@@ -144,11 +144,18 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
 	ON_BN_CLICKED(IDC_REPLACE_TAG_BUTTON, &CLyricEditDlg::OnBnClickedReplaceTagButton)
 	ON_BN_CLICKED(IDC_DELETE_TAG__BUTTON, &CLyricEditDlg::OnBnClickedDeleteTag)
 	ON_BN_CLICKED(IDC_SAVE_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedSaveLyricButton)
-	ON_BN_CLICKED(IDC_SAVE_AS_BUTTON5, &CLyricEditDlg::OnBnClickedSaveAsButton5)
+	//ON_BN_CLICKED(IDC_SAVE_AS_BUTTON5, &CLyricEditDlg::OnBnClickedSaveAsButton5)
 	ON_WM_DESTROY()
 	ON_EN_CHANGE(IDC_EDIT1, &CLyricEditDlg::OnEnChangeEdit1)
 	ON_WM_CLOSE()
-	ON_BN_CLICKED(IDC_OPEN_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedOpenLyricButton)
+	//ON_BN_CLICKED(IDC_OPEN_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedOpenLyricButton)
+	ON_COMMAND(ID_LYRIC_OPEN, &CLyricEditDlg::OnLyricOpen)
+	ON_COMMAND(ID_LYRIC_SAVE, &CLyricEditDlg::OnLyricSave)
+	ON_COMMAND(ID_LYRIC_SAVE_AS, &CLyricEditDlg::OnLyricSaveAs)
+	ON_COMMAND(ID_LYRIC_FIND, &CLyricEditDlg::OnLyricFind)
+	ON_COMMAND(ID_LYRIC_REPLACE, &CLyricEditDlg::OnLyricReplace)
+	ON_REGISTERED_MESSAGE(WM_FINDREPLACE, &CLyricEditDlg::OnFindReplace)
+	ON_COMMAND(ID_FIND_NEXT, &CLyricEditDlg::OnFindNext)
 END_MESSAGE_MAP()
 
 
@@ -180,6 +187,9 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_Mytip.AddTool(GetDlgItem(IDC_REPLACE_TAG_BUTTON), _T("替换光标所在行最左边的时间标签，快捷键：F9"));
 	m_Mytip.AddTool(GetDlgItem(IDC_DELETE_TAG__BUTTON), _T("删除光标处的时间标签，快捷键：Ctrl+Del"));
 	m_Mytip.AddTool(GetDlgItem(IDC_SAVE_LYRIC_BUTTON), _T("快捷键：Ctrl+S"));
+	m_Mytip.AddTool(GetDlgItem(ID_PLAY_PAUSE), _T("快捷键：Ctrl+P"));
+	m_Mytip.AddTool(GetDlgItem(ID_REW), _T("快捷键：Ctrl+←"));
+	m_Mytip.AddTool(GetDlgItem(ID_FF), _T("快捷键：Ctrl+→"));
 
 	//初始化状态栏
 	CRect rect;
@@ -231,44 +241,14 @@ void CLyricEditDlg::OnBnClickedDeleteTag()
 void CLyricEditDlg::OnBnClickedSaveLyricButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (m_modified)
-		SaveLyric(m_lyric_path.c_str(), m_code_type);
+	OnLyricSave();
 }
 
 
-void CLyricEditDlg::OnBnClickedSaveAsButton5()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//设置过滤器
-	const wchar_t* szFilter = _T("lrc歌词文件(*.lrc)|*.lrc|文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
-	//构造保存文件对话框
-	CFileDialog fileDlg(FALSE, _T("txt"), m_lyric_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
-	//为“另存为”对话框添加一个组合选择框
-	fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
-	//为组合选择框添加项目
-	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, _T("以ANSI格式保存"));
-	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, _T("以UTF-8格式保存"));
-	//为组合选择框设置默认选中的项目
-	DWORD default_selected{ 0 };
-	if (m_code_type == CodeType::UTF8 || m_code_type == CodeType::UTF8_NO_BOM)
-		default_selected = 1;
-	fileDlg.SetSelectedControlItem(IDC_SAVE_COMBO_BOX, default_selected);
-
-	//显示保存文件对话框
-	if (IDOK == fileDlg.DoModal())
-	{
-		DWORD selected_item;
-		fileDlg.GetSelectedControlItem(IDC_SAVE_COMBO_BOX, selected_item);	//获取“编码格式”中选中的项目
-		CodeType save_code{};
-		switch (selected_item)
-		{
-		case 0: save_code = CodeType::ANSI; break;
-		case 1: save_code = CodeType::UTF8; break;
-		default: break;
-		}
-		SaveLyric(fileDlg.GetPathName().GetString(), save_code);
-	}
-}
+//void CLyricEditDlg::OnBnClickedSaveAsButton5()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//}
 
 
 void CLyricEditDlg::OnDestroy()
@@ -325,6 +305,36 @@ BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
 			OnBnClickedSaveLyricButton();
 			return TRUE;
 		}
+		if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'P')
+		{
+			SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
+			return TRUE;
+		}
+		if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == VK_LEFT)
+		{
+			SendMessage(WM_COMMAND, ID_REW);
+			return TRUE;
+		}
+		if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == VK_RIGHT)
+		{
+			SendMessage(WM_COMMAND, ID_FF);
+			return TRUE;
+		}
+		if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'F')
+		{
+			OnLyricFind();
+			return TRUE;
+		}
+		if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'H')
+		{
+			OnLyricReplace();
+			return TRUE;
+		}
+		if (pMsg->wParam == VK_F3)
+		{
+			OnFindNext();
+			return TRUE;
+		}
 	}
 	//if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
 	//	return TRUE;
@@ -353,9 +363,15 @@ void CLyricEditDlg::OnClose()
 }
 
 
-void CLyricEditDlg::OnBnClickedOpenLyricButton()
+//void CLyricEditDlg::OnBnClickedOpenLyricButton()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//}
+
+
+void CLyricEditDlg::OnLyricOpen()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	// TODO: 在此添加命令处理程序代码
 	if (m_modified)
 	{
 		int rtn = MessageBox(_T("歌词已更改，是否要保存？"), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
@@ -366,7 +382,6 @@ void CLyricEditDlg::OnBnClickedOpenLyricButton()
 		default: return;
 		}
 	}
-
 
 	//设置过滤器
 	LPCTSTR szFilter = _T("lrc歌词文件(*.lrc)|*.lrc|文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
@@ -381,5 +396,171 @@ void CLyricEditDlg::OnBnClickedOpenLyricButton()
 		m_lyric_string = lyrics.GetLyricsString();
 		m_code_type = lyrics.GetCodeType();
 		m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+	}
+}
+
+
+void CLyricEditDlg::OnLyricSave()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_modified)
+		SaveLyric(m_lyric_path.c_str(), m_code_type);
+}
+
+
+void CLyricEditDlg::OnLyricSaveAs()
+{
+	// TODO: 在此添加命令处理程序代码
+	//设置过滤器
+	const wchar_t* szFilter = _T("lrc歌词文件(*.lrc)|*.lrc|文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+	//构造保存文件对话框
+	CFileDialog fileDlg(FALSE, _T("txt"), m_lyric_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+	//为“另存为”对话框添加一个组合选择框
+	fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
+	//为组合选择框添加项目
+	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, _T("以ANSI格式保存"));
+	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, _T("以UTF-8格式保存"));
+	//为组合选择框设置默认选中的项目
+	DWORD default_selected{ 0 };
+	if (m_code_type == CodeType::UTF8 || m_code_type == CodeType::UTF8_NO_BOM)
+		default_selected = 1;
+	fileDlg.SetSelectedControlItem(IDC_SAVE_COMBO_BOX, default_selected);
+
+	//显示保存文件对话框
+	if (IDOK == fileDlg.DoModal())
+	{
+		DWORD selected_item;
+		fileDlg.GetSelectedControlItem(IDC_SAVE_COMBO_BOX, selected_item);	//获取“编码格式”中选中的项目
+		CodeType save_code{};
+		switch (selected_item)
+		{
+		case 0: save_code = CodeType::ANSI; break;
+		case 1: save_code = CodeType::UTF8; break;
+		default: break;
+		}
+		SaveLyric(fileDlg.GetPathName().GetString(), save_code);
+	}
+}
+
+
+void CLyricEditDlg::OnLyricFind()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_pFindDlg == nullptr)
+	{
+		m_pFindDlg = new CFindReplaceDialog;
+		m_pFindDlg->Create(TRUE, NULL, NULL, FR_DOWN | FR_HIDEWHOLEWORD | FR_HIDEMATCHCASE, this);
+	}
+	m_pFindDlg->ShowWindow(SW_SHOW);
+	m_pFindDlg->SetActiveWindow();
+}
+
+
+void CLyricEditDlg::OnLyricReplace()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_pReplaceDlg == nullptr)
+	{
+		m_pReplaceDlg = new CFindReplaceDialog;
+		m_pReplaceDlg->Create(FALSE, NULL, NULL, FR_DOWN | FR_HIDEWHOLEWORD | FR_HIDEMATCHCASE, this);
+	}
+	m_pReplaceDlg->ShowWindow(SW_SHOW);
+	m_pReplaceDlg->SetActiveWindow();
+}
+
+
+afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
+{
+	if (m_pFindDlg != nullptr)
+	{
+		m_find_str = m_pFindDlg->GetFindString();
+		m_find_down = (m_pFindDlg->SearchDown() != 0);
+		if (m_pFindDlg->FindNext())		//查找下一个时
+		{
+			OnFindNext();
+		}
+		if (m_pFindDlg->IsTerminating())	//关闭窗口时
+		{
+			//m_pFindDlg->DestroyWindow();
+			m_pFindDlg = nullptr;
+		}
+	}
+	//delete m_pFindDlg;
+
+	if (m_pReplaceDlg != nullptr)
+	{
+		m_find_str = m_pReplaceDlg->GetFindString();
+		m_replace_str = m_pReplaceDlg->GetReplaceString();
+		if (m_pReplaceDlg->FindNext())		//查找下一个时
+		{
+			OnFindNext();
+		}
+		if (m_pReplaceDlg->ReplaceCurrent())	//替换当前时
+		{
+			if (m_find_flag)
+			{
+				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//替换找到的字符串
+				m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+				m_modified = true;
+				UpdateStatusbarInfo();
+				OnFindNext();
+				m_lyric_edit.SetSel(m_find_index, m_find_index + m_find_str.size());	//选中替换的字符串
+				SetActiveWindow();		//将编辑器窗口设置活动窗口
+			}
+			else
+			{
+				OnFindNext();
+			}
+		}
+		if (m_pReplaceDlg->ReplaceAll())		//替换全部时
+		{
+			int replace_count{};	//统计替换的字符串的个数
+			while (true)
+			{
+				m_find_index = m_lyric_string.find(m_find_str, m_find_index + 1);	//查找字符串
+				if (m_find_index == string::npos)
+					break;
+				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//替换找到的字符串
+				replace_count++;
+			}
+			m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+			m_modified = true;
+			UpdateStatusbarInfo();
+			if (replace_count != 0)
+			{
+				CString info;
+				info.Format(_T("替换完成，共替换%d个字符串。"), replace_count);
+				MessageBox(info, NULL, MB_ICONINFORMATION);
+			}
+		}
+		if (m_pReplaceDlg->IsTerminating())
+		{
+			m_pReplaceDlg = nullptr;
+		}
+	}
+	return 0;
+}
+
+
+void CLyricEditDlg::OnFindNext()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_find_down)
+		m_find_index = m_lyric_string.find(m_find_str, m_find_index + 1);	//向后查找
+	else
+		m_find_index = m_lyric_string.rfind(m_find_str, m_find_index - 1);	//向前查找
+	if (m_find_index == string::npos)
+	{
+		CString info;
+		info.Format(_T("找不到“%s”"), m_find_str.c_str());
+		MessageBox(info, NULL, MB_OK | MB_ICONINFORMATION);
+		m_find_flag = false;
+	}
+	else
+	{
+		m_lyric_edit.SetSel(m_find_index, m_find_index + m_find_str.size());		//选中找到的字符串
+		SetActiveWindow();		//将编辑器窗口设为活动窗口
+		m_lyric_edit.SetFocus();
+		m_find_flag = true;
 	}
 }

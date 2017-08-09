@@ -103,7 +103,7 @@ using std::map;
 
 #define SMALL_MODE_HEIGHT 8
 
-#define VERSION L"2.51";	//程序版本
+#define VERSION L"2.52";	//程序版本
 
 //任务栏图按钮
 #define IDT_PLAY_PAUSE 1321		//任务栏缩略图“播放/暂停”按钮的ID

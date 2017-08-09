@@ -37,6 +37,9 @@ public:
 	//规范化字符串，即删除字符串前面和后面的空格或控制字符(模板类型只能是string或wstring)
 	template<class T>
 	static bool StringNormalize(T& str);
+	//删除字符串末尾的空格
+	template<class T>
+	static bool DeleteEndSpace(T& str);
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);
 	//向ini文件写入一个int数据
@@ -92,6 +95,22 @@ inline bool CCommon::StringNormalize(T & str)
 			return true;
 		else
 			str = str.substr(index1, index2 - index1 + 1);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+template<class T>
+inline bool CCommon::DeleteEndSpace(T & str)
+{
+	if (typeid(str) == typeid(string) || typeid(str) == typeid(wstring))
+	{
+		if (str.empty()) return false;
+		while (!str.empty() && str.back() == L' ')
+			str.pop_back();
 		return true;
 	}
 	else

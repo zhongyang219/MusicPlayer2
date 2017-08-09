@@ -148,6 +148,7 @@ protected:
 	CWnd* m_cortana_wnd{};		//Cortana搜索框的指针
 	CFont m_cortana_font;		//在Cortana搜索框中显示歌词的字体
 	CRect m_cortana_rect;		//Cortana搜索框框的矩形区域
+	int m_cortana_left_space;		//Cortana搜索框中显示文本距搜索框左侧的距离
 	CDC* m_cortana_pDC{};				//在Cortana搜索框中绘图的DC
 
 	bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
@@ -176,7 +177,7 @@ protected:
 	void UpdatePlayPauseButton();		//根据当前播放状态更新“播放/暂停”按钮上的文字和图标
 	void SetThumbnailClipArea();		//设置任务栏缩略图的区域
 
-	void DrawCortanaText(LPCTSTR str, bool reset);		//在Cortana搜索框上绘制滚动显示的文本，如果reset为true则重置滚动位置
+	void DrawCortanaText(LPCTSTR str, bool reset, COLORREF color = RGB(255, 255, 255));		//在Cortana搜索框上绘制滚动显示的文本，如果reset为true则重置滚动位置
 	void DrawCortanaText(LPCTSTR str, int progress);		//在Cortana搜索框上绘制动态显示歌词的文本，progress为歌词进度
 	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
 	void GetCortanaHandle();		//获取Cortana的句柄

@@ -488,6 +488,13 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 
+	//按Ctrl+X退出
+	if (pMsg->message == WM_KEYDOWN && (GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'X')
+	{
+		OnCancel();
+		return TRUE;
+	}
+
 	//将此窗口的其他键盘消息转发给主窗口
 	if (pMsg->message == WM_KEYDOWN)
 	{

@@ -39,6 +39,8 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+protected:
+	afx_msg LRESULT OnFindReplace(WPARAM wParam, LPARAM lParam);
 };
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
@@ -53,6 +55,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
+	ON_REGISTERED_MESSAGE(WM_FINDREPLACE, &CAboutDlg::OnFindReplace)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -794,7 +797,7 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
 		m_pTaskbar->SetThumbnailClip(m_hWnd, info_rect);
 }
 
-void CMusicPlayerDlg::DrawCortanaText(LPCTSTR str, bool reset)
+void CMusicPlayerDlg::DrawCortanaText(LPCTSTR str, bool reset, COLORREF color)
 {
 	if (theApp.m_is_windows10 && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
@@ -810,9 +813,9 @@ void CMusicPlayerDlg::DrawCortanaText(LPCTSTR str, bool reset)
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
 		static CDrawCommon::ScrollInfo cortana_scroll_info;
-		m_cortana_draw.DrawScrollText(m_cortana_rect, str, RGB(255, 255, 255),DPI(2), false, cortana_scroll_info, reset);
+		m_cortana_draw.DrawScrollText(m_cortana_rect, str, color, DPI(2), false, cortana_scroll_info, reset);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
-		m_cortana_pDC->BitBlt(0, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
@@ -832,7 +835,7 @@ void CMusicPlayerDlg::DrawCortanaText(LPCTSTR str, int progress)
 		m_cortana_draw.SetDC(&MemDC);
 		m_cortana_draw.DrawWindowText(m_cortana_rect, str, RGB(255, 255, 255), m_lyric_back_color, progress, false, true);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
-		m_cortana_pDC->BitBlt(0, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
@@ -842,7 +845,7 @@ void CMusicPlayerDlg::ResetCortanaText()
 {
 	if (theApp.m_is_windows10 && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		DrawCortanaText(m_cortana_default_text.c_str(), true);
+		DrawCortanaText(m_cortana_default_text.c_str(), true, RGB(173,173,173));
 		m_cortana_wnd->Invalidate();
 	}
 }
@@ -853,18 +856,28 @@ void CMusicPlayerDlg::GetCortanaHandle()
 	{
 		HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//任务栏的句柄
 		HWND hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("TrayDummySearchControl"), NULL);	//Cortana栏的句柄（其中包含3个子窗口）
-		HWND hCortanaButton = ::FindWindowEx(hCortanaBar, NULL, _T("Button"), NULL);	//Cortana搜索框中类名为“Button”的窗口的句柄
-		m_cortana_hwnd = ::FindWindowEx(hCortanaBar, NULL, _T("Static"), NULL);		//Cortana搜索框中类名为“Static”的窗口的句柄
+		m_cortana_hwnd = ::FindWindowEx(hCortanaBar, NULL, _T("Button"), NULL);	//Cortana搜索框中类名为“Button”的窗口的句柄
+		HWND hCortanaStatic = ::FindWindowEx(hCortanaBar, NULL, _T("Static"), NULL);		//Cortana搜索框中类名为“Static”的窗口的句柄
 		if (m_cortana_hwnd == NULL) return;
 		wchar_t buff[32];
-		::GetWindowText(hCortanaButton, buff, 31);		//获取Cortana搜索框中原来的字符串，用于在程序退出时恢复
+		::GetWindowText(m_cortana_hwnd, buff, 31);		//获取Cortana搜索框中原来的字符串，用于在程序退出时恢复
 		m_cortana_default_text = buff;
 		m_cortana_wnd = FromHandle(m_cortana_hwnd);		//获取Cortana搜索框的CWnd类的指针
 		if (m_cortana_wnd == nullptr) return;
+
 		::GetClientRect(m_cortana_hwnd, m_cortana_rect);	//获取Cortana搜索框的矩形区域
+		CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
+		::GetClientRect(hCortanaStatic, cortana_static_rect);	//获取Cortana搜索框中static控件的矩形区域
+		m_cortana_left_space = m_cortana_rect.Width() - cortana_static_rect.Width();
+		m_cortana_rect.right = m_cortana_rect.left + cortana_static_rect.Width();		//调整Cortana窗口矩形的宽度
+
 		m_cortana_pDC = m_cortana_wnd->GetDC();
 		m_cortana_draw.Create(m_cortana_pDC, m_cortana_wnd);
-		m_cortana_draw.SetBackColor(RGB(47, 47, 47));	//设置绘图的背景颜色
+		DWORD dwStyle = GetWindowLong(hCortanaStatic, GWL_STYLE);
+		if ((dwStyle & WS_VISIBLE) != 0)		//根据Cortana搜索框中static控件是否有WS_VISIBLE属性为绘图背景设置不同的背景色
+			m_cortana_draw.SetBackColor(RGB(47, 47, 47));	//设置绘图的背景颜色
+		else
+			m_cortana_draw.SetBackColor(RGB(10, 10, 10));	//设置绘图的背景颜色
 		m_cortana_draw.SetFont(&m_cortana_font);		//设置字体
 	}
 }
@@ -1742,11 +1755,19 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	{
 		pMenu->EnableMenuItem(ID_EXPLORE_PATH, MF_BYCOMMAND | MF_GRAYED);
 		pMenu->EnableMenuItem(ID_EXPLORE_TRACK, MF_BYCOMMAND | MF_GRAYED);
+		pMenu->EnableMenuItem(ID_EDIT_LYRIC, MF_BYCOMMAND | MF_GRAYED);
+		pMenu->EnableMenuItem(ID_RELOAD_LYRIC, MF_BYCOMMAND | MF_GRAYED);
+		pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | MF_GRAYED);
+		pMenu->EnableMenuItem(ID_LYRIC_BATCH_DOWNLOAD, MF_BYCOMMAND | MF_GRAYED);
 	}
 	else
 	{
 		pMenu->EnableMenuItem(ID_EXPLORE_PATH, MF_BYCOMMAND | MF_ENABLED);
 		pMenu->EnableMenuItem(ID_EXPLORE_TRACK, MF_BYCOMMAND | MF_ENABLED);
+		pMenu->EnableMenuItem(ID_EDIT_LYRIC, MF_BYCOMMAND | MF_ENABLED);
+		pMenu->EnableMenuItem(ID_RELOAD_LYRIC, MF_BYCOMMAND | MF_ENABLED);
+		pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | MF_ENABLED);
+		pMenu->EnableMenuItem(ID_LYRIC_BATCH_DOWNLOAD, MF_BYCOMMAND | MF_ENABLED);
 	}
 
 	//设置播放列表菜单中排序方式的单选标记
@@ -2482,5 +2503,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 	theApp.m_player.IniLyrics();
 	ShowPlayList();
 	ShowTime();
+	return 0;
+}
+
+
+afx_msg LRESULT CAboutDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
+{
 	return 0;
 }

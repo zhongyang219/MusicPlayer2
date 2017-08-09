@@ -485,6 +485,10 @@ void CPlayer::GetBASSSpectral()
 			m_spectral_data[i] *= 300;
 		}
 	}
+	else
+	{
+		memset(m_spectral_data, 0, sizeof(m_spectral_data));
+	}
 }
 
 

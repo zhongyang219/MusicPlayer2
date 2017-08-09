@@ -103,28 +103,28 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 		{
 			string temp;
 			temp = string(id3->title, 30);
-			CCommon::StringNormalize(temp);
-			if (!temp.empty())
+			CCommon::DeleteEndSpace(temp);
+			if (!temp.empty() && temp.front() != L'\0')
 				song_info.title = CCommon::StrToUnicode(temp, CodeType::AUTO);
 
 			temp = string(id3->artist, 30);
-			CCommon::StringNormalize(temp);
-			if (!temp.empty())
+			CCommon::DeleteEndSpace(temp);
+			if (!temp.empty() && temp.front() != L'\0')
 				song_info.artist = CCommon::StrToUnicode(temp, CodeType::AUTO);
 
 			temp = string(id3->album, 30);
-			CCommon::StringNormalize(temp);
-			if (!temp.empty())
+			CCommon::DeleteEndSpace(temp);
+			if (!temp.empty() && temp.front() != L'\0')
 				song_info.album = CCommon::StrToUnicode(temp, CodeType::AUTO);
 
 			temp = string(id3->year, 4);
-			CCommon::StringNormalize(temp);
-			if (!temp.empty())
+			CCommon::DeleteEndSpace(temp);
+			if (!temp.empty() && temp.front() != L'\0')
 				song_info.year = CCommon::StrToUnicode(temp, CodeType::AUTO);
 
 			temp = string(id3->comment, 28);
-			CCommon::StringNormalize(temp);
-			if (!temp.empty())
+			CCommon::DeleteEndSpace(temp);
+			if (!temp.empty() && temp.front() != L'\0')
 				song_info.comment = CCommon::StrToUnicode(temp, CodeType::AUTO);
 			song_info.track = id3->track[1];
 			song_info.genre = GetGenre(id3->genre);
