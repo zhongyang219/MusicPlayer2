@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\派生的控件类">
+      <UniqueIdentifier>{a346ace4-e234-4c8c-a827-7f1b00a0e5bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\派生的控件类">
+      <UniqueIdentifier>{8b326fa4-f37d-4786-b847-07df26749e14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\公共的类">
+      <UniqueIdentifier>{4212b870-c979-4e16-a6e8-0f1c8ebf9db6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\对话框类">
+      <UniqueIdentifier>{9b54a66d-1d41-47b7-8595-5ec19e7c123d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\对话框类">
+      <UniqueIdentifier>{dc5424a3-009c-4bd4-8bfc-0b396caec4cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\公共的类">
+      <UniqueIdentifier>{590fb66d-d028-4088-8feb-32186d16c01d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\对话框类\选项设置对话框">
+      <UniqueIdentifier>{91bf2c82-bda3-473e-98c8-eddd4955e9e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\对话框类\选项设置对话框">
+      <UniqueIdentifier>{9e27da1a-5c5c-43f2-b3b8-e688c7f6d641}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+    <Text Include="Help.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MusicPlayer2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicPlayerDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Lyric.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionsDlg.h">
+      <Filter>头文件\对话框类\选项设置对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaySettingsDlg.h">
+      <Filter>头文件\对话框类\选项设置对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="AppearanceSettingDlg.h">
+      <Filter>头文件\对话框类\选项设置对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressStatic.h">
+      <Filter>头文件\派生的控件类</Filter>
+    </ClInclude>
+    <ClInclude Include="bass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EditEx.h">
+      <Filter>头文件\派生的控件类</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayListCtrl.h">
+      <Filter>头文件\派生的控件类</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticEx.h">
+      <Filter>头文件\派生的控件类</Filter>
+    </ClInclude>
+    <ClInclude Include="DataSettingsDlg.h">
+      <Filter>头文件\对话框类\选项设置对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioCommon.h">
+      <Filter>头文件\公共的类</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorConvert.h">
+      <Filter>头文件\公共的类</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>头文件\公共的类</Filter>
+    </ClInclude>
+    <ClInclude Include="LyricDownloadCommon.h">
+      <Filter>头文件\公共的类</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>头文件\公共的类</Filter>
+    </ClInclude>
+    <ClInclude Include="FindDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="HelpDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="LyricBatchDownloadDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="LyricDownloadDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="LyricEditDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniModeDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPathDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawCommon.h">
+      <Filter>头文件\公共的类</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MusicPlayer2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicPlayerDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Lyric.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionsDlg.cpp">
+      <Filter>源文件\对话框类\选项设置对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaySettingsDlg.cpp">
+      <Filter>源文件\对话框类\选项设置对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="AppearanceSettingDlg.cpp">
+      <Filter>源文件\对话框类\选项设置对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressStatic.cpp">
+      <Filter>源文件\派生的控件类</Filter>
+    </ClCompile>
+    <ClCompile Include="EditEx.cpp">
+      <Filter>源文件\派生的控件类</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayListCtrl.cpp">
+      <Filter>源文件\派生的控件类</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticEx.cpp">
+      <Filter>源文件\派生的控件类</Filter>
+    </ClCompile>
+    <ClCompile Include="DataSettingsDlg.cpp">
+      <Filter>源文件\对话框类\选项设置对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioCommon.cpp">
+      <Filter>源文件\公共的类</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorConvert.cpp">
+      <Filter>源文件\公共的类</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.cpp">
+      <Filter>源文件\公共的类</Filter>
+    </ClCompile>
+    <ClCompile Include="LyricDownloadCommon.cpp">
+      <Filter>源文件\公共的类</Filter>
+    </ClCompile>
+    <ClCompile Include="FindDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="HelpDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="LyricBatchDownloadDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="LyricDownloadDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="LyricEditDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniModeDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPathDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawCommon.cpp">
+      <Filter>源文件\公共的类</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MusicPlayer2.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\MusicPlayer2.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\MusicPlayer2.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\播放_暂停.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\上一曲.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\下一曲.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\播放.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\暂停.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\停止.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
