@@ -6,6 +6,7 @@
 //#include"MusicPlayerDlg.h"
 
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+104)		//播放列表加载完成消息
+#define WM_SET_TITLE (WM_USER+105)					//设置窗口标题的消息
 
 class CPlayer
 {
@@ -44,6 +45,7 @@ private:
 	int m_total_time;		//播放列表中所有曲目的时间（毫秒）
 
 	int m_index{ 0 };	//当前播放音乐的序号
+	int m_index_tmp{ 0 };
 	int m_song_num{ 0 };	//播放列表中的歌曲总数
 	int m_error_code{ 0 };	//储存错误代码
 	int m_playing{ 0 };		//正在播放标志（0：已停止，1：已暂停，2：正在播放）
@@ -65,8 +67,6 @@ public:
 	bool m_loading{ false };
 
 private:
-	wstring m_recent_path_dat_path;	//"recent_path.dat"文件的路径
-
 	vector<int> m_find_result;		//储存查找结果的歌曲序号
 
 	vector<wstring> m_current_path_lyrics;	//储存当前路径下的歌词文件的文件名（用于歌词模糊匹配时检索）

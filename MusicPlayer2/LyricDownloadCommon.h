@@ -38,6 +38,7 @@ public:
 	static int HttpPost(const wstring& str_url, wstring& result);
 
 	static bool DisposeLryic(wstring& lyric_str);	//对从网易云音乐下载的歌词进行处理，转换成正确的歌词文本
+	static void AddLyricTag(wstring& lyric_str, const wstring& song_id, const wstring& title = _T(""), const wstring& artist = _T(""), const wstring& album = _T(""));		//在歌词前面加上标签信息
 	static void DeleteStrSlash(wstring& str);		//如果字符串中的“\"”，删除字符串中的反斜杠
 	static void DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count = 30);		//从搜索结果search_result中提取出歌曲的信息，并保存在down_list容器里
 

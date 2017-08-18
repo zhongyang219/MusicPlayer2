@@ -18,6 +18,7 @@ public:
 
 	void EnableTip(bool enable = true) { m_bEnableTips = enable; }		//设置是否开启提示
 
+	static wstring GetDisplayStr(const SongInfo& song_info, DisplayFormat display_format);		//根据display_format指定的显示格式，返回一首曲目显示的字符串
 	void ShowPlaylist(DisplayFormat display_format);		//显示播放列表
 
 protected:

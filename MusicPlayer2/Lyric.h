@@ -30,10 +30,12 @@ private:
 	vector<string> m_lyrics_str;	//储存未拆分时间标签的每一句歌词
 	CodeType m_code_type{ CodeType::ANSI };		//歌词文本的编码类型
 
+	wstring m_id;		//歌词中的id标签（网易云音乐中的歌曲id，我自己加的，标准的lrc文件没有这个标签）
 	wstring m_ti;		//歌词中的ti标签
 	wstring m_ar;		//歌词中的ar标签
 	wstring m_al;		//歌词中的al标签
 	wstring m_by;		//歌词中的by标签
+	bool m_id_tag{ false };		//歌词中是否含有id标签
 	bool m_ti_tag{ false };		//歌词中是否含有ti标签
 	bool m_ar_tag{ false };		//歌词中是否含有ar标签
 	bool m_al_tag{ false };		//歌词中是否含有al标签

@@ -222,6 +222,18 @@ wstring CCommon::GetExePath()
 	return current_path;
 }
 
+wstring CCommon::GetDesktopPath()
+{
+	LPITEMIDLIST ppidl;
+	TCHAR pszDesktopPath[MAX_PATH];
+	if (SHGetSpecialFolderLocation(NULL, CSIDL_DESKTOP, &ppidl) == S_OK)
+	{
+		SHGetPathFromIDList(ppidl, pszDesktopPath);
+		CoTaskMemFree(ppidl);
+	}
+	return wstring(pszDesktopPath);
+}
+
 int CCommon::GetListWidth(CListBox & list)
 {
 	CDC *pDC = list.GetDC();
@@ -397,3 +409,102 @@ wstring CCommon::DisposeCmdLine(const wstring & cmd_line, vector<wstring>& files
 	//out_info += _T("\r\n");
 	//CCommon::WriteLog(L".\\command.log", wstring{ out_info });
 }
+
+BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, LPCTSTR lpszLnkFileName, LPCTSTR lpszWorkDir, WORD wHotkey, LPCTSTR lpszDescription, int iShowCmd)
+{
+	if (lpszLnkFileDir == NULL)
+		return FALSE;
+
+	HRESULT hr;
+	IShellLink     *pLink;  //IShellLink对象指针
+	IPersistFile   *ppf; //IPersisFil对象指针
+
+	//创建IShellLink对象
+	hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&pLink);
+	if (FAILED(hr))
+		return FALSE;
+
+	//从IShellLink对象中获取IPersistFile接口
+	hr = pLink->QueryInterface(IID_IPersistFile, (void**)&ppf);
+	if (FAILED(hr))
+	{
+		pLink->Release();
+		return FALSE;
+	}
+
+	TCHAR file_path[MAX_PATH];
+	GetModuleFileName(NULL, file_path, MAX_PATH);
+
+	//目标
+	if (lpszFileName == NULL)
+		pLink->SetPath(file_path);
+	else
+		pLink->SetPath(lpszFileName);
+
+	//工作目录
+	if (lpszWorkDir != NULL)
+	{
+		pLink->SetWorkingDirectory(lpszWorkDir);
+	}
+	else
+	{
+		//设置工作目录为快捷方式目标所在位置
+		TCHAR workDirBuf[MAX_PATH];
+		if (lpszFileName == NULL)
+			wcscpy_s(workDirBuf, file_path);
+		else
+			wcscpy_s(workDirBuf, lpszFileName);
+		LPTSTR pstr = wcsrchr(workDirBuf, _T('\\'));
+		*pstr = _T('\0');
+		pLink->SetWorkingDirectory(workDirBuf);
+	}
+
+	//快捷键
+	if (wHotkey != 0)
+		pLink->SetHotkey(wHotkey);
+
+	//备注
+	if (lpszDescription != NULL)
+		pLink->SetDescription(lpszDescription);
+
+	//显示方式
+	pLink->SetShowCmd(iShowCmd);
+
+
+	//快捷方式的路径 + 名称
+	wchar_t szBuffer[MAX_PATH];
+	if (lpszLnkFileName != NULL) //指定了快捷方式的名称
+		swprintf_s(szBuffer, L"%s\\%s", lpszLnkFileDir, lpszLnkFileName);
+	else
+	{
+		//没有指定名称，就从取指定文件的文件名作为快捷方式名称。
+		const wchar_t *pstr;
+		if (lpszFileName != NULL)
+			pstr = wcsrchr(lpszFileName, L'\\');
+		else
+			pstr = wcsrchr(file_path, L'\\');
+
+		if (pstr == NULL)
+		{
+			ppf->Release();
+			pLink->Release();
+			return FALSE;
+		}
+		//注意后缀名要从.exe改为.lnk
+		swprintf_s(szBuffer, L"%s\\%s", lpszLnkFileDir, pstr);
+		int nLen = wcslen(szBuffer);
+		szBuffer[nLen - 3] = L'l';
+		szBuffer[nLen - 2] = L'n';
+		szBuffer[nLen - 1] = L'k';
+	}
+	//保存快捷方式到指定目录下
+	//WCHAR  wsz[MAX_PATH];  //定义Unicode字符串
+	//MultiByteToWideChar(CP_ACP, 0, szBuffer, -1, wsz, MAX_PATH);
+
+	hr = ppf->Save(szBuffer, TRUE);
+
+	ppf->Release();
+	pLink->Release();
+	return SUCCEEDED(hr);
+}
+

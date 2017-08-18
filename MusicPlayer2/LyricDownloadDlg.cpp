@@ -294,6 +294,7 @@ UINT CLyricDownloadDlg::LyricDownloadThreadFunc(LPVOID lpParam)
 afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam)
 {
 	//响应WM_SEARCH_CONPLATE消息
+	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(TRUE);	//搜索完成之后启用该按钮
 	m_search_result = m_search_thread_info.result;
 	switch (m_search_thread_info.rtn)
 	{
@@ -325,7 +326,6 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	m_down_list_ctrl.SetItemState(best_matched, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//选中行
 	m_down_list_ctrl.EnsureVisible(best_matched, FALSE);		//使选中行保持可见
 	m_item_selected = best_matched;
-	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(TRUE);	//搜索完成之后启用该按钮
 	return 0;
 }
 
@@ -369,6 +369,8 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		MessageBox(_T("该歌曲没有歌词！"), NULL, MB_ICONWARNING);
 		return 0;
 	}
+
+	CLyricDownloadCommon::AddLyricTag(m_lyric_str, m_down_list[m_item_selected].id, m_down_list[m_item_selected].title, m_down_list[m_item_selected].artist, m_down_list[m_item_selected].album);
 
 	//保存歌词
 	if (wParam == 0)		//wParam为0时不弹出“另存为对话框”

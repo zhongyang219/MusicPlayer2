@@ -30,6 +30,32 @@ void CPlayListCtrl::SetColor(COLORREF TextColor, COLORREF TextBkColor, COLORREF 
 	this->RedrawItems(0, itemCount - 1);
 }
 
+wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat display_format)
+{
+	switch (display_format)
+	{
+	case DF_FILE_NAME:		//显示为文件名
+		return song_info.file_name;
+	case DF_TITLE:			//显示为歌曲标题
+		if (song_info.title == DEFAULT_TITLE)	//如果获取不到歌曲标题，就显示文件名
+			return song_info.file_name;
+		else
+			return song_info.title;
+	case DF_ARTIST_TITLE:	//显示为艺术家 - 标题
+		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//如果标题和艺术家都获取不到，就显示文件名
+			return song_info.file_name;
+		else
+			return (song_info.artist + _T(" - ") + song_info.title);
+	case DF_TITLE_ARTIST:	//显示为标题 - 艺术家
+		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//如果标题和艺术家都获取不到，就显示文件名
+			return song_info.file_name;
+		else
+			return (song_info.title + _T(" - ") + song_info.artist);
+	default:
+		return song_info.file_name;
+	}
+}
+
 void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format)
 {
 	int item_num_before = GetItemCount();
@@ -48,31 +74,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format)
 			str.Format(_T("%u"), i + 1);
 			InsertItem(i, str);
 		}
-
-		switch (display_format)
-		{
-		case DF_FILE_NAME:		//显示为文件名
-			SetItemText(i, 1, m_all_song_info[i].file_name.c_str());
-			break;
-		case DF_TITLE:			//显示为歌曲标题
-			if (m_all_song_info[i].title == DEFAULT_TITLE)	//如果获取不到歌曲标题，就显示文件名
-				SetItemText(i, 1, m_all_song_info[i].file_name.c_str());
-			else
-				SetItemText(i, 1, m_all_song_info[i].title.c_str());
-			break;
-		case DF_ARTIST_TITLE:	//显示为艺术家 - 标题
-			if (m_all_song_info[i].title == DEFAULT_TITLE && m_all_song_info[i].artist == DEFAULT_ARTIST)		//如果标题和艺术家都获取不到，就显示文件名
-				SetItemText(i, 1, m_all_song_info[i].file_name.c_str());
-			else
-				SetItemText(i, 1, (m_all_song_info[i].artist + _T(" - ") + m_all_song_info[i].title).c_str());
-			break;
-		case DF_TITLE_ARTIST:	//显示为标题 - 艺术家
-			if (m_all_song_info[i].title == DEFAULT_TITLE && m_all_song_info[i].artist == DEFAULT_ARTIST)		//如果标题和艺术家都获取不到，就显示文件名
-				SetItemText(i, 1, m_all_song_info[i].file_name.c_str());
-			else
-				SetItemText(i, 1, (m_all_song_info[i].title + _T(" - ") + m_all_song_info[i].artist).c_str());
-			break;
-		}
+		SetItemText(i, 1, (GetDisplayStr(m_all_song_info[i], display_format)).c_str());
 
 		SetItemText(i, 2, theApp.m_player.GetAllSongLength(i).time2str().c_str());
 	}

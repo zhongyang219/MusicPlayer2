@@ -30,6 +30,19 @@ void CLyrics::DisposeLyric()
 	Lyric lyric;
 	for (int i{ 0 }; i < m_lyrics_str.size(); i++)
 	{
+		//查找id标签（由于id标签是我自己加上的，它永远只会出现在第一行）
+		if (i == 0)
+		{
+			index = m_lyrics_str[i].find("[id:");
+			if (index != string::npos)
+			{
+				m_id_tag = true;
+				size_t index2 = m_lyrics_str[i].find(']');
+				temp = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+				m_id = CCommon::StrToUnicode(temp, m_code_type);
+			}
+		}
+
 		//查找ti标签
 		if (!m_ti_tag)
 		{
@@ -281,6 +294,7 @@ wstring CLyrics::GetLyricsString() const
 	}
 	else		//如果时间偏移不为0，返回将时间偏移写入每个时间标签后的歌词文本
 	{
+		if (m_id_tag) lyric_string += (L"[id:" + m_id + L"]\r\n");
 		if (m_ti_tag) lyric_string += (L"[ti:" + m_ti + L"]\r\n");
 		if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
 		if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
@@ -349,6 +363,7 @@ void CLyrics::SaveLyric2()
 		out_put << buff;
 	}
 	//输出标识标签
+	if(m_id_tag) out_put << "[id:" << CCommon::UnicodeToStr(m_id, m_code_type) << "]" << std::endl;
 	if(m_ti_tag) out_put << "[ti:" << CCommon::UnicodeToStr(m_ti, m_code_type) << "]" << std::endl;
 	if (m_ar_tag) out_put << "[ar:" << CCommon::UnicodeToStr(m_ar, m_code_type) << "]" << std::endl;
 	if (m_al_tag) out_put << "[al:" << CCommon::UnicodeToStr(m_al, m_code_type) << "]" << std::endl;

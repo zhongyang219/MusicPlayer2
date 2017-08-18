@@ -80,6 +80,7 @@ void CProgressStatic::OnPaint()
 	// 不为绘图消息调用 CStatic::OnPaint()
 	CRect rect;
 	this->GetClientRect(&rect);
+	int max_length = rect.Width();
 
 	//由于非windows10时为主窗口设置了WS_CLIPCHILDREN属性，所以这里需要手动重绘控件区域
 	if (!theApp.m_is_windows10)
@@ -101,6 +102,7 @@ void CProgressStatic::OnPaint()
 	//获取进度条的长度
 	int length;
 	length = rect.Width() * m_pos / m_range;
+	if (length > max_length) length = max_length;
 	rect.right = rect.left + length;
 	//画进度条颜色
 	if (!rect.IsRectEmpty())

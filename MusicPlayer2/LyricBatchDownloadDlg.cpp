@@ -309,6 +309,9 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 			continue;
 		}
 
+		//在歌词前面添加标签
+		CLyricDownloadCommon::AddLyricTag(lyric_str, down_list[best_matched].id, down_list[best_matched].title, down_list[best_matched].artist, down_list[best_matched].album);
+
 		//保存歌词
 		if (CLyricBatchDownloadDlg::SaveLyric(lyric_path.c_str(), lyric_str, pInfo->save_code))
 			pInfo->list_ctrl->SetItemText(i, 3, _T("成功，但是歌词中有无法转换的Unicode字符，建议保存为UTF-8格式"));		//如果函数返回true，则说明有无法转换的Unicode字符

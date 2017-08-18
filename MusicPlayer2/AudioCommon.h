@@ -9,6 +9,9 @@ enum AudioType
 	AU_WMA,
 	AU_OGG,
 	AU_MP4,
+	AU_APE,
+	AU_FLAC,
+	AU_CUE,
 	AU_OTHER
 };
 
@@ -38,6 +41,9 @@ struct SongInfo
 	BYTE track{};		//音轨序号
 	int tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
 	bool info_acquired{ false };		//如果已经获取到了信息，则为ture
+	Time start_pos{};		//音频的起始位置，用于cue分轨
+	Time end_pos{};
+	bool is_cue{ false };		//如果曲目是cue分轨，则为true
 
 	//根据文件名的比较函数，用于以文件名排序
 	static bool ByFileName(const SongInfo& a, const SongInfo& b) { return a.file_name < b.file_name; }
@@ -110,9 +116,14 @@ public:
 	//根据文件名判断文件的类型
 	static AudioType GetAudioType(const wstring& file_name);
 
+	//查找path目录下的所有音频文件，并将文件名保存到files容器中，并限定最大文件数为max_file
 	static void GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file);
 
+	//查找path目录下的所有歌词文件，并将文件名保存到files容器中
 	static void GetLyricFiles(wstring path, vector<wstring>& files);
+
+	//处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，path为文件的路径
+	static void GetCueTracks(vector<SongInfo>& files, wstring path);
 
 	//通过BASS音频库获取音频文件的信息，并储存在song_info中
 	static void GetAudioTags(HSTREAM hStream, AudioType type, SongInfo& song_info);

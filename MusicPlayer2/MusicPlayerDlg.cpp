@@ -39,8 +39,6 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-protected:
-	afx_msg LRESULT OnFindReplace(WPARAM wParam, LPARAM lParam);
 };
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
@@ -55,7 +53,6 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
-	ON_REGISTERED_MESSAGE(WM_FINDREPLACE, &CAboutDlg::OnFindReplace)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -227,6 +224,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_LBUTTONUP()
 	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_PLAYLIST_INI_COMPLATE, &CMusicPlayerDlg::OnPlaylistIniComplate)
+	ON_MESSAGE(WM_SET_TITLE, &CMusicPlayerDlg::OnSetTitle)
 END_MESSAGE_MAP()
 
 
@@ -882,6 +880,29 @@ void CMusicPlayerDlg::GetCortanaHandle()
 	}
 }
 
+void CMusicPlayerDlg::CreateDesktopShortcut()
+{
+	//如果目录下没有recent_path和song_data文件，就判断为是第一次运行程序，提示用户是否创建桌面快捷方式
+	if (!CCommon::FileExist(theApp.m_song_data_path) && !CCommon::FileExist(theApp.m_recent_path_dat_path))
+	{
+		wstring shortcut_path;
+
+		if (MessageBox(_T("你可能是第一次运行此程序，是否要在桌面上创建程序的快捷方式？"), NULL, MB_ICONMASK | MB_YESNO) == IDYES)
+		{
+			if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("音乐播放器.lnk")))
+			{
+				CString info;
+				info.Format(_T("已经在“%s”路径下创建了程序的快捷方式。"), theApp.m_desktop_path.c_str());
+				MessageBox(info, NULL, MB_ICONINFORMATION);
+			}
+			else
+			{
+				MessageBox(_T("快捷方式创建失败！"), NULL, MB_ICONWARNING);
+			}
+		}
+	}
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
@@ -1255,6 +1276,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		UpdatePlayPauseButton();
 		//SetForegroundWindow();
 		//ShowPlayList();
+
+		//提示用户是否创建桌面快捷方式
+		CreateDesktopShortcut();
 	}
 
 	m_timer_count++;
@@ -1296,13 +1320,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 				//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
 				if (index != theApp.m_player.GetIndex() || song_name != theApp.m_player.GetFileName())
 				{
-					DrawCortanaText((L"正在播放：" + theApp.m_player.GetFileName()).c_str(), true);
+					DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true);
 					index = theApp.m_player.GetIndex();
 					song_name = theApp.m_player.GetFileName();
 				}
 				else
 				{
-					DrawCortanaText((L"正在播放：" + theApp.m_player.GetFileName()).c_str(), false);
+					DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false);
 				}
 			}
 		}
@@ -1334,14 +1358,14 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		GetWindowRect(rect);
 		if (rect.left < 0) rect.left = 0;
 		if (rect.top < 0) rect.top = 0;
-		//获取窗口左上角点往右12个像素点的颜色（即为窗口边缘的颜色）
+		//获取窗口左上角点往右8个像素点的颜色（即为窗口边缘的颜色）
 		COLORREF color;
 		//如果系统是Win10就取窗口最边缘像素的颜色，因为当win10设置成不显示标题栏颜色时，只有窗口边框最外面的一圈像素是主题颜色
 		//如果系统是Win8/8.1，则取窗口边缘住下2个像素的颜色，因为win8窗口标题栏总是当前主题色，而边框最外侧的颜色比主题色要深。
 		if (theApp.m_is_windows10)
-			color = ::GetPixel(hDC, rect.TopLeft().x + 12, rect.TopLeft().y);
+			color = ::GetPixel(hDC, rect.TopLeft().x + DPI(8), rect.TopLeft().y);
 		else
-			color = ::GetPixel(hDC, rect.TopLeft().x + 12, rect.TopLeft().y + 2);
+			color = ::GetPixel(hDC, rect.TopLeft().x + DPI(8), rect.TopLeft().y + DPI(2));
 		if (theApp.m_theme_color != color && color != RGB(255,255,255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
 		{
 			theApp.m_theme_color = color;
@@ -2507,7 +2531,13 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 }
 
 
-afx_msg LRESULT CAboutDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
+afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 {
+	#ifdef _DEBUG
+		SetWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format) + L" - MusicPlayer2(DEBUG模式)").c_str());		//用当前正在播放的歌曲名作为窗口标题
+	#else
+		SetWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format) + L" - MusicPlayer2").c_str());		//用当前正在播放的歌曲名作为窗口标题
+	#endif
+
 	return 0;
 }

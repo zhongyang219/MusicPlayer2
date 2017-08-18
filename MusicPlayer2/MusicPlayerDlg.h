@@ -182,6 +182,7 @@ protected:
 	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
 	void GetCortanaHandle();		//获取Cortana的句柄
 
+	void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式
 
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
@@ -268,4 +269,5 @@ public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 protected:
 	afx_msg LRESULT OnPlaylistIniComplate(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnSetTitle(WPARAM wParam, LPARAM lParam);
 };

@@ -21,7 +21,7 @@ bool CAudioCommon::FileIsAudio(const wstring & file_name)
 		type = file_name.substr(index);			//获取扩展名
 	std::transform(type.begin(), type.end(), type.begin(), tolower);		//将扩展名转换成小写
 	return (type == L".mp3" || type == L".wma" || type == L".wav"|| type == L".ogg" || type == L".flac"
-		|| type == L".m4a");
+		|| type == L".m4a" || type == L".cue"/* || type == L".ape"*/);
 }
 
 AudioType CAudioCommon::GetAudioType(const wstring & file_name)
@@ -42,6 +42,10 @@ AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 		return AU_MP4;
 	else if (type == L".mp4")
 		return AU_MP4;
+	else if (type == L".flac")
+		return AU_FLAC;
+	else if (type == L".cue")
+		return AU_CUE;
 	else
 		return AU_OTHER;
 }
@@ -83,6 +87,136 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
 		} while (_wfindnext(hFile, &fileinfo) == 0);
 	}
 	_findclose(hFile);
+}
+
+void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
+{
+	for (size_t i{}; i < files.size(); i++)
+	{
+		//依次检查列表中的每首歌曲是否为cue文件
+		if (GetAudioType(files[i].file_name) == AU_CUE)
+		{
+			wstring cue_file_name{ files[i].file_name };		//cue文件的文件名
+			files.erase(files.begin() + i);		//从列表中删除cue文件
+			wstring cue_file_name2;			//cue文件的文件名（不含扩展名）
+			size_t index = cue_file_name.rfind(L'.');
+			cue_file_name2 = cue_file_name.substr(0, index);
+			//查找和cue文件同名的音频文件
+			wstring play_file_name;		//查找到的和cue文件同名的文件名
+			wstring play_file_name2;		//查找到的和cue文件同名的文件名（不含扩展名）
+			int bitrate;
+			Time total_length;
+			for (size_t j{}; j < files.size(); j++)
+			{
+				if (GetAudioType(files[j].file_name) != AU_CUE)	//确保该文件不是cue文件
+				{
+					play_file_name = files[j].file_name;		//信保存文件名
+					bitrate = files[j].bitrate;			//保存获取到的比特率
+					total_length = files[j].lengh;
+					size_t index2 = play_file_name.rfind(L'.');
+					play_file_name2 = play_file_name.substr(0, index2);
+					if (play_file_name2 == cue_file_name2)
+					{
+						files.erase(files.begin() + j);		//从列表中删除该文件
+						break;
+					}
+				}
+			}
+
+			//解析cue文件
+			string cue_file_contents;
+			ifstream OpenFile{ path + cue_file_name };
+			if (OpenFile.fail())
+				return;
+			string current_line;
+			char ch;
+			while (!OpenFile.eof())
+			{
+				//std::getline(OpenFile, current_line);
+				//cue_file_contents += current_line;
+				OpenFile.get(ch);
+				cue_file_contents.push_back(ch);
+				if (cue_file_contents.size() > 102400) break;	//限制cue文件最大为100KB
+			}
+			//获取cue文件的专辑标题
+			string album_name;
+			size_t index1 = cue_file_contents.find("TITLE");
+			size_t index2 = cue_file_contents.find('\"', index1);
+			size_t index3 = cue_file_contents.find('\"', index2 + 1);
+			album_name = cue_file_contents.substr(index2 + 1, index3 - index2 - 1);
+
+			SongInfo song_info{};
+			song_info.album = CCommon::StrToUnicode(album_name);
+			song_info.file_name = play_file_name;
+			song_info.bitrate = bitrate;
+			song_info.is_cue = true;
+			song_info.info_acquired = true;
+
+			size_t index_track{};
+			size_t index_title{};
+			size_t index_artist{};
+			size_t index_pos{};
+			while (true)
+			{
+				//查找曲目序号
+				index_track = cue_file_contents.find("TRACK ", index_track + 6);
+				if (index_track == string::npos)
+					break;
+				string track_str = cue_file_contents.substr(index_track + 6, 3);
+				song_info.track = atoi(track_str.c_str());
+				size_t next_track_index = cue_file_contents.find("TRACK ", index_track + 6);
+				//查找曲目标题
+				index_title = cue_file_contents.find("TITLE ", index_track + 6);
+				if (index_title < next_track_index)
+				{
+					index2 = cue_file_contents.find('\"', index_title);
+					index3 = cue_file_contents.find('\"', index2 + 1);
+					song_info.title = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1));
+				}
+				else
+				{
+					song_info.title = DEFAULT_TITLE;
+				}
+				//查找曲目艺术家
+				index_artist = cue_file_contents.find("PERFORMER ", index_track + 6);
+				if (index_artist < next_track_index)
+				{
+					index2 = cue_file_contents.find('\"', index_artist);
+					index3 = cue_file_contents.find('\"', index2 + 1);
+					song_info.artist = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1));
+				}
+				else
+				{
+					song_info.artist = DEFAULT_ARTIST;
+				}
+				//查找曲目位置
+				index_pos = cue_file_contents.find("INDEX ", index_track + 6);
+				index1 = cue_file_contents.find(":", index_pos + 6);
+				index2 = cue_file_contents.rfind(" ", index1);
+				string tmp;
+				Time time;
+				//获取分钟
+				tmp = cue_file_contents.substr(index2 + 1, index1 - index2 - 1);
+				time.min = atoi(tmp.c_str());
+				//获取秒钟
+				tmp = cue_file_contents.substr(index1 + 1, 2);
+				time.sec = atoi(tmp.c_str());
+				//获取毫秒
+				tmp = cue_file_contents.substr(index1 + 4, 2);
+				time.msec = atoi(tmp.c_str()) * 10;
+
+				song_info.start_pos = time;
+				if (!time.isZero() && !files.empty())
+				{
+					files.back().end_pos = time;
+					files.back().lengh = Time(time - files.back().start_pos);
+				}
+
+				files.push_back(song_info);
+			}
+			files.back().lengh = Time(total_length - files.back().start_pos);
+		}
+	}
 }
 
 

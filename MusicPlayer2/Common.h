@@ -50,7 +50,10 @@ public:
 	static string UnicodeToStr(const wstring & wstr, CodeType code_type, bool* char_cannot_convert = nullptr);
 	//判断一个字符串是否UTF8编码
 	static bool IsUTF8Bytes(const char* data);
+	//获取当前进程exe文件的路径
 	static wstring GetExePath();
+	//获取桌面的路径
+	static wstring GetDesktopPath();
 	//获取一个列表控件最大长度项目宽度的像素值
 	static int GetListWidth(CListBox& list);
 	//为一个Static控件填充指定的颜色
@@ -72,6 +75,19 @@ public:
 
 	//将通过命令行参数传递过来的多个文件路径拆分，并保存到file容器里，如果参数传递过来的第一个文件不是文件而是文件夹，则返回文件夹路径，否则，返回空字符串
 	static wstring DisposeCmdLine(const wstring& cmd_line, vector<wstring>& files);
+
+	/*
+	函数功能：对指定文件在指定的目录下创建其快捷方式
+	函数参数：
+	lpszLnkFileDir  指定目录，不能为NULL。
+	lpszFileName    指定文件，为NULL表示当前进程的EXE文件。
+	lpszLnkFileName 快捷方式名称，为NULL表示EXE文件名。
+	lpszWorkDir		快捷方式工作目录，为NULL表示快捷方式目标所在位置
+	wHotkey         为0表示不设置快捷键
+	pszDescription  备注
+	iShowCmd        运行方式，默认为常规窗口
+	*/
+	static BOOL CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL);
 };
 
 template<class T>

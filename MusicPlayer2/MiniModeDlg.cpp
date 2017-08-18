@@ -380,7 +380,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	if (theApp.m_player.m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
 	{
 		//正在播放的文件名以滚动的样式显示，函数每调用一次滚动DPI/72个像素（150%缩放时为2个像素）。如果参数要求强制刷新，则重置滚动位置
-		m_lyric_static.DrawScrollText(theApp.m_player.GetFileName().c_str(), theApp.m_dpi / 72, force_refresh);
+		m_lyric_static.DrawScrollText(CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str(), theApp.m_dpi / 72, force_refresh);
 	}
 	else		//显示歌词
 	{

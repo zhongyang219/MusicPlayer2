@@ -5,7 +5,6 @@
 
 CPlayer::CPlayer()
 {
-	m_recent_path_dat_path = CCommon::GetExePath() + L"recent_path.dat";
 }
 
 CPlayer::~CPlayer()
@@ -96,6 +95,7 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 		}
 		//m_index = 0;
 		m_song_num = m_playlist.size();
+		m_index_tmp = m_index;		//保存歌曲序号
 		if (m_index < 0 || m_index >= m_song_num) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 
 		m_loading = true;
@@ -167,6 +167,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate(bool sort)
 {
+	CAudioCommon::GetCueTracks(m_playlist, m_path);
+	m_song_num = m_playlist.size();
+	m_index = m_index_tmp;
+	if (m_index < 0 || m_index >= m_song_num) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 	//统计列表总时长
 	m_total_time = 0;
 	for (const auto& somg : m_playlist)
@@ -340,6 +344,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				m_song_length_int = m_song_length.time2int();
 			}
 		}
+		if (m_playlist[m_index].is_cue)
+			SeekTo(0);
 		SetVolume();
 		memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
 		break;
@@ -409,21 +415,28 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
 bool CPlayer::SongIsOver() const
 {
-	bool song_is_over;
-	static int last_pos;
-	if ((m_playing == 2 && m_current_position_int == last_pos && m_current_position_int != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
-		&& m_current_position_int > m_song_length_int-1000)		//且播放进度到了最后一秒
-		|| m_error_code == BASS_ERROR_ENDED)	//或者出现BASS_ERROR_ENDED错误，则判断当前歌曲播放完了
-		//有时候会出现识别的歌曲长度超过实际歌曲长度的问题，这样会导致歌曲播放进度超过实际歌曲结尾时会出现BASS_ERROR_ENDED错误，
-		//检测到这个错误时直接判断歌曲已经播放完了。
-		song_is_over = true;
+	if (m_playlist[m_index].is_cue)
+	{
+		return m_current_position_int >= m_song_length_int;
+	}
 	else
-		song_is_over = false;
-	last_pos = m_current_position_int;
-	return song_is_over;
-	//这里本来直接使用return m_current_position_int>=m_song_length_int来判断歌曲播放完了，
-	//但是BASS音频库在播放时可能会出现当前播放位置一直无法到达歌曲长度位置的问题，
-	//这样函数就会一直返回false。
+	{
+		bool song_is_over;
+		static int last_pos;
+		if ((m_playing == 2 && m_current_position_int == last_pos && m_current_position_int != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
+			&& m_current_position_int > m_song_length_int-1000)		//且播放进度到了最后一秒
+			|| m_error_code == BASS_ERROR_ENDED)	//或者出现BASS_ERROR_ENDED错误，则判断当前歌曲播放完了
+			//有时候会出现识别的歌曲长度超过实际歌曲长度的问题，这样会导致歌曲播放进度超过实际歌曲结尾时会出现BASS_ERROR_ENDED错误，
+			//检测到这个错误时直接判断歌曲已经播放完了。
+			song_is_over = true;
+		else
+			song_is_over = false;
+		last_pos = m_current_position_int;
+		return song_is_over;
+		//这里本来直接使用return m_current_position_int>=m_song_length_int来判断歌曲播放完了，
+		//但是BASS音频库在播放时可能会出现当前播放位置一直无法到达歌曲长度位置的问题，
+		//这样函数就会一直返回false。
+	}
 }
 
 void CPlayer::GetBASSSongLength()
@@ -456,6 +469,10 @@ void CPlayer::GetBASSCurrentPosition()
 	pos_sec = BASS_ChannelBytes2Seconds(m_musicStream, pos_bytes);
 	m_current_position_int = static_cast<int>(pos_sec * 1000);
 	if (m_current_position_int == -1000) m_current_position_int = 0;
+	if (m_playlist[m_index].is_cue)
+	{
+		m_current_position_int -= m_playlist[m_index].start_pos.time2int();
+	}
 	m_current_position.int2time(m_current_position_int);
 }
 
@@ -571,8 +588,8 @@ void CPlayer::ChangePath(const wstring& path, int track)
 	m_current_position = { 0, 0, 0 };
 	SaveConfig();
 	SetTitle();
-	MusicControl(Command::OPEN);
-	IniLyrics();
+	//MusicControl(Command::OPEN);
+	//IniLyrics();
 	m_find_result.clear();	//更改路径后清空查找结果
 }
 
@@ -598,7 +615,7 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
 	ChangePath(path, track);
 	m_current_position_int = position;
 	m_current_position.int2time(m_current_position_int);
-	MusicControl(Command::SEEK);
+	//MusicControl(Command::SEEK);
 	EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
 	
 }
@@ -745,11 +762,12 @@ bool CPlayer::IsError() const
 
 void CPlayer::SetTitle() const
 {
-#ifdef _DEBUG
-	SetWindowText(theApp.m_pMainWnd->m_hWnd, (m_current_file_name + L" - MusicPlayer2(DEBUG模式)").c_str());		//用当前正在播放的歌曲名作为窗口标题
-#else
-	SetWindowText(theApp.m_pMainWnd->m_hWnd, (m_current_file_name + L" - MusicPlayer2").c_str());		//用当前正在播放的歌曲名作为窗口标题
-#endif
+//#ifdef _DEBUG
+//	SetWindowText(theApp.m_pMainWnd->m_hWnd, (m_current_file_name + L" - MusicPlayer2(DEBUG模式)").c_str());		//用当前正在播放的歌曲名作为窗口标题
+//#else
+//	SetWindowText(theApp.m_pMainWnd->m_hWnd, (m_current_file_name + L" - MusicPlayer2").c_str());		//用当前正在播放的歌曲名作为窗口标题
+//#endif
+	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_SET_TITLE, 0, 0);
 }
 
 void CPlayer::SaveConfig() const
@@ -869,6 +887,10 @@ void CPlayer::SeekTo(int position)
 		position = m_song_length_int;
 	m_current_position_int = position;
 	m_current_position.int2time(position);
+	if (m_playlist[m_index].is_cue)
+	{
+		position += m_playlist[m_index].start_pos.time2int();
+	}
 	double pos_sec = static_cast<double>(position) / 1000.0;
 	QWORD pos_bytes;
 	pos_bytes = BASS_ChannelSeconds2Bytes(m_musicStream, pos_sec);
@@ -923,6 +945,7 @@ void CPlayer::ReIniBASS()
 void CPlayer::SortPlaylist(bool change_index)
 {
 	if (m_loading) return;
+	int track_number = m_playlist[m_index].track;
 	switch (m_sort_mode)
 	{
 	case SM_FILE: std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
@@ -942,12 +965,26 @@ void CPlayer::SortPlaylist(bool change_index)
 	if (change_index)
 	{
 		//播放列表排序后，查找正在播放项目的序号
-		for (int i{}; i < m_playlist.size(); i++)
+		if (!m_playlist[m_index].is_cue)
 		{
-			if (m_current_file_name == m_playlist[i].file_name)
+			for (int i{}; i < m_playlist.size(); i++)
 			{
-				m_index = i;
-				break;
+				if (m_current_file_name == m_playlist[i].file_name)
+				{
+					m_index = i;
+					break;
+				}
+			}
+		}
+		else
+		{
+			for (int i{}; i < m_playlist.size(); i++)
+			{
+				if (track_number == m_playlist[i].track)
+				{
+					m_index = i;
+					break;
+				}
 			}
 		}
 	}
@@ -958,7 +995,7 @@ void CPlayer::SaveRecentPath() const
 {
 	// 打开或者新建文件
 	CFile file;
-	BOOL bRet = file.Open(m_recent_path_dat_path.c_str(),
+	BOOL bRet = file.Open(theApp.m_recent_path_dat_path.c_str(),
 		CFile::modeCreate | CFile::modeWrite);
 	if (!bRet)		//打开文件失败
 	{
@@ -988,7 +1025,7 @@ void CPlayer::LoadRecentPath()
 {
 	// 打开文件
 	CFile file;
-	BOOL bRet = file.Open(m_recent_path_dat_path.c_str(), CFile::modeRead);
+	BOOL bRet = file.Open(theApp.m_recent_path_dat_path.c_str(), CFile::modeRead);
 	if (!bRet) return;
 	// 构造CArchive对象
 	CArchive ar(&file, CArchive::load);
