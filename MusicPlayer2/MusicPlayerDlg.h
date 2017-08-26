@@ -19,6 +19,7 @@
 #include "LyricBatchDownloadDlg.h"
 #include "DrawCommon.h"
 #include "StaticEx.h"
+#include "EqualizerDlg.h"
 
 // CMusicPlayerDlg ¶Ô»°¿ò
 class CMusicPlayerDlg : public CDialog
@@ -270,4 +271,6 @@ public:
 protected:
 	afx_msg LRESULT OnPlaylistIniComplate(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSetTitle(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnEqualizer();
 };

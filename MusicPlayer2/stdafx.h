@@ -82,6 +82,7 @@ using std::map;
 
 
 //自定义的宏
+
 #ifdef UNICODE
 #define _tstring  std::wstring
 #else
@@ -95,15 +96,10 @@ using std::map;
 #define NEXT (-999)		//定义“下一曲”常量
 #define PREVIOUS (-998)		//定义“上一曲”常量
 
-#define MIN_WIDTH 40		//定义控制台窗口的最小宽度
-#define MIN_HIGHT 7		//定义控制台窗口的最小高度
-
 #define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
 #define MAX_SONG_NUM 9999		//播放列表中文件数量的最大值
 
-#define SMALL_MODE_HEIGHT 8
-
-#define VERSION L"2.52";	//程序版本
+#define VERSION L"2.53";	//程序版本
 
 //任务栏图按钮
 #define IDT_PLAY_PAUSE 1321		//任务栏缩略图“播放/暂停”按钮的ID
@@ -125,7 +121,7 @@ using std::map;
 #define TIMER_ID_MINI2 1236		//迷你模式中的定时器ID，用于显示频谱分析
 #define TIMER_ELAPSE_MINI 200	//定义迷你模式中的定时器响应的时间间隔（毫秒）
 //#define TIMER_ID_SPECTRAL 
-#define TIMER_ID_EXIT 1237
+//#define TIMER_ID_EXIT 1237
 
 //频谱分析
 #define FFT_SAMPLE 128			//频谱分析采样点数
@@ -146,4 +142,18 @@ using std::map;
 //添加到系统菜单中的“迷你模式”菜单项的ID
 #define IDM_MINIMODE 112
 
-//自定义消息的ID
+//均衡器
+#define FX_CH_NUM 10		//均衡器通道的数量
+const int EQU_STYLE_TABLE[9][FX_CH_NUM]		//均衡器预设
+{
+	{ 0,0,0,0,0,0,0,0,0,0 } ,			//无
+	{ 4,3,3,2,2,1,0,-1,-2,-2 },		//古典
+	{ 3,2,0,-1,-2,-2,-1,0,2,3 },		//流行
+	{ 2,1,0,-1,-1,1,3,5,3 },		//爵士
+	{ -2,0,2,4,-1,-1,0,0,2,3 },		//摇滚
+	{ 1,0,0,1,2,1,-1,-2,-2,-2 },		//柔和
+	{ 4,6,6,-2,-1,0,0,0,0,0 },		//重低音
+	{ -5,-5,-3,-2,-2,0,0,0,0,0 },		//消除低音
+	{ 0,0,0,0,0,-1,-3,-5,-5,-4 }		//弱化高音
+};
+

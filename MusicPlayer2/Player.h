@@ -55,6 +55,12 @@ private:
 	float m_fft[FFT_SAMPLE];		//储存频谱分析的数据
 	float m_spectral_data[FFT_NUM]{};	//用于显示的每个频谱柱形的高度
 
+	int m_fx_handle[FX_CH_NUM]{};		//均衡器通道的句柄
+	const float FREQ_TABLE[FX_CH_NUM]{ 80, 125, 250, 500, 1000, 1500, 2000, 4000, 8000, 1600};		//每个均衡器通道的中心频率
+	int m_equalizer_gain[FX_CH_NUM]{};		//用于保存设置好的每个通道的增益
+	bool m_equ_enable{ true };		//指示是否允许均衡器
+	int m_equ_style{};
+
 public:
 	CLyrics m_Lyrics;		//歌词
 	wstring m_lyric_path;	//歌词文件夹的路径
@@ -64,7 +70,7 @@ public:
 
 	SortMode m_sort_mode;		//排序方式
 
-	bool m_loading{ false };
+	bool m_loading{ false };		//如果正在载入播放列表，则为true
 
 private:
 	vector<int> m_find_result;		//储存查找结果的歌曲序号
@@ -78,10 +84,21 @@ private:
 
 	void ChangePath(const wstring& path, int track = 0);		//改变当前路径
 
+	void SetFXHandle();		//设置均衡器通道的句柄
+	void RemoveFXHandle();		//移除均衡器通道的句柄
+	void ApplyEqualizer(int channel, int gain);		//应用一个均衡器通道的增益
+
 	void EmplaceCurrentPathToRecent();		//将当前路径插入到最近路径中
 	void LoadRecentPath();		//从文件载入最近路径列表
 public:
 	void SaveRecentPath() const;		//将最近路径列表保存到文件
+
+	void SetEqualizer(int channel, int gain);		//设置均衡器（channel为通道，取值为0~9，gain为增益，取值为-15~15）
+	int GeEqualizer(int channel);		//获取指定均衡器通道的增益
+	void SetAllEqualizer();			//将保存好的每个通道的增益（m_equalizer_gain）设置到均衡器
+	void ClearAllEqulizer();		//将每个均衡器通道的增益复位
+	void EnableEqualizer(bool enable);			//均衡器开关
+	bool GetEqualizerEnable() const { return m_equ_enable; }
 
 public:
 	CPlayer();

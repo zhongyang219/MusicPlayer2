@@ -348,9 +348,16 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			SeekTo(0);
 		SetVolume();
 		memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
+		SetFXHandle();
+		if (m_equ_enable)
+			SetAllEqualizer();
 		break;
 	case Command::PLAY: BASS_ChannelPlay(m_musicStream, FALSE); m_playing = 2; break;
-	case Command::CLOSE: BASS_StreamFree(m_musicStream); m_playing = 0; break;
+	case Command::CLOSE:
+		RemoveFXHandle();
+		BASS_StreamFree(m_musicStream);
+		m_playing = 0;
+		break;
 	case Command::PAUSE: BASS_ChannelPause(m_musicStream); m_playing = 1; break;
 	case Command::STOP:
 		BASS_ChannelStop(m_musicStream);
@@ -723,7 +730,7 @@ bool CPlayer::GetBASSError()
 	if (error_code_tmp && error_code_tmp != m_error_code)
 	{
 		wchar_t buff[32];
-		swprintf_s(buff, L"BASS音频库发生了错误，错误代码：%d", m_error_code);
+		swprintf_s(buff, L"BASS音频库发生了错误，错误代码：%d", error_code_tmp);
 		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
 	}
 	m_error_code = error_code_tmp;
@@ -757,6 +764,8 @@ bool CPlayer::GetBASSError()
 
 bool CPlayer::IsError() const
 {
+	//return ((m_error_code != 0 && m_error_code != BASS_ERROR_ILLPARAM) || m_musicStream == 0);
+	////调节均衡器时，BASS音频库会出现BASS_ERROR_ILLPARAM，但是似乎不影响音乐的播放，总之暂时先屏蔽这个故障
 	return (m_error_code != 0 || m_musicStream == 0);
 }
 
@@ -781,6 +790,18 @@ void CPlayer::SaveConfig() const
 	WritePrivateProfileStringW(L"config",L"lyric_path", m_lyric_path.c_str(), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"sort_mode", static_cast<int>(m_sort_mode), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_fuzzy_match", m_lyric_fuzzy_match, theApp.m_config_path.c_str());
+
+	CCommon::WritePrivateProfileIntW(L"equalizer", L"equalizer_enable", m_equ_enable, theApp.m_config_path.c_str());
+	//保存每个均衡器通道的增益
+	//if (m_equ_style == 9)
+	//{
+	//	wchar_t buff[16];
+	//	for (int i{}; i < FX_CH_NUM; i++)
+	//	{
+	//		swprintf_s(buff, L"channel%d", i + 1);
+	//		CCommon::WritePrivateProfileIntW(L"equalizer", buff, m_equalizer_gain[i], theApp.m_config_path.c_str());
+	//	}
+	//}
 }
 
 void CPlayer::LoadConfig()
@@ -802,6 +823,26 @@ void CPlayer::LoadConfig()
 	m_lyric_karaoke_disp = (GetPrivateProfileIntW(L"config", L"lyric_karaoke_disp", 1, theApp.m_config_path.c_str()) != 0);
 	m_sort_mode = static_cast<SortMode>(GetPrivateProfileIntW(L"config", L"sort_mode", 0, theApp.m_config_path.c_str()));
 	m_lyric_fuzzy_match = (GetPrivateProfileIntW(L"config", L"lyric_fuzzy_match", 1, theApp.m_config_path.c_str()) != 0);
+
+	//读取均衡器设定
+	m_equ_enable = (GetPrivateProfileIntW(L"equalizer", L"equalizer_enable", 0, theApp.m_config_path.c_str()) != 0);
+	m_equ_style = GetPrivateProfileIntW(L"equalizer", L"equalizer_style", 0, theApp.m_config_path.c_str());	//读取均衡器预设
+	if (m_equ_style == 9)		//如果均衡器预设为“自定义”
+	{
+		//读取每个均衡器通道的增益
+		for (int i{}; i < FX_CH_NUM; i++)
+		{
+			swprintf_s(buff, L"channel%d", i + 1);
+			m_equalizer_gain[i] = GetPrivateProfileIntW(L"equalizer", buff, 0, theApp.m_config_path.c_str());
+		}
+	}
+	else if (m_equ_style >= 0 && m_equ_style < 9)		//否则，根据均衡器预设设置每个通道的增益
+	{
+		for (int i{}; i < FX_CH_NUM; i++)
+		{
+			m_equalizer_gain[i] = EQU_STYLE_TABLE[m_equ_style][i];
+		}
+	}
 }
 
 void CPlayer::ExplorePath(int track) const
@@ -1083,4 +1124,85 @@ void CPlayer::EmplaceCurrentPathToRecent()
 	path_info.total_time = m_total_time;
 	if (m_song_num > 0)
 		m_recent_path.push_front(path_info);		//当前路径插入到m_recent_path的前面
+}
+
+
+void CPlayer::SetFXHandle()
+{
+	if (m_musicStream == 0) return;
+	//if (!m_equ_enable) return;
+	//设置每个均衡器通道的句柄
+	for (int i{}; i < FX_CH_NUM; i++)
+	{
+		m_fx_handle[i] = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_PARAMEQ, 1);
+	}
+}
+
+void CPlayer::RemoveFXHandle()
+{
+	if (m_musicStream == 0) return;
+	//移除每个均衡器通道的句柄
+	for (int i{}; i < FX_CH_NUM; i++)
+	{
+		if (m_fx_handle[i] != 0)
+		{
+			BASS_ChannelRemoveFX(m_musicStream, m_fx_handle[i]);
+			m_fx_handle[i] = 0;
+		}
+	}
+}
+
+void CPlayer::ApplyEqualizer(int channel, int gain)
+{
+	if (channel < 0 || channel >= FX_CH_NUM) return;
+	//if (!m_equ_enable) return;
+	if (gain < -15) gain = -15;
+	if (gain > 15) gain = 15;
+	BASS_DX8_PARAMEQ parameq;
+	parameq.fBandwidth = 30;
+	parameq.fCenter = FREQ_TABLE[channel];
+	parameq.fGain = gain;
+	BASS_FXSetParameters(m_fx_handle[channel], &parameq);
+}
+
+void CPlayer::SetEqualizer(int channel, int gain)
+{
+	if (channel < 0 || channel >= FX_CH_NUM) return;
+	m_equalizer_gain[channel] = gain;
+	ApplyEqualizer(channel, gain);
+}
+
+int CPlayer::GeEqualizer(int channel)
+{
+	if (channel < 0 || channel >= FX_CH_NUM) return 0;
+	//BASS_DX8_PARAMEQ parameq;
+	//int rtn;
+	//rtn = BASS_FXGetParameters(m_fx_handle[channel], &parameq);
+	//return static_cast<int>(parameq.fGain);
+	return m_equalizer_gain[channel];
+}
+
+void CPlayer::SetAllEqualizer()
+{
+	for (int i{}; i < FX_CH_NUM; i++)
+	{
+		ApplyEqualizer(i, m_equalizer_gain[i]);
+	}
+}
+
+void CPlayer::ClearAllEqulizer()
+{
+	for (int i{}; i < FX_CH_NUM; i++)
+	{
+		ApplyEqualizer(i, 0);
+	}
+}
+
+void CPlayer::EnableEqualizer(bool enable)
+{
+	if (enable)
+		SetAllEqualizer();
+	else
+		ClearAllEqulizer();
+	m_equ_enable = enable;
 }

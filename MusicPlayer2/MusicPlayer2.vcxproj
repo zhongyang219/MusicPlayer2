@@ -198,6 +198,7 @@
     <ClInclude Include="DataSettingsDlg.h" />
     <ClInclude Include="DrawCommon.h" />
     <ClInclude Include="EditEx.h" />
+    <ClInclude Include="EqualizerDlg.h" />
     <ClInclude Include="FindDlg.h" />
     <ClInclude Include="HelpDlg.h" />
     <ClInclude Include="LyricDownloadCommon.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="DataSettingsDlg.cpp" />
     <ClCompile Include="DrawCommon.cpp" />
     <ClCompile Include="EditEx.cpp" />
+    <ClCompile Include="EqualizerDlg.cpp" />
     <ClCompile Include="FindDlg.cpp" />
     <ClCompile Include="HelpDlg.cpp" />
     <ClCompile Include="LyricDownloadCommon.cpp" />

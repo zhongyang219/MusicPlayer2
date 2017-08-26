@@ -133,6 +133,9 @@
     <ClInclude Include="DrawCommon.h">
       <Filter>头文件\公共的类</Filter>
     </ClInclude>
+    <ClInclude Include="EqualizerDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MusicPlayer2.cpp">
@@ -212,6 +215,9 @@
     </ClCompile>
     <ClCompile Include="DrawCommon.cpp">
       <Filter>源文件\公共的类</Filter>
+    </ClCompile>
+    <ClCompile Include="EqualizerDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

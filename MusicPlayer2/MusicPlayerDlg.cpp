@@ -225,6 +225,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_PLAYLIST_INI_COMPLATE, &CMusicPlayerDlg::OnPlaylistIniComplate)
 	ON_MESSAGE(WM_SET_TITLE, &CMusicPlayerDlg::OnSetTitle)
+	ON_COMMAND(ID_EQUALIZER, &CMusicPlayerDlg::OnEqualizer)
 END_MESSAGE_MAP()
 
 
@@ -866,8 +867,15 @@ void CMusicPlayerDlg::GetCortanaHandle()
 		::GetClientRect(m_cortana_hwnd, m_cortana_rect);	//获取Cortana搜索框的矩形区域
 		CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
 		::GetClientRect(hCortanaStatic, cortana_static_rect);	//获取Cortana搜索框中static控件的矩形区域
-		m_cortana_left_space = m_cortana_rect.Width() - cortana_static_rect.Width();
-		m_cortana_rect.right = m_cortana_rect.left + cortana_static_rect.Width();		//调整Cortana窗口矩形的宽度
+		if (cortana_static_rect.Width() > 0)
+		{
+			m_cortana_left_space = m_cortana_rect.Width() - cortana_static_rect.Width();
+			m_cortana_rect.right = m_cortana_rect.left + cortana_static_rect.Width();		//调整Cortana窗口矩形的宽度
+		}
+		else
+		{
+			m_cortana_left_space = 0;
+		}
 
 		m_cortana_pDC = m_cortana_wnd->GetDC();
 		m_cortana_draw.Create(m_cortana_pDC, m_cortana_wnd);
@@ -1263,7 +1271,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		DrawInfo();
 
 		theApp.m_player.MusicControl(Command::OPEN);
-		theApp.m_player.MusicControl(Command::SEEK);
+		//theApp.m_player.MusicControl(Command::SEEK);
 		theApp.m_player.GetBASSError();
 		SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
 		ShowTime();
@@ -1497,9 +1505,14 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnFileOpenFolder();
 				return TRUE;
 			}
-			if (pMsg->wParam == 'E')		//设置按Ctr+E浏览文件
+			if (pMsg->wParam == 'B')		//设置按Ctr+B浏览文件
 			{
 				OnExplorePath();
+				return TRUE;
+			}
+			if (pMsg->wParam == 'N')		//设置按Ctr+N打开曲目信息
+			{
+				OnSongInfo();
 				return TRUE;
 			}
 			if (pMsg->wParam == 'F')		//按Ctr+F键查找文件
@@ -1546,6 +1559,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			{
 				if (!theApp.m_player.m_Lyrics.IsEmpty() && theApp.m_player.m_Lyrics.IsModified())
 					OnSaveModifiedLyric();
+				return TRUE;
+			}
+			if (pMsg->wParam == 'E')		//设置按Ctr+S打开均衡器
+			{
+				OnEqualizer();
 				return TRUE;
 			}
 		}
@@ -2527,6 +2545,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 	theApp.m_player.IniLyrics();
 	ShowPlayList();
 	ShowTime();
+	DrawInfo(true);
 	return 0;
 }
 
@@ -2540,4 +2559,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 	#endif
 
 	return 0;
+}
+
+
+void CMusicPlayerDlg::OnEqualizer()
+{
+	// TODO: 在此添加命令处理程序代码
+	CEqualizerDlg equalizerDlg;
+	equalizerDlg.DoModal();
 }
