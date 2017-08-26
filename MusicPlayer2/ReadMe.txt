@@ -66,6 +66,8 @@ MusicPlayer2.manifest
 
 /////////////////////////////////////////////////////////////////////////////
 
+已编译好的exe程序：https://pan.baidu.com/s/1i5QNwFF
+
 
 【错误代码检索】
 1 BASS_ERROR_MEM
