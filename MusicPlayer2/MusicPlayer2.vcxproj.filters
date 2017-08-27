@@ -136,6 +136,12 @@
     <ClInclude Include="EqualizerDlg.h">
       <Filter>头文件\对话框类</Filter>
     </ClInclude>
+    <ClInclude Include="SoundEffectDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
+    <ClInclude Include="ReverbDlg.h">
+      <Filter>头文件\对话框类</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MusicPlayer2.cpp">
@@ -217,6 +223,12 @@
       <Filter>源文件\公共的类</Filter>
     </ClCompile>
     <ClCompile Include="EqualizerDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEffectDlg.cpp">
+      <Filter>源文件\对话框类</Filter>
+    </ClCompile>
+    <ClCompile Include="ReverbDlg.cpp">
       <Filter>源文件\对话框类</Filter>
     </ClCompile>
   </ItemGroup>

@@ -66,10 +66,104 @@ MusicPlayer2.manifest
 
 /////////////////////////////////////////////////////////////////////////////
 
+其他文件用途说明：
+
+Player.h, Player.cpp
+	包含CPlayer类。封装的播放器类，用于实现各种播放功能。
+
+Lyric.h, Lyric.cpp
+	包含CLyric类。封装的歌词类，用于实现解析歌词文件。
+
+bass.h
+	BASS音频库的头文件。
+
+Time.h
+	包含Time结构的定义，用于表示歌词和歌曲播放等的时间。
+
+
+用于定义全局函数的类：
+由于MFC不允许定义全局函数，所以把一些需要用于全局作用域的函数作为静态函数放到相应的类中。
+
+Common.h, Common.cpp
+	包含CCommon类。包含一些全局函数和结构体的定义。此类只包含静态函数。
+
+AudioCommon.h, AudioCommon.cpp
+	包含CAudioCommon类。包含一些处理音频相关的全局函数，以及一些相关的结构体的枚举类型的定义。此类只包含静态函数。
+
+ColorConvert.h, ColorConvert.cpp
+	包含CColorConvert类。包含一些颜色转换的全局函数，主要用于变换颜色的亮度。此类只包含静态函数。
+
+DrawCommon.h, DrawCommon.cpp
+	包含CDrawCommon类。此类用于绘制动态的文本。主要用于绘制滚动的文本和动态歌词。此类不是静态类。
+
+LyricDownloadCommon.h, LyricDownloadCommon.cpp
+	包含CLyricDownloadCommon类。包含一些网络相关的全局函数，主要用于在线下载歌词。此类只包含静态函数。
+
+
+派生的控件类：
+
+EditEx.h, EditEx.cpp
+	包含CEditEx类。继承于CEdit类，用于支持文本编辑控件按Ctrl+A全选。
+
+PlayListCtrl.h, PlayListCtrl.cpp
+	包含CPlayListCtrl类。继承于CListCtrl类，用于实现列表中项目颜色设置，以及在鼠标提示中显示歌曲信息。
+
+ProgressStatic.h, ProgressStatic.cpp
+	包含CProgressStatic类。继承于CStatic类，作为一个进度条控件，用于实现指示歌曲进度，点击定位，以鼠标指向时显示时间。
+
+StaticEx.h, StaticEx.cpp
+	包含CStatic类。继承于CStatic类，用于实现在static控件上显示有颜色的文本。
+
+
+对话框类：
+	
+OptionsDlg.h, OptionsDlg.cpp
+	包含COptionsDlg类，选项设置对话框。
+
+AppearanceSettingDlg.h, AppearanceSettingDlg.cpp
+	包含CAppearanceSettingDlg类，选项设置对话框中的“外观设置”选项卡。
+
+DataSettingDlg.h, DataSettingDlg.cpp
+	包含CDataSettingDlg类，选项设置对话框中的“数据文件”选项卡。
+
+PlaySettingsDlg.h, PlaySettingsDlg.cpp
+	包含CPlaySettingsDlg类，选项设置对话框中的“播放选项”选项卡。
+
+EqualizerDlg.h, EqualizerDlg.cpp
+	包含CEqualizerDlg类，音效设定对话框中的“均衡器”选项卡。
+
+FindDlg.h, FindDlg.cpp
+	包含CFindDlg类，查找文件对话框。
+
+HelpDlg.h , HelpDlg.cpp
+	包含CHelpDlg类，帮助对话框。
+
+LyricBatchDownloadDlg.h, LyricBatchDownloadDlg.cpp
+	包含CLyricBatchDownloadDlg类，歌词批量下载对话框。
+
+LyricDownloadDlg.h, LyricDownloadDlg.cpp
+	包含CLyricDownloadDlg类，歌词下载对话框。
+
+MiniModeDlg.h, MiniModeDlg.cpp
+	包含CMiniModeDlg类，迷你模式对话框。
+
+PropertyDlg.h, PropertyDlg.cpp
+	包含CPropertyDlg类，属性对话框。
+
+ReverbDlg.h, ReverbDlg.cpp
+	包含CReverbDlg类，音效设定对话框中的“混响”选项卡。
+
+SetPathDlg.h, SetPathDlg,cpp
+	包含CSetPathDlg类，选择路径对话框。
+
+SoundEffectDlg.h, SoundEffectDlg.cpp
+	包含CSoundEffectDlg类，音效设定对话框。
+
+
 已编译好的exe程序：https://pan.baidu.com/s/1i5QNwFF
 
 
-【错误代码检索】
+【BASS音频库错误代码检索】
 1 BASS_ERROR_MEM
 内存不足。
 2 BASS_ERROR_FILEOPEN

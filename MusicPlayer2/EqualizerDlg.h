@@ -5,7 +5,7 @@
 
 // CEqualizerDlg 对话框
 
-class CEqualizerDlg : public CDialog
+class CEqualizerDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CEqualizerDlg)
 
@@ -19,9 +19,9 @@ public:
 #endif
 
 protected:
-	int m_user_defined_gain[FX_CH_NUM]{};		//用户自定义的均衡器设置
+	int m_user_defined_gain[EQU_CH_NUM]{};		//用户自定义的均衡器设置
 
-	CSliderCtrl m_sliders[FX_CH_NUM];
+	CSliderCtrl m_sliders[EQU_CH_NUM];
 	CListBox m_equ_style_list;
 	CButton m_enable_equ_check;
 	CToolTipCtrl m_Mytip;		//鼠标提示
@@ -42,4 +42,5 @@ public:
 	afx_msg void OnBnClickedEnableEquCheck();
 	afx_msg void OnLbnSelchangeEquStylesList();
 	afx_msg void OnDestroy();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

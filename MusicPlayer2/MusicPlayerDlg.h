@@ -19,7 +19,8 @@
 #include "LyricBatchDownloadDlg.h"
 #include "DrawCommon.h"
 #include "StaticEx.h"
-#include "EqualizerDlg.h"
+//#include "EqualizerDlg.h"
+#include "SoundEffectDlg.h"
 
 // CMusicPlayerDlg ¶Ô»°¿ò
 class CMusicPlayerDlg : public CDialog

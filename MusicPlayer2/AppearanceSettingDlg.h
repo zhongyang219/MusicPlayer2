@@ -79,4 +79,5 @@ public:
 //	afx_msg void OnEnChangeFontNameEdit();
 	afx_msg void OnEnChangeLineSpaceEdit();
 	afx_msg void OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

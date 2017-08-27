@@ -52,6 +52,7 @@
 #endif
 #include <iomanip>
 #include <map>
+#include <cmath>
 using std::ofstream;
 using std::ifstream;
 using std::string;
@@ -143,8 +144,8 @@ using std::map;
 #define IDM_MINIMODE 112
 
 //均衡器
-#define FX_CH_NUM 10		//均衡器通道的数量
-const int EQU_STYLE_TABLE[9][FX_CH_NUM]		//均衡器预设
+#define EQU_CH_NUM 10		//均衡器通道的数量
+const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 {
 	{ 0,0,0,0,0,0,0,0,0,0 } ,			//无
 	{ 4,3,3,2,2,1,0,-1,-2,-2 },		//古典

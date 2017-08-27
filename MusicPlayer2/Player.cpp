@@ -351,6 +351,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		SetFXHandle();
 		if (m_equ_enable)
 			SetAllEqualizer();
+		if (m_reverb_enable)
+			SetReverb(m_reverb_mix, m_reverb_time);
+		else
+			ClearReverb();
 		break;
 	case Command::PLAY: BASS_ChannelPlay(m_musicStream, FALSE); m_playing = 2; break;
 	case Command::CLOSE:
@@ -791,17 +795,22 @@ void CPlayer::SaveConfig() const
 	CCommon::WritePrivateProfileIntW(L"config", L"sort_mode", static_cast<int>(m_sort_mode), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_fuzzy_match", m_lyric_fuzzy_match, theApp.m_config_path.c_str());
 
+	//保存均衡器设定
 	CCommon::WritePrivateProfileIntW(L"equalizer", L"equalizer_enable", m_equ_enable, theApp.m_config_path.c_str());
 	//保存每个均衡器通道的增益
 	//if (m_equ_style == 9)
 	//{
 	//	wchar_t buff[16];
-	//	for (int i{}; i < FX_CH_NUM; i++)
+	//	for (int i{}; i < EQU_CH_NUM; i++)
 	//	{
 	//		swprintf_s(buff, L"channel%d", i + 1);
 	//		CCommon::WritePrivateProfileIntW(L"equalizer", buff, m_equalizer_gain[i], theApp.m_config_path.c_str());
 	//	}
 	//}
+	//保存混响设定
+	CCommon::WritePrivateProfileIntW(L"reverb", L"reverb_enable", m_reverb_enable, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"reverb", L"reverb_mix", m_reverb_mix, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"reverb", L"reverb_time", m_reverb_time, theApp.m_config_path.c_str());
 }
 
 void CPlayer::LoadConfig()
@@ -830,7 +839,7 @@ void CPlayer::LoadConfig()
 	if (m_equ_style == 9)		//如果均衡器预设为“自定义”
 	{
 		//读取每个均衡器通道的增益
-		for (int i{}; i < FX_CH_NUM; i++)
+		for (int i{}; i < EQU_CH_NUM; i++)
 		{
 			swprintf_s(buff, L"channel%d", i + 1);
 			m_equalizer_gain[i] = GetPrivateProfileIntW(L"equalizer", buff, 0, theApp.m_config_path.c_str());
@@ -838,11 +847,15 @@ void CPlayer::LoadConfig()
 	}
 	else if (m_equ_style >= 0 && m_equ_style < 9)		//否则，根据均衡器预设设置每个通道的增益
 	{
-		for (int i{}; i < FX_CH_NUM; i++)
+		for (int i{}; i < EQU_CH_NUM; i++)
 		{
 			m_equalizer_gain[i] = EQU_STYLE_TABLE[m_equ_style][i];
 		}
 	}
+	//读取混响设定
+	m_reverb_enable = (GetPrivateProfileIntW(L"reverb", L"reverb_enable", 0, theApp.m_config_path.c_str()) != 0);
+	m_reverb_mix = GetPrivateProfileIntW(L"reverb", L"reverb_mix", 45, theApp.m_config_path.c_str());		//混响强度默认为50
+	m_reverb_time = GetPrivateProfileIntW(L"reverb", L"reverb_time", 100, theApp.m_config_path.c_str());	//混响时间默认为1s
 }
 
 void CPlayer::ExplorePath(int track) const
@@ -1132,59 +1145,67 @@ void CPlayer::SetFXHandle()
 	if (m_musicStream == 0) return;
 	//if (!m_equ_enable) return;
 	//设置每个均衡器通道的句柄
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
-		m_fx_handle[i] = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_PARAMEQ, 1);
+		m_equ_handle[i] = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_PARAMEQ, 1);
 	}
+	//设置混响的句柄
+	m_reverb_handle = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_REVERB, 1);
 }
 
 void CPlayer::RemoveFXHandle()
 {
 	if (m_musicStream == 0) return;
 	//移除每个均衡器通道的句柄
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
-		if (m_fx_handle[i] != 0)
+		if (m_equ_handle[i] != 0)
 		{
-			BASS_ChannelRemoveFX(m_musicStream, m_fx_handle[i]);
-			m_fx_handle[i] = 0;
+			BASS_ChannelRemoveFX(m_musicStream, m_equ_handle[i]);
+			m_equ_handle[i] = 0;
 		}
+	}
+	//移除混响的句柄
+	if (m_reverb_handle != 0)
+	{
+		BASS_ChannelRemoveFX(m_musicStream, m_reverb_handle);
+		m_reverb_handle = 0;
 	}
 }
 
 void CPlayer::ApplyEqualizer(int channel, int gain)
 {
-	if (channel < 0 || channel >= FX_CH_NUM) return;
+	if (channel < 0 || channel >= EQU_CH_NUM) return;
 	//if (!m_equ_enable) return;
 	if (gain < -15) gain = -15;
 	if (gain > 15) gain = 15;
 	BASS_DX8_PARAMEQ parameq;
 	parameq.fBandwidth = 30;
 	parameq.fCenter = FREQ_TABLE[channel];
-	parameq.fGain = gain;
-	BASS_FXSetParameters(m_fx_handle[channel], &parameq);
+	parameq.fGain = static_cast<float>(gain);
+	BASS_FXSetParameters(m_equ_handle[channel], &parameq);
 }
 
 void CPlayer::SetEqualizer(int channel, int gain)
 {
-	if (channel < 0 || channel >= FX_CH_NUM) return;
+	if (channel < 0 || channel >= EQU_CH_NUM) return;
 	m_equalizer_gain[channel] = gain;
 	ApplyEqualizer(channel, gain);
 }
 
 int CPlayer::GeEqualizer(int channel)
 {
-	if (channel < 0 || channel >= FX_CH_NUM) return 0;
+	if (channel < 0 || channel >= EQU_CH_NUM) return 0;
 	//BASS_DX8_PARAMEQ parameq;
 	//int rtn;
-	//rtn = BASS_FXGetParameters(m_fx_handle[channel], &parameq);
+	//rtn = BASS_FXGetParameters(m_equ_handle[channel], &parameq);
 	//return static_cast<int>(parameq.fGain);
 	return m_equalizer_gain[channel];
 }
 
 void CPlayer::SetAllEqualizer()
 {
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		ApplyEqualizer(i, m_equalizer_gain[i]);
 	}
@@ -1192,7 +1213,7 @@ void CPlayer::SetAllEqualizer()
 
 void CPlayer::ClearAllEqulizer()
 {
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		ApplyEqualizer(i, 0);
 	}
@@ -1205,4 +1226,40 @@ void CPlayer::EnableEqualizer(bool enable)
 	else
 		ClearAllEqulizer();
 	m_equ_enable = enable;
+}
+
+void CPlayer::SetReverb(int mix, int time)
+{
+	if (mix < 0) mix = 0;
+	if (mix > 100) mix = 100;
+	if (time < 1) time = 1;
+	if (time > 300) time = 300;
+	m_reverb_mix = mix;
+	m_reverb_time = time;
+	BASS_DX8_REVERB parareverb;
+	parareverb.fInGain = 0;
+	//parareverb.fReverbMix = static_cast<float>(mix) / 100 * 96 - 96;
+	parareverb.fReverbMix = static_cast<float>(std::pow(static_cast<double>(mix) / 100, 0.1) * 96 - 96);
+	parareverb.fReverbTime = static_cast<float>(time * 10);
+	parareverb.fHighFreqRTRatio = 0.001f;
+	BASS_FXSetParameters(m_reverb_handle, &parareverb);
+}
+
+void CPlayer::ClearReverb()
+{
+	BASS_DX8_REVERB parareverb;
+	parareverb.fInGain = 0;
+	parareverb.fReverbMix = -96;
+	parareverb.fReverbTime = 0.001f;
+	parareverb.fHighFreqRTRatio = 0.001f;
+	BASS_FXSetParameters(m_reverb_handle, &parareverb);
+}
+
+void CPlayer::EnableReverb(bool enable)
+{
+	if (enable)
+		SetReverb(m_reverb_mix, m_reverb_time);
+	else
+		ClearReverb();
+	m_reverb_enable = enable;
 }

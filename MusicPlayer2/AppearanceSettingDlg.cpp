@@ -80,6 +80,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
 	//ON_EN_CHANGE(IDC_FONT_NAME_EDIT, &CAppearanceSettingDlg::OnEnChangeFontNameEdit)
 	ON_EN_CHANGE(IDC_FONT_SIZE_EDIT, &CAppearanceSettingDlg::OnEnChangeLineSpaceEdit)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CAppearanceSettingDlg::OnDeltaposSpin1)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -355,3 +356,17 @@ void CAppearanceSettingDlg::OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
+
+
+HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  在此更改 DC 的任何特性
+	if (pWnd == &m_transparency_slid)		//设置“窗口透明度”滑动条控件的背景色为白色
+	{
+		return (HBRUSH)::GetStockObject(WHITE_BRUSH);
+	}
+	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
+	return hbr;
+}

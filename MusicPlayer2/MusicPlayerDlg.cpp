@@ -39,6 +39,7 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
@@ -53,6 +54,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK2, &CAboutDlg::OnNMClickSyslink2)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -71,6 +73,7 @@ BOOL CAboutDlg::OnInitDialog()
 
 	m_Mytip.Create(this);
 	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("mailto:zhongyang219@hotmail.com"));	//添加工具提示
+	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK2), _T("转到百度网盘链接查看是否有更新"));	//添加工具提示
 	m_Mytip.SetDelayTime(300);	//设置延迟
 
 	//if (theApp.m_is_windows10)
@@ -85,7 +88,16 @@ BOOL CAboutDlg::OnInitDialog()
 void CAboutDlg::OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 在此添加控件通知处理程序代码
+	//点击了“联系作者”
 	ShellExecute(NULL, _T("open"), _T("mailto:zhongyang219@hotmail.com"), NULL, NULL, SW_SHOW);	//打开超链接
+	*pResult = 0;
+}
+
+void CAboutDlg::OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//点击了“检查更新”
+	ShellExecute(NULL, _T("open"), _T("https://pan.baidu.com/s/1i5QNwFF"), NULL, NULL, SW_SHOW);	//打开超链接
 	*pResult = 0;
 }
 
@@ -2565,6 +2577,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnEqualizer()
 {
 	// TODO: 在此添加命令处理程序代码
-	CEqualizerDlg equalizerDlg;
-	equalizerDlg.DoModal();
+	//CEqualizerDlg equalizerDlg;
+	//equalizerDlg.DoModal();
+	CSoundEffectDlg soundEffectDlg;
+	soundEffectDlg.DoModal();
 }

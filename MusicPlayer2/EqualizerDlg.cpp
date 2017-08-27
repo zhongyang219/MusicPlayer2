@@ -9,10 +9,10 @@
 
 // CEqualizerDlg 对话框
 
-IMPLEMENT_DYNAMIC(CEqualizerDlg, CDialog)
+IMPLEMENT_DYNAMIC(CEqualizerDlg, CDialogEx)
 
 CEqualizerDlg::CEqualizerDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_EQUALIZER_DIALOG, pParent)
+	: CDialogEx(IDD_EQUALIZER_DIALOG, pParent)
 {
 
 }
@@ -24,7 +24,7 @@ CEqualizerDlg::~CEqualizerDlg()
 void CEqualizerDlg::EnableControls(bool enable)
 {
 	m_equ_style_list.EnableWindow(enable);
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		m_sliders[i].EnableWindow(enable);
 	}
@@ -35,7 +35,7 @@ void CEqualizerDlg::SaveConfig() const
 	CCommon::WritePrivateProfileIntW(L"equalizer", L"equalizer_style", m_equ_style_selected, theApp.m_config_path.c_str());
 	//保存自定义的每个均衡器通道的增益
 	wchar_t buff[16];
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		swprintf_s(buff, L"channel%d", i + 1);
 		CCommon::WritePrivateProfileIntW(L"equalizer", buff, m_user_defined_gain[i], theApp.m_config_path.c_str());
@@ -47,7 +47,7 @@ void CEqualizerDlg::LoadConfig()
 	m_equ_style_selected = GetPrivateProfileIntW(L"equalizer", L"equalizer_style", 0, theApp.m_config_path.c_str());
 	//读取自定义的每个均衡器通道的增益
 	wchar_t buff[16];
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		swprintf_s(buff, L"channel%d", i + 1);
 		m_user_defined_gain[i] = GetPrivateProfileIntW(L"equalizer", buff, 0, theApp.m_config_path.c_str());
@@ -56,7 +56,7 @@ void CEqualizerDlg::LoadConfig()
 
 void CEqualizerDlg::UpdateChannelTip(int channel, int gain)
 {
-	if (channel < 0 || channel >= FX_CH_NUM) return;
+	if (channel < 0 || channel >= EQU_CH_NUM) return;
 	wchar_t buff[8];
 	swprintf_s(buff, L"%ddB", gain);
 	m_Mytip.UpdateTipText(buff, &m_sliders[channel]);		//更新鼠标提示
@@ -64,7 +64,7 @@ void CEqualizerDlg::UpdateChannelTip(int channel, int gain)
 
 void CEqualizerDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SLIDER1, m_sliders[0]);
 	DDX_Control(pDX, IDC_SLIDER2, m_sliders[1]);
 	DDX_Control(pDX, IDC_SLIDER3, m_sliders[2]);
@@ -80,12 +80,13 @@ void CEqualizerDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CEqualizerDlg, CDialog)
+BEGIN_MESSAGE_MAP(CEqualizerDlg, CDialogEx)
 //	ON_WM_TIMER()
 ON_WM_VSCROLL()
 ON_BN_CLICKED(IDC_ENABLE_EQU_CHECK, &CEqualizerDlg::OnBnClickedEnableEquCheck)
 ON_LBN_SELCHANGE(IDC_EQU_STYLES_LIST, &CEqualizerDlg::OnLbnSelchangeEquStylesList)
 ON_WM_DESTROY()
+ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -94,12 +95,12 @@ END_MESSAGE_MAP()
 
 BOOL CEqualizerDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 	LoadConfig();
 	//初始化滑动条的位置
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		m_sliders[i].SetRange(-15, 15, TRUE);
 		m_sliders[i].SetPos(-theApp.m_player.GeEqualizer(i));
@@ -127,11 +128,13 @@ BOOL CEqualizerDlg::OnInitDialog()
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
 	wchar_t buff[8];
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		swprintf_s(buff, L"%ddB", -m_sliders[i].GetPos());
 		m_Mytip.AddTool(&m_sliders[i], buff);
 	}
+
+	SetBackgroundColor(RGB(255, 255, 255));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -141,7 +144,7 @@ BOOL CEqualizerDlg::OnInitDialog()
 void CEqualizerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	for (int i{}; i < FX_CH_NUM; i++)
+	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		if (pScrollBar->GetSafeHwnd() == m_sliders[i].GetSafeHwnd())
 		{
@@ -156,7 +159,7 @@ void CEqualizerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			else
 			{
 				//否则，将当前每个滑动条上的增益设置保存到m_user_defined_gain里
-				for (int j{}; j < FX_CH_NUM; j++)
+				for (int j{}; j < EQU_CH_NUM; j++)
 				{
 					m_user_defined_gain[j] = -m_sliders[j].GetPos();
 				}
@@ -167,7 +170,7 @@ void CEqualizerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		}
 	}
 
-	CDialog::OnVScroll(nSBCode, nPos, pScrollBar);
+	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
 
@@ -177,7 +180,7 @@ BOOL CEqualizerDlg::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_Mytip.RelayEvent(pMsg);
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
 
@@ -198,7 +201,7 @@ void CEqualizerDlg::OnLbnSelchangeEquStylesList()
 	if (m_equ_style_selected >= 0 && m_equ_style_selected < 9)
 	{
 		//根据选中的均衡器风格设置每个通道的增益
-		for (int i{}; i < FX_CH_NUM; i++)
+		for (int i{}; i < EQU_CH_NUM; i++)
 		{
 			int gain = EQU_STYLE_TABLE[m_equ_style_selected][i];
 			theApp.m_player.SetEqualizer(i, gain);
@@ -208,7 +211,7 @@ void CEqualizerDlg::OnLbnSelchangeEquStylesList()
 	}
 	else if (m_equ_style_selected == 9)		//如果选择了“自定义”
 	{
-		for (int i{}; i < FX_CH_NUM; i++)
+		for (int i{}; i < EQU_CH_NUM; i++)
 		{
 			int gain = m_user_defined_gain[i];
 			theApp.m_player.SetEqualizer(i, gain);
@@ -221,8 +224,27 @@ void CEqualizerDlg::OnLbnSelchangeEquStylesList()
 
 void CEqualizerDlg::OnDestroy()
 {
-	CDialog::OnDestroy();
+	CDialogEx::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
 	SaveConfig();
+}
+
+
+HBRUSH CEqualizerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  在此更改 DC 的任何特性
+	//设置均衡器通道滑动条的背景色为白色
+	for (int i{}; i < EQU_CH_NUM; i++)
+	{
+		if (pWnd == &m_sliders[i])
+		{
+			return (HBRUSH)::GetStockObject(WHITE_BRUSH);
+		}
+	}
+
+	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
+	return hbr;
 }

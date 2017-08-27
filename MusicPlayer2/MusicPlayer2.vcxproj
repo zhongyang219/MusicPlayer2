@@ -216,7 +216,9 @@
     <ClInclude Include="ProgressStatic.h" />
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ReverbDlg.h" />
     <ClInclude Include="SetPathDlg.h" />
+    <ClInclude Include="SoundEffectDlg.h" />
     <ClInclude Include="StaticEx.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -247,7 +249,9 @@
     <ClCompile Include="PlaySettingsDlg.cpp" />
     <ClCompile Include="ProgressStatic.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />
+    <ClCompile Include="ReverbDlg.cpp" />
     <ClCompile Include="SetPathDlg.cpp" />
+    <ClCompile Include="SoundEffectDlg.cpp" />
     <ClCompile Include="StaticEx.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
