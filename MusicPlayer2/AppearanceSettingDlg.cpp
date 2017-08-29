@@ -36,6 +36,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FOLLOW_SYSTEM_COLOR_CHECK, m_follow_system_color_check);
 	DDX_Text(pDX, IDC_FONT_SIZE_EDIT, m_line_space);
 	DDV_MinMaxInt(pDX, m_line_space, 0, MAX_LINE_SPACE);
+	DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -102,8 +103,13 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_transparency_slid.SetRange(20, 100);
 	m_transparency_slid.SetPos(m_transparency);
 	CString str;
-	str.Format(_T("不透明度：%d%%"), m_transparency);
+	str.Format(_T("%d%%"), m_transparency);
 	SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
+
+	m_spectrum_height_slid.SetRange(30, 300);
+	m_spectrum_height_slid.SetPos(theApp.m_sprctrum_height);
+	str.Format(_T("%d%%"), theApp.m_sprctrum_height);
+	SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
 
 	//将焦点设置到“设置字体”按钮上
 	//GetDlgItem(IDC_SET_FONT_BUTTON)->SetFocus();
@@ -185,10 +191,17 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 	{
 		m_transparency = m_transparency_slid.GetPos();
 		CString str;
-		str.Format(_T("不透明度：%d%%"), m_transparency);
+		str.Format(_T("%d%%"), m_transparency);
 		SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 
 		SetTransparency();		//实时设置窗口不透明度
+	}
+	if ((pScrollBar->GetDlgCtrlID() == IDC_SPECTRUM_HEIGHT_SLIDER))
+	{
+		theApp.m_sprctrum_height = m_spectrum_height_slid.GetPos();
+		CString str;
+		str.Format(_T("%d%%"), theApp.m_sprctrum_height);
+		SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
 	}
 
 	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
@@ -363,7 +376,7 @@ HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何特性
-	if (pWnd == &m_transparency_slid)		//设置“窗口透明度”滑动条控件的背景色为白色
+	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid)		//设置滑动条控件的背景色为白色
 	{
 		return (HBRUSH)::GetStockObject(WHITE_BRUSH);
 	}

@@ -135,6 +135,8 @@ void CProgressStatic::PreSubclassWindow()
 	DWORD dwStyle = GetStyle();
 	::SetWindowLong(GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
+	m_toolTip.AddTool(this, _T("定位到0分0秒"));
+
 	CStatic::PreSubclassWindow();
 }
 
@@ -171,8 +173,13 @@ void CProgressStatic::OnMouseMove(UINT nFlags, CPoint point)
 	Time song_pos_time;
 	song_pos_time.int2time(static_cast<int>(song_pos));
 	CString str;
-	str.Format(_T("定位到%d分%.2d秒"), song_pos_time.min, song_pos_time.sec);
-	m_toolTip.AddTool(this, str);
+	static int last_sec{};
+	if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
+	{
+		str.Format(_T("定位到%d分%.2d秒"), song_pos_time.min, song_pos_time.sec);
+		m_toolTip.UpdateTipText(str, this);
+		last_sec = song_pos_time.sec;
+	}
 
 	CStatic::OnMouseMove(nFlags, point);
 }
@@ -181,10 +188,11 @@ void CProgressStatic::OnMouseMove(UINT nFlags, CPoint point)
 BOOL CProgressStatic::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (m_toolTip.GetSafeHwnd())
+	if (m_toolTip.GetSafeHwnd() && pMsg->message == WM_MOUSEMOVE)
 	{
 		m_toolTip.RelayEvent(pMsg);
 	}
+
 
 	return CStatic::PreTranslateMessage(pMsg);
 }

@@ -259,6 +259,7 @@ void CMusicPlayerDlg::SaveConfig()
 	WritePrivateProfileStringW(L"config",L"font", m_lyric_font_name.c_str(), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"font_size", m_lyric_font_size, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_line_space", m_lyric_line_space, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"spectrum_height", theApp.m_sprctrum_height, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -280,6 +281,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_lyric_font_size = GetPrivateProfileIntW(L"config", L"font_size", 10, theApp.m_config_path.c_str());
 	m_lyric_font.CreatePointFont(m_lyric_font_size * 10, m_lyric_font_name.c_str());
 	m_lyric_line_space = GetPrivateProfileIntW(L"config", L"lyric_line_space", 2, theApp.m_config_path.c_str());
+	theApp.m_sprctrum_height = GetPrivateProfileIntW(L"config", L"spectrum_height", 100, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -402,7 +404,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	for (int i{}; i < ROWS; i++)
 	{
 		CRect rect_tmp{ rects[i] };
-		int spetral_height = static_cast<int>(theApp.m_player.GetSpectralData()[i] * rects[0].Height() / 30);
+		int spetral_height = static_cast<int>(theApp.m_player.GetSpectralData()[i] * rects[0].Height() / 30 * theApp.m_sprctrum_height / 100);
 		if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 		rect_tmp.top = rect_tmp.bottom - spetral_height;
 		if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
@@ -674,6 +676,7 @@ void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
 		//设置时间位置
 		m_time_static.SetWindowPos(NULL, cx - time_width - m_margin, DPI(6) + m_control_bar_height, time_width, m_time_height, SWP_NOZORDER);
 	}
+	m_time_static.Invalidate();
 }
 
 void CMusicPlayerDlg::SetPorgressBarSize()
@@ -971,16 +974,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//只有Win10以上的系统才能在Cortana搜索框中显示歌词
 	if (!theApp.m_is_windows10)
 		m_show_lyric_in_cortana = false;
-
-	//设置窗口样式
-	//DWORD dwStyle{};
-	////不是windows10时为窗口设置WS_CLIPCHILDREN属性，以解决窗口大小变化时控制台窗口显示不正常的问题
-	//if (!theApp.m_is_windows10)
-	//{
-	//	dwStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
-	//	dwStyle |= WS_CLIPCHILDREN;
-	//	SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, dwStyle);
-	//}
 
 	//设置窗口不透明度
 	SetTransparency();
@@ -1399,13 +1392,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 	}
 
-	//if (nIDEvent == TIMER_ID_EXIT)
-	//{
-	//	//5秒定时器的时间到了，强制结束进程
-	//	HANDLE hself = GetCurrentProcess();
-	//	TerminateProcess(hself, 0);
-	//}
-
 	CDialog::OnTimer(nIDEvent);
 }
 
@@ -1630,26 +1616,6 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				theApp.m_player.SetRepeatMode();
 				return TRUE;
 			}
-			//if (pMsg->wParam == 'T')	//按T键设置路径
-			//{
-			//	OnSetPath();
-			//	return TRUE;
-			//}
-			//if (pMsg->wParam == 'F')	//按F键查找文件
-			//{
-			//	OnFind();
-			//	return TRUE;
-			//}
-			//if (pMsg->wParam == 0x00DB || (pMsg->wParam == 0x00E5 && pMsg->lParam == 0x001A0001))	//按“[”键或“【”键播放列表向前翻页
-			//{
-			//	theApp.m_player.SwitchPlaylist(PREVIOUS);
-			//	return TRUE;
-			//}
-			//if (pMsg->wParam == 0x00DD || (pMsg->wParam == 0x00E5 && pMsg->lParam == 0x001B0001))	//按“]”键或“】”键播放列表向后翻页
-			//{
-			//	theApp.m_player.SwitchPlaylist(NEXT);
-			//	return TRUE;
-			//}
 		}
 	}
 
@@ -1680,9 +1646,6 @@ void CMusicPlayerDlg::OnDestroy()
 
 	//退出时恢复Cortana的默认文本
 	ResetCortanaText();
-
-	//SetTimer(TIMER_ID_EXIT, 5000, NULL);
-	//FreeConsole();
 }
 
 
@@ -1904,22 +1867,6 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 }
 
 
-//void CMusicPlayerDlg::OnBnClickedVolumeUp()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	theApp.m_player.MusicControl(Command::VOLUME_UP, 5);
-//	//theApp.m_player.ShowVolume();
-//}
-
-
-//void CMusicPlayerDlg::OnBnClickedVolumeDown()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	theApp.m_player.MusicControl(Command::VOLUME_DOWN, 5);
-//	//theApp.m_player.ShowVolume();
-//}
-
-
 void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -1974,6 +1921,8 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab2_dlg.m_theme_color = theApp.m_theme_color;
 	optionDlg.m_tab2_dlg.m_theme_color_follow_system = m_theme_color_follow_system;
 
+	int sprctrum_height = theApp.m_sprctrum_height;		//保存theApp.m_sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
+
 	if (optionDlg.DoModal() == IDOK)
 	{
 		//获取选项设置对话框中的设置数据
@@ -2012,6 +1961,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	else
 	{
 		SetTransparency();		//如果点击了取消，则需要重新设置窗口透明度
+		theApp.m_sprctrum_height = sprctrum_height;
 	}
 
 	m_tab_selected = optionDlg.m_tab_selected;
@@ -2558,6 +2508,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 	ShowPlayList();
 	ShowTime();
 	DrawInfo(true);
+	SetPorgressBarSize();
 	return 0;
 }
 

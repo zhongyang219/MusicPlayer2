@@ -119,7 +119,7 @@ void CMiniModeDlg::DrawSpectral()
 	for (int i{}; i < ROW; i++)
 	{
 		CRect rect_tmp{ m_spectral_rect[i] };
-		int spetral_height = static_cast<int>(spectral_data[i] * m_spectral_client_rect.Height() / 120);
+		int spetral_height = static_cast<int>(spectral_data[i] * m_spectral_client_rect.Height() / 120 * theApp.m_sprctrum_height / 100);
 		if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 		rect_tmp.top = rect_tmp.bottom - spetral_height;
 		if (rect_tmp.top < 0) rect_tmp.top = 0;
