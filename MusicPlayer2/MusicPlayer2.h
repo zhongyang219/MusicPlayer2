@@ -11,6 +11,7 @@
 #include "resource.h"		// 主符号
 #include "Player.h"
 #include "AudioCommon.h"
+#include "ColorConvert.h"
 
 
 // CMusicPlayerApp: 
@@ -32,7 +33,8 @@ public:
 	wstring m_desktop_path;		//桌面的路径
 
 	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
-	COLORREF m_theme_color;		//主题颜色
+	//COLORREF m_theme_color;		//主题颜色
+	ColorTable m_theme_color;		//主题颜色
 	int m_sprctrum_height{ 100 };		//频谱分析高度比例（%）
 
 	volatile bool m_lyric_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出

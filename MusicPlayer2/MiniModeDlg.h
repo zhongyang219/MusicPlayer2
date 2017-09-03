@@ -39,10 +39,11 @@ protected:
 	HICON m_hPauseIcon_s;
 	HBITMAP m_back_img;
 
-	COLORREF m_theme_color{};
-	COLORREF m_item_text_color;		//播放列表中当前播放项目的文本颜色
-	COLORREF m_item_back_color;		//播放列表中当前播放项目的背景
-	COLORREF m_lyric_text_color;		//歌词卡拉OK样式显示时高亮的颜色
+	//COLORREF m_theme_color{};
+	//COLORREF m_item_text_color;		//播放列表中当前播放项目的文本颜色
+	//COLORREF m_item_back_color;		//播放列表中当前播放项目的背景
+	//COLORREF m_lyric_text_color;		//歌词卡拉OK样式显示时高亮的颜色
+	ColorTable m_theme_color{};
 
 	int m_position_x;
 	int m_position_y;

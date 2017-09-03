@@ -193,6 +193,8 @@ BOOL CFindDlg::OnInitDialog()
 	m_find_result_list.InsertColumn(3, _T("艺术家"), LVCFMT_LEFT, width2);		//插入第3列
 	m_find_result_list.InsertColumn(4, _T("唱片集"), LVCFMT_LEFT, width2);		//插入第4列
 
+	m_key_word.clear();
+
 	ShowFindResult();	//显示（上一次的）查找结果
 
 	GetDlgItem(IDC_FIND_EDIT)->SetFocus();		//将焦点设置到搜索框

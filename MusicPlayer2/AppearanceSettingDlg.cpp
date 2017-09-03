@@ -106,7 +106,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	str.Format(_T("%d%%"), m_transparency);
 	SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 
-	m_spectrum_height_slid.SetRange(30, 300);
+	m_spectrum_height_slid.SetRange(10, 300);
 	m_spectrum_height_slid.SetPos(theApp.m_sprctrum_height);
 	str.Format(_T("%d%%"), theApp.m_sprctrum_height);
 	SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);

@@ -42,6 +42,7 @@ protected:
 
 	CToolTipCtrl m_Mytip;		//鼠标提示
 	CStatusBarCtrl m_status_bar;	//状态栏
+	CSize m_min_size;		//窗口的最小大小
 
 	CFindReplaceDialog* m_pFindDlg{};   //查找对话框
 	CFindReplaceDialog* m_pReplaceDlg{};    //替换对话框
@@ -83,4 +84,6 @@ protected:
 	afx_msg LRESULT OnFindReplace(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnFindNext();
+	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

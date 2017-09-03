@@ -20,14 +20,20 @@ CPlayListCtrl::~CPlayListCtrl()
 {
 }
 
-void CPlayListCtrl::SetColor(COLORREF TextColor, COLORREF TextBkColor, COLORREF selected_color, COLORREF other_text_color)
+//void CPlayListCtrl::SetColor(COLORREF TextColor, COLORREF TextBkColor, COLORREF selected_color, COLORREF other_text_color)
+//{
+//	m_text_color = TextColor;
+//	m_back_color = TextBkColor;
+//	m_selected_color = selected_color;
+//	m_other_text_color = other_text_color;
+//	DWORD itemCount = GetItemCount();
+//	this->RedrawItems(0, itemCount - 1);
+//}
+
+void CPlayListCtrl::SetColor(const ColorTable & color_table)
 {
-	m_text_color = TextColor;
-	m_back_color = TextBkColor;
-	m_selected_color = selected_color;
-	m_other_text_color = other_text_color;
-	DWORD itemCount = GetItemCount();
-	this->RedrawItems(0, itemCount - 1);
+	m_theme_color = color_table;
+	Invalidate();
 }
 
 wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat display_format)
@@ -58,6 +64,7 @@ wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat d
 
 void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format)
 {
+	if (m_all_song_info.size() == 1 && m_all_song_info[0].file_name.empty()) return;
 	int item_num_before = GetItemCount();
 	int item_num_after = theApp.m_player.GetSongNum();
 	//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
@@ -102,32 +109,38 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
 		*pResult = CDRF_NOTIFYITEMDRAW;
 		break;
 	case CDDS_ITEMPREPAINT:			//如果为画ITEM之前就要进行颜色的改变
-		//当选中行又是高亮行时
+		//当选中行又是正在播放行时设置颜色
 		if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_hight_item)
 		{
 			SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-			lplvdr->clrText = m_back_color;
-			lplvdr->clrTextBk = m_selected_color;
+			lplvdr->clrText = m_theme_color.light3;
+			lplvdr->clrTextBk = m_theme_color.dark2;
 		}
-		//选中行颜色改变
+		//设置选中行的颜色
 		else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED/*pLVCD->nmcd.uItemState & CDIS_SELECTED*/)
 		{
 			SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 			lplvdr->clrText = RGB(255,255,255);
-			lplvdr->clrTextBk = m_other_text_color;
+			lplvdr->clrTextBk = m_theme_color.dark1;
 		}
-		//else if (MapItemColor.Lookup(nmcd.dwItemSpec, tb))
-			// 根据在 SetItemColor(DWORD iItem, COLORREF color) 设置的   
-			// ITEM号和COLORREF 在摸板中查找，然后进行颜色赋值。
-		else if(nmcd.dwItemSpec==m_hight_item)
+		//设置正在播放行的颜色
+		else if (nmcd.dwItemSpec == m_hight_item)
 		{
-			lplvdr->clrText = m_text_color;
-			lplvdr->clrTextBk = m_back_color;
+			//lplvdr->clrText = m_theme_color.dark3;
+			lplvdr->clrText = 0;
+			lplvdr->clrTextBk = m_theme_color.light2;
 		}
+		//设置偶数行的颜色
+		else if (nmcd.dwItemSpec % 2 == 0)
+		{
+			lplvdr->clrText = m_theme_color.dark3;
+			lplvdr->clrTextBk = m_theme_color.light3;
+		}
+		//设置奇数行的颜色
 		else
 		{
-			lplvdr->clrText = GetSysColor(COLOR_WINDOWTEXT);
-			lplvdr->clrTextBk = m_background_color;
+			lplvdr->clrText = m_theme_color.dark3;
+			lplvdr->clrTextBk = m_theme_color.light4;
 		}
 		*pResult = CDRF_DODEFAULT;
 		break;
@@ -155,10 +168,9 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			// 保存当前鼠标所在的行
 			m_nItem = lvhti.iItem;
-			if (m_nItem >= m_all_song_info.size()) return;
 
 			// 如果鼠标移动到一个合法的行，则显示新的提示信息，否则不显示提示
-			if (m_nItem != -1)
+			if (m_nItem >= 0 && m_nItem < m_all_song_info.size())
 			{
 				CString dis_str = GetItemText(m_nItem, 1);
 				int strWidth = GetStringWidth(dis_str) + DPI(10);		//获取要显示当前字符串的最小宽度
@@ -208,7 +220,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 BOOL CPlayListCtrl::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (m_toolTip.GetSafeHwnd())
+	if (m_toolTip.GetSafeHwnd() && pMsg->message == WM_MOUSEMOVE)
 	{
 		m_toolTip.RelayEvent(pMsg);
 	}

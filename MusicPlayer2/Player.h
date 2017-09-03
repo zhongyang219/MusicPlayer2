@@ -97,6 +97,7 @@ private:
 	void LoadRecentPath();		//从文件载入最近路径列表
 public:
 	void SaveRecentPath() const;		//将最近路径列表保存到文件
+	void OnExit();		//退出时的处理
 
 	void SetEqualizer(int channel, int gain);		//设置均衡器（channel为通道，取值为0~9，gain为增益，取值为-15~15）
 	int GeEqualizer(int channel);		//获取指定均衡器通道的增益
@@ -158,7 +159,7 @@ public:
 	int GetSongNum() const { return m_song_num; }		//获取歌曲总数
 	const wstring& GetCurrentPath() const { return m_path; }	//获取当前路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号
-	wstring GetFileName() const { return m_current_file_name; }
+	wstring GetFileName() const { return (m_current_file_name.empty() ? wstring(L"没有找到文件") : m_current_file_name); }
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
 	

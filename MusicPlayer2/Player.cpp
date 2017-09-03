@@ -11,16 +11,6 @@ CPlayer::~CPlayer()
 {
 	BASS_Stop();	//停止输出
 	BASS_Free();	//释放Bass资源
-
-	//尽管在退出时会将当前播放到的曲目号和播放到的位置保存到ini文件里，这里还是需要将其再保存到m_recent_path里，
-	//通常这不会有什么问题，因为一般情况下程序在启动时都会从ini文件载入上次播放的曲目和位置，但是如果程序启动时
-	//带了参数，就必须播放参数指定的曲目，ini文件保存的上次播放的曲目的位置就会丢失。
-	if (!m_recent_path.empty())
-	{
-		m_recent_path[0].track = m_index;
-		m_recent_path[0].position = m_current_position_int;
-	}
-	SaveRecentPath();
 }
 
 void CPlayer::IniBASS()
@@ -85,8 +75,6 @@ void CPlayer::Create(const wstring& path)
 
 void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 {
-	//theApp.m_mutex.Lock();
-	//WaitForSingleObject(theApp.m_mutex.m_hObject, INFINITE);
 	if (!m_loading)
 	{
 		if (!cmd_para)
@@ -110,13 +98,9 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 		//m_current_position = {0,0,0};
 		if (m_song_num == 0)
 		{
-			m_current_file_name = L"没有找到文件";
 			m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
 		}
-		else
-		{
-			m_current_file_name = m_playlist[m_index].file_name;
-		}
+		m_current_file_name = m_playlist[m_index].file_name;
 	}
 }
 
@@ -124,14 +108,11 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 {
 	ThreadInfo* pInfo = (ThreadInfo*)lpParam;
 	//获取播放列表中每一首歌曲的信息
-	//wchar_t buff[64];
 	//最多只获取MAX_NUM_LENGTH首歌的长度，超过MAX_NUM_LENGTH数量的歌曲的长度在打开时获得。防止文件夹中音频文件过多导致等待时间过长
 	int song_num = pInfo->playlist->size();
 	int song_count = min(song_num, MAX_NUM_LENGTH);
 	for (int i{}, count{}; count < song_count && i < song_num; i++)
 	{
-		//swprintf_s(buff, L"找到%d首歌曲，正在读取音频文件信息，初次加载可能要花一些时间，请稍候……已完成%d%%", m_song_num, i * 100 / song_count);
-		//m_console.PrintWString(buff, 0, 0, DARK_WHITE);
 		pInfo->process_percent = i * 100 / song_count + 1;
 
 		if (!pInfo->refresh_info)
@@ -212,8 +193,6 @@ void CPlayer::IniPlaylistComplate(bool sort)
 void CPlayer::SearchLyrics(/*bool refresh*/)
 {
 	//检索歌词文件
-	//system("cls");
-	//m_console.PrintWString(L"正在检索歌词文件，请稍候……", 0, 0, DARK_WHITE);
 	//如果允许歌词模糊匹配，先将所有的歌词文件的文件名保存到容器中以供模糊匹配时检索
 	if (m_lyric_fuzzy_match)
 	{
@@ -606,22 +585,8 @@ void CPlayer::ChangePath(const wstring& path, int track)
 
 void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sort_mode)
 {
-	//bool rtn{ false };
-	//CSetPathDlg setPathDlg(m_recent_path, m_path);
-	//if (setPathDlg.DoModal() == IDOK && setPathDlg.SelectValid())
-	//{
-	//	if (m_song_num>0) EmplaceCurrentPathToRecent();		//如果当前路径有歌曲，就保存当前路径到最近路径
-	//	m_sort_mode = setPathDlg.GetSortMode();
-	//	ChangePath(setPathDlg.GetSelPath(), setPathDlg.GetTrack());
-	//	m_current_position_int = setPathDlg.GetPosition();
-	//	m_current_position.int2time(m_current_position_int);
-	//	MusicControl(Command::SEEK);
-	//	EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
-	//	rtn = true;
-	//}
-	//SaveRecentPath();
-	//return rtn;
-	if (m_song_num>0) EmplaceCurrentPathToRecent();		//如果当前路径有歌曲，就保存当前路径到最近路径
+	//if (m_song_num>0 && !m_playlist[0].file_name.empty())		//如果当前路径有歌曲，就保存当前路径到最近路径
+	EmplaceCurrentPathToRecent();
 	m_sort_mode = sort_mode;
 	ChangePath(path, track);
 	m_current_position_int = position;
@@ -738,31 +703,6 @@ bool CPlayer::GetBASSError()
 		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
 	}
 	m_error_code = error_code_tmp;
-	//if (m_error_code)
-	//{
-	//	wchar_t buff[16];
-	//	swprintf_s(buff, L"错误代码：%d\r\n", m_error_code);
-	//	CCommon::WriteLog(L".\\error.log", wstring{ buff });
-	//}
-	//if (m_song_num == 0)
-	//{
-	//	m_console.PrintWString(L"当前路径下没有音频文件，请使用“文件”菜单下的“打开文件夹” 命令选择一个文件，或者直接将音频文件拖放到播放列表中。", 0, 1, DARK_WHITE);
-	//	if (!m_recent_path.empty() && m_path == m_recent_path[0].path)
-	//		m_recent_path.erase(m_recent_path.begin());		//当前路径没有音频文件，把最近路径中的没有文件的路径删除
-	//	return true;
-	//}
-	//else if (m_musicStream == 0)
-	//{
-	//	m_console.PrintWString(L"当前文件无法播放", 0, 1, DARK_WHITE);
-	//}
-
-	//else if (m_error_code)
-	//{
-	//	wchar_t buff[20];
-	//	swprintf_s(buff, L"出现了错误：错误代码：%d", m_error_code);
-	//	m_console.PrintWString(buff, 0, 1, DARK_WHITE);
-	//}
-
 	return true;
 }
 
@@ -785,10 +725,10 @@ void CPlayer::SetTitle() const
 
 void CPlayer::SaveConfig() const
 {
-	WritePrivateProfileStringW(L"config", L"path", m_path.c_str(), theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"track", m_index, theApp.m_config_path.c_str());
+	//WritePrivateProfileStringW(L"config", L"path", m_path.c_str(), theApp.m_config_path.c_str());
+	//CCommon::WritePrivateProfileIntW(L"config", L"track", m_index, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"volume", m_volume, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"position", m_current_position_int, theApp.m_config_path.c_str());
+	//CCommon::WritePrivateProfileIntW(L"config", L"position", m_current_position_int, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"repeat_mode", static_cast<int>(m_repeat_mode), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_karaoke_disp", m_lyric_karaoke_disp, theApp.m_config_path.c_str());
 	WritePrivateProfileStringW(L"config",L"lyric_path", m_lyric_path.c_str(), theApp.m_config_path.c_str());
@@ -816,14 +756,14 @@ void CPlayer::SaveConfig() const
 void CPlayer::LoadConfig()
 {
 	wchar_t buff[256];
-	GetPrivateProfileStringW(L"config", L"path", L".\\songs\\", buff, 255, theApp.m_config_path.c_str());
-	m_path = buff;
+	//GetPrivateProfileStringW(L"config", L"path", L".\\songs\\", buff, 255, theApp.m_config_path.c_str());
+	//m_path = buff;
 	if (!m_path.empty() && m_path.back() != L'/' && m_path.back() != L'\\')		//如果读取到的新路径末尾没有斜杠，则在末尾加上一个
 		m_path.append(1, L'\\');
-	m_index = GetPrivateProfileIntW(L"config", L"track", 0, theApp.m_config_path.c_str());
-	m_volume = GetPrivateProfileIntW(L"config", L"volume", 100, theApp.m_config_path.c_str());
-	m_current_position_int = GetPrivateProfileIntW(L"config", L"position", 0, theApp.m_config_path.c_str());
-	m_current_position.int2time(m_current_position_int);
+	//m_index = GetPrivateProfileIntW(L"config", L"track", 0, theApp.m_config_path.c_str());
+	m_volume = GetPrivateProfileIntW(L"config", L"volume", 60, theApp.m_config_path.c_str());
+	//m_current_position_int = GetPrivateProfileIntW(L"config", L"position", 0, theApp.m_config_path.c_str());
+	//m_current_position.int2time(m_current_position_int);
 	m_repeat_mode = static_cast<RepeatMode>(GetPrivateProfileIntW(L"config", L"repeat_mode", 0, theApp.m_config_path.c_str()));
 	GetPrivateProfileStringW(L"config", L"lyric_path", L".\\lyrics\\", buff, 255, theApp.m_config_path.c_str());
 	m_lyric_path = buff;
@@ -1075,12 +1015,28 @@ void CPlayer::SaveRecentPath() const
 
 }
 
+void CPlayer::OnExit()
+{
+	SaveConfig();
+	//退出时保存最后播放的曲目和位置
+	if (!m_recent_path.empty() && m_song_num>0 && !m_playlist[0].file_name.empty())
+	{
+		m_recent_path[0].track = m_index;
+		m_recent_path[0].position = m_current_position_int;
+	}
+	SaveRecentPath();
+}
+
 void CPlayer::LoadRecentPath()
 {
 	// 打开文件
 	CFile file;
 	BOOL bRet = file.Open(theApp.m_recent_path_dat_path.c_str(), CFile::modeRead);
-	if (!bRet) return;
+	if (!bRet)		//文件不存在
+	{
+		m_path = L".\\songs\\";		//默认的路径
+		return;
+	}
 	// 构造CArchive对象
 	CArchive ar(&file, CArchive::load);
 	// 读数据
@@ -1119,6 +1075,18 @@ void CPlayer::LoadRecentPath()
 	// 关闭文件
 	file.Close();
 
+	//从recent_path文件中获取路径、播放到的曲目和位置
+	if (!m_recent_path.empty())
+	{
+		m_path = m_recent_path[0].path;
+		m_index = m_recent_path[0].track;
+		m_current_position_int = m_recent_path[0].position;
+		m_current_position.int2time(m_current_position_int);
+	}
+	else
+	{
+		m_path = L".\\songs\\";		//默认的路径
+	}
 }
 
 void CPlayer::EmplaceCurrentPathToRecent()
@@ -1128,6 +1096,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
 		if (m_path == m_recent_path[i].path)
 			m_recent_path.erase(m_recent_path.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除
 	}
+	if (m_song_num == 0 || m_playlist[0].file_name.empty()) return;		//如果当前路径中没有文件，就不保存
 	PathInfo path_info;
 	path_info.path = m_path;
 	path_info.track = m_index;

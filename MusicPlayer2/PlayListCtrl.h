@@ -2,6 +2,7 @@
 //以及鼠标提示信息
 #pragma once
 #include "AudioCommon.h"
+#include "ColorConvert.h"
 
 // CPlayListCtrl
 
@@ -14,7 +15,8 @@ public:
 	virtual ~CPlayListCtrl();
 
 	void SetHightItem(int item) { m_hight_item = item; }					//设置高亮的项目，即播放列表中正在播放的项目
-	void SetColor(COLORREF TextColor, COLORREF TextBkColor, COLORREF selected_color, COLORREF other_text_color);	//设置播放列表的颜色
+	//void SetColor(COLORREF TextColor, COLORREF TextBkColor, COLORREF selected_color, COLORREF other_text_color);	//设置播放列表的颜色
+	void SetColor(const ColorTable& color_table);
 
 	void EnableTip(bool enable = true) { m_bEnableTips = enable; }		//设置是否开启提示
 
@@ -23,10 +25,11 @@ public:
 
 protected:
 	COLORREF m_background_color{ RGB(255,255,255) };	//列表控件的背景色
-	COLORREF m_text_color;		//高亮项目的文本颜色
-	COLORREF m_back_color;		//高亮项目的背景颜色
-	COLORREF m_selected_color;	//选中项目的颜色
-	COLORREF m_other_text_color;	//非高亮项目的文本颜色
+	//COLORREF m_text_color;		//高亮项目的文本颜色
+	//COLORREF m_back_color;		//高亮项目的背景颜色
+	//COLORREF m_selected_color;	//选中项目的颜色
+	//COLORREF m_other_text_color;	//非高亮项目的文本颜色
+	ColorTable m_theme_color;
 	int m_hight_item;			//高亮的项目
 
 	CToolTipCtrl m_toolTip;		//文本提示类

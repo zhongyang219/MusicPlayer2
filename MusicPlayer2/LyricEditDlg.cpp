@@ -156,6 +156,8 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
 	ON_COMMAND(ID_LYRIC_REPLACE, &CLyricEditDlg::OnLyricReplace)
 	ON_REGISTERED_MESSAGE(WM_FINDREPLACE, &CLyricEditDlg::OnFindReplace)
 	ON_COMMAND(ID_FIND_NEXT, &CLyricEditDlg::OnFindNext)
+	ON_WM_GETMINMAXINFO()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -191,8 +193,14 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_Mytip.AddTool(GetDlgItem(ID_REW), _T("快捷键：Ctrl+←"));
 	m_Mytip.AddTool(GetDlgItem(ID_FF), _T("快捷键：Ctrl+→"));
 
-	//初始化状态栏
+	//获取初始时窗口的大小
 	CRect rect;
+	GetWindowRect(rect);
+	m_min_size.cx = rect.Width();
+	m_min_size.cy = rect.Height();
+
+	//初始化状态栏
+	//CRect rect;
 	GetClientRect(&rect);
 	rect.top = rect.bottom - DPI(20);
 	m_status_bar.Create(WS_VISIBLE | CBRS_BOTTOM, rect, this, 3);
@@ -562,5 +570,33 @@ void CLyricEditDlg::OnFindNext()
 		SetActiveWindow();		//将编辑器窗口设为活动窗口
 		m_lyric_edit.SetFocus();
 		m_find_flag = true;
+	}
+}
+
+
+void CLyricEditDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	//限制窗口最小大小
+	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
+
+	CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+
+void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	// TODO: 在此处添加消息处理程序代码
+	//窗口大小变化时调整状态栏的大小和位置
+	if (nType != SIZE_MINIMIZED && m_status_bar.m_hWnd)
+	{
+		CRect rect;
+		rect.right = cx;
+		rect.bottom = cy;
+		rect.top = rect.bottom - DPI(20);
+		m_status_bar.MoveWindow(rect);
 	}
 }

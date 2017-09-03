@@ -57,7 +57,7 @@ void CDataSettingsDlg::ShowDataSizeInfo()
 	else if (m_data_size < 1024 * 1024)
 		info.Format(_T("当前数据文件大小：%.2fKB (%d个字节)"), static_cast<float>(m_data_size) / 1024.0f, m_data_size);
 	else
-		info.Format(_T("当前数据文件大小：%.2fMB (%d个字节)"), static_cast<float>(m_data_size) / 1024.0f / 1024.0f, m_data_size);
+		info.Format(_T("当前数据文件大小：%.2fMB (%d个字节)"), static_cast<float>(m_data_size) / 1024.0f / 1024.0f, m_data_size);		//注：此处曾经由于“%.2fMB”漏掉了“f”导致出现了一打开这个对话框程序就停止工作的严重问题。
 	SetDlgItemText(IDC_SIZE_STATIC, info);
 }
 

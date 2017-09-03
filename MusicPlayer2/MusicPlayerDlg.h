@@ -118,9 +118,9 @@ protected:
 	int m_transparency{ 100 };			//窗口透明度
 
 	//COLORREF m_theme_color;		//主题颜色		(移动到了App类中)
-	COLORREF m_text_color;			//界面中一些文本的颜色
-	COLORREF m_text_back_color;		//界面中一些背景的颜色
-	COLORREF m_lyric_back_color;		//歌词未播放的颜色
+	//COLORREF m_text_color;			//界面中一些文本的颜色
+	//COLORREF m_text_back_color;		//界面中一些背景的颜色
+	//COLORREF m_lyric_back_color;		//歌词未播放的颜色
 	bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
 
 	CRect m_draw_rect;		//绘图区域

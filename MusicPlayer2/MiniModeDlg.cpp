@@ -41,7 +41,7 @@ void CMiniModeDlg::SaveConfig() const
 {
 	CCommon::WritePrivateProfileIntW(L"mini_mode", L"position_x", m_position_x, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"mini_mode", L"position_y", m_position_y, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"mini_mode", L"text_color", m_theme_color, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"mini_mode", L"text_color", m_theme_color.original_color, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"mini_mode", L"dark_mode", m_dark_mode, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"mini_mode", L"follow_main_color", m_follow_main_color, theApp.m_config_path.c_str());
 }
@@ -50,7 +50,7 @@ void CMiniModeDlg::LoadConfig()
 {
 	m_position_x = GetPrivateProfileInt(_T("mini_mode"), _T("position_x"), -1, theApp.m_config_path.c_str());
 	m_position_y = GetPrivateProfileInt(_T("mini_mode"), _T("position_y"), -1, theApp.m_config_path.c_str());
-	m_theme_color = GetPrivateProfileInt(_T("mini_mode"), _T("text_color"), 13526784, theApp.m_config_path.c_str());
+	m_theme_color.original_color = GetPrivateProfileInt(_T("mini_mode"), _T("text_color"), 13526784, theApp.m_config_path.c_str());
 	m_dark_mode = (GetPrivateProfileInt(_T("mini_mode"), _T("dark_mode"), 0, theApp.m_config_path.c_str()) != 0);
 	m_follow_main_color = (GetPrivateProfileInt(_T("mini_mode"), _T("follow_main_color"), 1, theApp.m_config_path.c_str()) != 0);
 }
@@ -106,7 +106,7 @@ void CMiniModeDlg::DrawSpectral()
 	}
 	//pDC->SetBkMode(TRANSPARENT);
 	CBrush BGBrush, *pOldBrush;
-	BGBrush.CreateSolidBrush(m_theme_color);
+	BGBrush.CreateSolidBrush(m_theme_color.original_color);
 	pOldBrush = m_pDC->SelectObject(&BGBrush);
 	DrawThemeParentBackground(m_hWnd, m_pDC->GetSafeHdc(), &m_spectral_client_rect);	//重绘控件区域以解决文字重叠的问题
 	//将CPlayer类里获得到的频谱数据变换成ROW列的数据
@@ -202,7 +202,7 @@ void CMiniModeDlg::SetPlayListColor()
 	//m_playlist_ctrl.ResetAllItemColor();
 	//m_playlist_ctrl.SetItemColor(theApp.m_player.GetIndex(), m_item_text_color, m_item_back_color);
 	m_playlist_ctrl.SetHightItem(theApp.m_player.GetIndex());
-	m_playlist_ctrl.SetColor(m_item_text_color, m_item_back_color, m_theme_color, m_lyric_text_color);
+	m_playlist_ctrl.SetColor(m_theme_color);
 	m_playlist_ctrl.EnsureVisible(theApp.m_player.GetIndex(), FALSE);
 }
 
@@ -422,26 +422,27 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 
 void CMiniModeDlg::ColorChanged()
 {
-	m_item_text_color = CColorConvert::ConvertToItemColor(m_theme_color);
-	m_item_back_color = CColorConvert::ConvertToBackColor(m_theme_color);
-	m_lyric_text_color = CColorConvert::ConvertToLightColor(m_theme_color);
+	//m_item_text_color = CColorConvert::ConvertToItemColor(m_theme_color);
+	//m_item_back_color = CColorConvert::ConvertToBackColor(m_theme_color);
+	//m_lyric_text_color = CColorConvert::ConvertToLightColor(m_theme_color);
+	CColorConvert::ConvertColor(m_theme_color);
 	if (!m_dark_mode)
 	{
 		//设置窗口文本颜色
-		m_lyric_static.SetTextColor(m_item_text_color);
-		m_lyric_static.SetText2Color(m_lyric_text_color);
-		m_time_static.SetTextColor(m_item_text_color);
+		m_lyric_static.SetTextColor(m_theme_color.dark2);
+		m_lyric_static.SetText2Color(m_theme_color.light1);
+		m_time_static.SetTextColor(m_theme_color.dark2);
 		//设置背景颜色
-		SetBackgroundColor(m_item_back_color);
+		SetBackgroundColor(m_theme_color.light3);
 	}
 	else
 	{
 		//设置窗口文本颜色
-		m_lyric_static.SetTextColor(m_item_back_color);
-		m_lyric_static.SetText2Color(m_lyric_text_color);
-		m_time_static.SetTextColor(m_item_back_color);
+		m_lyric_static.SetTextColor(m_theme_color.light3);
+		m_lyric_static.SetText2Color(m_theme_color.light1);
+		m_time_static.SetTextColor(m_theme_color.light3);
 		//设置背景颜色
-		SetBackgroundColor(m_item_text_color);
+		SetBackgroundColor(m_theme_color.dark2);
 	}
 	SetPlayListColor();
 }
@@ -492,6 +493,12 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_KEYDOWN && (GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'X')
 	{
 		OnCancel();
+		return TRUE;
+	}
+	//按Ctrl+M回到主窗口
+	if (pMsg->message == WM_KEYDOWN && (GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'M')
+	{
+		OnOK();
 		return TRUE;
 	}
 
@@ -621,10 +628,10 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 void CMiniModeDlg::OnSetTextColor()
 {
 	// TODO: 在此添加命令处理程序代码
-	CColorDialog colorDlg(m_theme_color, 0, this);
+	CColorDialog colorDlg(m_theme_color.original_color, 0, this);
 	if (colorDlg.DoModal() == IDOK)
 	{
-		m_theme_color = colorDlg.GetColor();
+		m_theme_color.original_color = colorDlg.GetColor();
 		ColorChanged();
 		RePaint();
 		//m_lyric_static.SetTextColor(m_item_text_color);

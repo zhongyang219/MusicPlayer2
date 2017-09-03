@@ -2,6 +2,20 @@
 //#define min3v(v1, v2, v3)   ((v1)>(v2)? ((v2)>(v3)?(v3):(v2)):((v1)>(v3)?(v3):(v2)))
 //#define max3v(v1, v2, v3)   ((v1)<(v2)? ((v2)<(v3)?(v3):(v2)):((v1)<(v3)?(v3):(v1)))
 
+struct ColorTable
+{
+	//原始的颜色
+	COLORREF original_color;
+	//变换亮度后的颜色
+	COLORREF dark1;
+	COLORREF dark2;
+	COLORREF dark3;
+	COLORREF light1;
+	COLORREF light2;
+	COLORREF light3;
+	COLORREF light4;
+};
+
 class CColorConvert
 {
 public:
@@ -51,16 +65,18 @@ public:
 	// Converts HSL to RGB
 	static void HSLtoRGB(const COLOR_HSL *hsl, COLOR_RGB *rgb);
 
-	//此函数用于根据主题色计算播放列表中当前播放项目的文本颜色
-	//在保持色相和饱和度不变的情况下减少颜色的亮度值，亮度变换为一次函数y=0.5x+12
-	static COLORREF ConvertToItemColor(COLORREF color);
+	////此函数用于根据主题色计算播放列表中当前播放项目的文本颜色
+	////在保持色相和饱和度不变的情况下减少颜色的亮度值，亮度变换为一次函数y=0.5x+12
+	//static COLORREF ConvertToItemColor(COLORREF color);
 
-	//此函数用于根据主题色计算播放列表中当前播放项目的背景颜色
-	//在保持色相和饱和度不变的情况下增加颜色的亮度值，亮度变换为一次函数y=0.1x+90
-	static COLORREF ConvertToBackColor(COLORREF color);
+	////此函数用于根据主题色计算播放列表中当前播放项目的背景颜色
+	////在保持色相和饱和度不变的情况下增加颜色的亮度值，亮度变换为一次函数y=0.1x+90
+	//static COLORREF ConvertToBackColor(COLORREF color);
 
-	//此函数用于根据主题色计算迷你模式中卡拉OK显示时歌词的颜色
-	//在保持色相和饱和度不变的情况下增加颜色的亮度值，亮度变换为一次函数y=0.4x+50
-	static COLORREF ConvertToLightColor(COLORREF color);
+	////此函数用于根据主题色计算迷你模式中卡拉OK显示时歌词的颜色
+	////在保持色相和饱和度不变的情况下增加颜色的亮度值，亮度变换为一次函数y=0.4x+50
+	//static COLORREF ConvertToLightColor(COLORREF color);
+
+	static void ConvertColor(ColorTable& color_table);
 };
 
