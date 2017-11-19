@@ -52,6 +52,12 @@ void CSetPathDlg::ShowPathList()
 	//m_path_list.SetHorizontalExtent(list_width);
 }
 
+void CSetPathDlg::SetButtonsEnable(bool enable)
+{
+	GetDlgItem(IDOK)->EnableWindow(enable);
+	GetDlgItem(IDC_DELETE_PATH_BUTTON)->EnableWindow(enable);
+}
+
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -141,6 +147,8 @@ BOOL CSetPathDlg::OnInitDialog()
 	ShowPathList();
 	m_path_list.SetFocus();		//初始时将焦点设置到列表控件
 
+	SetButtonsEnable(false);
+
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
@@ -194,6 +202,7 @@ void CSetPathDlg::OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_path_selected = pNMItemActivate->iItem;
+	SetButtonsEnable(m_path_selected != -1);
 	*pResult = 0;
 }
 
@@ -203,6 +212,7 @@ void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_path_selected = pNMItemActivate->iItem;
+	SetButtonsEnable(m_path_selected != -1);
 	*pResult = 0;
 }
 
@@ -212,6 +222,7 @@ void CSetPathDlg::OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_path_selected = pNMItemActivate->iItem;
+	SetButtonsEnable(m_path_selected != -1);
 	OnOK();
 	*pResult = 0;
 }

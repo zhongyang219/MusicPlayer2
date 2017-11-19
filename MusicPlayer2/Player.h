@@ -36,6 +36,7 @@ private:
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
 	wstring m_path;		//当前播放文件的路径
 	wstring m_current_file_name;		//正在播放的文件名
+	wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
 	deque<PathInfo> m_recent_path;		//最近打开过的路径
 
 	Time m_song_length;		//正在播放的文件的长度
@@ -78,8 +79,6 @@ public:
 	bool m_loading{ false };		//如果正在载入播放列表，则为true
 
 private:
-	vector<int> m_find_result;		//储存查找结果的歌曲序号
-
 	vector<wstring> m_current_path_lyrics;	//储存当前路径下的歌词文件的文件名（用于歌词模糊匹配时检索）
 	vector<wstring> m_lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名（用于歌词模糊匹配时检索）
 
@@ -135,7 +134,8 @@ public:
 	void SetVolume();		//用m_volume的值设置音量
 	void SetPath(const wstring& path, int track, int position, SortMode sort_mode);		//设置路径
 	void OpenFolder(wstring path);	//通过“打开文件夹”来设置路径的处理
-	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开一个或多个文件，play用来设置是否立即播放
+	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开多个文件，play用来设置是否立即播放
+	void OpenAFile(wstring file);	//打开一个音频文件，参数为文件的绝对路径
 	void SetRepeatMode();		//更改循环模式
 	void SetRepeatMode(RepeatMode repeat_mode);	//设置循环模式
 	RepeatMode GetRepeatMode() const;

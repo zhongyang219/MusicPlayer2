@@ -6,6 +6,7 @@
 #include "afxcmn.h"
 #include "PlayListCtrl.h"
 #include "ColorConvert.h"
+#include"ProgressStatic.h"
 
 // CMiniModeDlg 对话框
 
@@ -39,10 +40,6 @@ protected:
 	HICON m_hPauseIcon_s;
 	HBITMAP m_back_img;
 
-	//COLORREF m_theme_color{};
-	//COLORREF m_item_text_color;		//播放列表中当前播放项目的文本颜色
-	//COLORREF m_item_back_color;		//播放列表中当前播放项目的背景
-	//COLORREF m_lyric_text_color;		//歌词卡拉OK样式显示时高亮的颜色
 	ColorTable m_theme_color{};
 
 	int m_position_x;
@@ -83,7 +80,10 @@ protected:
 	CMFCButton m_exit_button;
 	CStatic m_spectral_static;
 	CPlayListCtrl m_playlist_ctrl{ theApp.m_player.GetPlayList() };
+public:
+	CProgressStatic m_progress_bar;
 
+protected:
 	int m_last_lyric_index{};		//上一句歌词的序号，用于判断歌词是否改变
 	int m_last_index{};			//上一个播放曲目的序号，用于判断播放曲目是否改变
 	bool m_show_volume{ false };	//用于指示是否在显示时间的控件显示音量，当滚动鼠标滚轮时的1.5秒内，此变量的值为true
@@ -114,7 +114,6 @@ protected:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
-public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 //	afx_msg void OnClose();
 	afx_msg void OnDestroy();
@@ -135,4 +134,6 @@ public:
 	afx_msg void OnPaint();
 	afx_msg void OnDarkMode();
 	afx_msg void OnFollowMainColor();
+public:
+	afx_msg void OnStnClickedMiniProgressStatic();
 };

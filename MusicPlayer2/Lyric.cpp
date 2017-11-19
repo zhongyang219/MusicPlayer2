@@ -231,6 +231,7 @@ int CLyrics::GetLyricProgress(Time time) const
 {
 	int lyric_last_time{ 1 };		//time时间所在的歌词持续的时间
 	int lyric_current_time{ 0 };		//当前歌词在time时间时已经持续的时间
+	int progress{};
 	for (int i{ 0 }; i < m_lyrics.size(); i++)
 	{
 		if (m_lyrics[i].GetTime(m_offset) > time)
@@ -246,13 +247,16 @@ int CLyrics::GetLyricProgress(Time time) const
 				lyric_current_time = time - m_lyrics[i - 1].GetTime(m_offset);
 			}
 			if (lyric_last_time == 0) lyric_last_time = 1;
-			return lyric_current_time * 1000 / lyric_last_time;
+			progress = lyric_current_time * 1000 / lyric_last_time;
+			return progress;
 		}
 	}
 	//如果最后一句歌词之后已经没有时间标签，该句歌词默认显示20秒
 	lyric_current_time = time - m_lyrics[m_lyrics.size() - 1].GetTime(m_offset);
 	lyric_last_time = 20000;
-	return lyric_current_time * 1000 / lyric_last_time;
+	progress = lyric_current_time * 1000 / lyric_last_time;
+	if (progress > 1000) progress = 1000;
+	return progress;
 }
 
 int CLyrics::GetLyricIndex(Time time) const

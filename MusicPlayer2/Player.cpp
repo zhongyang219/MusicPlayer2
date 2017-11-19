@@ -167,10 +167,31 @@ void CPlayer::IniPlaylistComplate(bool sort)
 	{
 		if (m_playing == 0)		//播放列表初始化完成，并排序完成后，如果此时没有在播放，就重新设置播放的文件
 		{
-			MusicControl(Command::CLOSE);
-			m_current_file_name = m_playlist[m_index].file_name;
-			MusicControl(Command::OPEN);
-			MusicControl(Command::SEEK);
+			if (!m_current_file_name_tmp.empty())		//如果执行了ReloadPlaylist，m_current_file_name_tmp不为空，则查找m_current_file_name_tmp保存的曲目并播放
+			{
+				//重新载入播放列表后，查找正在播放项目的序号
+				MusicControl(Command::CLOSE);
+				for (int i{}; i < m_playlist.size(); i++)
+				{
+					if (m_current_file_name_tmp == m_playlist[i].file_name)
+					{
+						m_index = i;
+						m_current_file_name = m_current_file_name_tmp;
+						break;
+					}
+				}
+				m_current_file_name_tmp.clear();
+				MusicControl(Command::OPEN);
+				MusicControl(Command::SEEK);
+				MusicControl(Command::PLAY);
+			}
+			else		//否则，直接打开播放第index首曲目
+			{
+				MusicControl(Command::CLOSE);
+				m_current_file_name = m_playlist[m_index].file_name;
+				MusicControl(Command::OPEN);
+				MusicControl(Command::SEEK);
+			}
 		}
 		else		//如果用户在播放初始化的过程中进行了播放，则根据正在播放的文件名重新查找正在播放的序号
 		{
@@ -184,6 +205,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 			}
 		}
 	}
+
 
 	EmplaceCurrentPathToRecent();
 	SetTitle();
@@ -560,6 +582,17 @@ bool CPlayer::PlayTrack(int song_track)
 		SaveConfig();
 		return true;
 	}
+	else
+	{
+		MusicControl(Command::CLOSE);
+		m_index = 0;
+		m_current_file_name = m_playlist[m_index].file_name;
+		MusicControl(Command::OPEN);
+		IniLyrics();
+		GetBASSCurrentPosition();
+		SetTitle();
+		SaveConfig();
+	}
 	return false;
 }
 
@@ -580,7 +613,6 @@ void CPlayer::ChangePath(const wstring& path, int track)
 	SetTitle();
 	//MusicControl(Command::OPEN);
 	//IniLyrics();
-	m_find_result.clear();	//更改路径后清空查找结果
 }
 
 void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sort_mode)
@@ -653,7 +685,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
 		m_current_position = { 0,0,0 };
 		m_index = 0;
 	}
-	EmplaceCurrentPathToRecent();
+	//EmplaceCurrentPathToRecent();
 	SongInfo song_info;
 	for (const auto& file : files)
 	{
@@ -670,6 +702,37 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
 	IniLyrics();
 	SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 	//SetVolume();
+}
+
+void CPlayer::OpenAFile(wstring file)
+{
+	if (file.empty()) return;
+	if (m_loading) return;
+	MusicControl(Command::CLOSE);
+	if (m_song_num>0) EmplaceCurrentPathToRecent();		//先保存当前路径和播放进度到最近路径
+	size_t index;
+	wstring path;
+	index = file.rfind(L'\\');
+	path = file.substr(0, index + 1);		//获取路径
+	m_path = path;
+	m_playlist.clear();
+	m_current_position_int = 0;
+	m_current_position = { 0,0,0 };
+	m_index = 0;
+	m_current_file_name = file.substr(index + 1);
+	m_song_num = 1;
+
+	//获取打开路径的排序方式
+	m_sort_mode = SortMode::SM_FILE;
+	for (const auto& path_info : m_recent_path)
+	{
+		if (m_path == path_info.path)
+			m_sort_mode = path_info.sort_mode;
+	}
+
+	//初始化播放列表
+	m_current_file_name_tmp = m_current_file_name;
+	IniPlayList(false, false);		//根据新路径重新初始化播放列表
 }
 
 void CPlayer::SetRepeatMode()
@@ -809,7 +872,7 @@ void CPlayer::ExplorePath(int track) const
 			str.Format(_T("/select,\"%s%s\""), m_path.c_str(), m_playlist[track].file_name.c_str());
 		else								//track超过播放列表中文件的数量，打开资源管理器后不选中任何文件
 			str = m_path.c_str();
-		HINSTANCE rtn = ShellExecute(NULL, _T("open"),_T("explorer"), str, NULL, SW_SHOWNORMAL);
+		ShellExecute(NULL, _T("open"),_T("explorer"), str, NULL, SW_SHOWNORMAL);
 	}
 }
 
@@ -828,8 +891,10 @@ void CPlayer::ReloadPlaylist()
 	MusicControl(Command::CLOSE);
 	m_playlist.clear();		//清空播放列表
 	//wstring current_file_name = m_current_file_name;	//保存当前播放的曲目的文件名
+	m_current_file_name_tmp = m_current_file_name;	//保存当前播放的曲目的文件名，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
 	//初始化播放列表
 	IniPlayList(false, true);		//根据新路径重新初始化播放列表
+
 
 	////重新载入播放列表后，查找正在播放项目的序号
 	//for (int i{}; i < m_playlist.size(); i++)

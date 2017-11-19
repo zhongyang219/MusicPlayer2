@@ -89,6 +89,14 @@ BEGIN_MESSAGE_MAP(CLyricDownloadDlg, CDialog)
 	ON_BN_CLICKED(IDC_SAVE_TO_LYRIC_FOLDER1, &CLyricDownloadDlg::OnBnClickedSaveToLyricFolder1)
 	ON_BN_CLICKED(IDC_SELECTED_SAVE_AS, &CLyricDownloadDlg::OnBnClickedSelectedSaveAs)
 	ON_CBN_SELCHANGE(IDC_COMBO2, &CLyricDownloadDlg::OnCbnSelchangeCombo2)
+	ON_COMMAND(ID_LD_LYRIC_DOWNLOAD, &CLyricDownloadDlg::OnLdLyricDownload)
+	ON_COMMAND(ID_LD_LYRIC_SAVEAS, &CLyricDownloadDlg::OnLdLyricSaveas)
+	ON_COMMAND(ID_LD_COPY_TITLE, &CLyricDownloadDlg::OnLdCopyTitle)
+	ON_COMMAND(ID_LD_COPY_ARTIST, &CLyricDownloadDlg::OnLdCopyArtist)
+	ON_COMMAND(ID_LD_COPY_ALBUM, &CLyricDownloadDlg::OnLdCopyAlbum)
+	ON_COMMAND(ID_LD_COPY_ID, &CLyricDownloadDlg::OnLdCopyId)
+	ON_COMMAND(ID_LD_VIEW_ONLINE, &CLyricDownloadDlg::OnLdViewOnline)
+	ON_NOTIFY(NM_DBLCLK, IDC_LYRIC_DOWN_LIST1, &CLyricDownloadDlg::OnNMDblclkLyricDownList1)
 END_MESSAGE_MAP()
 
 
@@ -157,6 +165,10 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->SetCheck(TRUE);
 
+	//初始化右键菜单
+	m_menu.LoadMenu(IDR_LYRIC_DOWNLOAD_MENU);
+	m_menu.GetSubMenu(0)->SetDefaultItem(ID_LD_LYRIC_DOWNLOAD);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -220,6 +232,16 @@ void CLyricDownloadDlg::OnNMRClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_item_selected = pNMItemActivate->iItem;
+
+	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	{
+		//弹出右键菜单
+		CMenu* pContextMenu = m_menu.GetSubMenu(0);	//获取第一个弹出菜单
+		CPoint point1;	//定义一个用于确定光标位置的位置  
+		GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标
+		pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
+	}
+
 	*pResult = 0;
 }
 
@@ -475,4 +497,88 @@ void CLyricDownloadDlg::OnCbnSelchangeCombo2()
 	case 1: m_save_code = CodeType::UTF8; break;
 	default: m_save_code = CodeType::ANSI; break;
 	}
+}
+
+
+void CLyricDownloadDlg::OnLdLyricDownload()
+{
+	// TODO: 在此添加命令处理程序代码
+	OnBnClickedDownloadSelected();
+}
+
+
+void CLyricDownloadDlg::OnLdLyricSaveas()
+{
+	// TODO: 在此添加命令处理程序代码
+	OnBnClickedSelectedSaveAs();
+}
+
+
+void CLyricDownloadDlg::OnLdCopyTitle()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	{
+		if(!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].title))
+			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+	}
+}
+
+
+void CLyricDownloadDlg::OnLdCopyArtist()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	{
+		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].artist))
+			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+	}
+}
+
+
+void CLyricDownloadDlg::OnLdCopyAlbum()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	{
+		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].album))
+			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+	}
+}
+
+
+void CLyricDownloadDlg::OnLdCopyId()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	{
+		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].id))
+			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+	}
+}
+
+
+void CLyricDownloadDlg::OnLdViewOnline()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	{
+		//获取网易云音乐中该歌曲的在线接听网址
+		wstring song_url{ L"http://music.163.com/#/song?id=" + m_down_list[m_item_selected].id };
+		//打开超链接
+		ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
+	}
+}
+
+//双击列表项目后下载选中项目
+void CLyricDownloadDlg::OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	m_item_selected = pNMItemActivate->iItem;
+	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	{
+		OnBnClickedDownloadSelected();
+	}
+	*pResult = 0;
 }

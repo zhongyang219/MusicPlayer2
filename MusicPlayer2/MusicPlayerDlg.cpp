@@ -238,6 +238,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_MESSAGE(WM_PLAYLIST_INI_COMPLATE, &CMusicPlayerDlg::OnPlaylistIniComplate)
 	ON_MESSAGE(WM_SET_TITLE, &CMusicPlayerDlg::OnSetTitle)
 	ON_COMMAND(ID_EQUALIZER, &CMusicPlayerDlg::OnEqualizer)
+	ON_COMMAND(ID_EXPLORE_ONLINE, &CMusicPlayerDlg::OnExploreOnline)
 END_MESSAGE_MAP()
 
 
@@ -561,7 +562,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	}
 	else
 	{
-		CRect arect{ lyric_area };
+		CRect arect{ lyric_area };		//一行歌词的矩形区域
 		arect.bottom = arect.top + lyric_height;
 		vector<CRect> rects(theApp.m_player.m_Lyrics.GetLyricCount() + 1, arect);		//为每一句歌词创建一个矩形，保存在容器里
 		int center_pos = (lyric_area.top + lyric_area.bottom) / 2;		//歌词区域的中心y坐标
@@ -699,7 +700,10 @@ void CMusicPlayerDlg::ShowPlayList()
 	m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 
 	if (m_miniModeDlg.m_hWnd != NULL)
+	{
 		m_miniModeDlg.ShowPlaylist();
+		m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
+	}
 }
 
 void CMusicPlayerDlg::SetPlayListColor()
@@ -732,7 +736,14 @@ void CMusicPlayerDlg::SwitchTrack()
 	ShowTime();
 	m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 	SetPorgressBarSize();		//调整进度条在窗口中的大小和位置
+	if (m_miniModeDlg.m_hWnd != NULL)
+		m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 	DrawInfo(true);
+
+	//CString str;
+	//str = m_playlist_list.GetItemText(index, 0);
+	//str = _T(">") + str;
+	//m_playlist_list.SetItemText(index, 0, str);
 }
 
 void CMusicPlayerDlg::ShowTime()
@@ -751,6 +762,8 @@ void CMusicPlayerDlg::UpdateProgress()
 	__int64 pos;	//进度条的宽度
 	pos = static_cast<__int64>(position) * 1000 / length;	//先转换成__int64类型，防止乘以1000之后溢出
 	m_progress_bar.SetPos(static_cast<int>(pos));
+	if (m_miniModeDlg.m_hWnd != NULL)
+		m_miniModeDlg.m_progress_bar.SetPos(static_cast<int>(pos));
 }
 
 void CMusicPlayerDlg::UpdateTaskBarProgress()
@@ -1262,11 +1275,19 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
 		SetThumbnailClipArea();
 
-		if (m_cmdLine.empty())		//判断是否有通过命令行打开文件
+		if (m_cmdLine.empty())		//没有有通过命令行打开文件
 		{
 			theApp.m_player.Create();
 		}
-		else
+		else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//如果命令行参数中有RestartByRestartManager，则说明程序是被Windows重启的
+		{
+			theApp.m_player.Create();
+			//将命令行参数写入日志文件
+			wchar_t buff[256];
+			swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
+			CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
+		}
+		else		//从集合行参数获取要打开的文件
 		{
 			vector<wstring> files;
 			wstring path = CCommon::DisposeCmdLine(m_cmdLine, files);
@@ -1464,7 +1485,7 @@ void CMusicPlayerDlg::OnSetPath()
 		SetPorgressBarSize();
 		ShowTime();
 		DrawInfo(true);
-		m_find_result.clear();		//更换路径后清除查找结果
+		m_findDlg.ClearFindResult();		//更换路径后清除查找结果
 	}
 	theApp.m_player.SaveRecentPath();
 }
@@ -1475,9 +1496,34 @@ void CMusicPlayerDlg::OnFind()
 	// TODO: 在此添加命令处理程序代码
 	if (m_findDlg.DoModal() == IDOK)
 	{
-		theApp.m_player.PlayTrack(m_findDlg.GetSelectedTrack());
-		SwitchTrack();
-		UpdatePlayPauseButton();
+		if (m_findDlg.GetFindCurrentPlaylist())
+		{
+			int selected_track{ m_findDlg.GetSelectedTrack() };
+			if (selected_track >= 0)
+			{
+				theApp.m_player.PlayTrack(m_findDlg.GetSelectedTrack());
+				SwitchTrack();
+				UpdatePlayPauseButton();
+			}
+		}
+		else
+		{
+			wstring selected_song_path{ m_findDlg.GetSelectedSongPath() };
+			if (!CCommon::FileExist(selected_song_path))
+			{
+				//如果文件不存在，则弹出错误信息
+				CString info;
+				info.Format(_T("找不到文件“%s”！可能已经被移动或删除。"), selected_song_path.c_str());
+				MessageBox(info, NULL, MB_ICONWARNING);
+				return;
+			}
+			if (!selected_song_path.empty())
+			{
+				theApp.m_player.OpenAFile(selected_song_path);
+				SwitchTrack();
+				UpdatePlayPauseButton();
+			}
+		}
 	}
 }
 
@@ -1762,6 +1808,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 		pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | MF_GRAYED);
 		pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | MF_GRAYED);
 		pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_GRAYED);
+		pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | MF_GRAYED);
 	}
 	else
 	{
@@ -1769,6 +1816,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 		pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
 		pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | MF_ENABLED);
 		pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_ENABLED);
+		pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | MF_ENABLED);
 	}
 
 	//打开菜单时，如果播放列表中没有歌曲，则禁用主菜单和右键菜单中的“打开文件位置”项目
@@ -2514,6 +2562,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 	ShowTime();
 	DrawInfo(true);
 	SetPorgressBarSize();
+	UpdatePlayPauseButton();
 	return 0;
 }
 
@@ -2538,3 +2587,79 @@ void CMusicPlayerDlg::OnEqualizer()
 	CSoundEffectDlg soundEffectDlg;
 	soundEffectDlg.DoModal();
 }
+
+
+void CMusicPlayerDlg::OnExploreOnline()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_pThread = AfxBeginThread(ViewOnlineThreadFunc, &m_item_selected);
+}
+
+UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
+{
+	//此命令用于跳转到歌曲对应的网易云音乐的在线页面，要做到这点，必须根据歌曲信息通过网易云音乐的API搜索歌曲，
+	//在搜索的结果中选择最佳匹配项，再获取歌曲的id，根据id生成网址，最后打开该网址。
+	int item_selected{ *(static_cast<int*>(lpParam)) };
+	if (item_selected >= 0 && item_selected < theApp.m_player.GetSongNum())
+	{
+		//设置搜索关键字
+		wstring search_result;		//查找歌曲返回的结果
+		wstring keyword;		//查找的关键字
+		if (theApp.m_player.GetPlayList()[item_selected].title == DEFAULT_TITLE)		//如果没有标题信息，就把文件名设为搜索关键字
+		{
+			keyword = theApp.m_player.GetPlayList()[item_selected].file_name;
+			size_t index = keyword.rfind(L'.');		//查找最后一个点
+			keyword = keyword.substr(0, index);		//去掉扩展名
+		}
+		else if (theApp.m_player.GetPlayList()[item_selected].artist == DEFAULT_ARTIST)	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
+		{
+			keyword = theApp.m_player.GetPlayList()[item_selected].title;
+		}
+		else		//否则将“艺术家 标题”设为搜索关键字
+		{
+			keyword = theApp.m_player.GetPlayList()[item_selected].artist + L' ' + theApp.m_player.GetPlayList()[item_selected].title;
+		}
+
+		//搜索歌曲
+		wstring keyword_url = CLyricDownloadCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
+		wchar_t buff[1024];
+		swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
+		int rtn = CLyricDownloadCommon::HttpPost(buff, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+		if (rtn != 0)
+		{
+			AfxMessageBox(_T("网络连接失败或超时"), NULL, MB_ICONWARNING);
+			return 0;
+		}
+
+		//处理返回结果
+		vector<CLyricDownloadCommon::ItemInfo> down_list;
+		CLyricDownloadCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
+		if (down_list.empty())
+		{
+			AfxMessageBox(_T("找不到此歌曲"), NULL, MB_ICONWARNING);
+			return 0;
+		}
+
+		//计算最佳选择项
+		wstring title = theApp.m_player.GetPlayList()[item_selected].title;
+		wstring artist = theApp.m_player.GetPlayList()[item_selected].artist;
+		wstring album = theApp.m_player.GetPlayList()[item_selected].album;
+		if (title == DEFAULT_TITLE) title.clear();
+		if (artist == DEFAULT_ARTIST) artist.clear();
+		if (album == DEFAULT_ALBUM) album.clear();
+		int best_matched = CLyricDownloadCommon::SelectMatchedItem(down_list, title, artist, album, theApp.m_player.GetPlayList()[item_selected].file_name, true);
+		if (best_matched < 0)
+		{
+			AfxMessageBox(_T("找不到此歌曲"), NULL, MB_ICONWARNING);
+			return 0;
+		}
+
+		//获取网易云音乐中该歌曲的在线接听网址
+		wstring song_url{ L"http://music.163.com/#/song?id=" + down_list[best_matched].id };
+
+		//打开超链接
+		ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
+	}
+	return 0;
+}
+

@@ -67,6 +67,7 @@ protected:
 	bool m_save_to_song_folder{ true };		//是否保存到歌曲所在目录
 	CodeType m_save_code{};		//保存的编码格式
 
+	CMenu m_menu;
 	CListCtrl m_down_list_ctrl;
 	CButton m_download_translate_chk;
 	CComboBox m_save_code_combo;
@@ -103,4 +104,12 @@ public:
 	afx_msg void OnBnClickedSaveToLyricFolder1();
 	afx_msg void OnBnClickedSelectedSaveAs();
 	afx_msg void OnCbnSelchangeCombo2();
+	afx_msg void OnLdLyricDownload();
+	afx_msg void OnLdLyricSaveas();
+	afx_msg void OnLdCopyTitle();
+	afx_msg void OnLdCopyArtist();
+	afx_msg void OnLdCopyAlbum();
+	afx_msg void OnLdCopyId();
+	afx_msg void OnLdViewOnline();
+	afx_msg void OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult);
 };

@@ -73,5 +73,7 @@ public:
 	void DeleteRedundantLyric();	//删除歌词中时间标签超过100分钟的歌词（使用时必须确保歌词已经按时间标签排序）
 
 	void AdjustLyric(int offset);	//调整歌词的偏移量
+
+	wstring GetSongId() const { return m_id; }		//获取保存在歌词中的网易云音乐的歌曲ID
 };
 

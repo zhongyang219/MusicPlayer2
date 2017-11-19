@@ -1,4 +1,4 @@
-// ListCtrlEx.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// ListCtrlEx.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@
 
 IMPLEMENT_DYNAMIC(CPlayListCtrl, CListCtrl)
 
-//Í¨¹ı¹¹Ôìº¯Êı²ÎÊı´«µİÁĞ±íÖĞËùÓĞÎÄ¼şµÄĞÅÏ¢µÄÒıÓÃ
+//é€šè¿‡æ„é€ å‡½æ•°å‚æ•°ä¼ é€’åˆ—è¡¨ä¸­æ‰€æœ‰æ–‡ä»¶çš„ä¿¡æ¯çš„å¼•ç”¨
 CPlayListCtrl::CPlayListCtrl(const vector<SongInfo>& all_song_info) :m_all_song_info{ all_song_info }
 {
 	m_toolTip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
@@ -40,20 +40,20 @@ wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat d
 {
 	switch (display_format)
 	{
-	case DF_FILE_NAME:		//ÏÔÊ¾ÎªÎÄ¼şÃû
+	case DF_FILE_NAME:		//æ˜¾ç¤ºä¸ºæ–‡ä»¶å
 		return song_info.file_name;
-	case DF_TITLE:			//ÏÔÊ¾Îª¸èÇú±êÌâ
-		if (song_info.title == DEFAULT_TITLE)	//Èç¹û»ñÈ¡²»µ½¸èÇú±êÌâ£¬¾ÍÏÔÊ¾ÎÄ¼şÃû
+	case DF_TITLE:			//æ˜¾ç¤ºä¸ºæ­Œæ›²æ ‡é¢˜
+		if (song_info.title == DEFAULT_TITLE)	//å¦‚æœè·å–ä¸åˆ°æ­Œæ›²æ ‡é¢˜ï¼Œå°±æ˜¾ç¤ºæ–‡ä»¶å
 			return song_info.file_name;
 		else
 			return song_info.title;
-	case DF_ARTIST_TITLE:	//ÏÔÊ¾ÎªÒÕÊõ¼Ò - ±êÌâ
-		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//Èç¹û±êÌâºÍÒÕÊõ¼Ò¶¼»ñÈ¡²»µ½£¬¾ÍÏÔÊ¾ÎÄ¼şÃû
+	case DF_ARTIST_TITLE:	//æ˜¾ç¤ºä¸ºè‰ºæœ¯å®¶ - æ ‡é¢˜
+		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//å¦‚æœæ ‡é¢˜å’Œè‰ºæœ¯å®¶éƒ½è·å–ä¸åˆ°ï¼Œå°±æ˜¾ç¤ºæ–‡ä»¶å
 			return song_info.file_name;
 		else
 			return (song_info.artist + _T(" - ") + song_info.title);
-	case DF_TITLE_ARTIST:	//ÏÔÊ¾Îª±êÌâ - ÒÕÊõ¼Ò
-		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//Èç¹û±êÌâºÍÒÕÊõ¼Ò¶¼»ñÈ¡²»µ½£¬¾ÍÏÔÊ¾ÎÄ¼şÃû
+	case DF_TITLE_ARTIST:	//æ˜¾ç¤ºä¸ºæ ‡é¢˜ - è‰ºæœ¯å®¶
+		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//å¦‚æœæ ‡é¢˜å’Œè‰ºæœ¯å®¶éƒ½è·å–ä¸åˆ°ï¼Œå°±æ˜¾ç¤ºæ–‡ä»¶å
 			return song_info.file_name;
 		else
 			return (song_info.title + _T(" - ") + song_info.artist);
@@ -64,10 +64,14 @@ wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat d
 
 void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format)
 {
-	if (m_all_song_info.size() == 1 && m_all_song_info[0].file_name.empty()) return;
+	if (m_all_song_info.size() == 1 && m_all_song_info[0].file_name.empty())
+	{
+		DeleteAllItems();
+		return;
+	}
 	int item_num_before = GetItemCount();
 	int item_num_after = theApp.m_player.GetSongNum();
-	//Èç¹ûµ±Ç°ÁĞ±íÖĞÏîÄ¿µÄÊıÁ¿Ğ¡ÓÚÔ­À´µÄ£¬ÔòÖ±½ÓÇå¿ÕÔ­À´ÁĞ±íÖĞËùÓĞµÄÏîÄ¿£¬ÖØĞÂÌí¼Ó
+	//å¦‚æœå½“å‰åˆ—è¡¨ä¸­é¡¹ç›®çš„æ•°é‡å°äºåŸæ¥çš„ï¼Œåˆ™ç›´æ¥æ¸…ç©ºåŸæ¥åˆ—è¡¨ä¸­æ‰€æœ‰çš„é¡¹ç›®ï¼Œé‡æ–°æ·»åŠ 
 	if (item_num_after < item_num_before)
 	{
 		DeleteAllItems();
@@ -76,7 +80,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format)
 	CString str;
 	for (int i{}; i < item_num_after; i++)
 	{
-		if (i >= item_num_before)	//Èç¹ûµ±Ç°ÁĞ±íÖĞµÄÏîÄ¿ÊıÁ¿´óÓÚÖ®Ç°µÄÊıÁ¿£¬ÔòĞèÒªÔÚ²»¹»Ê±²åÈëĞÂµÄÏîÄ¿
+		if (i >= item_num_before)	//å¦‚æœå½“å‰åˆ—è¡¨ä¸­çš„é¡¹ç›®æ•°é‡å¤§äºä¹‹å‰çš„æ•°é‡ï¼Œåˆ™éœ€è¦åœ¨ä¸å¤Ÿæ—¶æ’å…¥æ–°çš„é¡¹ç›®
 		{
 			str.Format(_T("%u"), i + 1);
 			InsertItem(i, str);
@@ -96,47 +100,47 @@ BEGIN_MESSAGE_MAP(CPlayListCtrl, CListCtrl)
 END_MESSAGE_MAP()
 
 
-// CPlayListCtrl ÏûÏ¢´¦Àí³ÌĞò
+// CPlayListCtrl æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 void CPlayListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	*pResult = CDRF_DODEFAULT;
 	LPNMLVCUSTOMDRAW lplvdr = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
 	NMCUSTOMDRAW& nmcd = lplvdr->nmcd;
-	switch (lplvdr->nmcd.dwDrawStage)	//ÅĞ¶Ï×´Ì¬   
+	switch (lplvdr->nmcd.dwDrawStage)	//åˆ¤æ–­çŠ¶æ€   
 	{
 	case CDDS_PREPAINT:
 		*pResult = CDRF_NOTIFYITEMDRAW;
 		break;
-	case CDDS_ITEMPREPAINT:			//Èç¹ûÎª»­ITEMÖ®Ç°¾ÍÒª½øĞĞÑÕÉ«µÄ¸Ä±ä
-		//µ±Ñ¡ÖĞĞĞÓÖÊÇÕıÔÚ²¥·ÅĞĞÊ±ÉèÖÃÑÕÉ«
-		if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_hight_item)
+	case CDDS_ITEMPREPAINT:			//å¦‚æœä¸ºç”»ITEMä¹‹å‰å°±è¦è¿›è¡Œé¢œè‰²çš„æ”¹å˜
+		//å½“é€‰ä¸­è¡Œåˆæ˜¯æ­£åœ¨æ’­æ”¾è¡Œæ—¶è®¾ç½®é¢œè‰²
+		if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
 		{
 			SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 			lplvdr->clrText = m_theme_color.light3;
 			lplvdr->clrTextBk = m_theme_color.dark2;
 		}
-		//ÉèÖÃÑ¡ÖĞĞĞµÄÑÕÉ«
+		//è®¾ç½®é€‰ä¸­è¡Œçš„é¢œè‰²
 		else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED/*pLVCD->nmcd.uItemState & CDIS_SELECTED*/)
 		{
 			SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 			lplvdr->clrText = RGB(255,255,255);
 			lplvdr->clrTextBk = m_theme_color.dark1;
 		}
-		//ÉèÖÃÕıÔÚ²¥·ÅĞĞµÄÑÕÉ«
-		else if (nmcd.dwItemSpec == m_hight_item)
+		//è®¾ç½®æ­£åœ¨æ’­æ”¾è¡Œçš„é¢œè‰²
+		else if (nmcd.dwItemSpec == m_highlight_item)
 		{
 			//lplvdr->clrText = m_theme_color.dark3;
 			lplvdr->clrText = 0;
 			lplvdr->clrTextBk = m_theme_color.light2;
 		}
-		//ÉèÖÃÅ¼ÊıĞĞµÄÑÕÉ«
+		//è®¾ç½®å¶æ•°è¡Œçš„é¢œè‰²
 		else if (nmcd.dwItemSpec % 2 == 0)
 		{
 			lplvdr->clrText = m_theme_color.dark3;
 			lplvdr->clrTextBk = m_theme_color.light3;
 		}
-		//ÉèÖÃÆæÊıĞĞµÄÑÕÉ«
+		//è®¾ç½®å¥‡æ•°è¡Œçš„é¢œè‰²
 		else
 		{
 			lplvdr->clrText = m_theme_color.dark3;
@@ -152,59 +156,59 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
 
 void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//Èç¹û¿ªÆôÎÄ±¾ÌáÊ¾
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	//å¦‚æœå¼€å¯æ–‡æœ¬æç¤º
 	if (m_bEnableTips)
 	{
 		CString str_tip;
 		LVHITTESTINFO lvhti;
 
-		// ÅĞ¶ÏÊó±êµ±Ç°ËùÔÚµÄÎ»ÖÃ(ĞĞ, ÁĞ)
+		// åˆ¤æ–­é¼ æ ‡å½“å‰æ‰€åœ¨çš„ä½ç½®(è¡Œ, åˆ—)
 		lvhti.pt = point;
 		SubItemHitTest(&lvhti);
 
-		//Èç¹ûÊó±êÒÆ¶¯µ½ÁíÒ»ĞĞ, Ôò½øĞĞ´¦Àí; ·ñÔò, ²»×ö´¦Àí
+		//å¦‚æœé¼ æ ‡ç§»åŠ¨åˆ°å¦ä¸€è¡Œ, åˆ™è¿›è¡Œå¤„ç†; å¦åˆ™, ä¸åšå¤„ç†
 		if (lvhti.iItem != m_nItem)
 		{
-			// ±£´æµ±Ç°Êó±êËùÔÚµÄĞĞ
+			// ä¿å­˜å½“å‰é¼ æ ‡æ‰€åœ¨çš„è¡Œ
 			m_nItem = lvhti.iItem;
 
-			// Èç¹ûÊó±êÒÆ¶¯µ½Ò»¸öºÏ·¨µÄĞĞ£¬ÔòÏÔÊ¾ĞÂµÄÌáÊ¾ĞÅÏ¢£¬·ñÔò²»ÏÔÊ¾ÌáÊ¾
+			// å¦‚æœé¼ æ ‡ç§»åŠ¨åˆ°ä¸€ä¸ªåˆæ³•çš„è¡Œï¼Œåˆ™æ˜¾ç¤ºæ–°çš„æç¤ºä¿¡æ¯ï¼Œå¦åˆ™ä¸æ˜¾ç¤ºæç¤º
 			if (m_nItem >= 0 && m_nItem < m_all_song_info.size())
 			{
 				CString dis_str = GetItemText(m_nItem, 1);
-				int strWidth = GetStringWidth(dis_str) + DPI(10);		//»ñÈ¡ÒªÏÔÊ¾µ±Ç°×Ö·û´®µÄ×îĞ¡¿í¶È
-				int columnWidth = GetColumnWidth(1);	//»ñÈ¡Êó±êÖ¸ÏòÁĞµÄ¿í¶È
-				if (columnWidth < strWidth)		//µ±µ¥Ôª¸ñÄÚµÄµÄ×Ö·ûÎŞ·¨ÏÔÊ¾ÍêÈ«Ê±ÔÚÌáÊ¾µÄµÚ1ĞĞÏÔÊ¾µ¥Ôª¸ñÄÚÎÄ±¾
+				int strWidth = GetStringWidth(dis_str) + DPI(10);		//è·å–è¦æ˜¾ç¤ºå½“å‰å­—ç¬¦ä¸²çš„æœ€å°å®½åº¦
+				int columnWidth = GetColumnWidth(1);	//è·å–é¼ æ ‡æŒ‡å‘åˆ—çš„å®½åº¦
+				if (columnWidth < strWidth)		//å½“å•å…ƒæ ¼å†…çš„çš„å­—ç¬¦æ— æ³•æ˜¾ç¤ºå®Œå…¨æ—¶åœ¨æç¤ºçš„ç¬¬1è¡Œæ˜¾ç¤ºå•å…ƒæ ¼å†…æ–‡æœ¬
 				{
 					str_tip += dis_str;
 					str_tip += _T("\r\n");
 				}
 
-				str_tip += _T("ÎÄ¼şÃû£º");
+				str_tip += _T("æ–‡ä»¶åï¼š");
 				str_tip += m_all_song_info[m_nItem].file_name.c_str();
 				str_tip += _T("\r\n");
 
-				str_tip += _T("±êÌâ£º");
+				str_tip += _T("æ ‡é¢˜ï¼š");
 				str_tip += m_all_song_info[m_nItem].title.c_str();
 				str_tip += _T("\r\n");
 
-				str_tip += _T("ÒÕÊõ¼Ò£º");
+				str_tip += _T("è‰ºæœ¯å®¶ï¼š");
 				str_tip += m_all_song_info[m_nItem].artist.c_str();
 				str_tip += _T("\r\n");
 
-				str_tip += _T("³ªÆ¬¼¯£º");
+				str_tip += _T("å”±ç‰‡é›†ï¼š");
 				str_tip += m_all_song_info[m_nItem].album.c_str();
 				str_tip += _T("\r\n");
 
 				CString str_bitrate;
-				str_bitrate.Format(_T("±ÈÌØÂÊ£º%dkbps"), m_all_song_info[m_nItem].bitrate);
+				str_bitrate.Format(_T("æ¯”ç‰¹ç‡ï¼š%dkbps"), m_all_song_info[m_nItem].bitrate);
 				str_tip += str_bitrate;
 
-				m_toolTip.SetMaxTipWidth(DPI(400));		//ÉèÖÃÌáÊ¾ĞÅÏ¢µÄ¿í¶È£¬ÒÔÖ§³ÖÌáÊ¾»»ĞĞ
+				m_toolTip.SetMaxTipWidth(DPI(400));		//è®¾ç½®æç¤ºä¿¡æ¯çš„å®½åº¦ï¼Œä»¥æ”¯æŒæç¤ºæ¢è¡Œ
 
 				m_toolTip.AddTool(this, str_tip);
-				m_toolTip.Pop();			// ÏÔÊ¾ÌáÊ¾¿ò
+				m_toolTip.Pop();			// æ˜¾ç¤ºæç¤ºæ¡†
 			}
 			else
 			{
@@ -219,7 +223,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 
 BOOL CPlayListCtrl::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (m_toolTip.GetSafeHwnd() && pMsg->message == WM_MOUSEMOVE)
 	{
 		m_toolTip.RelayEvent(pMsg);
@@ -231,15 +235,15 @@ BOOL CPlayListCtrl::PreTranslateMessage(MSG* pMsg)
 
 void CPlayListCtrl::PreSubclassWindow()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	//CWindowDC dc(this);
 	//HDC hDC = dc.GetSafeHdc();
 	//m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 
-	//½«ÌáÊ¾ĞÅÏ¢ÉèÎªÖÃ¶¥
+	//å°†æç¤ºä¿¡æ¯è®¾ä¸ºç½®é¡¶
 	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-	//³õÊ¼»¯²¥·ÅÁĞ±í
+	//åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨
 	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	int width0, width1, width2;
 	width0 = DPI(40);
@@ -247,9 +251,9 @@ void CPlayListCtrl::PreSubclassWindow()
 	CRect rect;
 	GetWindowRect(rect);
 	width1 = rect.Width() - width0 - width2 - DPI(21);
-	InsertColumn(0, _T("ĞòºÅ"), LVCFMT_LEFT, width0);		//²åÈëµÚ1ÁĞ
-	InsertColumn(1, _T("ÇúÄ¿"), LVCFMT_LEFT, width1);		//²åÈëµÚ2ÁĞ
-	InsertColumn(2, _T("³¤¶È"), LVCFMT_LEFT, width2);		//²åÈëµÚ3ÁĞ
+	InsertColumn(0, _T("åºå·"), LVCFMT_LEFT, width0);		//æ’å…¥ç¬¬1åˆ—
+	InsertColumn(1, _T("æ›²ç›®"), LVCFMT_LEFT, width1);		//æ’å…¥ç¬¬2åˆ—
+	InsertColumn(2, _T("é•¿åº¦"), LVCFMT_LEFT, width2);		//æ’å…¥ç¬¬3åˆ—
 	EnableTip();
 
 	this->SetBkColor(m_background_color);
@@ -260,7 +264,7 @@ void CPlayListCtrl::PreSubclassWindow()
 
 void CPlayListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	this->SetFocus();
 	CListCtrl::OnLButtonDown(nFlags, point);
 }
@@ -268,7 +272,7 @@ void CPlayListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CPlayListCtrl::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	this->SetFocus();
 	CListCtrl::OnRButtonDown(nFlags, point);
 }

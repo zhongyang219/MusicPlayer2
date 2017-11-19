@@ -19,6 +19,7 @@ public:
 	void SetBackColor(COLORREF back_color);
 	void SetProgressBarHeight(int height);
 	void SetSongLength(int song_length) { m_song_length = song_length; }
+	CToolTipCtrl* GetToolTip() { return &m_toolTip; }
 
 protected:
 	int m_range{ 1 };			//进度条的总长度

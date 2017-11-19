@@ -9,10 +9,10 @@
 
 // CFindDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFindDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CFindDlg, CDialog)
 
-CFindDlg::CFindDlg(const vector<SongInfo>& playlist, vector<int>& find_result, CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_FIND_DIALOG, pParent), m_playlist{ playlist }, m_find_result{ find_result }
+CFindDlg::CFindDlg(const vector<SongInfo>& playlist, CWnd* pParent /*=NULL*/)
+	: CDialog(IDD_FIND_DIALOG, pParent), m_playlist{ playlist }
 {
 
 }
@@ -23,7 +23,7 @@ CFindDlg::~CFindDlg()
 
 void CFindDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_FIND_LIST, m_find_result_list);
 	DDX_Control(pDX, IDC_FIND_FILE_CHECK, m_find_file_check);
 	DDX_Control(pDX, IDC_FIND_TITLE_CHECK, m_find_title_check);
@@ -35,15 +35,50 @@ void CFindDlg::ShowFindResult()
 {
 	m_find_result_list.DeleteAllItems();
 	CString str;
-	for (int i{}; i<m_find_result.size(); i++)
+	if (m_find_current_playlist)
 	{
-		str.Format(_T("%u"), m_find_result[i] + 1);
-		m_find_result_list.InsertItem(i, str);
-		m_find_result_list.SetItemText(i, 1, m_playlist[m_find_result[i]].file_name.c_str());
-		m_find_result_list.SetItemText(i, 2, m_playlist[m_find_result[i]].title.c_str());
-		m_find_result_list.SetItemText(i, 3, m_playlist[m_find_result[i]].artist.c_str());
-		m_find_result_list.SetItemText(i, 4, m_playlist[m_find_result[i]].album.c_str());
+		for (int i{}; i<m_find_result.size(); i++)
+		{
+			str.Format(_T("%u"), m_find_result[i] + 1);
+			m_find_result_list.InsertItem(i, str);
+			m_find_result_list.SetItemText(i, 1, m_playlist[m_find_result[i]].file_name.c_str());
+			m_find_result_list.SetItemText(i, 2, m_playlist[m_find_result[i]].title.c_str());
+			m_find_result_list.SetItemText(i, 3, m_playlist[m_find_result[i]].artist.c_str());
+			m_find_result_list.SetItemText(i, 4, m_playlist[m_find_result[i]].album.c_str());
+		}
 	}
+	else
+	{
+		for (int i{}; i < m_all_find_result.size(); i++)
+		{
+			str.Format(_T("%u"), i + 1);
+			m_find_result_list.InsertItem(i, str);
+			int index = m_all_find_result[i].rfind(L'\\');
+			wstring file_name = m_all_find_result[i].substr(index + 1);
+			m_find_result_list.SetItemText(i, 1, file_name.c_str());
+			m_find_result_list.SetItemText(i, 2, theApp.m_song_data[m_all_find_result[i]].title.c_str());
+			m_find_result_list.SetItemText(i, 3, theApp.m_song_data[m_all_find_result[i]].artist.c_str());
+			m_find_result_list.SetItemText(i, 4, theApp.m_song_data[m_all_find_result[i]].album.c_str());
+			m_find_result_list.SetItemText(i, 5, m_all_find_result[i].c_str());
+		}
+	}
+}
+
+void CFindDlg::ShowFindInfo()
+{
+	CString str;
+	int result_mun;
+	if (m_find_current_playlist)
+		result_mun = m_find_result.size();
+	else
+		result_mun = m_all_find_result.size();
+	str.Format(_T("查找关键字：%s，结果数：%d"), m_key_word.c_str(), result_mun);
+	SetDlgItemText(IDC_FIND_INFO_STATIC, str);
+}
+
+void CFindDlg::ClearFindResult()
+{
+	m_find_result.clear();
 }
 
 void CFindDlg::SaveConfig()
@@ -57,16 +92,19 @@ void CFindDlg::SaveConfig()
 		m_find_option_data |= 0x04;
 	if (m_find_album)
 		m_find_option_data |= 0x08;
+	if(m_find_current_playlist)
+		m_find_option_data |= 0x10;
 	CCommon::WritePrivateProfileIntW(L"config", L"find_option_data", m_find_option_data, theApp.m_config_path.c_str());
 }
 
 void CFindDlg::LoadConfig()
 {
-	m_find_option_data = GetPrivateProfileInt(_T("config"), _T("find_option_data"), 15, theApp.m_config_path.c_str());
+	m_find_option_data = GetPrivateProfileInt(_T("config"), _T("find_option_data"), 0xff, theApp.m_config_path.c_str());
 	m_find_file = (m_find_option_data % 2 != 0);
 	m_find_title = ((m_find_option_data >> 1) % 2 != 0);
 	m_find_artist = ((m_find_option_data >> 2) % 2 != 0);
 	m_find_album = ((m_find_option_data >> 3) % 2 != 0);
+	m_find_current_playlist = ((m_find_option_data >> 4) % 2 != 0);
 }
 
 int CFindDlg::GetSelectedTrack() const
@@ -77,8 +115,21 @@ int CFindDlg::GetSelectedTrack() const
 		return -1;
 }
 
+bool CFindDlg::GetFindCurrentPlaylist() const
+{
+	return m_find_current_playlist;
+}
 
-BEGIN_MESSAGE_MAP(CFindDlg, CDialogEx)
+wstring CFindDlg::GetSelectedSongPath() const
+{
+	if (m_item_selected >= 0 && m_item_selected < m_all_find_result.size())
+		return m_all_find_result[m_item_selected];
+	else
+		return wstring();
+}
+
+
+BEGIN_MESSAGE_MAP(CFindDlg, CDialog)
 	ON_EN_CHANGE(IDC_FIND_EDIT, &CFindDlg::OnEnChangeFindEdit)
 	ON_NOTIFY(NM_CLICK, IDC_FIND_LIST, &CFindDlg::OnNMClickFindList)
 	ON_BN_CLICKED(IDC_FIND_BUTTON, &CFindDlg::OnBnClickedFindButton)
@@ -87,6 +138,14 @@ BEGIN_MESSAGE_MAP(CFindDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_FIND_TITLE_CHECK, &CFindDlg::OnBnClickedFindTitleCheck)
 	ON_BN_CLICKED(IDC_FIND_ARTIST_CHECK, &CFindDlg::OnBnClickedFindArtistCheck)
 	ON_BN_CLICKED(IDC_FIND_ALBUM_CHECK, &CFindDlg::OnBnClickedFindAlbumCheck)
+	ON_BN_CLICKED(IDC_FIND_CURRENT_PLAYLIST_RADIO, &CFindDlg::OnBnClickedFindCurrentPlaylistRadio)
+	ON_BN_CLICKED(IDC_FIND_ALL_PLAYLIST_RADIO, &CFindDlg::OnBnClickedFindAllPlaylistRadio)
+	ON_WM_GETMINMAXINFO()
+	ON_WM_SIZE()
+	ON_COMMAND(ID_FD_PLAY, &CFindDlg::OnFdPlay)
+	ON_COMMAND(ID_FD_OPEN_FILE_LOCATION, &CFindDlg::OnFdOpenFileLocation)
+	ON_NOTIFY(NM_RCLICK, IDC_FIND_LIST, &CFindDlg::OnNMRClickFindList)
+	ON_COMMAND(ID_FD_COPY_TEXT, &CFindDlg::OnFdCopyText)
 END_MESSAGE_MAP()
 
 
@@ -95,7 +154,7 @@ END_MESSAGE_MAP()
 void CFindDlg::OnEnChangeFindEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 发送此通知，除非重写 CDialog::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -112,6 +171,7 @@ void CFindDlg::OnNMClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	// TODO: 在此添加控件通知处理程序代码
 	//NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 	m_item_selected = pNMItemActivate->iItem;		//单击查找结果列表时保存选中的项目序号
+	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 	*pResult = 0;
 }
 
@@ -121,49 +181,93 @@ void CFindDlg::OnBnClickedFindButton()
 	// TODO: 在此添加控件通知处理程序代码
 	if (!m_key_word.empty())
 	{
-		m_find_result.clear();
-		int index;
-		bool find_flag;
-		for (int i{ 0 }; i < m_playlist.size(); i++)
+		if (m_find_current_playlist)		//查找当前播放列表时，在m_playlist窗口中查找
 		{
-			find_flag = false;
-			if (m_find_file)
+			m_find_result.clear();
+			int index;
+			bool find_flag;
+			for (int i{ 0 }; i < m_playlist.size(); i++)
 			{
-				index = m_playlist[i].file_name.find(m_key_word);
-				if (index != string::npos) find_flag = true;
-			}
-			if (m_find_title)
-			{
-				index = m_playlist[i].title.find(m_key_word);
-				if (index != string::npos) find_flag = true;
-			}
-			if (m_find_artist)
-			{
-				index = m_playlist[i].artist.find(m_key_word);
-				if (index != string::npos) find_flag = true;
-			}
-			if (m_find_album)
-			{
-				index = m_playlist[i].album.find(m_key_word);
-				if (index != string::npos) find_flag = true;
-			}
+				find_flag = false;
+				if (m_find_file)
+				{
+					index = m_playlist[i].file_name.find(m_key_word);
+					if (index != string::npos) find_flag = true;
+				}
+				if (m_find_title)
+				{
+					index = m_playlist[i].title.find(m_key_word);
+					if (index != string::npos) find_flag = true;
+				}
+				if (m_find_artist)
+				{
+					index = m_playlist[i].artist.find(m_key_word);
+					if (index != string::npos) find_flag = true;
+				}
+				if (m_find_album)
+				{
+					index = m_playlist[i].album.find(m_key_word);
+					if (index != string::npos) find_flag = true;
+				}
 
-			if (find_flag)
-				m_find_result.push_back(i);		//如果找到了，保存播放列表中的曲目序号
+				if (find_flag)
+					m_find_result.push_back(i);		//如果找到了，保存播放列表中的曲目序号
+			}
+			ShowFindResult();
+			if (!m_find_result.empty())
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("查找结果："));
+			else
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("没有找到结果！"));
 		}
-		ShowFindResult();
-		if (!m_find_result.empty())
-			SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("查找结果："));
-		else
-			SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("没有找到结果！"));
+		else			//查找所有播放列表时，在theApp.m_song_data窗口中查找
+		{
+			m_all_find_result.clear();
+			wstring a_result;
+			int index;
+			bool find_flag;
+			for (const auto& item : theApp.m_song_data)
+			{
+				find_flag = false;
+				if (m_find_file)
+				{
+					int index1;
+					index1 = item.first.rfind(L'\\');		//查找路径中最后一个反斜杠
+					index = item.first.find(m_key_word, index1);	//从最后一个反斜杠开始查找关键字
+					if (index != string::npos) find_flag = true;
+				}
+				if (m_find_title)
+				{
+					index = item.second.title.find(m_key_word);
+					if (index != string::npos) find_flag = true;
+				}
+				if (m_find_artist)
+				{
+					index = item.second.artist.find(m_key_word);
+					if (index != string::npos) find_flag = true;
+				}
+				if (m_find_album)
+				{
+					index = item.second.album.find(m_key_word);
+					if (index != string::npos) find_flag = true;
+				}
+				if (find_flag)
+					m_all_find_result.push_back(item.first);		//如果找到了，就保存歌曲的绝对路径
+			}
+			ShowFindResult();
+			if (!m_all_find_result.empty())
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("查找结果："));
+			else
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("没有找到结果！"));
+		}
 		m_item_selected = -1;
+		ShowFindInfo();
 	}
 }
 
 
 BOOL CFindDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 
@@ -178,6 +282,11 @@ BOOL CFindDlg::OnInitDialog()
 	m_find_artist_check.SetCheck(m_find_artist);
 	m_find_album_check.SetCheck(m_find_album);
 
+	if (m_find_current_playlist)
+		((CButton*)GetDlgItem(IDC_FIND_CURRENT_PLAYLIST_RADIO))->SetCheck(TRUE);
+	else
+		((CButton*)GetDlgItem(IDC_FIND_ALL_PLAYLIST_RADIO))->SetCheck(TRUE);
+
 	//初始化列表控件
 	CRect rect;
 	m_find_result_list.GetClientRect(rect);
@@ -185,23 +294,35 @@ BOOL CFindDlg::OnInitDialog()
 	int list_width{ rect.Width() - DPI(21) };		//列表控件宽度减去留给垂直滚动条的宽度余量
 	int width0, width1, width2;
 	width0 = DPI(40);
-	width2 = (list_width - width0) / 4;
-	width1 = list_width - width0 - width2 * 3;
+	width2 = (list_width - width0) / 5;
+	width1 = list_width - width0 - width2 * 4;
 	m_find_result_list.InsertColumn(0, _T("序号"), LVCFMT_LEFT, width0);		//插入第0列
 	m_find_result_list.InsertColumn(1, _T("文件名"), LVCFMT_LEFT, width1);		//插入第1列
 	m_find_result_list.InsertColumn(2, _T("标题"), LVCFMT_LEFT, width2);		//插入第2列
 	m_find_result_list.InsertColumn(3, _T("艺术家"), LVCFMT_LEFT, width2);		//插入第3列
 	m_find_result_list.InsertColumn(4, _T("唱片集"), LVCFMT_LEFT, width2);		//插入第4列
-
-	m_key_word.clear();
+	m_find_result_list.InsertColumn(5, _T("文件路径"), LVCFMT_LEFT, width2);		//插入第5列
 
 	ShowFindResult();	//显示（上一次的）查找结果
+	ShowFindInfo();
+
+	m_key_word.clear();
 
 	GetDlgItem(IDC_FIND_EDIT)->SetFocus();		//将焦点设置到搜索框
 
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_find_result_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
+	GetWindowRect(rect);
+	m_min_width = rect.Width();
+	m_min_height = rect.Height();
+
+	//初始化右键菜单
+	if (m_menu.m_hMenu == NULL)
+		m_menu.LoadMenu(IDR_FIND_POPUP_MENU);
+	m_menu.GetSubMenu(0)->SetDefaultItem(ID_FD_PLAY);
+
+	GetDlgItem(IDOK)->EnableWindow(FALSE);	//禁用“播放选中曲目”按钮，除非选中了一个项目
 
 	return FALSE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -213,8 +334,10 @@ void CFindDlg::OnNMDblclkFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_item_selected = pNMItemActivate->iItem;
-	if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
-		OnOK();		//双击列表项目后关闭对话框并播放选中项目
+	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
+
+	//双击列表项目后关闭对话框并播放选中项目
+	OnFdPlay();
 	*pResult = 0;
 }
 
@@ -232,7 +355,7 @@ BOOL CFindDlg::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 
-	return CDialogEx::PreTranslateMessage(pMsg);
+	return CDialog::PreTranslateMessage(pMsg);
 }
 
 
@@ -263,3 +386,125 @@ void CFindDlg::OnBnClickedFindAlbumCheck()
 	m_find_album = (m_find_album_check.GetCheck() != 0);
 }
 
+
+
+void CFindDlg::OnBnClickedFindCurrentPlaylistRadio()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_find_current_playlist = true;
+}
+
+
+void CFindDlg::OnBnClickedFindAllPlaylistRadio()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_find_current_playlist = false;
+}
+
+
+void CFindDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	//限制窗口最小大小
+	lpMMI->ptMinTrackSize.x = m_min_width;		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = m_min_height;		//设置最小高度
+
+	CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+
+void CFindDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	// TODO: 在此处添加消息处理程序代码
+	if (m_find_result_list.m_hWnd != NULL&&nType != SIZE_MINIMIZED)
+	{
+		//调整列表中项目的宽度
+		CRect rect;
+		m_find_result_list.GetClientRect(rect);
+		int list_width{ rect.Width() - DPI(21) };		//列表控件宽度减去留给垂直滚动条的宽度余量
+		int width0, width1, width2;
+		width0 = DPI(40);
+		width2 = (list_width - width0) / 5;
+		width1 = list_width - width0 - width2 * 4;
+		m_find_result_list.SetColumnWidth(1, width1);
+		m_find_result_list.SetColumnWidth(2, width2);
+		m_find_result_list.SetColumnWidth(3, width2);
+		m_find_result_list.SetColumnWidth(4, width2);
+		m_find_result_list.SetColumnWidth(5, width2);
+	}
+}
+
+
+void CFindDlg::OnFdPlay()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_find_current_playlist)
+	{
+		if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
+			OnOK();
+	}
+	else
+	{
+		if (m_item_selected >= 0 && m_item_selected < m_all_find_result.size())
+			OnOK();
+	}
+}
+
+
+void CFindDlg::OnFdOpenFileLocation()
+{
+	// TODO: 在此添加命令处理程序代码
+	wstring file;
+	if (m_find_current_playlist)
+	{
+		if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
+			file = m_playlist[m_find_result[m_item_selected]].file_name;
+		else
+			return;
+	}
+	else
+	{
+		if (m_item_selected >= 0 && m_item_selected < m_all_find_result.size())
+			file = m_all_find_result[m_item_selected];
+		else
+			return;
+	}
+	CString str;
+	str.Format(_T("/select,\"%s\""), file.c_str());
+	ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
+}
+
+
+void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	m_item_selected = pNMItemActivate->iItem;
+	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
+
+	if (m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < m_find_result.size())
+		|| !m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < m_all_find_result.size()))
+	{
+		//获取鼠标点击处的文本
+		int sub_item;
+		sub_item = pNMItemActivate->iSubItem;
+		m_selected_string = m_find_result_list.GetItemText(m_item_selected, sub_item);
+		//弹出右键菜单
+		CMenu* pContextMenu = m_menu.GetSubMenu(0);	//获取第一个弹出菜单
+		CPoint point1;	//定义一个用于确定光标位置的位置  
+		GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标
+		pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
+	}
+
+	*pResult = 0;
+}
+
+
+void CFindDlg::OnFdCopyText()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
+		MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+}

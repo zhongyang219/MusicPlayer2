@@ -35,6 +35,7 @@ void CMiniModeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_LIST_BUTTON, m_show_list_button);
 	DDX_Control(pDX, IDOK, m_return_button);
 	DDX_Control(pDX, ID_MINI_MODE_EXIT, m_exit_button);
+	DDX_Control(pDX, IDC_MINI_PROGRESS_STATIC, m_progress_bar);
 }
 
 void CMiniModeDlg::SaveConfig() const
@@ -169,6 +170,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_COMMAND(ID_DARK_MODE, &CMiniModeDlg::OnDarkMode)
 	ON_COMMAND(ID_FOLLOW_MAIN_COLOR, &CMiniModeDlg::OnFollowMainColor)
+	ON_STN_CLICKED(IDC_MINI_PROGRESS_STATIC, &CMiniModeDlg::OnStnClickedMiniProgressStatic)
 END_MESSAGE_MAP()
 
 
@@ -297,6 +299,18 @@ BOOL CMiniModeDlg::OnInitDialog()
 
 	////显示播放歌曲名
 	//m_lyric_static.SetWindowText(theApp.m_player.GetFileName().c_str());
+
+	//初始化进度条控件
+	m_time_static.GetWindowRect(rect);
+	ScreenToClient(rect);
+	rect.MoveToY(rect.bottom);
+	rect.bottom = rect.top + DPI(8);
+	m_progress_bar.MoveWindow(rect);
+	m_progress_bar.GetToolTip()->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);	//设置消息提示置顶
+	m_progress_bar.SetProgressBarHeight(DPI(2));
+	m_progress_bar.SetRange(1000);		//设置进度条的范围
+	
+	m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 
 	//设置定时器
 	SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
@@ -434,6 +448,9 @@ void CMiniModeDlg::ColorChanged()
 		m_time_static.SetTextColor(m_theme_color.dark2);
 		//设置背景颜色
 		SetBackgroundColor(m_theme_color.light3);
+		//设置进度条颜色
+		m_progress_bar.SetColor(m_theme_color.original_color);
+		m_progress_bar.SetBackColor(RGB(255, 255, 255));
 	}
 	else
 	{
@@ -443,8 +460,12 @@ void CMiniModeDlg::ColorChanged()
 		m_time_static.SetTextColor(m_theme_color.light3);
 		//设置背景颜色
 		SetBackgroundColor(m_theme_color.dark2);
+		//设置进度条颜色
+		m_progress_bar.SetColor(RGB(255, 255, 255));
+		m_progress_bar.SetBackColor(m_theme_color.dark1);
 	}
 	SetPlayListColor();
+	//m_progress_bar.Invalidate();
 }
 
 void CMiniModeDlg::SetVolume(bool up)
@@ -774,4 +795,13 @@ void CMiniModeDlg::OnFollowMainColor()
 		m_theme_color = theApp.m_theme_color;
 	ColorChanged();
 	RePaint();
+}
+
+
+void CMiniModeDlg::OnStnClickedMiniProgressStatic()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int pos = m_progress_bar.GetPos();
+	int song_pos = static_cast<__int64>(pos) * theApp.m_player.GetSongLength() / 1000;
+	theApp.m_player.SeekTo(song_pos);
 }

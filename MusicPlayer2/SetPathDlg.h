@@ -31,6 +31,7 @@ protected:
 	//int m_dpi;
 
 	void ShowPathList();
+	void SetButtonsEnable(bool enable);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 

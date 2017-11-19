@@ -72,9 +72,8 @@ protected:
 	HICON m_hPauseIcon_s;			//暂停图标
 	HICON m_hStopIcon_s;			//停止图标
 
-	CFindDlg m_findDlg{ theApp.m_player.GetPlayList(), m_find_result };		//查找对话框
+	CFindDlg m_findDlg{ theApp.m_player.GetPlayList() };		//查找对话框
 
-	//CPlayer m_player;
 	wstring m_cmdLine;	//命令行参数
 
 	CDC* m_pDC;				//当前窗口的DC
@@ -117,10 +116,6 @@ protected:
 
 	int m_transparency{ 100 };			//窗口透明度
 
-	//COLORREF m_theme_color;		//主题颜色		(移动到了App类中)
-	//COLORREF m_text_color;			//界面中一些文本的颜色
-	//COLORREF m_text_back_color;		//界面中一些背景的颜色
-	//COLORREF m_lyric_back_color;		//歌词未播放的颜色
 	bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
 
 	CRect m_draw_rect;		//绘图区域
@@ -131,8 +126,6 @@ protected:
 	bool m_volume_hover{ false };	//鼠标指向了音量的矩形区域
 	CRect m_volume_up_rect, m_volume_down_rect;	//音量调整条增加和减少音量的矩形区域
 	bool m_show_volume_adj{ false };	//显示音量调整按钮
-
-	vector<int> m_find_result;		//储存查找结果
 
 	int m_item_selected{};		//播放列表中鼠标选中的项目
 	int m_tab_selected{};		//选项设置中选择的标签
@@ -156,6 +149,9 @@ protected:
 	bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
 	CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
+
+	CWinThread* m_pThread;		//执行在线查看的线程
+	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
 
 	//私有的函数
 	void SaveConfig();		//保存设置到ini文件
@@ -274,4 +270,5 @@ protected:
 	afx_msg LRESULT OnSetTitle(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnEqualizer();
+	afx_msg void OnExploreOnline();
 };

@@ -40,8 +40,6 @@ public:
 	volatile bool m_lyric_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ false };		//用于指示歌词批量下载对话框已经退出
 
-	//CMutex m_mutex{0,_T("playlist")};		//互斥量的对象
-
 	void SaveSongData() const;		//将所有歌曲信息以序列化的方式保存到文件
 
 private:
