@@ -21,6 +21,7 @@
 #include "StaticEx.h"
 //#include "EqualizerDlg.h"
 #include "SoundEffectDlg.h"
+#include "CortanaLyric.h"
 
 // CMusicPlayerDlg 对话框
 class CMusicPlayerDlg : public CDialog
@@ -49,6 +50,7 @@ protected:
 	CEdit m_path_edit;
 	CMenu m_list_popup_menu;		//播放列表右键菜单
 	CMenu m_popup_menu;			//歌词右键菜单
+	CMenu m_main_popup_menu;
 	CMFCButton m_play_pause_button;
 	CMFCButton m_stop_button;
 	CMFCButton m_previous_button;
@@ -136,15 +138,8 @@ protected:
 
 	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_list_popup_menu };		//迷你模式对话框
 
-	HWND m_cortana_hwnd{};		//Cortana的句柄
 	bool m_show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
-	wstring m_cortana_default_text;	//Cortana搜索框中原来的文本
-	CDrawCommon m_cortana_draw;		//用于在Cortana搜索框中绘图的对象
-	CWnd* m_cortana_wnd{};		//Cortana搜索框的指针
-	CFont m_cortana_font;		//在Cortana搜索框中显示歌词的字体
-	CRect m_cortana_rect;		//Cortana搜索框框的矩形区域
-	int m_cortana_left_space;		//Cortana搜索框中显示文本距搜索框左侧的距离
-	CDC* m_cortana_pDC{};				//在Cortana搜索框中绘图的DC
+	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
 
 	bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
@@ -174,11 +169,7 @@ protected:
 	void UpdateTaskBarProgress();	//更新任务栏按钮上的进度
 	void UpdatePlayPauseButton();		//根据当前播放状态更新“播放/暂停”按钮上的文字和图标
 	void SetThumbnailClipArea();		//设置任务栏缩略图的区域
-
-	void DrawCortanaText(LPCTSTR str, bool reset, COLORREF color = RGB(255, 255, 255));		//在Cortana搜索框上绘制滚动显示的文本，如果reset为true则重置滚动位置
-	void DrawCortanaText(LPCTSTR str, int progress);		//在Cortana搜索框上绘制动态显示歌词的文本，progress为歌词进度
-	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
-	void GetCortanaHandle();		//获取Cortana的句柄
+	void EnablePlaylist(bool enable);		//设置启用或禁用播放列表控件
 
 	void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式
 
@@ -271,4 +262,6 @@ protected:
 public:
 	afx_msg void OnEqualizer();
 	afx_msg void OnExploreOnline();
+protected:
+	afx_msg LRESULT OnPlaylistIniStart(WPARAM wParam, LPARAM lParam);
 };

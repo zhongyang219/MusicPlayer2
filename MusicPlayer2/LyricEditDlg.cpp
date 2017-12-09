@@ -169,6 +169,8 @@ BOOL CLyricEditDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+
+	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 	//获取歌词信息
 	m_lyric_string = theApp.m_player.m_Lyrics.GetLyricsString();
 	m_lyric_path = theApp.m_player.m_Lyrics.GetPathName();

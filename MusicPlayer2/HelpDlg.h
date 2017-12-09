@@ -20,6 +20,7 @@ public:
 protected:
 	CEdit m_help_edit;
 	CString m_help_info;
+	CSize m_min_size;		//窗口的最小大小
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -28,4 +29,5 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	void GetHelpString();
+	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 };

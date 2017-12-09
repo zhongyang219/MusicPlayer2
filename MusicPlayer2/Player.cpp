@@ -106,6 +106,7 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 
 UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 {
+	SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, 0, 0);
 	ThreadInfo* pInfo = (ThreadInfo*)lpParam;
 	//获取播放列表中每一首歌曲的信息
 	//最多只获取MAX_NUM_LENGTH首歌的长度，超过MAX_NUM_LENGTH数量的歌曲的长度在打开时获得。防止文件夹中音频文件过多导致等待时间过长

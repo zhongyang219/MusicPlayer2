@@ -45,6 +45,7 @@ void CFindDlg::ShowFindResult()
 			m_find_result_list.SetItemText(i, 2, m_playlist[m_find_result[i]].title.c_str());
 			m_find_result_list.SetItemText(i, 3, m_playlist[m_find_result[i]].artist.c_str());
 			m_find_result_list.SetItemText(i, 4, m_playlist[m_find_result[i]].album.c_str());
+			m_find_result_list.SetItemText(i, 5, (theApp.m_player.GetCurrentPath() + m_playlist[m_find_result[i]].file_name).c_str());
 		}
 	}
 	else
@@ -271,10 +272,7 @@ BOOL CFindDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
-	////获取dpi设置
-	//CWindowDC dc(this);
-	//HDC hDC = dc.GetSafeHdc();
-	//m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
+	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 
 	//设置查找选项复选按钮的状态
 	m_find_file_check.SetCheck(m_find_file);
@@ -422,7 +420,7 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 	{
 		//调整列表中项目的宽度
 		CRect rect;
-		m_find_result_list.GetClientRect(rect);
+		m_find_result_list.GetWindowRect(rect);
 		int list_width{ rect.Width() - DPI(21) };		//列表控件宽度减去留给垂直滚动条的宽度余量
 		int width0, width1, width2;
 		width0 = DPI(40);
@@ -460,7 +458,7 @@ void CFindDlg::OnFdOpenFileLocation()
 	if (m_find_current_playlist)
 	{
 		if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
-			file = m_playlist[m_find_result[m_item_selected]].file_name;
+			file = theApp.m_player.GetCurrentPath() + m_playlist[m_find_result[m_item_selected]].file_name;
 		else
 			return;
 	}

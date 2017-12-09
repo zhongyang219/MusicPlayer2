@@ -29,6 +29,7 @@ void CHelpDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CHelpDlg, CDialog)
+	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
 
@@ -41,6 +42,15 @@ BOOL CHelpDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	//help_info.LoadString(IDS_HELP_INFO);
+
+	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+
+	//获取初始时窗口的大小
+	CRect rect;
+	GetWindowRect(rect);
+	m_min_size.cx = rect.Width();
+	m_min_size.cy = rect.Height();
+
 	GetHelpString();
 	m_help_edit.SetWindowText(m_help_info);
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -67,4 +77,14 @@ void CHelpDlg::GetHelpString()
 			m_help_info.Format(_T("%s"), (LPVOID)hglobal);
 		}
 	}
+}
+
+void CHelpDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	//限制窗口最小大小
+	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
+
+	CDialog::OnGetMinMaxInfo(lpMMI);
 }

@@ -28,7 +28,7 @@ protected:
 	CEdit m_path_name;
 	CListCtrl m_path_list;
 
-	//int m_dpi;
+	CSize m_min_size;		//窗口的最小大小
 
 	void ShowPathList();
 	void SetButtonsEnable(bool enable);
@@ -50,4 +50,6 @@ public:
 	afx_msg void OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

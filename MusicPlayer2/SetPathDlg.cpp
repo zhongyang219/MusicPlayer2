@@ -111,6 +111,8 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_PATH_LIST, &CSetPathDlg::OnNMClickPathList)
 	ON_NOTIFY(NM_RCLICK, IDC_PATH_LIST, &CSetPathDlg::OnNMRClickPathList)
 	ON_NOTIFY(NM_DBLCLK, IDC_PATH_LIST, &CSetPathDlg::OnNMDblclkPathList)
+	ON_WM_GETMINMAXINFO()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -124,10 +126,7 @@ BOOL CSetPathDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	m_path_name.SetWindowText(m_current_path.c_str());
 
-	////获取dpi设置
-	//CWindowDC dc(this);
-	//HDC hDC = dc.GetSafeHdc();
-	//m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
+	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 
 	//初始化播放列表控件
 	CRect rect;
@@ -148,6 +147,11 @@ BOOL CSetPathDlg::OnInitDialog()
 	m_path_list.SetFocus();		//初始时将焦点设置到列表控件
 
 	SetButtonsEnable(false);
+
+	//获取初始时窗口的大小
+	GetWindowRect(rect);
+	m_min_size.cx = rect.Width();
+	m_min_size.cy = rect.Height();
 
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -225,4 +229,37 @@ void CSetPathDlg::OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult)
 	SetButtonsEnable(m_path_selected != -1);
 	OnOK();
 	*pResult = 0;
+}
+
+
+void CSetPathDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	//限制窗口最小大小
+	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
+
+	CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+
+void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	// TODO: 在此处添加消息处理程序代码
+	if (nType != SIZE_MINIMIZED && m_path_list.m_hWnd)
+	{
+		int list_width{ cx - DPI(29) };
+		int width0, width1, width2, width3, width4;
+		width2 = width3 = list_width / 10;
+		width4 = list_width / 7;
+		width0 = width1 = (list_width - 2 * width2 - width4 - DPI(20)) / 2;
+		m_path_list.SetColumnWidth(0, width0);
+		m_path_list.SetColumnWidth(1, width1);
+		m_path_list.SetColumnWidth(2, width2);
+		m_path_list.SetColumnWidth(3, width3);
+		m_path_list.SetColumnWidth(4, width4);
+
+	}
 }

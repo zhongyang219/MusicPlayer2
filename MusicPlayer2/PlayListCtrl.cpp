@@ -113,38 +113,46 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
 		*pResult = CDRF_NOTIFYITEMDRAW;
 		break;
 	case CDDS_ITEMPREPAINT:			//如果为画ITEM之前就要进行颜色的改变
-		//当选中行又是正在播放行时设置颜色
-		if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
+		if (IsWindowEnabled())
 		{
-			SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-			lplvdr->clrText = m_theme_color.light3;
-			lplvdr->clrTextBk = m_theme_color.dark2;
+			//当选中行又是正在播放行时设置颜色
+			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
+			{
+				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				lplvdr->clrText = m_theme_color.light3;
+				lplvdr->clrTextBk = m_theme_color.dark2;
+			}
+			//设置选中行的颜色
+			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED/*pLVCD->nmcd.uItemState & CDIS_SELECTED*/)
+			{
+				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				lplvdr->clrText = RGB(255,255,255);
+				lplvdr->clrTextBk = m_theme_color.dark1;
+			}
+			//设置正在播放行的颜色
+			else if (nmcd.dwItemSpec == m_highlight_item)
+			{
+				//lplvdr->clrText = m_theme_color.dark3;
+				lplvdr->clrText = 0;
+				lplvdr->clrTextBk = m_theme_color.light2;
+			}
+			//设置偶数行的颜色
+			else if (nmcd.dwItemSpec % 2 == 0)
+			{
+				lplvdr->clrText = m_theme_color.dark3;
+				lplvdr->clrTextBk = m_theme_color.light3;
+			}
+			//设置奇数行的颜色
+			else
+			{
+				lplvdr->clrText = m_theme_color.dark3;
+				lplvdr->clrTextBk = m_theme_color.light4;
+			}
 		}
-		//设置选中行的颜色
-		else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED/*pLVCD->nmcd.uItemState & CDIS_SELECTED*/)
+		else		//当控件被禁用时，显示文本设为灰色
 		{
-			SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-			lplvdr->clrText = RGB(255,255,255);
-			lplvdr->clrTextBk = m_theme_color.dark1;
-		}
-		//设置正在播放行的颜色
-		else if (nmcd.dwItemSpec == m_highlight_item)
-		{
-			//lplvdr->clrText = m_theme_color.dark3;
-			lplvdr->clrText = 0;
-			lplvdr->clrTextBk = m_theme_color.light2;
-		}
-		//设置偶数行的颜色
-		else if (nmcd.dwItemSpec % 2 == 0)
-		{
-			lplvdr->clrText = m_theme_color.dark3;
-			lplvdr->clrTextBk = m_theme_color.light3;
-		}
-		//设置奇数行的颜色
-		else
-		{
-			lplvdr->clrText = m_theme_color.dark3;
-			lplvdr->clrTextBk = m_theme_color.light4;
+			lplvdr->clrText = GRAY(160);
+			lplvdr->clrTextBk = GRAY(240);
 		}
 		*pResult = CDRF_DODEFAULT;
 		break;
