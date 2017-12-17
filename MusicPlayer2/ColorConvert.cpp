@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ColorConvert.h"
 
+ColorTable CColorConvert::m_gray_color;
 
 CColorConvert::CColorConvert()
 {
@@ -9,6 +10,12 @@ CColorConvert::CColorConvert()
 
 CColorConvert::~CColorConvert()
 {
+}
+
+void CColorConvert::Initialize()
+{
+	m_gray_color.original_color = GRAY(160);
+	ConvertColor(m_gray_color);
 }
 
 void CColorConvert::RGBtoHSL(const COLOR_RGB * rgb, COLOR_HSL * hsl)
@@ -215,4 +222,12 @@ void CColorConvert::ConvertColor(ColorTable & color_table)
 	HSLtoRGB(&color_hsl, &color_rgb);
 	color_table.light4 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
 
+}
+
+void CColorConvert::Desaturate(COLORREF & color)
+{
+	BYTE r = GetRValue(color);
+	BYTE g = GetGValue(color);
+	BYTE b = GetBValue(color);
+	color = GRAY((r + g + b) / 3);
 }

@@ -34,6 +34,8 @@ public:
 
 	//判断文件是否存在
 	static bool FileExist(const wstring& file);
+	//判断文件夹是否存在
+	static bool FolderExist(const wstring& file);
 	//规范化字符串，即删除字符串前面和后面的空格或控制字符(模板类型只能是string或wstring)
 	template<class T>
 	static bool StringNormalize(T& str);

@@ -59,24 +59,20 @@ public:
 		return max;
 	}
 
+	static ColorTable m_gray_color;
+
+	static void Initialize();
+
 	// Converts RGB to HSL
 	static void RGBtoHSL(const COLOR_RGB *rgb, COLOR_HSL *hsl);
 
 	// Converts HSL to RGB
 	static void HSLtoRGB(const COLOR_HSL *hsl, COLOR_RGB *rgb);
 
-	////此函数用于根据主题色计算播放列表中当前播放项目的文本颜色
-	////在保持色相和饱和度不变的情况下减少颜色的亮度值，亮度变换为一次函数y=0.5x+12
-	//static COLORREF ConvertToItemColor(COLORREF color);
-
-	////此函数用于根据主题色计算播放列表中当前播放项目的背景颜色
-	////在保持色相和饱和度不变的情况下增加颜色的亮度值，亮度变换为一次函数y=0.1x+90
-	//static COLORREF ConvertToBackColor(COLORREF color);
-
-	////此函数用于根据主题色计算迷你模式中卡拉OK显示时歌词的颜色
-	////在保持色相和饱和度不变的情况下增加颜色的亮度值，亮度变换为一次函数y=0.4x+50
-	//static COLORREF ConvertToLightColor(COLORREF color);
-
+	//根据ColorTable中的original_color获取其他颜色
 	static void ConvertColor(ColorTable& color_table);
+
+	//去色（将颜色的饱和度降为0）
+	static void Desaturate(COLORREF& color);
 };
 

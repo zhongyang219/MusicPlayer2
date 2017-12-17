@@ -99,6 +99,9 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 
 	LoadConfig();
 
+	//设置列表控件主题颜色
+	m_song_list_ctrl.SetColor(theApp.m_theme_color);
+
 	//初始化控件的状态
 	m_skip_exist_check.SetCheck(m_skip_exist);
 	m_save_code_combo.AddString(_T("ANSI"));
@@ -109,7 +112,15 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->SetCheck(TRUE);
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->SetCheck(TRUE);
-
+	//判断歌词文件夹是否存在
+	bool lyric_path_exist = CCommon::FolderExist(theApp.m_player.m_lyric_path);
+	if (!lyric_path_exist)		//如果歌词文件不存在，则禁用“保存到歌词文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
+	{
+		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->EnableWindow(FALSE);
+		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->SetCheck(FALSE);
+		((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->SetCheck(TRUE);
+		m_save_to_song_folder = true;
+	}
 
 	//初始化歌曲列表控件
 	//设置各列的宽度

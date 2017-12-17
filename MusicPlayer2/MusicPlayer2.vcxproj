@@ -202,6 +202,7 @@
     <ClInclude Include="EqualizerDlg.h" />
     <ClInclude Include="FindDlg.h" />
     <ClInclude Include="HelpDlg.h" />
+    <ClInclude Include="ListCtrlEx.h" />
     <ClInclude Include="LyricDownloadCommon.h" />
     <ClInclude Include="LyricBatchDownloadDlg.h" />
     <ClInclude Include="LyricDownloadDlg.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="EqualizerDlg.cpp" />
     <ClCompile Include="FindDlg.cpp" />
     <ClCompile Include="HelpDlg.cpp" />
+    <ClCompile Include="ListCtrlEx.cpp" />
     <ClCompile Include="LyricDownloadCommon.cpp" />
     <ClCompile Include="LyricBatchDownloadDlg.cpp" />
     <ClCompile Include="LyricDownloadDlg.cpp" />

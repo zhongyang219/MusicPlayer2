@@ -8,7 +8,7 @@
 
 // CPlayListCtrl
 
-IMPLEMENT_DYNAMIC(CPlayListCtrl, CListCtrl)
+IMPLEMENT_DYNAMIC(CPlayListCtrl, CListCtrlEx)
 
 //通过构造函数参数传递列表中所有文件的信息的引用
 CPlayListCtrl::CPlayListCtrl(const vector<SongInfo>& all_song_info) :m_all_song_info{ all_song_info }
@@ -20,21 +20,6 @@ CPlayListCtrl::~CPlayListCtrl()
 {
 }
 
-//void CPlayListCtrl::SetColor(COLORREF TextColor, COLORREF TextBkColor, COLORREF selected_color, COLORREF other_text_color)
-//{
-//	m_text_color = TextColor;
-//	m_back_color = TextBkColor;
-//	m_selected_color = selected_color;
-//	m_other_text_color = other_text_color;
-//	DWORD itemCount = GetItemCount();
-//	this->RedrawItems(0, itemCount - 1);
-//}
-
-void CPlayListCtrl::SetColor(const ColorTable & color_table)
-{
-	m_theme_color = color_table;
-	Invalidate();
-}
 
 wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat display_format)
 {
@@ -92,7 +77,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format)
 }
 
 
-BEGIN_MESSAGE_MAP(CPlayListCtrl, CListCtrl)
+BEGIN_MESSAGE_MAP(CPlayListCtrl, CListCtrlEx)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, CPlayListCtrl::OnNMCustomdraw)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
@@ -101,66 +86,6 @@ END_MESSAGE_MAP()
 
 
 // CPlayListCtrl 消息处理程序
-
-void CPlayListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
-{
-	*pResult = CDRF_DODEFAULT;
-	LPNMLVCUSTOMDRAW lplvdr = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
-	NMCUSTOMDRAW& nmcd = lplvdr->nmcd;
-	switch (lplvdr->nmcd.dwDrawStage)	//判断状态   
-	{
-	case CDDS_PREPAINT:
-		*pResult = CDRF_NOTIFYITEMDRAW;
-		break;
-	case CDDS_ITEMPREPAINT:			//如果为画ITEM之前就要进行颜色的改变
-		if (IsWindowEnabled())
-		{
-			//当选中行又是正在播放行时设置颜色
-			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
-			{
-				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-				lplvdr->clrText = m_theme_color.light3;
-				lplvdr->clrTextBk = m_theme_color.dark2;
-			}
-			//设置选中行的颜色
-			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED/*pLVCD->nmcd.uItemState & CDIS_SELECTED*/)
-			{
-				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-				lplvdr->clrText = RGB(255,255,255);
-				lplvdr->clrTextBk = m_theme_color.dark1;
-			}
-			//设置正在播放行的颜色
-			else if (nmcd.dwItemSpec == m_highlight_item)
-			{
-				//lplvdr->clrText = m_theme_color.dark3;
-				lplvdr->clrText = 0;
-				lplvdr->clrTextBk = m_theme_color.light2;
-			}
-			//设置偶数行的颜色
-			else if (nmcd.dwItemSpec % 2 == 0)
-			{
-				lplvdr->clrText = m_theme_color.dark3;
-				lplvdr->clrTextBk = m_theme_color.light3;
-			}
-			//设置奇数行的颜色
-			else
-			{
-				lplvdr->clrText = m_theme_color.dark3;
-				lplvdr->clrTextBk = m_theme_color.light4;
-			}
-		}
-		else		//当控件被禁用时，显示文本设为灰色
-		{
-			lplvdr->clrText = GRAY(160);
-			lplvdr->clrTextBk = GRAY(240);
-		}
-		*pResult = CDRF_DODEFAULT;
-		break;
-	}
-}
-
-
-
 
 void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 {
@@ -225,7 +150,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 			}
 		}
 	}
-	CListCtrl::OnMouseMove(nFlags, point);
+	CListCtrlEx::OnMouseMove(nFlags, point);
 }
 
 
@@ -237,7 +162,7 @@ BOOL CPlayListCtrl::PreTranslateMessage(MSG* pMsg)
 		m_toolTip.RelayEvent(pMsg);
 	}
 
-	return CListCtrl::PreTranslateMessage(pMsg);
+	return CListCtrlEx::PreTranslateMessage(pMsg);
 }
 
 
@@ -264,23 +189,5 @@ void CPlayListCtrl::PreSubclassWindow()
 	InsertColumn(2, _T("长度"), LVCFMT_LEFT, width2);		//插入第3列
 	EnableTip();
 
-	this->SetBkColor(m_background_color);
-
-	CListCtrl::PreSubclassWindow();
-}
-
-
-void CPlayListCtrl::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	this->SetFocus();
-	CListCtrl::OnLButtonDown(nFlags, point);
-}
-
-
-void CPlayListCtrl::OnRButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	this->SetFocus();
-	CListCtrl::OnRButtonDown(nFlags, point);
+	CListCtrlEx::PreSubclassWindow();
 }

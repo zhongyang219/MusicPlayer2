@@ -4,8 +4,6 @@
 
 CCortanaLyric::CCortanaLyric()
 {
-	//创建在Cortana搜索显示歌词的字体
-	m_cortana_font.CreatePointFont(110, _T("微软雅黑"));
 }
 
 
@@ -51,7 +49,15 @@ void CCortanaLyric::Init()
 		m_cortana_draw.Create(m_cortana_pDC, m_cortana_wnd);
 
 		CheckDarkMode();
-		m_cortana_draw.SetFont(&m_cortana_font);		//设置字体
+		
+		//设置字体
+		LOGFONT lf;
+		SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(LOGFONT), &lf, 0);		//获取系统默认字体
+		if (m_cortana_font.m_hObject)		//如果m_font已经关联了一个字体资源对象，则释放它
+			m_cortana_font.DeleteObject();
+		m_cortana_font.CreatePointFont(110, lf.lfFaceName);
+		m_cortana_draw.SetFont(&m_cortana_font);		//设置绘图字体
+		int a = 0;
 	}
 }
 
@@ -79,10 +85,10 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 		m_cortana_draw.SetDC(&MemDC);
 		static CDrawCommon::ScrollInfo cortana_scroll_info;
 		COLORREF color;
-		color = (m_dark_mode ? GRAY(255) : m_colors.dark2);
+		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
 		m_cortana_draw.DrawScrollText(m_cortana_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
-		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1), m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
@@ -101,11 +107,11 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
 		if (m_dark_mode)
-			m_cortana_draw.DrawWindowText(m_cortana_rect, str, GRAY(255), m_colors.light1, progress, false, true);
+			m_cortana_draw.DrawWindowText(m_cortana_rect, str, m_colors.light3, m_colors.light1, progress, false, true);
 		else
 			m_cortana_draw.DrawWindowText(m_cortana_rect, str, m_colors.dark3, m_colors.dark1, progress, false, true);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
-		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1) , m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
@@ -119,7 +125,7 @@ void CCortanaLyric::ResetCortanaText()
 		color = (m_dark_mode ? GRAY(173) : GRAY(16));
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		CRect rect{ m_cortana_rect };
-		rect.MoveToX(rect.left + m_cortana_left_space);
+		rect.MoveToXY(rect.left + m_cortana_left_space, (m_dark_mode ? 0 : 1));
 		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color, false);
 		m_cortana_wnd->Invalidate();
 	}

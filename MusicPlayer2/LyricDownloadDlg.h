@@ -3,7 +3,7 @@
 #include "afxcmn.h"
 #include "Lyric.h"
 #include "afxwin.h"
-
+#include "ListCtrlEx.h"
 
 
 // CLyricDownloadDlg 对话框
@@ -68,9 +68,10 @@ protected:
 	CodeType m_save_code{};		//保存的编码格式
 
 	CMenu m_menu;
-	CListCtrl m_down_list_ctrl;
+	CListCtrlEx m_down_list_ctrl;
 	CButton m_download_translate_chk;
 	CComboBox m_save_code_combo;
+	//CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
 
 	CWinThread* m_pSearchThread;		//搜索歌词的线程
 	CWinThread* m_pDownThread;			//下载歌词的线程
@@ -112,4 +113,5 @@ public:
 	afx_msg void OnLdCopyId();
 	afx_msg void OnLdViewOnline();
 	afx_msg void OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

@@ -2,7 +2,7 @@
 #include "afxcmn.h"
 #include "AudioCommon.h"
 #include "afxwin.h"
-//#include "ListCtrlEx.h"
+#include "ListCtrlEx.h"
 #include "Common.h"
 
 
@@ -36,7 +36,7 @@ protected:
 	wstring m_key_word;				//查找的字符串
 	vector<wstring> m_all_find_result;		//储存所有播放列表的查找结果（文件绝对路径）
 
-	CListCtrl m_find_result_list;		//查找结果控件
+	CListCtrlEx m_find_result_list;		//查找结果控件
 	int m_item_selected{ -1 };		//鼠标选中的项目序号
 	CMenu m_menu;
 

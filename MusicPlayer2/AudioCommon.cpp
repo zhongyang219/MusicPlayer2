@@ -231,84 +231,84 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 	switch (type)
 	{
 	case AU_MP3: 
-		//获取ID3v1标签
-		id3 = (const TAG_ID3V1*)BASS_ChannelGetTags(hStream, BASS_TAG_ID3);
-		if (id3 != nullptr)
+		//获取ID3v2标签：
+		id3v2 = BASS_ChannelGetTags(hStream, BASS_TAG_ID3V2);
+		if (id3v2 != nullptr)
 		{
-			string temp;
-			temp = string(id3->title, 30);
-			CCommon::DeleteEndSpace(temp);
-			if (!temp.empty() && temp.front() != L'\0')
-				song_info.title = CCommon::StrToUnicode(temp, CodeType::AUTO);
+			const char* size;
+			size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
+			const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
+			string tag_content;
+			tag_content.assign(id3v2, tag_size);	//将标签区域的内容保存到一个string对象里
 
-			temp = string(id3->artist, 30);
-			CCommon::DeleteEndSpace(temp);
-			if (!temp.empty() && temp.front() != L'\0')
-				song_info.artist = CCommon::StrToUnicode(temp, CodeType::AUTO);
-
-			temp = string(id3->album, 30);
-			CCommon::DeleteEndSpace(temp);
-			if (!temp.empty() && temp.front() != L'\0')
-				song_info.album = CCommon::StrToUnicode(temp, CodeType::AUTO);
-
-			temp = string(id3->year, 4);
-			CCommon::DeleteEndSpace(temp);
-			if (!temp.empty() && temp.front() != L'\0')
-				song_info.year = CCommon::StrToUnicode(temp, CodeType::AUTO);
-
-			temp = string(id3->comment, 28);
-			CCommon::DeleteEndSpace(temp);
-			if (!temp.empty() && temp.front() != L'\0')
-				song_info.comment = CCommon::StrToUnicode(temp, CodeType::AUTO);
-			song_info.track = id3->track[1];
-			song_info.genre = GetGenre(id3->genre);
-			song_info.tag_type = 1;
+			const int TAG_NUM{ 7 };
+			//要查找的标签标识字符串（标题、艺术家、唱片集、年份、注释、流派、音轨号）
+			const string tag_identify[TAG_NUM]{ "TIT2","TPE2","TALB","TYER","COMM","TCON","TRCK" };
+			for (int i{}; i < TAG_NUM; i++)
+			{
+				size_t tag_index;
+				tag_index = tag_content.find(tag_identify[i]);	//查找一个标签标识字符串
+				if (i == 1 && tag_index == string::npos)	//如果在查找艺术家时找不到TPE2标签，尝试查找TPE1标签
+				{
+					tag_index = tag_content.find("TPE1");
+				}
+				if (tag_index != string::npos)
+				{
+					string size = tag_content.substr(tag_index + 4, 4);
+					wstring tag_info;
+					const int tag_size = size[0] * 0x1000000 + size[1] * 0x10000 + size[2] * 0x100 + size[3];	//获取当前标签的大小
+					if (i == 4)
+						tag_info = CCommon::StrToUnicode(tag_content.substr(tag_index + 18, tag_size), CodeType::AUTO);
+					else
+						tag_info = CCommon::StrToUnicode(tag_content.substr(tag_index + 11, tag_size - 1), CodeType::AUTO);
+					switch (i)
+					{
+					case 0: song_info.title = tag_info; break;
+					case 1: song_info.artist = tag_info; break;
+					case 2: song_info.album = tag_info; break;
+					case 3: song_info.year = tag_info; break;
+					case 4: song_info.comment = tag_info; break;
+					case 5: song_info.genre = tag_info; break;
+					case 6: song_info.track = _wtoi(tag_info.c_str()); break;
+					}
+				}
+			}
+			song_info.tag_type = 2;
 		}
 		else
 		{
-			//获取ID3v2标签：
-			id3v2 = BASS_ChannelGetTags(hStream, BASS_TAG_ID3V2);
-			if (id3v2 != nullptr)
+			//获取ID3v1标签
+			id3 = (const TAG_ID3V1*)BASS_ChannelGetTags(hStream, BASS_TAG_ID3);
+			if (id3 != nullptr)
 			{
-				const char* size;
-				size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
-				const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
-				string tag_content;
-				tag_content.assign(id3v2, tag_size);	//将标签区域的内容保存到一个string对象里
+				string temp;
+				temp = string(id3->title, 30);
+				CCommon::DeleteEndSpace(temp);
+				if (!temp.empty() && temp.front() != L'\0')
+					song_info.title = CCommon::StrToUnicode(temp, CodeType::AUTO);
 
-				const int TAG_NUM{ 7 };
-				//要查找的标签标识字符串（标题、艺术家、唱片集、年份、注释、流派、音轨号）
-				const string tag_identify[TAG_NUM]{ "TIT2","TPE2","TALB","TYER","COMM","TCON","TRCK" };
-				for (int i{}; i < TAG_NUM; i++)
-				{
-					size_t tag_index;
-					tag_index = tag_content.find(tag_identify[i]);	//查找一个标签标识字符串
-					if (i == 1 && tag_index == string::npos)	//如果在查找艺术家时找不到TPE2标签，尝试查找TPE1标签
-					{
-						tag_index = tag_content.find("TPE1");
-					}
-					if (tag_index != string::npos)
-					{
-						string size = tag_content.substr(tag_index + 4, 4);
-						wstring tag_info;
-						const int tag_size = size[0] * 0x1000000 + size[1] * 0x10000 + size[2] * 0x100 + size[3];	//获取当前标签的大小
-						if (i == 4)
-							tag_info = CCommon::StrToUnicode(tag_content.substr(tag_index + 18, tag_size), CodeType::AUTO);
-						else
-							tag_info = CCommon::StrToUnicode(tag_content.substr(tag_index + 11, tag_size - 1), CodeType::AUTO);
-						switch (i)
-						{
-						case 0: song_info.title = tag_info; break;
-						case 1: song_info.artist = tag_info; break;
-						case 2: song_info.album = tag_info; break;
-						case 3: song_info.year = tag_info; break;
-						case 4: song_info.comment = tag_info; break;
-						case 5: song_info.genre = tag_info; break;
-						case 6: song_info.track = _wtoi(tag_info.c_str()); break;
-						}
-					}
-				}
-				song_info.tag_type = 2;
+				temp = string(id3->artist, 30);
+				CCommon::DeleteEndSpace(temp);
+				if (!temp.empty() && temp.front() != L'\0')
+					song_info.artist = CCommon::StrToUnicode(temp, CodeType::AUTO);
+
+				temp = string(id3->album, 30);
+				CCommon::DeleteEndSpace(temp);
+				if (!temp.empty() && temp.front() != L'\0')
+					song_info.album = CCommon::StrToUnicode(temp, CodeType::AUTO);
+
+				temp = string(id3->year, 4);
+				CCommon::DeleteEndSpace(temp);
+				if (!temp.empty() && temp.front() != L'\0')
+					song_info.year = CCommon::StrToUnicode(temp, CodeType::AUTO);
+
+				temp = string(id3->comment, 28);
+				CCommon::DeleteEndSpace(temp);
+				if (!temp.empty() && temp.front() != L'\0')
+					song_info.comment = CCommon::StrToUnicode(temp, CodeType::AUTO);
+				song_info.track = id3->track[1];
+				song_info.genre = GetGenre(id3->genre);
+				song_info.tag_type = 1;
 			}
 			else
 			{

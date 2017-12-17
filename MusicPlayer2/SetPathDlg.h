@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "AudioCommon.h"
 #include "afxcmn.h"
-//#include "ListCtrlEx.h"
+#include "ListCtrlEx.h"
 
 // CSetPathDlg 对话框
 
@@ -26,7 +26,7 @@ protected:
 	wstring m_current_path;
 
 	CEdit m_path_name;
-	CListCtrl m_path_list;
+	CListCtrlEx m_path_list;
 
 	CSize m_min_size;		//窗口的最小大小
 

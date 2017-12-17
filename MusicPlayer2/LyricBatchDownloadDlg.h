@@ -4,6 +4,7 @@
 #include "afxcmn.h"
 #include "LyricDownloadCommon.h"
 #include "LyricDownloadDlg.h"
+#include "ListCtrlEx.h"
 
 // CLyricBatchDownloadDlg ¶Ô»°¿ò
 
@@ -46,7 +47,7 @@ public:
 protected:
 	CButton m_skip_exist_check;
 	CComboBox m_save_code_combo;
-	CListCtrl m_song_list_ctrl;
+	CListCtrlEx m_song_list_ctrl;
 	CButton m_download_translate_chk;
 	CStatic m_info_static;
 

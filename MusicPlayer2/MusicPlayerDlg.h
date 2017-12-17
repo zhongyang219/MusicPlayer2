@@ -121,7 +121,6 @@ protected:
 	bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
 
 	CRect m_draw_rect;		//绘图区域
-	//
 	CRect m_repetemode_rect;	//显示“循环模式”的矩形区域
 	bool m_repetemode_hover{ false };	//鼠标指向了“循环模式”的矩形区域
 	CRect m_volume_rect;		//显示音量的矩形区域

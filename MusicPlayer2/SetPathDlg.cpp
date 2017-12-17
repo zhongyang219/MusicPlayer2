@@ -128,6 +128,9 @@ BOOL CSetPathDlg::OnInitDialog()
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 
+	//设置列表控件主题颜色
+	m_path_list.SetColor(theApp.m_theme_color);
+
 	//初始化播放列表控件
 	CRect rect;
 	m_path_list.GetClientRect(rect);

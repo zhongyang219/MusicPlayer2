@@ -137,6 +137,9 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	SetDlgItemText(IDC_TITLE_EDIT1, m_title.c_str());
 	SetDlgItemText(IDC_ARTIST_EDIT1, m_artist.c_str());
 
+	//设置列表控件主题颜色
+	m_down_list_ctrl.SetColor(theApp.m_theme_color);
+
 	//初始化搜索结果列表控件
 	CRect rect;
 	m_down_list_ctrl.GetClientRect(rect);
@@ -155,6 +158,8 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_down_list_ctrl.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
+	//m_tool_tip.Create(this, TTS_ALWAYSTIP);
+
 	//初始化下载选项中控件的状态
 	m_download_translate_chk.SetCheck(m_download_translate);
 	m_save_code_combo.AddString(_T("ANSI"));
@@ -164,6 +169,19 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER1))->SetCheck(TRUE);
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->SetCheck(TRUE);
+
+	//判断歌词文件夹是否存在
+	bool lyric_path_exist = CCommon::FolderExist(theApp.m_player.m_lyric_path);
+	if (!lyric_path_exist)		//如果歌词文件不存在，则禁用“保存到歌词文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
+	{
+		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->EnableWindow(FALSE);
+		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->SetCheck(FALSE);
+		((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER1))->SetCheck(TRUE);
+		m_save_to_song_folder = true;
+		//CString info;
+		//info.LoadString(IDS_LYRIC_FOLDER_NOT_EXIST);
+		//m_tool_tip.AddTool(GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1), info);
+	}
 
 	//初始化右键菜单
 	m_menu.LoadMenu(IDR_LYRIC_DOWNLOAD_MENU);
@@ -404,6 +422,13 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		}
 		else
 		{
+			if (!CCommon::FolderExist(theApp.m_player.m_lyric_path))
+			{
+				CString info;
+				info.LoadString(IDS_LYRIC_FOLDER_NOT_EXIST);
+				MessageBox(info, NULL, MB_ICONWARNING | MB_OK);
+				return 0;
+			}
 			saved_path = theApp.m_player.m_lyric_path + m_file_name;
 			size_t index = saved_path.rfind(L'.');		//查找文件名最后一个点
 			saved_path = saved_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
@@ -581,4 +606,14 @@ void CLyricDownloadDlg::OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 		OnBnClickedDownloadSelected();
 	}
 	*pResult = 0;
+}
+
+
+BOOL CLyricDownloadDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	//if (pMsg->message == WM_MOUSEMOVE)
+	//	m_tool_tip.RelayEvent(pMsg);
+
+	return CDialog::PreTranslateMessage(pMsg);
 }

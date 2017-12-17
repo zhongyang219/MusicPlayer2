@@ -709,10 +709,7 @@ void CMusicPlayerDlg::ShowPlayList()
 
 void CMusicPlayerDlg::SetPlayListColor()
 {
-	//m_playlist_list.ResetAllItemColor();
-	//m_playlist_list.SetItemColor(theApp.m_player.GetIndex(), theApp.m_theme_color.dark2, theApp.m_theme_color.light3);
 	m_playlist_list.SetHightItem(theApp.m_player.GetIndex());
-	//m_playlist_list.SetColor(theApp.m_theme_color.dark2, theApp.m_theme_color.light3, theApp.m_theme_color.original_color, theApp.m_theme_color.light1);
 	m_playlist_list.SetColor(theApp.m_theme_color);
 	m_playlist_list.EnsureVisible(theApp.m_player.GetIndex(), FALSE);
 }
@@ -740,18 +737,11 @@ void CMusicPlayerDlg::SwitchTrack()
 	if (m_miniModeDlg.m_hWnd != NULL)
 		m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 	DrawInfo(true);
-
-	//CString str;
-	//str = m_playlist_list.GetItemText(index, 0);
-	//str = _T(">") + str;
-	//m_playlist_list.SetItemText(index, 0, str);
 }
 
 void CMusicPlayerDlg::ShowTime()
 {
 	m_time_static.SetWindowText(theApp.m_player.GetTimeString().c_str());
-	//m_time_static.SetTextColor(theApp.m_theme_color.dark2);
-	//m_time_static.DrawWindowText(theApp.m_player.GetTimeString().c_str());
 }
 
 void CMusicPlayerDlg::UpdateProgress()
@@ -1025,9 +1015,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	RegisterHotKey(m_hWnd, HK_VOLUME_DOWN, MOD_CONTROL | MOD_SHIFT, VK_DOWN);			//注册Ctrl+Shift+↓为全局音量减键
 
 	//设置界面的颜色
-	//theApp.m_theme_color.dark2 = CColorConvert::ConvertToItemColor(theApp.m_theme_color);
-	//theApp.m_theme_color.light3 = CColorConvert::ConvertToBackColor(theApp.m_theme_color);
-	//theApp.m_theme_color.light1 = CColorConvert::ConvertToLightColor(theApp.m_theme_color);
 	CColorConvert::ConvertColor(theApp.m_theme_color);
 
 	//初始化查找对话框中的数据
@@ -1041,9 +1028,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//初始化绘图的类
 	m_pDC = GetDC();
 	m_draw.Create(m_pDC, this);
-
-	////创建在Cortana搜索显示歌词的字体
-	//m_cortana_font.CreatePointFont(110, _T("微软雅黑"));
 
 	//设置定时器
 	SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
@@ -1206,7 +1190,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
 			CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
 		}
-		else		//从集合行参数获取要打开的文件
+		else		//从命令行参数获取要打开的文件
 		{
 			vector<wstring> files;
 			wstring path = CCommon::DisposeCmdLine(m_cmdLine, files);
@@ -1328,9 +1312,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			m_progress_bar.SetColor(theApp.m_theme_color.original_color);		//设置进度条颜色
 			m_progress_bar.Invalidate();
 			m_time_static.Invalidate();
-			//theApp.m_theme_color.dark2 = CColorConvert::ConvertToItemColor(theApp.m_theme_color);
-			//theApp.m_theme_color.light3 = CColorConvert::ConvertToBackColor(theApp.m_theme_color);
-			//theApp.m_theme_color.light1 = CColorConvert::ConvertToLightColor(theApp.m_theme_color);
 			CColorConvert::ConvertColor(theApp.m_theme_color);
 			SetPlayListColor();
 			m_cortana_lyric.SetColors(theApp.m_theme_color);
