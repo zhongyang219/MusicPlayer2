@@ -257,6 +257,8 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 					string size = tag_content.substr(tag_index + 4, 4);
 					wstring tag_info;
 					const int tag_size = size[0] * 0x1000000 + size[1] * 0x10000 + size[2] * 0x100 + size[3];	//获取当前标签的大小
+					if (tag_size <= 0) continue;
+					if (tag_index + 11 >= tag_content.size()) continue;
 					if (i == 4)
 						tag_info = CCommon::StrToUnicode(tag_content.substr(tag_index + 18, tag_size), CodeType::AUTO);
 					else
