@@ -323,7 +323,7 @@ UINT CLyricDownloadDlg::LyricDownloadThreadFunc(LPVOID lpParam)
 {
 	DownloadThreadInfo* pInfo = (DownloadThreadInfo*)lpParam;
 	wstring result;
-	CLyricDownloadCommon::DownloadLyric(pInfo->song_id, result, pInfo->download_translate);		//下载歌词
+	pInfo->success = CLyricDownloadCommon::DownloadLyric(pInfo->song_id, result, pInfo->download_translate);		//下载歌词
 	if (theApp.m_lyric_download_dialog_exit) return 0;
 	pInfo->result = result;
 	::PostMessage(pInfo->hwnd, WM_DOWNLOAD_COMPLATE, (WPARAM)pInfo->save_as, 0);		//下载完成后发送一个下载完成消息（wParam用于传递是否弹出“另存为”对话框）
@@ -399,7 +399,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 	m_lyric_str = m_download_thread_info.result;
 	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(TRUE);		//下载完成后启用该按钮
 	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(TRUE);		//下载完成后启用该按钮
-	if (m_lyric_str.empty())
+	if (!m_download_thread_info.success || m_lyric_str.empty())
 	{
 		MessageBox(_T("歌词下载失败！"), NULL, MB_ICONWARNING);
 		return 0;

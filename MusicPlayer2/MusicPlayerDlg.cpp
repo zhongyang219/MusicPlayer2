@@ -304,7 +304,11 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//设置缓冲的DC
 	CDC MemDC;
 	CBitmap MemBitmap;
-	MemDC.CreateCompatibleDC(NULL);
+	if (!MemDC.CreateCompatibleDC(NULL))
+	{
+		MessageBox(L"程序绘图功能出现严重错误，请退出程序后再重新启动！", NULL, MB_ICONERROR | MB_OK);
+		return;
+	}
 	m_draw_rect = info_rect;		//绘图区域
 	if (!m_narrow_mode)
 		m_draw_rect.bottom = m_client_height - m_margin;
@@ -501,6 +505,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
 	m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+	MemDC.SelectObject(pOldBit);
 	MemBitmap.DeleteObject();
 	MemDC.DeleteDC();
 }

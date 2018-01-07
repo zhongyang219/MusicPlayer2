@@ -67,6 +67,7 @@ void CDataSettingsDlg::OnBnClickedCleanDataFileButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	
+	CWaitCursor wait_cursor;	//显示等待光标
 	int clear_cnt{};		//统计删除的项目的数量
 	//遍历映射容器，删除不必要的条目。
 	for (auto iter{ theApp.m_song_data.begin() }; iter != theApp.m_song_data.end();)

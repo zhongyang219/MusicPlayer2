@@ -37,29 +37,43 @@ wstring CLyricDownloadCommon::URLEncode(const wstring & wstr)
 bool CLyricDownloadCommon::DownloadLyric(const wstring & song_id, wstring & result, bool download_translate)
 {
 	bool sucessed{ false };
-	wstring lyric_url;
-	if (!download_translate)
-		lyric_url = L"http://music.163.com/api/song/media?id=" + song_id;
-	else
-		lyric_url = L"http://music.163.com/api/song/lyric?os=osx&id=" + song_id + L"&lv=-1&kv=-1&tv=-1";
-	CInternetSession session;
-	CHttpFile* pfile = (CHttpFile *)session.OpenURL(lyric_url.c_str());
-	DWORD dwStatusCode;
-	pfile->QueryInfoStatusCode(dwStatusCode);
-	if (dwStatusCode == HTTP_STATUS_OK)
+	CInternetSession session{};
+	CHttpFile* pfile{};
+	try
 	{
-		CString content;
-		CString data;
-		while (pfile->ReadString(data))
+		wstring lyric_url;
+		if (!download_translate)
+			lyric_url = L"http://music.163.com/api/song/media?id=" + song_id;
+		else
+			lyric_url = L"http://music.163.com/api/song/lyric?os=osx&id=" + song_id + L"&lv=-1&kv=-1&tv=-1";
+		pfile = (CHttpFile *)session.OpenURL(lyric_url.c_str());
+		DWORD dwStatusCode;
+		pfile->QueryInfoStatusCode(dwStatusCode);
+		if (dwStatusCode == HTTP_STATUS_OK)
 		{
-			content += data;
+			CString content;
+			CString data;
+			while (pfile->ReadString(data))
+			{
+				content += data;
+			}
+			result = CCommon::StrToUnicode(string{ (const char*)content.GetString() }, CodeType::UTF8);	//获取歌词，并转换成Unicode编码
+			sucessed = true;
 		}
-		result = CCommon::StrToUnicode(string{ (const char*)content.GetString() }, CodeType::UTF8);	//获取歌词，并转换成Unicode编码
-		sucessed = true;
+		pfile->Close();
+		delete pfile;
+		session.Close();
 	}
-	pfile->Close();
-	delete pfile;
-	session.Close();
+	catch (CInternetException* e)
+	{
+		if (pfile != nullptr)
+		{
+			pfile->Close();
+			delete pfile;
+		}
+		session.Close();
+		sucessed = false;
+	}
 	return sucessed;
 }
 

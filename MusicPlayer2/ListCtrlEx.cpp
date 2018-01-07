@@ -52,7 +52,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				lplvdr->clrTextBk = m_theme_color.dark1;
 			}
 			//设置选中行的颜色
-			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED/*pLVCD->nmcd.uItemState & CDIS_SELECTED*/)
+			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 			{
 				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 				lplvdr->clrText = m_theme_color.dark3;

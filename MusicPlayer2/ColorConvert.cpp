@@ -14,7 +14,7 @@ CColorConvert::~CColorConvert()
 
 void CColorConvert::Initialize()
 {
-	m_gray_color.original_color = GRAY(160);
+	m_gray_color.original_color = GRAY(240);
 	ConvertColor(m_gray_color);
 }
 
@@ -128,60 +128,6 @@ void CColorConvert::HSLtoRGB(const COLOR_HSL * hsl, COLOR_RGB * rgb)
 // win_S = 240 * hsl.saturation / 100.f;
 // win_L = 240 * hsl.luminance / 100.f;
 
-//COLORREF CColorConvert::ConvertToItemColor(COLORREF color)
-//{
-//	COLOR_RGB color_rgb;
-//	color_rgb.red = GetRValue(color);
-//	color_rgb.green = GetGValue(color);
-//	color_rgb.blue = GetBValue(color);
-//
-//	COLOR_HSL color_hsl;
-//	RGBtoHSL(&color_rgb, &color_hsl);		//将颜色从RGB模式转换成HSL模式
-//
-//	//if (color_hsl.luminance <= 30) return color;
-//	//color_hsl.luminance = color_hsl.luminance * 0.5f + 12;		//变换调度值
-//	color_hsl.luminance = color_hsl.luminance * 0.3f + 20;		//变换调度值
-//
-//	HSLtoRGB(&color_hsl, &color_rgb);		//将颜色从HSL模式转换回RGB模式
-//
-//	return RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
-//}
-//
-//COLORREF CColorConvert::ConvertToBackColor(COLORREF color)
-//{
-//	COLOR_RGB color_rgb;
-//	color_rgb.red = GetRValue(color);
-//	color_rgb.green = GetGValue(color);
-//	color_rgb.blue = GetBValue(color);
-//
-//	COLOR_HSL color_hsl;
-//	RGBtoHSL(&color_rgb, &color_hsl);		//将颜色从RGB模式转换成HSL模式
-//
-//	//color_hsl.luminance = color_hsl.luminance * 0.1f + 90;		//变换调度值
-//	color_hsl.luminance = color_hsl.luminance * 0.05f + 93;		//变换调度值
-//
-//	HSLtoRGB(&color_hsl, &color_rgb);		//将颜色从HSL模式转换回RGB模式
-//
-//	return RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
-//}
-//
-//COLORREF CColorConvert::ConvertToLightColor(COLORREF color)
-//{
-//	COLOR_RGB color_rgb;
-//	color_rgb.red = GetRValue(color);
-//	color_rgb.green = GetGValue(color);
-//	color_rgb.blue = GetBValue(color);
-//
-//	COLOR_HSL color_hsl;
-//	RGBtoHSL(&color_rgb, &color_hsl);		//将颜色从RGB模式转换成HSL模式
-//
-//	//color_hsl.luminance = color_hsl.luminance * 0.4f + 50;		//变换调度值
-//	color_hsl.luminance = color_hsl.luminance * 0.15f + 60;		//变换调度值
-//
-//	HSLtoRGB(&color_hsl, &color_rgb);		//将颜色从HSL模式转换回RGB模式
-//
-//	return RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
-//}
 
 void CColorConvert::ConvertColor(ColorTable & color_table)
 {

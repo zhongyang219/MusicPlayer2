@@ -41,6 +41,7 @@ public:
 	{
 		wstring song_id;
 		wstring result;
+		bool success;
 		bool download_translate;
 		bool save_as;		//下载完成后是弹出“另存为”对话框还是直接保存
 		HWND hwnd;
