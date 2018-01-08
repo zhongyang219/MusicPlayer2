@@ -1187,14 +1187,14 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			theApp.m_player.Create();
 		}
-		else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//如果命令行参数中有RestartByRestartManager，则说明程序是被Windows重启的
-		{
-			theApp.m_player.Create();
-			//将命令行参数写入日志文件
-			wchar_t buff[256];
-			swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
-			CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
-		}
+		//else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//如果命令行参数中有RestartByRestartManager，则说明程序是被Windows重启的
+		//{
+		//	theApp.m_player.Create();
+		//	//将命令行参数写入日志文件
+		//	wchar_t buff[256];
+		//	swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
+		//	CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
+		//}
 		else		//从命令行参数获取要打开的文件
 		{
 			vector<wstring> files;

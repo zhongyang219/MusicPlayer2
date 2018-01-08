@@ -47,6 +47,17 @@ BOOL CMusicPlayerApp::InitInstance()
 	wc.lpszClassName = _T("MusicPlayer_l3gwYT");	//将对话框的类名修改为新类名
 	AfxRegisterClass(&wc);
 
+	//当程序被Windows重新启动时，直接退出程序
+	wstring cmd_line{ m_lpCmdLine };
+	if (cmd_line.find(L"RestartByRestartManager") != wstring::npos)
+	{
+		//将命令行参数写入日志文件
+		wchar_t buff[256];
+		swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s，程序已退出。", cmd_line.c_str());
+		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
+		return FALSE;
+	}
+
 	//检查是否已有实例正在运行（Debug时不检查）
 #ifndef _DEBUG
 	HANDLE hMutex = ::CreateMutex(NULL, TRUE, _T("bXS1E7joK0Kh"));		//使用一个随机的字符串创建一个互斥量
@@ -117,7 +128,7 @@ BOOL CMusicPlayerApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	CMusicPlayerDlg dlg(m_lpCmdLine);
+	CMusicPlayerDlg dlg(cmd_line);
 	//CMusicPlayerDlg dlg(L"D:\\音乐2\\Test\\1.wma \"D:\\音乐2\\Test\\Sweety - 樱花草.mp3\"");
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
