@@ -60,22 +60,11 @@ BOOL CHelpDlg::OnInitDialog()
 void CHelpDlg::GetHelpString()
 {
 	HRSRC hRes = FindResource(NULL,MAKEINTRESOURCE(IDR_TEXT1), _T("Text"));
-	if (hRes == NULL)
-	{
-		FreeResource(hRes);
-	}
-	else
+	if (hRes != NULL)
 	{
 		HGLOBAL hglobal = LoadResource(NULL, hRes);
-		if (hglobal == NULL)
-		{
-			FreeResource(hglobal);
-		}
-		else
-		{
-			//get text
+		if (hglobal != NULL)
 			m_help_info.Format(_T("%s"), (LPVOID)hglobal);
-		}
 	}
 }
 
