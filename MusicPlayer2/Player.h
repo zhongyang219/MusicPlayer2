@@ -154,6 +154,7 @@ public:
 	void IniLyrics(const wstring& lyric_path);
 
 	void ExplorePath(int track = -1) const;	//用资源管理器打开当前路径并选中指定指定文件（当track小于0时选中当前正在播放的文件）
+	void ExploreLyric() const;		//用资源管理器打开歌词文件所在的位置
 
 	const vector<SongInfo>& GetPlayList() const { return m_playlist; }	//获取播放列表的引用
 	Time GetAllSongLength(int track) const;				//获取指定序号的歌曲的长度

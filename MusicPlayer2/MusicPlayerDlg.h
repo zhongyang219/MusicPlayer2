@@ -263,4 +263,6 @@ public:
 	afx_msg void OnExploreOnline();
 protected:
 	afx_msg LRESULT OnPlaylistIniStart(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnBrowseLyric();
 };

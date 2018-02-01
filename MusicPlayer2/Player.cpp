@@ -877,6 +877,16 @@ void CPlayer::ExplorePath(int track) const
 	}
 }
 
+void CPlayer::ExploreLyric() const
+{
+	if (!m_Lyrics.IsEmpty())
+	{
+		CString str;
+		str.Format(_T("/select,\"%s\""), m_Lyrics.GetPathName().c_str());
+		ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
+	}
+}
+
 
 Time CPlayer::GetAllSongLength(int track) const
 {
