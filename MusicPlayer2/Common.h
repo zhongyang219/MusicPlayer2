@@ -42,8 +42,12 @@ public:
 	//删除字符串末尾的空格
 	template<class T>
 	static bool DeleteEndSpace(T& str);
+	//自定义的字符串拷贝函数
+	static void StringCopy(char* dest, int size, string source);
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);
+	//获取文件扩展名
+	static wstring GetFileExtension(const wstring& file_name);
 	//向ini文件写入一个int数据
 	static void WritePrivateProfileIntW(const wchar_t* AppName, const wchar_t* KeyName, int value, const wchar_t* Path);
 	//将string类型的字符串转换成Unicode编码的wstring字符串

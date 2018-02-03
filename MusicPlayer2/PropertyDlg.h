@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "EditEx.h"
 #include "afxwin.h"
+#include "MyComboBox.h"
 
 // CPropertyDlg 对话框
 
@@ -12,7 +13,7 @@ class CPropertyDlg : public CDialog
 	DECLARE_DYNAMIC(CPropertyDlg)
 
 public:
-	CPropertyDlg(const vector<SongInfo>& all_song_info, CWnd* pParent = NULL);   // 标准构造函数
+	CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CPropertyDlg();
 
 	wstring m_path;
@@ -28,7 +29,9 @@ public:
 
 protected:
 	//const vector<wstring>& m_all_file_name;
-	const vector<SongInfo>& m_all_song_info;
+	vector<SongInfo>& m_all_song_info;
+	bool m_write_enable{ false };		//是否允许写入标签
+	bool m_modified{ false };
 
 	//控件变量
 	CEditEx m_file_name_edit;
@@ -42,11 +45,17 @@ protected:
 	CEditEx m_album_edit;
 	CEditEx m_track_edit;
 	CEditEx m_year_edit;
-	CEditEx m_genre_edit;
+	//CEditEx m_genre_edit;
+	CMyComboBox m_genre_combo;
 	CEditEx m_comment_edit;
 	CEditEx m_lyric_file_edit;
+	CButton m_save_button;
 
 	void ShowInfo();
+	void SetEditReadOnly(bool read_only);
+	void SetWreteEnable();
+//	void SetSaveButtonEnable();
+	//void SaveTags();		//保存音频标签
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -57,4 +66,13 @@ public:
 	afx_msg void OnBnClickedNextButton();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	afx_msg void OnEnChangeTitelEdit();
+	afx_msg void OnEnChangeArtistEdit();
+	afx_msg void OnEnChangeAlbumEdit();
+	afx_msg void OnEnChangeTrackEdit();
+	afx_msg void OnEnChangeYearEdit();
+	afx_msg void OnEnChangeCommentEdit();
+	//afx_msg void OnCbnEditchangeGenreCombo();
+	afx_msg void OnBnClickedSaveToFileButton();
+	afx_msg void OnCbnSelchangeGenreCombo();
 };

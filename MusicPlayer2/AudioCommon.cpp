@@ -553,160 +553,45 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 	song_info.info_acquired = true;
 }
 
+bool CAudioCommon::WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off, BYTE genre)
+{
+	string title, artist, album, year, comment;
+	if (song_info.title != DEFAULT_TITLE)
+		title = CCommon::UnicodeToStr(song_info.title, CodeType::ANSI);
+	if (song_info.artist != DEFAULT_ARTIST)
+		artist = CCommon::UnicodeToStr(song_info.artist, CodeType::ANSI);
+	if (song_info.album != DEFAULT_ALBUM)
+		album = CCommon::UnicodeToStr(song_info.album, CodeType::ANSI);
+	if (song_info.year != DEFAULT_YEAR)
+		year = CCommon::UnicodeToStr(song_info.year, CodeType::ANSI);
+	comment = CCommon::UnicodeToStr(song_info.comment, CodeType::ANSI);
+	TAG_ID3V1 id3{};
+	CCommon::StringCopy(id3.id, 3, "TAG");
+	CCommon::StringCopy(id3.title, 30, title.c_str());
+	CCommon::StringCopy(id3.artist, 30, artist.c_str());
+	CCommon::StringCopy(id3.album, 30, album.c_str());
+	CCommon::StringCopy(id3.year, 4, year.c_str());
+	CCommon::StringCopy(id3.comment, 28, comment.c_str());
+	id3.track[1] = song_info.track;
+	id3.genre = genre;
+	text_cut_off = (title.size() > 30 || artist.size() > 30 || album.size() > 30 || year.size() > 4 || comment.size() > 28);
+
+	std::fstream fout;
+	fout.open(file_name, std::fstream::binary | std::fstream::out | std::fstream::in);
+	if (fout.fail())
+		return false;
+	fout.seekp(-128, std::ios::end);		//移动到文件末尾的128个字节处
+	fout.write((const char*)&id3, 128);		//将TAG_ID3V1结构体的128个字节写到文件末尾
+	fout.close();
+	return true;
+}
+
 wstring CAudioCommon::GetGenre(BYTE genre)
 {
-	switch (genre)
-	{
-	case 0: return L"Blues";break;
-	case 1: return L"ClassicRock";break;
-	case 2: return L"Country";break;
-	case 3: return L"Dance";break;
-	case 4: return L"Disco";break;
-	case 5: return L"Funk";break;
-	case 6: return L"Grunge";break;
-	case 7: return L"Hip-Hop";break;
-	case 8: return L"Jazz";break;
-	case 9: return L"Metal";break;
-	case 10: return L"NewAge";break;
-	case 11: return L"Oldies";break;
-	case 12: return L"Other";break;
-	case 13: return L"Pop";break;
-	case 14: return L"R&B";break;
-	case 15: return L"Rap";break;
-	case 16: return L"Reggae";break;
-	case 17: return L"Rock";break;
-	case 18: return L"Techno";break;
-	case 19: return L"Industrial";break;
-	case 20: return L"Alternative";break;
-	case 21: return L"Ska";break;
-	case 22: return L"DeathMetal";break;
-	case 23: return L"Pranks";break;
-	case 24: return L"Soundtrack";break;
-	case 25: return L"Euro-Techno";break;
-	case 26: return L"Ambient";break;
-	case 27: return L"Trip-Hop";break;
-	case 28: return L"Vocal";break;
-	case 29: return L"Jazz+Funk";break;
-	case 30: return L"Fusion";break;
-	case 31: return L"Trance";break;
-	case 32: return L"Classical";break;
-	case 33: return L"Instrumental";break;
-	case 34: return L"Acid";break;
-	case 35: return L"House";break;
-	case 36: return L"Game";break;
-	case 37: return L"SoundClip";break;
-	case 38: return L"Gospel";break;
-	case 39: return L"Noise";break;
-	case 40: return L"AlternRock";break;
-	case 41: return L"Bass";break;
-	case 42: return L"Soul";break;
-	case 43: return L"Punk";break;
-	case 44: return L"Space";break;
-	case 45: return L"Meditative";break;
-	case 46: return L"InstrumentalPop";break;
-	case 47: return L"InstrumentalRock";break;
-	case 48: return L"Ethnic";break;
-	case 49: return L"Gothic";break;
-	case 50: return L"Darkwave";break;
-	case 51: return L"Techno-Industrial";break;
-	case 52: return L"Electronic";break;
-	case 53: return L"Pop-Folk";break;
-	case 54: return L"Eurodance";break;
-	case 55: return L"Dream";break;
-	case 56: return L"SouthernRock";break;
-	case 57: return L"Comedy";break;
-	case 58: return L"Cult";break;
-	case 59: return L"Gangsta";break;
-	case 60: return L"Top40";break;
-	case 61: return L"ChristianRap";break;
-	case 62: return L"Pop/Funk";break;
-	case 63: return L"Jungle";break;
-	case 64: return L"NativeAmerican";break;
-	case 65: return L"Cabaret";break;
-	case 66: return L"NewWave";break;
-	case 67: return L"Psychadelic";break;
-	case 68: return L"Rave";break;
-	case 69: return L"Showtunes";break;
-	case 70: return L"Trailer";break;
-	case 71: return L"Lo-Fi";break;
-	case 72: return L"Tribal";break;
-	case 73: return L"AcidPunk";break;
-	case 74: return L"AcidJazz";break;
-	case 75: return L"Polka";break;
-	case 76: return L"Retro";break;
-	case 77: return L"Musical";break;
-	case 78: return L"Rock&Roll";break;
-	case 79: return L"HardRock";break;
-	case 80: return L"Folk";break;
-	case 81: return L"Folk-Rock";break;
-	case 82: return L"NationalFolk";break;
-	case 83: return L"Swing";break;
-	case 84: return L"FastFusion";break;
-	case 85: return L"Bebob";break;
-	case 86: return L"Latin";break;
-	case 87: return L"Revival";break;
-	case 88: return L"Celtic";break;
-	case 89: return L"Bluegrass";break;
-	case 90: return L"Avantgarde";break;
-	case 91: return L"GothicRock";break;
-	case 92: return L"ProgessiveRock";break;
-	case 93: return L"PsychedelicRock";break;
-	case 94: return L"SymphonicRock";break;
-	case 95: return L"SlowRock";break;
-	case 96: return L"BigBand";break;
-	case 97: return L"Chorus";break;
-	case 98: return L"EasyListening";break;
-	case 99: return L"Acoustic";break;
-	case 100: return L"Humour";break;
-	case 101: return L"Speech";break;
-	case 102: return L"Chanson";break;
-	case 103: return L"Opera";break;
-	case 104: return L"ChamberMusic";break;
-	case 105: return L"Sonata";break;
-	case 106: return L"Symphony";break;
-	case 107: return L"BootyBass";break;
-	case 108: return L"Primus";break;
-	case 109: return L"PornGroove";break;
-	case 110: return L"Satire";break;
-	case 111: return L"SlowJam";break;
-	case 112: return L"Club";break;
-	case 113: return L"Tango";break;
-	case 114: return L"Samba";break;
-	case 115: return L"Folklore";break;
-	case 116: return L"Ballad";break;
-	case 117: return L"PowerBallad";break;
-	case 118: return L"RhythmicSoul";break;
-	case 119: return L"Freestyle";break;
-	case 120: return L"Duet";break;
-	case 121: return L"PunkRock";break;
-	case 122: return L"DrumSolo";break;
-	case 123: return L"Acapella";break;
-	case 124: return L"Euro-House";break;
-	case 125: return L"DanceHall";break;
-	case 126: return L"Goa";break;
-	case 127: return L"Drum&Bass";break;
-	case 128: return L"Club-House";break;
-	case 129: return L"Hardcore";break;
-	case 130: return L"Terror";break;
-	case 131: return L"Indie";break;
-	case 132: return L"BritPop";break;
-	case 133: return L"Negerpunk";break;
-	case 134: return L"PolskPunk";break;
-	case 135: return L"Beat";break;
-	case 136: return L"ChristianGangstaRap";break;
-	case 137: return L"HeavyMetal";break;
-	case 138: return L"BlackMetal";break;
-	case 139: return L"Crossover";break;
-	case 140: return L"ContemporaryChristian";break;
-	case 141: return L"ChristianRock";break;
-	case 142: return L"Merengue";break;
-	case 143: return L"Salsa";break;
-	case 144: return L"TrashMetal";break;
-	case 145: return L"Anime";break;
-	case 146: return L"JPop";break;
-	case 147: return L"Synthpop"; break;
-	default: return L"<未知流派>"; break;
-	}
+	if (genre < GENRE_MAX)
+		return GENRE_TABLE[genre];
+	else
+		return L"<未知流派>";
 }
 
 //void CAudioCommon::DeleteEndSpace(wstring & str)

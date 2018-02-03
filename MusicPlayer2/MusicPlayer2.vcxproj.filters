@@ -108,6 +108,9 @@
     <Filter Include="头文件和源文件\对话框类\Sound Effect Dialog">
       <UniqueIdentifier>{e5a2c7ae-76de-47b5-9625-8a36cf5a9b49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\派生的控件类\MyComboBox">
+      <UniqueIdentifier>{136309c5-1102-4c2f-994c-fe290512c3b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -219,6 +222,9 @@
     <ClInclude Include="ReverbDlg.h">
       <Filter>头文件和源文件\对话框类\Sound Effect Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="MyComboBox.h">
+      <Filter>头文件和源文件\派生的控件类\MyComboBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -313,6 +319,9 @@
     </ClCompile>
     <ClCompile Include="ReverbDlg.cpp">
       <Filter>头文件和源文件\对话框类\Sound Effect Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="MyComboBox.cpp">
+      <Filter>头文件和源文件\派生的控件类\MyComboBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

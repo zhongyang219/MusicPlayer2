@@ -54,6 +54,15 @@ bool CCommon::FolderExist(const wstring & file)
 //	return (type == L".mid");
 //}
 
+void CCommon::StringCopy(char * dest, int size, string source)
+{
+	int source_size = source.size();
+	for (int i{}; i < size && i<source_size; i++)
+	{
+		dest[i] = source[i];
+	}
+}
+
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
 	int l, m;
@@ -63,6 +72,17 @@ size_t CCommon::GetFileSize(const wstring & file_name)
 	m = static_cast<int>(file.tellg());
 	file.close();
 	return m - l;
+}
+
+wstring CCommon::GetFileExtension(const wstring & file_name)
+{
+	wstring extension;
+	size_t index;
+	index = file_name.rfind(L'.');
+	if (index != string::npos)
+		extension = file_name.substr(index + 1);		//获取文件的扩展名
+	std::transform(extension.begin(), extension.end(), extension.begin(), tolower);		//将扩展名转换成小写
+	return extension;
 }
 
 void CCommon::WritePrivateProfileIntW(const wchar_t * AppName, const wchar_t * KeyName, int value, const wchar_t * Path)

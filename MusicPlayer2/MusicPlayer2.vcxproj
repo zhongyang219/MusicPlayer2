@@ -208,6 +208,7 @@
     <ClInclude Include="LyricDownloadDlg.h" />
     <ClInclude Include="LyricEditDlg.h" />
     <ClInclude Include="MiniModeDlg.h" />
+    <ClInclude Include="MyComboBox.h" />
     <ClInclude Include="PlayListCtrl.h" />
     <ClInclude Include="Lyric.h" />
     <ClInclude Include="MusicPlayer2.h" />
@@ -244,6 +245,7 @@
     <ClCompile Include="LyricDownloadDlg.cpp" />
     <ClCompile Include="LyricEditDlg.cpp" />
     <ClCompile Include="MiniModeDlg.cpp" />
+    <ClCompile Include="MyComboBox.cpp" />
     <ClCompile Include="PlayListCtrl.cpp" />
     <ClCompile Include="Lyric.cpp" />
     <ClCompile Include="MusicPlayer2.cpp" />
