@@ -262,6 +262,7 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 				song_info.comment = CCommon::StrToUnicode(temp, CodeType::AUTO);
 			song_info.track = id3->track[1];
 			song_info.genre = GetGenre(id3->genre);
+			song_info.genre_idx = id3->genre;
 			song_info.tag_type = 1;
 		}
 		else
@@ -553,7 +554,7 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 	song_info.info_acquired = true;
 }
 
-bool CAudioCommon::WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off, BYTE genre)
+bool CAudioCommon::WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off)
 {
 	string title, artist, album, year, comment;
 	if (song_info.title != DEFAULT_TITLE)
@@ -573,7 +574,7 @@ bool CAudioCommon::WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, boo
 	CCommon::StringCopy(id3.year, 4, year.c_str());
 	CCommon::StringCopy(id3.comment, 28, comment.c_str());
 	id3.track[1] = song_info.track;
-	id3.genre = genre;
+	id3.genre = song_info.genre_idx;
 	text_cut_off = (title.size() > 30 || artist.size() > 30 || album.size() > 30 || year.size() > 4 || comment.size() > 28);
 
 	std::fstream fout;
@@ -581,8 +582,23 @@ bool CAudioCommon::WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, boo
 	if (fout.fail())
 		return false;
 	fout.seekp(-128, std::ios::end);		//移动到文件末尾的128个字节处
-	fout.write((const char*)&id3, 128);		//将TAG_ID3V1结构体的128个字节写到文件末尾
-	fout.close();
+	//char buff[4];
+	//fout.get(buff, 4);
+	//if (buff[0] == 'T'&&buff[1] == 'A'&&buff[2] == 'G')		//如果已经有ID3V1标签
+	//{
+		fout.write((const char*)&id3, 128);		//将TAG_ID3V1结构体的128个字节写到文件末尾
+		fout.close();
+	//}
+	//else
+	//{
+	//	//文件没有ID3V1标签，则在文件末尾追加
+	//	fout.close();
+	//	fout.open(file_name, std::fstream::binary | std::fstream::out | std::fstream::app);
+	//	if (fout.fail())
+	//		return false;
+	//	fout.write((const char*)&id3, 128);
+	//	fout.close();
+	//}
 	return true;
 }
 

@@ -150,15 +150,6 @@ void CPropertyDlg::SetWreteEnable()
 		m_year_edit.SetLimitText(-1);
 }
 
-//void CPropertyDlg::SetSaveButtonEnable()
-//{
-//	bool modified;
-//	modified = (m_title_edit.GetModify() || m_artist_edit.GetModify() || m_album_edit.GetModify()
-//		|| m_track_edit.GetModify() || m_year_edit.GetModify() || m_genre_edit.GetModify() || m_comment_edit.GetModify());
-//	m_save_button.EnableWindow(m_write_enable && modified);
-//
-//}
-
 
 void CPropertyDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -207,6 +198,7 @@ BOOL CPropertyDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	m_modified = false;
+	m_genre_modified = false;
 
 	//初始化流派列表
 	for (int i{}; i < GENRE_MAX; i++)
@@ -228,6 +220,7 @@ void CPropertyDlg::OnBnClickedPreviousButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_modified = false;
+	m_genre_modified = false;
 	m_index--;
 	if (m_index < 0) m_index = m_song_num - 1;
 	if (m_index < 0) m_index = 0;
@@ -240,6 +233,7 @@ void CPropertyDlg::OnBnClickedNextButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_modified = false;
+	m_genre_modified = false;
 	m_index++;
 	if (m_index >= m_song_num) m_index = 0;
 	SetWreteEnable();
@@ -375,7 +369,6 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 	// TODO: 在此添加控件通知处理程序代码
 	if (!m_write_enable) return;
 	SongInfo song_info;
-	BYTE genre;
 	CString str_temp;
 	m_title_edit.GetWindowText(str_temp);
 	song_info.title = str_temp;
@@ -387,14 +380,17 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 	song_info.track = static_cast<BYTE>(_wtoi(str_temp));
 	m_year_edit.GetWindowText(str_temp);
 	song_info.year = str_temp;
-	genre = static_cast<BYTE>(m_genre_combo.GetCurSel());
+	if (m_genre_modified)
+		song_info.genre_idx = static_cast<BYTE>(m_genre_combo.GetCurSel());
+	else
+		song_info.genre_idx = m_all_song_info[m_index].genre_idx;		//如果流派没有修改，则将原来的流派号写回文件中
 	m_comment_edit.GetWindowText(str_temp);
 	song_info.comment = str_temp;
 
 	bool text_cut_off;
 	wstring file_path;
 	file_path = theApp.m_player.GetCurrentPath() + m_all_song_info[m_index].file_name;
-	if (!CAudioCommon::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off, genre))
+	if (!CAudioCommon::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off))
 	{
 		MessageBox(_T("无法写入文件！"), NULL, MB_ICONWARNING | MB_OK);
 	}
@@ -416,5 +412,6 @@ void CPropertyDlg::OnCbnSelchangeGenreCombo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_modified = true;
+	m_genre_modified = true;
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }

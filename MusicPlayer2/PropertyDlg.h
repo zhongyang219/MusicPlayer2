@@ -32,6 +32,7 @@ protected:
 	vector<SongInfo>& m_all_song_info;
 	bool m_write_enable{ false };		//是否允许写入标签
 	bool m_modified{ false };
+	bool m_genre_modified{ false };
 
 	//控件变量
 	CEditEx m_file_name_edit;
@@ -54,8 +55,6 @@ protected:
 	void ShowInfo();
 	void SetEditReadOnly(bool read_only);
 	void SetWreteEnable();
-//	void SetSaveButtonEnable();
-	//void SaveTags();		//保存音频标签
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

@@ -38,6 +38,7 @@ struct SongInfo
 	wstring year{ DEFAULT_YEAR };		//年份
 	wstring comment;	//注释
 	wstring genre{ DEFAULT_GENRE };		//流派
+	BYTE genre_idx{ 255 };		//以字节表示的流派号
 	BYTE track{};		//音轨序号
 	int tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
 	bool info_acquired{ false };		//如果已经获取到了信息，则为ture
@@ -283,7 +284,7 @@ public:
 	static void GetAudioTags(HSTREAM hStream, AudioType type, SongInfo& song_info);
 
 	//向一个MP3文件写入ID3V1标签，如果写入的文本长度超过ID3V1可容纳的长度，则过长的文本将会被截断，并将text_cut_off置为true
-	static bool WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off, BYTE genre = 255);
+	static bool WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off);
 
 	//获得标准流派信息
 	static wstring GetGenre(BYTE genre);

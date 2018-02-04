@@ -197,6 +197,7 @@ void CMusicPlayerApp::SaveSongData() const
 			<< CString(song_data.second.year.c_str())
 			<< CString(song_data.second.comment.c_str())
 			<< CString(song_data.second.genre.c_str())
+			<< song_data.second.genre_idx
 			<< song_data.second.track
 			<< song_data.second.tag_type
 			<< song_data.second.info_acquired;
@@ -245,6 +246,7 @@ void CMusicPlayerApp::LoadSongData()
 			song_info.comment = temp;
 			ar >> temp;
 			song_info.genre = temp;
+			ar >> song_info.genre_idx;
 			ar >> song_info.track;
 			ar >> song_info.tag_type;
 			m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
