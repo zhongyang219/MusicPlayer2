@@ -79,6 +79,34 @@ size_t CCommon::StringFindNoCase(const wstring & str, const wstring & find_str)
 	return _str.find(_find_str);
 }
 
+wstring CCommon::TranslateToSimplifiedChinese(const wstring & str)
+{
+	wstring result;
+	size_t size{ str.size() };
+	if (size == 0) return wstring();
+	wchar_t* out_buff = new wchar_t[size + 1];
+	WORD wLanguageID = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+	LCID Locale = MAKELCID(wLanguageID, SORT_CHINESE_PRCP);
+	int rtn = LCMapString(Locale, LCMAP_SIMPLIFIED_CHINESE, str.c_str(), -1, out_buff, size * sizeof(wchar_t));
+	result.assign(out_buff);
+	delete[] out_buff;
+	return result;
+}
+
+wstring CCommon::TranslateToTranditionalChinese(const wstring & str)
+{
+	wstring result;
+	size_t size{ str.size() };
+	if (size == 0) return wstring();
+	wchar_t* out_buff = new wchar_t[size + 1];
+	WORD wLanguageID = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+	LCID Locale = MAKELCID(wLanguageID, SORT_CHINESE_PRCP);
+	int rtn = LCMapString(Locale, LCMAP_TRADITIONAL_CHINESE, str.c_str(), -1, out_buff, size * sizeof(wchar_t));
+	result.assign(out_buff);
+	delete[] out_buff;
+	return result;
+}
+
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
 	int l, m;

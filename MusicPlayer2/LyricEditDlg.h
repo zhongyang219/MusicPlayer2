@@ -86,4 +86,6 @@ public:
 	afx_msg void OnFindNext();
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnLeTranslateToSimplifiedChinese();
+	afx_msg void OnLeTranslateToTranditionalChinese();
 };

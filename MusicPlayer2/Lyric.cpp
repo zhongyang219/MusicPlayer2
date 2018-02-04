@@ -417,3 +417,17 @@ void CLyrics::AdjustLyric(int offset)
 	m_offset += offset;
 	m_modified = true;
 }
+
+void CLyrics::ChineseTranslation(bool simplified)
+{
+	for (auto& lyric : m_lyrics)
+	{
+		if (simplified)
+			lyric.text = CCommon::TranslateToSimplifiedChinese(lyric.text);
+		else
+			lyric.text = CCommon::TranslateToTranditionalChinese(lyric.text);
+	}
+	SaveLyric2();
+	m_lyrics_str.clear();
+	DivideLyrics();
+}

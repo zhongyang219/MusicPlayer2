@@ -52,6 +52,9 @@ public:
 	//字符串查找，忽略大小写
 	static size_t StringFindNoCase(const wstring& str, const wstring& find_str);
 
+	static wstring TranslateToSimplifiedChinese(const wstring& str);
+	static wstring TranslateToTranditionalChinese(const wstring& str);
+
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);
 	//获取文件扩展名

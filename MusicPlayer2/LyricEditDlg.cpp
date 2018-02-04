@@ -158,6 +158,8 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
 	ON_COMMAND(ID_FIND_NEXT, &CLyricEditDlg::OnFindNext)
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
+	ON_COMMAND(ID_LE_TRANSLATE_TO_SIMPLIFIED_CHINESE, &CLyricEditDlg::OnLeTranslateToSimplifiedChinese)
+	ON_COMMAND(ID_LE_TRANSLATE_TO_TRANDITIONAL_CHINESE, &CLyricEditDlg::OnLeTranslateToTranditionalChinese)
 END_MESSAGE_MAP()
 
 
@@ -601,4 +603,24 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 		rect.top = rect.bottom - DPI(20);
 		m_status_bar.MoveWindow(rect);
 	}
+}
+
+
+void CLyricEditDlg::OnLeTranslateToSimplifiedChinese()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_lyric_string = CCommon::TranslateToSimplifiedChinese(m_lyric_string);
+	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+	m_modified = true;
+	UpdateStatusbarInfo();
+}
+
+
+void CLyricEditDlg::OnLeTranslateToTranditionalChinese()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_lyric_string = CCommon::TranslateToTranditionalChinese(m_lyric_string);
+	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+	m_modified = true;
+	UpdateStatusbarInfo();
 }

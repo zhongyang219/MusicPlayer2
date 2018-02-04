@@ -241,6 +241,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_EXPLORE_ONLINE, &CMusicPlayerDlg::OnExploreOnline)
 	ON_MESSAGE(WM_PLAYLIST_INI_START, &CMusicPlayerDlg::OnPlaylistIniStart)
 	ON_COMMAND(ID_BROWSE_LYRIC, &CMusicPlayerDlg::OnBrowseLyric)
+	ON_COMMAND(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, &CMusicPlayerDlg::OnTranslateToSimplifiedChinese)
+	ON_COMMAND(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, &CMusicPlayerDlg::OnTranslateToTranditionalChinese)
 END_MESSAGE_MAP()
 
 
@@ -1782,6 +1784,8 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	pMenu->EnableMenuItem(ID_SAVE_MODIFIED_LYRIC, MF_BYCOMMAND | ((!theApp.m_player.m_Lyrics.IsEmpty() && theApp.m_player.m_Lyrics.IsModified()) ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_DELETE_LYRIC, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_BROWSE_LYRIC, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 
 	// TODO: 在此处添加消息处理程序代码
 }
@@ -2613,4 +2617,20 @@ void CMusicPlayerDlg::OnBrowseLyric()
 {
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_player.ExploreLyric();
+}
+
+
+void CMusicPlayerDlg::OnTranslateToSimplifiedChinese()
+{
+	// TODO: 在此添加命令处理程序代码
+	CWaitCursor wait_cursor;
+	theApp.m_player.m_Lyrics.ChineseTranslation(true);
+}
+
+
+void CMusicPlayerDlg::OnTranslateToTranditionalChinese()
+{
+	// TODO: 在此添加命令处理程序代码
+	CWaitCursor wait_cursor;
+	theApp.m_player.m_Lyrics.ChineseTranslation(false);
 }
