@@ -44,6 +44,14 @@ public:
 	static bool DeleteEndSpace(T& str);
 	//自定义的字符串拷贝函数
 	static void StringCopy(char* dest, int size, string source);
+	//转换字符串大小写，如果upper为true，则转换成大写，否则转换成小写
+	template<class T>
+	static bool StringTransform(T& str, bool upper);
+	//字符串比较，忽略大小写
+	static bool StringCompareNoCase(const wstring& str1, const wstring& str2);
+	//字符串查找，忽略大小写
+	static size_t StringFindNoCase(const wstring& str, const wstring& find_str);
+
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);
 	//获取文件扩展名
@@ -133,6 +141,24 @@ inline bool CCommon::DeleteEndSpace(T & str)
 		if (str.empty()) return false;
 		while (!str.empty() && str.back() == L' ')
 			str.pop_back();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+template<class T>
+inline bool CCommon::StringTransform(T & str, bool upper)
+{
+	if (typeid(str) == typeid(string) || typeid(str) == typeid(wstring))
+	{
+		if (str.empty()) return false;
+		if (upper)
+			std::transform(str.begin(), str.end(), str.begin(), toupper);
+		else
+			std::transform(str.begin(), str.end(), str.begin(), tolower);
 		return true;
 	}
 	else

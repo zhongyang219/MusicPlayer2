@@ -51,13 +51,3 @@ BOOL CMyComboBox::PreTranslateMessage(MSG* pMsg)
 
 	return CComboBox::PreTranslateMessage(pMsg);
 }
-
-
-//void CMyComboBox::PreSubclassWindow()
-//{
-//	// TODO: 在此添加专用代码和/或调用基类
-//	GetWindowRect(m_arrow_rect);
-//	m_arrow_rect.left = m_arrow_rect.right - DPI(18);
-//
-//	CComboBox::PreSubclassWindow();
-//}

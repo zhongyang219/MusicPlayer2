@@ -63,6 +63,22 @@ void CCommon::StringCopy(char * dest, int size, string source)
 	}
 }
 
+bool CCommon::StringCompareNoCase(const wstring & str1, const wstring & str2)
+{
+	wstring _str1{ str1 }, _str2{ str2 };
+	StringTransform(_str1, false);
+	StringTransform(_str2, false);
+	return (_str1 == _str2);
+}
+
+size_t CCommon::StringFindNoCase(const wstring & str, const wstring & find_str)
+{
+	wstring _str{ str }, _find_str{ find_str };
+	StringTransform(_str, false);
+	StringTransform(_find_str, false);
+	return _str.find(_find_str);
+}
+
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
 	int l, m;

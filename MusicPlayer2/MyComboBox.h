@@ -17,6 +17,5 @@ protected:
 public:
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	//virtual void PreSubclassWindow();
 };
 

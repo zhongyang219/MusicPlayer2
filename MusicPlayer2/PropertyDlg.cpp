@@ -206,6 +206,7 @@ BOOL CPropertyDlg::OnInitDialog()
 		m_genre_combo.AddString(GENRE_TABLE[i]);
 	}
 	CRect rect;
+	m_genre_combo.SetMinVisibleItems(15);		//设置下拉列表的高度
 
 	SetWreteEnable();
 	ShowInfo();
@@ -368,6 +369,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	if (!m_write_enable) return;
+	CWaitCursor wait_cursor;
 	SongInfo song_info;
 	CString str_temp;
 	m_title_edit.GetWindowText(str_temp);
