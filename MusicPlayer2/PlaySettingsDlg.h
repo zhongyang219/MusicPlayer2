@@ -20,6 +20,7 @@ public:
 	wstring m_lyric_path;
 	bool m_show_lyric_in_cortana;
 	bool m_save_lyric_in_offset;
+	bool m_lyric_double_line;
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -31,6 +32,7 @@ protected:
 	CButton m_karaoke_disp_check;
 	CButton m_show_taskbar_progress_check;
 	CButton m_lyric_fuzzy_match_check;
+	CButton m_lyric_double_line_chk;
 
 	CToolTipCtrl m_tool_tip;
 
@@ -51,4 +53,5 @@ public:
 	afx_msg void OnBnClickedShowLyricInCortana();
 	afx_msg void OnBnClickedSaveInOffsetTag();
 	afx_msg void OnBnClickedSaveInTimeTag();
+	afx_msg void OnBnClickedLyricDoubleLineCheck();
 };

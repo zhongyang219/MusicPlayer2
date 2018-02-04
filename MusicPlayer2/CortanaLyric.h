@@ -25,6 +25,10 @@ public:
 		progress:	当前歌词的进度（范围为0~1000）
 	*/
 	void DrawCortanaText(LPCTSTR str, int progress);
+
+	//在Cortana搜索框内双行显示歌词
+	void DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int progress);
+
 	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
 	void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
 
@@ -36,6 +40,7 @@ private:
 	CDrawCommon m_cortana_draw;		//用于在Cortana搜索框中绘图的对象
 	CWnd* m_cortana_wnd{};		//Cortana搜索框的指针
 	CFont m_cortana_font;		//在Cortana搜索框中显示歌词的字体
+	CFont m_font_double_line;		//双行显示时歌词的字体
 	CRect m_cortana_rect;		//Cortana搜索框框的矩形区域
 	int m_cortana_left_space;		//Cortana搜索框中显示文本距搜索框左侧的距离
 	CDC* m_cortana_pDC{};				//在Cortana搜索框中绘图的DC

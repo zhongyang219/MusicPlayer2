@@ -265,6 +265,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"font_size", m_lyric_font_size, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_line_space", m_lyric_line_space, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"spectrum_height", theApp.m_sprctrum_height, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"cortana_lyric_double_line", m_cortana_lyric_double_line, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -287,6 +288,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_lyric_font.CreatePointFont(m_lyric_font_size * 10, m_lyric_font_name.c_str());
 	m_lyric_line_space = GetPrivateProfileIntW(L"config", L"lyric_line_space", 2, theApp.m_config_path.c_str());
 	theApp.m_sprctrum_height = GetPrivateProfileIntW(L"config", L"spectrum_height", 100, theApp.m_config_path.c_str());
+	m_cortana_lyric_double_line = (GetPrivateProfileInt(_T("config"), _T("cortana_lyric_double_line"), 0, theApp.m_config_path.c_str()) != 0);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -1257,8 +1259,18 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 				Time time{ theApp.m_player.GetCurrentPosition() };
 				wstring lyric_text = theApp.m_player.m_Lyrics.GetLyric(time, 0);
 				int progress = theApp.m_player.m_Lyrics.GetLyricProgress(time);
-				if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT;
-				m_cortana_lyric.DrawCortanaText(lyric_text.c_str(), progress);
+				if (!m_cortana_lyric_double_line)
+				{
+					if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT;
+					m_cortana_lyric.DrawCortanaText(lyric_text.c_str(), progress);
+				}
+				else
+				{
+					wstring next_lyric = theApp.m_player.m_Lyrics.GetLyric(time, 1);
+					if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT_CORTANA;
+					if (next_lyric.empty()) next_lyric = DEFAULT_LYRIC_TEXT_CORTANA;
+					m_cortana_lyric.DrawLyricDoubleLine(lyric_text.c_str(), next_lyric.c_str(), progress);
+				}
 			}
 			else
 			{
@@ -1880,6 +1892,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab1_dlg.m_show_lyric_in_cortana = m_show_lyric_in_cortana;
 	optionDlg.m_tab1_dlg.m_save_lyric_in_offset = m_save_lyric_in_offset;
 	optionDlg.m_tab1_dlg.m_lyric_path = theApp.m_player.m_lyric_path;
+	optionDlg.m_tab1_dlg.m_lyric_double_line = m_cortana_lyric_double_line;
 
 	optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
 	optionDlg.m_tab2_dlg.m_font = m_lyric_font_name;
@@ -1903,6 +1916,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 		m_show_lyric_in_cortana = optionDlg.m_tab1_dlg.m_show_lyric_in_cortana;
 		m_save_lyric_in_offset = optionDlg.m_tab1_dlg.m_save_lyric_in_offset;
 		theApp.m_player.m_lyric_path = optionDlg.m_tab1_dlg.m_lyric_path;
+		m_cortana_lyric_double_line = optionDlg.m_tab1_dlg.m_lyric_double_line;
 
 		m_transparency = optionDlg.m_tab2_dlg.m_transparency;
 		theApp.m_theme_color.original_color = optionDlg.m_tab2_dlg.m_theme_color;

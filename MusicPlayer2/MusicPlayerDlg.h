@@ -139,6 +139,7 @@ protected:
 
 	bool m_show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
 	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
+	bool m_cortana_lyric_double_line{true};		//是否在Cortana搜索中以双行显示歌词
 
 	bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）

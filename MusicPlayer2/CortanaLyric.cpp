@@ -56,7 +56,7 @@ void CCortanaLyric::Init()
 		if (m_cortana_font.m_hObject)		//如果m_font已经关联了一个字体资源对象，则释放它
 			m_cortana_font.DeleteObject();
 		m_cortana_font.CreatePointFont(110, lf.lfFaceName);
-		m_cortana_draw.SetFont(&m_cortana_font);		//设置绘图字体
+		m_font_double_line.CreatePointFont(110, lf.lfFaceName);
 		int a = 0;
 	}
 }
@@ -75,6 +75,7 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
+		m_cortana_draw.SetFont(&m_cortana_font);
 		//设置缓冲的DC
 		CDC MemDC;
 		CBitmap MemBitmap;
@@ -98,6 +99,7 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
+		m_cortana_draw.SetFont(&m_cortana_font);
 		//设置缓冲的DC
 		CDC MemDC;
 		CBitmap MemBitmap;
@@ -117,10 +119,76 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 	}
 }
 
+void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int progress)
+{
+	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
+	{
+		m_cortana_draw.SetFont(&m_font_double_line);
+		static bool swap;
+		static int last_progress;
+		if (last_progress > progress)
+		{
+			swap = !swap;
+		}
+		last_progress = progress;
+
+		//设置缓冲的DC
+		CDC MemDC;
+		CBitmap MemBitmap;
+		MemDC.CreateCompatibleDC(NULL);
+		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
+		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+
+		//使用m_cortana_draw绘图
+		m_cortana_draw.SetDC(&MemDC);
+		CRect up_rect{ m_cortana_rect }, down_rect{ m_cortana_rect };		//上半部分和下半部分歌词的矩形区域
+		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
+		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
+		//根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
+		MemDC.SelectObject(&m_font_double_line);
+		int width;
+		if (!swap)
+			width = MemDC.GetTextExtent(next_lyric).cx;
+		else
+			width = MemDC.GetTextExtent(lyric).cx;
+		if(width<m_cortana_rect.Width())
+			down_rect.left = down_rect.right - width;
+
+		COLORREF color1, color2;		//已播放歌词颜色、未播放歌词的颜色
+		if (m_dark_mode)
+		{
+			color1 = m_colors.light3;
+			color2 = m_colors.light1;
+		}
+		else
+		{
+			color1 = m_colors.dark3;
+			color2 = m_colors.dark1;
+		}
+		MemDC.FillSolidRect(m_cortana_rect, m_cortana_draw.GetBackColor());
+		if (!swap)
+		{
+			m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false, true);
+			m_cortana_draw.DrawWindowText(down_rect, next_lyric, color2, false, true);
+		}
+		else
+		{
+			m_cortana_draw.DrawWindowText(up_rect, next_lyric, color2, false, true);
+			m_cortana_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false, true);
+		}
+
+		//将缓冲区DC中的图像拷贝到屏幕中显示
+		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1), m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		MemBitmap.DeleteObject();
+		MemDC.DeleteDC();
+	}
+}
+
 void CCortanaLyric::ResetCortanaText()
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
+		m_cortana_draw.SetFont(&m_cortana_font);
 		COLORREF color;
 		color = (m_dark_mode ? GRAY(173) : GRAY(16));
 		m_cortana_draw.SetDC(m_cortana_pDC);

@@ -137,6 +137,7 @@ using std::map;
 
 //一句歌词为空白时的默认显示文本
 #define DEFAULT_LYRIC_TEXT L"……"
+#define DEFAULT_LYRIC_TEXT_CORTANA L"Music …"
 
 #define IDC_SAVE_COMBO_BOX 1990		//定义添加到“另存为”对话框中的组合框的ID
 

@@ -29,6 +29,7 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_TASKBAR_PROGRESS, m_show_taskbar_progress_check);
 	DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
 	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_show_lyric_in_cortana_check);
+	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
 }
 
 
@@ -41,6 +42,7 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SHOW_LYRIC_IN_CORTANA, &CPlaySettingsDlg::OnBnClickedShowLyricInCortana)
 	ON_BN_CLICKED(IDC_SAVE_IN_OFFSET_TAG, &CPlaySettingsDlg::OnBnClickedSaveInOffsetTag)
 	ON_BN_CLICKED(IDC_SAVE_IN_TIME_TAG, &CPlaySettingsDlg::OnBnClickedSaveInTimeTag)
+	ON_BN_CLICKED(IDC_LYRIC_DOUBLE_LINE_CHECK, &CPlaySettingsDlg::OnBnClickedLyricDoubleLineCheck)
 END_MESSAGE_MAP()
 
 
@@ -59,6 +61,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	m_karaoke_disp_check.SetCheck(m_karaoke_disp);
 	m_show_taskbar_progress_check.SetCheck(m_show_taskbar_progress);
 	m_lyric_fuzzy_match_check.SetCheck(m_lyric_fuzzy_match);
+	m_lyric_double_line_chk.SetCheck(m_lyric_double_line);
 	if (theApp.m_is_windows10)
 	{
 		m_show_lyric_in_cortana_check.SetCheck(m_show_lyric_in_cortana);
@@ -73,6 +76,8 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_SAVE_IN_OFFSET_TAG))->SetCheck(TRUE);
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_IN_TIME_TAG))->SetCheck(TRUE);
+
+	m_lyric_double_line_chk.EnableWindow(m_show_lyric_in_cortana);
 
 	SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_lyric_path.c_str());
 
@@ -186,6 +191,7 @@ void CPlaySettingsDlg::OnBnClickedShowLyricInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_show_lyric_in_cortana = (m_show_lyric_in_cortana_check.GetCheck() != 0);
+	m_lyric_double_line_chk.EnableWindow(m_show_lyric_in_cortana);
 }
 
 
@@ -200,4 +206,11 @@ void CPlaySettingsDlg::OnBnClickedSaveInTimeTag()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_save_lyric_in_offset = false;
+}
+
+
+void CPlaySettingsDlg::OnBnClickedLyricDoubleLineCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_lyric_double_line = (m_lyric_double_line_chk.GetCheck() != 0);
 }

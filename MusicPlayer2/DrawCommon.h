@@ -18,6 +18,7 @@ public:
 
 	void Create(CDC* pDC, CWnd* pMainWnd);
 	void SetBackColor(COLORREF back_color);		//设置绘制文本时填充的背景颜色
+	COLORREF GetBackColor() const { return m_backColor; }
 	void SetFont(CFont* pfont);		//设置绘制文本的字体
 	void SetDC(CDC* pDC);		//设置绘图的DC
 
