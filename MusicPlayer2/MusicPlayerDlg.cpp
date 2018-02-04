@@ -72,9 +72,10 @@ BOOL CAboutDlg::OnInitDialog()
 	m_static_version.SetWindowText(version_info);
 
 	m_Mytip.Create(this);
-	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("mailto:zhongyang219@hotmail.com"));	//添加工具提示
-	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK2), _T("转到百度网盘链接查看是否有更新"));	//添加工具提示
+	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("向作者发送电子邮件\r\nmailto:zhongyang219@hotmail.com"));	//添加工具提示
+	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK2), _T("转到GitHub页面查看更新\r\nhttps://github.com/zhongyang219/MusicPlayer2/releases"));	//添加工具提示
 	m_Mytip.SetDelayTime(300);	//设置延迟
+	m_Mytip.SetMaxTipWidth(DPI(400));
 
 	//if (theApp.m_is_windows10)
 	//	SetDlgItemText(IDC_DEBUG_INFO_STATIC, _T("Windows10"));
@@ -97,7 +98,7 @@ void CAboutDlg::OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//点击了“检查更新”
-	ShellExecute(NULL, _T("open"), _T("https://pan.baidu.com/s/1i5QNwFF"), NULL, NULL, SW_SHOW);	//打开超链接
+	ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/releases"), NULL, NULL, SW_SHOW);	//打开超链接
 	*pResult = 0;
 }
 

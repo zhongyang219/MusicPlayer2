@@ -184,7 +184,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 				m_current_file_name_tmp.clear();
 				MusicControl(Command::OPEN);
 				MusicControl(Command::SEEK);
-				MusicControl(Command::PLAY);
+				//MusicControl(Command::PLAY);
 			}
 			else		//否则，直接打开播放第index首曲目
 			{
