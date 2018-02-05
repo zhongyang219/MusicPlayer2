@@ -39,6 +39,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
 	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
 	DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
+	DDX_Control(pDX, IDC_ALBUM_COVER_BACKGROUND_CHECK, m_album_cover_as_background_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -86,6 +87,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_CHECK, &CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck)
 	ON_CBN_SELCHANGE(IDC_ALBUM_FIT_COMBO, &CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo)
+	ON_BN_CLICKED(IDC_ALBUM_COVER_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck)
 END_MESSAGE_MAP()
 
 
@@ -156,6 +158,8 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_album_cover_fit_combo.AddString(L"适应，不会改变比例，不裁剪");
 	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_album_cover_fit));
 	m_album_cover_fit_combo.EnableWindow(m_show_album_cover);
+
+	m_album_cover_as_background_chk.SetCheck(m_album_cover_as_background);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -408,4 +412,11 @@ void CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(m_album_cover_fit_combo.GetCurSel());
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
 }

@@ -25,8 +25,8 @@ public:
 	~CDrawCommon();
 
 	void Create(CDC* pDC, CWnd* pMainWnd);
-	void SetBackColor(COLORREF back_color);		//设置绘制文本时填充的背景颜色
-	COLORREF GetBackColor() const { return m_backColor; }
+	//void SetBackColor(COLORREF back_color);		//设置绘制文本时填充的背景颜色
+	//COLORREF GetBackColor() const { return m_backColor; }
 	void SetFont(CFont* pfont);		//设置绘制文本的字体
 	void SetDC(CDC* pDC);		//设置绘图的DC
 
@@ -41,10 +41,13 @@ public:
 	void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size);
 	void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
 
+	void FillRect(CRect rect, COLORREF color);
+	void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
+
 private:
 	CDC* m_pDC{};		//用于绘图的CDC类的指针
 	CWnd* m_pMainWnd{};	//绘图窗口的句柄
-	COLORREF m_backColor{ RGB(255,255,255) };
+	//COLORREF m_backColor{ RGB(255,255,255) };
 	CFont* m_pfont{};
 };
 

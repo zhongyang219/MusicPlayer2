@@ -49,6 +49,6 @@ private:
 	ColorTable m_colors;
 
 	CPoint m_lefttop_point{};			//Cortana搜索框左上角点的位置，用于判断Cortana搜索框的颜色是深色还是白色
-
+	COLORREF m_back_color;
 };
 

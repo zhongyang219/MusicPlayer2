@@ -120,6 +120,7 @@ protected:
 	bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
 	bool m_show_album_cover;			//显示专辑封面
 	CDrawCommon::StretchMode m_album_cover_fit{ CDrawCommon::StretchMode::FILL };		//专辑封面契合度（拉伸模式）
+	bool m_album_cover_as_background{ false };		//将专辑封面作为背景
 
 	CRect m_draw_rect;		//绘图区域
 	CRect m_repetemode_rect;	//显示“循环模式”的矩形区域

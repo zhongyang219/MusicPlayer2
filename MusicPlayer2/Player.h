@@ -69,6 +69,7 @@ private:
 	bool m_reverb_enable{ false };		//指示是否允许混响
 
 	CImage m_album_cover;
+	wstring m_album_cover_path;		//专辑封面文件的路径
 
 public:
 	CLyrics m_Lyrics;		//歌词
@@ -167,6 +168,8 @@ public:
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
 	CImage& GetAlbumCover() { return m_album_cover; }
+	bool AlbumCoverExist() { return !m_album_cover.IsNull(); }
+	wstring GetAlbumCoverPath() const { return m_album_cover_path; }
 	
 	void ReloadPlaylist();		//重新载入播放列表
 

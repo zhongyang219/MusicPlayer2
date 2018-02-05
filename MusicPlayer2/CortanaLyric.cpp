@@ -108,6 +108,7 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
+		MemDC.FillSolidRect(m_cortana_rect, m_back_color);
 		if (m_dark_mode)
 			m_cortana_draw.DrawWindowText(m_cortana_rect, str, m_colors.light3, m_colors.light1, progress, false, true);
 		else
@@ -165,7 +166,7 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 			color1 = m_colors.dark3;
 			color2 = m_colors.dark1;
 		}
-		MemDC.FillSolidRect(m_cortana_rect, m_cortana_draw.GetBackColor());
+		MemDC.FillSolidRect(m_cortana_rect, m_back_color);
 		if (!swap)
 		{
 			m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false, true);
@@ -194,6 +195,7 @@ void CCortanaLyric::ResetCortanaText()
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		CRect rect{ m_cortana_rect };
 		rect.MoveToXY(rect.left + m_cortana_left_space, (m_dark_mode ? 0 : 1));
+		m_cortana_draw.FillRect(rect, m_back_color);
 		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color, false);
 		m_cortana_wnd->Invalidate();
 	}
@@ -214,13 +216,13 @@ void CCortanaLyric::CheckDarkMode()
 		{
 			DWORD dwStyle = GetWindowLong(m_hCortanaStatic, GWL_STYLE);
 			if ((dwStyle & WS_VISIBLE) != 0)		//根据Cortana搜索框中static控件是否有WS_VISIBLE属性为绘图背景设置不同的背景色
-				m_cortana_draw.SetBackColor(GRAY(47));	//设置绘图的背景颜色
+				m_back_color = GRAY(47);	//设置绘图的背景颜色
 			else
-				m_cortana_draw.SetBackColor(GRAY(10));	//设置绘图的背景颜色
+				m_back_color = GRAY(10);	//设置绘图的背景颜色
 		}
 		else
 		{
-			m_cortana_draw.SetBackColor(GRAY(240));
+			m_back_color = GRAY(240);
 		}
 	}
 }

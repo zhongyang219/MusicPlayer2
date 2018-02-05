@@ -269,6 +269,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"cortana_lyric_double_line", m_cortana_lyric_double_line, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"show_album_cover", m_show_album_cover, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_fit", static_cast<int>(m_album_cover_fit), theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_as_background", m_album_cover_as_background, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -294,6 +295,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_cortana_lyric_double_line = (GetPrivateProfileInt(_T("config"), _T("cortana_lyric_double_line"), 0, theApp.m_config_path.c_str()) != 0);
 	m_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 	m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 1, theApp.m_config_path.c_str()));
+	m_album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -321,25 +323,40 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	}
 	m_draw_rect = info_rect;		//绘图区域
 	if (!m_narrow_mode)
-		m_draw_rect.bottom = m_client_height - m_margin;
+		m_draw_rect.bottom = m_client_height - 2*m_margin;
 	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
 	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
-	MemDC.FillSolidRect(0,0,m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
+	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
+		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+	//else
+	//	MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
 
 	//由于设置了缓冲绘图区域，m_draw_rect的左上角点变成了绘图的原点
 	info_rect.MoveToXY(0, 0);
 
 	//填充显示信息区域的背景色
 	CDrawCommon::SetDrawArea(&MemDC, info_rect);
-	MemDC.FillSolidRect(info_rect, RGB(255, 255, 255));
+	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
+		m_draw.FillAlphaRect(info_rect, RGB(255, 255, 255), 200);
+	else
+		MemDC.FillSolidRect(info_rect, RGB(255, 255, 255));
+
+	if (!m_narrow_mode)
+	{
+		CRect gap_rect{ info_rect };
+		gap_rect.top = info_rect.bottom;
+		gap_rect.bottom = gap_rect.top + 2*m_margin;
+		CDrawCommon::SetDrawArea(&MemDC, gap_rect);
+		MemDC.FillSolidRect(gap_rect, GetSysColor(COLOR_BTNFACE));
+	}
 
 	CPoint text_start{ info_rect.left + m_spectral_size.cx + 2 * m_margin, info_rect.top + m_margin };		//文本的起始坐标
 	int text_height{ DPI(18) };		//文本的高度
 
 	//显示歌曲信息
 	m_draw.SetFont(GetFont());
-	m_draw.SetBackColor(RGB(255, 255, 255));
+	//m_draw.SetBackColor(RGB(255, 255, 255));
 	CRect tmp{ text_start, CSize{1,text_height} };
 	wchar_t buff[16];
 	if (theApp.m_player.m_loading)
@@ -403,8 +420,11 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };
-	CDrawCommon::SetDrawArea(&MemDC, spectral_rect);
-	MemDC.FillSolidRect(spectral_rect, theApp.m_theme_color.light3);		//绘制背景
+	//绘制背景
+	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
+		m_draw.FillAlphaRect(spectral_rect, theApp.m_theme_color.light3, BACKGROUND_ALPHA);
+	else
+		m_draw.FillRect(spectral_rect, theApp.m_theme_color.light3);
 	if (m_show_album_cover)
 	{
 		//绘制专辑封面
@@ -440,10 +460,12 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	CPoint point{ spectral_rect.left, spectral_rect.bottom };
 	point.y += 2 * m_margin;
 	CRect other_info_rect{ point, CSize(info_rect.Width() - 2 * m_margin,DPI(24)) };
-	CDrawCommon::SetDrawArea(&MemDC, other_info_rect);
-	MemDC.FillSolidRect(other_info_rect, theApp.m_theme_color.light3);
+	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
+		m_draw.FillAlphaRect(other_info_rect, theApp.m_theme_color.light3, BACKGROUND_ALPHA);
+	else
+		m_draw.FillRect(other_info_rect, theApp.m_theme_color.light3);
 	//显示文字信息
-	m_draw.SetBackColor(theApp.m_theme_color.light3);
+	//m_draw.SetBackColor(theApp.m_theme_color.light3);
 	//显示循环模式
 	tmp = other_info_rect;
 	tmp.left += m_margin;
@@ -505,7 +527,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		//{
 		lyric_rect = info_rect;
 		lyric_rect.MoveToY(info_rect.bottom + 2*m_margin);
-		lyric_rect.bottom = m_draw_rect.Height() - m_margin;
+		lyric_rect.bottom = m_draw_rect.Height()/* - m_margin*/;
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}
 	}
@@ -513,7 +535,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//绘制音量调按钮，因为必须在上层，所以必须在歌词绘制完成后绘制
 	if (m_show_volume_adj)
 	{
-		m_draw.SetBackColor(theApp.m_theme_color.light1);
+		//m_draw.SetBackColor(theApp.m_theme_color.light1);
+		m_draw.FillRect(m_volume_down_rect, theApp.m_theme_color.light1);
+		m_draw.FillRect(m_volume_up_rect, theApp.m_theme_color.light1);
 		m_draw.DrawWindowText(m_volume_down_rect, L"-", RGB(255, 255, 255), true);
 		m_draw.DrawWindowText(m_volume_up_rect, L"+", RGB(255, 255, 255), true);
 	}
@@ -529,6 +553,10 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 {
+	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
+		m_draw.FillAlphaRect(lyric_rect, theApp.m_theme_color.light3, BACKGROUND_ALPHA);
+	else
+		m_draw.FillRect(lyric_rect, theApp.m_theme_color.light3);
 	if (theApp.m_player.m_Lyrics.IsEmpty())
 	{
 		m_draw.DrawWindowText(lyric_rect, _T("当前歌曲没有歌词"), theApp.m_theme_color.light1, true);
@@ -554,13 +582,16 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 {
 	//填充白色背景
 	CDrawCommon::SetDrawArea(pDC, lyric_rect);
-	pDC->FillSolidRect(lyric_rect, RGB(255, 255, 255));
+	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
+		m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), BACKGROUND_ALPHA);
+	else
+		pDC->FillSolidRect(lyric_rect, RGB(255, 255, 255));
 	//显示“歌词秀”
 	CRect tmp;
 	tmp = lyric_rect;
 	tmp.left += 2*m_margin;
 	tmp.bottom = tmp.top + DPI(28);
-	m_draw.SetBackColor(RGB(255, 255, 255));
+	//m_draw.SetBackColor(RGB(255, 255, 255));
 	m_draw.SetFont(GetFont());
 	m_draw.DrawWindowText(tmp, _T("歌词秀："), theApp.m_theme_color.dark2, false);
 	m_draw.SetFont(&m_lyric_font);
@@ -569,12 +600,15 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	lyric_area.top += DPI(20);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
-	pDC->FillSolidRect(lyric_area, theApp.m_theme_color.light3);
+	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
+		m_draw.FillAlphaRect(lyric_area, theApp.m_theme_color.light3, BACKGROUND_ALPHA * 3 / 5);
+	else
+		pDC->FillSolidRect(lyric_area, theApp.m_theme_color.light3);
 	//设置歌词文字区域
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
 	//绘制歌词文本
-	m_draw.SetBackColor(theApp.m_theme_color.light3);
+	//m_draw.SetBackColor(theApp.m_theme_color.light3);
 	//计算文本高度
 	m_pDC->SelectObject(&m_lyric_font);
 	int lyric_height = m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
@@ -1632,6 +1666,9 @@ void CMusicPlayerDlg::OnDestroy()
 
 	//退出时恢复Cortana的默认文本
 	m_cortana_lyric.ResetCortanaText();
+
+	//退出时删除专辑封面临时文件
+	DeleteFile(theApp.m_player.GetAlbumCoverPath().c_str());
 }
 
 
@@ -1915,6 +1952,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab2_dlg.m_theme_color_follow_system = m_theme_color_follow_system;
 	optionDlg.m_tab2_dlg.m_show_album_cover = m_show_album_cover;
 	optionDlg.m_tab2_dlg.m_album_cover_fit = m_album_cover_fit;
+	optionDlg.m_tab2_dlg.m_album_cover_as_background = m_album_cover_as_background;
 
 	int sprctrum_height = theApp.m_sprctrum_height;		//保存theApp.m_sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
 
@@ -1956,6 +1994,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 		}
 		m_show_album_cover = optionDlg.m_tab2_dlg.m_show_album_cover;
 		m_album_cover_fit = optionDlg.m_tab2_dlg.m_album_cover_fit;
+		m_album_cover_as_background = optionDlg.m_tab2_dlg.m_album_cover_as_background;
 		theApp.m_player.SaveConfig();		//将设置写入到ini文件
 	}
 	else

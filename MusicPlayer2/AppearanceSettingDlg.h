@@ -20,6 +20,7 @@ public:
 	bool m_theme_color_follow_system;
 	bool m_show_album_cover{};
 	CDrawCommon::StretchMode m_album_cover_fit{};
+	bool m_album_cover_as_background;
 
 	CAppearanceSettingDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CAppearanceSettingDlg();
@@ -57,6 +58,7 @@ protected:
 	CSliderCtrl m_spectrum_height_slid;
 	CButton m_show_album_cover_chk;
 	CComboBox m_album_cover_fit_combo;
+	CButton m_album_cover_as_background_chk;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -88,4 +90,5 @@ public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnBnClickedShowAlbumCoverCheck();
 	afx_msg void OnCbnSelchangeAlbumFitCombo();
+	afx_msg void OnBnClickedAlbumCoverBackgroundCheck();
 };

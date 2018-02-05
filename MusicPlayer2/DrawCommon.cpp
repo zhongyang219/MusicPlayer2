@@ -17,10 +17,10 @@ void CDrawCommon::Create(CDC * pDC, CWnd * pMainWnd)
 	m_pfont = m_pMainWnd->GetFont();
 }
 
-void CDrawCommon::SetBackColor(COLORREF back_color)
-{
-	m_backColor = back_color;
-}
+//void CDrawCommon::SetBackColor(COLORREF back_color)
+//{
+//	m_backColor = back_color;
+//}
 
 void CDrawCommon::SetFont(CFont * pfont)
 {
@@ -44,7 +44,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	}
 	CSize text_size = m_pDC->GetTextExtent(lpszString);
 	//用背景色填充矩形区域
-	m_pDC->FillSolidRect(rect, m_backColor);
+	//m_pDC->FillSolidRect(rect, m_backColor);
 	if (text_size.cx > rect.Width())		//如果文本宽度超过了矩形区域的宽度，则总是左对齐
 		m_pDC->DrawText(lpszString, rect, DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 	else
@@ -99,7 +99,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 	}
 
 	//用背景色填充矩形区域
-	m_pDC->FillSolidRect(rect, m_backColor);
+	//m_pDC->FillSolidRect(rect, m_backColor);
 	//输出文本
 	m_pDC->SetTextColor(color2);
 	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);		//绘制背景文字
@@ -156,7 +156,7 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 		}
 	}
 	//用背景色填充矩形区域
-	m_pDC->FillSolidRect(rect, m_backColor);
+	//m_pDC->FillSolidRect(rect, m_backColor);
 	//输出文本
 	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);
 	if (scroll_info.freez <= 0)		//当freez为0的时候才滚动
@@ -208,7 +208,7 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
 		}
 	}
 	//用背景色填充矩形区域
-	m_pDC->FillSolidRect(rect, m_backColor);
+	//m_pDC->FillSolidRect(rect, m_backColor);
 	//输出文本
 	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);
 	if (scroll_info.freez <= 0)		//当freez为0的时候才滚动
@@ -329,4 +329,39 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 	m_pDC->StretchBlt(start_point.x, start_point.y, draw_size.cx, draw_size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 	bitmap.Detach();
 	memDC.DeleteDC();
+}
+
+void CDrawCommon::FillRect(CRect rect, COLORREF color)
+{
+	SetDrawArea(m_pDC, rect);
+	m_pDC->FillSolidRect(rect, color);
+}
+
+void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha)
+{
+	SetDrawArea(m_pDC, rect);
+	CDC cdc;
+	cdc.CreateCompatibleDC(m_pDC);
+
+	CBitmap bitmap, *pOldBitmap;
+	bitmap.CreateCompatibleBitmap(m_pDC, rect.right, rect.bottom);
+	CRect src(rect);
+	src.OffsetRect(CSize(-rect.left, -rect.top));
+	pOldBitmap = cdc.SelectObject(&bitmap);
+	cdc.FillSolidRect(src, color); //透明色
+
+	if (::AlphaBlend == 0)
+	{
+		m_pDC->BitBlt(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, &cdc, src.left, src.top, SRCINVERT);
+	}
+	else
+	{
+		BLENDFUNCTION bf;
+		memset(&bf, 0, sizeof(bf));
+		bf.SourceConstantAlpha = alpha; //透明程度//值越大越不透明
+		bf.BlendOp = AC_SRC_OVER;
+		::AlphaBlend(m_pDC->GetSafeHdc(), rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+			cdc.GetSafeHdc(), src.left, src.top, src.right - src.left, src.bottom - src.top, bf);
+	}
+	cdc.SelectObject(pOldBitmap);
 }
