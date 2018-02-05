@@ -306,6 +306,7 @@ void CMusicPlayerDlg::SetTransparency()
 
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
+	if (IsIconic()) return;		//窗口最小化时不绘制，以降低CPU利用率
 	//设置信息区域的矩形
 	CRect info_rect;
 	if (!m_narrow_mode)
