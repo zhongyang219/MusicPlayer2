@@ -4,6 +4,14 @@ class CDrawCommon
 {
 public:
 
+	//拉伸模式
+	enum class StretchMode
+	{
+		STRETCH,		//拉伸，会改变比例
+		CLIP,			//裁剪，不改变比例，会裁剪长边
+		CENTER			//居中，不会改变比例，不裁剪
+	};
+
 	//用于在DrawScrollText函数调用时使用的一些需要在函数调用完毕后继续存在的变量
 	struct ScrollInfo
 	{
@@ -29,6 +37,9 @@ public:
 	void DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);	//函数功能和DrawScrollText一样，只是这个函数只会从左到右滚动，不会更换方向
 
 	static void SetDrawArea(CDC* pDC, CRect rect);
+
+	void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size);
+	void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
 
 private:
 	CDC* m_pDC{};		//用于绘图的CDC类的指针

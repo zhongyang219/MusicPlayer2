@@ -160,3 +160,5 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//¾ùºâÆ÷Ô¤Éè
 };
 
 #define GRAY(x) RGB(x,x,x)
+
+#define ALBUM_COVER_NAME L"CurrentAlbumCover-MusicPlayer2-jMZB7TMf"

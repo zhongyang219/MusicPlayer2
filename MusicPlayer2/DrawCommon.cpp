@@ -239,3 +239,94 @@ void CDrawCommon::SetDrawArea(CDC * pDC, CRect rect)
 	rgn.CreateRectRgnIndirect(rect);
 	pDC->SelectClipRgn(&rgn);
 }
+
+void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size)
+{
+	CDC memDC;
+	CBitmap bitmap;
+	bitmap.LoadBitmap(bitmap_id);
+	//获取图像实际大小
+	BITMAP bm;
+	GetObject(bitmap, sizeof(BITMAP), &bm);
+
+	memDC.CreateCompatibleDC(m_pDC);
+	memDC.SelectObject(&bitmap);
+	// 以下两行避免图片失真
+	m_pDC->SetStretchBltMode(HALFTONE);
+	m_pDC->SetBrushOrg(0, 0);
+	if (size.cx == 0 || size.cy == 0)		//如果指定的size为0，则使用位图的实际大小绘制
+		m_pDC->StretchBlt(start_point.x, start_point.y, bm.bmWidth, bm.bmHeight, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+	else
+		m_pDC->StretchBlt(start_point.x, start_point.y, size.cx, size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+	memDC.DeleteDC();
+}
+
+void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
+{
+	CDC memDC;
+	CBitmap bitmap;
+	if (!bitmap.Attach(hbitmap))
+		return;
+	//获取图像实际大小
+	BITMAP bm;
+	GetObject(bitmap, sizeof(BITMAP), &bm);
+
+	memDC.CreateCompatibleDC(m_pDC);
+	memDC.SelectObject(&bitmap);
+	// 以下两行避免图片失真
+	m_pDC->SetStretchBltMode(HALFTONE);
+	m_pDC->SetBrushOrg(0, 0);
+	CSize draw_size;
+	if (size.cx == 0 || size.cy == 0)		//如果指定的size为0，则使用位图的实际大小绘制
+	{
+		draw_size = CSize(bm.bmWidth, bm.bmHeight);
+	}
+	else
+	{
+		draw_size = size;
+		if (stretch_mode == StretchMode::CLIP)
+		{
+			SetDrawArea(m_pDC, CRect(start_point, draw_size));
+			float w_h_radio, w_h_radio_draw;		//图像的宽高比、绘制大小的宽高比
+			w_h_radio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
+			w_h_radio_draw = static_cast<float>(size.cx) / size.cy;
+			if (w_h_radio > w_h_radio_draw)		//如果图像的宽高比大于绘制区域的宽高比，则需要裁剪两边的图像
+			{
+				int image_width;		//按比例缩放后的宽度
+				image_width = bm.bmWidth * draw_size.cy / bm.bmHeight;
+				start_point.x -= ((image_width - draw_size.cx) / 2);
+				draw_size.cx = image_width;
+			}
+			else
+			{
+				int image_height;		//按比例缩放后的高度
+				image_height = bm.bmHeight * draw_size.cx / bm.bmWidth;
+				start_point.y -= ((image_height - draw_size.cy) / 2);
+				draw_size.cy = image_height;
+			}
+		}
+		else if (stretch_mode == StretchMode::CENTER)
+		{
+			draw_size = CSize(bm.bmWidth, bm.bmHeight);
+			float w_h_radio, w_h_radio_draw;		//图像的宽高比、绘制大小的宽高比
+			w_h_radio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
+			w_h_radio_draw = static_cast<float>(size.cx) / size.cy;
+			if (w_h_radio > w_h_radio_draw)		//如果图像的宽高比大于绘制区域的宽高比
+			{
+				draw_size.cx = size.cx;
+				draw_size.cy = draw_size.cx * size.cy / size.cy;
+				start_point.y += ((size.cy - draw_size.cy) / 2);
+			}
+			else
+			{
+				draw_size.cy = size.cy;
+				draw_size.cx = draw_size.cy * size.cx / size.cy;
+				start_point.x += ((size.cx - draw_size.cx) / 2);
+			}
+		}
+	}
+
+	m_pDC->StretchBlt(start_point.x, start_point.y, draw_size.cx, draw_size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+	bitmap.Detach();
+	memDC.DeleteDC();
+}

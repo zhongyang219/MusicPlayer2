@@ -45,6 +45,7 @@ struct SongInfo
 	Time start_pos{};		//音频的起始位置，用于cue分轨
 	Time end_pos{};
 	bool is_cue{ false };		//如果曲目是cue分轨，则为true
+	//wstring album_cover{};		//专辑封面保存的文件名
 
 	//根据文件名的比较函数，用于以文件名排序
 	static bool ByFileName(const SongInfo& a, const SongInfo& b) { return a.file_name < b.file_name; }
@@ -280,8 +281,11 @@ public:
 	//处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，path为文件的路径
 	static void GetCueTracks(vector<SongInfo>& files, wstring path);
 
-	//通过BASS音频库获取音频文件的信息，并储存在song_info中
+	//获取音频文件的信息，并储存在song_info中
 	static void GetAudioTags(HSTREAM hStream, AudioType type, SongInfo& song_info);
+
+	//获取音频文件的专辑封面，并保存到临时目录，返回保存路径
+	static wstring GetAlbumCover(HSTREAM hStream);
 
 	//向一个MP3文件写入ID3V1标签，如果写入的文本长度超过ID3V1可容纳的长度，则过长的文本将会被截断，并将text_cut_off置为true
 	static bool WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off);

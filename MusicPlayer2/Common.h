@@ -71,6 +71,8 @@ public:
 	static wstring GetExePath();
 	//获取桌面的路径
 	static wstring GetDesktopPath();
+	//获取临时文件夹路径
+	static wstring GetTemplatePath();
 	//获取一个列表控件最大长度项目宽度的像素值
 	static int GetListWidth(CListBox& list);
 	//为一个Static控件填充指定的颜色
@@ -105,6 +107,9 @@ public:
 	iShowCmd        运行方式，默认为常规窗口
 	*/
 	static BOOL CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL);
+
+	//获取一个随机的字符串
+	static wstring GetRandomString(int length);
 };
 
 template<class T>

@@ -554,6 +554,81 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 	song_info.info_acquired = true;
 }
 
+wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
+{
+	const char* id3v2 = BASS_ChannelGetTags(hStream, BASS_TAG_ID3V2);
+	if (id3v2 == nullptr)
+		return wstring();
+	const char* size;
+	size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
+	const int id3tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
+	string tag_content;
+	tag_content.assign(id3v2, id3tag_size);	//将标签区域的内容保存到一个string对象里
+
+	size_t cover_index = tag_content.find("APIC");
+	if(cover_index == string::npos)
+		return wstring();
+
+	//获取当前标签的大小
+	string size_str = tag_content.substr(cover_index + 4, 4);
+	const int tag_size = size_str[0] * 0x1000000 + size_str[1] * 0x10000 + size_str[2] * 0x100 + size_str[3];
+
+	//获取图片的类型
+	size_t type_index = tag_content.find("image", cover_index);
+	string image_type_str = tag_content.substr(type_index, 10);
+	string image_type_str2 = tag_content.substr(type_index, 9);
+
+	//根据图片类型设置文件扩展名
+	size_t image_index;		//图片数据的起始位置
+	size_t image_size;		//根据标签大小计算出的图片大小
+	size_t image_size2;		//根据图片结束字节计算出的图片大小
+	string image_head;
+	string image_contents;
+	wstring file_extension;		//
+	if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
+	{
+		file_extension = L".jpg";
+
+		image_head.push_back(static_cast<char>(0xff));
+		image_head.push_back(static_cast<char>(0xd8));
+		image_index = tag_content.find(image_head, type_index);
+		string image_tail;
+		image_tail.push_back(static_cast<char>(0xff));
+		image_tail.push_back(static_cast<char>(0xd9));
+		size_t end_index = tag_content.find(image_tail, image_index + 2);
+		image_size2 = end_index - image_index + 2;
+		image_contents = tag_content.substr(image_index, image_size2);
+	}
+	//else if (image_type_str2 == "image/png")
+	//{
+	//	file_extension = L".png";
+	//	//image_size = tag_size - (image_index - cover_index);
+	//	//image_contents = tag_content.substr(image_index, image_size);
+	//}
+	//else if (image_type_str2 == "image/bmp")
+	//{
+
+	//	file_extension = L".bmp";
+	//}
+
+
+	//char tmp[2];
+	//tmp[1] = image_contents[image_contents.size() - 1];
+	//tmp[0] = image_contents[image_contents.size() - 2];
+
+	//将专辑封面保存到临时目录
+	wstring file_path{ CCommon::GetTemplatePath() };
+	wstring file_name{ ALBUM_COVER_NAME + file_extension };
+	if (!image_contents.empty())
+	{
+		file_path += file_name;
+		ofstream out_put{ file_path, std::ios::binary };
+		out_put << image_contents;
+		return file_path;
+	}
+	return wstring();
+}
+
 bool CAudioCommon::WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off)
 {
 	string title, artist, album, year, comment;

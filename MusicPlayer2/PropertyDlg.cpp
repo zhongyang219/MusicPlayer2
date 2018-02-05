@@ -186,6 +186,7 @@ BEGIN_MESSAGE_MAP(CPropertyDlg, CDialog)
 	//ON_CBN_EDITCHANGE(IDC_GENRE_COMBO, &CPropertyDlg::OnCbnEditchangeGenreCombo)
 	ON_BN_CLICKED(IDC_SAVE_TO_FILE_BUTTON, &CPropertyDlg::OnBnClickedSaveToFileButton)
 	ON_CBN_SELCHANGE(IDC_GENRE_COMBO, &CPropertyDlg::OnCbnSelchangeGenreCombo)
+	ON_BN_CLICKED(IDC_BUTTON3, &CPropertyDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -416,4 +417,20 @@ void CPropertyDlg::OnCbnSelchangeGenreCombo()
 	m_modified = true;
 	m_genre_modified = true;
 	m_save_button.EnableWindow(m_write_enable && m_modified);
+}
+
+
+//用于测试
+void CPropertyDlg::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	wstring str = CCommon::GetRandomString(32);
+
+	//重新从文件读取该歌曲的标签
+	wstring file_path;
+	file_path = theApp.m_player.GetCurrentPath() + m_all_song_info[m_index].file_name;
+	HSTREAM hStream;
+	hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+	CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, m_all_song_info[m_index]);
+	BASS_StreamFree(hStream);
 }

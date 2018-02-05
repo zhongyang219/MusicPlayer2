@@ -345,6 +345,16 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				m_song_length = m_playlist[m_index].lengh;
 				m_song_length_int = m_song_length.time2int();
 			}
+
+			//打开时获取专辑封面
+			static wstring last_file_path;
+			if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
+			{
+				wstring cover_path = CAudioCommon::GetAlbumCover(m_musicStream);		//获取专辑封面并保存到临时目录
+				m_album_cover.Destroy();
+				m_album_cover.Load(cover_path.c_str());
+			}
+			last_file_path = m_path + m_current_file_name;
 		}
 		if (m_playlist[m_index].is_cue)
 			SeekTo(0);

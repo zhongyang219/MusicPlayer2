@@ -304,6 +304,17 @@ wstring CCommon::GetDesktopPath()
 	return wstring(pszDesktopPath);
 }
 
+wstring CCommon::GetTemplatePath()
+{
+	wstring result;
+	wchar_t buff[MAX_PATH];
+	GetTempPath(MAX_PATH, buff);		//获取临时文件夹的路径
+	result = buff;
+	if (result.back() != L'\\' && result.back() != L'/')		//确保路径后面有斜杠
+		result.push_back(L'\\');
+	return result;
+}
+
 int CCommon::GetListWidth(CListBox & list)
 {
 	CDC *pDC = list.GetDC();
@@ -576,5 +587,33 @@ BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 	ppf->Release();
 	pLink->Release();
 	return SUCCEEDED(hr);
+}
+
+wstring CCommon::GetRandomString(int length)
+{
+	wstring result;
+	SYSTEMTIME current_time;
+	GetLocalTime(&current_time);			//获取当前时间
+	srand(current_time.wMilliseconds);		//用当前时间的毫秒数设置产生随机数的种子
+	int char_type;		//当前要生成的字符类型 0：数字；1：小写字母；2：大写字母
+	for (int i{}; i < length; i++)
+	{
+		char_type = rand() % 3;		//随机确定要生成的字符类型
+		wchar_t current_char;
+		switch (char_type)
+		{
+		case 0:
+			current_char = L'0' + (rand() % 10);
+			break;
+		case 1:
+			current_char = L'a' + (rand() % 26);
+			break;
+		case 2:
+			current_char = L'A' + (rand() % 26);
+			break;
+		}
+		result.push_back(current_char);
+	}
+	return result;
 }
 

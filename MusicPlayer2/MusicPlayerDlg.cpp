@@ -400,7 +400,11 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };
 	CDrawCommon::SetDrawArea(&MemDC, spectral_rect);
-	MemDC.FillSolidRect(spectral_rect, theApp.m_theme_color.light3);
+	MemDC.FillSolidRect(spectral_rect, theApp.m_theme_color.light3);		//绘制背景
+	CRect cover_rect{ spectral_rect };
+	cover_rect.DeflateRect(m_margin / 2, m_margin / 2);
+	m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::CLIP);	//绘制专辑封面
+
 	const int ROWS = 16;		//频谱柱形的数量
 	int gap_width{ DPI(1) };		//频谱柱形间隙宽度
 	CRect rects[ROWS];

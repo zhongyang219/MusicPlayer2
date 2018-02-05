@@ -68,6 +68,8 @@ private:
 	int m_reverb_time{1};	//混响时间（单位10ms，1~300）
 	bool m_reverb_enable{ false };		//指示是否允许混响
 
+	CImage m_album_cover;
+
 public:
 	CLyrics m_Lyrics;		//歌词
 	wstring m_lyric_path;	//歌词文件夹的路径
@@ -164,6 +166,7 @@ public:
 	wstring GetFileName() const { return (m_current_file_name.empty() ? wstring(L"没有找到文件") : m_current_file_name); }
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
+	CImage& GetAlbumCover() { return m_album_cover; }
 	
 	void ReloadPlaylist();		//重新载入播放列表
 
