@@ -37,6 +37,8 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_FONT_SIZE_EDIT, m_line_space);
 	DDV_MinMaxInt(pDX, m_line_space, 0, MAX_LINE_SPACE);
 	DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
+	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
+	DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -82,6 +84,8 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_FONT_SIZE_EDIT, &CAppearanceSettingDlg::OnEnChangeLineSpaceEdit)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CAppearanceSettingDlg::OnDeltaposSpin1)
 	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_CHECK, &CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck)
+	ON_CBN_SELCHANGE(IDC_ALBUM_FIT_COMBO, &CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo)
 END_MESSAGE_MAP()
 
 
@@ -145,6 +149,13 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 		m_follow_system_color_check.EnableWindow(FALSE);		//Win8以下系统禁用此复选按钮
 #endif // !COMPILE_IN_WIN_XP
 
+	//
+	m_show_album_cover_chk.SetCheck(m_show_album_cover);
+	m_album_cover_fit_combo.AddString(L"拉伸，会改变比例");
+	m_album_cover_fit_combo.AddString(L"填充，不改变比例，会裁剪长边");
+	m_album_cover_fit_combo.AddString(L"适应，不会改变比例，不裁剪");
+	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_album_cover_fit));
+	m_album_cover_fit_combo.EnableWindow(m_show_album_cover);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -382,4 +393,19 @@ HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
 	return hbr;
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_show_album_cover = (m_show_album_cover_chk.GetCheck() != 0);
+	m_album_cover_fit_combo.EnableWindow(m_show_album_cover);
+}
+
+
+void CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(m_album_cover_fit_combo.GetCurSel());
 }

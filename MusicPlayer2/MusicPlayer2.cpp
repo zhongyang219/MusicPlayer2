@@ -90,7 +90,7 @@ BOOL CMusicPlayerApp::InitInstance()
 	m_song_data_path = CCommon::GetExePath() + L"song_data.dat";
 	m_recent_path_dat_path = CCommon::GetExePath() + L"recent_path.dat";
 	m_desktop_path = CCommon::GetDesktopPath();
-	m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
+	//m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
 	LoadSongData();
 
 	//判断当前操作系统是否是Windows10。结果储存在CMusicPlayerApp类中的成员变量中，以便在全局范围内可访问

@@ -74,5 +74,5 @@ public:
 	//afx_msg void OnCbnEditchangeGenreCombo();
 	afx_msg void OnBnClickedSaveToFileButton();
 	afx_msg void OnCbnSelchangeGenreCombo();
-	afx_msg void OnBnClickedButton3();
+	//afx_msg void OnBnClickedButton3();
 };

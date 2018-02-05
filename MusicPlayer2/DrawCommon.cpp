@@ -284,7 +284,7 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 	else
 	{
 		draw_size = size;
-		if (stretch_mode == StretchMode::CLIP)
+		if (stretch_mode == StretchMode::FILL)
 		{
 			SetDrawArea(m_pDC, CRect(start_point, draw_size));
 			float w_h_radio, w_h_radio_draw;		//图像的宽高比、绘制大小的宽高比
@@ -305,7 +305,7 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 				draw_size.cy = image_height;
 			}
 		}
-		else if (stretch_mode == StretchMode::CENTER)
+		else if (stretch_mode == StretchMode::FIT)
 		{
 			draw_size = CSize(bm.bmWidth, bm.bmHeight);
 			float w_h_radio, w_h_radio_draw;		//图像的宽高比、绘制大小的宽高比
@@ -313,14 +313,14 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 			w_h_radio_draw = static_cast<float>(size.cx) / size.cy;
 			if (w_h_radio > w_h_radio_draw)		//如果图像的宽高比大于绘制区域的宽高比
 			{
+				draw_size.cy = draw_size.cy * size.cx / draw_size.cx;
 				draw_size.cx = size.cx;
-				draw_size.cy = draw_size.cx * size.cy / size.cy;
 				start_point.y += ((size.cy - draw_size.cy) / 2);
 			}
 			else
 			{
+				draw_size.cx = draw_size.cx * size.cy / draw_size.cy;
 				draw_size.cy = size.cy;
-				draw_size.cx = draw_size.cy * size.cx / size.cy;
 				start_point.x += ((size.cx - draw_size.cx) / 2);
 			}
 		}

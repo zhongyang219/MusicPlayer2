@@ -2,6 +2,7 @@
 #include "afxcmn.h"
 #include "afxwin.h"
 #include "Common.h"
+#include "DrawCommon.h"
 
 // CAppearanceSettingDlg 对话框
 
@@ -17,6 +18,8 @@ public:
 	HWND m_hMainWnd;		//主窗口的句柄，用于实时更改窗口不透明度
 	COLORREF m_theme_color;
 	bool m_theme_color_follow_system;
+	bool m_show_album_cover{};
+	CDrawCommon::StretchMode m_album_cover_fit{};
 
 	CAppearanceSettingDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CAppearanceSettingDlg();
@@ -51,6 +54,9 @@ protected:
 	CToolTipCtrl m_toolTip;
 
 	CButton m_follow_system_color_check;
+	CSliderCtrl m_spectrum_height_slid;
+	CButton m_show_album_cover_chk;
+	CComboBox m_album_cover_fit_combo;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -80,5 +86,6 @@ public:
 	afx_msg void OnEnChangeLineSpaceEdit();
 	afx_msg void OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	CSliderCtrl m_spectrum_height_slid;
+	afx_msg void OnBnClickedShowAlbumCoverCheck();
+	afx_msg void OnCbnSelchangeAlbumFitCombo();
 };

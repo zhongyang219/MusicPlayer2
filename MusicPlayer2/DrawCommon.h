@@ -8,8 +8,8 @@ public:
 	enum class StretchMode
 	{
 		STRETCH,		//拉伸，会改变比例
-		CLIP,			//裁剪，不改变比例，会裁剪长边
-		CENTER			//居中，不会改变比例，不裁剪
+		FILL,			//填充，不改变比例，会裁剪长边
+		FIT			//适应，不会改变比例，不裁剪
 	};
 
 	//用于在DrawScrollText函数调用时使用的一些需要在函数调用完毕后继续存在的变量
