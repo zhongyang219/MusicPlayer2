@@ -587,7 +587,7 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& type)
 	const string png_head{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
 	const string png_tail{ static_cast<char>(0x49), static_cast<char>(0x45), static_cast<char>(0x4e), static_cast<char>(0x44), static_cast<char>(0xae), static_cast<char>(0x42), static_cast<char>(0x60), static_cast<char>(0x82) };
 	const string gif_head{ "GIF89a" };
-	const string gif_tail{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
+	const string gif_tail{ static_cast<char>(0x80), static_cast<char>(0x00), static_cast<char>(0x00), static_cast<char>(0x3b) };
 
 	string image_contents;
 	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
