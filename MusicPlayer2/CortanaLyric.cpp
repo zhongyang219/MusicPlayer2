@@ -210,9 +210,6 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 	{
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		m_cortana_draw.DrawBitmap(album_cover, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
-		//CRect rect{ m_cortana_rect };
-		//rect.MoveToX(m_cortana_left_space);
-		//CDrawCommon::SetDrawArea(m_cortana_pDC, rect);		//绘制完专辑封面后重新设置绘图区域
 	}
 }
 
@@ -277,8 +274,5 @@ void CCortanaLyric::AlbumCoverEnable(bool enable)
 	{
 		CDrawCommon::SetDrawArea(m_cortana_pDC, m_icon_rect);
 		m_cortana_pDC->FillSolidRect(m_icon_rect, m_back_color);
-		//CRect rect{ m_cortana_rect };
-		//rect.MoveToX(m_cortana_left_space);
-		//CDrawCommon::SetDrawArea(m_cortana_pDC, rect);		//绘制完专辑封面后重新设置绘图区域
 	}
 }

@@ -1344,7 +1344,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 					m_cortana_lyric.DrawCortanaText((L"ÕýÔÚ²¥·Å£º" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, DPI(2));
 				}
 			}
-			m_cortana_lyric.AlbumCoverEnable(theApp.m_player.AlbumCoverExist());
+			m_cortana_lyric.AlbumCoverEnable(m_cortana_show_album_cover && theApp.m_player.AlbumCoverExist());
 			m_cortana_lyric.DrawAlbumCover(theApp.m_player.GetAlbumCover());
 		}
 	}
