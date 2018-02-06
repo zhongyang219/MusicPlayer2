@@ -580,36 +580,35 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
 
 	//根据图片类型设置文件扩展名
 	size_t image_index;		//图片数据的起始位置
-	size_t image_size;		//根据标签大小计算出的图片大小
-	size_t image_size2;		//根据图片结束字节计算出的图片大小
-	string image_head;
+	size_t image_size;		//根据图片结束字节计算出的图片大小
+	//设置jpg和png文件的头和尾
+	const string jpg_head{ static_cast<char>(0xff), static_cast<char>(0xd8) };
+	const string jpg_tail{ static_cast<char>(0xff), static_cast<char>(0xd9) };
+	const string png_head{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
+	const string png_tail{ static_cast<char>(0x49), static_cast<char>(0x45), static_cast<char>(0x4e), static_cast<char>(0x44), static_cast<char>(0xae), static_cast<char>(0x42), static_cast<char>(0x60), static_cast<char>(0x82) };
+
 	string image_contents;
-	wstring file_extension;		//
-	if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
+	//wstring file_extension;		//
+	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
+	image_index = tag_content.find(jpg_head, type_index);
+	if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
 	{
-		file_extension = L".jpg";
-
-		image_head.push_back(static_cast<char>(0xff));
-		image_head.push_back(static_cast<char>(0xd8));
-		image_index = tag_content.find(image_head, type_index);
-		string image_tail;
-		image_tail.push_back(static_cast<char>(0xff));
-		image_tail.push_back(static_cast<char>(0xd9));
-		size_t end_index = tag_content.find(image_tail, image_index + 2);
-		image_size2 = end_index - image_index + 2;
-		image_contents = tag_content.substr(image_index, image_size2);
+		//file_extension = L".jpg";
+		size_t end_index = tag_content.find(jpg_tail, image_index + jpg_head.size());
+		image_size = end_index - image_index + jpg_tail.size();
+		image_contents = tag_content.substr(image_index, image_size);
 	}
-	//else if (image_type_str2 == "image/png")
-	//{
-	//	file_extension = L".png";
-	//	//image_size = tag_size - (image_index - cover_index);
-	//	//image_contents = tag_content.substr(image_index, image_size);
-	//}
-	//else if (image_type_str2 == "image/bmp")
-	//{
-
-	//	file_extension = L".bmp";
-	//}
+	else		//没有找到jpg文件头则查找png文件头
+	{
+		image_index = tag_content.find(png_head, type_index);
+		if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
+		{
+			//file_extension = L".png";
+			size_t end_index = tag_content.find(png_tail, image_index + png_head.size());
+			image_size = end_index - image_index + png_tail.size();
+			image_contents = tag_content.substr(image_index, image_size);
+		}
+	}
 
 
 	//char tmp[2];
@@ -618,7 +617,7 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
 
 	//将专辑封面保存到临时目录
 	wstring file_path{ CCommon::GetTemplatePath() };
-	wstring file_name{ ALBUM_COVER_NAME + file_extension };
+	wstring file_name{ ALBUM_COVER_NAME/* + file_extension*/ };
 	if (!image_contents.empty())
 	{
 		file_path += file_name;

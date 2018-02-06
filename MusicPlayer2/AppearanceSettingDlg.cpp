@@ -40,6 +40,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
 	DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
 	DDX_Control(pDX, IDC_ALBUM_COVER_BACKGROUND_CHECK, m_album_cover_as_background_chk);
+	DDX_Control(pDX, IDC_SHOW_SPECTRUM_CHECK, m_show_spectrum_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -88,6 +89,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_CHECK, &CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck)
 	ON_CBN_SELCHANGE(IDC_ALBUM_FIT_COMBO, &CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo)
 	ON_BN_CLICKED(IDC_ALBUM_COVER_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck)
+	ON_BN_CLICKED(IDC_SHOW_SPECTRUM_CHECK, &CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck)
 END_MESSAGE_MAP()
 
 
@@ -160,6 +162,8 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_album_cover_fit_combo.EnableWindow(m_show_album_cover);
 
 	m_album_cover_as_background_chk.SetCheck(m_album_cover_as_background);
+	m_show_spectrum_chk.SetCheck(m_show_spectrum);
+	m_spectrum_height_slid.EnableWindow(m_show_spectrum);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -419,4 +423,12 @@ void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_show_spectrum = (m_show_spectrum_chk.GetCheck() != 0);
+	m_spectrum_height_slid.EnableWindow(m_show_spectrum);
 }

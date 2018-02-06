@@ -21,6 +21,7 @@ public:
 	bool m_show_album_cover{};
 	CDrawCommon::StretchMode m_album_cover_fit{};
 	bool m_album_cover_as_background;
+	bool m_show_spectrum;
 
 	CAppearanceSettingDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CAppearanceSettingDlg();
@@ -59,6 +60,7 @@ protected:
 	CButton m_show_album_cover_chk;
 	CComboBox m_album_cover_fit_combo;
 	CButton m_album_cover_as_background_chk;
+	CButton m_show_spectrum_chk;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -91,4 +93,5 @@ public:
 	afx_msg void OnBnClickedShowAlbumCoverCheck();
 	afx_msg void OnCbnSelchangeAlbumFitCombo();
 	afx_msg void OnBnClickedAlbumCoverBackgroundCheck();
+	afx_msg void OnBnClickedShowSpectrumCheck();
 };

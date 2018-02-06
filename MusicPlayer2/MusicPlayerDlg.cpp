@@ -267,6 +267,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_line_space", m_lyric_line_space, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"spectrum_height", theApp.m_sprctrum_height, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"cortana_lyric_double_line", m_cortana_lyric_double_line, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"show_spectrum", m_show_spectrum, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"show_album_cover", m_show_album_cover, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_fit", static_cast<int>(m_album_cover_fit), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_as_background", m_album_cover_as_background, theApp.m_config_path.c_str());
@@ -291,10 +292,11 @@ void CMusicPlayerDlg::LoadConfig()
 	m_lyric_font_size = GetPrivateProfileIntW(L"config", L"font_size", 10, theApp.m_config_path.c_str());
 	m_lyric_font.CreatePointFont(m_lyric_font_size * 10, m_lyric_font_name.c_str());
 	m_lyric_line_space = GetPrivateProfileIntW(L"config", L"lyric_line_space", 2, theApp.m_config_path.c_str());
-	theApp.m_sprctrum_height = GetPrivateProfileIntW(L"config", L"spectrum_height", 100, theApp.m_config_path.c_str());
+	theApp.m_sprctrum_height = GetPrivateProfileIntW(L"config", L"spectrum_height", 80, theApp.m_config_path.c_str());
 	m_cortana_lyric_double_line = (GetPrivateProfileInt(_T("config"), _T("cortana_lyric_double_line"), 0, theApp.m_config_path.c_str()) != 0);
+	m_show_spectrum = (GetPrivateProfileInt(_T("config"), _T("show_spectrum"), 1, theApp.m_config_path.c_str()) != 0);
 	m_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
-	m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 1, theApp.m_config_path.c_str()));
+	m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
 	m_album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
 }
 
@@ -433,27 +435,30 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		cover_rect.DeflateRect(m_margin / 2, m_margin / 2);
 		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), m_album_cover_fit);
 	}
-	const int ROWS = 16;		//频谱柱形的数量
-	int gap_width{ DPI(1) };		//频谱柱形间隙宽度
-	CRect rects[ROWS];
-	int width = (spectral_rect.Width() - (ROWS - 1)*gap_width) / ROWS;
-	rects[0] = spectral_rect;
-	rects[0].DeflateRect(m_margin / 2, m_margin / 2);
-	rects[0].right = rects[0].left + width;
-	for (int i{ 1 }; i < ROWS; i++)
+	if (m_show_spectrum)
 	{
-		rects[i] = rects[0];
-		rects[i].left += (i * (width + gap_width));
-		rects[i].right += (i * (width + gap_width));
-	}
-	for (int i{}; i < ROWS; i++)
-	{
-		CRect rect_tmp{ rects[i] };
-		int spetral_height = static_cast<int>(theApp.m_player.GetSpectralData()[i] * rects[0].Height() / 30 * theApp.m_sprctrum_height / 100);
-		if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-		rect_tmp.top = rect_tmp.bottom - spetral_height;
-		if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
-		MemDC.FillSolidRect(rect_tmp, theApp.m_theme_color.original_color);
+		const int ROWS = 16;		//频谱柱形的数量
+		int gap_width{ DPI(1) };		//频谱柱形间隙宽度
+		CRect rects[ROWS];
+		int width = (spectral_rect.Width() - (ROWS - 1)*gap_width) / ROWS;
+		rects[0] = spectral_rect;
+		rects[0].DeflateRect(m_margin / 2, m_margin / 2);
+		rects[0].right = rects[0].left + width;
+		for (int i{ 1 }; i < ROWS; i++)
+		{
+			rects[i] = rects[0];
+			rects[i].left += (i * (width + gap_width));
+			rects[i].right += (i * (width + gap_width));
+		}
+		for (int i{}; i < ROWS; i++)
+		{
+			CRect rect_tmp{ rects[i] };
+			int spetral_height = static_cast<int>(theApp.m_player.GetSpectralData()[i] * rects[0].Height() / 30 * theApp.m_sprctrum_height / 100);
+			if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+			rect_tmp.top = rect_tmp.bottom - spetral_height;
+			if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
+			MemDC.FillSolidRect(rect_tmp, theApp.m_theme_color.original_color);
+		}
 	}
 
 	//显示控制条的信息
@@ -1954,6 +1959,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab2_dlg.m_show_album_cover = m_show_album_cover;
 	optionDlg.m_tab2_dlg.m_album_cover_fit = m_album_cover_fit;
 	optionDlg.m_tab2_dlg.m_album_cover_as_background = m_album_cover_as_background;
+	optionDlg.m_tab2_dlg.m_show_spectrum = m_show_spectrum;
 
 	int sprctrum_height = theApp.m_sprctrum_height;		//保存theApp.m_sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
 
@@ -1996,6 +2002,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 		m_show_album_cover = optionDlg.m_tab2_dlg.m_show_album_cover;
 		m_album_cover_fit = optionDlg.m_tab2_dlg.m_album_cover_fit;
 		m_album_cover_as_background = optionDlg.m_tab2_dlg.m_album_cover_as_background;
+		m_show_spectrum = optionDlg.m_tab2_dlg.m_show_spectrum;
 		theApp.m_player.SaveConfig();		//将设置写入到ini文件
 	}
 	else
