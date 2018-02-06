@@ -2728,12 +2728,19 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 	//设置另存为时的默认文件名
 	CString file_name;
 	CString extension;
-	if (theApp.m_player.GetAlbumCoverType() == 0)
+	switch (theApp.m_player.GetAlbumCoverType())
+	{
+	case 0:
 		extension = _T(".jpg");
-	else if (theApp.m_player.GetAlbumCoverType() == 1)
+		break;
+	case 1:
 		extension = _T(".png");
-	else
-		return;
+		break;
+	case 2:
+		extension = _T(".gif");
+		break;
+	default: return;
+	}
 	file_name.Format(_T("AlbumCover_%s_%s%s"), theApp.m_player.GetCurrentSongInfo().artist.c_str(), theApp.m_player.GetCurrentSongInfo().album.c_str(), extension);
 	//构造保存文件对话框
 	CFileDialog fileDlg(FALSE, _T("txt"), file_name, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);

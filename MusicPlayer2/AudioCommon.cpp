@@ -565,7 +565,7 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& type)
 	string tag_content;
 	tag_content.assign(id3v2, id3tag_size);	//将标签区域的内容保存到一个string对象里
 
-	size_t cover_index = tag_content.find("APIC");
+	size_t cover_index = tag_content.find("APIC");		//查找专辑封面的标识字符串
 	if(cover_index == string::npos)
 		return wstring();
 
@@ -573,19 +573,21 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& type)
 	string size_str = tag_content.substr(cover_index + 4, 4);
 	const int tag_size = size_str[0] * 0x1000000 + size_str[1] * 0x10000 + size_str[2] * 0x100 + size_str[3];
 
-	//获取图片的类型
+	//获取图片起始位置
 	size_t type_index = tag_content.find("image", cover_index);
-	string image_type_str = tag_content.substr(type_index, 10);
-	string image_type_str2 = tag_content.substr(type_index, 9);
+	//string image_type_str = tag_content.substr(type_index, 10);
+	//string image_type_str2 = tag_content.substr(type_index, 9);
 
 	//根据图片类型设置文件扩展名
 	size_t image_index;		//图片数据的起始位置
 	size_t image_size;		//根据图片结束字节计算出的图片大小
-	//设置jpg和png文件的头和尾
+	//设置图片文件的头和尾
 	const string jpg_head{ static_cast<char>(0xff), static_cast<char>(0xd8) };
 	const string jpg_tail{ static_cast<char>(0xff), static_cast<char>(0xd9) };
 	const string png_head{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
 	const string png_tail{ static_cast<char>(0x49), static_cast<char>(0x45), static_cast<char>(0x4e), static_cast<char>(0x44), static_cast<char>(0xae), static_cast<char>(0x42), static_cast<char>(0x60), static_cast<char>(0x82) };
+	const string gif_head{ "GIF89a" };
+	const string gif_tail{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
 
 	string image_contents;
 	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
@@ -606,6 +608,17 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& type)
 			size_t end_index = tag_content.find(png_tail, image_index + png_head.size());
 			image_size = end_index - image_index + png_tail.size();
 			image_contents = tag_content.substr(image_index, image_size);
+		}
+		else		//没有找到png文件头则查找gif文件头
+		{
+			image_index = tag_content.find(gif_head, type_index);
+			if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
+			{
+				type = 2;
+				size_t end_index = tag_content.find(gif_tail, image_index + gif_head.size());
+				image_size = end_index - image_index + gif_tail.size();
+				image_contents = tag_content.substr(image_index, image_size);
+			}
 		}
 	}
 

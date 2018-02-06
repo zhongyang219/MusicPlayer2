@@ -284,7 +284,7 @@ public:
 	//获取音频文件的信息，并储存在song_info中
 	static void GetAudioTags(HSTREAM hStream, AudioType type, SongInfo& song_info);
 
-	//获取音频文件的专辑封面，并保存到临时目录，返回保存路径，type用来接收封面的格式 0:jpg, 1:png
+	//获取音频文件的专辑封面，并保存到临时目录，返回保存路径，type用来接收封面的格式 0:jpg, 1:png, 2:gif
 	static wstring GetAlbumCover(HSTREAM hStream, int& type);
 
 	//向一个MP3文件写入ID3V1标签，如果写入的文本长度超过ID3V1可容纳的长度，则过长的文本将会被截断，并将text_cut_off置为true
