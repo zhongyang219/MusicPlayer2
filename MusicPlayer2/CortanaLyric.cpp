@@ -29,8 +29,8 @@ void CCortanaLyric::Init()
 		//获取左上角点的坐标
 		CRect rect;
 		::GetWindowRect(m_cortana_hwnd, rect);
-		m_lefttop_point = rect.TopLeft();
-		m_lefttop_point += CPoint{ 1, 1 };
+		m_lefttop_point.x = rect.right + 3;
+		m_lefttop_point.y = rect.top + 1;
 
 		::GetClientRect(m_cortana_hwnd, m_cortana_rect);	//获取Cortana搜索框的矩形区域
 		CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
@@ -44,6 +44,9 @@ void CCortanaLyric::Init()
 		{
 			m_cortana_left_space = 0;
 		}
+
+		m_icon_rect.right = m_cortana_left_space;
+		m_icon_rect.bottom = m_cortana_rect.Height();
 
 		m_cortana_pDC = m_cortana_wnd->GetDC();
 		m_cortana_draw.Create(m_cortana_pDC, m_cortana_wnd);
@@ -84,11 +87,17 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
+		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
 		static CDrawCommon::ScrollInfo cortana_scroll_info;
 		COLORREF color;
 		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
-		m_cortana_draw.DrawScrollText(m_cortana_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
+		CRect text_rect{ m_cortana_rect };
+		text_rect.DeflateRect(DPI(4), 0);
+		m_cortana_draw.DrawScrollText(text_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
+		CRect rect{ m_cortana_rect };
+		rect.MoveToX(m_cortana_left_space);
+		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
 		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1), m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
@@ -108,12 +117,17 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
-		MemDC.FillSolidRect(m_cortana_rect, m_back_color);
+		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
+		CRect text_rect{ m_cortana_rect };
+		text_rect.DeflateRect(DPI(4), 0);
 		if (m_dark_mode)
-			m_cortana_draw.DrawWindowText(m_cortana_rect, str, m_colors.light3, m_colors.light1, progress, false, true);
+			m_cortana_draw.DrawWindowText(text_rect, str, m_colors.light3, m_colors.light1, progress, false);
 		else
-			m_cortana_draw.DrawWindowText(m_cortana_rect, str, m_colors.dark3, m_colors.dark1, progress, false, true);
+			m_cortana_draw.DrawWindowText(text_rect, str, m_colors.dark3, m_colors.dark1, progress, false);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
+		CRect rect{ m_cortana_rect };
+		rect.MoveToX(m_cortana_left_space);
+		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
 		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1) , m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
@@ -142,7 +156,9 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
-		CRect up_rect{ m_cortana_rect }, down_rect{ m_cortana_rect };		//上半部分和下半部分歌词的矩形区域
+		CRect text_rect{ m_cortana_rect };
+		text_rect.DeflateRect(DPI(4), DPI(3));
+		CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 		//根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
@@ -166,22 +182,37 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 			color1 = m_colors.dark3;
 			color2 = m_colors.dark1;
 		}
-		MemDC.FillSolidRect(m_cortana_rect, m_back_color);
+		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
 		if (!swap)
 		{
-			m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false, true);
-			m_cortana_draw.DrawWindowText(down_rect, next_lyric, color2, false, true);
+			m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
+			m_cortana_draw.DrawWindowText(down_rect, next_lyric, color2, false);
 		}
 		else
 		{
-			m_cortana_draw.DrawWindowText(up_rect, next_lyric, color2, false, true);
-			m_cortana_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false, true);
+			m_cortana_draw.DrawWindowText(up_rect, next_lyric, color2, false);
+			m_cortana_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
 		}
 
 		//将缓冲区DC中的图像拷贝到屏幕中显示
+		CRect rect{ m_cortana_rect };
+		rect.MoveToX(m_cortana_left_space);
+		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
 		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1), m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
+	}
+}
+
+void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
+{
+	if (m_show_album_cover)
+	{
+		m_cortana_draw.SetDC(m_cortana_pDC);
+		m_cortana_draw.DrawBitmap(album_cover, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+		//CRect rect{ m_cortana_rect };
+		//rect.MoveToX(m_cortana_left_space);
+		//CDrawCommon::SetDrawArea(m_cortana_pDC, rect);		//绘制完专辑封面后重新设置绘图区域
 	}
 }
 
@@ -194,8 +225,18 @@ void CCortanaLyric::ResetCortanaText()
 		color = (m_dark_mode ? GRAY(173) : GRAY(16));
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		CRect rect{ m_cortana_rect };
-		rect.MoveToXY(rect.left + m_cortana_left_space, (m_dark_mode ? 0 : 1));
-		m_cortana_draw.FillRect(rect, m_back_color);
+		if (m_show_album_cover)
+		{
+			rect.MoveToY((m_dark_mode ? 0 : 1));
+			rect.right += m_cortana_left_space;
+			m_cortana_draw.FillRect(rect, m_back_color);
+			rect.left += m_cortana_left_space;
+		}
+		else
+		{
+			rect.MoveToXY(rect.left + m_cortana_left_space, (m_dark_mode ? 0 : 1));
+			m_cortana_draw.FillRect(rect, m_back_color);
+		}
 		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color, false);
 		m_cortana_wnd->Invalidate();
 	}
@@ -224,5 +265,20 @@ void CCortanaLyric::CheckDarkMode()
 		{
 			m_back_color = GRAY(240);
 		}
+	}
+}
+
+void CCortanaLyric::AlbumCoverEnable(bool enable)
+{
+	bool last_enable;
+	last_enable = m_show_album_cover;
+	m_show_album_cover = enable;
+	if (last_enable && !enable)
+	{
+		CDrawCommon::SetDrawArea(m_cortana_pDC, m_icon_rect);
+		m_cortana_pDC->FillSolidRect(m_icon_rect, m_back_color);
+		//CRect rect{ m_cortana_rect };
+		//rect.MoveToX(m_cortana_left_space);
+		//CDrawCommon::SetDrawArea(m_cortana_pDC, rect);		//绘制完专辑封面后重新设置绘图区域
 	}
 }

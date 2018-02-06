@@ -271,6 +271,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"show_album_cover", m_show_album_cover, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_fit", static_cast<int>(m_album_cover_fit), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_as_background", m_album_cover_as_background, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"cortana_show_album_cover", m_cortana_show_album_cover, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -298,6 +299,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 	m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
 	m_album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
+	m_cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -1341,6 +1343,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, DPI(2));
 				}
 			}
+			m_cortana_lyric.AlbumCoverEnable(theApp.m_player.AlbumCoverExist());
+			m_cortana_lyric.DrawAlbumCover(theApp.m_player.GetAlbumCover());
 		}
 	}
 	//if (theApp.m_player.SongIsOver() && (!m_stop_when_error || !theApp.m_player.IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲

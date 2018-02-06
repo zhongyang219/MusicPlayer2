@@ -1,6 +1,8 @@
 #pragma once
 #include "DrawCommon.h"
 #include "ColorConvert.h"
+#include "MusicPlayer2.h"
+
 class CCortanaLyric
 {
 public:
@@ -29,8 +31,12 @@ public:
 	//在Cortana搜索框内双行显示歌词
 	void DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int progress);
 
+	void DrawAlbumCover(const CImage& album_cover);
+
 	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
 	void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
+
+	void AlbumCoverEnable(bool enable);
 
 private:
 	bool m_enable;
@@ -42,6 +48,7 @@ private:
 	CFont m_cortana_font;		//在Cortana搜索框中显示歌词的字体
 	CFont m_font_double_line;		//双行显示时歌词的字体
 	CRect m_cortana_rect;		//Cortana搜索框框的矩形区域
+	CRect m_icon_rect;			//Cortana图标处的矩形区域
 	int m_cortana_left_space;		//Cortana搜索框中显示文本距搜索框左侧的距离
 	CDC* m_cortana_pDC{};				//在Cortana搜索框中绘图的DC
 
@@ -50,5 +57,7 @@ private:
 
 	CPoint m_lefttop_point{};			//Cortana搜索框左上角点的位置，用于判断Cortana搜索框的颜色是深色还是白色
 	COLORREF m_back_color;
+
+	bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
 };
 

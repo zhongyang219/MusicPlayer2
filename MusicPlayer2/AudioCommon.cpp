@@ -610,11 +610,6 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
 		}
 	}
 
-
-	//char tmp[2];
-	//tmp[1] = image_contents[image_contents.size() - 1];
-	//tmp[0] = image_contents[image_contents.size() - 2];
-
 	//将专辑封面保存到临时目录
 	wstring file_path{ CCommon::GetTemplatePath() };
 	wstring file_name{ ALBUM_COVER_NAME/* + file_extension*/ };
