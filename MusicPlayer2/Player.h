@@ -70,6 +70,7 @@ private:
 
 	CImage m_album_cover;
 	wstring m_album_cover_path;		//专辑封面文件的路径
+	int m_album_cover_type;			//专辑封面的格式
 
 public:
 	CLyrics m_Lyrics;		//歌词
@@ -170,6 +171,7 @@ public:
 	CImage& GetAlbumCover() { return m_album_cover; }
 	bool AlbumCoverExist() { return !m_album_cover.IsNull(); }
 	wstring GetAlbumCoverPath() const { return m_album_cover_path; }
+	int GetAlbumCoverType() const { return m_album_cover_type; }
 	
 	void ReloadPlaylist();		//重新载入播放列表
 

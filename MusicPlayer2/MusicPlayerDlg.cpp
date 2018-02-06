@@ -244,6 +244,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_BROWSE_LYRIC, &CMusicPlayerDlg::OnBrowseLyric)
 	ON_COMMAND(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, &CMusicPlayerDlg::OnTranslateToSimplifiedChinese)
 	ON_COMMAND(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, &CMusicPlayerDlg::OnTranslateToTranditionalChinese)
+	ON_COMMAND(ID_ALBUM_COVER_SAVE_AS, &CMusicPlayerDlg::OnAlbumCoverSaveAs)
 END_MESSAGE_MAP()
 
 
@@ -1858,6 +1859,8 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	pMenu->EnableMenuItem(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 
+	pMenu->EnableMenuItem(ID_ALBUM_COVER_SAVE_AS, MF_BYCOMMAND | (theApp.m_player.AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
+
 	// TODO: 在此处添加消息处理程序代码
 }
 
@@ -2714,4 +2717,30 @@ void CMusicPlayerDlg::OnTranslateToTranditionalChinese()
 	// TODO: 在此添加命令处理程序代码
 	CWaitCursor wait_cursor;
 	theApp.m_player.m_Lyrics.ChineseTranslation(false);
+}
+
+
+void CMusicPlayerDlg::OnAlbumCoverSaveAs()
+{
+	// TODO: 在此添加命令处理程序代码
+	//设置过滤器
+	const wchar_t* szFilter = L"所有文件(*.*)|*.*||";
+	//设置另存为时的默认文件名
+	CString file_name;
+	CString extension;
+	if (theApp.m_player.GetAlbumCoverType() == 0)
+		extension = _T(".jpg");
+	else if (theApp.m_player.GetAlbumCoverType() == 1)
+		extension = _T(".png");
+	else
+		return;
+	file_name.Format(_T("AlbumCover_%s_%s%s"), theApp.m_player.GetCurrentSongInfo().artist.c_str(), theApp.m_player.GetCurrentSongInfo().album.c_str(), extension);
+	//构造保存文件对话框
+	CFileDialog fileDlg(FALSE, _T("txt"), file_name, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+	//显示保存文件对话框
+	if (IDOK == fileDlg.DoModal())
+	{
+		CString dest_file = fileDlg.GetPathName();
+		::CopyFile(theApp.m_player.GetAlbumCoverPath().c_str(), dest_file, FALSE);
+	}
 }

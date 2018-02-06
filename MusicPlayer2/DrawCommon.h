@@ -29,6 +29,7 @@ public:
 	//COLORREF GetBackColor() const { return m_backColor; }
 	void SetFont(CFont* pfont);		//设置绘制文本的字体
 	void SetDC(CDC* pDC);		//设置绘图的DC
+	CDC* GetDC() { return m_pDC; }
 
 	//下面是绘制文本的函数，功能和CStaticEx类中的同名函数相同，不同点在于这些函数不依赖于特定的控件
 	void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, bool center, bool no_clip_area = false);	//在指定的矩形区域内绘制有颜色的文本，如果no_clip_area为true，则不在输出文字时限制绘图区域

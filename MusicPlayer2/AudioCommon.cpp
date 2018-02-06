@@ -554,7 +554,7 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 	song_info.info_acquired = true;
 }
 
-wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
+wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& type)
 {
 	const char* id3v2 = BASS_ChannelGetTags(hStream, BASS_TAG_ID3V2);
 	if (id3v2 == nullptr)
@@ -588,12 +588,11 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
 	const string png_tail{ static_cast<char>(0x49), static_cast<char>(0x45), static_cast<char>(0x4e), static_cast<char>(0x44), static_cast<char>(0xae), static_cast<char>(0x42), static_cast<char>(0x60), static_cast<char>(0x82) };
 
 	string image_contents;
-	//wstring file_extension;		//
 	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
 	image_index = tag_content.find(jpg_head, type_index);
 	if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
 	{
-		//file_extension = L".jpg";
+		type = 0;
 		size_t end_index = tag_content.find(jpg_tail, image_index + jpg_head.size());
 		image_size = end_index - image_index + jpg_tail.size();
 		image_contents = tag_content.substr(image_index, image_size);
@@ -603,7 +602,7 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
 		image_index = tag_content.find(png_head, type_index);
 		if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
 		{
-			//file_extension = L".png";
+			type = 1;
 			size_t end_index = tag_content.find(png_tail, image_index + png_head.size());
 			image_size = end_index - image_index + png_tail.size();
 			image_contents = tag_content.substr(image_index, image_size);
@@ -620,6 +619,7 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream)
 		out_put << image_contents;
 		return file_path;
 	}
+	type = -1;
 	return wstring();
 }
 

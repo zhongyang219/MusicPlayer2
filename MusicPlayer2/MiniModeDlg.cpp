@@ -101,15 +101,15 @@ void CMiniModeDlg::UpdateSongTipInfo()
 
 void CMiniModeDlg::DrawSpectral()
 {
-	if (m_pDC == nullptr)
+	if (m_spectrum_pDC == nullptr)
 	{
-		m_pDC = m_spectral_static.GetDC();
+		m_spectrum_pDC = m_spectral_static.GetDC();
 	}
 	//pDC->SetBkMode(TRANSPARENT);
 	CBrush BGBrush, *pOldBrush;
 	BGBrush.CreateSolidBrush(m_theme_color.original_color);
-	pOldBrush = m_pDC->SelectObject(&BGBrush);
-	DrawThemeParentBackground(m_hWnd, m_pDC->GetSafeHdc(), &m_spectral_client_rect);	//重绘控件区域以解决文字重叠的问题
+	pOldBrush = m_spectrum_pDC->SelectObject(&BGBrush);
+	DrawThemeParentBackground(m_hWnd, m_spectrum_pDC->GetSafeHdc(), &m_spectral_client_rect);	//重绘控件区域以解决文字重叠的问题
 	//将CPlayer类里获得到的频谱数据变换成ROW列的数据
 	float spectral_data[ROW];
 	memset(spectral_data, 0, sizeof(spectral_data));
@@ -124,9 +124,9 @@ void CMiniModeDlg::DrawSpectral()
 		if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 		rect_tmp.top = rect_tmp.bottom - spetral_height;
 		if (rect_tmp.top < 0) rect_tmp.top = 0;
-		m_pDC->FillRect(&rect_tmp, &BGBrush);
+		m_spectrum_pDC->FillRect(&rect_tmp, &BGBrush);
 	}
-	m_pDC->SelectObject(pOldBrush);
+	m_spectrum_pDC->SelectObject(pOldBrush);
 	BGBrush.DeleteObject();
 
 }
@@ -223,6 +223,12 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_rect_s = m_rect;
 	m_rect_s.bottom = rect.bottom + DPI(2);
 
+	m_album_rect = m_rect_s;
+	m_album_rect.right = m_album_rect.left + m_album_rect.Height();
+	m_album_rect.MoveToXY(0, 0);
+	m_album_rect.DeflateRect(DPI(2), DPI(2));
+
+
 	//设置窗口背景图片
 	//m_back_img = (HBITMAP)LoadImage(NULL, (CCommon::GetExePath() + L"minimode_background.bmp").c_str(), IMAGE_BITMAP, m_rect_s.Width(), m_rect_s.Height(), LR_LOADFROMFILE);
 	//SetBackgroundImage(m_back_img);
@@ -290,7 +296,9 @@ BOOL CMiniModeDlg::OnInitDialog()
 	}
 
 	//获取频谱分析控件的CDC，用于绘制频谱柱形
-	m_pDC = m_spectral_static.GetDC();
+	m_spectrum_pDC = m_spectral_static.GetDC();
+
+	m_draw.Create(GetDC(), this);
 
 	//为了确保每次打开迷你窗口时一定会显示当前歌词，在这里将此变量置为-1
 	m_last_lyric_index = -1;
@@ -432,6 +440,12 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 			m_time_static.DrawWindowText(theApp.m_player.GetTimeString().c_str());
 		}
 	}
+
+	//绘制专辑封面
+	if (theApp.m_player.AlbumCoverExist())
+		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
+	else
+		m_draw.DrawBitmap(IDB_DEFAULT_COVER, m_album_rect.TopLeft(), m_album_rect.Size());
 }
 
 void CMiniModeDlg::ColorChanged()
@@ -557,7 +571,7 @@ void CMiniModeDlg::OnDestroy()
 	SaveConfig();
 	KillTimer(TIMER_ID_MINI);
 	m_menu.DestroyMenu();
-	ReleaseDC(m_pDC);
+	ReleaseDC(m_spectrum_pDC);
 }
 
 

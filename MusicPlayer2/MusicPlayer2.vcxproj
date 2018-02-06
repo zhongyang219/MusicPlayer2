@@ -273,6 +273,7 @@
     <None Include="res\MusicPlayer2.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\default_cover.bmp" />
     <Image Include="res\MusicPlayer2.ico" />
     <Image Include="res\上一曲.ico" />
     <Image Include="res\下一曲.ico" />

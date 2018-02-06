@@ -350,7 +350,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			static wstring last_file_path;
 			if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
 			{
-				m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream);		//获取专辑封面并保存到临时目录
+				m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
 				m_album_cover.Destroy();
 				m_album_cover.Load(m_album_cover_path.c_str());
 			}

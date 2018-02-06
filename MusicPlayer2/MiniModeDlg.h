@@ -7,6 +7,7 @@
 #include "PlayListCtrl.h"
 #include "ColorConvert.h"
 #include"ProgressStatic.h"
+#include "DrawCommon.h"
 
 // CMiniModeDlg 对话框
 
@@ -68,7 +69,9 @@ protected:
 #define ROW 4				//频谱柱形的数量
 	CRect m_spectral_client_rect;		//频谱的矩形区域
 	CRect m_spectral_rect[ROW];		//每个柱形的矩形区域
-	CDC* m_pDC;		//频谱分析区域static控件的CDC
+	CDC* m_spectrum_pDC;		//频谱分析区域static控件的CDC
+	CDrawCommon m_draw;
+	CRect m_album_rect;			//专辑封面的矩形区域
 
 	CStaticEx m_lyric_static;
 	CStaticEx m_time_static;
