@@ -86,6 +86,18 @@ BOOL CMusicPlayerApp::InitInstance()
 	}
 #endif
 
+	//检查bass.dll的版本是否和API的版本匹配
+	WORD dll_version{ HIWORD(BASS_GetVersion()) };
+	//WORD dll_version{ 0x203 };
+	if (dll_version != BASSVERSION)
+	{
+		CString info;
+		info.Format(_T("bass.dll文件版本不匹配，版本为V%d.%d，期望的版本为V%d.%d。不匹配的版本可能会导致播放异常，仍要继续吗？"),
+			HIBYTE(dll_version), LOBYTE(dll_version), HIBYTE(BASSVERSION), LOBYTE(BASSVERSION));
+		if (AfxMessageBox(info, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+			return FALSE;
+	}
+
 	m_config_path = CCommon::GetExePath() + L"config.ini";
 	m_song_data_path = CCommon::GetExePath() + L"song_data.dat";
 	m_recent_path_dat_path = CCommon::GetExePath() + L"recent_path.dat";
