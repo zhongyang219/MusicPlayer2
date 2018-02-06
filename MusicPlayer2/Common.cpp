@@ -107,6 +107,21 @@ wstring CCommon::TranslateToTranditionalChinese(const wstring & str)
 	return result;
 }
 
+void CCommon::FileNameNormalize(wstring & file_name)
+{
+	//查找字符串中的无效字符，并将其替换成‘_’
+	const wstring invalid_chars{ L"\\\"/:*?<>|\a\b\f\n\r\t\v" };
+	int index{ -1 };
+	while (true)
+	{
+		index = file_name.find_first_of(invalid_chars, index + 1);
+		if (index == wstring::npos)
+			return;
+		else
+			file_name[index] = L'_';
+	}
+}
+
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
 	int l, m;

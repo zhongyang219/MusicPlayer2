@@ -54,6 +54,8 @@ public:
 
 	static wstring TranslateToSimplifiedChinese(const wstring& str);
 	static wstring TranslateToTranditionalChinese(const wstring& str);
+	//替换一个文件名中的无效字符
+	static void FileNameNormalize(wstring& file_name);
 
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);

@@ -2741,9 +2741,11 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 		break;
 	default: return;
 	}
-	file_name.Format(_T("AlbumCover_%s_%s%s"), theApp.m_player.GetCurrentSongInfo().artist.c_str(), theApp.m_player.GetCurrentSongInfo().album.c_str(), extension);
+	file_name.Format(_T("AlbumCover - %s - %s%s"), theApp.m_player.GetCurrentSongInfo().artist.c_str(), theApp.m_player.GetCurrentSongInfo().album.c_str(), extension);
+	wstring file_name_wcs{ file_name };
+	CCommon::FileNameNormalize(file_name_wcs);		//替换掉文件名中的无效字符
 	//构造保存文件对话框
-	CFileDialog fileDlg(FALSE, _T("txt"), file_name, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+	CFileDialog fileDlg(FALSE, _T("txt"), file_name_wcs.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 	//显示保存文件对话框
 	if (IDOK == fileDlg.DoModal())
 	{
