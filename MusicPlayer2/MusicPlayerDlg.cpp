@@ -273,6 +273,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_fit", static_cast<int>(m_album_cover_fit), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_as_background", m_album_cover_as_background, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"cortana_show_album_cover", m_cortana_show_album_cover, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"background_transparency", theApp.m_background_transparency, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -301,6 +302,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
 	m_album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
 	m_cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_background_transparency = GetPrivateProfileIntW(L"config", L"background_transparency", 80, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -344,7 +346,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//填充显示信息区域的背景色
 	CDrawCommon::SetDrawArea(&MemDC, info_rect);
 	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
-		m_draw.FillAlphaRect(info_rect, RGB(255, 255, 255), 200);
+		m_draw.FillAlphaRect(info_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_background_transparency));
 	else
 		MemDC.FillSolidRect(info_rect, RGB(255, 255, 255));
 
@@ -428,7 +430,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };
 	//绘制背景
 	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
-		m_draw.FillAlphaRect(spectral_rect, theApp.m_theme_color.light3, BACKGROUND_ALPHA);
+		m_draw.FillAlphaRect(spectral_rect, theApp.m_theme_color.light3, ALPHA_CHG(theApp.m_background_transparency));
 	else
 		m_draw.FillRect(spectral_rect, theApp.m_theme_color.light3);
 	if (m_show_album_cover)
@@ -470,7 +472,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	point.y += 2 * m_margin;
 	CRect other_info_rect{ point, CSize(info_rect.Width() - 2 * m_margin,DPI(24)) };
 	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
-		m_draw.FillAlphaRect(other_info_rect, theApp.m_theme_color.light3, BACKGROUND_ALPHA);
+		m_draw.FillAlphaRect(other_info_rect, theApp.m_theme_color.light3, ALPHA_CHG(theApp.m_background_transparency));
 	else
 		m_draw.FillRect(other_info_rect, theApp.m_theme_color.light3);
 	//显示文字信息
@@ -563,7 +565,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 {
 	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
-		m_draw.FillAlphaRect(lyric_rect, theApp.m_theme_color.light3, BACKGROUND_ALPHA);
+		m_draw.FillAlphaRect(lyric_rect, theApp.m_theme_color.light3, ALPHA_CHG(theApp.m_background_transparency));
 	else
 		m_draw.FillRect(lyric_rect, theApp.m_theme_color.light3);
 	if (theApp.m_player.m_Lyrics.IsEmpty())
@@ -592,7 +594,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	//填充白色背景
 	CDrawCommon::SetDrawArea(pDC, lyric_rect);
 	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
-		m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), BACKGROUND_ALPHA);
+		m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_background_transparency));
 	else
 		pDC->FillSolidRect(lyric_rect, RGB(255, 255, 255));
 	//显示“歌词秀”
@@ -610,7 +612,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	lyric_area.top += DPI(20);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
 	if (/*m_show_album_cover &&*/ m_album_cover_as_background && theApp.m_player.AlbumCoverExist())
-		m_draw.FillAlphaRect(lyric_area, theApp.m_theme_color.light3, BACKGROUND_ALPHA * 3 / 5);
+		m_draw.FillAlphaRect(lyric_area, theApp.m_theme_color.light3, ALPHA_CHG(theApp.m_background_transparency) * 3 / 5);
 	else
 		pDC->FillSolidRect(lyric_area, theApp.m_theme_color.light3);
 	//设置歌词文字区域
@@ -1970,6 +1972,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab2_dlg.m_show_spectrum = m_show_spectrum;
 
 	int sprctrum_height = theApp.m_sprctrum_height;		//保存theApp.m_sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
+	int background_transparency = theApp.m_background_transparency;		//同上
 
 	if (optionDlg.DoModal() == IDOK)
 	{
@@ -2017,6 +2020,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	{
 		SetTransparency();		//如果点击了取消，则需要重新设置窗口透明度
 		theApp.m_sprctrum_height = sprctrum_height;
+		theApp.m_background_transparency = background_transparency;
 	}
 
 	m_tab_selected = optionDlg.m_tab_selected;

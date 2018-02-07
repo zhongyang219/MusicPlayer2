@@ -37,6 +37,7 @@ public:
 	//COLORREF m_theme_color;		//主题颜色
 	ColorTable m_theme_color;		//主题颜色
 	int m_sprctrum_height{ 100 };		//频谱分析高度比例（%）
+	int m_background_transparency{ 80 };		//背景的透明度
 
 	volatile bool m_lyric_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ false };		//用于指示歌词批量下载对话框已经退出

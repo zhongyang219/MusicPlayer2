@@ -61,6 +61,7 @@ protected:
 	CComboBox m_album_cover_fit_combo;
 	CButton m_album_cover_as_background_chk;
 	CButton m_show_spectrum_chk;
+	CSliderCtrl m_back_transparency_slid;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 

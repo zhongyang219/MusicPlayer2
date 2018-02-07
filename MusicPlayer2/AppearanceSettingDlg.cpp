@@ -41,6 +41,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
 	DDX_Control(pDX, IDC_ALBUM_COVER_BACKGROUND_CHECK, m_album_cover_as_background_chk);
 	DDX_Control(pDX, IDC_SHOW_SPECTRUM_CHECK, m_show_spectrum_chk);
+	DDX_Control(pDX, IDC_BACKGROUND_TRANSPARENCY_SLIDER, m_back_transparency_slid);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -133,6 +134,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	::SetWindowLong(m_color_static6.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
 	m_toolTip.Create(this);
+	m_toolTip.SetMaxTipWidth(DPI(300));
 	m_toolTip.AddTool(&m_color_static, _T("当前的颜色"));
 	m_toolTip.AddTool(&m_color_static1, _T("天蓝色"));
 	m_toolTip.AddTool(&m_color_static2, _T("绿色"));
@@ -155,15 +157,22 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
 	//
 	m_show_album_cover_chk.SetCheck(m_show_album_cover);
-	m_album_cover_fit_combo.AddString(L"拉伸，会改变比例");
-	m_album_cover_fit_combo.AddString(L"填充，不改变比例，会裁剪长边");
-	m_album_cover_fit_combo.AddString(L"适应，不会改变比例，不裁剪");
+	m_album_cover_fit_combo.AddString(L"拉伸");
+	m_album_cover_fit_combo.AddString(L"填充");
+	m_album_cover_fit_combo.AddString(L"适应");
 	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_album_cover_fit));
 	m_album_cover_fit_combo.EnableWindow(m_show_album_cover);
+	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
 
 	m_album_cover_as_background_chk.SetCheck(m_album_cover_as_background);
 	m_show_spectrum_chk.SetCheck(m_show_spectrum);
 	m_spectrum_height_slid.EnableWindow(m_show_spectrum);
+
+	m_back_transparency_slid.SetRange(10, 98);
+	m_back_transparency_slid.SetPos(theApp.m_background_transparency);
+	str.Format(_T("%d%%"), theApp.m_background_transparency);
+	SetDlgItemText(IDC_BACKGROUND_TRANSPARENCY_STATIC, str);
+	m_back_transparency_slid.EnableWindow(m_album_cover_as_background);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -221,6 +230,13 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 		CString str;
 		str.Format(_T("%d%%"), theApp.m_sprctrum_height);
 		SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
+	}
+	if ((pScrollBar->GetDlgCtrlID() == IDC_BACKGROUND_TRANSPARENCY_SLIDER))
+	{
+		theApp.m_background_transparency = m_back_transparency_slid.GetPos();
+		CString str;
+		str.Format(_T("%d%%"), theApp.m_background_transparency);
+		SetDlgItemText(IDC_BACKGROUND_TRANSPARENCY_STATIC, str);
 	}
 
 	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
@@ -395,7 +411,7 @@ HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何特性
-	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid)		//设置滑动条控件的背景色为白色
+	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid)		//设置滑动条控件的背景色为白色
 	{
 		return (HBRUSH)::GetStockObject(WHITE_BRUSH);
 	}
@@ -423,6 +439,7 @@ void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
+	m_back_transparency_slid.EnableWindow(m_album_cover_as_background);
 }
 
 
