@@ -1267,15 +1267,16 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		DrawInfo();
 
-		theApp.m_player.MusicControl(Command::OPEN);
+		//注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
+		//theApp.m_player.MusicControl(Command::OPEN);
 		//theApp.m_player.MusicControl(Command::SEEK);
 		theApp.m_player.GetBASSError();
 		SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
 		ShowTime();
 		m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 
-		if(!m_cmdLine.empty())
-			theApp.m_player.MusicControl(Command::PLAY);	//如果文件是通过命令行打开的，则打开后直接播放
+		//if(!m_cmdLine.empty())
+		//	theApp.m_player.MusicControl(Command::PLAY);	//如果文件是通过命令行打开的，则打开后直接播放
 
 		sec_temp = theApp.m_player.GetCurrentSecond();
 		UpdatePlayPauseButton();
