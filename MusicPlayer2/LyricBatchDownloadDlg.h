@@ -57,13 +57,14 @@ protected:
 	bool m_save_to_song_folder{ true };		//是否保存到歌曲所在目录
 	const vector<SongInfo>& m_playlist{ theApp.m_player.GetPlayList() };	//播放列表的引用
 
+	bool m_lyric_path_not_exit{ false };
+
 	CWinThread* m_pThread{};		//下载歌词的线程
 
 	void SaveConfig() const;
 	void LoadConfig();
 
-	void DisableControls();		//用于在下载前禁用控件
-	void EnableControls();		//用于在下载完成后启用控件
+	void EnableControls(bool enable);		//启用或禁用控件
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

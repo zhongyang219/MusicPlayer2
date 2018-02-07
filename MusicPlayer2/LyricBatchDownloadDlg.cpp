@@ -35,24 +35,17 @@ void CLyricBatchDownloadDlg::LoadConfig()
 	m_save_to_song_folder = (GetPrivateProfileInt(_T("lyric_batch_download"), _T("save_to_song_folder"), 1, theApp.m_config_path.c_str()) != 0);
 }
 
-void CLyricBatchDownloadDlg::DisableControls()
+void CLyricBatchDownloadDlg::EnableControls(bool enable)
 {
-	m_skip_exist_check.EnableWindow(FALSE);
-	m_save_code_combo.EnableWindow(FALSE);
-	m_download_translate_chk.EnableWindow(FALSE);
-	GetDlgItem(IDC_SAVE_TO_SONG_FOLDER)->EnableWindow(FALSE);
-	GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER)->EnableWindow(FALSE);
-	GetDlgItem(IDC_START_DOWNLOAD)->EnableWindow(FALSE);
-}
-
-void CLyricBatchDownloadDlg::EnableControls()
-{
-	m_skip_exist_check.EnableWindow(TRUE);
-	m_save_code_combo.EnableWindow(TRUE);
-	m_download_translate_chk.EnableWindow(TRUE);
-	GetDlgItem(IDC_SAVE_TO_SONG_FOLDER)->EnableWindow(TRUE);
-	GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER)->EnableWindow(TRUE);
-	GetDlgItem(IDC_START_DOWNLOAD)->EnableWindow(TRUE);
+	m_skip_exist_check.EnableWindow(enable);
+	m_save_code_combo.EnableWindow(enable);
+	m_download_translate_chk.EnableWindow(enable);
+	GetDlgItem(IDC_SAVE_TO_SONG_FOLDER)->EnableWindow(enable);
+	if (m_lyric_path_not_exit)
+		GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER)->EnableWindow(FALSE);
+	else
+		GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER)->EnableWindow(enable);
+	GetDlgItem(IDC_START_DOWNLOAD)->EnableWindow(enable);
 }
 
 bool CLyricBatchDownloadDlg::SaveLyric(const wchar_t * path, const wstring& lyric_wcs, CodeType code_type)
@@ -120,6 +113,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->SetCheck(FALSE);
 		((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->SetCheck(TRUE);
 		m_save_to_song_folder = true;
+		m_lyric_path_not_exit = true;
 	}
 
 	//初始化歌曲列表控件
@@ -162,7 +156,7 @@ void CLyricBatchDownloadDlg::OnBnClickedStartDownload()
 		m_song_list_ctrl.SetItemText(i, 3, _T(""));
 	}
 
-	DisableControls();		//禁用控件
+	EnableControls(false);		//禁用控件
 
 	//设置要向歌词下载工作线程传递的数据
 	m_thread_info.hwnd = GetSafeHwnd();
@@ -348,7 +342,7 @@ afx_msg LRESULT CLyricBatchDownloadDlg::OnBatchDownloadComplate(WPARAM wParam, L
 	//下载完成后重新载入歌词
 	theApp.m_player.SearchLyrics();
 	theApp.m_player.IniLyrics();
-	EnableControls();		//启用控件
+	EnableControls(true);		//启用控件
 	return 0;
 }
 
