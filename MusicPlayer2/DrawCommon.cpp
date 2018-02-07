@@ -240,33 +240,10 @@ void CDrawCommon::SetDrawArea(CDC * pDC, CRect rect)
 	pDC->SelectClipRgn(&rgn);
 }
 
-void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size)
+void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
 {
 	CDC memDC;
-	CBitmap bitmap;
-	bitmap.LoadBitmap(bitmap_id);
-	//获取图像实际大小
-	BITMAP bm;
-	GetObject(bitmap, sizeof(BITMAP), &bm);
 
-	memDC.CreateCompatibleDC(m_pDC);
-	memDC.SelectObject(&bitmap);
-	// 以下两行避免图片失真
-	m_pDC->SetStretchBltMode(HALFTONE);
-	m_pDC->SetBrushOrg(0, 0);
-	if (size.cx == 0 || size.cy == 0)		//如果指定的size为0，则使用位图的实际大小绘制
-		m_pDC->StretchBlt(start_point.x, start_point.y, bm.bmWidth, bm.bmHeight, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-	else
-		m_pDC->StretchBlt(start_point.x, start_point.y, size.cx, size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-	memDC.DeleteDC();
-}
-
-void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
-{
-	CDC memDC;
-	CBitmap bitmap;
-	if (!bitmap.Attach(hbitmap))
-		return;
 	//获取图像实际大小
 	BITMAP bm;
 	GetObject(bitmap, sizeof(BITMAP), &bm);
@@ -327,8 +304,25 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 	}
 
 	m_pDC->StretchBlt(start_point.x, start_point.y, draw_size.cx, draw_size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-	bitmap.Detach();
 	memDC.DeleteDC();
+}
+
+void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode)
+{
+	CDC memDC;
+	CBitmap bitmap;
+	bitmap.LoadBitmap(bitmap_id);
+	DrawBitmap(bitmap, start_point, size, stretch_mode);
+}
+
+void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
+{
+	//CDC memDC;
+	CBitmap bitmap;
+	if (!bitmap.Attach(hbitmap))
+		return;
+	DrawBitmap(bitmap, start_point, size, stretch_mode);
+	bitmap.Detach();
 }
 
 void CDrawCommon::FillRect(CRect rect, COLORREF color)

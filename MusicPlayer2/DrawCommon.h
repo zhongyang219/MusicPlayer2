@@ -39,7 +39,8 @@ public:
 
 	static void SetDrawArea(CDC* pDC, CRect rect);
 
-	void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size);
+	void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
+	void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode);
 	void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
 
 	void FillRect(CRect rect, COLORREF color);

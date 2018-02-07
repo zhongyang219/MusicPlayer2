@@ -223,8 +223,11 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_rect_s = m_rect;
 	m_rect_s.bottom = rect.bottom + DPI(2);
 
+	//获取专辑封面的矩形区域
 	m_album_rect = m_rect_s;
-	m_album_rect.right = m_album_rect.left + m_album_rect.Height();
+	CRect previous_btn_tect;
+	m_previous_button.GetWindowRect(previous_btn_tect);
+	m_album_rect.right = previous_btn_tect.left;
 	m_album_rect.MoveToXY(0, 0);
 	m_album_rect.DeflateRect(DPI(2), DPI(2));
 
@@ -445,7 +448,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	if (theApp.m_player.AlbumCoverExist())
 		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
 	else
-		m_draw.DrawBitmap(IDB_DEFAULT_COVER, m_album_rect.TopLeft(), m_album_rect.Size());
+		m_draw.DrawBitmap(IDB_DEFAULT_COVER, m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
 }
 
 void CMiniModeDlg::ColorChanged()
