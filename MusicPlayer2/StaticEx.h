@@ -17,15 +17,21 @@ public:
 	CString GetString() const;			//获取控件文本
 	void SetTextCenter(bool center) { m_center = center; }	//设置文本居中
 
+	void SetFillColor(COLORREF fill_color);		//设置要填充的背景色
+
 protected:
 	COLORREF m_TextColor;	//控件文字颜色
 	COLORREF m_TextBackColor;	//控件文本的第2种颜色
 	CString m_text;			//控件上的文本
 	bool m_center{ false };		//文本是否居中
 
+	COLORREF m_fill_color{};
+	bool m_fill_color_enable{ false };
+
 	virtual LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 public:
 	DECLARE_MESSAGE_MAP()
 	virtual void PreSubclassWindow();
+	afx_msg void OnPaint();
 };
 

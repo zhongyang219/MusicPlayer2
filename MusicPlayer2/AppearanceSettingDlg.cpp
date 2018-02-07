@@ -53,7 +53,7 @@ void CAppearanceSettingDlg::SetTransparency()
 void CAppearanceSettingDlg::ClickColor()
 {
 	//点击了预置颜色中的其中一个时，取消“跟随系统主题色”复选按钮的选中
-	CCommon::FillStaticColor(m_color_static, m_theme_color);
+	m_color_static.SetFillColor(m_theme_color);
 	m_theme_color_follow_system = false;
 	m_follow_system_color_check.SetCheck(FALSE);
 	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow();
@@ -61,13 +61,13 @@ void CAppearanceSettingDlg::ClickColor()
 
 void CAppearanceSettingDlg::DrawColor()
 {
-	CCommon::FillStaticColor(m_color_static, m_theme_color);
-	CCommon::FillStaticColor(m_color_static1, m_color1);
-	CCommon::FillStaticColor(m_color_static2, m_color2);
-	CCommon::FillStaticColor(m_color_static3, m_color3);
-	CCommon::FillStaticColor(m_color_static4, m_color4);
-	CCommon::FillStaticColor(m_color_static5, m_color5);
-	CCommon::FillStaticColor(m_color_static6, m_color6);
+	m_color_static.SetFillColor(m_theme_color);
+	m_color_static1.SetFillColor(m_color1);
+	m_color_static2.SetFillColor(m_color2);
+	m_color_static3.SetFillColor(m_color3);
+	m_color_static4.SetFillColor(m_color4);
+	m_color_static5.SetFillColor(m_color5);
+	m_color_static6.SetFillColor(m_color6);
 }
 
 
@@ -142,6 +142,8 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_toolTip.AddTool(&m_color_static4, _T("青绿色"));
 	m_toolTip.AddTool(&m_color_static5, _T("浅红色"));
 	m_toolTip.AddTool(&m_color_static6, _T("淡紫色"));
+
+	DrawColor();
 
 	////设置“更多颜色”按钮的可用状态
 	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_theme_color_follow_system);
@@ -254,7 +256,7 @@ void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
 		//	MessageBox(_T("警告：将主题颜色设置成黑色会使播放列表中正在播放的项目看不见！"), NULL, MB_ICONWARNING);
 		if(m_theme_color == RGB(255,255,255))
 			MessageBox(_T("警告：将主题颜色设置成白色会使进度条完全看不见！"), NULL, MB_ICONWARNING);
-		CCommon::FillStaticColor(m_color_static, m_theme_color);
+		m_color_static.SetFillColor(m_theme_color);
 		//设置了“更多颜色”之后，取消“跟随系统主题色”复选按钮的选中
 		m_theme_color_follow_system = false;
 		m_follow_system_color_check.SetCheck(FALSE);

@@ -354,18 +354,18 @@ int CCommon::GetListWidth(CListBox & list)
 	return nMaxExtent;
 }
 
-void CCommon::FillStaticColor(CStatic & static_ctr, COLORREF color)
-{
-	CDC* pDC = static_ctr.GetDC();
-	CRect rect;
-	static_ctr.GetClientRect(&rect);
-	CBrush BGBrush, *pOldBrush;
-	BGBrush.CreateSolidBrush(color);
-	pOldBrush = pDC->SelectObject(&BGBrush);
-	pDC->FillRect(&rect, &BGBrush);
-	pDC->SelectObject(pOldBrush);
-	BGBrush.DeleteObject();
-}
+//void CCommon::FillStaticColor(CStatic & static_ctr, COLORREF color)
+//{
+//	CDC* pDC = static_ctr.GetDC();
+//	CRect rect;
+//	static_ctr.GetClientRect(&rect);
+//	CBrush BGBrush, *pOldBrush;
+//	BGBrush.CreateSolidBrush(color);
+//	pOldBrush = pDC->SelectObject(&BGBrush);
+//	pDC->FillRect(&rect, &BGBrush);
+//	pDC->SelectObject(pOldBrush);
+//	BGBrush.DeleteObject();
+//}
 
 //COLORREF CCommon::ConvertToItemColor(COLORREF color)
 //{

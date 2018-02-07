@@ -30,7 +30,6 @@ void COptionsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(COptionsDlg, CDialog)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_OPTIONS_TAB, &COptionsDlg::OnTcnSelchangeOptionsTab)
-	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -99,7 +98,6 @@ void COptionsDlg::OnTcnSelchangeOptionsTab(NMHDR *pNMHDR, LRESULT *pResult)
 		m_tab1_dlg.ShowWindow(SW_HIDE);
 		m_tab3_dlg.ShowWindow(SW_HIDE);
 		m_tab2_dlg.SetFocus();
-		SetTimer(TIMER_ID2, 50, NULL);		//点击了第2个选项卡后延迟30毫秒绘制“进度条颜色”中的预览区域
 		break;
 	case 2:
 		m_tab3_dlg.ShowWindow(SW_SHOW);
@@ -111,14 +109,3 @@ void COptionsDlg::OnTcnSelchangeOptionsTab(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-
-void COptionsDlg::OnTimer(UINT_PTR nIDEvent)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (nIDEvent == TIMER_ID2)
-	{
-		m_tab2_dlg.DrawColor();
-		KillTimer(TIMER_ID2);
-	}
-	CDialog::OnTimer(nIDEvent);
-}

@@ -77,8 +77,8 @@ public:
 	static wstring GetTemplatePath();
 	//获取一个列表控件最大长度项目宽度的像素值
 	static int GetListWidth(CListBox& list);
-	//为一个Static控件填充指定的颜色
-	static void FillStaticColor(CStatic& static_ctr, COLORREF color);
+	////为一个Static控件填充指定的颜色（已删除，改为使用CStaticEx类的SetFillColor函数）
+	//static void FillStaticColor(CStatic& static_ctr, COLORREF color);
 
 	//判断当前操作系统是否是Windows10或以上版本
 	//VersionHelper中的函数无法判断Windows8.1和Windows10，

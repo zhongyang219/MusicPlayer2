@@ -169,6 +169,13 @@ CString CStaticEx::GetString() const
 	return m_text;
 }
 
+void CStaticEx::SetFillColor(COLORREF fill_color)
+{
+	m_fill_color = fill_color;
+	m_fill_color_enable = true;
+	Invalidate();
+}
+
 
 LRESULT CStaticEx::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -184,6 +191,7 @@ LRESULT CStaticEx::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	return CStatic::DefWindowProc(message, wParam, lParam);
 }
 BEGIN_MESSAGE_MAP(CStaticEx, CStatic)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -194,4 +202,18 @@ void CStaticEx::PreSubclassWindow()
 	GetWindowText(m_text);
 
 	CStatic::PreSubclassWindow();
+}
+
+
+void CStaticEx::OnPaint()
+{
+	CPaintDC dc(this); // device context for painting
+					   // TODO: 在此处添加消息处理程序代码
+					   // 不为绘图消息调用 CStatic::OnPaint()
+	if (m_fill_color_enable)
+	{
+		CRect rect;
+		GetClientRect(rect);
+		dc.FillSolidRect(rect, m_fill_color);
+	}
 }
