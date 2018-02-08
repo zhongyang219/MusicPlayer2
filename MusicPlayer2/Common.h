@@ -50,7 +50,8 @@ public:
 	//×Ö·û´®±È½Ï£¬ºöÂÔ´óĞ¡Ğ´
 	static bool StringCompareNoCase(const wstring& str1, const wstring& str2);
 	//×Ö·û´®²éÕÒ£¬ºöÂÔ´óĞ¡Ğ´
-	static size_t StringFindNoCase(const wstring& str, const wstring& find_str);
+	template<class T>
+	static size_t StringFindNoCase(const T& str, const T& find_str);
 
 	static wstring TranslateToSimplifiedChinese(const wstring& str);
 	static wstring TranslateToTranditionalChinese(const wstring& str);
@@ -176,5 +177,21 @@ inline bool CCommon::StringTransform(T & str, bool upper)
 	else
 	{
 		return false;
+	}
+}
+
+template<class T>
+inline size_t CCommon::StringFindNoCase(const T & str, const T & find_str)
+{
+	if (typeid(str) == typeid(string) || typeid(str) == typeid(wstring))
+	{
+		T _str{ str }, _find_str{ find_str };
+		StringTransform(_str, false);
+		StringTransform(_find_str, false);
+		return _str.find(_find_str);
+	}
+	else
+	{
+		return -1;
 	}
 }

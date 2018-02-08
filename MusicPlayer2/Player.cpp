@@ -334,6 +334,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		if (m_song_num > 0)
 		{
 			//if (m_index >= MAX_NUM_LENGTH && m_playlist[m_index].lengh.isZero())	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
+			AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
 			if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
 			{
 				GetBASSSongLength();			//打开后重新获取文件长度
@@ -341,7 +342,6 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				float bitrate{};
 				BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_BITRATE, &bitrate);
 				m_playlist[m_index].bitrate = static_cast<int>(bitrate + 0.5f);
-				AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
 				CAudioCommon::GetAudioTags(m_musicStream, type, m_path, m_playlist[m_index]);
 				theApp.m_song_data[m_path + m_current_file_name] = m_playlist[m_index];
 			}
@@ -355,7 +355,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			static wstring last_file_path;
 			if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
 			{
-				m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
+				if (type != AU_FLAC)
+					m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
+				else
+					m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
 				m_album_cover.Destroy();
 				m_album_cover.Load(m_album_cover_path.c_str());
 			}

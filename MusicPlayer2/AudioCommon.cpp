@@ -547,22 +547,87 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, wstring file_pa
 	case AU_FLAC:
 		{
 			wstring file_name{ file_path + song_info.file_name };
-			string tag_contents;
-			ifstream file{ file_name.c_str(), std::ios::binary };
-			size_t size;
-			if (!CCommon::FileExist(file_name))
-				return;
-			if (file.fail())
+			string tag_contents;		//整个标签区域的内容
+			GetFlacTagContents(file_name, tag_contents);
+			string flac_tag_str;		//当前标签的字符
+			string flac_tag_title;
+			string flac_tag_artist;
+			string flac_tag_album;
+			string flac_tag_track;
+			string flac_tag_year;
+			string flac_tag_genre;
+			char tag_count{};
+			int tag_size = tag_contents.size();
+			if (tag_size < 4)
 				break;
-			while (!file.eof())
+
+			for (int i{}; i < tag_size; i++)	//只获取标签前面指定个数的字节
 			{
-				size = tag_contents.size();
-				tag_contents.push_back(file.get());
-				if (size > 1024 * 1024)
+				flac_tag_str.push_back(tag_contents[i]);
+				if (tag_contents[i] == '\0' && tag_contents[i + 1] == '\0' && tag_contents[i + 2] == '\0')		//遇到3个'\0'，一组标签结束
+				{
+					if (flac_tag_str.size() < 2)
+					{
+						flac_tag_str.clear();
+						continue;
+					}
+					flac_tag_str.pop_back();
+					flac_tag_str.pop_back();
+					size_t index;
+					index = flac_tag_str.find_first_of('=');
+					if (CCommon::StringFindNoCase(flac_tag_str, string("title")) != string::npos)
+					{
+						flac_tag_title = flac_tag_str.substr(index + 1);
+						tag_count++;
+					}
+					else if (CCommon::StringFindNoCase(flac_tag_str, string("Artist")) != string::npos)
+					{
+						flac_tag_artist = flac_tag_str.substr(index + 1);
+						tag_count++;
+					}
+					else if (CCommon::StringFindNoCase(flac_tag_str, string("Album")) != string::npos)
+					{
+						flac_tag_album = flac_tag_str.substr(index + 1);
+						tag_count++;
+					}
+					else if (CCommon::StringFindNoCase(flac_tag_str, string("TrackNumber")) != string::npos)
+					{
+						flac_tag_track = flac_tag_str.substr(index + 1);
+						tag_count++;
+					}
+					else if (CCommon::StringFindNoCase(flac_tag_str, string("Date")) != string::npos)
+					{
+						flac_tag_year = flac_tag_str.substr(index + 1);
+						tag_count++;
+					}
+					else if (CCommon::StringFindNoCase(flac_tag_str, string("Genre")) != string::npos)
+					{
+						flac_tag_genre = flac_tag_str.substr(index + 1);
+						tag_count++;
+					}
+
+					flac_tag_str.clear();
+				}
+
+				if (tag_count >= 6)		//已经获取到了6个标签，退出循环
 					break;
-				if (size > 4 && (tag_contents[size - 1] & (BYTE)0x80) == (BYTE)0x80 && tag_contents[size - 2] == -1 && tag_contents[size - 3] == -1 && tag_contents[size - 4] == -1)
+
+				if (tag_contents.substr(i, 6)=="image/")	//遇到"image/"，后面就是专辑封面了
 					break;
 			}
+
+			if (!flac_tag_title.empty())
+				song_info.title = CCommon::StrToUnicode(flac_tag_title, CodeType::UTF8);
+			if (!flac_tag_artist.empty())
+				song_info.artist = CCommon::StrToUnicode(flac_tag_artist, CodeType::UTF8);
+			if (!flac_tag_album.empty())
+				song_info.album = CCommon::StrToUnicode(flac_tag_album, CodeType::UTF8);
+			if (!flac_tag_track.empty())
+				song_info.track = atoi(flac_tag_track.c_str());
+			if (!flac_tag_year.empty())
+				song_info.year = CCommon::StrToUnicode(flac_tag_year, CodeType::UTF8);;
+			if (!flac_tag_genre.empty())
+				song_info.genre = GetGenre(static_cast<BYTE>(atoi(flac_tag_genre.c_str()) - 1));
 	}
 
 	default:
@@ -574,7 +639,7 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, wstring file_pa
 	song_info.info_acquired = true;
 }
 
-wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& type)
+wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& image_type)
 {
 	const char* id3v2 = BASS_ChannelGetTags(hStream, BASS_TAG_ID3V2);
 	if (id3v2 == nullptr)
@@ -584,76 +649,17 @@ wstring CAudioCommon::GetAlbumCover(HSTREAM hStream, int& type)
 	const int id3tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
 	string tag_content;
 	tag_content.assign(id3v2, id3tag_size);	//将标签区域的内容保存到一个string对象里
-
 	size_t cover_index = tag_content.find("APIC");		//查找专辑封面的标识字符串
-	if(cover_index == string::npos)
+	if (cover_index == string::npos)
 		return wstring();
+	return _GetAlbumCover(tag_content, cover_index, image_type);
+}
 
-	//获取当前标签的大小
-	string size_str = tag_content.substr(cover_index + 4, 4);
-	const int tag_size = size_str[0] * 0x1000000 + size_str[1] * 0x10000 + size_str[2] * 0x100 + size_str[3];
-
-	//获取图片起始位置
-	size_t type_index = tag_content.find("image", cover_index);
-	//string image_type_str = tag_content.substr(type_index, 10);
-	//string image_type_str2 = tag_content.substr(type_index, 9);
-
-	//根据图片类型设置文件扩展名
-	size_t image_index;		//图片数据的起始位置
-	size_t image_size;		//根据图片结束字节计算出的图片大小
-	//设置图片文件的头和尾
-	const string jpg_head{ static_cast<char>(0xff), static_cast<char>(0xd8) };
-	const string jpg_tail{ static_cast<char>(0xff), static_cast<char>(0xd9) };
-	const string png_head{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
-	const string png_tail{ static_cast<char>(0x49), static_cast<char>(0x45), static_cast<char>(0x4e), static_cast<char>(0x44), static_cast<char>(0xae), static_cast<char>(0x42), static_cast<char>(0x60), static_cast<char>(0x82) };
-	const string gif_head{ "GIF89a" };
-	const string gif_tail{ static_cast<char>(0x80), static_cast<char>(0x00), static_cast<char>(0x00), static_cast<char>(0x3b) };
-
-	string image_contents;
-	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
-	image_index = tag_content.find(jpg_head, type_index);
-	if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
-	{
-		type = 0;
-		size_t end_index = tag_content.find(jpg_tail, image_index + jpg_head.size());
-		image_size = end_index - image_index + jpg_tail.size();
-		image_contents = tag_content.substr(image_index, image_size);
-	}
-	else		//没有找到jpg文件头则查找png文件头
-	{
-		image_index = tag_content.find(png_head, type_index);
-		if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
-		{
-			type = 1;
-			size_t end_index = tag_content.find(png_tail, image_index + png_head.size());
-			image_size = end_index - image_index + png_tail.size();
-			image_contents = tag_content.substr(image_index, image_size);
-		}
-		else		//没有找到png文件头则查找gif文件头
-		{
-			image_index = tag_content.find(gif_head, type_index);
-			if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
-			{
-				type = 2;
-				size_t end_index = tag_content.find(gif_tail, image_index + gif_head.size());
-				image_size = end_index - image_index + gif_tail.size();
-				image_contents = tag_content.substr(image_index, image_size);
-			}
-		}
-	}
-
-	//将专辑封面保存到临时目录
-	wstring file_path{ CCommon::GetTemplatePath() };
-	wstring file_name{ ALBUM_COVER_NAME/* + file_extension*/ };
-	if (!image_contents.empty())
-	{
-		file_path += file_name;
-		ofstream out_put{ file_path, std::ios::binary };
-		out_put << image_contents;
-		return file_path;
-	}
-	type = -1;
-	return wstring();
+wstring CAudioCommon::GetFlacAlbumCover(const wstring & file_name, int & image_type)
+{
+	string tag_contents;
+	GetFlacTagContents(file_name, tag_contents);
+	return _GetAlbumCover(tag_contents, 0, image_type);
 }
 
 bool CAudioCommon::WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off)
@@ -712,11 +718,94 @@ wstring CAudioCommon::GetGenre(BYTE genre)
 		return L"<未知流派>";
 }
 
-//void CAudioCommon::DeleteEndSpace(wstring & str)
-//{
-//	while (!str.empty() && str.back() == L' ')
-//	{
-//		str.pop_back();
-//	}
-//}
+void CAudioCommon::GetFlacTagContents(wstring file_name, string & contents_buff)
+{
+	ifstream file{ file_name.c_str(), std::ios::binary };
+	size_t size;
+	if (!CCommon::FileExist(file_name))
+		return;
+	if (file.fail())
+		return;
+	contents_buff.clear();
+	while (!file.eof())
+	{
+		size = contents_buff.size();
+		contents_buff.push_back(file.get());
+		if (size > 1024 * 1024)
+			break;
+		//找到flac音频的起始字节时，表示标签信息已经读取完了
+		if (size > 4 && (contents_buff[size - 1] & (BYTE)0xF8) == (BYTE)0xF8 && contents_buff[size - 2] == -1)
+			break;
+	}
+}
+
+wstring CAudioCommon::_GetAlbumCover(const string & tag_content, size_t cover_index, int & image_type)
+{
+
+	//获取当前标签的大小
+	string size_str = tag_content.substr(cover_index + 4, 4);
+	const int tag_size = size_str[0] * 0x1000000 + size_str[1] * 0x10000 + size_str[2] * 0x100 + size_str[3];
+
+	//获取图片起始位置
+	size_t type_index = tag_content.find("image", cover_index);
+	//string image_type_str = tag_content.substr(type_index, 10);
+	//string image_type_str2 = tag_content.substr(type_index, 9);
+
+	//根据图片类型设置文件扩展名
+	size_t image_index;		//图片数据的起始位置
+	size_t image_size;		//根据图片结束字节计算出的图片大小
+							//设置图片文件的头和尾
+	const string jpg_head{ static_cast<char>(0xff), static_cast<char>(0xd8) };
+	const string jpg_tail{ static_cast<char>(0xff), static_cast<char>(0xd9) };
+	const string png_head{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
+	const string png_tail{ static_cast<char>(0x49), static_cast<char>(0x45), static_cast<char>(0x4e), static_cast<char>(0x44), static_cast<char>(0xae), static_cast<char>(0x42), static_cast<char>(0x60), static_cast<char>(0x82) };
+	const string gif_head{ "GIF89a" };
+	const string gif_tail{ static_cast<char>(0x80), static_cast<char>(0x00), static_cast<char>(0x00), static_cast<char>(0x3b) };
+
+	string image_contents;
+	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
+	image_index = tag_content.find(jpg_head, type_index);
+	if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
+	{
+		image_type = 0;
+		size_t end_index = tag_content.find(jpg_tail, image_index + jpg_head.size());
+		image_size = end_index - image_index + jpg_tail.size();
+		image_contents = tag_content.substr(image_index, image_size);
+	}
+	else		//没有找到jpg文件头则查找png文件头
+	{
+		image_index = tag_content.find(png_head, type_index);
+		if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
+		{
+			image_type = 1;
+			size_t end_index = tag_content.find(png_tail, image_index + png_head.size());
+			image_size = end_index - image_index + png_tail.size();
+			image_contents = tag_content.substr(image_index, image_size);
+		}
+		else		//没有找到png文件头则查找gif文件头
+		{
+			image_index = tag_content.find(gif_head, type_index);
+			if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
+			{
+				image_type = 2;
+				size_t end_index = tag_content.find(gif_tail, image_index + gif_head.size());
+				image_size = end_index - image_index + gif_tail.size();
+				image_contents = tag_content.substr(image_index, image_size);
+			}
+		}
+	}
+
+	//将专辑封面保存到临时目录
+	wstring file_path{ CCommon::GetTemplatePath() };
+	wstring file_name{ ALBUM_COVER_NAME/* + file_extension*/ };
+	if (!image_contents.empty())
+	{
+		file_path += file_name;
+		ofstream out_put{ file_path, std::ios::binary };
+		out_put << image_contents;
+		return file_path;
+	}
+	image_type = -1;
+	return wstring();
+}
 
