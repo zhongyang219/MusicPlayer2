@@ -220,7 +220,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 }
 
 
-void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song_info)
+void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, wstring file_path, SongInfo & song_info)
 {
 	const TAG_ID3V1* id3;
 	const char* id3v2;
@@ -544,6 +544,26 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, SongInfo & song
 			if (!mp4_tag_genre.empty())
 				song_info.genre = GetGenre(static_cast<BYTE>(atoi(mp4_tag_genre.c_str()) - 1));
 		}
+	case AU_FLAC:
+		{
+			wstring file_name{ file_path + song_info.file_name };
+			string tag_contents;
+			ifstream file{ file_name.c_str(), std::ios::binary };
+			size_t size;
+			if (!CCommon::FileExist(file_name))
+				return;
+			if (file.fail())
+				break;
+			while (!file.eof())
+			{
+				size = tag_contents.size();
+				tag_contents.push_back(file.get());
+				if (size > 1024 * 1024)
+					break;
+				if (size > 4 && (tag_contents[size - 1] & (BYTE)0x80) == (BYTE)0x80 && tag_contents[size - 2] == -1 && tag_contents[size - 3] == -1 && tag_contents[size - 4] == -1)
+					break;
+			}
+	}
 
 	default:
 		break;

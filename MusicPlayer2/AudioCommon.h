@@ -281,8 +281,8 @@ public:
 	//处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，path为文件的路径
 	static void GetCueTracks(vector<SongInfo>& files, wstring path);
 
-	//获取音频文件的信息，并储存在song_info中
-	static void GetAudioTags(HSTREAM hStream, AudioType type, SongInfo& song_info);
+	//获取音频文件的信息，并储存在song_info中（file_path在获取flac格式时用到）
+	static void GetAudioTags(HSTREAM hStream, AudioType type, wstring file_path, SongInfo& song_info);
 
 	//获取音频文件的专辑封面，并保存到临时目录，返回保存路径，type用来接收封面的格式 0:jpg, 1:png, 2:gif
 	static wstring GetAlbumCover(HSTREAM hStream, int& type);

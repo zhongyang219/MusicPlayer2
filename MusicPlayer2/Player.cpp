@@ -139,7 +139,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 		pInfo->player->m_playlist[i].bitrate = static_cast<int>(bitrate + 0.5f);
 		//»ñÈ¡ÒôÆµ±êÇ©
 		AudioType type = CAudioCommon::GetAudioType(current_file_name);
-		CAudioCommon::GetAudioTags(hStream, type, pInfo->player->m_playlist[i]);
+		CAudioCommon::GetAudioTags(hStream, type, pInfo->player->m_path, pInfo->player->m_playlist[i]);
 		BASS_StreamFree(hStream);
 		theApp.m_song_data[pInfo->player->m_path + pInfo->player->m_playlist[i].file_name] = pInfo->player->m_playlist[i];
 		count++;
@@ -342,7 +342,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_BITRATE, &bitrate);
 				m_playlist[m_index].bitrate = static_cast<int>(bitrate + 0.5f);
 				AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
-				CAudioCommon::GetAudioTags(m_musicStream, type, m_playlist[m_index]);
+				CAudioCommon::GetAudioTags(m_musicStream, type, m_path, m_playlist[m_index]);
 				theApp.m_song_data[m_path + m_current_file_name] = m_playlist[m_index];
 			}
 			else

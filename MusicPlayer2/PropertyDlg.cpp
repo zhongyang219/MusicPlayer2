@@ -402,7 +402,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 		//重新从文件读取该歌曲的标签
 		HSTREAM hStream;
 		hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-		CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, m_all_song_info[m_index]);
+		CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, theApp.m_player.GetCurrentPath(), m_all_song_info[m_index]);
 		BASS_StreamFree(hStream);
 
 		m_modified = false;
