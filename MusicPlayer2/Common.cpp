@@ -122,6 +122,14 @@ void CCommon::FileNameNormalize(wstring & file_name)
 	}
 }
 
+void CCommon::ReplaceFileNameExtension(wstring& file_name, wchar_t * extension)
+{
+	size_t index = file_name.rfind(L'.');
+	if (index >= (file_name.size() - 1)) return;		//找不到圆点，或圆点在最后一个字符的位置，则直接返回
+	file_name.erase(index + 1);
+	file_name.append(extension);
+}
+
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
 	int l, m;

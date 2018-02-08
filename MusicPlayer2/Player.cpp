@@ -238,9 +238,9 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 		//if (!song.lyric_file.empty() && CCommon::FileExist(song.lyric_file))		//如果歌曲信息中有歌词文件，且歌词文件存在，则不需要再获取歌词
 		//	continue;
 		wstring lyric_path{ m_path + song.file_name };		//得到路径+文件名的字符串
-		lyric_path.replace(lyric_path.size() - 3, 3, L"lrc");		//将最后3个字符的扩展名替换成lrc
+		CCommon::ReplaceFileNameExtension(lyric_path, L"lrc");		//将文件扩展替换成lrc
 		wstring lyric_path2{ m_lyric_path + song.file_name };
-		lyric_path2.replace(lyric_path2.size() - 3, 3, L"lrc");
+		CCommon::ReplaceFileNameExtension(lyric_path2, L"lrc");
 		//查找歌词文件名和歌曲文件名完全匹配的歌词
 		if (CCommon::FileExist(lyric_path))
 		{

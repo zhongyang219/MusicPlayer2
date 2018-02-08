@@ -338,9 +338,9 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha)
 	cdc.CreateCompatibleDC(m_pDC);
 
 	CBitmap bitmap, *pOldBitmap;
-	bitmap.CreateCompatibleBitmap(m_pDC, rect.right, rect.bottom);
+	bitmap.CreateCompatibleBitmap(m_pDC, rect.Width(), rect.Height());
 	CRect src(rect);
-	src.OffsetRect(CSize(-rect.left, -rect.top));
+	src.MoveToXY(0, 0);
 	pOldBitmap = cdc.SelectObject(&bitmap);
 	cdc.FillSolidRect(src, color); //Í¸Ã÷É«
 
