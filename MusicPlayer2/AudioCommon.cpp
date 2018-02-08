@@ -625,9 +625,9 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, wstring file_pa
 			if (!flac_tag_track.empty())
 				song_info.track = atoi(flac_tag_track.c_str());
 			if (!flac_tag_year.empty())
-				song_info.year = CCommon::StrToUnicode(flac_tag_year, CodeType::UTF8);;
+				song_info.year = CCommon::StrToUnicode(flac_tag_year, CodeType::UTF8);
 			if (!flac_tag_genre.empty())
-				song_info.genre = GetGenre(static_cast<BYTE>(atoi(flac_tag_genre.c_str()) - 1));
+				song_info.genre = CCommon::StrToUnicode(flac_tag_genre, CodeType::UTF8);
 	}
 
 	default:

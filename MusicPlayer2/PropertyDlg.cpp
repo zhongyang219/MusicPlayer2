@@ -404,6 +404,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 		hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, theApp.m_player.GetCurrentPath(), m_all_song_info[m_index]);
 		BASS_StreamFree(hStream);
+		theApp.m_song_data[theApp.m_player.GetCurrentPath() + m_all_song_info[m_index].file_name] = m_all_song_info[m_index];
 
 		m_modified = false;
 		m_save_button.EnableWindow(m_write_enable && m_modified);
