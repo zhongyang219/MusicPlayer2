@@ -1272,7 +1272,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
 		//theApp.m_player.MusicControl(Command::OPEN);
 		//theApp.m_player.MusicControl(Command::SEEK);
-		theApp.m_player.GetBASSError();
+		//theApp.m_player.GetBASSError();
 		SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
 		ShowTime();
 		m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
@@ -2581,9 +2581,6 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lParam)
 {
 	theApp.DoWaitCursor(0);
-	theApp.m_player.m_loading = false;
-	theApp.m_player.IniPlaylistComplate(wParam != 0);
-	theApp.m_player.IniLyrics();
 	ShowPlayList();
 	ShowTime();
 	DrawInfo(true);

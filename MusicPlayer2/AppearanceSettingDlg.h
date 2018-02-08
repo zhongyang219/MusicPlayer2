@@ -68,6 +68,8 @@ protected:
 
 	void SetTransparency();
 	void ClickColor();
+	static int SpectrumHeightChg(int value);		//使用二次函数将10~300范围内的值映射到0~100范围内
+	static int SpectrumHeightRChg(int value);		//使用二次函数将0~100范围内的值映射到10~300范围内
 
 	DECLARE_MESSAGE_MAP()
 public:

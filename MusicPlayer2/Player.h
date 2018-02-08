@@ -15,15 +15,10 @@ public:
 	//用于向初始化播放列表传递信息的结构体
 	struct ThreadInfo
 	{
-		//用于输入和输出：
-		vector<SongInfo>* playlist;
-		//用于输入：
-		wstring path;
 		bool refresh_info;
 		bool sort;		//指示加载完播放列表后是否要排序
-		//HSTREAM music_stream;
-		//用于输出
 		int process_percent;
+		CPlayer* player;
 	};
 	//初始化播放列表的工作线程函数
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
@@ -90,6 +85,7 @@ private:
 	void IniBASS();			//初始化BASS音频库
 	void IniPlayList(bool cmd_para = false, bool refresh_info = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
+	void IniPlaylistComplate(bool sort);		//播放列表加载完毕时的处理
 
 	void ChangePath(const wstring& path, int track = 0);		//改变当前路径
 
@@ -124,7 +120,6 @@ public:
 	void Create(const vector<wstring>& files);	//初始化CPlayer类
 	void Create(const wstring & path);
 	void MusicControl(Command command, int volume_step = 2);		//控制音乐播放
-	void IniPlaylistComplate(bool sort);		//播放列表加载完毕时的处理
 	bool SongIsOver() const;			//判断当前音乐是否播放完毕
 	void GetBASSCurrentPosition();		//从BASS音频库获取当前播放到的位置
 	void GetBASSSongLength();			//从BASS音频库获取正在播放文件的长度

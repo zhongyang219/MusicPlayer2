@@ -87,10 +87,11 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 		if (m_index < 0 || m_index >= m_song_num) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 
 		m_loading = true;
-		m_thread_info.playlist = &m_playlist;
+		//m_thread_info.playlist = &m_playlist;
 		m_thread_info.refresh_info = refresh_info;
 		m_thread_info.sort = !cmd_para;
-		m_thread_info.path = m_path;
+		//m_thread_info.path = m_path;
+		m_thread_info.player = this;
 		//创建初始化播放列表的工作线程
 		m_pThread = AfxBeginThread(IniPlaylistThreadFunc, &m_thread_info);
 
@@ -110,7 +111,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 	ThreadInfo* pInfo = (ThreadInfo*)lpParam;
 	//获取播放列表中每一首歌曲的信息
 	//最多只获取MAX_NUM_LENGTH首歌的长度，超过MAX_NUM_LENGTH数量的歌曲的长度在打开时获得。防止文件夹中音频文件过多导致等待时间过长
-	int song_num = pInfo->playlist->size();
+	int song_num = pInfo->player->m_playlist.size();
 	int song_count = min(song_num, MAX_NUM_LENGTH);
 	for (int i{}, count{}; count < song_count && i < song_num; i++)
 	{
@@ -118,32 +119,35 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 		if (!pInfo->refresh_info)
 		{
-			wstring file_name{ pInfo->playlist->at(i).file_name };
-			auto iter = theApp.m_song_data.find(pInfo->path + pInfo->playlist->at(i).file_name);
+			wstring file_name{ pInfo->player->m_playlist[i].file_name };
+			auto iter = theApp.m_song_data.find(pInfo->player->m_path + pInfo->player->m_playlist[i].file_name);
 			if (iter != theApp.m_song_data.end())		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
 			{
-				pInfo->playlist->at(i) = iter->second;
-				pInfo->playlist->at(i).file_name = file_name;
+				pInfo->player->m_playlist[i] = iter->second;
+				pInfo->player->m_playlist[i].file_name = file_name;
 				continue;
 			}
 		}
-		wstring current_file_name = pInfo->playlist->at(i).file_name;
+		wstring current_file_name = pInfo->player->m_playlist[i].file_name;
 		HSTREAM hStream;
-		hStream = BASS_StreamCreateFile(FALSE, (pInfo->path + current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+		hStream = BASS_StreamCreateFile(FALSE, (pInfo->player->m_path + current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		//获取长度
-		pInfo->playlist->at(i).lengh = GetBASSSongLength(hStream);
+		pInfo->player->m_playlist[i].lengh = GetBASSSongLength(hStream);
 		//获取比特率
 		float bitrate{};
 		BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
-		pInfo->playlist->at(i).bitrate = static_cast<int>(bitrate + 0.5f);
+		pInfo->player->m_playlist[i].bitrate = static_cast<int>(bitrate + 0.5f);
 		//获取音频标签
 		AudioType type = CAudioCommon::GetAudioType(current_file_name);
-		CAudioCommon::GetAudioTags(hStream, type, pInfo->playlist->at(i));
+		CAudioCommon::GetAudioTags(hStream, type, pInfo->player->m_playlist[i]);
 		BASS_StreamFree(hStream);
-		theApp.m_song_data[pInfo->path + pInfo->playlist->at(i).file_name] = pInfo->playlist->at(i);
+		theApp.m_song_data[pInfo->player->m_path + pInfo->player->m_playlist[i].file_name] = pInfo->player->m_playlist[i];
 		count++;
 	}
-	PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, WPARAM(pInfo->sort), 0);
+	pInfo->player->m_loading = false;
+	pInfo->player->IniPlaylistComplate(pInfo->sort);
+	pInfo->player->IniLyrics();
+	PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
 	return 0;
 }
 
@@ -770,6 +774,8 @@ RepeatMode CPlayer::GetRepeatMode() const
 
 bool CPlayer::GetBASSError()
 {
+	if (m_loading)
+		return false;
 	int error_code_tmp = BASS_ErrorGetCode();
 	if (error_code_tmp && error_code_tmp != m_error_code)
 	{
@@ -783,9 +789,10 @@ bool CPlayer::GetBASSError()
 
 bool CPlayer::IsError() const
 {
-	//return ((m_error_code != 0 && m_error_code != BASS_ERROR_ILLPARAM) || m_musicStream == 0);
-	////调节均衡器时，BASS音频库会出现BASS_ERROR_ILLPARAM，但是似乎不影响音乐的播放，总之暂时先屏蔽这个故障
-	return (m_error_code != 0 || m_musicStream == 0);
+	if (m_loading)		//如果播放列表正在加载，则不检测错误
+		return false;
+	else
+		return (m_error_code != 0 || m_musicStream == 0);
 }
 
 void CPlayer::SetTitle() const

@@ -59,6 +59,24 @@ void CAppearanceSettingDlg::ClickColor()
 	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow();
 }
 
+int CAppearanceSettingDlg::SpectrumHeightChg(int value)
+{
+	int rtn;
+	rtn = static_cast<int>(22.72727272727*std::sqrt(0.088*value - 0.39) - 15.9090909090);
+	if (rtn < 0) rtn = 0;
+	if (rtn > 100) rtn = 100;
+	return rtn;
+}
+
+int CAppearanceSettingDlg::SpectrumHeightRChg(int value)
+{
+	int rtn;
+	rtn = static_cast<int>(0.022*value*value + 0.7*value + 10);
+	if (rtn < 10) rtn = 10;
+	if (rtn > 300) rtn = 300;
+	return rtn;
+}
+
 void CAppearanceSettingDlg::DrawColor()
 {
 	m_color_static.SetFillColor(m_theme_color);
@@ -115,8 +133,8 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	str.Format(_T("%d%%"), m_transparency);
 	SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 
-	m_spectrum_height_slid.SetRange(10, 300);
-	m_spectrum_height_slid.SetPos(theApp.m_sprctrum_height);
+	m_spectrum_height_slid.SetRange(0, 100);
+	m_spectrum_height_slid.SetPos(SpectrumHeightChg(theApp.m_sprctrum_height));
 	str.Format(_T("%d%%"), theApp.m_sprctrum_height);
 	SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
 
@@ -228,7 +246,7 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 	}
 	if ((pScrollBar->GetDlgCtrlID() == IDC_SPECTRUM_HEIGHT_SLIDER))
 	{
-		theApp.m_sprctrum_height = m_spectrum_height_slid.GetPos();
+		theApp.m_sprctrum_height = SpectrumHeightRChg(m_spectrum_height_slid.GetPos());
 		CString str;
 		str.Format(_T("%d%%"), theApp.m_sprctrum_height);
 		SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
