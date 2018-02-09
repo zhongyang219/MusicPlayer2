@@ -1857,7 +1857,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	pMenu->EnableMenuItem(ID_LYRIC_FORWARD, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_LYRIC_DELAY, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_SAVE_MODIFIED_LYRIC, MF_BYCOMMAND | ((!theApp.m_player.m_Lyrics.IsEmpty() && theApp.m_player.m_Lyrics.IsModified()) ? MF_ENABLED : MF_GRAYED));
-	pMenu->EnableMenuItem(ID_DELETE_LYRIC, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_DELETE_LYRIC, MF_BYCOMMAND | (CCommon::FileExist(theApp.m_player.m_Lyrics.GetPathName()) ? MF_ENABLED : MF_GRAYED));		//当歌词文件存在时启用“删除歌词”菜单项
 	pMenu->EnableMenuItem(ID_BROWSE_LYRIC, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
@@ -2032,8 +2032,8 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_player.ReloadPlaylist();
 	//ShowPlayList();
-	UpdatePlayPauseButton();
-	ShowTime();
+	//UpdatePlayPauseButton();
+	//ShowTime();
 }
 
 
@@ -2081,6 +2081,8 @@ void CMusicPlayerDlg::OnItemProperty()
 	//propertyDlg.m_playing_index = theApp.m_player.GetIndex();
 	//propertyDlg.m_lyric_name = theApp.m_player.GetLyricName();
 	propertyDlg.DoModal();
+	if (propertyDlg.GetListRefresh())
+		ShowPlayList();
 }
 
 
@@ -2373,7 +2375,8 @@ void CMusicPlayerDlg::OnSongInfo()
 	propertyDlg.m_index = theApp.m_player.GetIndex();
 	propertyDlg.m_song_num = theApp.m_player.GetSongNum();
 	propertyDlg.DoModal();
-
+	if (propertyDlg.GetListRefresh())
+		ShowPlayList();
 }
 
 
@@ -2479,7 +2482,7 @@ void CMusicPlayerDlg::OnLyricBatchDownload()
 void CMusicPlayerDlg::OnDeleteLyric()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (!theApp.m_player.m_Lyrics.IsEmpty())
+	if (CCommon::FileExist(theApp.m_player.m_Lyrics.GetPathName()))
 	{
 		int rtn = CCommon::DeleteAFile(m_hWnd, theApp.m_player.m_Lyrics.GetPathName());		//删除歌词文件
 		theApp.m_player.ClearLyric();		//清除歌词关联
@@ -2586,6 +2589,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 	DrawInfo(true);
 	SetPorgressBarSize();
 	UpdatePlayPauseButton();
+	ShowTime();
 	EnablePlaylist(true);
 	theApp.DoWaitCursor(-1);
 

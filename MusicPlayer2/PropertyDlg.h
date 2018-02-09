@@ -22,6 +22,8 @@ public:
 	int m_song_num;
 	//wstring m_lyric_name;
 
+	bool GetListRefresh() const { return m_list_refresh; }
+
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_PROPERTY_DIALOG };
@@ -33,6 +35,7 @@ protected:
 	bool m_write_enable{ false };		//是否允许写入标签
 	bool m_modified{ false };
 	bool m_genre_modified{ false };
+	bool m_list_refresh{ false };		//用于判断窗口关闭后播放列表是否要刷新，只要有任一首曲目的“标题”或“艺术家”标签编辑过，则置为true
 
 	//控件变量
 	CEditEx m_file_name_edit;

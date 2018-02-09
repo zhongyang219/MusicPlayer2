@@ -141,7 +141,7 @@ void CPropertyDlg::SetEditReadOnly(bool read_only)
 void CPropertyDlg::SetWreteEnable()
 {
 	//目前暂时只支持MP3的ID3V1标签写入
-	m_write_enable = (CCommon::GetFileExtension(m_all_song_info[m_index].file_name) == L"mp3");
+	m_write_enable = (CCommon::GetFileExtension(m_all_song_info[m_index].file_name) == L"mp3" && m_all_song_info[m_index].tag_type == 1);
 	SetEditReadOnly(!m_write_enable);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 	if (m_write_enable)
@@ -200,6 +200,7 @@ BOOL CPropertyDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	m_modified = false;
 	m_genre_modified = false;
+	m_list_refresh = false;
 
 	//初始化流派列表
 	for (int i{}; i < GENRE_MAX; i++)
@@ -289,6 +290,7 @@ void CPropertyDlg::OnEnChangeTitelEdit()
 
 	// TODO:  在此添加控件通知处理程序代码
 	m_modified = (m_title_edit.GetModify() != 0);
+	m_list_refresh = m_modified;
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }
 
@@ -302,6 +304,7 @@ void CPropertyDlg::OnEnChangeArtistEdit()
 
 	// TODO:  在此添加控件通知处理程序代码
 	m_modified = (m_artist_edit.GetModify() != 0);
+	m_list_refresh = m_modified;
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }
 

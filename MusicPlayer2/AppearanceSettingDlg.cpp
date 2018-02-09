@@ -182,7 +182,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_album_cover_fit_combo.AddString(L"适应");
 	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_album_cover_fit));
 	m_album_cover_fit_combo.EnableWindow(m_show_album_cover);
-	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
+	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
 
 	m_album_cover_as_background_chk.SetCheck(m_album_cover_as_background);
 	m_show_spectrum_chk.SetCheck(m_show_spectrum);

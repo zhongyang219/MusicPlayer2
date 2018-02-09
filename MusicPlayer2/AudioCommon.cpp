@@ -741,11 +741,6 @@ void CAudioCommon::GetFlacTagContents(wstring file_name, string & contents_buff)
 
 wstring CAudioCommon::_GetAlbumCover(const string & tag_content, size_t cover_index, int & image_type)
 {
-
-	//获取当前标签的大小
-	string size_str = tag_content.substr(cover_index + 4, 4);
-	const int tag_size = size_str[0] * 0x1000000 + size_str[1] * 0x10000 + size_str[2] * 0x100 + size_str[3];
-
 	//获取图片起始位置
 	size_t type_index = tag_content.find("image", cover_index);
 	//string image_type_str = tag_content.substr(type_index, 10);
@@ -754,7 +749,7 @@ wstring CAudioCommon::_GetAlbumCover(const string & tag_content, size_t cover_in
 	//根据图片类型设置文件扩展名
 	size_t image_index;		//图片数据的起始位置
 	size_t image_size;		//根据图片结束字节计算出的图片大小
-							//设置图片文件的头和尾
+	//设置图片文件的头和尾
 	const string jpg_head{ static_cast<char>(0xff), static_cast<char>(0xd8) };
 	const string jpg_tail{ static_cast<char>(0xff), static_cast<char>(0xd9) };
 	const string png_head{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };

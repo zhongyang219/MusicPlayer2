@@ -56,7 +56,7 @@ protected:
 	CMFCButton m_previous_button;
 	CMFCButton m_next_button;
 	CProgressStatic m_progress_bar;		//进度条控件
-	CStaticEx m_time_static;				//显示播放时间的控件
+	CStatic m_time_static;				//显示播放时间的控件
 	CButton m_set_path_button;
 
 	ITaskbarList3* m_pTaskbar;          //用于支持任务栏显示播放进度
