@@ -381,6 +381,7 @@ void CLyrics::SaveLyric2()
 		out_put << time_buff << CCommon::UnicodeToStr(a_lyric.text, m_code_type) << std::endl;
 	}
 	m_modified = false;
+	m_chinese_converted = false;
 }
 
 void CLyrics::CombineSameTimeLyric()
@@ -427,7 +428,9 @@ void CLyrics::ChineseTranslation(bool simplified)
 		else
 			lyric.text = CCommon::TranslateToTranditionalChinese(lyric.text);
 	}
-	SaveLyric2();
-	m_lyrics_str.clear();
-	DivideLyrics();
+	m_modified = true;
+	m_chinese_converted = true;
+	//SaveLyric2();
+	//m_lyrics_str.clear();
+	//DivideLyrics();
 }

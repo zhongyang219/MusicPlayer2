@@ -46,6 +46,7 @@ private:
 	int m_offset_tag_index{ -1 };			//偏移量标签在第几行（从0开始计）
 
 	bool m_modified{ false };		//歌词是否已经修改
+	bool m_chinese_converted{ false };		//是否已经执行了中文繁简转换
 
 	void DivideLyrics();		//将歌词文件拆分成若干句歌词，并保存在m_lyrics_str中
 	void DisposeLyric();		//获得歌词中的时间标签和歌词文本，并将文本从string类型转换成wstring类型，保存在m_lyrics中
@@ -64,6 +65,7 @@ public:
 	wstring GetAllLyricText() const;		//返回所有歌词（仅包含全部歌词文本，不含标识标签和时间标签）
 	wstring GetLyricsString() const;		//返回所有歌词的字符串，以保存的样式，包含全部标签
 	bool IsModified() const { return m_modified; }
+	bool IsChineseConverted() const { return m_chinese_converted; }
 	int GetLyricCount() const{ return m_lyrics.size(); }
 
 	void SaveLyric();		//保存歌词（将歌词偏移保存在offset标签中）

@@ -2430,7 +2430,7 @@ void CMusicPlayerDlg::OnLyricDelay()
 void CMusicPlayerDlg::OnSaveModifiedLyric()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_save_lyric_in_offset)
+	if (m_save_lyric_in_offset && !theApp.m_player.m_Lyrics.IsChineseConverted())		//如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
 		theApp.m_player.m_Lyrics.SaveLyric();
 	else
 		theApp.m_player.m_Lyrics.SaveLyric2();
