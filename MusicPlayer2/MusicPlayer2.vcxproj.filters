@@ -359,5 +359,11 @@
     <Image Include="res\default_cover.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\Cortana_black.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Cortana_white.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

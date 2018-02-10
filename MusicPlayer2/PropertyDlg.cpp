@@ -141,7 +141,7 @@ void CPropertyDlg::SetEditReadOnly(bool read_only)
 void CPropertyDlg::SetWreteEnable()
 {
 	//目前暂时只支持MP3的ID3V1标签写入
-	m_write_enable = (CCommon::GetFileExtension(m_all_song_info[m_index].file_name) == L"mp3" && m_all_song_info[m_index].tag_type == 1);
+	m_write_enable = (CCommon::GetFileExtension(m_all_song_info[m_index].file_name) == L"mp3" && m_all_song_info[m_index].tag_type != 2);
 	SetEditReadOnly(!m_write_enable);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 	if (m_write_enable)

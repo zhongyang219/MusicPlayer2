@@ -273,6 +273,8 @@
     <None Include="res\MusicPlayer2.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Cortana_black.bmp" />
+    <Image Include="res\Cortana_white.bmp" />
     <Image Include="res\default_cover.bmp" />
     <Image Include="res\MusicPlayer2.ico" />
     <Image Include="res\上一曲.ico" />

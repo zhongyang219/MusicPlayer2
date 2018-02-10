@@ -209,7 +209,15 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 	if (m_show_album_cover)
 	{
 		m_cortana_draw.SetDC(m_cortana_pDC);
-		m_cortana_draw.DrawBitmap(album_cover, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+		if (album_cover.IsNull())
+		{
+			if(m_dark_mode)
+				m_cortana_draw.DrawBitmap(IDB_CORTANA_BLACK, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+			else
+				m_cortana_draw.DrawBitmap(IDB_CORTANA_WHITE, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+		}
+		else
+			m_cortana_draw.DrawBitmap(album_cover, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
 	}
 }
 
@@ -218,22 +226,18 @@ void CCortanaLyric::ResetCortanaText()
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
 		m_cortana_draw.SetFont(&m_cortana_font);
-		COLORREF color;
+		COLORREF color;		//Cortana默认文本的颜色
 		color = (m_dark_mode ? GRAY(173) : GRAY(16));
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		CRect rect{ m_cortana_rect };
-		if (m_show_album_cover)
-		{
-			rect.MoveToY((m_dark_mode ? 0 : 1));
-			rect.right += m_cortana_left_space;
-			m_cortana_draw.FillRect(rect, m_back_color);
-			rect.left += m_cortana_left_space;
-		}
+		//先绘制Cortana图标
+		if (m_dark_mode)
+			m_cortana_draw.DrawBitmap(IDB_CORTANA_BLACK, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
 		else
-		{
-			rect.MoveToXY(rect.left + m_cortana_left_space, (m_dark_mode ? 0 : 1));
-			m_cortana_draw.FillRect(rect, m_back_color);
-		}
+			m_cortana_draw.DrawBitmap(IDB_CORTANA_WHITE, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+		//再绘制Cortana默认文本
+		rect.MoveToXY(rect.left + m_cortana_left_space, (m_dark_mode ? 0 : 1));
+		m_cortana_draw.FillRect(rect, m_back_color);
 		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color, false);
 		m_cortana_wnd->Invalidate();
 	}
