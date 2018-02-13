@@ -106,10 +106,10 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 			wstring play_file_name2;		//查找到的和cue文件同名的文件名（不含扩展名）
 			int bitrate;
 			Time total_length;
-			bool matched_file_found{ false };		//v如果查找到了和cue文件相同的文件名，则为true
+			bool matched_file_found{ false };		//如果查找到了和cue文件相同的文件名，则为true
 			for (size_t j{}; j < files.size(); j++)
 			{
-				if (GetAudioType(files[j].file_name) != AU_CUE)	//确保该文件不是cue文件
+				if (GetAudioType(files[j].file_name) != AU_CUE && !files[j].is_cue)	//确保该文件不是cue文件，且不是已经解析过的cue音轨
 				{
 					play_file_name = files[j].file_name;		//信保存文件名
 					bitrate = files[j].bitrate;			//保存获取到的比特率
@@ -142,6 +142,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 				cue_file_contents.push_back(ch);
 				if (cue_file_contents.size() > 102400) break;	//限制cue文件最大为100KB
 			}
+			CodeType code_type{ CodeType::AUTO };		//cue文件的编码类型
+			if (cue_file_contents.size() >= 3 && cue_file_contents[0] == -17 && cue_file_contents[1] == -69 && cue_file_contents[2] == -65)
+				code_type = CodeType::UTF8;
 			//获取cue文件的专辑标题
 			string album_name;
 			size_t index1 = cue_file_contents.find("TITLE");
@@ -150,7 +153,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 			album_name = cue_file_contents.substr(index2 + 1, index3 - index2 - 1);
 
 			SongInfo song_info{};
-			song_info.album = CCommon::StrToUnicode(album_name);
+			song_info.album = CCommon::StrToUnicode(album_name, code_type);
 			song_info.file_name = play_file_name;
 			song_info.bitrate = bitrate;
 			song_info.is_cue = true;
@@ -175,7 +178,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 				{
 					index2 = cue_file_contents.find('\"', index_title);
 					index3 = cue_file_contents.find('\"', index2 + 1);
-					song_info.title = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1));
+					song_info.title = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1), code_type);
 				}
 				else
 				{
@@ -187,7 +190,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 				{
 					index2 = cue_file_contents.find('\"', index_artist);
 					index3 = cue_file_contents.find('\"', index2 + 1);
-					song_info.artist = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1));
+					song_info.artist = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1), code_type);
 				}
 				else
 				{
@@ -219,6 +222,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 				files.push_back(song_info);
 			}
 			files.back().lengh = Time(total_length - files.back().start_pos);
+			i--;		//解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
 		}
 	}
 }
