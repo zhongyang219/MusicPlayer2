@@ -106,6 +106,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 			wstring play_file_name2;		//查找到的和cue文件同名的文件名（不含扩展名）
 			int bitrate;
 			Time total_length;
+			bool matched_file_found{ false };		//v如果查找到了和cue文件相同的文件名，则为true
 			for (size_t j{}; j < files.size(); j++)
 			{
 				if (GetAudioType(files[j].file_name) != AU_CUE)	//确保该文件不是cue文件
@@ -118,10 +119,13 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 					if (play_file_name2 == cue_file_name2)
 					{
 						files.erase(files.begin() + j);		//从列表中删除该文件
+						matched_file_found = true;
 						break;
 					}
 				}
 			}
+			if (!matched_file_found)		//如果没有找到和cue同名的文件，则继续解析下一个cue文件
+				continue;
 
 			//解析cue文件
 			string cue_file_contents;

@@ -335,7 +335,8 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha)
 {
 	SetDrawArea(m_pDC, rect);
 	CDC cdc;
-	cdc.CreateCompatibleDC(m_pDC);
+	if(!cdc.CreateCompatibleDC(m_pDC))
+		return;
 
 	CBitmap bitmap, *pOldBitmap;
 	bitmap.CreateCompatibleBitmap(m_pDC, rect.Width(), rect.Height());
