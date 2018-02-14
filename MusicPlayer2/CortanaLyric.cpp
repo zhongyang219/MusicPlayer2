@@ -97,8 +97,10 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
 		rect.MoveToX(m_cortana_left_space);
+		if (!m_dark_mode)		//非深色模式下，不绘制搜索框最上面一行像素
+			rect.top++;
 		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1), m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
@@ -127,8 +129,10 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
 		rect.MoveToX(m_cortana_left_space);
+		if (!m_dark_mode)		//非深色模式下，不绘制搜索框最上面一行像素
+			rect.top++;
 		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1) , m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, 0 , m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
@@ -157,7 +161,7 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
 		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(DPI(4), DPI(3));
+		text_rect.DeflateRect(DPI(4), DPI(2));
 		CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
@@ -197,8 +201,10 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
 		rect.MoveToX(m_cortana_left_space);
+		if (!m_dark_mode)		//非深色模式下，不绘制搜索框最上面一行像素
+			rect.top++;
 		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, (m_dark_mode ? 0 : 1), m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
@@ -251,7 +257,9 @@ void CCortanaLyric::CheckDarkMode()
 		COLORREF color;
 		//获取Cortana左上角点的颜色
 		color = ::GetPixel(hDC, m_lefttop_point.x, m_lefttop_point.y);
-		m_dark_mode = (color % 256 < 220);
+		int brightness;
+		brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
+		m_dark_mode = (brightness < 220);
 
 		//根据深浅色模式设置背景颜色
 		if (m_dark_mode)

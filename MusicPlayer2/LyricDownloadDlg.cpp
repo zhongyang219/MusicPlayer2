@@ -344,7 +344,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	}
 	//DEBUG模式下，将查找返回的结果保存到文件
 #ifdef DEBUG
-	ofstream out_put{ L".\\down.txt", std::ios::binary };
+	ofstream out_put{ L".\\down.log", std::ios::binary };
 	out_put << CCommon::UnicodeToStr(m_search_result, CodeType::UTF8);
 #endif // DEBUG
 
