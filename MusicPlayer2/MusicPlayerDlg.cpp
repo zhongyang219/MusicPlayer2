@@ -1295,7 +1295,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	UpdateProgress();
 
 	theApp.m_player.GetBASSError();
-	if (m_miniModeDlg.m_hWnd == NULL)
+	if (m_miniModeDlg.m_hWnd == NULL && (theApp.m_player.IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
 		DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
 	if (theApp.m_player.IsPlaying())
 	{
