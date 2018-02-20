@@ -614,6 +614,23 @@ BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 	return SUCCEEDED(hr);
 }
 
+void CCommon::GetFiles(wstring file_name, vector<wstring>& files)
+{
+	files.clear();
+	//文件句柄
+	int hFile = 0;
+	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
+	_wfinddata_t fileinfo;
+	if ((hFile = _wfindfirst(file_name.c_str(), &fileinfo)) != -1)
+	{
+		do
+		{
+			files.push_back(fileinfo.name);
+		} while (_wfindnext(hFile, &fileinfo) == 0);
+	}
+	_findclose(hFile);
+}
+
 wstring CCommon::GetRandomString(int length)
 {
 	wstring result;

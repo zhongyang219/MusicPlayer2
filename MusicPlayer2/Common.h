@@ -113,6 +113,8 @@ public:
 	*/
 	static BOOL CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL);
 
+	static void GetFiles(wstring file_name, vector<wstring>& files);
+
 	//获取一个随机的字符串
 	static wstring GetRandomString(int length);
 };

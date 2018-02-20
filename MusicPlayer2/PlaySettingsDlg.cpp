@@ -57,29 +57,29 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	SetBackgroundColor(RGB(255, 255, 255));
 
 	//初始化各控件的状态
-	m_stop_when_error_check.SetCheck(m_stop_when_error);
-	m_karaoke_disp_check.SetCheck(m_karaoke_disp);
-	m_show_taskbar_progress_check.SetCheck(m_show_taskbar_progress);
-	m_lyric_fuzzy_match_check.SetCheck(m_lyric_fuzzy_match);
-	m_lyric_double_line_chk.SetCheck(m_lyric_double_line);
+	m_stop_when_error_check.SetCheck(m_data.m_stop_when_error);
+	m_karaoke_disp_check.SetCheck(m_data.m_lyric_karaoke_disp);
+	m_show_taskbar_progress_check.SetCheck(m_data.m_show_taskbar_progress);
+	m_lyric_fuzzy_match_check.SetCheck(m_data.m_lyric_fuzzy_match);
+	m_lyric_double_line_chk.SetCheck(m_data.m_cortana_lyric_double_line);
 	if (theApp.m_is_windows10)
 	{
-		m_show_lyric_in_cortana_check.SetCheck(m_show_lyric_in_cortana);
+		m_show_lyric_in_cortana_check.SetCheck(m_data.m_show_lyric_in_cortana);
 	}
 	else
 	{
 		m_show_lyric_in_cortana_check.EnableWindow(FALSE);		//Win10以下系统禁用此复选按钮
-		m_show_lyric_in_cortana = false;
+		m_data.m_show_lyric_in_cortana = false;
 	}
 
-	if(m_save_lyric_in_offset)
+	if(m_data.m_save_lyric_in_offset)
 		((CButton*)GetDlgItem(IDC_SAVE_IN_OFFSET_TAG))->SetCheck(TRUE);
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_IN_TIME_TAG))->SetCheck(TRUE);
 
-	m_lyric_double_line_chk.EnableWindow(m_show_lyric_in_cortana);
+	m_lyric_double_line_chk.EnableWindow(m_data.m_show_lyric_in_cortana);
 
-	SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_lyric_path.c_str());
+	SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_data.m_lyric_path.c_str());
 
 	m_tool_tip.Create(this);
 	m_tool_tip.SetMaxTipWidth(300);
@@ -95,14 +95,14 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 void CPlaySettingsDlg::OnBnClickedStopWhenError()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_stop_when_error = (m_stop_when_error_check.GetCheck() != 0);
+	m_data.m_stop_when_error = (m_stop_when_error_check.GetCheck() != 0);
 }
 
 
 void CPlaySettingsDlg::OnBnClickedKaraokeDisp()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_karaoke_disp = (m_karaoke_disp_check.GetCheck() != 0);
+	m_data.m_lyric_karaoke_disp = (m_karaoke_disp_check.GetCheck() != 0);
 }
 
 
@@ -136,13 +136,13 @@ void CPlaySettingsDlg::OnBnClickedExploreLyricButton()
 	//		AfxMessageBox(_T("无效的目录，请重新选择"));
 	//}
 
-	CFolderPickerDialog folderPickerDlg(m_lyric_path.c_str());
+	CFolderPickerDialog folderPickerDlg(m_data.m_lyric_path.c_str());
 	folderPickerDlg.m_ofn.lpstrTitle = _T("选择歌词文件夹");		//设置对话框标题
 	if (folderPickerDlg.DoModal() == IDOK)
 	{
-		m_lyric_path = folderPickerDlg.GetPathName();
-		if (m_lyric_path.back() != L'\\') m_lyric_path.push_back(L'\\');	//确保路径末尾有反斜杠
-		SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_lyric_path.c_str());
+		m_data.m_lyric_path = folderPickerDlg.GetPathName();
+		if (m_data.m_lyric_path.back() != L'\\') m_data.m_lyric_path.push_back(L'\\');	//确保路径末尾有反斜杠
+		SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_data.m_lyric_path.c_str());
 	}
 }
 
@@ -150,7 +150,7 @@ void CPlaySettingsDlg::OnBnClickedExploreLyricButton()
 void CPlaySettingsDlg::OnBnClickedShowTaskbarProgress()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_show_taskbar_progress = (m_show_taskbar_progress_check.GetCheck() != 0);
+	m_data.m_show_taskbar_progress = (m_show_taskbar_progress_check.GetCheck() != 0);
 }
 
 
@@ -173,7 +173,7 @@ void CPlaySettingsDlg::OnOK()
 void CPlaySettingsDlg::OnBnClickedLyricFuzzyMatch()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_lyric_fuzzy_match = (m_lyric_fuzzy_match_check.GetCheck() != 0);
+	m_data.m_lyric_fuzzy_match = (m_lyric_fuzzy_match_check.GetCheck() != 0);
 }
 
 
@@ -190,27 +190,27 @@ BOOL CPlaySettingsDlg::PreTranslateMessage(MSG* pMsg)
 void CPlaySettingsDlg::OnBnClickedShowLyricInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_show_lyric_in_cortana = (m_show_lyric_in_cortana_check.GetCheck() != 0);
-	m_lyric_double_line_chk.EnableWindow(m_show_lyric_in_cortana);
+	m_data.m_show_lyric_in_cortana = (m_show_lyric_in_cortana_check.GetCheck() != 0);
+	m_lyric_double_line_chk.EnableWindow(m_data.m_show_lyric_in_cortana);
 }
 
 
 void CPlaySettingsDlg::OnBnClickedSaveInOffsetTag()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_save_lyric_in_offset = true;
+	m_data.m_save_lyric_in_offset = true;
 }
 
 
 void CPlaySettingsDlg::OnBnClickedSaveInTimeTag()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_save_lyric_in_offset = false;
+	m_data.m_save_lyric_in_offset = false;
 }
 
 
 void CPlaySettingsDlg::OnBnClickedLyricDoubleLineCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_lyric_double_line = (m_lyric_double_line_chk.GetCheck() != 0);
+	m_data.m_cortana_lyric_double_line = (m_lyric_double_line_chk.GetCheck() != 0);
 }

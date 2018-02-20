@@ -104,24 +104,24 @@ protected:
 	int m_client_width;			//窗口客户区宽度
 	int m_client_height;		//窗口客户区高度
 
-	int m_lyric_line_space{ 2 };	//歌词的行间距
-	wstring m_lyric_font_name;		//歌词字体名称
-	int m_lyric_font_size;		//歌词字体大小
+	//int m_lyric_line_space{ 2 };	//歌词的行间距
+	//wstring m_lyric_font_name;		//歌词字体名称
+	//int m_lyric_font_size;		//歌词字体大小
 	CFont m_lyric_font;			//歌词字体
 
 	bool m_narrow_mode;		//窄界面模式
 
 	unsigned int m_timer_count{};
 
-	bool m_stop_when_error{ true };		//出现错误时停止播放
-	bool m_show_taskbar_progress{ false };	//在任务栏按钮上显示播放进度
+	//bool m_stop_when_error{ true };		//出现错误时停止播放
+	//bool m_show_taskbar_progress{ false };	//在任务栏按钮上显示播放进度
 
-	int m_transparency{ 100 };			//窗口透明度
-	bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
-	bool m_show_album_cover;			//显示专辑封面
-	CDrawCommon::StretchMode m_album_cover_fit{ CDrawCommon::StretchMode::FILL };		//专辑封面契合度（拉伸模式）
-	bool m_album_cover_as_background{ false };		//将专辑封面作为背景
-	bool m_show_spectrum{ true };		//显示频谱分析
+	//int m_transparency{ 100 };			//窗口透明度
+	//bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
+	//bool m_show_album_cover;			//显示专辑封面
+	//CDrawCommon::StretchMode m_album_cover_fit{ CDrawCommon::StretchMode::FILL };		//专辑封面契合度（拉伸模式）
+	//bool m_album_cover_as_background{ false };		//将专辑封面作为背景
+	//bool m_show_spectrum{ true };		//显示频谱分析
 	bool m_cortana_show_album_cover{ true };
 
 	CRect m_draw_rect;		//绘图区域
@@ -141,11 +141,11 @@ protected:
 
 	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_list_popup_menu };		//迷你模式对话框
 
-	bool m_show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
+	//bool m_show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
 	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
-	bool m_cortana_lyric_double_line{true};		//是否在Cortana搜索中以双行显示歌词
+	//bool m_cortana_lyric_double_line{true};		//是否在Cortana搜索中以双行显示歌词
 
-	bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
+	//bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
 	CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
 

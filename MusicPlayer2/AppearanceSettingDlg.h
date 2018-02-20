@@ -12,17 +12,19 @@ class CAppearanceSettingDlg : public CDialogEx
 	DECLARE_DYNAMIC(CAppearanceSettingDlg)
 
 public:
-	wstring m_font;
-	int m_font_size;
-	int m_line_space;
-	int m_transparency;
+	//wstring m_font;
+	//int m_font_size;
+	//int m_line_space;
+	//int m_transparency;
 	HWND m_hMainWnd;		//主窗口的句柄，用于实时更改窗口不透明度
-	COLORREF m_theme_color;
-	bool m_theme_color_follow_system;
-	bool m_show_album_cover{};
-	CDrawCommon::StretchMode m_album_cover_fit{};
-	bool m_album_cover_as_background;
-	bool m_show_spectrum;
+	//COLORREF m_theme_color;
+	//bool m_theme_color_follow_system;
+	//bool m_show_album_cover{};
+	//CDrawCommon::StretchMode m_album_cover_fit{};
+	//bool m_album_cover_as_background;
+	//bool m_show_spectrum;
+
+	ApperanceSettingData m_data;
 
 	CAppearanceSettingDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CAppearanceSettingDlg();
@@ -63,6 +65,7 @@ protected:
 	CButton m_album_cover_as_background_chk;
 	CButton m_show_spectrum_chk;
 	CSliderCtrl m_back_transparency_slid;
+	CButton m_use_out_image_chk;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -98,4 +101,5 @@ public:
 	afx_msg void OnCbnSelchangeAlbumFitCombo();
 	afx_msg void OnBnClickedAlbumCoverBackgroundCheck();
 	afx_msg void OnBnClickedShowSpectrumCheck();
+	afx_msg void OnBnClickedUseOutImageCheck();
 };

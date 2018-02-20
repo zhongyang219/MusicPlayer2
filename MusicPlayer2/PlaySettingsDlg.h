@@ -13,14 +13,15 @@ public:
 	virtual ~CPlaySettingsDlg();
 
 	//选项设置的数据，含义同CMusicPlayerDlg类里面的同名变量
-	bool m_stop_when_error;
-	bool m_karaoke_disp;
-	bool m_show_taskbar_progress;
-	bool m_lyric_fuzzy_match;
-	wstring m_lyric_path;
-	bool m_show_lyric_in_cortana;
-	bool m_save_lyric_in_offset;
-	bool m_lyric_double_line;
+	//bool m_stop_when_error;
+	//bool m_karaoke_disp;
+	//bool m_show_taskbar_progress;
+	//bool m_lyric_fuzzy_match;
+	//wstring m_lyric_path;
+	//bool m_show_lyric_in_cortana;
+	//bool m_save_lyric_in_offset;
+	//bool m_lyric_double_line;
+	PlaySettingData m_data;
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
