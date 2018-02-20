@@ -365,12 +365,12 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				{
 					//获取不到专辑封面时尝试使用外部图片作为封面
 					vector<wstring> files;
-					wstring file_name = m_path + GetCurrentSongInfo().album + L".*";	//查找以唱片集名为文件名的文件
+					wstring file_name = m_path + L'*' + GetCurrentSongInfo().album + L"*.*";	//查找文件名中包含唱片集名的文件
 					CCommon::GetFiles(file_name, files);
 					if (files.empty())
 					{
 						//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
-						file_name = m_path + DEFAULT_ALBUM_NAME + L".*";
+						file_name = m_path + theApp.m_default_album_name + L".*";
 						CCommon::GetFiles(file_name, files);
 					}
 					if (!files.empty())
@@ -837,6 +837,7 @@ void CPlayer::SaveConfig() const
 	WritePrivateProfileStringW(L"config",L"lyric_path", theApp.m_play_setting_data.m_lyric_path.c_str(), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"sort_mode", static_cast<int>(m_sort_mode), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_fuzzy_match", theApp.m_play_setting_data.m_lyric_fuzzy_match, theApp.m_config_path.c_str());
+	WritePrivateProfileStringW(L"config",L"default_album_file_name", theApp.m_default_album_name.c_str(), theApp.m_config_path.c_str());
 
 	//保存均衡器设定
 	CCommon::WritePrivateProfileIntW(L"equalizer", L"equalizer_enable", m_equ_enable, theApp.m_config_path.c_str());
@@ -875,6 +876,8 @@ void CPlayer::LoadConfig()
 	theApp.m_play_setting_data.m_lyric_karaoke_disp = (GetPrivateProfileIntW(L"config", L"lyric_karaoke_disp", 1, theApp.m_config_path.c_str()) != 0);
 	m_sort_mode = static_cast<SortMode>(GetPrivateProfileIntW(L"config", L"sort_mode", 0, theApp.m_config_path.c_str()));
 	theApp.m_play_setting_data.m_lyric_fuzzy_match = (GetPrivateProfileIntW(L"config", L"lyric_fuzzy_match", 1, theApp.m_config_path.c_str()) != 0);
+	GetPrivateProfileStringW(L"config", L"default_album_file_name", L"AlbumCover", buff, 255, theApp.m_config_path.c_str());
+	theApp.m_default_album_name = buff;
 
 	//读取均衡器设定
 	m_equ_enable = (GetPrivateProfileIntW(L"equalizer", L"equalizer_enable", 0, theApp.m_config_path.c_str()) != 0);

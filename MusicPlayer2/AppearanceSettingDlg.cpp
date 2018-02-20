@@ -186,7 +186,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_album_cover_fit_combo.EnableWindow(m_data.m_show_album_cover);
 	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
 	CString info;
-	info.Format(_T("如果无法从音频文件获取专辑封面，则尝试查找音频文件所在目录下和唱片集同名的图片文件，或者名为 %s 的图片文件作为专辑封面。"), DEFAULT_ALBUM_NAME);
+	info.Format(_T("如果无法从音频文件获取专辑封面，则尝试查找音频文件所在目录下含有唱片集名的图片文件，或者名为 %s 的图片文件作为专辑封面。"), theApp.m_default_album_name.c_str());
 	m_toolTip.AddTool(&m_use_out_image_chk, info);
 
 	m_album_cover_as_background_chk.SetCheck(m_data.m_album_cover_as_background);

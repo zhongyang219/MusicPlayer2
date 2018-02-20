@@ -162,7 +162,7 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define GRAY(x) RGB(x,x,x)
 
 #define ALBUM_COVER_NAME L"CurrentAlbumCover-MusicPlayer2-jMZB7TMf"
-#define DEFAULT_ALBUM_NAME L"cover"
+//#define DEFAULT_ALBUM_NAME L"cover"
 
 //#define BACKGROUND_ALPHA 200	//界面背景的透明度0~255
 #define ALPHA_CHG(alpha) ((alpha)*255/100)		//将透明度从0~100映射到0~255
