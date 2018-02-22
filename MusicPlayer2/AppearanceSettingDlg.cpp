@@ -254,6 +254,7 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 	if ((pScrollBar->GetDlgCtrlID() == IDC_SPECTRUM_HEIGHT_SLIDER))
 	{
 		theApp.m_app_setting_data.m_sprctrum_height = SpectrumHeightRChg(m_spectrum_height_slid.GetPos());
+		m_data.m_sprctrum_height = theApp.m_app_setting_data.m_sprctrum_height;
 		CString str;
 		str.Format(_T("%d%%"), theApp.m_app_setting_data.m_sprctrum_height);
 		SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
@@ -261,6 +262,7 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 	if ((pScrollBar->GetDlgCtrlID() == IDC_BACKGROUND_TRANSPARENCY_SLIDER))
 	{
 		theApp.m_app_setting_data.m_background_transparency = m_back_transparency_slid.GetPos();
+		m_data.m_background_transparency = theApp.m_app_setting_data.m_background_transparency;
 		CString str;
 		str.Format(_T("%d%%"), theApp.m_app_setting_data.m_background_transparency);
 		SetDlgItemText(IDC_BACKGROUND_TRANSPARENCY_STATIC, str);

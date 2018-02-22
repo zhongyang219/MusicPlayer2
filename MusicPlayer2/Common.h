@@ -113,6 +113,8 @@ public:
 	*/
 	static BOOL CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL);
 
+	//查找指定文件，并将文件名保存在files容器
+	//file_name：例如 D:\\Music\\*abc*.mp3，则将查找D:\Music目录下所有包含abc的mp3文件
 	static void GetFiles(wstring file_name, vector<wstring>& files);
 
 	//获取一个随机的字符串
