@@ -71,7 +71,10 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 		m_show_lyric_in_cortana_check.EnableWindow(FALSE);		//Win10以下系统禁用此复选按钮
 		m_data.m_show_lyric_in_cortana = false;
 	}
-
+#ifdef COMPILE_IN_WIN_XP
+	m_show_taskbar_progress_check.SetCheck(FALSE);
+	m_show_taskbar_progress_check.EnableWindow(FALSE);
+#endif
 	if(m_data.m_save_lyric_in_offset)
 		((CButton*)GetDlgItem(IDC_SAVE_IN_OFFSET_TAG))->SetCheck(TRUE);
 	else
@@ -135,9 +138,13 @@ void CPlaySettingsDlg::OnBnClickedExploreLyricButton()
 	//	else
 	//		AfxMessageBox(_T("无效的目录，请重新选择"));
 	//}
-
+#ifdef COMPILE_IN_WIN_XP
+	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
+	folderPickerDlg.SetInfo(_T("请选择歌词文件夹。"));
+#else
 	CFolderPickerDialog folderPickerDlg(m_data.m_lyric_path.c_str());
 	folderPickerDlg.m_ofn.lpstrTitle = _T("选择歌词文件夹");		//设置对话框标题
+#endif // COMPILE_IN_WIN_XP
 	if (folderPickerDlg.DoModal() == IDOK)
 	{
 		m_data.m_lyric_path = folderPickerDlg.GetPathName();

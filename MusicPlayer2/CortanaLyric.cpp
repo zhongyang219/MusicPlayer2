@@ -212,7 +212,7 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 
 void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 {
-	if (m_show_album_cover)
+	if (m_enable && m_show_album_cover)
 	{
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		if (album_cover.IsNull())

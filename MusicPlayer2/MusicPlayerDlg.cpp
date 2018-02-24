@@ -828,6 +828,7 @@ void CMusicPlayerDlg::UpdateProgress()
 
 void CMusicPlayerDlg::UpdateTaskBarProgress()
 {
+#ifndef COMPILE_IN_WIN_XP
 	//根据播放状态设置任务栏状态和进度
 	if (theApp.m_play_setting_data.m_show_taskbar_progress)
 	{
@@ -848,35 +849,43 @@ void CMusicPlayerDlg::UpdateTaskBarProgress()
 	{
 		m_pTaskbar->SetProgressState(this->GetSafeHwnd(), TBPF_NOPROGRESS);
 	}
+#endif
 }
 
 void CMusicPlayerDlg::UpdatePlayPauseButton()
 {
 	if (theApp.m_player.IsPlaying() && !theApp.m_player.IsError())
 	{
+#ifndef COMPILE_IN_WIN_XP
 		//更新任务栏缩略图上“播放/暂停”的图标
 		m_thumbButton[1].hIcon = m_hPauseIcon;
 		wcscpy_s(m_thumbButton[1].szTip, _T("暂停"));
+#endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPauseIcon_s, FALSE);
 		m_play_pause_button.SetWindowText(_T("暂停(&P)"));
 	}
 	else
 	{
+#ifndef COMPILE_IN_WIN_XP
 		//更新任务栏缩略图上“播放/暂停”的图标
 		m_thumbButton[1].hIcon = m_hPlayIcon;
 		wcscpy_s(m_thumbButton[1].szTip, _T("播放"));
+#endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPlayIcon_s, FALSE);
 		m_play_pause_button.SetWindowText(_T("播放(&P)"));
 	}
+#ifndef COMPILE_IN_WIN_XP
 	m_pTaskbar->ThumbBarUpdateButtons(m_hWnd, 3, m_thumbButton);
+#endif
 	if (m_miniModeDlg.m_hWnd != NULL)
 		m_miniModeDlg.UpdatePlayPauseButton();
 }
 
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
+#ifndef COMPILE_IN_WIN_XP
 	CRect info_rect;
 	if (!m_narrow_mode)
 		info_rect = CRect{ CPoint{ 2 * m_margin, m_control_bar_height + 2 * m_margin + DPI(20) }, CSize{ m_client_width / 2 - 4 * m_margin, m_info_height2 - 3 * m_margin } };
@@ -884,6 +893,7 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
 		info_rect = CRect{ CPoint{ 2 * m_margin, m_control_bar_height + m_progress_bar_height + m_margin + DPI(20) }, CSize{ m_client_width - 4 * m_margin, m_info_height - 3 * m_margin } };
 	if (m_pTaskbar != nullptr)
 		m_pTaskbar->SetThumbnailClip(m_hWnd, info_rect);
+#endif
 }
 
 void CMusicPlayerDlg::EnablePlaylist(bool enable)
@@ -1016,6 +1026,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
 
 	CoInitialize(0);	//初始化COM组件，用于支持任务栏显示进度和缩略图按钮
+#ifndef COMPILE_IN_WIN_XP
 	CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pTaskbar));	//创建ITaskbarList3的实例
 
 	//载入按钮图标
@@ -1024,13 +1035,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_hNextIcon = AfxGetApp()->LoadIcon(IDI_NEXT1);
 	m_hPlayIcon = AfxGetApp()->LoadIcon(IDI_PLAY);
 	m_hPauseIcon = AfxGetApp()->LoadIcon(IDI_PAUSE);
-
-	//载入按钮小图标（16*16）
-	m_hPreviousIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PREVIOUS), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hNextIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_NEXT1), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPlayIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PLAY), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPauseIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PAUSE), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hStopIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_STOP), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
 
 	//初始化任务栏缩略图中的按钮
 	THUMBBUTTONMASK dwMask = THB_ICON | THB_TOOLTIP | THB_FLAGS;
@@ -1052,6 +1056,14 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_thumbButton[2].hIcon = m_hNextIcon;
 	wcscpy_s(m_thumbButton[2].szTip, _T("下一曲"));
 	m_thumbButton[2].dwFlags = THBF_ENABLED;
+#endif
+
+	//载入按钮小图标（16*16）
+	m_hPreviousIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PREVIOUS), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hNextIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_NEXT1), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPlayIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PLAY), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPauseIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PAUSE), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hStopIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_STOP), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
 
 	//设置主界面上的按钮图标
 	m_play_pause_button.SetFont(this->GetFont());
@@ -1235,9 +1247,10 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		//此if语句只在定时器第1次触发时才执行
 		m_first_start = false;
+#ifndef COMPILE_IN_WIN_XP
 		//设置任务栏缩略图窗口按钮
 		m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
-
+#endif
 		CRect rect;
 		GetClientRect(rect);
 		m_client_width = rect.Width();
@@ -1729,8 +1742,13 @@ void CMusicPlayerDlg::OnFileOpen()
 void CMusicPlayerDlg::OnFileOpenFolder()
 {
 	// TODO: 在此添加命令处理程序代码
-	
+
+#ifdef COMPILE_IN_WIN_XP
+	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
+	folderPickerDlg.SetInfo(_T("请选择一个文件夹，文件夹里的所有音频文件都将添加到播放列表。"));
+#else
 	CFolderPickerDialog folderPickerDlg(theApp.m_player.GetCurrentPath().c_str());
+#endif
 	if (folderPickerDlg.DoModal() == IDOK)
 	{
 		theApp.m_player.OpenFolder(wstring(folderPickerDlg.GetPathName()));
@@ -2262,10 +2280,11 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 
 afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
 {
+#ifndef COMPILE_IN_WIN_XP
 	//当资源管理器重启后重新添加任务栏缩略图窗口按钮
 	m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
 	SetThumbnailClipArea();
-
+#endif
 	//资源管理器重启后Cortana的句柄会发生改变，此时要重新获取Cortana的句柄
 	m_cortana_lyric.Init();
 
@@ -2320,8 +2339,10 @@ void CMusicPlayerDlg::OnMiniMode()
 	else
 	{
 		ShowWindow(SW_SHOW);
+#ifndef COMPILE_IN_WIN_XP
 		m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//重新添加任务栏缩略图按钮
 		SetThumbnailClipArea();		//重新设置任务栏缩略图
+#endif
 		SetForegroundWindow();
 		SwitchTrack();
 	}

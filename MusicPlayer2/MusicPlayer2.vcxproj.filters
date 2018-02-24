@@ -111,6 +111,9 @@
     <Filter Include="头文件和源文件\派生的控件类\MyComboBox">
       <UniqueIdentifier>{136309c5-1102-4c2f-994c-fe290512c3b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\FolderBrowerDlg">
+      <UniqueIdentifier>{0ca98411-5535-4d52-a846-c0956fe1697f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -225,6 +228,9 @@
     <ClInclude Include="MyComboBox.h">
       <Filter>头文件和源文件\派生的控件类\MyComboBox</Filter>
     </ClInclude>
+    <ClInclude Include="FolderBrowserDlg.h">
+      <Filter>头文件和源文件\公共的类\FolderBrowerDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -322,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="MyComboBox.cpp">
       <Filter>头文件和源文件\派生的控件类\MyComboBox</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderBrowserDlg.cpp">
+      <Filter>头文件和源文件\公共的类\FolderBrowerDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

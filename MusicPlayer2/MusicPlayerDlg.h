@@ -59,6 +59,7 @@ protected:
 	CStatic m_time_static;				//显示播放时间的控件
 	CButton m_set_path_button;
 
+#ifndef COMPILE_IN_WIN_XP
 	ITaskbarList3* m_pTaskbar;          //用于支持任务栏显示播放进度
 	THUMBBUTTON m_thumbButton[3]{};
 	//图标（用于任务栏缩略图按钮）
@@ -67,6 +68,7 @@ protected:
 	HICON m_hNextIcon;			//下一曲图标
 	HICON m_hPlayIcon;			//播放图标
 	HICON m_hPauseIcon;			//暂停图标
+#endif
 	//小图标（用于主窗口按钮）
 	HICON m_hPreviousIcon_s;		//上一曲图标
 	HICON m_hNextIcon_s;			//下一曲图标

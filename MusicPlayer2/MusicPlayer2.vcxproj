@@ -201,6 +201,7 @@
     <ClInclude Include="EditEx.h" />
     <ClInclude Include="EqualizerDlg.h" />
     <ClInclude Include="FindDlg.h" />
+    <ClInclude Include="FolderBrowserDlg.h" />
     <ClInclude Include="HelpDlg.h" />
     <ClInclude Include="ListCtrlEx.h" />
     <ClInclude Include="LyricDownloadCommon.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="EditEx.cpp" />
     <ClCompile Include="EqualizerDlg.cpp" />
     <ClCompile Include="FindDlg.cpp" />
+    <ClCompile Include="FolderBrowserDlg.cpp" />
     <ClCompile Include="HelpDlg.cpp" />
     <ClCompile Include="ListCtrlEx.cpp" />
     <ClCompile Include="LyricDownloadCommon.cpp" />

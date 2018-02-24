@@ -1,6 +1,6 @@
 #pragma once
 #include "afxwin.h"
-
+#include "FolderBrowserDlg.h"
 
 // CPlaySettingsDlg ¶Ô»°¿ò
 
