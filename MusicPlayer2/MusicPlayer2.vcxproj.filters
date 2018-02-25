@@ -374,5 +374,26 @@
     <Image Include="res\Cortana_white.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\toolbar1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\AddTag.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\ReplaceTag.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\DeleteTag.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Save.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Find.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\Replace.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

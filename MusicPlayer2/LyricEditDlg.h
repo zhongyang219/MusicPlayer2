@@ -42,7 +42,11 @@ protected:
 
 	CToolTipCtrl m_Mytip;		//鼠标提示
 	CStatusBarCtrl m_status_bar;	//状态栏
-	CSize m_min_size;		//窗口的最小大小
+	CToolBar m_wndToolBar;		//工具栏
+	//CSize m_min_size;		//窗口的最小大小
+#define MARGIN DPI(8)
+#define TOOLBAR_HEIGHT DPI(30)
+#define STATUSBAR_HEIGHT DPI(20)
 
 	CFindReplaceDialog* m_pFindDlg{};   //查找对话框
 	CFindReplaceDialog* m_pReplaceDlg{};    //替换对话框
@@ -65,10 +69,10 @@ public:
 protected:
 	CEditEx m_lyric_edit;
 public:
-	afx_msg void OnBnClickedInsertTagButton();
-	afx_msg void OnBnClickedReplaceTagButton();
-	afx_msg void OnBnClickedDeleteTag();
-	afx_msg void OnBnClickedSaveLyricButton();
+	//afx_msg void OnBnClickedInsertTagButton();
+	//afx_msg void OnBnClickedReplaceTagButton();
+	//afx_msg void OnBnClickedDeleteTag();
+	//afx_msg void OnBnClickedSaveLyricButton();
 //	afx_msg void OnBnClickedSaveAsButton5();
 	afx_msg void OnDestroy();
 	afx_msg void OnEnChangeEdit1();
@@ -88,4 +92,8 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLeTranslateToSimplifiedChinese();
 	afx_msg void OnLeTranslateToTranditionalChinese();
+	afx_msg void OnLyricInsertTag();
+	afx_msg void OnLyricReplaceTag();
+	afx_msg void OnLyricDeleteTag();
+	afx_msg BOOL OnToolTipText(UINT, NMHDR* pNMHDR, LRESULT* pResult);
 };

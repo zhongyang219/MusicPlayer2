@@ -140,10 +140,10 @@ void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
-	ON_BN_CLICKED(IDC_INSERT_TAG_BUTTON, &CLyricEditDlg::OnBnClickedInsertTagButton)
-	ON_BN_CLICKED(IDC_REPLACE_TAG_BUTTON, &CLyricEditDlg::OnBnClickedReplaceTagButton)
-	ON_BN_CLICKED(IDC_DELETE_TAG__BUTTON, &CLyricEditDlg::OnBnClickedDeleteTag)
-	ON_BN_CLICKED(IDC_SAVE_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedSaveLyricButton)
+	//ON_BN_CLICKED(IDC_INSERT_TAG_BUTTON, &CLyricEditDlg::OnBnClickedInsertTagButton)
+	//ON_BN_CLICKED(IDC_REPLACE_TAG_BUTTON, &CLyricEditDlg::OnBnClickedReplaceTagButton)
+	//ON_BN_CLICKED(IDC_DELETE_TAG__BUTTON, &CLyricEditDlg::OnBnClickedDeleteTag)
+	//ON_BN_CLICKED(IDC_SAVE_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedSaveLyricButton)
 	//ON_BN_CLICKED(IDC_SAVE_AS_BUTTON5, &CLyricEditDlg::OnBnClickedSaveAsButton5)
 	ON_WM_DESTROY()
 	ON_EN_CHANGE(IDC_EDIT1, &CLyricEditDlg::OnEnChangeEdit1)
@@ -160,6 +160,10 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
 	ON_WM_SIZE()
 	ON_COMMAND(ID_LE_TRANSLATE_TO_SIMPLIFIED_CHINESE, &CLyricEditDlg::OnLeTranslateToSimplifiedChinese)
 	ON_COMMAND(ID_LE_TRANSLATE_TO_TRANDITIONAL_CHINESE, &CLyricEditDlg::OnLeTranslateToTranditionalChinese)
+	ON_COMMAND(ID_LYRIC_INSERT_TAG, &CLyricEditDlg::OnLyricInsertTag)
+	ON_COMMAND(ID_LYRIC_REPLACE_TAG, &CLyricEditDlg::OnLyricReplaceTag)
+	ON_COMMAND(ID_LYRIC_DELETE_TAG, &CLyricEditDlg::OnLyricDeleteTag)
+	ON_NOTIFY_EX(TTN_NEEDTEXT, 0, OnToolTipText)
 END_MESSAGE_MAP()
 
 
@@ -189,22 +193,54 @@ BOOL CLyricEditDlg::OnInitDialog()
 
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
-	m_Mytip.AddTool(GetDlgItem(IDC_INSERT_TAG_BUTTON), _T("在光标所在行的最左边插入一个时间标签，快捷键：F8"));
-	m_Mytip.AddTool(GetDlgItem(IDC_REPLACE_TAG_BUTTON), _T("替换光标所在行最左边的时间标签，快捷键：F9"));
-	m_Mytip.AddTool(GetDlgItem(IDC_DELETE_TAG__BUTTON), _T("删除光标处的时间标签，快捷键：Ctrl+Del"));
-	m_Mytip.AddTool(GetDlgItem(IDC_SAVE_LYRIC_BUTTON), _T("快捷键：Ctrl+S"));
-	m_Mytip.AddTool(GetDlgItem(ID_PLAY_PAUSE), _T("快捷键：Ctrl+P"));
-	m_Mytip.AddTool(GetDlgItem(ID_REW), _T("快捷键：Ctrl+←"));
-	m_Mytip.AddTool(GetDlgItem(ID_FF), _T("快捷键：Ctrl+→"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_INSERT_TAG_BUTTON), _T("在光标所在行的最左边插入一个时间标签，快捷键：F8"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_REPLACE_TAG_BUTTON), _T("替换光标所在行最左边的时间标签，快捷键：F9"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_DELETE_TAG__BUTTON), _T("删除光标处的时间标签，快捷键：Ctrl+Del"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_SAVE_LYRIC_BUTTON), _T("快捷键：Ctrl+S"));
+	//m_Mytip.AddTool(GetDlgItem(ID_PLAY_PAUSE), _T("快捷键：Ctrl+P"));
+	//m_Mytip.AddTool(GetDlgItem(ID_REW), _T("快捷键：Ctrl+←"));
+	//m_Mytip.AddTool(GetDlgItem(ID_FF), _T("快捷键：Ctrl+→"));
 
-	//获取初始时窗口的大小
-	CRect rect;
-	GetWindowRect(rect);
-	m_min_size.cx = rect.Width();
-	m_min_size.cy = rect.Height();
+	////获取初始时窗口的大小
+	//CRect rect;
+	//GetWindowRect(rect);
+	//m_min_size.cx = rect.Width();
+	//m_min_size.cy = rect.Height();
+
+	//初始化工具栏
+	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE/* | CBRS_TOP*/ | CBRS_ALIGN_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_TOP
+		/*| CBRS_GRIPPER*/ | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!m_wndToolBar.LoadToolBar(IDR_LYRIC_EDIT_TOOLBAR))  //指定工具栏ID号
+	{
+		TRACE0("Failed to create toolbar/n");
+		return -1;      // fail to create
+	}
+	RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
+	CImageList ImageList;
+	ImageList.Create(DPI(20), DPI(20), ILC_COLOR32 | ILC_MASK, 2, 2);
+
+	//通过ImageList对象加载图标作为工具栏的图标
+	//添加图标
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_ADD_TAG));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REPLACE_TAG));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_DELETE_TAG));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_SAVE));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_PLAY_PAUSE));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_PREVIOUS));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_NEXT1));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_FIND));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REPLACE));
+	m_wndToolBar.GetToolBarCtrl().SetImageList(&ImageList);
+	ImageList.Detach();
+
+	//设置工具栏高度
+	CRect rect1;
+	m_wndToolBar.GetClientRect(rect1);
+	rect1.bottom = rect1.top + TOOLBAR_HEIGHT;
+	m_wndToolBar.MoveWindow(rect1);
 
 	//初始化状态栏
-	//CRect rect;
+	CRect rect;
 	GetClientRect(&rect);
 	rect.top = rect.bottom - DPI(20);
 	m_status_bar.Create(WS_VISIBLE | CBRS_BOTTOM, rect, this, 3);
@@ -229,32 +265,32 @@ void CLyricEditDlg::OnCancel()
 }
 
 
-void CLyricEditDlg::OnBnClickedInsertTagButton()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	OpreateTag(TagOpreation::INSERT);
-}
+//void CLyricEditDlg::OnBnClickedInsertTagButton()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	OpreateTag(TagOpreation::INSERT);
+//}
+//
+//
+//void CLyricEditDlg::OnBnClickedReplaceTagButton()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	OpreateTag(TagOpreation::REPLACE);
+//}
+//
+//
+//void CLyricEditDlg::OnBnClickedDeleteTag()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	OpreateTag(TagOpreation::DELETE_);
+//}
 
 
-void CLyricEditDlg::OnBnClickedReplaceTagButton()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	OpreateTag(TagOpreation::REPLACE);
-}
-
-
-void CLyricEditDlg::OnBnClickedDeleteTag()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	OpreateTag(TagOpreation::DELETE_);
-}
-
-
-void CLyricEditDlg::OnBnClickedSaveLyricButton()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	OnLyricSave();
-}
+//void CLyricEditDlg::OnBnClickedSaveLyricButton()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	OnLyricSave();
+//}
 
 
 //void CLyricEditDlg::OnBnClickedSaveAsButton5()
@@ -314,7 +350,7 @@ BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
 		}
 		if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'S')
 		{
-			OnBnClickedSaveLyricButton();
+			OnLyricSave();
 			return TRUE;
 		}
 		if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'P')
@@ -582,8 +618,8 @@ void CLyricEditDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
-	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
+	lpMMI->ptMinTrackSize.x = DPI(300);		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = DPI(300);		//设置最小高度
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
@@ -600,8 +636,40 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 		CRect rect;
 		rect.right = cx;
 		rect.bottom = cy;
-		rect.top = rect.bottom - DPI(20);
+		rect.top = rect.bottom - STATUSBAR_HEIGHT;
 		m_status_bar.MoveWindow(rect);
+	}
+
+	//调整窗口的大小和位置
+	if (nType != SIZE_MINIMIZED)
+	{
+		CRect rect;
+		CWnd* plyric_path_wnd{ GetDlgItem(IDC_LYRIC_PATH_EDIT2) };
+		if (plyric_path_wnd != nullptr)
+		{
+			plyric_path_wnd->GetWindowRect(rect);
+			ScreenToClient(&rect);
+			rect.right = cx - MARGIN;
+			plyric_path_wnd->MoveWindow(rect);
+		}
+
+		if (m_lyric_edit.m_hWnd != NULL)
+		{
+			m_lyric_edit.GetWindowRect(rect);
+			ScreenToClient(&rect);
+			rect.right = cx - MARGIN;
+			rect.bottom = cy - STATUSBAR_HEIGHT - MARGIN;
+			m_lyric_edit.MoveWindow(rect);
+		}
+
+		if (m_wndToolBar.m_hWnd != NULL)
+		{
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = cx;
+			rect.bottom = TOOLBAR_HEIGHT;
+			m_wndToolBar.MoveWindow(rect);
+		}
 	}
 }
 
@@ -623,4 +691,62 @@ void CLyricEditDlg::OnLeTranslateToTranditionalChinese()
 	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
 	m_modified = true;
 	UpdateStatusbarInfo();
+}
+
+
+void CLyricEditDlg::OnLyricInsertTag()
+{
+	// TODO: 在此添加命令处理程序代码
+	OpreateTag(TagOpreation::INSERT);
+}
+
+
+void CLyricEditDlg::OnLyricReplaceTag()
+{
+	// TODO: 在此添加命令处理程序代码
+	OpreateTag(TagOpreation::REPLACE);
+}
+
+
+void CLyricEditDlg::OnLyricDeleteTag()
+{
+	// TODO: 在此添加命令处理程序代码
+	OpreateTag(TagOpreation::DELETE_);
+}
+
+BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR * pNMHDR, LRESULT * pResult)
+{
+	TOOLTIPTEXT* pT = (TOOLTIPTEXT*)pNMHDR; //将pNMHDR转换成TOOLTIPTEXT指针类型数据
+	UINT nID = pNMHDR->idFrom;  //获取工具条上按钮的ID
+	switch (nID)
+	{
+	case ID_LYRIC_INSERT_TAG:
+		pT->lpszText = _T("插入时间标签 (F8)");
+		break;
+	case ID_LYRIC_REPLACE_TAG:
+		pT->lpszText = _T("替换时间标签 (F9)");
+		break;
+	case ID_LYRIC_DELETE_TAG:
+		pT->lpszText = _T("删除时间标签 (Ctrl+Del)");
+		break;
+	case ID_LYRIC_SAVE:
+		pT->lpszText = _T("保存 (Ctrl+S)");
+		break;
+	case ID_PLAY_PAUSE:
+		pT->lpszText = _T("播放/暂停 (Ctrl+P)");
+		break;
+	case ID_REW:
+		pT->lpszText = _T("快退 (Ctrl+←)");
+		break;
+	case ID_FF:
+		pT->lpszText = _T("快进 (Ctrl+→)");
+		break;
+	case ID_LYRIC_FIND:
+		pT->lpszText = _T("查找 (Ctrl+F)");
+		break;
+	case ID_LYRIC_REPLACE:
+		pT->lpszText = _T("替换 (Ctrl+H)");
+		break;
+	}
+	return 0;
 }
