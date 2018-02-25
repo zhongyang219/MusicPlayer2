@@ -631,6 +631,35 @@ void CCommon::GetFiles(wstring file_name, vector<wstring>& files)
 	_findclose(hFile);
 }
 
+void CCommon::GetImageFiles(wstring file_name, vector<wstring>& files)
+{
+	files.clear();
+	//文件句柄
+	int hFile = 0;
+	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
+	_wfinddata_t fileinfo;
+	if ((hFile = _wfindfirst(file_name.c_str(), &fileinfo)) != -1)
+	{
+		do
+		{
+			if (FileIsImage(fileinfo.name))
+				files.push_back(fileinfo.name);
+		} while (_wfindnext(hFile, &fileinfo) == 0);
+	}
+	_findclose(hFile);
+}
+
+bool CCommon::FileIsImage(const wstring & file_name)
+{
+	size_t index;
+	index = file_name.find_last_of(L'.');
+	wstring type;
+	if (index != string::npos)
+		type = file_name.substr(index);			//获取扩展名
+	std::transform(type.begin(), type.end(), type.begin(), tolower);		//将扩展名转换成小写
+	return (type == L".jpg" || type == L".jpeg" || type == L".png" || type == L".gif" || type == L".bmp");
+}
+
 wstring CCommon::GetRandomString(int length)
 {
 	wstring result;

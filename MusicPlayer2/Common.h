@@ -117,6 +117,11 @@ public:
 	//file_name：例如 D:\\Music\\*abc*.mp3，则将查找D:\Music目录下所有包含abc的mp3文件
 	static void GetFiles(wstring file_name, vector<wstring>& files);
 
+	//查找指定的图片文件，并保存在files容器中，参数含义同GetFiles函数
+	static void GetImageFiles(wstring file_name, vector<wstring>& files);
+	//判断一个文件是否为图片文件
+	static bool FileIsImage(const wstring& file_name);
+
 	//获取一个随机的字符串
 	static wstring GetRandomString(int length);
 };

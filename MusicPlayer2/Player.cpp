@@ -368,12 +368,12 @@ void CPlayer::MusicControl(Command command, int volume_step)
 					//获取不到专辑封面时尝试使用外部图片作为封面
 					vector<wstring> files;
 					wstring file_name = m_path + L'*' + GetCurrentSongInfo().album + L"*.*";	//查找文件名中包含唱片集名的文件
-					CCommon::GetFiles(file_name, files);
+					CCommon::GetImageFiles(file_name, files);
 					if (files.empty())
 					{
 						//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
 						file_name = m_path + theApp.m_default_album_name + L".*";
-						CCommon::GetFiles(file_name, files);
+						CCommon::GetImageFiles(file_name, files);
 					}
 					if (!files.empty())
 					{
