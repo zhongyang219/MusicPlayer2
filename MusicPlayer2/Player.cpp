@@ -15,6 +15,8 @@ CPlayer::~CPlayer()
 
 void CPlayer::IniBASS()
 {
+	//载入BASS插件
+	BASS_PluginLoad("bass_ape.dll", 0);
 	//初始化BASE音频库
 	BASS_Init(
 		-1,//默认设备

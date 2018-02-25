@@ -21,7 +21,7 @@ bool CAudioCommon::FileIsAudio(const wstring & file_name)
 		type = file_name.substr(index);			//获取扩展名
 	std::transform(type.begin(), type.end(), type.begin(), tolower);		//将扩展名转换成小写
 	return (type == L".mp3" || type == L".wma" || type == L".wav"|| type == L".ogg" || type == L".flac"
-		|| type == L".m4a" || type == L".cue"/* || type == L".ape"*/);
+		|| type == L".m4a" || type == L".cue" || type == L".ape");
 }
 
 AudioType CAudioCommon::GetAudioType(const wstring & file_name)
