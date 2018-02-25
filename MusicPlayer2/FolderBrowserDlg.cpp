@@ -34,7 +34,7 @@ int CFolderBrowserDlg::DoModal()
 	{
 		if (!SHGetPathFromIDList(lp, szPath))
 		{
-			AfxMessageBox(_T("无效的目录，请重新选择"));
+			AfxMessageBox(_T("无效的目录，请重新选择！"), MB_ICONWARNING | MB_OK);
 			goto browse;
 		}
 		m_path = szPath;

@@ -191,8 +191,8 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
 	SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
 
-	//初始化提示信息
-	m_Mytip.Create(this, TTS_ALWAYSTIP);
+	////初始化提示信息
+	//m_Mytip.Create(this, TTS_ALWAYSTIP);
 	//m_Mytip.AddTool(GetDlgItem(IDC_INSERT_TAG_BUTTON), _T("在光标所在行的最左边插入一个时间标签，快捷键：F8"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_REPLACE_TAG_BUTTON), _T("替换光标所在行最左边的时间标签，快捷键：F9"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_DELETE_TAG__BUTTON), _T("删除光标处的时间标签，快捷键：Ctrl+Del"));
@@ -386,8 +386,8 @@ BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
 	}
 	//if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
 	//	return TRUE;
-	if (pMsg->message == WM_MOUSEMOVE)
-		m_Mytip.RelayEvent(pMsg);
+	//if (pMsg->message == WM_MOUSEMOVE)
+	//	m_Mytip.RelayEvent(pMsg);
 
 	return CDialog::PreTranslateMessage(pMsg);
 }

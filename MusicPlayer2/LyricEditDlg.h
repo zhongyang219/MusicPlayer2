@@ -40,7 +40,7 @@ protected:
 	bool m_modified{ false };	//如果歌词已更改，则为true
 	bool m_lyric_saved{ false };	//如果执行过保存操作，则为true
 
-	CToolTipCtrl m_Mytip;		//鼠标提示
+	//CToolTipCtrl m_Mytip;		//鼠标提示
 	CStatusBarCtrl m_status_bar;	//状态栏
 	CToolBar m_wndToolBar;		//工具栏
 	//CSize m_min_size;		//窗口的最小大小
