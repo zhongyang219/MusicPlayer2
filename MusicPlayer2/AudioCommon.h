@@ -281,6 +281,9 @@ public:
 	//处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，path为文件的路径
 	static void GetCueTracks(vector<SongInfo>& files, wstring path);
 
+	//检查files容器中是否有和cue文件匹配的音频文件，如果没有，则重新从路径中查找匹配的音频文件
+	static void CheckCueFiles(vector<SongInfo>& files, wstring path);
+
 	//获取音频文件的信息，并储存在song_info中（file_path在获取flac格式时用到）
 	static void GetAudioTags(HSTREAM hStream, AudioType type, wstring file_path, SongInfo& song_info);
 

@@ -155,6 +155,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate(bool sort)
 {
+	CAudioCommon::CheckCueFiles(m_playlist, m_path);
 	CAudioCommon::GetCueTracks(m_playlist, m_path);
 	m_song_num = m_playlist.size();
 	m_index = m_index_tmp;

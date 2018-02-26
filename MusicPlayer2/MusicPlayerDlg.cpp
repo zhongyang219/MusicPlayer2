@@ -1713,7 +1713,7 @@ void CMusicPlayerDlg::OnFileOpen()
 	// TODO: 在此添加命令处理程序代码
 	vector<wstring> files;	//储存打开的多个文件路径
 	//设置过滤器
-	LPCTSTR szFilter = _T("音频文件(*.mp3;*.wma;*.wav;*.ogg;*.flac;*.m4a)|*.mp3;*.wma;*.wav;*.ogg;*.flac;*.m4a|所有文件(*.*)|*.*||");
+	LPCTSTR szFilter = _T("常见音频文件(*.mp3;*.wma;*.wav;*.ogg;*.flac;*.m4a;*.ape;*.cue)|*.mp3;*.wma;*.wav;*.ogg;*.flac;*.m4a;*.ape;*.cue|所有文件(*.*)|*.*||");
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, szFilter, this);
 	//设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）

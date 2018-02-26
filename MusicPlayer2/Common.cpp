@@ -172,8 +172,8 @@ wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
 		//如果前面有UTF16的BOM，则编码类型为UTF16
 		else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
 			code_type = CodeType::UTF16;
-		else if (IsUTF8Bytes(str.c_str()))		//如果没有找到UTF8和UTF16的BOM，则判断字符串是否有UTF8编码的特性
-			code_type = CodeType::UTF8_NO_BOM;
+		//else if (IsUTF8Bytes(str.c_str()))		//如果没有找到UTF8和UTF16的BOM，则判断字符串是否有UTF8编码的特性
+		//	code_type = CodeType::UTF8_NO_BOM;
 		else
 			code_type = CodeType::ANSI;
 	}

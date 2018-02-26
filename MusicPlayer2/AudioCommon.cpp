@@ -227,6 +227,56 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 	}
 }
 
+void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
+{
+	bool audio_exist;
+	int size = files.size();
+	for (int i{}; i < size; i++)
+	{
+		if (GetAudioType(files[i].file_name) == AU_CUE)		//查找列表中的cue文件
+		{
+			audio_exist = false;
+			wstring file_name;
+			size_t index;
+			index = files[i].file_name.rfind(L'.');
+			file_name = files[i].file_name.substr(0, index);		//获取文件名（不含扩展名）
+			//查找和cue文件匹配的音频文件
+			for (int j{}; j < size; j++)
+			{
+				if (GetAudioType(files[j].file_name) != AU_CUE)
+				{
+					wstring audio_file_name;
+					index = files[j].file_name.rfind(L'.');
+					audio_file_name = files[j].file_name.substr(0, index);
+					if (file_name == audio_file_name)
+					{
+						audio_exist = true;
+						break;
+					}
+				}
+			}
+			//没有找到匹配的音频文件，则在目录下搜索匹配的音频文件
+			if (!audio_exist)
+			{
+				vector<wstring> audio_files;
+				CString find_file_name;
+				find_file_name.Format(_T("%s%s.*"), path.c_str(), file_name.c_str());
+				CCommon::GetFiles(wstring(find_file_name), audio_files);
+				for (const auto& file : audio_files)
+				{
+					if (GetAudioType(file) != AU_CUE)
+					{
+						SongInfo song_info;
+						song_info.file_name = file;
+						files.push_back(song_info);
+						return;
+					}
+				}
+			}
+		}
+	}
+}
+
 
 void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, wstring file_path, SongInfo & song_info)
 {
