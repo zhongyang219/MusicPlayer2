@@ -16,7 +16,7 @@ CPlayer::~CPlayer()
 void CPlayer::IniBASS()
 {
 	//载入BASS插件
-	BASS_PluginLoad("bass_ape.dll", 0);
+	m_no_ape_plugin = (BASS_PluginLoad("bass_ape.dll", 0) == 0);
 	//初始化BASE音频库
 	BASS_Init(
 		-1,//默认设备
@@ -401,7 +401,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		else
 			ClearReverb();
 		break;
-	case Command::PLAY: BASS_ChannelPlay(m_musicStream, FALSE); m_playing = 2; break;
+	case Command::PLAY:
+		ConnotPlayWarning();
+		BASS_ChannelPlay(m_musicStream, FALSE); m_playing = 2;
+		break;
 	case Command::CLOSE:
 		RemoveFXHandle();
 		BASS_StreamFree(m_musicStream);
@@ -435,6 +438,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		}
 		else
 		{
+			ConnotPlayWarning();
 			BASS_ChannelPlay(m_musicStream, FALSE);
 			m_playing = 2;
 		}
@@ -1357,4 +1361,11 @@ void CPlayer::EnableReverb(bool enable)
 	else
 		ClearReverb();
 	m_reverb_enable = enable;
+}
+
+
+void CPlayer::ConnotPlayWarning() const
+{
+	if (m_no_ape_plugin && CAudioCommon::GetAudioType(m_current_file_name) == AudioType::AU_APE)
+		AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
 }

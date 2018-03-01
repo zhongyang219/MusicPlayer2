@@ -67,6 +67,7 @@ private:
 	wstring m_album_cover_path;		//专辑封面文件的路径
 	int m_album_cover_type;			//专辑封面的格式
 
+	bool m_no_ape_plugin{ false };		//如果无法加载bass_ape.dll，则为true
 public:
 	CLyrics m_Lyrics;		//歌词
 	//wstring m_lyric_path;	//歌词文件夹的路径
@@ -186,5 +187,8 @@ public:
 	void ReIniBASS();		//重新初始化BASS
 
 	void SortPlaylist(bool change_index = true);	//播放列表按照m_sort_mode排序（当change_index为true时，排序后重新查找正在播放的歌曲）
+
+private:
+	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
 };
 

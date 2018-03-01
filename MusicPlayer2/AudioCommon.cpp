@@ -46,6 +46,8 @@ AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 		return AU_FLAC;
 	else if (type == L".cue")
 		return AU_CUE;
+	else if (type == L".ape")
+		return AU_APE;
 	else
 		return AU_OTHER;
 }
