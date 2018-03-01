@@ -620,6 +620,8 @@ bool CPlayer::PlayTrack(int song_track)
 		m_current_file_name = m_playlist[m_index].file_name;
 		MusicControl(Command::OPEN);
 		IniLyrics();
+		if (m_playlist[m_index].is_cue)
+			SeekTo(0);
 		MusicControl(Command::PLAY);
 		GetBASSCurrentPosition();
 		SetTitle();
