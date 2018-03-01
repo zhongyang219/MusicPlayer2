@@ -181,7 +181,7 @@ public:
 	const float* GetSpectralData() const { return m_spectral_data; }	//返回频谱分析每个柱形的高度的数据
 	deque<PathInfo>& GetRecentPath() { return m_recent_path; }	//返回最近播放路径列表的引用
 	wstring GetPlayingState() const;		//获取播放状态的字符串
-	const SongInfo& GetCurrentSongInfo() const { return m_playlist[m_index]; }
+	const SongInfo& GetCurrentSongInfo() const;
 
 	void ReIniBASS();		//重新初始化BASS
 

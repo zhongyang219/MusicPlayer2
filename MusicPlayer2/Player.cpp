@@ -386,7 +386,11 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			last_file_path = m_path + m_current_file_name;
 		}
 		if (m_playlist[m_index].is_cue)
-			SeekTo(0);
+		{
+			//SeekTo(0);
+			m_song_length = GetCurrentSongInfo().lengh;
+			m_song_length_int = m_song_length.time2int();
+		}
 		SetVolume();
 		memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
 		SetFXHandle();
@@ -1038,14 +1042,13 @@ wstring CPlayer::GetPlayingState() const
 	return wstring();
 }
 
-//SongInfo CPlayer::GetCurrentSongInfo() const
-//{
-//	// TODO: 在此处插入 return 语句
-//	if (m_index >= m_playlist.size() || m_index < 0)
-//		return SongInfo{};
-//	else
-//		return m_playlist[m_index];
-//}
+const SongInfo & CPlayer::GetCurrentSongInfo() const
+{
+	// TODO: 在此处插入 return 语句
+	if (m_index >= 0 && m_index < m_playlist.size())
+		return m_playlist[m_index];
+	else return m_playlist[0];
+}
 
 void CPlayer::ReIniBASS()
 {
