@@ -993,7 +993,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//根据当前系统的DPI设置窗口上方工具区和状态栏等的大小
 	m_control_bar_height = DPI(30);
 	m_margin = DPI(4);
-	m_width_threshold = DPI(650);
+	m_width_threshold = DPI(600);
 	m_info_height = DPI(170);
 	m_info_height2 = DPI(143);
 	m_path_edit_height = DPI(32);

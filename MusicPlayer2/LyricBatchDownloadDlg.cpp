@@ -120,17 +120,19 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 	//设置各列的宽度
 	CRect rect;
 	m_song_list_ctrl.GetClientRect(rect);
-	int width0, width1, width2, width3;
+	int width0, width1, width2, width3, width4;
 	width0 = rect.Width() / 10;
-	width1 = rect.Width() * 4 / 10;
+	width1 = rect.Width() * 2 / 10;
 	width2 = rect.Width() * 2 / 10;
-	width3 = rect.Width() - width0 - width1 - width2 - DPI(21);
+	width3 = rect.Width() * 3 / 10;
+	width4 = rect.Width() - width0 - width1 - width2 - width3 - DPI(21);
 	//插入列
 	m_song_list_ctrl.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	m_song_list_ctrl.InsertColumn(0, _T("序号"), LVCFMT_LEFT, width0);		//插入第1列
 	m_song_list_ctrl.InsertColumn(1, _T("标题"), LVCFMT_LEFT, width1);		//插入第2列
 	m_song_list_ctrl.InsertColumn(2, _T("艺术家"), LVCFMT_LEFT, width2);		//插入第3列
-	m_song_list_ctrl.InsertColumn(3, _T("状态"), LVCFMT_LEFT, width3);		//插入第3列
+	m_song_list_ctrl.InsertColumn(3, _T("文件名"), LVCFMT_LEFT, width3);		//插入第3列
+	m_song_list_ctrl.InsertColumn(4, _T("状态"), LVCFMT_LEFT, width4);		//插入第4列
 	//插入项目
 	for (size_t i{}; i<m_playlist.size(); i++)
 	{
@@ -139,6 +141,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 		m_song_list_ctrl.InsertItem(i, tmp);
 		m_song_list_ctrl.SetItemText(i, 1, m_playlist[i].title.c_str());
 		m_song_list_ctrl.SetItemText(i, 2, m_playlist[i].artist.c_str());
+		m_song_list_ctrl.SetItemText(i, 3, m_playlist[i].file_name.c_str());
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -153,7 +156,7 @@ void CLyricBatchDownloadDlg::OnBnClickedStartDownload()
 	//先清除“状态”一列的内容
 	for (size_t i{}; i < m_playlist.size(); i++)
 	{
-		m_song_list_ctrl.SetItemText(i, 3, _T(""));
+		m_song_list_ctrl.SetItemText(i, 4, _T(""));
 	}
 
 	EnableControls(false);		//禁用控件
@@ -224,7 +227,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		pInfo->static_ctrl->SetWindowText(info);
 		//SetDlgItemText(IDC_INFO_STATIC, info);
 
-		pInfo->list_ctrl->SetItemText(i, 3, _T("正在下载…"));
+		pInfo->list_ctrl->SetItemText(i, 4, _T("正在下载…"));
 		pInfo->list_ctrl->EnsureVisible(i, FALSE);
 
 		//设置要保存的歌词的路径
@@ -240,7 +243,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		bool lyric_exist = CCommon::FileExist(lyric_path) || (!pInfo->playlist->at(i).lyric_file.empty());
 		if (pInfo->skip_exist && lyric_exist)		//如果设置了跳过已存在歌词的曲目，并且歌词已经存在，则跳过它
 		{
-			pInfo->list_ctrl->SetItemText(i, 3, _T("已跳过"));
+			pInfo->list_ctrl->SetItemText(i, 4, _T("已跳过"));
 			continue;
 		}
 
@@ -272,7 +275,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 			return 0;
 		if (rtn != 0)
 		{
-			pInfo->list_ctrl->SetItemText(i, 3, _T("网络连接失败或超时"));
+			pInfo->list_ctrl->SetItemText(i, 4, _T("网络连接失败或超时"));
 			continue;
 		}
 
@@ -281,7 +284,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		CLyricDownloadCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
 		if (down_list.empty())
 		{
-			pInfo->list_ctrl->SetItemText(i, 3, _T("找不到此歌曲"));
+			pInfo->list_ctrl->SetItemText(i, 4, _T("找不到此歌曲"));
 			continue;
 		}
 
@@ -295,7 +298,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		int best_matched = CLyricDownloadCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).file_name, true);
 		if (best_matched < 0)
 		{
-			pInfo->list_ctrl->SetItemText(i, 3, _T("没有匹配的歌词"));
+			pInfo->list_ctrl->SetItemText(i, 4, _T("没有匹配的歌词"));
 			continue;
 		}
 
@@ -303,14 +306,14 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		CLyricDownloadCommon::DownloadLyric(down_list[best_matched].id, lyric_str, pInfo->download_translate);
 		if (lyric_str.empty())
 		{
-			pInfo->list_ctrl->SetItemText(i, 3, _T("歌词下载失败"));
+			pInfo->list_ctrl->SetItemText(i, 4, _T("歌词下载失败"));
 			continue;
 		}
 
 		//处理歌词文本
 		if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
 		{
-			pInfo->list_ctrl->SetItemText(i, 3, _T("该歌曲没有歌词"));
+			pInfo->list_ctrl->SetItemText(i, 4, _T("该歌曲没有歌词"));
 			continue;
 		}
 
@@ -319,9 +322,9 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
 		//保存歌词
 		if (CLyricBatchDownloadDlg::SaveLyric(lyric_path.c_str(), lyric_str, pInfo->save_code))
-			pInfo->list_ctrl->SetItemText(i, 3, _T("成功，但是歌词中有无法转换的Unicode字符，建议保存为UTF-8格式"));		//如果函数返回true，则说明有无法转换的Unicode字符
+			pInfo->list_ctrl->SetItemText(i, 4, _T("成功，但是歌词中有无法转换的Unicode字符，建议保存为UTF-8格式"));		//如果函数返回true，则说明有无法转换的Unicode字符
 		else
-			pInfo->list_ctrl->SetItemText(i, 3, _T("成功"));
+			pInfo->list_ctrl->SetItemText(i, 4, _T("成功"));
 		if (pInfo->download_translate)
 		{
 			CLyrics lyrics{ lyric_path };		//打开保存过的歌词
