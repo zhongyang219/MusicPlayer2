@@ -272,9 +272,11 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"show_album_cover", theApp.m_app_setting_data.m_show_album_cover, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_fit", static_cast<int>(theApp.m_app_setting_data.m_album_cover_fit), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_as_background", theApp.m_app_setting_data.m_album_cover_as_background, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"cortana_show_album_cover", m_cortana_show_album_cover, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"cortana_show_album_cover", theApp.m_nc_setting_data.m_cortana_show_album_cover, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"background_transparency", theApp.m_app_setting_data.m_background_transparency, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"use_out_image", theApp.m_app_setting_data.m_use_out_image, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -302,9 +304,11 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.m_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_app_setting_data.m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
 	theApp.m_app_setting_data.m_album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
-	m_cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_nc_setting_data.m_cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_app_setting_data.m_background_transparency = GetPrivateProfileIntW(L"config", L"background_transparency", 80, theApp.m_config_path.c_str());
 	theApp.m_app_setting_data.m_use_out_image = (GetPrivateProfileIntW(_T("config"), _T("use_out_image"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_nc_setting_data.volum_step = GetPrivateProfileIntW(_T("config"), _T("volum_step"), 3, theApp.m_config_path.c_str());
+	theApp.m_nc_setting_data.mouse_volum_step = GetPrivateProfileIntW(_T("config"), _T("mouse_volum_step"), 2, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -1362,7 +1366,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, DPI(2));
 				}
 			}
-			m_cortana_lyric.AlbumCoverEnable(m_cortana_show_album_cover/* && theApp.m_player.AlbumCoverExist()*/);
+			m_cortana_lyric.AlbumCoverEnable(theApp.m_nc_setting_data.m_cortana_show_album_cover/* && theApp.m_player.AlbumCoverExist()*/);
 			m_cortana_lyric.DrawAlbumCover(theApp.m_player.GetAlbumCover());
 		}
 	}
@@ -1652,12 +1656,12 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			}
 			if (pMsg->wParam == VK_UP)	//按上方向键下音量加
 			{
-				theApp.m_player.MusicControl(Command::VOLUME_UP);
+				theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
 				return TRUE;
 			}
 			if (pMsg->wParam == VK_DOWN)	//按下方向键音量减
 			{
-				theApp.m_player.MusicControl(Command::VOLUME_DOWN);
+				theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 				return TRUE;
 			}
 			if (pMsg->wParam == 'M')	//按M键设置循环模式
@@ -1921,11 +1925,11 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (zDelta > 0)
 	{
-		theApp.m_player.MusicControl(Command::VOLUME_UP);
+		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.mouse_volum_step);
 	}
 	if (zDelta < 0)
 	{
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN);
+		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.mouse_volum_step);
 	}
 
 	return CDialog::OnMouseWheel(nFlags, zDelta, pt);
@@ -2165,10 +2169,10 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 	case HK_PREVIOUS: OnPrevious(); break;
 	case HK_NEXT: OnNext(); break;
 	case HK_VOLUME_UP:
-		theApp.m_player.MusicControl(Command::VOLUME_UP);
+		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
 		break;
 	case HK_VOLUME_DOWN:
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN);
+		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 		break;
 	default: break;
 	}
@@ -2583,13 +2587,13 @@ void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
 		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
 
-	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加5
+	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
 	{
-		theApp.m_player.MusicControl(Command::VOLUME_UP, 5);
+		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
 	}
-	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小5
+	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
 	{
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN, 5);
+		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 	}
 
 	CDialog::OnLButtonUp(nFlags, point);

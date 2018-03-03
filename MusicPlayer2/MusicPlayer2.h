@@ -44,6 +44,13 @@ struct ApperanceSettingData
 	bool m_use_out_image{ true };			//使用外部图片作为专辑封面
 };
 
+struct NonCategorizedSettingData
+{
+	bool m_cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
+	int volum_step{ 3 };		//点击主界面中的音量调节时一次调整的步长
+	int mouse_volum_step{ 2 };		//通过鼠标滚轮调节音量时的步长
+};
+
 // CMusicPlayerApp: 
 // 有关此类的实现，请参阅 MusicPlayer2.cpp
 //
@@ -66,8 +73,9 @@ public:
 
 	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
 
-	PlaySettingData m_play_setting_data;
-	ApperanceSettingData m_app_setting_data;
+	PlaySettingData m_play_setting_data;		//“选项设置”对话框中“主窗口设置”中的数据
+	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“任务栏窗口设置”中的数据
+	NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
 
 	volatile bool m_lyric_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ false };		//用于指示歌词批量下载对话框已经退出

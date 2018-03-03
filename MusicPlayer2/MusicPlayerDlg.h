@@ -115,17 +115,6 @@ protected:
 
 	unsigned int m_timer_count{};
 
-	//bool m_stop_when_error{ true };		//出现错误时停止播放
-	//bool m_show_taskbar_progress{ false };	//在任务栏按钮上显示播放进度
-
-	//int m_transparency{ 100 };			//窗口透明度
-	//bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
-	//bool m_show_album_cover;			//显示专辑封面
-	//CDrawCommon::StretchMode m_album_cover_fit{ CDrawCommon::StretchMode::FILL };		//专辑封面契合度（拉伸模式）
-	//bool m_album_cover_as_background{ false };		//将专辑封面作为背景
-	//bool m_show_spectrum{ true };		//显示频谱分析
-	bool m_cortana_show_album_cover{ true };
-
 	CRect m_draw_rect;		//绘图区域
 	CRect m_repetemode_rect;	//显示“循环模式”的矩形区域
 	bool m_repetemode_hover{ false };	//鼠标指向了“循环模式”的矩形区域
@@ -143,11 +132,8 @@ protected:
 
 	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_list_popup_menu };		//迷你模式对话框
 
-	//bool m_show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
 	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
-	//bool m_cortana_lyric_double_line{true};		//是否在Cortana搜索中以双行显示歌词
 
-	//bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
 	CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
 
