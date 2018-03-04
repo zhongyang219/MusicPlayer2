@@ -136,6 +136,8 @@ protected:
 
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
 	CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
+	CSetPathDlg* m_pSetPathDlg;		//选择路径对话框（非模态对话框）
+	CSoundEffectDlg* m_pSoundEffecDlg;		//音效设定对话框（非模态对话框）
 
 	CWinThread* m_pThread;		//执行在线查看的线程
 	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
@@ -261,4 +263,6 @@ public:
 	afx_msg void OnTranslateToSimplifiedChinese();
 	afx_msg void OnTranslateToTranditionalChinese();
 	afx_msg void OnAlbumCoverSaveAs();
+protected:
+	afx_msg LRESULT OnPathSelected(WPARAM wParam, LPARAM lParam);
 };

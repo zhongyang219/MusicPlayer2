@@ -6,6 +6,7 @@
 #include "ListCtrlEx.h"
 
 // CSetPathDlg ¶Ô»°¿ò
+#define WM_PATH_SELECTED (WM_USER+107)
 
 class CSetPathDlg : public CDialog
 {
@@ -52,4 +53,6 @@ public:
 	afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	virtual void OnCancel();
+	virtual void OnOK();
 };

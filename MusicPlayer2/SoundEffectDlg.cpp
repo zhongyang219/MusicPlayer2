@@ -86,3 +86,12 @@ void CSoundEffectDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 	*pResult = 0;
 }
+
+
+void CSoundEffectDlg::OnCancel()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	DestroyWindow();
+
+	//CDialog::OnCancel();
+}

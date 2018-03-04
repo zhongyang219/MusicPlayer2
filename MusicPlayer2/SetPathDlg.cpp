@@ -266,3 +266,21 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 
 	}
 }
+
+
+void CSetPathDlg::OnCancel()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	DestroyWindow();
+
+	//CDialog::OnCancel();
+}
+
+
+void CSetPathDlg::OnOK()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (SelectValid())
+		::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(),WM_PATH_SELECTED, 0, 0);
+	CDialog::OnOK();
+}

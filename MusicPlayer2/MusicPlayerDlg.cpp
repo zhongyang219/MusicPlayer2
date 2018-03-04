@@ -125,12 +125,6 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
 
 CMusicPlayerDlg::~CMusicPlayerDlg()
 {
-	//if (m_pMaskDlg != nullptr)
-	//{
-	//	m_pMaskDlg->OnCancel();
-	//	delete m_pMaskDlg;
-	//	m_pMaskDlg = nullptr;
-	//}
 	if (m_pLyricEdit != nullptr)
 	{
 		m_pLyricEdit->OnCancel();
@@ -142,6 +136,18 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
 		m_pLyricBatchDownDlg->OnCancel();
 		delete m_pLyricBatchDownDlg;
 		m_pLyricBatchDownDlg = nullptr;
+	}
+	if (m_pSetPathDlg != nullptr)
+	{
+		m_pSetPathDlg->OnCancel();
+		delete m_pSetPathDlg;
+		m_pSetPathDlg = nullptr;
+	}
+	if (m_pSoundEffecDlg != nullptr)
+	{
+		m_pSoundEffecDlg->OnCancel();
+		delete m_pSoundEffecDlg;
+		m_pSoundEffecDlg = nullptr;
 	}
 }
 
@@ -245,6 +251,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, &CMusicPlayerDlg::OnTranslateToSimplifiedChinese)
 	ON_COMMAND(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, &CMusicPlayerDlg::OnTranslateToTranditionalChinese)
 	ON_COMMAND(ID_ALBUM_COVER_SAVE_AS, &CMusicPlayerDlg::OnAlbumCoverSaveAs)
+	ON_MESSAGE(WM_PATH_SELECTED, &CMusicPlayerDlg::OnPathSelected)
 END_MESSAGE_MAP()
 
 
@@ -1480,17 +1487,31 @@ void CMusicPlayerDlg::OnFF()
 void CMusicPlayerDlg::OnSetPath()
 {
 	// TODO: 在此添加命令处理程序代码
-	CSetPathDlg setPathDlg(theApp.m_player.GetRecentPath(), theApp.m_player.GetCurrentPath());
-	if (setPathDlg.DoModal() == IDOK && setPathDlg.SelectValid())
+	if (m_pSetPathDlg != nullptr)
 	{
-		theApp.m_player.SetPath(setPathDlg.GetSelPath(), setPathDlg.GetTrack(), setPathDlg.GetPosition(), setPathDlg.GetSortMode());
+		m_pSetPathDlg->OnCancel();
+		delete m_pSetPathDlg;
+		m_pSetPathDlg = nullptr;
+	}
+	m_pSetPathDlg = new CSetPathDlg(theApp.m_player.GetRecentPath(), theApp.m_player.GetCurrentPath());
+	m_pSetPathDlg->Create(IDD_SET_PATH_DIALOG);
+	m_pSetPathDlg->ShowWindow(SW_SHOW);
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
+{
+	if (m_pSetPathDlg != nullptr)
+	{
+		theApp.m_player.SetPath(m_pSetPathDlg->GetSelPath(), m_pSetPathDlg->GetTrack(), m_pSetPathDlg->GetPosition(), m_pSetPathDlg->GetSortMode());
 		UpdatePlayPauseButton();
 		SetPorgressBarSize();
 		ShowTime();
 		DrawInfo(true);
 		m_findDlg.ClearFindResult();		//更换路径后清除查找结果
+		theApp.m_player.SaveRecentPath();
 	}
-	theApp.m_player.SaveRecentPath();
+	return 0;
 }
 
 
@@ -2647,10 +2668,15 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnEqualizer()
 {
 	// TODO: 在此添加命令处理程序代码
-	//CEqualizerDlg equalizerDlg;
-	//equalizerDlg.DoModal();
-	CSoundEffectDlg soundEffectDlg;
-	soundEffectDlg.DoModal();
+	if (m_pSoundEffecDlg != nullptr)
+	{
+		m_pSoundEffecDlg->OnCancel();
+		delete m_pSoundEffecDlg;
+		m_pSoundEffecDlg = nullptr;
+	}
+	m_pSoundEffecDlg = new CSoundEffectDlg;
+	m_pSoundEffecDlg->Create(IDD_SOUND_EFFECT_DIALOG);
+	m_pSoundEffecDlg->ShowWindow(SW_SHOW);
 }
 
 
