@@ -113,6 +113,7 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CDialog)
 	ON_NOTIFY(NM_DBLCLK, IDC_PATH_LIST, &CSetPathDlg::OnNMDblclkPathList)
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_OPEN_FOLDER, &CSetPathDlg::OnBnClickedOpenFolder)
 END_MESSAGE_MAP()
 
 
@@ -192,16 +193,16 @@ void CSetPathDlg::OnBnClickedDeletePathButton()
 }
 
 
-BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	// TODO: 在此添加专用代码和/或调用基类
-	if (wParam == ID_FILE_OPEN_FOLDER)
-	{
-		OnCancel();		//点击了“打开新路径”按钮后关闭设置路径对话框
-	}
-
-	return CDialog::OnCommand(wParam, lParam);
-}
+//BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+//{
+//	// TODO: 在此添加专用代码和/或调用基类
+//	if (wParam == ID_FILE_OPEN_FOLDER)
+//	{
+//		OnCancel();		//点击了“打开新路径”按钮后关闭设置路径对话框
+//	}
+//
+//	return CDialog::OnCommand(wParam, lParam);
+//}
 
 
 void CSetPathDlg::OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
@@ -283,4 +284,12 @@ void CSetPathDlg::OnOK()
 	if (SelectValid())
 		::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(),WM_PATH_SELECTED, 0, 0);
 	CDialog::OnOK();
+}
+
+
+void CSetPathDlg::OnBnClickedOpenFolder()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_COMMAND, ID_FILE_OPEN_FOLDER, 0);
+	OnCancel();			//点击了“打开新路径”按钮后关闭设置路径对话框
 }

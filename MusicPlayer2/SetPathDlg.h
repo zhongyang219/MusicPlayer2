@@ -47,7 +47,7 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedDeletePathButton();
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
@@ -55,4 +55,5 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual void OnCancel();
 	virtual void OnOK();
+	afx_msg void OnBnClickedOpenFolder();
 };
