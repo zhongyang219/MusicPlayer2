@@ -5,6 +5,8 @@
 
 CPlayer::CPlayer()
 {
+	//载入BASS插件
+	m_no_ape_plugin = (BASS_PluginLoad("bass_ape.dll", 0) == 0);
 }
 
 CPlayer::~CPlayer()
@@ -15,8 +17,6 @@ CPlayer::~CPlayer()
 
 void CPlayer::IniBASS()
 {
-	//载入BASS插件
-	m_no_ape_plugin = (BASS_PluginLoad("bass_ape.dll", 0) == 0);
 	//初始化BASE音频库
 	BASS_Init(
 		-1,//默认设备
