@@ -395,5 +395,11 @@
     <Image Include="res\Replace.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\快进.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\快退.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

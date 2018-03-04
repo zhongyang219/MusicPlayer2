@@ -45,7 +45,7 @@ protected:
 	CToolBar m_wndToolBar;		//工具栏
 	//CSize m_min_size;		//窗口的最小大小
 #define MARGIN DPI(8)
-#define TOOLBAR_HEIGHT DPI(30)
+#define TOOLBAR_HEIGHT DPI(29)
 #define STATUSBAR_HEIGHT DPI(20)
 
 	CFindReplaceDialog* m_pFindDlg{};   //查找对话框
@@ -59,6 +59,7 @@ protected:
 	void OpreateTag(TagOpreation operation);
 	bool SaveLyric(const wchar_t* path, CodeType code_type);
 	void UpdateStatusbarInfo();			//更新状态栏信息
+	void StatusBarSetParts(int width);			//设置状态栏各部分的宽度
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

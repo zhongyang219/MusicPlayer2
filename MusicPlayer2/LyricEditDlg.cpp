@@ -132,6 +132,12 @@ void CLyricEditDlg::UpdateStatusbarInfo()
 	m_status_bar.SetText(str, 2, 0);
 }
 
+void CLyricEditDlg::StatusBarSetParts(int width)
+{
+	int nParts[3] = { width - DPI(220), width - DPI(160), -1 }; //分割尺寸
+	m_status_bar.SetParts(3, nParts); //分割状态栏
+}
+
 void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -226,8 +232,8 @@ BOOL CLyricEditDlg::OnInitDialog()
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_DELETE_TAG));
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_SAVE));
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_PLAY_PAUSE));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_PREVIOUS));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_NEXT1));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REW));
+	ImageList.Add(AfxGetApp()->LoadIcon(IDI_FF));
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_FIND));
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REPLACE));
 	m_wndToolBar.GetToolBarCtrl().SetImageList(&ImageList);
@@ -245,8 +251,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	rect.top = rect.bottom - DPI(20);
 	m_status_bar.Create(WS_VISIBLE | CBRS_BOTTOM, rect, this, 3);
 
-	int nParts[3] = { rect.Width() - DPI(220), rect.Width() - DPI(160), -1 }; //分割尺寸
-	m_status_bar.SetParts(3, nParts); //分割状态栏
+	StatusBarSetParts(rect.Width());
 	UpdateStatusbarInfo();
 
 	m_dlg_exist = true;
@@ -638,6 +643,7 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 		rect.bottom = cy;
 		rect.top = rect.bottom - STATUSBAR_HEIGHT;
 		m_status_bar.MoveWindow(rect);
+		StatusBarSetParts(cx);
 	}
 
 	//调整窗口的大小和位置

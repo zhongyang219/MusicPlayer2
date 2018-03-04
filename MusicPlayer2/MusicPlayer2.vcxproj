@@ -289,6 +289,8 @@
     <Image Include="res\上一曲.ico" />
     <Image Include="res\下一曲.ico" />
     <Image Include="res\停止.ico" />
+    <Image Include="res\快进.ico" />
+    <Image Include="res\快退.ico" />
     <Image Include="res\播放.ico" />
     <Image Include="res\播放_暂停.ico" />
     <Image Include="res\暂停.ico" />
