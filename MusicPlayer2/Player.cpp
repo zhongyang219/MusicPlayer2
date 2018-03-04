@@ -1055,7 +1055,7 @@ const SongInfo & CPlayer::GetCurrentSongInfo() const
 	// TODO: 在此处插入 return 语句
 	if (m_index >= 0 && m_index < m_playlist.size())
 		return m_playlist[m_index];
-	else return m_playlist[0];
+	else return m_no_use;
 }
 
 void CPlayer::ReIniBASS()

@@ -68,6 +68,8 @@ private:
 	int m_album_cover_type;			//专辑封面的格式
 
 	bool m_no_ape_plugin{ false };		//如果无法加载bass_ape.dll，则为true
+
+	SongInfo m_no_use{};
 public:
 	CLyrics m_Lyrics;		//歌词
 	//wstring m_lyric_path;	//歌词文件夹的路径
