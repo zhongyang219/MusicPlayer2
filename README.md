@@ -31,3 +31,9 @@
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Mini_mode.png)<br>
 Cortana搜索框显示歌词：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Cortana_lyric.png)<br>
+# 歌词下载
+软件提供了单个歌曲的歌词下载和歌词批量下载的功能。歌词下载功能调用了网易云音乐的API，如果感兴趣的话可以参考CLyricDownloadCommon、CLyricDownloadDlg和CLyricBatchDownloadDlg类。<br>
+歌词下载界面截图：<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Lyric_download.png)<br>
+歌词批量下载界面截图：<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Lyric_batch_download.png)<br>
