@@ -285,6 +285,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"use_out_image", theApp.m_app_setting_data.m_use_out_image, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"show_playstate_icon", theApp.m_play_setting_data.m_show_playstate_icon, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -317,6 +318,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.m_use_out_image = (GetPrivateProfileIntW(_T("config"), _T("use_out_image"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_nc_setting_data.volum_step = GetPrivateProfileIntW(_T("config"), _T("volum_step"), 3, theApp.m_config_path.c_str());
 	theApp.m_nc_setting_data.mouse_volum_step = GetPrivateProfileIntW(_T("config"), _T("mouse_volum_step"), 2, theApp.m_config_path.c_str());
+	theApp.m_play_setting_data.m_show_playstate_icon = (GetPrivateProfileIntW(_T("config"), _T("show_playstate_icon"), 1, theApp.m_config_path.c_str())!=0);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -2329,6 +2331,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
 	//当资源管理器重启后重新添加任务栏缩略图窗口按钮
 	m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
 	SetThumbnailClipArea();
+	//重新更新任务栏上的播放状态角标
+	UpdatePlayPauseButton();
 #endif
 	//资源管理器重启后Cortana的句柄会发生改变，此时要重新获取Cortana的句柄
 	m_cortana_lyric.Init();
