@@ -100,7 +100,7 @@ using std::map;
 #define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
 #define MAX_SONG_NUM 9999		//播放列表中文件数量的最大值
 
-#define VERSION L"2.58";	//程序版本
+#define VERSION L"2.59";	//程序版本
 
 //任务栏图按钮
 #define IDT_PLAY_PAUSE 1321		//任务栏缩略图“播放/暂停”按钮的ID
@@ -166,3 +166,5 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 
 //#define BACKGROUND_ALPHA 200	//界面背景的透明度0~255
 #define ALPHA_CHG(alpha) ((alpha)*255/100)		//将透明度从0~100映射到0~255
+
+#define WM_NEXT_USER_MSG (WM_USER+109)

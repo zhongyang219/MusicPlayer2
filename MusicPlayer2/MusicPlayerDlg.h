@@ -142,6 +142,8 @@ protected:
 	CWinThread* m_pThread;		//执行在线查看的线程
 	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
 
+	int m_play_error_cnt{};		//统计播放出错的次数
+
 	//私有的函数
 	void SaveConfig();		//保存设置到ini文件
 	void LoadConfig();		//从ini文件读取设置
@@ -265,4 +267,5 @@ public:
 	afx_msg void OnAlbumCoverSaveAs();
 protected:
 	afx_msg LRESULT OnPathSelected(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnConnotPlayWarning(WPARAM wParam, LPARAM lParam);
 };

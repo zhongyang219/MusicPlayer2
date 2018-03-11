@@ -252,6 +252,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, &CMusicPlayerDlg::OnTranslateToTranditionalChinese)
 	ON_COMMAND(ID_ALBUM_COVER_SAVE_AS, &CMusicPlayerDlg::OnAlbumCoverSaveAs)
 	ON_MESSAGE(WM_PATH_SELECTED, &CMusicPlayerDlg::OnPathSelected)
+	ON_MESSAGE(WM_CONNOT_PLAY_WARNING, &CMusicPlayerDlg::OnConnotPlayWarning)
 END_MESSAGE_MAP()
 
 
@@ -1378,9 +1379,14 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 	}
 	//if (theApp.m_player.SongIsOver() && (!theApp.m_play_setting_data.m_stop_when_error || !theApp.m_player.IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
-	if (theApp.m_player.SongIsOver() || (!theApp.m_play_setting_data.m_stop_when_error && theApp.m_player.IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
+	if ((theApp.m_player.SongIsOver() || (!theApp.m_play_setting_data.m_stop_when_error && theApp.m_player.IsError())) && m_play_error_cnt <= theApp.m_player.GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲
 	{
-		if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !theApp.m_player.PlayTrack(NEXT))		//当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
+		if (theApp.m_player.IsError())
+			m_play_error_cnt++;
+		else
+			m_play_error_cnt = 0;
+		//当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
+		if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !theApp.m_player.PlayTrack(NEXT))
 		{
 			theApp.m_player.MusicControl(Command::STOP);		//停止播放
 			ShowTime();
@@ -1510,6 +1516,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
 		DrawInfo(true);
 		m_findDlg.ClearFindResult();		//更换路径后清除查找结果
 		theApp.m_player.SaveRecentPath();
+		m_play_error_cnt = 0;
 	}
 	return 0;
 }
@@ -1760,6 +1767,7 @@ void CMusicPlayerDlg::OnFileOpen()
 		UpdatePlayPauseButton();
 		SetPorgressBarSize();
 		DrawInfo(true);
+		m_play_error_cnt = 0;
 	}
 }
 
@@ -1781,6 +1789,7 @@ void CMusicPlayerDlg::OnFileOpenFolder()
 		UpdatePlayPauseButton();
 		SetPorgressBarSize();
 		DrawInfo(true);
+		m_play_error_cnt = 0;
 	}
 }
 
@@ -2819,4 +2828,12 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 		CString dest_file = fileDlg.GetPathName();
 		::CopyFile(theApp.m_player.GetAlbumCoverPath().c_str(), dest_file, FALSE);
 	}
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lParam)
+{
+	if (theApp.m_play_setting_data.m_stop_when_error)
+		AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
+	return 0;
 }

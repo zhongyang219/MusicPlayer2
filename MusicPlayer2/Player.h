@@ -8,6 +8,7 @@
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//播放列表加载完成消息
 #define WM_SET_TITLE (WM_USER+106)					//设置窗口标题的消息
+#define WM_CONNOT_PLAY_WARNING (WM_USER+108)		//无法播放文件时弹出警告提示框的消息
 
 class CPlayer
 {
