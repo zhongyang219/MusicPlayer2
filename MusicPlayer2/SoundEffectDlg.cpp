@@ -41,6 +41,7 @@ BOOL CSoundEffectDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	CenterWindow();
 	//插入标签
 	m_tab.InsertItem(0, _T("均衡器"));
 	m_tab.InsertItem(1, _T("混响"));

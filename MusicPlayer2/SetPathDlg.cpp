@@ -125,6 +125,8 @@ BOOL CSetPathDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	CenterWindow();
+
 	m_path_name.SetWindowText(m_current_path.c_str());
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标

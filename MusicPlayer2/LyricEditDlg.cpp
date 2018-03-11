@@ -181,6 +181,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	CenterWindow();
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 	//获取歌词信息
