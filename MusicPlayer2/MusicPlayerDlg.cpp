@@ -1443,7 +1443,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 	}
 
-	if (m_timer_count % 10 == 0)
+	if (m_timer_count % 10 == 0 && !m_cortana_lyric.m_cortana_disabled)
 		m_cortana_lyric.CheckDarkMode();
 
 	CDialog::OnTimer(nIDEvent);

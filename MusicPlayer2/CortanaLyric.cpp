@@ -26,30 +26,49 @@ void CCortanaLyric::Init()
 		m_cortana_wnd = CWnd::FromHandle(m_cortana_hwnd);		//获取Cortana搜索框的CWnd类的指针
 		if (m_cortana_wnd == nullptr) return;
 
-		//获取左上角点的坐标
-		CRect rect;
-		::GetWindowRect(m_cortana_hwnd, rect);
-		m_lefttop_point.x = rect.right + 3;
-		m_lefttop_point.y = rect.top + 1;
-
 		::GetClientRect(m_cortana_hwnd, m_cortana_rect);	//获取Cortana搜索框的矩形区域
 		CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
 		::GetClientRect(m_hCortanaStatic, cortana_static_rect);	//获取Cortana搜索框中static控件的矩形区域
-		if (cortana_static_rect.Width() > 0)
-		{
+		//if (cortana_static_rect.Width() > 0)
+		//{
 			m_cortana_left_space = m_cortana_rect.Width() - cortana_static_rect.Width();
 			m_cortana_rect.right = m_cortana_rect.left + cortana_static_rect.Width();		//调整Cortana窗口矩形的宽度
+		//}
+		//else
+		//{
+		//	m_cortana_left_space = 0;
+		//}
+
+		if (m_cortana_left_space < m_cortana_rect.Height() / 2)		//显示文本的区域距小娜窗口左侧边框太近，则说明小娜被禁用，左侧没有小娜图标
+		{
+			m_cortana_disabled = true;
+			m_cortana_rect.right -= (m_cortana_rect.Height() - m_cortana_left_space);
+			m_cortana_left_space = m_cortana_rect.Height();
 		}
 		else
 		{
-			m_cortana_left_space = 0;
+			m_cortana_disabled = false;
 		}
-
 		m_icon_rect.right = m_cortana_left_space;
 		m_icon_rect.bottom = m_cortana_rect.Height();
 
 		m_cortana_pDC = m_cortana_wnd->GetDC();
 		m_cortana_draw.Create(m_cortana_pDC, m_cortana_wnd);
+
+
+		//获取用来检查小娜是否为深色模式的采样点的坐标
+		CRect rect;
+		::GetWindowRect(m_cortana_hwnd, rect);
+		if (!m_cortana_disabled)
+		{
+			m_check_dark_point.x = rect.right + 3;
+			m_check_dark_point.y = rect.top + 1;
+		}
+		else
+		{
+			m_check_dark_point.x = rect.right - 1;
+			m_check_dark_point.y = rect.top + 1;
+		}
 
 		CheckDarkMode();
 		
@@ -256,7 +275,7 @@ void CCortanaLyric::CheckDarkMode()
 		HDC hDC = ::GetDC(NULL);
 		COLORREF color;
 		//获取Cortana左上角点的颜色
-		color = ::GetPixel(hDC, m_lefttop_point.x, m_lefttop_point.y);
+		color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
 		int brightness;
 		brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
 		m_dark_mode = (brightness < 220);

@@ -55,9 +55,12 @@ private:
 	bool m_dark_mode{ true };			//Cortana搜索框是否处于深色模式
 	ColorTable m_colors;
 
-	CPoint m_lefttop_point{};			//Cortana搜索框左上角点的位置，用于判断Cortana搜索框的颜色是深色还是白色
+	CPoint m_check_dark_point{};			//用于判断Cortana搜索框是否为深色模式的点的位置
 	COLORREF m_back_color;
 
 	bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
+
+public:
+	bool m_cortana_disabled;
 };
 
