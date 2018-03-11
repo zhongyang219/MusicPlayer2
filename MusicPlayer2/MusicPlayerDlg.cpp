@@ -872,6 +872,9 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		//更新任务栏缩略图上“播放/暂停”的图标
 		m_thumbButton[1].hIcon = m_hPauseIcon;
 		wcscpy_s(m_thumbButton[1].szTip, _T("暂停"));
+		//更新任务按钮上的播放状态图标
+		if(theApp.m_play_setting_data.m_show_playstate_icon)
+			m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPlayIcon_s, L"");
 #endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPauseIcon_s, FALSE);
@@ -883,6 +886,14 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		//更新任务栏缩略图上“播放/暂停”的图标
 		m_thumbButton[1].hIcon = m_hPlayIcon;
 		wcscpy_s(m_thumbButton[1].szTip, _T("播放"));
+		//更新任务按钮上的播放状态图标
+		if (theApp.m_play_setting_data.m_show_playstate_icon)
+		{
+			if(theApp.m_player.GetPlayingState2()==1)
+				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPauseIcon_s, L"");
+			else
+				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
+		}
 #endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPlayIcon_s, FALSE);

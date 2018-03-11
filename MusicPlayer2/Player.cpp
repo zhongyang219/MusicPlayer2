@@ -477,7 +477,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
 bool CPlayer::SongIsOver() const
 {
-	if (m_playlist[m_index].is_cue)
+	if (GetCurrentSongInfo().is_cue)
 	{
 		return m_current_position_int >= m_song_length_int;
 	}
@@ -1065,7 +1065,7 @@ void CPlayer::ReIniBASS()
 	IniBASS();
 	MusicControl(Command::OPEN);
 	MusicControl(Command::SEEK);
-	m_playing = 1;
+	m_playing = 0;
 }
 
 void CPlayer::SortPlaylist(bool change_index)

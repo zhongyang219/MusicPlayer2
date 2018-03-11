@@ -19,6 +19,7 @@ struct PlaySettingData
 {
 	bool m_stop_when_error{ true };		//出现错误时停止播放
 	bool m_show_taskbar_progress{ false };	//在任务栏按钮上显示播放进度
+	bool m_show_playstate_icon{ true };		//在任务栏按钮上显示播放状态的角标
 	bool m_lyric_karaoke_disp{ true };	//可以是否以卡拉OK样式显示
 	bool m_lyric_fuzzy_match{ true };	//歌词模糊匹配
 	bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
