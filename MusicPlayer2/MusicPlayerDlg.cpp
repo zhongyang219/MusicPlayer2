@@ -2442,6 +2442,7 @@ void CMusicPlayerDlg::OnBnClickedNext()
 void CMusicPlayerDlg::OnReloadLyric()
 {
 	// TODO: 在此添加命令处理程序代码
+	CWaitCursor wait_cursor;
 	theApp.m_player.SearchLyrics();
 	theApp.m_player.IniLyrics();
 }

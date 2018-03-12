@@ -259,7 +259,8 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 			//先寻找歌词文件中同时包含歌曲标题和艺术家的歌词文件
 			for (const auto& str : m_current_path_lyrics)	//在当前目录下寻找
 			{
-				if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
+				//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
+				if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
 				{
 					matched_lyric = m_path + str;
 					break;
@@ -270,7 +271,8 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 			{
 				for (const auto& str : m_lyric_path_lyrics)	//在歌词目录下寻找
 				{
-					if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
+					//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
+					if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
 					{
 						matched_lyric = theApp.m_play_setting_data.m_lyric_path + str;
 						break;
@@ -283,7 +285,8 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 			{
 				for (const auto& str : m_current_path_lyrics)	//在当前目录下寻找
 				{
-					if (str.find(song.title) != string::npos)
+					//if (str.find(song.title) != string::npos)
+					if (CCommon::StringNatchWholeWord(str, song.title) != -1)
 					{
 						matched_lyric = m_path + str;
 						break;
@@ -295,7 +298,8 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 			{
 				for (const auto& str : m_lyric_path_lyrics)	//在歌词目录下寻找
 				{
-					if (str.find(song.title) != string::npos)
+					//if (str.find(song.title) != string::npos)
+					if (CCommon::StringNatchWholeWord(str, song.title) != -1)
 					{
 						matched_lyric = theApp.m_play_setting_data.m_lyric_path + str;
 						break;

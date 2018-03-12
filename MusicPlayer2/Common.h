@@ -48,10 +48,16 @@ public:
 	template<class T>
 	static bool StringTransform(T& str, bool upper);
 	//字符串比较，忽略大小写
-	static bool StringCompareNoCase(const wstring& str1, const wstring& str2);
+	template<class T>
+	static bool StringCompareNoCase(const T& str1, const T& str2);
 	//字符串查找，忽略大小写
 	template<class T>
 	static size_t StringFindNoCase(const T& str, const T& find_str);
+	//字符串查找，全词匹配
+	template<class T>
+	static size_t StringNatchWholeWord(const T& str, const T& find_str);
+	//判断一个字符是否是在全词匹配时的单词分割字符（除了字母、数字和256以上的Unicode字符外的字符）
+	static bool IsDivideChar(wchar_t ch);
 
 	static wstring TranslateToSimplifiedChinese(const wstring& str);
 	static wstring TranslateToTranditionalChinese(const wstring& str);
@@ -129,78 +135,97 @@ public:
 template<class T>
 inline bool CCommon::StringNormalize(T & str)
 {
-	if (typeid(str) == typeid(string) || typeid(str) == typeid(wstring))
-	{
-		if (str.empty()) return false;
+	if (str.empty()) return false;
 
-		int size = str.size();	//字符串的长度
-		if (size < 0) return false;
-		int index1 = 0 ;		//字符串中第1个不是空格或控制字符的位置
-		int index2 = size - 1;	//字符串中最后一个不是空格或控制字符的位置
-		while (index1 < size && str[index1] >= 0 && str[index1] <=32)
-			index1++;
-		while (index2 >= 0 && str[index2] >= 0 && str[index2] <= 32)
-			index2--;
-		if (index1 > index2)	//如果index1 > index2，说明字符串全是空格或控制字符
-			str.clear();
-		else if (index1 == 0 && index2 == size - 1)	//如果index1和index2的值分别为0和size - 1，说明字符串前后没有空格或控制字符，直接返回
-			return true;
-		else
-			str = str.substr(index1, index2 - index1 + 1);
+	int size = str.size();	//字符串的长度
+	if (size < 0) return false;
+	int index1 = 0 ;		//字符串中第1个不是空格或控制字符的位置
+	int index2 = size - 1;	//字符串中最后一个不是空格或控制字符的位置
+	while (index1 < size && str[index1] >= 0 && str[index1] <=32)
+		index1++;
+	while (index2 >= 0 && str[index2] >= 0 && str[index2] <= 32)
+		index2--;
+	if (index1 > index2)	//如果index1 > index2，说明字符串全是空格或控制字符
+		str.clear();
+	else if (index1 == 0 && index2 == size - 1)	//如果index1和index2的值分别为0和size - 1，说明字符串前后没有空格或控制字符，直接返回
 		return true;
-	}
 	else
-	{
-		return false;
-	}
+		str = str.substr(index1, index2 - index1 + 1);
+	return true;
 }
 
 template<class T>
 inline bool CCommon::DeleteEndSpace(T & str)
 {
-	if (typeid(str) == typeid(string) || typeid(str) == typeid(wstring))
-	{
-		if (str.empty()) return false;
-		while (!str.empty() && str.back() == L' ')
-			str.pop_back();
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	if (str.empty()) return false;
+	while (!str.empty() && str.back() == L' ')
+		str.pop_back();
+	return true;
 }
 
 template<class T>
 inline bool CCommon::StringTransform(T & str, bool upper)
 {
-	if (typeid(str) == typeid(string) || typeid(str) == typeid(wstring))
+	if (str.empty()) return false;
+	//if (upper)
+	//	std::transform(str.begin(), str.end(), str.begin(), toupper);
+	//else
+	//	std::transform(str.begin(), str.end(), str.begin(), tolower);
+	for (auto& ch : str)
 	{
-		if (str.empty()) return false;
 		if (upper)
-			std::transform(str.begin(), str.end(), str.begin(), toupper);
+		{
+			if (ch >= 'a'&&ch <= 'z')
+				ch -= 32;
+		}
 		else
-			std::transform(str.begin(), str.end(), str.begin(), tolower);
-		return true;
+		{
+			if (ch >= 'A'&&ch <= 'Z')
+				ch += 32;
+		}
 	}
-	else
-	{
-		return false;
-	}
+	return true;
+}
+
+template<class T>
+inline bool CCommon::StringCompareNoCase(const T & str1, const T & str2)
+{
+	T _str1{ str1 }, _str2{ str2 };
+	StringTransform(_str1, false);
+	StringTransform(_str2, false);
+	return (_str1 == _str2);
 }
 
 template<class T>
 inline size_t CCommon::StringFindNoCase(const T & str, const T & find_str)
 {
-	if (typeid(str) == typeid(string) || typeid(str) == typeid(wstring))
+	T _str{ str }, _find_str{ find_str };
+	StringTransform(_str, false);
+	StringTransform(_find_str, false);
+	return _str.find(_find_str);
+}
+
+template<class T>
+inline size_t CCommon::StringNatchWholeWord(const T & str, const T & find_str)
+{
+	//下面3句代码由于太消耗时间和CPU，因此去掉
+	//T _str{ str }, _find_str{ find_str };
+	//StringTransform(str, false);
+	//StringTransform(find_str, false);
+	int index{ -1 };
+	int find_str_front_pos, find_str_back_pos;		//找到的字符串在原字符串中前面和后面一个字符的位置
+	int size = str.size();
+	int find_str_size = find_str.size();
+	while (true)
 	{
-		T _str{ str }, _find_str{ find_str };
-		StringTransform(_str, false);
-		StringTransform(_find_str, false);
-		return _str.find(_find_str);
+		index = str.find(find_str, index + 1);
+		if (index == T::npos) break;
+		find_str_front_pos = index - 1;
+		find_str_back_pos = index + find_str_size;
+		if ((find_str_front_pos < 0 || IsDivideChar(str[find_str_front_pos])) && (find_str_back_pos >= size || IsDivideChar(str[find_str_back_pos])))
+			return index;
+		else
+			continue;
 	}
-	else
-	{
-		return -1;
-	}
+	return -1;
 }

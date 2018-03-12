@@ -63,13 +63,13 @@ void CCommon::StringCopy(char * dest, int size, string source)
 	}
 }
 
-bool CCommon::StringCompareNoCase(const wstring & str1, const wstring & str2)
-{
-	wstring _str1{ str1 }, _str2{ str2 };
-	StringTransform(_str1, false);
-	StringTransform(_str2, false);
-	return (_str1 == _str2);
-}
+//bool CCommon::StringCompareNoCase(const wstring & str1, const wstring & str2)
+//{
+//	wstring _str1{ str1 }, _str2{ str2 };
+//	StringTransform(_str1, false);
+//	StringTransform(_str2, false);
+//	return (_str1 == _str2);
+//}
 
 //size_t CCommon::StringFindNoCase(const wstring & str, const wstring & find_str)
 //{
@@ -78,6 +78,14 @@ bool CCommon::StringCompareNoCase(const wstring & str1, const wstring & str2)
 //	StringTransform(_find_str, false);
 //	return _str.find(_find_str);
 //}
+
+bool CCommon::IsDivideChar(wchar_t ch)
+{
+	if ((ch >= L'0' && ch <= L'9') || (ch >= L'a' && ch <= L'z') || (ch >= L'A' && ch <= L'Z') || ch > 255)
+		return false;
+	else
+		return true;
+}
 
 wstring CCommon::TranslateToSimplifiedChinese(const wstring & str)
 {
