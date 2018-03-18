@@ -55,7 +55,7 @@ void CSetPathDlg::ShowPathList()
 void CSetPathDlg::SetButtonsEnable(bool enable)
 {
 	GetDlgItem(IDOK)->EnableWindow(enable);
-	GetDlgItem(IDC_DELETE_PATH_BUTTON)->EnableWindow(enable);
+	//GetDlgItem(IDC_DELETE_PATH_BUTTON)->EnableWindow(enable);
 }
 
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
@@ -107,13 +107,18 @@ bool CSetPathDlg::SelectValid() const
 BEGIN_MESSAGE_MAP(CSetPathDlg, CDialog)
 //	ON_LBN_SELCHANGE(IDC_LIST1, &CSetPathDlg::OnLbnSelchangeList1)
 	ON_WM_DESTROY()
-	ON_BN_CLICKED(IDC_DELETE_PATH_BUTTON, &CSetPathDlg::OnBnClickedDeletePathButton)
+	//ON_BN_CLICKED(IDC_DELETE_PATH_BUTTON, &CSetPathDlg::OnBnClickedDeletePathButton)
 	ON_NOTIFY(NM_CLICK, IDC_PATH_LIST, &CSetPathDlg::OnNMClickPathList)
 	ON_NOTIFY(NM_RCLICK, IDC_PATH_LIST, &CSetPathDlg::OnNMRClickPathList)
 	ON_NOTIFY(NM_DBLCLK, IDC_PATH_LIST, &CSetPathDlg::OnNMDblclkPathList)
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_OPEN_FOLDER, &CSetPathDlg::OnBnClickedOpenFolder)
+	ON_COMMAND(ID_PLAY_PATH, &CSetPathDlg::OnPlayPath)
+	ON_COMMAND(ID_DELETE_PATH, &CSetPathDlg::OnDeletePath)
+	ON_COMMAND(ID_BROWSE_PATH, &CSetPathDlg::OnBrowsePath)
+	ON_COMMAND(ID_CLEAR_INVALID_PATH, &CSetPathDlg::OnClearInvalidPath)
+	ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -162,6 +167,10 @@ BOOL CSetPathDlg::OnInitDialog()
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
+	//初始化右键菜单
+	m_menu.LoadMenu(IDR_SET_PATH_POPUP_MENU);
+	m_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PATH);
+
 	return FALSE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -183,16 +192,16 @@ void CSetPathDlg::OnDestroy()
 }
 
 
-void CSetPathDlg::OnBnClickedDeletePathButton()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//m_path_selected = m_path_list.GetCurSel();
-	if (SelectValid())
-	{
-		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//删除选中的路径
-		ShowPathList();		//重新显示路径列表
-	}
-}
+//void CSetPathDlg::OnBnClickedDeletePathButton()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	//m_path_selected = m_path_list.GetCurSel();
+//	if (SelectValid())
+//	{
+//		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//删除选中的路径
+//		ShowPathList();		//重新显示路径列表
+//	}
+//}
 
 
 //BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -223,6 +232,13 @@ void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 	// TODO: 在此添加控件通知处理程序代码
 	m_path_selected = pNMItemActivate->iItem;
 	SetButtonsEnable(m_path_selected != -1);
+
+	//弹出右键菜单
+	CMenu* pContextMenu = m_menu.GetSubMenu(0);	//获取第一个弹出菜单
+	CPoint point1;	//定义一个用于确定光标位置的位置  
+	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标
+	pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
+
 	*pResult = 0;
 }
 
@@ -294,4 +310,64 @@ void CSetPathDlg::OnBnClickedOpenFolder()
 	// TODO: 在此添加控件通知处理程序代码
 	::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_COMMAND, ID_FILE_OPEN_FOLDER, 0);
 	OnCancel();			//点击了“打开新路径”按钮后关闭设置路径对话框
+}
+
+
+void CSetPathDlg::OnPlayPath()
+{
+	// TODO: 在此添加命令处理程序代码
+	OnOK();
+}
+
+
+void CSetPathDlg::OnDeletePath()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (SelectValid())
+	{
+		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//删除选中的路径
+		ShowPathList();		//重新显示路径列表
+	}
+}
+
+
+void CSetPathDlg::OnBrowsePath()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (SelectValid())
+		ShellExecute(NULL, _T("open"), _T("explorer"), m_recent_path[m_path_selected].path.c_str(), NULL, SW_SHOWNORMAL);
+}
+
+
+void CSetPathDlg::OnClearInvalidPath()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (MessageBox(_T("确实要清除列表中无效的路径吗？"), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
+		return;
+	int cleard_cnt{};
+	for (size_t i{}; i < m_recent_path.size(); i++)
+	{
+		if (!CCommon::FolderExist(m_recent_path[i].path))
+		{
+			m_recent_path.erase(m_recent_path.begin() + i);		//删除不存在的路径
+			i--;
+			cleard_cnt++;
+		}
+	}
+	ShowPathList();		//重新显示路径列表
+	CString info;
+	info.Format(_T("完成，清除了 %d 个无效路径。"), cleard_cnt);
+	MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+}
+
+
+void CSetPathDlg::OnInitMenu(CMenu* pMenu)
+{
+	CDialog::OnInitMenu(pMenu);
+
+	// TODO: 在此处添加消息处理程序代码
+	bool select_valid{ SelectValid() };
+	pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 }

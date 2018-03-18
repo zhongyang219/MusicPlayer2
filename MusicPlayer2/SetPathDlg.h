@@ -28,6 +28,7 @@ protected:
 
 	CEdit m_path_name;
 	CListCtrlEx m_path_list;
+	CMenu m_menu;
 
 	CSize m_min_size;		//窗口的最小大小
 
@@ -46,7 +47,7 @@ public:
 
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();
-	afx_msg void OnBnClickedDeletePathButton();
+	//afx_msg void OnBnClickedDeletePathButton();
 	//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
@@ -56,4 +57,9 @@ public:
 	virtual void OnCancel();
 	virtual void OnOK();
 	afx_msg void OnBnClickedOpenFolder();
+	afx_msg void OnPlayPath();
+	afx_msg void OnDeletePath();
+	afx_msg void OnBrowsePath();
+	afx_msg void OnClearInvalidPath();
+	afx_msg void OnInitMenu(CMenu* pMenu);
 };
