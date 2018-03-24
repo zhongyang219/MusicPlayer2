@@ -15,14 +15,14 @@ public:
 	//wstring m_font;
 	//int m_font_size;
 	//int m_line_space;
-	//int m_transparency;
+	//int window_transparency;
 	HWND m_hMainWnd;		//主窗口的句柄，用于实时更改窗口不透明度
-	//COLORREF m_theme_color;
-	//bool m_theme_color_follow_system;
-	//bool m_show_album_cover{};
-	//CDrawCommon::StretchMode m_album_cover_fit{};
-	//bool m_album_cover_as_background;
-	//bool m_show_spectrum;
+	//COLORREF theme_color;
+	//bool theme_color_follow_system;
+	//bool show_album_cover{};
+	//CDrawCommon::StretchMode album_cover_fit{};
+	//bool album_cover_as_background;
+	//bool show_spectrum;
 
 	ApperanceSettingData m_data;
 

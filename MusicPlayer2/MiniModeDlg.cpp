@@ -120,7 +120,7 @@ void CMiniModeDlg::DrawSpectral()
 	for (int i{}; i < ROW; i++)
 	{
 		CRect rect_tmp{ m_spectral_rect[i] };
-		int spetral_height = static_cast<int>(spectral_data[i] * m_spectral_client_rect.Height() / 120 * theApp.m_app_setting_data.m_sprctrum_height / 100);
+		int spetral_height = static_cast<int>(spectral_data[i] * m_spectral_client_rect.Height() / 120 * theApp.m_app_setting_data.sprctrum_height / 100);
 		if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 		rect_tmp.top = rect_tmp.bottom - spetral_height;
 		if (rect_tmp.top < 0) rect_tmp.top = 0;
@@ -332,7 +332,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 
 	//设置主题色
 	if (m_follow_main_color)
-		m_theme_color = theApp.m_app_setting_data.m_theme_color;
+		m_theme_color = theApp.m_app_setting_data.theme_color;
 
 	m_first_start = true;
 	m_show_playlist = false;
@@ -409,7 +409,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	}
 	else		//显示歌词
 	{
-		if (theApp.m_play_setting_data.m_lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
+		if (theApp.m_play_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
 		{
 			wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
 			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
@@ -453,9 +453,9 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 
 void CMiniModeDlg::ColorChanged()
 {
-	//m_item_text_color = CColorConvert::ConvertToItemColor(m_theme_color);
-	//m_item_back_color = CColorConvert::ConvertToBackColor(m_theme_color);
-	//m_lyric_text_color = CColorConvert::ConvertToLightColor(m_theme_color);
+	//m_item_text_color = CColorConvert::ConvertToItemColor(theme_color);
+	//m_item_back_color = CColorConvert::ConvertToBackColor(theme_color);
+	//m_lyric_text_color = CColorConvert::ConvertToLightColor(theme_color);
 	CColorConvert::ConvertColor(m_theme_color);
 	if (!m_dark_mode)
 	{
@@ -809,7 +809,7 @@ void CMiniModeDlg::OnFollowMainColor()
 	// TODO: 在此添加命令处理程序代码
 	m_follow_main_color = !m_follow_main_color;
 	if (m_follow_main_color)
-		m_theme_color = theApp.m_app_setting_data.m_theme_color;
+		m_theme_color = theApp.m_app_setting_data.theme_color;
 	ColorChanged();
 	RePaint();
 }

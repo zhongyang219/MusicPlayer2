@@ -106,9 +106,9 @@ protected:
 	int m_client_width;			//窗口客户区宽度
 	int m_client_height;		//窗口客户区高度
 
-	//int m_lyric_line_space{ 2 };	//歌词的行间距
-	//wstring m_lyric_font_name;		//歌词字体名称
-	//int m_lyric_font_size;		//歌词字体大小
+	//int lyric_line_space{ 2 };	//歌词的行间距
+	//wstring lyric_font_name;		//歌词字体名称
+	//int lyric_font_size;		//歌词字体大小
 	CFont m_lyric_font;			//歌词字体
 
 	bool m_narrow_mode;		//窄界面模式

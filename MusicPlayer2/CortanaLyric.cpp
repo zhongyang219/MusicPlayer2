@@ -93,6 +93,11 @@ void CCortanaLyric::SetColors(ColorTable colors)
 	m_colors = colors;
 }
 
+void CCortanaLyric::SetCortanaColor(int color)
+{
+	m_cortana_color = color;
+}
+
 void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
@@ -272,13 +277,24 @@ void CCortanaLyric::CheckDarkMode()
 {
 	if (m_enable)
 	{
-		HDC hDC = ::GetDC(NULL);
-		COLORREF color;
-		//获取Cortana左上角点的颜色
-		color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
-		int brightness;
-		brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
-		m_dark_mode = (brightness < 220);
+		if (m_cortana_color == 1)
+		{
+			m_dark_mode = true;
+		}
+		else if (m_cortana_color == 2)
+		{
+			m_dark_mode = false;
+		}
+		else
+		{
+			HDC hDC = ::GetDC(NULL);
+			COLORREF color;
+			//获取Cortana左上角点的颜色
+			color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
+			int brightness;
+			brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
+			m_dark_mode = (brightness < 220);
+		}
 
 		//根据深浅色模式设置背景颜色
 		if (m_dark_mode)

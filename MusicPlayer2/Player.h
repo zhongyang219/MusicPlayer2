@@ -75,8 +75,8 @@ public:
 	CLyrics m_Lyrics;		//歌词
 	//wstring m_lyric_path;	//歌词文件夹的路径
 
-	//bool m_lyric_karaoke_disp{ true };	//可以是否以卡拉OK样式显示
-	//bool m_lyric_fuzzy_match{ true };	//歌词模糊匹配
+	//bool lyric_karaoke_disp{ true };	//可以是否以卡拉OK样式显示
+	//bool lyric_fuzzy_match{ true };	//歌词模糊匹配
 
 	SortMode m_sort_mode;		//排序方式
 

@@ -94,7 +94,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 	LoadConfig();
 
 	//设置列表控件主题颜色
-	m_song_list_ctrl.SetColor(theApp.m_app_setting_data.m_theme_color);
+	m_song_list_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
 
 	//初始化控件的状态
 	m_skip_exist_check.SetCheck(m_skip_exist);
@@ -107,7 +107,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->SetCheck(TRUE);
 	//判断歌词文件夹是否存在
-	bool lyric_path_exist = CCommon::FolderExist(theApp.m_play_setting_data.m_lyric_path);
+	bool lyric_path_exist = CCommon::FolderExist(theApp.m_play_setting_data.lyric_path);
 	if (!lyric_path_exist)		//如果歌词文件不存在，则禁用“保存到歌词文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
 	{
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->EnableWindow(FALSE);
@@ -236,7 +236,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		if (pInfo->save_to_song_folder)
 			lyric_path = theApp.m_player.GetCurrentPath() + pInfo->playlist->at(i).file_name;
 		else
-			lyric_path = theApp.m_play_setting_data.m_lyric_path + pInfo->playlist->at(i).file_name;
+			lyric_path = theApp.m_play_setting_data.lyric_path + pInfo->playlist->at(i).file_name;
 		size_t index = lyric_path.rfind(L'.');		//查找文件名最后一个点
 		lyric_path = lyric_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
 

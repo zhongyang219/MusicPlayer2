@@ -17,37 +17,38 @@
 //选项设置数据
 struct PlaySettingData
 {
-	bool m_stop_when_error{ true };		//出现错误时停止播放
-	bool m_show_taskbar_progress{ false };	//在任务栏按钮上显示播放进度
-	bool m_show_playstate_icon{ true };		//在任务栏按钮上显示播放状态的角标
-	bool m_lyric_karaoke_disp{ true };	//可以是否以卡拉OK样式显示
-	bool m_lyric_fuzzy_match{ true };	//歌词模糊匹配
-	bool m_save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
-	wstring m_lyric_path;	//歌词文件夹的路径
-	bool m_show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
-	bool m_cortana_lyric_double_line{ true };		//是否在Cortana搜索中以双行显示歌词
+	bool stop_when_error{ true };		//出现错误时停止播放
+	bool show_taskbar_progress{ false };	//在任务栏按钮上显示播放进度
+	bool show_playstate_icon{ true };		//在任务栏按钮上显示播放状态的角标
+	bool lyric_karaoke_disp{ true };	//可以是否以卡拉OK样式显示
+	bool lyric_fuzzy_match{ true };	//歌词模糊匹配
+	bool save_lyric_in_offset{};	//是否将歌词保存在offset标签中，还是保存在每个时间标签中
+	wstring lyric_path;	//歌词文件夹的路径
+	bool show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
+	bool cortana_lyric_double_line{ true };		//是否在Cortana搜索中以双行显示歌词
+	int cortana_color{ 0 };		//Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
 };
 
 struct ApperanceSettingData
 {
-	wstring m_lyric_font_name;		//歌词字体名称
-	int m_lyric_font_size;		//歌词字体大小
-	int m_lyric_line_space{ 2 };	//歌词的行间距
-	int m_transparency{ 100 };			//窗口透明度
-	ColorTable m_theme_color;		//主题颜色
-	bool m_theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
-	bool m_show_album_cover;			//显示专辑封面
-	CDrawCommon::StretchMode m_album_cover_fit{ CDrawCommon::StretchMode::FILL };		//专辑封面契合度（拉伸模式）
-	bool m_album_cover_as_background{ false };		//将专辑封面作为背景
-	bool m_show_spectrum{ true };		//显示频谱分析
-	int m_sprctrum_height{ 100 };		//频谱分析高度比例（%）
-	int m_background_transparency{ 80 };		//背景的透明度
-	bool m_use_out_image{ true };			//使用外部图片作为专辑封面
+	wstring lyric_font_name;		//歌词字体名称
+	int lyric_font_size;		//歌词字体大小
+	int lyric_line_space{ 2 };	//歌词的行间距
+	int window_transparency{ 100 };			//窗口透明度
+	ColorTable theme_color;		//主题颜色
+	bool theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
+	bool show_album_cover;			//显示专辑封面
+	CDrawCommon::StretchMode album_cover_fit{ CDrawCommon::StretchMode::FILL };		//专辑封面契合度（拉伸模式）
+	bool album_cover_as_background{ false };		//将专辑封面作为背景
+	bool show_spectrum{ true };		//显示频谱分析
+	int sprctrum_height{ 100 };		//频谱分析高度比例（%）
+	int background_transparency{ 80 };		//背景的透明度
+	bool use_out_image{ true };			//使用外部图片作为专辑封面
 };
 
 struct NonCategorizedSettingData
 {
-	bool m_cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
+	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 	int volum_step{ 3 };		//点击主界面中的音量调节时一次调整的步长
 	int mouse_volum_step{ 2 };		//通过鼠标滚轮调节音量时的步长
 };

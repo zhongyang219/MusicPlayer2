@@ -13,7 +13,7 @@ IMPLEMENT_DYNAMIC(CAppearanceSettingDlg, CDialogEx)
 
 CAppearanceSettingDlg::CAppearanceSettingDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_APPEREANCE_SETTING_DLG, pParent)
-	/*, m_data.m_lyric_line_space(0)*/
+	/*, m_data.lyric_line_space(0)*/
 {
 
 }
@@ -34,8 +34,8 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COLOR_STATIC6, m_color_static5);
 	DDX_Control(pDX, IDC_COLOR_STATIC7, m_color_static6);
 	DDX_Control(pDX, IDC_FOLLOW_SYSTEM_COLOR_CHECK, m_follow_system_color_check);
-	DDX_Text(pDX, IDC_FONT_SIZE_EDIT, m_data.m_lyric_line_space);
-	DDV_MinMaxInt(pDX, m_data.m_lyric_line_space, 0, MAX_LINE_SPACE);
+	DDX_Text(pDX, IDC_FONT_SIZE_EDIT, m_data.lyric_line_space);
+	DDV_MinMaxInt(pDX, m_data.lyric_line_space, 0, MAX_LINE_SPACE);
 	DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
 	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
 	DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
@@ -48,14 +48,14 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 void CAppearanceSettingDlg::SetTransparency()
 {
 	::SetWindowLong(m_hMainWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-	::SetLayeredWindowAttributes(m_hMainWnd, 0, m_data.m_transparency * 255 / 100, LWA_ALPHA);  //透明度取值范围为0~255
+	::SetLayeredWindowAttributes(m_hMainWnd, 0, m_data.window_transparency * 255 / 100, LWA_ALPHA);  //透明度取值范围为0~255
 }
 
 void CAppearanceSettingDlg::ClickColor()
 {
 	//点击了预置颜色中的其中一个时，取消“跟随系统主题色”复选按钮的选中
-	m_color_static.SetFillColor(m_data.m_theme_color.original_color);
-	m_data.m_theme_color_follow_system = false;
+	m_color_static.SetFillColor(m_data.theme_color.original_color);
+	m_data.theme_color_follow_system = false;
 	m_follow_system_color_check.SetCheck(FALSE);
 	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow();
 }
@@ -80,7 +80,7 @@ int CAppearanceSettingDlg::SpectrumHeightRChg(int value)
 
 void CAppearanceSettingDlg::DrawColor()
 {
-	m_color_static.SetFillColor(m_data.m_theme_color.original_color);
+	m_color_static.SetFillColor(m_data.theme_color.original_color);
 	m_color_static1.SetFillColor(m_color1);
 	m_color_static2.SetFillColor(m_color2);
 	m_color_static3.SetFillColor(m_color3);
@@ -126,18 +126,18 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
 	//SetDlgItemText(IDC_FONT_NAME_EDIT, m_font.c_str());
 	//CString font_size_str;
-	//font_size_str.Format(_T("%d"), m_data.m_lyric_line_space);
+	//font_size_str.Format(_T("%d"), m_data.lyric_line_space);
 	//SetDlgItemText(IDC_FONT_SIZE_EDIT, font_size_str);
 
 	m_transparency_slid.SetRange(20, 100);
-	m_transparency_slid.SetPos(m_data.m_transparency);
+	m_transparency_slid.SetPos(m_data.window_transparency);
 	CString str;
-	str.Format(_T("%d%%"), m_data.m_transparency);
+	str.Format(_T("%d%%"), m_data.window_transparency);
 	SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 
 	m_spectrum_height_slid.SetRange(0, 100);
-	m_spectrum_height_slid.SetPos(SpectrumHeightChg(theApp.m_app_setting_data.m_sprctrum_height));
-	str.Format(_T("%d%%"), theApp.m_app_setting_data.m_sprctrum_height);
+	m_spectrum_height_slid.SetPos(SpectrumHeightChg(theApp.m_app_setting_data.sprctrum_height));
+	str.Format(_T("%d%%"), theApp.m_app_setting_data.sprctrum_height);
 	SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
 
 	//将焦点设置到“设置字体”按钮上
@@ -166,40 +166,40 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	DrawColor();
 
 	////设置“更多颜色”按钮的可用状态
-	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_data.m_theme_color_follow_system);
+	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_data.theme_color_follow_system);
 	//根据是否跟随系统设置复选按钮的初始状态
 #ifdef COMPILE_IN_WIN_XP
 	m_follow_system_color_check.EnableWindow(FALSE);
 #else
 	if (IsWindows8OrGreater())
-		m_follow_system_color_check.SetCheck(m_data.m_theme_color_follow_system);
+		m_follow_system_color_check.SetCheck(m_data.theme_color_follow_system);
 	else
 		m_follow_system_color_check.EnableWindow(FALSE);		//Win8以下系统禁用此复选按钮
 #endif // !COMPILE_IN_WIN_XP
 
 	//
-	m_show_album_cover_chk.SetCheck(m_data.m_show_album_cover);
+	m_show_album_cover_chk.SetCheck(m_data.show_album_cover);
 	m_album_cover_fit_combo.AddString(L"拉伸");
 	m_album_cover_fit_combo.AddString(L"填充");
 	m_album_cover_fit_combo.AddString(L"适应");
-	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.m_album_cover_fit));
-	m_album_cover_fit_combo.EnableWindow(m_data.m_show_album_cover);
+	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.album_cover_fit));
+	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
 	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
 	CString info;
 	info.Format(_T("如果无法从音频文件获取专辑封面，则尝试查找音频文件所在目录下含有唱片集名的图片文件，或者名为 %s 的图片文件作为专辑封面。"), theApp.m_default_album_name.c_str());
 	m_toolTip.AddTool(&m_use_out_image_chk, info);
 
-	m_album_cover_as_background_chk.SetCheck(m_data.m_album_cover_as_background);
-	m_show_spectrum_chk.SetCheck(m_data.m_show_spectrum);
-	m_spectrum_height_slid.EnableWindow(m_data.m_show_spectrum);
+	m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);
+	m_show_spectrum_chk.SetCheck(m_data.show_spectrum);
+	m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
 
 	m_back_transparency_slid.SetRange(10, 98);
-	m_back_transparency_slid.SetPos(theApp.m_app_setting_data.m_background_transparency);
-	str.Format(_T("%d%%"), theApp.m_app_setting_data.m_background_transparency);
+	m_back_transparency_slid.SetPos(theApp.m_app_setting_data.background_transparency);
+	str.Format(_T("%d%%"), theApp.m_app_setting_data.background_transparency);
 	SetDlgItemText(IDC_BACKGROUND_TRANSPARENCY_STATIC, str);
-	m_back_transparency_slid.EnableWindow(m_data.m_album_cover_as_background);
+	m_back_transparency_slid.EnableWindow(m_data.album_cover_as_background);
 
-	m_use_out_image_chk.SetCheck(m_data.m_use_out_image);
+	m_use_out_image_chk.SetCheck(m_data.use_out_image);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -210,7 +210,7 @@ void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CFont font;
-	font.CreatePointFont(m_data.m_lyric_font_size * 10, m_data.m_lyric_font_name.c_str());
+	font.CreatePointFont(m_data.lyric_font_size * 10, m_data.lyric_font_name.c_str());
 	LOGFONT lf{};             //LOGFONT变量
 	font.GetLogFont(&lf);
 	CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
@@ -219,8 +219,8 @@ void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 		//获取字体信息
 		//m_font = fontDlg.m_cf.lpLogFont->lfFaceName;
 		//m_font_size = fontDlg.m_cf.iPointSize / 10;
-		m_data.m_lyric_font_name = fontDlg.GetFaceName();
-		m_data.m_lyric_font_size = fontDlg.GetSize() / 10;
+		m_data.lyric_font_name = fontDlg.GetFaceName();
+		m_data.lyric_font_size = fontDlg.GetSize() / 10;
 		//将字体已更改flag置为true
 		m_font_changed = true;
 	}
@@ -230,9 +230,9 @@ void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 //void CAppearanceSettingDlg::OnNMReleasedcaptureTransparentSlider(NMHDR *pNMHDR, LRESULT *pResult)
 //{
 //	// TODO: 在此添加控件通知处理程序代码
-//	m_data.m_transparency = m_transparency_slid.GetPos();
+//	m_data.window_transparency = m_transparency_slid.GetPos();
 //	CString str;
-//	str.Format(_T("不透明度：%%%d"), m_data.m_transparency);
+//	str.Format(_T("不透明度：%%%d"), m_data.window_transparency);
 //	SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 //	*pResult = 0;
 //}
@@ -244,27 +244,27 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 	//滑动水平滑动条时响应此函数
 	if ((pScrollBar->GetDlgCtrlID() == IDC_TRANSPARENT_SLIDER))
 	{
-		m_data.m_transparency = m_transparency_slid.GetPos();
+		m_data.window_transparency = m_transparency_slid.GetPos();
 		CString str;
-		str.Format(_T("%d%%"), m_data.m_transparency);
+		str.Format(_T("%d%%"), m_data.window_transparency);
 		SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 
 		SetTransparency();		//实时设置窗口不透明度
 	}
 	if ((pScrollBar->GetDlgCtrlID() == IDC_SPECTRUM_HEIGHT_SLIDER))
 	{
-		theApp.m_app_setting_data.m_sprctrum_height = SpectrumHeightRChg(m_spectrum_height_slid.GetPos());
-		m_data.m_sprctrum_height = theApp.m_app_setting_data.m_sprctrum_height;
+		theApp.m_app_setting_data.sprctrum_height = SpectrumHeightRChg(m_spectrum_height_slid.GetPos());
+		m_data.sprctrum_height = theApp.m_app_setting_data.sprctrum_height;
 		CString str;
-		str.Format(_T("%d%%"), theApp.m_app_setting_data.m_sprctrum_height);
+		str.Format(_T("%d%%"), theApp.m_app_setting_data.sprctrum_height);
 		SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
 	}
 	if ((pScrollBar->GetDlgCtrlID() == IDC_BACKGROUND_TRANSPARENCY_SLIDER))
 	{
-		theApp.m_app_setting_data.m_background_transparency = m_back_transparency_slid.GetPos();
-		m_data.m_background_transparency = theApp.m_app_setting_data.m_background_transparency;
+		theApp.m_app_setting_data.background_transparency = m_back_transparency_slid.GetPos();
+		m_data.background_transparency = theApp.m_app_setting_data.background_transparency;
 		CString str;
-		str.Format(_T("%d%%"), theApp.m_app_setting_data.m_background_transparency);
+		str.Format(_T("%d%%"), theApp.m_app_setting_data.background_transparency);
 		SetDlgItemText(IDC_BACKGROUND_TRANSPARENCY_STATIC, str);
 	}
 
@@ -275,17 +275,17 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CColorDialog colorDlg(m_data.m_theme_color.original_color, 0, this);
+	CColorDialog colorDlg(m_data.theme_color.original_color, 0, this);
 	if (colorDlg.DoModal() == IDOK)
 	{
-		m_data.m_theme_color.original_color = colorDlg.GetColor();
-		//if (m_data.m_theme_color.original_color == 0)
+		m_data.theme_color.original_color = colorDlg.GetColor();
+		//if (m_data.theme_color.original_color == 0)
 		//	MessageBox(_T("警告：将主题颜色设置成黑色会使播放列表中正在播放的项目看不见！"), NULL, MB_ICONWARNING);
-		if(m_data.m_theme_color.original_color == RGB(255,255,255))
+		if(m_data.theme_color.original_color == RGB(255,255,255))
 			MessageBox(_T("警告：将主题颜色设置成白色会使进度条完全看不见！"), NULL, MB_ICONWARNING);
-		m_color_static.SetFillColor(m_data.m_theme_color.original_color);
+		m_color_static.SetFillColor(m_data.theme_color.original_color);
 		//设置了“更多颜色”之后，取消“跟随系统主题色”复选按钮的选中
-		m_data.m_theme_color_follow_system = false;
+		m_data.theme_color_follow_system = false;
 		m_follow_system_color_check.SetCheck(FALSE);
 	}
 }
@@ -294,7 +294,7 @@ void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
 void CAppearanceSettingDlg::OnStnClickedColorStatic2()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_theme_color.original_color = m_color1;
+	m_data.theme_color.original_color = m_color1;
 	ClickColor();
 }
 
@@ -302,7 +302,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic2()
 void CAppearanceSettingDlg::OnStnClickedColorStatic3()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_theme_color.original_color = m_color2;
+	m_data.theme_color.original_color = m_color2;
 	ClickColor();
 }
 
@@ -310,7 +310,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic3()
 void CAppearanceSettingDlg::OnStnClickedColorStatic4()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_theme_color.original_color = m_color3;
+	m_data.theme_color.original_color = m_color3;
 	ClickColor();
 }
 
@@ -318,7 +318,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic4()
 void CAppearanceSettingDlg::OnStnClickedColorStatic5()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_theme_color.original_color = m_color4;
+	m_data.theme_color.original_color = m_color4;
 	ClickColor();
 }
 
@@ -326,7 +326,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic5()
 void CAppearanceSettingDlg::OnStnClickedColorStatic6()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_theme_color.original_color = m_color5;
+	m_data.theme_color.original_color = m_color5;
 	ClickColor();
 }
 
@@ -334,7 +334,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic6()
 void CAppearanceSettingDlg::OnStnClickedColorStatic7()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_theme_color.original_color = m_color6;
+	m_data.theme_color.original_color = m_color6;
 	ClickColor();
 }
 
@@ -352,8 +352,8 @@ BOOL CAppearanceSettingDlg::PreTranslateMessage(MSG* pMsg)
 void CAppearanceSettingDlg::OnBnClickedFollowSystemColorCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_theme_color_follow_system = (m_follow_system_color_check.GetCheck() != 0);
-	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_data.m_theme_color_follow_system);
+	m_data.theme_color_follow_system = (m_follow_system_color_check.GetCheck() != 0);
+	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_data.theme_color_follow_system);
 }
 
 
@@ -398,10 +398,10 @@ void CAppearanceSettingDlg::OnEnChangeLineSpaceEdit()
 	// TODO:  在此添加控件通知处理程序代码
 	//CString font_size;
 	//GetDlgItemText(IDC_FONT_SIZE_EDIT, font_size);
-	//m_data.m_lyric_line_space = _wtoi(font_size);
+	//m_data.lyric_line_space = _wtoi(font_size);
 	UpdateData(TRUE);
-	if (m_data.m_lyric_line_space < 0) m_data.m_lyric_line_space = 0;
-	if (m_data.m_lyric_line_space > MAX_LINE_SPACE) m_data.m_lyric_line_space = MAX_LINE_SPACE;
+	if (m_data.lyric_line_space < 0) m_data.lyric_line_space = 0;
+	if (m_data.lyric_line_space > MAX_LINE_SPACE) m_data.lyric_line_space = MAX_LINE_SPACE;
 	UpdateData(FALSE);
 	m_font_changed = true;
 }
@@ -415,16 +415,16 @@ void CAppearanceSettingDlg::OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		//减少歌词行间距的数值
 		UpdateData(TRUE);
-		if (m_data.m_lyric_line_space > 0)
-			m_data.m_lyric_line_space--;
+		if (m_data.lyric_line_space > 0)
+			m_data.lyric_line_space--;
 		UpdateData(FALSE);
 	}
 	else if (pNMUpDown->iDelta == -1) // 如果此值为-1 , 说明点击了Spin的往上箭头 
 	{
 		//增加歌词行间距的数值
 		UpdateData(TRUE);
-		if (m_data.m_lyric_line_space < MAX_LINE_SPACE)
-			m_data.m_lyric_line_space++;
+		if (m_data.lyric_line_space < MAX_LINE_SPACE)
+			m_data.lyric_line_space++;
 		UpdateData(FALSE);
 	}
 	UpdateData(TRUE);
@@ -452,36 +452,36 @@ HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_show_album_cover = (m_show_album_cover_chk.GetCheck() != 0);
-	m_album_cover_fit_combo.EnableWindow(m_data.m_show_album_cover);
+	m_data.show_album_cover = (m_show_album_cover_chk.GetCheck() != 0);
+	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
 }
 
 
 void CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_album_cover_fit = static_cast<CDrawCommon::StretchMode>(m_album_cover_fit_combo.GetCurSel());
+	m_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(m_album_cover_fit_combo.GetCurSel());
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
-	m_back_transparency_slid.EnableWindow(m_data.m_album_cover_as_background);
+	m_data.album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
+	m_back_transparency_slid.EnableWindow(m_data.album_cover_as_background);
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_show_spectrum = (m_show_spectrum_chk.GetCheck() != 0);
-	m_spectrum_height_slid.EnableWindow(m_data.m_show_spectrum);
+	m_data.show_spectrum = (m_show_spectrum_chk.GetCheck() != 0);
+	m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedUseOutImageCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.m_use_out_image = (m_use_out_image_chk.GetCheck() != 0);
+	m_data.use_out_image = (m_use_out_image_chk.GetCheck() != 0);
 }

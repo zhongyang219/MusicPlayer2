@@ -12,6 +12,7 @@ public:
 	void Init();	//初始化，获取Cortana句柄、矩形区域等
 	void SetEnable(bool enable);
 	void SetColors(ColorTable colors);
+	void SetCortanaColor(int color);		//设置Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
 
 	/* 在Cortana搜索框上绘制滚动显示的文本
 	参数：
@@ -59,6 +60,7 @@ private:
 	COLORREF m_back_color;
 
 	bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
+	int m_cortana_color;		//Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
 
 public:
 	bool m_cortana_disabled;

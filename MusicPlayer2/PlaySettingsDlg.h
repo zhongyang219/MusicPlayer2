@@ -12,15 +12,7 @@ public:
 	CPlaySettingsDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CPlaySettingsDlg();
 
-	//选项设置的数据，含义同CMusicPlayerDlg类里面的同名变量
-	//bool m_stop_when_error;
-	//bool m_karaoke_disp;
-	//bool m_show_taskbar_progress;
-	//bool m_lyric_fuzzy_match;
-	//wstring m_lyric_path;
-	//bool m_show_lyric_in_cortana;
-	//bool m_save_lyric_in_offset;
-	//bool m_lyric_double_line;
+	//选项设置的数据
 	PlaySettingData m_data;
 
 // 对话框数据
@@ -34,6 +26,7 @@ protected:
 	CButton m_show_taskbar_progress_check;
 	CButton m_lyric_fuzzy_match_check;
 	CButton m_lyric_double_line_chk;
+	CComboBox m_cortana_color_combo;
 
 	CToolTipCtrl m_tool_tip;
 
@@ -55,4 +48,5 @@ public:
 	afx_msg void OnBnClickedSaveInOffsetTag();
 	afx_msg void OnBnClickedSaveInTimeTag();
 	afx_msg void OnBnClickedLyricDoubleLineCheck();
+	afx_msg void OnCbnSelchangeCortanaColorCombo();
 };

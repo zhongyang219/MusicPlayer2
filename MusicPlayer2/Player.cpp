@@ -225,12 +225,12 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 {
 	//检索歌词文件
 	//如果允许歌词模糊匹配，先将所有的歌词文件的文件名保存到容器中以供模糊匹配时检索
-	if (theApp.m_play_setting_data.m_lyric_fuzzy_match)
+	if (theApp.m_play_setting_data.lyric_fuzzy_match)
 	{
 		m_current_path_lyrics.clear();
 		m_lyric_path_lyrics.clear();
 		CAudioCommon::GetLyricFiles(m_path, m_current_path_lyrics);
-		CAudioCommon::GetLyricFiles(theApp.m_play_setting_data.m_lyric_path, m_lyric_path_lyrics);
+		CAudioCommon::GetLyricFiles(theApp.m_play_setting_data.lyric_path, m_lyric_path_lyrics);
 	}
 
 	//检索播放列表中每一首歌曲的歌词文件，并将歌词文件路径保存到列表中
@@ -242,7 +242,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 		//	continue;
 		wstring lyric_path{ m_path + song.file_name };		//得到路径+文件名的字符串
 		CCommon::ReplaceFileNameExtension(lyric_path, L"lrc");		//将文件扩展替换成lrc
-		wstring lyric_path2{ theApp.m_play_setting_data.m_lyric_path + song.file_name };
+		wstring lyric_path2{ theApp.m_play_setting_data.lyric_path + song.file_name };
 		CCommon::ReplaceFileNameExtension(lyric_path2, L"lrc");
 		//查找歌词文件名和歌曲文件名完全匹配的歌词
 		if (CCommon::FileExist(lyric_path))
@@ -253,7 +253,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 		{
 			song.lyric_file = lyric_path2;
 		}
-		else if (theApp.m_play_setting_data.m_lyric_fuzzy_match)
+		else if (theApp.m_play_setting_data.lyric_fuzzy_match)
 		{
 			wstring matched_lyric;		//匹配的歌词的路径
 			//先寻找歌词文件中同时包含歌曲标题和艺术家的歌词文件
@@ -274,7 +274,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 					//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
 					if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
 					{
-						matched_lyric = theApp.m_play_setting_data.m_lyric_path + str;
+						matched_lyric = theApp.m_play_setting_data.lyric_path + str;
 						break;
 					}
 				}
@@ -301,7 +301,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 					//if (str.find(song.title) != string::npos)
 					if (CCommon::StringNatchWholeWord(str, song.title) != -1)
 					{
-						matched_lyric = theApp.m_play_setting_data.m_lyric_path + str;
+						matched_lyric = theApp.m_play_setting_data.lyric_path + str;
 						break;
 					}
 				}
@@ -368,7 +368,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 					m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
 				m_album_cover.Destroy();
 				m_album_cover.Load(m_album_cover_path.c_str());
-				if (theApp.m_app_setting_data.m_use_out_image && m_album_cover.IsNull())
+				if (theApp.m_app_setting_data.use_out_image && m_album_cover.IsNull())
 				{
 					//获取不到专辑封面时尝试使用外部图片作为封面
 					vector<wstring> files;
@@ -852,10 +852,10 @@ void CPlayer::SaveConfig() const
 	CCommon::WritePrivateProfileIntW(L"config", L"volume", m_volume, theApp.m_config_path.c_str());
 	//CCommon::WritePrivateProfileIntW(L"config", L"position", m_current_position_int, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"repeat_mode", static_cast<int>(m_repeat_mode), theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"lyric_karaoke_disp", theApp.m_play_setting_data.m_lyric_karaoke_disp, theApp.m_config_path.c_str());
-	WritePrivateProfileStringW(L"config",L"lyric_path", theApp.m_play_setting_data.m_lyric_path.c_str(), theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"lyric_karaoke_disp", theApp.m_play_setting_data.lyric_karaoke_disp, theApp.m_config_path.c_str());
+	WritePrivateProfileStringW(L"config",L"lyric_path", theApp.m_play_setting_data.lyric_path.c_str(), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"sort_mode", static_cast<int>(m_sort_mode), theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"lyric_fuzzy_match", theApp.m_play_setting_data.m_lyric_fuzzy_match, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"lyric_fuzzy_match", theApp.m_play_setting_data.lyric_fuzzy_match, theApp.m_config_path.c_str());
 	WritePrivateProfileStringW(L"config",L"default_album_file_name", theApp.m_default_album_name.c_str(), theApp.m_config_path.c_str());
 
 	//保存均衡器设定
@@ -889,12 +889,12 @@ void CPlayer::LoadConfig()
 	//m_current_position.int2time(m_current_position_int);
 	m_repeat_mode = static_cast<RepeatMode>(GetPrivateProfileIntW(L"config", L"repeat_mode", 0, theApp.m_config_path.c_str()));
 	GetPrivateProfileStringW(L"config", L"lyric_path", L".\\lyrics\\", buff, 255, theApp.m_config_path.c_str());
-	theApp.m_play_setting_data.m_lyric_path = buff;
-	if (!theApp.m_play_setting_data.m_lyric_path.empty() && theApp.m_play_setting_data.m_lyric_path.back() != L'/' && theApp.m_play_setting_data.m_lyric_path.back() != L'\\')
-		theApp.m_play_setting_data.m_lyric_path.append(1, L'\\');
-	theApp.m_play_setting_data.m_lyric_karaoke_disp = (GetPrivateProfileIntW(L"config", L"lyric_karaoke_disp", 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_play_setting_data.lyric_path = buff;
+	if (!theApp.m_play_setting_data.lyric_path.empty() && theApp.m_play_setting_data.lyric_path.back() != L'/' && theApp.m_play_setting_data.lyric_path.back() != L'\\')
+		theApp.m_play_setting_data.lyric_path.append(1, L'\\');
+	theApp.m_play_setting_data.lyric_karaoke_disp = (GetPrivateProfileIntW(L"config", L"lyric_karaoke_disp", 1, theApp.m_config_path.c_str()) != 0);
 	m_sort_mode = static_cast<SortMode>(GetPrivateProfileIntW(L"config", L"sort_mode", 0, theApp.m_config_path.c_str()));
-	theApp.m_play_setting_data.m_lyric_fuzzy_match = (GetPrivateProfileIntW(L"config", L"lyric_fuzzy_match", 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_play_setting_data.lyric_fuzzy_match = (GetPrivateProfileIntW(L"config", L"lyric_fuzzy_match", 1, theApp.m_config_path.c_str()) != 0);
 	GetPrivateProfileStringW(L"config", L"default_album_file_name", L"AlbumCover", buff, 255, theApp.m_config_path.c_str());
 	theApp.m_default_album_name = buff;
 
