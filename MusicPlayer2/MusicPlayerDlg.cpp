@@ -287,6 +287,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"cortana_back_color", theApp.m_play_setting_data.cortana_color, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -321,6 +322,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_nc_setting_data.mouse_volum_step = GetPrivateProfileIntW(_T("config"), _T("mouse_volum_step"), 2, theApp.m_config_path.c_str());
 	theApp.m_play_setting_data.show_playstate_icon = (GetPrivateProfileIntW(_T("config"), _T("show_playstate_icon"), 1, theApp.m_config_path.c_str())!=0);
 	theApp.m_play_setting_data.cortana_color = GetPrivateProfileIntW(_T("config"), _T("cortana_back_color"), 0, theApp.m_config_path.c_str());
+	theApp.m_nc_setting_data.volume_map = GetPrivateProfileIntW(_T("config"), _T("volume_map"), 100, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::SetTransparency()

@@ -546,6 +546,7 @@ void CPlayer::GetBASSCurrentPosition()
 void CPlayer::SetVolume()
 {
 	float volume = static_cast<float>(m_volume) / 100.0f;
+	volume = volume * theApp.m_nc_setting_data.volume_map / 100;
 	BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, volume);
 }
 
