@@ -219,6 +219,9 @@ void CPlayer::IniPlaylistComplate(bool sort)
 	EmplaceCurrentPathToRecent();
 	SetTitle();
 	SearchLyrics();
+	m_shuffle_list.clear();
+	if (m_repeat_mode == RM_PLAY_SHUFFLE)
+		m_shuffle_list.push_back(m_index);
 }
 
 void CPlayer::SearchLyrics(/*bool refresh*/)
@@ -597,13 +600,32 @@ bool CPlayer::PlayTrack(int song_track)
 			song_track = m_index - 1;
 		break;
 	case RM_PLAY_SHUFFLE:		//随机播放
-		if (song_track == NEXT || song_track == PREVIOUS)
+		if (song_track == NEXT)
 		{
 			SYSTEMTIME current_time;
 			GetLocalTime(&current_time);			//获取当前时间
 			srand(current_time.wMilliseconds);		//用当前时间的毫秒数设置产生随机数的种子
 			song_track = rand() % m_song_num;
+			m_shuffle_list.push_back(song_track);	//保存随机播放过的曲目
 		}
+		else if (song_track == PREVIOUS)		//回溯上一个随机播放曲目
+		{
+			if (m_shuffle_list.size() >= 2)
+			{
+				if (m_index == m_shuffle_list.back())
+					m_shuffle_list.pop_back();
+				song_track = m_shuffle_list.back();
+			}
+			else
+			{
+				MusicControl(Command::STOP);	//无法回溯时停止播放
+				return true;
+			}
+		}
+		//else if (song_track >= 0 && song_track < m_song_num)
+		//{
+		//	m_shuffle_list.push_back(song_track);	//保存随机播放过的曲目
+		//}
 		break;
 	case RM_LOOP_PLAYLIST:		//列表循环
 		if (song_track == NEXT)		//播放下一曲

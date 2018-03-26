@@ -86,6 +86,9 @@ private:
 	vector<wstring> m_current_path_lyrics;	//储存当前路径下的歌词文件的文件名（用于歌词模糊匹配时检索）
 	vector<wstring> m_lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名（用于歌词模糊匹配时检索）
 
+	vector<int> m_shuffle_list;			//储存随机播放过的曲目序号
+
+private:
 	void IniBASS();			//初始化BASS音频库
 	void IniPlayList(bool cmd_para = false, bool refresh_info = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
