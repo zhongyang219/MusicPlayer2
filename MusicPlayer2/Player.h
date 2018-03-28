@@ -197,5 +197,6 @@ public:
 
 private:
 	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
+	void SearchAlbumCover();		//获取专辑封面
 };
 

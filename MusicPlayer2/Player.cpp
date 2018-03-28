@@ -362,37 +362,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			}
 
 			//打开时获取专辑封面
-			static wstring last_file_path;
-			if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
-			{
-				if (type != AU_FLAC)
-					m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
-				else
-					m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
-				m_album_cover.Destroy();
-				m_album_cover.Load(m_album_cover_path.c_str());
-				if (theApp.m_app_setting_data.use_out_image && m_album_cover.IsNull())
-				{
-					//获取不到专辑封面时尝试使用外部图片作为封面
-					vector<wstring> files;
-					wstring album_name{ GetCurrentSongInfo().album };
-					CCommon::FileNameNormalize(album_name);
-					wstring file_name = m_path + L'*' + album_name + L"*.*";	//查找文件名中包含唱片集名的文件
-					CCommon::GetImageFiles(file_name, files);
-					if (files.empty())
-					{
-						//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
-						file_name = m_path + theApp.m_default_album_name + L".*";
-						CCommon::GetImageFiles(file_name, files);
-					}
-					if (!files.empty())
-					{
-						m_album_cover_path = m_path + files[0];
-						m_album_cover.Load(m_album_cover_path.c_str());
-					}
-				}
-			}
-			last_file_path = m_path + m_current_file_name;
+			SearchAlbumCover();
 		}
 		if (m_playlist[m_index].is_cue)
 		{
@@ -1398,4 +1368,46 @@ void CPlayer::ConnotPlayWarning() const
 	if (m_no_ape_plugin && CAudioCommon::GetAudioType(m_current_file_name) == AudioType::AU_APE)
 		//AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
 		PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
+}
+
+void CPlayer::SearchAlbumCover()
+{
+	static wstring last_file_path;
+	if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
+	{
+		AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
+		if (type != AU_FLAC)
+			m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
+		else
+			m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
+		m_album_cover.Destroy();
+		m_album_cover.Load(m_album_cover_path.c_str());
+		if (theApp.m_app_setting_data.use_out_image && m_album_cover.IsNull())
+		{
+			//获取不到专辑封面时尝试使用外部图片作为封面
+			vector<wstring> files;
+			wstring album_name{ GetCurrentSongInfo().album };
+			CCommon::FileNameNormalize(album_name);
+			wstring file_name = m_path + L'*' + album_name + L"*.*";	//查找文件名中包含唱片集名的文件
+			CCommon::GetImageFiles(file_name, files);
+			if (files.empty())
+			{
+				//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
+				file_name = m_path + theApp.m_default_album_name + L".*";
+				CCommon::GetImageFiles(file_name, files);
+			}
+			if (files.empty())
+			{
+				//没有找到文件名为DEFAULT_ALBUM_NAME的文件，查找名为“Folder的文件”
+				file_name = m_path + L"Folder" + L".*";
+				CCommon::GetImageFiles(file_name, files);
+			}
+			if (!files.empty())
+			{
+				m_album_cover_path = m_path + files[0];
+				m_album_cover.Load(m_album_cover_path.c_str());
+			}
+		}
+	}
+	last_file_path = m_path + m_current_file_name;
 }
