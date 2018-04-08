@@ -440,10 +440,10 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//显示比特率
 	tmp.MoveToXY(text_start.x, text_start.y + 4 * text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, _T("比特率："), theApp.m_app_setting_data.theme_color.original_color, false);
+	m_draw.DrawWindowText(tmp, _T("格式："), theApp.m_app_setting_data.theme_color.original_color, false);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
-	swprintf_s(buff, L"%d kbps", theApp.m_player.GetCurrentSongInfo().bitrate);
+	swprintf_s(buff, L"%s %d kbps", CCommon::GetFileExtension(theApp.m_player.GetCurrentSongInfo().file_name, true).c_str(), theApp.m_player.GetCurrentSongInfo().bitrate);
 	m_draw.DrawWindowText(tmp, buff, theApp.m_app_setting_data.theme_color.dark2, false);
 
 	//显示频谱分析

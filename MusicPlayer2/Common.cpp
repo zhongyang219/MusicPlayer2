@@ -149,14 +149,17 @@ size_t CCommon::GetFileSize(const wstring & file_name)
 	return m - l;
 }
 
-wstring CCommon::GetFileExtension(const wstring & file_name)
+wstring CCommon::GetFileExtension(const wstring & file_name, bool upper)
 {
 	wstring extension;
 	size_t index;
 	index = file_name.rfind(L'.');
 	if (index != string::npos)
 		extension = file_name.substr(index + 1);		//获取文件的扩展名
-	std::transform(extension.begin(), extension.end(), extension.begin(), tolower);		//将扩展名转换成小写
+	if (upper)
+		std::transform(extension.begin(), extension.end(), extension.begin(), toupper);		//将扩展名转换成大写
+	else
+		std::transform(extension.begin(), extension.end(), extension.begin(), tolower);		//将扩展名转换成小写
 	return extension;
 }
 
