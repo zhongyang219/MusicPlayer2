@@ -241,10 +241,15 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		if (album_cover.IsNull())
 		{
-			if(m_dark_mode)
+			if (m_dark_mode)
+			{
 				m_cortana_draw.DrawBitmap(IDB_CORTANA_BLACK, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+			}
 			else
+			{
 				m_cortana_draw.DrawBitmap(IDB_CORTANA_WHITE, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+				m_cortana_draw.DrawRectTopFrame(m_icon_rect, m_border_color);
+			}
 		}
 		else
 			m_cortana_draw.DrawBitmap(album_cover, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
