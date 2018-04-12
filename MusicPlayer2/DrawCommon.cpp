@@ -360,3 +360,16 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha)
 	}
 	cdc.SelectObject(pOldBitmap);
 }
+
+void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
+{
+	SetDrawArea(m_pDC, rect);
+	CPen aPen, *pOldPen;
+	aPen.CreatePen(PS_SOLID, pilex, color);
+	pOldPen = m_pDC->SelectObject(&aPen);
+
+	m_pDC->MoveTo(rect.TopLeft());
+	m_pDC->LineTo(rect.right, rect.top);
+
+	m_pDC->SelectObject(pOldPen);
+}

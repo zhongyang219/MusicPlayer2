@@ -58,6 +58,7 @@ private:
 
 	CPoint m_check_dark_point{};			//用于判断Cortana搜索框是否为深色模式的点的位置
 	COLORREF m_back_color;
+	const COLORREF m_border_color{ GRAY(180) };		//浅色模式时边框的颜色
 
 	bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
 	int m_cortana_color;		//Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）

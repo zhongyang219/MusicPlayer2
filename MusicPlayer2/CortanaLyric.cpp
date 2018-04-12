@@ -121,8 +121,8 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
 		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，不绘制搜索框最上面一行像素
-			rect.top++;
+		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
+			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
 		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
 		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
@@ -153,8 +153,8 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
 		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，不绘制搜索框最上面一行像素
-			rect.top++;
+		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
+			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
 		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
 		m_cortana_pDC->BitBlt(m_cortana_left_space, 0 , m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
@@ -225,8 +225,8 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
 		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，不绘制搜索框最上面一行像素
-			rect.top++;
+		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
+			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
 		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
 		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
@@ -266,10 +266,15 @@ void CCortanaLyric::ResetCortanaText()
 		else
 			m_cortana_draw.DrawBitmap(IDB_CORTANA_WHITE, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
 		//再绘制Cortana默认文本
-		rect.MoveToXY(rect.left + m_cortana_left_space, (m_dark_mode ? 0 : 1));
+		rect.MoveToXY(rect.left + m_cortana_left_space, 0);
 		m_cortana_draw.FillRect(rect, m_back_color);
 		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color, false);
-		m_cortana_wnd->Invalidate();
+		if (!m_dark_mode)
+		{
+			rect.left -= m_cortana_left_space;
+			m_cortana_draw.DrawRectTopFrame(rect, m_border_color);
+		}
+		//m_cortana_wnd->Invalidate();
 	}
 }
 

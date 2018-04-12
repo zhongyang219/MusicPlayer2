@@ -46,6 +46,7 @@ public:
 	void FillRect(CRect rect, COLORREF color);
 	void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
 
+	void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
 private:
 	CDC* m_pDC{};		//用于绘图的CDC类的指针
 	CWnd* m_pMainWnd{};	//绘图窗口的句柄
