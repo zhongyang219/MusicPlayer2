@@ -114,6 +114,9 @@
     <Filter Include="头文件和源文件\公共的类\FolderBrowerDlg">
       <UniqueIdentifier>{0ca98411-5535-4d52-a846-c0956fe1697f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\派生的控件类\ColorStatic">
+      <UniqueIdentifier>{350e1692-d65b-4c62-b988-38c2c4eebdaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -231,6 +234,9 @@
     <ClInclude Include="FolderBrowserDlg.h">
       <Filter>头文件和源文件\公共的类\FolderBrowerDlg</Filter>
     </ClInclude>
+    <ClInclude Include="ColorStatic.h">
+      <Filter>头文件和源文件\派生的控件类\ColorStatic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -331,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="FolderBrowserDlg.cpp">
       <Filter>头文件和源文件\公共的类\FolderBrowerDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorStatic.cpp">
+      <Filter>头文件和源文件\派生的控件类\ColorStatic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

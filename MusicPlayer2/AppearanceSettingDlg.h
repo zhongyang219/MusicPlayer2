@@ -3,7 +3,7 @@
 #include "afxwin.h"
 #include "Common.h"
 #include "DrawCommon.h"
-#include "StaticEx.h"
+#include "ColorStatic.h"
 
 // CAppearanceSettingDlg 对话框
 
@@ -41,13 +41,13 @@ public:
 protected:
 	bool m_font_changed{ false };
 	CSliderCtrl m_transparency_slid;
-	CStaticEx m_color_static;
-	CStaticEx m_color_static1;
-	CStaticEx m_color_static2;
-	CStaticEx m_color_static3;
-	CStaticEx m_color_static4;
-	CStaticEx m_color_static5;
-	CStaticEx m_color_static6;
+	CColorStatic m_color_static;
+	CColorStatic m_color_static1;
+	CColorStatic m_color_static2;
+	CColorStatic m_color_static3;
+	CColorStatic m_color_static4;
+	CColorStatic m_color_static5;
+	CColorStatic m_color_static6;
 
 	const COLORREF m_color1{ RGB(123,189,255) };		//天蓝色
 	const COLORREF m_color2{ RGB(115,210,45) };			//绿色

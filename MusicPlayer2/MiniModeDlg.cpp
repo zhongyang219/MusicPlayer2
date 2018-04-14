@@ -337,6 +337,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_first_start = true;
 	m_show_playlist = false;
 	m_show_volume = false;
+	m_first_show_time = true;
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -434,13 +435,20 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	//显示播放时间
 	if (!m_show_volume)
 	{
-		if (theApp.m_player.IsError())		//出现错误时显示错误信息
+		static int last_second;
+		int second = theApp.m_player.GetCurrentSecond();
+		if (second != last_second || m_first_show_time)
 		{
-			m_time_static.DrawWindowText(_T("播放出错"));
-		}
-		else
-		{
-			m_time_static.DrawWindowText(theApp.m_player.GetTimeString().c_str());
+			if (theApp.m_player.IsError())		//出现错误时显示错误信息
+			{
+				m_time_static.DrawWindowText(_T("播放出错"));
+			}
+			else
+			{
+				m_time_static.DrawWindowText(theApp.m_player.GetTimeString().c_str());
+			}
+			last_second = second;
+			m_first_show_time = false;
 		}
 	}
 

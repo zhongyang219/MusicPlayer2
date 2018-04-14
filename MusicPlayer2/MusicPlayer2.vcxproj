@@ -194,6 +194,7 @@
     <ClInclude Include="AudioCommon.h" />
     <ClInclude Include="bass.h" />
     <ClInclude Include="ColorConvert.h" />
+    <ClInclude Include="ColorStatic.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CortanaLyric.h" />
     <ClInclude Include="DataSettingsDlg.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
     <ClCompile Include="ColorConvert.cpp" />
+    <ClCompile Include="ColorStatic.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CortanaLyric.cpp" />
     <ClCompile Include="DataSettingsDlg.cpp" />

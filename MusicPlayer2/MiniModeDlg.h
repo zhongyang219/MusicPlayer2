@@ -56,6 +56,7 @@ protected:
 	bool m_dark_mode{ false };
 	bool m_follow_main_color{ true };
 	bool m_first_start{ true };
+	bool m_first_show_time;
 
 	int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目
 
