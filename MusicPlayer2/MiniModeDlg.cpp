@@ -280,6 +280,8 @@ BOOL CMiniModeDlg::OnInitDialog()
 	//初始化窗口位置
 	if (m_position_x != -1 && m_position_y != -1)
 		SetWindowPos(nullptr , m_position_x, m_position_y, m_rect_s.Width(), m_rect_s.Height(), SWP_NOZORDER);
+	else
+		SetWindowPos(nullptr , 0, 0, m_rect_s.Width(), m_rect_s.Height(), SWP_NOMOVE | SWP_NOZORDER);
 	CheckWindowPos();
 
 	//装载右键菜单
