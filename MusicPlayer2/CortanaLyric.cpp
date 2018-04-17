@@ -242,7 +242,7 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 		if (album_cover.IsNull() || !m_show_album_cover)
 		{
 			m_cortana_draw.SetDrawArea(m_cortana_pDC, m_icon_rect);
-			//m_cortana_draw.FillRect(m_icon_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
+			m_cortana_draw.FillRect(m_icon_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
 			CRect rect{ m_icon_rect };
 			rect.DeflateRect(DPI(4), DPI(4));
 			int inflate;

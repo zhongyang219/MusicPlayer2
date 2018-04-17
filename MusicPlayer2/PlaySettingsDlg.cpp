@@ -85,8 +85,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_IN_TIME_TAG))->SetCheck(TRUE);
 
-	m_lyric_double_line_chk.EnableWindow(m_data.show_lyric_in_cortana);
-	m_cortana_color_combo.EnableWindow(m_data.show_lyric_in_cortana);
+	SetCortanaControlEnable(m_data.show_lyric_in_cortana);
 
 	SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_data.lyric_path.c_str());
 
@@ -104,6 +103,13 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
+}
+
+void CPlaySettingsDlg::SetCortanaControlEnable(bool enable)
+{
+	m_lyric_double_line_chk.EnableWindow(enable);
+	m_show_album_cover_in_cortana_check.EnableWindow(enable);
+	m_cortana_color_combo.EnableWindow(enable);
 }
 
 
@@ -210,7 +216,7 @@ void CPlaySettingsDlg::OnBnClickedShowLyricInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.show_lyric_in_cortana = (m_show_lyric_in_cortana_check.GetCheck() != 0);
-	m_lyric_double_line_chk.EnableWindow(m_data.show_lyric_in_cortana);
+	SetCortanaControlEnable(m_data.show_lyric_in_cortana);
 }
 
 

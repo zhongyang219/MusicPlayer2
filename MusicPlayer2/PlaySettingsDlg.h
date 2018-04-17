@@ -33,6 +33,7 @@ protected:
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	virtual BOOL OnInitDialog();
+	void SetCortanaControlEnable(bool enable);		//启用或禁用Cortana歌词显示相关的控件
 
 	DECLARE_MESSAGE_MAP()
 public:
