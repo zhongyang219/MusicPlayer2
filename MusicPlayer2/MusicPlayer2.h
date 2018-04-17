@@ -27,6 +27,7 @@ struct PlaySettingData
 	bool show_lyric_in_cortana{};	//是否在Cortana的搜索框中显示歌词
 	bool cortana_lyric_double_line{ true };		//是否在Cortana搜索中以双行显示歌词
 	int cortana_color{ 0 };		//Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
+	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 };
 
 struct ApperanceSettingData
@@ -48,7 +49,6 @@ struct ApperanceSettingData
 
 struct NonCategorizedSettingData
 {
-	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 	int volum_step{ 3 };		//点击主界面中的音量调节时一次调整的步长
 	int mouse_volum_step{ 2 };		//通过鼠标滚轮调节音量时的步长
 	int volume_map{ 100 };		//音量映射（例如：如果将此值从100改为60，则当音量设置为最大（100%）时的音量大小为原来的60%）

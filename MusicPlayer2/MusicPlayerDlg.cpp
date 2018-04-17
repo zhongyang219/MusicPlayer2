@@ -280,7 +280,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"show_album_cover", theApp.m_app_setting_data.show_album_cover, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_fit", static_cast<int>(theApp.m_app_setting_data.album_cover_fit), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_as_background", theApp.m_app_setting_data.album_cover_as_background, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"cortana_show_album_cover", theApp.m_nc_setting_data.cortana_show_album_cover, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"cortana_show_album_cover", theApp.m_play_setting_data.cortana_show_album_cover, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"background_transparency", theApp.m_app_setting_data.background_transparency, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"use_out_image", theApp.m_app_setting_data.use_out_image, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step, theApp.m_config_path.c_str());
@@ -315,7 +315,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.show_album_cover = (GetPrivateProfileInt(_T("config"), _T("show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
 	theApp.m_app_setting_data.album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
-	theApp.m_nc_setting_data.cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_play_setting_data.cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_app_setting_data.background_transparency = GetPrivateProfileIntW(L"config", L"background_transparency", 80, theApp.m_config_path.c_str());
 	theApp.m_app_setting_data.use_out_image = (GetPrivateProfileIntW(_T("config"), _T("use_out_image"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_nc_setting_data.volum_step = GetPrivateProfileIntW(_T("config"), _T("volum_step"), 3, theApp.m_config_path.c_str());
@@ -1391,7 +1391,15 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, DPI(2));
 				}
 			}
-			m_cortana_lyric.AlbumCoverEnable(theApp.m_nc_setting_data.cortana_show_album_cover/* && theApp.m_player.AlbumCoverExist()*/);
+			//计算频谱，根据频谱幅值使Cortana图标显示动态效果
+			float spectrum_avr{};		//取前面8个频段频谱值的平均值
+			for (int i{}; i < 8; i++)
+				spectrum_avr += theApp.m_player.GetSpectralData()[i];
+			spectrum_avr /= 8;
+			int spetraum = static_cast<int>(spectrum_avr * 25);
+			m_cortana_lyric.SetSpectrum(spetraum);
+			//显示专辑封面，如果没有专辑封面，则显示Cortana图标
+			m_cortana_lyric.AlbumCoverEnable(theApp.m_play_setting_data.cortana_show_album_cover/* && theApp.m_player.AlbumCoverExist()*/);
 			m_cortana_lyric.DrawAlbumCover(theApp.m_player.GetAlbumCover());
 		}
 	}

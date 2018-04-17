@@ -26,6 +26,7 @@ protected:
 	CButton m_show_taskbar_progress_check;
 	CButton m_lyric_fuzzy_match_check;
 	CButton m_lyric_double_line_chk;
+	CButton m_show_album_cover_in_cortana_check;
 	CComboBox m_cortana_color_combo;
 
 	CToolTipCtrl m_tool_tip;
@@ -49,4 +50,5 @@ public:
 	afx_msg void OnBnClickedSaveInTimeTag();
 	afx_msg void OnBnClickedLyricDoubleLineCheck();
 	afx_msg void OnCbnSelchangeCortanaColorCombo();
+	afx_msg void OnBnClickedShowAlbumCoverInCortana();
 };
