@@ -31,6 +31,7 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_show_lyric_in_cortana_check);
 	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
 	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
+	DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
 	DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
 }
 
@@ -47,6 +48,7 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LYRIC_DOUBLE_LINE_CHECK, &CPlaySettingsDlg::OnBnClickedLyricDoubleLineCheck)
 	ON_CBN_SELCHANGE(IDC_CORTANA_COLOR_COMBO, &CPlaySettingsDlg::OnCbnSelchangeCortanaColorCombo)
 	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_IN_CORTANA, &CPlaySettingsDlg::OnBnClickedShowAlbumCoverInCortana)
+	ON_BN_CLICKED(IDC_CORTANA_ICON_DEAT_CHECK, &CPlaySettingsDlg::OnBnClickedCortanaIconDeatCheck)
 END_MESSAGE_MAP()
 
 
@@ -67,6 +69,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	m_lyric_fuzzy_match_check.SetCheck(m_data.lyric_fuzzy_match);
 	m_lyric_double_line_chk.SetCheck(m_data.cortana_lyric_double_line);
 	m_show_album_cover_in_cortana_check.SetCheck(m_data.cortana_show_album_cover);
+	m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
 	if (theApp.m_is_windows10)
 	{
 		m_show_lyric_in_cortana_check.SetCheck(m_data.show_lyric_in_cortana);
@@ -110,6 +113,7 @@ void CPlaySettingsDlg::SetCortanaControlEnable(bool enable)
 	m_lyric_double_line_chk.EnableWindow(enable);
 	m_show_album_cover_in_cortana_check.EnableWindow(enable);
 	m_cortana_color_combo.EnableWindow(enable);
+	m_cortana_icon_beat_check.EnableWindow(enable);
 }
 
 
@@ -252,4 +256,11 @@ void CPlaySettingsDlg::OnBnClickedShowAlbumCoverInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.cortana_show_album_cover = (m_show_album_cover_in_cortana_check.GetCheck() != 0);
+}
+
+
+void CPlaySettingsDlg::OnBnClickedCortanaIconDeatCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.cortana_icon_beat = (m_cortana_icon_beat_check.GetCheck() != 0);
 }

@@ -241,15 +241,22 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 		m_cortana_draw.SetDC(m_cortana_pDC);
 		if (album_cover.IsNull() || !m_show_album_cover)
 		{
-			m_cortana_draw.SetDrawArea(m_cortana_pDC, m_icon_rect);
-			m_cortana_draw.FillRect(m_icon_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
-			CRect rect{ m_icon_rect };
-			rect.DeflateRect(DPI(4), DPI(4));
-			int inflate;
-			inflate = m_spectrum * DPI(14) / 1000;
-			rect.InflateRect(inflate, inflate);
 			int cortana_img_id{ m_dark_mode ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
-			m_cortana_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
+			m_cortana_draw.SetDrawArea(m_cortana_pDC, m_icon_rect);
+			if (*m_cortana_icon_beat)
+			{
+				m_cortana_draw.FillRect(m_icon_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
+				CRect rect{ m_icon_rect };
+				rect.DeflateRect(DPI(4), DPI(4));
+				int inflate;
+				inflate = m_spectrum * DPI(14) / 1000;
+				rect.InflateRect(inflate, inflate);
+				m_cortana_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
+			}
+			else
+			{
+				m_cortana_draw.DrawBitmap(cortana_img_id, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FIT);
+			}
 			if(!m_dark_mode)
 				m_cortana_draw.DrawRectTopFrame(m_icon_rect, m_border_color);
 		}
@@ -340,5 +347,10 @@ void CCortanaLyric::SetSpectrum(int spectrum)
 {
 	m_spectrum = spectrum;
 	if (m_spectrum < 0) m_spectrum = 0;
-	if (m_spectrum > 1000) m_spectrum = 1000;
+	if (m_spectrum > 2000) m_spectrum = 2000;
+}
+
+void CCortanaLyric::SetCortanaIconBeat(bool * beat)
+{
+	m_cortana_icon_beat = beat;
 }

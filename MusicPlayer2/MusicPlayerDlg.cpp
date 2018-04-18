@@ -281,6 +281,8 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_fit", static_cast<int>(theApp.m_app_setting_data.album_cover_fit), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"album_cover_as_background", theApp.m_app_setting_data.album_cover_as_background, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"cortana_show_album_cover", theApp.m_play_setting_data.cortana_show_album_cover, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"cortana_icon_beat", theApp.m_play_setting_data.cortana_icon_beat, theApp.m_config_path.c_str());
+
 	CCommon::WritePrivateProfileIntW(L"config", L"background_transparency", theApp.m_app_setting_data.background_transparency, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"use_out_image", theApp.m_app_setting_data.use_out_image, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step, theApp.m_config_path.c_str());
@@ -316,6 +318,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
 	theApp.m_app_setting_data.album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
 	theApp.m_play_setting_data.cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_play_setting_data.cortana_icon_beat = (GetPrivateProfileInt(_T("config"), _T("cortana_icon_beat"), 1, theApp.m_config_path.c_str()) != 0);
+
 	theApp.m_app_setting_data.background_transparency = GetPrivateProfileIntW(L"config", L"background_transparency", 80, theApp.m_config_path.c_str());
 	theApp.m_app_setting_data.use_out_image = (GetPrivateProfileIntW(_T("config"), _T("use_out_image"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_nc_setting_data.volum_step = GetPrivateProfileIntW(_T("config"), _T("volum_step"), 3, theApp.m_config_path.c_str());
@@ -1134,6 +1138,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_cortana_lyric.Init();
 	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
 	m_cortana_lyric.SetCortanaColor(theApp.m_play_setting_data.cortana_color);
+	m_cortana_lyric.SetCortanaIconBeat(&theApp.m_play_setting_data.cortana_icon_beat);
 
 	//初始化绘图的类
 	m_pDC = GetDC();

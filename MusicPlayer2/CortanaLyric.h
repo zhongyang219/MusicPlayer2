@@ -38,6 +38,7 @@ public:
 	void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
 	void AlbumCoverEnable(bool enable);
 	void SetSpectrum(int spectrum);
+	void SetCortanaIconBeat(bool* beat);
 
 private:
 	bool m_enable;
@@ -64,6 +65,7 @@ private:
 	int m_cortana_color;		//Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
 
 	int m_spectrum{0};		//频谱的幅值，取值为0~1000
+	bool* m_cortana_icon_beat;		//Cortana图标随音乐节奏跳动
 
 public:
 	bool m_cortana_disabled;
