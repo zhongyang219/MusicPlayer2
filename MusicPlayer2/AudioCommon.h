@@ -300,6 +300,9 @@ public:
 	////删除字符串末尾的空格
 	//static void DeleteEndSpace(wstring& str);
 
+	//删除一个字符串中非打印字符开始的后面全部字符
+	static void TagStrNormalize(wstring& str);
+
 protected:
 	//获取FLAC音频的标签区域的内容
 	static void GetFlacTagContents(wstring file_name, string& contents_buff);

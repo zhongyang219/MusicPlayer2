@@ -696,6 +696,9 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, wstring file_pa
 	//DeleteEndSpace(song_info.title);
 	//DeleteEndSpace(song_info.artist);
 	//DeleteEndSpace(song_info.album);
+	TagStrNormalize(song_info.title);
+	TagStrNormalize(song_info.artist);
+	TagStrNormalize(song_info.album);
 	song_info.info_acquired = true;
 }
 
@@ -862,5 +865,18 @@ wstring CAudioCommon::_GetAlbumCover(const string & tag_content, size_t cover_in
 	}
 	image_type = -1;
 	return wstring();
+}
+
+void CAudioCommon::TagStrNormalize(wstring & str)
+{
+	for (size_t i{}; i < str.size(); i++)
+	{
+		if (str[i] < 32 || str[i] >= static_cast<wchar_t>(0xfff0))
+		{
+			str = str.substr(0, i);
+			return;
+		}
+	}
+
 }
 
