@@ -83,6 +83,8 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 		if (m_search_result.empty())
 		{
 			DeleteAllItems();
+			InsertItem(0, _T(""));
+			SetItemText(0, 1, _T("没有结果可以显示。"));
 			return;
 		}
 		int item_num_before = GetItemCount();
@@ -263,51 +265,61 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	case CDDS_ITEMPREPAINT:			//如果为画ITEM之前就要进行颜色的改变
 		if (IsWindowEnabled())
 		{
-			int hightlight_item;
-			if (!m_searched || m_search_result.size() == m_all_song_info.size())	//当播放列表不处理搜索状态，或搜索结果数量等于播放列表中曲目数量时
+			if (m_searched && m_search_result.size() == 0)		//如果播放列表处理搜索状态且没有搜索结果
 			{
-				hightlight_item = m_highlight_item;
+				if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)	//不允许选中行
+					SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				lplvdr->clrText = GRAY(140);
+				lplvdr->clrTextBk = GRAY(255);
 			}
-			else		//如果播放列表处于搜索状态，则高亮项目应该为搜索结果的索引
-			{
-				auto iter = std::find(m_search_result.begin(), m_search_result.end(), m_highlight_item);
-				if (iter == m_search_result.end())
-					hightlight_item = -1;
-				else
-					hightlight_item = iter - m_search_result.begin();
-			}
-			//当选中行又是高亮行时设置颜色
-			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == hightlight_item)
-			{
-				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-				lplvdr->clrText = m_theme_color.light3;
-				lplvdr->clrTextBk = m_theme_color.dark1;
-			}
-			//设置选中行的颜色
-			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
-			{
-				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-				lplvdr->clrText = m_theme_color.dark3;
-				lplvdr->clrTextBk = m_theme_color.light2;
-			}
-			//设置高亮行的颜色
-			else if (nmcd.dwItemSpec == hightlight_item)
-			{
-				lplvdr->clrText = m_theme_color.dark2;
-				//lplvdr->clrText = 0;
-				lplvdr->clrTextBk = m_theme_color.light3;
-			}
-			//设置偶数行的颜色
-			else if (nmcd.dwItemSpec % 2 == 0)
-			{
-				lplvdr->clrText = CColorConvert::m_gray_color.dark3;
-				lplvdr->clrTextBk = CColorConvert::m_gray_color.light3;
-			}
-			//设置奇数行的颜色
 			else
 			{
-				lplvdr->clrText = CColorConvert::m_gray_color.dark3;
-				lplvdr->clrTextBk = CColorConvert::m_gray_color.light4;
+				int hightlight_item;
+				if (!m_searched || m_search_result.size() == m_all_song_info.size())	//当播放列表不处理搜索状态，或搜索结果数量等于播放列表中曲目数量时
+				{
+					hightlight_item = m_highlight_item;
+				}
+				else		//如果播放列表处于搜索状态，则高亮项目应该为搜索结果的索引
+				{
+					auto iter = std::find(m_search_result.begin(), m_search_result.end(), m_highlight_item);
+					if (iter == m_search_result.end())
+						hightlight_item = -1;
+					else
+						hightlight_item = iter - m_search_result.begin();
+				}
+				//当选中行又是高亮行时设置颜色
+				if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == hightlight_item)
+				{
+					SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+					lplvdr->clrText = m_theme_color.light3;
+					lplvdr->clrTextBk = m_theme_color.dark1;
+				}
+				//设置选中行的颜色
+				else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
+				{
+					SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+					lplvdr->clrText = m_theme_color.dark3;
+					lplvdr->clrTextBk = m_theme_color.light2;
+				}
+				//设置高亮行的颜色
+				else if (nmcd.dwItemSpec == hightlight_item)
+				{
+					lplvdr->clrText = m_theme_color.dark2;
+					//lplvdr->clrText = 0;
+					lplvdr->clrTextBk = m_theme_color.light3;
+				}
+				//设置偶数行的颜色
+				else if (nmcd.dwItemSpec % 2 == 0)
+				{
+					lplvdr->clrText = CColorConvert::m_gray_color.dark3;
+					lplvdr->clrTextBk = CColorConvert::m_gray_color.light3;
+				}
+				//设置奇数行的颜色
+				else
+				{
+					lplvdr->clrText = CColorConvert::m_gray_color.dark3;
+					lplvdr->clrTextBk = CColorConvert::m_gray_color.light4;
+				}
 			}
 		}
 		else		//当控件被禁用时，显示文本设为灰色
