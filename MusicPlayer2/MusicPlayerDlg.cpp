@@ -165,6 +165,8 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PROGRESS_STATIC, m_progress_bar);
 	DDX_Control(pDX, IDC_TIME_STATIC, m_time_static);
 	DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
+	DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
+	DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
 }
 
 BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
@@ -253,6 +255,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_ALBUM_COVER_SAVE_AS, &CMusicPlayerDlg::OnAlbumCoverSaveAs)
 	ON_MESSAGE(WM_PATH_SELECTED, &CMusicPlayerDlg::OnPathSelected)
 	ON_MESSAGE(WM_CONNOT_PLAY_WARNING, &CMusicPlayerDlg::OnConnotPlayWarning)
+	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMusicPlayerDlg::OnEnChangeSearchEdit)
+	ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CMusicPlayerDlg::OnBnClickedClearSearchButton)
 END_MESSAGE_MAP()
 
 
@@ -695,14 +699,16 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	int width0, width1, width2;
 	if (!m_narrow_mode)
 	{
-		m_playlist_list.MoveWindow(cx / 2 + m_margin, m_control_bar_height + m_path_edit_height + m_margin, cx / 2 - 2 * m_margin, cy - m_control_bar_height - m_path_edit_height - 2 * m_margin);
+		m_playlist_list.MoveWindow(cx / 2 + m_margin, m_control_bar_height + m_search_edit_height + m_path_edit_height + m_margin,
+			cx / 2 - 2 * m_margin, cy - m_control_bar_height - m_search_edit_height - m_path_edit_height - 2 * m_margin);
 		width0 = DPI(40);
 		width2 = DPI(50);
 		width1 = cx / 2 - width0 - width2 - DPI(21) - 2 * m_margin;
 	}
 	else
 	{
-		m_playlist_list.MoveWindow(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_path_edit_height + m_margin, cx - 2 * m_margin, cy - m_control_bar_height - m_info_height - m_progress_bar_height - m_path_edit_height - 2 * m_margin);
+		m_playlist_list.MoveWindow(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_search_edit_height + m_path_edit_height + m_margin,
+			cx - 2 * m_margin, cy - m_control_bar_height - m_info_height - m_progress_bar_height - m_search_edit_height - m_path_edit_height - 2 * m_margin);
 		width0 = DPI(40);
 		width2 = DPI(50);
 		width1 = cx - width0 - width2 - DPI(21) - 2 * m_margin;
@@ -733,6 +739,27 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 		rect_edit.MoveToXY(m_margin + rect_static.Width(), m_control_bar_height + m_info_height + m_progress_bar_height + m_margin);
 	}
 	m_path_edit.MoveWindow(rect_edit);
+	//设置歌曲搜索框的大小和位置
+	CRect rect_search;
+	m_search_edit.GetWindowRect(rect_search);
+	if (!m_narrow_mode)
+	{
+		rect_search.right = rect_search.left + (cx / 2 - 2 * m_margin - m_margin - rect_search.Height());
+		rect_search.MoveToXY(cx / 2 + m_margin, m_control_bar_height + m_path_edit_height + DPI(1));
+	}
+	else
+	{
+		rect_search.right = rect_search.left + (cx - 2 * m_margin - m_margin - rect_search.Height());
+		rect_search.MoveToXY(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_path_edit_height + DPI(1));
+	}
+	m_search_edit.MoveWindow(rect_search);
+	//设置清除搜索按钮的大小和位置
+	CRect rect_clear{};
+	rect_clear.right = rect_clear.bottom = rect_search.Height();
+	//if (!m_narrow_mode)
+		rect_clear.MoveToXY(rect_search.right + m_margin, rect_search.top);
+	m_clear_search_button.MoveWindow(rect_clear);
+	m_clear_search_button.Invalidate();
 }
 
 void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
@@ -1030,6 +1057,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_info_height = DPI(170);
 	m_info_height2 = DPI(143);
 	m_path_edit_height = DPI(32);
+	m_search_edit_height = DPI(26);
 	m_progress_bar_height = DPI(25);
 	m_spectral_size.cx = DPI(120);
 	m_spectral_size.cy = DPI(90);
@@ -1049,6 +1077,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_DOWN), _T("减小音量"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
 	m_Mytip.AddTool(&m_time_static, _T("播放时间"));
+	m_Mytip.AddTool(&m_clear_search_button, _T("清除搜索结果"));
 
 	//为显示播放时间的static控件设置SS_NOTIFY属性，以启用鼠标提示
 	DWORD dwStyle = m_time_static.GetStyle();
@@ -1057,6 +1086,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
 	m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//装载歌词右键菜单
 	m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
+
+	m_search_edit.SetCueBanner(_T("在此处键入搜索"), TRUE);
 
 	CoInitialize(0);	//初始化COM组件，用于支持任务栏显示进度和缩略图按钮
 #ifndef COMPILE_IN_WIN_XP
@@ -2011,8 +2042,18 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	int row = pNMItemActivate->iItem;
-	theApp.m_player.PlayTrack(row);
+	if (!m_searched)	//如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
+	{
+		theApp.m_player.PlayTrack(pNMItemActivate->iItem);
+	}
+	else		//如果播放列表处理选中状态，则曲目的索引是选中行第一列的数字-1
+	{
+		int song_index;
+		CString str;
+		str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
+		song_index = _ttoi(str) - 1;
+		theApp.m_player.PlayTrack(song_index);
+	}
 	SwitchTrack();
 	UpdatePlayPauseButton();
 
@@ -2091,7 +2132,16 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
+	if (!m_searched)
+	{
+		m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
+	}
+	else
+	{
+		CString str;
+		str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
+		m_item_selected = _ttoi(str) - 1;
+	}
 
 	CMenu* pContextMenu = m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
 	CPoint point;			//定义一个用于确定光标位置的位置  
@@ -2100,7 +2150,7 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 	if (m_item_selected >= 0 && m_item_selected < theApp.m_player.GetSongNum())
 	{
 		CRect item_rect;
-		m_playlist_list.GetItemRect(m_item_selected, item_rect, LVIR_BOUNDS);		//获取选中项目的矩形区域（以播放列表控件左上角为原点）
+		m_playlist_list.GetItemRect(pNMItemActivate->iItem, item_rect, LVIR_BOUNDS);		//获取选中项目的矩形区域（以播放列表控件左上角为原点）
 		CRect playlist_rect;
 		m_playlist_list.GetWindowRect(playlist_rect);		//获取播放列表控件的矩形区域（以屏幕左上角为原点）
 		point.y = playlist_rect.top + item_rect.bottom;	//设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
@@ -2827,4 +2877,34 @@ afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lPara
 	if (theApp.m_play_setting_data.stop_when_error)
 		AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
 	return 0;
+}
+
+
+void CMusicPlayerDlg::OnEnChangeSearchEdit()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
+	CString str;
+	m_search_edit.GetWindowText(str);
+	m_search_key_word = str;
+	m_searched = (str.GetLength() != 0);
+	m_playlist_list.QuickSearch(m_search_key_word);
+	m_playlist_list.ShowPlaylist(m_display_format, m_searched);
+}
+
+
+void CMusicPlayerDlg::OnBnClickedClearSearchButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (m_searched)
+	{
+		//清除搜索结果
+		m_searched = false;
+		m_search_edit.SetWindowText(_T(""));
+		m_playlist_list.ShowPlaylist(m_display_format, m_searched);
+	}
 }

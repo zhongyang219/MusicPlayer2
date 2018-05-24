@@ -44,6 +44,7 @@ public:
 protected:
 	HICON m_hIcon;
 	CToolTipCtrl m_Mytip;
+	//控件变量
 	CPlayListCtrl m_playlist_list{ theApp.m_player.GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
 																	//用于支持鼠标指向列表中的项目时显示歌曲信息)
 	CStatic m_path_static;
@@ -58,6 +59,8 @@ protected:
 	CProgressStatic m_progress_bar;		//进度条控件
 	CStatic m_time_static;				//显示播放时间的控件
 	CButton m_set_path_button;
+	CEdit m_search_edit;
+	CButton m_clear_search_button;
 
 #ifndef COMPILE_IN_WIN_XP
 	ITaskbarList3* m_pTaskbar;          //用于支持任务栏显示播放进度
@@ -95,7 +98,8 @@ protected:
 	int m_info_height;				//窄界面模式时显示信息区域的高度
 	int m_info_height2;				//普通界面模式时显示信息区域的高度
 	int m_control_bar_height;		//窗口上方的播放控制按钮部分的高度
-	int m_path_edit_height;			//显示当前路径控件区域的高度
+	int m_path_edit_height;			//前路径Edit控件区域的高度
+	int m_search_edit_height;		//歌曲搜索框Edit控件区域的高度
 	int m_progress_bar_height;		//(窄界面模式时)进度条区域的高度
 	int m_progress_bar_left_pos;	//(普通界面模式时)进度条左侧的位置
 	CSize m_spectral_size{};			//频谱分析区域的大小
@@ -112,6 +116,9 @@ protected:
 	CFont m_lyric_font;			//歌词字体
 
 	bool m_narrow_mode;		//窄界面模式
+
+	bool m_searched;		//播放列表是否处于搜索状态
+	wstring m_search_key_word;	//播放列表查找的关键字
 
 	unsigned int m_timer_count{};
 
@@ -268,4 +275,7 @@ public:
 protected:
 	afx_msg LRESULT OnPathSelected(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnConnotPlayWarning(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnEnChangeSearchEdit();
+	afx_msg void OnBnClickedClearSearchButton();
 };

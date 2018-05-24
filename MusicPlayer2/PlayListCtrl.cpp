@@ -47,32 +47,77 @@ wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat d
 	}
 }
 
-void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format)
+void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_result)
 {
+	m_searched = search_result;
 	if (m_all_song_info.size() == 1 && m_all_song_info[0].file_name.empty())
 	{
 		DeleteAllItems();
 		return;
 	}
-	int item_num_before = GetItemCount();
-	int item_num_after = theApp.m_player.GetSongNum();
-	//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
-	if (item_num_after < item_num_before)
+	if (!search_result)		//显示所有曲目
 	{
-		DeleteAllItems();
-		item_num_before = 0;
-	}
-	CString str;
-	for (int i{}; i < item_num_after; i++)
-	{
-		if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+		int item_num_before = GetItemCount();
+		int item_num_after = theApp.m_player.GetSongNum();
+		//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
+		if (item_num_after < item_num_before)
+		{
+			DeleteAllItems();
+			item_num_before = 0;
+		}
+		CString str;
+		for (int i{}; i < item_num_after; i++)
 		{
 			str.Format(_T("%u"), i + 1);
-			InsertItem(i, str);
+			if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+			{
+				InsertItem(i, str);
+			}
+			SetItemText(i, 0, str);
+			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[i], display_format)).c_str());
+			SetItemText(i, 2, theApp.m_player.GetAllSongLength(i).time2str().c_str());
 		}
-		SetItemText(i, 1, (GetDisplayStr(m_all_song_info[i], display_format)).c_str());
+	}
+	else		//只显示搜索结果的曲目
+	{
+		if (m_search_result.empty())
+		{
+			DeleteAllItems();
+			return;
+		}
+		int item_num_before = GetItemCount();
+		int item_num_after = m_search_result.size();
+		//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
+		if (item_num_after < item_num_before)
+		{
+			DeleteAllItems();
+			item_num_before = 0;
+		}
+		CString str;
+		for (int i{}; i < item_num_after; i++)
+		{
+			str.Format(_T("%u"), m_search_result[i] + 1);
+			if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+			{
+				InsertItem(i, str);
+			}
+			SetItemText(i, 0, str);
+			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[m_search_result[i]], display_format)).c_str());
+			SetItemText(i, 2, theApp.m_player.GetAllSongLength(m_search_result[i]).time2str().c_str());
+		}
+	}
+}
 
-		SetItemText(i, 2, theApp.m_player.GetAllSongLength(i).time2str().c_str());
+void CPlayListCtrl::QuickSearch(const wstring & key_word)
+{
+	m_search_result.clear();
+	for (size_t i{}; i < m_all_song_info.size(); i++)
+	{
+		if (m_all_song_info[i].file_name.find(key_word) != wstring::npos
+			|| m_all_song_info[i].title.find(key_word) != wstring::npos
+			|| m_all_song_info[i].artist.find(key_word) != wstring::npos
+			|| m_all_song_info[i].album.find(key_word) != wstring::npos)
+			m_search_result.push_back(i);
 	}
 }
 
@@ -82,6 +127,7 @@ BEGIN_MESSAGE_MAP(CPlayListCtrl, CListCtrlEx)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
+	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
 END_MESSAGE_MAP()
 
 
@@ -117,25 +163,36 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 					str_tip += dis_str;
 					str_tip += _T("\r\n");
 				}
-
+				int song_index;
+				if (!m_searched)
+				{
+					song_index = m_nItem;
+				}
+				else
+				{
+					CString str = GetItemText(m_nItem, 0);
+					song_index = _ttoi(str) - 1;
+				}
+				if (song_index < 0 || song_index >= m_all_song_info.size())
+					return;
 				str_tip += _T("文件名：");
-				str_tip += m_all_song_info[m_nItem].file_name.c_str();
+				str_tip += m_all_song_info[song_index].file_name.c_str();
 				str_tip += _T("\r\n");
 
 				str_tip += _T("标题：");
-				str_tip += m_all_song_info[m_nItem].title.c_str();
+				str_tip += m_all_song_info[song_index].title.c_str();
 				str_tip += _T("\r\n");
 
 				str_tip += _T("艺术家：");
-				str_tip += m_all_song_info[m_nItem].artist.c_str();
+				str_tip += m_all_song_info[song_index].artist.c_str();
 				str_tip += _T("\r\n");
 
 				str_tip += _T("唱片集：");
-				str_tip += m_all_song_info[m_nItem].album.c_str();
+				str_tip += m_all_song_info[song_index].album.c_str();
 				str_tip += _T("\r\n");
 
 				CString str_bitrate;
-				str_bitrate.Format(_T("比特率：%dkbps"), m_all_song_info[m_nItem].bitrate);
+				str_bitrate.Format(_T("比特率：%dkbps"), m_all_song_info[song_index].bitrate);
 				str_tip += str_bitrate;
 
 				m_toolTip.SetMaxTipWidth(DPI(400));		//设置提示信息的宽度，以支持提示换行
@@ -190,4 +247,75 @@ void CPlayListCtrl::PreSubclassWindow()
 	EnableTip();
 
 	CListCtrlEx::PreSubclassWindow();
+}
+
+
+void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	*pResult = CDRF_DODEFAULT;
+	LPNMLVCUSTOMDRAW lplvdr = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
+	NMCUSTOMDRAW& nmcd = lplvdr->nmcd;
+	switch (lplvdr->nmcd.dwDrawStage)	//判断状态   
+	{
+	case CDDS_PREPAINT:
+		*pResult = CDRF_NOTIFYITEMDRAW;
+		break;
+	case CDDS_ITEMPREPAINT:			//如果为画ITEM之前就要进行颜色的改变
+		if (IsWindowEnabled())
+		{
+			int hightlight_item;
+			if (!m_searched || m_search_result.size() == m_all_song_info.size())	//当播放列表不处理搜索状态，或搜索结果数量等于播放列表中曲目数量时
+			{
+				hightlight_item = m_highlight_item;
+			}
+			else		//如果播放列表处于搜索状态，则高亮项目应该为搜索结果的索引
+			{
+				auto iter = std::find(m_search_result.begin(), m_search_result.end(), m_highlight_item);
+				if (iter == m_search_result.end())
+					hightlight_item = -1;
+				else
+					hightlight_item = iter - m_search_result.begin();
+			}
+			//当选中行又是高亮行时设置颜色
+			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == hightlight_item)
+			{
+				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				lplvdr->clrText = m_theme_color.light3;
+				lplvdr->clrTextBk = m_theme_color.dark1;
+			}
+			//设置选中行的颜色
+			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
+			{
+				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				lplvdr->clrText = m_theme_color.dark3;
+				lplvdr->clrTextBk = m_theme_color.light2;
+			}
+			//设置高亮行的颜色
+			else if (nmcd.dwItemSpec == hightlight_item)
+			{
+				lplvdr->clrText = m_theme_color.dark2;
+				//lplvdr->clrText = 0;
+				lplvdr->clrTextBk = m_theme_color.light3;
+			}
+			//设置偶数行的颜色
+			else if (nmcd.dwItemSpec % 2 == 0)
+			{
+				lplvdr->clrText = CColorConvert::m_gray_color.dark3;
+				lplvdr->clrTextBk = CColorConvert::m_gray_color.light3;
+			}
+			//设置奇数行的颜色
+			else
+			{
+				lplvdr->clrText = CColorConvert::m_gray_color.dark3;
+				lplvdr->clrTextBk = CColorConvert::m_gray_color.light4;
+			}
+		}
+		else		//当控件被禁用时，显示文本设为灰色
+		{
+			lplvdr->clrText = GRAY(140);
+			lplvdr->clrTextBk = GRAY(240);
+		}
+		*pResult = CDRF_DODEFAULT;
+		break;
+	}
 }
