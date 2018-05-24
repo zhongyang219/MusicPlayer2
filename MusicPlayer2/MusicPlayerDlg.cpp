@@ -707,8 +707,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	}
 	else
 	{
-		m_playlist_list.MoveWindow(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_search_edit_height + m_path_edit_height + m_margin,
-			cx - 2 * m_margin, cy - m_control_bar_height - m_info_height - m_progress_bar_height - m_search_edit_height - m_path_edit_height - 2 * m_margin);
+		m_playlist_list.MoveWindow(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_search_edit_height + m_path_edit_height,
+			cx - 2 * m_margin, cy - m_control_bar_height - m_info_height - m_progress_bar_height - m_search_edit_height - m_path_edit_height - m_margin);
 		width0 = DPI(40);
 		width2 = DPI(50);
 		width1 = cx - width0 - width2 - DPI(21) - 2 * m_margin;
@@ -719,9 +719,9 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置“当前路径”static控件大小
 	CRect rect_static;
 	m_path_static.GetWindowRect(rect_static);
-	rect_static.bottom = rect_static.top + m_path_edit_height;
+	rect_static.bottom = rect_static.top + m_path_edit_height - 2 * m_margin;
 	if (!m_narrow_mode)
-		rect_static.MoveToXY(cx / 2 + m_margin, m_control_bar_height);
+		rect_static.MoveToXY(cx / 2 + m_margin, m_control_bar_height + m_margin);
 	else
 		rect_static.MoveToXY(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height);
 	m_path_static.MoveWindow(rect_static);
@@ -736,7 +736,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	else
 	{
 		rect_edit.right = rect_edit.left + (cx - 2 * m_margin - rect_static.Width());
-		rect_edit.MoveToXY(m_margin + rect_static.Width(), m_control_bar_height + m_info_height + m_progress_bar_height + m_margin);
+		rect_edit.MoveToXY(m_margin + rect_static.Width(), m_control_bar_height + m_info_height + m_progress_bar_height);
 	}
 	m_path_edit.MoveWindow(rect_edit);
 	//设置歌曲搜索框的大小和位置
@@ -750,7 +750,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	else
 	{
 		rect_search.right = rect_search.left + (cx - 2 * m_margin - m_margin - rect_search.Height());
-		rect_search.MoveToXY(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_path_edit_height + DPI(1));
+		rect_search.MoveToXY(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_path_edit_height - DPI(3));
 	}
 	m_search_edit.MoveWindow(rect_search);
 	//设置清除搜索按钮的大小和位置
@@ -1058,13 +1058,13 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_info_height2 = DPI(143);
 	m_path_edit_height = DPI(32);
 	m_search_edit_height = DPI(26);
-	m_progress_bar_height = DPI(25);
+	m_progress_bar_height = DPI(20);
 	m_spectral_size.cx = DPI(120);
 	m_spectral_size.cy = DPI(90);
 
 	m_set_path_button.GetWindowRect(rect);
 	m_min_width = rect.left + DPI(8);		//将“设置路径”按钮左侧的x位置设为窗口的最小宽度
-	m_min_height = DPI(340);	//设置最小高度
+	m_min_height = DPI(360);	//设置最小高度
 
 	CRect rect1;
 	m_time_static.GetWindowRect(rect1);
@@ -1078,6 +1078,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
 	m_Mytip.AddTool(&m_time_static, _T("播放时间"));
 	m_Mytip.AddTool(&m_clear_search_button, _T("清除搜索结果"));
+	m_Mytip.AddTool(&m_search_edit, _T("键入要搜索的关键词"));
 
 	//为显示播放时间的static控件设置SS_NOTIFY属性，以启用鼠标提示
 	DWORD dwStyle = m_time_static.GetStyle();
@@ -1630,7 +1631,7 @@ void CMusicPlayerDlg::OnExplorePath()
 BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_KEYDOWN)
+	if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
 	{
 		//按下Ctrl键时
 		if (GetKeyState(VK_CONTROL) & 0x80)
