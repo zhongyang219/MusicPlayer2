@@ -2053,6 +2053,8 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 		CString str;
 		str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
 		song_index = _ttoi(str) - 1;
+		if (song_index < 0)
+			return;
 		theApp.m_player.PlayTrack(song_index);
 	}
 	SwitchTrack();
