@@ -2911,5 +2911,6 @@ void CMusicPlayerDlg::OnBnClickedClearSearchButton()
 		m_searched = false;
 		m_search_edit.SetWindowText(_T(""));
 		m_playlist_list.ShowPlaylist(m_display_format, m_searched);
+		m_playlist_list.EnsureVisible(theApp.m_player.GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
 	}
 }

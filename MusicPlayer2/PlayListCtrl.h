@@ -4,6 +4,7 @@
 #include "AudioCommon.h"
 #include "ColorConvert.h"
 #include "ListCtrlEx.h"
+#include "Common.h"
 
 // CPlayListCtrl
 

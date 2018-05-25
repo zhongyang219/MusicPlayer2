@@ -115,10 +115,10 @@ void CPlayListCtrl::QuickSearch(const wstring & key_word)
 	m_search_result.clear();
 	for (size_t i{}; i < m_all_song_info.size(); i++)
 	{
-		if (m_all_song_info[i].file_name.find(key_word) != wstring::npos
-			|| m_all_song_info[i].title.find(key_word) != wstring::npos
-			|| m_all_song_info[i].artist.find(key_word) != wstring::npos
-			|| m_all_song_info[i].album.find(key_word) != wstring::npos)
+		if (CCommon::StringFindNoCase(m_all_song_info[i].file_name, key_word) != wstring::npos
+			|| CCommon::StringFindNoCase(m_all_song_info[i].title, key_word) != wstring::npos
+			|| CCommon::StringFindNoCase(m_all_song_info[i].artist, key_word) != wstring::npos
+			|| CCommon::StringFindNoCase(m_all_song_info[i].album, key_word) != wstring::npos)
 			m_search_result.push_back(i);
 	}
 }
