@@ -325,7 +325,10 @@ void CAudioCommon::GetAudioTags(HSTREAM hStream, AudioType type, wstring file_pa
 			song_info.genre_idx = id3->genre;
 			song_info.tag_type = 1;
 		}
-		else
+		bool id3_empty;		//ID3V1标签信息是否为空
+		id3_empty = (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST && song_info.album == DEFAULT_ALBUM
+			&& song_info.track == 0 && song_info.year == DEFAULT_YEAR);
+		if (id3 == nullptr || id3_empty)	//没有ID3V1标签或者ID3V1标签信息为空，则获取ID3V2标签
 		{
 			//获取ID3v2标签：
 			id3v2 = BASS_ChannelGetTags(hStream, BASS_TAG_ID3V2);
