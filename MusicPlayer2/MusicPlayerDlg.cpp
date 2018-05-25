@@ -2045,6 +2045,8 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 	// TODO: 在此添加控件通知处理程序代码
 	if (!m_searched)	//如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
 	{
+		if (pNMItemActivate->iItem < 0)
+			return;
 		theApp.m_player.PlayTrack(pNMItemActivate->iItem);
 	}
 	else		//如果播放列表处理选中状态，则曲目的索引是选中行第一列的数字-1
@@ -2053,6 +2055,8 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 		CString str;
 		str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
 		song_index = _ttoi(str) - 1;
+		if (song_index < 0)
+			return;
 		theApp.m_player.PlayTrack(song_index);
 	}
 	SwitchTrack();
