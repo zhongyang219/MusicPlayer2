@@ -1088,7 +1088,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//装载歌词右键菜单
 	m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
 
-	m_search_edit.SetCueBanner(_T("在此处键入搜索"), TRUE);
+	m_search_edit.SetCueBanner(_T("在此处键入搜索(F)"), TRUE);
 
 	CoInitialize(0);	//初始化COM组件，用于支持任务栏显示进度和缩略图按钮
 #ifndef COMPILE_IN_WIN_XP
@@ -1757,6 +1757,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			if (pMsg->wParam == 'M')	//按M键设置循环模式
 			{
 				theApp.m_player.SetRepeatMode();
+				return TRUE;
+			}
+			if (pMsg->wParam == 'F')	//按F键快速查找
+			{
+				m_search_edit.SetFocus();
 				return TRUE;
 			}
 		}
