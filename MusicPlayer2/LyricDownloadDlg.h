@@ -67,6 +67,7 @@ protected:
 	bool m_download_translate{ false };
 	bool m_save_to_song_folder{ true };		//是否保存到歌曲所在目录
 	CodeType m_save_code{};		//保存的编码格式
+	int m_search_max_item{ 30 };		//查找歌曲时返回的最大数量
 
 	CMenu m_menu;
 	CListCtrlEx m_down_list_ctrl;

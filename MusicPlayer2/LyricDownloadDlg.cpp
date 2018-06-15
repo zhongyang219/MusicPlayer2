@@ -56,6 +56,7 @@ void CLyricDownloadDlg::SaveConfig() const
 	CCommon::WritePrivateProfileIntW(L"lyric_download", L"download_translate", m_download_translate, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"lyric_download", L"save_as_utf8", static_cast<int>(m_save_code), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"lyric_download", L"save_to_song_folder", m_save_to_song_folder, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"lyric_download", L"search_max_item", m_search_max_item, theApp.m_config_path.c_str());
 }
 
 void CLyricDownloadDlg::LoadConfig()
@@ -63,6 +64,7 @@ void CLyricDownloadDlg::LoadConfig()
 	m_download_translate = (GetPrivateProfileInt(_T("lyric_download"), _T("download_translate"), 0, theApp.m_config_path.c_str()) != 0);
 	m_save_code = static_cast<CodeType>(GetPrivateProfileInt(_T("lyric_download"), _T("save_as_utf8"), 1, theApp.m_config_path.c_str()));
 	m_save_to_song_folder = (GetPrivateProfileInt(_T("lyric_download"), _T("save_to_song_folder"), 1, theApp.m_config_path.c_str()) != 0);
+	m_search_max_item = GetPrivateProfileInt(_T("lyric_download"), _T("search_max_item"), 30, theApp.m_config_path.c_str());
 }
 
 void CLyricDownloadDlg::DoDataExchange(CDataExchange* pDX)
@@ -199,7 +201,7 @@ void CLyricDownloadDlg::OnBnClickedSearchButton2()
 	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
 	wstring keyword = CLyricDownloadCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
 	wchar_t buff[1024];
-	swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=30&type=1&offset=0", keyword.c_str());
+	swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), m_search_max_item);
 	//int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
 	m_search_thread_info.url = buff;
 	m_search_thread_info.hwnd = GetSafeHwnd();
