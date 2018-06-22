@@ -140,8 +140,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 		BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
 		pInfo->player->m_playlist[i].bitrate = static_cast<int>(bitrate + 0.5f);
 		//获取音频标签
-		AudioType type = CAudioCommon::GetAudioType(current_file_name);
-		CAudioCommon::GetAudioTags(hStream, type, pInfo->player->m_path, pInfo->player->m_playlist[i]);
+		//AudioType type = CAudioCommon::GetAudioType(current_file_name);
+		//CAudioCommon::GetAudioTags(hStream, type, pInfo->player->m_path, pInfo->player->m_playlist[i]);
+		CAudioTag audio_tag(hStream, pInfo->player->m_path, pInfo->player->m_playlist[i]);
+		audio_tag.GetAudioTag(theApp.m_other_setting_data.id3v2_first);
 		BASS_StreamFree(hStream);
 		theApp.m_song_data[pInfo->player->m_path + pInfo->player->m_playlist[i].file_name] = pInfo->player->m_playlist[i];
 		count++;
@@ -344,7 +346,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		if (m_song_num > 0)
 		{
 			//if (m_index >= MAX_NUM_LENGTH && m_playlist[m_index].lengh.isZero())	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-			AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
+			//AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
 			if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
 			{
 				GetBASSSongLength();			//打开后重新获取文件长度
@@ -352,7 +354,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				float bitrate{};
 				BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_BITRATE, &bitrate);
 				m_playlist[m_index].bitrate = static_cast<int>(bitrate + 0.5f);
-				CAudioCommon::GetAudioTags(m_musicStream, type, m_path, m_playlist[m_index]);
+				//CAudioCommon::GetAudioTags(m_musicStream, type, m_path, m_playlist[m_index]);
+				CAudioTag audio_tag(m_musicStream, m_path, m_playlist[m_index]);
+				audio_tag.GetAudioTag(theApp.m_other_setting_data.id3v2_first);
 				theApp.m_song_data[m_path + m_current_file_name] = m_playlist[m_index];
 			}
 			else
@@ -1375,11 +1379,13 @@ void CPlayer::SearchAlbumCover()
 	static wstring last_file_path;
 	if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
 	{
-		AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
-		if (type != AU_FLAC)
-			m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
-		else
-			m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
+		//AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
+		//if (type != AU_FLAC)
+		//	m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
+		//else
+		//	m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
+		CAudioTag audio_tag(m_musicStream, m_path, m_playlist[m_index]);
+		m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
 		m_album_cover.Destroy();
 		m_album_cover.Load(m_album_cover_path.c_str());
 		if (theApp.m_app_setting_data.use_out_image && m_album_cover.IsNull())

@@ -192,6 +192,7 @@
   <ItemGroup>
     <ClInclude Include="AppearanceSettingDlg.h" />
     <ClInclude Include="AudioCommon.h" />
+    <ClInclude Include="AudioTag.h" />
     <ClInclude Include="bass.h" />
     <ClInclude Include="ColorConvert.h" />
     <ClInclude Include="ColorStatic.h" />
@@ -232,6 +233,7 @@
   <ItemGroup>
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
+    <ClCompile Include="AudioTag.cpp" />
     <ClCompile Include="ColorConvert.cpp" />
     <ClCompile Include="ColorStatic.cpp" />
     <ClCompile Include="Common.cpp" />

@@ -16,6 +16,8 @@ public:
 	enum { IDD = IDD_DATA_SETTINGS_DIALOG };
 #endif
 
+	OtherSettingData m_data;
+
 private:
 	size_t m_data_size;		//数据文件的大小
 
@@ -28,4 +30,5 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCleanDataFileButton();
+	afx_msg void OnBnClickedId3v2FirstCheck();
 };

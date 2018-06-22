@@ -2,7 +2,7 @@
 #include"Common.h"
 #include"Lyric.h"
 #include"SetPathDlg.h"
-#include"AudioCommon.h"
+#include"AudioTag.h"
 //#include"MusicPlayerDlg.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息

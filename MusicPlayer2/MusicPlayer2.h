@@ -48,6 +48,11 @@ struct ApperanceSettingData
 	bool use_out_image{ true };					//使用外部图片作为专辑封面
 };
 
+struct OtherSettingData
+{
+	bool id3v2_first{ false };		//优先获取ID3V2标签
+};
+
 struct NonCategorizedSettingData
 {
 	int volum_step{ 3 };			//点击主界面中的音量调节时一次调整的步长
@@ -79,6 +84,7 @@ public:
 
 	PlaySettingData m_play_setting_data;		//“选项设置”对话框中“主窗口设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“任务栏窗口设置”中的数据
+	OtherSettingData m_other_setting_data;
 	NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
 
 	volatile bool m_lyric_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出

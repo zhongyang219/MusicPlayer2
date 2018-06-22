@@ -117,6 +117,9 @@
     <Filter Include="头文件和源文件\派生的控件类\ColorStatic">
       <UniqueIdentifier>{350e1692-d65b-4c62-b988-38c2c4eebdaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\AudioTag">
+      <UniqueIdentifier>{093cf2b9-caf6-4e45-a47b-404a043db971}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -237,6 +240,9 @@
     <ClInclude Include="ColorStatic.h">
       <Filter>头文件和源文件\派生的控件类\ColorStatic</Filter>
     </ClInclude>
+    <ClInclude Include="AudioTag.h">
+      <Filter>头文件和源文件\公共的类\AudioTag</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -340,6 +346,9 @@
     </ClCompile>
     <ClCompile Include="ColorStatic.cpp">
       <Filter>头文件和源文件\派生的控件类\ColorStatic</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioTag.cpp">
+      <Filter>头文件和源文件\公共的类\AudioTag</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

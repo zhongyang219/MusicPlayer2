@@ -29,6 +29,7 @@ void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDataSettingsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CLEAN_DATA_FILE_BUTTON, &CDataSettingsDlg::OnBnClickedCleanDataFileButton)
+	ON_BN_CLICKED(IDC_ID3V2_FIRST_CHECK, &CDataSettingsDlg::OnBnClickedId3v2FirstCheck)
 END_MESSAGE_MAP()
 
 
@@ -44,6 +45,8 @@ BOOL CDataSettingsDlg::OnInitDialog()
 
 	m_data_size = CCommon::GetFileSize(theApp.m_song_data_path);
 	ShowDataSizeInfo();
+
+	((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->SetCheck(m_data.id3v2_first);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -106,4 +109,11 @@ void CDataSettingsDlg::OnBnClickedCleanDataFileButton()
 	MessageBox(info, NULL, MB_ICONINFORMATION);
 	m_data_size = data_size;
 	ShowDataSizeInfo();
+}
+
+
+void CDataSettingsDlg::OnBnClickedId3v2FirstCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.id3v2_first = (((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->GetCheck() != 0);
 }

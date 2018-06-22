@@ -294,6 +294,8 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"cortana_back_color", theApp.m_play_setting_data.cortana_color, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map, theApp.m_config_path.c_str());
+
+	CCommon::WritePrivateProfileIntW(L"config", L"id3v2_first", theApp.m_other_setting_data.id3v2_first, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -331,6 +333,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_play_setting_data.show_playstate_icon = (GetPrivateProfileIntW(_T("config"), _T("show_playstate_icon"), 1, theApp.m_config_path.c_str())!=0);
 	theApp.m_play_setting_data.cortana_color = GetPrivateProfileIntW(_T("config"), _T("cortana_back_color"), 0, theApp.m_config_path.c_str());
 	theApp.m_nc_setting_data.volume_map = GetPrivateProfileIntW(_T("config"), _T("volume_map"), 100, theApp.m_config_path.c_str());
+	
+	theApp.m_other_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("config"), _T("id3v2_first"), 0, theApp.m_config_path.c_str()) != 0);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -2087,6 +2091,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab1_dlg.m_data = theApp.m_play_setting_data;
 	optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
 	optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
+	optionDlg.m_tab3_dlg.m_data = theApp.m_other_setting_data;
 
 	int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
 	int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
@@ -2099,6 +2104,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 
 		theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
 		theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
+		theApp.m_other_setting_data = optionDlg.m_tab3_dlg.m_data;
 
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 		m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
