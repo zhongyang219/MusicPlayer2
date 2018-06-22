@@ -63,13 +63,13 @@ public:
 	static wstring TranslateToTranditionalChinese(const wstring& str);
 	//替换一个文件名中的无效字符
 	static void FileNameNormalize(wstring& file_name);
-	//替换一个文件名中的扩展名
-	static void ReplaceFileNameExtension(wstring& file_name, wchar_t* extension);
+	////替换一个文件名中的扩展名
+	//static void ReplaceFileNameExtension(wstring& file_name, wchar_t* extension);
 
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);
-	//获取文件扩展名
-	static wstring GetFileExtension(const wstring& file_name, bool upper = false);
+	////获取文件扩展名
+	//static wstring GetFileExtension(const wstring& file_name, bool upper = false);
 	//向ini文件写入一个int数据
 	static void WritePrivateProfileIntW(const wchar_t* AppName, const wchar_t* KeyName, int value, const wchar_t* Path);
 	//将string类型的字符串转换成Unicode编码的wstring字符串

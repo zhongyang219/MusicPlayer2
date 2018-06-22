@@ -130,14 +130,6 @@ void CCommon::FileNameNormalize(wstring & file_name)
 	}
 }
 
-void CCommon::ReplaceFileNameExtension(wstring& file_name, wchar_t * extension)
-{
-	size_t index = file_name.rfind(L'.');
-	if (index >= (file_name.size() - 1)) return;		//找不到圆点，或圆点在最后一个字符的位置，则直接返回
-	file_name.erase(index + 1);
-	file_name.append(extension);
-}
-
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
 	int l, m;
@@ -147,20 +139,6 @@ size_t CCommon::GetFileSize(const wstring & file_name)
 	m = static_cast<int>(file.tellg());
 	file.close();
 	return m - l;
-}
-
-wstring CCommon::GetFileExtension(const wstring & file_name, bool upper)
-{
-	wstring extension;
-	size_t index;
-	index = file_name.rfind(L'.');
-	if (index != string::npos)
-		extension = file_name.substr(index + 1);		//获取文件的扩展名
-	if (upper)
-		std::transform(extension.begin(), extension.end(), extension.begin(), toupper);		//将扩展名转换成大写
-	else
-		std::transform(extension.begin(), extension.end(), extension.begin(), tolower);		//将扩展名转换成小写
-	return extension;
 }
 
 void CCommon::WritePrivateProfileIntW(const wchar_t * AppName, const wchar_t * KeyName, int value, const wchar_t * Path)

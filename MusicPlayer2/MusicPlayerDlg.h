@@ -22,6 +22,7 @@
 //#include "EqualizerDlg.h"
 #include "SoundEffectDlg.h"
 #include "CortanaLyric.h"
+#include "FilePathHelper.h"
 
 // CMusicPlayerDlg ¶Ô»°¿ò
 class CMusicPlayerDlg : public CDialog

@@ -31,7 +31,8 @@ void CPropertyDlg::ShowInfo()
 
 	//显示文件类型
 	wstring file_type;
-	file_type = CCommon::GetFileExtension(m_all_song_info[m_index].file_name);
+	CFilePathHelper file_path{ m_all_song_info[m_index].file_name };
+	file_type = file_path.GetFileExtension();
 	if (file_type == _T("mp3"))
 		m_file_type_edit.SetWindowText(_T("MP3音频文件"));
 	else if (file_type == _T("wma"))
@@ -141,7 +142,8 @@ void CPropertyDlg::SetEditReadOnly(bool read_only)
 void CPropertyDlg::SetWreteEnable()
 {
 	//目前暂时只支持MP3的ID3V1标签写入
-	m_write_enable = (CCommon::GetFileExtension(m_all_song_info[m_index].file_name) == L"mp3" && m_all_song_info[m_index].tag_type != 2);
+	CFilePathHelper file_path{ m_all_song_info[m_index].file_name };
+	m_write_enable = (file_path.GetFileExtension() == L"mp3" && m_all_song_info[m_index].tag_type != 2);
 	SetEditReadOnly(!m_write_enable);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 	if (m_write_enable)

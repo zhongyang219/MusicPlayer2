@@ -1,7 +1,7 @@
 //此类用于定义音频信息相关的全局函数
 #pragma once
 #include "Time.h"
-#include"Common.h"
+#include "Common.h"
 
 //音频文件类型
 enum AudioType
@@ -285,21 +285,8 @@ public:
 	//检查files容器中是否有和cue文件匹配的音频文件，如果没有，则重新从路径中查找匹配的音频文件
 	static void CheckCueFiles(vector<SongInfo>& files, wstring path);
 
-	////获取音频文件的信息，并储存在song_info中（file_path在获取flac格式时用到）
-	//static void GetAudioTags(HSTREAM hStream, AudioType type, wstring file_path, SongInfo& song_info);
-
-	////获取音频文件的专辑封面，并保存到临时目录，返回保存路径，image_type用来接收封面的格式 0:jpg, 1:png, 2:gif
-	//static wstring GetAlbumCover(HSTREAM hStream, int& image_type);
-	//static wstring GetFlacAlbumCover(const wstring& file_name, int& image_type);
-
-	////向一个MP3文件写入ID3V1标签，如果写入的文本长度超过ID3V1可容纳的长度，则过长的文本将会被截断，并将text_cut_off置为true
-	//static bool WriteMp3Tag(LPCTSTR file_name, const SongInfo& song_info, bool& text_cut_off);
-
 	//获得标准流派信息
 	static wstring GetGenre(BYTE genre);
-
-	////删除字符串末尾的空格
-	//static void DeleteEndSpace(wstring& str);
 
 	//删除一个字符串中非打印字符开始的后面全部字符
 	static void TagStrNormalize(wstring& str);

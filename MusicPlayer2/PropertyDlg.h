@@ -5,6 +5,7 @@
 #include "EditEx.h"
 #include "afxwin.h"
 #include "MyComboBox.h"
+#include "FilePathHelper.h"
 
 // CPropertyDlg ¶Ô»°¿ò
 

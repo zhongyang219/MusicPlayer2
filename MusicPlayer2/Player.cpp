@@ -245,18 +245,18 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 		song.lyric_file.clear();		//检索歌词前先清除之前已经关联过的歌词
 		//if (!song.lyric_file.empty() && CCommon::FileExist(song.lyric_file))		//如果歌曲信息中有歌词文件，且歌词文件存在，则不需要再获取歌词
 		//	continue;
-		wstring lyric_path{ m_path + song.file_name };		//得到路径+文件名的字符串
-		CCommon::ReplaceFileNameExtension(lyric_path, L"lrc");		//将文件扩展替换成lrc
-		wstring lyric_path2{ theApp.m_play_setting_data.lyric_path + song.file_name };
-		CCommon::ReplaceFileNameExtension(lyric_path2, L"lrc");
+		CFilePathHelper lyric_path{ m_path + song.file_name };		//得到路径+文件名的字符串
+		lyric_path.ReplaceFileExtension(L"lrc");		//将文件扩展替换成lrc
+		CFilePathHelper lyric_path2{ theApp.m_play_setting_data.lyric_path + song.file_name };
+		lyric_path2.ReplaceFileExtension(L"lrc");
 		//查找歌词文件名和歌曲文件名完全匹配的歌词
-		if (CCommon::FileExist(lyric_path))
+		if (CCommon::FileExist(lyric_path.GetFilePath()))
 		{
-			song.lyric_file = lyric_path;
+			song.lyric_file = lyric_path.GetFilePath();
 		}
-		else if (CCommon::FileExist(lyric_path2))		//当前目录下没有对应的歌词文件时，就在theApp.m_play_setting_data.m_lyric_path目录下寻找歌词文件
+		else if (CCommon::FileExist(lyric_path2.GetFilePath()))		//当前目录下没有对应的歌词文件时，就在theApp.m_play_setting_data.m_lyric_path目录下寻找歌词文件
 		{
-			song.lyric_file = lyric_path2;
+			song.lyric_file = lyric_path2.GetFilePath();
 		}
 		else if (theApp.m_play_setting_data.lyric_fuzzy_match)
 		{

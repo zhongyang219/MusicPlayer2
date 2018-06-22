@@ -120,6 +120,9 @@
     <Filter Include="头文件和源文件\公共的类\AudioTag">
       <UniqueIdentifier>{093cf2b9-caf6-4e45-a47b-404a043db971}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\FilePathHelper">
+      <UniqueIdentifier>{6ee5891e-8e31-4ccc-8c8e-3a462892d7ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -243,6 +246,9 @@
     <ClInclude Include="AudioTag.h">
       <Filter>头文件和源文件\公共的类\AudioTag</Filter>
     </ClInclude>
+    <ClInclude Include="FilePathHelper.h">
+      <Filter>头文件和源文件\公共的类\FilePathHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -349,6 +355,9 @@
     </ClCompile>
     <ClCompile Include="AudioTag.cpp">
       <Filter>头文件和源文件\公共的类\AudioTag</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePathHelper.cpp">
+      <Filter>头文件和源文件\公共的类\FilePathHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

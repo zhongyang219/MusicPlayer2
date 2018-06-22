@@ -3,6 +3,7 @@
 #include"Lyric.h"
 #include"SetPathDlg.h"
 #include"AudioTag.h"
+#include "FilePathHelper.h"
 //#include"MusicPlayerDlg.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
