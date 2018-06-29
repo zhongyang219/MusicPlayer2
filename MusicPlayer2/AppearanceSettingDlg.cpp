@@ -111,6 +111,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_ALBUM_COVER_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck)
 	ON_BN_CLICKED(IDC_SHOW_SPECTRUM_CHECK, &CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck)
 	ON_BN_CLICKED(IDC_USE_OUT_IMAGE_CHECK, &CAppearanceSettingDlg::OnBnClickedUseOutImageCheck)
+	ON_EN_CHANGE(IDC_DEFAULT_COVER_NAME_EDIT, &CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit)
 END_MESSAGE_MAP()
 
 
@@ -186,8 +187,11 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
 	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
 	CString info;
-	info.Format(_T("如果无法从音频文件获取专辑封面，则尝试查找音频文件所在目录下含有唱片集名的图片文件，或者名为 %s 的图片文件作为专辑封面。"), theApp.m_default_album_name.c_str());
+	info.Format(_T("如果无法从音频文件获取专辑封面，则尝试查找音频文件所在目录下含有唱片集名的图片文件，或者名为 %s 的图片文件作为专辑封面。"), theApp.m_app_setting_data.default_album_name.c_str());
 	m_toolTip.AddTool(&m_use_out_image_chk, info);
+
+	SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, theApp.m_app_setting_data.default_album_name.c_str());
+	GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT)->EnableWindow(m_data.use_out_image);
 
 	m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);
 	m_show_spectrum_chk.SetCheck(m_data.show_spectrum);
@@ -484,4 +488,19 @@ void CAppearanceSettingDlg::OnBnClickedUseOutImageCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.use_out_image = (m_use_out_image_chk.GetCheck() != 0);
+	GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT)->EnableWindow(m_data.use_out_image);
+}
+
+
+void CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
+	CString temp;
+	GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
+	m_data.default_album_name = temp;
 }

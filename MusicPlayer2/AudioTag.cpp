@@ -595,6 +595,8 @@ wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index
 {
 	//获取图片起始位置
 	size_t type_index = tag_content.find("image", cover_index);
+	if (type_index == wstring::npos)
+		type_index = cover_index;
 	//string image_type_str = tag_content.substr(type_index, 10);
 	//string image_type_str2 = tag_content.substr(type_index, 9);
 

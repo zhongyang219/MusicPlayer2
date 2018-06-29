@@ -102,4 +102,5 @@ public:
 	afx_msg void OnBnClickedAlbumCoverBackgroundCheck();
 	afx_msg void OnBnClickedShowSpectrumCheck();
 	afx_msg void OnBnClickedUseOutImageCheck();
+	afx_msg void OnEnChangeDefaultCoverNameEdit();
 };
