@@ -295,6 +295,20 @@ bool CCommon::IsUTF8Bytes(const char * data)
 	else return true;
 }
 
+CodeType CCommon::JudgeCodeType(const string & str, CodeType default_code)
+{
+	//如果前面有UTF8的BOM，则编码类型为UTF8
+	if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
+		return CodeType::UTF8;
+	//如果前面有UTF16的BOM，则编码类型为UTF16
+	else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
+		return CodeType::UTF16;
+	//else if (IsUTF8Bytes(str.c_str()))		//如果没有找到UTF8和UTF16的BOM，则判断字符串是否有UTF8编码的特性
+	//	return CodeType::UTF8_NO_BOM;
+	else
+		return default_code;
+}
+
 wstring CCommon::GetExePath()
 {
 	wchar_t path[MAX_PATH];

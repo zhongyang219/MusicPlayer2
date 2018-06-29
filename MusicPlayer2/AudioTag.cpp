@@ -206,10 +206,19 @@ bool CAudioTag::GetID3V2Tag()
 				const int tag_size = size[0] * 0x1000000 + size[1] * 0x10000 + size[2] * 0x100 + size[3];	//获取当前标签的大小
 				if (tag_size <= 0) continue;
 				if (tag_index + 11 >= tag_content.size()) continue;
-				if (i == 4)
-					tag_info = CCommon::StrToUnicode(tag_content.substr(tag_index + 18, tag_size), CodeType::AUTO);
+				//判断标签的编码格式
+				CodeType default_code, code_type;
+				if (tag_content[tag_index + 10] == 1)
+					default_code = CodeType::UTF16;
 				else
-					tag_info = CCommon::StrToUnicode(tag_content.substr(tag_index + 11, tag_size - 1), CodeType::AUTO);
+					default_code = CodeType::ANSI;
+				string tag_info_str;
+				if (i == 4)
+					tag_info_str = tag_content.substr(tag_index + 18, tag_size);
+				else
+					tag_info_str = tag_content.substr(tag_index + 11, tag_size - 1);
+				code_type = CCommon::JudgeCodeType(tag_info_str, default_code);
+				tag_info = CCommon::StrToUnicode(tag_info_str, code_type);
 				switch (i)
 				{
 				case 0: m_song_info.title = tag_info; break;
