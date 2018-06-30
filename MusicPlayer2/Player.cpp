@@ -1392,11 +1392,20 @@ void CPlayer::SearchAlbumCover()
 		{
 			//获取不到专辑封面时尝试使用外部图片作为封面
 			vector<wstring> files;
-			wstring album_name{ GetCurrentSongInfo().album };
-			CCommon::FileNameNormalize(album_name);
-			wstring file_name = m_path + L'*' + album_name + L"*.*";	//查找文件名中包含唱片集名的文件
+			wstring file_name;
+			//查找文件和歌曲名一致的图片文件
+			CFilePathHelper c_file_name(m_current_file_name);
+			file_name = m_path + c_file_name.GetFileNameWithoutExtension() + L".*";
 			CCommon::GetImageFiles(file_name, files);
-			if (files.empty())
+			if (files.empty() && !GetCurrentSongInfo().album.empty())
+			{
+				//没有找到和歌曲名一致的图片文件，则查找文件名中包含唱片集名的文件
+				wstring album_name{ GetCurrentSongInfo().album };
+				CCommon::FileNameNormalize(album_name);
+				file_name = m_path + L'*' + album_name + L"*.*";
+				CCommon::GetImageFiles(file_name, files);
+			}
+			if (files.empty() && !theApp.m_app_setting_data.default_album_name.empty())
 			{
 				//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
 				file_name = m_path + theApp.m_app_setting_data.default_album_name + L".*";
