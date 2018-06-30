@@ -2724,11 +2724,16 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 
 afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 {
+	CString title;
+	title = CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str();
+	if (!title.IsEmpty())
+		title += _T(" - ");
 	#ifdef _DEBUG
-		SetWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format) + L" - MusicPlayer2(DEBUG模式)").c_str());		//用当前正在播放的歌曲名作为窗口标题
+		title += _T("MusicPlayer2 (DEBUG模式)");
 	#else
-		SetWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format) + L" - MusicPlayer2").c_str());		//用当前正在播放的歌曲名作为窗口标题
+		title += _T("MusicPlayer2");
 	#endif
+	SetWindowText(title);		//用当前正在播放的歌曲名作为窗口标题
 
 	return 0;
 }
