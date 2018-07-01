@@ -56,9 +56,14 @@ const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extensi
 {
 	size_t index;
 	index = m_file_path.rfind('.');
-	if (index == wstring::npos || index == m_file_path.size() - 1)
-		return m_file_path;
-	m_file_path.erase(index + 1);
-	m_file_path.append(new_extension);
+	if (index == wstring::npos)		//如果没有找到“.”，则在末尾添加
+	{
+		m_file_path.push_back(L'.');
+	}
+	if (index != m_file_path.size() - 1)	//如果“.”不在最后的位置，则删除“.”后面的字符串
+	{
+		m_file_path.erase(index + 1);
+	}
+	m_file_path.append(new_extension);		//在末尾添加扩展名
 	return m_file_path;
 }

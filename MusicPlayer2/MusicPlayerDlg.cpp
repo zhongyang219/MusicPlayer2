@@ -294,6 +294,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"cortana_back_color", theApp.m_play_setting_data.cortana_color, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip, theApp.m_config_path.c_str());
 
 	CCommon::WritePrivateProfileIntW(L"config", L"id3v2_first", theApp.m_other_setting_data.id3v2_first, theApp.m_config_path.c_str());
 }
@@ -333,6 +334,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_play_setting_data.show_playstate_icon = (GetPrivateProfileIntW(_T("config"), _T("show_playstate_icon"), 1, theApp.m_config_path.c_str())!=0);
 	theApp.m_play_setting_data.cortana_color = GetPrivateProfileIntW(_T("config"), _T("cortana_back_color"), 0, theApp.m_config_path.c_str());
 	theApp.m_nc_setting_data.volume_map = GetPrivateProfileIntW(_T("config"), _T("volume_map"), 100, theApp.m_config_path.c_str());
+	theApp.m_nc_setting_data.show_cover_tip = (GetPrivateProfileIntW(_T("config"), _T("show_cover_tip"), 1, theApp.m_config_path.c_str()) != 0);
 	
 	theApp.m_other_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("config"), _T("id3v2_first"), 0, theApp.m_config_path.c_str()) != 0);
 }
@@ -469,9 +471,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	if (theApp.m_app_setting_data.show_album_cover)
 	{
 		//绘制专辑封面
-		CRect cover_rect{ spectral_rect };
-		cover_rect.DeflateRect(m_margin / 2, m_margin / 2);
-		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+		m_cover_rect = spectral_rect;
+		m_cover_rect.DeflateRect(m_margin / 2, m_margin / 2);
+		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_cover_rect.TopLeft(), m_cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
 	}
 	if (theApp.m_app_setting_data.show_spectrum)
 	{
@@ -2659,6 +2661,48 @@ void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_repetemode_hover = (m_repetemode_rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_repetemode_hover置为true
 	m_volume_hover = (m_volume_rect.PtInRect(point) != FALSE);
+
+	//显示专辑封面的提示
+	if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
+	{
+		CRect cover_rect{ m_cover_rect };
+		cover_rect.MoveToXY(m_draw_rect.left + m_cover_rect.left, m_draw_rect.top + m_cover_rect.top);
+		bool show_cover_tip{ cover_rect.PtInRect(point) != FALSE };
+		static bool last_show_cover_tip{ false };
+		if (!last_show_cover_tip && show_cover_tip)
+		{
+			CString info;
+			if (theApp.m_player.AlbumCoverExist())
+			{
+				info = _T("专辑封面: ");
+				CFilePathHelper cover_path(theApp.m_player.GetAlbumCoverPath());
+				if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
+				{
+					info += _T("内嵌图片\r\n图片格式: ");
+					switch (theApp.m_player.GetAlbumCoverType())
+					{
+					case 0: info += _T("jpg"); break;
+					case 1: info += _T("png"); break;
+					case 2: info += _T("gif"); break;
+					}
+				}
+				else
+				{
+					info += _T("外部图片\r\n");
+					info += theApp.m_player.GetAlbumCoverPath().c_str();
+				}
+			}
+			m_Mytip.AddTool(this, info);
+			m_Mytip.SetMaxTipWidth(DPI(400));
+			m_Mytip.Pop();
+		}
+		if (last_show_cover_tip && !show_cover_tip)
+		{
+			m_Mytip.AddTool(this, _T(""));
+			m_Mytip.Pop();
+		}
+		last_show_cover_tip = show_cover_tip;
+	}
 
 	CDialog::OnMouseMove(nFlags, point);
 }

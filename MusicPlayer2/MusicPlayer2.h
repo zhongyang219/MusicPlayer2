@@ -59,6 +59,7 @@ struct NonCategorizedSettingData
 	int volum_step{ 3 };			//点击主界面中的音量调节时一次调整的步长
 	int mouse_volum_step{ 2 };		//通过鼠标滚轮调节音量时的步长
 	int volume_map{ 100 };			//音量映射（例如：如果将此值从100改为60，则当音量设置为最大（100%）时的音量大小为原来的60%）
+	bool show_cover_tip{ true };	//是否显示专辑封面上的鼠标提示
 };
 
 // CMusicPlayerApp: 

@@ -125,6 +125,7 @@ protected:
 
 	CRect m_draw_rect;		//绘图区域
 	CRect m_repetemode_rect;	//显示“循环模式”的矩形区域
+	CRect m_cover_rect;			//显示专辑封面的矩形区域（以绘图区域左上角为原点）
 	bool m_repetemode_hover{ false };	//鼠标指向了“循环模式”的矩形区域
 	CRect m_volume_rect;		//显示音量的矩形区域
 	bool m_volume_hover{ false };	//鼠标指向了音量的矩形区域
