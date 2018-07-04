@@ -336,7 +336,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_nc_setting_data.volume_map = GetPrivateProfileIntW(_T("config"), _T("volume_map"), 100, theApp.m_config_path.c_str());
 	theApp.m_nc_setting_data.show_cover_tip = (GetPrivateProfileIntW(_T("config"), _T("show_cover_tip"), 1, theApp.m_config_path.c_str()) != 0);
 	
-	theApp.m_other_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("config"), _T("id3v2_first"), 0, theApp.m_config_path.c_str()) != 0);
+	theApp.m_other_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("config"), _T("id3v2_first"), 1, theApp.m_config_path.c_str()) != 0);
 }
 
 void CMusicPlayerDlg::SetTransparency()
