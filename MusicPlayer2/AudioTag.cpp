@@ -210,10 +210,10 @@ bool CAudioTag::GetID3V2Tag()
 				CodeType default_code, code_type;
 				switch (tag_content[tag_index + 10])
 				{
-				case 1:
+				case 1: case 2:
 					default_code = CodeType::UTF16;
 					break;
-				case 2:
+				case 3:
 					default_code = CodeType::UTF8;
 					break;
 				default:
