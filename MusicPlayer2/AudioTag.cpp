@@ -222,9 +222,16 @@ bool CAudioTag::GetID3V2Tag()
 				}
 				string tag_info_str;
 				if (i == 4)
-					tag_info_str = tag_content.substr(tag_index + 18, tag_size);
+				{
+					if(default_code == CodeType::UTF16)
+						tag_info_str = tag_content.substr(tag_index + 18, tag_size - 8);
+					else
+						tag_info_str = tag_content.substr(tag_index + 15, tag_size - 5);
+				}
 				else
+				{
 					tag_info_str = tag_content.substr(tag_index + 11, tag_size - 1);
+				}
 				code_type = CCommon::JudgeCodeType(tag_info_str, default_code);
 				tag_info = CCommon::StrToUnicode(tag_info_str, code_type);
 				if (!tag_info.empty())
@@ -236,7 +243,7 @@ bool CAudioTag::GetID3V2Tag()
 					case 2: m_song_info.album = tag_info; break;
 					case 3: m_song_info.year = tag_info; break;
 					case 4: m_song_info.comment = tag_info; break;
-					case 5: m_song_info.genre = tag_info; break;
+					case 5: m_song_info.genre = CAudioCommon::GetID3V2Genre(tag_info); break;
 					case 6: m_song_info.track = _wtoi(tag_info.c_str()); break;
 					}
 				}

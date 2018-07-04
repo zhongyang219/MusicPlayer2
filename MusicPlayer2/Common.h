@@ -58,6 +58,8 @@ public:
 	static size_t StringNatchWholeWord(const T& str, const T& find_str);
 	//判断一个字符是否是在全词匹配时的单词分割字符（除了字母、数字和256以上的Unicode字符外的字符）
 	static bool IsDivideChar(wchar_t ch);
+	//判断一个字符串是否是数字
+	static bool StrIsNumber(const wstring& str);
 
 	static wstring TranslateToSimplifiedChinese(const wstring& str);
 	static wstring TranslateToTranditionalChinese(const wstring& str);

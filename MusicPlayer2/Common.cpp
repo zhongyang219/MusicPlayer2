@@ -87,6 +87,16 @@ bool CCommon::IsDivideChar(wchar_t ch)
 		return true;
 }
 
+bool CCommon::StrIsNumber(const wstring & str)
+{
+	for (const auto& ch : str)
+	{
+		if (ch<L'0' || ch > L'9')
+			return false;
+	}
+	return true;
+}
+
 wstring CCommon::TranslateToSimplifiedChinese(const wstring & str)
 {
 	wstring result;

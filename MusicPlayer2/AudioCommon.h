@@ -288,6 +288,9 @@ public:
 	//获得标准流派信息
 	static wstring GetGenre(BYTE genre);
 
+	//将ID3V2标签中数字表示的流派信息转换成标准流派信息
+	static wstring GetID3V2Genre(wstring genre);
+
 	//删除一个字符串中非打印字符开始的后面全部字符
 	static void TagStrNormalize(wstring& str);
 
