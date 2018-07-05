@@ -287,7 +287,7 @@ wstring CAudioCommon::GetGenre(BYTE genre)
 		return L"<未知流派>";
 }
 
-wstring CAudioCommon::GetID3V2Genre(wstring genre)
+wstring CAudioCommon::GenreConvert(wstring genre)
 {
 	if(genre.empty())
 		return wstring();
@@ -296,9 +296,12 @@ wstring CAudioCommon::GetID3V2Genre(wstring genre)
 	if (genre.back() == L')')
 		genre.pop_back();
 	if (CCommon::StrIsNumber(genre))		//如果流派信息是数字，则转换为标准流派信息
-		return GetGenre(static_cast<BYTE>(_wtoi(genre.c_str())));
-	else
-		return genre;
+	{
+		int n_genre = _wtoi(genre.c_str());
+		if(n_genre<256)
+			return GetGenre(static_cast<BYTE>(n_genre));
+	}
+	return genre;
 }
 
 

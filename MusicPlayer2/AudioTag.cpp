@@ -243,7 +243,7 @@ bool CAudioTag::GetID3V2Tag()
 					case 2: m_song_info.album = tag_info; break;
 					case 3: m_song_info.year = tag_info; break;
 					case 4: m_song_info.comment = tag_info; break;
-					case 5: m_song_info.genre = CAudioCommon::GetID3V2Genre(tag_info); break;
+					case 5: m_song_info.genre = CAudioCommon::GenreConvert(tag_info); break;
 					case 6: m_song_info.track = _wtoi(tag_info.c_str()); break;
 					}
 				}
@@ -347,7 +347,7 @@ bool CAudioTag::GetWmaTag()
 		if (!wma_tag_track.empty())
 			m_song_info.track = atoi(wma_tag_track.c_str());
 		if (!wma_tag_genre.empty())
-			m_song_info.genre = CCommon::StrToUnicode(wma_tag_genre, CodeType::UTF8);
+			m_song_info.genre = CAudioCommon::GenreConvert(CCommon::StrToUnicode(wma_tag_genre, CodeType::UTF8));
 		if (!wma_tag_comment.empty())
 			m_song_info.comment = CCommon::StrToUnicode(wma_tag_comment, CodeType::UTF8);
 		return true;
@@ -583,7 +583,7 @@ bool CAudioTag::GetFlacTag()
 	if (!flac_tag_year.empty())
 		m_song_info.year = CCommon::StrToUnicode(flac_tag_year, CodeType::UTF8);
 	if (!flac_tag_genre.empty())
-		m_song_info.genre = CCommon::StrToUnicode(flac_tag_genre, CodeType::UTF8);
+		m_song_info.genre = CAudioCommon::GenreConvert(CCommon::StrToUnicode(flac_tag_genre, CodeType::UTF8));
 	return true;
 }
 

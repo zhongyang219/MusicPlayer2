@@ -966,6 +966,8 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
 void CMusicPlayerDlg::EnablePlaylist(bool enable)
 {
 	m_playlist_list.EnableWindow(enable);
+	m_search_edit.EnableWindow(enable);
+	m_clear_search_button.EnableWindow(enable);
 }
 
 
