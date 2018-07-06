@@ -23,6 +23,7 @@
 #include "SoundEffectDlg.h"
 #include "CortanaLyric.h"
 #include "FilePathHelper.h"
+#include "CoverDownloadCommon.h"
 
 // CMusicPlayerDlg 对话框
 class CMusicPlayerDlg : public CDialog
@@ -178,6 +179,8 @@ protected:
 
 	void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式
 
+	void _OnDownloadAlbumCover(bool message);	//下载专辑封面，如果message为true，则会在失败时弹出提示
+
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -280,4 +283,7 @@ protected:
 public:
 	afx_msg void OnEnChangeSearchEdit();
 	afx_msg void OnBnClickedClearSearchButton();
+	afx_msg void OnDownloadAlbumCover();
+protected:
+	afx_msg LRESULT OnMusicStreamOpened(WPARAM wParam, LPARAM lParam);
 };

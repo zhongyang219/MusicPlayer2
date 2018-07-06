@@ -102,9 +102,6 @@
     <Filter Include="头文件和源文件\派生的控件类\ListCtrlEx">
       <UniqueIdentifier>{82f3d014-6620-46d0-acf8-98fc0f5b868a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件和源文件\对话框类\Lyric Download Dialog">
-      <UniqueIdentifier>{fc10c4e8-a014-47e8-a3f4-8e2319df4f55}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件和源文件\对话框类\Sound Effect Dialog">
       <UniqueIdentifier>{e5a2c7ae-76de-47b5-9625-8a36cf5a9b49}</UniqueIdentifier>
     </Filter>
@@ -122,6 +119,15 @@
     </Filter>
     <Filter Include="头文件和源文件\公共的类\FilePathHelper">
       <UniqueIdentifier>{6ee5891e-8e31-4ccc-8c8e-3a462892d7ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\公共的类\InternetCommon">
+      <UniqueIdentifier>{d2d845e7-6891-46c2-b483-b744f3faee29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\公共的类\CoverDownloadCommon">
+      <UniqueIdentifier>{e61ac844-0f12-4e27-9649-8e123d91e720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\对话框类\歌词下载对话框">
+      <UniqueIdentifier>{fc10c4e8-a014-47e8-a3f4-8e2319df4f55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +154,7 @@
       <Filter>头文件和源文件\对话框类\HelpDlg</Filter>
     </ClInclude>
     <ClInclude Include="LyricDownloadDlg.h">
-      <Filter>头文件和源文件\对话框类\Lyric Download Dialog</Filter>
+      <Filter>头文件和源文件\对话框类\歌词下载对话框</Filter>
     </ClInclude>
     <ClInclude Include="LyricEditDlg.h">
       <Filter>头文件和源文件\对话框类\LyricEditDlg</Filter>
@@ -226,7 +232,7 @@
       <Filter>头文件和源文件\派生的控件类\ListCtrlEx</Filter>
     </ClInclude>
     <ClInclude Include="LyricBatchDownloadDlg.h">
-      <Filter>头文件和源文件\对话框类\Lyric Download Dialog</Filter>
+      <Filter>头文件和源文件\对话框类\歌词下载对话框</Filter>
     </ClInclude>
     <ClInclude Include="EqualizerDlg.h">
       <Filter>头文件和源文件\对话框类\Sound Effect Dialog</Filter>
@@ -249,6 +255,12 @@
     <ClInclude Include="FilePathHelper.h">
       <Filter>头文件和源文件\公共的类\FilePathHelper</Filter>
     </ClInclude>
+    <ClInclude Include="InternetCommon.h">
+      <Filter>头文件和源文件\公共的类\InternetCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="CoverDownloadCommon.h">
+      <Filter>头文件和源文件\公共的类\CoverDownloadCommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -258,7 +270,7 @@
       <Filter>头文件和源文件\对话框类\HelpDlg</Filter>
     </ClCompile>
     <ClCompile Include="LyricDownloadDlg.cpp">
-      <Filter>头文件和源文件\对话框类\Lyric Download Dialog</Filter>
+      <Filter>头文件和源文件\对话框类\歌词下载对话框</Filter>
     </ClCompile>
     <ClCompile Include="LyricEditDlg.cpp">
       <Filter>头文件和源文件\对话框类\LyricEditDlg</Filter>
@@ -336,7 +348,7 @@
       <Filter>头文件和源文件\派生的控件类\ListCtrlEx</Filter>
     </ClCompile>
     <ClCompile Include="LyricBatchDownloadDlg.cpp">
-      <Filter>头文件和源文件\对话框类\Lyric Download Dialog</Filter>
+      <Filter>头文件和源文件\对话框类\歌词下载对话框</Filter>
     </ClCompile>
     <ClCompile Include="EqualizerDlg.cpp">
       <Filter>头文件和源文件\对话框类\Sound Effect Dialog</Filter>
@@ -358,6 +370,12 @@
     </ClCompile>
     <ClCompile Include="FilePathHelper.cpp">
       <Filter>头文件和源文件\公共的类\FilePathHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="InternetCommon.cpp">
+      <Filter>头文件和源文件\公共的类\InternetCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="CoverDownloadCommon.cpp">
+      <Filter>头文件和源文件\公共的类\CoverDownloadCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

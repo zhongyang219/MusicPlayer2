@@ -194,6 +194,7 @@
     <ClInclude Include="AudioCommon.h" />
     <ClInclude Include="AudioTag.h" />
     <ClInclude Include="bass.h" />
+    <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="FilePathHelper.h" />
     <ClInclude Include="ColorConvert.h" />
     <ClInclude Include="ColorStatic.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="FindDlg.h" />
     <ClInclude Include="FolderBrowserDlg.h" />
     <ClInclude Include="HelpDlg.h" />
+    <ClInclude Include="InternetCommon.h" />
     <ClInclude Include="ListCtrlEx.h" />
     <ClInclude Include="LyricDownloadCommon.h" />
     <ClInclude Include="LyricBatchDownloadDlg.h" />
@@ -235,6 +237,7 @@
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
     <ClCompile Include="AudioTag.cpp" />
+    <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="FilePathHelper.cpp" />
     <ClCompile Include="ColorConvert.cpp" />
     <ClCompile Include="ColorStatic.cpp" />
@@ -247,6 +250,7 @@
     <ClCompile Include="FindDlg.cpp" />
     <ClCompile Include="FolderBrowserDlg.cpp" />
     <ClCompile Include="HelpDlg.cpp" />
+    <ClCompile Include="InternetCommon.cpp" />
     <ClCompile Include="ListCtrlEx.cpp" />
     <ClCompile Include="LyricDownloadCommon.cpp" />
     <ClCompile Include="LyricBatchDownloadDlg.cpp" />

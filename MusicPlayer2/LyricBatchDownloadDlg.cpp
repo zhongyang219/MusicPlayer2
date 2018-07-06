@@ -268,10 +268,10 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		}
 
 		//搜索歌曲
-		wstring keyword_url = CLyricDownloadCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
+		wstring keyword_url = CInternetCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
 		wchar_t buff[1024];
 		swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
-		int rtn = CLyricDownloadCommon::HttpPost(buff, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+		int rtn = CInternetCommon::HttpPost(buff, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
 		if (theApp.m_batch_download_dialog_exit)		//由于CLyricDownloadCommon::HttpPost函数执行的时间比较长，所有在这里执行判断是否退出线程的处理
 			return 0;
 		if (rtn != 0)
@@ -281,8 +281,8 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		}
 
 		//处理返回结果
-		vector<CLyricDownloadCommon::ItemInfo> down_list;
-		CLyricDownloadCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
+		vector<CInternetCommon::ItemInfo> down_list;
+		CInternetCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
 		if (down_list.empty())
 		{
 			pInfo->list_ctrl->SetItemText(i, 4, _T("找不到此歌曲"));
@@ -296,7 +296,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		if (title == DEFAULT_TITLE) title.clear();
 		if (artist == DEFAULT_ARTIST) artist.clear();
 		if (album == DEFAULT_ALBUM) album.clear();
-		int best_matched = CLyricDownloadCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).file_name, true);
+		int best_matched = CInternetCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).file_name, true);
 		if (best_matched < 0)
 		{
 			pInfo->list_ctrl->SetItemText(i, 4, _T("没有匹配的歌词"));

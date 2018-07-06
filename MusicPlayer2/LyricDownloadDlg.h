@@ -61,7 +61,7 @@ protected:
 	wstring m_file_path;			//当前要保存的歌词文件的完整路径
 	wstring m_search_result;	//查找结果字符串
 	wstring m_lyric_str;	//下载的歌词
-	vector<CLyricDownloadCommon::ItemInfo> m_down_list;	//搜索结果的列表
+	vector<CInternetCommon::ItemInfo> m_down_list;	//搜索结果的列表
 
 	int m_item_selected{ -1 };		//搜索结果列表中选中的项目
 	bool m_download_translate{ false };

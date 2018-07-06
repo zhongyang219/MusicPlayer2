@@ -257,6 +257,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_MESSAGE(WM_CONNOT_PLAY_WARNING, &CMusicPlayerDlg::OnConnotPlayWarning)
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMusicPlayerDlg::OnEnChangeSearchEdit)
 	ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CMusicPlayerDlg::OnBnClickedClearSearchButton)
+	ON_COMMAND(ID_DOWNLOAD_ALBUM_COVER, &CMusicPlayerDlg::OnDownloadAlbumCover)
+	ON_MESSAGE(WM_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnMusicStreamOpened)
 END_MESSAGE_MAP()
 
 
@@ -296,7 +298,8 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip, theApp.m_config_path.c_str());
 
-	CCommon::WritePrivateProfileIntW(L"config", L"id3v2_first", theApp.m_other_setting_data.id3v2_first, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"general", L"auto_download_album_cover", theApp.m_general_setting_data.auto_download_album_cover, theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -336,7 +339,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_nc_setting_data.volume_map = GetPrivateProfileIntW(_T("config"), _T("volume_map"), 100, theApp.m_config_path.c_str());
 	theApp.m_nc_setting_data.show_cover_tip = (GetPrivateProfileIntW(_T("config"), _T("show_cover_tip"), 1, theApp.m_config_path.c_str()) != 0);
 	
-	theApp.m_other_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("config"), _T("id3v2_first"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_general_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("general"), _T("id3v2_first"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_general_setting_data.auto_download_album_cover = (GetPrivateProfileIntW(_T("general"), _T("auto_download_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -2098,7 +2102,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab1_dlg.m_data = theApp.m_play_setting_data;
 	optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
 	optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
-	optionDlg.m_tab3_dlg.m_data = theApp.m_other_setting_data;
+	optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
 
 	int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
 	int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
@@ -2111,7 +2115,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 
 		theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
 		theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
-		theApp.m_other_setting_data = optionDlg.m_tab3_dlg.m_data;
+		theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
 
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 		m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
@@ -2808,65 +2812,16 @@ void CMusicPlayerDlg::OnExploreOnline()
 
 UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 {
-	//此命令用于跳转到歌曲对应的网易云音乐的在线页面，要做到这点，必须根据歌曲信息通过网易云音乐的API搜索歌曲，
-	//在搜索的结果中选择最佳匹配项，再获取歌曲的id，根据id生成网址，最后打开该网址。
+	//此命令用于跳转到歌曲对应的网易云音乐的在线页面
 	int item_selected{ *(static_cast<int*>(lpParam)) };
 	if (item_selected >= 0 && item_selected < theApp.m_player.GetSongNum())
 	{
-		//设置搜索关键字
-		wstring search_result;		//查找歌曲返回的结果
-		wstring keyword;		//查找的关键字
-		if (theApp.m_player.GetPlayList()[item_selected].title == DEFAULT_TITLE)		//如果没有标题信息，就把文件名设为搜索关键字
-		{
-			keyword = theApp.m_player.GetPlayList()[item_selected].file_name;
-			size_t index = keyword.rfind(L'.');		//查找最后一个点
-			keyword = keyword.substr(0, index);		//去掉扩展名
-		}
-		else if (theApp.m_player.GetPlayList()[item_selected].artist == DEFAULT_ARTIST)	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
-		{
-			keyword = theApp.m_player.GetPlayList()[item_selected].title;
-		}
-		else		//否则将“艺术家 标题”设为搜索关键字
-		{
-			keyword = theApp.m_player.GetPlayList()[item_selected].artist + L' ' + theApp.m_player.GetPlayList()[item_selected].title;
-		}
-
-		//搜索歌曲
-		wstring keyword_url = CLyricDownloadCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
-		wchar_t buff[1024];
-		swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
-		int rtn = CLyricDownloadCommon::HttpPost(buff, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
-		if (rtn != 0)
-		{
-			AfxMessageBox(_T("网络连接失败或超时"), NULL, MB_ICONWARNING);
-			return 0;
-		}
-
-		//处理返回结果
-		vector<CLyricDownloadCommon::ItemInfo> down_list;
-		CLyricDownloadCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
-		if (down_list.empty())
-		{
-			AfxMessageBox(_T("找不到此歌曲"), NULL, MB_ICONWARNING);
-			return 0;
-		}
-
-		//计算最佳选择项
-		wstring title = theApp.m_player.GetPlayList()[item_selected].title;
-		wstring artist = theApp.m_player.GetPlayList()[item_selected].artist;
-		wstring album = theApp.m_player.GetPlayList()[item_selected].album;
-		if (title == DEFAULT_TITLE) title.clear();
-		if (artist == DEFAULT_ARTIST) artist.clear();
-		if (album == DEFAULT_ALBUM) album.clear();
-		int best_matched = CLyricDownloadCommon::SelectMatchedItem(down_list, title, artist, album, theApp.m_player.GetPlayList()[item_selected].file_name, true);
-		if (best_matched < 0)
-		{
-			AfxMessageBox(_T("找不到此歌曲"), NULL, MB_ICONWARNING);
-			return 0;
-		}
+		//查找歌曲并获取最佳匹配项的歌曲ID
+		wstring song_id = CInternetCommon::SearchSongAndGetMatched(theApp.m_player.GetPlayList()[item_selected].title, theApp.m_player.GetPlayList()[item_selected].artist,
+			theApp.m_player.GetPlayList()[item_selected].album, theApp.m_player.GetPlayList()[item_selected].file_name).id;
 
 		//获取网易云音乐中该歌曲的在线接听网址
-		wstring song_url{ L"http://music.163.com/#/song?id=" + down_list[best_matched].id };
+		wstring song_url{ L"http://music.163.com/#/song?id=" + song_id };
 
 		//打开超链接
 		ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
@@ -2978,4 +2933,53 @@ void CMusicPlayerDlg::OnBnClickedClearSearchButton()
 		m_playlist_list.ShowPlaylist(m_display_format, m_searched);
 		m_playlist_list.EnsureVisible(theApp.m_player.GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
 	}
+}
+
+void CMusicPlayerDlg::_OnDownloadAlbumCover(bool message)
+{
+	//查找歌曲并获取最佳匹配项的歌曲ID
+	CInternetCommon::ItemInfo match_item = CInternetCommon::SearchSongAndGetMatched(theApp.m_player.GetCurrentSongInfo().title, theApp.m_player.GetCurrentSongInfo().artist,
+		theApp.m_player.GetCurrentSongInfo().album, theApp.m_player.GetCurrentSongInfo().file_name, message);
+	wstring song_id = match_item.id;
+	if (song_id.empty())
+		return;
+	wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song_id);
+	if (cover_url.empty())
+	{
+		if(message)
+			MessageBox(_T("专辑封面下载失败，请检查你的网络连接！"), NULL, MB_ICONWARNING | MB_OK);
+		return;
+	}
+
+	//获取要保存的专辑封面的文件路径
+	CFilePathHelper cover_file_path;
+	if (match_item.album == theApp.m_player.GetCurrentSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的唱片集名称相同，则以唱片集名为文件名保存
+		cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + match_item.album);
+	else				//否则以歌曲文件名为文件名保存
+		cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
+	CFilePathHelper url_path(cover_url);
+	cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
+
+	//下面专辑封面
+	URLDownloadToFile(0, cover_url.c_str(), cover_file_path.GetFilePath().c_str(), 0, NULL);
+
+	theApp.m_player.SearchOutAlbumCover();
+}
+
+
+void CMusicPlayerDlg::OnDownloadAlbumCover()
+{
+	// TODO: 在此添加命令处理程序代码
+	_OnDownloadAlbumCover(true);
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lParam)
+{
+	//自动下载专辑封面
+	if (theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist())
+	{
+		_OnDownloadAlbumCover(false);
+	}
+	return 0;
 }

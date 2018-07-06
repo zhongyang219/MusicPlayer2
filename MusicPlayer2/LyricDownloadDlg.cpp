@@ -199,7 +199,7 @@ void CLyricDownloadDlg::OnBnClickedSearchButton2()
 	// TODO: 在此添加控件通知处理程序代码
 	SetDlgItemText(IDC_STATIC_INFO, _T("正在搜索……"));
 	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
-	wstring keyword = CLyricDownloadCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
+	wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
 	wchar_t buff[1024];
 	swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), m_search_max_item);
 	//int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
@@ -313,7 +313,7 @@ UINT CLyricDownloadDlg::LyricSearchThreadFunc(LPVOID lpParam)
 {
 	SearchThreadInfo* pInfo = (SearchThreadInfo*)lpParam;
 	wstring result;
-	pInfo->rtn = CLyricDownloadCommon::HttpPost(pInfo->url, result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+	pInfo->rtn = CInternetCommon::HttpPost(pInfo->url, result);		//向网易云音乐的歌曲搜索API发送http的POST请求
 	if (theApp.m_lyric_download_dialog_exit) return 0;
 	pInfo->result = result;
 	::PostMessage(pInfo->hwnd, WM_SEARCH_COMPLATE, 0, 0);		//搜索完成后发送一个搜索完成的消息
@@ -350,11 +350,11 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	out_put << CCommon::UnicodeToStr(m_search_result, CodeType::UTF8);
 #endif // DEBUG
 
-	CLyricDownloadCommon::DisposeSearchResult(m_down_list, m_search_result);		//处理返回的结果
+	CInternetCommon::DisposeSearchResult(m_down_list, m_search_result);		//处理返回的结果
 	ShowDownloadList();			//将搜索的结果显示在列表控件中
 
 	//计算搜索结果中最佳匹配项目
-	int best_matched = CLyricDownloadCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
+	int best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
 	CString info;
 	if (m_down_list.empty())
 		info = _T("搜索结果：（没有找到歌曲）");

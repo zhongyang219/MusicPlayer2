@@ -60,7 +60,7 @@ const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extensi
 	{
 		m_file_path.push_back(L'.');
 	}
-	if (index != m_file_path.size() - 1)	//如果“.”不在最后的位置，则删除“.”后面的字符串
+	else if (index != m_file_path.size() - 1)	//如果“.”不在最后的位置，则删除“.”后面的字符串
 	{
 		m_file_path.erase(index + 1);
 	}

@@ -67,6 +67,7 @@ using std::map;
 
 //用于支持使用网络相关的类
 #include <afxinet.h>
+#include <afxwin.h>
 
 
 
@@ -167,4 +168,4 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 //#define BACKGROUND_ALPHA 200	//界面背景的透明度0~255
 #define ALPHA_CHG(alpha) ((alpha)*255/100)		//将透明度从0~100映射到0~255
 
-#define WM_NEXT_USER_MSG (WM_USER+109)
+#define WM_NEXT_USER_MSG (WM_USER+110)

@@ -49,9 +49,10 @@ struct ApperanceSettingData
 	vector<wstring> default_album_name;				//默认的专辑封面文件名
 };
 
-struct OtherSettingData
+struct GeneralSettingData
 {
 	bool id3v2_first{ false };		//优先获取ID3V2标签
+	bool auto_download_album_cover{ true };		//是否自动下载专辑封面
 };
 
 struct NonCategorizedSettingData
@@ -85,7 +86,7 @@ public:
 
 	PlaySettingData m_play_setting_data;		//“选项设置”对话框中“主窗口设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“任务栏窗口设置”中的数据
-	OtherSettingData m_other_setting_data;
+	GeneralSettingData m_general_setting_data;
 	NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
 
 	volatile bool m_lyric_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出

@@ -4,6 +4,7 @@ class CFilePathHelper
 {
 public:
 	CFilePathHelper(const wstring& file_path);
+	CFilePathHelper(){}
 	~CFilePathHelper();
 
 	void SetFilePath(const wstring& file_path) { m_file_path = file_path; }
