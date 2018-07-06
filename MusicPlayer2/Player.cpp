@@ -1409,10 +1409,10 @@ void CPlayer::SearchOutAlbumCover()
 	CCommon::GetImageFiles(file_name, files);
 	if (files.empty() && !GetCurrentSongInfo().album.empty())
 	{
-		//没有找到和歌曲名一致的图片文件，则查找文件名中包含唱片集名的文件
+		//没有找到和歌曲名一致的图片文件，则查找文件名为“唱片集”的文件
 		wstring album_name{ GetCurrentSongInfo().album };
 		CCommon::FileNameNormalize(album_name);
-		file_name = m_path + L'*' + album_name + L"*.*";
+		file_name = m_path + album_name + L".*";
 		CCommon::GetImageFiles(file_name, files);
 	}
 	//if (files.empty() && !theApp.m_app_setting_data.default_album_name.empty())

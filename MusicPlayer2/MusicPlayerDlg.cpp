@@ -2953,10 +2953,16 @@ void CMusicPlayerDlg::_OnDownloadAlbumCover(bool message)
 
 	//获取要保存的专辑封面的文件路径
 	CFilePathHelper cover_file_path;
-	if (match_item.album == theApp.m_player.GetCurrentSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的唱片集名称相同，则以唱片集名为文件名保存
-		cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + match_item.album);
+	if (match_item.album == theApp.m_player.GetCurrentSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
+	{
+		wstring album_name{ match_item.album };
+		CCommon::FileNameNormalize(album_name);
+		cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() +  album_name);
+	}
 	else				//否则以歌曲文件名为文件名保存
+	{
 		cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
+	}
 	CFilePathHelper url_path(cover_url);
 	cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
 
