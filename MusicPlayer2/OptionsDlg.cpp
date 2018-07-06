@@ -44,7 +44,7 @@ BOOL COptionsDlg::OnInitDialog()
 	//插入标签
 	m_tab.InsertItem(0, _T("播放选项"));
 	m_tab.InsertItem(1, _T("外观设置"));
-	m_tab.InsertItem(2, _T("其他设置"));
+	m_tab.InsertItem(2, _T("常规设置"));
 	//创建子对话框
 	m_tab1_dlg.Create(IDD_PLAY_SETTING_DIALOG, &m_tab);
 	m_tab2_dlg.Create(IDD_APPEREANCE_SETTING_DLG, &m_tab);

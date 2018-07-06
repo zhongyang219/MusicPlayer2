@@ -32,4 +32,5 @@ public:
 	afx_msg void OnBnClickedCleanDataFileButton();
 	afx_msg void OnBnClickedId3v2FirstCheck();
 	afx_msg void OnBnClickedCoverAutoDownloadCheck();
+	afx_msg void OnBnClickedLyricAutoDownloadCheck();
 };

@@ -52,6 +52,7 @@ struct ApperanceSettingData
 struct GeneralSettingData
 {
 	bool id3v2_first{ false };		//优先获取ID3V2标签
+	bool auto_download_lyric{ false };			//是否自动下载歌词
 	bool auto_download_album_cover{ true };		//是否自动下载专辑封面
 };
 

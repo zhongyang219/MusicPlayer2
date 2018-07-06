@@ -388,6 +388,6 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 		return CInternetCommon::ItemInfo();
 	}
 
-	//获取网易云音乐中该歌曲的在线接听网址
+	//获返回最佳匹配项
 	return down_list[best_matched];
 }
