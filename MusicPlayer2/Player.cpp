@@ -853,7 +853,7 @@ void CPlayer::SaveConfig() const
 	WritePrivateProfileStringW(L"config",L"lyric_path", theApp.m_play_setting_data.lyric_path.c_str(), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"sort_mode", static_cast<int>(m_sort_mode), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"config", L"lyric_fuzzy_match", theApp.m_play_setting_data.lyric_fuzzy_match, theApp.m_config_path.c_str());
-	WritePrivateProfileStringW(L"config",L"default_album_file_name", theApp.m_app_setting_data.default_album_name.c_str(), theApp.m_config_path.c_str());
+	WritePrivateProfileStringW(L"config",L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str(), theApp.m_config_path.c_str());
 
 	//保存均衡器设定
 	CCommon::WritePrivateProfileIntW(L"equalizer", L"equalizer_enable", m_equ_enable, theApp.m_config_path.c_str());
@@ -893,7 +893,8 @@ void CPlayer::LoadConfig()
 	m_sort_mode = static_cast<SortMode>(GetPrivateProfileIntW(L"config", L"sort_mode", 0, theApp.m_config_path.c_str()));
 	theApp.m_play_setting_data.lyric_fuzzy_match = (GetPrivateProfileIntW(L"config", L"lyric_fuzzy_match", 1, theApp.m_config_path.c_str()) != 0);
 	GetPrivateProfileStringW(L"config", L"default_album_file_name", L"Folder", buff, 255, theApp.m_config_path.c_str());
-	theApp.m_app_setting_data.default_album_name = buff;
+	//theApp.m_app_setting_data.default_album_name = buff;
+	CCommon::StringSplit(buff, L',', theApp.m_app_setting_data.default_album_name);
 
 	//读取均衡器设定
 	m_equ_enable = (GetPrivateProfileIntW(L"equalizer", L"equalizer_enable", 0, theApp.m_config_path.c_str()) != 0);
@@ -1405,11 +1406,22 @@ void CPlayer::SearchAlbumCover()
 				file_name = m_path + L'*' + album_name + L"*.*";
 				CCommon::GetImageFiles(file_name, files);
 			}
-			if (files.empty() && !theApp.m_app_setting_data.default_album_name.empty())
+			//if (files.empty() && !theApp.m_app_setting_data.default_album_name.empty())
+			//{
+			//	//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
+			//	file_name = m_path + theApp.m_app_setting_data.default_album_name + L".*";
+			//	CCommon::GetImageFiles(file_name, files);
+			//}
+			//没有找到唱片集为文件名的文件，查找文件名为设置的专辑封面名的文件
+			for (const auto& album_name : theApp.m_app_setting_data.default_album_name)
 			{
-				//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
-				file_name = m_path + theApp.m_app_setting_data.default_album_name + L".*";
-				CCommon::GetImageFiles(file_name, files);
+				if (!files.empty())
+					break;
+				if (!album_name.empty())
+				{
+					file_name = m_path + album_name + L".*";
+					CCommon::GetImageFiles(file_name, files);
+				}
 			}
 			//if (files.empty())
 			//{

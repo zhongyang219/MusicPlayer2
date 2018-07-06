@@ -61,6 +61,16 @@ public:
 	//判断一个字符串是否是数字
 	static bool StrIsNumber(const wstring& str);
 
+	//将一个字符串分割成若干个字符串
+	//str: 原始字符串
+	//div_ch: 用于分割的字符
+	//result: 接收分割后的结果
+	static void StringSplit(const wstring& str, wchar_t div_ch,vector<wstring>& results);
+
+	//将若干个字符串合并成一个字符串
+	//div_ch: 用于分割的字符
+	static wstring StringMerge(const vector<wstring>& strings, wchar_t div_ch);
+
 	static wstring TranslateToSimplifiedChinese(const wstring& str);
 	static wstring TranslateToTranditionalChinese(const wstring& str);
 	//替换一个文件名中的无效字符

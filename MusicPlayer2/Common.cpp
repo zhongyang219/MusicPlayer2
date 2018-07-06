@@ -97,6 +97,35 @@ bool CCommon::StrIsNumber(const wstring & str)
 	return true;
 }
 
+void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& results)
+{
+	results.clear();
+	size_t split_index = -1 ;
+	size_t last_split_index = -1;
+	while (true)
+	{
+		split_index = str.find(div_ch, split_index + 1);
+		wstring split_str = str.substr(last_split_index + 1, split_index - last_split_index - 1);
+		StringNormalize(split_str);
+		if(!split_str.empty())
+			results.push_back(split_str);
+		if (split_index == wstring::npos)
+			break;
+		last_split_index = split_index;
+	}
+}
+
+wstring CCommon::StringMerge(const vector<wstring>& strings, wchar_t div_ch)
+{
+	wstring result;
+	for (const auto& str : strings)
+	{
+		result.append(str).push_back(div_ch);
+	}
+	result.pop_back();
+	return result;
+}
+
 wstring CCommon::TranslateToSimplifiedChinese(const wstring & str)
 {
 	wstring result;

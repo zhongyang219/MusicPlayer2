@@ -46,7 +46,7 @@ struct ApperanceSettingData
 	int sprctrum_height{ 100 };					//频谱分析高度比例（%）
 	int background_transparency{ 80 };			//背景的透明度
 	bool use_out_image{ true };					//使用外部图片作为专辑封面
-	wstring default_album_name;				//默认的专辑封面文件名
+	vector<wstring> default_album_name;				//默认的专辑封面文件名
 };
 
 struct OtherSettingData
