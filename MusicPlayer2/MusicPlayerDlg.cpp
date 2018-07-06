@@ -2831,6 +2831,48 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 	return 0;
 }
 
+UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
+{
+	CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
+	if (theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist())
+	{
+		pThis->_OnDownloadAlbumCover(false);
+	}
+	//自动下载歌词
+	if (theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty())
+	{
+		//获取歌曲ID
+		CInternetCommon::ItemInfo match_item = CInternetCommon::SearchSongAndGetMatched(theApp.m_player.GetCurrentSongInfo().title, theApp.m_player.GetCurrentSongInfo().artist,
+			theApp.m_player.GetCurrentSongInfo().album, theApp.m_player.GetCurrentSongInfo().file_name, false);
+		wstring song_id = match_item.id;
+		if (song_id.empty())
+			return 0;
+		//下载歌词
+		wstring lyric_str;
+		if (!CLyricDownloadCommon::DownloadLyric(song_id, lyric_str, false))
+			return 0;
+		if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
+			return 0;
+		CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
+		//保存歌词
+		CFilePathHelper lyric_path;
+		if (CCommon::FolderExist(theApp.m_play_setting_data.lyric_path))
+		{
+			lyric_path.SetFilePath(theApp.m_play_setting_data.lyric_path + theApp.m_player.GetCurrentSongInfo().file_name);
+		}
+		else
+		{
+			lyric_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
+		}
+		lyric_path.ReplaceFileExtension(L"lrc");
+		string _lyric_str = CCommon::UnicodeToStr(lyric_str, CodeType::UTF8);
+		ofstream out_put{ lyric_path.GetFilePath(), std::ios::binary };
+		out_put << _lyric_str;
+		theApp.m_player.IniLyrics(lyric_path.GetFilePath());
+	}
+	return 0;
+}
+
 
 
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam)
@@ -2989,41 +3031,6 @@ void CMusicPlayerDlg::OnDownloadAlbumCover()
 afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lParam)
 {
 	//自动下载专辑封面
-	if (theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist())
-	{
-		_OnDownloadAlbumCover(false);
-	}
-	//自动下载歌词
-	if (theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty())
-	{
-		//获取歌曲ID
-		CInternetCommon::ItemInfo match_item = CInternetCommon::SearchSongAndGetMatched(theApp.m_player.GetCurrentSongInfo().title, theApp.m_player.GetCurrentSongInfo().artist,
-			theApp.m_player.GetCurrentSongInfo().album, theApp.m_player.GetCurrentSongInfo().file_name, false);
-		wstring song_id = match_item.id;
-		if (song_id.empty())
-			return 0;
-		//下载歌词
-		wstring lyric_str;
-		if (!CLyricDownloadCommon::DownloadLyric(song_id, lyric_str, false))
-			return 0;
-		if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
-			return 0;
-		CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
-		//保存歌词
-		CFilePathHelper lyric_path;
-		if (CCommon::FolderExist(theApp.m_play_setting_data.lyric_path))
-		{
-			lyric_path.SetFilePath(theApp.m_play_setting_data.lyric_path + theApp.m_player.GetCurrentSongInfo().file_name);
-		}
-		else
-		{
-			lyric_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
-		}
-		lyric_path.ReplaceFileExtension(L"lrc");
-		string _lyric_str = CCommon::UnicodeToStr(lyric_str, CodeType::UTF8);
-		ofstream out_put{ lyric_path.GetFilePath(), std::ios::binary };
-		out_put << _lyric_str;
-		theApp.m_player.IniLyrics(lyric_path.GetFilePath());
-	}
+	m_pDownloadThread = AfxBeginThread(DownloadLyricAndCoverThreadFunc, this);
 	return 0;
 }

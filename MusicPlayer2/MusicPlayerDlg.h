@@ -152,6 +152,9 @@ protected:
 	CWinThread* m_pThread;		//执行在线查看的线程
 	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
 
+	CWinThread* m_pDownloadThread;		//执行自动下载歌词和专辑封面的线程
+	static UINT DownloadLyricAndCoverThreadFunc(LPVOID lpParam);	//执行自动下载歌词和专辑封面的线程函数
+
 	int m_play_error_cnt{};		//统计播放出错的次数
 
 	//私有的函数
