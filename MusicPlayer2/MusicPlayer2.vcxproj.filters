@@ -129,6 +129,9 @@
     <Filter Include="头文件和源文件\对话框类\歌词下载对话框">
       <UniqueIdentifier>{fc10c4e8-a014-47e8-a3f4-8e2319df4f55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\对话框类\专辑封面下载对话框">
+      <UniqueIdentifier>{d369f9b9-ebfd-4138-829d-de631c68a8e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -261,6 +264,9 @@
     <ClInclude Include="CoverDownloadCommon.h">
       <Filter>头文件和源文件\公共的类\CoverDownloadCommon</Filter>
     </ClInclude>
+    <ClInclude Include="CoverDownloadDlg.h">
+      <Filter>头文件和源文件\对话框类\专辑封面下载对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -376,6 +382,9 @@
     </ClCompile>
     <ClCompile Include="CoverDownloadCommon.cpp">
       <Filter>头文件和源文件\公共的类\CoverDownloadCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="CoverDownloadDlg.cpp">
+      <Filter>头文件和源文件\对话框类\专辑封面下载对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
