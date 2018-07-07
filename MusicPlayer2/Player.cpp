@@ -960,7 +960,7 @@ void CPlayer::DeleteAlbumCover()
 {
 	if (!m_inner_cover)
 	{
-		if (DeleteFile(m_album_cover_path.c_str()) != 0)
+		if (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_album_cover_path.c_str()) == 0)
 			m_album_cover.Destroy();
 	}
 }
