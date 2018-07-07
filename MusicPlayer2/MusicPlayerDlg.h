@@ -290,4 +290,5 @@ protected:
 	afx_msg LRESULT OnMusicStreamOpened(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnCurrentExploreOnline();
+	afx_msg void OnDeleteAlbumCover();
 };

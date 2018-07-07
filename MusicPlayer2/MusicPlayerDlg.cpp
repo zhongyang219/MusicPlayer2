@@ -260,6 +260,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_DOWNLOAD_ALBUM_COVER, &CMusicPlayerDlg::OnDownloadAlbumCover)
 	ON_MESSAGE(WM_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnMusicStreamOpened)
 	ON_COMMAND(ID_CURRENT_EXPLORE_ONLINE, &CMusicPlayerDlg::OnCurrentExploreOnline)
+	ON_COMMAND(ID_DELETE_ALBUM_COVER, &CMusicPlayerDlg::OnDeleteAlbumCover)
 END_MESSAGE_MAP()
 
 
@@ -2003,6 +2004,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 
 	pMenu->EnableMenuItem(ID_ALBUM_COVER_SAVE_AS, MF_BYCOMMAND | (theApp.m_player.AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
 
 	// TODO: 在此处添加消息处理程序代码
 }
@@ -3058,4 +3060,11 @@ void CMusicPlayerDlg::OnCurrentExploreOnline()
 {
 	// TODO: 在此添加命令处理程序代码
 	m_pThread = AfxBeginThread(ViewOnlineThreadFunc, (void*)theApp.m_player.GetIndex());
+}
+
+
+void CMusicPlayerDlg::OnDeleteAlbumCover()
+{
+	// TODO: 在此添加命令处理程序代码
+	theApp.m_player.DeleteAlbumCover();
 }

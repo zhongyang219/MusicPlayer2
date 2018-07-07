@@ -956,6 +956,15 @@ Time CPlayer::GetAllSongLength(int track) const
 		return Time();
 }
 
+void CPlayer::DeleteAlbumCover()
+{
+	if (!m_inner_cover)
+	{
+		if (DeleteFile(m_album_cover_path.c_str()) != 0)
+			m_album_cover.Destroy();
+	}
+}
+
 void CPlayer::ReloadPlaylist()
 {
 	if (m_loading) return;

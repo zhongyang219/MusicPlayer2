@@ -177,6 +177,7 @@ public:
 	bool AlbumCoverExist() { return !m_album_cover.IsNull(); }
 	wstring GetAlbumCoverPath() const { return m_album_cover_path; }
 	int GetAlbumCoverType() const { return m_album_cover_type; }
+	void DeleteAlbumCover();
 	
 	void ReloadPlaylist();		//重新载入播放列表
 
