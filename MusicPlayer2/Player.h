@@ -193,6 +193,8 @@ public:
 	wstring GetPlayingState() const;		//获取播放状态的字符串
 	int GetPlayingState2() const { return m_playing; }	//获取正在播放状态（0：已停止，1：已暂停，2：正在播放）
 	const SongInfo& GetCurrentSongInfo() const;
+	void SetRelatedSongID(wstring song_id);		//为当前歌曲设置关联的网易云音乐歌曲ID
+	void SetRelatedSongID(int index, wstring song_id);		//为第index首歌曲设置关联的网易云音乐歌曲ID
 	bool IsInnerCover() const { return m_inner_cover; }		//判断当前专辑封面是否是内嵌图片
 
 	void ReIniBASS();		//重新初始化BASS

@@ -112,9 +112,9 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	LoadConfig();
 
-	m_title = theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].title;
-	m_artist = theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].artist;
-	m_album = theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album;
+	m_title = theApp.m_player.GetCurrentSongInfo().title;
+	m_artist = theApp.m_player.GetCurrentSongInfo().artist;
+	m_album = theApp.m_player.GetCurrentSongInfo().album;
 
 	if (m_title == DEFAULT_TITLE)		//如果没有标题信息，就把文件名设为标题
 	{
@@ -272,6 +272,7 @@ void CLyricDownloadDlg::OnBnClickedDownloadSelected()
 	if (m_item_selected < 0 || m_item_selected >= m_down_list.size()) return;
 	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
 	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
+	theApp.m_player.SetRelatedSongID(m_down_list[m_item_selected].id);		//将选中项目的歌曲ID关联到歌曲
 	m_download_thread_info.hwnd = GetSafeHwnd();
 	m_download_thread_info.download_translate = m_download_translate;
 	m_download_thread_info.save_as = false;
@@ -354,12 +355,29 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	ShowDownloadList();			//将搜索的结果显示在列表控件中
 
 	//计算搜索结果中最佳匹配项目
-	int best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
+	int best_matched;
+	bool id_releated{ false };
+	if (!theApp.m_player.GetCurrentSongInfo().song_id.empty())		//如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+	{
+		for (size_t i{}; i<m_down_list.size(); i++)
+		{
+			if (theApp.m_player.GetCurrentSongInfo().song_id == m_down_list[i].id)
+			{
+				id_releated = true;
+				best_matched = i;
+				break;
+			}
+		}
+	}
+	if(!id_releated)
+		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
 	CString info;
 	if (m_down_list.empty())
 		info = _T("搜索结果：（没有找到歌曲）");
 	else if (best_matched == -1)
 		info = _T("搜索结果：（似乎没有最佳匹配的项）");
+	else if(id_releated)
+		info.Format(_T("搜索结果：（已关联项：%d）"), best_matched + 1);
 	else
 		info.Format(_T("搜索结果：（最佳匹配项：%d）"), best_matched + 1);
 	SetDlgItemText(IDC_STATIC_INFO, info);

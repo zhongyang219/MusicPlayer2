@@ -213,7 +213,9 @@ void CMusicPlayerApp::SaveSongData() const
 			<< song_data.second.genre_idx
 			<< song_data.second.track
 			<< song_data.second.tag_type
-			<< song_data.second.info_acquired;
+			<< CString(song_data.second.song_id.c_str())
+			<< song_data.second.info_acquired
+			;
 	}
 	// 关闭CArchive对象
 	ar.Close();
@@ -262,6 +264,8 @@ void CMusicPlayerApp::LoadSongData()
 			ar >> song_info.genre_idx;
 			ar >> song_info.track;
 			ar >> song_info.tag_type;
+			ar >> temp;
+			song_info.song_id = temp;
 			m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
 			ar >> song_info.info_acquired;
 		}

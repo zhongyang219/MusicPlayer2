@@ -2822,13 +2822,18 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 	if (item_selected >= 0 && item_selected < theApp.m_player.GetSongNum())
 	{
 		//查找歌曲并获取最佳匹配项的歌曲ID
-		wstring song_id = CInternetCommon::SearchSongAndGetMatched(theApp.m_player.GetPlayList()[item_selected].title, theApp.m_player.GetPlayList()[item_selected].artist,
-			theApp.m_player.GetPlayList()[item_selected].album, theApp.m_player.GetPlayList()[item_selected].file_name).id;
+		const SongInfo& song{ theApp.m_player.GetPlayList()[item_selected] };
+		if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
+		{
+			wstring song_id;
+			song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.file_name).id;
+			theApp.m_player.SetRelatedSongID(item_selected, song_id);
+		}
 
-		if (song_id.empty())
+		if (song.song_id.empty())
 			return 0;
 		//获取网易云音乐中该歌曲的在线接听网址
-		wstring song_url{ L"http://music.163.com/#/song?id=" + song_id };
+		wstring song_url{ L"http://music.163.com/#/song?id=" + song.song_id };
 
 		//打开超链接
 		ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
@@ -2839,22 +2844,60 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 {
 	CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
-	if (theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist())
+	bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist() };
+	bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty() };
+	CInternetCommon::ItemInfo match_item;
+	const SongInfo& song{ theApp.m_player.GetCurrentSongInfo() };
+	if (download_cover || download_lyric)
 	{
-		pThis->_OnDownloadAlbumCover(false);
+		if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
+		{
+			//搜索歌曲并获取最佳匹配的项目
+			match_item = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.file_name, false);
+			theApp.m_player.SetRelatedSongID(match_item.id);
+		}
+		if (song.song_id.empty())
+			return 0;
+	}
+	//自动下载专辑封面
+	if (download_cover)
+	{
+		wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song.song_id);
+		if (cover_url.empty())
+		{
+			return 0;
+		}
+
+		//获取要保存的专辑封面的文件路径
+		CFilePathHelper cover_file_path;
+		if (match_item.album == theApp.m_player.GetCurrentSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
+		{
+			wstring album_name{ match_item.album };
+			CCommon::FileNameNormalize(album_name);
+			cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + album_name);
+		}
+		else				//否则以歌曲文件名为文件名保存
+		{
+			cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
+		}
+		CFilePathHelper url_path(cover_url);
+		cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
+
+		//下面专辑封面
+		URLDownloadToFile(0, cover_url.c_str(), cover_file_path.GetFilePath().c_str(), 0, NULL);
+
+		//将下载的专辑封面改为隐藏属性
+		SetFileAttributes(cover_file_path.GetFilePath().c_str(), FILE_ATTRIBUTE_HIDDEN);
+
+		//重新从本地获取专辑封面
+		theApp.m_player.SearchOutAlbumCover();
 	}
 	//自动下载歌词
-	if (theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty())
+	if (download_lyric)
 	{
-		//获取歌曲ID
-		CInternetCommon::ItemInfo match_item = CInternetCommon::SearchSongAndGetMatched(theApp.m_player.GetCurrentSongInfo().title, theApp.m_player.GetCurrentSongInfo().artist,
-			theApp.m_player.GetCurrentSongInfo().album, theApp.m_player.GetCurrentSongInfo().file_name, false);
-		wstring song_id = match_item.id;
-		if (song_id.empty())
-			return 0;
 		//下载歌词
 		wstring lyric_str;
-		if (!CLyricDownloadCommon::DownloadLyric(song_id, lyric_str, false))
+		if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, false))
 			return 0;
 		if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
 			return 0;
@@ -2991,47 +3034,6 @@ void CMusicPlayerDlg::OnBnClickedClearSearchButton()
 		m_playlist_list.ShowPlaylist(m_display_format, m_searched);
 		m_playlist_list.EnsureVisible(theApp.m_player.GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
 	}
-}
-
-void CMusicPlayerDlg::_OnDownloadAlbumCover(bool message)
-{
-	//查找歌曲并获取最佳匹配项的歌曲ID
-	CInternetCommon::ItemInfo match_item = CInternetCommon::SearchSongAndGetMatched(theApp.m_player.GetCurrentSongInfo().title, theApp.m_player.GetCurrentSongInfo().artist,
-		theApp.m_player.GetCurrentSongInfo().album, theApp.m_player.GetCurrentSongInfo().file_name, message);
-	wstring song_id = match_item.id;
-	if (song_id.empty())
-		return;
-	wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song_id);
-	if (cover_url.empty())
-	{
-		if(message)
-			MessageBox(_T("专辑封面下载失败，请检查你的网络连接！"), NULL, MB_ICONWARNING | MB_OK);
-		return;
-	}
-
-	//获取要保存的专辑封面的文件路径
-	CFilePathHelper cover_file_path;
-	if (match_item.album == theApp.m_player.GetCurrentSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
-	{
-		wstring album_name{ match_item.album };
-		CCommon::FileNameNormalize(album_name);
-		cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() +  album_name);
-	}
-	else				//否则以歌曲文件名为文件名保存
-	{
-		cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
-	}
-	CFilePathHelper url_path(cover_url);
-	cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
-
-	//下面专辑封面
-	URLDownloadToFile(0, cover_url.c_str(), cover_file_path.GetFilePath().c_str(), 0, NULL);
-
-	//将下载的专辑封面改为隐藏属性
-	SetFileAttributes(cover_file_path.GetFilePath().c_str(), FILE_ATTRIBUTE_HIDDEN);
-
-	//重新从本地获取专辑封面
-	theApp.m_player.SearchOutAlbumCover();
 }
 
 
