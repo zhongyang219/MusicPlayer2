@@ -380,6 +380,8 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	if (title == DEFAULT_TITLE) _title.clear();
 	if (artist == DEFAULT_ARTIST) _artist.clear();
 	if (album == DEFAULT_ALBUM) _album.clear();
+	if (_title.empty())
+		_title = keyword;
 	int best_matched = CInternetCommon::SelectMatchedItem(down_list, _title, _artist, _album, file_name, true);
 	if (best_matched < 0)
 	{

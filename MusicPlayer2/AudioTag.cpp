@@ -42,6 +42,12 @@ void CAudioTag::GetAudioTag(bool id3v2_first)
 	CAudioCommon::TagStrNormalize(m_song_info.title);
 	CAudioCommon::TagStrNormalize(m_song_info.artist);
 	CAudioCommon::TagStrNormalize(m_song_info.album);
+	CCommon::StringNormalize(m_song_info.title);
+	CCommon::StringNormalize(m_song_info.artist);
+	CCommon::StringNormalize(m_song_info.album);
+	CCommon::StringNormalize(m_song_info.year);
+	CCommon::StringNormalize(m_song_info.genre);
+	CCommon::StringNormalize(m_song_info.comment);
 	m_song_info.info_acquired = true;
 }
 
@@ -202,7 +208,6 @@ bool CAudioTag::GetID3V2Tag()
 			if (tag_index != string::npos)
 			{
 				string size = tag_content.substr(tag_index + 4, 4);
-				wstring tag_info;
 				const int tag_size = size[0] * 0x1000000 + size[1] * 0x10000 + size[2] * 0x100 + size[3];	//获取当前标签的大小
 				if (tag_size <= 0) continue;
 				if (tag_index + 11 >= tag_content.size()) continue;
@@ -233,6 +238,7 @@ bool CAudioTag::GetID3V2Tag()
 					tag_info_str = tag_content.substr(tag_index + 11, tag_size - 1);
 				}
 				code_type = CCommon::JudgeCodeType(tag_info_str, default_code);
+				wstring tag_info;
 				tag_info = CCommon::StrToUnicode(tag_info_str, code_type);
 				if (!tag_info.empty())
 				{

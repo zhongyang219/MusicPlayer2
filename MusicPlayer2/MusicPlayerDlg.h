@@ -24,6 +24,7 @@
 #include "CortanaLyric.h"
 #include "FilePathHelper.h"
 #include "CoverDownloadCommon.h"
+#include "CoverDownloadDlg.h"
 
 // CMusicPlayerDlg ¶Ô»°¿ò
 class CMusicPlayerDlg : public CDialog
@@ -289,4 +290,6 @@ public:
 	afx_msg void OnDownloadAlbumCover();
 protected:
 	afx_msg LRESULT OnMusicStreamOpened(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnCurrentExploreOnline();
 };

@@ -186,7 +186,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.album_cover_fit));
 	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
 	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
-	m_toolTip.AddTool(&m_use_out_image_chk, _T("如果无法从音频文件获取专辑封面，则尝试按以下顺序在音频文件所在目录下查找专辑封面图片：\r\n1、文件名和音频文件名完全相同的图片文件\r\n2、文件名中含有唱片集名的图片文件\r\n3、文件名为下面设置的图片文件"));
+	m_toolTip.AddTool(&m_use_out_image_chk, _T("如果无法从音频文件获取专辑封面，则尝试在音频文件所在目录下查找下面指定的文件名为专辑封面"));
 	m_toolTip.AddTool(GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT), _T("在此设置默认的专辑封面文件名，多个文件名之间使用半角逗号隔开"));
 
 	SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());

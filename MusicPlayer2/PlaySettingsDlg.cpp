@@ -70,7 +70,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	m_lyric_double_line_chk.SetCheck(m_data.cortana_lyric_double_line);
 	m_show_album_cover_in_cortana_check.SetCheck(m_data.cortana_show_album_cover);
 	m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
-	m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
+	//m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
 	if (theApp.m_is_windows10)
 	{
 		m_show_lyric_in_cortana_check.SetCheck(m_data.show_lyric_in_cortana);
@@ -114,10 +114,10 @@ void CPlaySettingsDlg::SetCortanaControlEnable(bool enable)
 	m_lyric_double_line_chk.EnableWindow(enable);
 	m_show_album_cover_in_cortana_check.EnableWindow(enable);
 	m_cortana_color_combo.EnableWindow(enable);
-	if(m_data.cortana_show_album_cover)
-		m_cortana_icon_beat_check.EnableWindow(FALSE);
-	else
-		m_cortana_icon_beat_check.EnableWindow(enable);
+	//if(m_data.cortana_show_album_cover)
+	//	m_cortana_icon_beat_check.EnableWindow(FALSE);
+	//else
+	m_cortana_icon_beat_check.EnableWindow(enable);
 }
 
 
@@ -260,7 +260,7 @@ void CPlaySettingsDlg::OnBnClickedShowAlbumCoverInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.cortana_show_album_cover = (m_show_album_cover_in_cortana_check.GetCheck() != 0);
-	m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
+	//m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
 }
 
 

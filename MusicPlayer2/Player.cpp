@@ -1390,7 +1390,8 @@ void CPlayer::SearchAlbumCover()
 		m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
 		m_album_cover.Destroy();
 		m_album_cover.Load(m_album_cover_path.c_str());
-		if (theApp.m_app_setting_data.use_out_image && m_album_cover.IsNull())
+		m_inner_cover = !m_album_cover.IsNull();
+		if (/*theApp.m_app_setting_data.use_out_image && */m_album_cover.IsNull())
 		{
 			//获取不到专辑封面时尝试使用外部图片作为封面
 			SearchOutAlbumCover();
@@ -1422,14 +1423,17 @@ void CPlayer::SearchOutAlbumCover()
 	//	CCommon::GetImageFiles(file_name, files);
 	//}
 	//没有找到唱片集为文件名的文件，查找文件名为设置的专辑封面名的文件
-	for (const auto& album_name : theApp.m_app_setting_data.default_album_name)
+	if (theApp.m_app_setting_data.use_out_image)
 	{
-		if (!files.empty())
-			break;
-		if (!album_name.empty())
+		for (const auto& album_name : theApp.m_app_setting_data.default_album_name)
 		{
-			file_name = m_path + album_name + L".*";
-			CCommon::GetImageFiles(file_name, files);
+			if (!files.empty())
+				break;
+			if (!album_name.empty())
+			{
+				file_name = m_path + album_name + L".*";
+				CCommon::GetImageFiles(file_name, files);
+			}
 		}
 	}
 	//if (files.empty())

@@ -667,6 +667,9 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 		pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | MF_ENABLED);
 		pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_ENABLED);
 	}
+
+	pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
+
 	//设置播放列表右键菜单的默认菜单项
 	pMenu->SetDefaultItem(ID_PLAY_ITEM);
 
