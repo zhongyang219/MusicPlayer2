@@ -7,6 +7,7 @@ CPlayer::CPlayer()
 {
 	//‘ÿ»ÎBASS≤Âº˛
 	m_no_ape_plugin = (BASS_PluginLoad("bass_ape.dll", 0) == 0);
+	BASS_PluginLoad("basswma.dll", 0);
 }
 
 CPlayer::~CPlayer()

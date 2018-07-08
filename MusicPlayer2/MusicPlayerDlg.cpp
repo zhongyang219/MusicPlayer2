@@ -1050,7 +1050,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//只有win8以上的系统才能跟随系统主题色
 #ifdef COMPILE_IN_WIN_XP
-	theApp.m_app_setting_data.m_theme_color_follow_system = false;
+	theApp.m_app_setting_data.theme_color_follow_system = false;
 #else
 	if (!IsWindows8OrGreater())
 		theApp.m_app_setting_data.theme_color_follow_system = false;
