@@ -104,9 +104,16 @@ BOOL CMusicPlayerApp::InitInstance()
 	m_desktop_path = CCommon::GetDesktopPath();
 	//m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
 	LoadSongData();
+	LoadConfig();
 
 	//判断当前操作系统是否是Windows10。结果储存在CMusicPlayerApp类中的成员变量中，以便在全局范围内可访问
 	m_is_windows10 = CCommon::IsWindows10OrLater();
+
+	//启动时检查更新
+	if (m_general_setting_data.check_update_when_start)
+	{
+		AfxBeginThread(CheckUpdateThreadFunc, NULL);
+	}
 
 	CColorConvert::Initialize();
 
@@ -222,6 +229,74 @@ void CMusicPlayerApp::SaveSongData() const
 	// 关闭文件
 	file.Close();
 
+}
+
+void CMusicPlayerApp::CheckUpdate(bool message)
+{
+	CWaitCursor wait_cursor;
+	wstring version_info;
+	if (!CInternetCommon::GetURL(L"https://raw.githubusercontent.com/zhongyang219/MusicPlayer2/master/version.info", version_info))		//获取版本信息
+	{
+		if (message)
+			AfxMessageBox(_T("检查更新失败，请检查你的网络连接！"), MB_OK | MB_ICONWARNING);
+		return;
+	}
+
+	size_t index, index1, index2, index3, index4, index5;
+	index = version_info.find(L"<version>");
+	index1 = version_info.find(L"</version>");
+	index2 = version_info.find(L"<link>");
+	index3 = version_info.find(L"</link>");
+	index4 = version_info.find(L"<contents>");
+	index5 = version_info.find(L"</contents>");
+	wstring version;		//程序版本
+	wstring link;			//下载链接
+	wstring contents;		//更新内容
+	version = version_info.substr(index + 9, index1 - index - 9);
+	link = version_info.substr(index2 + 6, index3 - index2 - 6);
+	contents = version_info.substr(index4 + 10, index5 - index4 - 10);
+	CString contents_str = contents.c_str();
+	contents_str.Replace(L"\\n", L"\r\n");
+	if (index == wstring::npos || index1 == wstring::npos || index2 == wstring::npos || index3 == wstring::npos || version.empty() || link.empty())
+	{
+		if (message)
+			theApp.m_pMainWnd->MessageBox(_T("检查更新出错，从远程获取到了错误的信息，请联系作者！"), NULL, MB_OK | MB_ICONWARNING);
+		return;
+	}
+	if (version > VERSION)		//如果服务器上的版本大于本地版本
+	{
+		CString info;
+		if (contents.empty())
+			info.Format(_T("检测到新版本 V%s，是否前往更新？"), version.c_str());
+		else
+			info.Format(_T("检测到新版本 V%s，更新内容：\r\n%s\r\n是否前往更新？"), version.c_str(), contents_str);
+
+		if (theApp.m_pMainWnd->MessageBox(info, NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)
+		{
+			ShellExecute(NULL, _T("open"), link.c_str(), NULL, NULL, SW_SHOW);		//转到下载链接
+		}
+	}
+	else
+	{
+		if (message)
+			theApp.m_pMainWnd->MessageBox(_T("当前已经是最新版本。"), NULL, MB_OK | MB_ICONINFORMATION);
+	}
+}
+
+UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
+{
+	CheckUpdate(false);		//检查更新
+	return 0;
+}
+
+void CMusicPlayerApp::SaveConfig()
+{
+	CCommon::WritePrivateProfileIntW(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start, m_config_path.c_str());
+}
+
+void CMusicPlayerApp::LoadConfig()
+{
+	m_general_setting_data.check_update_when_start = (GetPrivateProfileIntW(_T("general"), _T("check_update_when_start"), 1, m_config_path.c_str()) != 0);
 }
 
 void CMusicPlayerApp::LoadSongData()

@@ -52,7 +52,7 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 			{
 				content += data;
 			}
-			result = CCommon::StrToUnicode(string{ (const char*)content.GetString() }, CodeType::UTF8);	//获取歌词，并转换成Unicode编码
+			result = CCommon::StrToUnicode(string{ (const char*)content.GetString() }, CodeType::UTF8);	//获取网页内容，并转换成Unicode编码
 			sucessed = true;
 		}
 		pfile->Close();

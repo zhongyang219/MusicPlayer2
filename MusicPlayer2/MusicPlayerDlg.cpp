@@ -40,6 +40,7 @@ public:
 	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
@@ -55,6 +56,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK2, &CAboutDlg::OnNMClickSyslink2)
+	ON_NOTIFY(NM_CLICK, IDC_GITHUB_SYSLINK, &CAboutDlg::OnNMClickGithubSyslink)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -72,8 +74,8 @@ BOOL CAboutDlg::OnInitDialog()
 	m_static_version.SetWindowText(version_info);
 
 	m_Mytip.Create(this);
-	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("向作者发送电子邮件\r\nmailto:zhongyang219@hotmail.com"));	//添加工具提示
-	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK2), _T("转到GitHub页面查看更新\r\nhttps://github.com/zhongyang219/MusicPlayer2/releases"));	//添加工具提示
+	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("向作者发送电子邮件\r\nmailto:zhongyang219@hotmail.com"));
+	m_Mytip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), _T("转到此项目在GitHub上的页面\r\nhttps://github.com/zhongyang219/MusicPlayer2"));
 	m_Mytip.SetDelayTime(300);	//设置延迟
 	m_Mytip.SetMaxTipWidth(DPI(400));
 
@@ -98,7 +100,14 @@ void CAboutDlg::OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//点击了“检查更新”
-	ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/releases"), NULL, NULL, SW_SHOW);	//打开超链接
+	theApp.CheckUpdate(true);
+	*pResult = 0;
+}
+
+void CAboutDlg::OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);	//打开超链接
 	*pResult = 0;
 }
 
@@ -2139,6 +2148,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 			m_lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
 		}
 		SaveConfig();		//将设置写入到ini文件
+		theApp.SaveConfig();
 		theApp.m_player.SaveConfig();
 	}
 	else

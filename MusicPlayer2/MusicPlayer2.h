@@ -54,6 +54,7 @@ struct GeneralSettingData
 	bool id3v2_first{ false };		//优先获取ID3V2标签
 	bool auto_download_lyric{ false };			//是否自动下载歌词
 	bool auto_download_album_cover{ true };		//是否自动下载专辑封面
+	bool check_update_when_start{ true };		//是否在程序启动时检查更新
 };
 
 struct NonCategorizedSettingData
@@ -95,6 +96,12 @@ public:
 	volatile bool m_cover_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出
 
 	void SaveSongData() const;		//将所有歌曲信息以序列化的方式保存到文件
+
+	static void CheckUpdate(bool message);
+	static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
+
+	void SaveConfig();
+	void LoadConfig();
 
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
