@@ -52,6 +52,18 @@ wstring CFilePathHelper::GetDir() const
 	return m_file_path.substr(0, index + 1);
 }
 
+wstring CFilePathHelper::GetParentDir() const
+{
+	wstring dir{ GetDir() };
+	size_t index;
+	if (!dir.empty() && (dir.back() == L'\\' || dir.back() == L'/'))
+		dir.pop_back();
+	index = dir.rfind('\\');
+	if (index == wstring::npos)
+		index = dir.rfind('/');
+	return m_file_path.substr(0, index + 1);
+}
+
 const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extension)
 {
 	size_t index;

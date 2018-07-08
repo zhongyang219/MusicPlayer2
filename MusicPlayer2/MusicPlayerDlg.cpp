@@ -1866,7 +1866,8 @@ void CMusicPlayerDlg::OnFileOpenFolder()
 	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
 	folderPickerDlg.SetInfo(_T("请选择一个文件夹，文件夹里的所有音频文件都将添加到播放列表。"));
 #else
-	CFolderPickerDialog folderPickerDlg(theApp.m_player.GetCurrentPath().c_str());
+	CFilePathHelper current_path(theApp.m_player.GetCurrentPath());
+	CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
 #endif
 	if (folderPickerDlg.DoModal() == IDOK)
 	{
