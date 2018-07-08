@@ -2374,6 +2374,10 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 			ShowPlayList();
 			UpdatePlayPauseButton();
 			DrawInfo(true);
+			//文件删除后同时删除和文件同名的图片文件和歌词文件
+			CFilePathHelper file_path(file_name);
+			DeleteFile(file_path.ReplaceFileExtension(L"jpg").c_str());
+			DeleteFile(file_path.ReplaceFileExtension(L"lrc").c_str());
 		}
 		else if (rtn == 1223)	//如果在弹出的对话框中点击“取消”则返回值为1223
 		{
