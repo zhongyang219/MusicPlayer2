@@ -2864,11 +2864,17 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 
 UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 {
-	CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
+	//CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
+	const SongInfo& song{ theApp.m_player.GetCurrentSongInfo() };
+	if (theApp.m_general_setting_data.auto_download_only_tag_full)		//设置了“仅当歌曲信息完整进才自动下载”时，如果歌曲标题和艺术家为空，则不自动下载
+	{
+		if ((song.title.empty() || song.title == DEFAULT_TITLE) && (song.artist.empty() || song.artist == DEFAULT_ARTIST))
+			return 0;
+	}
+
 	bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist() };
 	bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty() };
 	CInternetCommon::ItemInfo match_item;
-	const SongInfo& song{ theApp.m_player.GetCurrentSongInfo() };
 	if (download_cover || download_lyric)
 	{
 		if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID

@@ -54,6 +54,7 @@ struct GeneralSettingData
 	bool id3v2_first{ false };		//优先获取ID3V2标签
 	bool auto_download_lyric{ false };			//是否自动下载歌词
 	bool auto_download_album_cover{ true };		//是否自动下载专辑封面
+	bool auto_download_only_tag_full{ true };		//仅在歌曲信息完整时自动下载
 	bool check_update_when_start{ true };		//是否在程序启动时检查更新
 };
 
