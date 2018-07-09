@@ -98,9 +98,10 @@ BOOL CMusicPlayerApp::InitInstance()
 			return FALSE;
 	}
 
-	m_config_path = CCommon::GetExePath() + L"config.ini";
-	m_song_data_path = CCommon::GetExePath() + L"song_data.dat";
-	m_recent_path_dat_path = CCommon::GetExePath() + L"recent_path.dat";
+	m_module_dir = CCommon::GetExePath();
+	m_config_path = m_module_dir + L"config.ini";
+	m_song_data_path = m_module_dir + L"song_data.dat";
+	m_recent_path_dat_path = m_module_dir + L"recent_path.dat";
 	m_desktop_path = CCommon::GetDesktopPath();
 	//m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
 	LoadSongData();

@@ -6,8 +6,18 @@
 CPlayer::CPlayer()
 {
 	//载入BASS插件
-	m_no_ape_plugin = (BASS_PluginLoad("bass_ape.dll", 0) == 0);
-	BASS_PluginLoad("basswma.dll", 0);
+	wstring plugin_dir;
+#ifdef _DEBUG
+	plugin_dir = L".\\Plugins\\";
+#else
+	plugin_dir = theApp.m_module_dir + L"Plugins\\";
+#endif // _DEBUG
+	vector<wstring> plugin_files;
+	CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);
+	for (const auto& plugin_file : plugin_files)
+	{
+		BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
+	}
 }
 
 CPlayer::~CPlayer()
@@ -820,7 +830,7 @@ bool CPlayer::GetBASSError()
 	{
 		wchar_t buff[32];
 		swprintf_s(buff, L"BASS音频库发生了错误，错误代码：%d", error_code_tmp);
-		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
+		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ buff });
 	}
 	m_error_code = error_code_tmp;
 	return true;
@@ -1399,9 +1409,9 @@ void CPlayer::EnableReverb(bool enable)
 
 void CPlayer::ConnotPlayWarning() const
 {
-	if (m_no_ape_plugin && CAudioCommon::GetAudioType(m_current_file_name) == AudioType::AU_APE)
-		//AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
-		PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
+	//if (m_no_ape_plugin && CAudioCommon::GetAudioType(m_current_file_name) == AudioType::AU_APE)
+	//	//AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
+	//	PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
 }
 
 void CPlayer::SearchAlbumCover()

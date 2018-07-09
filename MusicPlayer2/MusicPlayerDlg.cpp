@@ -468,14 +468,18 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info4;
 	m_draw.DrawScrollText2(tmp, theApp.m_player.GetCurrentSongInfo().album.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info4, reset);
-	//显示比特率
+	//显示文件格式和比特率
 	tmp.MoveToXY(text_start.x, text_start.y + 4 * text_height);
 	tmp.right = tmp.left + DPI(52);
 	m_draw.DrawWindowText(tmp, _T("格式："), theApp.m_app_setting_data.theme_color.original_color, false);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	CFilePathHelper file_path{ theApp.m_player.GetCurrentSongInfo().file_name };
-	swprintf_s(buff, L"%s %dkbps", file_path.GetFileExtension(true).c_str(), theApp.m_player.GetCurrentSongInfo().bitrate);
+	wstring file_format{ file_path.GetFileExtension(true) };
+	if (file_format == L"MID")
+		swprintf_s(buff, L"%sI", file_format.c_str());
+	else
+		swprintf_s(buff, L"%s %dkbps", file_format.c_str(), theApp.m_player.GetCurrentSongInfo().bitrate);
 	m_draw.DrawWindowText(tmp, buff, theApp.m_app_setting_data.theme_color.dark2, false);
 
 	//显示频谱分析
@@ -1840,7 +1844,7 @@ void CMusicPlayerDlg::OnFileOpen()
 	// TODO: 在此添加命令处理程序代码
 	vector<wstring> files;	//储存打开的多个文件路径
 	//设置过滤器
-	LPCTSTR szFilter = _T("常见音频文件(*.mp3;*.wma;*.wav;*.ogg;*.flac;*.m4a;*.ape;*.cue)|*.mp3;*.wma;*.wav;*.ogg;*.flac;*.m4a;*.ape;*.cue|所有文件(*.*)|*.*||");
+	LPCTSTR szFilter = _T("音频文件(*.mp3;*.wma;*.wav;*.ogg;*.flac;*.fla;*.m4a;*.ape;*.cue;*.mid;*.midi;*.mp2;*.mp1;*.aif;*.cda;*.aac)|*.mp3;*.wma;*.wav;*.ogg;*.flac;*.fla;*.m4a;*.ape;*.cue;*.mid;*.midi;*.mp2;*.mp1;*.aif;*.cda;*.aac|所有文件(*.*)|*.*||");
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, szFilter, this);
 	//设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）

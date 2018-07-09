@@ -33,20 +33,21 @@ void CPropertyDlg::ShowInfo()
 	wstring file_type;
 	CFilePathHelper file_path{ m_all_song_info[m_index].file_name };
 	file_type = file_path.GetFileExtension();
-	if (file_type == _T("mp3"))
-		m_file_type_edit.SetWindowText(_T("MP3音频文件"));
-	else if (file_type == _T("wma"))
-		m_file_type_edit.SetWindowText(_T("Windows Media 音频文件"));
-	else if (file_type == _T("wav"))
-		m_file_type_edit.SetWindowText(_T("WAV音频文件"));
-	else if (file_type == _T("mid"))
-		m_file_type_edit.SetWindowText(_T("MIDI序列"));
-	else if (file_type == _T("ogg"))
-		m_file_type_edit.SetWindowText(_T("OGG音频文件"));
-	else if (file_type == _T("m4a"))
-		m_file_type_edit.SetWindowText(_T("MPEG-4 音频文件"));
-	else
-		m_file_type_edit.SetWindowText((file_type + _T("文件")).c_str());
+	//if (file_type == _T("mp3"))
+	//	m_file_type_edit.SetWindowText(_T("MP3音频文件"));
+	//else if (file_type == _T("wma"))
+	//	m_file_type_edit.SetWindowText(_T("Windows Media 音频文件"));
+	//else if (file_type == _T("wav"))
+	//	m_file_type_edit.SetWindowText(_T("WAV音频文件"));
+	//else if (file_type == _T("mid"))
+	//	m_file_type_edit.SetWindowText(_T("MIDI序列"));
+	//else if (file_type == _T("ogg"))
+	//	m_file_type_edit.SetWindowText(_T("OGG音频文件"));
+	//else if (file_type == _T("m4a"))
+	//	m_file_type_edit.SetWindowText(_T("MPEG-4 音频文件"));
+	//else
+	//	m_file_type_edit.SetWindowText((file_type + _T("文件")).c_str());
+	m_file_type_edit.SetWindowText((CAudioCommon::GetAudioFormatDescription(file_type)).c_str());
 
 	//显示文件长度
 	wstring song_length;
@@ -72,7 +73,7 @@ void CPropertyDlg::ShowInfo()
 
 	//显示比特率
 	CString info;
-	if (file_size == 0 || m_all_song_info[m_index].lengh.isZero() || file_type == L"mid")		//文件大小为0、文件长度为0或文件为midi音乐时不显示比特率
+	if (file_size == 0 || m_all_song_info[m_index].bitrate == 0)		//文件大小为0、文件长度为0或文件为midi音乐时不显示比特率
 	{
 		info = _T("-");
 	}

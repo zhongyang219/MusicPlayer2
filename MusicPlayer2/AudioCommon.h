@@ -2,6 +2,7 @@
 #pragma once
 #include "Time.h"
 #include "Common.h"
+#include "FilePathHelper.h"
 
 //音频文件类型
 enum AudioType
@@ -273,6 +274,9 @@ public:
 
 	//根据文件名判断文件的类型
 	static AudioType GetAudioType(const wstring& file_name);
+
+	//根据一个文件扩展名判断音频类型的描述
+	static wstring GetAudioFormatDescription(wstring extension);
 
 	//查找path目录下的所有音频文件，并将文件名保存到files容器中，并限定最大文件数为max_file
 	static void GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file);

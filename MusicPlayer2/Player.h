@@ -71,7 +71,7 @@ private:
 	int m_album_cover_type;			//专辑封面的格式
 	bool m_inner_cover{ false };			//如果专辑封面是内嵌图片，则为true
 
-	bool m_no_ape_plugin{ false };		//如果无法加载bass_ape.dll，则为true
+	//bool m_no_ape_plugin{ false };		//如果无法加载bass_ape.dll，则为true
 
 	SongInfo m_no_use{};
 public:

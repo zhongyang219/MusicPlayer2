@@ -18,9 +18,13 @@ bool CAudioCommon::FileIsAudio(const wstring & file_name)
 	wstring type;
 	if (index != string::npos)
 		type = file_name.substr(index);			//获取扩展名
-	std::transform(type.begin(), type.end(), type.begin(), tolower);		//将扩展名转换成小写
-	return (type == L".mp3" || type == L".wma" || type == L".wav"|| type == L".ogg" || type == L".flac"
-		|| type == L".m4a" || type == L".cue" || type == L".ape");
+	//std::transform(type.begin(), type.end(), type.begin(), tolower);	
+	CCommon::StringTransform(type, false);		//将扩展名转换成小写
+	return (type == L".mp3" || type == L".wma" || type == L".wav"|| type == L".ogg" || type == L".flac" || type == L".fla"
+		|| type == L".m4a" || type == L".cue" || type == L".ape" || type == L".mid" || type == L".midi"
+		|| type == L".mp2" || type == L".mp1" || type == L".aif"
+		|| type == L".cda"/*CD音频*/ || type == L".aac"
+		);
 }
 
 AudioType CAudioCommon::GetAudioType(const wstring & file_name)
@@ -49,6 +53,31 @@ AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 		return AU_APE;
 	else
 		return AU_OTHER;
+}
+
+wstring CAudioCommon::GetAudioFormatDescription(wstring extension)
+{
+	CCommon::StringTransform(extension, false);
+	if (extension == L"mp3")
+		return wstring(L"MP3 音频文件");
+	else if (extension == L"wma")
+		return wstring(L"Windows Media 音频文件");
+	else if (extension == L"wav")
+		return wstring(L"WAV 音频文件");
+	else if (extension == L"mid" || extension == L"midi")
+		return wstring(L"MIDI 序列");
+	else if (extension == L"ogg")
+		return wstring(L"OGG 音频文件");
+	else if (extension == L"m4a")
+		return wstring(L"MPEG-4 音频文件");
+	else if (extension == L"ape")
+		return wstring(L"Monkey's Audio (APE)");
+	else if (extension == L"aac")
+		return wstring(L"Advanced Audio Coding (AAC)");
+	else if (extension == L"cda")
+		return wstring(L"CD 音频文件 (CDA)");
+	else
+		return wstring(extension + L" 文件");
 }
 
 void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file)
