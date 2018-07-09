@@ -312,6 +312,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"general", L"auto_download_album_cover", theApp.m_general_setting_data.auto_download_album_cover, theApp.m_config_path.c_str());
+	WritePrivateProfileStringW(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path.c_str(), theApp.m_config_path.c_str());
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -327,7 +328,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_display_format = static_cast<DisplayFormat>(GetPrivateProfileInt(_T("config"), _T("playlist_display_format"), 2, theApp.m_config_path.c_str()));
 	theApp.m_play_setting_data.show_lyric_in_cortana = (GetPrivateProfileInt(_T("config"), _T("show_lyric_in_cortana"), 0, theApp.m_config_path.c_str()) != 0);
 	theApp.m_play_setting_data.save_lyric_in_offset = (GetPrivateProfileInt(_T("config"), _T("save_lyric_in_offset"), 1, theApp.m_config_path.c_str()) != 0);
-	wchar_t buff[32];
+	wchar_t buff[256];
 	GetPrivateProfileStringW(L"config", L"font", L"Î¢ÈíÑÅºÚ", buff, sizeof(buff) / sizeof(wchar_t), theApp.m_config_path.c_str());
 	theApp.m_app_setting_data.lyric_font_name = buff;
 	theApp.m_app_setting_data.lyric_font_size = GetPrivateProfileIntW(L"config", L"font_size", 10, theApp.m_config_path.c_str());
@@ -354,6 +355,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_general_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("general"), _T("id3v2_first"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_general_setting_data.auto_download_lyric = (GetPrivateProfileIntW(_T("general"), _T("auto_download_lyric"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_general_setting_data.auto_download_album_cover = (GetPrivateProfileIntW(_T("general"), _T("auto_download_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
+	GetPrivateProfileStringW(L"general", L"sf2_path", L"", buff, sizeof(buff) / sizeof(wchar_t), theApp.m_config_path.c_str());
+	theApp.m_general_setting_data.sf2_path = buff;
 }
 
 void CMusicPlayerDlg::SetTransparency()

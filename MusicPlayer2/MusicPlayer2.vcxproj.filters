@@ -132,6 +132,9 @@
     <Filter Include="头文件和源文件\对话框类\专辑封面下载对话框">
       <UniqueIdentifier>{d369f9b9-ebfd-4138-829d-de631c68a8e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\BASS">
+      <UniqueIdentifier>{19a9ecf9-4893-450b-a085-7cb1a6a7dd4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -267,6 +270,9 @@
     <ClInclude Include="CoverDownloadDlg.h">
       <Filter>头文件和源文件\对话框类\专辑封面下载对话框</Filter>
     </ClInclude>
+    <ClInclude Include="BASSMidiLibrary.h">
+      <Filter>头文件和源文件\公共的类\BASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -385,6 +391,9 @@
     </ClCompile>
     <ClCompile Include="CoverDownloadDlg.cpp">
       <Filter>头文件和源文件\对话框类\专辑封面下载对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="BASSMidiLibrary.cpp">
+      <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

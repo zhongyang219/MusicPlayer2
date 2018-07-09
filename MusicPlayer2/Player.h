@@ -4,6 +4,7 @@
 #include"SetPathDlg.h"
 #include"AudioTag.h"
 #include "FilePathHelper.h"
+#include "BASSMidiLibrary.h"
 //#include"MusicPlayerDlg.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
@@ -31,6 +32,9 @@ private:
 	CWinThread* m_pThread{};		//初始化播放列表的线程
 
 	HSTREAM m_musicStream{};		//当前的音频句柄
+
+	CBASSMidiLibrary m_bass_midi_lib;
+	BASS_MIDI_FONT m_sfont;
 
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
 	wstring m_path;		//当前播放文件的路径

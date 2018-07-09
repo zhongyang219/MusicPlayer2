@@ -56,6 +56,7 @@ struct GeneralSettingData
 	bool auto_download_album_cover{ true };		//是否自动下载专辑封面
 	bool auto_download_only_tag_full{ true };		//仅在歌曲信息完整时自动下载
 	bool check_update_when_start{ true };		//是否在程序启动时检查更新
+	wstring sf2_path;		//MIDI音色库路径
 };
 
 struct NonCategorizedSettingData

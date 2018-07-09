@@ -194,6 +194,7 @@
     <ClInclude Include="AudioCommon.h" />
     <ClInclude Include="AudioTag.h" />
     <ClInclude Include="bass.h" />
+    <ClInclude Include="BASSMidiLibrary.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
     <ClInclude Include="FilePathHelper.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
     <ClCompile Include="AudioTag.cpp" />
+    <ClCompile Include="BASSMidiLibrary.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
     <ClCompile Include="FilePathHelper.cpp" />

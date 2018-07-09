@@ -5,19 +5,6 @@
 
 CPlayer::CPlayer()
 {
-	//载入BASS插件
-	wstring plugin_dir;
-#ifdef _DEBUG
-	plugin_dir = L".\\Plugins\\";
-#else
-	plugin_dir = theApp.m_module_dir + L"Plugins\\";
-#endif // _DEBUG
-	vector<wstring> plugin_files;
-	CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);
-	for (const auto& plugin_file : plugin_files)
-	{
-		BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
-	}
 }
 
 CPlayer::~CPlayer()
@@ -40,6 +27,30 @@ void CPlayer::IniBASS()
 		theApp.m_pMainWnd->m_hWnd,//程序窗口,0用于控制台程序
 		NULL//类标识符,0使用默认值
 	);
+
+	//载入BASS插件
+	wstring plugin_dir;
+#ifdef _DEBUG
+	plugin_dir = L".\\Plugins\\";
+#else
+	plugin_dir = theApp.m_module_dir + L"Plugins\\";
+#endif // _DEBUG
+	vector<wstring> plugin_files;
+	CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);
+	for (const auto& plugin_file : plugin_files)
+	{
+		BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
+	}
+
+	//载入MIDI音色库，用于播放MIDI
+	m_bass_midi_lib.Init(plugin_dir + L"bassmidi.dll");
+	if (m_bass_midi_lib.IsSuccessed())
+	{
+		m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(theApp.m_general_setting_data.sf2_path.c_str(), BASS_UNICODE);
+		m_sfont.preset = -1;
+		m_sfont.bank = 0;
+	}
+	//int rtn = m_bass_midi_lib.BASS_MIDI_FontLoad(m_sfont, -1, -1);
 }
 
 void CPlayer::Create()
@@ -354,6 +365,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
 	case Command::OPEN:
 		m_error_code = 0;
 		m_musicStream = BASS_StreamCreateFile(FALSE, (m_path + m_current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+		if (m_bass_midi_lib.IsSuccessed())
+			m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
 		if (m_song_num > 0)
 		{
 			//if (m_index >= MAX_NUM_LENGTH && m_playlist[m_index].lengh.isZero())	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
@@ -1103,6 +1116,7 @@ void CPlayer::ReIniBASS()
 {
 	BASS_Stop();	//停止输出
 	BASS_Free();	//释放Bass资源
+	m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
 	IniBASS();
 	MusicControl(Command::OPEN);
 	MusicControl(Command::SEEK);

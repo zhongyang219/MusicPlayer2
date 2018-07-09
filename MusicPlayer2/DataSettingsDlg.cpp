@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_COVER_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck)
 	ON_BN_CLICKED(IDC_LYRIC_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck)
 	ON_BN_CLICKED(IDC_CHECK_UPDATE_CHECK, &CDataSettingsDlg::OnBnClickedCheckUpdateCheck)
+	ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDataSettingsDlg::OnBnClickedBrowseButton)
 END_MESSAGE_MAP()
 
 
@@ -53,6 +54,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_album_cover);
 	((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_lyric);
 	((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->SetCheck(m_data.check_update_when_start);
+	SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -143,4 +145,20 @@ void CDataSettingsDlg::OnBnClickedCheckUpdateCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.check_update_when_start = (((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->GetCheck() != 0);
+}
+
+
+void CDataSettingsDlg::OnBnClickedBrowseButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//设置过滤器
+	LPCTSTR szFilter = _T("音色库文件(*.SF2)|*.SF2|所有文件(*.*)|*.*||");
+	//构造打开文件对话框
+	CFileDialog fileDlg(TRUE, _T("SF2"), NULL, 0, szFilter, this);
+	//显示打开文件对话框
+	if (IDOK == fileDlg.DoModal())
+	{
+		m_data.sf2_path = fileDlg.GetPathName();	//获取打开的文件路径
+		SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
+	}
 }
