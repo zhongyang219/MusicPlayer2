@@ -167,7 +167,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 		CAudioTag audio_tag(hStream, pInfo->player->m_path, pInfo->player->m_playlist[i]);
 		audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
 		//获取midi音乐的标题
-		if (audio_tag.GetAudioType() == AU_MIDI)
+		if (pInfo->player->m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
 		{
 			BASS_MIDI_MARK mark;
 			if (pInfo->player->m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
@@ -370,6 +370,8 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 
 void CPlayer::MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void * user)
 {
+	if (!theApp.m_player.m_bass_midi_lib.IsSuccessed())
+		return;
 	BASS_MIDI_MARK mark;
 	theApp.m_player.m_bass_midi_lib.BASS_MIDI_StreamGetMark(channel, (DWORD)user, data, &mark); // get the lyric/text
 	if (mark.text[0] == '@') return; // skip info
@@ -426,7 +428,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			}
 			//如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
 			m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
-			if (m_is_midi)
+			if (m_is_midi && m_bass_midi_lib.IsSuccessed())
 			{
 				m_midi_info.midi_length = (BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) - 1) / 120;
 				m_midi_info.tempo = m_bass_midi_lib.BASS_MIDI_StreamGetEvent(m_musicStream, 0, MIDI_EVENT_TEMPO);
@@ -1172,7 +1174,8 @@ void CPlayer::ReIniBASS()
 {
 	BASS_Stop();	//停止输出
 	BASS_Free();	//释放Bass资源
-	m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
+	if(m_bass_midi_lib.IsSuccessed())
+		m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
 	IniBASS();
 	MusicControl(Command::OPEN);
 	MusicControl(Command::SEEK);
