@@ -21,6 +21,8 @@ public:
 	//返回值：成功返回true，否则返回false
 	static bool WriteMp3Tag(LPCTSTR file_path, const SongInfo& song_info, bool& text_cut_off);
 
+	AudioType GetAudioType() const { return m_type; }
+
 	~CAudioTag();
 
 private:

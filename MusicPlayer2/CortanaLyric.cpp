@@ -98,6 +98,37 @@ void CCortanaLyric::SetCortanaColor(int color)
 	m_cortana_color = color;
 }
 
+void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, bool center)
+{
+	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
+	{
+		m_cortana_draw.SetFont(&m_cortana_font);
+		//设置缓冲的DC
+		CDC MemDC;
+		CBitmap MemBitmap;
+		MemDC.CreateCompatibleDC(NULL);
+		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
+		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+		//使用m_cortana_draw绘图
+		m_cortana_draw.SetDC(&MemDC);
+		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
+		COLORREF color;
+		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
+		CRect text_rect{ m_cortana_rect };
+		text_rect.DeflateRect(DPI(4), 0);
+		m_cortana_draw.DrawWindowText(text_rect, str, color, center);
+		//将缓冲区DC中的图像拷贝到屏幕中显示
+		CRect rect{ m_cortana_rect };
+		rect.MoveToX(m_cortana_left_space);
+		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
+			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
+		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		MemBitmap.DeleteObject();
+		MemDC.DeleteDC();
+	}
+}
+
 void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)

@@ -20,6 +20,7 @@ public:
 
 private:
 	size_t m_data_size;		//数据文件的大小
+	CToolTipCtrl m_toolTip;
 
 	void ShowDataSizeInfo();
 
@@ -35,4 +36,6 @@ public:
 	afx_msg void OnBnClickedLyricAutoDownloadCheck();
 	afx_msg void OnBnClickedCheckUpdateCheck();
 	afx_msg void OnBnClickedBrowseButton();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnBnClickedMidiUseInnerLyricCheck();
 };

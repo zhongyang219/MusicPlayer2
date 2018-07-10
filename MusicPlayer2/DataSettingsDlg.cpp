@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_LYRIC_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck)
 	ON_BN_CLICKED(IDC_CHECK_UPDATE_CHECK, &CDataSettingsDlg::OnBnClickedCheckUpdateCheck)
 	ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDataSettingsDlg::OnBnClickedBrowseButton)
+	ON_BN_CLICKED(IDC_MIDI_USE_INNER_LYRIC_CHECK, &CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck)
 END_MESSAGE_MAP()
 
 
@@ -55,6 +56,11 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_lyric);
 	((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->SetCheck(m_data.check_update_when_start);
 	SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
+	((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->SetCheck(m_data.midi_use_inner_lyric);
+
+	m_toolTip.Create(this);
+	m_toolTip.SetMaxTipWidth(DPI(300));
+	m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), _T("说明：程序目录下的 song_data.dat 文件保存了所有加载过的歌曲信息，用于加快播放列表的载入速度，如果该文件过大，可以通过此按钮清理它。"));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -161,4 +167,21 @@ void CDataSettingsDlg::OnBnClickedBrowseButton()
 		m_data.sf2_path = fileDlg.GetPathName();	//获取打开的文件路径
 		SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
 	}
+}
+
+
+BOOL CDataSettingsDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_MOUSEMOVE)
+		m_toolTip.RelayEvent(pMsg);
+
+	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+
+void CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.midi_use_inner_lyric = (((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->GetCheck() != 0);
 }

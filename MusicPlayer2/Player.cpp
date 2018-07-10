@@ -166,6 +166,16 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 		//CAudioCommon::GetAudioTags(hStream, type, pInfo->player->m_path, pInfo->player->m_playlist[i]);
 		CAudioTag audio_tag(hStream, pInfo->player->m_path, pInfo->player->m_playlist[i]);
 		audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
+		//获取midi音乐的标题
+		if (audio_tag.GetAudioType() == AU_MIDI)
+		{
+			BASS_MIDI_MARK mark;
+			if (pInfo->player->m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
+			{
+				pInfo->player->m_playlist[i].title = CCommon::StrToUnicode(mark.text, CodeType::ANSI);
+				pInfo->player->m_playlist[i].info_acquired = true;
+			}
+		}
 		BASS_StreamFree(hStream);
 		theApp.m_song_data[pInfo->player->m_path + pInfo->player->m_playlist[i].file_name] = pInfo->player->m_playlist[i];
 		count++;
@@ -358,6 +368,32 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 	m_playlist[m_index].lyric_file = lyric_path;
 }
 
+void CPlayer::MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void * user)
+{
+	BASS_MIDI_MARK mark;
+	theApp.m_player.m_bass_midi_lib.BASS_MIDI_StreamGetMark(channel, (DWORD)user, data, &mark); // get the lyric/text
+	if (mark.text[0] == '@') return; // skip info
+	if (mark.text[0] == '\\')
+	{ // clear display
+		theApp.m_player.m_midi_lyric.clear();
+	}
+	else if (mark.text[0] == '/')
+	{
+		theApp.m_player.m_midi_lyric += L"\r\n";
+		const char* text = mark.text + 1;
+		theApp.m_player.m_midi_lyric += CCommon::StrToUnicode(text, CodeType::ANSI);
+	}
+	else
+	{
+		theApp.m_player.m_midi_lyric += CCommon::StrToUnicode(mark.text, CodeType::ANSI);
+	}
+}
+
+void CPlayer::MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void * user)
+{
+	theApp.m_player.m_midi_lyric.clear();
+}
+
 void CPlayer::MusicControl(Command command, int volume_step)
 {
 	switch (command)
@@ -387,6 +423,22 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			{
 				m_song_length = m_playlist[m_index].lengh;
 				m_song_length_int = m_song_length.time2int();
+			}
+			//如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
+			m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
+			if (m_is_midi)
+			{
+				m_midi_info.midi_length = (BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) - 1) / 120;
+				m_midi_info.tempo = m_bass_midi_lib.BASS_MIDI_StreamGetEvent(m_musicStream, 0, MIDI_EVENT_TEMPO);
+				m_midi_info.speed = 60000000 / m_midi_info.tempo;
+
+				BASS_MIDI_MARK mark;
+				m_midi_lyric.clear();
+				if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(m_musicStream, BASS_MIDI_MARK_LYRIC, 0, &mark)) // got lyrics
+					BASS_ChannelSetSync(m_musicStream, BASS_SYNC_MIDI_MARK, BASS_MIDI_MARK_LYRIC, MidiLyricSync, (void*)BASS_MIDI_MARK_LYRIC);
+				else if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(m_musicStream, BASS_MIDI_MARK_TEXT, 20, &mark)) // got text instead (over 20 of them)
+					BASS_ChannelSetSync(m_musicStream, BASS_SYNC_MIDI_MARK, BASS_MIDI_MARK_TEXT, MidiLyricSync, (void*)BASS_MIDI_MARK_TEXT);
+				BASS_ChannelSetSync(m_musicStream, BASS_SYNC_END, 0, MidiEndSync, 0);
 			}
 
 			//打开时获取专辑封面
@@ -542,6 +594,10 @@ void CPlayer::GetBASSCurrentPosition()
 		m_current_position_int -= m_playlist[m_index].start_pos.time2int();
 	}
 	m_current_position.int2time(m_current_position_int);
+	if (m_is_midi)
+	{
+		m_midi_info.midi_position = BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK)/120;
+	}
 }
 
 

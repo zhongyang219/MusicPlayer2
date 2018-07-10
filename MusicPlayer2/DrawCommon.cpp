@@ -32,7 +32,7 @@ void CDrawCommon::SetDC(CDC * pDC)
 	m_pDC = pDC;
 }
 
-void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, bool center, bool no_clip_area)
+void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, bool center, bool no_clip_area, bool multi_line)
 {
 	m_pDC->SetTextColor(color);
 	//m_pDC->SetBkMode(TRANSPARENT);
@@ -45,10 +45,22 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	CSize text_size = m_pDC->GetTextExtent(lpszString);
 	//用背景色填充矩形区域
 	//m_pDC->FillSolidRect(rect, m_backColor);
-	if (text_size.cx > rect.Width())		//如果文本宽度超过了矩形区域的宽度，则总是左对齐
-		m_pDC->DrawText(lpszString, rect, DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	if (multi_line)
+	{
+		CRect text_rect{ rect };
+		int height = m_pDC->DrawText(lpszString, text_rect, DT_CALCRECT | DT_CENTER | DT_EDITCONTROL | DT_WORDBREAK);
+		if (height < rect.Height())
+			rect.top += (rect.Height() - height) / 2;
+		rect.bottom = rect.top + height;
+		m_pDC->DrawText(lpszString, rect, (center ? DT_CENTER : 0) | DT_EDITCONTROL | DT_WORDBREAK | DT_NOPREFIX);
+	}
 	else
-		m_pDC->DrawText(lpszString, rect, (center ? DT_CENTER : 0) | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	{
+		if (text_size.cx > rect.Width())		//如果文本宽度超过了矩形区域的宽度，则总是左对齐
+			m_pDC->DrawText(lpszString, rect, DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+		else
+			m_pDC->DrawText(lpszString, rect, (center ? DT_CENTER : 0) | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	}
 }
 
 void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, bool center, bool no_clip_area)

@@ -57,6 +57,7 @@ struct GeneralSettingData
 	bool auto_download_only_tag_full{ true };		//仅在歌曲信息完整时自动下载
 	bool check_update_when_start{ true };		//是否在程序启动时检查更新
 	wstring sf2_path;		//MIDI音色库路径
+	bool midi_use_inner_lyric{ false };		//播放MIDI音乐时显示内嵌歌词
 };
 
 struct NonCategorizedSettingData

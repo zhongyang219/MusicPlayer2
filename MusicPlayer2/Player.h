@@ -13,6 +13,14 @@
 #define WM_CONNOT_PLAY_WARNING (WM_USER+108)		//无法播放文件时弹出警告提示框的消息
 #define WM_MUSIC_STREAM_OPENED (WM_USER+109)		//当音频文件打开时的消息
 
+struct MidiInfo
+{
+	int midi_position;
+	int midi_length;
+	int speed;		//速度，bpm
+	int tempo;		//每个四分音符的微秒数
+};
+
 class CPlayer
 {
 public:
@@ -28,6 +36,10 @@ public:
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
 	ThreadInfo m_thread_info;
 
+	//获取Midi音乐内嵌歌词的回调函数
+	static void CALLBACK MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void *user);
+	static void CALLBACK MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void *user);
+
 private:
 	CWinThread* m_pThread{};		//初始化播放列表的线程
 
@@ -35,6 +47,9 @@ private:
 
 	CBASSMidiLibrary m_bass_midi_lib;
 	BASS_MIDI_FONT m_sfont;
+	MidiInfo m_midi_info;
+	bool m_is_midi;
+	wstring m_midi_lyric;
 
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
 	wstring m_path;		//当前播放文件的路径
@@ -201,6 +216,10 @@ public:
 	void SetRelatedSongID(wstring song_id);		//为当前歌曲设置关联的网易云音乐歌曲ID
 	void SetRelatedSongID(int index, wstring song_id);		//为第index首歌曲设置关联的网易云音乐歌曲ID
 	bool IsInnerCover() const { return m_inner_cover; }		//判断当前专辑封面是否是内嵌图片
+
+	bool IsMidi() const { return m_is_midi; }
+	const MidiInfo& GetMidiInfo() const { return m_midi_info; }
+	const wstring& GetMidiLyric() const { return m_midi_lyric; }
 
 	void ReIniBASS();		//重新初始化BASS
 
