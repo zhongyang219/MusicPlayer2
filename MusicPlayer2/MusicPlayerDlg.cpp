@@ -2943,7 +2943,8 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 	}
 
 	bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist() };
-	bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty() };
+	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric };
+	bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty() && !midi_lyric };
 	CInternetCommon::ItemInfo match_item;
 	if (download_cover || download_lyric)
 	{
