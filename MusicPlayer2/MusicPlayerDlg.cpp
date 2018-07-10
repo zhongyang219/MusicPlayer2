@@ -1472,52 +1472,53 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//在Cortana搜索框里显示歌词
 		if (theApp.m_play_setting_data.show_lyric_in_cortana)
 		{
-			if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric)
+			//if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric)
+			//{
+			//	wstring current_lyric{ theApp.m_player.GetMidiLyric() };
+			//	if (current_lyric.empty())
+			//		m_cortana_lyric.DrawCortanaTextSimple((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false);
+			//	else
+			//		m_cortana_lyric.DrawCortanaTextSimple(current_lyric.c_str(), false);
+			//}
+			//else
+			//{
+			bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric };
+			if (!theApp.m_player.m_Lyrics.IsEmpty() && !midi_lyric)		//有歌词时显示歌词
 			{
-				wstring current_lyric{ theApp.m_player.GetMidiLyric() };
-				if (current_lyric.empty())
-					m_cortana_lyric.DrawCortanaTextSimple((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false);
+				Time time{ theApp.m_player.GetCurrentPosition() };
+				wstring lyric_text = theApp.m_player.m_Lyrics.GetLyric(time, 0);
+				int progress = theApp.m_player.m_Lyrics.GetLyricProgress(time);
+				if (!theApp.m_play_setting_data.cortana_lyric_double_line)
+				{
+					if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT;
+					m_cortana_lyric.DrawCortanaText(lyric_text.c_str(), progress);
+				}
 				else
-					m_cortana_lyric.DrawCortanaTextSimple(current_lyric.c_str(), false);
+				{
+					wstring next_lyric = theApp.m_player.m_Lyrics.GetLyric(time, 1);
+					if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT_CORTANA;
+					if (next_lyric.empty()) next_lyric = DEFAULT_LYRIC_TEXT_CORTANA;
+					m_cortana_lyric.DrawLyricDoubleLine(lyric_text.c_str(), next_lyric.c_str(), progress);
+				}
 			}
 			else
 			{
-				if (!theApp.m_player.m_Lyrics.IsEmpty())		//有歌词时显示歌词
+				//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
+				static int index{};
+				static wstring song_name{};
+				//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
+				if (index != theApp.m_player.GetIndex() || song_name != theApp.m_player.GetFileName())
 				{
-					Time time{ theApp.m_player.GetCurrentPosition() };
-					wstring lyric_text = theApp.m_player.m_Lyrics.GetLyric(time, 0);
-					int progress = theApp.m_player.m_Lyrics.GetLyricProgress(time);
-					if (!theApp.m_play_setting_data.cortana_lyric_double_line)
-					{
-						if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT;
-						m_cortana_lyric.DrawCortanaText(lyric_text.c_str(), progress);
-					}
-					else
-					{
-						wstring next_lyric = theApp.m_player.m_Lyrics.GetLyric(time, 1);
-						if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT_CORTANA;
-						if (next_lyric.empty()) next_lyric = DEFAULT_LYRIC_TEXT_CORTANA;
-						m_cortana_lyric.DrawLyricDoubleLine(lyric_text.c_str(), next_lyric.c_str(), progress);
-					}
+					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true, DPI(2));
+					index = theApp.m_player.GetIndex();
+					song_name = theApp.m_player.GetFileName();
 				}
 				else
 				{
-					//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
-					static int index{};
-					static wstring song_name{};
-					//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
-					if (index != theApp.m_player.GetIndex() || song_name != theApp.m_player.GetFileName())
-					{
-						m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true, DPI(2));
-						index = theApp.m_player.GetIndex();
-						song_name = theApp.m_player.GetFileName();
-					}
-					else
-					{
-						m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, DPI(2));
-					}
+					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, DPI(2));
 				}
 			}
+			//}
 
 			//计算频谱，根据频谱幅值使Cortana图标显示动态效果
 			float spectrum_avr{};		//取前面8个频段频谱值的平均值
