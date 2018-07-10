@@ -604,10 +604,17 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	int progress;
 	Time time{ theApp.m_player.GetCurrentPosition() };
 	if (theApp.m_player.IsMidi())
+	{
 		//progress = (theApp.m_player.GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
-		progress = (time.time2int() * 1000 / theApp.m_player.GetMidiInfo().tempo % 4 + 1) * 250;
+		if (theApp.m_player.GetMidiInfo().tempo == 0)
+			progress = 0;
+		else
+			progress = (time.time2int() * 1000 / theApp.m_player.GetMidiInfo().tempo % 4 + 1) * 250;
+	}
 	else
+	{
 		progress = (time.sec % 4 * 1000 + time.msec) / 4;
+	}
 	tmp.MoveToX(tmp.right);
 	tmp.right = other_info_rect.right;
 	m_draw.DrawWindowText(tmp, _T("<<<<"), theApp.m_app_setting_data.theme_color.dark2, theApp.m_app_setting_data.theme_color.light1, progress, false);
