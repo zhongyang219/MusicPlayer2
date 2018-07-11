@@ -10,40 +10,56 @@ CStaticEx::~CStaticEx()
 {
 }
 
-void CStaticEx::DrawWindowText(LPCTSTR lpszString)
+void CStaticEx::DrawWindowText(LPCTSTR lpszString, bool draw_back_ground)
 {
 	m_text = lpszString;
 	m_text_type = TextType::NORMAL;
-	Invalidate();
+	m_draw_back_ground = draw_back_ground;
+	if (m_draw_back_ground)
+		Invalidate(FALSE);
+	else
+		Invalidate();
 }
 
-void CStaticEx::DrawWindowText(LPCTSTR lpszString, int split)
+void CStaticEx::DrawWindowText(LPCTSTR lpszString, int split, bool draw_back_ground)
 {
 	m_text = lpszString;
 	m_text_type = TextType::SPLIT;
 	m_split = split;
-	Invalidate();
+	m_draw_back_ground = draw_back_ground;
+	if (m_draw_back_ground)
+		Invalidate(FALSE);
+	else
+		Invalidate();
 }
 
-void CStaticEx::DrawScrollText(LPCTSTR lpszString, int pixel, bool reset)
+void CStaticEx::DrawScrollText(LPCTSTR lpszString, int pixel, bool reset, bool draw_back_ground)
 {
 	m_text = lpszString;
 	m_text_type = TextType::SCROLL;
 	m_scroll_pixel = pixel;
 	m_scroll_reset = reset;
-	Invalidate();
-
+	m_draw_back_ground = draw_back_ground;
+	if (m_draw_back_ground)
+		Invalidate(FALSE);
+	else
+		Invalidate();
 }
 
 void CStaticEx::SetTextColor(COLORREF textColor)
 {
-	m_TextColor = textColor;
+	m_text_color = textColor;
 	//DrawWindowText(m_text);
 }
 
 void CStaticEx::SetText2Color(COLORREF textColor)
 {
-	m_TextBackColor = textColor;
+	m_text2_color = textColor;
+}
+
+void CStaticEx::SetBackColor(COLORREF back_color)
+{
+	m_back_color = back_color;
 }
 
 CString CStaticEx::GetString() const
@@ -90,17 +106,24 @@ void CStaticEx::OnPaint()
 	switch (m_text_type)
 	{
 	case CStaticEx::TextType::NORMAL:
-		dc.SetBkMode(TRANSPARENT);
+		if (m_draw_back_ground)
+			dc.FillSolidRect(rect, m_back_color);
+		else
+			dc.SetBkMode(TRANSPARENT);
 		dc.SelectObject(this->GetFont());
-		DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域以解决文字重叠的问题
-		dc.SetTextColor(m_TextColor);
+		if (!m_draw_back_ground)
+			DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域以解决文字重叠的问题
+		dc.SetTextColor(m_text_color);
 		dc.DrawText(m_text, rect, (m_center ? DT_CENTER : 0) | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 		break;
 	case CStaticEx::TextType::SPLIT:
 	{
 		if (m_split < 0) m_split = 0;
 		if (m_split > 1000) m_split = 1000;
-		dc.SetBkMode(TRANSPARENT);
+		if (m_draw_back_ground)
+			dc.FillSolidRect(rect, m_back_color);
+		else
+			dc.SetBkMode(TRANSPARENT);
 		dc.SelectObject(this->GetFont());
 		CSize text_size;	//文本的大小
 		int text_top, text_left;		//输出文本的top和left位置
@@ -142,10 +165,11 @@ void CStaticEx::OnPaint()
 			}
 		}
 
-		DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域以解决文字重叠的问题
-		dc.SetTextColor(m_TextBackColor);
+		if (!m_draw_back_ground)
+			DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域以解决文字重叠的问题
+		dc.SetTextColor(m_text2_color);
 		dc.DrawText(m_text, text_rect, DT_SINGLELINE | DT_NOPREFIX);		//绘制背景文字
-		dc.SetTextColor(m_TextColor);
+		dc.SetTextColor(m_text_color);
 		dc.DrawText(m_text, text_f_rect, DT_SINGLELINE | DT_NOPREFIX);		//绘制覆盖文字
 	}
 		break;
@@ -162,8 +186,11 @@ void CStaticEx::OnPaint()
 			freez = 20;
 			dir_changed = false;
 		}
-		dc.SetTextColor(m_TextColor);
-		dc.SetBkMode(TRANSPARENT);
+		dc.SetTextColor(m_text_color);
+		if (m_draw_back_ground)
+			dc.FillSolidRect(rect, m_back_color);
+		else
+			dc.SetBkMode(TRANSPARENT);
 		dc.SelectObject(this->GetFont());
 		CSize text_size;	//文本的大小
 		int text_top, text_left;		//输出文本的top和left位置
@@ -199,7 +226,8 @@ void CStaticEx::OnPaint()
 				dir_changed = false;
 			}
 		}
-		DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域以解决文字重叠的问题
+		if (!m_draw_back_ground)
+			DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域以解决文字重叠的问题
 		dc.DrawText(m_text, text_rect, DT_SINGLELINE | DT_NOPREFIX);
 		if (freez <= 0)		//当freez为0的时候才滚动
 		{

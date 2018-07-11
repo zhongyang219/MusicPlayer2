@@ -926,6 +926,7 @@ void CMusicPlayerDlg::SwitchTrack()
 	{
 		m_miniModeDlg.SetPlayListColor();
 		m_miniModeDlg.RePaint();
+		m_miniModeDlg.Invalidate(FALSE);
 	}
 	//切换歌曲时如果当前歌曲的时间没有显示，则显示出来
 	CString song_length_str;

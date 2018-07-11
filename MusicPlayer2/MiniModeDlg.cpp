@@ -303,7 +303,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 	//获取频谱分析控件的CDC，用于绘制频谱柱形
 	m_spectrum_pDC = m_spectral_static.GetDC();
 
-	m_draw.Create(GetDC(), this);
+	//m_draw.Create(GetDC(), this);
 
 	//为了确保每次打开迷你窗口时一定会显示当前歌词，在这里将此变量置为-1
 	m_last_lyric_index = -1;
@@ -409,16 +409,16 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
 		if (current_lyric.empty())
-			m_lyric_static.DrawWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str());
+			m_lyric_static.DrawWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true);
 		else
-			m_lyric_static.DrawWindowText(current_lyric.c_str());
+			m_lyric_static.DrawWindowText(current_lyric.c_str(), true);
 	}
 	else
 	{
 		if (theApp.m_player.m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
 		{
 			//正在播放的文件名以滚动的样式显示，函数每调用一次滚动DPI/72个像素（150%缩放时为2个像素）。如果参数要求强制刷新，则重置滚动位置
-			m_lyric_static.DrawScrollText(CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str(), theApp.m_dpi / 72, force_refresh);
+			m_lyric_static.DrawScrollText(CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str(), theApp.m_dpi / 72, force_refresh, true);
 		}
 		else		//显示歌词
 		{
@@ -428,7 +428,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 				int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 				if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 					current_lyric = DEFAULT_LYRIC_TEXT;
-				m_lyric_static.DrawWindowText(current_lyric.c_str(), progress);
+				m_lyric_static.DrawWindowText(current_lyric.c_str(), progress, true);
 			}
 			else				//歌词不以卡拉OK样式显示时
 			{
@@ -439,7 +439,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 					wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };
 					if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 						current_lyric = DEFAULT_LYRIC_TEXT;
-					m_lyric_static.DrawWindowText(current_lyric.c_str());
+					m_lyric_static.DrawWindowText(current_lyric.c_str(), true);
 					m_last_lyric_index = lyric_index;
 				}
 			}
@@ -450,26 +450,20 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	{
 		static int last_second;
 		int second = theApp.m_player.GetCurrentSecond();
-		if (second != last_second || m_first_show_time)
+		if (second != last_second || m_first_show_time || force_refresh)
 		{
 			if (theApp.m_player.IsError())		//出现错误时显示错误信息
 			{
-				m_time_static.DrawWindowText(_T("播放出错"));
+				m_time_static.DrawWindowText(_T("播放出错"), true);
 			}
 			else
 			{
-				m_time_static.DrawWindowText(theApp.m_player.GetTimeString().c_str());
+				m_time_static.DrawWindowText(theApp.m_player.GetTimeString().c_str(), true);
 			}
 			last_second = second;
 			m_first_show_time = false;
 		}
 	}
-
-	//绘制专辑封面
-	if (theApp.m_player.AlbumCoverExist())
-		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
-	else
-		m_draw.DrawBitmap(IDB_DEFAULT_COVER, m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
 }
 
 void CMiniModeDlg::ColorChanged()
@@ -486,6 +480,8 @@ void CMiniModeDlg::ColorChanged()
 		m_time_static.SetTextColor(m_theme_color.dark2);
 		//设置背景颜色
 		SetBackgroundColor(m_theme_color.light3);
+		m_lyric_static.SetBackColor(m_theme_color.light3);
+		m_time_static.SetBackColor(m_theme_color.light3);
 		//设置进度条颜色
 		m_progress_bar.SetColor(m_theme_color.original_color);
 		m_progress_bar.SetBackColor(RGB(255, 255, 255));
@@ -498,6 +494,8 @@ void CMiniModeDlg::ColorChanged()
 		m_time_static.SetTextColor(m_theme_color.light3);
 		//设置背景颜色
 		SetBackgroundColor(m_theme_color.dark2);
+		m_lyric_static.SetBackColor(m_theme_color.dark2);
+		m_time_static.SetBackColor(m_theme_color.dark2);
 		//设置进度条颜色
 		m_progress_bar.SetColor(RGB(255, 255, 255));
 		m_progress_bar.SetBackColor(m_theme_color.dark1);
@@ -815,6 +813,13 @@ void CMiniModeDlg::OnPaint()
 	CPaintDC dc(this); // device context for painting
 					   // TODO: 在此处添加消息处理程序代码
 					   // 不为绘图消息调用 CDialogEx::OnPaint()
+	//绘制专辑封面
+	CDrawCommon draw;
+	draw.Create(&dc, this);
+	if (theApp.m_player.AlbumCoverExist())
+		draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
+	else
+		draw.DrawBitmap(IDB_DEFAULT_COVER, m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
 }
 
 
