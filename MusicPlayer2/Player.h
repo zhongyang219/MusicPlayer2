@@ -19,6 +19,7 @@ struct MidiInfo
 	int midi_length;
 	int speed;		//速度，bpm
 	int tempo;		//每个四分音符的微秒数
+	float ppqn;
 };
 
 class CPlayer

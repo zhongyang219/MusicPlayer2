@@ -607,11 +607,12 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	Time time{ theApp.m_player.GetCurrentPosition() };
 	if (theApp.m_player.IsMidi())
 	{
-		//progress = (theApp.m_player.GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
-		if (theApp.m_player.GetMidiInfo().tempo == 0)
-			progress = 0;
-		else
-			progress = (time.time2int() * 1000 / theApp.m_player.GetMidiInfo().tempo % 4 + 1) * 250;
+		////progress = (theApp.m_player.GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
+		//if (theApp.m_player.GetMidiInfo().tempo == 0)
+		//	progress = 0;
+		//else
+		//	progress = (time.time2int() * 1000 / theApp.m_player.GetMidiInfo().tempo % 4 + 1) * 250;
+		progress = (theApp.m_player.GetMidiInfo().midi_position % 4 + 1) * 250;
 	}
 	else
 	{
@@ -2098,7 +2099,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 
 	pMenu->EnableMenuItem(ID_ALBUM_COVER_SAVE_AS, MF_BYCOMMAND | (theApp.m_player.AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
-	pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | ((!theApp.m_player.IsInnerCover() && theApp.m_player.AlbumCoverExist()) ? MF_ENABLED : MF_GRAYED));
 
 	// TODO: 在此处添加消息处理程序代码
 }

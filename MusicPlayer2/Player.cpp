@@ -432,10 +432,12 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
 			if (m_is_midi && m_bass_midi_lib.IsSuccessed())
 			{
-				m_midi_info.midi_length = (BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) - 1) / 120;
+				//获取MIDI音乐信息
+				BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_MIDI_PPQN, &m_midi_info.ppqn); // get PPQN value
+				m_midi_info.midi_length = BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) / m_midi_info.ppqn;
 				m_midi_info.tempo = m_bass_midi_lib.BASS_MIDI_StreamGetEvent(m_musicStream, 0, MIDI_EVENT_TEMPO);
 				m_midi_info.speed = 60000000 / m_midi_info.tempo;
-
+				//获取MIDI音乐内嵌歌词
 				BASS_MIDI_MARK mark;
 				m_midi_lyric.clear();
 				if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(m_musicStream, BASS_MIDI_MARK_LYRIC, 0, &mark)) // got lyrics
@@ -600,7 +602,7 @@ void CPlayer::GetBASSCurrentPosition()
 	m_current_position.int2time(m_current_position_int);
 	if (m_is_midi)
 	{
-		m_midi_info.midi_position = BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK)/120;
+		m_midi_info.midi_position = BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK)/ m_midi_info.ppqn;
 	}
 }
 
@@ -1118,6 +1120,7 @@ void CPlayer::SeekTo(int position)
 	QWORD pos_bytes;
 	pos_bytes = BASS_ChannelSeconds2Bytes(m_musicStream, pos_sec);
 	BASS_ChannelSetPosition(m_musicStream, pos_bytes, BASS_POS_BYTE);
+	m_midi_lyric.clear();
 }
 
 void CPlayer::ClearLyric()

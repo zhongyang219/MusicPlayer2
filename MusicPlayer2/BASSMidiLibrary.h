@@ -26,6 +26,8 @@ struct BASS_MIDI_MARK
 
 #define BASS_SYNC_MIDI_MARK		0x10000
 
+#define BASS_ATTRIB_MIDI_PPQN		0x12000
+
 class CBASSMidiLibrary
 {
 typedef HSOUNDFONT (WINAPI *_BASS_MIDI_FontInit)(const void* file, DWORD flags);
