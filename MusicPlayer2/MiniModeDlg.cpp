@@ -408,7 +408,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric)
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
-		if (current_lyric.empty())
+		if (theApp.m_player.MidiNoLyric())
 			m_lyric_static.DrawWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true);
 		else
 			m_lyric_static.DrawWindowText(current_lyric.c_str(), true);

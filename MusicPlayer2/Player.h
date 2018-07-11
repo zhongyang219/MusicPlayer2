@@ -51,6 +51,7 @@ private:
 	MidiInfo m_midi_info;
 	bool m_is_midi;
 	wstring m_midi_lyric;
+	bool m_midi_no_lyric;
 
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
 	wstring m_path;		//当前播放文件的路径
@@ -221,6 +222,7 @@ public:
 	bool IsMidi() const { return m_is_midi; }
 	const MidiInfo& GetMidiInfo() const { return m_midi_info; }
 	const wstring& GetMidiLyric() const { return m_midi_lyric; }
+	bool MidiNoLyric() const { return m_midi_no_lyric; }
 
 	void ReIniBASS();		//重新初始化BASS
 
@@ -229,6 +231,7 @@ public:
 private:
 	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
 	void SearchAlbumCover();		//获取专辑封面
+	void GetMidiPosition();			//获取MIDI音乐的播放进度
 public:
 	void SearchOutAlbumCover();		//从文件查找专辑封面获取
 };

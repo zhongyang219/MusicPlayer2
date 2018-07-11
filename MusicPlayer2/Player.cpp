@@ -374,6 +374,7 @@ void CPlayer::MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void * user
 {
 	if (!theApp.m_player.m_bass_midi_lib.IsSuccessed())
 		return;
+	theApp.m_player.m_midi_no_lyric = false;
 	BASS_MIDI_MARK mark;
 	theApp.m_player.m_bass_midi_lib.BASS_MIDI_StreamGetMark(channel, (DWORD)user, data, &mark); // get the lyric/text
 	if (mark.text[0] == '@') return; // skip info
@@ -445,6 +446,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				else if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(m_musicStream, BASS_MIDI_MARK_TEXT, 20, &mark)) // got text instead (over 20 of them)
 					BASS_ChannelSetSync(m_musicStream, BASS_SYNC_MIDI_MARK, BASS_MIDI_MARK_TEXT, MidiLyricSync, (void*)BASS_MIDI_MARK_TEXT);
 				BASS_ChannelSetSync(m_musicStream, BASS_SYNC_END, 0, MidiEndSync, 0);
+				m_midi_no_lyric = true;
 			}
 
 			//打开时获取专辑封面
@@ -600,10 +602,7 @@ void CPlayer::GetBASSCurrentPosition()
 		m_current_position_int -= m_playlist[m_index].start_pos.time2int();
 	}
 	m_current_position.int2time(m_current_position_int);
-	if (m_is_midi)
-	{
-		m_midi_info.midi_position = BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK)/ m_midi_info.ppqn;
-	}
+	GetMidiPosition();
 }
 
 
@@ -1121,6 +1120,7 @@ void CPlayer::SeekTo(int position)
 	pos_bytes = BASS_ChannelSeconds2Bytes(m_musicStream, pos_sec);
 	BASS_ChannelSetPosition(m_musicStream, pos_bytes, BASS_POS_BYTE);
 	m_midi_lyric.clear();
+	GetMidiPosition();
 }
 
 void CPlayer::ClearLyric()
@@ -1514,6 +1514,15 @@ void CPlayer::SearchAlbumCover()
 		}
 	}
 	last_file_path = m_path + m_current_file_name;
+}
+
+void CPlayer::GetMidiPosition()
+{
+	if (m_is_midi)
+	{
+		//获取midi音乐的进度并转换成节拍数。（其中+ (m_midi_info.ppqn / 3)的目的是修正显示的节拍不准确的问题）
+		m_midi_info.midi_position = (BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 3)) / m_midi_info.ppqn;
+	}
 }
 
 void CPlayer::SearchOutAlbumCover()

@@ -733,8 +733,15 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	lyric_height += theApp.m_app_setting_data.lyric_line_space;			//文本高度加上行间距
 	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric)
 	{
-		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
-		m_draw.DrawWindowText(lyric_area, current_lyric.c_str(), theApp.m_app_setting_data.theme_color.dark2, true, false, true);
+		if (theApp.m_player.MidiNoLyric())
+		{
+			m_draw.DrawWindowText(lyric_area, _T("当前歌曲没有歌词"), theApp.m_app_setting_data.theme_color.light1, true);
+		}
+		else
+		{
+			wstring current_lyric{ theApp.m_player.GetMidiLyric() };
+			m_draw.DrawWindowText(lyric_area, current_lyric.c_str(), theApp.m_app_setting_data.theme_color.dark2, true, false, true);
+		}
 	}
 	else
 	{
@@ -3103,6 +3110,7 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 	{
 		CString dest_file = fileDlg.GetPathName();
 		::CopyFile(theApp.m_player.GetAlbumCoverPath().c_str(), dest_file, FALSE);
+		SetFileAttributes(dest_file, FILE_ATTRIBUTE_NORMAL);		//取消文件的隐藏属性
 	}
 }
 
