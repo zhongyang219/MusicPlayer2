@@ -11,6 +11,8 @@ CPlayer::~CPlayer()
 {
 	BASS_Stop();	//停止输出
 	BASS_Free();	//释放Bass资源
+	if (m_bass_midi_lib.IsSuccessed())
+		m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
 }
 
 void CPlayer::IniBASS()

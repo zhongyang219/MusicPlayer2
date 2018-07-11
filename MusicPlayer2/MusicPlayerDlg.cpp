@@ -312,6 +312,7 @@ void CMusicPlayerDlg::SaveConfig()
 	CCommon::WritePrivateProfileIntW(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric, theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"general", L"auto_download_album_cover", theApp.m_general_setting_data.auto_download_album_cover, theApp.m_config_path.c_str());
+	CCommon::WritePrivateProfileIntW(L"general", L"auto_download_only_tag_full", theApp.m_general_setting_data.auto_download_only_tag_full, theApp.m_config_path.c_str());
 	WritePrivateProfileStringW(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path.c_str(), theApp.m_config_path.c_str());
 	CCommon::WritePrivateProfileIntW(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric, theApp.m_config_path.c_str());
 }
@@ -356,6 +357,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_general_setting_data.id3v2_first = (GetPrivateProfileIntW(_T("general"), _T("id3v2_first"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_general_setting_data.auto_download_lyric = (GetPrivateProfileIntW(_T("general"), _T("auto_download_lyric"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_general_setting_data.auto_download_album_cover = (GetPrivateProfileIntW(_T("general"), _T("auto_download_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_general_setting_data.auto_download_only_tag_full = (GetPrivateProfileIntW(_T("general"), _T("auto_download_only_tag_full"), 1, theApp.m_config_path.c_str()) != 0);
 	GetPrivateProfileStringW(L"general", L"sf2_path", L"", buff, sizeof(buff) / sizeof(wchar_t), theApp.m_config_path.c_str());
 	theApp.m_general_setting_data.sf2_path = buff;
 	theApp.m_general_setting_data.midi_use_inner_lyric = (GetPrivateProfileIntW(_T("general"), _T("midi_use_inner_lyric"), 0, theApp.m_config_path.c_str()) != 0);
@@ -2943,9 +2945,9 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 {
 	//CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
 	const SongInfo& song{ theApp.m_player.GetCurrentSongInfo() };
-	if (theApp.m_general_setting_data.auto_download_only_tag_full)		//设置了“仅当歌曲信息完整进才自动下载”时，如果歌曲标题和艺术家为空，则不自动下载
+	if (theApp.m_general_setting_data.auto_download_only_tag_full)		//设置了“仅当歌曲信息完整进才自动下载”时，如果歌曲标题和艺术家有一个为空，则不自动下载
 	{
-		if ((song.title.empty() || song.title == DEFAULT_TITLE) && (song.artist.empty() || song.artist == DEFAULT_ARTIST))
+		if ((song.title.empty() || song.title == DEFAULT_TITLE) || (song.artist.empty() || song.artist == DEFAULT_ARTIST))
 			return 0;
 	}
 

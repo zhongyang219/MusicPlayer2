@@ -38,4 +38,5 @@ public:
 	afx_msg void OnBnClickedBrowseButton();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedMidiUseInnerLyricCheck();
+	afx_msg void OnBnClickedDownloadWhenTagFullCheck();
 };

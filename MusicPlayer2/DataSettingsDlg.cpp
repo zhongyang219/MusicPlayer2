@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_UPDATE_CHECK, &CDataSettingsDlg::OnBnClickedCheckUpdateCheck)
 	ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDataSettingsDlg::OnBnClickedBrowseButton)
 	ON_BN_CLICKED(IDC_MIDI_USE_INNER_LYRIC_CHECK, &CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck)
+	ON_BN_CLICKED(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, &CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck)
 END_MESSAGE_MAP()
 
 
@@ -54,6 +55,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->SetCheck(m_data.id3v2_first);
 	((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_album_cover);
 	((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_lyric);
+	((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->SetCheck(m_data.auto_download_only_tag_full);
 	((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->SetCheck(m_data.check_update_when_start);
 	SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
 	((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->SetCheck(m_data.midi_use_inner_lyric);
@@ -70,11 +72,11 @@ void CDataSettingsDlg::ShowDataSizeInfo()
 {
 	CString info;
 	if (m_data_size < 1024)
-		info.Format(_T("当前数据文件大小：%d个字节"), m_data_size);
+		info.Format(_T("当前数据文件大小：% 个字节"), m_data_size);
 	else if (m_data_size < 1024 * 1024)
-		info.Format(_T("当前数据文件大小：%.2fKB (%d个字节)"), static_cast<float>(m_data_size) / 1024.0f, m_data_size);
+		info.Format(_T("当前数据文件大小：%.2f KB (%d 字节)"), static_cast<float>(m_data_size) / 1024.0f, m_data_size);
 	else
-		info.Format(_T("当前数据文件大小：%.2fMB (%d个字节)"), static_cast<float>(m_data_size) / 1024.0f / 1024.0f, m_data_size);		//注：此处曾经由于“%.2fMB”漏掉了“f”导致出现了一打开这个对话框程序就停止工作的严重问题。
+		info.Format(_T("当前数据文件大小：%.2f MB (%d 字节)"), static_cast<float>(m_data_size) / 1024.0f / 1024.0f, m_data_size);		//注：此处曾经由于“%.2fMB”漏掉了“f”导致出现了一打开这个对话框程序就停止工作的严重问题。
 	SetDlgItemText(IDC_SIZE_STATIC, info);
 }
 
@@ -184,4 +186,11 @@ void CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.midi_use_inner_lyric = (((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->GetCheck() != 0);
+}
+
+
+void CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.auto_download_only_tag_full = (((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->GetCheck() != 0);
 }
