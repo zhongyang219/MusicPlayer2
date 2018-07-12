@@ -114,6 +114,7 @@ private:
 
 private:
 	void IniBASS();			//初始化BASS音频库
+	void UnInitBASS();
 	void IniPlayList(bool cmd_para = false, bool refresh_info = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
 	void IniPlaylistComplate(bool sort);		//播放列表加载完毕时的处理
@@ -232,6 +233,7 @@ private:
 	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
 	void SearchAlbumCover();		//获取专辑封面
 	void GetMidiPosition();			//获取MIDI音乐的播放进度
+	void AcquireSongInfo(HSTREAM hStream, SongInfo& song_info);		//获取歌曲标签等信息
 public:
 	void SearchOutAlbumCover();		//从文件查找专辑封面获取
 };

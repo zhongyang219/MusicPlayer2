@@ -9,8 +9,7 @@ CBASSMidiLibrary::CBASSMidiLibrary()
 
 CBASSMidiLibrary::~CBASSMidiLibrary()
 {
-	if (m_dll_module != NULL)
-		FreeLibrary(m_dll_module);
+	UnInit();
 }
 
 void CBASSMidiLibrary::Init(const wstring & dll_path)
@@ -31,6 +30,15 @@ void CBASSMidiLibrary::Init(const wstring & dll_path)
 	m_successed &= (BASS_MIDI_FontFree != NULL);
 	m_successed &= (BASS_MIDI_StreamGetEvent != NULL);
 	m_successed &= (BASS_MIDI_StreamGetMark != NULL);
+}
+
+void CBASSMidiLibrary::UnInit()
+{
+	if (m_dll_module != NULL)
+	{
+		FreeLibrary(m_dll_module);
+		m_dll_module = NULL;
+	}
 }
 
 bool CBASSMidiLibrary::IsSuccessed()

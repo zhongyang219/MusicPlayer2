@@ -40,6 +40,7 @@ public:
 	~CBASSMidiLibrary();
 
 	void Init(const wstring& dll_path);		//载入DLL文件并获取函数入口
+	void UnInit();
 	bool IsSuccessed();		//判断DLL中的函数是否获取成功
 
 	//BASS MIDI库中的函数指针

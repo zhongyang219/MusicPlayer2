@@ -9,10 +9,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
-	BASS_Stop();	//停止输出
-	BASS_Free();	//释放Bass资源
-	if (m_bass_midi_lib.IsSuccessed())
-		m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
+	UnInitBASS();
 }
 
 void CPlayer::IniBASS()
@@ -53,6 +50,15 @@ void CPlayer::IniBASS()
 		m_sfont.bank = 0;
 	}
 	//int rtn = m_bass_midi_lib.BASS_MIDI_FontLoad(m_sfont, -1, -1);
+}
+
+void CPlayer::UnInitBASS()
+{
+	BASS_Stop();	//停止输出
+	BASS_Free();	//释放Bass资源
+	if (m_bass_midi_lib.IsSuccessed())
+		m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
+	m_bass_midi_lib.UnInit();
 }
 
 void CPlayer::Create()
@@ -157,29 +163,8 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 		wstring current_file_name = pInfo->player->m_playlist[i].file_name;
 		HSTREAM hStream;
 		hStream = BASS_StreamCreateFile(FALSE, (pInfo->player->m_path + current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-		//获取长度
-		pInfo->player->m_playlist[i].lengh = GetBASSSongLength(hStream);
-		//获取比特率
-		float bitrate{};
-		BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
-		pInfo->player->m_playlist[i].bitrate = static_cast<int>(bitrate + 0.5f);
-		//获取音频标签
-		//AudioType type = CAudioCommon::GetAudioType(current_file_name);
-		//CAudioCommon::GetAudioTags(hStream, type, pInfo->player->m_path, pInfo->player->m_playlist[i]);
-		CAudioTag audio_tag(hStream, pInfo->player->m_path, pInfo->player->m_playlist[i]);
-		audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
-		//获取midi音乐的标题
-		if (pInfo->player->m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
-		{
-			BASS_MIDI_MARK mark;
-			if (pInfo->player->m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
-			{
-				pInfo->player->m_playlist[i].title = CCommon::StrToUnicode(mark.text, CodeType::ANSI);
-				pInfo->player->m_playlist[i].info_acquired = true;
-			}
-		}
+		pInfo->player->AcquireSongInfo(hStream, pInfo->player->m_playlist[i]);
 		BASS_StreamFree(hStream);
-		theApp.m_song_data[pInfo->player->m_path + pInfo->player->m_playlist[i].file_name] = pInfo->player->m_playlist[i];
 		count++;
 	}
 	pInfo->player->m_loading = false;
@@ -410,25 +395,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
 		if (m_song_num > 0)
 		{
-			//if (m_index >= MAX_NUM_LENGTH && m_playlist[m_index].lengh.isZero())	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-			//AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
 			if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-			{
-				GetBASSSongLength();			//打开后重新获取文件长度
-				m_playlist[m_index].lengh = m_song_length;		//打开文件后再次将获取的文件长度保存到m_playlist容器中
-				float bitrate{};
-				BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_BITRATE, &bitrate);
-				m_playlist[m_index].bitrate = static_cast<int>(bitrate + 0.5f);
-				//CAudioCommon::GetAudioTags(m_musicStream, type, m_path, m_playlist[m_index]);
-				CAudioTag audio_tag(m_musicStream, m_path, m_playlist[m_index]);
-				audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
-				theApp.m_song_data[m_path + m_current_file_name] = m_playlist[m_index];
-			}
-			else
-			{
-				m_song_length = m_playlist[m_index].lengh;
-				m_song_length_int = m_song_length.time2int();
-			}
+				AcquireSongInfo(m_musicStream, m_playlist[m_index]);
+			m_song_length = m_playlist[m_index].lengh;
+			m_song_length_int = m_song_length.time2int();
 			//如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
 			m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
 			if (m_is_midi && m_bass_midi_lib.IsSuccessed())
@@ -1177,10 +1147,7 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
 
 void CPlayer::ReIniBASS()
 {
-	BASS_Stop();	//停止输出
-	BASS_Free();	//释放Bass资源
-	if(m_bass_midi_lib.IsSuccessed())
-		m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
+	UnInitBASS();
 	IniBASS();
 	MusicControl(Command::OPEN);
 	MusicControl(Command::SEEK);
@@ -1523,6 +1490,31 @@ void CPlayer::GetMidiPosition()
 		//获取midi音乐的进度并转换成节拍数。（其中+ (m_midi_info.ppqn / 3)的目的是修正显示的节拍不准确的问题）
 		m_midi_info.midi_position = (BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 3)) / m_midi_info.ppqn;
 	}
+}
+
+void CPlayer::AcquireSongInfo(HSTREAM hStream, SongInfo & song_info)
+{
+	//获取长度
+	song_info.lengh = GetBASSSongLength(hStream);
+	//获取比特率
+	float bitrate{};
+	BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
+	song_info.bitrate = static_cast<int>(bitrate + 0.5f);
+	//获取音频标签
+	CAudioTag audio_tag(hStream, m_path, song_info);
+	audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
+	//获取midi音乐的标题
+	if (m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
+	{
+		BASS_MIDI_MARK mark;
+		if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
+		{
+			song_info.title = CCommon::StrToUnicode(mark.text);
+			song_info.info_acquired = true;
+		}
+	}
+	//保存歌曲信息
+	theApp.m_song_data[m_path + song_info.file_name] = song_info;
 }
 
 void CPlayer::SearchOutAlbumCover()

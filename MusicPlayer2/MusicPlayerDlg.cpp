@@ -1786,11 +1786,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnCancel();
 				return TRUE;
 			}
-			if (pMsg->wParam == 'R')		//设置按Ctr+R重新初始化BASS音频库
-			{
-				OnReIniBass();
-				return TRUE;
-			}
+			//if (pMsg->wParam == 'R')		//设置按Ctr+R重新初始化BASS音频库
+			//{
+			//	OnReIniBass();
+			//	return TRUE;
+			//}
 			if (pMsg->wParam == 'M')		//设置按Ctr+M进入迷你模式
 			{
 				OnMiniMode();
@@ -2739,6 +2739,9 @@ void CMusicPlayerDlg::OnDeleteLyric()
 void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	if (m_volume_rect.PtInRect(point) == FALSE)
+		m_show_volume_adj = false;
 
 	//计算显示信息和显示歌词的区域
 	CRect info_rect{ m_draw_rect }, lyric_rect{ m_draw_rect };
