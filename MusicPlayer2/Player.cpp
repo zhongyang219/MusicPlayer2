@@ -45,7 +45,8 @@ void CPlayer::IniBASS()
 	m_bass_midi_lib.Init(plugin_dir + L"bassmidi.dll");
 	if (m_bass_midi_lib.IsSuccessed())
 	{
-		m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(theApp.m_general_setting_data.sf2_path.c_str(), BASS_UNICODE);
+		if(CCommon::FileExist(theApp.m_general_setting_data.sf2_path))
+			m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(theApp.m_general_setting_data.sf2_path.c_str(), BASS_UNICODE);
 		m_sfont.preset = -1;
 		m_sfont.bank = 0;
 	}
@@ -56,7 +57,7 @@ void CPlayer::UnInitBASS()
 {
 	BASS_Stop();	//停止输出
 	BASS_Free();	//释放Bass资源
-	if (m_bass_midi_lib.IsSuccessed())
+	if (m_bass_midi_lib.IsSuccessed() && m_sfont.font != 0)
 		m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
 	m_bass_midi_lib.UnInit();
 }
@@ -391,7 +392,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
 	case Command::OPEN:
 		m_error_code = 0;
 		m_musicStream = BASS_StreamCreateFile(FALSE, (m_path + m_current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-		if (m_bass_midi_lib.IsSuccessed())
+		m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
+		if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
 			m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
 		if (m_song_num > 0)
 		{
@@ -400,7 +402,6 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			m_song_length = m_playlist[m_index].lengh;
 			m_song_length_int = m_song_length.time2int();
 			//如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
-			m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
 			if (m_is_midi && m_bass_midi_lib.IsSuccessed())
 			{
 				//获取MIDI音乐信息

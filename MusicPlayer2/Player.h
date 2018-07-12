@@ -47,7 +47,7 @@ private:
 	HSTREAM m_musicStream{};		//µ±Ç°µÄÒôÆµ¾ä±ú
 
 	CBASSMidiLibrary m_bass_midi_lib;
-	BASS_MIDI_FONT m_sfont;
+	BASS_MIDI_FONT m_sfont{};
 	MidiInfo m_midi_info;
 	bool m_is_midi;
 	wstring m_midi_lyric;
