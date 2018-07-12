@@ -45,8 +45,16 @@ void CPlayer::IniBASS()
 	m_bass_midi_lib.Init(plugin_dir + L"bassmidi.dll");
 	if (m_bass_midi_lib.IsSuccessed())
 	{
-		if(CCommon::FileExist(theApp.m_general_setting_data.sf2_path))
+		if (CCommon::FileExist(theApp.m_general_setting_data.sf2_path))
+		{
 			m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(theApp.m_general_setting_data.sf2_path.c_str(), BASS_UNICODE);
+			if (m_sfont.font == 0)
+			{
+				CString info;
+				info.Format(_T("音色库“%s”加载失败！"), theApp.m_general_setting_data.sf2_path.c_str());
+				CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
+			}
+		}
 		m_sfont.preset = -1;
 		m_sfont.bank = 0;
 	}
@@ -1489,7 +1497,7 @@ void CPlayer::GetMidiPosition()
 	if (m_is_midi)
 	{
 		//获取midi音乐的进度并转换成节拍数。（其中+ (m_midi_info.ppqn / 3)的目的是修正显示的节拍不准确的问题）
-		m_midi_info.midi_position = (BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 3)) / m_midi_info.ppqn;
+		m_midi_info.midi_position = static_cast<int>((BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 3)) / m_midi_info.ppqn);
 	}
 }
 

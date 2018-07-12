@@ -2203,9 +2203,17 @@ void CMusicPlayerDlg::OnOptionSettings()
 		if (theApp.m_play_setting_data.show_lyric_in_cortana == true && optionDlg.m_tab1_dlg.m_data.show_lyric_in_cortana == false)	//如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
 			m_cortana_lyric.ResetCortanaText();
 
+		bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
+
 		theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
 		theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
 		theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
+
+		if (reload_sf2)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
+		{
+			theApp.m_player.ReIniBASS();
+			UpdatePlayPauseButton();
+		}
 
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 		m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
