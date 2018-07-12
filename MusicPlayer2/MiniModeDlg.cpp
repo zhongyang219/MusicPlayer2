@@ -405,43 +405,37 @@ void CMiniModeDlg::ShowVolume(int volume)
 
 void CMiniModeDlg::ShowInfo(bool force_refresh)
 {
-	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric)
+	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
-		if (theApp.m_player.MidiNoLyric())
-			m_lyric_static.DrawWindowText((CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true);
-		else
-			m_lyric_static.DrawWindowText(current_lyric.c_str(), true);
+		m_lyric_static.DrawWindowText(current_lyric.c_str(), true);
 	}
-	else
+	else if (theApp.m_player.m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
 	{
-		if (theApp.m_player.m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
-		{
 			//正在播放的文件名以滚动的样式显示，函数每调用一次滚动DPI/72个像素（150%缩放时为2个像素）。如果参数要求强制刷新，则重置滚动位置
 			m_lyric_static.DrawScrollText(CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str(), theApp.m_dpi / 72, force_refresh, true);
-		}
-		else		//显示歌词
+	}
+	else		//显示歌词
+	{
+		if (theApp.m_play_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
 		{
-			if (theApp.m_play_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
+			wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
+			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
+			if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
+				current_lyric = DEFAULT_LYRIC_TEXT;
+			m_lyric_static.DrawWindowText(current_lyric.c_str(), progress, true);
+		}
+		else				//歌词不以卡拉OK样式显示时
+		{
+			int lyric_index = theApp.m_player.m_Lyrics.GetLyricIndex(Time(theApp.m_player.GetCurrentPosition()));
+			//判断显示的歌词是否发生变化，如果发生了变化，或参数要求强制刷新，就更新歌词显示
+			if (lyric_index != m_last_lyric_index || force_refresh)
 			{
-				wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
-				int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
+				wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };
 				if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 					current_lyric = DEFAULT_LYRIC_TEXT;
-				m_lyric_static.DrawWindowText(current_lyric.c_str(), progress, true);
-			}
-			else				//歌词不以卡拉OK样式显示时
-			{
-				int lyric_index = theApp.m_player.m_Lyrics.GetLyricIndex(Time(theApp.m_player.GetCurrentPosition()));
-				//判断显示的歌词是否发生变化，如果发生了变化，或参数要求强制刷新，就更新歌词显示
-				if (lyric_index != m_last_lyric_index || force_refresh)
-				{
-					wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };
-					if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
-						current_lyric = DEFAULT_LYRIC_TEXT;
-					m_lyric_static.DrawWindowText(current_lyric.c_str(), true);
-					m_last_lyric_index = lyric_index;
-				}
+				m_lyric_static.DrawWindowText(current_lyric.c_str(), true);
+				m_last_lyric_index = lyric_index;
 			}
 		}
 	}
@@ -678,6 +672,8 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 	}
 
 	pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
+	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
+	pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric ? MF_ENABLED : MF_GRAYED));
 
 	//设置播放列表右键菜单的默认菜单项
 	pMenu->SetDefaultItem(ID_PLAY_ITEM);

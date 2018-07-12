@@ -16,8 +16,8 @@ public:
 
 	//在Cortana搜索框上绘制文本
 	//str:	要绘制的字符串
-	//center:	是否居中
-	void DrawCortanaTextSimple(LPCTSTR str, bool center);
+	//align:	对齐方式
+	void DrawCortanaTextSimple(LPCTSTR str, Alignment align);
 
 	/* 在Cortana搜索框上绘制滚动显示的文本
 	参数：

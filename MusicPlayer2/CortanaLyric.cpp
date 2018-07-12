@@ -98,7 +98,7 @@ void CCortanaLyric::SetCortanaColor(int color)
 	m_cortana_color = color;
 }
 
-void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, bool center)
+void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
@@ -116,7 +116,7 @@ void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, bool center)
 		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
 		CRect text_rect{ m_cortana_rect };
 		text_rect.DeflateRect(DPI(4), 0);
-		m_cortana_draw.DrawWindowText(text_rect, str, color, center);
+		m_cortana_draw.DrawWindowText(text_rect, str, color, align, false, false, true);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
 		rect.MoveToX(m_cortana_left_space);
@@ -245,11 +245,11 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		if (!swap)
 		{
 			m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
-			m_cortana_draw.DrawWindowText(down_rect, next_lyric, color2, false);
+			m_cortana_draw.DrawWindowText(down_rect, next_lyric, color2);
 		}
 		else
 		{
-			m_cortana_draw.DrawWindowText(up_rect, next_lyric, color2, false);
+			m_cortana_draw.DrawWindowText(up_rect, next_lyric, color2);
 			m_cortana_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
 		}
 
@@ -313,7 +313,7 @@ void CCortanaLyric::ResetCortanaText()
 		//再绘制Cortana默认文本
 		rect.MoveToXY(rect.left + m_cortana_left_space, 0);
 		m_cortana_draw.FillRect(rect, m_back_color);
-		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color, false);
+		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
 		if (!m_dark_mode)
 		{
 			rect.left -= m_cortana_left_space;

@@ -1,5 +1,13 @@
 //这个类用于定义用于绘图的函数
 #pragma once
+
+enum class Alignment	//对齐方式
+{
+	LEFT,
+	RIGHT,
+	CENTER
+};
+
 class CDrawCommon
 {
 public:
@@ -32,7 +40,7 @@ public:
 	CDC* GetDC() { return m_pDC; }
 
 	//下面是绘制文本的函数，功能和CStaticEx类中的同名函数相同，不同点在于这些函数不依赖于特定的控件
-	void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, bool center, bool no_clip_area = false, bool multi_line = false);	//在指定的矩形区域内绘制有颜色的文本，如果no_clip_area为true，则不在输出文字时限制绘图区域
+	void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align = Alignment::LEFT, bool no_clip_area = false, bool multi_line = false, bool default_right_align = false);	//在指定的矩形区域内绘制有颜色的文本，如果no_clip_area为true，则不在输出文字时限制绘图区域
 	void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, bool center, bool no_clip_area = false);	//在指定的矩形区域内绘制分割颜色的文本，split为颜色分割的位置，取值为0~1000（用于歌词动态显示），如果no_clip_area为true，则不在输出文字时限制绘图区域
 	void DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);	//在控件上绘制滚动的文本（当长度不够时），pixel指定此函数调用一次移动的像素值，如果reset为true，则滚动到初始位置
 	void DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);	//函数功能和DrawScrollText一样，只是这个函数只会从左到右滚动，不会更换方向
