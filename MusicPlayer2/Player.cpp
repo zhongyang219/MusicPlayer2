@@ -669,7 +669,8 @@ void CPlayer::GetBASSSpectral()
 		for (int i{}; i < ROW; i++)
 		{
 			m_spectral_data[i] /= (FFT_NUM / ROW);
-			m_spectral_data[i] *= 300;
+			m_spectral_data[i] = std::sqrtf(m_spectral_data[i]);		//对每个频谱柱形的值取平方根，以减少不同频率频谱值的差异
+			m_spectral_data[i] *= 60;
 		}
 	}
 	else

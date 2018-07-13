@@ -2233,6 +2233,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 		{
 			theApp.m_player.ReIniBASS();
 			UpdatePlayPauseButton();
+			DrawInfo(true);
 		}
 
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
