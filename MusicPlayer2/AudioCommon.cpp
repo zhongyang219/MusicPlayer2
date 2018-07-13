@@ -2,6 +2,7 @@
 #include "AudioCommon.h"
 
 vector<SupportedFormat> CAudioCommon::m_surpported_format;
+vector<wstring> CAudioCommon::m_all_surpported_extensions;
 
 CAudioCommon::CAudioCommon()
 {
@@ -16,13 +17,10 @@ bool CAudioCommon::FileIsAudio(const wstring & file_name)
 {
 	CFilePathHelper file_path(file_name);
 	wstring extension{ file_path.GetFileExtension() };		//获取文件扩展名
-	for (const auto& format : m_surpported_format)		//判断文件扩展是否在支持的扩展名列表里
+	for (const auto& ext : m_all_surpported_extensions)		//判断文件扩展是否在支持的扩展名列表里
 	{
-		for (const auto& ext : format.extensions)
-		{
-			if (ext == extension)
-				return true;
-		}
+		if (ext == extension)
+			return true;
 	}
 	return false;
 }
@@ -41,7 +39,7 @@ AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 		return AU_MP4;
 	else if (type == L"mp4")
 		return AU_MP4;
-	else if (type == L"flac")
+	else if (type == L"flac" || type == L"fla")
 		return AU_FLAC;
 	else if (type == L"cue")
 		return AU_CUE;

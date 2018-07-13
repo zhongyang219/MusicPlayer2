@@ -223,7 +223,7 @@ protected:
 	afx_msg void OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnPlayItem();
 	afx_msg void OnItemProperty();
-	afx_msg void OnRemoveFromPlaylist();
+	//afx_msg void OnRemoveFromPlaylist();
 //	afx_msg void OnClearPlaylist();
 	afx_msg void OnExploreTrack();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);

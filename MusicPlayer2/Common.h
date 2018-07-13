@@ -146,6 +146,10 @@ public:
 
 	//获取一个随机的字符串
 	static wstring GetRandomString(int length);
+
+	//判断一个元素是否在vector中
+	template<class T>
+	static bool IsItemInVector(const vector<T>& items, const T& item);
 };
 
 template<class T>
@@ -244,4 +248,15 @@ inline size_t CCommon::StringNatchWholeWord(const T & str, const T & find_str)
 			continue;
 	}
 	return -1;
+}
+
+template<class T>
+inline bool CCommon::IsItemInVector(const vector<T>& items, const T & item)
+{
+	for (const auto& an_item : items)
+	{
+		if (an_item == item)
+			return true;
+	}
+	return false;
 }

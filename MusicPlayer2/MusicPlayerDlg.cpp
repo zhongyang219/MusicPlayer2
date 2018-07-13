@@ -214,7 +214,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_NOTIFY(NM_RCLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMRClickPlaylistList)
 	ON_COMMAND(ID_PLAY_ITEM, &CMusicPlayerDlg::OnPlayItem)
 	ON_COMMAND(ID_ITEM_PROPERTY, &CMusicPlayerDlg::OnItemProperty)
-	ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
+	//ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
 	//ON_COMMAND(ID_CLEAR_PLAYLIST, &CMusicPlayerDlg::OnClearPlaylist)
 	ON_COMMAND(ID_EXPLORE_TRACK, &CMusicPlayerDlg::OnExploreTrack)
 	ON_WM_HOTKEY()
@@ -513,7 +513,8 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	m_draw.DrawWindowText(tmp, lable4_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
-	m_draw.DrawWindowText(tmp, lable4_content.c_str(), theApp.m_app_setting_data.theme_color.dark2);
+	static CDrawCommon::ScrollInfo scroll_info5;
+	m_draw.DrawScrollText2(tmp, lable4_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info5, reset);
 
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };
@@ -1908,15 +1909,12 @@ void CMusicPlayerDlg::OnFileOpen()
 	// TODO: 在此添加命令处理程序代码
 	vector<wstring> files;	//储存打开的多个文件路径
 	//设置过滤器
-	wstring filter(L"所有支持的音频文件|");
-	for (const auto& format : CAudioCommon::m_surpported_format)
+	wstring filter(L"所有支持的音频格式|");
+	for (const auto& ext : CAudioCommon::m_all_surpported_extensions)
 	{
-		for (const auto& ext : format.extensions)
-		{
-			filter += L"*.";
-			filter += ext;
-			filter.push_back(L';');
-		}
+		filter += L"*.";
+		filter += ext;
+		filter.push_back(L';');
 	}
 	filter.pop_back();
 	filter.push_back(L'|');
@@ -2334,13 +2332,13 @@ void CMusicPlayerDlg::OnItemProperty()
 }
 
 
-void CMusicPlayerDlg::OnRemoveFromPlaylist()
-{
-	// TODO: 在此添加命令处理程序代码
-	theApp.m_player.RemoveSong(m_item_selected);
-	ShowPlayList();
-	UpdatePlayPauseButton();
-}
+//void CMusicPlayerDlg::OnRemoveFromPlaylist()
+//{
+//	// TODO: 在此添加命令处理程序代码
+//	theApp.m_player.RemoveSong(m_item_selected);
+//	ShowPlayList();
+//	UpdatePlayPauseButton();
+//}
 
 
 //void CMusicPlayerDlg::OnClearPlaylist()

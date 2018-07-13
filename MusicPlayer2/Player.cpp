@@ -30,16 +30,22 @@ void CPlayer::IniBASS()
 	//向支持的文件列表插入原生支持的文件格式
 	CAudioCommon::m_surpported_format.clear();
 	SupportedFormat format;
-	format.description = L"常见音频格式";
+	format.description = L"基本音频格式";
 	format.extensions.push_back(L"mp3");
 	format.extensions.push_back(L"wma");
 	format.extensions.push_back(L"wav");
 	format.extensions.push_back(L"flac");
 	format.extensions.push_back(L"ogg");
+	format.extensions.push_back(L"oga");
 	format.extensions.push_back(L"m4a");
+	format.extensions.push_back(L"mp4");
 	format.extensions.push_back(L"cue");
-	format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.m4a;*.cue";
+	format.extensions.push_back(L"mp2");
+	format.extensions.push_back(L"mp1");
+	format.extensions.push_back(L"aif");
+	format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif";
 	CAudioCommon::m_surpported_format.push_back(format);
+	CAudioCommon::m_all_surpported_extensions = format.extensions;
 	//载入BASS插件
 	wstring plugin_dir;
 #ifdef _DEBUG
@@ -71,6 +77,8 @@ void CPlayer::IniBASS()
 			if (!ext.empty() && ext.back() == L';')
 				ext.pop_back();
 			format.extensions.push_back(ext);
+			if(!CCommon::IsItemInVector(CAudioCommon::m_all_surpported_extensions, ext))
+				CAudioCommon::m_all_surpported_extensions.push_back(ext);
 			if (index == wstring::npos)
 				break;
 			last_index = index;
