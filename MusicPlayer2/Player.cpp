@@ -1557,8 +1557,8 @@ void CPlayer::GetMidiPosition()
 {
 	if (m_is_midi)
 	{
-		//获取midi音乐的进度并转换成节拍数。（其中+ (m_midi_info.ppqn / 3)的目的是修正显示的节拍不准确的问题）
-		m_midi_info.midi_position = static_cast<int>((BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 3)) / m_midi_info.ppqn);
+		//获取midi音乐的进度并转换成节拍数。（其中+ (m_midi_info.ppqn / 4)的目的是修正显示的节拍不准确的问题）
+		m_midi_info.midi_position = static_cast<int>((BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 4)) / m_midi_info.ppqn);
 	}
 }
 
