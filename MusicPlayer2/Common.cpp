@@ -294,6 +294,16 @@ string CCommon::UnicodeToStr(const wstring & wstr, CodeType code_type, bool* cha
 	return result;
 }
 
+wstring CCommon::ASCIIToUnicode(const string & ascii)
+{
+	wstring result;
+	for (const char& ch: ascii)
+	{
+		result.push_back(ch);
+	}
+	return result;
+}
+
 bool CCommon::IsUTF8Bytes(const char * data)
 {
 	int charByteCounter = 1;  //计算当前正分析的字符应还有的字节数

@@ -264,6 +264,13 @@ const wchar_t GENRE_TABLE[GENRE_MAX][24]
 	L"Synthpop",
 };
 
+struct SupportedFormat		//一种支持的音频文件格式
+{
+	wstring description;		//文件格式的描述
+	wstring extensions_list;
+	vector<wstring> extensions;		//文件格式的扩展名
+};
+
 class CAudioCommon
 {
 public:
@@ -299,6 +306,9 @@ public:
 
 	//删除一个字符串中非打印字符开始的后面全部字符
 	static void TagStrNormalize(wstring& str);
+
+public:
+	static vector<SupportedFormat> m_surpported_format;		//支持的文件格式
 
 protected:
 

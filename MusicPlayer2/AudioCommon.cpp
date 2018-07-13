@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AudioCommon.h"
 
+vector<SupportedFormat> CAudioCommon::m_surpported_format;
 
 CAudioCommon::CAudioCommon()
 {
@@ -13,45 +14,40 @@ CAudioCommon::~CAudioCommon()
 
 bool CAudioCommon::FileIsAudio(const wstring & file_name)
 {
-	size_t index;
-	index = file_name.find_last_of(L'.');
-	wstring type;
-	if (index != string::npos)
-		type = file_name.substr(index);			//获取扩展名
-	//std::transform(type.begin(), type.end(), type.begin(), tolower);	
-	CCommon::StringTransform(type, false);		//将扩展名转换成小写
-	return (type == L".mp3" || type == L".wma" || type == L".wav"|| type == L".ogg" || type == L".flac" || type == L".fla"
-		|| type == L".m4a" || type == L".cue" || type == L".ape" || type == L".mid" || type == L".midi"
-		|| type == L".mp2" || type == L".mp1" || type == L".aif"
-		|| type == L".cda"/*CD音频*/ || type == L".aac"
-		);
+	CFilePathHelper file_path(file_name);
+	wstring extension{ file_path.GetFileExtension() };		//获取文件扩展名
+	for (const auto& format : m_surpported_format)		//判断文件扩展是否在支持的扩展名列表里
+	{
+		for (const auto& ext : format.extensions)
+		{
+			if (ext == extension)
+				return true;
+		}
+	}
+	return false;
 }
 
 AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 {
-	size_t index;
-	index = file_name.find_last_of(L'.');
-	wstring type;
-	if (index != string::npos)
-		type = file_name.substr(index);			//获取扩展名
-	std::transform(type.begin(), type.end(), type.begin(), tolower);		//将扩展名转换成小写
-	if (type == L".mp3")
+	CFilePathHelper file_path(file_name);
+	wstring type{ file_path.GetFileExtension() };		//获取文件扩展名
+	if (type == L"mp3")
 		return AU_MP3;
-	else if (type == L".wma")
+	else if (type == L"wma")
 		return AU_WMA;
-	else if (type == L".ogg")
+	else if (type == L"ogg")
 		return AU_OGG;
-	else if (type == L".m4a")
+	else if (type == L"m4a")
 		return AU_MP4;
-	else if (type == L".mp4")
+	else if (type == L"mp4")
 		return AU_MP4;
-	else if (type == L".flac")
+	else if (type == L"flac")
 		return AU_FLAC;
-	else if (type == L".cue")
+	else if (type == L"cue")
 		return AU_CUE;
-	else if (type == L".ape")
+	else if (type == L"ape")
 		return AU_APE;
-	else if (type == L".mid" || type == L".midi")
+	else if (type == L"mid" || type == L"midi")
 		return AU_MIDI;
 	else
 		return AU_OTHER;
@@ -79,7 +75,7 @@ wstring CAudioCommon::GetAudioFormatDescription(wstring extension)
 	else if (extension == L"cda")
 		return wstring(L"CD 音频文件 (CDA)");
 	else
-		return wstring(extension + L" 文件");
+		return wstring(extension + L" 音频文件");
 }
 
 void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file)

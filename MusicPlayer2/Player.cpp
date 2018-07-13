@@ -27,6 +27,19 @@ void CPlayer::IniBASS()
 		NULL//类标识符,0使用默认值
 	);
 
+	//向支持的文件列表插入原生支持的文件格式
+	CAudioCommon::m_surpported_format.clear();
+	SupportedFormat format;
+	format.description = L"常见音频格式";
+	format.extensions.push_back(L"mp3");
+	format.extensions.push_back(L"wma");
+	format.extensions.push_back(L"wav");
+	format.extensions.push_back(L"flac");
+	format.extensions.push_back(L"ogg");
+	format.extensions.push_back(L"m4a");
+	format.extensions.push_back(L"cue");
+	format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.m4a;*.cue";
+	CAudioCommon::m_surpported_format.push_back(format);
 	//载入BASS插件
 	wstring plugin_dir;
 #ifdef _DEBUG
@@ -35,38 +48,62 @@ void CPlayer::IniBASS()
 	plugin_dir = theApp.m_module_dir + L"Plugins\\";
 #endif // _DEBUG
 	vector<wstring> plugin_files;
-	CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);
+	CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);		//获取Plugins目录下所有的dll文件的文件名
 	for (const auto& plugin_file : plugin_files)
 	{
-		BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
-	}
-
-	//载入MIDI音色库，用于播放MIDI
-	m_bass_midi_lib.Init(plugin_dir + L"bassmidi.dll");
-	m_sfont_name = L"<无>";
-	if (m_bass_midi_lib.IsSuccessed())
-	{
-		if (CCommon::FileExist(theApp.m_general_setting_data.sf2_path))
+		//加载插件
+		HPLUGIN handle = BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
+		//获取插件支持的音频文件类型
+		const BASS_PLUGININFO* plugin_info = BASS_PluginGetInfo(handle);
+		format.description = CCommon::ASCIIToUnicode(plugin_info->formats->name);	//插件支持文件类型的描述
+		format.extensions_list = CCommon::ASCIIToUnicode(plugin_info->formats->exts);	//插件支持文件扩展名列表
+		//解析扩展名列表到vector
+		format.extensions.clear();
+		size_t index = 0, last_index = 0;
+		while (true)
 		{
-			m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(theApp.m_general_setting_data.sf2_path.c_str(), BASS_UNICODE);
-			if (m_sfont.font == 0)
+			index = format.extensions_list.find(L"*.", index + 1);
+			wstring ext{ format.extensions_list.substr(last_index + 2, index - last_index - 2) };
+			if (!ext.empty() && ext.back() == L';')
+				ext.pop_back();
+			format.extensions.push_back(ext);
+			if (index == wstring::npos)
+				break;
+			last_index = index;
+		}
+		CAudioCommon::m_surpported_format.push_back(format);
+
+		//载入MIDI音色库，用于播放MIDI
+		if (format.description == L"MIDI")
+		{
+			m_bass_midi_lib.Init(plugin_dir + plugin_file);
+			m_sfont_name = L"<无>";
+			if (m_bass_midi_lib.IsSuccessed())
 			{
-				CString info;
-				info.Format(_T("音色库“%s”加载失败！"), theApp.m_general_setting_data.sf2_path.c_str());
-				CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
-				m_sfont_name = L"<加载失败>";
+				if (CCommon::FileExist(theApp.m_general_setting_data.sf2_path))
+				{
+					m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(theApp.m_general_setting_data.sf2_path.c_str(), BASS_UNICODE);
+					if (m_sfont.font == 0)
+					{
+						CString info;
+						info.Format(_T("音色库“%s”加载失败！"), theApp.m_general_setting_data.sf2_path.c_str());
+						CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
+						m_sfont_name = L"<加载失败>";
+					}
+					else
+					{
+						//获取音色库信息
+						BASS_MIDI_FONTINFO sfount_info;
+						m_bass_midi_lib.BASS_MIDI_FontGetInfo(m_sfont.font, &sfount_info);
+						m_sfont_name = CCommon::StrToUnicode(sfount_info.name);
+					}
+					m_sfont.preset = -1;
+					m_sfont.bank = 0;
+				}
 			}
-			else
-			{
-				//获取音色库信息
-				BASS_MIDI_FONTINFO sfount_info;
-				m_bass_midi_lib.BASS_MIDI_FontGetInfo(m_sfont.font, &sfount_info);
-				m_sfont_name = CCommon::StrToUnicode(sfount_info.name);
-			}
-			m_sfont.preset = -1;
-			m_sfont.bank = 0;
 		}
 	}
+
 }
 
 void CPlayer::UnInitBASS()

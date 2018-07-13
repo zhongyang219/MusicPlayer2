@@ -1908,9 +1908,28 @@ void CMusicPlayerDlg::OnFileOpen()
 	// TODO: 在此添加命令处理程序代码
 	vector<wstring> files;	//储存打开的多个文件路径
 	//设置过滤器
-	LPCTSTR szFilter = _T("音频文件(*.mp3;*.wma;*.wav;*.ogg;*.flac;*.fla;*.m4a;*.ape;*.cue;*.mid;*.midi;*.mp2;*.mp1;*.aif;*.cda;*.aac)|*.mp3;*.wma;*.wav;*.ogg;*.flac;*.fla;*.m4a;*.ape;*.cue;*.mid;*.midi;*.mp2;*.mp1;*.aif;*.cda;*.aac|所有文件(*.*)|*.*||");
+	wstring filter(L"所有支持的音频文件|");
+	for (const auto& format : CAudioCommon::m_surpported_format)
+	{
+		for (const auto& ext : format.extensions)
+		{
+			filter += L"*.";
+			filter += ext;
+			filter.push_back(L';');
+		}
+	}
+	filter.pop_back();
+	filter.push_back(L'|');
+	for (const auto& format : CAudioCommon::m_surpported_format)
+	{
+		filter += format.description;
+		filter.push_back(L'|');
+		filter += format.extensions_list;
+		filter.push_back(L'|');
+	}
+	filter += L"所有文件(*.*)|*.*||";
 	//构造打开文件对话框
-	CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, szFilter, this);
+	CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), this);
 	//设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）
 	fileDlg.m_ofn.nMaxFile = 128 * 1024;
 	LPTSTR ch = new TCHAR[fileDlg.m_ofn.nMaxFile];
@@ -1932,6 +1951,7 @@ void CMusicPlayerDlg::OnFileOpen()
 		DrawInfo(true);
 		m_play_error_cnt = 0;
 	}
+	delete[] ch;
 }
 
 

@@ -88,6 +88,8 @@ public:
 	static wstring StrToUnicode(const string& str, CodeType code_type = CodeType::AUTO);
 	//将Unicode编码的wstring字符串转换成string类型的字符串，如果有字符无法转换，将参数char_cannot_convert指向的bool变量置为true
 	static string UnicodeToStr(const wstring & wstr, CodeType code_type, bool* char_cannot_convert = nullptr);
+	//将一个只有ASCII码组成的字符串转换成Unicode
+	static wstring ASCIIToUnicode(const string& ascii);
 	//判断一个字符串是否UTF8编码
 	static bool IsUTF8Bytes(const char* data);
 	//判断一个字符串的编码格式
