@@ -45,9 +45,10 @@ private:
 	CWinThread* m_pThread{};		//初始化播放列表的线程
 
 	HSTREAM m_musicStream{};		//当前的音频句柄
+	vector<HPLUGIN> m_plugin_handles;		//插件的句柄
 
 	CBASSMidiLibrary m_bass_midi_lib;
-	BASS_MIDI_FONT m_sfont{};
+	BASS_MIDI_FONT m_sfont{};	//MIDI音色库
 	wstring m_sfont_name;		//MIDI音色库的名称
 	MidiInfo m_midi_info;
 	bool m_is_midi;

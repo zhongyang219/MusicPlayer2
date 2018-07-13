@@ -49,12 +49,16 @@ void CPlayer::IniBASS()
 #endif // _DEBUG
 	vector<wstring> plugin_files;
 	CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);		//获取Plugins目录下所有的dll文件的文件名
+	m_plugin_handles.clear();
 	for (const auto& plugin_file : plugin_files)
 	{
 		//加载插件
 		HPLUGIN handle = BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
+		m_plugin_handles.push_back(handle);
 		//获取插件支持的音频文件类型
 		const BASS_PLUGININFO* plugin_info = BASS_PluginGetInfo(handle);
+		if (plugin_info == nullptr)
+			continue;
 		format.description = CCommon::ASCIIToUnicode(plugin_info->formats->name);	//插件支持文件类型的描述
 		format.extensions_list = CCommon::ASCIIToUnicode(plugin_info->formats->exts);	//插件支持文件扩展名列表
 		//解析扩展名列表到vector
@@ -113,6 +117,10 @@ void CPlayer::UnInitBASS()
 	if (m_bass_midi_lib.IsSuccessed() && m_sfont.font != 0)
 		m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
 	m_bass_midi_lib.UnInit();
+	for (const auto& handle : m_plugin_handles)		//释放插件句柄
+	{
+		BASS_PluginFree(handle);
+	}
 }
 
 void CPlayer::Create()
