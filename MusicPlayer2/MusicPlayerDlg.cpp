@@ -424,7 +424,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	m_draw.SetFont(GetFont());
 	//m_draw.SetBackColor(RGB(255, 255, 255));
 	CRect tmp{ text_start, CSize{1,text_height} };
-	wchar_t buff[16];
+	wchar_t buff[64];
 	if (theApp.m_player.m_loading)
 	{
 		tmp.right = info_rect.right - m_margin;
@@ -451,67 +451,69 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		m_draw.DrawWindowText(tmp, theApp.m_player.GetPlayingState().c_str(), theApp.m_app_setting_data.theme_color.original_color);
 	}
 
-	wstring title_str, title_content;
-	wstring artist_str, artist_content;
-	wstring album_str, album_content;
-	title_str = _T("标题：");
-	title_content = theApp.m_player.GetCurrentSongInfo().title;
+	wstring lable1_str, lable1_content;
+	wstring lable2_str, lable2_content;
+	wstring lable3_str, lable3_content;
+	wstring lable4_str, lable4_content;
+	lable1_str = _T("标题：");
+	lable1_content = theApp.m_player.GetCurrentSongInfo().title;
 	if (theApp.m_player.IsMidi())
 	{
 		const MidiInfo& midi_info{ theApp.m_player.GetMidiInfo() };
-		wchar_t buff[64];
-		artist_str = _T("节拍：");
+		lable2_str = _T("节拍：");
 		swprintf_s(buff, L"%d / %d", midi_info.midi_position, midi_info.midi_length);
-		artist_content = buff;
+		lable2_content = buff;
 
-		album_str = _T("速度：");
+		lable3_str = _T("速度：");
 		swprintf_s(buff, L"%d bpm", midi_info.speed);
-		album_content = buff;
+		lable3_content = buff;
+
+		lable4_str = _T("音色库：");
+		lable4_content = theApp.m_player.GetSoundFontName();
 	}
 	else
 	{
-		artist_str = _T("艺术家：");
-		artist_content = theApp.m_player.GetCurrentSongInfo().artist;
-		album_str = _T("唱片集：");
-		album_content = theApp.m_player.GetCurrentSongInfo().album;
+		lable2_str = _T("艺术家：");
+		lable2_content = theApp.m_player.GetCurrentSongInfo().artist;
+		lable3_str = _T("唱片集：");
+		lable3_content = theApp.m_player.GetCurrentSongInfo().album;
+		lable4_str = _T("格式：");
+		CFilePathHelper file_path{ theApp.m_player.GetCurrentSongInfo().file_name };
+		wstring file_format{ file_path.GetFileExtension(true) };
+		swprintf_s(buff, L"%s %dkbps", file_format.c_str(), theApp.m_player.GetCurrentSongInfo().bitrate);
+		lable4_content = buff;
 	}
 	//显示标题
 	tmp.MoveToXY(text_start.x, text_start.y + text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, title_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable1_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info2;
-	m_draw.DrawScrollText2(tmp, title_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info2, reset);
+	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info2, reset);
 	//显示艺术家
 	tmp.MoveToXY(text_start.x, text_start.y + 2 * text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, artist_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable2_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info3;
-	m_draw.DrawScrollText2(tmp, artist_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info3, reset);
+	m_draw.DrawScrollText2(tmp, lable2_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info3, reset);
 	//显示唱片集
 	tmp.MoveToXY(text_start.x, text_start.y + 3 * text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, album_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable3_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info4;
-	m_draw.DrawScrollText2(tmp, album_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info4, reset);
+	m_draw.DrawScrollText2(tmp, lable3_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info4, reset);
 	//显示文件格式和比特率
 	tmp.MoveToXY(text_start.x, text_start.y + 4 * text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, _T("格式："), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable4_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
-	CFilePathHelper file_path{ theApp.m_player.GetCurrentSongInfo().file_name };
-	wstring file_format{ file_path.GetFileExtension(true) };
-	if (file_format == L"MID")
-		swprintf_s(buff, L"%sI", file_format.c_str());
-	else
-		swprintf_s(buff, L"%s %dkbps", file_format.c_str(), theApp.m_player.GetCurrentSongInfo().bitrate);
-	m_draw.DrawWindowText(tmp, buff, theApp.m_app_setting_data.theme_color.dark2);
+	m_draw.DrawWindowText(tmp, lable4_content.c_str(), theApp.m_app_setting_data.theme_color.dark2);
 
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };

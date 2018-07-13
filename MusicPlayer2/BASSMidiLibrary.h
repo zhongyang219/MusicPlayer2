@@ -8,6 +8,17 @@ struct BASS_MIDI_FONT
 	int bank;
 };
 
+struct BASS_MIDI_FONTINFO
+{
+	const char *name;
+	const char *copyright;
+	const char *comment;
+	DWORD presets;		// number of presets/instruments
+	DWORD samsize;		// total size (in bytes) of the sample data
+	DWORD samload;		// amount of sample data currently loaded
+	DWORD samtype;		// sample format (CTYPE) if packed
+};
+
 struct BASS_MIDI_MARK
 {
 	DWORD track;		// track containing marker
@@ -32,6 +43,7 @@ class CBASSMidiLibrary
 {
 typedef HSOUNDFONT (WINAPI *_BASS_MIDI_FontInit)(const void* file, DWORD flags);
 typedef BOOL (WINAPI *_BASS_MIDI_StreamSetFonts)(HSTREAM handle, void* fonts, DWORD count);
+typedef BOOL (WINAPI *_BASS_MIDI_FontGetInfo)(HSOUNDFONT handle, BASS_MIDI_FONTINFO *info );
 typedef BOOL (WINAPI *_BASS_MIDI_FontFree)(HSOUNDFONT handle);
 typedef DWORD (WINAPI *_BASS_MIDI_StreamGetEvent)(HSTREAM handle, DWORD chan, DWORD event);
 typedef BOOL(WINAPI *_BASS_MIDI_StreamGetMark)(HSTREAM handle, DWORD type, DWORD index, BASS_MIDI_MARK *mark);
@@ -46,6 +58,7 @@ public:
 	//BASS MIDI库中的函数指针
 	_BASS_MIDI_FontInit BASS_MIDI_FontInit;
 	_BASS_MIDI_StreamSetFonts BASS_MIDI_StreamSetFonts;
+	_BASS_MIDI_FontGetInfo BASS_MIDI_FontGetInfo;
 	_BASS_MIDI_FontFree BASS_MIDI_FontFree;
 	_BASS_MIDI_StreamGetEvent BASS_MIDI_StreamGetEvent;
 	_BASS_MIDI_StreamGetMark BASS_MIDI_StreamGetMark;

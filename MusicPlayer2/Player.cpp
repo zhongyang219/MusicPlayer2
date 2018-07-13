@@ -43,6 +43,7 @@ void CPlayer::IniBASS()
 
 	//载入MIDI音色库，用于播放MIDI
 	m_bass_midi_lib.Init(plugin_dir + L"bassmidi.dll");
+	m_sfont_name = L"<无>";
 	if (m_bass_midi_lib.IsSuccessed())
 	{
 		if (CCommon::FileExist(theApp.m_general_setting_data.sf2_path))
@@ -53,12 +54,19 @@ void CPlayer::IniBASS()
 				CString info;
 				info.Format(_T("音色库“%s”加载失败！"), theApp.m_general_setting_data.sf2_path.c_str());
 				CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
+				m_sfont_name = L"<加载失败>";
 			}
+			else
+			{
+				//获取音色库信息
+				BASS_MIDI_FONTINFO sfount_info;
+				m_bass_midi_lib.BASS_MIDI_FontGetInfo(m_sfont.font, &sfount_info);
+				m_sfont_name = CCommon::StrToUnicode(sfount_info.name);
+			}
+			m_sfont.preset = -1;
+			m_sfont.bank = 0;
 		}
-		m_sfont.preset = -1;
-		m_sfont.bank = 0;
 	}
-	//int rtn = m_bass_midi_lib.BASS_MIDI_FontLoad(m_sfont, -1, -1);
 }
 
 void CPlayer::UnInitBASS()

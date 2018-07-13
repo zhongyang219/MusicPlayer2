@@ -48,6 +48,7 @@ private:
 
 	CBASSMidiLibrary m_bass_midi_lib;
 	BASS_MIDI_FONT m_sfont{};
+	wstring m_sfont_name;		//MIDI音色库的名称
 	MidiInfo m_midi_info;
 	bool m_is_midi;
 	wstring m_midi_lyric;
@@ -224,6 +225,7 @@ public:
 	const MidiInfo& GetMidiInfo() const { return m_midi_info; }
 	const wstring& GetMidiLyric() const { return m_midi_lyric; }
 	bool MidiNoLyric() const { return m_midi_no_lyric; }
+	const wstring& GetSoundFontName() const { return m_sfont_name; }
 
 	void ReIniBASS();		//重新初始化BASS
 
