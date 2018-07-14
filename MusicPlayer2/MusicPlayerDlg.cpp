@@ -1926,7 +1926,7 @@ void CMusicPlayerDlg::OnFileOpen()
 		filter += format.extensions_list;
 		filter.push_back(L'|');
 	}
-	filter += L"所有文件(*.*)|*.*||";
+	filter += L"所有文件|*.*||";
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), this);
 	//设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）

@@ -14,6 +14,9 @@ struct ColorTable
 	COLORREF light2;
 	COLORREF light3;
 	COLORREF light4;
+	//¹Ì¶¨µÄÑÕÉ«
+	const static COLORREF WHITE{ RGB(255,255,255) };
+	const static COLORREF BLACK{ RGB(0,0,0) };
 };
 
 class CColorConvert

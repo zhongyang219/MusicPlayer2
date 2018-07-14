@@ -99,6 +99,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	m_tool_tip.AddTool(GetDlgItem(IDC_SAVE_IN_OFFSET_TAG), _T("将歌词偏移保存到offset标签中，选择此项会使得修改的时间偏移很容易恢复，但是并非所有的播放器都支持offset标签。"));
 	m_tool_tip.AddTool(GetDlgItem(IDC_SAVE_IN_TIME_TAG), _T("将歌词偏移保存到每个时间标签中，选择此项会使得修改的时间偏移不那么容易恢复，但是对其他播放器的兼容性很好。"));
 	m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_PATH_EDIT), _T("说明：如果歌曲所在目录下找不到匹配的歌词文件，就会在此文件夹下寻找歌词文件。"));
+	m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), _T("勾选项后，可以在 Cortana 搜索框中显示歌词、歌曲名称和专辑封面。开启此功能后可能需要重新启动软件才能生效。"));
 
 	m_cortana_color_combo.AddString(_T("跟随系统"));
 	m_cortana_color_combo.AddString(_T("黑色"));
@@ -138,32 +139,6 @@ void CPlaySettingsDlg::OnBnClickedKaraokeDisp()
 void CPlaySettingsDlg::OnBnClickedExploreLyricButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	//TCHAR szPath[MAX_PATH];		//存放选择的目录路径
-	//CString str;
-
-	//BROWSEINFO bi;
-	//bi.hwndOwner = m_hWnd;
-	//bi.pidlRoot = NULL;
-	//bi.pszDisplayName = szPath;
-	//bi.lpszTitle = _T("请选择存放歌词文件的文件夹。");
-	//bi.ulFlags = 0;
-	//bi.lpfn = NULL;
-	//bi.lParam = 0;
-	//bi.iImage = 0;
-	////弹出选择目录对话框
-	//LPITEMIDLIST lp = SHBrowseForFolder(&bi);
-
-	//if (lp)
-	//{
-	//	if (SHGetPathFromIDList(lp, szPath))
-	//	{
-	//		m_lyric_path = szPath;
-	//		if (m_lyric_path.back() != L'\\') m_lyric_path.push_back(L'\\');	//确保路径末尾有反斜杠
-	//		SetDlgItemText(IDC_LYRIC_PATH_EDIT, szPath);
-	//	}
-	//	else
-	//		AfxMessageBox(_T("无效的目录，请重新选择"));
-	//}
 #ifdef COMPILE_IN_WIN_XP
 	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
 	folderPickerDlg.SetInfo(_T("请选择歌词文件夹。"));
