@@ -111,16 +111,16 @@ void CMiniModeDlg::DrawSpectral()
 	pOldBrush = m_spectrum_pDC->SelectObject(&BGBrush);
 	DrawThemeParentBackground(m_hWnd, m_spectrum_pDC->GetSafeHdc(), &m_spectral_client_rect);	//重绘控件区域以解决文字重叠的问题
 	//将CPlayer类里获得到的频谱数据变换成ROW列的数据
-	float spectral_data[ROW];
+	float spectral_data[DATA_ROW];
 	memset(spectral_data, 0, sizeof(spectral_data));
 	for (int i{}; i < 16; i++)
 	{
-		spectral_data[i / (16 / ROW)] += theApp.m_player.GetSpectralData()[i];
+		spectral_data[i / (16 / DATA_ROW)] += theApp.m_player.GetSpectralData()[i];
 	}
 	for (int i{}; i < ROW; i++)
 	{
 		CRect rect_tmp{ m_spectral_rect[i] };
-		int spetral_height = static_cast<int>(spectral_data[i] * m_spectral_client_rect.Height() / 90 * theApp.m_app_setting_data.sprctrum_height / 100);
+		int spetral_height = static_cast<int>(spectral_data[i] * m_spectral_client_rect.Height() / 50 * theApp.m_app_setting_data.sprctrum_height / 100);
 		if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 		rect_tmp.top = rect_tmp.bottom - spetral_height;
 		if (rect_tmp.top < 0) rect_tmp.top = 0;

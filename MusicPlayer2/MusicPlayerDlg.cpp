@@ -343,7 +343,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
 	theApp.m_app_setting_data.album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
 	theApp.m_play_setting_data.cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
-	theApp.m_play_setting_data.cortana_icon_beat = (GetPrivateProfileInt(_T("config"), _T("cortana_icon_beat"), 1, theApp.m_config_path.c_str()) != 0);
+	theApp.m_play_setting_data.cortana_icon_beat = (GetPrivateProfileInt(_T("config"), _T("cortana_icon_beat"), 0, theApp.m_config_path.c_str()) != 0);
 
 	theApp.m_app_setting_data.background_transparency = GetPrivateProfileIntW(L"config", L"background_transparency", 80, theApp.m_config_path.c_str());
 	theApp.m_app_setting_data.use_out_image = (GetPrivateProfileIntW(_T("config"), _T("use_out_image"), 0, theApp.m_config_path.c_str()) != 0);
@@ -532,10 +532,10 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	}
 	if (theApp.m_app_setting_data.show_spectrum)
 	{
-		const int ROWS = 16;		//频谱柱形的数量
+		const int ROWS = 24;		//要显示的频谱柱形的数量
 		int gap_width{ DPI(1) };		//频谱柱形间隙宽度
 		CRect rects[ROWS];
-		int width = (spectral_rect.Width() - (ROWS - 1)*gap_width) / ROWS;
+		int width = (spectral_rect.Width() - (ROWS - 1)*gap_width) / (ROWS-1);
 		rects[0] = spectral_rect;
 		rects[0].DeflateRect(m_margin / 2, m_margin / 2);
 		rects[0].right = rects[0].left + width;
@@ -1524,11 +1524,12 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			//}
 
 			//计算频谱，根据频谱幅值使Cortana图标显示动态效果
-			float spectrum_avr{};		//取前面8个频段频谱值的平均值
-			for (int i{}; i < 8; i++)
-				spectrum_avr += theApp.m_player.GetSpectralData()[i];
-			spectrum_avr /= 8;
-			int spetraum = static_cast<int>(spectrum_avr * 25);
+			float spectrum_avr{};		//取前面N个频段频谱值的平均值
+			const int N = 8;
+			for (int i{}; i <N; i++)
+				spectrum_avr += theApp.m_player.GetFFTData()[i];
+			spectrum_avr /= N;
+			int spetraum = static_cast<int>(spectrum_avr * 4000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
 			m_cortana_lyric.SetSpectrum(spetraum);
 			//显示专辑封面，如果没有专辑封面，则显示Cortana图标
 			m_cortana_lyric.AlbumCoverEnable(theApp.m_play_setting_data.cortana_show_album_cover/* && theApp.m_player.AlbumCoverExist()*/);
@@ -2088,8 +2089,9 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	//根据歌词是否存在设置启用或禁用菜单项
 	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
 	bool lyric_disable{ midi_lyric || theApp.m_player.m_Lyrics.IsEmpty() };
+	bool no_lyric{ theApp.m_player.m_Lyrics.IsEmpty() && theApp.m_player.MidiNoLyric() };
 	//pMenu->EnableMenuItem(ID_RELOAD_LYRIC, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
-	pMenu->EnableMenuItem(ID_COPY_CURRENT_LYRIC, MF_BYCOMMAND | (!lyric_disable ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_COPY_CURRENT_LYRIC, MF_BYCOMMAND | (!no_lyric ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_COPY_ALL_LYRIC, MF_BYCOMMAND | (!lyric_disable ? MF_ENABLED : MF_GRAYED));
 	//pMenu->EnableMenuItem(ID_EDIT_LYRIC, MF_BYCOMMAND | (!theApp.m_player.m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_LYRIC_FORWARD, MF_BYCOMMAND | (!lyric_disable ? MF_ENABLED : MF_GRAYED));
@@ -2640,9 +2642,15 @@ void CMusicPlayerDlg::OnSongInfo()
 void CMusicPlayerDlg::OnCopyCurrentLyric()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (CCommon::CopyStringToClipboard(theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0)))
-		MessageBox(_T("当前歌词已成功复制到剪贴板。"), NULL, MB_ICONINFORMATION);
+	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
+	wstring lyric_str;
+	if (midi_lyric)
+		lyric_str = theApp.m_player.GetMidiLyric();
 	else
+		lyric_str = theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0);
+	if (!CCommon::CopyStringToClipboard(lyric_str))
+	//	MessageBox(_T("当前歌词已成功复制到剪贴板。"), NULL, MB_ICONINFORMATION);
+	//else
 		MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
 }
 

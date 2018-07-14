@@ -128,7 +128,8 @@ using std::map;
 
 //频谱分析
 #define FFT_SAMPLE 128			//频谱分析采样点数
-#define FFT_NUM 64			//要使用的频谱的点数
+//#define FFT_NUM 128			//要使用的频谱的点数
+#define SPECTRUM_ROW 32			//频谱分析柱形的条数（必须为2的整数次方且小于或等于FFT_SAMPLE）
 
 //获取不到歌曲标签时的默认字符串
 #define DEFAULT_TITLE L"<未知标题>"

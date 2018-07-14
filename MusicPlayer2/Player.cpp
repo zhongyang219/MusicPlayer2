@@ -658,19 +658,18 @@ void CPlayer::GetBASSSpectral()
 {
 	if (m_musicStream && m_current_position_int < m_song_length_int - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
 	{
-		const int ROW{ 32 };			//频谱分析柱形的条数
 		BASS_ChannelGetData(m_musicStream, m_fft, BASS_DATA_FFT256);
 		memset(m_spectral_data, 0, sizeof(m_spectral_data));
-		for (int i{}; i < FFT_NUM; i++)
+		for (int i{}; i < FFT_SAMPLE; i++)
 		{
-			m_spectral_data[i / (FFT_NUM / ROW)] += m_fft[i];
+			m_spectral_data[i / (FFT_SAMPLE / SPECTRUM_ROW)] += m_fft[i];
 		}
 
-		for (int i{}; i < ROW; i++)
+		for (int i{}; i < SPECTRUM_ROW; i++)
 		{
-			m_spectral_data[i] /= (FFT_NUM / ROW);
+			m_spectral_data[i] /= (FFT_SAMPLE / SPECTRUM_ROW);
 			m_spectral_data[i] = std::sqrtf(m_spectral_data[i]);		//对每个频谱柱形的值取平方根，以减少不同频率频谱值的差异
-			m_spectral_data[i] *= 60;
+			m_spectral_data[i] *= 60;			//调整这里的乘数可以调整频谱分析柱形图整体的高度
 		}
 	}
 	else

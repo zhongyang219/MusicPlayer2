@@ -67,7 +67,8 @@ protected:
 	CString m_song_tip_info;
 
 	//
-#define ROW 4				//频谱柱形的数量
+	static const int ROW{ 7 };				//频谱柱形的数量
+	static const int DATA_ROW{ 8 };			//频谱柱形数据的数量（必须为2的整数次方且小于或等于SPECTRUM_ROW）
 	CRect m_spectral_client_rect;		//频谱的矩形区域
 	CRect m_spectral_rect[ROW];		//每个柱形的矩形区域
 	CDC* m_spectrum_pDC;		//频谱分析区域static控件的CDC
