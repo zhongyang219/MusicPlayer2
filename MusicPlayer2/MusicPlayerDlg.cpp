@@ -270,6 +270,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_MESSAGE(WM_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnMusicStreamOpened)
 	ON_COMMAND(ID_CURRENT_EXPLORE_ONLINE, &CMusicPlayerDlg::OnCurrentExploreOnline)
 	ON_COMMAND(ID_DELETE_ALBUM_COVER, &CMusicPlayerDlg::OnDeleteAlbumCover)
+	ON_COMMAND(ID_COPY_FILE_TO, &CMusicPlayerDlg::OnCopyFileTo)
+	ON_COMMAND(ID_MOVE_FILE_TO, &CMusicPlayerDlg::OnMoveFileTo)
 END_MESSAGE_MAP()
 
 
@@ -340,7 +342,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_play_setting_data.cortana_lyric_double_line = (GetPrivateProfileInt(_T("config"), _T("cortana_lyric_double_line"), 0, theApp.m_config_path.c_str()) != 0);
 	theApp.m_app_setting_data.show_spectrum = (GetPrivateProfileInt(_T("config"), _T("show_spectrum"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_app_setting_data.show_album_cover = (GetPrivateProfileInt(_T("config"), _T("show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
-	theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 2, theApp.m_config_path.c_str()));
+	theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(GetPrivateProfileInt(_T("config"), _T("album_cover_fit"), 1, theApp.m_config_path.c_str()));
 	theApp.m_app_setting_data.album_cover_as_background = (GetPrivateProfileInt(_T("config"), _T("album_cover_as_background"), 0, theApp.m_config_path.c_str()) != 0);
 	theApp.m_play_setting_data.cortana_show_album_cover = (GetPrivateProfileInt(_T("config"), _T("cortana_show_album_cover"), 1, theApp.m_config_path.c_str()) != 0);
 	theApp.m_play_setting_data.cortana_icon_beat = (GetPrivateProfileInt(_T("config"), _T("cortana_icon_beat"), 0, theApp.m_config_path.c_str()) != 0);
@@ -898,7 +900,7 @@ void CMusicPlayerDlg::ShowPlayList()
 	//设置播放列表中突出显示的项目
 	SetPlayListColor();
 	//显示当前路径
-	m_path_edit.SetWindowTextW(theApp.m_player.GetCurrentPath().c_str());
+	m_path_edit.SetWindowTextW(theApp.m_player.GetCurrentDir().c_str());
 
 	m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 
@@ -1657,7 +1659,7 @@ void CMusicPlayerDlg::OnSetPath()
 		delete m_pSetPathDlg;
 		m_pSetPathDlg = nullptr;
 	}
-	m_pSetPathDlg = new CSetPathDlg(theApp.m_player.GetRecentPath(), theApp.m_player.GetCurrentPath());
+	m_pSetPathDlg = new CSetPathDlg(theApp.m_player.GetRecentPath(), theApp.m_player.GetCurrentDir());
 	m_pSetPathDlg->Create(IDD_SET_PATH_DIALOG);
 	m_pSetPathDlg->ShowWindow(SW_SHOW);
 }
@@ -1962,7 +1964,7 @@ void CMusicPlayerDlg::OnFileOpenFolder()
 	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
 	folderPickerDlg.SetInfo(_T("请选择一个文件夹，文件夹里的所有音频文件都将添加到播放列表。"));
 #else
-	CFilePathHelper current_path(theApp.m_player.GetCurrentPath());
+	CFilePathHelper current_path(theApp.m_player.GetCurrentDir());
 	CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
 #endif
 	if (folderPickerDlg.DoModal() == IDOK)
@@ -2324,7 +2326,7 @@ void CMusicPlayerDlg::OnItemProperty()
 {
 	// TODO: 在此添加命令处理程序代码
 	CPropertyDlg propertyDlg(theApp.m_player.GetPlayList());
-	propertyDlg.m_path = theApp.m_player.GetCurrentPath();
+	propertyDlg.m_path = theApp.m_player.GetCurrentDir();
 	propertyDlg.m_index = m_item_selected;
 	propertyDlg.m_song_num = theApp.m_player.GetSongNum();
 	//propertyDlg.m_playing_index = theApp.m_player.GetIndex();
@@ -2469,7 +2471,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 	{
 		if (m_item_selected == theApp.m_player.GetIndex())	//如果删除的文件是正在播放的文件，则删除前必须先关闭文件
 			theApp.m_player.MusicControl(Command::CLOSE);
-		wstring file_name{ theApp.m_player.GetCurrentPath() + theApp.m_player.GetPlayList()[m_item_selected].file_name };
+		wstring file_name{ theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name };
 		int rtn;
 		rtn = CCommon::DeleteAFile(m_hWnd, file_name);
 		if (rtn == 0)
@@ -2630,7 +2632,7 @@ void CMusicPlayerDlg::OnSongInfo()
 {
 	// TODO: 在此添加命令处理程序代码
 	CPropertyDlg propertyDlg(theApp.m_player.GetPlayList());
-	propertyDlg.m_path = theApp.m_player.GetCurrentPath();
+	propertyDlg.m_path = theApp.m_player.GetCurrentDir();
 	propertyDlg.m_index = theApp.m_player.GetIndex();
 	propertyDlg.m_song_num = theApp.m_player.GetSongNum();
 	propertyDlg.DoModal();
@@ -3012,11 +3014,11 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 		{
 			wstring album_name{ match_item.album };
 			CCommon::FileNameNormalize(album_name);
-			cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + album_name);
+			cover_file_path.SetFilePath(theApp.m_player.GetCurrentDir() + album_name);
 		}
 		else				//否则以歌曲文件名为文件名保存
 		{
-			cover_file_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
+			cover_file_path.SetFilePath(theApp.m_player.GetCurrentDir() + theApp.m_player.GetCurrentSongInfo().file_name);
 		}
 		CFilePathHelper url_path(cover_url);
 		cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
@@ -3048,7 +3050,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 		}
 		else
 		{
-			lyric_path.SetFilePath(theApp.m_player.GetCurrentPath() + theApp.m_player.GetCurrentSongInfo().file_name);
+			lyric_path.SetFilePath(theApp.m_player.GetCurrentDir() + theApp.m_player.GetCurrentSongInfo().file_name);
 		}
 		lyric_path.ReplaceFileExtension(L"lrc");
 		string _lyric_str = CCommon::UnicodeToStr(lyric_str, CodeType::UTF8);
@@ -3204,4 +3206,61 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_player.DeleteAlbumCover();
+}
+
+
+void CMusicPlayerDlg::OnCopyFileTo()
+{
+	// TODO: 在此添加命令处理程序代码
+	LPCTSTR title{ _T("选择复制的目标文件夹") };
+#ifdef COMPILE_IN_WIN_XP
+	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
+	folderPickerDlg.SetInfo(title);
+#else
+	CFilePathHelper current_path(theApp.m_player.GetCurrentDir());
+	CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
+	folderPickerDlg.m_ofn.lpstrTitle = title;
+#endif
+	if (folderPickerDlg.DoModal() == IDOK)
+	{
+		if (m_item_selected >= 0 && m_item_selected < theApp.m_player.GetSongNum())
+		{
+			wstring source_file{ theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name };
+			CCommon::CopyAFile(this->GetSafeHwnd(), theApp.m_player.GetCurrentFilePath(), wstring(folderPickerDlg.GetPathName()));
+		}
+	}
+}
+
+
+void CMusicPlayerDlg::OnMoveFileTo()
+{
+	// TODO: 在此添加命令处理程序代码
+	LPCTSTR title{ _T("选择移动的目标文件夹") };
+#ifdef COMPILE_IN_WIN_XP
+	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
+	folderPickerDlg.SetInfo(title);
+#else
+	CFilePathHelper current_path(theApp.m_player.GetCurrentDir());
+	CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
+	folderPickerDlg.m_ofn.lpstrTitle = title;
+#endif
+	if (folderPickerDlg.DoModal() == IDOK)
+	{
+		if (m_item_selected >= 0 && m_item_selected < theApp.m_player.GetSongNum())
+		{
+			if (m_item_selected == theApp.m_player.GetIndex())	//如果移动的文件是正在播放的文件，则移动前必须先关闭文件
+				theApp.m_player.MusicControl(Command::CLOSE);
+			wstring source_file{ theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name };
+			int rtn;
+			rtn = CCommon::MoveAFile(m_hWnd, source_file, wstring(folderPickerDlg.GetPathName()));
+			if (rtn == 0)
+			{
+				//如果文件移动成功，同时从播放列表中移除
+				theApp.m_player.RemoveSong(m_item_selected);
+				ShowPlayList();
+				UpdatePlayPauseButton();
+				DrawInfo(true);
+			}
+		}
+	}
 }

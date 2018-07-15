@@ -86,7 +86,7 @@ bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 {
 	if (path[0] == L'\0')		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
 	{
-		m_lyric_path = theApp.m_player.GetCurrentPath() + theApp.m_player.GetFileName();
+		m_lyric_path = theApp.m_player.GetCurrentDir() + theApp.m_player.GetFileName();
 		int index = m_lyric_path.rfind(L'.');
 		m_lyric_path = m_lyric_path.substr(0, index);
 		m_lyric_path += L".lrc";

@@ -234,7 +234,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		//设置要保存的歌词的路径
 		wstring lyric_path;
 		if (pInfo->save_to_song_folder)
-			lyric_path = theApp.m_player.GetCurrentPath() + pInfo->playlist->at(i).file_name;
+			lyric_path = theApp.m_player.GetCurrentDir() + pInfo->playlist->at(i).file_name;
 		else
 			lyric_path = theApp.m_play_setting_data.lyric_path + pInfo->playlist->at(i).file_name;
 		size_t index = lyric_path.rfind(L'.');		//查找文件名最后一个点

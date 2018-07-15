@@ -625,7 +625,7 @@ void CMiniModeDlg::OnMiniModeExit()
 //{
 //	// TODO: 在此添加命令处理程序代码
 //	CPropertyDlg propertyDlg(theApp.m_player.GetPlayList());
-//	propertyDlg.m_path = theApp.m_player.GetCurrentPath();
+//	propertyDlg.m_path = theApp.m_player.GetCurrentDir();
 //	propertyDlg.m_index = theApp.m_player.GetIndex();
 //	propertyDlg.m_song_num = theApp.m_player.GetSongNum();
 //	propertyDlg.DoModal();

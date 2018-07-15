@@ -291,4 +291,6 @@ protected:
 public:
 	afx_msg void OnCurrentExploreOnline();
 	afx_msg void OnDeleteAlbumCover();
+	afx_msg void OnCopyFileTo();
+	afx_msg void OnMoveFileTo();
 };

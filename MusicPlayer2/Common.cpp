@@ -485,6 +485,36 @@ int CCommon::DeleteAFile(HWND hwnd, _tstring file)
 	return SHFileOperation(&FileOp);	//删除文件
 }
 
+int CCommon::CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to)
+{
+	file_from.push_back(_T('\0'));	//pFrom必须以两个\0结尾
+	file_to.push_back(_T('\0'));	//pTo必须以两个\0结尾
+	SHFILEOPSTRUCT FileOp{};
+	FileOp.hwnd = hwnd;
+	FileOp.wFunc = FO_COPY;
+	FileOp.pFrom = file_from.c_str();
+	FileOp.pTo = file_to.c_str();
+	FileOp.fFlags = FOF_ALLOWUNDO;
+	FileOp.hNameMappings = NULL;
+	FileOp.lpszProgressTitle = _T("复制");
+	return SHFileOperation(&FileOp);
+}
+
+int CCommon::MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to)
+{
+	file_from.push_back(_T('\0'));	//pFrom必须以两个\0结尾
+	file_to.push_back(_T('\0'));	//pTo必须以两个\0结尾
+	SHFILEOPSTRUCT FileOp{};
+	FileOp.hwnd = hwnd;
+	FileOp.wFunc = FO_MOVE;
+	FileOp.pFrom = file_from.c_str();
+	FileOp.pTo = file_to.c_str();
+	FileOp.fFlags = FOF_ALLOWUNDO;
+	FileOp.hNameMappings = NULL;
+	FileOp.lpszProgressTitle = _T("移动");
+	return SHFileOperation(&FileOp);
+}
+
 bool CCommon::CopyStringToClipboard(const wstring & str)
 {
 	if (OpenClipboard(NULL))

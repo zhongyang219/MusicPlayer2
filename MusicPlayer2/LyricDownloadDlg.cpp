@@ -132,7 +132,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	}
 
 	m_file_name = theApp.m_player.GetFileName();
-	m_file_path = theApp.m_player.GetCurrentPath() + m_file_name;
+	m_file_path = theApp.m_player.GetCurrentDir() + m_file_name;
 	size_t index = m_file_path.rfind(L'.');		//查找文件名最后一个点
 	m_file_path = m_file_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
 

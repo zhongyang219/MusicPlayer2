@@ -113,6 +113,12 @@ public:
 	//删除一个文件
 	static int DeleteAFile(HWND hwnd, _tstring file);
 
+	//复制一个文件
+	static int CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to);
+
+	//移动一个文件
+	static int MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to);
+
 	//将一个字符串保存到剪贴板
 	static bool CopyStringToClipboard(const wstring& str);
 

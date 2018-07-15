@@ -1018,7 +1018,7 @@ void CPlayer::LoadConfig()
 	theApp.m_play_setting_data.lyric_karaoke_disp = (GetPrivateProfileIntW(L"config", L"lyric_karaoke_disp", 1, theApp.m_config_path.c_str()) != 0);
 	m_sort_mode = static_cast<SortMode>(GetPrivateProfileIntW(L"config", L"sort_mode", 0, theApp.m_config_path.c_str()));
 	theApp.m_play_setting_data.lyric_fuzzy_match = (GetPrivateProfileIntW(L"config", L"lyric_fuzzy_match", 1, theApp.m_config_path.c_str()) != 0);
-	GetPrivateProfileStringW(L"config", L"default_album_file_name", L"Folder", buff, 255, theApp.m_config_path.c_str());
+	GetPrivateProfileStringW(L"config", L"default_album_file_name", L"cover", buff, 255, theApp.m_config_path.c_str());
 	//theApp.m_app_setting_data.default_album_name = buff;
 	CCommon::StringSplit(buff, L',', theApp.m_app_setting_data.default_album_name);
 

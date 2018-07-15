@@ -398,7 +398,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 
 	bool text_cut_off;
 	wstring file_path;
-	file_path = theApp.m_player.GetCurrentPath() + m_all_song_info[m_index].file_name;
+	file_path = theApp.m_player.GetCurrentDir() + m_all_song_info[m_index].file_name;
 	if (!CAudioTag::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off))
 	{
 		MessageBox(_T("无法写入文件！"), NULL, MB_ICONWARNING | MB_OK);
@@ -408,11 +408,11 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 		//重新从文件读取该歌曲的标签
 		HSTREAM hStream;
 		hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-		//CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, theApp.m_player.GetCurrentPath(), m_all_song_info[m_index]);
-		CAudioTag audio_tag(hStream, theApp.m_player.GetCurrentPath(), m_all_song_info[m_index]);
+		//CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, theApp.m_player.GetCurrentDir(), m_all_song_info[m_index]);
+		CAudioTag audio_tag(hStream, theApp.m_player.GetCurrentDir(), m_all_song_info[m_index]);
 		audio_tag.GetAudioTag(true);
 		BASS_StreamFree(hStream);
-		theApp.m_song_data[theApp.m_player.GetCurrentPath() + m_all_song_info[m_index].file_name] = m_all_song_info[m_index];
+		theApp.m_song_data[theApp.m_player.GetCurrentDir() + m_all_song_info[m_index].file_name] = m_all_song_info[m_index];
 
 		m_modified = false;
 		m_save_button.EnableWindow(m_write_enable && m_modified);
@@ -437,7 +437,7 @@ void CPropertyDlg::OnCbnSelchangeGenreCombo()
 //
 //	//重新从文件读取该歌曲的标签
 //	wstring file_path;
-//	file_path = theApp.m_player.GetCurrentPath() + m_all_song_info[m_index].file_name;
+//	file_path = theApp.m_player.GetCurrentDir() + m_all_song_info[m_index].file_name;
 //	HSTREAM hStream;
 //	hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 //	CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, m_all_song_info[m_index]);

@@ -75,7 +75,7 @@ void CDataSettingsDlg::ShowDataSizeInfo()
 {
 	CString info;
 	if (m_data_size < 1024)
-		info.Format(_T("当前数据文件大小：% 个字节"), m_data_size);
+		info.Format(_T("当前数据文件大小：%d 个字节"), m_data_size);
 	else if (m_data_size < 1024 * 1024)
 		info.Format(_T("当前数据文件大小：%.2f KB (%d 字节)"), static_cast<float>(m_data_size) / 1024.0f, m_data_size);
 	else

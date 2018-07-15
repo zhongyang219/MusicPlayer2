@@ -192,7 +192,8 @@ public:
 	vector<SongInfo>& GetPlayList() { return m_playlist; }	//获取播放列表的引用
 	Time GetAllSongLength(int track) const;				//获取指定序号的歌曲的长度
 	int GetSongNum() const { return m_song_num; }		//获取歌曲总数
-	const wstring& GetCurrentPath() const { return m_path; }	//获取当前路径
+	const wstring& GetCurrentDir() const { return m_path; }	//获取当前目录
+	wstring GetCurrentFilePath() const { return m_path + m_current_file_name; }		//获取正在播放文件的路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号
 	wstring GetFileName() const { return (m_current_file_name.empty() ? wstring(L"没有找到文件") : m_current_file_name); }
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
