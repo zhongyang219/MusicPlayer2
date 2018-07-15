@@ -293,4 +293,6 @@ public:
 	afx_msg void OnDeleteAlbumCover();
 	afx_msg void OnCopyFileTo();
 	afx_msg void OnMoveFileTo();
+protected:
+	afx_msg LRESULT OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam);
 };

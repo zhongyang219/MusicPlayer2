@@ -272,6 +272,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_DELETE_ALBUM_COVER, &CMusicPlayerDlg::OnDeleteAlbumCover)
 	ON_COMMAND(ID_COPY_FILE_TO, &CMusicPlayerDlg::OnCopyFileTo)
 	ON_COMMAND(ID_MOVE_FILE_TO, &CMusicPlayerDlg::OnMoveFileTo)
+	ON_MESSAGE(WM_OPEN_FILE_COMMAND_LINE, &CMusicPlayerDlg::OnOpenFileCommandLine)
 END_MESSAGE_MAP()
 
 
@@ -1900,8 +1901,6 @@ void CMusicPlayerDlg::OnDestroy()
 
 void CMusicPlayerDlg::OnAppAbout()
 {
-	CFilePathHelper file_path{ L"E:\\音乐\\Mp3\\vitas - 我多么地爱.wMa" };
-	wstring str = file_path.GetFileExtension();
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
 }
@@ -3263,4 +3262,16 @@ void CMusicPlayerDlg::OnMoveFileTo()
 			}
 		}
 	}
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam)
+{
+	wstring cmd_line = CCommon::GetStringFromClipboard();
+	if (cmd_line.empty())
+		return 0;
+	vector<wstring> files;
+	CCommon::DisposeCmdLine(wstring(cmd_line), files);
+	theApp.m_player.OpenFiles(files);
+	return 0;
 }

@@ -80,6 +80,11 @@ BOOL CMusicPlayerApp::InitInstance()
 					ShowWindow(minidlg_handle, SW_SHOWNORMAL);
 					SetForegroundWindow(minidlg_handle);
 				}
+				if (!cmd_line.empty())		//如果通过命令行传递了打开的文件名，且已有一个进程在运行，则将打开文件的命令和命令行参数传递给该进程
+				{
+					CCommon::CopyStringToClipboard(cmd_line);		//将命令行参数复制到剪贴板，通过剪贴板在不同进程间字符串
+					::SendMessage(handle, WM_OPEN_FILE_COMMAND_LINE, 0, 0);
+				}
 				return FALSE;		//退出当前程序
 			}
 		}

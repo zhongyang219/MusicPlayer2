@@ -533,6 +533,23 @@ bool CCommon::CopyStringToClipboard(const wstring & str)
 	else return false;
 }
 
+wstring CCommon::GetStringFromClipboard()
+{
+	if (OpenClipboard(NULL))
+	{
+		if (IsClipboardFormatAvailable(CF_TEXT))
+		{
+			HANDLE hClip;
+			wchar_t *pBuf;
+			hClip = GetClipboardData(CF_UNICODETEXT); //获取剪贴板数据
+			pBuf = (wchar_t*)GlobalLock(hClip);
+			CloseClipboard();
+			return wstring(pBuf);
+		}
+	}
+	return wstring();
+}
+
 void CCommon::WriteLog(const wchar_t* path, const wstring & content)
 {
 	SYSTEMTIME cur_time;
