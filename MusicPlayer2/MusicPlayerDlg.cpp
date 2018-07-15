@@ -2232,7 +2232,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 		theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
 		theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
 
-		if (reload_sf2)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
+		if (reload_sf2 && theApp.m_player.IsMidi())		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
 		{
 			theApp.m_player.ReIniBASS();
 			UpdatePlayPauseButton();

@@ -33,7 +33,7 @@ AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 		return AU_MP3;
 	else if (type == L"wma")
 		return AU_WMA;
-	else if (type == L"ogg")
+	else if (type == L"ogg" || type == L"oga")
 		return AU_OGG;
 	else if (type == L"m4a")
 		return AU_MP4;
@@ -45,7 +45,7 @@ AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 		return AU_CUE;
 	else if (type == L"ape")
 		return AU_APE;
-	else if (type == L"mid" || type == L"midi")
+	else if (type == L"mid" || type == L"midi" || type == L"rmi" || type == L"kar")
 		return AU_MIDI;
 	else
 		return AU_OTHER;
