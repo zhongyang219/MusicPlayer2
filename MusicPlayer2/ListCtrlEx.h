@@ -10,6 +10,7 @@ public:
 	~CListCtrlEx();
 
 	void SetColor(const ColorTable& colors);
+	void GetItemSelected(vector<int>& item_selected);
 
 protected:
 	ColorTable m_theme_color;

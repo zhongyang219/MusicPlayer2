@@ -485,6 +485,17 @@ int CCommon::DeleteAFile(HWND hwnd, _tstring file)
 	return SHFileOperation(&FileOp);	//删除文件
 }
 
+int CCommon::DeleteFiles(HWND hwnd, const vector<_tstring>& files)
+{
+	_tstring file_list;
+	for (const auto& file : files)
+	{
+		file_list += file;
+		file_list.push_back(_T('\0'));
+	}
+	return DeleteAFile(hwnd, file_list);
+}
+
 int CCommon::CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 {
 	file_from.push_back(_T('\0'));	//pFrom必须以两个\0结尾
@@ -500,6 +511,17 @@ int CCommon::CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 	return SHFileOperation(&FileOp);
 }
 
+int CCommon::CopyFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to)
+{
+	_tstring file_list;
+	for (const auto& file : files)
+	{
+		file_list += file;
+		file_list.push_back(_T('\0'));
+	}
+	return CopyAFile(hwnd, file_list, file_to);
+}
+
 int CCommon::MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 {
 	file_from.push_back(_T('\0'));	//pFrom必须以两个\0结尾
@@ -513,6 +535,17 @@ int CCommon::MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 	FileOp.hNameMappings = NULL;
 	FileOp.lpszProgressTitle = _T("移动");
 	return SHFileOperation(&FileOp);
+}
+
+int CCommon::MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to)
+{
+	_tstring file_list;
+	for (const auto& file : files)
+	{
+		file_list += file;
+		file_list.push_back(_T('\0'));
+	}
+	return MoveAFile(hwnd, file_list, file_to);
 }
 
 bool CCommon::CopyStringToClipboard(const wstring & str)

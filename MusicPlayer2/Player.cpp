@@ -1137,6 +1137,20 @@ void CPlayer::RemoveSong(int index)
 	}
 }
 
+void CPlayer::RemoveSongs(vector<int> indexes)
+{
+	int size = indexes.size();
+	for (int i{}; i<size; i++)
+	{
+		RemoveSong(indexes[i]);
+		if (i <= size - 2 && indexes[i + 1] > indexes[i])
+		{
+			for (int j{ i + 1 }; j < size; j++)
+				indexes[j]--;
+		}
+	}
+}
+
 void CPlayer::ClearPlaylist()
 {
 	if (m_loading) return;

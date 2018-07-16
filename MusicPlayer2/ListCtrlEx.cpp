@@ -23,6 +23,20 @@ void CListCtrlEx::SetColor(const ColorTable & colors)
 		Invalidate();
 }
 
+void CListCtrlEx::GetItemSelected(vector<int>& item_selected)
+{
+	item_selected.clear();
+	POSITION pos = GetFirstSelectedItemPosition();
+	if (pos != NULL)
+	{
+		while (pos)
+		{
+			int nItem = GetNextSelectedItem(pos);
+			item_selected.push_back(nItem);
+		}
+	}
+}
+
 
 BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
@@ -46,28 +60,14 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		if (IsWindowEnabled())
 		{
 			this_item_select = false;
-			////当选中行又是高亮行时设置颜色
-			//if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
-			//{
-			//	SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
-			//	lplvdr->clrText = m_theme_color.light3;
-			//	lplvdr->clrTextBk = m_theme_color.dark1;
-			//}
 			//设置选中行的颜色
-			/*else */if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
+			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 			{
 				this_item_select = true;
 				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 				lplvdr->clrText = m_theme_color.dark3;
 				lplvdr->clrTextBk = m_theme_color.light2;
 			}
-			////设置高亮行的颜色
-			//else if (nmcd.dwItemSpec == m_highlight_item)
-			//{
-			//	lplvdr->clrText = m_theme_color.dark2;
-			//	//lplvdr->clrText = 0;
-			//	lplvdr->clrTextBk = m_theme_color.light3;
-			//}
 			//设置偶数行的颜色
 			else if (nmcd.dwItemSpec % 2 == 0)
 			{

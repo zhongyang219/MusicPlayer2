@@ -207,6 +207,7 @@ public:
 	void ReloadPlaylist();		//重新载入播放列表
 
 	void RemoveSong(int index);		//从播放列表中删除指定的项目
+	void RemoveSongs(vector<int> indexes);	//从播放列表中删除多个指定的项目
 	void ClearPlaylist();			//清空播放列表
 	void SeekTo(int position);		//定位到指定位置
 	void ClearLyric();		//清除当前文件的歌词关联

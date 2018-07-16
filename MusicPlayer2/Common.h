@@ -112,12 +112,18 @@ public:
 
 	//删除一个文件
 	static int DeleteAFile(HWND hwnd, _tstring file);
+	//删除多个文件
+	static int DeleteFiles(HWND hwnd, const vector<_tstring>& files);
 
 	//复制一个文件
 	static int CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to);
+	//复制多个文件
+	static int CopyFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
 
 	//移动一个文件
 	static int MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to);
+	//移动多个文件
+	static int MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
 
 	//将一个字符串保存到剪贴板
 	static bool CopyStringToClipboard(const wstring& str);

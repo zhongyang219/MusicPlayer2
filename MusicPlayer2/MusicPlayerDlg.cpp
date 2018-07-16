@@ -2282,6 +2282,7 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
+	m_playlist_list.GetItemSelected(m_items_selected);
 	if (!m_searched)
 	{
 		m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
@@ -2466,40 +2467,77 @@ void CMusicPlayerDlg::OnSortByTrack()
 void CMusicPlayerDlg::OnDeleteFromDisk()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_item_selected >= 0 && m_item_selected < theApp.m_player.GetSongNum())
+	if (m_item_selected < 0 || m_item_selected >= theApp.m_player.GetSongNum())
+		return;
+	int rtn;
+	wstring delected_file;
+	vector<wstring> delected_files;
+	if (m_items_selected.size() > 1)
+	{
+		CString info;
+		info.Format(_T("确实要删除选中的 %d 首歌曲吗？"), m_items_selected.size());
+		if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
+			return;
+		if(CCommon::IsItemInVector(m_items_selected, theApp.m_player.GetIndex()))	//如果选中的文件中有正在播放的文件，则删除前必须先关闭文件
+			theApp.m_player.MusicControl(Command::CLOSE);
+		for (const auto& index : m_items_selected)
+			delected_files.push_back(theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[index].file_name);
+		rtn = CCommon::DeleteFiles(m_hWnd, delected_files);
+	}
+	else
 	{
 		if (m_item_selected == theApp.m_player.GetIndex())	//如果删除的文件是正在播放的文件，则删除前必须先关闭文件
 			theApp.m_player.MusicControl(Command::CLOSE);
-		wstring file_name{ theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name };
-		int rtn;
-		rtn = CCommon::DeleteAFile(m_hWnd, file_name);
-		if (rtn == 0)
-		{
-			//如果文件删除成功，同时从播放列表中移除
+		delected_file = theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name;
+		rtn = CCommon::DeleteAFile(m_hWnd, delected_file);
+	}
+	if (rtn == 0)
+	{
+		//如果文件删除成功，同时从播放列表中移除
+		if (m_items_selected.size() > 1)
+			theApp.m_player.RemoveSongs(m_items_selected);
+		else
 			theApp.m_player.RemoveSong(m_item_selected);
-			ShowPlayList();
-			UpdatePlayPauseButton();
-			DrawInfo(true);
-			//文件删除后同时删除和文件同名的图片文件和歌词文件
-			CFilePathHelper file_path(file_name);
-			DeleteFile(file_path.ReplaceFileExtension(L"jpg").c_str());
-			DeleteFile(file_path.ReplaceFileExtension(L"lrc").c_str());
-		}
-		else if (rtn == 1223)	//如果在弹出的对话框中点击“取消”则返回值为1223
+		ShowPlayList();
+		UpdatePlayPauseButton();
+		DrawInfo(true);
+		//文件删除后同时删除和文件同名的图片文件和歌词文件
+		if (m_items_selected.size() > 1)
 		{
-			if (m_item_selected == theApp.m_player.GetIndex())		//如果删除的文件是正在播放的文件，又点击了“取消”，则重新打开当前文件
+			for (auto& file : delected_files)
 			{
-				theApp.m_player.MusicControl(Command::OPEN);
-				theApp.m_player.MusicControl(Command::SEEK);
-				//theApp.m_player.Refresh();
-				UpdatePlayPauseButton();
-				DrawInfo(true);
+				CFilePathHelper file_path(file);
+				file = file_path.ReplaceFileExtension(L"jpg").c_str();
 			}
+			CCommon::DeleteFiles(m_hWnd, delected_files);
+			for (auto& file : delected_files)
+			{
+				CFilePathHelper file_path(file);
+				file = file_path.ReplaceFileExtension(L"lrc").c_str();
+			}
+			CCommon::DeleteFiles(m_hWnd, delected_files);
 		}
 		else
 		{
-			MessageBox(_T("无法删除文件！"), NULL, MB_ICONWARNING);
+			CFilePathHelper file_path(delected_file);
+			CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
+			CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
 		}
+	}
+	else if (rtn == 1223)	//如果在弹出的对话框中点击“取消”则返回值为1223
+	{
+		if (m_item_selected == theApp.m_player.GetIndex())		//如果删除的文件是正在播放的文件，又点击了“取消”，则重新打开当前文件
+		{
+			theApp.m_player.MusicControl(Command::OPEN);
+			theApp.m_player.MusicControl(Command::SEEK);
+			//theApp.m_player.Refresh();
+			UpdatePlayPauseButton();
+			DrawInfo(true);
+		}
+	}
+	else
+	{
+		MessageBox(_T("无法删除文件！"), NULL, MB_ICONWARNING);
 	}
 }
 
@@ -3222,9 +3260,18 @@ void CMusicPlayerDlg::OnCopyFileTo()
 #endif
 	if (folderPickerDlg.DoModal() == IDOK)
 	{
-		if (m_item_selected >= 0 && m_item_selected < theApp.m_player.GetSongNum())
+		if (m_item_selected < 0 || m_item_selected >= theApp.m_player.GetSongNum())
+			return;
+		if (m_items_selected.size() > 1)
 		{
-			wstring source_file{ theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name };
+			vector<wstring> source_files;
+			for (const auto& index : m_items_selected)
+				source_files.push_back(theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[index].file_name);
+			CCommon::CopyFiles(this->GetSafeHwnd(), source_files, wstring(folderPickerDlg.GetPathName()));
+		}
+		else
+		{
+			wstring source_file = theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name;
 			CCommon::CopyAFile(this->GetSafeHwnd(), theApp.m_player.GetCurrentFilePath(), wstring(folderPickerDlg.GetPathName()));
 		}
 	}
@@ -3245,21 +3292,36 @@ void CMusicPlayerDlg::OnMoveFileTo()
 #endif
 	if (folderPickerDlg.DoModal() == IDOK)
 	{
-		if (m_item_selected >= 0 && m_item_selected < theApp.m_player.GetSongNum())
+		if (m_item_selected < 0 || m_item_selected >= theApp.m_player.GetSongNum())
+			return;
+		wstring source_file;
+		vector<wstring> source_files;
+		int rtn;
+		if (m_items_selected.size() > 1)
+		{
+			if (CCommon::IsItemInVector(m_items_selected, theApp.m_player.GetIndex()))	//如果选中的文件中有正在播放的文件，则移动前必须先关闭文件
+				theApp.m_player.MusicControl(Command::CLOSE);
+			for (const auto& index : m_items_selected)
+				source_files.push_back(theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[index].file_name);
+			rtn = CCommon::MoveFiles(m_hWnd, source_files, wstring(folderPickerDlg.GetPathName()));
+		}
+		else
 		{
 			if (m_item_selected == theApp.m_player.GetIndex())	//如果移动的文件是正在播放的文件，则移动前必须先关闭文件
 				theApp.m_player.MusicControl(Command::CLOSE);
-			wstring source_file{ theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name };
-			int rtn;
+			source_file = theApp.m_player.GetCurrentDir() + theApp.m_player.GetPlayList()[m_item_selected].file_name;
 			rtn = CCommon::MoveAFile(m_hWnd, source_file, wstring(folderPickerDlg.GetPathName()));
-			if (rtn == 0)
-			{
-				//如果文件移动成功，同时从播放列表中移除
+		}
+		if (rtn == 0)
+		{
+			//如果文件移动成功，同时从播放列表中移除
+			if (m_items_selected.size() > 1)
+				theApp.m_player.RemoveSongs(m_items_selected);
+			else
 				theApp.m_player.RemoveSong(m_item_selected);
-				ShowPlayList();
-				UpdatePlayPauseButton();
-				DrawInfo(true);
-			}
+			ShowPlayList();
+			UpdatePlayPauseButton();
+			DrawInfo(true);
 		}
 	}
 }
