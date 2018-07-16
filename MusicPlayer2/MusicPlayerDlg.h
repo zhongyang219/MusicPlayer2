@@ -135,6 +135,7 @@ protected:
 	bool m_show_volume_adj{ false };	//显示音量调整按钮
 
 	int m_item_selected{};		//播放列表中鼠标选中的项目
+	vector<int> m_items_selected;
 	int m_tab_selected{};		//选项设置中选择的标签
 
 	static unsigned int m_WM_TASKBARCREATED;	//任务栏重启消息

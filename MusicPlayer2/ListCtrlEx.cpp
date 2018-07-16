@@ -36,6 +36,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = CDRF_DODEFAULT;
 	LPNMLVCUSTOMDRAW lplvdr = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
 	NMCUSTOMDRAW& nmcd = lplvdr->nmcd;
+	static bool this_item_select = false;
 	switch (lplvdr->nmcd.dwDrawStage)	//判断状态   
 	{
 	case CDDS_PREPAINT:
@@ -44,6 +45,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	case CDDS_ITEMPREPAINT:			//如果为画ITEM之前就要进行颜色的改变
 		if (IsWindowEnabled())
 		{
+			this_item_select = false;
 			////当选中行又是高亮行时设置颜色
 			//if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
 			//{
@@ -54,6 +56,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			//设置选中行的颜色
 			/*else */if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 			{
+				this_item_select = true;
 				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 				lplvdr->clrText = m_theme_color.dark3;
 				lplvdr->clrTextBk = m_theme_color.light2;
@@ -83,7 +86,12 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			lplvdr->clrText = GRAY(140);
 			lplvdr->clrTextBk = GRAY(240);
 		}
-		*pResult = CDRF_DODEFAULT;
+		*pResult = CDRF_NOTIFYPOSTPAINT;
+		break;
+	case CDDS_ITEMPOSTPAINT:
+		if (this_item_select)
+			SetItemState(nmcd.dwItemSpec, 0xFF, LVIS_SELECTED);
+		//*pResult = CDRF_DODEFAULT;
 		break;
 	}
 }
