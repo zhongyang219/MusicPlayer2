@@ -36,6 +36,7 @@ public:
 	//初始化播放列表的工作线程函数
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
 	ThreadInfo m_thread_info;
+	CBASSMidiLibrary m_bass_midi_lib;
 
 	//获取Midi音乐内嵌歌词的回调函数
 	static void CALLBACK MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void *user);
@@ -47,7 +48,6 @@ private:
 	HSTREAM m_musicStream{};		//当前的音频句柄
 	vector<HPLUGIN> m_plugin_handles;		//插件的句柄
 
-	CBASSMidiLibrary m_bass_midi_lib;
 	BASS_MIDI_FONT m_sfont{};	//MIDI音色库
 	wstring m_sfont_name;		//MIDI音色库的名称
 	MidiInfo m_midi_info;
@@ -230,6 +230,7 @@ public:
 	const wstring& GetMidiLyric() const { return m_midi_lyric; }
 	bool MidiNoLyric() const { return m_midi_no_lyric; }
 	const wstring& GetSoundFontName() const { return m_sfont_name; }
+	const BASS_MIDI_FONT& GetSoundFont() const { return m_sfont; }
 
 	void ReIniBASS();		//重新初始化BASS
 

@@ -25,6 +25,7 @@
 #include "FilePathHelper.h"
 #include "CoverDownloadCommon.h"
 #include "CoverDownloadDlg.h"
+#include "FormatConvertDlg.h"
 
 // CMusicPlayerDlg ¶Ô»°¿ò
 class CMusicPlayerDlg : public CDialog
@@ -296,4 +297,6 @@ public:
 	afx_msg void OnMoveFileTo();
 protected:
 	afx_msg LRESULT OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnFormatConvert();
 };

@@ -273,6 +273,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_COPY_FILE_TO, &CMusicPlayerDlg::OnCopyFileTo)
 	ON_COMMAND(ID_MOVE_FILE_TO, &CMusicPlayerDlg::OnMoveFileTo)
 	ON_MESSAGE(WM_OPEN_FILE_COMMAND_LINE, &CMusicPlayerDlg::OnOpenFileCommandLine)
+	ON_COMMAND(ID_FORMAT_CONVERT, &CMusicPlayerDlg::OnFormatConvert)
 END_MESSAGE_MAP()
 
 
@@ -3341,4 +3342,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lPa
 	CCommon::DisposeCmdLine(wstring(cmd_line), files);
 	theApp.m_player.OpenFiles(files);
 	return 0;
+}
+
+
+void CMusicPlayerDlg::OnFormatConvert()
+{
+	// TODO: 在此添加命令处理程序代码
+	CFormatConvertDlg dlg(m_items_selected);
+	dlg.DoModal();
 }

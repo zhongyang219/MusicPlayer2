@@ -1128,12 +1128,15 @@ void CPlayer::RemoveSong(int index)
 		m_song_num--;
 		if (index == m_index)		//如果要删除的曲目是正在播放的曲目，重新播放当前曲目
 		{
-			PlayTrack(m_index);
+			if(m_song_num>0)
+				PlayTrack(m_index);
 		}
 		else if (index < m_index)	//如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
 		{
 			m_index--;
 		}
+		if (m_song_num == 0)
+			m_playlist.push_back(SongInfo());
 	}
 }
 

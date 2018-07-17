@@ -135,6 +135,9 @@
     <Filter Include="头文件和源文件\公共的类\BASS">
       <UniqueIdentifier>{19a9ecf9-4893-450b-a085-7cb1a6a7dd4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\对话框类\FormatConvertDlg">
+      <UniqueIdentifier>{4778764b-1016-4c5b-8ac5-de6c4d846038}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -273,6 +276,12 @@
     <ClInclude Include="BASSMidiLibrary.h">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClInclude>
+    <ClInclude Include="FormatConvertDlg.h">
+      <Filter>头文件和源文件\对话框类\FormatConvertDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="BASSEncodeLibrary.h">
+      <Filter>头文件和源文件\公共的类\BASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -393,6 +402,12 @@
       <Filter>头文件和源文件\对话框类\专辑封面下载对话框</Filter>
     </ClCompile>
     <ClCompile Include="BASSMidiLibrary.cpp">
+      <Filter>头文件和源文件\公共的类\BASS</Filter>
+    </ClCompile>
+    <ClCompile Include="FormatConvertDlg.cpp">
+      <Filter>头文件和源文件\对话框类\FormatConvertDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="BASSEncodeLibrary.cpp">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClCompile>
   </ItemGroup>

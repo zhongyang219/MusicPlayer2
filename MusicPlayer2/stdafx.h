@@ -67,8 +67,6 @@ using std::map;
 
 //用于支持使用网络相关的类
 #include <afxinet.h>
-#include <afxwin.h>
-#include <afxwin.h>
 
 
 
@@ -172,4 +170,4 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 
 #define WM_OPEN_FILE_COMMAND_LINE (WM_USER+110)		//通过命令行打开文件时向已有实例窗口发送的消息
 
-#define WM_NEXT_USER_MSG (WM_USER+111)
+#define WM_NEXT_USER_MSG (WM_USER+113)

@@ -42,7 +42,7 @@ struct BASS_MIDI_MARK
 class CBASSMidiLibrary
 {
 typedef HSOUNDFONT (WINAPI *_BASS_MIDI_FontInit)(const void* file, DWORD flags);
-typedef BOOL (WINAPI *_BASS_MIDI_StreamSetFonts)(HSTREAM handle, void* fonts, DWORD count);
+typedef BOOL (WINAPI *_BASS_MIDI_StreamSetFonts)(HSTREAM handle, const void* fonts, DWORD count);
 typedef BOOL (WINAPI *_BASS_MIDI_FontGetInfo)(HSOUNDFONT handle, BASS_MIDI_FONTINFO *info );
 typedef BOOL (WINAPI *_BASS_MIDI_FontFree)(HSOUNDFONT handle);
 typedef DWORD (WINAPI *_BASS_MIDI_StreamGetEvent)(HSTREAM handle, DWORD chan, DWORD event);
