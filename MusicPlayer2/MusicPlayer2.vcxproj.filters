@@ -138,6 +138,9 @@
     <Filter Include="头文件和源文件\对话框类\FormatConvertDlg">
       <UniqueIdentifier>{4778764b-1016-4c5b-8ac5-de6c4d846038}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\对话框类\编码选项对话框">
+      <UniqueIdentifier>{6f54d060-c0cf-4263-b48a-d4ffdc8ab770}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -282,6 +285,9 @@
     <ClInclude Include="BASSEncodeLibrary.h">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClInclude>
+    <ClInclude Include="MP3EncodeCfgDlg.h">
+      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -409,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="BASSEncodeLibrary.cpp">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
+    </ClCompile>
+    <ClCompile Include="MP3EncodeCfgDlg.cpp">
+      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
