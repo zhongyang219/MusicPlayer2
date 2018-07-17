@@ -128,6 +128,22 @@ void CPlayListCtrl::QuickSearch(const wstring & key_word)
 	}
 }
 
+void CPlayListCtrl::GetItemSelectedSearched(vector<int>& item_selected)
+{
+	item_selected.clear();
+	POSITION pos = GetFirstSelectedItemPosition();
+	if (pos != NULL)
+	{
+		while (pos)
+		{
+			int nItem = GetNextSelectedItem(pos);
+			CString str;
+			str = GetItemText(nItem, 0);
+			item_selected.push_back(_ttoi(str) - 1);
+		}
+	}
+}
+
 
 BEGIN_MESSAGE_MAP(CPlayListCtrl, CListCtrlEx)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, CPlayListCtrl::OnNMCustomdraw)
@@ -272,7 +288,7 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		if (IsWindowEnabled())
 		{
 			this_item_select = false;
-			if (m_searched && m_search_result.size() == 0)		//如果播放列表处理搜索状态且没有搜索结果
+			if (m_searched && m_search_result.size() == 0)		//如果播放列表处于搜索状态且没有搜索结果
 			{
 				if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)	//不允许选中行
 					SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);

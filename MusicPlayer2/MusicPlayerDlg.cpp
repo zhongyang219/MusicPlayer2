@@ -2286,16 +2286,17 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	m_playlist_list.GetItemSelected(m_items_selected);
 	if (!m_searched)
 	{
 		m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
+		m_playlist_list.GetItemSelected(m_items_selected);		//获取多个选中的项目
 	}
 	else
 	{
 		CString str;
 		str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
 		m_item_selected = _ttoi(str) - 1;
+		m_playlist_list.GetItemSelectedSearched(m_items_selected);
 	}
 
 	CMenu* pContextMenu = m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单

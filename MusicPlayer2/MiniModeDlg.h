@@ -16,7 +16,7 @@ class CMiniModeDlg : public CDialogEx
 	DECLARE_DYNAMIC(CMiniModeDlg)
 
 public:
-	CMiniModeDlg(int& item_selected, CMenu& popup_menu, CWnd* pParent = NULL);   // 标准构造函数
+	CMiniModeDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CMiniModeDlg();
 
 // 对话框数据
@@ -59,6 +59,7 @@ protected:
 	bool m_first_show_time;
 
 	int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目
+	vector<int>& m_items_selected;
 
 	CToolTipCtrl m_Mytip;
 	CMenu m_menu;

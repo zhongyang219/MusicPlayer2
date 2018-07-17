@@ -11,8 +11,8 @@
 
 IMPLEMENT_DYNAMIC(CMiniModeDlg, CDialogEx)
 
-CMiniModeDlg::CMiniModeDlg(int& item_selected, CMenu& popup_menu, CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_MINI_DIALOG, pParent), m_item_selected{ item_selected }, m_popup_menu{ popup_menu }
+CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CWnd* pParent /*=NULL*/)
+	: CDialogEx(IDD_MINI_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }, m_popup_menu{ popup_menu }
 {
 	m_screen_width = GetSystemMetrics(SM_CXFULLSCREEN);
 	m_screen_height = GetSystemMetrics(SM_CYFULLSCREEN) + 23;
@@ -767,6 +767,7 @@ void CMiniModeDlg::OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
+	m_playlist_ctrl.GetItemSelected(m_items_selected);
 
 	CMenu* pContextMenu = m_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
 	CPoint point;			//定义一个用于确定光标位置的位置  

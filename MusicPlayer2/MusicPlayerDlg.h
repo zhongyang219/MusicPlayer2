@@ -142,7 +142,7 @@ protected:
 
 	DisplayFormat m_display_format{};		//播放列表中项目的显示样式
 
-	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_list_popup_menu };		//迷你模式对话框
+	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected, m_list_popup_menu };		//迷你模式对话框
 
 	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
 
