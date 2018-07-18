@@ -47,6 +47,7 @@ private:
 
 	HSTREAM m_musicStream{};		//当前的音频句柄
 	vector<HPLUGIN> m_plugin_handles;		//插件的句柄
+	BASS_CHANNELINFO m_channel_info;	//音频通道的信息
 
 	BASS_MIDI_FONT m_sfont{};	//MIDI音色库
 	wstring m_sfont_name;		//MIDI音色库的名称
@@ -231,6 +232,8 @@ public:
 	bool MidiNoLyric() const { return m_midi_no_lyric; }
 	const wstring& GetSoundFontName() const { return m_sfont_name; }
 	const BASS_MIDI_FONT& GetSoundFont() const { return m_sfont; }
+
+	const BASS_CHANNELINFO& GetChannelInfo() const { return m_channel_info; }
 
 	void ReIniBASS();		//重新初始化BASS
 

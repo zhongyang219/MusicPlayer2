@@ -465,15 +465,15 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	{
 		const MidiInfo& midi_info{ theApp.m_player.GetMidiInfo() };
 		lable2_str = _T("节拍：");
-		swprintf_s(buff, L"%d / %d", midi_info.midi_position, midi_info.midi_length);
+		swprintf_s(buff, L"%d/%d (%dbpm)", midi_info.midi_position, midi_info.midi_length, midi_info.speed);
 		lable2_content = buff;
 
-		lable3_str = _T("速度：");
-		swprintf_s(buff, L"%d bpm", midi_info.speed);
-		lable3_content = buff;
+		//lable3_str = _T("速度：");
+		//swprintf_s(buff, L"%d bpm", midi_info.speed);
+		//lable3_content = buff;
 
-		lable4_str = _T("音色库：");
-		lable4_content = theApp.m_player.GetSoundFontName();
+		lable3_str = _T("音色库：");
+		lable3_content = theApp.m_player.GetSoundFontName();
 	}
 	else
 	{
@@ -481,12 +481,23 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		lable2_content = theApp.m_player.GetCurrentSongInfo().artist;
 		lable3_str = _T("唱片集：");
 		lable3_content = theApp.m_player.GetCurrentSongInfo().album;
-		lable4_str = _T("格式：");
-		CFilePathHelper file_path{ theApp.m_player.GetCurrentSongInfo().file_name };
-		wstring file_format{ file_path.GetFileExtension(true) };
-		swprintf_s(buff, L"%s %dkbps", file_format.c_str(), theApp.m_player.GetCurrentSongInfo().bitrate);
-		lable4_content = buff;
 	}
+	lable4_str = _T("格式：");
+	CFilePathHelper file_path{ theApp.m_player.GetCurrentSongInfo().file_name };
+	wstring file_format{ file_path.GetFileExtension(true) };
+	const BASS_CHANNELINFO channel_info{ theApp.m_player.GetChannelInfo() };
+	CString chans_str;
+	if (channel_info.chans == 1)
+		chans_str = _T("单声道");
+	else if (channel_info.chans == 2)
+		chans_str = _T("立体声");
+	else if (channel_info.chans > 2)
+		chans_str.Format(_T("%d声道"));
+	if (!theApp.m_player.IsMidi())
+		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", file_format.c_str(), channel_info.freq/1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
+	else
+		swprintf_s(buff, L"MIDI %.1fkHz %s", channel_info.freq / 1000.0f, chans_str.GetString());
+	lable4_content = buff;
 	//显示标题
 	tmp.MoveToXY(text_start.x, text_start.y + text_height);
 	tmp.right = tmp.left + DPI(52);
@@ -502,7 +513,10 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info3;
-	m_draw.DrawScrollText2(tmp, lable2_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info3, reset);
+	if (theApp.m_player.IsMidi())
+		m_draw.DrawWindowText(tmp, lable2_content.c_str(), theApp.m_app_setting_data.theme_color.dark2);
+	else
+		m_draw.DrawScrollText2(tmp, lable2_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info3, reset);
 	//显示唱片集
 	tmp.MoveToXY(text_start.x, text_start.y + 3 * text_height);
 	tmp.right = tmp.left + DPI(52);

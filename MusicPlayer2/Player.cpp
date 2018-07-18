@@ -461,6 +461,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 	case Command::OPEN:
 		m_error_code = 0;
 		m_musicStream = BASS_StreamCreateFile(FALSE, (m_path + m_current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+		BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
 		m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
 		if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
 			m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
@@ -488,7 +489,6 @@ void CPlayer::MusicControl(Command command, int volume_step)
 				BASS_ChannelSetSync(m_musicStream, BASS_SYNC_END, 0, MidiEndSync, 0);
 				m_midi_no_lyric = true;
 			}
-
 			//打开时获取专辑封面
 			SearchAlbumCover();
 		}
