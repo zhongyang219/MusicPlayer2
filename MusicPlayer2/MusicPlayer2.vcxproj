@@ -199,6 +199,7 @@
     <ClInclude Include="BASSWmaLibrary.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
+    <ClInclude Include="WmaEncodeCfgDlg.h" />
     <ClInclude Include="FilePathHelper.h" />
     <ClInclude Include="ColorConvert.h" />
     <ClInclude Include="ColorStatic.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="BASSWmaLibrary.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
+    <ClCompile Include="WmaEncodeCfgDlg.cpp" />
     <ClCompile Include="FilePathHelper.cpp" />
     <ClCompile Include="ColorConvert.cpp" />
     <ClCompile Include="ColorStatic.cpp" />

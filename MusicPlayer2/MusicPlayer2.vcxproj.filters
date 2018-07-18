@@ -294,6 +294,9 @@
     <ClInclude Include="BASSWmaLibrary.h">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClInclude>
+    <ClInclude Include="WmaEncodeCfgDlg.h">
+      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -430,6 +433,9 @@
     </ClCompile>
     <ClCompile Include="BASSWmaLibrary.cpp">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
+    </ClCompile>
+    <ClCompile Include="WmaEncodeCfgDlg.cpp">
+      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
