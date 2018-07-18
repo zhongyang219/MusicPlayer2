@@ -291,6 +291,9 @@
     <ClInclude Include="OggEncodeCfgDlg.h">
       <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
     </ClInclude>
+    <ClInclude Include="BASSWmaLibrary.h">
+      <Filter>头文件和源文件\公共的类\BASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -424,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="OggEncodeCfgDlg.cpp">
       <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="BASSWmaLibrary.cpp">
+      <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
