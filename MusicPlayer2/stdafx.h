@@ -67,6 +67,7 @@ using std::map;
 
 //用于支持使用网络相关的类
 #include <afxinet.h>
+#include <afxwin.h>
 
 
 

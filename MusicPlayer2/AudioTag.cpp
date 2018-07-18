@@ -462,22 +462,22 @@ bool CAudioTag::GetOggTag()
 			{
 				size_t index;
 				index = ogg_tag_str.find_first_of('=');
-				if (ogg_tag_str.find("Title") != string::npos)
+				if(CCommon::StringFindNoCase(ogg_tag_str, string("Title"))!= string::npos)
 				{
 					ogg_tag_title = ogg_tag_str.substr(index + 1);
 					tag_count++;
 				}
-				else if (ogg_tag_str.find("Artist") != string::npos)
+				else if (CCommon::StringFindNoCase(ogg_tag_str, string("Artist")) != string::npos)
 				{
 					ogg_tag_artist = ogg_tag_str.substr(index + 1);
 					tag_count++;
 				}
-				else if (ogg_tag_str.find("Album") != string::npos)
+				else if (CCommon::StringFindNoCase(ogg_tag_str, string("Album")) != string::npos)
 				{
 					ogg_tag_album = ogg_tag_str.substr(index + 1);
 					tag_count++;
 				}
-				else if (ogg_tag_str.find("Tracknumber") != string::npos)
+				else if (CCommon::StringFindNoCase(ogg_tag_str, string("Tracknumber")) != string::npos)
 				{
 					ogg_tag_track = ogg_tag_str.substr(index + 1);
 					tag_count++;

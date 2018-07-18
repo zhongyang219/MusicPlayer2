@@ -288,6 +288,9 @@
     <ClInclude Include="MP3EncodeCfgDlg.h">
       <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
     </ClInclude>
+    <ClInclude Include="OggEncodeCfgDlg.h">
+      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -417,6 +420,9 @@
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClCompile>
     <ClCompile Include="MP3EncodeCfgDlg.cpp">
+      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="OggEncodeCfgDlg.cpp">
       <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
     </ClCompile>
   </ItemGroup>
