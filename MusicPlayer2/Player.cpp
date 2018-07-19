@@ -970,19 +970,22 @@ void CPlayer::SetTitle() const
 
 void CPlayer::SaveConfig() const
 {
-	//WritePrivateProfileStringW(L"config", L"path", m_path.c_str(), theApp.m_config_path.c_str());
-	//CCommon::WritePrivateProfileIntW(L"config", L"track", m_index, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"volume", m_volume, theApp.m_config_path.c_str());
-	//CCommon::WritePrivateProfileIntW(L"config", L"position", m_current_position_int, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"repeat_mode", static_cast<int>(m_repeat_mode), theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"lyric_karaoke_disp", theApp.m_play_setting_data.lyric_karaoke_disp, theApp.m_config_path.c_str());
-	WritePrivateProfileStringW(L"config",L"lyric_path", theApp.m_play_setting_data.lyric_path.c_str(), theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"sort_mode", static_cast<int>(m_sort_mode), theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"config", L"lyric_fuzzy_match", theApp.m_play_setting_data.lyric_fuzzy_match, theApp.m_config_path.c_str());
-	WritePrivateProfileStringW(L"config",L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str(), theApp.m_config_path.c_str());
+	CIniHelper ini;
+	ini.SetPath(theApp.m_config_path);
+
+	//ini.WriteString(L"config", L"path", m_path.c_str());
+	//ini.WriteInt(L"config", L"track", m_index);
+	ini.WriteInt(L"config", L"volume", m_volume);
+	//ini.WriteInt(L"config", L"position", m_current_position_int);
+	ini.WriteInt(L"config", L"repeat_mode", static_cast<int>(m_repeat_mode));
+	ini.WriteInt(L"config", L"lyric_karaoke_disp", theApp.m_play_setting_data.lyric_karaoke_disp);
+	ini.WriteString(L"config",L"lyric_path", theApp.m_play_setting_data.lyric_path);
+	ini.WriteInt(L"config", L"sort_mode", static_cast<int>(m_sort_mode));
+	ini.WriteInt(L"config", L"lyric_fuzzy_match", theApp.m_play_setting_data.lyric_fuzzy_match);
+	ini.WriteString(L"config",L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
 
 	//保存均衡器设定
-	CCommon::WritePrivateProfileIntW(L"equalizer", L"equalizer_enable", m_equ_enable, theApp.m_config_path.c_str());
+	ini.WriteInt(L"equalizer", L"equalizer_enable", m_equ_enable);
 	//保存每个均衡器通道的增益
 	//if (m_equ_style == 9)
 	//{
@@ -990,48 +993,49 @@ void CPlayer::SaveConfig() const
 	//	for (int i{}; i < EQU_CH_NUM; i++)
 	//	{
 	//		swprintf_s(buff, L"channel%d", i + 1);
-	//		CCommon::WritePrivateProfileIntW(L"equalizer", buff, m_equalizer_gain[i], theApp.m_config_path.c_str());
+	//		ini.WriteInt(L"equalizer", buff, m_equalizer_gain[i]);
 	//	}
 	//}
 	//保存混响设定
-	CCommon::WritePrivateProfileIntW(L"reverb", L"reverb_enable", m_reverb_enable, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"reverb", L"reverb_mix", m_reverb_mix, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"reverb", L"reverb_time", m_reverb_time, theApp.m_config_path.c_str());
+	ini.WriteInt(L"reverb", L"reverb_enable", m_reverb_enable);
+	ini.WriteInt(L"reverb", L"reverb_mix", m_reverb_mix);
+	ini.WriteInt(L"reverb", L"reverb_time", m_reverb_time);
 }
 
 void CPlayer::LoadConfig()
 {
-	wchar_t buff[256];
-	//GetPrivateProfileStringW(L"config", L"path", L".\\songs\\", buff, 255, theApp.m_config_path.c_str());
+	CIniHelper ini;
+	ini.SetPath(theApp.m_config_path);
+
+	//ini.GetString(L"config", L"path", L".\\songs\\");
 	//m_path = buff;
 	if (!m_path.empty() && m_path.back() != L'/' && m_path.back() != L'\\')		//如果读取到的新路径末尾没有斜杠，则在末尾加上一个
 		m_path.append(1, L'\\');
-	//m_index = GetPrivateProfileIntW(L"config", L"track", 0, theApp.m_config_path.c_str());
-	m_volume = GetPrivateProfileIntW(L"config", L"volume", 60, theApp.m_config_path.c_str());
-	//m_current_position_int = GetPrivateProfileIntW(L"config", L"position", 0, theApp.m_config_path.c_str());
+	//m_index =ini.GetInt(L"config", L"track", 0);
+	m_volume =ini.GetInt(L"config", L"volume", 60);
+	//m_current_position_int =ini.GetInt(L"config", L"position", 0);
 	//m_current_position.int2time(m_current_position_int);
-	m_repeat_mode = static_cast<RepeatMode>(GetPrivateProfileIntW(L"config", L"repeat_mode", 0, theApp.m_config_path.c_str()));
-	GetPrivateProfileStringW(L"config", L"lyric_path", L".\\lyrics\\", buff, 255, theApp.m_config_path.c_str());
-	theApp.m_play_setting_data.lyric_path = buff;
+	m_repeat_mode = static_cast<RepeatMode>(ini.GetInt(L"config", L"repeat_mode", 0));
+	theApp.m_play_setting_data.lyric_path = ini.GetString(L"config", L"lyric_path", L".\\lyrics\\");
 	if (!theApp.m_play_setting_data.lyric_path.empty() && theApp.m_play_setting_data.lyric_path.back() != L'/' && theApp.m_play_setting_data.lyric_path.back() != L'\\')
 		theApp.m_play_setting_data.lyric_path.append(1, L'\\');
-	theApp.m_play_setting_data.lyric_karaoke_disp = (GetPrivateProfileIntW(L"config", L"lyric_karaoke_disp", 1, theApp.m_config_path.c_str()) != 0);
-	m_sort_mode = static_cast<SortMode>(GetPrivateProfileIntW(L"config", L"sort_mode", 0, theApp.m_config_path.c_str()));
-	theApp.m_play_setting_data.lyric_fuzzy_match = (GetPrivateProfileIntW(L"config", L"lyric_fuzzy_match", 1, theApp.m_config_path.c_str()) != 0);
-	GetPrivateProfileStringW(L"config", L"default_album_file_name", L"cover", buff, 255, theApp.m_config_path.c_str());
-	//theApp.m_app_setting_data.default_album_name = buff;
-	CCommon::StringSplit(buff, L',', theApp.m_app_setting_data.default_album_name);
+	theApp.m_play_setting_data.lyric_karaoke_disp =ini.GetBool(L"config", L"lyric_karaoke_disp", 1);
+	m_sort_mode = static_cast<SortMode>(ini.GetInt(L"config", L"sort_mode", 0));
+	theApp.m_play_setting_data.lyric_fuzzy_match =ini.GetBool(L"config", L"lyric_fuzzy_match", 1);
+	wstring default_album_name = ini.GetString(L"config", L"default_album_file_name", L"cover");
+	CCommon::StringSplit(default_album_name, L',', theApp.m_app_setting_data.default_album_name);
 
 	//读取均衡器设定
-	m_equ_enable = (GetPrivateProfileIntW(L"equalizer", L"equalizer_enable", 0, theApp.m_config_path.c_str()) != 0);
-	m_equ_style = GetPrivateProfileIntW(L"equalizer", L"equalizer_style", 0, theApp.m_config_path.c_str());	//读取均衡器预设
+	m_equ_enable =ini.GetBool(L"equalizer", L"equalizer_enable", 0);
+	m_equ_style =ini.GetInt(L"equalizer", L"equalizer_style", 0);	//读取均衡器预设
 	if (m_equ_style == 9)		//如果均衡器预设为“自定义”
 	{
 		//读取每个均衡器通道的增益
 		for (int i{}; i < EQU_CH_NUM; i++)
 		{
+			wchar_t buff[16];
 			swprintf_s(buff, L"channel%d", i + 1);
-			m_equalizer_gain[i] = GetPrivateProfileIntW(L"equalizer", buff, 0, theApp.m_config_path.c_str());
+			m_equalizer_gain[i] =ini.GetInt(L"equalizer", buff, 0);
 		}
 	}
 	else if (m_equ_style >= 0 && m_equ_style < 9)		//否则，根据均衡器预设设置每个通道的增益
@@ -1042,9 +1046,9 @@ void CPlayer::LoadConfig()
 		}
 	}
 	//读取混响设定
-	m_reverb_enable = (GetPrivateProfileIntW(L"reverb", L"reverb_enable", 0, theApp.m_config_path.c_str()) != 0);
-	m_reverb_mix = GetPrivateProfileIntW(L"reverb", L"reverb_mix", 45, theApp.m_config_path.c_str());		//混响强度默认为50
-	m_reverb_time = GetPrivateProfileIntW(L"reverb", L"reverb_time", 100, theApp.m_config_path.c_str());	//混响时间默认为1s
+	m_reverb_enable =ini.GetBool(L"reverb", L"reverb_enable", 0);
+	m_reverb_mix =ini.GetInt(L"reverb", L"reverb_mix", 45);		//混响强度默认为50
+	m_reverb_time =ini.GetInt(L"reverb", L"reverb_time", 100);	//混响时间默认为1s
 }
 
 void CPlayer::ExplorePath(int track) const

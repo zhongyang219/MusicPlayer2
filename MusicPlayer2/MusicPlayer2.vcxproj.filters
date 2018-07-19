@@ -141,6 +141,9 @@
     <Filter Include="头文件和源文件\对话框类\编码选项对话框">
       <UniqueIdentifier>{6f54d060-c0cf-4263-b48a-d4ffdc8ab770}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\IniHelper">
+      <UniqueIdentifier>{42734b69-66a6-4f02-b9f2-8c4675336e95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -297,6 +300,9 @@
     <ClInclude Include="WmaEncodeCfgDlg.h">
       <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
     </ClInclude>
+    <ClInclude Include="IniHelper.h">
+      <Filter>头文件和源文件\公共的类\IniHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -436,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="WmaEncodeCfgDlg.cpp">
       <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="IniHelper.cpp">
+      <Filter>头文件和源文件\公共的类\IniHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

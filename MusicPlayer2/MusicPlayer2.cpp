@@ -297,12 +297,16 @@ UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
 
 void CMusicPlayerApp::SaveConfig()
 {
-	CCommon::WritePrivateProfileIntW(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start, m_config_path.c_str());
+	CIniHelper ini;
+	ini.SetPath(m_config_path);
+	ini.WriteBool(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start);
 }
 
 void CMusicPlayerApp::LoadConfig()
 {
-	m_general_setting_data.check_update_when_start = (GetPrivateProfileIntW(_T("general"), _T("check_update_when_start"), 1, m_config_path.c_str()) != 0);
+	CIniHelper ini;
+	ini.SetPath(m_config_path);
+	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", 1);
 }
 
 void CMusicPlayerApp::LoadSongData()

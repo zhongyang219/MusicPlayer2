@@ -13,6 +13,7 @@
 #include "AudioCommon.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"
+#include "IniHelper.h"
 
 //选项设置数据
 struct PlaySettingData
