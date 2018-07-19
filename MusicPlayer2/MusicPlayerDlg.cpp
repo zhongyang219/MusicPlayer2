@@ -274,6 +274,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_MOVE_FILE_TO, &CMusicPlayerDlg::OnMoveFileTo)
 	ON_MESSAGE(WM_OPEN_FILE_COMMAND_LINE, &CMusicPlayerDlg::OnOpenFileCommandLine)
 	ON_COMMAND(ID_FORMAT_CONVERT, &CMusicPlayerDlg::OnFormatConvert)
+	ON_COMMAND(ID_FORMAT_CONVERT1, &CMusicPlayerDlg::OnFormatConvert1)
 END_MESSAGE_MAP()
 
 
@@ -1823,6 +1824,15 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnEqualizer();
 				return TRUE;
 			}
+			if (GetKeyState(VK_SHIFT) & 0x8000)
+			{
+				//按下Ctrl + Shift键时
+				if (pMsg->wParam == 'C')		//设置按Ctr+S打开均衡器
+				{
+					OnFormatConvert1();
+					return TRUE;
+				}
+			}
 		}
 		else
 		{
@@ -3365,5 +3375,13 @@ void CMusicPlayerDlg::OnFormatConvert()
 {
 	// TODO: 在此添加命令处理程序代码
 	CFormatConvertDlg dlg(m_items_selected);
+	dlg.DoModal();
+}
+
+
+void CMusicPlayerDlg::OnFormatConvert1()
+{
+	// TODO: 在此添加命令处理程序代码
+	CFormatConvertDlg dlg;
 	dlg.DoModal();
 }

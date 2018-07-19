@@ -299,4 +299,5 @@ protected:
 	afx_msg LRESULT OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnFormatConvert();
+	afx_msg void OnFormatConvert1();
 };
