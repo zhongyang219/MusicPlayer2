@@ -281,10 +281,10 @@ public:
 	static bool FileIsAudio(const wstring& file_name);
 
 	//根据文件名判断文件的类型
-	static AudioType GetAudioType(const wstring& file_name);
+	static AudioType GetAudioTypeByExtension(const wstring& file_name);
 
 	//根据一个文件扩展名判断音频类型的描述
-	static wstring GetAudioFormatDescription(wstring extension);
+	static wstring GetAudioDescriptionByExtension(wstring extension);
 
 	//查找path目录下的所有音频文件，并将文件名保存到files容器中，并限定最大文件数为max_file
 	static void GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file);
@@ -308,7 +308,10 @@ public:
 	static void TagStrNormalize(wstring& str);
 
 	//获取一个BASS通道类型的描述
-	static wstring GetBASSChannelType(DWORD ctype);
+	static wstring GetBASSChannelDescription(DWORD ctype);
+
+	//根据BASS通道类型获取音频类型
+	static AudioType GetAudioTypeByBassChannel(DWORD ctype);
 
 public:
 	static vector<SupportedFormat> m_surpported_format;		//支持的文件格式

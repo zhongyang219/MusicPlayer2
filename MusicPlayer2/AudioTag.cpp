@@ -5,7 +5,11 @@
 CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 	: m_hStream{ hStream }, m_file_path{ file_path }, m_song_info{ m_song_info }
 {
-	m_type = CAudioCommon::GetAudioType(file_path);
+	//获取通道信息
+	BASS_CHANNELINFO channel_info;
+	BASS_ChannelGetInfo(m_hStream, &channel_info);
+	//根据通道信息判断音频文件的类型
+	m_type = CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype);
 }
 
 void CAudioTag::GetAudioTag(bool id3v2_first)

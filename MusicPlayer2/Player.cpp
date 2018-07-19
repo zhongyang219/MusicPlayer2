@@ -462,7 +462,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		m_error_code = 0;
 		m_musicStream = BASS_StreamCreateFile(FALSE, (m_path + m_current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
-		m_is_midi = (CAudioCommon::GetAudioType(m_current_file_name) == AU_MIDI);
+		m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
 		if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
 			m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
 		if (m_song_num > 0)
@@ -1545,7 +1545,7 @@ void CPlayer::EnableReverb(bool enable)
 
 void CPlayer::ConnotPlayWarning() const
 {
-	//if (m_no_ape_plugin && CAudioCommon::GetAudioType(m_current_file_name) == AudioType::AU_APE)
+	//if (m_no_ape_plugin && CAudioCommon::GetAudioTypeByExtension(m_current_file_name) == AudioType::AU_APE)
 	//	//AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
 	//	PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
 }
@@ -1555,7 +1555,7 @@ void CPlayer::SearchAlbumCover()
 	static wstring last_file_path;
 	if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
 	{
-		//AudioType type = CAudioCommon::GetAudioType(m_current_file_name);
+		//AudioType type = CAudioCommon::GetAudioTypeByExtension(m_current_file_name);
 		//if (type != AU_FLAC)
 		//	m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
 		//else

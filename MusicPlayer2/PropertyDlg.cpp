@@ -47,7 +47,7 @@ void CPropertyDlg::ShowInfo()
 	//	m_file_type_edit.SetWindowText(_T("MPEG-4 音频文件"));
 	//else
 	//	m_file_type_edit.SetWindowText((file_type + _T("文件")).c_str());
-	m_file_type_edit.SetWindowText((CAudioCommon::GetAudioFormatDescription(file_type)).c_str());
+	m_file_type_edit.SetWindowText((CAudioCommon::GetAudioDescriptionByExtension(file_type)).c_str());
 
 	//显示文件长度
 	wstring song_length;

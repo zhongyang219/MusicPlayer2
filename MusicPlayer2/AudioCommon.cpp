@@ -25,7 +25,7 @@ bool CAudioCommon::FileIsAudio(const wstring & file_name)
 	return false;
 }
 
-AudioType CAudioCommon::GetAudioType(const wstring & file_name)
+AudioType CAudioCommon::GetAudioTypeByExtension(const wstring & file_name)
 {
 	CFilePathHelper file_path(file_name);
 	wstring type{ file_path.GetFileExtension() };		//获取文件扩展名
@@ -51,7 +51,7 @@ AudioType CAudioCommon::GetAudioType(const wstring & file_name)
 		return AU_OTHER;
 }
 
-wstring CAudioCommon::GetAudioFormatDescription(wstring extension)
+wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 {
 	CCommon::StringTransform(extension, false);
 	if (extension == L"mp3")
@@ -120,7 +120,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 	for (size_t i{}; i < files.size(); i++)
 	{
 		//依次检查列表中的每首歌曲是否为cue文件
-		if (GetAudioType(files[i].file_name) == AU_CUE)
+		if (GetAudioTypeByExtension(files[i].file_name) == AU_CUE)
 		{
 			wstring cue_file_name{ files[i].file_name };		//cue文件的文件名
 			files.erase(files.begin() + i);		//从列表中删除cue文件
@@ -135,7 +135,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 			bool matched_file_found{ false };		//如果查找到了和cue文件相同的文件名，则为true
 			for (size_t j{}; j < files.size(); j++)
 			{
-				if (GetAudioType(files[j].file_name) != AU_CUE && !files[j].is_cue)	//确保该文件不是cue文件，且不是已经解析过的cue音轨
+				if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE && !files[j].is_cue)	//确保该文件不是cue文件，且不是已经解析过的cue音轨
 				{
 					play_file_name = files[j].file_name;		//信保存文件名
 					bitrate = files[j].bitrate;			//保存获取到的比特率
@@ -259,7 +259,7 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
 	int size = files.size();
 	for (int i{}; i < size; i++)
 	{
-		if (GetAudioType(files[i].file_name) == AU_CUE)		//查找列表中的cue文件
+		if (GetAudioTypeByExtension(files[i].file_name) == AU_CUE)		//查找列表中的cue文件
 		{
 			audio_exist = false;
 			wstring file_name;
@@ -269,7 +269,7 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
 			//查找和cue文件匹配的音频文件
 			for (int j{}; j < size; j++)
 			{
-				if (GetAudioType(files[j].file_name) != AU_CUE)
+				if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE)
 				{
 					wstring audio_file_name;
 					index = files[j].file_name.rfind(L'.');
@@ -290,7 +290,7 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
 				CCommon::GetFiles(wstring(find_file_name), audio_files);
 				for (const auto& file : audio_files)
 				{
-					if (GetAudioType(file) != AU_CUE)
+					if (GetAudioTypeByExtension(file) != AU_CUE)
 					{
 						SongInfo song_info;
 						song_info.file_name = file;
@@ -343,7 +343,7 @@ void CAudioCommon::TagStrNormalize(wstring & str)
 
 }
 
-wstring CAudioCommon::GetBASSChannelType(DWORD ctype)
+wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)
 {
 	switch (ctype)
 	{
@@ -382,5 +382,38 @@ wstring CAudioCommon::GetBASSChannelType(DWORD ctype)
 	case 0x10700: return L"APE";
 	default: return L"未知";
 	}
+}
+
+AudioType CAudioCommon::GetAudioTypeByBassChannel(DWORD ctype)
+{
+	AudioType type;
+	switch (ctype)
+	{
+	case BASS_CTYPE_STREAM_MP1: case BASS_CTYPE_STREAM_MP2: case BASS_CTYPE_STREAM_MP3:
+		type = AudioType::AU_MP3;
+		break;
+	case 0x10300: case 0x10301:
+		type = AudioType::AU_WMA;
+		break;
+	case BASS_CTYPE_STREAM_OGG:
+		type = AudioType::AU_OGG;
+		break;
+	case 0x10b01:
+		type = AudioType::AU_MP4;
+		break;
+	case 0x10900: case 0x10901:
+		type = AudioType::AU_FLAC;
+		break;
+	case 0x10d00:
+		type = AudioType::AU_MIDI;
+		break;
+	case 0x10700:
+		type = AudioType::AU_APE;
+		break;
+	default:
+		type = AudioType::AU_OTHER;
+		break;
+	}
+	return type;
 }
 
