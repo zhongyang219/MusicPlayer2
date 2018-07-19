@@ -1556,7 +1556,7 @@ void CPlayer::SearchAlbumCover()
 		//	m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
 		//else
 		//	m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
-		CAudioTag audio_tag(m_musicStream, m_path, m_playlist[m_index]);
+		CAudioTag audio_tag(m_musicStream, m_path + m_current_file_name, m_playlist[m_index]);
 		m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
 		m_album_cover.Destroy();
 		m_album_cover.Load(m_album_cover_path.c_str());
@@ -1588,7 +1588,7 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, SongInfo & song_info)
 	BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
 	song_info.bitrate = static_cast<int>(bitrate + 0.5f);
 	//获取音频标签
-	CAudioTag audio_tag(hStream, m_path, song_info);
+	CAudioTag audio_tag(hStream, m_path + song_info.file_name, song_info);
 	audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
 	//获取midi音乐的标题
 	if (m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
@@ -1606,18 +1606,28 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, SongInfo & song_info)
 
 void CPlayer::SearchOutAlbumCover()
 {
+	m_album_cover_path = GetRelatedAlbumCover(m_path + m_current_file_name, GetCurrentSongInfo());
+	if (!m_album_cover.IsNull())
+		m_album_cover.Destroy();
+	m_album_cover.Load(m_album_cover_path.c_str());
+}
+
+wstring CPlayer::GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info)
+{
 	vector<wstring> files;
 	wstring file_name;
 	//查找文件和歌曲名一致的图片文件
-	CFilePathHelper c_file_name(m_current_file_name);
-	file_name = m_path + c_file_name.GetFileNameWithoutExtension() + L".*";
-	CCommon::GetImageFiles(file_name, files);
-	if (files.empty() && !GetCurrentSongInfo().album.empty())
+	CFilePathHelper c_file_path(file_path);
+	//file_name = m_path + c_file_name.GetFileNameWithoutExtension() + L".*";
+	c_file_path.ReplaceFileExtension(L"*");
+	wstring dir{ c_file_path.GetDir() };
+	CCommon::GetImageFiles(c_file_path.GetFilePath(), files);
+	if (files.empty() && !song_info.album.empty())
 	{
 		//没有找到和歌曲名一致的图片文件，则查找文件名为“唱片集”的文件
-		wstring album_name{ GetCurrentSongInfo().album };
+		wstring album_name{ song_info.album };
 		CCommon::FileNameNormalize(album_name);
-		file_name = m_path + album_name + L".*";
+		file_name = dir + album_name + L".*";
 		CCommon::GetImageFiles(file_name, files);
 	}
 	//if (files.empty() && !theApp.m_app_setting_data.default_album_name.empty())
@@ -1635,7 +1645,7 @@ void CPlayer::SearchOutAlbumCover()
 				break;
 			if (!album_name.empty())
 			{
-				file_name = m_path + album_name + L".*";
+				file_name = dir + album_name + L".*";
 				CCommon::GetImageFiles(file_name, files);
 			}
 		}
@@ -1648,9 +1658,14 @@ void CPlayer::SearchOutAlbumCover()
 	//}
 	if (!files.empty())
 	{
-		m_album_cover_path = m_path + files[0];
-		if (!m_album_cover.IsNull())
-			m_album_cover.Destroy();
-		m_album_cover.Load(m_album_cover_path.c_str());
+		//m_album_cover_path = m_path + files[0];
+		//if (!m_album_cover.IsNull())
+		//	m_album_cover.Destroy();
+		//m_album_cover.Load(m_album_cover_path.c_str());
+		return wstring(dir + files[0]);
+	}
+	else
+	{
+		return wstring();
 	}
 }

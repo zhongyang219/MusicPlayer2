@@ -245,6 +245,7 @@ private:
 	void GetMidiPosition();			//获取MIDI音乐的播放进度
 	void AcquireSongInfo(HSTREAM hStream, SongInfo& song_info);		//获取歌曲标签等信息
 public:
-	void SearchOutAlbumCover();		//从文件查找专辑封面获取
+	void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
+	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
 };
 

@@ -2,10 +2,10 @@
 #include "AudioTag.h"
 
 
-CAudioTag::CAudioTag(HSTREAM hStream, wstring file_dir, SongInfo & m_song_info)
-	: m_hStream{ hStream }, m_file_dir{ file_dir }, m_song_info{ m_song_info }
+CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
+	: m_hStream{ hStream }, m_file_path{ file_path }, m_song_info{ m_song_info }
 {
-	m_type = CAudioCommon::GetAudioType(m_song_info.file_name);
+	m_type = CAudioCommon::GetAudioType(file_path);
 }
 
 void CAudioTag::GetAudioTag(bool id3v2_first)
@@ -52,7 +52,7 @@ void CAudioTag::GetAudioTag(bool id3v2_first)
 }
 
 
-wstring CAudioTag::GetAlbumCover(int & image_type)
+wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
 {
 	if (m_type != AudioType::AU_FLAC)
 	{
@@ -67,15 +67,14 @@ wstring CAudioTag::GetAlbumCover(int & image_type)
 		size_t cover_index = tag_content.find("APIC");		//查找专辑封面的标识字符串
 		if (cover_index == string::npos)
 			return wstring();
-		return _GetAlbumCover(tag_content, cover_index, image_type);
+		return _GetAlbumCover(tag_content, cover_index, image_type, file_name);
 
 	}
 	else
 	{
 		string tag_contents;
-		wstring file_path{ m_file_dir + m_song_info.file_name };
-		GetFlacTagContents(file_path, tag_contents);
-		return _GetAlbumCover(tag_contents, 0, image_type);
+		GetFlacTagContents(m_file_path, tag_contents);
+		return _GetAlbumCover(tag_contents, 0, image_type, file_name);
 	}
 	return wstring();
 }
@@ -508,9 +507,8 @@ bool CAudioTag::GetOggTag()
 
 bool CAudioTag::GetFlacTag()
 {
-	wstring file_path{ m_file_dir + m_song_info.file_name };
 	string tag_contents;		//整个标签区域的内容
-	GetFlacTagContents(file_path, tag_contents);
+	GetFlacTagContents(m_file_path, tag_contents);
 	string flac_tag_str;		//当前标签的字符
 	string flac_tag_title;
 	string flac_tag_artist;
@@ -594,11 +592,11 @@ bool CAudioTag::GetFlacTag()
 }
 
 
-void CAudioTag::GetFlacTagContents(wstring file_name, string & contents_buff)
+void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 {
-	ifstream file{ file_name.c_str(), std::ios::binary };
+	ifstream file{ file_path.c_str(), std::ios::binary };
 	size_t size;
-	if (!CCommon::FileExist(file_name))
+	if (!CCommon::FileExist(file_path))
 		return;
 	if (file.fail())
 		return;
@@ -615,7 +613,7 @@ void CAudioTag::GetFlacTagContents(wstring file_name, string & contents_buff)
 	}
 }
 
-wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index, int & image_type)
+wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index, int & image_type, wchar_t* file_name)
 {
 	//获取图片起始位置
 	size_t type_index = tag_content.find("image", cover_index);
@@ -670,10 +668,14 @@ wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index
 
 	//将专辑封面保存到临时目录
 	wstring file_path{ CCommon::GetTemplatePath() };
-	wstring file_name{ ALBUM_COVER_NAME/* + file_extension*/ };
+	wstring _file_name;
+	if (file_name == nullptr)
+		_file_name = ALBUM_COVER_NAME;
+	else
+		_file_name = file_name;
 	if (!image_contents.empty())
 	{
-		file_path += file_name;
+		file_path += _file_name;
 		ofstream out_put{ file_path, std::ios::binary };
 		out_put << image_contents;
 		return file_path;

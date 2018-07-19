@@ -4,7 +4,7 @@
 class CAudioTag
 {
 public:
-	CAudioTag(HSTREAM hStream, wstring file_dir, SongInfo & song_info);
+	CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & song_info);
 
 	//获取音频文件的标签信息，结果保存在构造函数传递进来的SongInfo结构里，
 	//id3v1_first：是否优先获取ID3V1标签，否则，优先获取ID3V2标签
@@ -12,8 +12,9 @@ public:
 
 	//获取音频文件的专辑封面，并保存到临时目录
 	//image_type：用来接收封面的格式 0:jpg, 1:png, 2:gif
+	//file_name: 指定保存的专辑封面的文件名，如果为nullptr，则使用默认的文件名
 	//返回值：专辑封面的保存路径
-	wstring GetAlbumCover(int& image_type);
+	wstring GetAlbumCover(int& image_type, wchar_t* file_name = nullptr);
 
 	//向一个MP3文件写入ID3V1标签
 	//file_path：mp3文件的路径
@@ -27,7 +28,7 @@ public:
 
 private:
 	HSTREAM m_hStream;
-	wstring m_file_dir;
+	wstring m_file_path;
 	SongInfo& m_song_info;
 	AudioType m_type;
 
@@ -39,9 +40,9 @@ private:
 	bool GetFlacTag();
 
 	//获取FLAC音频的标签区域的内容
-	static void GetFlacTagContents(wstring file_name, string& contents_buff);
+	static void GetFlacTagContents(wstring file_path, string& contents_buff);
 
-	static wstring _GetAlbumCover(const string& tag_content, size_t cover_index, int& image_type);
+	static wstring _GetAlbumCover(const string& tag_content, size_t cover_index, int& image_type, wchar_t* file_name = nullptr);
 
 };
 
