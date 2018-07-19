@@ -343,3 +343,44 @@ void CAudioCommon::TagStrNormalize(wstring & str)
 
 }
 
+wstring CAudioCommon::GetBASSChannelType(DWORD ctype)
+{
+	switch (ctype)
+	{
+	case 1: return L"SAMPLE";
+	case 2: return L"RECORD";
+	case 0x10000: return L"STREAM";
+	case 0x10002: return L"OGG";
+	case 0x10003: return L"MP1";
+	case 0x10004: return L"MP2";
+	case 0x10005: return L"MP3";
+	case 0x10006: return L"AIFF";
+	case 0x10007: return L"CA";
+	case 0x10008: return L"MF";
+	case 0x10009: return L"AM";
+	case 0x18000: return L"DUMMY";
+	case 0x18001: return L"DEVICE";
+	case 0x40000: return L"WAV";
+	case 0x50001: return L"WAV_PCM";
+	case 0x50003: return L"WAV_FLOAT";
+	case 0x20000: return L"MOD";
+	case 0x20001: return L"MTM";
+	case 0x20002: return L"S3M";
+	case 0x20003: return L"XM";
+	case 0x20004: return L"IT";
+	case 0x00100: return L"MO3";
+	case 0x10e00: return L"ALAC";
+	case 0x10200: return L"CD";
+	case 0x10900: return L"FLAC";
+	case 0x10901: return L"FLAC_OGG";
+	case 0x10d00: return L"MIDI";
+	case 0x10300: return L"WMA";
+	case 0x10301: return L"WMA_MP3";
+	case 0x10500: return L"WV";
+	case 0x10b00: return L"AAC";
+	case 0x10b01: return L"MP4";
+	case 0x10700: return L"APE";
+	default: return L"δ֪";
+	}
+}
+

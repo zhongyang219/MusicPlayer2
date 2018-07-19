@@ -483,8 +483,6 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		lable3_content = theApp.m_player.GetCurrentSongInfo().album;
 	}
 	lable4_str = _T("格式：");
-	CFilePathHelper file_path{ theApp.m_player.GetCurrentSongInfo().file_name };
-	wstring file_format{ file_path.GetFileExtension(true) };
 	const BASS_CHANNELINFO channel_info{ theApp.m_player.GetChannelInfo() };
 	CString chans_str;
 	if (channel_info.chans == 1)
@@ -494,9 +492,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	else if (channel_info.chans > 2)
 		chans_str.Format(_T("%d声道"));
 	if (!theApp.m_player.IsMidi())
-		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", file_format.c_str(), channel_info.freq/1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
+		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CAudioCommon::GetBASSChannelType(channel_info.ctype).c_str(), channel_info.freq/1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
 	else
-		swprintf_s(buff, L"MIDI %.1fkHz %s", channel_info.freq / 1000.0f, chans_str.GetString());
+		swprintf_s(buff, L"%s %.1fkHz %s", CAudioCommon::GetBASSChannelType(channel_info.ctype).c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
 	lable4_content = buff;
 	//显示标题
 	tmp.MoveToXY(text_start.x, text_start.y + text_height);

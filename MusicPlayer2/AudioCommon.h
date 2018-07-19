@@ -307,6 +307,9 @@ public:
 	//删除一个字符串中非打印字符开始的后面全部字符
 	static void TagStrNormalize(wstring& str);
 
+	//获取一个BASS通道类型的描述
+	static wstring GetBASSChannelType(DWORD ctype);
+
 public:
 	static vector<SupportedFormat> m_surpported_format;		//支持的文件格式
 	static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名
