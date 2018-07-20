@@ -165,6 +165,12 @@ public:
 	//判断一个元素是否在vector中
 	template<class T>
 	static bool IsItemInVector(const vector<T>& items, const T& item);
+
+	//判断文件名是末尾是否符合“(数字)”的形式
+	//file_name: 要判断的文件名，不包含扩展名
+	//number: 接收括号中的数字
+	//index: 接收右括号在字符串中的索引
+	static bool IsFileNameNumbered(const wstring& file_name, int& number, size_t& index);
 };
 
 template<class T>

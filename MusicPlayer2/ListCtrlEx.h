@@ -10,7 +10,9 @@ public:
 	~CListCtrlEx();
 
 	void SetColor(const ColorTable& colors);
-	void GetItemSelected(vector<int>& item_selected);
+	void GetItemSelected(vector<int>& item_selected) const;
+	int GetCurSel() const;		//获取当前选中的项目
+	void SetCurSel(int select);
 
 protected:
 	ColorTable m_theme_color;

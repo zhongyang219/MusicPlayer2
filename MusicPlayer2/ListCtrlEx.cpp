@@ -23,7 +23,7 @@ void CListCtrlEx::SetColor(const ColorTable & colors)
 		Invalidate();
 }
 
-void CListCtrlEx::GetItemSelected(vector<int>& item_selected)
+void CListCtrlEx::GetItemSelected(vector<int>& item_selected) const
 {
 	item_selected.clear();
 	POSITION pos = GetFirstSelectedItemPosition();
@@ -35,6 +35,22 @@ void CListCtrlEx::GetItemSelected(vector<int>& item_selected)
 			item_selected.push_back(nItem);
 		}
 	}
+}
+
+int CListCtrlEx::GetCurSel() const
+{
+	vector<int> item_selected;
+	GetItemSelected(item_selected);
+	if (!item_selected.empty())
+		return item_selected[0];
+	else
+		return -1;
+}
+
+void CListCtrlEx::SetCurSel(int select)
+{
+	SetItemState(select, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//选中行
+	EnsureVisible(select, FALSE);		//使选中行保持可见
 }
 
 

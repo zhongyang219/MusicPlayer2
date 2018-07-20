@@ -820,3 +820,26 @@ wstring CCommon::GetRandomString(int length)
 	return result;
 }
 
+bool CCommon::IsFileNameNumbered(const wstring & file_name, int& number, size_t& index)
+{
+	if (file_name.empty())
+		return false;
+	if (file_name.back() != L')')
+		return false;
+	size_t size{ file_name.size() };
+	//size_t index;
+	index = file_name.rfind(L'(');		//往前查找右括号
+	if (index == wstring::npos || index == 0)		//左括号不能在字符串开头
+		return false;
+	wstring number_str{ file_name.substr(index + 1, size - index - 2) };		//获取两个括号之前的文本
+	if (StrIsNumber(number_str))				//判断文本是否是数字
+	{
+		number = _wtoi(number_str.c_str());
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
