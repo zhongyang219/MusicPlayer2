@@ -71,7 +71,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	m_show_album_cover_in_cortana_check.SetCheck(m_data.cortana_show_album_cover);
 	m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
 	//m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
-	if (theApp.m_is_windows10)
+	if (theApp.m_win_version.IsWindows10OrLater())
 	{
 		m_show_lyric_in_cortana_check.SetCheck(m_data.show_lyric_in_cortana);
 	}

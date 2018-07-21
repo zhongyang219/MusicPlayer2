@@ -14,6 +14,7 @@
 #include "ColorConvert.h"
 #include "DrawCommon.h"
 #include "IniHelper.h"
+#include "WinVersionHelper.h"
 
 //选项设置数据
 struct PlaySettingData
@@ -79,7 +80,7 @@ public:
 	CMusicPlayerApp();
 
 	int m_dpi;
-	bool m_is_windows10;		//当前系统是否是Windows10
+	CWinVersionHelper m_win_version;		//当前Windows的版本
 	CPlayer m_player;
 
 	wstring m_module_dir;		//当前程序exe文件所在目录

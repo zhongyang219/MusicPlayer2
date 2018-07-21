@@ -47,9 +47,9 @@
 #include <tuple>
 #include <deque>
 #include <algorithm>
-#ifndef COMPILE_IN_WIN_XP
-#include <VersionHelpers.h>
-#endif
+//#ifndef COMPILE_IN_WIN_XP
+//#include <VersionHelpers.h>
+//#endif
 #include <iomanip>
 #include <map>
 #include <cmath>

@@ -82,9 +82,9 @@ void CProgressStatic::OnPaint()
 	this->GetClientRect(&rect);
 	int max_length = rect.Width();
 
-	//由于非windows10时为主窗口设置了WS_CLIPCHILDREN属性，所以这里需要手动重绘控件区域
-	if (!theApp.m_is_windows10)
-		DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域
+	////由于非windows10时为主窗口设置了WS_CLIPCHILDREN属性，所以这里需要手动重绘控件区域
+	//if (!theApp.m_win_version.IsWindows10OrLater())
+	//	DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域
 
 	//将矩形的高度更改为进度条显示的高度
 	if (m_progress_height < rect.Height() && m_progress_height > 0)

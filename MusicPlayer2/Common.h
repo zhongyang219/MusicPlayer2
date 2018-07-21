@@ -121,11 +121,6 @@ public:
 	//获取一个列表控件最大长度项目宽度的像素值
 	static int GetListWidth(CListBox& list);
 
-	//判断当前操作系统是否是Windows10或以上版本
-	//VersionHelper中的函数无法判断Windows8.1和Windows10，
-	//这个函数调用了RtlGetNtVersionNumbers获取系统版本信息
-	static bool IsWindows10OrLater();
-
 	//删除一个文件
 	static int DeleteAFile(HWND hwnd, _tstring file);
 	//删除多个文件

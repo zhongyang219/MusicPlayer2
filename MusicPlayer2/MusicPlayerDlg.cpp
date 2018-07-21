@@ -1113,14 +1113,14 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 #ifdef COMPILE_IN_WIN_XP
 	theApp.m_app_setting_data.theme_color_follow_system = false;
 #else
-	if (!IsWindows8OrGreater())
+	if (!theApp.m_win_version.IsWindows8OrLater())
 		theApp.m_app_setting_data.theme_color_follow_system = false;
 #endif
 
 	//只有Win10以上的系统才能在Cortana搜索框中显示歌词
-	if (!theApp.m_is_windows10)
+	if (!theApp.m_win_version.IsWindows10OrLater())
 		theApp.m_play_setting_data.show_lyric_in_cortana = false;
-	m_cortana_lyric.SetEnable(theApp.m_is_windows10);
+	m_cortana_lyric.SetEnable(theApp.m_win_version.IsWindows10OrLater());
 
 	//设置窗口不透明度
 	SetTransparency();
@@ -1574,7 +1574,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		COLORREF color;
 		//如果系统是Win10就取窗口最边缘像素的颜色，因为当win10设置成不显示标题栏颜色时，只有窗口边框最外面的一圈像素是主题颜色
 		//如果系统是Win8/8.1，则取窗口边缘住下2个像素的颜色，因为win8窗口标题栏总是当前主题色，而边框最外侧的颜色比主题色要深。
-		if (theApp.m_is_windows10)
+		if (theApp.m_win_version.IsWindows10OrLater())
 			color = ::GetPixel(hDC, rect.TopLeft().x + DPI(8), rect.TopLeft().y);
 		else
 			color = ::GetPixel(hDC, rect.TopLeft().x + DPI(8), rect.TopLeft().y + DPI(2));

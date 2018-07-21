@@ -112,9 +112,6 @@ BOOL CMusicPlayerApp::InitInstance()
 	LoadSongData();
 	LoadConfig();
 
-	//判断当前操作系统是否是Windows10。结果储存在CMusicPlayerApp类中的成员变量中，以便在全局范围内可访问
-	m_is_windows10 = CCommon::IsWindows10OrLater();
-
 	//启动时检查更新
 	if (m_general_setting_data.check_update_when_start)
 	{

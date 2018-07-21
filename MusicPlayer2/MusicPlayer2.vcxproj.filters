@@ -144,6 +144,9 @@
     <Filter Include="头文件和源文件\公共的类\IniHelper">
       <UniqueIdentifier>{42734b69-66a6-4f02-b9f2-8c4675336e95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\WinVersionHelper">
+      <UniqueIdentifier>{a08082b3-9202-4b64-9941-d4ff6059ae9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -303,6 +306,9 @@
     <ClInclude Include="IniHelper.h">
       <Filter>头文件和源文件\公共的类\IniHelper</Filter>
     </ClInclude>
+    <ClInclude Include="WinVersionHelper.h">
+      <Filter>头文件和源文件\公共的类\WinVersionHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -445,6 +451,9 @@
     </ClCompile>
     <ClCompile Include="IniHelper.cpp">
       <Filter>头文件和源文件\公共的类\IniHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="WinVersionHelper.cpp">
+      <Filter>头文件和源文件\公共的类\WinVersionHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

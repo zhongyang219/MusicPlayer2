@@ -416,60 +416,6 @@ int CCommon::GetListWidth(CListBox & list)
 	return nMaxExtent;
 }
 
-//void CCommon::FillStaticColor(CStatic & static_ctr, COLORREF color)
-//{
-//	CDC* pDC = static_ctr.GetDC();
-//	CRect rect;
-//	static_ctr.GetClientRect(&rect);
-//	CBrush BGBrush, *pOldBrush;
-//	BGBrush.CreateSolidBrush(color);
-//	pOldBrush = pDC->SelectObject(&BGBrush);
-//	pDC->FillRect(&rect, &BGBrush);
-//	pDC->SelectObject(pOldBrush);
-//	BGBrush.DeleteObject();
-//}
-
-//COLORREF CCommon::ConvertToItemColor(COLORREF color)
-//{
-//	int r, g, b, l;
-//	int r1, g1, b1, l1;
-//	r = GetRValue(color);
-//	g = GetGValue(color);
-//	b = GetBValue(color);
-//	l = ((r * 299) + (g * 587) + (b * 114)) / 1000;		//计算亮度值
-//	if (l == 0) return color;
-//
-//	l1 = (l - 80)*3 / 5 + 80;			//计算新亮度
-//	r1 = r * l1 / l;
-//	g1 = g * l1 / l;
-//	b1 = b * l1 / l;
-//	return RGB(r1, g1, b1);
-//}
-
-
-bool CCommon::IsWindows10OrLater()
-{
-#ifdef COMPILE_IN_WIN_XP
-	return false;
-#else
-	DWORD dwMajorVer{}, dwMinorVer{}, dwBuildNumber{};
-	HMODULE hModNtdll{};
-	if (hModNtdll = ::LoadLibraryW(L"ntdll.dll"))
-	{
-		typedef void (WINAPI *pfRTLGETNTVERSIONNUMBERS)(DWORD*, DWORD*, DWORD*);
-		pfRTLGETNTVERSIONNUMBERS pfRtlGetNtVersionNumbers;
-		pfRtlGetNtVersionNumbers = (pfRTLGETNTVERSIONNUMBERS)::GetProcAddress(hModNtdll, "RtlGetNtVersionNumbers");
-		if (pfRtlGetNtVersionNumbers)
-		{
-			pfRtlGetNtVersionNumbers(&dwMajorVer, &dwMinorVer, &dwBuildNumber);
-			dwBuildNumber &= 0x0ffff;
-		}
-		::FreeLibrary(hModNtdll);
-		hModNtdll = NULL;
-	}
-	return (dwMajorVer >= 10u);
-#endif
-}
 
 int CCommon::DeleteAFile(HWND hwnd, _tstring file)
 {
