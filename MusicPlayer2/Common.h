@@ -34,30 +34,40 @@ public:
 
 	//判断文件是否存在
 	static bool FileExist(const wstring& file);
+
 	//判断文件夹是否存在
 	static bool FolderExist(const wstring& file);
+
 	//规范化字符串，即删除字符串前面和后面的空格或控制字符(模板类型只能是string或wstring)
 	template<class T>
 	static bool StringNormalize(T& str);
+
 	//删除字符串末尾的空格
 	template<class T>
 	static bool DeleteEndSpace(T& str);
+
 	//自定义的字符串拷贝函数
 	static void StringCopy(char* dest, int size, string source);
+
 	//转换字符串大小写，如果upper为true，则转换成大写，否则转换成小写
 	template<class T>
 	static bool StringTransform(T& str, bool upper);
+
 	//字符串比较，忽略大小写
 	template<class T>
 	static bool StringCompareNoCase(const T& str1, const T& str2);
+
 	//字符串查找，忽略大小写
 	template<class T>
 	static size_t StringFindNoCase(const T& str, const T& find_str);
+
 	//字符串查找，全词匹配
 	template<class T>
 	static size_t StringNatchWholeWord(const T& str, const T& find_str);
+
 	//判断一个字符是否是在全词匹配时的单词分割字符（除了字母、数字和256以上的Unicode字符外的字符）
 	static bool IsDivideChar(wchar_t ch);
+
 	//判断一个字符串是否是数字
 	static bool StrIsNumber(const wstring& str);
 
@@ -71,39 +81,45 @@ public:
 	//div_ch: 用于分割的字符
 	static wstring StringMerge(const vector<wstring>& strings, wchar_t div_ch);
 
+	//中文繁简转换
 	static wstring TranslateToSimplifiedChinese(const wstring& str);
 	static wstring TranslateToTranditionalChinese(const wstring& str);
+
 	//替换一个文件名中的无效字符
 	static void FileNameNormalize(wstring& file_name);
-	////替换一个文件名中的扩展名
-	//static void ReplaceFileNameExtension(wstring& file_name, wchar_t* extension);
 
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);
-	////获取文件扩展名
-	//static wstring GetFileExtension(const wstring& file_name, bool upper = false);
+
 	//向ini文件写入一个int数据
 	static void WritePrivateProfileIntW(const wchar_t* AppName, const wchar_t* KeyName, int value, const wchar_t* Path);
+
 	//将string类型的字符串转换成Unicode编码的wstring字符串
 	static wstring StrToUnicode(const string& str, CodeType code_type = CodeType::AUTO);
+
 	//将Unicode编码的wstring字符串转换成string类型的字符串，如果有字符无法转换，将参数char_cannot_convert指向的bool变量置为true
 	static string UnicodeToStr(const wstring & wstr, CodeType code_type, bool* char_cannot_convert = nullptr);
+
 	//将一个只有ASCII码组成的字符串转换成Unicode
 	static wstring ASCIIToUnicode(const string& ascii);
+
 	//判断一个字符串是否UTF8编码
 	static bool IsUTF8Bytes(const char* data);
+
 	//判断一个字符串的编码格式
 	static CodeType JudgeCodeType(const string& str, CodeType default_code = CodeType::ANSI);
+
 	//获取当前进程exe文件的路径
 	static wstring GetExePath();
+
 	//获取桌面的路径
 	static wstring GetDesktopPath();
+
 	//获取临时文件夹路径
 	static wstring GetTemplatePath();
+
 	//获取一个列表控件最大长度项目宽度的像素值
 	static int GetListWidth(CListBox& list);
-	////为一个Static控件填充指定的颜色（已删除，改为使用CStaticEx类的SetFillColor函数）
-	//static void FillStaticColor(CStatic& static_ctr, COLORREF color);
 
 	//判断当前操作系统是否是Windows10或以上版本
 	//VersionHelper中的函数无法判断Windows8.1和Windows10，
@@ -122,6 +138,7 @@ public:
 
 	//移动一个文件
 	static int MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to);
+
 	//移动多个文件
 	static int MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
 
@@ -131,7 +148,7 @@ public:
 	//从剪贴板获取字符串
 	static wstring GetStringFromClipboard();
 
-	//
+	//写入日志
 	static void WriteLog(const wchar_t* path, const wstring& content);
 
 	//将通过命令行参数传递过来的多个文件路径拆分，并保存到file容器里，如果参数传递过来的第一个文件不是文件而是文件夹，则返回文件夹路径，否则，返回空字符串
@@ -156,7 +173,8 @@ public:
 
 	//查找指定的图片文件，并保存在files容器中，参数含义同GetFiles函数
 	static void GetImageFiles(wstring file_name, vector<wstring>& files);
-	//判断一个文件是否为图片文件
+
+	//根据文件扩展名判断一个文件是否为图片文件
 	static bool FileIsImage(const wstring& file_name);
 
 	//获取一个随机的字符串
@@ -171,6 +189,10 @@ public:
 	//number: 接收括号中的数字
 	//index: 接收右括号在字符串中的索引
 	static bool IsFileNameNumbered(const wstring& file_name, int& number, size_t& index);
+
+	//删除一个非模态对话框
+	template<class T>
+	static void DeleteModelessDialog(T* dlg);
 };
 
 template<class T>
@@ -280,4 +302,15 @@ inline bool CCommon::IsItemInVector(const vector<T>& items, const T & item)
 			return true;
 	}
 	return false;
+}
+
+template<class T>
+inline void CCommon::DeleteModelessDialog(T * dlg)
+{
+	if (dlg != nullptr)
+	{
+		dlg->OnCancel();
+		delete dlg;
+		dlg = nullptr;
+	}
 }

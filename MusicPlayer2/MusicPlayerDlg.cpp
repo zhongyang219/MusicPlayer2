@@ -134,30 +134,11 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
 
 CMusicPlayerDlg::~CMusicPlayerDlg()
 {
-	if (m_pLyricEdit != nullptr)
-	{
-		m_pLyricEdit->OnCancel();
-		delete m_pLyricEdit;
-		m_pLyricEdit = nullptr;
-	}
-	if (m_pLyricBatchDownDlg != nullptr)
-	{
-		m_pLyricBatchDownDlg->OnCancel();
-		delete m_pLyricBatchDownDlg;
-		m_pLyricBatchDownDlg = nullptr;
-	}
-	if (m_pSetPathDlg != nullptr)
-	{
-		m_pSetPathDlg->OnCancel();
-		delete m_pSetPathDlg;
-		m_pSetPathDlg = nullptr;
-	}
-	if (m_pSoundEffecDlg != nullptr)
-	{
-		m_pSoundEffecDlg->OnCancel();
-		delete m_pSoundEffecDlg;
-		m_pSoundEffecDlg = nullptr;
-	}
+	CCommon::DeleteModelessDialog(m_pLyricEdit);
+	CCommon::DeleteModelessDialog(m_pLyricBatchDownDlg);
+	CCommon::DeleteModelessDialog(m_pSetPathDlg);
+	CCommon::DeleteModelessDialog(m_pSoundEffecDlg);
+	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
 }
 
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
@@ -1672,12 +1653,7 @@ void CMusicPlayerDlg::OnFF()
 void CMusicPlayerDlg::OnSetPath()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_pSetPathDlg != nullptr)
-	{
-		m_pSetPathDlg->OnCancel();
-		delete m_pSetPathDlg;
-		m_pSetPathDlg = nullptr;
-	}
+	CCommon::DeleteModelessDialog(m_pSetPathDlg);
 	m_pSetPathDlg = new CSetPathDlg(theApp.m_player.GetRecentPath(), theApp.m_player.GetCurrentDir());
 	m_pSetPathDlg->Create(IDD_SET_PATH_DIALOG);
 	m_pSetPathDlg->ShowWindow(SW_SHOW);
@@ -2777,12 +2753,7 @@ void CMusicPlayerDlg::OnEditLyric()
 {
 	// TODO: 在此添加命令处理程序代码
 	//ShellExecute(NULL, _T("open"), theApp.m_player.m_Lyrics.GetPathName().c_str(), NULL, NULL, SW_SHOWNORMAL);
-	if (m_pLyricEdit != nullptr)
-	{
-		m_pLyricEdit->OnCancel();
-		delete m_pLyricEdit;
-		m_pLyricEdit = nullptr;
-	}
+	CCommon::DeleteModelessDialog(m_pLyricEdit);
 	m_pLyricEdit = new CLyricEditDlg;
 	m_pLyricEdit->Create(IDD_LYRIC_EDIT_DIALOG);
 	m_pLyricEdit->ShowWindow(SW_SHOW);
@@ -2802,12 +2773,7 @@ void CMusicPlayerDlg::OnLyricBatchDownload()
 	// TODO: 在此添加命令处理程序代码
 	//CLyricBatchDownloadDlg aDlg;
 	//aDlg.DoModal();
-	if (m_pLyricBatchDownDlg != nullptr)
-	{
-		m_pLyricBatchDownDlg->OnCancel();
-		delete m_pLyricBatchDownDlg;
-		m_pLyricBatchDownDlg = nullptr;
-	}
+	CCommon::DeleteModelessDialog(m_pLyricBatchDownDlg);
 	m_pLyricBatchDownDlg = new CLyricBatchDownloadDlg;
 	m_pLyricBatchDownDlg->Create(IDD_LYRIC_BATCH_DOWN_DIALOG);
 	m_pLyricBatchDownDlg->ShowWindow(SW_SHOW);
@@ -2999,12 +2965,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnEqualizer()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_pSoundEffecDlg != nullptr)
-	{
-		m_pSoundEffecDlg->OnCancel();
-		delete m_pSoundEffecDlg;
-		m_pSoundEffecDlg = nullptr;
-	}
+	CCommon::DeleteModelessDialog(m_pSoundEffecDlg);
 	m_pSoundEffecDlg = new CSoundEffectDlg;
 	m_pSoundEffecDlg->Create(IDD_SOUND_EFFECT_DIALOG);
 	m_pSoundEffecDlg->ShowWindow(SW_SHOW);
@@ -3374,14 +3335,22 @@ afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lPa
 void CMusicPlayerDlg::OnFormatConvert()
 {
 	// TODO: 在此添加命令处理程序代码
-	CFormatConvertDlg dlg(m_items_selected);
-	dlg.DoModal();
+	//CFormatConvertDlg dlg(m_items_selected);
+	//dlg.DoModal();
+	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
+	m_pFormatConvertDlg = new CFormatConvertDlg(m_items_selected);
+	m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
+	m_pFormatConvertDlg->ShowWindow(SW_SHOW);
 }
 
 
 void CMusicPlayerDlg::OnFormatConvert1()
 {
 	// TODO: 在此添加命令处理程序代码
-	CFormatConvertDlg dlg;
-	dlg.DoModal();
+	//CFormatConvertDlg dlg;
+	//dlg.DoModal();
+	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
+	m_pFormatConvertDlg = new CFormatConvertDlg;
+	m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
+	m_pFormatConvertDlg->ShowWindow(SW_SHOW);
 }
