@@ -431,3 +431,17 @@ CString CAudioCommon::TrackToString(BYTE track)
 	}
 }
 
+void CAudioCommon::ClearDefaultTagStr(SongInfo & song_info)
+{
+	if (song_info.title == DEFAULT_TITLE)
+		song_info.title.clear();
+	if (song_info.artist == DEFAULT_ARTIST)
+		song_info.artist.clear();
+	if (song_info.album == DEFAULT_ALBUM)
+		song_info.album.clear();
+	if (song_info.year == DEFAULT_YEAR)
+		song_info.year.clear();
+	if (song_info.genre == DEFAULT_GENRE)
+		song_info.genre.clear();
+}
+
