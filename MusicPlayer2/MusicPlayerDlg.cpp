@@ -894,7 +894,7 @@ void CMusicPlayerDlg::SetPorgressBarSize()
 void CMusicPlayerDlg::ShowPlayList()
 {
 	m_playlist_list.ShowPlaylist(m_display_format);
-
+	m_playlist_list.SetCurSel(-1);
 	//设置播放列表中突出显示的项目
 	SetPlayListColor();
 	//显示当前路径
