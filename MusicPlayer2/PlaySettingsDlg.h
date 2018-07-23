@@ -48,8 +48,8 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CButton m_show_lyric_in_cortana_check;
 	afx_msg void OnBnClickedShowLyricInCortana();
-	afx_msg void OnBnClickedSaveInOffsetTag();
-	afx_msg void OnBnClickedSaveInTimeTag();
+	//afx_msg void OnBnClickedSaveInOffsetTag();
+	//afx_msg void OnBnClickedSaveInTimeTag();
 	afx_msg void OnBnClickedLyricDoubleLineCheck();
 	afx_msg void OnCbnSelchangeCortanaColorCombo();
 	afx_msg void OnBnClickedShowAlbumCoverInCortana();
