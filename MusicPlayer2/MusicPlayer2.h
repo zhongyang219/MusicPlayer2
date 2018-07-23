@@ -97,10 +97,10 @@ public:
 	GeneralSettingData m_general_setting_data;
 	NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
 
-	volatile bool m_lyric_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出
-	volatile bool m_batch_download_dialog_exit{ false };		//用于指示歌词批量下载对话框已经退出
-	volatile bool m_cover_download_dialog_exit{ false };		//用于指示歌词下载对话框已经退出
-	volatile bool m_format_convert_dialog_exit{ false };		//用于指示格式对话框已经退出
+	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
+	volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
+	volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
+	volatile bool m_format_convert_dialog_exit{ true };		//用于指示格式对话框已经退出
 
 	void SaveSongData() const;		//将所有歌曲信息以序列化的方式保存到文件
 

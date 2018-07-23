@@ -2120,6 +2120,10 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | ((!theApp.m_player.IsInnerCover() && theApp.m_player.AlbumCoverExist()) ? MF_ENABLED : MF_GRAYED));
 
+	//正在执行格式转换时禁用“格式转换”菜单项
+	pMenu->EnableMenuItem(ID_FORMAT_CONVERT, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_FORMAT_CONVERT1, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
+
 	// TODO: 在此处添加消息处理程序代码
 }
 
@@ -3335,8 +3339,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lPa
 void CMusicPlayerDlg::OnFormatConvert()
 {
 	// TODO: 在此添加命令处理程序代码
-	//CFormatConvertDlg dlg(m_items_selected);
-	//dlg.DoModal();
+	if (!theApp.m_format_convert_dialog_exit)
+		return;
 	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
 	m_pFormatConvertDlg = new CFormatConvertDlg(m_items_selected);
 	m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
@@ -3347,8 +3351,8 @@ void CMusicPlayerDlg::OnFormatConvert()
 void CMusicPlayerDlg::OnFormatConvert1()
 {
 	// TODO: 在此添加命令处理程序代码
-	//CFormatConvertDlg dlg;
-	//dlg.DoModal();
+	if (!theApp.m_format_convert_dialog_exit)
+		return;
 	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
 	m_pFormatConvertDlg = new CFormatConvertDlg;
 	m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);

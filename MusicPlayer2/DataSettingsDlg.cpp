@@ -67,6 +67,8 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
 	m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), _T("有些 MIDI 音乐包含歌词，勾选此项后，会优先显示 MIDI 音乐内嵌的歌词。"));
 
+	GetDlgItem(IDC_BROWSE_BUTTON)->EnableWindow(theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
