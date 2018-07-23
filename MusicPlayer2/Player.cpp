@@ -1236,13 +1236,21 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
 	}
 }
 
-void CPlayer::ReIniBASS()
+void CPlayer::ReIniBASS(bool replay)
 {
+	int playing = m_playing;
 	UnInitBASS();
 	IniBASS();
 	MusicControl(Command::OPEN);
 	MusicControl(Command::SEEK);
-	m_playing = 0;
+	if (replay && playing == 2)
+	{
+		MusicControl(Command::PLAY);
+	}
+	else
+	{
+		m_playing = 0;
+	}
 }
 
 void CPlayer::SortPlaylist(bool change_index)

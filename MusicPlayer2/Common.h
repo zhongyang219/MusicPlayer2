@@ -182,7 +182,7 @@ public:
 	//判断文件名是末尾是否符合“(数字)”的形式
 	//file_name: 要判断的文件名，不包含扩展名
 	//number: 接收括号中的数字
-	//index: 接收右括号在字符串中的索引
+	//index: 接收左括号在字符串中的索引
 	static bool IsFileNameNumbered(const wstring& file_name, int& number, size_t& index);
 
 	//删除一个非模态对话框

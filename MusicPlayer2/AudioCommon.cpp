@@ -417,3 +417,17 @@ AudioType CAudioCommon::GetAudioTypeByBassChannel(DWORD ctype)
 	return type;
 }
 
+CString CAudioCommon::TrackToString(BYTE track)
+{
+	CString str;
+	if (track != 0)
+	{
+		str.Format(_T("%d"), track);
+		return str;
+	}
+	else
+	{
+		return CString();
+	}
+}
+

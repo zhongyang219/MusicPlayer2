@@ -313,6 +313,9 @@ public:
 	//根据BASS通道类型获取音频类型
 	static AudioType GetAudioTypeByBassChannel(DWORD ctype);
 
+	//将音轨序号转换成数字
+	static CString TrackToString(BYTE track);
+
 public:
 	static vector<SupportedFormat> m_surpported_format;		//支持的文件格式
 	static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名
