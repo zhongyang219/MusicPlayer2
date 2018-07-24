@@ -8,6 +8,8 @@ typedef DWORD HWMENCODE;	// WMA encoding handle
 // BASS_WMA_EncodeSetTag "form" values
 #define BASS_WMA_TAG_UNICODE	1
 
+#define BASS_ERROR_WMA				1001	// Windows Media (9 or above) is not installed
+
 class CBASSWmaLibrary
 {
 	typedef HWMENCODE (WINAPI *_BASS_WMA_EncodeOpenFile)(DWORD freq, DWORD chans, DWORD flags, DWORD bitrate, const char *file);
