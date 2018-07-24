@@ -135,17 +135,23 @@
     <Filter Include="头文件和源文件\公共的类\BASS">
       <UniqueIdentifier>{19a9ecf9-4893-450b-a085-7cb1a6a7dd4c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件和源文件\对话框类\FormatConvertDlg">
-      <UniqueIdentifier>{4778764b-1016-4c5b-8ac5-de6c4d846038}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件和源文件\对话框类\编码选项对话框">
-      <UniqueIdentifier>{6f54d060-c0cf-4263-b48a-d4ffdc8ab770}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件和源文件\公共的类\IniHelper">
       <UniqueIdentifier>{42734b69-66a6-4f02-b9f2-8c4675336e95}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件和源文件\公共的类\WinVersionHelper">
       <UniqueIdentifier>{a08082b3-9202-4b64-9941-d4ff6059ae9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\对话框类\格式转换相关对话框">
+      <UniqueIdentifier>{99e2f1f0-cb25-4143-ba92-c229ed751d23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\对话框类\格式转换相关对话框\FormatConvertDlg">
+      <UniqueIdentifier>{4778764b-1016-4c5b-8ac5-de6c4d846038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\对话框类\格式转换相关对话框\TagEditDlg">
+      <UniqueIdentifier>{09fc6101-0b4c-46d7-840c-d49845750079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框">
+      <UniqueIdentifier>{6f54d060-c0cf-4263-b48a-d4ffdc8ab770}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -286,28 +292,31 @@
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClInclude>
     <ClInclude Include="FormatConvertDlg.h">
-      <Filter>头文件和源文件\对话框类\FormatConvertDlg</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\FormatConvertDlg</Filter>
     </ClInclude>
     <ClInclude Include="BASSEncodeLibrary.h">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClInclude>
     <ClInclude Include="MP3EncodeCfgDlg.h">
-      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClInclude>
     <ClInclude Include="OggEncodeCfgDlg.h">
-      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClInclude>
     <ClInclude Include="BASSWmaLibrary.h">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClInclude>
     <ClInclude Include="WmaEncodeCfgDlg.h">
-      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClInclude>
     <ClInclude Include="IniHelper.h">
       <Filter>头文件和源文件\公共的类\IniHelper</Filter>
     </ClInclude>
     <ClInclude Include="WinVersionHelper.h">
       <Filter>头文件和源文件\公共的类\WinVersionHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="TagEditDlg.h">
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\TagEditDlg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -432,28 +441,31 @@
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClCompile>
     <ClCompile Include="FormatConvertDlg.cpp">
-      <Filter>头文件和源文件\对话框类\FormatConvertDlg</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\FormatConvertDlg</Filter>
     </ClCompile>
     <ClCompile Include="BASSEncodeLibrary.cpp">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClCompile>
     <ClCompile Include="MP3EncodeCfgDlg.cpp">
-      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClCompile>
     <ClCompile Include="OggEncodeCfgDlg.cpp">
-      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClCompile>
     <ClCompile Include="BASSWmaLibrary.cpp">
       <Filter>头文件和源文件\公共的类\BASS</Filter>
     </ClCompile>
     <ClCompile Include="WmaEncodeCfgDlg.cpp">
-      <Filter>头文件和源文件\对话框类\编码选项对话框</Filter>
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClCompile>
     <ClCompile Include="IniHelper.cpp">
       <Filter>头文件和源文件\公共的类\IniHelper</Filter>
     </ClCompile>
     <ClCompile Include="WinVersionHelper.cpp">
       <Filter>头文件和源文件\公共的类\WinVersionHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="TagEditDlg.cpp">
+      <Filter>头文件和源文件\对话框类\格式转换相关对话框\TagEditDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

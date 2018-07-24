@@ -200,6 +200,7 @@
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
     <ClInclude Include="IniHelper.h" />
+    <ClInclude Include="TagEditDlg.h" />
     <ClInclude Include="WinVersionHelper.h" />
     <ClInclude Include="WmaEncodeCfgDlg.h" />
     <ClInclude Include="FilePathHelper.h" />
@@ -253,6 +254,7 @@
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
     <ClCompile Include="IniHelper.cpp" />
+    <ClCompile Include="TagEditDlg.cpp" />
     <ClCompile Include="WinVersionHelper.cpp" />
     <ClCompile Include="WmaEncodeCfgDlg.cpp" />
     <ClCompile Include="FilePathHelper.cpp" />
