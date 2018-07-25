@@ -48,11 +48,7 @@ void CPlayer::IniBASS()
 	CAudioCommon::m_all_surpported_extensions = format.extensions;
 	//载入BASS插件
 	wstring plugin_dir;
-#ifdef _DEBUG
-	plugin_dir = L".\\Plugins\\";
-#else
-	plugin_dir = theApp.m_module_dir + L"Plugins\\";
-#endif // _DEBUG
+	plugin_dir = theApp.m_local_dir + L"Plugins\\";
 	vector<wstring> plugin_files;
 	CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);		//获取Plugins目录下所有的dll文件的文件名
 	m_plugin_handles.clear();
@@ -92,13 +88,15 @@ void CPlayer::IniBASS()
 			m_sfont_name = L"<无>";
 			if (m_bass_midi_lib.IsSuccessed())
 			{
-				if (CCommon::FileExist(theApp.m_general_setting_data.sf2_path))
+				CString sf2_path = theApp.m_general_setting_data.sf2_path.c_str();
+				sf2_path.Replace(L"%localdir%\\", theApp.m_local_dir.c_str());
+				if (CCommon::FileExist(wstring(sf2_path)))
 				{
-					m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(theApp.m_general_setting_data.sf2_path.c_str(), BASS_UNICODE);
+					m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(sf2_path, BASS_UNICODE);
 					if (m_sfont.font == 0)
 					{
 						CString info;
-						info.Format(_T("音色库“%s”加载失败！"), theApp.m_general_setting_data.sf2_path.c_str());
+						info.Format(_T("音色库“%s”加载失败！"), sf2_path.GetString());
 						CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
 						m_sfont_name = L"<加载失败>";
 					}

@@ -347,7 +347,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(_T("general"), _T("auto_download_lyric"), 1);
 	theApp.m_general_setting_data.auto_download_album_cover = ini.GetBool(_T("general"), _T("auto_download_album_cover"), 1);
 	theApp.m_general_setting_data.auto_download_only_tag_full = ini.GetBool(_T("general"), _T("auto_download_only_tag_full"), 1);
-	theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
+	theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"%localdir%\\Plugins\\soundfont\\TimGM6mb.sf2");
 	theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(_T("general"), _T("midi_use_inner_lyric"), 0);
 }
 

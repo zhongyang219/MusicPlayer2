@@ -104,6 +104,12 @@ BOOL CMusicPlayerApp::InitInstance()
 	}
 
 	m_module_dir = CCommon::GetExePath();
+#ifdef _DEBUG
+	m_local_dir = L".\\";
+#else
+	m_local_dir = m_module_dir;
+#endif // _DEBUG
+
 	m_config_path = m_module_dir + L"config.ini";
 	m_song_data_path = m_module_dir + L"song_data.dat";
 	m_recent_path_dat_path = m_module_dir + L"recent_path.dat";
