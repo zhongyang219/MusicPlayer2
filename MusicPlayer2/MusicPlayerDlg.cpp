@@ -297,6 +297,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"cortana_back_color", theApp.m_play_setting_data.cortana_color);
 	ini.WriteInt(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map);
 	ini.WriteBool(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip);
+	ini.WriteString(L"other", L"default_back_image_path", theApp.m_nc_setting_data.default_back_image_path);
 
 	ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
 	ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
@@ -342,7 +343,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_play_setting_data.cortana_color = ini.GetInt(_T("config"), _T("cortana_back_color"), 0);
 	theApp.m_nc_setting_data.volume_map = ini.GetInt(_T("config"), _T("volume_map"), 100);
 	theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(_T("config"), _T("show_cover_tip"), 0);
-	
+	theApp.m_nc_setting_data.default_back_image_path = ini.GetString(L"other", L"default_back_image_path", L"%localdir%\\default_background.jpg");
+
 	theApp.m_general_setting_data.id3v2_first = ini.GetBool(_T("general"), _T("id3v2_first"), 1);
 	theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(_T("general"), _T("auto_download_lyric"), 1);
 	theApp.m_general_setting_data.auto_download_album_cover = ini.GetBool(_T("general"), _T("auto_download_album_cover"), 1);
@@ -383,15 +385,17 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
 	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
 		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-	//else
-	//	MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
+	else
+		//MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
+		m_draw.DrawBitmap(m_default_background, 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
 
 	//由于设置了缓冲绘图区域，m_draw_rect的左上角点变成了绘图的原点
 	info_rect.MoveToXY(0, 0);
 
 	//填充显示信息区域的背景色
 	CDrawCommon::SetDrawArea(&MemDC, info_rect);
-	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
+	bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
+	if (draw_background)
 		m_draw.FillAlphaRect(info_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		MemDC.FillSolidRect(info_rect, RGB(255, 255, 255));
@@ -519,7 +523,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };
 	//绘制背景
-	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
+	if (draw_background)
 		m_draw.FillAlphaRect(spectral_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		m_draw.FillRect(spectral_rect, theApp.m_app_setting_data.theme_color.light3);
@@ -561,7 +565,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	CPoint point{ spectral_rect.left, spectral_rect.bottom };
 	point.y += 2 * m_margin;
 	CRect other_info_rect{ point, CSize(info_rect.Width() - 2 * m_margin,DPI(24)) };
-	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
+	if (draw_background)
 		m_draw.FillAlphaRect(other_info_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		m_draw.FillRect(other_info_rect, theApp.m_app_setting_data.theme_color.light3);
@@ -666,7 +670,8 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 {
-	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
+	bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
+	if (draw_background)
 		m_draw.FillAlphaRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		m_draw.FillRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3);
@@ -699,8 +704,9 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 {
 	//填充白色背景
+	bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
 	CDrawCommon::SetDrawArea(pDC, lyric_rect);
-	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
+	if (draw_background)
 		m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		pDC->FillSolidRect(lyric_rect, RGB(255, 255, 255));
@@ -718,7 +724,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	lyric_area.top += DPI(20);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
-	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
+	if (draw_background)
 		m_draw.FillAlphaRect(lyric_area, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
 	else
 		pDC->FillSolidRect(lyric_area, theApp.m_app_setting_data.theme_color.light3);
@@ -1264,6 +1270,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_draw.Create(m_pDC, this);
 
 	m_lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+
+	//
+	CString default_back_image_path = theApp.m_nc_setting_data.default_back_image_path.c_str();
+	default_back_image_path.Replace(L"%localdir%\\", theApp.m_local_dir.c_str());
+	m_default_background.Load(default_back_image_path);
 
 	//设置定时器
 	SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);

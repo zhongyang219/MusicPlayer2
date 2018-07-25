@@ -146,6 +146,7 @@ protected:
 	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected, m_list_popup_menu };		//迷你模式对话框
 
 	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
+	CImage m_default_background;		//默认的背景
 
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
 	CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
