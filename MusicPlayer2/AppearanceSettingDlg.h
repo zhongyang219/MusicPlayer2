@@ -66,6 +66,9 @@ protected:
 	CButton m_show_spectrum_chk;
 	CSliderCtrl m_back_transparency_slid;
 	CButton m_use_out_image_chk;
+	CButton m_background_gauss_blur_chk;
+	CSliderCtrl m_gauss_blur_radius_sld;
+	CButton m_lyric_background_chk;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -73,6 +76,8 @@ protected:
 	void ClickColor();
 	static int SpectrumHeightChg(int value);		//使用二次函数将10~300范围内的值映射到0~100范围内
 	static int SpectrumHeightRChg(int value);		//使用二次函数将0~100范围内的值映射到10~300范围内
+
+	void SetControlEnable();
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -103,4 +108,6 @@ public:
 	afx_msg void OnBnClickedShowSpectrumCheck();
 	afx_msg void OnBnClickedUseOutImageCheck();
 	afx_msg void OnEnChangeDefaultCoverNameEdit();
+	afx_msg void OnBnClickedBackgroundGaussBlurCheck();
+	afx_msg void OnBnClickedLyricBackgroundCheck();
 };

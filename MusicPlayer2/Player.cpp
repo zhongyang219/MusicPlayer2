@@ -1596,7 +1596,7 @@ void CPlayer::AlbumCoverGaussBlur()
 		CDrawCommon::BitmapStretch(&m_album_cover, &image_tmp, image_size);		//拉伸图片
 		//执行高斯模糊
 		CGaussBlur gauss_blur;
-		gauss_blur.SetSigma(7);		//设置高斯模糊半径
+		gauss_blur.SetSigma(static_cast<double>(theApp.m_app_setting_data.gauss_blur_radius) / 10);		//设置高斯模糊半径
 		gauss_blur.DoGaussBlur(image_tmp, m_album_cover_blur);
 	}
 }

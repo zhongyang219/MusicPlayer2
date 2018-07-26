@@ -43,6 +43,9 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_SPECTRUM_CHECK, m_show_spectrum_chk);
 	DDX_Control(pDX, IDC_BACKGROUND_TRANSPARENCY_SLIDER, m_back_transparency_slid);
 	DDX_Control(pDX, IDC_USE_OUT_IMAGE_CHECK, m_use_out_image_chk);
+	DDX_Control(pDX, IDC_GAUSS_BLURE_RADIUS_SLIDER, m_gauss_blur_radius_sld);
+	DDX_Control(pDX, IDC_BACKGROUND_GAUSS_BLUR_CHECK, m_background_gauss_blur_chk);
+	DDX_Control(pDX, IDC_LYRIC_BACKGROUND_CHECK, m_lyric_background_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -76,6 +79,16 @@ int CAppearanceSettingDlg::SpectrumHeightRChg(int value)
 	if (rtn < 10) rtn = 10;
 	if (rtn > 300) rtn = 300;
 	return rtn;
+}
+
+void CAppearanceSettingDlg::SetControlEnable()
+{
+	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
+	GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT)->EnableWindow(m_data.use_out_image);
+	m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
+	m_back_transparency_slid.EnableWindow(m_data.album_cover_as_background);
+	m_background_gauss_blur_chk.EnableWindow(m_data.album_cover_as_background);
+	m_gauss_blur_radius_sld.EnableWindow(m_data.album_cover_as_background && m_data.background_gauss_blur);
 }
 
 void CAppearanceSettingDlg::DrawColor()
@@ -112,6 +125,8 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SHOW_SPECTRUM_CHECK, &CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck)
 	ON_BN_CLICKED(IDC_USE_OUT_IMAGE_CHECK, &CAppearanceSettingDlg::OnBnClickedUseOutImageCheck)
 	ON_EN_CHANGE(IDC_DEFAULT_COVER_NAME_EDIT, &CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit)
+	ON_BN_CLICKED(IDC_BACKGROUND_GAUSS_BLUR_CHECK, &CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck)
+	ON_BN_CLICKED(IDC_LYRIC_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck)
 END_MESSAGE_MAP()
 
 
@@ -184,25 +199,30 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_album_cover_fit_combo.AddString(L"填充");
 	m_album_cover_fit_combo.AddString(L"适应");
 	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.album_cover_fit));
-	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
 	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
 	m_toolTip.AddTool(&m_use_out_image_chk, _T("如果无法从音频文件获取专辑封面，则尝试在音频文件所在目录下查找下面指定的文件名为专辑封面"));
 	m_toolTip.AddTool(GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT), _T("在此设置默认的专辑封面文件名，多个文件名之间使用半角逗号隔开"));
 
 	SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());
-	GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT)->EnableWindow(m_data.use_out_image);
 
 	m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);
 	m_show_spectrum_chk.SetCheck(m_data.show_spectrum);
-	m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
 
 	m_back_transparency_slid.SetRange(10, 98);
 	m_back_transparency_slid.SetPos(theApp.m_app_setting_data.background_transparency);
 	str.Format(_T("%d%%"), theApp.m_app_setting_data.background_transparency);
 	SetDlgItemText(IDC_BACKGROUND_TRANSPARENCY_STATIC, str);
-	m_back_transparency_slid.EnableWindow(m_data.album_cover_as_background);
 
 	m_use_out_image_chk.SetCheck(m_data.use_out_image);
+
+	m_background_gauss_blur_chk.SetCheck(m_data.background_gauss_blur);
+	m_gauss_blur_radius_sld.SetRange(10, 200);
+	m_gauss_blur_radius_sld.SetPos(m_data.gauss_blur_radius);
+	str.Format(_T("%.1f"), static_cast<float>(m_data.gauss_blur_radius) / 10);
+	SetDlgItemText(IDC_GAUSS_BLUR_RADIUS_STATIC, str);
+	m_lyric_background_chk.SetCheck(m_data.lyric_background);
+
+	SetControlEnable();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -269,6 +289,13 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 		CString str;
 		str.Format(_T("%d%%"), theApp.m_app_setting_data.background_transparency);
 		SetDlgItemText(IDC_BACKGROUND_TRANSPARENCY_STATIC, str);
+	}
+	if ((pScrollBar->GetDlgCtrlID() == IDC_GAUSS_BLURE_RADIUS_SLIDER))
+	{
+		m_data.gauss_blur_radius = m_gauss_blur_radius_sld.GetPos();
+		CString str;
+		str.Format(_T("%.1f"), static_cast<float>(m_data.gauss_blur_radius) / 10);
+		SetDlgItemText(IDC_GAUSS_BLUR_RADIUS_STATIC, str);
 	}
 
 	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
@@ -447,7 +474,7 @@ HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何特性
-	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid)		//设置滑动条控件的背景色为白色
+	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid || pWnd == &m_gauss_blur_radius_sld)		//设置滑动条控件的背景色为白色
 	{
 		return (HBRUSH)::GetStockObject(WHITE_BRUSH);
 	}
@@ -460,7 +487,7 @@ void CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.show_album_cover = (m_show_album_cover_chk.GetCheck() != 0);
-	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
+	SetControlEnable();
 }
 
 
@@ -475,7 +502,7 @@ void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
-	m_back_transparency_slid.EnableWindow(m_data.album_cover_as_background);
+	SetControlEnable();
 }
 
 
@@ -483,7 +510,7 @@ void CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.show_spectrum = (m_show_spectrum_chk.GetCheck() != 0);
-	m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
+	SetControlEnable();
 }
 
 
@@ -491,7 +518,7 @@ void CAppearanceSettingDlg::OnBnClickedUseOutImageCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.use_out_image = (m_use_out_image_chk.GetCheck() != 0);
-	GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT)->EnableWindow(m_data.use_out_image);
+	SetControlEnable();
 }
 
 
@@ -506,4 +533,19 @@ void CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit()
 	//CString temp;
 	//GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
 	//m_data.default_album_name = temp;
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.background_gauss_blur = (m_background_gauss_blur_chk.GetCheck() != 0);
+	SetControlEnable();
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.lyric_background = (m_lyric_background_chk.GetCheck() != 0);
 }

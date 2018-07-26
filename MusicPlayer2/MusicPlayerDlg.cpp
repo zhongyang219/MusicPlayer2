@@ -288,6 +288,9 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"album_cover_as_background", theApp.m_app_setting_data.album_cover_as_background);
 	ini.WriteBool(L"config", L"cortana_show_album_cover", theApp.m_play_setting_data.cortana_show_album_cover);
 	ini.WriteBool(L"config", L"cortana_icon_beat", theApp.m_play_setting_data.cortana_icon_beat);
+	ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
+	ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
+	ini.WriteBool(L"config", L"lyric_background", theApp.m_app_setting_data.lyric_background);
 
 	ini.WriteInt(L"config", L"background_transparency", theApp.m_app_setting_data.background_transparency);
 	ini.WriteBool(L"config", L"use_out_image", theApp.m_app_setting_data.use_out_image);
@@ -334,6 +337,9 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.album_cover_as_background = ini.GetBool(_T("config"), _T("album_cover_as_background"), 0);
 	theApp.m_play_setting_data.cortana_show_album_cover = ini.GetBool(_T("config"), _T("cortana_show_album_cover"), 1);
 	theApp.m_play_setting_data.cortana_icon_beat = ini.GetBool(_T("config"), _T("cortana_icon_beat"), 0);
+	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
+	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
+	theApp.m_app_setting_data.lyric_background = ini.GetBool(_T("config"), _T("lyric_background"), true);
 
 	theApp.m_app_setting_data.background_transparency = ini.GetInt(L"config", L"background_transparency", 80);
 	theApp.m_app_setting_data.use_out_image = ini.GetBool(_T("config"), _T("use_out_image"), 0);
@@ -385,11 +391,16 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
 	if (theApp.m_app_setting_data.album_cover_as_background)
 	{
-		if (theApp.m_player.AlbumCoverExist() && !theApp.m_player.GetAlbumCoverBlur().IsNull())
-			m_draw.DrawBitmap(theApp.m_player.GetAlbumCoverBlur(), 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+		if (theApp.m_player.AlbumCoverExist())
+		{
+			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? theApp.m_player.GetAlbumCoverBlur() : theApp.m_player.GetAlbumCover() };
+			m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+		}
 		else
+		{
 			//MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
-			m_draw.DrawBitmap(m_default_background, 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+			m_draw.DrawBitmap(m_default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+		}
 	}
 	else
 	{
@@ -403,7 +414,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 	//填充显示信息区域的背景色
 	CDrawCommon::SetDrawArea(&MemDC, info_rect);
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (/*theApp.m_player.AlbumCoverExist() ||*/ !m_default_background.IsNull()) };
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
 	if (draw_background)
 		m_draw.FillAlphaRect(info_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -679,11 +690,14 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 {
-	//bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
-	//if (draw_background)
-	//	m_draw.FillAlphaRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-	//else
-	//	m_draw.FillRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3);
+	if (theApp.m_app_setting_data.lyric_background)
+	{
+		bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
+		if (draw_background)
+			m_draw.FillAlphaRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+		else
+			m_draw.FillRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3);
+	}
 	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
@@ -713,7 +727,7 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 {
 	//填充白色背景
-	bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
 	CDrawCommon::SetDrawArea(pDC, lyric_rect);
 	if (draw_background)
 		m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
@@ -733,10 +747,13 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	lyric_area.top += DPI(20);
 	//CDrawCommon::SetDrawArea(pDC, lyric_area);
-	//if (draw_background)
-	//	m_draw.FillAlphaRect(lyric_area, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-	//else
-	//	pDC->FillSolidRect(lyric_area, theApp.m_app_setting_data.theme_color.light3);
+	if (theApp.m_app_setting_data.lyric_background)
+	{
+		if (draw_background)
+			m_draw.FillAlphaRect(lyric_area, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
+		else
+			m_draw.FillRect(lyric_area, theApp.m_app_setting_data.theme_color.light3);
+	}
 	//设置歌词文字区域
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
@@ -2260,6 +2277,8 @@ void CMusicPlayerDlg::OnOptionSettings()
 			m_cortana_lyric.ResetCortanaText();
 
 		bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
+		bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != optionDlg.m_tab2_dlg.m_data.background_gauss_blur
+			|| theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius };
 
 		theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
 		theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -2271,6 +2290,8 @@ void CMusicPlayerDlg::OnOptionSettings()
 			UpdatePlayPauseButton();
 			DrawInfo(true);
 		}
+		if (gauss_blur_changed)
+			theApp.m_player.AlbumCoverGaussBlur();
 
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 		m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
