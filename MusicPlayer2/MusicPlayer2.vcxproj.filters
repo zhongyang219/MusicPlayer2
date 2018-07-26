@@ -153,6 +153,9 @@
     <Filter Include="头文件和源文件\对话框类\格式转换相关对话框\编码选项对话框">
       <UniqueIdentifier>{6f54d060-c0cf-4263-b48a-d4ffdc8ab770}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\GaussBlur">
+      <UniqueIdentifier>{3c989d6b-1ece-4f47-b792-3934af8402e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -318,6 +321,9 @@
     <ClInclude Include="TagEditDlg.h">
       <Filter>头文件和源文件\对话框类\格式转换相关对话框\TagEditDlg</Filter>
     </ClInclude>
+    <ClInclude Include="GaussBlur.h">
+      <Filter>头文件和源文件\公共的类\GaussBlur</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -466,6 +472,9 @@
     </ClCompile>
     <ClCompile Include="TagEditDlg.cpp">
       <Filter>头文件和源文件\对话框类\格式转换相关对话框\TagEditDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="GaussBlur.cpp">
+      <Filter>头文件和源文件\公共的类\GaussBlur</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

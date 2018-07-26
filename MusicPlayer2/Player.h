@@ -6,6 +6,7 @@
 #include "FilePathHelper.h"
 #include "BASSMidiLibrary.h"
 //#include"MusicPlayerDlg.h"
+#include "GaussBlur.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//播放列表加载完成消息
@@ -90,7 +91,8 @@ private:
 	int m_reverb_time{1};	//混响时间（单位10ms，1~300）
 	bool m_reverb_enable{ false };		//指示是否允许混响
 
-	CImage m_album_cover;
+	CImage m_album_cover;			//专辑封面
+	CImage m_album_cover_blur;		//高斯模糊后的专辑封面
 	wstring m_album_cover_path;		//专辑封面文件的路径
 	int m_album_cover_type;			//专辑封面的格式
 	bool m_inner_cover{ false };			//如果专辑封面是内嵌图片，则为true
@@ -200,6 +202,7 @@ public:
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
 	CImage& GetAlbumCover() { return m_album_cover; }
+	CImage& GetAlbumCoverBlur() { return m_album_cover_blur; }
 	bool AlbumCoverExist() { return !m_album_cover.IsNull(); }
 	wstring GetAlbumCoverPath() const { return m_album_cover_path; }
 	int GetAlbumCoverType() const { return m_album_cover_type; }
@@ -246,6 +249,7 @@ private:
 	void AcquireSongInfo(HSTREAM hStream, SongInfo& song_info);		//获取歌曲标签等信息
 public:
 	void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
+	void AlbumCoverGaussBlur();		//专辑封面高斯模糊
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
 };
 

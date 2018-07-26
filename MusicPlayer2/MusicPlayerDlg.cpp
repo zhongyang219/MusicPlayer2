@@ -383,18 +383,27 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
 	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
-	if (/*theApp.m_app_setting_data.show_album_cover &&*/ theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist())
-		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+	if (theApp.m_app_setting_data.album_cover_as_background)
+	{
+		if (theApp.m_player.AlbumCoverExist() && !theApp.m_player.GetAlbumCoverBlur().IsNull())
+			m_draw.DrawBitmap(theApp.m_player.GetAlbumCoverBlur(), 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+		else
+			//MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
+			m_draw.DrawBitmap(m_default_background, 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+	}
 	else
-		//MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
-		m_draw.DrawBitmap(m_default_background, 0, m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+	{
+		CRect draw_rect{ m_draw_rect };
+		draw_rect.MoveToXY(0, 0);
+		m_draw.FillRect(draw_rect, ColorTable::WHITE);
+	}
 
 	//由于设置了缓冲绘图区域，m_draw_rect的左上角点变成了绘图的原点
 	info_rect.MoveToXY(0, 0);
 
 	//填充显示信息区域的背景色
 	CDrawCommon::SetDrawArea(&MemDC, info_rect);
-	bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (/*theApp.m_player.AlbumCoverExist() ||*/ !m_default_background.IsNull()) };
 	if (draw_background)
 		m_draw.FillAlphaRect(info_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -670,11 +679,11 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 {
-	bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
-	if (draw_background)
-		m_draw.FillAlphaRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-	else
-		m_draw.FillRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3);
+	//bool draw_background{ (theApp.m_app_setting_data.album_cover_as_background && theApp.m_player.AlbumCoverExist()) || !m_default_background.IsNull() };
+	//if (draw_background)
+	//	m_draw.FillAlphaRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+	//else
+	//	m_draw.FillRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3);
 	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
@@ -723,11 +732,11 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	CRect lyric_area = lyric_rect;
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	lyric_area.top += DPI(20);
-	CDrawCommon::SetDrawArea(pDC, lyric_area);
-	if (draw_background)
-		m_draw.FillAlphaRect(lyric_area, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-	else
-		pDC->FillSolidRect(lyric_area, theApp.m_app_setting_data.theme_color.light3);
+	//CDrawCommon::SetDrawArea(pDC, lyric_area);
+	//if (draw_background)
+	//	m_draw.FillAlphaRect(lyric_area, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
+	//else
+	//	pDC->FillSolidRect(lyric_area, theApp.m_app_setting_data.theme_color.light3);
 	//设置歌词文字区域
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
@@ -1915,6 +1924,8 @@ void CMusicPlayerDlg::OnDestroy()
 
 void CMusicPlayerDlg::OnAppAbout()
 {
+	CSize size(100, 100);
+	CCommon::SizeZoom(size, 200);
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
 }
@@ -3076,6 +3087,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 
 		//重新从本地获取专辑封面
 		theApp.m_player.SearchOutAlbumCover();
+		theApp.m_player.AlbumCoverGaussBlur();
 	}
 	//自动下载歌词
 	if (download_lyric)

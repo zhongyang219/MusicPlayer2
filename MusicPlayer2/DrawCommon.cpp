@@ -283,10 +283,10 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 		if (stretch_mode == StretchMode::FILL)
 		{
 			SetDrawArea(m_pDC, CRect(start_point, draw_size));
-			float w_h_radio, w_h_radio_draw;		//图像的宽高比、绘制大小的宽高比
-			w_h_radio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
-			w_h_radio_draw = static_cast<float>(size.cx) / size.cy;
-			if (w_h_radio > w_h_radio_draw)		//如果图像的宽高比大于绘制区域的宽高比，则需要裁剪两边的图像
+			float w_h_ratio, w_h_ratio_draw;		//图像的宽高比、绘制大小的宽高比
+			w_h_ratio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
+			w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
+			if (w_h_ratio > w_h_ratio_draw)		//如果图像的宽高比大于绘制区域的宽高比，则需要裁剪两边的图像
 			{
 				int image_width;		//按比例缩放后的宽度
 				image_width = bm.bmWidth * draw_size.cy / bm.bmHeight;
@@ -304,10 +304,10 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 		else if (stretch_mode == StretchMode::FIT)
 		{
 			draw_size = CSize(bm.bmWidth, bm.bmHeight);
-			float w_h_radio, w_h_radio_draw;		//图像的宽高比、绘制大小的宽高比
-			w_h_radio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
-			w_h_radio_draw = static_cast<float>(size.cx) / size.cy;
-			if (w_h_radio > w_h_radio_draw)		//如果图像的宽高比大于绘制区域的宽高比
+			float w_h_ratio, w_h_ratio_draw;		//图像的宽高比、绘制大小的宽高比
+			w_h_ratio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
+			w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
+			if (w_h_ratio > w_h_ratio_draw)		//如果图像的宽高比大于绘制区域的宽高比
 			{
 				draw_size.cy = draw_size.cy * size.cx / draw_size.cx;
 				draw_size.cx = size.cx;
@@ -391,4 +391,32 @@ void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 	m_pDC->LineTo(rect.right, rect.top);
 
 	m_pDC->SelectObject(pOldPen);
+}
+
+void CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize size)
+{
+	if (pImage->IsDIBSection())
+	{
+		// 取得 pImage 的 DC
+		CDC* pImageDC1 = CDC::FromHandle(pImage->GetDC()); // Image 因為有自己的 DC, 所以必須使用 FromHandle 取得對應的 DC
+
+		CBitmap *bitmap1 = pImageDC1->GetCurrentBitmap();
+		BITMAP bmpInfo;
+		bitmap1->GetBitmap(&bmpInfo);
+
+		// 建立新的 CImage
+		ResultImage->Create(size.cx, size.cy, bmpInfo.bmBitsPixel);
+		CDC* ResultImageDC = CDC::FromHandle(ResultImage->GetDC());
+
+		// 當 Destination 比較小的時候, 會根據 Destination DC 上的 Stretch Blt mode 決定是否要保留被刪除點的資訊
+		ResultImageDC->SetStretchBltMode(HALFTONE); // 使用最高品質的方式
+		::SetBrushOrgEx(ResultImageDC->m_hDC, 0, 0, NULL); // 調整 Brush 的起點
+
+		// 把 pImage 畫到 ResultImage 上面
+		StretchBlt(*ResultImageDC, 0, 0, size.cx, size.cy, *pImageDC1, 0, 0, pImage->GetWidth(), pImage->GetHeight(), SRCCOPY);
+		// pImage->Draw(*ResultImageDC,0,0,StretchWidth,StretchHeight,0,0,pImage->GetWidth(),pImage->GetHeight());
+
+		pImage->ReleaseDC();
+		ResultImage->ReleaseDC();
+	}
 }

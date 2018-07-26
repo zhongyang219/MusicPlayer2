@@ -789,3 +789,22 @@ bool CCommon::IsFileNameNumbered(const wstring & file_name, int& number, size_t&
 	}
 }
 
+void CCommon::SizeZoom(CSize & size, int side)
+{
+	float width_height_ratio{ static_cast<float>(size.cx) / size.cy };	//长宽比
+	if (width_height_ratio > 1)		//长宽比大于1：1
+	{
+		size.cx = side;
+		size.cy = static_cast<int>(side / width_height_ratio);
+	}
+	else if (width_height_ratio < 1)
+	{
+		size.cy = side;
+		size.cx = static_cast<int>(side * width_height_ratio);
+	}
+	else
+	{
+		size.cx = size.cy = side;
+	}
+}
+

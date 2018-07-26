@@ -1576,8 +1576,29 @@ void CPlayer::SearchAlbumCover()
 			//获取不到专辑封面时尝试使用外部图片作为封面
 			SearchOutAlbumCover();
 		}
+		AlbumCoverGaussBlur();
 	}
 	last_file_path = m_path + m_current_file_name;
+}
+
+void CPlayer::AlbumCoverGaussBlur()
+{
+	CImage image_tmp;
+	if (m_album_cover.IsNull())
+	{
+		m_album_cover_blur.Destroy();
+	}
+	else
+	{
+		CSize image_size(m_album_cover.GetWidth(), m_album_cover.GetHeight());
+		//将图片缩小以减小高斯模糊的计算量
+		CCommon::SizeZoom(image_size, 300);		//图片大小按比例缩放，使长边等于300
+		CDrawCommon::BitmapStretch(&m_album_cover, &image_tmp, image_size);		//拉伸图片
+		//执行高斯模糊
+		CGaussBlur gauss_blur;
+		gauss_blur.SetSigma(7);		//设置高斯模糊半径
+		gauss_blur.DoGaussBlur(image_tmp, m_album_cover_blur);
+	}
 }
 
 void CPlayer::GetMidiPosition()
