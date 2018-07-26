@@ -1,5 +1,5 @@
 # MusicPlayer2 简介
-这是一款可以播放常见音频格式的音频播放器。支持歌词显示、歌词卡拉OK样式显示、歌词在线下载、歌词编辑、歌曲标签识别、Win10小娜搜索显示歌词、频谱分析、任务栏缩略图按钮、主题颜色等功能。 播放内核为BASS音频库(V2.4)。支持的音频格式有mp3、wma、wav、flac、ogg、m4a、ape、cue。
+MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功能于一身的音频播放软件。支持歌词显示、歌词卡拉OK样式显示、歌词在线下载、歌词编辑、歌曲标签识别、Win10小娜搜索显示歌词、频谱分析、任务栏缩略图按钮、主题颜色等功能。 播放内核为BASS音频库(V2.4)。支持的音频格式有mp3、wma、wav、flac、ogg、m4a、ape、cue。
 # 主要特性
 * 歌词显示<br>
 * 迷你模式
@@ -16,6 +16,8 @@
 * 任务栏缩略图按钮
 * 主题颜色
 * 支持cue分轨
+* 背景高斯模糊
+* 格式转换
 # 使用方法
 可以使用以下方法播放歌曲：<br>
 1、选择“文件”菜单中的“打开文件”项目；<br>
@@ -32,6 +34,8 @@
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Mini_mode.png)<br>
 Cortana搜索框显示歌词：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Cortana_lyric.png)<br>
+选项设置：<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options.png)<br>
 # 歌词下载
 软件提供了单个歌曲的歌词下载和歌词批量下载的功能。歌词下载功能调用了网易云音乐的API，如果感兴趣的话可以参考CLyricDownloadCommon、CLyricDownloadDlg和CLyricBatchDownloadDlg类。<br>
 歌词下载界面截图：<br>
