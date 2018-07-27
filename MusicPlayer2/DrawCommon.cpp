@@ -393,7 +393,7 @@ void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 	m_pDC->SelectObject(pOldPen);
 }
 
-void CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize size)
+bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize size)
 {
 	if (pImage->IsDIBSection())
 	{
@@ -405,7 +405,8 @@ void CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize siz
 		bitmap1->GetBitmap(&bmpInfo);
 
 		// 建立新的 CImage
-		ResultImage->Create(size.cx, size.cy, bmpInfo.bmBitsPixel);
+		//ResultImage->Create(size.cx, size.cy, bmpInfo.bmBitsPixel);
+		ResultImage->Create(size.cx, size.cy, 24);		//总是将目标图片转换成24位图
 		CDC* ResultImageDC = CDC::FromHandle(ResultImage->GetDC());
 
 		// 當 Destination 比較小的時候, 會根據 Destination DC 上的 Stretch Blt mode 決定是否要保留被刪除點的資訊
@@ -413,10 +414,11 @@ void CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize siz
 		::SetBrushOrgEx(ResultImageDC->m_hDC, 0, 0, NULL); // 調整 Brush 的起點
 
 		// 把 pImage 畫到 ResultImage 上面
-		StretchBlt(*ResultImageDC, 0, 0, size.cx, size.cy, *pImageDC1, 0, 0, pImage->GetWidth(), pImage->GetHeight(), SRCCOPY);
+		BOOL rtn = StretchBlt(*ResultImageDC, 0, 0, size.cx, size.cy, *pImageDC1, 0, 0, pImage->GetWidth(), pImage->GetHeight(), SRCCOPY);
 		// pImage->Draw(*ResultImageDC,0,0,StretchWidth,StretchHeight,0,0,pImage->GetWidth(),pImage->GetHeight());
 
 		pImage->ReleaseDC();
 		ResultImage->ReleaseDC();
 	}
+	return true;
 }

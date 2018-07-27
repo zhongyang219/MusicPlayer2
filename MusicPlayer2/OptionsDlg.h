@@ -6,6 +6,7 @@
 
 // COptionsDlg ¶Ô»°¿ò
 #define TIMER_ID2 1122
+#define WM_SETTINGS_APPLIED (WM_USER+113)
 
 class COptionsDlg : public CDialog
 {
@@ -37,4 +38,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTcnSelchangeOptionsTab(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void OnOK();
+	afx_msg void OnBnClickedApplyButton();
 };

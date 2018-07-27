@@ -57,7 +57,7 @@ public:
 	void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
 
 	//将图片拉伸到指定尺寸(https://blog.csdn.net/sichuanpb/article/details/22986877)
-	static void BitmapStretch(CImage *pImage, CImage *ResultImage, CSize size);
+	static bool BitmapStretch(CImage *pImage, CImage *ResultImage, CSize size);
 
 private:
 	CDC* m_pDC{};		//用于绘图的CDC类的指针

@@ -1583,17 +1583,24 @@ void CPlayer::SearchAlbumCover()
 
 void CPlayer::AlbumCoverGaussBlur()
 {
-	CImage image_tmp;
+	if (!theApp.m_app_setting_data.background_gauss_blur)
+		return;
 	if (m_album_cover.IsNull())
 	{
 		m_album_cover_blur.Destroy();
 	}
 	else
 	{
+		CImage image_tmp;
 		CSize image_size(m_album_cover.GetWidth(), m_album_cover.GetHeight());
 		//将图片缩小以减小高斯模糊的计算量
 		CCommon::SizeZoom(image_size, 300);		//图片大小按比例缩放，使长边等于300
-		CDrawCommon::BitmapStretch(&m_album_cover, &image_tmp, image_size);		//拉伸图片
+		if (!CDrawCommon::BitmapStretch(&m_album_cover, &image_tmp, image_size))		//拉伸图片
+			return;
+#ifdef _DEBUG
+		image_tmp.Save(_T("..\\Debug\\image_tmp.bmp"), Gdiplus::ImageFormatBMP);
+#endif // _DEBUG
+
 		//执行高斯模糊
 		CGaussBlur gauss_blur;
 		gauss_blur.SetSigma(static_cast<double>(theApp.m_app_setting_data.gauss_blur_radius) / 10);		//设置高斯模糊半径

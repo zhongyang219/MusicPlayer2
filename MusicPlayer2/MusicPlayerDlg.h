@@ -187,6 +187,8 @@ protected:
 
 	void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式
 
+	void ApplySettings(const COptionsDlg& optionDlg);		//从选项设置对话框获取设置
+
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -302,4 +304,6 @@ protected:
 public:
 	afx_msg void OnFormatConvert();
 	afx_msg void OnFormatConvert1();
+protected:
+	afx_msg LRESULT OnSettingsApplied(WPARAM wParam, LPARAM lParam);
 };

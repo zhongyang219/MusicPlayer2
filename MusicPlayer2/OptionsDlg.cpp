@@ -30,6 +30,7 @@ void COptionsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(COptionsDlg, CDialog)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_OPTIONS_TAB, &COptionsDlg::OnTcnSelchangeOptionsTab)
+	ON_BN_CLICKED(IDC_APPLY_BUTTON, &COptionsDlg::OnBnClickedApplyButton)
 END_MESSAGE_MAP()
 
 
@@ -117,4 +118,11 @@ void COptionsDlg::OnOK()
 	m_tab2_dlg.OnOK();
 
 	CDialog::OnOK();
+}
+
+
+void COptionsDlg::OnBnClickedApplyButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SETTINGS_APPLIED, (WPARAM)this, 0);
 }

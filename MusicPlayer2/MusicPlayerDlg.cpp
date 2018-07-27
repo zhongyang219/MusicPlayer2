@@ -256,6 +256,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_MESSAGE(WM_OPEN_FILE_COMMAND_LINE, &CMusicPlayerDlg::OnOpenFileCommandLine)
 	ON_COMMAND(ID_FORMAT_CONVERT, &CMusicPlayerDlg::OnFormatConvert)
 	ON_COMMAND(ID_FORMAT_CONVERT1, &CMusicPlayerDlg::OnFormatConvert1)
+	ON_MESSAGE(WM_SETTINGS_APPLIED, &CMusicPlayerDlg::OnSettingsApplied)
 END_MESSAGE_MAP()
 
 
@@ -329,7 +330,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.lyric_font_name = ini.GetString(L"config", L"font", L"微软雅黑");
 	theApp.m_app_setting_data.lyric_font_size = ini.GetInt(L"config", L"font_size", 10);
 	theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 2);
-	theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 80);
+	theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 100);
 	theApp.m_play_setting_data.cortana_lyric_double_line = ini.GetBool(_T("config"), _T("cortana_lyric_double_line"), 0);
 	theApp.m_app_setting_data.show_spectrum = ini.GetBool(_T("config"), _T("show_spectrum"), 1);
 	theApp.m_app_setting_data.show_album_cover = ini.GetBool(_T("config"), _T("show_album_cover"), 1);
@@ -1102,6 +1103,48 @@ void CMusicPlayerDlg::CreateDesktopShortcut()
 			}
 		}
 	}
+}
+
+void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
+{
+	//获取选项设置对话框中的设置数据
+	if (theApp.m_play_setting_data.show_lyric_in_cortana == true && optionDlg.m_tab1_dlg.m_data.show_lyric_in_cortana == false)	//如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
+		m_cortana_lyric.ResetCortanaText();
+
+	bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
+	bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != optionDlg.m_tab2_dlg.m_data.background_gauss_blur
+		|| theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius };
+
+	theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
+	theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
+	theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
+
+	if (reload_sf2/* && theApp.m_player.IsMidi()*/)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
+	{
+		theApp.m_player.ReIniBASS(true);
+		UpdatePlayPauseButton();
+	}
+	if (gauss_blur_changed)
+		theApp.m_player.AlbumCoverGaussBlur();
+
+	CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
+	m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
+	m_progress_bar.Invalidate();
+	m_time_static.Invalidate();
+	SetPlayListColor();
+	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
+	m_cortana_lyric.SetCortanaColor(theApp.m_play_setting_data.cortana_color);
+	if (optionDlg.m_tab2_dlg.FontChanged())
+	{
+		//如果m_font已经关联了一个字体资源对象，则释放它
+		if (m_lyric_font.m_hObject)
+			m_lyric_font.DeleteObject();
+		m_lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+	}
+	SaveConfig();		//将设置写入到ini文件
+	theApp.SaveConfig();
+	theApp.m_player.SaveConfig();
+	DrawInfo(true);
 }
 
 BOOL CMusicPlayerDlg::OnInitDialog()
@@ -2272,44 +2315,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 
 	if (optionDlg.DoModal() == IDOK)
 	{
-		//获取选项设置对话框中的设置数据
-		if (theApp.m_play_setting_data.show_lyric_in_cortana == true && optionDlg.m_tab1_dlg.m_data.show_lyric_in_cortana == false)	//如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
-			m_cortana_lyric.ResetCortanaText();
-
-		bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
-		bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != optionDlg.m_tab2_dlg.m_data.background_gauss_blur
-			|| theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius };
-
-		theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
-		theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
-		theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
-
-		if (reload_sf2/* && theApp.m_player.IsMidi()*/)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
-		{
-			theApp.m_player.ReIniBASS(true);
-			UpdatePlayPauseButton();
-			DrawInfo(true);
-		}
-		if (gauss_blur_changed)
-			theApp.m_player.AlbumCoverGaussBlur();
-
-		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
-		m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
-		m_progress_bar.Invalidate();
-		m_time_static.Invalidate();
-		SetPlayListColor();
-		m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
-		m_cortana_lyric.SetCortanaColor(theApp.m_play_setting_data.cortana_color);
-		if (optionDlg.m_tab2_dlg.FontChanged())
-		{
-			//如果m_font已经关联了一个字体资源对象，则释放它
-			if (m_lyric_font.m_hObject)
-				m_lyric_font.DeleteObject();
-			m_lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
-		}
-		SaveConfig();		//将设置写入到ini文件
-		theApp.SaveConfig();
-		theApp.m_player.SaveConfig();
+		ApplySettings(optionDlg);
 	}
 	else
 	{
@@ -3401,4 +3407,13 @@ void CMusicPlayerDlg::OnFormatConvert1()
 	m_pFormatConvertDlg = new CFormatConvertDlg;
 	m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
 	m_pFormatConvertDlg->ShowWindow(SW_SHOW);
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnSettingsApplied(WPARAM wParam, LPARAM lParam)
+{
+	COptionsDlg* pOptionsDlg = (COptionsDlg*)wParam;
+	if (pOptionsDlg == nullptr)
+		return 0;
+	ApplySettings(*pOptionsDlg);
 }
