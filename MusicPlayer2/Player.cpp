@@ -1551,9 +1551,8 @@ void CPlayer::EnableReverb(bool enable)
 
 void CPlayer::ConnotPlayWarning() const
 {
-	//if (m_no_ape_plugin && CAudioCommon::GetAudioTypeByExtension(m_current_file_name) == AudioType::AU_APE)
-	//	//AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
-	//	PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
+	if (m_is_midi && m_sfont.font == 0)
+		PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
 }
 
 void CPlayer::SearchAlbumCover()
@@ -1583,7 +1582,7 @@ void CPlayer::SearchAlbumCover()
 
 void CPlayer::AlbumCoverGaussBlur()
 {
-	if (!theApp.m_app_setting_data.background_gauss_blur)
+	if (!theApp.m_app_setting_data.background_gauss_blur || !theApp.m_app_setting_data.album_cover_as_background)
 		return;
 	if (m_album_cover.IsNull())
 	{

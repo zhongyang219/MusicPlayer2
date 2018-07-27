@@ -301,7 +301,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"cortana_back_color", theApp.m_play_setting_data.cortana_color);
 	ini.WriteInt(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map);
 	ini.WriteBool(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip);
-	ini.WriteString(L"other", L"default_back_image_path", theApp.m_nc_setting_data.default_back_image_path);
+	ini.WriteBool(L"other", L"no_sf2_warning", theApp.m_nc_setting_data.no_sf2_warning);
 
 	ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
 	ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
@@ -350,7 +350,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_play_setting_data.cortana_color = ini.GetInt(_T("config"), _T("cortana_back_color"), 0);
 	theApp.m_nc_setting_data.volume_map = ini.GetInt(_T("config"), _T("volume_map"), 100);
 	theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(_T("config"), _T("show_cover_tip"), 0);
-	theApp.m_nc_setting_data.default_back_image_path = ini.GetString(L"other", L"default_back_image_path", L"%localdir%\\default_background.jpg");
+	theApp.m_nc_setting_data.no_sf2_warning = ini.GetInt(L"other", L"no_sf2_warning", true);
 
 	theApp.m_general_setting_data.id3v2_first = ini.GetBool(_T("general"), _T("id3v2_first"), 1);
 	theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(_T("general"), _T("auto_download_lyric"), 1);
@@ -1340,10 +1340,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	m_lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
 
-	//
-	CString default_back_image_path = theApp.m_nc_setting_data.default_back_image_path.c_str();
-	default_back_image_path.Replace(L"%localdir%\\", theApp.m_local_dir.c_str());
-	m_default_background.Load(default_back_image_path);
+	//载入默认背景图片（用于没有专辑封面时显示）
+	m_default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
 
 	//设置定时器
 	SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
@@ -3226,8 +3224,11 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 
 afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lParam)
 {
-	if (theApp.m_play_setting_data.stop_when_error)
-		AfxMessageBox(_T("无法播放 ape 文件，因为无法加载 ape 播放插件，请确认程序所在目录是否包含“bass_ape.dll”文件，然后重新启动播放器。"), MB_ICONWARNING | MB_OK);
+	if (theApp.m_nc_setting_data.no_sf2_warning)
+	{
+		if (MessageBox(_T("你正在播放 MIDI 音乐，但是由于没有载入 MIDI 音色库，因此你将听不到任何声音。请在菜单“工具”——“选项”——“常规设置”的“MIDI 音色库路径”中选择正确的MIDI 音色库路径。点击“取消”不再提示。"), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+			theApp.m_nc_setting_data.no_sf2_warning = false;
+	}
 	return 0;
 }
 
