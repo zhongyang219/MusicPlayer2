@@ -1892,10 +1892,6 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 		}
 		else
 		{
-			if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE)		//屏蔽按回车键和ESC键退出
-			{
-				return TRUE;
-			}
 			if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P' || pMsg->wParam == VK_MEDIA_PLAY_PAUSE)		//按空格键/P键播放/暂停
 			{
 				OnPlayPause();
@@ -1948,6 +1944,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			}
 		}
 	}
+	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))		//屏蔽按回车键和ESC键退出
+	{
+		return TRUE;
+	}
+
 
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_Mytip.RelayEvent(pMsg);
