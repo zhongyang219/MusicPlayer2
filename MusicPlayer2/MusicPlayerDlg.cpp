@@ -3416,4 +3416,5 @@ afx_msg LRESULT CMusicPlayerDlg::OnSettingsApplied(WPARAM wParam, LPARAM lParam)
 	if (pOptionsDlg == nullptr)
 		return 0;
 	ApplySettings(*pOptionsDlg);
+	return 0;
 }
