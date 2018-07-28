@@ -342,7 +342,7 @@ void CSetPathDlg::OnBrowsePath()
 void CSetPathDlg::OnClearInvalidPath()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (MessageBox(_T("确实要清除列表中无效的路径吗？"), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
+	if (MessageBox(_T("确实要清除列表中无效的文件夹吗？"), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
 		return;
 	int cleard_cnt{};
 	for (size_t i{}; i < m_recent_path.size(); i++)
@@ -356,7 +356,7 @@ void CSetPathDlg::OnClearInvalidPath()
 	}
 	ShowPathList();		//重新显示路径列表
 	CString info;
-	info.Format(_T("完成，清除了 %d 个无效路径。"), cleard_cnt);
+	info.Format(_T("完成，清除了 %d 个无效的文件夹。"), cleard_cnt);
 	MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
 }
 

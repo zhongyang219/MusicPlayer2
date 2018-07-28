@@ -1235,7 +1235,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
-	m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), _T("选择最近播放过的路径"));
+	m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), _T("选择最近播放过的文件夹"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_DOWN), _T("减小音量"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
 	m_Mytip.AddTool(&m_time_static, _T("播放时间"));
