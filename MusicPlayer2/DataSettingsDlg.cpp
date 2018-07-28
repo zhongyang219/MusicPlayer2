@@ -24,6 +24,7 @@ CDataSettingsDlg::~CDataSettingsDlg()
 void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_SF2_PATH_EDIT, m_sf2_path_edit);
 }
 
 
@@ -36,6 +37,7 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDataSettingsDlg::OnBnClickedBrowseButton)
 	ON_BN_CLICKED(IDC_MIDI_USE_INNER_LYRIC_CHECK, &CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck)
 	ON_BN_CLICKED(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, &CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck)
+	ON_EN_CHANGE(IDC_SF2_PATH_EDIT, &CDataSettingsDlg::OnEnChangeSf2PathEdit)
 END_MESSAGE_MAP()
 
 
@@ -68,6 +70,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), _T("有些 MIDI 音乐包含歌词，勾选此项后，会优先显示 MIDI 音乐内嵌的歌词。"));
 
 	GetDlgItem(IDC_BROWSE_BUTTON)->EnableWindow(theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
+	m_sf2_path_edit.EnableWindow(theApp.m_format_convert_dialog_exit);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -198,4 +201,21 @@ void CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.auto_download_only_tag_full = (((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->GetCheck() != 0);
+}
+
+
+void CDataSettingsDlg::OnEnChangeSf2PathEdit()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+	if (m_sf2_path_edit.GetModify())
+	{
+		CString str;
+		m_sf2_path_edit.GetWindowText(str);
+		m_data.sf2_path = str;
+	}
+
+	// TODO:  在此添加控件通知处理程序代码
 }

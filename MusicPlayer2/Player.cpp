@@ -88,15 +88,21 @@ void CPlayer::IniBASS()
 			m_sfont_name = L"<无>";
 			if (m_bass_midi_lib.IsSuccessed())
 			{
-				CString sf2_path = theApp.m_general_setting_data.sf2_path.c_str();
-				sf2_path.Replace(L"%localdir%\\", theApp.m_local_dir.c_str());
-				if (CCommon::FileExist(wstring(sf2_path)))
+				wstring sf2_path = theApp.m_general_setting_data.sf2_path;
+				if (!CCommon::FileExist(sf2_path))		//如果设置的音色库路径不存在，则从.\Plugins\soundfont\目录下查找音色库文件
 				{
-					m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(sf2_path, BASS_UNICODE);
+					vector<wstring> sf2s;
+					CCommon::GetFiles(plugin_dir + L"soundfont\\*.sf2", sf2s);
+					if (!sf2s.empty())
+						sf2_path = plugin_dir + L"soundfont\\" + sf2s[0];
+				}
+				if (CCommon::FileExist(sf2_path))
+				{
+					m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(sf2_path.c_str(), BASS_UNICODE);
 					if (m_sfont.font == 0)
 					{
 						CString info;
-						info.Format(_T("音色库“%s”加载失败！"), sf2_path.GetString());
+						info.Format(_T("音色库“%s”加载失败！"), sf2_path.c_str());
 						CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
 						m_sfont_name = L"<加载失败>";
 					}
