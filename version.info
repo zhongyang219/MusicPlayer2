@@ -1,3 +1,3 @@
-﻿<version>2.60</version>
-<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.60/MusicPlayer2_V2.60.7z</link>
-<contents>test测试</contents>
+﻿<version>2.61</version>
+<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.61/MusicPlayer2_V2.61.7z</link>
+<contents>新增bass播放插件，可支持几乎所有格式的音频格式；\n新增 MIDI 音色播放功能，可加载音色库；\n优化频谱分析显示效果，增加频谱柱形的条数；\n新增格式转换功能，可将任意音频格式转换成 WAV、MP3、WMA和OGG；\n新增背景图片高斯模糊效果，选项设置中增加相关设置；\n新增没有专辑封面时显示默认的背景图片；\n新增播放列表可选中多个项目；\n其他细节方面的改进。</contents>
