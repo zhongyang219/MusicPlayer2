@@ -52,6 +52,7 @@ struct ApperanceSettingData
 	bool background_gauss_blur{ true };			//背景高斯模糊
 	int gauss_blur_radius{ 60 };				//高斯模糊半径*10
 	bool lyric_background{ true };				//歌词界面背景
+	bool dark_mode{ false };					//深色模式
 };
 
 struct GeneralSettingData

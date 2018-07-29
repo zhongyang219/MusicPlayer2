@@ -46,6 +46,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GAUSS_BLURE_RADIUS_SLIDER, m_gauss_blur_radius_sld);
 	DDX_Control(pDX, IDC_BACKGROUND_GAUSS_BLUR_CHECK, m_background_gauss_blur_chk);
 	DDX_Control(pDX, IDC_LYRIC_BACKGROUND_CHECK, m_lyric_background_chk);
+	DDX_Control(pDX, IDC_DARK_MODE_CHECK, m_dark_mode_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -127,6 +128,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_DEFAULT_COVER_NAME_EDIT, &CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit)
 	ON_BN_CLICKED(IDC_BACKGROUND_GAUSS_BLUR_CHECK, &CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck)
 	ON_BN_CLICKED(IDC_LYRIC_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck)
+	ON_BN_CLICKED(IDC_DARK_MODE_CHECK, &CAppearanceSettingDlg::OnBnClickedDarkModeCheck)
 END_MESSAGE_MAP()
 
 
@@ -221,6 +223,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	str.Format(_T("%.1f"), static_cast<float>(m_data.gauss_blur_radius) / 10);
 	SetDlgItemText(IDC_GAUSS_BLUR_RADIUS_STATIC, str);
 	m_lyric_background_chk.SetCheck(m_data.lyric_background);
+	m_dark_mode_chk.SetCheck(m_data.dark_mode);
 
 	SetControlEnable();
 
@@ -548,4 +551,11 @@ void CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.lyric_background = (m_lyric_background_chk.GetCheck() != 0);
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedDarkModeCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.dark_mode = (m_dark_mode_chk.GetCheck() != 0);
 }

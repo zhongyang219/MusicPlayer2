@@ -292,6 +292,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
 	ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
 	ini.WriteBool(L"config", L"lyric_background", theApp.m_app_setting_data.lyric_background);
+	ini.WriteBool(L"config", L"dark_mode", theApp.m_app_setting_data.dark_mode);
 
 	ini.WriteInt(L"config", L"background_transparency", theApp.m_app_setting_data.background_transparency);
 	ini.WriteBool(L"config", L"use_out_image", theApp.m_app_setting_data.use_out_image);
@@ -341,6 +342,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
 	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
 	theApp.m_app_setting_data.lyric_background = ini.GetBool(_T("config"), _T("lyric_background"), true);
+	theApp.m_app_setting_data.dark_mode = ini.GetBool(_T("config"), _T("dark_mode"), false);
 
 	theApp.m_app_setting_data.background_transparency = ini.GetInt(L"config", L"background_transparency", 80);
 	theApp.m_app_setting_data.use_out_image = ini.GetBool(_T("config"), _T("use_out_image"), 0);
@@ -369,6 +371,39 @@ void CMusicPlayerDlg::SetTransparency()
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
 	if (IsIconic()) return;		//窗口最小化时不绘制，以降低CPU利用率
+	//设置颜色
+	if (theApp.m_app_setting_data.dark_mode)
+	{
+		m_colors.color_text = ColorTable::WHITE;
+		m_colors.color_text_lable = theApp.m_app_setting_data.theme_color.light2;
+		m_colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
+		m_colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.light2;
+		m_colors.color_back = GRAY(96);
+		m_colors.color_lyric_back = theApp.m_app_setting_data.theme_color.dark3;
+		m_colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.dark2;
+		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;
+		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
+		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
+
+		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
+	}
+	else
+	{
+		m_colors.color_text = theApp.m_app_setting_data.theme_color.dark2;
+		m_colors.color_text_lable = theApp.m_app_setting_data.theme_color.original_color;
+		m_colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
+		m_colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.dark1;
+		m_colors.color_back = ColorTable::WHITE;
+		m_colors.color_lyric_back = theApp.m_app_setting_data.theme_color.light3;
+		m_colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.light3;
+		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.original_color;
+		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
+		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
+
+		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
+	}
+
+
 	//设置信息区域的矩形
 	CRect info_rect;
 	if (!m_narrow_mode)
@@ -387,6 +422,8 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	m_draw_rect = info_rect;		//绘图区域
 	if (!m_narrow_mode)
 		m_draw_rect.bottom = m_client_height - 2*m_margin;
+	CRect draw_rect{ m_draw_rect };
+	draw_rect.MoveToXY(0, 0);
 	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
 	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
@@ -405,37 +442,43 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	}
 	else
 	{
-		CRect draw_rect{ m_draw_rect };
-		draw_rect.MoveToXY(0, 0);
-		m_draw.FillRect(draw_rect, ColorTable::WHITE);
+		m_draw.FillRect(draw_rect, m_colors.color_back);
 	}
 
 	//由于设置了缓冲绘图区域，m_draw_rect的左上角点变成了绘图的原点
 	info_rect.MoveToXY(0, 0);
 
-	//填充显示信息区域的背景色
-	CDrawCommon::SetDrawArea(&MemDC, info_rect);
+	//填充背景颜色
+	//CDrawCommon::SetDrawArea(&MemDC, info_rect);
 	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
 	if (draw_background)
-		m_draw.FillAlphaRect(info_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-	else
-		MemDC.FillSolidRect(info_rect, RGB(255, 255, 255));
-
-	if (!m_narrow_mode)
 	{
-		CRect gap_rect{ info_rect };
-		gap_rect.top = info_rect.bottom;
-		gap_rect.bottom = gap_rect.top + 2*m_margin;
-		CDrawCommon::SetDrawArea(&MemDC, gap_rect);
-		MemDC.FillSolidRect(gap_rect, GetSysColor(COLOR_BTNFACE));
+		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(m_colors.background_transparency));
 	}
+	else
+	{
+		if(theApp.m_app_setting_data.dark_mode)
+			m_draw.FillRect(draw_rect, GRAY(96));
+		else
+			m_draw.FillRect(draw_rect, m_colors.color_back);
+	}
+
+	//if (!m_narrow_mode)
+	//{
+	//	CRect gap_rect{ info_rect };
+	//	gap_rect.top = info_rect.bottom;
+	//	gap_rect.bottom = gap_rect.top + 2*m_margin;
+	//	//CDrawCommon::SetDrawArea(&MemDC, gap_rect);
+	//	//MemDC.FillSolidRect(gap_rect, GetSysColor(COLOR_BTNFACE));
+	//	m_draw.FillAlphaRect(gap_rect, color_back, ALPHA_CHG(m_colors.background_transparency));
+	//}
 
 	CPoint text_start{ info_rect.left + m_spectral_size.cx + 2 * m_margin, info_rect.top + m_margin };		//文本的起始坐标
 	int text_height{ DPI(18) };		//文本的高度
 
 	//显示歌曲信息
 	m_draw.SetFont(GetFont());
-	//m_draw.SetBackColor(RGB(255, 255, 255));
+	//m_draw.SetBackColor(color_back);
 	CRect tmp{ text_start, CSize{1,text_height} };
 	wchar_t buff[64];
 	if (theApp.m_player.m_loading)
@@ -444,7 +487,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		static CDrawCommon::ScrollInfo scroll_info0;
 		CString info;
 		info.Format(_T("找到%d首歌曲，正在读取音频文件信息，已完成%d%%，请稍候……"), theApp.m_player.GetSongNum(), theApp.m_player.m_thread_info.process_percent);
-		m_draw.DrawScrollText(tmp, info, theApp.m_app_setting_data.theme_color.dark2, static_cast<int>(DPI(1.5)), false, scroll_info0, reset);
+		m_draw.DrawScrollText(tmp, info, m_colors.color_text, static_cast<int>(DPI(1.5)), false, scroll_info0, reset);
 	}
 	else
 	{
@@ -452,16 +495,16 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		tmp.MoveToX(text_start.x + DPI(82));
 		tmp.right = info_rect.right - m_margin;
 		static CDrawCommon::ScrollInfo scroll_info1;
-		m_draw.DrawScrollText(tmp, theApp.m_player.GetFileName().c_str(), theApp.m_app_setting_data.theme_color.dark2, static_cast<int>(DPI(1.5)), false, scroll_info1, reset);
+		m_draw.DrawScrollText(tmp, theApp.m_player.GetFileName().c_str(), m_colors.color_text, static_cast<int>(DPI(1.5)), false, scroll_info1, reset);
 		//显示正在播放的曲目序号
 		tmp.MoveToX(text_start.x + DPI(52));
 		tmp.right = tmp.left + DPI(30);
 		swprintf_s(buff, sizeof(buff) / 2, L"%.3d", theApp.m_player.GetIndex() + 1);
-		m_draw.DrawWindowText(tmp, buff, theApp.m_app_setting_data.theme_color.light1);
+		m_draw.DrawWindowText(tmp, buff, m_colors.color_text_2);
 		//显示播放状态
 		tmp.MoveToX(text_start.x);
 		tmp.right = tmp.left + DPI(52);
-		m_draw.DrawWindowText(tmp, theApp.m_player.GetPlayingState().c_str(), theApp.m_app_setting_data.theme_color.original_color);
+		m_draw.DrawWindowText(tmp, theApp.m_player.GetPlayingState().c_str(), m_colors.color_text_lable);
 	}
 
 	wstring lable1_str, lable1_content;
@@ -508,46 +551,46 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//显示标题
 	tmp.MoveToXY(text_start.x, text_start.y + text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, lable1_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable1_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info2;
-	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info2, reset);
+	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info2, reset);
 	//显示艺术家
 	tmp.MoveToXY(text_start.x, text_start.y + 2 * text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, lable2_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable2_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info3;
 	if (theApp.m_player.IsMidi())
-		m_draw.DrawWindowText(tmp, lable2_content.c_str(), theApp.m_app_setting_data.theme_color.dark2);
+		m_draw.DrawWindowText(tmp, lable2_content.c_str(), m_colors.color_text);
 	else
-		m_draw.DrawScrollText2(tmp, lable2_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info3, reset);
+		m_draw.DrawScrollText2(tmp, lable2_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info3, reset);
 	//显示唱片集
 	tmp.MoveToXY(text_start.x, text_start.y + 3 * text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, lable3_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable3_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info4;
-	m_draw.DrawScrollText2(tmp, lable3_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info4, reset);
+	m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info4, reset);
 	//显示文件格式和比特率
 	tmp.MoveToXY(text_start.x, text_start.y + 4 * text_height);
 	tmp.right = tmp.left + DPI(52);
-	m_draw.DrawWindowText(tmp, lable4_str.c_str(), theApp.m_app_setting_data.theme_color.original_color);
+	m_draw.DrawWindowText(tmp, lable4_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info5;
-	m_draw.DrawScrollText2(tmp, lable4_content.c_str(), theApp.m_app_setting_data.theme_color.dark2, DPI(1), false, scroll_info5, reset);
+	m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info5, reset);
 
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };
 	//绘制背景
 	if (draw_background)
-		m_draw.FillAlphaRect(spectral_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+		m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(m_colors.background_transparency) * 2 / 3);
 	else
-		m_draw.FillRect(spectral_rect, theApp.m_app_setting_data.theme_color.light3);
+		m_draw.FillRect(spectral_rect, m_colors.color_spectrum_back);
 	if (theApp.m_app_setting_data.show_album_cover)
 	{
 		//绘制专辑封面
@@ -577,7 +620,10 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 			if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 			rect_tmp.top = rect_tmp.bottom - spetral_height;
 			if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
-			MemDC.FillSolidRect(rect_tmp, theApp.m_app_setting_data.theme_color.original_color);
+			if(theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
+				MemDC.FillSolidRect(rect_tmp, m_colors.color_spectrum_cover);
+			else
+				MemDC.FillSolidRect(rect_tmp, m_colors.color_spectrum);
 		}
 	}
 
@@ -587,9 +633,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	point.y += 2 * m_margin;
 	CRect other_info_rect{ point, CSize(info_rect.Width() - 2 * m_margin,DPI(24)) };
 	if (draw_background)
-		m_draw.FillAlphaRect(other_info_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+		m_draw.FillAlphaRect(other_info_rect, m_colors.color_control_bar_back, ALPHA_CHG(m_colors.background_transparency));
 	else
-		m_draw.FillRect(other_info_rect, theApp.m_app_setting_data.theme_color.light3);
+		m_draw.FillRect(other_info_rect, m_colors.color_control_bar_back);
 	//显示文字信息
 	//m_draw.SetBackColor(theApp.m_app_setting_data.theme_color.light3);
 	//显示循环模式
@@ -607,9 +653,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	case RepeatMode::RM_PLAY_SHUFFLE: repeat_mode_str += _T("随机播放"); break;
 	}
 	if (m_repetemode_hover)		//鼠标指向“循环模式”时，以另外一种颜色显示
-		m_draw.DrawWindowText(m_repetemode_rect, repeat_mode_str, theApp.m_app_setting_data.theme_color.dark1);
+		m_draw.DrawWindowText(m_repetemode_rect, repeat_mode_str, m_colors.color_text_heighlight);
 	else
-		m_draw.DrawWindowText(m_repetemode_rect, repeat_mode_str, theApp.m_app_setting_data.theme_color.dark2);
+		m_draw.DrawWindowText(m_repetemode_rect, repeat_mode_str, m_colors.color_text);
 	m_repetemode_rect.MoveToXY(CPoint{ m_repetemode_rect.left + m_draw_rect.left, m_repetemode_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
 	//显示音量
 	tmp.MoveToX(info_rect.right - DPI(124));
@@ -619,9 +665,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	m_volume_rect.right -= DPI(12);
 	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
 	if (m_volume_hover)		//鼠标指向音量区域时，以另外一种颜色显示
-		m_draw.DrawWindowText(tmp, buff, theApp.m_app_setting_data.theme_color.dark1);
+		m_draw.DrawWindowText(tmp, buff, m_colors.color_text_heighlight);
 	else
-		m_draw.DrawWindowText(tmp, buff, theApp.m_app_setting_data.theme_color.dark2);
+		m_draw.DrawWindowText(tmp, buff, m_colors.color_text);
 	//设置音量调整按钮的位置
 	m_volume_down_rect = m_volume_rect;
 	m_volume_down_rect.bottom += DPI(4);
@@ -648,7 +694,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	}
 	tmp.MoveToX(tmp.right);
 	tmp.right = other_info_rect.right;
-	m_draw.DrawWindowText(tmp, _T("<<<<"), theApp.m_app_setting_data.theme_color.dark2, theApp.m_app_setting_data.theme_color.light1, progress, false);
+	m_draw.DrawWindowText(tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress, false);
 
 	//显示歌词
 	m_draw.SetFont(&m_lyric_font);
@@ -664,7 +710,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		//if (theApp.m_player.IsPlaying() || reset)
 		//{
 		lyric_rect = info_rect;
-		lyric_rect.MoveToY(info_rect.bottom + 2*m_margin);
+		lyric_rect.MoveToY(info_rect.bottom/* + 2*m_margin*/);
 		lyric_rect.bottom = m_draw_rect.Height()/* - m_margin*/;
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}
@@ -674,10 +720,10 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	if (m_show_volume_adj)
 	{
 		//m_draw.SetBackColor(theApp.m_app_setting_data.theme_color.light1);
-		m_draw.FillRect(m_volume_down_rect, theApp.m_app_setting_data.theme_color.light1);
-		m_draw.FillRect(m_volume_up_rect, theApp.m_app_setting_data.theme_color.light1);
-		m_draw.DrawWindowText(m_volume_down_rect, L"-", RGB(255, 255, 255), Alignment::CENTER);
-		m_draw.DrawWindowText(m_volume_up_rect, L"+", RGB(255, 255, 255), Alignment::CENTER);
+		m_draw.FillRect(m_volume_down_rect, m_colors.color_text_2);
+		m_draw.FillRect(m_volume_up_rect, m_colors.color_text_2);
+		m_draw.DrawWindowText(m_volume_down_rect, L"-", m_colors.color_back, Alignment::CENTER);
+		m_draw.DrawWindowText(m_volume_up_rect, L"+", m_colors.color_back, Alignment::CENTER);
 	}
 	m_volume_down_rect.MoveToXY(CPoint{ m_volume_down_rect.left + m_draw_rect.left, m_volume_down_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
 	m_volume_up_rect.MoveToXY(CPoint{ m_volume_up_rect.left + m_draw_rect.left, m_volume_up_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
@@ -695,18 +741,18 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 	{
 		bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
 		if (draw_background)
-			m_draw.FillAlphaRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+			m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(m_colors.background_transparency) * 3 / 5);
 		else
-			m_draw.FillRect(lyric_rect, theApp.m_app_setting_data.theme_color.light3);
+			m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
 	}
 	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
-		m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), theApp.m_app_setting_data.theme_color.dark2, Alignment::CENTER, false, false, true);
+		m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, false, true);
 	}
 	else if (theApp.m_player.m_Lyrics.IsEmpty())
 	{
-			m_draw.DrawWindowText(lyric_rect, _T("当前歌曲没有歌词"), theApp.m_app_setting_data.theme_color.light1, Alignment::CENTER);
+			m_draw.DrawWindowText(lyric_rect, _T("当前歌曲没有歌词"), m_colors.color_text_2, Alignment::CENTER);
 	}
 	else
 	{
@@ -716,24 +762,23 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 		if (theApp.m_play_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
 		{
 			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
-			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), theApp.m_app_setting_data.theme_color.dark2, theApp.m_app_setting_data.theme_color.light1, progress, true);
+			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true);
 		}
 		else				//歌词不以卡拉OK样式显示时
 		{
-			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), theApp.m_app_setting_data.theme_color.dark2, Alignment::CENTER);
+			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER);
 		}
 	}
 }
 
 void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 {
-	//填充白色背景
 	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
-	CDrawCommon::SetDrawArea(pDC, lyric_rect);
-	if (draw_background)
-		m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-	else
-		pDC->FillSolidRect(lyric_rect, RGB(255, 255, 255));
+	//CDrawCommon::SetDrawArea(pDC, lyric_rect);
+	//if (draw_background)
+	//	m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), ALPHA_CHG(m_colors.background_transparency));
+	//else
+	//	pDC->FillSolidRect(lyric_rect, RGB(255, 255, 255));
 	//显示“歌词秀”
 	CRect tmp;
 	tmp = lyric_rect;
@@ -741,7 +786,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	tmp.bottom = tmp.top + DPI(28);
 	//m_draw.SetBackColor(RGB(255, 255, 255));
 	m_draw.SetFont(GetFont());
-	m_draw.DrawWindowText(tmp, _T("歌词秀："), theApp.m_app_setting_data.theme_color.dark2);
+	m_draw.DrawWindowText(tmp, _T("歌词秀："), m_colors.color_text);
 	m_draw.SetFont(&m_lyric_font);
 	//填充歌词区域背景色
 	CRect lyric_area = lyric_rect;
@@ -751,9 +796,9 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	if (theApp.m_app_setting_data.lyric_background)
 	{
 		if (draw_background)
-			m_draw.FillAlphaRect(lyric_area, theApp.m_app_setting_data.theme_color.light3, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
+			m_draw.FillAlphaRect(lyric_area, m_colors.color_lyric_back, ALPHA_CHG(m_colors.background_transparency) * 3 / 5);
 		else
-			m_draw.FillRect(lyric_area, theApp.m_app_setting_data.theme_color.light3);
+			m_draw.FillRect(lyric_area, m_colors.color_lyric_back);
 	}
 	//设置歌词文字区域
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
@@ -767,11 +812,11 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
-		m_draw.DrawWindowText(lyric_area, current_lyric.c_str(), theApp.m_app_setting_data.theme_color.dark2, Alignment::CENTER, false, true);
+		m_draw.DrawWindowText(lyric_area, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, true);
 	}
 	else if (theApp.m_player.m_Lyrics.IsEmpty())
 	{
-		m_draw.DrawWindowText(lyric_area, _T("当前歌曲没有歌词"), theApp.m_app_setting_data.theme_color.light1, Alignment::CENTER);
+		m_draw.DrawWindowText(lyric_area, _T("当前歌曲没有歌词"), m_colors.color_text_2, Alignment::CENTER);
 	}
 	else
 	{
@@ -797,13 +842,13 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 				if (i == lyric_index + 1)		//绘制正在播放的歌词
 				{
 					if (theApp.m_play_setting_data.lyric_karaoke_disp)
-						m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), theApp.m_app_setting_data.theme_color.dark2, theApp.m_app_setting_data.theme_color.light1, progress, true, true);
+						m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
 					else
-						m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), theApp.m_app_setting_data.theme_color.dark2, Alignment::CENTER, true);
+						m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), m_colors.color_text, Alignment::CENTER, true);
 				}
 				else		//绘制非正在播放的歌词
 				{
-					m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), theApp.m_app_setting_data.theme_color.light1, Alignment::CENTER, true);
+					m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), m_colors.color_text_2, Alignment::CENTER, true);
 				}
 			}
 		}
@@ -1113,7 +1158,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
 	bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
 	bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != optionDlg.m_tab2_dlg.m_data.background_gauss_blur
-		|| theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius };
+		|| theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius
+		|| theApp.m_app_setting_data.album_cover_as_background != optionDlg.m_tab2_dlg.m_data.album_cover_as_background };
 
 	theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
 	theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;

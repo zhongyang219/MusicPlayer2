@@ -30,6 +30,21 @@
 // CMusicPlayerDlg 对话框
 class CMusicPlayerDlg : public CDialog
 {
+
+	struct UIColors		//界面颜色
+	{
+		COLORREF color_text;				//文本颜色
+		COLORREF color_text_lable;			//标签文本的颜色
+		COLORREF color_text_2;				//歌词未播放文本的颜色
+		COLORREF color_text_heighlight;		//鼠标指向时文本的颜色
+		COLORREF color_back;				//背景颜色
+		COLORREF color_lyric_back;			//歌词界面背景颜色
+		COLORREF color_control_bar_back;	//控制条背景颜色
+		COLORREF color_spectrum;			//频谱分析柱形的颜色
+		COLORREF color_spectrum_cover;		//有专辑封面时的频谱分析柱形的颜色
+		COLORREF color_spectrum_back;		//频谱分析的背景颜色
+		int background_transparency;		//背景不透明度0~100
+	};
 // 构造
 public:
 	CMusicPlayerDlg(wstring cmdLine = wstring() ,CWnd* pParent = NULL);	// 标准构造函数
@@ -48,6 +63,7 @@ public:
 protected:
 	HICON m_hIcon;
 	CToolTipCtrl m_Mytip;
+	UIColors m_colors;
 	//控件变量
 	CPlayListCtrl m_playlist_list{ theApp.m_player.GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
 																	//用于支持鼠标指向列表中的项目时显示歌曲信息)
