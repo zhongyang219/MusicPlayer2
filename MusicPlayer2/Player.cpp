@@ -694,7 +694,7 @@ void CPlayer::GetBASSSpectral()
 			else
 			{
 				fall_count++;
-				m_spectral_peak[i] -= (fall_count*0.3);		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
+				m_spectral_peak[i] -= (fall_count*0.2);		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
 			}
 		}
 	}

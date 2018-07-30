@@ -593,7 +593,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	}
 	if (theApp.m_app_setting_data.show_spectrum)
 	{
-		const int ROWS = 24;		//要显示的频谱柱形的数量
+		const int ROWS = 31;		//要显示的频谱柱形的数量
 		int gap_width{ theApp.DPIRound(1, 0.4) };		//频谱柱形间隙宽度
 		CRect rects[ROWS];
 		int width = (spectral_rect.Width() - (ROWS - 1)*gap_width) / (ROWS-1);
