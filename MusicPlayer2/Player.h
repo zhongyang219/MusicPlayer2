@@ -79,6 +79,8 @@ private:
 
 	float m_fft[FFT_SAMPLE];		//储存频谱分析的数据
 	float m_spectral_data[SPECTRUM_ROW]{};	//用于显示的每个频谱柱形的高度
+	float m_last_spectral_data[SPECTRUM_ROW]{};	//上一次的频谱数据
+	float m_spectral_peak[SPECTRUM_ROW]{};		//频谱顶端的高度
 
 	int m_equ_handle[EQU_CH_NUM]{};		//均衡器通道的句柄
 	const float FREQ_TABLE[EQU_CH_NUM]{ 80, 125, 250, 500, 1000, 1500, 2000, 4000, 8000, 1600};		//每个均衡器通道的中心频率
@@ -220,6 +222,7 @@ public:
 	int GetSongLength() const { return m_song_length_int; }				//返回正在播放文件的长度
 	wstring GetTimeString() const;				//返回当前播放时间的字符串形式
 	const float* GetSpectralData() const { return m_spectral_data; }	//返回频谱分析每个柱形的高度的数据
+	const float* GetSpectralPeakData() const { return m_spectral_peak; }
 	const float* GetFFTData() const { return m_fft; }			//返回频谱分析的原始数据
 	deque<PathInfo>& GetRecentPath() { return m_recent_path; }	//返回最近播放路径列表的引用
 	wstring GetPlayingState() const;		//获取播放状态的字符串

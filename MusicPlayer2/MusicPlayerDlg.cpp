@@ -610,13 +610,23 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		{
 			CRect rect_tmp{ rects[i] };
 			int spetral_height = static_cast<int>(theApp.m_player.GetSpectralData()[i] * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+			int peak_height = static_cast<int>(theApp.m_player.GetSpectralPeakData()[i] * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
 			if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+			if (peak_height <= 0 || theApp.m_player.IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 			rect_tmp.top = rect_tmp.bottom - spetral_height;
 			if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
+			COLORREF color;
 			if(theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
-				MemDC.FillSolidRect(rect_tmp, m_colors.color_spectrum_cover);
+				color = m_colors.color_spectrum_cover;
 			else
-				MemDC.FillSolidRect(rect_tmp, m_colors.color_spectrum);
+				color = m_colors.color_spectrum;
+			MemDC.FillSolidRect(rect_tmp, color);
+
+			CRect rect_peak{ rect_tmp };
+			rect_peak.bottom = rect_tmp.bottom - peak_height - DPI(1.5);
+			rect_peak.top = rect_peak.bottom - DPI(1.5);
+			//if (peak_height > 1)
+				MemDC.FillSolidRect(rect_peak, color);
 		}
 	}
 
@@ -1592,6 +1602,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	theApp.m_player.GetBASSError();
 	if (m_miniModeDlg.m_hWnd == NULL && (theApp.m_player.IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
 		DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
+	theApp.m_player.GetBASSSpectral();
 	if (theApp.m_player.IsPlaying())
 	{
 		theApp.m_player.GetBASSCurrentPosition();
@@ -1602,7 +1613,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			sec_temp = sec_current;
 			ShowTime();
 		}
-		theApp.m_player.GetBASSSpectral();
 
 		//在Cortana搜索框里显示歌词
 		if (theApp.m_play_setting_data.show_lyric_in_cortana)

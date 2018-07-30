@@ -660,7 +660,7 @@ void CPlayer::SetVolume()
 
 void CPlayer::GetBASSSpectral()
 {
-	if (m_musicStream && m_current_position_int < m_song_length_int - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+	if (m_musicStream && m_playing != 0 && m_current_position_int < m_song_length_int - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
 	{
 		BASS_ChannelGetData(m_musicStream, m_fft, BASS_DATA_FFT256);
 		memset(m_spectral_data, 0, sizeof(m_spectral_data));
@@ -680,6 +680,26 @@ void CPlayer::GetBASSSpectral()
 	{
 		memset(m_spectral_data, 0, sizeof(m_spectral_data));
 	}
+	//计算频谱顶端的高度
+	if (m_playing != 1)
+	{
+		static int fall_count;
+		for (int i{}; i < SPECTRUM_ROW; i++)
+		{
+			if (m_spectral_data[i] > m_last_spectral_data[i])
+			{
+				m_spectral_peak[i] = m_spectral_data[i];		//如果当前的频谱比上一次的频谱高，则频谱顶端高度则为当前频谱的高度
+				fall_count = 0;
+			}
+			else
+			{
+				fall_count++;
+				m_spectral_peak[i] -= (fall_count*0.3);		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
+			}
+		}
+	}
+
+	memcpy_s(m_last_spectral_data, sizeof(m_last_spectral_data), m_spectral_data, sizeof(m_spectral_data));
 }
 
 
