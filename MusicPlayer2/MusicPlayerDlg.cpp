@@ -407,9 +407,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//设置信息区域的矩形
 	CRect info_rect;
 	if (!m_narrow_mode)
-		info_rect = CRect{ CPoint{2*m_margin, m_control_bar_height + 2*m_margin}, CSize{m_client_width / 2 - 4 * m_margin, m_info_height2 - 3 * m_margin } };
+		info_rect = CRect{ CPoint{m_margin, m_control_bar_height + m_margin}, CSize{m_client_width / 2 - 2 * m_margin, m_info_height2 - 3 * m_margin } };
 	else
-		info_rect = CRect{ CPoint{ 2*m_margin, m_control_bar_height + m_progress_bar_height + m_margin}, CSize{ m_client_width - 4 * m_margin, m_info_height - 3 * m_margin } };
+		info_rect = CRect{ CPoint{ m_margin, m_control_bar_height + m_progress_bar_height}, CSize{ m_client_width - 2 * m_margin, m_info_height - 2 * m_margin } };
 	
 	//设置缓冲的DC
 	CDC MemDC;
@@ -421,7 +421,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	}
 	m_draw_rect = info_rect;		//绘图区域
 	if (!m_narrow_mode)
-		m_draw_rect.bottom = m_client_height - 2*m_margin;
+		m_draw_rect.bottom = m_client_height - m_margin;
 	CRect draw_rect{ m_draw_rect };
 	draw_rect.MoveToXY(0, 0);
 	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
@@ -450,18 +450,11 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 	//填充背景颜色
 	//CDrawCommon::SetDrawArea(&MemDC, info_rect);
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };		//是否需要绘制图片背景
 	if (draw_background)
-	{
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(m_colors.background_transparency));
-	}
 	else
-	{
-		if(theApp.m_app_setting_data.dark_mode)
-			m_draw.FillRect(draw_rect, GRAY(96));
-		else
-			m_draw.FillRect(draw_rect, m_colors.color_back);
-	}
+		m_draw.FillRect(draw_rect, m_colors.color_back);
 
 	//if (!m_narrow_mode)
 	//{
@@ -720,10 +713,18 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	if (m_show_volume_adj)
 	{
 		//m_draw.SetBackColor(theApp.m_app_setting_data.theme_color.light1);
-		m_draw.FillRect(m_volume_down_rect, m_colors.color_text_2);
-		m_draw.FillRect(m_volume_up_rect, m_colors.color_text_2);
-		m_draw.DrawWindowText(m_volume_down_rect, L"-", m_colors.color_back, Alignment::CENTER);
-		m_draw.DrawWindowText(m_volume_up_rect, L"+", m_colors.color_back, Alignment::CENTER);
+		if (draw_background)
+		{
+			m_draw.FillAlphaRect(m_volume_down_rect, m_colors.color_text_2, ALPHA_CHG(m_colors.background_transparency));
+			m_draw.FillAlphaRect(m_volume_up_rect, m_colors.color_text_2, ALPHA_CHG(m_colors.background_transparency));
+		}
+		else
+		{
+			m_draw.FillRect(m_volume_down_rect, m_colors.color_text_2);
+			m_draw.FillRect(m_volume_up_rect, m_colors.color_text_2);
+		}
+		m_draw.DrawWindowText(m_volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
+		m_draw.DrawWindowText(m_volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
 	}
 	m_volume_down_rect.MoveToXY(CPoint{ m_volume_down_rect.left + m_draw_rect.left, m_volume_down_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
 	m_volume_up_rect.MoveToXY(CPoint{ m_volume_up_rect.left + m_draw_rect.left, m_volume_up_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
@@ -954,10 +955,10 @@ void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
 		left_pos = m_margin;
 		progress_width = cx - 3 * m_margin - time_width;
 		rect.right = rect.left + progress_width;
-		rect.MoveToXY(left_pos, DPI(6) + m_control_bar_height);
+		rect.MoveToXY(left_pos, DPI(2) + m_control_bar_height);
 		m_progress_bar.MoveWindow(rect);
 		//设置时间位置
-		m_time_static.SetWindowPos(NULL, cx - time_width - m_margin, DPI(6) + m_control_bar_height, time_width, m_time_height, SWP_NOZORDER);
+		m_time_static.SetWindowPos(NULL, cx - time_width - m_margin, DPI(2) + m_control_bar_height, time_width, m_time_height, SWP_NOZORDER);
 	}
 	m_time_static.Invalidate();
 }
@@ -1111,9 +1112,9 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
 #ifndef COMPILE_IN_WIN_XP
 	CRect info_rect;
 	if (!m_narrow_mode)
-		info_rect = CRect{ CPoint{ 2 * m_margin, m_control_bar_height + 2 * m_margin + DPI(20) }, CSize{ m_client_width / 2 - 4 * m_margin, m_info_height2 - 3 * m_margin } };
+		info_rect = CRect{ CPoint{ m_margin, m_control_bar_height + m_margin + DPI(20) }, CSize{ m_client_width / 2 - 2 * m_margin, m_info_height2 - 3 * m_margin } };
 	else
-		info_rect = CRect{ CPoint{ 2 * m_margin, m_control_bar_height + m_progress_bar_height + m_margin + DPI(20) }, CSize{ m_client_width - 4 * m_margin, m_info_height - 3 * m_margin } };
+		info_rect = CRect{ CPoint{ m_margin, m_control_bar_height + m_progress_bar_height + DPI(20) }, CSize{ m_client_width - 2 * m_margin, m_info_height - 2 * m_margin } };
 	if (m_pTaskbar != nullptr)
 		m_pTaskbar->SetThumbnailClip(m_hWnd, info_rect);
 #endif
@@ -1262,7 +1263,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_control_bar_height = DPI(30);
 	m_margin = DPI(4);
 	m_width_threshold = DPI(600);
-	m_info_height = DPI(170);
+	m_info_height = DPI(166);
 	m_info_height2 = DPI(143);
 	m_path_edit_height = DPI(32);
 	m_search_edit_height = DPI(26);
