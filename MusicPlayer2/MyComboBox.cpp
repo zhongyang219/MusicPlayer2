@@ -43,7 +43,7 @@ BOOL CMyComboBox::PreTranslateMessage(MSG* pMsg)
 			GetCursorPos(&point);
 			//获取箭头区域的位置
 			GetWindowRect(m_arrow_rect);
-			m_arrow_rect.left = m_arrow_rect.right - DPI(18);
+			m_arrow_rect.left = m_arrow_rect.right - theApp.DPI(18);
 			if(m_arrow_rect.PtInRect(point))		//如果鼠标指针的位置位于箭头区域，则不响应以上的鼠标消息
 				return TRUE;
 		}

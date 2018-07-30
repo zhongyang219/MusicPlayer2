@@ -117,6 +117,12 @@ public:
 	void SaveConfig();
 	void LoadConfig();
 
+	int DPI(int pixel);		//将一个像素值进行DPI变换
+	int DPI(double pixel);
+	//进行DPI变换后四舍五入处理
+	//round：round为0.5时四舍五入，round为0.4时为五舍六入
+	int DPIRound(double pixel, double round = 0.5);		//对结果进行四舍五入处理
+
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
 

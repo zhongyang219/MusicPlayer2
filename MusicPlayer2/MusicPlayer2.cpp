@@ -312,6 +312,24 @@ void CMusicPlayerApp::LoadConfig()
 	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", 1);
 }
 
+int CMusicPlayerApp::DPI(int pixel)
+{
+	return (m_dpi*(pixel) / 96);
+}
+
+int CMusicPlayerApp::DPI(double pixel)
+{
+	return static_cast<int>(m_dpi*(pixel) / 96);
+}
+
+int CMusicPlayerApp::DPIRound(double pixel, double round)
+{
+	double rtn;
+	rtn = static_cast<double>(m_dpi)*pixel / 96;
+	rtn += round;
+	return static_cast<int>(rtn);
+}
+
 void CMusicPlayerApp::LoadSongData()
 {
 	// 打开文件

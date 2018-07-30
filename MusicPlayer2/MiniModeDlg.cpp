@@ -221,7 +221,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 	CRect rect;
 	m_lyric_static.GetWindowRect(rect);
 	m_rect_s = m_rect;
-	m_rect_s.bottom = rect.bottom + DPI(2);
+	m_rect_s.bottom = rect.bottom + theApp.DPI(2);
 
 	//获取专辑封面的矩形区域
 	m_album_rect = m_rect_s;
@@ -229,7 +229,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_previous_button.GetWindowRect(previous_btn_tect);
 	m_album_rect.right = previous_btn_tect.left;
 	m_album_rect.MoveToXY(0, 0);
-	m_album_rect.DeflateRect(DPI(2), DPI(2));
+	m_album_rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
 
 
 	//设置窗口背景图片
@@ -239,10 +239,10 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_lyric_static.SetTextCenter(true);
 
 	//载入按钮小图标（16*16）
-	m_hPreviousIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PREVIOUS), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hNextIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_NEXT1), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPlayIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PLAY), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPauseIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PAUSE), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPreviousIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PREVIOUS), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hNextIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_NEXT1), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPlayIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PLAY), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPauseIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PAUSE), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
 
 	//设置按钮图标
 	m_previous_button.SetImage(m_hPreviousIcon_s);
@@ -317,10 +317,10 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_time_static.GetWindowRect(rect);
 	ScreenToClient(rect);
 	rect.MoveToY(rect.bottom);
-	rect.bottom = rect.top + DPI(8);
+	rect.bottom = rect.top + theApp.DPI(8);
 	m_progress_bar.MoveWindow(rect);
 	m_progress_bar.GetToolTip()->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);	//设置消息提示置顶
-	m_progress_bar.SetProgressBarHeight(DPI(2));
+	m_progress_bar.SetProgressBarHeight(theApp.DPI(2));
 	m_progress_bar.SetRange(1000);		//设置进度条的范围
 	
 	m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());

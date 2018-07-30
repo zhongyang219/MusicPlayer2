@@ -179,7 +179,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 			if (m_nItem >= 0 && m_nItem < m_all_song_info.size())
 			{
 				CString dis_str = GetItemText(m_nItem, 1);
-				int strWidth = GetStringWidth(dis_str) + DPI(10);		//获取要显示当前字符串的最小宽度
+				int strWidth = GetStringWidth(dis_str) + theApp.DPI(10);		//获取要显示当前字符串的最小宽度
 				int columnWidth = GetColumnWidth(1);	//获取鼠标指向列的宽度
 				if (columnWidth < strWidth)		//当单元格内的的字符无法显示完全时在提示的第1行显示单元格内文本
 				{
@@ -218,7 +218,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				str_bitrate.Format(_T("比特率：%dkbps"), m_all_song_info[song_index].bitrate);
 				str_tip += str_bitrate;
 
-				m_toolTip.SetMaxTipWidth(DPI(400));		//设置提示信息的宽度，以支持提示换行
+				m_toolTip.SetMaxTipWidth(theApp.DPI(400));		//设置提示信息的宽度，以支持提示换行
 
 				m_toolTip.AddTool(this, str_tip);
 				m_toolTip.Pop();			// 显示提示框
@@ -259,11 +259,11 @@ void CPlayListCtrl::PreSubclassWindow()
 	//初始化播放列表
 	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	int width0, width1, width2;
-	width0 = DPI(40);
-	width2 = DPI(50);
+	width0 = theApp.DPI(40);
+	width2 = theApp.DPI(50);
 	CRect rect;
 	GetWindowRect(rect);
-	width1 = rect.Width() - width0 - width2 - DPI(21);
+	width1 = rect.Width() - width0 - width2 - theApp.DPI(21);
 	InsertColumn(0, _T("序号"), LVCFMT_LEFT, width0);		//插入第1列
 	InsertColumn(1, _T("曲目"), LVCFMT_LEFT, width1);		//插入第2列
 	InsertColumn(2, _T("长度"), LVCFMT_LEFT, width2);		//插入第3列

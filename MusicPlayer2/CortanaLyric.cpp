@@ -115,7 +115,7 @@ void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
 		COLORREF color;
 		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
 		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(DPI(4), 0);
+		text_rect.DeflateRect(theApp.DPI(4), 0);
 		m_cortana_draw.DrawWindowText(text_rect, str, color, align, false, false, true);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
@@ -147,7 +147,7 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 		COLORREF color;
 		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
 		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(DPI(4), 0);
+		text_rect.DeflateRect(theApp.DPI(4), 0);
 		m_cortana_draw.DrawScrollText(text_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };
@@ -176,7 +176,7 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 		m_cortana_draw.SetDC(&MemDC);
 		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
 		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(DPI(4), 0);
+		text_rect.DeflateRect(theApp.DPI(4), 0);
 		if (m_dark_mode)
 			m_cortana_draw.DrawWindowText(text_rect, str, m_colors.light3, m_colors.light1, progress, false);
 		else
@@ -216,7 +216,7 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		//使用m_cortana_draw绘图
 		m_cortana_draw.SetDC(&MemDC);
 		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(DPI(4), DPI(2));
+		text_rect.DeflateRect(theApp.DPI(4), theApp.DPI(2));
 		CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
@@ -278,9 +278,9 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 			{
 				m_cortana_draw.FillRect(m_icon_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
 				CRect rect{ m_icon_rect };
-				rect.DeflateRect(DPI(4), DPI(4));
+				rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 				int inflate;
-				inflate = m_spectrum * DPI(14) / 1000;
+				inflate = m_spectrum * theApp.DPI(14) / 1000;
 				rect.InflateRect(inflate, inflate);
 				m_cortana_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
 			}

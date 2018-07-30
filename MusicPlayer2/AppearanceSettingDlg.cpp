@@ -172,7 +172,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	::SetWindowLong(m_color_static6.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
 	m_toolTip.Create(this);
-	m_toolTip.SetMaxTipWidth(DPI(300));
+	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
 	m_toolTip.AddTool(&m_color_static, _T("当前的颜色"));
 	m_toolTip.AddTool(&m_color_static1, _T("天蓝色"));
 	m_toolTip.AddTool(&m_color_static2, _T("绿色"));

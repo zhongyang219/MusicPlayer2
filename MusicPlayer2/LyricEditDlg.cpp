@@ -134,7 +134,7 @@ void CLyricEditDlg::UpdateStatusbarInfo()
 
 void CLyricEditDlg::StatusBarSetParts(int width)
 {
-	int nParts[3] = { width - DPI(220), width - DPI(160), -1 }; //分割尺寸
+	int nParts[3] = { width - theApp.DPI(220), width - theApp.DPI(160), -1 }; //分割尺寸
 	m_status_bar.SetParts(3, nParts); //分割状态栏
 }
 
@@ -224,7 +224,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	}
 	RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
 	CImageList ImageList;
-	ImageList.Create(DPI(20), DPI(20), ILC_COLOR32 | ILC_MASK, 2, 2);
+	ImageList.Create(theApp.DPI(20), theApp.DPI(20), ILC_COLOR32 | ILC_MASK, 2, 2);
 
 	//通过ImageList对象加载图标作为工具栏的图标
 	//添加图标
@@ -249,7 +249,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	//初始化状态栏
 	CRect rect;
 	GetClientRect(&rect);
-	rect.top = rect.bottom - DPI(20);
+	rect.top = rect.bottom - theApp.DPI(20);
 	m_status_bar.Create(WS_VISIBLE | CBRS_BOTTOM, rect, this, 3);
 
 	StatusBarSetParts(rect.Width());
@@ -624,8 +624,8 @@ void CLyricEditDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = DPI(300);		//设置最小宽度
-	lpMMI->ptMinTrackSize.y = DPI(300);		//设置最小高度
+	lpMMI->ptMinTrackSize.x = theApp.DPI(300);		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = theApp.DPI(300);		//设置最小高度
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }

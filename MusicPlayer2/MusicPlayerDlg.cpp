@@ -77,7 +77,7 @@ BOOL CAboutDlg::OnInitDialog()
 	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("向作者发送电子邮件\r\nmailto:zhongyang219@hotmail.com"));
 	m_Mytip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), _T("转到此项目在GitHub上的页面\r\nhttps://github.com/zhongyang219/MusicPlayer2"));
 	m_Mytip.SetDelayTime(300);	//设置延迟
-	m_Mytip.SetMaxTipWidth(DPI(400));
+	m_Mytip.SetMaxTipWidth(theApp.DPI(400));
 
 	//if (theApp.m_is_windows10)
 	//	SetDlgItemText(IDC_DEBUG_INFO_STATIC, _T("Windows10"));
@@ -467,7 +467,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//}
 
 	CPoint text_start{ info_rect.left + m_spectral_size.cx + 2 * m_margin, info_rect.top + m_margin };		//文本的起始坐标
-	int text_height{ DPI(18) };		//文本的高度
+	int text_height{ theApp.DPI(18) };		//文本的高度
 
 	//显示歌曲信息
 	m_draw.SetFont(GetFont());
@@ -480,23 +480,23 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		static CDrawCommon::ScrollInfo scroll_info0;
 		CString info;
 		info.Format(_T("找到%d首歌曲，正在读取音频文件信息，已完成%d%%，请稍候……"), theApp.m_player.GetSongNum(), theApp.m_player.m_thread_info.process_percent);
-		m_draw.DrawScrollText(tmp, info, m_colors.color_text, static_cast<int>(DPI(1.5)), false, scroll_info0, reset);
+		m_draw.DrawScrollText(tmp, info, m_colors.color_text, theApp.DPI(1.5), false, scroll_info0, reset);
 	}
 	else
 	{
 		//显示正在播放的文件名
-		tmp.MoveToX(text_start.x + DPI(82));
+		tmp.MoveToX(text_start.x + theApp.DPI(82));
 		tmp.right = info_rect.right - m_margin;
 		static CDrawCommon::ScrollInfo scroll_info1;
-		m_draw.DrawScrollText(tmp, theApp.m_player.GetFileName().c_str(), m_colors.color_text, static_cast<int>(DPI(1.5)), false, scroll_info1, reset);
+		m_draw.DrawScrollText(tmp, theApp.m_player.GetFileName().c_str(), m_colors.color_text, theApp.DPI(1.5), false, scroll_info1, reset);
 		//显示正在播放的曲目序号
-		tmp.MoveToX(text_start.x + DPI(52));
-		tmp.right = tmp.left + DPI(30);
+		tmp.MoveToX(text_start.x + theApp.DPI(52));
+		tmp.right = tmp.left + theApp.DPI(30);
 		swprintf_s(buff, sizeof(buff) / 2, L"%.3d", theApp.m_player.GetIndex() + 1);
 		m_draw.DrawWindowText(tmp, buff, m_colors.color_text_2);
 		//显示播放状态
 		tmp.MoveToX(text_start.x);
-		tmp.right = tmp.left + DPI(52);
+		tmp.right = tmp.left + theApp.DPI(52);
 		m_draw.DrawWindowText(tmp, theApp.m_player.GetPlayingState().c_str(), m_colors.color_text_lable);
 	}
 
@@ -543,39 +543,39 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	lable4_content = buff;
 	//显示标题
 	tmp.MoveToXY(text_start.x, text_start.y + text_height);
-	tmp.right = tmp.left + DPI(52);
+	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable1_str.c_str(), m_colors.color_text_lable);
-	tmp.MoveToX(tmp.left + DPI(52));
+	tmp.MoveToX(tmp.left + theApp.DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info2;
-	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info2, reset);
+	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info2, reset);
 	//显示艺术家
 	tmp.MoveToXY(text_start.x, text_start.y + 2 * text_height);
-	tmp.right = tmp.left + DPI(52);
+	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable2_str.c_str(), m_colors.color_text_lable);
-	tmp.MoveToX(tmp.left + DPI(52));
+	tmp.MoveToX(tmp.left + theApp.DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info3;
 	if (theApp.m_player.IsMidi())
 		m_draw.DrawWindowText(tmp, lable2_content.c_str(), m_colors.color_text);
 	else
-		m_draw.DrawScrollText2(tmp, lable2_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info3, reset);
+		m_draw.DrawScrollText2(tmp, lable2_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info3, reset);
 	//显示唱片集
 	tmp.MoveToXY(text_start.x, text_start.y + 3 * text_height);
-	tmp.right = tmp.left + DPI(52);
+	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable3_str.c_str(), m_colors.color_text_lable);
-	tmp.MoveToX(tmp.left + DPI(52));
+	tmp.MoveToX(tmp.left + theApp.DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info4;
-	m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info4, reset);
+	m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info4, reset);
 	//显示文件格式和比特率
 	tmp.MoveToXY(text_start.x, text_start.y + 4 * text_height);
-	tmp.right = tmp.left + DPI(52);
+	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable4_str.c_str(), m_colors.color_text_lable);
-	tmp.MoveToX(tmp.left + DPI(52));
+	tmp.MoveToX(tmp.left + theApp.DPI(52));
 	tmp.right = info_rect.right - m_margin;
 	static CDrawCommon::ScrollInfo scroll_info5;
-	m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info5, reset);
+	m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info5, reset);
 
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{info_rect.left + m_margin, info_rect.top + m_margin}, m_spectral_size };
@@ -594,7 +594,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	if (theApp.m_app_setting_data.show_spectrum)
 	{
 		const int ROWS = 24;		//要显示的频谱柱形的数量
-		int gap_width{ DPI(1) };		//频谱柱形间隙宽度
+		int gap_width{ theApp.DPIRound(1, 0.4) };		//频谱柱形间隙宽度
 		CRect rects[ROWS];
 		int width = (spectral_rect.Width() - (ROWS - 1)*gap_width) / (ROWS-1);
 		rects[0] = spectral_rect;
@@ -623,8 +623,8 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 			MemDC.FillSolidRect(rect_tmp, color);
 
 			CRect rect_peak{ rect_tmp };
-			rect_peak.bottom = rect_tmp.bottom - peak_height - DPI(1.5);
-			rect_peak.top = rect_peak.bottom - DPI(1.5);
+			rect_peak.bottom = rect_tmp.bottom - peak_height - theApp.DPIRound(1.1);
+			rect_peak.top = rect_peak.bottom - theApp.DPIRound(1.1);
 			//if (peak_height > 1)
 				MemDC.FillSolidRect(rect_peak, color);
 		}
@@ -634,7 +634,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//绘制背景
 	CPoint point{ spectral_rect.left, spectral_rect.bottom };
 	point.y += 2 * m_margin;
-	CRect other_info_rect{ point, CSize(info_rect.Width() - 2 * m_margin,DPI(24)) };
+	CRect other_info_rect{ point, CSize(info_rect.Width() - 2 * m_margin,theApp.DPI(24)) };
 	if (draw_background)
 		m_draw.FillAlphaRect(other_info_rect, m_colors.color_control_bar_back, ALPHA_CHG(m_colors.background_transparency));
 	else
@@ -644,9 +644,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//显示循环模式
 	tmp = other_info_rect;
 	tmp.left += m_margin;
-	tmp.right = tmp.left + DPI(112);
+	tmp.right = tmp.left + theApp.DPI(112);
 	m_repetemode_rect = tmp;
-	m_repetemode_rect.DeflateRect(0, DPI(4));
+	m_repetemode_rect.DeflateRect(0, theApp.DPI(4));
 	CString repeat_mode_str{_T("循环模式：")};
 	switch (theApp.m_player.GetRepeatMode())
 	{
@@ -661,11 +661,11 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		m_draw.DrawWindowText(m_repetemode_rect, repeat_mode_str, m_colors.color_text);
 	m_repetemode_rect.MoveToXY(CPoint{ m_repetemode_rect.left + m_draw_rect.left, m_repetemode_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
 	//显示音量
-	tmp.MoveToX(info_rect.right - DPI(124));
-	tmp.right = info_rect.right - DPI(49);
+	tmp.MoveToX(info_rect.right - theApp.DPI(124));
+	tmp.right = info_rect.right - theApp.DPI(49);
 	m_volume_rect = tmp;
-	m_volume_rect.DeflateRect(0, DPI(4));
-	m_volume_rect.right -= DPI(12);
+	m_volume_rect.DeflateRect(0, theApp.DPI(4));
+	m_volume_rect.right -= theApp.DPI(12);
 	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
 	if (m_volume_hover)		//鼠标指向音量区域时，以另外一种颜色显示
 		m_draw.DrawWindowText(tmp, buff, m_colors.color_text_heighlight);
@@ -673,7 +673,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		m_draw.DrawWindowText(tmp, buff, m_colors.color_text);
 	//设置音量调整按钮的位置
 	m_volume_down_rect = m_volume_rect;
-	m_volume_down_rect.bottom += DPI(4);
+	m_volume_down_rect.bottom += theApp.DPI(4);
 	m_volume_down_rect.MoveToY(m_volume_rect.bottom);
 	m_volume_down_rect.right = m_volume_rect.left + m_volume_rect.Width() / 2;
 	m_volume_up_rect = m_volume_down_rect;
@@ -794,7 +794,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	CRect tmp;
 	tmp = lyric_rect;
 	tmp.left += 2*m_margin;
-	tmp.bottom = tmp.top + DPI(28);
+	tmp.bottom = tmp.top + theApp.DPI(28);
 	//m_draw.SetBackColor(RGB(255, 255, 255));
 	m_draw.SetFont(GetFont());
 	m_draw.DrawWindowText(tmp, _T("歌词秀："), m_colors.color_text);
@@ -802,7 +802,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	//填充歌词区域背景色
 	CRect lyric_area = lyric_rect;
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
-	lyric_area.top += DPI(20);
+	lyric_area.top += theApp.DPI(20);
 	//CDrawCommon::SetDrawArea(pDC, lyric_area);
 	if (theApp.m_app_setting_data.lyric_background)
 	{
@@ -874,17 +874,17 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	{
 		m_playlist_list.MoveWindow(cx / 2 + m_margin, m_control_bar_height + m_search_edit_height + m_path_edit_height + m_margin,
 			cx / 2 - 2 * m_margin, cy - m_control_bar_height - m_search_edit_height - m_path_edit_height - 2 * m_margin);
-		width0 = DPI(40);
-		width2 = DPI(50);
-		width1 = cx / 2 - width0 - width2 - DPI(21) - 2 * m_margin;
+		width0 = theApp.DPI(40);
+		width2 = theApp.DPI(50);
+		width1 = cx / 2 - width0 - width2 - theApp.DPI(21) - 2 * m_margin;
 	}
 	else
 	{
 		m_playlist_list.MoveWindow(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_search_edit_height + m_path_edit_height,
 			cx - 2 * m_margin, cy - m_control_bar_height - m_info_height - m_progress_bar_height - m_search_edit_height - m_path_edit_height - m_margin);
-		width0 = DPI(40);
-		width2 = DPI(50);
-		width1 = cx - width0 - width2 - DPI(21) - 2 * m_margin;
+		width0 = theApp.DPI(40);
+		width2 = theApp.DPI(50);
+		width1 = cx - width0 - width2 - theApp.DPI(21) - 2 * m_margin;
 	}
 	m_playlist_list.SetColumnWidth(0, width0);
 	m_playlist_list.SetColumnWidth(1, width1);
@@ -918,12 +918,12 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	if (!m_narrow_mode)
 	{
 		rect_search.right = rect_search.left + (cx / 2 - 2 * m_margin - m_margin - rect_search.Height());
-		rect_search.MoveToXY(cx / 2 + m_margin, m_control_bar_height + m_path_edit_height + DPI(1));
+		rect_search.MoveToXY(cx / 2 + m_margin, m_control_bar_height + m_path_edit_height + theApp.DPI(1));
 	}
 	else
 	{
 		rect_search.right = rect_search.left + (cx - 2 * m_margin - m_margin - rect_search.Height());
-		rect_search.MoveToXY(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_path_edit_height - DPI(3));
+		rect_search.MoveToXY(m_margin, m_control_bar_height + m_info_height + m_progress_bar_height + m_path_edit_height - theApp.DPI(3));
 	}
 	m_search_edit.MoveWindow(rect_search);
 	//设置清除搜索按钮的大小和位置
@@ -954,10 +954,10 @@ void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
 		left_pos = m_progress_bar_left_pos;
 		progress_width = cx - left_pos - 2 * m_margin - time_width;
 		rect.right = rect.left + progress_width;
-		rect.MoveToXY(left_pos, DPI(6));
+		rect.MoveToXY(left_pos, theApp.DPI(6));
 		m_progress_bar.MoveWindow(rect);
 		//设置时间位置
-		m_time_static.SetWindowPos(NULL, cx - time_width - m_margin, DPI(6), time_width, m_time_height, SWP_NOZORDER);
+		m_time_static.SetWindowPos(NULL, cx - time_width - m_margin, theApp.DPI(6), time_width, m_time_height, SWP_NOZORDER);
 	}
 	else
 	{
@@ -965,10 +965,10 @@ void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
 		left_pos = m_margin;
 		progress_width = cx - 3 * m_margin - time_width;
 		rect.right = rect.left + progress_width;
-		rect.MoveToXY(left_pos, DPI(2) + m_control_bar_height);
+		rect.MoveToXY(left_pos, theApp.DPI(2) + m_control_bar_height);
 		m_progress_bar.MoveWindow(rect);
 		//设置时间位置
-		m_time_static.SetWindowPos(NULL, cx - time_width - m_margin, DPI(2) + m_control_bar_height, time_width, m_time_height, SWP_NOZORDER);
+		m_time_static.SetWindowPos(NULL, cx - time_width - m_margin, theApp.DPI(2) + m_control_bar_height, time_width, m_time_height, SWP_NOZORDER);
 	}
 	m_time_static.Invalidate();
 }
@@ -1122,9 +1122,9 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
 #ifndef COMPILE_IN_WIN_XP
 	CRect info_rect;
 	if (!m_narrow_mode)
-		info_rect = CRect{ CPoint{ m_margin, m_control_bar_height + m_margin + DPI(20) }, CSize{ m_client_width / 2 - 2 * m_margin, m_info_height2 - 3 * m_margin } };
+		info_rect = CRect{ CPoint{ m_margin, m_control_bar_height + m_margin + theApp.DPI(20) }, CSize{ m_client_width / 2 - 2 * m_margin, m_info_height2 - 3 * m_margin } };
 	else
-		info_rect = CRect{ CPoint{ m_margin, m_control_bar_height + m_progress_bar_height + DPI(20) }, CSize{ m_client_width - 2 * m_margin, m_info_height - 2 * m_margin } };
+		info_rect = CRect{ CPoint{ m_margin, m_control_bar_height + m_progress_bar_height + theApp.DPI(20) }, CSize{ m_client_width - 2 * m_margin, m_info_height - 2 * m_margin } };
 	if (m_pTaskbar != nullptr)
 		m_pTaskbar->SetThumbnailClip(m_hWnd, info_rect);
 #endif
@@ -1270,20 +1270,20 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	theApp.m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 
 	//根据当前系统的DPI设置窗口上方工具区和状态栏等的大小
-	m_control_bar_height = DPI(30);
-	m_margin = DPI(4);
-	m_width_threshold = DPI(600);
-	m_info_height = DPI(166);
-	m_info_height2 = DPI(143);
-	m_path_edit_height = DPI(32);
-	m_search_edit_height = DPI(26);
-	m_progress_bar_height = DPI(20);
-	m_spectral_size.cx = DPI(120);
-	m_spectral_size.cy = DPI(90);
+	m_control_bar_height = theApp.DPI(30);
+	m_margin = theApp.DPI(4);
+	m_width_threshold = theApp.DPI(600);
+	m_info_height = theApp.DPI(166);
+	m_info_height2 = theApp.DPI(143);
+	m_path_edit_height = theApp.DPI(32);
+	m_search_edit_height = theApp.DPI(26);
+	m_progress_bar_height = theApp.DPI(20);
+	m_spectral_size.cx = theApp.DPI(120);
+	m_spectral_size.cy = theApp.DPI(90);
 
 	m_set_path_button.GetWindowRect(rect);
-	m_min_width = rect.left + DPI(8);		//将“设置路径”按钮左侧的x位置设为窗口的最小宽度
-	m_min_height = DPI(360);	//设置最小高度
+	m_min_width = rect.left + theApp.DPI(8);		//将“设置路径”按钮左侧的x位置设为窗口的最小宽度
+	m_min_height = theApp.DPI(360);	//设置最小高度
 
 	CRect rect1;
 	m_time_static.GetWindowRect(rect1);
@@ -1343,11 +1343,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 #endif
 
 	//载入按钮小图标（16*16）
-	m_hPreviousIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PREVIOUS), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hNextIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_NEXT1), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPlayIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PLAY), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPauseIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PAUSE), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hStopIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_STOP), IMAGE_ICON, DPI(16), DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPreviousIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PREVIOUS), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hNextIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_NEXT1), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPlayIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PLAY), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPauseIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PAUSE), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hStopIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_STOP), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
 
 	//设置主界面上的按钮图标
 	m_play_pause_button.SetFont(this->GetFont());
@@ -1365,7 +1365,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//初始化进度条
 	m_progress_bar.SetRange(1000);		//设置进度条的范围
-	m_progress_bar.SetProgressBarHeight(DPI(5));	//设置进度条的高度
+	m_progress_bar.SetProgressBarHeight(theApp.DPI(5));	//设置进度条的高度
 	m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);			//设置进度条的颜色
 	m_progress_bar.GetWindowRect(rect);
 	m_progress_bar_left_pos = rect.left;		//用控件起始的位置作为普通界面模式下进度条控件左侧的位置
@@ -1649,13 +1649,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 				//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
 				if (index != theApp.m_player.GetIndex() || song_name != theApp.m_player.GetFileName())
 				{
-					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true, DPI(2));
+					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true, theApp.DPI(2));
 					index = theApp.m_player.GetIndex();
 					song_name = theApp.m_player.GetFileName();
 				}
 				else
 				{
-					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, DPI(2));
+					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, theApp.DPI(2));
 				}
 			}
 			//}
@@ -1710,9 +1710,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//如果系统是Win10就取窗口最边缘像素的颜色，因为当win10设置成不显示标题栏颜色时，只有窗口边框最外面的一圈像素是主题颜色
 		//如果系统是Win8/8.1，则取窗口边缘住下2个像素的颜色，因为win8窗口标题栏总是当前主题色，而边框最外侧的颜色比主题色要深。
 		if (theApp.m_win_version.IsWindows10OrLater())
-			color = ::GetPixel(hDC, rect.TopLeft().x + DPI(8), rect.TopLeft().y);
+			color = ::GetPixel(hDC, rect.TopLeft().x + theApp.DPI(8), rect.TopLeft().y);
 		else
-			color = ::GetPixel(hDC, rect.TopLeft().x + DPI(8), rect.TopLeft().y + DPI(2));
+			color = ::GetPixel(hDC, rect.TopLeft().x + theApp.DPI(8), rect.TopLeft().y + theApp.DPI(2));
 		if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255,255,255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
 		{
 			theApp.m_app_setting_data.theme_color.original_color = color;
@@ -2040,8 +2040,6 @@ void CMusicPlayerDlg::OnDestroy()
 
 void CMusicPlayerDlg::OnAppAbout()
 {
-	CSize size(100, 100);
-	CCommon::SizeZoom(size, 200);
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
 }
@@ -2918,7 +2916,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	}
 	else
 	{
-		info_rect.bottom -= DPI(30);
+		info_rect.bottom -= theApp.DPI(30);
 		lyric_rect.top = info_rect.bottom;
 	}
 
@@ -2981,7 +2979,7 @@ void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 				}
 			}
 			m_Mytip.AddTool(this, info);
-			m_Mytip.SetMaxTipWidth(DPI(400));
+			m_Mytip.SetMaxTipWidth(theApp.DPI(400));
 			m_Mytip.Pop();
 		}
 		if (last_show_cover_tip && !show_cover_tip)

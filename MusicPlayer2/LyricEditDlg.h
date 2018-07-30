@@ -44,9 +44,9 @@ protected:
 	CStatusBarCtrl m_status_bar;	//状态栏
 	CToolBar m_wndToolBar;		//工具栏
 	//CSize m_min_size;		//窗口的最小大小
-#define MARGIN DPI(8)
-#define TOOLBAR_HEIGHT DPI(29)
-#define STATUSBAR_HEIGHT DPI(20)
+#define MARGIN theApp.DPI(8)
+#define TOOLBAR_HEIGHT theApp.DPI(29)
+#define STATUSBAR_HEIGHT theApp.DPI(20)
 
 	CFindReplaceDialog* m_pFindDlg{};   //查找对话框
 	CFindReplaceDialog* m_pReplaceDlg{};    //替换对话框

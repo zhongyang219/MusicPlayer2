@@ -91,7 +91,7 @@ using std::map;
 #endif // !UNICODE
 
 //根据DPI缩放大小
-#define DPI(x) (theApp.m_dpi*(x)/96)
+//#define theApp.DPI(x) (theApp.m_dpi*(x)/96)
 
 //CPlayer类中用到的常量
 #define NEXT (-999)		//定义“下一曲”常量

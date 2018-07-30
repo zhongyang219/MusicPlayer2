@@ -145,7 +145,7 @@ BOOL CSetPathDlg::OnInitDialog()
 	int width0, width1, width2, width3, width4;
 	width2 = width3 = rect.Width() / 10;
 	width4 = rect.Width() / 7;
-	width0 = width1 = (rect.Width() - 2*width2 - width4 - DPI(20)) / 2;
+	width0 = width1 = (rect.Width() - 2*width2 - width4 - theApp.DPI(20)) / 2;
 
 	m_path_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	m_path_list.InsertColumn(0, _T("文件夹"), LVCFMT_LEFT, width0);		//插入第1列
@@ -272,11 +272,11 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 	// TODO: 在此处添加消息处理程序代码
 	if (nType != SIZE_MINIMIZED && m_path_list.m_hWnd)
 	{
-		int list_width{ cx - DPI(29) };
+		int list_width{ cx - theApp.DPI(29) };
 		int width0, width1, width2, width3, width4;
 		width2 = width3 = list_width / 10;
 		width4 = list_width / 7;
-		width0 = width1 = (list_width - 2 * width2 - width4 - DPI(20)) / 2;
+		width0 = width1 = (list_width - 2 * width2 - width4 - theApp.DPI(20)) / 2;
 		m_path_list.SetColumnWidth(0, width0);
 		m_path_list.SetColumnWidth(1, width1);
 		m_path_list.SetColumnWidth(2, width2);

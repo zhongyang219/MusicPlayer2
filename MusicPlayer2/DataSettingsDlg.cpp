@@ -63,7 +63,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->SetCheck(m_data.midi_use_inner_lyric);
 
 	m_toolTip.Create(this);
-	m_toolTip.SetMaxTipWidth(DPI(300));
+	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
 	m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), _T("说明：程序目录下的 song_data.dat 文件保存了所有加载过的歌曲信息，用于加快播放列表的载入速度，如果该文件过大，可以通过此按钮清理它。"));
 	m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), _T("勾选此项后，只有当歌曲的“标题”和“艺术家”信息都不为空时，才自动下载歌词和专辑封面。"));
 	//m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
