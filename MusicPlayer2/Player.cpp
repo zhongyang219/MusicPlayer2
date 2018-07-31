@@ -599,7 +599,7 @@ bool CPlayer::SongIsOver() const
 		bool song_is_over;
 		static int last_pos;
 		if ((m_playing == 2 && m_current_position_int == last_pos && m_current_position_int != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
-			&& m_current_position_int > m_song_length_int-1000)		//且播放进度到了最后一秒
+			&& m_current_position_int > m_song_length_int-2000)		//且播放进度到了最后2秒
 			|| m_error_code == BASS_ERROR_ENDED)	//或者出现BASS_ERROR_ENDED错误，则判断当前歌曲播放完了
 			//有时候会出现识别的歌曲长度超过实际歌曲长度的问题，这样会导致歌曲播放进度超过实际歌曲结尾时会出现BASS_ERROR_ENDED错误，
 			//检测到这个错误时直接判断歌曲已经播放完了。
