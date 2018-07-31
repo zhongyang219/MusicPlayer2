@@ -355,6 +355,13 @@ void CDrawCommon::FillRect(CRect rect, COLORREF color)
 
 void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha)
 {
+	if (alpha == 0)
+		return;
+	if (alpha == 255)
+	{
+		FillRect(rect, color);
+		return;
+	}
 	SetDrawArea(m_pDC, rect);
 	CDC cdc;
 	if(!cdc.CreateCompatibleDC(m_pDC))

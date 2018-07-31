@@ -118,13 +118,13 @@ void CLyrics::DisposeLyric()
 		//将获取到的歌词文本转换成Unicode
 		lyric.text = CCommon::StrToUnicode(temp, m_code_type);
 		size_t index1;
-		index1 = lyric.text.find(L'/');
-		if (index1 != wstring::npos)		//如果找到了‘/’，说明该句歌词包含翻译
+		index1 = lyric.text.find(L" / ");
+		if (index1 != wstring::npos)		//如果找到了‘ / ’，说明该句歌词包含翻译
 		{
-			lyric.translate = lyric.text.substr(index1 + 1);
+			lyric.translate = lyric.text.substr(index1 + 3);
 			lyric.text = lyric.text.substr(0, index1);
-			CCommon::StringNormalize(lyric.text);
-			CCommon::StringNormalize(lyric.translate);
+			//CCommon::StringNormalize(lyric.text);
+			//CCommon::StringNormalize(lyric.translate);
 			if(!lyric.translate.empty())
 				m_translate = true;
 		}
@@ -295,13 +295,18 @@ CodeType CLyrics::GetCodeType() const
 	return m_code_type;
 }
 
-wstring CLyrics::GetAllLyricText() const
+wstring CLyrics::GetAllLyricText(bool with_translate) const
 {
 	wstring all_lyric{};
 	for (auto a_lyric : m_lyrics)
 	{
 		all_lyric += a_lyric.text;
 		all_lyric += L"\r\n";
+		if(with_translate && !a_lyric.translate.empty())
+		{
+			all_lyric += a_lyric.translate;
+			all_lyric += L"\r\n";
+		}
 	}
 	return all_lyric;
 }

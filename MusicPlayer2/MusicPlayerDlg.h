@@ -137,6 +137,7 @@ protected:
 	CFont m_lyric_translate_font;	//歌词翻译的字体
 
 	bool m_narrow_mode;		//窄界面模式
+	bool m_show_translate{ true };	//歌词是否显示翻译
 
 	bool m_searched;		//播放列表是否处于搜索状态
 	wstring m_search_key_word;	//播放列表查找的关键字
@@ -151,6 +152,8 @@ protected:
 	bool m_volume_hover{ false };	//鼠标指向了音量的矩形区域
 	CRect m_volume_up_rect, m_volume_down_rect;	//音量调整条增加和减少音量的矩形区域
 	bool m_show_volume_adj{ false };	//显示音量调整按钮
+	CRect m_translate_rect;
+	bool m_translate_hover{ false };
 
 	int m_item_selected{};		//播放列表中鼠标选中的项目
 	vector<int> m_items_selected;

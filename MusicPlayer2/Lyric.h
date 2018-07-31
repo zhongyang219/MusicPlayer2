@@ -65,7 +65,7 @@ public:
 	int GetLyricIndex(Time time) const;			//根据时间返回该时间对应的歌词序号（用于判断歌词是否有变化）
 	CodeType GetCodeType() const;		//获得歌词文本的编码类型
 	wstring GetPathName() const { return m_file; }		//获取歌词文件的路径+文件名
-	wstring GetAllLyricText() const;		//返回所有歌词（仅包含全部歌词文本，不含标识标签和时间标签）
+	wstring GetAllLyricText(bool with_translate = false) const;		//返回所有歌词（仅包含全部歌词文本，不含标识标签和时间标签）。with_translate：是否包含翻译（如果有）
 	wstring GetLyricsString() const;		//返回所有歌词的字符串，以保存的样式，包含全部标签
 	bool IsModified() const { return m_modified; }
 	bool IsChineseConverted() const { return m_chinese_converted; }

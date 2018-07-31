@@ -558,7 +558,7 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 				m_modified = true;
 				UpdateStatusbarInfo();
 				OnFindNext();
-				m_lyric_edit.SetSel(m_find_index, m_find_index + m_find_str.size());	//选中替换的字符串
+				m_lyric_edit.SetSel(m_find_index, m_find_index + m_replace_str.size());	//选中替换的字符串
 				SetActiveWindow();		//将编辑器窗口设置活动窗口
 			}
 			else
@@ -571,7 +571,8 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 			int replace_count{};	//统计替换的字符串的个数
 			while (true)
 			{
-				m_find_index = m_lyric_string.find(m_find_str, m_find_index + 1);	//查找字符串
+				int index_offset = m_replace_str.size() - m_find_str.size();
+				m_find_index = m_lyric_string.find(m_find_str, m_find_index + index_offset + 1);	//查找字符串
 				if (m_find_index == string::npos)
 					break;
 				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//替换找到的字符串

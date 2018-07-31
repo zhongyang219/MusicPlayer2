@@ -61,7 +61,7 @@ void CLyricDownloadDlg::SaveConfig() const
 
 void CLyricDownloadDlg::LoadConfig()
 {
-	m_download_translate = (GetPrivateProfileInt(_T("lyric_download"), _T("download_translate"), 0, theApp.m_config_path.c_str()) != 0);
+	m_download_translate = (GetPrivateProfileInt(_T("lyric_download"), _T("download_translate"), 1, theApp.m_config_path.c_str()) != 0);
 	m_save_code = static_cast<CodeType>(GetPrivateProfileInt(_T("lyric_download"), _T("save_as_utf8"), 1, theApp.m_config_path.c_str()));
 	m_save_to_song_folder = (GetPrivateProfileInt(_T("lyric_download"), _T("save_to_song_folder"), 1, theApp.m_config_path.c_str()) != 0);
 	m_search_max_item = GetPrivateProfileInt(_T("lyric_download"), _T("search_max_item"), 30, theApp.m_config_path.c_str());
