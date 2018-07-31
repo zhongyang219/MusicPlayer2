@@ -406,9 +406,10 @@ void CLyrics::SaveLyric2()
 		sprintf_s(time_buff, "[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
 		out_put << time_buff << CCommon::UnicodeToStr(a_lyric.text, m_code_type);
 		if (!a_lyric.translate.empty())
-			out_put << L" / " << CCommon::UnicodeToStr(a_lyric.translate, m_code_type);
+			out_put << " / " << CCommon::UnicodeToStr(a_lyric.translate, m_code_type);
 		out_put << std::endl;
 	}
+	out_put.close();
 	m_modified = false;
 	m_chinese_converted = false;
 }

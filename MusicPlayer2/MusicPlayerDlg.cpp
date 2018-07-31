@@ -388,6 +388,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;
 		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
 		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
+		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.dark3;
 
 		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
 	}
@@ -403,6 +404,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.original_color;
 		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
 		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
+		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.light2;
 
 		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
 	}
@@ -813,7 +815,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 		if (m_translate_hover)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
 		else if (m_show_translate)
-			m_draw.FillAlphaRect(translate_rect, m_colors.color_lyric_back, alpha);
+			m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
 		m_draw.DrawWindowText(translate_rect, L"译", m_colors.color_text, Alignment::CENTER);
 	}
 	else
@@ -3293,26 +3295,32 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 	{
 		//下载歌词
 		wstring lyric_str;
-		if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, false))
+		if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, true))
 			return 0;
 		if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
 			return 0;
 		CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
 		//保存歌词
 		CFilePathHelper lyric_path;
-		if (CCommon::FolderExist(theApp.m_play_setting_data.lyric_path))
-		{
-			lyric_path.SetFilePath(theApp.m_play_setting_data.lyric_path + theApp.m_player.GetCurrentSongInfo().file_name);
-		}
-		else
-		{
+		//if (CCommon::FolderExist(theApp.m_play_setting_data.lyric_path))
+		//{
+		//	lyric_path.SetFilePath(theApp.m_play_setting_data.lyric_path + theApp.m_player.GetCurrentSongInfo().file_name);
+		//}
+		//else
+		//{
 			lyric_path.SetFilePath(theApp.m_player.GetCurrentDir() + theApp.m_player.GetCurrentSongInfo().file_name);
-		}
+		//}
 		lyric_path.ReplaceFileExtension(L"lrc");
 		string _lyric_str = CCommon::UnicodeToStr(lyric_str, CodeType::UTF8);
 		ofstream out_put{ lyric_path.GetFilePath(), std::ios::binary };
 		out_put << _lyric_str;
 		out_put.close();
+		//处理歌词翻译
+		CLyrics lyrics{ lyric_path.GetFilePath() };		//打开保存过的歌词
+		lyrics.DeleteRedundantLyric();		//删除多余的歌词
+		lyrics.CombineSameTimeLyric();		//将歌词翻译和原始歌词合并成一句
+		lyrics.SaveLyric2();
+
 		theApp.m_player.IniLyrics(lyric_path.GetFilePath());
 	}
 	return 0;

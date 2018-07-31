@@ -243,7 +243,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 	}
 	pInfo->player->m_loading = false;
 	pInfo->player->IniPlaylistComplate(pInfo->sort);
-	pInfo->player->IniLyrics();
+	//pInfo->player->IniLyrics();
 	PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
 	return 0;
 }
@@ -265,6 +265,8 @@ void CPlayer::IniPlaylistComplate(bool sort)
 	//对播放列表排序
 	if (sort && m_playlist.size() > 1)
 		SortPlaylist(false);
+
+	SearchLyrics();
 
 	if (m_song_num > 0)
 	{
@@ -313,7 +315,6 @@ void CPlayer::IniPlaylistComplate(bool sort)
 
 	EmplaceCurrentPathToRecent();
 	SetTitle();
-	SearchLyrics();
 	m_shuffle_list.clear();
 	if (m_repeat_mode == RM_PLAY_SHUFFLE)
 		m_shuffle_list.push_back(m_index);
@@ -495,6 +496,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			}
 			//打开时获取专辑封面
 			SearchAlbumCover();
+			//初始化歌词
+			IniLyrics();
 		}
 		if (m_playlist[m_index].is_cue)
 		{
@@ -776,7 +779,7 @@ bool CPlayer::PlayTrack(int song_track)
 		m_index = song_track;
 		m_current_file_name = m_playlist[m_index].file_name;
 		MusicControl(Command::OPEN);
-		IniLyrics();
+		//IniLyrics();
 		if (m_playlist[m_index].is_cue)
 			SeekTo(0);
 		MusicControl(Command::PLAY);
@@ -791,7 +794,7 @@ bool CPlayer::PlayTrack(int song_track)
 		m_index = 0;
 		m_current_file_name = m_playlist[m_index].file_name;
 		MusicControl(Command::OPEN);
-		IniLyrics();
+		//IniLyrics();
 		GetBASSCurrentPosition();
 		SetTitle();
 		SaveConfig();
@@ -902,7 +905,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
 	if (play)
 		//MusicControl(Command::PLAY);
 		PlayTrack(m_song_num - files.size());	//打开文件后播放添加的第1首曲目
-	IniLyrics();
+	//IniLyrics();
 	SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 	//SetVolume();
 }

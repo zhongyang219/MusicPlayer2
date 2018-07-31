@@ -43,6 +43,7 @@ class CMusicPlayerDlg : public CDialog
 		COLORREF color_spectrum;			//频谱分析柱形的颜色
 		COLORREF color_spectrum_cover;		//有专辑封面时的频谱分析柱形的颜色
 		COLORREF color_spectrum_back;		//频谱分析的背景颜色
+		COLORREF color_button_back;			//歌词翻译按钮的背景色
 		int background_transparency;		//背景不透明度0~100
 	};
 // 构造
