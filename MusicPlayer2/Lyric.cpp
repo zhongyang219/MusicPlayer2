@@ -28,6 +28,7 @@ void CLyrics::DisposeLyric()
 	int index;
 	string temp;
 	Lyric lyric;
+	m_translate = false;
 	for (int i{ 0 }; i < m_lyrics_str.size(); i++)
 	{
 		//查找id标签（由于id标签是我自己加上的，它永远只会出现在第一行）
@@ -116,6 +117,22 @@ void CLyrics::DisposeLyric()
 		CCommon::StringNormalize(temp);		//删除歌词文本前后的空格或特殊字符
 		//将获取到的歌词文本转换成Unicode
 		lyric.text = CCommon::StrToUnicode(temp, m_code_type);
+		size_t index1;
+		index1 = lyric.text.find(L'/');
+		if (index1 != wstring::npos)		//如果找到了‘/’，说明该句歌词包含翻译
+		{
+			lyric.translate = lyric.text.substr(index1 + 1);
+			lyric.text = lyric.text.substr(0, index1);
+			CCommon::StringNormalize(lyric.text);
+			CCommon::StringNormalize(lyric.translate);
+			if(!lyric.translate.empty())
+				m_translate = true;
+		}
+		else
+		{
+			lyric.translate.clear();
+		}
+
 		//if (lyric.text.empty())		//如果时间标签后没有文本，显示为“……”
 		//	lyric.text = DEFAULT_LYRIC_TEXT;
 		//if (!lyric.text.empty() && lyric.text.back() <= 32) lyric.text.pop_back();		//删除歌词末尾的一个控制字符或空格
@@ -197,34 +214,38 @@ bool CLyrics::IsEmpty() const
 	return (m_lyrics.size() == 0);
 }
 
-wstring CLyrics::GetLyric(Time time, int offset) const
+CLyrics::Lyric CLyrics::GetLyric(Time time, int offset) const
 {
+	Lyric ti{};
+	ti.text = m_ti;
 	for (int i{ 0 }; i < m_lyrics.size(); i++)
 	{
 		if (m_lyrics[i].GetTime(m_offset) > time)		//如果找到第一个时间标签比要显示的时间大，则该时间标签的前一句歌词即为当前歌词
 		{
-			if (i + offset - 1 < -1) return wstring{};
-			else if (i + offset - 1 == -1) return m_ti;		//时间在第一个时间标签前面，返回ti标签的值
-			else if (i + offset - 1 < m_lyrics.size()) return m_lyrics[i + offset - 1].text;
-			else return wstring{};
+			if (i + offset - 1 < -1) return Lyric{};
+			else if (i + offset - 1 == -1) return ti;		//时间在第一个时间标签前面，返回ti标签的值
+			else if (i + offset - 1 < m_lyrics.size()) return m_lyrics[i + offset - 1];
+			else return Lyric{};
 		}
 	}
 	if (m_lyrics.size() + offset - 1 < m_lyrics.size())
-		return m_lyrics[m_lyrics.size() + offset - 1].text;		//如果没有时间标签比要显示的时间大，当前歌词就是最后一句歌词
+		return m_lyrics[m_lyrics.size() + offset - 1];		//如果没有时间标签比要显示的时间大，当前歌词就是最后一句歌词
 	else
-		return wstring{};
+		return Lyric{};
 }
 
-wstring CLyrics::GetLyric(int index) const
+CLyrics::Lyric CLyrics::GetLyric(int index) const
 {
+	Lyric ti{};
+	ti.text = m_ti;
 	if (index < 0)
-		return wstring();
+		return Lyric();
 	else if (index == 0)
-		return m_ti;
+		return ti;
 	else if (index <= m_lyrics.size())
-		return m_lyrics[index - 1].text;
+		return m_lyrics[index - 1];
 	else
-		return wstring();
+		return Lyric();
 }
 
 int CLyrics::GetLyricProgress(Time time) const
@@ -378,7 +399,10 @@ void CLyrics::SaveLyric2()
 	{
 		Time a_time{ a_lyric.GetTime(m_offset) };
 		sprintf_s(time_buff, "[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-		out_put << time_buff << CCommon::UnicodeToStr(a_lyric.text, m_code_type) << std::endl;
+		out_put << time_buff << CCommon::UnicodeToStr(a_lyric.text, m_code_type);
+		if (!a_lyric.translate.empty())
+			out_put << L" / " << CCommon::UnicodeToStr(a_lyric.translate, m_code_type);
+		out_put << std::endl;
 	}
 	m_modified = false;
 	m_chinese_converted = false;
@@ -419,7 +443,7 @@ void CLyrics::AdjustLyric(int offset)
 	m_modified = true;
 }
 
-void CLyrics::ChineseTranslation(bool simplified)
+void CLyrics::ChineseConvertion(bool simplified)
 {
 	for (auto& lyric : m_lyrics)
 	{

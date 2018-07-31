@@ -134,6 +134,7 @@ protected:
 	//wstring lyric_font_name;		//歌词字体名称
 	//int lyric_font_size;		//歌词字体大小
 	CFont m_lyric_font;			//歌词字体
+	CFont m_lyric_translate_font;	//歌词翻译的字体
 
 	bool m_narrow_mode;		//窄界面模式
 

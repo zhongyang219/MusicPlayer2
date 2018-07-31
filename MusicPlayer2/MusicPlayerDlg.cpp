@@ -767,7 +767,7 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 	}
 	else
 	{
-		wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
+		wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };	//获取当歌词
 		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 			current_lyric = DEFAULT_LYRIC_TEXT;
 		if (theApp.m_play_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
@@ -785,17 +785,11 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 {
 	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
-	//CDrawCommon::SetDrawArea(pDC, lyric_rect);
-	//if (draw_background)
-	//	m_draw.FillAlphaRect(lyric_rect, RGB(255, 255, 255), ALPHA_CHG(m_colors.background_transparency));
-	//else
-	//	pDC->FillSolidRect(lyric_rect, RGB(255, 255, 255));
 	//显示“歌词秀”
 	CRect tmp;
 	tmp = lyric_rect;
 	tmp.left += 2*m_margin;
 	tmp.bottom = tmp.top + theApp.DPI(28);
-	//m_draw.SetBackColor(RGB(255, 255, 255));
 	m_draw.SetFont(GetFont());
 	m_draw.DrawWindowText(tmp, _T("歌词秀："), m_colors.color_text);
 	m_draw.SetFont(&m_lyric_font);
@@ -803,7 +797,6 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	CRect lyric_area = lyric_rect;
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	lyric_area.top += theApp.DPI(20);
-	//CDrawCommon::SetDrawArea(pDC, lyric_area);
 	if (theApp.m_app_setting_data.lyric_background)
 	{
 		if (draw_background)
@@ -814,12 +807,12 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	//设置歌词文字区域
 	lyric_area.DeflateRect(2 * m_margin, 2 * m_margin);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
-	//绘制歌词文本
-	//m_draw.SetBackColor(theApp.m_app_setting_data.theme_color.light3);
 	//计算文本高度
 	m_pDC->SelectObject(&m_lyric_font);
-	int lyric_height = m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
-	lyric_height += theApp.m_app_setting_data.lyric_line_space;			//文本高度加上行间距
+	int text_height = m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
+	int lyric_height = text_height + theApp.m_app_setting_data.lyric_line_space;			//文本高度加上行间距
+	int lyric_height2 = lyric_height * 2 + theApp.m_app_setting_data.lyric_line_space;		//包含翻译的歌词高度
+	//绘制歌词文本
 	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
@@ -831,15 +824,45 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	}
 	else
 	{
-		CRect arect{ lyric_area };		//一行歌词的矩形区域
-		arect.bottom = arect.top + lyric_height;
-		vector<CRect> rects(theApp.m_player.m_Lyrics.GetLyricCount() + 1, arect);		//为每一句歌词创建一个矩形，保存在容器里
+		//CRect arect{ lyric_area };		//一行歌词的矩形区域
+		//arect.bottom = arect.top + lyric_height;
+		//vector<CRect> rects(theApp.m_player.m_Lyrics.GetLyricCount() + 1, arect);
+		//为每一句歌词创建一个矩形，保存在容器里
+		vector<CRect> rects;
+		int lyric_count = theApp.m_player.m_Lyrics.GetLyricCount() + 1;		//获取歌词数量（由于第一行歌词需要显示标题，所以这里要+1）
+		for (int i{}; i < lyric_count; i++)
+		{
+			CRect arect{ lyric_area };
+			if(theApp.m_player.m_Lyrics.GetLyric(i).translate.empty())
+				arect.bottom = arect.top + lyric_height;
+			else
+				arect.bottom = arect.top + lyric_height2;
+			rects.push_back(arect);
+		}
 		int center_pos = (lyric_area.top + lyric_area.bottom) / 2;		//歌词区域的中心y坐标
 		Time time{ theApp.m_player.GetCurrentPosition() };		//当前播放时间
-		int lyric_index = theApp.m_player.m_Lyrics.GetLyricIndex(time);		//当前歌词的序号
+		int lyric_index = theApp.m_player.m_Lyrics.GetLyricIndex(time) + 1;		//当前歌词的序号（歌词的第一句GetLyricIndex返回的是0，由于显示时第一句歌词要显示标题，所以这里要+1）
 		int progress = theApp.m_player.m_Lyrics.GetLyricProgress(time);		//当前歌词进度（范围为0~1000）
-		int y_progress = progress*lyric_height / 1000;			//当前歌词在y轴上的进度
-		int start_pos = center_pos - y_progress - (lyric_index + 1)*lyric_height;		//第1句歌词的起始y坐标
+		int y_progress;			//当前歌词在y轴上的进度
+		if(theApp.m_player.m_Lyrics.GetLyric(lyric_index).translate.empty())
+			y_progress = progress*lyric_height / 1000;
+		else
+			y_progress = progress * lyric_height2 / 1000;
+		//int start_pos = center_pos - y_progress - (lyric_index + 1)*lyric_height;		//第1句歌词的起始y坐标
+		//计算第1句歌词的起始y坐标
+		//由于当前歌词需要显示在歌词区域的中心位置，因此从中心位置开始，减去当前歌词在Y轴上的进度
+		//再依次减去之前每一句歌词的高度，即得到了第一句歌词的起始位置
+		int start_pos;
+		start_pos = center_pos - y_progress;
+		for (int i{ lyric_index-1 }; i >= 0; i--)
+		{
+			if (theApp.m_player.m_Lyrics.GetLyric(i).translate.empty())
+				start_pos -= lyric_height;
+			else
+				start_pos -= lyric_height2;
+		}
+
+		//依次绘制每一句歌词
 		for (int i{}; i<rects.size(); i++)
 		{
 			//计算每一句歌词的位置
@@ -850,16 +873,42 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 			//绘制歌词文本
 			if (!(rects[i] & lyric_area).IsRectEmpty())		//只有当一句歌词的矩形区域和歌词区域的矩形有交集时，才绘制歌词
 			{
-				if (i == lyric_index + 1)		//绘制正在播放的歌词
+				//设置歌词文本和翻译文本的矩形区域
+				CRect rect_text{ rects[i] };
+				CRect rect_translate;
+				if (!theApp.m_player.m_Lyrics.GetLyric(i).translate.empty())
 				{
+					rect_text.bottom = rect_text.top + text_height;
+					rect_translate = rect_text;
+					rect_translate.MoveToY(rect_text.bottom + theApp.m_app_setting_data.lyric_line_space);
+				}
+
+				if (i == lyric_index)		//绘制正在播放的歌词
+				{
+					//绘制歌词文本
+					m_draw.SetFont(&m_lyric_font);
 					if (theApp.m_play_setting_data.lyric_karaoke_disp)
-						m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
+						m_draw.DrawWindowText(rect_text, theApp.m_player.m_Lyrics.GetLyric(i).text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
 					else
-						m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), m_colors.color_text, Alignment::CENTER, true);
+						m_draw.DrawWindowText(rect_text, theApp.m_player.m_Lyrics.GetLyric(i).text.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
+					//绘制翻译文本
+					if (!theApp.m_player.m_Lyrics.GetLyric(i).translate.empty())
+					{
+						m_draw.SetFont(&m_lyric_translate_font);
+						m_draw.DrawWindowText(rect_translate, theApp.m_player.m_Lyrics.GetLyric(i).translate.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
+					}
 				}
 				else		//绘制非正在播放的歌词
 				{
-					m_draw.DrawWindowText(rects[i], theApp.m_player.m_Lyrics.GetLyric(i).c_str(), m_colors.color_text_2, Alignment::CENTER, true);
+					//绘制歌词文本
+					m_draw.SetFont(&m_lyric_font);
+					m_draw.DrawWindowText(rect_text, theApp.m_player.m_Lyrics.GetLyric(i).text.c_str(), m_colors.color_text_2, Alignment::CENTER, true);
+					//绘制翻译文本
+					if (!theApp.m_player.m_Lyrics.GetLyric(i).translate.empty())
+					{
+						m_draw.SetFont(&m_lyric_translate_font);
+						m_draw.DrawWindowText(rect_translate, theApp.m_player.m_Lyrics.GetLyric(i).translate.c_str(), m_colors.color_text_2, Alignment::CENTER, true);
+					}
 				}
 			}
 		}
@@ -1197,6 +1246,9 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 		if (m_lyric_font.m_hObject)
 			m_lyric_font.DeleteObject();
 		m_lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+		if (m_lyric_translate_font.m_hObject)
+			m_lyric_translate_font.DeleteObject();
+		m_lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
 	}
 	SaveConfig();		//将设置写入到ini文件
 	theApp.SaveConfig();
@@ -1396,6 +1448,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_draw.Create(m_pDC, this);
 
 	m_lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+	m_lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());		//歌词翻译字体比歌词字体小一号
 
 	//载入默认背景图片（用于没有专辑封面时显示）
 	m_default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
@@ -1626,19 +1679,25 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			else if (!theApp.m_player.m_Lyrics.IsEmpty())		//有歌词时显示歌词
 			{
 				Time time{ theApp.m_player.GetCurrentPosition() };
-				wstring lyric_text = theApp.m_player.m_Lyrics.GetLyric(time, 0);
+				CLyrics::Lyric lyric = theApp.m_player.m_Lyrics.GetLyric(time, 0);
 				int progress = theApp.m_player.m_Lyrics.GetLyricProgress(time);
-				if (!theApp.m_play_setting_data.cortana_lyric_double_line)
+				if (theApp.m_player.m_Lyrics.IsTranslated())
 				{
-					if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT;
-					m_cortana_lyric.DrawCortanaText(lyric_text.c_str(), progress);
+					if (lyric.text.empty()) lyric.text = DEFAULT_LYRIC_TEXT;
+					if (lyric.translate.empty()) lyric.translate = DEFAULT_LYRIC_TEXT;
+					m_cortana_lyric.DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
+				}
+				else if (!theApp.m_play_setting_data.cortana_lyric_double_line)
+				{
+					if (lyric.text.empty()) lyric.text = DEFAULT_LYRIC_TEXT;
+					m_cortana_lyric.DrawCortanaText(lyric.text.c_str(), progress);
 				}
 				else
 				{
-					wstring next_lyric = theApp.m_player.m_Lyrics.GetLyric(time, 1);
-					if (lyric_text.empty()) lyric_text = DEFAULT_LYRIC_TEXT_CORTANA;
+					wstring next_lyric = theApp.m_player.m_Lyrics.GetLyric(time, 1).text;
+					if (lyric.text.empty()) lyric.text = DEFAULT_LYRIC_TEXT_CORTANA;
 					if (next_lyric.empty()) next_lyric = DEFAULT_LYRIC_TEXT_CORTANA;
-					m_cortana_lyric.DrawLyricDoubleLine(lyric_text.c_str(), next_lyric.c_str(), progress);
+					m_cortana_lyric.DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
 				}
 			}
 			else
@@ -2801,7 +2860,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
 	if (midi_lyric)
 		lyric_str = theApp.m_player.GetMidiLyric();
 	else
-		lyric_str = theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0);
+		lyric_str = theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text;
 	if (!CCommon::CopyStringToClipboard(lyric_str))
 	//	MessageBox(_T("当前歌词已成功复制到剪贴板。"), NULL, MB_ICONINFORMATION);
 	//else
@@ -3221,7 +3280,7 @@ void CMusicPlayerDlg::OnTranslateToSimplifiedChinese()
 {
 	// TODO: 在此添加命令处理程序代码
 	CWaitCursor wait_cursor;
-	theApp.m_player.m_Lyrics.ChineseTranslation(true);
+	theApp.m_player.m_Lyrics.ChineseConvertion(true);
 }
 
 
@@ -3229,7 +3288,7 @@ void CMusicPlayerDlg::OnTranslateToTranditionalChinese()
 {
 	// TODO: 在此添加命令处理程序代码
 	CWaitCursor wait_cursor;
-	theApp.m_player.m_Lyrics.ChineseTranslation(false);
+	theApp.m_player.m_Lyrics.ChineseConvertion(false);
 }
 
 

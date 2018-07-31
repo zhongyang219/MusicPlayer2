@@ -78,7 +78,12 @@ void CCortanaLyric::Init()
 		if (m_cortana_font.m_hObject)		//如果m_font已经关联了一个字体资源对象，则释放它
 			m_cortana_font.DeleteObject();
 		m_cortana_font.CreatePointFont(110, lf.lfFaceName);
+		if (m_font_double_line.m_hObject)
+			m_font_double_line.DeleteObject();
 		m_font_double_line.CreatePointFont(110, lf.lfFaceName);
+		if (m_font_translate.m_hObject)
+			m_font_translate.DeleteObject();
+		m_font_translate.CreatePointFont(100, lf.lfFaceName);
 		int a = 0;
 	}
 }
@@ -252,6 +257,54 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 			m_cortana_draw.DrawWindowText(up_rect, next_lyric, color2);
 			m_cortana_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
 		}
+
+		//将缓冲区DC中的图像拷贝到屏幕中显示
+		CRect rect{ m_cortana_rect };
+		rect.MoveToX(m_cortana_left_space);
+		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
+			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
+		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
+		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		MemBitmap.DeleteObject();
+		MemDC.DeleteDC();
+	}
+}
+
+void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int progress)
+{
+	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
+	{
+		//设置缓冲的DC
+		CDC MemDC;
+		CBitmap MemBitmap;
+		MemDC.CreateCompatibleDC(NULL);
+		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
+		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+
+		//使用m_cortana_draw绘图
+		m_cortana_draw.SetDC(&MemDC);
+		CRect text_rect{ m_cortana_rect };
+		text_rect.DeflateRect(theApp.DPI(4), theApp.DPI(2));
+		CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
+		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
+		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
+
+		COLORREF color1, color2;		//已播放歌词颜色、未播放歌词的颜色
+		if (m_dark_mode)
+		{
+			color1 = m_colors.light3;
+			color2 = m_colors.light1;
+		}
+		else
+		{
+			color1 = m_colors.dark3;
+			color2 = m_colors.dark1;
+		}
+		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
+		m_cortana_draw.SetFont(&m_cortana_font);
+		m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
+		m_cortana_draw.SetFont(&m_font_translate);
+		m_cortana_draw.DrawWindowText(down_rect, translate, color1, color1, progress, false);
 
 		//将缓冲区DC中的图像拷贝到屏幕中显示
 		CRect rect{ m_cortana_rect };

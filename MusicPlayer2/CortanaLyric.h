@@ -37,6 +37,9 @@ public:
 	//在Cortana搜索框内双行显示歌词
 	void DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int progress);
 
+	//在Cortana搜索框内显示带翻译的歌词
+	void DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int progress);
+
 	void DrawAlbumCover(const CImage& album_cover);
 
 	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
@@ -54,6 +57,7 @@ private:
 	CWnd* m_cortana_wnd{};		//Cortana搜索框的指针
 	CFont m_cortana_font;		//在Cortana搜索框中显示歌词的字体
 	CFont m_font_double_line;		//双行显示时歌词的字体
+	CFont m_font_translate;		//歌词翻译的字体
 	CRect m_cortana_rect;		//Cortana搜索框框的矩形区域
 	CRect m_icon_rect;			//Cortana图标处的矩形区域
 	int m_cortana_left_space;		//Cortana搜索框中显示文本距搜索框左侧的距离

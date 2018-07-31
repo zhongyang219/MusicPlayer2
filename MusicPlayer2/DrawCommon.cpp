@@ -122,8 +122,11 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 	//输出文本
 	m_pDC->SetTextColor(color2);
 	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);		//绘制背景文字
-	m_pDC->SetTextColor(color1);
-	m_pDC->DrawText(lpszString, text_f_rect, DT_SINGLELINE | DT_NOPREFIX);		//绘制覆盖文字
+	if (color1 != color2)
+	{
+		m_pDC->SetTextColor(color1);
+		m_pDC->DrawText(lpszString, text_f_rect, DT_SINGLELINE | DT_NOPREFIX);		//绘制覆盖文字
+	}
 }
 
 void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset)

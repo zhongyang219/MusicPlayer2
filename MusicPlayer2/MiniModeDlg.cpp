@@ -419,7 +419,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 	{
 		if (theApp.m_play_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
 		{
-			wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
+			wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };	//获取当歌词
 			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 			if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 				current_lyric = DEFAULT_LYRIC_TEXT;
@@ -431,7 +431,7 @@ void CMiniModeDlg::ShowInfo(bool force_refresh)
 			//判断显示的歌词是否发生变化，如果发生了变化，或参数要求强制刷新，就更新歌词显示
 			if (lyric_index != m_last_lyric_index || force_refresh)
 			{
-				wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };
+				wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };
 				if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 					current_lyric = DEFAULT_LYRIC_TEXT;
 				m_lyric_static.DrawWindowText(current_lyric.c_str(), true);
