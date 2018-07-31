@@ -452,10 +452,20 @@ void CLyrics::ChineseConvertion(bool simplified)
 {
 	for (auto& lyric : m_lyrics)
 	{
-		if (simplified)
-			lyric.text = CCommon::TranslateToSimplifiedChinese(lyric.text);
+		if (m_translate)		//如果当前歌词有翻译，则只对全部翻译文本转换
+		{
+			if (simplified)
+				lyric.translate = CCommon::TranslateToSimplifiedChinese(lyric.translate);
+			else
+				lyric.translate = CCommon::TranslateToTranditionalChinese(lyric.translate);
+		}
 		else
-			lyric.text = CCommon::TranslateToTranditionalChinese(lyric.text);
+		{
+			if (simplified)
+				lyric.text = CCommon::TranslateToSimplifiedChinese(lyric.text);
+			else
+				lyric.text = CCommon::TranslateToTranditionalChinese(lyric.text);
+		}
 	}
 	m_modified = true;
 	m_chinese_converted = true;
