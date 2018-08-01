@@ -791,6 +791,7 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 {
 	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_default_background.IsNull()) };
+	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
 	//显示“歌词秀”
 	CRect tmp;
 	tmp = lyric_rect;
@@ -805,7 +806,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	translate_rect.left = translate_rect.right - translate_rect.Height();
 	m_translate_rect = translate_rect;
 	m_translate_rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
-	if (theApp.m_player.m_Lyrics.IsTranslated())
+	if (theApp.m_player.m_Lyrics.IsTranslated() && !midi_lyric)
 	{
 		BYTE alpha;
 		if (draw_background)
@@ -843,7 +844,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	int lyric_height = text_height + theApp.m_app_setting_data.lyric_line_space;			//文本高度加上行间距
 	int lyric_height2 = lyric_height * 2 + theApp.m_app_setting_data.lyric_line_space;		//包含翻译的歌词高度
 	//绘制歌词文本
-	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
+	if (midi_lyric)
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
 		m_draw.DrawWindowText(lyric_area, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, true);
@@ -2922,7 +2923,9 @@ void CMusicPlayerDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//双击鼠标左键进入迷你模式
-	if (!m_repetemode_rect.PtInRect(point) && !m_volume_rect.PtInRect(point) && !m_volume_up_rect.PtInRect(point) && !m_volume_down_rect.PtInRect(point))
+	if (!m_repetemode_rect.PtInRect(point) && !m_volume_rect.PtInRect(point)
+		&& !m_volume_up_rect.PtInRect(point) && !m_volume_down_rect.PtInRect(point)
+		&& !m_translate_rect.PtInRect(point))
 		OnMiniMode();
 	CDialog::OnLButtonDblClk(nFlags, point);
 }
