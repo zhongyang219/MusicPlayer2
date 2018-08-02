@@ -43,7 +43,7 @@ void CBASSMidiLibrary::UnInit()
 	}
 }
 
-bool CBASSMidiLibrary::IsSuccessed()
+bool CBASSMidiLibrary::IsSuccessed() const
 {
 	return m_successed;
 }

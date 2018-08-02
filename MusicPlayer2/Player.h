@@ -37,7 +37,7 @@ public:
 	//初始化播放列表的工作线程函数
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
 	ThreadInfo m_thread_info;
-	CBASSMidiLibrary m_bass_midi_lib;
+	static CBASSMidiLibrary m_bass_midi_lib;
 
 	//获取Midi音乐内嵌歌词的回调函数
 	static void CALLBACK MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void *user);
@@ -249,8 +249,8 @@ private:
 	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
 	void SearchAlbumCover();		//获取专辑封面
 	void GetMidiPosition();			//获取MIDI音乐的播放进度
-	void AcquireSongInfo(HSTREAM hStream, SongInfo& song_info);		//获取歌曲标签等信息
 public:
+	static void AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo& song_info);		//获取歌曲标签等信息
 	void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
 	void AlbumCoverGaussBlur();		//专辑封面高斯模糊
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径

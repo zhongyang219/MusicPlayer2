@@ -7,8 +7,11 @@ public:
 	CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & song_info);
 
 	//获取音频文件的标签信息，结果保存在构造函数传递进来的SongInfo结构里，
-	//id3v1_first：是否优先获取ID3V1标签，否则，优先获取ID3V2标签
-	void GetAudioTag(bool id3v1_first);
+	//id3v2_first：是否优先获取ID3V2标签，否则，优先获取ID3V1标签
+	void GetAudioTag(bool id3v2_first);
+
+	//
+	void GetAllSongInfo(bool id3v2_first);
 
 	//获取音频文件的专辑封面，并保存到临时目录
 	//image_type：用来接收封面的格式 0:jpg, 1:png, 2:gif
