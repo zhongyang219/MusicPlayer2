@@ -909,6 +909,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 				CRect rect_translate;
 				if (!theApp.m_player.m_Lyrics.GetLyric(i).translate.empty() && m_show_translate)
 				{
+					rect_text.MoveToY(rect_text.top + theApp.m_app_setting_data.lyric_line_space);
 					rect_text.bottom = rect_text.top + text_height;
 					rect_translate = rect_text;
 					rect_translate.MoveToY(rect_text.bottom + theApp.m_app_setting_data.lyric_line_space);
