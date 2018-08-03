@@ -26,6 +26,9 @@
 #include "CoverDownloadCommon.h"
 #include "CoverDownloadDlg.h"
 #include "FormatConvertDlg.h"
+#include "RecorderDlg.h"
+
+#define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
 // CMusicPlayerDlg 对话框
 class CMusicPlayerDlg : public CDialog
@@ -327,4 +330,8 @@ public:
 	afx_msg void OnFormatConvert1();
 protected:
 	afx_msg LRESULT OnSettingsApplied(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnRecorder();
+protected:
+	afx_msg LRESULT OnAlbumCoverDownloadComplete(WPARAM wParam, LPARAM lParam);
 };

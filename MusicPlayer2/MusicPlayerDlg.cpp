@@ -257,6 +257,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_FORMAT_CONVERT, &CMusicPlayerDlg::OnFormatConvert)
 	ON_COMMAND(ID_FORMAT_CONVERT1, &CMusicPlayerDlg::OnFormatConvert1)
 	ON_MESSAGE(WM_SETTINGS_APPLIED, &CMusicPlayerDlg::OnSettingsApplied)
+	ON_COMMAND(ID_RECORDER, &CMusicPlayerDlg::OnRecorder)
+	ON_MESSAGE(WM_ALBUM_COVER_DOWNLOAD_COMPLETE, &CMusicPlayerDlg::OnAlbumCoverDownloadComplete)
 END_MESSAGE_MAP()
 
 
@@ -1995,11 +1997,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnCancel();
 				return TRUE;
 			}
-			//if (pMsg->wParam == 'R')		//设置按Ctr+R重新初始化BASS音频库
-			//{
-			//	OnReIniBass();
-			//	return TRUE;
-			//}
+			if (pMsg->wParam == 'R')		//设置按Ctr+R打开录音机
+			{
+				OnRecorder();
+				return TRUE;
+			}
 			if (pMsg->wParam == 'M')		//设置按Ctr+M进入迷你模式
 			{
 				OnMiniMode();
@@ -3292,7 +3294,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 
 		//重新从本地获取专辑封面
 		theApp.m_player.SearchOutAlbumCover();
-		theApp.m_player.AlbumCoverGaussBlur();
+		::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_ALBUM_COVER_DOWNLOAD_COMPLETE, 0, 0);
 	}
 	//自动下载歌词
 	if (download_lyric)
@@ -3460,6 +3462,8 @@ void CMusicPlayerDlg::OnDownloadAlbumCover()
 
 afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lParam)
 {
+	//专辑封面高斯模糊处理（放到这里是为了避免此函数在工作线程中被调用，在工作线程中，拉伸图片的处理CDrawCommon::BitmapStretch有一定的概率出错，原因未知）
+	theApp.m_player.AlbumCoverGaussBlur();
 	//自动下载专辑封面
 	m_pDownloadThread = AfxBeginThread(DownloadLyricAndCoverThreadFunc, this);
 	return 0;
@@ -3603,5 +3607,22 @@ afx_msg LRESULT CMusicPlayerDlg::OnSettingsApplied(WPARAM wParam, LPARAM lParam)
 	if (pOptionsDlg == nullptr)
 		return 0;
 	ApplySettings(*pOptionsDlg);
+	return 0;
+}
+
+
+void CMusicPlayerDlg::OnRecorder()
+{
+	// TODO: 在此添加命令处理程序代码
+	CRecorderDlg dlg;
+	dlg.DoModal();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPARAM lParam)
+{
+	//由于此函数放到线程中处理时，拉伸图片的处理CDrawCommon::BitmapStretch有一定的概率出错，原因未知
+	//导致专辑封面背景是黑色的，因此通过发送消息放到主线程中处理
+	theApp.m_player.AlbumCoverGaussBlur();
 	return 0;
 }

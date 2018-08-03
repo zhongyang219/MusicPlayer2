@@ -199,6 +199,7 @@
     <ClInclude Include="BASSWmaLibrary.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
+    <ClInclude Include="RecorderDlg.h" />
     <ClInclude Include="GaussBlur.h" />
     <ClInclude Include="IniHelper.h" />
     <ClInclude Include="TagEditDlg.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="BASSWmaLibrary.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
+    <ClCompile Include="RecorderDlg.cpp" />
     <ClCompile Include="GaussBlur.cpp" />
     <ClCompile Include="IniHelper.cpp" />
     <ClCompile Include="TagEditDlg.cpp" />

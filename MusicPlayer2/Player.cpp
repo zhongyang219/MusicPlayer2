@@ -1606,7 +1606,7 @@ void CPlayer::SearchAlbumCover()
 			//获取不到专辑封面时尝试使用外部图片作为封面
 			SearchOutAlbumCover();
 		}
-		AlbumCoverGaussBlur();
+		//AlbumCoverGaussBlur();
 	}
 	last_file_path = m_path + m_current_file_name;
 }

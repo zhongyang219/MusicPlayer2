@@ -156,6 +156,9 @@
     <Filter Include="头文件和源文件\公共的类\GaussBlur">
       <UniqueIdentifier>{3c989d6b-1ece-4f47-b792-3934af8402e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\对话框类\RecorderDlg">
+      <UniqueIdentifier>{bc15dc8a-cf52-42cb-ac8f-03c1795d5ab6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -324,6 +327,9 @@
     <ClInclude Include="GaussBlur.h">
       <Filter>头文件和源文件\公共的类\GaussBlur</Filter>
     </ClInclude>
+    <ClInclude Include="RecorderDlg.h">
+      <Filter>头文件和源文件\对话框类\RecorderDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -475,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="GaussBlur.cpp">
       <Filter>头文件和源文件\公共的类\GaussBlur</Filter>
+    </ClCompile>
+    <ClCompile Include="RecorderDlg.cpp">
+      <Filter>头文件和源文件\对话框类\RecorderDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
