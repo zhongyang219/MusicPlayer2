@@ -7,7 +7,7 @@ CLyrics::CLyrics(const wstring& file_name) : m_file{ file_name }
 	DivideLyrics();
 	JudgeCode();
 	DisposeLyric();
-	std::sort(m_lyrics.begin(), m_lyrics.end());		//将歌词按时间标签排序
+	std::stable_sort(m_lyrics.begin(), m_lyrics.end());		//将歌词按时间标签排序（使用stable_sort，确保相同的元素相对位置保持不变，用于处理带翻译的歌词时确保翻译在原文的后面）
 }
 
 void CLyrics::DivideLyrics()
