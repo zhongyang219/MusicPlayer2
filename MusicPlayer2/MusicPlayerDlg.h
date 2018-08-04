@@ -33,7 +33,6 @@
 // CMusicPlayerDlg 对话框
 class CMusicPlayerDlg : public CDialog
 {
-
 	struct UIColors		//界面颜色
 	{
 		COLORREF color_text;				//文本颜色
@@ -49,6 +48,14 @@ class CMusicPlayerDlg : public CDialog
 		COLORREF color_button_back;			//歌词翻译按钮的背景色
 		int background_transparency;		//背景不透明度0~100
 	};
+
+	struct UIButton		//界面中绘制的按钮
+	{
+		CRect rect;				//按钮的矩形区域
+		bool hover{ false };	//鼠标是否指向按钮
+		bool enable{ true };	//按钮是否启用
+	};
+
 // 构造
 public:
 	CMusicPlayerDlg(wstring cmdLine = wstring() ,CWnd* pParent = NULL);	// 标准构造函数
@@ -148,16 +155,14 @@ protected:
 
 	unsigned int m_timer_count{};
 
-	CRect m_draw_rect;		//绘图区域
-	CRect m_repetemode_rect;	//显示“循环模式”的矩形区域
-	CRect m_cover_rect;			//显示专辑封面的矩形区域（以绘图区域左上角为原点）
+	CRect m_draw_rect;				//绘图区域
+	CRect m_repetemode_rect;		//显示“循环模式”的矩形区域
+	CRect m_cover_rect;				//显示专辑封面的矩形区域（以绘图区域左上角为原点）
 	bool m_repetemode_hover{ false };	//鼠标指向了“循环模式”的矩形区域
-	CRect m_volume_rect;		//显示音量的矩形区域
-	bool m_volume_hover{ false };	//鼠标指向了音量的矩形区域
+	UIButton m_volume_btn;				//音量按钮
 	CRect m_volume_up_rect, m_volume_down_rect;	//音量调整条增加和减少音量的矩形区域
 	bool m_show_volume_adj{ false };	//显示音量调整按钮
-	CRect m_translate_rect;
-	bool m_translate_hover{ false };
+	UIButton m_translate_btn;			//歌词翻译按钮
 
 	int m_item_selected{};		//播放列表中鼠标选中的项目
 	vector<int> m_items_selected;

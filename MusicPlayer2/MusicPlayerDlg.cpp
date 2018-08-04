@@ -671,22 +671,22 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//显示音量
 	tmp.MoveToX(info_rect.right - theApp.DPI(124));
 	tmp.right = info_rect.right - theApp.DPI(49);
-	m_volume_rect = tmp;
-	m_volume_rect.DeflateRect(0, theApp.DPI(4));
-	m_volume_rect.right -= theApp.DPI(12);
+	m_volume_btn.rect = tmp;
+	m_volume_btn.rect.DeflateRect(0, theApp.DPI(4));
+	m_volume_btn.rect.right -= theApp.DPI(12);
 	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
-	if (m_volume_hover)		//鼠标指向音量区域时，以另外一种颜色显示
+	if (m_volume_btn.hover)		//鼠标指向音量区域时，以另外一种颜色显示
 		m_draw.DrawWindowText(tmp, buff, m_colors.color_text_heighlight);
 	else
 		m_draw.DrawWindowText(tmp, buff, m_colors.color_text);
 	//设置音量调整按钮的位置
-	m_volume_down_rect = m_volume_rect;
+	m_volume_down_rect = m_volume_btn.rect;
 	m_volume_down_rect.bottom += theApp.DPI(4);
-	m_volume_down_rect.MoveToY(m_volume_rect.bottom);
-	m_volume_down_rect.right = m_volume_rect.left + m_volume_rect.Width() / 2;
+	m_volume_down_rect.MoveToY(m_volume_btn.rect.bottom);
+	m_volume_down_rect.right = m_volume_btn.rect.left + m_volume_btn.rect.Width() / 2;
 	m_volume_up_rect = m_volume_down_rect;
 	m_volume_up_rect.MoveToX(m_volume_down_rect.right);
-	m_volume_rect.MoveToXY(CPoint{ m_volume_rect.left + m_draw_rect.left, m_volume_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
+	m_volume_btn.rect.MoveToXY(CPoint{ m_volume_btn.rect.left + m_draw_rect.left, m_volume_btn.rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
 	//显示<<<<
 	int progress;
 	Time time{ theApp.m_player.GetCurrentPosition() };
@@ -806,16 +806,17 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 	translate_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 	translate_rect.right = lyric_rect.right - 2 * m_margin;
 	translate_rect.left = translate_rect.right - translate_rect.Height();
-	m_translate_rect = translate_rect;
-	m_translate_rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
-	if (theApp.m_player.m_Lyrics.IsTranslated() && !midi_lyric)
+	m_translate_btn.rect = translate_rect;
+	m_translate_btn.rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
+	m_translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated() && !midi_lyric;
+	if (m_translate_btn.enable)
 	{
 		BYTE alpha;
 		if (draw_background)
 			alpha = ALPHA_CHG(m_colors.background_transparency);
 		else
 			alpha = 255;
-		if (m_translate_hover)
+		if (m_translate_btn.hover)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
 		else if (m_show_translate)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
@@ -2926,9 +2927,9 @@ void CMusicPlayerDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//双击鼠标左键进入迷你模式
-	if (!m_repetemode_rect.PtInRect(point) && !m_volume_rect.PtInRect(point)
+	if (!m_repetemode_rect.PtInRect(point) && !m_volume_btn.rect.PtInRect(point)
 		&& !m_volume_up_rect.PtInRect(point) && !m_volume_down_rect.PtInRect(point)
-		&& !m_translate_rect.PtInRect(point))
+		&& !m_translate_btn.rect.PtInRect(point))
 		OnMiniMode();
 	CDialog::OnLButtonDblClk(nFlags, point);
 }
@@ -3008,7 +3009,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	if (m_volume_rect.PtInRect(point) == FALSE)
+	if (m_volume_btn.rect.PtInRect(point) == FALSE)
 		m_show_volume_adj = false;
 
 	//计算显示信息和显示歌词的区域
@@ -3050,23 +3051,23 @@ void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_repetemode_hover = (m_repetemode_rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_repetemode_hover置为true
-	m_volume_hover = (m_volume_rect.PtInRect(point) != FALSE);
-	m_translate_hover = (m_translate_rect.PtInRect(point) != FALSE);
+	m_volume_btn.hover = (m_volume_btn.rect.PtInRect(point) != FALSE);
+	m_translate_btn.hover = (m_translate_btn.rect.PtInRect(point) != FALSE);
 
 	//显示歌词翻译的鼠标提示
 	static bool last_translate_hover{ false };
-	if (!last_translate_hover && m_translate_hover)
+	if (!last_translate_hover && m_translate_btn.hover)
 	{
 		m_Mytip.AddTool(this, L"显示歌词翻译");
 		m_Mytip.SetMaxTipWidth(theApp.DPI(400));
 		m_Mytip.Pop();
 	}
-	if (last_translate_hover && !m_translate_hover)
+	if (last_translate_hover && !m_translate_btn.hover)
 	{
 		m_Mytip.AddTool(this, _T(""));
 		m_Mytip.Pop();
 	}
-	last_translate_hover = m_translate_hover;
+	last_translate_hover = m_translate_btn.hover;
 
 	//显示专辑封面的提示
 	if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
@@ -3124,7 +3125,7 @@ void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 
 	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
-		m_show_volume_adj = (m_volume_rect.PtInRect(point) != FALSE);
+		m_show_volume_adj = (m_volume_btn.rect.PtInRect(point) != FALSE);
 	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
 		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
 
@@ -3137,7 +3138,7 @@ void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 	}
 
-	if (m_translate_rect.PtInRect(point))	//点击了“歌词翻译”时，开启或关闭歌词翻译
+	if (m_translate_btn.rect.PtInRect(point) && m_translate_btn.enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
 	{
 		m_show_translate = !m_show_translate;
 	}
