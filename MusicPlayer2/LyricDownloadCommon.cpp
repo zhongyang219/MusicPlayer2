@@ -31,6 +31,8 @@ bool CLyricDownloadCommon::DisposeLryic(wstring & lyric_str)
 		return false;
 	}
 	lyric_str = lyric_str.substr(index1, lyric_str.size() - index1 - 13);
+	if (!lyric_str.empty() && lyric_str.back() == L'\"')
+		lyric_str.pop_back();
 
 	for (int i{}; i < static_cast<int>(lyric_str.size() - 1); i++)
 	{
