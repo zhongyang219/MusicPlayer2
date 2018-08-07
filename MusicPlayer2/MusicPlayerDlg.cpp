@@ -275,24 +275,22 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"narrow_mode", m_narrow_mode);
 	ini.WriteBool(L"config", L"show_translate", m_show_translate);
 
-	ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
-	ini.WriteBool(L"config", L"show_taskbar_progress", theApp.m_play_setting_data.show_taskbar_progress);
 	ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
 	ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
 	ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(m_display_format));
-	ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_play_setting_data.show_lyric_in_cortana);
-	ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_play_setting_data.save_lyric_in_offset);
+	ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.show_lyric_in_cortana);
+	ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
 	ini.WriteString(L"config",L"font", theApp.m_app_setting_data.lyric_font_name);
 	ini.WriteInt(L"config", L"font_size", theApp.m_app_setting_data.lyric_font_size);
 	ini.WriteInt(L"config", L"lyric_line_space", theApp.m_app_setting_data.lyric_line_space);
 	ini.WriteInt(L"config", L"spectrum_height", theApp.m_app_setting_data.sprctrum_height);
-	ini.WriteBool(L"config", L"cortana_lyric_double_line", theApp.m_play_setting_data.cortana_lyric_double_line);
+	ini.WriteBool(L"config", L"cortana_lyric_double_line", theApp.m_lyric_setting_data.cortana_lyric_double_line);
 	ini.WriteBool(L"config", L"show_spectrum", theApp.m_app_setting_data.show_spectrum);
 	ini.WriteBool(L"config", L"show_album_cover", theApp.m_app_setting_data.show_album_cover);
 	ini.WriteInt(L"config", L"album_cover_fit", static_cast<int>(theApp.m_app_setting_data.album_cover_fit));
 	ini.WriteBool(L"config", L"album_cover_as_background", theApp.m_app_setting_data.album_cover_as_background);
-	ini.WriteBool(L"config", L"cortana_show_album_cover", theApp.m_play_setting_data.cortana_show_album_cover);
-	ini.WriteBool(L"config", L"cortana_icon_beat", theApp.m_play_setting_data.cortana_icon_beat);
+	ini.WriteBool(L"config", L"cortana_show_album_cover", theApp.m_lyric_setting_data.cortana_show_album_cover);
+	ini.WriteBool(L"config", L"cortana_icon_beat", theApp.m_lyric_setting_data.cortana_icon_beat);
 	ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
 	ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
 	ini.WriteBool(L"config", L"lyric_background", theApp.m_app_setting_data.lyric_background);
@@ -302,8 +300,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"use_out_image", theApp.m_app_setting_data.use_out_image);
 	ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
 	ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
-	ini.WriteBool(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon);
-	ini.WriteInt(L"config", L"cortana_back_color", theApp.m_play_setting_data.cortana_color);
+	ini.WriteInt(L"config", L"cortana_back_color", theApp.m_lyric_setting_data.cortana_color);
 	ini.WriteInt(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map);
 	ini.WriteBool(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip);
 	ini.WriteBool(L"other", L"no_sf2_warning", theApp.m_nc_setting_data.no_sf2_warning);
@@ -314,6 +311,11 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"general", L"auto_download_only_tag_full", theApp.m_general_setting_data.auto_download_only_tag_full);
 	ini.WriteString(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path);
 	ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric);
+
+	ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
+	ini.WriteBool(L"config", L"show_taskbar_progress", theApp.m_play_setting_data.show_taskbar_progress);
+	ini.WriteBool(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon);
+	ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -327,24 +329,22 @@ void CMusicPlayerDlg::LoadConfig()
 	m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
 	m_show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
 
-	theApp.m_play_setting_data.stop_when_error = ini.GetBool(_T("config"), _T("stop_when_error"), 1);
-	theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(_T("config"), _T("show_taskbar_progress"), 1);
 	theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(_T("config"), _T("theme_color"), 16760187);
 	theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(_T("config"), _T("theme_color_follow_system"), 1);
 	m_display_format = static_cast<DisplayFormat>(ini.GetInt(_T("config"), _T("playlist_display_format"), 2));
-	theApp.m_play_setting_data.show_lyric_in_cortana = ini.GetBool(_T("config"), _T("show_lyric_in_cortana"), 0);
-	theApp.m_play_setting_data.save_lyric_in_offset = ini.GetBool(_T("config"), _T("save_lyric_in_offset"), 0);
+	theApp.m_lyric_setting_data.show_lyric_in_cortana = ini.GetBool(_T("config"), _T("show_lyric_in_cortana"), 0);
+	theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(_T("config"), _T("save_lyric_in_offset"), 0);
 	theApp.m_app_setting_data.lyric_font_name = ini.GetString(L"config", L"font", L"微软雅黑");
 	theApp.m_app_setting_data.lyric_font_size = ini.GetInt(L"config", L"font_size", 10);
 	theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 2);
 	theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 100);
-	theApp.m_play_setting_data.cortana_lyric_double_line = ini.GetBool(_T("config"), _T("cortana_lyric_double_line"), 0);
+	theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(_T("config"), _T("cortana_lyric_double_line"), 0);
 	theApp.m_app_setting_data.show_spectrum = ini.GetBool(_T("config"), _T("show_spectrum"), 1);
 	theApp.m_app_setting_data.show_album_cover = ini.GetBool(_T("config"), _T("show_album_cover"), 1);
 	theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(ini.GetInt(_T("config"), _T("album_cover_fit"), 1));
 	theApp.m_app_setting_data.album_cover_as_background = ini.GetBool(_T("config"), _T("album_cover_as_background"), true);
-	theApp.m_play_setting_data.cortana_show_album_cover = ini.GetBool(_T("config"), _T("cortana_show_album_cover"), 1);
-	theApp.m_play_setting_data.cortana_icon_beat = ini.GetBool(_T("config"), _T("cortana_icon_beat"), 0);
+	theApp.m_lyric_setting_data.cortana_show_album_cover = ini.GetBool(_T("config"), _T("cortana_show_album_cover"), 1);
+	theApp.m_lyric_setting_data.cortana_icon_beat = ini.GetBool(_T("config"), _T("cortana_icon_beat"), 0);
 	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
 	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
 	theApp.m_app_setting_data.lyric_background = ini.GetBool(_T("config"), _T("lyric_background"), true);
@@ -354,8 +354,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.use_out_image = ini.GetBool(_T("config"), _T("use_out_image"), 0);
 	theApp.m_nc_setting_data.volum_step = ini.GetInt(_T("config"), _T("volum_step"), 3);
 	theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(_T("config"), _T("mouse_volum_step"), 2);
-	theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(_T("config"), _T("show_playstate_icon"), 1);
-	theApp.m_play_setting_data.cortana_color = ini.GetInt(_T("config"), _T("cortana_back_color"), 0);
+	theApp.m_lyric_setting_data.cortana_color = ini.GetInt(_T("config"), _T("cortana_back_color"), 0);
 	theApp.m_nc_setting_data.volume_map = ini.GetInt(_T("config"), _T("volume_map"), 100);
 	theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(_T("config"), _T("show_cover_tip"), 0);
 	theApp.m_nc_setting_data.no_sf2_warning = ini.GetInt(L"other", L"no_sf2_warning", true);
@@ -366,6 +365,11 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_general_setting_data.auto_download_only_tag_full = ini.GetBool(_T("general"), _T("auto_download_only_tag_full"), 1);
 	theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
 	theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(_T("general"), _T("midi_use_inner_lyric"), 0);
+
+	theApp.m_play_setting_data.stop_when_error = ini.GetBool(_T("config"), _T("stop_when_error"), 1);
+	theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(_T("config"), _T("show_taskbar_progress"), 1);
+	theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(_T("config"), _T("show_playstate_icon"), 1);
+	theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -778,7 +782,7 @@ void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
 		wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };	//获取当歌词
 		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 			current_lyric = DEFAULT_LYRIC_TEXT;
-		if (theApp.m_play_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
+		if (theApp.m_lyric_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
 		{
 			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true);
@@ -922,7 +926,7 @@ void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
 				{
 					//绘制歌词文本
 					m_draw.SetFont(&m_lyric_font);
-					if (theApp.m_play_setting_data.lyric_karaoke_disp)
+					if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
 						m_draw.DrawWindowText(rect_text, theApp.m_player.m_Lyrics.GetLyric(i).text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
 					else
 						m_draw.DrawWindowText(rect_text, theApp.m_player.m_Lyrics.GetLyric(i).text.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
@@ -1248,19 +1252,21 @@ void CMusicPlayerDlg::CreateDesktopShortcut()
 void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 {
 	//获取选项设置对话框中的设置数据
-	if (theApp.m_play_setting_data.show_lyric_in_cortana == true && optionDlg.m_tab1_dlg.m_data.show_lyric_in_cortana == false)	//如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
+	if (theApp.m_lyric_setting_data.show_lyric_in_cortana == true && optionDlg.m_tab1_dlg.m_data.show_lyric_in_cortana == false)	//如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
 		m_cortana_lyric.ResetCortanaText();
 
 	bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
 	bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != optionDlg.m_tab2_dlg.m_data.background_gauss_blur
 		|| theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius
 		|| theApp.m_app_setting_data.album_cover_as_background != optionDlg.m_tab2_dlg.m_data.album_cover_as_background };
+	bool output_device_changed{ theApp.m_play_setting_data.output_device != optionDlg.m_tab4_dlg.m_data.output_device };
 
-	theApp.m_play_setting_data = optionDlg.m_tab1_dlg.m_data;
+	theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
 	theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
 	theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
+	theApp.m_play_setting_data = optionDlg.m_tab4_dlg.m_data;
 
-	if (reload_sf2/* && theApp.m_player.IsMidi()*/)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
+	if (reload_sf2 || output_device_changed)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
 	{
 		theApp.m_player.ReIniBASS(true);
 		UpdatePlayPauseButton();
@@ -1274,7 +1280,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	m_time_static.Invalidate();
 	SetPlayListColor();
 	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
-	m_cortana_lyric.SetCortanaColor(theApp.m_play_setting_data.cortana_color);
+	m_cortana_lyric.SetCortanaColor(theApp.m_lyric_setting_data.cortana_color);
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
 		//如果m_font已经关联了一个字体资源对象，则释放它
@@ -1338,7 +1344,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//只有Win10以上的系统才能在Cortana搜索框中显示歌词
 	if (!theApp.m_win_version.IsWindows10OrLater())
-		theApp.m_play_setting_data.show_lyric_in_cortana = false;
+		theApp.m_lyric_setting_data.show_lyric_in_cortana = false;
 	m_cortana_lyric.SetEnable(theApp.m_win_version.IsWindows10OrLater());
 
 	//设置窗口不透明度
@@ -1475,8 +1481,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//获取Cortana歌词
 	m_cortana_lyric.Init();
 	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
-	m_cortana_lyric.SetCortanaColor(theApp.m_play_setting_data.cortana_color);
-	m_cortana_lyric.SetCortanaIconBeat(&theApp.m_play_setting_data.cortana_icon_beat);
+	m_cortana_lyric.SetCortanaColor(theApp.m_lyric_setting_data.cortana_color);
+	m_cortana_lyric.SetCortanaIconBeat(&theApp.m_lyric_setting_data.cortana_icon_beat);
 
 	//初始化绘图的类
 	m_pDC = GetDC();
@@ -1703,7 +1709,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 
 		//在Cortana搜索框里显示歌词
-		if (theApp.m_play_setting_data.show_lyric_in_cortana)
+		if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
 		{
 
 			if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
@@ -1722,7 +1728,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 					if (lyric.translate.empty()) lyric.translate = DEFAULT_LYRIC_TEXT;
 					m_cortana_lyric.DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
 				}
-				else if (!theApp.m_play_setting_data.cortana_lyric_double_line)
+				else if (!theApp.m_lyric_setting_data.cortana_lyric_double_line)
 				{
 					if (lyric.text.empty()) lyric.text = DEFAULT_LYRIC_TEXT;
 					m_cortana_lyric.DrawCortanaText(lyric.text.c_str(), progress);
@@ -1763,11 +1769,11 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			int spetraum = static_cast<int>(spectrum_avr * 4000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
 			m_cortana_lyric.SetSpectrum(spetraum);
 			//显示专辑封面，如果没有专辑封面，则显示Cortana图标
-			m_cortana_lyric.AlbumCoverEnable(theApp.m_play_setting_data.cortana_show_album_cover/* && theApp.m_player.AlbumCoverExist()*/);
+			m_cortana_lyric.AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && theApp.m_player.AlbumCoverExist()*/);
 			m_cortana_lyric.DrawAlbumCover(theApp.m_player.GetAlbumCover());
 		}
 	}
-	//if (theApp.m_player.SongIsOver() && (!theApp.m_play_setting_data.stop_when_error || !theApp.m_player.IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
+	//if (theApp.m_player.SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !theApp.m_player.IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
 	if ((theApp.m_player.SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && theApp.m_player.IsError())) && m_play_error_cnt <= theApp.m_player.GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲
 	{
 		if (theApp.m_player.IsError())
@@ -1779,7 +1785,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			theApp.m_player.MusicControl(Command::STOP);		//停止播放
 			ShowTime();
-			if (theApp.m_play_setting_data.show_lyric_in_cortana)
+			if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
 				m_cortana_lyric.ResetCortanaText();
 		}
 		SwitchTrack();
@@ -2453,10 +2459,11 @@ void CMusicPlayerDlg::OnOptionSettings()
 	COptionsDlg optionDlg;
 	//初始化对话框中变量的值
 	optionDlg.m_tab_selected = m_tab_selected;
-	optionDlg.m_tab1_dlg.m_data = theApp.m_play_setting_data;
+	optionDlg.m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
 	optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
 	optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
 	optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
+	optionDlg.m_tab4_dlg.m_data = theApp.m_play_setting_data;
 
 	int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
 	int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
@@ -2955,7 +2962,7 @@ void CMusicPlayerDlg::OnLyricDelay()
 void CMusicPlayerDlg::OnSaveModifiedLyric()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (theApp.m_play_setting_data.save_lyric_in_offset && !theApp.m_player.m_Lyrics.IsChineseConverted())		//如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
+	if (theApp.m_lyric_setting_data.save_lyric_in_offset && !theApp.m_player.m_Lyrics.IsChineseConverted())		//如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
 		theApp.m_player.m_Lyrics.SaveLyric();
 	else
 		theApp.m_player.m_Lyrics.SaveLyric2();
@@ -3309,9 +3316,9 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 		CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
 		//保存歌词
 		CFilePathHelper lyric_path;
-		//if (CCommon::FolderExist(theApp.m_play_setting_data.lyric_path))
+		//if (CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
 		//{
-		//	lyric_path.SetFilePath(theApp.m_play_setting_data.lyric_path + theApp.m_player.GetCurrentSongInfo().file_name);
+		//	lyric_path.SetFilePath(theApp.m_lyric_setting_data.lyric_path + theApp.m_player.GetCurrentSongInfo().file_name);
 		//}
 		//else
 		//{

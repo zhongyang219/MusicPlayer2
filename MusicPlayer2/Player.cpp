@@ -15,9 +15,43 @@ CPlayer::~CPlayer()
 
 void CPlayer::IniBASS()
 {
+	//获取当前的音频输出设备
+	BASS_DEVICEINFO device_info;
+	int rtn;
+	int device_index{1};
+	theApp.m_output_devices.clear();
+	DeviceInfo device;
+	device.index = -1;
+	device.name = L"默认输出设备";
+	theApp.m_output_devices.push_back(device);
+	while (true)
+	{
+		device = DeviceInfo{};
+		rtn = BASS_GetDeviceInfo(device_index, &device_info);
+		if (rtn == 0)
+			break;
+		device.index = device_index;
+		if(device_info.name!=nullptr)
+			device.name = CCommon::StrToUnicode(string(device_info.name));
+		if (device_info.driver != nullptr)
+			device.driver = CCommon::StrToUnicode(string(device_info.driver));
+		device.flags = device_info.flags;
+		theApp.m_output_devices.push_back(device);
+		device_index++;
+	}
+
+	for (int i{}; i < theApp.m_output_devices.size(); i++)
+	{
+		if (theApp.m_output_devices[i].name == theApp.m_play_setting_data.output_device)
+		{
+			theApp.m_play_setting_data.device_selected = i;
+			break;
+		}
+	}
+
 	//初始化BASE音频库
 	BASS_Init(
-		-1,//默认设备
+		theApp.m_output_devices[theApp.m_play_setting_data.device_selected].index,		//播放设备
 		44100,//输出采样率44100（常用值）
 		BASS_DEVICE_CPSPEAKERS,//信号，BASS_DEVICE_CPSPEAKERS 注释原文如下：
 							   /* Use the Windows control panel setting to detect the number of speakers.*/
@@ -326,12 +360,12 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 {
 	//检索歌词文件
 	//如果允许歌词模糊匹配，先将所有的歌词文件的文件名保存到容器中以供模糊匹配时检索
-	if (theApp.m_play_setting_data.lyric_fuzzy_match)
+	if (theApp.m_lyric_setting_data.lyric_fuzzy_match)
 	{
 		m_current_path_lyrics.clear();
 		m_lyric_path_lyrics.clear();
 		CAudioCommon::GetLyricFiles(m_path, m_current_path_lyrics);
-		CAudioCommon::GetLyricFiles(theApp.m_play_setting_data.lyric_path, m_lyric_path_lyrics);
+		CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, m_lyric_path_lyrics);
 	}
 
 	//检索播放列表中每一首歌曲的歌词文件，并将歌词文件路径保存到列表中
@@ -343,18 +377,18 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 		//	continue;
 		CFilePathHelper lyric_path{ m_path + song.file_name };		//得到路径+文件名的字符串
 		lyric_path.ReplaceFileExtension(L"lrc");		//将文件扩展替换成lrc
-		CFilePathHelper lyric_path2{ theApp.m_play_setting_data.lyric_path + song.file_name };
+		CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.file_name };
 		lyric_path2.ReplaceFileExtension(L"lrc");
 		//查找歌词文件名和歌曲文件名完全匹配的歌词
 		if (CCommon::FileExist(lyric_path.GetFilePath()))
 		{
 			song.lyric_file = lyric_path.GetFilePath();
 		}
-		else if (CCommon::FileExist(lyric_path2.GetFilePath()))		//当前目录下没有对应的歌词文件时，就在theApp.m_play_setting_data.m_lyric_path目录下寻找歌词文件
+		else if (CCommon::FileExist(lyric_path2.GetFilePath()))		//当前目录下没有对应的歌词文件时，就在theApp.m_lyric_setting_data.m_lyric_path目录下寻找歌词文件
 		{
 			song.lyric_file = lyric_path2.GetFilePath();
 		}
-		else if (theApp.m_play_setting_data.lyric_fuzzy_match)
+		else if (theApp.m_lyric_setting_data.lyric_fuzzy_match)
 		{
 			wstring matched_lyric;		//匹配的歌词的路径
 			//先寻找歌词文件中同时包含歌曲标题和艺术家的歌词文件
@@ -375,7 +409,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 					//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
 					if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
 					{
-						matched_lyric = theApp.m_play_setting_data.lyric_path + str;
+						matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
 						break;
 					}
 				}
@@ -402,7 +436,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 					//if (str.find(song.title) != string::npos)
 					if (CCommon::StringNatchWholeWord(str, song.title) != -1)
 					{
-						matched_lyric = theApp.m_play_setting_data.lyric_path + str;
+						matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
 						break;
 					}
 				}
@@ -1007,10 +1041,10 @@ void CPlayer::SaveConfig() const
 	ini.WriteInt(L"config", L"volume", m_volume);
 	//ini.WriteInt(L"config", L"position", m_current_position_int);
 	ini.WriteInt(L"config", L"repeat_mode", static_cast<int>(m_repeat_mode));
-	ini.WriteInt(L"config", L"lyric_karaoke_disp", theApp.m_play_setting_data.lyric_karaoke_disp);
-	ini.WriteString(L"config",L"lyric_path", theApp.m_play_setting_data.lyric_path);
+	ini.WriteInt(L"config", L"lyric_karaoke_disp", theApp.m_lyric_setting_data.lyric_karaoke_disp);
+	ini.WriteString(L"config",L"lyric_path", theApp.m_lyric_setting_data.lyric_path);
 	ini.WriteInt(L"config", L"sort_mode", static_cast<int>(m_sort_mode));
-	ini.WriteInt(L"config", L"lyric_fuzzy_match", theApp.m_play_setting_data.lyric_fuzzy_match);
+	ini.WriteInt(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
 	ini.WriteString(L"config",L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
 
 	//保存均衡器设定
@@ -1045,12 +1079,12 @@ void CPlayer::LoadConfig()
 	//m_current_position_int =ini.GetInt(L"config", L"position", 0);
 	//m_current_position.int2time(m_current_position_int);
 	m_repeat_mode = static_cast<RepeatMode>(ini.GetInt(L"config", L"repeat_mode", 0));
-	theApp.m_play_setting_data.lyric_path = ini.GetString(L"config", L"lyric_path", L".\\lyrics\\");
-	if (!theApp.m_play_setting_data.lyric_path.empty() && theApp.m_play_setting_data.lyric_path.back() != L'/' && theApp.m_play_setting_data.lyric_path.back() != L'\\')
-		theApp.m_play_setting_data.lyric_path.append(1, L'\\');
-	theApp.m_play_setting_data.lyric_karaoke_disp =ini.GetBool(L"config", L"lyric_karaoke_disp", 1);
+	theApp.m_lyric_setting_data.lyric_path = ini.GetString(L"config", L"lyric_path", L".\\lyrics\\");
+	if (!theApp.m_lyric_setting_data.lyric_path.empty() && theApp.m_lyric_setting_data.lyric_path.back() != L'/' && theApp.m_lyric_setting_data.lyric_path.back() != L'\\')
+		theApp.m_lyric_setting_data.lyric_path.append(1, L'\\');
+	theApp.m_lyric_setting_data.lyric_karaoke_disp =ini.GetBool(L"config", L"lyric_karaoke_disp", 1);
 	m_sort_mode = static_cast<SortMode>(ini.GetInt(L"config", L"sort_mode", 0));
-	theApp.m_play_setting_data.lyric_fuzzy_match =ini.GetBool(L"config", L"lyric_fuzzy_match", 1);
+	theApp.m_lyric_setting_data.lyric_fuzzy_match =ini.GetBool(L"config", L"lyric_fuzzy_match", 1);
 	wstring default_album_name = ini.GetString(L"config", L"default_album_file_name", L"cover");
 	CCommon::StringSplit(default_album_name, L',', theApp.m_app_setting_data.default_album_name);
 

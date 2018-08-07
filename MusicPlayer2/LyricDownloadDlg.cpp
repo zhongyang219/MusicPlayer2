@@ -173,7 +173,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->SetCheck(TRUE);
 
 	//判断歌词文件夹是否存在
-	bool lyric_path_exist = CCommon::FolderExist(theApp.m_play_setting_data.lyric_path);
+	bool lyric_path_exist = CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path);
 	if (!lyric_path_exist)		//如果歌词文件不存在，则禁用“保存到歌词文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
 	{
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->EnableWindow(FALSE);
@@ -442,14 +442,14 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		}
 		else
 		{
-			if (!CCommon::FolderExist(theApp.m_play_setting_data.lyric_path))
+			if (!CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
 			{
 				CString info;
 				info.LoadString(IDS_LYRIC_FOLDER_NOT_EXIST);
 				MessageBox(info, NULL, MB_ICONWARNING | MB_OK);
 				return 0;
 			}
-			saved_path = theApp.m_play_setting_data.lyric_path + m_file_name;
+			saved_path = theApp.m_lyric_setting_data.lyric_path + m_file_name;
 			size_t index = saved_path.rfind(L'.');		//查找文件名最后一个点
 			saved_path = saved_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
 

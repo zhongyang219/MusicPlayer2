@@ -199,6 +199,7 @@
     <ClInclude Include="BASSWmaLibrary.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
+    <ClInclude Include="PlaySettingsDlg.h" />
     <ClInclude Include="RecorderDlg.h" />
     <ClInclude Include="GaussBlur.h" />
     <ClInclude Include="IniHelper.h" />
@@ -234,7 +235,7 @@
     <ClInclude Include="MusicPlayerDlg.h" />
     <ClInclude Include="OptionsDlg.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlaySettingsDlg.h" />
+    <ClInclude Include="LyricSettingsDlg.h" />
     <ClInclude Include="ProgressStatic.h" />
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="BASSWmaLibrary.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
+    <ClCompile Include="PlaySettingsDlg.cpp" />
     <ClCompile Include="RecorderDlg.cpp" />
     <ClCompile Include="GaussBlur.cpp" />
     <ClCompile Include="IniHelper.cpp" />
@@ -290,7 +292,7 @@
     <ClCompile Include="MusicPlayerDlg.cpp" />
     <ClCompile Include="OptionsDlg.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlaySettingsDlg.cpp" />
+    <ClCompile Include="LyricSettingsDlg.cpp" />
     <ClCompile Include="ProgressStatic.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="ReverbDlg.cpp" />

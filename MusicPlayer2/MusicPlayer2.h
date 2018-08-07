@@ -16,12 +16,17 @@
 #include "IniHelper.h"
 #include "WinVersionHelper.h"
 
-//选项设置数据
-struct PlaySettingData
+struct DeviceInfo	//播放设备的信息
 {
-	bool stop_when_error{ true };				//出现错误时停止播放
-	bool show_taskbar_progress{ false };		//在任务栏按钮上显示播放进度
-	bool show_playstate_icon{ true };			//在任务栏按钮上显示播放状态的角标
+	int index;		//设备的索引
+	wstring name;	//设备的名称
+	wstring driver;	//设备的驱动程序
+	DWORD flags;	//设备的状态
+};
+
+//选项设置数据
+struct LyricSettingData
+{
 	bool lyric_karaoke_disp{ true };			//可以是否以卡拉OK样式显示
 	bool lyric_fuzzy_match{ true };				//歌词模糊匹配
 	bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
@@ -76,6 +81,15 @@ struct NonCategorizedSettingData
 	bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
 };
 
+struct PlaySettingData
+{
+	bool stop_when_error{ true };				//出现错误时停止播放
+	bool show_taskbar_progress{ false };		//在任务栏按钮上显示播放进度
+	bool show_playstate_icon{ true };			//在任务栏按钮上显示播放状态的角标
+	wstring output_device;						//播放设备的名称
+	int device_selected{};
+};
+
 // CMusicPlayerApp: 
 // 有关此类的实现，请参阅 MusicPlayer2.cpp
 //
@@ -99,9 +113,12 @@ public:
 
 	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
 
-	PlaySettingData m_play_setting_data;		//“选项设置”对话框中“主窗口设置”中的数据
-	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“任务栏窗口设置”中的数据
-	GeneralSettingData m_general_setting_data;
+	vector<DeviceInfo> m_output_devices;	//播放设备的信息
+
+	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
+	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
+	GeneralSettingData m_general_setting_data;		//“选项设置”对话框中“常规设置”中的数据
+	PlaySettingData m_play_setting_data;			//“选项设置”对话框中“播放设置”中的数据
 	NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
 
 	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出

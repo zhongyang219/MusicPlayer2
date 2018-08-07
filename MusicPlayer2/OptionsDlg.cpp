@@ -43,13 +43,15 @@ BOOL COptionsDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	//插入标签
-	m_tab.InsertItem(0, _T("播放选项"));
+	m_tab.InsertItem(0, _T("歌词设置"));
 	m_tab.InsertItem(1, _T("外观设置"));
 	m_tab.InsertItem(2, _T("常规设置"));
+	m_tab.InsertItem(3, _T("播放设置"));
 	//创建子对话框
-	m_tab1_dlg.Create(IDD_PLAY_SETTING_DIALOG, &m_tab);
+	m_tab1_dlg.Create(IDD_LYRIC_SETTING_DIALOG, &m_tab);
 	m_tab2_dlg.Create(IDD_APPEREANCE_SETTING_DLG, &m_tab);
 	m_tab3_dlg.Create(IDD_DATA_SETTINGS_DIALOG, &m_tab);
+	m_tab4_dlg.Create(IDD_PLAY_SETTING_DIALOG, &m_tab);
 	//调整子对话框的大小和位置
 	CRect rect;
 	m_tab.GetClientRect(rect);
@@ -62,6 +64,7 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab1_dlg.MoveWindow(&rect);
 	m_tab2_dlg.MoveWindow(&rect);
 	m_tab3_dlg.MoveWindow(&rect);
+	m_tab4_dlg.MoveWindow(&rect);
 
 	switch (m_tab_selected)
 	{
@@ -72,6 +75,10 @@ BOOL COptionsDlg::OnInitDialog()
 	case 2:
 		m_tab3_dlg.ShowWindow(SW_SHOW);
 		m_tab.SetCurFocus(2);
+		break;
+	case 3:
+		m_tab4_dlg.ShowWindow(SW_SHOW);
+		m_tab.SetCurFocus(3);
 		break;
 	default:
 		m_tab1_dlg.ShowWindow(SW_SHOW);
@@ -92,19 +99,29 @@ void COptionsDlg::OnTcnSelchangeOptionsTab(NMHDR *pNMHDR, LRESULT *pResult)
 		m_tab1_dlg.ShowWindow(SW_SHOW);
 		m_tab2_dlg.ShowWindow(SW_HIDE);
 		m_tab3_dlg.ShowWindow(SW_HIDE);
+		m_tab4_dlg.ShowWindow(SW_HIDE);
 		m_tab1_dlg.SetFocus();
 		break;
 	case 1:
 		m_tab2_dlg.ShowWindow(SW_SHOW);
 		m_tab1_dlg.ShowWindow(SW_HIDE);
 		m_tab3_dlg.ShowWindow(SW_HIDE);
+		m_tab4_dlg.ShowWindow(SW_HIDE);
 		m_tab2_dlg.SetFocus();
 		break;
 	case 2:
 		m_tab3_dlg.ShowWindow(SW_SHOW);
 		m_tab1_dlg.ShowWindow(SW_HIDE);
 		m_tab2_dlg.ShowWindow(SW_HIDE);
+		m_tab4_dlg.ShowWindow(SW_HIDE);
 		m_tab3_dlg.SetFocus();
+		break;
+	case 3:
+		m_tab4_dlg.ShowWindow(SW_SHOW);
+		m_tab1_dlg.ShowWindow(SW_HIDE);
+		m_tab2_dlg.ShowWindow(SW_HIDE);
+		m_tab3_dlg.ShowWindow(SW_HIDE);
+		m_tab4_dlg.SetFocus();
 		break;
 	}
 	*pResult = 0;

@@ -23,9 +23,6 @@
     <Filter Include="头文件和源文件\对话框类\选项设置对话框\OptionsDlg">
       <UniqueIdentifier>{44ecbe4a-63f2-40c4-9501-2ae0176fad9f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg">
-      <UniqueIdentifier>{b8b43656-f82c-483f-8bd5-f9cf1c8b8687}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件和源文件\对话框类\FindDlg">
       <UniqueIdentifier>{5d3a37b2-f1d5-4277-b14c-4bbde14e0a33}</UniqueIdentifier>
     </Filter>
@@ -159,6 +156,12 @@
     <Filter Include="头文件和源文件\对话框类\RecorderDlg">
       <UniqueIdentifier>{bc15dc8a-cf52-42cb-ac8f-03c1795d5ab6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\对话框类\选项设置对话框\LyricSettingsDlg">
+      <UniqueIdentifier>{b8b43656-f82c-483f-8bd5-f9cf1c8b8687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg">
+      <UniqueIdentifier>{ccaf366b-90bb-4607-9f9a-17e079d6f056}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -209,9 +212,6 @@
     </ClInclude>
     <ClInclude Include="OptionsDlg.h">
       <Filter>头文件和源文件\对话框类\选项设置对话框\OptionsDlg</Filter>
-    </ClInclude>
-    <ClInclude Include="PlaySettingsDlg.h">
-      <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
     </ClInclude>
     <ClInclude Include="AudioCommon.h">
       <Filter>头文件和源文件\公共的类\AudioCommon</Filter>
@@ -330,6 +330,12 @@
     <ClInclude Include="RecorderDlg.h">
       <Filter>头文件和源文件\对话框类\RecorderDlg</Filter>
     </ClInclude>
+    <ClInclude Include="LyricSettingsDlg.h">
+      <Filter>头文件和源文件\对话框类\选项设置对话框\LyricSettingsDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaySettingsDlg.h">
+      <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -364,9 +370,6 @@
     </ClCompile>
     <ClCompile Include="OptionsDlg.cpp">
       <Filter>头文件和源文件\对话框类\选项设置对话框\OptionsDlg</Filter>
-    </ClCompile>
-    <ClCompile Include="PlaySettingsDlg.cpp">
-      <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
     </ClCompile>
     <ClCompile Include="AudioCommon.cpp">
       <Filter>头文件和源文件\公共的类\AudioCommon</Filter>
@@ -484,6 +487,12 @@
     </ClCompile>
     <ClCompile Include="RecorderDlg.cpp">
       <Filter>头文件和源文件\对话框类\RecorderDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="LyricSettingsDlg.cpp">
+      <Filter>头文件和源文件\对话框类\选项设置对话框\LyricSettingsDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaySettingsDlg.cpp">
+      <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

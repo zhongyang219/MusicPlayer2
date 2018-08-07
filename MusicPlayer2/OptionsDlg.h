@@ -1,8 +1,9 @@
 #pragma once
 #include "afxcmn.h"
-#include "PlaySettingsDlg.h"
+#include "LyricSettingsDlg.h"
 #include "AppearanceSettingDlg.h"
 #include "DataSettingsDlg.h"
+#include "PlaySettingsDlg.h"
 
 // COptionsDlg 对话框
 #define TIMER_ID2 1122
@@ -16,9 +17,10 @@ public:
 	COptionsDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~COptionsDlg();
 
-	CPlaySettingsDlg m_tab1_dlg;	//“播放选项”子对话框
+	CLyricSettingsDlg m_tab1_dlg;	//“播放选项”子对话框
 	CAppearanceSettingDlg m_tab2_dlg;	//“外观设置”子对话框
 	CDataSettingsDlg m_tab3_dlg;		//“数据文件”子对话框
+	CPlaySettingsDlg m_tab4_dlg;
 
 	int m_tab_selected{};
 
