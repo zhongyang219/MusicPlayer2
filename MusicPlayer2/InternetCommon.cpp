@@ -173,9 +173,9 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 		//获取歌曲标题
 		index2 = search_result.find(L"name", index1);
 		if (index2 == string::npos) continue;
-		index3 = search_result.find(L',', index2);
-		wstring title = search_result.substr(index2 + 7, index3 - index2 - 8);
-		if (search_result.substr(index3 + 2, 6) == L"picUrl")	//如果找到的“name”后面的字符串是“picUrl”，说明这项name的值不是
+		index3 = search_result.find(L"\",\"", index2);
+		wstring title = search_result.substr(index2 + 7, index3 - index2 - 7);
+		if (search_result.substr(index3 + 3, 6) == L"picUrl")	//如果找到的“name”后面的字符串是“picUrl”，说明这项name的值不是
 		{														//另一首歌的标题，而是上一首歌的艺术家，上一首歌有多个艺术家
 			if (!down_list.empty())
 			{
@@ -193,15 +193,15 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 		index2 = search_result.find(L"artists", index1);
 		if (index2 == string::npos) continue;
 		index3 = search_result.find(L"name", index2);
-		index4 = search_result.find(L',', index3);
-		item.artist = search_result.substr(index3 + 7, index4 - index3 - 8);
+		index4 = search_result.find(L"\",\"", index3);
+		item.artist = search_result.substr(index3 + 7, index4 - index3 - 7);
 
 		//获取歌曲的唱片集
 		index2 = search_result.find(L"\"album\"", index1);
 		if (index2 == string::npos) continue;
 		index3 = search_result.find(L"name", index2);
-		index4 = search_result.find(L',', index3);
-		item.album = search_result.substr(index3 + 7, index4 - index3 - 8);
+		index4 = search_result.find(L"\",\"", index3);
+		item.album = search_result.substr(index3 + 7, index4 - index3 - 7);
 
 		DeleteStrSlash(item.title);
 		DeleteStrSlash(item.artist);
