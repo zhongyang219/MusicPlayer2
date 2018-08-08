@@ -313,6 +313,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric);
 
 	ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
+	ini.WriteBool(L"config", L"auto_play_when_start", theApp.m_play_setting_data.auto_play_when_start);
 	ini.WriteBool(L"config", L"show_taskbar_progress", theApp.m_play_setting_data.show_taskbar_progress);
 	ini.WriteBool(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon);
 	ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
@@ -366,9 +367,10 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
 	theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(_T("general"), _T("midi_use_inner_lyric"), 0);
 
-	theApp.m_play_setting_data.stop_when_error = ini.GetBool(_T("config"), _T("stop_when_error"), 1);
-	theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(_T("config"), _T("show_taskbar_progress"), 1);
-	theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(_T("config"), _T("show_playstate_icon"), 1);
+	theApp.m_play_setting_data.stop_when_error = ini.GetBool(_T("config"), _T("stop_when_error"), true);
+	theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(_T("config"), _T("auto_play_when_start"), false);
+	theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(_T("config"), _T("show_taskbar_progress"), true);
+	theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(_T("config"), _T("show_playstate_icon"), true);
 	theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
 }
 
@@ -1174,6 +1176,8 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		//更新任务按钮上的播放状态图标
 		if(theApp.m_play_setting_data.show_playstate_icon)
 			m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPlayIcon_s, L"");
+		else
+			m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 #endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPauseIcon_s, FALSE);
@@ -1186,13 +1190,10 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		m_thumbButton[1].hIcon = m_hPlayIcon;
 		wcscpy_s(m_thumbButton[1].szTip, _T("播放"));
 		//更新任务按钮上的播放状态图标
-		if (theApp.m_play_setting_data.show_playstate_icon)
-		{
-			if(theApp.m_player.GetPlayingState2()==1)
-				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPauseIcon_s, L"");
-			else
-				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
-		}
+		if (theApp.m_play_setting_data.show_playstate_icon && theApp.m_player.GetPlayingState2() == 1)
+			m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPauseIcon_s, L"");
+		else
+			m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 #endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPlayIcon_s, FALSE);
@@ -1273,6 +1274,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	}
 	if (gauss_blur_changed)
 		theApp.m_player.AlbumCoverGaussBlur();
+
+	UpdatePlayPauseButton();
 
 	CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 	m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色

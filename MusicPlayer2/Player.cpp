@@ -20,7 +20,7 @@ void CPlayer::IniBASS()
 	int rtn;
 	int device_index{1};
 	theApp.m_output_devices.clear();
-	DeviceInfo device;
+	DeviceInfo device{};
 	device.index = -1;
 	device.name = L"默认输出设备";
 	theApp.m_output_devices.push_back(device);
@@ -332,6 +332,8 @@ void CPlayer::IniPlaylistComplate(bool sort)
 				m_current_file_name = m_playlist[m_index].file_name;
 				MusicControl(Command::OPEN);
 				MusicControl(Command::SEEK);
+				if(theApp.m_play_setting_data.auto_play_when_start)
+					MusicControl(Command::PLAY);
 			}
 		}
 		else		//如果用户在播放初始化的过程中进行了播放，则根据正在播放的文件名重新查找正在播放的序号

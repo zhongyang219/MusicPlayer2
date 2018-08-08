@@ -62,13 +62,23 @@ struct ApperanceSettingData
 
 struct GeneralSettingData
 {
-	bool id3v2_first{ false };		//优先获取ID3V2标签
+	bool id3v2_first{ false };					//优先获取ID3V2标签
 	bool auto_download_lyric{ false };			//是否自动下载歌词
 	bool auto_download_album_cover{ true };		//是否自动下载专辑封面
-	bool auto_download_only_tag_full{ true };		//仅在歌曲信息完整时自动下载
+	bool auto_download_only_tag_full{ true };	//仅在歌曲信息完整时自动下载
 	bool check_update_when_start{ true };		//是否在程序启动时检查更新
-	wstring sf2_path;		//MIDI音色库路径
-	bool midi_use_inner_lyric{ false };		//播放MIDI音乐时显示内嵌歌词
+	wstring sf2_path;							//MIDI音色库路径
+	bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
+};
+
+struct PlaySettingData
+{
+	bool stop_when_error{ true };				//出现错误时停止播放
+	bool auto_play_when_start{ false };			//程序启动时自动播放
+	bool show_taskbar_progress{ false };		//在任务栏按钮上显示播放进度
+	bool show_playstate_icon{ true };			//在任务栏按钮上显示播放状态的角标
+	wstring output_device;						//播放设备的名称
+	int device_selected{};
 };
 
 struct NonCategorizedSettingData
@@ -79,15 +89,6 @@ struct NonCategorizedSettingData
 	bool show_cover_tip{ true };	//是否显示专辑封面上的鼠标提示
 	//wstring default_back_image_path{};	//没有专辑封面时的默认背景的路径
 	bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
-};
-
-struct PlaySettingData
-{
-	bool stop_when_error{ true };				//出现错误时停止播放
-	bool show_taskbar_progress{ false };		//在任务栏按钮上显示播放进度
-	bool show_playstate_icon{ true };			//在任务栏按钮上显示播放状态的角标
-	wstring output_device;						//播放设备的名称
-	int device_selected{};
 };
 
 // CMusicPlayerApp: 
