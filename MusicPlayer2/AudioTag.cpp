@@ -258,8 +258,13 @@ bool CAudioTag::GetID3V2Tag()
 				}
 			}
 		}
+		CAudioCommon::TagStrNormalize(m_song_info.title);
+		CAudioCommon::TagStrNormalize(m_song_info.artist);
+		CAudioCommon::TagStrNormalize(m_song_info.album);
 		bool id3_empty;		//ID3标签信息是否为空
-		id3_empty = (m_song_info.title == DEFAULT_TITLE && m_song_info.artist == DEFAULT_ARTIST && m_song_info.album == DEFAULT_ALBUM
+		id3_empty = ((m_song_info.title == DEFAULT_TITLE || m_song_info.title.empty())
+			&& (m_song_info.artist == DEFAULT_ARTIST || m_song_info.artist.empty())
+			&& (m_song_info.album == DEFAULT_ALBUM || m_song_info.album.empty())
 			&& m_song_info.track == 0 && m_song_info.year == DEFAULT_YEAR);
 		success = !id3_empty;
 

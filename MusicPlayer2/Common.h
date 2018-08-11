@@ -260,6 +260,8 @@ inline bool CCommon::StringCompareNoCase(const T & str1, const T & str2)
 template<class T>
 inline size_t CCommon::StringFindNoCase(const T & str, const T & find_str)
 {
+	if (str.empty() || find_str.empty())
+		return -1;
 	T _str{ str }, _find_str{ find_str };
 	StringTransform(_str, false);
 	StringTransform(_find_str, false);
@@ -269,6 +271,8 @@ inline size_t CCommon::StringFindNoCase(const T & str, const T & find_str)
 template<class T>
 inline size_t CCommon::StringNatchWholeWord(const T & str, const T & find_str)
 {
+	if (str.empty() || find_str.empty())
+		return -1;
 	//下面3句代码由于太消耗时间和CPU，因此去掉
 	//T _str{ str }, _find_str{ find_str };
 	//StringTransform(str, false);
