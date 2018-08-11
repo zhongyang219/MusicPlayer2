@@ -690,6 +690,15 @@ void CPlayer::GetBASSCurrentPosition()
 	GetMidiPosition();
 }
 
+int CPlayer::GetBASSCurrentPosition(HSTREAM hStream)
+{
+	QWORD pos_bytes;
+	pos_bytes = BASS_ChannelGetPosition(hStream, BASS_POS_BYTE);
+	double pos_sec;
+	pos_sec = BASS_ChannelBytes2Seconds(hStream, pos_bytes);
+	return static_cast<int>(pos_sec * 1000);
+}
+
 
 void CPlayer::SetVolume()
 {
@@ -1247,6 +1256,14 @@ void CPlayer::SeekTo(int position)
 	BASS_ChannelSetPosition(m_musicStream, pos_bytes, BASS_POS_BYTE);
 	m_midi_lyric.clear();
 	GetMidiPosition();
+}
+
+void CPlayer::SeekTo(HSTREAM hStream, int position)
+{
+	double pos_sec = static_cast<double>(position) / 1000.0;
+	QWORD pos_bytes;
+	pos_bytes = BASS_ChannelSeconds2Bytes(hStream, pos_sec);
+	BASS_ChannelSetPosition(hStream, pos_bytes, BASS_POS_BYTE);
 }
 
 void CPlayer::ClearLyric()

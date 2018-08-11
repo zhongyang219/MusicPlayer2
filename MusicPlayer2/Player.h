@@ -161,6 +161,7 @@ public:
 	void MusicControl(Command command, int volume_step = 2);		//控制音乐播放
 	bool SongIsOver() const;			//判断当前音乐是否播放完毕
 	void GetBASSCurrentPosition();		//从BASS音频库获取当前播放到的位置
+	static int GetBASSCurrentPosition(HSTREAM hStream);
 	void GetBASSSongLength();			//从BASS音频库获取正在播放文件的长度
 	static Time GetBASSSongLength(HSTREAM hStream);
 
@@ -216,6 +217,7 @@ public:
 	void RemoveSongs(vector<int> indexes);	//从播放列表中删除多个指定的项目
 	void ClearPlaylist();			//清空播放列表
 	void SeekTo(int position);		//定位到指定位置
+	static void SeekTo(HSTREAM hStream, int position);
 	void ClearLyric();		//清除当前文件的歌词关联
 
 	int GetCurrentPosition() const { return m_current_position_int; }		//返回当前播放到的位置
