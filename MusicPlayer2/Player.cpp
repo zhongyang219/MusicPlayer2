@@ -630,7 +630,7 @@ bool CPlayer::SongIsOver() const
 {
 	if (GetCurrentSongInfo().is_cue)
 	{
-		return m_current_position_int >= m_song_length_int;
+		return (m_playing == 2 && m_current_position_int >= m_song_length_int);
 	}
 	else
 	{
@@ -1302,6 +1302,8 @@ const SongInfo & CPlayer::GetCurrentSongInfo() const
 
 void CPlayer::SetRelatedSongID(wstring song_id)
 {
+	if (GetCurrentSongInfo().is_cue)
+		return;
 	if (m_index >= 0 && m_index < m_playlist.size())
 	{
 		m_playlist[m_index].song_id = song_id;
@@ -1311,6 +1313,8 @@ void CPlayer::SetRelatedSongID(wstring song_id)
 
 void CPlayer::SetRelatedSongID(int index, wstring song_id)
 {
+	if (GetCurrentSongInfo().is_cue)
+		return;
 	if (index >= 0 && index < m_playlist.size())
 	{
 		m_playlist[index].song_id = song_id;
