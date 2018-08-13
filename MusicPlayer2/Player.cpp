@@ -1312,8 +1312,6 @@ void CPlayer::SetRelatedSongID(wstring song_id)
 
 void CPlayer::SetRelatedSongID(int index, wstring song_id)
 {
-	if (GetCurrentSongInfo().is_cue)
-		return;
 	if (index >= 0 && index < m_playlist.size())
 	{
 		m_playlist[index].song_id = song_id;
