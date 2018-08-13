@@ -1302,12 +1302,11 @@ const SongInfo & CPlayer::GetCurrentSongInfo() const
 
 void CPlayer::SetRelatedSongID(wstring song_id)
 {
-	if (GetCurrentSongInfo().is_cue)
-		return;
 	if (m_index >= 0 && m_index < m_playlist.size())
 	{
 		m_playlist[m_index].song_id = song_id;
-		theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
+		if(!m_playlist[m_index].is_cue)
+			theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
 	}
 }
 
@@ -1318,7 +1317,8 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
 	if (index >= 0 && index < m_playlist.size())
 	{
 		m_playlist[index].song_id = song_id;
-		theApp.m_song_data[m_path + m_playlist[index].file_name] = m_playlist[index];
+		if (!m_playlist[index].is_cue)
+			theApp.m_song_data[m_path + m_playlist[index].file_name] = m_playlist[index];
 	}
 }
 

@@ -131,10 +131,17 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 		m_album.clear();
 	}
 
-	m_file_name = theApp.m_player.GetFileName();
+	const SongInfo& song{ theApp.m_player.GetCurrentSongInfo() };
+	if (!song.is_cue)
+		m_file_name = theApp.m_player.GetFileName();
+	else
+		m_file_name = song.artist + L" - " + song.title + L".lrc";
 	m_file_path = theApp.m_player.GetCurrentDir() + m_file_name;
-	size_t index = m_file_path.rfind(L'.');		//查找文件名最后一个点
-	m_file_path = m_file_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
+	if (song.is_cue)
+	{
+		size_t index = m_file_path.rfind(L'.');		//查找文件名最后一个点
+		m_file_path = m_file_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
+	}
 
 	SetDlgItemText(IDC_TITLE_EDIT1, m_title.c_str());
 	SetDlgItemText(IDC_ARTIST_EDIT1, m_artist.c_str());

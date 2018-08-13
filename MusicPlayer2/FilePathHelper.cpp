@@ -66,9 +66,10 @@ wstring CFilePathHelper::GetParentDir() const
 
 const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extension)
 {
-	size_t index;
+	size_t index, index1;
 	index = m_file_path.rfind('.');
-	if (index == wstring::npos)		//如果没有找到“.”，则在末尾添加
+	index1 = m_file_path.rfind('\\');
+	if (index == wstring::npos || index < index1)		//如果没有找到“.”，或者“.”在反斜杠的左边，则在末尾添加一个“.”
 	{
 		m_file_path.push_back(L'.');
 	}

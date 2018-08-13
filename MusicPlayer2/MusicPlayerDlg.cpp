@@ -3258,7 +3258,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 			return 0;
 	}
 
-	bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist() };
+	bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !theApp.m_player.AlbumCoverExist() && !theApp.m_player.GetCurrentSongInfo().is_cue };
 	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric };
 	bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && theApp.m_player.m_Lyrics.IsEmpty() && !midi_lyric };
 	CInternetCommon::ItemInfo match_item;
@@ -3284,7 +3284,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 
 		//获取要保存的专辑封面的文件路径
 		CFilePathHelper cover_file_path;
-		if (match_item.album == theApp.m_player.GetCurrentSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
+		if (match_item.album == song.album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
 		{
 			wstring album_name{ match_item.album };
 			CCommon::FileNameNormalize(album_name);
@@ -3292,7 +3292,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 		}
 		else				//否则以歌曲文件名为文件名保存
 		{
-			cover_file_path.SetFilePath(theApp.m_player.GetCurrentDir() + theApp.m_player.GetCurrentSongInfo().file_name);
+			cover_file_path.SetFilePath(theApp.m_player.GetCurrentDir() + song.file_name);
 		}
 		CFilePathHelper url_path(cover_url);
 		cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
@@ -3319,13 +3319,18 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 		CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
 		//保存歌词
 		CFilePathHelper lyric_path;
+		wstring file_name;
+		if (!song.is_cue)
+			file_name = song.file_name;
+		else
+			file_name = song.artist + L" - " + song.title;
 		//if (CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
 		//{
 		//	lyric_path.SetFilePath(theApp.m_lyric_setting_data.lyric_path + theApp.m_player.GetCurrentSongInfo().file_name);
 		//}
 		//else
 		//{
-			lyric_path.SetFilePath(theApp.m_player.GetCurrentDir() + theApp.m_player.GetCurrentSongInfo().file_name);
+		lyric_path.SetFilePath(theApp.m_player.GetCurrentDir() + file_name);
 		//}
 		lyric_path.ReplaceFileExtension(L"lrc");
 		string _lyric_str = CCommon::UnicodeToStr(lyric_str, CodeType::UTF8);
