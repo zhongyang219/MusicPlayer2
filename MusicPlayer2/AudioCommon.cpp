@@ -347,6 +347,7 @@ wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)
 {
 	switch (ctype)
 	{
+	case 0: return L"δ֪";
 	case 1: return L"SAMPLE";
 	case 2: return L"RECORD";
 	case 0x10000: return L"STREAM";
