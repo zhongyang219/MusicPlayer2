@@ -380,7 +380,7 @@ wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)
 	case 0x10b00: return L"AAC";
 	case 0x10b01: return L"MP4";
 	case 0x10700: return L"APE";
-	default: return L"δ֪";
+	default: return wstring();
 	}
 }
 

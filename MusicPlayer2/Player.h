@@ -61,6 +61,7 @@ private:
 	wstring m_path;		//当前播放文件的路径
 	wstring m_current_file_name;		//正在播放的文件名
 	wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
+	wstring m_current_file_type;
 	deque<PathInfo> m_recent_path;		//最近打开过的路径
 
 	Time m_song_length;		//正在播放的文件的长度
@@ -256,5 +257,6 @@ public:
 	void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
 	void AlbumCoverGaussBlur();		//专辑封面高斯模糊
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
+	wstring GetCurrentFileType() { return m_current_file_type; }
 };
 

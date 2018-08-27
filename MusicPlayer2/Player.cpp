@@ -508,6 +508,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
 		if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
 			m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
+		//获取音频类型
+		m_current_file_type = CAudioCommon::GetBASSChannelDescription(m_channel_info.ctype);		//根据通道信息获取当前音频文件的类型
+		if (m_current_file_type.empty())		//如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
+		{
+			CFilePathHelper file_path{ m_current_file_name };
+			m_current_file_type = file_path.GetFileExtension(true);
+		}
 		if (m_song_num > 0)
 		{
 			if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取

@@ -551,9 +551,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	else if (channel_info.chans > 2)
 		chans_str.Format(_T("%d声道"));
 	if (!theApp.m_player.IsMidi())
-		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CAudioCommon::GetBASSChannelDescription(channel_info.ctype).c_str(), channel_info.freq/1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
+		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq/1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
 	else
-		swprintf_s(buff, L"%s %.1fkHz %s", CAudioCommon::GetBASSChannelDescription(channel_info.ctype).c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
+		swprintf_s(buff, L"%s %.1fkHz %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
 	lable4_content = buff;
 	//显示标题
 	tmp.MoveToXY(text_start.x, text_start.y + text_height);
