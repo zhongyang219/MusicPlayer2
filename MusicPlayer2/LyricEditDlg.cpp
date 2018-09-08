@@ -146,6 +146,14 @@ void CLyricEditDlg::StatusBarSetParts(int width)
 	m_status_bar.SetParts(3, nParts); //分割状态栏
 }
 
+void CLyricEditDlg::OpenLyric(const wchar_t * path)
+{
+	m_lyric_path = path;
+	CLyrics lyrics{ m_lyric_path };					//打开文件
+	m_lyric_string = lyrics.GetLyricsString();
+	m_code_type = lyrics.GetCodeType();
+}
+
 void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -193,10 +201,11 @@ BOOL CLyricEditDlg::OnInitDialog()
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 	//获取歌词信息
-	m_lyric_string = theApp.m_player.m_Lyrics.GetLyricsString();
-	m_lyric_path = theApp.m_player.m_Lyrics.GetPathName();
+	//m_lyric_string = theApp.m_player.m_Lyrics.GetLyricsString();
+	//m_lyric_path = theApp.m_player.m_Lyrics.GetPathName();
+	OpenLyric(theApp.m_player.m_Lyrics.GetPathName().c_str());
 	m_original_lyric_path = m_lyric_path;
-	m_code_type = theApp.m_player.m_Lyrics.GetCodeType();
+	//m_code_type = theApp.m_player.m_Lyrics.GetCodeType();
 	m_current_song_name = theApp.m_player.GetFileName();
 
 	//初始化编辑区字体
@@ -452,11 +461,9 @@ void CLyricEditDlg::OnLyricOpen()
 	//显示打开文件对话框
 	if (IDOK == fileDlg.DoModal())
 	{
-		m_lyric_path = fileDlg.GetPathName();	//获取打开的文件路径
+		//m_lyric_path = fileDlg.GetPathName();	//获取打开的文件路径
+		OpenLyric(fileDlg.GetPathName());
 		SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
-		CLyrics lyrics{ m_lyric_path };					//打开文件
-		m_lyric_string = lyrics.GetLyricsString();
-		m_code_type = lyrics.GetCodeType();
 		m_lyric_edit.SetWindowText(m_lyric_string.c_str());
 	}
 }
