@@ -76,10 +76,10 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 		m_show_lyric_in_cortana_check.EnableWindow(FALSE);		//Win10以下系统禁用此复选按钮
 		m_data.show_lyric_in_cortana = false;
 	}
-#ifdef COMPILE_IN_WIN_XP
-	m_show_taskbar_progress_check.SetCheck(FALSE);
-	m_show_taskbar_progress_check.EnableWindow(FALSE);
-#endif
+//#ifdef COMPILE_IN_WIN_XP
+//	m_show_taskbar_progress_check.SetCheck(FALSE);
+//	m_show_taskbar_progress_check.EnableWindow(FALSE);
+//#endif
 	//if(m_data.save_lyric_in_offset)
 	//	((CButton*)GetDlgItem(IDC_SAVE_IN_OFFSET_TAG))->SetCheck(TRUE);
 	//else
