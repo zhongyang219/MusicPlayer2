@@ -1354,11 +1354,13 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	SetTransparency();
 
 	//初始化窗口大小
-	CRect rect;
-	rect.right = m_window_width;
-	rect.bottom = m_window_height;
+	//rect.right = m_window_width;
+	//rect.bottom = m_window_height;
 	if (m_window_height != -1 && m_window_width != -1)
-		MoveWindow(rect);
+	{
+		//MoveWindow(rect);
+		SetWindowPos(nullptr, 0, 0, m_window_width, m_window_height, SWP_NOZORDER | SWP_NOMOVE);
+	}
 
 	//获取当前系统DPI设置
 	CWindowDC dc(this);
@@ -1377,6 +1379,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_spectral_size.cx = theApp.DPI(120);
 	m_spectral_size.cy = theApp.DPI(90);
 
+	CRect rect;
 	m_set_path_button.GetWindowRect(rect);
 	m_min_width = rect.left + theApp.DPI(8);		//将“设置路径”按钮左侧的x位置设为窗口的最小宽度
 	m_min_height = theApp.DPI(360);	//设置最小高度
