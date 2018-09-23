@@ -118,6 +118,10 @@ public:
 	//获取临时文件夹路径
 	static wstring GetTemplatePath();
 
+	//获取系统特殊文件夹的位置
+	//csidl: 含义同SHGetSpecialFolderLocation函数的参数
+	static wstring GetSpecialDir(int csidl);
+
 	//获取一个列表控件最大长度项目宽度的像素值
 	static int GetListWidth(CListBox& list);
 

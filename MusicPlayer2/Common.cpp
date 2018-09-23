@@ -392,6 +392,18 @@ wstring CCommon::GetTemplatePath()
 	return result;
 }
 
+wstring CCommon::GetSpecialDir(int csidl)
+{
+	LPITEMIDLIST ppidl;
+	TCHAR folder_dir[MAX_PATH];
+	if (SHGetSpecialFolderLocation(NULL, csidl, &ppidl) == S_OK)
+	{
+		SHGetPathFromIDList(ppidl, folder_dir);
+		CoTaskMemFree(ppidl);
+	}
+	return wstring(folder_dir);
+}
+
 int CCommon::GetListWidth(CListBox & list)
 {
 	CDC *pDC = list.GetDC();
