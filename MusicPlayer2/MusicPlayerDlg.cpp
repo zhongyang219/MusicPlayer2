@@ -259,6 +259,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_MESSAGE(WM_SETTINGS_APPLIED, &CMusicPlayerDlg::OnSettingsApplied)
 	ON_COMMAND(ID_RECORDER, &CMusicPlayerDlg::OnRecorder)
 	ON_MESSAGE(WM_ALBUM_COVER_DOWNLOAD_COMPLETE, &CMusicPlayerDlg::OnAlbumCoverDownloadComplete)
+	ON_WM_DWMCOLORIZATIONCOLORCHANGED()
 END_MESSAGE_MAP()
 
 
@@ -1284,6 +1285,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	SetPlayListColor();
 	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
 	m_cortana_lyric.SetCortanaColor(theApp.m_lyric_setting_data.cortana_color);
+	ThemeColorChanged();
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
 		//如果m_font已经关联了一个字体资源对象，则释放它
@@ -1298,6 +1300,30 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	theApp.SaveConfig();
 	theApp.m_player.SaveConfig();
 	DrawInfo(true);
+}
+
+void CMusicPlayerDlg::ThemeColorChanged()
+{
+	if (!theApp.m_app_setting_data.theme_color_follow_system)
+		return;
+	COLORREF color{};
+	if (theApp.m_color_api.IsSuccessed())
+	{
+		color = theApp.m_color_api.GetWindowsThemeColor();
+		if (theApp.m_win_version.IsWindows10Version1809OrLater())		//Win10 1809版本的主题颜色过深，将其降低一点亮度
+			CColorConvert::ReduceLuminance(color);
+	}
+	if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255, 255, 255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
+	{
+		theApp.m_app_setting_data.theme_color.original_color = color;
+		m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
+		m_progress_bar.Invalidate();
+		m_time_static.Invalidate();
+		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
+		SetPlayListColor();
+		m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
+		DrawInfo();
+	}
 }
 
 BOOL CMusicPlayerDlg::OnInitDialog()
@@ -1690,6 +1716,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//SetForegroundWindow();
 		//ShowPlayList();
 
+		ThemeColorChanged();
+
 		//提示用户是否创建桌面快捷方式
 		CreateDesktopShortcut();
 	}
@@ -1801,29 +1829,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		theApp.m_player.MusicControl(Command::PAUSE);
 		UpdatePlayPauseButton();
-	}
-
-	//当设置了主题颜色跟随系统时，如果当前焦点在主窗口上，定时器每触发10次获取一次窗口标题栏的颜色
-	if (theApp.m_app_setting_data.theme_color_follow_system && m_timer_count % 10 == 0/* && ::GetForegroundWindow() == m_hWnd*/)
-	{
-		COLORREF color{};
-		if (theApp.m_color_api.IsSuccessed())
-		{
-			color = theApp.m_color_api.GetWindowsThemeColor();
-			if(theApp.m_win_version.IsWindows10Version1809OrLater())		//Win10 1809版本的主题颜色过深，将其降低一点亮度
-				CColorConvert::ReduceLuminance(color);
-		}
-		if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255,255,255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
-		{
-			theApp.m_app_setting_data.theme_color.original_color = color;
-			m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
-			m_progress_bar.Invalidate();
-			m_time_static.Invalidate();
-			CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
-			SetPlayListColor();
-			m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
-			DrawInfo();
-		}
 	}
 
 	if (m_timer_count % 10 == 0 && !m_cortana_lyric.m_cortana_disabled)
@@ -3639,4 +3644,17 @@ afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPA
 	//导致专辑封面背景是黑色的，因此通过发送消息放到主线程中处理
 	theApp.m_player.AlbumCoverGaussBlur();
 	return 0;
+}
+
+
+void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity)
+{
+	// 此功能要求 Windows Vista 或更高版本。
+	// _WIN32_WINNT 符号必须 >= 0x0600。
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	//响应主题颜色改变消息
+	ThemeColorChanged();
+
+	CDialog::OnColorizationColorChanged(dwColorizationColor, bOpacity);
 }

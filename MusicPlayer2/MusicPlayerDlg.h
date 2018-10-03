@@ -218,6 +218,8 @@ protected:
 
 	void ApplySettings(const COptionsDlg& optionDlg);		//从选项设置对话框获取设置
 
+	void ThemeColorChanged();
+
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -339,4 +341,6 @@ public:
 	afx_msg void OnRecorder();
 protected:
 	afx_msg LRESULT OnAlbumCoverDownloadComplete(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity);
 };
