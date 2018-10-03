@@ -65,6 +65,9 @@ using std::map;
 #include"bass.h"
 #pragma comment(lib,"bass.lib")
 
+//用于获取系统主题颜色
+#pragma comment(lib,"Dwmapi.lib")
+
 //用于支持使用网络相关的类
 #include <afxinet.h>
 #include <afxwin.h>

@@ -820,3 +820,20 @@ void CCommon::SizeZoom(CSize & size, int side)
 	}
 }
 
+COLORREF CCommon::GetWindowsThemeColor()
+{
+	DWORD crColorization;
+	BOOL fOpaqueBlend;
+	COLORREF theme_color{};
+	HRESULT result = DwmGetColorizationColor(&crColorization, &fOpaqueBlend);
+	if (result == S_OK)
+	{
+		BYTE r, g, b;
+		r = (crColorization >> 16) % 256;
+		g = (crColorization >> 8) % 256;
+		b = crColorization % 256;
+		theme_color = RGB(r, g, b);
+	}
+	return theme_color;
+}
+

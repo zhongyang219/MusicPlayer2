@@ -195,6 +195,8 @@ public:
 
 	//将一个CSize对象在保持长宽比的情况下缩放，使其长边等side
 	static void SizeZoom(CSize& size, int side);
+
+	static COLORREF GetWindowsThemeColor();
 };
 
 template<class T>
