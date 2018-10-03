@@ -78,7 +78,7 @@ public:
 	//去色（将颜色的饱和度降为0）
 	static void Desaturate(COLORREF& color);
 
-	//更改颜色
+	//当颜色的亮度低于一个值时降低其亮度
 	static void ReduceLuminance(COLORREF& color);
 };
 
