@@ -162,6 +162,9 @@
     <Filter Include="头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg">
       <UniqueIdentifier>{ccaf366b-90bb-4607-9f9a-17e079d6f056}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\公共的类\获取系统主题颜色">
+      <UniqueIdentifier>{8956885f-c8d8-4dd4-8644-78309e8a5897}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -336,6 +339,9 @@
     <ClInclude Include="PlaySettingsDlg.h">
       <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
     </ClInclude>
+    <ClInclude Include="DwmColorLibrary.h">
+      <Filter>头文件和源文件\公共的类\获取系统主题颜色</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -493,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="PlaySettingsDlg.cpp">
       <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="DwmColorLibrary.cpp">
+      <Filter>头文件和源文件\公共的类\获取系统主题颜色</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

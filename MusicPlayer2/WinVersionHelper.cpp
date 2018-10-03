@@ -63,3 +63,14 @@ bool CWinVersionHelper::IsWindows10OrLater() const
 {
 	return (m_major_version >= 10);
 }
+
+bool CWinVersionHelper::IsWindows10Version1809OrLater() const
+{
+	if (m_major_version > 10)
+		return true;
+	else if (m_major_version == 10 && m_minor_version > 0)
+		return true;
+	else if (m_major_version == 10 && m_minor_version == 0 && m_build_number >= 17763)
+		return true;
+	else return false;
+}

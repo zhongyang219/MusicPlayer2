@@ -10,6 +10,7 @@ public:
 	bool IsWindows8Or8point1() const;			//判断Windows版本是否为Windows8或Windows8.1
 	bool IsWindows8OrLater() const;
 	bool IsWindows10OrLater() const;
+	bool IsWindows10Version1809OrLater() const;
 
 	int GetMajorVersion() const { return m_major_version; }
 	int GetMinorVersion() const { return m_minor_version; }

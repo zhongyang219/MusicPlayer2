@@ -1804,21 +1804,15 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	//当设置了主题颜色跟随系统时，如果当前焦点在主窗口上，定时器每触发10次获取一次窗口标题栏的颜色
-	if (theApp.m_app_setting_data.theme_color_follow_system && m_timer_count % 10 == 0 && ::GetForegroundWindow() == m_hWnd)
+	if (theApp.m_app_setting_data.theme_color_follow_system && m_timer_count % 10 == 0/* && ::GetForegroundWindow() == m_hWnd*/)
 	{
-		HDC hDC = ::GetDC(NULL);
-		CRect rect;
-		GetWindowRect(rect);
-		if (rect.left < 0) rect.left = 0;
-		if (rect.top < 0) rect.top = 0;
-		//获取窗口左上角点往右8个像素点的颜色（即为窗口边缘的颜色）
-		COLORREF color;
-		//如果系统是Win10就取窗口最边缘像素的颜色，因为当win10设置成不显示标题栏颜色时，只有窗口边框最外面的一圈像素是主题颜色
-		//如果系统是Win8/8.1，则取窗口边缘住下2个像素的颜色，因为win8窗口标题栏总是当前主题色，而边框最外侧的颜色比主题色要深。
-		if (theApp.m_win_version.IsWindows10OrLater())
-			color = ::GetPixel(hDC, rect.TopLeft().x + theApp.DPI(8), rect.TopLeft().y);
-		else
-			color = ::GetPixel(hDC, rect.TopLeft().x + theApp.DPI(8), rect.TopLeft().y + theApp.DPI(2));
+		COLORREF color{};
+		if (theApp.m_color_api.IsSuccessed())
+		{
+			color = theApp.m_color_api.GetWindowsThemeColor();
+			if(theApp.m_win_version.IsWindows10Version1809OrLater())		//Win10 1809版本的主题颜色过深，将其降低一点亮度
+				CColorConvert::ReduceLuminance(color);
+		}
 		if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255,255,255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
 		{
 			theApp.m_app_setting_data.theme_color.original_color = color;
@@ -1828,6 +1822,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 			SetPlayListColor();
 			m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
+			DrawInfo();
 		}
 	}
 

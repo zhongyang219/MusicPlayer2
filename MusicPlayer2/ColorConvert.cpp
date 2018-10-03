@@ -177,3 +177,19 @@ void CColorConvert::Desaturate(COLORREF & color)
 	BYTE b = GetBValue(color);
 	color = GRAY((r + g + b) / 3);
 }
+
+void CColorConvert::ReduceLuminance(COLORREF & color)
+{
+	COLOR_RGB color_rgb;
+	color_rgb.red = GetRValue(color);
+	color_rgb.green = GetGValue(color);
+	color_rgb.blue = GetBValue(color);
+
+	COLOR_HSL color_hsl;
+	RGBtoHSL(&color_rgb, &color_hsl);		//将颜色从RGB模式转换成HSL模式
+
+	float luminance = color_hsl.luminance;		//保存原来的亮度
+	color_hsl.luminance = luminance * 0.2f + 40;
+	HSLtoRGB(&color_hsl, &color_rgb);
+	color = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
+}

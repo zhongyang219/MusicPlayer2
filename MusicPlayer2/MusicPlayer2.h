@@ -15,6 +15,7 @@
 #include "DrawCommon.h"
 #include "IniHelper.h"
 #include "WinVersionHelper.h"
+#include "DwmColorLibrary.h"
 
 struct DeviceInfo	//播放设备的信息
 {
@@ -102,6 +103,7 @@ public:
 
 	int m_dpi;
 	CWinVersionHelper m_win_version;		//当前Windows的版本
+	CDwmColorLibrary m_color_api;			//获取系统主题颜色的API
 	CPlayer m_player;
 
 	wstring m_module_dir;		//当前程序exe文件所在目录
