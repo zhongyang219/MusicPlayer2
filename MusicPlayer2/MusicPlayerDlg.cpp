@@ -1308,8 +1308,8 @@ void CMusicPlayerDlg::ThemeColorChanged()
 		return;
 	COLORREF color{};
 	color = CCommon::GetWindowsThemeColor();
-	if (theApp.m_win_version.IsWindows10Version1809OrLater())		//Win10 1809版本的主题颜色过深，将其降低一点亮度
-		CColorConvert::ReduceLuminance(color);
+	//if (theApp.m_win_version.IsWindows10Version1809OrLater())		//Win10 1809版本的主题颜色过深，将其降低一点亮度
+	CColorConvert::ReduceLuminance(color);
 	if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255, 255, 255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
 	{
 		theApp.m_app_setting_data.theme_color.original_color = color;
