@@ -22,6 +22,12 @@ wstring CCoverDownloadCommon::GetAlbumCoverURL(const wstring & song_id)
 	//将URL内容保存到内存
 	if(!CInternetCommon::GetURL(wstring(buff), contents))
 		return wstring();
+#ifdef _DEBUG
+	ofstream out_put{ L".\\cover_down.log", std::ios::binary };
+	out_put << CCommon::UnicodeToStr(contents, CodeType::UTF8);
+	out_put.close();
+#endif // _DEBUG
+
 	size_t index;
 	index = contents.find(L"\"album\"");
 	if (index == wstring::npos)
