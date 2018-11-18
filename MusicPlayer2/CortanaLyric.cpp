@@ -397,6 +397,7 @@ void CCortanaLyric::CheckDarkMode()
 			int brightness;
 			brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
 			m_dark_mode = (brightness < 220);
+			::ReleaseDC(NULL, hDC);
 		}
 
 		//根据深浅色模式设置背景颜色
