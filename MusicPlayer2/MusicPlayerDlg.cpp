@@ -429,11 +429,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 	//设置缓冲的DC
 	CDC MemDC;
 	CBitmap MemBitmap;
-	if (!MemDC.CreateCompatibleDC(NULL))
-	{
-		MessageBox(L"程序绘图功能出现严重错误，请退出程序后再重新启动！", NULL, MB_ICONERROR | MB_OK);
-		return;
-	}
+	MemDC.CreateCompatibleDC(NULL);
 	m_draw_rect = info_rect;		//绘图区域
 	if (!m_narrow_mode)
 		m_draw_rect.bottom = m_client_height - m_margin;

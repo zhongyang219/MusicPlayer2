@@ -122,8 +122,8 @@ public:
 	//csidl: 含义同SHGetSpecialFolderLocation函数的参数
 	static wstring GetSpecialDir(int csidl);
 
-	//获取一个列表控件最大长度项目宽度的像素值
-	static int GetListWidth(CListBox& list);
+	////获取一个列表控件最大长度项目宽度的像素值
+	//static int GetListWidth(CListBox& list);
 
 	//删除一个文件
 	static int DeleteAFile(HWND hwnd, _tstring file);

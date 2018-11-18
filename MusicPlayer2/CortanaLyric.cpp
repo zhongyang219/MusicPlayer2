@@ -9,6 +9,8 @@ CCortanaLyric::CCortanaLyric()
 
 CCortanaLyric::~CCortanaLyric()
 {
+	if (m_cortana_pDC != nullptr)
+		m_cortana_wnd->ReleaseDC(m_cortana_pDC);
 }
 
 void CCortanaLyric::Init()

@@ -404,29 +404,29 @@ wstring CCommon::GetSpecialDir(int csidl)
 	return wstring(folder_dir);
 }
 
-int CCommon::GetListWidth(CListBox & list)
-{
-	CDC *pDC = list.GetDC();
-	if (NULL == pDC)
-	{
-		return 0;
-	}
-	int nCount = list.GetCount();
-	if (nCount < 1)
-		return 0;
-	int nMaxExtent = 0;
-	CString szText;
-	for (int i = 0; i < nCount; ++i)
-	{
-		list.GetText(i, szText);
-		CSize &cs = pDC->GetTextExtent(szText);
-		if (cs.cx > nMaxExtent)
-		{
-			nMaxExtent = cs.cx;
-		}
-	}
-	return nMaxExtent;
-}
+//int CCommon::GetListWidth(CListBox & list)
+//{
+//	CDC *pDC = list.GetDC();
+//	if (NULL == pDC)
+//	{
+//		return 0;
+//	}
+//	int nCount = list.GetCount();
+//	if (nCount < 1)
+//		return 0;
+//	int nMaxExtent = 0;
+//	CString szText;
+//	for (int i = 0; i < nCount; ++i)
+//	{
+//		list.GetText(i, szText);
+//		CSize &cs = pDC->GetTextExtent(szText);
+//		if (cs.cx > nMaxExtent)
+//		{
+//			nMaxExtent = cs.cx;
+//		}
+//	}
+//	return nMaxExtent;
+//}
 
 
 int CCommon::DeleteAFile(HWND hwnd, _tstring file)
