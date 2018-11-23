@@ -266,6 +266,7 @@ const wchar_t GENRE_TABLE[GENRE_MAX][24]
 
 struct SupportedFormat		//一种支持的音频文件格式
 {
+	wstring file_name;
 	wstring description;		//文件格式的描述
 	wstring extensions_list;
 	vector<wstring> extensions;		//文件格式的扩展名

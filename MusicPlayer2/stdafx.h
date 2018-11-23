@@ -72,6 +72,7 @@ using std::map;
 #include <afxinet.h>
 #include <afxwin.h>
 #include <afxcontrolbars.h>
+#include <afxwin.h>
 
 
 

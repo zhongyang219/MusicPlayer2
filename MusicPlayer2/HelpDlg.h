@@ -1,6 +1,5 @@
 #pragma once
 #include "afxwin.h"
-#include "AudioCommon.h"
 
 // CHelpDlg ¶Ô»°¿ò
 

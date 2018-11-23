@@ -96,6 +96,7 @@ void CPlayer::IniBASS()
 		const BASS_PLUGININFO* plugin_info = BASS_PluginGetInfo(handle);
 		if (plugin_info == nullptr)
 			continue;
+		format.file_name = plugin_file;
 		format.description = CCommon::ASCIIToUnicode(plugin_info->formats->name);	//插件支持文件类型的描述
 		format.extensions_list = CCommon::ASCIIToUnicode(plugin_info->formats->exts);	//插件支持文件扩展名列表
 		//解析扩展名列表到vector

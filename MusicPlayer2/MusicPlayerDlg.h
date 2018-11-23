@@ -343,4 +343,5 @@ protected:
 	afx_msg LRESULT OnAlbumCoverDownloadComplete(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity);
+	afx_msg void OnSupportedFormat();
 };

@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "afxwin.h"
 #include "afxcmn.h"
+#include "SupportedFormatDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -260,6 +261,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_RECORDER, &CMusicPlayerDlg::OnRecorder)
 	ON_MESSAGE(WM_ALBUM_COVER_DOWNLOAD_COMPLETE, &CMusicPlayerDlg::OnAlbumCoverDownloadComplete)
 	ON_WM_DWMCOLORIZATIONCOLORCHANGED()
+	ON_COMMAND(ID_SUPPORTED_FORMAT, &CMusicPlayerDlg::OnSupportedFormat)
 END_MESSAGE_MAP()
 
 
@@ -3650,4 +3652,12 @@ void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL
 	ThemeColorChanged();
 
 	CDialog::OnColorizationColorChanged(dwColorizationColor, bOpacity);
+}
+
+
+void CMusicPlayerDlg::OnSupportedFormat()
+{
+	// TODO: 在此添加命令处理程序代码
+	CSupportedFormatDlg dlg;
+	dlg.DoModal();
 }

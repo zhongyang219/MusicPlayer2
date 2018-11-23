@@ -52,32 +52,8 @@ BOOL CHelpDlg::OnInitDialog()
 	m_min_size.cy = rect.Height();
 
 	GetHelpString();
-	wstring help_info{ m_help_info.GetString() };
+	m_help_edit.SetWindowText(m_help_info);
 
-	//在帮助文档中添加支持的音频格式
-	wstring str_support_format;
-	str_support_format += L"【支持的音频格式】\r\n";
-	str_support_format += L"更多音频格式支持依赖于BASS引擎插件（位于\".\\Plugins\"目录下）。\r\n";
-	for (const auto support_format : CAudioCommon::m_surpported_format)
-	{
-		str_support_format += support_format.description;
-		str_support_format += L": ";
-		str_support_format += support_format.extensions_list;
-		str_support_format += L"\r\n";
-	}
-	str_support_format += L"\r\n";
-	size_t index = help_info.find(L"【操作说明】");		//添加在【操作说明】之前
-	if (index != wstring::npos)
-	{
-		help_info.insert(index, str_support_format);
-	}
-	else
-	{
-		help_info += L"\r\n";
-		help_info += str_support_format;
-	}
-
-	m_help_edit.SetWindowText(help_info.c_str());
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }

@@ -162,6 +162,9 @@
     <Filter Include="头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg">
       <UniqueIdentifier>{ccaf366b-90bb-4607-9f9a-17e079d6f056}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\对话框类\SupportedFormatDlg">
+      <UniqueIdentifier>{31a26140-6f82-4081-be3f-bd5bc3d369f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -336,6 +339,9 @@
     <ClInclude Include="PlaySettingsDlg.h">
       <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
     </ClInclude>
+    <ClInclude Include="SupportedFormatDlg.h">
+      <Filter>头文件和源文件\对话框类\SupportedFormatDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -493,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="PlaySettingsDlg.cpp">
       <Filter>头文件和源文件\对话框类\选项设置对话框\PlaySettingsDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="SupportedFormatDlg.cpp">
+      <Filter>头文件和源文件\对话框类\SupportedFormatDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
