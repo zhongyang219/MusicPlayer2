@@ -1361,9 +1361,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//只有win8以上的系统才能跟随系统主题色
 #ifdef COMPILE_IN_WIN_XP
 	theApp.m_app_setting_data.theme_color_follow_system = false;
-#else
-	if (!theApp.m_win_version.IsWindows8OrLater())
-		theApp.m_app_setting_data.theme_color_follow_system = false;
+//#else
+//	if (!theApp.m_win_version.IsWindows8OrLater())
+//		theApp.m_app_setting_data.theme_color_follow_system = false;
 #endif
 
 	//只有Win10以上的系统才能在Cortana搜索框中显示歌词
