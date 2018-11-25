@@ -17,7 +17,6 @@
 #include"LyricEditDlg.h"
 #include "LyricDownloadDlg.h"
 #include "LyricBatchDownloadDlg.h"
-#include "DrawCommon.h"
 #include "StaticEx.h"
 //#include "EqualizerDlg.h"
 #include "SoundEffectDlg.h"
@@ -27,34 +26,13 @@
 #include "CoverDownloadDlg.h"
 #include "FormatConvertDlg.h"
 #include "RecorderDlg.h"
+#include "CPlayerUI.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
 // CMusicPlayerDlg 对话框
 class CMusicPlayerDlg : public CDialog
 {
-	struct UIColors		//界面颜色
-	{
-		COLORREF color_text;				//文本颜色
-		COLORREF color_text_lable;			//标签文本的颜色
-		COLORREF color_text_2;				//歌词未播放文本的颜色
-		COLORREF color_text_heighlight;		//鼠标指向时文本的颜色
-		COLORREF color_back;				//背景颜色
-		COLORREF color_lyric_back;			//歌词界面背景颜色
-		COLORREF color_control_bar_back;	//控制条背景颜色
-		COLORREF color_spectrum;			//频谱分析柱形的颜色
-		COLORREF color_spectrum_cover;		//有专辑封面时的频谱分析柱形的颜色
-		COLORREF color_spectrum_back;		//频谱分析的背景颜色
-		COLORREF color_button_back;			//歌词翻译按钮的背景色
-		int background_transparency;		//背景不透明度0~100
-	};
-
-	struct UIButton		//界面中绘制的按钮
-	{
-		CRect rect;				//按钮的矩形区域
-		bool hover{ false };	//鼠标是否指向按钮
-		bool enable{ true };	//按钮是否启用
-	};
 
 // 构造
 public:
@@ -74,7 +52,6 @@ public:
 protected:
 	HICON m_hIcon;
 	CToolTipCtrl m_Mytip;
-	UIColors m_colors;
 	//控件变量
 	CPlayListCtrl m_playlist_list{ theApp.m_player.GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
 																	//用于支持鼠标指向列表中的项目时显示歌曲信息)
@@ -115,7 +92,8 @@ protected:
 	wstring m_cmdLine;	//命令行参数
 
 	CDC* m_pDC;				//当前窗口的DC
-	CDrawCommon m_draw;		//用于绘制文本的对象
+	CPlayerUI::UIData m_ui_data;
+	CPlayerUI m_ui{ m_ui_data };
 
 	bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
 
@@ -124,45 +102,26 @@ protected:
 	int m_window_width;		//窗口的宽度
 	int m_window_height;	//窗口的高度
 
-	int m_margin;		//边缘的余量
 	int m_width_threshold{};		//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
-	int m_info_height;				//窄界面模式时显示信息区域的高度
-	int m_info_height2;				//普通界面模式时显示信息区域的高度
-	int m_control_bar_height;		//窗口上方的播放控制按钮部分的高度
 	int m_path_edit_height;			//前路径Edit控件区域的高度
 	int m_search_edit_height;		//歌曲搜索框Edit控件区域的高度
-	int m_progress_bar_height;		//(窄界面模式时)进度条区域的高度
 	int m_progress_bar_left_pos;	//(普通界面模式时)进度条左侧的位置
-	CSize m_spectral_size{};			//频谱分析区域的大小
 	int m_min_width;			//窗口最小宽度
 	int m_min_height;			//窗口最小高度
 	int m_time_width;			//显示播放时间控件的宽度
 	int m_time_height;			//显示播放时间控件的高度
-	int m_client_width;			//窗口客户区宽度
-	int m_client_height;		//窗口客户区高度
 
 	//int lyric_line_space{ 2 };	//歌词的行间距
 	//wstring lyric_font_name;		//歌词字体名称
 	//int lyric_font_size;		//歌词字体大小
-	CFont m_lyric_font;			//歌词字体
-	CFont m_lyric_translate_font;	//歌词翻译的字体
 
 	bool m_narrow_mode;		//窄界面模式
-	bool m_show_translate{ true };	//歌词是否显示翻译
 
 	bool m_searched;		//播放列表是否处于搜索状态
 	wstring m_search_key_word;	//播放列表查找的关键字
 
 	unsigned int m_timer_count{};
 
-	CRect m_draw_rect;				//绘图区域
-	CRect m_repetemode_rect;		//显示“循环模式”的矩形区域
-	CRect m_cover_rect;				//显示专辑封面的矩形区域（以绘图区域左上角为原点）
-	bool m_repetemode_hover{ false };	//鼠标指向了“循环模式”的矩形区域
-	UIButton m_volume_btn;				//音量按钮
-	CRect m_volume_up_rect, m_volume_down_rect;	//音量调整条增加和减少音量的矩形区域
-	bool m_show_volume_adj{ false };	//显示音量调整按钮
-	UIButton m_translate_btn;			//歌词翻译按钮
 
 	int m_item_selected{};		//播放列表中鼠标选中的项目
 	vector<int> m_items_selected;
@@ -175,7 +134,6 @@ protected:
 	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected, m_list_popup_menu };		//迷你模式对话框
 
 	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
-	CImage m_default_background;		//默认的背景
 
 	CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
 	CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
@@ -196,8 +154,8 @@ protected:
 	void LoadConfig();		//从ini文件读取设置
 	void SetTransparency();			//根据m_transparency的值设置窗口透明度
 	void DrawInfo(bool reset = false);		//绘制信息
-	void DrawLyricsSingleLine(CRect lyric_rect);			//绘制歌词（窄界面模式下单行显示），参数为显示歌词的矩形区域
-	void DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC);			//绘制歌词（普通模式下多行显示），参数为显示歌词的矩形区域
+	//void DrawLyricsSingleLine(CRect lyric_rect);			//绘制歌词（窄界面模式下单行显示），参数为显示歌词的矩形区域
+	//void DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC);			//绘制歌词（普通模式下多行显示），参数为显示歌词的矩形区域
 	void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
 	void SetPorgressBarSize(int cx, int cy);		//设置进度条在窗口中的位置
 	void SetPorgressBarSize();

@@ -165,6 +165,9 @@
     <Filter Include="头文件和源文件\对话框类\SupportedFormatDlg">
       <UniqueIdentifier>{31a26140-6f82-4081-be3f-bd5bc3d369f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\PlayerUI">
+      <UniqueIdentifier>{7ecb1bd3-1c4b-442e-80f8-25aefb244432}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -342,6 +345,9 @@
     <ClInclude Include="SupportedFormatDlg.h">
       <Filter>头文件和源文件\对话框类\SupportedFormatDlg</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerUI.h">
+      <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -502,6 +508,9 @@
     </ClCompile>
     <ClCompile Include="SupportedFormatDlg.cpp">
       <Filter>头文件和源文件\对话框类\SupportedFormatDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerUI.cpp">
+      <Filter>头文件和源文件\PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
