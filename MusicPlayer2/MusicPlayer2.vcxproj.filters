@@ -168,6 +168,9 @@
     <Filter Include="头文件和源文件\PlayerUI">
       <UniqueIdentifier>{7ecb1bd3-1c4b-442e-80f8-25aefb244432}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件和源文件\派生的控件类\CTabCtrlEx">
+      <UniqueIdentifier>{5729a1de-50e9-4b2e-9ef2-b3dad008995f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -348,6 +351,9 @@
     <ClInclude Include="CPlayerUI.h">
       <Filter>头文件和源文件\PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="CTabCtrlEx.h">
+      <Filter>头文件和源文件\派生的控件类\CTabCtrlEx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -511,6 +517,9 @@
     </ClCompile>
     <ClCompile Include="CPlayerUI.cpp">
       <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabCtrlEx.cpp">
+      <Filter>头文件和源文件\派生的控件类\CTabCtrlEx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

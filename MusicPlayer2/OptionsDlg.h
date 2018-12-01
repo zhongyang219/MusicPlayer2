@@ -4,6 +4,7 @@
 #include "AppearanceSettingDlg.h"
 #include "DataSettingsDlg.h"
 #include "PlaySettingsDlg.h"
+#include "CTabCtrlEx.h"
 
 // COptionsDlg 对话框
 #define TIMER_ID2 1122
@@ -31,14 +32,13 @@ public:
 
 protected:
 
-	CTabCtrl m_tab;		//选项卡控件
+	CTabCtrlEx m_tab;		//选项卡控件
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	afx_msg void OnTcnSelchangeOptionsTab(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void OnOK();
 	afx_msg void OnBnClickedApplyButton();
 };

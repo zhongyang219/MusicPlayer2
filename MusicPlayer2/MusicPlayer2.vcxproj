@@ -200,6 +200,7 @@
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
     <ClInclude Include="CPlayerUI.h" />
+    <ClInclude Include="CTabCtrlEx.h" />
     <ClInclude Include="PlaySettingsDlg.h" />
     <ClInclude Include="RecorderDlg.h" />
     <ClInclude Include="GaussBlur.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
     <ClCompile Include="CPlayerUI.cpp" />
+    <ClCompile Include="CTabCtrlEx.cpp" />
     <ClCompile Include="PlaySettingsDlg.cpp" />
     <ClCompile Include="RecorderDlg.cpp" />
     <ClCompile Include="GaussBlur.cpp" />
