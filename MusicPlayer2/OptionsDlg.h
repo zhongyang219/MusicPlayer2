@@ -41,4 +41,5 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual void OnOK();
 	afx_msg void OnBnClickedApplyButton();
+	afx_msg void OnDestroy();
 };

@@ -30,6 +30,7 @@ void COptionsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(COptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_APPLY_BUTTON, &COptionsDlg::OnBnClickedApplyButton)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -73,4 +74,13 @@ void COptionsDlg::OnBnClickedApplyButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SETTINGS_APPLIED, (WPARAM)this, 0);
+}
+
+
+void COptionsDlg::OnDestroy()
+{
+	CDialog::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	m_tab_selected = m_tab.GetCurSel();
 }
