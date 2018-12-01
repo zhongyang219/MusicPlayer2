@@ -102,18 +102,14 @@ protected:
 	int m_window_width;		//窗口的宽度
 	int m_window_height;	//窗口的高度
 
-	int m_width_threshold{};		//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
-	int m_path_edit_height;			//前路径Edit控件区域的高度
-	int m_search_edit_height;		//歌曲搜索框Edit控件区域的高度
 	int m_progress_bar_left_pos;	//(普通界面模式时)进度条左侧的位置
 	int m_min_width;			//窗口最小宽度
 	int m_min_height;			//窗口最小高度
 	int m_time_width;			//显示播放时间控件的宽度
 	int m_time_height;			//显示播放时间控件的高度
 
-	//int lyric_line_space{ 2 };	//歌词的行间距
-	//wstring lyric_font_name;		//歌词字体名称
-	//int lyric_font_size;		//歌词字体大小
+	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };		//窗口布局的固定数据
+
 
 	bool m_narrow_mode;		//窄界面模式
 

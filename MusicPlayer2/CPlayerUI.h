@@ -1,5 +1,19 @@
 #pragma once
 #include "DrawCommon.h"
+#include "MusicPlayer2.h"
+
+struct SLayoutData
+{
+	const int control_bar_height = theApp.DPI(30);				//窗口上方的播放控制按钮部分的高度
+	const int margin = theApp.DPI(4);							//边缘的余量
+	const int width_threshold = theApp.DPI(600);				//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
+	const int info_height = theApp.DPI(166);					//窄界面模式时显示信息区域的高度
+	const int info_height2 = theApp.DPI(143);					//普通界面模式时显示信息区域的高度
+	const int path_edit_height = theApp.DPI(32);				//前路径Edit控件区域的高度
+	const int search_edit_height = theApp.DPI(26);				//歌曲搜索框Edit控件区域的高度
+	const int progress_bar_height = theApp.DPI(20);				//(窄界面模式时)进度条区域的高度
+	const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };	//频谱分析区域的大小
+};
 
 class CPlayerUI
 {
@@ -29,30 +43,24 @@ public:
 
 	struct UIData
 	{
-		int margin;					//边缘的余量
-		int control_bar_height;		//窗口上方的播放控制按钮部分的高度
-		int info_height;				//窄界面模式时显示信息区域的高度
-		int info_height2;				//普通界面模式时显示信息区域的高度
-		int progress_bar_height;		//(窄界面模式时)进度条区域的高度
-		CRect draw_rect;				//绘图区域
-		CSize spectral_size{};			//频谱分析区域的大小
+		CRect draw_rect;					//绘图区域
 
-		CRect cover_rect;				//显示专辑封面的矩形区域（以绘图区域左上角为原点）
-		CRect repetemode_rect;		//显示“循环模式”的矩形区域
-		bool repetemode_hover{ false };	//鼠标指向了“循环模式”的矩形区域
+		CRect cover_rect;					//显示专辑封面的矩形区域（以绘图区域左上角为原点）
+		CRect repetemode_rect;				//显示“循环模式”的矩形区域
+		bool repetemode_hover{ false };		//鼠标指向了“循环模式”的矩形区域
 		UIButton volume_btn;				//音量按钮
 		CRect volume_up_rect, volume_down_rect;	//音量调整条增加和减少音量的矩形区域
-		bool show_volume_adj{ false };	//显示音量调整按钮
-		UIButton translate_btn;			//歌词翻译按钮
+		bool show_volume_adj{ false };		//显示音量调整按钮
+		UIButton translate_btn;				//歌词翻译按钮
 
-		CFont lyric_font;			//歌词字体
-		CFont lyric_translate_font;	//歌词翻译的字体
+		CFont lyric_font;					//歌词字体
+		CFont lyric_translate_font;			//歌词翻译的字体
 
-		bool show_translate{ true };	//歌词是否显示翻译
+		bool show_translate{ true };		//歌词是否显示翻译
 
-		int client_width;			//窗口客户区宽度
-		int client_height;		//窗口客户区高度
-		CImage default_background;		//默认的背景
+		int client_width;					//窗口客户区宽度
+		int client_height;					//窗口客户区高度
+		CImage default_background;			//默认的背景
 
 	};
 
@@ -75,5 +83,6 @@ protected:
 
 	CDrawCommon m_draw;		//用于绘制文本的对象
 
+	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
 };
 

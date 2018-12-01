@@ -403,19 +403,19 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	int width0, width1, width2;
 	if (!m_narrow_mode)
 	{
-		m_playlist_list.MoveWindow(cx / 2 + m_ui_data.margin, m_ui_data.control_bar_height + m_search_edit_height + m_path_edit_height + m_ui_data.margin,
-			cx / 2 - 2 * m_ui_data.margin, cy - m_ui_data.control_bar_height - m_search_edit_height - m_path_edit_height - 2 * m_ui_data.margin);
+		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
+			cx / 2 - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
 		width0 = theApp.DPI(40);
 		width2 = theApp.DPI(50);
-		width1 = cx / 2 - width0 - width2 - theApp.DPI(21) - 2 * m_ui_data.margin;
+		width1 = cx / 2 - width0 - width2 - theApp.DPI(21) - 2 * m_pLayout->margin;
 	}
 	else
 	{
-		m_playlist_list.MoveWindow(m_ui_data.margin, m_ui_data.control_bar_height + m_ui_data.info_height + m_ui_data.progress_bar_height + m_search_edit_height + m_path_edit_height,
-			cx - 2 * m_ui_data.margin, cy - m_ui_data.control_bar_height - m_ui_data.info_height - m_ui_data.progress_bar_height - m_search_edit_height - m_path_edit_height - m_ui_data.margin);
+		m_playlist_list.MoveWindow(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height,
+			cx - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->info_height - m_pLayout->progress_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - m_pLayout->margin);
 		width0 = theApp.DPI(40);
 		width2 = theApp.DPI(50);
-		width1 = cx - width0 - width2 - theApp.DPI(21) - 2 * m_ui_data.margin;
+		width1 = cx - width0 - width2 - theApp.DPI(21) - 2 * m_pLayout->margin;
 	}
 	m_playlist_list.SetColumnWidth(0, width0);
 	m_playlist_list.SetColumnWidth(1, width1);
@@ -423,24 +423,24 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置“当前路径”static控件大小
 	CRect rect_static;
 	m_path_static.GetWindowRect(rect_static);
-	rect_static.bottom = rect_static.top + m_path_edit_height - 2 * m_ui_data.margin;
+	rect_static.bottom = rect_static.top + m_pLayout->path_edit_height - 2 * m_pLayout->margin;
 	if (!m_narrow_mode)
-		rect_static.MoveToXY(cx / 2 + m_ui_data.margin, m_ui_data.control_bar_height + m_ui_data.margin);
+		rect_static.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin);
 	else
-		rect_static.MoveToXY(m_ui_data.margin, m_ui_data.control_bar_height + m_ui_data.info_height + m_ui_data.progress_bar_height);
+		rect_static.MoveToXY(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height);
 	m_path_static.MoveWindow(rect_static);
 	//设置“当前路径”edit控件大小
 	CRect rect_edit;
 	m_path_edit.GetWindowRect(rect_edit);
 	if (!m_narrow_mode)
 	{
-		rect_edit.right = rect_edit.left + (cx / 2 - 2 * m_ui_data.margin - rect_static.Width());
-		rect_edit.MoveToXY(cx / 2 + m_ui_data.margin + rect_static.Width(), m_ui_data.control_bar_height + m_ui_data.margin);
+		rect_edit.right = rect_edit.left + (cx / 2 - 2 * m_pLayout->margin - rect_static.Width());
+		rect_edit.MoveToXY(cx / 2 + m_pLayout->margin + rect_static.Width(), m_pLayout->control_bar_height + m_pLayout->margin);
 	}
 	else
 	{
-		rect_edit.right = rect_edit.left + (cx - 2 * m_ui_data.margin - rect_static.Width());
-		rect_edit.MoveToXY(m_ui_data.margin + rect_static.Width(), m_ui_data.control_bar_height + m_ui_data.info_height + m_ui_data.progress_bar_height);
+		rect_edit.right = rect_edit.left + (cx - 2 * m_pLayout->margin - rect_static.Width());
+		rect_edit.MoveToXY(m_pLayout->margin + rect_static.Width(), m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height);
 	}
 	m_path_edit.MoveWindow(rect_edit);
 	//设置歌曲搜索框的大小和位置
@@ -448,20 +448,20 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	m_search_edit.GetWindowRect(rect_search);
 	if (!m_narrow_mode)
 	{
-		rect_search.right = rect_search.left + (cx / 2 - 2 * m_ui_data.margin - m_ui_data.margin - rect_search.Height());
-		rect_search.MoveToXY(cx / 2 + m_ui_data.margin, m_ui_data.control_bar_height + m_path_edit_height + theApp.DPI(1));
+		rect_search.right = rect_search.left + (cx / 2 - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
+		rect_search.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->path_edit_height + theApp.DPI(1));
 	}
 	else
 	{
-		rect_search.right = rect_search.left + (cx - 2 * m_ui_data.margin - m_ui_data.margin - rect_search.Height());
-		rect_search.MoveToXY(m_ui_data.margin, m_ui_data.control_bar_height + m_ui_data.info_height + m_ui_data.progress_bar_height + m_path_edit_height - theApp.DPI(3));
+		rect_search.right = rect_search.left + (cx - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
+		rect_search.MoveToXY(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height + m_pLayout->path_edit_height - theApp.DPI(3));
 	}
 	m_search_edit.MoveWindow(rect_search);
 	//设置清除搜索按钮的大小和位置
 	CRect rect_clear{};
 	rect_clear.right = rect_clear.bottom = rect_search.Height();
 	//if (!m_narrow_mode)
-		rect_clear.MoveToXY(rect_search.right + m_ui_data.margin, rect_search.top);
+		rect_clear.MoveToXY(rect_search.right + m_pLayout->margin, rect_search.top);
 	m_clear_search_button.MoveWindow(rect_clear);
 	m_clear_search_button.Invalidate();
 }
@@ -483,23 +483,23 @@ void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
 	{
 		//设置进度条位置
 		left_pos = m_progress_bar_left_pos;
-		progress_width = cx - left_pos - 2 * m_ui_data.margin - time_width;
+		progress_width = cx - left_pos - 2 * m_pLayout->margin - time_width;
 		rect.right = rect.left + progress_width;
 		rect.MoveToXY(left_pos, theApp.DPI(6));
 		m_progress_bar.MoveWindow(rect);
 		//设置时间位置
-		m_time_static.SetWindowPos(NULL, cx - time_width - m_ui_data.margin, theApp.DPI(6), time_width, m_time_height, SWP_NOZORDER);
+		m_time_static.SetWindowPos(NULL, cx - time_width - m_pLayout->margin, theApp.DPI(6), time_width, m_time_height, SWP_NOZORDER);
 	}
 	else
 	{
 		//设置进度条位置
-		left_pos = m_ui_data.margin;
-		progress_width = cx - 3 * m_ui_data.margin - time_width;
+		left_pos = m_pLayout->margin;
+		progress_width = cx - 3 * m_pLayout->margin - time_width;
 		rect.right = rect.left + progress_width;
-		rect.MoveToXY(left_pos, theApp.DPI(2) + m_ui_data.control_bar_height);
+		rect.MoveToXY(left_pos, theApp.DPI(2) + m_pLayout->control_bar_height);
 		m_progress_bar.MoveWindow(rect);
 		//设置时间位置
-		m_time_static.SetWindowPos(NULL, cx - time_width - m_ui_data.margin, theApp.DPI(2) + m_ui_data.control_bar_height, time_width, m_time_height, SWP_NOZORDER);
+		m_time_static.SetWindowPos(NULL, cx - time_width - m_pLayout->margin, theApp.DPI(2) + m_pLayout->control_bar_height, time_width, m_time_height, SWP_NOZORDER);
 	}
 	m_time_static.Invalidate();
 }
@@ -652,9 +652,9 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
 #ifndef COMPILE_IN_WIN_XP
 	CRect info_rect;
 	if (!m_narrow_mode)
-		info_rect = CRect{ CPoint{ m_ui_data.margin, m_ui_data.control_bar_height + m_ui_data.margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_ui_data.margin, m_ui_data.info_height2 - 3 * m_ui_data.margin } };
+		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
 	else
-		info_rect = CRect{ CPoint{ m_ui_data.margin, m_ui_data.control_bar_height + m_ui_data.progress_bar_height + theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_ui_data.margin, m_ui_data.info_height - 2 * m_ui_data.margin } };
+		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
 	if (m_pTaskbar != nullptr)
 		m_pTaskbar->SetThumbnailClip(m_hWnd, info_rect);
 #endif
@@ -831,16 +831,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	theApp.m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 
 	//根据当前系统的DPI设置窗口上方工具区和状态栏等的大小
-	m_ui_data.control_bar_height = theApp.DPI(30);
-	m_ui_data.margin = theApp.DPI(4);
-	m_width_threshold = theApp.DPI(600);
-	m_ui_data.info_height = theApp.DPI(166);
-	m_ui_data.info_height2 = theApp.DPI(143);
-	m_path_edit_height = theApp.DPI(32);
-	m_search_edit_height = theApp.DPI(26);
-	m_ui_data.progress_bar_height = theApp.DPI(20);
-	m_ui_data.spectral_size.cx = theApp.DPI(120);
-	m_ui_data.spectral_size.cy = theApp.DPI(90);
+	m_pLayout = std::make_shared<SLayoutData>();
 
 	CRect rect;
 	m_set_path_button.GetWindowRect(rect);
@@ -1029,13 +1020,13 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
 	m_ui_data.show_volume_adj = false;
-	if (nType != SIZE_MINIMIZED)
+	if (nType != SIZE_MINIMIZED && m_pLayout != nullptr)
 	{
 		if (m_pDC != NULL)
 		{
 			DrawInfo(true);
 			CRect redraw_rect{m_ui_data.draw_rect};
-			if((cx < m_width_threshold)!= m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
+			if((cx < m_pLayout->width_threshold)!= m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
 			{
 				Invalidate(FALSE);
 				m_time_static.Invalidate(FALSE);
@@ -1045,14 +1036,14 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 				if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
 				{
 					//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-					redraw_rect.left = cx / 2 - 3 * m_ui_data.margin;
-					redraw_rect.right = m_ui_data.client_width / 2 + m_ui_data.margin;
+					redraw_rect.left = cx / 2 - 3 * m_pLayout->margin;
+					redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
 					m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 				}
 				else if (cy < m_ui_data.client_height)	//如果界面高度变小了
 				{
 					//重新将绘图区域下方区域的矩形区域填充为对话框背景色
-					redraw_rect.top = cy - 2 * m_ui_data.margin;
+					redraw_rect.top = cy - 2 * m_pLayout->margin;
 					redraw_rect.bottom = cy;
 					m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 				}
@@ -1060,16 +1051,16 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 			else if (m_narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
 			{
 				//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-				redraw_rect.left = cx - 2 * m_ui_data.margin;
+				redraw_rect.left = cx - 2 * m_pLayout->margin;
 				redraw_rect.right = cx;
 				m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 			}
 		}
 		m_ui_data.client_width = cx;
 		m_ui_data.client_height = cy;
-		if (m_width_threshold != 0)
+		if (m_pLayout->width_threshold != 0)
 		{
-			m_narrow_mode = (cx < m_width_threshold);
+			m_narrow_mode = (cx < m_pLayout->width_threshold);
 		}
 		if (m_playlist_list.m_hWnd && theApp.m_dpi)
 		{
@@ -2467,9 +2458,9 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	CRect info_rect{ m_ui_data.draw_rect }, lyric_rect{ m_ui_data.draw_rect };
 	if (!m_narrow_mode)
 	{
-		int height = m_ui_data.info_height2 - 3 * m_ui_data.margin;
+		int height = m_pLayout->info_height2 - 3 * m_pLayout->margin;
 		info_rect.bottom = info_rect.top + height;
-		lyric_rect.top = info_rect.bottom + 2 * m_ui_data.margin;
+		lyric_rect.top = info_rect.bottom + 2 * m_pLayout->margin;
 	}
 	else
 	{
