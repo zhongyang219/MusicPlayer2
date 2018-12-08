@@ -327,6 +327,7 @@
     <Image Include="res\Cortana_black.bmp" />
     <Image Include="res\Cortana_white.bmp" />
     <Image Include="res\default_cover.bmp" />
+    <Image Include="res\default_cover_new.ico" />
     <Image Include="res\DeleteTag.ico" />
     <Image Include="res\Find.ico" />
     <Image Include="res\MusicPlayer2.ico" />

@@ -7,6 +7,9 @@ CPlayerUI2::CPlayerUI2(UIData& ui_data)
 {
 	m_title_font.CreatePointFont(100, _T("Î¢ÈíÑÅºÚ"));
 	m_artist_font.CreatePointFont(90, _T("Î¢ÈíÑÅºÚ"));
+
+	m_default_cover = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_DEFAULT_COVER), IMAGE_ICON, 512, 512, LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+
 }
 
 
@@ -133,9 +136,17 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 
 		//»æÖÆ×¨¼­·âÃæ
 		cover_rect.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
+		m_draw_data.cover_rect = cover_rect;
 		if (theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
 		{
 			m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+		}
+		else
+		{
+			CRect rect = cover_rect;
+			int cover_margin = static_cast<int>(cover_rect.Width() * 0.13);
+			rect.DeflateRect(cover_margin, cover_margin);
+			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), rect.left, rect.top, m_default_cover, rect.Width(), rect.Height(), 0, NULL, DI_NORMAL);
 		}
 
 		//»æÖÆ²¥·Å½ø¶È
@@ -202,9 +213,17 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 			m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
 
 		rc_tmp.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
+		m_draw_data.cover_rect = rc_tmp;
 		if (theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
 		{
 			m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), rc_tmp.TopLeft(), rc_tmp.Size(), theApp.m_app_setting_data.album_cover_fit);
+		}
+		else
+		{
+			CRect rect = rc_tmp;
+			int cover_margin = static_cast<int>(rc_tmp.Width() * 0.13);
+			rect.DeflateRect(cover_margin, cover_margin);
+			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), rect.left, rect.top, m_default_cover, rect.Width(), rect.Height(), 0, NULL, DI_NORMAL);
 		}
 
 		wchar_t buff[64];
@@ -355,7 +374,19 @@ void CPlayerUI2::OnSizeRedraw(int cx, int cy, bool narrow_mode)
 
 CRect CPlayerUI2::GetThumbnailClipArea(bool narrow_mode)
 {
-	return m_draw_data.draw_rect;
+	CRect clip_area_rect;
+	if (!narrow_mode)
+	{
+		clip_area_rect = m_draw_data.cover_rect;
+		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20));
+		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
+	}
+	else
+	{
+		clip_area_rect = m_draw_data.draw_rect;
+		clip_area_rect.MoveToY(m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20));
+	}
+	return clip_area_rect;
 }
 
 void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)

@@ -9,6 +9,7 @@ private:
 	struct DrawData
 	{
 		CRect draw_rect;					//»æÍ¼ÇøÓò
+		CRect cover_rect;
 	};
 
 public:
@@ -36,5 +37,7 @@ protected:
 
 	CFont m_title_font;
 	CFont m_artist_font;
+
+	HICON m_default_cover;
 };
 

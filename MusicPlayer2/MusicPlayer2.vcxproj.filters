@@ -602,5 +602,8 @@
     <Image Include="res\快退.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\default_cover_new.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

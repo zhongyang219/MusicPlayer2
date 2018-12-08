@@ -1079,7 +1079,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		SetPlaylistSize(rect.Width(), rect.Height());		//调整播放列表的大小和位置
 		m_path_static.Invalidate();
 		SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
-		SetThumbnailClipArea();
 
 		if (m_cmdLine.empty())		//没有有通过命令行打开文件
 		{
@@ -1104,6 +1103,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			//MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
 		}
 		DrawInfo();
+		SetThumbnailClipArea();
 
 		//注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
 		//theApp.m_player.MusicControl(Command::OPEN);
