@@ -354,6 +354,12 @@
     <ClInclude Include="CTabCtrlEx.h">
       <Filter>头文件和源文件\派生的控件类\CTabCtrlEx</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerUIBase.h">
+      <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerUI2.h">
+      <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -520,6 +526,12 @@
     </ClCompile>
     <ClCompile Include="CTabCtrlEx.cpp">
       <Filter>头文件和源文件\派生的控件类\CTabCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerUIBase.cpp">
+      <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerUI2.cpp">
+      <Filter>头文件和源文件\PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

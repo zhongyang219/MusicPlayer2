@@ -29,7 +29,7 @@ public:
 
 protected:
 	CStatic m_static_version;
-	CToolTipCtrl m_Mytip;		//鼠标指向时的工具提示
+	CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -74,11 +74,11 @@ BOOL CAboutDlg::OnInitDialog()
 #endif
 	m_static_version.SetWindowText(version_info);
 
-	m_Mytip.Create(this);
-	m_Mytip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("向作者发送电子邮件\r\nmailto:zhongyang219@hotmail.com"));
-	m_Mytip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), _T("转到此项目在GitHub上的页面\r\nhttps://github.com/zhongyang219/MusicPlayer2"));
-	m_Mytip.SetDelayTime(300);	//设置延迟
-	m_Mytip.SetMaxTipWidth(theApp.DPI(400));
+	m_tool_tip.Create(this);
+	m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("向作者发送电子邮件\r\nmailto:zhongyang219@hotmail.com"));
+	m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), _T("转到此项目在GitHub上的页面\r\nhttps://github.com/zhongyang219/MusicPlayer2"));
+	m_tool_tip.SetDelayTime(300);	//设置延迟
+	m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
 	//if (theApp.m_is_windows10)
 	//	SetDlgItemText(IDC_DEBUG_INFO_STATIC, _T("Windows10"));
@@ -116,7 +116,7 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	if (pMsg->message == WM_MOUSEMOVE)
-		m_Mytip.RelayEvent(pMsg);
+		m_tool_tip.RelayEvent(pMsg);
 
 	return CDialog::PreTranslateMessage(pMsg);
 }
@@ -262,6 +262,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_MESSAGE(WM_ALBUM_COVER_DOWNLOAD_COMPLETE, &CMusicPlayerDlg::OnAlbumCoverDownloadComplete)
 	ON_WM_DWMCOLORIZATIONCOLORCHANGED()
 	ON_COMMAND(ID_SUPPORTED_FORMAT, &CMusicPlayerDlg::OnSupportedFormat)
+	ON_COMMAND(ID_SWITCH_UI, &CMusicPlayerDlg::OnSwitchUi)
 END_MESSAGE_MAP()
 
 
@@ -386,7 +387,7 @@ void CMusicPlayerDlg::SetTransparency()
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
 	if (IsIconic()) return;		//窗口最小化时不绘制，以降低CPU利用率
-	m_ui.DrawInfo(m_narrow_mode, reset);
+	m_pUI->DrawInfo(m_narrow_mode, reset);
 }
 
 //void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
@@ -650,13 +651,8 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
 #ifndef COMPILE_IN_WIN_XP
-	CRect info_rect;
-	if (!m_narrow_mode)
-		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
-	else
-		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
 	if (m_pTaskbar != nullptr)
-		m_pTaskbar->SetThumbnailClip(m_hWnd, info_rect);
+		m_pTaskbar->SetThumbnailClip(m_hWnd, m_pUI->GetThumbnailClipArea(m_narrow_mode));
 #endif
 }
 
@@ -851,14 +847,14 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_Mytip.AddTool(&m_time_static, _T("播放时间"));
 	m_Mytip.AddTool(&m_clear_search_button, _T("清除搜索结果"));
 	m_Mytip.AddTool(&m_search_edit, _T("键入要搜索的关键词"));
+	m_ui.SetToolTip(&m_Mytip);
+	m_ui2.SetToolTip(&m_Mytip);
 
 	//为显示播放时间的static控件设置SS_NOTIFY属性，以启用鼠标提示
 	DWORD dwStyle = m_time_static.GetStyle();
 	::SetWindowLong(m_time_static.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
 	m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
-	m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//装载歌词右键菜单
-	m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
 
 	m_search_edit.SetCueBanner(_T("在此处键入搜索(F)"), TRUE);
 
@@ -948,6 +944,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_pDC = GetDC();
 	//m_draw.Create(m_pDC, this);
 	m_ui.Init(m_pDC);
+	m_ui2.Init(m_pDC);
+	m_pUI = &m_ui2;
 
 	m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
 	m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());		//歌词翻译字体比歌词字体小一号
@@ -1019,41 +1017,19 @@ HCURSOR CMusicPlayerDlg::OnQueryDragIcon()
 void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
-	m_ui_data.show_volume_adj = false;
 	if (nType != SIZE_MINIMIZED && m_pLayout != nullptr)
 	{
 		if (m_pDC != NULL)
 		{
 			DrawInfo(true);
-			CRect redraw_rect{m_ui_data.draw_rect};
-			if((cx < m_pLayout->width_threshold)!= m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
+			if ((cx < m_pLayout->width_threshold) != m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
 			{
 				Invalidate(FALSE);
 				m_time_static.Invalidate(FALSE);
 			}
-			else if (!m_narrow_mode)	//在普通界面模式下
+			else
 			{
-				if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
-				{
-					//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-					redraw_rect.left = cx / 2 - 3 * m_pLayout->margin;
-					redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
-					m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
-				}
-				else if (cy < m_ui_data.client_height)	//如果界面高度变小了
-				{
-					//重新将绘图区域下方区域的矩形区域填充为对话框背景色
-					redraw_rect.top = cy - 2 * m_pLayout->margin;
-					redraw_rect.bottom = cy;
-					m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
-				}
-			}
-			else if (m_narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
-			{
-				//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-				redraw_rect.left = cx - 2 * m_pLayout->margin;
-				redraw_rect.right = cx;
-				m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+				m_pUI->OnSizeRedraw(cx, cy, m_narrow_mode);
 			}
 		}
 		m_ui_data.client_width = cx;
@@ -2368,11 +2344,12 @@ void CMusicPlayerDlg::OnCopyAllLyric()
 void CMusicPlayerDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	//双击鼠标左键进入迷你模式
-	if (!m_ui_data.repetemode_rect.PtInRect(point) && !m_ui_data.volume_btn.rect.PtInRect(point)
-		&& !m_ui_data.volume_up_rect.PtInRect(point) && !m_ui_data.volume_down_rect.PtInRect(point)
-		&& !m_ui_data.translate_btn.rect.PtInRect(point))
-		OnMiniMode();
+
+	////双击鼠标左键进入迷你模式
+	//if (!m_ui_data.repetemode_rect.PtInRect(point) && !m_ui_data.volume_btn.rect.PtInRect(point)
+	//	&& !m_ui_data.volume_up_rect.PtInRect(point) && !m_ui_data.volume_down_rect.PtInRect(point)
+	//	&& !m_ui_data.translate_btn.rect.PtInRect(point))
+	//	OnMiniMode();
 	CDialog::OnLButtonDblClk(nFlags, point);
 }
 
@@ -2451,39 +2428,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	if (m_ui_data.volume_btn.rect.PtInRect(point) == FALSE)
-		m_ui_data.show_volume_adj = false;
-
-	//计算显示信息和显示歌词的区域
-	CRect info_rect{ m_ui_data.draw_rect }, lyric_rect{ m_ui_data.draw_rect };
-	if (!m_narrow_mode)
-	{
-		int height = m_pLayout->info_height2 - 3 * m_pLayout->margin;
-		info_rect.bottom = info_rect.top + height;
-		lyric_rect.top = info_rect.bottom + 2 * m_pLayout->margin;
-	}
-	else
-	{
-		info_rect.bottom -= theApp.DPI(30);
-		lyric_rect.top = info_rect.bottom;
-	}
-
-	CPoint point1;		//定义一个用于确定光标位置的位置  
-	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-	if (m_ui_data.repetemode_rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
-	{
-		CMenu* pMenu = m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
-		if (pMenu != NULL)
-			pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
-	}
-	else if (info_rect.PtInRect(point))
-	{
-		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
-	}
-	else if(lyric_rect.PtInRect(point))
-	{
-		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
-	}
+	m_pUI->RButtonUp(point, m_narrow_mode);
 
 	CDialog::OnRButtonUp(nFlags, point);
 }
@@ -2492,67 +2437,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	m_ui_data.repetemode_hover = (m_ui_data.repetemode_rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_ui_data.repetemode_hover置为true
-	m_ui_data.volume_btn.hover = (m_ui_data.volume_btn.rect.PtInRect(point) != FALSE);
-	m_ui_data.translate_btn.hover = (m_ui_data.translate_btn.rect.PtInRect(point) != FALSE);
-
-	//显示歌词翻译的鼠标提示
-	static bool last_translate_hover{ false };
-	if (!last_translate_hover && m_ui_data.translate_btn.hover)
-	{
-		m_Mytip.AddTool(this, L"显示歌词翻译");
-		m_Mytip.SetMaxTipWidth(theApp.DPI(400));
-		m_Mytip.Pop();
-	}
-	if (last_translate_hover && !m_ui_data.translate_btn.hover)
-	{
-		m_Mytip.AddTool(this, _T(""));
-		m_Mytip.Pop();
-	}
-	last_translate_hover = m_ui_data.translate_btn.hover;
-
-	//显示专辑封面的提示
-	if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
-	{
-		CRect cover_rect{ m_ui_data.cover_rect };
-		cover_rect.MoveToXY(m_ui_data.draw_rect.left + m_ui_data.cover_rect.left, m_ui_data.draw_rect.top + m_ui_data.cover_rect.top);
-		bool show_cover_tip{ cover_rect.PtInRect(point) != FALSE };
-		static bool last_show_cover_tip{ false };
-		if (!last_show_cover_tip && show_cover_tip)
-		{
-			CString info;
-			if (theApp.m_player.AlbumCoverExist())
-			{
-				info = _T("专辑封面: ");
-				//CFilePathHelper cover_path(theApp.m_player.GetAlbumCoverPath());
-				//if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
-				if(theApp.m_player.IsInnerCover())
-				{
-					info += _T("内嵌图片\r\n图片格式: ");
-					switch (theApp.m_player.GetAlbumCoverType())
-					{
-					case 0: info += _T("jpg"); break;
-					case 1: info += _T("png"); break;
-					case 2: info += _T("gif"); break;
-					}
-				}
-				else
-				{
-					info += _T("外部图片\r\n");
-					info += theApp.m_player.GetAlbumCoverPath().c_str();
-				}
-			}
-			m_Mytip.AddTool(this, info);
-			m_Mytip.SetMaxTipWidth(theApp.DPI(400));
-			m_Mytip.Pop();
-		}
-		if (last_show_cover_tip && !show_cover_tip)
-		{
-			m_Mytip.AddTool(this, _T(""));
-			m_Mytip.Pop();
-		}
-		last_show_cover_tip = show_cover_tip;
-	}
+	m_pUI->MouseMove(point);
 
 	CDialog::OnMouseMove(nFlags, point);
 }
@@ -2561,29 +2446,7 @@ void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (m_ui_data.repetemode_rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
-	{
-		theApp.m_player.SetRepeatMode();
-	}
-
-	if (!m_ui_data.show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
-		m_ui_data.show_volume_adj = (m_ui_data.volume_btn.rect.PtInRect(point) != FALSE);
-	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
-		m_ui_data.show_volume_adj = (m_ui_data.volume_up_rect.PtInRect(point) || m_ui_data.volume_down_rect.PtInRect(point));
-
-	if (m_ui_data.show_volume_adj && m_ui_data.volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
-	{
-		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
-	}
-	if (m_ui_data.show_volume_adj && m_ui_data.volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
-	{
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
-	}
-
-	if (m_ui_data.translate_btn.rect.PtInRect(point) && m_ui_data.translate_btn.enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
-	{
-		m_ui_data.show_translate = !m_ui_data.show_translate;
-	}
+	m_pUI->LButtonUp(point);
 
 	CDialog::OnLButtonUp(nFlags, point);
 }
@@ -3094,4 +2957,16 @@ void CMusicPlayerDlg::OnSupportedFormat()
 	// TODO: 在此添加命令处理程序代码
 	CSupportedFormatDlg dlg;
 	dlg.DoModal();
+}
+
+
+void CMusicPlayerDlg::OnSwitchUi()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_pUI == &m_ui)
+		m_pUI = &m_ui2;
+	else
+		m_pUI = &m_ui;
+
+	SetThumbnailClipArea();
 }

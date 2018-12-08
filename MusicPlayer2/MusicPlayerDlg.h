@@ -27,6 +27,7 @@
 #include "FormatConvertDlg.h"
 #include "RecorderDlg.h"
 #include "CPlayerUI.h"
+#include "CPlayerUI2.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -58,8 +59,6 @@ protected:
 	CStatic m_path_static;
 	CEdit m_path_edit;
 	CMenu m_list_popup_menu;		//播放列表右键菜单
-	CMenu m_popup_menu;			//歌词右键菜单
-	CMenu m_main_popup_menu;
 	CMFCButton m_play_pause_button;
 	CMFCButton m_stop_button;
 	CMFCButton m_previous_button;
@@ -92,8 +91,10 @@ protected:
 	wstring m_cmdLine;	//命令行参数
 
 	CDC* m_pDC;				//当前窗口的DC
-	CPlayerUI::UIData m_ui_data;
+	CPlayerUIBase::UIData m_ui_data;
 	CPlayerUI m_ui{ m_ui_data };
+	CPlayerUI2 m_ui2{ m_ui_data };
+	CPlayerUIBase* m_pUI = nullptr;
 
 	bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
 
@@ -298,4 +299,5 @@ protected:
 public:
 	afx_msg void OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity);
 	afx_msg void OnSupportedFormat();
+	afx_msg void OnSwitchUi();
 };

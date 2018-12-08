@@ -35,7 +35,7 @@ void CDrawCommon::SetDC(CDC * pDC)
 void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align, bool no_clip_area, bool multi_line, bool default_right_align)
 {
 	m_pDC->SetTextColor(color);
-	//m_pDC->SetBkMode(TRANSPARENT);
+	m_pDC->SetBkMode(TRANSPARENT);
 	m_pDC->SelectObject(m_pfont);
 	//ÉèÖÃ»æÍ¼µÄ¼ô¼­ÇøÓò
 	if (!no_clip_area)
