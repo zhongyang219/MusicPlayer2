@@ -205,8 +205,19 @@ void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
 		//绘制专辑封面
 		m_draw_data.cover_rect = spectral_rect;
 		m_draw_data.cover_rect.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
-		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_draw_data.cover_rect.TopLeft(), m_draw_data.cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+		if (theApp.m_player.AlbumCoverExist())
+		{
+			m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_draw_data.cover_rect.TopLeft(), m_draw_data.cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+		}
+		else
+		{
+			int cover_side = m_draw_data.cover_rect.Height() * 3 / 4;
+			int x = m_draw_data.cover_rect.left + (m_draw_data.cover_rect.Width() - cover_side) / 2;
+			int y = m_draw_data.cover_rect.top + (m_draw_data.cover_rect.Height() - cover_side) / 2;
+			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_default_cover, cover_side, cover_side, 0, NULL, DI_NORMAL);
+		}
 	}
+
 	if (theApp.m_app_setting_data.show_spectrum)
 	{
 		const int ROWS = 31;		//要显示的频谱柱形的数量
@@ -263,10 +274,10 @@ void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
 	//显示循环模式
 	tmp = other_info_rect;
 	tmp.left += m_pLayout->margin;
-	tmp.right = tmp.left + theApp.DPI(112);
+	tmp.right = tmp.left + theApp.DPI(60);
 	m_draw_data.repetemode_rect = tmp;
 	m_draw_data.repetemode_rect.DeflateRect(0, theApp.DPI(4));
-	CString repeat_mode_str{ _T("循环模式：") };
+	CString repeat_mode_str;
 	switch (theApp.m_player.GetRepeatMode())
 	{
 	case RepeatMode::RM_PLAY_ORDER: repeat_mode_str += _T("顺序播放"); break;
@@ -279,25 +290,30 @@ void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
 	else
 		m_draw.DrawWindowText(m_draw_data.repetemode_rect, repeat_mode_str, m_colors.color_text);
 	m_draw_data.repetemode_rect.MoveToXY(CPoint{ m_draw_data.repetemode_rect.left + m_draw_data.draw_rect.left, m_draw_data.repetemode_rect.top + m_draw_data.draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
-	//显示音量
-	tmp.MoveToX(info_rect.right - theApp.DPI(124));
-	tmp.right = info_rect.right - theApp.DPI(49);
-	m_draw_data.volume_btn.rect = tmp;
-	m_draw_data.volume_btn.rect.DeflateRect(0, theApp.DPI(4));
-	m_draw_data.volume_btn.rect.right -= theApp.DPI(12);
-	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
-	if (m_draw_data.volume_btn.hover)		//鼠标指向音量区域时，以另外一种颜色显示
-		m_draw.DrawWindowText(tmp, buff, m_colors.color_text_heighlight);
+
+	//绘制切换界面按钮
+	tmp.right = other_info_rect.right;
+	tmp.left = tmp.right - other_info_rect.Height();
+	CRect rc_icon = tmp;
+	rc_icon.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+	m_draw.SetDrawArea(rc_icon);
+
+	BYTE alpha;
+	if (draw_background)
+		alpha = ALPHA_CHG(m_colors.background_transparency);
 	else
-		m_draw.DrawWindowText(tmp, buff, m_colors.color_text);
-	//设置音量调整按钮的位置
-	m_draw_data.volume_down_rect = m_draw_data.volume_btn.rect;
-	m_draw_data.volume_down_rect.bottom += theApp.DPI(4);
-	m_draw_data.volume_down_rect.MoveToY(m_draw_data.volume_btn.rect.bottom);
-	m_draw_data.volume_down_rect.right = m_draw_data.volume_btn.rect.left + m_draw_data.volume_btn.rect.Width() / 2;
-	m_draw_data.volume_up_rect = m_draw_data.volume_down_rect;
-	m_draw_data.volume_up_rect.MoveToX(m_draw_data.volume_down_rect.right);
-	m_draw_data.volume_btn.rect.MoveToXY(CPoint{ m_draw_data.volume_btn.rect.left + m_draw_data.draw_rect.left, m_draw_data.volume_btn.rect.top + m_draw_data.draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
+		alpha = 255;
+	if (m_draw_data.skin_btn.hover)
+		m_draw.FillAlphaRect(rc_icon, m_colors.color_text_2, alpha);
+	else if (!theApp.m_app_setting_data.dark_mode)
+		m_draw.FillAlphaRect(rc_icon, m_colors.color_button_back, alpha);
+
+	m_draw_data.skin_btn.rect = DrawAreaToClient(rc_icon, m_draw_data.draw_rect);
+
+	rc_icon = tmp;
+	rc_icon.DeflateRect(theApp.DPI(4), theApp.DPI(4));
+	m_draw.DrawIcon(theApp.m_skin_icon, rc_icon.TopLeft(), rc_icon.Size());
+
 	//显示<<<<
 	int progress;
 	Time time{ theApp.m_player.GetCurrentPosition() };
@@ -314,9 +330,29 @@ void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
 	{
 		progress = (time.sec % 4 * 1000 + time.msec) / 4;
 	}
-	tmp.MoveToX(tmp.right);
-	tmp.right = other_info_rect.right;
+	tmp.right = tmp.left;
+	tmp.left = tmp.right - theApp.DPI(49);
 	m_draw.DrawWindowText(tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress, false);
+
+	//显示音量																																									//显示音量
+	tmp.right = tmp.left;
+	tmp.left = tmp.right - theApp.DPI(75);
+	m_draw_data.volume_btn.rect = tmp;
+	m_draw_data.volume_btn.rect.DeflateRect(0, theApp.DPI(4));
+	m_draw_data.volume_btn.rect.right -= theApp.DPI(12);
+	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
+	if (m_draw_data.volume_btn.hover)		//鼠标指向音量区域时，以另外一种颜色显示
+		m_draw.DrawWindowText(tmp, buff, m_colors.color_text_heighlight);
+	else
+		m_draw.DrawWindowText(tmp, buff, m_colors.color_text);
+	//设置音量调整按钮的位置
+	m_draw_data.volume_down_rect = m_draw_data.volume_btn.rect;
+	m_draw_data.volume_down_rect.bottom += theApp.DPI(4);
+	m_draw_data.volume_down_rect.MoveToY(m_draw_data.volume_btn.rect.bottom);
+	m_draw_data.volume_down_rect.right = m_draw_data.volume_btn.rect.left + m_draw_data.volume_btn.rect.Width() / 2;
+	m_draw_data.volume_up_rect = m_draw_data.volume_down_rect;
+	m_draw_data.volume_up_rect.MoveToX(m_draw_data.volume_down_rect.right);
+	m_draw_data.volume_btn.rect.MoveToXY(CPoint{ m_draw_data.volume_btn.rect.left + m_draw_data.draw_rect.left, m_draw_data.volume_btn.rect.top + m_draw_data.draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
 
 	//显示歌词
 	m_draw.SetFont(&m_ui_data.lyric_font);
@@ -499,22 +535,19 @@ void CPlayerUI::MouseMove(CPoint point)
 {
 	m_draw_data.repetemode_hover = (m_draw_data.repetemode_rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
 	m_draw_data.volume_btn.hover = (m_draw_data.volume_btn.rect.PtInRect(point) != FALSE);
+	m_draw_data.skin_btn.hover = (m_draw_data.skin_btn.rect.PtInRect(point) != FALSE);
 	m_draw_data.translate_btn.hover = (m_draw_data.translate_btn.rect.PtInRect(point) != FALSE);
 
 	//显示歌词翻译的鼠标提示
 	static bool last_translate_hover{ false };
-	if (!last_translate_hover && m_draw_data.translate_btn.hover)
-	{
-		m_tool_tip->AddTool(theApp.m_pMainWnd, L"显示歌词翻译");
-		m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
-		m_tool_tip->Pop();
-	}
-	if (last_translate_hover && !m_draw_data.translate_btn.hover)
-	{
-		m_tool_tip->AddTool(theApp.m_pMainWnd, _T(""));
-		m_tool_tip->Pop();
-	}
-	last_translate_hover = m_draw_data.translate_btn.hover;
+	AddMouseToolTip(m_draw_data.translate_btn, _T("显示歌词翻译"), &last_translate_hover);
+
+	//显示音量的鼠标提示
+	static bool last_volume_hover{ false };
+	AddMouseToolTip(m_draw_data.volume_btn, _T("鼠标滚轮调整音量"), &last_volume_hover);
+
+	static bool last_skin_hover{ false };
+	AddMouseToolTip(m_draw_data.skin_btn, _T("切换界面"), &last_skin_hover);
 
 	//显示专辑封面的提示
 	if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
@@ -586,6 +619,12 @@ void CPlayerUI::LButtonUp(CPoint point)
 	{
 		m_ui_data.show_translate = !m_ui_data.show_translate;
 	}
+
+	if (m_draw_data.skin_btn.rect.PtInRect(point))
+	{
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+	}
+
 }
 
 void CPlayerUI::OnSizeRedraw(int cx, int cy, bool narrow_mode)

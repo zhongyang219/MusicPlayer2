@@ -124,6 +124,9 @@ BOOL CMusicPlayerApp::InitInstance()
 		AfxBeginThread(CheckUpdateThreadFunc, NULL);
 	}
 
+	m_default_cover = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, 512, 512);
+	m_skin_icon = CDrawCommon::LoadIconResource(IDI_SKIN, DPI(16), DPI(16));
+
 	CColorConvert::Initialize();
 
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要

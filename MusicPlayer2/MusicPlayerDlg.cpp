@@ -321,6 +321,13 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"show_taskbar_progress", theApp.m_play_setting_data.show_taskbar_progress);
 	ini.WriteBool(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon);
 	ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
+
+	int ui_selected;
+	if (m_pUI == &m_ui)
+		ui_selected = 0;
+	else
+		ui_selected = 1;
+	ini.WriteInt(L"config", L"UI_selected", ui_selected);
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -376,6 +383,12 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(_T("config"), _T("show_taskbar_progress"), true);
 	theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(_T("config"), _T("show_playstate_icon"), true);
 	theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
+
+	int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
+	if (ui_selected == 0)
+		m_pUI = &m_ui;
+	else
+		m_pUI = &m_ui2;
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -892,11 +905,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 #endif
 
 	//载入按钮小图标（16*16）
-	m_hPreviousIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PREVIOUS), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hNextIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_NEXT1), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPlayIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PLAY), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hPauseIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_PAUSE), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-	m_hStopIcon_s = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_STOP), IMAGE_ICON, theApp.DPI(16), theApp.DPI(16), LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	m_hPreviousIcon_s = CDrawCommon::LoadIconResource(IDI_PREVIOUS, theApp.DPI(16), theApp.DPI(16));
+	m_hNextIcon_s = CDrawCommon::LoadIconResource(IDI_NEXT1, theApp.DPI(16), theApp.DPI(16));
+	m_hPlayIcon_s = CDrawCommon::LoadIconResource(IDI_PLAY, theApp.DPI(16), theApp.DPI(16));
+	m_hPauseIcon_s = CDrawCommon::LoadIconResource(IDI_PAUSE, theApp.DPI(16), theApp.DPI(16));
+	m_hStopIcon_s = CDrawCommon::LoadIconResource(IDI_STOP, theApp.DPI(16), theApp.DPI(16));
 
 	//设置主界面上的按钮图标
 	m_play_pause_button.SetFont(this->GetFont());
@@ -945,7 +958,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//m_draw.Create(m_pDC, this);
 	m_ui.Init(m_pDC);
 	m_ui2.Init(m_pDC);
-	m_pUI = &m_ui2;
+	//m_pUI = &m_ui2;
 
 	m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
 	m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());		//歌词翻译字体比歌词字体小一号

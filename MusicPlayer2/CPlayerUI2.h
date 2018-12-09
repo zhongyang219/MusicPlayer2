@@ -10,6 +10,13 @@ private:
 	{
 		CRect draw_rect;					//»æÍ¼ÇøÓò
 		CRect cover_rect;
+		CRect info_rect;
+		CRect lyric_rect;
+
+		UIButton repetemode_btn;
+		UIButton volume_btn;
+		UIButton skin_btn;
+		UIButton translate_btn;
 	};
 
 public:
@@ -32,12 +39,9 @@ protected:
 protected:
 	DrawData m_draw_data;
 	UIData& m_ui_data;
-	CToolTipCtrl* m_tool_tip = nullptr;
 	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
 
 	CFont m_title_font;
 	CFont m_artist_font;
-
-	HICON m_default_cover;
 };
 

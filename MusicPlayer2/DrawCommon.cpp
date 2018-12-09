@@ -262,6 +262,13 @@ void CDrawCommon::SetDrawArea(CDC * pDC, CRect rect)
 	pDC->SelectClipRgn(&rgn);
 }
 
+void CDrawCommon::SetDrawArea(CRect rect)
+{
+	CRgn rgn;
+	rgn.CreateRectRgnIndirect(rect);
+	m_pDC->SelectClipRgn(&rgn);
+}
+
 void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
 {
 	CDC memDC;
@@ -347,22 +354,29 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 	bitmap.Detach();
 }
 
-void CDrawCommon::FillRect(CRect rect, COLORREF color)
+void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
 {
-	SetDrawArea(m_pDC, rect);
+	::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, size.cx, size.cy, 0, NULL, DI_NORMAL);
+}
+
+void CDrawCommon::FillRect(CRect rect, COLORREF color, bool no_clip_area)
+{
+	if(!no_clip_area)
+		SetDrawArea(m_pDC, rect);
 	m_pDC->FillSolidRect(rect, color);
 }
 
-void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha)
+void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area)
 {
 	if (alpha == 0)
 		return;
 	if (alpha == 255)
 	{
-		FillRect(rect, color);
+		FillRect(rect, color, no_clip_area);
 		return;
 	}
-	SetDrawArea(m_pDC, rect);
+	if (!no_clip_area)
+		SetDrawArea(m_pDC, rect);
 	CDC cdc;
 	if(!cdc.CreateCompatibleDC(m_pDC))
 		return;
@@ -431,4 +445,9 @@ bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize siz
 		ResultImage->ReleaseDC();
 	}
 	return true;
+}
+
+HICON CDrawCommon::LoadIconResource(UINT id, int width, int height)
+{
+	return (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, width, height, LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
 }

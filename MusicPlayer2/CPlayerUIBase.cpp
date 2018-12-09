@@ -171,3 +171,26 @@ void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect, CFont* font, COLORREF co
 {
 }
 
+void CPlayerUIBase::AddMouseToolTip(const UIButton & btn, LPCTSTR str, bool* last_hover)
+{
+	if (!*last_hover && btn.hover)
+	{
+		m_tool_tip->AddTool(theApp.m_pMainWnd, str);
+		m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
+		m_tool_tip->Pop();
+	}
+	if (*last_hover && !btn.hover)
+	{
+		m_tool_tip->AddTool(theApp.m_pMainWnd, _T(""));
+		m_tool_tip->Pop();
+	}
+	*last_hover = btn.hover;
+
+}
+
+CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
+{
+	rect.MoveToXY(rect.left + draw_area.left, rect.top + draw_area.top);
+	return rect;
+}
+

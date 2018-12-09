@@ -17,6 +17,7 @@ private:
 		CRect volume_up_rect, volume_down_rect;	//音量调整条增加和减少音量的矩形区域
 		bool show_volume_adj{ false };		//显示音量调整按钮
 		UIButton translate_btn;				//歌词翻译按钮
+		UIButton skin_btn;
 	};
 
 public:

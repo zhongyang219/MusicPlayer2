@@ -115,6 +115,8 @@ public:
 	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
 
 	vector<DeviceInfo> m_output_devices;	//播放设备的信息
+	HICON m_default_cover;
+	HICON m_skin_icon;
 
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据

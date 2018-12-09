@@ -73,19 +73,24 @@ public:
 	void DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);
 
 	static void SetDrawArea(CDC* pDC, CRect rect);
+	void SetDrawArea(CRect rect);
 
 	//绘制一个位图
 	void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
 	void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode);
 	void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
 
-	void FillRect(CRect rect, COLORREF color);
-	void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
+	void DrawIcon(HICON hIcon, CPoint start_point, CSize size);
+
+	void FillRect(CRect rect, COLORREF color, bool no_clip_area = false);
+	void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = false);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
 
 	void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
 
 	//将图片拉伸到指定尺寸(https://blog.csdn.net/sichuanpb/article/details/22986877)
 	static bool BitmapStretch(CImage *pImage, CImage *ResultImage, CSize size);
+
+	static HICON LoadIconResource(UINT id, int width, int height);
 
 private:
 	CDC* m_pDC{};		//用于绘图的CDC类的指针

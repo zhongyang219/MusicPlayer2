@@ -8,8 +8,6 @@ CPlayerUI2::CPlayerUI2(UIData& ui_data)
 	m_title_font.CreatePointFont(100, _T("微软雅黑"));
 	m_artist_font.CreatePointFont(90, _T("微软雅黑"));
 
-	m_default_cover = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_DEFAULT_COVER), IMAGE_ICON, 512, 512, LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
-
 }
 
 
@@ -146,7 +144,7 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 			CRect rect = cover_rect;
 			int cover_margin = static_cast<int>(cover_rect.Width() * 0.13);
 			rect.DeflateRect(cover_margin, cover_margin);
-			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), rect.left, rect.top, m_default_cover, rect.Width(), rect.Height(), 0, NULL, DI_NORMAL);
+			m_draw.DrawIcon(theApp.m_default_cover, rect.TopLeft(), rect.Size());
 		}
 
 		//绘制播放进度
@@ -157,8 +155,70 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 		progress_rect.right = progress_rect.left + static_cast<int>(progress * cover_rect.Width());
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum);
 
-		//绘制标题和艺术家
 		int text_height2 = theApp.DPI(22);
+
+		//绘制频谱分析
+		CRect rc_spectrum_area;
+		rc_spectrum_area.MoveToXY(m_pLayout->margin, draw_rect.bottom - bottom_height + text_height2);
+		rc_spectrum_area.right = draw_rect.right - m_pLayout->margin;
+
+		int spectrum_height = max(text_height2 + static_cast<int>(draw_rect.Height() * 0.1), draw_rect.bottom - rc_spectrum_area.top - theApp.DPI(128));
+
+		rc_spectrum_area.bottom = rc_spectrum_area.top + spectrum_height;
+		m_draw.SetDrawArea(m_draw.GetDC(), rc_spectrum_area);
+		rc_spectrum_area.left += static_cast<int>(draw_rect.Width()*0.09);
+		rc_spectrum_area.right -= static_cast<int>(draw_rect.Width()*0.05);
+
+		CRect rc_spectrum_top = rc_spectrum_area;
+		rc_spectrum_top.bottom = rc_spectrum_area.top + (rc_spectrum_area.Height() * 2 / 3);
+
+		if (theApp.m_app_setting_data.show_spectrum)
+		{
+			const int ROWS = 64;		//要显示的频谱柱形的数量
+			int gap_width{ draw_rect.Width()/200 };		//频谱柱形间隙宽度
+			CRect rects[ROWS];
+			int width = (rc_spectrum_top.Width() - (ROWS - 1)*gap_width) / (ROWS - 1);
+			rects[0] = rc_spectrum_top;
+			rects[0].right = rects[0].left + width;
+			for (int i{ 1 }; i < ROWS; i++)
+			{
+				rects[i] = rects[0];
+				rects[i].left += (i * (width + gap_width));
+				rects[i].right += (i * (width + gap_width));
+			}
+			for (int i{}; i < ROWS; i++)
+			{
+				float spetral_data = theApp.m_player.GetSpectralData()[i];
+				float peak_data = theApp.m_player.GetSpectralPeakData()[i];
+
+				CRect rect_tmp{ rects[i] };
+				int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+				int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+				if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+				if (peak_height <= 0 || theApp.m_player.IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+				rect_tmp.top = rect_tmp.bottom - spetral_height;
+				if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
+				m_draw.FillRect(rect_tmp, m_colors.color_spectrum, true);
+				//绘制倒影
+				CRect rc_invert = rect_tmp;
+				rc_invert.bottom = rect_tmp.top + rect_tmp.Height() * 2 / 3;
+				rc_invert.MoveToY(rect_tmp.bottom + gap_width);
+				m_draw.FillAlphaRect(rc_invert, m_colors.color_spectrum, 96, true);
+
+				//绘制顶端
+				CRect rect_peak{ rect_tmp };
+				rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
+				rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
+				m_draw.FillRect(rect_peak, m_colors.color_spectrum, true);
+				////绘制顶端倒影
+				//CRect rc_peak_invert = rect_peak;
+				//rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
+				//m_draw.FillAlphaRect(rc_peak_invert, m_colors.color_spectrum, 96);
+			}
+		}
+
+
+		//绘制标题和艺术家
 		rc_tmp.MoveToXY(m_pLayout->margin, draw_rect.bottom - bottom_height);
 		rc_tmp.right = draw_rect.right - m_pLayout->margin;
 		rc_tmp.bottom = rc_tmp.top + text_height2;
@@ -172,9 +232,14 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 		m_draw.DrawScrollText(rc_tmp, theApp.m_player.GetCurrentSongInfo().artist.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_artist, reset);
 
 		//绘制控制条
-		rc_tmp.MoveToY(rc_tmp.bottom + theApp.DPI(4));
+		rc_tmp.MoveToY(rc_spectrum_area.bottom + theApp.DPI(4));
 		rc_tmp.bottom = rc_tmp.top + theApp.DPI(24);
 		DrawControlBar(draw_background, rc_tmp);
+
+		m_draw_data.info_rect = m_draw_data.draw_rect;
+		m_draw_data.info_rect.bottom = m_draw_data.info_rect.top + rc_tmp.bottom;
+		m_draw_data.lyric_rect = m_draw_data.draw_rect;
+		m_draw_data.lyric_rect.top = m_draw_data.info_rect.bottom + 1;
 
 		//绘制歌词
 		bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
@@ -192,12 +257,13 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
 		}
 
-		rc_tmp.DeflateRect(2 * m_pLayout->margin, 2 * m_pLayout->margin);
-		CDrawCommon::SetDrawArea(m_draw.GetDC(), rc_tmp);
-
-		DrawLyricTextMultiLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font,
-			m_colors.color_text, m_colors.color_text_2, m_ui_data.show_translate, midi_lyric);
-
+		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
+		if (rc_tmp.bottom > rc_tmp.top)
+		{
+			CDrawCommon::SetDrawArea(m_draw.GetDC(), rc_tmp);
+			DrawLyricTextMultiLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font,
+				m_colors.color_text, m_colors.color_text_2, m_ui_data.show_translate, midi_lyric);
+		}
 	}
 
 	//窄界面模式时
@@ -223,7 +289,7 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 			CRect rect = rc_tmp;
 			int cover_margin = static_cast<int>(rc_tmp.Width() * 0.13);
 			rect.DeflateRect(cover_margin, cover_margin);
-			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), rect.left, rect.top, m_default_cover, rect.Width(), rect.Height(), 0, NULL, DI_NORMAL);
+			m_draw.DrawIcon(theApp.m_default_cover, rect.TopLeft(), rect.Size());
 		}
 
 		wchar_t buff[64];
@@ -298,7 +364,7 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 				current_lyric.text = DEFAULT_LYRIC_TEXT;
 			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 
-			if (m_ui_data.show_translate)
+			if (m_ui_data.show_translate && !current_lyric.translate.empty())
 			{
 				lyric_rect.bottom = lyric_rect.top + rc_tmp.Height() / 2;
 				CRect translate_rect = lyric_rect;
@@ -315,12 +381,6 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 				m_draw.DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
 			m_draw.SetFont(theApp.m_pMainWnd->GetFont());
 		}
-
-		//CDrawCommon::SetDrawArea(m_draw.GetDC(), rc_tmp);
-
-		//DrawLyricTextMultiLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font,
-		//	m_colors.color_text, m_colors.color_text_2, m_ui_data.show_translate, midi_lyric);
-
 	}
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
@@ -333,14 +393,55 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 
 void CPlayerUI2::RButtonUp(CPoint point, bool narrow_mode)
 {
+	CPoint point1;		//定义一个用于确定光标位置的位置  
+	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
+	if (m_draw_data.info_rect.PtInRect(point))
+	{
+		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
+	else if (m_draw_data.lyric_rect.PtInRect(point))
+	{
+		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
+
 }
 
 void CPlayerUI2::MouseMove(CPoint point)
 {
+	m_draw_data.repetemode_btn.hover = (m_draw_data.repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
+	m_draw_data.volume_btn.hover = (m_draw_data.volume_btn.rect.PtInRect(point) != FALSE);
+	m_draw_data.skin_btn.hover = (m_draw_data.skin_btn.rect.PtInRect(point) != FALSE);
+	m_draw_data.translate_btn.hover = (m_draw_data.translate_btn.rect.PtInRect(point) != FALSE);
+
+	//显示音量的鼠标提示
+	static bool last_volumn_hover{ false };
+	AddMouseToolTip(m_draw_data.volume_btn, _T("鼠标滚轮调整音量"), &last_volumn_hover);
+
+	static bool last_skin_hover{ false };
+	AddMouseToolTip(m_draw_data.skin_btn, _T("切换界面"), &last_skin_hover);
+
+	static bool last_translate_hover{ false };
+	AddMouseToolTip(m_draw_data.translate_btn, _T("显示歌词翻译"), &last_translate_hover);
+
 }
 
 void CPlayerUI2::LButtonUp(CPoint point)
 {
+	if (m_draw_data.repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
+	{
+		theApp.m_player.SetRepeatMode();
+	}
+
+	if (m_draw_data.skin_btn.rect.PtInRect(point))
+	{
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+	}
+
+	if (m_draw_data.translate_btn.rect.PtInRect(point) && m_draw_data.translate_btn.enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
+	{
+		m_ui_data.show_translate = !m_ui_data.show_translate;
+	}
+
 }
 
 void CPlayerUI2::OnSizeRedraw(int cx, int cy, bool narrow_mode)
@@ -398,7 +499,7 @@ void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)
 		m_draw.FillRect(rc_tmp, m_colors.color_control_bar_back);
 
 	//绘制循环模式
-	rc_tmp.right = rc_tmp.left + theApp.DPI(112);
+	rc_tmp.right = rc_tmp.left + theApp.DPI(60);
 	rc_tmp.DeflateRect(theApp.DPI(4), 0);
 	CString repeat_mode_str;
 	switch (theApp.m_player.GetRepeatMode())
@@ -408,14 +509,70 @@ void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)
 	case RepeatMode::RM_LOOP_TRACK: repeat_mode_str += _T("单曲循环"); break;
 	case RepeatMode::RM_PLAY_SHUFFLE: repeat_mode_str += _T("随机播放"); break;
 	}
-	m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text);
+	if (m_draw_data.repetemode_btn.hover)		//鼠标指向“循环模式”时，以另外一种颜色显示
+		m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text_heighlight);
+	else
+		m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text);
+
+	m_draw_data.repetemode_btn.rect = DrawAreaToClient(rc_tmp, m_draw_data.draw_rect);
+
+	//绘制切换界面按钮
+	rc_tmp.right = rect.right;
+	rc_tmp.left = rc_tmp.right - rect.Height();
+	CRect rc_icon = rc_tmp;
+	rc_icon.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+	m_draw.SetDrawArea(rc_icon);
+
+	BYTE alpha;
+	if (draw_background)
+		alpha = ALPHA_CHG(m_colors.background_transparency);
+	else
+		alpha = 255;
+	if (m_draw_data.skin_btn.hover)
+		m_draw.FillAlphaRect(rc_icon, m_colors.color_text_2, alpha);
+	else if (!theApp.m_app_setting_data.dark_mode)
+		m_draw.FillAlphaRect(rc_icon, m_colors.color_button_back, alpha);
+
+	m_draw_data.skin_btn.rect = DrawAreaToClient(rc_icon, m_draw_data.draw_rect);
+
+	rc_icon = rc_tmp;
+	rc_icon.DeflateRect(theApp.DPI(4), theApp.DPI(4));
+	m_draw.DrawIcon(theApp.m_skin_icon, rc_icon.TopLeft(), rc_icon.Size());
+
+	//绘制显示歌词翻译按钮
+	rc_tmp.MoveToX(rc_tmp.left - rect.Height());
+	CRect translate_rect = rc_tmp;
+	translate_rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+	m_draw_data.translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated();
+	if (m_draw_data.translate_btn.enable)
+	{
+		BYTE alpha;
+		if (draw_background)
+			alpha = ALPHA_CHG(m_colors.background_transparency);
+		else
+			alpha = 255;
+		if (m_draw_data.translate_btn.hover)
+			m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
+		else if (m_ui_data.show_translate)
+			m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
+		m_draw.DrawWindowText(translate_rect, L"译", m_colors.color_text, Alignment::CENTER);
+	}
+	else
+	{
+		m_draw.DrawWindowText(translate_rect, L"译", GRAY(200), Alignment::CENTER);
+	}
+	m_draw_data.translate_btn.rect = DrawAreaToClient(translate_rect, m_draw_data.draw_rect);
+
 
 	//绘制音量
 	wchar_t buff[16];
-	rc_tmp.right = rect.right - m_pLayout->margin;
+	rc_tmp.right = rc_tmp.left;
 	rc_tmp.left = rc_tmp.right - theApp.DPI(70);
 	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
 	m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
+
+	m_draw_data.volume_btn.rect = DrawAreaToClient(rc_tmp, m_draw_data.draw_rect);
+
 }
 
 

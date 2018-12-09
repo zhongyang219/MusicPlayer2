@@ -73,6 +73,10 @@ protected:
 	void DrawLyricTextMultiLine(CRect rect, CFont* font, CFont* translate_font, COLORREF color1, COLORREF color2, bool show_translate, bool midi_lyric);
 	void DrawLyricTextSingleLine(CRect rect, CFont* font, COLORREF color1, COLORREF color2);
 
+	void AddMouseToolTip(const UIButton& btn, LPCTSTR str, bool* static_bool);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
+
+	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
+
 protected:
 	CDC* m_pDC;
 	UIColors m_colors;
