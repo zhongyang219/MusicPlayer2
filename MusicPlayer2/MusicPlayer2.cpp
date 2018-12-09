@@ -125,7 +125,7 @@ BOOL CMusicPlayerApp::InitInstance()
 	}
 
 	m_default_cover = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, 512, 512);
-	m_skin_icon = CDrawCommon::LoadIconResource(IDI_SKIN, DPI(16), DPI(16));
+	m_skin_icon = CDrawCommon::LoadIconResource(IDI_SKIN, 48, 48);
 
 	CColorConvert::Initialize();
 

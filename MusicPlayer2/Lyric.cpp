@@ -250,6 +250,9 @@ CLyrics::Lyric CLyrics::GetLyric(int index) const
 
 int CLyrics::GetLyricProgress(Time time) const
 {
+	if (m_lyrics.empty())
+		return 0;
+
 	int lyric_last_time{ 1 };		//time时间所在的歌词持续的时间
 	int lyric_current_time{ 0 };		//当前歌词在time时间时已经持续的时间
 	int progress{};

@@ -814,9 +814,21 @@ void CMiniModeDlg::OnPaint()
 	CDrawCommon draw;
 	draw.Create(&dc, this);
 	if (theApp.m_player.AlbumCoverExist())
+	{
 		draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
+	}
 	else
-		draw.DrawBitmap(IDB_DEFAULT_COVER, m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
+	{
+		CRect rect = m_album_rect;
+		rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+		int cover_side = min(rect.Width(), rect.Height());
+		CPoint start_point;
+		start_point.x = rect.left + (rect.Width() - cover_side) / 2;
+		start_point.y = rect.top + (rect.Height() - cover_side) / 2;
+		draw.DrawIcon(theApp.m_default_cover, start_point, CSize(cover_side, cover_side));
+
+		//draw.DrawBitmap(IDB_DEFAULT_COVER, m_album_rect.TopLeft(), m_album_rect.Size(), CDrawCommon::StretchMode::FILL);
+	}
 }
 
 
