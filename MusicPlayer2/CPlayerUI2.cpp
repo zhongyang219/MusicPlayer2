@@ -162,18 +162,18 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 		rc_spectrum_area.MoveToXY(m_pLayout->margin, draw_rect.bottom - bottom_height + text_height2);
 		rc_spectrum_area.right = draw_rect.right - m_pLayout->margin;
 
-		int spectrum_height = max(text_height2 + static_cast<int>(draw_rect.Height() * 0.1), draw_rect.bottom - rc_spectrum_area.top - theApp.DPI(128));
-
-		rc_spectrum_area.bottom = rc_spectrum_area.top + spectrum_height;
-		m_draw.SetDrawArea(m_draw.GetDC(), rc_spectrum_area);
-		rc_spectrum_area.left += static_cast<int>(draw_rect.Width()*0.09);
-		rc_spectrum_area.right -= static_cast<int>(draw_rect.Width()*0.05);
-
-		CRect rc_spectrum_top = rc_spectrum_area;
-		rc_spectrum_top.bottom = rc_spectrum_area.top + (rc_spectrum_area.Height() * 2 / 3);
-
 		if (theApp.m_app_setting_data.show_spectrum)
 		{
+			int spectrum_height = max(text_height2 + static_cast<int>(draw_rect.Height() * 0.1), draw_rect.bottom - rc_spectrum_area.top - theApp.DPI(128));
+
+			rc_spectrum_area.bottom = rc_spectrum_area.top + spectrum_height;
+			m_draw.SetDrawArea(m_draw.GetDC(), rc_spectrum_area);
+			rc_spectrum_area.left += static_cast<int>(draw_rect.Width()*0.09);
+			rc_spectrum_area.right -= static_cast<int>(draw_rect.Width()*0.05);
+
+			CRect rc_spectrum_top = rc_spectrum_area;
+			rc_spectrum_top.bottom = rc_spectrum_area.top + (rc_spectrum_area.Height() * 2 / 3);
+
 			const int ROWS = 64;		//要显示的频谱柱形的数量
 			int gap_width{ draw_rect.Width()/200 };		//频谱柱形间隙宽度
 			CRect rects[ROWS];
@@ -215,6 +215,10 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 				//rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
 				//m_draw.FillAlphaRect(rc_peak_invert, m_colors.color_spectrum, 96);
 			}
+		}
+		else
+		{
+			rc_spectrum_area.bottom = rc_spectrum_area.top + text_height2;
 		}
 
 
