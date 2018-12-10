@@ -70,12 +70,15 @@ public:
 	virtual CRect GetThumbnailClipArea(bool narrow_mode) = 0;
 
 protected:
-	void DrawLyricTextMultiLine(CRect rect, CFont* font, CFont* translate_font, COLORREF color1, COLORREF color2, bool show_translate, bool midi_lyric);
-	void DrawLyricTextSingleLine(CRect rect, CFont* font, COLORREF color1, COLORREF color2);
+	void DrawLyricTextMultiLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
+	void DrawLyricTextSingleLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
 
 	void AddMouseToolTip(const UIButton& btn, LPCTSTR str, bool* static_bool);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
 
 	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
+
+private:
+	void DrawLyricDoubleLine(CRect rect, CFont* font, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
 
 protected:
 	CDC* m_pDC;

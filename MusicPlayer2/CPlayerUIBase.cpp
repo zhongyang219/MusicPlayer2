@@ -55,14 +55,15 @@ void CPlayerUIBase::DrawInfo(bool narrow_mode, bool reset)
 	}
 }
 
-void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area, CFont* font, CFont* translate_font, COLORREF color1, COLORREF color2, bool show_translate, bool midi_lyric)
+void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric)
 {
 	//计算文本高度
-	m_pDC->SelectObject(&font);
+	m_pDC->SelectObject(font);
 	int text_height = m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
 	int lyric_height = text_height + theApp.m_app_setting_data.lyric_line_space;			//文本高度加上行间距
 	int lyric_height2 = lyric_height * 2 + theApp.m_app_setting_data.lyric_line_space;		//包含翻译的歌词高度
 
+	m_draw.SetFont(font);
 	if (midi_lyric)
 	{
 		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
@@ -167,8 +168,55 @@ void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area, CFont* font, CFont*
 
 }
 
-void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect, CFont* font, COLORREF color1, COLORREF color2)
+void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric)
 {
+	m_draw.SetFont(font);
+	if (midi_lyric)
+	{
+		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
+		m_draw.DrawWindowText(rect, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, true);
+	}
+	else if (theApp.m_player.m_Lyrics.IsEmpty())
+	{
+		m_draw.DrawWindowText(rect, _T("当前歌曲没有歌词"), m_colors.color_text_2, Alignment::CENTER);
+	}
+	else
+	{
+		CRect lyric_rect = rect;
+		CLyrics::Lyric current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
+		if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
+			current_lyric.text = DEFAULT_LYRIC_TEXT;
+		int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
+
+		if ((!theApp.m_player.m_Lyrics.IsTranslated() || !show_translate) && rect.Height() > theApp.DPI(32))
+		{
+			wstring next_lyric_text = theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 1).text;
+			if (next_lyric_text.empty())
+				next_lyric_text = DEFAULT_LYRIC_TEXT;
+			DrawLyricDoubleLine(lyric_rect, font, current_lyric.text.c_str(), next_lyric_text.c_str(), progress);
+		}
+		else
+		{
+			if (show_translate && !current_lyric.translate.empty() && rect.Height()>theApp.DPI(32))
+			{
+				lyric_rect.bottom = lyric_rect.top + rect.Height() / 2;
+				CRect translate_rect = lyric_rect;
+				translate_rect.MoveToY(lyric_rect.bottom);
+
+				m_draw.SetFont(translate_font);
+				m_draw.DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
+			}
+
+			m_draw.SetFont(font);
+			if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
+				m_draw.DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
+			else
+				m_draw.DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
+		}
+
+		m_draw.SetFont(theApp.m_pMainWnd->GetFont());
+	}
+
 }
 
 void CPlayerUIBase::AddMouseToolTip(const UIButton & btn, LPCTSTR str, bool* last_hover)
@@ -192,5 +240,55 @@ CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
 {
 	rect.MoveToXY(rect.left + draw_area.left, rect.top + draw_area.top);
 	return rect;
+}
+
+void CPlayerUIBase::DrawLyricDoubleLine(CRect rect, CFont * font, LPCTSTR lyric, LPCTSTR next_lyric, int progress)
+{
+	m_draw.SetFont(font);
+	static bool swap;
+	static int last_progress;
+	if (last_progress > progress)
+	{
+		swap = !swap;
+	}
+	last_progress = progress;
+
+
+	//使用m_cortana_draw绘图
+	CRect up_rect{ rect }, down_rect{ rect };		//上半部分和下半部分歌词的矩形区域
+	up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
+	down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
+	//根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
+	m_draw.GetDC()->SelectObject(font);
+	int width;
+	if (!swap)
+		width = m_draw.GetDC()->GetTextExtent(next_lyric).cx;
+	else
+		width = m_draw.GetDC()->GetTextExtent(lyric).cx;
+	if (width < rect.Width())
+		down_rect.left = down_rect.right - width;
+
+	COLORREF color1, color2;
+	if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
+	{
+		color1 = m_colors.color_text;
+		color2 = m_colors.color_text_2;
+	}
+	else
+	{
+		color1 = color2 = m_colors.color_text;
+	}
+
+	if (!swap)
+	{
+		m_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
+		m_draw.DrawWindowText(down_rect, next_lyric, m_colors.color_text_2);
+	}
+	else
+	{
+		m_draw.DrawWindowText(up_rect, next_lyric, m_colors.color_text_2);
+		m_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
+	}
+
 }
 

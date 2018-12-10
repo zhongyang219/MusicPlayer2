@@ -258,11 +258,14 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 		}
 
 		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
-		if (rc_tmp.bottom > rc_tmp.top)
+		if (rc_tmp.bottom > rc_tmp.top + theApp.DPI(8))
 		{
 			CDrawCommon::SetDrawArea(m_draw.GetDC(), rc_tmp);
-			DrawLyricTextMultiLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font,
-				m_colors.color_text, m_colors.color_text_2, m_ui_data.show_translate, midi_lyric);
+
+			if(rc_tmp.Height()<theApp.DPI(64))
+				DrawLyricTextSingleLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font, m_ui_data.show_translate, midi_lyric);
+			else
+				DrawLyricTextMultiLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font, m_ui_data.show_translate, midi_lyric);
 		}
 	}
 
@@ -345,42 +348,9 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 			else
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
 		}
-
 		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
-		if (midi_lyric)
-		{
-			wstring current_lyric{ theApp.m_player.GetMidiLyric() };
-			m_draw.DrawWindowText(rc_tmp, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, true);
-		}
-		else if (theApp.m_player.m_Lyrics.IsEmpty())
-		{
-			m_draw.DrawWindowText(rc_tmp, _T("当前歌曲没有歌词"), m_colors.color_text_2, Alignment::CENTER);
-		}
-		else
-		{
-			CRect lyric_rect = rc_tmp;
-			CLyrics::Lyric current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
-			if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
-				current_lyric.text = DEFAULT_LYRIC_TEXT;
-			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
+		DrawLyricTextSingleLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font, m_ui_data.show_translate, midi_lyric);
 
-			if (m_ui_data.show_translate && !current_lyric.translate.empty())
-			{
-				lyric_rect.bottom = lyric_rect.top + rc_tmp.Height() / 2;
-				CRect translate_rect = lyric_rect;
-				translate_rect.MoveToY(lyric_rect.bottom);
-
-				m_draw.SetFont(&m_ui_data.lyric_translate_font);
-				m_draw.DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
-			}
-
-			m_draw.SetFont(&m_ui_data.lyric_font);
-			if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-				m_draw.DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
-			else
-				m_draw.DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
-			m_draw.SetFont(theApp.m_pMainWnd->GetFont());
-		}
 	}
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
