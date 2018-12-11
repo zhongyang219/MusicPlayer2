@@ -367,6 +367,11 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 
 void CPlayerUI2::RButtonUp(CPoint point, bool narrow_mode)
 {
+	CPlayerUIBase::RButtonUp(point, narrow_mode);
+
+	if (repetemode_btn.rect.PtInRect(point))
+		return;
+
 	CPoint point1;		//定义一个用于确定光标位置的位置  
 	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
 	if (m_draw_data.info_rect.PtInRect(point))
@@ -382,36 +387,40 @@ void CPlayerUI2::RButtonUp(CPoint point, bool narrow_mode)
 
 void CPlayerUI2::MouseMove(CPoint point)
 {
-	m_draw_data.repetemode_btn.hover = (m_draw_data.repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
-	m_draw_data.volume_btn.hover = (m_draw_data.volume_btn.rect.PtInRect(point) != FALSE);
-	m_draw_data.skin_btn.hover = (m_draw_data.skin_btn.rect.PtInRect(point) != FALSE);
-	m_draw_data.translate_btn.hover = (m_draw_data.translate_btn.rect.PtInRect(point) != FALSE);
+	CPlayerUIBase::MouseMove(point);
 
-	//显示音量的鼠标提示
-	static bool last_volumn_hover{ false };
-	AddMouseToolTip(m_draw_data.volume_btn, _T("鼠标滚轮调整音量"), &last_volumn_hover);
+	//m_draw_data.repetemode_btn.hover = (m_draw_data.repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
+	//m_draw_data.volume_btn.hover = (m_draw_data.volume_btn.rect.PtInRect(point) != FALSE);
+	//m_draw_data.skin_btn.hover = (m_draw_data.skin_btn.rect.PtInRect(point) != FALSE);
+	//m_draw_data.translate_btn.hover = (m_draw_data.translate_btn.rect.PtInRect(point) != FALSE);
 
-	static bool last_skin_hover{ false };
-	AddMouseToolTip(m_draw_data.skin_btn, _T("切换界面"), &last_skin_hover);
+	////显示音量的鼠标提示
+	//static bool last_volumn_hover{ false };
+	//AddMouseToolTip(m_draw_data.volume_btn, _T("鼠标滚轮调整音量"), &last_volumn_hover);
 
-	static bool last_translate_hover{ false };
-	AddMouseToolTip(m_draw_data.translate_btn, _T("显示歌词翻译"), &last_translate_hover);
+	//static bool last_skin_hover{ false };
+	//AddMouseToolTip(m_draw_data.skin_btn, _T("切换界面"), &last_skin_hover);
+
+	//static bool last_translate_hover{ false };
+	//AddMouseToolTip(m_draw_data.translate_btn, _T("显示歌词翻译"), &last_translate_hover);
 
 }
 
 void CPlayerUI2::LButtonUp(CPoint point)
 {
-	if (m_draw_data.repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
-	{
-		theApp.m_player.SetRepeatMode();
-	}
+	CPlayerUIBase::LButtonUp(point);
 
-	if (m_draw_data.skin_btn.rect.PtInRect(point))
-	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
-	}
+	//if (m_draw_data.repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
+	//{
+	//	theApp.m_player.SetRepeatMode();
+	//}
 
-	if (m_draw_data.translate_btn.rect.PtInRect(point) && m_draw_data.translate_btn.enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
+	//if (m_draw_data.skin_btn.rect.PtInRect(point))
+	//{
+	//	theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+	//}
+
+	if (translate_btn.rect.PtInRect(point) && translate_btn.enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
 	{
 		m_ui_data.show_translate = !m_ui_data.show_translate;
 	}
@@ -483,12 +492,12 @@ void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)
 	case RepeatMode::RM_LOOP_TRACK: repeat_mode_str += _T("单曲循环"); break;
 	case RepeatMode::RM_PLAY_SHUFFLE: repeat_mode_str += _T("随机播放"); break;
 	}
-	if (m_draw_data.repetemode_btn.hover)		//鼠标指向“循环模式”时，以另外一种颜色显示
+	if (repetemode_btn.hover)		//鼠标指向“循环模式”时，以另外一种颜色显示
 		m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text_heighlight);
 	else
 		m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text);
 
-	m_draw_data.repetemode_btn.rect = DrawAreaToClient(rc_tmp, m_draw_data.draw_rect);
+	repetemode_btn.rect = DrawAreaToClient(rc_tmp, m_draw_data.draw_rect);
 
 	//绘制切换界面按钮
 	rc_tmp.right = rect.right;
@@ -502,12 +511,12 @@ void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)
 		alpha = ALPHA_CHG(m_colors.background_transparency);
 	else
 		alpha = 255;
-	if (m_draw_data.skin_btn.hover)
+	if (skin_btn.hover)
 		m_draw.FillAlphaRect(rc_icon, m_colors.color_text_2, alpha);
 	else if (!theApp.m_app_setting_data.dark_mode)
 		m_draw.FillAlphaRect(rc_icon, m_colors.color_button_back, alpha);
 
-	m_draw_data.skin_btn.rect = DrawAreaToClient(rc_icon, m_draw_data.draw_rect);
+	skin_btn.rect = DrawAreaToClient(rc_icon, m_draw_data.draw_rect);
 
 	rc_icon = rc_tmp;
 	rc_icon.DeflateRect(theApp.DPI(4), theApp.DPI(4));
@@ -517,15 +526,15 @@ void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)
 	rc_tmp.MoveToX(rc_tmp.left - rect.Height());
 	CRect translate_rect = rc_tmp;
 	translate_rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
-	m_draw_data.translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated();
-	if (m_draw_data.translate_btn.enable)
+	translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated();
+	if (translate_btn.enable)
 	{
 		BYTE alpha;
 		if (draw_background)
 			alpha = ALPHA_CHG(m_colors.background_transparency);
 		else
 			alpha = 255;
-		if (m_draw_data.translate_btn.hover)
+		if (translate_btn.hover)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
 		else if (m_ui_data.show_translate)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
@@ -535,7 +544,7 @@ void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)
 	{
 		m_draw.DrawWindowText(translate_rect, L"译", GRAY(200), Alignment::CENTER);
 	}
-	m_draw_data.translate_btn.rect = DrawAreaToClient(translate_rect, m_draw_data.draw_rect);
+	translate_btn.rect = DrawAreaToClient(translate_rect, m_draw_data.draw_rect);
 
 
 	//绘制音量
@@ -545,7 +554,7 @@ void CPlayerUI2::DrawControlBar(bool draw_background, CRect rect)
 	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
 	m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
 
-	m_draw_data.volume_btn.rect = DrawAreaToClient(rc_tmp, m_draw_data.draw_rect);
+	volume_btn.rect = DrawAreaToClient(rc_tmp, m_draw_data.draw_rect);
 
 }
 

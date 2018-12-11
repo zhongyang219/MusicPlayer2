@@ -62,9 +62,9 @@ public:
 	virtual void Init(CDC* pDC) = 0;
 	virtual void DrawInfo(bool narrow_mode, bool reset = false);
 
-	virtual void RButtonUp(CPoint point, bool narrow_mode) = 0;
-	virtual void MouseMove(CPoint point) = 0;
-	virtual void LButtonUp(CPoint point) = 0;
+	virtual void RButtonUp(CPoint point, bool narrow_mode);
+	virtual void MouseMove(CPoint point);
+	virtual void LButtonUp(CPoint point);
 	virtual void OnSizeRedraw(int cx, int cy, bool narrow_mode) = 0;
 
 	virtual CRect GetThumbnailClipArea(bool narrow_mode) = 0;
@@ -72,6 +72,7 @@ public:
 protected:
 	void DrawLyricTextMultiLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
 	void DrawLyricTextSingleLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
+	//void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button);
 
 	void AddMouseToolTip(const UIButton& btn, LPCTSTR str, bool* static_bool);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
 
@@ -89,6 +90,14 @@ protected:
 	CMenu m_main_popup_menu;
 
 	CToolTipCtrl* m_tool_tip = nullptr;
+
+	//UI 数据
+	UIButton repetemode_btn;				//“循环模式”按钮
+	UIButton volume_btn;				//音量按钮
+	CRect volume_up_rect, volume_down_rect;	//音量调整条增加和减少音量的矩形区域
+	bool show_volume_adj{ false };		//显示音量调整按钮
+	UIButton translate_btn;				//歌词翻译按钮
+	UIButton skin_btn;
 
 };
 

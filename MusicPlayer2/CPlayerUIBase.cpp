@@ -55,6 +55,73 @@ void CPlayerUIBase::DrawInfo(bool narrow_mode, bool reset)
 	}
 }
 
+void CPlayerUIBase::RButtonUp(CPoint point, bool narrow_mode)
+{
+	if (volume_btn.rect.PtInRect(point) == FALSE)
+		show_volume_adj = false;
+
+	CPoint point1;		//定义一个用于确定光标位置的位置  
+	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
+	if (repetemode_btn.rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
+	{
+		CMenu* pMenu = m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
+		if (pMenu != NULL)
+			pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
+
+}
+
+void CPlayerUIBase::MouseMove(CPoint point)
+{
+	repetemode_btn.hover = (repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
+	volume_btn.hover = (volume_btn.rect.PtInRect(point) != FALSE);
+	skin_btn.hover = (skin_btn.rect.PtInRect(point) != FALSE);
+	translate_btn.hover = (translate_btn.rect.PtInRect(point) != FALSE);
+
+	//显示歌词翻译的鼠标提示
+	static bool last_translate_hover{ false };
+	AddMouseToolTip(translate_btn, _T("显示歌词翻译"), &last_translate_hover);
+
+	//显示音量的鼠标提示
+	static bool last_volume_hover{ false };
+	AddMouseToolTip(volume_btn, _T("鼠标滚轮调整音量"), &last_volume_hover);
+
+	static bool last_skin_hover{ false };
+	AddMouseToolTip(skin_btn, _T("切换界面"), &last_skin_hover);
+}
+
+void CPlayerUIBase::LButtonUp(CPoint point)
+{
+	if (repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
+	{
+		theApp.m_player.SetRepeatMode();
+	}
+
+	if (!show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
+		show_volume_adj = (volume_btn.rect.PtInRect(point) != FALSE);
+	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
+		show_volume_adj = (volume_up_rect.PtInRect(point) || volume_down_rect.PtInRect(point));
+
+	if (show_volume_adj && volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
+	{
+		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+	}
+	if (show_volume_adj && volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
+	{
+		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+	}
+
+	if (skin_btn.rect.PtInRect(point))
+	{
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+	}
+
+}
+
+void CPlayerUIBase::OnSizeRedraw(int cx, int cy, bool narrow_mode)
+{
+}
+
 void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric)
 {
 	//计算文本高度
@@ -218,6 +285,10 @@ void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect, CFont* font, CFont* tran
 	}
 
 }
+
+//void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button)
+//{
+//}
 
 void CPlayerUIBase::AddMouseToolTip(const UIButton & btn, LPCTSTR str, bool* last_hover)
 {

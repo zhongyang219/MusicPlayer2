@@ -12,11 +12,6 @@ private:
 		CRect cover_rect;
 		CRect info_rect;
 		CRect lyric_rect;
-
-		UIButton repetemode_btn;
-		UIButton volume_btn;
-		UIButton skin_btn;
-		UIButton translate_btn;
 	};
 
 public:
