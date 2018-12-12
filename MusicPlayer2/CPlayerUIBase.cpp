@@ -125,16 +125,19 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
 	if (m_skin_btn.rect.PtInRect(point))
 	{
+		m_skin_btn.hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
 	}
 
 	if (m_eq_btn.rect.PtInRect(point))
 	{
+		m_eq_btn.hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
 	}
 
 	if (m_setting_btn.rect.PtInRect(point))
 	{
+		m_setting_btn.hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
 	}
 

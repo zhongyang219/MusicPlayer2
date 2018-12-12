@@ -2982,5 +2982,6 @@ void CMusicPlayerDlg::OnSwitchUi()
 	else
 		m_pUI = &m_ui;
 
+	DrawInfo(true);
 	SetThumbnailClipArea();
 }
