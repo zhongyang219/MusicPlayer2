@@ -8,7 +8,6 @@ class CPlayerUI : public CPlayerUIBase
 private:
 	struct DrawData
 	{
-		CRect draw_rect;					//绘图区域
 
 		CRect cover_rect;					//显示专辑封面的矩形区域（以绘图区域左上角为原点）
 	};

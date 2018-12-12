@@ -100,7 +100,8 @@ class CMusicPlayerApp : public CWinApp
 public:
 	CMusicPlayerApp();
 
-	int m_dpi;
+	int m_dpi{};
+
 	CWinVersionHelper m_win_version;		//当前Windows的版本
 	CPlayer m_player;
 
@@ -115,8 +116,12 @@ public:
 	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
 
 	vector<DeviceInfo> m_output_devices;	//播放设备的信息
+
+	//界面图标资源
 	HICON m_default_cover;
 	HICON m_skin_icon;
+	HICON m_eq_icon;
+	HICON m_setting_icon;
 
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
@@ -137,11 +142,14 @@ public:
 	void SaveConfig();
 	void LoadConfig();
 
+	void IniIconResource();
+
 	int DPI(int pixel);		//将一个像素值进行DPI变换
 	int DPI(double pixel);
 	//进行DPI变换后四舍五入处理
 	//round：round为0.5时四舍五入，round为0.4时为五舍六入
 	int DPIRound(double pixel, double round = 0.5);		//对结果进行四舍五入处理
+	void GetDPIFromWindow(CWnd* pWnd);
 
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息

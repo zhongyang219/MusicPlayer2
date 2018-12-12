@@ -608,5 +608,11 @@
     <Image Include="res\skn.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\eq.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\setting.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

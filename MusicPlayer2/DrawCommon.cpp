@@ -356,7 +356,10 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
 {
-	::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, size.cx, size.cy, 0, NULL, DI_NORMAL);
+	if(size.cx==0||size.cy==0)
+		::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, 0, 0, 0, NULL, DI_NORMAL);
+	else
+		::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, size.cx, size.cy, 0, NULL, DI_NORMAL);
 }
 
 void CDrawCommon::FillRect(CRect rect, COLORREF color, bool no_clip_area)
@@ -449,5 +452,5 @@ bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize siz
 
 HICON CDrawCommon::LoadIconResource(UINT id, int width, int height)
 {
-	return (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, width, height, LR_DEFAULTCOLOR | LR_CREATEDIBSECTION);
+	return (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, width, height, 0);
 }

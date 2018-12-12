@@ -57,12 +57,12 @@ void CPlayerUIBase::DrawInfo(bool narrow_mode, bool reset)
 
 void CPlayerUIBase::RButtonUp(CPoint point, bool narrow_mode)
 {
-	if (volume_btn.rect.PtInRect(point) == FALSE)
-		show_volume_adj = false;
+	if (m_volume_btn.rect.PtInRect(point) == FALSE)
+		m_show_volume_adj = false;
 
 	CPoint point1;		//定义一个用于确定光标位置的位置  
 	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-	if (repetemode_btn.rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
+	if (m_repetemode_btn.rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
 	{
 		CMenu* pMenu = m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
 		if (pMenu != NULL)
@@ -73,47 +73,69 @@ void CPlayerUIBase::RButtonUp(CPoint point, bool narrow_mode)
 
 void CPlayerUIBase::MouseMove(CPoint point)
 {
-	repetemode_btn.hover = (repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
-	volume_btn.hover = (volume_btn.rect.PtInRect(point) != FALSE);
-	skin_btn.hover = (skin_btn.rect.PtInRect(point) != FALSE);
-	translate_btn.hover = (translate_btn.rect.PtInRect(point) != FALSE);
+	m_repetemode_btn.hover = (m_repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
+	m_volume_btn.hover = (m_volume_btn.rect.PtInRect(point) != FALSE);
+	m_skin_btn.hover = (m_skin_btn.rect.PtInRect(point) != FALSE);
+	m_translate_btn.hover = (m_translate_btn.rect.PtInRect(point) != FALSE);
+	m_eq_btn.hover = (m_eq_btn.rect.PtInRect(point) != FALSE);
+	m_setting_btn.hover = (m_setting_btn.rect.PtInRect(point) != FALSE);
+
+	//显示循环模式的鼠标提示
+	static bool last_repetemode_hover{ false };
+	AddMouseToolTip(m_repetemode_btn, _T("循环模式"), &last_repetemode_hover);
 
 	//显示歌词翻译的鼠标提示
 	static bool last_translate_hover{ false };
-	AddMouseToolTip(translate_btn, _T("显示歌词翻译"), &last_translate_hover);
+	AddMouseToolTip(m_translate_btn, _T("显示歌词翻译"), &last_translate_hover);
 
 	//显示音量的鼠标提示
 	static bool last_volume_hover{ false };
-	AddMouseToolTip(volume_btn, _T("鼠标滚轮调整音量"), &last_volume_hover);
+	AddMouseToolTip(m_volume_btn, _T("鼠标滚轮调整音量"), &last_volume_hover);
 
 	static bool last_skin_hover{ false };
-	AddMouseToolTip(skin_btn, _T("切换界面"), &last_skin_hover);
+	AddMouseToolTip(m_skin_btn, _T("切换界面"), &last_skin_hover);
+
+	static bool last_eq_hover{ false };
+	AddMouseToolTip(m_eq_btn, _T("音效设定"), &last_eq_hover);
+
+	static bool last_setting_hover{ false };
+	AddMouseToolTip(m_setting_btn, _T("设置"), &last_setting_hover);
 }
 
 void CPlayerUIBase::LButtonUp(CPoint point)
 {
-	if (repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
+	if (m_repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
 	{
 		theApp.m_player.SetRepeatMode();
 	}
 
-	if (!show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
-		show_volume_adj = (volume_btn.rect.PtInRect(point) != FALSE);
+	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
+		m_show_volume_adj = (m_volume_btn.rect.PtInRect(point) != FALSE);
 	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
-		show_volume_adj = (volume_up_rect.PtInRect(point) || volume_down_rect.PtInRect(point));
+		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
 
-	if (show_volume_adj && volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
+	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
 	{
 		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
 	}
-	if (show_volume_adj && volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
+	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
 	{
 		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 	}
 
-	if (skin_btn.rect.PtInRect(point))
+	if (m_skin_btn.rect.PtInRect(point))
 	{
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+	}
+
+	if (m_eq_btn.rect.PtInRect(point))
+	{
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
+	}
+
+	if (m_setting_btn.rect.PtInRect(point))
+	{
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
 	}
 
 }
@@ -286,9 +308,156 @@ void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect, CFont* font, CFont* tran
 
 }
 
-//void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button)
-//{
-//}
+void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
+{
+	wchar_t buff[64];
+	if (theApp.m_player.m_loading)
+	{
+		static CDrawCommon::ScrollInfo scroll_info0;
+		CString info;
+		info.Format(_T("找到%d首歌曲，正在读取音频文件信息，已完成%d%%，请稍候……"), theApp.m_player.GetSongNum(), theApp.m_player.m_thread_info.process_percent);
+		m_draw.DrawScrollText(rect, info, m_colors.color_text, theApp.DPI(1.5), false, scroll_info0, reset);
+	}
+	else
+	{
+		//绘制播放状态
+		CRect rc_tmp{ rect };
+		rc_tmp.right = rc_tmp.left + theApp.DPI(52);
+		m_draw.DrawWindowText(rc_tmp, theApp.m_player.GetPlayingState().c_str(), m_colors.color_text_lable);
+
+		//绘制歌曲序号
+		rc_tmp.MoveToX(rc_tmp.right);
+		rc_tmp.right = rc_tmp.left + theApp.DPI(30);
+		swprintf_s(buff, sizeof(buff) / 2, L"%.3d", theApp.m_player.GetIndex() + 1);
+		m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
+
+		//绘制文件名
+		rc_tmp.MoveToX(rc_tmp.right);
+		rc_tmp.right = rect.right;
+		static CDrawCommon::ScrollInfo scroll_info1;
+		m_draw.DrawScrollText(rc_tmp, theApp.m_player.GetFileName().c_str(), m_colors.color_text, theApp.DPI(1.5), false, scroll_info1, reset);
+	}
+}
+
+void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData)
+{
+	//绘制背景
+	if (draw_background)
+		m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, ALPHA_CHG(m_colors.background_transparency));
+	else
+		m_draw.FillRect(rect, m_colors.color_control_bar_back);
+
+	CRect rc_tmp = rect;
+
+	//绘制循环模式
+	if (rect.Width() >= theApp.DPI(228))
+	{
+		rc_tmp.right = rc_tmp.left + theApp.DPI(60);
+		rc_tmp.DeflateRect(theApp.DPI(4), 0);
+		CString repeat_mode_str;
+		switch (theApp.m_player.GetRepeatMode())
+		{
+		case RepeatMode::RM_PLAY_ORDER: repeat_mode_str += _T("顺序播放"); break;
+		case RepeatMode::RM_LOOP_PLAYLIST: repeat_mode_str += _T("列表循环"); break;
+		case RepeatMode::RM_LOOP_TRACK: repeat_mode_str += _T("单曲循环"); break;
+		case RepeatMode::RM_PLAY_SHUFFLE: repeat_mode_str += _T("随机播放"); break;
+		}
+		if (m_repetemode_btn.hover)		//鼠标指向“循环模式”时，以另外一种颜色显示
+			m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text_heighlight);
+		else
+			m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text);
+
+		m_repetemode_btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
+	}
+
+	//绘制切换界面按钮
+	rc_tmp.right = rect.right;
+	rc_tmp.left = rc_tmp.right - rect.Height();
+	DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon, draw_background);
+
+	//绘制均衡器按钮
+	rc_tmp.right = rc_tmp.left;
+	rc_tmp.left = rc_tmp.right - rect.Height();
+	DrawUIButton(rc_tmp, m_eq_btn, theApp.m_eq_icon, draw_background);
+
+	//绘制设置按钮
+	rc_tmp.right = rc_tmp.left;
+	rc_tmp.left = rc_tmp.right - rect.Height();
+	DrawUIButton(rc_tmp, m_setting_btn, theApp.m_setting_icon, draw_background);
+
+	//绘制翻译按钮
+	if (draw_translate_button)
+	{
+		rc_tmp.right = rc_tmp.left;
+		rc_tmp.left = rc_tmp.right - rect.Height();
+		CRect translate_rect = rc_tmp;
+		translate_rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+		m_translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated();
+		if (m_translate_btn.enable)
+		{
+			BYTE alpha;
+			if (draw_background)
+				alpha = ALPHA_CHG(m_colors.background_transparency);
+			else
+				alpha = 255;
+			if (m_translate_btn.hover)
+				m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
+			else if (pUIData!=nullptr && pUIData->show_translate)
+				m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
+			m_draw.DrawWindowText(translate_rect, L"译", m_colors.color_text, Alignment::CENTER);
+		}
+		else
+		{
+			m_draw.DrawWindowText(translate_rect, L"译", GRAY(200), Alignment::CENTER);
+		}
+		m_translate_btn.rect = DrawAreaToClient(translate_rect, m_draw_rect);
+
+	}
+
+	//显示音量
+	wchar_t buff[64];
+	rc_tmp.right = rc_tmp.left;
+	rc_tmp.left = rc_tmp.right - theApp.DPI(72);
+	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
+	if (m_volume_btn.hover)		//鼠标指向音量区域时，以另外一种颜色显示
+		m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_heighlight);
+	else
+		m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
+	//设置音量调整按钮的位置
+	m_volume_btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
+	m_volume_btn.rect.DeflateRect(0, theApp.DPI(4));
+	m_volume_btn.rect.right -= theApp.DPI(12);
+	m_volume_down_rect = m_volume_btn.rect;
+	m_volume_down_rect.bottom += theApp.DPI(4);
+	m_volume_down_rect.MoveToY(m_volume_btn.rect.bottom);
+	m_volume_down_rect.right = m_volume_btn.rect.left + m_volume_btn.rect.Width() / 2;
+	m_volume_up_rect = m_volume_down_rect;
+	m_volume_up_rect.MoveToX(m_volume_down_rect.right);
+
+	//显示<<<<
+	if (rect.Width() >= theApp.DPI(265))
+	{
+		int progress;
+		Time time{ theApp.m_player.GetCurrentPosition() };
+		if (theApp.m_player.IsMidi())
+		{
+			////progress = (theApp.m_player.GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
+			//if (theApp.m_player.GetMidiInfo().tempo == 0)
+			//	progress = 0;
+			//else
+			//	progress = (time.time2int() * 1000 / theApp.m_player.GetMidiInfo().tempo % 4 + 1) * 250;
+			progress = (theApp.m_player.GetMidiInfo().midi_position % 4 + 1) * 250;
+		}
+		else
+		{
+			progress = (time.sec % 4 * 1000 + time.msec) / 4;
+		}
+		rc_tmp.right = rc_tmp.left;
+		rc_tmp.left = rc_tmp.right - theApp.DPI(44);
+		m_draw.DrawWindowText(rc_tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress, false);
+	}
+
+}
 
 void CPlayerUIBase::AddMouseToolTip(const UIButton & btn, LPCTSTR str, bool* last_hover)
 {
@@ -310,6 +479,12 @@ void CPlayerUIBase::AddMouseToolTip(const UIButton & btn, LPCTSTR str, bool* las
 CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
 {
 	rect.MoveToXY(rect.left + draw_area.left, rect.top + draw_area.top);
+	return rect;
+}
+
+CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
+{
+	rect.MoveToXY(rect.left - draw_area.left, rect.top - draw_area.top);
 	return rect;
 }
 
@@ -361,5 +536,51 @@ void CPlayerUIBase::DrawLyricDoubleLine(CRect rect, CFont * font, LPCTSTR lyric,
 		m_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
 	}
 
+}
+
+void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool draw_background)
+{
+	CRect rc_tmp = rect;
+	rc_tmp.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+	m_draw.SetDrawArea(rc_tmp);
+
+	BYTE alpha;
+	if (draw_background)
+		alpha = ALPHA_CHG(m_colors.background_transparency);
+	else
+		alpha = 255;
+	if (btn.hover)
+		m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
+	else if (!theApp.m_app_setting_data.dark_mode)
+		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
+
+	btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
+
+	rc_tmp = rect;
+	rc_tmp.DeflateRect(theApp.DPI(4), theApp.DPI(4));
+	m_draw.DrawIcon(icon, rc_tmp.TopLeft(), rc_tmp.Size());
+
+}
+
+void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
+{
+	if (m_show_volume_adj)
+	{
+		CRect volume_down_rect = ClientAreaToDraw(m_volume_down_rect, m_draw_rect);
+		CRect volume_up_rect = ClientAreaToDraw(m_volume_up_rect, m_draw_rect);
+
+		if (draw_background)
+		{
+			m_draw.FillAlphaRect(volume_down_rect, m_colors.color_text_2, ALPHA_CHG(m_colors.background_transparency));
+			m_draw.FillAlphaRect(volume_up_rect, m_colors.color_text_2, ALPHA_CHG(m_colors.background_transparency));
+		}
+		else
+		{
+			m_draw.FillRect(volume_down_rect, m_colors.color_text_2);
+			m_draw.FillRect(volume_up_rect, m_colors.color_text_2);
+		}
+		m_draw.DrawWindowText(volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
+		m_draw.DrawWindowText(volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
+	}
 }
 

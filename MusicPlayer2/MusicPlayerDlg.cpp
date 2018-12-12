@@ -835,9 +835,10 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	}
 
 	//获取当前系统DPI设置
-	CWindowDC dc(this);
-	HDC hDC = dc.GetSafeHdc();
-	theApp.m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
+	theApp.GetDPIFromWindow(this);
+
+	//载入图标资源
+	theApp.IniIconResource();
 
 	//根据当前系统的DPI设置窗口上方工具区和状态栏等的大小
 	m_pLayout = std::make_shared<SLayoutData>();

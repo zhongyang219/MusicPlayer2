@@ -329,11 +329,13 @@
     <Image Include="res\default_cover.bmp" />
     <Image Include="res\default_cover_new.ico" />
     <Image Include="res\DeleteTag.ico" />
+    <Image Include="res\eq.ico" />
     <Image Include="res\Find.ico" />
     <Image Include="res\MusicPlayer2.ico" />
     <Image Include="res\Replace.ico" />
     <Image Include="res\ReplaceTag.ico" />
     <Image Include="res\Save.ico" />
+    <Image Include="res\setting.ico" />
     <Image Include="res\skn.ico" />
     <Image Include="res\toolbar1.bmp" />
     <Image Include="res\上一曲.ico" />

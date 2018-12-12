@@ -8,7 +8,6 @@ class CPlayerUI2 : public CPlayerUIBase
 private:
 	struct DrawData
 	{
-		CRect draw_rect;					//»æÍ¼ÇøÓò
 		CRect cover_rect;
 		CRect info_rect;
 		CRect lyric_rect;
@@ -29,7 +28,7 @@ public:
 	virtual CRect GetThumbnailClipArea(bool narrow_mode) override;
 
 protected:
-	void DrawControlBar(bool draw_background, CRect rect);
+	//void DrawControlBar(bool draw_background, CRect rect);
 
 protected:
 	DrawData m_draw_data;

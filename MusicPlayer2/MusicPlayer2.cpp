@@ -124,9 +124,6 @@ BOOL CMusicPlayerApp::InitInstance()
 		AfxBeginThread(CheckUpdateThreadFunc, NULL);
 	}
 
-	m_default_cover = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, 512, 512);
-	m_skin_icon = CDrawCommon::LoadIconResource(IDI_SKIN, 48, 48);
-
 	CColorConvert::Initialize();
 
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
@@ -315,6 +312,14 @@ void CMusicPlayerApp::LoadConfig()
 	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", 1);
 }
 
+void CMusicPlayerApp::IniIconResource()
+{
+	m_default_cover = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, 512, 512);
+	m_skin_icon = CDrawCommon::LoadIconResource(IDI_SKIN, theApp.DPI(16), theApp.DPI(16));
+	m_eq_icon = CDrawCommon::LoadIconResource(IDI_EQ, theApp.DPI(16), theApp.DPI(16));
+	m_setting_icon = CDrawCommon::LoadIconResource(IDI_SETTING, theApp.DPI(16), theApp.DPI(16));
+}
+
 int CMusicPlayerApp::DPI(int pixel)
 {
 	return (m_dpi*(pixel) / 96);
@@ -331,6 +336,13 @@ int CMusicPlayerApp::DPIRound(double pixel, double round)
 	rtn = static_cast<double>(m_dpi)*pixel / 96;
 	rtn += round;
 	return static_cast<int>(rtn);
+}
+
+void CMusicPlayerApp::GetDPIFromWindow(CWnd * pWnd)
+{
+	CWindowDC dc(pWnd);
+	HDC hDC = dc.GetSafeHdc();
+	theApp.m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 }
 
 void CMusicPlayerApp::LoadSongData()

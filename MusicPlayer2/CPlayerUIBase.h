@@ -72,14 +72,18 @@ public:
 protected:
 	void DrawLyricTextMultiLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
 	void DrawLyricTextSingleLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
-	//void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button);
+	void DrawSongInfo(CRect rect, bool reset = false);
+	void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
+	void DrawVolumnAdjBtn(bool draw_background);
 
 	void AddMouseToolTip(const UIButton& btn, LPCTSTR str, bool* static_bool);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
 
 	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
+	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
 private:
 	void DrawLyricDoubleLine(CRect rect, CFont* font, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
+	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
 
 protected:
 	CDC* m_pDC;
@@ -92,12 +96,14 @@ protected:
 	CToolTipCtrl* m_tool_tip = nullptr;
 
 	//UI 数据
-	UIButton repetemode_btn;				//“循环模式”按钮
-	UIButton volume_btn;				//音量按钮
-	CRect volume_up_rect, volume_down_rect;	//音量调整条增加和减少音量的矩形区域
-	bool show_volume_adj{ false };		//显示音量调整按钮
-	UIButton translate_btn;				//歌词翻译按钮
-	UIButton skin_btn;
-
+	CRect m_draw_rect;						//绘图区域
+	UIButton m_repetemode_btn;				//“循环模式”按钮
+	UIButton m_volume_btn;					//音量按钮
+	CRect m_volume_up_rect, m_volume_down_rect;	//音量调整条增加和减少音量的矩形区域
+	bool m_show_volume_adj{ false };		//显示音量调整按钮
+	UIButton m_translate_btn;				//歌词翻译按钮
+	UIButton m_skin_btn;					//切换界面按钮
+	UIButton m_eq_btn;						//音效设定按钮
+	UIButton m_setting_btn;
 };
 
