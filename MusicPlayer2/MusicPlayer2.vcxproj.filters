@@ -614,5 +614,17 @@
     <Image Include="res\setting.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\单曲循环.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\列表循环.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\顺序播放.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\随机播放.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

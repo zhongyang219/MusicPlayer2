@@ -53,6 +53,9 @@ void CPlayerUIBase::DrawInfo(bool narrow_mode, bool reset)
 
 		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
 	}
+
+	//if (m_repeat_mode_tip.IsEmpty())
+	SetRepeatModeToolTipText();
 }
 
 void CPlayerUIBase::RButtonUp(CPoint point, bool narrow_mode)
@@ -82,7 +85,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
 
 	//显示循环模式的鼠标提示
 	static bool last_repetemode_hover{ false };
-	AddMouseToolTip(m_repetemode_btn, _T("循环模式"), &last_repetemode_hover);
+	AddMouseToolTip(m_repetemode_btn, m_repeat_mode_tip, &last_repetemode_hover);
 
 	//显示歌词翻译的鼠标提示
 	static bool last_translate_hover{ false };
@@ -107,6 +110,12 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 	if (m_repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
 	{
 		theApp.m_player.SetRepeatMode();
+
+		SetRepeatModeToolTipText();
+		//m_tool_tip->UpdateTipText(m_repeat_mode_tip, theApp.m_pMainWnd);
+		m_tool_tip->AddTool(theApp.m_pMainWnd, m_repeat_mode_tip);
+		m_tool_tip->Pop();
+
 	}
 
 	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
@@ -353,46 +362,60 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 	CRect rc_tmp = rect;
 
 	//绘制循环模式
-	if (rect.Width() >= theApp.DPI(228))
-	{
-		rc_tmp.right = rc_tmp.left + theApp.DPI(60);
-		rc_tmp.DeflateRect(theApp.DPI(4), 0);
-		CString repeat_mode_str;
-		switch (theApp.m_player.GetRepeatMode())
-		{
-		case RepeatMode::RM_PLAY_ORDER: repeat_mode_str += _T("顺序播放"); break;
-		case RepeatMode::RM_LOOP_PLAYLIST: repeat_mode_str += _T("列表循环"); break;
-		case RepeatMode::RM_LOOP_TRACK: repeat_mode_str += _T("单曲循环"); break;
-		case RepeatMode::RM_PLAY_SHUFFLE: repeat_mode_str += _T("随机播放"); break;
-		}
-		if (m_repetemode_btn.hover)		//鼠标指向“循环模式”时，以另外一种颜色显示
-			m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text_heighlight);
-		else
-			m_draw.DrawWindowText(rc_tmp, repeat_mode_str, m_colors.color_text);
+	rc_tmp.right = rect.left + rect.Height();
+	CRect rc_repeat_mode = rc_tmp;
+	rc_repeat_mode.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+	m_draw.SetDrawArea(rc_repeat_mode);
 
-		m_repetemode_btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
+	BYTE alpha;
+	if (draw_background)
+		alpha = ALPHA_CHG(m_colors.background_transparency);
+	else
+		alpha = 255;
+	if (m_repetemode_btn.hover)
+		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_text_2, alpha);
+	else if (!theApp.m_app_setting_data.dark_mode)
+		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_back, alpha);
+
+	m_repetemode_btn.rect = DrawAreaToClient(rc_repeat_mode, m_draw_rect);
+
+	rc_repeat_mode = rc_tmp;
+	rc_repeat_mode.DeflateRect(theApp.DPI(4), theApp.DPI(4));
+
+	switch (theApp.m_player.GetRepeatMode())
+	{
+	case RepeatMode::RM_PLAY_ORDER:
+		m_draw.DrawIcon(theApp.m_play_oder_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
+	case RepeatMode::RM_LOOP_PLAYLIST:
+		m_draw.DrawIcon(theApp.m_loop_playlist_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
+	case RepeatMode::RM_LOOP_TRACK:
+		m_draw.DrawIcon(theApp.m_loop_track_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
+	case RepeatMode::RM_PLAY_SHUFFLE:
+		m_draw.DrawIcon(theApp.m_play_shuffle_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
 	}
 
-	//绘制切换界面按钮
-	rc_tmp.right = rect.right;
-	rc_tmp.left = rc_tmp.right - rect.Height();
-	DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon, draw_background);
-
-	//绘制均衡器按钮
-	rc_tmp.right = rc_tmp.left;
-	rc_tmp.left = rc_tmp.right - rect.Height();
-	DrawUIButton(rc_tmp, m_eq_btn, theApp.m_eq_icon, draw_background);
+	
 
 	//绘制设置按钮
-	rc_tmp.right = rc_tmp.left;
-	rc_tmp.left = rc_tmp.right - rect.Height();
+	rc_tmp.MoveToX(rc_tmp.right);
 	DrawUIButton(rc_tmp, m_setting_btn, theApp.m_setting_icon, draw_background);
 
+	//绘制均衡器按钮
+	rc_tmp.MoveToX(rc_tmp.right);
+	DrawUIButton(rc_tmp, m_eq_btn, theApp.m_eq_icon, draw_background);
+
+	//绘制切换界面按钮
+	rc_tmp.MoveToX(rc_tmp.right);
+	DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon, draw_background);
+
 	//绘制翻译按钮
-	if (draw_translate_button)
+	if (draw_translate_button && rect.Width()>=theApp.DPI(192))
 	{
-		rc_tmp.right = rc_tmp.left;
-		rc_tmp.left = rc_tmp.right - rect.Height();
+		rc_tmp.MoveToX(rc_tmp.right);
 		CRect translate_rect = rc_tmp;
 		translate_rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
 		m_translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated();
@@ -417,6 +440,31 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 
 	}
 
+	//显示<<<<
+	rc_tmp.left = rc_tmp.right = rect.right;
+	if (rect.Width() >= theApp.DPI(265))
+	{
+		int progress;
+		Time time{ theApp.m_player.GetCurrentPosition() };
+		if (theApp.m_player.IsMidi())
+		{
+			////progress = (theApp.m_player.GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
+			//if (theApp.m_player.GetMidiInfo().tempo == 0)
+			//	progress = 0;
+			//else
+			//	progress = (time.time2int() * 1000 / theApp.m_player.GetMidiInfo().tempo % 4 + 1) * 250;
+			progress = (theApp.m_player.GetMidiInfo().midi_position % 4 + 1) * 250;
+		}
+		else
+		{
+			progress = (time.sec % 4 * 1000 + time.msec) / 4;
+		}
+		rc_tmp.right = rect.right;
+		rc_tmp.left = rc_tmp.right - theApp.DPI(44);
+		m_draw.DrawWindowText(rc_tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress, false);
+	}
+
+
 	//显示音量
 	wchar_t buff[64];
 	rc_tmp.right = rc_tmp.left;
@@ -437,28 +485,6 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 	m_volume_up_rect = m_volume_down_rect;
 	m_volume_up_rect.MoveToX(m_volume_down_rect.right);
 
-	//显示<<<<
-	if (rect.Width() >= theApp.DPI(265))
-	{
-		int progress;
-		Time time{ theApp.m_player.GetCurrentPosition() };
-		if (theApp.m_player.IsMidi())
-		{
-			////progress = (theApp.m_player.GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
-			//if (theApp.m_player.GetMidiInfo().tempo == 0)
-			//	progress = 0;
-			//else
-			//	progress = (time.time2int() * 1000 / theApp.m_player.GetMidiInfo().tempo % 4 + 1) * 250;
-			progress = (theApp.m_player.GetMidiInfo().midi_position % 4 + 1) * 250;
-		}
-		else
-		{
-			progress = (time.sec % 4 * 1000 + time.msec) / 4;
-		}
-		rc_tmp.right = rc_tmp.left;
-		rc_tmp.left = rc_tmp.right - theApp.DPI(44);
-		m_draw.DrawWindowText(rc_tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress, false);
-	}
 
 }
 
@@ -563,6 +589,25 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool dr
 	rc_tmp.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 	m_draw.DrawIcon(icon, rc_tmp.TopLeft(), rc_tmp.Size());
 
+}
+
+void CPlayerUIBase::SetRepeatModeToolTipText()
+{
+	switch (theApp.m_player.GetRepeatMode())
+	{
+	case RepeatMode::RM_PLAY_ORDER:
+		m_repeat_mode_tip = _T("循环模式：顺序播放");
+		break;
+	case RepeatMode::RM_LOOP_PLAYLIST:
+		m_repeat_mode_tip = _T("循环模式：列表循环");
+		break;
+	case RepeatMode::RM_LOOP_TRACK:
+		m_repeat_mode_tip = _T("循环模式：单曲循环");
+		break;
+	case RepeatMode::RM_PLAY_SHUFFLE:
+		m_repeat_mode_tip = _T("循环模式：随机播放");
+		break;
+	}
 }
 
 void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)

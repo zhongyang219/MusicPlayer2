@@ -84,6 +84,7 @@ protected:
 private:
 	void DrawLyricDoubleLine(CRect rect, CFont* font, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
 	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
+	void SetRepeatModeToolTipText();
 
 protected:
 	CDC* m_pDC;
@@ -94,6 +95,8 @@ protected:
 	CMenu m_main_popup_menu;
 
 	CToolTipCtrl* m_tool_tip = nullptr;
+
+	CString m_repeat_mode_tip;
 
 	//UI Êý¾Ý
 	CRect m_draw_rect;						//»æÍ¼ÇøÓò

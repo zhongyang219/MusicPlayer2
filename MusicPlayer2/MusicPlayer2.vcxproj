@@ -341,11 +341,15 @@
     <Image Include="res\上一曲.ico" />
     <Image Include="res\下一曲.ico" />
     <Image Include="res\停止.ico" />
+    <Image Include="res\列表循环.ico" />
+    <Image Include="res\单曲循环.ico" />
     <Image Include="res\快进.ico" />
     <Image Include="res\快退.ico" />
     <Image Include="res\播放.ico" />
     <Image Include="res\播放_暂停.ico" />
     <Image Include="res\暂停.ico" />
+    <Image Include="res\随机播放.ico" />
+    <Image Include="res\顺序播放.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
