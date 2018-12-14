@@ -98,14 +98,10 @@ protected:
 
 	bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
 
-	int sec_current, sec_temp;		//用于控制界面信息刷新频率，当前歌曲进度每过1秒刷新
-
 	int m_window_width;		//窗口的宽度
 	int m_window_height;	//窗口的高度
 
 	int m_progress_bar_left_pos;	//(普通界面模式时)进度条左侧的位置
-	int m_min_width;			//窗口最小宽度
-	int m_min_height;			//窗口最小高度
 	int m_time_width;			//显示播放时间控件的宽度
 	int m_time_height;			//显示播放时间控件的高度
 

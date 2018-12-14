@@ -551,14 +551,13 @@ void CPlayerUIBase::DrawLyricDoubleLine(CRect rect, CFont * font, LPCTSTR lyric,
 	m_draw.SetFont(font);
 	static bool swap;
 	static int last_progress;
-	if (last_progress > progress)
+	if (last_progress > progress)		//如果当前的歌词进度比上次的小，说明歌词切换到了下一句
 	{
 		swap = !swap;
 	}
 	last_progress = progress;
 
 
-	//使用m_cortana_draw绘图
 	CRect up_rect{ rect }, down_rect{ rect };		//上半部分和下半部分歌词的矩形区域
 	up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 	down_rect.top = down_rect.bottom - (down_rect.Height() / 2);

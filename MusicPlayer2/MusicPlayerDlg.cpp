@@ -335,8 +335,8 @@ void CMusicPlayerDlg::LoadConfig()
 	CIniHelper ini;
 	ini.SetPath(theApp.m_config_path);
 
-	m_window_width = ini.GetInt(L"config", L"window_width", -1);
-	m_window_height = ini.GetInt(L"config", L"window_hight", -1);
+	m_window_width = ini.GetInt(L"config", L"window_width", theApp.DPI(698));
+	m_window_height = ini.GetInt(L"config", L"window_hight", theApp.DPI(565));
 	theApp.m_app_setting_data.window_transparency = ini.GetInt(_T("config"), _T("transparency"), 100);
 	m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
 	m_ui_data.show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
@@ -806,6 +806,12 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
+	//获取当前系统DPI设置
+	theApp.GetDPIFromWindow(this);
+
+	//载入图标资源
+	theApp.IniIconResource();
+
 	//载入设置
 	LoadConfig();
 
@@ -834,19 +840,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 		SetWindowPos(nullptr, 0, 0, m_window_width, m_window_height, SWP_NOZORDER | SWP_NOMOVE);
 	}
 
-	//获取当前系统DPI设置
-	theApp.GetDPIFromWindow(this);
-
-	//载入图标资源
-	theApp.IniIconResource();
-
 	//根据当前系统的DPI设置窗口上方工具区和状态栏等的大小
 	m_pLayout = std::make_shared<SLayoutData>();
-
-	CRect rect;
-	m_set_path_button.GetWindowRect(rect);
-	m_min_width = rect.left + theApp.DPI(8);		//将“设置路径”按钮左侧的x位置设为窗口的最小宽度
-	m_min_height = theApp.DPI(360);	//设置最小高度
 
 	CRect rect1;
 	m_time_static.GetWindowRect(rect1);
@@ -926,6 +921,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_stop_button.SetFont(this->GetFont());
 	m_stop_button.SetImage(m_hStopIcon_s);
 
+	CRect rect;
 	//初始化进度条
 	m_progress_bar.SetRange(1000);		//设置进度条的范围
 	m_progress_bar.SetProgressBarHeight(theApp.DPI(5));	//设置进度条的高度
@@ -1130,7 +1126,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//if(!m_cmdLine.empty())
 		//	theApp.m_player.MusicControl(Command::PLAY);	//如果文件是通过命令行打开的，则打开后直接播放
 
-		sec_temp = theApp.m_player.GetCurrentSecond();
 		UpdatePlayPauseButton();
 		//SetForegroundWindow();
 		//ShowPlayList();
@@ -1154,7 +1149,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		theApp.m_player.GetBASSCurrentPosition();
 
-		sec_current = theApp.m_player.GetCurrentSecond();
+		static int sec_temp;
+		int sec_current = theApp.m_player.GetCurrentSecond();
 		if (sec_temp != sec_current)		//获取播放时间的秒数，如果秒数变了则刷新一次时间
 		{
 			sec_temp = sec_current;
@@ -1837,8 +1833,8 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = m_min_width;		//设置最小宽度
-	lpMMI->ptMinTrackSize.y = m_min_height;		//设置最小高度
+	lpMMI->ptMinTrackSize.x = theApp.DPI(360);		//设置最小宽度
+	lpMMI->ptMinTrackSize.y = theApp.DPI(360);		//设置最小高度
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
