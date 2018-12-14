@@ -323,6 +323,13 @@ void CMusicPlayerApp::IniIconResource()
 	m_loop_playlist_icon = CDrawCommon::LoadIconResource(IDI_LOOP_PLAYLIST, theApp.DPI(16), theApp.DPI(16));
 	m_loop_track_icon = CDrawCommon::LoadIconResource(IDI_LOOP_TRACK, theApp.DPI(16), theApp.DPI(16));
 
+	m_skin_icon_d = CDrawCommon::LoadIconResource(IDI_SKIN_D, theApp.DPI(16), theApp.DPI(16));
+	m_eq_icon_d = CDrawCommon::LoadIconResource(IDI_EQ_D, theApp.DPI(16), theApp.DPI(16));
+	m_setting_icon_d = CDrawCommon::LoadIconResource(IDI_SETTING_D, theApp.DPI(16), theApp.DPI(16));
+	m_play_oder_icon_d = CDrawCommon::LoadIconResource(IDI_PLAY_ORDER_D, theApp.DPI(16), theApp.DPI(16));
+	m_play_shuffle_icon_d = CDrawCommon::LoadIconResource(IDI_PLAY_SHUFFLE_D, theApp.DPI(16), theApp.DPI(16));
+	m_loop_playlist_icon_d = CDrawCommon::LoadIconResource(IDI_LOOP_PLAYLIST_D, theApp.DPI(16), theApp.DPI(16));
+	m_loop_track_icon_d = CDrawCommon::LoadIconResource(IDI_LOOP_TRACK_D, theApp.DPI(16), theApp.DPI(16));
 }
 
 int CMusicPlayerApp::DPI(int pixel)

@@ -374,43 +374,72 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		alpha = 255;
 	if (m_repetemode_btn.hover)
 		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_text_2, alpha);
-	else if (!theApp.m_app_setting_data.dark_mode)
-		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_back, alpha);
+	//else if (!theApp.m_app_setting_data.dark_mode)
+	//	m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_back, alpha);
 
 	m_repetemode_btn.rect = DrawAreaToClient(rc_repeat_mode, m_draw_rect);
 
 	rc_repeat_mode = rc_tmp;
 	rc_repeat_mode.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 
-	switch (theApp.m_player.GetRepeatMode())
+	if (theApp.m_app_setting_data.dark_mode)
 	{
-	case RepeatMode::RM_PLAY_ORDER:
-		m_draw.DrawIcon(theApp.m_play_oder_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-		break;
-	case RepeatMode::RM_LOOP_PLAYLIST:
-		m_draw.DrawIcon(theApp.m_loop_playlist_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-		break;
-	case RepeatMode::RM_LOOP_TRACK:
-		m_draw.DrawIcon(theApp.m_loop_track_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-		break;
-	case RepeatMode::RM_PLAY_SHUFFLE:
-		m_draw.DrawIcon(theApp.m_play_shuffle_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-		break;
+		switch (theApp.m_player.GetRepeatMode())
+		{
+		case RepeatMode::RM_PLAY_ORDER:
+			m_draw.DrawIcon(theApp.m_play_oder_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		case RepeatMode::RM_LOOP_PLAYLIST:
+			m_draw.DrawIcon(theApp.m_loop_playlist_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		case RepeatMode::RM_LOOP_TRACK:
+			m_draw.DrawIcon(theApp.m_loop_track_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		case RepeatMode::RM_PLAY_SHUFFLE:
+			m_draw.DrawIcon(theApp.m_play_shuffle_icon, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		}
 	}
-
+	else
+	{
+		switch (theApp.m_player.GetRepeatMode())
+		{
+		case RepeatMode::RM_PLAY_ORDER:
+			m_draw.DrawIcon(theApp.m_play_oder_icon_d, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		case RepeatMode::RM_LOOP_PLAYLIST:
+			m_draw.DrawIcon(theApp.m_loop_playlist_icon_d, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		case RepeatMode::RM_LOOP_TRACK:
+			m_draw.DrawIcon(theApp.m_loop_track_icon_d, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		case RepeatMode::RM_PLAY_SHUFFLE:
+			m_draw.DrawIcon(theApp.m_play_shuffle_icon_d, rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+			break;
+		}
+	}
 	
 
 	//绘制设置按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_setting_btn, theApp.m_setting_icon, draw_background);
+	if (theApp.m_app_setting_data.dark_mode)
+		DrawUIButton(rc_tmp, m_setting_btn, theApp.m_setting_icon, draw_background);
+	else
+		DrawUIButton(rc_tmp, m_setting_btn, theApp.m_setting_icon_d, draw_background);
 
 	//绘制均衡器按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_eq_btn, theApp.m_eq_icon, draw_background);
+	if (theApp.m_app_setting_data.dark_mode)
+		DrawUIButton(rc_tmp, m_eq_btn, theApp.m_eq_icon, draw_background);
+	else
+		DrawUIButton(rc_tmp, m_eq_btn, theApp.m_eq_icon_d, draw_background);
 
 	//绘制切换界面按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon, draw_background);
+	if (theApp.m_app_setting_data.dark_mode)
+		DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon, draw_background);
+	else
+		DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon_d, draw_background);
 
 	//绘制翻译按钮
 	if (draw_translate_button && rect.Width()>=theApp.DPI(192))
@@ -580,8 +609,8 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool dr
 		alpha = 255;
 	if (btn.hover)
 		m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
-	else if (!theApp.m_app_setting_data.dark_mode)
-		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
+	//else if (!theApp.m_app_setting_data.dark_mode)
+	//	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
 
 	btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 

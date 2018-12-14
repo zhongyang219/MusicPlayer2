@@ -127,6 +127,14 @@ public:
 	HICON m_loop_playlist_icon;
 	HICON m_loop_track_icon;
 
+	HICON m_skin_icon_d;
+	HICON m_eq_icon_d;
+	HICON m_setting_icon_d;
+	HICON m_play_oder_icon_d;
+	HICON m_play_shuffle_icon_d;
+	HICON m_loop_playlist_icon_d;
+	HICON m_loop_track_icon_d;
+
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
 	GeneralSettingData m_general_setting_data;		//“选项设置”对话框中“常规设置”中的数据
