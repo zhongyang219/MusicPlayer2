@@ -144,7 +144,8 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 		progress_rect.bottom = progress_rect.top + m_pLayout->margin / 2;
 		double progress = static_cast<double>(theApp.m_player.GetCurrentPosition()) / theApp.m_player.GetSongLength();
 		progress_rect.right = progress_rect.left + static_cast<int>(progress * cover_rect.Width());
-		m_draw.FillRect(progress_rect, m_colors.color_spectrum);
+		if(progress_rect.right>progress_rect.left)
+			m_draw.FillRect(progress_rect, m_colors.color_spectrum);
 
 		int text_height2 = theApp.DPI(22);
 

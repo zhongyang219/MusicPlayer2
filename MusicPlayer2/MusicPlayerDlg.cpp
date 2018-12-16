@@ -2734,7 +2734,9 @@ afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lPara
 {
 	if (theApp.m_nc_setting_data.no_sf2_warning)
 	{
-		if (MessageBox(_T("你正在播放 MIDI 音乐，但是由于没有载入 MIDI 音色库，因此你将听不到任何声音。请在菜单“工具”——“选项”——“常规设置”的“MIDI 音色库路径”中选择正确的MIDI 音色库路径。点击“取消”不再提示。"), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+		if (MessageBox(_T("你正在播放 MIDI 音乐，但是由于没有正确载入 MIDI 音色库，因此你将听不到任何声音。"
+			"请在菜单“工具”——“选项”——“常规设置”的“MIDI 音色库路径”中选择正确的MIDI 音色库路径。"
+			"点击“取消”不再提示。"), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
 			theApp.m_nc_setting_data.no_sf2_warning = false;
 	}
 	return 0;
