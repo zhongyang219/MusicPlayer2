@@ -3,7 +3,7 @@
 
 
 CPlayerUI::CPlayerUI(UIData& ui_data)
-	:m_ui_data(ui_data)
+	: CPlayerUIBase(ui_data)
 {
 }
 
@@ -353,7 +353,7 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
 
 	//ªÊ÷∆∏Ë¥ Œƒ±æ
-	DrawLyricTextMultiLine(lyric_area, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font, m_ui_data.show_translate, midi_lyric);
+	DrawLyricTextMultiLine(lyric_area, midi_lyric);
 }
 
 void CPlayerUI::RButtonUp(CPoint point, bool narrow_mode)

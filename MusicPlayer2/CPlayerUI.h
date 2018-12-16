@@ -33,7 +33,6 @@ protected:
 
 protected:
 	DrawData m_draw_data;
-	UIData& m_ui_data;
 	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
 };
 

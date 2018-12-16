@@ -53,7 +53,7 @@ public:
 	};
 
 public:
-	CPlayerUIBase();
+	CPlayerUIBase(UIData& ui_data);
 	~CPlayerUIBase();
 
 	void SetToolTip(CToolTipCtrl* pToolTip);
@@ -70,8 +70,8 @@ public:
 	virtual CRect GetThumbnailClipArea(bool narrow_mode) = 0;
 
 protected:
-	void DrawLyricTextMultiLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
-	void DrawLyricTextSingleLine(CRect rect, CFont* font, CFont* translate_font, bool show_translate, bool midi_lyric);
+	void DrawLyricTextMultiLine(CRect rect, bool midi_lyric);
+	void DrawLyricTextSingleLine(CRect rect, bool midi_lyric);
 	void DrawSongInfo(CRect rect, bool reset = false);
 	void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
 	void DrawVolumnAdjBtn(bool draw_background);
@@ -82,7 +82,7 @@ protected:
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
 private:
-	void DrawLyricDoubleLine(CRect rect, CFont* font, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
+	void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
 	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
 	void SetRepeatModeToolTipText();
 
@@ -97,6 +97,9 @@ protected:
 	CToolTipCtrl* m_tool_tip = nullptr;
 
 	CString m_repeat_mode_tip;
+
+	int m_lyric_text_height;
+	UIData& m_ui_data;
 
 	//UI Êý¾Ý
 	CRect m_draw_rect;						//»æÍ¼ÇøÓò

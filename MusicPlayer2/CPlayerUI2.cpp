@@ -3,7 +3,7 @@
 
 
 CPlayerUI2::CPlayerUI2(UIData& ui_data)
-	:m_ui_data(ui_data)
+	: CPlayerUIBase(ui_data)
 {
 	m_title_font.CreatePointFont(100, _T("微软雅黑"));
 	m_artist_font.CreatePointFont(90, _T("微软雅黑"));
@@ -253,14 +253,14 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 		}
 
 		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
-		if (rc_tmp.bottom > rc_tmp.top + theApp.DPI(8))
+		if (rc_tmp.bottom > rc_tmp.top + m_lyric_text_height / 2)
 		{
 			CDrawCommon::SetDrawArea(m_draw.GetDC(), rc_tmp);
 
-			if(rc_tmp.Height()<theApp.DPI(64))
-				DrawLyricTextSingleLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font, m_ui_data.show_translate, midi_lyric);
+			if (rc_tmp.Height() < static_cast<int>(m_lyric_text_height*3.5))
+				DrawLyricTextSingleLine(rc_tmp, midi_lyric);
 			else
-				DrawLyricTextMultiLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font, m_ui_data.show_translate, midi_lyric);
+				DrawLyricTextMultiLine(rc_tmp, midi_lyric);
 		}
 
 		//绘制音量调整按钮
@@ -293,7 +293,6 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 			m_draw.DrawIcon(theApp.m_default_cover, rect.TopLeft(), rect.Size());
 		}
 
-		wchar_t buff[64];
 		//绘制播放状态
 		int text_height{ theApp.DPI(18) };		//文本的高度
 		rc_tmp.MoveToX(draw_rect.Height());
@@ -335,7 +334,7 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
 		}
 		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
-		DrawLyricTextSingleLine(rc_tmp, &m_ui_data.lyric_font, &m_ui_data.lyric_translate_font, m_ui_data.show_translate, midi_lyric);
+		DrawLyricTextSingleLine(rc_tmp, midi_lyric);
 
 		//绘制音量调整按钮
 		DrawVolumnAdjBtn(draw_background);
