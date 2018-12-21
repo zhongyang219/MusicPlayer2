@@ -197,6 +197,9 @@ public:
 	static void SizeZoom(CSize& size, int side);
 
 	static COLORREF GetWindowsThemeColor();
+
+	//将hSrc中的所有菜单项添加到菜单hDst中（来自 https://blog.csdn.net/zgl7903/article/details/71077441）
+	static int AppendMenuOp(HMENU hDst, HMENU hSrc);
 };
 
 template<class T>

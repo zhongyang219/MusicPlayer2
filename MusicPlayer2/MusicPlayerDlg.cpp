@@ -776,27 +776,30 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// 将“关于...”菜单项添加到系统菜单中。
+	//// 将“关于...”菜单项添加到系统菜单中。
 
-	// IDM_ABOUTBOX 必须在系统命令范围内。
-	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
-	ASSERT(IDM_ABOUTBOX < 0xF000);
+	//// IDM_ABOUTBOX 必须在系统命令范围内。
+	//ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
+	//ASSERT(IDM_ABOUTBOX < 0xF000);
 
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	if (pSysMenu != NULL)
 	{
 		pSysMenu->AppendMenu(MF_SEPARATOR);
 		pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE,_T("迷你模式(&I)\tCtrl+M"));
+		pSysMenu->AppendMenu(MF_SEPARATOR);
 
-		BOOL bNameValid;
-		CString strAboutMenu;
-		bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
-		ASSERT(bNameValid);
-		if (!strAboutMenu.IsEmpty())
-		{
-			pSysMenu->AppendMenu(MF_SEPARATOR);
-			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
-		}
+		CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), GetMenu()->GetSafeHmenu());		//将主菜单添加到系统菜单
+
+		//BOOL bNameValid;
+		//CString strAboutMenu;
+		//bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
+		//ASSERT(bNameValid);
+		//if (!strAboutMenu.IsEmpty())
+		//{
+		//	pSysMenu->AppendMenu(MF_SEPARATOR);
+		//	pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+		//}
 	}
 
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
@@ -971,18 +974,24 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 void CMusicPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+	DWORD cmd = nID & 0xFFF0;
+	/*if (cmd == IDM_ABOUTBOX)
 	{
 		CAboutDlg dlgAbout;
 		dlgAbout.DoModal();
 	}
-	else if ((nID & 0xFFF0) == IDM_MINIMODE)
+	else */if (cmd == IDM_MINIMODE)
 	{
 		OnMiniMode();
 	}
 	else
 	{
 		CDialog::OnSysCommand(nID, lParam);
+	}
+
+	if (nID >= 0x8000)
+	{
+		SendMessage(WM_COMMAND, nID);
 	}
 }
 

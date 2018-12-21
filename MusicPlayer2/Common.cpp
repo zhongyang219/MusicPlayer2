@@ -837,3 +837,41 @@ COLORREF CCommon::GetWindowsThemeColor()
 	return theme_color;
 }
 
+
+int CCommon::AppendMenuOp(HMENU hDst, HMENU hSrc)
+{
+	int iCnt = 0;
+	ASSERT(hDst && hSrc);
+
+	for (int iSrc = 0, iDst = GetMenuItemCount(hDst); iSrc < GetMenuItemCount(hSrc); iSrc++)
+	{
+		TCHAR szMenuStr[256] = { 0 };
+		MENUITEMINFO mInfo = { 0 };
+		mInfo.cbSize = sizeof(mInfo);
+		mInfo.fMask = 0
+			| MIIM_CHECKMARKS //Retrieves or sets the hbmpChecked and hbmpUnchecked members. 
+			| MIIM_DATA //Retrieves or sets the dwItemData member. 
+			| MIIM_ID //Retrieves or sets the wID member. 
+			| MIIM_STATE //Retrieves or sets the fState member. 
+			| MIIM_SUBMENU //Retrieves or sets the hSubMenu member. 
+			| MIIM_TYPE //Retrieves or sets the fType and dwTypeData members. 
+			| 0;
+		mInfo.dwTypeData = szMenuStr;
+		mInfo.cch = _countof(szMenuStr);
+
+		VERIFY(GetMenuItemInfo(hSrc, iSrc, TRUE, &mInfo));
+
+		if (mInfo.hSubMenu)
+		{
+			HMENU hSub = CreatePopupMenu();
+			AppendMenuOp(hSub, mInfo.hSubMenu);
+			mInfo.hSubMenu = hSub;
+		}
+
+		InsertMenuItem(hDst, iDst++, TRUE, &mInfo);
+		iCnt++;
+	}
+
+	return iCnt;
+}
+
