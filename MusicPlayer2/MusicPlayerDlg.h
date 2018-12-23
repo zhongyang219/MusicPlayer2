@@ -17,7 +17,6 @@
 #include"LyricEditDlg.h"
 #include "LyricDownloadDlg.h"
 #include "LyricBatchDownloadDlg.h"
-#include "StaticEx.h"
 //#include "EqualizerDlg.h"
 #include "SoundEffectDlg.h"
 #include "CortanaLyric.h"

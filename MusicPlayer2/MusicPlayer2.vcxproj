@@ -249,7 +249,6 @@
     <ClInclude Include="ReverbDlg.h" />
     <ClInclude Include="SetPathDlg.h" />
     <ClInclude Include="SoundEffectDlg.h" />
-    <ClInclude Include="StaticEx.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Time.h" />
@@ -311,7 +310,6 @@
     <ClCompile Include="ReverbDlg.cpp" />
     <ClCompile Include="SetPathDlg.cpp" />
     <ClCompile Include="SoundEffectDlg.cpp" />
-    <ClCompile Include="StaticEx.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

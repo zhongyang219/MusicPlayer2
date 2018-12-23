@@ -1,6 +1,5 @@
 #pragma once
 #include"Player.h"
-#include"StaticEx.h"
 #include "afxwin.h"
 #include "PropertyDlg.h"
 #include "afxcmn.h"

@@ -75,9 +75,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="头文件和源文件\派生的控件类\StaticEx">
-      <UniqueIdentifier>{39523b67-48d1-491a-b610-280aea21ba85}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件和源文件\CortanaLyric">
       <UniqueIdentifier>{c52febb4-8dff-4550-9b84-db03e2f7879a}</UniqueIdentifier>
     </Filter>
@@ -245,9 +242,6 @@
     </ClInclude>
     <ClInclude Include="ProgressStatic.h">
       <Filter>头文件和源文件\派生的控件类\ProgressStatic</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticEx.h">
-      <Filter>头文件和源文件\派生的控件类\StaticEx</Filter>
     </ClInclude>
     <ClInclude Include="CortanaLyric.h">
       <Filter>头文件和源文件\CortanaLyric</Filter>
@@ -424,9 +418,6 @@
     </ClCompile>
     <ClCompile Include="ProgressStatic.cpp">
       <Filter>头文件和源文件\派生的控件类\ProgressStatic</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticEx.cpp">
-      <Filter>头文件和源文件\派生的控件类\StaticEx</Filter>
     </ClCompile>
     <ClCompile Include="CortanaLyric.cpp">
       <Filter>头文件和源文件\CortanaLyric</Filter>
