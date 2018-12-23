@@ -360,6 +360,12 @@
     <ClInclude Include="CPlayerUI2.h">
       <Filter>头文件和源文件\PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="IPlayerUI.h">
+      <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CMiniModeUI.h">
+      <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -531,6 +537,9 @@
       <Filter>头文件和源文件\PlayerUI</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerUI2.cpp">
+      <Filter>头文件和源文件\PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CMiniModeUI.cpp">
       <Filter>头文件和源文件\PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>

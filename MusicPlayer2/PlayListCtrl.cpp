@@ -144,6 +144,20 @@ void CPlayListCtrl::GetItemSelectedSearched(vector<int>& item_selected)
 	}
 }
 
+void CPlayListCtrl::AdjustColumnWidth()
+{
+	int width0, width1, width2;
+	width0 = theApp.DPI(40);
+	width2 = theApp.DPI(50);
+	CRect rect;
+	GetWindowRect(rect);
+	width1 = rect.Width() - width0 - width2 - theApp.DPI(21);
+
+	SetColumnWidth(0, width0);
+	SetColumnWidth(1, width1);
+	SetColumnWidth(2, width2);
+}
+
 
 BEGIN_MESSAGE_MAP(CPlayListCtrl, CListCtrlEx)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, CPlayListCtrl::OnNMCustomdraw)

@@ -276,7 +276,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"window_width", m_window_width);
 	ini.WriteInt(L"config", L"window_hight", m_window_height);
 	ini.WriteInt(L"config", L"transparency", theApp.m_app_setting_data.window_transparency);
-	ini.WriteBool(L"config", L"narrow_mode", m_narrow_mode);
+	ini.WriteBool(L"config", L"narrow_mode", m_ui_data.m_narrow_mode);
 	ini.WriteBool(L"config", L"show_translate", m_ui_data.show_translate);
 
 	ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
@@ -338,7 +338,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_window_width = ini.GetInt(L"config", L"window_width", theApp.DPI(698));
 	m_window_height = ini.GetInt(L"config", L"window_hight", theApp.DPI(565));
 	theApp.m_app_setting_data.window_transparency = ini.GetInt(_T("config"), _T("transparency"), 100);
-	m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
+	m_ui_data.m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
 	m_ui_data.show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
 
 	theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(_T("config"), _T("theme_color"), 16760187);
@@ -400,7 +400,7 @@ void CMusicPlayerDlg::SetTransparency()
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
 	if (IsIconic()) return;		//窗口最小化时不绘制，以降低CPU利用率
-	m_pUI->DrawInfo(m_narrow_mode, reset);
+	m_pUI->DrawInfo(reset);
 }
 
 //void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
@@ -415,7 +415,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 {
 	//设置播放列表大小
 	int width0, width1, width2;
-	if (!m_narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
 			cx / 2 - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
@@ -438,7 +438,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	CRect rect_static;
 	m_path_static.GetWindowRect(rect_static);
 	rect_static.bottom = rect_static.top + m_pLayout->path_edit_height - 2 * m_pLayout->margin;
-	if (!m_narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 		rect_static.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin);
 	else
 		rect_static.MoveToXY(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height);
@@ -446,7 +446,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置“当前路径”edit控件大小
 	CRect rect_edit;
 	m_path_edit.GetWindowRect(rect_edit);
-	if (!m_narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		rect_edit.right = rect_edit.left + (cx / 2 - 2 * m_pLayout->margin - rect_static.Width());
 		rect_edit.MoveToXY(cx / 2 + m_pLayout->margin + rect_static.Width(), m_pLayout->control_bar_height + m_pLayout->margin);
@@ -460,7 +460,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置歌曲搜索框的大小和位置
 	CRect rect_search;
 	m_search_edit.GetWindowRect(rect_search);
-	if (!m_narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		rect_search.right = rect_search.left + (cx / 2 - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
 		rect_search.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->path_edit_height + theApp.DPI(1));
@@ -474,7 +474,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置清除搜索按钮的大小和位置
 	CRect rect_clear{};
 	rect_clear.right = rect_clear.bottom = rect_search.Height();
-	//if (!m_narrow_mode)
+	//if (!m_ui_data.m_narrow_mode)
 		rect_clear.MoveToXY(rect_search.right + m_pLayout->margin, rect_search.top);
 	m_clear_search_button.MoveWindow(rect_clear);
 	m_clear_search_button.Invalidate();
@@ -493,7 +493,7 @@ void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
 		time_width = m_time_width * 5 / 4;
 	else
 		time_width = m_time_width;
-	if (!m_narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		//设置进度条位置
 		left_pos = m_progress_bar_left_pos;
@@ -539,7 +539,7 @@ void CMusicPlayerDlg::ShowPlayList()
 	if (m_miniModeDlg.m_hWnd != NULL)
 	{
 		m_miniModeDlg.ShowPlaylist();
-		m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
+		//m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 	}
 }
 
@@ -557,7 +557,7 @@ void CMusicPlayerDlg::SwitchTrack()
 	if (m_miniModeDlg.m_hWnd != NULL)
 	{
 		m_miniModeDlg.SetPlayListColor();
-		m_miniModeDlg.RePaint();
+		//m_miniModeDlg.RePaint();
 		m_miniModeDlg.Invalidate(FALSE);
 	}
 	//切换歌曲时如果当前歌曲的时间没有显示，则显示出来
@@ -571,8 +571,8 @@ void CMusicPlayerDlg::SwitchTrack()
 	ShowTime();
 	m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 	SetPorgressBarSize();		//调整进度条在窗口中的大小和位置
-	if (m_miniModeDlg.m_hWnd != NULL)
-		m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
+	//if (m_miniModeDlg.m_hWnd != NULL)
+	//	m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 	DrawInfo(true);
 }
 
@@ -590,8 +590,8 @@ void CMusicPlayerDlg::UpdateProgress()
 	__int64 pos;	//进度条的宽度
 	pos = static_cast<__int64>(position) * 1000 / length;	//先转换成__int64类型，防止乘以1000之后溢出
 	m_progress_bar.SetPos(static_cast<int>(pos));
-	if (m_miniModeDlg.m_hWnd != NULL)
-		m_miniModeDlg.m_progress_bar.SetPos(static_cast<int>(pos));
+	//if (m_miniModeDlg.m_hWnd != NULL)
+	//	m_miniModeDlg.m_progress_bar.SetPos(static_cast<int>(pos));
 }
 
 void CMusicPlayerDlg::UpdateTaskBarProgress()
@@ -657,15 +657,13 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #ifndef COMPILE_IN_WIN_XP
 	m_pTaskbar->ThumbBarUpdateButtons(m_hWnd, 3, m_thumbButton);
 #endif
-	if (m_miniModeDlg.m_hWnd != NULL)
-		m_miniModeDlg.UpdatePlayPauseButton();
 }
 
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
 #ifndef COMPILE_IN_WIN_XP
 	if (m_pTaskbar != nullptr)
-		m_pTaskbar->SetThumbnailClip(m_hWnd, m_pUI->GetThumbnailClipArea(m_narrow_mode));
+		m_pTaskbar->SetThumbnailClip(m_hWnd, m_pUI->GetThumbnailClipArea());
 #endif
 }
 
@@ -769,6 +767,11 @@ void CMusicPlayerDlg::ThemeColorChanged()
 		SetPlayListColor();
 		m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
 		DrawInfo();
+		if (m_miniModeDlg.m_hWnd != NULL)
+		{
+			m_miniModeDlg.SetPlayListColor();
+		}
+
 	}
 }
 
@@ -1041,21 +1044,21 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		if (m_pDC != NULL)
 		{
 			DrawInfo(true);
-			if ((cx < m_pLayout->width_threshold) != m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
+			if ((cx < m_pLayout->width_threshold) != m_ui_data.m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
 			{
 				Invalidate(FALSE);
 				m_time_static.Invalidate(FALSE);
 			}
 			else
 			{
-				m_pUI->OnSizeRedraw(cx, cy, m_narrow_mode);
+				m_pUI->OnSizeRedraw(cx, cy);
 			}
 		}
 		m_ui_data.client_width = cx;
 		m_ui_data.client_height = cy;
 		if (m_pLayout->width_threshold != 0)
 		{
-			m_narrow_mode = (cx < m_pLayout->width_threshold);
+			m_ui_data.m_narrow_mode = (cx < m_pLayout->width_threshold);
 		}
 		if (m_playlist_list.m_hWnd && theApp.m_dpi)
 		{
@@ -2242,7 +2245,8 @@ void CMusicPlayerDlg::OnMiniMode()
 	if (m_miniModeDlg.m_hWnd != NULL)
 		return;
 
-	m_miniModeDlg.m_display_format = m_display_format;
+	m_miniModeDlg.SetDefaultBackGround(&m_ui_data.default_background);
+	m_miniModeDlg.SetDisplayFormat(&m_display_format);
 	ShowWindow(SW_HIDE);
 	if (m_miniModeDlg.DoModal() == IDCANCEL)
 	{
@@ -2447,7 +2451,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	m_pUI->RButtonUp(point, m_narrow_mode);
+	m_pUI->RButtonUp(point);
 
 	CDialog::OnRButtonUp(nFlags, point);
 }

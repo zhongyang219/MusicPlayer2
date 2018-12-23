@@ -1,5 +1,6 @@
 #pragma once
 #include "MusicPlayer2.h"
+#include "IPlayerUI.h"
 
 struct SLayoutData
 {
@@ -15,7 +16,7 @@ struct SLayoutData
 };
 
 
-class CPlayerUIBase
+class CPlayerUIBase : public IPlayerUI
 {
 public:
 	struct UIColors		//界面颜色
@@ -34,18 +35,12 @@ public:
 		int background_transparency;		//背景不透明度0~100
 	};
 
-	struct UIButton		//界面中绘制的按钮
-	{
-		CRect rect;				//按钮的矩形区域
-		bool hover{ false };	//鼠标是否指向按钮
-		bool enable{ true };	//按钮是否启用
-	};
-
 	struct UIData
 	{
 		CFont lyric_font;					//歌词字体
 		CFont lyric_translate_font;			//歌词翻译的字体
 		bool show_translate{ true };		//歌词是否显示翻译
+		bool m_narrow_mode;		//窄界面模式
 
 		int client_width;					//窗口客户区宽度
 		int client_height;					//窗口客户区高度
@@ -59,15 +54,15 @@ public:
 	void SetToolTip(CToolTipCtrl* pToolTip);
 
 public:
-	virtual void Init(CDC* pDC) = 0;
-	virtual void DrawInfo(bool narrow_mode, bool reset = false);
+	virtual void Init(CDC* pDC) override = 0;
+	virtual void DrawInfo(bool reset = false) override;
 
-	virtual void RButtonUp(CPoint point, bool narrow_mode);
-	virtual void MouseMove(CPoint point);
-	virtual void LButtonUp(CPoint point);
-	virtual void OnSizeRedraw(int cx, int cy, bool narrow_mode) = 0;
+	virtual void RButtonUp(CPoint point) override;
+	virtual void MouseMove(CPoint point) override;
+	virtual void LButtonUp(CPoint point) override;
+	virtual void OnSizeRedraw(int cx, int cy) override = 0;
 
-	virtual CRect GetThumbnailClipArea(bool narrow_mode) = 0;
+	virtual CRect GetThumbnailClipArea() override = 0;
 
 protected:
 	void DrawLyricTextMultiLine(CRect rect, bool midi_lyric);

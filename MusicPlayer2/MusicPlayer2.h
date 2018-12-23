@@ -91,6 +91,17 @@ struct NonCategorizedSettingData
 	bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
 };
 
+struct IconRes
+{
+	HICON hIcon;
+	HICON hIconDark;
+
+	HICON& GetIcon(bool dark = false)
+	{
+		return (dark ? hIconDark : hIcon);
+	}
+};
+
 // CMusicPlayerApp: 
 // 有关此类的实现，请参阅 MusicPlayer2.cpp
 //
@@ -118,22 +129,18 @@ public:
 	vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
 	//界面图标资源
-	HICON m_default_cover;
-	HICON m_skin_icon;
-	HICON m_eq_icon;
-	HICON m_setting_icon;
-	HICON m_play_oder_icon;
-	HICON m_play_shuffle_icon;
-	HICON m_loop_playlist_icon;
-	HICON m_loop_track_icon;
-
-	HICON m_skin_icon_d;
-	HICON m_eq_icon_d;
-	HICON m_setting_icon_d;
-	HICON m_play_oder_icon_d;
-	HICON m_play_shuffle_icon_d;
-	HICON m_loop_playlist_icon_d;
-	HICON m_loop_track_icon_d;
+	IconRes m_default_cover;
+	IconRes m_skin_icon;
+	IconRes m_eq_icon;
+	IconRes m_setting_icon;
+	IconRes m_play_oder_icon;
+	IconRes m_play_shuffle_icon;
+	IconRes m_loop_playlist_icon;
+	IconRes m_loop_track_icon;
+	IconRes m_previous_icon;
+	IconRes m_play_icon;
+	IconRes m_pause_icon;
+	IconRes m_next_icon;
 
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据

@@ -19,14 +19,14 @@ void CPlayerUI::Init(CDC* pDC)
 	m_pLayout = std::make_shared<SLayoutData>();
 }
 
-void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
+void CPlayerUI::DrawInfo(bool reset)
 {
 	//调用基类的函数，以设置绘图颜色
-	CPlayerUIBase::DrawInfo(narrow_mode, reset);
+	CPlayerUIBase::DrawInfo(reset);
 
 	//设置信息区域的矩形
 	CRect info_rect;
-	if (!narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 		info_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin}, CSize{m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
 	else
 		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height}, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
@@ -36,7 +36,7 @@ void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
 	CBitmap MemBitmap;
 	MemDC.CreateCompatibleDC(NULL);
 	m_draw_rect = info_rect;		//绘图区域
-	if (!narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 		m_draw_rect.bottom = m_ui_data.client_height - m_pLayout->margin;
 	CRect draw_rect{ m_draw_rect };
 	draw_rect.MoveToXY(0, 0);
@@ -181,7 +181,7 @@ void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
 			int cover_side = m_draw_data.cover_rect.Height() * 3 / 4;
 			int x = m_draw_data.cover_rect.left + (m_draw_data.cover_rect.Width() - cover_side) / 2;
 			int y = m_draw_data.cover_rect.top + (m_draw_data.cover_rect.Height() - cover_side) / 2;
-			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_default_cover, cover_side, cover_side, 0, NULL, DI_NORMAL);
+			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_default_cover.GetIcon(), cover_side, cover_side, 0, NULL, DI_NORMAL);
 		}
 	}
 
@@ -237,7 +237,7 @@ void CPlayerUI::DrawInfo(bool narrow_mode, bool reset)
 	//显示歌词
 	m_draw.SetFont(&m_ui_data.lyric_font);
 	CRect lyric_rect;
-	if (narrow_mode)
+	if (m_ui_data.m_narrow_mode)
 	{
 		lyric_rect = other_info_rect;
 		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin);
@@ -356,16 +356,16 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	DrawLyricTextMultiLine(lyric_area, midi_lyric);
 }
 
-void CPlayerUI::RButtonUp(CPoint point, bool narrow_mode)
+void CPlayerUI::RButtonUp(CPoint point)
 {
-	CPlayerUIBase::RButtonUp(point, narrow_mode);
+	CPlayerUIBase::RButtonUp(point);
 
 	if (m_repetemode_btn.rect.PtInRect(point))
 		return;
 
 	//计算显示信息和显示歌词的区域
 	CRect info_rect{ m_draw_rect }, lyric_rect{ m_draw_rect };
-	if (!narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		int height = m_pLayout->info_height2 - 3 * m_pLayout->margin;
 		info_rect.bottom = info_rect.top + height;
@@ -452,11 +452,11 @@ void CPlayerUI::LButtonUp(CPoint point)
 
 }
 
-void CPlayerUI::OnSizeRedraw(int cx, int cy, bool narrow_mode)
+void CPlayerUI::OnSizeRedraw(int cx, int cy)
 {
 	m_show_volume_adj = false;
 	CRect redraw_rect{ m_draw_rect };
-	if (!narrow_mode)	//在普通界面模式下
+	if (!m_ui_data.m_narrow_mode)	//在普通界面模式下
 	{
 		if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
 		{
@@ -473,7 +473,7 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy, bool narrow_mode)
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
 	}
-	else if (narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
+	else if (m_ui_data.m_narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
 	{
 		//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
 		redraw_rect.left = cx - 2 * m_pLayout->margin;
@@ -483,10 +483,10 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy, bool narrow_mode)
 
 }
 
-CRect CPlayerUI::GetThumbnailClipArea(bool narrow_mode)
+CRect CPlayerUI::GetThumbnailClipArea()
 {
 	CRect info_rect;
-	if (!narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
 	else
 		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };

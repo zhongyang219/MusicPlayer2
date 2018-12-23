@@ -94,7 +94,7 @@ protected:
 	CPlayerUIBase::UIData m_ui_data;
 	CPlayerUI m_ui{ m_ui_data };
 	CPlayerUI2 m_ui2{ m_ui_data };
-	CPlayerUIBase* m_pUI = nullptr;
+	IPlayerUI* m_pUI = nullptr;
 
 	bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
 
@@ -108,7 +108,6 @@ protected:
 	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };		//窗口布局的固定数据
 
 
-	bool m_narrow_mode;		//窄界面模式
 
 	bool m_searched;		//播放列表是否处于搜索状态
 	wstring m_search_key_word;	//播放列表查找的关键字

@@ -22,12 +22,12 @@ void CPlayerUI2::Init(CDC* pDC)
 	m_pLayout = std::make_shared<SLayoutData>();
 }
 
-void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
+void CPlayerUI2::DrawInfo(bool reset)
 {
-	CPlayerUIBase::DrawInfo(narrow_mode, reset);
+	CPlayerUIBase::DrawInfo(reset);
 
 	//设置信息区域的矩形
-	if (!narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin}, 
 		CPoint{m_ui_data.client_width / 2 - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
@@ -74,7 +74,7 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 		m_draw.FillRect(draw_rect, m_colors.color_back);
 
 
-	if (!narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		wchar_t buff[64];
 
@@ -135,7 +135,7 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 			CRect rect = cover_rect;
 			int cover_margin = static_cast<int>(cover_rect.Width() * 0.13);
 			rect.DeflateRect(cover_margin, cover_margin);
-			m_draw.DrawIcon(theApp.m_default_cover, rect.TopLeft(), rect.Size());
+			m_draw.DrawIcon(theApp.m_default_cover.GetIcon(), rect.TopLeft(), rect.Size());
 		}
 
 		//绘制播放进度
@@ -291,7 +291,7 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 			CRect rect = rc_tmp;
 			int cover_margin = static_cast<int>(rc_tmp.Width() * 0.13);
 			rect.DeflateRect(cover_margin, cover_margin);
-			m_draw.DrawIcon(theApp.m_default_cover, rect.TopLeft(), rect.Size());
+			m_draw.DrawIcon(theApp.m_default_cover.GetIcon(), rect.TopLeft(), rect.Size());
 		}
 
 		//绘制播放状态
@@ -349,9 +349,9 @@ void CPlayerUI2::DrawInfo(bool narrow_mode, bool reset)
 
 }
 
-void CPlayerUI2::RButtonUp(CPoint point, bool narrow_mode)
+void CPlayerUI2::RButtonUp(CPoint point)
 {
-	CPlayerUIBase::RButtonUp(point, narrow_mode);
+	CPlayerUIBase::RButtonUp(point);
 
 	if (m_repetemode_btn.rect.PtInRect(point))
 		return;
@@ -401,10 +401,10 @@ void CPlayerUI2::LButtonUp(CPoint point)
 
 }
 
-void CPlayerUI2::OnSizeRedraw(int cx, int cy, bool narrow_mode)
+void CPlayerUI2::OnSizeRedraw(int cx, int cy)
 {
 	CRect redraw_rect{ m_draw_rect };
-	if (!narrow_mode)	//在普通界面模式下
+	if (!m_ui_data.m_narrow_mode)	//在普通界面模式下
 	{
 		if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
 		{
@@ -421,7 +421,7 @@ void CPlayerUI2::OnSizeRedraw(int cx, int cy, bool narrow_mode)
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
 	}
-	else if (narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
+	else if (m_ui_data.m_narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
 	{
 		//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
 		redraw_rect.left = cx - 2 * m_pLayout->margin;
@@ -430,10 +430,10 @@ void CPlayerUI2::OnSizeRedraw(int cx, int cy, bool narrow_mode)
 	}
 }
 
-CRect CPlayerUI2::GetThumbnailClipArea(bool narrow_mode)
+CRect CPlayerUI2::GetThumbnailClipArea()
 {
 	CRect clip_area_rect;
-	if (!narrow_mode)
+	if (!m_ui_data.m_narrow_mode)
 	{
 		clip_area_rect = m_draw_data.cover_rect;
 		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20));

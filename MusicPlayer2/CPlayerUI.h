@@ -17,15 +17,15 @@ public:
 	~CPlayerUI();
 
 	virtual void Init(CDC* pDC) override;
-	virtual void DrawInfo(bool narrow_mode, bool reset = false) override;		//绘制信息
+	virtual void DrawInfo(bool reset = false) override;		//绘制信息
 
-	virtual void RButtonUp(CPoint point, bool narrow_mode) override;
+	virtual void RButtonUp(CPoint point) override;
 	virtual void MouseMove(CPoint point) override;
 	virtual void LButtonUp(CPoint point) override;
-	virtual void OnSizeRedraw(int cx, int cy, bool narrow_mode) override;
+	virtual void OnSizeRedraw(int cx, int cy) override;
 
 
-	virtual CRect GetThumbnailClipArea(bool narrow_mode) override;
+	virtual CRect GetThumbnailClipArea() override;
 
 protected:
 	void DrawLyricsSingleLine(CRect lyric_rect);			//绘制歌词（窄界面模式下单行显示），参数为显示歌词的矩形区域
