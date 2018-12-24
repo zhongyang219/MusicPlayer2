@@ -46,8 +46,6 @@ protected:
 	CMenu m_menu;
 	CMenu& m_popup_menu;		//播放列表右键菜单
 
-	CString m_song_tip_info;
-
 	CMiniModeUI::SMiniModeUIData m_ui_data;
 	CMiniModeUI m_ui{ m_ui_data, this };
 
@@ -91,4 +89,5 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnShowPlayList();
+	afx_msg void OnMouseLeave();
 };

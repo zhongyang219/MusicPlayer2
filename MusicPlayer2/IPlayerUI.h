@@ -8,6 +8,7 @@ public:
 	{
 		CRect rect;				//按钮的矩形区域
 		bool hover{ false };	//鼠标是否指向按钮
+		bool last_hover{ false };
 		bool enable{ true };	//按钮是否启用
 	};
 

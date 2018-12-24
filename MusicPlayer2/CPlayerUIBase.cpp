@@ -90,25 +90,19 @@ void CPlayerUIBase::MouseMove(CPoint point)
 	m_setting_btn.hover = (m_setting_btn.rect.PtInRect(point) != FALSE);
 
 	//显示循环模式的鼠标提示
-	static bool last_repetemode_hover{ false };
-	AddMouseToolTip(m_repetemode_btn, m_repeat_mode_tip, &last_repetemode_hover);
+	AddMouseToolTip(m_repetemode_btn, m_repeat_mode_tip);
 
 	//显示歌词翻译的鼠标提示
-	static bool last_translate_hover{ false };
-	AddMouseToolTip(m_translate_btn, _T("显示歌词翻译"), &last_translate_hover);
+	AddMouseToolTip(m_translate_btn, _T("显示歌词翻译"));
 
 	//显示音量的鼠标提示
-	static bool last_volume_hover{ false };
-	AddMouseToolTip(m_volume_btn, _T("鼠标滚轮调整音量"), &last_volume_hover);
+	AddMouseToolTip(m_volume_btn, _T("鼠标滚轮调整音量"));
 
-	static bool last_skin_hover{ false };
-	AddMouseToolTip(m_skin_btn, _T("切换界面"), &last_skin_hover);
+	AddMouseToolTip(m_skin_btn, _T("切换界面"));
 
-	static bool last_eq_hover{ false };
-	AddMouseToolTip(m_eq_btn, _T("音效设定"), &last_eq_hover);
+	AddMouseToolTip(m_eq_btn, _T("音效设定"));
 
-	static bool last_setting_hover{ false };
-	AddMouseToolTip(m_setting_btn, _T("设置"), &last_setting_hover);
+	AddMouseToolTip(m_setting_btn, _T("设置"));
 }
 
 void CPlayerUIBase::LButtonUp(CPoint point)
@@ -490,20 +484,20 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 
 }
 
-void CPlayerUIBase::AddMouseToolTip(const UIButton & btn, LPCTSTR str, bool* last_hover)
+void CPlayerUIBase::AddMouseToolTip(UIButton & btn, LPCTSTR str)
 {
-	if (!*last_hover && btn.hover)
+	if (!btn.last_hover && btn.hover)
 	{
 		m_tool_tip->AddTool(theApp.m_pMainWnd, str);
 		m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
 		m_tool_tip->Pop();
 	}
-	if (*last_hover && !btn.hover)
+	if (btn.last_hover && !btn.hover)
 	{
 		m_tool_tip->AddTool(theApp.m_pMainWnd, _T(""));
 		m_tool_tip->Pop();
 	}
-	*last_hover = btn.hover;
+	btn.last_hover = btn.hover;
 
 }
 

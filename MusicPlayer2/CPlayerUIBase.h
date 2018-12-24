@@ -71,7 +71,7 @@ protected:
 	void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
 	void DrawVolumnAdjBtn(bool draw_background);
 
-	void AddMouseToolTip(const UIButton& btn, LPCTSTR str, bool* static_bool);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
+	void AddMouseToolTip(UIButton& btn, LPCTSTR str);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
 
 	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);

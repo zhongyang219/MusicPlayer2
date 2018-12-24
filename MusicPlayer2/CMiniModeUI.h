@@ -33,6 +33,7 @@ public:
 
 		CImage* pDefaultBackground = nullptr;			//默认的背景
 		DisplayFormat* pDisplayFormat = nullptr;
+		CString m_song_tip_info;
 
 		void Init()
 		{
@@ -56,6 +57,7 @@ public:
 	virtual void RButtonUp(CPoint point) override;
 	virtual void MouseMove(CPoint point) override;
 	virtual void LButtonUp(CPoint point) override;
+	void MouseLeave();
 	virtual void OnSizeRedraw(int cx, int cy) override;
 
 	virtual CRect GetThumbnailClipArea() override;
@@ -63,7 +65,7 @@ public:
 private:
 	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
 	void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool draw_background);
-	void AddMouseToolTip(const UIButton& btn, LPCTSTR str, bool* static_bool);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
+	void AddMouseToolTip(UIButton& btn, LPCTSTR str);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
 
 private:
 	SMiniModeUIData& m_ui_data;
@@ -73,11 +75,17 @@ private:
 	UIColors m_colors;
 	CToolTipCtrl* m_tool_tip = nullptr;
 
-	UIButton m_previous_btn;
-	UIButton m_play_pause_btn;
-	UIButton m_next_btn;
-	UIButton m_playlist_btn;
-	UIButton m_return_btn;
-	UIButton m_close_btn;
+	enum BtnKey		//标识按钮的类型
+	{
+		BTN_PREVIOUS,
+		BTN_PLAY_PAUSE,
+		BTN_NEXT,
+		BTN_PLAYLIST,
+		BTN_RETURN,
+		BTN_CLOSE,
+		BTN_COVER
+	};
+
+	std::map<BtnKey, UIButton> m_buttons;
 };
 

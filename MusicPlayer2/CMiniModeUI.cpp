@@ -20,13 +20,12 @@ void CMiniModeUI::SetToolTip(CToolTipCtrl * pToolTip)
 
 bool CMiniModeUI::PointInControlArea(CPoint point) const
 {
-	return (m_previous_btn.rect.PtInRect(point)
-		|| m_play_pause_btn.rect.PtInRect(point)
-		|| m_next_btn.rect.PtInRect(point)
-		|| m_playlist_btn.rect.PtInRect(point)
-		|| m_return_btn.rect.PtInRect(point)
-		|| m_close_btn.rect.PtInRect(point)
-		);
+	bool point_in_control = false;
+	for (const auto& btn : m_buttons)
+	{
+		point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
+	}
+	return point_in_control;
 }
 
 void CMiniModeUI::Init(CDC * pDC)
@@ -120,22 +119,23 @@ void CMiniModeUI::DrawInfo(bool reset)
 		cover_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 		m_draw.DrawIcon(theApp.m_default_cover.GetIcon(), cover_rect.TopLeft(), cover_rect.Size());
 	}
+	m_buttons[BTN_COVER].rect = cover_rect;
 
 	//绘制播放控制按钮
 	CRect rc_tmp;
 	rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
 	rc_tmp.right = rc_tmp.left + theApp.DPI(27);
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(22);
-	DrawUIButton(rc_tmp, m_previous_btn, theApp.m_previous_icon.GetIcon(), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_previous_icon.GetIcon(), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
 	if(theApp.m_player.IsPlaying())
-		DrawUIButton(rc_tmp, m_play_pause_btn, theApp.m_pause_icon.GetIcon(), draw_background);
+		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_pause_icon.GetIcon(), draw_background);
 	else
-		DrawUIButton(rc_tmp, m_play_pause_btn, theApp.m_play_icon.GetIcon(), draw_background);
+		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_play_icon.GetIcon(), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-	DrawUIButton(rc_tmp, m_next_btn, theApp.m_next_icon.GetIcon(), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_next_icon.GetIcon(), draw_background);
 
 
 	//绘制频谱分析
@@ -212,13 +212,13 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.left = rc_tmp.right - theApp.DPI(20);;
 	rc_tmp.top = m_ui_data.margin;
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(20);
-	DrawTextButton(rc_tmp, m_close_btn, _T("╳"), draw_background);
+	DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("╳"), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-	DrawTextButton(rc_tmp, m_return_btn, _T("□"), draw_background);
+	DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("□"), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-	DrawTextButton(rc_tmp, m_playlist_btn, _T("≡"), draw_background);
+	DrawTextButton(rc_tmp, m_buttons[BTN_PLAYLIST], _T("≡"), draw_background);
 
 	//绘制显示文本信息
 	rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));
@@ -261,62 +261,90 @@ void CMiniModeUI::RButtonUp(CPoint point)
 
 void CMiniModeUI::MouseMove(CPoint point)
 {
-	m_previous_btn.hover = (m_previous_btn.rect.PtInRect(point) != FALSE);
-	m_play_pause_btn.hover = (m_play_pause_btn.rect.PtInRect(point) != FALSE);
-	m_next_btn.hover = (m_next_btn.rect.PtInRect(point) != FALSE);
-	m_playlist_btn.hover = (m_playlist_btn.rect.PtInRect(point) != FALSE);
-	m_return_btn.hover = (m_return_btn.rect.PtInRect(point) != FALSE);
-	m_close_btn.hover = (m_close_btn.rect.PtInRect(point) != FALSE);
+	for(auto& btn : m_buttons)
+	{
+		btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
+	}
 
-	static bool last_previous_hover{ false };
-	AddMouseToolTip(m_previous_btn, _T("上一曲"), &last_previous_hover);
+	for (auto& btn : m_buttons)
+	{
+		CString tip_info;
+		switch (btn.first)
+		{
+		case BTN_PREVIOUS:
+			tip_info = _T("上一曲");
+			break;
+		case BTN_PLAY_PAUSE:
+			tip_info = (theApp.m_player.IsPlaying() ? _T("暂停") : _T("播放"));
+			break;
+		case BTN_NEXT:
+			tip_info = _T("下一曲");
+			break;
+		case BTN_PLAYLIST:
+			tip_info = _T("显示/隐藏播放列表");
+			break;
+		case BTN_RETURN:
+			tip_info = _T("返回正常模式");
+			break;
+		case BTN_CLOSE:
+			tip_info = _T("退出程序");
+			break;
+		case BTN_COVER:
+			tip_info = m_ui_data.m_song_tip_info;
+			break;
+		}
+		AddMouseToolTip(btn.second, tip_info);
+	}
 
-	static bool last_paly_pause_hover{ false };
-	AddMouseToolTip(m_play_pause_btn, (theApp.m_player.IsPlaying() ? _T("暂停") : _T("播放")), &last_paly_pause_hover);
+	TRACKMOUSEEVENT tme;
+	tme.cbSize = sizeof(tme);
+	tme.hwndTrack = m_pMiniModeWnd->GetSafeHwnd();
+	tme.dwFlags = TME_LEAVE | TME_HOVER;
+	tme.dwHoverTime = 1;
+	_TrackMouseEvent(&tme);
 
-	static bool last_next_hover{ false };
-	AddMouseToolTip(m_next_btn, _T("下一曲"), &last_next_hover);
-
-	static bool last_playlist_hover{ false };
-	AddMouseToolTip(m_playlist_btn, _T("显示/隐藏播放列表"), &last_playlist_hover);
-
-	static bool last_paly_return_hover{ false };
-	AddMouseToolTip(m_return_btn, _T("返回正常模式"), &last_paly_return_hover);
-
-	static bool last_close_hover{ false };
-	AddMouseToolTip(m_close_btn, _T("退出程序"), &last_close_hover);
 }
 
 void CMiniModeUI::LButtonUp(CPoint point)
 {
-	if (m_previous_btn.rect.PtInRect(point))
+	for (auto& btn : m_buttons)
 	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PREVIOUS);
-	}
+		if (btn.second.rect.PtInRect(point))
+		{
+			switch (btn.first)
+			{
+			case BTN_PREVIOUS:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PREVIOUS);
+				break;
+			case BTN_PLAY_PAUSE:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
+				break;
+			case BTN_NEXT:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
+				break;
+			case BTN_PLAYLIST:
+				m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
+				break;
+			case BTN_RETURN:
+				m_buttons[BTN_RETURN].hover = false;
+				m_pMiniModeWnd->SendMessage(WM_COMMAND, IDOK);
+				break;
+			case BTN_CLOSE:
+				m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+				break;
+			default:
+				break;
+			}
 
-	if (m_play_pause_btn.rect.PtInRect(point))
-	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
+		}
 	}
+}
 
-	if (m_next_btn.rect.PtInRect(point))
+void CMiniModeUI::MouseLeave()
+{
+	for (auto& btn : m_buttons)
 	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
-	}
-
-	if (m_playlist_btn.rect.PtInRect(point))
-	{
-		m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
-	}
-
-	if (m_return_btn.rect.PtInRect(point))
-	{
-		m_pMiniModeWnd->SendMessage(WM_COMMAND, IDOK);
-	}
-
-	if (m_close_btn.rect.PtInRect(point))
-	{
-		m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+		btn.second.hover = false;
 	}
 }
 
@@ -372,18 +400,18 @@ void CMiniModeUI::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, bool 
 	m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
 }
 
-void CMiniModeUI::AddMouseToolTip(const UIButton & btn, LPCTSTR str, bool * last_hover)
+void CMiniModeUI::AddMouseToolTip(UIButton& btn, LPCTSTR str)
 {
-	if (!*last_hover && btn.hover)
+	if (!btn.last_hover && btn.hover)
 	{
 		m_tool_tip->AddTool(m_pMiniModeWnd, str);
 		m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
 		m_tool_tip->Pop();
 	}
-	if (*last_hover && !btn.hover)
+	if (btn.last_hover && !btn.hover)
 	{
 		m_tool_tip->AddTool(m_pMiniModeWnd, _T(""));
 		m_tool_tip->Pop();
 	}
-	*last_hover = btn.hover;
+	btn.last_hover = btn.hover;
 }

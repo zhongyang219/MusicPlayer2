@@ -68,19 +68,19 @@ void CMiniModeDlg::CheckWindowPos()
 
 void CMiniModeDlg::UpdateSongTipInfo()
 {
-	m_song_tip_info = _T("");
-	m_song_tip_info += _T("当前播放：");
-	m_song_tip_info += theApp.m_player.GetFileName().c_str();
-	m_song_tip_info += _T("\r\n");
-	m_song_tip_info += _T("标题：");
-	m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].title.c_str();
-	m_song_tip_info += _T("\r\n");
-	m_song_tip_info += _T("艺术家：");
-	m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].artist.c_str();
-	m_song_tip_info += _T("\r\n");
-	m_song_tip_info += _T("唱片集：");
-	m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album.c_str();
-	m_song_tip_info += _T("\r\n");
+	m_ui_data.m_song_tip_info = _T("");
+	m_ui_data.m_song_tip_info += _T("当前播放：");
+	m_ui_data.m_song_tip_info += theApp.m_player.GetFileName().c_str();
+	m_ui_data.m_song_tip_info += _T("\r\n");
+	m_ui_data.m_song_tip_info += _T("标题：");
+	m_ui_data.m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].title.c_str();
+	m_ui_data.m_song_tip_info += _T("\r\n");
+	m_ui_data.m_song_tip_info += _T("艺术家：");
+	m_ui_data.m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].artist.c_str();
+	m_ui_data.m_song_tip_info += _T("\r\n");
+	m_ui_data.m_song_tip_info += _T("唱片集：");
+	m_ui_data.m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album.c_str();
+	m_ui_data.m_song_tip_info += _T("\r\n");
 }
 
 
@@ -101,6 +101,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
 	ON_COMMAND(ID_SHOW_PLAY_LIST, &CMiniModeDlg::OnShowPlayList)
+	ON_WM_MOUSELEAVE()
 END_MESSAGE_MAP()
 
 
@@ -148,7 +149,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_Mytip.SetMaxTipWidth(800);
 
 	UpdateSongTipInfo();
-	m_Mytip.AddTool(this, m_song_tip_info);
+	//m_Mytip.AddTool(this, m_ui_data.m_song_tip_info);
 	m_ui.SetToolTip(&m_Mytip);
 
 	//初始化窗口位置
@@ -495,4 +496,13 @@ void CMiniModeDlg::OnShowPlayList()
 		CheckWindowPos();
 		m_show_playlist = true;
 	}
+}
+
+
+void CMiniModeDlg::OnMouseLeave()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	m_ui.MouseLeave();
+
+	CDialogEx::OnMouseLeave();
 }
