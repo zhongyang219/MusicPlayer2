@@ -133,6 +133,7 @@ public:
 	IconRes m_skin_icon;
 	IconRes m_eq_icon;
 	IconRes m_setting_icon;
+	IconRes m_mini_icon;
 	IconRes m_play_oder_icon;
 	IconRes m_play_shuffle_icon;
 	IconRes m_loop_playlist_icon;

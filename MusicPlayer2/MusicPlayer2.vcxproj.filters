@@ -647,5 +647,11 @@
     <Image Include="res\随机播放_d.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\mini.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\mini_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

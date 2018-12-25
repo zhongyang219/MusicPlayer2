@@ -409,8 +409,8 @@ BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CMiniModeDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if(!m_ui.PointInControlArea(point))
-		OnOK();
+	//if(!m_ui.PointInControlArea(point))
+	//	OnOK();
 
 	CDialogEx::OnLButtonDblClk(nFlags, point);
 }

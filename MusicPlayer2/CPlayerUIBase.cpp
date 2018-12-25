@@ -88,21 +88,15 @@ void CPlayerUIBase::MouseMove(CPoint point)
 	m_translate_btn.hover = (m_translate_btn.rect.PtInRect(point) != FALSE);
 	m_eq_btn.hover = (m_eq_btn.rect.PtInRect(point) != FALSE);
 	m_setting_btn.hover = (m_setting_btn.rect.PtInRect(point) != FALSE);
+	m_mini_btn.hover = (m_mini_btn.rect.PtInRect(point) != FALSE);
 
-	//显示循环模式的鼠标提示
 	AddMouseToolTip(m_repetemode_btn, m_repeat_mode_tip);
-
-	//显示歌词翻译的鼠标提示
 	AddMouseToolTip(m_translate_btn, _T("显示歌词翻译"));
-
-	//显示音量的鼠标提示
 	AddMouseToolTip(m_volume_btn, _T("鼠标滚轮调整音量"));
-
 	AddMouseToolTip(m_skin_btn, _T("切换界面"));
-
 	AddMouseToolTip(m_eq_btn, _T("音效设定"));
-
 	AddMouseToolTip(m_setting_btn, _T("设置"));
+	AddMouseToolTip(m_mini_btn, _T("迷你模式"));
 }
 
 void CPlayerUIBase::LButtonUp(CPoint point)
@@ -148,6 +142,12 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 	{
 		m_setting_btn.hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
+	}
+
+	if (m_mini_btn.rect.PtInRect(point))
+	{
+		m_mini_btn.hover = false;
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
 	}
 
 }
@@ -407,6 +407,10 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 	//绘制切换界面按钮
 	rc_tmp.MoveToX(rc_tmp.right);
 	DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+
+	//绘制迷你模式按钮
+	rc_tmp.MoveToX(rc_tmp.right);
+	DrawUIButton(rc_tmp, m_mini_btn, theApp.m_mini_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
 
 	//绘制翻译按钮
 	if (draw_translate_button && rect.Width()>=theApp.DPI(192))

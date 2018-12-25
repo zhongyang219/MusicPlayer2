@@ -105,6 +105,7 @@ protected:
 	UIButton m_translate_btn;				//歌词翻译按钮
 	UIButton m_skin_btn;					//切换界面按钮
 	UIButton m_eq_btn;						//音效设定按钮
-	UIButton m_setting_btn;
+	UIButton m_setting_btn;					//设置按钮
+	UIButton m_mini_btn;					//迷你模式按钮
 };
 

@@ -333,6 +333,8 @@
     <Image Include="res\eq.ico" />
     <Image Include="res\eq_d.ico" />
     <Image Include="res\Find.ico" />
+    <Image Include="res\mini.ico" />
+    <Image Include="res\mini_d.ico" />
     <Image Include="res\MusicPlayer2.ico" />
     <Image Include="res\Replace.ico" />
     <Image Include="res\ReplaceTag.ico" />

@@ -23,7 +23,8 @@ bool CMiniModeUI::PointInControlArea(CPoint point) const
 	bool point_in_control = false;
 	for (const auto& btn : m_buttons)
 	{
-		point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
+		if(btn.first!=BTN_COVER)
+			point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
 	}
 	return point_in_control;
 }
