@@ -59,6 +59,7 @@ public:
 	virtual void LButtonUp(CPoint point) override;
 	void MouseLeave();
 	virtual void OnSizeRedraw(int cx, int cy) override;
+	bool SetCursor();
 
 	virtual CRect GetThumbnailClipArea() override;
 
@@ -83,7 +84,8 @@ private:
 		BTN_PLAYLIST,
 		BTN_RETURN,
 		BTN_CLOSE,
-		BTN_COVER
+		BTN_COVER,
+		BTN_PROGRESS
 	};
 
 	std::map<BtnKey, UIButton> m_buttons;

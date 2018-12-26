@@ -1266,6 +1266,12 @@ void CPlayer::SeekTo(int position)
 	GetMidiPosition();
 }
 
+void CPlayer::SeekTo(double position)
+{
+	int pos = static_cast<int>(m_song_length_int*position);
+	SeekTo(pos);
+}
+
 void CPlayer::SeekTo(HSTREAM hStream, int position)
 {
 	double pos_sec = static_cast<double>(position) / 1000.0;

@@ -37,7 +37,6 @@ protected:
 	int m_screen_width;
 	int m_screen_height;
 	bool m_show_playlist{ false };		//是否显示播放列表
-	bool m_first_start{ true };
 
 	int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目
 	vector<int>& m_items_selected;
@@ -85,9 +84,10 @@ protected:
 	afx_msg void OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnPaint();
 public:
-	afx_msg void OnStnClickedMiniProgressStatic();
+	//afx_msg void OnStnClickedMiniProgressStatic();
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnShowPlayList();
 	afx_msg void OnMouseLeave();
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 };

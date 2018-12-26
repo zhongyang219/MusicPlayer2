@@ -218,6 +218,7 @@ public:
 	void RemoveSongs(vector<int> indexes);	//从播放列表中删除多个指定的项目
 	void ClearPlaylist();			//清空播放列表
 	void SeekTo(int position);		//定位到指定位置
+	void SeekTo(double position);	//定位到指定位置(范围0~1)
 	static void SeekTo(HSTREAM hStream, int position);
 	void ClearLyric();		//清除当前文件的歌词关联
 

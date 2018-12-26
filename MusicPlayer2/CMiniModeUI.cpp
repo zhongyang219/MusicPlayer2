@@ -203,8 +203,11 @@ void CMiniModeUI::DrawInfo(bool reset)
 	else
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum_back);
 
+	m_buttons[BTN_PROGRESS].rect = progress_rect;
+	m_buttons[BTN_PROGRESS].rect.InflateRect(0, theApp.DPI(2));
+
 	double progress = static_cast<double>(theApp.m_player.GetCurrentPosition()) / theApp.m_player.GetSongLength();
-	progress_rect.right = progress_rect.left + static_cast<int>(progress * cover_rect.Width());
+	progress_rect.right = progress_rect.left + static_cast<int>(progress * progress_rect.Width());
 	if (progress_rect.right > progress_rect.left)
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum);
 
@@ -335,6 +338,15 @@ void CMiniModeUI::LButtonUp(CPoint point)
 				break;
 			default:
 				break;
+			case BTN_COVER:
+				break;
+			case BTN_PROGRESS:
+			{
+				int ckick_pos = point.x - btn.second.rect.left;
+				double progress = static_cast<double>(ckick_pos) / btn.second.rect.Width();
+				theApp.m_player.SeekTo(progress);
+			}
+				break;
 			}
 
 		}
@@ -351,6 +363,16 @@ void CMiniModeUI::MouseLeave()
 
 void CMiniModeUI::OnSizeRedraw(int cx, int cy)
 {
+}
+
+bool CMiniModeUI::SetCursor()
+{
+	if (m_buttons[BTN_PROGRESS].hover)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(32649)));
+		return true;
+	}
+	return false;
 }
 
 CRect CMiniModeUI::GetThumbnailClipArea()

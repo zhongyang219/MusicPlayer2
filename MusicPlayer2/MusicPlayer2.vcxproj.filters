@@ -168,6 +168,12 @@
     <Filter Include="头文件和源文件\派生的控件类\CTabCtrlEx">
       <UniqueIdentifier>{5729a1de-50e9-4b2e-9ef2-b3dad008995f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="资源文件\Icons">
+      <UniqueIdentifier>{7f3aec29-356a-4ac1-8ad9-15b85ce141f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件\其他">
+      <UniqueIdentifier>{b15ef7d8-56db-471d-9986-4ca1ba98375a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -545,113 +551,113 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\MusicPlayer2.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\播放_暂停.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\上一曲.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\下一曲.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\播放.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\暂停.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\停止.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\default_cover.bmp">
-      <Filter>资源文件</Filter>
+    <Image Include="res\AddTag.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\Cortana_black.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\Cortana_white.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\toolbar1.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\AddTag.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\ReplaceTag.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\DeleteTag.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\Save.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\Find.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\Replace.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\快进.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\快退.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\default_cover.bmp">
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\default_cover_new.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\skn.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\DeleteTag.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\eq.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\setting.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\单曲循环.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\列表循环.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\顺序播放.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\随机播放.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\skn_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\eq_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\setting_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\单曲循环_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\列表循环_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\顺序播放_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\随机播放_d.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\Find.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\mini.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\mini_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\MusicPlayer2.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\Replace.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\ReplaceTag.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\Save.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\setting.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\setting_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\skn.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\skn_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\播放.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\播放_暂停.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\单曲循环.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\单曲循环_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\快进.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\快退.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\列表循环.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\列表循环_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\上一曲.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\顺序播放.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\顺序播放_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\随机播放.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\随机播放_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\停止.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\下一曲.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\暂停.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\toolbar1.bmp">
+      <Filter>资源文件\其他</Filter>
     </Image>
   </ItemGroup>
 </Project>

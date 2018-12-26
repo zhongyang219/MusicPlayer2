@@ -97,11 +97,12 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST2, &CMiniModeDlg::OnNMDblclkList2)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST2, &CMiniModeDlg::OnNMRClickList2)
 	ON_WM_PAINT()
-	ON_STN_CLICKED(IDC_MINI_PROGRESS_STATIC, &CMiniModeDlg::OnStnClickedMiniProgressStatic)
+	//ON_STN_CLICKED(IDC_MINI_PROGRESS_STATIC, &CMiniModeDlg::OnStnClickedMiniProgressStatic)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
 	ON_COMMAND(ID_SHOW_PLAY_LIST, &CMiniModeDlg::OnShowPlayList)
 	ON_WM_MOUSELEAVE()
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 
@@ -174,12 +175,11 @@ BOOL CMiniModeDlg::OnInitDialog()
 
 	//设置定时器
 	SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
-	SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//设置用于频谱分析的定时器
+	SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//设置用于界面刷新的定时器
 
 	//显示播放列表
 	ShowPlaylist();
 
-	m_first_start = true;
 	m_show_playlist = false;
 	m_ui_data.m_show_volume = false;
 
@@ -454,13 +454,13 @@ void CMiniModeDlg::OnPaint()
 }
 
 
-void CMiniModeDlg::OnStnClickedMiniProgressStatic()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//int pos = m_progress_bar.GetPos();
-	//int song_pos = static_cast<__int64>(pos) * theApp.m_player.GetSongLength() / 1000;
-	//theApp.m_player.SeekTo(song_pos);
-}
+//void CMiniModeDlg::OnStnClickedMiniProgressStatic()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	//int pos = m_progress_bar.GetPos();
+//	//int song_pos = static_cast<__int64>(pos) * theApp.m_player.GetSongLength() / 1000;
+//	//theApp.m_player.SeekTo(song_pos);
+//}
 
 
 void CMiniModeDlg::OnMouseMove(UINT nFlags, CPoint point)
@@ -505,4 +505,14 @@ void CMiniModeDlg::OnMouseLeave()
 	m_ui.MouseLeave();
 
 	CDialogEx::OnMouseLeave();
+}
+
+
+BOOL CMiniModeDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (m_ui.SetCursor())
+		return TRUE;
+	else	
+		return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
 }
