@@ -63,6 +63,7 @@ public:
 	virtual void OnSizeRedraw(int cx, int cy) override = 0;
 
 	virtual CRect GetThumbnailClipArea() override = 0;
+	void UpdateRepeatModeToolTip();
 
 protected:
 	enum BtnKey		//标识按钮的类型
@@ -84,8 +85,8 @@ protected:
 	void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
 	void DrawVolumnAdjBtn(bool draw_background);
 
-	void AddMouseToolTip(BtnKey btn, LPCTSTR str);		//为一个按钮添加鼠标提示
-	void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
+	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
+	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
 
 	void AddToolTips();			//为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 

@@ -57,13 +57,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
 	{
 		theApp.m_player.SetRepeatMode();
-
-		SetRepeatModeToolTipText();
-		////m_tool_tip->UpdateTipText(m_repeat_mode_tip, theApp.m_pMainWnd);
-		//m_tool_tip->AddTool(theApp.m_pMainWnd, m_repeat_mode_tip);
-		//m_tool_tip->Pop();
-		UpdateMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
-
+		UpdateRepeatModeToolTip();
 	}
 
 	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
@@ -108,6 +102,12 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
 void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 {
+}
+
+void CPlayerUIBase::UpdateRepeatModeToolTip()
+{
+	SetRepeatModeToolTipText();
+	UpdateMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
 }
 
 void CPlayerUIBase::PreDrawInfo()
@@ -612,15 +612,15 @@ void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
 	}
 }
 
-void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
-{
-	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
-}
-
-void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
-{
-	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1);
-}
+//void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
+//{
+//	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
+//}
+//
+//void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+//{
+//	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1);
+//}
 
 void CPlayerUIBase::AddToolTips()
 {

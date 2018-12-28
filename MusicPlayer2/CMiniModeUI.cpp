@@ -377,7 +377,7 @@ void CMiniModeUI::UpdateSongInfoTip(LPCTSTR str_tip)
 	UpdateMouseToolTip(BTN_COVER, str_tip);
 }
 
-void CMiniModeUI::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool draw_background)
+void CMiniModeUI::DrawUIButton(CRect rect, IPlayerUI::UIButton & btn, HICON icon, bool draw_background)
 {
 	CRect rc_tmp = rect;
 	m_draw.SetDrawArea(rc_tmp);
@@ -402,7 +402,7 @@ void CMiniModeUI::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool draw
 	m_draw.DrawIcon(icon, rc_tmp.TopLeft(), rc_tmp.Size());
 }
 
-void CMiniModeUI::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, bool draw_background)
+void CMiniModeUI::DrawTextButton(CRect rect, IPlayerUI::UIButton & btn, LPCTSTR text, bool draw_background)
 {
 	m_draw.SetDrawArea(rect);
 

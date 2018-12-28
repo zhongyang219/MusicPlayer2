@@ -3,8 +3,7 @@
 #include "MusicPlayer2.h"
 
 
-class CMiniModeUI :
-	public IPlayerUI
+class CMiniModeUI /*:	public IPlayerUI*/
 {
 public:
 	struct UIColors		//界面颜色
@@ -50,17 +49,17 @@ public:
 	void SetToolTip(CToolTipCtrl* pToolTip);
 	bool PointInControlArea(CPoint point) const;		//判断一个点的位置是否在控件区域
 
-	virtual void Init(CDC* pDC) override;
-	virtual void DrawInfo(bool reset = false) override;
+	virtual void Init(CDC* pDC);
+	virtual void DrawInfo(bool reset = false);
 
-	virtual void RButtonUp(CPoint point) override;
-	virtual void MouseMove(CPoint point) override;
-	virtual void LButtonUp(CPoint point) override;
+	virtual void RButtonUp(CPoint point);
+	virtual void MouseMove(CPoint point);
+	virtual void LButtonUp(CPoint point);
 	void MouseLeave();
-	virtual void OnSizeRedraw(int cx, int cy) override;
+	virtual void OnSizeRedraw(int cx, int cy);
 	bool SetCursor();
 
-	virtual CRect GetThumbnailClipArea() override;
+	virtual CRect GetThumbnailClipArea();
 
 	void UpdateSongInfoTip(LPCTSTR str_tip);
 
@@ -78,8 +77,8 @@ private:
 	};
 
 private:
-	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
-	void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool draw_background);
+	void DrawUIButton(CRect rect, IPlayerUI::UIButton& btn, HICON icon, bool draw_background);
+	void DrawTextButton(CRect rect, IPlayerUI::UIButton& btn, LPCTSTR text, bool draw_background);
 	void AddMouseToolTip(BtnKey btn, LPCTSTR str);		//为一个按钮添加鼠标提示
 	void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
 
@@ -95,6 +94,6 @@ private:
 
 	bool m_first_draw{ true };
 
-	std::map<BtnKey, UIButton> m_buttons;
+	std::map<BtnKey, IPlayerUI::UIButton> m_buttons;
 };
 

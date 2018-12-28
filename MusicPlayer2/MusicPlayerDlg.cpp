@@ -1523,6 +1523,8 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			if (pMsg->wParam == 'M')	//按M键设置循环模式
 			{
 				theApp.m_player.SetRepeatMode();
+				m_ui.UpdateRepeatModeToolTip();
+				m_ui2.UpdateRepeatModeToolTip();
 				return TRUE;
 			}
 			if (pMsg->wParam == 'F')	//按F键快速查找
@@ -1801,6 +1803,8 @@ void CMusicPlayerDlg::OnPlayOrder()
 {
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_player.SetRepeatMode(RM_PLAY_ORDER);		//设置顺序播放
+	m_ui.UpdateRepeatModeToolTip();
+	m_ui2.UpdateRepeatModeToolTip();
 }
 
 
@@ -1808,6 +1812,8 @@ void CMusicPlayerDlg::OnPlayShuffle()
 {
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_player.SetRepeatMode(RM_PLAY_SHUFFLE);		//设置随机播放
+	m_ui.UpdateRepeatModeToolTip();
+	m_ui2.UpdateRepeatModeToolTip();
 }
 
 
@@ -1815,6 +1821,8 @@ void CMusicPlayerDlg::OnLoopPlaylist()
 {
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_player.SetRepeatMode(RM_LOOP_PLAYLIST);		//设置列表循环
+	m_ui.UpdateRepeatModeToolTip();
+	m_ui2.UpdateRepeatModeToolTip();
 }
 
 
@@ -1822,6 +1830,8 @@ void CMusicPlayerDlg::OnLoopTrack()
 {
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_player.SetRepeatMode(RM_LOOP_TRACK);		//设置单曲循环
+	m_ui.UpdateRepeatModeToolTip();
+	m_ui2.UpdateRepeatModeToolTip();
 }
 
 
@@ -2995,4 +3005,6 @@ void CMusicPlayerDlg::OnSwitchUi()
 
 	DrawInfo(true);
 	SetThumbnailClipArea();
+	m_ui.UpdateRepeatModeToolTip();
+	m_ui2.UpdateRepeatModeToolTip();
 }

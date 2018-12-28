@@ -447,3 +447,13 @@ CRect CPlayerUI2::GetThumbnailClipArea()
 	}
 	return clip_area_rect;
 }
+
+void CPlayerUI2::AddMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 2000);
+}
+
+void CPlayerUI2::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 2000);
+}
