@@ -68,19 +68,20 @@ void CMiniModeDlg::CheckWindowPos()
 
 void CMiniModeDlg::UpdateSongTipInfo()
 {
-	m_ui_data.m_song_tip_info = _T("");
-	m_ui_data.m_song_tip_info += _T("当前播放：");
-	m_ui_data.m_song_tip_info += theApp.m_player.GetFileName().c_str();
-	m_ui_data.m_song_tip_info += _T("\r\n");
-	m_ui_data.m_song_tip_info += _T("标题：");
-	m_ui_data.m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].title.c_str();
-	m_ui_data.m_song_tip_info += _T("\r\n");
-	m_ui_data.m_song_tip_info += _T("艺术家：");
-	m_ui_data.m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].artist.c_str();
-	m_ui_data.m_song_tip_info += _T("\r\n");
-	m_ui_data.m_song_tip_info += _T("唱片集：");
-	m_ui_data.m_song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album.c_str();
-	m_ui_data.m_song_tip_info += _T("\r\n");
+	CString song_tip_info;
+	song_tip_info += _T("当前播放：");
+	song_tip_info += theApp.m_player.GetFileName().c_str();
+	song_tip_info += _T("\r\n");
+	song_tip_info += _T("标题：");
+	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].title.c_str();
+	song_tip_info += _T("\r\n");
+	song_tip_info += _T("艺术家：");
+	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].artist.c_str();
+	song_tip_info += _T("\r\n");
+	song_tip_info += _T("唱片集：");
+	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album.c_str();
+	song_tip_info += _T("\r\n");
+	m_ui.UpdateSongInfoTip(song_tip_info);
 }
 
 
@@ -149,9 +150,8 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
 	m_Mytip.SetMaxTipWidth(800);
 
-	UpdateSongTipInfo();
-	//m_Mytip.AddTool(this, m_ui_data.m_song_tip_info);
 	m_ui.SetToolTip(&m_Mytip);
+	UpdateSongTipInfo();
 
 	//初始化窗口位置
 	if (m_position_x != -1 && m_position_y != -1)

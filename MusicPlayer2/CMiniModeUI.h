@@ -33,7 +33,6 @@ public:
 
 		CImage* pDefaultBackground = nullptr;			//默认的背景
 		DisplayFormat* pDisplayFormat = nullptr;
-		CString m_song_tip_info;
 
 		void Init()
 		{
@@ -63,19 +62,9 @@ public:
 
 	virtual CRect GetThumbnailClipArea() override;
 
-private:
-	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
-	void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool draw_background);
-	void AddMouseToolTip(UIButton& btn, LPCTSTR str);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
+	void UpdateSongInfoTip(LPCTSTR str_tip);
 
 private:
-	SMiniModeUIData& m_ui_data;
-	CWnd* m_pMiniModeWnd = nullptr;
-	CDC* m_pDC;
-	CDrawCommon m_draw;
-	UIColors m_colors;
-	CToolTipCtrl* m_tool_tip = nullptr;
-
 	enum BtnKey		//标识按钮的类型
 	{
 		BTN_PREVIOUS,
@@ -87,6 +76,24 @@ private:
 		BTN_COVER,
 		BTN_PROGRESS
 	};
+
+private:
+	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
+	void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool draw_background);
+	void AddMouseToolTip(BtnKey btn, LPCTSTR str);		//为一个按钮添加鼠标提示
+	void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
+
+	void AddToolTips();
+
+private:
+	SMiniModeUIData& m_ui_data;
+	CWnd* m_pMiniModeWnd = nullptr;
+	CDC* m_pDC;
+	CDrawCommon m_draw;
+	UIColors m_colors;
+	CToolTipCtrl* m_tool_tip = nullptr;
+
+	bool m_first_draw{ true };
 
 	std::map<BtnKey, UIButton> m_buttons;
 };

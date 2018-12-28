@@ -33,6 +33,7 @@ void CMiniModeUI::Init(CDC * pDC)
 {
 	m_pDC = pDC;
 	m_draw.Create(m_pDC, theApp.m_pMainWnd);
+	m_first_draw = true;
 }
 
 void CMiniModeUI::DrawInfo(bool reset)
@@ -257,6 +258,12 @@ void CMiniModeUI::DrawInfo(bool reset)
 	MemDC.SelectObject(pOldBit);
 	MemBitmap.DeleteObject();
 	MemDC.DeleteDC();
+
+	if (m_first_draw)
+	{
+		AddToolTips();
+	}
+	m_first_draw = false;
 }
 
 void CMiniModeUI::RButtonUp(CPoint point)
@@ -270,34 +277,19 @@ void CMiniModeUI::MouseMove(CPoint point)
 		btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
 	}
 
-	for (auto& btn : m_buttons)
+
+	//鼠标指向进度条时显示定位到几分几秒
+	__int64 song_pos;
+	song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * theApp.m_player.GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
+	Time song_pos_time;
+	song_pos_time.int2time(static_cast<int>(song_pos));
+	CString str;
+	static int last_sec{};
+	if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
 	{
-		CString tip_info;
-		switch (btn.first)
-		{
-		case BTN_PREVIOUS:
-			tip_info = _T("上一曲");
-			break;
-		case BTN_PLAY_PAUSE:
-			tip_info = (theApp.m_player.IsPlaying() ? _T("暂停") : _T("播放"));
-			break;
-		case BTN_NEXT:
-			tip_info = _T("下一曲");
-			break;
-		case BTN_PLAYLIST:
-			tip_info = _T("显示/隐藏播放列表");
-			break;
-		case BTN_RETURN:
-			tip_info = _T("返回正常模式");
-			break;
-		case BTN_CLOSE:
-			tip_info = _T("退出程序");
-			break;
-		case BTN_COVER:
-			tip_info = m_ui_data.m_song_tip_info;
-			break;
-		}
-		AddMouseToolTip(btn.second, tip_info);
+		str.Format(_T("定位到%d分%.2d秒"), song_pos_time.min, song_pos_time.sec);
+		UpdateMouseToolTip(BTN_PROGRESS, str);
+		last_sec = song_pos_time.sec;
 	}
 
 	TRACKMOUSEEVENT tme;
@@ -380,6 +372,11 @@ CRect CMiniModeUI::GetThumbnailClipArea()
 	return CRect();
 }
 
+void CMiniModeUI::UpdateSongInfoTip(LPCTSTR str_tip)
+{
+	UpdateMouseToolTip(BTN_COVER, str_tip);
+}
+
 void CMiniModeUI::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool draw_background)
 {
 	CRect rc_tmp = rect;
@@ -423,18 +420,27 @@ void CMiniModeUI::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, bool 
 	m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
 }
 
-void CMiniModeUI::AddMouseToolTip(UIButton& btn, LPCTSTR str)
+void CMiniModeUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-	if (!btn.last_hover && btn.hover)
-	{
-		m_tool_tip->AddTool(m_pMiniModeWnd, str);
-		m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
-		m_tool_tip->Pop();
-	}
-	if (btn.last_hover && !btn.hover)
-	{
-		m_tool_tip->AddTool(m_pMiniModeWnd, _T(""));
-		m_tool_tip->Pop();
-	}
-	btn.last_hover = btn.hover;
+	m_tool_tip->AddTool(m_pMiniModeWnd, str, m_buttons[btn].rect, btn + 1);
+}
+
+void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+	//if (m_buttons[btn].hover)
+	//{
+		m_tool_tip->UpdateTipText(str, m_pMiniModeWnd, btn + 1);
+	//}
+}
+
+void CMiniModeUI::AddToolTips()
+{
+	AddMouseToolTip(BTN_PREVIOUS, _T("上一曲"));
+	AddMouseToolTip(BTN_PLAY_PAUSE, theApp.m_player.IsPlaying() ? _T("暂停") : _T("播放"));
+	AddMouseToolTip(BTN_NEXT, _T("下一曲"));
+	AddMouseToolTip(BTN_PLAYLIST, _T("显示/隐藏播放列表"));
+	AddMouseToolTip(BTN_RETURN, _T("返回正常模式"));
+	AddMouseToolTip(BTN_CLOSE, _T("退出程序"));
+	AddMouseToolTip(BTN_COVER, _T(""));
+	AddMouseToolTip(BTN_PROGRESS, _T("定位到"));
 }
