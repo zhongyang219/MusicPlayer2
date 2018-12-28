@@ -1,13 +1,16 @@
 #include "stdafx.h"
 #include "ListCtrlEx.h"
+#include "MusicPlayer2.h"
 
 IMPLEMENT_DYNAMIC(CListCtrlEx, CListCtrl)
 
 CListCtrlEx::CListCtrlEx()
+	: m_theme_color(theApp.m_app_setting_data.theme_color)
 {
+	
 	//³õÊ¼»¯ÑÕÉ«
-	m_theme_color.original_color = GRAY(180);
-	CColorConvert::ConvertColor(m_theme_color);
+	//m_theme_color.original_color = GRAY(180);
+	//CColorConvert::ConvertColor(m_theme_color);
 }
 
 
@@ -16,12 +19,12 @@ CListCtrlEx::~CListCtrlEx()
 }
 
 
-void CListCtrlEx::SetColor(const ColorTable & colors)
-{
-	m_theme_color = colors;
-	if (m_hWnd != NULL)
-		Invalidate();
-}
+//void CListCtrlEx::SetColor(const ColorTable & colors)
+//{
+//	m_theme_color = colors;
+//	if (m_hWnd != NULL)
+//		Invalidate();
+//}
 
 void CListCtrlEx::GetItemSelected(vector<int>& item_selected) const
 {

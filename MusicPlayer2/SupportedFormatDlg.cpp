@@ -52,7 +52,7 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 	m_min_size.cy = rect.Height();
 
 	//初始化列表
-	m_format_list.SetColor(theApp.m_app_setting_data.theme_color);
+	//m_format_list.SetColor(theApp.m_app_setting_data.theme_color);
 	m_format_list.GetClientRect(rect);
 	int width0, width1, width2;
 	width0 = theApp.DPI(100);

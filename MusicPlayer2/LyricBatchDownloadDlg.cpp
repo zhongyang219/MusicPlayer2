@@ -94,7 +94,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 	LoadConfig();
 
 	//设置列表控件主题颜色
-	m_song_list_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
+	//m_song_list_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
 
 	//初始化控件的状态
 	m_skip_exist_check.SetCheck(m_skip_exist);

@@ -118,7 +118,7 @@ void CMiniModeDlg::ShowPlaylist()
 void CMiniModeDlg::SetPlayListColor()
 {
 	m_playlist_ctrl.SetHightItem(theApp.m_player.GetIndex());
-	m_playlist_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
+	//m_playlist_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
 	m_playlist_ctrl.EnsureVisible(theApp.m_player.GetIndex(), FALSE);
 }
 

@@ -275,7 +275,7 @@ BOOL CFindDlg::OnInitDialog()
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 
 	//设置主题颜色
-	m_find_result_list.SetColor(theApp.m_app_setting_data.theme_color);
+	//m_find_result_list.SetColor(theApp.m_app_setting_data.theme_color);
 
 	//设置查找选项复选按钮的状态
 	m_find_file_check.SetCheck(m_find_file);

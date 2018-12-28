@@ -147,7 +147,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	SetDlgItemText(IDC_ARTIST_EDIT1, m_artist.c_str());
 
 	//设置列表控件主题颜色
-	m_down_list_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
+	//m_down_list_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
 
 	//初始化搜索结果列表控件
 	CRect rect;
