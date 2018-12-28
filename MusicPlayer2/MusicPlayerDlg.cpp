@@ -547,6 +547,7 @@ void CMusicPlayerDlg::SetPlayListColor()
 {
 	m_playlist_list.SetHightItem(theApp.m_player.GetIndex());
 	//m_playlist_list.SetColor(theApp.m_app_setting_data.theme_color);
+	m_playlist_list.Invalidate(FALSE);
 	m_playlist_list.EnsureVisible(theApp.m_player.GetIndex(), FALSE);
 }
 
