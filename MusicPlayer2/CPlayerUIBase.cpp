@@ -21,6 +21,97 @@ void CPlayerUIBase::SetToolTip(CToolTipCtrl * pToolTip)
 
 void CPlayerUIBase::DrawInfo(bool reset)
 {
+	if (m_first_draw)
+	{
+		AddToolTips();
+	}
+	m_first_draw = false;
+}
+
+void CPlayerUIBase::RButtonUp(CPoint point)
+{
+	if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
+		m_show_volume_adj = false;
+
+	CPoint point1;		//定义一个用于确定光标位置的位置  
+	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
+	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
+	{
+		CMenu* pMenu = m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
+		if (pMenu != NULL)
+			pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
+
+}
+
+void CPlayerUIBase::MouseMove(CPoint point)
+{
+	for (auto& btn : m_buttons)
+	{
+		btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
+	}
+}
+
+void CPlayerUIBase::LButtonUp(CPoint point)
+{
+	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
+	{
+		theApp.m_player.SetRepeatMode();
+
+		SetRepeatModeToolTipText();
+		////m_tool_tip->UpdateTipText(m_repeat_mode_tip, theApp.m_pMainWnd);
+		//m_tool_tip->AddTool(theApp.m_pMainWnd, m_repeat_mode_tip);
+		//m_tool_tip->Pop();
+		UpdateMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
+
+	}
+
+	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
+		m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
+	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
+		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
+
+	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
+	{
+		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+	}
+	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
+	{
+		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+	}
+
+	if (m_buttons[BTN_SKIN].rect.PtInRect(point))
+	{
+		m_buttons[BTN_SKIN].hover = false;
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+	}
+
+	if (m_buttons[BTN_EQ].rect.PtInRect(point))
+	{
+		m_buttons[BTN_EQ].hover = false;
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
+	}
+
+	if (m_buttons[BTN_SETTING].rect.PtInRect(point))
+	{
+		m_buttons[BTN_SETTING].hover = false;
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
+	}
+
+	if (m_buttons[BTN_MINI].rect.PtInRect(point))
+	{
+		m_buttons[BTN_MINI].hover = false;
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
+	}
+
+}
+
+void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
+{
+}
+
+void CPlayerUIBase::PreDrawInfo()
+{
 	//设置颜色
 	if (theApp.m_app_setting_data.dark_mode)
 	{
@@ -61,99 +152,6 @@ void CPlayerUIBase::DrawInfo(bool reset)
 	//计算文本高度
 	m_pDC->SelectObject(&m_ui_data.lyric_font);
 	m_lyric_text_height = m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
-
-}
-
-void CPlayerUIBase::RButtonUp(CPoint point)
-{
-	if (m_volume_btn.rect.PtInRect(point) == FALSE)
-		m_show_volume_adj = false;
-
-	CPoint point1;		//定义一个用于确定光标位置的位置  
-	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-	if (m_repetemode_btn.rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
-	{
-		CMenu* pMenu = m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
-		if (pMenu != NULL)
-			pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-	}
-
-}
-
-void CPlayerUIBase::MouseMove(CPoint point)
-{
-	m_repetemode_btn.hover = (m_repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
-	m_volume_btn.hover = (m_volume_btn.rect.PtInRect(point) != FALSE);
-	m_skin_btn.hover = (m_skin_btn.rect.PtInRect(point) != FALSE);
-	m_translate_btn.hover = (m_translate_btn.rect.PtInRect(point) != FALSE);
-	m_eq_btn.hover = (m_eq_btn.rect.PtInRect(point) != FALSE);
-	m_setting_btn.hover = (m_setting_btn.rect.PtInRect(point) != FALSE);
-	m_mini_btn.hover = (m_mini_btn.rect.PtInRect(point) != FALSE);
-
-	AddMouseToolTip(m_repetemode_btn, m_repeat_mode_tip);
-	AddMouseToolTip(m_translate_btn, _T("显示歌词翻译"));
-	AddMouseToolTip(m_volume_btn, _T("鼠标滚轮调整音量"));
-	AddMouseToolTip(m_skin_btn, _T("切换界面"));
-	AddMouseToolTip(m_eq_btn, _T("音效设定"));
-	AddMouseToolTip(m_setting_btn, _T("设置"));
-	AddMouseToolTip(m_mini_btn, _T("迷你模式"));
-}
-
-void CPlayerUIBase::LButtonUp(CPoint point)
-{
-	if (m_repetemode_btn.rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
-	{
-		theApp.m_player.SetRepeatMode();
-
-		SetRepeatModeToolTipText();
-		//m_tool_tip->UpdateTipText(m_repeat_mode_tip, theApp.m_pMainWnd);
-		m_tool_tip->AddTool(theApp.m_pMainWnd, m_repeat_mode_tip);
-		m_tool_tip->Pop();
-
-	}
-
-	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
-		m_show_volume_adj = (m_volume_btn.rect.PtInRect(point) != FALSE);
-	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
-		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
-
-	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
-	{
-		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
-	}
-	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
-	{
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
-	}
-
-	if (m_skin_btn.rect.PtInRect(point))
-	{
-		m_skin_btn.hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
-	}
-
-	if (m_eq_btn.rect.PtInRect(point))
-	{
-		m_eq_btn.hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
-	}
-
-	if (m_setting_btn.rect.PtInRect(point))
-	{
-		m_setting_btn.hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
-	}
-
-	if (m_mini_btn.rect.PtInRect(point))
-	{
-		m_mini_btn.hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
-	}
-
-}
-
-void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
-{
 }
 
 void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area, bool midi_lyric)
@@ -369,12 +367,12 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		alpha = ALPHA_CHG(m_colors.background_transparency);
 	else
 		alpha = 255;
-	if (m_repetemode_btn.hover)
+	if (m_buttons[BTN_REPETEMODE].hover)
 		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_text_2, alpha);
 	//else if (!theApp.m_app_setting_data.dark_mode)
 	//	m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_back, alpha);
 
-	m_repetemode_btn.rect = DrawAreaToClient(rc_repeat_mode, m_draw_rect);
+	m_buttons[BTN_REPETEMODE].rect = DrawAreaToClient(rc_repeat_mode, m_draw_rect);
 
 	rc_repeat_mode = rc_tmp;
 	rc_repeat_mode.DeflateRect(theApp.DPI(4), theApp.DPI(4));
@@ -398,19 +396,19 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 
 	//绘制设置按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_setting_btn, theApp.m_setting_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_SETTING], theApp.m_setting_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
 
 	//绘制均衡器按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_eq_btn, theApp.m_eq_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_EQ], theApp.m_eq_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
 
 	//绘制切换界面按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_skin_btn, theApp.m_skin_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_SKIN], theApp.m_skin_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
 
 	//绘制迷你模式按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_mini_btn, theApp.m_mini_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_MINI], theApp.m_mini_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
 
 	//绘制翻译按钮
 	if (draw_translate_button && rect.Width()>=theApp.DPI(192))
@@ -418,15 +416,15 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		rc_tmp.MoveToX(rc_tmp.right);
 		CRect translate_rect = rc_tmp;
 		translate_rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
-		m_translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated();
-		if (m_translate_btn.enable)
+		m_buttons[BTN_TRANSLATE].enable = theApp.m_player.m_Lyrics.IsTranslated();
+		if (m_buttons[BTN_TRANSLATE].enable)
 		{
 			BYTE alpha;
 			if (draw_background)
 				alpha = ALPHA_CHG(m_colors.background_transparency);
 			else
 				alpha = 255;
-			if (m_translate_btn.hover)
+			if (m_buttons[BTN_TRANSLATE].hover)
 				m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
 			else if (pUIData!=nullptr && pUIData->show_translate)
 				m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
@@ -436,7 +434,7 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		{
 			m_draw.DrawWindowText(translate_rect, L"译", GRAY(200), Alignment::CENTER);
 		}
-		m_translate_btn.rect = DrawAreaToClient(translate_rect, m_draw_rect);
+		m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(translate_rect, m_draw_rect);
 
 	}
 
@@ -470,38 +468,21 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 	rc_tmp.right = rc_tmp.left;
 	rc_tmp.left = rc_tmp.right - theApp.DPI(72);
 	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
-	if (m_volume_btn.hover)		//鼠标指向音量区域时，以另外一种颜色显示
+	if (m_buttons[BTN_VOLUME].hover)		//鼠标指向音量区域时，以另外一种颜色显示
 		m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_heighlight);
 	else
 		m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
 	//设置音量调整按钮的位置
-	m_volume_btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
-	m_volume_btn.rect.DeflateRect(0, theApp.DPI(4));
-	m_volume_btn.rect.right -= theApp.DPI(12);
-	m_volume_down_rect = m_volume_btn.rect;
+	m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
+	m_buttons[BTN_VOLUME].rect.DeflateRect(0, theApp.DPI(4));
+	m_buttons[BTN_VOLUME].rect.right -= theApp.DPI(12);
+	m_volume_down_rect = m_buttons[BTN_VOLUME].rect;
 	m_volume_down_rect.bottom += theApp.DPI(4);
-	m_volume_down_rect.MoveToY(m_volume_btn.rect.bottom);
-	m_volume_down_rect.right = m_volume_btn.rect.left + m_volume_btn.rect.Width() / 2;
+	m_volume_down_rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
+	m_volume_down_rect.right = m_buttons[BTN_VOLUME].rect.left + m_buttons[BTN_VOLUME].rect.Width() / 2;
 	m_volume_up_rect = m_volume_down_rect;
 	m_volume_up_rect.MoveToX(m_volume_down_rect.right);
 
-
-}
-
-void CPlayerUIBase::AddMouseToolTip(UIButton & btn, LPCTSTR str)
-{
-	if (!btn.last_hover && btn.hover)
-	{
-		m_tool_tip->AddTool(theApp.m_pMainWnd, str);
-		m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
-		m_tool_tip->Pop();
-	}
-	if (btn.last_hover && !btn.hover)
-	{
-		m_tool_tip->AddTool(theApp.m_pMainWnd, _T(""));
-		m_tool_tip->Pop();
-	}
-	btn.last_hover = btn.hover;
 
 }
 
@@ -629,5 +610,26 @@ void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
 		m_draw.DrawWindowText(volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
 		m_draw.DrawWindowText(volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
 	}
+}
+
+void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
+}
+
+void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1);
+}
+
+void CPlayerUIBase::AddToolTips()
+{
+	AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
+	AddMouseToolTip(BTN_TRANSLATE, _T("显示歌词翻译"));
+	AddMouseToolTip(BTN_VOLUME, _T("鼠标滚轮调整音量"));
+	AddMouseToolTip(BTN_SKIN, _T("切换界面"));
+	AddMouseToolTip(BTN_EQ, _T("音效设定"));
+	AddMouseToolTip(BTN_SETTING, _T("设置"));
+	AddMouseToolTip(BTN_MINI, _T("迷你模式"));
 }
 

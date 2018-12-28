@@ -22,7 +22,7 @@ void CPlayerUI::Init(CDC* pDC)
 void CPlayerUI::DrawInfo(bool reset)
 {
 	//调用基类的函数，以设置绘图颜色
-	CPlayerUIBase::DrawInfo(reset);
+	PreDrawInfo();
 
 	//设置信息区域的矩形
 	CRect info_rect;
@@ -262,6 +262,8 @@ void CPlayerUI::DrawInfo(bool reset)
 	MemDC.SelectObject(pOldBit);
 	MemBitmap.DeleteObject();
 	MemDC.DeleteDC();
+
+	CPlayerUIBase::DrawInfo(reset);
 }
 
 void CPlayerUI::DrawLyricsSingleLine(CRect lyric_rect)
@@ -316,17 +318,17 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	translate_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 	translate_rect.right = lyric_rect.right - 2 * m_pLayout->margin;
 	translate_rect.left = translate_rect.right - translate_rect.Height();
-	m_translate_btn.rect = translate_rect;
-	m_translate_btn.rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
-	m_translate_btn.enable = theApp.m_player.m_Lyrics.IsTranslated() && !midi_lyric;
-	if (m_translate_btn.enable)
+	m_buttons[BTN_TRANSLATE].rect = translate_rect;
+	m_buttons[BTN_TRANSLATE].rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
+	m_buttons[BTN_TRANSLATE].enable = theApp.m_player.m_Lyrics.IsTranslated() && !midi_lyric;
+	if (m_buttons[BTN_TRANSLATE].enable)
 	{
 		BYTE alpha;
 		if (draw_background)
 			alpha = ALPHA_CHG(m_colors.background_transparency);
 		else
 			alpha = 255;
-		if (m_translate_btn.hover)
+		if (m_buttons[BTN_TRANSLATE].hover)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
 		else if (m_ui_data.show_translate)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
@@ -360,7 +362,7 @@ void CPlayerUI::RButtonUp(CPoint point)
 {
 	CPlayerUIBase::RButtonUp(point);
 
-	if (m_repetemode_btn.rect.PtInRect(point))
+	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
 		return;
 
 	//计算显示信息和显示歌词的区域
@@ -444,7 +446,7 @@ void CPlayerUI::LButtonUp(CPoint point)
 {
 	CPlayerUIBase::LButtonUp(point);
 
-	if (m_translate_btn.rect.PtInRect(point) && m_translate_btn.enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
+	if (m_buttons[BTN_TRANSLATE].rect.PtInRect(point) && m_buttons[BTN_TRANSLATE].enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
 	{
 		m_ui_data.show_translate = !m_ui_data.show_translate;
 	}

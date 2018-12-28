@@ -65,13 +65,29 @@ public:
 	virtual CRect GetThumbnailClipArea() override = 0;
 
 protected:
+	enum BtnKey		//标识按钮的类型
+	{
+		BTN_REPETEMODE,			//“循环模式”按钮
+		BTN_VOLUME,				//音量按钮
+		BTN_TRANSLATE,			//歌词翻译按钮
+		BTN_SKIN,				//切换界面按钮
+		BTN_EQ,					//音效设定按钮
+		BTN_SETTING,			//设置按钮
+		BTN_MINI				//迷你模式按钮
+	};
+
+protected:
+	void PreDrawInfo();
 	void DrawLyricTextMultiLine(CRect rect, bool midi_lyric);
 	void DrawLyricTextSingleLine(CRect rect, bool midi_lyric);
 	void DrawSongInfo(CRect rect, bool reset = false);
 	void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
 	void DrawVolumnAdjBtn(bool draw_background);
 
-	void AddMouseToolTip(UIButton& btn, LPCTSTR str);		//为一个按钮添加鼠标提示，只能在响应“WM_MOUSEMOVE”时调用
+	void AddMouseToolTip(BtnKey btn, LPCTSTR str);		//为一个按钮添加鼠标提示
+	void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
+
+	void AddToolTips();			//为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 
 	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
@@ -98,14 +114,13 @@ protected:
 
 	//UI 数据
 	CRect m_draw_rect;						//绘图区域
-	UIButton m_repetemode_btn;				//“循环模式”按钮
-	UIButton m_volume_btn;					//音量按钮
 	CRect m_volume_up_rect, m_volume_down_rect;	//音量调整条增加和减少音量的矩形区域
 	bool m_show_volume_adj{ false };		//显示音量调整按钮
-	UIButton m_translate_btn;				//歌词翻译按钮
-	UIButton m_skin_btn;					//切换界面按钮
-	UIButton m_eq_btn;						//音效设定按钮
-	UIButton m_setting_btn;					//设置按钮
-	UIButton m_mini_btn;					//迷你模式按钮
+
+	std::map<BtnKey, UIButton> m_buttons;
+
+private:
+	bool m_first_draw{ true };
+
 };
 

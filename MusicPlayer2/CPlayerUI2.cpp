@@ -24,7 +24,7 @@ void CPlayerUI2::Init(CDC* pDC)
 
 void CPlayerUI2::DrawInfo(bool reset)
 {
-	CPlayerUIBase::DrawInfo(reset);
+	PreDrawInfo();
 
 	//设置信息区域的矩形
 	if (!m_ui_data.m_narrow_mode)
@@ -347,13 +347,14 @@ void CPlayerUI2::DrawInfo(bool reset)
 	MemBitmap.DeleteObject();
 	MemDC.DeleteDC();
 
+	CPlayerUIBase::DrawInfo(reset);
 }
 
 void CPlayerUI2::RButtonUp(CPoint point)
 {
 	CPlayerUIBase::RButtonUp(point);
 
-	if (m_repetemode_btn.rect.PtInRect(point))
+	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
 		return;
 
 	CPoint point1;		//定义一个用于确定光标位置的位置  
@@ -394,7 +395,7 @@ void CPlayerUI2::LButtonUp(CPoint point)
 {
 	CPlayerUIBase::LButtonUp(point);
 
-	if (m_translate_btn.rect.PtInRect(point) && m_translate_btn.enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
+	if (m_buttons[BTN_TRANSLATE].rect.PtInRect(point) && m_buttons[BTN_TRANSLATE].enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
 	{
 		m_ui_data.show_translate = !m_ui_data.show_translate;
 	}
