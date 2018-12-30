@@ -9,10 +9,10 @@
 
 // CHotKeySettingDlg 对话框
 
-IMPLEMENT_DYNAMIC(CHotKeySettingDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CHotKeySettingDlg, CTabDlg)
 
 CHotKeySettingDlg::CHotKeySettingDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_HOT_KEY_SETTINGS_DIALOG, pParent)
+	: CTabDlg(IDD_HOT_KEY_SETTINGS_DIALOG, pParent)
 {
 
 }
@@ -49,24 +49,20 @@ void CHotKeySettingDlg::EnableControl()
 void CHotKeySettingDlg::ListClicked()
 {
 	EnableControl();
-	//if (m_key_disable_flag)
-	//{
-	//	theApp.m_hot_key.UnRegisterAllHotKey();		//在当前对话框框首次点击列表控件后，禁用所有全局热键
-	//	m_key_disabled = true;
-	//}
-	//m_key_disable_flag = false;
+	//SHotKey hot_key = m_hotkey_group[static_cast<eHotKeyId>(m_item_selected + HK_PLAY_PAUSE)];
+	//m_hot_key_ctrl.SetHotKey(hot_key.key, hot_key.Modifiers());
 }
 
 void CHotKeySettingDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CTabDlg::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_HOT_KEY_LIST, m_key_list);
 	DDX_Control(pDX, IDC_HOT_KEY_ENABLE_CHECK, m_hot_key_enable_check);
 	DDX_Control(pDX, IDC_HOTKEY1, m_hot_key_ctrl);
 }
 
 
-BEGIN_MESSAGE_MAP(CHotKeySettingDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CHotKeySettingDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_SET_BUTTON, &CHotKeySettingDlg::OnBnClickedSetButton)
 	ON_NOTIFY(NM_CLICK, IDC_HOT_KEY_LIST, &CHotKeySettingDlg::OnNMClickHotKeyList)
 	ON_NOTIFY(NM_RCLICK, IDC_HOT_KEY_LIST, &CHotKeySettingDlg::OnNMRClickHotKeyList)
@@ -80,10 +76,9 @@ END_MESSAGE_MAP()
 
 BOOL CHotKeySettingDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	SetBackgroundColor(GRAY(255));
 
 	m_hot_key_enable_check.SetCheck(m_hot_key_enable);
 
@@ -120,7 +115,7 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
 
 	if (modifiers == 0 && key_coke != 0)
 	{
-		MessageBox(_T("全局快捷至少需要包含Ctrl、Shift、Alt中的一个！"), NULL, MB_ICONWARNING | MB_OK);
+		MessageBox(_T("全局快捷键至少需要包含Ctrl、Shift、Alt中的一个！"), NULL, MB_ICONWARNING | MB_OK);
 		return;
 	}
 

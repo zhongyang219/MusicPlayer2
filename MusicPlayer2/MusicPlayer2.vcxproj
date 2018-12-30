@@ -212,6 +212,7 @@
     <ClInclude Include="GaussBlur.h" />
     <ClInclude Include="IniHelper.h" />
     <ClInclude Include="SupportedFormatDlg.h" />
+    <ClInclude Include="TabDlg.h" />
     <ClInclude Include="TagEditDlg.h" />
     <ClInclude Include="WinVersionHelper.h" />
     <ClInclude Include="WmaEncodeCfgDlg.h" />
@@ -276,6 +277,7 @@
     <ClCompile Include="GaussBlur.cpp" />
     <ClCompile Include="IniHelper.cpp" />
     <ClCompile Include="SupportedFormatDlg.cpp" />
+    <ClCompile Include="TabDlg.cpp" />
     <ClCompile Include="TagEditDlg.cpp" />
     <ClCompile Include="WinVersionHelper.cpp" />
     <ClCompile Include="WmaEncodeCfgDlg.cpp" />

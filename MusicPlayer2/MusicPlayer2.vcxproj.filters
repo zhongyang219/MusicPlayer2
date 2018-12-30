@@ -180,6 +180,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="派生的控件类\TabDlg">
+      <UniqueIdentifier>{6f85ca9b-1cef-4027-b4b2-ca082c33c49d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -378,6 +381,9 @@
     <ClInclude Include="CHotKeySettingDlg.h">
       <Filter>对话框类\选项设置对话框\HotKeySettingDlg</Filter>
     </ClInclude>
+    <ClInclude Include="TabDlg.h">
+      <Filter>派生的控件类\TabDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -556,6 +562,9 @@
     </ClCompile>
     <ClCompile Include="CHotKeySettingDlg.cpp">
       <Filter>对话框类\选项设置对话框\HotKeySettingDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDlg.cpp">
+      <Filter>派生的控件类\TabDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

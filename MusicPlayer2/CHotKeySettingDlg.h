@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include "CHotkeyManager.h"
+#include "TabDlg.h"
 
 
 // CHotKeySettingDlg 对话框
 
-class CHotKeySettingDlg : public CDialogEx
+class CHotKeySettingDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CHotKeySettingDlg)
 

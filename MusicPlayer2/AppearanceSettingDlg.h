@@ -4,10 +4,11 @@
 #include "Common.h"
 #include "DrawCommon.h"
 #include "ColorStatic.h"
+#include "TabDlg.h"
 
 // CAppearanceSettingDlg ¶Ô»°¿ò
 
-class CAppearanceSettingDlg : public CDialogEx
+class CAppearanceSettingDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CAppearanceSettingDlg)
 

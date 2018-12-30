@@ -1,9 +1,10 @@
 #pragma once
 #include"Common.h"
+#include "TabDlg.h"
 
 // CDataSettingsDlg ¶Ô»°¿ò
 
-class CDataSettingsDlg : public CDialogEx
+class CDataSettingsDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CDataSettingsDlg)
 

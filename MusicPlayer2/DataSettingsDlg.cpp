@@ -9,10 +9,10 @@
 
 // CDataSettingsDlg 对话框
 
-IMPLEMENT_DYNAMIC(CDataSettingsDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CDataSettingsDlg, CTabDlg)
 
 CDataSettingsDlg::CDataSettingsDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_DATA_SETTINGS_DIALOG, pParent)
+	: CTabDlg(IDD_DATA_SETTINGS_DIALOG, pParent)
 {
 
 }
@@ -23,12 +23,12 @@ CDataSettingsDlg::~CDataSettingsDlg()
 
 void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CTabDlg::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SF2_PATH_EDIT, m_sf2_path_edit);
 }
 
 
-BEGIN_MESSAGE_MAP(CDataSettingsDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_CLEAN_DATA_FILE_BUTTON, &CDataSettingsDlg::OnBnClickedCleanDataFileButton)
 	ON_BN_CLICKED(IDC_ID3V2_FIRST_CHECK, &CDataSettingsDlg::OnBnClickedId3v2FirstCheck)
 	ON_BN_CLICKED(IDC_COVER_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck)
@@ -46,10 +46,10 @@ END_MESSAGE_MAP()
 
 BOOL CDataSettingsDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	SetBackgroundColor(RGB(255, 255, 255));
+	//SetBackgroundColor(RGB(255, 255, 255));
 
 	m_data_size = CCommon::GetFileSize(theApp.m_song_data_path);
 	ShowDataSizeInfo();
@@ -186,7 +186,7 @@ BOOL CDataSettingsDlg::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_toolTip.RelayEvent(pMsg);
 
-	return CDialogEx::PreTranslateMessage(pMsg);
+	return CTabDlg::PreTranslateMessage(pMsg);
 }
 
 
@@ -207,7 +207,7 @@ void CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck()
 void CDataSettingsDlg::OnEnChangeSf2PathEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 发送此通知，除非重写 CTabDlg::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 	if (m_sf2_path_edit.GetModify())

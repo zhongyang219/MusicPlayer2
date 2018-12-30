@@ -9,10 +9,10 @@
 
 // CLyricSettingsDlg 对话框
 
-IMPLEMENT_DYNAMIC(CLyricSettingsDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CLyricSettingsDlg, CTabDlg)
 
 CLyricSettingsDlg::CLyricSettingsDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_LYRIC_SETTING_DIALOG, pParent)
+	: CTabDlg(IDD_LYRIC_SETTING_DIALOG, pParent)
 {
 
 }
@@ -23,7 +23,7 @@ CLyricSettingsDlg::~CLyricSettingsDlg()
 
 void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CTabDlg::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
 	DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
 	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_show_lyric_in_cortana_check);
@@ -34,7 +34,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_STOP_WHEN_ERROR, &CLyricSettingsDlg::OnBnClickedStopWhenError)
 	ON_BN_CLICKED(IDC_KARAOKE_DISP, &CLyricSettingsDlg::OnBnClickedKaraokeDisp)
 	ON_BN_CLICKED(IDC_EXPLORE_LYRIC_BUTTON, &CLyricSettingsDlg::OnBnClickedExploreLyricButton)
@@ -55,10 +55,9 @@ END_MESSAGE_MAP()
 
 BOOL CLyricSettingsDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	SetBackgroundColor(RGB(255, 255, 255));
 
 	//初始化各控件的状态
 	m_karaoke_disp_check.SetCheck(m_data.lyric_karaoke_disp);
@@ -160,7 +159,7 @@ void CLyricSettingsDlg::OnCancel()
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	//CDialogEx::OnCancel();
+	//CTabDlg::OnCancel();
 }
 
 
@@ -168,7 +167,7 @@ void CLyricSettingsDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	//CDialogEx::OnOK();
+	//CTabDlg::OnOK();
 }
 
 
@@ -185,7 +184,7 @@ BOOL CLyricSettingsDlg::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_tool_tip.RelayEvent(pMsg);
 
-	return CDialogEx::PreTranslateMessage(pMsg);
+	return CTabDlg::PreTranslateMessage(pMsg);
 }
 
 

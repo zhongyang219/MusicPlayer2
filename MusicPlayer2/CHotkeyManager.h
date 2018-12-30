@@ -21,7 +21,7 @@ struct SHotKey
 	bool alt{};
 	short key{};
 
-
+	WORD Modifiers() const;
 };
 
 class CHotkeyManager

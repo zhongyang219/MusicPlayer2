@@ -1,10 +1,11 @@
 #pragma once
 #include "afxwin.h"
 #include "FolderBrowserDlg.h"
+#include "TabDlg.h"
 
 // CLyricSettingsDlg ¶Ô»°¿ò
 
-class CLyricSettingsDlg : public CDialogEx
+class CLyricSettingsDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CLyricSettingsDlg)
 

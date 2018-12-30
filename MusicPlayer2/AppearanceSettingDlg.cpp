@@ -9,10 +9,10 @@
 
 // CAppearanceSettingDlg 对话框
 
-IMPLEMENT_DYNAMIC(CAppearanceSettingDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CAppearanceSettingDlg, CTabDlg)
 
 CAppearanceSettingDlg::CAppearanceSettingDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_APPEREANCE_SETTING_DLG, pParent)
+	: CTabDlg(IDD_APPEREANCE_SETTING_DLG, pParent)
 	/*, m_data.lyric_line_space(0)*/
 {
 
@@ -24,7 +24,7 @@ CAppearanceSettingDlg::~CAppearanceSettingDlg()
 
 void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CTabDlg::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TRANSPARENT_SLIDER, m_transparency_slid);
 	DDX_Control(pDX, IDC_COLOR_STATIC, m_color_static);
 	DDX_Control(pDX, IDC_COLOR_STATIC2, m_color_static1);
@@ -104,7 +104,7 @@ void CAppearanceSettingDlg::DrawColor()
 }
 
 
-BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_SET_FONT_BUTTON, &CAppearanceSettingDlg::OnBnClickedSetFontButton)
 //	ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_TRANSPARENT_SLIDER, &CAppearanceSettingDlg::OnNMReleasedcaptureTransparentSlider)
 	ON_WM_HSCROLL()
@@ -137,10 +137,10 @@ END_MESSAGE_MAP()
 
 BOOL CAppearanceSettingDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	SetBackgroundColor(RGB(255, 255, 255));
+	//SetBackgroundColor(RGB(255, 255, 255));
 
 	//SetDlgItemText(IDC_FONT_NAME_EDIT, m_font.c_str());
 	//CString font_size_str;
@@ -301,7 +301,7 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 		SetDlgItemText(IDC_GAUSS_BLUR_RADIUS_STATIC, str);
 	}
 
-	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+	CTabDlg::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
 
@@ -378,7 +378,7 @@ BOOL CAppearanceSettingDlg::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_toolTip.RelayEvent(pMsg);
 
-	return CDialogEx::PreTranslateMessage(pMsg);
+	return CTabDlg::PreTranslateMessage(pMsg);
 }
 
 
@@ -394,7 +394,7 @@ void CAppearanceSettingDlg::OnCancel()
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	//CDialogEx::OnCancel();
+	//CTabDlg::OnCancel();
 }
 
 
@@ -406,14 +406,14 @@ void CAppearanceSettingDlg::OnOK()
 	GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
 	CCommon::StringSplit(wstring(temp), L',', m_data.default_album_name);
 
-	//CDialogEx::OnOK();
+	//CTabDlg::OnOK();
 }
 
 
 //void CAppearanceSettingDlg::OnEnChangeFontNameEdit()
 //{
 //	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-//	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+//	// 发送此通知，除非重写 CTabDlg::OnInitDialog()
 //	// 函数并调用 CRichEditCtrl().SetEventMask()，
 //	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 //
@@ -428,7 +428,7 @@ void CAppearanceSettingDlg::OnOK()
 void CAppearanceSettingDlg::OnEnChangeLineSpaceEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 发送此通知，除非重写 CTabDlg::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -474,7 +474,7 @@ void CAppearanceSettingDlg::OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult)
 
 HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hbr = CTabDlg::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何特性
 	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid || pWnd == &m_gauss_blur_radius_sld)		//设置滑动条控件的背景色为白色
@@ -528,7 +528,7 @@ void CAppearanceSettingDlg::OnBnClickedUseOutImageCheck()
 void CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialogEx::OnInitDialog()
+	// 发送此通知，除非重写 CTabDlg::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 

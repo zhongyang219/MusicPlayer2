@@ -27,13 +27,7 @@ void CHotkeyManager::RegisterAllHotKey()
 {
 	for (const auto& hot_key : m_hotkey_group)
 	{
-		UINT control_key{};
-		if (hot_key.second.ctrl)
-			control_key |= MOD_CONTROL;
-		if (hot_key.second.shift)
-			control_key |= MOD_SHIFT;
-		if (hot_key.second.alt)
-			control_key |= MOD_ALT;
+		WORD control_key = hot_key.second.Modifiers();
 
 		if (hot_key.second.key == 0 || control_key == 0)
 			return;
@@ -137,4 +131,17 @@ wstring CHotkeyManager::GetHotkeyName(const SHotKey & key)
 	str += CHotKeyCtrl::GetKeyName(key.key, bExtended);
 
 	return str;
+}
+
+WORD SHotKey::Modifiers() const
+{
+	WORD control_key{};
+	if (ctrl)
+		control_key |= MOD_CONTROL;
+	if (shift)
+		control_key |= MOD_SHIFT;
+	if (alt)
+		control_key |= MOD_ALT;
+
+	return control_key;
 }
