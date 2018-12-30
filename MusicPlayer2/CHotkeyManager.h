@@ -3,10 +3,15 @@
 enum eHotKeyId
 {
 	HK_PLAY_PAUSE = 1031,
+	HK_STOP,
+	HK_FF,
+	HK_REW,
 	HK_PREVIOUS,
 	HK_NEXT,
 	HK_VOLUME_UP,
-	HK_VOLUME_DOWN
+	HK_VOLUME_DOWN,
+	HK_EXIT,
+	HK_MAX
 };
 
 struct SHotKey

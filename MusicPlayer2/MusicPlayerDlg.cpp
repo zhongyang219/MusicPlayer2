@@ -336,6 +336,15 @@ void CMusicPlayerDlg::SaveConfig()
 	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_PLAY_PAUSE));
 	ini.WriteString(L"hot_key", L"play_pause", str);
 
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_STOP));
+	ini.WriteString(L"hot_key", L"stop", str);
+
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_FF));
+	ini.WriteString(L"hot_key", L"fast_forward", str);
+
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_REW));
+	ini.WriteString(L"hot_key", L"rewind", str);
+
 	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_PREVIOUS));
 	ini.WriteString(L"hot_key", L"previous", str);
 
@@ -347,6 +356,9 @@ void CMusicPlayerDlg::SaveConfig()
 
 	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_VOLUME_DOWN));
 	ini.WriteString(L"hot_key", L"volume_down", str);
+
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_EXIT));
+	ini.WriteString(L"hot_key", L"exit", str);
 
 }
 
@@ -417,6 +429,15 @@ void CMusicPlayerDlg::LoadConfig()
 	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"play_pause", L"Ctrl+Shift+116"));
 	theApp.m_hot_key.SetHotKey(HK_PLAY_PAUSE, hot_key);
 
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"stop", L"Ctrl+Shift+117"));
+	theApp.m_hot_key.SetHotKey(HK_STOP, hot_key);
+
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"fast_forward", L"Ctrl+Shift+119"));
+	theApp.m_hot_key.SetHotKey(HK_FF, hot_key);
+
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"rewind", L"Ctrl+Shift+118"));
+	theApp.m_hot_key.SetHotKey(HK_REW, hot_key);
+
 	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"previous", L"Ctrl+Shift+37"));
 	theApp.m_hot_key.SetHotKey(HK_PREVIOUS, hot_key);
 
@@ -428,6 +449,9 @@ void CMusicPlayerDlg::LoadConfig()
 
 	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"volume_down", L"Ctrl+Shift+40"));
 	theApp.m_hot_key.SetHotKey(HK_VOLUME_DOWN, hot_key);
+
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"exit", L"Ctrl+Shift+X"));
+	theApp.m_hot_key.SetHotKey(HK_EXIT, hot_key);
 
 }
 
@@ -2095,6 +2119,18 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 		break;
 	default: break;
+	case HK_STOP:
+		OnStop();
+		break;
+	case HK_FF:
+		OnFF();
+		break;
+	case HK_REW:
+		OnRew();
+		break;
+	case HK_EXIT:
+		OnCancel();
+		break;
 	}
 
 	CDialog::OnHotKey(nHotKeyId, nKey1, nKey2);

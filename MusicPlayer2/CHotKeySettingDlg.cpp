@@ -23,11 +23,12 @@ CHotKeySettingDlg::~CHotKeySettingDlg()
 
 void CHotKeySettingDlg::ShowKeyList()
 {
-	m_key_list.SetItemText(0, 1, CHotkeyManager::GetHotkeyName(m_hotkey_group[HK_PLAY_PAUSE]).c_str());
-	m_key_list.SetItemText(1, 1, CHotkeyManager::GetHotkeyName(m_hotkey_group[HK_PREVIOUS]).c_str());
-	m_key_list.SetItemText(2, 1, CHotkeyManager::GetHotkeyName(m_hotkey_group[HK_NEXT]).c_str());
-	m_key_list.SetItemText(3, 1, CHotkeyManager::GetHotkeyName(m_hotkey_group[HK_VOLUME_UP]).c_str());
-	m_key_list.SetItemText(4, 1, CHotkeyManager::GetHotkeyName(m_hotkey_group[HK_VOLUME_DOWN]).c_str());
+	int index = 0;
+	for (int i = HK_PLAY_PAUSE; i < HK_MAX; i++)
+	{
+		m_key_list.SetItemText(index, 1, CHotkeyManager::GetHotkeyName(m_hotkey_group[static_cast<eHotKeyId>(i)]).c_str());
+		index++;
+	}
 }
 
 void CHotKeySettingDlg::EnableControl()
@@ -91,10 +92,14 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 	m_key_list.InsertColumn(1, _T("快捷键"), LVCFMT_LEFT, theApp.DPI(170));
 
 	m_key_list.InsertItem(0, _T("播放暂停"));
-	m_key_list.InsertItem(1, _T("上一曲"));
-	m_key_list.InsertItem(2, _T("下一曲"));
-	m_key_list.InsertItem(3, _T("增大音量"));
-	m_key_list.InsertItem(4, _T("减小音量"));
+	m_key_list.InsertItem(1, _T("停止"));
+	m_key_list.InsertItem(2, _T("快进"));
+	m_key_list.InsertItem(3, _T("快退"));
+	m_key_list.InsertItem(4, _T("上一曲"));
+	m_key_list.InsertItem(5, _T("下一曲"));
+	m_key_list.InsertItem(6, _T("增大音量"));
+	m_key_list.InsertItem(7, _T("减小音量"));
+	m_key_list.InsertItem(8, _T("退出"));
 
 	ShowKeyList();
 
