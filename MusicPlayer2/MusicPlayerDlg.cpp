@@ -328,6 +328,26 @@ void CMusicPlayerDlg::SaveConfig()
 	else
 		ui_selected = 1;
 	ini.WriteInt(L"config", L"UI_selected", ui_selected);
+
+	//保存热键设置
+	ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_enable);
+
+	wstring str;
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_PLAY_PAUSE));
+	ini.WriteString(L"hot_key", L"play_pause", str);
+
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_PREVIOUS));
+	ini.WriteString(L"hot_key", L"previous", str);
+
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_NEXT));
+	ini.WriteString(L"hot_key", L"next", str);
+
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_VOLUME_UP));
+	ini.WriteString(L"hot_key", L"volume_up", str);
+
+	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_VOLUME_DOWN));
+	ini.WriteString(L"hot_key", L"volume_down", str);
+
 }
 
 void CMusicPlayerDlg::LoadConfig()
@@ -389,6 +409,26 @@ void CMusicPlayerDlg::LoadConfig()
 		m_pUI = &m_ui;
 	else
 		m_pUI = &m_ui2;
+
+	//载入热键设置
+	theApp.m_hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
+
+	SHotKey hot_key;
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"play_pause", L"Ctrl+Shift+116"));
+	theApp.m_hot_key.SetHotKey(HK_PLAY_PAUSE, hot_key);
+
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"previous", L"Ctrl+Shift+37"));
+	theApp.m_hot_key.SetHotKey(HK_PREVIOUS, hot_key);
+
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"next", L"Ctrl+Shift+39"));
+	theApp.m_hot_key.SetHotKey(HK_NEXT, hot_key);
+
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"volume_up", L"Ctrl+Shift+38"));
+	theApp.m_hot_key.SetHotKey(HK_VOLUME_UP, hot_key);
+
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"volume_down", L"Ctrl+Shift+40"));
+	theApp.m_hot_key.SetHotKey(HK_VOLUME_DOWN, hot_key);
+
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -715,6 +755,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
 	theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
 	theApp.m_play_setting_data = optionDlg.m_tab4_dlg.m_data;
+	theApp.m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
+	theApp.m_hot_key_enable = optionDlg.m_tab5_dlg.m_hot_key_enable;
 
 	if (reload_sf2 || output_device_changed)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
 	{
@@ -936,14 +978,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_progress_bar.GetWindowRect(rect);
 	m_progress_bar_left_pos = rect.left;		//用控件起始的位置作为普通界面模式下进度条控件左侧的位置
 
-	//注册全局热键
-	//RegisterHotKey(m_hWnd, HK_PLAY_PAUSE, 0, VK_MEDIA_PLAY_PAUSE);
-	RegisterHotKey(m_hWnd, HK_PLAY_PAUSE, MOD_CONTROL, VK_MEDIA_PLAY_PAUSE);		//注册Ctrl+多媒体播放/暂停键为全局热键
-	RegisterHotKey(m_hWnd, HK_PLAY_PAUSE2, MOD_CONTROL | MOD_SHIFT, VK_F5);		//注册Ctrl+Shift+F5为全局播放/暂停键
-	RegisterHotKey(m_hWnd, HK_PREVIOUS, MOD_CONTROL | MOD_SHIFT, VK_LEFT);		//注册Ctrl+Shift+←为全局上一曲键
-	RegisterHotKey(m_hWnd, HK_NEXT, MOD_CONTROL | MOD_SHIFT, VK_RIGHT);			//注册Ctrl+Shift+→为全局下一曲键
-	RegisterHotKey(m_hWnd, HK_VOLUME_UP, MOD_CONTROL | MOD_SHIFT, VK_UP);		//注册Ctrl+Shift+↑为全局音量加键
-	RegisterHotKey(m_hWnd, HK_VOLUME_DOWN, MOD_CONTROL | MOD_SHIFT, VK_DOWN);			//注册Ctrl+Shift+↓为全局音量减键
+	//注册全局热键	
+	if(theApp.m_hot_key_enable)
+		theApp.m_hot_key.RegisterAllHotKey();
 
 	//设置界面的颜色
 	CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
@@ -1559,12 +1596,7 @@ void CMusicPlayerDlg::OnDestroy()
 	SaveConfig();
 	m_findDlg.SaveConfig();
 	//解除全局热键
-	UnregisterHotKey(m_hWnd, HK_PLAY_PAUSE);
-	UnregisterHotKey(m_hWnd, HK_PLAY_PAUSE2);
-	UnregisterHotKey(m_hWnd, HK_PREVIOUS);
-	UnregisterHotKey(m_hWnd, HK_NEXT);
-	UnregisterHotKey(m_hWnd, HK_VOLUME_UP);
-	UnregisterHotKey(m_hWnd, HK_VOLUME_DOWN);
+	theApp.m_hot_key.UnRegisterAllHotKey();
 
 	//退出时恢复Cortana的默认文本
 	m_cortana_lyric.ResetCortanaText();
@@ -1900,6 +1932,9 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 void CMusicPlayerDlg::OnOptionSettings()
 {
 	// TODO: 在此添加命令处理程序代码
+
+	theApp.m_hot_key.UnRegisterAllHotKey();
+
 	COptionsDlg optionDlg;
 	//初始化对话框中变量的值
 	optionDlg.m_tab_selected = m_tab_selected;
@@ -1908,6 +1943,8 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
 	optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
 	optionDlg.m_tab4_dlg.m_data = theApp.m_play_setting_data;
+	optionDlg.m_tab5_dlg.m_hotkey_group = theApp.m_hot_key.GetHotKeyGroup();
+	optionDlg.m_tab5_dlg.m_hot_key_enable = theApp.m_hot_key_enable;
 
 	int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
 	int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
@@ -1924,6 +1961,10 @@ void CMusicPlayerDlg::OnOptionSettings()
 	}
 
 	m_tab_selected = optionDlg.m_tab_selected;
+	
+	if(theApp.m_hot_key_enable)
+		theApp.m_hot_key.RegisterAllHotKey();
+
 }
 
 
@@ -2044,7 +2085,7 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 	//响应全局快捷键
 	switch (nHotKeyId)
 	{
-	case HK_PLAY_PAUSE: case HK_PLAY_PAUSE2: OnPlayPause(); break;
+	case HK_PLAY_PAUSE: OnPlayPause(); break;
 	case HK_PREVIOUS: OnPrevious(); break;
 	case HK_NEXT: OnNext(); break;
 	case HK_VOLUME_UP:

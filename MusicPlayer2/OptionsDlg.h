@@ -5,6 +5,7 @@
 #include "DataSettingsDlg.h"
 #include "PlaySettingsDlg.h"
 #include "CTabCtrlEx.h"
+#include "CHotKeySettingDlg.h"
 
 // COptionsDlg 对话框
 #define TIMER_ID2 1122
@@ -22,6 +23,7 @@ public:
 	CAppearanceSettingDlg m_tab2_dlg;	//“外观设置”子对话框
 	CDataSettingsDlg m_tab3_dlg;		//“数据文件”子对话框
 	CPlaySettingsDlg m_tab4_dlg;
+	CHotKeySettingDlg m_tab5_dlg;
 
 	int m_tab_selected{};
 

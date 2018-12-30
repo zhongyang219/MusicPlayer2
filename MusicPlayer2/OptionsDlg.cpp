@@ -48,12 +48,14 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab2_dlg.Create(IDD_APPEREANCE_SETTING_DLG);
 	m_tab3_dlg.Create(IDD_DATA_SETTINGS_DIALOG);
 	m_tab4_dlg.Create(IDD_PLAY_SETTING_DIALOG);
+	m_tab5_dlg.Create(IDD_HOT_KEY_SETTINGS_DIALOG);
 
 	//添加对话框
 	m_tab.AddWindow(&m_tab1_dlg, _T("歌词设置"));
 	m_tab.AddWindow(&m_tab2_dlg, _T("外观设置"));
 	m_tab.AddWindow(&m_tab3_dlg, _T("常规设置"));
 	m_tab.AddWindow(&m_tab4_dlg, _T("播放设置"));
+	m_tab.AddWindow(&m_tab5_dlg, _T("全局快捷键"));
 
 	m_tab.SetCurTab(m_tab_selected);
 

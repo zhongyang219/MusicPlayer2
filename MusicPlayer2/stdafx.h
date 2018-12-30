@@ -114,13 +114,6 @@ using std::map;
 #define IDT_PREVIOUS 1322		//任务栏缩略图“上一曲”按钮的ID
 #define IDT_NEXT 1323			//任务栏缩略图“下一曲”按钮的ID
 
-//全局热键
-#define HK_PLAY_PAUSE 1031		//全局热键“播放/暂停”的ID
-#define HK_PLAY_PAUSE2 1032		//全局热键“播放/暂停”的ID
-#define HK_PREVIOUS 1033		//全局热键“上一曲”的ID
-#define HK_NEXT 1034			//全局热键“下一曲”的ID
-#define HK_VOLUME_UP 1035		//全局热键“音量加”的ID
-#define HK_VOLUME_DOWN 1036		//全局热键“音量减”的ID
 
 //定时器
 #define TIMER_ID 1234			//定义定时器的ID

@@ -15,6 +15,7 @@
 #include "DrawCommon.h"
 #include "IniHelper.h"
 #include "WinVersionHelper.h"
+#include "CHotkeyManager.h"
 
 struct DeviceInfo	//播放设备的信息
 {
@@ -125,7 +126,6 @@ public:
 	//wstring m_temp_path;		//临时文件夹的路径
 
 	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
-
 	vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
 	//界面图标资源
@@ -148,6 +148,8 @@ public:
 	GeneralSettingData m_general_setting_data;		//“选项设置”对话框中“常规设置”中的数据
 	PlaySettingData m_play_setting_data;			//“选项设置”对话框中“播放设置”中的数据
 	NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
+	CHotkeyManager m_hot_key;
+	bool m_hot_key_enable = true;
 
 	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
