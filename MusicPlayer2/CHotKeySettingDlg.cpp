@@ -113,9 +113,10 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
 	WORD key_coke, modifiers;
 	m_hot_key_ctrl.GetHotKey(key_coke, modifiers);
 
-	if (modifiers == 0)
+	if (modifiers == 0 && key_coke != 0)
 	{
 		MessageBox(_T("全局快捷至少需要包含Ctrl、Shift、Alt中的一个！"), NULL, MB_ICONWARNING | MB_OK);
+		return;
 	}
 
 	SHotKey hot_key;
