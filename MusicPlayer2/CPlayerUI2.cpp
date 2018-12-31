@@ -5,8 +5,8 @@
 CPlayerUI2::CPlayerUI2(UIData& ui_data)
 	: CPlayerUIBase(ui_data)
 {
-	m_title_font.CreatePointFont(100, _T("Î¢ÈíÑÅºÚ"));
-	m_artist_font.CreatePointFont(90, _T("Î¢ÈíÑÅºÚ"));
+	m_title_font.CreatePointFont(100, CCommon::LoadText(IDS_DEFAULT_FONT));
+	m_artist_font.CreatePointFont(90, CCommon::LoadText(IDS_DEFAULT_FONT));
 
 }
 
@@ -92,11 +92,11 @@ void CPlayerUI2::DrawInfo(bool reset)
 		const BASS_CHANNELINFO channel_info{ theApp.m_player.GetChannelInfo() };
 		CString chans_str;
 		if (channel_info.chans == 1)
-			chans_str = _T("µ¥ÉùµÀ");
+			chans_str = CCommon::LoadText(IDS_MONO);
 		else if (channel_info.chans == 2)
-			chans_str = _T("Á¢ÌåÉù");
+			chans_str = CCommon::LoadText(IDS_STEREO);
 		else if (channel_info.chans > 2)
-			chans_str.Format(_T("%dÉùµÀ"));
+			chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), channel_info.chans);
 		if (!theApp.m_player.IsMidi())
 			swprintf_s(buff, L"%s %.1fkHz %dkbps %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
 		else
@@ -456,4 +456,12 @@ void CPlayerUI2::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 void CPlayerUI2::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
 	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 2000);
+}
+
+void CPlayerUI2::UpdateToolTipPosition()
+{
+	for (const auto& btn : m_buttons)
+	{
+		m_tool_tip->SetToolRect(theApp.m_pMainWnd, btn.first + 2000, btn.second.rect);
+	}
 }

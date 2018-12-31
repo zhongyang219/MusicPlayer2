@@ -173,13 +173,13 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
 	m_toolTip.Create(this);
 	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-	m_toolTip.AddTool(&m_color_static, _T("当前的颜色"));
-	m_toolTip.AddTool(&m_color_static1, _T("天蓝色"));
-	m_toolTip.AddTool(&m_color_static2, _T("绿色"));
-	m_toolTip.AddTool(&m_color_static3, _T("橙色"));
-	m_toolTip.AddTool(&m_color_static4, _T("青绿色"));
-	m_toolTip.AddTool(&m_color_static5, _T("浅红色"));
-	m_toolTip.AddTool(&m_color_static6, _T("淡紫色"));
+	m_toolTip.AddTool(&m_color_static, CCommon::LoadText(IDS_CURRENT_COLOR));
+	m_toolTip.AddTool(&m_color_static1, CCommon::LoadText(IDS_LIGNT_BLUE));
+	m_toolTip.AddTool(&m_color_static2, CCommon::LoadText(IDS_GREEN));
+	m_toolTip.AddTool(&m_color_static3, CCommon::LoadText(IDS_ORANGE));
+	m_toolTip.AddTool(&m_color_static4, CCommon::LoadText(IDS_CYAN_GREEN));
+	m_toolTip.AddTool(&m_color_static5, CCommon::LoadText(IDS_PINK));
+	m_toolTip.AddTool(&m_color_static6, CCommon::LoadText(IDS_LIGHT_PURPLE));
 
 	DrawColor();
 
@@ -197,13 +197,13 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
 	//
 	m_show_album_cover_chk.SetCheck(m_data.show_album_cover);
-	m_album_cover_fit_combo.AddString(L"拉伸");
-	m_album_cover_fit_combo.AddString(L"填充");
-	m_album_cover_fit_combo.AddString(L"适应");
+	m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_STRETCH));
+	m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_FILL));
+	m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_ADAPT));
 	m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.album_cover_fit));
-	m_toolTip.AddTool(&m_album_cover_fit_combo, _T("拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"));
-	m_toolTip.AddTool(&m_use_out_image_chk, _T("如果无法从音频文件获取专辑封面，则尝试在音频文件所在目录下查找下面指定的文件名为专辑封面"));
-	m_toolTip.AddTool(GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT), _T("在此设置默认的专辑封面文件名，多个文件名之间使用半角逗号隔开"));
+	m_toolTip.AddTool(&m_album_cover_fit_combo, CCommon::LoadText(IDS_COVER_FIT_TIP_INFO));
+	m_toolTip.AddTool(&m_use_out_image_chk, CCommon::LoadText(IDS_USE_OUT_IMAGE_TIP_INFO));
+	m_toolTip.AddTool(GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT), CCommon::LoadText(IDS_DEFAULT_COVER_NAME_TIP_INFO));
 
 	SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());
 
@@ -315,7 +315,7 @@ void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
 		//if (m_data.theme_color.original_color == 0)
 		//	MessageBox(_T("警告：将主题颜色设置成黑色会使播放列表中正在播放的项目看不见！"), NULL, MB_ICONWARNING);
 		if(m_data.theme_color.original_color == RGB(255,255,255))
-			MessageBox(_T("警告：将主题颜色设置成白色会使进度条完全看不见！"), NULL, MB_ICONWARNING);
+			MessageBox(CCommon::LoadText(IDS_WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
 		m_color_static.SetFillColor(m_data.theme_color.original_color);
 		//设置了“更多颜色”之后，取消“跟随系统主题色”复选按钮的选中
 		m_data.theme_color_follow_system = false;

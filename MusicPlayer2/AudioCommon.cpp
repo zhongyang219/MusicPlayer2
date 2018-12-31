@@ -55,25 +55,25 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 {
 	CCommon::StringTransform(extension, false);
 	if (extension == L"mp3")
-		return wstring(L"MP3 音频文件");
+		return wstring(CCommon::LoadText(_T("MP3 "), IDS_AUDIO_FILE));
 	else if (extension == L"wma")
-		return wstring(L"Windows Media 音频文件");
+		return wstring(CCommon::LoadText(_T("Windows Media "), IDS_AUDIO_FILE));
 	else if (extension == L"wav")
-		return wstring(L"WAV 音频文件");
+		return wstring(CCommon::LoadText(_T("WAV "), IDS_AUDIO_FILE));
 	else if (extension == L"mid" || extension == L"midi")
-		return wstring(L"MIDI 序列");
+		return wstring(CCommon::LoadText(IDS_MINI_SEQUENCE));
 	else if (extension == L"ogg")
-		return wstring(L"OGG 音频文件");
+		return wstring(CCommon::LoadText(_T("OGG "), IDS_AUDIO_FILE));
 	else if (extension == L"m4a")
-		return wstring(L"MPEG-4 音频文件");
+		return wstring(CCommon::LoadText(_T("MPEG-4 "), IDS_AUDIO_FILE));
 	else if (extension == L"ape")
 		return wstring(L"Monkey's Audio (APE)");
 	else if (extension == L"aac")
 		return wstring(L"Advanced Audio Coding (AAC)");
 	else if (extension == L"cda")
-		return wstring(L"CD 音频文件 (CDA)");
+		return wstring(CCommon::LoadText(_T("CD "), IDS_AUDIO_FILE, _T(" (CDA)")));
 	else
-		return wstring(extension + L" 音频文件");
+		return wstring(extension + CCommon::LoadText(_T(" "), IDS_AUDIO_FILE).GetString());
 }
 
 void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file)
@@ -208,7 +208,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 				}
 				else
 				{
-					song_info.title = DEFAULT_TITLE;
+					song_info.title = CCommon::LoadText(IDS_DEFAULT_TITLE);
 				}
 				//查找曲目艺术家
 				index_artist = cue_file_contents.find("PERFORMER ", index_track + 6);
@@ -220,7 +220,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 				}
 				else
 				{
-					song_info.artist = DEFAULT_ARTIST;
+					song_info.artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
 				}
 				//查找曲目位置
 				index_pos = cue_file_contents.find("INDEX ", index_track + 6);
@@ -309,7 +309,7 @@ wstring CAudioCommon::GetGenre(BYTE genre)
 	if (genre < GENRE_MAX)
 		return GENRE_TABLE[genre];
 	else
-		return L"<未知流派>";
+		return CCommon::LoadText(IDS_DEFAULT_GENRE);
 }
 
 wstring CAudioCommon::GenreConvert(wstring genre)
@@ -347,7 +347,7 @@ wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)
 {
 	switch (ctype)
 	{
-	case 0: return L"未知";
+	case 0: return CCommon::LoadText(IDS_UNKNOW);
 	case 1: return L"SAMPLE";
 	case 2: return L"RECORD";
 	case 0x10000: return L"STREAM";
@@ -434,15 +434,15 @@ CString CAudioCommon::TrackToString(BYTE track)
 
 void CAudioCommon::ClearDefaultTagStr(SongInfo & song_info)
 {
-	if (song_info.title == DEFAULT_TITLE)
+	if (song_info.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
 		song_info.title.clear();
-	if (song_info.artist == DEFAULT_ARTIST)
+	if (song_info.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())
 		song_info.artist.clear();
-	if (song_info.album == DEFAULT_ALBUM)
+	if (song_info.album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
 		song_info.album.clear();
-	if (song_info.year == DEFAULT_YEAR)
+	if (song_info.year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
 		song_info.year.clear();
-	if (song_info.genre == DEFAULT_GENRE)
+	if (song_info.genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
 		song_info.genre.clear();
 }
 

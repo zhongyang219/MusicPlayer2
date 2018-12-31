@@ -148,11 +148,11 @@ BOOL CSetPathDlg::OnInitDialog()
 	width0 = width1 = (rect.Width() - 2*width2 - width4 - theApp.DPI(20)) / 2;
 
 	m_path_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_path_list.InsertColumn(0, _T("文件夹"), LVCFMT_LEFT, width0);		//插入第1列
-	m_path_list.InsertColumn(1, _T("路径"), LVCFMT_LEFT, width1);		//插入第2列
-	m_path_list.InsertColumn(2, _T("播放到第几首"), LVCFMT_LEFT, width2);		//插入第3列
-	m_path_list.InsertColumn(3, _T("曲目数"), LVCFMT_LEFT, width3);		//插入第4列
-	m_path_list.InsertColumn(4, _T("总时长"), LVCFMT_LEFT, width4);		//插入第5列
+	m_path_list.InsertColumn(0, CCommon::LoadText(IDS_FOLDER), LVCFMT_LEFT, width0);		//插入第1列
+	m_path_list.InsertColumn(1, CCommon::LoadText(IDS_PATH), LVCFMT_LEFT, width1);		//插入第2列
+	m_path_list.InsertColumn(2, CCommon::LoadText(IDS_TRACK_PLAYED), LVCFMT_LEFT, width2);		//插入第3列
+	m_path_list.InsertColumn(3, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width3);		//插入第4列
+	m_path_list.InsertColumn(4, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width4);		//插入第5列
 
 	ShowPathList();
 	m_path_list.SetFocus();		//初始时将焦点设置到列表控件
@@ -342,7 +342,7 @@ void CSetPathDlg::OnBrowsePath()
 void CSetPathDlg::OnClearInvalidPath()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (MessageBox(_T("确实要清除列表中无效的文件夹吗？"), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
+	if (MessageBox(CCommon::LoadText(IDS_CLEAR_PATH_INQUARY), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
 		return;
 	int cleard_cnt{};
 	for (size_t i{}; i < m_recent_path.size(); i++)
@@ -356,7 +356,7 @@ void CSetPathDlg::OnClearInvalidPath()
 	}
 	ShowPathList();		//重新显示路径列表
 	CString info;
-	info.Format(_T("完成，清除了 %d 个无效的文件夹。"), cleard_cnt);
+	info.Format(CCommon::LoadText(IDS_PATH_CLEAR_COMPLETE), cleard_cnt);
 	MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
 }
 

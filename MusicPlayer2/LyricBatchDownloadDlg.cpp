@@ -129,11 +129,11 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 	width4 = rect.Width() - width0 - width1 - width2 - width3 - theApp.DPI(21);
 	//插入列
 	m_song_list_ctrl.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_song_list_ctrl.InsertColumn(0, _T("序号"), LVCFMT_LEFT, width0);		//插入第1列
-	m_song_list_ctrl.InsertColumn(1, _T("标题"), LVCFMT_LEFT, width1);		//插入第2列
-	m_song_list_ctrl.InsertColumn(2, _T("艺术家"), LVCFMT_LEFT, width2);		//插入第3列
-	m_song_list_ctrl.InsertColumn(3, _T("文件名"), LVCFMT_LEFT, width3);		//插入第3列
-	m_song_list_ctrl.InsertColumn(4, _T("状态"), LVCFMT_LEFT, width4);		//插入第4列
+	m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第1列
+	m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width1);		//插入第2列
+	m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//插入第3列
+	m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width3);		//插入第3列
+	m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_STATE), LVCFMT_LEFT, width4);		//插入第4列
 	//插入项目
 	for (size_t i{}; i<m_playlist.size(); i++)
 	{
@@ -216,6 +216,7 @@ void CLyricBatchDownloadDlg::OnBnClickedDownloadTrasnlateCheck2()
 //工作线程函数
 UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 {
+	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	ThreadInfo* pInfo = (ThreadInfo*)lpParam;
 
 	//依次下载列表中每一首歌曲的歌词
@@ -224,11 +225,11 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		if (theApp.m_batch_download_dialog_exit)
 			return 0;
 		CString info;
-		info.Format(_T("正在下载歌词，已完成 %d%%，请稍候……"), i * 100 / pInfo->playlist->size());
+		info.Format(CCommon::LoadText(IDS_LYRIC_BATCH_DOWNLOADING_INFO), i * 100 / pInfo->playlist->size());
 		pInfo->static_ctrl->SetWindowText(info);
 		//SetDlgItemText(IDC_INFO_STATIC, info);
 
-		pInfo->list_ctrl->SetItemText(i, 4, _T("正在下载…"));
+		pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_DOWNLOADING));
 		pInfo->list_ctrl->EnsureVisible(i, FALSE);
 
 		//设置要保存的歌词的路径
@@ -249,7 +250,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		bool lyric_exist = CCommon::FileExist(lyric_path) || (!pInfo->playlist->at(i).lyric_file.empty());
 		if (pInfo->skip_exist && lyric_exist)		//如果设置了跳过已存在歌词的曲目，并且歌词已经存在，则跳过它
 		{
-			pInfo->list_ctrl->SetItemText(i, 4, _T("已跳过"));
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_SKIPED));
 			continue;
 		}
 
@@ -257,13 +258,13 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		wstring search_result;		//查找歌曲返回的结果
 		wstring lyric_str;			//下载好的歌词
 		wstring keyword;		//查找的关键字
-		if (pInfo->playlist->at(i).title == DEFAULT_TITLE)		//如果没有标题信息，就把文件名设为搜索关键字
+		if (pInfo->playlist->at(i).title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())		//如果没有标题信息，就把文件名设为搜索关键字
 		{
 			keyword = pInfo->playlist->at(i).file_name;
 			size_t index = keyword.rfind(L'.');		//查找最后一个点
 			keyword = keyword.substr(0, index);		//去掉扩展名
 		}
-		else if (pInfo->playlist->at(i).artist == DEFAULT_ARTIST)	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
+		else if (pInfo->playlist->at(i).artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
 		{
 			keyword = pInfo->playlist->at(i).title;
 		}
@@ -281,7 +282,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 			return 0;
 		if (rtn != 0)
 		{
-			pInfo->list_ctrl->SetItemText(i, 4, _T("网络连接失败或超时"));
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_NETWORK_CONNECTION_FAILED));
 			continue;
 		}
 
@@ -290,7 +291,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		CInternetCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
 		if (down_list.empty())
 		{
-			pInfo->list_ctrl->SetItemText(i, 4, _T("找不到此歌曲"));
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG));
 			continue;
 		}
 
@@ -298,13 +299,13 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		wstring title = pInfo->playlist->at(i).title;
 		wstring artist = pInfo->playlist->at(i).artist;
 		wstring album = pInfo->playlist->at(i).album;
-		if (title == DEFAULT_TITLE) title.clear();
-		if (artist == DEFAULT_ARTIST) artist.clear();
-		if (album == DEFAULT_ALBUM) album.clear();
+		if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString()) title.clear();
+		if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()) artist.clear();
+		if (album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString()) album.clear();
 		int best_matched = CInternetCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).file_name, true);
 		if (best_matched < 0)
 		{
-			pInfo->list_ctrl->SetItemText(i, 4, _T("没有匹配的歌词"));
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
 			continue;
 		}
 
@@ -312,14 +313,14 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		CLyricDownloadCommon::DownloadLyric(down_list[best_matched].id, lyric_str, pInfo->download_translate);
 		if (lyric_str.empty())
 		{
-			pInfo->list_ctrl->SetItemText(i, 4, _T("歌词下载失败"));
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_LYRIC_DOWNLOAD_FAILED));
 			continue;
 		}
 
 		//处理歌词文本
 		if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
 		{
-			pInfo->list_ctrl->SetItemText(i, 4, _T("该歌曲没有歌词"));
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_SONG_NO_LYRIC));
 			continue;
 		}
 
@@ -328,9 +329,9 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
 		//保存歌词
 		if (CLyricBatchDownloadDlg::SaveLyric(lyric_path.c_str(), lyric_str, pInfo->save_code))
-			pInfo->list_ctrl->SetItemText(i, 4, _T("成功，但是歌词中有无法转换的Unicode字符，建议保存为UTF-8格式"));		//如果函数返回true，则说明有无法转换的Unicode字符
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_DOWNLOAD_ENCODE_WARNING));		//如果函数返回true，则说明有无法转换的Unicode字符
 		else
-			pInfo->list_ctrl->SetItemText(i, 4, _T("成功"));
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_SUCCESSED));
 		if (pInfo->download_translate)
 		{
 			CLyrics lyrics{ lyric_path };		//打开保存过的歌词
@@ -347,7 +348,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
 afx_msg LRESULT CLyricBatchDownloadDlg::OnBatchDownloadComplate(WPARAM wParam, LPARAM lParam)
 {
-	SetDlgItemText(IDC_INFO_STATIC, _T("下载完成。"));
+	SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_DOWNLOAD_COMPLETE));
 	//下载完成后重新载入歌词
 	theApp.m_player.SearchLyrics();
 	theApp.m_player.IniLyrics();
@@ -375,7 +376,7 @@ void CLyricBatchDownloadDlg::OnCancel()
 		rtn = WaitForSingleObject(m_pThread->m_hThread, 2000);	//等待线程退出
 #ifdef DEBUG
 		CString info;
-		info.Format(_T("WaitForSingleObject函数的返回值为%x。"), rtn);
+		info.Format(CCommon::LoadText(IDS_RETURN_VALUE_OF_WAIT_FOR_SINGLE_OBJECT), rtn);
 		MessageBox(info, NULL, MB_ICONINFORMATION);
 #endif // DEBUG
 

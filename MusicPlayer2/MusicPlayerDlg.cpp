@@ -28,7 +28,6 @@ public:
 #endif
 
 protected:
-	CStatic m_static_version;
 	CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -51,7 +50,6 @@ CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_STATIC_VERSION, m_static_version);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
@@ -65,18 +63,24 @@ BOOL CAboutDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+
 	CString version_info;
-	const wchar_t* version = VERSION;
+	GetDlgItemText(IDC_STATIC_VERSION, version_info);
+	version_info.Replace(_T("<version>"), VERSION);
 #ifdef COMPILE_IN_WIN_XP
-	version_info.Format(_T("MusicPlayer2，%s 版 (for WinXP)"), version);
-#else
-	version_info.Format(_T("MusicPlayer2，%s 版"), version);
-#endif
-	m_static_version.SetWindowText(version_info);
+	version_info += _T(" (For WinXP)");
+#endif // COMPILE_FOR_WINXP
+	SetDlgItemText(IDC_STATIC_VERSION, version_info);
+
+	//设置最后编译日期
+	CString temp_str;
+	GetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
+	temp_str.Replace(_T("<compile_date>"), COMPILE_DATE);
+	SetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
 
 	m_tool_tip.Create(this);
-	m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), _T("向作者发送电子邮件\r\nmailto:zhongyang219@hotmail.com"));
-	m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), _T("转到此项目在GitHub上的页面\r\nhttps://github.com/zhongyang219/MusicPlayer2"));
+	m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), CCommon::LoadText(IDS_SEND_EMAIL_TO_ATHOUR,_T("\r\nmailto:zhongyang219@hotmail.com")));
+	m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), CCommon::LoadText(IDS_GOTO_GITHUB, _T("\r\nhttps://github.com/zhongyang219/MusicPlayer2")));
 	m_tool_tip.SetDelayTime(300);	//设置延迟
 	m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
@@ -378,7 +382,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_display_format = static_cast<DisplayFormat>(ini.GetInt(_T("config"), _T("playlist_display_format"), 2));
 	theApp.m_lyric_setting_data.show_lyric_in_cortana = ini.GetBool(_T("config"), _T("show_lyric_in_cortana"), 0);
 	theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(_T("config"), _T("save_lyric_in_offset"), 0);
-	theApp.m_app_setting_data.lyric_font_name = ini.GetString(L"config", L"font", L"微软雅黑");
+	theApp.m_app_setting_data.lyric_font_name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
 	theApp.m_app_setting_data.lyric_font_size = ini.GetInt(L"config", L"font_size", 10);
 	theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 2);
 	theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 100);
@@ -692,7 +696,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #ifndef COMPILE_IN_WIN_XP
 		//更新任务栏缩略图上“播放/暂停”的图标
 		m_thumbButton[1].hIcon = m_hPauseIcon;
-		wcscpy_s(m_thumbButton[1].szTip, _T("暂停"));
+		wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PAUSE));
 		//更新任务按钮上的播放状态图标
 		if(theApp.m_play_setting_data.show_playstate_icon)
 			m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPlayIcon_s, L"");
@@ -701,14 +705,14 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPauseIcon_s, FALSE);
-		m_play_pause_button.SetWindowText(_T("暂停(&P)"));
+		m_play_pause_button.SetWindowText(CCommon::LoadText(IDS_PAUSE2));
 	}
 	else
 	{
 #ifndef COMPILE_IN_WIN_XP
 		//更新任务栏缩略图上“播放/暂停”的图标
 		m_thumbButton[1].hIcon = m_hPlayIcon;
-		wcscpy_s(m_thumbButton[1].szTip, _T("播放"));
+		wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
 		//更新任务按钮上的播放状态图标
 		if (theApp.m_play_setting_data.show_playstate_icon && theApp.m_player.GetPlayingState2() == 1)
 			m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPauseIcon_s, L"");
@@ -717,7 +721,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #endif
 		//更新主界面上“播放/暂停”的图标
 		m_play_pause_button.SetImage(m_hPlayIcon_s, FALSE);
-		m_play_pause_button.SetWindowText(_T("播放(&P)"));
+		m_play_pause_button.SetWindowText(CCommon::LoadText(IDS_PLAY2));
 	}
 #ifndef COMPILE_IN_WIN_XP
 	m_pTaskbar->ThumbBarUpdateButtons(m_hWnd, 3, m_thumbButton);
@@ -747,17 +751,17 @@ void CMusicPlayerDlg::CreateDesktopShortcut()
 	{
 		wstring shortcut_path;
 
-		if (MessageBox(_T("你可能是第一次运行此程序，是否要在桌面上创建程序的快捷方式？"), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+		if (MessageBox(CCommon::LoadText(IDS_CREATE_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
 		{
-			if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("音乐播放器.lnk")))
+			if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
 			{
 				CString info;
-				info.Format(_T("已经在“%s”路径下创建了程序的快捷方式。"), theApp.m_desktop_path.c_str());
+				info.Format(CCommon::LoadText(IDS_SHORTCUT_CREATED), theApp.m_desktop_path.c_str());
 				MessageBox(info, NULL, MB_ICONINFORMATION);
 			}
 			else
 			{
-				MessageBox(_T("快捷方式创建失败！"), NULL, MB_ICONWARNING);
+				MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
 			}
 		}
 	}
@@ -856,7 +860,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	if (pSysMenu != NULL)
 	{
 		pSysMenu->AppendMenu(MF_SEPARATOR);
-		pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE,_T("迷你模式(&I)\tCtrl+M"));
+		pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE,CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
 		pSysMenu->AppendMenu(MF_SEPARATOR);
 
 		CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), GetMenu()->GetSafeHmenu());		//将主菜单添加到系统菜单
@@ -923,12 +927,12 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
-	m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), _T("选择最近播放过的文件夹"));
+	m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_SELECT_RENENT_FOLDER));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_DOWN), _T("减小音量"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
-	m_Mytip.AddTool(&m_time_static, _T("播放时间"));
-	m_Mytip.AddTool(&m_clear_search_button, _T("清除搜索结果"));
-	m_Mytip.AddTool(&m_search_edit, _T("键入要搜索的关键词"));
+	m_Mytip.AddTool(&m_time_static, CCommon::LoadText(IDS_PLAY_TIME));
+	m_Mytip.AddTool(&m_clear_search_button, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
+	m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
 	m_ui.SetToolTip(&m_Mytip);
 	m_ui2.SetToolTip(&m_Mytip);
 
@@ -938,7 +942,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
 
-	m_search_edit.SetCueBanner(_T("在此处键入搜索(F)"), TRUE);
+	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
 	CoInitialize(0);	//初始化COM组件，用于支持任务栏显示进度和缩略图按钮
 #ifndef COMPILE_IN_WIN_XP
@@ -957,19 +961,19 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_thumbButton[0].dwMask = dwMask;
 	m_thumbButton[0].iId = IDT_PREVIOUS;
 	m_thumbButton[0].hIcon = m_hPreviousIcon;
-	wcscpy_s(m_thumbButton[0].szTip, _T("上一曲"));
+	wcscpy_s(m_thumbButton[0].szTip, CCommon::LoadText(IDS_PREVIOUS));
 	m_thumbButton[0].dwFlags = THBF_ENABLED;
 	//播放/暂停按钮
 	m_thumbButton[1].dwMask = dwMask;
 	m_thumbButton[1].iId = IDT_PLAY_PAUSE;
 	m_thumbButton[1].hIcon = m_hPlayIcon;
-	wcscpy_s(m_thumbButton[1].szTip, _T("播放"));
+	wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
 	m_thumbButton[1].dwFlags = THBF_ENABLED;
 	//下一曲按钮
 	m_thumbButton[2].dwMask = dwMask;
 	m_thumbButton[2].iId = IDT_NEXT;
 	m_thumbButton[2].hIcon = m_hNextIcon;
-	wcscpy_s(m_thumbButton[2].szTip, _T("下一曲"));
+	wcscpy_s(m_thumbButton[2].szTip, CCommon::LoadText(IDS_NEXT));
 	m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
 
@@ -983,7 +987,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//设置主界面上的按钮图标
 	m_play_pause_button.SetFont(this->GetFont());
 	m_play_pause_button.SetImage(m_hPlayIcon_s, FALSE);
-	m_play_pause_button.SetWindowText(_T("播放(&P)"));
+	m_play_pause_button.SetWindowText(CCommon::LoadText(IDS_PLAY2));
 
 	m_previous_button.SetFont(this->GetFont());
 	m_previous_button.SetImage(m_hPreviousIcon_s);
@@ -1139,7 +1143,19 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 			m_window_width = rect.Width();
 			m_window_height = rect.Height();
 		}
+
+		//窗口大小变化时更新界面鼠标提示的位置
+		static UINT last_type;
+		if (last_type!=nType)
+		{
+			if (m_pUI != nullptr)
+				DrawInfo();
+		}
+		last_type = nType;
+		m_pUI->UpdateToolTipPosition();
 	}
+
+
 
 	// TODO: 在此处添加消息处理程序代码
 }
@@ -1247,20 +1263,20 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 				int progress = theApp.m_player.m_Lyrics.GetLyricProgress(time);
 				if (theApp.m_player.m_Lyrics.IsTranslated() && m_ui_data.show_translate)
 				{
-					if (lyric.text.empty()) lyric.text = DEFAULT_LYRIC_TEXT;
-					if (lyric.translate.empty()) lyric.translate = DEFAULT_LYRIC_TEXT;
+					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+					if (lyric.translate.empty()) lyric.translate = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 					m_cortana_lyric.DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
 				}
 				else if (!theApp.m_lyric_setting_data.cortana_lyric_double_line)
 				{
-					if (lyric.text.empty()) lyric.text = DEFAULT_LYRIC_TEXT;
+					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 					m_cortana_lyric.DrawCortanaText(lyric.text.c_str(), progress);
 				}
 				else
 				{
 					wstring next_lyric = theApp.m_player.m_Lyrics.GetLyric(time, 1).text;
-					if (lyric.text.empty()) lyric.text = DEFAULT_LYRIC_TEXT_CORTANA;
-					if (next_lyric.empty()) next_lyric = DEFAULT_LYRIC_TEXT_CORTANA;
+					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+					if (next_lyric.empty()) next_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
 					m_cortana_lyric.DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
 				}
 			}
@@ -1272,13 +1288,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 				//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
 				if (index != theApp.m_player.GetIndex() || song_name != theApp.m_player.GetFileName())
 				{
-					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), true, theApp.DPI(2));
+					m_cortana_lyric.DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str()), true, theApp.DPI(2));
 					index = theApp.m_player.GetIndex();
 					song_name = theApp.m_player.GetFileName();
 				}
 				else
 				{
-					m_cortana_lyric.DrawCortanaText((L"正在播放：" + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format)).c_str(), false, theApp.DPI(2));
+					m_cortana_lyric.DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str()), false, theApp.DPI(2));
 				}
 			}
 			//}
@@ -1429,7 +1445,7 @@ void CMusicPlayerDlg::OnFind()
 			{
 				//如果文件不存在，则弹出错误信息
 				CString info;
-				info.Format(_T("找不到文件“%s”！可能已经被移动或删除。"), selected_song_path.c_str());
+				info.Format(CCommon::LoadText(IDS_CONNOT_FIND_FILE), selected_song_path.c_str());
 				MessageBox(info, NULL, MB_ICONWARNING);
 				return;
 			}
@@ -1642,7 +1658,7 @@ void CMusicPlayerDlg::OnFileOpen()
 	// TODO: 在此添加命令处理程序代码
 	vector<wstring> files;	//储存打开的多个文件路径
 	//设置过滤器
-	wstring filter(L"所有支持的音频格式|");
+	wstring filter(CCommon::LoadText(IDS_ALL_SUPPORTED_FORMAT, _T("|")));
 	for (const auto& ext : CAudioCommon::m_all_surpported_extensions)
 	{
 		filter += L"*.";
@@ -1658,7 +1674,7 @@ void CMusicPlayerDlg::OnFileOpen()
 		filter += format.extensions_list;
 		filter.push_back(L'|');
 	}
-	filter += L"所有文件|*.*||";
+	filter += CCommon::LoadText(IDS_ALL_FILES, _T("|*.*||"));
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), this);
 	//设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）
@@ -1692,7 +1708,7 @@ void CMusicPlayerDlg::OnFileOpenFolder()
 
 #ifdef COMPILE_IN_WIN_XP
 	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-	folderPickerDlg.SetInfo(_T("请选择一个文件夹，文件夹里的所有音频文件都将添加到播放列表。"));
+	folderPickerDlg.SetInfo(CCommon::LoadText(IDS_OPEN_FOLDER_INFO));
 #else
 	CFilePathHelper current_path(theApp.m_player.GetCurrentDir());
 	CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
@@ -2212,7 +2228,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 	if (m_items_selected.size() > 1)
 	{
 		CString info;
-		info.Format(_T("确实要删除选中的 %d 首歌曲吗？"), m_items_selected.size());
+		info.Format(CCommon::LoadText(IDS_DELETE_FILE_INQUARY), m_items_selected.size());
 		if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
 			return;
 		if(CCommon::IsItemInVector(m_items_selected, theApp.m_player.GetIndex()))	//如果选中的文件中有正在播放的文件，则删除前必须先关闭文件
@@ -2274,7 +2290,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 	}
 	else
 	{
-		MessageBox(_T("无法删除文件！"), NULL, MB_ICONWARNING);
+		MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
 	}
 }
 
@@ -2438,7 +2454,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
 	if (!CCommon::CopyStringToClipboard(lyric_str))
 	//	MessageBox(_T("当前歌词已成功复制到剪贴板。"), NULL, MB_ICONINFORMATION);
 	//else
-		MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+		MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 }
 
 
@@ -2446,9 +2462,9 @@ void CMusicPlayerDlg::OnCopyAllLyric()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (CCommon::CopyStringToClipboard(theApp.m_player.m_Lyrics.GetAllLyricText(m_ui_data.show_translate)))
-		MessageBox(_T("已复制全部歌词到剪贴板。"), NULL, MB_ICONINFORMATION);
+		MessageBox(CCommon::LoadText(IDS_ALL_LRYIC_COPIED), NULL, MB_ICONINFORMATION);
 	else
-		MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+		MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 }
 
 
@@ -2602,7 +2618,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 	if (!title.IsEmpty())
 		title += _T(" - ");
 	#ifdef _DEBUG
-		title += _T("MusicPlayer2 (DEBUG模式)");
+		title += CCommon::LoadText(_T("MusicPlayer2 "), IDS_DEBUG_MODE);
 	#else
 		title += _T("MusicPlayer2");
 	#endif
@@ -2630,6 +2646,7 @@ void CMusicPlayerDlg::OnExploreOnline()
 
 UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 {
+	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	//此命令用于跳转到歌曲对应的网易云音乐的在线页面
 	int item_selected = (int)lpParam;
 	if (item_selected >= 0 && item_selected < theApp.m_player.GetSongNum())
@@ -2656,11 +2673,12 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 
 UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 {
+	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	//CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
 	const SongInfo& song{ theApp.m_player.GetCurrentSongInfo() };
 	if (theApp.m_general_setting_data.auto_download_only_tag_full)		//设置了“仅当歌曲信息完整进才自动下载”时，如果歌曲标题和艺术家有一个为空，则不自动下载
 	{
-		if ((song.title.empty() || song.title == DEFAULT_TITLE) || (song.artist.empty() || song.artist == DEFAULT_ARTIST))
+		if ((song.title.empty() || song.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString()) || (song.artist.empty() || song.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
 			return 0;
 	}
 
@@ -2791,7 +2809,7 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 {
 	// TODO: 在此添加命令处理程序代码
 	//设置过滤器
-	const wchar_t* szFilter = L"所有文件(*.*)|*.*||";
+	const wchar_t* szFilter = CCommon::LoadText(IDS_ALL_FILES, _T("(*.*)|*.*||"));
 	//设置另存为时的默认文件名
 	CString file_name;
 	CString extension;
@@ -2835,9 +2853,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lPara
 {
 	if (theApp.m_nc_setting_data.no_sf2_warning)
 	{
-		if (MessageBox(_T("你正在播放 MIDI 音乐，但是由于没有正确载入 MIDI 音色库，因此你将听不到任何声音。"
-			"请在菜单“工具”——“选项”——“常规设置”的“MIDI 音色库路径”中选择正确的MIDI 音色库路径。"
-			"点击“取消”不再提示。"), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+		if (MessageBox(CCommon::LoadText(IDS_NO_MIDI_SF2_WARNING), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
 			theApp.m_nc_setting_data.no_sf2_warning = false;
 	}
 	return 0;
@@ -2911,7 +2927,7 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
 void CMusicPlayerDlg::OnCopyFileTo()
 {
 	// TODO: 在此添加命令处理程序代码
-	LPCTSTR title{ _T("选择复制的目标文件夹") };
+	LPCTSTR title{ CCommon::LoadText(IDS_SELECT_COPY_TARGET_FOLDER) };
 #ifdef COMPILE_IN_WIN_XP
 	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
 	folderPickerDlg.SetInfo(title);
@@ -2943,7 +2959,7 @@ void CMusicPlayerDlg::OnCopyFileTo()
 void CMusicPlayerDlg::OnMoveFileTo()
 {
 	// TODO: 在此添加命令处理程序代码
-	LPCTSTR title{ _T("选择移动的目标文件夹") };
+	LPCTSTR title{ CCommon::LoadText(IDS_SELECT_MOVE_TARGET_FOLDER) };
 #ifdef COMPILE_IN_WIN_XP
 	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
 	folderPickerDlg.SetInfo(title);
@@ -3085,4 +3101,5 @@ void CMusicPlayerDlg::OnSwitchUi()
 	SetThumbnailClipArea();
 	m_ui.UpdateRepeatModeToolTip();
 	m_ui2.UpdateRepeatModeToolTip();
+	m_pUI->UpdateToolTipPosition();
 }

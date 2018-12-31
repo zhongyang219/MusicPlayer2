@@ -108,6 +108,7 @@ using std::map;
 #define MAX_SONG_NUM 9999		//播放列表中文件数量的最大值
 
 #define VERSION L"2.62"	//程序版本
+#define COMPILE_DATE L"2018/12/30"
 
 //任务栏图按钮
 #define IDT_PLAY_PAUSE 1321		//任务栏缩略图“播放/暂停”按钮的ID
@@ -130,15 +131,15 @@ using std::map;
 #define SPECTRUM_ROW 64			//频谱分析柱形的条数（必须为2的整数次方且小于或等于FFT_SAMPLE）
 
 //获取不到歌曲标签时的默认字符串
-#define DEFAULT_TITLE L"<未知标题>"
-#define DEFAULT_ARTIST L"<未知艺术家>"
-#define DEFAULT_ALBUM L"<未知唱片集>"
-#define DEFAULT_YEAR L"<未知年份>"
-#define DEFAULT_GENRE L"<未知流派>"
+//#define CCommon::LoadText(IDS_DEFAULT_TITLE) L"<未知标题>"
+//#define CCommon::LoadText(IDS_DEFAULT_ARTIST) L"<未知艺术家>"
+//#define CCommon::LoadText(IDS_DEFAULT_ALBUM) L"<未知唱片集>"
+//#define CCommon::LoadText(IDS_DEFAULT_YEAR) L"<未知年份>"
+//#define CCommon::LoadText(IDS_DEFAULT_GENRE) L"<未知流派>"
 
 //一句歌词为空白时的默认显示文本
-#define DEFAULT_LYRIC_TEXT L"……"
-#define DEFAULT_LYRIC_TEXT_CORTANA L"Music …"
+//#define CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT) L"……"
+//#define CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA) L"Music …"
 
 #define IDC_SAVE_COMBO_BOX 1990		//定义添加到“另存为”对话框中的组合框的ID
 

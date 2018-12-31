@@ -122,19 +122,19 @@ void CLyricEditDlg::UpdateStatusbarInfo()
 {
 	CString str;
 	//显示字符数
-	str.Format(_T("共%d个字符"), m_lyric_string.size());
+	str.Format(CCommon::LoadText(IDS_CHARACTER_TOTAL), m_lyric_string.size());
 	m_status_bar.SetText(str, 0, 0);
 
 	//显示是否修改
-	m_status_bar.SetText(m_modified ? _T("已修改") : _T("未修改"), 1, 0);
+	m_status_bar.SetText(m_modified ? CCommon::LoadText(IDS_MODIFIED) : CCommon::LoadText(IDS_UNMODIFIED), 1, 0);
 
 	//显示编码格式
-	str = _T("编码格式：");
+	str = CCommon::LoadText(IDS_ENCODE_FORMAT, _T(": "));
 	switch (m_code_type)
 	{
 	case CodeType::ANSI: str += _T("ANSI"); break;
 	case CodeType::UTF8: str += _T("UTF8"); break;
-	case CodeType::UTF8_NO_BOM: str += _T("UTF8无BOM"); break;
+	case CodeType::UTF8_NO_BOM: str += CCommon::LoadText(IDS_UTF8_NO_BOM); break;
 	case CodeType::UTF16: str += _T("UTF16"); break;
 	}
 	m_status_bar.SetText(str, 2, 0);
@@ -209,7 +209,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_current_song_name = theApp.m_player.GetFileName();
 
 	//初始化编辑区字体
-	m_font.CreatePointFont(100, _T("微软雅黑"));
+	m_font.CreatePointFont(100, CCommon::LoadText(IDS_DEFAULT_FONT));
 	m_lyric_edit.SetFont(&m_font);
 
 	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
@@ -421,7 +421,7 @@ void CLyricEditDlg::OnClose()
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (m_modified)
 	{
-		int rtn = MessageBox(_T("歌词已更改，是否要保存？"), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
+		int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
 		switch (rtn)
 		{
 		case IDYES: SaveLyric(m_lyric_path.c_str(), m_code_type);
@@ -445,7 +445,7 @@ void CLyricEditDlg::OnLyricOpen()
 	// TODO: 在此添加命令处理程序代码
 	if (m_modified)
 	{
-		int rtn = MessageBox(_T("歌词已更改，是否要保存？"), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
+		int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
 		switch (rtn)
 		{
 		case IDYES: SaveLyric(m_lyric_path.c_str(), m_code_type); m_modified = false; break;
@@ -455,7 +455,7 @@ void CLyricEditDlg::OnLyricOpen()
 	}
 
 	//设置过滤器
-	LPCTSTR szFilter = _T("lrc歌词文件(*.lrc)|*.lrc|文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+	LPCTSTR szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, _T("txt"), NULL, 0, szFilter, this);
 	//显示打开文件对话框
@@ -481,14 +481,14 @@ void CLyricEditDlg::OnLyricSaveAs()
 {
 	// TODO: 在此添加命令处理程序代码
 	//设置过滤器
-	const wchar_t* szFilter = _T("lrc歌词文件(*.lrc)|*.lrc|文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+	const wchar_t* szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
 	//构造保存文件对话框
 	CFileDialog fileDlg(FALSE, _T("txt"), m_lyric_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 	//为“另存为”对话框添加一个组合选择框
 	fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
 	//为组合选择框添加项目
-	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, _T("以ANSI格式保存"));
-	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, _T("以UTF-8格式保存"));
+	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, CCommon::LoadText(IDS_SAVE_AS_ANSI));
+	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, CCommon::LoadText(IDS_SAVE_AS_UTF8));
 	//为组合选择框设置默认选中的项目
 	DWORD default_selected{ 0 };
 	if (m_code_type == CodeType::UTF8 || m_code_type == CodeType::UTF8_NO_BOM)
@@ -599,7 +599,7 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 			if (replace_count != 0)
 			{
 				CString info;
-				info.Format(_T("替换完成，共替换%d个字符串。"), replace_count);
+				info.Format(CCommon::LoadText(IDS_REPLACE_COMPLETE_INFO), replace_count);
 				MessageBox(info, NULL, MB_ICONINFORMATION);
 			}
 		}
@@ -622,7 +622,7 @@ void CLyricEditDlg::OnFindNext()
 	if (m_find_index == string::npos)
 	{
 		CString info;
-		info.Format(_T("找不到“%s”"), m_find_str.c_str());
+		info.Format(CCommon::LoadText(IDS_CONNOT_FIND_STRING), m_find_str.c_str());
 		MessageBox(info, NULL, MB_OK | MB_ICONINFORMATION);
 		m_find_flag = false;
 	}
@@ -741,35 +741,39 @@ BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR * pNMHDR, LRESULT * pResult)
 {
 	TOOLTIPTEXT* pT = (TOOLTIPTEXT*)pNMHDR; //将pNMHDR转换成TOOLTIPTEXT指针类型数据
 	UINT nID = pNMHDR->idFrom;  //获取工具条上按钮的ID
+	wchar_t buff[256];
 	switch (nID)
 	{
 	case ID_LYRIC_INSERT_TAG:
-		pT->lpszText = _T("插入时间标签 (F8)");
+		LoadString(theApp.m_hInstance, IDS_INSERT_TIME_TAG_TIP, buff, 256);
 		break;
 	case ID_LYRIC_REPLACE_TAG:
-		pT->lpszText = _T("替换时间标签 (F9)");
+		LoadString(theApp.m_hInstance, IDS_REPLACE_TIME_TAG_TIP, buff, 256);
 		break;
 	case ID_LYRIC_DELETE_TAG:
-		pT->lpszText = _T("删除时间标签 (Ctrl+Del)");
+		LoadString(theApp.m_hInstance, IDS_DELETE_TIME_TAG_TIP, buff, 256);
 		break;
 	case ID_LYRIC_SAVE:
-		pT->lpszText = _T("保存 (Ctrl+S)");
+		LoadString(theApp.m_hInstance, IDS_SAVE_TIP, buff, 256);
 		break;
 	case ID_PLAY_PAUSE:
-		pT->lpszText = _T("播放/暂停 (Ctrl+P)");
+		LoadString(theApp.m_hInstance, IDS_PLAY_PAUSE_TIP, buff, 256);
 		break;
 	case ID_REW:
-		pT->lpszText = _T("快退 (Ctrl+←)");
+		LoadString(theApp.m_hInstance, IDS_REWIND_TIP, buff, 256);
 		break;
 	case ID_FF:
-		pT->lpszText = _T("快进 (Ctrl+→)");
+		LoadString(theApp.m_hInstance, IDS_FAST_FOWARD_TIP, buff, 256);
 		break;
 	case ID_LYRIC_FIND:
-		pT->lpszText = _T("查找 (Ctrl+F)");
+		LoadString(theApp.m_hInstance, IDS_FIND_TIP, buff, 256);
 		break;
 	case ID_LYRIC_REPLACE:
-		pT->lpszText = _T("替换 (Ctrl+H)");
+		LoadString(theApp.m_hInstance, IDS_REPLACE_TIP, buff, 256);
 		break;
+
 	}
+	pT->lpszText = buff;
+
 	return 0;
 }

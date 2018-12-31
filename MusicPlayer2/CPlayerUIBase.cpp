@@ -167,7 +167,7 @@ void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area, bool midi_lyric)
 	}
 	else if (theApp.m_player.m_Lyrics.IsEmpty())
 	{
-		m_draw.DrawWindowText(lyric_area, _T("当前歌曲没有歌词"), m_colors.color_text_2, Alignment::CENTER);
+		m_draw.DrawWindowText(lyric_area, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
 	}
 	else
 	{
@@ -274,21 +274,21 @@ void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect, bool midi_lyric)
 	}
 	else if (theApp.m_player.m_Lyrics.IsEmpty())
 	{
-		m_draw.DrawWindowText(rect, _T("当前歌曲没有歌词"), m_colors.color_text_2, Alignment::CENTER);
+		m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
 	}
 	else
 	{
 		CRect lyric_rect = rect;
 		CLyrics::Lyric current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0) };	//获取当歌词
 		if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
-			current_lyric.text = DEFAULT_LYRIC_TEXT;
+			current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 		int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 
 		if ((!theApp.m_player.m_Lyrics.IsTranslated() || !m_ui_data.show_translate) && rect.Height() > static_cast<int>(m_lyric_text_height*1.73))
 		{
 			wstring next_lyric_text = theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 1).text;
 			if (next_lyric_text.empty())
-				next_lyric_text = DEFAULT_LYRIC_TEXT;
+				next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 			DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress);
 		}
 		else
@@ -322,7 +322,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 	{
 		static CDrawCommon::ScrollInfo scroll_info0;
 		CString info;
-		info.Format(_T("找到%d首歌曲，正在读取音频文件信息，已完成%d%%，请稍候……"), theApp.m_player.GetSongNum(), theApp.m_player.m_thread_info.process_percent);
+		info.Format(CCommon::LoadText(IDS_PLAYLIST_INIT_INFO), theApp.m_player.GetSongNum(), theApp.m_player.m_thread_info.process_percent);
 		m_draw.DrawScrollText(rect, info, m_colors.color_text, theApp.DPI(1.5), false, scroll_info0, reset);
 	}
 	else
@@ -428,11 +428,11 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 				m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
 			else if (pUIData!=nullptr && pUIData->show_translate)
 				m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
-			m_draw.DrawWindowText(translate_rect, L"译", m_colors.color_text, Alignment::CENTER);
+			m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), m_colors.color_text, Alignment::CENTER);
 		}
 		else
 		{
-			m_draw.DrawWindowText(translate_rect, L"译", GRAY(200), Alignment::CENTER);
+			m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), GRAY(200), Alignment::CENTER);
 		}
 		m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(translate_rect, m_draw_rect);
 
@@ -467,7 +467,7 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 	wchar_t buff[64];
 	rc_tmp.right = rc_tmp.left;
 	rc_tmp.left = rc_tmp.right - theApp.DPI(72);
-	swprintf_s(buff, L"音量：%d%%", theApp.m_player.GetVolume());
+	swprintf_s(buff, CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), theApp.m_player.GetVolume());
 	if (m_buttons[BTN_VOLUME].hover)		//鼠标指向音量区域时，以另外一种颜色显示
 		m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_heighlight);
 	else
@@ -573,19 +573,20 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool dr
 
 void CPlayerUIBase::SetRepeatModeToolTipText()
 {
+	m_repeat_mode_tip = CCommon::LoadText(IDS_REPEAT_MODE, _T(": "));
 	switch (theApp.m_player.GetRepeatMode())
 	{
 	case RepeatMode::RM_PLAY_ORDER:
-		m_repeat_mode_tip = _T("循环模式：顺序播放");
+		m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_ODER);
 		break;
 	case RepeatMode::RM_LOOP_PLAYLIST:
-		m_repeat_mode_tip = _T("循环模式：列表循环");
+		m_repeat_mode_tip += CCommon::LoadText(IDS_LOOP_PLAYLIST);
 		break;
 	case RepeatMode::RM_LOOP_TRACK:
-		m_repeat_mode_tip = _T("循环模式：单曲循环");
+		m_repeat_mode_tip += CCommon::LoadText(IDS_LOOP_TRACK);
 		break;
 	case RepeatMode::RM_PLAY_SHUFFLE:
-		m_repeat_mode_tip = _T("循环模式：随机播放");
+		m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_SHUFFLE);
 		break;
 	}
 }
@@ -625,11 +626,11 @@ void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
 void CPlayerUIBase::AddToolTips()
 {
 	AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
-	AddMouseToolTip(BTN_TRANSLATE, _T("显示歌词翻译"));
-	AddMouseToolTip(BTN_VOLUME, _T("鼠标滚轮调整音量"));
-	AddMouseToolTip(BTN_SKIN, _T("切换界面"));
-	AddMouseToolTip(BTN_EQ, _T("音效设定"));
-	AddMouseToolTip(BTN_SETTING, _T("设置"));
-	AddMouseToolTip(BTN_MINI, _T("迷你模式"));
+	AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
+	AddMouseToolTip(BTN_VOLUME, CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME));
+	AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI));
+	AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING));
+	AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
+	AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE));
 }
 

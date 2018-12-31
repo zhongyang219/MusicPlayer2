@@ -73,7 +73,7 @@ void CFindDlg::ShowFindInfo()
 		result_mun = m_find_result.size();
 	else
 		result_mun = m_all_find_result.size();
-	str.Format(_T("查找关键字：%s，结果数：%d"), m_key_word.c_str(), result_mun);
+	str.Format(CCommon::LoadText(IDS_FIND_DLG_INFO), m_key_word.c_str(), result_mun);
 	SetDlgItemText(IDC_FIND_INFO_STATIC, str);
 }
 
@@ -216,9 +216,9 @@ void CFindDlg::OnBnClickedFindButton()
 			}
 			ShowFindResult();
 			if (!m_find_result.empty())
-				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("查找结果："));
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_FIND_RESULT, _T(": ")));
 			else
-				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("没有找到结果！"));
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_NO_RESULT));
 		}
 		else			//查找所有播放列表时，在theApp.m_song_data窗口中查找
 		{
@@ -256,9 +256,9 @@ void CFindDlg::OnBnClickedFindButton()
 			}
 			ShowFindResult();
 			if (!m_all_find_result.empty())
-				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("查找结果："));
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_FIND_RESULT, _T(": ")));
 			else
-				SetDlgItemText(IDC_FIND_RESULT_STATIC, _T("没有找到结果！"));
+				SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_NO_RESULT));
 		}
 		m_item_selected = -1;
 		ShowFindInfo();
@@ -297,12 +297,12 @@ BOOL CFindDlg::OnInitDialog()
 	width0 = theApp.DPI(40);
 	width2 = (list_width - width0) / 5;
 	width1 = list_width - width0 - width2 * 4;
-	m_find_result_list.InsertColumn(0, _T("序号"), LVCFMT_LEFT, width0);		//插入第0列
-	m_find_result_list.InsertColumn(1, _T("文件名"), LVCFMT_LEFT, width1);		//插入第1列
-	m_find_result_list.InsertColumn(2, _T("标题"), LVCFMT_LEFT, width2);		//插入第2列
-	m_find_result_list.InsertColumn(3, _T("艺术家"), LVCFMT_LEFT, width2);		//插入第3列
-	m_find_result_list.InsertColumn(4, _T("唱片集"), LVCFMT_LEFT, width2);		//插入第4列
-	m_find_result_list.InsertColumn(5, _T("文件路径"), LVCFMT_LEFT, width2);		//插入第5列
+	m_find_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第0列
+	m_find_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width1);		//插入第1列
+	m_find_result_list.InsertColumn(2, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width2);		//插入第2列
+	m_find_result_list.InsertColumn(3, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//插入第3列
+	m_find_result_list.InsertColumn(4, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width2);		//插入第4列
+	m_find_result_list.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, width2);		//插入第5列
 
 	ShowFindResult();	//显示（上一次的）查找结果
 	ShowFindInfo();
@@ -507,5 +507,5 @@ void CFindDlg::OnFdCopyText()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
-		MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+		MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 }

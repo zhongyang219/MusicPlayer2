@@ -51,11 +51,11 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab5_dlg.Create(IDD_HOT_KEY_SETTINGS_DIALOG);
 
 	//添加对话框
-	m_tab.AddWindow(&m_tab1_dlg, _T("歌词设置"));
-	m_tab.AddWindow(&m_tab2_dlg, _T("外观设置"));
-	m_tab.AddWindow(&m_tab3_dlg, _T("常规设置"));
-	m_tab.AddWindow(&m_tab4_dlg, _T("播放设置"));
-	m_tab.AddWindow(&m_tab5_dlg, _T("全局快捷键"));
+	m_tab.AddWindow(&m_tab1_dlg, CCommon::LoadText(IDS_LYRIC_SETTINGS));
+	m_tab.AddWindow(&m_tab2_dlg, CCommon::LoadText(IDS_APPEARANCE_SETTINGS));
+	m_tab.AddWindow(&m_tab3_dlg, CCommon::LoadText(IDS_GENERAL_SETTINGS));
+	m_tab.AddWindow(&m_tab4_dlg, CCommon::LoadText(IDS_PLAY_SETTINGS));
+	m_tab.AddWindow(&m_tab5_dlg, CCommon::LoadText(IDS_GLOBLE_HOTKEY));
 
 	m_tab.SetCurTab(m_tab_selected);
 
@@ -67,6 +67,7 @@ void COptionsDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	m_tab2_dlg.OnOK();
+	m_tab3_dlg.OnOK();
 
 	CDialog::OnOK();
 }

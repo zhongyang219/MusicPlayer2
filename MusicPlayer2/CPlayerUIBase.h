@@ -87,6 +87,7 @@ protected:
 
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
+	virtual void UpdateToolTipPosition() = 0;
 
 	void AddToolTips();			//为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 

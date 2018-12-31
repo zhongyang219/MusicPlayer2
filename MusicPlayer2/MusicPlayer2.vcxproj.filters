@@ -187,6 +187,7 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
     <Text Include="Help.txt" />
+    <Text Include="Help_en_us.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

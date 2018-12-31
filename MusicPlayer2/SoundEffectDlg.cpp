@@ -43,8 +43,8 @@ BOOL CSoundEffectDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	CenterWindow();
 	//插入标签
-	m_tab.InsertItem(0, _T("均衡器"));
-	m_tab.InsertItem(1, _T("混响"));
+	m_tab.InsertItem(0, CCommon::LoadText(IDS_EQUALIZER));
+	m_tab.InsertItem(1, CCommon::LoadText(IDS_REVERB));
 	//创建子对话框
 	m_equ_dlg.Create(IDD_EQUALIZER_DIALOG, &m_tab);
 	m_reverb_dlg.Create(IDD_REVERB_DIALOG, &m_tab);

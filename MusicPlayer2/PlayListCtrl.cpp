@@ -33,17 +33,17 @@ wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat d
 	case DF_FILE_NAME:		//显示为文件名
 		return song_info.file_name;
 	case DF_TITLE:			//显示为歌曲标题
-		if (song_info.title == DEFAULT_TITLE)	//如果获取不到歌曲标题，就显示文件名
+		if (song_info.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())	//如果获取不到歌曲标题，就显示文件名
 			return song_info.file_name;
 		else
 			return song_info.title;
 	case DF_ARTIST_TITLE:	//显示为艺术家 - 标题
-		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//如果标题和艺术家都获取不到，就显示文件名
+		if (song_info.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() && song_info.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())		//如果标题和艺术家都获取不到，就显示文件名
 			return song_info.file_name;
 		else
 			return (song_info.artist + _T(" - ") + song_info.title);
 	case DF_TITLE_ARTIST:	//显示为标题 - 艺术家
-		if (song_info.title == DEFAULT_TITLE && song_info.artist == DEFAULT_ARTIST)		//如果标题和艺术家都获取不到，就显示文件名
+		if (song_info.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() && song_info.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())		//如果标题和艺术家都获取不到，就显示文件名
 			return song_info.file_name;
 		else
 			return (song_info.title + _T(" - ") + song_info.artist);
@@ -89,7 +89,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 		{
 			DeleteAllItems();
 			InsertItem(0, _T(""));
-			SetItemText(0, 1, _T("没有结果可以显示。"));
+			SetItemText(0, 1, CCommon::LoadText(IDS_NO_RESULT_TO_SHOW));
 			return;
 		}
 		int item_num_before = GetItemCount();
@@ -212,24 +212,24 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				if (song_index < 0 || song_index >= m_all_song_info.size())
 					return;
-				str_tip += _T("文件名：");
+				str_tip += CCommon::LoadText(IDS_FILE_NAME, _T(": "));
 				str_tip += m_all_song_info[song_index].file_name.c_str();
 				str_tip += _T("\r\n");
 
-				str_tip += _T("标题：");
+				str_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
 				str_tip += m_all_song_info[song_index].title.c_str();
 				str_tip += _T("\r\n");
 
-				str_tip += _T("艺术家：");
+				str_tip += CCommon::LoadText(IDS_ARTIST, _T(": "));
 				str_tip += m_all_song_info[song_index].artist.c_str();
 				str_tip += _T("\r\n");
 
-				str_tip += _T("唱片集：");
+				str_tip += CCommon::LoadText(IDS_ALBUM, _T(": "));
 				str_tip += m_all_song_info[song_index].album.c_str();
 				str_tip += _T("\r\n");
 
 				CString str_bitrate;
-				str_bitrate.Format(_T("比特率：%dkbps"), m_all_song_info[song_index].bitrate);
+				str_bitrate.Format(CCommon::LoadText(IDS_BITRATE, _T(": %dkbps")), m_all_song_info[song_index].bitrate);
 				str_tip += str_bitrate;
 
 				m_toolTip.SetMaxTipWidth(theApp.DPI(400));		//设置提示信息的宽度，以支持提示换行
@@ -278,9 +278,9 @@ void CPlayListCtrl::PreSubclassWindow()
 	CRect rect;
 	GetWindowRect(rect);
 	width1 = rect.Width() - width0 - width2 - theApp.DPI(21);
-	InsertColumn(0, _T("序号"), LVCFMT_LEFT, width0);		//插入第1列
-	InsertColumn(1, _T("曲目"), LVCFMT_LEFT, width1);		//插入第2列
-	InsertColumn(2, _T("长度"), LVCFMT_LEFT, width2);		//插入第3列
+	InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第1列
+	InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, width1);		//插入第2列
+	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width2);		//插入第3列
 	EnableTip();
 
 	CListCtrlEx::PreSubclassWindow();

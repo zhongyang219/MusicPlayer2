@@ -52,7 +52,7 @@ void CPropertyDlg::ShowInfo()
 	//显示文件长度
 	wstring song_length;
 	if (m_all_song_info[m_index].lengh.isZero())
-		song_length = L"暂未获取或无法获取音频的长度";
+		song_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);
 	else
 		song_length = m_all_song_info[m_index].lengh.time2str2();
 	m_song_length_edit.SetWindowText(song_length.c_str());
@@ -87,7 +87,7 @@ void CPropertyDlg::ShowInfo()
 	if(!m_all_song_info[m_index].lyric_file.empty())
 		m_lyric_file_edit.SetWindowText(m_all_song_info[m_index].lyric_file.c_str());
 	else
-		m_lyric_file_edit.SetWindowText(_T("没有匹配的歌词"));
+		m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
 
 	//显示音频信息
 	//CString info;
@@ -106,10 +106,10 @@ void CPropertyDlg::ShowInfo()
 	//显示标签类型
 	if (file_type == _T("mp3"))
 	{
-		CString tag_type_str{ _T("MP3标签类型：") };
+		CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
 		switch (m_all_song_info[m_index].tag_type)
 		{
-		case 0: tag_type_str += _T("未知"); break;
+		case 0: tag_type_str += CCommon::LoadText(IDS_UNKNOW); break;
 		case 1: tag_type_str += _T("ID3v1"); break;
 		case 2: tag_type_str += _T("ID3v2"); break;
 		}
@@ -401,7 +401,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 	file_path = theApp.m_player.GetCurrentDir() + m_all_song_info[m_index].file_name;
 	if (!CAudioTag::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off))
 	{
-		MessageBox(_T("无法写入文件！"), NULL, MB_ICONWARNING | MB_OK);
+		MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
 	}
 	else
 	{

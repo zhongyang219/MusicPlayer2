@@ -23,6 +23,7 @@ private:
 	size_t m_data_size;		//数据文件的大小
 	CToolTipCtrl m_toolTip;
 	CEdit m_sf2_path_edit;
+	CComboBox m_language_combo;
 
 	void ShowDataSizeInfo();
 
@@ -42,4 +43,5 @@ public:
 	afx_msg void OnBnClickedMidiUseInnerLyricCheck();
 	afx_msg void OnBnClickedDownloadWhenTagFullCheck();
 	afx_msg void OnEnChangeSf2PathEdit();
+	virtual void OnOK();
 };

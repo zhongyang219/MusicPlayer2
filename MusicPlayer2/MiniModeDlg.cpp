@@ -69,16 +69,16 @@ void CMiniModeDlg::CheckWindowPos()
 void CMiniModeDlg::UpdateSongTipInfo()
 {
 	CString song_tip_info;
-	song_tip_info += _T("当前播放：");
+	song_tip_info += CCommon::LoadText(IDS_NOW_PLAYING, _T(": "));
 	song_tip_info += theApp.m_player.GetFileName().c_str();
 	song_tip_info += _T("\r\n");
-	song_tip_info += _T("标题：");
+	song_tip_info += CCommon::LoadText(IDS_TITLE, _T(": "));
 	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].title.c_str();
 	song_tip_info += _T("\r\n");
-	song_tip_info += _T("艺术家：");
+	song_tip_info += CCommon::LoadText(IDS_ARTIST, _T(": "));
 	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].artist.c_str();
 	song_tip_info += _T("\r\n");
-	song_tip_info += _T("唱片集：");
+	song_tip_info += CCommon::LoadText(IDS_ALBUM, _T(": "));
 	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album.c_str();
 	song_tip_info += _T("\r\n");
 	m_ui.UpdateSongInfoTip(song_tip_info);

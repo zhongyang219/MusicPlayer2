@@ -90,15 +90,15 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 
 	m_tool_tip.Create(this);
 	m_tool_tip.SetMaxTipWidth(300);
-	m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, _T("如果去掉此复选框的勾选，则只会匹配和歌曲文件名完全一样的歌词文件；\r\n如果选中此复选框，当找不到文件名完全一样的歌词文件时，会匹配文件名中包含艺术家和歌曲标题的歌词文件。\r\n（可能需要重新启动程序才能生效。）"));
+	m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, CCommon::LoadText(IDS_LYRIC_FUZZY_MATHC_TIP_INFO));
 	//m_tool_tip.AddTool(GetDlgItem(IDC_SAVE_IN_OFFSET_TAG), _T("将歌词偏移保存到offset标签中，选择此项会使得修改的时间偏移很容易恢复，但是并非所有的播放器都支持offset标签。"));
 	//m_tool_tip.AddTool(GetDlgItem(IDC_SAVE_IN_TIME_TAG), _T("将歌词偏移保存到每个时间标签中，选择此项会使得修改的时间偏移不那么容易恢复，但是对其他播放器的兼容性很好。"));
-	m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_PATH_EDIT), _T("说明：如果歌曲所在目录下找不到匹配的歌词文件，就会在此文件夹下寻找歌词文件。"));
-	m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), _T("勾选项后，可以在 Cortana 搜索框中显示歌词、歌曲名称和专辑封面。开启此功能后可能需要重新启动软件才能生效。"));
+	m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_PATH_EDIT), CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
+	m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
 
-	m_cortana_color_combo.AddString(_T("跟随系统"));
-	m_cortana_color_combo.AddString(_T("黑色"));
-	m_cortana_color_combo.AddString(_T("白色"));
+	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_FOLLOWING_SYSTEM));
+	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_BLACK));
+	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_WHITE));
 	m_cortana_color_combo.SetCurSel(m_data.cortana_color);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -135,10 +135,10 @@ void CLyricSettingsDlg::OnBnClickedExploreLyricButton()
 	// TODO: 在此添加控件通知处理程序代码
 #ifdef COMPILE_IN_WIN_XP
 	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-	folderPickerDlg.SetInfo(_T("请选择歌词文件夹。"));
+	folderPickerDlg.SetInfo(CCommon::LoadText(IDS_SELECT_LYRIC_FOLDER));
 #else
 	CFolderPickerDialog folderPickerDlg(m_data.lyric_path.c_str());
-	folderPickerDlg.m_ofn.lpstrTitle = _T("选择歌词文件夹");		//设置对话框标题
+	folderPickerDlg.m_ofn.lpstrTitle = CCommon::LoadText(IDS_SELECT_LYRIC_FOLDER);		//设置对话框标题
 #endif // COMPILE_IN_WIN_XP
 	if (folderPickerDlg.DoModal() == IDOK)
 	{

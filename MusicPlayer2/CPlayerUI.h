@@ -28,6 +28,7 @@ public:
 
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//为一个按钮添加鼠标提示
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) override;
+	virtual void UpdateToolTipPosition() override;
 
 protected:
 	void DrawLyricsSingleLine(CRect lyric_rect);			//绘制歌词（窄界面模式下单行显示），参数为显示歌词的矩形区域

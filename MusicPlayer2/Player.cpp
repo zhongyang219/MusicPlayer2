@@ -22,7 +22,7 @@ void CPlayer::IniBASS()
 	theApp.m_output_devices.clear();
 	DeviceInfo device{};
 	device.index = -1;
-	device.name = L"默认输出设备";
+	device.name = CCommon::LoadText(IDS_DEFAULT_OUTPUT_DEVICE);
 	theApp.m_output_devices.push_back(device);
 	while (true)
 	{
@@ -65,7 +65,7 @@ void CPlayer::IniBASS()
 	//向支持的文件列表插入原生支持的文件格式
 	CAudioCommon::m_surpported_format.clear();
 	SupportedFormat format;
-	format.description = L"基本音频格式";
+	format.description = CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT);
 	format.extensions.push_back(L"mp3");
 	format.extensions.push_back(L"wma");
 	format.extensions.push_back(L"wav");
@@ -121,7 +121,7 @@ void CPlayer::IniBASS()
 		if (format.description == L"MIDI")
 		{
 			m_bass_midi_lib.Init(plugin_dir + plugin_file);
-			m_sfont_name = L"<无>";
+			m_sfont_name = CCommon::LoadText(_T("<"), IDS_NONE, _T(">"));
 			m_sfont.font = 0;
 			if (m_bass_midi_lib.IsSuccessed())
 			{
@@ -139,9 +139,9 @@ void CPlayer::IniBASS()
 					if (m_sfont.font == 0)
 					{
 						CString info;
-						info.Format(_T("音色库“%s”加载失败！"), sf2_path.c_str());
+						info.Format(CCommon::LoadText(IDS_SOUND_FONT_LOAD_FAILED), sf2_path.c_str());
 						CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
-						m_sfont_name = L"<加载失败>";
+						m_sfont_name = CCommon::LoadText(_T("<"), IDS_LOAD_FAILED, _T(">"));
 					}
 					else
 					{
@@ -250,6 +250,7 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 
 UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 {
+	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, 0, 0);
 	ThreadInfo* pInfo = (ThreadInfo*)lpParam;
 	//获取播放列表中每一首歌曲的信息
@@ -1024,9 +1025,9 @@ bool CPlayer::GetBASSError()
 	int error_code_tmp = BASS_ErrorGetCode();
 	if (error_code_tmp && error_code_tmp != m_error_code)
 	{
-		wchar_t buff[32];
-		swprintf_s(buff, L"BASS音频库发生了错误，错误代码：%d", error_code_tmp);
-		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ buff });
+		CString info;
+		info.Format(CCommon::LoadText(IDS_BASS_ERROR_LOG_INFO, _T("%d")), error_code_tmp);
+		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info });
 	}
 	m_error_code = error_code_tmp;
 	return true;
@@ -1296,12 +1297,12 @@ wstring CPlayer::GetTimeString() const
 wstring CPlayer::GetPlayingState() const
 {
 	if (m_error_code != 0)
-		return L"播放出错";
+		return CCommon::LoadText(IDS_PLAY_ERROR);
 	switch (m_playing)
 	{
-	case 0: return L"已停止";
-	case 1: return L"已暂停";
-	case 2: return L"正在播放";
+	case 0: return CCommon::LoadText(IDS_STOPED);
+	case 1: return CCommon::LoadText(IDS_PAUSED);
+	case 2: return CCommon::LoadText(IDS_NOW_PLAYING);
 	}
 	return wstring();
 }
@@ -1482,7 +1483,7 @@ void CPlayer::LoadRecentPath()
 	{
 		//捕获序列化时出现的异常
 		CString info;
-		info.Format(_T("读取最近播放路径文件文件时发生了序列化异常，异常类型：CArchiveException，m_cause = %d。可能是recent_path.dat文件被损坏或版本不匹配造成的。"), exception->m_cause);
+		info.Format(CCommon::LoadText(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG), exception->m_cause);
 		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info });
 	}
 	// 关闭对象

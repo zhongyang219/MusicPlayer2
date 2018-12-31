@@ -83,18 +83,18 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 	m_hot_key_enable_check.SetCheck(m_hot_key_enable);
 
 	m_key_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_key_list.InsertColumn(0, _T("功能"), LVCFMT_LEFT, theApp.DPI(130));
-	m_key_list.InsertColumn(1, _T("快捷键"), LVCFMT_LEFT, theApp.DPI(170));
+	m_key_list.InsertColumn(0, CCommon::LoadText(IDS_FUNCTION), LVCFMT_LEFT, theApp.DPI(130));
+	m_key_list.InsertColumn(1, CCommon::LoadText(IDS_SHORTCUT_KEY), LVCFMT_LEFT, theApp.DPI(170));
 
-	m_key_list.InsertItem(0, _T("播放暂停"));
-	m_key_list.InsertItem(1, _T("停止"));
-	m_key_list.InsertItem(2, _T("快进"));
-	m_key_list.InsertItem(3, _T("快退"));
-	m_key_list.InsertItem(4, _T("上一曲"));
-	m_key_list.InsertItem(5, _T("下一曲"));
-	m_key_list.InsertItem(6, _T("增大音量"));
-	m_key_list.InsertItem(7, _T("减小音量"));
-	m_key_list.InsertItem(8, _T("退出"));
+	m_key_list.InsertItem(0, CCommon::LoadText(IDS_PLAY_PAUSE));
+	m_key_list.InsertItem(1, CCommon::LoadText(IDS_STOP));
+	m_key_list.InsertItem(2, CCommon::LoadText(IDS_FAST_FORWARD));
+	m_key_list.InsertItem(3, CCommon::LoadText(IDS_REWIND));
+	m_key_list.InsertItem(4, CCommon::LoadText(IDS_PREVIOUS));
+	m_key_list.InsertItem(5, CCommon::LoadText(IDS_NEXT));
+	m_key_list.InsertItem(6, CCommon::LoadText(IDS_VOLUME_UP));
+	m_key_list.InsertItem(7, CCommon::LoadText(IDS_VOLUME_DOWN));
+	m_key_list.InsertItem(8, CCommon::LoadText(IDS_EXIT));
 
 	ShowKeyList();
 
@@ -115,7 +115,7 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
 
 	if (modifiers == 0 && key_coke != 0)
 	{
-		MessageBox(_T("全局快捷键至少需要包含Ctrl、Shift、Alt中的一个！"), NULL, MB_ICONWARNING | MB_OK);
+		MessageBox(CCommon::LoadText(IDS_GLOBLE_HOT_KEY_WARNING), NULL, MB_ICONWARNING | MB_OK);
 		return;
 	}
 

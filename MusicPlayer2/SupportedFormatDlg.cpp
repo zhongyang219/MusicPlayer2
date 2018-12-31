@@ -60,9 +60,9 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 	width2 = rect.Width() - width1 - width0 - theApp.DPI(20);
 
 	m_format_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_format_list.InsertColumn(0, _T("插件文件名"), LVCFMT_LEFT, width0);		//插入第1列
-	m_format_list.InsertColumn(1, _T("提供的格式支持"), LVCFMT_LEFT, width1);		//插入第2列
-	m_format_list.InsertColumn(2, _T("文件的扩展名"), LVCFMT_LEFT, width2);		//插入第2列
+	m_format_list.InsertColumn(0, CCommon::LoadText(IDS_PLUGIN_FILE_NAME), LVCFMT_LEFT, width0);		//插入第1列
+	m_format_list.InsertColumn(1, CCommon::LoadText(IDS_FORMAT_SUPPORTED), LVCFMT_LEFT, width1);		//插入第2列
+	m_format_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_EXTENSION), LVCFMT_LEFT, width2);		//插入第2列
 
 	int index = 0;
 	for (const auto support_format : CAudioCommon::m_surpported_format)

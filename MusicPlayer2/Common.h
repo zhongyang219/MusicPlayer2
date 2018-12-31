@@ -25,6 +25,13 @@ enum class CodeType
 	AUTO
 };
 
+//语言
+enum class Language
+{
+	FOLLOWING_SYSTEM,		//跟随系统
+	ENGLISH,				//英语
+	SIMPLIFIED_CHINESE		//简体中文
+};
 
 class CCommon
 {
@@ -200,6 +207,14 @@ public:
 
 	//将hSrc中的所有菜单项添加到菜单hDst中（来自 https://blog.csdn.net/zgl7903/article/details/71077441）
 	static int AppendMenuOp(HMENU hDst, HMENU hSrc);
+
+	//从资源文件载入字符串。其中，front_str、back_str为载入字符串时需要在前面或后面添加的字符串
+	static CString LoadText(UINT id, LPCTSTR back_str = nullptr);
+	static CString LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str = nullptr);
+
+	//设置线程语言
+	static void SetThreadLanguage(Language language);
+
 };
 
 template<class T>

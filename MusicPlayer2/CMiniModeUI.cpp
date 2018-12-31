@@ -184,9 +184,9 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(16);
 	CString str;
 	if (m_ui_data.m_show_volume)
-		str.Format(_T("音量: %d%%"), theApp.m_player.GetVolume());
+		str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), theApp.m_player.GetVolume());
 	else if (theApp.m_player.IsError())
-		str = _T("播放出错");
+		str = CCommon::LoadText(IDS_PLAY_ERROR);
 	else
 		str = theApp.m_player.GetTimeString().c_str();
 	m_draw.DrawWindowText(rc_tmp, str, m_colors.color_text, Alignment::CENTER);
@@ -247,7 +247,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 		wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };	//获取当歌词
 		int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
-			current_lyric = DEFAULT_LYRIC_TEXT;
+			current_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 		m_draw.DrawWindowText(rc_tmp, current_lyric.c_str(), m_colors.color_text, color2, progress, true);
 	}
 
@@ -287,7 +287,7 @@ void CMiniModeUI::MouseMove(CPoint point)
 	static int last_sec{};
 	if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
 	{
-		str.Format(_T("定位到%d分%.2d秒"), song_pos_time.min, song_pos_time.sec);
+		str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
 		UpdateMouseToolTip(BTN_PROGRESS, str);
 		last_sec = song_pos_time.sec;
 	}
@@ -435,12 +435,12 @@ void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 
 void CMiniModeUI::AddToolTips()
 {
-	AddMouseToolTip(BTN_PREVIOUS, _T("上一曲"));
-	AddMouseToolTip(BTN_PLAY_PAUSE, theApp.m_player.IsPlaying() ? _T("暂停") : _T("播放"));
-	AddMouseToolTip(BTN_NEXT, _T("下一曲"));
-	AddMouseToolTip(BTN_PLAYLIST, _T("显示/隐藏播放列表"));
-	AddMouseToolTip(BTN_RETURN, _T("返回正常模式"));
-	AddMouseToolTip(BTN_CLOSE, _T("退出程序"));
+	AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
+	AddMouseToolTip(BTN_PLAY_PAUSE, theApp.m_player.IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
+	AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
+	AddMouseToolTip(BTN_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
+	AddMouseToolTip(BTN_RETURN, CCommon::LoadText(IDS_BACK_TO_NARMAL));
+	AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_EXIT_PROGRAM));
 	AddMouseToolTip(BTN_COVER, _T(""));
-	AddMouseToolTip(BTN_PROGRESS, _T("定位到"));
+	AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
 }

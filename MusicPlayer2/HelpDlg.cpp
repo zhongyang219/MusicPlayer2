@@ -60,7 +60,12 @@ BOOL CHelpDlg::OnInitDialog()
 
 void CHelpDlg::GetHelpString()
 {
-	HRSRC hRes = FindResource(NULL,MAKEINTRESOURCE(IDR_TEXT1), _T("Text"));
+	
+	HRSRC hRes;
+	if(theApp.m_general_setting_data.language == Language::FOLLOWING_SYSTEM)
+		hRes = FindResource(NULL, MAKEINTRESOURCE(IDR_TEXT1), _T("TEXT"));
+	else
+		hRes = FindResourceEx(NULL, _T("TEXT"), MAKEINTRESOURCE(IDR_TEXT1), theApp.GetCurrentLanguage());
 	if (hRes != NULL)
 	{
 		HGLOBAL hglobal = LoadResource(NULL, hRes);

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Common.h"
-
+#include "resource.h"
 
 CCommon::CCommon()
 {
@@ -432,7 +432,7 @@ wstring CCommon::GetSpecialDir(int csidl)
 int CCommon::DeleteAFile(HWND hwnd, _tstring file)
 {
 	file.push_back(_T('\0'));	//pFrom必须以两个\0结尾
-	LPCTSTR strTitle = _T("删除");	//文件删除进度对话框标题
+	LPCTSTR strTitle = CCommon::LoadText(IDS_DELETE);	//文件删除进度对话框标题
 	SHFILEOPSTRUCT FileOp{};	//定义SHFILEOPSTRUCT结构对象
 	FileOp.hwnd = hwnd;
 	FileOp.wFunc = FO_DELETE;	//执行文件删除操作;
@@ -465,7 +465,7 @@ int CCommon::CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 	FileOp.pTo = file_to.c_str();
 	FileOp.fFlags = FOF_ALLOWUNDO;
 	FileOp.hNameMappings = NULL;
-	FileOp.lpszProgressTitle = _T("复制");
+	FileOp.lpszProgressTitle = LoadText(IDS_COPY);
 	return SHFileOperation(&FileOp);
 }
 
@@ -491,7 +491,7 @@ int CCommon::MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 	FileOp.pTo = file_to.c_str();
 	FileOp.fFlags = FOF_ALLOWUNDO;
 	FileOp.hNameMappings = NULL;
-	FileOp.lpszProgressTitle = _T("移动");
+	FileOp.lpszProgressTitle = LoadText(IDS_MOVE);
 	return SHFileOperation(&FileOp);
 }
 
@@ -873,5 +873,36 @@ int CCommon::AppendMenuOp(HMENU hDst, HMENU hSrc)
 	}
 
 	return iCnt;
+}
+
+CString CCommon::LoadText(UINT id, LPCTSTR back_str)
+{
+	CString str;
+	str.LoadString(id);
+	if (back_str != nullptr)
+		str += back_str;
+	return str;
+}
+
+CString CCommon::LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str)
+{
+	CString str;
+	str.LoadString(id);
+	if (back_str != nullptr)
+		str += back_str;
+	if (front_str != nullptr)
+		str = front_str + str;
+	return str;
+}
+
+void CCommon::SetThreadLanguage(Language language)
+{
+	switch (language)
+	{
+	case Language::ENGLISH: SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US)); break;
+	case Language::SIMPLIFIED_CHINESE: SetThreadUILanguage(MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED)); break;
+	//case Language::TRADITIONAL_CHINESE: SetThreadUILanguage(MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_TRADITIONAL)); break;
+	default: break;
+	}
 }
 

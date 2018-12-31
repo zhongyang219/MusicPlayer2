@@ -25,6 +25,7 @@ void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CTabDlg::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SF2_PATH_EDIT, m_sf2_path_edit);
+	DDX_Control(pDX, IDC_COMBO1, m_language_combo);
 }
 
 
@@ -51,6 +52,11 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	//SetBackgroundColor(RGB(255, 255, 255));
 
+	m_language_combo.AddString(CCommon::LoadText(IDS_FOLLOWING_SYSTEM));
+	m_language_combo.AddString(_T("English"));
+	m_language_combo.AddString(_T("简体中文"));
+	m_language_combo.SetCurSel(static_cast<int>(m_data.language));
+
 	m_data_size = CCommon::GetFileSize(theApp.m_song_data_path);
 	ShowDataSizeInfo();
 
@@ -64,10 +70,10 @@ BOOL CDataSettingsDlg::OnInitDialog()
 
 	m_toolTip.Create(this);
 	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-	m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), _T("说明：程序目录下的 song_data.dat 文件保存了所有加载过的歌曲信息，用于加快播放列表的载入速度，如果该文件过大，可以通过此按钮清理它。"));
-	m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), _T("勾选此项后，只有当歌曲的“标题”和“艺术家”信息都不为空时，才自动下载歌词和专辑封面。"));
+	m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), CCommon::LoadText(IDS_CLEAR_DATA_FILE_TIP_INFO));
+	m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), CCommon::LoadText(IDS_AUTO_DOWNLOAD_LYRIC_TIP_INFO));
 	//m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
-	m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), _T("有些 MIDI 音乐包含歌词，勾选此项后，会优先显示 MIDI 音乐内嵌的歌词。"));
+	m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), CCommon::LoadText(IDS_MIDI_INNER_LYRIC_TIP_INFO));
 
 	GetDlgItem(IDC_BROWSE_BUTTON)->EnableWindow(theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
 	m_sf2_path_edit.EnableWindow(theApp.m_format_convert_dialog_exit);
@@ -80,11 +86,11 @@ void CDataSettingsDlg::ShowDataSizeInfo()
 {
 	CString info;
 	if (m_data_size < 1024)
-		info.Format(_T("当前数据文件大小：%d 个字节"), m_data_size);
+		info.Format(_T("&s: %d %s"), CCommon::LoadText(IDS_CURRENT_DATA_FILE_SIZE), m_data_size, CCommon::LoadText(IDS_BYTE));
 	else if (m_data_size < 1024 * 1024)
-		info.Format(_T("当前数据文件大小：%.2f KB (%d 字节)"), static_cast<float>(m_data_size) / 1024.0f, m_data_size);
+		info.Format(_T("%s: %.2f KB (%d %s)"), CCommon::LoadText(IDS_CURRENT_DATA_FILE_SIZE), static_cast<float>(m_data_size) / 1024.0f, m_data_size, CCommon::LoadText(IDS_BYTE));
 	else
-		info.Format(_T("当前数据文件大小：%.2f MB (%d 字节)"), static_cast<float>(m_data_size) / 1024.0f / 1024.0f, m_data_size);		//注：此处曾经由于“%.2fMB”漏掉了“f”导致出现了一打开这个对话框程序就停止工作的严重问题。
+		info.Format(_T("%s: %.2f MB (%d %s)"), CCommon::LoadText(IDS_CURRENT_DATA_FILE_SIZE), static_cast<float>(m_data_size) / 1024.0f / 1024.0f, m_data_size, CCommon::LoadText(IDS_BYTE));		//注：此处曾经由于“%.2fMB”漏掉了“f”导致出现了一打开这个对话框程序就停止工作的严重问题。
 	SetDlgItemText(IDC_SIZE_STATIC, info);
 }
 
@@ -129,7 +135,7 @@ void CDataSettingsDlg::OnBnClickedCleanDataFileButton()
 	int size_reduced = m_data_size - data_size;		//清理后数据文件减少的字节数
 	if (size_reduced < 0) size_reduced = 0;
 	CString info;
-	info.Format(_T("清理完成，已删除%d个项目，数据文件大小减小%d个字节。"), clear_cnt, size_reduced);
+	info.Format(CCommon::LoadText(IDS_CLEAR_COMPLETE_INFO), clear_cnt, size_reduced);
 	MessageBox(info, NULL, MB_ICONINFORMATION);
 	m_data_size = data_size;
 	ShowDataSizeInfo();
@@ -168,7 +174,7 @@ void CDataSettingsDlg::OnBnClickedBrowseButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//设置过滤器
-	LPCTSTR szFilter = _T("音色库文件|*.SF2|所有文件|*.*||");
+	LPCTSTR szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, _T("SF2"), NULL, 0, szFilter, this);
 	//显示打开文件对话框
@@ -218,4 +224,18 @@ void CDataSettingsDlg::OnEnChangeSf2PathEdit()
 	}
 
 	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CDataSettingsDlg::OnOK()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	//获取语言的设置
+	m_data.language = static_cast<Language>(m_language_combo.GetCurSel());
+	if (m_data.language != theApp.m_general_setting_data.language)
+	{
+		//MessageBox(CCommon::LoadText(IDS_LANGUAGE_CHANGE_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+	}
+
+	CTabDlg::OnOK();
 }

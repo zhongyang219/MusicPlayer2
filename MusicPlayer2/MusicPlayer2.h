@@ -70,6 +70,8 @@ struct GeneralSettingData
 	bool check_update_when_start{ true };		//是否在程序启动时检查更新
 	wstring sf2_path;							//MIDI音色库路径
 	bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
+
+	Language language;
 };
 
 struct PlaySettingData
@@ -172,6 +174,8 @@ public:
 	//round：round为0.5时四舍五入，round为0.4时为五舍六入
 	int DPIRound(double pixel, double round = 0.5);		//对结果进行四舍五入处理
 	void GetDPIFromWindow(CWnd* pWnd);
+
+	WORD GetCurrentLanguage() const;
 
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息

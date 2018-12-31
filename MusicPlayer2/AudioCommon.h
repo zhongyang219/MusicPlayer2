@@ -3,6 +3,7 @@
 #include "Time.h"
 #include "Common.h"
 #include "FilePathHelper.h"
+#include "Resource.h"
 
 //音频文件类型
 enum AudioType
@@ -31,16 +32,28 @@ enum SortMode
 //一首歌曲的信息
 struct SongInfo
 {
+	SongInfo(bool ini = true)
+	{
+		if (ini)
+		{
+			title = CCommon::LoadText(IDS_DEFAULT_TITLE);
+			artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
+			album = CCommon::LoadText(IDS_DEFAULT_ALBUM);
+			year = CCommon::LoadText(IDS_DEFAULT_YEAR);
+			genre = CCommon::LoadText(IDS_DEFAULT_GENRE);
+		}
+	}
+
 	wstring file_name{};	//歌曲的文件名
 	wstring lyric_file{};	//匹配的歌词文件的路径
 	Time lengh;			//歌曲的长度
 	int bitrate{};		//比特率
-	wstring title{ DEFAULT_TITLE };		//标题
-	wstring artist{ DEFAULT_ARTIST };	//艺术家
-	wstring album{ DEFAULT_ALBUM };		//唱片集
-	wstring year{ DEFAULT_YEAR };		//年份
+	wstring title;		//标题
+	wstring artist;		//艺术家
+	wstring album;		//唱片集
+	wstring year;		//年份
 	wstring comment;	//注释
-	wstring genre{ DEFAULT_GENRE };		//流派
+	wstring genre;		//流派
 	BYTE genre_idx{ 255 };		//以字节表示的流派号
 	BYTE track{};		//音轨序号
 	int tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）

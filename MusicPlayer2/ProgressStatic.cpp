@@ -135,7 +135,7 @@ void CProgressStatic::PreSubclassWindow()
 	DWORD dwStyle = GetStyle();
 	::SetWindowLong(GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
-	m_toolTip.AddTool(this, _T("定位到0分0秒"));
+	m_toolTip.AddTool(this, CCommon::LoadText(IDS_SEEK_TO));
 
 	CStatic::PreSubclassWindow();
 }
@@ -176,7 +176,7 @@ void CProgressStatic::OnMouseMove(UINT nFlags, CPoint point)
 	static int last_sec{};
 	if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
 	{
-		str.Format(_T("定位到%d分%.2d秒"), song_pos_time.min, song_pos_time.sec);
+		str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
 		m_toolTip.UpdateTipText(str, this);
 		last_sec = song_pos_time.sec;
 	}

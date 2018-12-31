@@ -53,7 +53,7 @@ BOOL CMusicPlayerApp::InitInstance()
 	{
 		//将命令行参数写入日志文件
 		wchar_t buff[256];
-		swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s，程序已退出。", cmd_line.c_str());
+		swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
 		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
 		return FALSE;
 	}
@@ -97,8 +97,12 @@ BOOL CMusicPlayerApp::InitInstance()
 	if (dll_version != BASSVERSION)
 	{
 		CString info;
-		info.Format(_T("bass.dll文件版本不匹配，版本为V%d.%d，期望的版本为V%d.%d。不匹配的版本可能会导致播放异常，仍要继续吗？"),
-			HIBYTE(dll_version), LOBYTE(dll_version), HIBYTE(BASSVERSION), LOBYTE(BASSVERSION));
+		info.LoadString(IDS_BASS_VERSION_WARNING);
+		CString version, exp_version;
+		version.Format(_T("V%d.%d"), HIBYTE(dll_version), LOBYTE(dll_version));
+		exp_version.Format(_T("V%d.%d"), HIBYTE(BASSVERSION), LOBYTE(BASSVERSION));
+		info.Replace(_T("<%version%>"), version);
+		info.Replace(_T("<%exp_version%>"), exp_version);
 		if (AfxMessageBox(info, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
 			return FALSE;
 	}
@@ -117,6 +121,9 @@ BOOL CMusicPlayerApp::InitInstance()
 	//m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
 	LoadSongData();
 	LoadConfig();
+
+	//初始化界面语言
+	CCommon::SetThreadLanguage(m_general_setting_data.language);
 
 	//启动时检查更新
 	if (m_general_setting_data.check_update_when_start)
@@ -247,7 +254,7 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 	if (!CInternetCommon::GetURL(L"https://raw.githubusercontent.com/zhongyang219/MusicPlayer2/master/version.info", version_info))		//获取版本信息
 	{
 		if (message)
-			AfxMessageBox(_T("检查更新失败，请检查你的网络连接！"), MB_OK | MB_ICONWARNING);
+			AfxMessageBox(CCommon::LoadText(IDS_CHECK_UPDATA_FAILED), MB_OK | MB_ICONWARNING);
 		return;
 	}
 
@@ -269,16 +276,16 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 	if (index == wstring::npos || index1 == wstring::npos || index2 == wstring::npos || index3 == wstring::npos || version.empty() || link.empty())
 	{
 		if (message)
-			theApp.m_pMainWnd->MessageBox(_T("检查更新出错，从远程获取到了错误的信息，请联系作者！"), NULL, MB_OK | MB_ICONWARNING);
+			theApp.m_pMainWnd->MessageBox(CCommon::LoadText(IDS_CHECK_UPDATA_ERROR), NULL, MB_OK | MB_ICONWARNING);
 		return;
 	}
 	if (version > VERSION)		//如果服务器上的版本大于本地版本
 	{
 		CString info;
 		if (contents.empty())
-			info.Format(_T("检测到新版本 V%s，是否前往更新？"), version.c_str());
+			info.Format(CCommon::LoadText(IDS_UPDATE_AVLIABLE), version.c_str());
 		else
-			info.Format(_T("检测到新版本 V%s，更新内容：\r\n%s\r\n是否前往更新？"), version.c_str(), contents_str);
+			info.Format(CCommon::LoadText(IDS_UPDATE_AVLIABLE2), version.c_str(), contents_str);
 
 		if (theApp.m_pMainWnd->MessageBox(info, NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)
 		{
@@ -288,12 +295,13 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 	else
 	{
 		if (message)
-			theApp.m_pMainWnd->MessageBox(_T("当前已经是最新版本。"), NULL, MB_OK | MB_ICONINFORMATION);
+			theApp.m_pMainWnd->MessageBox(CCommon::LoadText(IDS_ALREADY_UPDATED), NULL, MB_OK | MB_ICONINFORMATION);
 	}
 }
 
 UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
 {
+	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	CheckUpdate(false);		//检查更新
 	return 0;
 }
@@ -303,6 +311,7 @@ void CMusicPlayerApp::SaveConfig()
 	CIniHelper ini;
 	ini.SetPath(m_config_path);
 	ini.WriteBool(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start);
+	ini.WriteInt(_T("general"), _T("language"), static_cast<int>(m_general_setting_data.language));
 }
 
 void CMusicPlayerApp::LoadConfig()
@@ -310,6 +319,7 @@ void CMusicPlayerApp::LoadConfig()
 	CIniHelper ini;
 	ini.SetPath(m_config_path);
 	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", 1);
+	m_general_setting_data.language = static_cast<Language>(ini.GetInt(_T("general"), _T("language"), 0));
 }
 
 void CMusicPlayerApp::IniIconResource()
@@ -364,6 +374,17 @@ void CMusicPlayerApp::GetDPIFromWindow(CWnd * pWnd)
 	theApp.m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 }
 
+WORD CMusicPlayerApp::GetCurrentLanguage() const
+{
+	switch (m_general_setting_data.language)
+	{
+	case Language::SIMPLIFIED_CHINESE:
+		return MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
+	default:
+		return MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+	}
+}
+
 void CMusicPlayerApp::LoadSongData()
 {
 	// 打开文件
@@ -413,7 +434,7 @@ void CMusicPlayerApp::LoadSongData()
 	catch(CArchiveException* exception)
 	{
 		CString info;
-		info.Format(_T("读取数据文件时发生了序列化异常，异常类型：CArchiveException，m_cause = %d。可能是song_data.dat文件被损坏或版本不匹配造成的。"), exception->m_cause);
+		info.Format(CCommon::LoadText(IDS_SERIALIZE_ERROR), exception->m_cause);
 //		info.Format(_T("警告：读取数据文件时发生了序列化异常，异常类型：CArchiveException，m_cause = %d。\
 //可能是song_data.dat文件被损坏或版本不匹配造成的，你可以忽略这个信息，因为song_data.dat会重新生成。"), exception->m_cause);
 //		AfxMessageBox(info, MB_ICONWARNING);

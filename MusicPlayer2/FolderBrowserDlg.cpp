@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "FolderBrowserDlg.h"
+#include "Common.h"
+#include "resource.h"
 
 
 CFolderBrowserDlg::CFolderBrowserDlg(HWND hParent)
@@ -34,7 +36,7 @@ int CFolderBrowserDlg::DoModal()
 	{
 		if (!SHGetPathFromIDList(lp, szPath))
 		{
-			AfxMessageBox(_T("无效的目录，请重新选择！"), MB_ICONWARNING | MB_OK);
+			AfxMessageBox(CCommon::LoadText(IDS_INVALID_DIR_WARNING), MB_ICONWARNING | MB_OK);
 			goto browse;
 		}
 		m_path = szPath;

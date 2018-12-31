@@ -187,6 +187,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="Help.txt" />
+    <Text Include="Help_en_us.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -134,7 +134,7 @@ void CLyrics::DisposeLyric()
 		}
 
 		//if (lyric.text.empty())		//如果时间标签后没有文本，显示为“……”
-		//	lyric.text = DEFAULT_LYRIC_TEXT;
+		//	lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 		//if (!lyric.text.empty() && lyric.text.back() <= 32) lyric.text.pop_back();		//删除歌词末尾的一个控制字符或空格
 
 		//获取时间标签

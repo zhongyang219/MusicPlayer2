@@ -87,12 +87,12 @@ void CPlayerUI::DrawInfo(bool reset)
 	wstring lable2_str, lable2_content;
 	wstring lable3_str, lable3_content;
 	wstring lable4_str, lable4_content;
-	lable1_str = _T("标题：");
+	lable1_str = CCommon::LoadText(IDS_TITLE, _T(": "));
 	lable1_content = theApp.m_player.GetCurrentSongInfo().title;
 	if (theApp.m_player.IsMidi())
 	{
 		const MidiInfo& midi_info{ theApp.m_player.GetMidiInfo() };
-		lable2_str = _T("节拍：");
+		lable2_str = CCommon::LoadText(IDS_RHYTHM, _T(": "));
 		swprintf_s(buff, L"%d/%d (%dbpm)", midi_info.midi_position, midi_info.midi_length, midi_info.speed);
 		lable2_content = buff;
 
@@ -100,25 +100,25 @@ void CPlayerUI::DrawInfo(bool reset)
 		//swprintf_s(buff, L"%d bpm", midi_info.speed);
 		//lable3_content = buff;
 
-		lable3_str = _T("音色库：");
+		lable3_str = CCommon::LoadText(IDS_SOUND_FONT, _T(": ")) ;
 		lable3_content = theApp.m_player.GetSoundFontName();
 	}
 	else
 	{
-		lable2_str = _T("艺术家：");
+		lable2_str = CCommon::LoadText(IDS_ARTIST, _T(": "));
 		lable2_content = theApp.m_player.GetCurrentSongInfo().artist;
-		lable3_str = _T("唱片集：");
+		lable3_str = CCommon::LoadText(IDS_ALBUM, _T(": "));
 		lable3_content = theApp.m_player.GetCurrentSongInfo().album;
 	}
-	lable4_str = _T("格式：");
+	lable4_str = CCommon::LoadText(IDS_FORMAT, _T(": "));
 	const BASS_CHANNELINFO channel_info{ theApp.m_player.GetChannelInfo() };
 	CString chans_str;
 	if (channel_info.chans == 1)
-		chans_str = _T("单声道");
+		chans_str = CCommon::LoadText(IDS_MONO);
 	else if (channel_info.chans == 2)
-		chans_str = _T("立体声");
+		chans_str = CCommon::LoadText(IDS_STEREO);
 	else if (channel_info.chans > 2)
-		chans_str.Format(_T("%d声道"));
+		chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), channel_info.chans);
 	if (!theApp.m_player.IsMidi())
 		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
 	else
@@ -283,13 +283,13 @@ void CPlayerUI::DrawLyricsSingleLine(CRect lyric_rect)
 	}
 	else if (theApp.m_player.m_Lyrics.IsEmpty())
 	{
-		m_draw.DrawWindowText(lyric_rect, _T("当前歌曲没有歌词"), m_colors.color_text_2, Alignment::CENTER);
+		m_draw.DrawWindowText(lyric_rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
 	}
 	else
 	{
 		wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };	//获取当歌词
 		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
-			current_lyric = DEFAULT_LYRIC_TEXT;
+			current_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 		if (theApp.m_lyric_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
 		{
 			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
@@ -312,7 +312,7 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	tmp.left += 2 * m_pLayout->margin;
 	tmp.bottom = tmp.top + theApp.DPI(28);
 	m_draw.SetFont(theApp.m_pMainWnd->GetFont());
-	m_draw.DrawWindowText(tmp, _T("歌词秀："), m_colors.color_text);
+	m_draw.DrawWindowText(tmp, CCommon::LoadText(IDS_LYRIC_SHOW, _T(": ")), m_colors.color_text);
 	//显示翻译按钮
 	CRect translate_rect{ tmp };
 	translate_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
@@ -332,11 +332,11 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
 		else if (m_ui_data.show_translate)
 			m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
-		m_draw.DrawWindowText(translate_rect, L"译", m_colors.color_text, Alignment::CENTER);
+		m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), m_colors.color_text, Alignment::CENTER);
 	}
 	else
 	{
-		m_draw.DrawWindowText(translate_rect, L"译", GRAY(200), Alignment::CENTER);
+		m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), GRAY(200), Alignment::CENTER);
 	}
 	//填充歌词区域背景色
 	m_draw.SetFont(&m_ui_data.lyric_font);
@@ -409,12 +409,12 @@ void CPlayerUI::MouseMove(CPoint point)
 			CString info;
 			if (theApp.m_player.AlbumCoverExist())
 			{
-				info = _T("专辑封面: ");
+				info = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
 				//CFilePathHelper cover_path(theApp.m_player.GetAlbumCoverPath());
 				//if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
 				if (theApp.m_player.IsInnerCover())
 				{
-					info += _T("内嵌图片\r\n图片格式: ");
+					info += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
 					switch (theApp.m_player.GetAlbumCoverType())
 					{
 					case 0: info += _T("jpg"); break;
@@ -424,7 +424,7 @@ void CPlayerUI::MouseMove(CPoint point)
 				}
 				else
 				{
-					info += _T("外部图片\r\n");
+					info += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
 					info += theApp.m_player.GetAlbumCoverPath().c_str();
 				}
 			}
@@ -504,5 +504,13 @@ void CPlayerUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 void CPlayerUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
 	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1000);
+}
+
+void CPlayerUI::UpdateToolTipPosition()
+{
+	for (const auto& btn : m_buttons)
+	{
+		m_tool_tip->SetToolRect(theApp.m_pMainWnd, btn.first + 1000, btn.second.rect);
+	}
 }
 

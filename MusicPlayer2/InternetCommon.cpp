@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "InternetCommon.h"
+#include "Resource.h"
 
 
 CInternetCommon::CInternetCommon()
@@ -336,13 +337,13 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	//设置搜索关键字
 	wstring search_result;		//查找歌曲返回的结果
 	wstring keyword;		//查找的关键字
-	if (title == DEFAULT_TITLE)		//如果没有标题信息，就把文件名设为搜索关键字
+	if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())		//如果没有标题信息，就把文件名设为搜索关键字
 	{
 		keyword = file_name;
 		size_t index = keyword.rfind(L'.');		//查找最后一个点
 		keyword = keyword.substr(0, index);		//去掉扩展名
 	}
-	else if (artist == DEFAULT_ARTIST)	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
+	else if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
 	{
 		keyword = title;
 	}
@@ -359,7 +360,7 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	if (rtn != 0)
 	{
 		if(message)
-			AfxMessageBox(_T("网络连接失败或超时"), NULL, MB_ICONWARNING);
+			AfxMessageBox(CCommon::LoadText(IDS_NETWORK_CONNECTION_FAILED), NULL, MB_ICONWARNING);
 		return CInternetCommon::ItemInfo();
 	}
 
@@ -369,7 +370,7 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	if (down_list.empty())
 	{
 		if (message)
-			AfxMessageBox(_T("找不到此歌曲"), NULL, MB_ICONWARNING);
+			AfxMessageBox(CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG), NULL, MB_ICONWARNING);
 		return CInternetCommon::ItemInfo();
 	}
 
@@ -377,16 +378,16 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	wstring _title = title;
 	wstring _artist = artist;
 	wstring _album = album;
-	if (title == DEFAULT_TITLE) _title.clear();
-	if (artist == DEFAULT_ARTIST) _artist.clear();
-	if (album == DEFAULT_ALBUM) _album.clear();
+	if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString()) _title.clear();
+	if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()) _artist.clear();
+	if (album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString()) _album.clear();
 	if (_title.empty())
 		_title = keyword;
 	int best_matched = CInternetCommon::SelectMatchedItem(down_list, _title, _artist, _album, file_name, true);
 	if (best_matched < 0)
 	{
 		if (message)
-			AfxMessageBox(_T("找不到此歌曲"), NULL, MB_ICONWARNING);
+			AfxMessageBox(CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG), NULL, MB_ICONWARNING);
 		return CInternetCommon::ItemInfo();
 	}
 

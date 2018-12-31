@@ -21,7 +21,7 @@ public:
 
 	CLyricSettingsDlg m_tab1_dlg{ this };		//“歌词设置”子对话框
 	CAppearanceSettingDlg m_tab2_dlg{ this };	//“外观设置”子对话框
-	CDataSettingsDlg m_tab3_dlg{ this };		//“数据文件”子对话框
+	CDataSettingsDlg m_tab3_dlg{ this };		//“常规设置”子对话框
 	CPlaySettingsDlg m_tab4_dlg{ this };		//“播放选项”子对话框
 	CHotKeySettingDlg m_tab5_dlg{ this };		//“全局快捷键”子对话框
 

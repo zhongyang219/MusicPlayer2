@@ -116,17 +116,17 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	m_artist = theApp.m_player.GetCurrentSongInfo().artist;
 	m_album = theApp.m_player.GetCurrentSongInfo().album;
 
-	if (m_title == DEFAULT_TITLE)		//如果没有标题信息，就把文件名设为标题
+	if (m_title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())		//如果没有标题信息，就把文件名设为标题
 	{
 		m_title = theApp.m_player.GetFileName();
 		size_t index = m_title.rfind(L'.');
 		m_title = m_title.substr(0, index);
 	}
-	if (m_artist == DEFAULT_ARTIST)	//没有艺术家信息，清空艺术家的文本
+	if (m_artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())	//没有艺术家信息，清空艺术家的文本
 	{
 		m_artist.clear();
 	}
-	if (m_album == DEFAULT_ALBUM)	//没有唱片集信息，清空唱片集的文本
+	if (m_album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())	//没有唱片集信息，清空唱片集的文本
 	{
 		m_album.clear();
 	}
@@ -159,10 +159,10 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	width3 = rect.Width() - theApp.DPI(21) - width0 - width1 - width2;
 
 	m_down_list_ctrl.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_down_list_ctrl.InsertColumn(0, _T("序号"), LVCFMT_LEFT, width0);		//插入第1列
-	m_down_list_ctrl.InsertColumn(1, _T("标题"), LVCFMT_LEFT, width1);		//插入第2列
-	m_down_list_ctrl.InsertColumn(2, _T("艺术家"), LVCFMT_LEFT, width2);		//插入第3列
-	m_down_list_ctrl.InsertColumn(3, _T("唱片集"), LVCFMT_LEFT, width3);		//插入第3列
+	m_down_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第1列
+	m_down_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width1);		//插入第2列
+	m_down_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//插入第3列
+	m_down_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width3);		//插入第3列
 
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_down_list_ctrl.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -204,7 +204,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 void CLyricDownloadDlg::OnBnClickedSearchButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	SetDlgItemText(IDC_STATIC_INFO, _T("正在搜索……"));
+	SetDlgItemText(IDC_STATIC_INFO, CCommon::LoadText(IDS_SEARCHING));
 	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
 	wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
 	wchar_t buff[1024];
@@ -319,6 +319,7 @@ void CLyricDownloadDlg::OnDestroy()
 
 UINT CLyricDownloadDlg::LyricSearchThreadFunc(LPVOID lpParam)
 {
+	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	SearchThreadInfo* pInfo = (SearchThreadInfo*)lpParam;
 	wstring result;
 	pInfo->rtn = CInternetCommon::HttpPost(pInfo->url, result);		//向网易云音乐的歌曲搜索API发送http的POST请求
@@ -331,6 +332,7 @@ UINT CLyricDownloadDlg::LyricSearchThreadFunc(LPVOID lpParam)
 
 UINT CLyricDownloadDlg::LyricDownloadThreadFunc(LPVOID lpParam)
 {
+	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	DownloadThreadInfo* pInfo = (DownloadThreadInfo*)lpParam;
 	wstring result;
 	pInfo->success = CLyricDownloadCommon::DownloadLyric(pInfo->song_id, result, pInfo->download_translate);		//下载歌词
@@ -348,8 +350,8 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	m_search_result = m_search_thread_info.result;
 	switch (m_search_thread_info.rtn)
 	{
-	case 1: MessageBox(_T("搜索失败，请检查你的网络连接！"), NULL, MB_ICONWARNING); return 0;
-	case 2: MessageBox(_T("搜索超时！"), NULL, MB_ICONWARNING); return 0;
+	case 1: MessageBox(CCommon::LoadText(IDS_SEARCH_FAILED_INFO), NULL, MB_ICONWARNING); return 0;
+	case 2: MessageBox(CCommon::LoadText(IDS_SEARCH_TIME_OUT), NULL, MB_ICONWARNING); return 0;
 	default: break;
 	}
 	//DEBUG模式下，将查找返回的结果保存到文件
@@ -380,13 +382,13 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
 	CString info;
 	if (m_down_list.empty())
-		info = _T("搜索结果：（没有找到歌曲）");
+		info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
 	else if (best_matched == -1)
-		info = _T("搜索结果：（似乎没有最佳匹配的项）");
+		info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
 	else if(id_releated)
-		info.Format(_T("搜索结果：（已关联项：%d）"), best_matched + 1);
+		info.Format(CCommon::LoadText(IDS_SEARCH_RELATED), best_matched + 1);
 	else
-		info.Format(_T("搜索结果：（最佳匹配项：%d）"), best_matched + 1);
+		info.Format(CCommon::LoadText(IDS_SEARCH_BEST_MATCHED), best_matched + 1);
 	SetDlgItemText(IDC_STATIC_INFO, info);
 	//自动选中列表中最佳匹配的项目
 	m_down_list_ctrl.SetFocus();
@@ -428,12 +430,12 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(TRUE);		//下载完成后启用该按钮
 	if (!m_download_thread_info.success || m_lyric_str.empty())
 	{
-		MessageBox(_T("歌词下载失败！"), NULL, MB_ICONWARNING);
+		MessageBox(CCommon::LoadText(IDS_LYRIC_DOWNLOAD_FAILED, _T("!")), NULL, MB_ICONWARNING);
 		return 0;
 	}
 	if (!CLyricDownloadCommon::DisposeLryic(m_lyric_str))
 	{
-		MessageBox(_T("该歌曲没有歌词！"), NULL, MB_ICONWARNING);
+		MessageBox(CCommon::LoadText(IDS_SONG_NO_LYRIC, _T("!")), NULL, MB_ICONWARNING);
 		return 0;
 	}
 
@@ -463,7 +465,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		}
 		if (CCommon::FileExist(saved_path))
 		{
-			if (MessageBox(_T("歌词文件已存在，要替换它吗？"), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+			if (MessageBox(CCommon::LoadText(IDS_LYRIC_OVERWRITE_INQUARY), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
 				return 0;
 		}
 		if (!SaveLyric(saved_path.c_str(), m_save_code))	//保存歌词
@@ -479,20 +481,20 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		if (m_file_name == theApp.m_player.GetFileName())		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
 			theApp.m_player.IniLyrics(saved_path);
 		CString info;
-		info.Format(_T("下载完成，保存为“%s”。"), saved_path.c_str());
+		info.Format(CCommon::LoadText(IDS_DOWNLOAD_COMPLETE_SAVED), saved_path.c_str());
 		MessageBox(info, NULL, MB_ICONINFORMATION);
 	}
 	else
 	{
 		//设置过滤器
-		const wchar_t* szFilter = _T("lrc歌词文件(*.lrc)|*.lrc|文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+		const wchar_t* szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
 		//构造保存文件对话框
 		CFileDialog fileDlg(FALSE, _T("lrc"), m_file_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 		//为“另存为”对话框添加一个组合选择框
 		fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
 		//为组合选择框添加项目
-		fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, _T("以ANSI格式保存"));
-		fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, _T("以UTF-8格式保存"));
+		fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, CCommon::LoadText(IDS_SAVE_AS_ANSI));
+		fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, CCommon::LoadText(IDS_SAVE_AS_UTF8));
 		//为组合选择框设置默认选中的项目
 		fileDlg.SetSelectedControlItem(IDC_SAVE_COMBO_BOX, static_cast<int>(m_save_code));
 
@@ -572,7 +574,7 @@ void CLyricDownloadDlg::OnLdCopyTitle()
 	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
 	{
 		if(!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].title))
-			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 	}
 }
 
@@ -583,7 +585,7 @@ void CLyricDownloadDlg::OnLdCopyArtist()
 	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].artist))
-			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 	}
 }
 
@@ -594,7 +596,7 @@ void CLyricDownloadDlg::OnLdCopyAlbum()
 	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].album))
-			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 	}
 }
 
@@ -605,7 +607,7 @@ void CLyricDownloadDlg::OnLdCopyId()
 	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].id))
-			MessageBox(_T("复制到剪贴板失败！"), NULL, MB_ICONWARNING);
+			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 	}
 }
 

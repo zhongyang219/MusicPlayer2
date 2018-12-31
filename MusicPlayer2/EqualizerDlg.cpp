@@ -110,16 +110,16 @@ BOOL CEqualizerDlg::OnInitDialog()
 	m_enable_equ_check.SetCheck(theApp.m_player.GetEqualizerEnable());
 
 	//初始化“均衡器预设”列表
-	m_equ_style_list.AddString(_T("无"));
-	m_equ_style_list.AddString(_T("古典"));
-	m_equ_style_list.AddString(_T("流行"));
-	m_equ_style_list.AddString(_T("爵士"));
-	m_equ_style_list.AddString(_T("摇滚"));
-	m_equ_style_list.AddString(_T("柔和"));
-	m_equ_style_list.AddString(_T("重低音"));
-	m_equ_style_list.AddString(_T("消除低音"));
-	m_equ_style_list.AddString(_T("弱化高音"));
-	m_equ_style_list.AddString(_T("自定义"));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_NONE));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_CLASSICAL));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_POP));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_JAZZ));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_ROCK));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_SOFT));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_BASS));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_ELIMINATE_BASS));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_WEAKENING_TREBLE));
+	m_equ_style_list.AddString(CCommon::LoadText(IDS_USER_DEFINE));
 	m_equ_style_list.SetCurSel(m_equ_style_selected);
 
 	//初始化控件的启用禁用状态

@@ -26,4 +26,5 @@ public:
 
 	virtual CRect GetThumbnailClipArea() = 0;
 
+	virtual void UpdateToolTipPosition() = 0;
 };

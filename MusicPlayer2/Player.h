@@ -102,7 +102,7 @@ private:
 
 	//bool m_no_ape_plugin{ false };		//如果无法加载bass_ape.dll，则为true
 
-	SongInfo m_no_use{};
+	SongInfo m_no_use{ false };
 public:
 	CLyrics m_Lyrics;		//歌词
 	//wstring m_lyric_path;	//歌词文件夹的路径
