@@ -142,7 +142,7 @@ void CLyricEditDlg::UpdateStatusbarInfo()
 
 void CLyricEditDlg::StatusBarSetParts(int width)
 {
-	int nParts[3] = { width - theApp.DPI(220), width - theApp.DPI(160), -1 }; //·Ö¸î³ß´ç
+	int nParts[3] = { width - theApp.DPI(240), width - theApp.DPI(160), -1 }; //·Ö¸î³ß´ç
 	m_status_bar.SetParts(3, nParts); //·Ö¸î×´Ì¬À¸
 }
 

@@ -294,4 +294,6 @@ public:
 	afx_msg void OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity);
 	afx_msg void OnSupportedFormat();
 	afx_msg void OnSwitchUi();
+	afx_msg void OnVolumeUp();
+	afx_msg void OnVolumeDown();
 };

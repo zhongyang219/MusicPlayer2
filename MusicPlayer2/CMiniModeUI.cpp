@@ -217,7 +217,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.left = rc_tmp.right - theApp.DPI(20);;
 	rc_tmp.top = m_ui_data.margin;
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(20);
-	DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("¨w"), draw_background);
+	DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("¡Á"), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
 	DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("¡õ"), draw_background);

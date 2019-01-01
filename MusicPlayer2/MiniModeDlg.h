@@ -30,6 +30,8 @@ public:
 	void SetDefaultBackGround(CImage* pImage);
 	void SetDisplayFormat(DisplayFormat* pDisplayFormat);
 
+	void SetVolume(bool up);	//
+
 protected:
 
 	int m_position_x;
@@ -61,8 +63,6 @@ protected:
 
 	void CheckWindowPos();
 	void UpdateSongTipInfo();
-
-	void SetVolume(bool up);	//
 
 	DECLARE_MESSAGE_MAP()
 

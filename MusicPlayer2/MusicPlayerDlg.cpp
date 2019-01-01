@@ -267,6 +267,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_DWMCOLORIZATIONCOLORCHANGED()
 	ON_COMMAND(ID_SUPPORTED_FORMAT, &CMusicPlayerDlg::OnSupportedFormat)
 	ON_COMMAND(ID_SWITCH_UI, &CMusicPlayerDlg::OnSwitchUi)
+	ON_COMMAND(ID_VOLUME_UP, &CMusicPlayerDlg::OnVolumeUp)
+	ON_COMMAND(ID_VOLUME_DOWN, &CMusicPlayerDlg::OnVolumeDown)
 END_MESSAGE_MAP()
 
 
@@ -1592,12 +1594,12 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			}
 			if (pMsg->wParam == VK_UP)	//按上方向键下音量加
 			{
-				theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+				OnVolumeUp();
 				return TRUE;
 			}
 			if (pMsg->wParam == VK_DOWN)	//按下方向键音量减
 			{
-				theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+				OnVolumeDown();
 				return TRUE;
 			}
 			if (pMsg->wParam == 'M')	//按M键设置循环模式
@@ -1915,11 +1917,11 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (zDelta > 0)
 	{
-		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.mouse_volum_step);
+		OnVolumeUp();
 	}
 	if (zDelta < 0)
 	{
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.mouse_volum_step);
+		OnVolumeDown();
 	}
 
 	return CDialog::OnMouseWheel(nFlags, zDelta, pt);
@@ -2131,10 +2133,10 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 	case HK_PREVIOUS: OnPrevious(); break;
 	case HK_NEXT: OnNext(); break;
 	case HK_VOLUME_UP:
-		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+		OnVolumeUp();
 		break;
 	case HK_VOLUME_DOWN:
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+		OnVolumeDown();
 		break;
 	default: break;
 	case HK_STOP:
@@ -3104,4 +3106,20 @@ void CMusicPlayerDlg::OnSwitchUi()
 	m_ui.UpdateRepeatModeToolTip();
 	m_ui2.UpdateRepeatModeToolTip();
 	m_pUI->UpdateToolTipPosition();
+}
+
+void CMusicPlayerDlg::OnVolumeUp()
+{
+	if (m_miniModeDlg.m_hWnd == NULL)
+		theApp.m_player.MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+	else
+		m_miniModeDlg.SetVolume(true);
+}
+
+void CMusicPlayerDlg::OnVolumeDown()
+{
+	if (m_miniModeDlg.m_hWnd == NULL)
+		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+	else
+		m_miniModeDlg.SetVolume(false);
 }
