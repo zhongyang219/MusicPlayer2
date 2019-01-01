@@ -2813,7 +2813,7 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 {
 	// TODO: 在此添加命令处理程序代码
 	//设置过滤器
-	const wchar_t* szFilter = CCommon::LoadText(IDS_ALL_FILES, _T("(*.*)|*.*||"));
+	CString szFilter = CCommon::LoadText(IDS_ALL_FILES, _T("(*.*)|*.*||"));
 	//设置另存为时的默认文件名
 	CString file_name;
 	CString extension;

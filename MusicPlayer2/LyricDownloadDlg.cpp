@@ -487,7 +487,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 	else
 	{
 		//设置过滤器
-		const wchar_t* szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
+		CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
 		//构造保存文件对话框
 		CFileDialog fileDlg(FALSE, _T("lrc"), m_file_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 		//为“另存为”对话框添加一个组合选择框

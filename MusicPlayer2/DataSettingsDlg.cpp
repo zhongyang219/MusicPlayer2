@@ -174,7 +174,7 @@ void CDataSettingsDlg::OnBnClickedBrowseButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//设置过滤器
-	LPCTSTR szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
+	CString szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, _T("SF2"), NULL, 0, szFilter, this);
 	//显示打开文件对话框

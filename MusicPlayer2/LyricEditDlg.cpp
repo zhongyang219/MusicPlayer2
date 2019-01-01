@@ -455,7 +455,7 @@ void CLyricEditDlg::OnLyricOpen()
 	}
 
 	//设置过滤器
-	LPCTSTR szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
+	CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
 	//构造打开文件对话框
 	CFileDialog fileDlg(TRUE, _T("txt"), NULL, 0, szFilter, this);
 	//显示打开文件对话框
@@ -480,10 +480,8 @@ void CLyricEditDlg::OnLyricSave()
 void CLyricEditDlg::OnLyricSaveAs()
 {
 	// TODO: 在此添加命令处理程序代码
-	//设置过滤器
-	const wchar_t* szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
 	//构造保存文件对话框
-	CFileDialog fileDlg(FALSE, _T("txt"), m_lyric_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+	CFileDialog fileDlg(FALSE, _T("txt"), m_lyric_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_LYRIC_FILE_FILTER), this);
 	//为“另存为”对话框添加一个组合选择框
 	fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
 	//为组合选择框添加项目
