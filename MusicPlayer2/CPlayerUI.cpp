@@ -397,48 +397,48 @@ void CPlayerUI::MouseMove(CPoint point)
 {
 	CPlayerUIBase::MouseMove(point);
 
-	//显示专辑封面的提示
-	if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
-	{
-		CRect cover_rect{ m_draw_data.cover_rect };
-		cover_rect.MoveToXY(m_draw_rect.left + m_draw_data.cover_rect.left, m_draw_rect.top + m_draw_data.cover_rect.top);
-		bool show_cover_tip{ cover_rect.PtInRect(point) != FALSE };
-		static bool last_show_cover_tip{ false };
-		if (!last_show_cover_tip && show_cover_tip)
-		{
-			CString info;
-			if (theApp.m_player.AlbumCoverExist())
-			{
-				info = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
-				//CFilePathHelper cover_path(theApp.m_player.GetAlbumCoverPath());
-				//if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
-				if (theApp.m_player.IsInnerCover())
-				{
-					info += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
-					switch (theApp.m_player.GetAlbumCoverType())
-					{
-					case 0: info += _T("jpg"); break;
-					case 1: info += _T("png"); break;
-					case 2: info += _T("gif"); break;
-					}
-				}
-				else
-				{
-					info += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
-					info += theApp.m_player.GetAlbumCoverPath().c_str();
-				}
-			}
-			m_tool_tip->AddTool(theApp.m_pMainWnd, info);
-			m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
-			m_tool_tip->Pop();
-		}
-		if (last_show_cover_tip && !show_cover_tip)
-		{
-			m_tool_tip->AddTool(theApp.m_pMainWnd, _T(""));
-			m_tool_tip->Pop();
-		}
-		last_show_cover_tip = show_cover_tip;
-	}
+	////显示专辑封面的提示
+	//if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
+	//{
+	//	CRect cover_rect{ m_draw_data.cover_rect };
+	//	cover_rect.MoveToXY(m_draw_rect.left + m_draw_data.cover_rect.left, m_draw_rect.top + m_draw_data.cover_rect.top);
+	//	bool show_cover_tip{ cover_rect.PtInRect(point) != FALSE };
+	//	static bool last_show_cover_tip{ false };
+	//	if (!last_show_cover_tip && show_cover_tip)
+	//	{
+	//		CString info;
+	//		if (theApp.m_player.AlbumCoverExist())
+	//		{
+	//			info = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
+	//			//CFilePathHelper cover_path(theApp.m_player.GetAlbumCoverPath());
+	//			//if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
+	//			if (theApp.m_player.IsInnerCover())
+	//			{
+	//				info += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
+	//				switch (theApp.m_player.GetAlbumCoverType())
+	//				{
+	//				case 0: info += _T("jpg"); break;
+	//				case 1: info += _T("png"); break;
+	//				case 2: info += _T("gif"); break;
+	//				}
+	//			}
+	//			else
+	//			{
+	//				info += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
+	//				info += theApp.m_player.GetAlbumCoverPath().c_str();
+	//			}
+	//		}
+	//		m_tool_tip->AddTool(theApp.m_pMainWnd, info);
+	//		m_tool_tip->SetMaxTipWidth(theApp.DPI(400));
+	//		m_tool_tip->Pop();
+	//	}
+	//	if (last_show_cover_tip && !show_cover_tip)
+	//	{
+	//		m_tool_tip->AddTool(theApp.m_pMainWnd, _T(""));
+	//		m_tool_tip->Pop();
+	//	}
+	//	last_show_cover_tip = show_cover_tip;
+	//}
 
 }
 
