@@ -55,6 +55,8 @@ protected:
 
 	CPlayListCtrl m_playlist_ctrl{ theApp.m_player.GetPlayList() };
 
+	bool m_first_start{ true };
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 

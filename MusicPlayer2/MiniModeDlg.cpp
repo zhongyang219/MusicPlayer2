@@ -156,7 +156,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 	m_Mytip.SetMaxTipWidth(800);
 
 	m_ui.SetToolTip(&m_Mytip);
-	UpdateSongTipInfo();
+	//UpdateSongTipInfo();
 
 	//初始化窗口位置
 	if (m_position_x != -1 && m_position_y != -1)
@@ -187,6 +187,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 
 	m_show_playlist = false;
 	m_ui_data.m_show_volume = false;
+	m_first_start = true;
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -224,6 +225,10 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == TIMER_ID_MINI2)
 	{
 		m_ui.DrawInfo(false);
+
+		if (m_first_start)
+			UpdateSongTipInfo();
+		m_first_start = false;
 	}
 	if (nIDEvent == 11)
 	{
