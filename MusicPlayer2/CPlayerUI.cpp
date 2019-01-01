@@ -12,13 +12,6 @@ CPlayerUI::~CPlayerUI()
 {
 }
 
-void CPlayerUI::Init(CDC* pDC)
-{
-	m_pDC = pDC;
-	m_draw.Create(m_pDC, theApp.m_pMainWnd);
-	m_pLayout = std::make_shared<SLayoutData>();
-}
-
 void CPlayerUI::DrawInfo(bool reset)
 {
 	//调用基类的函数，以设置绘图颜色
@@ -457,32 +450,7 @@ void CPlayerUI::LButtonUp(CPoint point)
 void CPlayerUI::OnSizeRedraw(int cx, int cy)
 {
 	m_show_volume_adj = false;
-	CRect redraw_rect{ m_draw_rect };
-	if (!m_ui_data.m_narrow_mode)	//在普通界面模式下
-	{
-		if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
-		{
-			//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-			redraw_rect.left = cx / 2 - 3 * m_pLayout->margin;
-			redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
-			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
-		}
-		else if (cy < m_ui_data.client_height)	//如果界面高度变小了
-		{
-			//重新将绘图区域下方区域的矩形区域填充为对话框背景色
-			redraw_rect.top = cy - 2 * m_pLayout->margin;
-			redraw_rect.bottom = cy;
-			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
-		}
-	}
-	else if (m_ui_data.m_narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
-	{
-		//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-		redraw_rect.left = cx - 2 * m_pLayout->margin;
-		redraw_rect.right = cx;
-		m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
-	}
-
+	CPlayerUIBase::OnSizeRedraw(cx, cy);
 }
 
 CRect CPlayerUI::GetThumbnailClipArea()

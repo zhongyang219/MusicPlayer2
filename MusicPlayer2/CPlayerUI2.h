@@ -17,13 +17,11 @@ public:
 	CPlayerUI2(UIData& ui_data);
 	~CPlayerUI2();
 
-	virtual void Init(CDC* pDC) override;
 	virtual void DrawInfo(bool reset = false) override;		//ªÊ÷∆–≈œ¢
 
 	virtual void RButtonUp(CPoint point) override;
 	virtual void MouseMove(CPoint point) override;
 	virtual void LButtonUp(CPoint point) override;
-	virtual void OnSizeRedraw(int cx, int cy) override;
 
 	virtual CRect GetThumbnailClipArea() override;
 
@@ -36,7 +34,6 @@ protected:
 
 protected:
 	DrawData m_draw_data;
-	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
 
 	CFont m_title_font;
 	CFont m_artist_font;

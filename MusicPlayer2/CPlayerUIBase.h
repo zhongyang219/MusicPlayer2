@@ -54,13 +54,13 @@ public:
 	void SetToolTip(CToolTipCtrl* pToolTip);
 
 public:
-	virtual void Init(CDC* pDC) override = 0;
+	virtual void Init(CDC* pDC) override;
 	virtual void DrawInfo(bool reset = false) override;
 
 	virtual void RButtonUp(CPoint point) override;
 	virtual void MouseMove(CPoint point) override;
 	virtual void LButtonUp(CPoint point) override;
-	virtual void OnSizeRedraw(int cx, int cy) override = 0;
+	virtual void OnSizeRedraw(int cx, int cy) override;
 
 	virtual CRect GetThumbnailClipArea() override = 0;
 	void UpdateRepeatModeToolTip();
@@ -103,6 +103,7 @@ protected:
 	CDC* m_pDC;
 	UIColors m_colors;
 	CDrawCommon m_draw;		//用于绘制文本的对象
+	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
 
 	CMenu m_popup_menu;			//歌词右键菜单
 	CMenu m_main_popup_menu;

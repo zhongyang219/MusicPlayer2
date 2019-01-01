@@ -16,7 +16,6 @@ public:
 	CPlayerUI(UIData& ui_data);
 	~CPlayerUI();
 
-	virtual void Init(CDC* pDC) override;
 	virtual void DrawInfo(bool reset = false) override;		//ªÊ÷∆–≈œ¢
 
 	virtual void RButtonUp(CPoint point) override;
@@ -36,6 +35,5 @@ protected:
 
 protected:
 	DrawData m_draw_data;
-	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
 };
 

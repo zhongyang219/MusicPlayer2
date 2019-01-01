@@ -19,6 +19,13 @@ void CPlayerUIBase::SetToolTip(CToolTipCtrl * pToolTip)
 	m_tool_tip = pToolTip;
 }
 
+void CPlayerUIBase::Init(CDC * pDC)
+{
+	m_pDC = pDC;
+	m_draw.Create(m_pDC, theApp.m_pMainWnd);
+	m_pLayout = std::make_shared<SLayoutData>();
+}
+
 void CPlayerUIBase::DrawInfo(bool reset)
 {
 	if (m_first_draw)
@@ -102,6 +109,34 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
 void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 {
+	CRect redraw_rect;
+	if (!m_ui_data.m_narrow_mode)	//在普通界面模式下
+	{
+		if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
+		{
+			//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
+			redraw_rect = m_draw_rect;
+			redraw_rect.left = cx / 2 - m_pLayout->margin;
+			redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
+			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+		}
+		if (cy < m_ui_data.client_height)	//如果界面高度变小了
+		{
+			//重新将绘图区域下方区域的矩形区域填充为对话框背景色
+			redraw_rect = m_draw_rect;
+			redraw_rect.top = cy - m_pLayout->margin;
+			redraw_rect.bottom = cy;
+			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+		}
+	}
+	else if (m_ui_data.m_narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
+	{
+		//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
+		redraw_rect = m_draw_rect;
+		redraw_rect.left = cx - m_pLayout->margin;
+		redraw_rect.right = cx;
+		m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+	}
 }
 
 void CPlayerUIBase::UpdateRepeatModeToolTip()
