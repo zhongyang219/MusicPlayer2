@@ -309,7 +309,7 @@ wstring CAudioCommon::GetGenre(BYTE genre)
 	if (genre < GENRE_MAX)
 		return GENRE_TABLE[genre];
 	else
-		return CCommon::LoadText(IDS_DEFAULT_GENRE);
+		return CCommon::LoadText(IDS_DEFAULT_GENRE).GetString();
 }
 
 wstring CAudioCommon::GenreConvert(wstring genre)
@@ -347,7 +347,7 @@ wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)
 {
 	switch (ctype)
 	{
-	case 0: return CCommon::LoadText(IDS_UNKNOW);
+	case 0: return CCommon::LoadText(IDS_UNKNOW).GetString();
 	case 1: return L"SAMPLE";
 	case 2: return L"RECORD";
 	case 0x10000: return L"STREAM";

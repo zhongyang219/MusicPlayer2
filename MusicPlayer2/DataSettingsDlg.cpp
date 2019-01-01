@@ -234,7 +234,7 @@ void CDataSettingsDlg::OnOK()
 	m_data.language = static_cast<Language>(m_language_combo.GetCurSel());
 	if (m_data.language != theApp.m_general_setting_data.language)
 	{
-		//MessageBox(CCommon::LoadText(IDS_LANGUAGE_CHANGE_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+		MessageBox(CCommon::LoadText(IDS_LANGUAGE_CHANGE_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 	}
 
 	CTabDlg::OnOK();

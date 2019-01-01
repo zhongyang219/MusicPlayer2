@@ -328,9 +328,10 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 	else
 	{
 		//ªÊ÷∆≤•∑≈◊¥Ã¨
+		CString play_state_str = theApp.m_player.GetPlayingState().c_str();
 		CRect rc_tmp{ rect };
-		rc_tmp.right = rc_tmp.left + theApp.DPI(52);
-		m_draw.DrawWindowText(rc_tmp, theApp.m_player.GetPlayingState().c_str(), m_colors.color_text_lable);
+		rc_tmp.right = rc_tmp.left + m_draw.GetDC()->GetTextExtent(play_state_str).cx - theApp.DPI(4);
+		m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
 
 		//ªÊ÷∆∏Ë«˙–Ú∫≈
 		rc_tmp.MoveToX(rc_tmp.right);
@@ -377,21 +378,21 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 	rc_repeat_mode = rc_tmp;
 	rc_repeat_mode.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 
-		switch (theApp.m_player.GetRepeatMode())
-		{
-		case RepeatMode::RM_PLAY_ORDER:
-			m_draw.DrawIcon(theApp.m_play_oder_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-			break;
-		case RepeatMode::RM_LOOP_PLAYLIST:
-			m_draw.DrawIcon(theApp.m_loop_playlist_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-			break;
-		case RepeatMode::RM_LOOP_TRACK:
-			m_draw.DrawIcon(theApp.m_loop_track_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-			break;
-		case RepeatMode::RM_PLAY_SHUFFLE:
-			m_draw.DrawIcon(theApp.m_play_shuffle_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
-			break;
-		}
+	switch (theApp.m_player.GetRepeatMode())
+	{
+	case RepeatMode::RM_PLAY_ORDER:
+		m_draw.DrawIcon(theApp.m_play_oder_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
+	case RepeatMode::RM_LOOP_PLAYLIST:
+		m_draw.DrawIcon(theApp.m_loop_playlist_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
+	case RepeatMode::RM_LOOP_TRACK:
+		m_draw.DrawIcon(theApp.m_loop_track_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
+	case RepeatMode::RM_PLAY_SHUFFLE:
+		m_draw.DrawIcon(theApp.m_play_shuffle_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		break;
+	}
 	
 
 	//ªÊ÷∆…Ë÷√∞¥≈•
@@ -407,11 +408,18 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 	DrawUIButton(rc_tmp, m_buttons[BTN_SKIN], theApp.m_skin_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
 
 	//ªÊ÷∆√‘ƒ„ƒ£ Ω∞¥≈•
-	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_buttons[BTN_MINI], theApp.m_mini_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+	if (rect.Width() >= theApp.DPI(190))
+	{
+		rc_tmp.MoveToX(rc_tmp.right);
+		DrawUIButton(rc_tmp, m_buttons[BTN_MINI], theApp.m_mini_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+	}
+	else
+	{
+		m_buttons[BTN_MINI].rect = CRect();
+	}
 
 	//ªÊ÷∆∑≠“Î∞¥≈•
-	if (draw_translate_button && rect.Width()>=theApp.DPI(192))
+	if (draw_translate_button && rect.Width() >= theApp.DPI(214))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
 		CRect translate_rect = rc_tmp;
@@ -436,6 +444,10 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		}
 		m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(translate_rect, m_draw_rect);
 
+	}
+	else
+	{
+		m_buttons[BTN_TRANSLATE].rect = CRect();
 	}
 
 	//œ‘ æ<<<<
