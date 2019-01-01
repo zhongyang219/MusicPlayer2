@@ -24,6 +24,7 @@ public:
 	enum { IDD = IDD_MINI_DIALOG };
 #endif
 
+	void UpdatePlayPauseButton();
 	void ShowPlaylist();
 	void SetPlayListColor();
 	void SetDefaultBackGround(CImage* pImage);

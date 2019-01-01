@@ -110,6 +110,11 @@ END_MESSAGE_MAP()
 // CMiniModeDlg 消息处理程序
 
 
+void CMiniModeDlg::UpdatePlayPauseButton()
+{
+	m_ui.UpdatePlayPauseButtonTip();
+}
+
 void CMiniModeDlg::ShowPlaylist()
 {
 	m_playlist_ctrl.ShowPlaylist(*m_ui_data.pDisplayFormat);

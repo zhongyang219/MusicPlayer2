@@ -726,6 +726,8 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #ifndef COMPILE_IN_WIN_XP
 	m_pTaskbar->ThumbBarUpdateButtons(m_hWnd, 3, m_thumbButton);
 #endif
+	if (m_miniModeDlg.m_hWnd != NULL)
+		m_miniModeDlg.UpdatePlayPauseButton();
 }
 
 void CMusicPlayerDlg::SetThumbnailClipArea()

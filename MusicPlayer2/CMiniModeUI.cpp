@@ -377,6 +377,14 @@ void CMiniModeUI::UpdateSongInfoTip(LPCTSTR str_tip)
 	UpdateMouseToolTip(BTN_COVER, str_tip);
 }
 
+void CMiniModeUI::UpdatePlayPauseButtonTip()
+{
+	if (theApp.m_player.IsPlaying() && !theApp.m_player.IsError())
+		UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PAUSE));
+	else
+		UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
+}
+
 void CMiniModeUI::DrawUIButton(CRect rect, IPlayerUI::UIButton & btn, HICON icon, bool draw_background)
 {
 	CRect rc_tmp = rect;

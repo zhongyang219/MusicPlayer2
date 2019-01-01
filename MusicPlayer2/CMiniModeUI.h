@@ -62,6 +62,7 @@ public:
 	virtual CRect GetThumbnailClipArea();
 
 	void UpdateSongInfoTip(LPCTSTR str_tip);
+	void UpdatePlayPauseButtonTip();
 
 private:
 	enum BtnKey		//标识按钮的类型
