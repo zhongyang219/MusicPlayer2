@@ -183,6 +183,9 @@
     <Filter Include="派生的控件类\TabDlg">
       <UniqueIdentifier>{6f85ca9b-1cef-4027-b4b2-ca082c33c49d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\CVariant">
+      <UniqueIdentifier>{44956eab-c2bb-463e-9978-4a9fdb9b5136}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -385,6 +388,9 @@
     <ClInclude Include="TabDlg.h">
       <Filter>派生的控件类\TabDlg</Filter>
     </ClInclude>
+    <ClInclude Include="CVariant.h">
+      <Filter>公共的类\CVariant</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -566,6 +572,9 @@
     </ClCompile>
     <ClCompile Include="TabDlg.cpp">
       <Filter>派生的控件类\TabDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="CVariant.cpp">
+      <Filter>公共的类\CVariant</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

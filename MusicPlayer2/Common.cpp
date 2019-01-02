@@ -895,6 +895,27 @@ CString CCommon::LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str)
 	return str;
 }
 
+//CString CCommon::LoadTextFormat(UINT id, ...)
+//{
+//	CString str;
+//	str.LoadString(id);
+//
+//	va_list arg_ptr;
+//	va_start(arg_ptr, id);
+//
+//	for (int i = 0; i < count; ++i)
+//	{
+//		CountSum += va_arg(arg_ptr, int);
+//	}
+//	//将va_list类型的指针复位成空值
+//	//就是清空可变参数列表
+//	va_end(arg_ptr);
+//
+//
+//
+//	return CString();
+//}
+
 void CCommon::SetThreadLanguage(Language language)
 {
 	switch (language)

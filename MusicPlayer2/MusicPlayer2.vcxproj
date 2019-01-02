@@ -207,6 +207,7 @@
     <ClInclude Include="CPlayerUI2.h" />
     <ClInclude Include="CPlayerUIBase.h" />
     <ClInclude Include="CTabCtrlEx.h" />
+    <ClInclude Include="CVariant.h" />
     <ClInclude Include="IPlayerUI.h" />
     <ClInclude Include="PlaySettingsDlg.h" />
     <ClInclude Include="RecorderDlg.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="CPlayerUI2.cpp" />
     <ClCompile Include="CPlayerUIBase.cpp" />
     <ClCompile Include="CTabCtrlEx.cpp" />
+    <ClCompile Include="CVariant.cpp" />
     <ClCompile Include="PlaySettingsDlg.cpp" />
     <ClCompile Include="RecorderDlg.cpp" />
     <ClCompile Include="GaussBlur.cpp" />
