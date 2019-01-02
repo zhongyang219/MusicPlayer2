@@ -86,7 +86,7 @@ void CDataSettingsDlg::ShowDataSizeInfo()
 {
 	CString info;
 	if (m_data_size < 1024)
-		info.Format(_T("&s: %d %s"), CCommon::LoadText(IDS_CURRENT_DATA_FILE_SIZE), m_data_size, CCommon::LoadText(IDS_BYTE));
+		info.Format(_T("%s: %d %s"), CCommon::LoadText(IDS_CURRENT_DATA_FILE_SIZE), m_data_size, CCommon::LoadText(IDS_BYTE));
 	else if (m_data_size < 1024 * 1024)
 		info.Format(_T("%s: %.2f KB (%d %s)"), CCommon::LoadText(IDS_CURRENT_DATA_FILE_SIZE), static_cast<float>(m_data_size) / 1024.0f, m_data_size, CCommon::LoadText(IDS_BYTE));
 	else
