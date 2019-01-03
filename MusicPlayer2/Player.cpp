@@ -139,7 +139,7 @@ void CPlayer::IniBASS()
 					if (m_sfont.font == 0)
 					{
 						CString info;
-						info.Format(CCommon::LoadText(IDS_SOUND_FONT_LOAD_FAILED), sf2_path.c_str());
+						info = CCommon::LoadTextFormat(IDS_SOUND_FONT_LOAD_FAILED, { sf2_path });
 						CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
 						m_sfont_name = CCommon::LoadText(_T("<"), IDS_LOAD_FAILED, _T(">"));
 					}
@@ -1297,12 +1297,12 @@ wstring CPlayer::GetTimeString() const
 wstring CPlayer::GetPlayingState() const
 {
 	if (m_error_code != 0)
-		return CCommon::LoadText(IDS_PLAY_ERROR);
+		return CCommon::LoadText(IDS_PLAY_ERROR).GetString();
 	switch (m_playing)
 	{
-	case 0: return CCommon::LoadText(IDS_STOPED);
-	case 1: return CCommon::LoadText(IDS_PAUSED);
-	case 2: return CCommon::LoadText(IDS_NOW_PLAYING);
+	case 0: return CCommon::LoadText(IDS_STOPED).GetString();
+	case 1: return CCommon::LoadText(IDS_PAUSED).GetString();
+	case 2: return CCommon::LoadText(IDS_NOW_PLAYING).GetString();
 	}
 	return wstring();
 }
@@ -1483,7 +1483,7 @@ void CPlayer::LoadRecentPath()
 	{
 		//捕获序列化时出现的异常
 		CString info;
-		info.Format(CCommon::LoadText(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG), exception->m_cause);
+		info = CCommon::LoadTextFormat(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG, { exception->m_cause });
 		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info });
 	}
 	// 关闭对象

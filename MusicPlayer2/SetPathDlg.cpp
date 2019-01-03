@@ -356,7 +356,7 @@ void CSetPathDlg::OnClearInvalidPath()
 	}
 	ShowPathList();		//重新显示路径列表
 	CString info;
-	info.Format(CCommon::LoadText(IDS_PATH_CLEAR_COMPLETE), cleard_cnt);
+	info = CCommon::LoadTextFormat(IDS_PATH_CLEAR_COMPLETE, { cleard_cnt });
 	MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
 }
 

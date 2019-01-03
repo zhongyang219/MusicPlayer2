@@ -47,16 +47,16 @@ BOOL CMusicPlayerApp::InitInstance()
 	wc.lpszClassName = _T("MusicPlayer_l3gwYT");	//将对话框的类名修改为新类名
 	AfxRegisterClass(&wc);
 
-	//当程序被Windows重新启动时，直接退出程序
 	wstring cmd_line{ m_lpCmdLine };
-	if (cmd_line.find(L"RestartByRestartManager") != wstring::npos)
-	{
-		//将命令行参数写入日志文件
-		wchar_t buff[256];
-		swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
-		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
-		return FALSE;
-	}
+	////当程序被Windows重新启动时，直接退出程序
+	//if (cmd_line.find(L"RestartByRestartManager") != wstring::npos)
+	//{
+	//	//将命令行参数写入日志文件
+	//	CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
+	//	//swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
+	//	CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info.GetString() });
+	//	return FALSE;
+	//}
 
 	//检查是否已有实例正在运行（Debug时不检查）
 #ifndef _DEBUG
@@ -93,22 +93,6 @@ BOOL CMusicPlayerApp::InitInstance()
 
 	//CString str = CCommon::LoadTextFormat(IDS_TEST_STR, { 3, L"asdfghhh", 1.2 });
 
-	//检查bass.dll的版本是否和API的版本匹配
-	WORD dll_version{ HIWORD(BASS_GetVersion()) };
-	//WORD dll_version{ 0x203 };
-	if (dll_version != BASSVERSION)
-	{
-		CString info;
-		info.LoadString(IDS_BASS_VERSION_WARNING);
-		CString version, exp_version;
-		version.Format(_T("V%d.%d"), HIBYTE(dll_version), LOBYTE(dll_version));
-		exp_version.Format(_T("V%d.%d"), HIBYTE(BASSVERSION), LOBYTE(BASSVERSION));
-		info.Replace(_T("<%version%>"), version);
-		info.Replace(_T("<%exp_version%>"), exp_version);
-		if (AfxMessageBox(info, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
-			return FALSE;
-	}
-
 	m_module_dir = CCommon::GetExePath();
 #ifdef _DEBUG
 	m_local_dir = L".\\";
@@ -126,6 +110,16 @@ BOOL CMusicPlayerApp::InitInstance()
 
 	//初始化界面语言
 	CCommon::SetThreadLanguage(m_general_setting_data.language);
+
+	//检查bass.dll的版本是否和API的版本匹配
+	WORD dll_version{ HIWORD(BASS_GetVersion()) };
+	//WORD dll_version{ 0x203 };
+	if (dll_version != BASSVERSION)
+	{
+		CString info = CCommon::LoadTextFormat(IDS_BASS_VERSION_WARNING, { HIBYTE(dll_version), LOBYTE(dll_version), HIBYTE(BASSVERSION), LOBYTE(BASSVERSION) });
+		if (AfxMessageBox(info, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+			return FALSE;
+	}
 
 	//启动时检查更新
 	if (m_general_setting_data.check_update_when_start)
@@ -285,9 +279,9 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 	{
 		CString info;
 		if (contents.empty())
-			info.Format(CCommon::LoadText(IDS_UPDATE_AVLIABLE), version.c_str());
+			info = CCommon::LoadTextFormat(IDS_UPDATE_AVLIABLE, { version });
 		else
-			info.Format(CCommon::LoadText(IDS_UPDATE_AVLIABLE2), version.c_str(), contents_str);
+			info = CCommon::LoadTextFormat(IDS_UPDATE_AVLIABLE2, { version, contents_str });
 
 		if (theApp.m_pMainWnd->MessageBox(info, NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)
 		{
@@ -436,7 +430,7 @@ void CMusicPlayerApp::LoadSongData()
 	catch(CArchiveException* exception)
 	{
 		CString info;
-		info.Format(CCommon::LoadText(IDS_SERIALIZE_ERROR), exception->m_cause);
+		info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { exception->m_cause });
 //		info.Format(_T("警告：读取数据文件时发生了序列化异常，异常类型：CArchiveException，m_cause = %d。\
 //可能是song_data.dat文件被损坏或版本不匹配造成的，你可以忽略这个信息，因为song_data.dat会重新生成。"), exception->m_cause);
 //		AfxMessageBox(info, MB_ICONWARNING);

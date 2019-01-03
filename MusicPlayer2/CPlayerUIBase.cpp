@@ -357,7 +357,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 	{
 		static CDrawCommon::ScrollInfo scroll_info0;
 		CString info;
-		info.Format(CCommon::LoadText(IDS_PLAYLIST_INIT_INFO), theApp.m_player.GetSongNum(), theApp.m_player.m_thread_info.process_percent);
+		info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { theApp.m_player.GetSongNum(), theApp.m_player.m_thread_info.process_percent });
 		m_draw.DrawScrollText(rect, info, m_colors.color_text, theApp.DPI(1.5), false, scroll_info0, reset);
 	}
 	else

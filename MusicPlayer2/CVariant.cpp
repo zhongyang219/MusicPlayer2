@@ -8,6 +8,12 @@ CVariant::CVariant(int value)
 	m_type = eType::INT;
 }
 
+CVariant::CVariant(unsigned int value)
+{
+	m_value_int = value;
+	m_type = eType::UINT;
+}
+
 CVariant::CVariant(double value)
 {
 	m_value_double = value;
@@ -20,10 +26,16 @@ CVariant::CVariant(LPCTSTR value)
 	m_type = eType::STRING;
 }
 
-CVariant::CVariant(CString value)
+CVariant::CVariant(const CString& value)
 {
 	m_value_string = value;
 	m_type = eType::STRING;
+}
+
+CVariant::CVariant(const wstring & value)
+{
+	m_value_wstring = value;
+	m_type = eType::WSTRING;
 }
 
 CVariant::~CVariant()
@@ -38,11 +50,17 @@ CString CVariant::ToString() const
 	case CVariant::eType::INT:
 		str.Format(_T("%d"), m_value_int);
 		break;
+	case eType::UINT:
+		str.Format(_T("%u"), static_cast<unsigned int>(m_value_int));
+		break;
 	case CVariant::eType::DOUBLE:
 		str.Format(_T("%g"), m_value_double);
 		break;
 	case CVariant::eType::STRING:
 		str = m_value_string;
+		break;
+	case eType::WSTRING:
+		str = m_value_wstring.c_str();
 		break;
 	default:
 		break;

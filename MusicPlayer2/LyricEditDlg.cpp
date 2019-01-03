@@ -122,7 +122,7 @@ void CLyricEditDlg::UpdateStatusbarInfo()
 {
 	CString str;
 	//显示字符数
-	str.Format(CCommon::LoadText(IDS_CHARACTER_TOTAL), m_lyric_string.size());
+	str = CCommon::LoadTextFormat(IDS_CHARACTER_TOTAL, { m_lyric_string.size() });
 	m_status_bar.SetText(str, 0, 0);
 
 	//显示是否修改
@@ -597,7 +597,7 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 			if (replace_count != 0)
 			{
 				CString info;
-				info.Format(CCommon::LoadText(IDS_REPLACE_COMPLETE_INFO), replace_count);
+				info = CCommon::LoadTextFormat(IDS_REPLACE_COMPLETE_INFO, { replace_count });
 				MessageBox(info, NULL, MB_ICONINFORMATION);
 			}
 		}
@@ -620,7 +620,7 @@ void CLyricEditDlg::OnFindNext()
 	if (m_find_index == string::npos)
 	{
 		CString info;
-		info.Format(CCommon::LoadText(IDS_CONNOT_FIND_STRING), m_find_str.c_str());
+		info = CCommon::LoadTextFormat(IDS_CONNOT_FIND_STRING, { m_find_str });
 		MessageBox(info, NULL, MB_OK | MB_ICONINFORMATION);
 		m_find_flag = false;
 	}

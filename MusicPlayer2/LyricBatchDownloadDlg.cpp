@@ -225,7 +225,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		if (theApp.m_batch_download_dialog_exit)
 			return 0;
 		CString info;
-		info.Format(CCommon::LoadText(IDS_LYRIC_BATCH_DOWNLOADING_INFO), i * 100 / pInfo->playlist->size());
+		info = CCommon::LoadTextFormat(IDS_LYRIC_BATCH_DOWNLOADING_INFO, { i * 100 / pInfo->playlist->size() });
 		pInfo->static_ctrl->SetWindowText(info);
 		//SetDlgItemText(IDC_INFO_STATIC, info);
 

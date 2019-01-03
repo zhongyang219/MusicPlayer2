@@ -135,7 +135,7 @@ void CDataSettingsDlg::OnBnClickedCleanDataFileButton()
 	int size_reduced = m_data_size - data_size;		//清理后数据文件减少的字节数
 	if (size_reduced < 0) size_reduced = 0;
 	CString info;
-	info.Format(CCommon::LoadText(IDS_CLEAR_COMPLETE_INFO), clear_cnt, size_reduced);
+	info = CCommon::LoadTextFormat(IDS_CLEAR_COMPLETE_INFO, { clear_cnt, size_reduced });
 	MessageBox(info, NULL, MB_ICONINFORMATION);
 	m_data_size = data_size;
 	ShowDataSizeInfo();

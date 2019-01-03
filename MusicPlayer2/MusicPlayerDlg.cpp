@@ -760,7 +760,7 @@ void CMusicPlayerDlg::CreateDesktopShortcut()
 			if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
 			{
 				CString info;
-				info.Format(CCommon::LoadText(IDS_SHORTCUT_CREATED), theApp.m_desktop_path.c_str());
+				info = CCommon::LoadTextFormat(IDS_SHORTCUT_CREATED, { theApp.m_desktop_path });
 				MessageBox(info, NULL, MB_ICONINFORMATION);
 			}
 			else
@@ -1449,7 +1449,7 @@ void CMusicPlayerDlg::OnFind()
 			{
 				//如果文件不存在，则弹出错误信息
 				CString info;
-				info.Format(CCommon::LoadText(IDS_CONNOT_FIND_FILE), selected_song_path.c_str());
+				info = CCommon::LoadTextFormat(IDS_CONNOT_FIND_FILE, { selected_song_path });
 				MessageBox(info, NULL, MB_ICONWARNING);
 				return;
 			}
@@ -2232,7 +2232,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 	if (m_items_selected.size() > 1)
 	{
 		CString info;
-		info.Format(CCommon::LoadText(IDS_DELETE_FILE_INQUARY), m_items_selected.size());
+		info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { m_items_selected.size() });
 		if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
 			return;
 		if(CCommon::IsItemInVector(m_items_selected, theApp.m_player.GetIndex()))	//如果选中的文件中有正在播放的文件，则删除前必须先关闭文件

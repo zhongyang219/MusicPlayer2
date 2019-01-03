@@ -386,9 +386,9 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	else if (best_matched == -1)
 		info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
 	else if(id_releated)
-		info.Format(CCommon::LoadText(IDS_SEARCH_RELATED), best_matched + 1);
+		info = CCommon::LoadTextFormat(IDS_SEARCH_RELATED, { best_matched + 1 });
 	else
-		info.Format(CCommon::LoadText(IDS_SEARCH_BEST_MATCHED), best_matched + 1);
+		info = CCommon::LoadTextFormat(IDS_SEARCH_BEST_MATCHED, { best_matched + 1 });
 	SetDlgItemText(IDC_STATIC_INFO, info);
 	//自动选中列表中最佳匹配的项目
 	m_down_list_ctrl.SetFocus();
@@ -481,7 +481,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		if (m_file_name == theApp.m_player.GetFileName())		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
 			theApp.m_player.IniLyrics(saved_path);
 		CString info;
-		info.Format(CCommon::LoadText(IDS_DOWNLOAD_COMPLETE_SAVED), saved_path.c_str());
+		info = CCommon::LoadTextFormat(IDS_DOWNLOAD_COMPLETE_SAVED, { saved_path });
 		MessageBox(info, NULL, MB_ICONINFORMATION);
 	}
 	else
