@@ -2,8 +2,6 @@
 class CVariant
 {
 public:
-	enum class eType { INT, DOUBLE, STRING };
-
 	CVariant(int value);
 	CVariant(double value);
 	CVariant(LPCTSTR value);
@@ -12,7 +10,10 @@ public:
 	~CVariant();
 
 	CString ToString() const;
+
 private:
+	enum class eType { INT, DOUBLE, STRING };
+
 	int m_value_int;
 	double m_value_double;
 	CString m_value_string;

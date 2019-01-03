@@ -91,6 +91,8 @@ BOOL CMusicPlayerApp::InitInstance()
 	}
 #endif
 
+	//CString str = CCommon::LoadTextFormat(IDS_TEST_STR, { 3, L"asdfghhh", 1.2 });
+
 	//检查bass.dll的版本是否和API的版本匹配
 	WORD dll_version{ HIWORD(BASS_GetVersion()) };
 	//WORD dll_version{ 0x203 };

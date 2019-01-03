@@ -47,5 +47,5 @@ CString CVariant::ToString() const
 	default:
 		break;
 	}
-	return str.GetString();
+	return str;
 }
