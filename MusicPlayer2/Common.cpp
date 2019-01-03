@@ -895,26 +895,29 @@ CString CCommon::LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str)
 	return str;
 }
 
-//CString CCommon::LoadTextFormat(UINT id, ...)
-//{
-//	CString str;
-//	str.LoadString(id);
-//
-//	va_list arg_ptr;
-//	va_start(arg_ptr, id);
-//
-//	for (int i = 0; i < count; ++i)
-//	{
-//		CountSum += va_arg(arg_ptr, int);
-//	}
-//	//将va_list类型的指针复位成空值
-//	//就是清空可变参数列表
-//	va_end(arg_ptr);
-//
-//
-//
-//	return CString();
-//}
+CString CCommon::StringFormat(LPCTSTR format_str, const std::initializer_list<CVariant>& paras)
+{
+	CString str_rtn = format_str;
+	int index = 1;
+	for (const auto& para : paras)
+	{
+		CString para_str = para.ToString();
+		CString format_para;
+		format_para.Format(_T("<%%%d%%>"), index);
+		str_rtn.Replace(format_para, para_str);
+
+		index++;
+	}
+	return str_rtn;
+}
+
+CString CCommon::LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras)
+{
+	CString str;
+	str.LoadString(id);
+	return StringFormat(str.GetString(), paras);
+}
+
 
 void CCommon::SetThreadLanguage(Language language)
 {

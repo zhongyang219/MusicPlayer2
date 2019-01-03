@@ -30,20 +30,22 @@ CVariant::~CVariant()
 {
 }
 
-LPCTSTR CVariant::ToString()
+CString CVariant::ToString() const
 {
+	CString str;
 	switch (m_type)
 	{
 	case CVariant::eType::INT:
-		m_value_string.Format(_T("%d"), m_value_int);
+		str.Format(_T("%d"), m_value_int);
 		break;
 	case CVariant::eType::DOUBLE:
-		m_value_string.Format(_T("%f"), m_value_double);
+		str.Format(_T("%g"), m_value_double);
 		break;
 	case CVariant::eType::STRING:
+		str = m_value_string;
 		break;
 	default:
 		break;
 	}
-	return m_value_string.GetString();
+	return str.GetString();
 }

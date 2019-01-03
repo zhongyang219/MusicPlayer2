@@ -214,8 +214,11 @@ public:
 	static CString LoadText(UINT id, LPCTSTR back_str = nullptr);
 	static CString LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str = nullptr);
 
-	//从资源文件中载入字符串，并将资源字符串中的<%1%>,<%2%>等替换成可变参数列表中的参数
-	static CString LoadTextFormat(UINT id, std::initializer_list<int> il);
+	//安全的格式化字符串，将format_str中形如<%序号%>的字符串替换成初始化列表paras中的元素，元素支持int/double/LPCTSTR/CString格式，序号从1开始
+	static CString StringFormat(LPCTSTR format_str, const std::initializer_list<CVariant>& paras);
+
+	//从资源文件中载入字符串，并将资源字符串中形如<%序号%>的字符串替换成可变参数列表中的参数
+	static CString LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras);
 
 	//设置线程语言
 	static void SetThreadLanguage(Language language);

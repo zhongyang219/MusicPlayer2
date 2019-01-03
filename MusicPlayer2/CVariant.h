@@ -11,7 +11,7 @@ public:
 
 	~CVariant();
 
-	LPCTSTR ToString();
+	CString ToString() const;
 private:
 	int m_value_int;
 	double m_value_double;
