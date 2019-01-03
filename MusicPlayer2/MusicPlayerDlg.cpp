@@ -2369,6 +2369,7 @@ void CMusicPlayerDlg::OnMiniMode()
 #endif
 		SetForegroundWindow();
 		SwitchTrack();
+		UpdatePlayPauseButton();
 	}
 }
 
