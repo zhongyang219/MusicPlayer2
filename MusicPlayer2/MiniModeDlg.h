@@ -65,6 +65,7 @@ protected:
 
 	void CheckWindowPos();
 	void UpdateSongTipInfo();
+	void SetTitle();
 
 	DECLARE_MESSAGE_MAP()
 

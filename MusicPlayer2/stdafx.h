@@ -107,7 +107,7 @@ using std::map;
 #define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
 #define MAX_SONG_NUM 9999		//播放列表中文件数量的最大值
 
-#define VERSION L"2.61"	//程序版本
+#define VERSION L"2.62"	//程序版本
 #define COMPILE_DATE L"2018/12/30"
 
 //任务栏图按钮

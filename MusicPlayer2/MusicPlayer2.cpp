@@ -69,7 +69,7 @@ BOOL CMusicPlayerApp::InitInstance()
 			HWND handle = FindWindow(_T("MusicPlayer_l3gwYT"), NULL);		//根据类名查找已运行实例窗口的句柄
 			if (handle != NULL)
 			{
-				HWND minidlg_handle = FindWindow(NULL, _T("MiniDlg_ByH87M"));	//根据窗口标题查找“迷你模式”窗口的句柄
+				HWND minidlg_handle = FindWindow(_T("MiniDlg_ByH87M"), NULL);
 				if (minidlg_handle == NULL)			//没有找到“迷你模式”窗口，则激活主窗口
 				{
 					ShowWindow(handle, SW_SHOWNORMAL);		//激活并显示窗口

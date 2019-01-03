@@ -16,6 +16,12 @@ CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CMen
 {
 	m_screen_width = GetSystemMetrics(SM_CXFULLSCREEN);
 	m_screen_height = GetSystemMetrics(SM_CYFULLSCREEN) + 23;
+
+	//更改窗口的类名
+	WNDCLASS wc;
+	::GetClassInfo(AfxGetInstanceHandle(), _T("#32770"), &wc);
+	wc.lpszClassName = _T("MiniDlg_ByH87M");
+	AfxRegisterClass(&wc);
 }
 
 CMiniModeDlg::~CMiniModeDlg()
@@ -84,6 +90,16 @@ void CMiniModeDlg::UpdateSongTipInfo()
 	m_ui.UpdateSongInfoTip(song_tip_info);
 }
 
+void CMiniModeDlg::SetTitle()
+{
+	CString title;
+	title = CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), *m_ui_data.pDisplayFormat).c_str();
+	if (!title.IsEmpty())
+		title += _T(" - ");
+	title += _T("MusicPlayer2");
+	SetWindowText(title);
+}
+
 
 BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
 	ON_WM_LBUTTONDOWN()
@@ -144,8 +160,6 @@ BOOL CMiniModeDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	LoadConfig();
-
-	SetWindowText(_T("MiniDlg_ByH87M"));		//为对话框设置一个标题，用于通过FindWindow函数查找
 
 	m_ui_data.Init();
 	m_pDC = GetDC();
@@ -216,6 +230,7 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 		if (index != theApp.m_player.GetIndex() || song_name != theApp.m_player.GetFileName())
 		{
 			UpdateSongTipInfo();
+			SetTitle();
 			//m_Mytip.UpdateTipText(m_song_tip_info, this);
 			index = theApp.m_player.GetIndex();
 			song_name = theApp.m_player.GetFileName();
@@ -227,7 +242,10 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 		m_ui.DrawInfo(false);
 
 		if (m_first_start)
+		{
 			UpdateSongTipInfo();
+			SetTitle();
+		}
 		m_first_start = false;
 	}
 	if (nIDEvent == 11)
