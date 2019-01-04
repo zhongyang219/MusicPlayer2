@@ -14,12 +14,11 @@ public:
 	CString ToString() const;
 
 private:
-	enum class eType { INT, UINT, DOUBLE, STRING, WSTRING };
+	enum class eType { INT, UINT, DOUBLE, STRING };
 
 	int m_value_int;
 	double m_value_double;
 	CString m_value_string;
-	std::wstring m_value_wstring;
 	eType m_type;
 
 };

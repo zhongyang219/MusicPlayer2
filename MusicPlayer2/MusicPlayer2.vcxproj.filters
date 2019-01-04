@@ -186,6 +186,9 @@
     <Filter Include="公共的类\CVariant">
       <UniqueIdentifier>{44956eab-c2bb-463e-9978-4a9fdb9b5136}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\NotifyIcon">
+      <UniqueIdentifier>{b9af61d4-bcdf-4d21-a994-045553b4882e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -391,6 +394,9 @@
     <ClInclude Include="CVariant.h">
       <Filter>公共的类\CVariant</Filter>
     </ClInclude>
+    <ClInclude Include="CNotifyIcon.h">
+      <Filter>功能逻辑类\NotifyIcon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -575,6 +581,9 @@
     </ClCompile>
     <ClCompile Include="CVariant.cpp">
       <Filter>公共的类\CVariant</Filter>
+    </ClCompile>
+    <ClCompile Include="CNotifyIcon.cpp">
+      <Filter>功能逻辑类\NotifyIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

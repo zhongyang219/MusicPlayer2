@@ -201,6 +201,7 @@
     <ClInclude Include="CHotkeyManager.h" />
     <ClInclude Include="CHotKeySettingDlg.h" />
     <ClInclude Include="CMiniModeUI.h" />
+    <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
     <ClInclude Include="CPlayerUI.h" />
@@ -268,6 +269,7 @@
     <ClCompile Include="CHotkeyManager.cpp" />
     <ClCompile Include="CHotKeySettingDlg.cpp" />
     <ClCompile Include="CMiniModeUI.cpp" />
+    <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
     <ClCompile Include="CPlayerUI.cpp" />

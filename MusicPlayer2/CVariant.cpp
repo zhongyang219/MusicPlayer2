@@ -34,8 +34,8 @@ CVariant::CVariant(const CString& value)
 
 CVariant::CVariant(const wstring & value)
 {
-	m_value_wstring = value;
-	m_type = eType::WSTRING;
+	m_value_string = value.c_str();
+	m_type = eType::STRING;
 }
 
 CVariant::~CVariant()
@@ -58,9 +58,6 @@ CString CVariant::ToString() const
 		break;
 	case CVariant::eType::STRING:
 		str = m_value_string;
-		break;
-	case eType::WSTRING:
-		str = m_value_wstring.c_str();
 		break;
 	default:
 		break;

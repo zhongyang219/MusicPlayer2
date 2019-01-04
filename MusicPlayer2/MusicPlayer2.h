@@ -70,6 +70,7 @@ struct GeneralSettingData
 	bool check_update_when_start{ true };		//是否在程序启动时检查更新
 	wstring sf2_path;							//MIDI音色库路径
 	bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
+	bool minimize_to_notify_icon{ false };	//是否最小到通知区图标
 
 	Language language;
 };

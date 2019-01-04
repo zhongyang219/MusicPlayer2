@@ -223,6 +223,9 @@ public:
 	//设置线程语言
 	static void SetThreadLanguage(Language language);
 
+	//安全的字符串复制函数
+	static void WStringCopy(wchar_t* str_dest, int dest_size, const wchar_t* str_source, int source_size = INT_MAX);
+
 };
 
 template<class T>

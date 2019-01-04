@@ -269,6 +269,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_SWITCH_UI, &CMusicPlayerDlg::OnSwitchUi)
 	ON_COMMAND(ID_VOLUME_UP, &CMusicPlayerDlg::OnVolumeUp)
 	ON_COMMAND(ID_VOLUME_DOWN, &CMusicPlayerDlg::OnVolumeDown)
+	ON_MESSAGE(MY_WM_NOTIFYICON, &CMusicPlayerDlg::OnNotifyicon)
+	ON_WM_CLOSE()
+	ON_COMMAND(ID_MENU_EXIT, &CMusicPlayerDlg::OnMenuExit)
 END_MESSAGE_MAP()
 
 
@@ -321,6 +324,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"general", L"auto_download_only_tag_full", theApp.m_general_setting_data.auto_download_only_tag_full);
 	ini.WriteString(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path);
 	ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric);
+	ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
 
 	ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
 	ini.WriteBool(L"config", L"auto_play_when_start", theApp.m_play_setting_data.auto_play_when_start);
@@ -415,6 +419,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_general_setting_data.auto_download_only_tag_full = ini.GetBool(_T("general"), _T("auto_download_only_tag_full"), 1);
 	theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
 	theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(_T("general"), _T("midi_use_inner_lyric"), 0);
+	theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
 
 	theApp.m_play_setting_data.stop_when_error = ini.GetBool(_T("config"), _T("stop_when_error"), true);
 	theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(_T("config"), _T("auto_play_when_start"), false);
@@ -1039,6 +1044,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//载入默认背景图片（用于没有专辑封面时显示）
 	m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
 
+	m_notify_icon.Init(m_hIcon);
+	m_notify_icon.AddNotifyIcon();
+
 	//设置定时器
 	SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
 
@@ -1647,6 +1655,8 @@ void CMusicPlayerDlg::OnDestroy()
 
 	////退出时删除专辑封面临时文件
 	//DeleteFile(theApp.m_player.GetAlbumCoverPath().c_str());
+
+	m_notify_icon.DeleteNotifyIcon();
 }
 
 
@@ -2358,7 +2368,8 @@ void CMusicPlayerDlg::OnMiniMode()
 	ShowWindow(SW_HIDE);
 	if (m_miniModeDlg.DoModal() == IDCANCEL)
 	{
-		SendMessage(WM_COMMAND, ID_APP_EXIT);
+		//SendMessage(WM_COMMAND, ID_APP_EXIT);
+		OnMenuExit();
 	}
 	else
 	{
@@ -2628,6 +2639,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 		title += _T("MusicPlayer2");
 	#endif
 	SetWindowText(title);		//用当前正在播放的歌曲名作为窗口标题
+	m_notify_icon.SetIconToolTip(title);
 
 	return 0;
 }
@@ -3123,4 +3135,36 @@ void CMusicPlayerDlg::OnVolumeDown()
 		theApp.m_player.MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 	else
 		m_miniModeDlg.SetVolume(false);
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
+{
+	m_notify_icon.OnNotifyIcon(wParam, lParam);
+	return 0;
+}
+
+
+void CMusicPlayerDlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	CDialog::OnClose();
+}
+
+
+void CMusicPlayerDlg::OnCancel()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if(theApp.m_general_setting_data.minimize_to_notify_icon)
+		this->ShowWindow(HIDE_WINDOW);
+	else
+		CDialog::OnCancel();
+}
+
+
+void CMusicPlayerDlg::OnMenuExit()
+{
+	// TODO: 在此添加命令处理程序代码
+	CDialog::OnCancel();
 }

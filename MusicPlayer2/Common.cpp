@@ -930,3 +930,23 @@ void CCommon::SetThreadLanguage(Language language)
 	}
 }
 
+void CCommon::WStringCopy(wchar_t * str_dest, int dest_size, const wchar_t * str_source, int source_size)
+{
+	if (dest_size <= 0)
+		return;
+	if (source_size <= 0 || str_source == nullptr)
+	{
+		str_dest[0] = L'\0';
+		return;
+	}
+	int i;
+	for (i = 0; i < dest_size && i < source_size && str_source[i] != L'\0'; i++)
+		str_dest[i] = str_source[i];
+	//确保目标字符串末尾有一个\0
+	int copy_cnt = i;
+	if (copy_cnt < dest_size)
+		str_dest[copy_cnt] = L'\0';
+	else
+		str_dest[dest_size - 1] = L'\0';
+}
+

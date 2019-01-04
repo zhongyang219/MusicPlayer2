@@ -27,6 +27,7 @@
 #include "RecorderDlg.h"
 #include "CPlayerUI.h"
 #include "CPlayerUI2.h"
+#include "CNotifyIcon.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -140,6 +141,9 @@ protected:
 
 	int m_play_error_cnt{};		//统计播放出错的次数
 
+	CNotifyIcon m_notify_icon;
+
+private:
 	//私有的函数
 	void SaveConfig();		//保存设置到ini文件
 	void LoadConfig();		//从ini文件读取设置
@@ -296,4 +300,10 @@ public:
 	afx_msg void OnSwitchUi();
 	afx_msg void OnVolumeUp();
 	afx_msg void OnVolumeDown();
+protected:
+	afx_msg LRESULT OnNotifyicon(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnClose();
+	virtual void OnCancel();
+	afx_msg void OnMenuExit();
 };
