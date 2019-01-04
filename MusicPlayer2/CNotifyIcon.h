@@ -8,10 +8,10 @@ public:
 
 	void AddNotifyIcon();
 	void DeleteNotifyIcon();
-
 	void SetIconToolTip(LPCTSTR strTip);
 
-	LRESULT OnNotifyIcon(WPARAM wParam, LPARAM lParam);
+	void OnNotifyIcon(WPARAM wParam, LPARAM lParam);
+
 private:
 	NOTIFYICONDATA m_ntIcon;
 	CString m_tool_tip_str;

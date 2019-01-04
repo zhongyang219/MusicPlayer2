@@ -44,7 +44,7 @@ void CNotifyIcon::SetIconToolTip(LPCTSTR strTip)
 	m_tool_tip_str = strTip;
 }
 
-LRESULT CNotifyIcon::OnNotifyIcon(WPARAM wParam, LPARAM lParam)
+void CNotifyIcon::OnNotifyIcon(WPARAM wParam, LPARAM lParam)
 {
 	if (lParam == WM_LBUTTONDOWN)
 	{
@@ -72,6 +72,4 @@ LRESULT CNotifyIcon::OnNotifyIcon(WPARAM wParam, LPARAM lParam)
 	if (lParam == WM_LBUTTONDBLCLK)
 	{
 	}
-
-	return LRESULT();
 }

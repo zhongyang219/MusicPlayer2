@@ -2631,15 +2631,22 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 {
 	CString title;
 	title = CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), m_display_format).c_str();
+
+	CString title_suffix;
 	if (!title.IsEmpty())
-		title += _T(" - ");
+		title_suffix += _T(" - ");
 	#ifdef _DEBUG
-		title += CCommon::LoadText(_T("MusicPlayer2 "), IDS_DEBUG_MODE);
+		title_suffix += CCommon::LoadText(_T("MusicPlayer2 "), IDS_DEBUG_MODE);
 	#else
-		title += _T("MusicPlayer2");
+		title_suffix += _T("MusicPlayer2");
 	#endif
-	SetWindowText(title);		//用当前正在播放的歌曲名作为窗口标题
-	m_notify_icon.SetIconToolTip(title);
+
+	SetWindowText(title + title_suffix);		//用当前正在播放的歌曲名作为窗口标题
+
+	int title_length = 128 - title_suffix.GetLength() - 1;
+	if(title.GetLength() > title_length)
+		title = title.Left(title_length);
+	m_notify_icon.SetIconToolTip(title + title_suffix);
 
 	return 0;
 }
