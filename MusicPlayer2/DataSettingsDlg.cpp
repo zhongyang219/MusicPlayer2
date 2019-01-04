@@ -67,6 +67,10 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->SetCheck(m_data.check_update_when_start);
 	SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
 	((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->SetCheck(m_data.midi_use_inner_lyric);
+	if (m_data.minimize_to_notify_icon)
+		((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->SetCheck(TRUE);
+	else
+		((CButton*)GetDlgItem(IDC_EXIT_PROGRAM_RADIO))->SetCheck(TRUE);
 
 	m_toolTip.Create(this);
 	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
@@ -230,6 +234,9 @@ void CDataSettingsDlg::OnEnChangeSf2PathEdit()
 void CDataSettingsDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
+
+	m_data.minimize_to_notify_icon = (((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->GetCheck() != 0);
+
 	//获取语言的设置
 	m_data.language = static_cast<Language>(m_language_combo.GetCurSel());
 	if (m_data.language != theApp.m_general_setting_data.language)
