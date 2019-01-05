@@ -272,6 +272,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_MESSAGE(MY_WM_NOTIFYICON, &CMusicPlayerDlg::OnNotifyicon)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_MENU_EXIT, &CMusicPlayerDlg::OnMenuExit)
+	ON_COMMAND(ID_MINIMODE_RESTORE, &CMusicPlayerDlg::OnMinimodeRestore)
 END_MESSAGE_MAP()
 
 
@@ -3147,10 +3148,9 @@ void CMusicPlayerDlg::OnVolumeDown()
 
 afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
 {
-	HWND minidlg_handle = ::FindWindow(_T("MiniDlg_ByH87M"), NULL);
-	m_notify_icon.OnNotifyIcon(lParam, minidlg_handle);
+	m_notify_icon.OnNotifyIcon(lParam, m_miniModeDlg.m_hWnd);
 
-	if (lParam == WM_LBUTTONUP && minidlg_handle == NULL)
+	if (lParam == WM_LBUTTONUP && m_miniModeDlg.m_hWnd == NULL)
 	{
 #ifndef COMPILE_IN_WIN_XP
 		m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//重新添加任务栏缩略图按钮
@@ -3185,4 +3185,18 @@ void CMusicPlayerDlg::OnMenuExit()
 {
 	// TODO: 在此添加命令处理程序代码
 	CDialog::OnCancel();
+}
+
+
+void CMusicPlayerDlg::OnMinimodeRestore()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_miniModeDlg.m_hWnd == NULL)
+	{
+		OnMiniMode();
+	}
+	else
+	{
+		::SendMessage(m_miniModeDlg.m_hWnd, WM_COMMAND, IDOK, NULL);
+	}
 }
