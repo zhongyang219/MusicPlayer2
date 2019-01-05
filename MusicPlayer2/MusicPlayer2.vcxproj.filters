@@ -189,6 +189,9 @@
     <Filter Include="功能逻辑类\NotifyIcon">
       <UniqueIdentifier>{b9af61d4-bcdf-4d21-a994-045553b4882e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\SimpleXML">
+      <UniqueIdentifier>{56a131dd-13c7-49d0-a55c-de2c814afb82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -397,6 +400,9 @@
     <ClInclude Include="CNotifyIcon.h">
       <Filter>功能逻辑类\NotifyIcon</Filter>
     </ClInclude>
+    <ClInclude Include="SimpleXML.h">
+      <Filter>公共的类\SimpleXML</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -584,6 +590,9 @@
     </ClCompile>
     <ClCompile Include="CNotifyIcon.cpp">
       <Filter>功能逻辑类\NotifyIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleXML.cpp">
+      <Filter>公共的类\SimpleXML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

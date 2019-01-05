@@ -6,6 +6,7 @@
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
 #include "HelpDlg.h"
+#include "SimpleXML.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -254,22 +255,21 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 		return;
 	}
 
-	size_t index, index1, index2, index3, index4, index5;
-	index = version_info.find(L"<version>");
-	index1 = version_info.find(L"</version>");
-	index2 = version_info.find(L"<link>");
-	index3 = version_info.find(L"</link>");
-	index4 = version_info.find(L"<contents>");
-	index5 = version_info.find(L"</contents>");
 	wstring version;		//程序版本
 	wstring link;			//下载链接
-	wstring contents;		//更新内容
-	version = version_info.substr(index + 9, index1 - index - 9);
-	link = version_info.substr(index2 + 6, index3 - index2 - 6);
-	contents = version_info.substr(index4 + 10, index5 - index4 - 10);
-	CString contents_str = contents.c_str();
-	contents_str.Replace(L"\\n", L"\r\n");
-	if (index == wstring::npos || index1 == wstring::npos || index2 == wstring::npos || index3 == wstring::npos || version.empty() || link.empty())
+	CString contents_zh_cn;	//更新内容（简体中文）
+	CString contents_en;	//更新内容（English）
+	CSimpleXML version_xml;
+	version_xml.LoadXMLContentDirect(version_info);
+
+	version = version_xml.GetNode(L"version");
+	link = version_xml.GetNode(L"link");
+	contents_zh_cn = version_xml.GetNode(L"contents_zh_cn", L"update_contents").c_str();
+	contents_en = version_xml.GetNode(L"contents_en", L"update_contents").c_str();
+	contents_zh_cn.Replace(L"\\n", L"\r\n");
+	contents_en.Replace(L"\\n", L"\r\n");
+
+	if (version.empty() || link.empty())
 	{
 		if (message)
 			theApp.m_pMainWnd->MessageBox(CCommon::LoadText(IDS_CHECK_UPDATA_ERROR), NULL, MB_OK | MB_ICONWARNING);
@@ -278,10 +278,19 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 	if (version > VERSION)		//如果服务器上的版本大于本地版本
 	{
 		CString info;
-		if (contents.empty())
+		//根据语言设置选择对应语言版本的更新内容
+		int language_code = _ttoi(CCommon::LoadText(IDS_LANGUAGE_CODE));
+		CString contents_lan;
+		switch (language_code)
+		{
+		case 2: contents_lan = contents_zh_cn; break;
+		default: contents_lan = contents_en; break;
+		}
+
+		if (contents_lan.IsEmpty())
 			info = CCommon::LoadTextFormat(IDS_UPDATE_AVLIABLE, { version });
 		else
-			info = CCommon::LoadTextFormat(IDS_UPDATE_AVLIABLE2, { version, contents_str });
+			info = CCommon::LoadTextFormat(IDS_UPDATE_AVLIABLE2, { version, contents_lan });
 
 		if (theApp.m_pMainWnd->MessageBox(info, NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)
 		{

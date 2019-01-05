@@ -461,7 +461,7 @@ void CMusicPlayerDlg::LoadConfig()
 	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"volume_down", L"Ctrl+Shift+40"));
 	theApp.m_hot_key.SetHotKey(HK_VOLUME_DOWN, hot_key);
 
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"exit", L"Ctrl+Shift+115"));
+	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"exit", L""));
 	theApp.m_hot_key.SetHotKey(HK_EXIT, hot_key);
 
 }
