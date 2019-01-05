@@ -94,4 +94,5 @@ public:
 	afx_msg void OnShowPlayList();
 	afx_msg void OnMouseLeave();
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+	afx_msg void OnMiniMideMinimize();
 };

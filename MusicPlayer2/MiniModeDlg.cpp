@@ -120,6 +120,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
 	ON_COMMAND(ID_SHOW_PLAY_LIST, &CMiniModeDlg::OnShowPlayList)
 	ON_WM_MOUSELEAVE()
 	ON_WM_SETCURSOR()
+	ON_COMMAND(ID_MINI_MIDE_MINIMIZE, &CMiniModeDlg::OnMiniMideMinimize)
 END_MESSAGE_MAP()
 
 
@@ -543,4 +544,11 @@ BOOL CMiniModeDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 		return TRUE;
 	else	
 		return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
+}
+
+
+void CMiniModeDlg::OnMiniMideMinimize()
+{
+	// TODO: 在此添加命令处理程序代码
+	ShowWindow(HIDE_WINDOW);
 }

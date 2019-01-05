@@ -3184,7 +3184,14 @@ void CMusicPlayerDlg::OnCancel()
 void CMusicPlayerDlg::OnMenuExit()
 {
 	// TODO: 在此添加命令处理程序代码
-	CDialog::OnCancel();
+	if (m_miniModeDlg.m_hWnd == NULL)
+	{
+		CDialog::OnCancel();
+	}
+	else
+	{
+		::SendMessage(m_miniModeDlg.m_hWnd, WM_COMMAND, ID_MINI_MODE_EXIT, NULL);
+	}
 }
 
 

@@ -459,7 +459,7 @@ void CMiniModeUI::AddToolTips()
 	AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
 	AddMouseToolTip(BTN_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
 	AddMouseToolTip(BTN_RETURN, CCommon::LoadText(IDS_BACK_TO_NARMAL));
-	AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_EXIT_PROGRAM));
+	AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
 	AddMouseToolTip(BTN_COVER, _T(""));
 	AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
 }
