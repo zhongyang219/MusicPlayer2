@@ -10,7 +10,7 @@ public:
 	void DeleteNotifyIcon();
 	void SetIconToolTip(LPCTSTR strTip);
 
-	void OnNotifyIcon(WPARAM wParam, LPARAM lParam);
+	void OnNotifyIcon(UINT msgId, HWND hMiniMode);
 
 private:
 	NOTIFYICONDATA m_ntIcon;

@@ -44,14 +44,13 @@ void CNotifyIcon::SetIconToolTip(LPCTSTR strTip)
 	m_tool_tip_str = strTip;
 }
 
-void CNotifyIcon::OnNotifyIcon(WPARAM wParam, LPARAM lParam)
+void CNotifyIcon::OnNotifyIcon(UINT msgId, HWND hMiniMode)
 {
-	if (lParam == WM_LBUTTONDOWN)
+	if (msgId == WM_LBUTTONUP)
 	{
-		HWND minidlg_handle = FindWindow(_T("MiniDlg_ByH87M"), NULL);
-		if (minidlg_handle != NULL)
+		if (hMiniMode != NULL)
 		{
-			::SetForegroundWindow(minidlg_handle);
+			::SetForegroundWindow(hMiniMode);
 		}
 		else
 		{
@@ -60,7 +59,7 @@ void CNotifyIcon::OnNotifyIcon(WPARAM wParam, LPARAM lParam)
 		}
 
 	}
-	if (lParam == WM_RBUTTONUP)
+	if (msgId == WM_RBUTTONUP)
 	{
 		theApp.m_pMainWnd->SetForegroundWindow();
 
@@ -69,7 +68,7 @@ void CNotifyIcon::OnNotifyIcon(WPARAM wParam, LPARAM lParam)
 		GetCursorPos(&point);	//获取当前光标的位置
 		m_notify_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, theApp.m_pMainWnd); //在指定位置显示弹出菜单
 	}
-	if (lParam == WM_LBUTTONDBLCLK)
+	if (msgId == WM_LBUTTONDBLCLK)
 	{
 	}
 }

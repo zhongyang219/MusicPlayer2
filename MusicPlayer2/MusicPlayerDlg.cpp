@@ -3147,7 +3147,18 @@ void CMusicPlayerDlg::OnVolumeDown()
 
 afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
 {
-	m_notify_icon.OnNotifyIcon(wParam, lParam);
+	HWND minidlg_handle = ::FindWindow(_T("MiniDlg_ByH87M"), NULL);
+	m_notify_icon.OnNotifyIcon(lParam, minidlg_handle);
+
+	if (lParam == WM_LBUTTONUP && minidlg_handle == NULL)
+	{
+#ifndef COMPILE_IN_WIN_XP
+		m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//重新添加任务栏缩略图按钮
+		SetThumbnailClipArea();		//重新设置任务栏缩略图
+#endif
+		UpdatePlayPauseButton();
+	}
+
 	return 0;
 }
 
