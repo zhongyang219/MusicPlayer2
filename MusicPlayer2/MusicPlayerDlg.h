@@ -119,8 +119,6 @@ protected:
 	vector<int> m_items_selected;
 	int m_tab_selected{};		//选项设置中选择的标签
 
-	static unsigned int m_WM_TASKBARCREATED;	//任务栏重启消息
-
 	DisplayFormat m_display_format{};		//播放列表中项目的显示样式
 
 	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected, m_list_popup_menu };		//迷你模式对话框
@@ -144,13 +142,10 @@ protected:
 	CNotifyIcon m_notify_icon;
 
 private:
-	//私有的函数
 	void SaveConfig();		//保存设置到ini文件
 	void LoadConfig();		//从ini文件读取设置
 	void SetTransparency();			//根据m_transparency的值设置窗口透明度
 	void DrawInfo(bool reset = false);		//绘制信息
-	//void DrawLyricsSingleLine(CRect lyric_rect);			//绘制歌词（窄界面模式下单行显示），参数为显示歌词的矩形区域
-	//void DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC);			//绘制歌词（普通模式下多行显示），参数为显示歌词的矩形区域
 	void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
 	void SetPorgressBarSize(int cx, int cy);		//设置进度条在窗口中的位置
 	void SetPorgressBarSize();

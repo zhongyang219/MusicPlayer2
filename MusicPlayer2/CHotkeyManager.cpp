@@ -57,6 +57,9 @@ const CHotkeyManager::HotKeyMap & CHotkeyManager::GetHotKeyGroup() const
 wstring CHotkeyManager::HotkeyToString(const SHotKey & key)
 {
 	wstring str;
+	if (key.key == 0)
+		return str;
+
 	if (key.ctrl)
 		str += L"Ctrl+";
 	if (key.shift)
