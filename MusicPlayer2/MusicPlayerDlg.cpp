@@ -272,7 +272,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_MENU_EXIT, &CMusicPlayerDlg::OnMenuExit)
 	ON_COMMAND(ID_MINIMODE_RESTORE, &CMusicPlayerDlg::OnMinimodeRestore)
-END_MESSAGE_MAP()
+		ON_WM_APPCOMMAND()
+		END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1570,7 +1571,7 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 		}
 		else
 		{
-			if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P' || pMsg->wParam == VK_MEDIA_PLAY_PAUSE)		//按空格键/P键播放/暂停
+			if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P'/* || pMsg->wParam == VK_MEDIA_PLAY_PAUSE*/)		//按空格键/P键播放/暂停
 			{
 				OnPlayPause();
 				return TRUE;
@@ -3207,4 +3208,32 @@ void CMusicPlayerDlg::OnMinimodeRestore()
 	{
 		::SendMessage(m_miniModeDlg.m_hWnd, WM_COMMAND, IDOK, NULL);
 	}
+}
+
+
+void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey)
+{
+	// 该功能要求使用 Windows 2000 或更高版本。
+	// 符号 _WIN32_WINNT 和 WINVER 必须 >= 0x0500。
+
+	//响应多媒体键
+	switch (nCmd)
+	{
+	case APPCOMMAND_MEDIA_PLAY_PAUSE:
+		OnPlayPause();
+		break;
+	case APPCOMMAND_MEDIA_PREVIOUSTRACK:
+		OnPrevious();
+		break;
+	case APPCOMMAND_MEDIA_NEXTTRACK:
+		OnNext();
+		break;
+	case APPCOMMAND_MEDIA_STOP:
+		OnStop();
+		break;
+	default:
+		break;
+	}
+
+	CDialog::OnAppCommand(pWnd, nCmd, nDevice, nKey);
 }

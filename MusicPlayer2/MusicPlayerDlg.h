@@ -302,4 +302,5 @@ public:
 	virtual void OnCancel();
 	afx_msg void OnMenuExit();
 	afx_msg void OnMinimodeRestore();
+	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
 };
