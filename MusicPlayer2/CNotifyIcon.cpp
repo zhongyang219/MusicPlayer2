@@ -50,6 +50,7 @@ void CNotifyIcon::OnNotifyIcon(UINT msgId, HWND hMiniMode)
 	{
 		if (hMiniMode != NULL)
 		{
+			::ShowWindow(hMiniMode, SW_RESTORE);
 			::SetForegroundWindow(hMiniMode);
 		}
 		else

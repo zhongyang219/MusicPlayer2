@@ -334,7 +334,10 @@ void CMiniModeUI::LButtonUp(CPoint point)
 				m_pMiniModeWnd->SendMessage(WM_COMMAND, IDOK);
 				break;
 			case BTN_CLOSE:
-				m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+				if (theApp.m_general_setting_data.minimize_to_notify_icon)
+					m_pMiniModeWnd->ShowWindow(HIDE_WINDOW);
+				else
+					m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
 				break;
 			default:
 				break;
