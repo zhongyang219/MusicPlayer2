@@ -1147,7 +1147,6 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		{
 			SetPorgressBarSize(cx, cy);
 		}
-		SetThumbnailClipArea();
 
 		if (nType != SIZE_MAXIMIZED)
 		{
@@ -1168,6 +1167,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		m_pUI->UpdateToolTipPosition();
 	}
 
+	SetThumbnailClipArea();
 
 
 	// TODO: 在此处添加消息处理程序代码
