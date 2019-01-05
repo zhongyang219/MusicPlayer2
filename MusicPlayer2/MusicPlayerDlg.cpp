@@ -1523,11 +1523,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnOptionSettings();
 				return TRUE;
 			}
-			if (pMsg->wParam == 'X')		//设置按Ctr+X退出
-			{
-				OnCancel();
-				return TRUE;
-			}
+			//if (pMsg->wParam == 'X')		//设置按Ctr+X退出
+			//{
+			//	OnMenuExit();
+			//	return TRUE;
+			//}
 			if (pMsg->wParam == 'R')		//设置按Ctr+R打开录音机
 			{
 				OnRecorder();
@@ -2160,7 +2160,7 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 		OnRew();
 		break;
 	case HK_EXIT:
-		OnCancel();
+		OnMenuExit();
 		break;
 	}
 
