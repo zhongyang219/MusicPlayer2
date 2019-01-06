@@ -31,16 +31,14 @@ You have the following ways to open and play a song:<br>
 5. Drag and drop the file or folder directly onto the program's icon or its shortcut icon.<br>
 # Screen shoots
 Main window：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window.png)<br>
-Main window (when the window width becomes smaller):<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window2.png)<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/en_us/Main_window.png)<br>
+Main window (Without album cover):<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/en_us/Main_window2.png)<br>
 Mini mode:<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Mini_mode.png)<br>
 Show lyrics in Cortana search box<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Cortana_lyric.png)<br>
-Option settings<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options.png)<br>
-Lyric download<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Lyric_download.png)<br>
-Lyric batch download<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Lyric_batch_download.png)<br>
+Option settings - Appearance Settings<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/en_us/options.png)<br>
+Option settings - General Settings<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/en_us/options2.png)<br>

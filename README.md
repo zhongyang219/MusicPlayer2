@@ -32,15 +32,13 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 # 截图
 主窗口：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window.png)<br>
-主窗口（当窗口宽度变小后）：<br>
+主窗口（无专辑封面）：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window2.png)<br>
 迷你模式：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Mini_mode.png)<br>
 Cortana搜索框显示歌词：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Cortana_lyric.png)<br>
-选项设置：<br>
+选项设置——外观设置：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options.png)<br>
-歌词下载界面：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Lyric_download.png)<br>
-歌词批量下载界面：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Lyric_batch_download.png)<br>
+选项设置——常规设置：<br>
+![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options2.png)<br>

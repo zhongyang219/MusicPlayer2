@@ -1,8 +1,8 @@
-﻿<version>2.62</version>
-<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.62/MusicPlayer2_V2.62.7z</link>
+﻿<version>2.63</version>
+<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.63/MusicPlayer2_V2.63.7z</link>
 <update_contents>
 	<contents_zh_cn>测试</contents_zh_cn>
 	<contents_en>test</contents_en>
 </update_contents>
 <!--以下内容为了兼容旧版本程序的检查更新功能-->
-<contents>新增深色UI主题；\n频谱分析显示效果优化，增加顶端柱形；\n新增歌词翻译的原文双行显示；\n对于有翻译的歌词，执行歌词繁简转换时，只转换译文；\n修正设置了背景高斯模糊后，有时会导致背景为黑色的问题；\n新增选择播放设备的功能；\n修正下载的歌词时有时翻译在前面的问题；\n修正某些情况下获取的mp3标签不正确的问题；\n新增格式转换支持cue分轨；\n修正歌词结果中显示的歌曲信息如果含有“,”，则会导致显示不正确的问题；\n其他细节方面的改进。</contents>
+<contents>主界面重新设计，外观更加简洁美观。仍然可以快速切换回以前的界面\n迷你模式界面重新设计，使用和主界面相同的风格\n优化获取系统主题颜色的功能，获取实际的系统主题颜色而不是窗口标题栏的颜色\n修正一个由于GDI句柄泄漏导致程序运行一段时间崩溃的问题\n新增全局快捷键的设置\n增加通知区图标，关闭主窗口时可以最小化到通知区而是退出程序\n新增多语言支持，增加英语\n其他细节方面的改进</contents>
