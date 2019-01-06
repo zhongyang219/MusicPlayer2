@@ -167,7 +167,7 @@ public:
 	void SaveConfig();
 	void LoadConfig();
 
-	void IniIconResource();
+	void LoadIconResource();
 
 	int DPI(int pixel);		//将一个像素值进行DPI变换
 	int DPI(double pixel);

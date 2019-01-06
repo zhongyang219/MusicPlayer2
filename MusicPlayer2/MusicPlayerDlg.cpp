@@ -897,7 +897,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	theApp.GetDPIFromWindow(this);
 
 	//载入图标资源
-	theApp.IniIconResource();
+	theApp.LoadIconResource();
 
 	//载入设置
 	LoadConfig();

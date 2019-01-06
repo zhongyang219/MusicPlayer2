@@ -159,7 +159,7 @@ BOOL CMusicPlayerApp::InitInstance()
 	// 更改用于存储设置的注册表项
 	// TODO: 应适当修改该字符串，
 	// 例如修改为公司或组织名
-	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
+	//SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
 	CMusicPlayerDlg dlg(cmd_line);
 	//CMusicPlayerDlg dlg(L"D:\\音乐2\\Test\\1.wma \"D:\\音乐2\\Test\\Sweety - 樱花草.mp3\"");
@@ -327,7 +327,7 @@ void CMusicPlayerApp::LoadConfig()
 	m_general_setting_data.language = static_cast<Language>(ini.GetInt(_T("general"), _T("language"), 0));
 }
 
-void CMusicPlayerApp::IniIconResource()
+void CMusicPlayerApp::LoadIconResource()
 {
 	m_default_cover.GetIcon() = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, 512, 512);
 	m_skin_icon.GetIcon(false) = CDrawCommon::LoadIconResource(IDI_SKIN, theApp.DPI(16), theApp.DPI(16));
