@@ -42,3 +42,5 @@ Cortana搜索框显示歌词：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options.png)<br>
 选项设置——常规设置：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options2.png)<br>
+# 更新日志
+**[点击此处查看更新日志](https://github.com/zhongyang219/MusicPlayer2/blob/master/UpdateLog/update_log.md)**
