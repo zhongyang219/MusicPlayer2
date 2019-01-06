@@ -822,6 +822,9 @@ void CCommon::SizeZoom(CSize & size, int side)
 
 COLORREF CCommon::GetWindowsThemeColor()
 {
+#ifdef COMPILE_IN_WIN_XP
+	return RGB(0, 120, 215);
+#else
 	DWORD crColorization;
 	BOOL fOpaqueBlend;
 	COLORREF theme_color{};
@@ -835,6 +838,7 @@ COLORREF CCommon::GetWindowsThemeColor()
 		theme_color = RGB(r, g, b);
 	}
 	return theme_color;
+#endif
 }
 
 

@@ -86,7 +86,6 @@ void CMiniModeDlg::UpdateSongTipInfo()
 	song_tip_info += _T("\r\n");
 	song_tip_info += CCommon::LoadText(IDS_ALBUM, _T(": "));
 	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album.c_str();
-	song_tip_info += _T("\r\n");
 	m_ui.UpdateSongInfoTip(song_tip_info);
 }
 
@@ -160,6 +159,8 @@ BOOL CMiniModeDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	m_playlist_ctrl.SetFont(theApp.m_pMainWnd->GetFont());
+
 	LoadConfig();
 
 	m_ui_data.Init();
