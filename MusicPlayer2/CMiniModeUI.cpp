@@ -287,17 +287,20 @@ void CMiniModeUI::MouseMove(CPoint point)
 
 
 	//鼠标指向进度条时显示定位到几分几秒
-	__int64 song_pos;
-	song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * theApp.m_player.GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
-	Time song_pos_time;
-	song_pos_time.int2time(static_cast<int>(song_pos));
-	CString str;
-	static int last_sec{};
-	if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
+	if (m_buttons[BTN_PROGRESS].hover)
 	{
-		str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
-		UpdateMouseToolTip(BTN_PROGRESS, str);
-		last_sec = song_pos_time.sec;
+		__int64 song_pos;
+		song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * theApp.m_player.GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
+		Time song_pos_time;
+		song_pos_time.int2time(static_cast<int>(song_pos));
+		CString str;
+		static int last_sec{};
+		if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
+		{
+			str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
+			UpdateMouseToolTip(BTN_PROGRESS, str);
+			last_sec = song_pos_time.sec;
+		}
 	}
 
 	TRACKMOUSEEVENT tme;
