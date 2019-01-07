@@ -241,7 +241,8 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	if (nIDEvent == TIMER_ID_MINI2)
 	{
-		m_ui.DrawInfo(false);
+		if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+			m_ui.DrawInfo(false);
 
 		if (m_first_start)
 		{

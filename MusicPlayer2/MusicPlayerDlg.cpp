@@ -475,8 +475,8 @@ void CMusicPlayerDlg::SetTransparency()
 
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
-	if (IsIconic()) return;		//窗口最小化时不绘制，以降低CPU利用率
-	m_pUI->DrawInfo(reset);
+	if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+		m_pUI->DrawInfo(reset);
 }
 
 //void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
