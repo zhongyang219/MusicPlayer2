@@ -406,8 +406,9 @@ CRect CPlayerUI2::GetThumbnailClipArea()
 	}
 	else
 	{
-		clip_area_rect = m_draw_rect;
-		clip_area_rect.MoveToY(m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20));
+		clip_area_rect = m_draw_data.cover_rect;
+		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20));
+		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
 	}
 	return clip_area_rect;
 }
