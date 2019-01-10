@@ -161,6 +161,10 @@ BOOL CMusicPlayerApp::InitInstance()
 	// 例如修改为公司或组织名
 	//SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+	//
+	if(m_nc_setting_data.global_multimedia_key_enable)
+		m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
+
 	CMusicPlayerDlg dlg(cmd_line);
 	//CMusicPlayerDlg dlg(L"D:\\音乐2\\Test\\1.wma \"D:\\音乐2\\Test\\Sweety - 樱花草.mp3\"");
 	m_pMainWnd = &dlg;
@@ -187,6 +191,13 @@ BOOL CMusicPlayerApp::InitInstance()
 	if (pShellManager != NULL)
 	{
 		delete pShellManager;
+	}
+
+
+	if (m_multimedia_key_hook != NULL)
+	{
+		UnhookWindowsHookEx(m_multimedia_key_hook);
+		m_multimedia_key_hook = NULL;
 	}
 
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
@@ -317,14 +328,16 @@ void CMusicPlayerApp::SaveConfig()
 	ini.SetPath(m_config_path);
 	ini.WriteBool(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start);
 	ini.WriteInt(_T("general"), _T("language"), static_cast<int>(m_general_setting_data.language));
+	ini.WriteBool(L"other", L"global_multimedia_key_enable", m_nc_setting_data.global_multimedia_key_enable);
 }
 
 void CMusicPlayerApp::LoadConfig()
 {
 	CIniHelper ini;
 	ini.SetPath(m_config_path);
-	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", 1);
+	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
 	m_general_setting_data.language = static_cast<Language>(ini.GetInt(_T("general"), _T("language"), 0));
+	m_nc_setting_data.global_multimedia_key_enable = ini.GetBool(_T("other"), _T("global_multimedia_key_enable"), true);
 }
 
 void CMusicPlayerApp::LoadIconResource()
@@ -449,5 +462,40 @@ void CMusicPlayerApp::LoadSongData()
 	ar.Close();
 	// 关闭文件
 	file.Close();
+}
+
+LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+ //	if (wParam == HSHELL_APPCOMMAND)
+	//{
+	//	int a = 0;
+	//}
+
+	//截获全局的多媒体按键消息
+	if (wParam == WM_KEYUP)
+	{
+		KBDLLHOOKSTRUCT* pKBHook = (KBDLLHOOKSTRUCT*)lParam;
+		switch (pKBHook->vkCode)
+		{
+		case VK_MEDIA_PLAY_PAUSE:
+			SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_PAUSE, 0);
+			return TRUE;
+		case VK_MEDIA_PREV_TRACK:
+			SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PREVIOUS, 0);
+			return TRUE;
+		case VK_MEDIA_NEXT_TRACK:
+			SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_NEXT, 0);
+			return TRUE;
+		case VK_MEDIA_STOP:
+			SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_STOP, 0);
+			return TRUE;
+		default:
+			break;
+		}
+	}
+
+	CallNextHookEx(theApp.m_multimedia_key_hook, nCode, wParam, lParam);
+
+	return LRESULT();
 }
 

@@ -272,8 +272,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_MENU_EXIT, &CMusicPlayerDlg::OnMenuExit)
 	ON_COMMAND(ID_MINIMODE_RESTORE, &CMusicPlayerDlg::OnMinimodeRestore)
-		ON_WM_APPCOMMAND()
-		END_MESSAGE_MAP()
+	ON_WM_APPCOMMAND()
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1648,6 +1648,7 @@ void CMusicPlayerDlg::OnDestroy()
 	theApp.m_player.OnExit();
 	SaveConfig();
 	m_findDlg.SaveConfig();
+	theApp.SaveConfig();
 	//解除全局热键
 	theApp.m_hot_key.UnRegisterAllHotKey();
 
@@ -3217,22 +3218,25 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 	// 符号 _WIN32_WINNT 和 WINVER 必须 >= 0x0500。
 
 	//响应多媒体键
-	switch (nCmd)
+	if (!theApp.m_nc_setting_data.global_multimedia_key_enable)	//如何没有设置响应全局的多媒体按键消息，则在当前窗口内响应多媒体按键消息
 	{
-	case APPCOMMAND_MEDIA_PLAY_PAUSE:
-		OnPlayPause();
-		break;
-	case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-		OnPrevious();
-		break;
-	case APPCOMMAND_MEDIA_NEXTTRACK:
-		OnNext();
-		break;
-	case APPCOMMAND_MEDIA_STOP:
-		OnStop();
-		break;
-	default:
-		break;
+		switch (nCmd)
+		{
+		case APPCOMMAND_MEDIA_PLAY_PAUSE:
+			OnPlayPause();
+			break;
+		case APPCOMMAND_MEDIA_PREVIOUSTRACK:
+			OnPrevious();
+			break;
+		case APPCOMMAND_MEDIA_NEXTTRACK:
+			OnNext();
+			break;
+		case APPCOMMAND_MEDIA_STOP:
+			OnStop();
+			break;
+		default:
+			break;
+		}
 	}
 
 	CDialog::OnAppCommand(pWnd, nCmd, nDevice, nKey);

@@ -93,6 +93,7 @@ struct NonCategorizedSettingData
 	bool show_cover_tip{ true };	//是否显示专辑封面上的鼠标提示
 	//wstring default_back_image_path{};	//没有专辑封面时的默认背景的路径
 	bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
+	bool global_multimedia_key_enable{ true };
 };
 
 struct IconRes
@@ -180,6 +181,11 @@ public:
 
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
+
+	static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
+
+private:
+	HHOOK m_multimedia_key_hook = NULL;
 
 // 重写
 public:
