@@ -27,6 +27,7 @@ private:
 	CButton m_hot_key_enable_check;
 	CButton m_enable_global_multimedia_key_check;
 	int m_item_selected{ -1 };
+	CToolTipCtrl m_toolTip;
 
 protected:
 	void ShowKeyList();
@@ -44,4 +45,5 @@ public:
 	afx_msg void OnNMRClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedHotKeyEnableCheck();
 	afx_msg void OnBnClickedEnableGlabolMultimediaKeyCheck();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

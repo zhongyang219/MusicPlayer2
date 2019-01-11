@@ -85,6 +85,10 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 	m_hot_key_enable_check.SetCheck(m_data.hot_key_enable);
 	m_enable_global_multimedia_key_check.SetCheck(m_data.global_multimedia_key_enable);
 
+	m_toolTip.Create(this);
+	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
+	m_toolTip.AddTool(GetDlgItem(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK), CCommon::LoadText(IDS_MULTI_MEDIA_KEY_TIP));
+
 	m_key_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	m_key_list.InsertColumn(0, CCommon::LoadText(IDS_FUNCTION), LVCFMT_LEFT, theApp.DPI(130));
 	m_key_list.InsertColumn(1, CCommon::LoadText(IDS_SHORTCUT_KEY), LVCFMT_LEFT, theApp.DPI(170));
@@ -168,4 +172,14 @@ void CHotKeySettingDlg::OnBnClickedEnableGlabolMultimediaKeyCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.global_multimedia_key_enable = (m_enable_global_multimedia_key_check.GetCheck() != 0);
+}
+
+
+BOOL CHotKeySettingDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_MOUSEMOVE)
+		m_toolTip.RelayEvent(pMsg);
+
+	return CTabDlg::PreTranslateMessage(pMsg);
 }

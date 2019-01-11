@@ -161,7 +161,7 @@ BOOL CMusicPlayerApp::InitInstance()
 	// 例如修改为公司或组织名
 	//SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	//
+	//设置一个全局钩子以截获多媒体按键消息
 	if(m_hot_key_setting_data.global_multimedia_key_enable)
 		m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
 
