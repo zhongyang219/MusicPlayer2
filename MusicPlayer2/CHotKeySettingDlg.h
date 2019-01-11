@@ -20,11 +20,12 @@ public:
 
 public:
 	std::map<eHotKeyId, SHotKey> m_hotkey_group;
-	bool m_hot_key_enable{};
+	GlobalHotKeySettingData m_data;
 
 private:
 	CListCtrlEx m_key_list;
 	CButton m_hot_key_enable_check;
+	CButton m_enable_global_multimedia_key_check;
 	int m_item_selected{ -1 };
 
 protected:
@@ -42,4 +43,5 @@ public:
 	afx_msg void OnNMClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedHotKeyEnableCheck();
+	afx_msg void OnBnClickedEnableGlabolMultimediaKeyCheck();
 };

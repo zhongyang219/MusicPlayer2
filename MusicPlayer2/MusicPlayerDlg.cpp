@@ -341,7 +341,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"UI_selected", ui_selected);
 
 	//保存热键设置
-	ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_enable);
+	ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_setting_data.hot_key_enable);
 
 	wstring str;
 	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_PLAY_PAUSE));
@@ -435,7 +435,7 @@ void CMusicPlayerDlg::LoadConfig()
 		m_pUI = &m_ui2;
 
 	//载入热键设置
-	theApp.m_hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
+	theApp.m_hot_key_setting_data.hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
 
 	SHotKey hot_key;
 	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"play_pause", L"Ctrl+Shift+116"));
@@ -794,7 +794,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
 	theApp.m_play_setting_data = optionDlg.m_tab4_dlg.m_data;
 	theApp.m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
-	theApp.m_hot_key_enable = optionDlg.m_tab5_dlg.m_hot_key_enable;
+	theApp.m_hot_key_setting_data = optionDlg.m_tab5_dlg.m_data;
 
 	if (reload_sf2 || output_device_changed)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
 	{
@@ -1017,7 +1017,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_progress_bar_left_pos = rect.left;		//用控件起始的位置作为普通界面模式下进度条控件左侧的位置
 
 	//注册全局热键	
-	if(theApp.m_hot_key_enable)
+	if(theApp.m_hot_key_setting_data.hot_key_enable)
 		theApp.m_hot_key.RegisterAllHotKey();
 
 	//设置界面的颜色
@@ -2000,7 +2000,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 	optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
 	optionDlg.m_tab4_dlg.m_data = theApp.m_play_setting_data;
 	optionDlg.m_tab5_dlg.m_hotkey_group = theApp.m_hot_key.GetHotKeyGroup();
-	optionDlg.m_tab5_dlg.m_hot_key_enable = theApp.m_hot_key_enable;
+	optionDlg.m_tab5_dlg.m_data = theApp.m_hot_key_setting_data;
 
 	int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
 	int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
@@ -2018,7 +2018,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 
 	m_tab_selected = optionDlg.m_tab_selected;
 	
-	if(theApp.m_hot_key_enable)
+	if(theApp.m_hot_key_setting_data.hot_key_enable)
 		theApp.m_hot_key.RegisterAllHotKey();
 
 }
@@ -3218,7 +3218,7 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 	// 符号 _WIN32_WINNT 和 WINVER 必须 >= 0x0500。
 
 	//响应多媒体键
-	if (!theApp.m_nc_setting_data.global_multimedia_key_enable)	//如何没有设置响应全局的多媒体按键消息，则在当前窗口内响应多媒体按键消息
+	if (!theApp.m_hot_key_setting_data.global_multimedia_key_enable)	//如果没有设置响应全局的多媒体按键消息，则在当前窗口内响应多媒体按键消息
 	{
 		switch (nCmd)
 		{

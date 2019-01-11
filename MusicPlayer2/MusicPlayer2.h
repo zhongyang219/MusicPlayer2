@@ -70,7 +70,7 @@ struct GeneralSettingData
 	bool check_update_when_start{ true };		//是否在程序启动时检查更新
 	wstring sf2_path;							//MIDI音色库路径
 	bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
-	bool minimize_to_notify_icon{ false };	//是否最小到通知区图标
+	bool minimize_to_notify_icon{ false };		//是否最小到通知区图标
 
 	Language language;
 };
@@ -85,6 +85,12 @@ struct PlaySettingData
 	int device_selected{};
 };
 
+struct GlobalHotKeySettingData
+{
+	bool hot_key_enable = true;
+	bool global_multimedia_key_enable{ true };	//是否在全局范围内启用多媒体键
+};
+
 struct NonCategorizedSettingData
 {
 	int volum_step{ 3 };			//点击主界面中的音量调节时一次调整的步长
@@ -93,7 +99,6 @@ struct NonCategorizedSettingData
 	bool show_cover_tip{ true };	//是否显示专辑封面上的鼠标提示
 	//wstring default_back_image_path{};	//没有专辑封面时的默认背景的路径
 	bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
-	bool global_multimedia_key_enable{ true };
 };
 
 struct IconRes
@@ -152,8 +157,8 @@ public:
 	GeneralSettingData m_general_setting_data;		//“选项设置”对话框中“常规设置”中的数据
 	PlaySettingData m_play_setting_data;			//“选项设置”对话框中“播放设置”中的数据
 	NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
+	GlobalHotKeySettingData m_hot_key_setting_data;	//“全局快捷键”设置
 	CHotkeyManager m_hot_key;
-	bool m_hot_key_enable = true;
 
 	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出

@@ -33,8 +33,8 @@ void CHotKeySettingDlg::ShowKeyList()
 
 void CHotKeySettingDlg::EnableControl()
 {
-	m_key_list.EnableWindow(m_hot_key_enable);
-	if (!m_hot_key_enable)
+	m_key_list.EnableWindow(m_data.hot_key_enable);
+	if (!m_data.hot_key_enable)
 	{
 		m_hot_key_ctrl.EnableWindow(FALSE);
 		GetDlgItem(IDC_SET_BUTTON)->EnableWindow(FALSE);
@@ -59,6 +59,7 @@ void CHotKeySettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_HOT_KEY_LIST, m_key_list);
 	DDX_Control(pDX, IDC_HOT_KEY_ENABLE_CHECK, m_hot_key_enable_check);
 	DDX_Control(pDX, IDC_HOTKEY1, m_hot_key_ctrl);
+	DDX_Control(pDX, IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK, m_enable_global_multimedia_key_check);
 }
 
 
@@ -68,6 +69,7 @@ BEGIN_MESSAGE_MAP(CHotKeySettingDlg, CTabDlg)
 	ON_NOTIFY(NM_RCLICK, IDC_HOT_KEY_LIST, &CHotKeySettingDlg::OnNMRClickHotKeyList)
 	ON_BN_CLICKED(IDC_HOT_KEY_ENABLE_CHECK, &CHotKeySettingDlg::OnBnClickedHotKeyEnableCheck)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_ENABLE_GLABOL_MULTIMEDIA_KEY_CHECK, &CHotKeySettingDlg::OnBnClickedEnableGlabolMultimediaKeyCheck)
 END_MESSAGE_MAP()
 
 
@@ -80,7 +82,8 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
-	m_hot_key_enable_check.SetCheck(m_hot_key_enable);
+	m_hot_key_enable_check.SetCheck(m_data.hot_key_enable);
+	m_enable_global_multimedia_key_check.SetCheck(m_data.global_multimedia_key_enable);
 
 	m_key_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	m_key_list.InsertColumn(0, CCommon::LoadText(IDS_FUNCTION), LVCFMT_LEFT, theApp.DPI(130));
@@ -155,7 +158,14 @@ void CHotKeySettingDlg::OnNMRClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult)
 void CHotKeySettingDlg::OnBnClickedHotKeyEnableCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_hot_key_enable = (m_hot_key_enable_check.GetCheck() != 0);
+	m_data.hot_key_enable = (m_hot_key_enable_check.GetCheck() != 0);
 	EnableControl();
 }
 
+
+
+void CHotKeySettingDlg::OnBnClickedEnableGlabolMultimediaKeyCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.global_multimedia_key_enable = (m_enable_global_multimedia_key_check.GetCheck() != 0);
+}
