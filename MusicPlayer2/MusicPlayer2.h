@@ -183,6 +183,7 @@ public:
 	void GetDPIFromWindow(CWnd* pWnd);
 
 	WORD GetCurrentLanguage() const;
+	bool IsGlobalMultimediaKeyEnabled() const;
 
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息

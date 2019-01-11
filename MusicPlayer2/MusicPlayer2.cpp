@@ -337,7 +337,7 @@ void CMusicPlayerApp::LoadConfig()
 	ini.SetPath(m_config_path);
 	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
 	m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
-	m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", true);
+	m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", false);
 }
 
 void CMusicPlayerApp::LoadIconResource()
@@ -401,6 +401,11 @@ WORD CMusicPlayerApp::GetCurrentLanguage() const
 	default:
 		return MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 	}
+}
+
+bool CMusicPlayerApp::IsGlobalMultimediaKeyEnabled() const
+{
+	return m_multimedia_key_hook != NULL;
 }
 
 void CMusicPlayerApp::LoadSongData()
