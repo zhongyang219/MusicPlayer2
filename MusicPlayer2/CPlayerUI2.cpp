@@ -23,7 +23,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 	if (!m_ui_data.m_narrow_mode)
 	{
 		m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin}, 
-		CPoint{m_ui_data.client_width / 2 - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+		CPoint{m_ui_data.left_width - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
 	}
 	else
 	{

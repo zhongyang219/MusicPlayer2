@@ -112,12 +112,12 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 	CRect redraw_rect;
 	if (!m_ui_data.m_narrow_mode)	//在普通界面模式下
 	{
-		if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
+		if (cx < m_ui_data.left_width)	//如果界面宽度变窄了
 		{
 			//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
 			redraw_rect = m_draw_rect;
-			redraw_rect.left = cx / 2 - m_pLayout->margin;
-			redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
+			redraw_rect.left = m_ui_data.left_width - m_pLayout->margin;
+			redraw_rect.right = m_ui_data.left_width + m_pLayout->margin;
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
 		if (cy < m_ui_data.client_height)	//如果界面高度变小了
