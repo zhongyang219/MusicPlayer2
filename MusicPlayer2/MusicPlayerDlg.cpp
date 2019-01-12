@@ -288,7 +288,6 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"transparency", theApp.m_app_setting_data.window_transparency);
 	ini.WriteBool(L"config", L"narrow_mode", m_ui_data.m_narrow_mode);
 	ini.WriteBool(L"config", L"show_translate", m_ui_data.show_translate);
-	ini.WriteInt(L"config", L"left_width", m_ui_data.left_width);
 
 	ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
 	ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -384,7 +383,6 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.window_transparency = ini.GetInt(_T("config"), _T("transparency"), 100);
 	m_ui_data.m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
 	m_ui_data.show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
-	m_ui_data.left_width = ini.GetInt(L"config", L"left_width", theApp.DPI(330));
 
 	theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(_T("config"), _T("theme_color"), 16760187);
 	theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(_T("config"), _T("theme_color_follow_system"), 1);
@@ -495,11 +493,11 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	int width0, width1, width2;
 	if (!m_ui_data.m_narrow_mode)
 	{
-		m_playlist_list.MoveWindow(m_ui_data.left_width + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
-			cx - m_ui_data.left_width - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
+		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
+			cx / 2 - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
 		width0 = theApp.DPI(40);
 		width2 = theApp.DPI(50);
-		width1 = cx - m_ui_data.left_width - width0 - width2 - theApp.DPI(21) - 2 * m_pLayout->margin;
+		width1 = cx / 2 - width0 - width2 - theApp.DPI(21) - 2 * m_pLayout->margin;
 	}
 	else
 	{
@@ -517,7 +515,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	m_path_static.GetWindowRect(rect_static);
 	rect_static.bottom = rect_static.top + m_pLayout->path_edit_height - 2 * m_pLayout->margin;
 	if (!m_ui_data.m_narrow_mode)
-		rect_static.MoveToXY(m_ui_data.left_width + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin);
+		rect_static.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin);
 	else
 		rect_static.MoveToXY(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height);
 	m_path_static.MoveWindow(rect_static);
@@ -526,8 +524,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	m_path_edit.GetWindowRect(rect_edit);
 	if (!m_ui_data.m_narrow_mode)
 	{
-		rect_edit.right = rect_edit.left + (cx - m_ui_data.left_width - 2 * m_pLayout->margin - rect_static.Width());
-		rect_edit.MoveToXY(m_ui_data.left_width + m_pLayout->margin + rect_static.Width(), m_pLayout->control_bar_height + m_pLayout->margin);
+		rect_edit.right = rect_edit.left + (cx / 2 - 2 * m_pLayout->margin - rect_static.Width());
+		rect_edit.MoveToXY(cx / 2 + m_pLayout->margin + rect_static.Width(), m_pLayout->control_bar_height + m_pLayout->margin);
 	}
 	else
 	{
@@ -540,8 +538,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	m_search_edit.GetWindowRect(rect_search);
 	if (!m_ui_data.m_narrow_mode)
 	{
-		rect_search.right = rect_search.left + (cx - m_ui_data.left_width - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
-		rect_search.MoveToXY(m_ui_data.left_width + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->path_edit_height + theApp.DPI(1));
+		rect_search.right = rect_search.left + (cx / 2 - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
+		rect_search.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->path_edit_height + theApp.DPI(1));
 	}
 	else
 	{
@@ -1132,10 +1130,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 			}
 			else
 			{
-				if(!m_ui_data.m_narrow_mode)
-					m_pUI->OnSizeRedraw(m_ui_data.left_width, cy);
-				else
-					m_pUI->OnSizeRedraw(cx, cy);
+				m_pUI->OnSizeRedraw(cx, cy);
 			}
 		}
 		m_ui_data.client_width = cx;
