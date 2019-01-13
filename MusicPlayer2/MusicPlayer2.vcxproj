@@ -200,6 +200,7 @@
     <ClInclude Include="BASSWmaLibrary.h" />
     <ClInclude Include="CHotkeyManager.h" />
     <ClInclude Include="CHotKeySettingDlg.h" />
+    <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CMiniModeUI.h" />
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
@@ -269,6 +270,7 @@
     <ClCompile Include="BASSWmaLibrary.cpp" />
     <ClCompile Include="CHotkeyManager.cpp" />
     <ClCompile Include="CHotKeySettingDlg.cpp" />
+    <ClCompile Include="CListBoxEnhanced.cpp" />
     <ClCompile Include="CMiniModeUI.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />

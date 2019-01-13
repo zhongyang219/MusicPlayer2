@@ -82,11 +82,11 @@ void CEqualizerDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CEqualizerDlg, CDialogEx)
 //	ON_WM_TIMER()
-ON_WM_VSCROLL()
-ON_BN_CLICKED(IDC_ENABLE_EQU_CHECK, &CEqualizerDlg::OnBnClickedEnableEquCheck)
-ON_LBN_SELCHANGE(IDC_EQU_STYLES_LIST, &CEqualizerDlg::OnLbnSelchangeEquStylesList)
-ON_WM_DESTROY()
-ON_WM_CTLCOLOR()
+	ON_WM_VSCROLL()
+	ON_BN_CLICKED(IDC_ENABLE_EQU_CHECK, &CEqualizerDlg::OnBnClickedEnableEquCheck)
+	ON_WM_DESTROY()
+	ON_WM_CTLCOLOR()
+	ON_MESSAGE(WM_LISTBOX_SEL_CHANGED, &CEqualizerDlg::OnListboxSelChanged)
 END_MESSAGE_MAP()
 
 
@@ -193,32 +193,35 @@ void CEqualizerDlg::OnBnClickedEnableEquCheck()
 }
 
 
-void CEqualizerDlg::OnLbnSelchangeEquStylesList()
+afx_msg LRESULT CEqualizerDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lParam)
 {
-	// TODO: 在此添加控件通知处理程序代码
-	//获取列表中选中的项目
-	m_equ_style_selected = m_equ_style_list.GetCurSel();
-	if (m_equ_style_selected >= 0 && m_equ_style_selected < 9)
+	if ((CWnd*)wParam == &m_equ_style_list)
 	{
-		//根据选中的均衡器风格设置每个通道的增益
-		for (int i{}; i < EQU_CH_NUM; i++)
+		m_equ_style_selected = (int)lParam;
+		if (m_equ_style_selected >= 0 && m_equ_style_selected < 9)
 		{
-			int gain = EQU_STYLE_TABLE[m_equ_style_selected][i];
-			theApp.m_player.SetEqualizer(i, gain);
-			m_sliders[i].SetPos(-gain);
-			UpdateChannelTip(i, gain);		//更新鼠标提示
+			//根据选中的均衡器风格设置每个通道的增益
+			for (int i{}; i < EQU_CH_NUM; i++)
+			{
+				int gain = EQU_STYLE_TABLE[m_equ_style_selected][i];
+				theApp.m_player.SetEqualizer(i, gain);
+				m_sliders[i].SetPos(-gain);
+				UpdateChannelTip(i, gain);		//更新鼠标提示
+			}
 		}
-	}
-	else if (m_equ_style_selected == 9)		//如果选择了“自定义”
-	{
-		for (int i{}; i < EQU_CH_NUM; i++)
+		else if (m_equ_style_selected == 9)		//如果选择了“自定义”
 		{
-			int gain = m_user_defined_gain[i];
-			theApp.m_player.SetEqualizer(i, gain);
-			m_sliders[i].SetPos(-gain);
-			UpdateChannelTip(i, gain);		//更新鼠标提示
+			for (int i{}; i < EQU_CH_NUM; i++)
+			{
+				int gain = m_user_defined_gain[i];
+				theApp.m_player.SetEqualizer(i, gain);
+				m_sliders[i].SetPos(-gain);
+				UpdateChannelTip(i, gain);		//更新鼠标提示
+			}
 		}
+
 	}
+	return 0;
 }
 
 

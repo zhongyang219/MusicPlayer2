@@ -192,6 +192,9 @@
     <Filter Include="公共的类\SimpleXML">
       <UniqueIdentifier>{56a131dd-13c7-49d0-a55c-de2c814afb82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\ListBoxEnhanced">
+      <UniqueIdentifier>{e486ee63-eb5c-4174-b5d4-937609fd7070}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -403,6 +406,9 @@
     <ClInclude Include="SimpleXML.h">
       <Filter>公共的类\SimpleXML</Filter>
     </ClInclude>
+    <ClInclude Include="CListBoxEnhanced.h">
+      <Filter>派生的控件类\ListBoxEnhanced</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -593,6 +599,9 @@
     </ClCompile>
     <ClCompile Include="SimpleXML.cpp">
       <Filter>公共的类\SimpleXML</Filter>
+    </ClCompile>
+    <ClCompile Include="CListBoxEnhanced.cpp">
+      <Filter>派生的控件类\ListBoxEnhanced</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
