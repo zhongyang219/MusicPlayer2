@@ -35,6 +35,15 @@ void CPlayerUIBase::DrawInfo(bool reset)
 	m_first_draw = false;
 }
 
+void CPlayerUIBase::LButtonDown(CPoint point)
+{
+	for (auto& btn : m_buttons)
+	{
+		if(btn.second.rect.PtInRect(point) != FALSE)
+			btn.second.pressed = true;
+	}
+}
+
 void CPlayerUIBase::RButtonUp(CPoint point)
 {
 	if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
@@ -61,6 +70,15 @@ void CPlayerUIBase::MouseMove(CPoint point)
 
 void CPlayerUIBase::LButtonUp(CPoint point)
 {
+	for (auto& btn : m_buttons)
+	{
+		//if (btn.second.rect.PtInRect(point) != FALSE)
+		//{
+			btn.second.hover = false;
+			btn.second.pressed = false;
+		//}
+	}
+
 	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
 	{
 		theApp.m_player.SetRepeatMode();
@@ -83,25 +101,21 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
 	if (m_buttons[BTN_SKIN].rect.PtInRect(point))
 	{
-		m_buttons[BTN_SKIN].hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
 	}
 
 	if (m_buttons[BTN_EQ].rect.PtInRect(point))
 	{
-		m_buttons[BTN_EQ].hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
 	}
 
 	if (m_buttons[BTN_SETTING].rect.PtInRect(point))
 	{
-		m_buttons[BTN_SETTING].hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
 	}
 
 	if (m_buttons[BTN_MINI].rect.PtInRect(point))
 	{
-		m_buttons[BTN_MINI].hover = false;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
 	}
 
@@ -161,6 +175,7 @@ void CPlayerUIBase::PreDrawInfo()
 		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
 		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
 		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.dark3;
+		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light2;
 
 		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
 	}
@@ -177,6 +192,7 @@ void CPlayerUIBase::PreDrawInfo()
 		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
 		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
 		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.light2;
+		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark1;
 
 		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
 	}
@@ -403,8 +419,11 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		alpha = ALPHA_CHG(m_colors.background_transparency);
 	else
 		alpha = 255;
-	if (m_buttons[BTN_REPETEMODE].hover)
+	if (m_buttons[BTN_REPETEMODE].pressed && m_buttons[BTN_REPETEMODE].hover)
+		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_pressed, alpha);
+	else if (m_buttons[BTN_REPETEMODE].hover)
 		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_text_2, alpha);
+
 	//else if (!theApp.m_app_setting_data.dark_mode)
 	//	m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_back, alpha);
 
@@ -605,8 +624,11 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool dr
 		alpha = ALPHA_CHG(m_colors.background_transparency);
 	else
 		alpha = 255;
-	if (btn.hover)
+	if(btn.pressed && btn.hover)
+		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
+	else if (btn.hover)
 		m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
+
 	//else if (!theApp.m_app_setting_data.dark_mode)
 	//	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
 

@@ -52,6 +52,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 		//m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
 		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
 		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.dark2;
+		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light2;
 
 		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
 	}
@@ -68,6 +69,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 		//m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
 		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
 		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.light2;
+		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark1;
 
 		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
 	}
@@ -274,6 +276,15 @@ void CMiniModeUI::DrawInfo(bool reset)
 	m_first_draw = false;
 }
 
+void CMiniModeUI::LButtonDown(CPoint point)
+{
+	for (auto& btn : m_buttons)
+	{
+		if (btn.second.rect.PtInRect(point) != FALSE)
+			btn.second.pressed = true;
+	}
+}
+
 void CMiniModeUI::RButtonUp(CPoint point)
 {
 }
@@ -316,6 +327,9 @@ void CMiniModeUI::LButtonUp(CPoint point)
 {
 	for (auto& btn : m_buttons)
 	{
+		btn.second.hover = false;
+		btn.second.pressed = false;
+		
 		if (btn.second.rect.PtInRect(point))
 		{
 			switch (btn.first)
@@ -333,7 +347,7 @@ void CMiniModeUI::LButtonUp(CPoint point)
 				m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
 				break;
 			case BTN_RETURN:
-				m_buttons[BTN_RETURN].hover = false;
+				//m_buttons[BTN_RETURN].hover = false;
 				m_pMiniModeWnd->SendMessage(WM_COMMAND, IDOK);
 				break;
 			case BTN_CLOSE:
@@ -409,7 +423,10 @@ void CMiniModeUI::DrawUIButton(CRect rect, IPlayerUI::UIButton & btn, HICON icon
 		alpha = ALPHA_CHG(m_colors.background_transparency);
 	else
 		alpha = 255;
-	if (btn.hover)
+
+	if (btn.pressed && btn.hover)
+		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
+	else if (btn.hover)
 		m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
 	else
 		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
@@ -433,7 +450,9 @@ void CMiniModeUI::DrawTextButton(CRect rect, IPlayerUI::UIButton & btn, LPCTSTR 
 		alpha = ALPHA_CHG(m_colors.background_transparency);
 	else
 		alpha = 255;
-	if (btn.hover)
+	if (btn.pressed && btn.hover)
+		m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
+	else if (btn.hover)
 		m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
 	else
 		m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);

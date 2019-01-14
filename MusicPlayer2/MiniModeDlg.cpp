@@ -216,6 +216,8 @@ void CMiniModeDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	if(!m_ui.PointInControlArea(point))
 		PostMessage(WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(point.x, point.y));
 
+	m_ui.LButtonDown(point);
+
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 

@@ -273,6 +273,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_MENU_EXIT, &CMusicPlayerDlg::OnMenuExit)
 	ON_COMMAND(ID_MINIMODE_RESTORE, &CMusicPlayerDlg::OnMinimodeRestore)
 	ON_WM_APPCOMMAND()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -2599,6 +2600,15 @@ void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 }
 
 
+void CMusicPlayerDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	m_pUI->LButtonDown(point);
+
+	CDialog::OnLButtonDown(nFlags, point);
+}
+
+
 HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -3241,3 +3251,4 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 
 	CDialog::OnAppCommand(pWnd, nCmd, nDevice, nKey);
 }
+

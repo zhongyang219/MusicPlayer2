@@ -303,4 +303,5 @@ public:
 	afx_msg void OnMenuExit();
 	afx_msg void OnMinimodeRestore();
 	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
