@@ -162,40 +162,7 @@ void CPlayerUIBase::UpdateRepeatModeToolTip()
 void CPlayerUIBase::PreDrawInfo()
 {
 	//…Ë÷√—’…´
-	if (theApp.m_app_setting_data.dark_mode)
-	{
-		m_colors.color_text = ColorTable::WHITE;
-		m_colors.color_text_lable = theApp.m_app_setting_data.theme_color.light2;
-		m_colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
-		m_colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.light2;
-		m_colors.color_back = GRAY(96);
-		m_colors.color_lyric_back = theApp.m_app_setting_data.theme_color.dark3;
-		m_colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.dark2;
-		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;
-		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
-		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
-		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.dark3;
-		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light2;
-
-		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
-	}
-	else
-	{
-		m_colors.color_text = theApp.m_app_setting_data.theme_color.dark2;
-		m_colors.color_text_lable = theApp.m_app_setting_data.theme_color.original_color;
-		m_colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
-		m_colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.dark1;
-		m_colors.color_back = ColorTable::WHITE;
-		m_colors.color_lyric_back = theApp.m_app_setting_data.theme_color.light3;
-		m_colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.light3;
-		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.original_color;
-		m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
-		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
-		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.light2;
-		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark1;
-
-		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
-	}
+	m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color);
 
 	//if (m_repeat_mode_tip.IsEmpty())
 	SetRepeatModeToolTipText();
@@ -402,7 +369,7 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 {
 	//ªÊ÷∆±≥æ∞
 	if (draw_background)
-		m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, ALPHA_CHG(m_colors.background_transparency));
+		m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		m_draw.FillRect(rect, m_colors.color_control_bar_back);
 
@@ -416,7 +383,7 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(m_colors.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 	else
 		alpha = 255;
 	if (m_buttons[BTN_REPETEMODE].pressed && m_buttons[BTN_REPETEMODE].hover)
@@ -483,7 +450,7 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		{
 			BYTE alpha;
 			if (draw_background)
-				alpha = ALPHA_CHG(m_colors.background_transparency);
+				alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 			else
 				alpha = 255;
 			if (m_buttons[BTN_TRANSLATE].hover)
@@ -621,7 +588,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, HICON icon, bool dr
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(m_colors.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 	else
 		alpha = 255;
 	if(btn.pressed && btn.hover)
@@ -669,8 +636,8 @@ void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
 
 		if (draw_background)
 		{
-			m_draw.FillAlphaRect(volume_down_rect, m_colors.color_text_2, ALPHA_CHG(m_colors.background_transparency));
-			m_draw.FillAlphaRect(volume_up_rect, m_colors.color_text_2, ALPHA_CHG(m_colors.background_transparency));
+			m_draw.FillAlphaRect(volume_down_rect, m_colors.color_text_2, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+			m_draw.FillAlphaRect(volume_up_rect, m_colors.color_text_2, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 		}
 		else
 		{

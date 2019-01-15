@@ -409,6 +409,9 @@
     <ClInclude Include="CListBoxEnhanced.h">
       <Filter>派生的控件类\ListBoxEnhanced</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerUIHelper.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -602,6 +605,9 @@
     </ClCompile>
     <ClCompile Include="CListBoxEnhanced.cpp">
       <Filter>派生的控件类\ListBoxEnhanced</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerUIHelper.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -61,7 +61,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	//CDrawCommon::SetDrawArea(&MemDC, info_rect);
 	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		// «∑Ò–Ë“™ªÊ÷∆Õº∆¨±≥æ∞
 	if (draw_background)
-		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(m_colors.background_transparency));
+		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		m_draw.FillRect(draw_rect, m_colors.color_back);
 
@@ -157,7 +157,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	CRect spectral_rect{ CPoint{info_rect.left + m_pLayout->margin, info_rect.top + m_pLayout->margin}, m_pLayout->spectral_size };
 	//ªÊ÷∆±≥æ∞
 	if (draw_background)
-		m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(m_colors.background_transparency) * 2 / 3);
+		m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	else
 		m_draw.FillRect(spectral_rect, m_colors.color_spectrum_back);
 	if (theApp.m_app_setting_data.show_album_cover)
@@ -265,7 +265,7 @@ void CPlayerUI::DrawLyricsSingleLine(CRect lyric_rect)
 	{
 		bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };
 		if (draw_background)
-			m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(m_colors.background_transparency) * 3 / 5);
+			m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
 		else
 			m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
 	}
@@ -318,7 +318,7 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	{
 		BYTE alpha;
 		if (draw_background)
-			alpha = ALPHA_CHG(m_colors.background_transparency);
+			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 		else
 			alpha = 255;
 		if (m_buttons[BTN_TRANSLATE].hover)
@@ -339,7 +339,7 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	if (theApp.m_app_setting_data.lyric_background)
 	{
 		if (draw_background)
-			m_draw.FillAlphaRect(lyric_area, m_colors.color_lyric_back, ALPHA_CHG(m_colors.background_transparency) * 3 / 5);
+			m_draw.FillAlphaRect(lyric_area, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
 		else
 			m_draw.FillRect(lyric_area, m_colors.color_lyric_back);
 	}

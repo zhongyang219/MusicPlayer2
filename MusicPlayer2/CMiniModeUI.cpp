@@ -39,40 +39,7 @@ void CMiniModeUI::Init(CDC * pDC)
 void CMiniModeUI::DrawInfo(bool reset)
 {
 	//…Ë÷√—’…´
-	if (theApp.m_app_setting_data.dark_mode)
-	{
-		m_colors.color_text = ColorTable::WHITE;
-		m_colors.color_text_lable = theApp.m_app_setting_data.theme_color.light2;
-		m_colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
-		//m_colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.light2;
-		m_colors.color_back = GRAY(96);
-		m_colors.color_lyric_back = theApp.m_app_setting_data.theme_color.dark3;
-		//m_colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.dark2;
-		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;
-		//m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
-		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
-		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.dark2;
-		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light2;
-
-		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
-	}
-	else
-	{
-		m_colors.color_text = theApp.m_app_setting_data.theme_color.dark2;
-		m_colors.color_text_lable = theApp.m_app_setting_data.theme_color.original_color;
-		m_colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
-		//m_colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.dark1;
-		m_colors.color_back = ColorTable::WHITE;
-		m_colors.color_lyric_back = theApp.m_app_setting_data.theme_color.light3;
-		//m_colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.light3;
-		m_colors.color_spectrum = theApp.m_app_setting_data.theme_color.original_color;
-		//m_colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
-		m_colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
-		m_colors.color_button_back = theApp.m_app_setting_data.theme_color.light2;
-		m_colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark1;
-
-		m_colors.background_transparency = theApp.m_app_setting_data.background_transparency;
-	}
+	m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color);
 
 	//…Ë÷√ª∫≥ÂµƒDC
 	CDC MemDC;
@@ -103,7 +70,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	//ÃÓ≥‰±≥æ∞—’…´
 	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.pDefaultBackground->IsNull()) };		// «∑Ò–Ë“™ªÊ÷∆Õº∆¨±≥æ∞
 	if (draw_background)
-		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(m_colors.background_transparency));
+		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		m_draw.FillRect(draw_rect, m_colors.color_back);
 
@@ -117,7 +84,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	else
 	{
 		if (draw_background)
-			m_draw.FillAlphaRect(cover_rect, m_colors.color_spectrum_back, ALPHA_CHG(m_colors.background_transparency) * 2 / 3);
+			m_draw.FillAlphaRect(cover_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 		else
 			m_draw.FillRect(cover_rect, m_colors.color_spectrum_back);
 		cover_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
@@ -147,7 +114,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.right = rc_tmp.left + theApp.DPI(30);
 
 	if (draw_background)
-		m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(m_colors.background_transparency) * 2 / 3);
+		m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	else
 		m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
 
@@ -210,7 +177,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	progress_rect.bottom = progress_rect.top + progress_height;
 
 	if (draw_background)
-		m_draw.FillAlphaRect(progress_rect, m_colors.color_spectrum_back, ALPHA_CHG(m_colors.background_transparency) * 2 / 3);
+		m_draw.FillAlphaRect(progress_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	else
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum_back);
 
@@ -420,7 +387,7 @@ void CMiniModeUI::DrawUIButton(CRect rect, IPlayerUI::UIButton & btn, HICON icon
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(m_colors.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 	else
 		alpha = 255;
 
@@ -447,7 +414,7 @@ void CMiniModeUI::DrawTextButton(CRect rect, IPlayerUI::UIButton & btn, LPCTSTR 
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(m_colors.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 	else
 		alpha = 255;
 	if (btn.pressed && btn.hover)

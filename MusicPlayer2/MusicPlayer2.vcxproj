@@ -208,6 +208,7 @@
     <ClInclude Include="CPlayerUI.h" />
     <ClInclude Include="CPlayerUI2.h" />
     <ClInclude Include="CPlayerUIBase.h" />
+    <ClInclude Include="CPlayerUIHelper.h" />
     <ClInclude Include="CTabCtrlEx.h" />
     <ClInclude Include="CVariant.h" />
     <ClInclude Include="IPlayerUI.h" />
@@ -278,6 +279,7 @@
     <ClCompile Include="CPlayerUI.cpp" />
     <ClCompile Include="CPlayerUI2.cpp" />
     <ClCompile Include="CPlayerUIBase.cpp" />
+    <ClCompile Include="CPlayerUIHelper.cpp" />
     <ClCompile Include="CTabCtrlEx.cpp" />
     <ClCompile Include="CVariant.cpp" />
     <ClCompile Include="PlaySettingsDlg.cpp" />
