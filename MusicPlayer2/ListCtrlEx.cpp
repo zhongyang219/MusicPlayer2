@@ -86,9 +86,9 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		*pResult = CDRF_NOTIFYITEMDRAW;
 		break;
 	case CDDS_ITEMPREPAINT:			//如果为画ITEM之前就要进行颜色的改变
+		this_item_select = false;
 		if (IsWindowEnabled())
 		{
-			this_item_select = false;
 			//设置选中行的颜色
 			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 			{
