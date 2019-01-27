@@ -6,7 +6,9 @@ public:
 	~CWinVersionHelper();
 
 	bool IsWindows10FallCreatorOrLater() const;		//判断当前Windows版本是否为Win10秋季创意者更新或更新的版本
+	bool IsWindowsVista() const;
 	bool IsWindows7() const;					//判断Windows版本是否为Windows7
+	bool IsWindows7OrLater() const;
 	bool IsWindows8Or8point1() const;			//判断Windows版本是否为Windows8或Windows8.1
 	bool IsWindows8OrLater() const;
 	bool IsWindows10OrLater() const;

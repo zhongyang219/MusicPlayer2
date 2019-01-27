@@ -40,9 +40,23 @@ bool CWinVersionHelper::IsWindows10FallCreatorOrLater() const
 	else return false;
 }
 
+bool CWinVersionHelper::IsWindowsVista() const
+{
+	return (m_major_version == 6 && m_minor_version == 0);
+}
+
 bool CWinVersionHelper::IsWindows7() const
 {
 	return (m_major_version == 6 && m_minor_version == 1);
+}
+
+bool CWinVersionHelper::IsWindows7OrLater() const
+{
+	if (m_major_version > 6)
+		return true;
+	else if (m_major_version == 6 && m_minor_version >= 1)
+		return false;
+	else return false;
 }
 
 bool CWinVersionHelper::IsWindows8Or8point1() const
