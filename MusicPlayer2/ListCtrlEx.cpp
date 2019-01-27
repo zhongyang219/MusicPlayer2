@@ -66,6 +66,21 @@ void CListCtrlEx::SetCurSel(int select)
 	}
 }
 
+bool CListCtrlEx::SetRowHeight(int height)
+{
+	if (height > 0 && height <= 512)
+	{
+		CImageList imgList;		//为ClistCtrl设置一个图像列表，以设置行高
+		BOOL rtn = imgList.Create(1, height, ILC_COLOR, 1, 1);
+		if (rtn != FALSE)
+		{
+			SetImageList(&imgList, LVSIL_SMALL);
+			return true;
+		}
+	}
+	return false;
+}
+
 
 BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
@@ -109,6 +124,11 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				lplvdr->clrText = CColorConvert::m_gray_color.dark3;
 				lplvdr->clrTextBk = CColorConvert::m_gray_color.light4;
 			}
+
+			//用背景色填充单元格，以去掉每行前面的空白
+			CRect rect = nmcd.rc;
+			CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
+			pDC->FillSolidRect(rect, lplvdr->clrTextBk);
 		}
 		else		//当控件被禁用时，显示文本设为灰色
 		{

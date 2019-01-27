@@ -283,6 +283,8 @@ void CPlayListCtrl::PreSubclassWindow()
 	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width2);		//插入第3列
 	EnableTip();
 
+	SetRowHeight(theApp.DPI(24));
+
 	CListCtrlEx::PreSubclassWindow();
 }
 
@@ -360,6 +362,11 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 					lplvdr->clrTextBk = CColorConvert::m_gray_color.light4;
 				}
 			}
+
+			//用背景色填充单元格，以去掉每行前面的空白
+			CRect rect = nmcd.rc;
+			CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
+			pDC->FillSolidRect(rect, lplvdr->clrTextBk);
 		}
 		else		//当控件被禁用时，显示文本设为灰色
 		{
