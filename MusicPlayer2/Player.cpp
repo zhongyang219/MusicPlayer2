@@ -842,6 +842,8 @@ bool CPlayer::PlayTrack(int song_track)
 		GetBASSCurrentPosition();
 		SetTitle();
 		SaveConfig();
+		EmplaceCurrentPathToRecent();
+		SaveRecentPath();
 		return true;
 	}
 	else
@@ -854,6 +856,8 @@ bool CPlayer::PlayTrack(int song_track)
 		GetBASSCurrentPosition();
 		SetTitle();
 		SaveConfig();
+		EmplaceCurrentPathToRecent();
+		SaveRecentPath();
 	}
 	return false;
 }

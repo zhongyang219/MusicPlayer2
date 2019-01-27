@@ -133,9 +133,9 @@ private:
 	void RemoveFXHandle();		//移除音效句柄
 	void ApplyEqualizer(int channel, int gain);		//应用一个均衡器通道的增益
 
-	void EmplaceCurrentPathToRecent();		//将当前路径插入到最近路径中
 	void LoadRecentPath();		//从文件载入最近路径列表
 public:
+	void EmplaceCurrentPathToRecent();		//将当前路径插入到最近路径中
 	void SaveRecentPath() const;		//将最近路径列表保存到文件
 	void OnExit();		//退出时的处理
 
