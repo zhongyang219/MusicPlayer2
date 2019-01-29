@@ -54,15 +54,15 @@ BOOL CMusicPlayerApp::InitInstance()
 	AfxRegisterClass(&wc);
 
 	wstring cmd_line{ m_lpCmdLine };
-	////当程序被Windows重新启动时，直接退出程序
-	//if (cmd_line.find(L"RestartByRestartManager") != wstring::npos)
-	//{
-	//	//将命令行参数写入日志文件
-	//	CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
-	//	//swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
-	//	CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info.GetString() });
-	//	return FALSE;
-	//}
+	//当程序被Windows重新启动时，直接退出程序
+	if (cmd_line.find(L"RestartByRestartManager") != wstring::npos)
+	{
+		//将命令行参数写入日志文件
+		CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
+		//swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
+		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info.GetString() });
+		return FALSE;
+	}
 
 	//检查是否已有实例正在运行（Debug时不检查）
 #ifndef _DEBUG
