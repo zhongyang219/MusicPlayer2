@@ -71,6 +71,7 @@ protected:
 	CSliderCtrl m_gauss_blur_radius_sld;
 	CButton m_lyric_background_chk;
 	CButton m_dark_mode_chk;
+	CButton m_use_inner_image_first_chk;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 
@@ -113,4 +114,5 @@ public:
 	afx_msg void OnBnClickedBackgroundGaussBlurCheck();
 	afx_msg void OnBnClickedLyricBackgroundCheck();
 	afx_msg void OnBnClickedDarkModeCheck();
+	afx_msg void OnBnClickedUseInnerImageFirstCheck();
 };

@@ -54,6 +54,7 @@ struct ApperanceSettingData
 	int sprctrum_height{ 100 };					//频谱分析高度比例（%）
 	int background_transparency{ 80 };			//背景的透明度
 	bool use_out_image{ true };					//使用外部图片作为专辑封面
+	bool use_inner_image_first{ true };			//优先使用内嵌专辑封面
 	vector<wstring> default_album_name;			//默认的专辑封面文件名
 	bool background_gauss_blur{ true };			//背景高斯模糊
 	int gauss_blur_radius{ 60 };				//高斯模糊半径*10

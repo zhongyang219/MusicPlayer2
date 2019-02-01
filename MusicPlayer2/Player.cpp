@@ -1665,16 +1665,16 @@ void CPlayer::SearchAlbumCover()
 	static wstring last_file_path;
 	if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
 	{
-		//AudioType type = CAudioCommon::GetAudioTypeByExtension(m_current_file_name);
-		//if (type != AU_FLAC)
-		//	m_album_cover_path = CAudioCommon::GetAlbumCover(m_musicStream, m_album_cover_type);		//获取专辑封面并保存到临时目录
-		//else
-		//	m_album_cover_path = CAudioCommon::GetFlacAlbumCover(m_path + m_current_file_name, m_album_cover_type);
-		CAudioTag audio_tag(m_musicStream, m_path + m_current_file_name, m_playlist[m_index]);
-		m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
 		m_album_cover.Destroy();
-		m_album_cover.Load(m_album_cover_path.c_str());
+		if (!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first)
+		{
+			//从文件获取专辑封面
+			CAudioTag audio_tag(m_musicStream, m_path + m_current_file_name, m_playlist[m_index]);
+			m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
+			m_album_cover.Load(m_album_cover_path.c_str());
+		}
 		m_inner_cover = !m_album_cover.IsNull();
+
 		if (/*theApp.m_app_setting_data.use_out_image && */m_album_cover.IsNull())
 		{
 			//获取不到专辑封面时尝试使用外部图片作为封面

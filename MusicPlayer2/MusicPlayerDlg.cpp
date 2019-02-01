@@ -310,9 +310,10 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
 	ini.WriteBool(L"config", L"lyric_background", theApp.m_app_setting_data.lyric_background);
 	ini.WriteBool(L"config", L"dark_mode", theApp.m_app_setting_data.dark_mode);
-
 	ini.WriteInt(L"config", L"background_transparency", theApp.m_app_setting_data.background_transparency);
 	ini.WriteBool(L"config", L"use_out_image", theApp.m_app_setting_data.use_out_image);
+	ini.WriteBool(L"config", L"use_inner_image_first", theApp.m_app_setting_data.use_inner_image_first);
+
 	ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
 	ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
 	ini.WriteInt(L"config", L"cortana_back_color", theApp.m_lyric_setting_data.cortana_color);
@@ -405,9 +406,10 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
 	theApp.m_app_setting_data.lyric_background = ini.GetBool(_T("config"), _T("lyric_background"), true);
 	theApp.m_app_setting_data.dark_mode = ini.GetBool(_T("config"), _T("dark_mode"), false);
-
 	theApp.m_app_setting_data.background_transparency = ini.GetInt(L"config", L"background_transparency", 80);
 	theApp.m_app_setting_data.use_out_image = ini.GetBool(_T("config"), _T("use_out_image"), 0);
+	theApp.m_app_setting_data.use_inner_image_first = ini.GetBool(L"config", L"use_inner_image_first", true);
+
 	theApp.m_nc_setting_data.volum_step = ini.GetInt(_T("config"), _T("volum_step"), 3);
 	theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(_T("config"), _T("mouse_volum_step"), 2);
 	theApp.m_lyric_setting_data.cortana_color = ini.GetInt(_T("config"), _T("cortana_back_color"), 0);

@@ -47,6 +47,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BACKGROUND_GAUSS_BLUR_CHECK, m_background_gauss_blur_chk);
 	DDX_Control(pDX, IDC_LYRIC_BACKGROUND_CHECK, m_lyric_background_chk);
 	DDX_Control(pDX, IDC_DARK_MODE_CHECK, m_dark_mode_chk);
+	DDX_Control(pDX, IDC_USE_INNER_IMAGE_FIRST_CHECK, m_use_inner_image_first_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -129,6 +130,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_BACKGROUND_GAUSS_BLUR_CHECK, &CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck)
 	ON_BN_CLICKED(IDC_LYRIC_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck)
 	ON_BN_CLICKED(IDC_DARK_MODE_CHECK, &CAppearanceSettingDlg::OnBnClickedDarkModeCheck)
+	ON_BN_CLICKED(IDC_USE_INNER_IMAGE_FIRST_CHECK, &CAppearanceSettingDlg::OnBnClickedUseInnerImageFirstCheck)
 END_MESSAGE_MAP()
 
 
@@ -224,6 +226,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	SetDlgItemText(IDC_GAUSS_BLUR_RADIUS_STATIC, str);
 	m_lyric_background_chk.SetCheck(m_data.lyric_background);
 	m_dark_mode_chk.SetCheck(m_data.dark_mode);
+	m_use_inner_image_first_chk.SetCheck(m_data.use_inner_image_first);
 
 	SetControlEnable();
 
@@ -558,4 +561,11 @@ void CAppearanceSettingDlg::OnBnClickedDarkModeCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.dark_mode = (m_dark_mode_chk.GetCheck() != 0);
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedUseInnerImageFirstCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.use_inner_image_first = (m_use_inner_image_first_chk.GetCheck() != 0);
 }
