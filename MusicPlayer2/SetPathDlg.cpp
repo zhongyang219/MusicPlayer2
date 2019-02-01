@@ -21,35 +21,63 @@ CSetPathDlg::~CSetPathDlg()
 {
 }
 
+void CSetPathDlg::QuickSearch(const wstring & key_word)
+{
+	m_search_result.clear();
+	for (size_t i{}; i < m_recent_path.size(); i++)
+	{
+		if (CCommon::StringFindNoCase(m_recent_path[i].path, key_word) != wstring::npos)
+			m_search_result.push_back(i);
+	}
+}
+
 void CSetPathDlg::ShowPathList()
 {
-	m_path_list.DeleteAllItems();
-	CString path_str;
-	for (int i{}; i < m_recent_path.size(); i++)
+	m_path_list.EnableWindow(TRUE);
+	if (!m_searched)		//显示所有项目
 	{
-		size_t index = m_recent_path[i].path.find_last_of(L'\\', m_recent_path[i].path.size() - 2);	//查找倒数第2个“\”
-		wstring folder = m_recent_path[i].path.substr(index + 1);
-		folder.pop_back();		//去掉末尾的“\”
-		m_path_list.InsertItem(i, folder.c_str());
-		m_path_list.SetItemText(i, 1, m_recent_path[i].path.c_str());
+		m_path_list.DeleteAllItems();
+		CString path_str;
+		for (int i{}; i < m_recent_path.size(); i++)
+		{
+			CString str;
+			str.Format(_T("%d"), i + 1);
+			m_path_list.InsertItem(i, str);
 
-		CString str;
-		str.Format(_T("%d"), m_recent_path[i].track + 1);
-		m_path_list.SetItemText(i, 2, str);
-
-		str.Format(_T("%d"), m_recent_path[i].track_num);
-		m_path_list.SetItemText(i, 3, str);
-
-		Time total_time{ m_recent_path[i].total_time };
-		m_path_list.SetItemText(i, 4, total_time.time2str3().c_str());
-
-		//path_str.Format(_T("%s (播放到第%d首)"), a_path_info.path.c_str(), a_path_info.track + 1);
-		//m_path_list.AddString(path_str);
+			SetListRowData(i, m_recent_path[i]);
+		}
 	}
-	////根据列表中最长项目的宽度自动设置列表控件的宽度
-	//int list_width;
-	//list_width = CCommon::GetListWidth(m_path_list) * 108 / 100;
-	//m_path_list.SetHorizontalExtent(list_width);
+	else		//只显示搜索结果的曲目
+	{
+		if (m_search_result.empty())
+		{
+			m_path_list.DeleteAllItems();
+			m_path_list.InsertItem(0, _T(""));
+			m_path_list.SetItemText(0, 1, CCommon::LoadText(IDS_NO_RESULT_TO_SHOW));
+			m_path_list.EnableWindow(FALSE);
+			return;
+		}
+
+		int item_num_before = m_path_list.GetItemCount();
+		int item_num_after = m_search_result.size();
+		//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
+		if (item_num_after < item_num_before)
+		{
+			m_path_list.DeleteAllItems();
+			item_num_before = 0;
+		}
+		CString str;
+		for (int i{}; i < item_num_after; i++)
+		{
+			str.Format(_T("%u"), m_search_result[i] + 1);
+			if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+			{
+				m_path_list.InsertItem(i, str);
+			}
+			m_path_list.SetItemText(i, 0, str);
+			SetListRowData(i, m_recent_path[m_search_result[i]]);
+		}
+	}
 }
 
 void CSetPathDlg::SetButtonsEnable(bool enable)
@@ -58,12 +86,43 @@ void CSetPathDlg::SetButtonsEnable(bool enable)
 	//GetDlgItem(IDC_DELETE_PATH_BUTTON)->EnableWindow(enable);
 }
 
+void CSetPathDlg::CalculateColumeWidth(vector<int>& width)
+{
+	CRect rect;
+	m_path_list.GetClientRect(rect);
+	width.resize(6);
+
+	width[3] = width[4] = rect.Width() / 10;
+	width[5] = rect.Width() / 7;
+
+	width[0] = theApp.DPI(40);
+	width[1] = width[2] = (rect.Width() - width[3] - width[4] - width[5] - width[0] - theApp.DPI(20)) / 2;
+}
+
+void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
+{
+	CFilePathHelper path_helper(path_info.path);
+	m_path_list.SetItemText(index, 1, path_helper.GetFolderName().c_str());
+	m_path_list.SetItemText(index, 2, path_info.path.c_str());
+
+	CString str;
+	str.Format(_T("%d"), path_info.track + 1);
+	m_path_list.SetItemText(index, 3, str);
+
+	str.Format(_T("%d"), path_info.track_num);
+	m_path_list.SetItemText(index, 4, str);
+
+	Time total_time{ path_info.total_time };
+	m_path_list.SetItemText(index, 5, total_time.time2str3().c_str());
+}
+
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PATH_EDIT, m_path_name);
 	//DDX_Control(pDX, IDC_LIST1, m_path_list);
 	DDX_Control(pDX, IDC_PATH_LIST, m_path_list);
+	DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
 }
 
 wstring CSetPathDlg::GetSelPath() const
@@ -119,6 +178,8 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CDialog)
 	ON_COMMAND(ID_BROWSE_PATH, &CSetPathDlg::OnBrowsePath)
 	ON_COMMAND(ID_CLEAR_INVALID_PATH, &CSetPathDlg::OnClearInvalidPath)
 	ON_WM_INITMENU()
+	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CSetPathDlg::OnEnChangeSearchEdit)
+	ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CSetPathDlg::OnBnClickedClearButton)
 END_MESSAGE_MAP()
 
 
@@ -140,32 +201,37 @@ BOOL CSetPathDlg::OnInitDialog()
 	//m_path_list.SetColor(theApp.m_app_setting_data.theme_color);
 
 	//初始化播放列表控件
-	CRect rect;
-	m_path_list.GetClientRect(rect);
-	int width0, width1, width2, width3, width4;
-	width2 = width3 = rect.Width() / 10;
-	width4 = rect.Width() / 7;
-	width0 = width1 = (rect.Width() - 2*width2 - width4 - theApp.DPI(20)) / 2;
-
+	vector<int> width;
+	CalculateColumeWidth(width);
 	m_path_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_path_list.InsertColumn(0, CCommon::LoadText(IDS_FOLDER), LVCFMT_LEFT, width0);		//插入第1列
-	m_path_list.InsertColumn(1, CCommon::LoadText(IDS_PATH), LVCFMT_LEFT, width1);		//插入第2列
-	m_path_list.InsertColumn(2, CCommon::LoadText(IDS_TRACK_PLAYED), LVCFMT_LEFT, width2);		//插入第3列
-	m_path_list.InsertColumn(3, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width3);		//插入第4列
-	m_path_list.InsertColumn(4, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width4);		//插入第5列
+	m_path_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);
+	m_path_list.InsertColumn(1, CCommon::LoadText(IDS_FOLDER), LVCFMT_LEFT, width[1]);
+	m_path_list.InsertColumn(2, CCommon::LoadText(IDS_PATH), LVCFMT_LEFT, width[2]);
+	m_path_list.InsertColumn(3, CCommon::LoadText(IDS_TRACK_PLAYED), LVCFMT_LEFT, width[3]);
+	m_path_list.InsertColumn(4, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[4]);
+	m_path_list.InsertColumn(5, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[5]);
 
 	ShowPathList();
-	m_path_list.SetFocus();		//初始时将焦点设置到列表控件
+	m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
 
 	SetButtonsEnable(false);
 
+	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+
 	//获取初始时窗口的大小
+	CRect rect;
 	GetWindowRect(rect);
 	m_min_size.cx = rect.Width();
 	m_min_size.cy = rect.Height();
 
+	//初始化提示信息
+	m_Mytip.Create(this, TTS_ALWAYSTIP);
+	m_Mytip.AddTool(GetDlgItem(IDC_CLEAR_BUTTON), CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
+	m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
+
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	m_Mytip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	//初始化右键菜单
 	m_menu.LoadMenu(IDR_SET_PATH_POPUP_MENU);
@@ -220,8 +286,19 @@ void CSetPathDlg::OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	m_path_selected = pNMItemActivate->iItem;
-	SetButtonsEnable(m_path_selected != -1);
+	if (!m_searched)	//如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
+	{
+		m_path_selected = pNMItemActivate->iItem;
+	}
+	else
+	{
+		CString str;
+		str = m_path_list.GetItemText(pNMItemActivate->iItem, 0);
+		m_path_selected = _ttoi(str) - 1;
+	}
+
+	bool enable = (m_path_selected > 0);
+	SetButtonsEnable(enable);
 	*pResult = 0;
 }
 
@@ -247,9 +324,21 @@ void CSetPathDlg::OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	m_path_selected = pNMItemActivate->iItem;
-	SetButtonsEnable(m_path_selected != -1);
-	OnOK();
+	if (!m_searched)	//如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
+	{
+		m_path_selected = pNMItemActivate->iItem;
+	}
+	else
+	{
+		CString str;
+		str = m_path_list.GetItemText(pNMItemActivate->iItem, 0);
+		m_path_selected = _ttoi(str) - 1;
+	}
+
+	bool enable = (m_path_selected > 0);
+	SetButtonsEnable(enable);
+	if(enable)
+		OnOK();
 	*pResult = 0;
 }
 
@@ -273,16 +362,10 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 	if (nType != SIZE_MINIMIZED && m_path_list.m_hWnd)
 	{
 		int list_width{ cx - theApp.DPI(29) };
-		int width0, width1, width2, width3, width4;
-		width2 = width3 = list_width / 10;
-		width4 = list_width / 7;
-		width0 = width1 = (list_width - 2 * width2 - width4 - theApp.DPI(20)) / 2;
-		m_path_list.SetColumnWidth(0, width0);
-		m_path_list.SetColumnWidth(1, width1);
-		m_path_list.SetColumnWidth(2, width2);
-		m_path_list.SetColumnWidth(3, width3);
-		m_path_list.SetColumnWidth(4, width4);
-
+		vector<int> width;
+		CalculateColumeWidth(width);
+		for (size_t i{}; i < width.size(); i++)
+			m_path_list.SetColumnWidth(i, width[i]);
 	}
 }
 
@@ -370,4 +453,53 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
 	pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+}
+
+
+void CSetPathDlg::OnEnChangeSearchEdit()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
+	CString key_word;
+	m_search_edit.GetWindowText(key_word);
+	m_searched = (key_word.GetLength() != 0);
+	QuickSearch(wstring(key_word));
+	ShowPathList();
+
+}
+
+
+void CSetPathDlg::OnBnClickedClearButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (m_searched)
+	{
+		//清除搜索结果
+		m_searched = false;
+		m_search_edit.SetWindowText(_T(""));
+		ShowPathList();
+	}
+}
+
+
+BOOL CSetPathDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+	{
+		if (pMsg->wParam == 'F')	//按F键快速查找
+		{
+			m_search_edit.SetFocus();
+			return TRUE;
+		}
+	}
+
+	if (pMsg->message == WM_MOUSEMOVE)
+		m_Mytip.RelayEvent(pMsg);
+
+	return CDialog::PreTranslateMessage(pMsg);
 }

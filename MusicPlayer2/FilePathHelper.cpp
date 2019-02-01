@@ -41,6 +41,20 @@ wstring CFilePathHelper::GetFileNameWithoutExtension() const
 	return m_file_path.substr(index1 + 1, (index - index1 - 1));
 }
 
+wstring CFilePathHelper::GetFolderName() const
+{
+	int index, index1;
+	index = m_file_path.find_last_of(L"\\/");
+	if (index == wstring::npos || index == 0)
+		return wstring();
+
+	index1 = m_file_path.find_last_of(L"\\/", index - 1);
+	if (index1 == wstring::npos || index1 == 0)
+		return wstring();
+
+	return m_file_path.substr(index1 + 1, (index - index1 - 1));
+}
+
 wstring CFilePathHelper::GetDir() const
 {
 	if (!m_file_path.empty() && (m_file_path.back() == L'\\' || m_file_path.back() == L'/'))

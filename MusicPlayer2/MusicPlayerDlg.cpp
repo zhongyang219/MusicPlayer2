@@ -2941,11 +2941,10 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
 	// TODO:  在此添加控件通知处理程序代码
-	CString str;
-	m_search_edit.GetWindowText(str);
-	m_search_key_word = str;
-	m_searched = (str.GetLength() != 0);
-	m_playlist_list.QuickSearch(m_search_key_word);
+	CString key_word;
+	m_search_edit.GetWindowText(key_word);
+	m_searched = (key_word.GetLength() != 0);
+	m_playlist_list.QuickSearch(wstring(key_word));
 	m_playlist_list.ShowPlaylist(m_display_format, m_searched);
 }
 

@@ -21,6 +21,9 @@ public:
 	enum { IDD = IDD_SET_PATH_DIALOG };
 #endif
 
+public:
+	void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
+
 protected:
 	deque<PathInfo>& m_recent_path;		//最近打开过的路径
 	int m_path_selected{};		//选择的路径
@@ -29,11 +32,19 @@ protected:
 	CEdit m_path_name;
 	CListCtrlEx m_path_list;
 	CMenu m_menu;
+	CEdit m_search_edit;
+	CToolTipCtrl m_Mytip;
 
 	CSize m_min_size;		//窗口的最小大小
 
+	vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
+	bool m_searched{ false };				//是否处理搜索状态
+
+protected:
 	void ShowPathList();
 	void SetButtonsEnable(bool enable);
+	void CalculateColumeWidth(vector<int>& width);
+	void SetListRowData(int index, const PathInfo& path_info);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -62,4 +73,7 @@ public:
 	afx_msg void OnBrowsePath();
 	afx_msg void OnClearInvalidPath();
 	afx_msg void OnInitMenu(CMenu* pMenu);
+	afx_msg void OnEnChangeSearchEdit();
+	afx_msg void OnBnClickedClearButton();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

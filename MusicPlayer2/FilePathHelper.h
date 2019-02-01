@@ -12,6 +12,7 @@ public:
 	wstring GetFileExtension(bool upper = false) const;		//获取文件的扩展名（不包含“.”）
 	wstring GetFileName() const;							//获取文件名
 	wstring GetFileNameWithoutExtension() const;			//获取文件名（不含扩展名）
+	wstring GetFolderName() const;							//获取文件夹名
 	wstring GetDir() const;									//获取目录
 	wstring GetParentDir() const;							//获取上级目录
 	wstring GetFilePath() const { return m_file_path; }		//获取完整路径

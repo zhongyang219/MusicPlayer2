@@ -110,7 +110,6 @@ protected:
 
 
 	bool m_searched;		//播放列表是否处于搜索状态
-	wstring m_search_key_word;	//播放列表查找的关键字
 
 	unsigned int m_timer_count{};
 
