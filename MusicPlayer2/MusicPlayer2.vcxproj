@@ -375,6 +375,8 @@
     <Image Include="res\播放.ico" />
     <Image Include="res\播放_暂停.ico" />
     <Image Include="res\暂停.ico" />
+    <Image Include="res\曲目信息.ico" />
+    <Image Include="res\曲目信息_d.ico" />
     <Image Include="res\随机播放.ico" />
     <Image Include="res\随机播放_d.ico" />
     <Image Include="res\顺序播放.ico" />

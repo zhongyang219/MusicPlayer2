@@ -119,6 +119,11 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
 	}
 
+	if (m_buttons[BTN_INFO].rect.PtInRect(point))
+	{
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
+	}
+
 }
 
 void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
@@ -159,6 +164,12 @@ void CPlayerUIBase::UpdateRepeatModeToolTip()
 	UpdateMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
 }
 
+void CPlayerUIBase::UpdateSongInfoToolTip()
+{
+	SetSongInfoToolTipText();
+	UpdateMouseToolTip(BTN_INFO, m_info_tip);
+}
+
 void CPlayerUIBase::PreDrawInfo()
 {
 	//设置颜色
@@ -166,6 +177,7 @@ void CPlayerUIBase::PreDrawInfo()
 
 	//if (m_repeat_mode_tip.IsEmpty())
 	SetRepeatModeToolTipText();
+	SetSongInfoToolTipText();
 
 	//计算文本高度
 	m_pDC->SelectObject(&m_ui_data.lyric_font);
@@ -439,8 +451,19 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		m_buttons[BTN_MINI].rect = CRect();
 	}
 
+	//绘制曲目信息按钮
+	if (rect.Width() >= theApp.DPI(214))
+	{
+		rc_tmp.MoveToX(rc_tmp.right);
+		DrawUIButton(rc_tmp, m_buttons[BTN_INFO], theApp.m_info_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), draw_background);
+	}
+	else
+	{
+		m_buttons[BTN_INFO].rect = CRect();
+	}
+
 	//绘制翻译按钮
-	if (draw_translate_button && rect.Width() >= theApp.DPI(214))
+	if (draw_translate_button && rect.Width() >= theApp.DPI(238))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
 		CRect translate_rect = rc_tmp;
@@ -471,9 +494,10 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		m_buttons[BTN_TRANSLATE].rect = CRect();
 	}
 
-	//显示<<<<
 	rc_tmp.left = rc_tmp.right = rect.right;
-	if (rect.Width() >= theApp.DPI(265))
+
+	//显示<<<<
+	if (rect.Width() >= theApp.DPI(289))
 	{
 		int progress;
 		Time time{ theApp.m_player.GetCurrentPosition() };
@@ -490,7 +514,7 @@ void CPlayerUIBase::DrawControlBar(bool draw_background, CRect rect, bool draw_t
 		{
 			progress = (time.sec % 4 * 1000 + time.msec) / 4;
 		}
-		rc_tmp.right = rect.right;
+		rc_tmp.right = rc_tmp.left;
 		rc_tmp.left = rc_tmp.right - theApp.DPI(44);
 		m_draw.DrawWindowText(rc_tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress, false);
 	}
@@ -627,6 +651,30 @@ void CPlayerUIBase::SetRepeatModeToolTipText()
 	}
 }
 
+void CPlayerUIBase::SetSongInfoToolTipText()
+{
+	const SongInfo& songInfo = theApp.m_player.GetCurrentSongInfo();
+	
+	m_info_tip = CCommon::LoadText(IDS_SONG_INFO, _T("\r\n"));
+
+	m_info_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
+	m_info_tip += songInfo.title.c_str();
+	m_info_tip += _T("\r\n");
+
+	m_info_tip += CCommon::LoadText(IDS_ARTIST, _T(": "));
+	m_info_tip += songInfo.artist.c_str();
+	m_info_tip += _T("\r\n");
+
+	m_info_tip += CCommon::LoadText(IDS_ALBUM, _T(": "));
+	m_info_tip += songInfo.album.c_str();
+	//m_info_tip += _T("\r\n");
+
+	//m_info_tip += CCommon::LoadText(IDS_BITRATE, _T(": "));
+	//CString strTmp;
+	//strTmp.Format(_T("%d kbps"), songInfo.bitrate);
+	//m_info_tip += strTmp;
+}
+
 void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
 {
 	if (m_show_volume_adj)
@@ -668,5 +716,6 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING));
 	AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
 	AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE));
+	AddMouseToolTip(BTN_INFO, m_info_tip);
 }
 

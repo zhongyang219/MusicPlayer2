@@ -357,6 +357,8 @@ void CMusicPlayerApp::LoadIconResource()
 	m_play_shuffle_icon.GetIcon(false) = CDrawCommon::LoadIconResource(IDI_PLAY_SHUFFLE, theApp.DPI(16), theApp.DPI(16));
 	m_loop_playlist_icon.GetIcon(false) = CDrawCommon::LoadIconResource(IDI_LOOP_PLAYLIST, theApp.DPI(16), theApp.DPI(16));
 	m_loop_track_icon.GetIcon(false) = CDrawCommon::LoadIconResource(IDI_LOOP_TRACK, theApp.DPI(16), theApp.DPI(16));
+	m_info_icon.GetIcon(false) = CDrawCommon::LoadIconResource(IDI_SONG_INFO, theApp.DPI(16), theApp.DPI(16));
+	
 	m_previous_icon.GetIcon() = CDrawCommon::LoadIconResource(IDI_PREVIOUS, theApp.DPI(16), theApp.DPI(16));
 	m_play_icon.GetIcon() = CDrawCommon::LoadIconResource(IDI_PLAY, theApp.DPI(16), theApp.DPI(16));
 	m_pause_icon.GetIcon() = CDrawCommon::LoadIconResource(IDI_PAUSE, theApp.DPI(16), theApp.DPI(16));
@@ -371,6 +373,7 @@ void CMusicPlayerApp::LoadIconResource()
 	m_play_shuffle_icon.GetIcon(true) = CDrawCommon::LoadIconResource(IDI_PLAY_SHUFFLE_D, theApp.DPI(16), theApp.DPI(16));
 	m_loop_playlist_icon.GetIcon(true) = CDrawCommon::LoadIconResource(IDI_LOOP_PLAYLIST_D, theApp.DPI(16), theApp.DPI(16));
 	m_loop_track_icon.GetIcon(true) = CDrawCommon::LoadIconResource(IDI_LOOP_TRACK_D, theApp.DPI(16), theApp.DPI(16));
+	m_info_icon.GetIcon(true) = CDrawCommon::LoadIconResource(IDI_SONG_INFO_D, theApp.DPI(16), theApp.DPI(16));
 }
 
 int CMusicPlayerApp::DPI(int pixel)

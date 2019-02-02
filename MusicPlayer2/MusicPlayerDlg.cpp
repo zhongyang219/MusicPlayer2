@@ -384,7 +384,6 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 {
 	//设置播放列表大小
-	int width0, width1, width2;
 	if (!m_ui_data.m_narrow_mode)
 	{
 		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
@@ -538,6 +537,9 @@ void CMusicPlayerDlg::SwitchTrack()
 	//if (m_miniModeDlg.m_hWnd != NULL)
 	//	m_miniModeDlg.m_progress_bar.SetSongLength(theApp.m_player.GetSongLength());
 	DrawInfo(true);
+
+	m_ui.UpdateSongInfoToolTip();
+	m_ui2.UpdateSongInfoToolTip();
 }
 
 void CMusicPlayerDlg::ShowTime()
@@ -834,6 +836,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
+	m_Mytip.SetMaxTipWidth(theApp.DPI(400));
 	m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_SELECT_RENENT_FOLDER));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_DOWN), _T("减小音量"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
@@ -2552,6 +2555,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 	SetPorgressBarSize();
 	UpdatePlayPauseButton();
 	ShowTime();
+
+	m_ui.UpdateSongInfoToolTip();
+	m_ui2.UpdateSongInfoToolTip();
+
 	EnablePlaylist(true);
 	theApp.DoWaitCursor(-1);
 

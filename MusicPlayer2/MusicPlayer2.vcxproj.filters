@@ -738,5 +738,11 @@
     <Image Include="res\toolbar1.bmp">
       <Filter>资源文件\其他</Filter>
     </Image>
+    <Image Include="res\曲目信息.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\曲目信息_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

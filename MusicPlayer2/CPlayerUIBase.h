@@ -51,6 +51,7 @@ public:
 
 	virtual CRect GetThumbnailClipArea() override = 0;
 	void UpdateRepeatModeToolTip();
+	void UpdateSongInfoToolTip();
 
 protected:
 	enum BtnKey		//标识按钮的类型
@@ -61,7 +62,8 @@ protected:
 		BTN_SKIN,				//切换界面按钮
 		BTN_EQ,					//音效设定按钮
 		BTN_SETTING,			//设置按钮
-		BTN_MINI				//迷你模式按钮
+		BTN_MINI,				//迷你模式按钮
+		BTN_INFO				//曲目信息按钮
 	};
 
 protected:
@@ -85,6 +87,7 @@ private:
 	void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
 	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
 	void SetRepeatModeToolTipText();
+	void SetSongInfoToolTipText();
 
 protected:
 	CDC* m_pDC;
@@ -98,6 +101,7 @@ protected:
 	CToolTipCtrl* m_tool_tip = nullptr;
 
 	CString m_repeat_mode_tip;
+	CString m_info_tip;
 
 	int m_lyric_text_height;
 	UIData& m_ui_data;

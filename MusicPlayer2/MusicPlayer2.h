@@ -152,6 +152,7 @@ public:
 	IconRes m_play_icon;
 	IconRes m_pause_icon;
 	IconRes m_next_icon;
+	IconRes m_info_icon;
 
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
