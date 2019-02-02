@@ -195,6 +195,9 @@
     <Filter Include="派生的控件类\ListBoxEnhanced">
       <UniqueIdentifier>{e486ee63-eb5c-4174-b5d4-937609fd7070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\AboutDlg">
+      <UniqueIdentifier>{8652e0f5-2b28-4c73-bde8-b32dc1e3332c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -412,6 +415,9 @@
     <ClInclude Include="CPlayerUIHelper.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>对话框类\AboutDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -608,6 +614,9 @@
     </ClCompile>
     <ClCompile Include="CPlayerUIHelper.cpp">
       <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>对话框类\AboutDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

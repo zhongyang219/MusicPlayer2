@@ -9,121 +9,12 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 #include "SupportedFormatDlg.h"
+#include "AboutDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
-// 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-
-class CAboutDlg : public CDialog
-{
-public:
-	CAboutDlg();
-
-// 对话框数据
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
-#endif
-
-protected:
-	CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
-
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-
-// 实现
-protected:
-	DECLARE_MESSAGE_MAP()
-public:
-	virtual BOOL OnInitDialog();
-	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult);
-};
-
-CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
-	ON_NOTIFY(NM_CLICK, IDC_SYSLINK2, &CAboutDlg::OnNMClickSyslink2)
-	ON_NOTIFY(NM_CLICK, IDC_GITHUB_SYSLINK, &CAboutDlg::OnNMClickGithubSyslink)
-END_MESSAGE_MAP()
-
-BOOL CAboutDlg::OnInitDialog()
-{
-	CDialog::OnInitDialog();
-
-	// TODO:  在此添加额外的初始化
-
-	CString version_info;
-	GetDlgItemText(IDC_STATIC_VERSION, version_info);
-	version_info.Replace(_T("<version>"), VERSION);
-#ifdef COMPILE_IN_WIN_XP
-	version_info += _T(" (For WinXP)");
-#endif // COMPILE_FOR_WINXP
-	SetDlgItemText(IDC_STATIC_VERSION, version_info);
-
-	//设置最后编译日期
-	CString temp_str;
-	GetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
-	temp_str.Replace(_T("<compile_date>"), COMPILE_DATE);
-	SetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
-
-	m_tool_tip.Create(this);
-	m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), CCommon::LoadText(IDS_SEND_EMAIL_TO_ATHOUR,_T("\r\nmailto:zhongyang219@hotmail.com")));
-	m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), CCommon::LoadText(IDS_GOTO_GITHUB, _T("\r\nhttps://github.com/zhongyang219/MusicPlayer2")));
-	m_tool_tip.SetDelayTime(300);	//设置延迟
-	m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
-
-	//if (theApp.m_is_windows10)
-	//	SetDlgItemText(IDC_DEBUG_INFO_STATIC, _T("Windows10"));
-	//else
-	//	SetDlgItemText(IDC_DEBUG_INFO_STATIC, _T("Not Windows10"));
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // 异常: OCX 属性页应返回 FALSE
-}
-
-void CAboutDlg::OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//点击了“联系作者”
-	ShellExecute(NULL, _T("open"), _T("mailto:zhongyang219@hotmail.com"), NULL, NULL, SW_SHOW);	//打开超链接
-	*pResult = 0;
-}
-
-void CAboutDlg::OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//点击了“检查更新”
-	theApp.CheckUpdate(true);
-	*pResult = 0;
-}
-
-void CAboutDlg::OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	// TODO: 在此添加控件通知处理程序代码
-	ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);	//打开超链接
-	*pResult = 0;
-}
-
-BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
-{
-	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_MOUSEMOVE)
-		m_tool_tip.RelayEvent(pMsg);
-
-	return CDialog::PreTranslateMessage(pMsg);
-}
 
 
 // CMusicPlayerDlg 对话框
@@ -498,21 +389,14 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	{
 		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
 			cx / 2 - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
-		width0 = theApp.DPI(40);
-		width2 = theApp.DPI(50);
-		width1 = cx / 2 - width0 - width2 - theApp.DPI(21) - 2 * m_pLayout->margin;
 	}
 	else
 	{
 		m_playlist_list.MoveWindow(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height,
 			cx - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->info_height - m_pLayout->progress_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - m_pLayout->margin);
-		width0 = theApp.DPI(40);
-		width2 = theApp.DPI(50);
-		width1 = cx - width0 - width2 - theApp.DPI(21) - 2 * m_pLayout->margin;
 	}
-	m_playlist_list.SetColumnWidth(0, width0);
-	m_playlist_list.SetColumnWidth(1, width1);
-	m_playlist_list.SetColumnWidth(2, width2);
+	m_playlist_list.AdjustColumnWidth();
+
 	//设置“当前路径”static控件大小
 	CRect rect_static;
 	m_path_static.GetWindowRect(rect_static);
@@ -908,9 +792,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-
-	//获取当前系统DPI设置
-	theApp.GetDPIFromWindow(this);
 
 	//载入图标资源
 	theApp.LoadIconResource();

@@ -149,10 +149,11 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 void CListCtrlEx::PreSubclassWindow()
 {
 	// TODO: 在此添加专用代码和/或调用基类
+	CListCtrl::PreSubclassWindow();
+
 	SetBkColor(m_background_color);
 	//SetHightItem(-1);
-
-	CListCtrl::PreSubclassWindow();
+	SetRowHeight(theApp.DPI(22));
 }
 
 

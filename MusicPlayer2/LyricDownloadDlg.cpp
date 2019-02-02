@@ -156,7 +156,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	width0 = rect.Width() / 10;
 	width1 = rect.Width() * 3 / 10;
 	width2 = rect.Width() * 2 / 10;
-	width3 = rect.Width() - theApp.DPI(21) - width0 - width1 - width2;
+	width3 = rect.Width() - theApp.DPI(20) - 1 - width0 - width1 - width2;
 
 	m_down_list_ctrl.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	m_down_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//²åÈëµÚ1ÁÐ

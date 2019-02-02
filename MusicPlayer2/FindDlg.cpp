@@ -292,7 +292,7 @@ BOOL CFindDlg::OnInitDialog()
 	CRect rect;
 	m_find_result_list.GetClientRect(rect);
 	m_find_result_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	int list_width{ rect.Width() - theApp.DPI(21) };		//列表控件宽度减去留给垂直滚动条的宽度余量
+	int list_width{ rect.Width() - theApp.DPI(20) - 1 };		//列表控件宽度减去留给垂直滚动条的宽度余量
 	int width0, width1, width2;
 	width0 = theApp.DPI(40);
 	width2 = (list_width - width0) / 5;
@@ -424,7 +424,7 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 		//调整列表中项目的宽度
 		CRect rect;
 		m_find_result_list.GetWindowRect(rect);
-		int list_width{ rect.Width() - theApp.DPI(21) };		//列表控件宽度减去留给垂直滚动条的宽度余量
+		int list_width{ rect.Width() - theApp.DPI(20) - 1 };		//列表控件宽度减去留给垂直滚动条的宽度余量
 		int width0, width1, width2;
 		width0 = theApp.DPI(40);
 		width2 = (list_width - width0) / 5;

@@ -53,11 +53,11 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 
 	//初始化列表
 	//m_format_list.SetColor(theApp.m_app_setting_data.theme_color);
-	m_format_list.GetClientRect(rect);
+	m_format_list.GetWindowRect(rect);
 	int width0, width1, width2;
 	width0 = theApp.DPI(100);
 	width1 = rect.Width() / 3;
-	width2 = rect.Width() - width1 - width0 - theApp.DPI(20);
+	width2 = rect.Width() - width1 - width0 - theApp.DPI(20) - 1;
 
 	m_format_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	m_format_list.InsertColumn(0, CCommon::LoadText(IDS_PLUGIN_FILE_NAME), LVCFMT_LEFT, width0);		//插入第1列

@@ -38,6 +38,9 @@ protected:
 	vector<int> m_search_result;					//储存快速搜索结果的歌曲序号
 	bool m_searched{ false };
 
+protected:
+	void CalculateColumeWidth(vector<int>& width);
+
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 

@@ -211,8 +211,6 @@ BOOL CSetPathDlg::OnInitDialog()
 	m_path_list.InsertColumn(4, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[4]);
 	m_path_list.InsertColumn(5, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[5]);
 
-	m_path_list.SetRowHeight(theApp.DPI(22));
-
 	ShowPathList();
 	m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
 

@@ -146,16 +146,11 @@ void CPlayListCtrl::GetItemSelectedSearched(vector<int>& item_selected)
 
 void CPlayListCtrl::AdjustColumnWidth()
 {
-	int width0, width1, width2;
-	width0 = theApp.DPI(40);
-	width2 = theApp.DPI(50);
-	CRect rect;
-	GetWindowRect(rect);
-	width1 = rect.Width() - width0 - width2 - theApp.DPI(21);
+	vector<int> width;
+	CalculateColumeWidth(width);
 
-	SetColumnWidth(0, width0);
-	SetColumnWidth(1, width1);
-	SetColumnWidth(2, width2);
+	for (size_t i{}; i<width.size(); i++)
+		SetColumnWidth(i, width[i]);
 }
 
 
@@ -169,6 +164,17 @@ END_MESSAGE_MAP()
 
 
 // CPlayListCtrl 消息处理程序
+
+void CPlayListCtrl::CalculateColumeWidth(vector<int>& width)
+{
+	width.resize(3);
+
+	width[0] = theApp.DPI(40);
+	width[2] = theApp.DPI(50);
+	CRect rect;
+	GetWindowRect(rect);
+	width[1] = rect.Width() - width[0] - width[2] - theApp.DPI(20) - 1;
+}
 
 void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 {
@@ -267,25 +273,22 @@ void CPlayListCtrl::PreSubclassWindow()
 	//HDC hDC = dc.GetSafeHdc();
 	//m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 
+	CListCtrlEx::PreSubclassWindow();
+
 	//将提示信息设为置顶
 	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	//初始化播放列表
 	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-	int width0, width1, width2;
-	width0 = theApp.DPI(40);
-	width2 = theApp.DPI(50);
-	CRect rect;
-	GetWindowRect(rect);
-	width1 = rect.Width() - width0 - width2 - theApp.DPI(21);
-	InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第1列
-	InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, width1);		//插入第2列
-	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width2);		//插入第3列
+	vector<int> width;
+	CalculateColumeWidth(width);
+	InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);		//插入第1列
+	InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, width[1]);		//插入第2列
+	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width[2]);		//插入第3列
 	EnableTip();
 
 	SetRowHeight(theApp.DPI(24));
 
-	CListCtrlEx::PreSubclassWindow();
 }
 
 
