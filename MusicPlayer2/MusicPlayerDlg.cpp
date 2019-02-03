@@ -165,6 +165,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_MINIMODE_RESTORE, &CMusicPlayerDlg::OnMinimodeRestore)
 	ON_WM_APPCOMMAND()
 	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHOW_PLAYLIST, &CMusicPlayerDlg::OnShowPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -180,6 +181,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"transparency", theApp.m_app_setting_data.window_transparency);
 	ini.WriteBool(L"config", L"narrow_mode", m_ui_data.m_narrow_mode);
 	ini.WriteBool(L"config", L"show_translate", m_ui_data.show_translate);
+	ini.WriteBool(L"config", L"show_playlist", m_ui_data.show_playlist);
 
 	ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
 	ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -276,6 +278,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.window_transparency = ini.GetInt(_T("config"), _T("transparency"), 100);
 	m_ui_data.m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
 	m_ui_data.show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
+	m_ui_data.show_playlist = ini.GetBool(_T("config"), _T("show_playlist"), true);
 
 	theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(_T("config"), _T("theme_color"), 16760187);
 	theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(_T("config"), _T("theme_color_follow_system"), 1);
@@ -545,6 +548,16 @@ void CMusicPlayerDlg::SwitchTrack()
 void CMusicPlayerDlg::ShowTime()
 {
 	m_time_static.SetWindowText(CPlayer::GetInstance().GetTimeString().c_str());
+}
+
+void CMusicPlayerDlg::SetPlaylistVisible()
+{
+	int cmdShow = (m_ui_data.show_playlist ? SW_SHOW : SW_HIDE);
+	m_playlist_list.ShowWindow(cmdShow);
+	m_path_static.ShowWindow(cmdShow);
+	m_path_edit.ShowWindow(cmdShow);
+	m_search_edit.ShowWindow(cmdShow);
+	m_clear_search_button.ShowWindow(cmdShow);
 }
 
 void CMusicPlayerDlg::UpdateProgress()
@@ -1039,6 +1052,8 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		if (m_pLayout->width_threshold != 0)
 		{
 			m_ui_data.m_narrow_mode = (cx < m_pLayout->width_threshold);
+			//if (!m_ui_data.show_playlist)
+			//	m_ui_data.m_narrow_mode = false;
 		}
 		if (m_playlist_list.m_hWnd && theApp.m_dpi)
 		{
@@ -1096,6 +1111,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		SetPlaylistSize(rect.Width(), rect.Height());		//调整播放列表的大小和位置
 		m_path_static.Invalidate();
 		SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
+		SetPlaylistVisible();
 
 		if (m_cmdLine.empty())		//没有有通过命令行打开文件
 		{
@@ -1747,6 +1763,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 		pMenu->EnableMenuItem(ID_LYRIC_BATCH_DOWNLOAD, MF_BYCOMMAND | MF_ENABLED);
 	}
 
+	pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
 
 	//设置播放列表菜单中排序方式的单选标记
 	switch (CPlayer::GetInstance().m_sort_mode)
@@ -3179,3 +3196,16 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 	CDialog::OnAppCommand(pWnd, nCmd, nDevice, nKey);
 }
 
+
+
+void CMusicPlayerDlg::OnShowPlaylist()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_pUI->ClearInfo();
+	m_ui_data.show_playlist = !m_ui_data.show_playlist;
+
+	DrawInfo(true);
+
+	OnSize(SIZE_RESTORED, m_ui_data.client_width, m_ui_data.client_height);
+	SetPlaylistVisible();
+}

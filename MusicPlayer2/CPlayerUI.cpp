@@ -217,7 +217,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	//显示歌词
 	m_draw.SetFont(&m_ui_data.lyric_font);
 	CRect lyric_rect;
-	if (m_ui_data.m_narrow_mode)
+	if (DrawNarrowMode())
 	{
 		lyric_rect = other_info_rect;
 		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin);
@@ -347,7 +347,7 @@ void CPlayerUI::RButtonUp(CPoint point)
 
 	//计算显示信息和显示歌词的区域
 	CRect info_rect{ m_draw_rect }, lyric_rect{ m_draw_rect };
-	if (!m_ui_data.m_narrow_mode)
+	if (!DrawNarrowMode())
 	{
 		int height = m_pLayout->info_height2 - 3 * m_pLayout->margin;
 		info_rect.bottom = info_rect.top + height;
@@ -443,7 +443,7 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy)
 CRect CPlayerUI::GetThumbnailClipArea()
 {
 	CRect info_rect;
-	if (!m_ui_data.m_narrow_mode)
+	if (!DrawNarrowMode())
 		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
 	else
 		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };

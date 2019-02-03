@@ -55,7 +55,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		m_draw.FillRect(draw_rect, m_colors.color_back);
 
 
-	if (!m_ui_data.m_narrow_mode)
+	if (!DrawNarrowMode())
 	{
 		wchar_t buff[64];
 
@@ -386,7 +386,7 @@ void CPlayerUI2::LButtonUp(CPoint point)
 CRect CPlayerUI2::GetThumbnailClipArea()
 {
 	CRect clip_area_rect;
-	if (!m_ui_data.m_narrow_mode)
+	if (!DrawNarrowMode())
 	{
 		clip_area_rect = m_draw_data.cover_rect;
 		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20));

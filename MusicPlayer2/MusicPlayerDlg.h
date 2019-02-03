@@ -154,6 +154,7 @@ protected:
 	void SetPlayListColor();
 	void SwitchTrack();		//当切换正在播放的歌曲时的处理
 	void ShowTime();		//显示播放时间
+	void SetPlaylistVisible();
 
 	void UpdateProgress();			//更新进度条的进度
 	void UpdateTaskBarProgress();	//更新任务栏按钮上的进度
@@ -303,4 +304,5 @@ public:
 	afx_msg void OnMinimodeRestore();
 	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnShowPlaylist();
 };

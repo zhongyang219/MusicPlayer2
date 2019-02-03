@@ -18,6 +18,7 @@ public:
 
 	virtual void Init(CDC* pDC) = 0;
 	virtual void DrawInfo(bool reset = false) = 0;
+	virtual void ClearInfo() = 0;
 
 	virtual void LButtonDown(CPoint point) = 0;
 	virtual void RButtonUp(CPoint point) = 0;

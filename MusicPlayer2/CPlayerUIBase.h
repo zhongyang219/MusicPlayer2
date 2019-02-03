@@ -27,6 +27,7 @@ public:
 		CFont lyric_translate_font;			//歌词翻译的字体
 		bool show_translate{ true };		//歌词是否显示翻译
 		bool m_narrow_mode;					//窄界面模式
+		bool show_playlist{true};
 
 		int client_width;					//窗口客户区宽度
 		int client_height;					//窗口客户区高度
@@ -42,6 +43,7 @@ public:
 public:
 	virtual void Init(CDC* pDC) override;
 	virtual void DrawInfo(bool reset = false) override;
+	virtual void ClearInfo() override;
 
 	virtual void LButtonDown(CPoint point) override;
 	virtual void RButtonUp(CPoint point) override;
@@ -83,6 +85,8 @@ protected:
 
 	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
+
+	bool DrawNarrowMode();			//是否使用窄界面模式绘图
 
 private:
 	void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);

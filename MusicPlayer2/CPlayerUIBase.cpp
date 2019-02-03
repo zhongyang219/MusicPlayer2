@@ -35,6 +35,12 @@ void CPlayerUIBase::DrawInfo(bool reset)
 	m_first_draw = false;
 }
 
+void CPlayerUIBase::ClearInfo()
+{
+	PreDrawInfo();
+	m_pDC->FillSolidRect(m_draw_rect, GetSysColor(COLOR_BTNFACE));
+}
+
 void CPlayerUIBase::LButtonDown(CPoint point)
 {
 	for (auto& btn : m_buttons)
@@ -135,8 +141,16 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 		{
 			//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
 			redraw_rect = m_draw_rect;
-			redraw_rect.left = cx / 2 - m_pLayout->margin;
-			redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
+			if (m_ui_data.show_playlist)
+			{
+				redraw_rect.left = cx / 2 - m_pLayout->margin;
+				redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
+			}
+			else
+			{
+				redraw_rect.left = m_draw_rect.right - m_pLayout->margin;
+				redraw_rect.right = m_draw_rect.right + m_pLayout->margin;
+			}
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
 		if (cy < m_ui_data.client_height)	//如果界面高度变小了
@@ -148,13 +162,27 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
 	}
-	else if (m_ui_data.m_narrow_mode && cx < m_ui_data.client_width)	//在窄界面模式下，如果宽度变窄了
+	else if (m_ui_data.m_narrow_mode)	//在窄界面模式下
 	{
-		//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-		redraw_rect = m_draw_rect;
-		redraw_rect.left = cx - m_pLayout->margin;
-		redraw_rect.right = cx;
-		m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+		if (cx < m_ui_data.client_width)		//如果宽度变窄了
+		{
+			//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
+			redraw_rect = m_draw_rect;
+			redraw_rect.left = cx - m_pLayout->margin;
+			redraw_rect.right = cx;
+			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+		}
+		if (cy < m_ui_data.client_height)	//如果界面高度变小了
+		{
+			if (!m_ui_data.show_playlist)
+			{
+				//重新将绘图区域下方区域的矩形区域填充为对话框背景色
+				redraw_rect = m_draw_rect;
+				redraw_rect.top = cy - m_pLayout->margin;
+				redraw_rect.bottom = cy;
+				m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+			}
+		}
 	}
 }
 
@@ -191,13 +219,29 @@ void CPlayerUIBase::SetDrawRect()
 {
 	if (!m_ui_data.m_narrow_mode)
 	{
-		m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin},
-		CPoint{m_ui_data.client_width / 2 - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+		if (m_ui_data.show_playlist)
+		{
+			m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin},
+		   CPoint{m_ui_data.client_width / 2 - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+		}
+		else
+		{
+			m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin},
+		    CPoint{m_ui_data.client_width - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+		}
 	}
 	else
 	{
-		m_draw_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height},
-		CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
+		if (m_ui_data.show_playlist)
+		{
+			m_draw_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height},
+			CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
+		}
+		else
+		{
+			m_draw_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height},
+			CPoint{m_ui_data.client_width - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+		}
 	}
 }
 
@@ -690,6 +734,14 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 	//CString strTmp;
 	//strTmp.Format(_T("%d kbps"), songInfo.bitrate);
 	//m_info_tip += strTmp;
+}
+
+bool CPlayerUIBase::DrawNarrowMode()
+{
+	if (!m_ui_data.show_playlist)
+		return false;
+	else
+		return m_ui_data.m_narrow_mode;
 }
 
 void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
