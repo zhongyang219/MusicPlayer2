@@ -57,6 +57,11 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 	if (!DrawNarrowMode())
 	{
+		bool right_lyric = (!m_ui_data.m_narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > theApp.DPI(600);
+		CRect info_rect{ draw_rect };
+		if (right_lyric)
+			info_rect.right = info_rect.left + info_rect.Width() / 2;
+
 		wchar_t buff[64];
 
 		//绘制播放状态
@@ -87,8 +92,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 		m_draw.DrawScrollText(rc_tmp, buff, m_colors.color_text, theApp.DPI(1.5), false, scroll_info2, reset);
 
 		//计算专辑封面的位置
-		int bottom_height = static_cast<int>(draw_rect.Height() * 0.4);
-		CRect cover_frame_rect{ CPoint(0, text_height * 2), CSize(draw_rect.Width(), draw_rect.Height() - text_height * 2 - bottom_height) };
+		int bottom_height = static_cast<int>(info_rect.Height() * 0.4);
+		CRect cover_frame_rect{ CPoint(0, text_height * 2), CSize(info_rect.Width(), info_rect.Height() - text_height * 2 - bottom_height) };
 		int cover_side = min(cover_frame_rect.Width(), cover_frame_rect.Height());
 		CPoint start_point;
 		start_point.x = cover_frame_rect.left + (cover_frame_rect.Width() - cover_side) / 2;
@@ -132,23 +137,23 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制频谱分析
 		CRect rc_spectrum_area;
-		rc_spectrum_area.MoveToXY(m_pLayout->margin, draw_rect.bottom - bottom_height + text_height2);
-		rc_spectrum_area.right = draw_rect.right - m_pLayout->margin;
+		rc_spectrum_area.MoveToXY(m_pLayout->margin, info_rect.bottom - bottom_height + text_height2);
+		rc_spectrum_area.right = info_rect.right - m_pLayout->margin;
 
 		if (theApp.m_app_setting_data.show_spectrum)
 		{
-			int spectrum_height = max(text_height2 + static_cast<int>(draw_rect.Height() * 0.1), draw_rect.bottom - rc_spectrum_area.top - theApp.DPI(128));
+			int spectrum_height = max(text_height2 + static_cast<int>(info_rect.Height() * 0.1), info_rect.bottom - rc_spectrum_area.top - theApp.DPI(128));
 
 			rc_spectrum_area.bottom = rc_spectrum_area.top + spectrum_height;
 			m_draw.SetDrawArea(m_draw.GetDC(), rc_spectrum_area);
-			rc_spectrum_area.left += static_cast<int>(draw_rect.Width()*0.09);
-			rc_spectrum_area.right -= static_cast<int>(draw_rect.Width()*0.05);
+			rc_spectrum_area.left += static_cast<int>(info_rect.Width()*0.09);
+			rc_spectrum_area.right -= static_cast<int>(info_rect.Width()*0.05);
 
 			CRect rc_spectrum_top = rc_spectrum_area;
 			rc_spectrum_top.bottom = rc_spectrum_area.top + (rc_spectrum_area.Height() * 2 / 3);
 
 			const int ROWS = 64;		//要显示的频谱柱形的数量
-			int gap_width{ draw_rect.Width()/200 };		//频谱柱形间隙宽度
+			int gap_width{ info_rect.Width()/200 };		//频谱柱形间隙宽度
 			CRect rects[ROWS];
 			int width = (rc_spectrum_top.Width() - (ROWS - 1)*gap_width) / (ROWS - 1);
 			rects[0] = rc_spectrum_top;
@@ -196,8 +201,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 
 		//绘制标题和艺术家
-		rc_tmp.MoveToXY(m_pLayout->margin, draw_rect.bottom - bottom_height);
-		rc_tmp.right = draw_rect.right - m_pLayout->margin;
+		rc_tmp.MoveToXY(m_pLayout->margin, info_rect.bottom - bottom_height);
+		rc_tmp.right = info_rect.right - m_pLayout->margin;
 		rc_tmp.bottom = rc_tmp.top + text_height2;
 		m_draw.SetFont(&m_title_font);
 		static CDrawCommon::ScrollInfo scroll_info_title;
@@ -211,6 +216,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制控制条
 		rc_tmp.MoveToY(rc_spectrum_area.bottom + theApp.DPI(4));
 		rc_tmp.bottom = rc_tmp.top + theApp.DPI(24);
+		rc_tmp.right = draw_rect.right - m_pLayout->margin;
 		DrawControlBar(draw_background, rc_tmp, true, &m_ui_data);
 
 		m_draw_data.info_rect = m_draw_rect;
@@ -221,10 +227,20 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制歌词
 		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 
-		rc_tmp.MoveToX(m_pLayout->margin);
-		rc_tmp.MoveToY(rc_tmp.bottom + m_pLayout->margin);
-		rc_tmp.right = draw_rect.right - m_pLayout->margin;
-		rc_tmp.bottom = draw_rect.bottom - m_pLayout->margin;
+		if (!right_lyric)
+		{
+			rc_tmp.MoveToX(m_pLayout->margin);
+			rc_tmp.MoveToY(rc_tmp.bottom + m_pLayout->margin);
+			rc_tmp.right = info_rect.right - m_pLayout->margin;
+			rc_tmp.bottom = info_rect.bottom - m_pLayout->margin;
+		}
+		else
+		{
+			rc_tmp.MoveToX(info_rect.right);
+			rc_tmp.MoveToY(2 * text_height2 + m_pLayout->margin);
+			rc_tmp.right = draw_rect.right - m_pLayout->margin;
+			rc_tmp.bottom = rc_spectrum_area.bottom;
+		}
 
 		if (theApp.m_app_setting_data.lyric_background)
 		{
