@@ -32,7 +32,7 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 	else
 		tag_index += 2;
 
-	Time time_tag{ theApp.m_player.GetCurrentPosition() };		//获取当前播放时间
+	Time time_tag{ CPlayer::GetInstance().GetCurrentPosition() };		//获取当前播放时间
 	wchar_t time_tag_str[16];
 	swprintf_s(time_tag_str, L"[%.2d:%.2d.%.2d]", time_tag.min, time_tag.sec, time_tag.msec / 10);
 
@@ -86,16 +86,16 @@ bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 {
 	if (path[0] == L'\0')		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
 	{
-		const SongInfo& song{ theApp.m_player.GetCurrentSongInfo() };
+		const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
 		if (!song.is_cue)
 		{
-			m_lyric_path = theApp.m_player.GetCurrentDir() + theApp.m_player.GetFileName();
+			m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetFileName();
 			int index = m_lyric_path.rfind(L'.');
 			m_lyric_path = m_lyric_path.substr(0, index);
 		}
 		else
 		{
-			m_lyric_path = theApp.m_player.GetCurrentDir() + song.artist + L" - " + song.title;
+			m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + song.artist + L" - " + song.title;
 		}
 		m_lyric_path += L".lrc";
 		m_original_lyric_path = m_lyric_path;
@@ -201,12 +201,12 @@ BOOL CLyricEditDlg::OnInitDialog()
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 	//获取歌词信息
-	//m_lyric_string = theApp.m_player.m_Lyrics.GetLyricsString();
-	//m_lyric_path = theApp.m_player.m_Lyrics.GetPathName();
-	OpenLyric(theApp.m_player.m_Lyrics.GetPathName().c_str());
+	//m_lyric_string = CPlayer::GetInstance().m_Lyrics.GetLyricsString();
+	//m_lyric_path = CPlayer::GetInstance().m_Lyrics.GetPathName();
+	OpenLyric(CPlayer::GetInstance().m_Lyrics.GetPathName().c_str());
 	m_original_lyric_path = m_lyric_path;
-	//m_code_type = theApp.m_player.m_Lyrics.GetCodeType();
-	m_current_song_name = theApp.m_player.GetFileName();
+	//m_code_type = CPlayer::GetInstance().m_Lyrics.GetCodeType();
+	m_current_song_name = CPlayer::GetInstance().GetFileName();
 
 	//初始化编辑区字体
 	m_font.CreatePointFont(100, CCommon::LoadText(IDS_DEFAULT_FONT));
@@ -327,8 +327,8 @@ void CLyricEditDlg::OnDestroy()
 	// TODO: 在此处添加消息处理程序代码
 	CDialog::OnDestroy();
 	m_dlg_exist = false;
-	if (m_current_song_name == theApp.m_player.GetFileName() && m_lyric_saved)		//关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
-		theApp.m_player.IniLyrics(m_original_lyric_path);
+	if (m_current_song_name == CPlayer::GetInstance().GetFileName() && m_lyric_saved)		//关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
+		CPlayer::GetInstance().IniLyrics(m_original_lyric_path);
 }
 
 

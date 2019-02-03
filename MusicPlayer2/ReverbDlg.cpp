@@ -65,18 +65,18 @@ BOOL CReverbDlg::OnInitDialog()
 
 	//初始化滑动条
 	m_reverb_mix_slider.SetRange(0, 100);
-	m_reverb_mix_slider.SetPos(theApp.m_player.GetReverbMix());
+	m_reverb_mix_slider.SetPos(CPlayer::GetInstance().GetReverbMix());
 	m_reverb_time_slider.SetRange(1, 300);
-	m_reverb_time_slider.SetPos(theApp.m_player.GetReverbTime());
+	m_reverb_time_slider.SetPos(CPlayer::GetInstance().GetReverbTime());
 
 	//初始化静态控件的文本
 	UpdateStaticText(m_reverb_mix_slider.GetPos(), m_reverb_time_slider.GetPos());
 
 	//初始化混响开关复选框
-	m_enable_reverb_chk.SetCheck(theApp.m_player.GetReverbEnable());
+	m_enable_reverb_chk.SetCheck(CPlayer::GetInstance().GetReverbEnable());
 
 	//初始化控件的启用状态
-	EnableControls(theApp.m_player.GetReverbEnable());
+	EnableControls(CPlayer::GetInstance().GetReverbEnable());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -90,7 +90,7 @@ void CReverbDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	{
 		int mix{ m_reverb_mix_slider.GetPos() };
 		int time{ m_reverb_time_slider.GetPos() };
-		theApp.m_player.SetReverb(mix, time);
+		CPlayer::GetInstance().SetReverb(mix, time);
 		UpdateStaticText(mix, time);
 	}
 
@@ -116,6 +116,6 @@ void CReverbDlg::OnBnClickedEnableReverbCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	bool enable = (m_enable_reverb_chk.GetCheck() != 0);
-	theApp.m_player.EnableReverb(enable);
+	CPlayer::GetInstance().EnableReverb(enable);
 	EnableControls(enable);
 }

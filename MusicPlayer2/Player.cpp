@@ -3,9 +3,15 @@
 #include "MusicPlayer2.h"
 
 CBASSMidiLibrary CPlayer::m_bass_midi_lib;
+CPlayer CPlayer::m_instance;
 
 CPlayer::CPlayer()
 {
+}
+
+CPlayer & CPlayer::GetInstance()
+{
+	return m_instance;
 }
 
 CPlayer::~CPlayer()
@@ -474,29 +480,29 @@ void CPlayer::MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void * user
 {
 	if (!CPlayer::m_bass_midi_lib.IsSuccessed())
 		return;
-	theApp.m_player.m_midi_no_lyric = false;
+	CPlayer::GetInstance().m_midi_no_lyric = false;
 	BASS_MIDI_MARK mark;
 	CPlayer::m_bass_midi_lib.BASS_MIDI_StreamGetMark(channel, (DWORD)user, data, &mark); // get the lyric/text
 	if (mark.text[0] == '@') return; // skip info
 	if (mark.text[0] == '\\')
 	{ // clear display
-		theApp.m_player.m_midi_lyric.clear();
+		CPlayer::GetInstance().m_midi_lyric.clear();
 	}
 	else if (mark.text[0] == '/')
 	{
-		theApp.m_player.m_midi_lyric += L"\r\n";
+		CPlayer::GetInstance().m_midi_lyric += L"\r\n";
 		const char* text = mark.text + 1;
-		theApp.m_player.m_midi_lyric += CCommon::StrToUnicode(text, CodeType::ANSI);
+		CPlayer::GetInstance().m_midi_lyric += CCommon::StrToUnicode(text, CodeType::ANSI);
 	}
 	else
 	{
-		theApp.m_player.m_midi_lyric += CCommon::StrToUnicode(mark.text, CodeType::ANSI);
+		CPlayer::GetInstance().m_midi_lyric += CCommon::StrToUnicode(mark.text, CodeType::ANSI);
 	}
 }
 
 void CPlayer::MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void * user)
 {
-	theApp.m_player.m_midi_lyric.clear();
+	CPlayer::GetInstance().m_midi_lyric.clear();
 }
 
 void CPlayer::MusicControl(Command command, int volume_step)

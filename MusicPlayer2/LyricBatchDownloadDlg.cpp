@@ -240,7 +240,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		else
 			file_name = pInfo->playlist->at(i).artist + L" - " + pInfo->playlist->at(i).title + L".lrc";
 		if (pInfo->save_to_song_folder)
-			lyric_path = theApp.m_player.GetCurrentDir() + file_name;
+			lyric_path = CPlayer::GetInstance().GetCurrentDir() + file_name;
 		else
 			lyric_path = theApp.m_lyric_setting_data.lyric_path + file_name;
 		size_t index = lyric_path.rfind(L'.');		//查找文件名最后一个点
@@ -350,8 +350,8 @@ afx_msg LRESULT CLyricBatchDownloadDlg::OnBatchDownloadComplate(WPARAM wParam, L
 {
 	SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_DOWNLOAD_COMPLETE));
 	//下载完成后重新载入歌词
-	theApp.m_player.SearchLyrics();
-	theApp.m_player.IniLyrics();
+	CPlayer::GetInstance().SearchLyrics();
+	CPlayer::GetInstance().IniLyrics();
 	EnableControls(true);		//启用控件
 	return 0;
 }

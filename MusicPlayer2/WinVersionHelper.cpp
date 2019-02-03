@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "WinVersionHelper.h"
 
-
-CWinVersionHelper::CWinVersionHelper()
+WinVersion::WinVersion()
 {
 	DWORD dwMajorVer{}, dwMinorVer{}, dwBuildNumber{};
 	HMODULE hModNtdll{};
@@ -24,67 +23,74 @@ CWinVersionHelper::CWinVersionHelper()
 	m_build_number = dwBuildNumber;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+WinVersion CWinVersionHelper::m_version;
+
+CWinVersionHelper::CWinVersionHelper()
+{
+}
+
 
 CWinVersionHelper::~CWinVersionHelper()
 {
 }
 
-bool CWinVersionHelper::IsWindows10FallCreatorOrLater() const
+bool CWinVersionHelper::IsWindows10FallCreatorOrLater()
 {
-	if (m_major_version > 10)
+	if (m_version.m_major_version > 10)
 		return true;
-	else if (m_major_version == 10 && m_minor_version > 0)
+	else if (m_version.m_major_version == 10 && m_version.m_minor_version > 0)
 		return true;
-	else if (m_major_version == 10 && m_minor_version == 0 && m_build_number >= 16299)
+	else if (m_version.m_major_version == 10 && m_version.m_minor_version == 0 && m_version.m_build_number >= 16299)
 		return true;
 	else return false;
 }
 
-bool CWinVersionHelper::IsWindowsVista() const
+bool CWinVersionHelper::IsWindowsVista()
 {
-	return (m_major_version == 6 && m_minor_version == 0);
+	return (m_version.m_major_version == 6 && m_version.m_minor_version == 0);
 }
 
-bool CWinVersionHelper::IsWindows7() const
+bool CWinVersionHelper::IsWindows7()
 {
-	return (m_major_version == 6 && m_minor_version == 1);
+	return (m_version.m_major_version == 6 && m_version.m_minor_version == 1);
 }
 
-bool CWinVersionHelper::IsWindows7OrLater() const
+bool CWinVersionHelper::IsWindows7OrLater()
 {
-	if (m_major_version > 6)
+	if (m_version.m_major_version > 6)
 		return true;
-	else if (m_major_version == 6 && m_minor_version >= 1)
+	else if (m_version.m_major_version == 6 && m_version.m_minor_version >= 1)
 		return false;
 	else return false;
 }
 
-bool CWinVersionHelper::IsWindows8Or8point1() const
+bool CWinVersionHelper::IsWindows8Or8point1()
 {
-	return (m_major_version == 6 && m_minor_version > 1);
+	return (m_version.m_major_version == 6 && m_version.m_minor_version > 1);
 }
 
-bool CWinVersionHelper::IsWindows8OrLater() const
+bool CWinVersionHelper::IsWindows8OrLater()
 {
-	if (m_major_version > 6)
+	if (m_version.m_major_version > 6)
 		return true;
-	else if (m_major_version == 6 && m_minor_version > 1)
+	else if (m_version.m_major_version == 6 && m_version.m_minor_version > 1)
 		return true;
 	else return false;
 }
 
-bool CWinVersionHelper::IsWindows10OrLater() const
+bool CWinVersionHelper::IsWindows10OrLater()
 {
-	return (m_major_version >= 10);
+	return (m_version.m_major_version >= 10);
 }
 
-bool CWinVersionHelper::IsWindows10Version1809OrLater() const
+bool CWinVersionHelper::IsWindows10Version1809OrLater()
 {
-	if (m_major_version > 10)
+	if (m_version.m_major_version > 10)
 		return true;
-	else if (m_major_version == 10 && m_minor_version > 0)
+	else if (m_version.m_major_version == 10 && m_version.m_minor_version > 0)
 		return true;
-	else if (m_major_version == 10 && m_minor_version == 0 && m_build_number >= 17763)
+	else if (m_version.m_major_version == 10 && m_version.m_minor_version == 0 && m_version.m_build_number >= 17763)
 		return true;
 	else return false;
 }

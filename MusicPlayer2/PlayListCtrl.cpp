@@ -63,7 +63,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 	if (!search_result)		//显示所有曲目
 	{
 		int item_num_before = GetItemCount();
-		int item_num_after = theApp.m_player.GetSongNum();
+		int item_num_after = CPlayer::GetInstance().GetSongNum();
 		//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
 		if (item_num_after < item_num_before)
 		{
@@ -80,7 +80,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 			}
 			SetItemText(i, 0, str);
 			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[i], display_format)).c_str());
-			SetItemText(i, 2, theApp.m_player.GetAllSongLength(i).time2str().c_str());
+			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(i).time2str().c_str());
 		}
 	}
 	else		//只显示搜索结果的曲目
@@ -110,7 +110,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 			}
 			SetItemText(i, 0, str);
 			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[m_search_result[i]], display_format)).c_str());
-			SetItemText(i, 2, theApp.m_player.GetAllSongLength(m_search_result[i]).time2str().c_str());
+			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(m_search_result[i]).time2str().c_str());
 		}
 	}
 }

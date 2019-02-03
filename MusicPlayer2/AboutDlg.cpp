@@ -90,8 +90,8 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 			CString info{ _T("Debug Info:\r\n") };
 			
 			CString strTmp;
-			strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), theApp.m_win_version.GetMajorVersion(), 
-				theApp.m_win_version.GetMinorVersion(), theApp.m_win_version.GetBuildNumber());
+			strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), CWinVersionHelper::GetMajorVersion(), 
+				CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
 			info += strTmp;
 			
 			strTmp.Format(_T("DPI: %d"), theApp.m_dpi);

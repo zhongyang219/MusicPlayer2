@@ -45,7 +45,7 @@ void CFindDlg::ShowFindResult()
 			m_find_result_list.SetItemText(i, 2, m_playlist[m_find_result[i]].title.c_str());
 			m_find_result_list.SetItemText(i, 3, m_playlist[m_find_result[i]].artist.c_str());
 			m_find_result_list.SetItemText(i, 4, m_playlist[m_find_result[i]].album.c_str());
-			m_find_result_list.SetItemText(i, 5, (theApp.m_player.GetCurrentDir() + m_playlist[m_find_result[i]].file_name).c_str());
+			m_find_result_list.SetItemText(i, 5, (CPlayer::GetInstance().GetCurrentDir() + m_playlist[m_find_result[i]].file_name).c_str());
 		}
 	}
 	else
@@ -461,7 +461,7 @@ void CFindDlg::OnFdOpenFileLocation()
 	if (m_find_current_playlist)
 	{
 		if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
-			file = theApp.m_player.GetCurrentDir() + m_playlist[m_find_result[m_item_selected]].file_name;
+			file = CPlayer::GetInstance().GetCurrentDir() + m_playlist[m_find_result[m_item_selected]].file_name;
 		else
 			return;
 	}

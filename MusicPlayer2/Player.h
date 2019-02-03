@@ -153,8 +153,14 @@ public:
 	void EnableReverb(bool enable);		//混响开关
 	bool GetReverbEnable() const { return m_reverb_enable; }
 
-public:
+private:
 	CPlayer();
+
+private:
+	static CPlayer m_instance;		//CPlayer类唯一的对象
+	 
+public:
+	static CPlayer& GetInstance();		//获取CPlayer类的唯一的对象
 	~CPlayer();
 	void Create();		//初始化CPlayer类
 	void Create(const vector<wstring>& files);	//初始化CPlayer类

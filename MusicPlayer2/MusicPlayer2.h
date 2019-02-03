@@ -124,8 +124,8 @@ public:
 
 	int m_dpi{};
 
-	CWinVersionHelper m_win_version;		//当前Windows的版本
-	CPlayer m_player;
+	//CWinVersionHelper m_win_version;		//当前Windows的版本
+	//CPlayer m_player;
 
 	wstring m_module_dir;		//当前程序exe文件所在目录
 	wstring m_local_dir;		//当前目录（debug模式下为.\，release模式下为exe文件所在目录）

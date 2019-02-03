@@ -103,11 +103,11 @@ BOOL CEqualizerDlg::OnInitDialog()
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		m_sliders[i].SetRange(-15, 15, TRUE);
-		m_sliders[i].SetPos(-theApp.m_player.GeEqualizer(i));
+		m_sliders[i].SetPos(-CPlayer::GetInstance().GeEqualizer(i));
 	}
 
 	//初始化均衡器开关复选框
-	m_enable_equ_check.SetCheck(theApp.m_player.GetEqualizerEnable());
+	m_enable_equ_check.SetCheck(CPlayer::GetInstance().GetEqualizerEnable());
 
 	//初始化“均衡器预设”列表
 	m_equ_style_list.AddString(CCommon::LoadText(IDS_NONE));
@@ -123,7 +123,7 @@ BOOL CEqualizerDlg::OnInitDialog()
 	m_equ_style_list.SetCurSel(m_equ_style_selected);
 
 	//初始化控件的启用禁用状态
-	EnableControls(theApp.m_player.GetEqualizerEnable());
+	EnableControls(CPlayer::GetInstance().GetEqualizerEnable());
 	
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
@@ -149,7 +149,7 @@ void CEqualizerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		if (pScrollBar->GetSafeHwnd() == m_sliders[i].GetSafeHwnd())
 		{
 			int gain{ -m_sliders[i].GetPos() };		//由于滑动条的值越往上越小，所以这里取负数
-			theApp.m_player.SetEqualizer(i, gain);		//设置通道i的增益
+			CPlayer::GetInstance().SetEqualizer(i, gain);		//设置通道i的增益
 			UpdateChannelTip(i, gain);		//更新鼠标提示
 
 			if (m_equ_style_list.GetCurSel() == 9)		//如果“均衡器预设”中选中的是自定义
@@ -188,7 +188,7 @@ void CEqualizerDlg::OnBnClickedEnableEquCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	bool enable = (m_enable_equ_check.GetCheck() != 0);
-	theApp.m_player.EnableEqualizer(enable);
+	CPlayer::GetInstance().EnableEqualizer(enable);
 	EnableControls(enable);
 }
 
@@ -204,7 +204,7 @@ afx_msg LRESULT CEqualizerDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lParam)
 			for (int i{}; i < EQU_CH_NUM; i++)
 			{
 				int gain = EQU_STYLE_TABLE[m_equ_style_selected][i];
-				theApp.m_player.SetEqualizer(i, gain);
+				CPlayer::GetInstance().SetEqualizer(i, gain);
 				m_sliders[i].SetPos(-gain);
 				UpdateChannelTip(i, gain);		//更新鼠标提示
 			}
@@ -214,7 +214,7 @@ afx_msg LRESULT CEqualizerDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lParam)
 			for (int i{}; i < EQU_CH_NUM; i++)
 			{
 				int gain = m_user_defined_gain[i];
-				theApp.m_player.SetEqualizer(i, gain);
+				CPlayer::GetInstance().SetEqualizer(i, gain);
 				m_sliders[i].SetPos(-gain);
 				UpdateChannelTip(i, gain);		//更新鼠标提示
 			}

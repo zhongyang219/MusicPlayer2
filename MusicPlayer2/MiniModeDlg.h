@@ -53,7 +53,7 @@ protected:
 
 	CDC* m_pDC;
 
-	CPlayListCtrl m_playlist_ctrl{ theApp.m_player.GetPlayList() };
+	CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
 
 	bool m_first_start{ true };
 

@@ -47,9 +47,9 @@ void CPlayerUI2::DrawInfo(bool reset)
 	//绘制背景
 	if (theApp.m_app_setting_data.album_cover_as_background)
 	{
-		if (theApp.m_player.AlbumCoverExist())
+		if (CPlayer::GetInstance().AlbumCoverExist())
 		{
-			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? theApp.m_player.GetAlbumCoverBlur() : theApp.m_player.GetAlbumCover() };
+			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
 			m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
 		}
 		else
@@ -60,7 +60,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 	}
 
 	//填充背景颜色
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		//是否需要绘制图片背景
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		//是否需要绘制图片背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -82,7 +82,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制曲目格式
 		rc_tmp.MoveToX(m_pLayout->margin);
 		rc_tmp.MoveToY(rc_tmp.bottom);
-		const BASS_CHANNELINFO channel_info{ theApp.m_player.GetChannelInfo() };
+		const BASS_CHANNELINFO channel_info{ CPlayer::GetInstance().GetChannelInfo() };
 		CString chans_str;
 		if (channel_info.chans == 1)
 			chans_str = CCommon::LoadText(IDS_MONO);
@@ -90,10 +90,10 @@ void CPlayerUI2::DrawInfo(bool reset)
 			chans_str = CCommon::LoadText(IDS_STEREO);
 		else if (channel_info.chans > 2)
 			chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), channel_info.chans);
-		if (!theApp.m_player.IsMidi())
-			swprintf_s(buff, L"%s %.1fkHz %dkbps %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
+		if (!CPlayer::GetInstance().IsMidi())
+			swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
 		else
-			swprintf_s(buff, L"%s %.1fkHz %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
+			swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
 
 		static CDrawCommon::ScrollInfo scroll_info2;
 		m_draw.DrawScrollText(rc_tmp, buff, m_colors.color_text, theApp.DPI(1.5), false, scroll_info2, reset);
@@ -119,9 +119,9 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制专辑封面
 		cover_rect.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
 		m_draw_data.cover_rect = cover_rect;
-		if (theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
+		if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 		{
-			m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
 		}
 		else
 		{
@@ -135,7 +135,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		CRect progress_rect = cover_rect;
 		progress_rect.top = cover_rect.bottom;
 		progress_rect.bottom = progress_rect.top + m_pLayout->margin / 2;
-		double progress = static_cast<double>(theApp.m_player.GetCurrentPosition()) / theApp.m_player.GetSongLength();
+		double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
 		progress_rect.right = progress_rect.left + static_cast<int>(progress * cover_rect.Width());
 		if(progress_rect.right>progress_rect.left)
 			m_draw.FillRect(progress_rect, m_colors.color_spectrum);
@@ -173,14 +173,14 @@ void CPlayerUI2::DrawInfo(bool reset)
 			}
 			for (int i{}; i < ROWS; i++)
 			{
-				float spetral_data = theApp.m_player.GetSpectralData()[i];
-				float peak_data = theApp.m_player.GetSpectralPeakData()[i];
+				float spetral_data = CPlayer::GetInstance().GetSpectralData()[i];
+				float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i];
 
 				CRect rect_tmp{ rects[i] };
 				int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
 				int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-				if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-				if (peak_height <= 0 || theApp.m_player.IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+				if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+				if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 				rect_tmp.top = rect_tmp.bottom - spetral_height;
 				if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
 				m_draw.FillRect(rect_tmp, m_colors.color_spectrum, true);
@@ -213,12 +213,12 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.bottom = rc_tmp.top + text_height2;
 		m_draw.SetFont(&m_title_font);
 		static CDrawCommon::ScrollInfo scroll_info_title;
-		m_draw.DrawScrollText(rc_tmp, theApp.m_player.GetCurrentSongInfo().title.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_title, reset);
+		m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().title.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_title, reset);
 
 		rc_tmp.MoveToY(rc_tmp.bottom);
 		m_draw.SetFont(&m_artist_font);
 		static CDrawCommon::ScrollInfo scroll_info_artist;
-		m_draw.DrawScrollText(rc_tmp, theApp.m_player.GetCurrentSongInfo().artist.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_artist, reset);
+		m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_artist, reset);
 
 		//绘制控制条
 		rc_tmp.MoveToY(rc_spectrum_area.bottom + theApp.DPI(4));
@@ -231,7 +231,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		m_draw_data.lyric_rect.top = m_draw_data.info_rect.bottom + 1;
 
 		//绘制歌词
-		bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
+		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 
 		rc_tmp.MoveToX(m_pLayout->margin);
 		rc_tmp.MoveToY(rc_tmp.bottom + m_pLayout->margin);
@@ -275,9 +275,9 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		rc_tmp.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
 		m_draw_data.cover_rect = rc_tmp;
-		if (theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
+		if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 		{
-			m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), rc_tmp.TopLeft(), rc_tmp.Size(), theApp.m_app_setting_data.album_cover_fit);
+			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rc_tmp.TopLeft(), rc_tmp.Size(), theApp.m_app_setting_data.album_cover_fit);
 		}
 		else
 		{
@@ -302,12 +302,12 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.bottom = rc_tmp.top + text_height2;
 		m_draw.SetFont(&m_title_font);
 		static CDrawCommon::ScrollInfo scroll_info_title;
-		m_draw.DrawScrollText(rc_tmp, theApp.m_player.GetCurrentSongInfo().title.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_title, reset);
+		m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().title.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_title, reset);
 
 		rc_tmp.MoveToY(rc_tmp.bottom);
 		m_draw.SetFont(&m_artist_font);
 		static CDrawCommon::ScrollInfo scroll_info_artist;
-		m_draw.DrawScrollText(rc_tmp, theApp.m_player.GetCurrentSongInfo().artist.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_artist, reset);
+		m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_artist, reset);
 
 		//绘制控件条
 		rc_tmp.MoveToY(rc_tmp.bottom + theApp.DPI(4));
@@ -315,7 +315,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		DrawControlBar(draw_background, rc_tmp, true, &m_ui_data);
 
 		//绘制歌词
-		bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
+		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 
 		rc_tmp.MoveToY(rc_tmp.bottom + m_pLayout->margin);
 		rc_tmp.bottom = draw_rect.bottom - m_pLayout->margin;

@@ -56,9 +56,9 @@ void CMiniModeUI::DrawInfo(bool reset)
 	//绘制背景
 	if (theApp.m_app_setting_data.album_cover_as_background)
 	{
-		if (theApp.m_player.AlbumCoverExist())
+		if (CPlayer::GetInstance().AlbumCoverExist())
 		{
-			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? theApp.m_player.GetAlbumCoverBlur() : theApp.m_player.GetAlbumCover() };
+			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
 			m_draw.DrawBitmap(back_image, CPoint(0, 0), draw_rect.Size(), CDrawCommon::StretchMode::FILL);
 		}
 		else
@@ -68,7 +68,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	}
 
 	//填充背景颜色
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.pDefaultBackground->IsNull()) };		//是否需要绘制图片背景
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.pDefaultBackground->IsNull()) };		//是否需要绘制图片背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -77,9 +77,9 @@ void CMiniModeUI::DrawInfo(bool reset)
 	//绘制专辑封面
 	int cover_side = m_ui_data.window_height - 2 * m_ui_data.margin;
 	CRect cover_rect{CPoint(m_ui_data.margin, m_ui_data.margin), CSize(cover_side, cover_side)};
-	if (theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
+	if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 	{
-		m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+		m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
 	}
 	else
 	{
@@ -100,7 +100,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_previous_icon.GetIcon(), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-	if(theApp.m_player.IsPlaying())
+	if(CPlayer::GetInstance().IsPlaying())
 		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_pause_icon.GetIcon(), draw_background);
 	else
 		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_play_icon.GetIcon(), draw_background);
@@ -136,15 +136,15 @@ void CMiniModeUI::DrawInfo(bool reset)
 
 	for (int i{}; i < 64; i++)
 	{
-		spectral_data[i / (64 / DATA_ROW)] += theApp.m_player.GetSpectralData()[i];
-		spectral_data_peak[i / (64 / DATA_ROW)] += theApp.m_player.GetSpectralPeakData()[i];
+		spectral_data[i / (64 / DATA_ROW)] += CPlayer::GetInstance().GetSpectralData()[i];
+		spectral_data_peak[i / (64 / DATA_ROW)] += CPlayer::GetInstance().GetSpectralPeakData()[i];
 	}
 	for (int i{}; i < DATA_ROW; i++)
 	{
 		CRect rect_tmp{ rects[i] };
 		int spetral_height = static_cast<int>(spectral_data[i] * rc_tmp.Height() / 60 * theApp.m_app_setting_data.sprctrum_height / 100);
 		int peak_height = static_cast<int>(spectral_data_peak[i] * rc_tmp.Height() / 60 * theApp.m_app_setting_data.sprctrum_height / 100);
-		if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+		if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 		rect_tmp.top = rect_tmp.bottom - spetral_height;
 		if (rect_tmp.top < 0) rect_tmp.top = 0;
 		m_draw.FillRect(rect_tmp, m_colors.color_spectrum, true);
@@ -161,11 +161,11 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(16);
 	CString str;
 	if (m_ui_data.m_show_volume)
-		str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), theApp.m_player.GetVolume());
-	else if (theApp.m_player.IsError())
+		str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
+	else if (CPlayer::GetInstance().IsError())
 		str = CCommon::LoadText(IDS_PLAY_ERROR);
 	else
-		str = theApp.m_player.GetTimeString().c_str();
+		str = CPlayer::GetInstance().GetTimeString().c_str();
 	m_draw.DrawWindowText(rc_tmp, str, m_colors.color_text, Alignment::CENTER);
 
 	//绘制进度条
@@ -184,7 +184,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	m_buttons[BTN_PROGRESS].rect = progress_rect;
 	m_buttons[BTN_PROGRESS].rect.InflateRect(0, theApp.DPI(2));
 
-	double progress = static_cast<double>(theApp.m_player.GetCurrentPosition()) / theApp.m_player.GetSongLength();
+	double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
 	progress_rect.right = progress_rect.left + static_cast<int>(progress * progress_rect.Width());
 	if (progress_rect.right > progress_rect.left)
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum);
@@ -206,23 +206,23 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));
 	rc_tmp.right = m_ui_data.widnow_width - m_ui_data.margin;
 	rc_tmp.bottom = m_ui_data.window_height;
-	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
+	if (CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric())
 	{
-		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
+		wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
 		m_draw.DrawWindowText(rc_tmp, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER);
 	}
-	else if (theApp.m_player.m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
+	else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
 	{
 		//正在播放的文件名以滚动的样式显示。如果参数要求强制刷新，则重置滚动位置
 		CDrawCommon::ScrollInfo scroll_info;
-		m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), *m_ui_data.pDisplayFormat).c_str(),
+		m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), *m_ui_data.pDisplayFormat).c_str(),
 			m_colors.color_text, theApp.DPI(1), true, scroll_info, reset);
 	}
 	else		//显示歌词
 	{
 		COLORREF color2 = (theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text);
-		wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };	//获取当歌词
-		int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
+		wstring current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0).text };	//获取当歌词
+		int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(Time(CPlayer::GetInstance().GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 			current_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 		m_draw.DrawWindowText(rc_tmp, current_lyric.c_str(), m_colors.color_text, color2, progress, true);
@@ -268,7 +268,7 @@ void CMiniModeUI::MouseMove(CPoint point)
 	if (m_buttons[BTN_PROGRESS].hover)
 	{
 		__int64 song_pos;
-		song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * theApp.m_player.GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
+		song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * CPlayer::GetInstance().GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
 		Time song_pos_time;
 		song_pos_time.int2time(static_cast<int>(song_pos));
 		CString str;
@@ -331,7 +331,7 @@ void CMiniModeUI::LButtonUp(CPoint point)
 			{
 				int ckick_pos = point.x - btn.second.rect.left;
 				double progress = static_cast<double>(ckick_pos) / btn.second.rect.Width();
-				theApp.m_player.SeekTo(progress);
+				CPlayer::GetInstance().SeekTo(progress);
 			}
 				break;
 			}
@@ -374,7 +374,7 @@ void CMiniModeUI::UpdateSongInfoTip(LPCTSTR str_tip)
 
 void CMiniModeUI::UpdatePlayPauseButtonTip()
 {
-	if (theApp.m_player.IsPlaying() && !theApp.m_player.IsError())
+	if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
 		UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PAUSE));
 	else
 		UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
@@ -444,7 +444,7 @@ void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 void CMiniModeUI::AddToolTips()
 {
 	AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
-	AddMouseToolTip(BTN_PLAY_PAUSE, theApp.m_player.IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
+	AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
 	AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
 	AddMouseToolTip(BTN_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
 	AddMouseToolTip(BTN_RETURN, CCommon::LoadText(IDS_BACK_TO_NARMAL));

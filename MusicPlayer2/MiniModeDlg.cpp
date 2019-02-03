@@ -76,23 +76,23 @@ void CMiniModeDlg::UpdateSongTipInfo()
 {
 	CString song_tip_info;
 	song_tip_info += CCommon::LoadText(IDS_NOW_PLAYING, _T(": "));
-	song_tip_info += theApp.m_player.GetFileName().c_str();
+	song_tip_info += CPlayer::GetInstance().GetFileName().c_str();
 	song_tip_info += _T("\r\n");
 	song_tip_info += CCommon::LoadText(IDS_TITLE, _T(": "));
-	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].title.c_str();
+	song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].title.c_str();
 	song_tip_info += _T("\r\n");
 	song_tip_info += CCommon::LoadText(IDS_ARTIST, _T(": "));
-	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].artist.c_str();
+	song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].artist.c_str();
 	song_tip_info += _T("\r\n");
 	song_tip_info += CCommon::LoadText(IDS_ALBUM, _T(": "));
-	song_tip_info += theApp.m_player.GetPlayList()[theApp.m_player.GetIndex()].album.c_str();
+	song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].album.c_str();
 	m_ui.UpdateSongInfoTip(song_tip_info);
 }
 
 void CMiniModeDlg::SetTitle()
 {
 	CString title;
-	title = CPlayListCtrl::GetDisplayStr(theApp.m_player.GetCurrentSongInfo(), *m_ui_data.pDisplayFormat).c_str();
+	title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), *m_ui_data.pDisplayFormat).c_str();
 	if (!title.IsEmpty())
 		title += _T(" - ");
 	title += _T("MusicPlayer2");
@@ -139,9 +139,9 @@ void CMiniModeDlg::ShowPlaylist()
 
 void CMiniModeDlg::SetPlayListColor()
 {
-	m_playlist_ctrl.SetHightItem(theApp.m_player.GetIndex());
+	m_playlist_ctrl.SetHightItem(CPlayer::GetInstance().GetIndex());
 	//m_playlist_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
-	m_playlist_ctrl.EnsureVisible(theApp.m_player.GetIndex(), FALSE);
+	m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 }
 
 void CMiniModeDlg::SetDefaultBackGround(CImage * pImage)
@@ -231,13 +231,13 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 		static int index{};
 		static wstring song_name{};
 		//如果当前播放的歌曲发生变化，就更新鼠标提示信息
-		if (index != theApp.m_player.GetIndex() || song_name != theApp.m_player.GetFileName())
+		if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
 		{
 			UpdateSongTipInfo();
 			SetTitle();
 			//m_Mytip.UpdateTipText(m_song_tip_info, this);
-			index = theApp.m_player.GetIndex();
-			song_name = theApp.m_player.GetFileName();
+			index = CPlayer::GetInstance().GetIndex();
+			song_name = CPlayer::GetInstance().GetFileName();
 		}
 		
 	}
@@ -265,10 +265,10 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 void CMiniModeDlg::SetVolume(bool up)
 {
 	if (up)
-		theApp.m_player.MusicControl(Command::VOLUME_UP);
+		CPlayer::GetInstance().MusicControl(Command::VOLUME_UP);
 	else
-		theApp.m_player.MusicControl(Command::VOLUME_DOWN);
-	//ShowVolume(theApp.m_player.GetVolume());
+		CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN);
+	//ShowVolume(CPlayer::GetInstance().GetVolume());
 	KillTimer(11);
 	SetTimer(11, 1500, NULL);		//显示音量后设置一个1500毫秒的定时器（音量显示保持1.5秒）
 	m_ui_data.m_show_volume = true;
@@ -383,7 +383,7 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 
 	//设置迷你模式窗口右键菜单
 	//设置循环模式菜单的单选标记
-	RepeatMode repeat_mode{ theApp.m_player.GetRepeatMode() };
+	RepeatMode repeat_mode{ CPlayer::GetInstance().GetRepeatMode() };
 	switch (repeat_mode)
 	{
 	case RM_PLAY_ORDER: pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_ORDER, MF_BYCOMMAND | MF_CHECKED); break;
@@ -398,7 +398,7 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 
 	//设置播放列表右键菜单
 	//弹出播放列表右键菜单时，如果没有选中播放列表中的项目，则禁用右键菜单中“播放”、“从列表中删除”、“属性”、“从磁盘删除”项目。
-	if (m_item_selected < 0 || m_item_selected >= theApp.m_player.GetSongNum())
+	if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
 	{
 		pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | MF_GRAYED);
 		pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | MF_GRAYED);
@@ -413,8 +413,8 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 		pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_ENABLED);
 	}
 
-	pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!theApp.m_player.IsInnerCover() ? MF_ENABLED : MF_GRAYED));
-	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
+	pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsInnerCover() ? MF_ENABLED : MF_GRAYED));
+	bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 	pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric ? MF_ENABLED : MF_GRAYED));
 
 	//设置播放列表右键菜单的默认菜单项
@@ -454,7 +454,7 @@ void CMiniModeDlg::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	int row = pNMItemActivate->iItem;
-	theApp.m_player.PlayTrack(row);
+	CPlayer::GetInstance().PlayTrack(row);
 	//SwitchTrack();
 	SetPlayListColor();
 	//RePaint();
@@ -491,8 +491,8 @@ void CMiniModeDlg::OnPaint()
 //{
 //	// TODO: 在此添加控件通知处理程序代码
 //	//int pos = m_progress_bar.GetPos();
-//	//int song_pos = static_cast<__int64>(pos) * theApp.m_player.GetSongLength() / 1000;
-//	//theApp.m_player.SeekTo(song_pos);
+//	//int song_pos = static_cast<__int64>(pos) * CPlayer::GetInstance().GetSongLength() / 1000;
+//	//CPlayer::GetInstance().SeekTo(song_pos);
 //}
 
 

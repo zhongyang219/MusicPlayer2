@@ -54,7 +54,7 @@ protected:
 	HICON m_hIcon;
 	CToolTipCtrl m_Mytip;
 	//控件变量
-	CPlayListCtrl m_playlist_list{ theApp.m_player.GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
+	CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
 																	//用于支持鼠标指向列表中的项目时显示歌曲信息)
 	CStatic m_path_static;
 	CEdit m_path_edit;
@@ -86,7 +86,7 @@ protected:
 	HICON m_hPauseIcon_s;			//暂停图标
 	HICON m_hStopIcon_s;			//停止图标
 
-	CFindDlg m_findDlg{ theApp.m_player.GetPlayList() };		//查找对话框
+	CFindDlg m_findDlg{ CPlayer::GetInstance().GetPlayList() };		//查找对话框
 
 	wstring m_cmdLine;	//命令行参数
 

@@ -55,7 +55,7 @@ protected:
 	CodeType m_save_code{};		//保存的编码格式
 	bool m_download_translate{ false };		//是否下载歌词翻译
 	bool m_save_to_song_folder{ true };		//是否保存到歌曲所在目录
-	const vector<SongInfo>& m_playlist{ theApp.m_player.GetPlayList() };	//播放列表的引用
+	const vector<SongInfo>& m_playlist{ CPlayer::GetInstance().GetPlayList() };	//播放列表的引用
 
 	bool m_lyric_path_not_exit{ false };
 

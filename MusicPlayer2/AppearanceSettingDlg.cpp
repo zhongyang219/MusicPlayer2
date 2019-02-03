@@ -191,7 +191,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 #ifdef COMPILE_IN_WIN_XP
 	m_follow_system_color_check.EnableWindow(FALSE);
 #else
-	//if (theApp.m_win_version.IsWindows8OrLater())
+	//if (CWinVersionHelper::IsWindows8OrLater())
 	m_follow_system_color_check.SetCheck(m_data.theme_color_follow_system);
 	//else
 	//	m_follow_system_color_check.EnableWindow(FALSE);		//Win8以下系统禁用此复选按钮

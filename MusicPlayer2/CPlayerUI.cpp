@@ -38,9 +38,9 @@ void CPlayerUI::DrawInfo(bool reset)
 	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
 	if (theApp.m_app_setting_data.album_cover_as_background)
 	{
-		if (theApp.m_player.AlbumCoverExist())
+		if (CPlayer::GetInstance().AlbumCoverExist())
 		{
-			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? theApp.m_player.GetAlbumCoverBlur() : theApp.m_player.GetAlbumCover() };
+			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
 			m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
 		}
 		else
@@ -59,7 +59,7 @@ void CPlayerUI::DrawInfo(bool reset)
 
 	//填充背景颜色
 	//CDrawCommon::SetDrawArea(&MemDC, info_rect);
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		//是否需要绘制图片背景
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		//是否需要绘制图片背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -81,10 +81,10 @@ void CPlayerUI::DrawInfo(bool reset)
 	wstring lable3_str, lable3_content;
 	wstring lable4_str, lable4_content;
 	lable1_str = CCommon::LoadText(IDS_TITLE, _T(": "));
-	lable1_content = theApp.m_player.GetCurrentSongInfo().title;
-	if (theApp.m_player.IsMidi())
+	lable1_content = CPlayer::GetInstance().GetCurrentSongInfo().title;
+	if (CPlayer::GetInstance().IsMidi())
 	{
-		const MidiInfo& midi_info{ theApp.m_player.GetMidiInfo() };
+		const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
 		lable2_str = CCommon::LoadText(IDS_RHYTHM, _T(": "));
 		swprintf_s(buff, L"%d/%d (%dbpm)", midi_info.midi_position, midi_info.midi_length, midi_info.speed);
 		lable2_content = buff;
@@ -94,17 +94,17 @@ void CPlayerUI::DrawInfo(bool reset)
 		//lable3_content = buff;
 
 		lable3_str = CCommon::LoadText(IDS_SOUND_FONT, _T(": ")) ;
-		lable3_content = theApp.m_player.GetSoundFontName();
+		lable3_content = CPlayer::GetInstance().GetSoundFontName();
 	}
 	else
 	{
 		lable2_str = CCommon::LoadText(IDS_ARTIST, _T(": "));
-		lable2_content = theApp.m_player.GetCurrentSongInfo().artist;
+		lable2_content = CPlayer::GetInstance().GetCurrentSongInfo().artist;
 		lable3_str = CCommon::LoadText(IDS_ALBUM, _T(": "));
-		lable3_content = theApp.m_player.GetCurrentSongInfo().album;
+		lable3_content = CPlayer::GetInstance().GetCurrentSongInfo().album;
 	}
 	lable4_str = CCommon::LoadText(IDS_FORMAT, _T(": "));
-	const BASS_CHANNELINFO channel_info{ theApp.m_player.GetChannelInfo() };
+	const BASS_CHANNELINFO channel_info{ CPlayer::GetInstance().GetChannelInfo() };
 	CString chans_str;
 	if (channel_info.chans == 1)
 		chans_str = CCommon::LoadText(IDS_MONO);
@@ -112,10 +112,10 @@ void CPlayerUI::DrawInfo(bool reset)
 		chans_str = CCommon::LoadText(IDS_STEREO);
 	else if (channel_info.chans > 2)
 		chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), channel_info.chans);
-	if (!theApp.m_player.IsMidi())
-		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, theApp.m_player.GetCurrentSongInfo().bitrate, chans_str.GetString());
+	if (!CPlayer::GetInstance().IsMidi())
+		swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
 	else
-		swprintf_s(buff, L"%s %.1fkHz %s", theApp.m_player.GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
+		swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
 	lable4_content = buff;
 	//显示标题
 	tmp.MoveToXY(text_start.x, text_start.y + text_height);
@@ -132,7 +132,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
 	tmp.right = info_rect.right - m_pLayout->margin;
 	static CDrawCommon::ScrollInfo scroll_info3;
-	if (theApp.m_player.IsMidi())
+	if (CPlayer::GetInstance().IsMidi())
 		m_draw.DrawWindowText(tmp, lable2_content.c_str(), m_colors.color_text);
 	else
 		m_draw.DrawScrollText2(tmp, lable2_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info3, reset);
@@ -165,9 +165,9 @@ void CPlayerUI::DrawInfo(bool reset)
 		//绘制专辑封面
 		m_draw_data.cover_rect = spectral_rect;
 		m_draw_data.cover_rect.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
-		if (theApp.m_player.AlbumCoverExist())
+		if (CPlayer::GetInstance().AlbumCoverExist())
 		{
-			m_draw.DrawBitmap(theApp.m_player.GetAlbumCover(), m_draw_data.cover_rect.TopLeft(), m_draw_data.cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), m_draw_data.cover_rect.TopLeft(), m_draw_data.cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
 		}
 		else
 		{
@@ -195,18 +195,18 @@ void CPlayerUI::DrawInfo(bool reset)
 		}
 		for (int i{}; i < ROWS; i++)
 		{
-			float spetral_data = (theApp.m_player.GetSpectralData()[i * 2] + theApp.m_player.GetSpectralData()[i * 2 + 1]) / 2;
-			float peak_data = (theApp.m_player.GetSpectralPeakData()[i * 2] + theApp.m_player.GetSpectralPeakData()[i * 2 + 1]) / 2;
+			float spetral_data = (CPlayer::GetInstance().GetSpectralData()[i * 2] + CPlayer::GetInstance().GetSpectralData()[i * 2 + 1]) / 2;
+			float peak_data = (CPlayer::GetInstance().GetSpectralPeakData()[i * 2] + CPlayer::GetInstance().GetSpectralPeakData()[i * 2 + 1]) / 2;
 
 			CRect rect_tmp{ rects[i] };
 			int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
 			int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-			if (spetral_height <= 0 || theApp.m_player.IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-			if (peak_height <= 0 || theApp.m_player.IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+			if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+			if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
 			rect_tmp.top = rect_tmp.bottom - spetral_height;
 			if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
 			COLORREF color;
-			if (theApp.m_app_setting_data.show_album_cover && theApp.m_player.AlbumCoverExist())
+			if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 				color = m_colors.color_spectrum_cover;
 			else
 				color = m_colors.color_spectrum;
@@ -238,7 +238,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	}
 	else
 	{
-		//if (theApp.m_player.IsPlaying() || reset)
+		//if (CPlayer::GetInstance().IsPlaying() || reset)
 		//{
 		lyric_rect = info_rect;
 		lyric_rect.MoveToY(info_rect.bottom/* + 2*m_pLayout->margin*/);
@@ -263,29 +263,29 @@ void CPlayerUI::DrawLyricsSingleLine(CRect lyric_rect)
 {
 	if (theApp.m_app_setting_data.lyric_background)
 	{
-		bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };
+		bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };
 		if (draw_background)
 			m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
 		else
 			m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
 	}
-	if (theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric())
+	if (CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric())
 	{
-		wstring current_lyric{ theApp.m_player.GetMidiLyric() };
+		wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
 		m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, false, true);
 	}
-	else if (theApp.m_player.m_Lyrics.IsEmpty())
+	else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())
 	{
 		m_draw.DrawWindowText(lyric_rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
 	}
 	else
 	{
-		wstring current_lyric{ theApp.m_player.m_Lyrics.GetLyric(Time(theApp.m_player.GetCurrentPosition()), 0).text };	//获取当歌词
+		wstring current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0).text };	//获取当歌词
 		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
 			current_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 		if (theApp.m_lyric_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
 		{
-			int progress{ theApp.m_player.m_Lyrics.GetLyricProgress(Time(theApp.m_player.GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
+			int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(Time(CPlayer::GetInstance().GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
 			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true);
 		}
 		else				//歌词不以卡拉OK样式显示时
@@ -297,8 +297,8 @@ void CPlayerUI::DrawLyricsSingleLine(CRect lyric_rect)
 
 void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 {
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (theApp.m_player.AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };
-	bool midi_lyric{ theApp.m_player.IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !theApp.m_player.MidiNoLyric() };
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };
+	bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 	//显示“歌词秀”
 	CRect tmp;
 	tmp = lyric_rect;
@@ -313,7 +313,7 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	translate_rect.left = translate_rect.right - translate_rect.Height();
 	m_buttons[BTN_TRANSLATE].rect = translate_rect;
 	m_buttons[BTN_TRANSLATE].rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
-	m_buttons[BTN_TRANSLATE].enable = theApp.m_player.m_Lyrics.IsTranslated() && !midi_lyric;
+	m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated() && !midi_lyric;
 	if (m_buttons[BTN_TRANSLATE].enable)
 	{
 		BYTE alpha;
@@ -400,15 +400,15 @@ void CPlayerUI::MouseMove(CPoint point)
 	//	if (!last_show_cover_tip && show_cover_tip)
 	//	{
 	//		CString info;
-	//		if (theApp.m_player.AlbumCoverExist())
+	//		if (CPlayer::GetInstance().AlbumCoverExist())
 	//		{
 	//			info = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
-	//			//CFilePathHelper cover_path(theApp.m_player.GetAlbumCoverPath());
+	//			//CFilePathHelper cover_path(CPlayer::GetInstance().GetAlbumCoverPath());
 	//			//if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
-	//			if (theApp.m_player.IsInnerCover())
+	//			if (CPlayer::GetInstance().IsInnerCover())
 	//			{
 	//				info += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
-	//				switch (theApp.m_player.GetAlbumCoverType())
+	//				switch (CPlayer::GetInstance().GetAlbumCoverType())
 	//				{
 	//				case 0: info += _T("jpg"); break;
 	//				case 1: info += _T("png"); break;
@@ -418,7 +418,7 @@ void CPlayerUI::MouseMove(CPoint point)
 	//			else
 	//			{
 	//				info += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
-	//				info += theApp.m_player.GetAlbumCoverPath().c_str();
+	//				info += CPlayer::GetInstance().GetAlbumCoverPath().c_str();
 	//			}
 	//		}
 	//		m_tool_tip->AddTool(theApp.m_pMainWnd, info);

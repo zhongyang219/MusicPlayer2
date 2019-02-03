@@ -110,13 +110,13 @@ void CDataSettingsDlg::OnBnClickedCleanDataFileButton()
 	for (auto iter{ theApp.m_song_data.begin() }; iter != theApp.m_song_data.end();)
 	{
 		//检查该条目对应的文件所在的路径是否在“最近播放路径”列表里
-		bool path_exist{ false };	//如果iter指向的条目的文件路径在“最近播放路径”列表(theApp.m_player.GetRecentPath())里，则为true
+		bool path_exist{ false };	//如果iter指向的条目的文件路径在“最近播放路径”列表(CPlayer::GetInstance().GetRecentPath())里，则为true
 		wstring item_path;
 		size_t index = iter->first.rfind(L'\\');
 		item_path = iter->first.substr(0, index + 1);		//获取iter指向项目的文件目录
-		for (int i{}; i < theApp.m_player.GetRecentPath().size(); i++)
+		for (int i{}; i < CPlayer::GetInstance().GetRecentPath().size(); i++)
 		{
-			if (item_path == theApp.m_player.GetRecentPath()[i].path)
+			if (item_path == CPlayer::GetInstance().GetRecentPath()[i].path)
 			{
 				path_exist = true;
 				break;
