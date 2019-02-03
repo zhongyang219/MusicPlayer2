@@ -17,20 +17,10 @@ void CPlayerUI::DrawInfo(bool reset)
 	//调用基类的函数，以设置绘图颜色
 	PreDrawInfo();
 
-	//设置信息区域的矩形
-	CRect info_rect;
-	if (!m_ui_data.m_narrow_mode)
-		info_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin}, CSize{m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
-	else
-		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height}, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
-
 	//设置缓冲的DC
 	CDC MemDC;
 	CBitmap MemBitmap;
 	MemDC.CreateCompatibleDC(NULL);
-	m_draw_rect = info_rect;		//绘图区域
-	if (!m_ui_data.m_narrow_mode)
-		m_draw_rect.bottom = m_ui_data.client_height - m_pLayout->margin;
 	CRect draw_rect{ m_draw_rect };
 	draw_rect.MoveToXY(0, 0);
 	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
@@ -54,18 +44,15 @@ void CPlayerUI::DrawInfo(bool reset)
 		m_draw.FillRect(draw_rect, m_colors.color_back);
 	}
 
-	//由于设置了缓冲绘图区域，m_draw_rect的左上角点变成了绘图的原点
-	info_rect.MoveToXY(0, 0);
-
 	//填充背景颜色
-	//CDrawCommon::SetDrawArea(&MemDC, info_rect);
+	//CDrawCommon::SetDrawArea(&MemDC, draw_rect);
 	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		//是否需要绘制图片背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
 		m_draw.FillRect(draw_rect, m_colors.color_back);
 
-	CPoint text_start{ info_rect.left + m_pLayout->spectral_size.cx + 2 * m_pLayout->margin, info_rect.top + m_pLayout->margin };		//文本的起始坐标
+	CPoint text_start{ draw_rect.left + m_pLayout->spectral_size.cx + 2 * m_pLayout->margin, draw_rect.top + m_pLayout->margin };		//文本的起始坐标
 	int text_height{ theApp.DPI(18) };		//文本的高度
 
 	//显示歌曲信息
@@ -122,7 +109,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable1_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = info_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_pLayout->margin;
 	static CDrawCommon::ScrollInfo scroll_info2;
 	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info2, reset);
 	//显示艺术家
@@ -130,7 +117,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable2_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = info_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_pLayout->margin;
 	static CDrawCommon::ScrollInfo scroll_info3;
 	if (CPlayer::GetInstance().IsMidi())
 		m_draw.DrawWindowText(tmp, lable2_content.c_str(), m_colors.color_text);
@@ -141,7 +128,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable3_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = info_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_pLayout->margin;
 	static CDrawCommon::ScrollInfo scroll_info4;
 	m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info4, reset);
 	//显示文件格式和比特率
@@ -149,12 +136,12 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable4_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = info_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_pLayout->margin;
 	static CDrawCommon::ScrollInfo scroll_info5;
 	m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info5, reset);
 
 	//显示频谱分析
-	CRect spectral_rect{ CPoint{info_rect.left + m_pLayout->margin, info_rect.top + m_pLayout->margin}, m_pLayout->spectral_size };
+	CRect spectral_rect{ CPoint{draw_rect.left + m_pLayout->margin, draw_rect.top + m_pLayout->margin}, m_pLayout->spectral_size };
 	//绘制背景
 	if (draw_background)
 		m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
@@ -224,7 +211,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	//绘制背景
 	CPoint point{ spectral_rect.left, spectral_rect.bottom };
 	point.y += 2 * m_pLayout->margin;
-	CRect other_info_rect{ point, CSize(info_rect.Width() - 2 * m_pLayout->margin,theApp.DPI(24)) };
+	CRect other_info_rect{ point, CSize(draw_rect.Width() - 2 * m_pLayout->margin,theApp.DPI(24)) };
 	DrawControlBar(draw_background, other_info_rect, false, &m_ui_data);
 
 	//显示歌词
@@ -240,8 +227,8 @@ void CPlayerUI::DrawInfo(bool reset)
 	{
 		//if (CPlayer::GetInstance().IsPlaying() || reset)
 		//{
-		lyric_rect = info_rect;
-		lyric_rect.MoveToY(info_rect.bottom/* + 2*m_pLayout->margin*/);
+		lyric_rect = draw_rect;
+		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin);
 		lyric_rect.bottom = m_draw_rect.Height()/* - m_pLayout->margin*/;
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}

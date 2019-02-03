@@ -26,7 +26,7 @@ public:
 		CFont lyric_font;					//歌词字体
 		CFont lyric_translate_font;			//歌词翻译的字体
 		bool show_translate{ true };		//歌词是否显示翻译
-		bool m_narrow_mode;		//窄界面模式
+		bool m_narrow_mode;					//窄界面模式
 
 		int client_width;					//窗口客户区宽度
 		int client_height;					//窗口客户区高度
@@ -68,6 +68,7 @@ protected:
 
 protected:
 	void PreDrawInfo();
+	void SetDrawRect();
 	void DrawLyricTextMultiLine(CRect rect, bool midi_lyric);
 	void DrawLyricTextSingleLine(CRect rect, bool midi_lyric);
 	void DrawSongInfo(CRect rect, bool reset = false);

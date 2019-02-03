@@ -19,18 +19,6 @@ void CPlayerUI2::DrawInfo(bool reset)
 {
 	PreDrawInfo();
 
-	//设置信息区域的矩形
-	if (!m_ui_data.m_narrow_mode)
-	{
-		m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin}, 
-		CPoint{m_ui_data.client_width / 2 - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
-	}
-	else
-	{
-		m_draw_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height},
-		CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
-	}
-
 	//设置缓冲的DC
 	CDC MemDC;
 	CBitmap MemBitmap;

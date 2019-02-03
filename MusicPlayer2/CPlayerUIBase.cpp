@@ -182,6 +182,23 @@ void CPlayerUIBase::PreDrawInfo()
 	//计算文本高度
 	m_pDC->SelectObject(&m_ui_data.lyric_font);
 	m_lyric_text_height = m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
+
+	//设置绘制的矩形区域
+	SetDrawRect();
+}
+
+void CPlayerUIBase::SetDrawRect()
+{
+	if (!m_ui_data.m_narrow_mode)
+	{
+		m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin},
+		CPoint{m_ui_data.client_width / 2 - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+	}
+	else
+	{
+		m_draw_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height},
+		CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
+	}
 }
 
 void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area, bool midi_lyric)
