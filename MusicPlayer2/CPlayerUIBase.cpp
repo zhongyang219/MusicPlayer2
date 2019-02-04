@@ -208,7 +208,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			redraw_rect = m_draw_rect;
 			if (m_ui_data.show_playlist)
 			{
-				redraw_rect.left = cx / 2 - m_pLayout->margin;
+				redraw_rect.left = cx / 2/* - m_pLayout->margin*/;
 				redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
 			}
 			else
@@ -305,7 +305,7 @@ void CPlayerUIBase::SetDrawRect()
 		if (m_ui_data.show_playlist)
 		{
 			m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->margin},
-		   CPoint{m_ui_data.client_width / 2 - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+		   CPoint{m_ui_data.client_width / 2/* - m_pLayout->margin*/, m_ui_data.client_height - m_pLayout->margin} };
 		}
 		else
 		{
@@ -919,10 +919,10 @@ void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_background)
 	rc_btn.left = rc_btn.right - btn_side;
 	rc_btn.top = rect.top + (rect.Height() - btn_side) / 2;
 	rc_btn.bottom = rc_btn.top + btn_side;
-	DrawUIButton(rc_btn, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_mini_icon, draw_background);
+	DrawUIButton(rc_btn, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_show_playlist_icon, draw_background);
 
 	rc_btn.MoveToX(rc_btn.left - btn_side);
-	DrawUIButton(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_skin_icon, draw_background);
+	DrawUIButton(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_select_folder_icon, draw_background);
 
 	if (!progress_on_top)
 	{

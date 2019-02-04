@@ -358,6 +358,8 @@ void CMusicPlayerApp::LoadIconResource()
 	m_loop_playlist_icon.Load(IDI_LOOP_PLAYLIST, IDI_LOOP_PLAYLIST_D, theApp.DPI(16));
 	m_loop_track_icon.Load(IDI_LOOP_TRACK, IDI_LOOP_TRACK_D, theApp.DPI(16));
 	m_info_icon.Load(IDI_SONG_INFO, IDI_SONG_INFO_D, theApp.DPI(16));
+	m_select_folder_icon.Load(IDI_SELECT_FOLDER, IDI_SELECT_FOLDER_D, theApp.DPI(16));
+	m_show_playlist_icon.Load(IDI_PLAYLIST, IDI_PLAYLIST_D, theApp.DPI(16));
 	
 	m_previous_icon.Load(IDI_PREVIOUS, NULL, theApp.DPI(16));
 	m_play_icon.Load(IDI_PLAY, NULL, theApp.DPI(16));

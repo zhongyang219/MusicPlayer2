@@ -375,6 +375,10 @@
     <Image Include="res\快退.ico" />
     <Image Include="res\播放.ico" />
     <Image Include="res\播放_暂停.ico" />
+    <Image Include="res\播放列表.ico" />
+    <Image Include="res\播放列表_d.ico" />
+    <Image Include="res\文件夹.ico" />
+    <Image Include="res\文件夹_d.ico" />
     <Image Include="res\暂停.ico" />
     <Image Include="res\曲目信息.ico" />
     <Image Include="res\曲目信息_d.ico" />

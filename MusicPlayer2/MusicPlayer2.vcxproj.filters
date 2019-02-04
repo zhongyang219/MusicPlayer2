@@ -747,5 +747,17 @@
     <Image Include="res\曲目信息_d.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\文件夹.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\文件夹_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\播放列表.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\播放列表_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
