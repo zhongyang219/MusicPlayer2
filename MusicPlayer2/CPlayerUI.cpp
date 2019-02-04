@@ -232,6 +232,12 @@ void CPlayerUI::DrawInfo(bool reset)
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}
 	}
+	m_draw_data.lyric_rect = lyric_rect;
+	m_draw_data.thumbnail_rect = draw_rect;
+	if (!DrawNarrowMode())
+	{
+		m_draw_data.thumbnail_rect.bottom = lyric_rect.top;
+	}
 
 	//绘制音量调按钮，因为必须在上层，所以必须在歌词绘制完成后绘制
 	DrawVolumnAdjBtn(draw_background);
@@ -362,30 +368,16 @@ void CPlayerUI::RButtonUp(CPoint point)
 	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
 		return;
 
-	//计算显示信息和显示歌词的区域
-	CRect info_rect{ m_draw_rect }, lyric_rect{ m_draw_rect };
-	if (!DrawNarrowMode())
-	{
-		int height = m_pLayout->info_height2 - 3 * m_pLayout->margin;
-		info_rect.bottom = info_rect.top + height;
-		lyric_rect.top = info_rect.bottom + 2 * m_pLayout->margin;
-	}
-	else
-	{
-		info_rect.bottom -= theApp.DPI(30);
-		lyric_rect.top = info_rect.bottom;
-	}
-
 	CPoint point1;		//定义一个用于确定光标位置的位置  
 	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
 
-	if (info_rect.PtInRect(point))
+	if (!m_draw_data.lyric_rect.PtInRect(point))
 	{
-	m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
 	}
-		else if (lyric_rect.PtInRect(point))
+	else
 	{
-	m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
 	}
 
 }
@@ -457,16 +449,16 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy)
 	CPlayerUIBase::OnSizeRedraw(cx, cy);
 }
 
-CRect CPlayerUI::GetThumbnailClipArea()
-{
-	CRect info_rect;
-	if (!DrawNarrowMode())
-		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
-	else
-		info_rect = CRect{ CPoint{ m_pLayout->margin, theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
-
-	return info_rect;
-}
+//CRect CPlayerUI::GetThumbnailClipArea()
+//{
+//	//CRect info_rect;
+//	//if (!DrawNarrowMode())
+//	//	info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
+//	//else
+//	//	info_rect = CRect{ CPoint{ m_pLayout->margin, theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
+//
+//	return info_rect;
+//}
 
 void CPlayerUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {

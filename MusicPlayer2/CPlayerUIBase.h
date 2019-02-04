@@ -51,7 +51,7 @@ public:
 	virtual void LButtonUp(CPoint point) override;
 	virtual void OnSizeRedraw(int cx, int cy) override;
 
-	virtual CRect GetThumbnailClipArea() override = 0;
+	virtual CRect GetThumbnailClipArea() override;
 	void UpdateRepeatModeToolTip();
 	void UpdateSongInfoToolTip();
 	void UpdatePlayPauseButtonTip() override;
@@ -76,6 +76,13 @@ protected:
 		BTN_SHOW_PLAYLIST,
 		BTN_SELECT_FOLDER,
 		BTN_PROGRESS
+	};
+
+	struct DrawData
+	{
+		CRect cover_rect;
+		CRect lyric_rect;
+		CRect thumbnail_rect;
 	};
 
 protected:
@@ -113,6 +120,7 @@ protected:
 	CDrawCommon m_draw;		//用于绘制文本的对象
 	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
 	CFont m_font_time;
+	DrawData m_draw_data;
 
 	CMenu m_popup_menu;			//歌词右键菜单
 	CMenu m_main_popup_menu;

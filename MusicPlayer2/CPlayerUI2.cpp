@@ -118,6 +118,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制专辑封面
 		cover_rect.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
 		m_draw_data.cover_rect = cover_rect;
+		m_draw_data.thumbnail_rect = cover_rect;
 		if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 		{
 			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
@@ -236,10 +237,10 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.right = draw_rect.right - m_pLayout->margin;
 		DrawToolBar(draw_background, rc_tmp, true, &m_ui_data);
 
-		m_draw_data.info_rect = m_draw_rect;
-		m_draw_data.info_rect.bottom = m_draw_data.info_rect.top + rc_tmp.bottom;
-		m_draw_data.lyric_rect = m_draw_rect;
-		m_draw_data.lyric_rect.top = m_draw_data.info_rect.bottom + 1;
+		//m_draw_data.info_rect = m_draw_rect;
+		//m_draw_data.info_rect.bottom = m_draw_data.info_rect.top + rc_tmp.bottom;
+		//m_draw_data.lyric_rect = m_draw_rect;
+		//m_draw_data.lyric_rect.top = m_draw_data.info_rect.bottom + 1;
 
 		//绘制歌词
 		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
@@ -263,6 +264,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 			lyric_margin = 2 * m_pLayout->margin;
 		}
+
+		m_draw_data.lyric_rect = rc_tmp;
 
 		if (theApp.m_app_setting_data.lyric_background)
 		{
@@ -314,6 +317,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		rc_tmp.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
 		m_draw_data.cover_rect = rc_tmp;
+		m_draw_data.thumbnail_rect = rc_tmp;
 		if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 		{
 			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rc_tmp.TopLeft(), rc_tmp.Size(), theApp.m_app_setting_data.album_cover_fit);
@@ -370,6 +374,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		{
 			m_draw.SetDrawArea(rc_tmp);
 		}
+		m_draw_data.lyric_rect = rc_tmp;
 		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
 		DrawLyricTextSingleLine(rc_tmp, midi_lyric);
 
@@ -402,7 +407,7 @@ void CPlayerUI2::RButtonUp(CPoint point)
 
 	CPoint point1;		//定义一个用于确定光标位置的位置  
 	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-	if (m_draw_data.info_rect.PtInRect(point))
+	if (!m_draw_data.lyric_rect.PtInRect(point))
 	{
 		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
 	}
@@ -445,23 +450,23 @@ void CPlayerUI2::LButtonUp(CPoint point)
 
 }
 
-CRect CPlayerUI2::GetThumbnailClipArea()
-{
-	CRect clip_area_rect;
-	if (!DrawNarrowMode())
-	{
-		clip_area_rect = m_draw_data.cover_rect;
-		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->margin + theApp.DPI(20));
-		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
-	}
-	else
-	{
-		clip_area_rect = m_draw_data.cover_rect;
-		clip_area_rect.MoveToY(clip_area_rect.top + theApp.DPI(20));
-		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
-	}
-	return clip_area_rect;
-}
+//CRect CPlayerUI2::GetThumbnailClipArea()
+//{
+//	CRect clip_area_rect;
+//	if (!DrawNarrowMode())
+//	{
+//		clip_area_rect = m_draw_data.cover_rect;
+//		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->margin + theApp.DPI(20));
+//		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
+//	}
+//	else
+//	{
+//		clip_area_rect = m_draw_data.cover_rect;
+//		clip_area_rect.MoveToY(clip_area_rect.top + theApp.DPI(20));
+//		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
+//	}
+//	return clip_area_rect;
+//}
 
 void CPlayerUI2::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {

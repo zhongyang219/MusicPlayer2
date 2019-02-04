@@ -251,6 +251,13 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 	}
 }
 
+CRect CPlayerUIBase::GetThumbnailClipArea()
+{
+	CRect thumbnail_rect = DrawAreaToClient(m_draw_data.thumbnail_rect, m_draw_rect);
+	thumbnail_rect.MoveToY(thumbnail_rect.top + theApp.DPI(20));
+	return thumbnail_rect;
+}
+
 void CPlayerUIBase::UpdateRepeatModeToolTip()
 {
 	SetRepeatModeToolTipText();
