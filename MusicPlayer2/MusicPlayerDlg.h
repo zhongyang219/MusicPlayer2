@@ -59,12 +59,6 @@ protected:
 	CStatic m_path_static;
 	CEdit m_path_edit;
 	CMenu m_list_popup_menu;		//播放列表右键菜单
-	CMFCButton m_play_pause_button;
-	CMFCButton m_stop_button;
-	CMFCButton m_previous_button;
-	CMFCButton m_next_button;
-	CProgressStatic m_progress_bar;		//进度条控件
-	CStatic m_time_static;				//显示播放时间的控件
 	CButton m_set_path_button;
 	CEdit m_search_edit;
 	CButton m_clear_search_button;
@@ -79,12 +73,6 @@ protected:
 	HICON m_hPlayIcon;			//播放图标
 	HICON m_hPauseIcon;			//暂停图标
 #endif
-	//小图标（用于主窗口按钮）
-	HICON m_hPreviousIcon_s;		//上一曲图标
-	HICON m_hNextIcon_s;			//下一曲图标
-	HICON m_hPlayIcon_s;			//播放图标
-	HICON m_hPauseIcon_s;			//暂停图标
-	HICON m_hStopIcon_s;			//停止图标
 
 	CFindDlg m_findDlg{ CPlayer::GetInstance().GetPlayList() };		//查找对话框
 
@@ -101,9 +89,8 @@ protected:
 	int m_window_width;		//窗口的宽度
 	int m_window_height;	//窗口的高度
 
-	int m_progress_bar_left_pos;	//(普通界面模式时)进度条左侧的位置
-	int m_time_width;			//显示播放时间控件的宽度
-	int m_time_height;			//显示播放时间控件的高度
+	int m_select_folder_width{};		//选择文件夹的宽度
+	int m_select_folder_height{};		//选择文件夹的高度
 
 	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };		//窗口布局的固定数据
 
@@ -146,17 +133,13 @@ private:
 	void SetTransparency();			//根据m_transparency的值设置窗口透明度
 	void DrawInfo(bool reset = false);		//绘制信息
 	void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
-	void SetPorgressBarSize(int cx, int cy);		//设置进度条在窗口中的位置
-	void SetPorgressBarSize();
 public:
 	void ShowPlayList();
 protected:
 	void SetPlayListColor();
 	void SwitchTrack();		//当切换正在播放的歌曲时的处理
-	void ShowTime();		//显示播放时间
 	void SetPlaylistVisible();
 
-	void UpdateProgress();			//更新进度条的进度
 	void UpdateTaskBarProgress();	//更新任务栏按钮上的进度
 	void UpdatePlayPauseButton();		//根据当前播放状态更新“播放/暂停”按钮上的文字和图标
 	void SetThumbnailClipArea();		//设置任务栏缩略图的区域
@@ -213,7 +196,7 @@ protected:
 	afx_msg void OnExploreTrack();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2);
-	afx_msg void OnStnClickedProgressStatic();
+	//afx_msg void OnStnClickedProgressStatic();
 	afx_msg void OnReIniBass();
 	afx_msg void OnSortByFile();
 	afx_msg void OnSortByTitle();
@@ -305,4 +288,5 @@ public:
 	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnShowPlaylist();
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 };

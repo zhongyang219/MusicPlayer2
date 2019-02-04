@@ -418,6 +418,9 @@
     <ClInclude Include="AboutDlg.h">
       <Filter>对话框类\AboutDlg</Filter>
     </ClInclude>
+    <ClInclude Include="CommonData.h">
+      <Filter>公共的类</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">

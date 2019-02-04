@@ -5,14 +5,14 @@
 
 struct SLayoutData
 {
-	const int control_bar_height = theApp.DPI(30);				//窗口上方的播放控制按钮部分的高度
+	//const int control_bar_height = theApp.DPI(30);				//窗口上方的播放控制按钮部分的高度
 	const int margin = theApp.DPI(4);							//边缘的余量
 	const int width_threshold = theApp.DPI(600);				//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
-	const int info_height = theApp.DPI(166);					//窄界面模式时显示信息区域的高度
+	const int info_height = theApp.DPI(198);					//窄界面模式时显示信息区域的高度
 	const int info_height2 = theApp.DPI(143);					//普通界面模式时显示信息区域的高度
 	const int path_edit_height = theApp.DPI(32);				//前路径Edit控件区域的高度
 	const int search_edit_height = theApp.DPI(26);				//歌曲搜索框Edit控件区域的高度
-	const int progress_bar_height = theApp.DPI(20);				//(窄界面模式时)进度条区域的高度
+	//const int progress_bar_height = theApp.DPI(20);				//(窄界面模式时)进度条区域的高度
 	const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };	//频谱分析区域的大小
 };
 
@@ -54,6 +54,9 @@ public:
 	virtual CRect GetThumbnailClipArea() override = 0;
 	void UpdateRepeatModeToolTip();
 	void UpdateSongInfoToolTip();
+	void UpdatePlayPauseButtonTip() override;
+
+	virtual bool SetCursor() override;
 
 protected:
 	enum BtnKey		//标识按钮的类型
@@ -65,7 +68,14 @@ protected:
 		BTN_EQ,					//音效设定按钮
 		BTN_SETTING,			//设置按钮
 		BTN_MINI,				//迷你模式按钮
-		BTN_INFO				//曲目信息按钮
+		BTN_INFO,				//曲目信息按钮
+		BTN_STOP,
+		BTN_PREVIOUS,
+		BTN_PLAY_PAUSE,
+		BTN_NEXT,
+		BTN_SHOW_PLAYLIST,
+		BTN_SELECT_FOLDER,
+		BTN_PROGRESS
 	};
 
 protected:
@@ -74,8 +84,10 @@ protected:
 	void DrawLyricTextMultiLine(CRect rect, bool midi_lyric);
 	void DrawLyricTextSingleLine(CRect rect, bool midi_lyric);
 	void DrawSongInfo(CRect rect, bool reset = false);
-	void DrawControlBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
+	void DrawToolBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
 	void DrawVolumnAdjBtn(bool draw_background);
+	void DrawControlBar(CRect rect, bool draw_background);
+	void DrawProgressBar(CRect rect, bool draw_background);
 
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
@@ -90,7 +102,8 @@ protected:
 
 private:
 	void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
-	void DrawUIButton(CRect rect, UIButton& btn, HICON icon, bool draw_background);
+	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon, bool draw_background);
+	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon, bool draw_background);
 	void SetRepeatModeToolTipText();
 	void SetSongInfoToolTipText();
 
@@ -99,6 +112,7 @@ protected:
 	UIColors m_colors;
 	CDrawCommon m_draw;		//用于绘制文本的对象
 	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
+	CFont m_font_time;
 
 	CMenu m_popup_menu;			//歌词右键菜单
 	CMenu m_main_popup_menu;

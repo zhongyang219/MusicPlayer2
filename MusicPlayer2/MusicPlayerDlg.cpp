@@ -43,12 +43,6 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PLAYLIST_LIST, m_playlist_list);
 	DDX_Control(pDX, IDC_PATH_STATIC, m_path_static);
 	DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
-	DDX_Control(pDX, IDC_PLAY_PAUSE, m_play_pause_button);
-	DDX_Control(pDX, IDC_STOP, m_stop_button);
-	DDX_Control(pDX, IDC_PREVIOUS, m_previous_button);
-	DDX_Control(pDX, IDC_NEXT, m_next_button);
-	DDX_Control(pDX, IDC_PROGRESS_STATIC, m_progress_bar);
-	DDX_Control(pDX, IDC_TIME_STATIC, m_time_static);
 	DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
 	DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
 	DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
@@ -80,21 +74,15 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_COMMAND(ID_LOOP_PLAYLIST, &CMusicPlayerDlg::OnLoopPlaylist)
 	ON_COMMAND(ID_LOOP_TRACK, &CMusicPlayerDlg::OnLoopTrack)
 	ON_WM_MOUSEWHEEL()
-	//ON_BN_CLICKED(IDC_VOLUME_UP, &CMusicPlayerDlg::OnBnClickedVolumeUp)
-	//ON_BN_CLICKED(IDC_VOLUME_DOWN, &CMusicPlayerDlg::OnBnClickedVolumeDown)
 	ON_WM_GETMINMAXINFO()
 	ON_NOTIFY(NM_DBLCLK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMDblclkPlaylistList)
-	//ON_COMMAND(ID_REFRESH_PLAYLIST, &CMusicPlayerDlg::OnRefreshPlaylist)
 	ON_COMMAND(ID_OPTION_SETTINGS, &CMusicPlayerDlg::OnOptionSettings)
 	ON_COMMAND(ID_RELOAD_PLAYLIST, &CMusicPlayerDlg::OnReloadPlaylist)
 	ON_NOTIFY(NM_RCLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMRClickPlaylistList)
 	ON_COMMAND(ID_PLAY_ITEM, &CMusicPlayerDlg::OnPlayItem)
 	ON_COMMAND(ID_ITEM_PROPERTY, &CMusicPlayerDlg::OnItemProperty)
-	//ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
-	//ON_COMMAND(ID_CLEAR_PLAYLIST, &CMusicPlayerDlg::OnClearPlaylist)
 	ON_COMMAND(ID_EXPLORE_TRACK, &CMusicPlayerDlg::OnExploreTrack)
 	ON_WM_HOTKEY()
-	ON_STN_CLICKED(IDC_PROGRESS_STATIC, &CMusicPlayerDlg::OnStnClickedProgressStatic)
 	ON_COMMAND(ID_RE_INI_BASS, &CMusicPlayerDlg::OnReIniBass)
 	ON_COMMAND(ID_SORT_BY_FILE, &CMusicPlayerDlg::OnSortByFile)
 	ON_COMMAND(ID_SORT_BY_TITLE, &CMusicPlayerDlg::OnSortByTitle)
@@ -112,7 +100,6 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_BN_CLICKED(IDC_PREVIOUS, &CMusicPlayerDlg::OnBnClickedPrevious)
 	ON_BN_CLICKED(IDC_PLAY_PAUSE, &CMusicPlayerDlg::OnBnClickedPlayPause)
 	ON_BN_CLICKED(IDC_NEXT, &CMusicPlayerDlg::OnBnClickedNext)
-//	ON_WM_MOVE()
 	ON_COMMAND(ID_RELOAD_LYRIC, &CMusicPlayerDlg::OnReloadLyric)
 	ON_COMMAND(ID_SONG_INFO, &CMusicPlayerDlg::OnSongInfo)
 	ON_COMMAND(ID_COPY_CURRENT_LYRIC, &CMusicPlayerDlg::OnCopyCurrentLyric)
@@ -166,6 +153,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_APPCOMMAND()
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHOW_PLAYLIST, &CMusicPlayerDlg::OnShowPlaylist)
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 
@@ -376,26 +364,18 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 		m_pUI->DrawInfo(reset);
 }
 
-//void CMusicPlayerDlg::DrawLyricsSingleLine(CRect lyric_rect)
-//{
-//}
-//
-//void CMusicPlayerDlg::DrawLyricsMulityLine(CRect lyric_rect, CDC* pDC)
-//{
-//}
-
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 {
 	//设置播放列表大小
 	if (!m_ui_data.m_narrow_mode)
 	{
-		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
-			cx / 2 - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
+		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
+			cx / 2 - 2 * m_pLayout->margin, cy - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
 	}
 	else
 	{
-		m_playlist_list.MoveWindow(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height,
-			cx - 2 * m_pLayout->margin, cy - m_pLayout->control_bar_height - m_pLayout->info_height - m_pLayout->progress_bar_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - m_pLayout->margin);
+		m_playlist_list.MoveWindow(m_pLayout->margin, m_pLayout->info_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height,
+			cx - 2 * m_pLayout->margin, cy - m_pLayout->info_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - m_pLayout->margin);
 	}
 	m_playlist_list.AdjustColumnWidth();
 
@@ -404,36 +384,45 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	m_path_static.GetWindowRect(rect_static);
 	rect_static.bottom = rect_static.top + m_pLayout->path_edit_height - 2 * m_pLayout->margin;
 	if (!m_ui_data.m_narrow_mode)
-		rect_static.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin);
+		rect_static.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->margin);
 	else
-		rect_static.MoveToXY(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height);
+		rect_static.MoveToXY(m_pLayout->margin, m_pLayout->info_height);
 	m_path_static.MoveWindow(rect_static);
 	//设置“当前路径”edit控件大小
 	CRect rect_edit;
 	m_path_edit.GetWindowRect(rect_edit);
 	if (!m_ui_data.m_narrow_mode)
 	{
-		rect_edit.right = rect_edit.left + (cx / 2 - 2 * m_pLayout->margin - rect_static.Width());
-		rect_edit.MoveToXY(cx / 2 + m_pLayout->margin + rect_static.Width(), m_pLayout->control_bar_height + m_pLayout->margin);
+		rect_edit.right = rect_edit.left + (cx / 2 - 3 * m_pLayout->margin - rect_static.Width() - m_select_folder_width);
+		rect_edit.MoveToXY(cx / 2 + m_pLayout->margin + rect_static.Width(), m_pLayout->margin);
 	}
 	else
 	{
-		rect_edit.right = rect_edit.left + (cx - 2 * m_pLayout->margin - rect_static.Width());
-		rect_edit.MoveToXY(m_pLayout->margin + rect_static.Width(), m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height);
+		rect_edit.right = rect_edit.left + (cx - 3 * m_pLayout->margin - rect_static.Width() - m_select_folder_width);
+		rect_edit.MoveToXY(m_pLayout->margin + rect_static.Width(), m_pLayout->info_height);
 	}
 	m_path_edit.MoveWindow(rect_edit);
+
+	//设置“选择文件夹”按钮的大小和位置
+	CRect rect_select_folder{ rect_edit };
+	rect_select_folder.top = rect_edit.top + (rect_edit.Height() - m_select_folder_height) / 2;
+	rect_select_folder.bottom = rect_select_folder.top + m_select_folder_height;
+	rect_select_folder.left = rect_edit.right + m_pLayout->margin;
+	rect_select_folder.right = cx - m_pLayout->margin;
+	m_set_path_button.MoveWindow(rect_select_folder);
+
 	//设置歌曲搜索框的大小和位置
 	CRect rect_search;
 	m_search_edit.GetWindowRect(rect_search);
 	if (!m_ui_data.m_narrow_mode)
 	{
 		rect_search.right = rect_search.left + (cx / 2 - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
-		rect_search.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->path_edit_height + theApp.DPI(1));
+		rect_search.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->path_edit_height + theApp.DPI(1));
 	}
 	else
 	{
 		rect_search.right = rect_search.left + (cx - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
-		rect_search.MoveToXY(m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->info_height + m_pLayout->progress_bar_height + m_pLayout->path_edit_height - theApp.DPI(3));
+		rect_search.MoveToXY(m_pLayout->margin, m_pLayout->info_height + m_pLayout->path_edit_height - theApp.DPI(3));
 	}
 	m_search_edit.MoveWindow(rect_search);
 	//设置清除搜索按钮的大小和位置
@@ -445,51 +434,6 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	m_clear_search_button.Invalidate();
 }
 
-void CMusicPlayerDlg::SetPorgressBarSize(int cx, int cy)
-{
-	CRect rect;
-	m_progress_bar.GetWindowRect(rect);
-	int left_pos;		//进度条左侧位置
-	int progress_width;	//进度条宽度
-	int time_width;	//时间的宽度
-	if (CPlayer::GetInstance().GetSongLength() >= 6000000)	//如果歌曲长度大于6000000毫秒，即大于100分钟，则显示时间控件的宽度增加50%
-		time_width = m_time_width * 3 / 2;
-	else if (CPlayer::GetInstance().GetSongLength() >= 600000)	//如果歌曲长度大于600000毫秒，即大于10分钟，则显示时间控件的宽度增加25%
-		time_width = m_time_width * 5 / 4;
-	else
-		time_width = m_time_width;
-	if (!m_ui_data.m_narrow_mode)
-	{
-		//设置进度条位置
-		left_pos = m_progress_bar_left_pos;
-		progress_width = cx - left_pos - 2 * m_pLayout->margin - time_width;
-		rect.right = rect.left + progress_width;
-		rect.MoveToXY(left_pos, theApp.DPI(6));
-		m_progress_bar.MoveWindow(rect);
-		//设置时间位置
-		m_time_static.SetWindowPos(NULL, cx - time_width - m_pLayout->margin, theApp.DPI(6), time_width, m_time_height, SWP_NOZORDER);
-	}
-	else
-	{
-		//设置进度条位置
-		left_pos = m_pLayout->margin;
-		progress_width = cx - 3 * m_pLayout->margin - time_width;
-		rect.right = rect.left + progress_width;
-		rect.MoveToXY(left_pos, theApp.DPI(2) + m_pLayout->control_bar_height);
-		m_progress_bar.MoveWindow(rect);
-		//设置时间位置
-		m_time_static.SetWindowPos(NULL, cx - time_width - m_pLayout->margin, theApp.DPI(2) + m_pLayout->control_bar_height, time_width, m_time_height, SWP_NOZORDER);
-	}
-	m_time_static.Invalidate();
-}
-
-void CMusicPlayerDlg::SetPorgressBarSize()
-{
-	CRect rect;
-	GetClientRect(rect);
-	SetPorgressBarSize(rect.Width(), rect.Height());
-}
-
 void CMusicPlayerDlg::ShowPlayList()
 {
 	m_playlist_list.ShowPlaylist(m_display_format);
@@ -499,12 +443,9 @@ void CMusicPlayerDlg::ShowPlayList()
 	//显示当前路径
 	m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentDir().c_str());
 
-	m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
-
 	if (m_miniModeDlg.m_hWnd != NULL)
 	{
 		m_miniModeDlg.ShowPlaylist();
-		//m_miniModeDlg.m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
 	}
 }
 
@@ -534,20 +475,11 @@ void CMusicPlayerDlg::SwitchTrack()
 	{
 		m_playlist_list.SetItemText(index, 2, CPlayer::GetInstance().GetAllSongLength(index).time2str().c_str());
 	}
-	ShowTime();
-	m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
-	SetPorgressBarSize();		//调整进度条在窗口中的大小和位置
-	//if (m_miniModeDlg.m_hWnd != NULL)
-	//	m_miniModeDlg.m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
+
 	DrawInfo(true);
 
 	m_ui.UpdateSongInfoToolTip();
 	m_ui2.UpdateSongInfoToolTip();
-}
-
-void CMusicPlayerDlg::ShowTime()
-{
-	m_time_static.SetWindowText(CPlayer::GetInstance().GetTimeString().c_str());
 }
 
 void CMusicPlayerDlg::SetPlaylistVisible()
@@ -558,19 +490,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
 	m_path_edit.ShowWindow(cmdShow);
 	m_search_edit.ShowWindow(cmdShow);
 	m_clear_search_button.ShowWindow(cmdShow);
-}
-
-void CMusicPlayerDlg::UpdateProgress()
-{
-	int position, length;
-	position = CPlayer::GetInstance().GetCurrentPosition();
-	length = CPlayer::GetInstance().GetSongLength();
-	if (length == 0) length = 1;	//防止除数为0
-	__int64 pos;	//进度条的宽度
-	pos = static_cast<__int64>(position) * 1000 / length;	//先转换成__int64类型，防止乘以1000之后溢出
-	m_progress_bar.SetPos(static_cast<int>(pos));
-	//if (m_miniModeDlg.m_hWnd != NULL)
-	//	m_miniModeDlg.m_progress_bar.SetPos(static_cast<int>(pos));
+	m_set_path_button.ShowWindow(cmdShow);
 }
 
 void CMusicPlayerDlg::UpdateTaskBarProgress()
@@ -614,14 +534,11 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 			wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PAUSE));
 			//更新任务按钮上的播放状态图标
 			if (theApp.m_play_setting_data.show_playstate_icon)
-				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPlayIcon_s, L"");
+				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPlayIcon, L"");
 			else
 				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 		}
 #endif
-		//更新主界面上“播放/暂停”的图标
-		m_play_pause_button.SetImage(m_hPauseIcon_s, FALSE);
-		m_play_pause_button.SetWindowText(CCommon::LoadText(IDS_PAUSE2));
 	}
 	else
 	{
@@ -633,14 +550,11 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 			wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
 			//更新任务按钮上的播放状态图标
 			if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
-				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPauseIcon_s, L"");
+				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPauseIcon, L"");
 			else
 				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 		}
 #endif
-		//更新主界面上“播放/暂停”的图标
-		m_play_pause_button.SetImage(m_hPlayIcon_s, FALSE);
-		m_play_pause_button.SetWindowText(CCommon::LoadText(IDS_PLAY2));
 	}
 #ifndef COMPILE_IN_WIN_XP
 	if (CWinVersionHelper::IsWindows7OrLater())
@@ -648,6 +562,8 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #endif
 	if (m_miniModeDlg.m_hWnd != NULL)
 		m_miniModeDlg.UpdatePlayPauseButton();
+
+	m_pUI->UpdatePlayPauseButtonTip();
 }
 
 void CMusicPlayerDlg::SetThumbnailClipArea()
@@ -722,9 +638,9 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	UpdatePlayPauseButton();
 
 	CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
-	m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
-	m_progress_bar.Invalidate();
-	m_time_static.Invalidate();
+	//m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
+	//m_progress_bar.Invalidate();
+	//m_time_static.Invalidate();
 	SetPlayListColor();
 	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
 	m_cortana_lyric.SetCortanaColor(theApp.m_lyric_setting_data.cortana_color);
@@ -756,9 +672,9 @@ void CMusicPlayerDlg::ThemeColorChanged()
 	if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255, 255, 255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
 	{
 		theApp.m_app_setting_data.theme_color.original_color = color;
-		m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
-		m_progress_bar.Invalidate();
-		m_time_static.Invalidate();
+		//m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
+		//m_progress_bar.Invalidate();
+		//m_time_static.Invalidate();
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 		SetPlayListColor();
 		m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
@@ -843,9 +759,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_pLayout = std::make_shared<SLayoutData>();
 
 	CRect rect1;
-	m_time_static.GetWindowRect(rect1);
-	m_time_width = rect1.Width();		//保存时间控件初始时的宽度
-	m_time_height = rect1.Height();
+	m_set_path_button.GetWindowRect(rect1);
+	m_select_folder_width = rect1.Width();		//保存“选择文件夹”按钮初始时的宽度
+	m_select_folder_height = rect1.Height();
 
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
@@ -853,15 +769,15 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_SELECT_RENENT_FOLDER));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_DOWN), _T("减小音量"));
 	//m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
-	m_Mytip.AddTool(&m_time_static, CCommon::LoadText(IDS_PLAY_TIME));
+	//m_Mytip.AddTool(&m_time_static, CCommon::LoadText(IDS_PLAY_TIME));
 	m_Mytip.AddTool(&m_clear_search_button, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
 	m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
 	m_ui.SetToolTip(&m_Mytip);
 	m_ui2.SetToolTip(&m_Mytip);
 
 	//为显示播放时间的static控件设置SS_NOTIFY属性，以启用鼠标提示
-	DWORD dwStyle = m_time_static.GetStyle();
-	::SetWindowLong(m_time_static.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
+	//DWORD dwStyle = m_time_static.GetStyle();
+	//::SetWindowLong(m_time_static.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
 	m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
 
@@ -900,35 +816,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	wcscpy_s(m_thumbButton[2].szTip, CCommon::LoadText(IDS_NEXT));
 	m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
-
-	//载入按钮小图标（16*16）
-	m_hPreviousIcon_s = CDrawCommon::LoadIconResource(IDI_PREVIOUS, theApp.DPI(16), theApp.DPI(16));
-	m_hNextIcon_s = CDrawCommon::LoadIconResource(IDI_NEXT1, theApp.DPI(16), theApp.DPI(16));
-	m_hPlayIcon_s = CDrawCommon::LoadIconResource(IDI_PLAY, theApp.DPI(16), theApp.DPI(16));
-	m_hPauseIcon_s = CDrawCommon::LoadIconResource(IDI_PAUSE, theApp.DPI(16), theApp.DPI(16));
-	m_hStopIcon_s = CDrawCommon::LoadIconResource(IDI_STOP, theApp.DPI(16), theApp.DPI(16));
-
-	//设置主界面上的按钮图标
-	m_play_pause_button.SetFont(this->GetFont());
-	m_play_pause_button.SetImage(m_hPlayIcon_s, FALSE);
-	m_play_pause_button.SetWindowText(CCommon::LoadText(IDS_PLAY2));
-
-	m_previous_button.SetFont(this->GetFont());
-	m_previous_button.SetImage(m_hPreviousIcon_s);
-
-	m_next_button.SetFont(this->GetFont());
-	m_next_button.SetImage(m_hNextIcon_s);
-
-	m_stop_button.SetFont(this->GetFont());
-	m_stop_button.SetImage(m_hStopIcon_s);
-
-	CRect rect;
-	//初始化进度条
-	m_progress_bar.SetRange(1000);		//设置进度条的范围
-	m_progress_bar.SetProgressBarHeight(theApp.DPI(5));	//设置进度条的高度
-	m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);			//设置进度条的颜色
-	m_progress_bar.GetWindowRect(rect);
-	m_progress_bar_left_pos = rect.left;		//用控件起始的位置作为普通界面模式下进度条控件左侧的位置
 
 	//注册全局热键	
 	if(theApp.m_hot_key_setting_data.hot_key_enable)
@@ -1040,7 +927,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 			if ((cx < m_pLayout->width_threshold) != m_ui_data.m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
 			{
 				Invalidate(FALSE);
-				m_time_static.Invalidate(FALSE);
+				//m_time_static.Invalidate(FALSE);
 			}
 			else
 			{
@@ -1058,10 +945,6 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		if (m_playlist_list.m_hWnd && theApp.m_dpi)
 		{
 			SetPlaylistSize(cx, cy);
-		}
-		if (m_progress_bar.m_hWnd && theApp.m_dpi)
-		{
-			SetPorgressBarSize(cx, cy);
 		}
 
 		if (nType != SIZE_MAXIMIZED)
@@ -1110,7 +993,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		m_ui_data.client_height = rect.Height();
 		SetPlaylistSize(rect.Width(), rect.Height());		//调整播放列表的大小和位置
 		m_path_static.Invalidate();
-		SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
+		//SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
 		SetPlaylistVisible();
 
 		if (m_cmdLine.empty())		//没有有通过命令行打开文件
@@ -1142,9 +1025,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//CPlayer::GetInstance().MusicControl(Command::OPEN);
 		//CPlayer::GetInstance().MusicControl(Command::SEEK);
 		//CPlayer::GetInstance().GetBASSError();
-		SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
-		ShowTime();
-		m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
+		//SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
+		//ShowTime();
+		//m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
 
 		//if(!m_cmdLine.empty())
 		//	CPlayer::GetInstance().MusicControl(Command::PLAY);	//如果文件是通过命令行打开的，则打开后直接播放
@@ -1162,7 +1045,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	m_timer_count++;
 
 	UpdateTaskBarProgress();
-	UpdateProgress();
+	//UpdateProgress();
 
 	CPlayer::GetInstance().GetBASSError();
 	if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
@@ -1177,7 +1060,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		if (sec_temp != sec_current)		//获取播放时间的秒数，如果秒数变了则刷新一次时间
 		{
 			sec_temp = sec_current;
-			ShowTime();
+			//ShowTime();
 		}
 
 		//在Cortana搜索框里显示歌词
@@ -1256,7 +1139,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT))
 		{
 			CPlayer::GetInstance().MusicControl(Command::STOP);		//停止播放
-			ShowTime();
+			//ShowTime();
 			if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
 				m_cortana_lyric.ResetCortanaText();
 		}
@@ -1301,7 +1184,7 @@ void CMusicPlayerDlg::OnStop()
 	// TODO: 在此添加命令处理程序代码
 	CPlayer::GetInstance().MusicControl(Command::STOP);
 	UpdatePlayPauseButton();
-	ShowTime();
+	//ShowTime();
 }
 
 
@@ -1328,7 +1211,7 @@ void CMusicPlayerDlg::OnRew()
 	// TODO: 在此添加命令处理程序代码
 	CPlayer::GetInstance().MusicControl(Command::REW);
 	UpdateTaskBarProgress();
-	ShowTime();
+	//ShowTime();
 }
 
 
@@ -1337,7 +1220,7 @@ void CMusicPlayerDlg::OnFF()
 	// TODO: 在此添加命令处理程序代码
 	CPlayer::GetInstance().MusicControl(Command::FF);
 	UpdateTaskBarProgress();
-	ShowTime();
+	//ShowTime();
 }
 
 
@@ -1357,8 +1240,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
 	{
 		CPlayer::GetInstance().SetPath(m_pSetPathDlg->GetSelPath(), m_pSetPathDlg->GetTrack(), m_pSetPathDlg->GetPosition(), m_pSetPathDlg->GetSortMode());
 		UpdatePlayPauseButton();
-		SetPorgressBarSize();
-		ShowTime();
+		//SetPorgressBarSize();
+		//ShowTime();
 		DrawInfo(true);
 		m_findDlg.ClearFindResult();		//更换路径后清除查找结果
 		CPlayer::GetInstance().SaveRecentPath();
@@ -1642,7 +1525,7 @@ void CMusicPlayerDlg::OnFileOpen()
 		CPlayer::GetInstance().OpenFiles(files);
 		//ShowPlayList();
 		UpdatePlayPauseButton();
-		SetPorgressBarSize();
+		//SetPorgressBarSize();
 		DrawInfo(true);
 		m_play_error_cnt = 0;
 	}
@@ -1666,7 +1549,7 @@ void CMusicPlayerDlg::OnFileOpenFolder()
 		CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()));
 		//ShowPlayList();
 		UpdatePlayPauseButton();
-		SetPorgressBarSize();
+		//SetPorgressBarSize();
 		DrawInfo(true);
 		m_play_error_cnt = 0;
 	}
@@ -1700,7 +1583,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
 	}
 	//ShowPlayList();
 	UpdatePlayPauseButton();
-	SetPorgressBarSize();
+	//SetPorgressBarSize();
 	DrawInfo(true);
 
 	CDialog::OnDropFiles(hDropInfo);
@@ -2099,17 +1982,6 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 	}
 
 	CDialog::OnHotKey(nHotKeyId, nKey1, nKey2);
-}
-
-
-
-void CMusicPlayerDlg::OnStnClickedProgressStatic()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	int pos = m_progress_bar.GetPos();
-	int song_pos = static_cast<__int64>(pos) * CPlayer::GetInstance().GetSongLength() / 1000;
-	CPlayer::GetInstance().SeekTo(song_pos);
-	ShowTime();
 }
 
 
@@ -2552,11 +2424,6 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何特性
-	//设置播放时间控件的颜色
-	if (pWnd == &m_time_static)
-	{
-		pDC->SetTextColor(theApp.m_app_setting_data.theme_color.dark2);
-	}
 
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
 	return hbr;
@@ -2567,11 +2434,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 {
 	theApp.DoWaitCursor(0);
 	ShowPlayList();
-	ShowTime();
+	//ShowTime();
 	DrawInfo(true);
-	SetPorgressBarSize();
+	//SetPorgressBarSize();
 	UpdatePlayPauseButton();
-	ShowTime();
+	//ShowTime();
 
 	m_ui.UpdateSongInfoToolTip();
 	m_ui2.UpdateSongInfoToolTip();
@@ -3208,4 +3075,14 @@ void CMusicPlayerDlg::OnShowPlaylist()
 
 	OnSize(SIZE_RESTORED, m_ui_data.client_width, m_ui_data.client_height);
 	SetPlaylistVisible();
+}
+
+
+BOOL CMusicPlayerDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (m_pUI->SetCursor())
+		return TRUE;
+	else
+	return CDialog::OnSetCursor(pWnd, nHitTest, message);
 }

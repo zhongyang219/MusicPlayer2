@@ -30,7 +30,7 @@ public:
 	virtual void UpdateToolTipPosition() override;
 
 protected:
-	//void DrawControlBar(bool draw_background, CRect rect);
+	//void DrawToolBar(bool draw_background, CRect rect);
 
 protected:
 	DrawData m_draw_data;

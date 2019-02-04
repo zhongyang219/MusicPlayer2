@@ -207,12 +207,11 @@ void CPlayerUI::DrawInfo(bool reset)
 		}
 	}
 
-	//显示控制条的信息
-	//绘制背景
+	//绘制工具条
 	CPoint point{ spectral_rect.left, spectral_rect.bottom };
 	point.y += 2 * m_pLayout->margin;
 	CRect other_info_rect{ point, CSize(draw_rect.Width() - 2 * m_pLayout->margin,theApp.DPI(24)) };
-	DrawControlBar(draw_background, other_info_rect, false, &m_ui_data);
+	DrawToolBar(draw_background, other_info_rect, false, &m_ui_data);
 
 	//显示歌词
 	m_draw.SetFont(&m_ui_data.lyric_font);
@@ -228,7 +227,7 @@ void CPlayerUI::DrawInfo(bool reset)
 		//if (CPlayer::GetInstance().IsPlaying() || reset)
 		//{
 		lyric_rect = draw_rect;
-		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin);
+		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin + theApp.DPI(32));
 		lyric_rect.bottom = m_draw_rect.Height()/* - m_pLayout->margin*/;
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}
@@ -236,6 +235,24 @@ void CPlayerUI::DrawInfo(bool reset)
 
 	//绘制音量调按钮，因为必须在上层，所以必须在歌词绘制完成后绘制
 	DrawVolumnAdjBtn(draw_background);
+
+	//绘制播放控制条
+	CRect rc_control_bar;
+	if (DrawNarrowMode())
+	{
+		rc_control_bar.top = lyric_rect.bottom + m_pLayout->margin;
+		rc_control_bar.left = m_pLayout->margin;
+		rc_control_bar.right = draw_rect.right - m_pLayout->margin;
+		rc_control_bar.bottom = draw_rect.bottom - m_pLayout->margin;
+	}
+	else
+	{
+		rc_control_bar.top = other_info_rect.bottom + m_pLayout->margin;
+		rc_control_bar.left = m_pLayout->margin;
+		rc_control_bar.right = draw_rect.right - m_pLayout->margin;
+		rc_control_bar.bottom = lyric_rect.top;
+	}
+	DrawControlBar(rc_control_bar, draw_background);
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
 	m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &MemDC, 0, 0, SRCCOPY);
@@ -444,9 +461,9 @@ CRect CPlayerUI::GetThumbnailClipArea()
 {
 	CRect info_rect;
 	if (!DrawNarrowMode())
-		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
+		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
 	else
-		info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
+		info_rect = CRect{ CPoint{ m_pLayout->margin, theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
 
 	return info_rect;
 }

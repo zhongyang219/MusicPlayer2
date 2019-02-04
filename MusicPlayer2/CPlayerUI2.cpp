@@ -59,6 +59,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 	{
 		bool right_lyric = (!m_ui_data.m_narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > theApp.DPI(600);
 		CRect info_rect{ draw_rect };
+		info_rect.bottom -= theApp.DPI(36);
 		if (right_lyric)
 			info_rect.right = info_rect.left + info_rect.Width() / 2;
 
@@ -92,7 +93,12 @@ void CPlayerUI2::DrawInfo(bool reset)
 		m_draw.DrawScrollText(rc_tmp, buff, m_colors.color_text, theApp.DPI(1.5), false, scroll_info2, reset);
 
 		//计算专辑封面的位置
-		int bottom_height = static_cast<int>(info_rect.Height() * 0.4);
+		int bottom_height;		//专辑封面底部到绘图区询问的距离
+		if (!right_lyric)
+			bottom_height = static_cast<int>(info_rect.Height() * 0.4);
+		else
+			bottom_height = static_cast<int>(info_rect.Height() * 0.35);
+
 		CRect cover_frame_rect{ CPoint(0, text_height * 2), CSize(info_rect.Width(), info_rect.Height() - text_height * 2 - bottom_height) };
 		int cover_side = min(cover_frame_rect.Width(), cover_frame_rect.Height());
 		CPoint start_point;
@@ -103,7 +109,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制背景
 		rc_tmp = cover_rect;
-		rc_tmp.bottom += m_pLayout->margin / 2;
+		//rc_tmp.bottom += m_pLayout->margin / 2;
 		if (draw_background)
 			m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 		else
@@ -124,14 +130,14 @@ void CPlayerUI2::DrawInfo(bool reset)
 			m_draw.DrawIcon(theApp.m_default_cover.GetIcon(), rect.TopLeft(), rect.Size());
 		}
 
-		//绘制播放进度
-		CRect progress_rect = cover_rect;
-		progress_rect.top = cover_rect.bottom;
-		progress_rect.bottom = progress_rect.top + m_pLayout->margin / 2;
-		double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
-		progress_rect.right = progress_rect.left + static_cast<int>(progress * cover_rect.Width());
-		if(progress_rect.right>progress_rect.left)
-			m_draw.FillRect(progress_rect, m_colors.color_spectrum);
+		////绘制播放进度
+		//CRect progress_rect = cover_rect;
+		//progress_rect.top = cover_rect.bottom;
+		//progress_rect.bottom = progress_rect.top + m_pLayout->margin / 2;
+		//double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
+		//progress_rect.right = progress_rect.left + static_cast<int>(progress * cover_rect.Width());
+		//if(progress_rect.right>progress_rect.left)
+		//	m_draw.FillRect(progress_rect, m_colors.color_spectrum);
 
 		int text_height2 = theApp.DPI(22);
 
@@ -142,61 +148,72 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		if (theApp.m_app_setting_data.show_spectrum)
 		{
-			int spectrum_height = max(text_height2 + static_cast<int>(info_rect.Height() * 0.1), info_rect.bottom - rc_spectrum_area.top - theApp.DPI(128));
+			int spectrum_height;
+			if (!right_lyric)
+				spectrum_height = max(text_height2 + static_cast<int>(info_rect.Height() * 0.1), info_rect.bottom - rc_spectrum_area.top - theApp.DPI(128));
+			else
+				spectrum_height = info_rect.bottom - rc_spectrum_area.top - theApp.DPI(32);
 
 			rc_spectrum_area.bottom = rc_spectrum_area.top + spectrum_height;
-			m_draw.SetDrawArea(m_draw.GetDC(), rc_spectrum_area);
-			rc_spectrum_area.left += static_cast<int>(info_rect.Width()*0.09);
-			rc_spectrum_area.right -= static_cast<int>(info_rect.Width()*0.05);
 
-			CRect rc_spectrum_top = rc_spectrum_area;
-			rc_spectrum_top.bottom = rc_spectrum_area.top + (rc_spectrum_area.Height() * 2 / 3);
-
-			const int ROWS = 64;		//要显示的频谱柱形的数量
-			int gap_width{ info_rect.Width()/200 };		//频谱柱形间隙宽度
-			CRect rects[ROWS];
-			int width = (rc_spectrum_top.Width() - (ROWS - 1)*gap_width) / (ROWS - 1);
-			rects[0] = rc_spectrum_top;
-			rects[0].right = rects[0].left + width;
-			for (int i{ 1 }; i < ROWS; i++)
+			if (spectrum_height > text_height2 + theApp.DPI(6))
 			{
-				rects[i] = rects[0];
-				rects[i].left += (i * (width + gap_width));
-				rects[i].right += (i * (width + gap_width));
-			}
-			for (int i{}; i < ROWS; i++)
-			{
-				float spetral_data = CPlayer::GetInstance().GetSpectralData()[i];
-				float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i];
+				m_draw.SetDrawArea(m_draw.GetDC(), rc_spectrum_area);
+				rc_spectrum_area.left += static_cast<int>(info_rect.Width()*0.09);
+				rc_spectrum_area.right -= static_cast<int>(info_rect.Width()*0.05);
 
-				CRect rect_tmp{ rects[i] };
-				int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-				int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-				if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-				if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-				rect_tmp.top = rect_tmp.bottom - spetral_height;
-				if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
-				m_draw.FillRect(rect_tmp, m_colors.color_spectrum, true);
-				//绘制倒影
-				CRect rc_invert = rect_tmp;
-				rc_invert.bottom = rect_tmp.top + rect_tmp.Height() * 2 / 3;
-				rc_invert.MoveToY(rect_tmp.bottom + gap_width);
-				m_draw.FillAlphaRect(rc_invert, m_colors.color_spectrum, 96, true);
+				CRect rc_spectrum_top = rc_spectrum_area;
+				rc_spectrum_top.bottom = rc_spectrum_area.top + (rc_spectrum_area.Height() * 2 / 3);
 
-				//绘制顶端
-				CRect rect_peak{ rect_tmp };
-				rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
-				rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
-				m_draw.FillRect(rect_peak, m_colors.color_spectrum, true);
-				////绘制顶端倒影
-				//CRect rc_peak_invert = rect_peak;
-				//rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
-				//m_draw.FillAlphaRect(rc_peak_invert, m_colors.color_spectrum, 96);
+				const int ROWS = 64;		//要显示的频谱柱形的数量
+				int gap_width{ info_rect.Width() / 200 };		//频谱柱形间隙宽度
+				CRect rects[ROWS];
+				int width = (rc_spectrum_top.Width() - (ROWS - 1)*gap_width) / (ROWS - 1);
+				rects[0] = rc_spectrum_top;
+				rects[0].right = rects[0].left + width;
+				for (int i{ 1 }; i < ROWS; i++)
+				{
+					rects[i] = rects[0];
+					rects[i].left += (i * (width + gap_width));
+					rects[i].right += (i * (width + gap_width));
+				}
+				for (int i{}; i < ROWS; i++)
+				{
+					float spetral_data = CPlayer::GetInstance().GetSpectralData()[i];
+					float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i];
+
+					CRect rect_tmp{ rects[i] };
+					int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+					int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+					if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+					if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+					rect_tmp.top = rect_tmp.bottom - spetral_height;
+					if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
+					m_draw.FillRect(rect_tmp, m_colors.color_spectrum, true);
+					//绘制倒影
+					CRect rc_invert = rect_tmp;
+					rc_invert.bottom = rect_tmp.top + rect_tmp.Height() * 2 / 3;
+					rc_invert.MoveToY(rect_tmp.bottom + gap_width);
+					m_draw.FillAlphaRect(rc_invert, m_colors.color_spectrum, 96, true);
+
+					//绘制顶端
+					CRect rect_peak{ rect_tmp };
+					rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
+					rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
+					m_draw.FillRect(rect_peak, m_colors.color_spectrum, true);
+					////绘制顶端倒影
+					//CRect rc_peak_invert = rect_peak;
+					//rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
+					//m_draw.FillAlphaRect(rc_peak_invert, m_colors.color_spectrum, 96);
+				}
 			}
 		}
 		else
 		{
-			rc_spectrum_area.bottom = rc_spectrum_area.top + text_height2;
+			if (!right_lyric)
+				rc_spectrum_area.bottom = rc_spectrum_area.top + text_height2;
+			else
+				rc_spectrum_area.bottom = info_rect.bottom - theApp.DPI(32);
 		}
 
 
@@ -217,7 +234,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.MoveToY(rc_spectrum_area.bottom + theApp.DPI(4));
 		rc_tmp.bottom = rc_tmp.top + theApp.DPI(24);
 		rc_tmp.right = draw_rect.right - m_pLayout->margin;
-		DrawControlBar(draw_background, rc_tmp, true, &m_ui_data);
+		DrawToolBar(draw_background, rc_tmp, true, &m_ui_data);
 
 		m_draw_data.info_rect = m_draw_rect;
 		m_draw_data.info_rect.bottom = m_draw_data.info_rect.top + rc_tmp.bottom;
@@ -227,12 +244,15 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制歌词
 		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 
+		int lyric_margin;
 		if (!right_lyric)
 		{
 			rc_tmp.MoveToX(m_pLayout->margin);
 			rc_tmp.MoveToY(rc_tmp.bottom + m_pLayout->margin);
 			rc_tmp.right = info_rect.right - m_pLayout->margin;
 			rc_tmp.bottom = info_rect.bottom - m_pLayout->margin;
+
+			lyric_margin = m_pLayout->margin;
 		}
 		else
 		{
@@ -240,6 +260,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 			rc_tmp.MoveToY(2 * text_height2 + m_pLayout->margin);
 			rc_tmp.right = draw_rect.right - m_pLayout->margin;
 			rc_tmp.bottom = rc_spectrum_area.bottom;
+
+			lyric_margin = 2 * m_pLayout->margin;
 		}
 
 		if (theApp.m_app_setting_data.lyric_background)
@@ -250,7 +272,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
 		}
 
-		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
+		rc_tmp.DeflateRect(lyric_margin, lyric_margin);
 		if (rc_tmp.bottom > rc_tmp.top + m_lyric_text_height / 2)
 		{
 			CDrawCommon::SetDrawArea(m_draw.GetDC(), rc_tmp);
@@ -263,15 +285,28 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制音量调整按钮
 		DrawVolumnAdjBtn(draw_background);
+
+		//绘制播放控制按钮
+		rc_tmp = draw_rect;
+		rc_tmp.left += m_pLayout->margin;
+		rc_tmp.right -= m_pLayout->margin;
+		rc_tmp.top = info_rect.bottom;
+		rc_tmp.bottom -= m_pLayout->margin;
+		DrawControlBar(rc_tmp, draw_background);
 	}
 
 	//窄界面模式时
 	else
 	{
+		CRect info_rect{ draw_rect };
+		info_rect.bottom -= theApp.DPI(36);
+
 		//绘制专辑封面
-		CRect rc_tmp = draw_rect;
+		CRect rc_tmp = info_rect;
+		const int cover_side = theApp.DPI(150);
 		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
-		rc_tmp.right = rc_tmp.left + rc_tmp.Height();
+		rc_tmp.right = rc_tmp.left + cover_side;
+		rc_tmp.bottom = rc_tmp.top + cover_side;
 		if (draw_background)
 			m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 		else
@@ -293,16 +328,16 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制播放状态
 		int text_height{ theApp.DPI(18) };		//文本的高度
-		rc_tmp.MoveToX(draw_rect.Height());
+		rc_tmp.MoveToX(cover_side + 2 * m_pLayout->margin);
 		rc_tmp.MoveToY(m_pLayout->margin);
-		rc_tmp.right = draw_rect.right - m_pLayout->margin;
+		rc_tmp.right = info_rect.right - m_pLayout->margin;
 		rc_tmp.bottom = rc_tmp.top + text_height;
 		DrawSongInfo(rc_tmp, reset);
 
 		//绘制标题和艺术家
 		int text_height2 = theApp.DPI(22);
-		rc_tmp.MoveToXY(draw_rect.Height(), rc_tmp.bottom + theApp.DPI(4));
-		rc_tmp.right = draw_rect.right - m_pLayout->margin;
+		rc_tmp.MoveToXY(cover_side + 2 * m_pLayout->margin, rc_tmp.bottom + theApp.DPI(4));
+		rc_tmp.right = info_rect.right - m_pLayout->margin;
 		rc_tmp.bottom = rc_tmp.top + text_height2;
 		m_draw.SetFont(&m_title_font);
 		static CDrawCommon::ScrollInfo scroll_info_title;
@@ -313,16 +348,16 @@ void CPlayerUI2::DrawInfo(bool reset)
 		static CDrawCommon::ScrollInfo scroll_info_artist;
 		m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), m_colors.color_text, theApp.DPI(1), true, scroll_info_artist, reset);
 
-		//绘制控件条
+		//绘制工具条
 		rc_tmp.MoveToY(rc_tmp.bottom + theApp.DPI(4));
 		rc_tmp.bottom = rc_tmp.top + theApp.DPI(24);
-		DrawControlBar(draw_background, rc_tmp, true, &m_ui_data);
+		DrawToolBar(draw_background, rc_tmp, true, &m_ui_data);
 
 		//绘制歌词
 		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 
 		rc_tmp.MoveToY(rc_tmp.bottom + m_pLayout->margin);
-		rc_tmp.bottom = draw_rect.bottom - m_pLayout->margin;
+		rc_tmp.bottom = cover_side + 2 * m_pLayout->margin - m_pLayout->margin;
 
 		if (theApp.m_app_setting_data.lyric_background)
 		{
@@ -331,11 +366,22 @@ void CPlayerUI2::DrawInfo(bool reset)
 			else
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
 		}
+		else
+		{
+			m_draw.SetDrawArea(rc_tmp);
+		}
 		rc_tmp.DeflateRect(m_pLayout->margin, m_pLayout->margin);
 		DrawLyricTextSingleLine(rc_tmp, midi_lyric);
 
 		//绘制音量调整按钮
 		DrawVolumnAdjBtn(draw_background);
+
+		//绘播放制控制条
+		rc_tmp.top = cover_side + 2 * m_pLayout->margin;
+		rc_tmp.left = m_pLayout->margin;
+		rc_tmp.right = draw_rect.right - m_pLayout->margin;
+		rc_tmp.bottom = draw_rect.bottom - m_pLayout->margin;
+		DrawControlBar(rc_tmp, draw_background);
 	}
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
@@ -405,13 +451,13 @@ CRect CPlayerUI2::GetThumbnailClipArea()
 	if (!DrawNarrowMode())
 	{
 		clip_area_rect = m_draw_data.cover_rect;
-		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->control_bar_height + m_pLayout->margin + theApp.DPI(20));
+		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->margin + theApp.DPI(20));
 		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
 	}
 	else
 	{
 		clip_area_rect = m_draw_data.cover_rect;
-		clip_area_rect.MoveToY(clip_area_rect.top + m_pLayout->control_bar_height + m_pLayout->progress_bar_height + theApp.DPI(20));
+		clip_area_rect.MoveToY(clip_area_rect.top + theApp.DPI(20));
 		clip_area_rect.MoveToX(clip_area_rect.left + m_pLayout->margin);
 	}
 	return clip_area_rect;

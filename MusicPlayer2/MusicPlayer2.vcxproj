@@ -204,6 +204,7 @@
     <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CMiniModeUI.h" />
     <ClInclude Include="CNotifyIcon.h" />
+    <ClInclude Include="CommonData.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
     <ClInclude Include="CPlayerUI.h" />
