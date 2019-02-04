@@ -317,8 +317,8 @@ void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
 		m_data.theme_color.original_color = colorDlg.GetColor();
 		//if (m_data.theme_color.original_color == 0)
 		//	MessageBox(_T("警告：将主题颜色设置成黑色会使播放列表中正在播放的项目看不见！"), NULL, MB_ICONWARNING);
-		if(m_data.theme_color.original_color == RGB(255,255,255))
-			MessageBox(CCommon::LoadText(IDS_WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
+		//if(m_data.theme_color.original_color == RGB(255,255,255))
+		//	MessageBox(CCommon::LoadText(IDS_WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
 		m_color_static.SetFillColor(m_data.theme_color.original_color);
 		//设置了“更多颜色”之后，取消“跟随系统主题色”复选按钮的选中
 		m_data.theme_color_follow_system = false;
