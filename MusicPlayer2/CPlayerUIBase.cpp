@@ -524,8 +524,14 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 void CPlayerUIBase::DrawToolBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData)
 {
 	//ªÊ÷∆±≥æ∞
+	BYTE alpha;
+	if (theApp.m_app_setting_data.dark_mode)
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+	else
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+
 	if (draw_background)
-		m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+		m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
 	else
 		m_draw.FillRect(rect, m_colors.color_control_bar_back);
 
@@ -537,7 +543,6 @@ void CPlayerUIBase::DrawToolBar(bool draw_background, CRect rect, bool draw_tran
 	rc_repeat_mode.DeflateRect(theApp.DPI(2), theApp.DPI(2));
 	m_draw.SetDrawArea(rc_repeat_mode);
 
-	BYTE alpha;
 	if (draw_background)
 		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 	else
@@ -617,7 +622,7 @@ void CPlayerUIBase::DrawToolBar(bool draw_background, CRect rect, bool draw_tran
 		{
 			BYTE alpha;
 			if (draw_background)
-				alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+				alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 			else
 				alpha = 255;
 			if (m_buttons[BTN_TRANSLATE].hover)
@@ -756,7 +761,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes& icon
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 	else
 		alpha = 255;
 	if(btn.pressed && btn.hover)
@@ -783,7 +788,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 	else
 		alpha = 255;
 	if (btn.pressed && btn.hover)

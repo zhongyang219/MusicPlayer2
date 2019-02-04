@@ -322,7 +322,7 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	{
 		BYTE alpha;
 		if (draw_background)
-			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 		else
 			alpha = 255;
 		if (m_buttons[BTN_TRANSLATE].hover)
