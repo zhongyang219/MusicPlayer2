@@ -59,7 +59,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 	{
 		bool right_lyric = (!m_ui_data.m_narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > theApp.DPI(600);
 		CRect info_rect{ draw_rect };
-		info_rect.bottom -= theApp.DPI(36);
+		info_rect.bottom -= theApp.DPI(40);
 		if (right_lyric)
 			info_rect.right = info_rect.left + info_rect.Width() / 2;
 
@@ -94,10 +94,10 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//计算专辑封面的位置
 		int bottom_height;		//专辑封面底部到绘图区询问的距离
-		if (!right_lyric)
+		//if (!right_lyric)
 			bottom_height = static_cast<int>(info_rect.Height() * 0.4);
-		else
-			bottom_height = static_cast<int>(info_rect.Height() * 0.35);
+		//else
+		//	bottom_height = static_cast<int>(info_rect.Height() * 0.35);
 
 		CRect cover_frame_rect{ CPoint(0, text_height * 2), CSize(info_rect.Width(), info_rect.Height() - text_height * 2 - bottom_height) };
 		int cover_side = min(cover_frame_rect.Width(), cover_frame_rect.Height());

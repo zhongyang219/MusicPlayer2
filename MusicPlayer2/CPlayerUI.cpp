@@ -227,7 +227,7 @@ void CPlayerUI::DrawInfo(bool reset)
 		//if (CPlayer::GetInstance().IsPlaying() || reset)
 		//{
 		lyric_rect = draw_rect;
-		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin + theApp.DPI(32));
+		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin + theApp.DPI(36));
 		lyric_rect.bottom = m_draw_rect.Height()/* - m_pLayout->margin*/;
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}
