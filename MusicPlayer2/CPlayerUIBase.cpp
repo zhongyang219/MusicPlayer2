@@ -108,6 +108,12 @@ void CPlayerUIBase::MouseMove(CPoint point)
 		}
 	}
 
+	TRACKMOUSEEVENT tme;
+	tme.cbSize = sizeof(tme);
+	tme.hwndTrack = theApp.m_pMainWnd->GetSafeHwnd();
+	tme.dwFlags = TME_LEAVE | TME_HOVER;
+	tme.dwHoverTime = 1;
+	_TrackMouseEvent(&tme);
 }
 
 void CPlayerUIBase::LButtonUp(CPoint point)
@@ -311,6 +317,14 @@ bool CPlayerUIBase::SetCursor()
 		return true;
 	}
 	return false;
+}
+
+void CPlayerUIBase::MouseLeave()
+{
+	for (auto& btn : m_buttons)
+	{
+		btn.second.hover = false;
+	}
 }
 
 void CPlayerUIBase::PreDrawInfo()
@@ -892,7 +906,7 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 {
 	const SongInfo& songInfo = CPlayer::GetInstance().GetCurrentSongInfo();
 	
-	m_info_tip = CCommon::LoadText(IDS_SONG_INFO, _T(" (Ctrl + N)\r\n"));
+	m_info_tip = CCommon::LoadText(IDS_SONG_INFO, _T(" (Ctrl+N)\r\n"));
 
 	m_info_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
 	m_info_tip += songInfo.title.c_str();
@@ -1079,9 +1093,9 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
 	AddMouseToolTip(BTN_VOLUME, CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME));
 	AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI));
-	AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, _T(" (Ctrl + E)")));
-	AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, _T(" (Ctrl + I)")));
-	AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl + M)")));
+	AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, _T(" (Ctrl+E)")));
+	AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, _T(" (Ctrl+I)")));
+	AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl+M)")));
 	AddMouseToolTip(BTN_INFO, m_info_tip);
 	AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
 	AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
@@ -1089,7 +1103,7 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
 	AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
 	AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
-	AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_SELECT_FOLDER, _T(" (Ctrl + T)")));
-	AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl + F)")));
+	AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_SELECT_FOLDER, _T(" (Ctrl+T)")));
+	AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
 }
 

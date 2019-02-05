@@ -32,5 +32,5 @@ public:
 	virtual void UpdatePlayPauseButtonTip() = 0;
 
 	virtual bool SetCursor() = 0;
-
+	virtual void MouseLeave() = 0;
 };

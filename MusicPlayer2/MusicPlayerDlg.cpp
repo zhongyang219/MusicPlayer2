@@ -154,7 +154,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHOW_PLAYLIST, &CMusicPlayerDlg::OnShowPlaylist)
 	ON_WM_SETCURSOR()
-END_MESSAGE_MAP()
+		ON_WM_MOUSELEAVE()
+		END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3072,4 +3073,13 @@ BOOL CMusicPlayerDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 		return TRUE;
 	else
 	return CDialog::OnSetCursor(pWnd, nHitTest, message);
+}
+
+
+void CMusicPlayerDlg::OnMouseLeave()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	m_pUI->MouseLeave();
+
+	CDialog::OnMouseLeave();
 }

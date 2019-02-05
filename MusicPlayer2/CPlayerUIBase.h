@@ -55,6 +55,7 @@ public:
 	void UpdatePlayPauseButtonTip() override;
 
 	virtual bool SetCursor() override;
+	virtual void MouseLeave() override;
 
 protected:
 	enum BtnKey		//标识按钮的类型
