@@ -48,7 +48,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 	}
 
 	//填充背景颜色
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		//是否需要绘制图片背景
+	bool draw_background{ DrawBackgroundAlpha() };		//是否需要绘制透明背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -240,7 +240,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.MoveToY(rc_spectrum_area.bottom + theApp.DPI(4));
 		rc_tmp.bottom = rc_tmp.top + theApp.DPI(24);
 		rc_tmp.right = draw_rect.right - m_layout.margin;
-		DrawToolBar(draw_background, rc_tmp, true, &m_ui_data);
+		DrawToolBar(rc_tmp, true);
 
 		//m_draw_data.info_rect = m_draw_rect;
 		//m_draw_data.info_rect.bottom = m_draw_data.info_rect.top + rc_tmp.bottom;
@@ -248,7 +248,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//m_draw_data.lyric_rect.top = m_draw_data.info_rect.bottom + 1;
 
 		//绘制歌词
-		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
+		//bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 
 		int lyric_margin;
 		if (!right_lyric)
@@ -284,16 +284,11 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.DeflateRect(lyric_margin, lyric_margin);
 		if (rc_tmp.bottom > rc_tmp.top + m_lyric_text_height / 2)
 		{
-			CDrawCommon::SetDrawArea(m_draw.GetDC(), rc_tmp);
-
-			if (rc_tmp.Height() < static_cast<int>(m_lyric_text_height*3.5))
-				DrawLyricTextSingleLine(rc_tmp, midi_lyric);
-			else
-				DrawLyricTextMultiLine(rc_tmp, midi_lyric);
+			DrawLryicCommon(rc_tmp);
 		}
 
 		//绘制音量调整按钮
-		DrawVolumnAdjBtn(draw_background);
+		DrawVolumnAdjBtn();
 
 		//绘制播放控制按钮
 		rc_tmp = draw_rect;
@@ -301,7 +296,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.right -= m_layout.margin;
 		rc_tmp.top = info_rect.bottom;
 		rc_tmp.bottom -= m_layout.margin;
-		DrawControlBar(rc_tmp, draw_background);
+		DrawControlBar(rc_tmp);
 	}
 
 	//窄界面模式时
@@ -361,10 +356,10 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制工具条
 		rc_tmp.MoveToY(rc_tmp.bottom + theApp.DPI(4));
 		rc_tmp.bottom = rc_tmp.top + theApp.DPI(24);
-		DrawToolBar(draw_background, rc_tmp, true, &m_ui_data);
+		DrawToolBar(rc_tmp, true);
 
 		//绘制歌词
-		bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
+		//bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
 
 		rc_tmp.MoveToY(rc_tmp.bottom + m_layout.margin);
 		rc_tmp.bottom = cover_side + 2 * m_layout.margin - m_layout.margin;
@@ -382,17 +377,17 @@ void CPlayerUI2::DrawInfo(bool reset)
 		}
 		m_draw_data.lyric_rect = rc_tmp;
 		rc_tmp.DeflateRect(m_layout.margin, m_layout.margin);
-		DrawLyricTextSingleLine(rc_tmp, midi_lyric);
+		DrawLryicCommon(rc_tmp);
 
 		//绘制音量调整按钮
-		DrawVolumnAdjBtn(draw_background);
+		DrawVolumnAdjBtn();
 
 		//绘播放制控制条
 		rc_tmp.top = cover_side + 2 * m_layout.margin;
 		rc_tmp.left = m_layout.margin;
 		rc_tmp.right = draw_rect.right - m_layout.margin;
 		rc_tmp.bottom = draw_rect.bottom - m_layout.margin;
-		DrawControlBar(rc_tmp, draw_background);
+		DrawControlBar(rc_tmp);
 	}
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示

@@ -7,7 +7,7 @@ struct SLayoutData
 {
 	const int margin = theApp.DPI(4);							//边缘的余量
 	const int width_threshold = theApp.DPI(600);				//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
-	const int info_height = theApp.DPI(206);					//窄界面模式时显示信息区域的高度
+	const int info_height = theApp.DPI(208);					//窄界面模式时显示信息区域的高度
 	const int info_height2 = theApp.DPI(143);					//普通界面模式时显示信息区域的高度
 	const int path_edit_height = theApp.DPI(32);				//前路径Edit控件区域的高度
 	const int search_edit_height = theApp.DPI(26);				//歌曲搜索框Edit控件区域的高度
@@ -86,13 +86,12 @@ protected:
 protected:
 	void PreDrawInfo();
 	void SetDrawRect();
-	void DrawLyricTextMultiLine(CRect rect, bool midi_lyric);
-	void DrawLyricTextSingleLine(CRect rect, bool midi_lyric);
+	void DrawLryicCommon(CRect rect);
 	void DrawSongInfo(CRect rect, bool reset = false);
-	void DrawToolBar(bool draw_background, CRect rect, bool draw_translate_button, UIData* pUIData = nullptr);
-	void DrawVolumnAdjBtn(bool draw_background);
-	void DrawControlBar(CRect rect, bool draw_background);
-	void DrawProgressBar(CRect rect, bool draw_background);
+	void DrawToolBar(CRect rect, bool draw_translate_button);
+	void DrawVolumnAdjBtn();
+	void DrawControlBar(CRect rect);
+	void DrawProgressBar(CRect rect);
 
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
@@ -104,11 +103,15 @@ protected:
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
 	bool DrawNarrowMode();			//是否使用窄界面模式绘图
+	static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
+	bool DrawBackgroundAlpha() const;	//是否需要绘制透明背景
 
 private:
+	void DrawLyricTextMultiLine(CRect rect);
+	void DrawLyricTextSingleLine(CRect rect);
 	void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
-	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon, bool draw_background);
-	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon, bool draw_background);
+	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
+	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
 	void SetRepeatModeToolTipText();
 	void SetSongInfoToolTipText();
 

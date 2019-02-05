@@ -46,7 +46,7 @@ void CPlayerUI::DrawInfo(bool reset)
 
 	//填充背景颜色
 	//CDrawCommon::SetDrawArea(&MemDC, draw_rect);
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };		//是否需要绘制图片背景
+	bool draw_background{ DrawBackgroundAlpha() };		//是否需要绘制透明背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -211,7 +211,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	CPoint point{ spectral_rect.left, spectral_rect.bottom };
 	point.y += 2 * m_layout.margin;
 	CRect other_info_rect{ point, CSize(draw_rect.Width() - 2 * m_layout.margin,theApp.DPI(24)) };
-	DrawToolBar(draw_background, other_info_rect, false, &m_ui_data);
+	DrawToolBar(other_info_rect, false);
 
 	//显示歌词
 	m_draw.SetFont(&m_ui_data.lyric_font);
@@ -220,7 +220,17 @@ void CPlayerUI::DrawInfo(bool reset)
 	{
 		lyric_rect = other_info_rect;
 		lyric_rect.MoveToY(other_info_rect.bottom + m_layout.margin);
-		DrawLyricsSingleLine(lyric_rect);
+
+		//绘制背景
+		if (theApp.m_app_setting_data.lyric_background)
+		{
+			if (draw_background)
+				m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
+			else
+				m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
+		}
+
+		DrawLryicCommon(lyric_rect);
 	}
 	else
 	{
@@ -236,7 +246,7 @@ void CPlayerUI::DrawInfo(bool reset)
 		lyric_rect = draw_rect;
 		lyric_rect.MoveToY(other_info_rect.bottom + m_layout.margin + control_bar_height);
 		lyric_rect.bottom = m_draw_rect.Height()/* - m_layout.margin*/;
-		DrawLyricsMulityLine(lyric_rect, &MemDC);
+		DrawLyricsArea(lyric_rect);
 		//}
 	}
 	m_draw_data.lyric_rect = lyric_rect;
@@ -247,7 +257,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	}
 
 	//绘制音量调按钮，因为必须在上层，所以必须在歌词绘制完成后绘制
-	DrawVolumnAdjBtn(draw_background);
+	DrawVolumnAdjBtn();
 
 	//绘制播放控制条
 	CRect rc_control_bar;
@@ -265,7 +275,7 @@ void CPlayerUI::DrawInfo(bool reset)
 		rc_control_bar.right = draw_rect.right - m_layout.margin;
 		rc_control_bar.bottom = lyric_rect.top;
 	}
-	DrawControlBar(rc_control_bar, draw_background);
+	DrawControlBar(rc_control_bar);
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
 	m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &MemDC, 0, 0, SRCCOPY);
@@ -276,46 +286,10 @@ void CPlayerUI::DrawInfo(bool reset)
 	CPlayerUIBase::DrawInfo(reset);
 }
 
-void CPlayerUI::DrawLyricsSingleLine(CRect lyric_rect)
+void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
 {
-	if (theApp.m_app_setting_data.lyric_background)
-	{
-		bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };
-		if (draw_background)
-			m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-		else
-			m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
-	}
-	if (CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric())
-	{
-		wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
-		m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, false, true);
-	}
-	else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())
-	{
-		m_draw.DrawWindowText(lyric_rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
-	}
-	else
-	{
-		wstring current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0).text };	//获取当歌词
-		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
-			current_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-		if (theApp.m_lyric_setting_data.lyric_karaoke_disp)		//歌词以卡拉OK样式显示时
-		{
-			int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(Time(CPlayer::GetInstance().GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
-			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true);
-		}
-		else				//歌词不以卡拉OK样式显示时
-		{
-			m_draw.DrawWindowText(lyric_rect, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER);
-		}
-	}
-}
-
-void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
-{
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull()) };
-	bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
+	bool draw_background{ DrawBackgroundAlpha() };
+	bool midi_lyric = IsMidiLyric();
 	//显示“歌词秀”
 	CRect tmp;
 	tmp = lyric_rect;
@@ -362,10 +336,10 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	}
 	//设置歌词文字区域
 	lyric_area.DeflateRect(2 * m_layout.margin, 2 * m_layout.margin);
-	CDrawCommon::SetDrawArea(pDC, lyric_area);
+	//CDrawCommon::SetDrawArea(pDC, lyric_area);
 
 	//绘制歌词文本
-	DrawLyricTextMultiLine(lyric_area, midi_lyric);
+	DrawLryicCommon(lyric_area);
 }
 
 //void CPlayerUI::RButtonUp(CPoint point)

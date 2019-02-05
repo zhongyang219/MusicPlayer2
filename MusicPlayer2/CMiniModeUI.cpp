@@ -69,7 +69,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	}
 
 	//填充背景颜色
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.pDefaultBackground->IsNull()) };		//是否需要绘制图片背景
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.pDefaultBackground->IsNull()) };		//是否需要绘制透明背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
