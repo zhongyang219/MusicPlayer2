@@ -340,6 +340,33 @@ void CPlayerUIBase::SetDrawRect()
 	}
 }
 
+void CPlayerUIBase::DrawBackground()
+{
+	CRect draw_rect = m_draw_rect;
+	draw_rect.MoveToXY(0, 0);
+
+	//»æÖÆ±³¾°
+	if (theApp.m_app_setting_data.album_cover_as_background)
+	{
+		if (CPlayer::GetInstance().AlbumCoverExist())
+		{
+			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
+			m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+		}
+		else
+		{
+			//MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//¸ø»º³åDCµÄ»æÍ¼ÇøÓòÌî³ä¶Ô»°¿òµÄ±³¾°ÑÕÉ«
+			m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+		}
+	}
+
+	//Ìî³ä±³¾°ÑÕÉ«
+	if (IsDrawBackgroundAlpha())
+		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
+	else
+		m_draw.FillRect(draw_rect, m_colors.color_back);
+}
+
 void CPlayerUIBase::DrawLryicCommon(CRect rect)
 {
 	CDrawCommon::SetDrawArea(m_draw.GetDC(), rect);
@@ -545,7 +572,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 
 void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 {
-	bool draw_background{ DrawBackgroundAlpha() };
+	bool draw_background{ IsDrawBackgroundAlpha() };
 	//»æÖÆ±³¾°
 	BYTE alpha;
 	if (theApp.m_app_setting_data.dark_mode)
@@ -783,7 +810,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes& icon
 	m_draw.SetDrawArea(rc_tmp);
 
 	BYTE alpha;
-	if (DrawBackgroundAlpha())
+	if (IsDrawBackgroundAlpha())
 		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 	else
 		alpha = 255;
@@ -810,7 +837,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
 	m_draw.SetDrawArea(rc_tmp);
 
 	BYTE alpha;
-	if (DrawBackgroundAlpha())
+	if (IsDrawBackgroundAlpha())
 		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 	else
 		alpha = 255;
@@ -884,12 +911,12 @@ bool CPlayerUIBase::IsMidiLyric()
 	return CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric();
 }
 
-bool CPlayerUIBase::DrawBackgroundAlpha() const
+bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
 	return theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
 }
 
-bool CPlayerUIBase::DrawNarrowMode()
+bool CPlayerUIBase::IsDrawNarrowMode()
 {
 	if (!m_ui_data.show_playlist)
 		return false;
@@ -904,7 +931,7 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
 		CRect volume_down_rect = ClientAreaToDraw(m_volume_down_rect, m_draw_rect);
 		CRect volume_up_rect = ClientAreaToDraw(m_volume_up_rect, m_draw_rect);
 
-		if (DrawBackgroundAlpha())
+		if (IsDrawBackgroundAlpha())
 		{
 			m_draw.FillAlphaRect(volume_down_rect, m_colors.color_text_2, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 			m_draw.FillAlphaRect(volume_up_rect, m_colors.color_text_2, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
@@ -993,7 +1020,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 	progress_rect.top = rect.top + (rect.Height() - progress_height) / 2;
 	progress_rect.bottom = progress_rect.top + progress_height;
 
-	if (DrawBackgroundAlpha())
+	if (IsDrawBackgroundAlpha())
 		m_draw.FillAlphaRect(progress_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	else
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum_back);

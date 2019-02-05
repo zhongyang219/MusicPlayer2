@@ -26,31 +26,9 @@ void CPlayerUI::DrawInfo(bool reset)
 	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
 	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
-	if (theApp.m_app_setting_data.album_cover_as_background)
-	{
-		if (CPlayer::GetInstance().AlbumCoverExist())
-		{
-			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
-			m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-		}
-		else
-		{
-			//MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
-			m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-		}
-	}
-	else
-	{
-		m_draw.FillRect(draw_rect, m_colors.color_back);
-	}
 
-	//填充背景颜色
-	//CDrawCommon::SetDrawArea(&MemDC, draw_rect);
-	bool draw_background{ DrawBackgroundAlpha() };		//是否需要绘制透明背景
-	if (draw_background)
-		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-	else
-		m_draw.FillRect(draw_rect, m_colors.color_back);
+	//绘制背景
+	DrawBackground();
 
 	CPoint text_start{ draw_rect.left + m_layout.spectral_size.cx + 2 * m_layout.margin, draw_rect.top + m_layout.margin };		//文本的起始坐标
 	int text_height{ theApp.DPI(18) };		//文本的高度
@@ -143,7 +121,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	//显示频谱分析
 	CRect spectral_rect{ CPoint{draw_rect.left + m_layout.margin, draw_rect.top + m_layout.margin}, m_layout.spectral_size };
 	//绘制背景
-	if (draw_background)
+	if (IsDrawBackgroundAlpha())
 		m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	else
 		m_draw.FillRect(spectral_rect, m_colors.color_spectrum_back);
@@ -216,7 +194,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	//显示歌词
 	m_draw.SetFont(&m_ui_data.lyric_font);
 	CRect lyric_rect;
-	if (DrawNarrowMode())
+	if (IsDrawNarrowMode())
 	{
 		lyric_rect = other_info_rect;
 		lyric_rect.MoveToY(other_info_rect.bottom + m_layout.margin);
@@ -224,7 +202,7 @@ void CPlayerUI::DrawInfo(bool reset)
 		//绘制背景
 		if (theApp.m_app_setting_data.lyric_background)
 		{
-			if (draw_background)
+			if (IsDrawBackgroundAlpha())
 				m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
 			else
 				m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
@@ -251,7 +229,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	}
 	m_draw_data.lyric_rect = lyric_rect;
 	m_draw_data.thumbnail_rect = draw_rect;
-	if (!DrawNarrowMode())
+	if (!IsDrawNarrowMode())
 	{
 		m_draw_data.thumbnail_rect.bottom = lyric_rect.top;
 	}
@@ -261,7 +239,7 @@ void CPlayerUI::DrawInfo(bool reset)
 
 	//绘制播放控制条
 	CRect rc_control_bar;
-	if (DrawNarrowMode())
+	if (IsDrawNarrowMode())
 	{
 		rc_control_bar.top = lyric_rect.bottom + m_layout.margin;
 		rc_control_bar.left = m_layout.margin;
@@ -288,7 +266,7 @@ void CPlayerUI::DrawInfo(bool reset)
 
 void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
 {
-	bool draw_background{ DrawBackgroundAlpha() };
+	bool draw_background{ IsDrawBackgroundAlpha() };
 	bool midi_lyric = IsMidiLyric();
 	//显示“歌词秀”
 	CRect tmp;
@@ -421,7 +399,7 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy)
 //CRect CPlayerUI::GetThumbnailClipArea()
 //{
 //	//CRect info_rect;
-//	//if (!DrawNarrowMode())
+//	//if (!IsDrawNarrowMode())
 //	//	info_rect = CRect{ CPoint{ m_layout.margin, m_layout.margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_layout.margin, m_layout.info_height2 - 3 * m_layout.margin } };
 //	//else
 //	//	info_rect = CRect{ CPoint{ m_layout.margin, theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_layout.margin, m_layout.info_height - 2 * m_layout.margin } };

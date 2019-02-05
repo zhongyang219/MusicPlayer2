@@ -33,29 +33,9 @@ void CPlayerUI2::DrawInfo(bool reset)
 	m_draw.SetFont(theApp.m_pMainWnd->GetFont());
 
 	//»æÖÆ±³¾°
-	if (theApp.m_app_setting_data.album_cover_as_background)
-	{
-		if (CPlayer::GetInstance().AlbumCoverExist())
-		{
-			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
-			m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-		}
-		else
-		{
-			//MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//¸ø»º³åDCµÄ»æÍ¼ÇøÓòÌî³ä¶Ô»°¿òµÄ±³¾°ÑÕÉ«
-			m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-		}
-	}
+	DrawBackground();
 
-	//Ìî³ä±³¾°ÑÕÉ«
-	bool draw_background{ DrawBackgroundAlpha() };		//ÊÇ·ñÐèÒª»æÖÆÍ¸Ã÷±³¾°
-	if (draw_background)
-		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-	else
-		m_draw.FillRect(draw_rect, m_colors.color_back);
-
-
-	if (!DrawNarrowMode())
+	if (!IsDrawNarrowMode())
 	{
 		bool right_lyric = (!m_ui_data.m_narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > theApp.DPI(600);
 		CRect info_rect{ draw_rect };
@@ -115,7 +95,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//»æÖÆ±³¾°
 		rc_tmp = cover_rect;
 		//rc_tmp.bottom += m_layout.margin / 2;
-		if (draw_background)
+		if (IsDrawBackgroundAlpha())
 			m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 		else
 			m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
@@ -273,17 +253,19 @@ void CPlayerUI2::DrawInfo(bool reset)
 		m_draw_data.lyric_rect = rc_tmp;
 		m_draw_data.lyric_rect.InflateRect(m_layout.margin, m_layout.margin);
 
-		if (theApp.m_app_setting_data.lyric_background)
-		{
-			if (draw_background)
-				m_draw.FillAlphaRect(rc_tmp, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-			else
-				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
-		}
+		CRect background_rect = rc_tmp;
 
 		rc_tmp.DeflateRect(lyric_margin, lyric_margin);
 		if (rc_tmp.bottom > rc_tmp.top + m_lyric_text_height / 2)
 		{
+			if (theApp.m_app_setting_data.lyric_background)
+			{
+				if (IsDrawBackgroundAlpha())
+					m_draw.FillAlphaRect(background_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
+				else
+					m_draw.FillRect(background_rect, m_colors.color_lyric_back);
+			}
+
 			DrawLryicCommon(rc_tmp);
 		}
 
@@ -311,7 +293,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.DeflateRect(m_layout.margin, m_layout.margin);
 		rc_tmp.right = rc_tmp.left + cover_side;
 		rc_tmp.bottom = rc_tmp.top + cover_side;
-		if (draw_background)
+		if (IsDrawBackgroundAlpha())
 			m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 		else
 			m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
@@ -366,7 +348,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		if (theApp.m_app_setting_data.lyric_background)
 		{
-			if (draw_background)
+			if (IsDrawBackgroundAlpha())
 				m_draw.FillAlphaRect(rc_tmp, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
 			else
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
@@ -436,7 +418,7 @@ void CPlayerUI2::MouseMove(CPoint point)
 //CRect CPlayerUI2::GetThumbnailClipArea()
 //{
 //	CRect clip_area_rect;
-//	if (!DrawNarrowMode())
+//	if (!IsDrawNarrowMode())
 //	{
 //		clip_area_rect = m_draw_data.cover_rect;
 //		clip_area_rect.MoveToY(clip_area_rect.top + m_layout.margin + theApp.DPI(20));

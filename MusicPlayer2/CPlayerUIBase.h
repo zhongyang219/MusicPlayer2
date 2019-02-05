@@ -86,6 +86,7 @@ protected:
 protected:
 	void PreDrawInfo();
 	void SetDrawRect();
+	void DrawBackground();
 	void DrawLryicCommon(CRect rect);
 	void DrawSongInfo(CRect rect, bool reset = false);
 	void DrawToolBar(CRect rect, bool draw_translate_button);
@@ -102,9 +103,9 @@ protected:
 	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
-	bool DrawNarrowMode();			//是否使用窄界面模式绘图
+	bool IsDrawNarrowMode();			//是否使用窄界面模式绘图
 	static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
-	bool DrawBackgroundAlpha() const;	//是否需要绘制透明背景
+	bool IsDrawBackgroundAlpha() const;	//是否需要绘制透明背景
 
 private:
 	void DrawLyricTextMultiLine(CRect rect);
