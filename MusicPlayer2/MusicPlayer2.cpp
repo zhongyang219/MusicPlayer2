@@ -360,6 +360,7 @@ void CMusicPlayerApp::LoadIconResource()
 	m_info_icon.Load(IDI_SONG_INFO, IDI_SONG_INFO_D, theApp.DPI(16));
 	m_select_folder_icon.Load(IDI_SELECT_FOLDER, IDI_SELECT_FOLDER_D, theApp.DPI(16));
 	m_show_playlist_icon.Load(IDI_PLAYLIST, IDI_PLAYLIST_D, theApp.DPI(16));
+	m_find_songs_icon.Load(IDI_FIND_SONGS, IDI_FIND_SONGS_D, theApp.DPI(16));
 	
 	m_previous_icon.Load(IDI_PREVIOUS, NULL, theApp.DPI(16));
 	m_play_icon.Load(IDI_PLAY, NULL, theApp.DPI(16));

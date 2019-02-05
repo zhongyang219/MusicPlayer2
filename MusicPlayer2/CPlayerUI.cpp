@@ -280,26 +280,8 @@ void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
 	translate_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 	translate_rect.right = lyric_rect.right - 2 * m_layout.margin;
 	translate_rect.left = translate_rect.right - translate_rect.Height();
-	m_buttons[BTN_TRANSLATE].rect = translate_rect;
-	m_buttons[BTN_TRANSLATE].rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
-	m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated() && !midi_lyric;
-	if (m_buttons[BTN_TRANSLATE].enable)
-	{
-		BYTE alpha;
-		if (draw_background)
-			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-		else
-			alpha = 255;
-		if (m_buttons[BTN_TRANSLATE].hover)
-			m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
-		else if (m_ui_data.show_translate)
-			m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
-		m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), m_colors.color_text, Alignment::CENTER);
-	}
-	else
-	{
-		m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), GRAY(200), Alignment::CENTER);
-	}
+	DrawTranslateButton(translate_rect);
+
 	//填充歌词区域背景色
 	m_draw.SetFont(&m_ui_data.lyric_font);
 	CRect lyric_area = lyric_rect;

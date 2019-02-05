@@ -67,13 +67,14 @@ protected:
 		BTN_SETTING,			//设置按钮
 		BTN_MINI,				//迷你模式按钮
 		BTN_INFO,				//曲目信息按钮
-		BTN_STOP,
-		BTN_PREVIOUS,
-		BTN_PLAY_PAUSE,
-		BTN_NEXT,
-		BTN_SHOW_PLAYLIST,
-		BTN_SELECT_FOLDER,
-		BTN_PROGRESS
+		BTN_FIND,				//查找歌曲按钮
+		BTN_STOP,				//停止
+		BTN_PREVIOUS,			//上一曲
+		BTN_PLAY_PAUSE,			//播放/暂停
+		BTN_NEXT,				//下一曲
+		BTN_SHOW_PLAYLIST,		//显示/隐藏播放列表
+		BTN_SELECT_FOLDER,		//选择文件夹
+		BTN_PROGRESS			//进度条
 	};
 
 	struct DrawData
@@ -93,6 +94,7 @@ protected:
 	void DrawVolumnAdjBtn();
 	void DrawControlBar(CRect rect);
 	void DrawProgressBar(CRect rect);
+	void DrawTranslateButton(CRect rect);
 
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;

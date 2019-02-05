@@ -63,8 +63,17 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 		CMenu* pMenu = m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
 		if (pMenu != NULL)
 			pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		return;
 	}
-	else if (!m_draw_data.lyric_rect.PtInRect(point))
+
+	for (auto& btn : m_buttons)
+	{
+		//按钮上点击右键不弹出菜单
+		if (btn.second.rect.PtInRect(point) != FALSE)
+			return;
+	}
+
+	if (!m_draw_data.lyric_rect.PtInRect(point))	//如果在歌词区域点击了鼠标右键
 	{
 		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
 	}
@@ -185,9 +194,13 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 			}
 			return;
 
+			case BTN_FIND:
+				m_buttons[BTN_FIND].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
+				return;
+
 			default:
 				break;
-
 			}
 		}
 	}
@@ -661,32 +674,25 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 		m_buttons[BTN_INFO].rect = CRect();
 	}
 
+	//绘制查找按钮
+	if (rect.Width() >= theApp.DPI(238))
+	{
+		rc_tmp.MoveToX(rc_tmp.right);
+		DrawUIButton(rc_tmp, m_buttons[BTN_FIND], theApp.m_find_songs_icon);
+	}
+	else
+	{
+		m_buttons[BTN_FIND].rect = CRect();
+	}
+
+
 	//绘制翻译按钮
-	if (draw_translate_button && rect.Width() >= theApp.DPI(238))
+	if (draw_translate_button && rect.Width() >= theApp.DPI(262))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
 		CRect translate_rect = rc_tmp;
 		translate_rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
-		m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated();
-		if (m_buttons[BTN_TRANSLATE].enable)
-		{
-			BYTE alpha;
-			if (draw_background)
-				alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-			else
-				alpha = 255;
-			if (m_buttons[BTN_TRANSLATE].hover)
-				m_draw.FillAlphaRect(translate_rect, m_colors.color_text_2, alpha);
-			else if (m_ui_data.show_translate)
-				m_draw.FillAlphaRect(translate_rect, m_colors.color_button_back, alpha);
-			m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), m_colors.color_text, Alignment::CENTER);
-		}
-		else
-		{
-			m_draw.DrawWindowText(translate_rect, CCommon::LoadText(IDS_TRAS), GRAY(200), Alignment::CENTER);
-		}
-		m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(translate_rect, m_draw_rect);
-
+		DrawTranslateButton(translate_rect);
 	}
 	else
 	{
@@ -696,7 +702,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 	rc_tmp.left = rc_tmp.right = rect.right;
 
 	//显示<<<<
-	if (rect.Width() >= theApp.DPI(289))
+	if (rect.Width() >= theApp.DPI(313))
 	{
 		int progress;
 		Time time{ CPlayer::GetInstance().GetCurrentPosition() };
@@ -864,7 +870,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
 
 void CPlayerUIBase::SetRepeatModeToolTipText()
 {
-	m_repeat_mode_tip = CCommon::LoadText(IDS_REPEAT_MODE, _T(": "));
+	m_repeat_mode_tip = CCommon::LoadText(IDS_REPEAT_MODE, _T(" (M): "));
 	switch (CPlayer::GetInstance().GetRepeatMode())
 	{
 	case RepeatMode::RM_PLAY_ORDER:
@@ -886,7 +892,7 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 {
 	const SongInfo& songInfo = CPlayer::GetInstance().GetCurrentSongInfo();
 	
-	m_info_tip = CCommon::LoadText(IDS_SONG_INFO, _T("\r\n"));
+	m_info_tip = CCommon::LoadText(IDS_SONG_INFO, _T(" (Ctrl + N)\r\n"));
 
 	m_info_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
 	m_info_tip += songInfo.title.c_str();
@@ -1034,6 +1040,29 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum);
 }
 
+void CPlayerUIBase::DrawTranslateButton(CRect rect)
+{
+	m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated();
+	if (m_buttons[BTN_TRANSLATE].enable)
+	{
+		BYTE alpha;
+		if (IsDrawBackgroundAlpha())
+			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+		else
+			alpha = 255;
+		if (m_buttons[BTN_TRANSLATE].hover)
+			m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
+		else if (m_ui_data.show_translate)
+			m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
+		m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_TRAS), m_colors.color_text, Alignment::CENTER);
+	}
+	else
+	{
+		m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_TRAS), GRAY(200), Alignment::CENTER);
+	}
+	m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(rect, m_draw_rect);
+}
+
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 //{
 //	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
@@ -1050,9 +1079,9 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
 	AddMouseToolTip(BTN_VOLUME, CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME));
 	AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI));
-	AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING));
-	AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
-	AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE));
+	AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, _T(" (Ctrl + E)")));
+	AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, _T(" (Ctrl + I)")));
+	AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl + M)")));
 	AddMouseToolTip(BTN_INFO, m_info_tip);
 	AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
 	AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
@@ -1060,6 +1089,7 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
 	AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
 	AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
-	AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_SELECT_FOLDER));
+	AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_SELECT_FOLDER, _T(" (Ctrl + T)")));
+	AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl + F)")));
 }
 

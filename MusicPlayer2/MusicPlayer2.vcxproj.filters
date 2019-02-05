@@ -759,5 +759,11 @@
     <Image Include="res\播放列表_d.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\查找.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\查找_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

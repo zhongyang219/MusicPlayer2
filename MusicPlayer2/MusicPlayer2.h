@@ -61,6 +61,7 @@ public:
 	IconRes m_info_icon;
 	IconRes m_select_folder_icon;
 	IconRes m_show_playlist_icon;
+	IconRes m_find_songs_icon;
 
 	IconRes m_stop_icon_l;
 	IconRes m_previous_icon_l;
