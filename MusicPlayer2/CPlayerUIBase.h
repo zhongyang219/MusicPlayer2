@@ -5,14 +5,12 @@
 
 struct SLayoutData
 {
-	//const int control_bar_height = theApp.DPI(30);				//窗口上方的播放控制按钮部分的高度
 	const int margin = theApp.DPI(4);							//边缘的余量
 	const int width_threshold = theApp.DPI(600);				//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
 	const int info_height = theApp.DPI(198);					//窄界面模式时显示信息区域的高度
 	const int info_height2 = theApp.DPI(143);					//普通界面模式时显示信息区域的高度
 	const int path_edit_height = theApp.DPI(32);				//前路径Edit控件区域的高度
 	const int search_edit_height = theApp.DPI(26);				//歌曲搜索框Edit控件区域的高度
-	//const int progress_bar_height = theApp.DPI(20);				//(窄界面模式时)进度条区域的高度
 	const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };	//频谱分析区域的大小
 };
 
@@ -118,7 +116,7 @@ protected:
 	CDC* m_pDC;
 	UIColors m_colors;
 	CDrawCommon m_draw;		//用于绘制文本的对象
-	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };
+	SLayoutData m_layout;
 	CFont m_font_time;
 	DrawData m_draw_data;
 

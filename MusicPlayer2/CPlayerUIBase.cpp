@@ -25,7 +25,6 @@ void CPlayerUIBase::Init(CDC * pDC)
 {
 	m_pDC = pDC;
 	m_draw.Create(m_pDC, theApp.m_pMainWnd);
-	m_pLayout = std::make_shared<SLayoutData>();
 }
 
 void CPlayerUIBase::DrawInfo(bool reset)
@@ -65,6 +64,14 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 		if (pMenu != NULL)
 			pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
 	}
+	else if (!m_draw_data.lyric_rect.PtInRect(point))
+	{
+		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
+	else
+	{
+		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
 
 }
 
@@ -103,12 +110,86 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 			//btn.second.hover = false;
 			btn.second.pressed = false;
 		//}
-	}
 
-	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))	//点击了“循环模式”时，设置循环模式
-	{
-		CPlayer::GetInstance().SetRepeatMode();
-		UpdateRepeatModeToolTip();
+		if (btn.second.rect.PtInRect(point) && btn.second.enable)
+		{
+			switch (btn.first)
+			{
+			case BTN_REPETEMODE:
+				CPlayer::GetInstance().SetRepeatMode();
+				UpdateRepeatModeToolTip();
+				return;
+
+			case BTN_VOLUME:
+				break;
+
+			case BTN_TRANSLATE:
+				m_ui_data.show_translate = !m_ui_data.show_translate;
+				return;
+
+			case BTN_SKIN:
+				m_buttons[BTN_SKIN].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+				return;
+
+			case BTN_EQ:
+				m_buttons[BTN_EQ].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
+				return;
+
+			case BTN_SETTING:
+				m_buttons[BTN_SETTING].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
+				return;
+
+			case BTN_MINI:
+				m_buttons[BTN_MINI].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
+				return;
+
+			case BTN_INFO:
+				m_buttons[BTN_INFO].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
+				return;
+
+			case BTN_STOP:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_STOP);
+				return;
+
+			case BTN_PREVIOUS:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PREVIOUS);
+				return;
+			case BTN_PLAY_PAUSE:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
+				return;
+
+			case BTN_NEXT:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
+				return;
+
+			case BTN_SHOW_PLAYLIST:
+				m_buttons[BTN_SHOW_PLAYLIST].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
+				return;
+
+			case BTN_SELECT_FOLDER:
+				m_buttons[BTN_SELECT_FOLDER].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
+				return;
+
+			case BTN_PROGRESS:
+			{
+				int ckick_pos = point.x - m_buttons[BTN_PROGRESS].rect.left;
+				double progress = static_cast<double>(ckick_pos) / m_buttons[BTN_PROGRESS].rect.Width();
+				CPlayer::GetInstance().SeekTo(progress);
+			}
+			return;
+
+			default:
+				break;
+
+			}
+		}
 	}
 
 	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
@@ -125,75 +206,6 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 		CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 	}
 
-	if (m_buttons[BTN_SKIN].rect.PtInRect(point))
-	{
-		m_buttons[BTN_SKIN].hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
-	}
-
-	if (m_buttons[BTN_EQ].rect.PtInRect(point))
-	{
-		m_buttons[BTN_EQ].hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
-	}
-
-	if (m_buttons[BTN_SETTING].rect.PtInRect(point))
-	{
-		m_buttons[BTN_SETTING].hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
-	}
-
-	if (m_buttons[BTN_MINI].rect.PtInRect(point))
-	{
-		m_buttons[BTN_MINI].hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
-	}
-
-	if (m_buttons[BTN_INFO].rect.PtInRect(point))
-	{
-		m_buttons[BTN_INFO].hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
-	}
-
-	if (m_buttons[BTN_STOP].rect.PtInRect(point))
-	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_STOP);
-	}
-
-	if (m_buttons[BTN_PREVIOUS].rect.PtInRect(point))
-	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PREVIOUS);
-	}
-
-	if (m_buttons[BTN_PLAY_PAUSE].rect.PtInRect(point))
-	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
-	}
-
-	if (m_buttons[BTN_NEXT].rect.PtInRect(point))
-	{
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
-	}
-
-	if (m_buttons[BTN_PROGRESS].rect.PtInRect(point))
-	{
-		int ckick_pos = point.x - m_buttons[BTN_PROGRESS].rect.left;
-		double progress = static_cast<double>(ckick_pos) / m_buttons[BTN_PROGRESS].rect.Width();
-		CPlayer::GetInstance().SeekTo(progress);
-
-	}
-
-	if (m_buttons[BTN_SHOW_PLAYLIST].rect.PtInRect(point))
-	{
-		m_buttons[BTN_SHOW_PLAYLIST].hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
-	}
-
-	if (m_buttons[BTN_SELECT_FOLDER].rect.PtInRect(point))
-	{
-		m_buttons[BTN_SELECT_FOLDER].hover = false;
-		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
-	}
 
 }
 
@@ -208,13 +220,13 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			redraw_rect = m_draw_rect;
 			if (m_ui_data.show_playlist)
 			{
-				redraw_rect.left = cx / 2/* - m_pLayout->margin*/;
-				redraw_rect.right = m_ui_data.client_width / 2 + m_pLayout->margin;
+				redraw_rect.left = cx / 2/* - m_layout.margin*/;
+				redraw_rect.right = m_ui_data.client_width / 2 + m_layout.margin;
 			}
 			else
 			{
-				redraw_rect.left = m_draw_rect.right - m_pLayout->margin;
-				redraw_rect.right = m_draw_rect.right + m_pLayout->margin;
+				redraw_rect.left = cx - m_layout.margin;
+				redraw_rect.right = cx;
 			}
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
@@ -222,7 +234,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 		{
 			//重新将绘图区域下方区域的矩形区域填充为对话框背景色
 			redraw_rect = m_draw_rect;
-			redraw_rect.top = cy - m_pLayout->margin;
+			redraw_rect.top = cy - m_layout.margin;
 			redraw_rect.bottom = cy;
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
@@ -233,7 +245,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 		{
 			//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
 			redraw_rect = m_draw_rect;
-			redraw_rect.left = cx - m_pLayout->margin;
+			redraw_rect.left = cx - m_layout.margin;
 			redraw_rect.right = cx;
 			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 		}
@@ -243,7 +255,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			{
 				//重新将绘图区域下方区域的矩形区域填充为对话框背景色
 				redraw_rect = m_draw_rect;
-				redraw_rect.top = cy - m_pLayout->margin;
+				redraw_rect.top = cy - m_layout.margin;
 				redraw_rect.bottom = cy;
 				m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
 			}
@@ -307,31 +319,24 @@ void CPlayerUIBase::PreDrawInfo()
 
 void CPlayerUIBase::SetDrawRect()
 {
-	if (!m_ui_data.m_narrow_mode)
+	if (!m_ui_data.show_playlist)
 	{
-		if (m_ui_data.show_playlist)
-		{
-			m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->margin},
-		   CPoint{m_ui_data.client_width / 2/* - m_pLayout->margin*/, m_ui_data.client_height - m_pLayout->margin} };
-		}
-		else
-		{
-			m_draw_rect = CRect{ CPoint{m_pLayout->margin, m_pLayout->margin},
-		    CPoint{m_ui_data.client_width - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
-		}
+		m_draw_rect = CRect(0, 0, m_ui_data.client_width, m_ui_data.client_height);
+		m_draw_rect.DeflateRect(m_layout.margin, m_layout.margin);
 	}
 	else
 	{
-		if (m_ui_data.show_playlist)
+		if (!m_ui_data.m_narrow_mode)
 		{
-			m_draw_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->margin},
-			CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
+			m_draw_rect = CRect{ CPoint{m_layout.margin, m_layout.margin},
+			CPoint{m_ui_data.client_width / 2/* - m_layout.margin*/, m_ui_data.client_height - m_layout.margin} };
 		}
 		else
 		{
-			m_draw_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->margin},
-			CPoint{m_ui_data.client_width - m_pLayout->margin, m_ui_data.client_height - m_pLayout->margin} };
+			m_draw_rect = CRect{ CPoint{ m_layout.margin, m_layout.margin},
+			CSize{ m_ui_data.client_width - 2 * m_layout.margin, m_layout.info_height - 2 * m_layout.margin } };
 		}
+
 	}
 }
 
@@ -923,7 +928,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_background)
 	rc_btn.MoveToX(rc_btn.right);
 	DrawControlButton(rc_btn, m_buttons[BTN_NEXT], theApp.m_next_icon_l, draw_background);
 
-	int progressbar_left = rc_btn.right + m_pLayout->margin;
+	int progressbar_left = rc_btn.right + m_layout.margin;
 
 	//绘制右侧按钮
 	const int btn_side = theApp.DPI(24);
@@ -940,7 +945,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_background)
 	{
 		progress_rect = rect;
 		progress_rect.left = progressbar_left;
-		progress_rect.right = rc_btn.left - m_pLayout->margin;
+		progress_rect.right = rc_btn.left - m_layout.margin;
 		DrawProgressBar(progress_rect, draw_background);
 	}
 }
@@ -962,7 +967,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect, bool draw_background)
 	//绘制进度条
 	const int progress_height = theApp.DPI(4);
 	CRect progress_rect = rect;
-	progress_rect.right = rc_time.left - m_pLayout->margin;
+	progress_rect.right = rc_time.left - m_layout.margin;
 	progress_rect.top = rect.top + (rect.Height() - progress_height) / 2;
 	progress_rect.bottom = progress_rect.top + progress_height;
 

@@ -6,6 +6,7 @@
 CMiniModeUI::CMiniModeUI(SMiniModeUIData& ui_data, CWnd* pMiniModeWnd)
 	: m_ui_data(ui_data), m_pMiniModeWnd(pMiniModeWnd)
 {
+	m_font_time.CreatePointFont(80, CCommon::LoadText(IDS_DEFAULT_FONT));
 }
 
 
@@ -166,7 +167,9 @@ void CMiniModeUI::DrawInfo(bool reset)
 		str = CCommon::LoadText(IDS_PLAY_ERROR);
 	else
 		str = CPlayer::GetInstance().GetTimeString().c_str();
+	m_draw.SetFont(&m_font_time);
 	m_draw.DrawWindowText(rc_tmp, str, m_colors.color_text, Alignment::CENTER);
+	m_draw.SetFont(theApp.m_pMainWnd->GetFont());
 
 	//绘制进度条
 	rc_tmp.MoveToY(rc_tmp.bottom);
@@ -387,7 +390,7 @@ void CMiniModeUI::DrawUIButton(CRect rect, IPlayerUI::UIButton & btn, HICON icon
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 	else
 		alpha = 255;
 
@@ -395,8 +398,8 @@ void CMiniModeUI::DrawUIButton(CRect rect, IPlayerUI::UIButton & btn, HICON icon
 		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
 	else if (btn.hover)
 		m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
-	else
-		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
+	//else
+	//	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
 
 	btn.rect = rc_tmp;
 
@@ -414,15 +417,15 @@ void CMiniModeUI::DrawTextButton(CRect rect, IPlayerUI::UIButton & btn, LPCTSTR 
 
 	BYTE alpha;
 	if (draw_background)
-		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 	else
 		alpha = 255;
 	if (btn.pressed && btn.hover)
 		m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
 	else if (btn.hover)
 		m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
-	else
-		m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
+	//else
+	//	m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
 
 	btn.rect = rect;
 	m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);

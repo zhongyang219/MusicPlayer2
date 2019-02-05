@@ -66,12 +66,6 @@ protected:
 #ifndef COMPILE_IN_WIN_XP
 	ITaskbarList3* m_pTaskbar;          //用于支持任务栏显示播放进度
 	THUMBBUTTON m_thumbButton[3]{};
-	//图标（用于任务栏缩略图按钮）
-	HICON m_hPlayPauseIcon;		//播放/暂停图标（未使用）
-	HICON m_hPreviousIcon;		//上一曲图标
-	HICON m_hNextIcon;			//下一曲图标
-	HICON m_hPlayIcon;			//播放图标
-	HICON m_hPauseIcon;			//暂停图标
 #endif
 
 	CFindDlg m_findDlg{ CPlayer::GetInstance().GetPlayList() };		//查找对话框
@@ -92,7 +86,7 @@ protected:
 	int m_select_folder_width{};		//选择文件夹的宽度
 	int m_select_folder_height{};		//选择文件夹的高度
 
-	std::shared_ptr<SLayoutData> m_pLayout{ nullptr };		//窗口布局的固定数据
+	SLayoutData m_layout;		//窗口布局的固定数据
 
 
 

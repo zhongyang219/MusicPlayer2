@@ -11,9 +11,8 @@ public:
 
 	virtual void DrawInfo(bool reset = false) override;		//ªÊ÷∆–≈œ¢
 
-	virtual void RButtonUp(CPoint point) override;
+	//virtual void RButtonUp(CPoint point) override;
 	virtual void MouseMove(CPoint point) override;
-	virtual void LButtonUp(CPoint point) override;
 
 	//virtual CRect GetThumbnailClipArea() override;
 

@@ -79,6 +79,7 @@ private:
 	CDrawCommon m_draw;
 	UIColors m_colors;
 	CToolTipCtrl* m_tool_tip = nullptr;
+	CFont m_font_time;
 
 	bool m_first_draw{ true };
 

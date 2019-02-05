@@ -369,37 +369,37 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置播放列表大小
 	if (!m_ui_data.m_narrow_mode)
 	{
-		m_playlist_list.MoveWindow(cx / 2 + m_pLayout->margin, m_pLayout->search_edit_height + m_pLayout->path_edit_height + m_pLayout->margin,
-			cx / 2 - 2 * m_pLayout->margin, cy - m_pLayout->search_edit_height - m_pLayout->path_edit_height - 2 * m_pLayout->margin);
+		m_playlist_list.MoveWindow(cx / 2 + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.margin,
+			cx / 2 - 2 * m_layout.margin, cy - m_layout.search_edit_height - m_layout.path_edit_height - 2 * m_layout.margin);
 	}
 	else
 	{
-		m_playlist_list.MoveWindow(m_pLayout->margin, m_pLayout->info_height + m_pLayout->search_edit_height + m_pLayout->path_edit_height,
-			cx - 2 * m_pLayout->margin, cy - m_pLayout->info_height - m_pLayout->search_edit_height - m_pLayout->path_edit_height - m_pLayout->margin);
+		m_playlist_list.MoveWindow(m_layout.margin, m_layout.info_height + m_layout.search_edit_height + m_layout.path_edit_height,
+			cx - 2 * m_layout.margin, cy - m_layout.info_height - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.margin);
 	}
 	m_playlist_list.AdjustColumnWidth();
 
 	//设置“当前路径”static控件大小
 	CRect rect_static;
 	m_path_static.GetWindowRect(rect_static);
-	rect_static.bottom = rect_static.top + m_pLayout->path_edit_height - 2 * m_pLayout->margin;
+	rect_static.bottom = rect_static.top + m_layout.path_edit_height - 2 * m_layout.margin;
 	if (!m_ui_data.m_narrow_mode)
-		rect_static.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->margin);
+		rect_static.MoveToXY(cx / 2 + m_layout.margin, m_layout.margin);
 	else
-		rect_static.MoveToXY(m_pLayout->margin, m_pLayout->info_height);
+		rect_static.MoveToXY(m_layout.margin, m_layout.info_height);
 	m_path_static.MoveWindow(rect_static);
 	//设置“当前路径”edit控件大小
 	CRect rect_edit;
 	m_path_edit.GetWindowRect(rect_edit);
 	if (!m_ui_data.m_narrow_mode)
 	{
-		rect_edit.right = rect_edit.left + (cx / 2 - 3 * m_pLayout->margin - rect_static.Width() - m_select_folder_width);
-		rect_edit.MoveToXY(cx / 2 + m_pLayout->margin + rect_static.Width(), m_pLayout->margin);
+		rect_edit.right = rect_edit.left + (cx / 2 - 3 * m_layout.margin - rect_static.Width() - m_select_folder_width);
+		rect_edit.MoveToXY(cx / 2 + m_layout.margin + rect_static.Width(), m_layout.margin);
 	}
 	else
 	{
-		rect_edit.right = rect_edit.left + (cx - 3 * m_pLayout->margin - rect_static.Width() - m_select_folder_width);
-		rect_edit.MoveToXY(m_pLayout->margin + rect_static.Width(), m_pLayout->info_height);
+		rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_select_folder_width);
+		rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), m_layout.info_height);
 	}
 	m_path_edit.MoveWindow(rect_edit);
 
@@ -407,8 +407,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	CRect rect_select_folder{ rect_edit };
 	rect_select_folder.top = rect_edit.top + (rect_edit.Height() - m_select_folder_height) / 2;
 	rect_select_folder.bottom = rect_select_folder.top + m_select_folder_height;
-	rect_select_folder.left = rect_edit.right + m_pLayout->margin;
-	rect_select_folder.right = cx - m_pLayout->margin;
+	rect_select_folder.left = rect_edit.right + m_layout.margin;
+	rect_select_folder.right = cx - m_layout.margin;
 	m_set_path_button.MoveWindow(rect_select_folder);
 
 	//设置歌曲搜索框的大小和位置
@@ -416,20 +416,20 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	m_search_edit.GetWindowRect(rect_search);
 	if (!m_ui_data.m_narrow_mode)
 	{
-		rect_search.right = rect_search.left + (cx / 2 - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
-		rect_search.MoveToXY(cx / 2 + m_pLayout->margin, m_pLayout->path_edit_height + theApp.DPI(1));
+		rect_search.right = rect_search.left + (cx / 2 - 2 * m_layout.margin - m_layout.margin - rect_search.Height());
+		rect_search.MoveToXY(cx / 2 + m_layout.margin, m_layout.path_edit_height + theApp.DPI(1));
 	}
 	else
 	{
-		rect_search.right = rect_search.left + (cx - 2 * m_pLayout->margin - m_pLayout->margin - rect_search.Height());
-		rect_search.MoveToXY(m_pLayout->margin, m_pLayout->info_height + m_pLayout->path_edit_height - theApp.DPI(3));
+		rect_search.right = rect_search.left + (cx - 2 * m_layout.margin - m_layout.margin - rect_search.Height());
+		rect_search.MoveToXY(m_layout.margin, m_layout.info_height + m_layout.path_edit_height - theApp.DPI(3));
 	}
 	m_search_edit.MoveWindow(rect_search);
 	//设置清除搜索按钮的大小和位置
 	CRect rect_clear{};
 	rect_clear.right = rect_clear.bottom = rect_search.Height();
 	//if (!m_ui_data.m_narrow_mode)
-		rect_clear.MoveToXY(rect_search.right + m_pLayout->margin, rect_search.top);
+		rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
 	m_clear_search_button.MoveWindow(rect_clear);
 	m_clear_search_button.Invalidate();
 }
@@ -530,11 +530,11 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		if (CWinVersionHelper::IsWindows7OrLater())
 		{
 			//更新任务栏缩略图上“播放/暂停”的图标
-			m_thumbButton[1].hIcon = m_hPauseIcon;
+			m_thumbButton[1].hIcon = theApp.m_pause_icon.GetIcon();
 			wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PAUSE));
 			//更新任务按钮上的播放状态图标
 			if (theApp.m_play_setting_data.show_playstate_icon)
-				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPlayIcon, L"");
+				m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_play_icon.GetIcon(), L"");
 			else
 				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 		}
@@ -546,11 +546,11 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		if (CWinVersionHelper::IsWindows7OrLater())
 		{
 			//更新任务栏缩略图上“播放/暂停”的图标
-			m_thumbButton[1].hIcon = m_hPlayIcon;
+			m_thumbButton[1].hIcon = theApp.m_play_icon.GetIcon();
 			wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
 			//更新任务按钮上的播放状态图标
 			if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
-				m_pTaskbar->SetOverlayIcon(m_hWnd, m_hPauseIcon, L"");
+				m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_pause_icon.GetIcon(), L"");
 			else
 				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 		}
@@ -746,6 +746,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//设置窗口不透明度
 	SetTransparency();
 
+	CRect rect1;
+	m_set_path_button.GetWindowRect(rect1);
+	m_select_folder_width = rect1.Width();		//保存“选择文件夹”按钮初始时的宽度
+	m_select_folder_height = rect1.Height();
+
 	//初始化窗口大小
 	//rect.right = m_window_width;
 	//rect.bottom = m_window_height;
@@ -754,14 +759,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 		//MoveWindow(rect);
 		SetWindowPos(nullptr, 0, 0, m_window_width, m_window_height, SWP_NOZORDER | SWP_NOMOVE);
 	}
-
-	//根据当前系统的DPI设置窗口上方工具区和状态栏等的大小
-	m_pLayout = std::make_shared<SLayoutData>();
-
-	CRect rect1;
-	m_set_path_button.GetWindowRect(rect1);
-	m_select_folder_width = rect1.Width();		//保存“选择文件夹”按钮初始时的宽度
-	m_select_folder_height = rect1.Height();
 
 	//初始化提示信息
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
@@ -788,31 +785,24 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	if (CWinVersionHelper::IsWindows7OrLater())
 		CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pTaskbar));	//创建ITaskbarList3的实例
 
-	//载入按钮图标
-	m_hPlayPauseIcon = AfxGetApp()->LoadIcon(IDI_PLAY_PAUSE);
-	m_hPreviousIcon = AfxGetApp()->LoadIcon(IDI_PREVIOUS);
-	m_hNextIcon = AfxGetApp()->LoadIcon(IDI_NEXT1);
-	m_hPlayIcon = AfxGetApp()->LoadIcon(IDI_PLAY);
-	m_hPauseIcon = AfxGetApp()->LoadIcon(IDI_PAUSE);
-
 	//初始化任务栏缩略图中的按钮
 	THUMBBUTTONMASK dwMask = THB_ICON | THB_TOOLTIP | THB_FLAGS;
 	//上一曲按钮
 	m_thumbButton[0].dwMask = dwMask;
 	m_thumbButton[0].iId = IDT_PREVIOUS;
-	m_thumbButton[0].hIcon = m_hPreviousIcon;
+	m_thumbButton[0].hIcon = theApp.m_previous_icon.GetIcon();
 	wcscpy_s(m_thumbButton[0].szTip, CCommon::LoadText(IDS_PREVIOUS));
 	m_thumbButton[0].dwFlags = THBF_ENABLED;
 	//播放/暂停按钮
 	m_thumbButton[1].dwMask = dwMask;
 	m_thumbButton[1].iId = IDT_PLAY_PAUSE;
-	m_thumbButton[1].hIcon = m_hPlayIcon;
+	m_thumbButton[1].hIcon = theApp.m_play_icon.GetIcon();
 	wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
 	m_thumbButton[1].dwFlags = THBF_ENABLED;
 	//下一曲按钮
 	m_thumbButton[2].dwMask = dwMask;
 	m_thumbButton[2].iId = IDT_NEXT;
-	m_thumbButton[2].hIcon = m_hNextIcon;
+	m_thumbButton[2].hIcon = theApp.m_next_icon.GetIcon();
 	wcscpy_s(m_thumbButton[2].szTip, CCommon::LoadText(IDS_NEXT));
 	m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
@@ -919,26 +909,23 @@ HCURSOR CMusicPlayerDlg::OnQueryDragIcon()
 void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
-	if (nType != SIZE_MINIMIZED && m_pLayout != nullptr)
+	if (nType != SIZE_MINIMIZED && m_pUI != nullptr)
 	{
 		if (m_pDC != NULL)
 		{
 			DrawInfo(true);
-			if ((cx < m_pLayout->width_threshold) != m_ui_data.m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
+			if ((cx < m_layout.width_threshold) != m_ui_data.m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
 			{
 				Invalidate(FALSE);
 				//m_time_static.Invalidate(FALSE);
 			}
-			else
-			{
-				m_pUI->OnSizeRedraw(cx, cy);
-			}
+			m_pUI->OnSizeRedraw(cx, cy);
 		}
 		m_ui_data.client_width = cx;
 		m_ui_data.client_height = cy;
-		if (m_pLayout->width_threshold != 0)
+		if (m_layout.width_threshold != 0)
 		{
-			m_ui_data.m_narrow_mode = (cx < m_pLayout->width_threshold);
+			m_ui_data.m_narrow_mode = (cx < m_layout.width_threshold);
 			//if (!m_ui_data.show_playlist)
 			//	m_ui_data.m_narrow_mode = false;
 		}

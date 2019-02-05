@@ -52,14 +52,14 @@ void CPlayerUI::DrawInfo(bool reset)
 	else
 		m_draw.FillRect(draw_rect, m_colors.color_back);
 
-	CPoint text_start{ draw_rect.left + m_pLayout->spectral_size.cx + 2 * m_pLayout->margin, draw_rect.top + m_pLayout->margin };		//文本的起始坐标
+	CPoint text_start{ draw_rect.left + m_layout.spectral_size.cx + 2 * m_layout.margin, draw_rect.top + m_layout.margin };		//文本的起始坐标
 	int text_height{ theApp.DPI(18) };		//文本的高度
 
 	//显示歌曲信息
 	m_draw.SetFont(theApp.m_pMainWnd->GetFont());
 	//m_draw.SetBackColor(color_back);
 	CRect tmp{ text_start, CSize{1,text_height} };
-	tmp.right = draw_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_layout.margin;
 	DrawSongInfo(tmp, reset);
 
 	wchar_t buff[64];
@@ -109,7 +109,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable1_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = draw_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_layout.margin;
 	static CDrawCommon::ScrollInfo scroll_info2;
 	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info2, reset);
 	//显示艺术家
@@ -117,7 +117,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable2_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = draw_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_layout.margin;
 	static CDrawCommon::ScrollInfo scroll_info3;
 	if (CPlayer::GetInstance().IsMidi())
 		m_draw.DrawWindowText(tmp, lable2_content.c_str(), m_colors.color_text);
@@ -128,7 +128,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable3_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = draw_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_layout.margin;
 	static CDrawCommon::ScrollInfo scroll_info4;
 	m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info4, reset);
 	//显示文件格式和比特率
@@ -136,12 +136,12 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + theApp.DPI(52);
 	m_draw.DrawWindowText(tmp, lable4_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + theApp.DPI(52));
-	tmp.right = draw_rect.right - m_pLayout->margin;
+	tmp.right = draw_rect.right - m_layout.margin;
 	static CDrawCommon::ScrollInfo scroll_info5;
 	m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, theApp.DPI(1), false, scroll_info5, reset);
 
 	//显示频谱分析
-	CRect spectral_rect{ CPoint{draw_rect.left + m_pLayout->margin, draw_rect.top + m_pLayout->margin}, m_pLayout->spectral_size };
+	CRect spectral_rect{ CPoint{draw_rect.left + m_layout.margin, draw_rect.top + m_layout.margin}, m_layout.spectral_size };
 	//绘制背景
 	if (draw_background)
 		m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
@@ -151,7 +151,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	{
 		//绘制专辑封面
 		m_draw_data.cover_rect = spectral_rect;
-		m_draw_data.cover_rect.DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
+		m_draw_data.cover_rect.DeflateRect(m_layout.margin / 2, m_layout.margin / 2);
 		if (CPlayer::GetInstance().AlbumCoverExist())
 		{
 			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), m_draw_data.cover_rect.TopLeft(), m_draw_data.cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
@@ -172,7 +172,7 @@ void CPlayerUI::DrawInfo(bool reset)
 		CRect rects[ROWS];
 		int width = (spectral_rect.Width() - (ROWS - 1)*gap_width) / (ROWS - 1);
 		rects[0] = spectral_rect;
-		rects[0].DeflateRect(m_pLayout->margin / 2, m_pLayout->margin / 2);
+		rects[0].DeflateRect(m_layout.margin / 2, m_layout.margin / 2);
 		rects[0].right = rects[0].left + width;
 		for (int i{ 1 }; i < ROWS; i++)
 		{
@@ -209,8 +209,8 @@ void CPlayerUI::DrawInfo(bool reset)
 
 	//绘制工具条
 	CPoint point{ spectral_rect.left, spectral_rect.bottom };
-	point.y += 2 * m_pLayout->margin;
-	CRect other_info_rect{ point, CSize(draw_rect.Width() - 2 * m_pLayout->margin,theApp.DPI(24)) };
+	point.y += 2 * m_layout.margin;
+	CRect other_info_rect{ point, CSize(draw_rect.Width() - 2 * m_layout.margin,theApp.DPI(24)) };
 	DrawToolBar(draw_background, other_info_rect, false, &m_ui_data);
 
 	//显示歌词
@@ -219,7 +219,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	if (DrawNarrowMode())
 	{
 		lyric_rect = other_info_rect;
-		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin);
+		lyric_rect.MoveToY(other_info_rect.bottom + m_layout.margin);
 		DrawLyricsSingleLine(lyric_rect);
 	}
 	else
@@ -227,8 +227,8 @@ void CPlayerUI::DrawInfo(bool reset)
 		//if (CPlayer::GetInstance().IsPlaying() || reset)
 		//{
 		lyric_rect = draw_rect;
-		lyric_rect.MoveToY(other_info_rect.bottom + m_pLayout->margin + theApp.DPI(36));
-		lyric_rect.bottom = m_draw_rect.Height()/* - m_pLayout->margin*/;
+		lyric_rect.MoveToY(other_info_rect.bottom + m_layout.margin + theApp.DPI(36));
+		lyric_rect.bottom = m_draw_rect.Height()/* - m_layout.margin*/;
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}
 	}
@@ -246,16 +246,16 @@ void CPlayerUI::DrawInfo(bool reset)
 	CRect rc_control_bar;
 	if (DrawNarrowMode())
 	{
-		rc_control_bar.top = lyric_rect.bottom + m_pLayout->margin;
-		rc_control_bar.left = m_pLayout->margin;
-		rc_control_bar.right = draw_rect.right - m_pLayout->margin;
-		rc_control_bar.bottom = draw_rect.bottom - m_pLayout->margin;
+		rc_control_bar.top = lyric_rect.bottom + m_layout.margin;
+		rc_control_bar.left = m_layout.margin;
+		rc_control_bar.right = draw_rect.right - m_layout.margin;
+		rc_control_bar.bottom = draw_rect.bottom - m_layout.margin;
 	}
 	else
 	{
-		rc_control_bar.top = other_info_rect.bottom + m_pLayout->margin;
-		rc_control_bar.left = m_pLayout->margin;
-		rc_control_bar.right = draw_rect.right - m_pLayout->margin;
+		rc_control_bar.top = other_info_rect.bottom + m_layout.margin;
+		rc_control_bar.left = m_layout.margin;
+		rc_control_bar.right = draw_rect.right - m_layout.margin;
 		rc_control_bar.bottom = lyric_rect.top;
 	}
 	DrawControlBar(rc_control_bar, draw_background);
@@ -312,14 +312,14 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	//显示“歌词秀”
 	CRect tmp;
 	tmp = lyric_rect;
-	tmp.left += 2 * m_pLayout->margin;
+	tmp.left += 2 * m_layout.margin;
 	tmp.bottom = tmp.top + theApp.DPI(28);
 	m_draw.SetFont(theApp.m_pMainWnd->GetFont());
 	m_draw.DrawWindowText(tmp, CCommon::LoadText(IDS_LYRIC_SHOW, _T(": ")), m_colors.color_text);
 	//显示翻译按钮
 	CRect translate_rect{ tmp };
 	translate_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
-	translate_rect.right = lyric_rect.right - 2 * m_pLayout->margin;
+	translate_rect.right = lyric_rect.right - 2 * m_layout.margin;
 	translate_rect.left = translate_rect.right - translate_rect.Height();
 	m_buttons[BTN_TRANSLATE].rect = translate_rect;
 	m_buttons[BTN_TRANSLATE].rect.MoveToXY(CPoint{ translate_rect.left + m_draw_rect.left, translate_rect.top + m_draw_rect.top });	//将矩形坐标变换为以客户区左上角为原点
@@ -344,7 +344,7 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 	//填充歌词区域背景色
 	m_draw.SetFont(&m_ui_data.lyric_font);
 	CRect lyric_area = lyric_rect;
-	lyric_area.DeflateRect(2 * m_pLayout->margin, 2 * m_pLayout->margin);
+	lyric_area.DeflateRect(2 * m_layout.margin, 2 * m_layout.margin);
 	lyric_area.top += theApp.DPI(20);
 	if (theApp.m_app_setting_data.lyric_background)
 	{
@@ -354,33 +354,33 @@ void CPlayerUI::DrawLyricsMulityLine(CRect lyric_rect, CDC * pDC)
 			m_draw.FillRect(lyric_area, m_colors.color_lyric_back);
 	}
 	//设置歌词文字区域
-	lyric_area.DeflateRect(2 * m_pLayout->margin, 2 * m_pLayout->margin);
+	lyric_area.DeflateRect(2 * m_layout.margin, 2 * m_layout.margin);
 	CDrawCommon::SetDrawArea(pDC, lyric_area);
 
 	//绘制歌词文本
 	DrawLyricTextMultiLine(lyric_area, midi_lyric);
 }
 
-void CPlayerUI::RButtonUp(CPoint point)
-{
-	CPlayerUIBase::RButtonUp(point);
-
-	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
-		return;
-
-	CPoint point1;		//定义一个用于确定光标位置的位置  
-	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-
-	if (!m_draw_data.lyric_rect.PtInRect(point))
-	{
-		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-	}
-	else
-	{
-		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-	}
-
-}
+//void CPlayerUI::RButtonUp(CPoint point)
+//{
+//	CPlayerUIBase::RButtonUp(point);
+//
+//	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
+//		return;
+//
+//	CPoint point1;		//定义一个用于确定光标位置的位置  
+//	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
+//
+//	if (!m_draw_data.lyric_rect.PtInRect(point))
+//	{
+//		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+//	}
+//	else
+//	{
+//		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+//	}
+//
+//}
 
 void CPlayerUI::MouseMove(CPoint point)
 {
@@ -431,18 +431,6 @@ void CPlayerUI::MouseMove(CPoint point)
 
 }
 
-void CPlayerUI::LButtonUp(CPoint point)
-{
-	CPlayerUIBase::LButtonUp(point);
-
-	if (m_buttons[BTN_TRANSLATE].rect.PtInRect(point) && m_buttons[BTN_TRANSLATE].enable)	//点击了“歌词翻译”时，开启或关闭歌词翻译
-	{
-		m_ui_data.show_translate = !m_ui_data.show_translate;
-	}
-
-
-}
-
 void CPlayerUI::OnSizeRedraw(int cx, int cy)
 {
 	m_show_volume_adj = false;
@@ -453,9 +441,9 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy)
 //{
 //	//CRect info_rect;
 //	//if (!DrawNarrowMode())
-//	//	info_rect = CRect{ CPoint{ m_pLayout->margin, m_pLayout->margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_pLayout->margin, m_pLayout->info_height2 - 3 * m_pLayout->margin } };
+//	//	info_rect = CRect{ CPoint{ m_layout.margin, m_layout.margin + theApp.DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * m_layout.margin, m_layout.info_height2 - 3 * m_layout.margin } };
 //	//else
-//	//	info_rect = CRect{ CPoint{ m_pLayout->margin, theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_pLayout->margin, m_pLayout->info_height - 2 * m_pLayout->margin } };
+//	//	info_rect = CRect{ CPoint{ m_layout.margin, theApp.DPI(20) }, CSize{ m_ui_data.client_width - 2 * m_layout.margin, m_layout.info_height - 2 * m_layout.margin } };
 //
 //	return info_rect;
 //}
