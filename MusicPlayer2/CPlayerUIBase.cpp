@@ -900,13 +900,14 @@ void CPlayerUIBase::DrawVolumnAdjBtn(bool draw_background)
 
 void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_background)
 {
-	bool progress_on_top = rect.Width() < theApp.DPI(300);
+	bool progress_on_top = rect.Width() < m_progress_on_top_threshold;
 	const int progress_height = theApp.DPI(4);
 	CRect progress_rect;
 	if (progress_on_top)
 	{
 		progress_rect = rect;
-		progress_rect.bottom = progress_rect.top + theApp.DPI(8);
+		int progressbar_height = rect.Height() / 3;
+		progress_rect.bottom = progress_rect.top + progressbar_height;
 		DrawProgressBar(progress_rect, draw_background);
 		rect.top = progress_rect.bottom;
 	}

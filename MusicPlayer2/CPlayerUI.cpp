@@ -226,8 +226,15 @@ void CPlayerUI::DrawInfo(bool reset)
 	{
 		//if (CPlayer::GetInstance().IsPlaying() || reset)
 		//{
+
+		int control_bar_height;
+		if (draw_rect.Width() - 2 * m_layout.margin < m_progress_on_top_threshold)		//如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
+			control_bar_height = theApp.DPI(50);
+		else
+			control_bar_height = theApp.DPI(36);
+
 		lyric_rect = draw_rect;
-		lyric_rect.MoveToY(other_info_rect.bottom + m_layout.margin + theApp.DPI(36));
+		lyric_rect.MoveToY(other_info_rect.bottom + m_layout.margin + control_bar_height);
 		lyric_rect.bottom = m_draw_rect.Height()/* - m_layout.margin*/;
 		DrawLyricsMulityLine(lyric_rect, &MemDC);
 		//}

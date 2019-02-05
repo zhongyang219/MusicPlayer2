@@ -59,7 +59,12 @@ void CPlayerUI2::DrawInfo(bool reset)
 	{
 		bool right_lyric = (!m_ui_data.m_narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > theApp.DPI(600);
 		CRect info_rect{ draw_rect };
-		info_rect.bottom -= theApp.DPI(40);
+
+		//留出空间来显示播放控制条
+		if(draw_rect.Width() - 2 * m_layout.margin < m_progress_on_top_threshold)		//如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
+			info_rect.bottom -= theApp.DPI(54);
+		else
+			info_rect.bottom -= theApp.DPI(40);
 		if (right_lyric)
 			info_rect.right = info_rect.left + info_rect.Width() / 2;
 

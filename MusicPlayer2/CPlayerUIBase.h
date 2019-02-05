@@ -7,7 +7,7 @@ struct SLayoutData
 {
 	const int margin = theApp.DPI(4);							//边缘的余量
 	const int width_threshold = theApp.DPI(600);				//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
-	const int info_height = theApp.DPI(198);					//窄界面模式时显示信息区域的高度
+	const int info_height = theApp.DPI(206);					//窄界面模式时显示信息区域的高度
 	const int info_height2 = theApp.DPI(143);					//普通界面模式时显示信息区域的高度
 	const int path_edit_height = theApp.DPI(32);				//前路径Edit控件区域的高度
 	const int search_edit_height = theApp.DPI(26);				//歌曲搜索框Edit控件区域的高度
@@ -137,6 +137,8 @@ protected:
 	bool m_show_volume_adj{ false };		//显示音量调整按钮
 
 	std::map<BtnKey, UIButton> m_buttons;
+
+	const int m_progress_on_top_threshold = theApp.DPI(350);		//当控制条的宽度小于此值，将进度条显示在播放控制按钮的上方
 
 private:
 	bool m_first_draw{ true };
