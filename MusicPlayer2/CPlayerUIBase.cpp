@@ -616,43 +616,24 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
 	//绘制循环模式
 	rc_tmp.right = rect.left + rect.Height();
-	CRect rc_repeat_mode = rc_tmp;
-	rc_repeat_mode.DeflateRect(theApp.DPI(2), theApp.DPI(2));
-	m_draw.SetDrawArea(rc_repeat_mode);
-
-	if (draw_background)
-		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
-	else
-		alpha = 255;
-	if (m_buttons[BTN_REPETEMODE].pressed && m_buttons[BTN_REPETEMODE].hover)
-		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_pressed, alpha);
-	else if (m_buttons[BTN_REPETEMODE].hover)
-		m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_text_2, alpha);
-
-	//else if (!theApp.m_app_setting_data.dark_mode)
-	//	m_draw.FillAlphaRect(rc_repeat_mode, m_colors.color_button_back, alpha);
-
-	m_buttons[BTN_REPETEMODE].rect = DrawAreaToClient(rc_repeat_mode, m_draw_rect);
-
-	rc_repeat_mode = rc_tmp;
-	rc_repeat_mode.DeflateRect(theApp.DPI(4), theApp.DPI(4));
-
+	IconRes* pIcon = nullptr;
 	switch (CPlayer::GetInstance().GetRepeatMode())
 	{
 	case RepeatMode::RM_PLAY_ORDER:
-		m_draw.DrawIcon(theApp.m_play_oder_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		pIcon = &theApp.m_play_oder_icon;
 		break;
 	case RepeatMode::RM_LOOP_PLAYLIST:
-		m_draw.DrawIcon(theApp.m_loop_playlist_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		pIcon = &theApp.m_loop_playlist_icon;
 		break;
 	case RepeatMode::RM_LOOP_TRACK:
-		m_draw.DrawIcon(theApp.m_loop_track_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		pIcon = &theApp.m_loop_track_icon;
 		break;
 	case RepeatMode::RM_PLAY_SHUFFLE:
-		m_draw.DrawIcon(theApp.m_play_shuffle_icon.GetIcon(!theApp.m_app_setting_data.dark_mode), rc_repeat_mode.TopLeft(), rc_repeat_mode.Size());
+		pIcon = &theApp.m_play_shuffle_icon;
 		break;
 	}
-	
+	if (pIcon != nullptr)
+		DrawUIButton(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
 
 	//绘制设置按钮
 	rc_tmp.MoveToX(rc_tmp.right);
@@ -982,9 +963,9 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
 
 	//绘制播放控制按钮
 	const int btn_width = theApp.DPI(36);
-	const int btn_height = rect.Height();
+	const int btn_height = min(rect.Height(), btn_width);
 
-	CRect rc_btn{ rect.TopLeft(), CSize(btn_width, btn_height) };
+	CRect rc_btn{ CPoint(rect.left, rect.top + (rect.Height() - btn_height) / 2), CSize(btn_width, btn_height) };
 	DrawControlButton(rc_btn, m_buttons[BTN_STOP], theApp.m_stop_icon_l);
 
 	rc_btn.MoveToX(rc_btn.right);
