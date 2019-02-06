@@ -39,7 +39,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
 void CPlayerUIBase::ClearInfo()
 {
 	PreDrawInfo();
-	m_pDC->FillSolidRect(m_draw_rect, GetSysColor(COLOR_BTNFACE));
+	m_pDC->FillSolidRect(m_draw_rect, CONSTVAL::BACKGROUND_COLOR);
 }
 
 void CPlayerUIBase::LButtonDown(CPoint point)
@@ -247,7 +247,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 				redraw_rect.left = cx - m_layout.margin;
 				redraw_rect.right = cx;
 			}
-			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+			m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 		}
 		if (cy < m_ui_data.client_height)	//如果界面高度变小了
 		{
@@ -255,7 +255,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			redraw_rect = m_draw_rect;
 			redraw_rect.top = cy - m_layout.margin;
 			redraw_rect.bottom = cy;
-			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+			m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 		}
 	}
 	else if (m_ui_data.m_narrow_mode)	//在窄界面模式下
@@ -266,7 +266,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			redraw_rect = m_draw_rect;
 			redraw_rect.left = cx - m_layout.margin;
 			redraw_rect.right = cx;
-			m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+			m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 		}
 		if (cy < m_ui_data.client_height)	//如果界面高度变小了
 		{
@@ -276,7 +276,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 				redraw_rect = m_draw_rect;
 				redraw_rect.top = cy - m_layout.margin;
 				redraw_rect.bottom = cy;
-				m_pDC->FillSolidRect(redraw_rect, GetSysColor(COLOR_BTNFACE));
+				m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 			}
 		}
 	}

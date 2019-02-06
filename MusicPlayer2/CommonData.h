@@ -4,6 +4,11 @@
 #include "DrawCommon.h"
 #include "Common.h"
 
+namespace CONSTVAL
+{
+	const COLORREF BACKGROUND_COLOR = GRAY(255);		//更改此颜色的值可以修改主窗口背景色
+}
+
 struct DeviceInfo	//播放设备的信息
 {
 	int index;		//设备的索引

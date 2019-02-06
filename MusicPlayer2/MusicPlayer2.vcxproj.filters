@@ -198,6 +198,9 @@
     <Filter Include="对话框类\AboutDlg">
       <UniqueIdentifier>{8652e0f5-2b28-4c73-bde8-b32dc1e3332c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\StaticEx">
+      <UniqueIdentifier>{72a446d4-025c-4d2e-ba9c-88b0d29d5159}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -421,6 +424,9 @@
     <ClInclude Include="CommonData.h">
       <Filter>公共的类</Filter>
     </ClInclude>
+    <ClInclude Include="StaticEx.h">
+      <Filter>派生的控件类\StaticEx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -620,6 +626,9 @@
     </ClCompile>
     <ClCompile Include="AboutDlg.cpp">
       <Filter>对话框类\AboutDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticEx.cpp">
+      <Filter>派生的控件类\StaticEx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

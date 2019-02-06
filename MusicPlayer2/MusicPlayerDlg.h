@@ -28,6 +28,7 @@
 #include "CPlayerUI.h"
 #include "CPlayerUI2.h"
 #include "CNotifyIcon.h"
+#include "StaticEx.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -56,7 +57,7 @@ protected:
 	//控件变量
 	CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
 																	//用于支持鼠标指向列表中的项目时显示歌曲信息)
-	CStatic m_path_static;
+	CStaticEx m_path_static;
 	CEdit m_path_edit;
 	CMenu m_list_popup_menu;		//播放列表右键菜单
 	CButton m_set_path_button;

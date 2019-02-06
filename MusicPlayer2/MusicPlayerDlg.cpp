@@ -2414,6 +2414,12 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	// TODO:  在此更改 DC 的任何特性
 
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
+	if (pWnd == this /*|| pWnd == &m_path_static*/)
+	{
+		HBRUSH hBackBrush = CreateSolidBrush(CONSTVAL::BACKGROUND_COLOR);
+		return hBackBrush;
+	}
+
 	return hbr;
 }
 
@@ -3059,10 +3065,10 @@ void CMusicPlayerDlg::OnShowPlaylist()
 	m_pUI->ClearInfo();
 	m_ui_data.show_playlist = !m_ui_data.show_playlist;
 
-	DrawInfo(true);
-
 	OnSize(SIZE_RESTORED, m_ui_data.client_width, m_ui_data.client_height);
 	SetPlaylistVisible();
+
+	DrawInfo(true);
 }
 
 
