@@ -125,20 +125,22 @@ void CPlayerUI::DrawInfo(bool reset)
 		m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	else
 		m_draw.FillRect(spectral_rect, m_colors.color_spectrum_back);
+
+	CRect cover_rect = spectral_rect;
+	cover_rect.DeflateRect(m_layout.margin / 2, m_layout.margin / 2);
+	m_buttons[BTN_COVER].rect = DrawAreaToClient(cover_rect, m_draw_rect);
 	if (theApp.m_app_setting_data.show_album_cover)
 	{
 		//»æÖÆ×¨¼­·âÃæ
-		m_draw_data.cover_rect = spectral_rect;
-		m_draw_data.cover_rect.DeflateRect(m_layout.margin / 2, m_layout.margin / 2);
 		if (CPlayer::GetInstance().AlbumCoverExist())
 		{
-			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), m_draw_data.cover_rect.TopLeft(), m_draw_data.cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+			m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
 		}
 		else
 		{
-			int cover_side = m_draw_data.cover_rect.Height() * 3 / 4;
-			int x = m_draw_data.cover_rect.left + (m_draw_data.cover_rect.Width() - cover_side) / 2;
-			int y = m_draw_data.cover_rect.top + (m_draw_data.cover_rect.Height() - cover_side) / 2;
+			int cover_side = cover_rect.Height() * 3 / 4;
+			int x = cover_rect.left + (cover_rect.Width() - cover_side) / 2;
+			int y = cover_rect.top + (cover_rect.Height() - cover_side) / 2;
 			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_default_cover.GetIcon(), cover_side, cover_side, 0, NULL, DI_NORMAL);
 		}
 	}

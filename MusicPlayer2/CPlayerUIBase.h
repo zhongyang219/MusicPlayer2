@@ -57,6 +57,8 @@ public:
 	virtual bool SetCursor() override;
 	virtual void MouseLeave() override;
 
+	void ClearBtnRect();
+
 protected:
 	enum BtnKey		//标识按钮的类型
 	{
@@ -77,12 +79,13 @@ protected:
 		BTN_NEXT,				//下一曲
 		BTN_SHOW_PLAYLIST,		//显示/隐藏播放列表
 		BTN_SELECT_FOLDER,		//选择文件夹
-		BTN_PROGRESS			//进度条
+		BTN_PROGRESS,			//进度条
+		BTN_COVER
 	};
 
 	struct DrawData
 	{
-		CRect cover_rect;
+		//CRect cover_rect;
 		CRect lyric_rect;
 		CRect thumbnail_rect;
 	};
@@ -120,6 +123,7 @@ private:
 	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
 	void SetRepeatModeToolTipText();
 	void SetSongInfoToolTipText();
+	void SetCoverToolTipText();
 
 protected:
 	CDC* m_pDC;
@@ -136,6 +140,7 @@ protected:
 
 	CString m_repeat_mode_tip;
 	CString m_info_tip;
+	CString m_cover_tip;
 
 	int m_lyric_text_height;
 	UIData& m_ui_data;

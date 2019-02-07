@@ -2904,6 +2904,13 @@ afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPA
 	//由于此函数放到线程中处理时，拉伸图片的处理CDrawCommon::BitmapStretch有一定的概率出错，原因未知
 	//导致专辑封面背景是黑色的，因此通过发送消息放到主线程中处理
 	CPlayer::GetInstance().AlbumCoverGaussBlur();
+	
+	if(theApp.m_nc_setting_data.show_cover_tip)
+	{
+		m_ui.UpdateSongInfoToolTip();
+		m_ui2.UpdateSongInfoToolTip();
+	}
+
 	return 0;
 }
 
@@ -2932,10 +2939,19 @@ void CMusicPlayerDlg::OnSupportedFormat()
 void CMusicPlayerDlg::OnSwitchUi()
 {
 	// TODO: 在此添加命令处理程序代码
+
 	if (m_pUI == &m_ui)
+	{
 		m_pUI = &m_ui2;
+		m_ui.ClearBtnRect();
+		m_ui.UpdateToolTipPosition();
+	}
 	else
+	{
 		m_pUI = &m_ui;
+		m_ui2.ClearBtnRect();
+		m_ui2.UpdateToolTipPosition();
+	}
 
 	DrawInfo(true);
 	SetThumbnailClipArea();

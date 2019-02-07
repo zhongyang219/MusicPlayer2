@@ -102,7 +102,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制专辑封面
 		cover_rect.DeflateRect(m_layout.margin / 2, m_layout.margin / 2);
-		m_draw_data.cover_rect = cover_rect;
+		m_buttons[BTN_COVER].rect = DrawAreaToClient(cover_rect, m_draw_rect);
 		m_draw_data.thumbnail_rect = cover_rect;
 		if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 		{
@@ -299,7 +299,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 			m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
 
 		rc_tmp.DeflateRect(m_layout.margin / 2, m_layout.margin / 2);
-		m_draw_data.cover_rect = rc_tmp;
+		m_buttons[BTN_COVER].rect= DrawAreaToClient(rc_tmp, m_draw_rect);
 		m_draw_data.thumbnail_rect = rc_tmp;
 		if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
 		{
@@ -341,8 +341,6 @@ void CPlayerUI2::DrawInfo(bool reset)
 		DrawToolBar(rc_tmp, true);
 
 		//绘制歌词
-		//bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
-
 		rc_tmp.MoveToY(rc_tmp.bottom + m_layout.margin);
 		rc_tmp.bottom = cover_side + 2 * m_layout.margin - m_layout.margin;
 
@@ -352,10 +350,6 @@ void CPlayerUI2::DrawInfo(bool reset)
 				m_draw.FillAlphaRect(rc_tmp, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
 			else
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
-		}
-		else
-		{
-			m_draw.SetDrawArea(rc_tmp);
 		}
 		m_draw_data.lyric_rect = rc_tmp;
 		rc_tmp.DeflateRect(m_layout.margin, m_layout.margin);
@@ -381,57 +375,6 @@ void CPlayerUI2::DrawInfo(bool reset)
 	CPlayerUIBase::DrawInfo(reset);
 }
 
-//void CPlayerUI2::RButtonUp(CPoint point)
-//{
-//	CPlayerUIBase::RButtonUp(point);
-//
-//	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
-//		return;
-//
-//	CPoint point1;		//定义一个用于确定光标位置的位置  
-//	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-//	
-//
-//}
-
-void CPlayerUI2::MouseMove(CPoint point)
-{
-	CPlayerUIBase::MouseMove(point);
-
-	//m_draw_data.repetemode_btn.hover = (m_draw_data.repetemode_btn.rect.PtInRect(point) != FALSE);		//当鼠标移动到“循环模式”所在的矩形框内时，将m_draw_data.repetemode_hover置为true
-	//m_draw_data.volume_btn.hover = (m_draw_data.volume_btn.rect.PtInRect(point) != FALSE);
-	//m_draw_data.skin_btn.hover = (m_draw_data.skin_btn.rect.PtInRect(point) != FALSE);
-	//m_draw_data.translate_btn.hover = (m_draw_data.translate_btn.rect.PtInRect(point) != FALSE);
-
-	////显示音量的鼠标提示
-	//static bool last_volumn_hover{ false };
-	//AddMouseToolTip(m_draw_data.volume_btn, _T("鼠标滚轮调整音量"), &last_volumn_hover);
-
-	//static bool last_skin_hover{ false };
-	//AddMouseToolTip(m_draw_data.skin_btn, _T("切换界面"), &last_skin_hover);
-
-	//static bool last_translate_hover{ false };
-	//AddMouseToolTip(m_draw_data.translate_btn, _T("显示歌词翻译"), &last_translate_hover);
-
-}
-
-//CRect CPlayerUI2::GetThumbnailClipArea()
-//{
-//	CRect clip_area_rect;
-//	if (!IsDrawNarrowMode())
-//	{
-//		clip_area_rect = m_draw_data.cover_rect;
-//		clip_area_rect.MoveToY(clip_area_rect.top + m_layout.margin + theApp.DPI(20));
-//		clip_area_rect.MoveToX(clip_area_rect.left + m_layout.margin);
-//	}
-//	else
-//	{
-//		clip_area_rect = m_draw_data.cover_rect;
-//		clip_area_rect.MoveToY(clip_area_rect.top + theApp.DPI(20));
-//		clip_area_rect.MoveToX(clip_area_rect.left + m_layout.margin);
-//	}
-//	return clip_area_rect;
-//}
 
 void CPlayerUI2::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {

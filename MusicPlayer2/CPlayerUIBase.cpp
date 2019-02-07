@@ -69,7 +69,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 	for (auto& btn : m_buttons)
 	{
 		//按钮上点击右键不弹出菜单
-		if (btn.second.rect.PtInRect(point) != FALSE)
+		if (btn.first != BTN_COVER && btn.second.rect.PtInRect(point) != FALSE)
 			return;
 	}
 
@@ -307,6 +307,9 @@ void CPlayerUIBase::UpdateSongInfoToolTip()
 {
 	SetSongInfoToolTipText();
 	UpdateMouseToolTip(BTN_INFO, m_info_tip);
+
+	SetCoverToolTipText();
+	UpdateMouseToolTip(BTN_COVER, m_cover_tip);
 }
 
 void CPlayerUIBase::UpdatePlayPauseButtonTip()
@@ -332,6 +335,14 @@ void CPlayerUIBase::MouseLeave()
 	for (auto& btn : m_buttons)
 	{
 		btn.second.hover = false;
+	}
+}
+
+void CPlayerUIBase::ClearBtnRect()
+{
+	for (auto& btn : m_buttons)
+	{
+		btn.second.rect = CRect();
 	}
 }
 
@@ -915,6 +926,34 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 	//m_info_tip += strTmp;
 }
 
+void CPlayerUIBase::SetCoverToolTipText()
+{
+	if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
+	{
+		m_cover_tip = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
+
+		if (CPlayer::GetInstance().IsInnerCover())
+		{
+			m_cover_tip += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
+			switch (CPlayer::GetInstance().GetAlbumCoverType())
+			{
+			case 0: m_cover_tip += _T("jpg"); break;
+			case 1: m_cover_tip += _T("png"); break;
+			case 2: m_cover_tip += _T("gif"); break;
+			}
+		}
+		else
+		{
+			m_cover_tip += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
+			m_cover_tip += CPlayer::GetInstance().GetAlbumCoverPath().c_str();
+		}
+	}
+	else
+	{
+		m_cover_tip.Empty();
+	}
+}
+
 bool CPlayerUIBase::IsMidiLyric()
 {
 	return CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric();
@@ -1112,5 +1151,6 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
 	AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_SELECT_FOLDER, _T(" (Ctrl+T)")));
 	AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
+	AddMouseToolTip(BTN_COVER, m_cover_tip);
 }
 
