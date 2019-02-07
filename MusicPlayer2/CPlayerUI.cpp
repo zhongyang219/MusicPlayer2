@@ -234,9 +234,6 @@ void CPlayerUI::DrawInfo(bool reset)
 		m_draw_data.thumbnail_rect.bottom = lyric_rect.top;
 	}
 
-	//绘制音量调按钮，因为必须在上层，所以必须在歌词绘制完成后绘制
-	DrawVolumnAdjBtn();
-
 	//绘制播放控制条
 	CRect rc_control_bar;
 	if (IsDrawNarrowMode())
@@ -254,6 +251,9 @@ void CPlayerUI::DrawInfo(bool reset)
 		rc_control_bar.bottom = lyric_rect.top;
 	}
 	DrawControlBar(rc_control_bar);
+
+	//绘制音量调按钮，因为必须在上层，所以必须在最后绘制
+	DrawVolumnAdjBtn();
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
 	m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &MemDC, 0, 0, SRCCOPY);

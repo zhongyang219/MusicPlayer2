@@ -91,6 +91,8 @@ void CPlayerUIBase::MouseMove(CPoint point)
 		btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
 	}
 
+	m_buttons[BTN_PROGRESS].hover = m_buttons[BTN_PROGRESS].hover && !(m_show_volume_adj && (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point)));
+
 	//鼠标指向进度条时显示定位到几分几秒
 	if (m_buttons[BTN_PROGRESS].hover)
 	{
@@ -118,6 +120,22 @@ void CPlayerUIBase::MouseMove(CPoint point)
 
 void CPlayerUIBase::LButtonUp(CPoint point)
 {
+	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
+		m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
+	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
+		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
+
+	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
+	{
+		CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+		return;
+	}
+	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
+	{
+		CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+		return;
+	}
+
 	for (auto& btn : m_buttons)
 	{
 		//if (btn.second.rect.PtInRect(point) != FALSE)
@@ -210,21 +228,6 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 			}
 		}
 	}
-
-	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
-		m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
-	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
-		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
-
-	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
-	{
-		CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
-	}
-	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
-	{
-		CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
-	}
-
 
 }
 
