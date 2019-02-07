@@ -1069,7 +1069,9 @@ void CPlayerUIBase::DrawTranslateButton(CRect rect)
 			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 		else
 			alpha = 255;
-		if (m_buttons[BTN_TRANSLATE].hover)
+		if(m_buttons[BTN_TRANSLATE].pressed)
+			m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
+		else if (m_buttons[BTN_TRANSLATE].hover)
 			m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
 		else if (m_ui_data.show_translate)
 			m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
