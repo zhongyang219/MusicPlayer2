@@ -91,7 +91,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
 		btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
 	}
 
-	m_buttons[BTN_PROGRESS].hover = m_buttons[BTN_PROGRESS].hover && !(m_show_volume_adj && (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point)));
+	m_buttons[BTN_PROGRESS].hover = m_buttons[BTN_PROGRESS].hover && !(m_show_volume_adj && (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point)));
 
 	//鼠标指向进度条时显示定位到几分几秒
 	if (m_buttons[BTN_PROGRESS].hover)
@@ -123,18 +123,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 	if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
 		m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
 	else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
-		m_show_volume_adj = (m_volume_up_rect.PtInRect(point) || m_volume_down_rect.PtInRect(point));
-
-	if (m_show_volume_adj && m_volume_up_rect.PtInRect(point))	//点击音量调整按钮中的音量加时音量增加
-	{
-		CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
-		return;
-	}
-	if (m_show_volume_adj && m_volume_down_rect.PtInRect(point))	//点击音量调整按钮中的音量减时音量减小
-	{
-		CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
-		return;
-	}
+		m_show_volume_adj = (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point));
 
 	for (auto& btn : m_buttons)
 	{
@@ -210,6 +199,21 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
 				return;
 
+			case BTN_VOLUME_UP:
+				if (m_show_volume_adj)
+				{
+					CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+					return;
+				}
+				break;
+
+			case BTN_VOLUME_DOWN:
+				if (m_show_volume_adj)
+				{
+					CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+					return;
+				}
+
 			case BTN_PROGRESS:
 			{
 				int ckick_pos = point.x - m_buttons[BTN_PROGRESS].rect.left;
@@ -222,6 +226,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 				m_buttons[BTN_FIND].hover = false;
 				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
 				return;
+				break;
 
 			default:
 				break;
@@ -736,12 +741,12 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 	m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 	m_buttons[BTN_VOLUME].rect.DeflateRect(0, theApp.DPI(4));
 	m_buttons[BTN_VOLUME].rect.right -= theApp.DPI(12);
-	m_volume_down_rect = m_buttons[BTN_VOLUME].rect;
-	m_volume_down_rect.bottom += theApp.DPI(4);
-	m_volume_down_rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
-	m_volume_down_rect.right = m_buttons[BTN_VOLUME].rect.left + m_buttons[BTN_VOLUME].rect.Width() / 2;
-	m_volume_up_rect = m_volume_down_rect;
-	m_volume_up_rect.MoveToX(m_volume_down_rect.right);
+	m_buttons[BTN_VOLUME_DOWN].rect = m_buttons[BTN_VOLUME].rect;
+	m_buttons[BTN_VOLUME_DOWN].rect.bottom += theApp.DPI(4);
+	m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
+	m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + m_buttons[BTN_VOLUME].rect.Width() / 2;
+	m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
+	m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
 
 
 }
@@ -932,19 +937,35 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
 {
 	if (m_show_volume_adj)
 	{
-		CRect volume_down_rect = ClientAreaToDraw(m_volume_down_rect, m_draw_rect);
-		CRect volume_up_rect = ClientAreaToDraw(m_volume_up_rect, m_draw_rect);
+		CRect volume_down_rect = ClientAreaToDraw(m_buttons[BTN_VOLUME_DOWN].rect, m_draw_rect);
+		CRect volume_up_rect = ClientAreaToDraw(m_buttons[BTN_VOLUME_UP].rect, m_draw_rect);
 
+		BYTE alpha;
 		if (IsDrawBackgroundAlpha())
-		{
-			m_draw.FillAlphaRect(volume_down_rect, m_colors.color_text_2, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-			m_draw.FillAlphaRect(volume_up_rect, m_colors.color_text_2, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-		}
+			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 		else
-		{
-			m_draw.FillRect(volume_down_rect, m_colors.color_text_2);
-			m_draw.FillRect(volume_up_rect, m_colors.color_text_2);
-		}
+			alpha = 255;
+
+		COLORREF btn_up_back_color, btn_down_back_color;
+
+		if (m_buttons[BTN_VOLUME_UP].pressed && m_buttons[BTN_VOLUME_UP].hover)
+			btn_up_back_color = m_colors.color_button_pressed;
+		//else if (m_buttons[BTN_VOLUME_UP].hover)
+		//	btn_up_back_color = m_colors.color_control_bar_back;
+		else
+			btn_up_back_color = m_colors.color_text_2;
+
+		if (m_buttons[BTN_VOLUME_DOWN].pressed && m_buttons[BTN_VOLUME_DOWN].hover)
+			btn_down_back_color = m_colors.color_button_pressed;
+		//else if (m_buttons[BTN_VOLUME_DOWN].hover)
+		//	btn_down_back_color = m_colors.color_control_bar_back;
+		else
+			btn_down_back_color = m_colors.color_text_2;
+
+
+		m_draw.FillAlphaRect(volume_up_rect, btn_up_back_color, alpha);
+		m_draw.FillAlphaRect(volume_down_rect, btn_down_back_color, alpha);
+
 		m_draw.DrawWindowText(volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
 		m_draw.DrawWindowText(volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
 	}
@@ -1030,7 +1051,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum_back);
 
 	m_buttons[BTN_PROGRESS].rect = DrawAreaToClient(progress_rect, m_draw_rect);
-	m_buttons[BTN_PROGRESS].rect.InflateRect(0, theApp.DPI(2));
+	m_buttons[BTN_PROGRESS].rect.InflateRect(0, theApp.DPI(3));
 
 	double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
 	progress_rect.right = progress_rect.left + static_cast<int>(progress * progress_rect.Width());

@@ -62,6 +62,8 @@ protected:
 	{
 		BTN_REPETEMODE,			//“循环模式”按钮
 		BTN_VOLUME,				//音量按钮
+		BTN_VOLUME_UP,
+		BTN_VOLUME_DOWN,
 		BTN_TRANSLATE,			//歌词翻译按钮
 		BTN_SKIN,				//切换界面按钮
 		BTN_EQ,					//音效设定按钮
@@ -140,7 +142,6 @@ protected:
 
 	//UI 数据
 	CRect m_draw_rect;						//绘图区域
-	CRect m_volume_up_rect, m_volume_down_rect;	//音量调整条增加和减少音量的矩形区域
 	bool m_show_volume_adj{ false };		//显示音量调整按钮
 
 	std::map<BtnKey, UIButton> m_buttons;
