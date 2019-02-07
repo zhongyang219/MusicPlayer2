@@ -262,6 +262,13 @@ BOOL CPlayListCtrl::PreTranslateMessage(MSG* pMsg)
 		m_toolTip.RelayEvent(pMsg);
 	}
 
+	//按Ctrl+A全选
+	if ((GetKeyState(VK_CONTROL) & 0x80) && (pMsg->wParam == 'A'))
+	{
+		SelectAll();
+		return TRUE;
+	}
+
 	return CListCtrlEx::PreTranslateMessage(pMsg);
 }
 

@@ -66,6 +66,15 @@ void CListCtrlEx::SetCurSel(int select)
 	}
 }
 
+void CListCtrlEx::SelectAll()
+{
+	int itemCnt = GetItemCount();
+	for (int i = 0; i < itemCnt; i++)
+	{
+		SetItemState(i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+	}
+}
+
 bool CListCtrlEx::SetRowHeight(int height)
 {
 	if (height > 0 && height <= 512)
