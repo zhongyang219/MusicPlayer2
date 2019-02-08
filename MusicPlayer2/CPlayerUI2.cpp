@@ -37,7 +37,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 	if (!IsDrawNarrowMode())
 	{
-		bool right_lyric = (!m_ui_data.m_narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > theApp.DPI(600);
+		bool right_lyric = (!m_ui_data.narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > theApp.DPI(600);
 		CRect info_rect{ draw_rect };
 
 		//留出空间来显示播放控制条

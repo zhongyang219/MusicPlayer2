@@ -243,7 +243,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 {
 	CRect redraw_rect;
-	if (!m_ui_data.m_narrow_mode)	//在普通界面模式下
+	if (!m_ui_data.narrow_mode)	//在普通界面模式下
 	{
 		if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
 		{
@@ -270,7 +270,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 		}
 	}
-	else if (m_ui_data.m_narrow_mode)	//在窄界面模式下
+	else if (m_ui_data.narrow_mode)	//在窄界面模式下
 	{
 		if (cx < m_ui_data.client_width)		//如果宽度变窄了
 		{
@@ -377,7 +377,7 @@ void CPlayerUIBase::SetDrawRect()
 	}
 	else
 	{
-		if (!m_ui_data.m_narrow_mode)
+		if (!m_ui_data.narrow_mode)
 		{
 			m_draw_rect = CRect{ CPoint{m_layout.margin, m_layout.margin},
 			CPoint{m_ui_data.client_width / 2/* - m_layout.margin*/, m_ui_data.client_height - m_layout.margin} };
@@ -974,7 +974,7 @@ bool CPlayerUIBase::IsDrawNarrowMode()
 	if (!m_ui_data.show_playlist)
 		return false;
 	else
-		return m_ui_data.m_narrow_mode;
+		return m_ui_data.narrow_mode;
 }
 
 void CPlayerUIBase::DrawVolumnAdjBtn()

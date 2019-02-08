@@ -14,6 +14,8 @@ public:
 	void SetColors(ColorTable colors);
 	void SetCortanaColor(int color);		//设置Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
 
+	void DrawInfo();
+
 	//在Cortana搜索框上绘制文本
 	//str:	要绘制的字符串
 	//align:	对齐方式

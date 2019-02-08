@@ -169,14 +169,14 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"window_width", m_window_width);
 	ini.WriteInt(L"config", L"window_hight", m_window_height);
 	ini.WriteInt(L"config", L"transparency", theApp.m_app_setting_data.window_transparency);
-	ini.WriteBool(L"config", L"narrow_mode", m_ui_data.m_narrow_mode);
-	ini.WriteBool(L"config", L"show_translate", m_ui_data.show_translate);
-	ini.WriteBool(L"config", L"show_playlist", m_ui_data.show_playlist);
-	ini.WriteBool(L"config", L"show_menu_bar", m_ui_data.show_menu_bar);
+	ini.WriteBool(L"config", L"narrow_mode", theApp.m_ui_data.narrow_mode);
+	ini.WriteBool(L"config", L"show_translate", theApp.m_ui_data.show_translate);
+	ini.WriteBool(L"config", L"show_playlist", theApp.m_ui_data.show_playlist);
+	ini.WriteBool(L"config", L"show_menu_bar", theApp.m_ui_data.show_menu_bar);
 
 	ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
 	ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
-	ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(m_display_format));
+	ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_ui_data.display_format));
 	ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.show_lyric_in_cortana);
 	ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
 	ini.WriteString(L"config",L"font", theApp.m_app_setting_data.lyric_font_name);
@@ -190,6 +190,8 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"album_cover_as_background", theApp.m_app_setting_data.album_cover_as_background);
 	ini.WriteBool(L"config", L"cortana_show_album_cover", theApp.m_lyric_setting_data.cortana_show_album_cover);
 	ini.WriteBool(L"config", L"cortana_icon_beat", theApp.m_lyric_setting_data.cortana_icon_beat);
+	ini.WriteBool(L"config", L"cortana_lyric_compatible_mode", theApp.m_lyric_setting_data.cortana_lyric_compatible_mode);
+
 	ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
 	ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
 	ini.WriteBool(L"config", L"lyric_background", theApp.m_app_setting_data.lyric_background);
@@ -267,14 +269,14 @@ void CMusicPlayerDlg::LoadConfig()
 	m_window_width = ini.GetInt(L"config", L"window_width", theApp.DPI(698));
 	m_window_height = ini.GetInt(L"config", L"window_hight", theApp.DPI(565));
 	theApp.m_app_setting_data.window_transparency = ini.GetInt(_T("config"), _T("transparency"), 100);
-	m_ui_data.m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
-	m_ui_data.show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
-	m_ui_data.show_playlist = ini.GetBool(_T("config"), _T("show_playlist"), true);
-	m_ui_data.show_menu_bar = ini.GetBool(_T("config"), _T("show_menu_bar"), true);
+	theApp.m_ui_data.narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
+	theApp.m_ui_data.show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
+	theApp.m_ui_data.show_playlist = ini.GetBool(_T("config"), _T("show_playlist"), true);
+	theApp.m_ui_data.show_menu_bar = ini.GetBool(_T("config"), _T("show_menu_bar"), true);
 
 	theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(_T("config"), _T("theme_color"), 16760187);
 	theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(_T("config"), _T("theme_color_follow_system"), 1);
-	m_display_format = static_cast<DisplayFormat>(ini.GetInt(_T("config"), _T("playlist_display_format"), 2));
+	theApp.m_ui_data.display_format = static_cast<DisplayFormat>(ini.GetInt(_T("config"), _T("playlist_display_format"), 2));
 	theApp.m_lyric_setting_data.show_lyric_in_cortana = ini.GetBool(_T("config"), _T("show_lyric_in_cortana"), 0);
 	theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(_T("config"), _T("save_lyric_in_offset"), 0);
 	theApp.m_app_setting_data.lyric_font_name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
@@ -288,6 +290,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.album_cover_as_background = ini.GetBool(_T("config"), _T("album_cover_as_background"), true);
 	theApp.m_lyric_setting_data.cortana_show_album_cover = ini.GetBool(_T("config"), _T("cortana_show_album_cover"), 1);
 	theApp.m_lyric_setting_data.cortana_icon_beat = ini.GetBool(_T("config"), _T("cortana_icon_beat"), 0);
+	theApp.m_lyric_setting_data.cortana_lyric_compatible_mode = ini.GetBool(_T("config"), _T("cortana_lyric_compatible_mode"), 0);
+
 	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
 	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
 	theApp.m_app_setting_data.lyric_background = ini.GetBool(_T("config"), _T("lyric_background"), true);
@@ -371,7 +375,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 {
 	//设置播放列表大小
-	if (!m_ui_data.m_narrow_mode)
+	if (!theApp.m_ui_data.narrow_mode)
 	{
 		m_playlist_list.MoveWindow(cx / 2 + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.margin,
 			cx / 2 - 2 * m_layout.margin, cy - m_layout.search_edit_height - m_layout.path_edit_height - 2 * m_layout.margin);
@@ -387,7 +391,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	CRect rect_static;
 	m_path_static.GetWindowRect(rect_static);
 	rect_static.bottom = rect_static.top + m_layout.path_edit_height - 2 * m_layout.margin;
-	if (!m_ui_data.m_narrow_mode)
+	if (!theApp.m_ui_data.narrow_mode)
 		rect_static.MoveToXY(cx / 2 + m_layout.margin, m_layout.margin);
 	else
 		rect_static.MoveToXY(m_layout.margin, m_layout.info_height);
@@ -395,7 +399,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置“当前路径”edit控件大小
 	CRect rect_edit;
 	m_path_edit.GetWindowRect(rect_edit);
-	if (!m_ui_data.m_narrow_mode)
+	if (!theApp.m_ui_data.narrow_mode)
 	{
 		rect_edit.right = rect_edit.left + (cx / 2 - 3 * m_layout.margin - rect_static.Width() - m_select_folder_width);
 		rect_edit.MoveToXY(cx / 2 + m_layout.margin + rect_static.Width(), m_layout.margin);
@@ -418,7 +422,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置歌曲搜索框的大小和位置
 	CRect rect_search;
 	m_search_edit.GetWindowRect(rect_search);
-	if (!m_ui_data.m_narrow_mode)
+	if (!theApp.m_ui_data.narrow_mode)
 	{
 		rect_search.right = rect_search.left + (cx / 2 - 2 * m_layout.margin - m_layout.margin - rect_search.Height());
 		rect_search.MoveToXY(cx / 2 + m_layout.margin, m_layout.path_edit_height + theApp.DPI(1));
@@ -432,7 +436,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	//设置清除搜索按钮的大小和位置
 	CRect rect_clear{};
 	rect_clear.right = rect_clear.bottom = rect_search.Height();
-	//if (!m_ui_data.m_narrow_mode)
+	//if (!theApp.m_ui_data.narrow_mode)
 		rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
 	m_clear_search_button.MoveWindow(rect_clear);
 	m_clear_search_button.Invalidate();
@@ -440,7 +444,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 
 void CMusicPlayerDlg::ShowPlayList()
 {
-	m_playlist_list.ShowPlaylist(m_display_format);
+	m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format);
 	m_playlist_list.SetCurSel(-1);
 	//设置播放列表中突出显示的项目
 	SetPlayListColor();
@@ -488,7 +492,7 @@ void CMusicPlayerDlg::SwitchTrack()
 
 void CMusicPlayerDlg::SetPlaylistVisible()
 {
-	int cmdShow = (m_ui_data.show_playlist ? SW_SHOW : SW_HIDE);
+	int cmdShow = (theApp.m_ui_data.show_playlist ? SW_SHOW : SW_HIDE);
 	m_playlist_list.ShowWindow(cmdShow);
 	m_path_static.ShowWindow(cmdShow);
 	m_path_edit.ShowWindow(cmdShow);
@@ -499,7 +503,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
 
 void CMusicPlayerDlg::SetMenubarVisible()
 {
-	if (m_ui_data.show_menu_bar)
+	if (theApp.m_ui_data.show_menu_bar)
 	{
 		SetMenu(&m_main_menu);
 	}
@@ -664,12 +668,12 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
 		//如果m_font已经关联了一个字体资源对象，则释放它
-		if (m_ui_data.lyric_font.m_hObject)
-			m_ui_data.lyric_font.DeleteObject();
-		m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
-		if (m_ui_data.lyric_translate_font.m_hObject)
-			m_ui_data.lyric_translate_font.DeleteObject();
-		m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+		if (theApp.m_ui_data.lyric_font.m_hObject)
+			theApp.m_ui_data.lyric_font.DeleteObject();
+		theApp.m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+		if (theApp.m_ui_data.lyric_translate_font.m_hObject)
+			theApp.m_ui_data.lyric_translate_font.DeleteObject();
+		theApp.m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
 	}
 	SaveConfig();		//将设置写入到ini文件
 	theApp.SaveConfig();
@@ -840,11 +844,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_ui2.Init(m_pDC);
 	//m_pUI = &m_ui2;
 
-	m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
-	m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());		//歌词翻译字体比歌词字体小一号
+	theApp.m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+	theApp.m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());		//歌词翻译字体比歌词字体小一号
 
 	//载入默认背景图片（用于没有专辑封面时显示）
-	m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
+	theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
 
 	m_notify_icon.Init(m_hIcon);
 	m_notify_icon.AddNotifyIcon();
@@ -924,20 +928,20 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		if (m_pDC != NULL)
 		{
 			DrawInfo(true);
-			if ((cx < m_layout.width_threshold) != m_ui_data.m_narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
+			if ((cx < m_layout.width_threshold) != theApp.m_ui_data.narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
 			{
 				Invalidate(FALSE);
 				//m_time_static.Invalidate(FALSE);
 			}
 			m_pUI->OnSizeRedraw(cx, cy);
 		}
-		m_ui_data.client_width = cx;
-		m_ui_data.client_height = cy;
+		theApp.m_ui_data.client_width = cx;
+		theApp.m_ui_data.client_height = cy;
 		if (m_layout.width_threshold != 0)
 		{
-			m_ui_data.m_narrow_mode = (cx < m_layout.width_threshold);
-			//if (!m_ui_data.show_playlist)
-			//	m_ui_data.m_narrow_mode = false;
+			theApp.m_ui_data.narrow_mode = (cx < m_layout.width_threshold);
+			//if (!theApp.m_ui_data.show_playlist)
+			//	theApp.m_ui_data.narrow_mode = false;
 		}
 		if (m_playlist_list.m_hWnd && theApp.m_dpi)
 		{
@@ -986,8 +990,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 #endif
 		CRect rect;
 		GetClientRect(rect);
-		m_ui_data.client_width = rect.Width();
-		m_ui_data.client_height = rect.Height();
+		theApp.m_ui_data.client_width = rect.Width();
+		theApp.m_ui_data.client_height = rect.Height();
 		SetPlaylistSize(rect.Width(), rect.Height());		//调整播放列表的大小和位置
 		m_path_static.Invalidate();
 		//SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
@@ -1063,66 +1067,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//在Cortana搜索框里显示歌词
 		if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
 		{
-
-			if (CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric())
-			{
-				wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
-					m_cortana_lyric.DrawCortanaTextSimple(current_lyric.c_str(), Alignment::LEFT);
-			}
-			else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//有歌词时显示歌词
-			{
-				Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-				CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
-				int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
-				if (CPlayer::GetInstance().m_Lyrics.IsTranslated() && m_ui_data.show_translate)
-				{
-					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-					if (lyric.translate.empty()) lyric.translate = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-					m_cortana_lyric.DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
-				}
-				else if (!theApp.m_lyric_setting_data.cortana_lyric_double_line)
-				{
-					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-					m_cortana_lyric.DrawCortanaText(lyric.text.c_str(), progress);
-				}
-				else
-				{
-					wstring next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
-					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-					if (next_lyric.empty()) next_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-					m_cortana_lyric.DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
-				}
-			}
-			else
-			{
-				//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
-				static int index{};
-				static wstring song_name{};
-				//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
-				if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
-				{
-					m_cortana_lyric.DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), m_display_format).c_str()), true, theApp.DPI(2));
-					index = CPlayer::GetInstance().GetIndex();
-					song_name = CPlayer::GetInstance().GetFileName();
-				}
-				else
-				{
-					m_cortana_lyric.DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), m_display_format).c_str()), false, theApp.DPI(2));
-				}
-			}
-			//}
-
-			//计算频谱，根据频谱幅值使Cortana图标显示动态效果
-			float spectrum_avr{};		//取前面N个频段频谱值的平均值
-			const int N = 8;
-			for (int i{}; i <N; i++)
-				spectrum_avr += CPlayer::GetInstance().GetFFTData()[i];
-			spectrum_avr /= N;
-			int spetraum = static_cast<int>(spectrum_avr * 4000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
-			m_cortana_lyric.SetSpectrum(spetraum);
-			//显示专辑封面，如果没有专辑封面，则显示Cortana图标
-			m_cortana_lyric.AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
-			m_cortana_lyric.DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
+			m_cortana_lyric.DrawInfo();
 		}
 	}
 	//if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
@@ -1643,8 +1588,8 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 		pMenu->EnableMenuItem(ID_LYRIC_BATCH_DOWNLOAD, MF_BYCOMMAND | MF_ENABLED);
 	}
 
-	pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
-	pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
+	pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
+	pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
 
 	//设置播放列表菜单中排序方式的单选标记
 	switch (CPlayer::GetInstance().m_sort_mode)
@@ -1657,7 +1602,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	}
 
 	//设置播放列表菜单中“播放列表显示样式”的单选标记
-	switch (m_display_format)
+	switch (theApp.m_ui_data.display_format)
 	{
 	case DF_FILE_NAME: pMenu->CheckMenuRadioItem(ID_DISP_FILE_NAME, ID_DISP_TITLE_ARTIST, ID_DISP_FILE_NAME, MF_BYCOMMAND | MF_CHECKED); break;
 	case DF_TITLE: pMenu->CheckMenuRadioItem(ID_DISP_FILE_NAME, ID_DISP_TITLE_ARTIST, ID_DISP_TITLE, MF_BYCOMMAND | MF_CHECKED); break;
@@ -2138,7 +2083,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnDispFileName()
 {
 	// TODO: 在此添加命令处理程序代码
-	m_display_format = DF_FILE_NAME;
+	theApp.m_ui_data.display_format = DF_FILE_NAME;
 	ShowPlayList();
 }
 
@@ -2146,7 +2091,7 @@ void CMusicPlayerDlg::OnDispFileName()
 void CMusicPlayerDlg::OnDispTitle()
 {
 	// TODO: 在此添加命令处理程序代码
-	m_display_format = DF_TITLE;
+	theApp.m_ui_data.display_format = DF_TITLE;
 	ShowPlayList();
 }
 
@@ -2154,7 +2099,7 @@ void CMusicPlayerDlg::OnDispTitle()
 void CMusicPlayerDlg::OnDispArtistTitle()
 {
 	// TODO: 在此添加命令处理程序代码
-	m_display_format = DF_ARTIST_TITLE;
+	theApp.m_ui_data.display_format = DF_ARTIST_TITLE;
 	ShowPlayList();
 }
 
@@ -2162,7 +2107,7 @@ void CMusicPlayerDlg::OnDispArtistTitle()
 void CMusicPlayerDlg::OnDispTitleArtist()
 {
 	// TODO: 在此添加命令处理程序代码
-	m_display_format = DF_TITLE_ARTIST;
+	theApp.m_ui_data.display_format = DF_TITLE_ARTIST;
 	ShowPlayList();
 }
 
@@ -2173,8 +2118,8 @@ void CMusicPlayerDlg::OnMiniMode()
 	if (m_miniModeDlg.m_hWnd != NULL)
 		return;
 
-	m_miniModeDlg.SetDefaultBackGround(&m_ui_data.default_background);
-	m_miniModeDlg.SetDisplayFormat(&m_display_format);
+	//m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);
+	//m_miniModeDlg.SetDisplayFormat(&theApp.m_ui_data.display_format);
 	ShowWindow(SW_HIDE);
 	if (m_miniModeDlg.DoModal() == IDCANCEL)
 	{
@@ -2274,7 +2219,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
 	{
 		CLyrics::Lyric lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0) };
 		lyric_str = lyric.text;
-		if (m_ui_data.show_translate && !lyric.translate.empty())
+		if (theApp.m_ui_data.show_translate && !lyric.translate.empty())
 		{
 			lyric_str += L"\r\n";
 			lyric_str += lyric.translate;
@@ -2290,7 +2235,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
 void CMusicPlayerDlg::OnCopyAllLyric()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (CCommon::CopyStringToClipboard(CPlayer::GetInstance().m_Lyrics.GetAllLyricText(m_ui_data.show_translate)))
+	if (CCommon::CopyStringToClipboard(CPlayer::GetInstance().m_Lyrics.GetAllLyricText(theApp.m_ui_data.show_translate)))
 		MessageBox(CCommon::LoadText(IDS_ALL_LRYIC_COPIED), NULL, MB_ICONINFORMATION);
 	else
 		MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
@@ -2302,9 +2247,9 @@ void CMusicPlayerDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	////双击鼠标左键进入迷你模式
-	//if (!m_ui_data.repetemode_rect.PtInRect(point) && !m_ui_data.volume_btn.rect.PtInRect(point)
-	//	&& !m_ui_data.volume_up_rect.PtInRect(point) && !m_ui_data.volume_down_rect.PtInRect(point)
-	//	&& !m_ui_data.translate_btn.rect.PtInRect(point))
+	//if (!theApp.m_ui_data.repetemode_rect.PtInRect(point) && !theApp.m_ui_data.volume_btn.rect.PtInRect(point)
+	//	&& !theApp.m_ui_data.volume_up_rect.PtInRect(point) && !theApp.m_ui_data.volume_down_rect.PtInRect(point)
+	//	&& !theApp.m_ui_data.translate_btn.rect.PtInRect(point))
 	//	OnMiniMode();
 	CDialog::OnLButtonDblClk(nFlags, point);
 }
@@ -2457,7 +2402,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 {
 	CString title;
-	title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), m_display_format).c_str();
+	title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str();
 
 	CString title_suffix;
 	if (!title.IsEmpty())
@@ -2723,7 +2668,7 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
 	m_search_edit.GetWindowText(key_word);
 	m_searched = (key_word.GetLength() != 0);
 	m_playlist_list.QuickSearch(wstring(key_word));
-	m_playlist_list.ShowPlaylist(m_display_format, m_searched);
+	m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
 }
 
 
@@ -2735,7 +2680,7 @@ void CMusicPlayerDlg::OnBnClickedClearSearchButton()
 		//清除搜索结果
 		m_searched = false;
 		m_search_edit.SetWindowText(_T(""));
-		m_playlist_list.ShowPlaylist(m_display_format, m_searched);
+		m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
 		m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
 	}
 }
@@ -3089,9 +3034,9 @@ void CMusicPlayerDlg::OnShowPlaylist()
 {
 	// TODO: 在此添加命令处理程序代码
 	m_pUI->ClearInfo();
-	m_ui_data.show_playlist = !m_ui_data.show_playlist;
+	theApp.m_ui_data.show_playlist = !theApp.m_ui_data.show_playlist;
 
-	OnSize(SIZE_RESTORED, m_ui_data.client_width, m_ui_data.client_height);
+	OnSize(SIZE_RESTORED, theApp.m_ui_data.client_width, theApp.m_ui_data.client_height);
 	SetPlaylistVisible();
 
 	DrawInfo(true);
@@ -3120,7 +3065,7 @@ void CMusicPlayerDlg::OnMouseLeave()
 void CMusicPlayerDlg::OnShowMenuBar()
 {
 	// TODO: 在此添加命令处理程序代码
-	m_ui_data.show_menu_bar = !m_ui_data.show_menu_bar;
+	theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
 	SetMenubarVisible();
 	SetThumbnailClipArea();
 }

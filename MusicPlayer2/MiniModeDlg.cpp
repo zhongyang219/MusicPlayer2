@@ -92,7 +92,7 @@ void CMiniModeDlg::UpdateSongTipInfo()
 void CMiniModeDlg::SetTitle()
 {
 	CString title;
-	title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), *m_ui_data.pDisplayFormat).c_str();
+	title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str();
 	if (!title.IsEmpty())
 		title += _T(" - ");
 	title += _T("MusicPlayer2");
@@ -133,7 +133,7 @@ void CMiniModeDlg::UpdatePlayPauseButton()
 
 void CMiniModeDlg::ShowPlaylist()
 {
-	m_playlist_ctrl.ShowPlaylist(*m_ui_data.pDisplayFormat);
+	m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format);
 	SetPlayListColor();
 }
 
@@ -143,17 +143,17 @@ void CMiniModeDlg::SetPlayListColor()
 	//m_playlist_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
 	m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 }
+//
+//void CMiniModeDlg::SetDefaultBackGround(CImage * pImage)
+//{
+//	m_ui_data.pDefaultBackground = pImage;
+//}
 
-void CMiniModeDlg::SetDefaultBackGround(CImage * pImage)
-{
-	m_ui_data.pDefaultBackground = pImage;
-}
-
-void CMiniModeDlg::SetDisplayFormat(DisplayFormat * pDisplayFormat)
-{
-	m_ui_data.pDisplayFormat = pDisplayFormat;
-}
-
+//void CMiniModeDlg::SetDisplayFormat(DisplayFormat * pDisplayFormat)
+//{
+//	m_ui_data.pDisplayFormat = pDisplayFormat;
+//}
+//
 BOOL CMiniModeDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();

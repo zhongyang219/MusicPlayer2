@@ -27,8 +27,8 @@ public:
 	void UpdatePlayPauseButton();
 	void ShowPlaylist();
 	void SetPlayListColor();
-	void SetDefaultBackGround(CImage* pImage);
-	void SetDisplayFormat(DisplayFormat* pDisplayFormat);
+	//void SetDefaultBackGround(CImage* pImage);
+	//void SetDisplayFormat(DisplayFormat* pDisplayFormat);
 
 	void SetVolume(bool up);	//
 

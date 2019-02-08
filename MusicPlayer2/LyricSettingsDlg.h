@@ -28,12 +28,14 @@ protected:
 	CButton m_show_album_cover_in_cortana_check;
 	CButton m_cortana_icon_beat_check;
 	CComboBox m_cortana_color_combo;
+	CButton m_lyric_compatible_mode_chk;
 
 	CToolTipCtrl m_tool_tip;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	virtual BOOL OnInitDialog();
-	void SetCortanaControlEnable(bool enable);		//启用或禁用Cortana歌词显示相关的控件
+	//void SetCortanaControlEnable(bool enable);		//启用或禁用Cortana歌词显示相关的控件
+	void EnableControl();
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -53,4 +55,5 @@ public:
 	afx_msg void OnCbnSelchangeCortanaColorCombo();
 	afx_msg void OnBnClickedShowAlbumCoverInCortana();
 	afx_msg void OnBnClickedCortanaIconDeatCheck();
+	afx_msg void OnBnClickedLyricCompatibleMode();
 };

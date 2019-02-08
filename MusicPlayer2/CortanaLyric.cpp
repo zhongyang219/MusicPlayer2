@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "CortanaLyric.h"
+#include "PlayListCtrl.h"
+#include "CPlayerUIBase.h"
 
 
 CCortanaLyric::CCortanaLyric()
@@ -103,6 +105,107 @@ void CCortanaLyric::SetColors(ColorTable colors)
 void CCortanaLyric::SetCortanaColor(int color)
 {
 	m_cortana_color = color;
+}
+
+void CCortanaLyric::DrawInfo()
+{
+	if (!m_enable)
+		return;
+
+	bool is_midi_lyric = CPlayerUIBase::IsMidiLyric();
+	if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
+	{
+		if (is_midi_lyric)
+		{
+			wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
+			DrawCortanaTextSimple(current_lyric.c_str(), Alignment::LEFT);
+		}
+		else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//有歌词时显示歌词
+		{
+			Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+			CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
+			int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
+			if (CPlayer::GetInstance().m_Lyrics.IsTranslated() && theApp.m_ui_data.show_translate)
+			{
+				if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+				if (lyric.translate.empty()) lyric.translate = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+				DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
+			}
+			else if (!theApp.m_lyric_setting_data.cortana_lyric_double_line)
+			{
+				if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+				DrawCortanaText(lyric.text.c_str(), progress);
+			}
+			else
+			{
+				wstring next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
+				if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+				if (next_lyric.empty()) next_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+				DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
+			}
+		}
+		else
+		{
+			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
+			static int index{};
+			static wstring song_name{};
+			//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
+			if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
+			{
+				DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), true, theApp.DPI(2));
+				index = CPlayer::GetInstance().GetIndex();
+				song_name = CPlayer::GetInstance().GetFileName();
+			}
+			else
+			{
+				DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), false, theApp.DPI(2));
+			}
+		}
+		//}
+
+		//计算频谱，根据频谱幅值使Cortana图标显示动态效果
+		float spectrum_avr{};		//取前面N个频段频谱值的平均值
+		const int N = 8;
+		for (int i{}; i < N; i++)
+			spectrum_avr += CPlayer::GetInstance().GetFFTData()[i];
+		spectrum_avr /= N;
+		int spetraum = static_cast<int>(spectrum_avr * 4000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
+		SetSpectrum(spetraum);
+		//显示专辑封面，如果没有专辑封面，则显示Cortana图标
+		AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
+		DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
+	}
+
+	else
+	{
+		CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);
+		if (pWnd != nullptr)
+		{
+			static wstring str_disp_last;
+			wstring str_disp;
+			if (is_midi_lyric)
+			{
+				str_disp = CPlayer::GetInstance().GetMidiLyric();
+			}
+			else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//有歌词时显示歌词
+			{
+				Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+				str_disp = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0).text;
+			}
+			else
+			{
+				//没有歌词时显示当前播放歌曲的名称
+				str_disp = CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")).GetString() + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format);
+			}
+
+			if(str_disp != str_disp_last)
+			{
+				pWnd->SetWindowText(str_disp.c_str());
+				pWnd->Invalidate();
+				str_disp_last = str_disp;
+			}
+		}
+	}
 }
 
 void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
@@ -355,26 +458,42 @@ void CCortanaLyric::ResetCortanaText()
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		m_cortana_draw.SetFont(&m_cortana_font);
-		COLORREF color;		//Cortana默认文本的颜色
-		color = (m_dark_mode ? GRAY(173) : GRAY(16));
-		m_cortana_draw.SetDC(m_cortana_pDC);
-		CRect rect{ m_cortana_rect };
-		//先绘制Cortana图标
-		if (m_dark_mode)
-			m_cortana_draw.DrawBitmap(IDB_CORTANA_BLACK, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
-		else
-			m_cortana_draw.DrawBitmap(IDB_CORTANA_WHITE, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
-		//再绘制Cortana默认文本
-		rect.MoveToXY(rect.left + m_cortana_left_space, 0);
-		m_cortana_draw.FillRect(rect, m_back_color);
-		m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
-		if (!m_dark_mode)
+		if (!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
 		{
-			rect.left -= m_cortana_left_space;
-			m_cortana_draw.DrawRectTopFrame(rect, m_border_color);
+			m_cortana_draw.SetFont(&m_cortana_font);
+			COLORREF color;		//Cortana默认文本的颜色
+			color = (m_dark_mode ? GRAY(173) : GRAY(16));
+			m_cortana_draw.SetDC(m_cortana_pDC);
+			CRect rect{ m_cortana_rect };
+			//先绘制Cortana图标
+			if (m_dark_mode)
+				m_cortana_draw.DrawBitmap(IDB_CORTANA_BLACK, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+			else
+				m_cortana_draw.DrawBitmap(IDB_CORTANA_WHITE, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+			//再绘制Cortana默认文本
+			rect.MoveToXY(rect.left + m_cortana_left_space, 0);
+			m_cortana_draw.FillRect(rect, m_back_color);
+			m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
+			if (!m_dark_mode)
+			{
+				rect.left -= m_cortana_left_space;
+				m_cortana_draw.DrawRectTopFrame(rect, m_border_color);
+			}
+			//m_cortana_wnd->Invalidate();
 		}
-		//m_cortana_wnd->Invalidate();
+
+		CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);
+		if (pWnd != nullptr)
+		{
+			CString str;
+			pWnd->GetWindowText(str);
+			if(str!=m_cortana_default_text.c_str())
+			{
+				pWnd->SetWindowText(m_cortana_default_text.c_str());
+				pWnd->Invalidate();
+			}
+		}
+
 	}
 }
 

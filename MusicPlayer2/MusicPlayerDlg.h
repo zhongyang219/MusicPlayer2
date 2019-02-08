@@ -75,9 +75,8 @@ protected:
 	wstring m_cmdLine;	//命令行参数
 
 	CDC* m_pDC;				//当前窗口的DC
-	CPlayerUIBase::UIData m_ui_data;
-	CPlayerUI m_ui{ m_ui_data };
-	CPlayerUI2 m_ui2{ m_ui_data };
+	CPlayerUI m_ui{ theApp.m_ui_data };
+	CPlayerUI2 m_ui2{ theApp.m_ui_data };
 	IPlayerUI* m_pUI = nullptr;
 
 	bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
@@ -100,8 +99,6 @@ protected:
 	int m_item_selected{};		//播放列表中鼠标选中的项目
 	vector<int> m_items_selected;
 	int m_tab_selected{};		//选项设置中选择的标签
-
-	DisplayFormat m_display_format{};		//播放列表中项目的显示样式
 
 	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected, m_list_popup_menu };		//迷你模式对话框
 

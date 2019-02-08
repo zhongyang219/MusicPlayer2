@@ -16,9 +16,6 @@ public:
 		int margin;
 		bool m_show_volume{ false };	//用于指示是否在显示时间的控件显示音量，当滚动鼠标滚轮时的1.5秒内，此变量的值为true
 
-		CImage* pDefaultBackground = nullptr;			//默认的背景
-		DisplayFormat* pDisplayFormat = nullptr;
-
 		void Init()
 		{
 			widnow_width = theApp.DPI(304);

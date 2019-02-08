@@ -31,6 +31,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
 	DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
 	DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
+	DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
 }
 
 
@@ -47,6 +48,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_CBN_SELCHANGE(IDC_CORTANA_COLOR_COMBO, &CLyricSettingsDlg::OnCbnSelchangeCortanaColorCombo)
 	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowAlbumCoverInCortana)
 	ON_BN_CLICKED(IDC_CORTANA_ICON_DEAT_CHECK, &CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck)
+	ON_BN_CLICKED(IDC_LYRIC_COMPATIBLE_MODE, &CLyricSettingsDlg::OnBnClickedLyricCompatibleMode)
 END_MESSAGE_MAP()
 
 
@@ -66,6 +68,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_show_album_cover_in_cortana_check.SetCheck(m_data.cortana_show_album_cover);
 	m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
 	//m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
+	m_lyric_compatible_mode_chk.SetCheck(m_data.cortana_lyric_compatible_mode);
 	if (CWinVersionHelper::IsWindows10OrLater())
 	{
 		m_show_lyric_in_cortana_check.SetCheck(m_data.show_lyric_in_cortana);
@@ -84,7 +87,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	//else
 	//	((CButton*)GetDlgItem(IDC_SAVE_IN_TIME_TAG))->SetCheck(TRUE);
 
-	SetCortanaControlEnable(m_data.show_lyric_in_cortana);
+	EnableControl();
 
 	SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_data.lyric_path.c_str());
 
@@ -105,15 +108,25 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
-void CLyricSettingsDlg::SetCortanaControlEnable(bool enable)
+//void CLyricSettingsDlg::SetCortanaControlEnable(bool enable)
+//{
+//	m_lyric_double_line_chk.EnableWindow(enable);
+//	m_show_album_cover_in_cortana_check.EnableWindow(enable);
+//	m_cortana_color_combo.EnableWindow(enable);
+//	//if(m_data.cortana_show_album_cover)
+//	//	m_cortana_icon_beat_check.EnableWindow(FALSE);
+//	//else
+//	m_cortana_icon_beat_check.EnableWindow(enable);
+//}
+
+void CLyricSettingsDlg::EnableControl()
 {
+	bool enable = m_data.show_lyric_in_cortana && !m_data.cortana_lyric_compatible_mode;
 	m_lyric_double_line_chk.EnableWindow(enable);
 	m_show_album_cover_in_cortana_check.EnableWindow(enable);
 	m_cortana_color_combo.EnableWindow(enable);
-	//if(m_data.cortana_show_album_cover)
-	//	m_cortana_icon_beat_check.EnableWindow(FALSE);
-	//else
 	m_cortana_icon_beat_check.EnableWindow(enable);
+	m_lyric_compatible_mode_chk.EnableWindow(m_data.show_lyric_in_cortana);
 }
 
 
@@ -192,7 +205,7 @@ void CLyricSettingsDlg::OnBnClickedShowLyricInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.show_lyric_in_cortana = (m_show_lyric_in_cortana_check.GetCheck() != 0);
-	SetCortanaControlEnable(m_data.show_lyric_in_cortana);
+	EnableControl();
 }
 
 
@@ -236,4 +249,12 @@ void CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.cortana_icon_beat = (m_cortana_icon_beat_check.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedLyricCompatibleMode()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.cortana_lyric_compatible_mode = (m_lyric_compatible_mode_chk.GetCheck() != 0);
+	EnableControl();
 }

@@ -64,12 +64,12 @@ void CMiniModeUI::DrawInfo(bool reset)
 		}
 		else
 		{
-			m_draw.DrawBitmap(*m_ui_data.pDefaultBackground, CPoint(0, 0), draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+			m_draw.DrawBitmap(theApp.m_ui_data.default_background, CPoint(0, 0), draw_rect.Size(), CDrawCommon::StretchMode::FILL);
 		}
 	}
 
 	//填充背景颜色
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.pDefaultBackground->IsNull()) };		//是否需要绘制透明背景
+	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !theApp.m_ui_data.default_background.IsNull()) };		//是否需要绘制透明背景
 	if (draw_background)
 		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
 	else
@@ -218,7 +218,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	{
 		//正在播放的文件名以滚动的样式显示。如果参数要求强制刷新，则重置滚动位置
 		CDrawCommon::ScrollInfo scroll_info;
-		m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), *m_ui_data.pDisplayFormat).c_str(),
+		m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str(),
 			m_colors.color_text, theApp.DPI(1), true, scroll_info, reset);
 	}
 	else		//显示歌词

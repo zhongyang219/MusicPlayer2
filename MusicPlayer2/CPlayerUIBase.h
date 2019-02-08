@@ -18,22 +18,6 @@ struct SLayoutData
 class CPlayerUIBase : public IPlayerUI
 {
 public:
-
-	struct UIData
-	{
-		CFont lyric_font;					//歌词字体
-		CFont lyric_translate_font;			//歌词翻译的字体
-		bool show_translate{ true };		//歌词是否显示翻译
-		bool m_narrow_mode;					//窄界面模式
-		bool show_playlist{true};
-		bool show_menu_bar{ true };
-
-		int client_width;					//窗口客户区宽度
-		int client_height;					//窗口客户区高度
-		CImage default_background;			//默认的背景
-	};
-
-public:
 	CPlayerUIBase(UIData& ui_data);
 	~CPlayerUIBase();
 
@@ -59,6 +43,8 @@ public:
 	virtual void MouseLeave() override;
 
 	void ClearBtnRect();
+
+	static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
 
 protected:
 	enum BtnKey		//标识按钮的类型
@@ -113,7 +99,6 @@ protected:
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
 	bool IsDrawNarrowMode();			//是否使用窄界面模式绘图
-	static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
 	bool IsDrawBackgroundAlpha() const;	//是否需要绘制透明背景
 
 private:

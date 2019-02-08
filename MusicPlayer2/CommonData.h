@@ -29,6 +29,7 @@ struct LyricSettingData
 	int cortana_color{ 0 };						//Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
 	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 	bool cortana_icon_beat{ true };				//Cortana图标随音乐节奏跳动
+	bool cortana_lyric_compatible_mode{ false };	//Cortana搜索框歌词显示使用兼容模式
 };
 
 struct ApperanceSettingData
@@ -120,4 +121,20 @@ public:
 	{
 		return iconSize;
 	}
+};
+
+
+struct UIData
+{
+	CFont lyric_font;					//歌词字体
+	CFont lyric_translate_font;			//歌词翻译的字体
+	bool show_translate{ true };		//歌词是否显示翻译
+	bool narrow_mode;					//窄界面模式
+	bool show_playlist{ true };
+	bool show_menu_bar{ true };
+
+	int client_width;					//窗口客户区宽度
+	int client_height;					//窗口客户区高度
+	CImage default_background;			//默认的背景
+	DisplayFormat display_format{};		//播放列表中项目的显示样式
 };

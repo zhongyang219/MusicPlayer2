@@ -77,6 +77,8 @@ public:
 	GlobalHotKeySettingData m_hot_key_setting_data;	//“全局快捷键”设置
 	CHotkeyManager m_hot_key;
 
+	UIData m_ui_data;
+
 	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
 	volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
