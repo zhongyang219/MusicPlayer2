@@ -80,7 +80,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//计算专辑封面的位置
 		int bottom_height;		//专辑封面底部到绘图区询问的距离
 		if (!right_lyric)
-			bottom_height = static_cast<int>(info_rect.Height() * 0.4);
+			bottom_height = static_cast<int>(info_rect.Height() * 0.42);
 		else
 			bottom_height = static_cast<int>(info_rect.Height() * 0.35);
 

@@ -213,6 +213,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 					CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
 					return;
 				}
+				break;
 
 			case BTN_PROGRESS:
 			{
