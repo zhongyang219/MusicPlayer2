@@ -692,13 +692,13 @@ void CMusicPlayerDlg::ThemeColorChanged()
 		//m_progress_bar.Invalidate();
 		//m_time_static.Invalidate();
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
-		SetPlayListColor();
+		//SetPlayListColor();
 		m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
 		DrawInfo();
-		if (m_miniModeDlg.m_hWnd != NULL)
-		{
-			m_miniModeDlg.SetPlayListColor();
-		}
+		//if (m_miniModeDlg.m_hWnd != NULL)
+		//{
+		//	m_miniModeDlg.SetPlayListColor();
+		//}
 
 	}
 }
@@ -777,10 +777,14 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	if (pSysMenu != NULL)
 	{
 		pSysMenu->AppendMenu(MF_SEPARATOR);
-		pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
-		pSysMenu->AppendMenu(MF_SEPARATOR);
-
 		CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_main_menu.GetSafeHmenu());		//将主菜单添加到系统菜单
+
+		pSysMenu->AppendMenu(MF_SEPARATOR);
+		pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
+
+		CString exitStr;
+		m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
+		pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
 	}
 
 
