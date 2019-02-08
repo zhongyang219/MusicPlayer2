@@ -53,6 +53,9 @@ void CPlayerUIBase::LButtonDown(CPoint point)
 
 void CPlayerUIBase::RButtonUp(CPoint point)
 {
+	if (!m_draw_rect.PtInRect(point))
+		return;
+
 	if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
 		m_show_volume_adj = false;
 
@@ -293,8 +296,9 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 
 CRect CPlayerUIBase::GetThumbnailClipArea()
 {
+	int menu_bar_height = (m_ui_data.show_menu_bar ? theApp.DPI(20) : 0);
 	CRect thumbnail_rect = DrawAreaToClient(m_draw_data.thumbnail_rect, m_draw_rect);
-	thumbnail_rect.MoveToY(thumbnail_rect.top + theApp.DPI(20));
+	thumbnail_rect.MoveToY(thumbnail_rect.top + menu_bar_height);
 	return thumbnail_rect;
 }
 

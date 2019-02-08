@@ -154,8 +154,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHOW_PLAYLIST, &CMusicPlayerDlg::OnShowPlaylist)
 	ON_WM_SETCURSOR()
-		ON_WM_MOUSELEAVE()
-		END_MESSAGE_MAP()
+	ON_WM_MOUSELEAVE()
+	ON_COMMAND(ID_SHOW_MENU_BAR, &CMusicPlayerDlg::OnShowMenuBar)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -171,6 +172,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"narrow_mode", m_ui_data.m_narrow_mode);
 	ini.WriteBool(L"config", L"show_translate", m_ui_data.show_translate);
 	ini.WriteBool(L"config", L"show_playlist", m_ui_data.show_playlist);
+	ini.WriteBool(L"config", L"show_menu_bar", m_ui_data.show_menu_bar);
 
 	ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
 	ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -268,6 +270,7 @@ void CMusicPlayerDlg::LoadConfig()
 	m_ui_data.m_narrow_mode = ini.GetBool(_T("config"), _T("narrow_mode"), 0);
 	m_ui_data.show_translate = ini.GetBool(_T("config"), _T("show_translate"), true);
 	m_ui_data.show_playlist = ini.GetBool(_T("config"), _T("show_playlist"), true);
+	m_ui_data.show_menu_bar = ini.GetBool(_T("config"), _T("show_menu_bar"), true);
 
 	theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(_T("config"), _T("theme_color"), 16760187);
 	theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(_T("config"), _T("theme_color_follow_system"), 1);
@@ -494,6 +497,18 @@ void CMusicPlayerDlg::SetPlaylistVisible()
 	m_set_path_button.ShowWindow(cmdShow);
 }
 
+void CMusicPlayerDlg::SetMenubarVisible()
+{
+	if (m_ui_data.show_menu_bar)
+	{
+		SetMenu(&m_main_menu);
+	}
+	else
+	{
+		SetMenu(nullptr);
+	}
+}
+
 void CMusicPlayerDlg::UpdateTaskBarProgress()
 {
 #ifndef COMPILE_IN_WIN_XP
@@ -692,32 +707,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	//// 将“关于...”菜单项添加到系统菜单中。
-
-	//// IDM_ABOUTBOX 必须在系统命令范围内。
-	//ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
-	//ASSERT(IDM_ABOUTBOX < 0xF000);
-
-	CMenu* pSysMenu = GetSystemMenu(FALSE);
-	if (pSysMenu != NULL)
-	{
-		pSysMenu->AppendMenu(MF_SEPARATOR);
-		pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE,CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
-		pSysMenu->AppendMenu(MF_SEPARATOR);
-
-		CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), GetMenu()->GetSafeHmenu());		//将主菜单添加到系统菜单
-
-		//BOOL bNameValid;
-		//CString strAboutMenu;
-		//bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
-		//ASSERT(bNameValid);
-		//if (!strAboutMenu.IsEmpty())
-		//{
-		//	pSysMenu->AppendMenu(MF_SEPARATOR);
-		//	pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
-		//}
-	}
-
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
@@ -777,7 +766,23 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//DWORD dwStyle = m_time_static.GetStyle();
 	//::SetWindowLong(m_time_static.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
+	//初始化菜单
+	m_main_menu.LoadMenu(IDR_MENU1);
 	m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
+
+	SetMenubarVisible();
+
+	//将主菜单添加到系统菜单中
+	CMenu* pSysMenu = GetSystemMenu(FALSE);
+	if (pSysMenu != NULL)
+	{
+		pSysMenu->AppendMenu(MF_SEPARATOR);
+		pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
+		pSysMenu->AppendMenu(MF_SEPARATOR);
+
+		CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_main_menu.GetSafeHmenu());		//将主菜单添加到系统菜单
+	}
+
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
@@ -1635,6 +1640,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 	}
 
 	pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
+	pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
 
 	//设置播放列表菜单中排序方式的单选标记
 	switch (CPlayer::GetInstance().m_sort_mode)
@@ -3104,4 +3110,13 @@ void CMusicPlayerDlg::OnMouseLeave()
 	m_pUI->MouseLeave();
 
 	CDialog::OnMouseLeave();
+}
+
+
+void CMusicPlayerDlg::OnShowMenuBar()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_ui_data.show_menu_bar = !m_ui_data.show_menu_bar;
+	SetMenubarVisible();
+	SetThumbnailClipArea();
 }

@@ -59,6 +59,7 @@ protected:
 																	//用于支持鼠标指向列表中的项目时显示歌曲信息)
 	CStaticEx m_path_static;
 	CEdit m_path_edit;
+	CMenu m_main_menu;
 	CMenu m_list_popup_menu;		//播放列表右键菜单
 	CButton m_set_path_button;
 	CEdit m_search_edit;
@@ -134,6 +135,7 @@ protected:
 	void SetPlayListColor();
 	void SwitchTrack();		//当切换正在播放的歌曲时的处理
 	void SetPlaylistVisible();
+	void SetMenubarVisible();
 
 	void UpdateTaskBarProgress();	//更新任务栏按钮上的进度
 	void UpdatePlayPauseButton();		//根据当前播放状态更新“播放/暂停”按钮上的文字和图标
@@ -285,4 +287,5 @@ public:
 	afx_msg void OnShowPlaylist();
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg void OnMouseLeave();
+	afx_msg void OnShowMenuBar();
 };
