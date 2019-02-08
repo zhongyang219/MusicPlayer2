@@ -750,29 +750,29 @@
     <Image Include="res\toolbar1.bmp">
       <Filter>资源文件\其他</Filter>
     </Image>
-    <Image Include="res\曲目信息.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\曲目信息_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\文件夹.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\文件夹_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\播放列表.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\播放列表_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\查找.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\查找_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\曲目信息.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\曲目信息_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\文件夹.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\文件夹_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

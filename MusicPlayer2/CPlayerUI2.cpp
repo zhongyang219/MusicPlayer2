@@ -70,9 +70,16 @@ void CPlayerUI2::DrawInfo(bool reset)
 		else if (channel_info.chans > 2)
 			chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), channel_info.chans);
 		if (!CPlayer::GetInstance().IsMidi())
-			swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
+		{
+			swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f,
+				CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
+		}
 		else
-			swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
+		{
+			const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
+			swprintf_s(buff, L"%s %.1fkHz %s %dbpm %d/%d", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f,
+				chans_str.GetString(), midi_info.speed, midi_info.midi_position, midi_info.midi_length);
+		}
 
 		static CDrawCommon::ScrollInfo scroll_info2;
 		m_draw.DrawScrollText(rc_tmp, buff, m_colors.color_text, theApp.DPI(1.5), false, scroll_info2, reset);
@@ -80,7 +87,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//计算专辑封面的位置
 		int bottom_height;		//专辑封面底部到绘图区询问的距离
 		if (!right_lyric)
-			bottom_height = static_cast<int>(info_rect.Height() * 0.42);
+			bottom_height = static_cast<int>(info_rect.Height() * 0.41);
 		else
 			bottom_height = static_cast<int>(info_rect.Height() * 0.35);
 
