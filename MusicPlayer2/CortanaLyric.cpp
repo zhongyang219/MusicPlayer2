@@ -397,7 +397,8 @@ void CCortanaLyric::ResetCortanaText()
 				m_draw.DrawBitmap(IDB_CORTANA_WHITE, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FILL);
 			//再绘制Cortana默认文本
 			CRect rect{ m_cortana_rect };
-			rect.MoveToXY(rect.left + m_cover_width, 0);
+			//rect.MoveToXY(rect.left + m_cover_width, 0);
+			rect.left += m_cover_width;
 			m_draw.FillRect(rect, m_back_color);
 			m_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
 			if (!m_dark_mode)
@@ -482,8 +483,3 @@ void CCortanaLyric::SetSpectrum(int spectrum)
 	if (m_spectrum < 0) m_spectrum = 0;
 	if (m_spectrum > 2000) m_spectrum = 2000;
 }
-
-//void CCortanaLyric::SetCortanaIconBeat(bool * beat)
-//{
-//	m_cortana_icon_beat = beat;
-//}
