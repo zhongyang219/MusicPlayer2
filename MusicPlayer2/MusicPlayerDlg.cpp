@@ -663,6 +663,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	//m_time_static.Invalidate();
 	SetPlayListColor();
 	ThemeColorChanged();
+
+	m_cortana_lyric.SetUIColors();
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
 		//如果m_font已经关联了一个字体资源对象，则释放它
@@ -1088,8 +1090,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		UpdatePlayPauseButton();
 	}
 
-	if (m_timer_count % 10 == 0)
-		m_cortana_lyric.CheckDarkMode();
+	//if (m_timer_count % 10 == 0)
+	//	m_cortana_lyric.CheckDarkMode();
 
 	if (CWinVersionHelper::IsWindowsVista())
 	{

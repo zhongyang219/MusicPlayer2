@@ -46,10 +46,11 @@ void CCortanaLyric::Init()
 
 
 		//获取用来检查小娜是否为深色模式的采样点的坐标
-		m_check_dark_point.x = cortana_rect.right + 1;
+		m_check_dark_point.x = cortana_rect.right - 1;
 		m_check_dark_point.y = cortana_rect.top + 1;
 
 		CheckDarkMode();
+		SetUIColors();
 		
 		//设置字体
 		LOGFONT lf;
@@ -89,7 +90,7 @@ void CCortanaLyric::DrawInfo()
 		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
 		//使用m_draw绘图
 		m_draw.SetDC(&MemDC);
-		m_draw.FillRect(m_cortana_rect, m_back_color);
+		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 		
 		if (is_midi_lyric)
 		{
@@ -150,7 +151,7 @@ void CCortanaLyric::DrawInfo()
 		DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
 	
 		//将缓冲区DC中的图像拷贝到屏幕中显示
-		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
+		if (!m_colors.dark)		//非深色模式下，在搜索顶部绘制边框
 		{
 			CRect rect{ m_cortana_rect };
 			rect.left += m_cover_width;
@@ -198,10 +199,8 @@ void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		COLORREF color;
-		color = (m_dark_mode ? theApp.m_app_setting_data.theme_color.light3 : theApp.m_app_setting_data.theme_color.dark2);
 		CRect text_rect{ TextRect() };
-		m_draw.DrawWindowText(text_rect, str, color, align, false, false, true);
+		m_draw.DrawWindowText(text_rect, str, m_colors.info_text_color, align, false, false, true);
 	}
 }
 
@@ -210,10 +209,8 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
 		static CDrawCommon::ScrollInfo cortana_scroll_info;
-		COLORREF color;
-		color = (m_dark_mode ? theApp.m_app_setting_data.theme_color.light3 : theApp.m_app_setting_data.theme_color.dark2);
 		CRect text_rect{ TextRect() };
-		m_draw.DrawScrollText(text_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
+		m_draw.DrawScrollText(text_rect, str, m_colors.info_text_color, scroll_pixel, false, cortana_scroll_info, reset);
 	}
 }
 
@@ -222,10 +219,7 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
 		CRect text_rect{ TextRect() };
-		if (m_dark_mode)
-			m_draw.DrawWindowText(text_rect, str, theApp.m_app_setting_data.theme_color.light3, theApp.m_app_setting_data.theme_color.light1, progress, false);
-		else
-			m_draw.DrawWindowText(text_rect, str, theApp.m_app_setting_data.theme_color.dark3, theApp.m_app_setting_data.theme_color.dark1, progress, false);
+		m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color2, progress, false);
 	}
 }
 
@@ -247,7 +241,6 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 		//根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
-		//MemDC.SelectObject(&m_font_double_line);
 		int width;
 		if (!swap)
 			width = m_draw.GetTextExtent(next_lyric).cx;
@@ -256,27 +249,16 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		if(width<m_cortana_rect.Width())
 			down_rect.left = down_rect.right - width;
 
-		COLORREF color1, color2;		//已播放歌词颜色、未播放歌词的颜色
-		if (m_dark_mode)
-		{
-			color1 = theApp.m_app_setting_data.theme_color.light3;
-			color2 = theApp.m_app_setting_data.theme_color.light1;
-		}
-		else
-		{
-			color1 = theApp.m_app_setting_data.theme_color.dark3;
-			color2 = theApp.m_app_setting_data.theme_color.dark1;
-		}
-		m_draw.FillRect(m_cortana_rect, m_back_color);
+		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 		if (!swap)
 		{
-			m_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
-			m_draw.DrawWindowText(down_rect, next_lyric, color2);
+			m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
+			m_draw.DrawWindowText(down_rect, next_lyric, m_colors.text_color2);
 		}
 		else
 		{
-			m_draw.DrawWindowText(up_rect, next_lyric, color2);
-			m_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
+			m_draw.DrawWindowText(up_rect, next_lyric, m_colors.text_color2);
+			m_draw.DrawWindowText(down_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
 		}
 	}
 }
@@ -290,22 +272,11 @@ void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 
-		COLORREF color1, color2;		//已播放歌词颜色、未播放歌词的颜色
-		if (m_dark_mode)
-		{
-			color1 = theApp.m_app_setting_data.theme_color.light3;
-			color2 = theApp.m_app_setting_data.theme_color.light1;
-		}
-		else
-		{
-			color1 = theApp.m_app_setting_data.theme_color.dark3;
-			color2 = theApp.m_app_setting_data.theme_color.dark1;
-		}
-		m_draw.FillRect(m_cortana_rect, m_back_color);
+		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 		m_draw.SetFont(&m_cortana_font);
-		m_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
+		m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
 		m_draw.SetFont(&m_font_translate);
-		m_draw.DrawWindowText(down_rect, translate, color1, color1, progress, false);
+		m_draw.DrawWindowText(down_rect, translate, m_colors.text_color, m_colors.text_color, progress, false);
 	}
 }
 
@@ -317,10 +288,10 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 		m_draw.SetDrawArea(cover_rect);
 		if (album_cover.IsNull() || !m_show_album_cover)
 		{
-			int cortana_img_id{ m_dark_mode ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
+			int cortana_img_id{ m_colors.dark ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
 			if (theApp.m_lyric_setting_data.cortana_icon_beat)
 			{
-				m_draw.FillRect(cover_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
+				m_draw.FillRect(cover_rect, (m_colors.dark ? GRAY(47) : GRAY(240)));
 				CRect rect{ cover_rect };
 				rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 				int inflate;
@@ -333,7 +304,7 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 				m_draw.DrawBitmap(cortana_img_id, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
 			}
 
-			if(!m_dark_mode)
+			if(!m_colors.dark)
 				m_draw.DrawRectTopFrame(cover_rect, m_border_color);
 		}
 		else
@@ -390,7 +361,7 @@ void CCortanaLyric::ResetCortanaText()
 			//再绘制Cortana默认文本
 			CRect rect{ m_cortana_rect };
 			rect.left += m_cover_width;
-			m_draw.FillRect(rect, m_back_color);
+			m_draw.FillRect(rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
 			m_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
 			if (!m_dark_mode)
 			{
@@ -406,39 +377,14 @@ void CCortanaLyric::CheckDarkMode()
 {
 	if (m_enable)
 	{
-		if (theApp.m_lyric_setting_data.cortana_color == 1)
-		{
-			m_dark_mode = true;
-		}
-		else if (theApp.m_lyric_setting_data.cortana_color == 2)
-		{
-			m_dark_mode = false;
-		}
-		else
-		{
-			HDC hDC = ::GetDC(NULL);
-			COLORREF color;
-			//获取Cortana左上角点的颜色
-			color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
-			int brightness;
-			brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
-			m_dark_mode = (brightness < 220);
-			::ReleaseDC(NULL, hDC);
-		}
-
-		//根据深浅色模式设置背景颜色
-		if (m_dark_mode)
-		{
-			DWORD dwStyle = GetWindowLong(m_hCortanaStatic, GWL_STYLE);
-			if ((dwStyle & WS_VISIBLE) != 0)		//根据Cortana搜索框中static控件是否有WS_VISIBLE属性为绘图背景设置不同的背景色
-				m_back_color = GRAY(47);	//设置绘图的背景颜色
-			else
-				m_back_color = GRAY(10);	//设置绘图的背景颜色
-		}
-		else
-		{
-			m_back_color = GRAY(240);
-		}
+		HDC hDC = ::GetDC(NULL);
+		COLORREF color;
+		//获取Cortana左上角点的颜色
+		color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
+		int brightness;
+		brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
+		m_dark_mode = (brightness < 220);
+		::ReleaseDC(NULL, hDC);
 	}
 }
 
@@ -451,7 +397,7 @@ void CCortanaLyric::AlbumCoverEnable(bool enable)
 	{
 		CRect cover_rect = CoverRect();
 		CDrawCommon::SetDrawArea(m_pDC, cover_rect);
-		m_pDC->FillSolidRect(cover_rect, m_back_color);
+		m_pDC->FillSolidRect(cover_rect, m_colors.back_color);
 	}
 }
 
@@ -460,4 +406,34 @@ void CCortanaLyric::SetSpectrum(int spectrum)
 	m_spectrum = spectrum;
 	if (m_spectrum < 0) m_spectrum = 0;
 	if (m_spectrum > 2000) m_spectrum = 2000;
+}
+
+void CCortanaLyric::SetUIColors()
+{
+	if (theApp.m_lyric_setting_data.cortana_color == 1)
+		m_colors.dark = true;
+	else if (theApp.m_lyric_setting_data.cortana_color == 2)
+		m_colors.dark = false;
+	else
+		m_colors.dark = m_dark_mode;
+
+	if (m_colors.dark)
+	{
+		m_colors.text_color = theApp.m_app_setting_data.theme_color.light3;
+		m_colors.text_color2 = theApp.m_app_setting_data.theme_color.light1;
+		m_colors.info_text_color = theApp.m_app_setting_data.theme_color.light3;
+
+		DWORD dwStyle = GetWindowLong(m_hCortanaStatic, GWL_STYLE);
+		if ((dwStyle & WS_VISIBLE) != 0)		//根据Cortana搜索框中static控件是否有WS_VISIBLE属性为绘图背景设置不同的背景色
+			m_colors.back_color = GRAY(47);	//设置绘图的背景颜色
+		else
+			m_colors.back_color = GRAY(10);	//设置绘图的背景颜色
+	}
+	else
+	{
+		m_colors.text_color = theApp.m_app_setting_data.theme_color.dark3;
+		m_colors.text_color2 = theApp.m_app_setting_data.theme_color.dark1;
+		m_colors.info_text_color = theApp.m_app_setting_data.theme_color.dark2;
+		m_colors.back_color = GRAY(240);
+	}
 }

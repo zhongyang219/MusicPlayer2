@@ -15,12 +15,23 @@ public:
 	void DrawInfo();
 
 	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
-	void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
 	void AlbumCoverEnable(bool enable);
 	void SetSpectrum(int spectrum);
-	//void SetCortanaIconBeat(bool* beat);
+	void SetUIColors();
 
 private:
+	struct UIColors		//界面颜色
+	{
+		COLORREF text_color;		//已播放歌词的颜色
+		COLORREF text_color2;		//未播放歌词的颜色
+		COLORREF info_text_color;	//歌曲信息文本的颜色
+		COLORREF back_color;		//背景色
+		bool dark;			//是否使用深色作为背景色绘制
+	};
+
+private:
+	void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
+
 	//在Cortana搜索框上绘制文本
 	//str:	要绘制的字符串
 	//align:	对齐方式
@@ -69,8 +80,10 @@ private:
 	bool m_dark_mode{ true };			//Cortana搜索框是否处于深色模式
 
 	CPoint m_check_dark_point{};			//用于判断Cortana搜索框是否为深色模式的点的位置
-	COLORREF m_back_color;
+	//COLORREF m_back_color;
 	const COLORREF m_border_color{ GRAY(180) };		//浅色模式时边框的颜色
+
+	UIColors m_colors;
 
 	bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
 	int m_spectrum{0};		//频谱的幅值，取值为0~1000
