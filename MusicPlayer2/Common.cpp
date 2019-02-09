@@ -46,6 +46,12 @@ bool CCommon::FolderExist(const wstring & file)
 	return INVALID_FILE_ATTRIBUTES != dwAttrib && 0 != (dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
 }
 
+bool CCommon::IsFolder(const wstring& path)
+{
+	DWORD dwAttrib = GetFileAttributes(path.c_str());
+	return (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
+}
+
 //bool CCommon::FileIsMidi(const wstring & file_name)
 //{
 //	wstring type;

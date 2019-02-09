@@ -1614,10 +1614,10 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
 	//获取第1个文件
 	DragQueryFile(hDropInfo, 0, file_path, MAX_PATH);
 	wstring file_path_wcs{ file_path };
-	if (file_path_wcs.size() > 4 && file_path_wcs[file_path_wcs.size() - 4] != L'.' && file_path_wcs[file_path_wcs.size() - 5] != L'.')
+	//if (file_path_wcs.size() > 4 && file_path_wcs[file_path_wcs.size() - 4] != L'.' && file_path_wcs[file_path_wcs.size() - 5] != L'.')
+	if(CCommon::IsFolder(file_path_wcs))
 	{
-		//如果获取的第一个文件的倒数第3个和倒数第4个字符都不是“.”，说明这不是一个文件，而是一个文件夹
-		file_path_wcs.push_back(L'\\');
+		//file_path_wcs.push_back(L'\\');
 		CPlayer::GetInstance().OpenFolder(file_path_wcs);
 	}
 	else
