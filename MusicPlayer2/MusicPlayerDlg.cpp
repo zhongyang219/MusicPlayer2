@@ -662,8 +662,6 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	//m_progress_bar.Invalidate();
 	//m_time_static.Invalidate();
 	SetPlayListColor();
-	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
-	m_cortana_lyric.SetCortanaColor(theApp.m_lyric_setting_data.cortana_color);
 	ThemeColorChanged();
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
@@ -697,7 +695,6 @@ void CMusicPlayerDlg::ThemeColorChanged()
 		//m_time_static.Invalidate();
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 		SetPlayListColor();
-		m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
 		DrawInfo();
 		if (m_miniModeDlg.m_hWnd != NULL)
 		{
@@ -833,9 +830,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//获取Cortana歌词
 	m_cortana_lyric.Init();
-	m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
-	m_cortana_lyric.SetCortanaColor(theApp.m_lyric_setting_data.cortana_color);
-	m_cortana_lyric.SetCortanaIconBeat(&theApp.m_lyric_setting_data.cortana_icon_beat);
 
 	//初始化绘图的类
 	m_pDC = GetDC();

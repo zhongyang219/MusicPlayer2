@@ -11,8 +11,6 @@ public:
 
 	void Init();	//初始化，获取Cortana句柄、矩形区域等
 	void SetEnable(bool enable);
-	void SetColors(ColorTable colors);
-	void SetCortanaColor(int color);		//设置Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
 
 	void DrawInfo();
 
@@ -20,7 +18,7 @@ public:
 	void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
 	void AlbumCoverEnable(bool enable);
 	void SetSpectrum(int spectrum);
-	void SetCortanaIconBeat(bool* beat);
+	//void SetCortanaIconBeat(bool* beat);
 
 private:
 	//在Cortana搜索框上绘制文本
@@ -69,17 +67,13 @@ private:
 	CDC* m_pDC{};				//在Cortana搜索框中绘图的DC
 
 	bool m_dark_mode{ true };			//Cortana搜索框是否处于深色模式
-	ColorTable m_colors;
 
 	CPoint m_check_dark_point{};			//用于判断Cortana搜索框是否为深色模式的点的位置
 	COLORREF m_back_color;
 	const COLORREF m_border_color{ GRAY(180) };		//浅色模式时边框的颜色
 
 	bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
-	int m_cortana_color;		//Cortana搜索框的背景颜色（0：跟随系统，1：黑色，2：白色）
-
 	int m_spectrum{0};		//频谱的幅值，取值为0~1000
-	bool* m_cortana_icon_beat;		//Cortana图标随音乐节奏跳动
 
 public:
 	bool m_cortana_disabled;

@@ -80,16 +80,16 @@ void CCortanaLyric::SetEnable(bool enable)
 	m_enable = enable;
 }
 
-void CCortanaLyric::SetColors(ColorTable colors)
-{
-	m_colors = colors;
-}
-
-void CCortanaLyric::SetCortanaColor(int color)
-{
-	m_cortana_color = color;
-}
-
+//void CCortanaLyric::SetColors(ColorTable colors)
+//{
+//	m_colors = colors;
+//}
+//
+//void CCortanaLyric::SetCortanaColor(int color)
+//{
+//	m_cortana_color = color;
+//}
+//
 void CCortanaLyric::DrawInfo()
 {
 	if (!m_enable)
@@ -219,7 +219,7 @@ void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
 		COLORREF color;
-		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
+		color = (m_dark_mode ? theApp.m_app_setting_data.theme_color.light3 : theApp.m_app_setting_data.theme_color.dark2);
 		CRect text_rect{ TextRect() };
 		m_draw.DrawWindowText(text_rect, str, color, align, false, false, true);
 	}
@@ -231,7 +231,7 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 	{
 		static CDrawCommon::ScrollInfo cortana_scroll_info;
 		COLORREF color;
-		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
+		color = (m_dark_mode ? theApp.m_app_setting_data.theme_color.light3 : theApp.m_app_setting_data.theme_color.dark2);
 		CRect text_rect{ TextRect() };
 		m_draw.DrawScrollText(text_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
 	}
@@ -243,9 +243,9 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 	{
 		CRect text_rect{ TextRect() };
 		if (m_dark_mode)
-			m_draw.DrawWindowText(text_rect, str, m_colors.light3, m_colors.light1, progress, false);
+			m_draw.DrawWindowText(text_rect, str, theApp.m_app_setting_data.theme_color.light3, theApp.m_app_setting_data.theme_color.light1, progress, false);
 		else
-			m_draw.DrawWindowText(text_rect, str, m_colors.dark3, m_colors.dark1, progress, false);
+			m_draw.DrawWindowText(text_rect, str, theApp.m_app_setting_data.theme_color.dark3, theApp.m_app_setting_data.theme_color.dark1, progress, false);
 	}
 }
 
@@ -279,13 +279,13 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		COLORREF color1, color2;		//已播放歌词颜色、未播放歌词的颜色
 		if (m_dark_mode)
 		{
-			color1 = m_colors.light3;
-			color2 = m_colors.light1;
+			color1 = theApp.m_app_setting_data.theme_color.light3;
+			color2 = theApp.m_app_setting_data.theme_color.light1;
 		}
 		else
 		{
-			color1 = m_colors.dark3;
-			color2 = m_colors.dark1;
+			color1 = theApp.m_app_setting_data.theme_color.dark3;
+			color2 = theApp.m_app_setting_data.theme_color.dark1;
 		}
 		m_draw.FillRect(m_cortana_rect, m_back_color);
 		if (!swap)
@@ -313,13 +313,13 @@ void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int
 		COLORREF color1, color2;		//已播放歌词颜色、未播放歌词的颜色
 		if (m_dark_mode)
 		{
-			color1 = m_colors.light3;
-			color2 = m_colors.light1;
+			color1 = theApp.m_app_setting_data.theme_color.light3;
+			color2 = theApp.m_app_setting_data.theme_color.light1;
 		}
 		else
 		{
-			color1 = m_colors.dark3;
-			color2 = m_colors.dark1;
+			color1 = theApp.m_app_setting_data.theme_color.dark3;
+			color2 = theApp.m_app_setting_data.theme_color.dark1;
 		}
 		m_draw.FillRect(m_cortana_rect, m_back_color);
 		m_draw.SetFont(&m_cortana_font);
@@ -338,7 +338,7 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 		if (album_cover.IsNull() || !m_show_album_cover)
 		{
 			int cortana_img_id{ m_dark_mode ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
-			if (*m_cortana_icon_beat)
+			if (theApp.m_lyric_setting_data.cortana_icon_beat)
 			{
 				m_draw.FillRect(cover_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
 				CRect rect{ cover_rect };
@@ -427,11 +427,11 @@ void CCortanaLyric::CheckDarkMode()
 {
 	if (m_enable)
 	{
-		if (m_cortana_color == 1)
+		if (theApp.m_lyric_setting_data.cortana_color == 1)
 		{
 			m_dark_mode = true;
 		}
-		else if (m_cortana_color == 2)
+		else if (theApp.m_lyric_setting_data.cortana_color == 2)
 		{
 			m_dark_mode = false;
 		}
@@ -483,7 +483,7 @@ void CCortanaLyric::SetSpectrum(int spectrum)
 	if (m_spectrum > 2000) m_spectrum = 2000;
 }
 
-void CCortanaLyric::SetCortanaIconBeat(bool * beat)
-{
-	m_cortana_icon_beat = beat;
-}
+//void CCortanaLyric::SetCortanaIconBeat(bool * beat)
+//{
+//	m_cortana_icon_beat = beat;
+//}
