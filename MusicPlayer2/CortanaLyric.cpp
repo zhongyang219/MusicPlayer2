@@ -178,6 +178,8 @@ void CCortanaLyric::DrawInfo()
 			{
 				Time time{ CPlayer::GetInstance().GetCurrentPosition() };
 				str_disp = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0).text;
+				if (str_disp.empty())
+					str_disp = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 			}
 			else
 			{
@@ -219,7 +221,10 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
 		CRect text_rect{ TextRect() };
-		m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color2, progress, false);
+		if(theApp.m_lyric_setting_data.lyric_karaoke_disp)
+			m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color2, progress, false);
+		else
+			m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color, progress, false);
 	}
 }
 
@@ -252,13 +257,21 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 		if (!swap)
 		{
-			m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
+			if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
+				m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
+			else
+				m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color, progress, false);
+
 			m_draw.DrawWindowText(down_rect, next_lyric, m_colors.text_color2);
 		}
 		else
 		{
 			m_draw.DrawWindowText(up_rect, next_lyric, m_colors.text_color2);
-			m_draw.DrawWindowText(down_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
+
+			if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
+				m_draw.DrawWindowText(down_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
+			else
+				m_draw.DrawWindowText(down_rect, lyric, m_colors.text_color, m_colors.text_color, progress, false);
 		}
 	}
 }
@@ -274,7 +287,11 @@ void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int
 
 		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 		m_draw.SetFont(&m_cortana_font);
-		m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
+		if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
+			m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
+		else
+			m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color, progress, false);
+
 		m_draw.SetFont(&m_font_translate);
 		m_draw.DrawWindowText(down_rect, translate, m_colors.text_color, m_colors.text_color, progress, false);
 	}
