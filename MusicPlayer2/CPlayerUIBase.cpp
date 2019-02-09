@@ -604,7 +604,8 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 		//»æÖÆ²¥·Å×´Ì¬
 		CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
 		CRect rc_tmp{ rect };
-		rc_tmp.right = rc_tmp.left + m_draw.GetDC()->GetTextExtent(play_state_str).cx - theApp.DPI(4);
+		m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
+		rc_tmp.right = rc_tmp.left + m_draw.GetDC()->GetTextExtent(play_state_str).cx + theApp.DPI(4);
 		m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
 
 		//»æÖÆ¸èÇúĞòºÅ

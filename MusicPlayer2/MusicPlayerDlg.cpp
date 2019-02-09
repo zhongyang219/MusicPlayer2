@@ -696,13 +696,13 @@ void CMusicPlayerDlg::ThemeColorChanged()
 		//m_progress_bar.Invalidate();
 		//m_time_static.Invalidate();
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
-		//SetPlayListColor();
+		SetPlayListColor();
 		m_cortana_lyric.SetColors(theApp.m_app_setting_data.theme_color);
 		DrawInfo();
-		//if (m_miniModeDlg.m_hWnd != NULL)
-		//{
-		//	m_miniModeDlg.SetPlayListColor();
-		//}
+		if (m_miniModeDlg.m_hWnd != NULL)
+		{
+			m_miniModeDlg.SetPlayListColor();
+		}
 
 	}
 }

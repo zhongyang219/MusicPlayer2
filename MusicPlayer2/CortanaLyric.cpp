@@ -11,8 +11,8 @@ CCortanaLyric::CCortanaLyric()
 
 CCortanaLyric::~CCortanaLyric()
 {
-	if (m_cortana_pDC != nullptr)
-		m_cortana_wnd->ReleaseDC(m_cortana_pDC);
+	if (m_pDC != nullptr)
+		m_cortana_wnd->ReleaseDC(m_pDC);
 }
 
 void CCortanaLyric::Init()
@@ -33,31 +33,14 @@ void CCortanaLyric::Init()
 		::GetClientRect(m_cortana_hwnd, m_cortana_rect);	//获取Cortana搜索框的矩形区域
 		CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
 		::GetClientRect(m_hCortanaStatic, cortana_static_rect);	//获取Cortana搜索框中static控件的矩形区域
-		//if (cortana_static_rect.Width() > 0)
-		//{
-			m_cortana_left_space = m_cortana_rect.Width() - cortana_static_rect.Width();
-			m_cortana_rect.right = m_cortana_rect.left + cortana_static_rect.Width();		//调整Cortana窗口矩形的宽度
-		//}
-		//else
-		//{
-		//	m_cortana_left_space = 0;
-		//}
 
-		if (m_cortana_left_space < m_cortana_rect.Height() / 2)		//显示文本的区域距小娜窗口左侧边框太近，则说明小娜被禁用，左侧没有小娜图标
-		{
-			m_cortana_disabled = true;
-			m_cortana_rect.right -= (m_cortana_rect.Height() - m_cortana_left_space);
-			m_cortana_left_space = m_cortana_rect.Height();
-		}
-		else
-		{
-			m_cortana_disabled = false;
-		}
-		m_icon_rect.right = m_cortana_left_space;
-		m_icon_rect.bottom = m_cortana_rect.Height();
+		m_cover_width = m_cortana_rect.Width() - cortana_static_rect.Width();
+		m_cortana_disabled = m_cover_width < m_cortana_rect.Height() / 2;
+		if (m_cortana_disabled)
+			m_cover_width = m_cortana_rect.Height();
 
-		m_cortana_pDC = m_cortana_wnd->GetDC();
-		m_cortana_draw.Create(m_cortana_pDC, m_cortana_wnd);
+		m_pDC = m_cortana_wnd->GetDC();
+		m_draw.Create(m_pDC, m_cortana_wnd);
 
 
 		//获取用来检查小娜是否为深色模式的采样点的坐标
@@ -111,6 +94,17 @@ void CCortanaLyric::DrawInfo()
 {
 	if (!m_enable)
 		return;
+
+	m_draw.SetFont(&m_cortana_font);
+	//设置缓冲的DC
+	CDC MemDC;
+	CBitmap MemBitmap;
+	MemDC.CreateCompatibleDC(NULL);
+	MemBitmap.CreateCompatibleBitmap(m_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
+	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+	//使用m_draw绘图
+	m_draw.SetDC(&MemDC);
+	m_draw.FillRect(m_cortana_rect, m_back_color);
 
 	bool is_midi_lyric = CPlayerUIBase::IsMidiLyric();
 	if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
@@ -174,6 +168,18 @@ void CCortanaLyric::DrawInfo()
 		//显示专辑封面，如果没有专辑封面，则显示Cortana图标
 		AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
 		DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
+	
+		//将缓冲区DC中的图像拷贝到屏幕中显示
+		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
+		{
+			CRect rect{ m_cortana_rect };
+			rect.left += m_cover_width;
+			m_draw.DrawRectTopFrame(rect, m_border_color);
+		}
+		CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
+		m_pDC->BitBlt(0, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+		MemBitmap.DeleteObject();
+		MemDC.DeleteDC();
 	}
 
 	else
@@ -212,30 +218,10 @@ void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		m_cortana_draw.SetFont(&m_cortana_font);
-		//设置缓冲的DC
-		CDC MemDC;
-		CBitmap MemBitmap;
-		MemDC.CreateCompatibleDC(NULL);
-		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
-		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-		//使用m_cortana_draw绘图
-		m_cortana_draw.SetDC(&MemDC);
-		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
 		COLORREF color;
 		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
-		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(theApp.DPI(4), 0);
-		m_cortana_draw.DrawWindowText(text_rect, str, color, align, false, false, true);
-		//将缓冲区DC中的图像拷贝到屏幕中显示
-		CRect rect{ m_cortana_rect };
-		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
-			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
-		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-		MemBitmap.DeleteObject();
-		MemDC.DeleteDC();
+		CRect text_rect{ TextRect() };
+		m_draw.DrawWindowText(text_rect, str, color, align, false, false, true);
 	}
 }
 
@@ -243,31 +229,11 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		m_cortana_draw.SetFont(&m_cortana_font);
-		//设置缓冲的DC
-		CDC MemDC;
-		CBitmap MemBitmap;
-		MemDC.CreateCompatibleDC(NULL);
-		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
-		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-		//使用m_cortana_draw绘图
-		m_cortana_draw.SetDC(&MemDC);
-		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
 		static CDrawCommon::ScrollInfo cortana_scroll_info;
 		COLORREF color;
 		color = (m_dark_mode ? m_colors.light3 : m_colors.dark2);
-		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(theApp.DPI(4), 0);
-		m_cortana_draw.DrawScrollText(text_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
-		//将缓冲区DC中的图像拷贝到屏幕中显示
-		CRect rect{ m_cortana_rect };
-		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
-			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
-		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-		MemBitmap.DeleteObject();
-		MemDC.DeleteDC();
+		CRect text_rect{ TextRect() };
+		m_draw.DrawScrollText(text_rect, str, color, scroll_pixel, false, cortana_scroll_info, reset);
 	}
 }
 
@@ -275,31 +241,11 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		m_cortana_draw.SetFont(&m_cortana_font);
-		//设置缓冲的DC
-		CDC MemDC;
-		CBitmap MemBitmap;
-		MemDC.CreateCompatibleDC(NULL);
-		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
-		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-		//使用m_cortana_draw绘图
-		m_cortana_draw.SetDC(&MemDC);
-		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
-		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(theApp.DPI(4), 0);
+		CRect text_rect{ TextRect() };
 		if (m_dark_mode)
-			m_cortana_draw.DrawWindowText(text_rect, str, m_colors.light3, m_colors.light1, progress, false);
+			m_draw.DrawWindowText(text_rect, str, m_colors.light3, m_colors.light1, progress, false);
 		else
-			m_cortana_draw.DrawWindowText(text_rect, str, m_colors.dark3, m_colors.dark1, progress, false);
-		//将缓冲区DC中的图像拷贝到屏幕中显示
-		CRect rect{ m_cortana_rect };
-		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
-			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
-		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, 0 , m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-		MemBitmap.DeleteObject();
-		MemDC.DeleteDC();
+			m_draw.DrawWindowText(text_rect, str, m_colors.dark3, m_colors.dark1, progress, false);
 	}
 }
 
@@ -307,7 +253,7 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		m_cortana_draw.SetFont(&m_font_double_line);
+		m_draw.SetFont(&m_font_double_line);
 		static bool swap;
 		static int last_progress;
 		if (last_progress > progress)
@@ -316,27 +262,17 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		}
 		last_progress = progress;
 
-		//设置缓冲的DC
-		CDC MemDC;
-		CBitmap MemBitmap;
-		MemDC.CreateCompatibleDC(NULL);
-		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
-		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-
-		//使用m_cortana_draw绘图
-		m_cortana_draw.SetDC(&MemDC);
-		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(theApp.DPI(4), theApp.DPI(2));
+		CRect text_rect{ TextRect() };
 		CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 		//根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
-		MemDC.SelectObject(&m_font_double_line);
+		//MemDC.SelectObject(&m_font_double_line);
 		int width;
 		if (!swap)
-			width = MemDC.GetTextExtent(next_lyric).cx;
+			width = m_draw.GetDC()->GetTextExtent(next_lyric).cx;
 		else
-			width = MemDC.GetTextExtent(lyric).cx;
+			width = m_draw.GetDC()->GetTextExtent(lyric).cx;
 		if(width<m_cortana_rect.Width())
 			down_rect.left = down_rect.right - width;
 
@@ -351,27 +287,17 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 			color1 = m_colors.dark3;
 			color2 = m_colors.dark1;
 		}
-		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
+		m_draw.FillRect(m_cortana_rect, m_back_color);
 		if (!swap)
 		{
-			m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
-			m_cortana_draw.DrawWindowText(down_rect, next_lyric, color2);
+			m_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
+			m_draw.DrawWindowText(down_rect, next_lyric, color2);
 		}
 		else
 		{
-			m_cortana_draw.DrawWindowText(up_rect, next_lyric, color2);
-			m_cortana_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
+			m_draw.DrawWindowText(up_rect, next_lyric, color2);
+			m_draw.DrawWindowText(down_rect, lyric, color1, color2, progress, false);
 		}
-
-		//将缓冲区DC中的图像拷贝到屏幕中显示
-		CRect rect{ m_cortana_rect };
-		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
-			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
-		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-		MemBitmap.DeleteObject();
-		MemDC.DeleteDC();
 	}
 }
 
@@ -379,17 +305,7 @@ void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		//设置缓冲的DC
-		CDC MemDC;
-		CBitmap MemBitmap;
-		MemDC.CreateCompatibleDC(NULL);
-		MemBitmap.CreateCompatibleBitmap(m_cortana_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
-		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-
-		//使用m_cortana_draw绘图
-		m_cortana_draw.SetDC(&MemDC);
-		CRect text_rect{ m_cortana_rect };
-		text_rect.DeflateRect(theApp.DPI(4), theApp.DPI(2));
+		CRect text_rect{ TextRect() };
 		CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
@@ -405,21 +321,11 @@ void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int
 			color1 = m_colors.dark3;
 			color2 = m_colors.dark1;
 		}
-		m_cortana_draw.FillRect(m_cortana_rect, m_back_color);
-		m_cortana_draw.SetFont(&m_cortana_font);
-		m_cortana_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
-		m_cortana_draw.SetFont(&m_font_translate);
-		m_cortana_draw.DrawWindowText(down_rect, translate, color1, color1, progress, false);
-
-		//将缓冲区DC中的图像拷贝到屏幕中显示
-		CRect rect{ m_cortana_rect };
-		rect.MoveToX(m_cortana_left_space);
-		if (!m_dark_mode)		//非深色模式下，在搜索顶部绘制边框
-			m_cortana_draw.DrawRectTopFrame(m_cortana_rect, m_border_color);
-		CDrawCommon::SetDrawArea(m_cortana_pDC, rect);
-		m_cortana_pDC->BitBlt(m_cortana_left_space, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-		MemBitmap.DeleteObject();
-		MemDC.DeleteDC();
+		m_draw.FillRect(m_cortana_rect, m_back_color);
+		m_draw.SetFont(&m_cortana_font);
+		m_draw.DrawWindowText(up_rect, lyric, color1, color2, progress, false);
+		m_draw.SetFont(&m_font_translate);
+		m_draw.DrawWindowText(down_rect, translate, color1, color1, progress, false);
 	}
 }
 
@@ -427,31 +333,50 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 {
 	if (m_enable)
 	{
-		m_cortana_draw.SetDC(m_cortana_pDC);
+		CRect cover_rect = CoverRect();
+		m_draw.SetDrawArea(cover_rect);
 		if (album_cover.IsNull() || !m_show_album_cover)
 		{
 			int cortana_img_id{ m_dark_mode ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
-			m_cortana_draw.SetDrawArea(m_cortana_pDC, m_icon_rect);
 			if (*m_cortana_icon_beat)
 			{
-				m_cortana_draw.FillRect(m_icon_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
-				CRect rect{ m_icon_rect };
+				m_draw.FillRect(cover_rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
+				CRect rect{ cover_rect };
 				rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 				int inflate;
 				inflate = m_spectrum * theApp.DPI(14) / 1000;
 				rect.InflateRect(inflate, inflate);
-				m_cortana_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
+				m_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
 			}
 			else
 			{
-				m_cortana_draw.DrawBitmap(cortana_img_id, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FIT);
+				m_draw.DrawBitmap(cortana_img_id, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
 			}
+
 			if(!m_dark_mode)
-				m_cortana_draw.DrawRectTopFrame(m_icon_rect, m_border_color);
+				m_draw.DrawRectTopFrame(cover_rect, m_border_color);
 		}
 		else
-			m_cortana_draw.DrawBitmap(album_cover, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+		{
+			m_draw.DrawBitmap(album_cover, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FILL);
+		}
 	}
+}
+
+CRect CCortanaLyric::TextRect() const
+{
+	CRect text_rect{ m_cortana_rect };
+	text_rect.left += m_cover_width;
+	text_rect.DeflateRect(theApp.DPI(4), theApp.DPI(2));
+	text_rect.top -= theApp.DPI(1);
+	return text_rect;
+}
+
+CRect CCortanaLyric::CoverRect() const
+{
+	CRect cover_rect = m_cortana_rect;
+	cover_rect.right = cover_rect.left + m_cover_width;
+	return cover_rect;
 }
 
 void CCortanaLyric::ResetCortanaText()
@@ -460,24 +385,25 @@ void CCortanaLyric::ResetCortanaText()
 	{
 		if (!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
 		{
-			m_cortana_draw.SetFont(&m_cortana_font);
+			m_draw.SetFont(&m_cortana_font);
 			COLORREF color;		//Cortana默认文本的颜色
 			color = (m_dark_mode ? GRAY(173) : GRAY(16));
-			m_cortana_draw.SetDC(m_cortana_pDC);
-			CRect rect{ m_cortana_rect };
+			m_draw.SetDC(m_pDC);
 			//先绘制Cortana图标
+			CRect cover_rect = CoverRect();
 			if (m_dark_mode)
-				m_cortana_draw.DrawBitmap(IDB_CORTANA_BLACK, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+				m_draw.DrawBitmap(IDB_CORTANA_BLACK, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FILL);
 			else
-				m_cortana_draw.DrawBitmap(IDB_CORTANA_WHITE, m_icon_rect.TopLeft(), m_icon_rect.Size(), CDrawCommon::StretchMode::FILL);
+				m_draw.DrawBitmap(IDB_CORTANA_WHITE, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FILL);
 			//再绘制Cortana默认文本
-			rect.MoveToXY(rect.left + m_cortana_left_space, 0);
-			m_cortana_draw.FillRect(rect, m_back_color);
-			m_cortana_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
+			CRect rect{ m_cortana_rect };
+			rect.MoveToXY(rect.left + m_cover_width, 0);
+			m_draw.FillRect(rect, m_back_color);
+			m_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
 			if (!m_dark_mode)
 			{
-				rect.left -= m_cortana_left_space;
-				m_cortana_draw.DrawRectTopFrame(rect, m_border_color);
+				rect.left -= m_cover_width;
+				m_draw.DrawRectTopFrame(rect, m_border_color);
 			}
 			//m_cortana_wnd->Invalidate();
 		}
@@ -544,8 +470,9 @@ void CCortanaLyric::AlbumCoverEnable(bool enable)
 	m_show_album_cover = enable;
 	if (last_enable && !enable)
 	{
-		CDrawCommon::SetDrawArea(m_cortana_pDC, m_icon_rect);
-		m_cortana_pDC->FillSolidRect(m_icon_rect, m_back_color);
+		CRect cover_rect = CoverRect();
+		CDrawCommon::SetDrawArea(m_pDC, cover_rect);
+		m_pDC->FillSolidRect(cover_rect, m_back_color);
 	}
 }
 
