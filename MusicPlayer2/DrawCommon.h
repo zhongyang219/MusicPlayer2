@@ -87,6 +87,8 @@ public:
 
 	void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
 
+	CSize GetTextExtent(LPCTSTR str);
+
 	//将图片拉伸到指定尺寸(https://blog.csdn.net/sichuanpb/article/details/22986877)
 	static bool BitmapStretch(CImage *pImage, CImage *ResultImage, CSize size);
 

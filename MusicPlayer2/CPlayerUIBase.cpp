@@ -796,12 +796,12 @@ void CPlayerUIBase::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_
 	up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 	down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 	//根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
-	m_draw.GetDC()->SelectObject(&m_ui_data.lyric_font);
+	//m_draw.GetDC()->SelectObject(&m_ui_data.lyric_font);
 	int width;
 	if (!swap)
-		width = m_draw.GetDC()->GetTextExtent(next_lyric).cx;
+		width = m_draw.GetTextExtent(next_lyric).cx;
 	else
-		width = m_draw.GetDC()->GetTextExtent(lyric).cx;
+		width = m_draw.GetTextExtent(lyric).cx;
 	if (width < rect.Width())
 		down_rect.left = down_rect.right - width;
 

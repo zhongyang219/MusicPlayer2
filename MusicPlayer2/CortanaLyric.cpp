@@ -30,13 +30,15 @@ void CCortanaLyric::Init()
 		m_cortana_wnd = CWnd::FromHandle(m_cortana_hwnd);		//获取Cortana搜索框的CWnd类的指针
 		if (m_cortana_wnd == nullptr) return;
 
-		::GetClientRect(m_cortana_hwnd, m_cortana_rect);	//获取Cortana搜索框的矩形区域
-		CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
-		::GetClientRect(m_hCortanaStatic, cortana_static_rect);	//获取Cortana搜索框中static控件的矩形区域
+		::GetClientRect(hCortanaBar, m_cortana_rect);	//获取Cortana搜索框的矩形区域
 
-		m_cover_width = m_cortana_rect.Width() - cortana_static_rect.Width();
-		m_cortana_disabled = m_cover_width < m_cortana_rect.Height() / 2;
-		if (m_cortana_disabled)
+		CRect cortana_rect;
+		CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
+		::GetWindowRect(hCortanaBar, cortana_rect);
+		::GetWindowRect(m_hCortanaStatic, cortana_static_rect);	//获取Cortana搜索框中static控件的矩形区域
+
+		m_cover_width = cortana_static_rect.left - cortana_rect.left;
+		if (m_cover_width < m_cortana_rect.Height() / 2)
 			m_cover_width = m_cortana_rect.Height();
 
 		m_pDC = m_cortana_wnd->GetDC();
@@ -44,18 +46,8 @@ void CCortanaLyric::Init()
 
 
 		//获取用来检查小娜是否为深色模式的采样点的坐标
-		CRect rect;
-		::GetWindowRect(m_cortana_hwnd, rect);
-		if (!m_cortana_disabled)
-		{
-			m_check_dark_point.x = rect.right + 3;
-			m_check_dark_point.y = rect.top + 1;
-		}
-		else
-		{
-			m_check_dark_point.x = rect.right - 1;
-			m_check_dark_point.y = rect.top + 1;
-		}
+		m_check_dark_point.x = cortana_rect.right + 1;
+		m_check_dark_point.y = cortana_rect.top + 1;
 
 		CheckDarkMode();
 		
@@ -80,35 +72,25 @@ void CCortanaLyric::SetEnable(bool enable)
 	m_enable = enable;
 }
 
-//void CCortanaLyric::SetColors(ColorTable colors)
-//{
-//	m_colors = colors;
-//}
-//
-//void CCortanaLyric::SetCortanaColor(int color)
-//{
-//	m_cortana_color = color;
-//}
-//
 void CCortanaLyric::DrawInfo()
 {
 	if (!m_enable)
 		return;
 
-	m_draw.SetFont(&m_cortana_font);
-	//设置缓冲的DC
-	CDC MemDC;
-	CBitmap MemBitmap;
-	MemDC.CreateCompatibleDC(NULL);
-	MemBitmap.CreateCompatibleBitmap(m_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
-	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-	//使用m_draw绘图
-	m_draw.SetDC(&MemDC);
-	m_draw.FillRect(m_cortana_rect, m_back_color);
-
 	bool is_midi_lyric = CPlayerUIBase::IsMidiLyric();
 	if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
 	{
+		m_draw.SetFont(&m_cortana_font);
+		//设置缓冲的DC
+		CDC MemDC;
+		CBitmap MemBitmap;
+		MemDC.CreateCompatibleDC(NULL);
+		MemBitmap.CreateCompatibleBitmap(m_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
+		CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+		//使用m_draw绘图
+		m_draw.SetDC(&MemDC);
+		m_draw.FillRect(m_cortana_rect, m_back_color);
+		
 		if (is_midi_lyric)
 		{
 			wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
@@ -138,9 +120,8 @@ void CCortanaLyric::DrawInfo()
 				DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
 			}
 		}
-		else
+		else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
 		{
-			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
 			static int index{};
 			static wstring song_name{};
 			//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
@@ -155,7 +136,6 @@ void CCortanaLyric::DrawInfo()
 				DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), false, theApp.DPI(2));
 			}
 		}
-		//}
 
 		//计算频谱，根据频谱幅值使Cortana图标显示动态效果
 		float spectrum_avr{};		//取前面N个频段频谱值的平均值
@@ -270,9 +250,9 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		//MemDC.SelectObject(&m_font_double_line);
 		int width;
 		if (!swap)
-			width = m_draw.GetDC()->GetTextExtent(next_lyric).cx;
+			width = m_draw.GetTextExtent(next_lyric).cx;
 		else
-			width = m_draw.GetDC()->GetTextExtent(lyric).cx;
+			width = m_draw.GetTextExtent(lyric).cx;
 		if(width<m_cortana_rect.Width())
 			down_rect.left = down_rect.right - width;
 
@@ -383,6 +363,18 @@ void CCortanaLyric::ResetCortanaText()
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
+		CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);
+		if (pWnd != nullptr)
+		{
+			CString str;
+			pWnd->GetWindowText(str);
+			if (str != m_cortana_default_text.c_str())
+			{
+				pWnd->SetWindowText(m_cortana_default_text.c_str());
+				pWnd->Invalidate();
+			}
+		}
+		
 		if (!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
 		{
 			m_draw.SetFont(&m_cortana_font);
@@ -397,7 +389,6 @@ void CCortanaLyric::ResetCortanaText()
 				m_draw.DrawBitmap(IDB_CORTANA_WHITE, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FILL);
 			//再绘制Cortana默认文本
 			CRect rect{ m_cortana_rect };
-			//rect.MoveToXY(rect.left + m_cover_width, 0);
 			rect.left += m_cover_width;
 			m_draw.FillRect(rect, m_back_color);
 			m_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
@@ -408,19 +399,6 @@ void CCortanaLyric::ResetCortanaText()
 			}
 			//m_cortana_wnd->Invalidate();
 		}
-
-		CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);
-		if (pWnd != nullptr)
-		{
-			CString str;
-			pWnd->GetWindowText(str);
-			if(str!=m_cortana_default_text.c_str())
-			{
-				pWnd->SetWindowText(m_cortana_default_text.c_str());
-				pWnd->Invalidate();
-			}
-		}
-
 	}
 }
 

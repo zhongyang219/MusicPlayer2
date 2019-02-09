@@ -420,6 +420,12 @@ void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 	m_pDC->SelectObject(pOldPen);
 }
 
+CSize CDrawCommon::GetTextExtent(LPCTSTR str)
+{
+	m_pDC->SelectObject(m_pfont);
+	return m_pDC->GetTextExtent(str);
+}
+
 bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize size)
 {
 	if (pImage->IsDIBSection())

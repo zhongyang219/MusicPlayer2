@@ -76,6 +76,6 @@ private:
 	int m_spectrum{0};		//频谱的幅值，取值为0~1000
 
 public:
-	bool m_cortana_disabled;
+	//bool m_cortana_disabled;
 };
 
