@@ -657,14 +657,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
 	UpdatePlayPauseButton();
 
-	CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
-	//m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
-	//m_progress_bar.Invalidate();
-	//m_time_static.Invalidate();
-	SetPlayListColor();
 	ThemeColorChanged();
 
-	m_cortana_lyric.SetUIColors();
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
 		//如果m_font已经关联了一个字体资源对象，则释放它
@@ -697,6 +691,7 @@ void CMusicPlayerDlg::ThemeColorChanged()
 		//m_time_static.Invalidate();
 		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 		SetPlayListColor();
+		m_cortana_lyric.SetUIColors();
 		DrawInfo();
 		if (m_miniModeDlg.m_hWnd != NULL)
 		{
@@ -1108,14 +1103,14 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			CPlayer::GetInstance().Create();
 		}
-		//else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//如果命令行参数中有RestartByRestartManager，则说明程序是被Windows重启的
-		//{
-		//	CPlayer::GetInstance().Create();
-		//	//将命令行参数写入日志文件
-		//	wchar_t buff[256];
-		//	swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
-		//	CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
-		//}
+		else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//如果命令行参数中有RestartByRestartManager，则忽略命令行参数
+		{
+			CPlayer::GetInstance().Create();
+			////将命令行参数写入日志文件
+			//wchar_t buff[256];
+			//swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
+			//CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
+		}
 		else		//从命令行参数获取要打开的文件
 		{
 			vector<wstring> files;
