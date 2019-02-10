@@ -658,6 +658,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	UpdatePlayPauseButton();
 
 	ThemeColorChanged();
+	ApplyThemeColor();
 
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
@@ -675,6 +676,18 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	DrawInfo(true);
 }
 
+void CMusicPlayerDlg::ApplyThemeColor()
+{
+	CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
+	SetPlayListColor();
+	m_cortana_lyric.SetUIColors();
+	DrawInfo();
+	if (m_miniModeDlg.m_hWnd != NULL)
+	{
+		m_miniModeDlg.SetPlayListColor();
+	}
+}
+
 void CMusicPlayerDlg::ThemeColorChanged()
 {
 	if (!theApp.m_app_setting_data.theme_color_follow_system)
@@ -686,18 +699,7 @@ void CMusicPlayerDlg::ThemeColorChanged()
 	if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255, 255, 255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
 	{
 		theApp.m_app_setting_data.theme_color.original_color = color;
-		//m_progress_bar.SetColor(theApp.m_app_setting_data.theme_color.original_color);		//设置进度条颜色
-		//m_progress_bar.Invalidate();
-		//m_time_static.Invalidate();
-		CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
-		SetPlayListColor();
-		m_cortana_lyric.SetUIColors();
-		DrawInfo();
-		if (m_miniModeDlg.m_hWnd != NULL)
-		{
-			m_miniModeDlg.SetPlayListColor();
-		}
-
+		ApplyThemeColor();
 	}
 }
 

@@ -142,6 +142,7 @@ protected:
 	void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式
 
 	void ApplySettings(const COptionsDlg& optionDlg);		//从选项设置对话框获取设置
+	void ApplyThemeColor();			//应用主题颜色设置
 
 	void ThemeColorChanged();
 
