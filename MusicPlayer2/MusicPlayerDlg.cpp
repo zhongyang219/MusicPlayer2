@@ -1163,13 +1163,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		CPlayer::GetInstance().GetBASSCurrentPosition();
 
-		static int sec_temp;
-		int sec_current = CPlayer::GetInstance().GetCurrentSecond();
-		if (sec_temp != sec_current)		//获取播放时间的秒数，如果秒数变了则刷新一次时间
-		{
-			sec_temp = sec_current;
-			//ShowTime();
-		}
+		//static int sec_temp;
+		//int sec_current = CPlayer::GetInstance().GetCurrentSecond();
+		//if (sec_temp != sec_current)		//获取播放时间的秒数，如果秒数变了则刷新一次时间
+		//{
+		//	sec_temp = sec_current;
+		//	//ShowTime();
+		//}
 
 		//在Cortana搜索框里显示歌词
 		if (theApp.m_lyric_setting_data.show_lyric_in_cortana)

@@ -61,7 +61,7 @@ bool CWinVersionHelper::IsWindows7OrLater()
 	if (m_version.m_major_version > 6)
 		return true;
 	else if (m_version.m_major_version == 6 && m_version.m_minor_version >= 1)
-		return false;
+		return true;
 	else return false;
 }
 
