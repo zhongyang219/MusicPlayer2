@@ -51,16 +51,15 @@ BOOL CHelpDlg::OnInitDialog()
 	m_min_size.cx = rect.Width();
 	m_min_size.cy = rect.Height();
 
-	GetHelpString();
-	m_help_edit.SetWindowText(m_help_info);
+	m_help_edit.SetWindowText(GetHelpString());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
-void CHelpDlg::GetHelpString()
+CString CHelpDlg::GetHelpString()
 {
-	
+	CString help_info;
 	HRSRC hRes;
 	if(theApp.m_general_setting_data.language == Language::FOLLOWING_SYSTEM)
 		hRes = FindResource(NULL, MAKEINTRESOURCE(IDR_TEXT1), _T("TEXT"));
@@ -70,8 +69,22 @@ void CHelpDlg::GetHelpString()
 	{
 		HGLOBAL hglobal = LoadResource(NULL, hRes);
 		if (hglobal != NULL)
-			m_help_info.Format(_T("%s"), (LPVOID)hglobal);
+			help_info.Format(_T("%s"), (LPVOID)hglobal);
 	}
+
+	//在帮助信息后面增加系统信息
+	help_info += _T("\r\n\r\nSystem Info:\r\n");
+
+	CString strTmp;
+	strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), CWinVersionHelper::GetMajorVersion(),
+		CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
+	help_info += strTmp;
+
+	strTmp.Format(_T("DPI: %d"), theApp.m_dpi);
+	help_info += strTmp;
+	help_info += _T("\r\n");
+
+	return help_info;
 }
 
 void CHelpDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
