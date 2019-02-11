@@ -66,7 +66,7 @@ protected:
 	CButton m_clear_search_button;
 
 #ifndef COMPILE_IN_WIN_XP
-	ITaskbarList3* m_pTaskbar;          //用于支持任务栏显示播放进度
+	//ITaskbarList3* m_pTaskbar;          //用于支持任务栏显示播放进度
 	THUMBBUTTON m_thumbButton[3]{};
 #endif
 
