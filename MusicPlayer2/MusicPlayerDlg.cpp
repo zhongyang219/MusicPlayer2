@@ -1221,6 +1221,8 @@ void CMusicPlayerDlg::OnPlayPause()
 {
 	// TODO: 在此添加命令处理程序代码
 	CPlayer::GetInstance().MusicControl(Command::PLAY_PAUSE);
+	if (!CPlayer::GetInstance().IsPlaying())
+		DrawInfo();
 	UpdatePlayPauseButton();
 }
 

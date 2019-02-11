@@ -585,6 +585,8 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 			while (true)
 			{
 				int index_offset = m_replace_str.size() - m_find_str.size();
+				if (index_offset < 0)
+					index_offset = 0;
 				m_find_index = m_lyric_string.find(m_find_str, m_find_index + index_offset + 1);	//²éÕÒ×Ö·û´®
 				if (m_find_index == string::npos)
 					break;
