@@ -253,44 +253,44 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			{
 				redraw_rect.left = cx / 2/* - m_layout.margin*/;
 				redraw_rect.right = m_ui_data.client_width / 2 + m_layout.margin;
+				m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 			}
-			else
-			{
-				redraw_rect.left = cx - m_layout.margin;
-				redraw_rect.right = cx;
-			}
-			m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
+			//else
+			//{
+			//	redraw_rect.left = cx - m_layout.margin;
+			//	redraw_rect.right = cx;
+			//}
 		}
-		if (cy < m_ui_data.client_height)	//如果界面高度变小了
-		{
-			//重新将绘图区域下方区域的矩形区域填充为对话框背景色
-			redraw_rect = m_draw_rect;
-			redraw_rect.top = cy - m_layout.margin;
-			redraw_rect.bottom = cy;
-			m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
-		}
+		//if (cy < m_ui_data.client_height)	//如果界面高度变小了
+		//{
+		//	//重新将绘图区域下方区域的矩形区域填充为对话框背景色
+		//	redraw_rect = m_draw_rect;
+		//	redraw_rect.top = cy - m_layout.margin;
+		//	redraw_rect.bottom = cy;
+		//	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
+		//}
 	}
 	else if (m_ui_data.narrow_mode)	//在窄界面模式下
 	{
-		if (cx < m_ui_data.client_width)		//如果宽度变窄了
-		{
-			//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-			redraw_rect = m_draw_rect;
-			redraw_rect.left = cx - m_layout.margin;
-			redraw_rect.right = cx;
-			m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
-		}
-		if (cy < m_ui_data.client_height)	//如果界面高度变小了
-		{
-			if (!m_ui_data.show_playlist)
-			{
-				//重新将绘图区域下方区域的矩形区域填充为对话框背景色
-				redraw_rect = m_draw_rect;
-				redraw_rect.top = cy - m_layout.margin;
-				redraw_rect.bottom = cy;
-				m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
-			}
-		}
+		//if (cx < m_ui_data.client_width)		//如果宽度变窄了
+		//{
+		//	//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
+		//	redraw_rect = m_draw_rect;
+		//	redraw_rect.left = cx - m_layout.margin;
+		//	redraw_rect.right = cx;
+		//	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
+		//}
+		//if (cy < m_ui_data.client_height)	//如果界面高度变小了
+		//{
+		//	if (!m_ui_data.show_playlist)
+		//	{
+		//		//重新将绘图区域下方区域的矩形区域填充为对话框背景色
+		//		redraw_rect = m_draw_rect;
+		//		redraw_rect.top = cy - m_layout.margin;
+		//		redraw_rect.bottom = cy;
+		//		m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
+		//	}
+		//}
 	}
 }
 
@@ -373,19 +373,19 @@ void CPlayerUIBase::SetDrawRect()
 	if (!m_ui_data.show_playlist)
 	{
 		m_draw_rect = CRect(0, 0, m_ui_data.client_width, m_ui_data.client_height);
-		m_draw_rect.DeflateRect(m_layout.margin, m_layout.margin);
+		//m_draw_rect.DeflateRect(m_layout.margin, m_layout.margin);
 	}
 	else
 	{
 		if (!m_ui_data.narrow_mode)
 		{
-			m_draw_rect = CRect{ CPoint{m_layout.margin, m_layout.margin},
-			CPoint{m_ui_data.client_width / 2/* - m_layout.margin*/, m_ui_data.client_height - m_layout.margin} };
+			m_draw_rect = CRect{ /*CPoint{m_layout.margin, m_layout.margin}*/ CPoint(),
+			CPoint{m_ui_data.client_width / 2 /* - m_layout.margin*/, m_ui_data.client_height} };
 		}
 		else
 		{
-			m_draw_rect = CRect{ CPoint{ m_layout.margin, m_layout.margin},
-			CSize{ m_ui_data.client_width - 2 * m_layout.margin, m_layout.info_height - 2 * m_layout.margin } };
+			m_draw_rect = CRect{ /*CPoint{ m_layout.margin, m_layout.margin }*/ CPoint(),
+			CSize{ m_ui_data.client_width /*- 2 * m_layout.margin*/, m_layout.info_height - m_layout.margin } };
 		}
 
 	}
@@ -770,13 +770,13 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
 CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
 {
-	rect.MoveToXY(rect.left + draw_area.left, rect.top + draw_area.top);
+	//rect.MoveToXY(rect.left + draw_area.left, rect.top + draw_area.top);
 	return rect;
 }
 
 CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
 {
-	rect.MoveToXY(rect.left - draw_area.left, rect.top - draw_area.top);
+	//rect.MoveToXY(rect.left - draw_area.left, rect.top - draw_area.top);
 	return rect;
 }
 
