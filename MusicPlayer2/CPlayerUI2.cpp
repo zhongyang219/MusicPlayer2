@@ -155,8 +155,17 @@ void CPlayerUI2::DrawInfo(bool reset)
 				rc_spectrum_area.left += static_cast<int>(info_rect.Width()*0.09);
 				rc_spectrum_area.right -= static_cast<int>(info_rect.Width()*0.05);
 
-				CRect rc_spectrum_top = rc_spectrum_area;
-				rc_spectrum_top.bottom = rc_spectrum_area.top + (rc_spectrum_area.Height() * 2 / 3);
+				//限制频谱区域的最大高度
+				CRect rc_spectrum{ rc_spectrum_area };
+				const int max_height = max(rc_spectrum_area.Width() / 3, theApp.DPI(78));
+				if (rc_spectrum.Height() > max_height)
+				{
+					rc_spectrum.top += (rc_spectrum_area.Height() * 2 / 3 - max_height * 2 / 3);
+					rc_spectrum.bottom = rc_spectrum.top + max_height;
+				}
+
+				CRect rc_spectrum_top = rc_spectrum;
+				rc_spectrum_top.bottom = rc_spectrum.top + (rc_spectrum.Height() * 2 / 3);
 
 				const int ROWS = 64;		//要显示的频谱柱形的数量
 				int gap_width{ info_rect.Width() / 200 };		//频谱柱形间隙宽度
