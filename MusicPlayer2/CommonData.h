@@ -7,6 +7,7 @@
 namespace CONSTVAL
 {
 	const COLORREF BACKGROUND_COLOR = GRAY(255);		//更改此颜色的值可以修改主窗口背景色
+	const double FULL_SCREEN_ZOOM_FACTOR = 1.5;
 }
 
 struct DeviceInfo	//播放设备的信息
@@ -100,41 +101,108 @@ struct IconRes
 private:
 	HICON hIcon;
 	HICON hIconDark;
+	HICON hIconLarge;
+	HICON hIconDarkLarge;
 	CSize iconSize;
+	CSize iconSizeLarge;
 
 public:
-	const HICON& GetIcon(bool dark = false) const
+	const HICON& GetIcon(bool dark = false, bool large = false) const
 	{
-		return (dark ? hIconDark : hIcon);
+		if(large)
+			return (dark ? hIconDarkLarge : hIconLarge);
+		else
+			return (dark ? hIconDark : hIcon);
 	}
 
 	void Load(UINT id, UINT id_dark, int size)
 	{
+		int size_large = static_cast<int>(size * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
+
 		if (id != 0)
+		{
 			hIcon = CDrawCommon::LoadIconResource(id, size, size);
+			hIconLarge = CDrawCommon::LoadIconResource(id, size_large, size_large);
+		}
 		if (id_dark != 0)
+		{
 			hIconDark = CDrawCommon::LoadIconResource(id_dark, size, size);
+			hIconDarkLarge = CDrawCommon::LoadIconResource(id_dark, size_large, size_large);
+		}
 		iconSize.cx = iconSize.cy = size;
+		iconSizeLarge.cx = iconSizeLarge.cy = size_large;
 	}
 
-	const CSize& GetSize() const
+	const CSize& GetSize(bool large = false) const
 	{
-		return iconSize;
+		return (large? iconSizeLarge : iconSize);
 	}
 };
 
 
 struct UIData
 {
-	CFont lyric_font;					//歌词字体
-	CFont lyric_translate_font;			//歌词翻译的字体
 	bool show_translate{ true };		//歌词是否显示翻译
 	bool narrow_mode;					//窄界面模式
 	bool show_playlist{ true };
 	bool show_menu_bar{ true };
+	bool full_screen{ false };
 
 	int client_width;					//窗口客户区宽度
 	int client_height;					//窗口客户区高度
 	CImage default_background;			//默认的背景
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
 };
+
+struct UIFont
+{
+private:
+	CFont font;
+	CFont font_l;
+
+public:
+	void Load(int font_size)
+	{
+		if (font_size < 5)
+			font_size = 5;
+		font.CreatePointFont(font_size * 10, CCommon::LoadText(IDS_DEFAULT_FONT));
+		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), CCommon::LoadText(IDS_DEFAULT_FONT));
+	}
+
+	CFont& GetFont(bool large = false)
+	{
+		return (large ? font_l : font);
+	}
+
+	void SetFont(int font_size, LPCTSTR name)
+	{
+		if (font_size < 5)
+			font_size = 5;
+
+		if (font.m_hObject)
+			font.DeleteObject();
+		font.CreatePointFont(font_size * 10, CCommon::LoadText(IDS_DEFAULT_FONT));
+
+		if (font_l.m_hObject)
+			font_l.DeleteObject();
+		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), CCommon::LoadText(IDS_DEFAULT_FONT));
+	}
+};
+
+struct FontSet
+{
+	UIFont normal;				//普通的字体
+	UIFont time;				//显示播放时间
+	UIFont title;				//界面2的歌曲标题
+
+	UIFont lyric;				//歌词字体
+	UIFont lyric_translate;		//歌词翻译的字体
+
+	void Init()
+	{
+		normal.Load(9);
+		time.Load(8);
+		title.Load(10);
+	}
+};
+

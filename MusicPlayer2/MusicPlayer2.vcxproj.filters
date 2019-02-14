@@ -201,6 +201,9 @@
     <Filter Include="派生的控件类\StaticEx">
       <UniqueIdentifier>{72a446d4-025c-4d2e-ba9c-88b0d29d5159}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\CMainDialogBase">
+      <UniqueIdentifier>{6c231d95-eeae-49b2-91b0-8d5f6079498b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -427,6 +430,9 @@
     <ClInclude Include="StaticEx.h">
       <Filter>派生的控件类\StaticEx</Filter>
     </ClInclude>
+    <ClInclude Include="CMainDialogBase.h">
+      <Filter>功能逻辑类\CMainDialogBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -629,6 +635,9 @@
     </ClCompile>
     <ClCompile Include="StaticEx.cpp">
       <Filter>派生的控件类\StaticEx</Filter>
+    </ClCompile>
+    <ClCompile Include="CMainDialogBase.cpp">
+      <Filter>功能逻辑类\CMainDialogBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

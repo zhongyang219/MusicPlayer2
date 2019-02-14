@@ -29,11 +29,12 @@
 #include "CPlayerUI2.h"
 #include "CNotifyIcon.h"
 #include "StaticEx.h"
+#include "CMainDialogBase.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
 // CMusicPlayerDlg 对话框
-class CMusicPlayerDlg : public CDialog
+class CMusicPlayerDlg : public CMainDialogBase
 {
 
 // 构造
@@ -288,4 +289,5 @@ public:
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg void OnMouseLeave();
 	afx_msg void OnShowMenuBar();
+	afx_msg void OnFullScreen();
 };

@@ -23,5 +23,6 @@ public:
 
 private:
 	void DrawLyricsArea(CRect lyric_rect);			//普通模式下绘制歌词区域
+	CSize SpectralSize();
 };
 

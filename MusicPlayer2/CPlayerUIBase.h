@@ -101,6 +101,9 @@ protected:
 	bool IsDrawNarrowMode();			//是否使用窄界面模式绘图
 	bool IsDrawBackgroundAlpha() const;	//是否需要绘制透明背景
 
+	int DPI(int pixel);
+	int DPI(double pixel);
+
 private:
 	void DrawLyricTextMultiLine(CRect rect);
 	void DrawLyricTextSingleLine(CRect rect);
@@ -116,7 +119,7 @@ protected:
 	UIColors m_colors;
 	CDrawCommon m_draw;		//用于绘制文本的对象
 	SLayoutData m_layout;
-	CFont m_font_time;
+	//CFont m_font_time;
 	DrawData m_draw_data;
 
 	CMenu m_popup_menu;			//歌词右键菜单

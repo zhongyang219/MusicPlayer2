@@ -78,6 +78,7 @@ public:
 	CHotkeyManager m_hot_key;
 
 	UIData m_ui_data;
+	FontSet m_font_set;
 
 	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出

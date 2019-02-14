@@ -16,7 +16,7 @@ public:
 	virtual void UpdateToolTipPosition() override;
 
 protected:
-	CFont m_title_font;
-	CFont m_artist_font;
+	//CFont m_title_font;
+	//CFont m_artist_font;
 };
 

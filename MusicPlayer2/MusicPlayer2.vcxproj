@@ -202,6 +202,7 @@
     <ClInclude Include="CHotkeyManager.h" />
     <ClInclude Include="CHotKeySettingDlg.h" />
     <ClInclude Include="CListBoxEnhanced.h" />
+    <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="CMiniModeUI.h" />
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CommonData.h" />
@@ -276,6 +277,7 @@
     <ClCompile Include="CHotkeyManager.cpp" />
     <ClCompile Include="CHotKeySettingDlg.cpp" />
     <ClCompile Include="CListBoxEnhanced.cpp" />
+    <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="CMiniModeUI.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />

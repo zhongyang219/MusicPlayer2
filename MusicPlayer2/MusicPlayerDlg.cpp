@@ -22,7 +22,7 @@
 const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };	//注册任务栏建立的消息
 
 CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
-	: m_cmdLine{cmdLine}, CDialog(IDD_MUSICPLAYER2_DIALOG, pParent)
+	: m_cmdLine{cmdLine}, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -38,7 +38,7 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
 
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CMainDialogBase::DoDataExchange(pDX);
 	//DDX_Control(pDX, IDC_TRACK_EDIT, m_track_edit);
 	DDX_Control(pDX, IDC_PLAYLIST_LIST, m_playlist_list);
 	DDX_Control(pDX, IDC_PATH_STATIC, m_path_static);
@@ -48,7 +48,7 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
 }
 
-BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
+BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
@@ -156,7 +156,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CDialog)
 	ON_WM_SETCURSOR()
 	ON_WM_MOUSELEAVE()
 	ON_COMMAND(ID_SHOW_MENU_BAR, &CMusicPlayerDlg::OnShowMenuBar)
-END_MESSAGE_MAP()
+		ON_COMMAND(ID_FULL_SCREEN, &CMusicPlayerDlg::OnFullScreen)
+		END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -662,13 +663,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
-		//如果m_font已经关联了一个字体资源对象，则释放它
-		if (theApp.m_ui_data.lyric_font.m_hObject)
-			theApp.m_ui_data.lyric_font.DeleteObject();
-		theApp.m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
-		if (theApp.m_ui_data.lyric_translate_font.m_hObject)
-			theApp.m_ui_data.lyric_translate_font.DeleteObject();
-		theApp.m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
+		theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font_size, theApp.m_app_setting_data.lyric_font_name.c_str());
+		theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font_size - 1, theApp.m_app_setting_data.lyric_font_name.c_str());
 	}
 	SaveConfig();		//将设置写入到ini文件
 	theApp.SaveConfig();
@@ -694,8 +690,7 @@ void CMusicPlayerDlg::ThemeColorChanged()
 		return;
 	COLORREF color{};
 	color = CCommon::GetWindowsThemeColor();
-	//if (CWinVersionHelper::IsWindows10Version1809OrLater())		//Win10 1809版本的主题颜色过深，将其降低一点亮度
-	CColorConvert::ReduceLuminance(color);
+	CColorConvert::ReduceLuminance(color);				//如果主题颜色过深，就将其降低一点亮度
 	if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255, 255, 255))	//当前主题色变了的时候重新设置主题色，但是确保获取到的颜色不是纯白色
 	{
 		theApp.m_app_setting_data.theme_color.original_color = color;
@@ -816,7 +811,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CMainDialogBase::OnInitDialog();
 
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
@@ -827,6 +822,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//载入图标资源
 	theApp.LoadIconResource();
+
+	//初始化字体
+	theApp.m_font_set.Init();
 
 	//载入设置
 	LoadConfig();
@@ -948,8 +946,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	m_ui2.Init(m_pDC);
 	//m_pUI = &m_ui2;
 
-	theApp.m_ui_data.lyric_font.CreatePointFont(theApp.m_app_setting_data.lyric_font_size * 10, theApp.m_app_setting_data.lyric_font_name.c_str());
-	theApp.m_ui_data.lyric_translate_font.CreatePointFont((theApp.m_app_setting_data.lyric_font_size - 1) * 10, theApp.m_app_setting_data.lyric_font_name.c_str());		//歌词翻译字体比歌词字体小一号
+	//初始化歌词字体
+	theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font_size, theApp.m_app_setting_data.lyric_font_name.c_str());
+	theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font_size - 1, theApp.m_app_setting_data.lyric_font_name.c_str());
 
 	//载入默认背景图片（用于没有专辑封面时显示）
 	theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
@@ -977,7 +976,7 @@ void CMusicPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 	else
 	{
-		CDialog::OnSysCommand(nID, lParam);
+		CMainDialogBase::OnSysCommand(nID, lParam);
 	}
 
 	if (nID >= 0x8000)
@@ -1011,7 +1010,7 @@ void CMusicPlayerDlg::OnPaint()
 	}
 	else
 	{
-		CDialog::OnPaint();
+		CMainDialogBase::OnPaint();
 	}
 	//DrawInfo();
 }
@@ -1026,7 +1025,7 @@ HCURSOR CMusicPlayerDlg::OnQueryDragIcon()
 
 void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 {
-	CDialog::OnSize(nType, cx, cy);
+	CMainDialogBase::OnSize(nType, cx, cy);
 	if (nType != SIZE_MINIMIZED && m_pUI != nullptr)
 	{
 		if (m_pDC != NULL)
@@ -1213,7 +1212,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	//	CPlayer::GetInstance().SaveRecentPath();
 	//}
 
-	CDialog::OnTimer(nIDEvent);
+	CMainDialogBase::OnTimer(nIDEvent);
 }
 
 
@@ -1486,6 +1485,14 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				m_search_edit.SetFocus();
 				return TRUE;
 			}
+			if (pMsg->wParam == VK_ESCAPE)	//按ESC键退出全屏模式
+			{
+				if (theApp.m_ui_data.full_screen)
+				{
+					OnFullScreen();
+					return TRUE;
+				}
+			}
 		}
 	}
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))		//屏蔽按回车键和ESC键退出
@@ -1498,13 +1505,13 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 		m_Mytip.RelayEvent(pMsg);
 
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CMainDialogBase::PreTranslateMessage(pMsg);
 }
 
 
 void CMusicPlayerDlg::OnDestroy()
 {
-	CDialog::OnDestroy();
+	CMainDialogBase::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
 	//退出时保存设置
@@ -1634,13 +1641,13 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
 	//SetPorgressBarSize();
 	DrawInfo(true);
 
-	CDialog::OnDropFiles(hDropInfo);
+	CMainDialogBase::OnDropFiles(hDropInfo);
 }
 
 
 void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 {
-	CDialog::OnInitMenu(pMenu);
+	CMainDialogBase::OnInitMenu(pMenu);
 
 	// TODO: 在此处添加消息处理程序代码
 	SetMenuState(pMenu);
@@ -1698,7 +1705,7 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		OnVolumeDown();
 	}
 
-	return CDialog::OnMouseWheel(nFlags, zDelta, pt);
+	return CMainDialogBase::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 
@@ -1709,7 +1716,7 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	lpMMI->ptMinTrackSize.x = theApp.DPI(360);		//设置最小宽度
 	lpMMI->ptMinTrackSize.y = theApp.DPI(360);		//设置最小高度
 
-	CDialog::OnGetMinMaxInfo(lpMMI);
+	CMainDialogBase::OnGetMinMaxInfo(lpMMI);
 }
 
 
@@ -1893,7 +1900,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	case IDT_NEXT: OnNext(); break;
 	}
 
-	return CDialog::OnCommand(wParam, lParam);
+	return CMainDialogBase::OnCommand(wParam, lParam);
 }
 
 
@@ -1927,7 +1934,7 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 		break;
 	}
 
-	CDialog::OnHotKey(nHotKeyId, nKey1, nKey2);
+	CMainDialogBase::OnHotKey(nHotKeyId, nKey1, nKey2);
 }
 
 
@@ -2180,7 +2187,7 @@ void CMusicPlayerDlg::OnBnClickedNext()
 
 //void CMusicPlayerDlg::OnMove(int x, int y)
 //{
-//	CDialog::OnMove(x, y);
+//	CMainDialogBase::OnMove(x, y);
 //
 //	// TODO: 在此处添加消息处理程序代码
 //	SetMaskWindowPos();
@@ -2254,7 +2261,7 @@ void CMusicPlayerDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 	//	&& !theApp.m_ui_data.volume_up_rect.PtInRect(point) && !theApp.m_ui_data.volume_down_rect.PtInRect(point)
 	//	&& !theApp.m_ui_data.translate_btn.rect.PtInRect(point))
 	//	OnMiniMode();
-	CDialog::OnLButtonDblClk(nFlags, point);
+	CMainDialogBase::OnLButtonDblClk(nFlags, point);
 }
 
 
@@ -2334,7 +2341,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 
 	m_pUI->RButtonUp(point);
 
-	CDialog::OnRButtonUp(nFlags, point);
+	CMainDialogBase::OnRButtonUp(nFlags, point);
 }
 
 
@@ -2343,7 +2350,7 @@ void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_pUI->MouseMove(point);
 
-	CDialog::OnMouseMove(nFlags, point);
+	CMainDialogBase::OnMouseMove(nFlags, point);
 }
 
 
@@ -2352,7 +2359,7 @@ void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_pUI->LButtonUp(point);
 
-	CDialog::OnLButtonUp(nFlags, point);
+	CMainDialogBase::OnLButtonUp(nFlags, point);
 }
 
 
@@ -2361,13 +2368,13 @@ void CMusicPlayerDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_pUI->LButtonDown(point);
 
-	CDialog::OnLButtonDown(nFlags, point);
+	CMainDialogBase::OnLButtonDown(nFlags, point);
 }
 
 
 HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hbr = CMainDialogBase::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何特性
 
@@ -2662,7 +2669,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lPara
 void CMusicPlayerDlg::OnEnChangeSearchEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CMainDialogBase::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -2882,7 +2889,7 @@ void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL
 	//响应主题颜色改变消息
 	ThemeColorChanged();
 
-	CDialog::OnColorizationColorChanged(dwColorizationColor, bOpacity);
+	CMainDialogBase::OnColorizationColorChanged(dwColorizationColor, bOpacity);
 }
 
 
@@ -2959,7 +2966,7 @@ void CMusicPlayerDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	CDialog::OnClose();
+	CMainDialogBase::OnClose();
 }
 
 
@@ -2969,7 +2976,7 @@ void CMusicPlayerDlg::OnCancel()
 	if(theApp.m_general_setting_data.minimize_to_notify_icon)
 		this->ShowWindow(HIDE_WINDOW);
 	else
-		CDialog::OnCancel();
+		CMainDialogBase::OnCancel();
 }
 
 
@@ -2978,7 +2985,7 @@ void CMusicPlayerDlg::OnMenuExit()
 	// TODO: 在此添加命令处理程序代码
 	if (m_miniModeDlg.m_hWnd == NULL)
 	{
-		CDialog::OnCancel();
+		CMainDialogBase::OnCancel();
 	}
 	else
 	{
@@ -3028,7 +3035,7 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 		}
 	}
 
-	CDialog::OnAppCommand(pWnd, nCmd, nDevice, nKey);
+	CMainDialogBase::OnAppCommand(pWnd, nCmd, nDevice, nKey);
 }
 
 
@@ -3052,7 +3059,7 @@ BOOL CMusicPlayerDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 	if (m_pUI->SetCursor())
 		return TRUE;
 	else
-	return CDialog::OnSetCursor(pWnd, nHitTest, message);
+	return CMainDialogBase::OnSetCursor(pWnd, nHitTest, message);
 }
 
 
@@ -3061,7 +3068,7 @@ void CMusicPlayerDlg::OnMouseLeave()
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_pUI->MouseLeave();
 
-	CDialog::OnMouseLeave();
+	CMainDialogBase::OnMouseLeave();
 }
 
 
@@ -3071,4 +3078,12 @@ void CMusicPlayerDlg::OnShowMenuBar()
 	theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
 	SetMenubarVisible();
 	SetThumbnailClipArea();
+}
+
+
+void CMusicPlayerDlg::OnFullScreen()
+{
+	// TODO: 在此添加命令处理程序代码
+	theApp.m_ui_data.full_screen = !theApp.m_ui_data.full_screen;
+	SetFullScreen(theApp.m_ui_data.full_screen);
 }
