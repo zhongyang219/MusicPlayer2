@@ -45,29 +45,6 @@ public:
 	vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
 	//界面图标资源
-	IconRes m_default_cover;
-	IconRes m_skin_icon;
-	IconRes m_eq_icon;
-	IconRes m_setting_icon;
-	IconRes m_mini_icon;
-	IconRes m_play_oder_icon;
-	IconRes m_play_shuffle_icon;
-	IconRes m_loop_playlist_icon;
-	IconRes m_loop_track_icon;
-	IconRes m_previous_icon;
-	IconRes m_play_icon;
-	IconRes m_pause_icon;
-	IconRes m_next_icon;
-	IconRes m_info_icon;
-	IconRes m_select_folder_icon;
-	IconRes m_show_playlist_icon;
-	IconRes m_find_songs_icon;
-
-	IconRes m_stop_icon_l;
-	IconRes m_previous_icon_l;
-	IconRes m_play_icon_l;
-	IconRes m_pause_icon_l;
-	IconRes m_next_icon_l;
 
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
@@ -78,6 +55,7 @@ public:
 	CHotkeyManager m_hot_key;
 
 	UIData m_ui_data;
+	IconSet m_icon_set;
 	FontSet m_font_set;
 
 	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出

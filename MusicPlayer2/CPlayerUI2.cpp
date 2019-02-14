@@ -52,20 +52,24 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		CRect rc_tmp;
 		//绘制全屏图标
-		int full_screen_icon_icon_width = 0;
+		int full_screen_icon_size = 0;
+		int margin_tmp = 0;;
 		if(m_ui_data.full_screen)
-			full_screen_icon_icon_width = DPI(28);
+		{
+			full_screen_icon_size = DPI(28);
+			margin_tmp = m_layout.margin;
 
-		rc_tmp.right = draw_rect.right - m_layout.margin;
-		rc_tmp.top = m_layout.margin;
-		rc_tmp.bottom = rc_tmp.top + full_screen_icon_icon_width;
-		rc_tmp.left = rc_tmp.right - full_screen_icon_icon_width;
-		DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], theApp.m_pause_icon);
+			rc_tmp.right = draw_rect.right - m_layout.margin;
+			rc_tmp.top = m_layout.margin;
+			rc_tmp.bottom = rc_tmp.top + full_screen_icon_size;
+			rc_tmp.left = rc_tmp.right - full_screen_icon_size;
+			DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], theApp.m_icon_set.full_screen);
+		}
 
 		//绘制播放状态
 		int text_height{ DPI(18) };
 		rc_tmp.MoveToXY(m_layout.margin, m_layout.margin);
-		rc_tmp.right = draw_rect.right - 2 * m_layout.margin - full_screen_icon_icon_width;
+		rc_tmp.right = draw_rect.right - m_layout.margin - full_screen_icon_size - margin_tmp;
 		rc_tmp.bottom = rc_tmp.top + text_height;
 		DrawSongInfo(rc_tmp, reset);
 
@@ -131,7 +135,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 			CRect rect = cover_rect;
 			int cover_margin = static_cast<int>(cover_rect.Width() * 0.13);
 			rect.DeflateRect(cover_margin, cover_margin);
-			m_draw.DrawIcon(theApp.m_default_cover.GetIcon(), rect.TopLeft(), rect.Size());
+			m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
 		}
 
 		////绘制播放进度
@@ -337,7 +341,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 			CRect rect = rc_tmp;
 			int cover_margin = static_cast<int>(rc_tmp.Width() * 0.13);
 			rect.DeflateRect(cover_margin, cover_margin);
-			m_draw.DrawIcon(theApp.m_default_cover.GetIcon(), rect.TopLeft(), rect.Size());
+			m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
 		}
 
 		//绘制播放状态

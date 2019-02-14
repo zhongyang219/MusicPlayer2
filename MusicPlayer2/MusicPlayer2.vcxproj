@@ -371,6 +371,8 @@
     <Image Include="res\上一曲.ico" />
     <Image Include="res\下一曲.ico" />
     <Image Include="res\停止.ico" />
+    <Image Include="res\全屏.ico" />
+    <Image Include="res\全屏_d.ico" />
     <Image Include="res\列表循环.ico" />
     <Image Include="res\列表循环_d.ico" />
     <Image Include="res\单曲循环.ico" />

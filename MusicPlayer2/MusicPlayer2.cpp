@@ -348,30 +348,31 @@ void CMusicPlayerApp::LoadConfig()
 
 void CMusicPlayerApp::LoadIconResource()
 {
-	m_default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);
-	m_skin_icon.Load(IDI_SKIN, IDI_SKIN_D, theApp.DPI(16));
-	m_eq_icon.Load(IDI_EQ, IDI_EQ_D, theApp.DPI(16));
-	m_setting_icon.Load(IDI_SETTING, IDI_SETTING_D, theApp.DPI(16));
-	m_mini_icon.Load(IDI_MINI, IDI_MINI_D, theApp.DPI(16));
-	m_play_oder_icon.Load(IDI_PLAY_ORDER, IDI_PLAY_ORDER_D, theApp.DPI(16));
-	m_play_shuffle_icon.Load(IDI_PLAY_SHUFFLE, IDI_PLAY_SHUFFLE_D, theApp.DPI(16));
-	m_loop_playlist_icon.Load(IDI_LOOP_PLAYLIST, IDI_LOOP_PLAYLIST_D, theApp.DPI(16));
-	m_loop_track_icon.Load(IDI_LOOP_TRACK, IDI_LOOP_TRACK_D, theApp.DPI(16));
-	m_info_icon.Load(IDI_SONG_INFO, IDI_SONG_INFO_D, theApp.DPI(16));
-	m_select_folder_icon.Load(IDI_SELECT_FOLDER, IDI_SELECT_FOLDER_D, theApp.DPI(16));
-	m_show_playlist_icon.Load(IDI_PLAYLIST, IDI_PLAYLIST_D, theApp.DPI(16));
-	m_find_songs_icon.Load(IDI_FIND_SONGS, IDI_FIND_SONGS_D, theApp.DPI(16));
-	
-	m_previous_icon.Load(IDI_PREVIOUS, NULL, theApp.DPI(16));
-	m_play_icon.Load(IDI_PLAY, NULL, theApp.DPI(16));
-	m_pause_icon.Load(IDI_PAUSE, NULL, theApp.DPI(16));
-	m_next_icon.Load(IDI_NEXT1, NULL, theApp.DPI(16));
+	m_icon_set.default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);
+	m_icon_set.skin.Load(IDI_SKIN, IDI_SKIN_D, DPI(16));
+	m_icon_set.eq.Load(IDI_EQ, IDI_EQ_D, DPI(16));
+	m_icon_set.setting.Load(IDI_SETTING, IDI_SETTING_D, DPI(16));
+	m_icon_set.mini.Load(IDI_MINI, IDI_MINI_D, DPI(16));
+	m_icon_set.play_oder.Load(IDI_PLAY_ORDER, IDI_PLAY_ORDER_D, DPI(16));
+	m_icon_set.play_shuffle.Load(IDI_PLAY_SHUFFLE, IDI_PLAY_SHUFFLE_D, DPI(16));
+	m_icon_set.loop_playlist.Load(IDI_LOOP_PLAYLIST, IDI_LOOP_PLAYLIST_D, DPI(16));
+	m_icon_set.loop_track.Load(IDI_LOOP_TRACK, IDI_LOOP_TRACK_D, DPI(16));
+	m_icon_set.info.Load(IDI_SONG_INFO, IDI_SONG_INFO_D, DPI(16));
+	m_icon_set.select_folder.Load(IDI_SELECT_FOLDER, IDI_SELECT_FOLDER_D, DPI(16));
+	m_icon_set.show_playlist.Load(IDI_PLAYLIST, IDI_PLAYLIST_D, DPI(16));
+	m_icon_set.find_songs.Load(IDI_FIND_SONGS, IDI_FIND_SONGS_D, DPI(16));
+	m_icon_set.full_screen.Load(IDI_FULL_SCREEN, IDI_FULL_SCREEN_D, DPI(16));
 
-	m_stop_icon_l.Load(IDI_STOP, NULL, theApp.DPI(20));
-	m_previous_icon_l.Load(IDI_PREVIOUS, NULL, theApp.DPI(20));
-	m_play_icon_l.Load(IDI_PLAY, NULL, theApp.DPI(20));
-	m_pause_icon_l.Load(IDI_PAUSE, NULL, theApp.DPI(20));
-	m_next_icon_l.Load(IDI_NEXT1, NULL, theApp.DPI(20));
+	m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
+	m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));
+	m_icon_set.pause.Load(IDI_PAUSE, NULL, DPI(16));
+	m_icon_set.next.Load(IDI_NEXT1, NULL, DPI(16));
+
+	m_icon_set.stop_l.Load(IDI_STOP, NULL, DPI(20));
+	m_icon_set.previous_l.Load(IDI_PREVIOUS, NULL, DPI(20));
+	m_icon_set.play_l.Load(IDI_PLAY, NULL, DPI(20));
+	m_icon_set.pause_l.Load(IDI_PAUSE, NULL, DPI(20));
+	m_icon_set.next_l.Load(IDI_NEXT1, NULL, DPI(20));
 
 }
 

@@ -551,11 +551,11 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		if (CWinVersionHelper::IsWindows7OrLater())
 		{
 			//更新任务栏缩略图上“播放/暂停”的图标
-			m_thumbButton[1].hIcon = theApp.m_pause_icon.GetIcon();
+			m_thumbButton[1].hIcon = theApp.m_icon_set.pause.GetIcon();
 			wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PAUSE));
 			//更新任务按钮上的播放状态图标
 			if (theApp.m_play_setting_data.show_playstate_icon)
-				m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_play_icon.GetIcon(), L"");
+				m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.play.GetIcon(), L"");
 			else
 				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 		}
@@ -567,11 +567,11 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 		if (CWinVersionHelper::IsWindows7OrLater())
 		{
 			//更新任务栏缩略图上“播放/暂停”的图标
-			m_thumbButton[1].hIcon = theApp.m_play_icon.GetIcon();
+			m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
 			wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
 			//更新任务按钮上的播放状态图标
 			if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
-				m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_pause_icon.GetIcon(), L"");
+				m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
 			else
 				m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
 		}
@@ -909,19 +909,19 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//上一曲按钮
 	m_thumbButton[0].dwMask = dwMask;
 	m_thumbButton[0].iId = IDT_PREVIOUS;
-	m_thumbButton[0].hIcon = theApp.m_previous_icon.GetIcon();
+	m_thumbButton[0].hIcon = theApp.m_icon_set.previous.GetIcon();
 	wcscpy_s(m_thumbButton[0].szTip, CCommon::LoadText(IDS_PREVIOUS));
 	m_thumbButton[0].dwFlags = THBF_ENABLED;
 	//播放/暂停按钮
 	m_thumbButton[1].dwMask = dwMask;
 	m_thumbButton[1].iId = IDT_PLAY_PAUSE;
-	m_thumbButton[1].hIcon = theApp.m_play_icon.GetIcon();
+	m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
 	wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
 	m_thumbButton[1].dwFlags = THBF_ENABLED;
 	//下一曲按钮
 	m_thumbButton[2].dwMask = dwMask;
 	m_thumbButton[2].iId = IDT_NEXT;
-	m_thumbButton[2].hIcon = theApp.m_next_icon.GetIcon();
+	m_thumbButton[2].hIcon = theApp.m_icon_set.next.GetIcon();
 	wcscpy_s(m_thumbButton[2].szTip, CCommon::LoadText(IDS_NEXT));
 	m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
@@ -3086,4 +3086,7 @@ void CMusicPlayerDlg::OnFullScreen()
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_ui_data.full_screen = !theApp.m_ui_data.full_screen;
 	SetFullScreen(theApp.m_ui_data.full_screen);
+	DrawInfo(true);
+	m_pUI->UpdateToolTipPosition();
+	SetThumbnailClipArea();
 }

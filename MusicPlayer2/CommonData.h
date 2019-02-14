@@ -3,6 +3,7 @@
 #include "ColorConvert.h"
 #include "DrawCommon.h"
 #include "Common.h"
+#include <functional>
 
 namespace CONSTVAL
 {
@@ -110,9 +111,9 @@ public:
 	const HICON& GetIcon(bool dark = false, bool large = false) const
 	{
 		if(large)
-			return (dark ? hIconDarkLarge : hIconLarge);
+			return (dark && hIconDarkLarge != NULL ? hIconDarkLarge : hIconLarge);
 		else
-			return (dark ? hIconDark : hIcon);
+			return (dark && hIconDark != NULL ? hIconDark : hIcon);
 	}
 
 	void Load(UINT id, UINT id_dark, int size)
@@ -136,6 +137,63 @@ public:
 	const CSize& GetSize(bool large = false) const
 	{
 		return (large? iconSizeLarge : iconSize);
+	}
+};
+
+struct IconSet
+{
+	IconRes default_cover;
+	IconRes skin;
+	IconRes eq;
+	IconRes setting;
+	IconRes mini;
+	IconRes play_oder;
+	IconRes play_shuffle;
+	IconRes loop_playlist;
+	IconRes loop_track;
+	IconRes previous;
+	IconRes play;
+	IconRes pause;
+	IconRes next;
+	IconRes info;
+	IconRes select_folder;
+	IconRes show_playlist;
+	IconRes find_songs;
+	IconRes full_screen;
+
+	IconRes stop_l;
+	IconRes previous_l;
+	IconRes play_l;
+	IconRes pause_l;
+	IconRes next_l;
+
+	void Init(std::function<int(int)> fun_dpi)
+	{
+		default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);
+		skin.Load(IDI_SKIN, IDI_SKIN_D, fun_dpi(16));
+		eq.Load(IDI_EQ, IDI_EQ_D, fun_dpi(16));
+		setting.Load(IDI_SETTING, IDI_SETTING_D, fun_dpi(16));
+		mini.Load(IDI_MINI, IDI_MINI_D, fun_dpi(16));
+		play_oder.Load(IDI_PLAY_ORDER, IDI_PLAY_ORDER_D, fun_dpi(16));
+		play_shuffle.Load(IDI_PLAY_SHUFFLE, IDI_PLAY_SHUFFLE_D, fun_dpi(16));
+		loop_playlist.Load(IDI_LOOP_PLAYLIST, IDI_LOOP_PLAYLIST_D, fun_dpi(16));
+		loop_track.Load(IDI_LOOP_TRACK, IDI_LOOP_TRACK_D, fun_dpi(16));
+		info.Load(IDI_SONG_INFO, IDI_SONG_INFO_D, fun_dpi(16));
+		select_folder.Load(IDI_SELECT_FOLDER, IDI_SELECT_FOLDER_D, fun_dpi(16));
+		show_playlist.Load(IDI_PLAYLIST, IDI_PLAYLIST_D, fun_dpi(16));
+		find_songs.Load(IDI_FIND_SONGS, IDI_FIND_SONGS_D, fun_dpi(16));
+		full_screen.Load(IDI_FULL_SCREEN, IDI_FULL_SCREEN_D, fun_dpi(16));
+
+		previous.Load(IDI_PREVIOUS, NULL, fun_dpi(16));
+		play.Load(IDI_PLAY, NULL, fun_dpi(16));
+		pause.Load(IDI_PAUSE, NULL, fun_dpi(16));
+		next.Load(IDI_NEXT1, NULL, fun_dpi(16));
+
+		stop_l.Load(IDI_STOP, NULL, fun_dpi(20));
+		previous_l.Load(IDI_PREVIOUS, NULL, fun_dpi(20));
+		play_l.Load(IDI_PLAY, NULL, fun_dpi(20));
+		pause_l.Load(IDI_PAUSE, NULL, fun_dpi(20));
+		next_l.Load(IDI_NEXT1, NULL, fun_dpi(20));
 	}
 };
 

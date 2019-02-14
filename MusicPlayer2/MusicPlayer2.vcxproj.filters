@@ -783,5 +783,11 @@
     <Image Include="res\文件夹_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\全屏.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\全屏_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -89,7 +89,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 		else
 			m_draw.FillRect(cover_rect, m_colors.color_spectrum_back);
 		cover_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
-		m_draw.DrawIcon(theApp.m_default_cover.GetIcon(), cover_rect.TopLeft(), cover_rect.Size());
+		m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), cover_rect.TopLeft(), cover_rect.Size());
 	}
 	m_buttons[BTN_COVER].rect = cover_rect;
 
@@ -98,16 +98,16 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
 	rc_tmp.right = rc_tmp.left + theApp.DPI(27);
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(22);
-	DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_previous_icon.GetIcon(), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous.GetIcon(), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
 	if(CPlayer::GetInstance().IsPlaying())
-		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_pause_icon.GetIcon(), draw_background);
+		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause.GetIcon(), draw_background);
 	else
-		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_play_icon.GetIcon(), draw_background);
+		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play.GetIcon(), draw_background);
 
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-	DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_next_icon.GetIcon(), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next.GetIcon(), draw_background);
 
 
 	//»æÖÆÆµÆ×·ÖÎö

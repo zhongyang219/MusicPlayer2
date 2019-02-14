@@ -34,12 +34,25 @@ void CPlayerUI::DrawInfo(bool reset)
 	int text_height{ DPI(18) };		//文本的高度
 
 	//绘制全屏显示图标
+	int full_screen_icon_size = 0;
+	int margin_tmp = 0;
+	if(m_ui_data.full_screen)
+	{
+		full_screen_icon_size = DPI(28);
+		margin_tmp = m_layout.margin;
+		CRect rc_tmp;
+		rc_tmp.right = draw_rect.right - m_layout.margin;
+		rc_tmp.top = m_layout.margin;
+		rc_tmp.bottom = rc_tmp.top + full_screen_icon_size;
+		rc_tmp.left = rc_tmp.right - full_screen_icon_size;
+		DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], theApp.m_icon_set.full_screen);
+	}
 
 	//显示歌曲信息
 	m_draw.SetFont(&theApp.m_font_set.normal.GetFont(m_ui_data.full_screen));
 	//m_draw.SetBackColor(color_back);
 	CRect tmp{ text_start, CSize{1,text_height} };
-	tmp.right = draw_rect.right - m_layout.margin;
+	tmp.right = draw_rect.right - m_layout.margin - full_screen_icon_size - margin_tmp;
 	DrawSongInfo(tmp, reset);
 
 	wchar_t buff[64];
@@ -89,7 +102,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	tmp.right = tmp.left + DPI(52);
 	m_draw.DrawWindowText(tmp, lable1_str.c_str(), m_colors.color_text_lable);
 	tmp.MoveToX(tmp.left + DPI(52));
-	tmp.right = draw_rect.right - m_layout.margin;
+	tmp.right = draw_rect.right - m_layout.margin - full_screen_icon_size;
 	static CDrawCommon::ScrollInfo scroll_info2;
 	m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info2, reset);
 	//显示艺术家
@@ -143,7 +156,7 @@ void CPlayerUI::DrawInfo(bool reset)
 			int cover_side = cover_rect.Height() * 3 / 4;
 			int x = cover_rect.left + (cover_rect.Width() - cover_side) / 2;
 			int y = cover_rect.top + (cover_rect.Height() - cover_side) / 2;
-			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_default_cover.GetIcon(), cover_side, cover_side, 0, NULL, DI_NORMAL);
+			::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_icon_set.default_cover.GetIcon(), cover_side, cover_side, 0, NULL, DI_NORMAL);
 		}
 	}
 
