@@ -33,6 +33,8 @@ void CPlayerUI::DrawInfo(bool reset)
 	CPoint text_start{ draw_rect.left + SpectralSize().cx + 2 * m_layout.margin, draw_rect.top + m_layout.margin };		//文本的起始坐标
 	int text_height{ DPI(18) };		//文本的高度
 
+	//绘制全屏显示图标
+
 	//显示歌曲信息
 	m_draw.SetFont(&theApp.m_font_set.normal.GetFont(m_ui_data.full_screen));
 	//m_draw.SetBackColor(color_back);

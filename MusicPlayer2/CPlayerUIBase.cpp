@@ -232,6 +232,11 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 				return;
 				break;
 
+			case BTN_FULL_SCREEN:
+				m_buttons[BTN_FULL_SCREEN].hover = false;
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
+				return;
+
 			default:
 				break;
 			}

@@ -67,7 +67,8 @@ protected:
 		BTN_SHOW_PLAYLIST,		//显示/隐藏播放列表
 		BTN_SELECT_FOLDER,		//选择文件夹
 		BTN_PROGRESS,			//进度条
-		BTN_COVER
+		BTN_COVER,
+		BTN_FULL_SCREEN
 	};
 
 	struct DrawData
@@ -89,6 +90,9 @@ protected:
 	void DrawProgressBar(CRect rect);
 	void DrawTranslateButton(CRect rect);
 
+	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
+	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
+
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
 	virtual void UpdateToolTipPosition() = 0;
@@ -108,8 +112,6 @@ private:
 	void DrawLyricTextMultiLine(CRect rect);
 	void DrawLyricTextSingleLine(CRect rect);
 	void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
-	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
-	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
 	void SetRepeatModeToolTipText();
 	void SetSongInfoToolTipText();
 	void SetCoverToolTipText();

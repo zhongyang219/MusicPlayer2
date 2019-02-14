@@ -50,11 +50,22 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		wchar_t buff[64];
 
+		CRect rc_tmp;
+		//绘制全屏图标
+		int full_screen_icon_icon_width = 0;
+		if(m_ui_data.full_screen)
+			full_screen_icon_icon_width = DPI(28);
+
+		rc_tmp.right = draw_rect.right - m_layout.margin;
+		rc_tmp.top = m_layout.margin;
+		rc_tmp.bottom = rc_tmp.top + full_screen_icon_icon_width;
+		rc_tmp.left = rc_tmp.right - full_screen_icon_icon_width;
+		DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], theApp.m_pause_icon);
+
 		//绘制播放状态
 		int text_height{ DPI(18) };
-		CRect rc_tmp;
 		rc_tmp.MoveToXY(m_layout.margin, m_layout.margin);
-		rc_tmp.right = draw_rect.right - m_layout.margin;
+		rc_tmp.right = draw_rect.right - 2 * m_layout.margin - full_screen_icon_icon_width;
 		rc_tmp.bottom = rc_tmp.top + text_height;
 		DrawSongInfo(rc_tmp, reset);
 
