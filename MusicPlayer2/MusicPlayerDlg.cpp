@@ -295,7 +295,7 @@ void CMusicPlayerDlg::LoadConfig()
 
 	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
 	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
-	theApp.m_app_setting_data.lyric_background = ini.GetBool(_T("config"), _T("lyric_background"), true);
+	theApp.m_app_setting_data.lyric_background = ini.GetBool(_T("config"), _T("lyric_background"), false);
 	theApp.m_app_setting_data.dark_mode = ini.GetBool(_T("config"), _T("dark_mode"), false);
 	theApp.m_app_setting_data.background_transparency = ini.GetInt(L"config", L"background_transparency", 80);
 	theApp.m_app_setting_data.use_out_image = ini.GetBool(_T("config"), _T("use_out_image"), 0);
