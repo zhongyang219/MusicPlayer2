@@ -190,12 +190,12 @@ private:
 	CFont font_l;
 
 public:
-	void Load(int font_size)
+	void Create(int font_size, LPCTSTR font_name)
 	{
 		if (font_size < 5)
 			font_size = 5;
-		font.CreatePointFont(font_size * 10, CCommon::LoadText(IDS_DEFAULT_FONT));
-		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), CCommon::LoadText(IDS_DEFAULT_FONT));
+		font.CreatePointFont(font_size * 10, font_name);
+		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), font_name);
 	}
 
 	CFont& GetFont(bool large = false)
@@ -203,18 +203,18 @@ public:
 		return (large ? font_l : font);
 	}
 
-	void SetFont(int font_size, LPCTSTR name)
+	void SetFont(int font_size, LPCTSTR font_name)
 	{
 		if (font_size < 5)
 			font_size = 5;
 
 		if (font.m_hObject)
 			font.DeleteObject();
-		font.CreatePointFont(font_size * 10, CCommon::LoadText(IDS_DEFAULT_FONT));
+		font.CreatePointFont(font_size * 10, font_name);
 
 		if (font_l.m_hObject)
 			font_l.DeleteObject();
-		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), CCommon::LoadText(IDS_DEFAULT_FONT));
+		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), font_name);
 	}
 };
 
@@ -229,9 +229,9 @@ struct FontSet
 
 	void Init()
 	{
-		normal.Load(9);
-		time.Load(8);
-		title.Load(10);
+		normal.Create(9, CCommon::LoadText(IDS_DEFAULT_FONT));
+		time.Create(8, CCommon::LoadText(IDS_DEFAULT_FONT));
+		title.Create(10, CCommon::LoadText(IDS_DEFAULT_FONT));
 	}
 };
 
