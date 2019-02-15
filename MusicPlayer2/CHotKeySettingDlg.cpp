@@ -89,6 +89,8 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
 	m_toolTip.AddTool(GetDlgItem(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK), CCommon::LoadText(IDS_MULTI_MEDIA_KEY_TIP));
 
+	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+
 	m_key_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	m_key_list.InsertColumn(0, CCommon::LoadText(IDS_FUNCTION), LVCFMT_LEFT, theApp.DPI(130));
 	m_key_list.InsertColumn(1, CCommon::LoadText(IDS_SHORTCUT_KEY), LVCFMT_LEFT, theApp.DPI(170));

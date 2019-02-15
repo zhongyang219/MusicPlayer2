@@ -79,6 +79,8 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	//m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
 	m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), CCommon::LoadText(IDS_MIDI_INNER_LYRIC_TIP_INFO));
 
+	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+
 	GetDlgItem(IDC_BROWSE_BUTTON)->EnableWindow(theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
 	m_sf2_path_edit.EnableWindow(theApp.m_format_convert_dialog_exit);
 

@@ -183,6 +183,8 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_toolTip.AddTool(&m_color_static5, CCommon::LoadText(IDS_PINK));
 	m_toolTip.AddTool(&m_color_static6, CCommon::LoadText(IDS_LIGHT_PURPLE));
 
+	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+
 	DrawColor();
 
 	////设置“更多颜色”按钮的可用状态

@@ -99,6 +99,8 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_PATH_EDIT), CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
 	m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
 
+	m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+
 	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_FOLLOWING_SYSTEM));
 	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_BLACK));
 	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_WHITE));
