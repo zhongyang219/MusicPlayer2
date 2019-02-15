@@ -1031,7 +1031,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		if (m_pDC != NULL)
 		{
 			DrawInfo(true);
-			if ((cx < m_layout.width_threshold) != theApp.m_ui_data.narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
+			if ((cx < m_ui.WidthThreshold()) != theApp.m_ui_data.narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
 			{
 				Invalidate(FALSE);
 				//m_time_static.Invalidate(FALSE);
@@ -1040,9 +1040,9 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 		}
 		theApp.m_ui_data.client_width = cx;
 		theApp.m_ui_data.client_height = cy;
-		if (m_layout.width_threshold != 0)
+		if (m_ui.WidthThreshold() != 0)
 		{
-			theApp.m_ui_data.narrow_mode = (cx < m_layout.width_threshold);
+			theApp.m_ui_data.narrow_mode = (cx < m_ui.WidthThreshold());
 			//if (!theApp.m_ui_data.show_playlist)
 			//	theApp.m_ui_data.narrow_mode = false;
 		}
@@ -1421,15 +1421,15 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnEqualizer();
 				return TRUE;
 			}
-			if (GetKeyState(VK_SHIFT) & 0x8000)
-			{
-				//按下Ctrl + Shift键时
-				if (pMsg->wParam == 'C')		//设置按Ctr+S打开均衡器
-				{
-					OnFormatConvert1();
-					return TRUE;
-				}
-			}
+			//if (GetKeyState(VK_SHIFT) & 0x8000)
+			//{
+			//	//按下Ctrl + Shift键时
+			//	if (pMsg->wParam == 'C')
+			//	{
+			//		OnFormatConvert1();
+			//		return TRUE;
+			//	}
+			//}
 		}
 		else
 		{
@@ -1483,6 +1483,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			if (pMsg->wParam == 'F')	//按F键快速查找
 			{
 				m_search_edit.SetFocus();
+				return TRUE;
+			}
+			if (pMsg->wParam == VK_F11)	//按F11键进入或退出全屏模式
+			{
+				OnFullScreen();
 				return TRUE;
 			}
 			if (pMsg->wParam == VK_ESCAPE)	//按ESC键退出全屏模式

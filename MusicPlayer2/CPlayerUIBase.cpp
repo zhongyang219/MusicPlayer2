@@ -256,13 +256,13 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 			redraw_rect = m_draw_rect;
 			if (m_ui_data.show_playlist)
 			{
-				redraw_rect.left = cx / 2/* - m_layout.margin*/;
-				redraw_rect.right = m_ui_data.client_width / 2 + m_layout.margin;
+				redraw_rect.left = cx / 2/* - Margin()*/;
+				redraw_rect.right = m_ui_data.client_width / 2 + Margin();
 				m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 			}
 			//else
 			//{
-			//	redraw_rect.left = cx - m_layout.margin;
+			//	redraw_rect.left = cx - Margin();
 			//	redraw_rect.right = cx;
 			//}
 		}
@@ -270,7 +270,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 		//{
 		//	//重新将绘图区域下方区域的矩形区域填充为对话框背景色
 		//	redraw_rect = m_draw_rect;
-		//	redraw_rect.top = cy - m_layout.margin;
+		//	redraw_rect.top = cy - Margin();
 		//	redraw_rect.bottom = cy;
 		//	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 		//}
@@ -281,7 +281,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 		//{
 		//	//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
 		//	redraw_rect = m_draw_rect;
-		//	redraw_rect.left = cx - m_layout.margin;
+		//	redraw_rect.left = cx - Margin();
 		//	redraw_rect.right = cx;
 		//	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 		//}
@@ -291,7 +291,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 		//	{
 		//		//重新将绘图区域下方区域的矩形区域填充为对话框背景色
 		//		redraw_rect = m_draw_rect;
-		//		redraw_rect.top = cy - m_layout.margin;
+		//		redraw_rect.top = cy - Margin();
 		//		redraw_rect.bottom = cy;
 		//		m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
 		//	}
@@ -378,19 +378,19 @@ void CPlayerUIBase::SetDrawRect()
 	if (!m_ui_data.show_playlist)
 	{
 		m_draw_rect = CRect(0, 0, m_ui_data.client_width, m_ui_data.client_height);
-		//m_draw_rect.DeflateRect(m_layout.margin, m_layout.margin);
+		//m_draw_rect.DeflateRect(Margin(), Margin());
 	}
 	else
 	{
 		if (!m_ui_data.narrow_mode)
 		{
-			m_draw_rect = CRect{ /*CPoint{m_layout.margin, m_layout.margin}*/ CPoint(),
-			CPoint{m_ui_data.client_width / 2 /* - m_layout.margin*/, m_ui_data.client_height} };
+			m_draw_rect = CRect{ /*CPoint{Margin(), Margin()}*/ CPoint(),
+			CPoint{m_ui_data.client_width / 2 /* - Margin()*/, m_ui_data.client_height} };
 		}
 		else
 		{
-			m_draw_rect = CRect{ /*CPoint{ m_layout.margin, m_layout.margin }*/ CPoint(),
-			CSize{ m_ui_data.client_width /*- 2 * m_layout.margin*/, m_layout.info_height - m_layout.margin } };
+			m_draw_rect = CRect{ /*CPoint{ Margin(), Margin() }*/ CPoint(),
+			CSize{ m_ui_data.client_width /*- 2 * Margin()*/, m_layout.info_height - Margin() } };
 		}
 
 	}
@@ -975,6 +975,24 @@ bool CPlayerUIBase::IsMidiLyric()
 	return CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric();
 }
 
+int CPlayerUIBase::Margin() const
+{
+	int margin = m_layout.margin;
+	if(m_ui_data.full_screen)
+		margin = static_cast<int>(margin * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
+
+	return margin;
+}
+
+int CPlayerUIBase::WidthThreshold() const
+{
+	int width = m_layout.width_threshold;
+	if (m_ui_data.full_screen)
+		width = static_cast<int>(width * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
+
+	return width;
+}
+
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
 	return theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
@@ -1073,7 +1091,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
 	rc_btn.MoveToX(rc_btn.right);
 	DrawControlButton(rc_btn, m_buttons[BTN_NEXT], theApp.m_icon_set.next_l);
 
-	int progressbar_left = rc_btn.right + m_layout.margin;
+	int progressbar_left = rc_btn.right + Margin();
 
 	//绘制右侧按钮
 	const int btn_side = DPI(24);
@@ -1090,7 +1108,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
 	{
 		progress_rect = rect;
 		progress_rect.left = progressbar_left;
-		progress_rect.right = rc_btn.left - m_layout.margin;
+		progress_rect.right = rc_btn.left - Margin();
 		DrawProgressBar(progress_rect);
 	}
 }
@@ -1111,7 +1129,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 	//绘制进度条
 	const int progress_height = DPI(4);
 	CRect progress_rect = rect;
-	progress_rect.right = rc_time.left - m_layout.margin;
+	progress_rect.right = rc_time.left - Margin();
 	progress_rect.top = rect.top + (rect.Height() - progress_height) / 2;
 	progress_rect.bottom = progress_rect.top + progress_height;
 

@@ -46,6 +46,9 @@ public:
 
 	static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
 
+	int Margin() const;
+	int WidthThreshold() const;
+
 protected:
 	enum BtnKey		//标识按钮的类型
 	{
