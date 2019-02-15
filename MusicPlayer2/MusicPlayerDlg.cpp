@@ -3089,6 +3089,10 @@ void CMusicPlayerDlg::OnShowMenuBar()
 void CMusicPlayerDlg::OnFullScreen()
 {
 	// TODO: 在此添加命令处理程序代码
+
+	if (m_miniModeDlg.m_hWnd != NULL)	//迷你模式下不允许响应全屏显示
+		return;
+
 	theApp.m_ui_data.full_screen = !theApp.m_ui_data.full_screen;
 	SetFullScreen(theApp.m_ui_data.full_screen);
 	DrawInfo(true);
