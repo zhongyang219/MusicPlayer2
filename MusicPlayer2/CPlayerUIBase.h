@@ -47,6 +47,7 @@ public:
 	static bool IsMidiLyric();		// «∑ÒªÊ÷∆MIDI“Ù¿÷µƒ∏Ë¥ 
 
 	int Margin() const;
+	int EdgeMargin() const;
 	int WidthThreshold() const;
 
 protected:

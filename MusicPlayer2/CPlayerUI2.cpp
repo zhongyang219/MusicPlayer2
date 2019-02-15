@@ -41,10 +41,10 @@ void CPlayerUI2::DrawInfo(bool reset)
 		CRect info_rect{ draw_rect };
 
 		//留出空间来显示播放控制条
-		if(draw_rect.Width() - 2 * Margin() < m_progress_on_top_threshold)		//如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
-			info_rect.bottom -= DPI(54);
+		if(draw_rect.Width() - 2 * EdgeMargin() < m_progress_on_top_threshold)		//如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
+			info_rect.bottom -= (EdgeMargin() + DPI(50));
 		else
-			info_rect.bottom -= DPI(40);
+			info_rect.bottom -= (EdgeMargin() + DPI(36));
 		if (right_lyric)
 			info_rect.right = info_rect.left + info_rect.Width() / 2;
 
@@ -59,8 +59,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 			full_screen_icon_size = DPI(28);
 			margin_tmp = Margin();
 
-			rc_tmp.right = draw_rect.right - Margin();
-			rc_tmp.top = Margin();
+			rc_tmp.right = draw_rect.right - EdgeMargin();
+			rc_tmp.top = EdgeMargin();
 			rc_tmp.bottom = rc_tmp.top + full_screen_icon_size;
 			rc_tmp.left = rc_tmp.right - full_screen_icon_size;
 			DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], theApp.m_icon_set.full_screen);
@@ -68,13 +68,13 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制播放状态
 		int text_height{ DPI(18) };
-		rc_tmp.MoveToXY(Margin(), Margin());
-		rc_tmp.right = draw_rect.right - Margin() - full_screen_icon_size - margin_tmp;
+		rc_tmp.MoveToXY(EdgeMargin(), EdgeMargin());
+		rc_tmp.right = draw_rect.right - EdgeMargin() - full_screen_icon_size - margin_tmp;
 		rc_tmp.bottom = rc_tmp.top + text_height;
 		DrawSongInfo(rc_tmp, reset);
 
 		//绘制曲目格式
-		rc_tmp.MoveToX(Margin());
+		rc_tmp.MoveToX(EdgeMargin());
 		rc_tmp.MoveToY(rc_tmp.bottom);
 		const BASS_CHANNELINFO channel_info{ CPlayer::GetInstance().GetChannelInfo() };
 		CString chans_str;
@@ -106,7 +106,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		else
 			bottom_height = static_cast<int>(info_rect.Height() * 0.35);
 
-		CRect cover_frame_rect{ CPoint(0, text_height * 2), CSize(info_rect.Width(), info_rect.Height() - text_height * 2 - bottom_height) };
+		CRect cover_frame_rect{ CPoint(0, text_height * 2 + (EdgeMargin() - Margin())), CSize(info_rect.Width(), info_rect.Height() - text_height * 2 - bottom_height - (EdgeMargin() - Margin())) };
 		int cover_side = min(cover_frame_rect.Width(), cover_frame_rect.Height());
 		CPoint start_point;
 		start_point.x = cover_frame_rect.left + (cover_frame_rect.Width() - cover_side) / 2;
@@ -151,8 +151,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制频谱分析
 		CRect rc_spectrum_area;
-		rc_spectrum_area.MoveToXY(Margin(), info_rect.bottom - bottom_height + text_height2);
-		rc_spectrum_area.right = info_rect.right - Margin();
+		rc_spectrum_area.MoveToXY(EdgeMargin(), info_rect.bottom - bottom_height + text_height2);
+		rc_spectrum_area.right = info_rect.right - EdgeMargin();
 
 		if (theApp.m_app_setting_data.show_spectrum)
 		{
@@ -235,8 +235,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 
 		//绘制标题和艺术家
-		rc_tmp.MoveToXY(Margin(), info_rect.bottom - bottom_height);
-		rc_tmp.right = info_rect.right - Margin();
+		rc_tmp.MoveToXY(EdgeMargin(), info_rect.bottom - bottom_height);
+		rc_tmp.right = info_rect.right - EdgeMargin();
 		rc_tmp.bottom = rc_tmp.top + text_height2;
 		m_draw.SetFont(&theApp.m_font_set.title.GetFont(theApp.m_ui_data.full_screen));
 		static CDrawCommon::ScrollInfo scroll_info_title;
@@ -250,7 +250,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制控制条
 		rc_tmp.MoveToY(rc_spectrum_area.bottom + DPI(4));
 		rc_tmp.bottom = rc_tmp.top + DPI(24);
-		rc_tmp.right = draw_rect.right - Margin();
+		rc_tmp.right = draw_rect.right - EdgeMargin();
 		DrawToolBar(rc_tmp, true);
 
 		//m_draw_data.info_rect = m_draw_rect;
@@ -264,10 +264,10 @@ void CPlayerUI2::DrawInfo(bool reset)
 		int lyric_margin;
 		if (!right_lyric)
 		{
-			rc_tmp.MoveToX(Margin());
+			rc_tmp.MoveToX(EdgeMargin());
 			rc_tmp.MoveToY(rc_tmp.bottom + Margin());
-			rc_tmp.right = info_rect.right - Margin();
-			rc_tmp.bottom = info_rect.bottom - Margin();
+			rc_tmp.right = info_rect.right - EdgeMargin();
+			rc_tmp.bottom = info_rect.bottom - EdgeMargin();
 
 			lyric_margin = Margin();
 		}
@@ -275,7 +275,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		{
 			rc_tmp.MoveToX(info_rect.right);
 			rc_tmp.MoveToY(2 * text_height2 + Margin());
-			rc_tmp.right = draw_rect.right - Margin();
+			rc_tmp.right = draw_rect.right - EdgeMargin();
 			rc_tmp.bottom = rc_spectrum_area.bottom;
 
 			lyric_margin = 2 * Margin();
@@ -305,10 +305,10 @@ void CPlayerUI2::DrawInfo(bool reset)
 
 		//绘制播放控制按钮
 		rc_tmp = draw_rect;
-		rc_tmp.left += Margin();
-		rc_tmp.right -= Margin();
+		rc_tmp.left += EdgeMargin();
+		rc_tmp.right -= EdgeMargin();
 		rc_tmp.top = info_rect.bottom;
-		rc_tmp.bottom -= Margin();
+		rc_tmp.bottom -= EdgeMargin();
 		DrawControlBar(rc_tmp);
 	}
 

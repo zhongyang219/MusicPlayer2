@@ -979,9 +979,17 @@ int CPlayerUIBase::Margin() const
 {
 	int margin = m_layout.margin;
 	if(m_ui_data.full_screen)
-		margin = static_cast<int>(margin * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
+		margin = static_cast<int>(margin * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR * 1.5);
 
 	return margin;
+}
+
+int CPlayerUIBase::EdgeMargin() const
+{
+	if (m_ui_data.full_screen)
+		return theApp.DPI(40);
+	else
+		return m_layout.margin;
 }
 
 int CPlayerUIBase::WidthThreshold() const
