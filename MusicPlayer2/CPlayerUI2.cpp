@@ -387,7 +387,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 				m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
 		}
 		m_draw_data.lyric_rect = rc_tmp;
-		rc_tmp.DeflateRect(Margin(), Margin());
+		rc_tmp.DeflateRect(Margin(), m_layout.margin);
 		DrawLryicCommon(rc_tmp);
 
 		//绘制音量调整按钮
