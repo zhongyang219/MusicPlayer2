@@ -33,6 +33,13 @@ void CPlayerUI::DrawInfo(bool reset)
 	CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(), draw_rect.top + EdgeMargin() };		//文本的起始坐标
 	int text_height{ DPI(18) };		//文本的高度
 
+	//全屏模式时在右上角绘制时间
+	if (m_ui_data.full_screen)
+	{
+		DrawCurrentTime();
+	}
+
+
 	//绘制全屏显示图标
 	int full_screen_icon_size = 0;
 	int margin_tmp = 0;

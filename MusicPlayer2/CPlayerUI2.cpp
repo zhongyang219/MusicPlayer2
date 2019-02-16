@@ -49,8 +49,14 @@ void CPlayerUI2::DrawInfo(bool reset)
 			info_rect.right = info_rect.left + info_rect.Width() / 2;
 
 		wchar_t buff[64];
-
 		CRect rc_tmp;
+
+		//全屏模式时在右上角绘制时间
+		if(m_ui_data.full_screen)
+		{
+			DrawCurrentTime();
+		}
+
 		//绘制全屏图标
 		int full_screen_icon_size = 0;
 		int margin_tmp = 0;

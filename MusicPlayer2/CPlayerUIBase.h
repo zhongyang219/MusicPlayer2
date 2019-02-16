@@ -93,6 +93,7 @@ protected:
 	void DrawControlBar(CRect rect);
 	void DrawProgressBar(CRect rect);
 	void DrawTranslateButton(CRect rect);
+	void DrawCurrentTime();				//在右上角绘制当前系统时间
 
 	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
 	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);

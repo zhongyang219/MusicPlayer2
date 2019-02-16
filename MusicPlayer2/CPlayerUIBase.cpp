@@ -1180,6 +1180,23 @@ void CPlayerUIBase::DrawTranslateButton(CRect rect)
 	m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(rect, m_draw_rect);
 }
 
+void CPlayerUIBase::DrawCurrentTime()
+{
+	wchar_t buff[64];
+	CRect rc_tmp;
+	SYSTEMTIME curTime;
+	GetLocalTime(&curTime);
+	std::swprintf(buff, 64, L"%d:%.2d", curTime.wHour, curTime.wMinute);
+	CSize size = m_draw.GetTextExtent(buff);
+	rc_tmp.top = theApp.DPI(4);
+	rc_tmp.right = m_draw_rect.right - theApp.DPI(4);
+	rc_tmp.bottom = rc_tmp.top + size.cy;
+	rc_tmp.left = rc_tmp.right - size.cx;
+	m_draw.SetFont(&theApp.m_font_set.time.GetFont(m_ui_data.full_screen));
+	m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
+	m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+}
+
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 //{
 //	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
