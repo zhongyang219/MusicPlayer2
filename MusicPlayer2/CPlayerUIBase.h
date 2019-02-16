@@ -8,7 +8,7 @@ struct SLayoutData
 	const int margin = theApp.DPI(4);							//边缘的余量
 	const int width_threshold = theApp.DPI(600);				//界面从普通界面模式切换到窄界面模式时界面宽度的阈值
 	const int info_height = theApp.DPI(208);					//窄界面模式时显示信息区域的高度
-	const int info_height2 = theApp.DPI(143);					//普通界面模式时显示信息区域的高度
+	//const int info_height2 = theApp.DPI(143);					//普通界面模式时显示信息区域的高度
 	const int path_edit_height = theApp.DPI(32);				//前路径Edit控件区域的高度
 	const int search_edit_height = theApp.DPI(26);				//歌曲搜索框Edit控件区域的高度
 	const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };	//频谱分析区域的大小
@@ -50,6 +50,7 @@ public:
 	int Margin() const;
 	int EdgeMargin() const;
 	int WidthThreshold() const;
+	int DrawAreaHeight() const;		//窄界面模式下显示播放列表时绘图区的高度
 
 protected:
 	enum BtnKey		//标识按钮的类型
@@ -94,6 +95,7 @@ protected:
 	void DrawControlBar(CRect rect);
 	void DrawProgressBar(CRect rect);
 	void DrawTranslateButton(CRect rect);
+	int DrawFullScreenIcon();			//绘制全屏显示图标。返回图标的大小
 	void DrawCurrentTime();				//在右上角绘制当前系统时间
 
 	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);

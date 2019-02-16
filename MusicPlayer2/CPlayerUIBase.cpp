@@ -398,7 +398,7 @@ void CPlayerUIBase::SetDrawRect()
 		else
 		{
 			m_draw_rect = CRect{ /*CPoint{ Margin(), Margin() }*/ CPoint(),
-			CSize{ m_ui_data.client_width /*- 2 * Margin()*/, m_layout.info_height - Margin() } };
+			CSize{ m_ui_data.client_width /*- 2 * Margin()*/, DrawAreaHeight() - Margin() } };
 		}
 
 	}
@@ -1009,6 +1009,15 @@ int CPlayerUIBase::WidthThreshold() const
 	return width;
 }
 
+int CPlayerUIBase::DrawAreaHeight() const
+{
+	int info_height = m_layout.info_height;
+	if (m_ui_data.full_screen)
+		info_height = static_cast<int>(info_height * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR) + 2 * EdgeMargin();
+	
+	return info_height;
+}
+
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
 	return theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
@@ -1186,6 +1195,25 @@ void CPlayerUIBase::DrawTranslateButton(CRect rect)
 		m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_TRAS), GRAY(200), Alignment::CENTER);
 	}
 	m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(rect, m_draw_rect);
+}
+
+int CPlayerUIBase::DrawFullScreenIcon()
+{
+	int icon_size = 0;
+	if (!m_ui_data.show_playlist || m_ui_data.full_screen)
+	{
+		icon_size = DPI(28);
+
+		CRect rc_tmp;
+		rc_tmp.right = m_draw_rect.right - EdgeMargin();
+		rc_tmp.top = EdgeMargin();
+		rc_tmp.bottom = rc_tmp.top + icon_size;
+		rc_tmp.left = rc_tmp.right - icon_size;
+		IconRes& icon{ m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1 };
+		DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], icon);
+		icon_size += Margin();
+	}
+	return icon_size;
 }
 
 void CPlayerUIBase::DrawCurrentTime()

@@ -383,8 +383,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	}
 	else
 	{
-		m_playlist_list.MoveWindow(m_layout.margin, m_layout.info_height + m_layout.search_edit_height + m_layout.path_edit_height,
-			cx - 2 * m_layout.margin, cy - m_layout.info_height - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.margin);
+		m_playlist_list.MoveWindow(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.search_edit_height + m_layout.path_edit_height,
+			cx - 2 * m_layout.margin, cy - m_ui.DrawAreaHeight() - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.margin);
 	}
 	m_playlist_list.AdjustColumnWidth();
 
@@ -395,7 +395,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	if (!theApp.m_ui_data.narrow_mode)
 		rect_static.MoveToXY(cx / 2 + m_layout.margin, m_layout.margin);
 	else
-		rect_static.MoveToXY(m_layout.margin, m_layout.info_height);
+		rect_static.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight());
 	m_path_static.MoveWindow(rect_static);
 	//设置“当前路径”edit控件大小
 	CRect rect_edit;
@@ -408,7 +408,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	else
 	{
 		rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_select_folder_width);
-		rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), m_layout.info_height);
+		rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), m_ui.DrawAreaHeight());
 	}
 	m_path_edit.MoveWindow(rect_edit);
 
@@ -431,7 +431,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	else
 	{
 		rect_search.right = rect_search.left + (cx - 2 * m_layout.margin - m_layout.margin - rect_search.Height());
-		rect_search.MoveToXY(m_layout.margin, m_layout.info_height + m_layout.path_edit_height - theApp.DPI(3));
+		rect_search.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.path_edit_height - theApp.DPI(3));
 	}
 	m_search_edit.MoveWindow(rect_search);
 	//设置清除搜索按钮的大小和位置
