@@ -32,7 +32,7 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 # 截图
 主窗口：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window.png)<br>
-主窗口（无专辑封面）：<br>
+主窗口（隐藏播放列表）：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window2.png)<br>
 迷你模式：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Mini_mode.png)<br>

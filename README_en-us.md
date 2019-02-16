@@ -32,7 +32,7 @@ You have the following ways to open and play a song:<br>
 # Screen shoots
 Main window：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/en_us/Main_window.png)<br>
-Main window (Without album cover):<br>
+Main window (Hide playlist):<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/en_us/Main_window2.png)<br>
 Mini mode:<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Mini_mode.png)<br>
