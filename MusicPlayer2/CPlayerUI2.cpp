@@ -273,7 +273,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 			rc_tmp.MoveToX(EdgeMargin());
 			rc_tmp.MoveToY(rc_tmp.bottom + Margin());
 			rc_tmp.right = info_rect.right - EdgeMargin();
-			rc_tmp.bottom = info_rect.bottom - EdgeMargin();
+			rc_tmp.bottom = info_rect.bottom - Margin();
 
 			lyric_margin = Margin();
 		}
