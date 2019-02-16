@@ -753,8 +753,10 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 		pMenu->EnableMenuItem(ID_LYRIC_BATCH_DOWNLOAD, MF_BYCOMMAND | MF_ENABLED);
 	}
 
+	//设置“视图”菜单下的复选标记
 	pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
 	pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
+	pMenu->CheckMenuItem(IDS_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
 
 	//设置播放列表菜单中排序方式的单选标记
 	switch (CPlayer::GetInstance().m_sort_mode)
@@ -3097,5 +3099,6 @@ void CMusicPlayerDlg::OnFullScreen()
 	SetFullScreen(theApp.m_ui_data.full_screen);
 	DrawInfo(true);
 	m_pUI->UpdateToolTipPosition();
+	m_pUI->UpdateFullScreenTip();
 	SetThumbnailClipArea();
 }

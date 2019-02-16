@@ -30,6 +30,7 @@ public:
 
 	virtual void UpdateToolTipPosition() = 0;
 	virtual void UpdatePlayPauseButtonTip() = 0;
+	virtual void UpdateFullScreenTip() = 0;
 
 	virtual bool SetCursor() = 0;
 	virtual void MouseLeave() = 0;

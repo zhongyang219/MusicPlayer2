@@ -330,6 +330,14 @@ void CPlayerUIBase::UpdatePlayPauseButtonTip()
 		UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
 }
 
+void CPlayerUIBase::UpdateFullScreenTip()
+{
+	if (m_ui_data.full_screen)
+		UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN));
+	else
+		UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN));
+}
+
 bool CPlayerUIBase::SetCursor()
 {
 	if (m_buttons[BTN_PROGRESS].hover)
@@ -1226,6 +1234,6 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_SELECT_FOLDER, _T(" (Ctrl+T)")));
 	AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
 	AddMouseToolTip(BTN_COVER, m_cover_tip);
-	AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN));
+	AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN));
 }
 

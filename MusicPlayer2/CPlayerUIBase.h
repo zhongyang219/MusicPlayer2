@@ -38,6 +38,7 @@ public:
 	void UpdateRepeatModeToolTip();
 	void UpdateSongInfoToolTip();
 	void UpdatePlayPauseButtonTip() override;
+	virtual void UpdateFullScreenTip() override;
 
 	virtual bool SetCursor() override;
 	virtual void MouseLeave() override;

@@ -160,6 +160,7 @@ struct IconSet
 	IconRes show_playlist;
 	IconRes find_songs;
 	IconRes full_screen;
+	IconRes full_screen1;
 
 	IconRes stop_l;
 	IconRes previous_l;

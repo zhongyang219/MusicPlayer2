@@ -60,7 +60,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		//绘制全屏图标
 		int full_screen_icon_size = 0;
 		int margin_tmp = 0;
-		if(m_ui_data.full_screen)
+		if (!m_ui_data.show_playlist)
 		{
 			full_screen_icon_size = DPI(28);
 			margin_tmp = Margin();
@@ -69,7 +69,8 @@ void CPlayerUI2::DrawInfo(bool reset)
 			rc_tmp.top = EdgeMargin();
 			rc_tmp.bottom = rc_tmp.top + full_screen_icon_size;
 			rc_tmp.left = rc_tmp.right - full_screen_icon_size;
-			DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], theApp.m_icon_set.full_screen);
+			IconRes& icon{ m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1 };
+			DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], icon);
 		}
 
 		//绘制播放状态
@@ -280,7 +281,7 @@ void CPlayerUI2::DrawInfo(bool reset)
 		else
 		{
 			rc_tmp.MoveToX(info_rect.right);
-			rc_tmp.MoveToY(2 * text_height2 + Margin());
+			rc_tmp.MoveToY(2 * text_height2 + EdgeMargin());
 			rc_tmp.right = draw_rect.right - EdgeMargin();
 			rc_tmp.bottom = rc_spectrum_area.bottom;
 
