@@ -43,7 +43,7 @@ void CPlayerUI::DrawInfo(bool reset)
 	//绘制全屏显示图标
 	int full_screen_icon_size = 0;
 	int margin_tmp = 0;
-	if (!m_ui_data.show_playlist)
+	if (!m_ui_data.show_playlist || m_ui_data.full_screen)
 	{
 		full_screen_icon_size = DPI(28);
 		margin_tmp = Margin();
