@@ -48,7 +48,7 @@ public:
 	static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
 
 	int Margin() const;
-	int EdgeMargin() const;
+	int EdgeMargin(bool x = true) const;
 	int WidthThreshold() const;
 	int DrawAreaHeight() const;		//窄界面模式下显示播放列表时绘图区的高度
 

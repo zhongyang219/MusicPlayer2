@@ -992,10 +992,19 @@ int CPlayerUIBase::Margin() const
 	return margin;
 }
 
-int CPlayerUIBase::EdgeMargin() const
+int CPlayerUIBase::EdgeMargin(bool x) const
 {
+	/*全屏时界面外侧边距的计算
+	边距 = 宽度 x 屏幕宽度的英寸值 / 320
+	此计算方法可以确保边距占屏幕宽度的比例与屏幕宽度的英寸值成正比，即界面看起来越空旷，外侧边距就越大
+	最后取以上值和theApp.DPI(40)两者中较大的值。
+	*/
 	if (m_ui_data.full_screen)
-		return theApp.DPI(40);
+	{
+		int draw_size = (x ? m_draw_rect.Width() : m_draw_rect.Height());
+		int margin = draw_size * draw_size / theApp.m_dpi / 300;
+		return max(theApp.DPI(40), margin);
+	}
 	else
 		return m_layout.margin;
 }
@@ -1205,8 +1214,8 @@ int CPlayerUIBase::DrawFullScreenIcon()
 		icon_size = DPI(28);
 
 		CRect rc_tmp;
-		rc_tmp.right = m_draw_rect.right - EdgeMargin();
-		rc_tmp.top = EdgeMargin();
+		rc_tmp.right = m_draw_rect.right - EdgeMargin(true);
+		rc_tmp.top = EdgeMargin(false);
 		rc_tmp.bottom = rc_tmp.top + icon_size;
 		rc_tmp.left = rc_tmp.right - icon_size;
 		IconRes& icon{ m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1 };
