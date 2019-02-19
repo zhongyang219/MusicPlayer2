@@ -995,7 +995,7 @@ int CPlayerUIBase::Margin() const
 int CPlayerUIBase::EdgeMargin(bool x) const
 {
 	/*全屏时界面外侧边距的计算
-	边距 = 宽度 x 屏幕宽度的英寸值 / 320
+	边距 = 屏幕像素值 x 屏幕宽度的英寸值 / 常数
 	此计算方法可以确保边距占屏幕宽度的比例与屏幕宽度的英寸值成正比，即界面看起来越空旷，外侧边距就越大
 	最后取以上值和theApp.DPI(40)两者中较大的值。
 	*/
