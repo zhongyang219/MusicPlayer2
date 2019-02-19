@@ -80,7 +80,7 @@ CString CHelpDlg::GetHelpString()
 		CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
 	help_info += strTmp;
 
-	strTmp.Format(_T("DPI: %d"), theApp.m_dpi);
+	strTmp.Format(_T("DPI: %d"), theApp.GetDPI());
 	help_info += strTmp;
 	help_info += _T("\r\n");
 

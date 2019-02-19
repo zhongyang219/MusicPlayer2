@@ -1002,7 +1002,7 @@ int CPlayerUIBase::EdgeMargin(bool x) const
 	if (m_ui_data.full_screen)
 	{
 		int draw_size = (x ? m_draw_rect.Width() : m_draw_rect.Height());
-		int margin = draw_size * draw_size / theApp.m_dpi / 300;
+		int margin = draw_size * draw_size / theApp.GetDPI() / 300;
 		return max(theApp.DPI(40), margin);
 	}
 	else

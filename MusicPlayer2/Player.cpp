@@ -1494,7 +1494,7 @@ void CPlayer::LoadRecentPath()
 		//捕获序列化时出现的异常
 		CString info;
 		info = CCommon::LoadTextFormat(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG, { exception->m_cause });
-		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info });
+		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info });
 	}
 	// 关闭对象
 	ar.Close();

@@ -31,11 +31,30 @@ CMusicPlayerApp::CMusicPlayerApp()
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
 
+	//初始化路径
+	m_module_dir = CCommon::GetExePath();
+#ifdef _DEBUG
+	m_local_dir = L".\\";
+#else
+	m_local_dir = m_module_dir;
+#endif // _DEBUG
+
+	m_config_path = m_module_dir + L"config.ini";
+	m_song_data_path = m_module_dir + L"song_data.dat";
+	m_recent_path_dat_path = m_module_dir + L"recent_path.dat";
+	m_desktop_path = CCommon::GetDesktopPath();
+	//m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
+
+
 	//获取当前DPI
 	HDC hDC = ::GetDC(NULL);
-	theApp.m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
+	m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 	::ReleaseDC(NULL, hDC);
-
+	if (m_dpi == 0)
+	{
+		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), L"Get system DPI failed!");
+		m_dpi = 96;
+	}
 }
 
 
@@ -61,7 +80,7 @@ BOOL CMusicPlayerApp::InitInstance()
 		//将命令行参数写入日志文件
 		CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
 		//swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
-		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info.GetString() });
+		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info.GetString() });
 		return FALSE;
 	}
 
@@ -100,18 +119,6 @@ BOOL CMusicPlayerApp::InitInstance()
 
 	//CString str = CCommon::LoadTextFormat(IDS_TEST_STR, { 3, L"asdfghhh", 1.2 });
 
-	m_module_dir = CCommon::GetExePath();
-#ifdef _DEBUG
-	m_local_dir = L".\\";
-#else
-	m_local_dir = m_module_dir;
-#endif // _DEBUG
-
-	m_config_path = m_module_dir + L"config.ini";
-	m_song_data_path = m_module_dir + L"song_data.dat";
-	m_recent_path_dat_path = m_module_dir + L"recent_path.dat";
-	m_desktop_path = CCommon::GetDesktopPath();
-	//m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
 	LoadSongData();
 	LoadConfig();
 
@@ -399,7 +406,7 @@ void CMusicPlayerApp::GetDPIFromWindow(CWnd * pWnd)
 {
 	CWindowDC dc(pWnd);
 	HDC hDC = dc.GetSafeHdc();
-	theApp.m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
+	m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 }
 
 WORD CMusicPlayerApp::GetCurrentLanguage() const
@@ -471,7 +478,7 @@ void CMusicPlayerApp::LoadSongData()
 //		info.Format(_T("警告：读取数据文件时发生了序列化异常，异常类型：CArchiveException，m_cause = %d。\
 //可能是song_data.dat文件被损坏或版本不匹配造成的，你可以忽略这个信息，因为song_data.dat会重新生成。"), exception->m_cause);
 //		AfxMessageBox(info, MB_ICONWARNING);
-		CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ info });
+		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info });
 	}
 	// 关闭对象
 	ar.Close();

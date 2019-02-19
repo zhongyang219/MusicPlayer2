@@ -28,8 +28,6 @@ class CMusicPlayerApp : public CWinApp
 public:
 	CMusicPlayerApp();
 
-	int m_dpi{};
-
 	//CWinVersionHelper m_win_version;		//当前Windows的版本
 	//CPlayer m_player;
 
@@ -80,6 +78,8 @@ public:
 	int DPIRound(double pixel, double round = 0.5);		//对结果进行四舍五入处理
 	void GetDPIFromWindow(CWnd* pWnd);
 
+	int GetDPI() { return m_dpi; }
+
 	WORD GetCurrentLanguage() const;
 	bool IsGlobalMultimediaKeyEnabled() const;
 
@@ -90,6 +90,8 @@ private:
 
 private:
 	HHOOK m_multimedia_key_hook = NULL;
+
+	int m_dpi{};
 
 // 重写
 public:

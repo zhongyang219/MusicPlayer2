@@ -1048,7 +1048,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 			//if (!theApp.m_ui_data.show_playlist)
 			//	theApp.m_ui_data.narrow_mode = false;
 		}
-		if (m_playlist_list.m_hWnd && theApp.m_dpi)
+		if (m_playlist_list.m_hWnd)
 		{
 			SetPlaylistSize(cx, cy);
 		}
@@ -1112,7 +1112,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			////将命令行参数写入日志文件
 			//wchar_t buff[256];
 			//swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
-			//CCommon::WriteLog((CCommon::GetExePath() + L"error.log").c_str(), wstring{ buff });
+			//CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ buff });
 		}
 		else		//从命令行参数获取要打开的文件
 		{
