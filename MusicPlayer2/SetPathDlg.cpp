@@ -89,7 +89,7 @@ void CSetPathDlg::SetButtonsEnable(bool enable)
 void CSetPathDlg::CalculateColumeWidth(vector<int>& width)
 {
 	CRect rect;
-	m_path_list.GetClientRect(rect);
+	m_path_list.GetWindowRect(rect);
 	width.resize(6);
 
 	width[3] = width[4] = rect.Width() / 10;
