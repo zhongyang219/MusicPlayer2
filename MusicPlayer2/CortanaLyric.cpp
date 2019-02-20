@@ -55,17 +55,18 @@ void CCortanaLyric::Init()
 		//设置字体
 		LOGFONT lf;
 		SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(LOGFONT), &lf, 0);		//获取系统默认字体
-		if (m_cortana_font.m_hObject)		//如果m_font已经关联了一个字体资源对象，则释放它
-			m_cortana_font.DeleteObject();
-		m_cortana_font.CreatePointFont(110, lf.lfFaceName);
-		if (m_font_double_line.m_hObject)
-			m_font_double_line.DeleteObject();
-		m_font_double_line.CreatePointFont(110, lf.lfFaceName);
-		if (m_font_translate.m_hObject)
-			m_font_translate.DeleteObject();
-		m_font_translate.CreatePointFont(100, lf.lfFaceName);
-		int a = 0;
+		if (m_default_font.m_hObject)
+			m_default_font.DeleteObject();
+		m_default_font.CreatePointFont(110, lf.lfFaceName);
+
+		InitFont();
 	}
+}
+
+void CCortanaLyric::InitFont()
+{
+	theApp.m_font_set.cortana.SetFont(theApp.m_lyric_setting_data.cortana_font_size, theApp.m_lyric_setting_data.cortana_font_name.c_str());
+	theApp.m_font_set.cortana_translate.SetFont(theApp.m_lyric_setting_data.cortana_font_size - 1, theApp.m_lyric_setting_data.cortana_font_name.c_str());
 }
 
 void CCortanaLyric::SetEnable(bool enable)
@@ -81,7 +82,7 @@ void CCortanaLyric::DrawInfo()
 	bool is_midi_lyric = CPlayerUIBase::IsMidiLyric();
 	if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
 	{
-		m_draw.SetFont(&m_cortana_font);
+		m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
 		//设置缓冲的DC
 		CDC MemDC;
 		CBitmap MemBitmap;
@@ -232,7 +233,7 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 {
 	if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
 	{
-		m_draw.SetFont(&m_font_double_line);
+		m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
 		static bool swap;
 		static int last_progress;
 		if (last_progress > progress)
@@ -286,13 +287,13 @@ void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 
 		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
-		m_draw.SetFont(&m_cortana_font);
+		m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
 		if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
 			m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
 		else
 			m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color, progress, false);
 
-		m_draw.SetFont(&m_font_translate);
+		m_draw.SetFont(&theApp.m_font_set.cortana_translate.GetFont());
 		m_draw.DrawWindowText(down_rect, translate, m_colors.text_color, m_colors.text_color, progress, false);
 	}
 }
@@ -365,7 +366,7 @@ void CCortanaLyric::ResetCortanaText()
 		
 		if (!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
 		{
-			m_draw.SetFont(&m_cortana_font);
+			m_draw.SetFont(&m_default_font);
 			COLORREF color;		//Cortana默认文本的颜色
 			color = (m_dark_mode ? GRAY(173) : GRAY(16));
 			m_draw.SetDC(m_pDC);

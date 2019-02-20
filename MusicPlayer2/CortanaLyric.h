@@ -10,6 +10,7 @@ public:
 	~CCortanaLyric();
 
 	void Init();	//初始化，获取Cortana句柄、矩形区域等
+	static void InitFont();
 	void SetEnable(bool enable);
 
 	void DrawInfo();
@@ -70,9 +71,7 @@ private:
 	wstring m_cortana_default_text;	//Cortana搜索框中原来的文本
 	CDrawCommon m_draw;		//用于在Cortana搜索框中绘图的对象
 	CWnd* m_cortana_wnd{};		//Cortana搜索框的指针
-	CFont m_cortana_font;		//在Cortana搜索框中显示歌词的字体
-	CFont m_font_double_line;		//双行显示时歌词的字体
-	CFont m_font_translate;		//歌词翻译的字体
+	CFont m_default_font;		//在Cortana搜索框中原来的字体
 	CRect m_cortana_rect;		//Cortana搜索框框的矩形区域
 	int m_cover_width;
 	CDC* m_pDC{};				//在Cortana搜索框中绘图的DC

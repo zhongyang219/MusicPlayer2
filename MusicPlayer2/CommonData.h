@@ -32,6 +32,8 @@ struct LyricSettingData
 	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 	bool cortana_icon_beat{ true };				//Cortana图标随音乐节奏跳动
 	bool cortana_lyric_compatible_mode{ false };	//Cortana搜索框歌词显示使用兼容模式
+	wstring cortana_font_name;
+	int cortana_font_size;
 };
 
 struct ApperanceSettingData
@@ -191,14 +193,6 @@ private:
 	CFont font_l;
 
 public:
-	void Create(int font_size, LPCTSTR font_name)
-	{
-		if (font_size < 5)
-			font_size = 5;
-		font.CreatePointFont(font_size * 10, font_name);
-		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), font_name);
-	}
-
 	CFont& GetFont(bool large = false)
 	{
 		return (large ? font_l : font);
@@ -227,12 +221,14 @@ struct FontSet
 
 	UIFont lyric;				//歌词字体
 	UIFont lyric_translate;		//歌词翻译的字体
+	UIFont cortana;				//搜索框字体
+	UIFont cortana_translate;	//搜索框翻译字体
 
 	void Init()
 	{
-		normal.Create(9, CCommon::LoadText(IDS_DEFAULT_FONT));
-		time.Create(8, CCommon::LoadText(IDS_DEFAULT_FONT));
-		title.Create(10, CCommon::LoadText(IDS_DEFAULT_FONT));
+		normal.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
+		time.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
+		title.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
 	}
 };
 

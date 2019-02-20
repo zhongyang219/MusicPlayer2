@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowAlbumCoverInCortana)
 	ON_BN_CLICKED(IDC_CORTANA_ICON_DEAT_CHECK, &CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck)
 	ON_BN_CLICKED(IDC_LYRIC_COMPATIBLE_MODE, &CLyricSettingsDlg::OnBnClickedLyricCompatibleMode)
+	ON_BN_CLICKED(IDC_SET_FONT, &CLyricSettingsDlg::OnBnClickedSetFont)
 END_MESSAGE_MAP()
 
 
@@ -128,6 +129,7 @@ void CLyricSettingsDlg::EnableControl()
 	m_show_album_cover_in_cortana_check.EnableWindow(enable);
 	m_cortana_color_combo.EnableWindow(enable);
 	m_cortana_icon_beat_check.EnableWindow(enable);
+	GetDlgItem(IDC_SET_FONT)->EnableWindow(enable);
 	m_lyric_compatible_mode_chk.EnableWindow(m_data.show_lyric_in_cortana);
 }
 
@@ -259,4 +261,20 @@ void CLyricSettingsDlg::OnBnClickedLyricCompatibleMode()
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.cortana_lyric_compatible_mode = (m_lyric_compatible_mode_chk.GetCheck() != 0);
 	EnableControl();
+}
+
+
+void CLyricSettingsDlg::OnBnClickedSetFont()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	LOGFONT lf{};             //LOGFONT变量
+	theApp.m_font_set.cortana.GetFont().GetLogFont(&lf);
+	CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+	if (IDOK == fontDlg.DoModal())     // 显示字体对话框
+	{
+		//获取字体信息
+		m_data.cortana_font_name = fontDlg.GetFaceName();
+		m_data.cortana_font_size = fontDlg.GetSize() / 10;
+		m_font_changed = true;
+	}
 }

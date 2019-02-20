@@ -13,6 +13,8 @@ public:
 	CLyricSettingsDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CLyricSettingsDlg();
 
+	bool FontChanged() const { return m_font_changed; }
+
 	//选项设置的数据
 	LyricSettingData m_data;
 
@@ -31,6 +33,7 @@ protected:
 	CButton m_lyric_compatible_mode_chk;
 
 	CToolTipCtrl m_tool_tip;
+	bool m_font_changed{ false };
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	virtual BOOL OnInitDialog();
@@ -56,4 +59,5 @@ public:
 	afx_msg void OnBnClickedShowAlbumCoverInCortana();
 	afx_msg void OnBnClickedCortanaIconDeatCheck();
 	afx_msg void OnBnClickedLyricCompatibleMode();
+	afx_msg void OnBnClickedSetFont();
 };

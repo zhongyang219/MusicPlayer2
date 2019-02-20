@@ -192,6 +192,8 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"cortana_show_album_cover", theApp.m_lyric_setting_data.cortana_show_album_cover);
 	ini.WriteBool(L"config", L"cortana_icon_beat", theApp.m_lyric_setting_data.cortana_icon_beat);
 	ini.WriteBool(L"config", L"cortana_lyric_compatible_mode", theApp.m_lyric_setting_data.cortana_lyric_compatible_mode);
+	ini.WriteString(L"config", L"cortana_font", theApp.m_lyric_setting_data.cortana_font_name);
+	ini.WriteInt(L"config", L"cortana_font_size", theApp.m_lyric_setting_data.cortana_font_size);
 
 	ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
 	ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -292,6 +294,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.cortana_show_album_cover = ini.GetBool(_T("config"), _T("cortana_show_album_cover"), 1);
 	theApp.m_lyric_setting_data.cortana_icon_beat = ini.GetBool(_T("config"), _T("cortana_icon_beat"), 0);
 	theApp.m_lyric_setting_data.cortana_lyric_compatible_mode = ini.GetBool(_T("config"), _T("cortana_lyric_compatible_mode"), 0);
+	theApp.m_lyric_setting_data.cortana_font_name = ini.GetString(L"config", L"cortana_font", CCommon::LoadText(IDS_DEFAULT_FONT));
+	theApp.m_lyric_setting_data.cortana_font_size = ini.GetInt(L"config", L"cortana_font_size", 11);
 
 	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
 	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
@@ -666,6 +670,11 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 		theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font_size, theApp.m_app_setting_data.lyric_font_name.c_str());
 		theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font_size - 1, theApp.m_app_setting_data.lyric_font_name.c_str());
 	}
+	if (optionDlg.m_tab1_dlg.FontChanged())
+	{
+		CCortanaLyric::InitFont();
+	}
+
 	SaveConfig();		//将设置写入到ini文件
 	theApp.SaveConfig();
 	CPlayer::GetInstance().SaveConfig();
