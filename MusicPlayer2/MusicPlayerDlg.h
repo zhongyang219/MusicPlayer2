@@ -42,6 +42,8 @@ public:
 	CMusicPlayerDlg(wstring cmdLine = wstring() ,CWnd* pParent = NULL);	// 标准构造函数
 	~CMusicPlayerDlg();
 
+	bool IsTaskbarListEnable() const;
+
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_MUSICPLAYER2_DIALOG };

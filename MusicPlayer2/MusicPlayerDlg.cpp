@@ -36,6 +36,11 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
 	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
 }
 
+bool CMusicPlayerDlg::IsTaskbarListEnable() const
+{
+	return CWinVersionHelper::IsWindows7OrLater() && m_pTaskbar != nullptr;
+}
+
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CMainDialogBase::DoDataExchange(pDX);
@@ -523,7 +528,7 @@ void CMusicPlayerDlg::SetMenubarVisible()
 void CMusicPlayerDlg::UpdateTaskBarProgress()
 {
 #ifndef COMPILE_IN_WIN_XP
-	if(CWinVersionHelper::IsWindows7OrLater())
+	if (IsTaskbarListEnable())
 	{
 		//根据播放状态设置任务栏状态和进度
 		if (theApp.m_play_setting_data.show_taskbar_progress)
@@ -554,7 +559,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 	if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
 	{
 #ifndef COMPILE_IN_WIN_XP
-		if (CWinVersionHelper::IsWindows7OrLater())
+		if (IsTaskbarListEnable())
 		{
 			//更新任务栏缩略图上“播放/暂停”的图标
 			m_thumbButton[1].hIcon = theApp.m_icon_set.pause.GetIcon();
@@ -570,7 +575,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 	else
 	{
 #ifndef COMPILE_IN_WIN_XP
-		if (CWinVersionHelper::IsWindows7OrLater())
+		if (IsTaskbarListEnable())
 		{
 			//更新任务栏缩略图上“播放/暂停”的图标
 			m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
@@ -584,7 +589,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #endif
 	}
 #ifndef COMPILE_IN_WIN_XP
-	if (CWinVersionHelper::IsWindows7OrLater())
+	if (IsTaskbarListEnable())
 		m_pTaskbar->ThumbBarUpdateButtons(m_hWnd, 3, m_thumbButton);
 #endif
 	if (m_miniModeDlg.m_hWnd != NULL)
@@ -596,7 +601,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
 #ifndef COMPILE_IN_WIN_XP
-	if (CWinVersionHelper::IsWindows7OrLater())
+	if (IsTaskbarListEnable())
 	{
 		if (m_pTaskbar != nullptr && m_pUI != nullptr)
 			m_pTaskbar->SetThumbnailClip(m_hWnd, m_pUI->GetThumbnailClipArea());
@@ -1098,7 +1103,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		//此if语句只在定时器第1次触发时才执行
 		m_first_start = false;
 #ifndef COMPILE_IN_WIN_XP
-		if (CWinVersionHelper::IsWindows7OrLater())
+		if (IsTaskbarListEnable())
 		{
 			//设置任务栏缩略图窗口按钮
 			m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
@@ -2084,7 +2089,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
 {
 #ifndef COMPILE_IN_WIN_XP
-	if (CWinVersionHelper::IsWindows7OrLater())
+	if (IsTaskbarListEnable())
 	{
 		//当资源管理器重启后重新添加任务栏缩略图窗口按钮
 		m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
@@ -2152,7 +2157,7 @@ void CMusicPlayerDlg::OnMiniMode()
 	{
 		ShowWindow(SW_SHOW);
 #ifndef COMPILE_IN_WIN_XP
-		if (CWinVersionHelper::IsWindows7OrLater())
+		if (IsTaskbarListEnable())
 		{
 			m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//重新添加任务栏缩略图按钮
 			SetThumbnailClipArea();		//重新设置任务栏缩略图
@@ -2961,7 +2966,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
 	if (lParam == WM_LBUTTONUP && m_miniModeDlg.m_hWnd == NULL)
 	{
 #ifndef COMPILE_IN_WIN_XP
-		if (CWinVersionHelper::IsWindows7OrLater())
+		if (IsTaskbarListEnable())
 		{
 			m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//重新添加任务栏缩略图按钮
 			SetThumbnailClipArea();		//重新设置任务栏缩略图
