@@ -32,8 +32,9 @@ struct LyricSettingData
 	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 	bool cortana_icon_beat{ true };				//Cortana图标随音乐节奏跳动
 	bool cortana_lyric_compatible_mode{ false };	//Cortana搜索框歌词显示使用兼容模式
-	wstring cortana_font_name;
-	int cortana_font_size;
+	wstring cortana_font_name;					//搜索框字体名称
+	int cortana_font_size;						//搜索框字体大小
+	bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
 };
 
 struct ApperanceSettingData

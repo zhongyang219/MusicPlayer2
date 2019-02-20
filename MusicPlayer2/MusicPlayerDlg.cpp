@@ -194,6 +194,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"cortana_lyric_compatible_mode", theApp.m_lyric_setting_data.cortana_lyric_compatible_mode);
 	ini.WriteString(L"config", L"cortana_font", theApp.m_lyric_setting_data.cortana_font_name);
 	ini.WriteInt(L"config", L"cortana_font_size", theApp.m_lyric_setting_data.cortana_font_size);
+	ini.WriteBool(L"config", L"cortana_lyric_keep_display", theApp.m_lyric_setting_data.cortana_lyric_keep_display);
 
 	ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
 	ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -286,7 +287,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_app_setting_data.lyric_font_size = ini.GetInt(L"config", L"font_size", 10);
 	theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 2);
 	theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 80);
-	theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(_T("config"), _T("cortana_lyric_double_line"), 0);
+	theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(_T("config"), _T("cortana_lyric_double_line"), true);
 	theApp.m_app_setting_data.show_spectrum = ini.GetBool(_T("config"), _T("show_spectrum"), 1);
 	theApp.m_app_setting_data.show_album_cover = ini.GetBool(_T("config"), _T("show_album_cover"), 1);
 	theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(ini.GetInt(_T("config"), _T("album_cover_fit"), 1));
@@ -296,6 +297,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.cortana_lyric_compatible_mode = ini.GetBool(_T("config"), _T("cortana_lyric_compatible_mode"), 0);
 	theApp.m_lyric_setting_data.cortana_font_name = ini.GetString(L"config", L"cortana_font", CCommon::LoadText(IDS_DEFAULT_FONT));
 	theApp.m_lyric_setting_data.cortana_font_size = ini.GetInt(L"config", L"cortana_font_size", 11);
+	theApp.m_lyric_setting_data.cortana_lyric_keep_display = ini.GetBool(L"config", L"cortana_lyric_keep_display", false);
 
 	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
 	theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(_T("config"), _T("gauss_blur_radius"), 60);
@@ -1169,21 +1171,15 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 	if (CPlayer::GetInstance().IsPlaying())
 	{
 		CPlayer::GetInstance().GetBASSCurrentPosition();
-
-		//static int sec_temp;
-		//int sec_current = CPlayer::GetInstance().GetCurrentSecond();
-		//if (sec_temp != sec_current)		//获取播放时间的秒数，如果秒数变了则刷新一次时间
-		//{
-		//	sec_temp = sec_current;
-		//	//ShowTime();
-		//}
-
-		//在Cortana搜索框里显示歌词
-		if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
-		{
-			m_cortana_lyric.DrawInfo();
-		}
 	}
+
+	//在Cortana搜索框里显示歌词
+	if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
+	{
+		if(theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
+			m_cortana_lyric.DrawInfo();
+	}
+
 	//if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
 	if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲
 	{

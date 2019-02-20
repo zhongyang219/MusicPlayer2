@@ -32,6 +32,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
 	DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
 	DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
+	DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
 }
 
 
@@ -50,6 +51,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_CORTANA_ICON_DEAT_CHECK, &CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck)
 	ON_BN_CLICKED(IDC_LYRIC_COMPATIBLE_MODE, &CLyricSettingsDlg::OnBnClickedLyricCompatibleMode)
 	ON_BN_CLICKED(IDC_SET_FONT, &CLyricSettingsDlg::OnBnClickedSetFont)
+	ON_BN_CLICKED(IDC_KEEP_DISPLAY_CHECK, &CLyricSettingsDlg::OnBnClickedKeepDisplayCheck)
 END_MESSAGE_MAP()
 
 
@@ -70,6 +72,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
 	//m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
 	m_lyric_compatible_mode_chk.SetCheck(m_data.cortana_lyric_compatible_mode);
+	m_keep_display_chk.SetCheck(m_data.cortana_lyric_keep_display);
 	if (CWinVersionHelper::IsWindows10OrLater())
 	{
 		m_show_lyric_in_cortana_check.SetCheck(m_data.show_lyric_in_cortana);
@@ -277,4 +280,11 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
 		m_data.cortana_font_size = fontDlg.GetSize() / 10;
 		m_font_changed = true;
 	}
+}
+
+
+void CLyricSettingsDlg::OnBnClickedKeepDisplayCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.cortana_lyric_keep_display = (m_keep_display_chk.GetCheck() != 0);
 }

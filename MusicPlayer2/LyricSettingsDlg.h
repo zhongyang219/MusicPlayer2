@@ -31,6 +31,7 @@ protected:
 	CButton m_cortana_icon_beat_check;
 	CComboBox m_cortana_color_combo;
 	CButton m_lyric_compatible_mode_chk;
+	CButton m_keep_display_chk;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -60,4 +61,5 @@ public:
 	afx_msg void OnBnClickedCortanaIconDeatCheck();
 	afx_msg void OnBnClickedLyricCompatibleMode();
 	afx_msg void OnBnClickedSetFont();
+	afx_msg void OnBnClickedKeepDisplayCheck();
 };
