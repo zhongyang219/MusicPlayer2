@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "PlayListCtrl.h"
+#pragma warning (disable : 4018)
 
 
 // CPlayListCtrl

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "MusicPlayer2.h"
+#pragma warning (disable : 4018)
+#pragma warning (disable : 4244)
 
 CBASSMidiLibrary CPlayer::m_bass_midi_lib;
 CPlayer CPlayer::m_instance;

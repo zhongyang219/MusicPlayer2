@@ -3,6 +3,7 @@
 #include "MusicPlayer2.h"
 #include "Common.h"
 
+#pragma warning (disable : 4018)
 
 CHotkeyManager::CHotkeyManager()
 {

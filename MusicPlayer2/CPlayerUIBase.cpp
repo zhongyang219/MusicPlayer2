@@ -501,7 +501,7 @@ void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area)
 		}
 
 		//依次绘制每一句歌词
-		for (int i{}; i < rects.size(); i++)
+		for (int i{}; i < (int)rects.size(); i++)
 		{
 			//计算每一句歌词的位置
 			if (i == 0)

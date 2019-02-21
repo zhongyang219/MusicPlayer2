@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "InternetCommon.h"
 #include "Resource.h"
+#pragma warning (disable : 4101)
 
 
 CInternetCommon::CInternetCommon()

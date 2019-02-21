@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "SetPathDlg.h"
 #include "afxdialogex.h"
+#pragma warning (disable : 4018)
 
 
 // CSetPathDlg ¶Ô»°¿ò

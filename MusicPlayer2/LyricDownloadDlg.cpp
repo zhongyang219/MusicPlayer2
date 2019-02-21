@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "LyricDownloadDlg.h"
 #include "afxdialogex.h"
+#pragma warning (disable : 4018)
 
 
 // CLyricDownloadDlg ¶Ô»°¿ò

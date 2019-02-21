@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AudioTag.h"
 
+#pragma warning (disable : 4309)
 
 CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 	: m_hStream{ hStream }, m_file_path{ file_path }, m_song_info{ m_song_info }

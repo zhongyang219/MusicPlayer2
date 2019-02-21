@@ -91,10 +91,10 @@ private:
 private:
 	HHOOK m_multimedia_key_hook = NULL;
 
-	int m_dpi{};
-
 // ÷ÿ–¥
 public:
+
+	int m_dpi{};
 	virtual BOOL InitInstance();
 
 //  µœ÷
