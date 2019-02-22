@@ -204,6 +204,9 @@
     <Filter Include="功能逻辑类\CMainDialogBase">
       <UniqueIdentifier>{6c231d95-eeae-49b2-91b0-8d5f6079498b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\crashtool">
+      <UniqueIdentifier>{1e70237e-f876-475b-b0bc-39515b58536d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -433,6 +436,9 @@
     <ClInclude Include="CMainDialogBase.h">
       <Filter>功能逻辑类\CMainDialogBase</Filter>
     </ClInclude>
+    <ClInclude Include="crashtool.h">
+      <Filter>公共的类\crashtool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -638,6 +644,9 @@
     </ClCompile>
     <ClCompile Include="CMainDialogBase.cpp">
       <Filter>功能逻辑类\CMainDialogBase</Filter>
+    </ClCompile>
+    <ClCompile Include="crashtool.cpp">
+      <Filter>公共的类\crashtool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

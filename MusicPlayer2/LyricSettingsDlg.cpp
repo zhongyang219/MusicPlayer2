@@ -222,6 +222,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
 	// TODO: 在此添加控件通知处理程序代码
 	LOGFONT lf{};             //LOGFONT变量
 	theApp.m_font_set.cortana.GetFont().GetLogFont(&lf);
+	CCommon::NormalizeFont(lf);
 	CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
 	if (IDOK == fontDlg.DoModal())     // 显示字体对话框
 	{

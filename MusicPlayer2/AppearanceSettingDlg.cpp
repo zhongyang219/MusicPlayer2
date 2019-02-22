@@ -240,10 +240,9 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CFont font;
-	font.CreatePointFont(m_data.lyric_font_size * 10, m_data.lyric_font_name.c_str());
 	LOGFONT lf{};             //LOGFONT变量
-	font.GetLogFont(&lf);
+	theApp.m_font_set.lyric.GetFont().GetLogFont(&lf);
+	CCommon::NormalizeFont(lf);
 	CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
 	if (IDOK == fontDlg.DoModal())     // 显示字体对话框
 	{

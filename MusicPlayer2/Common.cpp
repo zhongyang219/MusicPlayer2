@@ -960,3 +960,51 @@ void CCommon::WStringCopy(wchar_t * str_dest, int dest_size, const wchar_t * str
 		str_dest[dest_size - 1] = L'\0';
 }
 
+void CCommon::NormalizeFont(LOGFONT & font)
+{
+	wstring name;
+	wstring style;
+	name = font.lfFaceName;
+	if (name.empty())
+		return;
+	if (name.back() == L' ')
+		name.pop_back();
+	size_t index = name.rfind(L' ');
+	if (index == wstring::npos)
+		return;
+	style = name.substr(index + 1);
+	bool style_acquired = false;
+	if (style == L"Light")
+	{
+		font.lfWeight = FW_LIGHT;
+		style_acquired = true;
+	}
+	else if (style == L"Semilight")
+	{
+		font.lfWeight = 350;
+		style_acquired = true;
+	}
+	else if (style == L"Semibold")
+	{
+		font.lfWeight = FW_SEMIBOLD;
+		style_acquired = true;
+	}
+	else if (style == L"Bold")
+	{
+		font.lfWeight = FW_BOLD;
+		style_acquired = true;
+	}
+	else if (style == L"Black")
+	{
+		font.lfWeight = FW_BLACK;
+		style_acquired = true;
+	}
+
+	if (style_acquired)
+	{
+		name = name.substr(0, index);
+	}
+	//wcsncpy_s(font.lfFaceName, name.c_str(), 32);
+	WStringCopy(font.lfFaceName, 32, name.c_str(), name.size());
+}
+

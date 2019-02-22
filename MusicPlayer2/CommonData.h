@@ -187,6 +187,35 @@ struct UIData
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
 };
 
+struct FontStyle
+{
+	bool bold;			//粗体
+	bool italic;		//斜体
+	bool underline;		//下划线
+	bool strike_out;	//删除线
+
+	int ToInt()
+	{
+		int value = 0;
+		if (bold)
+			value |= 0x01;
+		if (italic)
+			value |= 0x02;
+		if (underline)
+			value |= 0x04;
+		if (strike_out)
+			value |= 0x08;
+	}
+
+	void FromInt(int value)
+	{
+		bold = (value % 2 != 0);
+		italic = ((value >> 1) % 2 != 0);
+		underline = ((value >> 2) % 2 != 0);
+		strike_out = ((value >> 3) % 2 != 0);
+	}
+};
+
 struct UIFont
 {
 private:

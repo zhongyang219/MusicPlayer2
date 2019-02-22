@@ -7,6 +7,7 @@
 #include "MusicPlayerDlg.h"
 #include "HelpDlg.h"
 #include "SimpleXML.h"
+#include "crashtool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,6 +31,8 @@ CMusicPlayerApp::CMusicPlayerApp()
 
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
+
+	CRASHREPORT::StartCrashReport();
 
 	//初始化路径
 	m_module_dir = CCommon::GetExePath();
