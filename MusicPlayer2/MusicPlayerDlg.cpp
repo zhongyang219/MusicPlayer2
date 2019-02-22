@@ -1069,7 +1069,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 			SetPlaylistSize(cx, cy);
 		}
 
-		if (nType != SIZE_MAXIMIZED)
+		if (nType != SIZE_MAXIMIZED && !theApp.m_ui_data.full_screen)
 		{
 			CRect rect;
 			GetWindowRect(&rect);
