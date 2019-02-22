@@ -1433,6 +1433,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnEqualizer();
 				return TRUE;
 			}
+			if (pMsg->wParam == 'L')		//设置按Ctr+L显示/隐藏播放列表
+			{
+				OnShowPlaylist();
+				return TRUE;
+			}
 			//if (GetKeyState(VK_SHIFT) & 0x8000)
 			//{
 			//	//按下Ctrl + Shift键时

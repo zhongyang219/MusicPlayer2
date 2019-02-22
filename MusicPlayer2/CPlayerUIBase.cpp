@@ -333,9 +333,9 @@ void CPlayerUIBase::UpdatePlayPauseButtonTip()
 void CPlayerUIBase::UpdateFullScreenTip()
 {
 	if (m_ui_data.full_screen)
-		UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN));
+		UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
 	else
-		UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN));
+		UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
 }
 
 bool CPlayerUIBase::SetCursor()
@@ -1267,10 +1267,10 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
 	AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
 	AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
-	AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
+	AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+L)")));
 	AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_SELECT_FOLDER, _T(" (Ctrl+T)")));
 	AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
 	AddMouseToolTip(BTN_COVER, m_cover_tip);
-	AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN));
+	AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
 }
 
