@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ColorConvert.h"
+#include "Common.h"
 
 ColorTable CColorConvert::m_gray_color;
 
@@ -25,8 +26,8 @@ void CColorConvert::RGBtoHSL(const COLOR_RGB * rgb, COLOR_HSL * hsl)
 	float r = rgb->red / 255.0f;
 	float g = rgb->green / 255.0f;
 	float b = rgb->blue / 255.0f;
-	float maxVal = max3v(r, g, b);
-	float minVal = min3v(r, g, b);
+	float maxVal = CCommon::Max3(r, g, b);
+	float minVal = CCommon::Min3(r, g, b);
 
 	// hue
 	if (maxVal == minVal)

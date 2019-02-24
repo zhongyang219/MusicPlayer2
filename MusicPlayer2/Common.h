@@ -232,6 +232,29 @@ public:
 	//删除字体名称后面的Bold、Light等字符串，并根据这些字符串设置字体粗细
 	static void NormalizeFont(LOGFONT& font);
 
+
+	template<class T>
+	static T Min3(T v1, T v2, T v3)
+	{
+		T min = v1;
+		if (v2 < min)
+			min = v2;
+		if (v3 < min)
+			min = v3;
+		return min;
+	}
+
+	template<class T>
+	static T Max3(T v1, T v2, T v3)
+	{
+		T max = v1;
+		if (v2 > max)
+			max = v2;
+		if (v3 > max)
+			max = v3;
+		return max;
+	}
+
 };
 
 template<class T>

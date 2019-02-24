@@ -207,6 +207,9 @@
     <Filter Include="公共的类\crashtool">
       <UniqueIdentifier>{1e70237e-f876-475b-b0bc-39515b58536d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="测试">
+      <UniqueIdentifier>{692fd85a-6d5f-4f16-acc2-2d9f78548d64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -439,6 +442,9 @@
     <ClInclude Include="crashtool.h">
       <Filter>公共的类\crashtool</Filter>
     </ClInclude>
+    <ClInclude Include="CTest.h">
+      <Filter>测试</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -647,6 +653,9 @@
     </ClCompile>
     <ClCompile Include="crashtool.cpp">
       <Filter>公共的类\crashtool</Filter>
+    </ClCompile>
+    <ClCompile Include="CTest.cpp">
+      <Filter>测试</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

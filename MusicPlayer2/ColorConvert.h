@@ -40,28 +40,6 @@ public:
 	CColorConvert();
 	~CColorConvert();
 
-	template<class T>
-	static T min3v(T v1, T v2, T v3)
-	{
-		T min = v1;
-		if (v2 < min)
-			min = v2;
-		if (v3 < min)
-			min = v3;
-		return min;
-	}
-
-	template<class T>
-	static T max3v(T v1, T v2, T v3)
-	{
-		T max = v1;
-		if (v2 > max)
-			max = v2;
-		if (v3 > max)
-			max = v3;
-		return max;
-	}
-
 	static ColorTable m_gray_color;
 
 	static void Initialize();

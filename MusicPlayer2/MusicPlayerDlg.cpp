@@ -10,6 +10,7 @@
 #include "afxcmn.h"
 #include "SupportedFormatDlg.h"
 #include "AboutDlg.h"
+#include "CTest.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1438,15 +1439,17 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnShowPlaylist();
 				return TRUE;
 			}
-			//if (GetKeyState(VK_SHIFT) & 0x8000)
-			//{
-			//	//按下Ctrl + Shift键时
-			//	if (pMsg->wParam == 'C')
-			//	{
-			//		OnFormatConvert1();
-			//		return TRUE;
-			//	}
-			//}
+			if (GetKeyState(VK_SHIFT) & 0x8000)
+			{
+				//按下Ctrl + Shift键时
+#ifdef _DEBUG
+				if (pMsg->wParam == 'Z')
+				{
+					CTest::Test();
+					return TRUE;
+				}
+#endif
+			}
 		}
 		else
 		{

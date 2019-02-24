@@ -214,6 +214,7 @@
     <ClInclude Include="CPlayerUIHelper.h" />
     <ClInclude Include="crashtool.h" />
     <ClInclude Include="CTabCtrlEx.h" />
+    <ClInclude Include="CTest.h" />
     <ClInclude Include="CVariant.h" />
     <ClInclude Include="IPlayerUI.h" />
     <ClInclude Include="PlaySettingsDlg.h" />
@@ -289,6 +290,7 @@
     <ClCompile Include="CPlayerUIHelper.cpp" />
     <ClCompile Include="crashtool.cpp" />
     <ClCompile Include="CTabCtrlEx.cpp" />
+    <ClCompile Include="CTest.cpp" />
     <ClCompile Include="CVariant.cpp" />
     <ClCompile Include="PlaySettingsDlg.cpp" />
     <ClCompile Include="RecorderDlg.cpp" />

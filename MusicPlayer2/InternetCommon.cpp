@@ -213,16 +213,75 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 
 double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const wstring & matchString)
 {
+	/*
+	编辑距离算法，来自“编辑距离——百度百科”(https://baike.baidu.com/history/编辑距离/8010193/131513486)
+	比如要计算cafe和coffee的编辑距离。cafe→caffe→coffe→coffee
+	先创建一个6×8的表（cafe长度为4，coffee长度为6，各加2）
+	表1：
+	|   |   | c | o | f | f | e | e |
+	|   |   |   |   |   |   |   |   |
+	| c |   |   |   |   |   |   |   |
+	| a |   |   |   |   |   |   |   |
+	| f |   |   |   |   |   |   |   |
+	| e |   |   |   |   |   |   |   |
+
+	接着，在如下位置填入数字（表2）：
+	表2：
+	|   |   | c | o | f | f | e | e |
+	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+	| c | 1 |   |   |   |   |   |   |
+	| a | 2 |   |   |   |   |   |   |
+	| f | 3 |   |   |   |   |   |   |
+	| e | 4 |   |   |   |   |   |   |
+
+	从3,3格开始，开始计算。取以下三个值的最小值：
+	如果最上方的字符等于最左方的字符，则为左上方的数字。否则为左上方的数字+1。（对于3,3来说为0）
+	左方数字+1（对于3,3格来说为2）
+	上方数字+1（对于3,3格来说为2）
+
+	因此为格3,3为0（表3）
+	表3：
+	|   |   | c | o | f | f | e | e |
+	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+	| c | 1 | 0 |   |   |   |   |   |
+	| a | 2 |   |   |   |   |   |   |
+	| f | 3 |   |   |   |   |   |   |
+	| e | 4 |   |   |   |   |   |   |
+
+	从3,4（三行四列）格开始，开始计算。取以下三个值的最小值：
+	* 如果最上方的字符等于最左方的字符，则为左上方的数字。否则为左上方的数字+1。（对于3,4来说为2）
+	* 左方数字+1（对于3,4格来说为1）
+	* 上方数字+1（对于3,4格来说为3）
+	因此为格3,3为0（表4）
+	表4：
+	|   |   | c | o | f | f | e | e |
+	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+	| c | 1 | 0 | 1 |   |   |   |   |
+	| a | 2 |   |   |   |   |   |   |
+	| f | 3 |   |   |   |   |   |   |
+	| e | 4 |   |   |   |   |   |   |
+
+	循环操作，推出下表
+	|   |   | c | o | f | f | e | e |
+	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+	| c | 1 | 0 | 1 | 2 | 3 | 4 | 5 |
+	| a | 2 | 1 | 1 | 2 | 3 | 4 | 5 |
+	| f | 3 | 2 | 2 | 1 | 2 | 3 | 4 |
+	| e | 4 | 3 | 3 | 2 | 2 | 2 | 3 |
+	取右下角，得编辑距离为3。
+	*/
+
 	int n = srcString.size();
 	int m = matchString.size();
-	//int[, ] d = new int[n + 1, m + 1]; // matrix
-	vector<vector<int>> d(n + 1, vector<int>(m + 1));
-	int cost; // cost
-			  // Step 1（如果其中一个字符串长度为0，则相似度为1）？
-			  //if (n == 0) return (double)m / max(srcString.size(), matchString.size());
-			  //if (m == 0) return (double)n / max(srcString.size(), matchString.size());
+	
+	//创建表
+	vector<vector<double>> d(n + 1, vector<double>(m + 1));
+	double cost; // cost
+
+	// Step 1（如果其中一个字符串长度为0，则相似度为1）？
 	if (n == 0 || m == 0) return 0.0;	//如果其中一个字符串长度为0，则相似度为0
-										// Step 2
+
+	// Step 2，给表的第1行和第1列填入数字
 	for (int i = 0; i <= n; d[i][0] = i++);
 	for (int j = 0; j <= m; d[0][j] = j++);
 	// Step 3
@@ -231,10 +290,19 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 		//Step 4
 		for (int j = 1; j <= m; j++)
 		{
-			// Step 5
-			cost = (matchString.substr(j - 1, 1) == srcString.substr(i - 1, 1) ? 0 : 1);
-			// Step 6
-			d[i][j] = min(min(d[i - 1][j] + 1, d[i][j - 1] + 1), d[i - 1][j - 1] + cost);
+			// Step 5，遍历表格剩下的格子计算每个格子的值
+			wchar_t ch1 = matchString[j - 1];
+			wchar_t ch2 = srcString[i - 1];
+
+			if (ch1 == ch2)		//如果最上方的字符等于最左方的字符
+				cost = 0;
+			else if ((ch1 >= 'A' && ch1 <= 'Z' && ch2 == ch1 + 32) || (ch1 >= 'a' && ch1 <= 'z' && ch2 == ch1 - 32))	//如果最上方的字符和最左方的字符为同一个字符的大小写
+				cost = 0.2;
+			else
+				cost = 1;
+
+			// Step 6，取3个值中的最小值
+			d[i][j] = CCommon::Min3(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
 		}
 	}
 
