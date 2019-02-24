@@ -73,6 +73,7 @@ void CLyricDownloadDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LYRIC_DOWN_LIST1, m_down_list_ctrl);
 	DDX_Control(pDX, IDC_DOWNLOAD_TRANSLATE_CHECK1, m_download_translate_chk);
 	DDX_Control(pDX, IDC_COMBO2, m_save_code_combo);
+	DDX_Control(pDX, IDC_UNASSOCIATE_LINK, m_unassciate_lnk);
 }
 
 
@@ -99,6 +100,7 @@ BEGIN_MESSAGE_MAP(CLyricDownloadDlg, CDialog)
 	ON_COMMAND(ID_LD_COPY_ID, &CLyricDownloadDlg::OnLdCopyId)
 	ON_COMMAND(ID_LD_VIEW_ONLINE, &CLyricDownloadDlg::OnLdViewOnline)
 	ON_NOTIFY(NM_DBLCLK, IDC_LYRIC_DOWN_LIST1, &CLyricDownloadDlg::OnNMDblclkLyricDownList1)
+	ON_NOTIFY(NM_CLICK, IDC_UNASSOCIATE_LINK, &CLyricDownloadDlg::OnNMClickUnassociateLink)
 END_MESSAGE_MAP()
 
 
@@ -195,6 +197,8 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	//初始化右键菜单
 	m_menu.LoadMenu(IDR_LYRIC_DOWNLOAD_MENU);
 	m_menu.GetSubMenu(0)->SetDefaultItem(ID_LD_LYRIC_DOWNLOAD);
+
+	m_unassciate_lnk.ShowWindow(SW_HIDE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -381,14 +385,19 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	if(!id_releated)
 		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
 	CString info;
+	m_unassciate_lnk.ShowWindow(SW_HIDE);
 	if (m_down_list.empty())
 		info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
 	else if (best_matched == -1)
 		info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
 	else if(id_releated)
+	{
 		info = CCommon::LoadTextFormat(IDS_SEARCH_RELATED, { best_matched + 1 });
+		m_unassciate_lnk.ShowWindow(SW_SHOW);
+	}
 	else
 		info = CCommon::LoadTextFormat(IDS_SEARCH_BEST_MATCHED, { best_matched + 1 });
+
 	SetDlgItemText(IDC_STATIC_INFO, info);
 	//自动选中列表中最佳匹配的项目
 	m_down_list_ctrl.SetFocus();
@@ -645,4 +654,14 @@ BOOL CLyricDownloadDlg::PreTranslateMessage(MSG* pMsg)
 	//	m_tool_tip.RelayEvent(pMsg);
 
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+
+void CLyricDownloadDlg::OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CPlayer::GetInstance().SetRelatedSongID(wstring());
+	m_unassciate_lnk.ShowWindow(SW_HIDE);
+
+	*pResult = 0;
 }

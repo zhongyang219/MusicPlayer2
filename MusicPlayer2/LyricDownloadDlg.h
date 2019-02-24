@@ -74,6 +74,7 @@ protected:
 	CButton m_download_translate_chk;
 	CComboBox m_save_code_combo;
 	//CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
+	CLinkCtrl m_unassciate_lnk;
 
 	CWinThread* m_pSearchThread;		//搜索歌词的线程
 	CWinThread* m_pDownThread;			//下载歌词的线程
@@ -116,4 +117,5 @@ public:
 	afx_msg void OnLdViewOnline();
 	afx_msg void OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult);
 };
