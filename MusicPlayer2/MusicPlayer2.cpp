@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
-#include "HelpDlg.h"
+#include "MessageDlg.h"
 #include "SimpleXML.h"
 #include "crashtool.h"
 
@@ -226,8 +226,9 @@ BOOL CMusicPlayerApp::InitInstance()
 void CMusicPlayerApp::OnHelp()
 {
 	// TODO: 在此添加命令处理程序代码
-	//AfxMessageBox(_T("打开了帮助"), NULL, MB_ICONINFORMATION);
-	CHelpDlg helpDlg;
+	CMessageDlg helpDlg;
+	helpDlg.SetInfoText(CCommon::LoadText(IDS_WELCOM_TO_USE));
+	helpDlg.SetMessageText(GetHelpString());
 	helpDlg.DoModal();
 }
 
@@ -426,6 +427,36 @@ WORD CMusicPlayerApp::GetCurrentLanguage() const
 bool CMusicPlayerApp::IsGlobalMultimediaKeyEnabled() const
 {
 	return m_multimedia_key_hook != NULL;
+}
+
+CString CMusicPlayerApp::GetHelpString()
+{
+	CString help_info;
+	HRSRC hRes;
+	if (m_general_setting_data.language == Language::FOLLOWING_SYSTEM)
+		hRes = FindResource(NULL, MAKEINTRESOURCE(IDR_TEXT1), _T("TEXT"));
+	else
+		hRes = FindResourceEx(NULL, _T("TEXT"), MAKEINTRESOURCE(IDR_TEXT1), GetCurrentLanguage());
+	if (hRes != NULL)
+	{
+		HGLOBAL hglobal = LoadResource(NULL, hRes);
+		if (hglobal != NULL)
+			help_info.Format(_T("%s"), (LPVOID)hglobal);
+	}
+
+	//在帮助信息后面增加系统信息
+	help_info += _T("\r\n\r\nSystem Info:\r\n");
+
+	CString strTmp;
+	strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), CWinVersionHelper::GetMajorVersion(),
+		CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
+	help_info += strTmp;
+
+	strTmp.Format(_T("DPI: %d"), GetDPI());
+	help_info += strTmp;
+	help_info += _T("\r\n");
+
+	return help_info;
 }
 
 void CMusicPlayerApp::LoadSongData()

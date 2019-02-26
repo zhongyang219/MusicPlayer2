@@ -50,9 +50,6 @@
     <Filter Include="对话框类\FindDlg">
       <UniqueIdentifier>{5d3a37b2-f1d5-4277-b14c-4bbde14e0a33}</UniqueIdentifier>
     </Filter>
-    <Filter Include="对话框类\HelpDlg">
-      <UniqueIdentifier>{460c7079-bec0-4530-814a-80130ffc6e79}</UniqueIdentifier>
-    </Filter>
     <Filter Include="对话框类\LyricEditDlg">
       <UniqueIdentifier>{6b890c8c-5249-48ae-a0a2-3f5d80b3457d}</UniqueIdentifier>
     </Filter>
@@ -210,6 +207,9 @@
     <Filter Include="测试">
       <UniqueIdentifier>{692fd85a-6d5f-4f16-acc2-2d9f78548d64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\MessageDlg">
+      <UniqueIdentifier>{460c7079-bec0-4530-814a-80130ffc6e79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -231,9 +231,6 @@
     </ClInclude>
     <ClInclude Include="FindDlg.h">
       <Filter>对话框类\FindDlg</Filter>
-    </ClInclude>
-    <ClInclude Include="HelpDlg.h">
-      <Filter>对话框类\HelpDlg</Filter>
     </ClInclude>
     <ClInclude Include="LyricDownloadDlg.h">
       <Filter>对话框类\歌词下载对话框</Filter>
@@ -445,13 +442,13 @@
     <ClInclude Include="CTest.h">
       <Filter>测试</Filter>
     </ClInclude>
+    <ClInclude Include="MessageDlg.h">
+      <Filter>对话框类\MessageDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
       <Filter>对话框类\FindDlg</Filter>
-    </ClCompile>
-    <ClCompile Include="HelpDlg.cpp">
-      <Filter>对话框类\HelpDlg</Filter>
     </ClCompile>
     <ClCompile Include="LyricDownloadDlg.cpp">
       <Filter>对话框类\歌词下载对话框</Filter>
@@ -656,6 +653,9 @@
     </ClCompile>
     <ClCompile Include="CTest.cpp">
       <Filter>测试</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageDlg.cpp">
+      <Filter>对话框类\MessageDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

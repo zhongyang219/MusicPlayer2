@@ -4,6 +4,9 @@
 #include <strsafe.h>
 #include <DbgHelp.h>
 #include <tchar.h>
+#include "MessageDlg.h"
+#include "Common.h"
+#include "Resource.h"
 
 #pragma comment(lib, "Dbghelp.lib")
 
@@ -32,6 +35,8 @@ public:
             return;
         }
 
+		m_dumpFile = szDumpFile;
+
         MINIDUMP_EXCEPTION_INFORMATION ExpParam;
         ExpParam.ThreadId = ::GetCurrentThreadId();
         ExpParam.ExceptionPointers = pEP;
@@ -40,9 +45,16 @@ public:
         // 生成minidump文件
         BOOL bResult = ::MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &ExpParam, NULL, NULL);
         ::CloseHandle(hDumpFile);
-
-		AfxMessageBox(_T("错误测试"), MB_ICONERROR | MB_OK);
     }
+
+	void ShowCrashInfo()
+	{
+		CMessageDlg dlg;
+		dlg.SetInfoText(CCommon::LoadText(IDS_ERROR_MESSAGE));
+		dlg.SetMessageText(CCommon::LoadTextFormat(IDS_ERROR_INFO, { m_dumpFile }));
+		dlg.DoModal();
+	}
+
 private:
     void GetAppPath()
     {
@@ -69,6 +81,8 @@ private:
 private:
     wchar_t m_szDumpFilePath[MAX_PATH];
     wchar_t m_szModuleFileName[MAX_PATH];
+
+	CString m_dumpFile;
 };
 
 namespace CRASHREPORT
@@ -78,6 +92,7 @@ namespace CRASHREPORT
         ::SetErrorMode(0); //使用默认的
         CCrashReport cr;
         cr.CreateMiniDump(pEP);
+		cr.ShowCrashInfo();
         return EXCEPTION_CONTINUE_SEARCH;
     }
 

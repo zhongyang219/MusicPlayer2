@@ -1,15 +1,18 @@
 #pragma once
 #include "afxwin.h"
 
-// CHelpDlg 对话框
+// CMessageDlg 对话框
 
-class CHelpDlg : public CDialog
+class CMessageDlg : public CDialog
 {
-	DECLARE_DYNAMIC(CHelpDlg)
+	DECLARE_DYNAMIC(CMessageDlg)
 
 public:
-	CHelpDlg(CWnd* pParent = NULL);   // 标准构造函数
-	virtual ~CHelpDlg();
+	CMessageDlg(CWnd* pParent = NULL);   // 标准构造函数
+	virtual ~CMessageDlg();
+
+	void SetInfoText(LPCTSTR str);
+	void SetMessageText(LPCTSTR str);
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -17,15 +20,19 @@ public:
 #endif
 
 protected:
-	CEdit m_help_edit;
+	CEdit m_message_edit;
 	CSize m_min_size;		//窗口的最小大小
+	CStatic m_info_static;
 
+	CString m_info;
+	CString m_message;
+
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 
 public:
 	virtual BOOL OnInitDialog();
-	static CString GetHelpString();
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 };

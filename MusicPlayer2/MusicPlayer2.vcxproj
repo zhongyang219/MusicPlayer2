@@ -240,7 +240,7 @@
     <ClInclude Include="FindDlg.h" />
     <ClInclude Include="FolderBrowserDlg.h" />
     <ClInclude Include="FormatConvertDlg.h" />
-    <ClInclude Include="HelpDlg.h" />
+    <ClInclude Include="MessageDlg.h" />
     <ClInclude Include="InternetCommon.h" />
     <ClInclude Include="ListCtrlEx.h" />
     <ClInclude Include="LyricDownloadCommon.h" />
@@ -315,7 +315,7 @@
     <ClCompile Include="FindDlg.cpp" />
     <ClCompile Include="FolderBrowserDlg.cpp" />
     <ClCompile Include="FormatConvertDlg.cpp" />
-    <ClCompile Include="HelpDlg.cpp" />
+    <ClCompile Include="MessageDlg.cpp" />
     <ClCompile Include="InternetCommon.cpp" />
     <ClCompile Include="ListCtrlEx.cpp" />
     <ClCompile Include="LyricDownloadCommon.cpp" />

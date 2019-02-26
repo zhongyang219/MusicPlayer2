@@ -83,6 +83,9 @@ public:
 	WORD GetCurrentLanguage() const;
 	bool IsGlobalMultimediaKeyEnabled() const;
 
+	//获取帮助文本
+	CString GetHelpString();
+
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
 
