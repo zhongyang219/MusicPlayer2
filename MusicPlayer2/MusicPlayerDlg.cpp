@@ -2865,7 +2865,10 @@ void CMusicPlayerDlg::OnFormatConvert1()
 	if (!theApp.m_format_convert_dialog_exit)
 		return;
 	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
-	m_pFormatConvertDlg = new CFormatConvertDlg;
+
+	vector<int> items_selected;
+	items_selected.push_back(CPlayer::GetInstance().GetIndex());
+	m_pFormatConvertDlg = new CFormatConvertDlg(items_selected);
 	m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
 	m_pFormatConvertDlg->ShowWindow(SW_SHOW);
 }
