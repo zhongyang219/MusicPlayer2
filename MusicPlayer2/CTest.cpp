@@ -13,7 +13,8 @@ CTest::~CTest()
 
 void CTest::Test()
 {
-	TestStringMatch();
+	//TestStringMatch();
+	TestCrash();
 }
 
 void CTest::TestStringMatch()
@@ -27,4 +28,11 @@ void CTest::TestStringMatch()
 	double res5 = CInternetCommon::StringSimilarDegree_LD(L"12345a", L"1234A5");
 
 	int a = 0;
+}
+
+void CTest::TestCrash()
+{
+	CString* pStr = nullptr;
+	int a = pStr->GetLength();
+	printf("%d", a);
 }

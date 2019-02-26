@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "AboutDlg.h"
+#include "CTest.h"
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
 {
@@ -82,25 +83,13 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 		m_tool_tip.RelayEvent(pMsg);
 
 
-	//if (pMsg->message == WM_KEYDOWN)
-	//{
-	//	//关于界面按下Ctrl + shift + 1显示调试信息
-	//	if ((GetKeyState(VK_CONTROL) & 0x80) && (GetKeyState(VK_SHIFT) & 0x8000) && pMsg->wParam == '1')
-	//	{
-	//		CString info{ _T("Debug Info:\r\n") };
-	//		
-	//		CString strTmp;
-	//		strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), CWinVersionHelper::GetMajorVersion(), 
-	//			CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
-	//		info += strTmp;
-	//		
-	//		strTmp.Format(_T("DPI: %d"), theApp.m_dpi);
-	//		info += strTmp;
-
-	//		MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
-	//		return TRUE;
-	//	}
-	//}
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if ((GetKeyState(VK_CONTROL) & 0x80) && (GetKeyState(VK_SHIFT) & 0x8000) && pMsg->wParam == 'Z')
+		{
+			CTest::Test();
+		}
+	}
 
 
 	return CDialog::PreTranslateMessage(pMsg);

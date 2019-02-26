@@ -1441,14 +1441,14 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 			}
 			if (GetKeyState(VK_SHIFT) & 0x8000)
 			{
-				//按下Ctrl + Shift键时
-#ifdef _DEBUG
-				if (pMsg->wParam == 'Z')
-				{
-					CTest::Test();
-					return TRUE;
-				}
-#endif
+//				//按下Ctrl + Shift键时
+//#ifdef _DEBUG
+//				if (pMsg->wParam == 'Z')
+//				{
+//					CTest::Test();
+//					return TRUE;
+//				}
+//#endif
 			}
 		}
 		else

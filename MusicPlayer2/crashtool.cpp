@@ -40,6 +40,8 @@ public:
         // 生成minidump文件
         BOOL bResult = ::MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &ExpParam, NULL, NULL);
         ::CloseHandle(hDumpFile);
+
+		AfxMessageBox(_T("错误测试"), MB_ICONERROR | MB_OK);
     }
 private:
     void GetAppPath()
