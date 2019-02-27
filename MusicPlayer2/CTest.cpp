@@ -14,7 +14,7 @@ CTest::~CTest()
 void CTest::Test()
 {
 	//TestStringMatch();
-	TestCrash();
+	//TestCrash();
 }
 
 void CTest::TestStringMatch()

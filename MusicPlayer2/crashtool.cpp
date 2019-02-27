@@ -6,7 +6,7 @@
 #include <tchar.h>
 #include "MessageDlg.h"
 #include "Common.h"
-#include "Resource.h"
+#include "MusicPlayer2.h"
 
 #pragma comment(lib, "Dbghelp.lib")
 
@@ -50,8 +50,14 @@ public:
 	void ShowCrashInfo()
 	{
 		CMessageDlg dlg;
+		dlg.SetWindowTitle(CCommon::LoadText(IDS_ERROR1));
 		dlg.SetInfoText(CCommon::LoadText(IDS_ERROR_MESSAGE));
-		dlg.SetMessageText(CCommon::LoadTextFormat(IDS_ERROR_INFO, { m_dumpFile }));
+
+		CString info = CCommon::LoadTextFormat(IDS_CRASH_INFO, { m_dumpFile });
+		info += _T("\r\n");
+		info += theApp.GetSystemInfoString();
+
+		dlg.SetMessageText(info);
 		dlg.DoModal();
 	}
 

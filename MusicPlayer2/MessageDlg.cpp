@@ -11,13 +11,18 @@
 IMPLEMENT_DYNAMIC(CMessageDlg, CDialog)
 
 CMessageDlg::CMessageDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_HELP_DIALOG, pParent)
+	: CDialog(IDD_MESSAGE_DIALOG, pParent)
 {
 
 }
 
 CMessageDlg::~CMessageDlg()
 {
+}
+
+void CMessageDlg::SetWindowTitle(LPCTSTR str)
+{
+	m_title = str;
 }
 
 void CMessageDlg::SetInfoText(LPCTSTR str)
@@ -60,6 +65,7 @@ BOOL CMessageDlg::OnInitDialog()
 	m_min_size.cx = rect.Width();
 	m_min_size.cy = rect.Height();
 
+	SetWindowText(m_title);
 	m_info_static.SetWindowText(m_info);
 	m_message_edit.SetWindowText(m_message);
 

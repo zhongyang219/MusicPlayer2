@@ -227,8 +227,14 @@ void CMusicPlayerApp::OnHelp()
 {
 	// TODO: 在此添加命令处理程序代码
 	CMessageDlg helpDlg;
+	helpDlg.SetWindowTitle(CCommon::LoadText(IDS_HELP));
 	helpDlg.SetInfoText(CCommon::LoadText(IDS_WELCOM_TO_USE));
-	helpDlg.SetMessageText(GetHelpString());
+
+	CString info{ GetHelpString() };
+	info += _T("\r\n\r\n");
+	info += GetSystemInfoString();
+
+	helpDlg.SetMessageText(info);
 	helpDlg.DoModal();
 }
 
@@ -444,19 +450,24 @@ CString CMusicPlayerApp::GetHelpString()
 			help_info.Format(_T("%s"), (LPVOID)hglobal);
 	}
 
-	//在帮助信息后面增加系统信息
-	help_info += _T("\r\n\r\nSystem Info:\r\n");
+	return help_info;
+}
+
+CString CMusicPlayerApp::GetSystemInfoString()
+{
+	CString info;
+	info += _T("System Info:\r\n");
 
 	CString strTmp;
 	strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), CWinVersionHelper::GetMajorVersion(),
 		CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
-	help_info += strTmp;
+	info += strTmp;
 
 	strTmp.Format(_T("DPI: %d"), GetDPI());
-	help_info += strTmp;
-	help_info += _T("\r\n");
+	info += strTmp;
+	info += _T("\r\n");
 
-	return help_info;
+	return info;
 }
 
 void CMusicPlayerApp::LoadSongData()

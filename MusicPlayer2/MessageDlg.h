@@ -11,12 +11,13 @@ public:
 	CMessageDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CMessageDlg();
 
+	void SetWindowTitle(LPCTSTR str);
 	void SetInfoText(LPCTSTR str);
 	void SetMessageText(LPCTSTR str);
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_HELP_DIALOG };
+	enum { IDD = IDD_MESSAGE_DIALOG };
 #endif
 
 protected:
@@ -24,6 +25,7 @@ protected:
 	CSize m_min_size;		//窗口的最小大小
 	CStatic m_info_static;
 
+	CString m_title;
 	CString m_info;
 	CString m_message;
 

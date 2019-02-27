@@ -86,6 +86,9 @@ public:
 	//获取帮助文本
 	CString GetHelpString();
 
+	//获取系统信息文本
+	CString GetSystemInfoString();
+
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
 
