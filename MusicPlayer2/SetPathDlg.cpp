@@ -96,7 +96,8 @@ void CSetPathDlg::CalculateColumeWidth(vector<int>& width)
 	width[5] = rect.Width() / 7;
 
 	width[0] = theApp.DPI(40);
-	width[1] = width[2] = (rect.Width() - width[3] - width[4] - width[5] - width[0] - theApp.DPI(20)) / 2;
+	width[1] = rect.Width() / 4;
+	width[2] = rect.Width() - width[1] - width[3] - width[4] - width[5] - width[0] - theApp.DPI(20) - 1;
 }
 
 void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
