@@ -25,7 +25,7 @@ CLyricDownloadDlg::~CLyricDownloadDlg()
 void CLyricDownloadDlg::ShowDownloadList()
 {
 	m_down_list_ctrl.DeleteAllItems();
-	for (int i{}; i < m_down_list.size(); i++)
+	for (size_t i{}; i < m_down_list.size(); i++)
 	{
 		CString tmp;
 		tmp.Format(_T("%d"), i + 1);
@@ -106,6 +106,11 @@ END_MESSAGE_MAP()
 
 // CLyricDownloadDlg 消息处理程序
 
+
+bool CLyricDownloadDlg::IsItemSelectedValid() const
+{
+	return (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_down_list.size()));
+}
 
 BOOL CLyricDownloadDlg::OnInitDialog()
 {
@@ -264,7 +269,7 @@ void CLyricDownloadDlg::OnNMRClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 	// TODO: 在此添加控件通知处理程序代码
 	m_item_selected = pNMItemActivate->iItem;
 
-	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	if (IsItemSelectedValid())
 	{
 		//弹出右键菜单
 		CMenu* pContextMenu = m_menu.GetSubMenu(0);	//获取第一个弹出菜单
@@ -280,7 +285,9 @@ void CLyricDownloadDlg::OnNMRClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 void CLyricDownloadDlg::OnBnClickedDownloadSelected()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (m_item_selected < 0 || m_item_selected >= m_down_list.size()) return;
+	if (!IsItemSelectedValid())
+		return;
+
 	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
 	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
 	CPlayer::GetInstance().SetRelatedSongID(m_down_list[m_item_selected].id);		//将选中项目的歌曲ID关联到歌曲
@@ -295,7 +302,9 @@ void CLyricDownloadDlg::OnBnClickedDownloadSelected()
 void CLyricDownloadDlg::OnBnClickedSelectedSaveAs()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (m_item_selected < 0 || m_item_selected >= m_down_list.size()) return;
+	if (!IsItemSelectedValid())
+		return;
+
 	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
 	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
 	m_download_thread_info.hwnd = GetSafeHwnd();
@@ -580,7 +589,7 @@ void CLyricDownloadDlg::OnLdLyricSaveas()
 void CLyricDownloadDlg::OnLdCopyTitle()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	if (IsItemSelectedValid())
 	{
 		if(!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].title))
 			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
@@ -591,7 +600,7 @@ void CLyricDownloadDlg::OnLdCopyTitle()
 void CLyricDownloadDlg::OnLdCopyArtist()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	if (IsItemSelectedValid())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].artist))
 			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
@@ -602,7 +611,7 @@ void CLyricDownloadDlg::OnLdCopyArtist()
 void CLyricDownloadDlg::OnLdCopyAlbum()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	if (IsItemSelectedValid())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].album))
 			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
@@ -613,7 +622,7 @@ void CLyricDownloadDlg::OnLdCopyAlbum()
 void CLyricDownloadDlg::OnLdCopyId()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	if (IsItemSelectedValid())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].id))
 			MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
@@ -624,7 +633,7 @@ void CLyricDownloadDlg::OnLdCopyId()
 void CLyricDownloadDlg::OnLdViewOnline()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	if (IsItemSelectedValid())
 	{
 		//获取网易云音乐中该歌曲的在线接听网址
 		wstring song_url{ L"http://music.163.com/#/song?id=" + m_down_list[m_item_selected].id };
@@ -639,7 +648,7 @@ void CLyricDownloadDlg::OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_item_selected = pNMItemActivate->iItem;
-	if (m_item_selected >= 0 && m_item_selected < m_down_list.size())
+	if (IsItemSelectedValid())
 	{
 		OnBnClickedDownloadSelected();
 	}

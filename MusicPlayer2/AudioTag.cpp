@@ -637,12 +637,13 @@ wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index
 	size_t image_index;		//图片数据的起始位置
 	size_t image_size;		//根据图片结束字节计算出的图片大小
 							//设置图片文件的头和尾
-	const string jpg_head{ static_cast<char>(0xff), static_cast<char>(0xd8) };
-	const string jpg_tail{ static_cast<char>(0xff), static_cast<char>(0xd9) };
-	const string png_head{ static_cast<char>(0x89), static_cast<char>(0x50), static_cast<char>(0x4e), static_cast<char>(0x47) };
-	const string png_tail{ static_cast<char>(0x49), static_cast<char>(0x45), static_cast<char>(0x4e), static_cast<char>(0x44), static_cast<char>(0xae), static_cast<char>(0x42), static_cast<char>(0x60), static_cast<char>(0x82) };
+
+	const string jpg_head{ '\xff', '\xd8' };
+	const string jpg_tail{ '\xff', '\xd9' };
+	const string png_head{ '\x89', '\x50', '\x4e', '\x47' };
+	const string png_tail{ '\x49', '\x45', '\x4e', '\x44', '\xae', '\x42', '\x60', '\x82' };
 	const string gif_head{ "GIF89a" };
-	const string gif_tail{ static_cast<char>(0x80), static_cast<char>(0x00), static_cast<char>(0x00), static_cast<char>(0x3b) };
+	const string gif_tail{ '\x80', '\x00', '\x00', '\x3b' };
 
 	string image_contents;
 	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")

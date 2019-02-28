@@ -88,6 +88,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 
 	DECLARE_MESSAGE_MAP()
+
+private:
+	bool IsItemSelectedValid() const;
+
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedSearchButton2();

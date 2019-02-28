@@ -37,7 +37,7 @@ void CFindDlg::ShowFindResult()
 	CString str;
 	if (m_find_current_playlist)
 	{
-		for (int i{}; i<m_find_result.size(); i++)
+		for (size_t i{}; i<m_find_result.size(); i++)
 		{
 			str.Format(_T("%u"), m_find_result[i] + 1);
 			m_find_result_list.InsertItem(i, str);
@@ -50,7 +50,7 @@ void CFindDlg::ShowFindResult()
 	}
 	else
 	{
-		for (int i{}; i < m_all_find_result.size(); i++)
+		for (size_t i{}; i < m_all_find_result.size(); i++)
 		{
 			str.Format(_T("%u"), i + 1);
 			m_find_result_list.InsertItem(i, str);
@@ -110,7 +110,7 @@ void CFindDlg::LoadConfig()
 
 int CFindDlg::GetSelectedTrack() const
 {
-	if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
+	if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
 		return m_find_result[m_item_selected];
 	else
 		return -1;
@@ -123,7 +123,7 @@ bool CFindDlg::GetFindCurrentPlaylist() const
 
 wstring CFindDlg::GetSelectedSongPath() const
 {
-	if (m_item_selected >= 0 && m_item_selected < m_all_find_result.size())
+	if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_all_find_result.size()))
 		return m_all_find_result[m_item_selected];
 	else
 		return wstring();
@@ -187,7 +187,7 @@ void CFindDlg::OnBnClickedFindButton()
 			m_find_result.clear();
 			int index;
 			bool find_flag;
-			for (int i{ 0 }; i < m_playlist.size(); i++)
+			for (size_t i{ 0 }; i < m_playlist.size(); i++)
 			{
 				find_flag = false;
 				if (m_find_file)
@@ -443,12 +443,12 @@ void CFindDlg::OnFdPlay()
 	// TODO: 在此添加命令处理程序代码
 	if (m_find_current_playlist)
 	{
-		if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
+		if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
 			OnOK();
 	}
 	else
 	{
-		if (m_item_selected >= 0 && m_item_selected < m_all_find_result.size())
+		if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_all_find_result.size()))
 			OnOK();
 	}
 }
@@ -460,14 +460,14 @@ void CFindDlg::OnFdOpenFileLocation()
 	wstring file;
 	if (m_find_current_playlist)
 	{
-		if (m_item_selected >= 0 && m_item_selected < m_find_result.size())
+		if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
 			file = CPlayer::GetInstance().GetCurrentDir() + m_playlist[m_find_result[m_item_selected]].file_name;
 		else
 			return;
 	}
 	else
 	{
-		if (m_item_selected >= 0 && m_item_selected < m_all_find_result.size())
+		if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_all_find_result.size()))
 			file = m_all_find_result[m_item_selected];
 		else
 			return;
@@ -485,8 +485,8 @@ void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	m_item_selected = pNMItemActivate->iItem;
 	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 
-	if (m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < m_find_result.size())
-		|| !m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < m_all_find_result.size()))
+	if (m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
+		|| !m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_all_find_result.size())))
 	{
 		//获取鼠标点击处的文本
 		int sub_item;

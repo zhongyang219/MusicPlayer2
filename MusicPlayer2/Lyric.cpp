@@ -29,7 +29,7 @@ void CLyrics::DisposeLyric()
 	string temp;
 	Lyric lyric;
 	m_translate = false;
-	for (int i{ 0 }; i < m_lyrics_str.size(); i++)
+	for (size_t i{ 0 }; i < m_lyrics_str.size(); i++)
 	{
 		//查找id标签（由于id标签是我自己加上的，它永远只会出现在第一行）
 		if (i == 0)
@@ -188,7 +188,7 @@ void CLyrics::JudgeCode()
 		}
 		else				//无BOM的情况下
 		{
-			int i, j;
+			size_t i, j;
 			bool break_flag{ false };
 			for (i = 0; i < m_lyrics_str.size(); i++)		//查找每一句歌词
 			{
@@ -203,7 +203,7 @@ void CLyrics::JudgeCode()
 				}
 				if (break_flag) break;
 			}
-			if (i<m_lyrics_str.size() && CCommon::IsUTF8Bytes(m_lyrics_str[i].c_str()))		//判断出现第1个非ASCII字符的那句歌词是不是UTF8编码，如果是歌词就是UTF8编码
+			if (i < m_lyrics_str.size() && CCommon::IsUTF8Bytes(m_lyrics_str[i].c_str()))	//判断出现第1个非ASCII字符的那句歌词是不是UTF8编码，如果是歌词就是UTF8编码
 				m_code_type = CodeType::UTF8_NO_BOM;
 		}
 	}
@@ -218,13 +218,13 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, int offset) const
 {
 	Lyric ti{};
 	ti.text = m_ti;
-	for (int i{ 0 }; i < m_lyrics.size(); i++)
+	for (int i{ 0 }; i < static_cast<int>(m_lyrics.size()); i++)
 	{
 		if (m_lyrics[i].GetTime(m_offset) > time)		//如果找到第一个时间标签比要显示的时间大，则该时间标签的前一句歌词即为当前歌词
 		{
 			if (i + offset - 1 < -1) return Lyric{};
 			else if (i + offset - 1 == -1) return ti;		//时间在第一个时间标签前面，返回ti标签的值
-			else if (i + offset - 1 < m_lyrics.size()) return m_lyrics[i + offset - 1];
+			else if (i + offset - 1 < static_cast<int>(m_lyrics.size())) return m_lyrics[i + offset - 1];
 			else return Lyric{};
 		}
 	}
@@ -242,7 +242,7 @@ CLyrics::Lyric CLyrics::GetLyric(int index) const
 		return Lyric();
 	else if (index == 0)
 		return ti;
-	else if (index <= m_lyrics.size())
+	else if (index <= static_cast<int>(m_lyrics.size()))
 		return m_lyrics[index - 1];
 	else
 		return Lyric();
@@ -256,7 +256,7 @@ int CLyrics::GetLyricProgress(Time time) const
 	int lyric_last_time{ 1 };		//time时间所在的歌词持续的时间
 	int lyric_current_time{ 0 };		//当前歌词在time时间时已经持续的时间
 	int progress{};
-	for (int i{ 0 }; i < m_lyrics.size(); i++)
+	for (size_t i{ 0 }; i < m_lyrics.size(); i++)
 	{
 		if (m_lyrics[i].GetTime(m_offset) > time)
 		{
@@ -285,7 +285,7 @@ int CLyrics::GetLyricProgress(Time time) const
 
 int CLyrics::GetLyricIndex(Time time) const
 {
-	for (int i{ 0 }; i < m_lyrics.size(); i++)
+	for (int i{ 0 }; i < static_cast<int>(m_lyrics.size()); i++)
 	{
 		if (m_lyrics[i].GetTime(m_offset)>time)
 			return i - 1;
@@ -365,7 +365,7 @@ void CLyrics::SaveLyric()
 		buff[3] = 0;
 		out_put << buff;
 	}
-	for (int i{ 0 }; i < m_lyrics_str.size(); i++)
+	for (int i{ 0 }; i < static_cast<int>(m_lyrics_str.size()); i++)
 	{
 		if (m_offset_tag_index == i)	//如果i是偏移标签的位置，则在这时输出偏移标签
 		{

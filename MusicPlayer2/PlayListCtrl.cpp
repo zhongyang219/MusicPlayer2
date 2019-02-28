@@ -196,7 +196,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 			m_nItem = lvhti.iItem;
 
 			// 如果鼠标移动到一个合法的行，则显示新的提示信息，否则不显示提示
-			if (m_nItem >= 0 && m_nItem < m_all_song_info.size())
+			if (m_nItem >= 0 && m_nItem < static_cast<int>(m_all_song_info.size()))
 			{
 				CString dis_str = GetItemText(m_nItem, 1);
 				int strWidth = GetStringWidth(dis_str) + theApp.DPI(10);		//获取要显示当前字符串的最小宽度
@@ -216,7 +216,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 					CString str = GetItemText(m_nItem, 0);
 					song_index = _ttoi(str) - 1;
 				}
-				if (song_index < 0 || song_index >= m_all_song_info.size())
+				if (song_index < 0 || song_index >= static_cast<int>(m_all_song_info.size()))
 					return;
 				str_tip += CCommon::LoadText(IDS_FILE_NAME, _T(": "));
 				str_tip += m_all_song_info[song_index].file_name.c_str();

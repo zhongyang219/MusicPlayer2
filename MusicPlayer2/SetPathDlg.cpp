@@ -38,7 +38,7 @@ void CSetPathDlg::ShowPathList()
 	{
 		m_path_list.DeleteAllItems();
 		CString path_str;
-		for (int i{}; i < m_recent_path.size(); i++)
+		for (size_t i{}; i < m_recent_path.size(); i++)
 		{
 			CString str;
 			str.Format(_T("%d"), i + 1);
@@ -160,7 +160,7 @@ SortMode CSetPathDlg::GetSortMode() const
 
 bool CSetPathDlg::SelectValid() const
 {
-	return (m_path_selected >= 0 && m_path_selected < m_recent_path.size());
+	return (m_path_selected >= 0 && m_path_selected < static_cast<int>(m_recent_path.size()));
 }
 
 

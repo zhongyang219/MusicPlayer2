@@ -46,7 +46,7 @@ void CPlayer::IniBASS()
 		device_index++;
 	}
 
-	for (int i{}; i < theApp.m_output_devices.size(); i++)
+	for (size_t i{}; i < theApp.m_output_devices.size(); i++)
 	{
 		if (theApp.m_output_devices[i].name == theApp.m_play_setting_data.output_device)
 		{
@@ -320,7 +320,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 			{
 				//重新载入播放列表后，查找正在播放项目的序号
 				MusicControl(Command::CLOSE);
-				for (int i{}; i < m_playlist.size(); i++)
+				for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
 				{
 					if (m_current_file_name_tmp == m_playlist[i].file_name)
 					{
@@ -346,7 +346,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 		}
 		else		//如果用户在播放初始化的过程中进行了播放，则根据正在播放的文件名重新查找正在播放的序号
 		{
-			for (int i{}; i < m_playlist.size(); i++)
+			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
 			{
 				if (m_current_file_name == m_playlist[i].file_name)
 				{
@@ -534,7 +534,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			{
 				//获取MIDI音乐信息
 				BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_MIDI_PPQN, &m_midi_info.ppqn); // get PPQN value
-				m_midi_info.midi_length = BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) / m_midi_info.ppqn;
+				m_midi_info.midi_length = static_cast<int>(BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) / m_midi_info.ppqn);
 				m_midi_info.tempo = m_bass_midi_lib.BASS_MIDI_StreamGetEvent(m_musicStream, 0, MIDI_EVENT_TEMPO);
 				m_midi_info.speed = 60000000 / m_midi_info.tempo;
 				//获取MIDI音乐内嵌歌词
@@ -759,7 +759,7 @@ void CPlayer::GetBASSSpectral()
 			else
 			{
 				fall_count++;
-				m_spectral_peak[i] -= (fall_count*0.2);		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
+				m_spectral_peak[i] -= (fall_count*0.2f);		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
 			}
 		}
 	}
@@ -1172,7 +1172,7 @@ void CPlayer::ExploreLyric() const
 
 Time CPlayer::GetAllSongLength(int track) const
 {
-	if (track >= 0 && track < m_playlist.size())
+	if (track >= 0 && track < static_cast<int>(m_playlist.size()))
 		return m_playlist[track].lengh;
 	else
 		return Time();
@@ -1319,15 +1319,14 @@ wstring CPlayer::GetPlayingState() const
 
 const SongInfo & CPlayer::GetCurrentSongInfo() const
 {
-	// TODO: 在此处插入 return 语句
-	if (m_index >= 0 && m_index < m_playlist.size())
+	if (m_index >= 0 && m_index < static_cast<int>(m_playlist.size()))
 		return m_playlist[m_index];
 	else return m_no_use;
 }
 
 void CPlayer::SetRelatedSongID(wstring song_id)
 {
-	if (m_index >= 0 && m_index < m_playlist.size())
+	if (m_index >= 0 && m_index < static_cast<int>(m_playlist.size()))
 	{
 		m_playlist[m_index].song_id = song_id;
 		if(!m_playlist[m_index].is_cue)
@@ -1337,7 +1336,7 @@ void CPlayer::SetRelatedSongID(wstring song_id)
 
 void CPlayer::SetRelatedSongID(int index, wstring song_id)
 {
-	if (index >= 0 && index < m_playlist.size())
+	if (index >= 0 && index < static_cast<int>(m_playlist.size()))
 	{
 		m_playlist[index].song_id = song_id;
 		if (!m_playlist[index].is_cue)
@@ -1387,7 +1386,7 @@ void CPlayer::SortPlaylist(bool change_index)
 		//播放列表排序后，查找正在播放项目的序号
 		if (!m_playlist[m_index].is_cue)
 		{
-			for (int i{}; i < m_playlist.size(); i++)
+			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
 			{
 				if (m_current_file_name == m_playlist[i].file_name)
 				{
@@ -1398,7 +1397,7 @@ void CPlayer::SortPlaylist(bool change_index)
 		}
 		else
 		{
-			for (int i{}; i < m_playlist.size(); i++)
+			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
 			{
 				if (track_number == m_playlist[i].track)
 				{
@@ -1517,7 +1516,7 @@ void CPlayer::LoadRecentPath()
 
 void CPlayer::EmplaceCurrentPathToRecent()
 {
-	for (int i{ 0 }; i < m_recent_path.size(); i++)
+	for (size_t i{ 0 }; i < m_recent_path.size(); i++)
 	{
 		if (m_path == m_recent_path[i].path)
 			m_recent_path.erase(m_recent_path.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除

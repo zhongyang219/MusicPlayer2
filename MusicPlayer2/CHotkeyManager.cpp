@@ -105,7 +105,7 @@ SHotKey CHotkeyManager::HotkeyFromString(const wstring & str)
 		hot_key.key = _wtoi(str_list.back().c_str());
 	}
 
-	for (int i = 0; i < str_list.size() - 1; i++)
+	for (size_t i = 0; i < str_list.size() - 1; i++)
 	{
 		if (str_list[i] == L"Ctrl")
 			hot_key.ctrl = true;

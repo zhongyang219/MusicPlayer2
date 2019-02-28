@@ -116,7 +116,7 @@ void CDataSettingsDlg::OnBnClickedCleanDataFileButton()
 		wstring item_path;
 		size_t index = iter->first.rfind(L'\\');
 		item_path = iter->first.substr(0, index + 1);		//获取iter指向项目的文件目录
-		for (int i{}; i < CPlayer::GetInstance().GetRecentPath().size(); i++)
+		for (size_t i{}; i < CPlayer::GetInstance().GetRecentPath().size(); i++)
 		{
 			if (item_path == CPlayer::GetInstance().GetRecentPath()[i].path)
 			{
