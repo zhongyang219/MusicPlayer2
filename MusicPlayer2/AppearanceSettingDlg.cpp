@@ -247,10 +247,12 @@ void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 	if (IDOK == fontDlg.DoModal())     // 显示字体对话框
 	{
 		//获取字体信息
-		//m_font = fontDlg.m_cf.lpLogFont->lfFaceName;
-		//m_font_size = fontDlg.m_cf.iPointSize / 10;
-		m_data.lyric_font_name = fontDlg.GetFaceName();
-		m_data.lyric_font_size = fontDlg.GetSize() / 10;
+		m_data.lyric_font.name = fontDlg.GetFaceName();
+		m_data.lyric_font.size = fontDlg.GetSize() / 10;
+		m_data.lyric_font.style.bold = (fontDlg.IsBold() != FALSE);
+		m_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
+		m_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
+		m_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
 		//将字体已更改flag置为true
 		m_font_changed = true;
 	}

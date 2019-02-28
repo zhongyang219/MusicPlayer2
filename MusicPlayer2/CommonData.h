@@ -19,6 +19,119 @@ struct DeviceInfo	//播放设备的信息
 	DWORD flags;	//设备的状态
 };
 
+
+struct FontStyle
+{
+	bool bold{ false };			//粗体
+	bool italic{ false };		//斜体
+	bool underline{ false };	//下划线
+	bool strike_out{ false };	//删除线
+
+	int ToInt()
+	{
+		int value = 0;
+		if (bold)
+			value |= 0x01;
+		if (italic)
+			value |= 0x02;
+		if (underline)
+			value |= 0x04;
+		if (strike_out)
+			value |= 0x08;
+		return value;
+	}
+
+	void FromInt(int value)
+	{
+		bold = (value % 2 != 0);
+		italic = ((value >> 1) % 2 != 0);
+		underline = ((value >> 2) % 2 != 0);
+		strike_out = ((value >> 3) % 2 != 0);
+	}
+};
+
+struct FontInfo
+{
+	wstring name;	//字体名称
+	int size;		//字体大小
+	FontStyle style;	//字体样式
+};
+
+
+//将字号转成LOGFONT结构中的lfHeight
+#define FONTSIZE_TO_LFHEIGHT(font_size) (-MulDiv(font_size, GetDeviceCaps(::GetDC(HWND_DESKTOP), LOGPIXELSY), 72))
+
+struct UIFont
+{
+private:
+	CFont font;
+	CFont font_l;
+
+public:
+	CFont& GetFont(bool large = false)
+	{
+		return (large ? font_l : font);
+	}
+
+	void SetFont(int font_size, LPCTSTR font_name, FontStyle style = FontStyle())
+	{
+		if (font_size < 5)
+			font_size = 5;
+
+		if (font.m_hObject)
+			font.DeleteObject();
+		CreateFontSimple(font, font_size, font_name, style);
+
+		if (font_l.m_hObject)
+			font_l.DeleteObject();
+		CreateFontSimple(font_l, static_cast<int>(font_size * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), font_name, style);
+	}
+
+	void SetFont(FontInfo font_info)
+	{
+		SetFont(font_info.size, font_info.name.c_str(), font_info.style);
+	}
+
+	static void CreateFontSimple(CFont& font, int font_size, LPCTSTR font_name, FontStyle style = FontStyle())
+	{
+		font.CreateFont(
+			FONTSIZE_TO_LFHEIGHT(font_size), // nHeight
+			0, // nWidth
+			0, // nEscapement
+			0, // nOrientation
+			(style.bold ? FW_BOLD : FW_NORMAL), // nWeight
+			style.italic, // bItalic
+			style.underline, // bUnderline
+			style.strike_out, // cStrikeOut
+			DEFAULT_CHARSET, // nCharSet
+			OUT_DEFAULT_PRECIS, // nOutPrecision
+			CLIP_DEFAULT_PRECIS, // nClipPrecision
+			DEFAULT_QUALITY, // nQuality
+			DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+			font_name);
+	}
+};
+
+struct FontSet
+{
+	UIFont normal;				//普通的字体
+	UIFont time;				//显示播放时间
+	UIFont title;				//界面2的歌曲标题
+
+	UIFont lyric;				//歌词字体
+	UIFont lyric_translate;		//歌词翻译的字体
+	UIFont cortana;				//搜索框字体
+	UIFont cortana_translate;	//搜索框翻译字体
+
+	void Init()
+	{
+		normal.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
+		time.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
+		title.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
+	}
+};
+
+
 //选项设置数据
 struct LyricSettingData
 {
@@ -32,15 +145,17 @@ struct LyricSettingData
 	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 	bool cortana_icon_beat{ true };				//Cortana图标随音乐节奏跳动
 	bool cortana_lyric_compatible_mode{ false };	//Cortana搜索框歌词显示使用兼容模式
-	wstring cortana_font_name;					//搜索框字体名称
-	int cortana_font_size;						//搜索框字体大小
+	//wstring cortana_font_name;					//搜索框字体名称
+	//int cortana_font_size;						//搜索框字体大小
+	FontInfo cortana_font;
 	bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
 };
 
 struct ApperanceSettingData
 {
-	wstring lyric_font_name;					//歌词字体名称
-	int lyric_font_size;						//歌词字体大小
+	//wstring lyric_font_name;					//歌词字体名称
+	//int lyric_font_size;						//歌词字体大小
+	FontInfo lyric_font;
 	int lyric_line_space{ 2 };					//歌词的行间距
 	int window_transparency{ 100 };				//窗口透明度
 	ColorTable theme_color;						//主题颜色
@@ -185,80 +300,5 @@ struct UIData
 	int client_height;					//窗口客户区高度
 	CImage default_background;			//默认的背景
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
-};
-
-struct FontStyle
-{
-	bool bold;			//粗体
-	bool italic;		//斜体
-	bool underline;		//下划线
-	bool strike_out;	//删除线
-
-	int ToInt()
-	{
-		int value = 0;
-		if (bold)
-			value |= 0x01;
-		if (italic)
-			value |= 0x02;
-		if (underline)
-			value |= 0x04;
-		if (strike_out)
-			value |= 0x08;
-	}
-
-	void FromInt(int value)
-	{
-		bold = (value % 2 != 0);
-		italic = ((value >> 1) % 2 != 0);
-		underline = ((value >> 2) % 2 != 0);
-		strike_out = ((value >> 3) % 2 != 0);
-	}
-};
-
-struct UIFont
-{
-private:
-	CFont font;
-	CFont font_l;
-
-public:
-	CFont& GetFont(bool large = false)
-	{
-		return (large ? font_l : font);
-	}
-
-	void SetFont(int font_size, LPCTSTR font_name)
-	{
-		if (font_size < 5)
-			font_size = 5;
-
-		if (font.m_hObject)
-			font.DeleteObject();
-		font.CreatePointFont(font_size * 10, font_name);
-
-		if (font_l.m_hObject)
-			font_l.DeleteObject();
-		font_l.CreatePointFont(static_cast<int>(font_size * 10 * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR), font_name);
-	}
-};
-
-struct FontSet
-{
-	UIFont normal;				//普通的字体
-	UIFont time;				//显示播放时间
-	UIFont title;				//界面2的歌曲标题
-
-	UIFont lyric;				//歌词字体
-	UIFont lyric_translate;		//歌词翻译的字体
-	UIFont cortana;				//搜索框字体
-	UIFont cortana_translate;	//搜索框翻译字体
-
-	void Init()
-	{
-		normal.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
-		time.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
-		title.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
-	}
 };
 

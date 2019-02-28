@@ -65,8 +65,8 @@ void CCortanaLyric::Init()
 
 void CCortanaLyric::InitFont()
 {
-	theApp.m_font_set.cortana.SetFont(theApp.m_lyric_setting_data.cortana_font_size, theApp.m_lyric_setting_data.cortana_font_name.c_str());
-	theApp.m_font_set.cortana_translate.SetFont(theApp.m_lyric_setting_data.cortana_font_size - 1, theApp.m_lyric_setting_data.cortana_font_name.c_str());
+	theApp.m_font_set.cortana.SetFont(theApp.m_lyric_setting_data.cortana_font);
+	theApp.m_font_set.cortana_translate.SetFont(theApp.m_lyric_setting_data.cortana_font);
 }
 
 void CCortanaLyric::SetEnable(bool enable)

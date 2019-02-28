@@ -186,8 +186,9 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_ui_data.display_format));
 	ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.show_lyric_in_cortana);
 	ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
-	ini.WriteString(L"config",L"font", theApp.m_app_setting_data.lyric_font_name);
-	ini.WriteInt(L"config", L"font_size", theApp.m_app_setting_data.lyric_font_size);
+	ini.WriteString(L"config",L"font", theApp.m_app_setting_data.lyric_font.name);
+	ini.WriteInt(L"config", L"font_size", theApp.m_app_setting_data.lyric_font.size);
+	ini.WriteInt(L"config", L"font_style", theApp.m_app_setting_data.lyric_font.style.ToInt());
 	ini.WriteInt(L"config", L"lyric_line_space", theApp.m_app_setting_data.lyric_line_space);
 	ini.WriteInt(L"config", L"spectrum_height", theApp.m_app_setting_data.sprctrum_height);
 	ini.WriteBool(L"config", L"cortana_lyric_double_line", theApp.m_lyric_setting_data.cortana_lyric_double_line);
@@ -198,8 +199,9 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"cortana_show_album_cover", theApp.m_lyric_setting_data.cortana_show_album_cover);
 	ini.WriteBool(L"config", L"cortana_icon_beat", theApp.m_lyric_setting_data.cortana_icon_beat);
 	ini.WriteBool(L"config", L"cortana_lyric_compatible_mode", theApp.m_lyric_setting_data.cortana_lyric_compatible_mode);
-	ini.WriteString(L"config", L"cortana_font", theApp.m_lyric_setting_data.cortana_font_name);
-	ini.WriteInt(L"config", L"cortana_font_size", theApp.m_lyric_setting_data.cortana_font_size);
+	ini.WriteString(L"config", L"cortana_font", theApp.m_lyric_setting_data.cortana_font.name);
+	ini.WriteInt(L"config", L"cortana_font_size", theApp.m_lyric_setting_data.cortana_font.size);
+	ini.WriteInt(L"config", L"cortana_font_style", theApp.m_lyric_setting_data.cortana_font.style.ToInt());
 	ini.WriteBool(L"config", L"cortana_lyric_keep_display", theApp.m_lyric_setting_data.cortana_lyric_keep_display);
 
 	ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
@@ -289,8 +291,9 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_ui_data.display_format = static_cast<DisplayFormat>(ini.GetInt(_T("config"), _T("playlist_display_format"), 2));
 	theApp.m_lyric_setting_data.show_lyric_in_cortana = ini.GetBool(_T("config"), _T("show_lyric_in_cortana"), 0);
 	theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(_T("config"), _T("save_lyric_in_offset"), 0);
-	theApp.m_app_setting_data.lyric_font_name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
-	theApp.m_app_setting_data.lyric_font_size = ini.GetInt(L"config", L"font_size", 10);
+	theApp.m_app_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
+	theApp.m_app_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 10);
+	theApp.m_app_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
 	theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 2);
 	theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 80);
 	theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(_T("config"), _T("cortana_lyric_double_line"), true);
@@ -301,8 +304,9 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.cortana_show_album_cover = ini.GetBool(_T("config"), _T("cortana_show_album_cover"), 1);
 	theApp.m_lyric_setting_data.cortana_icon_beat = ini.GetBool(_T("config"), _T("cortana_icon_beat"), 0);
 	theApp.m_lyric_setting_data.cortana_lyric_compatible_mode = ini.GetBool(_T("config"), _T("cortana_lyric_compatible_mode"), 0);
-	theApp.m_lyric_setting_data.cortana_font_name = ini.GetString(L"config", L"cortana_font", CCommon::LoadText(IDS_DEFAULT_FONT));
-	theApp.m_lyric_setting_data.cortana_font_size = ini.GetInt(L"config", L"cortana_font_size", 11);
+	theApp.m_lyric_setting_data.cortana_font.name = ini.GetString(L"config", L"cortana_font", CCommon::LoadText(IDS_DEFAULT_FONT));
+	theApp.m_lyric_setting_data.cortana_font.size = ini.GetInt(L"config", L"cortana_font_size", 11);
+	theApp.m_lyric_setting_data.cortana_font.style.FromInt(ini.GetInt(L"config", L"cortana_font_style", 0));
 	theApp.m_lyric_setting_data.cortana_lyric_keep_display = ini.GetBool(L"config", L"cortana_lyric_keep_display", false);
 
 	theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(_T("config"), _T("background_gauss_blur"), true);
@@ -675,8 +679,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
-		theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font_size, theApp.m_app_setting_data.lyric_font_name.c_str());
-		theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font_size - 1, theApp.m_app_setting_data.lyric_font_name.c_str());
+		theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
+		theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font);
 	}
 	if (optionDlg.m_tab1_dlg.FontChanged())
 	{
@@ -966,8 +970,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//m_pUI = &m_ui2;
 
 	//初始化歌词字体
-	theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font_size, theApp.m_app_setting_data.lyric_font_name.c_str());
-	theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font_size - 1, theApp.m_app_setting_data.lyric_font_name.c_str());
+	theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
+	theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font);
 
 	//载入默认背景图片（用于没有专辑封面时显示）
 	theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());

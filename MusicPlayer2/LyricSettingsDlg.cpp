@@ -227,8 +227,12 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
 	if (IDOK == fontDlg.DoModal())     // 显示字体对话框
 	{
 		//获取字体信息
-		m_data.cortana_font_name = fontDlg.GetFaceName();
-		m_data.cortana_font_size = fontDlg.GetSize() / 10;
+		m_data.cortana_font.name = fontDlg.GetFaceName();
+		m_data.cortana_font.size = fontDlg.GetSize() / 10;
+		m_data.cortana_font.style.bold = (fontDlg.IsBold() != FALSE);
+		m_data.cortana_font.style.italic = (fontDlg.IsItalic() != FALSE);
+		m_data.cortana_font.style.underline = (fontDlg.IsUnderline() != FALSE);
+		m_data.cortana_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
 		m_font_changed = true;
 	}
 }
