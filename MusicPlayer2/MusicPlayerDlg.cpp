@@ -680,7 +680,9 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	if (optionDlg.m_tab2_dlg.FontChanged())
 	{
 		theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
-		theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font);
+		FontInfo translate_font = theApp.m_app_setting_data.lyric_font;
+		translate_font.size--;
+		theApp.m_font_set.lyric_translate.SetFont(translate_font);
 	}
 	if (optionDlg.m_tab1_dlg.FontChanged())
 	{
@@ -971,7 +973,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//初始化歌词字体
 	theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
-	theApp.m_font_set.lyric_translate.SetFont(theApp.m_app_setting_data.lyric_font);
+	FontInfo translate_font = theApp.m_app_setting_data.lyric_font;
+	translate_font.size--;
+	theApp.m_font_set.lyric_translate.SetFont(translate_font);
 
 	//载入默认背景图片（用于没有专辑封面时显示）
 	theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
