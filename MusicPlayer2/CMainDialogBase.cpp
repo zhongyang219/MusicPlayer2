@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "CMainDialogBase.h"
+#include "Common.h"
+#include "MusicPlayer2.h"
 
 IMPLEMENT_DYNAMIC(CMainDialogBase, CDialog)
 
@@ -22,6 +24,9 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 		int g_iCurScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 		int g_iCurScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
+		//当前菜单栏的高度减去一行菜单栏的高度
+		int height_comp = CCommon::GetMenuBarHeight(m_hWnd) - theApp.DPIRound(19);
+
 		//用m_struOldWndpl得到当前窗口的显示状态和窗体位置，以供退出全屏后使用  
 		GetWindowPlacement(&m_struOldWndpl);
 
@@ -32,7 +37,7 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 		RepositionBars(0, 0xffff, AFX_IDW_PANE_FIRST, reposQuery, &rectClient);//得到窗口客户区坐标  
 		ClientToScreen(&rectClient);//将客户区相对窗体的坐标转为相对屏幕坐标  
 		m_rectFullScreen.left = rectWholeDlg.left - rectClient.left;
-		m_rectFullScreen.top = rectWholeDlg.top - rectClient.top;
+		m_rectFullScreen.top = rectWholeDlg.top - rectClient.top + height_comp;
 		m_rectFullScreen.right = rectWholeDlg.right + g_iCurScreenWidth - rectClient.right;
 		m_rectFullScreen.bottom = rectWholeDlg.bottom + g_iCurScreenHeight - rectClient.bottom;
 

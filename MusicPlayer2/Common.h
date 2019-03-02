@@ -232,6 +232,9 @@ public:
 	//删除字体名称后面的Bold、Light等字符串，并根据这些字符串设置字体粗细
 	static void NormalizeFont(LOGFONT& font);
 
+	//获取菜单栏的高度。hWnd：菜单栏所在的窗口句柄
+	static int GetMenuBarHeight(HWND hWnd);
+
 
 	template<class T>
 	static T Min3(T v1, T v2, T v3)

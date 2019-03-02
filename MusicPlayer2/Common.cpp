@@ -1008,3 +1008,16 @@ void CCommon::NormalizeFont(LOGFONT & font)
 	WStringCopy(font.lfFaceName, 32, name.c_str(), name.size());
 }
 
+int CCommon::GetMenuBarHeight(HWND hWnd)
+{
+	MENUBARINFO menuInfo{};
+	menuInfo.cbSize = sizeof(MENUBARINFO);
+	int rtn = GetMenuBarInfo(hWnd, OBJID_MENU, 0, &menuInfo);
+
+	int menu_bar_height = 0;
+	if (rtn != 0)
+		menu_bar_height = menuInfo.rcBar.bottom - menuInfo.rcBar.top;
+
+	return menu_bar_height;
+}
+

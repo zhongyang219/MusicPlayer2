@@ -302,17 +302,14 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 CRect CPlayerUIBase::GetThumbnailClipArea()
 {
 	//获取菜单栏的高度
-	MENUBARINFO menuInfo{};
-	menuInfo.cbSize = sizeof(MENUBARINFO);
-	int rtn = GetMenuBarInfo(theApp.m_pMainWnd->GetSafeHwnd(), OBJID_MENU, 0, &menuInfo);
-
 	int menu_bar_height = 0;
 	if (m_ui_data.show_menu_bar)
 	{
-		if(rtn == 0)
+		menu_bar_height = CCommon::GetMenuBarHeight(theApp.m_pMainWnd->GetSafeHwnd());
+		if (menu_bar_height == 0)
 			menu_bar_height = theApp.DPI(20);
 		else
-			menu_bar_height = menuInfo.rcBar.bottom - menuInfo.rcBar.top + theApp.DPI(1);
+			menu_bar_height += theApp.DPI(1);
 	}
 
 	CRect thumbnail_rect = DrawAreaToClient(m_draw_data.thumbnail_rect, m_draw_rect);
