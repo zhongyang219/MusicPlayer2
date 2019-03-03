@@ -117,6 +117,11 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
 	m_path_list.SetItemText(index, 5, total_time.time2str3().c_str());
 }
 
+bool CSetPathDlg::IsSelectedPlayEnable() const
+{
+	return !m_recent_path.empty() && SelectValid() && GetSelPath() != CPlayer::GetInstance().GetCurrentDir();
+}
+
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -298,7 +303,7 @@ void CSetPathDlg::OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_path_selected = _ttoi(str) - 1;
 	}
 
-	bool enable = (m_path_selected > 0);
+	bool enable = IsSelectedPlayEnable();
 	SetButtonsEnable(enable);
 	*pResult = 0;
 }
@@ -336,7 +341,7 @@ void CSetPathDlg::OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_path_selected = _ttoi(str) - 1;
 	}
 
-	bool enable = (m_path_selected > 0);
+	bool enable = IsSelectedPlayEnable();
 	SetButtonsEnable(enable);
 	if(enable)
 		OnOK();
