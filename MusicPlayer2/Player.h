@@ -59,7 +59,7 @@ private:
 
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
 	wstring m_path;		//当前播放文件的路径
-	wstring m_current_file_name;		//正在播放的文件名
+	//wstring m_current_file_name;		//正在播放的文件名
 	wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
 	wstring m_current_file_type;
 	deque<PathInfo> m_recent_path;		//最近打开过的路径
@@ -72,7 +72,7 @@ private:
 
 	int m_index{ 0 };	//当前播放音乐的序号
 	int m_index_tmp{ 0 };
-	int m_song_num{ 0 };	//播放列表中的歌曲总数
+	//int m_song_num{ 0 };	//播放列表中的歌曲总数
 	int m_error_code{ 0 };	//储存错误代码
 	int m_playing{ 0 };		//正在播放标志（0：已停止，1：已暂停，2：正在播放）
 	RepeatMode m_repeat_mode;		//循环模式（0：顺序播放，1：随机播放，2：列表循环，3：单曲循环）
@@ -204,11 +204,11 @@ public:
 
 	vector<SongInfo>& GetPlayList() { return m_playlist; }	//获取播放列表的引用
 	Time GetAllSongLength(int track) const;				//获取指定序号的歌曲的长度
-	int GetSongNum() const { return m_song_num; }		//获取歌曲总数
+	int GetSongNum() const;			//获取歌曲总数
 	const wstring& GetCurrentDir() const { return m_path; }	//获取当前目录
-	wstring GetCurrentFilePath() const { return m_path + m_current_file_name; }		//获取正在播放文件的路径
+	wstring GetCurrentFilePath() const { return m_path + GetCurrentFileName(); }		//获取正在播放文件的路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号
-	wstring GetFileName() const { return (m_current_file_name.empty() ? wstring(L"没有找到文件") : m_current_file_name); }
+	wstring GetFileName() const;
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
 	CImage& GetAlbumCover() { return m_album_cover; }
@@ -259,6 +259,8 @@ private:
 	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
 	void SearchAlbumCover();		//获取专辑封面
 	void GetMidiPosition();			//获取MIDI音乐的播放进度
+	wstring GetCurrentFileName() const;
+
 public:
 	static void AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo& song_info);		//获取歌曲标签等信息
 	void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面

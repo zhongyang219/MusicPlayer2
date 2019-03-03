@@ -231,9 +231,9 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 			CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM);
 		}
 		//m_index = 0;
-		m_song_num = m_playlist.size();
+		//m_song_num = m_playlist.size();
 		m_index_tmp = m_index;		//保存歌曲序号
-		if (m_index < 0 || m_index >= m_song_num) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
+		if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 
 		m_loading = true;
 		//m_thread_info.playlist = &m_playlist;
@@ -246,11 +246,11 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 
 		m_song_length = { 0,0,0 };
 		//m_current_position = {0,0,0};
-		if (m_song_num == 0)
+		if (GetSongNum() == 0)
 		{
 			m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
 		}
-		m_current_file_name = m_playlist[m_index].file_name;
+		//m_current_file_name = m_playlist[m_index].file_name;
 	}
 }
 
@@ -296,9 +296,9 @@ void CPlayer::IniPlaylistComplate(bool sort)
 {
 	CAudioCommon::CheckCueFiles(m_playlist, m_path);
 	CAudioCommon::GetCueTracks(m_playlist, m_path);
-	m_song_num = m_playlist.size();
+	//m_song_num = m_playlist.size();
 	m_index = m_index_tmp;
-	if (m_index < 0 || m_index >= m_song_num) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
+	if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 	//统计列表总时长
 	m_total_time = 0;
 	for (const auto& somg : m_playlist)
@@ -306,13 +306,19 @@ void CPlayer::IniPlaylistComplate(bool sort)
 		m_total_time += somg.lengh.time2int();
 	}
 
+	//清除歌词和专辑封面
+	m_album_cover.Destroy();
+	m_album_cover_blur.Destroy();
+	m_Lyrics = CLyrics();
+
 	//对播放列表排序
+	wstring current_file_name = GetCurrentFileName();		//排序前保存当前歌曲文件名
 	if (sort && m_playlist.size() > 1)
 		SortPlaylist(false);
 
 	SearchLyrics();
 
-	if (m_song_num > 0)
+	if (GetSongNum() > 0)
 	{
 		if (m_playing == 0)		//播放列表初始化完成，并排序完成后，如果此时没有在播放，就重新设置播放的文件
 		{
@@ -325,7 +331,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 					if (m_current_file_name_tmp == m_playlist[i].file_name)
 					{
 						m_index = i;
-						m_current_file_name = m_current_file_name_tmp;
+						//m_current_file_name = m_current_file_name_tmp;
 						break;
 					}
 				}
@@ -337,10 +343,10 @@ void CPlayer::IniPlaylistComplate(bool sort)
 			else		//否则，直接打开播放第index首曲目
 			{
 				MusicControl(Command::CLOSE);
-				m_current_file_name = m_playlist[m_index].file_name;
+				//m_current_file_name = m_playlist[m_index].file_name;
 				MusicControl(Command::OPEN);
 				MusicControl(Command::SEEK);
-				if(theApp.m_play_setting_data.auto_play_when_start)
+				if (theApp.m_play_setting_data.auto_play_when_start)
 					MusicControl(Command::PLAY);
 			}
 		}
@@ -348,7 +354,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 		{
 			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
 			{
-				if (m_current_file_name == m_playlist[i].file_name)
+				if (current_file_name == m_playlist[i].file_name)
 				{
 					m_index = i;
 					break;
@@ -507,11 +513,14 @@ void CPlayer::MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void * user)
 
 void CPlayer::MusicControl(Command command, int volume_step)
 {
+	if (!CCommon::FileExist(m_path + GetCurrentFileName()))
+		return;
+
 	switch (command)
 	{
 	case Command::OPEN:
 		m_error_code = 0;
-		m_musicStream = BASS_StreamCreateFile(FALSE, (m_path + m_current_file_name).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+		m_musicStream = BASS_StreamCreateFile(FALSE, (m_path + GetCurrentFileName()).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
 		m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
 		if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
@@ -520,13 +529,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		m_current_file_type = CAudioCommon::GetBASSChannelDescription(m_channel_info.ctype);		//根据通道信息获取当前音频文件的类型
 		if (m_current_file_type.empty())		//如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
 		{
-			CFilePathHelper file_path{ m_current_file_name };
+			CFilePathHelper file_path{ GetCurrentFileName() };
 			m_current_file_type = file_path.GetFileExtension(true);
 		}
-		if (m_song_num > 0)
+		if (GetSongNum() > 0)
 		{
 			if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-				AcquireSongInfo(m_musicStream, m_path + m_current_file_name, m_playlist[m_index]);
+				AcquireSongInfo(m_musicStream, m_path + GetCurrentFileName(), m_playlist[m_index]);
 			m_song_length = m_playlist[m_index].lengh;
 			m_song_length_int = m_song_length.time2int();
 			//如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
@@ -794,7 +803,7 @@ bool CPlayer::PlayTrack(int song_track)
 			SYSTEMTIME current_time;
 			GetLocalTime(&current_time);			//获取当前时间
 			srand(current_time.wMilliseconds);		//用当前时间的毫秒数设置产生随机数的种子
-			song_track = rand() % m_song_num;
+			song_track = rand() % GetSongNum();
 			m_shuffle_list.push_back(song_track);	//保存随机播放过的曲目
 		}
 		else if (song_track == PREVIOUS)		//回溯上一个随机播放曲目
@@ -820,14 +829,14 @@ bool CPlayer::PlayTrack(int song_track)
 		if (song_track == NEXT)		//播放下一曲
 		{
 			song_track = m_index + 1;
-			if (song_track >= m_song_num) song_track = 0;
-			if (song_track < 0) song_track = m_song_num - 1;
+			if (song_track >= GetSongNum()) song_track = 0;
+			if (song_track < 0) song_track = GetSongNum() - 1;
 		}
 		if (song_track == PREVIOUS)		//播放上一曲
 		{
 			song_track = m_index - 1;
-			if (song_track >= m_song_num) song_track = 0;
-			if (song_track < 0) song_track = m_song_num - 1;
+			if (song_track >= GetSongNum()) song_track = 0;
+			if (song_track < 0) song_track = GetSongNum() - 1;
 		}
 		break;
 	case RM_LOOP_TRACK:		//单曲循环
@@ -835,11 +844,11 @@ bool CPlayer::PlayTrack(int song_track)
 			song_track = m_index;
 	}
 
-	if (song_track >= 0 && song_track < m_song_num)
+	if (song_track >= 0 && song_track < GetSongNum())
 	{
 		MusicControl(Command::CLOSE);
 		m_index = song_track;
-		m_current_file_name = m_playlist[m_index].file_name;
+		//m_current_file_name = m_playlist[m_index].file_name;
 		MusicControl(Command::OPEN);
 		//IniLyrics();
 		if (m_playlist[m_index].is_cue)
@@ -856,7 +865,7 @@ bool CPlayer::PlayTrack(int song_track)
 	{
 		MusicControl(Command::CLOSE);
 		m_index = 0;
-		m_current_file_name = m_playlist[m_index].file_name;
+		//m_current_file_name = m_playlist[m_index].file_name;
 		MusicControl(Command::OPEN);
 		//IniLyrics();
 		GetBASSCurrentPosition();
@@ -908,7 +917,7 @@ void CPlayer::OpenFolder(wstring path)
 	bool path_exist{ false };
 	int track;
 	int position;
-	if (m_song_num>0) EmplaceCurrentPathToRecent();		//如果当前路径有歌曲，就保存当前路径到最近路径
+	if (GetSongNum() > 0) EmplaceCurrentPathToRecent();		//如果当前路径有歌曲，就保存当前路径到最近路径
 	//检查打开的路径是否已经存在于最近路径中
 	for (const auto& a_path_info : m_recent_path)
 	{
@@ -944,7 +953,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
 	if (files.empty()) return;
 	if (m_loading) return;
 	MusicControl(Command::CLOSE);
-	if (m_song_num>0) EmplaceCurrentPathToRecent();		//先保存当前路径和播放进度到最近路径
+	if (GetSongNum() > 0) EmplaceCurrentPathToRecent();		//先保存当前路径和播放进度到最近路径
 	size_t index;
 	wstring path;
 	index = files[0].find_last_of(L'\\');
@@ -970,7 +979,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
 	MusicControl(Command::SEEK);
 	if (play)
 		//MusicControl(Command::PLAY);
-		PlayTrack(m_song_num - files.size());	//打开文件后播放添加的第1首曲目
+		PlayTrack(GetSongNum() - files.size());	//打开文件后播放添加的第1首曲目
 	//IniLyrics();
 	SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 	//SetVolume();
@@ -981,18 +990,16 @@ void CPlayer::OpenAFile(wstring file)
 	if (file.empty()) return;
 	if (m_loading) return;
 	MusicControl(Command::CLOSE);
-	if (m_song_num>0) EmplaceCurrentPathToRecent();		//先保存当前路径和播放进度到最近路径
-	size_t index;
-	wstring path;
-	index = file.rfind(L'\\');
-	path = file.substr(0, index + 1);		//获取路径
-	m_path = path;
+	if (GetSongNum() > 0) EmplaceCurrentPathToRecent();		//先保存当前路径和播放进度到最近路径
+
+	CFilePathHelper file_path(file);
+	m_path = file_path.GetDir();
 	m_playlist.clear();
 	m_current_position_int = 0;
 	m_current_position = { 0,0,0 };
 	m_index = 0;
-	m_current_file_name = file.substr(index + 1);
-	m_song_num = 1;
+	//m_current_file_name = file.substr(index + 1);
+	//m_song_num = 1;
 
 	//获取打开路径的排序方式
 	m_sort_mode = SortMode::SM_FILE;
@@ -1003,7 +1010,7 @@ void CPlayer::OpenAFile(wstring file)
 	}
 
 	//初始化播放列表
-	m_current_file_name_tmp = m_current_file_name;
+	m_current_file_name_tmp = GetCurrentFileName();
 	IniPlayList(false, false);		//根据新路径重新初始化播放列表
 }
 
@@ -1146,12 +1153,12 @@ void CPlayer::LoadConfig()
 
 void CPlayer::ExplorePath(int track) const
 {
-	if (m_song_num > 0)
+	if (GetSongNum() > 0)
 	{
 		CString str;
 		if (track < 0)		//track小于0，打开资源管理器后选中当前播放的文件
-			str.Format(_T("/select,\"%s%s\""), m_path.c_str(), m_current_file_name.c_str());
-		else if (track < m_song_num)		//track为播放列表中的一个序号，打开资源管理器后选中指定的文件
+			str.Format(_T("/select,\"%s%s\""), m_path.c_str(), GetCurrentFileName().c_str());
+		else if (track < GetSongNum())		//track为播放列表中的一个序号，打开资源管理器后选中指定的文件
 			str.Format(_T("/select,\"%s%s\""), m_path.c_str(), m_playlist[track].file_name.c_str());
 		else								//track超过播放列表中文件的数量，打开资源管理器后不选中任何文件
 			str = m_path.c_str();
@@ -1178,6 +1185,16 @@ Time CPlayer::GetAllSongLength(int track) const
 		return Time();
 }
 
+int CPlayer::GetSongNum() const
+{
+	return static_cast<int>(m_playlist.size());
+}
+
+wstring CPlayer::GetFileName() const
+{
+	return (GetCurrentFileName().empty() ? CCommon::LoadText(IDS_FILE_NOT_FOUND).GetString() : GetCurrentFileName());
+}
+
 void CPlayer::DeleteAlbumCover()
 {
 	if (!m_inner_cover)
@@ -1191,48 +1208,29 @@ void CPlayer::ReloadPlaylist()
 {
 	if (m_loading) return;
 	MusicControl(Command::CLOSE);
+	m_current_file_name_tmp = GetCurrentFileName();	//保存当前播放的曲目的文件名，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
 	m_playlist.clear();		//清空播放列表
-	//wstring current_file_name = m_current_file_name;	//保存当前播放的曲目的文件名
-	m_current_file_name_tmp = m_current_file_name;	//保存当前播放的曲目的文件名，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
 	//初始化播放列表
 	IniPlayList(false, true);		//根据新路径重新初始化播放列表
-
-
-	////重新载入播放列表后，查找正在播放项目的序号
-	//for (int i{}; i < m_playlist.size(); i++)
-	//{
-	//	if (current_file_name == m_playlist[i].file_name)
-	//	{
-	//		m_index = i;
-	//		m_current_file_name = current_file_name;
-	//		break;
-	//	}
-	//}
-
-	//SetTitle();
-	//MusicControl(Command::OPEN);
-	//MusicControl(Command::SEEK);
-	//SaveConfig();
-
 }
 
 void CPlayer::RemoveSong(int index)
 {
 	if (m_loading) return;
-	if (index >= 0 && index < m_song_num)
+	if (index >= 0 && index < GetSongNum())
 	{
 		m_playlist.erase(m_playlist.begin() + index);
-		m_song_num--;
+		//m_song_num--;
 		if (index == m_index)		//如果要删除的曲目是正在播放的曲目，重新播放当前曲目
 		{
-			if(m_song_num>0)
+			if(GetSongNum() > 0)
 				PlayTrack(m_index);
 		}
 		else if (index < m_index)	//如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
 		{
 			m_index--;
 		}
-		if (m_song_num == 0)
+		if (GetSongNum() == 0)
 			m_playlist.push_back(SongInfo());
 	}
 }
@@ -1255,7 +1253,7 @@ void CPlayer::ClearPlaylist()
 {
 	if (m_loading) return;
 	m_playlist.clear();
-	m_song_num = 0;
+	//m_song_num = 0;
 	MusicControl(Command::STOP);
 }
 
@@ -1365,6 +1363,7 @@ void CPlayer::SortPlaylist(bool change_index)
 {
 	if (m_loading) return;
 	int track_number = m_playlist[m_index].track;
+	wstring current_file_name = GetCurrentFileName();
 	switch (m_sort_mode)
 	{
 	case SM_FILE: std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
@@ -1388,7 +1387,7 @@ void CPlayer::SortPlaylist(bool change_index)
 		{
 			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
 			{
-				if (m_current_file_name == m_playlist[i].file_name)
+				if (current_file_name == m_playlist[i].file_name)
 				{
 					m_index = i;
 					break;
@@ -1444,7 +1443,7 @@ void CPlayer::OnExit()
 {
 	SaveConfig();
 	//退出时保存最后播放的曲目和位置
-	if (!m_recent_path.empty() && m_song_num>0 && !m_playlist[0].file_name.empty())
+	if (!m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_name.empty())
 	{
 		m_recent_path[0].track = m_index;
 		m_recent_path[0].position = m_current_position_int;
@@ -1521,15 +1520,15 @@ void CPlayer::EmplaceCurrentPathToRecent()
 		if (m_path == m_recent_path[i].path)
 			m_recent_path.erase(m_recent_path.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除
 	}
-	if (m_song_num == 0 || m_playlist[0].file_name.empty()) return;		//如果当前路径中没有文件，就不保存
+	if (GetSongNum() == 0 || m_playlist[0].file_name.empty()) return;		//如果当前路径中没有文件，就不保存
 	PathInfo path_info;
 	path_info.path = m_path;
 	path_info.track = m_index;
 	path_info.position = m_current_position_int;
 	path_info.sort_mode = m_sort_mode;
-	path_info.track_num = m_song_num;
+	path_info.track_num = GetSongNum();
 	path_info.total_time = m_total_time;
-	if (m_song_num > 0)
+	if (GetSongNum() > 0)
 		m_recent_path.push_front(path_info);		//当前路径插入到m_recent_path的前面
 }
 
@@ -1668,13 +1667,13 @@ void CPlayer::ConnotPlayWarning() const
 void CPlayer::SearchAlbumCover()
 {
 	static wstring last_file_path;
-	if (last_file_path != m_path + m_current_file_name)		//防止同一个文件多次获取专辑封面
+	if (last_file_path != m_path + GetCurrentFileName())		//防止同一个文件多次获取专辑封面
 	{
 		m_album_cover.Destroy();
 		if (!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first)
 		{
 			//从文件获取专辑封面
-			CAudioTag audio_tag(m_musicStream, m_path + m_current_file_name, m_playlist[m_index]);
+			CAudioTag audio_tag(m_musicStream, m_path + GetCurrentFileName(), m_playlist[m_index]);
 			m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
 			m_album_cover.Load(m_album_cover_path.c_str());
 		}
@@ -1687,7 +1686,7 @@ void CPlayer::SearchAlbumCover()
 		}
 		//AlbumCoverGaussBlur();
 	}
-	last_file_path = m_path + m_current_file_name;
+	last_file_path = m_path + GetCurrentFileName();
 }
 
 void CPlayer::AlbumCoverGaussBlur()
@@ -1726,6 +1725,14 @@ void CPlayer::GetMidiPosition()
 	}
 }
 
+wstring CPlayer::GetCurrentFileName() const
+{
+	if (m_index >= 0 && m_index < static_cast<int>(m_playlist.size()))
+		return m_playlist[m_index].file_name;
+	else
+		return wstring();
+}
+
 void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo & song_info)
 {
 	//获取长度
@@ -1755,7 +1762,7 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInf
 
 void CPlayer::SearchOutAlbumCover()
 {
-	m_album_cover_path = GetRelatedAlbumCover(m_path + m_current_file_name, GetCurrentSongInfo());
+	m_album_cover_path = GetRelatedAlbumCover(m_path + GetCurrentFileName(), GetCurrentSongInfo());
 	if (!m_album_cover.IsNull())
 		m_album_cover.Destroy();
 	m_album_cover.Load(m_album_cover_path.c_str());
