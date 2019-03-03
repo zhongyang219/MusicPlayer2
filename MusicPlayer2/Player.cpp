@@ -1666,27 +1666,27 @@ void CPlayer::ConnotPlayWarning() const
 
 void CPlayer::SearchAlbumCover()
 {
-	static wstring last_file_path;
-	if (last_file_path != m_path + GetCurrentFileName())		//防止同一个文件多次获取专辑封面
+	//static wstring last_file_path;
+	//if (last_file_path != m_path + GetCurrentFileName())		//防止同一个文件多次获取专辑封面
+	//{
+	m_album_cover.Destroy();
+	if (!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first)
 	{
-		m_album_cover.Destroy();
-		if (!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first)
-		{
-			//从文件获取专辑封面
-			CAudioTag audio_tag(m_musicStream, m_path + GetCurrentFileName(), m_playlist[m_index]);
-			m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
-			m_album_cover.Load(m_album_cover_path.c_str());
-		}
-		m_inner_cover = !m_album_cover.IsNull();
-
-		if (/*theApp.m_app_setting_data.use_out_image && */m_album_cover.IsNull())
-		{
-			//获取不到专辑封面时尝试使用外部图片作为封面
-			SearchOutAlbumCover();
-		}
-		//AlbumCoverGaussBlur();
+		//从文件获取专辑封面
+		CAudioTag audio_tag(m_musicStream, m_path + GetCurrentFileName(), m_playlist[m_index]);
+		m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
+		m_album_cover.Load(m_album_cover_path.c_str());
 	}
-	last_file_path = m_path + GetCurrentFileName();
+	m_inner_cover = !m_album_cover.IsNull();
+
+	if (/*theApp.m_app_setting_data.use_out_image && */m_album_cover.IsNull())
+	{
+		//获取不到专辑封面时尝试使用外部图片作为封面
+		SearchOutAlbumCover();
+	}
+	//AlbumCoverGaussBlur();
+	//}
+	//last_file_path = m_path + GetCurrentFileName();
 }
 
 void CPlayer::AlbumCoverGaussBlur()
