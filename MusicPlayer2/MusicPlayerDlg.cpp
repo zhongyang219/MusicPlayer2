@@ -1366,7 +1366,10 @@ void CMusicPlayerDlg::OnExplorePath()
 BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+	if (pMsg->message == WM_KEYDOWN)
+		return TRUE;
+
+	if (pMsg->message == WM_KEYUP && pMsg->hwnd != m_search_edit.GetSafeHwnd())
 	{
 		//按下Ctrl键时
 		if (GetKeyState(VK_CONTROL) & 0x80)

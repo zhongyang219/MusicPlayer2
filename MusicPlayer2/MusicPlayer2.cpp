@@ -226,16 +226,24 @@ BOOL CMusicPlayerApp::InitInstance()
 void CMusicPlayerApp::OnHelp()
 {
 	// TODO: 在此添加命令处理程序代码
-	CMessageDlg helpDlg;
-	helpDlg.SetWindowTitle(CCommon::LoadText(IDS_HELP));
-	helpDlg.SetInfoText(CCommon::LoadText(IDS_WELCOM_TO_USE));
+	static bool dialog_exist{ false };
 
-	CString info{ GetHelpString() };
-	info += _T("\r\n\r\n");
-	info += GetSystemInfoString();
+	if(!dialog_exist)		//确保对话框已经存在时不再弹出
+	{
+		dialog_exist = true;
+		CMessageDlg helpDlg;
+		helpDlg.SetWindowTitle(CCommon::LoadText(IDS_HELP));
+		helpDlg.SetInfoText(CCommon::LoadText(IDS_WELCOM_TO_USE));
 
-	helpDlg.SetMessageText(info);
-	helpDlg.DoModal();
+		CString info{ GetHelpString() };
+		info += _T("\r\n\r\n");
+		info += GetSystemInfoString();
+
+		helpDlg.SetMessageText(info);
+		helpDlg.DoModal();
+
+		dialog_exist = false;
+	}
 }
 
 void CMusicPlayerApp::SaveSongData() const
