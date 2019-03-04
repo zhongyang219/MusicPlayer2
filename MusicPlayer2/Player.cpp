@@ -1070,8 +1070,7 @@ void CPlayer::SetTitle() const
 
 void CPlayer::SaveConfig() const
 {
-	CIniHelper ini;
-	ini.SetPath(theApp.m_config_path);
+	CIniHelper ini(theApp.m_config_path);
 
 	//ini.WriteString(L"config", L"path", m_path.c_str());
 	//ini.WriteInt(L"config", L"track", m_index);
@@ -1100,12 +1099,13 @@ void CPlayer::SaveConfig() const
 	ini.WriteInt(L"reverb", L"reverb_enable", m_reverb_enable);
 	ini.WriteInt(L"reverb", L"reverb_mix", m_reverb_mix);
 	ini.WriteInt(L"reverb", L"reverb_time", m_reverb_time);
+
+	ini.Save();
 }
 
 void CPlayer::LoadConfig()
 {
-	CIniHelper ini;
-	ini.SetPath(theApp.m_config_path);
+	CIniHelper ini(theApp.m_config_path);
 
 	//ini.GetString(L"config", L"path", L".\\songs\\");
 	//m_path = buff;

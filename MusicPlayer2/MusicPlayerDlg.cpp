@@ -170,8 +170,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 
 void CMusicPlayerDlg::SaveConfig()
 {
-	CIniHelper ini;
-	ini.SetPath(theApp.m_config_path);
+	CIniHelper ini(theApp.m_config_path);
 
 	ini.WriteInt(L"config", L"window_width", m_window_width);
 	ini.WriteInt(L"config", L"window_hight", m_window_height);
@@ -271,12 +270,12 @@ void CMusicPlayerDlg::SaveConfig()
 	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_EXIT));
 	ini.WriteString(L"hot_key", L"exit", str);
 
+	ini.Save();
 }
 
 void CMusicPlayerDlg::LoadConfig()
 {
-	CIniHelper ini;
-	ini.SetPath(theApp.m_config_path);
+	CIniHelper ini(theApp.m_config_path);
 
 	m_window_width = ini.GetInt(L"config", L"window_width", theApp.DPI(698));
 	m_window_height = ini.GetInt(L"config", L"window_hight", theApp.DPI(565));

@@ -355,17 +355,16 @@ UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
 
 void CMusicPlayerApp::SaveConfig()
 {
-	CIniHelper ini;
-	ini.SetPath(m_config_path);
+	CIniHelper ini(m_config_path);
 	ini.WriteBool(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start);
 	ini.WriteInt(_T("general"), _T("language"), static_cast<int>(m_general_setting_data.language));
 	ini.WriteBool(L"hot_key", L"global_multimedia_key_enable", m_hot_key_setting_data.global_multimedia_key_enable);
+	ini.Save();
 }
 
 void CMusicPlayerApp::LoadConfig()
 {
-	CIniHelper ini;
-	ini.SetPath(m_config_path);
+	CIniHelper ini(m_config_path);
 	m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
 	m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
 	m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", false);

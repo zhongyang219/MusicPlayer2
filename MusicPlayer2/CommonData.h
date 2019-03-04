@@ -3,7 +3,7 @@
 #include "ColorConvert.h"
 #include "DrawCommon.h"
 #include "Common.h"
-#include <functional>
+#include "resource.h"
 
 namespace CONSTVAL
 {
@@ -145,17 +145,13 @@ struct LyricSettingData
 	bool cortana_show_album_cover{ true };		//是否在Cortana搜索框显示专辑封面
 	bool cortana_icon_beat{ true };				//Cortana图标随音乐节奏跳动
 	bool cortana_lyric_compatible_mode{ false };	//Cortana搜索框歌词显示使用兼容模式
-	//wstring cortana_font_name;					//搜索框字体名称
-	//int cortana_font_size;						//搜索框字体大小
-	FontInfo cortana_font;
+	FontInfo cortana_font;						//搜索框字体
 	bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
 };
 
 struct ApperanceSettingData
 {
-	//wstring lyric_font_name;					//歌词字体名称
-	//int lyric_font_size;						//歌词字体大小
-	FontInfo lyric_font;
+	FontInfo lyric_font;						//歌词字体
 	int lyric_line_space{ 2 };					//歌词的行间距
 	int window_transparency{ 100 };				//窗口透明度
 	ColorTable theme_color;						//主题颜色
@@ -287,6 +283,15 @@ struct IconSet
 	IconRes next_l;
 };
 
+
+//播放列表中项目的显示格式
+enum DisplayFormat
+{
+	DF_FILE_NAME,		//文件名
+	DF_TITLE,			//标题
+	DF_ARTIST_TITLE,	//艺术家 - 标题
+	DF_TITLE_ARTIST		//标题 - 艺术家
+};
 
 struct UIData
 {

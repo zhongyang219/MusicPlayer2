@@ -64,3 +64,73 @@ CString CVariant::ToString() const
 	}
 	return str;
 }
+
+int CVariant::ToInt() const
+{
+	int rtn_value = 0;
+	switch (m_type)
+	{
+	case eType::INT:
+		rtn_value = m_value_int;
+		break;
+	case eType::UINT:
+		rtn_value = static_cast<int>(m_value_int);
+		break;
+	case eType::DOUBLE:
+		rtn_value = static_cast<int>(m_value_double);
+		break;
+	case eType::STRING:
+		rtn_value = _ttoi(m_value_string);
+		break;
+	default:
+		break;
+	}
+	return rtn_value;
+}
+
+double CVariant::ToDouble() const
+{
+	double rtn_value = 0.0;
+	switch (m_type)
+	{
+	case eType::INT:
+	case eType::UINT:
+		rtn_value = static_cast<double>(m_value_int);
+		break;
+	case eType::DOUBLE:
+		rtn_value = m_value_double;
+		break;
+	case eType::STRING:
+		rtn_value = _ttof(m_value_string);
+		break;
+	default:
+		break;
+	}
+	return rtn_value;
+}
+
+bool CVariant::ToBool() const
+{
+	bool rtn_value = false;
+	switch (m_type)
+	{
+	case eType::INT:
+	case eType::UINT:
+		rtn_value = m_value_int != 0;
+		break;
+	case eType::DOUBLE:
+		rtn_value = fabs(m_value_double) > 1e-6;
+		break;
+	case eType::STRING:
+		if (m_value_string == _T("true") || m_value_string == _T("True") || m_value_string == _T("TRUE"))
+			rtn_value = true;
+		else if (m_value_string == _T("false") || m_value_string == _T("False") || m_value_string == _T("FALSE"))
+			rtn_value = false;
+		else
+			rtn_value = ToInt() != 0;
+		break;
+	default:
+		break;
+	}
+	return rtn_value;
+}

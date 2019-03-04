@@ -12,6 +12,9 @@ public:
 	~CVariant();
 
 	CString ToString() const;
+	int ToInt() const;
+	double ToDouble() const;
+	bool ToBool() const;
 
 private:
 	enum class eType { INT, UINT, DOUBLE, STRING };

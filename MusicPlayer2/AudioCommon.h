@@ -114,15 +114,6 @@ enum RepeatMode
 	RM_LOOP_TRACK		//单曲循环
 };
 
-//播放列表中项目的显示格式
-enum DisplayFormat
-{
-	DF_FILE_NAME,		//文件名
-	DF_TITLE,			//标题
-	DF_ARTIST_TITLE,	//艺术家 - 标题
-	DF_TITLE_ARTIST		//标题 - 艺术家
-};
-
 #define GENRE_MAX 148
 //流派列表
 const wchar_t GENRE_TABLE[GENRE_MAX][24]
