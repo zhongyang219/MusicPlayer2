@@ -103,9 +103,6 @@ public:
 	//计算文件大小
 	static size_t GetFileSize(const wstring& file_name);
 
-	//向ini文件写入一个int数据
-	static void WritePrivateProfileIntW(const wchar_t* AppName, const wchar_t* KeyName, int value, const wchar_t* Path);
-
 	//将string类型的字符串转换成Unicode编码的wstring字符串
 	static wstring StrToUnicode(const string& str, CodeType code_type = CodeType::AUTO);
 

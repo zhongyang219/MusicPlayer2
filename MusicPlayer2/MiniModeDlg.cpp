@@ -36,14 +36,17 @@ void CMiniModeDlg::DoDataExchange(CDataExchange* pDX)
 
 void CMiniModeDlg::SaveConfig() const
 {
-	CCommon::WritePrivateProfileIntW(L"mini_mode", L"position_x", m_position_x, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"mini_mode", L"position_y", m_position_y, theApp.m_config_path.c_str());
+	CIniHelper ini(theApp.m_config_path);
+	ini.WriteInt(L"mini_mode", L"position_x", m_position_x);
+	ini.WriteInt(L"mini_mode", L"position_y", m_position_y);
+	ini.Save();
 }
 
 void CMiniModeDlg::LoadConfig()
 {
-	m_position_x = GetPrivateProfileInt(_T("mini_mode"), _T("position_x"), -1, theApp.m_config_path.c_str());
-	m_position_y = GetPrivateProfileInt(_T("mini_mode"), _T("position_y"), -1, theApp.m_config_path.c_str());
+	CIniHelper ini(theApp.m_config_path);
+	m_position_x = ini.GetInt(L"mini_mode", L"position_x", -1);
+	m_position_y = ini.GetInt(_T("mini_mode"), _T("position_y"), -1);
 }
 
 void CMiniModeDlg::CheckWindowPos()

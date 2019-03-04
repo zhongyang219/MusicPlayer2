@@ -186,13 +186,6 @@ size_t CCommon::GetFileSize(const wstring & file_name)
 	return m - l;
 }
 
-void CCommon::WritePrivateProfileIntW(const wchar_t * AppName, const wchar_t * KeyName, int value, const wchar_t * Path)
-{
-	wchar_t buff[16];
-	_itow_s(value, buff, 10);
-	WritePrivateProfileStringW(AppName, KeyName, buff, Path);
-}
-
 wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
 {
 	if (str.empty()) return wstring();

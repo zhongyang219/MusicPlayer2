@@ -32,25 +32,30 @@ void CEqualizerDlg::EnableControls(bool enable)
 
 void CEqualizerDlg::SaveConfig() const
 {
-	CCommon::WritePrivateProfileIntW(L"equalizer", L"equalizer_style", m_equ_style_selected, theApp.m_config_path.c_str());
+	CIniHelper ini(theApp.m_config_path);
+
+	ini.WriteInt(L"equalizer", L"equalizer_style", m_equ_style_selected);
 	//保存自定义的每个均衡器通道的增益
 	wchar_t buff[16];
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		swprintf_s(buff, L"channel%d", i + 1);
-		CCommon::WritePrivateProfileIntW(L"equalizer", buff, m_user_defined_gain[i], theApp.m_config_path.c_str());
+		ini.WriteInt(L"equalizer", buff, m_user_defined_gain[i]);
 	}
+	ini.Save();
 }
 
 void CEqualizerDlg::LoadConfig()
 {
-	m_equ_style_selected = GetPrivateProfileIntW(L"equalizer", L"equalizer_style", 0, theApp.m_config_path.c_str());
+	CIniHelper ini(theApp.m_config_path);
+
+	m_equ_style_selected = ini.GetInt(L"equalizer", L"equalizer_style", 0);
 	//读取自定义的每个均衡器通道的增益
 	wchar_t buff[16];
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		swprintf_s(buff, L"channel%d", i + 1);
-		m_user_defined_gain[i] = GetPrivateProfileIntW(L"equalizer", buff, 0, theApp.m_config_path.c_str());
+		m_user_defined_gain[i] = ini.GetInt(L"equalizer", buff, 0);
 	}
 }
 

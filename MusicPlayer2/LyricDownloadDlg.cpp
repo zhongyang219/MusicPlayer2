@@ -53,18 +53,21 @@ bool CLyricDownloadDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 
 void CLyricDownloadDlg::SaveConfig() const
 {
-	CCommon::WritePrivateProfileIntW(L"lyric_download", L"download_translate", m_download_translate, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"lyric_download", L"save_as_utf8", static_cast<int>(m_save_code), theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"lyric_download", L"save_to_song_folder", m_save_to_song_folder, theApp.m_config_path.c_str());
-	CCommon::WritePrivateProfileIntW(L"lyric_download", L"search_max_item", m_search_max_item, theApp.m_config_path.c_str());
+	CIniHelper ini(theApp.m_config_path);
+	ini.WriteBool(L"lyric_download", L"download_translate", m_download_translate);
+	ini.WriteInt(L"lyric_download", L"save_as_utf8", static_cast<int>(m_save_code));
+	ini.WriteBool(L"lyric_download", L"save_to_song_folder", m_save_to_song_folder);
+	ini.WriteInt(L"lyric_download", L"search_max_item", m_search_max_item);
+	ini.Save();
 }
 
 void CLyricDownloadDlg::LoadConfig()
 {
-	m_download_translate = (GetPrivateProfileInt(_T("lyric_download"), _T("download_translate"), 1, theApp.m_config_path.c_str()) != 0);
-	m_save_code = static_cast<CodeType>(GetPrivateProfileInt(_T("lyric_download"), _T("save_as_utf8"), 1, theApp.m_config_path.c_str()));
-	m_save_to_song_folder = (GetPrivateProfileInt(_T("lyric_download"), _T("save_to_song_folder"), 1, theApp.m_config_path.c_str()) != 0);
-	m_search_max_item = GetPrivateProfileInt(_T("lyric_download"), _T("search_max_item"), 30, theApp.m_config_path.c_str());
+	CIniHelper ini(theApp.m_config_path);
+	m_download_translate = ini.GetBool(L"lyric_download", L"download_translate", true);
+	m_save_code = static_cast<CodeType>(ini.GetInt(L"lyric_download", L"save_as_utf8", 1));
+	m_save_to_song_folder = ini.GetBool(L"lyric_download", L"save_to_song_folder", true);
+	m_search_max_item = ini.GetInt(L"lyric_download", L"search_max_item", 30);
 }
 
 void CLyricDownloadDlg::DoDataExchange(CDataExchange* pDX)
