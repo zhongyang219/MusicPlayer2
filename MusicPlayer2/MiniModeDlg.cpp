@@ -282,9 +282,6 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 	// TODO: 在此添加专用代码和/或调用基类
 
 	if (pMsg->message == WM_KEYDOWN)
-		return TRUE;
-
-	if (pMsg->message == WM_KEYUP)
 	{
 		if (pMsg->wParam == VK_ESCAPE)
 		{
@@ -321,9 +318,9 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 	}
 
 	//将此窗口的其他键盘消息转发给主窗口
-	if (pMsg->message == WM_KEYUP)
+	if (pMsg->message == WM_KEYDOWN)
 	{
-		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYUP, pMsg->wParam, pMsg->lParam);
+		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, pMsg->wParam, pMsg->lParam);
 		return TRUE;
 	}
 
