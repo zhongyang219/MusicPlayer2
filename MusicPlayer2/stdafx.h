@@ -33,6 +33,7 @@
 
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
+//如果需要为Windows XP编译，请去掉下面一行代码的注释
 //#define COMPILE_IN_WIN_XP
 
 //自定义包含文件
@@ -47,9 +48,6 @@
 #include <tuple>
 #include <deque>
 #include <algorithm>
-//#ifndef COMPILE_IN_WIN_XP
-//#include <VersionHelpers.h>
-//#endif
 #include <iomanip>
 #include <map>
 #include <cmath>
@@ -70,12 +68,7 @@ using std::map;
 #pragma comment(lib,"Dwmapi.lib")
 #endif
 
-//用于支持使用网络相关的类
-#include <afxinet.h>
-#include <afxwin.h>
-#include <afxcontrolbars.h>
-#include <afxwin.h>
-#include <afxcmn.h>
+#include <afxinet.h>	//用于支持使用网络相关的类
 
 
 
@@ -98,9 +91,6 @@ using std::map;
 #else
 #define _tstring  std::string
 #endif // !UNICODE
-
-//根据DPI缩放大小
-//#define theApp.DPI(x) (theApp.m_dpi*(x)/96)
 
 //CPlayer类中用到的常量
 #define NEXT (-999)		//定义“下一曲”常量
@@ -131,17 +121,6 @@ using std::map;
 #define FFT_SAMPLE 128			//频谱分析采样点数
 //#define FFT_NUM 128			//要使用的频谱的点数
 #define SPECTRUM_ROW 64			//频谱分析柱形的条数（必须为2的整数次方且小于或等于FFT_SAMPLE）
-
-//获取不到歌曲标签时的默认字符串
-//#define CCommon::LoadText(IDS_DEFAULT_TITLE) L"<未知标题>"
-//#define CCommon::LoadText(IDS_DEFAULT_ARTIST) L"<未知艺术家>"
-//#define CCommon::LoadText(IDS_DEFAULT_ALBUM) L"<未知唱片集>"
-//#define CCommon::LoadText(IDS_DEFAULT_YEAR) L"<未知年份>"
-//#define CCommon::LoadText(IDS_DEFAULT_GENRE) L"<未知流派>"
-
-//一句歌词为空白时的默认显示文本
-//#define CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT) L"……"
-//#define CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA) L"Music …"
 
 #define IDC_SAVE_COMBO_BOX 1990		//定义添加到“另存为”对话框中的组合框的ID
 

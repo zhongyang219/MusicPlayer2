@@ -12,7 +12,6 @@
 #include"PropertyDlg.h"
 #include"ProgressStatic.h"
 #include"ColorConvert.h"
-//#include<VersionHelpers.h>
 #include"MiniModeDlg.h"
 #include"LyricEditDlg.h"
 #include "LyricDownloadDlg.h"
