@@ -1077,14 +1077,14 @@ void CPlayer::SaveConfig() const
 	ini.WriteInt(L"config", L"volume", m_volume);
 	//ini.WriteInt(L"config", L"position", m_current_position_int);
 	ini.WriteInt(L"config", L"repeat_mode", static_cast<int>(m_repeat_mode));
-	ini.WriteInt(L"config", L"lyric_karaoke_disp", theApp.m_lyric_setting_data.lyric_karaoke_disp);
+	ini.WriteBool(L"config", L"lyric_karaoke_disp", theApp.m_lyric_setting_data.lyric_karaoke_disp);
 	ini.WriteString(L"config",L"lyric_path", theApp.m_lyric_setting_data.lyric_path);
 	ini.WriteInt(L"config", L"sort_mode", static_cast<int>(m_sort_mode));
-	ini.WriteInt(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
+	ini.WriteBool(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
 	ini.WriteString(L"config",L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
 
 	//保存均衡器设定
-	ini.WriteInt(L"equalizer", L"equalizer_enable", m_equ_enable);
+	ini.WriteBool(L"equalizer", L"equalizer_enable", m_equ_enable);
 	//保存每个均衡器通道的增益
 	//if (m_equ_style == 9)
 	//{
@@ -1109,8 +1109,6 @@ void CPlayer::LoadConfig()
 
 	//ini.GetString(L"config", L"path", L".\\songs\\");
 	//m_path = buff;
-	if (!m_path.empty() && m_path.back() != L'/' && m_path.back() != L'\\')		//如果读取到的新路径末尾没有斜杠，则在末尾加上一个
-		m_path.append(1, L'\\');
 	//m_index =ini.GetInt(L"config", L"track", 0);
 	m_volume =ini.GetInt(L"config", L"volume", 60);
 	//m_current_position_int =ini.GetInt(L"config", L"position", 0);
@@ -1119,14 +1117,14 @@ void CPlayer::LoadConfig()
 	theApp.m_lyric_setting_data.lyric_path = ini.GetString(L"config", L"lyric_path", L".\\lyrics\\");
 	if (!theApp.m_lyric_setting_data.lyric_path.empty() && theApp.m_lyric_setting_data.lyric_path.back() != L'/' && theApp.m_lyric_setting_data.lyric_path.back() != L'\\')
 		theApp.m_lyric_setting_data.lyric_path.append(1, L'\\');
-	theApp.m_lyric_setting_data.lyric_karaoke_disp =ini.GetBool(L"config", L"lyric_karaoke_disp", 1);
+	theApp.m_lyric_setting_data.lyric_karaoke_disp =ini.GetBool(L"config", L"lyric_karaoke_disp", true);
 	m_sort_mode = static_cast<SortMode>(ini.GetInt(L"config", L"sort_mode", 0));
-	theApp.m_lyric_setting_data.lyric_fuzzy_match =ini.GetBool(L"config", L"lyric_fuzzy_match", 1);
+	theApp.m_lyric_setting_data.lyric_fuzzy_match =ini.GetBool(L"config", L"lyric_fuzzy_match", true);
 	wstring default_album_name = ini.GetString(L"config", L"default_album_file_name", L"cover");
 	CCommon::StringSplit(default_album_name, L',', theApp.m_app_setting_data.default_album_name);
 
 	//读取均衡器设定
-	m_equ_enable =ini.GetBool(L"equalizer", L"equalizer_enable", 0);
+	m_equ_enable =ini.GetBool(L"equalizer", L"equalizer_enable", false);
 	m_equ_style =ini.GetInt(L"equalizer", L"equalizer_style", 0);	//读取均衡器预设
 	if (m_equ_style == 9)		//如果均衡器预设为“自定义”
 	{
@@ -1503,6 +1501,9 @@ void CPlayer::LoadRecentPath()
 	if (!m_recent_path.empty())
 	{
 		m_path = m_recent_path[0].path;
+		if (!m_path.empty() && m_path.back() != L'/' && m_path.back() != L'\\')		//如果读取到的新路径末尾没有斜杠，则在末尾加上一个
+			m_path.push_back(L'\\');
+
 		m_index = m_recent_path[0].track;
 		m_current_position_int = m_recent_path[0].position;
 		m_current_position.int2time(m_current_position_int);
