@@ -95,12 +95,17 @@ void CFindDlg::SaveConfig()
 		m_find_option_data |= 0x08;
 	if(m_find_current_playlist)
 		m_find_option_data |= 0x10;
-	CCommon::WritePrivateProfileIntW(L"config", L"find_option_data", m_find_option_data, theApp.m_config_path.c_str());
+
+	CIniHelper ini(theApp.m_config_path);
+	ini.WriteInt(L"config", L"find_option_data", m_find_option_data);
+	ini.Save();
 }
 
 void CFindDlg::LoadConfig()
 {
-	m_find_option_data = GetPrivateProfileInt(_T("config"), _T("find_option_data"), 0xff, theApp.m_config_path.c_str());
+	CIniHelper ini(theApp.m_config_path);
+	m_find_option_data = ini.GetInt(L"config", L"find_option_data", 0xff);
+
 	m_find_file = (m_find_option_data % 2 != 0);
 	m_find_title = ((m_find_option_data >> 1) % 2 != 0);
 	m_find_artist = ((m_find_option_data >> 2) % 2 != 0);
