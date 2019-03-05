@@ -183,8 +183,10 @@ public:
 	wHotkey         为0表示不设置快捷键
 	pszDescription  备注
 	iShowCmd        运行方式，默认为常规窗口
+	lpszArguments	命令行参数
+	nIconOffset		使用的图标为应用程序中第几个图标
 	*/
-	static BOOL CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL);
+	static bool CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL, LPCTSTR lpszArguments = NULL, int nIconOffset = 0);
 
 	//查找指定文件，并将文件名保存在files容器
 	//file_name：例如 D:\\Music\\*abc*.mp3，则将查找D:\Music目录下所有包含abc的mp3文件

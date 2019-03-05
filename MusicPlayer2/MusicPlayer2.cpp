@@ -104,15 +104,18 @@ BOOL CMusicPlayerApp::InitInstance()
 			if (handle != NULL)
 			{
 				HWND minidlg_handle = FindWindow(_T("MiniDlg_ByH87M"), NULL);
-				if (minidlg_handle == NULL)			//没有找到“迷你模式”窗口，则激活主窗口
+				if (!cmd_control)
 				{
-					ShowWindow(handle, SW_SHOWNORMAL);		//激活并显示窗口
-					SetForegroundWindow(handle);		//将窗口设置为焦点
-				}
-				else				//找到了“迷你模式”窗口，则激活“迷你模式”窗口
-				{
-					ShowWindow(minidlg_handle, SW_SHOWNORMAL);
-					SetForegroundWindow(minidlg_handle);
+					if (minidlg_handle == NULL)			//没有找到“迷你模式”窗口，则激活主窗口
+					{
+						ShowWindow(handle, SW_SHOWNORMAL);		//激活并显示窗口
+						SetForegroundWindow(handle);		//将窗口设置为焦点
+					}
+					else				//找到了“迷你模式”窗口，则激活“迷你模式”窗口
+					{
+						ShowWindow(minidlg_handle, SW_SHOWNORMAL);
+						SetForegroundWindow(minidlg_handle);
+					}
 				}
 
 				if (cmd_control)

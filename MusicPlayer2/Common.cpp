@@ -621,10 +621,10 @@ bool CCommon::GetCmdLineCommand(const wstring & cmd_line, ControlCmd & command)
 	return rtn;
 }
 
-BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, LPCTSTR lpszLnkFileName, LPCTSTR lpszWorkDir, WORD wHotkey, LPCTSTR lpszDescription, int iShowCmd)
+bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, LPCTSTR lpszLnkFileName, LPCTSTR lpszWorkDir, WORD wHotkey, LPCTSTR lpszDescription, int iShowCmd, LPCTSTR lpszArguments, int nIconOffset)
 {
 	if (lpszLnkFileDir == NULL)
-		return FALSE;
+		return false;
 
 	HRESULT hr;
 	IShellLink     *pLink;  //IShellLink对象指针
@@ -633,24 +633,26 @@ BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 	//创建IShellLink对象
 	hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&pLink);
 	if (FAILED(hr))
-		return FALSE;
+		return false;
 
 	//从IShellLink对象中获取IPersistFile接口
 	hr = pLink->QueryInterface(IID_IPersistFile, (void**)&ppf);
 	if (FAILED(hr))
 	{
 		pLink->Release();
-		return FALSE;
+		return false;
 	}
 
-	TCHAR file_path[MAX_PATH];
+	TCHAR file_path[MAX_PATH];		//当前进程exe文件路径
 	GetModuleFileName(NULL, file_path, MAX_PATH);
+	LPCTSTR pFilePath;				//快捷方式目标
 
 	//目标
 	if (lpszFileName == NULL)
-		pLink->SetPath(file_path);
+		pFilePath = file_path;
 	else
-		pLink->SetPath(lpszFileName);
+		pFilePath = lpszFileName;
+	pLink->SetPath(pFilePath);
 
 	//工作目录
 	if (lpszWorkDir != NULL)
@@ -661,10 +663,7 @@ BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 	{
 		//设置工作目录为快捷方式目标所在位置
 		TCHAR workDirBuf[MAX_PATH];
-		if (lpszFileName == NULL)
-			wcscpy_s(workDirBuf, file_path);
-		else
-			wcscpy_s(workDirBuf, lpszFileName);
+		wcscpy_s(workDirBuf, pFilePath);
 		LPTSTR pstr = wcsrchr(workDirBuf, _T('\\'));
 		*pstr = _T('\0');
 		pLink->SetWorkingDirectory(workDirBuf);
@@ -681,6 +680,13 @@ BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 	//显示方式
 	pLink->SetShowCmd(iShowCmd);
 
+	//参数
+	if (lpszArguments != NULL)
+		pLink->SetArguments(lpszArguments);
+
+	//图标
+	if (nIconOffset > 0)
+		pLink->SetIconLocation(pFilePath, nIconOffset);
 
 	//快捷方式的路径 + 名称
 	wchar_t szBuffer[MAX_PATH];
@@ -699,7 +705,7 @@ BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 		{
 			ppf->Release();
 			pLink->Release();
-			return FALSE;
+			return false;
 		}
 		//注意后缀名要从.exe改为.lnk
 		swprintf_s(szBuffer, L"%s\\%s", lpszLnkFileDir, pstr);

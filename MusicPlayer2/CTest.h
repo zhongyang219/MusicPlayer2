@@ -12,5 +12,6 @@ public:
 private:
 	static void TestStringMatch();
 	static void TestCrash();
+	static void TestShortCut();
 };
 

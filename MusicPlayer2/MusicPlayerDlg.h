@@ -291,4 +291,5 @@ public:
 	afx_msg void OnMouseLeave();
 	afx_msg void OnShowMenuBar();
 	afx_msg void OnFullScreen();
+	afx_msg void OnCreatePlayShortcut();
 };

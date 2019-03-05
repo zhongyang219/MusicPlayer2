@@ -163,6 +163,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_WM_MOUSELEAVE()
 	ON_COMMAND(ID_SHOW_MENU_BAR, &CMusicPlayerDlg::OnShowMenuBar)
 		ON_COMMAND(ID_FULL_SCREEN, &CMusicPlayerDlg::OnFullScreen)
+		ON_COMMAND(ID_CREATE_PLAY_SHORTCUT, &CMusicPlayerDlg::OnCreatePlayShortcut)
 		END_MESSAGE_MAP()
 
 
@@ -3129,4 +3130,31 @@ void CMusicPlayerDlg::OnFullScreen()
 	m_pUI->UpdateToolTipPosition();
 	m_pUI->UpdateFullScreenTip();
 	SetThumbnailClipArea();
+}
+
+
+void CMusicPlayerDlg::OnCreatePlayShortcut()
+{
+	// TODO: 在此添加命令处理程序代码
+
+	//创建播放/暂停快捷方式
+	wstring play_pause = CCommon::LoadText(IDS_PLAY_PAUSE, L".lnk");
+	CCommon::FileNameNormalize(play_pause);
+
+	bool success = true;
+	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, play_pause.c_str(), NULL, 0, 0, 1, L"-play_pause", 2);
+
+	//创建上一曲快捷方式
+	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_PREVIOUS, L".lnk"), NULL, 0, 0, 1, L"-previous", 1);
+
+	//创建下一曲快捷方式
+	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_NEXT, L".lnk"), NULL, 0, 0, 1, L"-next", 3);
+
+	//创建停止快捷方式
+	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_STOP, L".lnk"), NULL, 0, 0, 1, L"-stop", 6);
+
+	if (success)
+		MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREATED), NULL, MB_ICONINFORMATION);
+	else
+		MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
 }

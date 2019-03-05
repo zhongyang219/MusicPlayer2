@@ -15,6 +15,7 @@ void CTest::Test()
 {
 	//TestStringMatch();
 	//TestCrash();
+	//TestShortCut();
 }
 
 void CTest::TestStringMatch()
@@ -35,4 +36,19 @@ void CTest::TestCrash()
 	CString* pStr = nullptr;
 	int a = pStr->GetLength();
 	printf("%d", a);
+}
+
+void CTest::TestShortCut()
+{
+	int rtn = CCommon::CreateFileShortcut(L"D:\\Temp",
+		L"D:\\Program Files\\MusicPlayer2\\MusicPlayer2.exe",
+		L"play_pause.lnk",
+		L"D:\\Program Files\\MusicPlayer2",
+		0,
+		NULL,
+		1,
+		L"-play_pause",
+		2
+		);
+	int a = 0;
 }
