@@ -18,6 +18,14 @@ enum class Command
 	SEEK
 };
 
+enum class ControlCmd
+{
+	PLAY_PAUSE,
+	_PREVIOUS,
+	_NEXT,
+	STOP
+};
+
 enum class CodeType
 {
 	ANSI,
@@ -160,7 +168,10 @@ public:
 	static void WriteLog(const wchar_t* path, const wstring& content);
 
 	//将通过命令行参数传递过来的多个文件路径拆分，并保存到file容器里，如果参数传递过来的第一个文件不是文件而是文件夹，则返回文件夹路径，否则，返回空字符串
-	static wstring DisposeCmdLine(const wstring& cmd_line, vector<wstring>& files);
+	static wstring DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files);
+
+	//解析命令行参数中的命令
+	static bool GetCmdLineCommand(const wstring& cmd_line, ControlCmd& command);
 
 	/*
 	函数功能：对指定文件在指定的目录下创建其快捷方式

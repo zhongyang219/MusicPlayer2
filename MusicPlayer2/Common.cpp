@@ -551,7 +551,7 @@ void CCommon::WriteLog(const wchar_t* path, const wstring & content)
 	out_put << buff << CCommon::UnicodeToStr(content, CodeType::UTF8_NO_BOM) << std::endl;
 }
 
-wstring CCommon::DisposeCmdLine(const wstring & cmd_line, vector<wstring>& files)
+wstring CCommon::DisposeCmdLineFiles(const wstring & cmd_line, vector<wstring>& files)
 {
 	files.clear();
 	if (cmd_line.empty()) return wstring();
@@ -603,6 +603,22 @@ wstring CCommon::DisposeCmdLine(const wstring & cmd_line, vector<wstring>& files
 	//out_info += path.c_str();
 	//out_info += _T("\r\n");
 	//CCommon::WriteLog(L".\\command.log", wstring{ out_info });
+}
+
+bool CCommon::GetCmdLineCommand(const wstring & cmd_line, ControlCmd & command)
+{
+	bool rtn = true;
+	if (cmd_line.find(L"-play_pause") != wstring::npos)
+		command = ControlCmd::PLAY_PAUSE;
+	else if (cmd_line.find(L"-previous") != wstring::npos)
+		command = ControlCmd::_PREVIOUS;
+	else if (cmd_line.find(L"-next") != wstring::npos)
+		command = ControlCmd::_NEXT;
+	else if (cmd_line.find(L"-stop") != wstring::npos)
+		command = ControlCmd::STOP;
+	else
+		rtn = false;
+	return rtn;
 }
 
 BOOL CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, LPCTSTR lpszLnkFileName, LPCTSTR lpszWorkDir, WORD wHotkey, LPCTSTR lpszDescription, int iShowCmd)

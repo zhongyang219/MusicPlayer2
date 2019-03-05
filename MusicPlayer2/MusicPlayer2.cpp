@@ -87,6 +87,11 @@ BOOL CMusicPlayerApp::InitInstance()
 		return FALSE;
 	}
 
+	ControlCmd cmd;
+	bool cmd_control = CCommon::GetCmdLineCommand(cmd_line, cmd);		//命令行参数是否包含参数命令
+	if (cmd_control)		//如果从命令行参数解析到了命令，则将命令行参数清除
+		cmd_line.clear();
+
 	//检查是否已有实例正在运行（Debug时不检查）
 #ifndef _DEBUG
 	HANDLE hMutex = ::CreateMutex(NULL, TRUE, _T("bXS1E7joK0Kh"));		//使用一个随机的字符串创建一个互斥量
@@ -109,6 +114,28 @@ BOOL CMusicPlayerApp::InitInstance()
 					ShowWindow(minidlg_handle, SW_SHOWNORMAL);
 					SetForegroundWindow(minidlg_handle);
 				}
+
+				if (cmd_control)
+				{
+					switch (cmd)
+					{
+					case ControlCmd::PLAY_PAUSE:
+						::SendMessage(handle, WM_COMMAND, ID_PLAY_PAUSE, 0);
+						break;
+					case ControlCmd::_PREVIOUS:
+						::SendMessage(handle, WM_COMMAND, ID_PREVIOUS, 0);
+						break;
+					case ControlCmd::_NEXT:
+						::SendMessage(handle, WM_COMMAND, ID_NEXT, 0);
+						break;
+					case ControlCmd::STOP:
+						::SendMessage(handle, WM_COMMAND, ID_STOP, 0);
+						break;
+					default:
+						break;
+					}
+				}
+
 				if (!cmd_line.empty())		//如果通过命令行传递了打开的文件名，且已有一个进程在运行，则将打开文件的命令和命令行参数传递给该进程
 				{
 					CCommon::CopyStringToClipboard(cmd_line);		//将命令行参数复制到剪贴板，通过剪贴板在不同进程间字符串

@@ -1141,7 +1141,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		else		//从命令行参数获取要打开的文件
 		{
 			vector<wstring> files;
-			wstring path = CCommon::DisposeCmdLine(m_cmdLine, files);
+			wstring path = CCommon::DisposeCmdLineFiles(m_cmdLine, files);
 			if (!path.empty())
 				CPlayer::GetInstance().Create(path);
 			else
@@ -2848,7 +2848,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lPa
 	if (cmd_line.empty())
 		return 0;
 	vector<wstring> files;
-	CCommon::DisposeCmdLine(wstring(cmd_line), files);
+	CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
 	CPlayer::GetInstance().OpenFiles(files);
 	return 0;
 }
