@@ -58,9 +58,6 @@ struct FontInfo
 };
 
 
-//将字号转成LOGFONT结构中的lfHeight
-#define FONTSIZE_TO_LFHEIGHT(font_size) (-MulDiv(font_size, GetDeviceCaps(::GetDC(HWND_DESKTOP), LOGPIXELSY), 72))
-
 struct UIFont
 {
 private:
@@ -95,7 +92,7 @@ public:
 	static void CreateFontSimple(CFont& font, int font_size, LPCTSTR font_name, FontStyle style = FontStyle())
 	{
 		font.CreateFont(
-			FONTSIZE_TO_LFHEIGHT(font_size), // nHeight
+			FontSizeToLfHeight(font_size), // nHeight
 			0, // nWidth
 			0, // nEscapement
 			0, // nOrientation
@@ -110,6 +107,16 @@ public:
 			DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
 			font_name);
 	}
+
+	//将字号转成LOGFONT结构中的lfHeight
+	static int FontSizeToLfHeight(int font_size)
+	{
+		HDC hDC = ::GetDC(HWND_DESKTOP);
+		int lfHeight = -MulDiv(font_size, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+		::ReleaseDC(HWND_DESKTOP, hDC);
+		return lfHeight;
+	}
+
 };
 
 struct FontSet
