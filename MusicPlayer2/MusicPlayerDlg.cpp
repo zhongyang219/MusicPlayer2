@@ -3154,7 +3154,7 @@ void CMusicPlayerDlg::OnCreatePlayShortcut()
 	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_STOP, L".lnk"), NULL, 0, 0, 1, L"-stop", 6);
 
 	if (success)
-		MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREATED), NULL, MB_ICONINFORMATION);
+		MessageBox(CCommon::LoadTextFormat(IDS_PLAY_SHORTCUT_CREATED, { theApp.m_module_dir }), NULL, MB_ICONINFORMATION);
 	else
 		MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
 }
