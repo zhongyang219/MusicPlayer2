@@ -35,6 +35,9 @@ public:
 	static void DeleteStrSlash(wstring& str);		//如果字符串中的“\"”，删除字符串中的反斜杠
 	static void DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count = 30);		//从搜索结果search_result中提取出歌曲的信息，并保存在down_list容器里
 
+	//判断两个字符的匹配度
+	static double CharacterSimilarDegree(wchar_t ch1, wchar_t ch2);
+
 	/// <summary>
 	/// 字符串相似度算法-编辑距离法
 	/// </summary>

@@ -212,6 +212,28 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 	}
 }
 
+double CInternetCommon::CharacterSimilarDegree(wchar_t ch1, wchar_t ch2)
+{
+	if (ch1 == ch2)
+		return 1;
+	else if ((ch1 >= 'A' && ch1 <= 'Z' && ch2 == ch1 + 32) || (ch1 >= 'a' && ch1 <= 'z' && ch2 == ch1 - 32))
+		return 0.8;
+	else if ((ch1 == L'1' && ch2 == L'一') || (ch1 == L'一' && ch2 == L'1')
+		|| (ch1 == L'2' && ch2 == L'二') || (ch1 == L'二' && ch2 == L'2')
+		|| (ch1 == L'3' && ch2 == L'三') || (ch1 == L'三' && ch2 == L'3')
+		|| (ch1 == L'4' && ch2 == L'四') || (ch1 == L'四' && ch2 == L'4')
+		|| (ch1 == L'5' && ch2 == L'五') || (ch1 == L'五' && ch2 == L'5')
+		|| (ch1 == L'6' && ch2 == L'六') || (ch1 == L'六' && ch2 == L'6')
+		|| (ch1 == L'7' && ch2 == L'七') || (ch1 == L'七' && ch2 == L'7')
+		|| (ch1 == L'8' && ch2 == L'八') || (ch1 == L'八' && ch2 == L'8')
+		|| (ch1 == L'9' && ch2 == L'九') || (ch1 == L'九' && ch2 == L'9')
+		|| (ch1 == L'0' && ch2 == L'零') || (ch1 == L'零' && ch2 == L'0')
+		)
+		return 0.7;
+	else
+		return 0.0;
+}
+
 double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const wstring & matchString)
 {
 	/*
@@ -295,12 +317,8 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 			wchar_t ch1 = matchString[j - 1];
 			wchar_t ch2 = srcString[i - 1];
 
-			if (ch1 == ch2)		//如果最上方的字符等于最左方的字符
-				cost = 0;
-			else if ((ch1 >= 'A' && ch1 <= 'Z' && ch2 == ch1 + 32) || (ch1 >= 'a' && ch1 <= 'z' && ch2 == ch1 - 32))	//如果最上方的字符和最左方的字符为同一个字符的大小写
-				cost = 0.2;
-			else
-				cost = 1;
+			//比较最上方的字符和最左方的字符
+			cost = 1 - CharacterSimilarDegree(ch1, ch2);
 
 			// Step 6，取3个值中的最小值
 			d[i][j] = CCommon::Min3(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
@@ -364,34 +382,34 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 #ifdef DEBUG
 	if (write_log)
 	{
-		CString out_info{ _T("\r\n==============================================================================\r\n") };
+		CString out_info{ _T("\n==============================================================================\n") };
 		CString tmp;
-		out_info += _T("\r\n歌曲信息：\r\n");
+		out_info += _T("\n歌曲信息：\n");
 		out_info += _T("文件名：");
 		out_info += filename.c_str();
-		out_info += _T("\r\n标题：");
+		out_info += _T("\n标题：");
 		out_info += title.c_str();
-		out_info += _T("\r\n艺术家：");
+		out_info += _T("\n艺术家：");
 		out_info += artist.c_str();
-		out_info += _T("\r\n唱片集：");
+		out_info += _T("\n唱片集：");
 		out_info += album.c_str();
 
-		out_info += _T("\r\n搜索结果：\r\n");
-		out_info += _T("序号\t歌曲ID\t标题\t艺术家\t唱片集\r\n");
+		out_info += _T("\n搜索结果：\n");
+		out_info += _T("序号\t歌曲ID\t标题\t艺术家\t唱片集\n");
 		for (size_t i{}; i<down_list.size(); i++)
 		{
-			tmp.Format(_T("%d\t%s\t%s\t%s\t%s\r\n"), i + 1, down_list[i].id.c_str(), down_list[i].title.c_str(), down_list[i].artist.c_str(), down_list[i].album.c_str());
+			tmp.Format(_T("%d\t%s\t%s\t%s\t%s\n"), i + 1, down_list[i].id.c_str(), down_list[i].title.c_str(), down_list[i].artist.c_str(), down_list[i].album.c_str());
 			out_info += tmp;
 		}
 
-		out_info += _T("各项权值：\r\n");
+		out_info += _T("各项权值：\n");
 		for (size_t i{}; i < weights.size(); i++)
 		{
-			tmp.Format(_T("%d\t%f\r\n"), i + 1, weights[i]);
+			tmp.Format(_T("%d\t%f\n"), i + 1, weights[i]);
 			out_info += tmp;
 		}
 
-		tmp.Format(_T("最佳匹配项：%d\r\n\r\n"), max_index + 1);
+		tmp.Format(_T("最佳匹配项：%d\n\n"), max_index + 1);
 		out_info += tmp;
 
 		CCommon::WriteLog(L".\\search.log", wstring{ out_info });
