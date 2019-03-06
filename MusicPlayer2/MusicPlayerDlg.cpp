@@ -3137,24 +3137,27 @@ void CMusicPlayerDlg::OnCreatePlayShortcut()
 {
 	// TODO: 在此添加命令处理程序代码
 
-	//创建播放/暂停快捷方式
-	wstring play_pause = CCommon::LoadText(IDS_PLAY_PAUSE, L".lnk");
-	CCommon::FileNameNormalize(play_pause);
+	if (MessageBox(CCommon::LoadText(IDS_CREATE_PLAY_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+	{
+		//创建播放/暂停快捷方式
+		wstring play_pause = CCommon::LoadText(IDS_PLAY_PAUSE, L".lnk");
+		CCommon::FileNameNormalize(play_pause);
 
-	bool success = true;
-	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, play_pause.c_str(), NULL, 0, 0, 1, L"-play_pause", 2);
+		bool success = true;
+		success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, play_pause.c_str(), NULL, 0, 0, 1, L"-play_pause", 2);
 
-	//创建上一曲快捷方式
-	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_PREVIOUS, L".lnk"), NULL, 0, 0, 1, L"-previous", 1);
+		//创建上一曲快捷方式
+		success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_PREVIOUS, L".lnk"), NULL, 0, 0, 1, L"-previous", 1);
 
-	//创建下一曲快捷方式
-	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_NEXT, L".lnk"), NULL, 0, 0, 1, L"-next", 3);
+		//创建下一曲快捷方式
+		success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_NEXT, L".lnk"), NULL, 0, 0, 1, L"-next", 3);
 
-	//创建停止快捷方式
-	success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_STOP, L".lnk"), NULL, 0, 0, 1, L"-stop", 6);
+		//创建停止快捷方式
+		success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_STOP, L".lnk"), NULL, 0, 0, 1, L"-stop", 6);
 
-	if (success)
-		MessageBox(CCommon::LoadTextFormat(IDS_PLAY_SHORTCUT_CREATED, { theApp.m_module_dir }), NULL, MB_ICONINFORMATION);
-	else
-		MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+		if (success)
+			MessageBox(CCommon::LoadTextFormat(IDS_PLAY_SHORTCUT_CREATED, { theApp.m_module_dir }), NULL, MB_ICONINFORMATION);
+		else
+			MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+	}
 }
