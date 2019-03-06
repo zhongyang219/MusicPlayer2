@@ -23,7 +23,11 @@ enum class ControlCmd
 	PLAY_PAUSE,
 	_PREVIOUS,
 	_NEXT,
-	STOP
+	STOP,
+	FF,
+	REW,
+	VOLUME_UP,
+	VOLUME_DOWM
 };
 
 enum class CodeType

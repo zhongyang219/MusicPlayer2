@@ -134,6 +134,19 @@ BOOL CMusicPlayerApp::InitInstance()
 					case ControlCmd::STOP:
 						::SendMessage(handle, WM_COMMAND, ID_STOP, 0);
 						break;
+					case ControlCmd::FF:
+						::SendMessage(handle, WM_COMMAND, ID_FF, 0);
+						break;
+					case ControlCmd::REW:
+						::SendMessage(handle, WM_COMMAND, ID_REW, 0);
+						break;
+					case ControlCmd::VOLUME_UP:
+						::SendMessage(handle, WM_COMMAND, ID_VOLUME_UP, 0);
+						break;
+					case ControlCmd::VOLUME_DOWM:
+						::SendMessage(handle, WM_COMMAND, ID_VOLUME_DOWN, 0);
+						break;
+
 					default:
 						break;
 					}

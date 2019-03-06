@@ -608,14 +608,22 @@ wstring CCommon::DisposeCmdLineFiles(const wstring & cmd_line, vector<wstring>& 
 bool CCommon::GetCmdLineCommand(const wstring & cmd_line, ControlCmd & command)
 {
 	bool rtn = true;
-	if (cmd_line.find(L"-play_pause") != wstring::npos)
+	if (cmd_line == L"-play_pause" || cmd_line == L"-p")
 		command = ControlCmd::PLAY_PAUSE;
-	else if (cmd_line.find(L"-previous") != wstring::npos)
+	else if (cmd_line == L"-previous" || cmd_line == L"-pre")
 		command = ControlCmd::_PREVIOUS;
-	else if (cmd_line.find(L"-next") != wstring::npos)
+	else if (cmd_line == L"-next" || cmd_line == L"-n")
 		command = ControlCmd::_NEXT;
-	else if (cmd_line.find(L"-stop") != wstring::npos)
+	else if (cmd_line == L"-stop" || cmd_line == L"-s")
 		command = ControlCmd::STOP;
+	else if (cmd_line == L"-ff")
+		command = ControlCmd::FF;
+	else if (cmd_line == L"-rew")
+		command = ControlCmd::REW;
+	else if (cmd_line == L"-vol_up")
+		command = ControlCmd::VOLUME_UP;
+	else if (cmd_line == L"-vol_down")
+		command = ControlCmd::VOLUME_DOWM;
 	else
 		rtn = false;
 	return rtn;
