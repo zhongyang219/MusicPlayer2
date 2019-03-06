@@ -42,7 +42,7 @@ void CTest::TestShortCut()
 {
 	int rtn = CCommon::CreateFileShortcut(L"D:\\Temp",
 		L"D:\\Program Files\\MusicPlayer2\\MusicPlayer2.exe",
-		L"play_pause.lnk",
+		NULL,
 		L"D:\\Program Files\\MusicPlayer2",
 		0,
 		NULL,

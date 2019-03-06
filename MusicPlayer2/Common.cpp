@@ -662,11 +662,11 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 	else
 	{
 		//设置工作目录为快捷方式目标所在位置
-		TCHAR workDirBuf[MAX_PATH];
-		wcscpy_s(workDirBuf, pFilePath);
-		LPTSTR pstr = wcsrchr(workDirBuf, _T('\\'));
-		*pstr = _T('\0');
-		pLink->SetWorkingDirectory(workDirBuf);
+		_tstring workDir = pFilePath;
+		int index = workDir.find_last_of(_T("\\/"));
+		if (index != workDir.npos)
+			workDir = workDir.substr(0, index);
+		pLink->SetWorkingDirectory(workDir.c_str());
 	}
 
 	//快捷键
@@ -689,36 +689,37 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 		pLink->SetIconLocation(pFilePath, nIconOffset);
 
 	//快捷方式的路径 + 名称
-	wchar_t szBuffer[MAX_PATH];
+	_tstring shortcutName;
+	shortcutName = lpszLnkFileDir;
+	if(!shortcutName.empty() && shortcutName.back()!=_T('\\') && shortcutName.back() != _T('/'))
+		shortcutName.push_back(_T('\\'));
+
 	if (lpszLnkFileName != NULL) //指定了快捷方式的名称
-		swprintf_s(szBuffer, L"%s\\%s", lpszLnkFileDir, lpszLnkFileName);
+	{
+		shortcutName += lpszLnkFileName;
+	}
 	else
 	{
 		//没有指定名称，就从取指定文件的文件名作为快捷方式名称。
-		const wchar_t *pstr;
-		if (lpszFileName != NULL)
-			pstr = wcsrchr(lpszFileName, L'\\');
-		else
-			pstr = wcsrchr(file_path, L'\\');
+		_tstring fileName = pFilePath;
 
-		if (pstr == NULL)
+		int index1, index2;
+		index1 = fileName.find_last_of(_T("\\/"));
+		index2 = fileName.rfind(_T('.'));
+
+		if (index1 == _tstring::npos || index2 == _tstring::npos || index1 >= index2)
 		{
 			ppf->Release();
 			pLink->Release();
 			return false;
 		}
-		//注意后缀名要从.exe改为.lnk
-		swprintf_s(szBuffer, L"%s\\%s", lpszLnkFileDir, pstr);
-		int nLen = wcslen(szBuffer);
-		szBuffer[nLen - 3] = L'l';
-		szBuffer[nLen - 2] = L'n';
-		szBuffer[nLen - 1] = L'k';
+		fileName = fileName.substr(index1 + 1, index2 - index1 - 1);
+		fileName += _T(".lnk");
+		shortcutName += fileName;
 	}
-	//保存快捷方式到指定目录下
-	//WCHAR  wsz[MAX_PATH];  //定义Unicode字符串
-	//MultiByteToWideChar(CP_ACP, 0, szBuffer, -1, wsz, MAX_PATH);
 
-	hr = ppf->Save(szBuffer, TRUE);
+	//保存快捷方式到指定目录下
+	hr = ppf->Save(shortcutName.c_str(), TRUE);
 
 	ppf->Release();
 	pLink->Release();

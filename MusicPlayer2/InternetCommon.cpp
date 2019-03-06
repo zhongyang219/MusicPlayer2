@@ -60,7 +60,7 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 		delete pfile;
 		session.Close();
 	}
-	catch (CInternetException*)
+	catch (CInternetException* e)
 	{
 		if (pfile != nullptr)
 		{
@@ -69,6 +69,7 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 		}
 		session.Close();
 		sucessed = false;
+		e->Delete();
 	}
 	return sucessed;
 }
