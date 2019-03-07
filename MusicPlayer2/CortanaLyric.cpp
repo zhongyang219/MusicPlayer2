@@ -82,6 +82,8 @@ void CCortanaLyric::DrawInfo()
 		return;
 
 	bool is_midi_lyric = CPlayerUIBase::IsMidiLyric();
+
+	//不使用兼容模式显示歌词，直接在小娜搜索框内绘图
 	if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
 	{
 		m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
@@ -153,7 +155,6 @@ void CCortanaLyric::DrawInfo()
 		AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
 		DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
 	
-		//将缓冲区DC中的图像拷贝到屏幕中显示
 		if (!m_colors.dark)		//非深色模式下，在搜索顶部绘制边框
 		{
 			CRect rect{ m_cortana_rect };
@@ -161,11 +162,13 @@ void CCortanaLyric::DrawInfo()
 			m_draw.DrawRectTopFrame(rect, m_border_color);
 		}
 		CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
+		//将缓冲区DC中的图像拷贝到屏幕中显示
 		m_pDC->BitBlt(0, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
 		MemBitmap.DeleteObject();
 		MemDC.DeleteDC();
 	}
 
+	//使用兼容模式显示歌词，给小娜搜索框设置文本
 	else
 	{
 		CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);

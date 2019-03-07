@@ -1736,14 +1736,15 @@ wstring CPlayer::GetCurrentFileName() const
 
 void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo & song_info)
 {
+	SongInfo& song = theApp.m_song_data[file_path];
 	//获取长度
-	song_info.lengh = GetBASSSongLength(hStream);
+	song.lengh = GetBASSSongLength(hStream);
 	//获取比特率
 	float bitrate{};
 	BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
-	song_info.bitrate = static_cast<int>(bitrate + 0.5f);
+	song.bitrate = static_cast<int>(bitrate + 0.5f);
 	//获取音频标签
-	CAudioTag audio_tag(hStream, file_path, song_info);
+	CAudioTag audio_tag(hStream, file_path, song);
 	audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
 	//获取midi音乐的标题
 	if (m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
@@ -1751,14 +1752,14 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInf
 		BASS_MIDI_MARK mark;
 		if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
 		{
-			song_info.title = CCommon::StrToUnicode(mark.text);
-			song_info.info_acquired = true;
+			song.title = CCommon::StrToUnicode(mark.text);
+			song.info_acquired = true;
 		}
 	}
 	CFilePathHelper c_file_path(file_path);
-	song_info.file_name = c_file_path.GetFileName();
+	song.file_name = c_file_path.GetFileName();
 	//保存歌曲信息
-	theApp.m_song_data[file_path] = song_info;
+	song_info = song;
 }
 
 void CPlayer::SearchOutAlbumCover()
