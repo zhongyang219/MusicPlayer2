@@ -30,6 +30,10 @@ BOOL CAboutDlg::OnInitDialog()
 #ifdef COMPILE_IN_WIN_XP
 	version_info += _T(" (For WinXP)");
 #endif // COMPILE_FOR_WINXP
+
+#ifdef _M_X64
+	version_info += _T(" (x64)");
+#endif
 	SetDlgItemText(IDC_STATIC_VERSION, version_info);
 
 	//设置最后编译日期
