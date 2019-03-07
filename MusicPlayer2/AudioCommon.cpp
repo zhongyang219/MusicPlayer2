@@ -79,7 +79,7 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file)
 {
 	//文件句柄 
-	int hFile = 0;
+	intptr_t hFile = 0;
 	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
 	_wfinddata_t fileinfo;
 	SongInfo song_info;
@@ -101,7 +101,7 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
 void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
 {
 	//文件句柄 
-	int hFile = 0;
+	intptr_t hFile = 0;
 	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
 	_wfinddata_t fileinfo;
 	//wstring file_path;
