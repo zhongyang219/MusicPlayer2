@@ -61,7 +61,11 @@ using std::map;
 
 //用于BASS音频库的支持
 #include"bass.h"
+#ifdef _M_X64
+#pragma comment(lib,"bass_x64.lib")
+#else
 #pragma comment(lib,"bass.lib")
+#endif
 
 #ifndef COMPILE_IN_WIN_XP
 //用于获取系统主题颜色

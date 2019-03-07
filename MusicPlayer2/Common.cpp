@@ -738,7 +738,7 @@ void CCommon::GetFiles(wstring file_name, vector<wstring>& files)
 {
 	files.clear();
 	//文件句柄
-	int hFile = 0;
+	intptr_t hFile = 0;
 	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
 	_wfinddata_t fileinfo;
 	if ((hFile = _wfindfirst(file_name.c_str(), &fileinfo)) != -1)
@@ -755,7 +755,7 @@ void CCommon::GetImageFiles(wstring file_name, vector<wstring>& files)
 {
 	files.clear();
 	//文件句柄
-	int hFile = 0;
+	intptr_t hFile = 0;
 	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
 	_wfinddata_t fileinfo;
 	if ((hFile = _wfindfirst(file_name.c_str(), &fileinfo)) != -1)
