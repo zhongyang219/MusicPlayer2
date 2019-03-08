@@ -96,6 +96,9 @@ void CCortanaLyric::DrawInfo()
 		//使用m_draw绘图
 		m_draw.SetDC(&MemDC);
 		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
+
+		if(theApp.m_lyric_setting_data.cortana_show_spectrum)
+			DrawSpectrum();
 		
 		if (is_midi_lyric)
 		{
@@ -150,7 +153,7 @@ void CCortanaLyric::DrawInfo()
 			spectrum_avr += CPlayer::GetInstance().GetFFTData()[i];
 		spectrum_avr /= N;
 		int spetraum = static_cast<int>(spectrum_avr * 4000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
-		SetSpectrum(spetraum);
+		SetBeatAmp(spetraum);
 		//显示专辑封面，如果没有专辑封面，则显示Cortana图标
 		AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
 		DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
@@ -260,7 +263,7 @@ void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int p
 		if(width<m_cortana_rect.Width())
 			down_rect.left = down_rect.right - width;
 
-		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
+		//m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 		if (!swap)
 		{
 			if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
@@ -318,7 +321,7 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 				CRect rect{ cover_rect };
 				rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
 				int inflate;
-				inflate = m_spectrum * theApp.DPI(14) / 1000;
+				inflate = m_beat_amp * theApp.DPI(14) / 1000;
 				rect.InflateRect(inflate, inflate);
 				m_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
 			}
@@ -334,6 +337,46 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 		{
 			m_draw.DrawBitmap(album_cover, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FILL);
 		}
+	}
+}
+
+void CCortanaLyric::DrawSpectrum()
+{
+	CRect rc_spectrum{ TextRect() };
+	m_draw.SetDrawArea(rc_spectrum);
+	rc_spectrum.right += theApp.DPI(8);
+
+	const int ROWS = 64;		//要显示的频谱柱形的数量
+	int gap_width{ rc_spectrum.Width() / 160 };		//频谱柱形间隙宽度
+	CRect rects[ROWS];
+	int width = (rc_spectrum.Width() - (ROWS - 1)*gap_width) / (ROWS - 1);		//每个柱形的宽度
+	rects[0] = rc_spectrum;
+	rects[0].right = rects[0].left + width;
+	for (int i{ 1 }; i < ROWS; i++)
+	{
+		rects[i] = rects[0];
+		rects[i].left += (i * (width + gap_width));
+		rects[i].right += (i * (width + gap_width));
+	}
+	for (int i{}; i < ROWS; i++)
+	{
+		float spetral_data = CPlayer::GetInstance().GetSpectralData()[i];
+		float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i];
+
+		CRect rect_tmp{ rects[i] };
+		int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+		int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+		if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+		if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+		rect_tmp.top = rect_tmp.bottom - spetral_height;
+		if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
+		m_draw.FillAlphaRect(rect_tmp, m_colors.sprctrum_color, 140, true);
+
+		//绘制顶端
+		CRect rect_peak{ rect_tmp };
+		rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
+		rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
+		m_draw.FillAlphaRect(rect_peak, m_colors.sprctrum_color, 140, true);
 	}
 }
 
@@ -424,11 +467,11 @@ void CCortanaLyric::AlbumCoverEnable(bool enable)
 	}
 }
 
-void CCortanaLyric::SetSpectrum(int spectrum)
+void CCortanaLyric::SetBeatAmp(int beat_amp)
 {
-	m_spectrum = spectrum;
-	if (m_spectrum < 0) m_spectrum = 0;
-	if (m_spectrum > 2000) m_spectrum = 2000;
+	m_beat_amp = beat_amp;
+	if (m_beat_amp < 0) m_beat_amp = 0;
+	if (m_beat_amp > 2000) m_beat_amp = 2000;
 }
 
 void CCortanaLyric::SetUIColors()
@@ -445,6 +488,7 @@ void CCortanaLyric::SetUIColors()
 		m_colors.text_color = theApp.m_app_setting_data.theme_color.light3;
 		m_colors.text_color2 = theApp.m_app_setting_data.theme_color.light1;
 		m_colors.info_text_color = theApp.m_app_setting_data.theme_color.light3;
+		m_colors.sprctrum_color = theApp.m_app_setting_data.theme_color.light1;
 
 		DWORD dwStyle = GetWindowLong(m_hCortanaStatic, GWL_STYLE);
 		if ((dwStyle & WS_VISIBLE) != 0)		//根据Cortana搜索框中static控件是否有WS_VISIBLE属性为绘图背景设置不同的背景色
@@ -458,5 +502,6 @@ void CCortanaLyric::SetUIColors()
 		m_colors.text_color2 = theApp.m_app_setting_data.theme_color.dark1;
 		m_colors.info_text_color = theApp.m_app_setting_data.theme_color.dark2;
 		m_colors.back_color = GRAY(240);
+		m_colors.sprctrum_color = theApp.m_app_setting_data.theme_color.dark1;
 	}
 }

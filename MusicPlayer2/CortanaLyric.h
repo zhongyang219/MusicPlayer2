@@ -17,7 +17,7 @@ public:
 
 	void ResetCortanaText();		//将Cortana搜索框的文本恢复为默认
 	void AlbumCoverEnable(bool enable);
-	void SetSpectrum(int spectrum);
+	void SetBeatAmp(int beat_amp);
 	void SetUIColors();
 
 private:
@@ -27,6 +27,7 @@ private:
 		COLORREF text_color2;		//未播放歌词的颜色
 		COLORREF info_text_color;	//歌曲信息文本的颜色
 		COLORREF back_color;		//背景色
+		COLORREF sprctrum_color;
 		bool dark;			//是否使用深色作为背景色绘制
 	};
 
@@ -61,6 +62,8 @@ private:
 
 	void DrawAlbumCover(const CImage& album_cover);
 
+	void DrawSpectrum();
+
 	CRect TextRect() const;
 	CRect CoverRect() const;
 
@@ -85,7 +88,7 @@ private:
 	UIColors m_colors;
 
 	bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
-	int m_spectrum{0};		//频谱的幅值，取值为0~1000
+	int m_beat_amp{0};						//小娜图标跳动的幅值，取值为0~1000
 
 public:
 	//bool m_cortana_disabled;
