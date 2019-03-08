@@ -294,7 +294,7 @@ void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int
 		up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
 		down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 
-		m_draw.FillRect(m_cortana_rect, m_colors.back_color);
+		//m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 		m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
 		if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
 			m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
