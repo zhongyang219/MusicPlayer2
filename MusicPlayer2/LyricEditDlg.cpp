@@ -741,39 +741,39 @@ BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR * pNMHDR, LRESULT * pResult)
 {
 	TOOLTIPTEXT* pT = (TOOLTIPTEXT*)pNMHDR; //将pNMHDR转换成TOOLTIPTEXT指针类型数据
 	UINT nID = pNMHDR->idFrom;  //获取工具条上按钮的ID
-	wchar_t buff[256];
+	CString tipInfo;
 	switch (nID)
 	{
 	case ID_LYRIC_INSERT_TAG:
-		LoadString(theApp.m_hInstance, IDS_INSERT_TIME_TAG_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_INSERT_TIME_TAG_TIP);
 		break;
 	case ID_LYRIC_REPLACE_TAG:
-		LoadString(theApp.m_hInstance, IDS_REPLACE_TIME_TAG_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_REPLACE_TIME_TAG_TIP);
 		break;
 	case ID_LYRIC_DELETE_TAG:
-		LoadString(theApp.m_hInstance, IDS_DELETE_TIME_TAG_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_DELETE_TIME_TAG_TIP);
 		break;
 	case ID_LYRIC_SAVE:
-		LoadString(theApp.m_hInstance, IDS_SAVE_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_SAVE_TIP);
 		break;
 	case ID_PLAY_PAUSE:
-		LoadString(theApp.m_hInstance, IDS_PLAY_PAUSE_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_PLAY_PAUSE_TIP);
 		break;
 	case ID_REW:
-		LoadString(theApp.m_hInstance, IDS_REWIND_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_REWIND_TIP);
 		break;
 	case ID_FF:
-		LoadString(theApp.m_hInstance, IDS_FAST_FOWARD_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_FAST_FOWARD_TIP);
 		break;
 	case ID_LYRIC_FIND:
-		LoadString(theApp.m_hInstance, IDS_FIND_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_FIND_TIP);
 		break;
 	case ID_LYRIC_REPLACE:
-		LoadString(theApp.m_hInstance, IDS_REPLACE_TIP, buff, 256);
+		tipInfo = CCommon::LoadText(IDS_REPLACE_TIP);
 		break;
-
 	}
-	pT->lpszText = buff;
+
+	CCommon::WStringCopy(pT->szText, 80, tipInfo.GetString());
 
 	return 0;
 }
