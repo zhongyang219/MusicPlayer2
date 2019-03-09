@@ -987,6 +987,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//设置定时器
 	SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
+	SetTimer(TIMER_1_SEC, 1000, NULL);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -1109,131 +1110,146 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
 void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (m_first_start)
+
+	//响应主定时器
+	if(nIDEvent==TIMER_ID)
 	{
-		//此if语句只在定时器第1次触发时才执行
-		m_first_start = false;
+		if (m_first_start)
+		{
+			//此if语句只在定时器第1次触发时才执行
+			m_first_start = false;
 #ifndef COMPILE_IN_WIN_XP
-		if (IsTaskbarListEnable())
-		{
-			//设置任务栏缩略图窗口按钮
-			m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
-		}
+			if (IsTaskbarListEnable())
+			{
+				//设置任务栏缩略图窗口按钮
+				m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
+			}
 #endif
-		CRect rect;
-		GetClientRect(rect);
-		theApp.m_ui_data.client_width = rect.Width();
-		theApp.m_ui_data.client_height = rect.Height();
-		SetPlaylistSize(rect.Width(), rect.Height());		//调整播放列表的大小和位置
-		m_path_static.Invalidate();
-		//SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
-		SetPlaylistVisible();
+			CRect rect;
+			GetClientRect(rect);
+			theApp.m_ui_data.client_width = rect.Width();
+			theApp.m_ui_data.client_height = rect.Height();
+			SetPlaylistSize(rect.Width(), rect.Height());		//调整播放列表的大小和位置
+			m_path_static.Invalidate();
+			//SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
+			SetPlaylistVisible();
 
-		if (m_cmdLine.empty())		//没有有通过命令行打开文件
-		{
-			CPlayer::GetInstance().Create();
-		}
-		else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//如果命令行参数中有RestartByRestartManager，则忽略命令行参数
-		{
-			CPlayer::GetInstance().Create();
-			////将命令行参数写入日志文件
-			//wchar_t buff[256];
-			//swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
-			//CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ buff });
-		}
-		else		//从命令行参数获取要打开的文件
-		{
-			vector<wstring> files;
-			wstring path = CCommon::DisposeCmdLineFiles(m_cmdLine, files);
-			if (!path.empty())
-				CPlayer::GetInstance().Create(path);
-			else
-				CPlayer::GetInstance().Create(files);
-			//MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
-		}
-		DrawInfo();
-		SetThumbnailClipArea();
+			if (m_cmdLine.empty())		//没有有通过命令行打开文件
+			{
+				CPlayer::GetInstance().Create();
+			}
+			else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//如果命令行参数中有RestartByRestartManager，则忽略命令行参数
+			{
+				CPlayer::GetInstance().Create();
+				////将命令行参数写入日志文件
+				//wchar_t buff[256];
+				//swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
+				//CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ buff });
+			}
+			else		//从命令行参数获取要打开的文件
+			{
+				vector<wstring> files;
+				wstring path = CCommon::DisposeCmdLineFiles(m_cmdLine, files);
+				if (!path.empty())
+					CPlayer::GetInstance().Create(path);
+				else
+					CPlayer::GetInstance().Create(files);
+				//MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
+			}
+			DrawInfo();
+			SetThumbnailClipArea();
 
-		//注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
-		//CPlayer::GetInstance().MusicControl(Command::OPEN);
-		//CPlayer::GetInstance().MusicControl(Command::SEEK);
-		//CPlayer::GetInstance().GetBASSError();
-		//SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
-		//ShowTime();
-		//m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
-
-		//if(!m_cmdLine.empty())
-		//	CPlayer::GetInstance().MusicControl(Command::PLAY);	//如果文件是通过命令行打开的，则打开后直接播放
-
-		UpdatePlayPauseButton();
-		//SetForegroundWindow();
-		//ShowPlayList();
-
-		ThemeColorChanged();
-
-		//提示用户是否创建桌面快捷方式
-		CreateDesktopShortcut();
-	}
-
-	m_timer_count++;
-
-	UpdateTaskBarProgress();
-	//UpdateProgress();
-
-	CPlayer::GetInstance().GetBASSError();
-	if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
-		DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
-	CPlayer::GetInstance().GetBASSSpectral();
-	if (CPlayer::GetInstance().IsPlaying())
-	{
-		CPlayer::GetInstance().GetBASSCurrentPosition();
-	}
-
-	//在Cortana搜索框里显示歌词
-	if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
-	{
-		if(theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
-			m_cortana_lyric.DrawInfo();
-	}
-
-	//if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
-	if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲
-	{
-		if (CPlayer::GetInstance().IsError())
-			m_play_error_cnt++;
-		else
-			m_play_error_cnt = 0;
-		//当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
-		if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT))
-		{
-			CPlayer::GetInstance().MusicControl(Command::STOP);		//停止播放
+			//注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
+			//CPlayer::GetInstance().MusicControl(Command::OPEN);
+			//CPlayer::GetInstance().MusicControl(Command::SEEK);
+			//CPlayer::GetInstance().GetBASSError();
+			//SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
 			//ShowTime();
-			if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
-				m_cortana_lyric.ResetCortanaText();
-		}
-		SwitchTrack();
-		UpdatePlayPauseButton();
-	}
-	if (CPlayer::GetInstance().IsPlaying() && (theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError()))
-	{
-		CPlayer::GetInstance().MusicControl(Command::PAUSE);
-		UpdatePlayPauseButton();
-	}
+			//m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
 
-	//if (m_timer_count % 10 == 0)
-	//	m_cortana_lyric.CheckDarkMode();
+			//if(!m_cmdLine.empty())
+			//	CPlayer::GetInstance().MusicControl(Command::PLAY);	//如果文件是通过命令行打开的，则打开后直接播放
 
-	if (CWinVersionHelper::IsWindowsVista())
-	{
-		if(m_timer_count % 15 == 14)
+			UpdatePlayPauseButton();
+			//SetForegroundWindow();
+			//ShowPlayList();
+
 			ThemeColorChanged();
+
+			//提示用户是否创建桌面快捷方式
+			CreateDesktopShortcut();
+		}
+
+		m_timer_count++;
+
+		UpdateTaskBarProgress();
+		//UpdateProgress();
+
+		CPlayer::GetInstance().GetBASSError();
+		if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
+			DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
+		CPlayer::GetInstance().GetBASSSpectral();
+		if (CPlayer::GetInstance().IsPlaying())
+		{
+			CPlayer::GetInstance().GetBASSCurrentPosition();
+		}
+
+		//在Cortana搜索框里显示歌词
+		if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
+		{
+			if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
+				m_cortana_lyric.DrawInfo();
+		}
+
+		//if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
+		if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲
+		{
+			if (CPlayer::GetInstance().IsError())
+				m_play_error_cnt++;
+			else
+				m_play_error_cnt = 0;
+			//当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
+			if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT))
+			{
+				CPlayer::GetInstance().MusicControl(Command::STOP);		//停止播放
+				//ShowTime();
+				if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
+					m_cortana_lyric.ResetCortanaText();
+			}
+			SwitchTrack();
+			UpdatePlayPauseButton();
+		}
+		if (CPlayer::GetInstance().IsPlaying() && (theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError()))
+		{
+			CPlayer::GetInstance().MusicControl(Command::PAUSE);
+			UpdatePlayPauseButton();
+		}
+
+		//if (m_timer_count % 10 == 0)
+		//	m_cortana_lyric.CheckDarkMode();
+
+		if (CWinVersionHelper::IsWindowsVista())
+		{
+			if (m_timer_count % 15 == 14)
+				ThemeColorChanged();
+		}
+
+		//if (m_timer_count % 400 == 399)
+		//{
+		//	CPlayer::GetInstance().EmplaceCurrentPathToRecent();
+		//	CPlayer::GetInstance().SaveRecentPath();
+		//}
 	}
 
-	//if (m_timer_count % 400 == 399)
-	//{
-	//	CPlayer::GetInstance().EmplaceCurrentPathToRecent();
-	//	CPlayer::GetInstance().SaveRecentPath();
-	//}
+	//响应1秒定时器
+	else if (nIDEvent == TIMER_1_SEC)
+	{
+		if (CPlayer::GetInstance().IsPlaying())
+		{
+			CPlayer::GetInstance().AddListenTime(1);
+		}
+
+	}
 
 	CMainDialogBase::OnTimer(nIDEvent);
 }

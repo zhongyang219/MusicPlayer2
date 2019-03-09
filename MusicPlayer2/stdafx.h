@@ -118,6 +118,8 @@ using std::map;
 #define TIMER_ID_MINI 1235		//迷你模式中的定时器ID
 #define TIMER_ID_MINI2 1236		//迷你模式中的定时器ID，用于显示频谱分析
 #define TIMER_ELAPSE_MINI 200	//定义迷你模式中的定时器响应的时间间隔（毫秒）
+#define TIMER_1_SEC 1237
+
 //#define TIMER_ID_SPECTRAL 
 //#define TIMER_ID_EXIT 1237
 

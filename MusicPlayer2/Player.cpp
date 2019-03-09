@@ -326,7 +326,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 			{
 				//重新载入播放列表后，查找正在播放项目的序号
 				MusicControl(Command::CLOSE);
-				for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
+				for (int i{}; i < GetSongNum(); i++)
 				{
 					if (m_current_file_name_tmp == m_playlist[i].file_name)
 					{
@@ -352,7 +352,7 @@ void CPlayer::IniPlaylistComplate(bool sort)
 		}
 		else		//如果用户在播放初始化的过程中进行了播放，则根据正在播放的文件名重新查找正在播放的序号
 		{
-			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
+			for (int i{}; i < GetSongNum(); i++)
 			{
 				if (current_file_name == m_playlist[i].file_name)
 				{
@@ -1177,7 +1177,7 @@ void CPlayer::ExploreLyric() const
 
 Time CPlayer::GetAllSongLength(int track) const
 {
-	if (track >= 0 && track < static_cast<int>(m_playlist.size()))
+	if (track >= 0 && track < GetSongNum())
 		return m_playlist[track].lengh;
 	else
 		return Time();
@@ -1315,14 +1315,14 @@ wstring CPlayer::GetPlayingState() const
 
 const SongInfo & CPlayer::GetCurrentSongInfo() const
 {
-	if (m_index >= 0 && m_index < static_cast<int>(m_playlist.size()))
+	if (m_index >= 0 && m_index < GetSongNum())
 		return m_playlist[m_index];
 	else return m_no_use;
 }
 
 void CPlayer::SetRelatedSongID(wstring song_id)
 {
-	if (m_index >= 0 && m_index < static_cast<int>(m_playlist.size()))
+	if (m_index >= 0 && m_index < GetSongNum())
 	{
 		m_playlist[m_index].song_id = song_id;
 		if(!m_playlist[m_index].is_cue)
@@ -1332,11 +1332,21 @@ void CPlayer::SetRelatedSongID(wstring song_id)
 
 void CPlayer::SetRelatedSongID(int index, wstring song_id)
 {
-	if (index >= 0 && index < static_cast<int>(m_playlist.size()))
+	if (index >= 0 && index < GetSongNum())
 	{
 		m_playlist[index].song_id = song_id;
 		if (!m_playlist[index].is_cue)
 			theApp.m_song_data[m_path + m_playlist[index].file_name] = m_playlist[index];
+	}
+}
+
+void CPlayer::AddListenTime(int sec)
+{
+	if (m_index >= 0 && m_index < GetSongNum())
+	{
+		m_playlist[m_index].listen_time += sec;
+		if (!m_playlist[m_index].is_cue)
+			theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
 	}
 }
 
@@ -1383,7 +1393,7 @@ void CPlayer::SortPlaylist(bool change_index)
 		//播放列表排序后，查找正在播放项目的序号
 		if (!m_playlist[m_index].is_cue)
 		{
-			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
+			for (int i{}; i < GetSongNum(); i++)
 			{
 				if (current_file_name == m_playlist[i].file_name)
 				{
@@ -1394,7 +1404,7 @@ void CPlayer::SortPlaylist(bool change_index)
 		}
 		else
 		{
-			for (int i{}; i < static_cast<int>(m_playlist.size()); i++)
+			for (int i{}; i < GetSongNum(); i++)
 			{
 				if (track_number == m_playlist[i].track)
 				{
@@ -1728,7 +1738,7 @@ void CPlayer::GetMidiPosition()
 
 wstring CPlayer::GetCurrentFileName() const
 {
-	if (m_index >= 0 && m_index < static_cast<int>(m_playlist.size()))
+	if (m_index >= 0 && m_index < GetSongNum())
 		return m_playlist[m_index].file_name;
 	else
 		return wstring();

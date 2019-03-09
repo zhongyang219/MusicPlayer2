@@ -302,6 +302,7 @@ void CMusicPlayerApp::SaveSongData() const
 	// 构造CArchive对象
 	CArchive ar(&file, CArchive::store);
 	// 写数据
+	ar << CString(VERSION);			//写入版本号
 	ar << m_song_data.size();		//写入映射容器的大小
 	for (auto& song_data : m_song_data)
 	{
@@ -319,6 +320,7 @@ void CMusicPlayerApp::SaveSongData() const
 			<< song_data.second.track
 			<< song_data.second.tag_type
 			<< CString(song_data.second.song_id.c_str())
+			<< song_data.second.listen_time
 			<< song_data.second.info_acquired
 			;
 	}
@@ -533,9 +535,11 @@ void CMusicPlayerApp::LoadSongData()
 	SongInfo song_info;
 	CString song_path;
 	CString temp;
+	CString version;
 	int song_length;
 	try
 	{
+		ar >> version;
 		ar >> size;		//读取映射容器的长度
 		for (size_t i{}; i < size; i++)
 		{
@@ -562,8 +566,9 @@ void CMusicPlayerApp::LoadSongData()
 			ar >> song_info.tag_type;
 			ar >> temp;
 			song_info.song_id = temp;
-			m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
+			ar >> song_info.listen_time;
 			ar >> song_info.info_acquired;
+			m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
 		}
 	}
 	catch(CArchiveException* exception)

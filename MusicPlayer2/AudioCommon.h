@@ -63,6 +63,7 @@ struct SongInfo
 	bool is_cue{ false };		//如果曲目是cue分轨，则为true
 	//wstring album_cover{};		//专辑封面保存的文件名
 	wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
+	int listen_time{};			//歌曲累计听的时间（单位为秒）
 
 	//根据文件名的比较函数，用于以文件名排序
 	static bool ByFileName(const SongInfo& a, const SongInfo& b) { return a.file_name < b.file_name; }
