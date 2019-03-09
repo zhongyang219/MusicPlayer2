@@ -17,7 +17,6 @@ public:
 	virtual ~CPlayListCtrl();
 
 	void EnableTip(bool enable = true) { m_bEnableTips = enable; }		//设置是否开启提示
-	void SetHightItem(int item) { m_highlight_item = item; }			//设置高亮的项目，即播放列表中正在播放的项目
 
 	static wstring GetDisplayStr(const SongInfo& song_info, DisplayFormat display_format);		//根据display_format指定的显示格式，返回一首曲目显示的字符串
 	void ShowPlaylist(DisplayFormat display_format, bool search_result = false);		//显示播放列表
@@ -32,7 +31,6 @@ protected:
 	int m_nItem;				//存放行号
 	//int m_nSubItem;			//存放列号
 	bool m_bEnableTips{ false };	//是否开启文本提示
-	int m_highlight_item{};			//高亮的项目
 
 	const vector<SongInfo>& m_all_song_info;		//储存播放列表中所有歌曲的信息
 	vector<int> m_search_result;					//储存快速搜索结果的歌曲序号

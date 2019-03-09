@@ -16,9 +16,12 @@ public:
 	void SelectAll();
 	bool SetRowHeight(int height);		//设置表格行高
 
+	void SetHightItem(int item) { m_highlight_item = item; }			//设置高亮的项目（播放列表中正在播放的项目）
+
 protected:
 	ColorTable& m_theme_color;
 	COLORREF m_background_color{ GRAY(255) };	//列表控件的背景色
+	int m_highlight_item{ -1 };			//高亮的项目
 
 public:
 	DECLARE_MESSAGE_MAP()

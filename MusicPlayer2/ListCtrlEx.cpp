@@ -113,13 +113,28 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		this_item_select = false;
 		if (IsWindowEnabled())
 		{
+			//当选中行又是高亮行时设置颜色
+			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
+			{
+				this_item_select = true;
+				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				lplvdr->clrText = m_theme_color.light3;
+				lplvdr->clrTextBk = m_theme_color.dark1;
+			}
 			//设置选中行的颜色
-			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
+			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 			{
 				this_item_select = true;
 				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 				lplvdr->clrText = m_theme_color.dark3;
 				lplvdr->clrTextBk = m_theme_color.light2;
+			}
+			//设置高亮行的颜色
+			else if (nmcd.dwItemSpec == m_highlight_item)
+			{
+				lplvdr->clrText = m_theme_color.dark2;
+				//lplvdr->clrText = 0;
+				lplvdr->clrTextBk = m_theme_color.light3;
 			}
 			//设置偶数行的颜色
 			else if (nmcd.dwItemSpec % 2 == 0)

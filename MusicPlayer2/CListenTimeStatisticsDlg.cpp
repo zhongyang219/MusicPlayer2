@@ -37,10 +37,10 @@ void CListenTimeStatisticsDlg::ShowData()
 {
 	vector<SongInfo> data_list;
 
-	//从所有歌曲信息中查找累计听的时间5秒以上的并添加到vector
+	//从所有歌曲信息中查找累计听的时间超过指定时间的曲目添加到vector
 	for (const auto& data : theApp.m_song_data)
 	{
-		if (data.second.listen_time >= 5)
+		if (data.second.listen_time >= 20)
 		{
 			data_list.push_back(data.second);
 			data_list.back().file_name = data.first;
@@ -57,7 +57,18 @@ void CListenTimeStatisticsDlg::ShowData()
 	for (const auto& data : data_list)
 	{
 		m_list_ctrl.InsertItem(index, std::to_wstring(index + 1).c_str());
-		m_list_ctrl.SetItemText(index, 1, (data.artist + L" - " + data.title).c_str());
+
+		CString str_track;
+		if (data.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
+		{
+			CFilePathHelper file_path(data.file_name);
+			str_track = file_path.GetFileName().c_str();
+		}
+		else
+		{
+			str_track = (data.artist + L" - " + data.title).c_str();
+		}
+		m_list_ctrl.SetItemText(index, 1, str_track);
 		m_list_ctrl.SetItemText(index, 2, data.file_name.c_str());
 
 		int hour, min, sec;
@@ -72,6 +83,9 @@ void CListenTimeStatisticsDlg::ShowData()
 		double times = static_cast<double>(data.listen_time) / data.lengh.time2int() * 1000;
 		str.Format(_T("%.2f"), times);
 		m_list_ctrl.SetItemText(index, 5, str);
+
+		if (CPlayer::GetInstance().GetCurrentFilePath() == data.file_name)
+			m_list_ctrl.SetHightItem(index);
 
 		index++;
 	}
@@ -100,13 +114,20 @@ BOOL CListenTimeStatisticsDlg::OnInitDialog()
 	m_min_size.cy = rect.Height();
 
 	//初始化列表
+	int width[6];
+	width[0] = theApp.DPI(40);
+	width[1] = theApp.DPI(150);
+	width[3] = width[5] = theApp.DPI(60);
+	width[4] = theApp.DPI(50);
+	m_list_ctrl.GetWindowRect(rect);
+	width[2] = rect.Width() - width[1] - width[3] - width[4] - width[5] - width[0] - theApp.DPI(20) - 1;
 	m_list_ctrl.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, theApp.DPI(40));
-	m_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, theApp.DPI(150));
-	m_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_PATH), LVCFMT_LEFT, theApp.DPI(130));
-	m_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_LISTEN_TIME), LVCFMT_LEFT, theApp.DPI(60));
-	m_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, theApp.DPI(60));
-	m_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_LISTEN_TIMES), LVCFMT_LEFT, theApp.DPI(60));
+	m_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);
+	m_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, width[1]);
+	m_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_PATH), LVCFMT_LEFT, width[2]);
+	m_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_LISTEN_TIME), LVCFMT_LEFT, width[3]);
+	m_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width[4]);
+	m_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_LISTEN_TIMES), LVCFMT_LEFT, width[5]);
 
 	ShowData();
 
@@ -150,7 +171,7 @@ void CListenTimeStatisticsDlg::OnBnClickedExportButton()
 	//弹出保存对话框
 
 	CString filter = CCommon::LoadText(IDS_LISTEN_TIME_FILE_DLG_FILTER);
-	CString file_name = CCommon::LoadText(IDS_LISTEN_TIME);
+	CString file_name = CCommon::LoadText(IDS_LISTEN_TIME_STATISTICS);
 	CString str_cur_date;
 	SYSTEMTIME cur_time;
 	GetLocalTime(&cur_time);
