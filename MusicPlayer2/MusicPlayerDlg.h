@@ -292,4 +292,5 @@ public:
 	afx_msg void OnShowMenuBar();
 	afx_msg void OnFullScreen();
 	afx_msg void OnCreatePlayShortcut();
+	afx_msg void OnListenStatistics();
 };

@@ -11,6 +11,7 @@
 #include "SupportedFormatDlg.h"
 #include "AboutDlg.h"
 #include "CTest.h"
+#include "CListenTimeStatisticsDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -164,6 +165,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_SHOW_MENU_BAR, &CMusicPlayerDlg::OnShowMenuBar)
 		ON_COMMAND(ID_FULL_SCREEN, &CMusicPlayerDlg::OnFullScreen)
 		ON_COMMAND(ID_CREATE_PLAY_SHORTCUT, &CMusicPlayerDlg::OnCreatePlayShortcut)
+		ON_COMMAND(ID_LISTEN_STATISTICS, &CMusicPlayerDlg::OnListenStatistics)
 		END_MESSAGE_MAP()
 
 
@@ -3178,4 +3180,12 @@ void CMusicPlayerDlg::OnCreatePlayShortcut()
 		else
 			MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
 	}
+}
+
+
+void CMusicPlayerDlg::OnListenStatistics()
+{
+	// TODO: 在此添加命令处理程序代码
+	CListenTimeStatisticsDlg dlg;
+	dlg.DoModal();
 }

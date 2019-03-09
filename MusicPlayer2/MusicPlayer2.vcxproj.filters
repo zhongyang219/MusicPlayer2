@@ -210,6 +210,9 @@
     <Filter Include="对话框类\MessageDlg">
       <UniqueIdentifier>{460c7079-bec0-4530-814a-80130ffc6e79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\ListenTimeStatisticsDlg">
+      <UniqueIdentifier>{2110f98d-93b4-4d48-b2c9-85bf324254ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -445,6 +448,9 @@
     <ClInclude Include="MessageDlg.h">
       <Filter>对话框类\MessageDlg</Filter>
     </ClInclude>
+    <ClInclude Include="CListenTimeStatisticsDlg.h">
+      <Filter>对话框类\ListenTimeStatisticsDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -656,6 +662,9 @@
     </ClCompile>
     <ClCompile Include="MessageDlg.cpp">
       <Filter>对话框类\MessageDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="CListenTimeStatisticsDlg.cpp">
+      <Filter>对话框类\ListenTimeStatisticsDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
