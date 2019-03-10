@@ -75,6 +75,20 @@ struct SongInfo
 	static bool ByAlbum(const SongInfo& a, const SongInfo& b) { return a.album < b.album; }
 	//根据音轨序号的比较函数，用于以音轨序号排序
 	static bool ByTrack(const SongInfo& a, const SongInfo& b) { return a.track < b.track; }
+
+	//从另一个SongInfo对象复制标签信息
+	void CopyAudioTag(const SongInfo& song_info)
+	{
+		title = song_info.title;
+		artist = song_info.artist;
+		album = song_info.album;
+		year = song_info.year;
+		comment = song_info.comment;
+		genre = song_info.genre;
+		genre_idx = song_info.genre_idx;
+		track = song_info.track;
+		tag_type = song_info.tag_type;
+	}
 };
 
 

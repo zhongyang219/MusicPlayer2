@@ -412,7 +412,8 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 		CAudioTag audio_tag(hStream, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
 		audio_tag.GetAudioTag(true);
 		BASS_StreamFree(hStream);
-		theApp.m_song_data[CPlayer::GetInstance().GetCurrentDir() + m_all_song_info[m_index].file_name] = m_all_song_info[m_index];
+		theApp.m_song_data[CPlayer::GetInstance().GetCurrentDir() + m_all_song_info[m_index].file_name].CopyAudioTag(m_all_song_info[m_index]);
+		theApp.SetSongDataModified();
 
 		m_modified = false;
 		m_save_button.EnableWindow(m_write_enable && m_modified);

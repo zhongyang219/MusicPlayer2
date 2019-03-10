@@ -289,7 +289,7 @@ void CMusicPlayerApp::OnHelp()
 	}
 }
 
-void CMusicPlayerApp::SaveSongData() const
+void CMusicPlayerApp::SaveSongData()
 {
 	// 打开或者新建文件
 	CFile file;
@@ -329,6 +329,7 @@ void CMusicPlayerApp::SaveSongData() const
 	// 关闭文件
 	file.Close();
 
+	m_song_data_modified = false;
 }
 
 void CMusicPlayerApp::CheckUpdate(bool message)
@@ -520,6 +521,16 @@ CString CMusicPlayerApp::GetSystemInfoString()
 	info += _T("\r\n");
 
 	return info;
+}
+
+void CMusicPlayerApp::SetSongDataModified()
+{
+	m_song_data_modified = true;
+}
+
+bool CMusicPlayerApp::IsSongDataModified() const
+{
+	return m_song_data_modified;
 }
 
 void CMusicPlayerApp::LoadSongData()

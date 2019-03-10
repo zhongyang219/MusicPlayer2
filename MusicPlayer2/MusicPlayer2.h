@@ -61,7 +61,7 @@ public:
 	volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
 	volatile bool m_format_convert_dialog_exit{ true };		//用于指示格式对话框已经退出
 
-	void SaveSongData() const;		//将所有歌曲信息以序列化的方式保存到文件
+	void SaveSongData();		//将所有歌曲信息以序列化的方式保存到文件
 
 	static void CheckUpdate(bool message);
 	static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
@@ -89,6 +89,9 @@ public:
 	//获取系统信息文本
 	CString GetSystemInfoString();
 
+	void SetSongDataModified();
+	bool IsSongDataModified() const;
+
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
 
@@ -98,6 +101,7 @@ private:
 	HHOOK m_multimedia_key_hook = NULL;
 
 	int m_dpi{};
+	bool m_song_data_modified{ false };
 
 // 重写
 public:

@@ -1236,11 +1236,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 				ThemeColorChanged();
 		}
 
-		//if (m_timer_count % 400 == 399)
-		//{
-		//	CPlayer::GetInstance().EmplaceCurrentPathToRecent();
-		//	CPlayer::GetInstance().SaveRecentPath();
-		//}
+		if (m_timer_count % 600 == 599)
+		{
+			//CPlayer::GetInstance().EmplaceCurrentPathToRecent();
+			//CPlayer::GetInstance().SaveRecentPath();
+			if(theApp.IsSongDataModified())				//在歌曲信息被修改过的情况下，每隔一定的时间保存一次
+				theApp.SaveSongData();
+		}
 	}
 
 	//响应1秒定时器

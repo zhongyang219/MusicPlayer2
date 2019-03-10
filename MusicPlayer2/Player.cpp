@@ -1326,7 +1326,10 @@ void CPlayer::SetRelatedSongID(wstring song_id)
 	{
 		m_playlist[m_index].song_id = song_id;
 		if(!m_playlist[m_index].is_cue)
+		{
 			theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
+			theApp.SetSongDataModified();
+		}
 	}
 }
 
@@ -1336,7 +1339,10 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
 	{
 		m_playlist[index].song_id = song_id;
 		if (!m_playlist[index].is_cue)
+		{
 			theApp.m_song_data[m_path + m_playlist[index].file_name] = m_playlist[index];
+			theApp.SetSongDataModified();
+		}
 	}
 }
 
@@ -1346,7 +1352,10 @@ void CPlayer::AddListenTime(int sec)
 	{
 		m_playlist[m_index].listen_time += sec;
 		if (!m_playlist[m_index].is_cue)
+		{
 			theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
+			theApp.SetSongDataModified();
+		}
 	}
 }
 
