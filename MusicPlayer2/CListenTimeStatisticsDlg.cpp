@@ -158,14 +158,15 @@ void CListenTimeStatisticsDlg::OnBnClickedExportButton()
 
 	for (int i = 0; i < list_size; i++)
 	{
-		str += m_list_ctrl.GetItemText(i, 0);
-		str += _T(',');
-		str += m_list_ctrl.GetItemText(i, 1);
-		str += _T(',');
-		str += m_list_ctrl.GetItemText(i, 2);
-		str += _T(',');
-		str += m_list_ctrl.GetItemText(i, 3);
-		str += _T('\n');
+		const int COLUMN = 6;
+		for (int j = 0; j < COLUMN; j++)
+		{
+			str += m_list_ctrl.GetItemText(i, j);
+			if (j == COLUMN - 1)
+				str += _T('\n');
+			else
+				str += _T(',');
+		}
 	}
 
 	//弹出保存对话框
