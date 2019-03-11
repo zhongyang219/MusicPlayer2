@@ -217,6 +217,7 @@ struct NonCategorizedSettingData
 	bool show_cover_tip{ true };	//是否显示专辑封面上的鼠标提示
 	//wstring default_back_image_path{};	//没有专辑封面时的默认背景的路径
 	bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
+	bool show_hide_menu_bar_tip{ true };	//是隐藏菜单栏是否弹出提示信息
 };
 
 struct IconRes

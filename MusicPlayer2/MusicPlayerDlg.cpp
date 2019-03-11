@@ -221,6 +221,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map);
 	ini.WriteBool(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip);
 	ini.WriteBool(L"other", L"no_sf2_warning", theApp.m_nc_setting_data.no_sf2_warning);
+	ini.WriteBool(L"other", L"show_hide_menu_bar_tip", theApp.m_nc_setting_data.show_hide_menu_bar_tip);
 
 	ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
 	ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
@@ -326,7 +327,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.cortana_color = ini.GetInt(L"config", L"cortana_back_color", 0);
 	theApp.m_nc_setting_data.volume_map = ini.GetInt(L"config", L"volume_map", 100);
 	theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(L"config", L"show_cover_tip", 0);
-	theApp.m_nc_setting_data.no_sf2_warning = ini.GetInt(L"other", L"no_sf2_warning", true);
+	theApp.m_nc_setting_data.no_sf2_warning = ini.GetBool(L"other", L"no_sf2_warning", true);
+	theApp.m_nc_setting_data.show_hide_menu_bar_tip = ini.GetBool(L"other", L"show_hide_menu_bar_tip", true);
 
 	theApp.m_general_setting_data.id3v2_first = ini.GetBool(L"general", L"id3v2_first", 1);
 	theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(L"general", L"auto_download_lyric", 1);
@@ -3136,6 +3138,16 @@ void CMusicPlayerDlg::OnShowMenuBar()
 	theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
 	SetMenubarVisible();
 	SetThumbnailClipArea();
+
+	//隐藏菜单栏后弹出提示，告诉用户如何再次显示菜单栏
+	if (!theApp.m_ui_data.show_menu_bar)
+	{
+		if (theApp.m_nc_setting_data.show_hide_menu_bar_tip)
+		{
+			if (MessageBox(CCommon::LoadText(IDS_HIDE_MENU_BAR_TIP), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDCANCEL)
+				theApp.m_nc_setting_data.show_hide_menu_bar_tip = false;
+		}
+	}
 }
 
 
