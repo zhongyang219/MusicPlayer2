@@ -114,10 +114,11 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
 	rc_tmp.right = rc_tmp.left + theApp.DPI(30);
 
-	if (draw_background)
-		m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
-	else
-		m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
+	//if (draw_background)
+	//	m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
+	//else
+	//	m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
+	m_draw.SetDrawArea(rc_tmp);
 
 	static const int DATA_ROW{ 16 };			//频谱柱形数据的数量（必须为2的整数次方且小于或等于SPECTRUM_ROW）
 	float spectral_data[DATA_ROW]{};
