@@ -249,6 +249,9 @@ public:
 	//获取菜单栏的高度。hWnd：菜单栏所在的窗口句柄
 	static int GetMenuBarHeight(HWND hWnd);
 
+	//对一个double按指定位数四舍五入
+	static double DoubleRound(double dVal, int format);
+
 
 	template<class T>
 	static T Min3(T v1, T v2, T v3)

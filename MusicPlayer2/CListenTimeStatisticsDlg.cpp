@@ -27,11 +27,6 @@ void CListenTimeStatisticsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_list_ctrl);
 }
 
-static bool ByListenTime(const SongInfo& a, const SongInfo& b)
-{
-	return a.listen_time > b.listen_time;
-}
-
 
 void CListenTimeStatisticsDlg::ShowData()
 {
@@ -47,9 +42,21 @@ void CListenTimeStatisticsDlg::ShowData()
 		}
 	}
 
-	//按累计收听时间从大到小排序
-	std::sort(data_list.begin(), data_list.end(), ByListenTime);
+	//先按累计收听时间从大到小排序
+	std::sort(data_list.begin(), data_list.end(), [](const SongInfo& a, const SongInfo& b)
+	{
+		return a.listen_time > b.listen_time;
+	});
 	
+	//再按累计次数从大到小排序，并确保累计次数相同的项目按累计时间从大到小排序
+	std::stable_sort(data_list.begin(), data_list.end(), [](const SongInfo& a, const SongInfo& b)
+	{
+		double times_a, times_b;
+		times_a = CCommon::DoubleRound(static_cast<double>(a.listen_time) / a.lengh.time2int() * 1000, 1);
+		times_b = CCommon::DoubleRound(static_cast<double>(b.listen_time) / b.lengh.time2int() * 1000, 1);
+		return times_a > times_b;
+	});
+
 	//将vector中的数据显示到列表中
 	m_list_ctrl.DeleteAllItems();
 
@@ -81,7 +88,10 @@ void CListenTimeStatisticsDlg::ShowData()
 
 		m_list_ctrl.SetItemText(index, 4, data.lengh.time2str().c_str());
 		double times = static_cast<double>(data.listen_time) / data.lengh.time2int() * 1000;
-		str.Format(_T("%.2f"), times);
+		str.Format(_T("%.1f"), times);
+		if (str.Right(2) == _T(".0"))
+			str = str.Left(str.GetLength() - 2);
+
 		m_list_ctrl.SetItemText(index, 5, str);
 
 		if (CPlayer::GetInstance().GetCurrentFilePath() == data.file_name)

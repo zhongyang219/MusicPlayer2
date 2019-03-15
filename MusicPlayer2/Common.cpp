@@ -1045,3 +1045,9 @@ int CCommon::GetMenuBarHeight(HWND hWnd)
 	return menu_bar_height;
 }
 
+double CCommon::DoubleRound(double dVal, int format)
+{
+	auto ipow = std::pow(10, format);
+	return std::floor(dVal * ipow + 0.5) / ipow;
+}
+
