@@ -28,9 +28,6 @@ class CMusicPlayerApp : public CWinApp
 public:
 	CMusicPlayerApp();
 
-	//CWinVersionHelper m_win_version;		//当前Windows的版本
-	//CPlayer m_player;
-
 	wstring m_module_dir;		//当前程序exe文件所在目录
 	wstring m_local_dir;		//当前目录（debug模式下为.\，release模式下为exe文件所在目录）
 	wstring m_config_path;		//配置文件的路径
@@ -42,8 +39,6 @@ public:
 	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
 	vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
-	//界面图标资源
-
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
 	ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
 	GeneralSettingData m_general_setting_data;		//“选项设置”对话框中“常规设置”中的数据
@@ -53,8 +48,8 @@ public:
 	CHotkeyManager m_hot_key;
 
 	UIData m_ui_data;
-	IconSet m_icon_set;
-	FontSet m_font_set;
+	IconSet m_icon_set;			//图标资源
+	FontSet m_font_set;			//字体资源
 
 	volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
 	volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出

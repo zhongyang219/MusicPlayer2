@@ -2,6 +2,7 @@
 #include "MusicPlayer2.h"
 #include "AboutDlg.h"
 #include "CTest.h"
+#include "CDonateDlg.h"
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
 {
@@ -16,6 +17,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK2, &CAboutDlg::OnNMClickSyslink2)
 	ON_NOTIFY(NM_CLICK, IDC_GITHUB_SYSLINK, &CAboutDlg::OnNMClickGithubSyslink)
+	ON_NOTIFY(NM_CLICK, IDC_DONATE_SYSLINK, &CAboutDlg::OnNMClickDonateSyslink)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -99,3 +101,13 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
+
+
+void CAboutDlg::OnNMClickDonateSyslink(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CDonateDlg dlg;
+	dlg.DoModal();
+
+	*pResult = 0;
+}

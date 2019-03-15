@@ -592,9 +592,6 @@ void CMusicPlayerApp::LoadSongData()
 	{
 		CString info;
 		info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { exception->m_cause });
-//		info.Format(_T("警告：读取数据文件时发生了序列化异常，异常类型：CArchiveException，m_cause = %d。\
-//可能是song_data.dat文件被损坏或版本不匹配造成的，你可以忽略这个信息，因为song_data.dat会重新生成。"), exception->m_cause);
-//		AfxMessageBox(info, MB_ICONWARNING);
 		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info });
 	}
 	// 关闭对象

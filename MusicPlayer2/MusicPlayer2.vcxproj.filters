@@ -213,6 +213,9 @@
     <Filter Include="对话框类\ListenTimeStatisticsDlg">
       <UniqueIdentifier>{2110f98d-93b4-4d48-b2c9-85bf324254ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\DonateDlg">
+      <UniqueIdentifier>{5b564b64-3172-4a1b-a38f-02ae3a8a64ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -451,6 +454,9 @@
     <ClInclude Include="CListenTimeStatisticsDlg.h">
       <Filter>对话框类\ListenTimeStatisticsDlg</Filter>
     </ClInclude>
+    <ClInclude Include="CDonateDlg.h">
+      <Filter>对话框类\DonateDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -666,6 +672,9 @@
     <ClCompile Include="CListenTimeStatisticsDlg.cpp">
       <Filter>对话框类\ListenTimeStatisticsDlg</Filter>
     </ClCompile>
+    <ClCompile Include="CDonateDlg.cpp">
+      <Filter>对话框类\DonateDlg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
@@ -821,6 +830,9 @@
     </Image>
     <Image Include="res\全屏1_d.ico">
       <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\donate.bmp">
+      <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
 </Project>

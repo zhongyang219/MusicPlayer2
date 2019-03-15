@@ -27,4 +27,5 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMClickDonateSyslink(NMHDR *pNMHDR, LRESULT *pResult);
 };
