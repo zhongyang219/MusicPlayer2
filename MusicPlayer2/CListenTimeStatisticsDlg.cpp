@@ -66,7 +66,7 @@ void CListenTimeStatisticsDlg::ShowData()
 		m_list_ctrl.InsertItem(index, std::to_wstring(index + 1).c_str());
 
 		CString str_track;
-		if (data.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
+		if (data.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() || CAudioCommon::GetAudioTypeByExtension(data.file_name) == AU_MIDI)
 		{
 			CFilePathHelper file_path(data.file_name);
 			str_track = file_path.GetFileName().c_str();
