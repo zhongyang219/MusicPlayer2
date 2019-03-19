@@ -36,7 +36,7 @@ public:
 	wstring m_desktop_path;		//桌面的路径
 	//wstring m_temp_path;		//临时文件夹的路径
 
-	map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
+	std::unordered_map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
 	vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
 	LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据

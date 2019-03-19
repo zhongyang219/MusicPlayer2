@@ -51,6 +51,7 @@
 #include <iomanip>
 #include <map>
 #include <cmath>
+#include <unordered_map>
 using std::ofstream;
 using std::ifstream;
 using std::string;
