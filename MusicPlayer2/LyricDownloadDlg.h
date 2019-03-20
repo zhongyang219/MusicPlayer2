@@ -122,4 +122,5 @@ public:
 	afx_msg void OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnLdPreview();
 };

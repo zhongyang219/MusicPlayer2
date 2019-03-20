@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "LyricDownloadDlg.h"
 #include "afxdialogex.h"
+#include "MessageDlg.h"
 
 
 // CLyricDownloadDlg 对话框
@@ -104,6 +105,7 @@ BEGIN_MESSAGE_MAP(CLyricDownloadDlg, CDialog)
 	ON_COMMAND(ID_LD_VIEW_ONLINE, &CLyricDownloadDlg::OnLdViewOnline)
 	ON_NOTIFY(NM_DBLCLK, IDC_LYRIC_DOWN_LIST1, &CLyricDownloadDlg::OnNMDblclkLyricDownList1)
 	ON_NOTIFY(NM_CLICK, IDC_UNASSOCIATE_LINK, &CLyricDownloadDlg::OnNMClickUnassociateLink)
+	ON_COMMAND(ID_LD_PREVIEW, &CLyricDownloadDlg::OnLdPreview)
 END_MESSAGE_MAP()
 
 
@@ -676,4 +678,53 @@ void CLyricDownloadDlg::OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
 
 	*pResult = 0;
+}
+
+
+void CLyricDownloadDlg::OnLdPreview()
+{
+	// TODO: 在此添加命令处理程序代码
+
+	//下载歌词
+	const CInternetCommon::ItemInfo& item{ m_down_list[m_item_selected] };
+	bool success{ false };
+	wstring result;
+	{
+		CWaitCursor wait_cursor;
+		success = CLyricDownloadCommon::DownloadLyric(item.id, result, m_download_translate);		//下载歌词
+	}
+
+	//如果不成功弹出消息对话框
+	if (!success || result.empty())
+	{
+		MessageBox(CCommon::LoadText(IDS_LYRIC_DOWNLOAD_FAILED, _T("!")), NULL, MB_ICONWARNING);
+		return;
+	}
+	if (!CLyricDownloadCommon::DisposeLryic(result))
+	{
+		MessageBox(CCommon::LoadText(IDS_SONG_NO_LYRIC, _T("!")), NULL, MB_ICONWARNING);
+		return;
+	}
+
+	//添加歌词标签
+	CLyricDownloadCommon::AddLyricTag(result, item.id, item.title, item.artist, item.album);
+
+	CLyrics lyrics;
+	lyrics.LyricsFromRowString(result);
+	lyrics.DeleteRedundantLyric();
+	lyrics.CombineSameTimeLyric();
+	result = lyrics.GetLyricsString2();
+
+	//显示预览窗口
+	CString dlg_title = CCommon::LoadText(IDS_LYRIC_PREVIEW);
+	CMessageDlg dlg;
+	dlg.SetWindowTitle(dlg_title);
+	CString info;
+	info += item.artist.c_str();
+	info += _T(" - ");
+	info += item.title.c_str();
+	dlg.SetInfoText(info);
+	dlg.SetMessageText(result.c_str());
+
+	dlg.DoModal();
 }

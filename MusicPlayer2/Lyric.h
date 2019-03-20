@@ -58,6 +58,7 @@ private:
 public:
 	CLyrics(const wstring& file_name);
 	CLyrics() {}
+	void LyricsFromRowString(const wstring& lryic_str);
 	bool IsEmpty() const;		//判断是否有歌词
 	Lyric GetLyric(Time time, int offset) const;		//根据时间返回一句歌词。第2个参数如果是0，则返回当前时间对应的歌词，如果是-1则返回当前时间的前一句歌词，1则返回后一句歌词，以此类推。
 	Lyric GetLyric(int index) const;			//根据索引返回一句歌词
@@ -66,7 +67,8 @@ public:
 	CodeType GetCodeType() const;		//获得歌词文本的编码类型
 	wstring GetPathName() const { return m_file; }		//获取歌词文件的路径+文件名
 	wstring GetAllLyricText(bool with_translate = false) const;		//返回所有歌词（仅包含全部歌词文本，不含标识标签和时间标签）。with_translate：是否包含翻译（如果有）
-	wstring GetLyricsString() const;		//返回所有歌词的字符串，以保存的样式，包含全部标签
+	wstring GetLyricsString() const;		//返回所有歌词的字符串，原始样式，包含全部标签
+	wstring GetLyricsString2() const;		//返回所有歌词的字符串，以保存的样式，包含全部标签（将歌词偏移保存到每个时间标签中）
 	bool IsModified() const { return m_modified; }
 	bool IsChineseConverted() const { return m_chinese_converted; }
 	bool IsTranslated() const { return m_translate; }

@@ -10,6 +10,21 @@ CLyrics::CLyrics(const wstring& file_name) : m_file{ file_name }
 	std::stable_sort(m_lyrics.begin(), m_lyrics.end());		//将歌词按时间标签排序（使用stable_sort，确保相同的元素相对位置保持不变，用于处理带翻译的歌词时确保翻译在原文的后面）
 }
 
+void CLyrics::LyricsFromRowString(const wstring & lyric_str)
+{
+	vector<wstring> results;
+	CCommon::StringSplit(lyric_str, L'\n', results);
+	for (const auto& str : results)
+	{
+		string lyric_str = CCommon::UnicodeToStr(str, CodeType::UTF8_NO_BOM);
+		CCommon::StringNormalize(lyric_str);
+		m_lyrics_str.push_back(lyric_str);
+	}
+	m_code_type = CodeType::UTF8_NO_BOM;
+	DisposeLyric();
+	std::stable_sort(m_lyrics.begin(), m_lyrics.end());
+}
+
 void CLyrics::DivideLyrics()
 {
 	ifstream OpenFile{ m_file };
@@ -327,27 +342,35 @@ wstring CLyrics::GetLyricsString() const
 	}
 	else		//如果时间偏移不为0，返回将时间偏移写入每个时间标签后的歌词文本
 	{
-		if (m_id_tag) lyric_string += (L"[id:" + m_id + L"]\r\n");
-		if (m_ti_tag) lyric_string += (L"[ti:" + m_ti + L"]\r\n");
-		if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
-		if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
-		if (m_by_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
-		if (m_offset_tag) lyric_string += L"[offset:0]\r\n";
-		wchar_t time_buff[16];
-		for (auto a_lyric : m_lyrics)
-		{
-			Time a_time{ a_lyric.GetTime(m_offset) };
-			swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-			lyric_string += time_buff;
-			lyric_string += a_lyric.text;
-			lyric_string += L"\r\n";
-		}
+		lyric_string = GetLyricsString2();
 	}
 	if (lyric_string.size() > 1)
 	{
 		lyric_string.pop_back();	//最后一行不需要加回车，删除末尾的\r\n
 		lyric_string.pop_back();
 	}
+	return lyric_string;
+}
+
+wstring CLyrics::GetLyricsString2() const
+{
+	wstring lyric_string{};
+	if (m_id_tag) lyric_string += (L"[id:" + m_id + L"]\r\n");
+	if (m_ti_tag) lyric_string += (L"[ti:" + m_ti + L"]\r\n");
+	if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
+	if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
+	if (m_by_tag) lyric_string += (L"[by:" + m_by + L"]\r\n");
+	if (m_offset_tag) lyric_string += L"[offset:0]\r\n";
+	wchar_t time_buff[16];
+	for (auto a_lyric : m_lyrics)
+	{
+		Time a_time{ a_lyric.GetTime(m_offset) };
+		swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
+		lyric_string += time_buff;
+		lyric_string += a_lyric.text;
+		lyric_string += L"\r\n";
+	}
+
 	return lyric_string;
 }
 
