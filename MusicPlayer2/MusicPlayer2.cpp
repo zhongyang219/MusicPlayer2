@@ -27,7 +27,7 @@ END_MESSAGE_MAP()
 CMusicPlayerApp::CMusicPlayerApp()
 {
 	// 支持重新启动管理器
-	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
+	//m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;		//不需要支持重新启动管理器
 
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
@@ -55,7 +55,7 @@ CMusicPlayerApp::CMusicPlayerApp()
 	::ReleaseDC(NULL, hDC);
 	if (m_dpi == 0)
 	{
-		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), L"Get system DPI failed!");
+		WriteErrorLog(L"Get system DPI failed!");
 		m_dpi = 96;
 	}
 }
@@ -83,7 +83,7 @@ BOOL CMusicPlayerApp::InitInstance()
 		//将命令行参数写入日志文件
 		CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
 		//swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
-		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info.GetString() });
+		WriteErrorLog(wstring{ info.GetString() });
 		return FALSE;
 	}
 
@@ -533,6 +533,11 @@ bool CMusicPlayerApp::IsSongDataModified() const
 	return m_song_data_modified;
 }
 
+void CMusicPlayerApp::WriteErrorLog(const wstring & log_str)
+{
+	CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
+}
+
 void CMusicPlayerApp::LoadSongData()
 {
 	// 打开文件
@@ -592,7 +597,7 @@ void CMusicPlayerApp::LoadSongData()
 	{
 		CString info;
 		info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { exception->m_cause });
-		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info });
+		WriteErrorLog(wstring{ info });
 	}
 	// 关闭对象
 	ar.Close();

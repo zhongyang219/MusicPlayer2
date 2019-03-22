@@ -1148,7 +1148,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 				////将命令行参数写入日志文件
 				//wchar_t buff[256];
 				//swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
-				//CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ buff });
+				//theApp.WriteErrorLog(wstring{ buff });
 			}
 			else		//从命令行参数获取要打开的文件
 			{

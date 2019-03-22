@@ -146,7 +146,7 @@ void CPlayer::IniBASS()
 					{
 						CString info;
 						info = CCommon::LoadTextFormat(IDS_SOUND_FONT_LOAD_FAILED, { sf2_path });
-						CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), info.GetString());
+						theApp.WriteErrorLog(info.GetString());
 						m_sfont_name = CCommon::LoadText(_T("<"), IDS_LOAD_FAILED, _T(">"));
 					}
 					else
@@ -1042,9 +1042,8 @@ bool CPlayer::GetBASSError()
 	int error_code_tmp = BASS_ErrorGetCode();
 	if (error_code_tmp && error_code_tmp != m_error_code)
 	{
-		CString info;
-		info.Format(CCommon::LoadText(IDS_BASS_ERROR_LOG_INFO, _T("%d")), error_code_tmp);
-		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info });
+		CString info = CCommon::LoadTextFormat(IDS_BASS_ERROR_LOG_INFO, {error_code_tmp, GetCurrentFilePath()});
+		theApp.WriteErrorLog(wstring{ info });
 	}
 	m_error_code = error_code_tmp;
 	return true;
@@ -1509,7 +1508,7 @@ void CPlayer::LoadRecentPath()
 		//捕获序列化时出现的异常
 		CString info;
 		info = CCommon::LoadTextFormat(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG, { exception->m_cause });
-		CCommon::WriteLog((theApp.m_module_dir + L"error.log").c_str(), wstring{ info });
+		theApp.WriteErrorLog(wstring{ info });
 	}
 	// 关闭对象
 	ar.Close();

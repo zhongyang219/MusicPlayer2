@@ -87,6 +87,8 @@ public:
 	void SetSongDataModified();
 	bool IsSongDataModified() const;
 
+	void WriteErrorLog(const wstring& log_str);
+
 private:
 	void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
 
