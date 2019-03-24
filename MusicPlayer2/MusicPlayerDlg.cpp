@@ -1770,7 +1770,7 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = theApp.DPI(360);		//设置最小宽度
+	lpMMI->ptMinTrackSize.x = theApp.DPI(340);		//设置最小宽度
 	lpMMI->ptMinTrackSize.y = theApp.DPI(360);		//设置最小高度
 
 	CMainDialogBase::OnGetMinMaxInfo(lpMMI);

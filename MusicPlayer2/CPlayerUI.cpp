@@ -209,6 +209,8 @@ void CPlayerUI::DrawInfo(bool reset)
 	{
 		lyric_rect = other_info_rect;
 		lyric_rect.MoveToY(other_info_rect.bottom + Margin());
+		if (lyric_rect.Width() >= m_progress_on_top_threshold)		//如果界面宽度足够大导致进度条不显示在按钮上方而是右侧，则歌词区域可以有更大的高度
+			lyric_rect.bottom += theApp.DPI(16);
 
 		//绘制背景
 		if (theApp.m_app_setting_data.lyric_background)
