@@ -163,10 +163,11 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_WM_SETCURSOR()
 	ON_WM_MOUSELEAVE()
 	ON_COMMAND(ID_SHOW_MENU_BAR, &CMusicPlayerDlg::OnShowMenuBar)
-		ON_COMMAND(ID_FULL_SCREEN, &CMusicPlayerDlg::OnFullScreen)
-		ON_COMMAND(ID_CREATE_PLAY_SHORTCUT, &CMusicPlayerDlg::OnCreatePlayShortcut)
-		ON_COMMAND(ID_LISTEN_STATISTICS, &CMusicPlayerDlg::OnListenStatistics)
-		END_MESSAGE_MAP()
+	ON_COMMAND(ID_FULL_SCREEN, &CMusicPlayerDlg::OnFullScreen)
+	ON_COMMAND(ID_CREATE_PLAY_SHORTCUT, &CMusicPlayerDlg::OnCreatePlayShortcut)
+	ON_COMMAND(ID_LISTEN_STATISTICS, &CMusicPlayerDlg::OnListenStatistics)
+	ON_COMMAND(ID_DARK_MODE, &CMusicPlayerDlg::OnDarkMode)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -785,7 +786,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 	//设置“视图”菜单下的复选标记
 	pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
 	pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
-	pMenu->CheckMenuItem(IDS_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
+	pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
+	pMenu->CheckMenuItem(ID_DARK_MODE, MF_BYCOMMAND | (theApp.m_app_setting_data.dark_mode ? MF_CHECKED : MF_UNCHECKED));
 
 	//设置播放列表菜单中排序方式的单选标记
 	switch (CPlayer::GetInstance().m_sort_mode)
@@ -3202,4 +3204,16 @@ void CMusicPlayerDlg::OnListenStatistics()
 	// TODO: 在此添加命令处理程序代码
 	CListenTimeStatisticsDlg dlg;
 	dlg.DoModal();
+}
+
+
+void CMusicPlayerDlg::OnDarkMode()
+{
+	// TODO: 在此添加命令处理程序代码
+	theApp.m_app_setting_data.dark_mode = !theApp.m_app_setting_data.dark_mode;
+	if (theApp.m_app_setting_data.dark_mode)
+		theApp.m_app_setting_data.background_transparency = 50;
+	else
+		theApp.m_app_setting_data.background_transparency = 80;
+	SaveConfig();
 }

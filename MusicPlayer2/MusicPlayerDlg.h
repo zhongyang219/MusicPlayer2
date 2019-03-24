@@ -293,4 +293,5 @@ public:
 	afx_msg void OnFullScreen();
 	afx_msg void OnCreatePlayShortcut();
 	afx_msg void OnListenStatistics();
+	afx_msg void OnDarkMode();
 };
