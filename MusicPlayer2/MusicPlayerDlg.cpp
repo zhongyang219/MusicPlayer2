@@ -296,9 +296,9 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.show_lyric_in_cortana = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
 	theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
 	theApp.m_app_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
-	theApp.m_app_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 10);
+	theApp.m_app_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
 	theApp.m_app_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
-	theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 2);
+	theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 4);
 	theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 80);
 	theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(L"config", L"cortana_lyric_double_line", true);
 	theApp.m_app_setting_data.show_spectrum = ini.GetBool(L"config", L"show_spectrum", 1);
