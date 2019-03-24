@@ -195,3 +195,13 @@ void CListCtrlEx::OnRButtonDown(UINT nFlags, CPoint point)
 	this->SetFocus();
 	CListCtrl::OnRButtonDown(nFlags, point);
 }
+
+
+BOOL CListCtrlEx::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN)		//屏蔽列表控件的键盘消息，防止每次按下一个键时列表选中行会出现讨厌的、难看的虚线框
+		return TRUE;
+
+	return CListCtrl::PreTranslateMessage(pMsg);
+}
