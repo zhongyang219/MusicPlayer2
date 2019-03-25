@@ -26,7 +26,7 @@ void CHotKeySettingDlg::ShowKeyList()
 	int index = 0;
 	for (int i = HK_PLAY_PAUSE; i < HK_MAX; i++)
 	{
-		m_key_list.SetItemText(index, 1, CHotkeyManager::GetHotkeyName(m_hotkey_group[static_cast<eHotKeyId>(i)]).c_str());
+		m_key_list.SetItemText(index, 1, m_hotkey_group[static_cast<eHotKeyId>(i)].GetHotkeyName().c_str());
 		index++;
 	}
 }
@@ -49,7 +49,7 @@ void CHotKeySettingDlg::EnableControl()
 void CHotKeySettingDlg::ListClicked()
 {
 	EnableControl();
-	//SHotKey hot_key = m_hotkey_group[static_cast<eHotKeyId>(m_item_selected + HK_PLAY_PAUSE)];
+	//CHotKey hot_key = m_hotkey_group[static_cast<eHotKeyId>(m_item_selected + HK_PLAY_PAUSE)];
 	//m_hot_key_ctrl.SetHotKey(hot_key.key, hot_key.Modifiers());
 }
 
@@ -128,7 +128,7 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
 		return;
 	}
 
-	SHotKey hot_key;
+	CHotKey hot_key;
 	hot_key.key = key_coke;
 
 	hot_key.ctrl = ((modifiers & MOD_CONTROL) != 0);

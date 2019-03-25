@@ -1,4 +1,6 @@
 #pragma once
+#include "CHotKey.h"
+#include "IniHelper.h"
 
 enum eHotKeyId
 {
@@ -14,34 +16,23 @@ enum eHotKeyId
 	HK_MAX
 };
 
-struct SHotKey
-{
-	bool ctrl{};
-	bool shift{};
-	bool alt{};
-	short key{};
-
-	WORD Modifiers() const;
-};
-
 class CHotkeyManager
 {
 public:
 	CHotkeyManager();
 	~CHotkeyManager();
 
-	using HotKeyMap = std::map<eHotKeyId, SHotKey>;
+	using HotKeyMap = std::map<eHotKeyId, CHotKey>;
 
-	void SetHotKey(eHotKeyId id, SHotKey key);
-	SHotKey GetHotKey(eHotKeyId id);
+	void SetHotKey(eHotKeyId id, CHotKey key);
+	CHotKey GetHotKey(eHotKeyId id);
 	void RegisterAllHotKey();
 	void UnRegisterAllHotKey();
 	void FromHotkeyGroup(const HotKeyMap& group);
 	const HotKeyMap& GetHotKeyGroup() const;
 
-	static wstring HotkeyToString(const SHotKey& key);
-	static SHotKey HotkeyFromString(const wstring& str);
-	static wstring GetHotkeyName(const SHotKey& key);
+	void LoadFromIni(const CIniHelper& ini);
+	void SaveToTni(CIniHelper& ini);
 
 private:
 	HotKeyMap m_hotkey_group;

@@ -200,6 +200,7 @@
     <ClInclude Include="BASSMidiLibrary.h" />
     <ClInclude Include="BASSWmaLibrary.h" />
     <ClInclude Include="CDonateDlg.h" />
+    <ClInclude Include="CHotKey.h" />
     <ClInclude Include="CHotkeyManager.h" />
     <ClInclude Include="CHotKeySettingDlg.h" />
     <ClInclude Include="CListBoxEnhanced.h" />
@@ -279,6 +280,7 @@
     <ClCompile Include="BASSMidiLibrary.cpp" />
     <ClCompile Include="BASSWmaLibrary.cpp" />
     <ClCompile Include="CDonateDlg.cpp" />
+    <ClCompile Include="CHotKey.cpp" />
     <ClCompile Include="CHotkeyManager.cpp" />
     <ClCompile Include="CHotKeySettingDlg.cpp" />
     <ClCompile Include="CListBoxEnhanced.cpp" />

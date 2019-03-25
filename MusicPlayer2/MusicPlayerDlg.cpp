@@ -247,34 +247,7 @@ void CMusicPlayerDlg::SaveConfig()
 
 	//保存热键设置
 	ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_setting_data.hot_key_enable);
-
-	wstring str;
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_PLAY_PAUSE));
-	ini.WriteString(L"hot_key", L"play_pause", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_STOP));
-	ini.WriteString(L"hot_key", L"stop", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_FF));
-	ini.WriteString(L"hot_key", L"fast_forward", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_REW));
-	ini.WriteString(L"hot_key", L"rewind", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_PREVIOUS));
-	ini.WriteString(L"hot_key", L"previous", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_NEXT));
-	ini.WriteString(L"hot_key", L"next", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_VOLUME_UP));
-	ini.WriteString(L"hot_key", L"volume_up", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_VOLUME_DOWN));
-	ini.WriteString(L"hot_key", L"volume_down", str);
-
-	str = CHotkeyManager::HotkeyToString(theApp.m_hot_key.GetHotKey(HK_EXIT));
-	ini.WriteString(L"hot_key", L"exit", str);
+	theApp.m_hot_key.SaveToTni(ini);
 
 	ini.Save();
 }
@@ -353,34 +326,7 @@ void CMusicPlayerDlg::LoadConfig()
 
 	//载入热键设置
 	theApp.m_hot_key_setting_data.hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
-
-	SHotKey hot_key;
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"play_pause", L"Ctrl+Shift+116"));
-	theApp.m_hot_key.SetHotKey(HK_PLAY_PAUSE, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"stop", L"Ctrl+Shift+117"));
-	theApp.m_hot_key.SetHotKey(HK_STOP, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"fast_forward", L"Ctrl+Shift+119"));
-	theApp.m_hot_key.SetHotKey(HK_FF, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"rewind", L"Ctrl+Shift+118"));
-	theApp.m_hot_key.SetHotKey(HK_REW, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"previous", L"Ctrl+Shift+37"));
-	theApp.m_hot_key.SetHotKey(HK_PREVIOUS, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"next", L"Ctrl+Shift+39"));
-	theApp.m_hot_key.SetHotKey(HK_NEXT, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"volume_up", L"Ctrl+Shift+38"));
-	theApp.m_hot_key.SetHotKey(HK_VOLUME_UP, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"volume_down", L"Ctrl+Shift+40"));
-	theApp.m_hot_key.SetHotKey(HK_VOLUME_DOWN, hot_key);
-
-	hot_key = CHotkeyManager::HotkeyFromString(ini.GetString(L"hot_key", L"exit", L""));
-	theApp.m_hot_key.SetHotKey(HK_EXIT, hot_key);
+	theApp.m_hot_key.LoadFromIni(ini);
 
 }
 

@@ -457,6 +457,9 @@
     <ClInclude Include="CDonateDlg.h">
       <Filter>对话框类\DonateDlg</Filter>
     </ClInclude>
+    <ClInclude Include="CHotKey.h">
+      <Filter>功能逻辑类\HotKeyManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -674,6 +677,9 @@
     </ClCompile>
     <ClCompile Include="CDonateDlg.cpp">
       <Filter>对话框类\DonateDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="CHotKey.cpp">
+      <Filter>功能逻辑类\HotKeyManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

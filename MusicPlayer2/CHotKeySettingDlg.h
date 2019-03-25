@@ -19,7 +19,7 @@ public:
 #endif
 
 public:
-	std::map<eHotKeyId, SHotKey> m_hotkey_group;
+	std::map<eHotKeyId, CHotKey> m_hotkey_group;
 	GlobalHotKeySettingData m_data;
 
 private:

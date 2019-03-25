@@ -13,12 +13,12 @@ CHotkeyManager::~CHotkeyManager()
 {
 }
 
-void CHotkeyManager::SetHotKey(eHotKeyId id, SHotKey key)
+void CHotkeyManager::SetHotKey(eHotKeyId id, CHotKey key)
 {
 	m_hotkey_group[id] = key;
 }
 
-SHotKey CHotkeyManager::GetHotKey(eHotKeyId id)
+CHotKey CHotkeyManager::GetHotKey(eHotKeyId id)
 {
 	return m_hotkey_group[id];
 }
@@ -54,97 +54,64 @@ const CHotkeyManager::HotKeyMap & CHotkeyManager::GetHotKeyGroup() const
 	return m_hotkey_group;
 }
 
-wstring CHotkeyManager::HotkeyToString(const SHotKey & key)
+void CHotkeyManager::LoadFromIni(const CIniHelper & ini)
+{
+	CHotKey hot_key;
+	hot_key.FromString(ini.GetString(L"hot_key", L"play_pause", L"Ctrl+Shift+116"));
+	SetHotKey(HK_PLAY_PAUSE, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"stop", L"Ctrl+Shift+117"));
+	SetHotKey(HK_STOP, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"fast_forward", L"Ctrl+Shift+119"));
+	SetHotKey(HK_FF, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"rewind", L"Ctrl+Shift+118"));
+	SetHotKey(HK_REW, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"previous", L"Ctrl+Shift+37"));
+	SetHotKey(HK_PREVIOUS, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"next", L"Ctrl+Shift+39"));
+	SetHotKey(HK_NEXT, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"volume_up", L"Ctrl+Shift+38"));
+	SetHotKey(HK_VOLUME_UP, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"volume_down", L"Ctrl+Shift+40"));
+	SetHotKey(HK_VOLUME_DOWN, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"exit", L""));
+	SetHotKey(HK_EXIT, hot_key);
+}
+
+void CHotkeyManager::SaveToTni(CIniHelper & ini)
 {
 	wstring str;
-	if (key.key == 0)
-		return str;
+	str = GetHotKey(HK_PLAY_PAUSE).ToString();
+	ini.WriteString(L"hot_key", L"play_pause", str);
 
-	if (key.ctrl)
-		str += L"Ctrl+";
-	if (key.shift)
-		str += L"Shift+";
-	if (key.alt)
-		str += L"Alt+";
+	str = GetHotKey(HK_STOP).ToString();
+	ini.WriteString(L"hot_key", L"stop", str);
 
-	if ((key.key >= '0'&&key.key <= '9') || (key.key >= 'A' && key.key <= 'Z'))
-	{
-		str += static_cast<wchar_t>(key.key);
-	}
-	else
-	{
-		wchar_t buff[16];
-		swprintf_s(buff, L"%d", key.key);
-		str += buff;
-	}
+	str = GetHotKey(HK_FF).ToString();
+	ini.WriteString(L"hot_key", L"fast_forward", str);
 
-	return str;
-}
+	str = GetHotKey(HK_REW).ToString();
+	ini.WriteString(L"hot_key", L"rewind", str);
 
-SHotKey CHotkeyManager::HotkeyFromString(const wstring & str)
-{
-	vector<wstring> str_list;
-	CCommon::StringSplit(str, L'+', str_list);
-	if(str_list.empty())
-		return SHotKey();
+	str = GetHotKey(HK_PREVIOUS).ToString();
+	ini.WriteString(L"hot_key", L"previous", str);
 
-	SHotKey hot_key;
-	if (str_list.back().size() == 1)
-	{
-		wchar_t ch = str_list.back()[0];
-		if (ch >= 'a' && ch <= 'z')
-			ch = -32;
+	str = GetHotKey(HK_NEXT).ToString();
+	ini.WriteString(L"hot_key", L"next", str);
 
-		if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z'))
-			hot_key.key = ch;
-		else
-			SHotKey();
-	}
-	else
-	{
-		hot_key.key = _wtoi(str_list.back().c_str());
-	}
+	str = GetHotKey(HK_VOLUME_UP).ToString();
+	ini.WriteString(L"hot_key", L"volume_up", str);
 
-	for (size_t i = 0; i < str_list.size() - 1; i++)
-	{
-		if (str_list[i] == L"Ctrl")
-			hot_key.ctrl = true;
-		if (str_list[i] == L"Shift")
-			hot_key.shift = true;
-		if (str_list[i] == L"Alt")
-			hot_key.alt = true;
-	}
-	return hot_key;
-}
+	str = GetHotKey(HK_VOLUME_DOWN).ToString();
+	ini.WriteString(L"hot_key", L"volume_down", str);
 
-wstring CHotkeyManager::GetHotkeyName(const SHotKey & key)
-{
-	wstring str;
-	if (key.ctrl)
-		str += L"Ctrl + ";
-	if (key.shift)
-		str += L"Shift + ";
-	if (key.alt)
-		str += L"Alt + ";
-
-	BOOL bExtended = FALSE;
-	if (key.key <= 0x2F)
-		bExtended = TRUE;
-
-	str += CHotKeyCtrl::GetKeyName(key.key, bExtended);
-
-	return str;
-}
-
-WORD SHotKey::Modifiers() const
-{
-	WORD control_key{};
-	if (ctrl)
-		control_key |= MOD_CONTROL;
-	if (shift)
-		control_key |= MOD_SHIFT;
-	if (alt)
-		control_key |= MOD_ALT;
-
-	return control_key;
+	str = GetHotKey(HK_EXIT).ToString();
+	ini.WriteString(L"hot_key", L"exit", str);
 }
