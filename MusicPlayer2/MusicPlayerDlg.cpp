@@ -2343,8 +2343,17 @@ void CMusicPlayerDlg::OnDeleteLyric()
 void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-	m_pUI->RButtonUp(point);
+	if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
+	{
+		CPoint point1;
+		GetCursorPos(&point1);
+		//m_main_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
+	else
+	{
+		m_pUI->RButtonUp(point);
+	}
 
 	CMainDialogBase::OnRButtonUp(nFlags, point);
 }

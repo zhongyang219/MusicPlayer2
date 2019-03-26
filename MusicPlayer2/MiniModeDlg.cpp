@@ -367,10 +367,17 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//设置点击鼠标右键弹出菜单
-	CMenu* pContextMenu = m_menu.GetSubMenu(0); //获取第一个弹出菜单，所以第一个菜单必须有子菜单 
 	CPoint point1;	//定义一个用于确定光标位置的位置  
 	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标  
-	pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
+	if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
+	{
+		theApp.m_pMainWnd->GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+	}
+	else
+	{
+		CMenu* pContextMenu = m_menu.GetSubMenu(0);
+		pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
+	}
 
 	CDialogEx::OnRButtonUp(nFlags, point);
 }
