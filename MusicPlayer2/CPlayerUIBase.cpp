@@ -571,7 +571,7 @@ void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect)
 	CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0) };	//获取当歌词
 	bool no_lyric{ false };
 	//如果当前一句歌词为空，且持续了超过了20秒，且当前是最后一句歌词，则不显示歌词
-	no_lyric = current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.time2int() > 20000/* && CPlayer::GetInstance().m_Lyrics.GetLyricIndex(Time(CPlayer::GetInstance().GetCurrentPosition()) == CPlayer::GetInstance().m_Lyrics.GetLyricCount()-1*/);
+	no_lyric = current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.time2int() > 20000/* && CPlayer::GetInstance().m_Lyrics.GetLyricIndex(Time(CPlayer::GetInstance().GetCurrentPosition()) == CPlayer::GetInstance().m_Lyrics.GetLyricCount()-1)*/;
 
 	if (IsMidiLyric())
 	{

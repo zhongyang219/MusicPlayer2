@@ -218,7 +218,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
 	{
 		//正在播放的文件名以滚动的样式显示。如果参数要求强制刷新，则重置滚动位置
-		CDrawCommon::ScrollInfo scroll_info;
+		static CDrawCommon::ScrollInfo scroll_info;
 		m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str(),
 			m_colors.color_text, theApp.DPI(1), true, scroll_info, reset);
 	}
