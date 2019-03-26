@@ -241,6 +241,7 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 			//m_Mytip.UpdateTipText(m_song_tip_info, this);
 			index = CPlayer::GetInstance().GetIndex();
 			song_name = CPlayer::GetInstance().GetFileName();
+			m_ui.DrawInfo(true);
 		}
 		
 	}
