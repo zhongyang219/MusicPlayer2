@@ -215,23 +215,30 @@ void CMiniModeUI::DrawInfo(bool reset)
 		wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
 		m_draw.DrawWindowText(rc_tmp, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER);
 	}
-	else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())	//没有歌词时显示播放的文件名
+	else
 	{
-		//正在播放的文件名以滚动的样式显示。如果参数要求强制刷新，则重置滚动位置
-		static CDrawCommon::ScrollInfo scroll_info;
-		m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str(),
-			m_colors.color_text, theApp.DPI(1), true, scroll_info, reset);
+		Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+		CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//获取当歌词
+		int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//获取当前歌词进度（范围为0~1000）
+		bool no_lyric{ false };
+		//如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
+		no_lyric = (current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.time2int() > 20000) || progress >= 1000;
+		
+		if (CPlayer::GetInstance().m_Lyrics.IsEmpty() || no_lyric)	//没有歌词时显示播放的文件名
+		{
+			//正在播放的文件名以滚动的样式显示。如果参数要求强制刷新，则重置滚动位置
+			static CDrawCommon::ScrollInfo scroll_info;
+			m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str(),
+				m_colors.color_text, theApp.DPI(1), true, scroll_info, reset);
+		}
+		else		//显示歌词
+		{
+			COLORREF color2 = (theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text);
+			if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
+				current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+			m_draw.DrawWindowText(rc_tmp, current_lyric.text.c_str(), m_colors.color_text, color2, progress, true);
+		}
 	}
-	else		//显示歌词
-	{
-		COLORREF color2 = (theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text);
-		wstring current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0).text };	//获取当歌词
-		int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(Time(CPlayer::GetInstance().GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
-		if (current_lyric.empty())		//如果当前歌词为空白，就显示为省略号
-			current_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-		m_draw.DrawWindowText(rc_tmp, current_lyric.c_str(), m_colors.color_text, color2, progress, true);
-	}
-
 
 
 	//将缓冲区DC中的图像拷贝到屏幕中显示
