@@ -105,44 +105,51 @@ void CCortanaLyric::DrawInfo()
 			wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
 			DrawCortanaTextSimple(current_lyric.c_str(), Alignment::LEFT);
 		}
-		else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//有歌词时显示歌词
+		else
 		{
 			Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-			CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
 			int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
-			if (CPlayer::GetInstance().m_Lyrics.IsTranslated() && theApp.m_ui_data.show_translate)
+			CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
+			bool no_lyric{ false };
+			//如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
+			no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time.time2int() > 20000) || progress >= 1000;
+
+			if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric)		//有歌词时显示歌词
 			{
-				if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-				if (lyric.translate.empty()) lyric.translate = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-				DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
+				if (CPlayer::GetInstance().m_Lyrics.IsTranslated() && theApp.m_ui_data.show_translate)
+				{
+					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+					if (lyric.translate.empty()) lyric.translate = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+					DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
+				}
+				else if (!theApp.m_lyric_setting_data.cortana_lyric_double_line)
+				{
+					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+					DrawCortanaText(lyric.text.c_str(), progress);
+				}
+				else
+				{
+					wstring next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
+					if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+					if (next_lyric.empty()) next_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+					DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
+				}
 			}
-			else if (!theApp.m_lyric_setting_data.cortana_lyric_double_line)
+			else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
 			{
-				if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-				DrawCortanaText(lyric.text.c_str(), progress);
-			}
-			else
-			{
-				wstring next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
-				if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-				if (next_lyric.empty()) next_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-				DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
-			}
-		}
-		else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
-		{
-			static int index{};
-			static wstring song_name{};
-			//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
-			if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
-			{
-				DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), true, theApp.DPI(2));
-				index = CPlayer::GetInstance().GetIndex();
-				song_name = CPlayer::GetInstance().GetFileName();
-			}
-			else
-			{
-				DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), false, theApp.DPI(2));
+				static int index{};
+				static wstring song_name{};
+				//如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
+				if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
+				{
+					DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), true, theApp.DPI(2));
+					index = CPlayer::GetInstance().GetIndex();
+					song_name = CPlayer::GetInstance().GetFileName();
+				}
+				else
+				{
+					DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), false, theApp.DPI(2));
+				}
 			}
 		}
 

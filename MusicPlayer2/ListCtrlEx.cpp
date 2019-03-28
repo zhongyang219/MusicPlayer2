@@ -95,6 +95,7 @@ BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
+	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 
 
@@ -200,8 +201,19 @@ void CListCtrlEx::OnRButtonDown(UINT nFlags, CPoint point)
 BOOL CListCtrlEx::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)		//屏蔽列表控件的键盘消息，防止每次按下一个键时列表选中行会出现讨厌的、难看的虚线框
-		return TRUE;
+
+	//if (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)		//屏蔽列表控件的键盘消息，防止每次按下一个键时列表选中行会出现讨厌的、难看的虚线框
+	//	return TRUE;
 
 	return CListCtrl::PreTranslateMessage(pMsg);
+}
+
+
+void CListCtrlEx::OnSetFocus(CWnd* pOldWnd)
+{
+	CListCtrl::OnSetFocus(pOldWnd);
+
+	// TODO: 在此处添加消息处理程序代码
+
+	SendMessage(WM_KILLFOCUS);				//禁止列表控件获取焦点，防止选中行会出现难看的虚线框
 }

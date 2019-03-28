@@ -568,23 +568,20 @@ void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area)
 void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect)
 {
 	m_draw.SetFont(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
-	CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0) };	//获取当歌词
-	bool no_lyric{ false };
-	//如果当前一句歌词为空，且持续了超过了20秒，且当前是最后一句歌词，则不显示歌词
-	no_lyric = current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.time2int() > 20000/* && CPlayer::GetInstance().m_Lyrics.GetLyricIndex(Time(CPlayer::GetInstance().GetCurrentPosition()) == CPlayer::GetInstance().m_Lyrics.GetLyricCount()-1)*/;
 
 	if (IsMidiLyric())
 	{
 		wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
 		m_draw.DrawWindowText(rect, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, true);
 	}
-	else if (CPlayer::GetInstance().m_Lyrics.IsEmpty() || no_lyric)
+	else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())
 	{
 		m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
 	}
 	else
 	{
 		CRect lyric_rect = rect;
+		CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0) };	//获取当歌词
 		if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
 			current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
 		int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(Time(CPlayer::GetInstance().GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
