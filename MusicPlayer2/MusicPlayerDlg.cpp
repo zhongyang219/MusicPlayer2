@@ -878,7 +878,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
-	CoInitialize(0);	//初始化COM组件，用于支持任务栏显示进度和缩略图按钮
+	//CoInitialize(0);	//初始化COM组件，用于支持任务栏显示进度和缩略图按钮
 #ifndef COMPILE_IN_WIN_XP
 	//if (CWinVersionHelper::IsWindows7OrLater())
 	//	CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pTaskbar));	//创建ITaskbarList3的实例

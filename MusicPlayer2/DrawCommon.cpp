@@ -14,7 +14,8 @@ void CDrawCommon::Create(CDC * pDC, CWnd * pMainWnd)
 {
 	m_pDC = pDC;
 	m_pMainWnd = pMainWnd;
-	m_pfont = m_pMainWnd->GetFont();
+	if(m_pMainWnd != nullptr)
+		m_pfont = m_pMainWnd->GetFont();
 }
 
 //void CDrawCommon::SetBackColor(COLORREF back_color)
@@ -36,7 +37,8 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 {
 	m_pDC->SetTextColor(color);
 	m_pDC->SetBkMode(TRANSPARENT);
-	m_pDC->SelectObject(m_pfont);
+	if (m_pfont != nullptr)
+		m_pDC->SelectObject(m_pfont);
 	//设置绘图的剪辑区域
 	if (!no_clip_area)
 	{
@@ -75,7 +77,8 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 	if (split < 0) split = 0;
 	if (split > 1000) split = 1000;
 	m_pDC->SetBkMode(TRANSPARENT);
-	m_pDC->SelectObject(m_pfont);
+	if (m_pfont != nullptr)
+		m_pDC->SelectObject(m_pfont);
 	CSize text_size;	//文本的大小
 	int text_top, text_left;		//输出文本的top和left位置
 	//设置绘图的剪辑区域，防止文字输出超出控件区域
@@ -144,7 +147,8 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	}
 	m_pDC->SetTextColor(color);
 	m_pDC->SetBkMode(TRANSPARENT);
-	m_pDC->SelectObject(m_pfont);
+	if (m_pfont != nullptr)
+		m_pDC->SelectObject(m_pfont);
 	CSize text_size;	//文本的大小
 	int text_top, text_left;		//输出文本的top和left位置
 	//设置绘图的剪辑区域，防止文字输出超出控件区域
@@ -203,7 +207,8 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
 	}
 	m_pDC->SetTextColor(color);
 	m_pDC->SetBkMode(TRANSPARENT);
-	m_pDC->SelectObject(m_pfont);
+	if (m_pfont != nullptr)
+		m_pDC->SelectObject(m_pfont);
 	CSize text_size;	//文本的大小
 	int text_top, text_left;		//输出文本的top和left位置
 	//设置绘图的剪辑区域，防止文字输出超出控件区域
@@ -422,7 +427,8 @@ void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 {
-	m_pDC->SelectObject(m_pfont);
+	if (m_pfont != nullptr)
+		m_pDC->SelectObject(m_pfont);
 	return m_pDC->GetTextExtent(str);
 }
 
