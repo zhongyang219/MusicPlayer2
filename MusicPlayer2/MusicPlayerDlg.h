@@ -61,8 +61,9 @@ protected:
 																	//用于支持鼠标指向列表中的项目时显示歌曲信息)
 	CStaticEx m_path_static;
 	CEdit m_path_edit;
-	CMenu m_main_menu;
+	CMenu m_main_menu;				//菜单栏上的菜单
 	CMenu m_list_popup_menu;		//播放列表右键菜单
+	CMenu m_main_popup_menu;		//按住Shift键时弹出的右键菜单
 	CButton m_set_path_button;
 	CEdit m_search_edit;
 	CButton m_clear_search_button;
@@ -102,7 +103,7 @@ protected:
 	vector<int> m_items_selected;
 	int m_tab_selected{};		//选项设置中选择的标签
 
-	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected, m_list_popup_menu };		//迷你模式对话框
+	CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected, m_list_popup_menu, m_main_popup_menu };		//迷你模式对话框
 
 	CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
 

@@ -16,7 +16,7 @@ class CMiniModeDlg : public CDialogEx
 	DECLARE_DYNAMIC(CMiniModeDlg)
 
 public:
-	CMiniModeDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CWnd* pParent = NULL);   // 标准构造函数
+	CMiniModeDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CMenu& main_popup_menu, CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CMiniModeDlg();
 
 // 对话框数据
@@ -47,6 +47,7 @@ protected:
 	CToolTipCtrl m_Mytip;
 	CMenu m_menu;
 	CMenu& m_popup_menu;		//播放列表右键菜单
+	CMenu& m_main_popup_menu;
 
 	CMiniModeUI::SMiniModeUIData m_ui_data;
 	CMiniModeUI m_ui{ m_ui_data, this };

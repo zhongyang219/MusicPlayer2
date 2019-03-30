@@ -11,8 +11,9 @@
 
 IMPLEMENT_DYNAMIC(CMiniModeDlg, CDialogEx)
 
-CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_MINI_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }, m_popup_menu{ popup_menu }
+CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CMenu& main_popup_menu, CWnd* pParent /*=NULL*/)
+	: CDialogEx(IDD_MINI_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected },
+	m_popup_menu{ popup_menu }, m_main_popup_menu{ main_popup_menu }
 {
 	m_screen_width = GetSystemMetrics(SM_CXFULLSCREEN);
 	m_screen_height = GetSystemMetrics(SM_CYFULLSCREEN) + 23;
@@ -371,7 +372,7 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标  
 	if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
 	{
-		theApp.m_pMainWnd->GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
 	}
 	else
 	{

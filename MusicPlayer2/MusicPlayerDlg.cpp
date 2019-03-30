@@ -875,6 +875,13 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 		pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
 	}
 
+	//初始化按Shift键弹出的右键菜单
+	m_main_popup_menu.CreatePopupMenu();
+	CCommon::AppendMenuOp(m_main_popup_menu.GetSafeHmenu(), m_main_menu.GetSafeHmenu());
+	m_main_popup_menu.AppendMenu(MF_SEPARATOR);
+	CString exitStr;
+	m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
+	m_main_popup_menu.AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
@@ -2348,7 +2355,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 		CPoint point1;
 		GetCursorPos(&point1);
 		//m_main_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-		GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
 	}
 	else
 	{
