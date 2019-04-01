@@ -1233,6 +1233,10 @@ int CPlayerUIBase::DrawFullScreenIcon()
 		DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], icon);
 		icon_size += Margin();
 	}
+	else
+	{
+		m_buttons[BTN_FULL_SCREEN].rect.SetRectEmpty();
+	}
 	return icon_size;
 }
 
