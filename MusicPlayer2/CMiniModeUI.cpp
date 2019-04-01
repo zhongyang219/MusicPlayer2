@@ -82,14 +82,22 @@ void CMiniModeUI::DrawInfo(bool reset)
 	{
 		m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
 	}
-	else
+	else		//专辑封面不存在时显示默认专辑封面图标
 	{
 		if (draw_background)
 			m_draw.FillAlphaRect(cover_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 		else
 			m_draw.FillRect(cover_rect, m_colors.color_spectrum_back);
-		cover_rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
-		m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), cover_rect.TopLeft(), cover_rect.Size());
+
+		//使图标在矩形框中居中
+		CSize icon_size = theApp.m_icon_set.default_cover_small.GetSize();
+		CRect icon_rect;
+		icon_rect.left = cover_rect.left + (cover_rect.Width() - icon_size.cx) / 2;
+		icon_rect.right = icon_rect.left + icon_size.cx;
+		icon_rect.top = cover_rect.top + (cover_rect.Height() - icon_size.cy) / 2;
+		icon_rect.bottom = icon_rect.top + icon_size.cy;
+
+		m_draw.DrawIcon(theApp.m_icon_set.default_cover_small.GetIcon(), icon_rect.TopLeft(), icon_rect.Size());
 	}
 	m_buttons[BTN_COVER].rect = cover_rect;
 

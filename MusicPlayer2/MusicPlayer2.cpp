@@ -419,6 +419,7 @@ void CMusicPlayerApp::LoadConfig()
 void CMusicPlayerApp::LoadIconResource()
 {
 	m_icon_set.default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);
+	m_icon_set.default_cover_small.Load(IDI_DEFAULT_COVER, NULL, DPI(32));
 	m_icon_set.skin.Load(IDI_SKIN, IDI_SKIN_D, DPI(16));
 	m_icon_set.eq.Load(IDI_EQ, IDI_EQ_D, DPI(16));
 	m_icon_set.setting.Load(IDI_SETTING, IDI_SETTING_D, DPI(16));

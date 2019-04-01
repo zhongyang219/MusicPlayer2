@@ -266,6 +266,7 @@ public:
 struct IconSet
 {
 	IconRes default_cover;
+	IconRes default_cover_small;
 	IconRes skin;
 	IconRes eq;
 	IconRes setting;
