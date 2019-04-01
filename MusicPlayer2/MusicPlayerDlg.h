@@ -295,4 +295,6 @@ public:
 	afx_msg void OnCreatePlayShortcut();
 	afx_msg void OnListenStatistics();
 	afx_msg void OnDarkMode();
+protected:
+	afx_msg LRESULT OnMainMenuPopup(WPARAM wParam, LPARAM lParam);
 };

@@ -3,6 +3,8 @@
 #include "IPlayerUI.h"
 #include "CPlayerUIHelper.h"
 
+#define WM_MAIN_MENU_POPEDUP (WM_USER+117)		//显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
+
 struct SLayoutData
 {
 	const int margin = theApp.DPI(4);							//边缘的余量
@@ -73,7 +75,8 @@ protected:
 		BTN_SELECT_FOLDER,		//选择文件夹
 		BTN_PROGRESS,			//进度条
 		BTN_COVER,
-		BTN_FULL_SCREEN
+		BTN_FULL_SCREEN,
+		BTN_MENU
 	};
 
 	struct DrawData
@@ -94,7 +97,7 @@ protected:
 	void DrawControlBar(CRect rect);
 	void DrawProgressBar(CRect rect);
 	void DrawTranslateButton(CRect rect);
-	int DrawFullScreenIcon();			//绘制全屏显示图标。返回图标的大小
+	int DrawTopRightIcons();			//绘制右上角的图标。返回总宽度
 	void DrawCurrentTime();				//在右上角绘制当前系统时间
 
 	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);

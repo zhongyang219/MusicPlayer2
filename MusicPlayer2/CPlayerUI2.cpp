@@ -57,13 +57,13 @@ void CPlayerUI2::DrawInfo(bool reset)
 			DrawCurrentTime();
 		}
 
-		//绘制全屏图标
-		int full_screen_icon_size = DrawFullScreenIcon();
+		//绘制右上角图标
+		int top_right_icon_size = DrawTopRightIcons();
 
 		//绘制播放状态
 		int text_height{ DPI(18) };
 		rc_tmp.MoveToXY(EdgeMargin(true), EdgeMargin(false));
-		rc_tmp.right = draw_rect.right - EdgeMargin(true) - full_screen_icon_size;
+		rc_tmp.right = draw_rect.right - EdgeMargin(true) - top_right_icon_size;
 		rc_tmp.bottom = rc_tmp.top + text_height;
 		DrawSongInfo(rc_tmp, reset);
 
@@ -343,22 +343,22 @@ void CPlayerUI2::DrawInfo(bool reset)
 			m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
 		}
 
-		//绘制全屏图标
-		int full_screen_icon_size = DrawFullScreenIcon();
+		//绘制右上角图标
+		int top_right_icon_size = DrawTopRightIcons();
 
 
 		//绘制播放状态
 		int text_height{ DPI(18) };		//文本的高度
 		rc_tmp.MoveToX(cover_side + EdgeMargin(true) + Margin());
 		rc_tmp.MoveToY(EdgeMargin(false));
-		rc_tmp.right = info_rect.right - EdgeMargin(true) - full_screen_icon_size;
+		rc_tmp.right = info_rect.right - EdgeMargin(true) - top_right_icon_size;
 		rc_tmp.bottom = rc_tmp.top + text_height;
 		DrawSongInfo(rc_tmp, reset);
 
 		//绘制标题和艺术家
 		int text_height2 = DPI(22);
 		rc_tmp.MoveToXY(cover_side + EdgeMargin(true) + Margin(), rc_tmp.bottom + DPI(4));
-		rc_tmp.right = info_rect.right - EdgeMargin(true) - full_screen_icon_size;
+		rc_tmp.right = info_rect.right - EdgeMargin(true) - top_right_icon_size;
 		rc_tmp.bottom = rc_tmp.top + text_height2;
 		m_draw.SetFont(&theApp.m_font_set.title.GetFont(theApp.m_ui_data.full_screen));
 		static CDrawCommon::ScrollInfo scroll_info_title;

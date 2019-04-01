@@ -167,6 +167,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_CREATE_PLAY_SHORTCUT, &CMusicPlayerDlg::OnCreatePlayShortcut)
 	ON_COMMAND(ID_LISTEN_STATISTICS, &CMusicPlayerDlg::OnListenStatistics)
 	ON_COMMAND(ID_DARK_MODE, &CMusicPlayerDlg::OnDarkMode)
+	ON_MESSAGE(WM_MAIN_MENU_POPEDUP, &CMusicPlayerDlg::OnMainMenuPopup)
 END_MESSAGE_MAP()
 
 
@@ -2354,8 +2355,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	{
 		CPoint point1;
 		GetCursorPos(&point1);
-		//m_main_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-		m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
 	}
 	else
 	{
@@ -3178,4 +3178,14 @@ void CMusicPlayerDlg::OnDarkMode()
 	else
 		theApp.m_app_setting_data.background_transparency = 80;
 	SaveConfig();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnMainMenuPopup(WPARAM wParam, LPARAM lParam)
+{
+	CPoint point = *((CPoint*)wParam);
+	ClientToScreen(&point);
+	m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+
+	return 0;
 }

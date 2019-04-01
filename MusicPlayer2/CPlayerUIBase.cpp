@@ -237,6 +237,12 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
 				return;
 
+			case BTN_MENU:
+				{
+					CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
+					theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+				}
+
 			default:
 				break;
 			}
@@ -1217,12 +1223,14 @@ void CPlayerUIBase::DrawTranslateButton(CRect rect)
 	m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(rect, m_draw_rect);
 }
 
-int CPlayerUIBase::DrawFullScreenIcon()
+int CPlayerUIBase::DrawTopRightIcons()
 {
-	int icon_size = 0;
+	int total_width = 0;
+	const int icon_size = DPI(28);
+	//绘制“全屏”图标
 	if (!m_ui_data.show_playlist || m_ui_data.full_screen)
 	{
-		icon_size = DPI(28);
+		total_width = icon_size;
 
 		CRect rc_tmp;
 		rc_tmp.right = m_draw_rect.right - EdgeMargin(true);
@@ -1231,13 +1239,27 @@ int CPlayerUIBase::DrawFullScreenIcon()
 		rc_tmp.left = rc_tmp.right - icon_size;
 		IconRes& icon{ m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1 };
 		DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], icon);
-		icon_size += Margin();
+		total_width += Margin();
 	}
 	else
 	{
 		m_buttons[BTN_FULL_SCREEN].rect.SetRectEmpty();
 	}
-	return icon_size;
+
+	//绘制“主菜单”图标
+	if (!m_ui_data.show_menu_bar || m_ui_data.full_screen)
+	{
+		CRect rc_tmp;
+		rc_tmp.right = m_draw_rect.right - total_width - EdgeMargin(true);
+		rc_tmp.top = EdgeMargin(false);
+		rc_tmp.bottom = rc_tmp.top + icon_size;
+		rc_tmp.left = rc_tmp.right - icon_size;
+		DrawControlButton(rc_tmp, m_buttons[BTN_MENU], theApp.m_icon_set.mini);
+		total_width += icon_size;
+		total_width += Margin();
+	}
+
+	return total_width;
 }
 
 void CPlayerUIBase::DrawCurrentTime()
@@ -1287,5 +1309,6 @@ void CPlayerUIBase::AddToolTips()
 	AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
 	AddMouseToolTip(BTN_COVER, m_cover_tip);
 	AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+	AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
 }
 
