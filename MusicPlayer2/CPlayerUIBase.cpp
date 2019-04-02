@@ -29,6 +29,31 @@ void CPlayerUIBase::Init(CDC * pDC)
 
 void CPlayerUIBase::DrawInfo(bool reset)
 {
+	PreDrawInfo();
+
+	//设置缓冲的DC
+	CDC MemDC;
+	CBitmap MemBitmap;
+	MemDC.CreateCompatibleDC(NULL);
+
+	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
+	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
+	m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+
+	//绘制背景
+	DrawBackground();
+
+	//绘制界面中其他信息
+	_DrawInfo(reset);
+
+	//将缓冲区DC中的图像拷贝到屏幕中显示
+	m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &MemDC, 0, 0, SRCCOPY);
+	MemDC.SelectObject(pOldBit);
+	MemBitmap.DeleteObject();
+	MemDC.DeleteDC();
+
+
 	if (m_first_draw)
 	{
 		AddToolTips();

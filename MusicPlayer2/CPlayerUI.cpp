@@ -12,23 +12,10 @@ CPlayerUI::~CPlayerUI()
 {
 }
 
-void CPlayerUI::DrawInfo(bool reset)
+void CPlayerUI::_DrawInfo(bool reset)
 {
-	//调用基类的函数，以设置绘图颜色
-	PreDrawInfo();
-
-	//设置缓冲的DC
-	CDC MemDC;
-	CBitmap MemBitmap;
-	MemDC.CreateCompatibleDC(NULL);
 	CRect draw_rect{ m_draw_rect };
 	draw_rect.MoveToXY(0, 0);
-	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
-	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
-
-	//绘制背景
-	DrawBackground();
 
 	CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(true), draw_rect.top + EdgeMargin(false) };		//文本的起始坐标
 	int text_height{ DPI(18) };		//文本的高度
@@ -187,13 +174,13 @@ void CPlayerUI::DrawInfo(bool reset)
 				color = m_colors.color_spectrum_cover;
 			else
 				color = m_colors.color_spectrum;
-			MemDC.FillSolidRect(rect_tmp, color);
+			m_draw.GetDC()->FillSolidRect(rect_tmp, color);
 
 			CRect rect_peak{ rect_tmp };
 			rect_peak.bottom = rect_tmp.bottom - peak_height - theApp.DPIRound(1.1);
 			rect_peak.top = rect_peak.bottom - theApp.DPIRound(1.1);
 			//if (peak_height > 1)
-			MemDC.FillSolidRect(rect_peak, color);
+			m_draw.GetDC()->FillSolidRect(rect_peak, color);
 		}
 	}
 
@@ -267,14 +254,6 @@ void CPlayerUI::DrawInfo(bool reset)
 
 	//绘制音量调按钮，因为必须在上层，所以必须在最后绘制
 	DrawVolumnAdjBtn();
-
-	//将缓冲区DC中的图像拷贝到屏幕中显示
-	m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-	MemDC.SelectObject(pOldBit);
-	MemBitmap.DeleteObject();
-	MemDC.DeleteDC();
-
-	CPlayerUIBase::DrawInfo(reset);
 }
 
 void CPlayerUI::DrawLyricsArea(CRect lyric_rect)

@@ -26,7 +26,7 @@ public:
 
 public:
 	virtual void Init(CDC* pDC) override;
-	virtual void DrawInfo(bool reset = false) override;
+	virtual void DrawInfo(bool reset = false) override final;
 	virtual void ClearInfo() override;
 
 	virtual void LButtonDown(CPoint point) override;
@@ -87,6 +87,7 @@ protected:
 	};
 
 protected:
+	virtual void _DrawInfo(bool reset = false) = 0;
 	void PreDrawInfo();
 	void SetDrawRect();
 	void DrawBackground();

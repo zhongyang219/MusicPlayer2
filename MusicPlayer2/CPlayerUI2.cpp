@@ -15,25 +15,10 @@ CPlayerUI2::~CPlayerUI2()
 {
 }
 
-void CPlayerUI2::DrawInfo(bool reset)
+void CPlayerUI2::_DrawInfo(bool reset)
 {
-	PreDrawInfo();
-
-	//设置缓冲的DC
-	CDC MemDC;
-	CBitmap MemBitmap;
-	MemDC.CreateCompatibleDC(NULL);
-
 	CRect draw_rect = m_draw_rect;
 	draw_rect.MoveToXY(0, 0);
-
-	MemBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
-	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
-	m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
-
-	//绘制背景
-	DrawBackground();
 
 	if (!IsDrawNarrowMode())
 	{
@@ -400,14 +385,6 @@ void CPlayerUI2::DrawInfo(bool reset)
 		rc_tmp.bottom = draw_rect.bottom - EdgeMargin(false);
 		DrawControlBar(rc_tmp);
 	}
-
-	//将缓冲区DC中的图像拷贝到屏幕中显示
-	m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-	MemDC.SelectObject(pOldBit);
-	MemBitmap.DeleteObject();
-	MemDC.DeleteDC();
-
-	CPlayerUIBase::DrawInfo(reset);
 }
 
 

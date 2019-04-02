@@ -9,8 +9,6 @@ public:
 	CPlayerUI(UIData& ui_data);
 	~CPlayerUI();
 
-	virtual void DrawInfo(bool reset = false) override;		//绘制信息
-
 	//virtual void RButtonUp(CPoint point) override;
 	virtual void MouseMove(CPoint point) override;
 	virtual void OnSizeRedraw(int cx, int cy) override;
@@ -22,6 +20,8 @@ public:
 	virtual void UpdateToolTipPosition() override;
 
 private:
+	virtual void _DrawInfo(bool reset = false) override;		//绘制信息
+
 	void DrawLyricsArea(CRect lyric_rect);			//普通模式下绘制歌词区域
 	CSize SpectralSize();
 };
