@@ -16,6 +16,7 @@ void CTest::Test()
 	//TestStringMatch();
 	//TestCrash();
 	//TestShortCut();
+	//TestCommon();
 }
 
 void CTest::TestStringMatch()
@@ -50,5 +51,11 @@ void CTest::TestShortCut()
 		L"-play_pause",
 		2
 		);
+	int a = 0;
+}
+
+void CTest::TestCommon()
+{
+	int b = CCommon::IconSizeNormalize(30);
 	int a = 0;
 }

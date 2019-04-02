@@ -13,5 +13,6 @@ private:
 	static void TestStringMatch();
 	static void TestCrash();
 	static void TestShortCut();
+	static void TestCommon();
 };
 

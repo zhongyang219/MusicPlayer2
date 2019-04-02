@@ -252,6 +252,8 @@ public:
 	//对一个double按指定位数四舍五入
 	static double DoubleRound(double dVal, int format);
 
+	//将一个图标的尺寸改为标准尺寸。给定一个像素值，然后在标准尺寸列表中查找最相近的尺寸，并返回
+	static int IconSizeNormalize(int size);
 
 	template<class T>
 	static T Min3(T v1, T v2, T v3)

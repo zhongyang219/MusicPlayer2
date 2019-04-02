@@ -243,6 +243,11 @@ public:
 	{
 		int size_large = static_cast<int>(size * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
 
+		if(size < 32)
+			size = CCommon::IconSizeNormalize(size);
+		if (size_large < 32)
+			size_large = CCommon::IconSizeNormalize(size_large);
+
 		if (id != 0)
 		{
 			hIcon = CDrawCommon::LoadIconResource(id, size, size);
