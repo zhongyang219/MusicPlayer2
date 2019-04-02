@@ -36,6 +36,11 @@ BOOL CAboutDlg::OnInitDialog()
 #ifdef _M_X64
 	version_info += _T(" (x64)");
 #endif
+
+#ifdef _DEBUG
+	version_info += _T(" (Debug)");
+#endif
+
 	SetDlgItemText(IDC_STATIC_VERSION, version_info);
 
 	//设置最后编译日期
@@ -49,11 +54,6 @@ BOOL CAboutDlg::OnInitDialog()
 	m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), CCommon::LoadText(IDS_GOTO_GITHUB, _T("\r\nhttps://github.com/zhongyang219/MusicPlayer2")));
 	m_tool_tip.SetDelayTime(300);	//设置延迟
 	m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
-
-	//if (theApp.m_is_windows10)
-	//	SetDlgItemText(IDC_DEBUG_INFO_STATIC, _T("Windows10"));
-	//else
-	//	SetDlgItemText(IDC_DEBUG_INFO_STATIC, _T("Not Windows10"));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE

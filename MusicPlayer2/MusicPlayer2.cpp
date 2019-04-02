@@ -182,10 +182,13 @@ BOOL CMusicPlayerApp::InitInstance()
 	}
 
 	//启动时检查更新
+#ifndef _DEBUG		//DEBUG下不在启动时检查更新
 	if (m_general_setting_data.check_update_when_start)
 	{
 		AfxBeginThread(CheckUpdateThreadFunc, NULL);
 	}
+#endif // !_DEBUG
+
 
 	CColorConvert::Initialize();
 
