@@ -437,6 +437,7 @@ void CMusicPlayerApp::LoadIconResource()
 	m_icon_set.find_songs.Load(IDI_FIND_SONGS, IDI_FIND_SONGS_D, DPI(16));
 	m_icon_set.full_screen.Load(IDI_FULL_SCREEN, IDI_FULL_SCREEN_D, DPI(16));
 	m_icon_set.full_screen1.Load(IDI_FULL_SCREEN1, IDI_FULL_SCREEN1_D, DPI(16));
+	m_icon_set.menu.Load(IDI_MENU, IDI_MENU_D, DPI(16));
 
 	m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
 	m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));

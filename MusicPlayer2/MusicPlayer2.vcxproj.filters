@@ -837,8 +837,14 @@
     <Image Include="res\全屏1_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\menu.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\menu_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
     <Image Include="res\donate.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\其他</Filter>
     </Image>
   </ItemGroup>
 </Project>

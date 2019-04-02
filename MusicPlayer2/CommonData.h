@@ -285,6 +285,7 @@ struct IconSet
 	IconRes find_songs;
 	IconRes full_screen;
 	IconRes full_screen1;
+	IconRes menu;
 
 	IconRes stop_l;
 	IconRes previous_l;

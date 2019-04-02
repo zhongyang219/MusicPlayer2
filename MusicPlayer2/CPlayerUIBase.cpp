@@ -1279,7 +1279,7 @@ int CPlayerUIBase::DrawTopRightIcons()
 		rc_tmp.top = EdgeMargin(false);
 		rc_tmp.bottom = rc_tmp.top + icon_size;
 		rc_tmp.left = rc_tmp.right - icon_size;
-		DrawControlButton(rc_tmp, m_buttons[BTN_MENU], theApp.m_icon_set.mini);
+		DrawControlButton(rc_tmp, m_buttons[BTN_MENU], theApp.m_icon_set.menu);
 		total_width += icon_size;
 		total_width += Margin();
 	}
