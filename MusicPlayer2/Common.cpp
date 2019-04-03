@@ -1061,6 +1061,9 @@ int CCommon::IconSizeNormalize(int size)
 	for (size_t i = 0; i < standard_size.size(); i++)
 	{
 		int diff = std::abs(size - standard_size[i]);
+		if (diff == min_diff && diff > 2)
+			return size;
+
 		if (diff < min_diff)
 		{
 			min_diff = diff;
