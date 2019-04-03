@@ -38,8 +38,7 @@ void CNotifyIcon::SetIconToolTip(LPCTSTR strTip)
 	if (m_tool_tip_str != strTip)
 	{
 		CCommon::WStringCopy(m_ntIcon.szTip, 128, strTip);
-		DeleteNotifyIcon();
-		AddNotifyIcon();
+		::Shell_NotifyIcon(NIM_MODIFY, &m_ntIcon);
 	}
 	m_tool_tip_str = strTip;
 }
