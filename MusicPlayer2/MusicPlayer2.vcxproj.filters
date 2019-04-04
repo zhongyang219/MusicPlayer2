@@ -460,6 +460,9 @@
     <ClInclude Include="CHotKey.h">
       <Filter>功能逻辑类\HotKeyManager</Filter>
     </ClInclude>
+    <ClInclude Include="SongInfo.h">
+      <Filter>公共的类\AudioCommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
