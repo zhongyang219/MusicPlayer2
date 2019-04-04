@@ -1,5 +1,6 @@
 ﻿<version>2.64</version>
 <link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.64/MusicPlayer2_V2.64.7z</link>
+<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.64/MusicPlayer2_V2.64.7z</link_x64>
 <update_contents>
 	<contents_zh_cn>界面调整，界面中的播放控制按钮和进度条美化。\n新增隐藏/显示播放列表的功能。\n新增隐藏/显示菜单栏的功能。\n新增响应多媒体按键的功能。\n小娜搜索框歌词显示效果优化。\n新增全屏显示的功能。\n其他界面细节方面的调整。\n其他细节方面的改进。</contents_zh_cn>
 	<contents_en>Adjust the UI. Beautify the playback control buttons and progress bar.\nAdded the function to hide/display playlists.\nAdded the function to hide/display menu bar.\nAdded the function to respond the multimedia keys.\nOptimize the display effect of the Cortana search box lyrics .\nAdded the function of full-screen display.\nOther adjustments for the UI details.\nImproved in other details.</contents_en>
