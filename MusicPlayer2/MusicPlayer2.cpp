@@ -354,7 +354,11 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 	version_xml.LoadXMLContentDirect(version_info);
 
 	version = version_xml.GetNode(L"version");
+#ifdef _M_X64
+	link = version_xml.GetNode(L"link_x64");
+#else
 	link = version_xml.GetNode(L"link");
+#endif
 	contents_zh_cn = version_xml.GetNode(L"contents_zh_cn", L"update_contents").c_str();
 	contents_en = version_xml.GetNode(L"contents_en", L"update_contents").c_str();
 	contents_zh_cn.Replace(L"\\n", L"\r\n");

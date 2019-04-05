@@ -225,6 +225,7 @@
     <ClInclude Include="GaussBlur.h" />
     <ClInclude Include="IniHelper.h" />
     <ClInclude Include="SimpleXML.h" />
+    <ClInclude Include="SongInfo.h" />
     <ClInclude Include="StaticEx.h" />
     <ClInclude Include="SupportedFormatDlg.h" />
     <ClInclude Include="TabDlg.h" />
