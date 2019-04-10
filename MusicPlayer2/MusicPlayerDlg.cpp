@@ -168,6 +168,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_LISTEN_STATISTICS, &CMusicPlayerDlg::OnListenStatistics)
 	ON_COMMAND(ID_DARK_MODE, &CMusicPlayerDlg::OnDarkMode)
 	ON_MESSAGE(WM_MAIN_MENU_POPEDUP, &CMusicPlayerDlg::OnMainMenuPopup)
+	ON_COMMAND(ID_ALWAYS_ON_TOP, &CMusicPlayerDlg::OnAlwaysOnTop)
 END_MESSAGE_MAP()
 
 
@@ -222,6 +223,8 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"config", L"cortana_back_color", theApp.m_lyric_setting_data.cortana_color);
 	ini.WriteInt(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map);
 	ini.WriteBool(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip);
+	ini.WriteBool(L"config", L"always_on_top", theApp.m_nc_setting_data.always_on_top);
+
 	ini.WriteBool(L"other", L"no_sf2_warning", theApp.m_nc_setting_data.no_sf2_warning);
 	ini.WriteBool(L"other", L"show_hide_menu_bar_tip", theApp.m_nc_setting_data.show_hide_menu_bar_tip);
 
@@ -301,7 +304,9 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
 	theApp.m_lyric_setting_data.cortana_color = ini.GetInt(L"config", L"cortana_back_color", 0);
 	theApp.m_nc_setting_data.volume_map = ini.GetInt(L"config", L"volume_map", 100);
-	theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(L"config", L"show_cover_tip", 0);
+	theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(L"config", L"show_cover_tip", false);
+	theApp.m_nc_setting_data.always_on_top = ini.GetBool(L"config", L"always_on_top", false);
+
 	theApp.m_nc_setting_data.no_sf2_warning = ini.GetBool(L"other", L"no_sf2_warning", true);
 	theApp.m_nc_setting_data.show_hide_menu_bar_tip = ini.GetBool(L"other", L"show_hide_menu_bar_tip", true);
 
@@ -411,6 +416,14 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 		rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
 	m_clear_search_button.MoveWindow(rect_clear);
 	m_clear_search_button.Invalidate();
+}
+
+void CMusicPlayerDlg::SetAlwaysOnTop()
+{
+	if (theApp.m_nc_setting_data.always_on_top)
+		SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);			//设置置顶
+	else
+		SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);		//取消置顶
 }
 
 void CMusicPlayerDlg::ShowPlayList()
@@ -735,6 +748,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 	pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
 	pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
 	pMenu->CheckMenuItem(ID_DARK_MODE, MF_BYCOMMAND | (theApp.m_app_setting_data.dark_mode ? MF_CHECKED : MF_UNCHECKED));
+	pMenu->CheckMenuItem(ID_ALWAYS_ON_TOP, MF_BYCOMMAND | (theApp.m_nc_setting_data.always_on_top ? MF_CHECKED : MF_UNCHECKED));
 
 	//设置播放列表菜单中排序方式的单选标记
 	switch (CPlayer::GetInstance().m_sort_mode)
@@ -1138,6 +1152,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
 			//提示用户是否创建桌面快捷方式
 			CreateDesktopShortcut();
+
+			SetAlwaysOnTop();
 		}
 
 		m_timer_count++;
@@ -3188,4 +3204,13 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainMenuPopup(WPARAM wParam, LPARAM lParam)
 	m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 
 	return 0;
+}
+
+
+
+void CMusicPlayerDlg::OnAlwaysOnTop()
+{
+	// TODO: 在此添加命令处理程序代码
+	theApp.m_nc_setting_data.always_on_top = !theApp.m_nc_setting_data.always_on_top;
+	SetAlwaysOnTop();
 }

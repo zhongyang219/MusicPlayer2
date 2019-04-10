@@ -218,6 +218,7 @@ struct NonCategorizedSettingData
 	//wstring default_back_image_path{};	//没有专辑封面时的默认背景的路径
 	bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
 	bool show_hide_menu_bar_tip{ true };	//是隐藏菜单栏是否弹出提示信息
+	bool always_on_top{ false };	//是否总是置顶
 };
 
 struct IconRes

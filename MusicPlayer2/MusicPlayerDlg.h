@@ -129,6 +129,8 @@ private:
 	void SetTransparency();			//根据m_transparency的值设置窗口透明度
 	void DrawInfo(bool reset = false);		//绘制信息
 	void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
+	void SetAlwaysOnTop();
+
 public:
 	void ShowPlayList();
 protected:
@@ -297,4 +299,6 @@ public:
 	afx_msg void OnDarkMode();
 protected:
 	afx_msg LRESULT OnMainMenuPopup(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnAlwaysOnTop();
 };
