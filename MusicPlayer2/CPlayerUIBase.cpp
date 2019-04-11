@@ -1289,6 +1289,10 @@ int CPlayerUIBase::DrawTopRightIcons()
 		total_width += icon_size;
 		total_width += Margin();
 	}
+	else
+	{
+		m_buttons[BTN_MENU].rect.SetRectEmpty();
+	}
 
 	return total_width;
 }
