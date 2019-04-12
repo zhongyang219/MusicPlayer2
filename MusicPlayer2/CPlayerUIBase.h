@@ -19,7 +19,7 @@ struct SLayoutData
 class CPlayerUIBase : public IPlayerUI
 {
 public:
-	CPlayerUIBase(UIData& ui_data);
+	CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd);
 	~CPlayerUIBase();
 
 	void SetToolTip(CToolTipCtrl* pToolTip);
@@ -74,9 +74,12 @@ protected:
 		BTN_SHOW_PLAYLIST,		//显示/隐藏播放列表
 		BTN_SELECT_FOLDER,		//选择文件夹
 		BTN_PROGRESS,			//进度条
-		BTN_COVER,
-		BTN_FULL_SCREEN,
-		BTN_MENU
+		BTN_COVER,				//专辑封面
+		BTN_FULL_SCREEN,		//全屏显示按钮
+		BTN_MENU,				//主菜单按钮
+		BTN_CLOSE,				//关闭按钮（迷你模式）
+		BTN_RETURN				//返回按钮（迷你模式）
+
 	};
 
 	struct DrawData
@@ -88,7 +91,7 @@ protected:
 
 protected:
 	virtual void _DrawInfo(bool reset = false) = 0;
-	void PreDrawInfo();
+	virtual void PreDrawInfo();
 	void SetDrawRect();
 	void DrawBackground();
 	void DrawLryicCommon(CRect rect);
@@ -103,12 +106,13 @@ protected:
 
 	void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
 	void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
+	void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);
 
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
 	virtual void UpdateToolTipPosition() = 0;
 
-	void AddToolTips();			//为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
+	virtual void AddToolTips();			//为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 
 	static CRect DrawAreaToClient(CRect rect, CRect draw_area);
 	static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
@@ -126,8 +130,10 @@ private:
 	void SetRepeatModeToolTipText();
 	void SetSongInfoToolTipText();
 	void SetCoverToolTipText();
+	void DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon);
 
 protected:
+	CWnd* m_pMainWnd = nullptr;
 	CDC* m_pDC;
 	UIColors m_colors;
 	CDrawCommon m_draw;		//用于绘制文本的对象

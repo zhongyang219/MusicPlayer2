@@ -3,8 +3,8 @@
 #include "PlayListCtrl.h"
 
 
-CMiniModeUI::CMiniModeUI(SMiniModeUIData& ui_data, CWnd* pMiniModeWnd)
-	: m_ui_data(ui_data), m_pMiniModeWnd(pMiniModeWnd)
+CMiniModeUI::CMiniModeUI(SMiniModeUIData& ui_data, CWnd* pMaineWnd)
+	: m_ui_data(ui_data), CPlayerUIBase(theApp.m_ui_data, pMaineWnd)
 {
 	m_font_time.CreatePointFont(80, CCommon::LoadText(IDS_DEFAULT_FONT));
 }
@@ -12,11 +12,6 @@ CMiniModeUI::CMiniModeUI(SMiniModeUIData& ui_data, CWnd* pMiniModeWnd)
 
 CMiniModeUI::~CMiniModeUI()
 {
-}
-
-void CMiniModeUI::SetToolTip(CToolTipCtrl * pToolTip)
-{
-	m_tool_tip = pToolTip;
 }
 
 bool CMiniModeUI::PointInControlArea(CPoint point) const
@@ -30,51 +25,8 @@ bool CMiniModeUI::PointInControlArea(CPoint point) const
 	return point_in_control;
 }
 
-void CMiniModeUI::Init(CDC * pDC)
+void CMiniModeUI::_DrawInfo(bool reset)
 {
-	m_pDC = pDC;
-	m_draw.Create(m_pDC, theApp.m_pMainWnd);
-	m_first_draw = true;
-}
-
-void CMiniModeUI::DrawInfo(bool reset)
-{
-	//设置颜色
-	m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color);
-
-	//设置缓冲的DC
-	CDC MemDC;
-	CBitmap MemBitmap;
-	MemDC.CreateCompatibleDC(NULL);
-
-	CRect draw_rect(CPoint(0,0), CSize(m_ui_data.widnow_width, m_ui_data.window_height));
-
-	MemBitmap.CreateCompatibleBitmap(m_pDC, m_ui_data.widnow_width, m_ui_data.window_height);
-	CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-	m_draw.SetDC(&MemDC);	//将m_draw中的绘图DC设置为缓冲的DC
-	m_draw.SetFont(theApp.m_pMainWnd->GetFont());
-
-	//绘制背景
-	if (theApp.m_app_setting_data.album_cover_as_background)
-	{
-		if (CPlayer::GetInstance().AlbumCoverExist())
-		{
-			CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
-			m_draw.DrawBitmap(back_image, CPoint(0, 0), draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-		}
-		else
-		{
-			m_draw.DrawBitmap(theApp.m_ui_data.default_background, CPoint(0, 0), draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-		}
-	}
-
-	//填充背景颜色
-	bool draw_background{ theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !theApp.m_ui_data.default_background.IsNull()) };		//是否需要绘制透明背景
-	if (draw_background)
-		m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
-	else
-		m_draw.FillRect(draw_rect, m_colors.color_back);
-
 	//绘制专辑封面
 	int cover_side = m_ui_data.window_height - 2 * m_ui_data.margin;
 	CRect cover_rect{CPoint(m_ui_data.margin, m_ui_data.margin), CSize(cover_side, cover_side)};
@@ -84,7 +36,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	}
 	else		//专辑封面不存在时显示默认专辑封面图标
 	{
-		if (draw_background)
+		if (IsDrawBackgroundAlpha())
 			m_draw.FillAlphaRect(cover_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 		else
 			m_draw.FillRect(cover_rect, m_colors.color_spectrum_back);
@@ -106,23 +58,23 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
 	rc_tmp.right = rc_tmp.left + theApp.DPI(27);
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(22);
-	DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous.GetIcon(), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous);
 
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
 	if(CPlayer::GetInstance().IsPlaying())
-		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause.GetIcon(), draw_background);
+		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause);
 	else
-		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play.GetIcon(), draw_background);
+		DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play);
 
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-	DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next.GetIcon(), draw_background);
+	DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next);
 
 
 	//绘制频谱分析
 	rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
 	rc_tmp.right = rc_tmp.left + theApp.DPI(30);
 
-	//if (draw_background)
+	//if (IsDrawBackgroundAlpha())
 	//	m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	//else
 	//	m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
@@ -188,7 +140,7 @@ void CMiniModeUI::DrawInfo(bool reset)
 	progress_rect.top = progress_rect.top + (rc_tmp.Height() - progress_height) / 2;
 	progress_rect.bottom = progress_rect.top + progress_height;
 
-	if (draw_background)
+	if (IsDrawBackgroundAlpha())
 		m_draw.FillAlphaRect(progress_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
 	else
 		m_draw.FillRect(progress_rect, m_colors.color_spectrum_back);
@@ -206,13 +158,13 @@ void CMiniModeUI::DrawInfo(bool reset)
 	rc_tmp.left = rc_tmp.right - theApp.DPI(20);;
 	rc_tmp.top = m_ui_data.margin;
 	rc_tmp.bottom = rc_tmp.top + theApp.DPI(20);
-	DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"), draw_background);
+	DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"));
 
 	rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-	DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("□"), draw_background);
+	DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("□"));
 
 	rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-	DrawTextButton(rc_tmp, m_buttons[BTN_PLAYLIST], _T("≡"), draw_background);
+	DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("≡"));
 
 	//绘制显示文本信息
 	rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));
@@ -247,66 +199,10 @@ void CMiniModeUI::DrawInfo(bool reset)
 			m_draw.DrawWindowText(rc_tmp, current_lyric.text.c_str(), m_colors.color_text, color2, progress, true);
 		}
 	}
-
-
-	//将缓冲区DC中的图像拷贝到屏幕中显示
-	m_pDC->BitBlt(0, 0, m_ui_data.widnow_width, m_ui_data.window_height, &MemDC, 0, 0, SRCCOPY);
-	MemDC.SelectObject(pOldBit);
-	MemBitmap.DeleteObject();
-	MemDC.DeleteDC();
-
-	if (m_first_draw)
-	{
-		AddToolTips();
-	}
-	m_first_draw = false;
-}
-
-void CMiniModeUI::LButtonDown(CPoint point)
-{
-	for (auto& btn : m_buttons)
-	{
-		if (btn.second.rect.PtInRect(point) != FALSE)
-			btn.second.pressed = true;
-	}
 }
 
 void CMiniModeUI::RButtonUp(CPoint point)
 {
-}
-
-void CMiniModeUI::MouseMove(CPoint point)
-{
-	for(auto& btn : m_buttons)
-	{
-		btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
-	}
-
-
-	//鼠标指向进度条时显示定位到几分几秒
-	if (m_buttons[BTN_PROGRESS].hover)
-	{
-		__int64 song_pos;
-		song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * CPlayer::GetInstance().GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
-		Time song_pos_time;
-		song_pos_time.int2time(static_cast<int>(song_pos));
-		CString str;
-		static int last_sec{};
-		if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
-		{
-			str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
-			UpdateMouseToolTip(BTN_PROGRESS, str);
-			last_sec = song_pos_time.sec;
-		}
-	}
-
-	TRACKMOUSEEVENT tme;
-	tme.cbSize = sizeof(tme);
-	tme.hwndTrack = m_pMiniModeWnd->GetSafeHwnd();
-	tme.dwFlags = TME_LEAVE | TME_HOVER;
-	tme.dwHoverTime = 1;
-	_TrackMouseEvent(&tme);
-
 }
 
 void CMiniModeUI::LButtonUp(CPoint point)
@@ -329,18 +225,18 @@ void CMiniModeUI::LButtonUp(CPoint point)
 			case BTN_NEXT:
 				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
 				break;
-			case BTN_PLAYLIST:
-				m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
+			case BTN_SHOW_PLAYLIST:
+				m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
 				break;
 			case BTN_RETURN:
 				//m_buttons[BTN_RETURN].hover = false;
-				m_pMiniModeWnd->SendMessage(WM_COMMAND, IDOK);
+				m_pMainWnd->SendMessage(WM_COMMAND, IDOK);
 				break;
 			case BTN_CLOSE:
 				if (theApp.m_general_setting_data.minimize_to_notify_icon)
-					m_pMiniModeWnd->ShowWindow(HIDE_WINDOW);
+					m_pMainWnd->ShowWindow(HIDE_WINDOW);
 				else
-					m_pMiniModeWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+					m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
 				break;
 			default:
 				break;
@@ -357,28 +253,6 @@ void CMiniModeUI::LButtonUp(CPoint point)
 
 		}
 	}
-}
-
-void CMiniModeUI::MouseLeave()
-{
-	for (auto& btn : m_buttons)
-	{
-		btn.second.hover = false;
-	}
-}
-
-void CMiniModeUI::OnSizeRedraw(int cx, int cy)
-{
-}
-
-bool CMiniModeUI::SetCursor()
-{
-	if (m_buttons[BTN_PROGRESS].hover)
-	{
-		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(32649)));
-		return true;
-	}
-	return false;
 }
 
 CRect CMiniModeUI::GetThumbnailClipArea()
@@ -399,65 +273,29 @@ void CMiniModeUI::UpdatePlayPauseButtonTip()
 		UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
 }
 
-void CMiniModeUI::DrawUIButton(CRect rect, IPlayerUI::UIButton & btn, HICON icon, bool draw_background)
+void CMiniModeUI::PreDrawInfo()
 {
-	CRect rc_tmp = rect;
-	m_draw.SetDrawArea(rc_tmp);
-
-	BYTE alpha;
-	if (draw_background)
-		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-	else
-		alpha = 255;
-
-	if (btn.pressed && btn.hover)
-		m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
-	else if (btn.hover)
-		m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
-	//else
-	//	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
-
-	btn.rect = rc_tmp;
-
-	int icon_size = theApp.DPI(16);
-	rc_tmp.left = rc_tmp.left + (rc_tmp.Width() - icon_size) / 2;
-	rc_tmp.right = rc_tmp.left + icon_size;
-	rc_tmp.top = rc_tmp.top + (rc_tmp.Height() - icon_size) / 2;
-	rc_tmp.bottom = rc_tmp.top + icon_size;
-	m_draw.DrawIcon(icon, rc_tmp.TopLeft(), rc_tmp.Size());
-}
-
-void CMiniModeUI::DrawTextButton(CRect rect, IPlayerUI::UIButton & btn, LPCTSTR text, bool draw_background)
-{
-	m_draw.SetDrawArea(rect);
-
-	BYTE alpha;
-	if (draw_background)
-		alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-	else
-		alpha = 255;
-	if (btn.pressed && btn.hover)
-		m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
-	else if (btn.hover)
-		m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
-	//else
-	//	m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
-
-	btn.rect = rect;
-	m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
+	//设置颜色
+	m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color);
+	//设置绘图区域
+	m_draw_rect = CRect(CPoint(0, 0), CSize(m_ui_data.widnow_width, m_ui_data.window_height));
 }
 
 void CMiniModeUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-	m_tool_tip->AddTool(m_pMiniModeWnd, str, m_buttons[btn].rect, btn + 1);
+	m_tool_tip->AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
 }
 
 void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
 	//if (m_buttons[btn].hover)
 	//{
-		m_tool_tip->UpdateTipText(str, m_pMiniModeWnd, btn + 1);
+		m_tool_tip->UpdateTipText(str, m_pMainWnd, btn + 1);
 	//}
+}
+
+void CMiniModeUI::UpdateToolTipPosition()
+{
 }
 
 void CMiniModeUI::AddToolTips()
@@ -465,7 +303,7 @@ void CMiniModeUI::AddToolTips()
 	AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
 	AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
 	AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
-	AddMouseToolTip(BTN_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
+	AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
 	AddMouseToolTip(BTN_RETURN, CCommon::LoadText(IDS_BACK_TO_NARMAL));
 	AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
 	AddMouseToolTip(BTN_COVER, _T(""));

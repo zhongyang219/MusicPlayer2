@@ -2,8 +2,8 @@
 #include "CPlayerUIBase.h"
 
 
-CPlayerUIBase::CPlayerUIBase(UIData& ui_data)
-	:m_ui_data(ui_data)
+CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
+	:m_ui_data(ui_data), m_pMainWnd(pMainWnd)
 {
 	m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//装载歌词右键菜单
 	m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
@@ -24,7 +24,7 @@ void CPlayerUIBase::SetToolTip(CToolTipCtrl * pToolTip)
 void CPlayerUIBase::Init(CDC * pDC)
 {
 	m_pDC = pDC;
-	m_draw.Create(m_pDC, theApp.m_pMainWnd);
+	m_draw.Create(m_pDC, m_pMainWnd);
 }
 
 void CPlayerUIBase::DrawInfo(bool reset)
@@ -140,7 +140,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
 
 	TRACKMOUSEEVENT tme;
 	tme.cbSize = sizeof(tme);
-	tme.hwndTrack = theApp.m_pMainWnd->GetSafeHwnd();
+	tme.hwndTrack = m_pMainWnd->GetSafeHwnd();
 	tme.dwFlags = TME_LEAVE | TME_HOVER;
 	tme.dwHoverTime = 1;
 	_TrackMouseEvent(&tme);
@@ -643,7 +643,7 @@ void CPlayerUIBase::DrawLyricTextSingleLine(CRect rect)
 				m_draw.DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
 		}
 
-		m_draw.SetFont(theApp.m_pMainWnd->GetFont());
+		m_draw.SetFont(m_pMainWnd->GetFont());
 	}
 
 }
@@ -679,6 +679,12 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 		static CDrawCommon::ScrollInfo scroll_info1;
 		m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetFileName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
 	}
+}
+
+void CPlayerUIBase::DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon)
+{
+	rect.DeflateRect(DPI(2), DPI(2));
+	DrawUIButton(rect, btn, icon);
 }
 
 void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
@@ -717,25 +723,25 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 		break;
 	}
 	if (pIcon != nullptr)
-		DrawUIButton(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
+		DrawControlBarBtn(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
 
 	//绘制设置按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_buttons[BTN_SETTING], theApp.m_icon_set.setting);
+	DrawControlBarBtn(rc_tmp, m_buttons[BTN_SETTING], theApp.m_icon_set.setting);
 
 	//绘制均衡器按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_buttons[BTN_EQ], theApp.m_icon_set.eq);
+	DrawControlBarBtn(rc_tmp, m_buttons[BTN_EQ], theApp.m_icon_set.eq);
 
 	//绘制切换界面按钮
 	rc_tmp.MoveToX(rc_tmp.right);
-	DrawUIButton(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
+	DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
 
 	//绘制迷你模式按钮
 	if (rect.Width() >= DPI(190))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
-		DrawUIButton(rc_tmp, m_buttons[BTN_MINI], theApp.m_icon_set.mini);
+		DrawControlBarBtn(rc_tmp, m_buttons[BTN_MINI], theApp.m_icon_set.mini);
 	}
 	else
 	{
@@ -746,7 +752,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 	if (rect.Width() >= DPI(214))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
-		DrawUIButton(rc_tmp, m_buttons[BTN_INFO], theApp.m_icon_set.info);
+		DrawControlBarBtn(rc_tmp, m_buttons[BTN_INFO], theApp.m_icon_set.info);
 	}
 	else
 	{
@@ -757,7 +763,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 	if (rect.Width() >= DPI(238))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
-		DrawUIButton(rc_tmp, m_buttons[BTN_FIND], theApp.m_icon_set.find_songs);
+		DrawControlBarBtn(rc_tmp, m_buttons[BTN_FIND], theApp.m_icon_set.find_songs);
 	}
 	else
 	{
@@ -891,7 +897,7 @@ void CPlayerUIBase::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_
 void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes& icon)
 {
 	CRect rc_tmp = rect;
-	rc_tmp.DeflateRect(DPI(2), DPI(2));
+	//rc_tmp.DeflateRect(DPI(2), DPI(2));
 	m_draw.SetDrawArea(rc_tmp);
 
 	BYTE alpha;
@@ -952,6 +958,30 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
 
 	const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, theApp.m_ui_data.full_screen);
 	m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
+}
+
+void CPlayerUIBase::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, bool back_color)
+{
+	if (btn.enable)
+	{
+		BYTE alpha;
+		if (IsDrawBackgroundAlpha())
+			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+		else
+			alpha = 255;
+		if (btn.pressed)
+			m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
+		else if (btn.hover)
+			m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
+		else if (back_color)
+			m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
+		m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
+	}
+	else
+	{
+		m_draw.DrawWindowText(rect, text, GRAY(200), Alignment::CENTER);
+	}
+	btn.rect = DrawAreaToClient(rect, m_draw_rect);
 }
 
 void CPlayerUIBase::SetRepeatModeToolTipText()
@@ -1181,10 +1211,10 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
 	rc_btn.left = rc_btn.right - btn_side;
 	rc_btn.top = rect.top + (rect.Height() - btn_side) / 2;
 	rc_btn.bottom = rc_btn.top + btn_side;
-	DrawUIButton(rc_btn, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
+	DrawControlBarBtn(rc_btn, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
 
 	rc_btn.MoveToX(rc_btn.left - btn_side);
-	DrawUIButton(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.select_folder);
+	DrawControlBarBtn(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.select_folder);
 
 	if (!progress_on_top)
 	{
@@ -1231,27 +1261,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
 {
-	m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated();
-	if (m_buttons[BTN_TRANSLATE].enable)
-	{
-		BYTE alpha;
-		if (IsDrawBackgroundAlpha())
-			alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-		else
-			alpha = 255;
-		if(m_buttons[BTN_TRANSLATE].pressed)
-			m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
-		else if (m_buttons[BTN_TRANSLATE].hover)
-			m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
-		else if (m_ui_data.show_translate)
-			m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
-		m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_TRAS), m_colors.color_text, Alignment::CENTER);
-	}
-	else
-	{
-		m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_TRAS), GRAY(200), Alignment::CENTER);
-	}
-	m_buttons[BTN_TRANSLATE].rect = DrawAreaToClient(rect, m_draw_rect);
+	DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), m_ui_data.show_translate);
 }
 
 int CPlayerUIBase::DrawTopRightIcons()

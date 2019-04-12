@@ -6,7 +6,7 @@
 class CPlayerUI2 : public CPlayerUIBase
 {
 public:
-	CPlayerUI2(UIData& ui_data);
+	CPlayerUI2(UIData& ui_data, CWnd* pMainWnd);
 	~CPlayerUI2();
 
 	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//为一个按钮添加鼠标提示

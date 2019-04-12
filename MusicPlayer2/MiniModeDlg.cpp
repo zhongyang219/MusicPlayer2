@@ -167,7 +167,6 @@ BOOL CMiniModeDlg::OnInitDialog()
 
 	LoadConfig();
 
-	m_ui_data.Init();
 	m_pDC = GetDC();
 	m_ui.Init(m_pDC);
 

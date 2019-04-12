@@ -2,8 +2,8 @@
 #include "CPlayerUI.h"
 
 
-CPlayerUI::CPlayerUI(UIData& ui_data)
-	: CPlayerUIBase(ui_data)
+CPlayerUI::CPlayerUI(UIData& ui_data, CWnd* pMainWnd)
+	: CPlayerUIBase(ui_data, pMainWnd)
 {
 }
 
@@ -318,11 +318,11 @@ CSize CPlayerUI::SpectralSize()
 //
 //	if (!m_draw_data.lyric_rect.PtInRect(point))
 //	{
-//		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+//		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
 //	}
 //	else
 //	{
-//		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+//		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
 //	}
 //
 //}
@@ -362,13 +362,13 @@ void CPlayerUI::MouseMove(CPoint point)
 	//				info += CPlayer::GetInstance().GetAlbumCoverPath().c_str();
 	//			}
 	//		}
-	//		m_tool_tip->AddTool(theApp.m_pMainWnd, info);
+	//		m_tool_tip->AddTool(m_pMainWnd, info);
 	//		m_tool_tip->SetMaxTipWidth(DPI(400));
 	//		m_tool_tip->Pop();
 	//	}
 	//	if (last_show_cover_tip && !show_cover_tip)
 	//	{
-	//		m_tool_tip->AddTool(theApp.m_pMainWnd, _T(""));
+	//		m_tool_tip->AddTool(m_pMainWnd, _T(""));
 	//		m_tool_tip->Pop();
 	//	}
 	//	last_show_cover_tip = show_cover_tip;
@@ -395,19 +395,19 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy)
 
 void CPlayerUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1000);
+	m_tool_tip->AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1000);
 }
 
 void CPlayerUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1000);
+	m_tool_tip->UpdateTipText(str, m_pMainWnd, btn + 1000);
 }
 
 void CPlayerUI::UpdateToolTipPosition()
 {
 	for (const auto& btn : m_buttons)
 	{
-		m_tool_tip->SetToolRect(theApp.m_pMainWnd, btn.first + 1000, btn.second.rect);
+		m_tool_tip->SetToolRect(m_pMainWnd, btn.first + 1000, btn.second.rect);
 	}
 }
 

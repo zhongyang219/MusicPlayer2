@@ -6,7 +6,7 @@
 class CPlayerUI : public CPlayerUIBase
 {
 public:
-	CPlayerUI(UIData& ui_data);
+	CPlayerUI(UIData& ui_data, CWnd* pMainWnd);
 	~CPlayerUI();
 
 	//virtual void RButtonUp(CPoint point) override;

@@ -78,8 +78,8 @@ protected:
 	wstring m_cmdLine;	//命令行参数
 
 	CDC* m_pDC;				//当前窗口的DC
-	CPlayerUI m_ui{ theApp.m_ui_data };
-	CPlayerUI2 m_ui2{ theApp.m_ui_data };
+	CPlayerUI m_ui{ theApp.m_ui_data, this };
+	CPlayerUI2 m_ui2{ theApp.m_ui_data, this };
 	IPlayerUI* m_pUI = nullptr;
 
 	bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
