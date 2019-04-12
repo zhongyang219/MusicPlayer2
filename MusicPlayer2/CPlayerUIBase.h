@@ -161,7 +161,6 @@ protected:
 
 	const int m_progress_on_top_threshold = theApp.DPI(350);		//当控制条的宽度小于此值，将进度条显示在播放控制按钮的上方
 
-private:
 	bool m_first_draw{ true };
 
 };

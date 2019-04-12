@@ -14,6 +14,12 @@ CMiniModeUI::~CMiniModeUI()
 {
 }
 
+void CMiniModeUI::Init(CDC * pDC)
+{
+	CPlayerUIBase::Init(pDC);
+	m_first_draw = true;
+}
+
 bool CMiniModeUI::PointInControlArea(CPoint point) const
 {
 	bool point_in_control = false;

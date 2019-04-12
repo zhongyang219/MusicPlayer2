@@ -22,6 +22,8 @@ public:
 	CMiniModeUI(SMiniModeUIData& ui_data, CWnd* pMainWnd);
 	~CMiniModeUI();
 
+	virtual void Init(CDC* pDC) override;
+
 	bool PointInControlArea(CPoint point) const;		//判断一个点的位置是否在控件区域
 
 	virtual void RButtonUp(CPoint point) override;
