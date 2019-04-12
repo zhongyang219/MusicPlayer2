@@ -1261,6 +1261,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
 {
+	m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated();
 	DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), m_ui_data.show_translate);
 }
 
