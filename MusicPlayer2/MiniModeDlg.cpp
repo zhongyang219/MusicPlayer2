@@ -204,6 +204,9 @@ BOOL CMiniModeDlg::OnInitDialog()
 	//显示播放列表
 	ShowPlaylist();
 
+	//设置窗口不透明度
+	CCommon::SetWindowOpacity(m_hWnd, theApp.m_app_setting_data.window_transparency);
+
 	m_show_playlist = false;
 	m_ui_data.m_show_volume = false;
 	m_first_start = true;

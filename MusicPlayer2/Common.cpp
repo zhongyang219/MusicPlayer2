@@ -1073,3 +1073,9 @@ int CCommon::IconSizeNormalize(int size)
 	return standard_size[index];
 }
 
+void CCommon::SetWindowOpacity(HWND hWnd, int opacity)
+{
+	SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+	::SetLayeredWindowAttributes(hWnd, 0, opacity * 255 / 100, LWA_ALPHA);  //透明度取值范围为0~255
+}
+

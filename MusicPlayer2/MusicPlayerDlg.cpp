@@ -338,8 +338,7 @@ void CMusicPlayerDlg::LoadConfig()
 
 void CMusicPlayerDlg::SetTransparency()
 {
-	SetWindowLong(m_hWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-	SetLayeredWindowAttributes(0, theApp.m_app_setting_data.window_transparency * 255 / 100, LWA_ALPHA);  //透明度取值范围为0~255
+	CCommon::SetWindowOpacity(m_hWnd, theApp.m_app_setting_data.window_transparency);
 }
 
 void CMusicPlayerDlg::DrawInfo(bool reset)
