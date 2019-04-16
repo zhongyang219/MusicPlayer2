@@ -31,6 +31,7 @@ public:
 	//void SetDisplayFormat(DisplayFormat* pDisplayFormat);
 
 	void SetVolume(bool up);	//
+	void SetTransparency();
 
 protected:
 

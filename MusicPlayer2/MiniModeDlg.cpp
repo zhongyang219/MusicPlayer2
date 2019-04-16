@@ -205,7 +205,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 	ShowPlaylist();
 
 	//设置窗口不透明度
-	CCommon::SetWindowOpacity(m_hWnd, theApp.m_app_setting_data.window_transparency);
+	SetTransparency();
 
 	m_show_playlist = false;
 	m_ui_data.m_show_volume = false;
@@ -279,6 +279,11 @@ void CMiniModeDlg::SetVolume(bool up)
 	KillTimer(11);
 	SetTimer(11, 1500, NULL);		//显示音量后设置一个1500毫秒的定时器（音量显示保持1.5秒）
 	m_ui_data.m_show_volume = true;
+}
+
+void CMiniModeDlg::SetTransparency()
+{
+	CCommon::SetWindowOpacity(m_hWnd, theApp.m_app_setting_data.window_transparency);
 }
 
 BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)

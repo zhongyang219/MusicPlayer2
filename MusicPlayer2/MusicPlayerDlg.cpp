@@ -1792,7 +1792,10 @@ void CMusicPlayerDlg::OnOptionSettings()
 	//初始化对话框中变量的值
 	optionDlg.m_tab_selected = m_tab_selected;
 	optionDlg.m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
-	optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
+	if (m_miniModeDlg.m_hWnd == NULL)
+		optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
+	else
+		optionDlg.m_tab2_dlg.m_hMainWnd = m_miniModeDlg.m_hWnd;
 	optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
 	optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
 	optionDlg.m_tab4_dlg.m_data = theApp.m_play_setting_data;
@@ -1809,6 +1812,9 @@ void CMusicPlayerDlg::OnOptionSettings()
 	else
 	{
 		SetTransparency();		//如果点击了取消，则需要重新设置窗口透明度
+		if (m_miniModeDlg.m_hWnd != NULL)
+			m_miniModeDlg.SetTransparency();
+
 		theApp.m_app_setting_data.sprctrum_height = sprctrum_height;
 		theApp.m_app_setting_data.background_transparency = background_transparency;
 	}
@@ -2177,6 +2183,7 @@ void CMusicPlayerDlg::OnMiniMode()
 		SetForegroundWindow();
 		SwitchTrack();
 		UpdatePlayPauseButton();
+		SetTransparency();
 	}
 }
 
