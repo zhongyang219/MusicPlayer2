@@ -324,6 +324,14 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 
+		if (pMsg->wParam == VK_APPS)		//按菜单键弹出主菜单
+		{
+			CRect rect;
+			GetWindowRect(rect);
+			m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, this);
+			return TRUE;
+		}
+
 	}
 
 	//将此窗口的其他键盘消息转发给主窗口

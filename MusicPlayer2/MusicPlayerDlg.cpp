@@ -1524,7 +1524,8 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 
 			if (pMsg->wParam == VK_APPS)		//按菜单键弹出主菜单
 			{
-				SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&CPoint(0,0));
+				SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&CPoint(0, 0));
+				return TRUE;
 			}
 		}
 	}
