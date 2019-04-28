@@ -1776,7 +1776,10 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInf
 	CFilePathHelper c_file_path(file_path);
 	song_info.file_name = c_file_path.GetFileName();
 	//±£¥Ê∏Ë«˙–≈œ¢
-	theApp.m_song_data[file_path].CopyAudioTag(song_info);
+	SongInfo& song = theApp.m_song_data[file_path];
+	song.CopyAudioTag(song_info);
+	song.lengh = song_info.lengh;
+	song.bitrate = song_info.bitrate;
 }
 
 void CPlayer::SearchOutAlbumCover()
