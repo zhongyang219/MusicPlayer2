@@ -563,7 +563,7 @@ void CPlayerUIBase::DrawLyricTextMultiLine(CRect lyric_area)
 					rect_translate.MoveToY(rect_text.bottom + line_space);
 				}
 
-				if (i == lyric_index)		//绘制正在播放的歌词
+				if (i == lyric_index && progress < 1000)		//绘制正在播放的歌词
 				{
 					//绘制歌词文本
 					m_draw.SetFont(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
