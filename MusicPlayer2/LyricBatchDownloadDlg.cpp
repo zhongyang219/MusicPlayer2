@@ -51,13 +51,14 @@ void CLyricBatchDownloadDlg::EnableControls(bool enable)
 	GetDlgItem(IDC_START_DOWNLOAD)->EnableWindow(enable);
 }
 
-bool CLyricBatchDownloadDlg::SaveLyric(const wchar_t * path, const wstring& lyric_wcs, CodeType code_type)
+bool CLyricBatchDownloadDlg::SaveLyric(const wchar_t * path, const wstring& lyric_wcs, CodeType code_type, bool* char_cannot_convert)
 {
-	bool char_cannot_convert;
-	string lyric_str = CCommon::UnicodeToStr(lyric_wcs, code_type, &char_cannot_convert);
+	string lyric_str = CCommon::UnicodeToStr(lyric_wcs, code_type, char_cannot_convert);
 	ofstream out_put{ path, std::ios::binary };
+	if (out_put.fail())
+		return false;
 	out_put << lyric_str;
-	return char_cannot_convert;
+	return true;
 }
 
 void CLyricBatchDownloadDlg::DoDataExchange(CDataExchange* pDX)
@@ -331,10 +332,19 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		CLyricDownloadCommon::AddLyricTag(lyric_str, down_list[best_matched].id, down_list[best_matched].title, down_list[best_matched].artist, down_list[best_matched].album);
 
 		//保存歌词
-		if (CLyricBatchDownloadDlg::SaveLyric(lyric_path.c_str(), lyric_str, pInfo->save_code))
-			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_DOWNLOAD_ENCODE_WARNING));		//如果函数返回true，则说明有无法转换的Unicode字符
+		bool char_cannot_convert;
+		if (CLyricBatchDownloadDlg::SaveLyric(lyric_path.c_str(), lyric_str, pInfo->save_code, &char_cannot_convert))
+		{
+			if(char_cannot_convert)
+				pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_DOWNLOAD_ENCODE_WARNING));		//char_cannot_convert为true，则说明有无法转换的Unicode字符
+			else
+				pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_SUCCESSED));
+		}
 		else
-			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_SUCCESSED));
+		{
+			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE));
+		}
+
 		if (pInfo->download_translate)
 		{
 			CLyrics lyrics{ lyric_path };		//打开保存过的歌词
