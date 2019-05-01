@@ -45,9 +45,16 @@ bool CLyricDownloadDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 	{
 		CString info;
 		info.LoadString(IDS_STRING103);		//从string table载入字符串
-		if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK) return false;		//如果用户点击了取消按钮，则返回false
+		if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK)
+			return false;		//如果用户点击了取消按钮，则返回false
 	}
+
 	ofstream out_put{ path, std::ios::binary };
+	if (out_put.fail())
+	{
+		MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_FAILED), NULL, MB_ICONWARNING | MB_OK);
+		return false;
+	}
 	out_put << lyric_str;
 	return true;
 }
@@ -534,7 +541,9 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			default: break;
 			}
 			wstring saved_path{ fileDlg.GetPathName().GetString() };
-			SaveLyric(saved_path.c_str(), save_code);	//保存歌词
+			if (!SaveLyric(saved_path.c_str(), save_code))	//保存歌词
+				return 0;
+
 			if (m_download_translate)
 			{
 				CLyrics lyrics{ saved_path };		//打开保存过的歌词

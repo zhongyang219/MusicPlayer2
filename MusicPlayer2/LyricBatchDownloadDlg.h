@@ -42,7 +42,7 @@ public:
 
 	ThreadInfo m_thread_info;
 
-	static bool SaveLyric(const wchar_t* path, const wstring& lyric_wcs, CodeType code_type);		//保存歌词，如果将歌词保存为ANSI格式时有无法转换的Unicode字符，则返回true
+	static bool SaveLyric(const wchar_t* path, const wstring& lyric_wcs, CodeType code_type, bool* char_cannot_convert);		//保存歌词，如果将歌词保存为ANSI格式时有无法转换的Unicode字符，则char_cannot_convert置为true
 
 protected:
 	CButton m_skip_exist_check;
