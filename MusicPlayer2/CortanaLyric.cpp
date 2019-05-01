@@ -60,6 +60,16 @@ void CCortanaLyric::Init()
 		m_default_font.CreatePointFont(110, lf.lfFaceName);
 
 		InitFont();
+
+		//为Cortana搜索框设置一个透明色，使Cortana搜索框不透明
+#ifndef COMPILE_IN_WIN_XP
+		if(theApp.m_nc_setting_data.cortana_opaque)
+		{
+			SetWindowLong(hCortanaBar, GWL_EXSTYLE, GetWindowLong(hCortanaBar, GWL_EXSTYLE) | WS_EX_LAYERED);
+			::SetLayeredWindowAttributes(hCortanaBar, theApp.m_nc_setting_data.cortana_transparent_color, 0, LWA_COLORKEY);
+		}
+#endif // !COMPILE_IN_WIN_XP
+
 	}
 }
 
@@ -165,7 +175,7 @@ void CCortanaLyric::DrawInfo()
 		AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
 		DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
 	
-		if (!m_colors.dark)		//非深色模式下，在搜索顶部绘制边框
+		if (!m_colors.dark && !theApp.m_nc_setting_data.cortana_opaque)		//非深色模式下，在搜索顶部绘制边框
 		{
 			CRect rect{ m_cortana_rect };
 			rect.left += m_cover_width;
