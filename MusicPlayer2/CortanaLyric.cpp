@@ -46,8 +46,8 @@ void CCortanaLyric::Init()
 
 
 		//获取用来检查小娜是否为深色模式的采样点的坐标
-		m_check_dark_point.x = cortana_rect.right - 1;
-		m_check_dark_point.y = cortana_rect.top + 1;
+		m_check_dark_point.x = cortana_rect.right - 2;
+		m_check_dark_point.y = cortana_rect.top + 2;
 
 		CheckDarkMode();
 		SetUIColors();
