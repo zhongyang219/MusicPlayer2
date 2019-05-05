@@ -312,6 +312,7 @@ enum DisplayFormat
 	DF_TITLE_ARTIST		//标题 - 艺术家
 };
 
+//视图菜单中的一些选项
 struct UIData
 {
 	bool show_translate{ true };		//歌词是否显示翻译
@@ -319,10 +320,16 @@ struct UIData
 	bool show_playlist{ true };
 	bool show_menu_bar{ true };
 	bool full_screen{ false };
+	bool float_playlist{ false };		//浮动播放列表
 
 	int client_width;					//窗口客户区宽度
 	int client_height;					//窗口客户区高度
 	CImage default_background;			//默认的背景
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
+
+	bool ShowPlaylist() const			//是否在主窗口中显示播放列表
+	{
+		return !float_playlist && show_playlist;
+	}
 };
 

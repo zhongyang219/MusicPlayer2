@@ -12,6 +12,7 @@
 #include "AboutDlg.h"
 #include "CTest.h"
 #include "CListenTimeStatisticsDlg.h"
+#include "CFloatPlaylistDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -169,6 +170,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_DARK_MODE, &CMusicPlayerDlg::OnDarkMode)
 	ON_MESSAGE(WM_MAIN_MENU_POPEDUP, &CMusicPlayerDlg::OnMainMenuPopup)
 	ON_COMMAND(ID_ALWAYS_ON_TOP, &CMusicPlayerDlg::OnAlwaysOnTop)
+	ON_COMMAND(ID_FLOAT_PLAYLIST, &CMusicPlayerDlg::OnFloatPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -375,25 +377,24 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 	else
 		rect_static.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight());
 	m_path_static.MoveWindow(rect_static);
+
 	//设置“当前路径”edit控件大小
 	CRect rect_edit;
 	m_path_edit.GetWindowRect(rect_edit);
 	if (!theApp.m_ui_data.narrow_mode)
 	{
-		rect_edit.right = rect_edit.left + (cx / 2 - 3 * m_layout.margin - rect_static.Width() - m_select_folder_width);
+		rect_edit.right = rect_edit.left + (cx / 2 - 3 * m_layout.margin - rect_static.Width() - m_layout.select_folder_width);
 		rect_edit.MoveToXY(cx / 2 + m_layout.margin + rect_static.Width(), m_layout.margin);
 	}
 	else
 	{
-		rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_select_folder_width);
+		rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_layout.select_folder_width);
 		rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), m_ui.DrawAreaHeight());
 	}
 	m_path_edit.MoveWindow(rect_edit);
 
 	//设置“选择文件夹”按钮的大小和位置
 	CRect rect_select_folder{ rect_edit };
-	rect_select_folder.top = rect_edit.top + (rect_edit.Height() - m_select_folder_height) / 2;
-	rect_select_folder.bottom = rect_select_folder.top + m_select_folder_height;
 	rect_select_folder.left = rect_edit.right + m_layout.margin;
 	rect_select_folder.right = cx - m_layout.margin;
 	m_set_path_button.MoveWindow(rect_select_folder);
@@ -479,7 +480,7 @@ void CMusicPlayerDlg::SwitchTrack()
 
 void CMusicPlayerDlg::SetPlaylistVisible()
 {
-	int cmdShow = (theApp.m_ui_data.show_playlist ? SW_SHOW : SW_HIDE);
+	int cmdShow = (theApp.m_ui_data.ShowPlaylist() ? SW_SHOW : SW_HIDE);
 	m_playlist_list.ShowWindow(cmdShow);
 	m_path_static.ShowWindow(cmdShow);
 	m_path_edit.ShowWindow(cmdShow);
@@ -806,6 +807,14 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 	pMenu->EnableMenuItem(ID_FORMAT_CONVERT1, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
 }
 
+void CMusicPlayerDlg::ShowFloatPlaylist()
+{
+}
+
+void CMusicPlayerDlg::HideFloatPlaylist()
+{
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
 	CMainDialogBase::OnInitDialog();
@@ -841,11 +850,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 	//设置窗口不透明度
 	SetTransparency();
-
-	CRect rect1;
-	m_set_path_button.GetWindowRect(rect1);
-	m_select_folder_width = rect1.Width();		//保存“选择文件夹”按钮初始时的宽度
-	m_select_folder_height = rect1.Height();
 
 	//初始化窗口大小
 	//rect.right = m_window_width;
@@ -3230,4 +3234,14 @@ void CMusicPlayerDlg::OnAlwaysOnTop()
 	// TODO: 在此添加命令处理程序代码
 	theApp.m_nc_setting_data.always_on_top = !theApp.m_nc_setting_data.always_on_top;
 	SetAlwaysOnTop();
+}
+
+
+void CMusicPlayerDlg::OnFloatPlaylist()
+{
+	// TODO: 在此添加命令处理程序代码
+	//theApp.m_ui_data.float_playlist = !theApp.m_ui_data.float_playlist;
+	//if()
+	CFloatPlaylistDlg dlg{ m_item_selected, m_items_selected, m_list_popup_menu };
+	dlg.DoModal();
 }

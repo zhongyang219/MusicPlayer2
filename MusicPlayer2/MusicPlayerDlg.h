@@ -87,9 +87,6 @@ protected:
 	int m_window_width;		//窗口的宽度
 	int m_window_height;	//窗口的高度
 
-	int m_select_folder_width{};		//选择文件夹的宽度
-	int m_select_folder_height{};		//选择文件夹的高度
-
 	SLayoutData m_layout;		//窗口布局的固定数据
 
 
@@ -152,6 +149,9 @@ protected:
 	void ThemeColorChanged();
 
 	void SetMenuState(CMenu* pMenu);
+
+	void ShowFloatPlaylist();
+	void HideFloatPlaylist();
 
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
@@ -301,4 +301,5 @@ protected:
 	afx_msg LRESULT OnMainMenuPopup(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnAlwaysOnTop();
+	afx_msg void OnFloatPlaylist();
 };

@@ -216,6 +216,9 @@
     <Filter Include="对话框类\DonateDlg">
       <UniqueIdentifier>{5b564b64-3172-4a1b-a38f-02ae3a8a64ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\FloatPlaylistDlg">
+      <UniqueIdentifier>{793816ab-36f6-4c91-9b8f-ae90b52407b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -463,6 +466,9 @@
     <ClInclude Include="SongInfo.h">
       <Filter>公共的类\AudioCommon</Filter>
     </ClInclude>
+    <ClInclude Include="CFloatPlaylistDlg.h">
+      <Filter>对话框类\FloatPlaylistDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -683,6 +689,9 @@
     </ClCompile>
     <ClCompile Include="CHotKey.cpp">
       <Filter>功能逻辑类\HotKeyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CFloatPlaylistDlg.cpp">
+      <Filter>对话框类\FloatPlaylistDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
