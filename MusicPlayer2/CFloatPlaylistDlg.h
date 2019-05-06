@@ -52,4 +52,6 @@ public:
 	afx_msg void OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnChangeSearchEdit();
 	afx_msg void OnBnClickedClearSearchButton();
+	virtual void OnCancel();
+	afx_msg void OnClose();
 };

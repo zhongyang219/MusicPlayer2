@@ -101,6 +101,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
 	ON_NOTIFY(NM_DBLCLK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMDblclkPlaylistList)
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CFloatPlaylistDlg::OnEnChangeSearchEdit)
 	ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CFloatPlaylistDlg::OnBnClickedClearSearchButton)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -217,4 +218,19 @@ void CFloatPlaylistDlg::OnBnClickedClearSearchButton()
 		m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
 		m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
 	}
+}
+
+
+void CFloatPlaylistDlg::OnCancel()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	DestroyWindow();
+
+	//CDialog::OnCancel();
+}
+
+void CFloatPlaylistDlg::OnClose()
+{
+	theApp.m_ui_data.float_playlist = false;
+	CDialog::OnClose();
 }

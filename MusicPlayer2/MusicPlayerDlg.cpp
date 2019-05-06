@@ -37,6 +37,7 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
 	CCommon::DeleteModelessDialog(m_pSetPathDlg);
 	CCommon::DeleteModelessDialog(m_pSoundEffecDlg);
 	CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
+	CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
 }
 
 bool CMusicPlayerDlg::IsTaskbarListEnable() const
@@ -187,6 +188,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"config", L"show_translate", theApp.m_ui_data.show_translate);
 	ini.WriteBool(L"config", L"show_playlist", theApp.m_ui_data.show_playlist);
 	ini.WriteBool(L"config", L"show_menu_bar", theApp.m_ui_data.show_menu_bar);
+	ini.WriteBool(L"config", L"float_playlist", theApp.m_ui_data.float_playlist);
 
 	ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
 	ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -271,6 +273,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_ui_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
 	theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", true);
 	theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", true);
+	theApp.m_ui_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
 
 	theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
 	theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
@@ -809,10 +812,18 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
 {
+	CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
+	m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected, m_list_popup_menu);
+	m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, GetDesktopWindow());
+	m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
+
+	SetPlaylistVisible();
+
 }
 
 void CMusicPlayerDlg::HideFloatPlaylist()
 {
+	CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
 }
 
 BOOL CMusicPlayerDlg::OnInitDialog()
@@ -1156,6 +1167,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			//ShowPlayList();
 
 			ThemeColorChanged();
+
+			if (theApp.m_ui_data.float_playlist)
+				OnFloatPlaylist();
 
 			//提示用户是否创建桌面快捷方式
 			CreateDesktopShortcut();
@@ -3104,13 +3118,13 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 void CMusicPlayerDlg::OnShowPlaylist()
 {
 	// TODO: 在此添加命令处理程序代码
-	m_pUI->ClearInfo();
-	theApp.m_ui_data.show_playlist = !theApp.m_ui_data.show_playlist;
+		m_pUI->ClearInfo();
+		theApp.m_ui_data.show_playlist = !theApp.m_ui_data.show_playlist;
 
-	OnSize(SIZE_RESTORED, theApp.m_ui_data.client_width, theApp.m_ui_data.client_height);
-	SetPlaylistVisible();
+		OnSize(SIZE_RESTORED, theApp.m_ui_data.client_width, theApp.m_ui_data.client_height);
+		SetPlaylistVisible();
 
-	DrawInfo(true);
+		DrawInfo(true);
 }
 
 
@@ -3240,8 +3254,13 @@ void CMusicPlayerDlg::OnAlwaysOnTop()
 void CMusicPlayerDlg::OnFloatPlaylist()
 {
 	// TODO: 在此添加命令处理程序代码
-	//theApp.m_ui_data.float_playlist = !theApp.m_ui_data.float_playlist;
-	//if()
-	CFloatPlaylistDlg dlg{ m_item_selected, m_items_selected, m_list_popup_menu };
-	dlg.DoModal();
+
+	ShowFloatPlaylist();
+	theApp.m_ui_data.float_playlist = true;
+
+	if (theApp.m_ui_data.show_playlist)
+	{
+		theApp.m_ui_data.show_playlist = false;
+		SetPlaylistVisible();
+	}
 }

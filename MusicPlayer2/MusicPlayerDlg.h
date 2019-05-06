@@ -29,6 +29,7 @@
 #include "CNotifyIcon.h"
 #include "StaticEx.h"
 #include "CMainDialogBase.h"
+#include "CFloatPlaylistDlg.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -109,6 +110,7 @@ protected:
 	CSetPathDlg* m_pSetPathDlg;		//选择路径对话框（非模态对话框）
 	CSoundEffectDlg* m_pSoundEffecDlg;		//音效设定对话框（非模态对话框）
 	CFormatConvertDlg* m_pFormatConvertDlg;		//格式转换对话框（非模态对话框）
+	CFloatPlaylistDlg* m_pFloatPlaylistDlg;
 
 	CWinThread* m_pThread;		//执行在线查看的线程
 	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
