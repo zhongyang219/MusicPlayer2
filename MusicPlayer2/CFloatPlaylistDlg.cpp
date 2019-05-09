@@ -249,7 +249,8 @@ void CFloatPlaylistDlg::OnClose()
 BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	if(wParam >= 32771)
+	
+	if(CCommon::IsMenuItemInMenu(m_popup_menu.GetSubMenu(0), wParam))
 		return theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
 	else
 		return CDialog::OnCommand(wParam, lParam);

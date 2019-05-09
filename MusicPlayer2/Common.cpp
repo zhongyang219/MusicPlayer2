@@ -909,6 +909,20 @@ int CCommon::AppendMenuOp(HMENU hDst, HMENU hSrc)
 	return iCnt;
 }
 
+bool CCommon::IsMenuItemInMenu(CMenu* pMenu, UINT id)
+{
+	if (pMenu == nullptr)
+		return false;
+
+	int item_count = pMenu->GetMenuItemCount();
+	for (int i = 0; i < item_count; i++)
+	{
+		if (pMenu->GetMenuItemID(i) == id)
+			return true;
+	}
+	return false;
+}
+
 CString CCommon::LoadText(UINT id, LPCTSTR back_str)
 {
 	CString str;

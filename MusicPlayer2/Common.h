@@ -227,6 +227,9 @@ public:
 	//将hSrc中的所有菜单项添加到菜单hDst中（来自 https://blog.csdn.net/zgl7903/article/details/71077441）
 	static int AppendMenuOp(HMENU hDst, HMENU hSrc);
 
+	//判断一个菜单项是否在菜单中（不检查子菜单）
+	static bool IsMenuItemInMenu(CMenu* pMenu, UINT id);
+
 	//从资源文件载入字符串。其中，front_str、back_str为载入字符串时需要在前面或后面添加的字符串
 	static CString LoadText(UINT id, LPCTSTR back_str = nullptr);
 	static CString LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str = nullptr);
