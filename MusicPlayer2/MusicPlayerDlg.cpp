@@ -446,6 +446,11 @@ void CMusicPlayerDlg::ShowPlayList()
 	{
 		m_miniModeDlg.ShowPlaylist();
 	}
+
+	if (theApp.m_ui_data.float_playlist && m_pFloatPlaylistDlg != nullptr)
+	{
+		m_pFloatPlaylistDlg->RefreshData();
+	}
 }
 
 void CMusicPlayerDlg::SetPlayListColor()
