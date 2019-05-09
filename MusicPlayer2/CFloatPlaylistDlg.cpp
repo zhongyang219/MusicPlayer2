@@ -25,8 +25,7 @@ void CFloatPlaylistDlg::RefreshData()
 {
 	//刷新播放列表数据
 	m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format);
-	m_playlist_ctrl.SetHightItem(CPlayer::GetInstance().GetIndex());
-	m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+	RefreshState();
 
 	m_path_edit.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
 }
@@ -77,6 +76,13 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
 
 }
 
+void CFloatPlaylistDlg::RefreshState()
+{
+	m_playlist_ctrl.SetHightItem(CPlayer::GetInstance().GetIndex());
+	m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+	m_playlist_ctrl.Invalidate(FALSE);
+}
+
 bool CFloatPlaylistDlg::Initilized() const
 {
 	return m_playlist_ctrl.GetSafeHwnd()!=NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
@@ -113,6 +119,9 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
+	SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), FALSE);
+
 	RefreshData();
 
 	//设置窗口大小
@@ -183,7 +192,7 @@ void CFloatPlaylistDlg::OnNMDblclkPlaylistList(NMHDR * pNMHDR, LRESULT * pResult
 	{
 		if (pNMItemActivate->iItem < 0)
 			return;
-		CPlayer::GetInstance().PlayTrack(pNMItemActivate->iItem);
+		m_item_selected = pNMItemActivate->iItem;
 	}
 	else		//如果播放列表处理选中状态，则曲目的索引是选中行第一列的数字-1
 	{
@@ -193,8 +202,9 @@ void CFloatPlaylistDlg::OnNMDblclkPlaylistList(NMHDR * pNMHDR, LRESULT * pResult
 		song_index = _ttoi(str) - 1;
 		if (song_index < 0)
 			return;
-		CPlayer::GetInstance().PlayTrack(song_index);
+		m_item_selected = song_index;
 	}
+	theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_ITEM);
 
 	*pResult = 0;
 }
@@ -233,4 +243,13 @@ void CFloatPlaylistDlg::OnClose()
 {
 	theApp.m_ui_data.float_playlist = false;
 	CDialog::OnClose();
+}
+
+
+BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	return theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
+
+	//return CDialog::OnCommand(wParam, lParam);
 }

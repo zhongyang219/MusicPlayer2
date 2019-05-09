@@ -454,6 +454,11 @@ void CMusicPlayerDlg::SetPlayListColor()
 	//m_playlist_list.SetColor(theApp.m_app_setting_data.theme_color);
 	m_playlist_list.Invalidate(FALSE);
 	m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+
+	if (theApp.m_ui_data.float_playlist && m_pFloatPlaylistDlg != nullptr)
+	{
+		m_pFloatPlaylistDlg->RefreshState();
+	}
 }
 
 void CMusicPlayerDlg::SwitchTrack()
@@ -483,7 +488,7 @@ void CMusicPlayerDlg::SwitchTrack()
 
 void CMusicPlayerDlg::SetPlaylistVisible()
 {
-	int cmdShow = (theApp.m_ui_data.ShowPlaylist() ? SW_SHOW : SW_HIDE);
+	int cmdShow = (theApp.m_ui_data.show_playlist ? SW_SHOW : SW_HIDE);
 	m_playlist_list.ShowWindow(cmdShow);
 	m_path_static.ShowWindow(cmdShow);
 	m_path_edit.ShowWindow(cmdShow);
@@ -757,6 +762,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 	pMenu->CheckMenuItem(ID_DARK_MODE, MF_BYCOMMAND | (theApp.m_app_setting_data.dark_mode ? MF_CHECKED : MF_UNCHECKED));
 	pMenu->CheckMenuItem(ID_ALWAYS_ON_TOP, MF_BYCOMMAND | (theApp.m_nc_setting_data.always_on_top ? MF_CHECKED : MF_UNCHECKED));
 
+	pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
+
 	//设置播放列表菜单中排序方式的单选标记
 	switch (CPlayer::GetInstance().m_sort_mode)
 	{
@@ -817,8 +824,10 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
 	m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, GetDesktopWindow());
 	m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
 
-	SetPlaylistVisible();
 
+	theApp.m_ui_data.show_playlist = false;
+	SetPlaylistVisible();
+	DrawInfo(true);
 }
 
 void CMusicPlayerDlg::HideFloatPlaylist()
@@ -1169,7 +1178,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			ThemeColorChanged();
 
 			if (theApp.m_ui_data.float_playlist)
-				OnFloatPlaylist();
+				ShowFloatPlaylist();
 
 			//提示用户是否创建桌面快捷方式
 			CreateDesktopShortcut();
@@ -3255,12 +3264,13 @@ void CMusicPlayerDlg::OnFloatPlaylist()
 {
 	// TODO: 在此添加命令处理程序代码
 
-	ShowFloatPlaylist();
-	theApp.m_ui_data.float_playlist = true;
-
-	if (theApp.m_ui_data.show_playlist)
+	theApp.m_ui_data.float_playlist = !theApp.m_ui_data.float_playlist;
+	if(theApp.m_ui_data.float_playlist)
 	{
-		theApp.m_ui_data.show_playlist = false;
-		SetPlaylistVisible();
+		ShowFloatPlaylist();
+	}
+	else
+	{
+		HideFloatPlaylist();
 	}
 }

@@ -21,6 +21,7 @@ public:
 
 	void RefreshData();			//刷新数据
 	void ReSizeControl(int cx, int cy);		//调整控件的大小和位置
+	void RefreshState();		//刷新播放列表的状态
 
 private:
 	CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
@@ -54,4 +55,5 @@ public:
 	afx_msg void OnBnClickedClearSearchButton();
 	virtual void OnCancel();
 	afx_msg void OnClose();
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 };

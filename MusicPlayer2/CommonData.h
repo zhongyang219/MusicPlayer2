@@ -326,10 +326,5 @@ struct UIData
 	int client_height;					//窗口客户区高度
 	CImage default_background;			//默认的背景
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
-
-	bool ShowPlaylist() const			//是否在主窗口中显示播放列表
-	{
-		return !float_playlist && show_playlist;
-	}
 };
 
