@@ -1478,6 +1478,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 				OnShowPlaylist();
 				return TRUE;
 			}
+			if (pMsg->wParam == 'K')		//设置按Ctr+K显示浮动播放列表
+			{
+				OnFloatPlaylist();
+				return TRUE;
+			}
 			if (GetKeyState(VK_SHIFT) & 0x8000)
 			{
 //				//按下Ctrl + Shift键时
