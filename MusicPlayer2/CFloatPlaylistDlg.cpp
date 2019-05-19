@@ -120,7 +120,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
-	SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), FALSE);
+	SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 
 	RefreshData();
 
@@ -250,8 +250,8 @@ BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	
-	if(CCommon::IsMenuItemInMenu(m_popup_menu.GetSubMenu(0), wParam))
-		return theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
-	else
-		return CDialog::OnCommand(wParam, lParam);
+	if(wParam == ID_SET_PATH || CCommon::IsMenuItemInMenu(m_popup_menu.GetSubMenu(0), wParam))
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
+
+	return CDialog::OnCommand(wParam, lParam);
 }
