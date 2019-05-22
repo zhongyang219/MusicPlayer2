@@ -224,6 +224,7 @@ struct NonCategorizedSettingData
 
     bool float_playlist{ false };		//浮动播放列表
     CSize playlist_size{320, 530};		//浮动播放列表的大小
+    bool playlist_btn_for_float_playlist{ false };		//指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
 };
 
 struct IconRes

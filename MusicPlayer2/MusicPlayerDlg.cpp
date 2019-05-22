@@ -191,6 +191,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"float_playlist", theApp.m_nc_setting_data.float_playlist);
     ini.WriteInt(L"config", L"float_playlist_width", theApp.m_nc_setting_data.playlist_size.cx);
     ini.WriteInt(L"config", L"float_playlist_height", theApp.m_nc_setting_data.playlist_size.cy);
+    ini.WriteBool(L"config", L"playlist_btn_for_float_playlist", theApp.m_nc_setting_data.playlist_btn_for_float_playlist);
 
     ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
     ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -278,6 +279,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
     theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(530));
+    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = ini.GetBool(L"config", L"playlist_btn_for_float_playlist", false);
 
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
