@@ -54,12 +54,6 @@ private:
     */
     void DrawCortanaText(LPCTSTR str, int progress);
 
-    //在Cortana搜索框内双行显示歌词
-    void DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int progress);
-
-    //在Cortana搜索框内显示带翻译的歌词
-    void DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int progress);
-
     void DrawAlbumCover(const CImage& album_cover);
 
     void DrawSpectrum();

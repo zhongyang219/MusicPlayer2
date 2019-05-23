@@ -6,6 +6,7 @@
 
 CCortanaLyric::CCortanaLyric()
 {
+	m_draw.SetForCortanaLyric();
 }
 
 
@@ -111,65 +112,47 @@ void CCortanaLyric::DrawInfo()
         if(theApp.m_lyric_setting_data.cortana_show_spectrum)
             DrawSpectrum();
 
-        if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
+        if (is_midi_lyric)
         {
-            m_draw.DrawLryicCommon(TextRect());
+            wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
+            DrawCortanaTextSimple(current_lyric.c_str(), Alignment::LEFT);
         }
         else
         {
-            if (is_midi_lyric)
-            {
-                wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
-                DrawCortanaTextSimple(current_lyric.c_str(), Alignment::LEFT);
-            }
-            else
-            {
-                Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-                int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
-                CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
-                bool no_lyric{ false };
-                //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
-                no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time.time2int() > 20000) || progress >= 1000;
+			Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+			int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
+			CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
+            bool no_lyric{ false };
+            //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
+            no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time.time2int() > 20000) || progress >= 1000;
 
-                if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric)		//有歌词时显示歌词
+            if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric)		//有歌词时显示歌词
+            {
+				if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
+				{
+					m_draw.DrawLryicCommon(TextRect());
+				}
+				else
+				{
+					m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line);
+				}
+            }
+            else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
+            {
+                static int index{};
+                static wstring song_name{};
+                //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
+                if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
                 {
-                    if (CPlayer::GetInstance().m_Lyrics.IsTranslated() && theApp.m_ui_data.show_translate)
-                    {
-                        if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-                        if (lyric.translate.empty()) lyric.translate = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-                        DrawLyricWithTranslate(lyric.text.c_str(), lyric.translate.c_str(), progress);
-                    }
-                    else if (!theApp.m_lyric_setting_data.cortana_lyric_double_line)
-                    {
-                        if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-                        DrawCortanaText(lyric.text.c_str(), progress);
-                    }
-                    else
-                    {
-                        wstring next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
-                        if (lyric.text.empty()) lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-                        if (next_lyric.empty()) next_lyric = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-                        DrawLyricDoubleLine(lyric.text.c_str(), next_lyric.c_str(), progress);
-                    }
+                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), true, theApp.DPI(2));
+                    index = CPlayer::GetInstance().GetIndex();
+                    song_name = CPlayer::GetInstance().GetFileName();
                 }
-                else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
+                else
                 {
-                    static int index{};
-                    static wstring song_name{};
-                    //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
-                    if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
-                    {
-                        DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), true, theApp.DPI(2));
-                        index = CPlayer::GetInstance().GetIndex();
-                        song_name = CPlayer::GetInstance().GetFileName();
-                    }
-                    else
-                    {
-                        DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), false, theApp.DPI(2));
-                    }
+                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), false, theApp.DPI(2));
                 }
             }
-
         }
 
         //计算频谱，根据频谱幅值使Cortana图标显示动态效果
@@ -263,75 +246,6 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
     }
 }
 
-void CCortanaLyric::DrawLyricDoubleLine(LPCTSTR lyric, LPCTSTR next_lyric, int progress)
-{
-    if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
-    {
-        m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
-        static bool swap;
-        static int last_progress;
-        if (last_progress > progress)
-        {
-            swap = !swap;
-        }
-        last_progress = progress;
-
-        CRect text_rect{ TextRect() };
-        CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
-        up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
-        down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
-        //根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
-        int width;
-        if (!swap)
-            width = m_draw.GetTextExtent(next_lyric).cx;
-        else
-            width = m_draw.GetTextExtent(lyric).cx;
-        if(width < m_cortana_rect.Width())
-            down_rect.left = down_rect.right - width;
-
-        //m_draw.FillRect(m_cortana_rect, m_colors.back_color);
-        if (!swap)
-        {
-            if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-                m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
-            else
-                m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color, progress, false);
-
-            m_draw.DrawWindowText(down_rect, next_lyric, m_colors.text_color2);
-        }
-        else
-        {
-            m_draw.DrawWindowText(up_rect, next_lyric, m_colors.text_color2);
-
-            if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-                m_draw.DrawWindowText(down_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
-            else
-                m_draw.DrawWindowText(down_rect, lyric, m_colors.text_color, m_colors.text_color, progress, false);
-        }
-    }
-}
-
-void CCortanaLyric::DrawLyricWithTranslate(LPCTSTR lyric, LPCTSTR translate, int progress)
-{
-    if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
-    {
-        CRect text_rect{ TextRect() };
-        CRect up_rect{ text_rect }, down_rect{ text_rect };		//上半部分和下半部分歌词的矩形区域
-        up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
-        down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
-
-        //m_draw.FillRect(m_cortana_rect, m_colors.back_color);
-        m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
-        if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-            m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color2, progress, false);
-        else
-            m_draw.DrawWindowText(up_rect, lyric, m_colors.text_color, m_colors.text_color, progress, false);
-
-        m_draw.SetFont(&theApp.m_font_set.cortana_translate.GetFont());
-        m_draw.DrawWindowText(down_rect, translate, m_colors.text_color, m_colors.text_color, progress, false);
-    }
-}
-
 void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 {
     if (m_enable)
@@ -369,6 +283,10 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 void CCortanaLyric::DrawSpectrum()
 {
     CRect rc_spectrum{ TextRect() };
+	const int max_spectrum_height{ theApp.DPI(80) };		//频谱区域的最大高度
+	if (rc_spectrum.Height() > max_spectrum_height)
+		rc_spectrum.top = rc_spectrum.bottom - max_spectrum_height;
+
     m_draw.SetDrawArea(rc_spectrum);
     rc_spectrum.right += theApp.DPI(8);
 
