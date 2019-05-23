@@ -3,6 +3,7 @@
 #include "StaticEx.h"
 #include "CPlayerUIBase.h"
 
+#define WM_FLOAT_PLAYLIST_CLOSED (WM_USER+118)
 
 // CFloatPlaylistDlg 对话框
 
@@ -11,7 +12,7 @@ class CFloatPlaylistDlg : public CDialog
     DECLARE_DYNAMIC(CFloatPlaylistDlg)
 
 public:
-    CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CWnd* pParent = nullptr);   // 标准构造函数
+    CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent = nullptr);   // 标准构造函数
     virtual ~CFloatPlaylistDlg();
 
 // 对话框数据
@@ -30,8 +31,6 @@ private:
     CButton m_set_path_button;
     CEdit m_search_edit;
     CButton m_clear_search_button;
-
-    CMenu& m_popup_menu;		//播放列表右键菜单
 
     SLayoutData m_layout;		//窗口布局的固定数据
 

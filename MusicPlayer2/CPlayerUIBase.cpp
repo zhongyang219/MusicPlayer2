@@ -5,8 +5,6 @@
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
 {
-    m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//装载歌词右键菜单
-    m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
 
     //m_font_time.CreatePointFont(80, CCommon::LoadText(IDS_DEFAULT_FONT));
 }
@@ -88,7 +86,15 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
     if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
     {
-        CMenu* pMenu = m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
+        if (pMenu != NULL)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return;
+    }
+
+    if (m_buttons[BTN_SHOW_PLAYLIST].rect.PtInRect(point))
+    {
+        CMenu* pMenu = theApp.m_menu_set.m_playlist_btn_menu.GetSubMenu(0);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
         return;
@@ -103,11 +109,11 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 
     if (!m_draw_data.lyric_rect.PtInRect(point))	//如果在歌词区域点击了鼠标右键
     {
-        m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     }
     else
     {
-        m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        theApp.m_menu_set.m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     }
 
 }

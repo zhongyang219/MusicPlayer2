@@ -172,6 +172,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_MAIN_MENU_POPEDUP, &CMusicPlayerDlg::OnMainMenuPopup)
     ON_COMMAND(ID_ALWAYS_ON_TOP, &CMusicPlayerDlg::OnAlwaysOnTop)
     ON_COMMAND(ID_FLOAT_PLAYLIST, &CMusicPlayerDlg::OnFloatPlaylist)
+    ON_COMMAND(ID_DOCKED_PLAYLIST, &CMusicPlayerDlg::OnDockedPlaylist)
+    ON_COMMAND(ID_FLOATED_PLAYLIST, &CMusicPlayerDlg::OnFloatedPlaylist)
+    ON_MESSAGE(WM_FLOAT_PLAYLIST_CLOSED, &CMusicPlayerDlg::OnFloatPlaylistClosed)
 END_MESSAGE_MAP()
 
 
@@ -512,7 +515,7 @@ void CMusicPlayerDlg::SetMenubarVisible()
 {
     if (theApp.m_ui_data.show_menu_bar)
     {
-        SetMenu(&m_main_menu);
+        SetMenu(&theApp.m_menu_set.m_main_menu);
     }
     else
     {
@@ -821,6 +824,11 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         break;
     }
 
+    if(theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+        pMenu->CheckMenuRadioItem(ID_DOCKED_PLAYLIST, ID_FLOATED_PLAYLIST, ID_FLOATED_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
+    else
+        pMenu->CheckMenuRadioItem(ID_DOCKED_PLAYLIST, ID_FLOATED_PLAYLIST, ID_DOCKED_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
+
     //设置播放列表右键菜单的默认菜单项
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
 
@@ -858,10 +866,11 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 void CMusicPlayerDlg::ShowFloatPlaylist()
 {
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
-    m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected, m_list_popup_menu);
+    m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected);
     m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, GetDesktopWindow());
     m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
-
+    if(m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
+        m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
     theApp.m_ui_data.show_playlist = false;
     SetPlaylistVisible();
@@ -870,6 +879,7 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
 
 void CMusicPlayerDlg::HideFloatPlaylist()
 {
+    OnFloatPlaylistClosed(0, 0);
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
 }
 
@@ -889,6 +899,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     //初始化字体
     theApp.m_font_set.Init();
+
+    theApp.InitMenuResourse();
 
     //载入设置
     LoadConfig();
@@ -934,34 +946,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //DWORD dwStyle = m_time_static.GetStyle();
     //::SetWindowLong(m_time_static.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
-    //初始化菜单
-    m_main_menu.LoadMenu(IDR_MENU1);
-    m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
-
     SetMenubarVisible();
 
-    //将主菜单添加到系统菜单中
-    CMenu* pSysMenu = GetSystemMenu(FALSE);
-    if (pSysMenu != NULL)
-    {
-        pSysMenu->AppendMenu(MF_SEPARATOR);
-        CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_main_menu.GetSafeHmenu());		//将主菜单添加到系统菜单
-
-        pSysMenu->AppendMenu(MF_SEPARATOR);
-        pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
-
-        CString exitStr;
-        m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
-        pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
-    }
-
-    //初始化按Shift键弹出的右键菜单
-    m_main_popup_menu.CreatePopupMenu();
-    CCommon::AppendMenuOp(m_main_popup_menu.GetSafeHmenu(), m_main_menu.GetSafeHmenu());
-    m_main_popup_menu.AppendMenu(MF_SEPARATOR);
-    CString exitStr;
-    m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
-    m_main_popup_menu.AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
@@ -1935,7 +1921,7 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
         m_playlist_list.GetItemSelectedSearched(m_items_selected);
     }
 
-    CMenu* pContextMenu = m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
     CPoint point;			//定义一个用于确定光标位置的位置
     GetCursorPos(&point);	//获取当前光标的位置，以便使得菜单可以跟随光标
 
@@ -2471,7 +2457,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
     {
         CPoint point1;
         GetCursorPos(&point1);
-        m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+        theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
     }
     else
     {
@@ -3302,7 +3288,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainMenuPopup(WPARAM wParam, LPARAM lParam)
 {
     CPoint point = *((CPoint*)wParam);
     ClientToScreen(&point);
-    m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+    theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 
     return 0;
 }
@@ -3330,4 +3316,27 @@ void CMusicPlayerDlg::OnFloatPlaylist()
     {
         HideFloatPlaylist();
     }
+}
+
+
+void CMusicPlayerDlg::OnDockedPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = false;
+}
+
+
+void CMusicPlayerDlg::OnFloatedPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = true;
+}
+
+LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
+{
+    CRect rect;
+    ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
+    m_float_playlist_pos = rect.TopLeft();
+
+    return 0;
 }

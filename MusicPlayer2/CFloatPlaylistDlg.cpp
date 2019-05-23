@@ -11,8 +11,8 @@
 
 IMPLEMENT_DYNAMIC(CFloatPlaylistDlg, CDialog)
 
-CFloatPlaylistDlg::CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CMenu& popup_menu, CWnd* pParent /*=nullptr*/)
-    : CDialog(IDD_MUSICPLAYER2_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }, m_popup_menu(popup_menu)
+CFloatPlaylistDlg::CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent /*=nullptr*/)
+    : CDialog(IDD_MUSICPLAYER2_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }
 {
 
 }
@@ -171,7 +171,7 @@ void CFloatPlaylistDlg::OnNMRClickPlaylistList(NMHDR * pNMHDR, LRESULT * pResult
         m_playlist_ctrl.GetItemSelectedSearched(m_items_selected);
     }
 
-    CMenu* pContextMenu = m_popup_menu.GetSubMenu(0);
+    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
     CPoint point;			//定义一个用于确定光标位置的位置
     GetCursorPos(&point);	//获取当前光标的位置，以便使得菜单可以跟随光标
 
@@ -246,6 +246,7 @@ void CFloatPlaylistDlg::OnCancel()
 
 void CFloatPlaylistDlg::OnClose()
 {
+    theApp.m_pMainWnd->SendMessage(WM_FLOAT_PLAYLIST_CLOSED);
     theApp.m_nc_setting_data.float_playlist = false;
     CDialog::OnClose();
 }
@@ -255,7 +256,7 @@ BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
 
-    if(wParam == ID_SET_PATH || CCommon::IsMenuItemInMenu(m_popup_menu.GetSubMenu(0), wParam))
+    if(wParam == ID_SET_PATH || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), wParam))
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
 
     return CDialog::OnCommand(wParam, lParam);
