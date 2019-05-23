@@ -130,7 +130,7 @@ void CCortanaLyric::DrawInfo()
             {
 				if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
 				{
-					m_draw.DrawLryicCommon(TextRect());
+					m_draw.DrawLyricTextMultiLine(TextRect());
 				}
 				else
 				{
@@ -427,7 +427,9 @@ void CCortanaLyric::SetUIColors()
     else
         m_colors.dark = m_dark_mode;
 
-    if (m_colors.dark)
+	m_lyric_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, m_colors.dark);
+	
+	if (m_colors.dark)
     {
         m_colors.text_color = theApp.m_app_setting_data.theme_color.light3;
         m_colors.text_color2 = theApp.m_app_setting_data.theme_color.light1;
@@ -447,7 +449,8 @@ void CCortanaLyric::SetUIColors()
         m_colors.info_text_color = theApp.m_app_setting_data.theme_color.dark2;
         m_colors.back_color = GRAY(240);
         m_colors.sprctrum_color = theApp.m_app_setting_data.theme_color.dark1;
-    }
 
-    m_lyric_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, m_colors.dark);
+		m_lyric_colors.color_text = theApp.m_app_setting_data.theme_color.dark3;
+		m_lyric_colors.color_text_2 = theApp.m_app_setting_data.theme_color.dark1;
+    }
 }
