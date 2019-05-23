@@ -2,6 +2,7 @@
 #include "MusicPlayer2.h"
 #include "IPlayerUI.h"
 #include "CPlayerUIHelper.h"
+#include "CLyricDraw.h"
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)		//显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
 
@@ -46,8 +47,6 @@ public:
     virtual void MouseLeave() override;
 
     void ClearBtnRect();
-
-    static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
 
     int Margin() const;
     int EdgeMargin(bool x = true) const;
@@ -95,7 +94,6 @@ protected:
     virtual void PreDrawInfo();
     void SetDrawRect();
     void DrawBackground();
-    void DrawLryicCommon(CRect rect);
     void DrawSongInfo(CRect rect, bool reset = false);
     void DrawToolBar(CRect rect, bool draw_translate_button);
     void DrawVolumnAdjBtn();
@@ -125,9 +123,6 @@ protected:
     int DPI(double pixel);
 
 private:
-    void DrawLyricTextMultiLine(CRect rect);
-    void DrawLyricTextSingleLine(CRect rect);
-    void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
     void SetRepeatModeToolTipText();
     void SetSongInfoToolTipText();
     void SetCoverToolTipText();
@@ -137,7 +132,7 @@ protected:
     CWnd* m_pMainWnd = nullptr;
     CDC* m_pDC;
     UIColors m_colors;
-    CDrawCommon m_draw;		//用于绘制文本的对象
+    CLyricDraw m_draw{ m_colors };		//用于绘制文本的对象
     SLayoutData m_layout;
     //CFont m_font_time;
     DrawData m_draw_data;
@@ -149,7 +144,6 @@ protected:
     CString m_info_tip;
     CString m_cover_tip;
 
-    int m_lyric_text_height;
     UIData& m_ui_data;
 
     //UI 数据

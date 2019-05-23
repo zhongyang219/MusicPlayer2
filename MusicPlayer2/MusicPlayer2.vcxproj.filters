@@ -469,6 +469,9 @@
     <ClInclude Include="CFloatPlaylistDlg.h">
       <Filter>对话框类\FloatPlaylistDlg</Filter>
     </ClInclude>
+    <ClInclude Include="CLyricDraw.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -692,6 +695,9 @@
     </ClCompile>
     <ClCompile Include="CFloatPlaylistDlg.cpp">
       <Filter>对话框类\FloatPlaylistDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="CLyricDraw.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
