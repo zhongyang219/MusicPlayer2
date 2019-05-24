@@ -147,10 +147,13 @@ void CFloatPlaylistDlg::OnSize(UINT nType, int cx, int cy)
     {
         ReSizeControl(cx, cy);
 
-        CRect rect;
-        GetWindowRect(&rect);
-        theApp.m_nc_setting_data.playlist_size.cx = rect.Width();
-        theApp.m_nc_setting_data.playlist_size.cy = rect.Height();
+        if(nType != SIZE_MAXIMIZED)
+        {
+            CRect rect;
+            GetWindowRect(&rect);
+            theApp.m_nc_setting_data.playlist_size.cx = rect.Width();
+            theApp.m_nc_setting_data.playlist_size.cy = rect.Height();
+        }
     }
 }
 

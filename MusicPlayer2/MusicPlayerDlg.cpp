@@ -3335,8 +3335,12 @@ void CMusicPlayerDlg::OnFloatedPlaylist()
 LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 {
     CRect rect;
-    ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
-    m_float_playlist_pos = rect.TopLeft();
+    if(m_pFloatPlaylistDlg != nullptr)
+    {
+        ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
+        if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
+            m_float_playlist_pos = rect.TopLeft();
+    }
 
     return 0;
 }
