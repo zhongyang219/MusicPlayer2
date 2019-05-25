@@ -1,5 +1,15 @@
 **[简体中文](https://github.com/zhongyang219/MusicPlayer2/blob/master/UpdateLog/update_log.md) | English**<br>
 # MusicPlayer2 Update log
+## V2.65 (2019/05/25)
+* Add the function to display spectrum analysis in the search box.
+* Add the function of accumulating listening time statistics.
+* Add the function of floating playlist.
+* Add the function of always on top.
+* Add the function to display error messages and generate a dump file when crashed.
+* Add the style settings of bold, italic, and underline font settings.
+* Add the function to create playback control shortcuts.
+* Add the x64 version.
+* Improvements in other details
 ## V2.64 (2019/02/16)
 * Adjust the UI. Beautify the playback control buttons and progress bar.
 * Added the function to hide/display playlists.
