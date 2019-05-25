@@ -42,7 +42,11 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
 
 bool CMusicPlayerDlg::IsTaskbarListEnable() const
 {
-    return CWinVersionHelper::IsWindows7OrLater() && m_pTaskbar != nullptr;
+#ifdef COMPILE_IN_WIN_XP
+	return false;
+#else
+	return CWinVersionHelper::IsWindows7OrLater() && m_pTaskbar != nullptr;
+#endif
 }
 
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
