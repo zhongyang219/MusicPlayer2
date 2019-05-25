@@ -1,9 +1,9 @@
-﻿<version>2.64</version>
-<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.64/MusicPlayer2_V2.64.7z</link>
-<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.64/MusicPlayer2_V2.64.7z</link_x64>
+﻿<version>2.65</version>
+<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.65/MusicPlayer2_V2.65_x86.7z</link>
+<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.65/MusicPlayer2_V2.65_x64.7z</link_x64>
 <update_contents>
-	<contents_zh_cn>界面调整，界面中的播放控制按钮和进度条美化。\n新增隐藏/显示播放列表的功能。\n新增隐藏/显示菜单栏的功能。\n新增响应多媒体按键的功能。\n小娜搜索框歌词显示效果优化。\n新增全屏显示的功能。\n其他界面细节方面的调整。\n其他细节方面的改进。</contents_zh_cn>
-	<contents_en>Adjust the UI. Beautify the playback control buttons and progress bar.\nAdded the function to hide/display playlists.\nAdded the function to hide/display menu bar.\nAdded the function to respond the multimedia keys.\nOptimize the display effect of the Cortana search box lyrics .\nAdded the function of full-screen display.\nOther adjustments for the UI details.\nImproved in other details.</contents_en>
+	<contents_zh_cn>新增在搜索框显示频谱分析的功能。\n新增累计听歌时间统计的功能。\n新增浮动播放列表的功能。\n新增总是置顶的功能。\n新增崩溃时显示错误信息并生成dump文件的功能。\n字体设置增加粗体、斜体和下划线的样式设置。\n新增创建播放控制快捷方式的功能。\n新增x64的支版本。\n其他细节方面的改进。</contents_zh_cn>
+	<contents_en>Add the function to display spectrum analysis in the search box.\nAdd the function of accumulating listening time statistics.\nAdd the function of floating playlist.\nAdd the function of always on top.\nAdd the function to display error messages and generate a dump file when crashed.\nAdd the style settings of bold, italic, and underline font settings.\nAdd the function to create playback control shortcuts.\nAdd the x64 version.\nImprovements in other details</contents_en>
 </update_contents>
 <!--以下内容为了兼容旧版本程序的检查更新功能-->
-<contents>界面调整，界面中的播放控制按钮和进度条美化。\n新增隐藏/显示播放列表的功能。\n新增隐藏/显示菜单栏的功能。\n新增响应多媒体按键的功能。\n小娜搜索框歌词显示效果优化。\n新增全屏显示的功能。\n其他界面细节方面的调整。\n其他细节方面的改进。</contents>
+<contents>新增在搜索框显示频谱分析的功能。\n新增累计听歌时间统计的功能。\n新增浮动播放列表的功能。\n新增总是置顶的功能。\n新增崩溃时显示错误信息并生成dump文件的功能。\n字体设置增加粗体、斜体和下划线的样式设置。\n新增创建播放控制快捷方式的功能。\n新增x64的支版本。\n其他细节方面的改进。</contents>
