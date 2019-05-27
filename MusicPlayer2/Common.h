@@ -95,6 +95,8 @@ public:
 	//判断一个字符串是否是数字
 	static bool StrIsNumber(const wstring& str);
 
+	static bool CharIsNumber(wchar_t ch);
+
 	//将一个字符串分割成若干个字符串
 	//str: 原始字符串
 	//div_ch: 用于分割的字符
@@ -260,6 +262,8 @@ public:
 
 	//设置窗口不透明度
 	static void SetWindowOpacity(HWND hWnd, int opacity);
+
+	static bool StringIsVersion(LPCTSTR str);
 
 	template<class T>
 	static T Min3(T v1, T v2, T v3)

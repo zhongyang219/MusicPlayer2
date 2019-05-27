@@ -60,9 +60,9 @@ void COSUPlayerHelper::GetOSUAudioTitleArtist(SongInfo & song_info)
         song_info.artist = song_info.file_name.substr(index1 + 1, index2 - index1 - 1);
     if (index2 < index3)
         song_info.title = song_info.file_name.substr(index2 + 3, index3 - index2 - 3);
-	//wstring song_index = song_info.file_name.substr(0, index1);
-	//if(CCommon::StrIsNumber(song_index))
-	//	song_info.
+	wstring song_index = song_info.file_name.substr(0, index1);
+	if (CCommon::StrIsNumber(song_index))
+		song_info.track = _wtoi(song_index.c_str());
 }
 
 wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)

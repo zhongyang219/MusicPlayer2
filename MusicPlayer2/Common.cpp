@@ -97,10 +97,15 @@ bool CCommon::StrIsNumber(const wstring & str)
 {
 	for (const auto& ch : str)
 	{
-		if (ch<L'0' || ch > L'9')
+		if (ch < L'0' || ch > L'9')
 			return false;
 	}
 	return true;
+}
+
+bool CCommon::CharIsNumber(wchar_t ch)
+{
+	return (ch >= L'0' && ch <= L'9');
 }
 
 void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& results)
@@ -1091,5 +1096,11 @@ void CCommon::SetWindowOpacity(HWND hWnd, int opacity)
 {
 	SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
 	::SetLayeredWindowAttributes(hWnd, 0, opacity * 255 / 100, LWA_ALPHA);  //透明度取值范围为0~255
+}
+
+bool CCommon::StringIsVersion(LPCTSTR str)
+{
+	CString version_str{ str };
+	return version_str.GetLength() == 4 && version_str[1] == _T('.') && CharIsNumber(version_str[0]) && CharIsNumber(version_str[2]) && CharIsNumber(version_str[3]);
 }
 

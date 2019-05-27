@@ -305,7 +305,7 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(VERSION);			//写入版本号
+    ar << CString(_T("2.66"));			//写入数据版本
     ar << m_song_data.size();		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -604,7 +604,8 @@ void CMusicPlayerApp::LoadSongData()
         //读取版本
         CString version_str;
         ar >> version_str;
-        double version = _ttof(version_str);
+		if (!CCommon::StringIsVersion(version_str))
+			version_str = _T("0.00");
         ar >> size;		//读取映射容器的长度
         for (size_t i{}; i < size; i++)
         {
@@ -627,12 +628,21 @@ void CMusicPlayerApp::LoadSongData()
             ar >> temp;
             song_info.genre = temp;
             ar >> song_info.genre_idx;
-            ar >> song_info.track;
+			if (version_str >= _T("2.66"))
+			{
+				ar >> song_info.track;
+			}
+			else
+			{
+				BYTE track;
+				ar >> track;
+				song_info.track = track;
+			}
             ar >> song_info.tag_type;
             ar >> temp;
             song_info.song_id = temp;
 
-            if(version >= 2.63999)		//版本号大于等于2.64
+            if(version_str >= _T("2.64"))		//版本号大于等于2.64
             {
                 ar >> song_info.listen_time;
                 ar >> song_info.info_acquired;

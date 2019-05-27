@@ -31,7 +31,7 @@ struct SongInfo
 	wstring comment;	//注释
 	wstring genre;		//流派
 	BYTE genre_idx{ 255 };		//以字节表示的流派号
-	BYTE track{};		//音轨序号
+	int track{};		//音轨序号
 	int tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
 	bool info_acquired{ false };		//如果已经获取到了信息，则为ture
 	Time start_pos{};		//音频的起始位置，用于cue分轨
