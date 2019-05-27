@@ -211,6 +211,7 @@
     <ClInclude Include="CMiniModeUI.h" />
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CommonData.h" />
+    <ClInclude Include="COSUPlayerHelper.h" />
     <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
     <ClInclude Include="CPlayerUI.h" />
@@ -293,6 +294,7 @@
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="CMiniModeUI.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
+    <ClCompile Include="COSUPlayerHelper.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
     <ClCompile Include="CPlayerUI.cpp" />

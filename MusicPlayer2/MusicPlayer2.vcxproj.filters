@@ -219,6 +219,9 @@
     <Filter Include="对话框类\FloatPlaylistDlg">
       <UniqueIdentifier>{793816ab-36f6-4c91-9b8f-ae90b52407b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\OSUPlayerHelper">
+      <UniqueIdentifier>{67a4bb32-a0f9-40a1-a79c-e0893ec380af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -472,6 +475,9 @@
     <ClInclude Include="CLyricDraw.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="COSUPlayerHelper.h">
+      <Filter>功能逻辑类\OSUPlayerHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -698,6 +704,9 @@
     </ClCompile>
     <ClCompile Include="CLyricDraw.cpp">
       <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="COSUPlayerHelper.cpp">
+      <Filter>功能逻辑类\OSUPlayerHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

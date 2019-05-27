@@ -114,6 +114,8 @@ public:
 
 	bool m_loading{ false };		//如果正在载入播放列表，则为true
 
+	bool m_is_ous_folder{ false };	//如果打开的是OUS的Songs目录，则为true
+
 private:
 	vector<wstring> m_current_path_lyrics;	//储存当前路径下的歌词文件的文件名（用于歌词模糊匹配时检索）
 	vector<wstring> m_lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名（用于歌词模糊匹配时检索）
@@ -264,7 +266,7 @@ private:
 	wstring GetCurrentFileName() const;
 
 public:
-	static void AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo& song_info);		//获取歌曲标签等信息
+	static void AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo& song_info, bool osu_song = false);		//获取歌曲标签等信息
 	void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
 	void AlbumCoverGaussBlur();		//专辑封面高斯模糊
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
