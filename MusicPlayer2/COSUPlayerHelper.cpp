@@ -60,6 +60,9 @@ void COSUPlayerHelper::GetOSUAudioTitleArtist(SongInfo & song_info)
         song_info.artist = song_info.file_name.substr(index1 + 1, index2 - index1 - 1);
     if (index2 < index3)
         song_info.title = song_info.file_name.substr(index2 + 3, index3 - index2 - 3);
+	//wstring song_index = song_info.file_name.substr(0, index1);
+	//if(CCommon::StrIsNumber(song_index))
+	//	song_info.
 }
 
 wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
@@ -71,7 +74,31 @@ wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
     vector<wstring> image_list;
     CCommon::GetFiles(path + L"*.jpg", image_list);
     if (!image_list.empty())
-        return path + image_list[0];
+	{
+		return path + image_list[0];
+	}
+	else
+	{
+		//如果没有jpg图片，则查找png图片
+		vector<wstring> image_list;
+		CCommon::GetFiles(path + L"*.png", image_list);
+		if (!image_list.empty())
+		{
+			size_t max_file_size{};
+			wstring max_size_file_name;
+			for (const auto& image_file : image_list)
+			{
+				//由于OSU歌曲目录下可能会有很多皮肤素材png图片，因此查找最大的图片作为背景图片
+				size_t file_size = CCommon::GetFileSize(path + image_file);
+				if (max_file_size < file_size)
+				{
+					max_file_size = file_size;
+					max_size_file_name = image_file;
+				}
+			}
+			return path + max_size_file_name;
+		}
+	}
 
     return wstring();
 }

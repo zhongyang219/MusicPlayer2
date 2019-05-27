@@ -1708,7 +1708,7 @@ void CPlayer::SearchAlbumCover()
     //if (last_file_path != m_path + GetCurrentFileName())		//防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
-    if (!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first)
+    if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFolder())
     {
         //从文件获取专辑封面
         CAudioTag audio_tag(m_musicStream, m_path + GetCurrentFileName(), m_playlist[m_index]);
