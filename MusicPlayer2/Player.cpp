@@ -1811,9 +1811,15 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInf
 void CPlayer::SearchOutAlbumCover()
 {
     if (m_is_ous_folder)
-        m_album_cover_path = COSUPlayerHelper::GetAlbumCover(m_path + GetCurrentFileName());
+	{
+		m_album_cover_path = COSUPlayerHelper::GetAlbumCover(m_path + GetCurrentFileName());
+		if (m_album_cover_path.empty())
+			m_album_cover_path = theApp.m_nc_setting_data.default_osu_img;
+	}
     else
-        m_album_cover_path = GetRelatedAlbumCover(m_path + GetCurrentFileName(), GetCurrentSongInfo());
+	{
+		m_album_cover_path = GetRelatedAlbumCover(m_path + GetCurrentFileName(), GetCurrentSongInfo());
+	}
     if (!m_album_cover.IsNull())
         m_album_cover.Destroy();
     m_album_cover.Load(m_album_cover_path.c_str());

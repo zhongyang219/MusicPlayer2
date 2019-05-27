@@ -331,6 +331,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.show_hide_menu_bar_tip = ini.GetBool(L"other", L"show_hide_menu_bar_tip", true);
     theApp.m_nc_setting_data.cortana_opaque = ini.GetBool(L"other", L"cortana_opaque", false);
     theApp.m_nc_setting_data.cortana_transparent_color = ini.GetInt(L"other", L"cortana_transparent_color", RGB(255, 0, 255));
+	theApp.m_nc_setting_data.default_osu_img = ini.GetString(L"other", L"default_osu_img", L"");
 
     theApp.m_general_setting_data.id3v2_first = ini.GetBool(L"general", L"id3v2_first", 1);
     theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(L"general", L"auto_download_lyric", 1);

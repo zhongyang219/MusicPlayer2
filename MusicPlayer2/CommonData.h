@@ -221,6 +221,7 @@ struct NonCategorizedSettingData
     bool always_on_top{ false };	//是否总是置顶
     bool cortana_opaque{ false };	//搜索框不透明
     COLORREF cortana_transparent_color{};
+	wstring default_osu_img;
 
     bool float_playlist{ false };		//浮动播放列表
     CSize playlist_size{320, 530};		//浮动播放列表的大小
