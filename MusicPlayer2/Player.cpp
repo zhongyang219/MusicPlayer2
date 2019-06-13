@@ -521,14 +521,14 @@ void CPlayer::MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void * user)
 
 void CPlayer::MusicControl(Command command, int volume_step)
 {
-    if (!CCommon::FileExist(m_path + GetCurrentFileName()))
+    if (!CCommon::FileExist(GetCurrentFilePath()))
         return;
 
     switch (command)
     {
     case Command::OPEN:
         m_error_code = 0;
-        m_musicStream = BASS_StreamCreateFile(FALSE, (m_path + GetCurrentFileName()).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+        m_musicStream = BASS_StreamCreateFile(FALSE, (GetCurrentFilePath()).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
         BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
         m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
         if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
@@ -543,7 +543,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (GetSongNum() > 0)
         {
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-                AcquireSongInfo(m_musicStream, m_path + GetCurrentFileName(), m_playlist[m_index], m_is_ous_folder);
+                AcquireSongInfo(m_musicStream, GetCurrentFilePath(), m_playlist[m_index], m_is_ous_folder);
             m_song_length = m_playlist[m_index].lengh;
             m_song_length_int = m_song_length.time2int();
             //如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
@@ -985,6 +985,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     {
         index = file.find_last_of(L'\\');
         song_info.file_name = file.substr(index + 1);
+        song_info.file_path = file;
         m_playlist.push_back(song_info);	//将文件名储存到播放列表
     }
     IniPlayList(true);
@@ -1715,13 +1716,13 @@ void CPlayer::ConnotPlayWarning() const
 void CPlayer::SearchAlbumCover()
 {
     //static wstring last_file_path;
-    //if (last_file_path != m_path + GetCurrentFileName())		//防止同一个文件多次获取专辑封面
+    //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFolder())
     {
         //从文件获取专辑封面
-        CAudioTag audio_tag(m_musicStream, m_path + GetCurrentFileName(), m_playlist[m_index]);
+        CAudioTag audio_tag(m_musicStream, GetCurrentFilePath(), m_playlist[m_index]);
         m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
         m_album_cover.Load(m_album_cover_path.c_str());
     }
@@ -1734,7 +1735,7 @@ void CPlayer::SearchAlbumCover()
     }
     //AlbumCoverGaussBlur();
     //}
-    //last_file_path = m_path + GetCurrentFileName();
+    //last_file_path = GetCurrentFilePath();
 }
 
 void CPlayer::AlbumCoverGaussBlur()
@@ -1822,13 +1823,13 @@ void CPlayer::SearchOutAlbumCover()
 {
     if (m_is_ous_folder)
     {
-        m_album_cover_path = COSUPlayerHelper::GetAlbumCover(m_path + GetCurrentFileName());
+        m_album_cover_path = COSUPlayerHelper::GetAlbumCover(GetCurrentFilePath());
         if (m_album_cover_path.empty())
             m_album_cover_path = theApp.m_nc_setting_data.default_osu_img;
     }
     else
     {
-        m_album_cover_path = GetRelatedAlbumCover(m_path + GetCurrentFileName(), GetCurrentSongInfo());
+        m_album_cover_path = GetRelatedAlbumCover(GetCurrentFilePath(), GetCurrentSongInfo());
     }
     if (!m_album_cover.IsNull())
         m_album_cover.Destroy();

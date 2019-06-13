@@ -1509,14 +1509,16 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             }
             if (GetKeyState(VK_SHIFT) & 0x8000)
             {
-//				//按下Ctrl + Shift键时
-//#ifdef _DEBUG
-//				if (pMsg->wParam == 'Z')
-//				{
-//					CTest::Test();
-//					return TRUE;
-//				}
-//#endif
+				//按下Ctrl + Shift键时
+#ifdef _DEBUG
+				if (pMsg->wParam == 'Z')
+				{
+                    vector<wstring> files;
+                    files.push_back(L"D:\\Music\\纯音乐\\[.que] - Decide.mp3");
+                    files.push_back(L"D:\\Music\\小冰\\小冰 - 24小时之歌.mp3");
+                    CPlayer::GetInstance().OpenFiles(files, false);
+                }
+#endif
             }
         }
         else
