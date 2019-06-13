@@ -202,6 +202,7 @@ void CPlayer::Create(const vector<wstring>& files)
     {
         index = file.find_last_of(L'\\');
         song_info.file_name = file.substr(index + 1);
+        song_info.file_path = file;
         m_playlist.push_back(song_info);
     }
     IniPlayList(true);
@@ -275,15 +276,16 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         if (!pInfo->refresh_info)
         {
             wstring file_name{ pInfo->player->m_playlist[i].file_name };
-            auto iter = theApp.m_song_data.find(pInfo->player->m_path + pInfo->player->m_playlist[i].file_name);
+            auto iter = theApp.m_song_data.find(pInfo->player->m_playlist[i].file_path);
             if (iter != theApp.m_song_data.end())		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
             {
                 pInfo->player->m_playlist[i] = iter->second;
                 pInfo->player->m_playlist[i].file_name = file_name;
+                pInfo->player->m_playlist[i].file_path = iter->first;
                 continue;
             }
         }
-        wstring file_path{ pInfo->player->m_path + pInfo->player->m_playlist[i].file_name };
+        wstring file_path{ pInfo->player->m_playlist[i].file_path };
         HSTREAM hStream;
         hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
         pInfo->player->AcquireSongInfo(hStream, file_path, pInfo->player->m_playlist[i], pInfo->player->m_is_ous_folder);
@@ -1198,6 +1200,14 @@ int CPlayer::GetSongNum() const
     return static_cast<int>(m_playlist.size());
 }
 
+wstring CPlayer::GetCurrentFilePath() const
+{
+    if (m_index >= 0 && m_index < GetSongNum())
+        return m_playlist[m_index].file_path;
+    else
+        return wstring();
+}
+
 wstring CPlayer::GetFileName() const
 {
     return (GetCurrentFileName().empty() ? CCommon::LoadText(IDS_FILE_NOT_FOUND).GetString() : GetCurrentFileName());
@@ -1811,15 +1821,15 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInf
 void CPlayer::SearchOutAlbumCover()
 {
     if (m_is_ous_folder)
-	{
-		m_album_cover_path = COSUPlayerHelper::GetAlbumCover(m_path + GetCurrentFileName());
-		if (m_album_cover_path.empty())
-			m_album_cover_path = theApp.m_nc_setting_data.default_osu_img;
-	}
+    {
+        m_album_cover_path = COSUPlayerHelper::GetAlbumCover(m_path + GetCurrentFileName());
+        if (m_album_cover_path.empty())
+            m_album_cover_path = theApp.m_nc_setting_data.default_osu_img;
+    }
     else
-	{
-		m_album_cover_path = GetRelatedAlbumCover(m_path + GetCurrentFileName(), GetCurrentSongInfo());
-	}
+    {
+        m_album_cover_path = GetRelatedAlbumCover(m_path + GetCurrentFileName(), GetCurrentSongInfo());
+    }
     if (!m_album_cover.IsNull())
         m_album_cover.Destroy();
     m_album_cover.Load(m_album_cover_path.c_str());

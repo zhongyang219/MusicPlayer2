@@ -208,7 +208,7 @@ public:
 	Time GetAllSongLength(int track) const;				//获取指定序号的歌曲的长度
 	int GetSongNum() const;			//获取歌曲总数
 	const wstring& GetCurrentDir() const { return m_path; }	//获取当前目录
-	wstring GetCurrentFilePath() const { return m_path + GetCurrentFileName(); }		//获取正在播放文件的路径
+    wstring GetCurrentFilePath() const;		//获取正在播放文件的路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号
 	wstring GetFileName() const;
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
