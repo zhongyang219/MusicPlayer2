@@ -185,7 +185,6 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     IniPlayList();	//初始化播放列表
-    //EmplaceCurrentPathToRecent();
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 }
 
@@ -206,7 +205,6 @@ void CPlayer::Create(const vector<wstring>& files)
         m_playlist.push_back(song_info);
     }
     IniPlayList(true);
-    //EmplaceCurrentPathToRecent();
     m_current_position_int = 0;
     m_current_position = { 0, 0, 0 };
     m_index = 0;
@@ -218,8 +216,6 @@ void CPlayer::Create(const wstring& path)
     IniBASS();
     LoadConfig();
     LoadRecentPath();
-    //IniPlayList();	//初始化播放列表
-    //EmplaceCurrentPathToRecent();
     OpenFolder(path);
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 }
@@ -980,7 +976,6 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     m_current_position = { 0, 0, 0 };
     m_index = 0;
     //}
-    //EmplaceCurrentPathToRecent();
     SongInfo song_info;
     for (const auto& file : files)
     {
@@ -1505,7 +1500,7 @@ void CPlayer::OnExit()
 {
     SaveConfig();
     //退出时保存最后播放的曲目和位置
-    if (!m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_name.empty())
+    if (!m_from_playlist && !m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_name.empty())
     {
         m_recent_path[0].track = m_index;
         m_recent_path[0].position = m_current_position_int;
@@ -1580,6 +1575,9 @@ void CPlayer::LoadRecentPath()
 
 void CPlayer::EmplaceCurrentPathToRecent()
 {
+    if (m_from_playlist)
+        return;
+
     for (size_t i{ 0 }; i < m_recent_path.size(); i++)
     {
         if (m_path == m_recent_path[i].path)
