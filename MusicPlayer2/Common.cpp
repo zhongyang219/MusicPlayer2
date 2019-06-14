@@ -52,6 +52,16 @@ bool CCommon::IsFolder(const wstring& path)
 	return (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
+void CCommon::DeleteStringBom(string & str)
+{
+    //去掉utf8的BOM
+    if (str.size() >= 3 && str.substr(0, 3) == string{ '\xef', '\xbb', '\xbf' })
+        str = str.substr(3);
+    //去掉utf16的BOM
+    if (str.size() >= 2 && str.substr(0, 2) == string{ '\xff', '\xfe' })
+        str = str.substr(2);
+}
+
 //bool CCommon::FileIsMidi(const wstring & file_name)
 //{
 //	wstring type;

@@ -305,4 +305,5 @@ public:
     afx_msg void OnDockedPlaylist();
     afx_msg void OnFloatedPlaylist();
     afx_msg LRESULT OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnFileOpenPalylist();
 };

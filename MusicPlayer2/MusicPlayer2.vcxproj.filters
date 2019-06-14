@@ -222,6 +222,9 @@
     <Filter Include="功能逻辑类\OSUPlayerHelper">
       <UniqueIdentifier>{67a4bb32-a0f9-40a1-a79c-e0893ec380af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\Playlist">
+      <UniqueIdentifier>{24b3ec04-656b-465e-a1b5-1e1ba58253bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -478,6 +481,9 @@
     <ClInclude Include="COSUPlayerHelper.h">
       <Filter>功能逻辑类\OSUPlayerHelper</Filter>
     </ClInclude>
+    <ClInclude Include="Playlist.h">
+      <Filter>功能逻辑类\Playlist</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -707,6 +713,9 @@
     </ClCompile>
     <ClCompile Include="COSUPlayerHelper.cpp">
       <Filter>功能逻辑类\OSUPlayerHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="Playlist.cpp">
+      <Filter>功能逻辑类\Playlist</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

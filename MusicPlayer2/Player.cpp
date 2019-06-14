@@ -228,6 +228,7 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
 {
     if (!m_loading)
     {
+        m_from_playlist = cmd_para;
         m_is_ous_folder = !cmd_para && COSUPlayerHelper::IsOsuFolder(m_path);
         if (!cmd_para)
         {
@@ -971,14 +972,14 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     wstring path;
     index = files[0].find_last_of(L'\\');
     path = files[0].substr(0, index + 1);		//获取路径
-    if (path != m_path)		//如果打开的文件在新的路径中，就清除播放列表，否则，在原有列表中添加
-    {
-        m_path = path;
-        m_playlist.clear();
-        m_current_position_int = 0;
-        m_current_position = { 0, 0, 0 };
-        m_index = 0;
-    }
+    //if (path != m_path)		//如果打开的文件在新的路径中，就清除播放列表，否则，在原有列表中添加
+    //{
+    m_path = path;
+    m_playlist.clear();
+    m_current_position_int = 0;
+    m_current_position = { 0, 0, 0 };
+    m_index = 0;
+    //}
     //EmplaceCurrentPathToRecent();
     SongInfo song_info;
     for (const auto& file : files)
@@ -1199,6 +1200,21 @@ Time CPlayer::GetAllSongLength(int track) const
 int CPlayer::GetSongNum() const
 {
     return static_cast<int>(m_playlist.size());
+}
+
+wstring CPlayer::GetCurrentDir() const
+{
+    wstring current_file_path = GetCurrentFilePath();
+    CFilePathHelper path_helper(current_file_path);
+    return path_helper.GetDir();
+}
+
+wstring CPlayer::GetPlaylistName() const
+{
+    if (m_from_playlist)
+        return L"Playlist";
+    else
+        return m_path;
 }
 
 wstring CPlayer::GetCurrentFilePath() const

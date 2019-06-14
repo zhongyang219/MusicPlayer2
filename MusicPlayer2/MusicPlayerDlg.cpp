@@ -13,6 +13,7 @@
 #include "CTest.h"
 #include "CListenTimeStatisticsDlg.h"
 #include "CFloatPlaylistDlg.h"
+#include "Playlist.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -179,6 +180,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DOCKED_PLAYLIST, &CMusicPlayerDlg::OnDockedPlaylist)
     ON_COMMAND(ID_FLOATED_PLAYLIST, &CMusicPlayerDlg::OnFloatedPlaylist)
     ON_MESSAGE(WM_FLOAT_PLAYLIST_CLOSED, &CMusicPlayerDlg::OnFloatPlaylistClosed)
+    ON_COMMAND(ID_FILE_OPEN_PALYLIST, &CMusicPlayerDlg::OnFileOpenPalylist)
 END_MESSAGE_MAP()
 
 
@@ -454,7 +456,7 @@ void CMusicPlayerDlg::ShowPlayList()
     //设置播放列表中突出显示的项目
     SetPlayListColor();
     //显示当前路径
-    m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentDir().c_str());
+    m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetPlaylistName().c_str());
 
     if (m_miniModeDlg.m_hWnd != NULL)
     {
@@ -3350,4 +3352,21 @@ LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
     }
 
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnFileOpenPalylist()
+{
+    //设置过滤器
+    CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILTER);
+    //构造打开文件对话框
+    CFileDialog fileDlg(TRUE, _T("txt"), NULL, 0, szFilter, this);
+    //显示打开文件对话框
+    if (IDOK == fileDlg.DoModal())
+    {
+        CPlaylist playlist;
+        playlist.LoadFromFile(wstring(fileDlg.GetPathName()));
+        CPlayer::GetInstance().OpenFiles(playlist.GetPlaylist(), false);
+    }
+
 }

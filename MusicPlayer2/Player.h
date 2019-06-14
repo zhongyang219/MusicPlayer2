@@ -122,6 +122,8 @@ private:
 
 	vector<int> m_shuffle_list;			//储存随机播放过的曲目序号
 
+    bool m_from_playlist{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
+
 private:
 	void IniBASS();			//初始化BASS音频库
 	void UnInitBASS();
@@ -207,7 +209,8 @@ public:
 	vector<SongInfo>& GetPlayList() { return m_playlist; }	//获取播放列表的引用
 	Time GetAllSongLength(int track) const;				//获取指定序号的歌曲的长度
 	int GetSongNum() const;			//获取歌曲总数
-	const wstring& GetCurrentDir() const { return m_path; }	//获取当前目录
+    wstring GetCurrentDir() const;   	//获取当前目录
+    wstring GetPlaylistName() const;
     wstring GetCurrentFilePath() const;		//获取正在播放文件的路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号
 	wstring GetFileName() const;
@@ -272,5 +275,6 @@ public:
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
 	wstring GetCurrentFileType() { return m_current_file_type; }
 	bool IsOsuFolder() const { return m_is_ous_folder; }
+    bool IsFromPlaylist() const { return m_from_playlist; }
 };
 

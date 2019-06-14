@@ -66,6 +66,9 @@ public:
 	template<class T>
 	static bool StringNormalize(T& str);
 
+    //É¾³ý×Ö·û´®Ç°ÃæµÄbom
+    static void DeleteStringBom(string& str);
+
 	//É¾³ý×Ö·û´®Ä©Î²µÄ¿Õ¸ñ
 	template<class T>
 	static bool DeleteEndSpace(T& str);

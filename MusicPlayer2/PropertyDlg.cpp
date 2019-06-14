@@ -28,7 +28,7 @@ void CPropertyDlg::ShowInfo()
 	m_file_name_edit.SetWindowText(m_all_song_info[m_index].file_name.c_str());
 
 	//显示文件路径
-	m_file_path_edit.SetWindowText((m_path + m_all_song_info[m_index].file_name).c_str());
+	m_file_path_edit.SetWindowText((m_all_song_info[m_index].file_path).c_str());
 
 	//显示文件类型
 	wstring file_type;
@@ -60,7 +60,7 @@ void CPropertyDlg::ShowInfo()
 
 	//显示文件大小
 	size_t file_size;
-	file_size = CCommon::GetFileSize(m_path + m_all_song_info[m_index].file_name);
+	file_size = CCommon::GetFileSize(m_all_song_info[m_index].file_path);
 	CString size_info;
 	if (file_size < 1024)
 		size_info.Format(_T("%u B"), file_size);
