@@ -59,9 +59,6 @@
     <Filter Include="对话框类\PropertyDlg">
       <UniqueIdentifier>{c63ff3fd-416b-44ea-a7f9-460ae199d15b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="对话框类\SetPathDlg">
-      <UniqueIdentifier>{a3ab564f-8af7-4267-a854-05b454587203}</UniqueIdentifier>
-    </Filter>
     <Filter Include="对话框类\Sound Effect Dialog">
       <UniqueIdentifier>{e5a2c7ae-76de-47b5-9625-8a36cf5a9b49}</UniqueIdentifier>
     </Filter>
@@ -225,6 +222,9 @@
     <Filter Include="功能逻辑类\Playlist">
       <UniqueIdentifier>{24b3ec04-656b-465e-a1b5-1e1ba58253bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\媒体库对话框">
+      <UniqueIdentifier>{a3ab564f-8af7-4267-a854-05b454587203}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -260,7 +260,7 @@
       <Filter>对话框类\PropertyDlg</Filter>
     </ClInclude>
     <ClInclude Include="SetPathDlg.h">
-      <Filter>对话框类\SetPathDlg</Filter>
+      <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
     <ClInclude Include="SoundEffectDlg.h">
       <Filter>对话框类\Sound Effect Dialog</Filter>
@@ -484,6 +484,12 @@
     <ClInclude Include="Playlist.h">
       <Filter>功能逻辑类\Playlist</Filter>
     </ClInclude>
+    <ClInclude Include="CMediaLibDlg.h">
+      <Filter>对话框类\媒体库对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="CSelectPlaylist.h">
+      <Filter>对话框类\媒体库对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -502,7 +508,7 @@
       <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
     <ClCompile Include="SetPathDlg.cpp">
-      <Filter>对话框类\SetPathDlg</Filter>
+      <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
     <ClCompile Include="SoundEffectDlg.cpp">
       <Filter>对话框类\Sound Effect Dialog</Filter>
@@ -716,6 +722,12 @@
     </ClCompile>
     <ClCompile Include="Playlist.cpp">
       <Filter>功能逻辑类\Playlist</Filter>
+    </ClCompile>
+    <ClCompile Include="CMediaLibDlg.cpp">
+      <Filter>对话框类\媒体库对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="CSelectPlaylist.cpp">
+      <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

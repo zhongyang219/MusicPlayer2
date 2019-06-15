@@ -4,16 +4,17 @@
 #include "AudioCommon.h"
 #include "afxcmn.h"
 #include "ListCtrlEx.h"
+#include "TabDlg.h"
 
 // CSetPathDlg 对话框
 #define WM_PATH_SELECTED (WM_USER+107)
 
-class CSetPathDlg : public CDialog
+class CSetPathDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CSetPathDlg)
 
 public:
-	CSetPathDlg(deque<PathInfo>& recent_path, wstring current_path, CWnd* pParent = NULL);   // 标准构造函数
+	CSetPathDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CSetPathDlg();
 
 // 对话框数据
@@ -27,7 +28,6 @@ public:
 protected:
 	deque<PathInfo>& m_recent_path;		//最近打开过的路径
 	int m_path_selected{};		//选择的路径
-	wstring m_current_path;
 
 	CEdit m_path_name;
 	CListCtrlEx m_path_list;
@@ -66,7 +66,7 @@ public:
 	afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	virtual void OnCancel();
+	//virtual void OnCancel();
 	virtual void OnOK();
 	afx_msg void OnBnClickedOpenFolder();
 	afx_msg void OnPlayPath();

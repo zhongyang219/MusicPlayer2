@@ -35,7 +35,7 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
 {
     CCommon::DeleteModelessDialog(m_pLyricEdit);
     CCommon::DeleteModelessDialog(m_pLyricBatchDownDlg);
-    CCommon::DeleteModelessDialog(m_pSetPathDlg);
+    //CCommon::DeleteModelessDialog(m_pSetPathDlg);
     CCommon::DeleteModelessDialog(m_pSoundEffecDlg);
     CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
@@ -1351,19 +1351,24 @@ void CMusicPlayerDlg::OnFF()
 
 void CMusicPlayerDlg::OnSetPath()
 {
-    // TODO: 在此添加命令处理程序代码
-    CCommon::DeleteModelessDialog(m_pSetPathDlg);
-    m_pSetPathDlg = new CSetPathDlg(CPlayer::GetInstance().GetRecentPath(), CPlayer::GetInstance().GetCurrentDir());
-    m_pSetPathDlg->Create(IDD_SET_PATH_DIALOG);
-    m_pSetPathDlg->ShowWindow(SW_SHOW);
+    static bool dialog_exist{ false };
+
+    if (!dialog_exist)		//确保对话框已经存在时不再弹出
+    {
+        dialog_exist = true;
+        CMediaLibDlg media_lib_dlg;
+        media_lib_dlg.DoModal();
+        dialog_exist = false;
+    }
 }
 
 
 afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
 {
-    if (m_pSetPathDlg != nullptr)
+    CSetPathDlg* pPathDlg = (CSetPathDlg*)wParam;
+    if (pPathDlg != nullptr)
     {
-        CPlayer::GetInstance().SetPath(m_pSetPathDlg->GetSelPath(), m_pSetPathDlg->GetTrack(), m_pSetPathDlg->GetPosition(), m_pSetPathDlg->GetSortMode());
+        CPlayer::GetInstance().SetPath(pPathDlg->GetSelPath(), pPathDlg->GetTrack(), pPathDlg->GetPosition(), pPathDlg->GetSortMode());
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
         //ShowTime();

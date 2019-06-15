@@ -75,6 +75,8 @@ using std::map;
 
 #include <afxinet.h>	//用于支持使用网络相关的类
 #include <afxwin.h>
+#include <afxwin.h>
+#include <afxwin.h>
 
 
 

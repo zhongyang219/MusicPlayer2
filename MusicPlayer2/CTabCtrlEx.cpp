@@ -51,9 +51,31 @@ void CTabCtrlEx::SetCurTab(int index)
 	}
 }
 
+CWnd* CTabCtrlEx::GetCurrentTab()
+{
+    int cur_tab_index = GetCurSel();
+    if (cur_tab_index >= 0 && cur_tab_index < m_tab_list.size())
+    {
+        return m_tab_list[cur_tab_index];
+    }
+    return nullptr;
+}
+
+void CTabCtrlEx::CalSubWindowSize()
+{
+    GetClientRect(m_tab_rect);
+    CRect rcTabItem;
+    GetItemRect(0, rcTabItem);
+    m_tab_rect.top += rcTabItem.Height() + 4;
+    m_tab_rect.left += 4;
+    m_tab_rect.bottom -= 4;
+    m_tab_rect.right -= 4;
+}
+
 
 BEGIN_MESSAGE_MAP(CTabCtrlEx, CTabCtrl)
 	ON_NOTIFY_REFLECT(TCN_SELCHANGE, &CTabCtrlEx::OnTcnSelchange)
+    ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -78,13 +100,20 @@ void CTabCtrlEx::PreSubclassWindow()
 	// TODO: 在此添加专用代码和/或调用基类
 
 	//计算子窗口的位置
-	GetClientRect(m_tab_rect);
-	CRect rcTabItem;
-	GetItemRect(0, rcTabItem);
-	m_tab_rect.top += rcTabItem.Height() + 4;
-	m_tab_rect.left += 4;
-	m_tab_rect.bottom -= 4;
-	m_tab_rect.right -= 4;
+    CalSubWindowSize();
 
 	CTabCtrl::PreSubclassWindow();
+}
+
+
+void CTabCtrlEx::OnSize(UINT nType, int cx, int cy)
+{
+    CTabCtrl::OnSize(nType, cx, cy);
+
+    // TODO: 在此处添加消息处理程序代码
+    CalSubWindowSize();
+    for (size_t i{}; i < m_tab_list.size(); i++)
+    {
+        m_tab_list[i]->MoveWindow(m_tab_rect);
+    }
 }

@@ -9,10 +9,10 @@
 
 // CSetPathDlg 对话框
 
-IMPLEMENT_DYNAMIC(CSetPathDlg, CDialog)
+IMPLEMENT_DYNAMIC(CSetPathDlg, CTabDlg)
 
-CSetPathDlg::CSetPathDlg(deque<PathInfo>& recent_path, wstring current_path, CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_SET_PATH_DIALOG, pParent), m_recent_path(recent_path), m_current_path(current_path)
+CSetPathDlg::CSetPathDlg(CWnd* pParent /*=NULL*/)
+	: CTabDlg(IDD_SET_PATH_DIALOG, pParent), m_recent_path(CPlayer::GetInstance().GetRecentPath())
 {
 
 }
@@ -82,7 +82,7 @@ void CSetPathDlg::ShowPathList()
 
 void CSetPathDlg::SetButtonsEnable(bool enable)
 {
-	GetDlgItem(IDOK)->EnableWindow(enable);
+	//GetDlgItem(IDOK)->EnableWindow(enable);
 	//GetDlgItem(IDC_DELETE_PATH_BUTTON)->EnableWindow(enable);
 }
 
@@ -124,7 +124,7 @@ bool CSetPathDlg::IsSelectedPlayEnable() const
 
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CTabDlg::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PATH_EDIT, m_path_name);
 	//DDX_Control(pDX, IDC_LIST1, m_path_list);
 	DDX_Control(pDX, IDC_PATH_LIST, m_path_list);
@@ -169,7 +169,7 @@ bool CSetPathDlg::SelectValid() const
 }
 
 
-BEGIN_MESSAGE_MAP(CSetPathDlg, CDialog)
+BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
 //	ON_LBN_SELCHANGE(IDC_LIST1, &CSetPathDlg::OnLbnSelchangeList1)
 	ON_WM_DESTROY()
 	//ON_BN_CLICKED(IDC_DELETE_PATH_BUTTON, &CSetPathDlg::OnBnClickedDeletePathButton)
@@ -194,12 +194,12 @@ END_MESSAGE_MAP()
 
 BOOL CSetPathDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 	CenterWindow();
 
-	m_path_name.SetWindowText(m_current_path.c_str());
+	m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 
@@ -257,7 +257,7 @@ BOOL CSetPathDlg::OnInitDialog()
 
 void CSetPathDlg::OnDestroy()
 {
-	CDialog::OnDestroy();
+	CTabDlg::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
 	//m_path_selected = m_path_list.GetCurSel();
@@ -284,7 +284,7 @@ void CSetPathDlg::OnDestroy()
 //		OnCancel();		//点击了“打开新路径”按钮后关闭设置路径对话框
 //	}
 //
-//	return CDialog::OnCommand(wParam, lParam);
+//	return CTabDlg::OnCommand(wParam, lParam);
 //}
 
 
@@ -356,13 +356,13 @@ void CSetPathDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
 	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
 
-	CDialog::OnGetMinMaxInfo(lpMMI);
+	CTabDlg::OnGetMinMaxInfo(lpMMI);
 }
 
 
 void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 {
-	CDialog::OnSize(nType, cx, cy);
+	CTabDlg::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
 	if (nType != SIZE_MINIMIZED && m_path_list.m_hWnd)
@@ -376,21 +376,29 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 }
 
 
-void CSetPathDlg::OnCancel()
-{
-	// TODO: 在此添加专用代码和/或调用基类
-	DestroyWindow();
-
-	//CDialog::OnCancel();
-}
+//void CSetPathDlg::OnCancel()
+//{
+//	// TODO: 在此添加专用代码和/或调用基类
+//	DestroyWindow();
+//
+//	//CTabDlg::OnCancel();
+//}
 
 
 void CSetPathDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	if (SelectValid())
-		::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(),WM_PATH_SELECTED, 0, 0);
-	CDialog::OnOK();
+		::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(),WM_PATH_SELECTED, (WPARAM)this, 0);
+	CTabDlg::OnOK();
+
+    CWnd* pParent = GetParent();
+    if (pParent != nullptr)
+    {
+        pParent = pParent->GetParent();
+        if(pParent!=nullptr)
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+    }
 }
 
 
@@ -399,6 +407,14 @@ void CSetPathDlg::OnBnClickedOpenFolder()
 	// TODO: 在此添加控件通知处理程序代码
 	::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_COMMAND, ID_FILE_OPEN_FOLDER, 0);
 	OnCancel();			//点击了“打开新路径”按钮后关闭设置路径对话框
+    CWnd* pParent = GetParent();
+    if (pParent != nullptr)
+    {
+        pParent = pParent->GetParent();
+        if (pParent != nullptr)
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+    }
+
 }
 
 
@@ -452,7 +468,7 @@ void CSetPathDlg::OnClearInvalidPath()
 
 void CSetPathDlg::OnInitMenu(CMenu* pMenu)
 {
-	CDialog::OnInitMenu(pMenu);
+	CTabDlg::OnInitMenu(pMenu);
 
 	// TODO: 在此处添加消息处理程序代码
 	bool select_valid{ SelectValid() };
@@ -465,7 +481,7 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
 void CSetPathDlg::OnEnChangeSearchEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CTabDlg::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -507,5 +523,5 @@ BOOL CSetPathDlg::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_Mytip.RelayEvent(pMsg);
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CTabDlg::PreTranslateMessage(pMsg);
 }
