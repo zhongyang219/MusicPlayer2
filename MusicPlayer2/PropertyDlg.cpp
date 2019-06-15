@@ -92,16 +92,16 @@ void CPropertyDlg::ShowInfo()
 
 	//显示音频信息
 	//CString info;
-	m_title_edit.SetWindowText(m_all_song_info[m_index].title.c_str());
-	m_artist_edit.SetWindowText(m_all_song_info[m_index].artist.c_str());
-	m_album_edit.SetWindowText(m_all_song_info[m_index].album.c_str());
-	m_year_edit.SetWindowText(m_all_song_info[m_index].year.c_str());
+	m_title_edit.SetWindowText(m_all_song_info[m_index].GetTitle().c_str());
+	m_artist_edit.SetWindowText(m_all_song_info[m_index].GetArtist().c_str());
+	m_album_edit.SetWindowText(m_all_song_info[m_index].GetAlbum().c_str());
+	m_year_edit.SetWindowText(m_all_song_info[m_index].GetYear().c_str());
 	if (m_all_song_info[m_index].track != 0)
-		info.Format(_T("%u"), m_all_song_info[m_index].track);
+		info.Format(_T("%d"), m_all_song_info[m_index].track);
 	else
 		info = _T("");
 	m_track_edit.SetWindowText(info);
-	m_genre_combo.SetWindowText(m_all_song_info[m_index].genre.c_str());
+	m_genre_combo.SetWindowText(m_all_song_info[m_index].GetGenre().c_str());
 	m_comment_edit.SetWindowText(m_all_song_info[m_index].comment.c_str());
 
 	//显示标签类型

@@ -66,7 +66,16 @@ void COSUPlayerHelper::GetOSUAudioTitleArtist(SongInfo & song_info)
         COSUFile osu_file{ (song_folder + osu_list.front()).c_str() };
         song_info.artist = osu_file.GetArtist();
         song_info.title = osu_file.GetTitle();
-        song_info.track = _wtoi(osu_file.GetBeatampSetId().c_str());
+        song_info.album = osu_file.GetAlbum();
+
+        wstring id = osu_file.GetBeatampSetId();
+        if (id.empty())
+        {
+            wstring folder_name = file_path.GetFolderName();
+            size_t index = folder_name.find(L' ');
+            id = folder_name.substr(0, index);
+        }
+        song_info.track = _wtoi(id.c_str());
     }
 }
 
@@ -116,6 +125,11 @@ void COSUPlayerHelper::GetOSUFile(wstring folder_path)
 ////////////////////////////////////////////////////////////////////////////
 COSUFile::COSUFile(const wchar_t * file_path)
 {
+    CFilePathHelper file_path_helper{ file_path };
+    wstring ext = file_path_helper.GetFileExtension();
+    if (ext != L"osu")
+        return;
+
     CCommon::GetFileContent(file_path, m_data, false);
     if (m_data.empty())
         return;
@@ -144,6 +158,11 @@ wstring COSUFile::GetTitle()
     if (artist.empty())
         artist = GetTagItem("Title:", m_metadata_seg);
     return artist;
+}
+
+wstring COSUFile::GetAlbum()
+{
+    return GetTagItem("Source:", m_metadata_seg);
 }
 
 wstring COSUFile::GetBeatampSetId()

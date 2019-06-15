@@ -24,6 +24,7 @@ public:
     wstring GetAudioFile();
     wstring GetArtist();
     wstring GetTitle();
+    wstring GetAlbum();
     wstring GetBeatampSetId();
 
 private:

@@ -334,19 +334,24 @@ inline bool CCommon::StringTransform(T & str, bool upper)
 	//	std::transform(str.begin(), str.end(), str.begin(), toupper);
 	//else
 	//	std::transform(str.begin(), str.end(), str.begin(), tolower);
-	for (auto& ch : str)
-	{
-		if (upper)
-		{
-			if (ch >= 'a'&&ch <= 'z')
-				ch -= 32;
-		}
-		else
-		{
-			if (ch >= 'A'&&ch <= 'Z')
-				ch += 32;
-		}
-	}
+    if (upper)
+    {
+	    for (auto& ch : str)
+	    {
+		    {
+			    if (ch >= 'a'&&ch <= 'z')
+				    ch -= 32;
+		    }
+	    }
+    }
+    else
+    {
+        for (auto& ch : str)
+        {
+            if (ch >= 'A'&&ch <= 'Z')
+                ch += 32;
+        }
+    }
 	return true;
 }
 

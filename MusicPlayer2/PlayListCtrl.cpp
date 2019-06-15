@@ -223,15 +223,15 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				str_tip += _T("\r\n");
 
 				str_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
-				str_tip += m_all_song_info[song_index].title.c_str();
+				str_tip += m_all_song_info[song_index].GetTitle().c_str();
 				str_tip += _T("\r\n");
 
 				str_tip += CCommon::LoadText(IDS_ARTIST, _T(": "));
-				str_tip += m_all_song_info[song_index].artist.c_str();
+				str_tip += m_all_song_info[song_index].GetArtist().c_str();
 				str_tip += _T("\r\n");
 
 				str_tip += CCommon::LoadText(IDS_ALBUM, _T(": "));
-				str_tip += m_all_song_info[song_index].album.c_str();
+				str_tip += m_all_song_info[song_index].GetAlbum().c_str();
 				str_tip += _T("\r\n");
 
 				CString str_bitrate;
