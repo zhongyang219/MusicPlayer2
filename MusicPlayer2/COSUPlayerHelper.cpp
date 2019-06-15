@@ -175,7 +175,7 @@ void COSUFile::GetTag(const string & tag, string & tag_content)
     size_t start{}, end{};
     start = m_data.find(tag);
     if (start != string::npos)
-        end = m_data.find('[', start + tag.size());
+        end = m_data.find("\n[", start + tag.size());
 
     tag_content = m_data.substr(start, end - start);
 
