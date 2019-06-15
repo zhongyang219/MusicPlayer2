@@ -18,6 +18,7 @@ void CTest::Test()
     //TestCrash();
     //TestShortCut();
     //TestCommon();
+    //TestOSUFile();
 }
 
 void CTest::TestStringMatch()
@@ -68,4 +69,12 @@ void CTest::TestCommon()
         COSUPlayerHelper::GetOSUAudioTitleArtist(songs[0]);
 
     int a = 0;
+}
+
+void CTest::TestOSUFile()
+{
+    COSUFile osu_file{ L"D:\\Program Files\\osu!\\Songs\\66385 u's - Snow halation\\u's - Snow halation (blissfulyoshi) [Insane].osu" };
+    wstring file_name = osu_file.GetAudioFile();
+    int a = 0;
+
 }

@@ -40,12 +40,15 @@ void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<SongInfo>& files)
         if(folder_name == L"." || folder_name == L"..")
             continue;
 
-        std::vector<wstring> mp3_list;
-        CCommon::GetFiles(path + folder_name + L"\\*.mp3", mp3_list);
-        for(const auto& mp3_file : mp3_list)
+        std::vector<wstring> osu_list;
+        CCommon::GetFiles(path + folder_name + L"\\*.osu", osu_list);
+        if(!osu_list.empty())
         {
+            COSUFile osu_file{ (path + folder_name + L"\\" + osu_list.front()).c_str() };
             SongInfo song_info;
-            song_info.file_name = folder_name + L"\\" + mp3_file;
+            song_info.file_name = osu_file.GetAudioFile();
+            song_info.file_path = path + folder_name + L"\\" + song_info.file_name;
+            song_info.is_osu_file = true;
             files.push_back(song_info);
         }
     }
@@ -53,16 +56,18 @@ void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<SongInfo>& files)
 
 void COSUPlayerHelper::GetOSUAudioTitleArtist(SongInfo & song_info)
 {
-    size_t index1 = song_info.file_name.find(L' ');
-    size_t index2 = song_info.file_name.find(L" - ");
-    size_t index3 = song_info.file_name.find_first_of(L"\\/");
-    if (index1 < index2)
-        song_info.artist = song_info.file_name.substr(index1 + 1, index2 - index1 - 1);
-    if (index2 < index3)
-        song_info.title = song_info.file_name.substr(index2 + 3, index3 - index2 - 3);
-	wstring song_index = song_info.file_name.substr(0, index1);
-	if (CCommon::StrIsNumber(song_index))
-		song_info.track = _wtoi(song_index.c_str());
+    CFilePathHelper file_path{ song_info.file_path };
+    wstring song_folder = file_path.GetDir();
+
+    std::vector<wstring> osu_list;
+    CCommon::GetFiles(song_folder + L"*.osu", osu_list);
+    if (!osu_list.empty())
+    {
+        COSUFile osu_file{ (song_folder + osu_list.front()).c_str() };
+        song_info.artist = osu_file.GetArtist();
+        song_info.title = osu_file.GetTitle();
+        song_info.track = _wtoi(osu_file.GetBeatampSetId().c_str());
+    }
 }
 
 wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
@@ -100,5 +105,72 @@ wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
 		}
 	}
 
+    return wstring();
+}
+
+void COSUPlayerHelper::GetOSUFile(wstring folder_path)
+{
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+COSUFile::COSUFile(const wchar_t * file_path)
+{
+    CCommon::GetFileContent(file_path, m_data, false);
+    if (m_data.empty())
+        return;
+
+    GetTag("[General]", m_general_seg);
+    GetTag("[Metadata]", m_metadata_seg);
+
+}
+
+wstring COSUFile::GetAudioFile()
+{
+    return GetTagItem("AudioFilename:", m_general_seg);
+}
+
+wstring COSUFile::GetArtist()
+{
+    wstring artist = GetTagItem("ArtistUnicode:", m_metadata_seg);
+    if(artist.empty())
+        artist = GetTagItem("Artist:", m_metadata_seg);
+    return artist;
+}
+
+wstring COSUFile::GetTitle()
+{
+    wstring artist = GetTagItem("TitleUnicode:", m_metadata_seg);
+    if (artist.empty())
+        artist = GetTagItem("Title:", m_metadata_seg);
+    return artist;
+}
+
+wstring COSUFile::GetBeatampSetId()
+{
+    return GetTagItem("BeatmapSetID:", m_metadata_seg);
+}
+
+void COSUFile::GetTag(const string & tag, string & tag_content)
+{
+    size_t start{}, end{};
+    start = m_data.find(tag);
+    if (start != string::npos)
+        end = m_data.find('[', start + tag.size());
+
+    tag_content = m_data.substr(start, end - start);
+
+}
+
+wstring COSUFile::GetTagItem(const string & tag, const string & tag_content)
+{
+    size_t start = tag_content.find(tag);
+    if (start != string::npos)
+    {
+        size_t end = tag_content.find('\n', start + 1);
+        string file_name = tag_content.substr(start + tag.size(), end - start - tag.size());
+        CCommon::StringNormalize(file_name);
+        return CCommon::StrToUnicode(file_name, CodeType::UTF8);
+    }
     return wstring();
 }

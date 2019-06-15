@@ -41,6 +41,7 @@ struct SongInfo
     //wstring album_cover{};		//专辑封面保存的文件名
     wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     int listen_time{};			//歌曲累计听的时间（单位为秒）
+    bool is_osu_file{ false };
 
     //根据文件名的比较函数，用于以文件名排序
     static bool ByFileName(const SongInfo& a, const SongInfo& b)
@@ -80,6 +81,14 @@ struct SongInfo
         genre_idx = song_info.genre_idx;
         track = song_info.track;
         tag_type = song_info.tag_type;
+    }
+
+    void CopySongInfo(const SongInfo& song_info)
+    {
+        CopyAudioTag(song_info);
+        lengh = song_info.lengh;
+        bitrate = song_info.bitrate;
+        listen_time = song_info.listen_time;
     }
 
     bool IsTitleEmpty() const

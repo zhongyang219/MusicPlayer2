@@ -43,7 +43,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     wstring lable3_str, lable3_content;
     wstring lable4_str, lable4_content;
     lable1_str = CCommon::LoadText(IDS_TITLE, _T(": "));
-    lable1_content = CPlayer::GetInstance().GetCurrentSongInfo().title;
+    lable1_content = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
     if (CPlayer::GetInstance().IsMidi())
     {
         const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
@@ -61,9 +61,9 @@ void CPlayerUI::_DrawInfo(bool reset)
     else
     {
         lable2_str = CCommon::LoadText(IDS_ARTIST, _T(": "));
-        lable2_content = CPlayer::GetInstance().GetCurrentSongInfo().artist;
+        lable2_content = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
         lable3_str = CCommon::LoadText(IDS_ALBUM, _T(": "));
-        lable3_content = CPlayer::GetInstance().GetCurrentSongInfo().album;
+        lable3_content = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
     }
     lable4_str = CCommon::LoadText(IDS_FORMAT, _T(": "));
     const BASS_CHANNELINFO channel_info{ CPlayer::GetInstance().GetChannelInfo() };

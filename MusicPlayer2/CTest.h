@@ -14,5 +14,6 @@ private:
 	static void TestCrash();
 	static void TestShortCut();
 	static void TestCommon();
+    static void TestOSUFile();
 };
 

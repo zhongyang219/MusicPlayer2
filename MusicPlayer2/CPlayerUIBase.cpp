@@ -791,15 +791,15 @@ void CPlayerUIBase::SetSongInfoToolTipText()
     m_info_tip = CCommon::LoadText(IDS_SONG_INFO, _T(" (Ctrl+N)\r\n"));
 
     m_info_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
-    m_info_tip += songInfo.title.c_str();
+    m_info_tip += songInfo.GetTitle().c_str();
     m_info_tip += _T("\r\n");
 
     m_info_tip += CCommon::LoadText(IDS_ARTIST, _T(": "));
-    m_info_tip += songInfo.artist.c_str();
+    m_info_tip += songInfo.GetArtist().c_str();
     m_info_tip += _T("\r\n");
 
     m_info_tip += CCommon::LoadText(IDS_ALBUM, _T(": "));
-    m_info_tip += songInfo.album.c_str();
+    m_info_tip += songInfo.GetAlbum().c_str();
     //m_info_tip += _T("\r\n");
 
     //m_info_tip += CCommon::LoadText(IDS_BITRATE, _T(": "));

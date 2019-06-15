@@ -276,9 +276,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             auto iter = theApp.m_song_data.find(pInfo->player->m_playlist[i].file_path);
             if (iter != theApp.m_song_data.end())		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
             {
-                pInfo->player->m_playlist[i] = iter->second;
-                pInfo->player->m_playlist[i].file_name = file_name;
-                pInfo->player->m_playlist[i].file_path = iter->first;
+                pInfo->player->m_playlist[i].CopySongInfo(iter->second);
+                //pInfo->player->m_playlist[i] = iter->second;
+                //pInfo->player->m_playlist[i].file_name = file_name;
+                //pInfo->player->m_playlist[i].file_path = iter->first;
                 continue;
             }
         }
@@ -1164,9 +1165,9 @@ void CPlayer::ExplorePath(int track) const
     {
         CString str;
         if (track < 0)		//track小于0，打开资源管理器后选中当前播放的文件
-            str.Format(_T("/select,\"%s%s\""), m_path.c_str(), GetCurrentFileName().c_str());
+            str.Format(_T("/select,\"%s\""), GetCurrentFilePath().c_str());
         else if (track < GetSongNum())		//track为播放列表中的一个序号，打开资源管理器后选中指定的文件
-            str.Format(_T("/select,\"%s%s\""), m_path.c_str(), m_playlist[track].file_name.c_str());
+            str.Format(_T("/select,\"%s\""), m_playlist[track].file_path.c_str());
         else								//track超过播放列表中文件的数量，打开资源管理器后不选中任何文件
             str = m_path.c_str();
         ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
@@ -1215,7 +1216,12 @@ wstring CPlayer::GetPlaylistName() const
 wstring CPlayer::GetCurrentFilePath() const
 {
     if (m_index >= 0 && m_index < GetSongNum())
-        return m_playlist[m_index].file_path;
+    {
+        if (m_playlist[m_index].file_path.empty())
+            return m_path + m_playlist[m_index].file_name;
+        else
+            return m_playlist[m_index].file_path;
+    }
     else
         return wstring();
 }

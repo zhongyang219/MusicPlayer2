@@ -268,6 +268,9 @@ public:
 
 	static bool StringIsVersion(LPCTSTR str);
 
+    //读取文件内容
+    static bool GetFileContent(const wchar_t* file_path, string& contents_buff, bool binary = true, size_t max_size = 0x500000);
+
 	template<class T>
 	static T Min3(T v1, T v2, T v3)
 	{

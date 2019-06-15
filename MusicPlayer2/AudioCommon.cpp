@@ -186,6 +186,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
             SongInfo song_info{};
             song_info.album = CCommon::StrToUnicode(album_name, code_type);
             song_info.file_name = play_file_name;
+            song_info.file_path = path + play_file_name;
             song_info.bitrate = bitrate;
             song_info.is_cue = true;
             song_info.info_acquired = true;

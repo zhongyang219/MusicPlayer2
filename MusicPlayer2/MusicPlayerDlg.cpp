@@ -1962,7 +1962,6 @@ void CMusicPlayerDlg::OnItemProperty()
 {
     // TODO: 在此添加命令处理程序代码
     CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
-    propertyDlg.m_path = CPlayer::GetInstance().GetCurrentDir();
     propertyDlg.m_index = m_item_selected;
     propertyDlg.m_song_num = CPlayer::GetInstance().GetSongNum();
     //propertyDlg.m_playing_index = CPlayer::GetInstance().GetIndex();
@@ -2331,7 +2330,6 @@ void CMusicPlayerDlg::OnSongInfo()
 {
     // TODO: 在此添加命令处理程序代码
     CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
-    propertyDlg.m_path = CPlayer::GetInstance().GetCurrentDir();
     propertyDlg.m_index = CPlayer::GetInstance().GetIndex();
     propertyDlg.m_song_num = CPlayer::GetInstance().GetSongNum();
     propertyDlg.DoModal();

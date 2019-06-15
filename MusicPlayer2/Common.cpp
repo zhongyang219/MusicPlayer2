@@ -1114,3 +1114,19 @@ bool CCommon::StringIsVersion(LPCTSTR str)
 	return version_str.GetLength() == 4 && version_str[1] == _T('.') && CharIsNumber(version_str[0]) && CharIsNumber(version_str[2]) && CharIsNumber(version_str[3]);
 }
 
+bool CCommon::GetFileContent(const wchar_t * file_path, string & contents_buff, bool binary, size_t max_size)
+{
+    std::ifstream file{ file_path, (binary ? std::ios::binary : std::ios::in) };
+    if (file.fail())
+        return false;
+    contents_buff.clear();
+    while (!file.eof())
+    {
+        contents_buff.push_back(file.get());
+        if (contents_buff.size() > max_size)
+            break;
+    }
+    contents_buff.pop_back();
+    return true;
+}
+

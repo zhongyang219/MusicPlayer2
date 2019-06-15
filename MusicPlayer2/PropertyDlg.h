@@ -17,7 +17,6 @@ public:
 	CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CPropertyDlg();
 
-	wstring m_path;
 	int m_index{};		//当前显示项目的曲目序号
 	//int m_playing_index{};	//正在播放的曲目序号
 	int m_song_num;
