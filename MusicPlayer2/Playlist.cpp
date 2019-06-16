@@ -26,7 +26,9 @@ void CPlaylist::LoadFromFile(const wstring & file_path)
             current_line = current_line.substr(1);
         if (!current_line.empty() && current_line.back() == '\"')
             current_line.pop_back();
-        m_playlist.push_back(CCommon::StrToUnicode(current_line, CodeType::UTF8));
+
+        if(current_line.size()>3)
+            m_playlist.push_back(CCommon::StrToUnicode(current_line, CodeType::UTF8));
     }
 
 }

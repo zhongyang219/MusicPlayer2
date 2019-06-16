@@ -935,10 +935,10 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
 
 void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position)
 {
-    EmplaceCurrentPlaylistToRecent();
-    m_playlist.clear();
     MusicControl(Command::STOP);
     MusicControl(Command::CLOSE);
+    EmplaceCurrentPlaylistToRecent();
+    m_playlist.clear();
     CPlaylist playlist;
     playlist.LoadFromFile(playlist_path);
 
