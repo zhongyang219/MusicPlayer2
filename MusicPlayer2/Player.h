@@ -7,6 +7,7 @@
 #include "BASSMidiLibrary.h"
 //#include"MusicPlayerDlg.h"
 #include "GaussBlur.h"
+#include "PlaylistMgr.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//播放列表加载完成消息
@@ -59,10 +60,12 @@ private:
 
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
 	wstring m_path;		//当前播放文件的路径
+    wstring m_playlist_path;        //当前播放列表文件的路径
 	//wstring m_current_file_name;		//正在播放的文件名
 	wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
 	wstring m_current_file_type;
 	deque<PathInfo> m_recent_path;		//最近打开过的路径
+    CPlaylistMgr m_recent_playlist;
 
 	Time m_song_length;		//正在播放的文件的长度
 	Time m_current_position;		//当前播放到的位置
@@ -138,8 +141,10 @@ private:
 	void ApplyEqualizer(int channel, int gain);		//应用一个均衡器通道的增益
 
 	void LoadRecentPath();		//从文件载入最近路径列表
+    void LoadRecentPlaylist();
 public:
 	void EmplaceCurrentPathToRecent();		//将当前路径插入到最近路径中
+    void EmplaceCurrentPlaylistToRecent();
 	void SaveRecentPath() const;		//将最近路径列表保存到文件
 	void OnExit();		//退出时的处理
 
@@ -184,6 +189,7 @@ public:
 
 	void SetVolume();		//用m_volume的值设置音量
 	void SetPath(const wstring& path, int track, int position, SortMode sort_mode);		//设置路径
+    void SetPlaylist(const wstring& playlist_path, int track, int position);
 	void OpenFolder(wstring path);	//通过“打开文件夹”来设置路径的处理
 	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开多个文件，play用来设置是否立即播放
 	void OpenAFile(wstring file);	//打开一个音频文件，参数为文件的绝对路径
@@ -240,6 +246,7 @@ public:
 	const float* GetSpectralPeakData() const { return m_spectral_peak; }
 	const float* GetFFTData() const { return m_fft; }			//返回频谱分析的原始数据
 	deque<PathInfo>& GetRecentPath() { return m_recent_path; }	//返回最近播放路径列表的引用
+    CPlaylistMgr& GetRecentPlaylist() { return m_recent_playlist; }
 	wstring GetPlayingState() const;		//获取播放状态的字符串
 	int GetPlayingState2() const { return m_playing; }	//获取正在播放状态（0：已停止，1：已暂停，2：正在播放）
 	const SongInfo& GetCurrentSongInfo() const;

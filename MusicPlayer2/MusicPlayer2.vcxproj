@@ -226,6 +226,7 @@
     <ClInclude Include="CVariant.h" />
     <ClInclude Include="IPlayerUI.h" />
     <ClInclude Include="Playlist.h" />
+    <ClInclude Include="PlaylistMgr.h" />
     <ClInclude Include="PlaySettingsDlg.h" />
     <ClInclude Include="RecorderDlg.h" />
     <ClInclude Include="GaussBlur.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="CTest.cpp" />
     <ClCompile Include="CVariant.cpp" />
     <ClCompile Include="Playlist.cpp" />
+    <ClCompile Include="PlaylistMgr.cpp" />
     <ClCompile Include="PlaySettingsDlg.cpp" />
     <ClCompile Include="RecorderDlg.cpp" />
     <ClCompile Include="GaussBlur.cpp" />

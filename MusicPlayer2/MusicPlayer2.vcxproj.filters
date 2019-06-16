@@ -225,6 +225,9 @@
     <Filter Include="对话框类\媒体库对话框">
       <UniqueIdentifier>{a3ab564f-8af7-4267-a854-05b454587203}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\PlaylistMgr">
+      <UniqueIdentifier>{4dbe9b2f-faf2-46dd-8583-24b0eff0b7fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -490,6 +493,9 @@
     <ClInclude Include="CSelectPlaylist.h">
       <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
+    <ClInclude Include="PlaylistMgr.h">
+      <Filter>功能逻辑类\PlaylistMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -728,6 +734,9 @@
     </ClCompile>
     <ClCompile Include="CSelectPlaylist.cpp">
       <Filter>对话框类\媒体库对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaylistMgr.cpp">
+      <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -307,4 +307,6 @@ public:
     afx_msg void OnFloatedPlaylist();
     afx_msg LRESULT OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam);
     afx_msg void OnFileOpenPalylist();
+protected:
+    afx_msg LRESULT OnPlaylistSelected(WPARAM wParam, LPARAM lParam);
 };

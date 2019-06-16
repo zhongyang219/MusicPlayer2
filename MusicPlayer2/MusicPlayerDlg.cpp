@@ -181,7 +181,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_FLOATED_PLAYLIST, &CMusicPlayerDlg::OnFloatedPlaylist)
     ON_MESSAGE(WM_FLOAT_PLAYLIST_CLOSED, &CMusicPlayerDlg::OnFloatPlaylistClosed)
     ON_COMMAND(ID_FILE_OPEN_PALYLIST, &CMusicPlayerDlg::OnFileOpenPalylist)
-END_MESSAGE_MAP()
+        ON_MESSAGE(WM_PLAYLIST_SELECTED, &CMusicPlayerDlg::OnPlaylistSelected)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3372,4 +3373,22 @@ void CMusicPlayerDlg::OnFileOpenPalylist()
         CPlayer::GetInstance().OpenFiles(playlist.GetPlaylist(), false);
     }
 
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam)
+{
+    CSelectPlaylist* pPathDlg = (CSelectPlaylist*)wParam;
+    if (pPathDlg != nullptr)
+    {
+        CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), pPathDlg->GetTrack(), pPathDlg->GetPosition());
+        UpdatePlayPauseButton();
+        //SetPorgressBarSize();
+        //ShowTime();
+        DrawInfo(true);
+        m_findDlg.ClearFindResult();		//更换路径后清除查找结果
+        CPlayer::GetInstance().SaveRecentPath();
+        m_play_error_cnt = 0;
+    }
+    return 0;
 }

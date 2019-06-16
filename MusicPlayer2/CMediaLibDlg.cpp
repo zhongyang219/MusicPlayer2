@@ -73,8 +73,12 @@ BOOL CMediaLibDlg::OnInitDialog()
 
 void CMediaLibDlg::OnBnClickedPlaySelected()
 {
-    if(m_tab_ctrl.GetCurrentTab() == &m_path_dlg)
+    CWnd* current_tab = m_tab_ctrl.GetCurrentTab();
+    if (current_tab == &m_path_dlg)
         m_path_dlg.OnOK();
+    else if (current_tab == &m_playlist_dlg)
+        m_playlist_dlg.OnOK();
+
 }
 
 
