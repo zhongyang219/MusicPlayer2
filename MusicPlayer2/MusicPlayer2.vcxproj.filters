@@ -228,6 +228,9 @@
     <Filter Include="功能逻辑类\PlaylistMgr">
       <UniqueIdentifier>{4dbe9b2f-faf2-46dd-8583-24b0eff0b7fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\InputDlg">
+      <UniqueIdentifier>{82bbfa03-6c20-4f56-8ad9-7bf00fcd1fe2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -496,6 +499,9 @@
     <ClInclude Include="PlaylistMgr.h">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClInclude>
+    <ClInclude Include="ImputDlg.h">
+      <Filter>对话框类\InputDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -737,6 +743,9 @@
     </ClCompile>
     <ClCompile Include="PlaylistMgr.cpp">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="ImputDlg.cpp">
+      <Filter>对话框类\InputDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

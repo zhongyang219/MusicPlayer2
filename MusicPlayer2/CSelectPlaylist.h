@@ -46,4 +46,5 @@ private:
 public:
     afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
     virtual void OnOK();
+    afx_msg void OnBnClickedNewPlaylist();
 };

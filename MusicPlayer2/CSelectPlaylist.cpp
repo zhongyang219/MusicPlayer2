@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CSelectPlaylist.h"
 #include "afxdialogex.h"
+#include "ImputDlg.h"
 
 
 // CSelectPlaylist 对话框
@@ -45,6 +46,7 @@ void CSelectPlaylist::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CSelectPlaylist, CTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSelectPlaylist::OnNMDblclkList1)
+    ON_BN_CLICKED(IDC_NEW_PLAYLIST, &CSelectPlaylist::OnBnClickedNewPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -165,4 +167,17 @@ void CSelectPlaylist::OnOK()
             ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 
+}
+
+
+void CSelectPlaylist::OnBnClickedNewPlaylist()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CImputDlg imput_dlg;
+    imput_dlg.SetTitle(_T("新建播放列表"));
+    imput_dlg.SetInfoText(_T("输入播放列表名称："));
+    if (imput_dlg.DoModal() == IDOK)
+    {
+        CString playlistName = imput_dlg.GetEditText();
+    }
 }
