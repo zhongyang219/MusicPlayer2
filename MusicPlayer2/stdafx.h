@@ -161,6 +161,7 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define ALPHA_CHG(alpha) ((alpha)*255/100)		//将透明度从0~100映射到0~255
 
 #define LOCAL_DIR_STR L"%localdir%"
+#define DEFAULT_PLAYLIST_NAME L"default_playlist.playlist"
 
 #define WM_OPEN_FILE_COMMAND_LINE (WM_USER+110)		//通过命令行打开文件时向已有实例窗口发送的消息
 #define MY_WM_NOTIFYICON (WM_USER+115)

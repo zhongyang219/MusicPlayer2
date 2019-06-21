@@ -5,7 +5,7 @@
 
 CPlaylistMgr::CPlaylistMgr()
 {
-    m_default_playlist.path = theApp.m_module_dir + L"default_playlist.playlist";
+    m_default_playlist.path = theApp.m_module_dir + DEFAULT_PLAYLIST_NAME;
 }
 
 
@@ -15,6 +15,9 @@ CPlaylistMgr::~CPlaylistMgr()
 
 void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time)
 {
+    if (path == m_default_playlist.path)
+        return;
+
     for (size_t i{ 0 }; i < m_recent_playlists.size(); i++)
     {
         if (path == m_recent_playlists[i].path)
@@ -27,6 +30,13 @@ void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int 
     playlist_info.track_num = track_num;
     playlist_info.total_time = total_time;
     m_recent_playlists.push_front(playlist_info);		//当前路径插入到m_recent_playlists的前面
+}
+
+void CPlaylistMgr::AddNewPlaylist(const wstring& path)
+{
+    PlaylistInfo playlist_info{};
+    playlist_info.path = path;
+    m_recent_playlists.push_back(playlist_info);
 }
 
 void CPlaylistMgr::SavePlaylistData()
@@ -99,8 +109,9 @@ void CPlaylistMgr::LoadPlaylistData()
         ar >> size;		//读取映射容器的长度
         for (unsigned int i{}; i < size; i++)
         {
-            ar >> temp;
-            path_info.path = temp;
+            CString strTmp;
+            ar >> strTmp;
+            path_info.path = strTmp;
             ar >> path_info.track;
             ar >> path_info.position;
             ar >> path_info.track_num;
@@ -112,9 +123,9 @@ void CPlaylistMgr::LoadPlaylistData()
     catch (CArchiveException* exception)
     {
         //捕获序列化时出现的异常
-        //CString info;
-        //info = CCommon::LoadTextFormat(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG, { exception->m_cause });
-        //theApp.WriteErrorLog(wstring{ info });
+        CString info;
+        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { theApp.m_recent_playlist_data_path, exception->m_cause });
+        theApp.WriteErrorLog(wstring{ info });
     }
     // 关闭对象
     ar.Close();

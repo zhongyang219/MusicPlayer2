@@ -192,9 +192,15 @@ void CPlayer::Create()
     }
     else
     {
-        CPlaylist playlist;
-        playlist.LoadFromFile(m_recent_playlist.m_default_playlist.path);
-        OpenFiles(playlist.GetPlaylist());
+        //CPlaylist playlist;
+        //playlist.LoadFromFile(m_recent_playlist.m_default_playlist.path);
+        ////OpenFiles(playlist.GetPlaylist());
+        PlaylistInfo playlist_info;
+        if (m_recent_playlist.m_use_default_playlist || m_recent_playlist.m_recent_playlists.empty())
+            playlist_info = m_recent_playlist.m_default_playlist;
+        else
+            playlist_info = m_recent_playlist.m_recent_playlists.front();
+        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
     }
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 }
@@ -933,11 +939,17 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
 
 }
 
-void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position)
+void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init)
 {
+    m_recent_playlist.m_use_default_playlist = (playlist_path == m_recent_playlist.m_default_playlist.path);
+
     MusicControl(Command::STOP);
     MusicControl(Command::CLOSE);
-    EmplaceCurrentPlaylistToRecent();
+    if(!init)
+    {
+        SaveCurrentPlaylist();
+        EmplaceCurrentPlaylistToRecent();
+    }
     m_playlist.clear();
     CPlaylist playlist;
     playlist.LoadFromFile(playlist_path);
@@ -950,13 +962,14 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position)
         song_info.file_path = file;
         m_playlist.push_back(song_info);	//将文件名储存到播放列表
     }
-    IniPlayList(true);
 
     m_index = track;
     m_current_position_int = position;
     m_current_position.int2time(m_current_position_int);
     SetTitle();
+    m_playlist_path = playlist_path;
 
+    IniPlayList(true);
 }
 
 void CPlayer::OpenFolder(wstring path)
@@ -1574,6 +1587,7 @@ void CPlayer::OnExit()
     SaveRecentPath();
     EmplaceCurrentPlaylistToRecent();
     m_recent_playlist.SavePlaylistData();
+    SaveCurrentPlaylist();
 }
 
 void CPlayer::LoadRecentPath()
@@ -1651,10 +1665,26 @@ void CPlayer::LoadRecentPlaylist()
         m_current_position_int = m_recent_playlist.m_default_playlist.position;
         m_current_position.int2time(m_current_position_int);
     }
-    else
+    else if(!m_recent_playlist.m_recent_playlists.empty())
     {
+        m_playlist_path = m_recent_playlist.m_recent_playlists.front().path;
+        m_index = m_recent_playlist.m_recent_playlists.front().track;
+        m_current_position_int = m_recent_playlist.m_recent_playlists.front().position;
+        m_current_position.int2time(m_current_position_int);
 
     }
+}
+
+void CPlayer::SaveCurrentPlaylist()
+{
+    wstring current_playlist;
+    if (m_recent_playlist.m_use_default_playlist || m_recent_playlist.m_recent_playlists.empty())
+        current_playlist = m_recent_playlist.m_default_playlist.path;
+    else
+        current_playlist = m_recent_playlist.m_recent_playlists.front().path;
+    CPlaylist playlist;
+    playlist.FromSongList(m_playlist);
+    playlist.SaveToFile(m_playlist_path);
 }
 
 void CPlayer::EmplaceCurrentPathToRecent()
@@ -1694,7 +1724,7 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
     }
     else
     {
-
+        m_recent_playlist.EmplacePlaylist(m_playlist_path, m_index, m_current_position_int, GetSongNum(), m_total_time);
     }
 }
 

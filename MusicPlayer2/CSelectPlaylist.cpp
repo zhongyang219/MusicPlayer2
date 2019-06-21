@@ -178,6 +178,9 @@ void CSelectPlaylist::OnBnClickedNewPlaylist()
     imput_dlg.SetInfoText(_T("输入播放列表名称："));
     if (imput_dlg.DoModal() == IDOK)
     {
-        CString playlistName = imput_dlg.GetEditText();
+        CString playlist_name = imput_dlg.GetEditText();
+        wstring playlist_path = theApp.m_module_dir + playlist_name.GetString() + L".playlist";
+        CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
+        ShowPathList();
     }
 }

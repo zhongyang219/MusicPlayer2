@@ -653,7 +653,7 @@ void CMusicPlayerApp::LoadSongData()
     catch(CArchiveException* exception)
     {
         CString info;
-        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { exception->m_cause });
+        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { m_song_data_path, exception->m_cause });
         WriteErrorLog(wstring{ info });
     }
     // πÿ±’∂‘œÛ
