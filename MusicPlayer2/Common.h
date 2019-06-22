@@ -167,6 +167,8 @@ public:
 	//移动多个文件
 	static int MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
 
+    static bool CreateDir(const _tstring& path);
+
 	//将一个字符串保存到剪贴板
 	static bool CopyStringToClipboard(const wstring& str);
 

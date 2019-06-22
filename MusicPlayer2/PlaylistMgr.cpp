@@ -5,7 +5,7 @@
 
 CPlaylistMgr::CPlaylistMgr()
 {
-    m_default_playlist.path = theApp.m_module_dir + DEFAULT_PLAYLIST_NAME;
+    m_default_playlist.path = theApp.m_playlist_dir + DEFAULT_PLAYLIST_NAME;
 }
 
 

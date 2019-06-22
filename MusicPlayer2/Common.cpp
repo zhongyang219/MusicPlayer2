@@ -520,6 +520,18 @@ int CCommon::MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_t
 	return MoveAFile(hwnd, file_list, file_to);
 }
 
+bool CCommon::CreateDir(const _tstring & path)
+{
+    if (!FolderExist(path))
+    {
+        if (CreateDirectory(path.c_str(), NULL))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool CCommon::CopyStringToClipboard(const wstring & str)
 {
 	if (OpenClipboard(NULL))

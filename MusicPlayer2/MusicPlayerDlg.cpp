@@ -790,23 +790,26 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
 
     //设置播放列表菜单中排序方式的单选标记
-    switch (CPlayer::GetInstance().m_sort_mode)
+    if(!CPlayer::GetInstance().IsFromPlaylist())
     {
-    case SM_FILE:
-        pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_FILE, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    case SM_TITLE:
-        pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_TITLE, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    case SM_ARTIST:
-        pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_ARTIST, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    case SM_ALBUM:
-        pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_ALBUM, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    case SM_TRACK:
-        pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_TRACK, MF_BYCOMMAND | MF_CHECKED);
-        break;
+        switch (CPlayer::GetInstance().m_sort_mode)
+        {
+        case SM_FILE:
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_FILE, MF_BYCOMMAND | MF_CHECKED);
+            break;
+        case SM_TITLE:
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_TITLE, MF_BYCOMMAND | MF_CHECKED);
+            break;
+        case SM_ARTIST:
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_ARTIST, MF_BYCOMMAND | MF_CHECKED);
+            break;
+        case SM_ALBUM:
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_ALBUM, MF_BYCOMMAND | MF_CHECKED);
+            break;
+        case SM_TRACK:
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_TRACK, MF_BYCOMMAND | MF_CHECKED);
+            break;
+        }
     }
 
     //设置播放列表菜单中“播放列表显示样式”的单选标记

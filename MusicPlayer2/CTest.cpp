@@ -61,12 +61,14 @@ void CTest::TestCommon()
     //int b = CCommon::IconSizeNormalize(30);
     //int a = 0;
 
-    bool rtn = COSUPlayerHelper::IsOsuFolder(L"D:\\BaiduNetdiskDownload\\Songs/");
+    //bool rtn = COSUPlayerHelper::IsOsuFolder(L"D:\\BaiduNetdiskDownload\\Songs/");
 
-    vector<SongInfo> songs;
-    COSUPlayerHelper::GetOSUAudioFiles(L"D:\\BaiduNetdiskDownload\\Songs\\", songs);
-    if (!songs.empty())
-        COSUPlayerHelper::GetOSUAudioTitleArtist(songs[0]);
+    //vector<SongInfo> songs;
+    //COSUPlayerHelper::GetOSUAudioFiles(L"D:\\BaiduNetdiskDownload\\Songs\\", songs);
+    //if (!songs.empty())
+    //    COSUPlayerHelper::GetOSUAudioTitleArtist(songs[0]);
+
+    CCommon::CreateDir(L"D:\\Temp\\Folder\\");
 
     int a = 0;
 }

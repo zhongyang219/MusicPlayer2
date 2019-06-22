@@ -48,6 +48,8 @@ CMusicPlayerApp::CMusicPlayerApp()
     m_recent_playlist_data_path = m_module_dir + L"playlist\\recent_playlist.dat";
     m_desktop_path = CCommon::GetDesktopPath();
     //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
+    m_playlist_dir = m_module_dir + L"playlist\\";
+    CCommon::CreateDir(m_playlist_dir);
 
     //获取当前DPI
     HDC hDC = ::GetDC(NULL);

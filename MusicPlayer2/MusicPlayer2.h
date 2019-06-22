@@ -30,6 +30,7 @@ public:
 
     wstring m_module_dir;		//当前程序exe文件所在目录
     wstring m_local_dir;		//当前目录（debug模式下为.\，release模式下为exe文件所在目录）
+    wstring m_playlist_dir;     //播放列表目录
     wstring m_config_path;		//配置文件的路径
     wstring m_song_data_path;	//储存所有歌曲信息数据文件的路径
     wstring m_recent_path_dat_path;	//"recent_path.dat"文件的路径
