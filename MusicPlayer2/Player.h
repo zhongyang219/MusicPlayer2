@@ -142,8 +142,8 @@ private:
 
 	void LoadRecentPath();		//从文件载入最近路径列表
     void LoadRecentPlaylist();
-    void SaveCurrentPlaylist();
 public:
+    void SaveCurrentPlaylist();
 	void EmplaceCurrentPathToRecent();		//将当前路径插入到最近路径中
     void EmplaceCurrentPlaylistToRecent();
 	void SaveRecentPath() const;		//将最近路径列表保存到文件
@@ -194,6 +194,7 @@ public:
 	void OpenFolder(wstring path);	//通过“打开文件夹”来设置路径的处理
 	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开多个文件，play用来设置是否立即播放
 	void OpenAFile(wstring file);	//打开一个音频文件，参数为文件的绝对路径
+    void AddFiles(const vector<wstring>& files);
 	void SetRepeatMode();		//更改循环模式
 	void SetRepeatMode(RepeatMode repeat_mode);	//设置循环模式
 	RepeatMode GetRepeatMode() const;

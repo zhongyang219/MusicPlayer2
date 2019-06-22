@@ -278,6 +278,8 @@ public:
 	//清除歌曲信息中的<>内的默认字符串
 	static void ClearDefaultTagStr(SongInfo& song_info);
 
+    static wstring GetFileDlgFilter();
+
 public:
 	static vector<SupportedFormat> m_surpported_format;		//支持的文件格式
 	static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名

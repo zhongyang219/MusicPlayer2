@@ -1130,3 +1130,27 @@ bool CCommon::GetFileContent(const wchar_t * file_path, string & contents_buff, 
     return true;
 }
 
+void CCommon::DoOpenFileDlg(const wstring& filter, vector<wstring>& path_list, CWnd* pParent)
+{
+    path_list.clear();
+    //构造打开文件对话框
+    CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), pParent);
+    //设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）
+    fileDlg.m_ofn.nMaxFile = 128 * 1024;
+    LPTSTR ch = new TCHAR[fileDlg.m_ofn.nMaxFile];
+    fileDlg.m_ofn.lpstrFile = ch;
+    //对内存块清零
+    ZeroMemory(fileDlg.m_ofn.lpstrFile, sizeof(TCHAR) * fileDlg.m_ofn.nMaxFile);
+    //显示打开文件对话框
+    if (IDOK == fileDlg.DoModal())
+    {
+        POSITION posFile = fileDlg.GetStartPosition();
+        while (posFile != NULL)
+        {
+            path_list.push_back(fileDlg.GetNextPathName(posFile).GetString());
+        }
+    }
+    delete[] ch;
+
+}
+

@@ -181,8 +181,11 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_FLOATED_PLAYLIST, &CMusicPlayerDlg::OnFloatedPlaylist)
     ON_MESSAGE(WM_FLOAT_PLAYLIST_CLOSED, &CMusicPlayerDlg::OnFloatPlaylistClosed)
     ON_COMMAND(ID_FILE_OPEN_PALYLIST, &CMusicPlayerDlg::OnFileOpenPalylist)
-        ON_MESSAGE(WM_PLAYLIST_SELECTED, &CMusicPlayerDlg::OnPlaylistSelected)
-        END_MESSAGE_MAP()
+    ON_MESSAGE(WM_PLAYLIST_SELECTED, &CMusicPlayerDlg::OnPlaylistSelected)
+    ON_COMMAND(ID_PLAYLIST_ADD_FILE, &CMusicPlayerDlg::OnPlaylistAddFile)
+    ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
+    ON_COMMAND(ID_EMPTY_PLAYLIST, &CMusicPlayerDlg::OnEmptyPlaylist)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -745,26 +748,17 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     }
 
     //弹出右键菜单时，如果没有选中播放列表中的项目，则禁用右键菜单中“播放”、“从列表中删除”、“属性”、“从磁盘删除”项目。
-    if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
-    {
-        pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_MOVE_FILE_TO, MF_BYCOMMAND | MF_GRAYED);
-    }
-    else
-    {
-        pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_MOVE_FILE_TO, MF_BYCOMMAND | MF_ENABLED);
-    }
+    bool selete_valid = m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum();
+    pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_MOVE_FILE_TO, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+
+    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
 
     //打开菜单时，如果播放列表中没有歌曲，则禁用主菜单和右键菜单中的“打开文件位置”项目
     if (CPlayer::GetInstance().GetSongNum() == 0)
@@ -1654,47 +1648,16 @@ void CMusicPlayerDlg::OnFileOpen()
     // TODO: 在此添加命令处理程序代码
     vector<wstring> files;	//储存打开的多个文件路径
     //设置过滤器
-    wstring filter(CCommon::LoadText(IDS_ALL_SUPPORTED_FORMAT, _T("|")));
-    for (const auto& ext : CAudioCommon::m_all_surpported_extensions)
+    wstring filter = CAudioCommon::GetFileDlgFilter();
+
+    CCommon::DoOpenFileDlg(filter, files, this);
+    if (!files.empty())
     {
-        filter += L"*.";
-        filter += ext;
-        filter.push_back(L';');
-    }
-    filter.pop_back();
-    filter.push_back(L'|');
-    for (const auto& format : CAudioCommon::m_surpported_format)
-    {
-        filter += format.description;
-        filter.push_back(L'|');
-        filter += format.extensions_list;
-        filter.push_back(L'|');
-    }
-    filter += CCommon::LoadText(IDS_ALL_FILES, _T("|*.*||"));
-    //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), this);
-    //设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）
-    fileDlg.m_ofn.nMaxFile = 128 * 1024;
-    LPTSTR ch = new TCHAR[fileDlg.m_ofn.nMaxFile];
-    fileDlg.m_ofn.lpstrFile = ch;
-    //对内存块清零
-    ZeroMemory(fileDlg.m_ofn.lpstrFile, sizeof(TCHAR) * fileDlg.m_ofn.nMaxFile);
-    //显示打开文件对话框
-    if (IDOK == fileDlg.DoModal())
-    {
-        POSITION posFile = fileDlg.GetStartPosition();
-        while (posFile != NULL)
-        {
-            files.push_back(fileDlg.GetNextPathName(posFile).GetString());
-        }
         CPlayer::GetInstance().OpenFiles(files);
-        //ShowPlayList();
         UpdatePlayPauseButton();
-        //SetPorgressBarSize();
         DrawInfo(true);
         m_play_error_cnt = 0;
     }
-    delete[] ch;
 }
 
 
@@ -3364,7 +3327,7 @@ void CMusicPlayerDlg::OnFileOpenPalylist()
     //设置过滤器
     CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILTER);
     //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, _T("txt"), NULL, 0, szFilter, this);
+    CFileDialog fileDlg(TRUE, _T("playlist"), NULL, 0, szFilter, this);
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
@@ -3391,4 +3354,38 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
         m_play_error_cnt = 0;
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnPlaylistAddFile()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<wstring> files;
+    wstring filter = CAudioCommon::GetFileDlgFilter();
+    CCommon::DoOpenFileDlg(filter, files, this);
+    if(!files.empty())
+    {
+        CPlayer::GetInstance().AddFiles(files);
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+    }
+}
+
+
+void CMusicPlayerDlg::OnRemoveFromPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().RemoveSongs(m_items_selected);
+    CPlayer::GetInstance().SaveCurrentPlaylist();
+}
+
+
+void CMusicPlayerDlg::OnEmptyPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (MessageBox(CCommon::LoadText(IDS_CLEAR_PLAYLIST_WARNING), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+    {
+        CPlayer::GetInstance().ClearPlaylist();
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+        ShowPlayList();
+    }
 }

@@ -309,4 +309,8 @@ public:
     afx_msg void OnFileOpenPalylist();
 protected:
     afx_msg LRESULT OnPlaylistSelected(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnPlaylistAddFile();
+    afx_msg void OnRemoveFromPlaylist();
+    afx_msg void OnEmptyPlaylist();
 };

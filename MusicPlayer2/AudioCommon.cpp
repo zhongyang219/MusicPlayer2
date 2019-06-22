@@ -491,3 +491,25 @@ void CAudioCommon::ClearDefaultTagStr(SongInfo & song_info)
         song_info.genre.clear();
 }
 
+wstring CAudioCommon::GetFileDlgFilter()
+{
+    wstring filter(CCommon::LoadText(IDS_ALL_SUPPORTED_FORMAT, _T("|")));
+    for (const auto& ext : m_all_surpported_extensions)
+    {
+        filter += L"*.";
+        filter += ext;
+        filter.push_back(L';');
+    }
+    filter.pop_back();
+    filter.push_back(L'|');
+    for (const auto& format : m_surpported_format)
+    {
+        filter += format.description;
+        filter.push_back(L'|');
+        filter += format.extensions_list;
+        filter.push_back(L'|');
+    }
+    filter += CCommon::LoadText(IDS_ALL_FILES, _T("|*.*||"));
+    return filter;
+}
+
