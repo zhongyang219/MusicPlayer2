@@ -10,50 +10,50 @@
 
 // CSelectPlaylist 对话框
 
-IMPLEMENT_DYNAMIC(CSelectPlaylist, CTabDlg)
+IMPLEMENT_DYNAMIC(CSelectPlaylistDlg, CTabDlg)
 
-CSelectPlaylist::CSelectPlaylist(CWnd* pParent /*=nullptr*/)
+CSelectPlaylistDlg::CSelectPlaylistDlg(CWnd* pParent /*=nullptr*/)
 	: CTabDlg(IDD_SELECT_PLAYLIST_DIALOG, pParent)
 {
 
 }
 
-CSelectPlaylist::~CSelectPlaylist()
+CSelectPlaylistDlg::~CSelectPlaylistDlg()
 {
 }
 
-wstring CSelectPlaylist::GetSelPlaylistPath() const
+wstring CSelectPlaylistDlg::GetSelPlaylistPath() const
 {
     return GetSelectedPlaylist().path;
 }
 
-int CSelectPlaylist::GetTrack() const
+int CSelectPlaylistDlg::GetTrack() const
 {
     return GetSelectedPlaylist().track;
 }
 
-int CSelectPlaylist::GetPosition() const
+int CSelectPlaylistDlg::GetPosition() const
 {
     return GetSelectedPlaylist().position;
 }
 
-void CSelectPlaylist::DoDataExchange(CDataExchange* pDX)
+void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST1, m_playlist_ctrl);
 }
 
 
-BEGIN_MESSAGE_MAP(CSelectPlaylist, CTabDlg)
-    ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSelectPlaylist::OnNMDblclkList1)
-    ON_BN_CLICKED(IDC_NEW_PLAYLIST, &CSelectPlaylist::OnBnClickedNewPlaylist)
+BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
+    ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSelectPlaylistDlg::OnNMDblclkList1)
+    ON_BN_CLICKED(IDC_NEW_PLAYLIST, &CSelectPlaylistDlg::OnBnClickedNewPlaylist)
 END_MESSAGE_MAP()
 
 
 // CSelectPlaylist 消息处理程序
 
 
-BOOL CSelectPlaylist::OnInitDialog()
+BOOL CSelectPlaylistDlg::OnInitDialog()
 {
     CTabDlg::OnInitDialog();
 
@@ -75,7 +75,7 @@ BOOL CSelectPlaylist::OnInitDialog()
                   // 异常: OCX 属性页应返回 FALSE
 }
 
-void CSelectPlaylist::CalculateColumeWidth(vector<int>& width)
+void CSelectPlaylistDlg::CalculateColumeWidth(vector<int>& width)
 {
     CRect rect;
     m_playlist_ctrl.GetWindowRect(rect);
@@ -89,7 +89,7 @@ void CSelectPlaylist::CalculateColumeWidth(vector<int>& width)
 
 }
 
-void CSelectPlaylist::ShowPathList()
+void CSelectPlaylistDlg::ShowPathList()
 {
     m_playlist_ctrl.DeleteAllItems();
     m_playlist_ctrl.InsertItem(0, _T("1"));
@@ -102,13 +102,20 @@ void CSelectPlaylist::ShowPathList()
         str.Format(_T("%d"), index + 1);
         m_playlist_ctrl.InsertItem(index, str);
         SetListRowData(index, playlist_info);
+        index++;
     }
 }
 
-void CSelectPlaylist::SetListRowData(int index, const PlaylistInfo& playlist_info)
+void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_info)
 {
     CFilePathHelper path_helper{ playlist_info.path };
-    m_playlist_ctrl.SetItemText(index, 1, path_helper.GetFileNameWithoutExtension().c_str());
+    wstring playlist_name = path_helper.GetFileName();
+    if (playlist_name == DEFAULT_PLAYLIST_NAME)
+        playlist_name = CCommon::LoadText(_T("["), IDS_DEFAULT, _T("]"));
+    else
+        playlist_name = path_helper.GetFileNameWithoutExtension();
+
+    m_playlist_ctrl.SetItemText(index, 1, playlist_name.c_str());
 
     CString str;
     str.Format(_T("%d"), playlist_info.track + 1);
@@ -122,7 +129,7 @@ void CSelectPlaylist::SetListRowData(int index, const PlaylistInfo& playlist_inf
 }
 
 
-bool CSelectPlaylist::SelectValid() const
+bool CSelectPlaylistDlg::SelectValid() const
 {
     if (m_row_selected == 0)
         return true;
@@ -130,7 +137,7 @@ bool CSelectPlaylist::SelectValid() const
     return (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()));
 }
 
-PlaylistInfo CSelectPlaylist::GetSelectedPlaylist() const
+PlaylistInfo CSelectPlaylistDlg::GetSelectedPlaylist() const
 {
     if (m_row_selected == 0)
         return CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
@@ -141,7 +148,7 @@ PlaylistInfo CSelectPlaylist::GetSelectedPlaylist() const
         return PlaylistInfo();
 }
 
-void CSelectPlaylist::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
+void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -152,7 +159,7 @@ void CSelectPlaylist::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CSelectPlaylist::OnOK()
+void CSelectPlaylistDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
     ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, 0);
@@ -170,7 +177,7 @@ void CSelectPlaylist::OnOK()
 }
 
 
-void CSelectPlaylist::OnBnClickedNewPlaylist()
+void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
 {
     // TODO: 在此添加控件通知处理程序代码
     CImputDlg imput_dlg;

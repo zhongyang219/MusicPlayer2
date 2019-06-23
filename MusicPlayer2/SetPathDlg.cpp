@@ -197,11 +197,9 @@ BOOL CSetPathDlg::OnInitDialog()
 	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	CenterWindow();
+	//CenterWindow();
 
 	m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
-
-	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 
 	//设置列表控件主题颜色
 	//m_path_list.SetColor(theApp.m_app_setting_data.theme_color);

@@ -64,7 +64,8 @@ void CPlaylistMgr::SavePlaylistData()
     ar << static_cast<unsigned int>(m_recent_playlists.size());		//写入m_recent_playlists的大小
     for (auto& path_info : m_recent_playlists)
     {
-        ar << CString(path_info.path.c_str())
+        CFilePathHelper path_helper{ path_info.path };
+        ar << CString(path_helper.GetFileNameWithoutExtension().c_str())
             << path_info.track
             << path_info.position
             << path_info.track_num
@@ -79,6 +80,8 @@ void CPlaylistMgr::SavePlaylistData()
 
 void CPlaylistMgr::LoadPlaylistData()
 {
+    std::map<wstring, PlaylistInfo> playlist_map;
+
     // 打开文件
     CFile file;
     BOOL bRet = file.Open(theApp.m_recent_playlist_data_path.c_str(), CFile::modeRead);
@@ -90,7 +93,6 @@ void CPlaylistMgr::LoadPlaylistData()
     CArchive ar(&file, CArchive::load);
     // 读数据
     unsigned int size{};
-    PlaylistInfo path_info;
     CString temp;
     int sort_mode;
     try
@@ -109,15 +111,16 @@ void CPlaylistMgr::LoadPlaylistData()
         ar >> size;		//读取映射容器的长度
         for (unsigned int i{}; i < size; i++)
         {
+            PlaylistInfo path_info;
             CString strTmp;
             ar >> strTmp;
-            path_info.path = strTmp;
+            //path_info.path = strTmp;
             ar >> path_info.track;
             ar >> path_info.position;
             ar >> path_info.track_num;
             ar >> path_info.total_time;
 
-            m_recent_playlists.push_back(path_info);
+            playlist_map[wstring(strTmp.GetString())] = path_info;
         }
     }
     catch (CArchiveException* exception)
@@ -131,4 +134,29 @@ void CPlaylistMgr::LoadPlaylistData()
     ar.Close();
     // 关闭文件
     file.Close();
+
+    //从playlist目录下查找播放列表文件
+    vector<wstring> file_list;
+    CCommon::GetFiles(theApp.m_playlist_dir + L"*.playlist", file_list);
+    for (const auto& file : file_list)
+    {
+        CFilePathHelper path_helper{ theApp.m_playlist_dir + file };
+        wstring file_name = path_helper.GetFileName();
+        wstring playlist_name = path_helper.GetFileNameWithoutExtension();
+        if(file_name == DEFAULT_PLAYLIST_NAME)
+            continue;
+
+        PlaylistInfo path_info;
+        path_info.path = path_helper.GetFilePath();
+        auto iter = playlist_map.find(playlist_name);
+        if (iter != playlist_map.end())
+        {
+            path_info.position = iter->second.position;
+            path_info.total_time = iter->second.total_time;
+            path_info.track = iter->second.track;
+            path_info.track_num = iter->second.track_num;
+        }
+        m_recent_playlists.push_back(path_info);
+    }
+    int a = 0;
 }

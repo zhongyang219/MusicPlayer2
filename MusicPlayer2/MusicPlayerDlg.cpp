@@ -3344,7 +3344,7 @@ void CMusicPlayerDlg::OnFileOpenPalylist()
 
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam)
 {
-    CSelectPlaylist* pPathDlg = (CSelectPlaylist*)wParam;
+    CSelectPlaylistDlg* pPathDlg = (CSelectPlaylistDlg*)wParam;
     if (pPathDlg != nullptr)
     {
         CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), pPathDlg->GetTrack(), pPathDlg->GetPosition());

@@ -6,13 +6,13 @@
 // CSelectPlaylist 对话框
 #define WM_PLAYLIST_SELECTED (WM_USER+119)
 
-class CSelectPlaylist : public CTabDlg
+class CSelectPlaylistDlg : public CTabDlg
 {
-	DECLARE_DYNAMIC(CSelectPlaylist)
+	DECLARE_DYNAMIC(CSelectPlaylistDlg)
 
 public:
-	CSelectPlaylist(CWnd* pParent = nullptr);   // 标准构造函数
-	virtual ~CSelectPlaylist();
+	CSelectPlaylistDlg(CWnd* pParent = nullptr);   // 标准构造函数
+	virtual ~CSelectPlaylistDlg();
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME

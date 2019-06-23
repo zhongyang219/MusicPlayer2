@@ -57,7 +57,11 @@ BOOL CImputDlg::OnInitDialog()
     SetWindowText(m_strTitle);
     SetDlgItemText(IDC_INFO_STATIC, m_strInfo);
 
-    return TRUE;  // return TRUE unless you set the focus to a control
+    CWnd* pEdit = GetDlgItem(IDC_INPUT_EDIT);
+    if(pEdit!=nullptr)
+        pEdit->SetFocus();		//初始时将焦点设置到输入框
+
+    return FALSE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
 

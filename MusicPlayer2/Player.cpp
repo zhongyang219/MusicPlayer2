@@ -1082,6 +1082,9 @@ void CPlayer::OpenAFile(wstring file)
 
 void CPlayer::AddFiles(const vector<wstring>& files)
 {
+    if (m_playlist.size() == 1 && m_playlist[0].file_path.empty() && m_playlist[0].file_name.empty())
+        m_playlist.clear();     //删除播放列表中的占位项
+
     SongInfo song_info;
     for (const auto& file : files)
     {

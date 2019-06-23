@@ -51,6 +51,9 @@ BOOL CMediaLibDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+
+    SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+
     //创建子对话框
     m_path_dlg.Create(IDD_SET_PATH_DIALOG);
     m_playlist_dlg.Create(IDD_SELECT_PLAYLIST_DIALOG);

@@ -20,7 +20,7 @@ public:
 
 public:
     CSetPathDlg m_path_dlg;
-    CSelectPlaylist m_playlist_dlg;
+    CSelectPlaylistDlg m_playlist_dlg;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
