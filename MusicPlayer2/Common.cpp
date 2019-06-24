@@ -532,6 +532,27 @@ bool CCommon::CreateDir(const _tstring & path)
     return false;
 }
 
+_tstring CCommon::FileRename(const _tstring& file_path, const _tstring& new_file_name)
+{
+    if (!FileExist(file_path))
+        return _tstring();
+
+    _tstring dir;
+    size_t index = file_path.find_last_of(_T("/\\"));
+    if (index == _tstring::npos)
+        return _tstring();
+    dir = file_path.substr(0, index + 1);
+
+    _tstring extension;
+    index = file_path.rfind(_T('.'));
+    if (index != _tstring::npos && index < file_path.size() - 1)
+        extension = file_path.substr(index);
+
+    _tstring new_file_path = dir + new_file_name + extension;
+    CFile::Rename(file_path.c_str(), new_file_path.c_str());
+    return new_file_path;
+}
+
 bool CCommon::CopyStringToClipboard(const wstring & str)
 {
 	if (OpenClipboard(NULL))

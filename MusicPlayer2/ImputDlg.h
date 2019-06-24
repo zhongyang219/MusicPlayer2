@@ -18,6 +18,7 @@ public:
 
     void SetTitle(LPCTSTR strTitle);
     void SetInfoText(LPCTSTR strInfo);
+    void SetEditText(LPCTSTR strEdit);
     CString GetEditText() const;
 
 protected:

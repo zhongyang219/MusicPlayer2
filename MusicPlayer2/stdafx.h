@@ -95,9 +95,9 @@ using std::map;
 //自定义的宏
 
 #ifdef UNICODE
-#define _tstring  std::wstring
+using _tstring = std::wstring;
 #else
-#define _tstring  std::string
+using _tstring = std::string;
 #endif // !UNICODE
 
 //CPlayer类中用到的常量

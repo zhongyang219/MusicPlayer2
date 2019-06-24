@@ -68,7 +68,9 @@ void CTest::TestCommon()
     //if (!songs.empty())
     //    COSUPlayerHelper::GetOSUAudioTitleArtist(songs[0]);
 
-    CCommon::CreateDir(L"D:\\Temp\\Folder\\");
+    //CCommon::CreateDir(L"D:\\Temp\\Folder\\");
+
+    wstring rtn = CCommon::FileRename(L"D:\\Temp\\无标题.txt", L"无标题1");
 
     int a = 0;
 }

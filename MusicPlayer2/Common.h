@@ -169,6 +169,12 @@ public:
 
     static bool CreateDir(const _tstring& path);
 
+    //文件/文件夹重命名
+    //file_path: 文件或文件夹的路径
+    //new_file_name: 新的文件名（不含扩展名），如果操作对象为文件夹，则为新文件夹名
+    //成功则返回新文件/文件夹的路径，否则返回空字符串
+    static _tstring FileRename(const _tstring& file_path, const _tstring& new_file_name);
+
 	//将一个字符串保存到剪贴板
 	static bool CopyStringToClipboard(const wstring& str);
 

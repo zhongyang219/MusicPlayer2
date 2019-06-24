@@ -75,6 +75,9 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
 
     ShowPathList();
 
+    //初始化右键菜单
+    m_menu.LoadMenu(IDR_SELETE_PLAYLIST_POPUP_MENU);
+    m_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PLAYLIST);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -208,24 +211,29 @@ void CSelectPlaylistDlg::OnPlayPlaylist()
 void CSelectPlaylistDlg::OnRenamePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    //CImputDlg imput_dlg;
-    //imput_dlg.SetTitle(CCommon::LoadText(IDS_RENAME_PLAYLIST));
-    //imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
-    //if (imput_dlg.DoModal() == IDOK)
-    //{
-    //    CString playlist_name = imput_dlg.GetEditText();
+    CImputDlg imput_dlg;
+    imput_dlg.SetTitle(CCommon::LoadText(IDS_RENAME_PLAYLIST));
+    imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
 
-    //    int index = m_row_selected - 1;
-    //    if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
-    //    {
-    //        wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
-    //        CCommon::
+    CString old_playlist_name = m_playlist_ctrl.GetItemText(m_row_selected, 1);
+    imput_dlg.SetEditText(old_playlist_name);
 
-    //        CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].
-    //    }
+    if (imput_dlg.DoModal() == IDOK)
+    {
+        CString playlist_name = imput_dlg.GetEditText();
 
-    //    ShowPathList();
-    //}
+        int index = m_row_selected - 1;
+        if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
+        {
+            wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
+            wstring new_path = CCommon::FileRename(playlist_path, wstring(playlist_name));
+
+            CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path = new_path;
+            CPlayer::GetInstance().GetRecentPlaylist().SavePlaylistData();
+        }
+
+        ShowPathList();
+    }
 }
 
 
@@ -249,5 +257,12 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_row_selected = pNMItemActivate->iItem;
+
+    //弹出右键菜单
+    CMenu* pContextMenu = m_menu.GetSubMenu(0);
+    CPoint point1;
+    GetCursorPos(&point1);
+    pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+
     *pResult = 0;
 }

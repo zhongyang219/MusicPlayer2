@@ -26,6 +26,7 @@ public:
 
 private:
     int m_row_selected{};
+    CMenu m_menu;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

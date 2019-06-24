@@ -31,6 +31,11 @@ void CImputDlg::SetInfoText(LPCTSTR strInfo)
     m_strInfo = strInfo;
 }
 
+void CImputDlg::SetEditText(LPCTSTR strEdit)
+{
+    m_strEdit = strEdit;
+}
+
 CString CImputDlg::GetEditText() const
 {
     return m_strEdit;
@@ -59,7 +64,10 @@ BOOL CImputDlg::OnInitDialog()
 
     CWnd* pEdit = GetDlgItem(IDC_INPUT_EDIT);
     if(pEdit!=nullptr)
+    {
+        pEdit->SetWindowText(m_strEdit);
         pEdit->SetFocus();		//初始时将焦点设置到输入框
+    }
 
     return FALSE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
