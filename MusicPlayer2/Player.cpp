@@ -259,7 +259,6 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info)
         m_thread_info.refresh_info = refresh_info;
         m_thread_info.sort = !cmd_para;
         //m_thread_info.path = m_path;
-        m_thread_info.player = this;
         //创建初始化播放列表的工作线程
         m_pThread = AfxBeginThread(IniPlaylistThreadFunc, &m_thread_info);
 
@@ -280,7 +279,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
     //获取播放列表中每一首歌曲的信息
     //最多只获取MAX_NUM_LENGTH首歌的长度，超过MAX_NUM_LENGTH数量的歌曲的长度在打开时获得。防止文件夹中音频文件过多导致等待时间过长
-    int song_num = pInfo->player->m_playlist.size();
+    int song_num = GetInstance().m_playlist.size();
     int song_count = min(song_num, MAX_NUM_LENGTH);
     for (int i{}, count{}; count < song_count && i < song_num; i++)
     {
@@ -288,27 +287,27 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
         if (!pInfo->refresh_info)
         {
-            wstring file_name{ pInfo->player->m_playlist[i].file_name };
-            auto iter = theApp.m_song_data.find(pInfo->player->m_playlist[i].file_path);
+            wstring file_name{ GetInstance().m_playlist[i].file_name };
+            auto iter = theApp.m_song_data.find(GetInstance().m_playlist[i].file_path);
             if (iter != theApp.m_song_data.end())		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
             {
-                pInfo->player->m_playlist[i].CopySongInfo(iter->second);
-                //pInfo->player->m_playlist[i] = iter->second;
-                //pInfo->player->m_playlist[i].file_name = file_name;
-                //pInfo->player->m_playlist[i].file_path = iter->first;
+                GetInstance().m_playlist[i].CopySongInfo(iter->second);
+                //GetInstance().m_playlist[i] = iter->second;
+                //GetInstance().m_playlist[i].file_name = file_name;
+                //GetInstance().m_playlist[i].file_path = iter->first;
                 continue;
             }
         }
-        wstring file_path{ pInfo->player->m_playlist[i].file_path };
+        wstring file_path{ GetInstance().m_playlist[i].file_path };
         HSTREAM hStream;
         hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-        pInfo->player->AcquireSongInfo(hStream, file_path, pInfo->player->m_playlist[i], pInfo->player->m_is_ous_folder);
+        GetInstance().AcquireSongInfo(hStream, file_path, GetInstance().m_playlist[i], GetInstance().m_is_ous_folder);
         BASS_StreamFree(hStream);
         count++;
     }
-    pInfo->player->m_loading = false;
-    pInfo->player->IniPlaylistComplate(pInfo->sort);
-    //pInfo->player->IniLyrics();
+    GetInstance().m_loading = false;
+    GetInstance().IniPlaylistComplate(pInfo->sort);
+    //GetInstance().IniLyrics();
     PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
     return 0;
 }

@@ -47,4 +47,9 @@ public:
     afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
     virtual void OnOK();
     afx_msg void OnBnClickedNewPlaylist();
+    afx_msg void OnPlayPlaylist();
+    afx_msg void OnRenamePlaylist();
+    afx_msg void OnDeletePlaylist();
+    afx_msg void OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
 };

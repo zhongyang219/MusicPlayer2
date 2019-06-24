@@ -3379,6 +3379,7 @@ void CMusicPlayerDlg::OnRemoveFromPlaylist()
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().RemoveSongs(m_items_selected);
     CPlayer::GetInstance().SaveCurrentPlaylist();
+    ShowPlayList();
 }
 
 

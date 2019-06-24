@@ -33,7 +33,6 @@ public:
 		bool refresh_info;
 		bool sort;		//指示加载完播放列表后是否要排序
 		int process_percent;
-		CPlayer* player;
 	};
 	//初始化播放列表的工作线程函数
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);

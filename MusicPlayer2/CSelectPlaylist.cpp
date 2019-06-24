@@ -47,6 +47,11 @@ void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSelectPlaylistDlg::OnNMDblclkList1)
     ON_BN_CLICKED(IDC_NEW_PLAYLIST, &CSelectPlaylistDlg::OnBnClickedNewPlaylist)
+    ON_COMMAND(ID_PLAY_PLAYLIST, &CSelectPlaylistDlg::OnPlayPlaylist)
+    ON_COMMAND(ID_RENAME_PLAYLIST, &CSelectPlaylistDlg::OnRenamePlaylist)
+    ON_COMMAND(ID_DELETE_PLAYLIST, &CSelectPlaylistDlg::OnDeletePlaylist)
+    ON_NOTIFY(NM_CLICK, IDC_LIST1, &CSelectPlaylistDlg::OnNMClickList1)
+    ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CSelectPlaylistDlg::OnNMRClickList1)
 END_MESSAGE_MAP()
 
 
@@ -181,8 +186,8 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
 {
     // TODO: 在此添加控件通知处理程序代码
     CImputDlg imput_dlg;
-    imput_dlg.SetTitle(_T("新建播放列表"));
-    imput_dlg.SetInfoText(_T("输入播放列表名称："));
+    imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
+    imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
@@ -190,4 +195,59 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
         ShowPathList();
     }
+}
+
+
+void CSelectPlaylistDlg::OnPlayPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, 0);
+}
+
+
+void CSelectPlaylistDlg::OnRenamePlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    //CImputDlg imput_dlg;
+    //imput_dlg.SetTitle(CCommon::LoadText(IDS_RENAME_PLAYLIST));
+    //imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
+    //if (imput_dlg.DoModal() == IDOK)
+    //{
+    //    CString playlist_name = imput_dlg.GetEditText();
+
+    //    int index = m_row_selected - 1;
+    //    if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
+    //    {
+    //        wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
+    //        CCommon::
+
+    //        CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].
+    //    }
+
+    //    ShowPathList();
+    //}
+}
+
+
+void CSelectPlaylistDlg::OnDeletePlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CSelectPlaylistDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    m_row_selected = pNMItemActivate->iItem;
+    *pResult = 0;
+}
+
+
+void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    m_row_selected = pNMItemActivate->iItem;
+    *pResult = 0;
 }
