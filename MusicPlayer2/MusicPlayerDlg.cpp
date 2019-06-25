@@ -1354,7 +1354,8 @@ void CMusicPlayerDlg::OnSetPath()
     if (!dialog_exist)		//确保对话框已经存在时不再弹出
     {
         dialog_exist = true;
-        CMediaLibDlg media_lib_dlg;
+        int cur_tab{ CPlayer::GetInstance().IsFromPlaylist() ? 1 : 0 };
+        CMediaLibDlg media_lib_dlg{ cur_tab };
         media_lib_dlg.DoModal();
         dialog_exist = false;
     }
@@ -3347,7 +3348,15 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
     CSelectPlaylistDlg* pPathDlg = (CSelectPlaylistDlg*)wParam;
     if (pPathDlg != nullptr)
     {
-        CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), pPathDlg->GetTrack(), pPathDlg->GetPosition());
+        if(lParam == TRUE)      //当lParam为1时，播放默认的播放列表
+        {
+            auto default_playlist = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
+            CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
+        }
+        else
+        {
+            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), pPathDlg->GetTrack(), pPathDlg->GetPosition());
+        }
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
         //ShowTime();

@@ -39,6 +39,23 @@ void CPlaylistMgr::AddNewPlaylist(const wstring& path)
     m_recent_playlists.push_back(playlist_info);
 }
 
+bool CPlaylistMgr::DeletePlaylist(const wstring & path)
+{
+    auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [path](const PlaylistInfo& item) {
+        return item.path == path;
+    });
+
+    if (iter != m_recent_playlists.end())
+    {
+        m_recent_playlists.erase(iter);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void CPlaylistMgr::SavePlaylistData()
 {
     // 打开或者新建文件

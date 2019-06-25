@@ -19,6 +19,7 @@ public:
 
     void EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time);
     void AddNewPlaylist(const wstring& path);
+    bool DeletePlaylist(const wstring& path);
 
     void SavePlaylistData();
     void LoadPlaylistData();

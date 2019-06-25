@@ -284,5 +284,8 @@ public:
 	wstring GetCurrentFileType() { return m_current_file_type; }
 	bool IsOsuFolder() const { return m_is_ous_folder; }
     bool IsFromPlaylist() const { return m_from_playlist; }
+
+    void SetPlaylistPath(const wstring& playlist_path);
+    wstring GetPlaylistPath() const;
 };
 

@@ -967,6 +967,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     m_current_position.int2time(m_current_position_int);
     SetTitle();
     m_playlist_path = playlist_path;
+    EmplaceCurrentPlaylistToRecent();
 
     IniPlayList(true);
 }
@@ -2058,4 +2059,14 @@ wstring CPlayer::GetRelatedAlbumCover(const wstring& file_path, const SongInfo& 
     {
         return wstring();
     }
+}
+
+void CPlayer::SetPlaylistPath(const wstring& playlist_path)
+{
+    m_playlist_path = playlist_path;
+}
+
+wstring CPlayer::GetPlaylistPath() const
+{
+    return m_playlist_path;
 }

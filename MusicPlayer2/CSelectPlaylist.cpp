@@ -225,10 +225,15 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
         int index = m_row_selected - 1;
         if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
         {
-            wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
-            wstring new_path = CCommon::FileRename(playlist_path, wstring(playlist_name));
+            wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;      //播放列表重命名前的路径
+            wstring new_path = CCommon::FileRename(playlist_path, wstring(playlist_name));                          //播放列表后命名后的路径
 
             CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path = new_path;
+
+            if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())          //如果重命名的播放是当前播放的播放列表，就重新设置当前播放列表的路径
+            {
+                CPlayer::GetInstance().SetPlaylistPath(new_path);
+            }
             CPlayer::GetInstance().GetRecentPlaylist().SavePlaylistData();
         }
 
@@ -240,6 +245,17 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
 void CSelectPlaylistDlg::OnDeletePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
+    int index = m_row_selected - 1;
+    if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
+    {
+        wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
+        if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())      //如果删除的是正在播放的播放列表，则播放默认播放列表
+        {
+            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, TRUE);
+        }
+        CPlayer::GetInstance().GetRecentPlaylist().DeletePlaylist(playlist_path);
+        CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
+    }
 }
 
 

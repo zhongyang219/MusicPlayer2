@@ -10,7 +10,7 @@ class CMediaLibDlg : public CDialog
 	DECLARE_DYNAMIC(CMediaLibDlg)
 
 public:
-	CMediaLibDlg(CWnd* pParent = nullptr);   // 标准构造函数
+	CMediaLibDlg(int cur_tab = 0, CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CMediaLibDlg();
 
 // 对话框数据
@@ -30,6 +30,7 @@ protected:
 private:
     CTabCtrlEx m_tab_ctrl;
     CSize m_min_size{};
+    int m_init_tab{};
 
 public:
     virtual BOOL OnInitDialog();

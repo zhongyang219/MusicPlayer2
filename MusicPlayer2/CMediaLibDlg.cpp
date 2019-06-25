@@ -11,8 +11,8 @@
 
 IMPLEMENT_DYNAMIC(CMediaLibDlg, CDialog)
 
-CMediaLibDlg::CMediaLibDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_MEDIA_LIB_DIALOG, pParent)
+CMediaLibDlg::CMediaLibDlg(int cur_tab, CWnd* pParent /*=nullptr*/)
+	: CDialog(IDD_MEDIA_LIB_DIALOG, pParent), m_init_tab(cur_tab)
 {
 
 }
@@ -61,7 +61,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     //添加对话框
     m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
     m_tab_ctrl.AddWindow(&m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
-    m_tab_ctrl.SetCurTab(0);
+    m_tab_ctrl.SetCurTab(m_init_tab);
 
     //获取初始时窗口的大小
     CRect rect;
