@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PlaylistMgr.h"
 #include "MusicPlayer2.h"
+#include <set>
 
 
 CPlaylistMgr::CPlaylistMgr()
@@ -97,7 +98,8 @@ void CPlaylistMgr::SavePlaylistData()
 
 void CPlaylistMgr::LoadPlaylistData()
 {
-    std::map<wstring, PlaylistInfo> playlist_map;
+    m_recent_playlists.clear();
+    std::vector<PlaylistInfo> playlist_info_vect;       //从数据获取到的播放列表信息
 
     // 打开文件
     CFile file;
@@ -111,7 +113,6 @@ void CPlaylistMgr::LoadPlaylistData()
     // 读数据
     unsigned int size{};
     CString temp;
-    int sort_mode;
     try
     {
         int version{};
@@ -131,13 +132,13 @@ void CPlaylistMgr::LoadPlaylistData()
             PlaylistInfo path_info;
             CString strTmp;
             ar >> strTmp;
-            //path_info.path = strTmp;
+            path_info.path = strTmp;
             ar >> path_info.track;
             ar >> path_info.position;
             ar >> path_info.track_num;
             ar >> path_info.total_time;
 
-            playlist_map[wstring(strTmp.GetString())] = path_info;
+            playlist_info_vect.push_back(path_info);
         }
     }
     catch (CArchiveException* exception)
@@ -152,27 +153,35 @@ void CPlaylistMgr::LoadPlaylistData()
     // 关闭文件
     file.Close();
 
-    //从playlist目录下查找播放列表文件
+    std::set<wstring> files_in_playlist_info;       //保存已添加的播放列表文件路径
+    for (const auto& playlist_info : playlist_info_vect)
+    {
+        wstring file_path{ theApp.m_playlist_dir + playlist_info.path + L".playlist" };
+        if (CCommon::FileExist(file_path))
+        {
+            CFilePathHelper path_helper{ file_path };
+            wstring file_name = path_helper.GetFileName();
+            if (file_name != DEFAULT_PLAYLIST_NAME)
+            {
+                m_recent_playlists.push_back(playlist_info);
+                files_in_playlist_info.insert(file_path);
+            }
+        }
+    }
+
+    //获取playlist目录下的播放列表文件
     vector<wstring> file_list;
     CCommon::GetFiles(theApp.m_playlist_dir + L"*.playlist", file_list);
+
     for (const auto& file : file_list)
     {
         CFilePathHelper path_helper{ theApp.m_playlist_dir + file };
         wstring file_name = path_helper.GetFileName();
-        wstring playlist_name = path_helper.GetFileNameWithoutExtension();
-        if(file_name == DEFAULT_PLAYLIST_NAME)
+        if(file_name == DEFAULT_PLAYLIST_NAME || files_in_playlist_info.find(path_helper.GetFilePath())!= files_in_playlist_info.end())
             continue;
 
         PlaylistInfo path_info;
         path_info.path = path_helper.GetFilePath();
-        auto iter = playlist_map.find(playlist_name);
-        if (iter != playlist_map.end())
-        {
-            path_info.position = iter->second.position;
-            path_info.total_time = iter->second.total_time;
-            path_info.track = iter->second.track;
-            path_info.track_num = iter->second.track_num;
-        }
         m_recent_playlists.push_back(path_info);
     }
     int a = 0;
