@@ -45,3 +45,13 @@ BOOL CTabDlg::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
+
+CWnd* CTabDlg::GetParentWindow()
+{
+    CWnd* pParent = GetParent();
+    if (pParent != nullptr)
+    {
+        return pParent->GetParent();
+    }
+    return nullptr;
+}

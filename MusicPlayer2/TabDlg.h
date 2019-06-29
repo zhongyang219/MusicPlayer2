@@ -8,6 +8,7 @@ public:
 	~CTabDlg();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual BOOL OnInitDialog();
+    CWnd* GetParentWindow();
 protected:
 	CWnd* m_pParent;
 };

@@ -180,7 +180,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DOCKED_PLAYLIST, &CMusicPlayerDlg::OnDockedPlaylist)
     ON_COMMAND(ID_FLOATED_PLAYLIST, &CMusicPlayerDlg::OnFloatedPlaylist)
     ON_MESSAGE(WM_FLOAT_PLAYLIST_CLOSED, &CMusicPlayerDlg::OnFloatPlaylistClosed)
-    ON_COMMAND(ID_FILE_OPEN_PALYLIST, &CMusicPlayerDlg::OnFileOpenPalylist)
+//    ON_COMMAND(ID_FILE_OPEN_PALYLIST, &CMusicPlayerDlg::OnFileOpenPalylist)
     ON_MESSAGE(WM_PLAYLIST_SELECTED, &CMusicPlayerDlg::OnPlaylistSelected)
     ON_COMMAND(ID_PLAYLIST_ADD_FILE, &CMusicPlayerDlg::OnPlaylistAddFile)
     ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
@@ -460,7 +460,11 @@ void CMusicPlayerDlg::ShowPlayList()
     //设置播放列表中突出显示的项目
     SetPlayListColor();
     //显示当前路径
-    m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetPlaylistName().c_str());
+    m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
+    if (CPlayer::GetInstance().IsFromPlaylist())
+        m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+    else
+        m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
 
     if (m_miniModeDlg.m_hWnd != NULL)
     {
@@ -1519,10 +1523,10 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 #ifdef _DEBUG
 				if (pMsg->wParam == 'Z')
 				{
-                    vector<wstring> files;
-                    files.push_back(L"D:\\Music\\纯音乐\\[.que] - Decide.mp3");
-                    files.push_back(L"D:\\Music\\小冰\\小冰 - 24小时之歌.mp3");
-                    CPlayer::GetInstance().OpenFiles(files, false);
+                    //vector<wstring> files;
+                    //files.push_back(L"D:\\Music\\纯音乐\\[.que] - Decide.mp3");
+                    //files.push_back(L"D:\\Music\\小冰\\小冰 - 24小时之歌.mp3");
+                    //CPlayer::GetInstance().OpenFiles(files, false);
                 }
 #endif
             }
@@ -3326,21 +3330,21 @@ LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 }
 
 
-void CMusicPlayerDlg::OnFileOpenPalylist()
-{
-    //设置过滤器
-    CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILTER);
-    //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, _T("playlist"), NULL, 0, szFilter, this);
-    //显示打开文件对话框
-    if (IDOK == fileDlg.DoModal())
-    {
-        CPlaylist playlist;
-        playlist.LoadFromFile(wstring(fileDlg.GetPathName()));
-        CPlayer::GetInstance().OpenFiles(playlist.GetPlaylist(), false);
-    }
-
-}
+//void CMusicPlayerDlg::OnFileOpenPalylist()
+//{
+//    //设置过滤器
+//    CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILTER);
+//    //构造打开文件对话框
+//    CFileDialog fileDlg(TRUE, _T("playlist"), NULL, 0, szFilter, this);
+//    //显示打开文件对话框
+//    if (IDOK == fileDlg.DoModal())
+//    {
+//        CPlaylist playlist;
+//        playlist.LoadFromFile(wstring(fileDlg.GetPathName()));
+//        CPlayer::GetInstance().OpenFiles(playlist.GetPlaylist(), false);
+//    }
+//
+//}
 
 
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam)

@@ -2,7 +2,6 @@
 #include "CTabCtrlEx.h"
 #include "CSelectPlaylist.h"
 
-
 // CMediaLibDlg 对话框
 
 class CMediaLibDlg : public CDialog
@@ -36,4 +35,6 @@ public:
     virtual BOOL OnInitDialog();
     afx_msg void OnBnClickedPlaySelected();
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+protected:
+    afx_msg LRESULT OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam);
 };

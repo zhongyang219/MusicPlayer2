@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Playlist.h"
 #include "Common.h"
+#include "FilePathHelper.h"
 
 
 CPlaylist::CPlaylist()
@@ -60,5 +61,17 @@ void CPlaylist::FromSongList(const vector<SongInfo>& song_list)
     {
         if(!song.file_path.empty())
             m_playlist.push_back(song.file_path);
+    }
+}
+
+void CPlaylist::ToSongList(vector<SongInfo>& song_list)
+{
+    for (const auto& file : m_playlist)
+    {
+        SongInfo song_info;
+        CFilePathHelper file_path{ file };
+        song_info.file_name = file_path.GetFileName();
+        song_info.file_path = file;
+        song_list.push_back(song_info);
     }
 }

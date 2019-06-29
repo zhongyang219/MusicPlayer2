@@ -43,6 +43,8 @@ private:
     void SetListRowData(int index, const PlaylistInfo& playlist_info);
     bool SelectValid() const;
     PlaylistInfo GetSelectedPlaylist() const;
+    void SetButtonsEnable();
+    bool SelectedCanPlay() const;
 
 public:
     afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
@@ -53,4 +55,5 @@ public:
     afx_msg void OnDeletePlaylist();
     afx_msg void OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };

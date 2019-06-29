@@ -52,6 +52,7 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
     ON_COMMAND(ID_DELETE_PLAYLIST, &CSelectPlaylistDlg::OnDeletePlaylist)
     ON_NOTIFY(NM_CLICK, IDC_LIST1, &CSelectPlaylistDlg::OnNMClickList1)
     ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CSelectPlaylistDlg::OnNMRClickList1)
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -74,6 +75,27 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     m_playlist_ctrl.InsertColumn(4, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[4]);
 
     ShowPathList();
+
+    if(CPlayer::GetInstance().IsFromPlaylist())
+    {
+        //正在播放的项目
+        int highlight_item;
+        if (CPlayer::GetInstance().GetRecentPlaylist().m_use_default_playlist)
+        {
+            highlight_item = 0;
+        }
+        else
+        {
+            auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
+            wstring current_playlist{ CPlayer::GetInstance().GetPlaylistPath() };
+            auto iter = std::find_if(recent_playlist.begin(), recent_playlist.end(), [current_playlist](const PlaylistInfo& playlist_info)
+            {
+                return current_playlist == playlist_info.path;
+            });
+            highlight_item = iter - recent_playlist.begin() + 1;
+        }
+        m_playlist_ctrl.SetHightItem(highlight_item);
+    }
 
     //初始化右键菜单
     m_menu.LoadMenu(IDR_SELETE_PLAYLIST_POPUP_MENU);
@@ -126,7 +148,10 @@ void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_
     m_playlist_ctrl.SetItemText(index, 1, playlist_name.c_str());
 
     CString str;
-    str.Format(_T("%d"), playlist_info.track + 1);
+    if (playlist_info.track_num <= 0)
+        str = _T("0");
+    else
+        str.Format(_T("%d"), playlist_info.track + 1);
     m_playlist_ctrl.SetItemText(index, 2, str);
 
     str.Format(_T("%d"), playlist_info.track_num);
@@ -156,6 +181,18 @@ PlaylistInfo CSelectPlaylistDlg::GetSelectedPlaylist() const
         return PlaylistInfo();
 }
 
+void CSelectPlaylistDlg::SetButtonsEnable()
+{
+    bool enable = SelectedCanPlay();
+    CWnd* pParent = GetParentWindow();
+    ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
+}
+
+bool CSelectPlaylistDlg::SelectedCanPlay() const
+{
+    return SelectValid() && (!CPlayer::GetInstance().IsFromPlaylist() || GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath());
+}
+
 void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
@@ -170,14 +207,14 @@ void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 void CSelectPlaylistDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
-    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, 0);
 
-    CTabDlg::OnOK();
-
-    CWnd* pParent = GetParent();
-    if (pParent != nullptr)
+    if(SelectedCanPlay())
     {
-        pParent = pParent->GetParent();
+        ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, 0);
+
+        CTabDlg::OnOK();
+
+        CWnd* pParent = GetParentWindow();
         if (pParent != nullptr)
             ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
@@ -255,6 +292,7 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         }
         CPlayer::GetInstance().GetRecentPlaylist().DeletePlaylist(playlist_path);
         CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
+        ShowPathList();
     }
 }
 
@@ -264,6 +302,8 @@ void CSelectPlaylistDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_row_selected = pNMItemActivate->iItem;
+    SetButtonsEnable();
+
     *pResult = 0;
 }
 
@@ -273,6 +313,7 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_row_selected = pNMItemActivate->iItem;
+    SetButtonsEnable();
 
     //弹出右键菜单
     CMenu* pContextMenu = m_menu.GetSubMenu(0);
@@ -281,4 +322,17 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
 
     *pResult = 0;
+}
+
+
+void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
+{
+    CTabDlg::OnInitMenu(pMenu);
+
+    // TODO: 在此处添加消息处理程序代码
+    bool is_not_default_playlist{ m_row_selected > 0 };
+    pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
+
 }

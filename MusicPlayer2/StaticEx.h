@@ -9,6 +9,7 @@ public:
 
 	void SetTextColor(COLORREF text_color);
 	void SetBackgroundColor(COLORREF back_color);
+    void SetWindowText(LPCTSTR lpszString);
 
 private:
 	COLORREF m_text_color{ GRAY(0) };

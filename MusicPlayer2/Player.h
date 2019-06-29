@@ -32,6 +32,7 @@ public:
 	{
 		bool refresh_info;
 		bool sort;		//指示加载完播放列表后是否要排序
+        bool play;      //加载完播放列表后是否立即播放
 		int process_percent;
 	};
 	//初始化播放列表的工作线程函数
@@ -129,9 +130,9 @@ private:
 private:
 	void IniBASS();			//初始化BASS音频库
 	void UnInitBASS();
-	void IniPlayList(bool cmd_para = false, bool refresh_info = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
+	void IniPlayList(bool cmd_para = false, bool refresh_info = false, bool play = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
-	void IniPlaylistComplate(bool sort);		//播放列表加载完毕时的处理
+	void IniPlaylistComplate();		//播放列表加载完毕时的处理
 
 	void ChangePath(const wstring& path, int track = 0);		//改变当前路径
 
@@ -217,7 +218,7 @@ public:
 	Time GetAllSongLength(int track) const;				//获取指定序号的歌曲的长度
 	int GetSongNum() const;			//获取歌曲总数
     wstring GetCurrentDir() const;   	//获取当前目录
-    wstring GetPlaylistName() const;
+    wstring GetCurrentFolderOrPlaylistName() const;
     wstring GetCurrentFilePath() const;		//获取正在播放文件的路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号
 	wstring GetFileName() const;

@@ -84,6 +84,9 @@ void CSetPathDlg::SetButtonsEnable(bool enable)
 {
 	//GetDlgItem(IDOK)->EnableWindow(enable);
 	//GetDlgItem(IDC_DELETE_PATH_BUTTON)->EnableWindow(enable);
+    CWnd* pParent = GetParentWindow();
+    if (pParent != nullptr)
+        ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
 }
 
 void CSetPathDlg::CalculateColumeWidth(vector<int>& width)
@@ -217,8 +220,6 @@ BOOL CSetPathDlg::OnInitDialog()
 
 	ShowPathList();
 	m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
-
-	SetButtonsEnable(false);
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
@@ -390,12 +391,10 @@ void CSetPathDlg::OnOK()
 		::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(),WM_PATH_SELECTED, (WPARAM)this, 0);
 	CTabDlg::OnOK();
 
-    CWnd* pParent = GetParent();
+    CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
     {
-        pParent = pParent->GetParent();
-        if(pParent!=nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 

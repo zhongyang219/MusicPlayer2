@@ -57,6 +57,32 @@ bool CPlaylistMgr::DeletePlaylist(const wstring & path)
     }
 }
 
+void CPlaylistMgr::UpdateCurrentPlaylist(int track, int pos, int track_num, int total_time)
+{
+    if (m_use_default_playlist)
+    {
+        m_default_playlist.track = track;
+        m_default_playlist.position = pos;
+        m_default_playlist.track_num = track_num;
+        m_default_playlist.total_time = total_time;
+    }
+    else
+    {
+        wstring current_playlist_path = CPlayer::GetInstance().GetPlaylistPath();
+        auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [current_playlist_path](const PlaylistInfo& playlist_info)
+        {
+            return playlist_info.path == current_playlist_path;
+        });
+        if (iter != m_recent_playlists.end())
+        {
+            iter->track = track;
+            iter->position = pos;
+            iter->track_num = track_num;
+            iter->total_time = total_time;
+        }
+    }
+}
+
 void CPlaylistMgr::SavePlaylistData()
 {
     // 打开或者新建文件
@@ -132,7 +158,7 @@ void CPlaylistMgr::LoadPlaylistData()
             PlaylistInfo path_info;
             CString strTmp;
             ar >> strTmp;
-            path_info.path = strTmp;
+            path_info.path = theApp.m_playlist_dir + strTmp.GetString() + L".playlist";
             ar >> path_info.track;
             ar >> path_info.position;
             ar >> path_info.track_num;
@@ -156,15 +182,14 @@ void CPlaylistMgr::LoadPlaylistData()
     std::set<wstring> files_in_playlist_info;       //保存已添加的播放列表文件路径
     for (const auto& playlist_info : playlist_info_vect)
     {
-        wstring file_path{ theApp.m_playlist_dir + playlist_info.path + L".playlist" };
-        if (CCommon::FileExist(file_path))
+        if (CCommon::FileExist(playlist_info.path))
         {
-            CFilePathHelper path_helper{ file_path };
+            CFilePathHelper path_helper{ playlist_info.path };
             wstring file_name = path_helper.GetFileName();
             if (file_name != DEFAULT_PLAYLIST_NAME)
             {
                 m_recent_playlists.push_back(playlist_info);
-                files_in_playlist_info.insert(file_path);
+                files_in_playlist_info.insert(playlist_info.path);
             }
         }
     }

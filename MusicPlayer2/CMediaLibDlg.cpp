@@ -31,6 +31,7 @@ void CMediaLibDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMediaLibDlg, CDialog)
     ON_BN_CLICKED(IDC_PLAY_SELECTED, &CMediaLibDlg::OnBnClickedPlaySelected)
     ON_WM_GETMINMAXINFO()
+    ON_MESSAGE(WM_PLAY_SELECTED_BTN_ENABLE, &CMediaLibDlg::OnPlaySelectedBtnEnable)
 END_MESSAGE_MAP()
 
 
@@ -69,6 +70,8 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_min_size.cx = rect.Width();
     m_min_size.cy = rect.Height();
 
+    OnPlaySelectedBtnEnable(0, 0);
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -93,4 +96,15 @@ void CMediaLibDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
     lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
 
     CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+
+afx_msg LRESULT CMediaLibDlg::OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam)
+{
+    bool enable = (wParam != 0);
+    CWnd* pBtn = GetDlgItem(IDC_PLAY_SELECTED);
+    if (pBtn != nullptr)
+        pBtn->EnableWindow(enable);
+
+    return 0;
 }

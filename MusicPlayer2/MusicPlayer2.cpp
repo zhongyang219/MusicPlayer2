@@ -230,7 +230,7 @@ BOOL CMusicPlayerApp::InitInstance()
         m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
 
     CMusicPlayerDlg dlg(cmd_line);
-    //CMusicPlayerDlg dlg(L"D:\\“Ù¿÷2\\Test\\1.wma \"D:\\“Ù¿÷2\\Test\\Sweety - ”£ª®≤›.mp3\"");
+    //CMusicPlayerDlg dlg(L"\"D:\\“Ù¿÷\\¥ø“Ù¿÷\\∞‡µ√»\\05. Chariots Of Fire ª’Ω≥µ.mp3\"");
     m_pMainWnd = &dlg;
     INT_PTR nResponse = dlg.DoModal();
     if (nResponse == IDOK)

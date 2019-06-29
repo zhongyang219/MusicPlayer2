@@ -22,6 +22,13 @@ void CStaticEx::SetBackgroundColor(COLORREF back_color)
 	m_back_color = back_color;
 	m_transparent = false;
 }
+
+void CStaticEx::SetWindowText(LPCTSTR lpszString)
+{
+    CWnd::SetWindowText(lpszString);
+    Invalidate();
+}
+
 BEGIN_MESSAGE_MAP(CStaticEx, CStatic)
 	ON_WM_PAINT()
 END_MESSAGE_MAP()

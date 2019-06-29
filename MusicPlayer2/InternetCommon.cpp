@@ -297,12 +297,16 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 	int n = srcString.size();
 	int m = matchString.size();
 	
+    const int MAX_LENGTH = 256;
+    if (n <= 0 || n > MAX_LENGTH || m <= 0 || m > MAX_LENGTH || std::abs(n - m) > MAX_LENGTH)      //如果要比较的字符串过长，则不计算
+        return 0;
+
 	//创建表
 	vector<vector<double>> d(n + 1, vector<double>(m + 1));
 	double cost; // cost
 
-	// Step 1（如果其中一个字符串长度为0，则相似度为1）？
-	if (n == 0 || m == 0) return 0.0;	//如果其中一个字符串长度为0，则相似度为0
+	//// Step 1（如果其中一个字符串长度为0，则相似度为1）？
+	//if (n == 0 || m == 0) return 0.0;	//如果其中一个字符串长度为0，则相似度为0
 
 	// Step 2，给表的第1行和第1列填入数字
 	for (int i = 0; i <= n; d[i][0] = i++);
