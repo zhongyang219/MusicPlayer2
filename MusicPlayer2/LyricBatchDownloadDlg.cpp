@@ -262,13 +262,13 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		wstring search_result;		//查找歌曲返回的结果
 		wstring lyric_str;			//下载好的歌词
 		wstring keyword;		//查找的关键字
-		if (pInfo->playlist->at(i).title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())		//如果没有标题信息，就把文件名设为搜索关键字
+		if (pInfo->playlist->at(i).IsTitleEmpty())		//如果没有标题信息，就把文件名设为搜索关键字
 		{
 			keyword = pInfo->playlist->at(i).file_name;
 			size_t index = keyword.rfind(L'.');		//查找最后一个点
 			keyword = keyword.substr(0, index);		//去掉扩展名
 		}
-		else if (pInfo->playlist->at(i).artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
+		else if (pInfo->playlist->at(i).IsArtistEmpty())	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
 		{
 			keyword = pInfo->playlist->at(i).title;
 		}

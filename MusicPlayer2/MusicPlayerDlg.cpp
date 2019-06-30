@@ -2627,7 +2627,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
     if (theApp.m_general_setting_data.auto_download_only_tag_full)		//设置了“仅当歌曲信息完整进才自动下载”时，如果歌曲标题和艺术家有一个为空，则不自动下载
     {
-        if ((song.title.empty() || song.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString()) || (song.artist.empty() || song.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
+        if (song.IsTitleEmpty() || song.IsArtistEmpty())
             return 0;
     }
 

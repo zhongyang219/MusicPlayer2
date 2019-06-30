@@ -428,13 +428,13 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	//设置搜索关键字
 	wstring search_result;		//查找歌曲返回的结果
 	wstring keyword;		//查找的关键字
-	if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())		//如果没有标题信息，就把文件名设为搜索关键字
+	if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() || title.empty())		//如果没有标题信息，就把文件名设为搜索关键字
 	{
 		keyword = file_name;
 		size_t index = keyword.rfind(L'.');		//查找最后一个点
 		keyword = keyword.substr(0, index);		//去掉扩展名
 	}
-	else if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
+	else if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString() || artist.empty())	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
 	{
 		keyword = title;
 	}

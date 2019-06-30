@@ -176,10 +176,8 @@ bool CAudioTag::GetID3V1Tag()
 		m_song_info.genre_idx = id3->genre;
 		
 		bool id3_empty;		//ID3V1标签信息是否为空
-		id3_empty = (m_song_info.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString()
-			&& m_song_info.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()
-			&& m_song_info.album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString()
-			&& m_song_info.track == 0 && m_song_info.year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString());
+		id3_empty = (m_song_info.IsTitleEmpty() && m_song_info.IsArtistEmpty() && m_song_info.IsAlbumEmpty()
+			&& m_song_info.track == 0 && m_song_info.IsYearEmpty());
 		success = !id3_empty;
 	}
 	else
@@ -268,10 +266,8 @@ bool CAudioTag::GetID3V2Tag()
 		CAudioCommon::TagStrNormalize(m_song_info.artist);
 		CAudioCommon::TagStrNormalize(m_song_info.album);
 		bool id3_empty;		//ID3标签信息是否为空
-		id3_empty = ((m_song_info.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() || m_song_info.title.empty())
-			&& (m_song_info.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString() || m_song_info.artist.empty())
-			&& (m_song_info.album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString() || m_song_info.album.empty())
-			&& m_song_info.track == 0 && m_song_info.year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString());
+		id3_empty = ((m_song_info.IsTitleEmpty()) && (m_song_info.IsArtistEmpty()) && (m_song_info.IsAlbumEmpty())
+			&& m_song_info.track == 0 && m_song_info.IsYearEmpty());
 		success = !id3_empty;
 
 	}

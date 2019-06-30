@@ -212,10 +212,10 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
                     index3 = cue_file_contents.find('\"', index2 + 1);
                     song_info.title = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1), code_type);
                 }
-                else
-                {
-                    song_info.title = CCommon::LoadText(IDS_DEFAULT_TITLE);
-                }
+                //else
+                //{
+                //    song_info.title = CCommon::LoadText(IDS_DEFAULT_TITLE);
+                //}
                 //查找曲目艺术家
                 index_artist = cue_file_contents.find("PERFORMER ", index_track + 6);
                 if (index_artist < next_track_index)
@@ -224,10 +224,10 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
                     index3 = cue_file_contents.find('\"', index2 + 1);
                     song_info.artist = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1), code_type);
                 }
-                else
-                {
-                    song_info.artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
-                }
+                //else
+                //{
+                //    song_info.artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
+                //}
                 //查找曲目位置
                 index_pos = cue_file_contents.find("INDEX ", index_track + 6);
                 index1 = cue_file_contents.find(":", index_pos + 6);
@@ -315,7 +315,7 @@ wstring CAudioCommon::GetGenre(BYTE genre)
     if (genre < GENRE_MAX)
         return GENRE_TABLE[genre];
     else
-        return CCommon::LoadText(IDS_DEFAULT_GENRE).GetString();
+        return wstring();
 }
 
 wstring CAudioCommon::GenreConvert(wstring genre)

@@ -8,17 +8,17 @@
 //一首歌曲的信息
 struct SongInfo
 {
-    SongInfo(bool ini = true)
-    {
-        if (ini)
-        {
-            title = CCommon::LoadText(IDS_DEFAULT_TITLE);
-            artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
-            album = CCommon::LoadText(IDS_DEFAULT_ALBUM);
-            year = CCommon::LoadText(IDS_DEFAULT_YEAR);
-            genre = CCommon::LoadText(IDS_DEFAULT_GENRE);
-        }
-    }
+    //SongInfo(bool ini = true)
+    //{
+    //    if (ini)
+    //    {
+    //        title = CCommon::LoadText(IDS_DEFAULT_TITLE);
+    //        artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
+    //        album = CCommon::LoadText(IDS_DEFAULT_ALBUM);
+    //        year = CCommon::LoadText(IDS_DEFAULT_YEAR);
+    //        genre = CCommon::LoadText(IDS_DEFAULT_GENRE);
+    //    }
+    //}
 
     wstring file_name{};	//歌曲的文件名
     wstring file_path{};

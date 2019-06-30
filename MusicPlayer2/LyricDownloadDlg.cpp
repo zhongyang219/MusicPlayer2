@@ -131,21 +131,22 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	LoadConfig();
 
+    const auto& song_info{ CPlayer::GetInstance().GetCurrentSongInfo() };
 	m_title = CPlayer::GetInstance().GetCurrentSongInfo().title;
 	m_artist = CPlayer::GetInstance().GetCurrentSongInfo().artist;
 	m_album = CPlayer::GetInstance().GetCurrentSongInfo().album;
 
-	if (m_title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())		//如果没有标题信息，就把文件名设为标题
+	if (song_info.IsTitleEmpty())		//如果没有标题信息，就把文件名设为标题
 	{
 		m_title = CPlayer::GetInstance().GetFileName();
 		size_t index = m_title.rfind(L'.');
 		m_title = m_title.substr(0, index);
 	}
-	if (m_artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())	//没有艺术家信息，清空艺术家的文本
+	if (song_info.IsArtistEmpty())	//没有艺术家信息，清空艺术家的文本
 	{
 		m_artist.clear();
 	}
-	if (m_album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())	//没有唱片集信息，清空唱片集的文本
+	if (song_info.IsAlbumEmpty())	//没有唱片集信息，清空唱片集的文本
 	{
 		m_album.clear();
 	}

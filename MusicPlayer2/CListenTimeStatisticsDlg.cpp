@@ -66,14 +66,14 @@ void CListenTimeStatisticsDlg::ShowData()
 		m_list_ctrl.InsertItem(index, std::to_wstring(index + 1).c_str());
 
 		CString str_track;
-		if (data.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() || CAudioCommon::GetAudioTypeByExtension(data.file_name) == AU_MIDI)
+		if (data.IsTitleEmpty() || CAudioCommon::GetAudioTypeByExtension(data.file_name) == AU_MIDI)
 		{
 			CFilePathHelper file_path(data.file_name);
 			str_track = file_path.GetFileName().c_str();
 		}
 		else
 		{
-			str_track = (data.artist + L" - " + data.title).c_str();
+			str_track = (data.GetArtist() + L" - " + data.GetTitle()).c_str();
 		}
 		m_list_ctrl.SetItemText(index, 1, str_track);
 		m_list_ctrl.SetItemText(index, 2, data.file_name.c_str());
