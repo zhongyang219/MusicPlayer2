@@ -13,6 +13,7 @@ public:
 	void GetItemSelected(vector<int>& item_selected) const;
 	int GetCurSel() const;		//获取当前选中的项目
 	void SetCurSel(int select);
+    void SetCurSel(int first, int last);
 	void SelectAll();
 	bool SetRowHeight(int height);		//设置表格行高
 

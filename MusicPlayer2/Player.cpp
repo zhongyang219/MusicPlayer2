@@ -1078,7 +1078,7 @@ void CPlayer::OpenAFile(wstring file)
     }
 
     //初始化播放列表
-    m_current_file_name_tmp = GetCurrentFileName();
+    m_current_file_name_tmp = file_path.GetFileName();
     IniPlayList(false, false);		//根据新路径重新初始化播放列表
 }
 
@@ -1387,6 +1387,48 @@ void CPlayer::ClearPlaylist()
     m_playlist.clear();
     //m_song_num = 0;
     MusicControl(Command::STOP);
+}
+
+bool CPlayer::MoveUp(int first, int last)
+{
+    if (!m_from_playlist)
+        return false;
+
+    if (first <= 0 || last >= GetSongNum() || last < first)
+        return false;
+    
+    if (m_index >= first && m_index <= last)
+        m_index--;
+    else if (m_index == first - 1)
+        m_index = last;
+
+    for (int i = first; i <= last; i++)
+    {
+        std::swap(m_playlist[i - 1], m_playlist[i]);
+    }
+    SaveCurrentPlaylist();
+    return true;
+}
+
+bool CPlayer::MoveDown(int first, int last)
+{
+    if (!m_from_playlist)
+        return false;
+    
+    if (first < 0 || last >= GetSongNum() - 1 || last < first)
+        return false;
+
+    if (m_index >= first && m_index <= last)
+        m_index++;
+    else if (m_index == last + 1)
+        m_index = first;
+
+    for (int i = last + 1; i > first; i--)
+    {
+        std::swap(m_playlist[i], m_playlist[i - 1]);
+    }
+    SaveCurrentPlaylist();
+    return true;
 }
 
 void CPlayer::SeekTo(int position)

@@ -185,7 +185,10 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_ADD_FILE, &CMusicPlayerDlg::OnPlaylistAddFile)
     ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
     ON_COMMAND(ID_EMPTY_PLAYLIST, &CMusicPlayerDlg::OnEmptyPlaylist)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_UP, &CMusicPlayerDlg::OnMovePlaylistItemUp)
+        ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_DOWN, &CMusicPlayerDlg::OnMovePlaylistItemDown)
+        ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMClickPlaylistList)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -420,6 +423,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     CRect rect_select_folder{ rect_edit };
     rect_select_folder.left = rect_edit.right + m_layout.margin;
     rect_select_folder.right = cx - m_layout.margin;
+    rect_select_folder.top--;
+    rect_select_folder.bottom++;
     m_set_path_button.MoveWindow(rect_select_folder);
 
     //设置歌曲搜索框的大小和位置
@@ -764,6 +769,10 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
 
+    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched;
+    pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
+
     //打开菜单时，如果播放列表中没有歌曲，则禁用主菜单和右键菜单中的“打开文件位置”项目
     if (CPlayer::GetInstance().GetSongNum() == 0)
     {
@@ -890,6 +899,23 @@ void CMusicPlayerDlg::HideFloatPlaylist()
 {
     OnFloatPlaylistClosed(0, 0);
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
+}
+
+void CMusicPlayerDlg::GetPlaylistItemSelected()
+{
+    if (!m_searched)
+    {
+        m_item_selected = m_playlist_list.GetCurSel();	//获取鼠标选中的项目
+        m_playlist_list.GetItemSelected(m_items_selected);		//获取多个选中的项目
+    }
+    else
+    {
+        CString str;
+        str = m_playlist_list.GetItemText(m_playlist_list.GetCurSel(), 0);
+        m_item_selected = _ttoi(str) - 1;
+        m_playlist_list.GetItemSelectedSearched(m_items_selected);
+    }
+
 }
 
 BOOL CMusicPlayerDlg::OnInitDialog()
@@ -1515,6 +1541,16 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             if (pMsg->wParam == 'K')		//设置按Ctr+K显示浮动播放列表
             {
                 OnFloatPlaylist();
+                return TRUE;
+            }
+            if (pMsg->wParam == VK_UP)
+            {
+                OnMovePlaylistItemUp();
+                return TRUE;
+            }
+            if (pMsg->wParam == VK_DOWN)
+            {
+                OnMovePlaylistItemDown();
                 return TRUE;
             }
             if (GetKeyState(VK_SHIFT) & 0x8000)
@@ -3405,4 +3441,55 @@ void CMusicPlayerDlg::OnEmptyPlaylist()
         CPlayer::GetInstance().SaveCurrentPlaylist();
         ShowPlayList();
     }
+}
+
+
+void CMusicPlayerDlg::OnMovePlaylistItemUp()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_items_selected.empty())
+        return;
+
+    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched;
+    if (!move_enable)
+        return;
+
+    int first = m_items_selected.front();
+    int last = m_items_selected.back();
+    if(CPlayer::GetInstance().MoveUp(first, last))
+    {
+        ShowPlayList();
+        m_playlist_list.SetCurSel(first - 1, last - 1);
+        GetPlaylistItemSelected();
+    }
+}
+
+
+void CMusicPlayerDlg::OnMovePlaylistItemDown()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_items_selected.empty())
+        return;
+
+    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched;
+    if (!move_enable)
+        return;
+
+    int first = m_items_selected.front();
+    int last = m_items_selected.back();
+    if(CPlayer::GetInstance().MoveDown(first, last))
+    {
+        ShowPlayList();
+        m_playlist_list.SetCurSel(first + 1, last + 1);
+        GetPlaylistItemSelected();
+    }
+}
+
+
+void CMusicPlayerDlg::OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    GetPlaylistItemSelected();
+    *pResult = 0;
 }

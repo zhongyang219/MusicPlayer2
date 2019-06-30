@@ -66,6 +66,18 @@ void CListCtrlEx::SetCurSel(int select)
 	}
 }
 
+void CListCtrlEx::SetCurSel(int first, int last)
+{
+    int itemCnt = GetItemCount();
+    if (first >= 0 && last < itemCnt && first <= last)
+    {
+        for (int i = first; i <= last; i++)
+        {
+            SetItemState(i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+        }
+    }
+}
+
 void CListCtrlEx::SelectAll()
 {
 	int itemCnt = GetItemCount();

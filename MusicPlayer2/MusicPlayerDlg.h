@@ -154,6 +154,8 @@ protected:
     void ShowFloatPlaylist();
     void HideFloatPlaylist();
 
+    void GetPlaylistItemSelected();
+
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -313,4 +315,7 @@ public:
     afx_msg void OnPlaylistAddFile();
     afx_msg void OnRemoveFromPlaylist();
     afx_msg void OnEmptyPlaylist();
+    afx_msg void OnMovePlaylistItemUp();
+    afx_msg void OnMovePlaylistItemDown();
+    afx_msg void OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
 };

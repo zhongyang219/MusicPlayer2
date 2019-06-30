@@ -403,6 +403,7 @@ void CPlayerUIBase::MouseLeave()
     for (auto& btn : m_buttons)
     {
         btn.second.hover = false;
+        btn.second.pressed = false;
     }
 }
 
@@ -676,6 +677,9 @@ CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
 
 void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & icon)
 {
+    if(btn.pressed)
+        rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
+
     CRect rc_tmp = rect;
     //rc_tmp.DeflateRect(DPI(2), DPI(2));
     m_draw.SetDrawArea(rc_tmp);
@@ -700,11 +704,6 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & ico
     CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
-    if (btn.pressed)
-    {
-        rc_tmp.left += theApp.DPI(1);
-        rc_tmp.top += theApp.DPI(1);
-    }
     rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.bottom = rc_tmp.top + icon_size.cy;
 
@@ -715,6 +714,9 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & ico
 
 void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes & icon)
 {
+    if (btn.pressed)
+        rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
+
     CRect rc_tmp = rect;
     m_draw.SetDrawArea(rc_tmp);
 
@@ -738,11 +740,6 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
     CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
-    if (btn.pressed)
-    {
-        rc_tmp.left += theApp.DPI(1);
-        rc_tmp.top += theApp.DPI(1);
-    }
     rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.bottom = rc_tmp.top + icon_size.cy;
 
@@ -760,11 +757,18 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, boo
         else
             alpha = 255;
         if (btn.pressed)
+        {
+            rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
             m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
+        }
         else if (btn.hover)
+        {
             m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
+        }
         else if (back_color)
+        {
             m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
+        }
         m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
     }
     else
