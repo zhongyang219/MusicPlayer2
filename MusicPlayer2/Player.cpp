@@ -239,6 +239,12 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info, bool play)
         m_index_tmp = m_index;		//保存歌曲序号
         if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 
+        m_song_length = { 0, 0, 0 };
+        if (GetSongNum() == 0)
+        {
+            m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
+        }
+
         m_loading = true;
         //m_thread_info.playlist = &m_playlist;
         m_thread_info.refresh_info = refresh_info;
@@ -247,14 +253,6 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info, bool play)
         //m_thread_info.path = m_path;
         //创建初始化播放列表的工作线程
         m_pThread = AfxBeginThread(IniPlaylistThreadFunc, &m_thread_info);
-
-        m_song_length = { 0, 0, 0 };
-        //m_current_position = {0,0,0};
-        if (GetSongNum() == 0)
-        {
-            m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
-        }
-        //m_current_file_name = m_playlist[m_index].file_name;
     }
 }
 
@@ -1010,7 +1008,8 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
         MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
-        SaveCurrentPlaylist();
+        if (!m_from_playlist || !m_recent_playlist.m_use_default_playlist)
+            SaveCurrentPlaylist();
         EmplaceCurrentPlaylistToRecent();
     }
 
@@ -1025,7 +1024,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     playlist.ToSongList(m_playlist);
 
     //将播放的文件添加到默认播放列表
-    int play_index = -1;        //播放的序号
+    int play_index = GetSongNum();        //播放的序号
     for (const auto& file : files)
     {
         SongInfo song_info;
@@ -1043,14 +1042,12 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
         else
             play_index = iter - m_playlist.begin();
     }
-    if (play_index >= 0)
-        m_index = play_index;
-    else
-        m_index = GetSongNum();
+    m_index = play_index;
 
     m_current_position_int = 0;
     m_current_position = Time();
 
+    SaveCurrentPlaylist();
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 
     IniPlayList(true, false, play);
@@ -1340,6 +1337,11 @@ void CPlayer::ReloadPlaylist()
     }
     else
     {
+        m_playlist.clear();
+        CPlaylist playlist;
+        playlist.LoadFromFile(m_playlist_path);
+        playlist.ToSongList(m_playlist);
+
         IniPlayList(true, true);
     }
 }

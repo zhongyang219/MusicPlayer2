@@ -699,8 +699,13 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & ico
     //使图标在矩形中居中
     CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
-    rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
+    if (btn.pressed)
+    {
+        rc_tmp.left += theApp.DPI(1);
+        rc_tmp.top += theApp.DPI(1);
+    }
+    rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.bottom = rc_tmp.top + icon_size.cy;
 
     const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, theApp.m_ui_data.full_screen);
@@ -732,8 +737,13 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
     //使图标在矩形中居中
     CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
-    rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
+    if (btn.pressed)
+    {
+        rc_tmp.left += theApp.DPI(1);
+        rc_tmp.top += theApp.DPI(1);
+    }
+    rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.bottom = rc_tmp.top + icon_size.cy;
 
     const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, theApp.m_ui_data.full_screen);

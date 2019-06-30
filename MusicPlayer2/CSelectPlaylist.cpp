@@ -231,7 +231,7 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
-        wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + L".playlist";
+        wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
         ShowPathList();
     }

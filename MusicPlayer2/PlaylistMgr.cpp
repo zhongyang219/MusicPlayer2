@@ -158,7 +158,7 @@ void CPlaylistMgr::LoadPlaylistData()
             PlaylistInfo path_info;
             CString strTmp;
             ar >> strTmp;
-            path_info.path = theApp.m_playlist_dir + strTmp.GetString() + L".playlist";
+            path_info.path = theApp.m_playlist_dir + strTmp.GetString() + PLAYLIST_EXTENSION;
             ar >> path_info.track;
             ar >> path_info.position;
             ar >> path_info.track_num;
@@ -196,7 +196,7 @@ void CPlaylistMgr::LoadPlaylistData()
 
     //获取playlist目录下的播放列表文件
     vector<wstring> file_list;
-    CCommon::GetFiles(theApp.m_playlist_dir + L"*.playlist", file_list);
+    CCommon::GetFiles(theApp.m_playlist_dir + L'*' + PLAYLIST_EXTENSION, file_list);
 
     for (const auto& file : file_list)
     {
@@ -209,5 +209,4 @@ void CPlaylistMgr::LoadPlaylistData()
         path_info.path = path_helper.GetFilePath();
         m_recent_playlists.push_back(path_info);
     }
-    int a = 0;
 }

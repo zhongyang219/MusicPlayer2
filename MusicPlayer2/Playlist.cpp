@@ -29,7 +29,7 @@ void CPlaylist::LoadFromFile(const wstring & file_path)
             current_line.pop_back();
 
         if(current_line.size()>3)
-            m_playlist.push_back(CCommon::StrToUnicode(current_line, CodeType::UTF8));
+            m_playlist.push_back(CCommon::StrToUnicode(current_line, CodeType::UTF8_NO_BOM));
     }
 
 }
@@ -39,7 +39,7 @@ void CPlaylist::SaveToFile(const wstring & file_path) const
     ofstream stream{ file_path };
     for (const auto& item : m_playlist)
     {
-        stream << CCommon::UnicodeToStr(item, CodeType::UTF8) << std::endl;
+        stream << CCommon::UnicodeToStr(item, CodeType::UTF8_NO_BOM) << std::endl;
     }
 }
 
