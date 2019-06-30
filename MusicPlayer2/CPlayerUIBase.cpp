@@ -645,10 +645,13 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     rc_tmp.right = rc_tmp.left;
     rc_tmp.left = rc_tmp.right - DPI(72);
     swprintf_s(buff, CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
+    CRect rc_vol{ rc_tmp };
+    if (m_buttons[BTN_VOLUME].pressed)
+        rc_vol.MoveToXY(rc_vol.left + theApp.DPI(1), rc_vol.top + theApp.DPI(1));
     if (m_buttons[BTN_VOLUME].hover)		//鼠标指向音量区域时，以另外一种颜色显示
-        m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_heighlight);
+        m_draw.DrawWindowText(rc_vol, buff, m_colors.color_text_heighlight);
     else
-        m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
+        m_draw.DrawWindowText(rc_vol, buff, m_colors.color_text);
     //设置音量调整按钮的位置
     m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
     m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
@@ -659,8 +662,6 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + m_buttons[BTN_VOLUME].rect.Width() / 2;
     m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
     m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
-
-
 }
 
 CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
@@ -961,6 +962,11 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
 
         m_draw.FillAlphaRect(volume_up_rect, btn_up_back_color, alpha);
         m_draw.FillAlphaRect(volume_down_rect, btn_down_back_color, alpha);
+
+        if (m_buttons[BTN_VOLUME_DOWN].pressed)
+            volume_down_rect.MoveToXY(volume_down_rect.left + theApp.DPI(1), volume_down_rect.top + theApp.DPI(1));
+        if (m_buttons[BTN_VOLUME_UP].pressed)
+            volume_up_rect.MoveToXY(volume_up_rect.left + theApp.DPI(1), volume_up_rect.top + theApp.DPI(1));
 
         m_draw.DrawWindowText(volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
         m_draw.DrawWindowText(volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
