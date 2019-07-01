@@ -185,10 +185,10 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_ADD_FILE, &CMusicPlayerDlg::OnPlaylistAddFile)
     ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
     ON_COMMAND(ID_EMPTY_PLAYLIST, &CMusicPlayerDlg::OnEmptyPlaylist)
-        ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_UP, &CMusicPlayerDlg::OnMovePlaylistItemUp)
-        ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_DOWN, &CMusicPlayerDlg::OnMovePlaylistItemDown)
-        ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMClickPlaylistList)
-        END_MESSAGE_MAP()
+    ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_UP, &CMusicPlayerDlg::OnMovePlaylistItemUp)
+    ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_DOWN, &CMusicPlayerDlg::OnMovePlaylistItemDown)
+    ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMClickPlaylistList)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -769,7 +769,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
 
-    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched;
+    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
 
@@ -3459,7 +3459,10 @@ void CMusicPlayerDlg::OnMovePlaylistItemUp()
     if(CPlayer::GetInstance().MoveUp(first, last))
     {
         ShowPlayList();
-        m_playlist_list.SetCurSel(first - 1, last - 1);
+        if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
+            m_playlist_list.SetCurSel(first - 1, last - 1);
+        else
+            m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(first - 1, last - 1);
         GetPlaylistItemSelected();
     }
 }
@@ -3480,7 +3483,10 @@ void CMusicPlayerDlg::OnMovePlaylistItemDown()
     if(CPlayer::GetInstance().MoveDown(first, last))
     {
         ShowPlayList();
-        m_playlist_list.SetCurSel(first + 1, last + 1);
+        if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
+            m_playlist_list.SetCurSel(first + 1, last + 1);
+        else
+            m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(first + 1, last + 1);
         GetPlaylistItemSelected();
     }
 }

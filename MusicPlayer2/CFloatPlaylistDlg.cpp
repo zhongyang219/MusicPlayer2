@@ -83,6 +83,11 @@ void CFloatPlaylistDlg::RefreshState()
     m_playlist_ctrl.Invalidate(FALSE);
 }
 
+CListCtrlEx & CFloatPlaylistDlg::GetListCtrl()
+{
+    return m_playlist_ctrl;
+}
+
 bool CFloatPlaylistDlg::Initilized() const
 {
     return m_playlist_ctrl.GetSafeHwnd() != NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
@@ -109,6 +114,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CFloatPlaylistDlg::OnBnClickedClearSearchButton)
     ON_WM_CLOSE()
     ON_WM_GETMINMAXINFO()
+    ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMClickPlaylistList)
 END_MESSAGE_MAP()
 
 
@@ -272,4 +278,47 @@ void CFloatPlaylistDlg::OnGetMinMaxInfo(MINMAXINFO * lpMMI)
     lpMMI->ptMinTrackSize.y = theApp.DPI(228);		//设置最小高度
 
     CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+void CFloatPlaylistDlg::OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    if (!m_searched)
+    {
+        m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
+        m_playlist_ctrl.GetItemSelected(m_items_selected);		//获取多个选中的项目
+    }
+    else
+    {
+        CString str;
+        str = m_playlist_ctrl.GetItemText(pNMItemActivate->iItem, 0);
+        m_item_selected = _ttoi(str) - 1;
+        m_playlist_ctrl.GetItemSelectedSearched(m_items_selected);
+    }
+    *pResult = 0;
+}
+
+
+BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+    {
+        //按下Ctrl键时
+        if (GetKeyState(VK_CONTROL) & 0x80)
+        {
+            if (pMsg->wParam == VK_UP)
+            {
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_UP, 0);
+                return TRUE;
+            }
+            if (pMsg->wParam == VK_DOWN)
+            {
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
+                return TRUE;
+            }
+        }
+    }
+    return CDialog::PreTranslateMessage(pMsg);
 }

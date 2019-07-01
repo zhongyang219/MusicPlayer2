@@ -71,9 +71,12 @@ void CListCtrlEx::SetCurSel(int first, int last)
     int itemCnt = GetItemCount();
     if (first >= 0 && last < itemCnt && first <= last)
     {
-        for (int i = first; i <= last; i++)
+        for (int i = 0; i < itemCnt; i++)
         {
-            SetItemState(i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+            if(i>=first && i<=last)
+                SetItemState(i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+            else
+                SetItemState(i, 0, LVIS_SELECTED);
         }
     }
 }
