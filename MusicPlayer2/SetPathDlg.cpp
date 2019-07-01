@@ -122,7 +122,7 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
 
 bool CSetPathDlg::IsSelectedPlayEnable() const
 {
-	return !m_recent_path.empty() && SelectValid() && GetSelPath() != CPlayer::GetInstance().GetCurrentDir();
+	return !m_recent_path.empty() && (SelectValid() && GetSelPath() != CPlayer::GetInstance().GetCurrentDir() || CPlayer::GetInstance().IsFromPlaylist());
 }
 
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)

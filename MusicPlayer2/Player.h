@@ -235,6 +235,7 @@ public:
 
 	void RemoveSong(int index);		//从播放列表中删除指定的项目
 	void RemoveSongs(vector<int> indexes);	//从播放列表中删除多个指定的项目
+    bool RemoveSameSongs();         //从播放列表中删除相同的曲目
 	void ClearPlaylist();			//清空播放列表
     bool MoveUp(int first, int last);        //将指定范围内的项目上移
     bool MoveDown(int first, int last);      //将指定范围内的项目下移

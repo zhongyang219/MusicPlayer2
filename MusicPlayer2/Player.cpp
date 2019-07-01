@@ -1381,6 +1381,23 @@ void CPlayer::RemoveSongs(vector<int> indexes)
     }
 }
 
+bool CPlayer::RemoveSameSongs()
+{
+    bool removed = false;
+    for (int i = 0; i < GetSongNum(); i++)
+    {
+        for (int j = i + 1; j < GetSongNum(); j++)
+        {
+            if (m_playlist[i].file_path == m_playlist[j].file_path)
+            {
+                RemoveSong(j);
+                removed = true;
+            }
+        }
+    }
+    return removed;
+}
+
 void CPlayer::ClearPlaylist()
 {
     if (m_loading) return;
@@ -1607,6 +1624,7 @@ void CPlayer::SortPlaylist(bool change_index)
             }
         }
     }
+    SaveCurrentPlaylist();
 }
 
 

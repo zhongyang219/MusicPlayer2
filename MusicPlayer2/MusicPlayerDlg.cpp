@@ -188,6 +188,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_UP, &CMusicPlayerDlg::OnMovePlaylistItemUp)
     ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_DOWN, &CMusicPlayerDlg::OnMovePlaylistItemDown)
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMClickPlaylistList)
+    ON_COMMAND(ID_REMOVE_SAME_SONGS, &CMusicPlayerDlg::OnRemoveSameSongs)
 END_MESSAGE_MAP()
 
 
@@ -768,6 +769,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
     pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_REMOVE_SAME_SONGS, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
 
     bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
@@ -3508,4 +3510,13 @@ void CMusicPlayerDlg::OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
     // TODO: 在此添加控件通知处理程序代码
     GetPlaylistItemSelected();
     *pResult = 0;
+}
+
+
+void CMusicPlayerDlg::OnRemoveSameSongs()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().RemoveSameSongs();
+    CPlayer::GetInstance().SaveCurrentPlaylist();
+    ShowPlayList();
 }
