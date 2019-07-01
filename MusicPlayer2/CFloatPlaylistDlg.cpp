@@ -88,6 +88,23 @@ CListCtrlEx & CFloatPlaylistDlg::GetListCtrl()
     return m_playlist_ctrl;
 }
 
+void CFloatPlaylistDlg::GetPlaylistItemSelected()
+{
+    if (!m_searched)
+    {
+        m_item_selected = m_playlist_ctrl.GetCurSel();	//获取鼠标选中的项目
+        m_playlist_ctrl.GetItemSelected(m_items_selected);		//获取多个选中的项目
+    }
+    else
+    {
+        CString str;
+        str = m_playlist_ctrl.GetItemText(m_playlist_ctrl.GetCurSel(), 0);
+        m_item_selected = _ttoi(str) - 1;
+        m_playlist_ctrl.GetItemSelectedSearched(m_items_selected);
+    }
+
+}
+
 bool CFloatPlaylistDlg::Initilized() const
 {
     return m_playlist_ctrl.GetSafeHwnd() != NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
@@ -115,6 +132,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_WM_CLOSE()
     ON_WM_GETMINMAXINFO()
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMClickPlaylistList)
+    ON_MESSAGE(WM_INITMENU, &CFloatPlaylistDlg::OnInitmenu)
 END_MESSAGE_MAP()
 
 
@@ -284,18 +302,7 @@ void CFloatPlaylistDlg::OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    if (!m_searched)
-    {
-        m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
-        m_playlist_ctrl.GetItemSelected(m_items_selected);		//获取多个选中的项目
-    }
-    else
-    {
-        CString str;
-        str = m_playlist_ctrl.GetItemText(pNMItemActivate->iItem, 0);
-        m_item_selected = _ttoi(str) - 1;
-        m_playlist_ctrl.GetItemSelectedSearched(m_items_selected);
-    }
+    GetPlaylistItemSelected();
     *pResult = 0;
 }
 
@@ -321,4 +328,11 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
         }
     }
     return CDialog::PreTranslateMessage(pMsg);
+}
+
+
+afx_msg LRESULT CFloatPlaylistDlg::OnInitmenu(WPARAM wParam, LPARAM lParam)
+{
+    theApp.m_pMainWnd->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
+    return 0;
 }

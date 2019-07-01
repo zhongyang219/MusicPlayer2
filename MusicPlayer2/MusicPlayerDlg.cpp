@@ -3460,10 +3460,15 @@ void CMusicPlayerDlg::OnMovePlaylistItemUp()
     {
         ShowPlayList();
         if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
+        {
             m_playlist_list.SetCurSel(first - 1, last - 1);
+            GetPlaylistItemSelected();
+        }
         else
+        {
             m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(first - 1, last - 1);
-        GetPlaylistItemSelected();
+            m_pFloatPlaylistDlg->GetPlaylistItemSelected();
+        }
     }
 }
 
@@ -3484,10 +3489,15 @@ void CMusicPlayerDlg::OnMovePlaylistItemDown()
     {
         ShowPlayList();
         if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
+        {
             m_playlist_list.SetCurSel(first + 1, last + 1);
+            GetPlaylistItemSelected();
+        }
         else
+        {
             m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(first + 1, last + 1);
-        GetPlaylistItemSelected();
+            m_pFloatPlaylistDlg->GetPlaylistItemSelected();
+        }
     }
 }
 

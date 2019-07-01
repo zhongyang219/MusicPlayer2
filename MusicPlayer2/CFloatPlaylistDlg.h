@@ -24,6 +24,7 @@ public:
     void ReSizeControl(int cx, int cy);		//调整控件的大小和位置
     void RefreshState();		//刷新播放列表的状态
     CListCtrlEx& GetListCtrl();
+    void GetPlaylistItemSelected();
 
 private:
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
@@ -59,4 +60,6 @@ public:
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
     virtual BOOL PreTranslateMessage(MSG* pMsg);
+protected:
+    afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
 };
