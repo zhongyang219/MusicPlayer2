@@ -62,11 +62,12 @@ BOOL CImputDlg::OnInitDialog()
     SetWindowText(m_strTitle);
     SetDlgItemText(IDC_INFO_STATIC, m_strInfo);
 
-    CWnd* pEdit = GetDlgItem(IDC_INPUT_EDIT);
+    CEdit* pEdit = (CEdit*)GetDlgItem(IDC_INPUT_EDIT);
     if(pEdit!=nullptr)
     {
         pEdit->SetWindowText(m_strEdit);
         pEdit->SetFocus();		//初始时将焦点设置到输入框
+        pEdit->SetSel(0, -1);
     }
 
     return FALSE;  // return TRUE unless you set the focus to a control

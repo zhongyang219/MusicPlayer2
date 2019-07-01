@@ -232,6 +232,12 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
     {
         CString playlist_name = imput_dlg.GetEditText();
         wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
+        if (CCommon::FileExist(playlist_path))
+        {
+            MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_EXIST_WARNING, { playlist_name }), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
+
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
         ShowPathList();
     }
@@ -259,11 +265,20 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
     {
         CString playlist_name = imput_dlg.GetEditText();
 
+        if (CCommon::FileExist(theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION))
+        {
+            MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_EXIST_WARNING, { playlist_name }), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
+
         int index = m_row_selected - 1;
         if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
         {
             wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;      //播放列表重命名前的路径
             wstring new_path = CCommon::FileRename(playlist_path, wstring(playlist_name));                          //播放列表后命名后的路径
+
+            if (playlist_path == new_path)
+                return;
 
             CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path = new_path;
 
