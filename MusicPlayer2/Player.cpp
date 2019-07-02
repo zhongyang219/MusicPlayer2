@@ -663,6 +663,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
     default:
         break;
     }
+    GetBASSError();
 }
 
 bool CPlayer::SongIsOver() const
@@ -744,6 +745,7 @@ void CPlayer::SetVolume()
     float volume = static_cast<float>(m_volume) / 100.0f;
     volume = volume * theApp.m_nc_setting_data.volume_map / 100;
     BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, volume);
+    GetBASSError();
 }
 
 
@@ -1464,6 +1466,7 @@ void CPlayer::SeekTo(int position)
     BASS_ChannelSetPosition(m_musicStream, pos_bytes, BASS_POS_BYTE);
     m_midi_lyric.clear();
     GetMidiPosition();
+    GetBASSError();
 }
 
 void CPlayer::SeekTo(double position)
@@ -1478,6 +1481,7 @@ void CPlayer::SeekTo(HSTREAM hStream, int position)
     QWORD pos_bytes;
     pos_bytes = BASS_ChannelSeconds2Bytes(hStream, pos_sec);
     BASS_ChannelSetPosition(hStream, pos_bytes, BASS_POS_BYTE);
+    GetInstance().GetBASSError();
 }
 
 void CPlayer::ClearLyric()
@@ -1831,6 +1835,7 @@ void CPlayer::SetFXHandle()
     }
     //ÉèÖÃ»ìÏìµÄ¾ä±ú
     m_reverb_handle = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_REVERB, 1);
+    GetBASSError();
 }
 
 void CPlayer::RemoveFXHandle()
@@ -1851,6 +1856,7 @@ void CPlayer::RemoveFXHandle()
         BASS_ChannelRemoveFX(m_musicStream, m_reverb_handle);
         m_reverb_handle = 0;
     }
+    GetBASSError();
 }
 
 void CPlayer::ApplyEqualizer(int channel, int gain)
@@ -1864,6 +1870,7 @@ void CPlayer::ApplyEqualizer(int channel, int gain)
     parameq.fCenter = FREQ_TABLE[channel];
     parameq.fGain = static_cast<float>(gain);
     BASS_FXSetParameters(m_equ_handle[channel], &parameq);
+    GetBASSError();
 }
 
 void CPlayer::SetEqualizer(int channel, int gain)
@@ -1923,6 +1930,7 @@ void CPlayer::SetReverb(int mix, int time)
     parareverb.fReverbTime = static_cast<float>(time * 10);
     parareverb.fHighFreqRTRatio = 0.001f;
     BASS_FXSetParameters(m_reverb_handle, &parareverb);
+    GetBASSError();
 }
 
 void CPlayer::ClearReverb()
@@ -1933,6 +1941,7 @@ void CPlayer::ClearReverb()
     parareverb.fReverbTime = 0.001f;
     parareverb.fHighFreqRTRatio = 0.001f;
     BASS_FXSetParameters(m_reverb_handle, &parareverb);
+    GetBASSError();
 }
 
 void CPlayer::EnableReverb(bool enable)
