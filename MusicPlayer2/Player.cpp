@@ -1381,9 +1381,9 @@ void CPlayer::RemoveSongs(vector<int> indexes)
     }
 }
 
-bool CPlayer::RemoveSameSongs()
+int CPlayer::RemoveSameSongs()
 {
-    bool removed = false;
+    int removed = 0;
     for (int i = 0; i < GetSongNum(); i++)
     {
         for (int j = i + 1; j < GetSongNum(); j++)
@@ -1391,7 +1391,7 @@ bool CPlayer::RemoveSameSongs()
             if (m_playlist[i].file_path == m_playlist[j].file_path)
             {
                 RemoveSong(j);
-                removed = true;
+                removed++;
             }
         }
     }

@@ -218,8 +218,16 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				if (song_index < 0 || song_index >= static_cast<int>(m_all_song_info.size()))
 					return;
-				str_tip += CCommon::LoadText(IDS_FILE_NAME, _T(": "));
-				str_tip += m_all_song_info[song_index].file_name.c_str();
+                if (CPlayer::GetInstance().IsFromPlaylist())
+                {
+                    str_tip += CCommon::LoadText(IDS_PATH, _T(": "));
+                    str_tip += m_all_song_info[song_index].file_path.c_str();
+                }
+                else
+                {
+                    str_tip += CCommon::LoadText(IDS_FILE_NAME, _T(": "));
+                    str_tip += m_all_song_info[song_index].file_name.c_str();
+                }
 				str_tip += _T("\r\n");
 
 				str_tip += CCommon::LoadText(IDS_TITLE, _T(": "));

@@ -970,7 +970,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //初始化提示信息
     m_Mytip.Create(this, TTS_ALWAYSTIP);
     m_Mytip.SetMaxTipWidth(theApp.DPI(400));
-    m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_SELECT_RENENT_FOLDER));
+    m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_OPEN_MEDIA_LIB, _T(" (Ctrl+T)")));
     //m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_DOWN), _T("减小音量"));
     //m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
     //m_Mytip.AddTool(&m_time_static, CCommon::LoadText(IDS_PLAY_TIME));
@@ -3516,7 +3516,8 @@ void CMusicPlayerDlg::OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 void CMusicPlayerDlg::OnRemoveSameSongs()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().RemoveSameSongs();
+    int removed = CPlayer::GetInstance().RemoveSameSongs();
     CPlayer::GetInstance().SaveCurrentPlaylist();
     ShowPlayList();
+    MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
 }
