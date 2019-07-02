@@ -231,6 +231,9 @@
     <Filter Include="对话框类\InputDlg">
       <UniqueIdentifier>{82bbfa03-6c20-4f56-8ad9-7bf00fcd1fe2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\RegFileRealte">
+      <UniqueIdentifier>{674e95e3-bfd2-4ab8-91f6-b6c888949e2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -502,6 +505,9 @@
     <ClInclude Include="ImputDlg.h">
       <Filter>对话框类\InputDlg</Filter>
     </ClInclude>
+    <ClInclude Include="RegFileRelate.h">
+      <Filter>功能逻辑类\RegFileRealte</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -747,6 +753,9 @@
     <ClCompile Include="ImputDlg.cpp">
       <Filter>对话框类\InputDlg</Filter>
     </ClCompile>
+    <ClCompile Include="RegFileRelate.cpp">
+      <Filter>功能逻辑类\RegFileRealte</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
@@ -911,6 +920,9 @@
     </Image>
     <Image Include="res\donate.bmp">
       <Filter>资源文件\其他</Filter>
+    </Image>
+    <Image Include="res\file_icon.ico">
+      <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
 </Project>

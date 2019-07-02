@@ -2562,10 +2562,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
     CString title_suffix;
     if (!title.IsEmpty())
         title_suffix += _T(" - ");
+    title_suffix += APP_NAME;
 #ifdef _DEBUG
-    title_suffix += CCommon::LoadText(_T("MusicPlayer2 "), IDS_DEBUG_MODE);
-#else
-    title_suffix += _T("MusicPlayer2");
+    title_suffix += _T(' ');
+    title_suffix += CCommon::LoadText(IDS_DEBUG_MODE);
 #endif
 
     SetWindowText(title + title_suffix);		//用当前正在播放的歌曲名作为窗口标题

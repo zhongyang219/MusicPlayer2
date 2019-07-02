@@ -15,5 +15,6 @@ private:
 	static void TestShortCut();
 	static void TestCommon();
     static void TestOSUFile();
+    static void TestReg();
 };
 

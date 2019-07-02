@@ -16,7 +16,7 @@ void CNotifyIcon::Init(HICON hIcon)
 	m_ntIcon.cbSize = sizeof(NOTIFYICONDATA);	//该结构体变量的大小
 	m_ntIcon.hIcon = hIcon;						//设置图标
 	m_ntIcon.hWnd = theApp.m_pMainWnd->GetSafeHwnd();				//接收托盘图标通知消息的窗口句柄
-	CCommon::WStringCopy(m_ntIcon.szTip, 128, L"MusicPlayer2");
+	CCommon::WStringCopy(m_ntIcon.szTip, 128, APP_NAME);
 	m_ntIcon.uCallbackMessage = MY_WM_NOTIFYICON;			//应用程序定义的消息ID号
 	m_ntIcon.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;		//图标的属性：设置成员uCallbackMessage、hIcon、szTip有效
 

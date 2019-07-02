@@ -2,6 +2,7 @@
 #include "CTest.h"
 #include "InternetCommon.h"
 #include "COSUPlayerHelper.h"
+#include "RegFileRelate.h"
 
 CTest::CTest()
 {
@@ -19,6 +20,7 @@ void CTest::Test()
     //TestShortCut();
     //TestCommon();
     //TestOSUFile();
+    //TestReg();
 }
 
 void CTest::TestStringMatch()
@@ -81,4 +83,12 @@ void CTest::TestOSUFile()
     wstring file_name = osu_file.GetAudioFile();
     int a = 0;
 
+}
+
+void CTest::TestReg()
+{
+    CRegFileRelate reg;
+    bool rtn = reg.AddFileTypeRelate(_T(".wma"), 46);
+    //bool rtn = reg.DeleteFileTypeRelate(_T(".test"));
+    int a = 0;
 }

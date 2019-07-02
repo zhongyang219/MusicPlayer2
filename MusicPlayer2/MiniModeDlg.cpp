@@ -98,7 +98,7 @@ void CMiniModeDlg::SetTitle()
     title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str();
     if (!title.IsEmpty())
         title += _T(" - ");
-    title += _T("MusicPlayer2");
+    title += APP_NAME;
     SetWindowText(title);
 }
 
