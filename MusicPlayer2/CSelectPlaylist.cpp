@@ -37,6 +37,11 @@ int CSelectPlaylistDlg::GetPosition() const
     return GetSelectedPlaylist().position;
 }
 
+bool CSelectPlaylistDlg::IsPlaylistModified() const
+{
+    return m_playlist_modified;
+}
+
 void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -240,6 +245,7 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
 
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
         ShowPathList();
+        m_playlist_modified = true;
     }
 }
 
@@ -290,6 +296,7 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
         }
 
         ShowPathList();
+        m_playlist_modified = true;
     }
 }
 
@@ -308,6 +315,7 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         CPlayer::GetInstance().GetRecentPlaylist().DeletePlaylist(playlist_path);
         CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
         ShowPathList();
+        m_playlist_modified = true;
     }
 }
 

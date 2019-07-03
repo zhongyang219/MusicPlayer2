@@ -23,10 +23,12 @@ public:
     wstring GetSelPlaylistPath() const;
     int GetTrack() const;
     int GetPosition() const;
+    bool IsPlaylistModified() const;
 
 private:
     int m_row_selected{};
     CMenu m_menu;
+    bool m_playlist_modified{ false };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

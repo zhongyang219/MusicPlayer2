@@ -14,6 +14,7 @@
 #include "CListenTimeStatisticsDlg.h"
 #include "CFloatPlaylistDlg.h"
 #include "Playlist.h"
+#include "ImputDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -189,6 +190,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_MOVE_PLAYLIST_ITEM_DOWN, &CMusicPlayerDlg::OnMovePlaylistItemDown)
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMClickPlaylistList)
     ON_COMMAND(ID_REMOVE_SAME_SONGS, &CMusicPlayerDlg::OnRemoveSameSongs)
+    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMusicPlayerDlg::OnAddToNewPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -774,6 +776,19 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
+
+    //设置“添加到播放列表”子菜单项的可用状态
+    bool from_playlist{ CPlayer::GetInstance().IsFromPlaylist() };
+    bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_use_default_playlist };
+    pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(from_playlist && use_default_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
+    wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
+    for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST + 1; id < ID_ADD_TO_DEFAULT_PLAYLIST + ADD_TO_PLAYLIST_MAX_SIZE; id++)
+    {
+        CString menu_string;
+        pMenu->GetMenuString(id, menu_string, 0);
+        pMenu->EnableMenuItem(id, MF_BYCOMMAND | (selete_valid && current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+    }
+    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
 
     //打开菜单时，如果播放列表中没有歌曲，则禁用主菜单和右键菜单中的“打开文件位置”项目
     if (CPlayer::GetInstance().GetSongNum() == 0)
@@ -1408,6 +1423,8 @@ void CMusicPlayerDlg::OnSetPath()
         CMediaLibDlg media_lib_dlg{ cur_tab };
         media_lib_dlg.DoModal();
         dialog_exist = false;
+        if (media_lib_dlg.m_playlist_dlg.IsPlaylistModified())
+            IniPlaylistPopupMenu();
     }
 }
 
@@ -3573,4 +3590,42 @@ void CMusicPlayerDlg::OnRemoveSameSongs()
     CPlayer::GetInstance().SaveCurrentPlaylist();
     ShowPlayList();
     MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
+}
+
+
+void CMusicPlayerDlg::OnAddToNewPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    CImputDlg imput_dlg;
+    imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
+    imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
+    if (imput_dlg.DoModal() == IDOK)
+    {
+        CString playlist_name = imput_dlg.GetEditText();
+        wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
+        if (CCommon::FileExist(playlist_path))
+        {
+            MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_EXIST_WARNING, { playlist_name }), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
+        //添加空的播放列表
+        CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
+        
+        //获取选中的曲目的路径
+        std::vector<std::wstring> selected_item_path;
+        for (auto i : m_items_selected)
+        {
+            if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+            {
+                selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i].file_path);
+            }
+        }
+
+        CPlaylist playlist;
+        playlist.LoadFromFile(playlist_path);
+        playlist.AddFiles(selected_item_path);
+        playlist.SaveToFile(playlist_path);
+
+        IniPlaylistPopupMenu();
+    }
 }
