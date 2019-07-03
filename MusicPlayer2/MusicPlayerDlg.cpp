@@ -401,6 +401,15 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     CRect rect_static;
     m_path_static.GetWindowRect(rect_static);
     rect_static.bottom = rect_static.top + m_layout.path_edit_height - 2 * m_layout.margin;
+    //CDrawCommon draw;
+    //int width = theApp.DPI(70);
+    //if (m_pDC != nullptr)
+    //{
+    //    draw.Create(m_pDC, this);
+    //    CString str = m_path_static.GetWindowText();
+    //    width = draw.GetTextExtent(str).cx + theApp.DPI(8);
+    //}
+    //rect_static.right = rect_static.left + width;
     if (!theApp.m_ui_data.narrow_mode)
         rect_static.MoveToXY(cx / 2 + m_layout.margin, m_layout.margin);
     else
@@ -469,10 +478,15 @@ void CMusicPlayerDlg::ShowPlayList()
     SetPlayListColor();
     //显示当前路径
     m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
-    if (CPlayer::GetInstance().IsFromPlaylist())
-        m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+    CStaticEx* pStatic{};
+    if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
+        pStatic = &m_path_static;
     else
-        m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
+        pStatic = &m_pFloatPlaylistDlg->GetPathStatic();
+    if (CPlayer::GetInstance().IsFromPlaylist())
+        pStatic->SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+    else
+        pStatic->SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
 
     if (m_miniModeDlg.m_hWnd != NULL)
     {

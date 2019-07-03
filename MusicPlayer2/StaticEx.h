@@ -10,6 +10,7 @@ public:
 	void SetTextColor(COLORREF text_color);
 	void SetBackgroundColor(COLORREF back_color);
     void SetWindowText(LPCTSTR lpszString);
+    CString GetWindowText() const;
 
 private:
 	COLORREF m_text_color{ GRAY(0) };

@@ -27,7 +27,7 @@ void CFloatPlaylistDlg::RefreshData()
     m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format);
     RefreshState();
 
-    m_path_edit.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
+    m_path_edit.SetWindowText(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
 }
 
 void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
@@ -86,6 +86,16 @@ void CFloatPlaylistDlg::RefreshState()
 CListCtrlEx & CFloatPlaylistDlg::GetListCtrl()
 {
     return m_playlist_ctrl;
+}
+
+CStaticEx & CFloatPlaylistDlg::GetPathStatic()
+{
+    return m_path_static;
+}
+
+CEdit & CFloatPlaylistDlg::GetPathEdit()
+{
+    return m_path_edit;
 }
 
 void CFloatPlaylistDlg::GetPlaylistItemSelected()
@@ -157,6 +167,11 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     ReSizeControl(rect.Width(), rect.Height());
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+
+    if (CPlayer::GetInstance().IsFromPlaylist())
+        m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+    else
+        m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
 
 
     return TRUE;  // return TRUE unless you set the focus to a control

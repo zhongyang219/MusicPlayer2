@@ -24,6 +24,8 @@ public:
     void ReSizeControl(int cx, int cy);		//调整控件的大小和位置
     void RefreshState();		//刷新播放列表的状态
     CListCtrlEx& GetListCtrl();
+    CStaticEx& GetPathStatic();
+    CEdit& GetPathEdit();
     void GetPlaylistItemSelected();
 
 private:

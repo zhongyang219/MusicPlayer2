@@ -29,6 +29,13 @@ void CStaticEx::SetWindowText(LPCTSTR lpszString)
     Invalidate();
 }
 
+CString CStaticEx::GetWindowText() const
+{
+    CString str;
+    CStatic::GetWindowText(str);
+    return str;
+}
+
 BEGIN_MESSAGE_MAP(CStaticEx, CStatic)
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
@@ -46,7 +53,7 @@ void CStaticEx::OnPaint()
 	CRect rect;
 	GetClientRect(rect);
 	CString str;
-	GetWindowText(str);
+	CStatic::GetWindowText(str);
 	if(!m_transparent)
 		draw.FillRect(rect, m_back_color);
 	else
