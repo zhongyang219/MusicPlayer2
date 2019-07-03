@@ -2048,25 +2048,38 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         break;
     }
 
-    if (command > ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_DEFAULT_PLAYLIST + ADD_TO_PLAYLIST_MAX_SIZE)
+    //响应播放列表右键菜单中的“添加到播放列表”
+    if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_DEFAULT_PLAYLIST + ADD_TO_PLAYLIST_MAX_SIZE)
     {
-        auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
-        size_t index = command - ID_ADD_TO_DEFAULT_PLAYLIST - 1;
-        if (index < recent_playlist.size())
+        //获取选中的曲目的路径
+        std::vector<std::wstring> selected_item_path;
+        for (auto i : m_items_selected)
         {
-            std::vector<std::wstring> selected_item_path;
-            for (auto i : m_items_selected)
+            if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
             {
-                if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
-                {
-                    selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i].file_path);
-                }
+                selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i].file_path);
             }
+        }
 
+        if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
+        {
+            std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
             CPlaylist playlist;
-            playlist.LoadFromFile(recent_playlist[index].path);
+            playlist.LoadFromFile(default_playlist_path);
             playlist.AddFiles(selected_item_path);
-            playlist.SaveToFile(recent_playlist[index].path);
+            playlist.SaveToFile(default_playlist_path);
+        }
+        else        //添加到选中的播放列表
+        {
+            auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
+            size_t index = command - ID_ADD_TO_DEFAULT_PLAYLIST - 1;
+            if (index < recent_playlist.size())
+            {
+                CPlaylist playlist;
+                playlist.LoadFromFile(recent_playlist[index].path);
+                playlist.AddFiles(selected_item_path);
+                playlist.SaveToFile(recent_playlist[index].path);
+            }
         }
     }
 
