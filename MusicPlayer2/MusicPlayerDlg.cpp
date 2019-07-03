@@ -2088,14 +2088,22 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         }
         else        //添加到选中的播放列表
         {
-            auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
-            size_t index = command - ID_ADD_TO_DEFAULT_PLAYLIST - 1;
-            if (index < recent_playlist.size())
+            CString menu_string;
+            theApp.m_menu_set.m_list_popup_menu.GetMenuString(command, menu_string, 0);
+            if (!menu_string.IsEmpty())
             {
-                CPlaylist playlist;
-                playlist.LoadFromFile(recent_playlist[index].path);
-                playlist.AddFiles(selected_item_path);
-                playlist.SaveToFile(recent_playlist[index].path);
+                wstring playlist_path = theApp.m_playlist_dir + menu_string.GetString() + PLAYLIST_EXTENSION;
+                if(CCommon::FileExist(playlist_path))
+                {
+                    CPlaylist playlist;
+                    playlist.LoadFromFile(playlist_path);
+                    playlist.AddFiles(selected_item_path);
+                    playlist.SaveToFile(playlist_path);
+                }
+                else
+                {
+                    MessageBox(CCommon::LoadText(IDS_ADD_TO_PLAYLIST_FAILED_WARNING), NULL, MB_ICONWARNING | MB_OK);
+                }
             }
         }
     }
