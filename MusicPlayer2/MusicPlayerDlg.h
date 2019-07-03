@@ -155,6 +155,7 @@ protected:
     void HideFloatPlaylist();
 
     void GetPlaylistItemSelected();
+    void IniPlaylistPopupMenu();
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();

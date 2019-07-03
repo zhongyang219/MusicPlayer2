@@ -920,6 +920,22 @@ void CMusicPlayerDlg::GetPlaylistItemSelected()
 
 }
 
+void CMusicPlayerDlg::IniPlaylistPopupMenu()
+{
+    theApp.m_menu_set.m_list_popup_menu.DestroyMenu();
+    theApp.m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);
+    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(13);
+    if (add_to_menu != nullptr)
+    {
+        auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
+        for (size_t i{}; i < recent_playlist.size() && i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
+        {
+            CFilePathHelper playlist_path{ recent_playlist[i].path };
+            add_to_menu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_DEFAULT_PLAYLIST + i + 1, playlist_path.GetFileNameWithoutExtension().c_str());
+        }
+    }
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -1240,6 +1256,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
             if (theApp.m_nc_setting_data.float_playlist)
                 ShowFloatPlaylist();
+
+            IniPlaylistPopupMenu();
 
             //提示用户是否创建桌面快捷方式
             CreateDesktopShortcut();
@@ -2028,6 +2046,28 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     case IDT_NEXT:
         OnNext();
         break;
+    }
+
+    if (command > ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_DEFAULT_PLAYLIST + ADD_TO_PLAYLIST_MAX_SIZE)
+    {
+        auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
+        size_t index = command - ID_ADD_TO_DEFAULT_PLAYLIST - 1;
+        if (index < recent_playlist.size())
+        {
+            std::vector<std::wstring> selected_item_path;
+            for (auto i : m_items_selected)
+            {
+                if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+                {
+                    selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i].file_path);
+                }
+            }
+
+            CPlaylist playlist;
+            playlist.LoadFromFile(recent_playlist[index].path);
+            playlist.AddFiles(selected_item_path);
+            playlist.SaveToFile(recent_playlist[index].path);
+        }
     }
 
     return CMainDialogBase::OnCommand(wParam, lParam);
