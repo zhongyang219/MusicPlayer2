@@ -1788,7 +1788,10 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             if (CAudioCommon::FileIsAudio(wstring(file_path)))
                 files.push_back(file_path);
         }
-        CPlayer::GetInstance().OpenFiles(files, false);
+        if(CPlayer::GetInstance().IsFromPlaylist())
+            CPlayer::GetInstance().AddFiles(files);
+        else
+            CPlayer::GetInstance().OpenFiles(files, false);
     }
     //ShowPlayList();
     UpdatePlayPauseButton();
