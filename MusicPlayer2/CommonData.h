@@ -294,6 +294,7 @@ struct IconSet
     IconRes next;
     IconRes info;
     IconRes select_folder;
+    IconRes media_lib;
     IconRes show_playlist;
     IconRes find_songs;
     IconRes full_screen;

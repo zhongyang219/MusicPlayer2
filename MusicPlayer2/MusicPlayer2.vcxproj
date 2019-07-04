@@ -388,6 +388,8 @@
     <Image Include="res\eq_d.ico" />
     <Image Include="res\file_icon.ico" />
     <Image Include="res\Find.ico" />
+    <Image Include="res\media_lib.ico" />
+    <Image Include="res\media_lib_d.ico" />
     <Image Include="res\menu.ico" />
     <Image Include="res\menu_d.ico" />
     <Image Include="res\mini.ico" />

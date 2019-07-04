@@ -922,7 +922,13 @@
       <Filter>资源文件\其他</Filter>
     </Image>
     <Image Include="res\file_icon.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\media_lib.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\media_lib_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

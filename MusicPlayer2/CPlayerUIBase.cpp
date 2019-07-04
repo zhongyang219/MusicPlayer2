@@ -1015,7 +1015,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
     DrawControlBarBtn(rc_btn, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
 
     rc_btn.MoveToX(rc_btn.left - btn_side);
-    DrawControlBarBtn(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.select_folder);
+    DrawControlBarBtn(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
 
     if (!progress_on_top)
     {

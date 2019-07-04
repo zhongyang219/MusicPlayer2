@@ -53,7 +53,7 @@ BOOL CMediaLibDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+    SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), FALSE);		// 设置小图标
 
     //创建子对话框
     m_path_dlg.Create(IDD_SET_PATH_DIALOG);
