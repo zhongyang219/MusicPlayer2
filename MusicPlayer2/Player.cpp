@@ -916,7 +916,10 @@ void CPlayer::ChangePath(const wstring& path, int track)
 void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sort_mode)
 {
     //if (m_song_num>0 && !m_playlist[0].file_name.empty())		//如果当前路径有歌曲，就保存当前路径到最近路径
-    EmplaceCurrentPathToRecent();
+    if (m_from_playlist)
+        EmplaceCurrentPlaylistToRecent();
+    else
+        EmplaceCurrentPathToRecent();
     m_sort_mode = sort_mode;
     ChangePath(path, track);
     m_current_position_int = position;
@@ -932,10 +935,13 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
 
     if(!init)
     {
+        SaveCurrentPlaylist();
+        if (m_from_playlist)
+            EmplaceCurrentPlaylistToRecent();
+        else
+            EmplaceCurrentPathToRecent();
         MusicControl(Command::STOP);
         MusicControl(Command::CLOSE);
-        SaveCurrentPlaylist();
-        EmplaceCurrentPlaylistToRecent();
     }
     m_playlist.clear();
     CPlaylist playlist;
