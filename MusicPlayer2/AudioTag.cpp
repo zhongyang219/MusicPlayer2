@@ -563,7 +563,7 @@ bool CAudioTag::GetFlacTag()
                         m_song_info.track = atoi(tag_str.c_str());
                         break;
                     case 4:
-                        if(tag_str.size()<5)
+                        if (tag_str.size() <= 8)
                             m_song_info.year = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
                         break;
                     case 5:

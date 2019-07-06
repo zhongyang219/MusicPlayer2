@@ -315,9 +315,9 @@ inline bool CCommon::StringNormalize(T & str)
 	if (size < 0) return false;
 	int index1 = 0 ;		//字符串中第1个不是空格或控制字符的位置
 	int index2 = size - 1;	//字符串中最后一个不是空格或控制字符的位置
-	while (index1 < size && ((str[index1] >= 0 && str[index1] <=32) || str[index1] >= 0xfffdu))
+	while (index1 < size && ((str[index1] >= 0 && str[index1] <=32) || str[index1] == 0xfffdu))
 		index1++;
-	while (index2 >= 0 && ((str[index2] >= 0 && str[index2] <= 32) || str[index2] >= 0xfffdu))
+	while (index2 >= 0 && ((str[index2] >= 0 && str[index2] <= 32) || str[index2] == 0xfffdu))
 		index2--;
 	if (index1 > index2)	//如果index1 > index2，说明字符串全是空格或控制字符
 		str.clear();
