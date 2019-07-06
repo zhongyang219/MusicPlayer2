@@ -530,7 +530,7 @@ bool CAudioTag::GetFlacTag()
 	{
 		flac_tag_str.push_back(tag_contents[i]);
         const std::vector<std::string> TAG_IDENTIFY{ "title=", "Artist=", "Album=", "TrackNumber=", "Date=", "Genre=" };
-		if (tag_contents[i] == '\0' && tag_contents[i + 1] == '\0' && tag_contents[i + 2] == '\0')		//遇到3个'\0'，一组标签结束
+		if ((tag_contents[i] == '\0' && tag_contents[i + 1] == '\0' && tag_contents[i + 2] == '\0') || i >= tag_size - 1)		//遇到3个'\0'，一组标签结束
 		{
 			if (flac_tag_str.size() < 2)
 			{
@@ -544,7 +544,7 @@ bool CAudioTag::GetFlacTag()
             {
                 size_t index;
                 index = CCommon::StringFindNoCase(flac_tag_str, TAG_IDENTIFY[j]);
-                if (index != string::npos)
+                if (index != string::npos && flac_tag_str[index - 1] == '\0')
                 {
                     string tag_str = flac_tag_str.substr(index + TAG_IDENTIFY[j].size());
                     tag_count++;
@@ -563,8 +563,7 @@ bool CAudioTag::GetFlacTag()
                         m_song_info.track = atoi(tag_str.c_str());
                         break;
                     case 4:
-                        if (tag_str.size() <= 8)
-                            m_song_info.year = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
+                        m_song_info.year = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
                         break;
                     case 5:
                         m_song_info.genre = CAudioCommon::GenreConvert(CCommon::StrToUnicode(tag_str, CodeType::UTF8));
@@ -589,6 +588,8 @@ bool CAudioTag::GetFlacTag()
     CCommon::StringNormalize(m_song_info.artist);
     CCommon::StringNormalize(m_song_info.album);
     CCommon::StringNormalize(m_song_info.year);
+    if (m_song_info.year.size() > 8)
+        m_song_info.year.clear();
     CCommon::StringNormalize(m_song_info.genre);
 
 	return true;
