@@ -54,22 +54,35 @@ AudioType CAudioCommon::GetAudioTypeByExtension(const wstring & file_name)
 wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 {
     CCommon::StringTransform(extension, false);
+
+    for (const auto& item : m_surpported_format)
+    {
+        if (!item.file_name.empty())
+        {
+            for (const auto& ext : item.extensions)
+            {
+                if (ext == extension)
+                    return item.description;
+            }
+        }
+    }
+
     if (extension == L"mp3")
-        return wstring(CCommon::LoadText(_T("MP3 "), IDS_AUDIO_FILE));
+        return L"MPEG Audio Layer 3";
     else if (extension == L"wma")
-        return wstring(CCommon::LoadText(_T("Windows Media "), IDS_AUDIO_FILE));
+        return L"Windows Media Audio";
     else if (extension == L"wav")
         return wstring(CCommon::LoadText(_T("WAV "), IDS_AUDIO_FILE));
-    else if (extension == L"mid" || extension == L"midi")
-        return wstring(CCommon::LoadText(IDS_MINI_SEQUENCE));
-    else if (extension == L"ogg")
-        return wstring(CCommon::LoadText(_T("OGG "), IDS_AUDIO_FILE));
+    else if (extension == L"ogg" || extension == L"oga")
+        return wstring(CCommon::LoadText(_T("OGG Vorbis "), IDS_AUDIO_FILE));
     else if (extension == L"m4a")
         return wstring(CCommon::LoadText(_T("MPEG-4 "), IDS_AUDIO_FILE));
     else if (extension == L"ape")
         return wstring(L"Monkey's Audio (APE)");
     else if (extension == L"aac")
         return wstring(L"Advanced Audio Coding (AAC)");
+    else if (extension == L"aif")
+        return wstring(L"Audio Interchange File (AAC)");
     else if (extension == L"cda")
         return wstring(CCommon::LoadText(_T("CD "), IDS_AUDIO_FILE, _T(" (CDA)")));
     else
@@ -511,21 +524,5 @@ wstring CAudioCommon::GetFileDlgFilter()
     }
     filter += CCommon::LoadText(IDS_ALL_FILES, _T("|*.*||"));
     return filter;
-}
-
-wstring CAudioCommon::GetSupportedFileDescription(const wstring& extension)
-{
-    for (const auto& item : m_surpported_format)
-    {
-        if (!item.file_name.empty())
-        {
-            for (const auto& ext : item.extensions)
-            {
-                if (ext == extension)
-                    return item.description;
-            }
-        }
-    }
-    return wstring();
 }
 

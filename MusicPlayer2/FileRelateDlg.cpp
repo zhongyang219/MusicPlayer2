@@ -39,7 +39,7 @@ void CFileRelateDlg::RefreshList()
         if(item == L"cue")
             continue;
         m_list_ctrl.InsertItem(index, item.c_str());
-        wstring description = CAudioCommon::GetSupportedFileDescription(item);
+        wstring description = CAudioCommon::GetAudioDescriptionByExtension(item);
         m_list_ctrl.SetItemText(index, 1, description.c_str());
         CRegFileRelate reg_file;
         m_list_ctrl.SetCheck(index, reg_file.IsFileTypeRelated(item.c_str()));
