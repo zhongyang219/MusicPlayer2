@@ -280,6 +280,8 @@ public:
 
     static wstring GetFileDlgFilter();
 
+    static wstring GetSupportedFileDescription(const wstring& extension);
+
 public:
 	static vector<SupportedFormat> m_surpported_format;		//支持的文件格式
 	static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名

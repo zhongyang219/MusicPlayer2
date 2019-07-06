@@ -513,3 +513,19 @@ wstring CAudioCommon::GetFileDlgFilter()
     return filter;
 }
 
+wstring CAudioCommon::GetSupportedFileDescription(const wstring& extension)
+{
+    for (const auto& item : m_surpported_format)
+    {
+        if (!item.file_name.empty())
+        {
+            for (const auto& ext : item.extensions)
+            {
+                if (ext == extension)
+                    return item.description;
+            }
+        }
+    }
+    return wstring();
+}
+

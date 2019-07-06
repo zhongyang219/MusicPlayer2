@@ -15,6 +15,7 @@
 #include "CFloatPlaylistDlg.h"
 #include "Playlist.h"
 #include "ImputDlg.h"
+#include "FileRelateDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -191,6 +192,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMClickPlaylistList)
     ON_COMMAND(ID_REMOVE_SAME_SONGS, &CMusicPlayerDlg::OnRemoveSameSongs)
     ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMusicPlayerDlg::OnAddToNewPlaylist)
+    ON_COMMAND(ID_TOOL_FILE_RELATE, &CMusicPlayerDlg::OnToolFileRelate)
 END_MESSAGE_MAP()
 
 
@@ -3653,4 +3655,12 @@ void CMusicPlayerDlg::OnAddToNewPlaylist()
 
         IniPlaylistPopupMenu();
     }
+}
+
+
+void CMusicPlayerDlg::OnToolFileRelate()
+{
+    // TODO: 在此添加命令处理程序代码
+    CFileRelateDlg dlg;
+    dlg.DoModal();
 }

@@ -321,4 +321,5 @@ public:
     afx_msg void OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnRemoveSameSongs();
     afx_msg void OnAddToNewPlaylist();
+    afx_msg void OnToolFileRelate();
 };

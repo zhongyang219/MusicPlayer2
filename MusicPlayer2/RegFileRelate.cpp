@@ -95,7 +95,7 @@ bool CRegFileRelate::IsFileTypeRelated(LPCTSTR file_ext)
     if (key.QueryStringValue(NULL, buff, &size) != ERROR_SUCCESS)
         return false;
 
-    return CString(buff) == m_app_name + str_ext;
+    return CString(buff) == m_app_name + str_ext || CString(buff) == m_app_name;
 }
 
 bool CRegFileRelate::DeleteFileTypeRelate(LPCTSTR file_ext)

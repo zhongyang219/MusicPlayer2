@@ -224,6 +224,7 @@
     <ClInclude Include="CTabCtrlEx.h" />
     <ClInclude Include="CTest.h" />
     <ClInclude Include="CVariant.h" />
+    <ClInclude Include="FileRelateDlg.h" />
     <ClInclude Include="ImputDlg.h" />
     <ClInclude Include="IPlayerUI.h" />
     <ClInclude Include="Playlist.h" />
@@ -313,6 +314,7 @@
     <ClCompile Include="CTabCtrlEx.cpp" />
     <ClCompile Include="CTest.cpp" />
     <ClCompile Include="CVariant.cpp" />
+    <ClCompile Include="FileRelateDlg.cpp" />
     <ClCompile Include="ImputDlg.cpp" />
     <ClCompile Include="Playlist.cpp" />
     <ClCompile Include="PlaylistMgr.cpp" />

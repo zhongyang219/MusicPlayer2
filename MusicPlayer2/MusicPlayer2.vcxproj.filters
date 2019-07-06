@@ -234,6 +234,9 @@
     <Filter Include="功能逻辑类\RegFileRealte">
       <UniqueIdentifier>{674e95e3-bfd2-4ab8-91f6-b6c888949e2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\FileRelateDlg">
+      <UniqueIdentifier>{29bba7c1-c366-4b88-841a-e53a63a3950c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -508,6 +511,9 @@
     <ClInclude Include="RegFileRelate.h">
       <Filter>功能逻辑类\RegFileRealte</Filter>
     </ClInclude>
+    <ClInclude Include="FileRelateDlg.h">
+      <Filter>对话框类\FileRelateDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -755,6 +761,9 @@
     </ClCompile>
     <ClCompile Include="RegFileRelate.cpp">
       <Filter>功能逻辑类\RegFileRealte</Filter>
+    </ClCompile>
+    <ClCompile Include="FileRelateDlg.cpp">
+      <Filter>对话框类\FileRelateDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
