@@ -1103,6 +1103,7 @@ void CPlayer::AddFiles(const vector<wstring>& files)
         song_info.file_path = file;
         m_playlist.push_back(song_info);
     }
+    SaveCurrentPlaylist();
     IniPlayList(true);
 }
 

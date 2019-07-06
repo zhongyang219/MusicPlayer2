@@ -521,12 +521,6 @@ bool CAudioTag::GetFlacTag()
 	string tag_contents;		//整个标签区域的内容
 	GetFlacTagContents(m_file_path, tag_contents);
 	string flac_tag_str;		//当前标签的字符
-	string flac_tag_title;
-	string flac_tag_artist;
-	string flac_tag_album;
-	string flac_tag_track;
-	string flac_tag_year;
-	string flac_tag_genre;
 	char tag_count{};
 	int tag_size = tag_contents.size();
 	if (tag_size < 4)
@@ -535,6 +529,7 @@ bool CAudioTag::GetFlacTag()
 	for (int i{}; i < tag_size; i++)	//只获取标签前面指定个数的字节
 	{
 		flac_tag_str.push_back(tag_contents[i]);
+        const std::vector<std::string> TAG_IDENTIFY{ "title=", "Artist=", "Album=", "TrackNumber=", "Date=", "Genre=" };
 		if (tag_contents[i] == '\0' && tag_contents[i + 1] == '\0' && tag_contents[i + 2] == '\0')		//遇到3个'\0'，一组标签结束
 		{
 			if (flac_tag_str.size() < 2)
@@ -544,38 +539,41 @@ bool CAudioTag::GetFlacTag()
 			}
 			flac_tag_str.pop_back();
 			flac_tag_str.pop_back();
-			size_t index;
-			index = flac_tag_str.find_first_of('=');
-			if (CCommon::StringFindNoCase(flac_tag_str, string("title")) != string::npos)
-			{
-				flac_tag_title = flac_tag_str.substr(index + 1);
-				tag_count++;
-			}
-			else if (CCommon::StringFindNoCase(flac_tag_str, string("Artist")) != string::npos)
-			{
-				flac_tag_artist = flac_tag_str.substr(index + 1);
-				tag_count++;
-			}
-			else if (CCommon::StringFindNoCase(flac_tag_str, string("Album")) != string::npos)
-			{
-				flac_tag_album = flac_tag_str.substr(index + 1);
-				tag_count++;
-			}
-			else if (CCommon::StringFindNoCase(flac_tag_str, string("TrackNumber")) != string::npos)
-			{
-				flac_tag_track = flac_tag_str.substr(index + 1);
-				tag_count++;
-			}
-			else if (CCommon::StringFindNoCase(flac_tag_str, string("Date")) != string::npos)
-			{
-				flac_tag_year = flac_tag_str.substr(index + 1);
-				tag_count++;
-			}
-			else if (CCommon::StringFindNoCase(flac_tag_str, string("Genre")) != string::npos)
-			{
-				flac_tag_genre = flac_tag_str.substr(index + 1);
-				tag_count++;
-			}
+
+            for (size_t j = 0; j < TAG_IDENTIFY.size(); j++)
+            {
+                size_t index;
+                index = CCommon::StringFindNoCase(flac_tag_str, TAG_IDENTIFY[j]);
+                if (index != string::npos)
+                {
+                    string tag_str = flac_tag_str.substr(index + TAG_IDENTIFY[j].size());
+                    tag_count++;
+                    switch (j)
+                    {
+                    case 0:
+                        m_song_info.title = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
+                        break;
+                    case 1:
+                        m_song_info.artist = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
+                        break;
+                    case 2:
+                        m_song_info.album = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
+                        break;
+                    case 3:
+                        m_song_info.track = atoi(tag_str.c_str());
+                        break;
+                    case 4:
+                        if(tag_str.size()<5)
+                            m_song_info.year = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
+                        break;
+                    case 5:
+                        m_song_info.genre = CAudioCommon::GenreConvert(CCommon::StrToUnicode(tag_str, CodeType::UTF8));
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
 
 			flac_tag_str.clear();
 		}
@@ -583,22 +581,16 @@ bool CAudioTag::GetFlacTag()
 		if (tag_count >= 6)		//已经获取到了6个标签，退出循环
 			break;
 
-		if (tag_contents.substr(i, 6) == "image/")	//遇到"image/"，后面就是专辑封面了
-			break;
+		//if (tag_contents.substr(i, 6) == "image/")	//遇到"image/"，后面就是专辑封面了
+		//	break;
 	}
 
-	if (!flac_tag_title.empty())
-		m_song_info.title = CCommon::StrToUnicode(flac_tag_title, CodeType::UTF8);
-	if (!flac_tag_artist.empty())
-		m_song_info.artist = CCommon::StrToUnicode(flac_tag_artist, CodeType::UTF8);
-	if (!flac_tag_album.empty())
-		m_song_info.album = CCommon::StrToUnicode(flac_tag_album, CodeType::UTF8);
-	if (!flac_tag_track.empty())
-		m_song_info.track = atoi(flac_tag_track.c_str());
-	if (!flac_tag_year.empty())
-		m_song_info.year = CCommon::StrToUnicode(flac_tag_year, CodeType::UTF8);
-	if (!flac_tag_genre.empty())
-		m_song_info.genre = CAudioCommon::GenreConvert(CCommon::StrToUnicode(flac_tag_genre, CodeType::UTF8));
+    CCommon::StringNormalize(m_song_info.title);
+    CCommon::StringNormalize(m_song_info.artist);
+    CCommon::StringNormalize(m_song_info.album);
+    CCommon::StringNormalize(m_song_info.year);
+    CCommon::StringNormalize(m_song_info.genre);
+
 	return true;
 }
 
@@ -618,8 +610,8 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 		contents_buff.push_back(file.get());
 		if (size > 1024 * 1024)
 			break;
-		//找到flac音频的起始字节时，表示标签信息已经读取完了
-		if (size > 4 && (contents_buff[size - 1] & (BYTE)0xF8) == (BYTE)0xF8 && contents_buff[size - 2] == -1)
+		//找到flac音频的起始字节时（二进制13个1,1个0），表示标签信息已经读取完了
+		if (size > 5 && (contents_buff[size - 1] & (BYTE)0xFC) == (BYTE)0xF8 && contents_buff[size - 2] == -1 && contents_buff[size - 3] == 0)
 			break;
 	}
 }
