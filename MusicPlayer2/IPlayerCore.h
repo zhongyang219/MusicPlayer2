@@ -13,6 +13,8 @@ struct MidiInfo
 class IPlayerCore
 {
 public:
+    virtual ~IPlayerCore() {}
+
     virtual void InitCore() = 0;
     virtual void UnInitCore() = 0;
     virtual unsigned int GetHandle() = 0;
