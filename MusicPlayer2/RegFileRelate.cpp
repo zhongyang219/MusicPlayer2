@@ -90,7 +90,7 @@ bool CRegFileRelate::IsFileTypeRelated(LPCTSTR file_ext)
     if (key.Open(HKEY_CURRENT_USER, CString("Software\\Classes\\") + str_ext) != ERROR_SUCCESS)
         return false;
 
-    TCHAR buff[256];
+    TCHAR buff[256]{};
     ULONG size{ 256 };
     if (key.QueryStringValue(NULL, buff, &size) != ERROR_SUCCESS)
         return false;
@@ -112,14 +112,22 @@ bool CRegFileRelate::DeleteFileTypeRelate(LPCTSTR file_ext)
     if (!OpenItem(key, CString("Software\\Classes\\") + str_ext))
         return false;
 
-    key.DeleteValue(NULL);
+    TCHAR buff[256]{};
+    ULONG size{ 256 };
+    bool deleted{ false };
+    if (key.QueryStringValue(NULL, buff, &size) == ERROR_SUCCESS)
+    {
+        if (CString(buff) == m_app_name + str_ext || CString(buff) == m_app_name)
+        {
+            deleted = (key.DeleteValue(NULL) == ERROR_SUCCESS);
+        }
+    }
 
     if (!OpenItem(key, CString("Software\\Classes\\")))
         return false;
-    if (key.RecurseDeleteKey(m_app_name + str_ext) != ERROR_SUCCESS)
-        return false;
+    key.RecurseDeleteKey(m_app_name + str_ext);
 
-    return true;
+    return deleted;
 }
 
 bool CRegFileRelate::OpenItem(CRegKey& key, LPCTSTR item_str)
