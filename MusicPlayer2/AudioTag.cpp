@@ -215,7 +215,7 @@ bool CAudioTag::GetID3V2Tag()
 			if (tag_index != string::npos)
 			{
 				string size = tag_content.substr(tag_index + 4, 4);
-				const int tag_size = size[0] * 0x1000000 + size[1] * 0x10000 + size[2] * 0x100 + size[3];	//获取当前标签的大小
+				const size_t tag_size = (BYTE)size[0] * 0x1000000 + (BYTE)size[1] * 0x10000 + (BYTE)size[2] * 0x100 + (BYTE)size[3];	//获取当前标签的大小
 				if (tag_size <= 0) continue;
 				if (tag_index + 11 >= tag_content.size()) continue;
 				//判断标签的编码格式
