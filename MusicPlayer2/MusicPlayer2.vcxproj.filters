@@ -237,6 +237,9 @@
     <Filter Include="对话框类\FileRelateDlg">
       <UniqueIdentifier>{29bba7c1-c366-4b88-841a-e53a63a3950c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\PlayerCore">
+      <UniqueIdentifier>{0d75bb1f-ce06-443c-a51f-0deef9f44178}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -514,6 +517,12 @@
     <ClInclude Include="FileRelateDlg.h">
       <Filter>对话框类\FileRelateDlg</Filter>
     </ClInclude>
+    <ClInclude Include="IPlayerCore.h">
+      <Filter>功能逻辑类\PlayerCore</Filter>
+    </ClInclude>
+    <ClInclude Include="BassCore.h">
+      <Filter>功能逻辑类\PlayerCore</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -764,6 +773,9 @@
     </ClCompile>
     <ClCompile Include="FileRelateDlg.cpp">
       <Filter>对话框类\FileRelateDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="BassCore.cpp">
+      <Filter>功能逻辑类\PlayerCore</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

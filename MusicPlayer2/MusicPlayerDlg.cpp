@@ -698,7 +698,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     if (reload_sf2 || output_device_changed)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
     {
-        CPlayer::GetInstance().ReIniBASS(true);
+        CPlayer::GetInstance().ReIniPlayerCore(true);
         UpdatePlayPauseButton();
     }
     if (gauss_blur_changed)
@@ -2175,7 +2175,7 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 void CMusicPlayerDlg::OnReIniBass()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().ReIniBASS();
+    CPlayer::GetInstance().ReIniPlayerCore();
     UpdatePlayPauseButton();
 }
 

@@ -82,7 +82,7 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
     else if (extension == L"aac")
         return wstring(L"Advanced Audio Coding (AAC)");
     else if (extension == L"aif")
-        return wstring(L"Audio Interchange File (AAC)");
+        return wstring(L"Audio Interchange File");
     else if (extension == L"cda")
         return wstring(CCommon::LoadText(_T("CD "), IDS_AUDIO_FILE, _T(" (CDA)")));
     else

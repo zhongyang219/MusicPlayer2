@@ -8,6 +8,8 @@
 //#include"MusicPlayerDlg.h"
 #include "GaussBlur.h"
 #include "PlaylistMgr.h"
+#include "IPlayerCore.h"
+#include "BassCore.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//播放列表加载完成消息
@@ -15,14 +17,6 @@
 #define WM_CONNOT_PLAY_WARNING (WM_USER+108)		//无法播放文件时弹出警告提示框的消息
 #define WM_MUSIC_STREAM_OPENED (WM_USER+109)		//当音频文件打开时的消息
 
-struct MidiInfo
-{
-	int midi_position;
-	int midi_length;
-	int speed;		//速度，bpm
-	int tempo;		//每个四分音符的微秒数
-	float ppqn;
-};
 
 class CPlayer
 {
@@ -38,25 +32,14 @@ public:
 	//初始化播放列表的工作线程函数
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
 	ThreadInfo m_thread_info;
-	static CBASSMidiLibrary m_bass_midi_lib;
 
-	//获取Midi音乐内嵌歌词的回调函数
-	static void CALLBACK MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void *user);
-	static void CALLBACK MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void *user);
 
 private:
 	CWinThread* m_pThread{};		//初始化播放列表的线程
 
-	HSTREAM m_musicStream{};		//当前的音频句柄
-	vector<HPLUGIN> m_plugin_handles;		//插件的句柄
-	BASS_CHANNELINFO m_channel_info;	//音频通道的信息
+	//
+    IPlayerCore* m_pCore{};
 
-	BASS_MIDI_FONT m_sfont{};	//MIDI音色库
-	wstring m_sfont_name;		//MIDI音色库的名称
-	MidiInfo m_midi_info;
-	bool m_is_midi;
-	wstring m_midi_lyric;
-	bool m_midi_no_lyric;
 
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
 	wstring m_path;		//当前播放文件的路径
@@ -128,8 +111,8 @@ private:
     bool m_from_playlist{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
 
 private:
-	void IniBASS();			//初始化BASS音频库
-	void UnInitBASS();
+	void IniPlayerCore();			//初始化BASS音频库
+	void UnInitPlayerCore();
 	void IniPlayList(bool cmd_para = false, bool refresh_info = false, bool play = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
 	void IniPlaylistComplate();		//播放列表加载完毕时的处理
@@ -262,23 +245,22 @@ public:
 
 	void AddListenTime(int sec);		//为当前歌曲增加累计已播放时间
 
-	bool IsMidi() const { return m_is_midi; }
-	const MidiInfo& GetMidiInfo() const { return m_midi_info; }
-	const wstring& GetMidiLyric() const { return m_midi_lyric; }
-	bool MidiNoLyric() const { return m_midi_no_lyric; }
-	const wstring& GetSoundFontName() const { return m_sfont_name; }
-	const BASS_MIDI_FONT& GetSoundFont() const { return m_sfont; }
+	bool IsMidi() const { return m_pCore->IsMidi(); }
+	MidiInfo GetMidiInfo() const { return m_pCore->GetMidiInfo(); }
+	wstring GetMidiLyric() const { return m_pCore->GetMidiInnerLyric(); }
+	bool MidiNoLyric() const { return m_pCore->MidiNoLyric(); }
+	wstring GetSoundFontName() const { return m_pCore->GetSoundFontName(); }
 
-	const BASS_CHANNELINFO& GetChannelInfo() const { return m_channel_info; }
+    int GetChannels();
+    int GetFreq();
 
-	void ReIniBASS(bool replay = false);		//重新初始化BASS。当replay为true时，如果原来正在播放，则重新初始化后继续播放
+	void ReIniPlayerCore(bool replay = false);		//重新初始化BASS。当replay为true时，如果原来正在播放，则重新初始化后继续播放
 
 	void SortPlaylist(bool change_index = true);	//播放列表按照m_sort_mode排序（当change_index为true时，排序后重新查找正在播放的歌曲）
 
 private:
 	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
 	void SearchAlbumCover();		//获取专辑封面
-	void GetMidiPosition();			//获取MIDI音乐的播放进度
 	wstring GetCurrentFileName() const;
 
 public:

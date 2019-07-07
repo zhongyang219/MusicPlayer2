@@ -66,18 +66,20 @@ void CPlayerUI::_DrawInfo(bool reset)
         lable3_content = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
     }
     lable4_str = CCommon::LoadText(IDS_FORMAT, _T(": "));
-    const BASS_CHANNELINFO channel_info{ CPlayer::GetInstance().GetChannelInfo() };
+    //const BASS_CHANNELINFO channel_info{ CPlayer::GetInstance().GetChannelInfo() };
+    int chans = CPlayer::GetInstance().GetChannels();
+    int freq = CPlayer::GetInstance().GetFreq();
     CString chans_str;
-    if (channel_info.chans == 1)
+    if (chans == 1)
         chans_str = CCommon::LoadText(IDS_MONO);
-    else if (channel_info.chans == 2)
+    else if (chans == 2)
         chans_str = CCommon::LoadText(IDS_STEREO);
-    else if (channel_info.chans > 2)
-        chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), channel_info.chans);
+    else if (chans > 2)
+        chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), chans);
     if (!CPlayer::GetInstance().IsMidi())
-        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
+        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
     else
-        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), channel_info.freq / 1000.0f, chans_str.GetString());
+        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.GetString());
     lable4_content = buff;
     //œ‘ æ±ÍÃ‚
     tmp.MoveToXY(text_start.x, text_start.y + text_height);

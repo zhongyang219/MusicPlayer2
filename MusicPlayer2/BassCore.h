@@ -1,0 +1,66 @@
+#pragma once
+#include "IPlayerCore.h"
+#include "bass.h"
+#include "BASSMidiLibrary.h"
+
+class CBassCore :
+    public IPlayerCore
+{
+public:
+    CBassCore();
+    ~CBassCore();
+
+    virtual void InitCore() override;
+    virtual void UnInitCore() override;
+    virtual unsigned int GetHandle() override;
+
+    virtual std::wstring GetAudioType() override;
+    virtual int GetChannels() override;
+    virtual int GetFReq() override;
+    virtual const wstring& GetSoundFontName() override;
+
+    virtual void Open(const wchar_t* file_path) override;
+    virtual void Close() override;
+    virtual void Play() override;
+    virtual void Pause() override;
+    virtual void Stop() override;
+    virtual void SetVolume(int volume) override;
+
+    virtual int GetCurPosition() override;
+    virtual int GetSongLength() override;
+    virtual void SetCurPosition(int position) override;
+
+    virtual bool IsMidi() override;
+    virtual bool IsMidiConnotPlay() override;
+    virtual std::wstring GetMidiInnerLyric() override;
+    virtual MidiInfo GetMidiInfo() override;
+    virtual bool MidiNoLyric() override;
+
+    struct MidiLyricInfo 
+    {
+        wstring midi_lyric;
+        bool midi_no_lyric;
+    };
+
+public:
+    static CBASSMidiLibrary m_bass_midi_lib;
+    static BASS_MIDI_FONT m_sfont;	//MIDI音色库
+
+private:
+    //获取Midi音乐内嵌歌词的回调函数
+    static void CALLBACK MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void *user);
+    static void CALLBACK MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void *user);
+
+    void GetMidiPosition();
+
+private:
+    HSTREAM m_musicStream{};		//当前的音频句柄
+    vector<HPLUGIN> m_plugin_handles;		//插件的句柄
+    wstring m_sfont_name;		//MIDI音色库的名称
+    static MidiLyricInfo m_midi_lyric;
+    BASS_CHANNELINFO m_channel_info;	//音频通道的信息
+    bool m_is_midi;
+    MidiInfo m_midi_info;
+
+};
+

@@ -196,6 +196,7 @@
     <ClInclude Include="AudioCommon.h" />
     <ClInclude Include="AudioTag.h" />
     <ClInclude Include="bass.h" />
+    <ClInclude Include="BassCore.h" />
     <ClInclude Include="BASSEncodeLibrary.h" />
     <ClInclude Include="BASSMidiLibrary.h" />
     <ClInclude Include="BASSWmaLibrary.h" />
@@ -226,6 +227,7 @@
     <ClInclude Include="CVariant.h" />
     <ClInclude Include="FileRelateDlg.h" />
     <ClInclude Include="ImputDlg.h" />
+    <ClInclude Include="IPlayerCore.h" />
     <ClInclude Include="IPlayerUI.h" />
     <ClInclude Include="Playlist.h" />
     <ClInclude Include="PlaylistMgr.h" />
@@ -287,6 +289,7 @@
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
     <ClCompile Include="AudioTag.cpp" />
+    <ClCompile Include="BassCore.cpp" />
     <ClCompile Include="BASSEncodeLibrary.cpp" />
     <ClCompile Include="BASSMidiLibrary.cpp" />
     <ClCompile Include="BASSWmaLibrary.cpp" />

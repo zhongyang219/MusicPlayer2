@@ -3,12 +3,13 @@
 #include "MusicPlayer2.h"
 #include "COSUPlayerHelper.h"
 #include "Playlist.h"
+#include "BassCore.h"
 
-CBASSMidiLibrary CPlayer::m_bass_midi_lib;
 CPlayer CPlayer::m_instance;
 
 CPlayer::CPlayer()
 {
+    m_pCore = new CBassCore();
 }
 
 CPlayer & CPlayer::GetInstance()
@@ -18,171 +19,23 @@ CPlayer & CPlayer::GetInstance()
 
 CPlayer::~CPlayer()
 {
-    UnInitBASS();
+    UnInitPlayerCore();
+    delete m_pCore;
 }
 
-void CPlayer::IniBASS()
+void CPlayer::IniPlayerCore()
 {
-    //获取当前的音频输出设备
-    BASS_DEVICEINFO device_info;
-    int rtn;
-    int device_index{1};
-    theApp.m_output_devices.clear();
-    DeviceInfo device{};
-    device.index = -1;
-    device.name = CCommon::LoadText(IDS_DEFAULT_OUTPUT_DEVICE);
-    theApp.m_output_devices.push_back(device);
-    while (true)
-    {
-        device = DeviceInfo{};
-        rtn = BASS_GetDeviceInfo(device_index, &device_info);
-        if (rtn == 0)
-            break;
-        device.index = device_index;
-        if(device_info.name != nullptr)
-            device.name = CCommon::StrToUnicode(string(device_info.name));
-        if (device_info.driver != nullptr)
-            device.driver = CCommon::StrToUnicode(string(device_info.driver));
-        device.flags = device_info.flags;
-        theApp.m_output_devices.push_back(device);
-        device_index++;
-    }
-
-    for (size_t i{}; i < theApp.m_output_devices.size(); i++)
-    {
-        if (theApp.m_output_devices[i].name == theApp.m_play_setting_data.output_device)
-        {
-            theApp.m_play_setting_data.device_selected = i;
-            break;
-        }
-    }
-
-    //初始化BASE音频库
-    BASS_Init(
-        theApp.m_output_devices[theApp.m_play_setting_data.device_selected].index,		//播放设备
-        44100,//输出采样率44100（常用值）
-        BASS_DEVICE_CPSPEAKERS,//信号，BASS_DEVICE_CPSPEAKERS 注释原文如下：
-        /* Use the Windows control panel setting to detect the number of speakers.*/
-        /* Soundcards generally have their own control panel to set the speaker config,*/
-        /* so the Windows control panel setting may not be accurate unless it matches that.*/
-        /* This flag has no effect on Vista, as the speakers are already accurately detected.*/
-        theApp.m_pMainWnd->m_hWnd,//程序窗口,0用于控制台程序
-        NULL//类标识符,0使用默认值
-    );
-
-    //向支持的文件列表插入原生支持的文件格式
-    CAudioCommon::m_surpported_format.clear();
-    SupportedFormat format;
-    format.description = CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT);
-    format.extensions.push_back(L"mp3");
-    format.extensions.push_back(L"wma");
-    format.extensions.push_back(L"wav");
-    format.extensions.push_back(L"flac");
-    format.extensions.push_back(L"ogg");
-    format.extensions.push_back(L"oga");
-    format.extensions.push_back(L"m4a");
-    format.extensions.push_back(L"mp4");
-    format.extensions.push_back(L"cue");
-    format.extensions.push_back(L"mp2");
-    format.extensions.push_back(L"mp1");
-    format.extensions.push_back(L"aif");
-    format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif";
-    CAudioCommon::m_surpported_format.push_back(format);
-    CAudioCommon::m_all_surpported_extensions = format.extensions;
-    //载入BASS插件
-    wstring plugin_dir;
-    plugin_dir = theApp.m_local_dir + L"Plugins\\";
-    vector<wstring> plugin_files;
-    CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);		//获取Plugins目录下所有的dll文件的文件名
-    m_plugin_handles.clear();
-    for (const auto& plugin_file : plugin_files)
-    {
-        //加载插件
-        HPLUGIN handle = BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
-        m_plugin_handles.push_back(handle);
-        //获取插件支持的音频文件类型
-        const BASS_PLUGININFO* plugin_info = BASS_PluginGetInfo(handle);
-        if (plugin_info == nullptr)
-            continue;
-        format.file_name = plugin_file;
-        format.description = CCommon::ASCIIToUnicode(plugin_info->formats->name);	//插件支持文件类型的描述
-        format.extensions_list = CCommon::ASCIIToUnicode(plugin_info->formats->exts);	//插件支持文件扩展名列表
-        //解析扩展名列表到vector
-        format.extensions.clear();
-        size_t index = 0, last_index = 0;
-        while (true)
-        {
-            index = format.extensions_list.find(L"*.", index + 1);
-            wstring ext{ format.extensions_list.substr(last_index + 2, index - last_index - 2) };
-            if (!ext.empty() && ext.back() == L';')
-                ext.pop_back();
-            format.extensions.push_back(ext);
-            if(!CCommon::IsItemInVector(CAudioCommon::m_all_surpported_extensions, ext))
-                CAudioCommon::m_all_surpported_extensions.push_back(ext);
-            if (index == wstring::npos)
-                break;
-            last_index = index;
-        }
-        CAudioCommon::m_surpported_format.push_back(format);
-
-        //载入MIDI音色库，用于播放MIDI
-        if (format.description == L"MIDI")
-        {
-            m_bass_midi_lib.Init(plugin_dir + plugin_file);
-            m_sfont_name = CCommon::LoadText(_T("<"), IDS_NONE, _T(">"));
-            m_sfont.font = 0;
-            if (m_bass_midi_lib.IsSuccessed())
-            {
-                wstring sf2_path = theApp.m_general_setting_data.sf2_path;
-                if (!CCommon::FileExist(sf2_path))		//如果设置的音色库路径不存在，则从.\Plugins\soundfont\目录下查找音色库文件
-                {
-                    vector<wstring> sf2s;
-                    CCommon::GetFiles(plugin_dir + L"soundfont\\*.sf2", sf2s);
-                    if (!sf2s.empty())
-                        sf2_path = plugin_dir + L"soundfont\\" + sf2s[0];
-                }
-                if (CCommon::FileExist(sf2_path))
-                {
-                    m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(sf2_path.c_str(), BASS_UNICODE);
-                    if (m_sfont.font == 0)
-                    {
-                        CString info;
-                        info = CCommon::LoadTextFormat(IDS_SOUND_FONT_LOAD_FAILED, { sf2_path });
-                        theApp.WriteErrorLog(info.GetString());
-                        m_sfont_name = CCommon::LoadText(_T("<"), IDS_LOAD_FAILED, _T(">"));
-                    }
-                    else
-                    {
-                        //获取音色库信息
-                        BASS_MIDI_FONTINFO sfount_info;
-                        m_bass_midi_lib.BASS_MIDI_FontGetInfo(m_sfont.font, &sfount_info);
-                        m_sfont_name = CCommon::StrToUnicode(sfount_info.name);
-                    }
-                    m_sfont.preset = -1;
-                    m_sfont.bank = 0;
-                }
-            }
-        }
-    }
-
+    m_pCore->InitCore();
 }
 
-void CPlayer::UnInitBASS()
+void CPlayer::UnInitPlayerCore()
 {
-    BASS_Stop();	//停止输出
-    BASS_Free();	//释放Bass资源
-    if (m_bass_midi_lib.IsSuccessed() && m_sfont.font != 0)
-        m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
-    m_bass_midi_lib.UnInit();
-    for (const auto& handle : m_plugin_handles)		//释放插件句柄
-    {
-        BASS_PluginFree(handle);
-    }
+    m_pCore->UnInitCore();
 }
 
 void CPlayer::Create()
 {
-    IniBASS();
+    IniPlayerCore();
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
@@ -204,7 +57,7 @@ void CPlayer::Create()
 
 void CPlayer::Create(const vector<wstring>& files)
 {
-    IniBASS();
+    IniPlayerCore();
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
@@ -213,7 +66,7 @@ void CPlayer::Create(const vector<wstring>& files)
 
 void CPlayer::Create(const wstring& path)
 {
-    IniBASS();
+    IniPlayerCore();
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
@@ -491,35 +344,6 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
     m_playlist[m_index].lyric_file = lyric_path;
 }
 
-void CPlayer::MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void * user)
-{
-    if (!CPlayer::m_bass_midi_lib.IsSuccessed())
-        return;
-    CPlayer::GetInstance().m_midi_no_lyric = false;
-    BASS_MIDI_MARK mark;
-    CPlayer::m_bass_midi_lib.BASS_MIDI_StreamGetMark(channel, (DWORD)user, data, &mark); // get the lyric/text
-    if (mark.text[0] == '@') return; // skip info
-    if (mark.text[0] == '\\')
-    {
-        // clear display
-        CPlayer::GetInstance().m_midi_lyric.clear();
-    }
-    else if (mark.text[0] == '/')
-    {
-        CPlayer::GetInstance().m_midi_lyric += L"\r\n";
-        const char* text = mark.text + 1;
-        CPlayer::GetInstance().m_midi_lyric += CCommon::StrToUnicode(text, CodeType::ANSI);
-    }
-    else
-    {
-        CPlayer::GetInstance().m_midi_lyric += CCommon::StrToUnicode(mark.text, CodeType::ANSI);
-    }
-}
-
-void CPlayer::MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void * user)
-{
-    CPlayer::GetInstance().m_midi_lyric.clear();
-}
 
 void CPlayer::MusicControl(Command command, int volume_step)
 {
@@ -530,13 +354,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
     {
     case Command::OPEN:
         m_error_code = 0;
-        m_musicStream = BASS_StreamCreateFile(FALSE, (GetCurrentFilePath()).c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-        BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
-        m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
-        if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
-            m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
+        m_pCore->Open(GetCurrentFilePath().c_str());
         //获取音频类型
-        m_current_file_type = CAudioCommon::GetBASSChannelDescription(m_channel_info.ctype);		//根据通道信息获取当前音频文件的类型
+        m_current_file_type = m_pCore->GetAudioType();		//根据通道信息获取当前音频文件的类型
         if (m_current_file_type.empty())		//如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
         {
             CFilePathHelper file_path{ GetCurrentFileName() };
@@ -545,27 +365,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (GetSongNum() > 0)
         {
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-                AcquireSongInfo(m_musicStream, GetCurrentFilePath(), m_playlist[m_index], m_is_ous_folder);
+                AcquireSongInfo(m_pCore->GetHandle(), GetCurrentFilePath(), m_playlist[m_index], m_is_ous_folder);
             m_song_length = m_playlist[m_index].lengh;
             m_song_length_int = m_song_length.time2int();
-            //如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
-            if (m_is_midi && m_bass_midi_lib.IsSuccessed())
-            {
-                //获取MIDI音乐信息
-                BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_MIDI_PPQN, &m_midi_info.ppqn); // get PPQN value
-                m_midi_info.midi_length = static_cast<int>(BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) / m_midi_info.ppqn);
-                m_midi_info.tempo = m_bass_midi_lib.BASS_MIDI_StreamGetEvent(m_musicStream, 0, MIDI_EVENT_TEMPO);
-                m_midi_info.speed = 60000000 / m_midi_info.tempo;
-                //获取MIDI音乐内嵌歌词
-                BASS_MIDI_MARK mark;
-                m_midi_lyric.clear();
-                if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(m_musicStream, BASS_MIDI_MARK_LYRIC, 0, &mark)) // got lyrics
-                    BASS_ChannelSetSync(m_musicStream, BASS_SYNC_MIDI_MARK, BASS_MIDI_MARK_LYRIC, MidiLyricSync, (void*)BASS_MIDI_MARK_LYRIC);
-                else if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(m_musicStream, BASS_MIDI_MARK_TEXT, 20, &mark)) // got text instead (over 20 of them)
-                    BASS_ChannelSetSync(m_musicStream, BASS_SYNC_MIDI_MARK, BASS_MIDI_MARK_TEXT, MidiLyricSync, (void*)BASS_MIDI_MARK_TEXT);
-                BASS_ChannelSetSync(m_musicStream, BASS_SYNC_END, 0, MidiEndSync, 0);
-                m_midi_no_lyric = true;
-            }
             //打开时获取专辑封面
             SearchAlbumCover();
             //初始化歌词
@@ -590,20 +392,20 @@ void CPlayer::MusicControl(Command command, int volume_step)
         break;
     case Command::PLAY:
         ConnotPlayWarning();
-        BASS_ChannelPlay(m_musicStream, FALSE);
+        m_pCore->Play();
         m_playing = 2;
         break;
     case Command::CLOSE:
         RemoveFXHandle();
-        BASS_StreamFree(m_musicStream);
+        m_pCore->Close();
         m_playing = 0;
         break;
     case Command::PAUSE:
-        BASS_ChannelPause(m_musicStream);
+        m_pCore->Pause();
         m_playing = 1;
         break;
     case Command::STOP:
-        BASS_ChannelStop(m_musicStream);
+        m_pCore->Stop();
         m_playing = 0;
         SeekTo(0);
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
@@ -624,13 +426,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
     case Command::PLAY_PAUSE:
         if (m_playing == 2)
         {
-            BASS_ChannelPause(m_musicStream);
+            m_pCore->Pause();
             m_playing = 1;
         }
         else
         {
             ConnotPlayWarning();
-            BASS_ChannelPlay(m_musicStream, FALSE);
+            m_pCore->Play();
             m_playing = 2;
         }
         break;
@@ -694,12 +496,7 @@ bool CPlayer::SongIsOver() const
 
 void CPlayer::GetBASSSongLength()
 {
-    QWORD lenght_bytes;
-    lenght_bytes = BASS_ChannelGetLength(m_musicStream, BASS_POS_BYTE);
-    double length_sec;
-    length_sec = BASS_ChannelBytes2Seconds(m_musicStream, lenght_bytes);
-    m_song_length_int = static_cast<int>(length_sec * 1000);
-    if (m_song_length_int == -1000) m_song_length_int = 0;
+    m_song_length_int = m_pCore->GetSongLength();
     m_song_length.int2time(m_song_length_int);		//将长度转换成Time结构
 }
 
@@ -716,18 +513,12 @@ Time CPlayer::GetBASSSongLength(HSTREAM hStream)
 
 void CPlayer::GetBASSCurrentPosition()
 {
-    QWORD pos_bytes;
-    pos_bytes = BASS_ChannelGetPosition(m_musicStream, BASS_POS_BYTE);
-    double pos_sec;
-    pos_sec = BASS_ChannelBytes2Seconds(m_musicStream, pos_bytes);
-    m_current_position_int = static_cast<int>(pos_sec * 1000);
-    if (m_current_position_int == -1000) m_current_position_int = 0;
+    m_current_position_int = m_pCore->GetCurPosition();
     if (m_playlist[m_index].is_cue)
     {
         m_current_position_int -= m_playlist[m_index].start_pos.time2int();
     }
     m_current_position.int2time(m_current_position_int);
-    GetMidiPosition();
 }
 
 int CPlayer::GetBASSCurrentPosition(HSTREAM hStream)
@@ -742,18 +533,16 @@ int CPlayer::GetBASSCurrentPosition(HSTREAM hStream)
 
 void CPlayer::SetVolume()
 {
-    float volume = static_cast<float>(m_volume) / 100.0f;
-    volume = volume * theApp.m_nc_setting_data.volume_map / 100;
-    BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, volume);
+    m_pCore->SetVolume(m_volume);
     GetBASSError();
 }
 
 
 void CPlayer::GetBASSSpectral()
 {
-    if (m_musicStream && m_playing != 0 && m_current_position_int < m_song_length_int - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+    if (m_pCore->GetHandle() && m_playing != 0 && m_current_position_int < m_song_length_int - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
     {
-        BASS_ChannelGetData(m_musicStream, m_fft, BASS_DATA_FFT256);
+        BASS_ChannelGetData(m_pCore->GetHandle(), m_fft, BASS_DATA_FFT256);
         memset(m_spectral_data, 0, sizeof(m_spectral_data));
         for (int i{}; i < FFT_SAMPLE; i++)
         {
@@ -1012,7 +801,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     if (files.empty()) return;
     if (m_loading) return;
 
-    if(m_musicStream != 0)
+    if(m_pCore->GetHandle() != 0)
         MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
@@ -1147,7 +936,7 @@ bool CPlayer::IsError() const
     if (m_loading)		//如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_code != 0 || m_musicStream == 0);
+        return (m_error_code != 0 || m_pCore->GetHandle() == 0);
 }
 
 void CPlayer::SetTitle() const
@@ -1467,12 +1256,7 @@ void CPlayer::SeekTo(int position)
     {
         position += m_playlist[m_index].start_pos.time2int();
     }
-    double pos_sec = static_cast<double>(position) / 1000.0;
-    QWORD pos_bytes;
-    pos_bytes = BASS_ChannelSeconds2Bytes(m_musicStream, pos_sec);
-    BASS_ChannelSetPosition(m_musicStream, pos_bytes, BASS_POS_BYTE);
-    m_midi_lyric.clear();
-    GetMidiPosition();
+    m_pCore->SetCurPosition(position);
     GetBASSError();
 }
 
@@ -1566,11 +1350,21 @@ void CPlayer::AddListenTime(int sec)
     }
 }
 
-void CPlayer::ReIniBASS(bool replay)
+int CPlayer::GetChannels()
+{
+    return m_pCore->GetChannels();
+}
+
+int CPlayer::GetFreq()
+{
+    return m_pCore->GetFReq();
+}
+
+void CPlayer::ReIniPlayerCore(bool replay)
 {
     int playing = m_playing;
-    UnInitBASS();
-    IniBASS();
+    UnInitPlayerCore();
+    IniPlayerCore();
     MusicControl(Command::OPEN);
     MusicControl(Command::SEEK);
     if (replay && playing == 2)
@@ -1833,34 +1627,34 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
 
 void CPlayer::SetFXHandle()
 {
-    if (m_musicStream == 0) return;
+    if (m_pCore->GetHandle() == 0) return;
     //if (!m_equ_enable) return;
     //设置每个均衡器通道的句柄
     for (int i{}; i < EQU_CH_NUM; i++)
     {
-        m_equ_handle[i] = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_PARAMEQ, 1);
+        m_equ_handle[i] = BASS_ChannelSetFX(m_pCore->GetHandle(), BASS_FX_DX8_PARAMEQ, 1);
     }
     //设置混响的句柄
-    m_reverb_handle = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_REVERB, 1);
+    m_reverb_handle = BASS_ChannelSetFX(m_pCore->GetHandle(), BASS_FX_DX8_REVERB, 1);
     GetBASSError();
 }
 
 void CPlayer::RemoveFXHandle()
 {
-    if (m_musicStream == 0) return;
+    if (m_pCore->GetHandle() == 0) return;
     //移除每个均衡器通道的句柄
     for (int i{}; i < EQU_CH_NUM; i++)
     {
         if (m_equ_handle[i] != 0)
         {
-            BASS_ChannelRemoveFX(m_musicStream, m_equ_handle[i]);
+            BASS_ChannelRemoveFX(m_pCore->GetHandle(), m_equ_handle[i]);
             m_equ_handle[i] = 0;
         }
     }
     //移除混响的句柄
     if (m_reverb_handle != 0)
     {
-        BASS_ChannelRemoveFX(m_musicStream, m_reverb_handle);
+        BASS_ChannelRemoveFX(m_pCore->GetHandle(), m_reverb_handle);
         m_reverb_handle = 0;
     }
     GetBASSError();
@@ -1963,7 +1757,7 @@ void CPlayer::EnableReverb(bool enable)
 
 void CPlayer::ConnotPlayWarning() const
 {
-    if (m_is_midi && m_sfont.font == 0)
+    if (m_pCore->IsMidiConnotPlay())
         PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
 }
 
@@ -1976,7 +1770,7 @@ void CPlayer::SearchAlbumCover()
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFolder())
     {
         //从文件获取专辑封面
-        CAudioTag audio_tag(m_musicStream, GetCurrentFilePath(), m_playlist[m_index]);
+        CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), m_playlist[m_index]);
         m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
         m_album_cover.Load(m_album_cover_path.c_str());
     }
@@ -2019,15 +1813,6 @@ void CPlayer::AlbumCoverGaussBlur()
     }
 }
 
-void CPlayer::GetMidiPosition()
-{
-    if (m_is_midi)
-    {
-        //获取midi音乐的进度并转换成节拍数。（其中+ (m_midi_info.ppqn / 4)的目的是修正显示的节拍不准确的问题）
-        m_midi_info.midi_position = static_cast<int>((BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 4)) / m_midi_info.ppqn);
-    }
-}
-
 wstring CPlayer::GetCurrentFileName() const
 {
     if (m_index >= 0 && m_index < GetSongNum())
@@ -2054,10 +1839,10 @@ void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInf
         CAudioTag audio_tag(hStream, file_path, song_info);
         audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
         //获取midi音乐的标题
-        if (m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
+        if (CBassCore::m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
         {
             BASS_MIDI_MARK mark;
-            if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
+            if (CBassCore::m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
             {
                 song_info.title = CCommon::StrToUnicode(mark.text);
                 song_info.info_acquired = true;
