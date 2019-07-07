@@ -90,7 +90,7 @@ void CReverbDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	{
 		int mix{ m_reverb_mix_slider.GetPos() };
 		int time{ m_reverb_time_slider.GetPos() };
-		CPlayer::GetInstance().SetReverb(mix, time);
+		CPlayer::GetInstance().GetPlayerCore()->SetReverb(mix, time);
 		UpdateStaticText(mix, time);
 	}
 

@@ -69,12 +69,9 @@ private:
 	float m_last_spectral_data[SPECTRUM_ROW]{};	//上一次的频谱数据
 	float m_spectral_peak[SPECTRUM_ROW]{};		//频谱顶端的高度
 
-	int m_equ_handle[EQU_CH_NUM]{};		//均衡器通道的句柄
-	const float FREQ_TABLE[EQU_CH_NUM]{ 80, 125, 250, 500, 1000, 1500, 2000, 4000, 8000, 1600};		//每个均衡器通道的中心频率
 	int m_equalizer_gain[EQU_CH_NUM]{};		//用于保存设置好的每个通道的增益
 	bool m_equ_enable{ false };		//指示是否允许均衡器
 
-	int m_reverb_handle{};		//混响的句柄
 	int m_equ_style{};
 	int m_reverb_mix{};		//混响强度（0~100）
 	int m_reverb_time{1};	//混响时间（单位10ms，1~300）
@@ -119,8 +116,6 @@ private:
 
 	void ChangePath(const wstring& path, int track = 0);		//改变当前路径
 
-	void SetFXHandle();		//设置音效句柄
-	void RemoveFXHandle();		//移除音效句柄
 	void ApplyEqualizer(int channel, int gain);		//应用一个均衡器通道的增益
 
 	void LoadRecentPath();		//从文件载入最近路径列表
@@ -139,8 +134,6 @@ public:
 	void EnableEqualizer(bool enable);			//均衡器开关
 	bool GetEqualizerEnable() const { return m_equ_enable; }
 
-	void SetReverb(int mix, int time);		//设置混响（mix为混响强度，取值为0~100，time为混响时间，取值为1~300，单位为10ms）
-	void ClearReverb();				//关闭混响
 	int GetReverbMix() const { return m_reverb_mix; }
 	int GetReverbTime() const { return m_reverb_time; }
 	void EnableReverb(bool enable);		//混响开关
@@ -274,5 +267,6 @@ public:
 
     void SetPlaylistPath(const wstring& playlist_path);
     wstring GetPlaylistPath() const;
+    IPlayerCore* GetPlayerCore() { return m_pCore; }
 };
 

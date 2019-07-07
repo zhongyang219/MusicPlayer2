@@ -226,6 +226,39 @@ void CBassCore::GetMidiPosition()
 
 }
 
+void CBassCore::SetFXHandle()
+{
+    if (m_musicStream == 0) return;
+    //if (!m_equ_enable) return;
+    //设置每个均衡器通道的句柄
+    for (int i{}; i < EQU_CH_NUM; i++)
+    {
+        m_equ_handle[i] = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_PARAMEQ, 1);
+    }
+    //设置混响的句柄
+    m_reverb_handle = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_REVERB, 1);
+}
+
+void CBassCore::RemoveFXHandle()
+{
+    if (m_musicStream == 0) return;
+    //移除每个均衡器通道的句柄
+    for (int i{}; i < EQU_CH_NUM; i++)
+    {
+        if (m_equ_handle[i] != 0)
+        {
+            BASS_ChannelRemoveFX(m_musicStream, m_equ_handle[i]);
+            m_equ_handle[i] = 0;
+        }
+    }
+    //移除混响的句柄
+    if (m_reverb_handle != 0)
+    {
+        BASS_ChannelRemoveFX(m_musicStream, m_reverb_handle);
+        m_reverb_handle = 0;
+    }
+}
+
 int CBassCore::GetChannels()
 {
     return m_channel_info.chans;
@@ -267,11 +300,12 @@ void CBassCore::Open(const wchar_t * file_path)
         BASS_ChannelSetSync(m_musicStream, BASS_SYNC_END, 0, MidiEndSync, 0);
         m_midi_lyric.midi_no_lyric = true;
     }
-
+    SetFXHandle();
 }
 
 void CBassCore::Close()
 {
+    RemoveFXHandle();
     BASS_StreamFree(m_musicStream);
 }
 
@@ -354,4 +388,39 @@ MidiInfo CBassCore::GetMidiInfo()
 bool CBassCore::MidiNoLyric()
 {
     return m_midi_lyric.midi_no_lyric;
+}
+
+void CBassCore::ApplyEqualizer(int channel, int gain)
+{
+    if (channel < 0 || channel >= EQU_CH_NUM) return;
+    //if (!m_equ_enable) return;
+    if (gain < -15) gain = -15;
+    if (gain > 15) gain = 15;
+    BASS_DX8_PARAMEQ parameq;
+    parameq.fBandwidth = 30;
+    parameq.fCenter = FREQ_TABLE[channel];
+    parameq.fGain = static_cast<float>(gain);
+    BASS_FXSetParameters(m_equ_handle[channel], &parameq);
+
+}
+
+void CBassCore::SetReverb(int mix, int time)
+{
+    BASS_DX8_REVERB parareverb;
+    parareverb.fInGain = 0;
+    //parareverb.fReverbMix = static_cast<float>(mix) / 100 * 96 - 96;
+    parareverb.fReverbMix = static_cast<float>(std::pow(static_cast<double>(mix) / 100, 0.1) * 96 - 96);
+    parareverb.fReverbTime = static_cast<float>(time * 10);
+    parareverb.fHighFreqRTRatio = 0.001f;
+    BASS_FXSetParameters(m_reverb_handle, &parareverb);
+}
+
+void CBassCore::ClearReverb()
+{
+    BASS_DX8_REVERB parareverb;
+    parareverb.fInGain = 0;
+    parareverb.fReverbMix = -96;
+    parareverb.fReverbTime = 0.001f;
+    parareverb.fHighFreqRTRatio = 0.001f;
+    BASS_FXSetParameters(m_reverb_handle, &parareverb);
 }

@@ -381,13 +381,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
         }
         SetVolume();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
-        SetFXHandle();
+        //SetFXHandle();
         if (m_equ_enable)
             SetAllEqualizer();
         if (m_reverb_enable)
-            SetReverb(m_reverb_mix, m_reverb_time);
+            m_pCore->SetReverb(m_reverb_mix, m_reverb_time);
         else
-            ClearReverb();
+            m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
         break;
     case Command::PLAY:
@@ -396,7 +396,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_playing = 2;
         break;
     case Command::CLOSE:
-        RemoveFXHandle();
+        //RemoveFXHandle();
         m_pCore->Close();
         m_playing = 0;
         break;
@@ -1625,52 +1625,19 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
     }
 }
 
-void CPlayer::SetFXHandle()
-{
-    if (m_pCore->GetHandle() == 0) return;
-    //if (!m_equ_enable) return;
-    //设置每个均衡器通道的句柄
-    for (int i{}; i < EQU_CH_NUM; i++)
-    {
-        m_equ_handle[i] = BASS_ChannelSetFX(m_pCore->GetHandle(), BASS_FX_DX8_PARAMEQ, 1);
-    }
-    //设置混响的句柄
-    m_reverb_handle = BASS_ChannelSetFX(m_pCore->GetHandle(), BASS_FX_DX8_REVERB, 1);
-    GetBASSError();
-}
-
-void CPlayer::RemoveFXHandle()
-{
-    if (m_pCore->GetHandle() == 0) return;
-    //移除每个均衡器通道的句柄
-    for (int i{}; i < EQU_CH_NUM; i++)
-    {
-        if (m_equ_handle[i] != 0)
-        {
-            BASS_ChannelRemoveFX(m_pCore->GetHandle(), m_equ_handle[i]);
-            m_equ_handle[i] = 0;
-        }
-    }
-    //移除混响的句柄
-    if (m_reverb_handle != 0)
-    {
-        BASS_ChannelRemoveFX(m_pCore->GetHandle(), m_reverb_handle);
-        m_reverb_handle = 0;
-    }
-    GetBASSError();
-}
+//void CPlayer::SetFXHandle()
+//{
+//    GetBASSError();
+//}
+//
+//void CPlayer::RemoveFXHandle()
+//{
+//    GetBASSError();
+//}
 
 void CPlayer::ApplyEqualizer(int channel, int gain)
 {
-    if (channel < 0 || channel >= EQU_CH_NUM) return;
-    //if (!m_equ_enable) return;
-    if (gain < -15) gain = -15;
-    if (gain > 15) gain = 15;
-    BASS_DX8_PARAMEQ parameq;
-    parameq.fBandwidth = 30;
-    parameq.fCenter = FREQ_TABLE[channel];
-    parameq.fGain = static_cast<float>(gain);
-    BASS_FXSetParameters(m_equ_handle[channel], &parameq);
+    m_pCore->ApplyEqualizer(channel, gain);
     GetBASSError();
 }
 
@@ -1716,42 +1683,22 @@ void CPlayer::EnableEqualizer(bool enable)
     m_equ_enable = enable;
 }
 
-void CPlayer::SetReverb(int mix, int time)
-{
-    if (mix < 0) mix = 0;
-    if (mix > 100) mix = 100;
-    if (time < 1) time = 1;
-    if (time > 300) time = 300;
-    m_reverb_mix = mix;
-    m_reverb_time = time;
-    BASS_DX8_REVERB parareverb;
-    parareverb.fInGain = 0;
-    //parareverb.fReverbMix = static_cast<float>(mix) / 100 * 96 - 96;
-    parareverb.fReverbMix = static_cast<float>(std::pow(static_cast<double>(mix) / 100, 0.1) * 96 - 96);
-    parareverb.fReverbTime = static_cast<float>(time * 10);
-    parareverb.fHighFreqRTRatio = 0.001f;
-    BASS_FXSetParameters(m_reverb_handle, &parareverb);
-    GetBASSError();
-}
-
-void CPlayer::ClearReverb()
-{
-    BASS_DX8_REVERB parareverb;
-    parareverb.fInGain = 0;
-    parareverb.fReverbMix = -96;
-    parareverb.fReverbTime = 0.001f;
-    parareverb.fHighFreqRTRatio = 0.001f;
-    BASS_FXSetParameters(m_reverb_handle, &parareverb);
-    GetBASSError();
-}
-
 void CPlayer::EnableReverb(bool enable)
 {
     if (enable)
-        SetReverb(m_reverb_mix, m_reverb_time);
+    {
+        if (m_reverb_mix < 0) m_reverb_mix = 0;
+        if (m_reverb_mix > 100) m_reverb_mix = 100;
+        if (m_reverb_time < 1) m_reverb_time = 1;
+        if (m_reverb_time > 300) m_reverb_time = 300;
+        m_pCore->SetReverb(m_reverb_mix, m_reverb_time);
+    }
     else
-        ClearReverb();
+    {
+        m_pCore->ClearReverb();
+    }
     m_reverb_enable = enable;
+    GetBASSError();
 }
 
 
