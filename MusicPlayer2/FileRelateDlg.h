@@ -25,4 +25,5 @@ public:
     CListCtrlEx m_list_ctrl;
     virtual BOOL OnInitDialog();
     virtual void OnOK();
+    afx_msg void OnBnClickedSelectAllCheck();
 };

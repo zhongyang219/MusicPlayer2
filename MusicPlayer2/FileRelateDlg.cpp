@@ -34,6 +34,7 @@ void CFileRelateDlg::RefreshList()
 {
     m_list_ctrl.DeleteAllItems();
     int index = 0;
+    bool checked{ false }, unchecked{ false };
     for (const auto& item : CAudioCommon::m_all_surpported_extensions)
     {
         if(item == L"cue")
@@ -42,12 +43,30 @@ void CFileRelateDlg::RefreshList()
         wstring description = CAudioCommon::GetAudioDescriptionByExtension(item);
         m_list_ctrl.SetItemText(index, 1, description.c_str());
         CRegFileRelate reg_file;
-        m_list_ctrl.SetCheck(index, reg_file.IsFileTypeRelated(item.c_str()));
+        bool related = reg_file.IsFileTypeRelated(item.c_str());
+        m_list_ctrl.SetCheck(index, related);
+        if (related)
+            checked = true;
+        else
+            unchecked = true;
+
         index++;
+    }
+
+    CButton* pBtn = (CButton*)GetDlgItem(IDC_SELECT_ALL_CHECK);
+    if (pBtn != nullptr)
+    {
+        if (checked && !unchecked)
+            pBtn->SetCheck(BST_CHECKED);
+        else if (checked && unchecked)
+            pBtn->SetCheck(BST_INDETERMINATE);
+        else
+            pBtn->SetCheck(BST_UNCHECKED);
     }
 }
 
 BEGIN_MESSAGE_MAP(CFileRelateDlg, CDialog)
+    ON_BN_CLICKED(IDC_SELECT_ALL_CHECK, &CFileRelateDlg::OnBnClickedSelectAllCheck)
 END_MESSAGE_MAP()
 
 
@@ -92,4 +111,17 @@ void CFileRelateDlg::OnOK()
     }
 
     CDialog::OnOK();
+}
+
+
+void CFileRelateDlg::OnBnClickedSelectAllCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CButton* pBtn = (CButton*)GetDlgItem(IDC_SELECT_ALL_CHECK);
+    if (pBtn == nullptr)
+        return;
+    BOOL checked{ pBtn->GetCheck() };
+    int list_count{ m_list_ctrl.GetItemCount() };
+    for (int i = 0; i < list_count; i++)
+        m_list_ctrl.SetCheck(i, checked);
 }
