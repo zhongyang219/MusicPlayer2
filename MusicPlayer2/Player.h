@@ -154,11 +154,9 @@ public:
 	void MusicControl(Command command, int volume_step = 2);		//控制音乐播放
 	bool SongIsOver() const;			//判断当前音乐是否播放完毕
 	void GetBASSCurrentPosition();		//从BASS音频库获取当前播放到的位置
-	static int GetBASSCurrentPosition(HSTREAM hStream);
 	void GetBASSSongLength();			//从BASS音频库获取正在播放文件的长度
-	static Time GetBASSSongLength(HSTREAM hStream);
 
-	void GetBASSSpectral();		//频谱分析
+	void CalculateSpectralData();		//频谱分析
 	int GetCurrentSecond();		//获取当前播放到的位置的秒数
 	bool IsPlaying() const;			//判断当前是否正在播放
 

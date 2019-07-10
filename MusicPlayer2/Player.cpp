@@ -500,17 +500,6 @@ void CPlayer::GetBASSSongLength()
     m_song_length.int2time(m_song_length_int);		//将长度转换成Time结构
 }
 
-Time CPlayer::GetBASSSongLength(HSTREAM hStream)
-{
-    QWORD lenght_bytes;
-    lenght_bytes = BASS_ChannelGetLength(hStream, BASS_POS_BYTE);
-    double length_sec;
-    length_sec = BASS_ChannelBytes2Seconds(hStream, lenght_bytes);
-    int song_length_int = static_cast<int>(length_sec * 1000);
-    if (song_length_int == -1000) song_length_int = 0;
-    return Time(song_length_int);		//将长度转换成Time结构
-}
-
 void CPlayer::GetBASSCurrentPosition()
 {
     m_current_position_int = m_pCore->GetCurPosition();
@@ -521,15 +510,6 @@ void CPlayer::GetBASSCurrentPosition()
     m_current_position.int2time(m_current_position_int);
 }
 
-int CPlayer::GetBASSCurrentPosition(HSTREAM hStream)
-{
-    QWORD pos_bytes;
-    pos_bytes = BASS_ChannelGetPosition(hStream, BASS_POS_BYTE);
-    double pos_sec;
-    pos_sec = BASS_ChannelBytes2Seconds(hStream, pos_bytes);
-    return static_cast<int>(pos_sec * 1000);
-}
-
 
 void CPlayer::SetVolume()
 {
@@ -538,11 +518,12 @@ void CPlayer::SetVolume()
 }
 
 
-void CPlayer::GetBASSSpectral()
+void CPlayer::CalculateSpectralData()
 {
     if (m_pCore->GetHandle() && m_playing != 0 && m_current_position_int < m_song_length_int - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
     {
-        BASS_ChannelGetData(m_pCore->GetHandle(), m_fft, BASS_DATA_FFT256);
+        //BASS_ChannelGetData(m_pCore->GetHandle(), m_fft, BASS_DATA_FFT256);
+        m_pCore->GetFFTData(m_fft);
         memset(m_spectral_data, 0, sizeof(m_spectral_data));
         for (int i{}; i < FFT_SAMPLE; i++)
         {
@@ -1771,7 +1752,7 @@ wstring CPlayer::GetCurrentFileName() const
 void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo & song_info, bool osu_song)
 {
     //获取长度
-    song_info.lengh = GetBASSSongLength(hStream);
+    song_info.lengh = CBassCore::GetBASSSongLength(hStream);
     //获取比特率
     float bitrate{};
     BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);

@@ -2,6 +2,7 @@
 #include "IPlayerCore.h"
 #include "bass.h"
 #include "BASSMidiLibrary.h"
+#include "Time.h"
 
 class CBassCore :
     public IPlayerCore
@@ -36,15 +37,19 @@ public:
     virtual MidiInfo GetMidiInfo() override;
     virtual bool MidiNoLyric() override;
 
-    virtual void ApplyEqualizer(int channel, int gain) override;
-    virtual void SetReverb(int mix, int time) override;
-    virtual void ClearReverb() override;
-
     struct MidiLyricInfo 
     {
         wstring midi_lyric;
         bool midi_no_lyric;
     };
+
+    virtual void ApplyEqualizer(int channel, int gain) override;
+    virtual void SetReverb(int mix, int time) override;
+    virtual void ClearReverb() override;
+    virtual void GetFFTData(float fft_data[128]) override;
+
+    static int GetBASSCurrentPosition(HSTREAM hStream);
+    static Time GetBASSSongLength(HSTREAM hStream);
 
 public:
     static CBASSMidiLibrary m_bass_midi_lib;

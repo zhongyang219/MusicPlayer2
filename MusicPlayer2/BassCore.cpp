@@ -424,3 +424,28 @@ void CBassCore::ClearReverb()
     parareverb.fHighFreqRTRatio = 0.001f;
     BASS_FXSetParameters(m_reverb_handle, &parareverb);
 }
+
+void CBassCore::GetFFTData(float fft_data[128])
+{
+    BASS_ChannelGetData(m_musicStream, fft_data, BASS_DATA_FFT256);
+}
+
+int CBassCore::GetBASSCurrentPosition(HSTREAM hStream)
+{
+    QWORD pos_bytes;
+    pos_bytes = BASS_ChannelGetPosition(hStream, BASS_POS_BYTE);
+    double pos_sec;
+    pos_sec = BASS_ChannelBytes2Seconds(hStream, pos_bytes);
+    return static_cast<int>(pos_sec * 1000);
+}
+
+Time CBassCore::GetBASSSongLength(HSTREAM hStream)
+{
+    QWORD lenght_bytes;
+    lenght_bytes = BASS_ChannelGetLength(hStream, BASS_POS_BYTE);
+    double length_sec;
+    length_sec = BASS_ChannelBytes2Seconds(hStream, lenght_bytes);
+    int song_length_int = static_cast<int>(length_sec * 1000);
+    if (song_length_int == -1000) song_length_int = 0;
+    return Time(song_length_int);		//将长度转换成Time结构
+}

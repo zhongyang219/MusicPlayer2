@@ -44,5 +44,6 @@ public:
     virtual void ApplyEqualizer(int channel, int gain) = 0;
     virtual void SetReverb(int mix, int time) = 0;		//设置混响（mix为混响强度，取值为0~100，time为混响时间，取值为1~300，单位为10ms）
     virtual void ClearReverb() = 0;			//关闭混响
+    virtual void GetFFTData(float fft_data[128]) = 0;       //获取频谱分析数据
 
 };
