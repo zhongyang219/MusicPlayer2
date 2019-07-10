@@ -958,7 +958,8 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
 {
     theApp.m_menu_set.m_list_popup_menu.DestroyMenu();
     theApp.m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);
-    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(13);
+    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(10);
+    ASSERT(add_to_menu != nullptr);
     if (add_to_menu != nullptr)
     {
         auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
@@ -3621,8 +3622,11 @@ void CMusicPlayerDlg::OnRemoveSameSongs()
 {
     // TODO: 在此添加命令处理程序代码
     int removed = CPlayer::GetInstance().RemoveSameSongs();
-    CPlayer::GetInstance().SaveCurrentPlaylist();
-    ShowPlayList();
+    if (removed > 0)
+    {
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+        ShowPlayList();
+    }
     MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
@@ -3709,7 +3713,10 @@ void CMusicPlayerDlg::OnRemoveInvalidItems()
 {
     // TODO: 在此添加命令处理程序代码
     int removed = CPlayer::GetInstance().RemoveInvalidSongs();
-    CPlayer::GetInstance().SaveCurrentPlaylist();
-    ShowPlayList();
+    if (removed > 0)
+    {
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+        ShowPlayList();
+    }
     MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
 }
