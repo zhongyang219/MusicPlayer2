@@ -323,4 +323,5 @@ public:
     afx_msg void OnAddToNewPlaylist();
     afx_msg void OnToolFileRelate();
     afx_msg void OnPlaylistAddFolder();
+    afx_msg void OnRemoveInvalidItems();
 };

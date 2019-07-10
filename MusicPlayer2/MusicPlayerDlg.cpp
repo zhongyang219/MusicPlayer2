@@ -194,7 +194,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMusicPlayerDlg::OnAddToNewPlaylist)
     ON_COMMAND(ID_TOOL_FILE_RELATE, &CMusicPlayerDlg::OnToolFileRelate)
     ON_COMMAND(ID_PLAYLIST_ADD_FOLDER, &CMusicPlayerDlg::OnPlaylistAddFolder)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_REMOVE_INVALID_ITEMS, &CMusicPlayerDlg::OnRemoveInvalidItems)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3701,4 +3702,14 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         CPlayer::GetInstance().SaveCurrentPlaylist();
 
     }
+}
+
+
+void CMusicPlayerDlg::OnRemoveInvalidItems()
+{
+    // TODO: 在此添加命令处理程序代码
+    int removed = CPlayer::GetInstance().RemoveInvalidSongs();
+    CPlayer::GetInstance().SaveCurrentPlaylist();
+    ShowPlayList();
+    MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
 }
