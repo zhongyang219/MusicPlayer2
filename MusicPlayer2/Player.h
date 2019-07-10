@@ -217,7 +217,7 @@ public:
 
 	void SeekTo(int position);		//定位到指定位置
 	void SeekTo(double position);	//定位到指定位置(范围0~1)
-	static void SeekTo(HSTREAM hStream, int position);
+	//static void SeekTo(HSTREAM hStream, int position);
 	void ClearLyric();		//清除当前文件的歌词关联
 
 	int GetCurrentPosition() const { return m_current_position_int; }		//返回当前播放到的位置
@@ -256,8 +256,7 @@ private:
 	wstring GetCurrentFileName() const;
 
 public:
-	static void AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo& song_info, bool osu_song = false);		//获取歌曲标签等信息
-	void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
+    void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
 	void AlbumCoverGaussBlur();		//专辑封面高斯模糊
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
 	wstring GetCurrentFileType() { return m_current_file_type; }

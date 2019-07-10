@@ -429,6 +429,14 @@ void CMusicPlayerApp::LoadConfig()
     m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", false);
 }
 
+void CMusicPlayerApp::SaveSongInfo(const SongInfo& song_info)
+{
+    SongInfo& song = m_song_data[song_info.file_path];
+    song.CopyAudioTag(song_info);
+    song.lengh = song_info.lengh;
+    song.bitrate = song_info.bitrate;
+}
+
 void CMusicPlayerApp::LoadIconResource()
 {
     m_icon_set.default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);

@@ -136,10 +136,12 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             }
         }
         wstring file_path{ GetInstance().m_playlist[i].file_path };
-        HSTREAM hStream;
-        hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-        GetInstance().AcquireSongInfo(hStream, file_path, GetInstance().m_playlist[i], GetInstance().m_is_ous_folder);
-        BASS_StreamFree(hStream);
+        GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], !GetInstance().IsOsuFolder());
+        //if (GetInstance().IsOsuFolder())
+        //{
+        //    COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
+        //}
+        theApp.SaveSongInfo(GetInstance().m_playlist[i]);
         count++;
     }
     GetInstance().m_loading = false;
@@ -365,7 +367,12 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (GetSongNum() > 0)
         {
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-                AcquireSongInfo(m_pCore->GetHandle(), GetCurrentFilePath(), m_playlist[m_index], m_is_ous_folder);
+            {
+                m_pCore->GetAudioInfo(m_playlist[m_index], !m_is_ous_folder);
+                //if(m_is_ous_folder)
+                //    COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
+                theApp.SaveSongInfo(m_playlist[m_index]);
+            }
             m_song_length = m_playlist[m_index].lengh;
             m_song_length_int = m_song_length.time2int();
             //打开时获取专辑封面
@@ -1261,14 +1268,14 @@ void CPlayer::SeekTo(double position)
     SeekTo(pos);
 }
 
-void CPlayer::SeekTo(HSTREAM hStream, int position)
-{
-    double pos_sec = static_cast<double>(position) / 1000.0;
-    QWORD pos_bytes;
-    pos_bytes = BASS_ChannelSeconds2Bytes(hStream, pos_sec);
-    BASS_ChannelSetPosition(hStream, pos_bytes, BASS_POS_BYTE);
-    GetInstance().GetBASSError();
-}
+//void CPlayer::SeekTo(HSTREAM hStream, int position)
+//{
+//    double pos_sec = static_cast<double>(position) / 1000.0;
+//    QWORD pos_bytes;
+//    pos_bytes = BASS_ChannelSeconds2Bytes(hStream, pos_sec);
+//    BASS_ChannelSetPosition(hStream, pos_bytes, BASS_POS_BYTE);
+//    GetInstance().GetBASSError();
+//}
 
 void CPlayer::ClearLyric()
 {
@@ -1761,43 +1768,6 @@ wstring CPlayer::GetCurrentFileName() const
         return m_playlist[m_index].file_name;
     else
         return wstring();
-}
-
-void CPlayer::AcquireSongInfo(HSTREAM hStream, const wstring& file_path, SongInfo & song_info, bool osu_song)
-{
-    //获取长度
-    song_info.lengh = CBassCore::GetBASSSongLength(hStream);
-    //获取比特率
-    float bitrate{};
-    BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
-    song_info.bitrate = static_cast<int>(bitrate + 0.5f);
-    if (osu_song)
-    {
-        COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
-    }
-    else
-    {
-        //获取音频标签
-        CAudioTag audio_tag(hStream, file_path, song_info);
-        audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
-        //获取midi音乐的标题
-        if (CBassCore::m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
-        {
-            BASS_MIDI_MARK mark;
-            if (CBassCore::m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
-            {
-                song_info.title = CCommon::StrToUnicode(mark.text);
-                song_info.info_acquired = true;
-            }
-        }
-        CFilePathHelper c_file_path(file_path);
-        song_info.file_name = c_file_path.GetFileName();
-    }
-    //保存歌曲信息
-    SongInfo& song = theApp.m_song_data[file_path];
-    song.CopyAudioTag(song_info);
-    song.lengh = song_info.lengh;
-    song.bitrate = song_info.bitrate;
 }
 
 void CPlayer::SearchOutAlbumCover()

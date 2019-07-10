@@ -1,4 +1,5 @@
 #pragma once
+#include "SongInfo.h"
 
 struct MidiInfo
 {
@@ -34,6 +35,8 @@ public:
     virtual int GetCurPosition() = 0;
     virtual int GetSongLength() = 0;
     virtual void SetCurPosition(int position) = 0;
+    virtual void GetAudioInfo(SongInfo& song_info, bool get_tag = true) = 0;        //获取打开的音频的长度、比特率和标签信息，如果get_tag为false，则不获取标签信息
+    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, bool get_tag = true) = 0;        //获取指定音频文件的长度、比特率和标签信息
 
     virtual bool IsMidi() = 0;
     virtual bool IsMidiConnotPlay() = 0;

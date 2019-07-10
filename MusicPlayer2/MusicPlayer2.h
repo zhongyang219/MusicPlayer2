@@ -67,6 +67,8 @@ public:
     void SaveConfig();
     void LoadConfig();
 
+    void SaveSongInfo(const SongInfo& song_info);       //将一个歌曲信息保存到m_song_data中
+
     void LoadIconResource();
     void InitMenuResourse();
 

@@ -28,6 +28,15 @@ bool COSUPlayerHelper::IsOsuFolder(const std::wstring & strPath)
     return CCommon::FileExist(parent_dir + L"osu!.exe") && folder_path.substr(folder_path.size() - 6, 5) == L"Songs";
 }
 
+bool COSUPlayerHelper::IsOsuFile(const std::wstring& strPath)
+{
+    if (strPath.empty())
+        return false;
+
+    CFilePathHelper path_helper(strPath);
+    return IsOsuFolder(path_helper.GetParentDir());
+}
+
 void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<SongInfo>& files)
 {
     if (path.back() != L'\\' && path.back() != L'/')

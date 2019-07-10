@@ -30,6 +30,8 @@ public:
     virtual int GetCurPosition() override;
     virtual int GetSongLength() override;
     virtual void SetCurPosition(int position) override;
+    virtual void GetAudioInfo(SongInfo& song_info, bool get_tag = true) override;
+    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, bool get_tag = true) override;
 
     virtual bool IsMidi() override;
     virtual bool IsMidiConnotPlay() override;
@@ -50,6 +52,9 @@ public:
 
     static int GetBASSCurrentPosition(HSTREAM hStream);
     static Time GetBASSSongLength(HSTREAM hStream);
+    static void SetCurrentPosition(HSTREAM hStream, int position);
+
+    static void GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, bool get_tag);
 
 public:
     static CBASSMidiLibrary m_bass_midi_lib;
@@ -66,6 +71,7 @@ private:
 
 private:
     HSTREAM m_musicStream{};		//当前的音频句柄
+    wstring m_file_path;            //当前音频文件的路径
     vector<HPLUGIN> m_plugin_handles;		//插件的句柄
     wstring m_sfont_name;		//MIDI音色库的名称
     static MidiLyricInfo m_midi_lyric;

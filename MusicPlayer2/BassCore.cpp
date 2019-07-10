@@ -259,6 +259,31 @@ void CBassCore::RemoveFXHandle()
     }
 }
 
+void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, bool get_tag)
+{
+    //获取长度
+    song_info.lengh = CBassCore::GetBASSSongLength(hStream);
+    //获取比特率
+    float bitrate{};
+    BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
+    song_info.bitrate = static_cast<int>(bitrate + 0.5f);
+    if(get_tag)
+    {
+        CAudioTag audio_tag(hStream, file_path, song_info);
+        audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
+        //获取midi音乐的标题
+        if (CBassCore::m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
+        {
+            BASS_MIDI_MARK mark;
+            if (CBassCore::m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
+            {
+                song_info.title = CCommon::StrToUnicode(mark.text);
+                song_info.info_acquired = true;
+            }
+        }
+    }
+}
+
 int CBassCore::GetChannels()
 {
     return m_channel_info.chans;
@@ -276,6 +301,7 @@ const wstring& CBassCore::GetSoundFontName()
 
 void CBassCore::Open(const wchar_t * file_path)
 {
+    m_file_path = file_path;
     m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, BASS_SAMPLE_FLOAT);
     BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
     m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
@@ -365,6 +391,19 @@ void CBassCore::SetCurPosition(int position)
     GetMidiPosition();
 }
 
+void CBassCore::GetAudioInfo(SongInfo & song_info, bool get_tag)
+{
+    GetBASSAudioInfo(m_musicStream, m_file_path.c_str(), song_info, get_tag);
+}
+
+void CBassCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, bool get_tag)
+{
+    HSTREAM hStream;
+    hStream = BASS_StreamCreateFile(FALSE, file_path, 0, 0, BASS_SAMPLE_FLOAT);
+    GetBASSAudioInfo(hStream, file_path, song_info, get_tag);
+    BASS_StreamFree(hStream);
+}
+
 bool CBassCore::IsMidi()
 {
     return m_is_midi;
@@ -448,4 +487,12 @@ Time CBassCore::GetBASSSongLength(HSTREAM hStream)
     int song_length_int = static_cast<int>(length_sec * 1000);
     if (song_length_int == -1000) song_length_int = 0;
     return Time(song_length_int);		//将长度转换成Time结构
+}
+
+void CBassCore::SetCurrentPosition(HSTREAM hStream, int position)
+{
+    double pos_sec = static_cast<double>(position) / 1000.0;
+    QWORD pos_bytes;
+    pos_bytes = BASS_ChannelSeconds2Bytes(hStream, pos_sec);
+    BASS_ChannelSetPosition(hStream, pos_bytes, BASS_POS_BYTE);
 }
