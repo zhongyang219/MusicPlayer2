@@ -1177,6 +1177,20 @@ int CPlayer::RemoveSameSongs()
     return removed;
 }
 
+int CPlayer::RemoveInvalidSongs()
+{
+    int removed = 0;
+    for (int i = 0; i < GetSongNum(); i++)
+    {
+        if(!CCommon::FileExist(m_playlist[i].file_path) || m_playlist[i].lengh.isZero())
+        {
+            RemoveSong(i);
+            removed++;
+        }
+    }
+    return removed;
+}
+
 void CPlayer::ClearPlaylist()
 {
     if (m_loading) return;

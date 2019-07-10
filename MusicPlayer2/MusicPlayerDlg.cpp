@@ -778,24 +778,25 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
     //弹出右键菜单时，如果没有选中播放列表中的项目，则禁用右键菜单中“播放”、“从列表中删除”、“属性”、“从磁盘删除”项目。
     bool selete_valid = m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum();
+    bool from_playlist{ CPlayer::GetInstance().IsFromPlaylist() };
     pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && from_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_FILE_TO, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
 
-    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_REMOVE_SAME_SONGS, MF_BYCOMMAND | (CPlayer::GetInstance().IsFromPlaylist() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FOLDER, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_REMOVE_SAME_SONGS, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
 
-    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched && selete_valid;
+    bool move_enable = from_playlist && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
 
     //设置“添加到播放列表”子菜单项的可用状态
-    bool from_playlist{ CPlayer::GetInstance().IsFromPlaylist() };
     bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_use_default_playlist };
     pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(from_playlist && use_default_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
     wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
@@ -3512,6 +3513,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
 void CMusicPlayerDlg::OnPlaylistAddFile()
 {
     // TODO: 在此添加命令处理程序代码
+
+    if (!CPlayer::GetInstance().IsFromPlaylist())
+        return;
+
     vector<wstring> files;
     wstring filter = CAudioCommon::GetFileDlgFilter();
     CCommon::DoOpenFileDlg(filter, files, this);
@@ -3670,6 +3675,10 @@ void CMusicPlayerDlg::OnToolFileRelate()
 void CMusicPlayerDlg::OnPlaylistAddFolder()
 {
     // TODO: 在此添加命令处理程序代码
+
+    if (!CPlayer::GetInstance().IsFromPlaylist())
+        return;
+
     static bool include_sub_dir{ false };
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
