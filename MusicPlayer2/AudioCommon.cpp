@@ -115,6 +115,39 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
     _findclose(hFile);
 }
 
+void CAudioCommon::GetAudioFiles(wstring path, std::vector<std::wstring>& files, size_t max_file, bool include_sub_dir)
+{
+    //文件句柄
+    intptr_t hFile = 0;
+    //文件信息
+    _wfinddata_t fileinfo;
+    if (path.back() != '\\' && path.back() != '/')
+        path.push_back('\\');
+    if ((hFile = _wfindfirst((path + L"*").c_str(), &fileinfo)) != -1)
+    {
+        do
+        {
+            if (files.size() >= max_file) break;
+
+            wstring file_name = fileinfo.name;
+            if(file_name == L"." || file_name == L"..")
+                continue;
+
+            if (CCommon::IsFolder(path + file_name))        //当前是文件夹，则递归调用
+            {
+                if (include_sub_dir)
+                    GetAudioFiles(path + file_name, files, max_file, true);
+            }
+            else
+            {
+                if (FileIsAudio(file_name))	//如果找到的文件是音频文件，则保存到容器中
+                    files.push_back(path + file_name);
+            }
+        } while (_wfindnext(hFile, &fileinfo) == 0);
+    }
+    _findclose(hFile);
+}
+
 void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
 {
     //文件句柄

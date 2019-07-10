@@ -95,7 +95,7 @@ protected:
     unsigned int m_timer_count{};
 
 
-    int m_item_selected{};		//播放列表中鼠标选中的项目
+    int m_item_selected{ -1 };		//播放列表中鼠标选中的项目
     vector<int> m_items_selected;
     int m_tab_selected{};		//选项设置中选择的标签
 
@@ -322,4 +322,5 @@ public:
     afx_msg void OnRemoveSameSongs();
     afx_msg void OnAddToNewPlaylist();
     afx_msg void OnToolFileRelate();
+    afx_msg void OnPlaylistAddFolder();
 };

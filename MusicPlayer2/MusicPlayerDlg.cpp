@@ -193,6 +193,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_REMOVE_SAME_SONGS, &CMusicPlayerDlg::OnRemoveSameSongs)
     ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMusicPlayerDlg::OnAddToNewPlaylist)
     ON_COMMAND(ID_TOOL_FILE_RELATE, &CMusicPlayerDlg::OnToolFileRelate)
+    ON_COMMAND(ID_PLAYLIST_ADD_FOLDER, &CMusicPlayerDlg::OnPlaylistAddFolder)
 END_MESSAGE_MAP()
 
 
@@ -3663,4 +3664,32 @@ void CMusicPlayerDlg::OnToolFileRelate()
     // TODO: 在此添加命令处理程序代码
     CFileRelateDlg dlg;
     dlg.DoModal();
+}
+
+
+void CMusicPlayerDlg::OnPlaylistAddFolder()
+{
+    // TODO: 在此添加命令处理程序代码
+    static bool include_sub_dir{ false };
+#ifdef COMPILE_IN_WIN_XP
+    CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
+    folderPickerDlg.SetInfo(CCommon::LoadText(IDS_OPEN_FOLDER_INFO));
+#else
+    CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
+    CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
+    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, CCommon::LoadText(IDS_INCLUDE_SUB_DIR), include_sub_dir);     //在打开对话框中添加一个复选框
+#endif
+    if (folderPickerDlg.DoModal() == IDOK)
+    {
+#ifndef COMPILE_IN_WIN_XP
+        BOOL checked;
+        folderPickerDlg.GetCheckButtonState(IDC_OPEN_CHECKBOX, checked);
+        include_sub_dir = (checked != FALSE);
+#endif
+        std::vector<wstring> file_list;
+        CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
+        CPlayer::GetInstance().AddFiles(file_list);
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+
+    }
 }

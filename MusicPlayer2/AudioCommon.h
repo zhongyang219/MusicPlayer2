@@ -246,7 +246,8 @@ public:
 	static wstring GetAudioDescriptionByExtension(wstring extension);
 
 	//查找path目录下的所有音频文件，并将文件名保存到files容器中，并限定最大文件数为max_file
-	static void GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file);
+	static void GetAudioFiles(wstring path, std::vector<SongInfo>& files, size_t max_file);
+    static void GetAudioFiles(wstring path, std::vector<std::wstring>& files, size_t max_file, bool include_sub_dir = false);
 
 	//查找path目录下的所有歌词文件，并将文件名保存到files容器中
 	static void GetLyricFiles(wstring path, vector<wstring>& files);
