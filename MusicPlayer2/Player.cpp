@@ -796,6 +796,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
         if (!m_from_playlist || !m_recent_playlist.m_use_default_playlist)
             SaveCurrentPlaylist();
         EmplaceCurrentPlaylistToRecent();
+        EmplaceCurrentPathToRecent();
     }
 
     m_recent_playlist.m_use_default_playlist = true;
