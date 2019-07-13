@@ -23,7 +23,7 @@ public:
     void RefreshData();			//刷新数据
     void ReSizeControl(int cx, int cy);		//调整控件的大小和位置
     void RefreshState();		//刷新播放列表的状态
-    CListCtrlEx& GetListCtrl();
+    CPlayListCtrl& GetListCtrl();
     CStaticEx& GetPathStatic();
     CEdit& GetPathEdit();
     void GetPlaylistItemSelected();
@@ -64,4 +64,5 @@ public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
     afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
 };

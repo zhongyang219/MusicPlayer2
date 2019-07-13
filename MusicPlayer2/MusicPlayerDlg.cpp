@@ -2657,6 +2657,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     theApp.DoWaitCursor(-1);
 
     m_playlist_list.SetDragEnable(CPlayer::GetInstance().IsFromPlaylist());
+    if(m_pFloatPlaylistDlg->GetSafeHwnd()!=NULL)
+        m_pFloatPlaylistDlg->GetListCtrl().SetDragEnable(CPlayer::GetInstance().IsFromPlaylist());
 
     return 0;
 }
@@ -3737,14 +3739,25 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
     CWaitCursor wait_cursor;
     int drop_index = static_cast<int>(wParam);
     std::vector<int> drag_items;
-    m_playlist_list.GetItemSelected(drag_items);
+    if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
+        m_playlist_list.GetItemSelected(drag_items);
+    else
+        m_pFloatPlaylistDlg->GetListCtrl().GetItemSelected(drag_items);
 
     int index = CPlayer::GetInstance().MoveItems(drag_items, drop_index);
     ShowPlayList(false);
 
     //移动后设置当前选中行
-    m_playlist_list.SetCurSel(index, index + drag_items.size() - 1);
-    GetPlaylistItemSelected();
+    if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
+    {
+        m_playlist_list.SetCurSel(index, index + drag_items.size() - 1);
+        GetPlaylistItemSelected();
+    }
+    else
+    {
+        m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(index, index + drag_items.size() - 1);
+        m_pFloatPlaylistDlg->GetPlaylistItemSelected();
+    }
 
     return 0;
 }

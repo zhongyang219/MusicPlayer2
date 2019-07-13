@@ -83,7 +83,7 @@ void CFloatPlaylistDlg::RefreshState()
     m_playlist_ctrl.Invalidate(FALSE);
 }
 
-CListCtrlEx & CFloatPlaylistDlg::GetListCtrl()
+CPlayListCtrl & CFloatPlaylistDlg::GetListCtrl()
 {
     return m_playlist_ctrl;
 }
@@ -143,6 +143,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_WM_GETMINMAXINFO()
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMClickPlaylistList)
     ON_MESSAGE(WM_INITMENU, &CFloatPlaylistDlg::OnInitmenu)
+    ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CFloatPlaylistDlg::OnListItemDragged)
 END_MESSAGE_MAP()
 
 
@@ -173,6 +174,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     else
         m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
 
+    m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsFromPlaylist());
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
@@ -349,5 +351,12 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
 afx_msg LRESULT CFloatPlaylistDlg::OnInitmenu(WPARAM wParam, LPARAM lParam)
 {
     theApp.m_pMainWnd->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
+    return 0;
+}
+
+
+afx_msg LRESULT CFloatPlaylistDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
+{
+    theApp.m_pMainWnd->SendMessage(WM_LIST_ITEM_DRAGGED, wParam, lParam);
     return 0;
 }
