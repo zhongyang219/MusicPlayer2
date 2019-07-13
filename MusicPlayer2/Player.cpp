@@ -396,11 +396,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
         else
             m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
+        GetBASSError();
         break;
     case Command::PLAY:
         ConnotPlayWarning();
         m_pCore->Play();
         m_playing = 2;
+        GetBASSError();
         break;
     case Command::CLOSE:
         //RemoveFXHandle();
@@ -472,7 +474,6 @@ void CPlayer::MusicControl(Command command, int volume_step)
     default:
         break;
     }
-    GetBASSError();
 }
 
 bool CPlayer::SongIsOver() const
