@@ -214,6 +214,7 @@ public:
 	void ClearPlaylist();			//清空播放列表
     bool MoveUp(int first, int last);        //将指定范围内的项目上移
     bool MoveDown(int first, int last);      //将指定范围内的项目下移
+    int MoveItems(std::vector<int> indexes, int dest);      //移动多个项目到dest的位置，返回移动后第1个项目的索引
 
 	void SeekTo(int position);		//定位到指定位置
 	void SeekTo(double position);	//定位到指定位置(范围0~1)

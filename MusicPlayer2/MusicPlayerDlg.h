@@ -130,9 +130,9 @@ private:
     void SetAlwaysOnTop();
 
 public:
-    void ShowPlayList();
+    void ShowPlayList(bool highlight_visible = true);
 protected:
-    void SetPlayListColor();
+    void SetPlayListColor(bool highlight_visible = true);
     void SwitchTrack();		//当切换正在播放的歌曲时的处理
     void SetPlaylistVisible();
     void SetMenubarVisible();
@@ -324,4 +324,6 @@ public:
     afx_msg void OnToolFileRelate();
     afx_msg void OnPlaylistAddFolder();
     afx_msg void OnRemoveInvalidItems();
+protected:
+    afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
 };

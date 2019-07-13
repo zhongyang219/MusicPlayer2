@@ -787,6 +787,9 @@
     <None Include="res\MusicPlayer2.rc2">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\drag.cur">
+      <Filter>资源文件\Icons</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\AddTag.ico">

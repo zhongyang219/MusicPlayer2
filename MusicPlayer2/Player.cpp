@@ -1250,6 +1250,72 @@ bool CPlayer::MoveDown(int first, int last)
     return true;
 }
 
+int CPlayer::MoveItems(std::vector<int> indexes, int dest)
+{
+    if (!m_from_playlist)
+        return -1;
+
+    if (std::find(indexes.begin(), indexes.end(), dest) != indexes.end())
+        return -1;
+
+    std::wstring dest_file_path;        //保存目标位置的文件路径
+    if (dest >= 0 && dest < GetSongNum())
+        dest_file_path = m_playlist[dest].file_path;
+
+    std::wstring current_file_path{ GetCurrentFilePath() };
+
+    //把要移动的项目取出并删除要移动的项目
+    std::vector<SongInfo> moved_items;
+    int size = indexes.size();
+    for (int i{}; i < size; i++)
+    {
+        if (indexes[i] >= 0 && indexes[i] < GetSongNum())
+        {
+            moved_items.push_back(m_playlist[indexes[i]]);
+            m_playlist.erase(m_playlist.begin() + indexes[i]);
+            if (i <= size - 2 && indexes[i + 1] > indexes[i])
+            {
+                for (int j{ i + 1 }; j < size; j++)
+                    indexes[j]--;
+            }
+        }
+    }
+
+    //重新查找目标文件的位置
+    int dest_index;
+    auto iter_dest = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& song)
+    {
+        return song.file_path == dest_file_path;
+    });
+    if(dest >= 0 && iter_dest != m_playlist.end())
+    {
+        //把要移动的项目插入到目标位置
+        dest_index = iter_dest - m_playlist.begin();
+        m_playlist.insert(iter_dest, moved_items.begin(), moved_items.end());
+    }
+    else        //dest为负，则把要移动的项目插入到列表最后
+    {
+        dest_index = GetSongNum();
+        for (const auto& song : moved_items)
+        {
+            m_playlist.push_back(song);
+        }
+    }
+    SaveCurrentPlaylist();
+
+    //查找正在播放的曲目
+    auto iter_play = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& song)
+    {
+        return song.file_path == current_file_path;
+    });
+    if (iter_play == m_playlist.end())
+        m_index = 0;
+    else
+        m_index = iter_play - m_playlist.begin();
+
+    return dest_index;
+}
+
 void CPlayer::SeekTo(int position)
 {
     if (position > m_song_length_int)

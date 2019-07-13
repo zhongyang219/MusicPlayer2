@@ -194,8 +194,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMusicPlayerDlg::OnAddToNewPlaylist)
     ON_COMMAND(ID_TOOL_FILE_RELATE, &CMusicPlayerDlg::OnToolFileRelate)
     ON_COMMAND(ID_PLAYLIST_ADD_FOLDER, &CMusicPlayerDlg::OnPlaylistAddFolder)
-        ON_COMMAND(ID_REMOVE_INVALID_ITEMS, &CMusicPlayerDlg::OnRemoveInvalidItems)
-        END_MESSAGE_MAP()
+    ON_COMMAND(ID_REMOVE_INVALID_ITEMS, &CMusicPlayerDlg::OnRemoveInvalidItems)
+    ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMusicPlayerDlg::OnListItemDragged)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -474,12 +475,12 @@ void CMusicPlayerDlg::SetAlwaysOnTop()
         SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);		//取消置顶
 }
 
-void CMusicPlayerDlg::ShowPlayList()
+void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
 {
     m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format);
     m_playlist_list.SetCurSel(-1);
     //设置播放列表中突出显示的项目
-    SetPlayListColor();
+    SetPlayListColor(highlight_visible);
     //显示当前路径
     m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
     CStaticEx* pStatic{};
@@ -503,12 +504,13 @@ void CMusicPlayerDlg::ShowPlayList()
     }
 }
 
-void CMusicPlayerDlg::SetPlayListColor()
+void CMusicPlayerDlg::SetPlayListColor(bool highlight_visible)
 {
     m_playlist_list.SetHightItem(CPlayer::GetInstance().GetIndex());
     //m_playlist_list.SetColor(theApp.m_app_setting_data.theme_color);
     m_playlist_list.Invalidate(FALSE);
-    m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+    if(highlight_visible)
+        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 
     if (theApp.m_nc_setting_data.float_playlist && m_pFloatPlaylistDlg != nullptr)
     {
@@ -1098,6 +1100,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     m_notify_icon.Init(m_hIcon);
     m_notify_icon.AddNotifyIcon();
+
+    m_playlist_list.SetDragEnable();
 
     //设置定时器
     SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
@@ -2652,6 +2656,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     EnablePlaylist(true);
     theApp.DoWaitCursor(-1);
 
+    m_playlist_list.SetDragEnable(CPlayer::GetInstance().IsFromPlaylist());
+
     return 0;
 }
 
@@ -3566,7 +3572,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemUp()
     int last = m_items_selected.back();
     if(CPlayer::GetInstance().MoveUp(first, last))
     {
-        ShowPlayList();
+        ShowPlayList(false);
         if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
         {
             m_playlist_list.SetCurSel(first - 1, last - 1);
@@ -3595,7 +3601,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemDown()
     int last = m_items_selected.back();
     if(CPlayer::GetInstance().MoveDown(first, last))
     {
-        ShowPlayList();
+        ShowPlayList(false);
         if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
         {
             m_playlist_list.SetCurSel(first + 1, last + 1);
@@ -3720,4 +3726,25 @@ void CMusicPlayerDlg::OnRemoveInvalidItems()
         ShowPlayList();
     }
     MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
+{
+    if (!CPlayer::GetInstance().IsFromPlaylist())
+        return 0;
+
+    CWaitCursor wait_cursor;
+    int drop_index = static_cast<int>(wParam);
+    std::vector<int> drag_items;
+    m_playlist_list.GetItemSelected(drag_items);
+
+    int index = CPlayer::GetInstance().MoveItems(drag_items, drop_index);
+    ShowPlayList(false);
+
+    //移动后设置当前选中行
+    m_playlist_list.SetCurSel(index, index + drag_items.size() - 1);
+    GetPlaylistItemSelected();
+
+    return 0;
 }

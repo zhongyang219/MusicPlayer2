@@ -11,6 +11,7 @@ CListCtrlEx::CListCtrlEx()
 	//初始化颜色
 	//m_theme_color.original_color = GRAY(180);
 	//CColorConvert::ConvertColor(m_theme_color);
+    m_drag_cursor = AfxGetApp()->LoadCursor(IDC_DRAG_CURSOR);
 }
 
 
@@ -111,6 +112,9 @@ BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_SETFOCUS()
+    ON_NOTIFY_REFLECT(LVN_BEGINDRAG, &CListCtrlEx::OnLvnBegindrag)
+    ON_WM_LBUTTONUP()
+    ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 
@@ -231,4 +235,50 @@ void CListCtrlEx::OnSetFocus(CWnd* pOldWnd)
 	// TODO: 在此处添加消息处理程序代码
 
 	SendMessage(WM_KILLFOCUS);				//禁止列表控件获取焦点，防止选中行会出现难看的虚线框
+}
+
+
+void CListCtrlEx::OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    if (m_drag_enable)
+    {
+        m_dragging = true;
+    }
+
+    *pResult = 0;
+}
+
+
+void CListCtrlEx::OnLButtonUp(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if (m_dragging)
+    {
+        CPoint pt(point);
+        int drop_index = this->HitTest(pt);     //鼠标松开时的项目序号
+        CWnd* pParent{ GetParent() };
+        if (pParent != nullptr)
+        {
+            pParent->SendMessage(WM_LIST_ITEM_DRAGGED, drop_index, 0);       //结束拖放时向父窗口发送消息，传递拖放结束位置索引
+        }
+        m_dragging = false;
+        SendMessage(WM_SETCURSOR);      //鼠标松开时刷新光标
+    }
+
+    CListCtrl::OnLButtonUp(nFlags, point);
+}
+
+
+BOOL CListCtrlEx::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if (m_dragging)
+    {
+        ::SetCursor(m_drag_cursor);
+        return TRUE;
+    }
+
+    return CListCtrl::OnSetCursor(pWnd, nHitTest, message);
 }

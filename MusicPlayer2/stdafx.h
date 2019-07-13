@@ -171,6 +171,6 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define MY_WM_NOTIFYICON (WM_USER+115)
 #define WM_PLAY_SELECTED_BTN_ENABLE (WM_USER+120)
 
-#define WM_NEXT_USER_MSG (WM_USER+121)
+#define WM_NEXT_USER_MSG (WM_USER+122)
 
 #define ADD_TO_PLAYLIST_MAX_SIZE 20         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

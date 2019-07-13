@@ -379,6 +379,7 @@
     <ResourceCompile Include="MusicPlayer2.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\drag.cur" />
     <None Include="res\MusicPlayer2.rc2" />
   </ItemGroup>
   <ItemGroup>
