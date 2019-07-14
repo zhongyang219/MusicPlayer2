@@ -85,9 +85,13 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     {
         //正在播放的项目
         int highlight_item;
-        if (CPlayer::GetInstance().GetRecentPlaylist().m_use_default_playlist)
+        if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_DEFAULT)
         {
             highlight_item = 0;
+        }
+        else if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
+        {
+            highlight_item = 1;
         }
         else
         {
@@ -97,7 +101,7 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
             {
                 return current_playlist == playlist_info.path;
             });
-            highlight_item = iter - recent_playlist.begin() + 1;
+            highlight_item = iter - recent_playlist.begin() + 2;
         }
         m_playlist_ctrl.SetHightItem(highlight_item);
     }
@@ -129,8 +133,10 @@ void CSelectPlaylistDlg::ShowPathList()
     m_playlist_ctrl.DeleteAllItems();
     m_playlist_ctrl.InsertItem(0, _T("1"));
     SetListRowData(0, CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist);
+    m_playlist_ctrl.InsertItem(1, _T("2"));
+    SetListRowData(1, CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist);
     auto& recent_playlists = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists;
-    int index = 1;
+    int index = 2;
     for (const auto& playlist_info : recent_playlists)
     {
         CString str;
@@ -147,6 +153,8 @@ void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_
     wstring playlist_name = path_helper.GetFileName();
     if (playlist_name == DEFAULT_PLAYLIST_NAME)
         playlist_name = CCommon::LoadText(_T("["), IDS_DEFAULT, _T("]"));
+    else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
+        playlist_name = CCommon::LoadText(_T("["), IDS_MY_FAVURITE, _T("]"));
     else
         playlist_name = path_helper.GetFileNameWithoutExtension();
 
@@ -169,9 +177,9 @@ void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_
 
 bool CSelectPlaylistDlg::SelectValid() const
 {
-    if (m_row_selected == 0)
+    if (m_row_selected == 0 || m_row_selected == 1)
         return true;
-    int index = m_row_selected - 1;
+    int index = m_row_selected - 2;
     return (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()));
 }
 
@@ -179,7 +187,9 @@ PlaylistInfo CSelectPlaylistDlg::GetSelectedPlaylist() const
 {
     if (m_row_selected == 0)
         return CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
-    int index = m_row_selected - 1;
+    else if (m_row_selected == 1)
+        return CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist;
+    int index = m_row_selected - 2;
     if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
         return CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index];
     else

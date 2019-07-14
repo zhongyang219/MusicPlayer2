@@ -801,10 +801,12 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
 
     //设置“添加到播放列表”子菜单项的可用状态
-    bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_use_default_playlist };
+    bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_DEFAULT };
     pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(from_playlist && use_default_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
+    bool use_faourite_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE };
+    pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (!(from_playlist && use_faourite_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
     wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
-    for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST + 1; id < ID_ADD_TO_DEFAULT_PLAYLIST + ADD_TO_PLAYLIST_MAX_SIZE; id++)
+    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE; id++)
     {
         CString menu_string;
         pMenu->GetMenuString(id, menu_string, 0);
@@ -969,7 +971,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         for (size_t i{}; i < recent_playlist.size() && i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
         {
             CFilePathHelper playlist_path{ recent_playlist[i].path };
-            add_to_menu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_DEFAULT_PLAYLIST + i + 1, playlist_path.GetFileNameWithoutExtension().c_str());
+            add_to_menu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_MY_FAVOURITE + i + 1, playlist_path.GetFileNameWithoutExtension().c_str());
         }
     }
 }
@@ -2094,7 +2096,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     }
 
     //响应播放列表右键菜单中的“添加到播放列表”
-    if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_DEFAULT_PLAYLIST + ADD_TO_PLAYLIST_MAX_SIZE)
+    if (command >= ID_ADD_TO_MY_FAVOURITE && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
     {
         //获取选中的曲目的路径
         std::vector<std::wstring> selected_item_path;
@@ -2113,6 +2115,14 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             playlist.LoadFromFile(default_playlist_path);
             playlist.AddFiles(selected_item_path);
             playlist.SaveToFile(default_playlist_path);
+        }
+        else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
+        {
+            std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
+            CPlaylist playlist;
+            playlist.LoadFromFile(favourite_playlist_path);
+            playlist.AddFiles(selected_item_path);
+            playlist.SaveToFile(favourite_playlist_path);
         }
         else        //添加到选中的播放列表
         {

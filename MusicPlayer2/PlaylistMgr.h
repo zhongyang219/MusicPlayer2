@@ -10,6 +10,12 @@ struct PlaylistInfo
     int total_time{};		//路径中音频文件的总时间
 };
 
+enum PlaylistType
+{
+    PT_USER,
+    PT_DEFAULT,
+    PT_FAVOURITE
+};
 
 class CPlaylistMgr
 {
@@ -27,7 +33,8 @@ public:
 
 public:
     PlaylistInfo m_default_playlist;
+    PlaylistInfo m_favourite_playlist;
     std::deque<PlaylistInfo> m_recent_playlists;
-    bool m_use_default_playlist{ true };
+    PlaylistType m_cur_playlist_type{ PT_DEFAULT };
 };
 

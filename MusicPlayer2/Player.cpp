@@ -46,8 +46,10 @@ void CPlayer::Create()
     else
     {
         PlaylistInfo playlist_info;
-        if (m_recent_playlist.m_use_default_playlist || m_recent_playlist.m_recent_playlists.empty())
+        if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT || m_recent_playlist.m_recent_playlists.empty())
             playlist_info = m_recent_playlist.m_default_playlist;
+        else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+            playlist_info = m_recent_playlist.m_favourite_playlist;
         else
             playlist_info = m_recent_playlist.m_recent_playlists.front();
         SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
@@ -709,7 +711,12 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
 
 void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init)
 {
-    m_recent_playlist.m_use_default_playlist = (playlist_path == m_recent_playlist.m_default_playlist.path);
+    if(playlist_path == m_recent_playlist.m_default_playlist.path)
+        m_recent_playlist.m_cur_playlist_type = PT_DEFAULT;
+    else if (playlist_path == m_recent_playlist.m_favourite_playlist.path)
+        m_recent_playlist.m_cur_playlist_type = PT_FAVOURITE;
+    else
+        m_recent_playlist.m_cur_playlist_type = PT_USER;
 
     if(!init)
     {
@@ -794,13 +801,13 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
         MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
-        if (!m_from_playlist || !m_recent_playlist.m_use_default_playlist)
+        if (!m_from_playlist || !m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
             SaveCurrentPlaylist();
         EmplaceCurrentPlaylistToRecent();
         EmplaceCurrentPathToRecent();
     }
 
-    m_recent_playlist.m_use_default_playlist = true;
+    m_recent_playlist.m_cur_playlist_type = PT_DEFAULT;
     m_from_playlist = true;
     m_playlist_path = m_recent_playlist.m_default_playlist.path;
 
@@ -1077,6 +1084,8 @@ wstring CPlayer::GetCurrentFolderOrPlaylistName() const
         wstring playlist_name = file_path.GetFileName();
         if (playlist_name == DEFAULT_PLAYLIST_NAME)
             return wstring(CCommon::LoadText(_T("["), IDS_DEFAULT, _T("]")));
+        else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
+            return wstring(CCommon::LoadText(_T("["), IDS_MY_FAVURITE, _T("]")));
         else
             return file_path.GetFileNameWithoutExtension();
     }
@@ -1621,11 +1630,18 @@ void CPlayer::LoadRecentPlaylist()
     m_recent_playlist.LoadPlaylistData();
     if(m_from_playlist)
     {
-        if (m_recent_playlist.m_use_default_playlist)
+        if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
         {
             m_playlist_path = m_recent_playlist.m_default_playlist.path;
             m_index = m_recent_playlist.m_default_playlist.track;
             m_current_position_int = m_recent_playlist.m_default_playlist.position;
+            m_current_position.int2time(m_current_position_int);
+        }
+        else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+        {
+            m_playlist_path = m_recent_playlist.m_favourite_playlist.path;
+            m_index = m_recent_playlist.m_favourite_playlist.track;
+            m_current_position_int = m_recent_playlist.m_favourite_playlist.position;
             m_current_position.int2time(m_current_position_int);
         }
         else if (!m_recent_playlist.m_recent_playlists.empty())
@@ -1644,8 +1660,10 @@ void CPlayer::SaveCurrentPlaylist()
     if(m_from_playlist)
     {
         wstring current_playlist;
-        if (m_recent_playlist.m_use_default_playlist || m_recent_playlist.m_recent_playlists.empty())
+        if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT || m_recent_playlist.m_recent_playlists.empty())
             current_playlist = m_recent_playlist.m_default_playlist.path;
+        else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+            current_playlist = m_recent_playlist.m_favourite_playlist.path;
         else
             current_playlist = m_recent_playlist.m_recent_playlists.front().path;
         CPlaylist playlist;
@@ -1682,12 +1700,19 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
     if (!m_from_playlist)
         return;
 
-    if (m_recent_playlist.m_use_default_playlist)
+    if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
     {
         m_recent_playlist.m_default_playlist.position = m_current_position_int;
         m_recent_playlist.m_default_playlist.track = m_index;
         m_recent_playlist.m_default_playlist.track_num = GetSongNum();
         m_recent_playlist.m_default_playlist.total_time = m_total_time;
+    }
+    else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+    {
+        m_recent_playlist.m_favourite_playlist.position = m_current_position_int;
+        m_recent_playlist.m_favourite_playlist.track = m_index;
+        m_recent_playlist.m_favourite_playlist.track_num = GetSongNum();
+        m_recent_playlist.m_favourite_playlist.total_time = m_total_time;
     }
     else
     {
