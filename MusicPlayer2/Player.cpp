@@ -890,6 +890,8 @@ void CPlayer::AddFiles(const vector<wstring>& files)
         CFilePathHelper file_path{ file };
         song_info.file_name = file_path.GetFileName();
         song_info.file_path = file;
+        if (m_from_playlist && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+            song_info.is_favourite = true;
         m_playlist.push_back(song_info);
     }
     SaveCurrentPlaylist();
@@ -1153,17 +1155,24 @@ void CPlayer::RemoveSong(int index)
     {
         m_playlist.erase(m_playlist.begin() + index);
         //m_song_num--;
-        if (index == m_index)		//如果要删除的曲目是正在播放的曲目，重新播放当前曲目
+        if(!m_playlist.empty())
         {
-            if(GetSongNum() > 0)
-                PlayTrack(m_index);
+            if (index == m_index)		//如果要删除的曲目是正在播放的曲目，重新播放当前曲目
+            {
+                if (GetSongNum() > 0)
+                    PlayTrack(m_index);
+            }
+            else if (index < m_index)	//如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
+            {
+                m_index--;
+            }
         }
-        else if (index < m_index)	//如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
+        else
         {
-            m_index--;
-        }
-        if (GetSongNum() == 0)
+            MusicControl(Command::STOP);
+            MusicControl(Command::CLOSE);
             m_playlist.push_back(SongInfo());
+        }
     }
 }
 
@@ -1402,7 +1411,6 @@ void CPlayer::SetRelatedSongID(wstring song_id)
         {
             //theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
             theApp.SaveSongInfo(m_playlist[m_index]);
-            theApp.SetSongDataModified();
         }
     }
 }
@@ -1415,7 +1423,6 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
         if (!m_playlist[index].is_cue)
         {
             theApp.SaveSongInfo(m_playlist[m_index]);
-            theApp.SetSongDataModified();
         }
     }
 }
@@ -1428,7 +1435,6 @@ void CPlayer::SetFavourite(bool favourite)
         if (!m_playlist[m_index].is_cue)
         {
             theApp.SaveSongInfo(m_playlist[m_index]);
-            theApp.SetSongDataModified();
         }
     }
 
@@ -1436,7 +1442,7 @@ void CPlayer::SetFavourite(bool favourite)
 
 bool CPlayer::IsFavourite()
 {
-    if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+    if (m_from_playlist && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
         return true;
     if (m_index >= 0 && m_index < GetSongNum())
     {

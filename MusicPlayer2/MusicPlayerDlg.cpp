@@ -2116,6 +2116,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             playlist.LoadFromFile(default_playlist_path);
             playlist.AddFiles(selected_item_path);
             playlist.SaveToFile(default_playlist_path);
+
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
@@ -2124,6 +2125,17 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             playlist.LoadFromFile(favourite_playlist_path);
             playlist.AddFiles(selected_item_path);
             playlist.SaveToFile(favourite_playlist_path);
+
+            //添加到“我喜欢”播放列表后，为添加的项目设置favourite标记
+            for (auto i : m_items_selected)
+            {
+                if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+                {
+                    CPlayer::GetInstance().GetPlayList()[i].is_favourite = true;
+                    theApp.SaveSongInfo(CPlayer::GetInstance().GetPlayList()[i]);
+                }
+            }
+
         }
         else        //添加到选中的播放列表
         {
@@ -3777,7 +3789,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnAddRemoveFromFavourite()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
+    if (CPlayer::GetInstance().IsFromPlaylist() && CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
     {
         //如果当前播放列表就是“我喜欢”播放列表，则直接将当前歌曲从列表中移除
         CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
