@@ -89,6 +89,7 @@ struct SongInfo
         lengh = song_info.lengh;
         bitrate = song_info.bitrate;
         listen_time = song_info.listen_time;
+        song_id = song_info.song_id;
     }
 
     bool IsTitleEmpty() const
