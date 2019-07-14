@@ -77,8 +77,9 @@ protected:
         BTN_COVER,				//专辑封面
         BTN_FULL_SCREEN,		//全屏显示按钮
         BTN_MENU,				//主菜单按钮
+        BTN_FAVOURITE,		    //“我喜欢”按钮
         BTN_CLOSE,				//关闭按钮（迷你模式）
-        BTN_RETURN				//返回按钮（迷你模式）
+        BTN_RETURN,				//返回按钮（迷你模式）
 
     };
 

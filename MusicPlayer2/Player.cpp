@@ -1400,7 +1400,8 @@ void CPlayer::SetRelatedSongID(wstring song_id)
         m_playlist[m_index].song_id = song_id;
         if(!m_playlist[m_index].is_cue)
         {
-            theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
+            //theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
+            theApp.SaveSongInfo(m_playlist[m_index]);
             theApp.SetSongDataModified();
         }
     }
@@ -1413,10 +1414,35 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
         m_playlist[index].song_id = song_id;
         if (!m_playlist[index].is_cue)
         {
-            theApp.m_song_data[m_path + m_playlist[index].file_name] = m_playlist[index];
+            theApp.SaveSongInfo(m_playlist[m_index]);
             theApp.SetSongDataModified();
         }
     }
+}
+
+void CPlayer::SetFavourite(bool favourite)
+{
+    if (m_index >= 0 && m_index < GetSongNum())
+    {
+        m_playlist[m_index].is_favourite = favourite;
+        if (!m_playlist[m_index].is_cue)
+        {
+            theApp.SaveSongInfo(m_playlist[m_index]);
+            theApp.SetSongDataModified();
+        }
+    }
+
+}
+
+bool CPlayer::IsFavourite()
+{
+    if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+        return true;
+    if (m_index >= 0 && m_index < GetSongNum())
+    {
+        return m_playlist[m_index].is_favourite;
+    }
+    return false;
 }
 
 void CPlayer::AddListenTime(int sec)

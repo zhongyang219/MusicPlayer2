@@ -236,6 +236,11 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
                 return;
 
+            case BTN_FAVOURITE:
+                m_buttons[BTN_FAVOURITE].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
+                return;
+
             case BTN_VOLUME_UP:
                 if (m_show_volume_adj)
                 {
@@ -1017,6 +1022,12 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
     rc_btn.MoveToX(rc_btn.left - btn_side);
     DrawControlBarBtn(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
 
+    rc_btn.MoveToX(rc_btn.left - btn_side);
+    if(CPlayer::GetInstance().IsFavourite())
+        DrawControlBarBtn(rc_btn, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.heart);
+    else
+        DrawControlBarBtn(rc_btn, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.favourite);
+
     if (!progress_on_top)
     {
         progress_rect = rect;
@@ -1157,5 +1168,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_COVER, m_cover_tip);
     AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
+    AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
 }
 

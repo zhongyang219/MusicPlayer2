@@ -75,3 +75,18 @@ void CPlaylist::ToSongList(vector<SongInfo>& song_list)
         song_list.push_back(song_info);
     }
 }
+
+bool CPlaylist::IsFileInPlaylist(const wstring& file)
+{
+    auto iter = std::find(m_playlist.begin(), m_playlist.end(), file);
+    return iter != m_playlist.end();
+}
+
+void CPlaylist::RemoveFile(const wstring& file)
+{
+    auto iter = std::find(m_playlist.begin(), m_playlist.end(), file);
+    if (iter != m_playlist.end())
+    {
+        m_playlist.erase(iter);
+    }
+}

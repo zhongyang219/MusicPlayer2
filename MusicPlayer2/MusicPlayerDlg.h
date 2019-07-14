@@ -326,4 +326,6 @@ public:
     afx_msg void OnRemoveInvalidItems();
 protected:
     afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnAddRemoveFromFavourite();
 };

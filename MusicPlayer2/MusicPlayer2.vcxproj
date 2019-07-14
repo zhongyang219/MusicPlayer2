@@ -392,8 +392,11 @@
     <Image Include="res\donate.bmp" />
     <Image Include="res\eq.ico" />
     <Image Include="res\eq_d.ico" />
+    <Image Include="res\favourite.ico" />
+    <Image Include="res\favourite_d.ico" />
     <Image Include="res\file_icon.ico" />
     <Image Include="res\Find.ico" />
+    <Image Include="res\heart.ico" />
     <Image Include="res\media_lib.ico" />
     <Image Include="res\media_lib_d.ico" />
     <Image Include="res\menu.ico" />

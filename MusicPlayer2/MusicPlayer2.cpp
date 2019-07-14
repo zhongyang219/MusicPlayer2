@@ -307,7 +307,7 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.66"));			//写入数据版本
+    ar << CString(_T("2.661"));			//写入数据版本
     ar << m_song_data.size();		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -327,6 +327,7 @@ void CMusicPlayerApp::SaveSongData()
            << CString(song_data.second.song_id.c_str())
            << song_data.second.listen_time
            << song_data.second.info_acquired
+           << song_data.second.is_favourite
            ;
     }
     // 关闭CArchive对象
@@ -437,6 +438,8 @@ void CMusicPlayerApp::SaveSongInfo(const SongInfo& song_info)
     song.CopyAudioTag(song_info);
     song.lengh = song_info.lengh;
     song.bitrate = song_info.bitrate;
+    song.song_id = song_info.song_id;
+    song.is_favourite = song_info.is_favourite;
 }
 
 void CMusicPlayerApp::LoadIconResource()
@@ -459,6 +462,8 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.full_screen.Load(IDI_FULL_SCREEN, IDI_FULL_SCREEN_D, DPI(16));
     m_icon_set.full_screen1.Load(IDI_FULL_SCREEN1, IDI_FULL_SCREEN1_D, DPI(16));
     m_icon_set.menu.Load(IDI_MENU, IDI_MENU_D, DPI(16));
+    m_icon_set.favourite.Load(IDI_FAVOURITE, IDI_FAVOURITE_D, DPI(16));
+    m_icon_set.heart.Load(IDI_HEART, NULL, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));
@@ -659,6 +664,11 @@ void CMusicPlayerApp::LoadSongData()
             {
                 ar >> song_info.listen_time;
                 ar >> song_info.info_acquired;
+            }
+
+            if (version_str >= _T("2.661"))
+            {
+                ar >> song_info.is_favourite;
             }
             m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
         }

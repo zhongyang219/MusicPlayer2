@@ -300,6 +300,8 @@ struct IconSet
     IconRes full_screen;
     IconRes full_screen1;
     IconRes menu;
+    IconRes favourite;
+    IconRes heart;
 
     IconRes stop_l;
     IconRes previous_l;

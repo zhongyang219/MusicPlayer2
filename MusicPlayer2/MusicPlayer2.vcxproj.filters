@@ -954,5 +954,14 @@
     <Image Include="res\media_lib_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\favourite.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\favourite_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\heart.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -234,6 +234,8 @@ public:
 	const SongInfo& GetCurrentSongInfo() const;
 	void SetRelatedSongID(wstring song_id);		//为当前歌曲设置关联的网易云音乐歌曲ID
 	void SetRelatedSongID(int index, wstring song_id);		//为第index首歌曲设置关联的网易云音乐歌曲ID
+    void SetFavourite(bool favourite);          //为当前歌曲设置“我喜欢”标记
+    bool IsFavourite();
 	bool IsInnerCover() const { return m_inner_cover; }		//判断当前专辑封面是否是内嵌图片
 
 	void AddListenTime(int sec);		//为当前歌曲增加累计已播放时间

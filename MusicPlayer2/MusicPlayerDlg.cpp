@@ -196,6 +196,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_ADD_FOLDER, &CMusicPlayerDlg::OnPlaylistAddFolder)
     ON_COMMAND(ID_REMOVE_INVALID_ITEMS, &CMusicPlayerDlg::OnRemoveInvalidItems)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMusicPlayerDlg::OnListItemDragged)
+    ON_COMMAND(ID_ADD_REMOVE_FROM_FAVOURITE, &CMusicPlayerDlg::OnAddRemoveFromFavourite)
 END_MESSAGE_MAP()
 
 
@@ -3770,4 +3771,41 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
     }
 
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnAddRemoveFromFavourite()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
+    {
+        //如果当前播放列表就是“我喜欢”播放列表，则直接将当前歌曲从列表中移除
+        CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+        ShowPlayList();
+    }
+    else
+    {
+        std::wstring current_file_path = CPlayer::GetInstance().GetCurrentFilePath();
+        std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
+        CPlaylist playlist;
+        playlist.LoadFromFile(favourite_playlist_path);
+        if (!CPlayer::GetInstance().IsFavourite())
+        {
+            //添加到“我喜欢”播放列表
+            if (!playlist.IsFileInPlaylist(current_file_path))
+            {
+                playlist.AddFiles(std::vector<std::wstring> {current_file_path});
+                playlist.SaveToFile(favourite_playlist_path);
+            }
+            CPlayer::GetInstance().SetFavourite(true);
+        }
+        else
+        {
+            //从“我喜欢”播放列表移除
+            playlist.RemoveFile(current_file_path);
+            playlist.SaveToFile(favourite_playlist_path);
+            CPlayer::GetInstance().SetFavourite(false);
+        }
+    }
 }

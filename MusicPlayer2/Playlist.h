@@ -11,6 +11,8 @@ public:
     void AddFiles(const vector<wstring>& files);
     void FromSongList(const vector<SongInfo>& song_list);
     void ToSongList(vector<SongInfo>& song_list);
+    bool IsFileInPlaylist(const wstring& file);
+    void RemoveFile(const wstring& file);
 
 private:
     vector<wstring> m_playlist;
