@@ -126,7 +126,9 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
         if (!pInfo->refresh_info)
         {
-            wstring file_name{ GetInstance().m_playlist[i].file_name };
+            //wstring file_name{ GetInstance().m_playlist[i].file_name };
+            if(GetInstance().m_playlist[i].file_path.empty())
+                continue;
             auto iter = theApp.m_song_data.find(GetInstance().m_playlist[i].file_path);
             if (iter != theApp.m_song_data.end())		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
             {
@@ -711,13 +713,6 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
 
 void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init)
 {
-    if(playlist_path == m_recent_playlist.m_default_playlist.path)
-        m_recent_playlist.m_cur_playlist_type = PT_DEFAULT;
-    else if (playlist_path == m_recent_playlist.m_favourite_playlist.path)
-        m_recent_playlist.m_cur_playlist_type = PT_FAVOURITE;
-    else
-        m_recent_playlist.m_cur_playlist_type = PT_USER;
-
     if(!init)
     {
         SaveCurrentPlaylist();
@@ -728,6 +723,14 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
         MusicControl(Command::STOP);
         MusicControl(Command::CLOSE);
     }
+
+    if(playlist_path == m_recent_playlist.m_default_playlist.path)
+        m_recent_playlist.m_cur_playlist_type = PT_DEFAULT;
+    else if (playlist_path == m_recent_playlist.m_favourite_playlist.path)
+        m_recent_playlist.m_cur_playlist_type = PT_FAVOURITE;
+    else
+        m_recent_playlist.m_cur_playlist_type = PT_USER;
+
     m_playlist.clear();
     CPlaylist playlist;
     playlist.LoadFromFile(playlist_path);

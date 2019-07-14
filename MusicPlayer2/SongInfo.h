@@ -23,7 +23,7 @@ struct SongInfo
     wstring file_name{};	//歌曲的文件名
     wstring file_path{};
     wstring lyric_file{};	//匹配的歌词文件的路径
-    Time lengh;			//歌曲的长度
+    Time lengh{};			//歌曲的长度
     int bitrate{};		//比特率
     wstring title;		//标题
     wstring artist;		//艺术家

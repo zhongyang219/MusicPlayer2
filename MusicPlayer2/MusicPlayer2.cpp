@@ -431,6 +431,8 @@ void CMusicPlayerApp::LoadConfig()
 
 void CMusicPlayerApp::SaveSongInfo(const SongInfo& song_info)
 {
+    if (song_info.file_path.empty())
+        return;
     SongInfo& song = m_song_data[song_info.file_path];
     song.CopyAudioTag(song_info);
     song.lengh = song_info.lengh;
