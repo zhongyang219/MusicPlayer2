@@ -121,6 +121,9 @@ protected:
 
     CNotifyIcon m_notify_icon;
 
+    bool m_no_lbtnup{ false };      //当它为true时，不响应WM_LBUTTONUP消息
+    enum { DELAY_TIMER_ID = 1200 };
+
 private:
     void SaveConfig();		//保存设置到ini文件
     void LoadConfig();		//从ini文件读取设置
