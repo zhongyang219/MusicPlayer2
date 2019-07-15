@@ -169,6 +169,15 @@ void CPlayer::IniPlaylistComplate()
         m_total_time += somg.lengh.time2int();
     }
 
+    //检查列表中的曲目是否在“我喜欢”播放列表中
+    CPlaylist favourite_playlist;
+    favourite_playlist.LoadFromFile(m_recent_playlist.m_favourite_playlist.path);
+    for (auto& item : m_playlist)
+    {
+        if(!item.is_cue)
+            item.is_favourite = favourite_playlist.IsFileInPlaylist(item.file_path);
+    }
+
     if(!IsPlaying())
     {
         //清除歌词和专辑封面
@@ -1432,10 +1441,10 @@ void CPlayer::SetFavourite(bool favourite)
     if (m_index >= 0 && m_index < GetSongNum())
     {
         m_playlist[m_index].is_favourite = favourite;
-        if (!m_playlist[m_index].is_cue)
-        {
-            theApp.SaveSongInfo(m_playlist[m_index]);
-        }
+        //if (!m_playlist[m_index].is_cue)
+        //{
+        //    theApp.SaveSongInfo(m_playlist[m_index]);
+        //}
     }
 
 }

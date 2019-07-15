@@ -307,7 +307,7 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.661"));			//写入数据版本
+    ar << CString(_T("2.662"));			//写入数据版本
     ar << m_song_data.size();		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -327,7 +327,7 @@ void CMusicPlayerApp::SaveSongData()
            << CString(song_data.second.song_id.c_str())
            << song_data.second.listen_time
            << song_data.second.info_acquired
-           << song_data.second.is_favourite
+           //<< song_data.second.is_favourite
            ;
     }
     // 关闭CArchive对象
@@ -439,7 +439,7 @@ void CMusicPlayerApp::SaveSongInfo(const SongInfo& song_info)
     song.lengh = song_info.lengh;
     song.bitrate = song_info.bitrate;
     song.song_id = song_info.song_id;
-    song.is_favourite = song_info.is_favourite;
+    //song.is_favourite = song_info.is_favourite;
 
     SetSongDataModified();
 }
@@ -668,7 +668,7 @@ void CMusicPlayerApp::LoadSongData()
                 ar >> song_info.info_acquired;
             }
 
-            if (version_str >= _T("2.661"))
+            if (version_str == _T("2.661"))
             {
                 ar >> song_info.is_favourite;
             }

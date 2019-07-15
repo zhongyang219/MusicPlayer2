@@ -2097,7 +2097,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     }
 
     //响应播放列表右键菜单中的“添加到播放列表”
-    if (command >= ID_ADD_TO_MY_FAVOURITE && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
+    if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
     {
         //获取选中的曲目的路径
         std::vector<std::wstring> selected_item_path;
@@ -2132,7 +2132,6 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                 if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
                 {
                     CPlayer::GetInstance().GetPlayList()[i].is_favourite = true;
-                    theApp.SaveSongInfo(CPlayer::GetInstance().GetPlayList()[i]);
                 }
             }
 
