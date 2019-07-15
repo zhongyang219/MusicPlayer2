@@ -489,7 +489,7 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
         pStatic = &m_path_static;
     else
         pStatic = &m_pFloatPlaylistDlg->GetPathStatic();
-    if (CPlayer::GetInstance().IsFromPlaylist())
+    if (CPlayer::GetInstance().IsPlaylistMode())
         pStatic->SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
     else
         pStatic->SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
@@ -782,7 +782,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
     //弹出右键菜单时，如果没有选中播放列表中的项目，则禁用右键菜单中“播放”、“从列表中删除”、“属性”、“从磁盘删除”项目。
     bool selete_valid = m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum();
-    bool from_playlist{ CPlayer::GetInstance().IsFromPlaylist() };
+    bool from_playlist{ CPlayer::GetInstance().IsPlaylistMode() };
     pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && from_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
@@ -845,7 +845,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
 
     //设置播放列表菜单中排序方式的单选标记
-    if(!CPlayer::GetInstance().IsFromPlaylist())
+    if(!CPlayer::GetInstance().IsPlaylistMode())
     {
         switch (CPlayer::GetInstance().m_sort_mode)
         {
@@ -977,6 +977,14 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
     }
 }
 
+void CMusicPlayerDlg::SetPlaylistDragEnable()
+{
+    bool enable = CPlayer::GetInstance().IsPlaylistMode() && !m_searched;   //处于播放列表模式且不处理搜索状态时才允许拖动排序
+    m_playlist_list.SetDragEnable(enable);
+    if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
+        m_pFloatPlaylistDlg->GetListCtrl().SetDragEnable(enable);
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -1103,8 +1111,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     m_notify_icon.Init(m_hIcon);
     m_notify_icon.AddNotifyIcon();
-
-    m_playlist_list.SetDragEnable();
 
     //设置定时器
     SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
@@ -1447,7 +1453,7 @@ void CMusicPlayerDlg::OnSetPath()
     if (!dialog_exist)		//确保对话框已经存在时不再弹出
     {
         dialog_exist = true;
-        int cur_tab{ CPlayer::GetInstance().IsFromPlaylist() ? 1 : 0 };
+        int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
         CMediaLibDlg media_lib_dlg{ cur_tab };
         media_lib_dlg.DoModal();
         dialog_exist = false;
@@ -1816,7 +1822,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             if (CAudioCommon::FileIsAudio(wstring(file_path)))
                 files.push_back(file_path);
         }
-        if(CPlayer::GetInstance().IsFromPlaylist())
+        if(CPlayer::GetInstance().IsPlaylistMode())
             CPlayer::GetInstance().AddFiles(files);
         else
             CPlayer::GetInstance().OpenFiles(files, false);
@@ -2678,9 +2684,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     EnablePlaylist(true);
     theApp.DoWaitCursor(-1);
 
-    m_playlist_list.SetDragEnable(CPlayer::GetInstance().IsFromPlaylist());
-    if(m_pFloatPlaylistDlg->GetSafeHwnd()!=NULL)
-        m_pFloatPlaylistDlg->GetListCtrl().SetDragEnable(CPlayer::GetInstance().IsFromPlaylist());
+    SetPlaylistDragEnable();
 
     return 0;
 }
@@ -2955,6 +2959,7 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
     CString key_word;
     m_search_edit.GetWindowText(key_word);
     m_searched = (key_word.GetLength() != 0);
+    SetPlaylistDragEnable();
     m_playlist_list.QuickSearch(wstring(key_word));
     m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
 }
@@ -3547,7 +3552,7 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
 {
     // TODO: 在此添加命令处理程序代码
 
-    if (!CPlayer::GetInstance().IsFromPlaylist())
+    if (!CPlayer::GetInstance().IsPlaylistMode())
         return;
 
     vector<wstring> files;
@@ -3588,7 +3593,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemUp()
     if (m_items_selected.empty())
         return;
 
-    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched;
+    bool move_enable = CPlayer::GetInstance().IsPlaylistMode() && !m_searched;
     if (!move_enable)
         return;
 
@@ -3617,7 +3622,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemDown()
     if (m_items_selected.empty())
         return;
 
-    bool move_enable = CPlayer::GetInstance().IsFromPlaylist() && !m_searched;
+    bool move_enable = CPlayer::GetInstance().IsPlaylistMode() && !m_searched;
     if (!move_enable)
         return;
 
@@ -3712,7 +3717,7 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
 {
     // TODO: 在此添加命令处理程序代码
 
-    if (!CPlayer::GetInstance().IsFromPlaylist())
+    if (!CPlayer::GetInstance().IsPlaylistMode())
         return;
 
     static bool include_sub_dir{ false };
@@ -3755,7 +3760,7 @@ void CMusicPlayerDlg::OnRemoveInvalidItems()
 
 afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 {
-    if (!CPlayer::GetInstance().IsFromPlaylist())
+    if (!CPlayer::GetInstance().IsPlaylistMode())
         return 0;
 
     CWaitCursor wait_cursor;
@@ -3788,7 +3793,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnAddRemoveFromFavourite()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CPlayer::GetInstance().IsFromPlaylist() && CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
+    if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
     {
         //如果当前播放列表就是“我喜欢”播放列表，则直接将当前歌曲从列表中移除
         CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());

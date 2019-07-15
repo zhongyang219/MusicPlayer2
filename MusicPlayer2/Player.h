@@ -105,7 +105,7 @@ private:
 
 	vector<int> m_shuffle_list;			//储存随机播放过的曲目序号
 
-    bool m_from_playlist{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
+    bool m_playlist_mode{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
 
 private:
 	void IniPlayerCore();			//初始化BASS音频库
@@ -264,7 +264,7 @@ public:
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
 	wstring GetCurrentFileType() { return m_current_file_type; }
 	bool IsOsuFolder() const { return m_is_ous_folder; }
-    bool IsFromPlaylist() const { return m_from_playlist; }
+    bool IsPlaylistMode() const { return m_playlist_mode; }
 
     void SetPlaylistPath(const wstring& playlist_path);
     wstring GetPlaylistPath() const;

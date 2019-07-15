@@ -81,7 +81,7 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
 
     ShowPathList();
 
-    if(CPlayer::GetInstance().IsFromPlaylist())
+    if(CPlayer::GetInstance().IsPlaylistMode())
     {
         //正在播放的项目
         int highlight_item;
@@ -205,7 +205,7 @@ void CSelectPlaylistDlg::SetButtonsEnable()
 
 bool CSelectPlaylistDlg::SelectedCanPlay() const
 {
-    return SelectValid() && (!CPlayer::GetInstance().IsFromPlaylist() || GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath());
+    return SelectValid() && (!CPlayer::GetInstance().IsPlaylistMode() || GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath());
 }
 
 void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)

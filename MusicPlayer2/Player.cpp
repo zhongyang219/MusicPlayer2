@@ -39,7 +39,7 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    if(!m_from_playlist)
+    if(!m_playlist_mode)
     {
         IniPlayList();	//初始化播放列表
     }
@@ -80,7 +80,7 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info, bool play)
 {
     if (!m_loading)
     {
-        m_from_playlist = cmd_para;
+        m_playlist_mode = cmd_para;
         m_is_ous_folder = !cmd_para && COSUPlayerHelper::IsOsuFolder(m_path);
         if (!cmd_para)
         {
@@ -707,7 +707,7 @@ void CPlayer::ChangePath(const wstring& path, int track)
 void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sort_mode)
 {
     //if (m_song_num>0 && !m_playlist[0].file_name.empty())		//如果当前路径有歌曲，就保存当前路径到最近路径
-    if (m_from_playlist)
+    if (m_playlist_mode)
         EmplaceCurrentPlaylistToRecent();
     else
         EmplaceCurrentPathToRecent();
@@ -725,7 +725,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     if(!init)
     {
         SaveCurrentPlaylist();
-        if (m_from_playlist)
+        if (m_playlist_mode)
             EmplaceCurrentPlaylistToRecent();
         else
             EmplaceCurrentPathToRecent();
@@ -813,14 +813,14 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
         MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
-        if (!m_from_playlist || !m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
+        if (!m_playlist_mode || !m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
             SaveCurrentPlaylist();
         EmplaceCurrentPlaylistToRecent();
         EmplaceCurrentPathToRecent();
     }
 
     m_recent_playlist.m_cur_playlist_type = PT_DEFAULT;
-    m_from_playlist = true;
+    m_playlist_mode = true;
     m_playlist_path = m_recent_playlist.m_default_playlist.path;
 
     //加载默认播放列表
@@ -899,7 +899,7 @@ void CPlayer::AddFiles(const vector<wstring>& files)
         CFilePathHelper file_path{ file };
         song_info.file_name = file_path.GetFileName();
         song_info.file_path = file;
-        if (m_from_playlist && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+        if (m_playlist_mode && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
             song_info.is_favourite = true;
         m_playlist.push_back(song_info);
     }
@@ -974,7 +974,7 @@ void CPlayer::SaveConfig() const
     ini.WriteInt(L"config", L"sort_mode", static_cast<int>(m_sort_mode));
     ini.WriteBool(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
     ini.WriteString(L"config", L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
-    ini.WriteBool(L"config", L"from_playlist", m_from_playlist);
+    ini.WriteBool(L"config", L"from_playlist", m_playlist_mode);
 
     //保存均衡器设定
     ini.WriteBool(L"equalizer", L"equalizer_enable", m_equ_enable);
@@ -1016,7 +1016,7 @@ void CPlayer::LoadConfig()
     wstring default_album_name = ini.GetString(L"config", L"default_album_file_name", L"cover");
     CCommon::StringSplit(default_album_name, L',', theApp.m_app_setting_data.default_album_name);
 
-    m_from_playlist = ini.GetBool(L"config", L"from_playlist", m_from_playlist);
+    m_playlist_mode = ini.GetBool(L"config", L"from_playlist", m_playlist_mode);
 
     //读取均衡器设定
     m_equ_enable = ini.GetBool(L"equalizer", L"equalizer_enable", false);
@@ -1092,7 +1092,7 @@ wstring CPlayer::GetCurrentDir() const
 
 wstring CPlayer::GetCurrentFolderOrPlaylistName() const
 {
-    if (m_from_playlist)
+    if (m_playlist_mode)
     {
         CFilePathHelper file_path{ m_playlist_path };
         wstring playlist_name = file_path.GetFileName();
@@ -1141,7 +1141,7 @@ void CPlayer::ReloadPlaylist()
     if (m_loading) return;
     MusicControl(Command::CLOSE);
     m_current_file_name_tmp = GetCurrentFileName();	//保存当前播放的曲目的文件名，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
-    if(!m_from_playlist)
+    if(!m_playlist_mode)
     {
         m_playlist.clear();		//清空播放列表
         IniPlayList(false, true);		//根据新路径重新初始化播放列表
@@ -1240,7 +1240,7 @@ void CPlayer::ClearPlaylist()
 
 bool CPlayer::MoveUp(int first, int last)
 {
-    if (!m_from_playlist)
+    if (!m_playlist_mode)
         return false;
 
     if (first <= 0 || last >= GetSongNum() || last < first)
@@ -1261,7 +1261,7 @@ bool CPlayer::MoveUp(int first, int last)
 
 bool CPlayer::MoveDown(int first, int last)
 {
-    if (!m_from_playlist)
+    if (!m_playlist_mode)
         return false;
     
     if (first < 0 || last >= GetSongNum() - 1 || last < first)
@@ -1282,7 +1282,7 @@ bool CPlayer::MoveDown(int first, int last)
 
 int CPlayer::MoveItems(std::vector<int> indexes, int dest)
 {
-    if (!m_from_playlist)
+    if (!m_playlist_mode)
         return -1;
 
     if (std::find(indexes.begin(), indexes.end(), dest) != indexes.end())
@@ -1451,7 +1451,7 @@ void CPlayer::SetFavourite(bool favourite)
 
 bool CPlayer::IsFavourite()
 {
-    if (m_from_playlist && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+    if (m_playlist_mode && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
         return true;
     if (m_index >= 0 && m_index < GetSongNum())
     {
@@ -1590,7 +1590,7 @@ void CPlayer::OnExit()
 {
     SaveConfig();
     //退出时保存最后播放的曲目和位置
-    if (!m_from_playlist && !m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_name.empty())
+    if (!m_playlist_mode && !m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_name.empty())
     {
         m_recent_path[0].track = m_index;
         m_recent_path[0].position = m_current_position_int;
@@ -1650,7 +1650,7 @@ void CPlayer::LoadRecentPath()
     file.Close();
 
     //从recent_path文件中获取路径、播放到的曲目和位置
-    if(!m_from_playlist)
+    if(!m_playlist_mode)
     {
         if (!m_recent_path.empty())
         {
@@ -1672,7 +1672,7 @@ void CPlayer::LoadRecentPath()
 void CPlayer::LoadRecentPlaylist()
 {
     m_recent_playlist.LoadPlaylistData();
-    if(m_from_playlist)
+    if(m_playlist_mode)
     {
         if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
         {
@@ -1701,7 +1701,7 @@ void CPlayer::LoadRecentPlaylist()
 
 void CPlayer::SaveCurrentPlaylist()
 {
-    if(m_from_playlist)
+    if(m_playlist_mode)
     {
         wstring current_playlist;
         if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT || m_recent_playlist.m_recent_playlists.empty())
@@ -1718,7 +1718,7 @@ void CPlayer::SaveCurrentPlaylist()
 
 void CPlayer::EmplaceCurrentPathToRecent()
 {
-    if (m_from_playlist)
+    if (m_playlist_mode)
         return;
 
     for (size_t i{ 0 }; i < m_recent_path.size(); i++)
@@ -1741,7 +1741,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
 
 void CPlayer::EmplaceCurrentPlaylistToRecent()
 {
-    if (!m_from_playlist)
+    if (!m_playlist_mode)
         return;
 
     if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)

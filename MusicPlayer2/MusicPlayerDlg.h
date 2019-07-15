@@ -157,6 +157,8 @@ protected:
     void GetPlaylistItemSelected();
     void IniPlaylistPopupMenu();
 
+    void SetPlaylistDragEnable();       //设置播放列表是事允许拖动排序
+
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);

@@ -169,12 +169,12 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
-    if (CPlayer::GetInstance().IsFromPlaylist())
+    if (CPlayer::GetInstance().IsPlaylistMode())
         m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
     else
         m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
 
-    m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsFromPlaylist());
+    m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode());
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
