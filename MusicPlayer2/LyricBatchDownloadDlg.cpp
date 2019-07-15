@@ -291,11 +291,13 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		}
 
 		//处理返回结果
+        SongInfo& song_info_ori{ theApp.m_song_data[pInfo->playlist->at(i).file_path] };
 		vector<CInternetCommon::ItemInfo> down_list;
 		CInternetCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
 		if (down_list.empty())
 		{
 			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG));
+            song_info_ori.no_online_lyric = true;
 			continue;
 		}
 
@@ -309,7 +311,8 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		int best_matched = CInternetCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).file_name, true);
 		if (best_matched < 0)
 		{
-			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
+            song_info_ori.no_online_lyric = true;
+            pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
 			continue;
 		}
 

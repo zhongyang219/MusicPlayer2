@@ -408,10 +408,17 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
 	CString info;
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
+    SongInfo& song_info_ori{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
 	if (m_down_list.empty())
-		info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
+    {
+        song_info_ori.no_online_lyric = true;
+        info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
+    }
 	else if (best_matched == -1)
-		info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
+    {
+        song_info_ori.no_online_lyric = true;
+        info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
+    }
 	else if(id_releated)
 	{
 		info = CCommon::LoadTextFormat(IDS_SEARCH_RELATED, { best_matched + 1 });

@@ -1,6 +1,14 @@
 #pragma once
 #include "Common.h"
 
+enum DownloadResult     //下载结果
+{
+    DR_SUCCESS,             //成功
+    DR_NETWORK_ERROR,       //网络连接失败
+    DR_DOWNLOAD_ERROR       //下载失败
+};
+
+
 class CInternetCommon
 {
 #define  NORMAL_CONNECT INTERNET_FLAG_KEEP_CONNECTION
@@ -48,6 +56,6 @@ public:
 	static int SelectMatchedItem(const vector<ItemInfo>& down_list, const wstring& title, const wstring& artist, const wstring& album, const wstring& filename, bool write_log = false);
 
 	//自动搜索歌曲并返回最佳匹配项的ID，如果message为true，则会在失败时弹出提示
-	static ItemInfo SearchSongAndGetMatched(const wstring& title, const wstring& artist, const wstring& album, const wstring& file_name, bool message = true);
+	static ItemInfo SearchSongAndGetMatched(const wstring& title, const wstring& artist, const wstring& album, const wstring& file_name, bool message = true, DownloadResult* result = nullptr);
 };
 

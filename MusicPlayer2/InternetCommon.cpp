@@ -423,7 +423,7 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 	return max_index;
 }
 
-CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring & title, const wstring & artist, const wstring & album, const wstring & file_name, bool message)
+CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring & title, const wstring & artist, const wstring & album, const wstring & file_name, bool message, DownloadResult* result)
 {
 	//设置搜索关键字
 	wstring search_result;		//查找歌曲返回的结果
@@ -452,6 +452,9 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	{
 		if(message)
 			AfxMessageBox(CCommon::LoadText(IDS_NETWORK_CONNECTION_FAILED), NULL, MB_ICONWARNING);
+        if (result != nullptr)
+            *result = DR_NETWORK_ERROR;
+
 		return CInternetCommon::ItemInfo();
 	}
 
@@ -462,7 +465,9 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	{
 		if (message)
 			AfxMessageBox(CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG), NULL, MB_ICONWARNING);
-		return CInternetCommon::ItemInfo();
+        if (result != nullptr)
+            *result = DR_DOWNLOAD_ERROR;
+        return CInternetCommon::ItemInfo();
 	}
 
 	//计算最佳选择项
@@ -479,9 +484,13 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 	{
 		if (message)
 			AfxMessageBox(CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG), NULL, MB_ICONWARNING);
-		return CInternetCommon::ItemInfo();
+        if (result != nullptr)
+            *result = DR_DOWNLOAD_ERROR;
+        return CInternetCommon::ItemInfo();
 	}
 
 	//获返回最佳匹配项
-	return down_list[best_matched];
+    if (result != nullptr)
+        *result = DR_SUCCESS;
+    return down_list[best_matched];
 }

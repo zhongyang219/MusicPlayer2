@@ -41,9 +41,11 @@ struct SongInfo
     //wstring album_cover{};		//专辑封面保存的文件名
     wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     int listen_time{};			//歌曲累计听的时间（单位为秒）
-    bool is_favourite{ false };
+    bool no_online_lyric{ false };         //如果为true，则不在线下载歌词
+    bool no_online_album_cover{ false };   //如果为true，则不在线下载专辑封面
 
     bool is_osu_file{ false };
+    bool is_favourite{ false };
 
     //根据文件名的比较函数，用于以文件名排序
     static bool ByFileName(const SongInfo& a, const SongInfo& b)
