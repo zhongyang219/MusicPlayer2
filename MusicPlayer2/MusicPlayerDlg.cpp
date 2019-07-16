@@ -2611,6 +2611,10 @@ void CMusicPlayerDlg::OnDeleteLyric()
         int rtn = CCommon::DeleteAFile(m_hWnd, CPlayer::GetInstance().m_Lyrics.GetPathName());		//删除歌词文件
         CPlayer::GetInstance().ClearLyric();		//清除歌词关联
     }
+
+    SongInfo& song_info{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
+    song_info.no_online_lyric = true;
+    theApp.SetSongDataModified();
 }
 
 
@@ -2798,6 +2802,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             {
                 song_info_ori.no_online_album_cover = true;
                 song_info_ori.no_online_lyric = true;
+                theApp.SetSongDataModified();
             }
             return 0;
         }
@@ -2809,6 +2814,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         if (cover_url.empty())
         {
             song_info_ori.no_online_album_cover = true;
+            theApp.SetSongDataModified();
             return 0;
         }
 
@@ -2845,11 +2851,13 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, true))
         {
             song_info_ori.no_online_lyric = true;
+            theApp.SetSongDataModified();
             return 0;
         }
         if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
         {
             song_info_ori.no_online_lyric = true;
+            theApp.SetSongDataModified();
             return 0;
         }
         CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
@@ -3034,6 +3042,9 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().DeleteAlbumCover();
+    SongInfo& song_info{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
+    song_info.no_online_album_cover = true;
+    theApp.SetSongDataModified();
 }
 
 

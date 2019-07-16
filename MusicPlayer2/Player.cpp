@@ -1477,7 +1477,7 @@ void CPlayer::AddListenTime(int sec)
         m_playlist[m_index].listen_time += sec;
         if (!m_playlist[m_index].is_cue)
         {
-            theApp.m_song_data[m_path + m_playlist[m_index].file_name].listen_time = m_playlist[m_index].listen_time;
+            theApp.m_song_data[m_playlist[m_index].file_path].listen_time = m_playlist[m_index].listen_time;
             theApp.SetSongDataModified();
         }
     }
