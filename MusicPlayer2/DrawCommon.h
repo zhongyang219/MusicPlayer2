@@ -27,6 +27,7 @@ public:
         bool shift_dir{};		//移动的方向，右移为false，左移为true
         int freez{};			//当该变量大于0时，文本不滚动，直到小于等于0为止
         bool dir_changed{ false };	//如果方向发生了变化，则为true
+        CString last_string;        //上一次绘制的文本
     };
 
     CDrawCommon();

@@ -138,6 +138,13 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	//static bool shift_dir;		//移动的方向，右移为false，左移为true
 	//static int freez;			//当该变量大于0时，文本不滚动，直到小于等于0为止
 	//static bool dir_changed{ false };	//如果方向发生了变化，则为true
+
+    if (scroll_info.last_string != lpszString)      //当显示文本发生变化时，重置滚动位置
+    {
+        reset = true;
+        scroll_info.last_string = lpszString;
+    }
+
 	if (reset)
 	{
 		scroll_info.shift_cnt = 0;
@@ -200,7 +207,13 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 
 void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo & scroll_info, bool reset)
 {
-	if (reset)
+    if (scroll_info.last_string != lpszString)      //当显示文本发生变化时，重置滚动位置
+    {
+        reset = true;
+        scroll_info.last_string = lpszString;
+    }
+    
+    if (reset)
 	{
 		scroll_info.shift_cnt = 0;
 		scroll_info.freez = 20;
