@@ -287,11 +287,17 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
             return;
         }
 
-        int index = m_row_selected - 1;
+        int index = m_row_selected - 2;
         if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
         {
             wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;      //播放列表重命名前的路径
             wstring new_path = CCommon::FileRename(playlist_path, wstring(playlist_name));                          //播放列表后命名后的路径
+
+            if (new_path.empty())
+            {
+                MessageBox(CCommon::LoadText(IDS_REMANE_FAILED), NULL, MB_ICONWARNING | MB_OK);
+                return;
+            }
 
             if (playlist_path == new_path)
                 return;
@@ -314,7 +320,7 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
 void CSelectPlaylistDlg::OnDeletePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    int index = m_row_selected - 1;
+    int index = m_row_selected - 2;
     if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
     {
         wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;

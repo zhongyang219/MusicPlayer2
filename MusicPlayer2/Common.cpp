@@ -549,7 +549,15 @@ _tstring CCommon::FileRename(const _tstring& file_path, const _tstring& new_file
         extension = file_path.substr(index);
 
     _tstring new_file_path = dir + new_file_name + extension;
-    CFile::Rename(file_path.c_str(), new_file_path.c_str());
+    try
+    {
+        CFile::Rename(file_path.c_str(), new_file_path.c_str());
+    }
+    catch (CFileException* pEx)
+    {
+        new_file_path.clear();
+        pEx->Delete();
+    }
     return new_file_path;
 }
 
