@@ -399,7 +399,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 
 	bool text_cut_off;
 	wstring file_path;
-	file_path = CPlayer::GetInstance().GetCurrentDir() + m_all_song_info[m_index].file_name;
+	file_path = m_all_song_info[m_index].file_path;
 	if (!CAudioTag::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off))
 	{
 		MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
@@ -410,10 +410,10 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 		HSTREAM hStream;
 		hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		//CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
-		CAudioTag audio_tag(hStream, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
+		CAudioTag audio_tag(hStream, file_path, m_all_song_info[m_index]);
 		audio_tag.GetAudioTag(true);
 		BASS_StreamFree(hStream);
-		theApp.m_song_data[CPlayer::GetInstance().GetCurrentDir() + m_all_song_info[m_index].file_name].CopyAudioTag(m_all_song_info[m_index]);
+		theApp.m_song_data[m_all_song_info[m_index].file_path].CopyAudioTag(m_all_song_info[m_index]);
 		theApp.SetSongDataModified();
 
 		m_modified = false;
