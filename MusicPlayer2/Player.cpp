@@ -268,6 +268,16 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
         song.lyric_file.clear();		//检索歌词前先清除之前已经关联过的歌词
         //if (!song.lyric_file.empty() && CCommon::FileExist(song.lyric_file))		//如果歌曲信息中有歌词文件，且歌词文件存在，则不需要再获取歌词
         //	continue;
+
+        wstring file_dir;
+        if (m_playlist_mode)
+        {
+            m_current_path_lyrics.clear();
+            CFilePathHelper file_path{ song.file_path };
+            file_dir = file_path.GetDir();
+            CAudioCommon::GetLyricFiles(file_dir, m_current_path_lyrics);
+        }
+
         CFilePathHelper lyric_path{ song.file_path };		//得到路径+文件名的字符串
         lyric_path.ReplaceFileExtension(L"lrc");		//将文件扩展替换成lrc
         CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.file_name };
@@ -290,7 +300,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
                 //if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
                 if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
                 {
-                    matched_lyric = m_path + str;
+                    matched_lyric = (m_playlist_mode ? file_dir : m_path) + str;
                     break;
                 }
             }
@@ -316,7 +326,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
                     //if (str.find(song.title) != string::npos)
                     if (CCommon::StringNatchWholeWord(str, song.title) != -1)
                     {
-                        matched_lyric = m_path + str;
+                        matched_lyric = (m_playlist_mode ? file_dir : m_path) + str;
                         break;
                     }
                 }

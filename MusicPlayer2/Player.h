@@ -42,9 +42,8 @@ private:
 
 
 	vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
-	wstring m_path;		//当前播放文件的路径
+	wstring m_path;		            //文件夹模式下，当前播放文件的目录
     wstring m_playlist_path;        //当前播放列表文件的路径
-	//wstring m_current_file_name;		//正在播放的文件名
 	wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
 	wstring m_current_file_type;
 	deque<PathInfo> m_recent_path;		//最近打开过的路径
