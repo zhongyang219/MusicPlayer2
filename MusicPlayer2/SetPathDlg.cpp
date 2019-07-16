@@ -202,7 +202,8 @@ BOOL CSetPathDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	//CenterWindow();
 
-	m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
+    if(!CPlayer::GetInstance().IsPlaylistMode())
+        m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
 
 	//设置列表控件主题颜色
 	//m_path_list.SetColor(theApp.m_app_setting_data.theme_color);
