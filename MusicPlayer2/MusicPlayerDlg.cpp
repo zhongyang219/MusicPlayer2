@@ -2304,7 +2304,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
             CPlayer::GetInstance().RemoveSongs(m_items_selected);
         else
             CPlayer::GetInstance().RemoveSong(m_item_selected);
-        ShowPlayList();
+        ShowPlayList(false);
         UpdatePlayPauseButton();
         DrawInfo(true);
         //文件删除后同时删除和文件同名的图片文件和歌词文件
@@ -3609,7 +3609,7 @@ void CMusicPlayerDlg::OnRemoveFromPlaylist()
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().RemoveSongs(m_items_selected);
     CPlayer::GetInstance().SaveCurrentPlaylist();
-    ShowPlayList();
+    ShowPlayList(false);
 }
 
 

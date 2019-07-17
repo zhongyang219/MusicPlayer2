@@ -975,6 +975,9 @@ bool CCommon::IsMenuItemInMenu(CMenu* pMenu, UINT id)
 	{
 		if (pMenu->GetMenuItemID(i) == id)
 			return true;
+        CMenu* pSubMenu = pMenu->GetSubMenu(i);
+        if (IsMenuItemInMenu(pSubMenu, id))
+            return true;
 	}
 	return false;
 }
