@@ -3834,9 +3834,12 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
     if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
     {
         //如果当前播放列表就是“我喜欢”播放列表，则直接将当前歌曲从列表中移除
-        CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
-        CPlayer::GetInstance().SaveCurrentPlaylist();
-        ShowPlayList();
+        if(MessageBox(CCommon::LoadText(IDS_REMOVE_MY_FAVOURITE_WARNING), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
+        {
+            CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
+            CPlayer::GetInstance().SaveCurrentPlaylist();
+            ShowPlayList();
+        }
     }
     else
     {

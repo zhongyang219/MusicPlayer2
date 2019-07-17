@@ -1170,6 +1170,13 @@ void CPlayer::ReloadPlaylist()
 void CPlayer::RemoveSong(int index)
 {
     if (m_loading) return;
+
+    if (index == GetSongNum() - 1)
+    {
+        MusicControl(Command::STOP);
+        MusicControl(Command::CLOSE);
+    }
+
     if (index >= 0 && index < GetSongNum())
     {
         m_playlist.erase(m_playlist.begin() + index);
@@ -1191,6 +1198,9 @@ void CPlayer::RemoveSong(int index)
             MusicControl(Command::STOP);
             MusicControl(Command::CLOSE);
             m_playlist.push_back(SongInfo());
+            m_album_cover.Destroy();
+            m_album_cover_blur.Destroy();
+            m_Lyrics = CLyrics();
         }
     }
 }
