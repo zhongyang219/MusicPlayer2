@@ -3714,6 +3714,11 @@ void CMusicPlayerDlg::OnAddToNewPlaylist()
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
+        if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
+        {
+            MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
         wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
         if (CCommon::FileExist(playlist_path))
         {

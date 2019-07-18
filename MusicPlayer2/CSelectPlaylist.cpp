@@ -58,6 +58,7 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
     ON_NOTIFY(NM_CLICK, IDC_LIST1, &CSelectPlaylistDlg::OnNMClickList1)
     ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CSelectPlaylistDlg::OnNMRClickList1)
     ON_WM_INITMENU()
+    ON_COMMAND(ID_NEW_PLAYLIST, &CSelectPlaylistDlg::OnNewPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -246,6 +247,11 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
+        if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
+        {
+            MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
         wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
         if (CCommon::FileExist(playlist_path))
         {
@@ -280,6 +286,11 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
+        if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
+        {
+            MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
 
         if (CCommon::FileExist(theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION))
         {
@@ -374,4 +385,11 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
 
+}
+
+
+void CSelectPlaylistDlg::OnNewPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    OnBnClickedNewPlaylist();
 }

@@ -190,6 +190,12 @@ void CCommon::FileNameNormalize(wstring & file_name)
 	}
 }
 
+bool CCommon::IsFileNameValid(const wstring& file_name)
+{
+    const wstring invalid_chars{ L"\\\"/:*?<>|\a\b\f\n\r\t\v" };
+    return (file_name.find_first_of(invalid_chars) == wstring::npos);
+}
+
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
 	int l, m;
