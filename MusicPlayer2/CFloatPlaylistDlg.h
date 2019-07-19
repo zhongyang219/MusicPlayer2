@@ -27,6 +27,7 @@ public:
     CStaticEx& GetPathStatic();
     CEdit& GetPathEdit();
     void GetPlaylistItemSelected();
+    void SetDragEnable();
 
 private:
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
@@ -38,7 +39,7 @@ private:
 
     SLayoutData m_layout;		//窗口布局的固定数据
 
-    bool m_searched;		//播放列表是否处于搜索状态
+    bool m_searched{ false };		//播放列表是否处于搜索状态
     int& m_item_selected;		//播放列表中鼠标选中的项目
     vector<int>& m_items_selected;
 

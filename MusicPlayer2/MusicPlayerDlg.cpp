@@ -981,8 +981,11 @@ void CMusicPlayerDlg::SetPlaylistDragEnable()
 {
     bool enable = CPlayer::GetInstance().IsPlaylistMode() && !m_searched;   //处于播放列表模式且不处理搜索状态时才允许拖动排序
     m_playlist_list.SetDragEnable(enable);
+
     if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
-        m_pFloatPlaylistDlg->GetListCtrl().SetDragEnable(enable);
+        m_pFloatPlaylistDlg->SetDragEnable();
+    if(m_miniModeDlg.GetSafeHwnd()!=NULL)
+        m_miniModeDlg.SetDragEnable();
 }
 
 BOOL CMusicPlayerDlg::OnInitDialog()
@@ -3400,6 +3403,7 @@ void CMusicPlayerDlg::OnShowMenuBar()
     theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
     SetMenubarVisible();
     SetThumbnailClipArea();
+    m_pUI->UpdateToolTipPosition();
 
     //隐藏菜单栏后弹出提示，告诉用户如何再次显示菜单栏
     if (!theApp.m_ui_data.show_menu_bar)

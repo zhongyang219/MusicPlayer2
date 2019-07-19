@@ -123,6 +123,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_WM_MOUSELEAVE()
     ON_WM_SETCURSOR()
     ON_COMMAND(ID_MINI_MIDE_MINIMIZE, &CMiniModeDlg::OnMiniMideMinimize)
+    ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMiniModeDlg::OnListItemDragged)
 END_MESSAGE_MAP()
 
 
@@ -283,6 +284,11 @@ void CMiniModeDlg::SetVolume(bool up)
 void CMiniModeDlg::SetTransparency()
 {
     CCommon::SetWindowOpacity(m_hWnd, theApp.m_app_setting_data.window_transparency);
+}
+
+void CMiniModeDlg::SetDragEnable()
+{
+    m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode());
 }
 
 BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
@@ -509,7 +515,7 @@ void CMiniModeDlg::OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult)
     m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
     m_playlist_ctrl.GetItemSelected(m_items_selected);
 
-    CMenu* pContextMenu = theApp.m_menu_set.m_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
     CPoint point;			//定义一个用于确定光标位置的位置
     GetCursorPos(&point);	//获取当前光标的位置，以便使得菜单可以跟随光标
 
@@ -595,4 +601,10 @@ void CMiniModeDlg::OnMiniMideMinimize()
 {
     // TODO: 在此添加命令处理程序代码
     ShowWindow(HIDE_WINDOW);
+}
+
+
+afx_msg LRESULT CMiniModeDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

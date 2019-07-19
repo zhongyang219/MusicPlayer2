@@ -33,6 +33,8 @@ public:
     void SetVolume(bool up);	//
     void SetTransparency();
 
+    void SetDragEnable();
+
 protected:
 
     int m_position_x;
@@ -95,4 +97,6 @@ public:
     afx_msg void OnMouseLeave();
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
     afx_msg void OnMiniMideMinimize();
+protected:
+    afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
 };

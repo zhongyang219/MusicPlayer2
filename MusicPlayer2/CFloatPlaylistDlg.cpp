@@ -115,6 +115,12 @@ void CFloatPlaylistDlg::GetPlaylistItemSelected()
 
 }
 
+void CFloatPlaylistDlg::SetDragEnable()
+{
+    bool enable = CPlayer::GetInstance().IsPlaylistMode() && !m_searched;   //处于播放列表模式且不处理搜索状态时才允许拖动排序
+    m_playlist_ctrl.SetDragEnable(enable);
+}
+
 bool CFloatPlaylistDlg::Initilized() const
 {
     return m_playlist_ctrl.GetSafeHwnd() != NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
@@ -174,7 +180,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     else
         m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
 
-    m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode());
+    SetDragEnable();
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
@@ -265,6 +271,7 @@ void CFloatPlaylistDlg::OnEnChangeSearchEdit()
     m_searched = (key_word.GetLength() != 0);
     m_playlist_ctrl.QuickSearch(wstring(key_word));
     m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+    SetDragEnable();
 }
 
 void CFloatPlaylistDlg::OnBnClickedClearSearchButton()
