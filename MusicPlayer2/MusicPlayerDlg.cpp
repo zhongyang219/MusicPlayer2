@@ -3818,6 +3818,9 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
     else
         m_pFloatPlaylistDlg->GetListCtrl().GetItemSelected(drag_items);
 
+    if (m_miniModeDlg.GetSafeHwnd()!=NULL)
+        m_miniModeDlg.GetPlaylistCtrl().GetItemSelected(drag_items);
+
     int index = CPlayer::GetInstance().MoveItems(drag_items, drop_index);
     ShowPlayList(false);
 
@@ -3832,6 +3835,9 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
         m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(index, index + drag_items.size() - 1);
         m_pFloatPlaylistDlg->GetPlaylistItemSelected();
     }
+
+    if (m_miniModeDlg.GetSafeHwnd() != NULL)
+        m_miniModeDlg.GetPlaylistCtrl().SetCurSel(index, index + drag_items.size() - 1);
 
     return 0;
 }

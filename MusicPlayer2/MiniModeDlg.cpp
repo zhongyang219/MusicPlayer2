@@ -204,6 +204,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     //显示播放列表
     ShowPlaylist();
 
+    SetDragEnable();
+
     //设置窗口不透明度
     SetTransparency();
 
@@ -606,5 +608,19 @@ void CMiniModeDlg::OnMiniMideMinimize()
 
 afx_msg LRESULT CMiniModeDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 {
+    theApp.m_pMainWnd->SendMessage(WM_LIST_ITEM_DRAGGED, wParam, lParam);
     return 0;
+}
+
+
+BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    WORD command = LOWORD(wParam);
+    if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
+    {
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);
+    }
+
+    return CDialogEx::OnCommand(wParam, lParam);
 }

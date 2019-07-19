@@ -34,6 +34,7 @@ public:
     void SetTransparency();
 
     void SetDragEnable();
+    CPlayListCtrl& GetPlaylistCtrl() { return m_playlist_ctrl; }
 
 protected:
 
@@ -99,4 +100,5 @@ public:
     afx_msg void OnMiniMideMinimize();
 protected:
     afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
+    virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 };
