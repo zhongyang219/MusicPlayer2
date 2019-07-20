@@ -508,9 +508,6 @@
     <ClInclude Include="PlaylistMgr.h">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClInclude>
-    <ClInclude Include="ImputDlg.h">
-      <Filter>对话框类\InputDlg</Filter>
-    </ClInclude>
     <ClInclude Include="RegFileRelate.h">
       <Filter>功能逻辑类\RegFileRealte</Filter>
     </ClInclude>
@@ -522,6 +519,9 @@
     </ClInclude>
     <ClInclude Include="BassCore.h">
       <Filter>功能逻辑类\PlayerCore</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDlg.h">
+      <Filter>对话框类\InputDlg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -765,9 +765,6 @@
     <ClCompile Include="PlaylistMgr.cpp">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClCompile>
-    <ClCompile Include="ImputDlg.cpp">
-      <Filter>对话框类\InputDlg</Filter>
-    </ClCompile>
     <ClCompile Include="RegFileRelate.cpp">
       <Filter>功能逻辑类\RegFileRealte</Filter>
     </ClCompile>
@@ -776,6 +773,9 @@
     </ClCompile>
     <ClCompile Include="BassCore.cpp">
       <Filter>功能逻辑类\PlayerCore</Filter>
+    </ClCompile>
+    <ClCompile Include="InputDlg.cpp">
+      <Filter>对话框类\InputDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

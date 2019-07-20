@@ -3,58 +3,58 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
-#include "ImputDlg.h"
+#include "InputDlg.h"
 #include "afxdialogex.h"
 
 
 // CInputDlg 对话框
 
-IMPLEMENT_DYNAMIC(CImputDlg, CDialog)
+IMPLEMENT_DYNAMIC(CInputDlg, CDialog)
 
-CImputDlg::CImputDlg(CWnd* pParent /*=nullptr*/)
+CInputDlg::CInputDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_INPUT_DLG, pParent)
 {
 
 }
 
-CImputDlg::~CImputDlg()
+CInputDlg::~CInputDlg()
 {
 }
 
-void CImputDlg::SetTitle(LPCTSTR strTitle)
+void CInputDlg::SetTitle(LPCTSTR strTitle)
 {
     m_strTitle = strTitle;
 }
 
-void CImputDlg::SetInfoText(LPCTSTR strInfo)
+void CInputDlg::SetInfoText(LPCTSTR strInfo)
 {
     m_strInfo = strInfo;
 }
 
-void CImputDlg::SetEditText(LPCTSTR strEdit)
+void CInputDlg::SetEditText(LPCTSTR strEdit)
 {
     m_strEdit = strEdit;
 }
 
-CString CImputDlg::GetEditText() const
+CString CInputDlg::GetEditText() const
 {
     return m_strEdit;
 }
 
-void CImputDlg::DoDataExchange(CDataExchange* pDX)
+void CInputDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 }
 
 
-BEGIN_MESSAGE_MAP(CImputDlg, CDialog)
+BEGIN_MESSAGE_MAP(CInputDlg, CDialog)
 END_MESSAGE_MAP()
 
 
 // CInputDlg 消息处理程序
 
 
-BOOL CImputDlg::OnInitDialog()
+BOOL CInputDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
@@ -75,7 +75,7 @@ BOOL CImputDlg::OnInitDialog()
 }
 
 
-void CImputDlg::OnOK()
+void CInputDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
     GetDlgItemText(IDC_INPUT_EDIT, m_strEdit);

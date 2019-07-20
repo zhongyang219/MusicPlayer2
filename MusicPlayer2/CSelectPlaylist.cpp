@@ -5,7 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CSelectPlaylist.h"
 #include "afxdialogex.h"
-#include "ImputDlg.h"
+#include "InputDlg.h"
 
 
 // CSelectPlaylist 对话框
@@ -241,7 +241,7 @@ void CSelectPlaylistDlg::OnOK()
 void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CImputDlg imput_dlg;
+    CInputDlg imput_dlg;
     imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
     if (imput_dlg.DoModal() == IDOK)
@@ -276,7 +276,7 @@ void CSelectPlaylistDlg::OnPlayPlaylist()
 void CSelectPlaylistDlg::OnRenamePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    CImputDlg imput_dlg;
+    CInputDlg imput_dlg;
     imput_dlg.SetTitle(CCommon::LoadText(IDS_RENAME_PLAYLIST));
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
 

@@ -302,7 +302,10 @@ const wstring& CBassCore::GetSoundFontName()
 void CBassCore::Open(const wchar_t * file_path)
 {
     m_file_path = file_path;
-    m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, BASS_SAMPLE_FLOAT);
+    if (CCommon::IsURL(m_file_path))
+        m_musicStream = BASS_StreamCreateURL(file_path, 0, BASS_SAMPLE_FLOAT, NULL, NULL);
+    else
+        m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, BASS_SAMPLE_FLOAT);
     BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
     m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
     if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)

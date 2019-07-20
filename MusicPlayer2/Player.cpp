@@ -372,7 +372,7 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 
 void CPlayer::MusicControl(Command command, int volume_step)
 {
-    if (!CCommon::FileExist(GetCurrentFilePath()))
+    if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
         return;
 
     switch (command)
@@ -1171,7 +1171,7 @@ void CPlayer::RemoveSong(int index)
 {
     if (m_loading) return;
 
-    if (index == GetSongNum() - 1)
+    if (index == m_index && index == GetSongNum() - 1)
     {
         MusicControl(Command::STOP);
         MusicControl(Command::CLOSE);
@@ -1458,6 +1458,8 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
 
 void CPlayer::SetFavourite(bool favourite)
 {
+    if (IsError())
+        return;
     if (m_index >= 0 && m_index < GetSongNum())
     {
         m_playlist[m_index].is_favourite = favourite;

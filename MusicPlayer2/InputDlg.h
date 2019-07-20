@@ -3,13 +3,13 @@
 
 // CInputDlg 对话框
 
-class CImputDlg : public CDialog
+class CInputDlg : public CDialog
 {
-	DECLARE_DYNAMIC(CImputDlg)
+	DECLARE_DYNAMIC(CInputDlg)
 
 public:
-	CImputDlg(CWnd* pParent = nullptr);   // 标准构造函数
-	virtual ~CImputDlg();
+	CInputDlg(CWnd* pParent = nullptr);   // 标准构造函数
+	virtual ~CInputDlg();
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME

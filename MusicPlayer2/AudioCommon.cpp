@@ -53,6 +53,9 @@ AudioType CAudioCommon::GetAudioTypeByExtension(const wstring & file_name)
 
 wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 {
+    if (extension.empty())
+        return wstring(CCommon::LoadText(IDS_UNKNOW));
+
     CCommon::StringTransform(extension, false);
 
     for (const auto& item : m_surpported_format)

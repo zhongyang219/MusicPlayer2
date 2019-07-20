@@ -137,6 +137,8 @@ public:
 	//判断一个字符串的编码格式
 	static CodeType JudgeCodeType(const string& str, CodeType default_code = CodeType::ANSI);
 
+    static bool IsURL(const wstring& str);
+
 	//获取当前进程exe文件的路径
 	static wstring GetExePath();
 

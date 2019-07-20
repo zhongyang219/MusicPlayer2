@@ -14,7 +14,7 @@
 #include "CListenTimeStatisticsDlg.h"
 #include "CFloatPlaylistDlg.h"
 #include "Playlist.h"
-#include "ImputDlg.h"
+#include "InputDlg.h"
 #include "FileRelateDlg.h"
 
 #ifdef _DEBUG
@@ -197,7 +197,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_REMOVE_INVALID_ITEMS, &CMusicPlayerDlg::OnRemoveInvalidItems)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMusicPlayerDlg::OnListItemDragged)
     ON_COMMAND(ID_ADD_REMOVE_FROM_FAVOURITE, &CMusicPlayerDlg::OnAddRemoveFromFavourite)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_FILE_OPEN_URL, &CMusicPlayerDlg::OnFileOpenUrl)
+        ON_COMMAND(ID_PLAYLIST_ADD_URL, &CMusicPlayerDlg::OnPlaylistAddUrl)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3712,7 +3714,7 @@ void CMusicPlayerDlg::OnRemoveSameSongs()
 void CMusicPlayerDlg::OnAddToNewPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    CImputDlg imput_dlg;
+    CInputDlg imput_dlg;
     imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
     if (imput_dlg.DoModal() == IDOK)
@@ -3879,5 +3881,41 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
             playlist.SaveToFile(favourite_playlist_path);
             CPlayer::GetInstance().SetFavourite(false);
         }
+    }
+}
+
+
+void CMusicPlayerDlg::OnFileOpenUrl()
+{
+    // TODO: 在此添加命令处理程序代码
+    CInputDlg input_dlg;
+    input_dlg.SetTitle(CCommon::LoadText(IDS_OPEN_URL));
+    input_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_URL_TIP));
+    if (input_dlg.DoModal() == IDOK)
+    {
+        wstring strUrl = input_dlg.GetEditText().GetString();
+        vector<wstring> vecUrl;
+        vecUrl.push_back(strUrl);
+        CPlayer::GetInstance().OpenFiles(vecUrl);
+        UpdatePlayPauseButton();
+        DrawInfo(true);
+        m_play_error_cnt = 0;
+    }
+}
+
+
+void CMusicPlayerDlg::OnPlaylistAddUrl()
+{
+    // TODO: 在此添加命令处理程序代码
+    CInputDlg input_dlg;
+    input_dlg.SetTitle(CCommon::LoadText(IDS_ADD_URL));
+    input_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_URL_TIP));
+    if (input_dlg.DoModal() == IDOK)
+    {
+        wstring strUrl = input_dlg.GetEditText().GetString();
+        vector<wstring> vecUrl;
+        vecUrl.push_back(strUrl);
+        CPlayer::GetInstance().AddFiles(vecUrl);
+        CPlayer::GetInstance().SaveCurrentPlaylist();
     }
 }
