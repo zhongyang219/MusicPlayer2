@@ -161,7 +161,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
 
     //绘制右上角按钮
     rc_tmp.right = m_ui_data.widnow_width - m_ui_data.margin;
-    rc_tmp.left = rc_tmp.right - theApp.DPI(20);;
+    rc_tmp.left = rc_tmp.right - theApp.DPI(20);
     rc_tmp.top = m_ui_data.margin;
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(20);
     DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"));
@@ -172,9 +172,20 @@ void CMiniModeUI::_DrawInfo(bool reset)
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
     DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("≡"));
 
+    //绘制右下角按钮
+    rc_tmp.MoveToXY(m_ui_data.widnow_width - theApp.DPI(20) - m_ui_data.margin, m_ui_data.margin + theApp.DPI(20));
+    DrawUIButton(rc_tmp, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
+    rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
+    if(CPlayer::GetInstance().IsFavourite())
+        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.heart);
+    else
+        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.favourite);
+
     //绘制显示文本信息
-    rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));
-    rc_tmp.right = m_ui_data.widnow_width - m_ui_data.margin;
+    //rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));
+    rc_tmp.top = m_ui_data.margin + theApp.DPI(22);
+    rc_tmp.right = rc_tmp.left - m_ui_data.margin;
+    rc_tmp.left = m_ui_data.window_height;
     rc_tmp.bottom = m_ui_data.window_height;
     if (CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric())
     {
@@ -243,6 +254,12 @@ void CMiniModeUI::LButtonUp(CPoint point)
                     m_pMainWnd->ShowWindow(HIDE_WINDOW);
                 else
                     m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+                break;
+            case BTN_SELECT_FOLDER:
+                m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
+                break;
+            case BTN_FAVOURITE:
+                m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
                 break;
             default:
                 break;
@@ -314,4 +331,6 @@ void CMiniModeUI::AddToolTips()
     AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
     AddMouseToolTip(BTN_COVER, _T(""));
     AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
+    AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, _T(" (Ctrl+T)")));
+    AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
 }
