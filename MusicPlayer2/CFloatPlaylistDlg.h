@@ -28,6 +28,7 @@ public:
     CEdit& GetPathEdit();
     void GetPlaylistItemSelected();
     void SetDragEnable();
+    void EnableControl(bool enable);
 
 private:
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };

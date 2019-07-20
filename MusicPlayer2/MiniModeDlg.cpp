@@ -205,6 +205,7 @@ BOOL CMiniModeDlg::OnInitDialog()
     ShowPlaylist();
 
     SetDragEnable();
+    m_playlist_ctrl.EnableWindow(!CPlayer::GetInstance().m_loading);
 
     //设置窗口不透明度
     SetTransparency();

@@ -1020,6 +1020,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
     DrawControlBarBtn(rc_btn, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
 
     rc_btn.MoveToX(rc_btn.left - btn_side);
+    m_buttons[BTN_SELECT_FOLDER].enable = !CPlayer::GetInstance().m_loading;
     DrawControlBarBtn(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
 
     rc_btn.MoveToX(rc_btn.left - btn_side);

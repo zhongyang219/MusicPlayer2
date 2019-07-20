@@ -121,6 +121,14 @@ void CFloatPlaylistDlg::SetDragEnable()
     m_playlist_ctrl.SetDragEnable(enable);
 }
 
+void CFloatPlaylistDlg::EnableControl(bool enable)
+{
+    m_playlist_ctrl.EnableWindow(enable);
+    m_search_edit.EnableWindow(enable);
+    m_set_path_button.EnableWindow(enable);
+    m_clear_search_button.EnableWindow(enable);
+}
+
 bool CFloatPlaylistDlg::Initilized() const
 {
     return m_playlist_ctrl.GetSafeHwnd() != NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
@@ -181,6 +189,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
         m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
 
     SetDragEnable();
+    EnableControl(!CPlayer::GetInstance().m_loading);
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
