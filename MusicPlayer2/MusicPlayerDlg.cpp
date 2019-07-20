@@ -2685,7 +2685,9 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     // TODO:  如果默认的不是所需画笔，则返回另一个画笔
     if (pWnd == this /*|| pWnd == &m_path_static*/)
     {
-        HBRUSH hBackBrush = CreateSolidBrush(CONSTVAL::BACKGROUND_COLOR);
+        static HBRUSH hBackBrush{};
+        if (hBackBrush == NULL)
+            hBackBrush = CreateSolidBrush(CONSTVAL::BACKGROUND_COLOR);
         return hBackBrush;
     }
 
