@@ -335,4 +335,6 @@ public:
     afx_msg void OnAddRemoveFromFavourite();
     afx_msg void OnFileOpenUrl();
     afx_msg void OnPlaylistAddUrl();
+protected:
+    afx_msg LRESULT OnSetMenuState(WPARAM wParam, LPARAM lParam);
 };

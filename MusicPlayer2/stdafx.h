@@ -171,7 +171,8 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_OPEN_FILE_COMMAND_LINE (WM_USER+110)		//通过命令行打开文件时向已有实例窗口发送的消息
 #define MY_WM_NOTIFYICON (WM_USER+115)
 #define WM_PLAY_SELECTED_BTN_ENABLE (WM_USER+120)
+#define WM_SET_MENU_STATE (WM_USER+122)
 
-#define WM_NEXT_USER_MSG (WM_USER+122)
+#define WM_NEXT_USER_MSG (WM_USER+123)
 
 #define ADD_TO_PLAYLIST_MAX_SIZE 20         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

@@ -197,9 +197,10 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_REMOVE_INVALID_ITEMS, &CMusicPlayerDlg::OnRemoveInvalidItems)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMusicPlayerDlg::OnListItemDragged)
     ON_COMMAND(ID_ADD_REMOVE_FROM_FAVOURITE, &CMusicPlayerDlg::OnAddRemoveFromFavourite)
-        ON_COMMAND(ID_FILE_OPEN_URL, &CMusicPlayerDlg::OnFileOpenUrl)
-        ON_COMMAND(ID_PLAYLIST_ADD_URL, &CMusicPlayerDlg::OnPlaylistAddUrl)
-        END_MESSAGE_MAP()
+    ON_COMMAND(ID_FILE_OPEN_URL, &CMusicPlayerDlg::OnFileOpenUrl)
+    ON_COMMAND(ID_PLAYLIST_ADD_URL, &CMusicPlayerDlg::OnPlaylistAddUrl)
+    ON_MESSAGE(WM_SET_MENU_STATE, &CMusicPlayerDlg::OnSetMenuState)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3918,4 +3919,13 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         CPlayer::GetInstance().AddFiles(vecUrl);
         CPlayer::GetInstance().SaveCurrentPlaylist();
     }
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnSetMenuState(WPARAM wParam, LPARAM lParam)
+{
+    CMenu* pMenu = (CMenu*)wParam;
+    if (pMenu != nullptr)
+        SetMenuState(pMenu);
+    return 0;
 }

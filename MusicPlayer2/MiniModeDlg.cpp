@@ -420,54 +420,15 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 
     // TODO: 在此处添加消息处理程序代码
 
-    //设置迷你模式窗口右键菜单
-    //设置循环模式菜单的单选标记
-    RepeatMode repeat_mode{ CPlayer::GetInstance().GetRepeatMode() };
-    switch (repeat_mode)
-    {
-    case RM_PLAY_ORDER:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_ORDER, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    case RM_PLAY_SHUFFLE:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_SHUFFLE, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    case RM_LOOP_PLAYLIST:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_LOOP_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    case RM_LOOP_TRACK:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_LOOP_TRACK, MF_BYCOMMAND | MF_CHECKED);
-        break;
-    default:
-        break;
-    }
 
     //设置复选菜单项的勾选
     pMenu->CheckMenuItem(ID_SHOW_PLAY_LIST, MF_BYCOMMAND | (m_show_playlist ? MF_CHECKED : MF_UNCHECKED));
-
-    //设置播放列表右键菜单
-    //弹出播放列表右键菜单时，如果没有选中播放列表中的项目，则禁用右键菜单中“播放”、“从列表中删除”、“属性”、“从磁盘删除”项目。
-    if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
-    {
-        pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | MF_GRAYED);
-        pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_GRAYED);
-    }
-    else
-    {
-        pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | MF_ENABLED);
-        pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | MF_ENABLED);
-    }
-
-    pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsInnerCover() ? MF_ENABLED : MF_GRAYED));
-    bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
-    pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric ? MF_ENABLED : MF_GRAYED));
+    pMenu->CheckMenuItem(ID_ADD_REMOVE_FROM_FAVOURITE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFavourite() ? MF_CHECKED : MF_UNCHECKED));
 
     //设置播放列表右键菜单的默认菜单项
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
 
+    theApp.m_pMainWnd->SendMessage(WM_SET_MENU_STATE, (WPARAM)pMenu);
 }
 
 
