@@ -141,10 +141,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         }
         wstring file_path{ GetInstance().m_playlist[i].file_path };
         GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], !GetInstance().IsOsuFolder());
-        //if (GetInstance().IsOsuFolder())
-        //{
-        //    COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
-        //}
+        if (GetInstance().IsOsuFolder())
+        {
+            COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
+        }
         theApp.SaveSongInfo(GetInstance().m_playlist[i]);
         count++;
     }
@@ -392,8 +392,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
             {
                 m_pCore->GetAudioInfo(m_playlist[m_index], !m_is_ous_folder);
-                //if(m_is_ous_folder)
-                //    COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
+                if (m_is_ous_folder)
+                    COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
                 theApp.SaveSongInfo(m_playlist[m_index]);
             }
             m_song_length = m_playlist[m_index].lengh;
