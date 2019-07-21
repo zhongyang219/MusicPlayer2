@@ -277,6 +277,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"auto_play_when_start", theApp.m_play_setting_data.auto_play_when_start);
     ini.WriteBool(L"config", L"show_taskbar_progress", theApp.m_play_setting_data.show_taskbar_progress);
     ini.WriteBool(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon);
+    ini.WriteBool(L"config", L"fade_effect", theApp.m_play_setting_data.fade_effect);
+    ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
 
     int ui_selected;
@@ -366,6 +368,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(L"config", L"auto_play_when_start", false);
     theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(L"config", L"show_taskbar_progress", true);
     theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(L"config", L"show_playstate_icon", true);
+    theApp.m_play_setting_data.fade_effect = ini.GetBool(L"config", L"fade_effect", true);
+    theApp.m_play_setting_data.fade_time = ini.GetInt(L"config", L"fade_time", 500);
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
 
     int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);

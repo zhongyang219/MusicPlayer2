@@ -201,6 +201,8 @@ struct PlaySettingData
     bool show_playstate_icon{ true };			//在任务栏按钮上显示播放状态的角标
     wstring output_device;						//播放设备的名称
     int device_selected{};
+    bool fade_effect{ true };                   //播放淡入淡出效果
+    int fade_time{ 500 };                      //淡入淡出时间（毫秒）
 };
 
 struct GlobalHotKeySettingData

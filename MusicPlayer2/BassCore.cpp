@@ -340,21 +340,67 @@ void CBassCore::Close()
 
 void CBassCore::Play()
 {
-    BASS_ChannelPlay(m_musicStream, FALSE);
+    if (theApp.m_play_setting_data.fade_effect)     //如果设置了播放时音量淡入淡出
+    {
+        KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
+        int pos = GetCurPosition();
+        pos -= theApp.m_play_setting_data.fade_time;
+        if (pos < 0)
+            pos = 0;
+        SetCurPosition(pos);
+        BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, 0);        //先将音量设为0
+        BASS_ChannelPlay(m_musicStream, FALSE);
+        float volume = static_cast<float>(m_volume) / 100;
+        BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, volume, theApp.m_play_setting_data.fade_time);   //音量渐变到原来的音量
+    }
+    else
+    {
+        BASS_ChannelPlay(m_musicStream, FALSE);
+    }
 }
 
 void CBassCore::Pause()
 {
-    BASS_ChannelPause(m_musicStream);
+    if (theApp.m_play_setting_data.fade_effect)     //如果设置了播放时音量淡入淡出
+    {
+        BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);        //音量渐变到0
+        KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
+        //设置一个淡出时间的定时器
+        SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID, theApp.m_play_setting_data.fade_time, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
+        {
+            KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
+            BASS_ChannelPause(CPlayer::GetInstance().GetPlayerCore()->GetHandle());     //当定时器器触发时，即音量已经渐变到0，执行暂停操作
+        });
+    }
+    else
+    {
+        BASS_ChannelPause(m_musicStream);
+    }
 }
 
 void CBassCore::Stop()
 {
-    BASS_ChannelStop(m_musicStream);
+    if (theApp.m_play_setting_data.fade_effect)
+    {
+        BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);
+        KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
+        SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID, theApp.m_play_setting_data.fade_time, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
+        {
+            KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
+            BASS_ChannelStop(CPlayer::GetInstance().GetPlayerCore()->GetHandle());
+            BASS_ChannelSetPosition(CPlayer::GetInstance().GetPlayerCore()->GetHandle(), 0, BASS_POS_BYTE);
+        });
+    }
+    else
+    {
+        BASS_ChannelStop(m_musicStream);
+        SetCurPosition(0);
+    }
 }
 
 void CBassCore::SetVolume(int vol)
 {
+    m_volume = vol;
     float volume = static_cast<float>(vol) / 100.0f;
     volume = volume * theApp.m_nc_setting_data.volume_map / 100;
     BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, volume);

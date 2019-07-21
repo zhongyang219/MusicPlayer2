@@ -438,7 +438,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
     case Command::STOP:
         m_pCore->Stop();
         m_playing = 0;
-        SeekTo(0);
+        //SeekTo(0);
+        m_current_position_int = 0;
+        m_current_position = Time();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
         //GetBASSCurrentPosition();
         break;
