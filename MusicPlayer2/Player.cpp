@@ -81,10 +81,9 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info, bool play)
     if (!m_loading)
     {
         m_playlist_mode = cmd_para;
-        m_is_ous_folder = !cmd_para && COSUPlayerHelper::IsOsuFolder(m_path);
         if (!cmd_para)
         {
-            if (m_is_ous_folder)
+            if (COSUPlayerHelper::IsOsuFolder(m_path))
                 COSUPlayerHelper::GetOSUAudioFiles(m_path, m_playlist);
             else
                 CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM);
@@ -140,8 +139,8 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             }
         }
         wstring file_path{ GetInstance().m_playlist[i].file_path };
-        GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], !GetInstance().IsOsuFolder());
-        if (GetInstance().IsOsuFolder())
+        GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], !GetInstance().IsOsuFile());
+        if (GetInstance().IsOsuFile())
         {
             COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
         }
@@ -391,8 +390,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
         {
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
             {
-                m_pCore->GetAudioInfo(m_playlist[m_index], !m_is_ous_folder);
-                if (m_is_ous_folder)
+                m_pCore->GetAudioInfo(m_playlist[m_index], !IsOsuFile());
+                if (IsOsuFile())
                     COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
                 theApp.SaveSongInfo(m_playlist[m_index]);
             }
@@ -1875,7 +1874,7 @@ void CPlayer::SearchAlbumCover()
     //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
-    if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFolder())
+    if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile())
     {
         //从文件获取专辑封面
         CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), m_playlist[m_index]);
@@ -1931,7 +1930,7 @@ wstring CPlayer::GetCurrentFileName() const
 
 void CPlayer::SearchOutAlbumCover()
 {
-    if (m_is_ous_folder)
+    if (IsOsuFile())
     {
         m_album_cover_path = COSUPlayerHelper::GetAlbumCover(GetCurrentFilePath());
         if (m_album_cover_path.empty())
@@ -2002,6 +2001,12 @@ wstring CPlayer::GetRelatedAlbumCover(const wstring& file_path, const SongInfo& 
     {
         return wstring();
     }
+}
+
+bool CPlayer::IsOsuFile() const
+{
+    wstring cur_file_path{ GetCurrentFilePath() };
+    return COSUPlayerHelper::IsOsuFile(cur_file_path);
 }
 
 void CPlayer::SetPlaylistPath(const wstring& playlist_path)

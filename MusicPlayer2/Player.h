@@ -96,7 +96,7 @@ public:
 
 	bool m_loading{ false };		//如果正在载入播放列表，则为true
 
-	bool m_is_ous_folder{ false };	//如果打开的是OUS的Songs目录，则为true
+	//bool m_is_ous_folder{ false };	//如果打开的是OUS的Songs目录，则为true
 
 private:
 	vector<wstring> m_current_path_lyrics;	//储存当前路径下的歌词文件的文件名（用于歌词模糊匹配时检索）
@@ -262,7 +262,7 @@ public:
 	void AlbumCoverGaussBlur();		//专辑封面高斯模糊
 	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
 	wstring GetCurrentFileType() { return m_current_file_type; }
-	bool IsOsuFolder() const { return m_is_ous_folder; }
+    bool IsOsuFile() const;
     bool IsPlaylistMode() const { return m_playlist_mode; }
 
     void SetPlaylistPath(const wstring& playlist_path);
