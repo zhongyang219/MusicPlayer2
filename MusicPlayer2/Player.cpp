@@ -715,6 +715,8 @@ void CPlayer::ChangePath(const wstring& path, int track)
 
 void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sort_mode)
 {
+    if (m_loading)
+        return;
     //if (m_song_num>0 && !m_playlist[0].file_name.empty())		//如果当前路径有歌曲，就保存当前路径到最近路径
     if (m_playlist_mode)
         EmplaceCurrentPlaylistToRecent();
@@ -731,6 +733,9 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
 
 void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init)
 {
+    if (m_loading)
+        return;
+
     if(!init)
     {
         SaveCurrentPlaylist();
@@ -1206,6 +1211,8 @@ void CPlayer::RemoveSong(int index)
 
 void CPlayer::RemoveSongs(vector<int> indexes)
 {
+    if (m_loading)
+        return;
     int size = indexes.size();
     for (int i{}; i < size; i++)
     {
@@ -1220,6 +1227,8 @@ void CPlayer::RemoveSongs(vector<int> indexes)
 
 int CPlayer::RemoveSameSongs()
 {
+    if (m_loading)
+        return 0;
     int removed = 0;
     for (int i = 0; i < GetSongNum(); i++)
     {
@@ -1259,6 +1268,8 @@ void CPlayer::ClearPlaylist()
 
 bool CPlayer::MoveUp(int first, int last)
 {
+    if (m_loading)
+        return false;
     if (!m_playlist_mode)
         return false;
 
@@ -1280,6 +1291,8 @@ bool CPlayer::MoveUp(int first, int last)
 
 bool CPlayer::MoveDown(int first, int last)
 {
+    if (m_loading)
+        return false;
     if (!m_playlist_mode)
         return false;
     
@@ -1301,6 +1314,8 @@ bool CPlayer::MoveDown(int first, int last)
 
 int CPlayer::MoveItems(std::vector<int> indexes, int dest)
 {
+    if (m_loading)
+        return -1;
     if (!m_playlist_mode)
         return -1;
 

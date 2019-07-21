@@ -3414,6 +3414,7 @@ void CMusicPlayerDlg::OnShowMenuBar()
     theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
     SetMenubarVisible();
     SetThumbnailClipArea();
+    DrawInfo();
     m_pUI->UpdateToolTipPosition();
 
     //隐藏菜单栏后弹出提示，告诉用户如何再次显示菜单栏

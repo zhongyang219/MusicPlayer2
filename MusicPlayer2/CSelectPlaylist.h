@@ -29,9 +29,19 @@ private:
     int m_row_selected{};
     CMenu m_menu;
     bool m_playlist_modified{ false };
+    CEdit m_search_edit;
+    vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
+    bool m_searched{ false };				//是否处理搜索状态
+
+    enum
+    {
+        SPEC_PLAYLIST_NUM = 2       //特殊播放列表的个数（这里是2，默认播放列表和我喜欢的播放列表）
+    };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
+    void SetHighlightItem();
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -59,4 +69,6 @@ public:
     afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnNewPlaylist();
+    afx_msg void OnEnChangeSearchEdit();
+    afx_msg void OnBnClickedClearButton();
 };
