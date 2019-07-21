@@ -255,7 +255,7 @@ void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_
     m_playlist_ctrl.SetItemText(index, 3, str);
 
     Time total_time{ playlist_info.total_time };
-    m_playlist_ctrl.SetItemText(index, 4, total_time.time2str3().c_str());
+    m_playlist_ctrl.SetItemText(index, 4, total_time.toString3().c_str());
 }
 
 

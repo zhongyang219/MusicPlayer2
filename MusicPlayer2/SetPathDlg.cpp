@@ -117,7 +117,7 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
 	m_path_list.SetItemText(index, 4, str);
 
 	Time total_time{ path_info.total_time };
-	m_path_list.SetItemText(index, 5, total_time.time2str3().c_str());
+	m_path_list.SetItemText(index, 5, total_time.toString3().c_str());
 }
 
 bool CSetPathDlg::IsSelectedPlayEnable() const

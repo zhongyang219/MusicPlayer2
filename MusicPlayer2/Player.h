@@ -51,8 +51,8 @@ private:
 
 	Time m_song_length;		//正在播放的文件的长度
 	Time m_current_position;		//当前播放到的位置
-	int m_song_length_int;		//正在播放的文件的长度（int类型）
-	int m_current_position_int;		//当前播放到的位置（int类型）
+	//int m_song_length_int;		//正在播放的文件的长度（int类型）
+	//int m_current_position_int;		//当前播放到的位置（int类型）
 	int m_total_time;		//播放列表中所有曲目的时间（毫秒）
 
 	int m_index{ 0 };	//当前播放音乐的序号
@@ -220,8 +220,8 @@ public:
 	//static void SeekTo(HSTREAM hStream, int position);
 	void ClearLyric();		//清除当前文件的歌词关联
 
-	int GetCurrentPosition() const { return m_current_position_int; }		//返回当前播放到的位置
-	int GetSongLength() const { return m_song_length_int; }				//返回正在播放文件的长度
+	int GetCurrentPosition() const { return m_current_position.toInt(); }		//返回当前播放到的位置
+	int GetSongLength() const { return m_song_length.toInt(); }				//返回正在播放文件的长度
 	wstring GetTimeString() const;				//返回当前播放时间的字符串形式
 	const float* GetSpectralData() const { return m_spectral_data; }	//返回频谱分析每个柱形的高度的数据
 	const float* GetSpectralPeakData() const { return m_spectral_peak; }

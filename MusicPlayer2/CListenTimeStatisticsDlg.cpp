@@ -52,8 +52,8 @@ void CListenTimeStatisticsDlg::ShowData()
 	std::stable_sort(data_list.begin(), data_list.end(), [](const SongInfo& a, const SongInfo& b)
 	{
 		double times_a, times_b;
-		times_a = CCommon::DoubleRound(static_cast<double>(a.listen_time) / a.lengh.time2int() * 1000, 1);
-		times_b = CCommon::DoubleRound(static_cast<double>(b.listen_time) / b.lengh.time2int() * 1000, 1);
+		times_a = CCommon::DoubleRound(static_cast<double>(a.listen_time) / a.lengh.toInt() * 1000, 1);
+		times_b = CCommon::DoubleRound(static_cast<double>(b.listen_time) / b.lengh.toInt() * 1000, 1);
 		return times_a > times_b;
 	});
 
@@ -86,8 +86,8 @@ void CListenTimeStatisticsDlg::ShowData()
 		str.Format(_T("%d:%.2d:%.2d"), hour, min, sec);
 		m_list_ctrl.SetItemText(index, 3, str);
 
-		m_list_ctrl.SetItemText(index, 4, data.lengh.time2str().c_str());
-		double times = static_cast<double>(data.listen_time) / data.lengh.time2int() * 1000;
+		m_list_ctrl.SetItemText(index, 4, data.lengh.toString().c_str());
+		double times = static_cast<double>(data.listen_time) / data.lengh.toInt() * 1000;
 		str.Format(_T("%.1f"), times);
 		if (str.Right(2) == _T(".0"))
 			str = str.Left(str.GetLength() - 2);

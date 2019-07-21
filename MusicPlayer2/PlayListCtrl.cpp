@@ -80,7 +80,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 			}
 			SetItemText(i, 0, str);
 			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[i], display_format)).c_str());
-			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(i).time2str().c_str());
+			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(i).toString().c_str());
 		}
 	}
 	else		//只显示搜索结果的曲目
@@ -110,7 +110,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 			}
 			SetItemText(i, 0, str);
 			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[m_search_result[i]], display_format)).c_str());
-			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(m_search_result[i]).time2str().c_str());
+			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(m_search_result[i]).toString().c_str());
 		}
 	}
 }

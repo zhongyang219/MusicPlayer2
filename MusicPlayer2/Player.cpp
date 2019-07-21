@@ -165,7 +165,7 @@ void CPlayer::IniPlaylistComplate()
     m_total_time = 0;
     for (const auto& somg : m_playlist)
     {
-        m_total_time += somg.lengh.time2int();
+        m_total_time += somg.lengh.toInt();
     }
 
     //检查列表中的曲目是否在“我喜欢”播放列表中
@@ -396,7 +396,6 @@ void CPlayer::MusicControl(Command command, int volume_step)
                 theApp.SaveSongInfo(m_playlist[m_index]);
             }
             m_song_length = m_playlist[m_index].lengh;
-            m_song_length_int = m_song_length.time2int();
             //打开时获取专辑封面
             SearchAlbumCover();
             //初始化歌词
@@ -406,7 +405,6 @@ void CPlayer::MusicControl(Command command, int volume_step)
         {
             //SeekTo(0);
             m_song_length = GetCurrentSongInfo().lengh;
-            m_song_length_int = m_song_length.time2int();
         }
         SetVolume();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
@@ -438,23 +436,20 @@ void CPlayer::MusicControl(Command command, int volume_step)
     case Command::STOP:
         m_pCore->Stop();
         m_playing = 0;
-        //SeekTo(0);
-        m_current_position_int = 0;
         m_current_position = Time();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
-        //GetBASSCurrentPosition();
         break;
     case Command::FF:		//快进
         GetBASSCurrentPosition();		//获取当前位置（毫秒）
-        m_current_position_int += 5000;		//每次快进5000毫秒
-        if (m_current_position_int > m_song_length_int) m_current_position_int -= 5000;
-        SeekTo(m_current_position_int);
+        m_current_position += 5000;		//每次快进5000毫秒
+        if (m_current_position > m_song_length) m_current_position -= 5000;
+        SeekTo(m_current_position.toInt());
         break;
     case Command::REW:		//快退
         GetBASSCurrentPosition();		//获取当前位置（毫秒）
-        m_current_position_int -= 5000;		//每次快退5000毫秒
-        if (m_current_position_int < 0) m_current_position_int = 0;		//防止快退到负的位置
-        SeekTo(m_current_position_int);
+        m_current_position -= 5000;		//每次快退5000毫秒
+        if (m_current_position < 0) m_current_position = 0;		//防止快退到负的位置
+        SeekTo(m_current_position.toInt());
         break;
     case Command::PLAY_PAUSE:
         if (m_playing == 2)
@@ -488,12 +483,11 @@ void CPlayer::MusicControl(Command command, int volume_step)
         }
         break;
     case Command::SEEK:		//定位到m_current_position的位置
-        if (m_current_position_int > m_song_length_int)
+        if (m_current_position > m_song_length)
         {
-            m_current_position_int = 0;
-            m_current_position = Time{ 0, 0, 0 };
+            m_current_position = Time();
         }
-        SeekTo(m_current_position_int);
+        SeekTo(m_current_position.toInt());
         break;
     default:
         break;
@@ -504,23 +498,23 @@ bool CPlayer::SongIsOver() const
 {
     if (GetCurrentSongInfo().is_cue)
     {
-        return (m_playing == 2 && m_current_position_int >= m_song_length_int);
+        return (m_playing == 2 && m_current_position >= m_song_length);
     }
     else
     {
         bool song_is_over;
         static int last_pos;
-        if ((m_playing == 2 && m_current_position_int == last_pos && m_current_position_int != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
-                && m_current_position_int > m_song_length_int - 2000)		//且播放进度到了最后2秒
+        if ((m_playing == 2 && m_current_position.toInt() == last_pos && m_current_position.toInt() != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
+                && m_current_position.toInt() > m_song_length.toInt() - 2000)		//且播放进度到了最后2秒
                 || m_error_code == BASS_ERROR_ENDED)	//或者出现BASS_ERROR_ENDED错误，则判断当前歌曲播放完了
             //有时候会出现识别的歌曲长度超过实际歌曲长度的问题，这样会导致歌曲播放进度超过实际歌曲结尾时会出现BASS_ERROR_ENDED错误，
             //检测到这个错误时直接判断歌曲已经播放完了。
             song_is_over = true;
         else
             song_is_over = false;
-        last_pos = m_current_position_int;
+        last_pos = m_current_position.toInt();
         return song_is_over;
-        //这里本来直接使用return m_current_position_int>=m_song_length_int来判断歌曲播放完了，
+        //这里本来直接使用return current_position_int>=m_song_length_int来判断歌曲播放完了，
         //但是BASS音频库在播放时可能会出现当前播放位置一直无法到达歌曲长度位置的问题，
         //这样函数就会一直返回false。
     }
@@ -528,18 +522,17 @@ bool CPlayer::SongIsOver() const
 
 void CPlayer::GetBASSSongLength()
 {
-    m_song_length_int = m_pCore->GetSongLength();
-    m_song_length.int2time(m_song_length_int);		//将长度转换成Time结构
+    m_song_length.fromInt(m_pCore->GetSongLength());
 }
 
 void CPlayer::GetBASSCurrentPosition()
 {
-    m_current_position_int = m_pCore->GetCurPosition();
+    int current_position_int = m_pCore->GetCurPosition();
     if (m_playlist[m_index].is_cue)
     {
-        m_current_position_int -= m_playlist[m_index].start_pos.time2int();
+        current_position_int -= m_playlist[m_index].start_pos.toInt();
     }
-    m_current_position.int2time(m_current_position_int);
+    m_current_position.fromInt(current_position_int);
 }
 
 
@@ -552,7 +545,7 @@ void CPlayer::SetVolume()
 
 void CPlayer::CalculateSpectralData()
 {
-    if (m_pCore->GetHandle() && m_playing != 0 && m_current_position_int < m_song_length_int - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+    if (m_pCore->GetHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
     {
         //BASS_ChannelGetData(m_pCore->GetHandle(), m_fft, BASS_DATA_FFT256);
         m_pCore->GetFFTData(m_fft);
@@ -707,7 +700,6 @@ void CPlayer::ChangePath(const wstring& path, int track)
     m_index = track;
     //初始化播放列表
     IniPlayList();		//根据新路径重新初始化播放列表
-    m_current_position_int = 0;
     m_current_position = { 0, 0, 0 };
     SaveConfig();
     SetTitle();
@@ -726,8 +718,7 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
         EmplaceCurrentPathToRecent();
     m_sort_mode = sort_mode;
     ChangePath(path, track);
-    m_current_position_int = position;
-    m_current_position.int2time(m_current_position_int);
+    m_current_position.fromInt(position);
     //MusicControl(Command::SEEK);
     EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
 
@@ -770,8 +761,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     }
 
     m_index = track;
-    m_current_position_int = position;
-    m_current_position.int2time(m_current_position_int);
+    m_current_position.fromInt(position);
     SetTitle();
     m_playlist_path = playlist_path;
     EmplaceCurrentPlaylistToRecent();
@@ -803,8 +793,7 @@ void CPlayer::OpenFolder(wstring path)
     if (path_exist)			//如果打开的路径已经存在于最近路径中
     {
         ChangePath(path, track);
-        m_current_position_int = position;
-        m_current_position.int2time(m_current_position_int);
+        m_current_position.fromInt(position);
         MusicControl(Command::SEEK);
         EmplaceCurrentPathToRecent();		//保存打开的路径到最近路径
         SaveRecentPath();
@@ -866,7 +855,6 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     }
     m_index = play_index;
 
-    m_current_position_int = 0;
     m_current_position = Time();
 
     SaveCurrentPlaylist();
@@ -885,7 +873,6 @@ void CPlayer::OpenAFile(wstring file)
     CFilePathHelper file_path(file);
     m_path = file_path.GetDir();
     m_playlist.clear();
-    m_current_position_int = 0;
     m_current_position = { 0, 0, 0 };
     m_index = 0;
     //m_current_file_name = file.substr(index + 1);
@@ -983,7 +970,7 @@ void CPlayer::SaveConfig() const
     //ini.WriteString(L"config", L"path", m_path.c_str());
     //ini.WriteInt(L"config", L"track", m_index);
     ini.WriteInt(L"config", L"volume", m_volume);
-    //ini.WriteInt(L"config", L"position", m_current_position_int);
+    //ini.WriteInt(L"config", L"position", current_position_int);
     ini.WriteInt(L"config", L"repeat_mode", static_cast<int>(m_repeat_mode));
     ini.WriteBool(L"config", L"lyric_karaoke_disp", theApp.m_lyric_setting_data.lyric_karaoke_disp);
     ini.WriteString(L"config", L"lyric_path", theApp.m_lyric_setting_data.lyric_path);
@@ -1020,8 +1007,8 @@ void CPlayer::LoadConfig()
     //m_path = buff;
     //m_index =ini.GetInt(L"config", L"track", 0);
     m_volume = ini.GetInt(L"config", L"volume", 60);
-    //m_current_position_int =ini.GetInt(L"config", L"position", 0);
-    //m_current_position.int2time(m_current_position_int);
+    //current_position_int =ini.GetInt(L"config", L"position", 0);
+    //m_current_position.fromInt(current_position_int);
     m_repeat_mode = static_cast<RepeatMode>(ini.GetInt(L"config", L"repeat_mode", 0));
     theApp.m_lyric_setting_data.lyric_path = ini.GetString(L"config", L"lyric_path", L".\\lyrics\\");
     if (!theApp.m_lyric_setting_data.lyric_path.empty() && theApp.m_lyric_setting_data.lyric_path.back() != L'/' && theApp.m_lyric_setting_data.lyric_path.back() != L'\\')
@@ -1384,13 +1371,12 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
 
 void CPlayer::SeekTo(int position)
 {
-    if (position > m_song_length_int)
-        position = m_song_length_int;
-    m_current_position_int = position;
-    m_current_position.int2time(position);
+    if (position > m_song_length.toInt())
+        position = m_song_length.toInt();
+    m_current_position.fromInt(position);
     if (m_playlist[m_index].is_cue)
     {
-        position += m_playlist[m_index].start_pos.time2int();
+        position += m_playlist[m_index].start_pos.toInt();
     }
     m_pCore->SetCurPosition(position);
     GetBASSError();
@@ -1398,7 +1384,7 @@ void CPlayer::SeekTo(int position)
 
 void CPlayer::SeekTo(double position)
 {
-    int pos = static_cast<int>(m_song_length_int * position);
+    int pos = static_cast<int>(m_song_length.toInt() * position);
     SeekTo(pos);
 }
 
@@ -1631,7 +1617,7 @@ void CPlayer::OnExit()
     if (!m_playlist_mode && !m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_name.empty())
     {
         m_recent_path[0].track = m_index;
-        m_recent_path[0].position = m_current_position_int;
+        m_recent_path[0].position = m_current_position.toInt();
     }
     SaveRecentPath();
     EmplaceCurrentPlaylistToRecent();
@@ -1697,8 +1683,7 @@ void CPlayer::LoadRecentPath()
                 m_path.push_back(L'\\');
 
             m_index = m_recent_path[0].track;
-            m_current_position_int = m_recent_path[0].position;
-            m_current_position.int2time(m_current_position_int);
+            m_current_position.fromInt(m_recent_path[0].position);
         }
         else
         {
@@ -1716,22 +1701,19 @@ void CPlayer::LoadRecentPlaylist()
         {
             m_playlist_path = m_recent_playlist.m_default_playlist.path;
             m_index = m_recent_playlist.m_default_playlist.track;
-            m_current_position_int = m_recent_playlist.m_default_playlist.position;
-            m_current_position.int2time(m_current_position_int);
+            m_current_position.fromInt(m_recent_playlist.m_default_playlist.position);
         }
         else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
         {
             m_playlist_path = m_recent_playlist.m_favourite_playlist.path;
             m_index = m_recent_playlist.m_favourite_playlist.track;
-            m_current_position_int = m_recent_playlist.m_favourite_playlist.position;
-            m_current_position.int2time(m_current_position_int);
+            m_current_position.fromInt(m_recent_playlist.m_favourite_playlist.position);
         }
         else if (!m_recent_playlist.m_recent_playlists.empty())
         {
             m_playlist_path = m_recent_playlist.m_recent_playlists.front().path;
             m_index = m_recent_playlist.m_recent_playlists.front().track;
-            m_current_position_int = m_recent_playlist.m_recent_playlists.front().position;
-            m_current_position.int2time(m_current_position_int);
+            m_current_position.fromInt(m_recent_playlist.m_recent_playlists.front().position);
 
         }
     }
@@ -1768,7 +1750,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
     PathInfo path_info;
     path_info.path = m_path;
     path_info.track = m_index;
-    path_info.position = m_current_position_int;
+    path_info.position = m_current_position.toInt();
     path_info.sort_mode = m_sort_mode;
     path_info.track_num = GetSongNum();
     path_info.total_time = m_total_time;
@@ -1784,21 +1766,21 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
 
     if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
     {
-        m_recent_playlist.m_default_playlist.position = m_current_position_int;
+        m_recent_playlist.m_default_playlist.position = m_current_position.toInt();
         m_recent_playlist.m_default_playlist.track = m_index;
         m_recent_playlist.m_default_playlist.track_num = GetSongNum();
         m_recent_playlist.m_default_playlist.total_time = m_total_time;
     }
     else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
     {
-        m_recent_playlist.m_favourite_playlist.position = m_current_position_int;
+        m_recent_playlist.m_favourite_playlist.position = m_current_position.toInt();
         m_recent_playlist.m_favourite_playlist.track = m_index;
         m_recent_playlist.m_favourite_playlist.track_num = GetSongNum();
         m_recent_playlist.m_favourite_playlist.total_time = m_total_time;
     }
     else
     {
-        m_recent_playlist.EmplacePlaylist(m_playlist_path, m_index, m_current_position_int, GetSongNum(), m_total_time);
+        m_recent_playlist.EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), GetSongNum(), m_total_time);
     }
 }
 

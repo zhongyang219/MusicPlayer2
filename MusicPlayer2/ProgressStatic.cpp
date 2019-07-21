@@ -171,7 +171,7 @@ void CProgressStatic::OnMouseMove(UINT nFlags, CPoint point)
 	__int64 song_pos;
 	song_pos = static_cast<__int64>(point.x) * m_song_length / rect.Width();
 	Time song_pos_time;
-	song_pos_time.int2time(static_cast<int>(song_pos));
+	song_pos_time.fromInt(static_cast<int>(song_pos));
 	CString str;
 	static int last_sec{};
 	if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示

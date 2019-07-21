@@ -299,8 +299,8 @@ int CLyrics::GetLyricProgress(Time time) const
         {
             if (i == 0)
             {
-                lyric_current_time = time.time2int();
-                lyric_last_time = m_lyrics[i].GetTime(m_offset).time2int();
+                lyric_current_time = time.toInt();
+                lyric_last_time = m_lyrics[i].GetTime(m_offset).toInt();
             }
             else
             {

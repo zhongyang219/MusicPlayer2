@@ -14,14 +14,14 @@ public:
 
 	Time(int time)
 	{
-		int2time(time);
+		fromInt(time);
 	}
 
 	~Time()
 	{}
 
 	//将int类型的时间（毫秒数）转换成Time结构
-	void int2time(int time)
+	void fromInt(int time)
 	{
 		msec = time % 1000;
 		sec = time / 1000 % 60;
@@ -29,7 +29,7 @@ public:
 	}
 
 	//将Time结构转换成int类型（毫秒数）
-	int time2int() const
+	int toInt() const
 	{
 		return msec + sec * 1000 + min * 60000;
 	}
@@ -44,6 +44,11 @@ public:
 			return(msec > time.msec);
 		else return false;
 	}
+
+    bool operator<(const Time& time) const
+    {
+        return time > *this;
+    }
 
 	bool operator==(const Time& time) const
 	{
@@ -75,22 +80,27 @@ public:
 	//加法赋值运算符，用于在当前时间上加上一个int类型的毫秒数
 	Time operator+=(int time)
 	{
-		int added = this->time2int();
+		int added = this->toInt();
 		added += time;
-		this->int2time(added);
+		this->fromInt(added);
 		return *this;
 	}
+
+    Time operator-=(int time)
+    {
+        return operator+=(-time);
+    }
 
 	//加法运算符，用于在当前时间上加上一个int类型的毫秒数，返回Time对象
 	Time operator+(int time) const
 	{
-		int added = this->time2int();
+		int added = this->toInt();
 		added += time;
 		return Time{ added };
 	}
 
 	//将时间转换成字符串（格式：分:秒）
-	wstring time2str() const
+	wstring toString() const
 	{
 		wchar_t buff[16];
 		if (*this == Time{ 0,0,0 })
@@ -101,7 +111,7 @@ public:
 	}
 
 	//将时间转换成字符串（格式：分:秒.毫秒）
-	wstring time2str2() const
+	wstring toString2() const
 	{
 		wchar_t buff[16];
 		if (*this == Time{ 0,0,0 })
@@ -112,7 +122,7 @@ public:
 	}
 
 	//将时间转换成字符串（格式：时:分:秒）
-	wstring time2str3() const
+	wstring toString3() const
 	{
 		int hour, min1;
 		hour = min / 60;

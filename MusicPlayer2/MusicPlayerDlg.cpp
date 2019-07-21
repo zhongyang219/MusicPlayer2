@@ -542,7 +542,7 @@ void CMusicPlayerDlg::SwitchTrack()
     song_length_str = m_playlist_list.GetItemText(index, 2);
     if (song_length_str == _T("-:--") && !CPlayer::GetInstance().GetAllSongLength(index).isZero())
     {
-        m_playlist_list.SetItemText(index, 2, CPlayer::GetInstance().GetAllSongLength(index).time2str().c_str());
+        m_playlist_list.SetItemText(index, 2, CPlayer::GetInstance().GetAllSongLength(index).toString().c_str());
     }
 
     DrawInfo(true);

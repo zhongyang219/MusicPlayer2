@@ -313,7 +313,7 @@ void CMusicPlayerApp::SaveSongData()
     {
         ar << CString(song_data.first.c_str())		//±£´æÓ³ÉäÈÝÆ÷µÄ¼ü£¬¼´¸èÇúµÄ¾ø¶ÔÂ·¾¶
            //<< CString(song_data.second.lyric_file.c_str())
-           << song_data.second.lengh.time2int()
+           << song_data.second.lengh.toInt()
            << song_data.second.bitrate
            << CString(song_data.second.title.c_str())
            << CString(song_data.second.artist.c_str())
@@ -635,7 +635,7 @@ void CMusicPlayerApp::LoadSongData()
             //ar >> temp;
             //song_info.lyric_file = temp;
             ar >> song_length;
-            song_info.lengh.int2time(song_length);
+            song_info.lengh.fromInt(song_length);
             ar >> song_info.bitrate;
             ar >> temp;
             song_info.title = temp;

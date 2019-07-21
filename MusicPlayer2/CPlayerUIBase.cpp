@@ -133,7 +133,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
         __int64 song_pos;
         song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * CPlayer::GetInstance().GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
         Time song_pos_time;
-        song_pos_time.int2time(static_cast<int>(song_pos));
+        song_pos_time.fromInt(static_cast<int>(song_pos));
         CString str;
         static int last_sec{};
         if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
@@ -632,7 +632,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
             //if (CPlayer::GetInstance().GetMidiInfo().tempo == 0)
             //	progress = 0;
             //else
-            //	progress = (time.time2int() * 1000 / CPlayer::GetInstance().GetMidiInfo().tempo % 4 + 1) * 250;
+            //	progress = (time.toInt() * 1000 / CPlayer::GetInstance().GetMidiInfo().tempo % 4 + 1) * 250;
             progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 4 + 1) * 250;
         }
         else

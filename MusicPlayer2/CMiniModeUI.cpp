@@ -199,7 +199,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
         int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//获取当前歌词进度（范围为0~1000）
         bool no_lyric{ false };
         //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
-        no_lyric = (current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.time2int() > 20000) || progress >= 1000;
+        no_lyric = (current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.toInt() > 20000) || progress >= 1000;
 
         if (CPlayer::GetInstance().m_Lyrics.IsEmpty() || no_lyric)	//没有歌词时显示播放的文件名
         {
