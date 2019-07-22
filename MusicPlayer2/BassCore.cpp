@@ -342,7 +342,7 @@ void CBassCore::Close()
 
 void CBassCore::Play()
 {
-    if (theApp.m_play_setting_data.fade_effect)     //如果设置了播放时音量淡入淡出
+    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //如果设置了播放时音量淡入淡出
     {
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
         int pos = GetCurPosition();
@@ -363,7 +363,7 @@ void CBassCore::Play()
 
 void CBassCore::Pause()
 {
-    if (theApp.m_play_setting_data.fade_effect)     //如果设置了播放时音量淡入淡出
+    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //如果设置了播放时音量淡入淡出
     {
         BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);        //音量渐变到0
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
@@ -382,7 +382,7 @@ void CBassCore::Pause()
 
 void CBassCore::Stop()
 {
-    if (theApp.m_play_setting_data.fade_effect)
+    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)
     {
         BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);

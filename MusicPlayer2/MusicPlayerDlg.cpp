@@ -370,6 +370,10 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(L"config", L"show_playstate_icon", true);
     theApp.m_play_setting_data.fade_effect = ini.GetBool(L"config", L"fade_effect", true);
     theApp.m_play_setting_data.fade_time = ini.GetInt(L"config", L"fade_time", 500);
+    if (theApp.m_play_setting_data.fade_time < 0)
+        theApp.m_play_setting_data.fade_time = 0;
+    if (theApp.m_play_setting_data.fade_time > 2000)
+        theApp.m_play_setting_data.fade_time = 2000;
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
 
     int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
