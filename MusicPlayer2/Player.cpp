@@ -4,12 +4,12 @@
 #include "COSUPlayerHelper.h"
 #include "Playlist.h"
 #include "BassCore.h"
+#include "MciCore.h"
 
 CPlayer CPlayer::m_instance;
 
 CPlayer::CPlayer()
 {
-    m_pCore = new CBassCore();
 }
 
 CPlayer & CPlayer::GetInstance()
@@ -25,6 +25,11 @@ CPlayer::~CPlayer()
 
 void CPlayer::IniPlayerCore()
 {
+    if (theApp.m_play_setting_data.use_mci)
+        m_pCore = new CMciCore();
+    else
+        m_pCore = new CBassCore();
+
     m_pCore->InitCore();
 }
 
@@ -935,7 +940,7 @@ bool CPlayer::GetBASSError()
 {
     if (m_loading)
         return false;
-    int error_code_tmp = BASS_ErrorGetCode();
+    int error_code_tmp = m_pCore->GetErrorCode();
     if (error_code_tmp && error_code_tmp != m_error_code)
     {
         CString info = CCommon::LoadTextFormat(IDS_BASS_ERROR_LOG_INFO, {error_code_tmp, GetCurrentFilePath()});
@@ -950,7 +955,7 @@ bool CPlayer::IsError() const
     if (m_loading)		//如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_code != 0 || m_pCore->GetHandle() == 0);
+        return (m_error_code != 0 || (!theApp.m_play_setting_data.use_mci && m_pCore->GetHandle() == 0));
 }
 
 void CPlayer::SetTitle() const

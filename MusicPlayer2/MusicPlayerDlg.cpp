@@ -280,6 +280,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"fade_effect", theApp.m_play_setting_data.fade_effect);
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
+    ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
 
     int ui_selected;
     if (m_pUI == &m_ui)
@@ -375,6 +376,7 @@ void CMusicPlayerDlg::LoadConfig()
     if (theApp.m_play_setting_data.fade_time > 2000)
         theApp.m_play_setting_data.fade_time = 2000;
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
+    theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
 
     int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
     if (ui_selected == 0)

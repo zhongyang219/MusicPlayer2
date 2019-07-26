@@ -18,7 +18,7 @@ public:
     virtual std::wstring GetAudioType() override;
     virtual int GetChannels() override;
     virtual int GetFReq() override;
-    virtual const wstring& GetSoundFontName() override;
+    virtual wstring GetSoundFontName() override;
 
     virtual void Open(const wchar_t* file_path) override;
     virtual void Close() override;
@@ -49,6 +49,8 @@ public:
     virtual void SetReverb(int mix, int time) override;
     virtual void ClearReverb() override;
     virtual void GetFFTData(float fft_data[128]) override;
+
+    virtual int GetErrorCode() override;
 
     static int GetBASSCurrentPosition(HSTREAM hStream);
     static Time GetBASSSongLength(HSTREAM hStream);

@@ -203,6 +203,8 @@ struct PlaySettingData
     int device_selected{};
     bool fade_effect{ true };                   //播放淡入淡出效果
     int fade_time{ 500 };                      //淡入淡出时间（毫秒）
+
+    bool use_mci{ false };              //是否使用MCI内核
 };
 
 struct GlobalHotKeySettingData

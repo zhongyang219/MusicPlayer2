@@ -294,7 +294,7 @@ int CBassCore::GetFReq()
     return m_channel_info.freq;
 }
 
-const wstring& CBassCore::GetSoundFontName()
+wstring CBassCore::GetSoundFontName()
 {
     return m_sfont_name;
 }
@@ -518,6 +518,11 @@ void CBassCore::ClearReverb()
 void CBassCore::GetFFTData(float fft_data[128])
 {
     BASS_ChannelGetData(m_musicStream, fft_data, BASS_DATA_FFT256);
+}
+
+int CBassCore::GetErrorCode()
+{
+    return BASS_ErrorGetCode();
 }
 
 int CBassCore::GetBASSCurrentPosition(HSTREAM hStream)

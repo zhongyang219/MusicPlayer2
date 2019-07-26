@@ -240,6 +240,9 @@
     <Filter Include="功能逻辑类\PlayerCore">
       <UniqueIdentifier>{0d75bb1f-ce06-443c-a51f-0deef9f44178}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\PlayerCore\MCI">
+      <UniqueIdentifier>{624c0f2f-0da1-4e3a-a50b-bf7ae2aeec2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -523,6 +526,9 @@
     <ClInclude Include="InputDlg.h">
       <Filter>对话框类\InputDlg</Filter>
     </ClInclude>
+    <ClInclude Include="MciCore.h">
+      <Filter>功能逻辑类\PlayerCore\MCI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -776,6 +782,9 @@
     </ClCompile>
     <ClCompile Include="InputDlg.cpp">
       <Filter>对话框类\InputDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="MciCore.cpp">
+      <Filter>功能逻辑类\PlayerCore\MCI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

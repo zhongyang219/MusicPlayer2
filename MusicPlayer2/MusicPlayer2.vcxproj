@@ -209,6 +209,7 @@
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
     <ClInclude Include="CLyricDraw.h" />
     <ClInclude Include="CMainDialogBase.h" />
+    <ClInclude Include="MciCore.h" />
     <ClInclude Include="CMediaLibDlg.h" />
     <ClInclude Include="CMiniModeUI.h" />
     <ClInclude Include="CNotifyIcon.h" />
@@ -302,6 +303,7 @@
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
     <ClCompile Include="CLyricDraw.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
+    <ClCompile Include="MciCore.cpp" />
     <ClCompile Include="CMediaLibDlg.cpp" />
     <ClCompile Include="CMiniModeUI.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
