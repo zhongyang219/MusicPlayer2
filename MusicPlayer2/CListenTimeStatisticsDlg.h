@@ -32,4 +32,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedExportButton();
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+    afx_msg void OnBnClickedClearButton();
 };

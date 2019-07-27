@@ -35,7 +35,7 @@ void CListenTimeStatisticsDlg::ShowData()
 	//从所有歌曲信息中查找累计听的时间超过指定时间的曲目添加到vector
 	for (const auto& data : theApp.m_song_data)
 	{
-		if (data.second.listen_time >= 20)
+        if (data.second.listen_time >= 20 && data.second.lengh > 0)
 		{
 			data_list.push_back(data.second);
 			data_list.back().file_name = data.first;
@@ -105,6 +105,7 @@ void CListenTimeStatisticsDlg::ShowData()
 BEGIN_MESSAGE_MAP(CListenTimeStatisticsDlg, CDialog)
 	ON_BN_CLICKED(IDC_EXPORT_BUTTON, &CListenTimeStatisticsDlg::OnBnClickedExportButton)
 	ON_WM_GETMINMAXINFO()
+    ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CListenTimeStatisticsDlg::OnBnClickedClearButton)
 END_MESSAGE_MAP()
 
 
@@ -150,35 +151,6 @@ void CListenTimeStatisticsDlg::OnBnClickedExportButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
 
-	//生成导出的csv文本
-	CString str;
-	int list_size = m_list_ctrl.GetItemCount();
-	str += CCommon::LoadText(IDS_NUMBER);
-	str += _T(',');
-	str += CCommon::LoadText(IDS_TRACK);
-	str += _T(',');
-	str += CCommon::LoadText(IDS_PATH);
-	str += _T(',');
-	str += CCommon::LoadText(IDS_LISTEN_TIME);
-	str += _T(',');
-	str += CCommon::LoadText(IDS_LENGTH);
-	str += _T(',');
-	str += CCommon::LoadText(IDS_LISTEN_TIMES);
-	str += _T('\n');
-
-	for (int i = 0; i < list_size; i++)
-	{
-		const int COLUMN = 6;
-		for (int j = 0; j < COLUMN; j++)
-		{
-			str += m_list_ctrl.GetItemText(i, j);
-			if (j == COLUMN - 1)
-				str += _T('\n');
-			else
-				str += _T(',');
-		}
-	}
-
 	//弹出保存对话框
 
 	CString filter = CCommon::LoadText(IDS_LISTEN_TIME_FILE_DLG_FILTER);
@@ -194,6 +166,36 @@ void CListenTimeStatisticsDlg::OnBnClickedExportButton()
 	// 显示保存文件对话框
 	if (IDOK == fileDlg.DoModal())
 	{
+        //生成导出的csv文本
+        CString str;
+        int list_size = m_list_ctrl.GetItemCount();
+        str += CCommon::LoadText(IDS_NUMBER);
+        str += _T(',');
+        str += CCommon::LoadText(IDS_TRACK);
+        str += _T(',');
+        str += CCommon::LoadText(IDS_PATH);
+        str += _T(',');
+        str += CCommon::LoadText(IDS_LISTEN_TIME);
+        str += _T(',');
+        str += CCommon::LoadText(IDS_LENGTH);
+        str += _T(',');
+        str += CCommon::LoadText(IDS_LISTEN_TIMES);
+        str += _T('\n');
+
+        for (int i = 0; i < list_size; i++)
+        {
+            const int COLUMN = 6;
+            for (int j = 0; j < COLUMN; j++)
+            {
+                str += m_list_ctrl.GetItemText(i, j);
+                if (j == COLUMN - 1)
+                    str += _T('\n');
+                else
+                    str += _T(',');
+            }
+        }
+
+
 		ofstream out_put{ fileDlg.GetPathName().GetString() };
 		out_put << CCommon::UnicodeToStr(wstring(str), CodeType::ANSI);
 	}
@@ -208,4 +210,18 @@ void CListenTimeStatisticsDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+
+void CListenTimeStatisticsDlg::OnBnClickedClearButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    if (MessageBox(CCommon::LoadText(IDS_CLEAR_LISTEN_TIME_WARNING), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
+    {
+        for (auto& data : theApp.m_song_data)
+        {
+            data.second.listen_time = 0;
+        }
+        m_list_ctrl.DeleteAllItems();
+    }
 }
