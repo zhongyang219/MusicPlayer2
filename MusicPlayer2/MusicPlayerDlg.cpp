@@ -2760,6 +2760,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnEqualizer()
 {
     // TODO: 在此添加命令处理程序代码
+    if (theApp.m_play_setting_data.use_mci)
+    {
+        MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
+        return;
+    }
+
     CCommon::DeleteModelessDialog(m_pSoundEffecDlg);
     m_pSoundEffecDlg = new CSoundEffectDlg;
     m_pSoundEffecDlg->Create(IDD_SOUND_EFFECT_DIALOG);
@@ -3176,6 +3182,13 @@ void CMusicPlayerDlg::OnFormatConvert()
     if (!theApp.m_format_convert_dialog_exit)
         return;
     CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
+
+    if (theApp.m_play_setting_data.use_mci)
+    {
+        MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
+        return;
+    }
+
     m_pFormatConvertDlg = new CFormatConvertDlg(m_items_selected);
     m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
     m_pFormatConvertDlg->ShowWindow(SW_SHOW);
@@ -3188,6 +3201,12 @@ void CMusicPlayerDlg::OnFormatConvert1()
     if (!theApp.m_format_convert_dialog_exit)
         return;
     CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
+
+    if (theApp.m_play_setting_data.use_mci)
+    {
+        MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
+        return;
+    }
 
     vector<int> items_selected;
     items_selected.push_back(CPlayer::GetInstance().GetIndex());

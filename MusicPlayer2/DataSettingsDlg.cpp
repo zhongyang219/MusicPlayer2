@@ -81,8 +81,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
 
 	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
-	GetDlgItem(IDC_BROWSE_BUTTON)->EnableWindow(theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
-	m_sf2_path_edit.EnableWindow(theApp.m_format_convert_dialog_exit);
+    EnableControl();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -101,6 +100,18 @@ void CDataSettingsDlg::ShowDataSizeInfo()
 }
 
 
+
+void CDataSettingsDlg::EnableControl()
+{
+    bool enable = !theApp.m_play_setting_data.use_mci;
+    m_sf2_path_edit.EnableWindow(enable && theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
+    CWnd* pWnd = GetDlgItem(IDC_BROWSE_BUTTON);
+    if(pWnd!=nullptr)
+        pWnd->EnableWindow(enable && theApp.m_format_convert_dialog_exit);
+    pWnd = GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK);
+    if (pWnd != nullptr)
+        pWnd->EnableWindow(enable);
+}
 
 void CDataSettingsDlg::OnBnClickedCleanDataFileButton()
 {

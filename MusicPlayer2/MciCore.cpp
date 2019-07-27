@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MciCore.h"
 #include "AudioCommon.h"
+#include "MusicPlayer2.h"
 
 
 CMciCore::CMciCore()
@@ -15,6 +16,12 @@ CMciCore::CMciCore()
 	m_success &= (m_dll_module != NULL);
 	m_success &= (mciSendStringW != NULL);
 	m_success &= (mciGetErrorStringW != NULL);
+
+    if (!m_success)
+    {
+        CString strInfo = CCommon::LoadText(IDS_MCI_INIT_FAILED);
+        theApp.WriteErrorLog(wstring(strInfo));
+    }
 }
 
 
@@ -84,7 +91,8 @@ void CMciCore::Open(const wchar_t * file_path)
             m_midi_info.midi_length = _wtoi(buff) / 4;
             m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" tempo").c_str(), buff, 15, 0);
             m_midi_info.speed = _wtoi(buff);
-            m_midi_info.tempo = 60000000 / m_midi_info.speed;
+            if(m_midi_info.speed > 0)
+                m_midi_info.tempo = 60000000 / m_midi_info.speed;
         }
     }
 
@@ -253,7 +261,7 @@ std::wstring CMciCore::GetErrorInfo(int error_code)
 {
     wchar_t buff[64]{};
     mciGetErrorStringW(error_code, buff, sizeof(buff) / sizeof(wchar_t));		//根据错误代码获取错误信息
-    return L"MCI: " + wstring(buff);
+    return L"MCI: " + wstring(buff) + m_file_path;
 }
 
 void CMciCore::GetMidiPosition()

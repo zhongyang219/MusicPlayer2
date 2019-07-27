@@ -26,6 +26,7 @@ private:
 	CComboBox m_language_combo;
 
 	void ShowDataSizeInfo();
+    void EnableControl();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
