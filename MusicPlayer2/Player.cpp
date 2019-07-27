@@ -981,7 +981,7 @@ void CPlayer::SaveConfig() const
     ini.WriteInt(L"config", L"sort_mode", static_cast<int>(m_sort_mode));
     ini.WriteBool(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
     ini.WriteString(L"config", L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
-    ini.WriteBool(L"config", L"from_playlist", m_playlist_mode);
+    ini.WriteBool(L"config", L"playlist_mode", m_playlist_mode);
 
     //保存均衡器设定
     ini.WriteBool(L"equalizer", L"equalizer_enable", m_equ_enable);
@@ -1023,7 +1023,8 @@ void CPlayer::LoadConfig()
     wstring default_album_name = ini.GetString(L"config", L"default_album_file_name", L"cover");
     CCommon::StringSplit(default_album_name, L',', theApp.m_app_setting_data.default_album_name);
 
-    m_playlist_mode = ini.GetBool(L"config", L"from_playlist", m_playlist_mode);
+    bool playlist_mode_default = !CCommon::FileExist(theApp.m_recent_path_dat_path);
+    m_playlist_mode = ini.GetBool(L"config", L"playlist_mode", playlist_mode_default);
 
     //读取均衡器设定
     m_equ_enable = ini.GetBool(L"equalizer", L"equalizer_enable", false);
