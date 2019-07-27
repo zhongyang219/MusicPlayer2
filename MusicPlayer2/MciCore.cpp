@@ -27,6 +27,11 @@ CMciCore::CMciCore()
 
 CMciCore::~CMciCore()
 {
+    if (m_dll_module != NULL)
+    {
+        FreeLibrary(m_dll_module);
+        m_dll_module = NULL;
+    }
 }
 
 void CMciCore::InitCore()
@@ -177,7 +182,8 @@ void CMciCore::SetCurPosition(int position)
     {
         if (IsMidi())
         {
-            position = position / m_midi_info.speed;
+            if (m_midi_info.speed > 0)
+                position = position / m_midi_info.speed;
         }
 
         wchar_t buff[16];
