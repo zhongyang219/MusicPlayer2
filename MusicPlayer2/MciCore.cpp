@@ -9,10 +9,12 @@ CMciCore::CMciCore()
 	m_dll_module = ::LoadLibrary(_T("winmm.dll"));
 	//获取函数入口
     mciSendStringW = (_mciSendStringW)::GetProcAddress(m_dll_module, "mciSendStringW");
+    mciGetErrorStringW = (_mciGetErrorStringW)::GetProcAddress(m_dll_module, "mciGetErrorStringW");
 	//判断是否成功
-	m_successed = true;
-	m_successed &= (m_dll_module != NULL);
-	m_successed &= (mciSendStringW != NULL);
+	m_success = true;
+	m_success &= (m_dll_module != NULL);
+	m_success &= (mciSendStringW != NULL);
+	m_success &= (mciGetErrorStringW != NULL);
 }
 
 
@@ -68,79 +70,141 @@ wstring CMciCore::GetSoundFontName()
 void CMciCore::Open(const wchar_t * file_path)
 {
     m_file_path = file_path;
-    m_error_code = mciSendStringW((L"open \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+    CFilePathHelper path_helper{ file_path };
+    m_file_type = path_helper.GetFileExtension();
+    if(m_success)
+    {
+        m_error_code = mciSendStringW((L"open \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+
+        //获取MIDI信息
+        if (IsMidi())
+        {
+            wchar_t buff[16];
+            m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" length").c_str(), buff, 15, 0);
+            m_midi_info.midi_length = _wtoi(buff) / 4;
+            m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" tempo").c_str(), buff, 15, 0);
+            m_midi_info.speed = _wtoi(buff);
+            m_midi_info.tempo = 60000000 / m_midi_info.speed;
+        }
+    }
 
 }
 
 void CMciCore::Close()
 {
-    m_error_code = mciSendStringW((L"close \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+    if (m_success)
+    {
+        m_error_code = mciSendStringW((L"close \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+        m_playing = false;
+    }
 }
 
 void CMciCore::Play()
 {
-    m_error_code = mciSendStringW((L"play \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+    if (m_success)
+    {
+        m_error_code = mciSendStringW((L"play \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+        m_playing = true;
+    }
 }
 
 void CMciCore::Pause()
 {
-    m_error_code = mciSendStringW((L"pause \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+    if (m_success)
+    {
+        m_error_code = mciSendStringW((L"pause \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+        m_playing = false;
+    }
 }
 
 void CMciCore::Stop()
 {
-    m_error_code = mciSendStringW((L"stop \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+    if (m_success)
+    {
+        m_error_code = mciSendStringW((L"stop \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
+        m_playing = false;
+        SetCurPosition(0);
+    }
 }
 
 void CMciCore::SetVolume(int volume)
 {
-    wchar_t buff[16];
-    _itow_s(volume * 10, buff, 10);		//设置音量100%时为1000
-    m_error_code = mciSendStringW((L"setaudio \"" + m_file_path + L"\" volume to " + buff).c_str(), NULL, 0, 0);
-
+    if (m_success && !IsMidi())
+    {
+        wchar_t buff[16];
+        _itow_s(volume * 10, buff, 10);		//设置音量100%时为1000
+        m_error_code = mciSendStringW((L"setaudio \"" + m_file_path + L"\" volume to " + buff).c_str(), NULL, 0, 0);
+    }
 }
 
 int CMciCore::GetCurPosition()
 {
-    wchar_t buff[16];
-    m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" position").c_str(), buff, 15, 0);
-    return _wtoi(buff);
+    if (m_success)
+    {
+        wchar_t buff[16];
+        m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" position").c_str(), buff, 15, 0);
+        int position = _wtoi(buff);
+        if(IsMidi())        //如果是MIDI，MCI获取到的长度并不是毫秒数，而是MIDI的节拍数
+        {
+            m_midi_info.midi_position = position / 4;
+            position = position * m_midi_info.speed;
+        }
+        return position;
+    }
+    return 0;
 }
 
 int CMciCore::GetSongLength()
 {
-    wchar_t buff[16];
-    m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
-    return _wtoi(buff);
+    if (m_success)
+    {
+        return GetMciSongLength(m_file_path);
+    }
+    return 1;
 }
 
 void CMciCore::SetCurPosition(int position)
 {
-    wchar_t buff[16];
-    _itow_s(position, buff, 10);
-    m_error_code = mciSendStringW((L"seek \"" + m_file_path + L"\" to " + buff).c_str(), NULL, 0, 0);		//定位到新的位置
+    if (m_success)
+    {
+        if (IsMidi())
+        {
+            position = position / m_midi_info.speed;
+        }
+
+        wchar_t buff[16];
+        _itow_s(position, buff, 10);
+        m_error_code = mciSendStringW((L"seek \"" + m_file_path + L"\" to " + buff).c_str(), NULL, 0, 0);		//定位到新的位置
+        if (m_playing)
+            m_error_code = mciSendStringW((L"play \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);		//继续播放
+
+    }
 }
 
 void CMciCore::GetAudioInfo(SongInfo & song_info, bool get_tag)
 {
-    wchar_t buff[16];
-    m_error_code = mciSendStringW((L"status \"" + song_info.file_path + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
-    song_info.lengh = _wtoi(buff);
+    if (m_success)
+    {
+        song_info.lengh = GetMciSongLength(song_info.file_path);
+    }
 
 }
 
 void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, bool get_tag)
 {
-    m_error_code = mciSendStringW((L"open \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
-    wchar_t buff[16];
-    m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
-    song_info.lengh = _wtoi(buff);
-    m_error_code = mciSendStringW((L"close \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
+    if (m_success)
+    {
+        m_error_code = mciSendStringW((L"open \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
+        wchar_t buff[16];
+        m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
+        song_info.lengh = _wtoi(buff);
+        m_error_code = mciSendStringW((L"close \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
+    }
 }
 
 bool CMciCore::IsMidi()
 {
-    return false;
+    return m_file_type==L"mid" || m_file_type == L"midi";
 }
 
 bool CMciCore::IsMidiConnotPlay()
@@ -155,7 +219,7 @@ std::wstring CMciCore::GetMidiInnerLyric()
 
 MidiInfo CMciCore::GetMidiInfo()
 {
-    return MidiInfo();
+    return m_midi_info;
 }
 
 bool CMciCore::MidiNoLyric()
@@ -182,5 +246,36 @@ void CMciCore::GetFFTData(float fft_data[128])
 
 int CMciCore::GetErrorCode()
 {
-    return 0;
+    return m_error_code;
+}
+
+std::wstring CMciCore::GetErrorInfo(int error_code)
+{
+    wchar_t buff[64]{};
+    mciGetErrorStringW(error_code, buff, sizeof(buff) / sizeof(wchar_t));		//根据错误代码获取错误信息
+    return L"MCI: " + wstring(buff);
+}
+
+void CMciCore::GetMidiPosition()
+{
+    if (IsMidi())
+    {
+        wchar_t buff[16];
+        m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" position").c_str(), buff, 15, 0);
+        m_midi_info.midi_position = _wtoi(buff) / 4;
+    }
+}
+
+int CMciCore::GetMciSongLength(const std::wstring& file_path)
+{
+    wchar_t buff[16];
+    mciSendStringW((L"status \"" + file_path + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
+    int length = _wtoi(buff);
+    if (IsMidi())
+    {
+        m_midi_info.midi_length = length / 4;
+        if (m_midi_info.speed > 0)
+            length = length * m_midi_info.speed;
+    }
+    return length;
 }

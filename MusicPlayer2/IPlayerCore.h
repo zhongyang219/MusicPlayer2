@@ -49,6 +49,6 @@ public:
     virtual void ClearReverb() = 0;			//关闭混响
     virtual void GetFFTData(float fft_data[128]) = 0;       //获取频谱分析数据
 
-    virtual int GetErrorCode() = 0;
-
+    virtual int GetErrorCode() = 0;                         //获取错误代码
+    virtual std::wstring GetErrorInfo(int error_code) = 0;  //根据错误代码获取错误信息
 };

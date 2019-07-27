@@ -153,7 +153,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         count++;
     }
     GetInstance().m_loading = false;
-    GetInstance().IniPlaylistComplate();
+    //GetInstance().IniPlaylistComplate();
     //GetInstance().IniLyrics();
     PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
     return 0;
@@ -421,13 +421,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
         else
             m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
-        GetBASSError();
+        GetPlayerCoreError();
         break;
     case Command::PLAY:
         ConnotPlayWarning();
         m_pCore->Play();
         m_playing = 2;
-        GetBASSError();
+        GetPlayerCoreError();
         break;
     case Command::CLOSE:
         //RemoveFXHandle();
@@ -445,13 +445,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
         break;
     case Command::FF:		//快进
-        GetBASSCurrentPosition();		//获取当前位置（毫秒）
+        GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
         m_current_position += 5000;		//每次快进5000毫秒
         if (m_current_position > m_song_length) m_current_position -= 5000;
         SeekTo(m_current_position.toInt());
         break;
     case Command::REW:		//快退
-        GetBASSCurrentPosition();		//获取当前位置（毫秒）
+        GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
         m_current_position -= 5000;		//每次快退5000毫秒
         if (m_current_position < 0) m_current_position = 0;		//防止快退到负的位置
         SeekTo(m_current_position.toInt());
@@ -501,7 +501,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
 bool CPlayer::SongIsOver() const
 {
-    if (GetCurrentSongInfo().is_cue)
+    if (GetCurrentSongInfo().is_cue || theApp.m_play_setting_data.use_mci)
     {
         return (m_playing == 2 && m_current_position >= m_song_length);
     }
@@ -525,12 +525,12 @@ bool CPlayer::SongIsOver() const
     }
 }
 
-void CPlayer::GetBASSSongLength()
+void CPlayer::GetPlayerCoreSongLength()
 {
     m_song_length.fromInt(m_pCore->GetSongLength());
 }
 
-void CPlayer::GetBASSCurrentPosition()
+void CPlayer::GetPlayerCoreCurrentPosition()
 {
     int current_position_int = m_pCore->GetCurPosition();
     if (m_playlist[m_index].is_cue)
@@ -544,7 +544,7 @@ void CPlayer::GetBASSCurrentPosition()
 void CPlayer::SetVolume()
 {
     m_pCore->SetVolume(m_volume);
-    GetBASSError();
+    GetPlayerCoreError();
 }
 
 
@@ -671,7 +671,7 @@ bool CPlayer::PlayTrack(int song_track)
         if (m_playlist[m_index].is_cue)
             SeekTo(0);
         MusicControl(Command::PLAY);
-        GetBASSCurrentPosition();
+        GetPlayerCoreCurrentPosition();
         SetTitle();
         SaveConfig();
         EmplaceCurrentPathToRecent();
@@ -685,7 +685,7 @@ bool CPlayer::PlayTrack(int song_track)
         //m_current_file_name = m_playlist[m_index].file_name;
         MusicControl(Command::OPEN);
         //IniLyrics();
-        GetBASSCurrentPosition();
+        GetPlayerCoreCurrentPosition();
         SetTitle();
         SaveConfig();
         EmplaceCurrentPathToRecent();
@@ -936,15 +936,14 @@ RepeatMode CPlayer::GetRepeatMode() const
     return m_repeat_mode;
 }
 
-bool CPlayer::GetBASSError()
+bool CPlayer::GetPlayerCoreError()
 {
     if (m_loading)
         return false;
     int error_code_tmp = m_pCore->GetErrorCode();
     if (error_code_tmp && error_code_tmp != m_error_code)
     {
-        CString info = CCommon::LoadTextFormat(IDS_BASS_ERROR_LOG_INFO, {error_code_tmp, GetCurrentFilePath()});
-        theApp.WriteErrorLog(wstring{ info });
+        theApp.WriteErrorLog(m_pCore->GetErrorInfo(error_code_tmp));
     }
     m_error_code = error_code_tmp;
     return true;
@@ -1384,7 +1383,7 @@ void CPlayer::SeekTo(int position)
         position += m_playlist[m_index].start_pos.toInt();
     }
     m_pCore->SetCurPosition(position);
-    GetBASSError();
+    GetPlayerCoreError();
 }
 
 void CPlayer::SeekTo(double position)
@@ -1399,7 +1398,7 @@ void CPlayer::SeekTo(double position)
 //    QWORD pos_bytes;
 //    pos_bytes = BASS_ChannelSeconds2Bytes(hStream, pos_sec);
 //    BASS_ChannelSetPosition(hStream, pos_bytes, BASS_POS_BYTE);
-//    GetInstance().GetBASSError();
+//    GetInstance().GetPlayerCoreError();
 //}
 
 void CPlayer::ClearLyric()
@@ -1791,18 +1790,18 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
 
 //void CPlayer::SetFXHandle()
 //{
-//    GetBASSError();
+//    GetPlayerCoreError();
 //}
 //
 //void CPlayer::RemoveFXHandle()
 //{
-//    GetBASSError();
+//    GetPlayerCoreError();
 //}
 
 void CPlayer::ApplyEqualizer(int channel, int gain)
 {
     m_pCore->ApplyEqualizer(channel, gain);
-    GetBASSError();
+    GetPlayerCoreError();
 }
 
 void CPlayer::SetEqualizer(int channel, int gain)
@@ -1862,7 +1861,7 @@ void CPlayer::EnableReverb(bool enable)
         m_pCore->ClearReverb();
     }
     m_reverb_enable = enable;
-    GetBASSError();
+    GetPlayerCoreError();
 }
 
 

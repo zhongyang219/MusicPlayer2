@@ -111,7 +111,6 @@ private:
 	void UnInitPlayerCore();
 	void IniPlayList(bool cmd_para = false, bool refresh_info = false, bool play = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
-	void IniPlaylistComplate();		//播放列表加载完毕时的处理
 
 	void ChangePath(const wstring& path, int track = 0);		//改变当前路径
 
@@ -125,6 +124,7 @@ public:
     void EmplaceCurrentPlaylistToRecent();
 	void SaveRecentPath() const;		//将最近路径列表保存到文件
 	void OnExit();		//退出时的处理
+	void IniPlaylistComplate();		//播放列表加载完毕时的处理
 
 	void SetEqualizer(int channel, int gain);		//设置均衡器（channel为通道，取值为0~9，gain为增益，取值为-15~15）
 	int GeEqualizer(int channel);		//获取指定均衡器通道的增益
@@ -152,8 +152,8 @@ public:
 	void Create(const wstring & path);
 	void MusicControl(Command command, int volume_step = 2);		//控制音乐播放
 	bool SongIsOver() const;			//判断当前音乐是否播放完毕
-	void GetBASSCurrentPosition();		//从BASS音频库获取当前播放到的位置
-	void GetBASSSongLength();			//从BASS音频库获取正在播放文件的长度
+	void GetPlayerCoreCurrentPosition();		//从BASS音频库获取当前播放到的位置
+	void GetPlayerCoreSongLength();			//从BASS音频库获取正在播放文件的长度
 
 	void CalculateSpectralData();		//频谱分析
 	int GetCurrentSecond();		//获取当前播放到的位置的秒数
@@ -172,7 +172,7 @@ public:
 	void SetRepeatMode(RepeatMode repeat_mode);	//设置循环模式
 	RepeatMode GetRepeatMode() const;
 
-	bool GetBASSError();		//获取BASS音频库的错误
+	bool GetPlayerCoreError();		//获取BASS音频库的错误
 	bool IsError() const;				//有错误时返回ture，否则返回false
 
 	void SetTitle() const;		//设置窗口标题

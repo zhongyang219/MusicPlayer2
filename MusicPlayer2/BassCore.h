@@ -51,6 +51,7 @@ public:
     virtual void GetFFTData(float fft_data[128]) override;
 
     virtual int GetErrorCode() override;
+    virtual std::wstring GetErrorInfo(int error_code) override;
 
     static int GetBASSCurrentPosition(HSTREAM hStream);
     static Time GetBASSSongLength(HSTREAM hStream);

@@ -525,6 +525,12 @@ int CBassCore::GetErrorCode()
     return BASS_ErrorGetCode();
 }
 
+std::wstring CBassCore::GetErrorInfo(int error_code)
+{
+    CString info = CCommon::LoadTextFormat(IDS_BASS_ERROR_LOG_INFO, { error_code, m_file_path });
+    return std::wstring(info);
+}
+
 int CBassCore::GetBASSCurrentPosition(HSTREAM hStream)
 {
     QWORD pos_bytes;

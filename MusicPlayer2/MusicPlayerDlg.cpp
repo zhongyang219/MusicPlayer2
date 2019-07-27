@@ -1311,7 +1311,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             //注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
             //CPlayer::GetInstance().MusicControl(Command::OPEN);
             //CPlayer::GetInstance().MusicControl(Command::SEEK);
-            //CPlayer::GetInstance().GetBASSError();
+            //CPlayer::GetInstance().GetPlayerCoreError();
             //SetPorgressBarSize(rect.Width(), rect.Height());		//重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
             //ShowTime();
             //m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
@@ -1341,13 +1341,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         UpdateTaskBarProgress();
         //UpdateProgress();
 
-        //CPlayer::GetInstance().GetBASSError();
+        //CPlayer::GetInstance().GetPlayerCoreError();
         if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
             DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
         CPlayer::GetInstance().CalculateSpectralData();
         if (CPlayer::GetInstance().IsPlaying())
         {
-            CPlayer::GetInstance().GetBASSCurrentPosition();
+            CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
         }
 
         //在Cortana搜索框里显示歌词
@@ -2707,6 +2707,7 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lParam)
 {
+    CPlayer::GetInstance().IniPlaylistComplate();
     theApp.DoWaitCursor(0);
     ShowPlayList();
     //ShowTime();
@@ -2736,6 +2737,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
     if (!title.IsEmpty())
         title_suffix += _T(" - ");
     title_suffix += APP_NAME;
+
+    if (theApp.m_play_setting_data.use_mci)
+        title_suffix += _T(" (MCI)");
+
 #ifdef _DEBUG
     title_suffix += _T(' ');
     title_suffix += CCommon::LoadText(IDS_DEBUG_MODE);

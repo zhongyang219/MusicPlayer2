@@ -8,6 +8,7 @@ class CMciCore :
 
     //使用动态加载的方式加载MCI的API，如果没有使用MCI内核，则不加载
     typedef MCIERROR(WINAPI *_mciSendStringW)(LPCWSTR lpstrCommand, LPWSTR lpstrReturnString, UINT uReturnLength, HWND hwndCallback);
+    typedef BOOL(WINAPI *_mciGetErrorStringW)(MCIERROR mcierr, LPWSTR pszText, UINT cchText);
 
 public:
     CMciCore();
@@ -47,16 +48,25 @@ public:
     virtual void GetFFTData(float fft_data[128]) override;
 
     virtual int GetErrorCode() override;
+    virtual std::wstring GetErrorInfo(int error_code) override;
 
+private:
+    void GetMidiPosition();
+    int GetMciSongLength(const std::wstring& file_path);
 
 private:
     std::wstring m_file_path;
+    bool m_playing{ false };
+    std::wstring m_file_type;
+    MidiInfo m_midi_info;
 
     MCIERROR m_error_code{ 0 };
 
     //
     HMODULE m_dll_module{};
     _mciSendStringW mciSendStringW;
-    bool m_successed;
+    _mciGetErrorStringW mciGetErrorStringW;
+
+    bool m_success;
 };
 
