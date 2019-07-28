@@ -382,7 +382,8 @@ void CBassCore::Pause()
 
 void CBassCore::Stop()
 {
-    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)
+    DWORD playing_state = BASS_ChannelIsActive(m_musicStream);
+    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0 && playing_state == BASS_ACTIVE_PLAYING)
     {
         BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
