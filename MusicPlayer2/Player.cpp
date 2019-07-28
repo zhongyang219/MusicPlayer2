@@ -501,7 +501,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
 bool CPlayer::SongIsOver() const
 {
-    if (GetCurrentSongInfo().is_cue || theApp.m_play_setting_data.use_mci)
+    if (GetCurrentSongInfo().is_cue || IsMciCore())
     {
         return (m_playing == 2 && m_current_position >= m_song_length);
     }
@@ -954,7 +954,7 @@ bool CPlayer::IsError() const
     if (m_loading)		//如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_code != 0 || (!theApp.m_play_setting_data.use_mci && m_pCore->GetHandle() == 0));
+        return (m_error_code != 0 || (!IsMciCore() && m_pCore->GetHandle() == 0));
 }
 
 void CPlayer::SetTitle() const
@@ -2021,4 +2021,9 @@ void CPlayer::SetPlaylistPath(const wstring& playlist_path)
 wstring CPlayer::GetPlaylistPath() const
 {
     return m_playlist_path;
+}
+
+bool CPlayer::IsMciCore() const
+{
+    return m_pCore->GetCoreName() == L"MCI";
 }

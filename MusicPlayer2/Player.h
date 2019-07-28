@@ -268,5 +268,6 @@ public:
     void SetPlaylistPath(const wstring& playlist_path);
     wstring GetPlaylistPath() const;
     IPlayerCore* GetPlayerCore() { return m_pCore; }
+    bool IsMciCore() const;
 };
 

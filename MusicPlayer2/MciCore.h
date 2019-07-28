@@ -50,6 +50,8 @@ public:
     virtual int GetErrorCode() override;
     virtual std::wstring GetErrorInfo(int error_code) override;
 
+    virtual std::wstring GetCoreName() override { return L"MCI"; }
+
 private:
     void GetMidiPosition();
     int GetMciSongLength(const std::wstring& file_path);

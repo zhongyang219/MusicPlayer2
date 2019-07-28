@@ -2738,7 +2738,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
         title_suffix += _T(" - ");
     title_suffix += APP_NAME;
 
-    if (theApp.m_play_setting_data.use_mci)
+    if (CPlayer::GetInstance().IsMciCore())
         title_suffix += _T(" (MCI)");
 
 #ifdef _DEBUG
@@ -2760,7 +2760,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnEqualizer()
 {
     // TODO: 在此添加命令处理程序代码
-    if (theApp.m_play_setting_data.use_mci)
+    if (CPlayer::GetInstance().IsMciCore())
     {
         MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
         return;
@@ -3183,7 +3183,7 @@ void CMusicPlayerDlg::OnFormatConvert()
         return;
     CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
 
-    if (theApp.m_play_setting_data.use_mci)
+    if (CPlayer::GetInstance().IsMciCore())
     {
         MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
         return;
@@ -3202,7 +3202,7 @@ void CMusicPlayerDlg::OnFormatConvert1()
         return;
     CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
 
-    if (theApp.m_play_setting_data.use_mci)
+    if (CPlayer::GetInstance().IsMciCore())
     {
         MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
         return;

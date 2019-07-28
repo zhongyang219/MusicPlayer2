@@ -51,4 +51,6 @@ public:
 
     virtual int GetErrorCode() = 0;                         //获取错误代码
     virtual std::wstring GetErrorInfo(int error_code) = 0;  //根据错误代码获取错误信息
+
+    virtual std::wstring GetCoreName() = 0;
 };
