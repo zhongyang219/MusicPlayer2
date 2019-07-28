@@ -661,37 +661,31 @@ bool CPlayer::PlayTrack(int song_track)
             song_track = m_index;
     }
 
-    if (song_track >= 0 && song_track < GetSongNum())
+    bool valid = (song_track >= 0 && song_track < GetSongNum());
+    if (!valid)
+        song_track = 0;
+    MusicControl(Command::CLOSE);
+    m_index = song_track;
+    //m_current_file_name = m_playlist[m_index].file_name;
+    MusicControl(Command::OPEN);
+    //IniLyrics();
+    if (m_playlist[m_index].is_cue)
+        SeekTo(0);
+    MusicControl(Command::PLAY);
+    GetPlayerCoreCurrentPosition();
+    SetTitle();
+    SaveConfig();
+    if (m_playlist_mode)
     {
-        MusicControl(Command::CLOSE);
-        m_index = song_track;
-        //m_current_file_name = m_playlist[m_index].file_name;
-        MusicControl(Command::OPEN);
-        //IniLyrics();
-        if (m_playlist[m_index].is_cue)
-            SeekTo(0);
-        MusicControl(Command::PLAY);
-        GetPlayerCoreCurrentPosition();
-        SetTitle();
-        SaveConfig();
-        EmplaceCurrentPathToRecent();
-        SaveRecentPath();
-        return true;
+        EmplaceCurrentPlaylistToRecent();
+        m_recent_playlist.SavePlaylistData();
     }
     else
     {
-        MusicControl(Command::CLOSE);
-        m_index = 0;
-        //m_current_file_name = m_playlist[m_index].file_name;
-        MusicControl(Command::OPEN);
-        //IniLyrics();
-        GetPlayerCoreCurrentPosition();
-        SetTitle();
-        SaveConfig();
         EmplaceCurrentPathToRecent();
         SaveRecentPath();
     }
-    return false;
+    return valid;
 }
 
 void CPlayer::ChangePath(const wstring& path, int track)
