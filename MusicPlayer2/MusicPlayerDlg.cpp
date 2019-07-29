@@ -812,6 +812,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
     pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FOLDER, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_URL, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_REMOVE_SAME_SONGS, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_REMOVE_INVALID_ITEMS, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
