@@ -52,6 +52,8 @@ void CMciCore::InitCore()
 
 void CMciCore::UnInitCore()
 {
+    Stop();
+    Close();
 }
 
 unsigned int CMciCore::GetHandle()
