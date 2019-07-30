@@ -20,7 +20,6 @@ CPlayer & CPlayer::GetInstance()
 CPlayer::~CPlayer()
 {
     UnInitPlayerCore();
-    delete m_pCore;
 }
 
 void CPlayer::IniPlayerCore()
@@ -35,7 +34,12 @@ void CPlayer::IniPlayerCore()
 
 void CPlayer::UnInitPlayerCore()
 {
-    m_pCore->UnInitCore();
+    if (m_pCore != nullptr)
+    {
+        m_pCore->UnInitCore();
+        delete m_pCore;
+        m_pCore = nullptr;
+    }
 }
 
 void CPlayer::Create()

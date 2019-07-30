@@ -712,6 +712,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                              || theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius
                              || theApp.m_app_setting_data.album_cover_as_background != optionDlg.m_tab2_dlg.m_data.album_cover_as_background };
     bool output_device_changed{ theApp.m_play_setting_data.output_device != optionDlg.m_tab4_dlg.m_data.output_device };
+    bool player_core_changed{ theApp.m_play_setting_data.use_mci != optionDlg.m_tab4_dlg.m_data.use_mci };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -720,10 +721,11 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     theApp.m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
     theApp.m_hot_key_setting_data = optionDlg.m_tab5_dlg.m_data;
 
-    if (reload_sf2 || output_device_changed)		//如果在选项设置中更改了MIDI音频库的路径，则重新加载MIDI音频库
+    if (reload_sf2 || output_device_changed || player_core_changed)
     {
         CPlayer::GetInstance().ReIniPlayerCore(true);
         UpdatePlayPauseButton();
+        OnSetTitle(0, 0);
     }
     if (gauss_blur_changed)
         CPlayer::GetInstance().AlbumCoverGaussBlur();
