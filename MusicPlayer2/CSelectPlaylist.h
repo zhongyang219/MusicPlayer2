@@ -32,6 +32,7 @@ private:
     CEdit m_search_edit;
     vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
     bool m_searched{ false };				//是否处理搜索状态
+    CToolTipCtrl m_Mytip;
 
     enum
     {
@@ -71,4 +72,5 @@ public:
     afx_msg void OnNewPlaylist();
     afx_msg void OnEnChangeSearchEdit();
     afx_msg void OnBnClickedClearButton();
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

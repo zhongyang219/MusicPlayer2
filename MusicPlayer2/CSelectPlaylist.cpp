@@ -128,6 +128,15 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     m_playlist_ctrl.InsertColumn(3, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[3]);
     m_playlist_ctrl.InsertColumn(4, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[4]);
 
+    //初始化提示信息
+    m_Mytip.Create(this, TTS_ALWAYSTIP);
+    m_Mytip.AddTool(GetDlgItem(IDC_CLEAR_BUTTON), CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
+    m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
+
+    //设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
+    m_playlist_ctrl.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    m_Mytip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
     ShowPathList();
     m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
@@ -533,4 +542,23 @@ void CSelectPlaylistDlg::OnBnClickedClearButton()
         ShowPathList();
         SetHighlightItem();
     }
+}
+
+
+BOOL CSelectPlaylistDlg::PreTranslateMessage(MSG* pMsg)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+    {
+        if (pMsg->wParam == 'F')	//按F键快速查找
+        {
+            m_search_edit.SetFocus();
+            return TRUE;
+        }
+    }
+
+    if (pMsg->message == WM_MOUSEMOVE)
+        m_Mytip.RelayEvent(pMsg);
+
+    return CTabDlg::PreTranslateMessage(pMsg);
 }
