@@ -1767,23 +1767,26 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
     if (!m_playlist_mode)
         return;
 
+    int song_num = GetSongNum();
+    if (song_num == 1 && m_playlist[0].file_path.empty())
+        song_num = 0;
     if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
     {
         m_recent_playlist.m_default_playlist.position = m_current_position.toInt();
         m_recent_playlist.m_default_playlist.track = m_index;
-        m_recent_playlist.m_default_playlist.track_num = GetSongNum();
+        m_recent_playlist.m_default_playlist.track_num = song_num;
         m_recent_playlist.m_default_playlist.total_time = m_total_time;
     }
     else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
     {
         m_recent_playlist.m_favourite_playlist.position = m_current_position.toInt();
         m_recent_playlist.m_favourite_playlist.track = m_index;
-        m_recent_playlist.m_favourite_playlist.track_num = GetSongNum();
+        m_recent_playlist.m_favourite_playlist.track_num = song_num;
         m_recent_playlist.m_favourite_playlist.total_time = m_total_time;
     }
     else
     {
-        m_recent_playlist.EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), GetSongNum(), m_total_time);
+        m_recent_playlist.EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), song_num, m_total_time);
     }
 }
 
