@@ -224,7 +224,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
     ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
     ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_ui_data.display_format));
-    ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.show_lyric_in_cortana);
+    ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.cortana_info_enable);
+    ini.WriteBool(L"config", L"cortana_show_lyric", theApp.m_lyric_setting_data.cortana_show_lyric);
     ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
     ini.WriteString(L"config", L"font", theApp.m_app_setting_data.lyric_font.name);
     ini.WriteInt(L"config", L"font_size", theApp.m_app_setting_data.lyric_font.size);
@@ -315,7 +316,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
     theApp.m_ui_data.display_format = static_cast<DisplayFormat>(ini.GetInt(L"config", L"playlist_display_format", 2));
-    theApp.m_lyric_setting_data.show_lyric_in_cortana = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
+    theApp.m_lyric_setting_data.cortana_show_lyric = ini.GetBool(L"config", L"cortana_show_lyric", true);
+    theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
     theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
     theApp.m_app_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
     theApp.m_app_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
@@ -704,7 +706,7 @@ void CMusicPlayerDlg::CreateDesktopShortcut()
 void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 {
     //获取选项设置对话框中的设置数据
-    if (theApp.m_lyric_setting_data.show_lyric_in_cortana == true && optionDlg.m_tab1_dlg.m_data.show_lyric_in_cortana == false)	//如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
+    if (theApp.m_lyric_setting_data.cortana_info_enable == true && optionDlg.m_tab1_dlg.m_data.cortana_info_enable == false)	//如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
         m_cortana_lyric.ResetCortanaText();
 
     bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
@@ -1042,7 +1044,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     //只有Win10以上的系统才能在Cortana搜索框中显示歌词
     if (!CWinVersionHelper::IsWindows10OrLater())
-        theApp.m_lyric_setting_data.show_lyric_in_cortana = false;
+        theApp.m_lyric_setting_data.cortana_info_enable = false;
     m_cortana_lyric.SetEnable(CWinVersionHelper::IsWindows10OrLater());
 
     //设置窗口不透明度
@@ -1354,7 +1356,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         }
 
         //在Cortana搜索框里显示歌词
-        if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
+        if (theApp.m_lyric_setting_data.cortana_info_enable)
         {
             if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
                 m_cortana_lyric.DrawInfo();
@@ -1372,7 +1374,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             {
                 CPlayer::GetInstance().MusicControl(Command::STOP);		//停止播放
                 //ShowTime();
-                if (theApp.m_lyric_setting_data.show_lyric_in_cortana)
+                if (theApp.m_lyric_setting_data.cortana_info_enable)
                     m_cortana_lyric.ResetCortanaText();
             }
             SwitchTrack();

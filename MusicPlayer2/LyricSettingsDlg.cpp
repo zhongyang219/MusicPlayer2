@@ -23,17 +23,18 @@ CLyricSettingsDlg::~CLyricSettingsDlg()
 
 void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CTabDlg::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
-	DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
-	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_show_lyric_in_cortana_check);
-	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
-	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
-	DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
-	DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
-	DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
-	DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
-	DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
+    CTabDlg::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
+    DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
+    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
+    DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
+    DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
+    DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
+    DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
+    DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
+    DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
+    DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
+    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
 }
 
 
@@ -50,6 +51,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_SET_FONT, &CLyricSettingsDlg::OnBnClickedSetFont)
 	ON_BN_CLICKED(IDC_KEEP_DISPLAY_CHECK, &CLyricSettingsDlg::OnBnClickedKeepDisplayCheck)
 	ON_BN_CLICKED(IDC_SHOW_SPECTRUM_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowSpectrumInCortana)
+    ON_BN_CLICKED(IDC_SHOW_LYRIC_IN_CORTANA2, &CLyricSettingsDlg::OnBnClickedShowLyricInCortana2)
 END_MESSAGE_MAP()
 
 
@@ -72,14 +74,15 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_lyric_compatible_mode_chk.SetCheck(m_data.cortana_lyric_compatible_mode);
 	m_keep_display_chk.SetCheck(m_data.cortana_lyric_keep_display);
 	m_show_spectrum_chk.SetCheck(m_data.cortana_show_spectrum);
+    m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
 	if (CWinVersionHelper::IsWindows10OrLater())
 	{
-		m_show_lyric_in_cortana_check.SetCheck(m_data.show_lyric_in_cortana);
+		m_cortana_info_enable_check.SetCheck(m_data.cortana_info_enable);
 	}
 	else
 	{
-		m_show_lyric_in_cortana_check.EnableWindow(FALSE);		//Win10以下系统禁用此复选按钮
-		m_data.show_lyric_in_cortana = false;
+		m_cortana_info_enable_check.EnableWindow(FALSE);		//Win10以下系统禁用此复选按钮
+		m_data.cortana_info_enable = false;
 	}
 
 	EnableControl();
@@ -105,15 +108,16 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 
 void CLyricSettingsDlg::EnableControl()
 {
-	bool enable = m_data.show_lyric_in_cortana && !m_data.cortana_lyric_compatible_mode;
-	m_lyric_double_line_chk.EnableWindow(enable);
+	bool enable = m_data.cortana_info_enable && !m_data.cortana_lyric_compatible_mode;
+	m_lyric_double_line_chk.EnableWindow(enable && m_data.cortana_show_lyric);
+    m_show_lyric_in_cortana_chk.EnableWindow(enable);
 	m_show_album_cover_in_cortana_check.EnableWindow(enable);
 	m_cortana_color_combo.EnableWindow(enable);
 	m_cortana_icon_beat_check.EnableWindow(enable);
 	GetDlgItem(IDC_SET_FONT)->EnableWindow(enable);
 	m_keep_display_chk.EnableWindow(enable);
 	m_show_spectrum_chk.EnableWindow(enable);
-	m_lyric_compatible_mode_chk.EnableWindow(m_data.show_lyric_in_cortana);
+	m_lyric_compatible_mode_chk.EnableWindow(m_data.cortana_info_enable);
 }
 
 
@@ -179,7 +183,7 @@ BOOL CLyricSettingsDlg::PreTranslateMessage(MSG* pMsg)
 void CLyricSettingsDlg::OnBnClickedShowLyricInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_data.show_lyric_in_cortana = (m_show_lyric_in_cortana_check.GetCheck() != 0);
+	m_data.cortana_info_enable = (m_cortana_info_enable_check.GetCheck() != 0);
 	EnableControl();
 }
 
@@ -253,4 +257,12 @@ void CLyricSettingsDlg::OnBnClickedShowSpectrumInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.cortana_show_spectrum = (m_show_spectrum_chk.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedShowLyricInCortana2()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.cortana_show_lyric = (m_show_lyric_in_cortana_chk.GetCheck() != 0);
+    EnableControl();
 }

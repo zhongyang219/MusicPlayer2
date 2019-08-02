@@ -126,7 +126,7 @@ void CCortanaLyric::DrawInfo()
             //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
             no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time.toInt() > 20000) || progress >= 1000;
 
-            if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric)		//有歌词时显示歌词
+            if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric && theApp.m_lyric_setting_data.cortana_show_lyric)		//有歌词时显示歌词
             {
 				if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
 				{

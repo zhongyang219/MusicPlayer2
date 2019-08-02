@@ -33,6 +33,7 @@ protected:
 	CButton m_lyric_compatible_mode_chk;
 	CButton m_keep_display_chk;
 	CButton m_show_spectrum_chk;
+    CButton m_show_lyric_in_cortana_chk;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -49,7 +50,7 @@ public:
 	virtual void OnOK();
 	afx_msg void OnBnClickedLyricFuzzyMatch();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	CButton m_show_lyric_in_cortana_check;
+	CButton m_cortana_info_enable_check;
 	afx_msg void OnBnClickedShowLyricInCortana();
 	afx_msg void OnBnClickedLyricDoubleLineCheck();
 	afx_msg void OnCbnSelchangeCortanaColorCombo();
@@ -59,4 +60,5 @@ public:
 	afx_msg void OnBnClickedSetFont();
 	afx_msg void OnBnClickedKeepDisplayCheck();
 	afx_msg void OnBnClickedShowSpectrumInCortana();
+    afx_msg void OnBnClickedShowLyricInCortana2();
 };
