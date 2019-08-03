@@ -74,10 +74,6 @@ using std::map;
 #endif
 
 #include <afxinet.h>	//用于支持使用网络相关的类
-#include <afxwin.h>
-#include <afxwin.h>
-#include <afxwin.h>
-#include <afxwin.h>
 
 
 
@@ -108,8 +104,8 @@ using _tstring = std::string;
 #define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
 #define MAX_SONG_NUM 9999		//播放列表中文件数量的最大值
 
-#define VERSION L"2.65"	//程序版本
-#define COMPILE_DATE L"2019/05/25"
+#define VERSION L"2.66"	//程序版本
+#define COMPILE_DATE L"2019/08/03"
 
 //任务栏图按钮
 #define IDT_PLAY_PAUSE 1321		//任务栏缩略图“播放/暂停”按钮的ID
