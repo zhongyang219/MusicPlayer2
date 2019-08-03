@@ -1,9 +1,9 @@
-﻿<version>2.65</version>
-<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.65/MusicPlayer2_V2.65_x86.7z</link>
-<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.65/MusicPlayer2_V2.65_x64.7z</link_x64>
+﻿<version>2.66</version>
+<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.66/MusicPlayer2_V2.66_x86.7z</link>
+<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.66/MusicPlayer2_V2.66_x64.7z</link_x64>
 <update_contents>
-	<contents_zh_cn>新增在搜索框显示频谱分析的功能。\n新增累计听歌时间统计的功能。\n新增浮动播放列表的功能。\n新增总是置顶的功能。\n新增崩溃时显示错误信息并生成dump文件的功能。\n字体设置增加粗体、斜体和下划线的样式设置。\n新增创建播放控制快捷方式的功能。\n新增x64的支版本。\n其他细节方面的改进。</contents_zh_cn>
-	<contents_en>Add the function to display spectrum analysis in the search box.\nAdd the function of accumulating listening time statistics.\nAdd the function of floating playlist.\nAdd the function of always on top.\nAdd the function to display error messages and generate a dump file when crashed.\nAdd the style settings of bold, italic, and underline font settings.\nAdd the function to create playback control shortcuts.\nAdd the x64 version.\nImprovements in other details</contents_en>
+	<contents_zh_cn>新增播放列表功能，可自由创建和编辑播放列表。\n新增歌曲红心的功能。\n修正部分flac音频标签获取不正确的问题。\n新增文件关联功能。\n修正窗口大小改变时会导致GDI句柄泄漏的问题。\n新增声音淡入淡出效果。\n修正了一些bug。\n其他细节方面的改进。</contents_zh_cn>
+	<contents_en>Add the playlist function, you can freely create and edit playlists.\nAdd the function of song red heart.\nFixed the problem that some flac audio tags were incorrectly obtained.\nAdd the function of file association.\nFixed the problem that the GDI handle leaked when the window size changed.\nAdd the sound fade effect.\nFixed some bugs.\nImproved in other details.</contents_en>
 </update_contents>
 <!--以下内容为了兼容旧版本程序的检查更新功能-->
-<contents>新增在搜索框显示频谱分析的功能。\n新增累计听歌时间统计的功能。\n新增浮动播放列表的功能。\n新增总是置顶的功能。\n新增崩溃时显示错误信息并生成dump文件的功能。\n字体设置增加粗体、斜体和下划线的样式设置。\n新增创建播放控制快捷方式的功能。\n新增x64的支版本。\n其他细节方面的改进。</contents>
+<contents>新增播放列表功能，可自由创建和编辑播放列表。\n新增歌曲红心的功能。\n修正部分flac音频标签获取不正确的问题。\n新增文件关联功能。\n修正窗口大小改变时会导致GDI句柄泄漏的问题。\n新增声音淡入淡出效果。\n修正了一些bug。\n其他细节方面的改进。</contents>
