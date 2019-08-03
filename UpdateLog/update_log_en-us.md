@@ -1,5 +1,14 @@
 **[简体中文](https://github.com/zhongyang219/MusicPlayer2/blob/master/UpdateLog/update_log.md) | English**<br>
 # MusicPlayer2 Update log
+## V2.66 (2019/08/03)
+* Add the playlist function, you can freely create and edit playlists.
+* Add the function of song red heart.
+* Fixed the problem that some flac audio tags were incorrectly obtained.
+* Add the function of file association.
+* Fixed the problem that the GDI handle leaked when the window size changed.
+* Add the sound fade effect.
+* Fixed some bugs.
+* Improved in other details.
 ## V2.65 (2019/05/25)
 * Add the function to display spectrum analysis in the search box.
 * Add the function of accumulating listening time statistics.
