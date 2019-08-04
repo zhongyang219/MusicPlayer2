@@ -148,8 +148,9 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             }
         }
         wstring file_path{ GetInstance().m_playlist[i].file_path };
-        GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], !GetInstance().IsOsuFile());
-        if (GetInstance().IsOsuFile())
+        bool is_osu_file{ COSUPlayerHelper::IsOsuFile(file_path) };
+        GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], !is_osu_file);
+        if (is_osu_file)
         {
             COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
         }
