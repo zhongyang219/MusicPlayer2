@@ -205,7 +205,8 @@ void CListCtrlEx::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	this->SetFocus();
-	CListCtrl::OnLButtonDown(nFlags, point);
+    m_dragging = false;
+    CListCtrl::OnLButtonDown(nFlags, point);
 }
 
 
@@ -213,7 +214,8 @@ void CListCtrlEx::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	this->SetFocus();
-	CListCtrl::OnRButtonDown(nFlags, point);
+    m_dragging = false;
+    CListCtrl::OnRButtonDown(nFlags, point);
 }
 
 
