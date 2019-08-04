@@ -890,6 +890,14 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
             break;
         }
     }
+    else
+    {
+        pMenu->CheckMenuItem(ID_SORT_BY_FILE, MF_UNCHECKED);
+        pMenu->CheckMenuItem(ID_SORT_BY_TITLE, MF_UNCHECKED);
+        pMenu->CheckMenuItem(ID_SORT_BY_ARTIST, MF_UNCHECKED);
+        pMenu->CheckMenuItem(ID_SORT_BY_ALBUM, MF_UNCHECKED);
+        pMenu->CheckMenuItem(ID_SORT_BY_TRACK, MF_UNCHECKED);
+    }
 
     //设置播放列表菜单中“播放列表显示样式”的单选标记
     switch (theApp.m_ui_data.display_format)
