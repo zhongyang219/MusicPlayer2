@@ -322,6 +322,7 @@ void CCortanaLyric::DrawSpectrum()
         rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
         m_draw.FillAlphaRect(rect_peak, m_colors.sprctrum_color, 140, true);
     }
+    m_draw.SetDrawArea(m_cortana_rect);
 }
 
 CRect CCortanaLyric::TextRect() const

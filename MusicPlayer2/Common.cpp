@@ -380,7 +380,7 @@ CodeType CCommon::JudgeCodeType(const string & str, CodeType default_code)
 
 bool CCommon::IsURL(const wstring& str)
 {
-    return (str.substr(0, 7) == L"http://" || str.substr(0, 8) == L"https://" || str.substr(0, 6) == L"ftp://");
+    return (str.substr(0, 7) == L"http://" || str.substr(0, 8) == L"https://" || str.substr(0, 6) == L"ftp://" || str.substr(0, 6) == L"mms://");
 }
 
 wstring CCommon::GetExePath()
