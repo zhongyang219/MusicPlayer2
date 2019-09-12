@@ -529,6 +529,9 @@
     <ClInclude Include="MciCore.h">
       <Filter>功能逻辑类\PlayerCore\MCI</Filter>
     </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
