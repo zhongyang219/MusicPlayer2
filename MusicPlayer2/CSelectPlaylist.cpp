@@ -348,6 +348,11 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
+        if (playlist_name.IsEmpty())
+        {
+            MessageBox(CCommon::LoadText(IDS_PLAYLIST_NAME_EMPTY_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
         if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
         {
             MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
@@ -387,6 +392,11 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
+        if (playlist_name.IsEmpty())
+        {
+            MessageBox(CCommon::LoadText(IDS_PLAYLIST_NAME_EMPTY_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
         if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
         {
             MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
