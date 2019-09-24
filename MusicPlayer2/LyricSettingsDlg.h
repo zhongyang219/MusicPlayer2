@@ -61,4 +61,6 @@ public:
 	afx_msg void OnBnClickedKeepDisplayCheck();
 	afx_msg void OnBnClickedShowSpectrumInCortana();
     afx_msg void OnBnClickedShowLyricInCortana2();
+	CButton m_search_box_opaque_chk;
+    afx_msg void OnBnClickedSearchBoxOpaqueCheck();
 };

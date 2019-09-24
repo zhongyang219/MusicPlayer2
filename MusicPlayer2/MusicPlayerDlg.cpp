@@ -263,7 +263,7 @@ void CMusicPlayerDlg::SaveConfig()
 
     ini.WriteBool(L"other", L"no_sf2_warning", theApp.m_nc_setting_data.no_sf2_warning);
     ini.WriteBool(L"other", L"show_hide_menu_bar_tip", theApp.m_nc_setting_data.show_hide_menu_bar_tip);
-    ini.WriteBool(L"other", L"cortana_opaque", theApp.m_nc_setting_data.cortana_opaque);
+    ini.WriteBool(L"other", L"cortana_opaque", theApp.m_lyric_setting_data.cortana_opaque);
     ini.WriteInt(L"other", L"cortana_transparent_color", theApp.m_nc_setting_data.cortana_transparent_color);
 
     ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
@@ -355,7 +355,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     theApp.m_nc_setting_data.no_sf2_warning = ini.GetBool(L"other", L"no_sf2_warning", true);
     theApp.m_nc_setting_data.show_hide_menu_bar_tip = ini.GetBool(L"other", L"show_hide_menu_bar_tip", true);
-    theApp.m_nc_setting_data.cortana_opaque = ini.GetBool(L"other", L"cortana_opaque", false);
+    theApp.m_lyric_setting_data.cortana_opaque = ini.GetBool(L"other", L"cortana_opaque", false);
     theApp.m_nc_setting_data.cortana_transparent_color = ini.GetInt(L"other", L"cortana_transparent_color", RGB(255, 0, 255));
 	theApp.m_nc_setting_data.default_osu_img = ini.GetString(L"other", L"default_osu_img", L"");
 
@@ -2837,7 +2837,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     CInternetCommon::ItemInfo match_item;
     if (download_cover || download_lyric)
     {
-        DownloadResult result;
+		DownloadResult result{};
         if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
         {
             //搜索歌曲并获取最佳匹配的项目

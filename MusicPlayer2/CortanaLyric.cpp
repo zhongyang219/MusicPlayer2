@@ -14,6 +14,15 @@ CCortanaLyric::~CCortanaLyric()
 {
     if (m_pDC != nullptr)
         m_cortana_wnd->ReleaseDC(m_pDC);
+
+	//退出时恢复Cortana窗口透明
+#ifndef COMPILE_IN_WIN_XP
+	if (m_cortana_opaque)
+	{
+		SetWindowLong(m_hCortanaBar, GWL_EXSTYLE, GetWindowLong(m_hCortanaBar, GWL_EXSTYLE) & ~WS_EX_LAYERED);
+	}
+#endif // !COMPILE_IN_WIN_XP
+
 }
 
 void CCortanaLyric::Init()
@@ -21,9 +30,9 @@ void CCortanaLyric::Init()
     if (m_enable)
     {
         HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//任务栏的句柄
-        HWND hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("TrayDummySearchControl"), NULL);	//Cortana栏的句柄（其中包含3个子窗口）
-        m_cortana_hwnd = ::FindWindowEx(hCortanaBar, NULL, _T("Button"), NULL);	//Cortana搜索框中类名为“Button”的窗口的句柄
-        m_hCortanaStatic = ::FindWindowEx(hCortanaBar, NULL, _T("Static"), NULL);		//Cortana搜索框中类名为“Static”的窗口的句柄
+        m_hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("TrayDummySearchControl"), NULL);	//Cortana栏的句柄（其中包含3个子窗口）
+        m_cortana_hwnd = ::FindWindowEx(m_hCortanaBar, NULL, _T("Button"), NULL);	//Cortana搜索框中类名为“Button”的窗口的句柄
+        m_hCortanaStatic = ::FindWindowEx(m_hCortanaBar, NULL, _T("Static"), NULL);		//Cortana搜索框中类名为“Static”的窗口的句柄
         if (m_cortana_hwnd == NULL) return;
         wchar_t buff[32];
         ::GetWindowText(m_cortana_hwnd, buff, 31);		//获取Cortana搜索框中原来的字符串，用于在程序退出时恢复
@@ -31,11 +40,11 @@ void CCortanaLyric::Init()
         m_cortana_wnd = CWnd::FromHandle(m_cortana_hwnd);		//获取Cortana搜索框的CWnd类的指针
         if (m_cortana_wnd == nullptr) return;
 
-        ::GetClientRect(hCortanaBar, m_cortana_rect);	//获取Cortana搜索框的矩形区域
+        ::GetClientRect(m_hCortanaBar, m_cortana_rect);	//获取Cortana搜索框的矩形区域
 
         CRect cortana_rect;
         CRect cortana_static_rect;		//Cortana搜索框中static控件的矩形区域
-        ::GetWindowRect(hCortanaBar, cortana_rect);
+        ::GetWindowRect(m_hCortanaBar, cortana_rect);
         ::GetWindowRect(m_hCortanaStatic, cortana_static_rect);	//获取Cortana搜索框中static控件的矩形区域
 
         const int min_conver_width = theApp.DPI(40);
@@ -65,10 +74,11 @@ void CCortanaLyric::Init()
 
         //为Cortana搜索框设置一个透明色，使Cortana搜索框不透明
 #ifndef COMPILE_IN_WIN_XP
-        if(theApp.m_nc_setting_data.cortana_opaque)
+        if(theApp.m_lyric_setting_data.cortana_opaque)
         {
-            SetWindowLong(hCortanaBar, GWL_EXSTYLE, GetWindowLong(hCortanaBar, GWL_EXSTYLE) | WS_EX_LAYERED);
-            ::SetLayeredWindowAttributes(hCortanaBar, theApp.m_nc_setting_data.cortana_transparent_color, 0, LWA_COLORKEY);
+            SetWindowLong(m_hCortanaBar, GWL_EXSTYLE, GetWindowLong(m_hCortanaBar, GWL_EXSTYLE) | WS_EX_LAYERED);
+            ::SetLayeredWindowAttributes(m_hCortanaBar, theApp.m_nc_setting_data.cortana_transparent_color, 0, LWA_COLORKEY);
+            m_cortana_opaque = true;
         }
 #endif // !COMPILE_IN_WIN_XP
 
@@ -167,7 +177,7 @@ void CCortanaLyric::DrawInfo()
         AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
         DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
 
-        if (!m_colors.dark && !theApp.m_nc_setting_data.cortana_opaque)		//非深色模式下，在搜索顶部绘制边框
+        if (!m_colors.dark && !theApp.m_lyric_setting_data.cortana_opaque)		//非深色模式下，在搜索顶部绘制边框
         {
             CRect rect{ m_cortana_rect };
             rect.left += m_cover_width;

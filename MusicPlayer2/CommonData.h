@@ -156,6 +156,8 @@ struct LyricSettingData
     FontInfo cortana_font;						//搜索框字体
     bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
     bool cortana_show_spectrum{ false };		//是否在搜索框显示频谱
+
+	bool cortana_opaque{ false };				//搜索框不透明
 };
 
 struct ApperanceSettingData
@@ -224,7 +226,6 @@ struct NonCategorizedSettingData
     bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
     bool show_hide_menu_bar_tip{ true };	//是隐藏菜单栏是否弹出提示信息
     bool always_on_top{ false };	//是否总是置顶
-    bool cortana_opaque{ false };	//搜索框不透明
     COLORREF cortana_transparent_color{};
 	wstring default_osu_img;
 

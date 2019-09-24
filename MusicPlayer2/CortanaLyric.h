@@ -63,6 +63,7 @@ private:
 
 private:
     bool m_enable;
+	HWND m_hCortanaBar{};		////Cortana栏的句柄
     HWND m_cortana_hwnd{};		//Cortana的句柄
     HWND m_hCortanaStatic;
     wstring m_cortana_default_text;	//Cortana搜索框中原来的文本
@@ -84,6 +85,8 @@ private:
 
     bool m_show_album_cover{ false };			//是否在Cortana图标处显示专辑封面
     int m_beat_amp{0};						//小娜图标跳动的幅值，取值为0~1000
+
+    bool m_cortana_opaque{ false };           //是否设置了搜索框不透明
 
 public:
     //bool m_cortana_disabled;

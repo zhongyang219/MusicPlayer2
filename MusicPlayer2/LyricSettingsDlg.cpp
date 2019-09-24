@@ -23,18 +23,19 @@ CLyricSettingsDlg::~CLyricSettingsDlg()
 
 void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CTabDlg::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
-    DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
-    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
-    DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
-    DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
-    DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
-    DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
-    DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
-    DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
-    DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
-    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
+	CTabDlg::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
+	DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
+	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
+	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
+	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
+	DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
+	DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
+	DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
+	DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
+	DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
+	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
+	DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
 }
 
 
@@ -52,6 +53,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_KEEP_DISPLAY_CHECK, &CLyricSettingsDlg::OnBnClickedKeepDisplayCheck)
 	ON_BN_CLICKED(IDC_SHOW_SPECTRUM_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowSpectrumInCortana)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_IN_CORTANA2, &CLyricSettingsDlg::OnBnClickedShowLyricInCortana2)
+    ON_BN_CLICKED(IDC_SEARCH_BOX_OPAQUE_CHECK, &CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck)
 END_MESSAGE_MAP()
 
 
@@ -75,6 +77,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_keep_display_chk.SetCheck(m_data.cortana_lyric_keep_display);
 	m_show_spectrum_chk.SetCheck(m_data.cortana_show_spectrum);
     m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
+    m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
 	if (CWinVersionHelper::IsWindows10OrLater())
 	{
 		m_cortana_info_enable_check.SetCheck(m_data.cortana_info_enable);
@@ -94,6 +97,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, CCommon::LoadText(IDS_LYRIC_FUZZY_MATHC_TIP_INFO));
 	m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_PATH_EDIT), CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
 	m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
+	m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
 
 	m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -265,4 +269,11 @@ void CLyricSettingsDlg::OnBnClickedShowLyricInCortana2()
     // TODO: 在此添加控件通知处理程序代码
     m_data.cortana_show_lyric = (m_show_lyric_in_cortana_chk.GetCheck() != 0);
     EnableControl();
+}
+
+
+void CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.cortana_opaque = (m_search_box_opaque_chk.GetCheck() != 0);
 }
