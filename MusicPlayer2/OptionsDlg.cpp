@@ -50,12 +50,35 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab4_dlg.Create(IDD_PLAY_SETTING_DIALOG);
 	m_tab5_dlg.Create(IDD_HOT_KEY_SETTINGS_DIALOG);
 
+	//保存子对话框
+	std::vector<CTabDlg*> tab_vect;
+	tab_vect.push_back(&m_tab1_dlg);
+	tab_vect.push_back(&m_tab2_dlg);
+	tab_vect.push_back(&m_tab3_dlg);
+	tab_vect.push_back(&m_tab4_dlg);
+	tab_vect.push_back(&m_tab5_dlg);
+
+	//获取子对话框的初始高度
+	std::vector<int> tab_height;
+	for (const auto* pDlg : tab_vect)
+	{
+		CRect rect;
+		pDlg->GetWindowRect(rect);
+		tab_height.push_back(rect.Height());
+	}
+
 	//添加对话框
 	m_tab.AddWindow(&m_tab1_dlg, CCommon::LoadText(IDS_LYRIC_SETTINGS));
 	m_tab.AddWindow(&m_tab2_dlg, CCommon::LoadText(IDS_APPEARANCE_SETTINGS));
 	m_tab.AddWindow(&m_tab3_dlg, CCommon::LoadText(IDS_GENERAL_SETTINGS));
 	m_tab.AddWindow(&m_tab4_dlg, CCommon::LoadText(IDS_PLAY_SETTINGS));
 	m_tab.AddWindow(&m_tab5_dlg, CCommon::LoadText(IDS_GLOBLE_HOTKEY));
+
+	//为每个子窗口设置滚动信息
+	for (size_t i = 0; i < tab_vect.size(); i++)
+	{
+		tab_vect[i]->SetScrollbarInfo(m_tab.m_tab_rect.Height(), tab_height[i]);
+	}
 
 	m_tab.SetCurTab(m_tab_selected);
 
