@@ -68,6 +68,7 @@ void CTabDlg::SetScrollbarInfo(int nPage, int nMax)
 	scrollinfo.nMax = nMax;     //设置滚动条的最大位置
 	if (scrollinfo.nMax < 0)
 		scrollinfo.nMax = 0;
+	scrollinfo.nPos = scrollinfo.nMin;
 	SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 }
 
