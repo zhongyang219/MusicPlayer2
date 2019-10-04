@@ -83,8 +83,10 @@ void CTabDlg::ScrollWindowSimple(int step)
 	}
 	if (scrollinfo.nPos + scrollinfo.nPage > scrollinfo.nMax)  //此处一定要注意加上滑块的长度，再作判断
 	{
+		step -= (scrollinfo.nMax - (scrollinfo.nPos + scrollinfo.nPage));		//如果向上滚动一个距离后大于滚动条的最大位置了，则修正step的值，使窗口滚动到最下方
+		if (step > 0)
+			step = 0;
 		scrollinfo.nPos = scrollinfo.nMax;
-		return;
 	}
 	SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 	ScrollWindow(0, step);

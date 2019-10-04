@@ -535,7 +535,7 @@
     <ClInclude Include="Define.h">
       <Filter>stdafx</Filter>
     </ClInclude>
-    <ClInclude Include="DesktopLyrics.h">
+    <ClInclude Include="LyricsWindow.h">
       <Filter>功能逻辑类\桌面歌词</Filter>
     </ClInclude>
   </ItemGroup>
@@ -795,7 +795,7 @@
     <ClCompile Include="MciCore.cpp">
       <Filter>功能逻辑类\PlayerCore\MCI</Filter>
     </ClCompile>
-    <ClCompile Include="DesktopLyrics.cpp">
+    <ClCompile Include="LyricsWindow.cpp">
       <Filter>功能逻辑类\桌面歌词</Filter>
     </ClCompile>
   </ItemGroup>

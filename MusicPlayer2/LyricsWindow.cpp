@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "DesktopLyrics.h"
+#include "LyricsWindow.h"
 
 
 // CLyricsWindow
