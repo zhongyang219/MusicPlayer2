@@ -1403,6 +1403,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			m_desktop_lyric.ShowLyric();
 		}
+		m_desktop_lyric.SetLyricWindowVisible(theApp.m_lyric_setting_data.show_desktop_lyric && !CPlayer::GetInstance().m_Lyrics.IsEmpty());
 
         //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
         if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲

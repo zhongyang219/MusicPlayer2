@@ -44,6 +44,11 @@ void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 	m_lyric_window.SetHighlightColor(ToGDIPluseColor(data.highlight_color1), ToGDIPluseColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
 }
 
+void CDesktopLyric::SetLyricWindowVisible(bool visible)
+{
+	m_lyric_window.ShowWindow(visible);
+}
+
 int CDesktopLyric::ToGDIPluseFontStyle(const FontStyle& style)
 {
 	int value = 0;

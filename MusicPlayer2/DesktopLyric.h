@@ -10,6 +10,7 @@ public:
 	void Create();
 	void ShowLyric();
 	void ApplySettings(const DesktopLyricSettingData& data);
+	void SetLyricWindowVisible(bool visible);
 
 	static int ToGDIPluseFontStyle(const FontStyle& style);
 	static Gdiplus::Color ToGDIPluseColor(COLORREF color);
