@@ -36,6 +36,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
 	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
 	DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
+	DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
 }
 
 
@@ -54,6 +55,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_SHOW_SPECTRUM_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowSpectrumInCortana)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_IN_CORTANA2, &CLyricSettingsDlg::OnBnClickedShowLyricInCortana2)
     ON_BN_CLICKED(IDC_SEARCH_BOX_OPAQUE_CHECK, &CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck)
+	ON_BN_CLICKED(IDC_SHOW_DESKTOP_LYRIC, &CLyricSettingsDlg::OnBnClickedShowDesktopLyric)
 END_MESSAGE_MAP()
 
 
@@ -78,6 +80,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_show_spectrum_chk.SetCheck(m_data.cortana_show_spectrum);
     m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
     m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
+	m_show_desktop_lyric_chk.SetCheck(m_data.show_desktop_lyric);
 	if (CWinVersionHelper::IsWindows10OrLater())
 	{
 		m_cortana_info_enable_check.SetCheck(m_data.cortana_info_enable);
@@ -276,4 +279,11 @@ void CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.cortana_opaque = (m_search_box_opaque_chk.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedShowDesktopLyric()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.show_desktop_lyric = (m_show_desktop_lyric_chk.GetCheck() != 0);
 }

@@ -245,6 +245,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"cortana_font_style", theApp.m_lyric_setting_data.cortana_font.style.ToInt());
     ini.WriteBool(L"config", L"cortana_lyric_keep_display", theApp.m_lyric_setting_data.cortana_lyric_keep_display);
     ini.WriteBool(L"config", L"cortana_show_spectrum", theApp.m_lyric_setting_data.cortana_show_spectrum);
+    
+	ini.WriteBool(L"desktop_lyric", L"show_desktop_lyric", theApp.m_lyric_setting_data.show_desktop_lyric);
 
     ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
     ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -337,6 +339,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.cortana_font.style.FromInt(ini.GetInt(L"config", L"cortana_font_style", 0));
     theApp.m_lyric_setting_data.cortana_lyric_keep_display = ini.GetBool(L"config", L"cortana_lyric_keep_display", false);
     theApp.m_lyric_setting_data.cortana_show_spectrum = ini.GetBool(L"config", L"cortana_show_spectrum", false);
+
+	theApp.m_lyric_setting_data.show_desktop_lyric = ini.GetBool(L"desktop_lyric", L"show_desktop_lyric", false);
 
     theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(L"config", L"background_gauss_blur", true);
     theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 60);
@@ -1128,6 +1132,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //获取Cortana歌词
     m_cortana_lyric.Init();
 
+	//初始化桌面歌词
+	m_LyricsWindow.Create();
+
     //初始化绘图的类
     m_pDC = GetDC();
     //m_draw.Create(m_pDC, this);
@@ -1369,6 +1376,27 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
                 m_cortana_lyric.DrawInfo();
         }
+
+		//显示桌面歌词
+		if (theApp.m_lyric_setting_data.show_desktop_lyric)
+		{
+			Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+			int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
+			CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
+			static std::wstring last_lyric_str;
+			if(!lyric.text.empty())
+			{
+				if (last_lyric_str != lyric.text)
+				{
+					m_LyricsWindow.UpdateLyrics(lyric.text.c_str(), progress);
+					last_lyric_str = lyric.text;
+				}
+				else
+				{
+					m_LyricsWindow.UpdateLyrics(progress);
+				}
+			}
+		}
 
         //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
         if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲

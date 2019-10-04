@@ -109,6 +109,8 @@ private:
     int m_dpi{};
     bool m_song_data_modified{ false };
 
+	ULONG_PTR m_gdiplusToken;
+
 // ÖØÐ´
 public:
     virtual BOOL InitInstance();
@@ -117,6 +119,7 @@ public:
 
     DECLARE_MESSAGE_MAP()
     afx_msg void OnHelp();
+	virtual int ExitInstance();
 };
 
 extern CMusicPlayerApp theApp;

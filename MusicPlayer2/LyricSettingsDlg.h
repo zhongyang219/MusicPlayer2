@@ -34,6 +34,7 @@ protected:
 	CButton m_keep_display_chk;
 	CButton m_show_spectrum_chk;
     CButton m_show_lyric_in_cortana_chk;
+	CButton m_show_desktop_lyric_chk;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -63,4 +64,5 @@ public:
     afx_msg void OnBnClickedShowLyricInCortana2();
 	CButton m_search_box_opaque_chk;
     afx_msg void OnBnClickedSearchBoxOpaqueCheck();
+	afx_msg void OnBnClickedShowDesktopLyric();
 };

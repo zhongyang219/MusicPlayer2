@@ -8,6 +8,7 @@
 #include "MessageDlg.h"
 #include "SimpleXML.h"
 #include "crashtool.h"
+#include <Gdiplus.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -228,6 +229,9 @@ BOOL CMusicPlayerApp::InitInstance()
     //设置一个全局钩子以截获多媒体按键消息
     if(m_hot_key_setting_data.global_multimedia_key_enable)
         m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
+
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
     CMusicPlayerDlg dlg(cmd_line);
     //CMusicPlayerDlg dlg(L"\"D:\\音乐\\纯音乐\\班得瑞\\05. Chariots Of Fire 火战车.mp3\"");
@@ -730,3 +734,13 @@ LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM 
     return LRESULT();
 }
 
+
+
+int CMusicPlayerApp::ExitInstance()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	// 卸载GDI+
+	Gdiplus::GdiplusShutdown(m_gdiplusToken);
+
+	return CWinApp::ExitInstance();
+}

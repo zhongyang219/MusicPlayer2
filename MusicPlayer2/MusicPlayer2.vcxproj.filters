@@ -243,6 +243,9 @@
     <Filter Include="功能逻辑类\PlayerCore\MCI">
       <UniqueIdentifier>{624c0f2f-0da1-4e3a-a50b-bf7ae2aeec2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\桌面歌词">
+      <UniqueIdentifier>{cec43889-05cc-4001-b005-a26a7b552a39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -532,6 +535,9 @@
     <ClInclude Include="Define.h">
       <Filter>stdafx</Filter>
     </ClInclude>
+    <ClInclude Include="DesktopLyrics.h">
+      <Filter>功能逻辑类\桌面歌词</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -788,6 +794,9 @@
     </ClCompile>
     <ClCompile Include="MciCore.cpp">
       <Filter>功能逻辑类\PlayerCore\MCI</Filter>
+    </ClCompile>
+    <ClCompile Include="DesktopLyrics.cpp">
+      <Filter>功能逻辑类\桌面歌词</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -214,6 +214,7 @@
     <ClInclude Include="CLyricDraw.h" />
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="DesktopLyrics.h" />
     <ClInclude Include="MciCore.h" />
     <ClInclude Include="CMediaLibDlg.h" />
     <ClInclude Include="CMiniModeUI.h" />
@@ -308,6 +309,7 @@
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
     <ClCompile Include="CLyricDraw.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
+    <ClCompile Include="DesktopLyrics.cpp" />
     <ClCompile Include="MciCore.cpp" />
     <ClCompile Include="CMediaLibDlg.cpp" />
     <ClCompile Include="CMiniModeUI.cpp" />

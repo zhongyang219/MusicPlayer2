@@ -156,8 +156,9 @@ struct LyricSettingData
     FontInfo cortana_font;						//搜索框字体
     bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
     bool cortana_show_spectrum{ false };		//是否在搜索框显示频谱
-
 	bool cortana_opaque{ false };				//搜索框不透明
+
+	bool show_desktop_lyric{ false };			//显示桌面歌词
 };
 
 struct ApperanceSettingData
