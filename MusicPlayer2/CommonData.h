@@ -140,6 +140,20 @@ struct FontSet
 
 
 //选项设置数据
+
+struct DesktopLyricSettingData		//桌面歌词设置
+{
+	bool lyric_double_line{ false };
+	FontInfo lyric_font;
+	COLORREF text_color1{};
+	COLORREF text_color2{};
+	int text_gradient{};
+	COLORREF highlight_color1{};
+	COLORREF highlight_color2{};
+	int highlight_gradient{};
+	int opacity{ 100 };
+};
+
 struct LyricSettingData
 {
     bool lyric_karaoke_disp{ true };			//可以是否以卡拉OK样式显示
@@ -159,6 +173,7 @@ struct LyricSettingData
 	bool cortana_opaque{ false };				//搜索框不透明
 
 	bool show_desktop_lyric{ false };			//显示桌面歌词
+	DesktopLyricSettingData desktop_lyric_data;
 };
 
 struct ApperanceSettingData

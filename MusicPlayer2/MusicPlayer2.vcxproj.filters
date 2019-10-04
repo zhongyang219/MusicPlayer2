@@ -538,6 +538,12 @@
     <ClInclude Include="LyricsWindow.h">
       <Filter>功能逻辑类\桌面歌词</Filter>
     </ClInclude>
+    <ClInclude Include="DesktopLyric.h">
+      <Filter>功能逻辑类\桌面歌词</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorStaticEx.h">
+      <Filter>派生的控件类\ColorStatic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -797,6 +803,12 @@
     </ClCompile>
     <ClCompile Include="LyricsWindow.cpp">
       <Filter>功能逻辑类\桌面歌词</Filter>
+    </ClCompile>
+    <ClCompile Include="DesktopLyric.cpp">
+      <Filter>功能逻辑类\桌面歌词</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorStaticEx.cpp">
+      <Filter>派生的控件类\ColorStatic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

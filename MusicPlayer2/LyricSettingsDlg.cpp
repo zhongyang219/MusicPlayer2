@@ -37,6 +37,14 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
 	DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
 	DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
+	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK2, m_desktop_lyric_double_line_chk);
+	DDX_Control(pDX, IDC_TEXT_COLOR1_STATIC, m_text_color1_static);
+	DDX_Control(pDX, IDC_TEXT_COLOR2_STATIC, m_text_color2_static);
+	DDX_Control(pDX, IDC_TEXT_GRADIENT_COMBO, m_text_gradient_combo);
+	DDX_Control(pDX, IDC_HIGHLIGHT_COLOR1_STATIC, m_highlight_color1_static);
+	DDX_Control(pDX, IDC_HIGHLIGHT_COLOR2_STATIC, m_highlight_color2_static);
+	DDX_Control(pDX, IDC_HIGHLIGHT_GRADIENT_COMBO, m_highlight_gradient_combo);
+	DDX_Control(pDX, IDC_LYRIC_OPACITY_SLIDER, m_desktop_lyric_opacity_sld);
 }
 
 
@@ -56,6 +64,9 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_IN_CORTANA2, &CLyricSettingsDlg::OnBnClickedShowLyricInCortana2)
     ON_BN_CLICKED(IDC_SEARCH_BOX_OPAQUE_CHECK, &CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck)
 	ON_BN_CLICKED(IDC_SHOW_DESKTOP_LYRIC, &CLyricSettingsDlg::OnBnClickedShowDesktopLyric)
+	ON_BN_CLICKED(IDC_SET_FONT2, &CLyricSettingsDlg::OnBnClickedSetFont2)
+	ON_CBN_SELCHANGE(IDC_TEXT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeTextGradientCombo)
+	ON_CBN_SELCHANGE(IDC_HIGHLIGHT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeHighlightGradientCombo)
 END_MESSAGE_MAP()
 
 
@@ -81,6 +92,20 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
     m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
 	m_show_desktop_lyric_chk.SetCheck(m_data.show_desktop_lyric);
+	m_text_color1_static.SetFillColor(m_data.desktop_lyric_data.text_color1);
+	m_text_color2_static.SetFillColor(m_data.desktop_lyric_data.text_color2);
+	m_highlight_color1_static.SetFillColor(m_data.desktop_lyric_data.highlight_color1);
+	m_highlight_color2_static.SetFillColor(m_data.desktop_lyric_data.highlight_color2);
+
+	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_NO_GRADIENT));
+	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
+	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_THREE_COLOR_GRADIENT));
+	m_text_gradient_combo.SetCurSel(m_data.desktop_lyric_data.text_gradient);
+	m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_NO_GRADIENT));
+	m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
+	m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_THREE_COLOR_GRADIENT));
+	m_highlight_gradient_combo.SetCurSel(m_data.desktop_lyric_data.highlight_gradient);
+
 	if (CWinVersionHelper::IsWindows10OrLater())
 	{
 		m_cortana_info_enable_check.SetCheck(m_data.cortana_info_enable);
@@ -165,6 +190,10 @@ void CLyricSettingsDlg::OnCancel()
 void CLyricSettingsDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
+	m_data.desktop_lyric_data.text_color1 = m_text_color1_static.GetFillColor();
+	m_data.desktop_lyric_data.text_color2 = m_text_color2_static.GetFillColor();
+	m_data.desktop_lyric_data.highlight_color1 = m_highlight_color1_static.GetFillColor();
+	m_data.desktop_lyric_data.highlight_color2 = m_highlight_color2_static.GetFillColor();
 
 	//CTabDlg::OnOK();
 }
@@ -235,7 +264,7 @@ void CLyricSettingsDlg::OnBnClickedLyricCompatibleMode()
 void CLyricSettingsDlg::OnBnClickedSetFont()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	LOGFONT lf{};             //LOGFONT变量
+	LOGFONT lf{};
 	theApp.m_font_set.cortana.GetFont().GetLogFont(&lf);
 	CCommon::NormalizeFont(lf);
 	CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
@@ -286,4 +315,40 @@ void CLyricSettingsDlg::OnBnClickedShowDesktopLyric()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.show_desktop_lyric = (m_show_desktop_lyric_chk.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedSetFont2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	LOGFONT lf{};
+	CFont font;
+	UIFont::CreateFontSimple(font, m_data.desktop_lyric_data.lyric_font.size, m_data.desktop_lyric_data.lyric_font.name.c_str(), m_data.desktop_lyric_data.lyric_font.style);
+	font.GetLogFont(&lf);
+	CCommon::NormalizeFont(lf);
+	CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+	if (IDOK == fontDlg.DoModal())     // 显示字体对话框
+	{
+		//获取字体信息
+		m_data.desktop_lyric_data.lyric_font.name = fontDlg.GetFaceName();
+		m_data.desktop_lyric_data.lyric_font.size = fontDlg.GetSize() / 10;
+		m_data.desktop_lyric_data.lyric_font.style.bold = (fontDlg.IsBold() != FALSE);
+		m_data.desktop_lyric_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
+		m_data.desktop_lyric_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
+		m_data.desktop_lyric_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
+	}
+}
+
+
+void CLyricSettingsDlg::OnCbnSelchangeTextGradientCombo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.desktop_lyric_data.text_gradient = m_text_gradient_combo.GetCurSel();
+}
+
+
+void CLyricSettingsDlg::OnCbnSelchangeHighlightGradientCombo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.desktop_lyric_data.highlight_gradient = m_highlight_gradient_combo.GetCurSel();
 }

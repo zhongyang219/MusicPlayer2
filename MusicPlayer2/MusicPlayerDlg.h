@@ -31,7 +31,7 @@
 #include "CMainDialogBase.h"
 #include "CFloatPlaylistDlg.h"
 #include "CMediaLibDlg.h"
-#include "DesktopLyrics.h"
+#include "DesktopLyric.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -103,7 +103,7 @@ protected:
     CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected };		//迷你模式对话框
 
     CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
-	CLyricsWindow m_LyricsWindow;		//桌面歌词
+	CDesktopLyric m_desktop_lyric;		//桌面歌词
 
     CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
     CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）

@@ -2,6 +2,7 @@
 #include "afxwin.h"
 #include "FolderBrowserDlg.h"
 #include "TabDlg.h"
+#include "ColorStaticEx.h"
 
 // CLyricSettingsDlg ¶Ô»°¿ò
 
@@ -36,6 +37,15 @@ protected:
     CButton m_show_lyric_in_cortana_chk;
 	CButton m_show_desktop_lyric_chk;
 
+	CButton m_desktop_lyric_double_line_chk;
+	CColorStaticEx m_text_color1_static;
+	CColorStaticEx m_text_color2_static;
+	CComboBox m_text_gradient_combo;
+	CColorStaticEx m_highlight_color1_static;
+	CColorStaticEx m_highlight_color2_static;
+	CComboBox m_highlight_gradient_combo;
+	CSliderCtrl m_desktop_lyric_opacity_sld;
+
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
 
@@ -65,4 +75,7 @@ public:
 	CButton m_search_box_opaque_chk;
     afx_msg void OnBnClickedSearchBoxOpaqueCheck();
 	afx_msg void OnBnClickedShowDesktopLyric();
+	afx_msg void OnBnClickedSetFont2();
+	afx_msg void OnCbnSelchangeTextGradientCombo();
+	afx_msg void OnCbnSelchangeHighlightGradientCombo();
 };

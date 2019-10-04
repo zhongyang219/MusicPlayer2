@@ -22,7 +22,7 @@ CLyricsWindow::CLyricsWindow()
 	m_HighlightGradientMode=LyricsGradientMode_Two ; //∏ﬂ¡¡∏Ë¥ Ω•±‰ƒ£ Ω
 	m_pHighlightPen=NULL ; //∏ﬂ¡¡∏Ë¥ ±ﬂøÚª≠± 
 	m_pShadowBrush=NULL ; //“ı”∞ª≠À¢,GDIPlusª≠À¢ 
-	m_nShadowOffset=LyricsGradientMode_Two ; //“ı”∞∆´“∆
+	m_nShadowOffset=1 ; //“ı”∞∆´“∆
 	m_pFont=NULL ; //GDIPlus◊÷ÃÂ
 	m_FontStyle=NULL ; 
 	m_FontSize=NULL ; 
@@ -34,11 +34,11 @@ CLyricsWindow::CLyricsWindow()
 	m_pTextFormat->SetAlignment(Gdiplus::StringAlignmentCenter); //÷√ÀÆ∆Ω∂‘∆Î∑Ω Ω
 	m_pTextFormat->SetLineAlignment(Gdiplus::StringAlignmentNear); //÷√¥π÷±∂‘∆Î∑Ω Ω
 	//---------------------------------
-	SetLyricsFont(L"Œ¢»Ì—≈∫⁄", 40, Gdiplus::FontStyle::FontStyleRegular);
-	SetLyricsColor(Gdiplus::Color::Red,Gdiplus::Color(255,172,0),LyricsGradientMode_Three);
+	//SetLyricsFont(L"Œ¢»Ì—≈∫⁄", 40, Gdiplus::FontStyle::FontStyleRegular);
+	//SetLyricsColor(Gdiplus::Color::Red,Gdiplus::Color(255,172,0),LyricsGradientMode_Three);
 	//SetLyricsBorder(Gdiplus::Color::Black,1);
-	SetLyricsShadow(Gdiplus::Color(150,0,0,0),2);
-	SetHighlightColor(Gdiplus::Color(255,100,26),Gdiplus::Color(255,255,0),LyricsGradientMode_Three);
+	SetLyricsShadow(Gdiplus::Color(150,0,0,0),1);
+	//SetHighlightColor(Gdiplus::Color(255,100,26),Gdiplus::Color(255,255,0),LyricsGradientMode_Three);
 	//SetHighlightBorder(Gdiplus::Color::Black,1);
 	
 }
