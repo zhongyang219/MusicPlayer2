@@ -7,6 +7,8 @@
 
 // CLyricsWindow
 
+const Gdiplus::REAL TRANSLATE_FONT_SIZE_FACTOR = 0.88f;		//歌词翻译文本大小占歌词文本大小的比例
+
 IMPLEMENT_DYNAMIC(CLyricsWindow, CWnd)
 
 CLyricsWindow::CLyricsWindow()
@@ -84,9 +86,9 @@ END_MESSAGE_MAP()
 
 
 
-BOOL CLyricsWindow::Create()
+BOOL CLyricsWindow::Create(int nHeight)
 {
-	return CLyricsWindow::Create(_T("CometLyricsWindow"),-1,-1);
+	return CLyricsWindow::Create(_T("CometLyricsWindow"), -1, nHeight);
 }
 BOOL CLyricsWindow::Create(LPCTSTR lpszClassName)
 {
@@ -191,6 +193,12 @@ void CLyricsWindow::UpdateLyrics(int nHighlight)
 		m_nHighlight=1000;
 	Draw();
 }
+
+void CLyricsWindow::UpdateLyricTranslate(LPCTSTR lpszLyricTranslate)
+{
+	m_strTranslate = lpszLyricTranslate;
+}
+
 //重画歌词窗口
 void CLyricsWindow::Draw()
 {
@@ -236,6 +244,41 @@ void CLyricsWindow::Draw()
 	::DeleteObject(hBitmap);
 	::ReleaseDC(m_hWnd,hDC);
 }
+
+void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawTranslate)
+{
+	Gdiplus::REAL fontSize = bDrawTranslate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
+	if (fontSize < 1)
+		fontSize = m_FontSize;
+
+	//-----------------------------------------------------------
+	//画出阴影
+	if (m_pShadowBrush) {
+		Gdiplus::RectF layoutRect(0, 0, 0, 0);
+		layoutRect = rect;
+		layoutRect.X = layoutRect.X + m_nShadowOffset;
+		layoutRect.Y = layoutRect.Y + m_nShadowOffset;
+		Gdiplus::GraphicsPath* pShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
+		pShadowPath->AddString(strText, -1, m_pFontFamily, m_FontStyle, fontSize, layoutRect, m_pTextFormat); //把文字加入路径
+		pGraphics->FillPath(m_pShadowBrush, pShadowPath);//填充路径
+		delete pShadowPath; //销毁路径
+	}
+
+	//-----------------------------------------------------------
+	//画出歌词
+	Gdiplus::GraphicsPath* pStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
+	pStringPath->AddString(strText, -1, m_pFontFamily, m_FontStyle, fontSize, rect, m_pTextFormat); //把文字加入路径
+	if (m_pTextPen) {
+		pGraphics->DrawPath(m_pTextPen, pStringPath);//画路径,文字边框
+	}
+	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, rect);
+	pGraphics->FillPath(pBrush, pStringPath);//填充路径
+	delete pBrush;//销毁画刷
+	if(!bDrawTranslate)
+		DrawHighlightLyrics(pGraphics, pStringPath, rect);
+	delete pStringPath; //销毁路径
+}
+
 //绘制歌词
 void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 {
@@ -244,35 +287,32 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	Gdiplus::RectF boundingBox;
 	pGraphics->MeasureString (m_lpszLyrics, -1, m_pFont,layoutRect, m_pTextFormat,&boundingBox, 0, 0);
 	//计算歌词画出的位置
-	Gdiplus::RectF dstRect((m_nWidth - boundingBox.Width) / 2,(m_nHeight - boundingBox.Height) / 2,boundingBox.Width,boundingBox.Height);
+	Gdiplus::RectF dstRect;		//文字的矩形
+	Gdiplus::RectF transRect;	//翻译文本的矩形
+	dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, (m_nHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
+	if (!m_strTranslate.IsEmpty())
+	{
+		Gdiplus::RectF transBoundingBox;
+		pGraphics->MeasureString(m_strTranslate, -1, m_pFont, layoutRect, m_pTextFormat, &transBoundingBox, 0, 0);
+		Gdiplus::REAL translateHeight = boundingBox.Height * TRANSLATE_FONT_SIZE_FACTOR;
+		Gdiplus::REAL maxWidth = max(boundingBox.Width, transBoundingBox.Width);
+		Gdiplus::REAL gapHeight = boundingBox.Height * 0.2f;	//歌词和翻译之间的间隙
+		Gdiplus::REAL height = boundingBox.Height + gapHeight + translateHeight;
+		Gdiplus::RectF textRect((m_nWidth - maxWidth) / 2, (m_nHeight - height * 2) / 2, maxWidth, height);
+		dstRect = textRect;
+		dstRect.Height = boundingBox.Height;
+		transRect = textRect;
+		transRect.Y += (boundingBox.Height + gapHeight);
+		transRect.Height = translateHeight;
+	}
 	if(dstRect.X<0)dstRect.X=0;
 	if(dstRect.Width>m_nWidth)dstRect.Width=m_nWidth;
+	if (transRect.X < 0)transRect.X = 0;
+	if (transRect.Width > m_nWidth)transRect.Width = m_nWidth;
 
-	//-----------------------------------------------------------
-	//画出阴影
-	if(m_pShadowBrush){
-		layoutRect=dstRect;
-		layoutRect.X=layoutRect.X + m_nShadowOffset;
-		layoutRect.Y=layoutRect.Y + m_nShadowOffset;
-		Gdiplus::GraphicsPath* pShadowPath=new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
-		pShadowPath->AddString (m_lpszLyrics, -1, m_pFontFamily, m_FontStyle, m_FontSize, layoutRect, m_pTextFormat); //把文字加入路径
-		pGraphics->FillPath (m_pShadowBrush,pShadowPath);//填充路径
-		delete pShadowPath; //销毁路径
-	}
-
-	//-----------------------------------------------------------
-	//画出歌词
-	Gdiplus::GraphicsPath* pStringPath=new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
-	pStringPath->AddString (m_lpszLyrics, -1, m_pFontFamily, m_FontStyle, m_FontSize,dstRect, m_pTextFormat); //把文字加入路径
-	if(m_pTextPen){
-		pGraphics->DrawPath (m_pTextPen,pStringPath);//画路径,文字边框
-	}
-	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1,m_TextColor2,dstRect);
-	pGraphics->FillPath (pBrush,pStringPath);//填充路径
-	delete pBrush;//销毁画刷
-	DrawHighlightLyrics(pGraphics,pStringPath,dstRect);
-	delete pStringPath; //销毁路径
-
+	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, false);
+	if (!m_strTranslate.IsEmpty())
+		DrawLyricText(pGraphics, m_strTranslate, transRect, true);
 }
 //绘制高亮歌词
 void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect)
@@ -419,6 +459,16 @@ void CLyricsWindow::SetLyricsFont(const WCHAR * familyName, Gdiplus::REAL emSize
 
 	
 	
+}
+
+void CLyricsWindow::SetLyricDoubleLine(bool doubleLine)
+{
+	m_bDoubleLine = doubleLine;
+}
+
+void CLyricsWindow::SetNextLyric(LPCTSTR lpszNextLyric)
+{
+	m_strNextLyric = lpszNextLyric;
 }
 
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)

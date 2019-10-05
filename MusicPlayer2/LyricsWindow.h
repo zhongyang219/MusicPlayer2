@@ -17,6 +17,11 @@
 // SetLyricsFont		设置歌词字体
 // ========================================================
 
+/*
+说明：此类的原作者：邓学彬，地址：https://blog.csdn.net/CometNet/article/details/37508613
+本人在此基础上进行了修改
+*/
+
 #pragma once
 
 #include <gdiplus.h>
@@ -41,7 +46,7 @@ public:
 	virtual ~CLyricsWindow();
 public:
 	//创建窗口 
-	BOOL Create();
+	BOOL Create(int nHeight = -1);
 	BOOL Create(LPCTSTR lpszClassName);
 	BOOL Create(LPCTSTR lpszClassName,int nWidth,int nHeight);
 public:
@@ -50,6 +55,8 @@ public:
 	void UpdateLyrics(LPCWSTR lpszLyrics,int nHighlight);
 	//更新高亮进度(高亮进度百分比)
 	void UpdateLyrics(int nHighlight);
+	//更新歌词翻译文本
+	void UpdateLyricTranslate(LPCTSTR lpszLyricTranslate);
 	//重画歌词窗口
 	void Draw();
 	//设置歌词颜色
@@ -66,7 +73,11 @@ public:
 	void SetLyricsShadow(Gdiplus::Color ShadowColor,int nShadowOffset=2);
 	//设置歌词字体
 	void SetLyricsFont(const WCHAR * familyName, Gdiplus::REAL emSize,INT style= Gdiplus::FontStyleRegular, Gdiplus::Unit unit= Gdiplus::UnitPixel);
+	//设置是否双行显示
+	void SetLyricDoubleLine(bool doubleLine);
+	void SetNextLyric(LPCTSTR lpszNextLyric);
 private:
+	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawTranslate);
 	//绘制歌词
 	void DrawLyrics(Gdiplus::Graphics* pGraphics);
 	//绘制高亮歌词
@@ -82,7 +93,7 @@ private:
 	int m_nWidth;
 	int m_nHeight;
 	LPWSTR m_lpszLyrics;//Unicode格式的歌词
-	int m_nHighlight;//高亮歌词的百分比 0--100
+	int m_nHighlight;//高亮歌词的百分比 0--1000
 	Gdiplus::Color m_TextColor1;//普通歌词颜色,ARGB颜色
 	Gdiplus::Color m_TextColor2;//普通歌词颜色,ARGB颜色
 	LyricsGradientMode m_TextGradientMode;//普通歌词渐变模式
@@ -98,6 +109,9 @@ private:
 	Gdiplus::REAL m_FontSize;
 	Gdiplus::FontFamily* m_pFontFamily;
 	Gdiplus::StringFormat* m_pTextFormat;
+	bool m_bDoubleLine = false;		//歌词双行显示
+	CString m_strTranslate;			//歌词翻译
+	CString m_strNextLyric;			//下一句歌词
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);

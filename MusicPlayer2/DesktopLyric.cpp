@@ -13,7 +13,7 @@ CDesktopLyric::~CDesktopLyric()
 
 void CDesktopLyric::Create()
 {
-	m_lyric_window.Create();
+	m_lyric_window.Create(theApp.DPI(150));
 }
 
 void CDesktopLyric::ShowLyric()
@@ -26,6 +26,7 @@ void CDesktopLyric::ShowLyric()
 	{
 		if (last_lyric_str != lyric.text)
 		{
+			m_lyric_window.UpdateLyricTranslate(lyric.translate.c_str());
 			m_lyric_window.UpdateLyrics(lyric.text.c_str(), progress);
 			last_lyric_str = lyric.text;
 		}
@@ -42,11 +43,24 @@ void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 	m_lyric_window.SetLyricsFont(data.lyric_font.name.c_str(), theApp.DPI(data.lyric_font.size), ToGDIPluseFontStyle(data.lyric_font.style));
 	m_lyric_window.SetLyricsColor(ToGDIPluseColor(data.text_color1), ToGDIPluseColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
 	m_lyric_window.SetHighlightColor(ToGDIPluseColor(data.highlight_color1), ToGDIPluseColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
+	SetLyricWindowLock(data.lock_desktop_lyric);
 }
 
 void CDesktopLyric::SetLyricWindowVisible(bool visible)
 {
 	m_lyric_window.ShowWindow(visible);
+}
+
+void CDesktopLyric::SetLyricWindowLock(bool locked)
+{
+	if (locked)
+	{
+		SetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);		//设置鼠标穿透
+	}
+	else
+	{
+		SetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE) & (~WS_EX_TRANSPARENT));		//取消鼠标穿透
+	}
 }
 
 int CDesktopLyric::ToGDIPluseFontStyle(const FontStyle& style)

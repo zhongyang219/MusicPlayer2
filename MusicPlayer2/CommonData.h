@@ -152,6 +152,7 @@ struct DesktopLyricSettingData		//◊¿√Ê∏Ë¥ …Ë÷√
 	COLORREF highlight_color2{};
 	int highlight_gradient{};
 	int opacity{ 100 };
+	bool lock_desktop_lyric{ false };
 };
 
 struct LyricSettingData

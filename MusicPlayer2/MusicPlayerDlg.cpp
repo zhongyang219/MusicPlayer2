@@ -256,6 +256,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"desktop_lyric", L"highlight_color1", theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color1);
 	ini.WriteInt(L"desktop_lyric", L"highlight_color2", theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color2);
 	ini.WriteInt(L"desktop_lyric", L"highlight_gradient", theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient);
+	ini.WriteBool(L"desktop_lyric", L"lock_desktop_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
 
     ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
     ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -359,6 +360,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color1 = ini.GetInt(L"desktop_lyric", L"highlight_color1", RGB(37, 152, 10));
 	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color2 = ini.GetInt(L"desktop_lyric", L"highlight_color2", RGB(129, 249, 0));
 	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient = ini.GetInt(L"desktop_lyric", L"highlight_gradient", 1);
+	theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = ini.GetBool(L"desktop_lyric", L"lock_desktop_lyric", false);
 
     theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(L"config", L"background_gauss_blur", true);
     theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 60);

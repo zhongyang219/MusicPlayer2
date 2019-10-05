@@ -45,6 +45,7 @@ protected:
 	CColorStaticEx m_highlight_color2_static;
 	CComboBox m_highlight_gradient_combo;
 	CSliderCtrl m_desktop_lyric_opacity_sld;
+	CButton m_lock_desktop_lyric_chk;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -78,4 +79,5 @@ public:
 	afx_msg void OnBnClickedSetFont2();
 	afx_msg void OnCbnSelchangeTextGradientCombo();
 	afx_msg void OnCbnSelchangeHighlightGradientCombo();
+	afx_msg void OnBnClickedLockDesktopLyricCheck();
 };

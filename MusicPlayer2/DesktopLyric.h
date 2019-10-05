@@ -11,6 +11,7 @@ public:
 	void ShowLyric();
 	void ApplySettings(const DesktopLyricSettingData& data);
 	void SetLyricWindowVisible(bool visible);
+	void SetLyricWindowLock(bool locked);
 
 	static int ToGDIPluseFontStyle(const FontStyle& style);
 	static Gdiplus::Color ToGDIPluseColor(COLORREF color);

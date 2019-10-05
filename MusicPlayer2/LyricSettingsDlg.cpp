@@ -45,6 +45,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_HIGHLIGHT_COLOR2_STATIC, m_highlight_color2_static);
 	DDX_Control(pDX, IDC_HIGHLIGHT_GRADIENT_COMBO, m_highlight_gradient_combo);
 	DDX_Control(pDX, IDC_LYRIC_OPACITY_SLIDER, m_desktop_lyric_opacity_sld);
+	DDX_Control(pDX, IDC_LOCK_DESKTOP_LYRIC_CHECK, m_lock_desktop_lyric_chk);
 }
 
 
@@ -67,6 +68,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_SET_FONT2, &CLyricSettingsDlg::OnBnClickedSetFont2)
 	ON_CBN_SELCHANGE(IDC_TEXT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeTextGradientCombo)
 	ON_CBN_SELCHANGE(IDC_HIGHLIGHT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeHighlightGradientCombo)
+	ON_BN_CLICKED(IDC_LOCK_DESKTOP_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedLockDesktopLyricCheck)
 END_MESSAGE_MAP()
 
 
@@ -96,6 +98,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_text_color2_static.SetFillColor(m_data.desktop_lyric_data.text_color2);
 	m_highlight_color1_static.SetFillColor(m_data.desktop_lyric_data.highlight_color1);
 	m_highlight_color2_static.SetFillColor(m_data.desktop_lyric_data.highlight_color2);
+	m_lock_desktop_lyric_chk.SetCheck(m_data.desktop_lyric_data.lock_desktop_lyric);
 
 	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_NO_GRADIENT));
 	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
@@ -351,4 +354,11 @@ void CLyricSettingsDlg::OnCbnSelchangeHighlightGradientCombo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.desktop_lyric_data.highlight_gradient = m_highlight_gradient_combo.GetCurSel();
+}
+
+
+void CLyricSettingsDlg::OnBnClickedLockDesktopLyricCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.desktop_lyric_data.lock_desktop_lyric = (m_lock_desktop_lyric_chk.GetCheck() != 0);
 }
