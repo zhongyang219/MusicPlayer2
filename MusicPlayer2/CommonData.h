@@ -153,6 +153,7 @@ struct DesktopLyricSettingData		//桌面歌词设置
 	int highlight_gradient{};
 	int opacity{ 100 };
 	bool lock_desktop_lyric{ false };
+	bool hide_lyric_window_without_lyric{ false };	//没有歌词时隐藏歌词窗口
 };
 
 struct LyricSettingData

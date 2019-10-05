@@ -257,6 +257,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"desktop_lyric", L"highlight_color2", theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color2);
 	ini.WriteInt(L"desktop_lyric", L"highlight_gradient", theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient);
 	ini.WriteBool(L"desktop_lyric", L"lock_desktop_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
+	ini.WriteBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric);
 
     ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
     ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -352,15 +353,16 @@ void CMusicPlayerDlg::LoadConfig()
 
 	theApp.m_lyric_setting_data.show_desktop_lyric = ini.GetBool(L"desktop_lyric", L"show_desktop_lyric", false);
 	theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.name = ini.GetString(L"desktop_lyric", L"font_name", CCommon::LoadText(IDS_DEFAULT_FONT));
-	theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.size = ini.GetInt(L"desktop_lyric", L"font_size", 26);
+	theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.size = ini.GetInt(L"desktop_lyric", L"font_size", 30);
 	theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.style.FromInt(ini.GetInt(L"desktop_lyric", L"font_style", 0));
-	theApp.m_lyric_setting_data.desktop_lyric_data.text_color1 = ini.GetInt(L"desktop_lyric", L"text_color1", RGB(253, 232, 0));
-	theApp.m_lyric_setting_data.desktop_lyric_data.text_color2 = ini.GetInt(L"desktop_lyric", L"text_color2", RGB(255, 120, 0));
-	theApp.m_lyric_setting_data.desktop_lyric_data.text_gradient = ini.GetInt(L"desktop_lyric", L"text_gradient", 2);
-	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color1 = ini.GetInt(L"desktop_lyric", L"highlight_color1", RGB(37, 152, 10));
-	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color2 = ini.GetInt(L"desktop_lyric", L"highlight_color2", RGB(129, 249, 0));
-	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient = ini.GetInt(L"desktop_lyric", L"highlight_gradient", 1);
+	theApp.m_lyric_setting_data.desktop_lyric_data.text_color1 = ini.GetInt(L"desktop_lyric", L"text_color1", RGB(37, 152, 10));
+	theApp.m_lyric_setting_data.desktop_lyric_data.text_color2 = ini.GetInt(L"desktop_lyric", L"text_color2", RGB(129, 249, 0));
+	theApp.m_lyric_setting_data.desktop_lyric_data.text_gradient = ini.GetInt(L"desktop_lyric", L"text_gradient", 1);
+	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color1 = ini.GetInt(L"desktop_lyric", L"highlight_color1", RGB(253, 232, 0));
+	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_color2 = ini.GetInt(L"desktop_lyric", L"highlight_color2", RGB(255, 120, 0));
+	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient = ini.GetInt(L"desktop_lyric", L"highlight_gradient", 2);
 	theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = ini.GetBool(L"desktop_lyric", L"lock_desktop_lyric", false);
+	theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric = ini.GetBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", false);
 
     theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(L"config", L"background_gauss_blur", true);
     theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 60);
@@ -1401,11 +1403,14 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         }
 
 		//显示桌面歌词
+		bool desktop_lyric_visible = theApp.m_lyric_setting_data.show_desktop_lyric;
+		if (CPlayer::GetInstance().m_Lyrics.IsEmpty() && theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric)
+			desktop_lyric_visible = false;
+		m_desktop_lyric.SetLyricWindowVisible(desktop_lyric_visible);
 		if (theApp.m_lyric_setting_data.show_desktop_lyric)
 		{
 			m_desktop_lyric.ShowLyric();
 		}
-		m_desktop_lyric.SetLyricWindowVisible(theApp.m_lyric_setting_data.show_desktop_lyric && !CPlayer::GetInstance().m_Lyrics.IsEmpty());
 
         //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
         if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//当前曲目播放完毕且没有出现错误时才播放下一曲
@@ -3112,6 +3117,9 @@ afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lPara
     CPlayer::GetInstance().AlbumCoverGaussBlur();
     //自动下载专辑封面
     m_pDownloadThread = AfxBeginThread(DownloadLyricAndCoverThreadFunc, this);
+
+	m_desktop_lyric.ClearLyric();
+
     return 0;
 }
 

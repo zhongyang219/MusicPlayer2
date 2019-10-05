@@ -9,6 +9,7 @@ public:
 
 	void Create();
 	void ShowLyric();
+	void ClearLyric();
 	void ApplySettings(const DesktopLyricSettingData& data);
 	void SetLyricWindowVisible(bool visible);
 	void SetLyricWindowLock(bool locked);
