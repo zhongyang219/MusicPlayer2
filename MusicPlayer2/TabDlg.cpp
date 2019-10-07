@@ -42,7 +42,6 @@ BOOL CTabDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	//将窗口背景设置成白色
 	SetBackgroundColor(RGB(255, 255, 255));
-	ModifyStyle(0, WS_VSCROLL);		//为选项卡窗口添加滚动条
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE

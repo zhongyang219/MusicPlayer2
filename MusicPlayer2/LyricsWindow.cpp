@@ -225,6 +225,14 @@ void CLyricsWindow::Draw()
 	Gdiplus::Graphics* pGraphics=new Gdiplus::Graphics(m_hCacheDC);
 	pGraphics->SetSmoothingMode (Gdiplus::SmoothingModeAntiAlias);
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
+
+	//»æÖÆ°ëÍ¸Ã÷±³¾°
+	if(m_bDrawBackground)
+	{
+		Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(80, 255, 255, 255));
+		pGraphics->FillRectangle(pBrush, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height());
+		delete pBrush;
+	}
 	DrawLyrics(pGraphics);
 	delete pGraphics;
 	//----------------------------------
@@ -472,6 +480,11 @@ void CLyricsWindow::SetLyricDoubleLine(bool doubleLine)
 void CLyricsWindow::SetNextLyric(LPCTSTR lpszNextLyric)
 {
 	m_strNextLyric = lpszNextLyric;
+}
+
+void CLyricsWindow::SetDrawBackground(bool drawBackground)
+{
+	m_bDrawBackground = drawBackground;
 }
 
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)

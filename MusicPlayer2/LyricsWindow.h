@@ -76,6 +76,7 @@ public:
 	//设置是否双行显示
 	void SetLyricDoubleLine(bool doubleLine);
 	void SetNextLyric(LPCTSTR lpszNextLyric);
+	void SetDrawBackground(bool drawBackground);
 private:
 	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawTranslate);
 	//绘制歌词
@@ -112,6 +113,7 @@ private:
 	bool m_bDoubleLine = false;		//歌词双行显示
 	CString m_strTranslate;			//歌词翻译
 	CString m_strNextLyric;			//下一句歌词
+	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
