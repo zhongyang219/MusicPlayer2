@@ -102,7 +102,7 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info, bool play)
         m_index_tmp = m_index;		//保存歌曲序号
         if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 
-        m_song_length = { 0, 0, 0 };
+        //m_song_length = { 0, 0, 0 };
         if (GetSongNum() == 0)
         {
             m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
