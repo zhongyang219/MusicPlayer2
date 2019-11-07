@@ -130,6 +130,7 @@ private:
     void SaveConfig();		//保存设置到ini文件
     void LoadConfig();		//从ini文件读取设置
     void SetTransparency();			//根据m_transparency的值设置窗口透明度
+    void SetDesptopLyricTransparency();
     void DrawInfo(bool reset = false);		//绘制信息
     void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
     void SetAlwaysOnTop();

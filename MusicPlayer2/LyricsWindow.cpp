@@ -17,7 +17,6 @@ CLyricsWindow::CLyricsWindow()
 	m_hCacheDC=::CreateCompatibleDC(hDC);
 	::ReleaseDC(NULL,hDC);
 	//---------------------------------
-	m_lpszLyrics=NULL ; //Unicode格式的歌词
 	m_nHighlight=NULL ; //高亮歌词的百分比 0--100
 	m_TextGradientMode=LyricsGradientMode_Two ; //普通歌词渐变模式
 	m_pTextPen=NULL ; //普通歌词边框画笔
@@ -47,10 +46,6 @@ CLyricsWindow::CLyricsWindow()
 
 CLyricsWindow::~CLyricsWindow()
 {
-	if(m_lpszLyrics){
-		delete  m_lpszLyrics;
-		m_lpszLyrics=NULL;
-	}
 	if(m_pTextPen){
 		delete m_pTextPen;
 		m_pTextPen=NULL;
@@ -149,39 +144,10 @@ BOOL CLyricsWindow::RegisterWndClass(LPCTSTR lpszClassName)
 
 
 //更新歌词(歌词文本,高亮进度百分比)
-void CLyricsWindow::UpdateLyrics(LPCSTR lpszLyrics,int nHighlight)
+void CLyricsWindow::UpdateLyrics(LPCTSTR lpszLyrics,int nHighlight)
 {
-	if(m_lpszLyrics){
-		delete  m_lpszLyrics;
-		m_lpszLyrics=NULL;
-	}
-	if(lpszLyrics){
-		//传递进来的ANSI版本的字符串,需要转换成Unicode
-		int nLen=MultiByteToWideChar(CP_ACP,0,lpszLyrics,-1, NULL,NULL);
-		if(nLen){
-			m_lpszLyrics = new WCHAR[nLen+1];
-			ZeroMemory(m_lpszLyrics,sizeof(WCHAR)*(nLen+1));
-			MultiByteToWideChar(CP_ACP,0,lpszLyrics,-1,m_lpszLyrics,nLen); 
-		}		
-	}
-	UpdateLyrics(nHighlight);
-}
-void CLyricsWindow::UpdateLyrics(LPCWSTR lpszLyrics,int nHighlight)
-{
-	if(m_lpszLyrics){
-		delete  m_lpszLyrics;
-		 m_lpszLyrics=NULL;
-	}
-	int nLen=0;
-	if(lpszLyrics){
-		nLen=lstrlenW(lpszLyrics);
-	}
-	if(nLen>0){
-		m_lpszLyrics=new WCHAR[nLen+1];
-		ZeroMemory(m_lpszLyrics,sizeof(WCHAR)*(nLen+1));
-		CopyMemory(m_lpszLyrics,lpszLyrics,sizeof(WCHAR)*(nLen));
-	}
-	UpdateLyrics(nHighlight);
+    m_lpszLyrics = lpszLyrics;
+    UpdateLyrics(nHighlight);
 }
 //更新高亮进度(高亮进度百分比)
 void CLyricsWindow::UpdateLyrics(int nHighlight)
@@ -243,7 +209,7 @@ void CLyricsWindow::Draw()
 	blendFunc32bpp.AlphaFormat = AC_SRC_ALPHA;
 	blendFunc32bpp.BlendFlags = 0;
 	blendFunc32bpp.BlendOp = AC_SRC_OVER;
-	blendFunc32bpp.SourceConstantAlpha = 255;
+	blendFunc32bpp.SourceConstantAlpha = m_alpha;
 	HDC hDC=::GetDC(m_hWnd);
 	::UpdateLayeredWindow(m_hWnd,hDC,NULL,&psize,m_hCacheDC,&DestPt,0,&blendFunc32bpp,ULW_ALPHA);
 	//----------------------------------
@@ -485,6 +451,11 @@ void CLyricsWindow::SetNextLyric(LPCTSTR lpszNextLyric)
 void CLyricsWindow::SetDrawBackground(bool drawBackground)
 {
 	m_bDrawBackground = drawBackground;
+}
+
+void CLyricsWindow::SetAlpha(int alpha)
+{
+    m_alpha = alpha;
 }
 
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)

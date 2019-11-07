@@ -69,6 +69,8 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_CBN_SELCHANGE(IDC_TEXT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeTextGradientCombo)
 	ON_CBN_SELCHANGE(IDC_HIGHLIGHT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeHighlightGradientCombo)
 	ON_BN_CLICKED(IDC_LOCK_DESKTOP_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedLockDesktopLyricCheck)
+    ON_WM_CTLCOLOR()
+    ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 
@@ -108,6 +110,13 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
 	m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_THREE_COLOR_GRADIENT));
 	m_highlight_gradient_combo.SetCurSel(m_data.desktop_lyric_data.highlight_gradient);
+
+    m_desktop_lyric_opacity_sld.SetRange(20, 100);
+    m_desktop_lyric_opacity_sld.SetPos(m_data.desktop_lyric_data.opacity);
+
+    CString str;
+    str.Format(_T("%d%%"), m_data.desktop_lyric_data.opacity);
+    SetDlgItemText(IDC_LYRIC_OPACITY_STATIC, str);
 
 	if (CWinVersionHelper::IsWindows10OrLater())
 	{
@@ -361,4 +370,38 @@ void CLyricSettingsDlg::OnBnClickedLockDesktopLyricCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.desktop_lyric_data.lock_desktop_lyric = (m_lock_desktop_lyric_chk.GetCheck() != 0);
+}
+
+
+HBRUSH CLyricSettingsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    HBRUSH hbr = CTabDlg::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    // TODO:  在此更改 DC 的任何特性
+    if (pWnd == &m_desktop_lyric_opacity_sld)		//设置滑动条控件的背景色为白色
+    {
+        return (HBRUSH)::GetStockObject(WHITE_BRUSH);
+    }
+
+    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
+    return hbr;
+}
+
+
+void CLyricSettingsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if ((pScrollBar->GetDlgCtrlID() == IDC_LYRIC_OPACITY_SLIDER))
+    {
+        m_data.desktop_lyric_data.opacity = m_desktop_lyric_opacity_sld.GetPos();
+        CString str;
+        str.Format(_T("%d%%"), m_data.desktop_lyric_data.opacity);
+        SetDlgItemText(IDC_LYRIC_OPACITY_STATIC, str);
+
+        //实时设置窗口不透明度
+        if (m_pDesktopLyric != nullptr)
+            m_pDesktopLyric->SetLyricOpacity(m_data.desktop_lyric_data.opacity);
+    }
+
+    CTabDlg::OnHScroll(nSBCode, nPos, pScrollBar);
 }

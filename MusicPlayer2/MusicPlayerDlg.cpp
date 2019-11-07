@@ -258,6 +258,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"desktop_lyric", L"highlight_gradient", theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient);
 	ini.WriteBool(L"desktop_lyric", L"lock_desktop_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
 	ini.WriteBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric);
+	ini.WriteInt(L"desktop_lyric", L"opacity", theApp.m_lyric_setting_data.desktop_lyric_data.opacity);
 
     ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
     ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -363,6 +364,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient = ini.GetInt(L"desktop_lyric", L"highlight_gradient", 2);
 	theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = ini.GetBool(L"desktop_lyric", L"lock_desktop_lyric", false);
 	theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric = ini.GetBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", false);
+	theApp.m_lyric_setting_data.desktop_lyric_data.opacity = ini.GetInt(L"desktop_lyric", L"opacity", 100);
 
     theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(L"config", L"background_gauss_blur", true);
     theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 60);
@@ -421,6 +423,11 @@ void CMusicPlayerDlg::LoadConfig()
 void CMusicPlayerDlg::SetTransparency()
 {
     CCommon::SetWindowOpacity(m_hWnd, theApp.m_app_setting_data.window_transparency);
+}
+
+void CMusicPlayerDlg::SetDesptopLyricTransparency()
+{
+    m_desktop_lyric.SetLyricOpacity(theApp.m_lyric_setting_data.desktop_lyric_data.opacity);
 }
 
 void CMusicPlayerDlg::DrawInfo(bool reset)
@@ -1085,6 +1092,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     //设置窗口不透明度
     SetTransparency();
+    SetDesptopLyricTransparency();
 
     //初始化窗口大小
     //rect.right = m_window_width;
@@ -2040,6 +2048,7 @@ void CMusicPlayerDlg::OnOptionSettings()
     //初始化对话框中变量的值
     optionDlg.m_tab_selected = m_tab_selected;
     optionDlg.m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
+    optionDlg.m_tab1_dlg.m_pDesktopLyric = &m_desktop_lyric;
     if (m_miniModeDlg.m_hWnd == NULL)
         optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
     else
@@ -2052,6 +2061,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 
     int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
     int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
+    int desktop_lyric_opacity = theApp.m_lyric_setting_data.desktop_lyric_data.opacity;
 
     if (optionDlg.DoModal() == IDOK)
     {
@@ -2060,11 +2070,14 @@ void CMusicPlayerDlg::OnOptionSettings()
     else
     {
         SetTransparency();		//如果点击了取消，则需要重新设置窗口透明度
+        SetDesptopLyricTransparency();
+
         if (m_miniModeDlg.m_hWnd != NULL)
             m_miniModeDlg.SetTransparency();
 
         theApp.m_app_setting_data.sprctrum_height = sprctrum_height;
         theApp.m_app_setting_data.background_transparency = background_transparency;
+        theApp.m_lyric_setting_data.desktop_lyric_data.opacity = desktop_lyric_opacity;
     }
 
     m_tab_selected = optionDlg.m_tab_selected;

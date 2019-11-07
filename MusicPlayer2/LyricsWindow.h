@@ -19,7 +19,7 @@
 
 /*
 说明：此类的原作者：邓学彬，地址：https://blog.csdn.net/CometNet/article/details/37508613
-本人在此基础上进行了修改
+在原有的基础上有修改
 */
 
 #pragma once
@@ -51,8 +51,7 @@ public:
 	BOOL Create(LPCTSTR lpszClassName,int nWidth,int nHeight);
 public:
 	//更新歌词(歌词文本,高亮进度百分比)
-	void UpdateLyrics(LPCSTR lpszLyrics,int nHighlight);
-	void UpdateLyrics(LPCWSTR lpszLyrics,int nHighlight);
+	void UpdateLyrics(LPCTSTR lpszLyrics,int nHighlight);
 	//更新高亮进度(高亮进度百分比)
 	void UpdateLyrics(int nHighlight);
 	//更新歌词翻译文本
@@ -77,6 +76,8 @@ public:
 	void SetLyricDoubleLine(bool doubleLine);
 	void SetNextLyric(LPCTSTR lpszNextLyric);
 	void SetDrawBackground(bool drawBackground);
+    //设置不透明度
+    void SetAlpha(int alpha);
 private:
 	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawTranslate);
 	//绘制歌词
@@ -93,7 +94,7 @@ private:
 	HDC m_hCacheDC;//缓存DC
 	int m_nWidth;
 	int m_nHeight;
-	LPWSTR m_lpszLyrics;//Unicode格式的歌词
+	CString m_lpszLyrics;//Unicode格式的歌词
 	int m_nHighlight;//高亮歌词的百分比 0--1000
 	Gdiplus::Color m_TextColor1;//普通歌词颜色,ARGB颜色
 	Gdiplus::Color m_TextColor2;//普通歌词颜色,ARGB颜色
@@ -114,6 +115,7 @@ private:
 	CString m_strTranslate;			//歌词翻译
 	CString m_strNextLyric;			//下一句歌词
 	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
+    int m_alpha = 255;                    //不透明度
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);

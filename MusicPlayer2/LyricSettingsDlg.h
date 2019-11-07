@@ -3,6 +3,7 @@
 #include "FolderBrowserDlg.h"
 #include "TabDlg.h"
 #include "ColorStaticEx.h"
+#include "DesktopLyric.h"
 
 // CLyricSettingsDlg 对话框
 
@@ -16,8 +17,8 @@ public:
 
 	bool FontChanged() const { return m_font_changed; }
 
-	//选项设置的数据
-	LyricSettingData m_data;
+	LyricSettingData m_data;	//选项设置的数据
+    CDesktopLyric* m_pDesktopLyric = nullptr;
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -80,4 +81,6 @@ public:
 	afx_msg void OnCbnSelchangeTextGradientCombo();
 	afx_msg void OnCbnSelchangeHighlightGradientCombo();
 	afx_msg void OnBnClickedLockDesktopLyricCheck();
+    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };

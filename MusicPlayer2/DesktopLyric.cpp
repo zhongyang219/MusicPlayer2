@@ -91,6 +91,16 @@ void CDesktopLyric::SetLyricWindowLock(bool locked)
 	//m_lyric_window.SetDrawBackground(!locked);
 }
 
+void CDesktopLyric::SetLyricOpacity(int opacity)
+{
+    m_lyric_window.SetAlpha(opacity * 255 / 100);
+}
+
+HWND CDesktopLyric::GetLyricWnd() const
+{
+    return m_lyric_window.GetSafeHwnd();
+}
+
 int CDesktopLyric::ToGDIPluseFontStyle(const FontStyle& style)
 {
 	int value = 0;
