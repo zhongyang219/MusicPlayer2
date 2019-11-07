@@ -67,6 +67,7 @@ protected:
         BTN_MINI,				//迷你模式按钮
         BTN_INFO,				//曲目信息按钮
         BTN_FIND,				//查找歌曲按钮
+        BTN_LRYIC,              //桌面歌词按钮
         BTN_STOP,				//停止
         BTN_PREVIOUS,			//上一曲
         BTN_PLAY_PAUSE,			//播放/暂停

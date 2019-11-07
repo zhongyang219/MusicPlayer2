@@ -458,6 +458,11 @@ void CLyricsWindow::SetAlpha(int alpha)
     m_alpha = alpha;
 }
 
+const CString& CLyricsWindow::GetLyricStr() const
+{
+    return m_lpszLyrics;
+}
+
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CWnd::OnLButtonDown(nFlags, point);

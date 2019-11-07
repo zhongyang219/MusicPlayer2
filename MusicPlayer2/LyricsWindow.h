@@ -78,6 +78,8 @@ public:
 	void SetDrawBackground(bool drawBackground);
     //设置不透明度
     void SetAlpha(int alpha);
+    //获取当前歌词文本
+    const CString& GetLyricStr() const;
 private:
 	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawTranslate);
 	//绘制歌词

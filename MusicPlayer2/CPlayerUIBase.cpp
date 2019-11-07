@@ -208,6 +208,10 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
                 return;
 
+            case BTN_LRYIC:
+                theApp.m_lyric_setting_data.show_desktop_lyric = !theApp.m_lyric_setting_data.show_desktop_lyric;
+                return;
+
             case BTN_STOP:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_STOP);
                 return;
@@ -619,10 +623,23 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         m_buttons[BTN_TRANSLATE].rect = CRect();
     }
 
+    //绘制桌面歌词按钮
+    if (rect.Width() >= DPI(286))
+    {
+        rc_tmp.MoveToX(rc_tmp.right);
+        CRect translate_rect = rc_tmp;
+        translate_rect.DeflateRect(DPI(2), DPI(2));
+        DrawTextButton(translate_rect, m_buttons[BTN_LRYIC], CCommon::LoadText(IDS_LRC), theApp.m_lyric_setting_data.show_desktop_lyric);
+    }
+    else
+    {
+        m_buttons[BTN_LRYIC].rect = CRect();
+    }
+
     rc_tmp.left = rc_tmp.right = rect.right;
 
     //显示<<<<
-    if (rect.Width() >= DPI(313))
+    if (rect.Width() >= DPI(337))
     {
         int progress;
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
@@ -1170,5 +1187,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
+    AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
 }
 

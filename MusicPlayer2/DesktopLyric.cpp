@@ -27,14 +27,12 @@ void CDesktopLyric::ShowLyric()
 		Time time{ CPlayer::GetInstance().GetCurrentPosition() };
 		int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
 		CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
-		static std::wstring last_lyric_str;
 		if (lyric.text.empty())
 			lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-		if (last_lyric_str != lyric.text)
+		if (m_lyric_window.GetLyricStr().GetString() != lyric.text)
 		{
 			m_lyric_window.UpdateLyricTranslate(lyric.translate.c_str());
 			m_lyric_window.UpdateLyrics(lyric.text.c_str(), progress);
-			last_lyric_str = lyric.text;
 		}
 		else
 		{
@@ -45,11 +43,9 @@ void CDesktopLyric::ShowLyric()
 	{
 		const SongInfo& cur_song_info = CPlayer::GetInstance().GetCurrentSongInfo();
 		std::wstring display_text = CPlayListCtrl::GetDisplayStr(cur_song_info, DF_ARTIST_TITLE);
-		static std::wstring last_lyric_str;
-		if (display_text != last_lyric_str)
+		if (display_text != m_lyric_window.GetLyricStr().GetString())
 		{
 			m_lyric_window.UpdateLyrics(display_text.c_str(), 0);
-			last_lyric_str = display_text;
 		}
 		else
 		{
