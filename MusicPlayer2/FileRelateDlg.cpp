@@ -81,7 +81,7 @@ BOOL CFileRelateDlg::OnInitDialog()
     CRect rect;
     m_list_ctrl.GetWindowRect(rect);
 
-    m_list_ctrl.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
+    m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
     int width0 = 150;
     int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
     m_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_FORMAT), LVCFMT_LEFT, 150);

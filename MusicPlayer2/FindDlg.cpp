@@ -296,7 +296,7 @@ BOOL CFindDlg::OnInitDialog()
 	//初始化列表控件
 	CRect rect;
 	m_find_result_list.GetClientRect(rect);
-	m_find_result_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
+    m_find_result_list.SetExtendedStyle(m_find_result_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 	int list_width{ rect.Width() - theApp.DPI(20) - 1 };		//列表控件宽度减去留给垂直滚动条的宽度余量
 	int width0, width1, width2;
 	width0 = theApp.DPI(40);

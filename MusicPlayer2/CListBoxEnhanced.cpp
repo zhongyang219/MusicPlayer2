@@ -22,7 +22,7 @@ void CListBoxEnhanced::AddString(LPCTSTR str)
 void CListBoxEnhanced::PreSubclassWindow()
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_INFOTIP);
+    SetExtendedStyle(GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_INFOTIP);
 	ModifyStyle(0, LVS_NOCOLUMNHEADER);
 
 	CRect rect;

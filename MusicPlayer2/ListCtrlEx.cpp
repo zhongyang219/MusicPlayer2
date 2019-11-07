@@ -195,6 +195,9 @@ void CListCtrlEx::PreSubclassWindow()
 	// TODO: 在此添加专用代码和/或调用基类
 	CListCtrl::PreSubclassWindow();
 
+    DWORD style = GetExtendedStyle();
+    SetExtendedStyle(style | LVS_EX_DOUBLEBUFFER);      //设置双缓冲绘图
+
 	SetBkColor(m_background_color);
 	//SetHightItem(-1);
 	SetRowHeight(theApp.DPI(22));
