@@ -47,6 +47,8 @@ protected:
 	CComboBox m_highlight_gradient_combo;
 	CSliderCtrl m_desktop_lyric_opacity_sld;
 	CButton m_lock_desktop_lyric_chk;
+    CButton m_hide_lyric_without_lyric_chk;
+    CButton m_hide_lyric_paused_chk;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -83,4 +85,6 @@ public:
 	afx_msg void OnBnClickedLockDesktopLyricCheck();
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnBnClickedHideLyricWithoutLyricCheck();
+    afx_msg void OnBnClickedHideLyricPauseCheck();
 };

@@ -23,29 +23,31 @@ CLyricSettingsDlg::~CLyricSettingsDlg()
 
 void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CTabDlg::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
-	DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
-	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
-	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
-	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
-	DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
-	DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
-	DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
-	DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
-	DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
-	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
-	DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
-	DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
-	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK2, m_desktop_lyric_double_line_chk);
-	DDX_Control(pDX, IDC_TEXT_COLOR1_STATIC, m_text_color1_static);
-	DDX_Control(pDX, IDC_TEXT_COLOR2_STATIC, m_text_color2_static);
-	DDX_Control(pDX, IDC_TEXT_GRADIENT_COMBO, m_text_gradient_combo);
-	DDX_Control(pDX, IDC_HIGHLIGHT_COLOR1_STATIC, m_highlight_color1_static);
-	DDX_Control(pDX, IDC_HIGHLIGHT_COLOR2_STATIC, m_highlight_color2_static);
-	DDX_Control(pDX, IDC_HIGHLIGHT_GRADIENT_COMBO, m_highlight_gradient_combo);
-	DDX_Control(pDX, IDC_LYRIC_OPACITY_SLIDER, m_desktop_lyric_opacity_sld);
-	DDX_Control(pDX, IDC_LOCK_DESKTOP_LYRIC_CHECK, m_lock_desktop_lyric_chk);
+    CTabDlg::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
+    DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
+    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
+    DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
+    DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
+    DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
+    DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
+    DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
+    DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
+    DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
+    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
+    DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
+    DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
+    DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK2, m_desktop_lyric_double_line_chk);
+    DDX_Control(pDX, IDC_TEXT_COLOR1_STATIC, m_text_color1_static);
+    DDX_Control(pDX, IDC_TEXT_COLOR2_STATIC, m_text_color2_static);
+    DDX_Control(pDX, IDC_TEXT_GRADIENT_COMBO, m_text_gradient_combo);
+    DDX_Control(pDX, IDC_HIGHLIGHT_COLOR1_STATIC, m_highlight_color1_static);
+    DDX_Control(pDX, IDC_HIGHLIGHT_COLOR2_STATIC, m_highlight_color2_static);
+    DDX_Control(pDX, IDC_HIGHLIGHT_GRADIENT_COMBO, m_highlight_gradient_combo);
+    DDX_Control(pDX, IDC_LYRIC_OPACITY_SLIDER, m_desktop_lyric_opacity_sld);
+    DDX_Control(pDX, IDC_LOCK_DESKTOP_LYRIC_CHECK, m_lock_desktop_lyric_chk);
+    DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, m_hide_lyric_without_lyric_chk);
+    DDX_Control(pDX, IDC_HIDE_LYRIC_PAUSE_CHECK, m_hide_lyric_paused_chk);
 }
 
 
@@ -71,6 +73,8 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_LOCK_DESKTOP_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedLockDesktopLyricCheck)
     ON_WM_CTLCOLOR()
     ON_WM_HSCROLL()
+    ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck)
+    ON_BN_CLICKED(IDC_HIDE_LYRIC_PAUSE_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricPauseCheck)
 END_MESSAGE_MAP()
 
 
@@ -101,6 +105,8 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_highlight_color1_static.SetFillColor(m_data.desktop_lyric_data.highlight_color1);
 	m_highlight_color2_static.SetFillColor(m_data.desktop_lyric_data.highlight_color2);
 	m_lock_desktop_lyric_chk.SetCheck(m_data.desktop_lyric_data.lock_desktop_lyric);
+    m_hide_lyric_without_lyric_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_without_lyric);
+    m_hide_lyric_paused_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_when_paused);
 
 	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_NO_GRADIENT));
 	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
@@ -162,6 +168,24 @@ void CLyricSettingsDlg::EnableControl()
 	m_keep_display_chk.EnableWindow(enable);
 	m_show_spectrum_chk.EnableWindow(enable);
 	m_lyric_compatible_mode_chk.EnableWindow(m_data.cortana_info_enable);
+
+    bool desktop_lyric_enable = m_data.show_desktop_lyric;
+    m_desktop_lyric_double_line_chk.EnableWindow(desktop_lyric_enable);
+    m_text_color1_static.EnableWindow(desktop_lyric_enable);
+    m_text_color1_static.Invalidate();
+    m_text_color2_static.EnableWindow(desktop_lyric_enable);
+    m_text_color2_static.Invalidate();
+    m_text_gradient_combo.EnableWindow(desktop_lyric_enable);
+    m_highlight_color1_static.EnableWindow(desktop_lyric_enable);
+    m_highlight_color1_static.Invalidate();
+    m_highlight_color2_static.EnableWindow(desktop_lyric_enable);
+    m_highlight_color2_static.Invalidate();
+    m_highlight_gradient_combo.EnableWindow(desktop_lyric_enable);
+    m_desktop_lyric_opacity_sld.EnableWindow(desktop_lyric_enable);
+    m_lock_desktop_lyric_chk.EnableWindow(desktop_lyric_enable);
+    m_hide_lyric_without_lyric_chk.EnableWindow(desktop_lyric_enable);
+    m_hide_lyric_paused_chk.EnableWindow(desktop_lyric_enable);
+    GetDlgItem(IDC_SET_FONT2)->EnableWindow(desktop_lyric_enable);
 }
 
 
@@ -327,6 +351,7 @@ void CLyricSettingsDlg::OnBnClickedShowDesktopLyric()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.show_desktop_lyric = (m_show_desktop_lyric_chk.GetCheck() != 0);
+    EnableControl();
 }
 
 
@@ -404,4 +429,18 @@ void CLyricSettingsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
     }
 
     CTabDlg::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.desktop_lyric_data.hide_lyric_window_without_lyric = (m_hide_lyric_without_lyric_chk.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedHideLyricPauseCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.desktop_lyric_data.hide_lyric_window_when_paused = (m_hide_lyric_paused_chk.GetCheck() != 0);
 }
