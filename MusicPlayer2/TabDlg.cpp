@@ -71,6 +71,16 @@ void CTabDlg::SetScrollbarInfo(int nPage, int nMax)
 	SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 }
 
+void CTabDlg::ResetScroll()
+{
+    SCROLLINFO scrollinfo;
+    GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+    int step = scrollinfo.nPos - scrollinfo.nMin;
+    scrollinfo.nPos = scrollinfo.nMin;
+    SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+    ScrollWindow(0, step);
+}
+
 void CTabDlg::ScrollWindowSimple(int step)
 {
 	SCROLLINFO scrollinfo;

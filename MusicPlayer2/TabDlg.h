@@ -10,6 +10,7 @@ public:
 	virtual BOOL OnInitDialog();
     CWnd* GetParentWindow();
 	void SetScrollbarInfo(int nPage, int nMax);
+    void ResetScroll();
 
 protected:
 	void ScrollWindowSimple(int step);

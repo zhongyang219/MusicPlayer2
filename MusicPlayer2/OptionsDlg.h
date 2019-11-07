@@ -35,6 +35,9 @@ public:
 protected:
 
 	CTabCtrlEx m_tab;		//选项卡控件
+    std::vector<CTabDlg*> m_tab_vect;
+    std::vector<int> m_tab_height;
+    CSize m_min_size{};
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -44,4 +47,6 @@ public:
 	virtual void OnOK();
 	afx_msg void OnBnClickedApplyButton();
 	afx_msg void OnDestroy();
+    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };
