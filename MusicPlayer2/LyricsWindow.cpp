@@ -5,6 +5,7 @@
 #include "LyricsWindow.h"
 #include "Resource.h"
 #include "Common.h"
+#include "MusicPlayer2.h"
 
 
 // CLyricsWindow
@@ -84,6 +85,8 @@ BEGIN_MESSAGE_MAP(CLyricsWindow, CWnd)
     ON_WM_MOUSELEAVE()
     ON_WM_SIZING()
     ON_WM_RBUTTONUP()
+    ON_WM_GETMINMAXINFO()
+    ON_MESSAGE(WM_INITMENU, &CLyricsWindow::OnInitmenu)
 END_MESSAGE_MAP()
 
 
@@ -628,4 +631,21 @@ BOOL CLyricsWindow::OnCommand(WPARAM wParam, LPARAM lParam)
         AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
 
     return CWnd::OnCommand(wParam, lParam);
+}
+
+
+void CLyricsWindow::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    lpMMI->ptMinTrackSize.x = theApp.DPI(400);
+    lpMMI->ptMinTrackSize.y = theApp.DPI(100);
+
+    CWnd::OnGetMinMaxInfo(lpMMI);
+}
+
+
+afx_msg LRESULT CLyricsWindow::OnInitmenu(WPARAM wParam, LPARAM lParam)
+{
+    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
+    return 0;
 }

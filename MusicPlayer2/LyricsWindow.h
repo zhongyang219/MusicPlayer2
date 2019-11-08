@@ -136,6 +136,9 @@ public:
     afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
     afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+protected:
+    afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
 };
 
 

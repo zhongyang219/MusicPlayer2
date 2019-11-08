@@ -35,6 +35,8 @@ void CDesktopLyric::ShowLyric()
         if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
             CLyrics::Lyric next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1);
+            if (next_lyric.text.empty())
+                next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
             m_lyric_window.SetNextLyric(next_lyric.text.c_str());
         }
 
