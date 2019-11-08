@@ -230,6 +230,28 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 	if (fontSize < 1)
 		fontSize = m_FontSize;
 
+    Gdiplus::REAL textWidth = rect.Width;
+    Gdiplus::REAL highlighWidth = rect.Width * m_nHighlight / 1000;
+    //如果文本宽度大于控件宽度，就要根据分割的位置滚动文本
+    if (textWidth > m_nWidth)
+    {
+        //如果分割的位置（歌词进度）剩下的宽度已经小于控件宽度的一半，此时使文本右侧和控件右侧对齐
+        if (textWidth - highlighWidth < m_nWidth / 2)
+        {
+            rect.X = m_nWidth - textWidth;
+        }
+        //分割位置剩下的宽度还没有到小于控件宽度的一半，但是分割位置的宽度已经大于控件宽度的一半时，需要移动文本使分割位置正好在控件的中间
+        else if (highlighWidth > m_nWidth / 2)
+        {
+            rect.X = m_nWidth / 2 - highlighWidth;
+        }
+        //分割位置还不到控件宽度的一半时，使文本左侧和控件左侧对齐
+        else
+        {
+            rect.X = 0;
+        }
+    }
+
 	//-----------------------------------------------------------
 	//画出阴影
 	if (m_pShadowBrush) {
@@ -287,10 +309,10 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 		transRect.Y += (boundingBox.Height + gapHeight);
 		transRect.Height = translateHeight;
 	}
-	if(dstRect.X<0)dstRect.X=0;
-	if(dstRect.Width>m_nWidth)dstRect.Width=m_nWidth;
-	if (transRect.X < 0)transRect.X = 0;
-	if (transRect.Width > m_nWidth)transRect.Width = m_nWidth;
+	//if(dstRect.X<0)dstRect.X=0;
+	//if(dstRect.Width>m_nWidth)dstRect.Width=m_nWidth;
+	//if (transRect.X < 0)transRect.X = 0;
+	//if (transRect.Width > m_nWidth)transRect.Width = m_nWidth;
 
 	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, false);
 	if (!m_strTranslate.IsEmpty())
