@@ -124,6 +124,9 @@ private:
     int m_alpha = 255;                    //不透明度
     bool m_bHot;
     bool m_lyricChangeFlag = false; //歌词发生改变标志
+
+    CMenu m_popupMenu;
+
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
@@ -131,6 +134,8 @@ public:
     afx_msg void OnMouseHover(UINT nFlags, CPoint point);
     afx_msg void OnMouseLeave();
     afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
+    afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+    virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 };
 
 

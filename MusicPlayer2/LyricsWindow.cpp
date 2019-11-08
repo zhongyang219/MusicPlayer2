@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "LyricsWindow.h"
+#include "Resource.h"
+#include "Common.h"
 
 
 // CLyricsWindow
@@ -81,6 +83,7 @@ BEGIN_MESSAGE_MAP(CLyricsWindow, CWnd)
     ON_WM_MOUSEHOVER()
     ON_WM_MOUSELEAVE()
     ON_WM_SIZING()
+    ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
 
 
@@ -99,6 +102,9 @@ BOOL CLyricsWindow::Create(LPCTSTR lpszClassName,int nWidth,int nHeight)
 	{
 		TRACE("Class　Registration　Failedn");
 	}
+
+    m_popupMenu.LoadMenu(IDR_DESKTOP_LYRIC_POPUP_MENU);
+
 	//--------------------------------------------
 	//取出桌面工作区域
 	RECT rcWork;
@@ -322,10 +328,6 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 		transRect.Y += (boundingBox.Height + gapHeight);
 		transRect.Height = translateHeight;
 	}
-	//if(dstRect.X<0)dstRect.X=0;
-	//if(dstRect.Width>m_nWidth)dstRect.Width=m_nWidth;
-	//if (transRect.X < 0)transRect.X = 0;
-	//if (transRect.Width > m_nWidth)transRect.Width = m_nWidth;
 
 	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true);
 	if (bDrawTranslate)
@@ -359,7 +361,6 @@ void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
 
     DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true);
     DrawLyricText(pGraphics, m_strNextLyric, nextRect, false);
-
 }
 
 //绘制高亮歌词
@@ -604,4 +605,27 @@ void CLyricsWindow::OnSizing(UINT fwSide, LPRECT pRect)
 
     // TODO: 在此处添加消息处理程序代码
     m_bHot = true;
+}
+
+
+void CLyricsWindow::OnRButtonUp(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    CPoint point1;		//定义一个用于确定光标位置的位置
+    GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
+    CMenu* pMenu = m_popupMenu.GetSubMenu(0);
+    if (pMenu != NULL)
+        pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+
+    //CWnd::OnRButtonUp(nFlags, point);
+}
+
+
+BOOL CLyricsWindow::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), wParam))
+        AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
+
+    return CWnd::OnCommand(wParam, lParam);
 }

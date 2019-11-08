@@ -425,6 +425,7 @@
 #define IDI_ICON10                      394
 #define IDI_HEART                       394
 #define IDS_DESCRIPTION                 395
+#define IDR_DESKTOP_LYRIC_POPUP_MENU    395
 #define IDS_INCLUDE_SUB_DIR             396
 #define IDS_MY_FAVURITE                 397
 #define IDS_ADD_TO_MA_FAVOURITE         398
@@ -1018,13 +1019,15 @@
 #define ID_33112                        33112
 #define ID_33113                        33113
 #define ID_LOCK_DESKTOP_LRYIC           33114
+#define ID_33115                        33115
+#define ID_CLOSE_DESKTOP_LYRIC          33116
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        395
-#define _APS_NEXT_COMMAND_VALUE         33115
+#define _APS_NEXT_RESOURCE_VALUE        396
+#define _APS_NEXT_COMMAND_VALUE         33117
 #define _APS_NEXT_CONTROL_VALUE         1149
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

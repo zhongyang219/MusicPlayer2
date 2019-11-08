@@ -200,8 +200,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_FILE_OPEN_URL, &CMusicPlayerDlg::OnFileOpenUrl)
     ON_COMMAND(ID_PLAYLIST_ADD_URL, &CMusicPlayerDlg::OnPlaylistAddUrl)
     ON_MESSAGE(WM_SET_MENU_STATE, &CMusicPlayerDlg::OnSetMenuState)
-        ON_COMMAND(ID_LOCK_DESKTOP_LRYIC, &CMusicPlayerDlg::OnLockDesktopLryic)
-        END_MESSAGE_MAP()
+    ON_COMMAND(ID_LOCK_DESKTOP_LRYIC, &CMusicPlayerDlg::OnLockDesktopLryic)
+    ON_COMMAND(ID_CLOSE_DESKTOP_LYRIC, &CMusicPlayerDlg::OnCloseDesktopLyric)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -4100,4 +4101,11 @@ void CMusicPlayerDlg::OnLockDesktopLryic()
     // TODO: 在此添加命令处理程序代码
     theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = !theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
     m_desktop_lyric.SetLyricWindowLock(theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
+}
+
+
+void CMusicPlayerDlg::OnCloseDesktopLyric()
+{
+    // TODO: 在此添加命令处理程序代码
+    theApp.m_lyric_setting_data.show_desktop_lyric = false;
 }

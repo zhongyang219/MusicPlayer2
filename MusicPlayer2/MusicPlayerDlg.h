@@ -344,4 +344,5 @@ protected:
     afx_msg LRESULT OnSetMenuState(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnLockDesktopLryic();
+    afx_msg void OnCloseDesktopLyric();
 };
