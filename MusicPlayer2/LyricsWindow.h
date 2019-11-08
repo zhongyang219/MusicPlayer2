@@ -118,9 +118,13 @@ private:
 	CString m_strNextLyric;			//下一句歌词
 	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
     int m_alpha = 255;                    //不透明度
+    bool m_bHot;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    afx_msg void OnMouseHover(UINT nFlags, CPoint point);
+    afx_msg void OnMouseLeave();
 };
 
 

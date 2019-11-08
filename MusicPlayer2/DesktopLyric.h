@@ -1,6 +1,14 @@
 #pragma once
 #include "LyricsWindow.h"
 #include "CommonData.h"
+
+struct LyricStyleDefaultData        //桌面歌词预设数据
+{
+    COLORREF color1 = 0;
+    COLORREF color2 = 0;
+    int gradient_mode = 0;
+};
+
 class CDesktopLyric
 {
 public:
@@ -21,5 +29,7 @@ public:
 
 private:
 	CLyricsWindow m_lyric_window;
+
+
 };
 

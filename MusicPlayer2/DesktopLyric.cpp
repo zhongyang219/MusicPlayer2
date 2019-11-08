@@ -84,7 +84,7 @@ void CDesktopLyric::SetLyricWindowLock(bool locked)
 	{
 		SetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE) & (~WS_EX_TRANSPARENT));		//»°œ˚ Û±Í¥©Õ∏
 	}
-	//m_lyric_window.SetDrawBackground(!locked);
+	m_lyric_window.SetDrawBackground(!locked);
 }
 
 void CDesktopLyric::SetLyricOpacity(int opacity)

@@ -77,6 +77,9 @@ BEGIN_MESSAGE_MAP(CLyricsWindow, CWnd)
 
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
+    ON_WM_MOUSEMOVE()
+    ON_WM_MOUSEHOVER()
+    ON_WM_MOUSELEAVE()
 END_MESSAGE_MAP()
 
 
@@ -193,7 +196,7 @@ void CLyricsWindow::Draw()
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
 
 	//绘制半透明背景
-	if(m_bDrawBackground)
+	if(m_bDrawBackground && m_bHot)
 	{
 		Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(80, 255, 255, 255));
 		pGraphics->FillRectangle(pBrush, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height());
@@ -475,4 +478,43 @@ void CLyricsWindow::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	CWnd::OnLButtonUp(nFlags, point);
+}
+
+
+void CLyricsWindow::OnMouseMove(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    TRACKMOUSEEVENT tme;
+    tme.cbSize = sizeof(tme);
+    tme.hwndTrack = m_hWnd;
+    tme.dwFlags = TME_LEAVE | TME_HOVER;
+    tme.dwHoverTime = 1;
+    _TrackMouseEvent(&tme);
+
+    CWnd::OnMouseMove(nFlags, point);
+}
+
+
+void CLyricsWindow::OnMouseHover(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if (!m_bHot)
+    {
+        m_bHot = true;
+        //Invalidate();
+    }
+    else
+    {
+        CWnd::OnMouseHover(nFlags, point);
+    }
+}
+
+
+void CLyricsWindow::OnMouseLeave()
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    m_bHot = false;
+    //Invalidate();
+
+    CWnd::OnMouseLeave();
 }
