@@ -260,6 +260,8 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric);
 	ini.WriteBool(L"desktop_lyric", L"hide_lyric_window_when_paused", theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused);
 	ini.WriteInt(L"desktop_lyric", L"opacity", theApp.m_lyric_setting_data.desktop_lyric_data.opacity);
+	ini.WriteInt(L"desktop_lyric", L"position_x", m_desktop_lyric_pos.x);
+	ini.WriteInt(L"desktop_lyric", L"position_y", m_desktop_lyric_pos.y);
 
     ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
     ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -367,6 +369,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric = ini.GetBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", false);
 	theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused = ini.GetBool(L"desktop_lyric", L"hide_lyric_window_when_paused", false);
 	theApp.m_lyric_setting_data.desktop_lyric_data.opacity = ini.GetInt(L"desktop_lyric", L"opacity", 100);
+    m_desktop_lyric_pos.x = ini.GetInt(L"desktop_lyric", L"position_x", -1);
+    m_desktop_lyric_pos.y = ini.GetInt(L"desktop_lyric", L"position_y", -1);
 
     theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(L"config", L"background_gauss_blur", true);
     theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 60);
@@ -1169,6 +1173,23 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 	//初始化桌面歌词
 	m_desktop_lyric.Create();
 	m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
+    if (m_desktop_lyric_pos.x != -1 && m_desktop_lyric_pos.y != -1)
+    {
+        CRect rcLyric;
+        ::GetWindowRect(m_desktop_lyric.GetLyricWnd(), rcLyric);
+        CRect rcWork;
+        SystemParametersInfo(SPI_GETWORKAREA, NULL, rcWork, NULL);
+        if (m_desktop_lyric_pos.x < rcWork.left - rcLyric.Width() / 2)
+            m_desktop_lyric_pos.x = rcWork.left - rcLyric.Width() / 2;
+        if (m_desktop_lyric_pos.x > rcWork.right - rcLyric.Width() / 2)
+            m_desktop_lyric_pos.x = rcWork.right - rcLyric.Width() / 2;
+        if (m_desktop_lyric_pos.y < rcWork.top - rcLyric.Height() / 2)
+            m_desktop_lyric_pos.y = rcWork.top - rcLyric.Height() / 2;
+        if (m_desktop_lyric_pos.y > rcWork.bottom - rcLyric.Height() / 2)
+            m_desktop_lyric_pos.y = rcWork.bottom - rcLyric.Height() / 2;
+
+        ::SetWindowPos(m_desktop_lyric.GetLyricWnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    }
 
     //初始化绘图的类
     m_pDC = GetDC();
@@ -1830,6 +1851,12 @@ void CMusicPlayerDlg::OnDestroy()
     CMainDialogBase::OnDestroy();
 
     // TODO: 在此处添加消息处理程序代码
+
+    //获取桌面歌词窗口的位置
+    CRect rect;
+    ::GetWindowRect(m_desktop_lyric.GetLyricWnd(), rect);
+    m_desktop_lyric_pos = rect.TopLeft();
+
     //退出时保存设置
     CPlayer::GetInstance().OnExit();
     SaveConfig();
