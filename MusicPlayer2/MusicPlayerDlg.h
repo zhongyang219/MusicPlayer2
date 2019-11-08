@@ -87,6 +87,7 @@ protected:
     int m_window_width;		//窗口的宽度
     int m_window_height;	//窗口的高度
     CPoint m_desktop_lyric_pos{ -1, -1 };     //桌面歌词窗口的位置
+    CSize m_desktop_lyric_size{ 0, 0 };
 
     SLayoutData m_layout;		//窗口布局的固定数据
 

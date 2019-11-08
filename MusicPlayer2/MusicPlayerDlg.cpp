@@ -262,6 +262,8 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteInt(L"desktop_lyric", L"opacity", theApp.m_lyric_setting_data.desktop_lyric_data.opacity);
 	ini.WriteInt(L"desktop_lyric", L"position_x", m_desktop_lyric_pos.x);
 	ini.WriteInt(L"desktop_lyric", L"position_y", m_desktop_lyric_pos.y);
+	ini.WriteInt(L"desktop_lyric", L"width", m_desktop_lyric_size.cx);
+	ini.WriteInt(L"desktop_lyric", L"height", m_desktop_lyric_size.cy);
 
     ini.WriteBool(L"config", L"background_gauss_blur", theApp.m_app_setting_data.background_gauss_blur);
     ini.WriteInt(L"config", L"gauss_blur_radius", theApp.m_app_setting_data.gauss_blur_radius);
@@ -371,6 +373,8 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.desktop_lyric_data.opacity = ini.GetInt(L"desktop_lyric", L"opacity", 100);
     m_desktop_lyric_pos.x = ini.GetInt(L"desktop_lyric", L"position_x", -1);
     m_desktop_lyric_pos.y = ini.GetInt(L"desktop_lyric", L"position_y", -1);
+    m_desktop_lyric_size.cx = ini.GetInt(L"desktop_lyric", L"width", 0);
+    m_desktop_lyric_size.cy = ini.GetInt(L"desktop_lyric", L"height", 0);
 
     theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(L"config", L"background_gauss_blur", true);
     theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 60);
@@ -1189,8 +1193,15 @@ BOOL CMusicPlayerDlg::OnInitDialog()
             m_desktop_lyric_pos.y = rcWork.top - rcLyric.Height() / 2;
         if (m_desktop_lyric_pos.y > rcWork.bottom - rcLyric.Height() / 2)
             m_desktop_lyric_pos.y = rcWork.bottom - rcLyric.Height() / 2;
-
         ::SetWindowPos(m_desktop_lyric.GetLyricWnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    }
+    if (m_desktop_lyric_size.cx > 0 && m_desktop_lyric_size.cy > 0)
+    {
+        if (m_desktop_lyric_size.cx < theApp.DPI(400))
+            m_desktop_lyric_size.cx = theApp.DPI(400);
+        if (m_desktop_lyric_size.cy < theApp.DPI(100))
+            m_desktop_lyric_size.cy = theApp.DPI(100);
+        ::SetWindowPos(m_desktop_lyric.GetLyricWnd(), nullptr, 0, 0, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOMOVE | SWP_NOZORDER);
     }
 
     //初始化绘图的类
@@ -1858,6 +1869,7 @@ void CMusicPlayerDlg::OnDestroy()
     CRect rect;
     ::GetWindowRect(m_desktop_lyric.GetLyricWnd(), rect);
     m_desktop_lyric_pos = rect.TopLeft();
+    m_desktop_lyric_size = rect.Size();
 
     //退出时保存设置
     CPlayer::GetInstance().OnExit();

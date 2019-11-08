@@ -125,6 +125,7 @@ public:
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg void OnMouseHover(UINT nFlags, CPoint point);
     afx_msg void OnMouseLeave();
+    afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
 };
 
 

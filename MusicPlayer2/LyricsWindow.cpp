@@ -80,6 +80,7 @@ BEGIN_MESSAGE_MAP(CLyricsWindow, CWnd)
     ON_WM_MOUSEMOVE()
     ON_WM_MOUSEHOVER()
     ON_WM_MOUSELEAVE()
+    ON_WM_SIZING()
 END_MESSAGE_MAP()
 
 
@@ -105,13 +106,13 @@ BOOL CLyricsWindow::Create(LPCTSTR lpszClassName,int nWidth,int nHeight)
 	int nWorkWidth=rcWork.right-rcWork.left;
 	int nWorkHeight=rcWork.bottom-rcWork.top;
 	//未传递宽度、高度参数时设置个默认值
-	if(nWidth<0)nWidth=nWorkWidth;
+	if(nWidth<0)nWidth=nWorkWidth*2/3;      //默认宽度为桌面宽度的2/3
 	if(nHeight<0)nHeight=150;
 	//设置左边、顶边位置,让窗口在屏幕下方
 	int x=rcWork.left+( (nWorkWidth-nWidth)/2 );
 	int y=rcWork.bottom-nHeight;
 	//--------------------------------------------
-	DWORD dwStyle=WS_POPUP|WS_VISIBLE;
+	DWORD dwStyle=WS_POPUP|WS_VISIBLE|WS_THICKFRAME;
 	DWORD dwExStyle=WS_EX_TOOLWINDOW|WS_EX_TOPMOST|WS_EX_LAYERED;
 	return CWnd::CreateEx(dwExStyle, lpszClassName, NULL, dwStyle, x, y, nWidth, nHeight, NULL, NULL);
 }
@@ -172,7 +173,7 @@ void CLyricsWindow::UpdateLyricTranslate(LPCTSTR lpszLyricTranslate)
 void CLyricsWindow::Draw()
 {
 	CRect rcClient;
-	GetClientRect(rcClient);
+	GetWindowRect(rcClient);
 	m_nWidth=rcClient.Width();
 	m_nHeight=rcClient.Height();
 	//----------------------------------
@@ -196,10 +197,11 @@ void CLyricsWindow::Draw()
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
 
 	//绘制半透明背景
-	if(m_bDrawBackground && m_bHot)
+	if(m_bDrawBackground)
 	{
-		Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(80, 255, 255, 255));
-		pGraphics->FillRectangle(pBrush, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height());
+        BYTE alpha = m_bHot ? 80 : 2;
+		Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(alpha, 255, 255, 255));
+		pGraphics->FillRectangle(pBrush, 0, 0, rcClient.Width(), rcClient.Height());
 		delete pBrush;
 	}
 	DrawLyrics(pGraphics);
@@ -517,4 +519,13 @@ void CLyricsWindow::OnMouseLeave()
     //Invalidate();
 
     CWnd::OnMouseLeave();
+}
+
+
+void CLyricsWindow::OnSizing(UINT fwSide, LPRECT pRect)
+{
+    CWnd::OnSizing(fwSide, pRect);
+
+    // TODO: 在此处添加消息处理程序代码
+    m_bHot = true;
 }
