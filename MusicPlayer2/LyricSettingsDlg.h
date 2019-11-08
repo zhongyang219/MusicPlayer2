@@ -87,4 +87,5 @@ public:
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     afx_msg void OnBnClickedHideLyricWithoutLyricCheck();
     afx_msg void OnBnClickedHideLyricPauseCheck();
+    afx_msg void OnBnClickedLyricDoubleLineCheck2();
 };

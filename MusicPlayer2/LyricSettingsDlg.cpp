@@ -75,6 +75,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_WM_HSCROLL()
     ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_PAUSE_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricPauseCheck)
+    ON_BN_CLICKED(IDC_LYRIC_DOUBLE_LINE_CHECK2, &CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck2)
 END_MESSAGE_MAP()
 
 
@@ -99,11 +100,13 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_show_spectrum_chk.SetCheck(m_data.cortana_show_spectrum);
     m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
     m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
+
 	m_show_desktop_lyric_chk.SetCheck(m_data.show_desktop_lyric);
 	m_text_color1_static.SetFillColor(m_data.desktop_lyric_data.text_color1);
 	m_text_color2_static.SetFillColor(m_data.desktop_lyric_data.text_color2);
 	m_highlight_color1_static.SetFillColor(m_data.desktop_lyric_data.highlight_color1);
 	m_highlight_color2_static.SetFillColor(m_data.desktop_lyric_data.highlight_color2);
+    m_desktop_lyric_double_line_chk.SetCheck(m_data.desktop_lyric_data.lyric_double_line);
 	m_lock_desktop_lyric_chk.SetCheck(m_data.desktop_lyric_data.lock_desktop_lyric);
     m_hide_lyric_without_lyric_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_without_lyric);
     m_hide_lyric_paused_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_when_paused);
@@ -443,4 +446,11 @@ void CLyricSettingsDlg::OnBnClickedHideLyricPauseCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.desktop_lyric_data.hide_lyric_window_when_paused = (m_hide_lyric_paused_chk.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck2()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.desktop_lyric_data.lyric_double_line = (m_desktop_lyric_double_line_chk.GetCheck() != 0);
 }

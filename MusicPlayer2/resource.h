@@ -1016,13 +1016,15 @@
 #define ID_33110                        33110
 #define ID_PLAYLIST_ADD_URL             33111
 #define ID_33112                        33112
+#define ID_33113                        33113
+#define ID_LOCK_DESKTOP_LRYIC           33114
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        395
-#define _APS_NEXT_COMMAND_VALUE         33113
+#define _APS_NEXT_COMMAND_VALUE         33115
 #define _APS_NEXT_CONTROL_VALUE         1149
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

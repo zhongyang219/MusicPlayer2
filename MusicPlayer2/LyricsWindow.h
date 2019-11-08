@@ -76,14 +76,17 @@ public:
 	void SetLyricDoubleLine(bool doubleLine);
 	void SetNextLyric(LPCTSTR lpszNextLyric);
 	void SetDrawBackground(bool drawBackground);
+    void SetShowTranslate(bool showTranslate);
     //设置不透明度
     void SetAlpha(int alpha);
     //获取当前歌词文本
     const CString& GetLyricStr() const;
+    void SetLyricChangeFlag(bool bFlag);
 private:
-	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawTranslate);
+	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate = false);
 	//绘制歌词
 	void DrawLyrics(Gdiplus::Graphics* pGraphics);
+    void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
 	//绘制高亮歌词
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
 	//创建渐变画刷
@@ -114,11 +117,13 @@ private:
 	Gdiplus::FontFamily* m_pFontFamily;
 	Gdiplus::StringFormat* m_pTextFormat;
 	bool m_bDoubleLine = false;		//歌词双行显示
+    bool m_bShowTranslate = false;  //显示歌词翻译
 	CString m_strTranslate;			//歌词翻译
 	CString m_strNextLyric;			//下一句歌词
 	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
     int m_alpha = 255;                    //不透明度
     bool m_bHot;
+    bool m_lyricChangeFlag = false; //歌词发生改变标志
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);

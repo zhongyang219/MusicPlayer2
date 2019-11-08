@@ -29,14 +29,29 @@ void CDesktopLyric::ShowLyric()
 		CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
 		if (lyric.text.empty())
 			lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-		if (m_lyric_window.GetLyricStr().GetString() != lyric.text)
+
+        m_lyric_window.SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+        m_lyric_window.SetShowTranslate(theApp.m_ui_data.show_translate);
+        if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
+        {
+            CLyrics::Lyric next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1);
+            m_lyric_window.SetNextLyric(next_lyric.text.c_str());
+        }
+
+        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);
+        static int last_lyric_index = -1;
+
+		if (lyric_index != last_lyric_index)
 		{
+            m_lyric_window.SetLyricChangeFlag(true);
 			m_lyric_window.UpdateLyricTranslate(lyric.translate.c_str());
 			m_lyric_window.UpdateLyrics(lyric.text.c_str(), progress);
+            last_lyric_index = lyric_index;
 		}
 		else
 		{
-			m_lyric_window.UpdateLyrics(progress);
+            m_lyric_window.SetLyricChangeFlag(false);
+            m_lyric_window.UpdateLyrics(progress);
 		}
 	}
 	else

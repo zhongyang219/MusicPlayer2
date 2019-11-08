@@ -204,7 +204,10 @@ void CLyricsWindow::Draw()
 		pGraphics->FillRectangle(pBrush, 0, 0, rcClient.Width(), rcClient.Height());
 		delete pBrush;
 	}
-	DrawLyrics(pGraphics);
+    if (m_bDoubleLine)
+        DrawLyricsDoubleLine(pGraphics);
+    else
+        DrawLyrics(pGraphics);
 	delete pGraphics;
 	//----------------------------------
 	//设置透明窗口
@@ -224,7 +227,7 @@ void CLyricsWindow::Draw()
 	::ReleaseDC(m_hWnd,hDC);
 }
 
-void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawTranslate)
+void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate)
 {
 	Gdiplus::REAL fontSize = bDrawTranslate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
 	if (fontSize < 1)
@@ -232,23 +235,32 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 
     Gdiplus::REAL textWidth = rect.Width;
     Gdiplus::REAL highlighWidth = rect.Width * m_nHighlight / 1000;
-    //如果文本宽度大于控件宽度，就要根据分割的位置滚动文本
-    if (textWidth > m_nWidth)
+
+    if (!bDrawHighlight && !bDrawTranslate)
     {
-        //如果分割的位置（歌词进度）剩下的宽度已经小于控件宽度的一半，此时使文本右侧和控件右侧对齐
-        if (textWidth - highlighWidth < m_nWidth / 2)
-        {
-            rect.X = m_nWidth - textWidth;
-        }
-        //分割位置剩下的宽度还没有到小于控件宽度的一半，但是分割位置的宽度已经大于控件宽度的一半时，需要移动文本使分割位置正好在控件的中间
-        else if (highlighWidth > m_nWidth / 2)
-        {
-            rect.X = m_nWidth / 2 - highlighWidth;
-        }
-        //分割位置还不到控件宽度的一半时，使文本左侧和控件左侧对齐
-        else
-        {
+        if (rect.X < 0)
             rect.X = 0;
+    }
+    else
+    {
+        //如果文本宽度大于控件宽度，就要根据分割的位置滚动文本
+        if (textWidth > m_nWidth)
+        {
+            //如果分割的位置（歌词进度）剩下的宽度已经小于控件宽度的一半，此时使文本右侧和控件右侧对齐
+            if (textWidth - highlighWidth < m_nWidth / 2)
+            {
+                rect.X = m_nWidth - textWidth;
+            }
+            //分割位置剩下的宽度还没有到小于控件宽度的一半，但是分割位置的宽度已经大于控件宽度的一半时，需要移动文本使分割位置正好在控件的中间
+            else if (highlighWidth > m_nWidth / 2)
+            {
+                rect.X = m_nWidth / 2 - highlighWidth;
+            }
+            //分割位置还不到控件宽度的一半时，使文本左侧和控件左侧对齐
+            else
+            {
+                rect.X = 0;
+            }
         }
     }
 
@@ -275,7 +287,7 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, rect);
 	pGraphics->FillPath(pBrush, pStringPath);//填充路径
 	delete pBrush;//销毁画刷
-	if(!bDrawTranslate)
+	if(bDrawHighlight)
 		DrawHighlightLyrics(pGraphics, pStringPath, rect);
 	delete pStringPath; //销毁路径
 }
@@ -290,7 +302,8 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	//计算歌词画出的位置
 	Gdiplus::RectF dstRect;		//文字的矩形
 	Gdiplus::RectF transRect;	//翻译文本的矩形
-	if(m_strTranslate.IsEmpty())
+    bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
+	if(!bDrawTranslate)
 	{
 		dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, (m_nHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
 	}
@@ -314,10 +327,41 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	//if (transRect.X < 0)transRect.X = 0;
 	//if (transRect.Width > m_nWidth)transRect.Width = m_nWidth;
 
-	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, false);
-	if (!m_strTranslate.IsEmpty())
-		DrawLyricText(pGraphics, m_strTranslate, transRect, true);
+	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true);
+	if (bDrawTranslate)
+		DrawLyricText(pGraphics, m_strTranslate, transRect, false, true);
 }
+
+void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
+{
+    static bool bSwap = false;
+    if (m_lyricChangeFlag)      //如果歌词发生了改变，则交换当前歌词和下一句歌词的位置
+        bSwap = !bSwap;
+    //先取出文字宽度和高度
+    Gdiplus::RectF layoutRect(0, 0, 0, 0);
+    Gdiplus::RectF boundingBox;
+    pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+    Gdiplus::RectF nextBoundingBox;
+    pGraphics->MeasureString(m_strNextLyric, -1, m_pFont, layoutRect, m_pTextFormat, &nextBoundingBox, 0, 0);
+    //计算歌词画出的位置
+    Gdiplus::RectF dstRect;		//文字的矩形
+    Gdiplus::RectF nextRect;	//下一句文本的矩形
+
+    dstRect = Gdiplus::RectF(0, (m_nHeight / 2 - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
+    nextRect = Gdiplus::RectF(m_nWidth - nextBoundingBox.Width, dstRect.Y + m_nHeight / 2, nextBoundingBox.Width, nextBoundingBox.Height);
+
+    if (bSwap)
+    {
+        std::swap(dstRect.Y, nextRect.Y);
+        nextRect.X = 0;
+        dstRect.X = m_nWidth - dstRect.Width;
+    }
+
+    DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true);
+    DrawLyricText(pGraphics, m_strNextLyric, nextRect, false);
+
+}
+
 //绘制高亮歌词
 void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect)
 {
@@ -480,6 +524,11 @@ void CLyricsWindow::SetDrawBackground(bool drawBackground)
 	m_bDrawBackground = drawBackground;
 }
 
+void CLyricsWindow::SetShowTranslate(bool showTranslate)
+{
+    m_bShowTranslate = showTranslate;
+}
+
 void CLyricsWindow::SetAlpha(int alpha)
 {
     m_alpha = alpha;
@@ -488,6 +537,11 @@ void CLyricsWindow::SetAlpha(int alpha)
 const CString& CLyricsWindow::GetLyricStr() const
 {
     return m_lpszLyrics;
+}
+
+void CLyricsWindow::SetLyricChangeFlag(bool bFlag)
+{
+    m_lyricChangeFlag = bFlag;
 }
 
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)
