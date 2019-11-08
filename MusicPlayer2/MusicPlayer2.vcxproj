@@ -216,6 +216,7 @@
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DesktopLyric.h" />
+    <ClInclude Include="GdiPlusTool.h" />
     <ClInclude Include="LyricsWindow.h" />
     <ClInclude Include="MciCore.h" />
     <ClInclude Include="CMediaLibDlg.h" />
@@ -313,6 +314,7 @@
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
+    <ClCompile Include="GdiPlusTool.cpp" />
     <ClCompile Include="LyricsWindow.cpp" />
     <ClCompile Include="MciCore.cpp" />
     <ClCompile Include="CMediaLibDlg.cpp" />

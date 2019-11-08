@@ -6,6 +6,7 @@
 #include "Resource.h"
 #include "Common.h"
 #include "MusicPlayer2.h"
+#include "GdiPlusTool.h"
 
 
 // CLyricsWindow
@@ -217,6 +218,11 @@ void CLyricsWindow::Draw()
         DrawLyricsDoubleLine(pGraphics);
     else
         DrawLyrics(pGraphics);
+
+    //绘制工具条
+    if (m_bDrawBackground && m_bHot)
+        DrawToolbar(pGraphics);
+
 	delete pGraphics;
 	//----------------------------------
 	//设置透明窗口
@@ -390,6 +396,77 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 		delete pRegion;
 	}
 }
+
+void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
+{
+    const int toolbar_num = 4;
+    const int btn_size = theApp.DPI(24);
+    int toolbar_width = toolbar_num * btn_size;
+    Gdiplus::Rect toolbar_rect;
+    toolbar_rect.Y = 0;
+    toolbar_rect.X = (m_nWidth - toolbar_width) / 2;
+    toolbar_rect.Width = toolbar_width;
+    toolbar_rect.Height = btn_size;
+
+    //绘制背景
+    Gdiplus::Color back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light3, 180);
+    Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(back_color);
+    pGraphics->FillRectangle(pBrush, toolbar_rect);
+    delete pBrush;
+
+    HDC hDC = pGraphics->GetHDC();
+    CDrawCommon drawer;
+    drawer.Create(CDC::FromHandle(hDC));
+
+    //
+    CRect rcIcon = CRect(toolbar_rect.X, toolbar_rect.Y, toolbar_rect.GetRight(), toolbar_rect.GetBottom());
+    rcIcon.right = rcIcon.left + btn_size;
+
+    DrawToolIcon(pGraphics, drawer, theApp.m_icon_set.stop_l, rcIcon, BTN_STOP);
+    rcIcon.MoveToX(rcIcon.right);
+    DrawToolIcon(pGraphics, drawer, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
+    rcIcon.MoveToX(rcIcon.right);
+    IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
+    DrawToolIcon(pGraphics, drawer, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
+    rcIcon.MoveToX(rcIcon.right);
+    DrawToolIcon(pGraphics, drawer, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
+
+    pGraphics->ReleaseHDC(hDC);
+}
+
+void CLyricsWindow::DrawToolIcon(Gdiplus::Graphics* pGraphics, CDrawCommon& drawer, IconRes icon, CRect rect, BtnKey btn_key, bool checked)
+{
+    rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+    auto& btn = m_buttons[btn_key];
+    btn.rect = rect;
+
+    if (btn.pressed)
+        rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
+
+    Gdiplus::Color back_color;
+    if (btn.pressed && btn.hover)
+        back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.dark1, 160);
+    else if (btn.hover)
+        back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light1, 160);
+    else if(checked)
+        back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light2, 160);
+    Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(back_color);
+    pGraphics->FillRectangle(pBrush, rect.left, rect.top, rect.Width(), rect.Height());
+    delete pBrush;
+
+    //drawer.GetDC()->FillSolidRect(rect, theApp.m_app_setting_data.theme_color.light1);
+
+    CRect rc_tmp = rect;
+    //使图标在矩形中居中
+    CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
+    rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
+    rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
+    rc_tmp.right = rc_tmp.left + icon_size.cx;
+    rc_tmp.bottom = rc_tmp.top + icon_size.cy;
+
+    drawer.DrawIcon(icon.GetIcon(), rc_tmp.TopLeft(), rc_tmp.Size());
+}
+
 //创建渐变画刷
 Gdiplus::Brush* CLyricsWindow::CreateGradientBrush(LyricsGradientMode TextGradientMode,Gdiplus::Color& Color1,Gdiplus::Color& Color2, Gdiplus::RectF& dstRect)
 {
@@ -550,6 +627,12 @@ void CLyricsWindow::SetLyricChangeFlag(bool bFlag)
 
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)
 {
+    for (auto& btn : m_buttons)
+    {
+        if (btn.second.rect.PtInRect(point) != FALSE)
+            btn.second.pressed = true;
+    }
+
 	CWnd::OnLButtonDown(nFlags, point);
 	ReleaseCapture();
 	SendMessage(WM_NCLBUTTONDOWN,HTCAPTION,NULL);
@@ -558,7 +641,10 @@ void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)
 void CLyricsWindow::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
+    for (auto& btn : m_buttons)
+    {
+        btn.second.pressed = false;
+    }
 	CWnd::OnLButtonUp(nFlags, point);
 }
 
@@ -566,6 +652,11 @@ void CLyricsWindow::OnLButtonUp(UINT nFlags, CPoint point)
 void CLyricsWindow::OnMouseMove(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
+    for (auto& btn : m_buttons)
+    {
+        btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
+    }
+
     TRACKMOUSEEVENT tme;
     tme.cbSize = sizeof(tme);
     tme.hwndTrack = m_hWnd;

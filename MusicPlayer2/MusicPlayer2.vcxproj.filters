@@ -544,6 +544,9 @@
     <ClInclude Include="ColorStaticEx.h">
       <Filter>派生的控件类\ColorStatic</Filter>
     </ClInclude>
+    <ClInclude Include="GdiPlusTool.h">
+      <Filter>功能逻辑类\桌面歌词</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -809,6 +812,9 @@
     </ClCompile>
     <ClCompile Include="ColorStaticEx.cpp">
       <Filter>派生的控件类\ColorStatic</Filter>
+    </ClCompile>
+    <ClCompile Include="GdiPlusTool.cpp">
+      <Filter>功能逻辑类\桌面歌词</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

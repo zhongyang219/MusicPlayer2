@@ -26,6 +26,8 @@
 
 #include <gdiplus.h>
 #pragma comment(lib,"GdiPlus.lib")
+#include "DrawCommon.h"
+#include "CommonData.h"
 
 //歌词渐变模式
 enum LyricsGradientMode
@@ -40,6 +42,23 @@ enum LyricsGradientMode
 class CLyricsWindow : public CWnd
 {
 	DECLARE_DYNAMIC(CLyricsWindow)
+
+    struct UIButton		//界面中绘制的按钮
+    {
+        CRect rect;				//按钮的矩形区域
+        bool hover{ false };	//鼠标是否指向按钮
+        bool pressed{ false };	//按钮是否按下
+        bool enable{ true };	//按钮是否启用
+    };
+
+    enum BtnKey		//标识按钮的类型
+    {
+        BTN_STOP,				//停止
+        BTN_PREVIOUS,			//上一曲
+        BTN_PLAY_PAUSE,			//播放/暂停
+        BTN_NEXT,				//下一曲
+        BTN_LOCK
+    };
 
 public:
 	CLyricsWindow();
@@ -89,6 +108,9 @@ private:
     void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
 	//绘制高亮歌词
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
+
+    void DrawToolbar(Gdiplus::Graphics* pGraphics);
+    void DrawToolIcon(Gdiplus::Graphics* pGraphics, CDrawCommon& drawer, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
 	//创建渐变画刷
 	Gdiplus::Brush* CreateGradientBrush(LyricsGradientMode TextGradientMode,Gdiplus::Color& Color1,Gdiplus::Color& Color2, Gdiplus::RectF& dstRect);
 	//注册窗口类
@@ -126,6 +148,7 @@ private:
     bool m_lyricChangeFlag = false; //歌词发生改变标志
 
     CMenu m_popupMenu;
+    std::map<BtnKey, UIButton> m_buttons;
 
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
