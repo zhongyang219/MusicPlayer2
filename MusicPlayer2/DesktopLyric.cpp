@@ -68,6 +68,8 @@ void CDesktopLyric::ShowLyric()
 		{
 			m_lyric_window.UpdateLyrics(0);
 		}
+        m_lyric_window.UpdateLyricTranslate(_T(""));
+        m_lyric_window.SetNextLyric(_T(""));
 	}
 
 }
