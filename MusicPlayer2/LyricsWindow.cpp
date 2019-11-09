@@ -845,7 +845,7 @@ BOOL CLyricsWindow::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
-    if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), command) || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_popup_menu, command))
+    if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), command) || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_menu, command))
         AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
 
     return CWnd::OnCommand(wParam, lParam);
