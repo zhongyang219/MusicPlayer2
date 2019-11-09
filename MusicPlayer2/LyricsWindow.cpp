@@ -246,7 +246,7 @@ void CLyricsWindow::Draw()
 		pGraphics->FillRectangle(pBrush, 0, 0, rcWindow.Width(), rcWindow.Height());
 		delete pBrush;
 	}
-    if (m_bDoubleLine)
+    if (m_bDoubleLine && !m_strNextLyric.IsEmpty())
         DrawLyricsDoubleLine(pGraphics);
     else
         DrawLyrics(pGraphics);

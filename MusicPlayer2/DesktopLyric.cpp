@@ -76,6 +76,7 @@ void CDesktopLyric::ClearLyric()
 {
 	m_lyric_window.UpdateLyricTranslate(_T(""));
 	m_lyric_window.UpdateLyrics(_T(""), 0);
+    m_lyric_window.SetNextLyric(_T(""));
 }
 
 void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
