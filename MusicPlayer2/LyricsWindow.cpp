@@ -514,7 +514,7 @@ void CLyricsWindow::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
 
     CRect rc_tmp = rect;
     //使图标在矩形中居中
-    CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
+    CSize icon_size = icon.GetSize();
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
     rc_tmp.right = rc_tmp.left + icon_size.cx;
