@@ -171,6 +171,7 @@ void CLyricsWindow::AddToolTips()
     AddMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY_PAUSE));
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
+    AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
     AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE_DESKTOP_LYRIC));
 
@@ -441,7 +442,7 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 
 void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
 {
-    const int toolbar_num = 8;
+    const int toolbar_num = 9;
     const int btn_size = theApp.DPI(TOOL_ICON_SIZE);
     int toolbar_width = toolbar_num * btn_size;
     Gdiplus::Rect toolbar_rect;
@@ -472,6 +473,8 @@ void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
     rcIcon.MoveToX(rcIcon.right);
     DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
     rcIcon.MoveToX(rcIcon.right);
+    DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, m_bDoubleLine);
+    rcIcon.MoveToX(rcIcon.right);
     DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
     rcIcon.MoveToX(rcIcon.right);
     DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
@@ -500,7 +503,7 @@ void CLyricsWindow::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
     }
     else if(checked)
     {
-        back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light2, 180);
+        back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light1, 110);
         draw_background = true;
     }
     if(draw_background)
@@ -747,6 +750,10 @@ void CLyricsWindow::OnLButtonUp(UINT nFlags, CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
                 return;
 
+            case BTN_DOUBLE_LINE:
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_DISPLAYED_DOUBLE_LINE);
+                return;
+
             case BTN_LOCK:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCK_DESKTOP_LRYIC);
                 return;
@@ -837,7 +844,8 @@ void CLyricsWindow::OnRButtonUp(UINT nFlags, CPoint point)
 BOOL CLyricsWindow::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), wParam))
+    WORD command = LOWORD(wParam);
+    if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), command) || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_popup_menu, command))
         AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
 
     return CWnd::OnCommand(wParam, lParam);

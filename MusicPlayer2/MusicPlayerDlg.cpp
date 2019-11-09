@@ -202,7 +202,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_SET_MENU_STATE, &CMusicPlayerDlg::OnSetMenuState)
     ON_COMMAND(ID_LOCK_DESKTOP_LRYIC, &CMusicPlayerDlg::OnLockDesktopLryic)
     ON_COMMAND(ID_CLOSE_DESKTOP_LYRIC, &CMusicPlayerDlg::OnCloseDesktopLyric)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_LYRIC_DISPLAYED_DOUBLE_LINE, &CMusicPlayerDlg::OnLyricDisplayedDoubleLine)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1006,6 +1007,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_FORMAT_CONVERT1, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
 
     pMenu->CheckMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_LYRIC_DISPLAYED_DOUBLE_LINE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line ? MF_CHECKED : MF_UNCHECKED));
 }
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
@@ -4108,4 +4110,11 @@ void CMusicPlayerDlg::OnCloseDesktopLyric()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_lyric_setting_data.show_desktop_lyric = false;
+}
+
+
+void CMusicPlayerDlg::OnLyricDisplayedDoubleLine()
+{
+    // TODO: 在此添加命令处理程序代码
+    theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line = !theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line;
 }

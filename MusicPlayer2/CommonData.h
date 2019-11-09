@@ -328,6 +328,7 @@ struct IconSet
     IconRes menu;
     IconRes favourite;
     IconRes heart;
+    IconRes double_line;
     IconRes lock;
     IconRes close;
 

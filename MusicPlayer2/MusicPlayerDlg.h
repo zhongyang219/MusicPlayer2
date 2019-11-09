@@ -345,4 +345,5 @@ protected:
 public:
     afx_msg void OnLockDesktopLryic();
     afx_msg void OnCloseDesktopLyric();
+    afx_msg void OnLyricDisplayedDoubleLine();
 };

@@ -59,6 +59,7 @@ class CLyricsWindow : public CWnd
         BTN_PLAY_PAUSE,			//播放/暂停
         BTN_NEXT,				//下一曲
         BTN_LOCK,
+        BTN_DOUBLE_LINE,
         BTN_SETTING,
         BTN_CLOSE
     };
@@ -111,16 +112,18 @@ private:
     void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
 	//绘制高亮歌词
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
-
+    //绘制工具条
     void DrawToolbar(Gdiplus::Graphics* pGraphics);
+    //绘制工具条上的图标
     void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
 	//创建渐变画刷
 	Gdiplus::Brush* CreateGradientBrush(LyricsGradientMode TextGradientMode,Gdiplus::Color& Color1,Gdiplus::Color& Color2, Gdiplus::RectF& dstRect);
 	//注册窗口类
 	BOOL RegisterWndClass(LPCTSTR lpszClassName);
-
+    //添加鼠标提示
     void AddToolTips();
-    void AddMouseToolTip(BtnKey btn, LPCTSTR str);		//为一个按钮添加鼠标提示
+    //为一个按钮添加鼠标提示
+    void AddMouseToolTip(BtnKey btn, LPCTSTR str);
 
 protected:
 	DECLARE_MESSAGE_MAP()

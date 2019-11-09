@@ -473,6 +473,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.menu.Load(IDI_MENU, IDI_MENU_D, DPI(16));
     m_icon_set.favourite.Load(IDI_FAVOURITE, IDI_FAVOURITE_D, DPI(16));
     m_icon_set.heart.Load(IDI_HEART, NULL, DPI(16));
+    m_icon_set.double_line.Load(IDI_DOUBLE_LINE_D, NULL, DPI(16));
     m_icon_set.lock.Load(IDI_LOCK_D, NULL, DPI(16));
     m_icon_set.close.Load(IDI_CLOSE_D, NULL, DPI(16));
 

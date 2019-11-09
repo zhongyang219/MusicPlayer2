@@ -993,20 +993,23 @@
     <Image Include="res\media_lib_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\favourite.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\favourite_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\heart.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\lock_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\close_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\lock_d.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\double_line_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\favourite.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\favourite_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\heart.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

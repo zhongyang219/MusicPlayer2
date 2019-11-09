@@ -386,7 +386,6 @@
 #define IDS_LISTEN_TIMES                375
 #define IDI_MENU                        375
 #define IDS_LISTEN_TIME_STATISTICS      376
-#define IDI_ICON9                       376
 #define IDI_MENU_D                      376
 #define IDS_HIDE_MENU_BAR_TIP           377
 #define IDR_PLAYLIST_BTN_MENU           377
@@ -397,7 +396,6 @@
 #define IDS_LYRIC_SAVE_FAILED           381
 #define IDS_IDS_FILE_WRITE_FAILED       382
 #define IDS_PLAYLIST                    382
-#define IDD_DIALOG5                     382
 #define IDD_SELECT_PLAYLIST_DIALOG      382
 #define IDS_PLAYLIST_FILTER             383
 #define IDD_INPUT_DLG                   384
@@ -405,7 +403,6 @@
 #define IDS_DEFAULT                     385
 #define IDR_SELETE_PLAYLIST_POPUP_MENU  385
 #define IDS_NEW_PLAYLIST                386
-#define IDI_ICON5                       386
 #define IDI_FILE_ICON                   386
 #define IDS_INPUT_PLAYLIST_NAME         387
 #define IDI_MEDIA_LIB                   387
@@ -422,7 +419,6 @@
 #define IDS_OPEN_MEDIA_LIB              393
 #define IDI_FAVOURITE_D                 393
 #define IDS_ADD_TO_PLAYLIST_FAILED_WARNING 394
-#define IDI_ICON10                      394
 #define IDI_HEART                       394
 #define IDS_DESCRIPTION                 395
 #define IDR_DESKTOP_LYRIC_POPUP_MENU    395
@@ -431,6 +427,7 @@
 #define IDS_MY_FAVURITE                 397
 #define IDI_LOCK_D                      397
 #define IDS_ADD_TO_MA_FAVOURITE         398
+#define IDI_DOUBLE_LINE_D               398
 #define IDS_REMANE_FAILED               399
 #define IDS_REMOVE_MY_FAVOURITE_WARNING 400
 #define IDS_FILE_NAME_INVALID_WARNING   401
@@ -450,6 +447,7 @@
 #define IDS_SHOW_DESKTOP_LYRIC          415
 #define IDS_LOCK_DESKTOP_LYRIC          416
 #define IDS_CLOSE_DESKTOP_LYRIC         417
+#define IDS_LYRIC_DOUBLE_LINE           418
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1021,7 +1019,7 @@
 #define ID_33110                        33110
 #define ID_PLAYLIST_ADD_URL             33111
 #define ID_33112                        33112
-#define ID_33113                        33113
+#define ID_LYRIC_DISPLAYED_DOUBLE_LINE  33113
 #define ID_LOCK_DESKTOP_LRYIC           33114
 #define ID_33115                        33115
 #define ID_CLOSE_DESKTOP_LYRIC          33116
@@ -1030,7 +1028,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        398
+#define _APS_NEXT_RESOURCE_VALUE        399
 #define _APS_NEXT_COMMAND_VALUE         33117
 #define _APS_NEXT_CONTROL_VALUE         1149
 #define _APS_NEXT_SYMED_VALUE           101

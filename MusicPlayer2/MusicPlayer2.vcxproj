@@ -406,6 +406,7 @@
     <Image Include="res\default_cover_new.ico" />
     <Image Include="res\DeleteTag.ico" />
     <Image Include="res\donate.bmp" />
+    <Image Include="res\double_line_d.ico" />
     <Image Include="res\eq.ico" />
     <Image Include="res\eq_d.ico" />
     <Image Include="res\favourite.ico" />
