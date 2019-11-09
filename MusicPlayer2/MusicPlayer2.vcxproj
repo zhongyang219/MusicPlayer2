@@ -399,6 +399,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\AddTag.ico" />
+    <Image Include="res\close_d.ico" />
     <Image Include="res\Cortana_black.bmp" />
     <Image Include="res\Cortana_white.bmp" />
     <Image Include="res\default_cover.bmp" />
@@ -412,6 +413,7 @@
     <Image Include="res\file_icon.ico" />
     <Image Include="res\Find.ico" />
     <Image Include="res\heart.ico" />
+    <Image Include="res\lock_d.ico" />
     <Image Include="res\media_lib.ico" />
     <Image Include="res\media_lib_d.ico" />
     <Image Include="res\menu.ico" />

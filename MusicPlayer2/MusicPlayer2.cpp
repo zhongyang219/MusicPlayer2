@@ -452,6 +452,7 @@ void CMusicPlayerApp::SaveSongInfo(const SongInfo& song_info)
 
 void CMusicPlayerApp::LoadIconResource()
 {
+    m_icon_set.app.Load(IDR_MAINFRAME, NULL, DPI(16));
     m_icon_set.default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);
     m_icon_set.default_cover_small.Load(IDI_DEFAULT_COVER, NULL, DPI(32));
     m_icon_set.skin.Load(IDI_SKIN, IDI_SKIN_D, DPI(16));
@@ -472,6 +473,8 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.menu.Load(IDI_MENU, IDI_MENU_D, DPI(16));
     m_icon_set.favourite.Load(IDI_FAVOURITE, IDI_FAVOURITE_D, DPI(16));
     m_icon_set.heart.Load(IDI_HEART, NULL, DPI(16));
+    m_icon_set.lock.Load(IDI_LOCK_D, NULL, DPI(16));
+    m_icon_set.close.Load(IDI_CLOSE_D, NULL, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));

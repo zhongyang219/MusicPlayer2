@@ -303,6 +303,7 @@ public:
 
 struct IconSet
 {
+    IconRes app;
     IconRes default_cover;
     IconRes default_cover_small;
     IconRes skin;
@@ -327,6 +328,8 @@ struct IconSet
     IconRes menu;
     IconRes favourite;
     IconRes heart;
+    IconRes lock;
+    IconRes close;
 
     IconRes stop_l;
     IconRes previous_l;

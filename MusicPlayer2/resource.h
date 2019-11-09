@@ -427,7 +427,9 @@
 #define IDS_DESCRIPTION                 395
 #define IDR_DESKTOP_LYRIC_POPUP_MENU    395
 #define IDS_INCLUDE_SUB_DIR             396
+#define IDI_CLOSE_D                     396
 #define IDS_MY_FAVURITE                 397
+#define IDI_LOCK_D                      397
 #define IDS_ADD_TO_MA_FAVOURITE         398
 #define IDS_REMANE_FAILED               399
 #define IDS_REMOVE_MY_FAVOURITE_WARNING 400
@@ -446,6 +448,8 @@
 #define IDS_NO_GRADIENT                 413
 #define IDS_LRC                         414
 #define IDS_SHOW_DESKTOP_LYRIC          415
+#define IDS_LOCK_DESKTOP_LYRIC          416
+#define IDS_CLOSE_DESKTOP_LYRIC         417
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1026,7 +1030,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        396
+#define _APS_NEXT_RESOURCE_VALUE        398
 #define _APS_NEXT_COMMAND_VALUE         33117
 #define _APS_NEXT_CONTROL_VALUE         1149
 #define _APS_NEXT_SYMED_VALUE           101

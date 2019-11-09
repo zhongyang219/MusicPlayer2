@@ -53,11 +53,14 @@ class CLyricsWindow : public CWnd
 
     enum BtnKey		//标识按钮的类型
     {
+        BTN_APP,
         BTN_STOP,				//停止
         BTN_PREVIOUS,			//上一曲
         BTN_PLAY_PAUSE,			//播放/暂停
         BTN_NEXT,				//下一曲
-        BTN_LOCK
+        BTN_LOCK,
+        BTN_SETTING,
+        BTN_CLOSE
     };
 
 public:
@@ -110,11 +113,15 @@ private:
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
 
     void DrawToolbar(Gdiplus::Graphics* pGraphics);
-    void DrawToolIcon(Gdiplus::Graphics* pGraphics, CDrawCommon& drawer, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
+    void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
 	//创建渐变画刷
 	Gdiplus::Brush* CreateGradientBrush(LyricsGradientMode TextGradientMode,Gdiplus::Color& Color1,Gdiplus::Color& Color2, Gdiplus::RectF& dstRect);
 	//注册窗口类
 	BOOL RegisterWndClass(LPCTSTR lpszClassName);
+
+    void AddToolTips();
+    void AddMouseToolTip(BtnKey btn, LPCTSTR str);		//为一个按钮添加鼠标提示
+
 protected:
 	DECLARE_MESSAGE_MAP()
 private:
@@ -144,11 +151,14 @@ private:
 	CString m_strNextLyric;			//下一句歌词
 	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
     int m_alpha = 255;                    //不透明度
-    bool m_bHot;
+    bool m_bHover;
     bool m_lyricChangeFlag = false; //歌词发生改变标志
 
     CMenu m_popupMenu;
+    CToolTipCtrl m_tool_tip;
     std::map<BtnKey, UIButton> m_buttons;
+    CSize m_frameSize{};
+    bool m_first_draw = false;      //第一次绘制工具条时，则为true
 
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -162,6 +172,8 @@ public:
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 protected:
     afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
+public:
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
 

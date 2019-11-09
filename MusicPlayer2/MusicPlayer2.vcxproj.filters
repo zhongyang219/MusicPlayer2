@@ -1002,5 +1002,11 @@
     <Image Include="res\heart.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\close_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\lock_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
