@@ -473,7 +473,7 @@ void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
     rcIcon.MoveToX(rcIcon.right);
     DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
     rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, m_bDoubleLine);
+    DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
     rcIcon.MoveToX(rcIcon.right);
     DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
     rcIcon.MoveToX(rcIcon.right);
