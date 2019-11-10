@@ -89,6 +89,7 @@ BEGIN_MESSAGE_MAP(CLyricsWindow, CWnd)
     ON_WM_RBUTTONUP()
     ON_WM_GETMINMAXINFO()
     ON_MESSAGE(WM_INITMENU, &CLyricsWindow::OnInitmenu)
+    ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -125,12 +126,16 @@ BOOL CLyricsWindow::Create(LPCTSTR lpszClassName,int nWidth,int nHeight)
 	//--------------------------------------------
 	DWORD dwStyle=WS_POPUP|WS_VISIBLE|WS_THICKFRAME;
 	DWORD dwExStyle=WS_EX_TOOLWINDOW|WS_EX_TOPMOST|WS_EX_LAYERED;
+    BOOL rtn = CWnd::CreateEx(dwExStyle, lpszClassName, NULL, dwStyle, x, y, nWidth, nHeight, NULL, NULL);
 
     //初始化提示信息
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
-	return CWnd::CreateEx(dwExStyle, lpszClassName, NULL, dwStyle, x, y, nWidth, nHeight, NULL, NULL);
+    //初始化定时器
+    SetTimer(TIMER_DESKTOP_LYRIC, 200, NULL);
+
+    return rtn;
 }
 BOOL CLyricsWindow::RegisterWndClass(LPCTSTR lpszClassName)
 {
@@ -209,14 +214,14 @@ void CLyricsWindow::UpdateLyricTranslate(LPCTSTR lpszLyricTranslate)
 //重画歌词窗口
 void CLyricsWindow::Draw()
 {
-	CRect rcWindow;
-	GetWindowRect(rcWindow);
-	m_nWidth=rcWindow.Width();
-	m_nHeight=rcWindow.Height();
+	//CRect rcWindow;
+	GetWindowRect(m_rcWindow);
+	m_nWidth= m_rcWindow.Width();
+	m_nHeight= m_rcWindow.Height();
     CRect rcClient;
     GetClientRect(rcClient);
-    m_frameSize.cx = (rcWindow.Width() - rcClient.Width()) / 2;
-    m_frameSize.cy = (rcWindow.Height() - rcClient.Height()) / 2;
+    m_frameSize.cx = (m_rcWindow.Width() - rcClient.Width()) / 2;
+    m_frameSize.cy = (m_rcWindow.Height() - rcClient.Height()) / 2;
 
 	//----------------------------------
 	BITMAPINFO bitmapinfo;
@@ -241,9 +246,9 @@ void CLyricsWindow::Draw()
 	//绘制半透明背景
 	if(m_bDrawBackground)
 	{
-        BYTE alpha = m_bHover ? 96 : 1;
+        BYTE alpha = (m_bHover) ? 96 : 1;
 		Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(alpha, 255, 255, 255));
-		pGraphics->FillRectangle(pBrush, 0, 0, rcWindow.Width(), rcWindow.Height());
+		pGraphics->FillRectangle(pBrush, 0, 0, m_rcWindow.Width(), m_rcWindow.Height());
 		delete pBrush;
 	}
     if (m_bDoubleLine && !m_strNextLyric.IsEmpty())
@@ -252,7 +257,7 @@ void CLyricsWindow::Draw()
         DrawLyrics(pGraphics);
 
     //绘制工具条
-    if (m_bDrawBackground && m_bHover)
+    if (m_bDrawBackground && (m_bHover))
     {
         m_first_draw = true;
         DrawToolbar(pGraphics);
@@ -814,6 +819,10 @@ void CLyricsWindow::OnMouseLeave()
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     m_bHover = false;
     //Invalidate();
+    for (auto& btn : m_buttons)
+    {
+        btn.second.pressed = false;
+    }
 
     CWnd::OnMouseLeave();
 }
@@ -876,4 +885,18 @@ BOOL CLyricsWindow::PreTranslateMessage(MSG* pMsg)
         m_tool_tip.RelayEvent(pMsg);
 
     return CWnd::PreTranslateMessage(pMsg);
+}
+
+
+void CLyricsWindow::OnTimer(UINT_PTR nIDEvent)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if (nIDEvent == TIMER_DESKTOP_LYRIC)
+    {
+        CPoint point;
+        GetCursorPos(&point);
+        m_bMouseInWindowRect = m_rcWindow.PtInRect(point);
+    }
+
+    CWnd::OnTimer(nIDEvent);
 }

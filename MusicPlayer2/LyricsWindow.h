@@ -154,8 +154,10 @@ private:
 	CString m_strNextLyric;			//下一句歌词
 	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
     int m_alpha = 255;                    //不透明度
-    bool m_bHover;
+    bool m_bHover = false;                  //鼠标是否在指向窗口
+    bool m_bMouseInWindowRect = false;      //鼠标是否在当前窗口区域内
     bool m_lyricChangeFlag = false; //歌词发生改变标志
+    CRect m_rcWindow;
 
     CMenu m_popupMenu;
     CToolTipCtrl m_tool_tip;
@@ -177,6 +179,7 @@ protected:
     afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
 public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
+    afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 

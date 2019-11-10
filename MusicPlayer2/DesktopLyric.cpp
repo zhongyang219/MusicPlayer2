@@ -46,15 +46,14 @@ void CDesktopLyric::ShowLyric()
 		if (lyric_index != last_lyric_index)
 		{
             m_lyric_window.SetLyricChangeFlag(true);
-			m_lyric_window.UpdateLyricTranslate(lyric.translate.c_str());
-			m_lyric_window.UpdateLyrics(lyric.text.c_str(), progress);
             last_lyric_index = lyric_index;
 		}
 		else
 		{
             m_lyric_window.SetLyricChangeFlag(false);
-            m_lyric_window.UpdateLyrics(progress);
 		}
+        m_lyric_window.UpdateLyricTranslate(lyric.translate.c_str());
+        m_lyric_window.UpdateLyrics(lyric.text.c_str(), progress);
 	}
 	else
 	{
