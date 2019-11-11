@@ -60,6 +60,7 @@ class CLyricsWindow : public CWnd
         BTN_NEXT,				//ÏÂÒ»Çú
         BTN_LOCK,
         BTN_DOUBLE_LINE,
+        BTN_BACKGROUND_PENETRATE,
         BTN_SETTING,
         BTN_CLOSE
     };

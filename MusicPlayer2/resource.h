@@ -449,6 +449,7 @@
 #define IDS_LOCK_DESKTOP_LYRIC          416
 #define IDS_CLOSE_DESKTOP_LYRIC         417
 #define IDS_LYRIC_DOUBLE_LINE           418
+#define IDS_LYRIC_BACKGROUND_PENETRATE  419
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

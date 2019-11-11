@@ -177,6 +177,7 @@ void CLyricsWindow::AddToolTips()
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
     AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
+    AddMouseToolTip(BTN_BACKGROUND_PENETRATE, CCommon::LoadText(IDS_LYRIC_BACKGROUND_PENETRATE));
     AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE_DESKTOP_LYRIC));
 
@@ -246,7 +247,7 @@ void CLyricsWindow::Draw()
 	//绘制半透明背景
 	if(m_bDrawBackground && !m_lyricBackgroundPenetrate)
 	{
-        BYTE alpha = (m_bHover) ? 96 : 1;
+        BYTE alpha = (m_bHover) ? 80 : 1;
 		Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(alpha, 255, 255, 255));
 		pGraphics->FillRectangle(pBrush, 0, 0, m_rcWindow.Width(), m_rcWindow.Height());
 		delete pBrush;
@@ -449,7 +450,7 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
 {
     bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
-    const int toolbar_num = bLocked ? 1 : 9;            //
+    const int toolbar_num = bLocked ? 1 : 10;            //
     const int btn_size = theApp.DPI(TOOL_ICON_SIZE);
     int toolbar_width = toolbar_num * btn_size;
     Gdiplus::Rect toolbar_rect;
@@ -469,8 +470,13 @@ void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
 
     if (bLocked)    //如果处理锁定状态，只绘制一个解锁图标
     {
-        m_buttons.clear();
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+        for (auto& btn : m_buttons)
+        {
+            if (btn.first == BTN_LOCK)
+                DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+            else
+                btn.second = UIButton();
+        }
     }
     else
     {
@@ -488,6 +494,8 @@ void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
         DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
         rcIcon.MoveToX(rcIcon.right);
@@ -774,8 +782,13 @@ void CLyricsWindow::OnLButtonUp(UINT nFlags, CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_DISPLAYED_DOUBLE_LINE);
                 return;
 
+            case BTN_BACKGROUND_PENETRATE:
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_BACKGROUND_PENETRATE);
+                return;
+
             case BTN_LOCK:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCK_DESKTOP_LRYIC);
+                btn.second.hover = false;
                 return;
 
             case BTN_CLOSE:
@@ -913,15 +926,21 @@ void CLyricsWindow::OnTimer(UINT_PTR nIDEvent)
         m_bMouseInWindowRect = m_rcWindow.PtInRect(point);
 
         bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
-        if (bLocked)        //处理锁定状态时，如果指针处理“锁定”按钮区域内，则取消鼠标穿透状态
+        if (bLocked)        //处于锁定状态时，如果指针处理“锁定”按钮区域内，则取消鼠标穿透状态，以使得“锁定”按钮可以点击
         {
             CRect rcLockBtn = m_buttons[BTN_LOCK].rect;
             rcLockBtn.MoveToX(rcLockBtn.left + m_rcWindow.left);
             rcLockBtn.MoveToY(rcLockBtn.top + m_rcWindow.top);
             if(rcLockBtn.PtInRect(point))
+            {
                 SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) & (~WS_EX_TRANSPARENT));		//取消鼠标穿透
+                m_buttons[BTN_LOCK].hover = true;
+            }
             else
+            {
                 SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);		//设置鼠标穿透
+                m_buttons[BTN_LOCK].hover = false;
+            }
         }
     }
 
