@@ -429,6 +429,8 @@
 #define IDS_ADD_TO_MA_FAVOURITE         398
 #define IDI_DOUBLE_LINE_D               398
 #define IDS_REMANE_FAILED               399
+#define IDR_MENU3                       399
+#define IDR_LRYIC_DEFAULT_STYLE_MENU    399
 #define IDS_REMOVE_MY_FAVOURITE_WARNING 400
 #define IDS_FILE_NAME_INVALID_WARNING   401
 #define IDS_OPEN_URL                    402
@@ -627,6 +629,7 @@
 #define IDC_SELECTED_SAVE_AS            1082
 #define IDC_SAVE_TO_FILE_BUTTON         1082
 #define IDC_BROWSE_BUTTON               1082
+#define IDC_DEFAULT_STYLE               1082
 #define IDC_TAB1                        1083
 #define IDC_REVERB_MIX_SLIDER           1084
 #define IDC_REVERB_TIME_SLIDER          1085
@@ -1023,13 +1026,21 @@
 #define ID_LOCK_DESKTOP_LRYIC           33114
 #define ID_33115                        33115
 #define ID_CLOSE_DESKTOP_LYRIC          33116
+#define ID_33117                        33117
+#define ID_33118                        33118
+#define ID_33119                        33119
+#define ID_33120                        33120
+#define ID_LYRIC_DEFAULT_STYLE1         33121
+#define ID_LYRIC_DEFAULT_STYLE2         33122
+#define ID_LYRIC_DEFAULT_STYLE3         33123
+#define ID_LYRIC_USER_DEFINE            33124
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        399
-#define _APS_NEXT_COMMAND_VALUE         33117
+#define _APS_NEXT_RESOURCE_VALUE        400
+#define _APS_NEXT_COMMAND_VALUE         33125
 #define _APS_NEXT_CONTROL_VALUE         1149
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -2,12 +2,19 @@
 #include "LyricsWindow.h"
 #include "CommonData.h"
 
-struct LyricStyleDefaultData        //桌面歌词预设数据
+struct LyricStyle
 {
     COLORREF color1 = 0;
     COLORREF color2 = 0;
     int gradient_mode = 0;
 };
+
+struct LyricStyleDefaultData        //桌面歌词预设数据
+{
+    LyricStyle normal_style;
+    LyricStyle highlight_style;
+};
+const int LYRIC_DEFAULT_STYLE_NUM = 3;
 
 class CDesktopLyric
 {
@@ -23,13 +30,14 @@ public:
 	void SetLyricWindowLock(bool locked);
     void SetLyricOpacity(int opacity);
     HWND GetLyricWnd() const;
+    LyricStyleDefaultData GetDefaultStyle(int index);
 
 	static int ToGDIPluseFontStyle(const FontStyle& style);
 	static Gdiplus::Color ToGDIPluseColor(COLORREF color);
 
 private:
 	CLyricsWindow m_lyric_window;
-
+    LyricStyleDefaultData m_default_style[LYRIC_DEFAULT_STYLE_NUM];
 
 };
 

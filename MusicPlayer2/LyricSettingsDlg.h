@@ -52,10 +52,12 @@ protected:
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
+    CMenu m_lyric_style_menu;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 	virtual BOOL OnInitDialog();
 	void EnableControl();
+    void ApplyDefaultLyricStyle(const LyricStyleDefaultData& style);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -88,4 +90,8 @@ public:
     afx_msg void OnBnClickedHideLyricWithoutLyricCheck();
     afx_msg void OnBnClickedHideLyricPauseCheck();
     afx_msg void OnBnClickedLyricDoubleLineCheck2();
+    afx_msg void OnBnClickedDefaultStyle();
+    afx_msg void OnLyricDefaultStyle1();
+    afx_msg void OnLyricDefaultStyle2();
+    afx_msg void OnLyricDefaultStyle3();
 };

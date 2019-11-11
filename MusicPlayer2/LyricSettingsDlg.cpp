@@ -76,6 +76,10 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_PAUSE_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricPauseCheck)
     ON_BN_CLICKED(IDC_LYRIC_DOUBLE_LINE_CHECK2, &CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck2)
+    ON_BN_CLICKED(IDC_DEFAULT_STYLE, &CLyricSettingsDlg::OnBnClickedDefaultStyle)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1, &CLyricSettingsDlg::OnLyricDefaultStyle1)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CLyricSettingsDlg::OnLyricDefaultStyle2)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CLyricSettingsDlg::OnLyricDefaultStyle3)
 END_MESSAGE_MAP()
 
 
@@ -155,6 +159,8 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_WHITE));
 	m_cortana_color_combo.SetCurSel(m_data.cortana_color);
 
+    m_lyric_style_menu.LoadMenu(IDR_LRYIC_DEFAULT_STYLE_MENU);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -191,6 +197,16 @@ void CLyricSettingsDlg::EnableControl()
     GetDlgItem(IDC_SET_FONT2)->EnableWindow(desktop_lyric_enable);
 }
 
+
+void CLyricSettingsDlg::ApplyDefaultLyricStyle(const LyricStyleDefaultData& style)
+{
+    m_text_color1_static.SetFillColor(style.normal_style.color1);
+    m_text_color2_static.SetFillColor(style.normal_style.color2);
+    m_data.desktop_lyric_data.text_gradient = style.normal_style.gradient_mode;
+    m_highlight_color1_static.SetFillColor(style.highlight_style.color1);
+    m_highlight_color2_static.SetFillColor(style.highlight_style.color2);
+    m_data.desktop_lyric_data.highlight_gradient = style.highlight_style.gradient_mode;
+}
 
 void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
 {
@@ -453,4 +469,55 @@ void CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck2()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.desktop_lyric_data.lyric_double_line = (m_desktop_lyric_double_line_chk.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedDefaultStyle()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CWnd* pBtn = GetDlgItem(IDC_DEFAULT_STYLE);
+    CPoint point;
+    if(pBtn!=nullptr)
+    {
+        CRect rect;
+        pBtn->GetWindowRect(rect);
+        point.x = rect.left;
+        point.y = rect.bottom;
+        CMenu* pMenu = m_lyric_style_menu.GetSubMenu(0);
+        if (pMenu != NULL)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+    }
+}
+
+
+void CLyricSettingsDlg::OnLyricDefaultStyle1()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_pDesktopLyric != nullptr)
+    {
+        auto style = m_pDesktopLyric->GetDefaultStyle(0);
+        ApplyDefaultLyricStyle(style);
+    }
+}
+
+
+void CLyricSettingsDlg::OnLyricDefaultStyle2()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_pDesktopLyric != nullptr)
+    {
+        auto style = m_pDesktopLyric->GetDefaultStyle(1);
+        ApplyDefaultLyricStyle(style);
+    }
+}
+
+
+void CLyricSettingsDlg::OnLyricDefaultStyle3()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_pDesktopLyric != nullptr)
+    {
+        auto style = m_pDesktopLyric->GetDefaultStyle(2);
+        ApplyDefaultLyricStyle(style);
+    }
 }

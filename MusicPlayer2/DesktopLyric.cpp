@@ -5,6 +5,27 @@
 
 CDesktopLyric::CDesktopLyric()
 {
+    //初始化歌词预设样式
+    m_default_style[0].normal_style.color1 = RGB(37, 152, 10);
+    m_default_style[0].normal_style.color2 = RGB(129, 249, 0);
+    m_default_style[0].normal_style.gradient_mode = 1;
+    m_default_style[0].highlight_style.color1 = RGB(253, 232, 0);
+    m_default_style[0].highlight_style.color2 = RGB(255, 120, 0);
+    m_default_style[0].highlight_style.gradient_mode = 2;
+
+    m_default_style[1].normal_style.color1 = RGB(252, 82, 66);
+    m_default_style[1].normal_style.color2 = RGB(255, 128, 0);
+    m_default_style[1].normal_style.gradient_mode = 1;
+    m_default_style[1].highlight_style.color1 = RGB(255, 255, 0);
+    m_default_style[1].highlight_style.color2 = RGB(255, 192, 0);
+    m_default_style[1].highlight_style.gradient_mode = 2;
+
+    m_default_style[2].normal_style.color1 = RGB(210, 137, 255);
+    m_default_style[2].normal_style.color2 = RGB(200, 227, 255);
+    m_default_style[2].normal_style.gradient_mode = 1;
+    m_default_style[2].highlight_style.color1 = RGB(98, 237, 245);
+    m_default_style[2].highlight_style.color2 = RGB(74, 145, 253);
+    m_default_style[2].highlight_style.gradient_mode = 2;
 }
 
 
@@ -114,6 +135,13 @@ void CDesktopLyric::SetLyricOpacity(int opacity)
 HWND CDesktopLyric::GetLyricWnd() const
 {
     return m_lyric_window.GetSafeHwnd();
+}
+
+LyricStyleDefaultData CDesktopLyric::GetDefaultStyle(int index)
+{
+    if (index < 0 || index >= LYRIC_DEFAULT_STYLE_NUM)
+        index = 0;
+    return m_default_style[index];
 }
 
 int CDesktopLyric::ToGDIPluseFontStyle(const FontStyle& style)
