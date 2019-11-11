@@ -107,7 +107,7 @@ void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 	m_lyric_window.SetLyricsColor(ToGDIPluseColor(data.text_color1), ToGDIPluseColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
 	m_lyric_window.SetHighlightColor(ToGDIPluseColor(data.highlight_color1), ToGDIPluseColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
 	SetLyricWindowLock(data.lock_desktop_lyric);
-    m_lyric_window.SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
+    SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
 }
 
 void CDesktopLyric::SetLyricWindowVisible(bool visible)
@@ -119,11 +119,15 @@ void CDesktopLyric::SetLyricWindowLock(bool locked)
 {
 	if (locked)
 	{
-		SetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);		//设置鼠标穿透
+		//设置鼠标穿透
+        m_lyric_window.ModifyStyleEx(NULL, WS_EX_TRANSPARENT);
+        m_lyric_window.ModifyStyle(WS_THICKFRAME, NULL);
 	}
 	else
 	{
-		SetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(m_lyric_window.GetSafeHwnd(), GWL_EXSTYLE) & (~WS_EX_TRANSPARENT));		//取消鼠标穿透
+		//取消鼠标穿透
+        m_lyric_window.ModifyStyleEx(WS_EX_TRANSPARENT, NULL);
+        m_lyric_window.ModifyStyle(NULL, WS_THICKFRAME);
 	}
 	m_lyric_window.SetDrawBackground(!locked);
 }
@@ -136,6 +140,10 @@ void CDesktopLyric::SetLyricOpacity(int opacity)
 void CDesktopLyric::SetLyricBackgroundPenetrate(bool penetrate)
 {
     m_lyric_window.SetLyricBackgroundPenetrate(penetrate);
+    if(penetrate)
+        m_lyric_window.ModifyStyle(WS_THICKFRAME, NULL);
+    else
+        m_lyric_window.ModifyStyle(NULL, WS_THICKFRAME);
 }
 
 HWND CDesktopLyric::GetLyricWnd() const
