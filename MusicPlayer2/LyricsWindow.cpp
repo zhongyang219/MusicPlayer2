@@ -257,7 +257,8 @@ void CLyricsWindow::Draw()
         DrawLyrics(pGraphics);
 
     //绘制工具条
-    if (m_bDrawBackground && (m_lyricBackgroundPenetrate ? m_bMouseInWindowRect : m_bHover))
+    bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
+    if (m_lyricBackgroundPenetrate || !m_bDrawBackground ? m_bMouseInWindowRect : m_bHover)
     {
         m_first_draw = true;
         DrawToolbar(pGraphics);
@@ -447,7 +448,8 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 
 void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
 {
-    const int toolbar_num = 9;
+    bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
+    const int toolbar_num = bLocked ? 1 : 9;            //
     const int btn_size = theApp.DPI(TOOL_ICON_SIZE);
     int toolbar_width = toolbar_num * btn_size;
     Gdiplus::Rect toolbar_rect;
@@ -465,24 +467,32 @@ void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
     CRect rcIcon = CRect(toolbar_rect.X, toolbar_rect.Y, toolbar_rect.GetRight(), toolbar_rect.GetBottom());
     rcIcon.right = rcIcon.left + btn_size;
 
-    DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
-    rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.stop_l, rcIcon, BTN_STOP);
-    rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
-    rcIcon.MoveToX(rcIcon.right);
-    IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
-    DrawToolIcon(pGraphics, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
-    rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
-    rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
-    rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
-    rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
-    rcIcon.MoveToX(rcIcon.right);
-    DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+    if (bLocked)    //如果处理锁定状态，只绘制一个解锁图标
+    {
+        m_buttons.clear();
+        DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+    }
+    else
+    {
+        DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.stop_l, rcIcon, BTN_STOP);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
+        rcIcon.MoveToX(rcIcon.right);
+        IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
+        DrawToolIcon(pGraphics, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+    }
 }
 
 void CLyricsWindow::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn_key, bool checked)
@@ -901,6 +911,18 @@ void CLyricsWindow::OnTimer(UINT_PTR nIDEvent)
         CPoint point;
         GetCursorPos(&point);
         m_bMouseInWindowRect = m_rcWindow.PtInRect(point);
+
+        bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
+        if (bLocked)        //处理锁定状态时，如果指针处理“锁定”按钮区域内，则取消鼠标穿透状态
+        {
+            CRect rcLockBtn = m_buttons[BTN_LOCK].rect;
+            rcLockBtn.MoveToX(rcLockBtn.left + m_rcWindow.left);
+            rcLockBtn.MoveToY(rcLockBtn.top + m_rcWindow.top);
+            if(rcLockBtn.PtInRect(point))
+                SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) & (~WS_EX_TRANSPARENT));		//取消鼠标穿透
+            else
+                SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);		//设置鼠标穿透
+        }
     }
 
     CWnd::OnTimer(nIDEvent);
