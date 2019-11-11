@@ -29,6 +29,7 @@ public:
 	void SetLyricWindowVisible(bool visible);
 	void SetLyricWindowLock(bool locked);
     void SetLyricOpacity(int opacity);
+    void SetLyricBackgroundPenetrate(bool penetrate);
     HWND GetLyricWnd() const;
     LyricStyleDefaultData GetDefaultStyle(int index);
 

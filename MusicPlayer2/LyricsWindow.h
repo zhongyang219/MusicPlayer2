@@ -105,6 +105,7 @@ public:
     //获取当前歌词文本
     const CString& GetLyricStr() const;
     void SetLyricChangeFlag(bool bFlag);
+    void SetLyricBackgroundPenetrate(bool bPenetrate);
 private:
 	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate = false);
 	//绘制歌词
@@ -153,17 +154,18 @@ private:
 	CString m_strTranslate;			//歌词翻译
 	CString m_strNextLyric;			//下一句歌词
 	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
-    int m_alpha = 255;                    //不透明度
-    bool m_bHover = false;                  //鼠标是否在指向窗口
-    bool m_bMouseInWindowRect = false;      //鼠标是否在当前窗口区域内
+    int m_alpha = 255;              //不透明度
     bool m_lyricChangeFlag = false; //歌词发生改变标志
-    CRect m_rcWindow;
+    bool m_lyricBackgroundPenetrate = false;        //歌词背景穿透
 
     CMenu m_popupMenu;
     CToolTipCtrl m_tool_tip;
     std::map<BtnKey, UIButton> m_buttons;
     CSize m_frameSize{};
+    CRect m_rcWindow;
     bool m_first_draw = false;      //第一次绘制工具条时，则为true
+    bool m_bHover = false;                  //鼠标是否在指向窗口
+    bool m_bMouseInWindowRect = false;      //鼠标是否在当前窗口区域内
 
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

@@ -49,6 +49,7 @@ protected:
 	CButton m_lock_desktop_lyric_chk;
     CButton m_hide_lyric_without_lyric_chk;
     CButton m_hide_lyric_paused_chk;
+    CButton m_lyric_background_penetrate_chk;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -94,4 +95,5 @@ public:
     afx_msg void OnLyricDefaultStyle1();
     afx_msg void OnLyricDefaultStyle2();
     afx_msg void OnLyricDefaultStyle3();
+    afx_msg void OnBnClickedHideLyricWithoutLyricCheck3();
 };

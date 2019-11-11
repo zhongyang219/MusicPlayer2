@@ -48,6 +48,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LOCK_DESKTOP_LYRIC_CHECK, m_lock_desktop_lyric_chk);
     DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, m_hide_lyric_without_lyric_chk);
     DDX_Control(pDX, IDC_HIDE_LYRIC_PAUSE_CHECK, m_hide_lyric_paused_chk);
+    DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, m_lyric_background_penetrate_chk);
 }
 
 
@@ -80,6 +81,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1, &CLyricSettingsDlg::OnLyricDefaultStyle1)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CLyricSettingsDlg::OnLyricDefaultStyle2)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CLyricSettingsDlg::OnLyricDefaultStyle3)
+    ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck3)
 END_MESSAGE_MAP()
 
 
@@ -114,6 +116,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_lock_desktop_lyric_chk.SetCheck(m_data.desktop_lyric_data.lock_desktop_lyric);
     m_hide_lyric_without_lyric_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_without_lyric);
     m_hide_lyric_paused_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_when_paused);
+    m_lyric_background_penetrate_chk.SetCheck(m_data.desktop_lyric_data.lyric_background_penetrate);
 
 	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_NO_GRADIENT));
 	m_text_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
@@ -194,6 +197,7 @@ void CLyricSettingsDlg::EnableControl()
     m_lock_desktop_lyric_chk.EnableWindow(desktop_lyric_enable);
     m_hide_lyric_without_lyric_chk.EnableWindow(desktop_lyric_enable);
     m_hide_lyric_paused_chk.EnableWindow(desktop_lyric_enable);
+    m_lyric_background_penetrate_chk.EnableWindow(desktop_lyric_enable);
     GetDlgItem(IDC_SET_FONT2)->EnableWindow(desktop_lyric_enable);
 }
 
@@ -520,4 +524,11 @@ void CLyricSettingsDlg::OnLyricDefaultStyle3()
         auto style = m_pDesktopLyric->GetDefaultStyle(2);
         ApplyDefaultLyricStyle(style);
     }
+}
+
+
+void CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck3()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.desktop_lyric_data.lyric_background_penetrate = !m_data.desktop_lyric_data.lyric_background_penetrate;
 }

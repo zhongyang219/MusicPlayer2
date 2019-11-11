@@ -107,6 +107,7 @@ void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 	m_lyric_window.SetLyricsColor(ToGDIPluseColor(data.text_color1), ToGDIPluseColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
 	m_lyric_window.SetHighlightColor(ToGDIPluseColor(data.highlight_color1), ToGDIPluseColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
 	SetLyricWindowLock(data.lock_desktop_lyric);
+    m_lyric_window.SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
 }
 
 void CDesktopLyric::SetLyricWindowVisible(bool visible)
@@ -130,6 +131,11 @@ void CDesktopLyric::SetLyricWindowLock(bool locked)
 void CDesktopLyric::SetLyricOpacity(int opacity)
 {
     m_lyric_window.SetAlpha(opacity * 255 / 100);
+}
+
+void CDesktopLyric::SetLyricBackgroundPenetrate(bool penetrate)
+{
+    m_lyric_window.SetLyricBackgroundPenetrate(penetrate);
 }
 
 HWND CDesktopLyric::GetLyricWnd() const

@@ -244,7 +244,7 @@ void CLyricsWindow::Draw()
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
 
 	//绘制半透明背景
-	if(m_bDrawBackground)
+	if(m_bDrawBackground && !m_lyricBackgroundPenetrate)
 	{
         BYTE alpha = (m_bHover) ? 96 : 1;
 		Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(alpha, 255, 255, 255));
@@ -257,7 +257,7 @@ void CLyricsWindow::Draw()
         DrawLyrics(pGraphics);
 
     //绘制工具条
-    if (m_bDrawBackground && (m_bHover))
+    if (m_bDrawBackground && (m_lyricBackgroundPenetrate ? m_bMouseInWindowRect : m_bHover))
     {
         m_first_draw = true;
         DrawToolbar(pGraphics);
@@ -688,6 +688,11 @@ const CString& CLyricsWindow::GetLyricStr() const
 void CLyricsWindow::SetLyricChangeFlag(bool bFlag)
 {
     m_lyricChangeFlag = bFlag;
+}
+
+void CLyricsWindow::SetLyricBackgroundPenetrate(bool bPenetrate)
+{
+    m_lyricBackgroundPenetrate = bPenetrate;
 }
 
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)
