@@ -168,6 +168,7 @@ private:
     bool m_first_draw = true;      //第一次绘制工具条时，则为true
     bool m_bHover = false;                  //鼠标是否在指向窗口
     bool m_bMouseInWindowRect = false;      //鼠标是否在当前窗口区域内
+    bool m_bMenuPopedUp = false;
 
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

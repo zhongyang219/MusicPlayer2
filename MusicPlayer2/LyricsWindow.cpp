@@ -774,7 +774,9 @@ void CLyricsWindow::OnLButtonUp(UINT nFlags, CPoint point)
             {
                 CPoint cur_point;
                 GetCursorPos(&cur_point);
+                m_bMenuPopedUp = true;
                 theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
+                m_bMenuPopedUp = false;
             }
                 return;
 
@@ -864,11 +866,14 @@ void CLyricsWindow::OnMouseHover(UINT nFlags, CPoint point)
 void CLyricsWindow::OnMouseLeave()
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    m_bHover = false;
-    //Invalidate();
-    for (auto& btn : m_buttons)
+    if(!m_bMenuPopedUp)
     {
-        btn.second.pressed = false;
+        m_bHover = false;
+        //Invalidate();
+        for (auto& btn : m_buttons)
+        {
+            btn.second.pressed = false;
+        }
     }
 
     CWnd::OnMouseLeave();
@@ -888,12 +893,13 @@ void CLyricsWindow::OnSizing(UINT fwSide, LPRECT pRect)
 void CLyricsWindow::OnRButtonUp(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
+    m_bMenuPopedUp = true;
     CPoint point1;		//定义一个用于确定光标位置的位置
     GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
     CMenu* pMenu = m_popupMenu.GetSubMenu(0);
     if (pMenu != NULL)
         pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
-
+    m_bMenuPopedUp = false;
     //CWnd::OnRButtonUp(nFlags, point);
 }
 
