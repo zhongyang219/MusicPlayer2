@@ -186,8 +186,22 @@ void CLyricsWindow::AddToolTips()
 
 void CLyricsWindow::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip.AddTool(this, str, m_buttons[btn].rect, btn + 1000);
+    CRect rcBtn = m_buttons[btn].rect;
+    rcBtn.MoveToX(rcBtn.left - m_frameSize.cx);
+    rcBtn.MoveToY(rcBtn.top - m_frameSize.cy);
+    m_tool_tip.AddTool(this, str, rcBtn, btn + 1000);
 
+}
+
+void CLyricsWindow::UpdateToolTipPosition()
+{
+    for (const auto& btn : m_buttons)
+    {
+        CRect rcBtn = btn.second.rect;
+        rcBtn.MoveToX(rcBtn.left - m_frameSize.cx);
+        rcBtn.MoveToY(rcBtn.top - m_frameSize.cy);
+        m_tool_tip.SetToolRect(this, btn.first + 1000, rcBtn);
+    }
 }
 
 //更新歌词(歌词文本,高亮进度百分比)
@@ -261,8 +275,13 @@ void CLyricsWindow::Draw()
     bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
     if (m_lyricBackgroundPenetrate || !m_bDrawBackground ? m_bMouseInWindowRect : m_bHover)
     {
-        m_first_draw = true;
         DrawToolbar(pGraphics);
+
+        if (m_first_draw)
+        {
+            AddToolTips();
+            m_first_draw = false;
+        }
     }
 
 	delete pGraphics;
@@ -282,12 +301,6 @@ void CLyricsWindow::Draw()
 	::SelectObject (m_hCacheDC,hOldBitmap);
 	::DeleteObject(hBitmap);
 	::ReleaseDC(m_hWnd,hDC);
-
-    if (m_first_draw)
-    {
-        AddToolTips();
-        m_first_draw = false;
-    }
 }
 
 void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate)
@@ -500,6 +513,12 @@ void CLyricsWindow::DrawToolbar(Gdiplus::Graphics* pGraphics)
         DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+    }
+    static bool last_locked = !bLocked;
+    if (last_locked != bLocked)
+    {
+        UpdateToolTipPosition();
+        last_locked = bLocked;
     }
 }
 
@@ -862,6 +881,7 @@ void CLyricsWindow::OnSizing(UINT fwSide, LPRECT pRect)
 
     // TODO: 在此处添加消息处理程序代码
     m_bHover = true;
+    UpdateToolTipPosition();
 }
 
 

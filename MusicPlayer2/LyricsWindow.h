@@ -126,6 +126,7 @@ private:
     void AddToolTips();
     //为一个按钮添加鼠标提示
     void AddMouseToolTip(BtnKey btn, LPCTSTR str);
+    void UpdateToolTipPosition();
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -164,7 +165,7 @@ private:
     std::map<BtnKey, UIButton> m_buttons;
     CSize m_frameSize{};
     CRect m_rcWindow;
-    bool m_first_draw = false;      //第一次绘制工具条时，则为true
+    bool m_first_draw = true;      //第一次绘制工具条时，则为true
     bool m_bHover = false;                  //鼠标是否在指向窗口
     bool m_bMouseInWindowRect = false;      //鼠标是否在当前窗口区域内
 
