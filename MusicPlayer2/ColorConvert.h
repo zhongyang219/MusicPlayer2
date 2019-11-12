@@ -58,5 +58,8 @@ public:
 
 	//当颜色的亮度低于一个值时降低其亮度
 	static void ReduceLuminance(COLORREF& color);
+
+    //计算两种颜色的渐变颜色。percent从0~100，当percent为0时返回color1，100时返回color2，其他值返回两种颜色的中间颜色
+    static COLORREF GetGradientColor(COLORREF color1, COLORREF color2, int percent);
 };
 

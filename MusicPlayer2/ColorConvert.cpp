@@ -197,3 +197,24 @@ void CColorConvert::ReduceLuminance(COLORREF & color)
 		color = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
 	}
 }
+
+COLORREF CColorConvert::GetGradientColor(COLORREF color1, COLORREF color2, int percent)
+{
+    if (percent > 100)
+        percent = 100;
+    if (percent < 0)
+        percent = 0;
+
+    int R1 = GetRValue(color1);
+    int G1 = GetGValue(color1);
+    int B1 = GetBValue(color1);
+    int R2 = GetRValue(color2);
+    int G2 = GetGValue(color2);
+    int B2 = GetBValue(color2);
+
+    int R_result = (R1 + (R2 - R1)*percent / 100) % 256;
+    int G_result = (G1 + (G2 - G1)*percent / 100) % 256;
+    int B_result = (B1 + (B2 - B1)*percent / 100) % 256;
+
+    return RGB(R_result, G_result, B_result);
+}
