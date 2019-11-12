@@ -96,7 +96,10 @@ protected:
 	//绘制歌词
 	void DrawLyrics(Gdiplus::Graphics* pGraphics);
     void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
-    virtual void DrawBackgroundAndToolbar(Gdiplus::Graphics* pGraphics) { }
+    //在绘制歌词前绘制的内容
+    virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics) { }
+    //在绘制歌词后绘制的内容
+    virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) { }
 
 protected:
 	DECLARE_MESSAGE_MAP()

@@ -325,7 +325,7 @@ void CDesktopLyric::UpdateToolTipPosition()
 }
 
 
-void CDesktopLyric::DrawBackgroundAndToolbar(Gdiplus::Graphics* pGraphics)
+void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics)
 {
     //绘制半透明背景
     if (m_bDrawBackground && !m_lyricBackgroundPenetrate)
@@ -335,7 +335,10 @@ void CDesktopLyric::DrawBackgroundAndToolbar(Gdiplus::Graphics* pGraphics)
         pGraphics->FillRectangle(pBrush, 0, 0, m_rcWindow.Width(), m_rcWindow.Height());
         delete pBrush;
     }
+}
 
+void CDesktopLyric::AfterDrawLyric(Gdiplus::Graphics* pGraphics)
+{
     //绘制工具条
     bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
     if (m_lyricBackgroundPenetrate || !m_bDrawBackground ? m_bMouseInWindowRect : m_bHover)
@@ -348,7 +351,6 @@ void CDesktopLyric::DrawBackgroundAndToolbar(Gdiplus::Graphics* pGraphics)
             m_first_draw = false;
         }
     }
-
 }
 
 void CDesktopLyric::OnLButtonDown(UINT nFlags, CPoint point)

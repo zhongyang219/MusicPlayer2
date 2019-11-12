@@ -199,12 +199,12 @@ void CLyricsWindow::Draw()
 	pGraphics->SetSmoothingMode (Gdiplus::SmoothingModeAntiAlias);
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
 
-    DrawBackgroundAndToolbar(pGraphics);
-
+    PreDrawLyric(pGraphics);
     if (m_bDoubleLine && !m_strNextLyric.IsEmpty())
         DrawLyricsDoubleLine(pGraphics);
     else
         DrawLyrics(pGraphics);
+    AfterDrawLyric(pGraphics);
 
 	delete pGraphics;
 	//----------------------------------

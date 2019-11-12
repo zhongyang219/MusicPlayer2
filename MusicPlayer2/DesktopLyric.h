@@ -68,7 +68,8 @@ public:
     void UpdateToolTipPosition();
 
 protected:
-    virtual void DrawBackgroundAndToolbar(Gdiplus::Graphics* pGraphics) override;
+    virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics) override;
+    virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) override;
 
 private:
 	//CLyricsWindow m_lyric_window;
