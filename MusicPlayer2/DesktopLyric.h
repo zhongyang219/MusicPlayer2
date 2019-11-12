@@ -55,8 +55,6 @@ public:
     void SetLyricBackgroundPenetrate(bool penetrate);
     LyricStyleDefaultData GetDefaultStyle(int index);
 
-	static int ToGDIPluseFontStyle(const FontStyle& style);
-	static Gdiplus::Color ToGDIPluseColor(COLORREF color);
 
     //绘制工具条
     void DrawToolbar(Gdiplus::Graphics* pGraphics);

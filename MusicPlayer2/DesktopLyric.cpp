@@ -129,9 +129,9 @@ void CDesktopLyric::ClearLyric()
 
 void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 {
-	SetLyricsFont(data.lyric_font.name.c_str(), theApp.DPI(data.lyric_font.size), ToGDIPluseFontStyle(data.lyric_font.style));
-	SetLyricsColor(ToGDIPluseColor(data.text_color1), ToGDIPluseColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
-	SetHighlightColor(ToGDIPluseColor(data.highlight_color1), ToGDIPluseColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
+	SetLyricsFont(data.lyric_font.name.c_str(), theApp.DPI(data.lyric_font.size), CGdiPlusTool::ToGDIPluseFontStyle(data.lyric_font.style));
+	SetLyricsColor(CGdiPlusTool::COLORREFToGdiplusColor(data.text_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
+	SetHighlightColor(CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
 	SetLyricWindowLock(data.lock_desktop_lyric);
     SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
 }
@@ -177,28 +177,6 @@ LyricStyleDefaultData CDesktopLyric::GetDefaultStyle(int index)
     if (index < 0 || index >= LYRIC_DEFAULT_STYLE_NUM)
         index = 0;
     return m_default_style[index];
-}
-
-int CDesktopLyric::ToGDIPluseFontStyle(const FontStyle& style)
-{
-	int value = 0;
-	if (style.bold)
-		value |= Gdiplus::FontStyle::FontStyleBold;
-	if (style.italic)
-		value |= Gdiplus::FontStyle::FontStyleItalic;
-	if (style.underline)
-		value |= Gdiplus::FontStyle::FontStyleUnderline;
-	if (style.strike_out)
-		value |= Gdiplus::FontStyle::FontStyleStrikeout;
-	return value;
-
-}
-
-Gdiplus::Color CDesktopLyric::ToGDIPluseColor(COLORREF color)
-{
-	Gdiplus::Color gdiplus_color;
-	gdiplus_color.SetFromCOLORREF(color);
-	return gdiplus_color;
 }
 
 void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
