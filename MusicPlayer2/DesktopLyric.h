@@ -72,17 +72,20 @@ protected:
     virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) override;
 
 private:
+    void SetWindowStyle();
+
+private:
 	//CLyricsWindow m_lyric_window;
     LyricStyleDefaultData m_default_style[LYRIC_DEFAULT_STYLE_NUM];
 
     CMenu m_popupMenu;
     CToolTipCtrl m_tool_tip;
     std::map<BtnKey, UIButton> m_buttons;
-    bool m_first_draw = true;      //第一次绘制工具条时，则为true
+    bool m_first_draw = true;       //第一次绘制工具条时，则为true
     bool m_bHover = false;                  //鼠标是否在指向窗口
     bool m_bMouseInWindowRect = false;      //鼠标是否在当前窗口区域内
     bool m_bMenuPopedUp = false;
-    bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
+    bool m_bLocked = false;     	//是否锁定歌词窗口
     bool m_lyricBackgroundPenetrate = false;
 
 public:

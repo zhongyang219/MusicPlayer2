@@ -3,6 +3,7 @@
 #include "MusicPlayer2.h"
 #include "PlayListCtrl.h"
 #include "GdiPlusTool.h"
+#include "Define.h"
 
 CDesktopLyric::CDesktopLyric()
 {
@@ -37,6 +38,7 @@ CDesktopLyric::~CDesktopLyric()
 }
 
 BEGIN_MESSAGE_MAP(CDesktopLyric, CLyricsWindow)
+    ON_WM_LBUTTONDOWN()
     ON_WM_LBUTTONUP()
     ON_WM_MOUSEMOVE()
     ON_WM_MOUSEHOVER()
@@ -132,8 +134,11 @@ void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 	SetLyricsFont(data.lyric_font.name.c_str(), theApp.DPI(data.lyric_font.size), CGdiPlusTool::ToGDIPluseFontStyle(data.lyric_font.style));
 	SetLyricsColor(CGdiPlusTool::COLORREFToGdiplusColor(data.text_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
 	SetHighlightColor(CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
-	SetLyricWindowLock(data.lock_desktop_lyric);
-    SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
+	//SetLyricWindowLock(data.lock_desktop_lyric);
+    //SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
+    m_bLocked = data.lock_desktop_lyric;
+    m_lyricBackgroundPenetrate = data.lyric_background_penetrate;
+    SetTimer(TIMER_DESKTOP_LYRIC_2, 200, NULL);     //—”≥Ÿ200∫¡√Î…Ë÷√À¯∂®∏Ë¥ ¥∞ø⁄∫Õ±≥æ∞¥©Õ∏
 }
 
 void CDesktopLyric::SetLyricWindowVisible(bool visible)
@@ -143,19 +148,8 @@ void CDesktopLyric::SetLyricWindowVisible(bool visible)
 
 void CDesktopLyric::SetLyricWindowLock(bool locked)
 {
-	if (locked)
-	{
-		//…Ë÷√ Û±Í¥©Õ∏
-        ModifyStyleEx(NULL, WS_EX_TRANSPARENT);
-        ModifyStyle(WS_THICKFRAME, NULL);
-	}
-	else
-	{
-		//»°œ˚ Û±Í¥©Õ∏
-        ModifyStyleEx(WS_EX_TRANSPARENT, NULL);
-        ModifyStyle(NULL, WS_THICKFRAME);
-	}
-    m_bDrawBackground = !locked;
+    m_bLocked = locked;
+    SetWindowStyle();
 }
 
 void CDesktopLyric::SetLyricOpacity(int opacity)
@@ -166,10 +160,7 @@ void CDesktopLyric::SetLyricOpacity(int opacity)
 void CDesktopLyric::SetLyricBackgroundPenetrate(bool penetrate)
 {
     m_lyricBackgroundPenetrate = penetrate;
-    if(penetrate)
-        ModifyStyle(WS_THICKFRAME, NULL);
-    else
-        ModifyStyle(NULL, WS_THICKFRAME);
+    SetWindowStyle();
 }
 
 LyricStyleDefaultData CDesktopLyric::GetDefaultStyle(int index)
@@ -328,7 +319,7 @@ void CDesktopLyric::UpdateToolTipPosition()
 void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics)
 {
     //ªÊ÷∆∞ÎÕ∏√˜±≥æ∞
-    if (m_bDrawBackground && !m_lyricBackgroundPenetrate)
+    if (!m_bLocked && !m_lyricBackgroundPenetrate)
     {
         BYTE alpha = (m_bHover) ? 80 : 1;
         Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(Gdiplus::Color(alpha, 255, 255, 255));
@@ -341,7 +332,7 @@ void CDesktopLyric::AfterDrawLyric(Gdiplus::Graphics* pGraphics)
 {
     //ªÊ÷∆π§æﬂÃı
     bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
-    if (m_lyricBackgroundPenetrate || !m_bDrawBackground ? m_bMouseInWindowRect : m_bHover)
+    if (m_lyricBackgroundPenetrate || m_bLocked ? m_bMouseInWindowRect : m_bHover)
     {
         DrawToolbar(pGraphics);
 
@@ -351,6 +342,19 @@ void CDesktopLyric::AfterDrawLyric(Gdiplus::Graphics* pGraphics)
             m_first_draw = false;
         }
     }
+}
+
+void CDesktopLyric::SetWindowStyle()
+{
+    if (m_bLocked)
+        ModifyStyleEx(NULL, WS_EX_TRANSPARENT);
+    else
+        ModifyStyleEx(WS_EX_TRANSPARENT, NULL);
+
+    if (m_bLocked || m_lyricBackgroundPenetrate)
+        ModifyStyle(WS_THICKFRAME, NULL);
+    else
+        ModifyStyle(NULL, WS_THICKFRAME);
 }
 
 void CDesktopLyric::OnLButtonDown(UINT nFlags, CPoint point)
@@ -587,6 +591,11 @@ void CDesktopLyric::OnTimer(UINT_PTR nIDEvent)
                 m_buttons[BTN_LOCK].hover = false;
             }
         }
+    }
+    else if (nIDEvent == TIMER_DESKTOP_LYRIC_2)
+    {
+        KillTimer(TIMER_DESKTOP_LYRIC_2);
+        SetWindowStyle();
     }
 
     CLyricsWindow::OnTimer(nIDEvent);

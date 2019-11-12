@@ -73,6 +73,7 @@ using _tstring = std::string;
 #define TIMER_ELAPSE_MINI 200	//定义迷你模式中的定时器响应的时间间隔（毫秒）
 #define TIMER_1_SEC 1237
 #define TIMER_DESKTOP_LYRIC 1238
+#define TIMER_DESKTOP_LYRIC_2 1239
 
 //#define TIMER_ID_SPECTRAL
 //#define TIMER_ID_EXIT 1237
