@@ -1194,7 +1194,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     if (m_desktop_lyric_pos.x != -1 && m_desktop_lyric_pos.y != -1)
     {
         CRect rcLyric;
-        ::GetWindowRect(m_desktop_lyric.GetLyricWnd(), rcLyric);
+        ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rcLyric);
         CRect rcWork;
         SystemParametersInfo(SPI_GETWORKAREA, NULL, rcWork, NULL);
         if (m_desktop_lyric_pos.x < rcWork.left - rcLyric.Width() / 2)
@@ -1205,7 +1205,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
             m_desktop_lyric_pos.y = rcWork.top - rcLyric.Height() / 2;
         if (m_desktop_lyric_pos.y > rcWork.bottom - rcLyric.Height() / 2)
             m_desktop_lyric_pos.y = rcWork.bottom - rcLyric.Height() / 2;
-        ::SetWindowPos(m_desktop_lyric.GetLyricWnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     }
     if (m_desktop_lyric_size.cx > 0 && m_desktop_lyric_size.cy > 0)
     {
@@ -1213,7 +1213,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
             m_desktop_lyric_size.cx = theApp.DPI(400);
         if (m_desktop_lyric_size.cy < theApp.DPI(100))
             m_desktop_lyric_size.cy = theApp.DPI(100);
-        ::SetWindowPos(m_desktop_lyric.GetLyricWnd(), nullptr, 0, 0, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOMOVE | SWP_NOZORDER);
+        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, 0, 0, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOMOVE | SWP_NOZORDER);
     }
 
     //初始化绘图的类
@@ -1879,7 +1879,7 @@ void CMusicPlayerDlg::OnDestroy()
 
     //获取桌面歌词窗口的位置
     CRect rect;
-    ::GetWindowRect(m_desktop_lyric.GetLyricWnd(), rect);
+    ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rect);
     m_desktop_lyric_pos = rect.TopLeft();
     m_desktop_lyric_size = rect.Size();
 

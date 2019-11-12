@@ -43,28 +43,6 @@ class CLyricsWindow : public CWnd
 {
 	DECLARE_DYNAMIC(CLyricsWindow)
 
-    struct UIButton		//界面中绘制的按钮
-    {
-        CRect rect;				//按钮的矩形区域
-        bool hover{ false };	//鼠标是否指向按钮
-        bool pressed{ false };	//按钮是否按下
-        bool enable{ true };	//按钮是否启用
-    };
-
-    enum BtnKey		//标识按钮的类型
-    {
-        BTN_APP,
-        BTN_STOP,				//停止
-        BTN_PREVIOUS,			//上一曲
-        BTN_PLAY_PAUSE,			//播放/暂停
-        BTN_NEXT,				//下一曲
-        BTN_LOCK,
-        BTN_DOUBLE_LINE,
-        BTN_BACKGROUND_PENETRATE,
-        BTN_SETTING,
-        BTN_CLOSE
-    };
-
 public:
 	CLyricsWindow();
 	virtual ~CLyricsWindow();
@@ -99,34 +77,26 @@ public:
 	//设置是否双行显示
 	void SetLyricDoubleLine(bool doubleLine);
 	void SetNextLyric(LPCTSTR lpszNextLyric);
-	void SetDrawBackground(bool drawBackground);
     void SetShowTranslate(bool showTranslate);
     //设置不透明度
     void SetAlpha(int alpha);
     //获取当前歌词文本
     const CString& GetLyricStr() const;
     void SetLyricChangeFlag(bool bFlag);
-    void SetLyricBackgroundPenetrate(bool bPenetrate);
 private:
-	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate = false);
-	//绘制歌词
-	void DrawLyrics(Gdiplus::Graphics* pGraphics);
-    void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
 	//绘制高亮歌词
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
-    //绘制工具条
-    void DrawToolbar(Gdiplus::Graphics* pGraphics);
-    //绘制工具条上的图标
-    void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
 	//创建渐变画刷
 	Gdiplus::Brush* CreateGradientBrush(LyricsGradientMode TextGradientMode,Gdiplus::Color& Color1,Gdiplus::Color& Color2, Gdiplus::RectF& dstRect);
 	//注册窗口类
 	BOOL RegisterWndClass(LPCTSTR lpszClassName);
-    //添加鼠标提示
-    void AddToolTips();
-    //为一个按钮添加鼠标提示
-    void AddMouseToolTip(BtnKey btn, LPCTSTR str);
-    void UpdateToolTipPosition();
+
+protected:
+	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate = false);
+	//绘制歌词
+	void DrawLyrics(Gdiplus::Graphics* pGraphics);
+    void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
+    virtual void DrawBackgroundAndToolbar(Gdiplus::Graphics* pGraphics) { }
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -151,40 +121,21 @@ private:
 	Gdiplus::REAL m_FontSize;
 	Gdiplus::FontFamily* m_pFontFamily;
 	Gdiplus::StringFormat* m_pTextFormat;
+
+protected:
 	bool m_bDoubleLine = false;		//歌词双行显示
     bool m_bShowTranslate = false;  //显示歌词翻译
 	CString m_strTranslate;			//歌词翻译
 	CString m_strNextLyric;			//下一句歌词
-	bool m_bDrawBackground = false;	//是否绘制一个半透明的白色背景
     int m_alpha = 255;              //不透明度
     bool m_lyricChangeFlag = false; //歌词发生改变标志
-    bool m_lyricBackgroundPenetrate = false;        //歌词背景穿透
-
-    CMenu m_popupMenu;
-    CToolTipCtrl m_tool_tip;
-    std::map<BtnKey, UIButton> m_buttons;
     CSize m_frameSize{};
     CRect m_rcWindow;
-    bool m_first_draw = true;      //第一次绘制工具条时，则为true
-    bool m_bHover = false;                  //鼠标是否在指向窗口
-    bool m_bMouseInWindowRect = false;      //鼠标是否在当前窗口区域内
-    bool m_bMenuPopedUp = false;
+    int m_toobar_height = 0;
 
-public:
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-    afx_msg void OnMouseHover(UINT nFlags, CPoint point);
-    afx_msg void OnMouseLeave();
-    afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
-    afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-    virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 protected:
-    afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
-public:
-    virtual BOOL PreTranslateMessage(MSG* pMsg);
-    afx_msg void OnTimer(UINT_PTR nIDEvent);
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+
 };
 
 
