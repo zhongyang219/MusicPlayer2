@@ -202,17 +202,21 @@ void CLyricDraw::DrawLyricTextSingleLine(CRect rect, bool double_line)
     else
     {
         CRect lyric_rect = rect;
-        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0) };	//获取当歌词
+        Time time = CPlayer::GetInstance().GetCurrentPosition();
+        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//获取当歌词
         if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
             current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(Time(CPlayer::GetInstance().GetCurrentPosition())) };		//获取当前歌词进度（范围为0~1000）
+        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//获取当前歌词进度（范围为0~1000）
 
         if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_ui_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
-            wstring next_lyric_text = CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 1).text;
+            wstring next_lyric_text = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
             if (next_lyric_text.empty())
                 next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress);
+            //这里实现文本从非高亮缓慢变化到高亮效果
+            int last_time_span = time - current_lyric.time;     //当前播放的歌词已持续的时间
+            int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
+            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, fade_percent);
         }
         else
         {
@@ -237,7 +241,7 @@ void CLyricDraw::DrawLyricTextSingleLine(CRect rect, bool double_line)
     }
 }
 
-void CLyricDraw::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress)
+void CLyricDraw::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent)
 {
     SetLyricFont();
     static bool swap;
@@ -270,7 +274,7 @@ void CLyricDraw::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyr
     }
     else
     {
-        color1 = color2 = m_colors.color_text;
+        color1 = color2 = CColorConvert::GetGradientColor(m_colors.color_text_2, m_colors.color_text, fade_percent);
     }
 
     if (!swap)

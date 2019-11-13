@@ -22,7 +22,7 @@ public:
 private:
     void SetLyricFont();
     void SetLyricFontTranslated();
-    void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress);
+    void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent = 100);
 
 private:
     UIColors& m_colors;
