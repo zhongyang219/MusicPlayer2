@@ -496,6 +496,7 @@ void CDesktopLyric::OnMouseLeave()
         for (auto& btn : m_buttons)
         {
             btn.second.pressed = false;
+            btn.second.hover = false;
         }
     }
 
