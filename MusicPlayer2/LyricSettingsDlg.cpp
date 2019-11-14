@@ -82,6 +82,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CLyricSettingsDlg::OnLyricDefaultStyle2)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CLyricSettingsDlg::OnLyricDefaultStyle3)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck3)
+    ON_MESSAGE(WM_COLOR_SELECTED, &CLyricSettingsDlg::OnColorSelected)
 END_MESSAGE_MAP()
 
 
@@ -204,12 +205,19 @@ void CLyricSettingsDlg::EnableControl()
 
 void CLyricSettingsDlg::ApplyDefaultLyricStyle(const LyricStyleDefaultData& style)
 {
+    m_data.desktop_lyric_data.text_color1 = style.normal_style.color1;
+    m_data.desktop_lyric_data.text_color2 = style.normal_style.color2;
+    m_data.desktop_lyric_data.text_gradient = style.normal_style.gradient_mode;
+    m_data.desktop_lyric_data.highlight_color1 = style.highlight_style.color1;
+    m_data.desktop_lyric_data.highlight_color2 = style.highlight_style.color2;
+    m_data.desktop_lyric_data.highlight_gradient = style.highlight_style.gradient_mode;
+
     m_text_color1_static.SetFillColor(style.normal_style.color1);
     m_text_color2_static.SetFillColor(style.normal_style.color2);
-    m_data.desktop_lyric_data.text_gradient = style.normal_style.gradient_mode;
+    m_text_gradient_combo.SetCurSel(m_data.desktop_lyric_data.text_gradient);
     m_highlight_color1_static.SetFillColor(style.highlight_style.color1);
     m_highlight_color2_static.SetFillColor(style.highlight_style.color2);
-    m_data.desktop_lyric_data.highlight_gradient = style.highlight_style.gradient_mode;
+    m_highlight_gradient_combo.SetCurSel(m_data.desktop_lyric_data.highlight_gradient);
 }
 
 void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
@@ -249,10 +257,10 @@ void CLyricSettingsDlg::OnCancel()
 void CLyricSettingsDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	m_data.desktop_lyric_data.text_color1 = m_text_color1_static.GetFillColor();
-	m_data.desktop_lyric_data.text_color2 = m_text_color2_static.GetFillColor();
-	m_data.desktop_lyric_data.highlight_color1 = m_highlight_color1_static.GetFillColor();
-	m_data.desktop_lyric_data.highlight_color2 = m_highlight_color2_static.GetFillColor();
+	//m_data.desktop_lyric_data.text_color1 = m_text_color1_static.GetFillColor();
+	//m_data.desktop_lyric_data.text_color2 = m_text_color2_static.GetFillColor();
+	//m_data.desktop_lyric_data.highlight_color1 = m_highlight_color1_static.GetFillColor();
+	//m_data.desktop_lyric_data.highlight_color2 = m_highlight_color2_static.GetFillColor();
 
 	//CTabDlg::OnOK();
 }
@@ -531,4 +539,19 @@ void CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck3()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.desktop_lyric_data.lyric_background_penetrate = !m_data.desktop_lyric_data.lyric_background_penetrate;
+}
+
+
+afx_msg LRESULT CLyricSettingsDlg::OnColorSelected(WPARAM wParam, LPARAM lParam)
+{
+    CWnd* pControl = (CWnd*)wParam;
+    if (pControl == &m_text_color1_static)
+        m_data.desktop_lyric_data.text_color1 = m_text_color1_static.GetFillColor();
+    else if(pControl == &m_text_color2_static)
+        m_data.desktop_lyric_data.text_color2 = m_text_color2_static.GetFillColor();
+    else if(pControl == &m_highlight_color1_static)
+        m_data.desktop_lyric_data.highlight_color1 = m_highlight_color1_static.GetFillColor();
+    else if(pControl == &m_highlight_color2_static)
+        m_data.desktop_lyric_data.highlight_color2 = m_highlight_color2_static.GetFillColor();
+    return 0;
 }

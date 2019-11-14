@@ -44,6 +44,11 @@ void CColorStaticEx::OnLButtonUp(UINT nFlags, CPoint point)
 	if (color_dlg.DoModal() == IDOK)
 	{
 		SetFillColor(color_dlg.GetColor());
+
+        //向父窗口发送WM_COLOR_SELECTED消息
+        CWnd* pParent = GetParent();
+        if(pParent!=nullptr)
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COLOR_SELECTED, (WPARAM)this, 0);
 	}
 
 	CColorStatic::OnLButtonUp(nFlags, point);
