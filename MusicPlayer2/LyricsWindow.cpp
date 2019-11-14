@@ -310,16 +310,12 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	{
 		Gdiplus::RectF transBoundingBox;
 		pGraphics->MeasureString(m_strTranslate, -1, m_pFont, layoutRect, m_pTextFormat, &transBoundingBox, 0, 0);
-		Gdiplus::REAL translateHeight = boundingBox.Height * TRANSLATE_FONT_SIZE_FACTOR;
-		Gdiplus::REAL maxWidth = max(boundingBox.Width, transBoundingBox.Width);
+		Gdiplus::REAL translateHeight = transBoundingBox.Height * TRANSLATE_FONT_SIZE_FACTOR;
+		Gdiplus::REAL translateWidth = transBoundingBox.Width * TRANSLATE_FONT_SIZE_FACTOR;
 		Gdiplus::REAL gapHeight = boundingBox.Height * 0.2f;	//歌词和翻译之间的间隙
 		Gdiplus::REAL height = boundingBox.Height + gapHeight + translateHeight;
-        Gdiplus::RectF textRect((m_nWidth - maxWidth) / 2, m_toobar_height + (lyricHeight - height) / 2, maxWidth, height);
-		dstRect = textRect;
-		dstRect.Height = boundingBox.Height;
-		transRect = textRect;
-		transRect.Y += (boundingBox.Height + gapHeight);
-		transRect.Height = translateHeight;
+		dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, m_toobar_height + (lyricHeight - height) / 2, boundingBox.Width, boundingBox.Height);
+		transRect = Gdiplus::RectF((m_nWidth - translateWidth) / 2, dstRect.GetBottom() + gapHeight, translateWidth, translateHeight);
 	}
 
 	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true);
