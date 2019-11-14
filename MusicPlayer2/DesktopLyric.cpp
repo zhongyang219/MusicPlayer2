@@ -304,6 +304,11 @@ void CDesktopLyric::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 
 }
 
+void CDesktopLyric::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+    m_tool_tip.UpdateTipText(str, this, btn + 1000);
+}
+
 void CDesktopLyric::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)

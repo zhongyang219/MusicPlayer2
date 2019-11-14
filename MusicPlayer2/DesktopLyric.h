@@ -65,6 +65,7 @@ public:
     void AddToolTips();
     //为一个按钮添加鼠标提示
     void AddMouseToolTip(BtnKey btn, LPCTSTR str);
+    void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
     void UpdateToolTipPosition();
 
 protected:

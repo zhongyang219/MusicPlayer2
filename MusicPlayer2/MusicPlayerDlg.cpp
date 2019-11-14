@@ -4107,6 +4107,12 @@ void CMusicPlayerDlg::OnLockDesktopLryic()
     // TODO: 在此添加命令处理程序代码
     theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = !theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
     m_desktop_lyric.SetLyricWindowLock(theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
+    CString strTip;
+    if (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
+        strTip = CCommon::LoadText(IDS_ULOCK_DESKTOP_LYRIC);
+    else
+        strTip = CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC);
+    m_desktop_lyric.UpdateMouseToolTip(CDesktopLyric::BTN_LOCK, strTip);
 }
 
 
