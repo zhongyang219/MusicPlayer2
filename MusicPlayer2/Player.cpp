@@ -1164,9 +1164,13 @@ void CPlayer::ReloadPlaylist()
     }
 }
 
-void CPlayer::RemoveSong(int index)
+bool CPlayer::RemoveSong(int index)
 {
-    if (m_loading) return;
+    if (m_loading)
+        return false;
+
+    if (m_playlist.empty() || (m_playlist[0].file_path.empty() && m_playlist[0].file_name.empty()))
+        return false;
 
     if (index == m_index && index == GetSongNum() - 1)
     {
@@ -1199,7 +1203,9 @@ void CPlayer::RemoveSong(int index)
             m_album_cover_blur.Destroy();
             m_Lyrics = CLyrics();
         }
+        return true;
     }
+    return false;
 }
 
 void CPlayer::RemoveSongs(vector<int> indexes)
@@ -1229,8 +1235,11 @@ int CPlayer::RemoveSameSongs()
         {
             if (m_playlist[i].file_path == m_playlist[j].file_path)
             {
-                RemoveSong(j);
-                removed++;
+                if (RemoveSong(j))
+                {
+                    removed++;
+                    j--;
+                }
             }
         }
     }
@@ -1244,8 +1253,11 @@ int CPlayer::RemoveInvalidSongs()
     {
         if(!CCommon::FileExist(m_playlist[i].file_path) || m_playlist[i].lengh.isZero())
         {
-            RemoveSong(i);
-            removed++;
+            if (RemoveSong(i))
+            {
+                removed++;
+                i--;
+            }
         }
     }
     return removed;
