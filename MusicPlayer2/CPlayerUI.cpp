@@ -190,7 +190,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     CPoint point{ spectral_rect.left, spectral_rect.bottom };
     point.y += 2 * Margin();
     CRect other_info_rect{ point, CSize(draw_rect.Width() - 2 * EdgeMargin(true), DPI(24)) };
-    DrawToolBar(other_info_rect, false);
+    DrawToolBar(other_info_rect, IsDrawNarrowMode());
 
     //œ‘ æ∏Ë¥ 
     CRect lyric_rect;
