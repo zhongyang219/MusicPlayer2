@@ -289,7 +289,10 @@ void CDesktopLyric::AddToolTips()
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
     AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
     AddMouseToolTip(BTN_BACKGROUND_PENETRATE, CCommon::LoadText(IDS_LYRIC_BACKGROUND_PENETRATE));
-    AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC));
+    if(theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
+        AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_ULOCK_DESKTOP_LYRIC));
+    else
+        AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE_DESKTOP_LYRIC));
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
