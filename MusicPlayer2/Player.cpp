@@ -1910,16 +1910,18 @@ void CPlayer::SearchAlbumCover()
     //}
     //last_file_path = GetCurrentFilePath();
 
-    //如果专辑封面过大，则将其缩小，以提高性能
-    if (!m_album_cover.IsNull() && (m_album_cover.GetWidth() > 800 || m_album_cover.GetHeight() > 800))
-    {
-        CSize image_size(m_album_cover.GetWidth(), m_album_cover.GetHeight());
-        CCommon::SizeZoom(image_size, 800);
+    ////如果专辑封面过大，则将其缩小，以提高性能
+    //if (!m_album_cover.IsNull() && (m_album_cover.GetWidth() > 800 || m_album_cover.GetHeight() > 800))
+    //{
+    //    CSize image_size(m_album_cover.GetWidth(), m_album_cover.GetHeight());
+    //    CCommon::SizeZoom(image_size, 800);
 
-        CImage img_temp;
-        if (CDrawCommon::BitmapStretch(&m_album_cover, &img_temp, image_size))
-            m_album_cover = img_temp;
-    }
+    //    CImage img_temp;
+    //    if (CDrawCommon::BitmapStretch(&m_album_cover, &img_temp, image_size))
+    //    {
+    //        m_album_cover = img_temp;
+    //    }
+    //}
 }
 
 void CPlayer::AlbumCoverGaussBlur()
