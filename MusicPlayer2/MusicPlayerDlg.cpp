@@ -2255,6 +2255,10 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     case IDT_NEXT:
         OnNext();
         break;
+    case ID_OPTION_SETTINGS2:
+        m_tab_selected = lParam;
+        OnOptionSettings();
+        break;
     }
 
     //响应播放列表右键菜单中的“添加到播放列表”

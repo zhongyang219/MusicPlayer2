@@ -427,7 +427,7 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
                 return;
 
             case BTN_SETTING:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS2, 0);
                 return;
 
             case BTN_DOUBLE_LINE:

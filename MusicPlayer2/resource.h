@@ -780,7 +780,7 @@
 #define ID_REFRESH_PLAYLIST             32823
 #define ID_32824                        32824
 #define ID_OPTION_SETTINGS              32825
-#define ID_32826                        32826
+#define ID_OPTION_SETTINGS2             32826
 #define ID_RELOAD_PLAYLIST              32827
 #define ID_32828                        32828
 #define ID_Menu                         32829

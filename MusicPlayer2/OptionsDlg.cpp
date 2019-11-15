@@ -88,6 +88,8 @@ BOOL COptionsDlg::OnInitDialog()
 		m_tab_vect[i]->SetScrollbarInfo(m_tab.m_tab_rect.Height(), m_tab_height[i]);
 	}
 
+    if (m_tab_selected < 0 || m_tab_selected >= m_tab.GetItemCount())
+        m_tab_selected = 0;
 	m_tab.SetCurTab(m_tab_selected);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
