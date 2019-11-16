@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "PlayerToolBar.h"
 
 // CTestDlg 对话框
 
@@ -16,8 +16,14 @@ public:
 	enum { IDD = IDD_TEST_DIALOG };
 #endif
 
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+
+private:
+    CPlayerToolBar m_toolbar;
+public:
+    virtual BOOL OnInitDialog();
 };

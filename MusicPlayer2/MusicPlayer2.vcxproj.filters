@@ -249,6 +249,9 @@
     <Filter Include="测试\TestDlg">
       <UniqueIdentifier>{8ce0b994-4bf4-4aa6-8cae-0ca57536d438}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\PlayerToolBar">
+      <UniqueIdentifier>{cefd3a16-652f-47b7-80f0-c01c9654eda2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -553,6 +556,9 @@
     <ClInclude Include="TestDlg.h">
       <Filter>测试\TestDlg</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerToolBar.h">
+      <Filter>派生的控件类\PlayerToolBar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -824,6 +830,9 @@
     </ClCompile>
     <ClCompile Include="TestDlg.cpp">
       <Filter>测试\TestDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerToolBar.cpp">
+      <Filter>派生的控件类\PlayerToolBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

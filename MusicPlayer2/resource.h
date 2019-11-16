@@ -452,6 +452,7 @@
 #define IDS_LYRIC_DOUBLE_LINE           418
 #define IDS_LYRIC_BACKGROUND_PENETRATE  419
 #define IDS_ULOCK_DESKTOP_LYRIC         420
+#define IDS_ADD                         421
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -725,7 +726,9 @@
 #define IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK 1148
 #define IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK2 1149
 #define IDC_HIDE_LYRIC_PAUSE_CHECK      1149
+#define IDC_TEST_TOOLBAR                1149
 #define IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3 1150
+#define IDC_PLAYLIST_TOOLBAR            1150
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1046,7 +1049,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        400
 #define _APS_NEXT_COMMAND_VALUE         33127
-#define _APS_NEXT_CONTROL_VALUE         1149
+#define _APS_NEXT_CONTROL_VALUE         1151
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

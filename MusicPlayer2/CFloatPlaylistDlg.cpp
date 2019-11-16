@@ -144,6 +144,7 @@ void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
+    DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
 }
 
 

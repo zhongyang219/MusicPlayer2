@@ -124,6 +124,7 @@ protected:
     int m_play_error_cnt{};		//统计播放出错的次数
 
     CNotifyIcon m_notify_icon;
+    CPlayerToolBar m_playlist_toolbar;
 
     bool m_no_lbtnup{ false };      //当它为true时，不响应WM_LBUTTONUP消息
     enum { DELAY_TIMER_ID = 1200 };

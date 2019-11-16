@@ -2,6 +2,7 @@
 #include "PlayListCtrl.h"
 #include "StaticEx.h"
 #include "CPlayerUIBase.h"
+#include "PlayerToolBar.h"
 
 #define WM_FLOAT_PLAYLIST_CLOSED (WM_USER+118)
 
@@ -43,6 +44,7 @@ private:
     bool m_searched{ false };		//播放列表是否处于搜索状态
     int& m_item_selected;		//播放列表中鼠标选中的项目
     vector<int>& m_items_selected;
+    CPlayerToolBar m_playlist_toolbar;
 
 private:
     bool Initilized() const;

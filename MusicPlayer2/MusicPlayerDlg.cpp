@@ -63,6 +63,7 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
+    DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
 }
 
 BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
@@ -1235,6 +1236,10 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     m_notify_icon.Init(m_hIcon);
     m_notify_icon.AddNotifyIcon();
+
+    //初始化播放列表工具栏
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.media_lib, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_list_popup_menu.GetSubMenu(8), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_list_popup_menu.GetSubMenu(9), true);
 
     //设置定时器
     SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
