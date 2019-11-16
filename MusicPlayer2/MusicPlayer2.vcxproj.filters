@@ -246,6 +246,9 @@
     <Filter Include="功能逻辑类\桌面歌词">
       <UniqueIdentifier>{cec43889-05cc-4001-b005-a26a7b552a39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="测试\TestDlg">
+      <UniqueIdentifier>{8ce0b994-4bf4-4aa6-8cae-0ca57536d438}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -547,6 +550,9 @@
     <ClInclude Include="GdiPlusTool.h">
       <Filter>功能逻辑类\桌面歌词</Filter>
     </ClInclude>
+    <ClInclude Include="TestDlg.h">
+      <Filter>测试\TestDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -815,6 +821,9 @@
     </ClCompile>
     <ClCompile Include="GdiPlusTool.cpp">
       <Filter>功能逻辑类\桌面歌词</Filter>
+    </ClCompile>
+    <ClCompile Include="TestDlg.cpp">
+      <Filter>测试\TestDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

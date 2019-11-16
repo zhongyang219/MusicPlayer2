@@ -252,6 +252,7 @@
     <ClInclude Include="SupportedFormatDlg.h" />
     <ClInclude Include="TabDlg.h" />
     <ClInclude Include="TagEditDlg.h" />
+    <ClInclude Include="TestDlg.h" />
     <ClInclude Include="WinVersionHelper.h" />
     <ClInclude Include="WmaEncodeCfgDlg.h" />
     <ClInclude Include="FilePathHelper.h" />
@@ -346,6 +347,7 @@
     <ClCompile Include="SupportedFormatDlg.cpp" />
     <ClCompile Include="TabDlg.cpp" />
     <ClCompile Include="TagEditDlg.cpp" />
+    <ClCompile Include="TestDlg.cpp" />
     <ClCompile Include="WinVersionHelper.cpp" />
     <ClCompile Include="WmaEncodeCfgDlg.cpp" />
     <ClCompile Include="FilePathHelper.cpp" />

@@ -16,6 +16,7 @@
 #include "Playlist.h"
 #include "InputDlg.h"
 #include "FileRelateDlg.h"
+#include "TestDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -2261,6 +2262,12 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         break;
     case ID_TEST:
         CTest::Test();
+        break;
+    case ID_TEST_DIALOG:
+    {
+        CTestDlg dlg;
+        dlg.DoModal();
+    }
         break;
     }
 

@@ -512,6 +512,7 @@ void CMusicPlayerApp::InitMenuResourse()
         //Ìí¼ÓÒ»¸ö²âÊÔÃüÁî
 #ifdef _DEBUG
         pSysMenu->AppendMenu(MF_STRING, ID_TEST, _T("Test Command"));
+        pSysMenu->AppendMenu(MF_STRING, ID_TEST_DIALOG, _T("Test Dialog"));
 #endif
     }
 

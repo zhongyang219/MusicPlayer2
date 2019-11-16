@@ -412,6 +412,7 @@
 #define IDD_FILE_RELATE_DIALOG          389
 #define IDS_PLAYLIST_EXIST_WARNING      390
 #define IDS_REMOVE_SAME_SONGS_INFO      391
+#define IDD_TEST_DIALOG                 391
 #define IDC_CURSOR1                     391
 #define IDC_DRAG_CURSOR                 391
 #define IDS_MEDIA_LIB                   392
@@ -788,7 +789,7 @@
 #define ID_TEST                         32831
 #define ID_PROPERTY                     32832
 #define ID_ITEM_PROPERTY                32833
-#define ID_32834                        32834
+#define ID_TEST_DIALOG                  32834
 #define ID_REMOVE_FROM_PLAYLIST         32835
 #define ID_32836                        32836
 #define ID_32837                        32837
