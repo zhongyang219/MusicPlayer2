@@ -508,6 +508,11 @@ void CMusicPlayerApp::InitMenuResourse()
         CString exitStr;
         m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
         pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
+
+        //添加一个测试命令
+#ifdef _DEBUG
+        pSysMenu->AppendMenu(MF_STRING, ID_TEST, _T("Test Command"));
+#endif
     }
 
     //初始化按Shift键弹出的右键菜单

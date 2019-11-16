@@ -2259,6 +2259,9 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         m_tab_selected = lParam;
         OnOptionSettings();
         break;
+    case ID_TEST:
+        CTest::Test();
+        break;
     }
 
     //响应播放列表右键菜单中的“添加到播放列表”

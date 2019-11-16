@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "AboutDlg.h"
-#include "CTest.h"
 #include "CDonateDlg.h"
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
@@ -89,13 +88,13 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 		m_tool_tip.RelayEvent(pMsg);
 
 
-	if (pMsg->message == WM_KEYDOWN)
-	{
-		if ((GetKeyState(VK_CONTROL) & 0x80) && (GetKeyState(VK_SHIFT) & 0x8000) && pMsg->wParam == 'Z')
-		{
-			CTest::Test();
-		}
-	}
+	//if (pMsg->message == WM_KEYDOWN)
+	//{
+	//	if ((GetKeyState(VK_CONTROL) & 0x80) && (GetKeyState(VK_SHIFT) & 0x8000) && pMsg->wParam == 'Z')
+	//	{
+	//		CTest::Test();
+	//	}
+	//}
 
 
 	return CDialog::PreTranslateMessage(pMsg);

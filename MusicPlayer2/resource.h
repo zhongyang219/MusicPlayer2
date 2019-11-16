@@ -785,7 +785,7 @@
 #define ID_32828                        32828
 #define ID_Menu                         32829
 #define ID_PLAY_ITEM                    32830
-#define ID_                             32831
+#define ID_TEST                         32831
 #define ID_PROPERTY                     32832
 #define ID_ITEM_PROPERTY                32833
 #define ID_32834                        32834
