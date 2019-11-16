@@ -206,6 +206,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_CLOSE_DESKTOP_LYRIC, &CMusicPlayerDlg::OnCloseDesktopLyric)
     ON_COMMAND(ID_LYRIC_DISPLAYED_DOUBLE_LINE, &CMusicPlayerDlg::OnLyricDisplayedDoubleLine)
     ON_COMMAND(ID_LYRIC_BACKGROUND_PENETRATE, &CMusicPlayerDlg::OnLyricBackgroundPenetrate)
+    ON_COMMAND(ID_PLAYLIST_SELECT_ALL, &CMusicPlayerDlg::OnPlaylistSelectAll)
+    ON_COMMAND(ID_PLAYLIST_SELECT_NONE, &CMusicPlayerDlg::OnPlaylistSelectNone)
+    ON_COMMAND(ID_PLAYLIST_SELECT_REVERT, &CMusicPlayerDlg::OnPlaylistSelectRevert)
 END_MESSAGE_MAP()
 
 
@@ -461,13 +464,13 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     //设置播放列表大小
     if (!theApp.m_ui_data.narrow_mode)
     {
-        m_playlist_list.MoveWindow(cx / 2 + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.margin,
-                                   cx / 2 - 2 * m_layout.margin, cy - m_layout.search_edit_height - m_layout.path_edit_height - 2 * m_layout.margin);
+        m_playlist_list.MoveWindow(cx / 2 + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + 2 * m_layout.margin,
+                                   cx / 2 - 2 * m_layout.margin, cy - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 3 * m_layout.margin);
     }
     else
     {
-        m_playlist_list.MoveWindow(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.search_edit_height + m_layout.path_edit_height,
-                                   cx - 2 * m_layout.margin, cy - m_ui.DrawAreaHeight() - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.margin);
+        m_playlist_list.MoveWindow(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + m_layout.margin,
+                                   cx - 2 * m_layout.margin, cy - m_ui.DrawAreaHeight() - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 2 * m_layout.margin);
     }
     m_playlist_list.AdjustColumnWidth();
 
@@ -534,6 +537,13 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
     m_clear_search_button.MoveWindow(rect_clear);
     m_clear_search_button.Invalidate();
+    //设置播放列表工具栏的大小位置
+    CRect rect_toolbar{ rect_search };
+    rect_toolbar.top = rect_search.bottom + m_layout.margin;
+    rect_toolbar.right = rect_clear.right;
+    rect_toolbar.bottom = rect_toolbar.top + m_layout.toolbar_height;
+    m_playlist_toolbar.MoveWindow(rect_toolbar);
+    m_playlist_toolbar.Invalidate();
 }
 
 void CMusicPlayerDlg::SetAlwaysOnTop()
@@ -815,6 +825,7 @@ void CMusicPlayerDlg::ApplyThemeColor()
     CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
     SetPlayListColor();
     m_cortana_lyric.SetUIColors();
+    m_playlist_toolbar.Invalidate();
     DrawInfo();
     if (m_miniModeDlg.m_hWnd != NULL)
     {
@@ -1055,19 +1066,32 @@ void CMusicPlayerDlg::GetPlaylistItemSelected()
 
 void CMusicPlayerDlg::IniPlaylistPopupMenu()
 {
-    theApp.m_menu_set.m_list_popup_menu.DestroyMenu();
-    theApp.m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);
+    //向“添加到播放列表”菜单追加播放列表
+    auto initAddToMenu = [](CMenu* pMenu)
+    {
+        for(int i=0; i< ADD_TO_PLAYLIST_MAX_SIZE; i++)
+        {
+            pMenu->DeleteMenu(ID_ADD_TO_MY_FAVOURITE + i + 1, MF_BYCOMMAND);
+        }
+
+        if (pMenu != nullptr)
+        {
+            auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
+            for (size_t i{}; i < recent_playlist.size() && i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
+            {
+                CFilePathHelper playlist_path{ recent_playlist[i].path };
+                pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_MY_FAVOURITE + i + 1, playlist_path.GetFileNameWithoutExtension().c_str());
+            }
+        }
+    };
+
     CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(10);
     ASSERT(add_to_menu != nullptr);
-    if (add_to_menu != nullptr)
-    {
-        auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
-        for (size_t i{}; i < recent_playlist.size() && i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
-        {
-            CFilePathHelper playlist_path{ recent_playlist[i].path };
-            add_to_menu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_MY_FAVOURITE + i + 1, playlist_path.GetFileNameWithoutExtension().c_str());
-        }
-    }
+    initAddToMenu(add_to_menu);
+
+    CMenu* playlist_add_to_menu = theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0);
+    ASSERT(playlist_add_to_menu != nullptr);
+    initAddToMenu(playlist_add_to_menu);
 }
 
 void CMusicPlayerDlg::SetPlaylistDragEnable()
@@ -1238,8 +1262,12 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_notify_icon.AddNotifyIcon();
 
     //初始化播放列表工具栏
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.media_lib, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_list_popup_menu.GetSubMenu(8), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_list_popup_menu.GetSubMenu(9), true);
+    m_playlist_toolbar.SetIconSize(theApp.DPI(20));
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.play_oder, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
 
     //设置定时器
     SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
@@ -4154,4 +4182,28 @@ void CMusicPlayerDlg::OnLyricBackgroundPenetrate()
     // TODO: 在此添加命令处理程序代码
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate = !theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate;
     m_desktop_lyric.SetLyricBackgroundPenetrate(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
+}
+
+
+void CMusicPlayerDlg::OnPlaylistSelectAll()
+{
+    // TODO: 在此添加命令处理程序代码
+    m_playlist_list.SelectAll();
+    GetPlaylistItemSelected();
+}
+
+
+void CMusicPlayerDlg::OnPlaylistSelectNone()
+{
+    // TODO: 在此添加命令处理程序代码
+    m_playlist_list.SelectNone();
+    GetPlaylistItemSelected();
+}
+
+
+void CMusicPlayerDlg::OnPlaylistSelectRevert()
+{
+    // TODO: 在此添加命令处理程序代码
+    m_playlist_list.SelectReverse();
+    GetPlaylistItemSelected();
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ListCtrlEx.h"
 #include "MusicPlayer2.h"
+#include <set>
 
 IMPLEMENT_DYNAMIC(CListCtrlEx, CListCtrl)
 
@@ -89,6 +90,32 @@ void CListCtrlEx::SelectAll()
 	{
 		SetItemState(i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 	}
+}
+
+void CListCtrlEx::SelectNone()
+{
+    int itemCnt = GetItemCount();
+    for (int i = 0; i < itemCnt; i++)
+    {
+        SetItemState(i, 0, LVIS_SELECTED);
+    }
+}
+
+void CListCtrlEx::SelectReverse()
+{
+    std::vector<int> selected_vect;
+    GetItemSelected(selected_vect);
+    std::set<int> selected_set;
+    for (auto n : selected_vect)
+        selected_set.insert(n);
+    int size = GetItemCount();
+    for (int i = 0; i < size; i++)
+    {
+        if(selected_set.find(i)==selected_set.end())
+            SetItemState(i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+        else
+            SetItemState(i, 0, LVIS_SELECTED);
+    }
 }
 
 bool CListCtrlEx::SetRowHeight(int height)

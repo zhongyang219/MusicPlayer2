@@ -20,6 +20,8 @@ public:
 	void SetCurSel(int select);
     void SetCurSel(int first, int last);
 	void SelectAll();
+	void SelectNone();
+	void SelectReverse();
 	bool SetRowHeight(int height);		//设置表格行高
 
 	void SetHightItem(int item) { m_highlight_item = item; }			//设置高亮的项目（播放列表中正在播放的项目）

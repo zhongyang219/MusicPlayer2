@@ -432,8 +432,11 @@
 #define IDS_REMANE_FAILED               399
 #define IDR_LRYIC_DEFAULT_STYLE_MENU    399
 #define IDS_REMOVE_MY_FAVOURITE_WARNING 400
+#define IDR_PLAYLIST_TOOLBAR_MENU       400
 #define IDS_FILE_NAME_INVALID_WARNING   401
+#define IDI_EDIT_D                      401
 #define IDS_OPEN_URL                    402
+#define IDI_ADD_D                       402
 #define IDS_ADD_URL                     403
 #define IDS_INPUT_URL_TIP               404
 #define IDS_MCI_INIT_FAILED             405
@@ -453,6 +456,9 @@
 #define IDS_LYRIC_BACKGROUND_PENETRATE  419
 #define IDS_ULOCK_DESKTOP_LYRIC         420
 #define IDS_ADD                         421
+#define IDS_SORT                        422
+#define IDS_LIST                        423
+#define IDS_EDIT                        424
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1042,13 +1048,16 @@
 #define ID_LYRIC_USER_DEFINE            33124
 #define ID_33125                        33125
 #define ID_LYRIC_BACKGROUND_PENETRATE   33126
+#define ID_PLAYLIST_SELECT_ALL          33127
+#define ID_PLAYLIST_SELECT_NONE         33128
+#define ID_PLAYLIST_SELECT_REVERT       33129
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        400
-#define _APS_NEXT_COMMAND_VALUE         33127
+#define _APS_NEXT_RESOURCE_VALUE        403
+#define _APS_NEXT_COMMAND_VALUE         33130
 #define _APS_NEXT_CONTROL_VALUE         1151
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

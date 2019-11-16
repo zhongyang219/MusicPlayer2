@@ -403,6 +403,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\AddTag.ico" />
+    <Image Include="res\add_d.ico" />
     <Image Include="res\close_d.ico" />
     <Image Include="res\Cortana_black.bmp" />
     <Image Include="res\Cortana_white.bmp" />
@@ -411,6 +412,7 @@
     <Image Include="res\DeleteTag.ico" />
     <Image Include="res\donate.bmp" />
     <Image Include="res\double_line_d.ico" />
+    <Image Include="res\edit_d.ico" />
     <Image Include="res\eq.ico" />
     <Image Include="res\eq_d.ico" />
     <Image Include="res\favourite.ico" />

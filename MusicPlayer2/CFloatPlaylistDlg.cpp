@@ -65,9 +65,16 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
     rect_search.right = rect_clear.left - m_layout.margin;
     m_search_edit.MoveWindow(rect_search);
 
+    CRect rect_toolbar{ rect_search };
+    rect_toolbar.top = rect_search.bottom + m_layout.margin;
+    rect_toolbar.right = rect_clear.right;
+    rect_toolbar.bottom = rect_toolbar.top + m_layout.toolbar_height;
+    m_playlist_toolbar.MoveWindow(rect_toolbar);
+    m_playlist_toolbar.Invalidate();
+
     //
     CRect rect_playlist;
-    rect_playlist.top = rect_search.bottom + m_layout.margin;
+    rect_playlist.top = rect_toolbar.bottom + m_layout.margin;
     rect_playlist.left = m_layout.margin;
     rect_playlist.right = cx - m_layout.margin;
     rect_playlist.bottom = cy - m_layout.margin;
@@ -127,6 +134,7 @@ void CFloatPlaylistDlg::EnableControl(bool enable)
     m_search_edit.EnableWindow(enable);
     m_set_path_button.EnableWindow(enable);
     m_clear_search_button.EnableWindow(enable);
+    m_playlist_toolbar.EnableWindow(enable);
 }
 
 bool CFloatPlaylistDlg::Initilized() const
@@ -188,6 +196,14 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
         m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
     else
         m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
+
+    //初始化播放列表工具栏
+    m_playlist_toolbar.SetIconSize(theApp.DPI(20));
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.play_oder, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
 
     SetDragEnable();
     EnableControl(!CPlayer::GetInstance().m_loading);
@@ -316,10 +332,28 @@ void CFloatPlaylistDlg::OnClose()
 BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
-
-    if(wParam == ID_SET_PATH || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), wParam)
-        || (wParam >= ID_ADD_TO_MY_FAVOURITE && wParam < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE))
-        theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
+    WORD command = LOWORD(wParam);
+    switch (wParam)
+    {
+    case ID_PLAYLIST_SELECT_ALL:
+        m_playlist_ctrl.SelectAll();
+        GetPlaylistItemSelected();
+        break;
+    case ID_PLAYLIST_SELECT_NONE:
+        m_playlist_ctrl.SelectNone();
+        GetPlaylistItemSelected();
+        break;
+    case ID_PLAYLIST_SELECT_REVERT:
+        m_playlist_ctrl.SelectReverse();
+        GetPlaylistItemSelected();
+        break;
+    default:
+        if(wParam == ID_SET_PATH || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), wParam)
+            || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_playlist_toolbar_menu, wParam)
+            || (wParam >= ID_ADD_TO_MY_FAVOURITE && wParam < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE))
+            theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
+        break;
+    }
 
     return CDialog::OnCommand(wParam, lParam);
 }

@@ -476,6 +476,8 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.double_line.Load(IDI_DOUBLE_LINE_D, NULL, DPI(16));
     m_icon_set.lock.Load(IDI_LOCK_D, NULL, DPI(16));
     m_icon_set.close.Load(IDI_CLOSE_D, NULL, DPI(16));
+    m_icon_set.edit.Load(IDI_EDIT_D, NULL, DPI(16));
+    m_icon_set.add.Load(IDI_ADD_D, NULL, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));
@@ -494,6 +496,7 @@ void CMusicPlayerApp::InitMenuResourse()
 {
     m_menu_set.m_main_menu.LoadMenu(IDR_MENU1);
     m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
+    m_menu_set.m_playlist_toolbar_menu.LoadMenu(IDR_PLAYLIST_TOOLBAR_MENU);
 
     //将主菜单添加到系统菜单中
     CMenu* pSysMenu = m_pMainWnd->GetSystemMenu(FALSE);

@@ -332,6 +332,8 @@ struct IconSet
     IconRes double_line;
     IconRes lock;
     IconRes close;
+    IconRes edit;
+    IconRes add;
 
     IconRes stop_l;
     IconRes previous_l;
@@ -373,4 +375,5 @@ struct MenuSet
     CMenu m_popup_menu;			//歌词右键菜单
     CMenu m_main_popup_menu;
     CMenu m_playlist_btn_menu;		//播放列表按钮上的右键菜单
+    CMenu m_playlist_toolbar_menu;
 };

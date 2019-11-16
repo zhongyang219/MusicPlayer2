@@ -1029,5 +1029,11 @@
     <Image Include="res\heart.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\edit_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\add_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

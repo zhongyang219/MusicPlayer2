@@ -54,6 +54,9 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnMouseLeave();
     afx_msg void OnMouseHover(UINT nFlags, CPoint point);
+protected:
+    afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
+    virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 };
 
 

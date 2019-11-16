@@ -38,13 +38,13 @@ private:
     CButton m_set_path_button;
     CEdit m_search_edit;
     CButton m_clear_search_button;
+    CPlayerToolBar m_playlist_toolbar;
 
     SLayoutData m_layout;		//窗口布局的固定数据
 
     bool m_searched{ false };		//播放列表是否处于搜索状态
     int& m_item_selected;		//播放列表中鼠标选中的项目
     vector<int>& m_items_selected;
-    CPlayerToolBar m_playlist_toolbar;
 
 private:
     bool Initilized() const;

@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CPlayerToolBar, CStatic)
 	ON_WM_MOUSEMOVE()
     ON_WM_MOUSELEAVE()
     ON_WM_MOUSEHOVER()
+    ON_MESSAGE(WM_INITMENU, &CPlayerToolBar::OnInitmenu)
 END_MESSAGE_MAP()
 
 
@@ -203,8 +204,10 @@ void CPlayerToolBar::OnLButtonUp(UINT nFlags, CPoint point)
             else if (btn.pMenu != nullptr)
             {
                 CPoint point;
+                CRect rect;
+                GetClientRect(rect);
                 point.x = btn.rect.left;
-                point.y = btn.rect.bottom;
+                point.y = rect.bottom;
                 ClientToScreen(&point);
                 btn.pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
             }
@@ -271,4 +274,23 @@ void CPlayerToolBar::OnMouseHover(UINT nFlags, CPoint point)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
 
     CStatic::OnMouseHover(nFlags, point);
+}
+
+
+afx_msg LRESULT CPlayerToolBar::OnInitmenu(WPARAM wParam, LPARAM lParam)
+{
+    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
+    return 0;
+}
+
+
+BOOL CPlayerToolBar::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    CWnd* pParent = GetParent();
+    if (pParent == nullptr)
+        pParent = AfxGetMainWnd();
+    pParent->SendMessage(WM_COMMAND, wParam, lParam);        //将WM_COMMAND消息转发到父窗口
+
+    return CStatic::OnCommand(wParam, lParam);
 }
