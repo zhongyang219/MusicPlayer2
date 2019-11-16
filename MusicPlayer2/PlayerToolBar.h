@@ -42,6 +42,7 @@ protected:
     int m_icon_size = 20;
     int m_cur_btn_id = 100;
     bool m_first_draw = true;
+    bool m_menu_poped_up = false;
 
 	DECLARE_MESSAGE_MAP()
 

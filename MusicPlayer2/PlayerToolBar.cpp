@@ -214,7 +214,9 @@ void CPlayerToolBar::OnLButtonUp(UINT nFlags, CPoint point)
                 point.x = btn.rect.left;
                 point.y = rect.bottom;
                 ClientToScreen(&point);
+                m_menu_poped_up = true;
                 btn.pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+                m_menu_poped_up = false;
             }
         }
     }
@@ -263,12 +265,15 @@ BOOL CPlayerToolBar::PreTranslateMessage(MSG* pMsg)
 void CPlayerToolBar::OnMouseLeave()
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    for (auto& btn : m_buttons)
+    if(!m_menu_poped_up)
     {
-        btn.pressed = false;
-        btn.hover = false;
+        for (auto& btn : m_buttons)
+        {
+            btn.pressed = false;
+            btn.hover = false;
+        }
+        Invalidate();
     }
-    Invalidate();
 
     CStatic::OnMouseLeave();
 }
