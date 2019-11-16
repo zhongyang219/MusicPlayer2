@@ -135,6 +135,7 @@ void CFloatPlaylistDlg::EnableControl(bool enable)
     m_set_path_button.EnableWindow(enable);
     m_clear_search_button.EnableWindow(enable);
     m_playlist_toolbar.EnableWindow(enable);
+    m_playlist_toolbar.Invalidate();
 }
 
 bool CFloatPlaylistDlg::Initilized() const

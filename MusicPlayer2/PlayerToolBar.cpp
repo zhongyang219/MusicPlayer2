@@ -142,7 +142,12 @@ void CPlayerToolBar::OnPaint()
         {
             CRect rc_text = rc_icon;
             rc_text.left = rc_tmp.right + theApp.DPI(2);
-            drawer.DrawWindowText(rc_text, iter->text, CColorConvert::m_gray_color.dark3);
+            COLORREF text_color;
+            if (IsWindowEnabled())
+                text_color = CColorConvert::m_gray_color.dark3;
+            else
+                text_color = CColorConvert::m_gray_color.dark1;
+            drawer.DrawWindowText(rc_text, iter->text, text_color);
         }
 
     }

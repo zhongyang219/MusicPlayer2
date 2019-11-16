@@ -631,6 +631,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
     m_search_edit.ShowWindow(cmdShow);
     m_clear_search_button.ShowWindow(cmdShow);
     m_set_path_button.ShowWindow(cmdShow);
+    m_playlist_toolbar.ShowWindow(cmdShow);
 }
 
 void CMusicPlayerDlg::SetMenubarVisible()
@@ -735,6 +736,8 @@ void CMusicPlayerDlg::EnablePlaylist(bool enable)
     m_search_edit.EnableWindow(enable);
     m_clear_search_button.EnableWindow(enable);
     m_set_path_button.EnableWindow(enable);
+    m_playlist_toolbar.EnableWindow(enable);
+    m_playlist_toolbar.Invalidate();
 
     if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
         m_pFloatPlaylistDlg->EnableControl(enable);
