@@ -93,7 +93,7 @@ void CPlayerToolBar::OnPaint()
     drawer.Create(&MemDC, this);
 
     //»æÖÆ±³¾°
-    drawer.FillRect(rect, m_theme_color.light3);
+    drawer.FillRect(rect, CColorConvert::m_gray_color.light3);
 
     //»æÖÆÍ¼±ê
     CRect rc_icon = rect;
@@ -142,7 +142,7 @@ void CPlayerToolBar::OnPaint()
         {
             CRect rc_text = rc_icon;
             rc_text.left = rc_tmp.right + theApp.DPI(2);
-            drawer.DrawWindowText(rc_text, iter->text, m_theme_color.dark3);
+            drawer.DrawWindowText(rc_text, iter->text, CColorConvert::m_gray_color.dark3);
         }
 
     }
