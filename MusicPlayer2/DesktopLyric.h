@@ -39,7 +39,8 @@ public:
         BTN_BACKGROUND_PENETRATE,
         BTN_SETTING,
         BTN_DEFAULT_STYLE,
-        BTN_CLOSE
+        BTN_CLOSE,
+        MAX             //用于指示枚举的最大个数
     };
 
 public:

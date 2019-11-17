@@ -186,7 +186,7 @@ void CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(const LyricStyleDefa
 void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
 {
     bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
-    const int toolbar_num = bLocked ? 1 : m_buttons.size();            //
+    const int toolbar_num = bLocked ? 1 : BtnKey::MAX;
     const int btn_size = m_toobar_height;
     int toolbar_width = toolbar_num * btn_size;
     Gdiplus::Rect toolbar_rect;
