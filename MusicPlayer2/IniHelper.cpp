@@ -68,7 +68,12 @@ int CIniHelper::GetInt(const wchar_t * AppName, const wchar_t * KeyName, int def
 	wchar_t default_str_buff[16]{};
 	_itow_s(default_value, default_str_buff, 10);
 	wstring rtn{ _GetString(AppName, KeyName, default_str_buff) };
-	return _ttoi(rtn.c_str());
+    if (rtn == L"true")
+        return 1;
+    else if (rtn == L"false")
+        return 0;
+    else
+        return _ttoi(rtn.c_str());
 }
 
 void CIniHelper::WriteBool(const wchar_t * AppName, const wchar_t * KeyName, bool value)
