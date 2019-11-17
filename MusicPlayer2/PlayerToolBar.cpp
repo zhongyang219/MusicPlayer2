@@ -169,8 +169,7 @@ void CPlayerToolBar::PreSubclassWindow()
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	//为控件设置SS_NOTIFY属性
-	DWORD dwStyle = GetStyle();
-	::SetWindowLong(GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
+    ModifyStyle(NULL, SS_NOTIFY);
 
     //初始化提示信息
     m_tool_tip.Create(this, TTS_ALWAYSTIP);

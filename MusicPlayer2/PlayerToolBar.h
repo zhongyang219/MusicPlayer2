@@ -15,8 +15,6 @@ public:
     void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showTest = false);      //添加一个按钮，点击后弹出菜单
     void SetIconSize(int size);
 
-	CToolTipCtrl* GetToolTip() { return &m_tool_tip; }
-
 protected:
     struct ToolBtn
     {
