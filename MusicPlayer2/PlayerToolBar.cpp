@@ -121,9 +121,9 @@ void CPlayerToolBar::OnPaint()
 
         iter->rect = rc_icon;
         if (iter->hover)
-            drawer.FillRect(rc_icon, m_theme_color.light2);
+            drawer.FillRect(rc_icon, m_theme_color.light2_5);
         if(iter->pressed)
-            drawer.FillRect(rc_icon, m_theme_color.light1);
+            drawer.FillRect(rc_icon, m_theme_color.light1_5);
 
         CRect rc_tmp = rc_icon;
         //使图标在矩形中居中

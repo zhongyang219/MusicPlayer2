@@ -157,9 +157,17 @@ void CColorConvert::ConvertColor(ColorTable & color_table)
 	HSLtoRGB(&color_hsl, &color_rgb);
 	color_table.light1 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
 
+	color_hsl.luminance = luminance * 0.1f + 70;	//light1_5
+	HSLtoRGB(&color_hsl, &color_rgb);
+	color_table.light1_5 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
+
 	color_hsl.luminance = luminance * 0.05f + 80;	//light2
 	HSLtoRGB(&color_hsl, &color_rgb);
 	color_table.light2 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
+
+	color_hsl.luminance = luminance * 0.05f + 85;	//light2_5
+	HSLtoRGB(&color_hsl, &color_rgb);
+	color_table.light2_5 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
 
 	color_hsl.luminance = luminance * 0.05f + 92;	//light3
 	HSLtoRGB(&color_hsl, &color_rgb);
