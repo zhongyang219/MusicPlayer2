@@ -49,6 +49,9 @@ BEGIN_MESSAGE_MAP(CDesktopLyric, CLyricsWindow)
     ON_MESSAGE(WM_INITMENU, &CDesktopLyric::OnInitmenu)
     ON_WM_TIMER()
 
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1, &CDesktopLyric::OnLyricDefaultStyle1)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CDesktopLyric::OnLyricDefaultStyle2)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CDesktopLyric::OnLyricDefaultStyle3)
 END_MESSAGE_MAP()
 
 void CDesktopLyric::Create()
@@ -170,10 +173,20 @@ LyricStyleDefaultData CDesktopLyric::GetDefaultStyle(int index)
     return m_default_style[index];
 }
 
+void CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(const LyricStyleDefaultData& style_data, DesktopLyricSettingData& setting_data)
+{
+    setting_data.text_color1 = style_data.normal_style.color1;
+    setting_data.text_color2 = style_data.normal_style.color2;
+    setting_data.text_gradient = style_data.normal_style.gradient_mode;
+    setting_data.highlight_color1 = style_data.highlight_style.color1;
+    setting_data.highlight_color2 = style_data.highlight_style.color2;
+    setting_data.highlight_gradient = style_data.highlight_style.gradient_mode;
+}
+
 void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
 {
     bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
-    const int toolbar_num = bLocked ? 1 : 10;            //
+    const int toolbar_num = bLocked ? 1 : m_buttons.size();            //
     const int btn_size = m_toobar_height;
     int toolbar_width = toolbar_num * btn_size;
     Gdiplus::Rect toolbar_rect;
@@ -215,6 +228,8 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         rcIcon.MoveToX(rcIcon.right);
@@ -287,6 +302,7 @@ void CDesktopLyric::AddToolTips()
     AddMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY_PAUSE));
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
+    AddMouseToolTip(BTN_DEFAULT_STYLE, CCommon::LoadText(IDS_DEFAULT_STYLE));
     AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
     AddMouseToolTip(BTN_BACKGROUND_PENETRATE, CCommon::LoadText(IDS_LYRIC_BACKGROUND_PENETRATE));
     if(theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
@@ -429,6 +445,20 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
             case BTN_SETTING:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS2, 0);
                 return;
+
+            case BTN_DEFAULT_STYLE:
+            {
+                CPoint cur_point;
+                cur_point.x = m_buttons[BTN_DEFAULT_STYLE].rect.left - m_frameSize.cx;
+                cur_point.y = m_buttons[BTN_DEFAULT_STYLE].rect.bottom - m_frameSize.cy;
+                ClientToScreen(&cur_point);
+                m_bMenuPopedUp = true;
+                CMenu* pMenu = theApp.m_menu_set.m_lyric_default_style.GetSubMenu(0);
+                if (pMenu != nullptr)
+                    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
+                m_bMenuPopedUp = false;
+            }
+            return;
 
             case BTN_DOUBLE_LINE:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_DISPLAYED_DOUBLE_LINE);
@@ -608,4 +638,31 @@ void CDesktopLyric::OnTimer(UINT_PTR nIDEvent)
     }
 
     CLyricsWindow::OnTimer(nIDEvent);
+}
+
+
+void CDesktopLyric::OnLyricDefaultStyle1()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto style = GetDefaultStyle(0);
+    CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
+    ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
+}
+
+
+void CDesktopLyric::OnLyricDefaultStyle2()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto style = GetDefaultStyle(1);
+    CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
+    ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
+}
+
+
+void CDesktopLyric::OnLyricDefaultStyle3()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto style = GetDefaultStyle(2);
+    CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
+    ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
 }

@@ -459,6 +459,7 @@
 #define IDS_SORT                        422
 #define IDS_LIST                        423
 #define IDS_EDIT                        424
+#define IDS_DEFAULT_STYLE               425
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1051,13 +1052,14 @@
 #define ID_PLAYLIST_SELECT_ALL          33127
 #define ID_PLAYLIST_SELECT_NONE         33128
 #define ID_PLAYLIST_SELECT_REVERT       33129
+#define ID_33130                        33130
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        403
-#define _APS_NEXT_COMMAND_VALUE         33130
+#define _APS_NEXT_COMMAND_VALUE         33131
 #define _APS_NEXT_CONTROL_VALUE         1151
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

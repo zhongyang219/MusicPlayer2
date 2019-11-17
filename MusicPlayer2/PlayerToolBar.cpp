@@ -209,10 +209,8 @@ void CPlayerToolBar::OnLButtonUp(UINT nFlags, CPoint point)
             else if (btn.pMenu != nullptr)
             {
                 CPoint point;
-                CRect rect;
-                GetClientRect(rect);
                 point.x = btn.rect.left;
-                point.y = rect.bottom;
+                point.y = btn.rect.bottom;
                 ClientToScreen(&point);
                 m_menu_poped_up = true;
                 btn.pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);

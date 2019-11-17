@@ -376,4 +376,5 @@ struct MenuSet
     CMenu m_main_popup_menu;
     CMenu m_playlist_btn_menu;		//播放列表按钮上的右键菜单
     CMenu m_playlist_toolbar_menu;
+    CMenu m_lyric_default_style;     //桌面歌词预设方案菜单
 };

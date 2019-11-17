@@ -53,7 +53,6 @@ protected:
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
-    CMenu m_lyric_style_menu;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 	virtual BOOL OnInitDialog();

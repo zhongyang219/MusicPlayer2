@@ -38,6 +38,7 @@ public:
         BTN_DOUBLE_LINE,
         BTN_BACKGROUND_PENETRATE,
         BTN_SETTING,
+        BTN_DEFAULT_STYLE,
         BTN_CLOSE
     };
 
@@ -55,6 +56,7 @@ public:
     void SetLyricBackgroundPenetrate(bool penetrate);
     LyricStyleDefaultData GetDefaultStyle(int index);
 
+    static void LyricStyleDefaultDataToLyricSettingData(const LyricStyleDefaultData& style_data, DesktopLyricSettingData& setting_data);
 
     //绘制工具条
     void DrawToolbar(Gdiplus::Graphics* pGraphics);
@@ -106,5 +108,8 @@ public:
     afx_msg void OnTimer(UINT_PTR nIDEvent);
 
     DECLARE_MESSAGE_MAP()
+    afx_msg void OnLyricDefaultStyle1();
+    afx_msg void OnLyricDefaultStyle2();
+    afx_msg void OnLyricDefaultStyle3();
 };
 

@@ -163,8 +163,6 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_WHITE));
 	m_cortana_color_combo.SetCurSel(m_data.cortana_color);
 
-    m_lyric_style_menu.LoadMenu(IDR_LRYIC_DEFAULT_STYLE_MENU);
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -205,12 +203,7 @@ void CLyricSettingsDlg::EnableControl()
 
 void CLyricSettingsDlg::ApplyDefaultLyricStyle(const LyricStyleDefaultData& style)
 {
-    m_data.desktop_lyric_data.text_color1 = style.normal_style.color1;
-    m_data.desktop_lyric_data.text_color2 = style.normal_style.color2;
-    m_data.desktop_lyric_data.text_gradient = style.normal_style.gradient_mode;
-    m_data.desktop_lyric_data.highlight_color1 = style.highlight_style.color1;
-    m_data.desktop_lyric_data.highlight_color2 = style.highlight_style.color2;
-    m_data.desktop_lyric_data.highlight_gradient = style.highlight_style.gradient_mode;
+    CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(style, m_data.desktop_lyric_data);
 
     m_text_color1_static.SetFillColor(style.normal_style.color1);
     m_text_color2_static.SetFillColor(style.normal_style.color2);
@@ -495,7 +488,7 @@ void CLyricSettingsDlg::OnBnClickedDefaultStyle()
         pBtn->GetWindowRect(rect);
         point.x = rect.left;
         point.y = rect.bottom;
-        CMenu* pMenu = m_lyric_style_menu.GetSubMenu(0);
+        CMenu* pMenu = theApp.m_menu_set.m_lyric_default_style.GetSubMenu(0);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
     }
