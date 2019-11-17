@@ -135,6 +135,11 @@ void CPlayerToolBar::OnPaint()
         rc_tmp.top = rc_icon.top + (rc_icon.Height() - icon_size.cy) / 2;
         rc_tmp.right = rc_tmp.left + icon_size.cx;
         rc_tmp.bottom = rc_tmp.top + icon_size.cy;
+        if (iter->pressed)
+        {
+            rc_tmp.MoveToX(rc_tmp.left + theApp.DPI(1));
+            rc_tmp.MoveToY(rc_tmp.top + theApp.DPI(1));
+        }
         drawer.SetDrawArea(rc_tmp);
         drawer.DrawIcon(iter->icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
         //»æÖÆÎÄ±¾
@@ -147,6 +152,8 @@ void CPlayerToolBar::OnPaint()
                 text_color = CColorConvert::m_gray_color.dark3;
             else
                 text_color = CColorConvert::m_gray_color.dark1;
+            if(iter->pressed)
+                rc_text.MoveToY(rc_text.top + theApp.DPI(1));
             drawer.DrawWindowText(rc_text, iter->text, text_color);
         }
 
