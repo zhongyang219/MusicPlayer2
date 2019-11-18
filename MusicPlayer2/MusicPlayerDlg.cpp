@@ -1160,17 +1160,10 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_Mytip.Create(this, TTS_ALWAYSTIP);
     m_Mytip.SetMaxTipWidth(theApp.DPI(400));
     m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_OPEN_MEDIA_LIB, _T(" (Ctrl+T)")));
-    //m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_DOWN), _T("减小音量"));
-    //m_Mytip.AddTool(GetDlgItem(IDC_VOLUME_UP), _T("增大音量"));
-    //m_Mytip.AddTool(&m_time_static, CCommon::LoadText(IDS_PLAY_TIME));
     m_Mytip.AddTool(&m_clear_search_button, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
     m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
     m_ui.SetToolTip(&m_Mytip);
     m_ui2.SetToolTip(&m_Mytip);
-
-    //为显示播放时间的static控件设置SS_NOTIFY属性，以启用鼠标提示
-    //DWORD dwStyle = m_time_static.GetStyle();
-    //::SetWindowLong(m_time_static.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
     SetMenubarVisible();
 

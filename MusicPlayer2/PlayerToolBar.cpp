@@ -25,9 +25,11 @@ void CPlayerToolBar::AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToo
     btn.cmd_id = cmdId;
     btn.is_cmd = true;
     btn.icon = icon;
-    btn.text = strText;
+    if (strText != nullptr)
+        btn.text = strText;
     btn.show_text = showText;
-    btn.tooltip_text = strToolTip;
+    if (strToolTip != nullptr)
+        btn.tooltip_text = strToolTip;
     m_buttons.push_back(btn);
 }
 
@@ -37,9 +39,11 @@ void CPlayerToolBar::AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToo
     btn.pMenu = pMenu;
     btn.is_cmd = false;
     btn.icon = icon;
-    btn.text = strText;
+    if (strText != nullptr)
+        btn.text = strText;
     btn.show_text = showText;
-    btn.tooltip_text = strToolTip;
+    if(strToolTip != nullptr)
+        btn.tooltip_text = strToolTip;
     m_buttons.push_back(btn);
 }
 
@@ -53,7 +57,8 @@ void CPlayerToolBar::AddToolTips()
 {
     for (size_t i = 0; i < m_buttons.size(); i++)
     {
-        m_tool_tip.AddTool(this, m_buttons[i].tooltip_text, m_buttons[i].rect, i + 100);
+        if(!m_buttons[i].tooltip_text.IsEmpty())
+            m_tool_tip.AddTool(this, m_buttons[i].tooltip_text, m_buttons[i].rect, i + 100);
     }
 }
 
@@ -109,7 +114,8 @@ void CPlayerToolBar::OnPaint()
             rc_icon.left = (iter-1)->rect.right + theApp.DPI(2);
         }
 
-        if (iter->show_text)
+        bool draw_text = iter->show_text && !(iter->text.IsEmpty());
+        if (draw_text)
         {
             CSize text_size = drawer.GetTextExtent(iter->text);
             rc_icon.right = rc_icon.left + m_icon_size + text_size.cx + theApp.DPI(4);
@@ -128,7 +134,7 @@ void CPlayerToolBar::OnPaint()
         CRect rc_tmp = rc_icon;
         //使图标在矩形中居中
         CSize icon_size = iter->icon.GetSize();
-        if (iter->show_text)
+        if (draw_text)
             rc_tmp.left = rc_icon.left + theApp.DPI(2);
         else
             rc_tmp.left = rc_icon.left + (rc_icon.Width() - icon_size.cx) / 2;
@@ -143,7 +149,7 @@ void CPlayerToolBar::OnPaint()
         drawer.SetDrawArea(rc_tmp);
         drawer.DrawIcon(iter->icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
         //绘制文本
-        if (iter->show_text)
+        if (draw_text)
         {
             CRect rc_text = rc_icon;
             rc_text.left = rc_tmp.right + theApp.DPI(2);

@@ -11,8 +11,22 @@ public:
 	CPlayerToolBar();
 	virtual ~CPlayerToolBar();
 
-    void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showTest = false);        //添加一个按钮，点击后发送cmdId命令
-    void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showTest = false);      //添加一个按钮，点击后弹出菜单
+    // 添加一个按钮，点击后执行一个命令
+    // IconRes icon: 图标资源
+    // LPCTSTR strText: 图标右侧的文本
+    // LPCTSTR strToolTip: 鼠标提示的文本
+    // UINT cmdId: 点击后执行的命令ID
+    // bool showText: 是否在图标右侧显示文本
+    void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText = false);
+
+    // 添加一个按钮，点击后弹出菜单
+    // IconRes icon: 图标资源
+    // LPCTSTR strText: 图标右侧的文本
+    // LPCTSTR strToolTip: 鼠标提示的文本
+    // CMenu * pMenu: 点击后弹出的菜单
+    // bool showText: 是否在图标右侧显示文本
+    void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
+
     void SetIconSize(int size);
 
 protected:
