@@ -941,6 +941,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_ALWAYS_ON_TOP, MF_BYCOMMAND | (theApp.m_nc_setting_data.always_on_top ? MF_CHECKED : MF_UNCHECKED));
 
     pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));        //全屏时禁止显示/关闭菜单栏
+    pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //迷你模式下禁用全屏模式
+    pMenu->EnableMenuItem(ID_MINI_MODE, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));            //全屏时禁止进入迷你模式
 
     pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
 
@@ -2600,6 +2602,9 @@ void CMusicPlayerDlg::OnMiniMode()
 {
     // TODO: 在此添加命令处理程序代码
     if (m_miniModeDlg.m_hWnd != NULL)
+        return;
+
+    if (theApp.m_ui_data.full_screen)   //全屏模式下禁用响应迷你模式
         return;
 
     //m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);

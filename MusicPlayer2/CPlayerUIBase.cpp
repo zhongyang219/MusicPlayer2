@@ -69,7 +69,7 @@ void CPlayerUIBase::LButtonDown(CPoint point)
 {
     for (auto& btn : m_buttons)
     {
-        if(btn.second.rect.PtInRect(point) != FALSE)
+        if(btn.second.enable && btn.second.rect.PtInRect(point) != FALSE)
             btn.second.pressed = true;
     }
 }
@@ -122,7 +122,8 @@ void CPlayerUIBase::MouseMove(CPoint point)
 {
     for (auto& btn : m_buttons)
     {
-        btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
+        if(btn.second.enable)
+            btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
     }
 
     m_buttons[BTN_PROGRESS].hover = m_buttons[BTN_PROGRESS].hover && !(m_show_volume_adj && (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point)));
@@ -580,6 +581,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     if (rect.Width() >= DPI(190))
     {
         rc_tmp.MoveToX(rc_tmp.right);
+        m_buttons[BTN_MINI].enable = !theApp.m_ui_data.full_screen;
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_MINI], theApp.m_icon_set.mini);
     }
     else
@@ -700,7 +702,7 @@ CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
 
 void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & icon)
 {
-    if(btn.pressed)
+    if(btn.pressed && btn.enable)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
 
     CRect rc_tmp = rect;
