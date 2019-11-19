@@ -15,6 +15,7 @@ public:
 
 protected:
 	CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
+    CRect m_rc_pic;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -28,4 +29,5 @@ public:
 	afx_msg void OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickDonateSyslink(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnPaint();
 };

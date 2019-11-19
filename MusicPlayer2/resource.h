@@ -438,6 +438,8 @@
 #define IDS_OPEN_URL                    402
 #define IDI_ADD_D                       402
 #define IDS_ADD_URL                     403
+#define IDB_BITMAP1                     403
+#define IDB_ABOUT_BITMAP                403
 #define IDS_INPUT_URL_TIP               404
 #define IDS_MCI_INIT_FAILED             405
 #define IDS_MCI_NO_THIS_FUNCTION_WARNING 406
@@ -1066,7 +1068,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        403
+#define _APS_NEXT_RESOURCE_VALUE        404
 #define _APS_NEXT_COMMAND_VALUE         33137
 #define _APS_NEXT_CONTROL_VALUE         1151
 #define _APS_NEXT_SYMED_VALUE           101

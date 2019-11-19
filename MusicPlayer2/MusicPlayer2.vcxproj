@@ -402,6 +402,7 @@
     <None Include="res\MusicPlayer2.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\about.bmp" />
     <Image Include="res\AddTag.ico" />
     <Image Include="res\add_d.ico" />
     <Image Include="res\close_d.ico" />

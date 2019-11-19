@@ -1035,5 +1035,8 @@
     <Image Include="res\add_d.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\about.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
