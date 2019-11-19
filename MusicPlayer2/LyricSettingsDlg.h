@@ -97,4 +97,9 @@ public:
     afx_msg void OnBnClickedHideLyricWithoutLyricCheck3();
 protected:
     afx_msg LRESULT OnColorSelected(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnLyricDefaultStyle1Modify();
+    afx_msg void OnLyricDefaultStyle2Modify();
+    afx_msg void OnLyricDefaultStyle3Modify();
+    afx_msg void OnRestoreDefaultStyle();
 };

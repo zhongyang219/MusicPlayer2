@@ -7,28 +7,6 @@
 
 CDesktopLyric::CDesktopLyric()
 {
-    //初始化歌词预设样式
-    m_default_style[0].normal_style.color1 = RGB(37, 152, 10);
-    m_default_style[0].normal_style.color2 = RGB(129, 249, 0);
-    m_default_style[0].normal_style.gradient_mode = 1;
-    m_default_style[0].highlight_style.color1 = RGB(253, 232, 0);
-    m_default_style[0].highlight_style.color2 = RGB(255, 120, 0);
-    m_default_style[0].highlight_style.gradient_mode = 2;
-
-    m_default_style[1].normal_style.color1 = RGB(252, 82, 66);
-    m_default_style[1].normal_style.color2 = RGB(255, 128, 0);
-    m_default_style[1].normal_style.gradient_mode = 1;
-    m_default_style[1].highlight_style.color1 = RGB(255, 255, 0);
-    m_default_style[1].highlight_style.color2 = RGB(255, 192, 0);
-    m_default_style[1].highlight_style.gradient_mode = 2;
-
-    m_default_style[2].normal_style.color1 = RGB(210, 137, 255);
-    m_default_style[2].normal_style.color2 = RGB(200, 227, 255);
-    m_default_style[2].normal_style.gradient_mode = 1;
-    m_default_style[2].highlight_style.color1 = RGB(98, 237, 245);
-    m_default_style[2].highlight_style.color2 = RGB(74, 145, 253);
-    m_default_style[2].highlight_style.gradient_mode = 2;
-
     m_toobar_height = theApp.DPI(24);
 }
 
@@ -166,11 +144,43 @@ void CDesktopLyric::SetLyricBackgroundPenetrate(bool penetrate)
     SetWindowStyle();
 }
 
-LyricStyleDefaultData CDesktopLyric::GetDefaultStyle(int index)
+LyricStyleDefaultData CDesktopLyric::GetDefaultStyle(int index) const
 {
     if (index < 0 || index >= LYRIC_DEFAULT_STYLE_NUM)
         index = 0;
     return m_default_style[index];
+}
+
+void CDesktopLyric::SetDefaultStyle(const LyricStyleDefaultData& style_data, int index)
+{
+    if (index >= 0 && index < LYRIC_DEFAULT_STYLE_NUM)
+    {
+        m_default_style[index] = style_data;
+    }
+}
+
+void CDesktopLyric::RestoreDefaultStyle()
+{
+    m_default_style[0].normal_style.color1 = RGB(37, 152, 10);
+    m_default_style[0].normal_style.color2 = RGB(129, 249, 0);
+    m_default_style[0].normal_style.gradient_mode = 1;
+    m_default_style[0].highlight_style.color1 = RGB(253, 232, 0);
+    m_default_style[0].highlight_style.color2 = RGB(255, 120, 0);
+    m_default_style[0].highlight_style.gradient_mode = 2;
+
+    m_default_style[1].normal_style.color1 = RGB(252, 82, 66);
+    m_default_style[1].normal_style.color2 = RGB(255, 128, 0);
+    m_default_style[1].normal_style.gradient_mode = 1;
+    m_default_style[1].highlight_style.color1 = RGB(255, 255, 0);
+    m_default_style[1].highlight_style.color2 = RGB(255, 192, 0);
+    m_default_style[1].highlight_style.gradient_mode = 2;
+
+    m_default_style[2].normal_style.color1 = RGB(210, 137, 255);
+    m_default_style[2].normal_style.color2 = RGB(200, 227, 255);
+    m_default_style[2].normal_style.gradient_mode = 1;
+    m_default_style[2].highlight_style.color1 = RGB(98, 237, 245);
+    m_default_style[2].highlight_style.color2 = RGB(74, 145, 253);
+    m_default_style[2].highlight_style.gradient_mode = 2;
 }
 
 void CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(const LyricStyleDefaultData& style_data, DesktopLyricSettingData& setting_data)
@@ -181,6 +191,65 @@ void CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(const LyricStyleDefa
     setting_data.highlight_color1 = style_data.highlight_style.color1;
     setting_data.highlight_color2 = style_data.highlight_style.color2;
     setting_data.highlight_gradient = style_data.highlight_style.gradient_mode;
+}
+
+void CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(const DesktopLyricSettingData& setting_data, LyricStyleDefaultData& style_data)
+{
+    style_data.normal_style.color1 = setting_data.text_color1;
+    style_data.normal_style.color2 = setting_data.text_color2;
+    style_data.normal_style.gradient_mode = setting_data.text_gradient;
+    style_data.highlight_style.color1 = setting_data.highlight_color1;
+    style_data.highlight_style.color2 = setting_data.highlight_color2;
+    style_data.highlight_style.gradient_mode = setting_data.highlight_gradient;
+
+}
+
+void CDesktopLyric::LoadDefaultStyle(CIniHelper & ini)
+{
+    m_default_style[0].normal_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color1", RGB(37, 152, 10));
+    m_default_style[0].normal_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color2", RGB(129, 249, 0));
+    m_default_style[0].normal_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_gradient_mode", 1);
+    m_default_style[0].highlight_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default1_highlight_color1", RGB(253, 232, 0));
+    m_default_style[0].highlight_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default1_highlight_color2", RGB(255, 120, 0));
+    m_default_style[0].highlight_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default1_highlight_gradient_mode", 2);
+
+    m_default_style[1].normal_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default2_text_color1", RGB(252, 82, 66));
+    m_default_style[1].normal_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default2_text_color2", RGB(255, 128, 0));
+    m_default_style[1].normal_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default2_text_gradient_mode", 1);
+    m_default_style[1].highlight_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default2_highlight_color1", RGB(255, 255, 0));
+    m_default_style[1].highlight_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default2_highlight_color2", RGB(255, 192, 0));
+    m_default_style[1].highlight_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default2_highlight_gradient_mode", 2);
+
+    m_default_style[2].normal_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default3_text_color1", RGB(210, 137, 255));
+    m_default_style[2].normal_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default3_text_color2", RGB(200, 227, 255));
+    m_default_style[2].normal_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default3_text_gradient_mode", 1);
+    m_default_style[2].highlight_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default3_highlight_color1", RGB(98, 237, 245));
+    m_default_style[2].highlight_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default3_highlight_color2", RGB(74, 145, 253));
+    m_default_style[2].highlight_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default3_highlight_gradient_mode", 2);
+}
+
+void CDesktopLyric::SaveDefaultStyle(CIniHelper & ini) const
+{
+    ini.WriteInt(L"desktop_lyric_default_style", L"default1_text_color1", m_default_style[0].normal_style.color1);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default1_text_color2", m_default_style[0].normal_style.color2);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default1_text_gradient_mode", m_default_style[0].normal_style.gradient_mode);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default1_highlight_color1", m_default_style[0].highlight_style.color1);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default1_highlight_color2", m_default_style[0].highlight_style.color2);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default1_highlight_gradient_mode", m_default_style[0].highlight_style.gradient_mode);
+
+    ini.WriteInt(L"desktop_lyric_default_style", L"default2_text_color1", m_default_style[1].normal_style.color1);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default2_text_color2", m_default_style[1].normal_style.color2);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default2_text_gradient_mode", m_default_style[1].normal_style.gradient_mode);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default2_highlight_color1", m_default_style[1].highlight_style.color1);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default2_highlight_color2", m_default_style[1].highlight_style.color2);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default2_highlight_gradient_mode", m_default_style[1].highlight_style.gradient_mode);
+
+    ini.WriteInt(L"desktop_lyric_default_style", L"default3_text_color1", m_default_style[2].normal_style.color1);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default3_text_color2", m_default_style[2].normal_style.color2);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default3_text_gradient_mode", m_default_style[2].normal_style.gradient_mode);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default3_highlight_color1", m_default_style[2].highlight_style.color1);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default3_highlight_color2", m_default_style[2].highlight_style.color2);
+    ini.WriteInt(L"desktop_lyric_default_style", L"default3_highlight_gradient_mode", m_default_style[2].highlight_style.gradient_mode);
 }
 
 void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
@@ -645,7 +714,7 @@ void CDesktopLyric::OnLyricDefaultStyle1()
 {
     // TODO: 在此添加命令处理程序代码
     auto style = GetDefaultStyle(0);
-    CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
+    LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
     ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
 }
 
@@ -654,7 +723,7 @@ void CDesktopLyric::OnLyricDefaultStyle2()
 {
     // TODO: 在此添加命令处理程序代码
     auto style = GetDefaultStyle(1);
-    CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
+    LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
     ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
 }
 
@@ -663,6 +732,6 @@ void CDesktopLyric::OnLyricDefaultStyle3()
 {
     // TODO: 在此添加命令处理程序代码
     auto style = GetDefaultStyle(2);
-    CDesktopLyric::LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
+    LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
     ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
 }

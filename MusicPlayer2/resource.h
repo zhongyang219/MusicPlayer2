@@ -460,6 +460,8 @@
 #define IDS_LIST                        423
 #define IDS_EDIT                        424
 #define IDS_DEFAULT_STYLE               425
+#define IDS_MODIFY_DEFAULT_STYLE_WARNING 426
+#define IDS_RESTORE_DEFAULT_STYTLE_WARNING 427
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1053,13 +1055,19 @@
 #define ID_PLAYLIST_SELECT_NONE         33128
 #define ID_PLAYLIST_SELECT_REVERT       33129
 #define ID_33130                        33130
+#define ID_2_33131                      33131
+#define ID_LYRIC_DEFAULT_STYLE1_MODIFY  33132
+#define ID_LYRIC_DEFAULT_STYLE2_MODIFY  33133
+#define ID_LYRIC_DEFAULT_STYLE3_MODIFY  33134
+#define ID_33135                        33135
+#define ID_RESTORE_DEFAULT_STYLE        33136
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        403
-#define _APS_NEXT_COMMAND_VALUE         33131
+#define _APS_NEXT_COMMAND_VALUE         33137
 #define _APS_NEXT_CONTROL_VALUE         1151
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

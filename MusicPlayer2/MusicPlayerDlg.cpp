@@ -324,6 +324,9 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_setting_data.hot_key_enable);
     theApp.m_hot_key.SaveToTni(ini);
 
+    //保存桌面歌词预设
+    m_desktop_lyric.SaveDefaultStyle(ini);
+
     ini.Save();
 }
 
@@ -441,6 +444,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_hot_key_setting_data.hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
     theApp.m_hot_key.LoadFromIni(ini);
 
+    //载入桌面歌词预设方案
+    m_desktop_lyric.LoadDefaultStyle(ini);
 }
 
 void CMusicPlayerDlg::SetTransparency()

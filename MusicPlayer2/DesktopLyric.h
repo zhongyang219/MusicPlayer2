@@ -1,6 +1,7 @@
 #pragma once
 #include "LyricsWindow.h"
 #include "CommonData.h"
+#include "IniHelper.h"
 
 struct LyricStyle
 {
@@ -55,23 +56,29 @@ public:
 	void SetLyricWindowLock(bool locked);
     void SetLyricOpacity(int opacity);
     void SetLyricBackgroundPenetrate(bool penetrate);
-    LyricStyleDefaultData GetDefaultStyle(int index);
+    LyricStyleDefaultData GetDefaultStyle(int index) const;
+    void SetDefaultStyle(const LyricStyleDefaultData& style_data, int index);
+    void RestoreDefaultStyle();
 
     static void LyricStyleDefaultDataToLyricSettingData(const LyricStyleDefaultData& style_data, DesktopLyricSettingData& setting_data);
+    static void LyricSettingDatatOLyricStyleDefaultData(const DesktopLyricSettingData& setting_data, LyricStyleDefaultData& style_data);
 
+    void LoadDefaultStyle(CIniHelper& ini);
+    void SaveDefaultStyle(CIniHelper& ini) const;
+
+    void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
+    void UpdateToolTipPosition();
+
+protected:
+    //添加鼠标提示
+    void AddToolTips();
+    //为一个按钮添加鼠标提示
+    void AddMouseToolTip(BtnKey btn, LPCTSTR str);
     //绘制工具条
     void DrawToolbar(Gdiplus::Graphics* pGraphics);
     //绘制工具条上的图标
     void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
 
-    //添加鼠标提示
-    void AddToolTips();
-    //为一个按钮添加鼠标提示
-    void AddMouseToolTip(BtnKey btn, LPCTSTR str);
-    void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
-    void UpdateToolTipPosition();
-
-protected:
     virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics) override;
     virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) override;
 

@@ -83,6 +83,10 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CLyricSettingsDlg::OnLyricDefaultStyle3)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck3)
     ON_MESSAGE(WM_COLOR_SELECTED, &CLyricSettingsDlg::OnColorSelected)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1_MODIFY, &CLyricSettingsDlg::OnLyricDefaultStyle1Modify)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2_MODIFY, &CLyricSettingsDlg::OnLyricDefaultStyle2Modify)
+    ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3_MODIFY, &CLyricSettingsDlg::OnLyricDefaultStyle3Modify)
+    ON_COMMAND(ID_RESTORE_DEFAULT_STYLE, &CLyricSettingsDlg::OnRestoreDefaultStyle)
 END_MESSAGE_MAP()
 
 
@@ -179,6 +183,7 @@ void CLyricSettingsDlg::EnableControl()
 	m_keep_display_chk.EnableWindow(enable);
 	m_show_spectrum_chk.EnableWindow(enable);
 	m_lyric_compatible_mode_chk.EnableWindow(m_data.cortana_info_enable);
+    m_search_box_opaque_chk.EnableWindow(m_data.cortana_info_enable);
 
     bool desktop_lyric_enable = m_data.show_desktop_lyric;
     m_desktop_lyric_double_line_chk.EnableWindow(desktop_lyric_enable);
@@ -198,6 +203,7 @@ void CLyricSettingsDlg::EnableControl()
     m_hide_lyric_paused_chk.EnableWindow(desktop_lyric_enable);
     m_lyric_background_penetrate_chk.EnableWindow(desktop_lyric_enable);
     GetDlgItem(IDC_SET_FONT2)->EnableWindow(desktop_lyric_enable);
+    GetDlgItem(IDC_DEFAULT_STYLE)->EnableWindow(desktop_lyric_enable);
 }
 
 
@@ -488,7 +494,7 @@ void CLyricSettingsDlg::OnBnClickedDefaultStyle()
         pBtn->GetWindowRect(rect);
         point.x = rect.left;
         point.y = rect.bottom;
-        CMenu* pMenu = theApp.m_menu_set.m_lyric_default_style.GetSubMenu(0);
+        CMenu* pMenu = theApp.m_menu_set.m_lyric_default_style.GetSubMenu(1);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
     }
@@ -547,4 +553,50 @@ afx_msg LRESULT CLyricSettingsDlg::OnColorSelected(WPARAM wParam, LPARAM lParam)
     else if(pControl == &m_highlight_color2_static)
         m_data.desktop_lyric_data.highlight_color2 = m_highlight_color2_static.GetFillColor();
     return 0;
+}
+
+
+void CLyricSettingsDlg::OnLyricDefaultStyle1Modify()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (MessageBox(CCommon::LoadTextFormat(IDS_MODIFY_DEFAULT_STYLE_WARNING, { 1 }), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    {
+        LyricStyleDefaultData style_data;
+        CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(m_data.desktop_lyric_data, style_data);
+        m_pDesktopLyric->SetDefaultStyle(style_data, 0);
+    }
+}
+
+
+void CLyricSettingsDlg::OnLyricDefaultStyle2Modify()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (MessageBox(CCommon::LoadTextFormat(IDS_MODIFY_DEFAULT_STYLE_WARNING, { 2 }), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    {
+        LyricStyleDefaultData style_data;
+        CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(m_data.desktop_lyric_data, style_data);
+        m_pDesktopLyric->SetDefaultStyle(style_data, 1);
+    }
+}
+
+
+void CLyricSettingsDlg::OnLyricDefaultStyle3Modify()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (MessageBox(CCommon::LoadTextFormat(IDS_MODIFY_DEFAULT_STYLE_WARNING, { 3 }), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    {
+        LyricStyleDefaultData style_data;
+        CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(m_data.desktop_lyric_data, style_data);
+        m_pDesktopLyric->SetDefaultStyle(style_data, 2);
+    }
+}
+
+
+void CLyricSettingsDlg::OnRestoreDefaultStyle()
+{
+    // TODO: 在此添加命令处理程序代码
+    if(MessageBox(CCommon::LoadText(IDS_RESTORE_DEFAULT_STYTLE_WARNING), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    {
+        m_pDesktopLyric->RestoreDefaultStyle();
+    }
 }
