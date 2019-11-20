@@ -37,8 +37,8 @@ void CFileRelateDlg::RefreshList()
     bool checked{ false }, unchecked{ false };
     for (const auto& item : CAudioCommon::m_all_surpported_extensions)
     {
-        if(item == L"cue")
-            continue;
+        //if(item == L"cue")
+        //    continue;
         m_list_ctrl.InsertItem(index, item.c_str());
         wstring description = CAudioCommon::GetAudioDescriptionByExtension(item);
         m_list_ctrl.SetItemText(index, 1, description.c_str());
