@@ -132,6 +132,12 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     {
         pInfo->process_percent = i * 100 / song_count + 1;
 
+        if(GetInstance().m_playlist[i].is_cue)
+        {
+            GetInstance().m_playlist[i].info_acquired = true;
+            continue;
+        }
+
         if (!pInfo->refresh_info)
         {
             //wstring file_name{ GetInstance().m_playlist[i].file_name };
@@ -755,13 +761,10 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     CPlaylist playlist;
     playlist.LoadFromFile(playlist_path);
 
-    SongInfo song_info;
-    for (const auto& file : playlist.GetPlaylist())
+    auto playlist_files{ playlist.GetPlaylist() };
+    for (const auto& file : playlist_files)
     {
-        CFilePathHelper file_path{ file };
-        song_info.file_name = file_path.GetFileName();
-        song_info.file_path = file;
-        m_playlist.push_back(song_info);	//将文件名储存到播放列表
+        m_playlist.push_back(file);
     }
 
     m_index = track;

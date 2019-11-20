@@ -196,7 +196,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
                     total_length = files[j].lengh;
                     size_t index2 = play_file_name.rfind(L'.');
                     play_file_name2 = play_file_name.substr(0, index2);
-                    if (play_file_name2 == cue_file_name2)
+                    if (CCommon::StringCompareNoCase(play_file_name2, cue_file_name2) || CCommon::StringCompareNoCase(play_file_name, cue_file_name2))
                     {
                         files.erase(files.begin() + j);		//从列表中删除该文件
                         matched_file_found = true;
@@ -329,7 +329,7 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
                     wstring audio_file_name;
                     index = files[j].file_name.rfind(L'.');
                     audio_file_name = files[j].file_name.substr(0, index);
-                    if (file_name == audio_file_name)
+                    if (CCommon::StringCompareNoCase(file_name, audio_file_name) || CCommon::StringCompareNoCase(file_name, files[j].file_name))
                     {
                         audio_exist = true;
                         break;

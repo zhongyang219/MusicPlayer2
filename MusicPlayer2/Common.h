@@ -104,7 +104,7 @@ public:
 	//str: 原始字符串
 	//div_ch: 用于分割的字符
 	//result: 接收分割后的结果
-	static void StringSplit(const wstring& str, wchar_t div_ch,vector<wstring>& results);
+	static void StringSplit(const wstring& str, wchar_t div_ch,vector<wstring>& results, bool skip_empty = true);
 
 	//将若干个字符串合并成一个字符串
 	//div_ch: 用于分割的字符

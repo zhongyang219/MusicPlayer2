@@ -118,7 +118,7 @@ bool CCommon::CharIsNumber(wchar_t ch)
 	return (ch >= L'0' && ch <= L'9');
 }
 
-void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& results)
+void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& results, bool skip_empty)
 {
 	results.clear();
 	size_t split_index = -1 ;
@@ -128,7 +128,7 @@ void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& 
 		split_index = str.find(div_ch, split_index + 1);
 		wstring split_str = str.substr(last_split_index + 1, split_index - last_split_index - 1);
 		StringNormalize(split_str);
-		if(!split_str.empty())
+		if(!split_str.empty() || !skip_empty)
 			results.push_back(split_str);
 		if (split_index == wstring::npos)
 			break;

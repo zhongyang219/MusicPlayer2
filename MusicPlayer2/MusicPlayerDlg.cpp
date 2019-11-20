@@ -2311,12 +2311,12 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
     {
         //获取选中的曲目的路径
-        std::vector<std::wstring> selected_item_path;
+        std::vector<SongInfo> selected_item_path;
         for (auto i : m_items_selected)
         {
             if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
             {
-                selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i].file_path);
+                selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i]);
             }
         }
 
@@ -3960,12 +3960,12 @@ void CMusicPlayerDlg::OnAddToNewPlaylist()
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
         
         //获取选中的曲目的路径
-        std::vector<std::wstring> selected_item_path;
+        std::vector<SongInfo> selected_item_path;
         for (auto i : m_items_selected)
         {
             if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
             {
-                selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i].file_path);
+                selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i]);
             }
         }
 
@@ -4085,16 +4085,16 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
     }
     else
     {
-        std::wstring current_file_path = CPlayer::GetInstance().GetCurrentFilePath();
+        SongInfo current_file = CPlayer::GetInstance().GetCurrentSongInfo();
         std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
         CPlaylist playlist;
         playlist.LoadFromFile(favourite_playlist_path);
         if (!CPlayer::GetInstance().IsFavourite())
         {
             //添加到“我喜欢”播放列表
-            if (!playlist.IsFileInPlaylist(current_file_path))
+            if (!playlist.IsFileInPlaylist(current_file.file_path))
             {
-                playlist.AddFiles(std::vector<std::wstring> {current_file_path});
+                playlist.AddFiles(std::vector<SongInfo> {current_file});
                 playlist.SaveToFile(favourite_playlist_path);
             }
             CPlayer::GetInstance().SetFavourite(true);
@@ -4102,7 +4102,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
         else
         {
             //从“我喜欢”播放列表移除
-            playlist.RemoveFile(current_file_path);
+            playlist.RemoveFile(current_file.file_path);
             playlist.SaveToFile(favourite_playlist_path);
             CPlayer::GetInstance().SetFavourite(false);
         }
