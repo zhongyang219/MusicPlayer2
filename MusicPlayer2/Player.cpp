@@ -544,7 +544,7 @@ void CPlayer::GetPlayerCoreSongLength()
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
     int current_position_int = m_pCore->GetCurPosition();
-    if (m_playlist[m_index].is_cue)
+    if (!IsPlaylistEmpty() && m_playlist[m_index].is_cue)
     {
         current_position_int -= m_playlist[m_index].start_pos.toInt();
     }
@@ -680,7 +680,7 @@ bool CPlayer::PlayTrack(int song_track)
     //m_current_file_name = m_playlist[m_index].file_name;
     MusicControl(Command::OPEN);
     //IniLyrics();
-    if (m_playlist[m_index].is_cue)
+    if (GetCurrentSongInfo().is_cue)
         SeekTo(0);
     MusicControl(Command::PLAY);
     GetPlayerCoreCurrentPosition();
@@ -1172,7 +1172,7 @@ bool CPlayer::RemoveSong(int index)
     if (m_loading)
         return false;
 
-    if (m_playlist.empty() || (m_playlist[0].file_path.empty() && m_playlist[0].file_name.empty()))
+    if (IsPlaylistEmpty())
         return false;
 
     if (index == m_index && index == GetSongNum() - 1)
@@ -1231,12 +1231,21 @@ int CPlayer::RemoveSameSongs()
 {
     if (m_loading)
         return 0;
+
+    auto isSameSong = [](const SongInfo& a, const SongInfo& b) 
+    {
+        if (a.is_cue && b.is_cue)
+            return a.file_path == b.file_path && a.track == b.track;
+        else
+            return a.file_path == b.file_path;
+    };
+
     int removed = 0;
     for (int i = 0; i < GetSongNum(); i++)
     {
         for (int j = i + 1; j < GetSongNum(); j++)
         {
-            if (m_playlist[i].file_path == m_playlist[j].file_path)
+            if (isSameSong(m_playlist[i], m_playlist[j]))
             {
                 if (RemoveSong(j))
                 {
@@ -1269,9 +1278,9 @@ int CPlayer::RemoveInvalidSongs()
 void CPlayer::ClearPlaylist()
 {
     if (m_loading) return;
+    MusicControl(Command::STOP);
     m_playlist.clear();
     //m_song_num = 0;
-    MusicControl(Command::STOP);
 }
 
 bool CPlayer::MoveUp(int first, int last)
@@ -1765,7 +1774,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
         if (m_path == m_recent_path[i].path)
             m_recent_path.erase(m_recent_path.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除
     }
-    if (GetSongNum() == 0 || m_playlist[0].file_name.empty()) return;		//如果当前路径中没有文件，就不保存
+    if (IsPlaylistEmpty()) return;		//如果当前路径中没有文件，就不保存
     PathInfo path_info;
     path_info.path = m_path;
     path_info.track = m_index;
@@ -2041,6 +2050,11 @@ bool CPlayer::IsOsuFile() const
 {
     wstring cur_file_path{ GetCurrentFilePath() };
     return COSUPlayerHelper::IsOsuFile(cur_file_path);
+}
+
+bool CPlayer::IsPlaylistEmpty() const
+{
+    return m_playlist.empty() || (m_playlist.size() == 1 && m_playlist[0].file_name.empty() && m_playlist[0].file_path.empty());
 }
 
 void CPlayer::SetPlaylistPath(const wstring& playlist_path)

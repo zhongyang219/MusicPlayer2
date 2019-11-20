@@ -176,11 +176,12 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
         //依次检查列表中的每首歌曲是否为cue文件
         if (GetAudioTypeByExtension(files[i].file_name) == AU_CUE)
         {
+            CFilePathHelper file_path{ files[i].file_path };
+            if (path.empty())
+                path = file_path.GetDir();
             wstring cue_file_name{ files[i].file_name };		//cue文件的文件名
             files.erase(files.begin() + i);		//从列表中删除cue文件
-            wstring cue_file_name2;			//cue文件的文件名（不含扩展名）
-            size_t index = cue_file_name.rfind(L'.');
-            cue_file_name2 = cue_file_name.substr(0, index);
+            wstring cue_file_name2 = file_path.GetFileNameWithoutExtension();			//cue文件的文件名（不含扩展名）
             //查找和cue文件同名的音频文件
             wstring play_file_name;		//查找到的和cue文件同名的文件名
             wstring play_file_name2;		//查找到的和cue文件同名的文件名（不含扩展名）
@@ -318,17 +319,20 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
         {
             audio_exist = false;
             wstring file_name;
-            size_t index;
-            index = files[i].file_name.rfind(L'.');
-            file_name = files[i].file_name.substr(0, index);		//获取文件名（不含扩展名）
+            CFilePathHelper file_path{ files[i].file_path };
+            file_name = file_path.GetFileNameWithoutExtension();		//获取文件名（不含扩展名）
+            if (path.empty())
+            {
+                path = file_path.GetDir();
+            }
             //查找和cue文件匹配的音频文件
             for (int j{}; j < size; j++)
             {
                 if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE)
                 {
                     wstring audio_file_name;
-                    index = files[j].file_name.rfind(L'.');
-                    audio_file_name = files[j].file_name.substr(0, index);
+                    CFilePathHelper file_path1{ files[j].file_path };
+                    audio_file_name = file_path1.GetFileNameWithoutExtension();
                     if (CCommon::StringCompareNoCase(file_name, audio_file_name) || CCommon::StringCompareNoCase(file_name, files[j].file_name))
                     {
                         audio_exist = true;

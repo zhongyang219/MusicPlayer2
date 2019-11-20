@@ -264,6 +264,7 @@ public:
 	wstring GetCurrentFileType() { return m_current_file_type; }
     bool IsOsuFile() const;
     bool IsPlaylistMode() const { return m_playlist_mode; }
+    bool IsPlaylistEmpty() const;
 
     void SetPlaylistPath(const wstring& playlist_path);
     wstring GetPlaylistPath() const;
