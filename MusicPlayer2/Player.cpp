@@ -1340,8 +1340,12 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
         return -1;
 
     std::wstring dest_file_path;        //保存目标位置的文件路径
+    int dest_track = 0;                      //保存目标位置的音轨
     if (dest >= 0 && dest < GetSongNum())
+    {
         dest_file_path = m_playlist[dest].file_path;
+        dest_track = m_playlist[dest].track;
+    }
 
     std::wstring current_file_path{ GetCurrentFilePath() };
 
@@ -1366,7 +1370,7 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
     int dest_index;
     auto iter_dest = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& song)
     {
-        return song.file_path == dest_file_path;
+        return song.file_path == dest_file_path && song.track == dest_track;
     });
     if(dest >= 0 && iter_dest != m_playlist.end())
     {
