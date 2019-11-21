@@ -6,7 +6,7 @@
 /*
 播放列表文件格式说明
 每行一个曲目，每一行的格式为：
-文件路径|是否为cue音轨|cue音轨起始时间|cue音轨结束时间|标题|艺术家|唱片集|曲目序号
+文件路径|是否为cue音轨|cue音轨起始时间|cue音轨结束时间|标题|艺术家|唱片集|曲目序号|比特率
 目前除了cue音轨外，其他曲目只保存文件路径
 */
 
@@ -44,7 +44,7 @@ void CPlaylist::LoadFromFile(const wstring & file_path)
             {
                 vector<wstring> result;
                 CCommon::StringSplit(current_line_wcs, L'|', result, false);
-                if (result.size() >= 8)
+                if (result.size() >= 9)
                 {
                     item.is_cue = (_wtoi(result[1].c_str()) != 0);
                     item.start_pos.fromInt(_wtoi(result[2].c_str()));
@@ -53,6 +53,7 @@ void CPlaylist::LoadFromFile(const wstring & file_path)
                     item.artist = result[5];
                     item.album = result[6];
                     item.track = _wtoi(result[7].c_str());
+                    item.bit_rate = _wtoi(result[8].c_str());
                 }
             }
             m_playlist.push_back(item);
@@ -70,8 +71,8 @@ void CPlaylist::SaveToFile(const wstring & file_path) const
         if (item.is_cue)
         {
             CString buff;
-            buff.Format(L"|%d|%d|%d|%s|%s|%s|%d", item.is_cue, item.start_pos.toInt(), item.end_pos.toInt(),
-                item.title.c_str(), item.artist.c_str(), item.album.c_str(), item.track); 
+            buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d", item.is_cue, item.start_pos.toInt(), item.end_pos.toInt(),
+                item.title.c_str(), item.artist.c_str(), item.album.c_str(), item.track, item.bit_rate); 
             stream << CCommon::UnicodeToStr(buff.GetString(), CodeType::UTF8_NO_BOM);
         }
         stream << std::endl;
@@ -160,6 +161,7 @@ SongInfo CPlaylist::PlaylistItemToSongInfo(const PlaylistItem & item)
     song_info.artist = item.artist;
     song_info.album = item.album;
     song_info.track = item.track;
+    song_info.bitrate = item.bit_rate;
     return song_info;
 }
 
@@ -174,5 +176,6 @@ CPlaylist::PlaylistItem CPlaylist::SongInfoToPlaylistItem(const SongInfo & song)
     item.artist = song.artist;
     item.album = song.album;
     item.track = song.track;
+    item.bit_rate = song.bitrate;
     return item;
 }

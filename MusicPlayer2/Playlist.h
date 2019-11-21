@@ -13,6 +13,7 @@ public:
         wstring artist;
         wstring album;
         int track{};
+        int bit_rate{};
     };
 
 public:
