@@ -183,8 +183,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files)
             files.erase(files.begin() + i);		//从列表中删除cue文件
             wstring cue_file_name2 = file_path.GetFileNameWithoutExtension();			//cue文件的文件名（不含扩展名）
             //查找和cue文件同名的音频文件
-            wstring play_file_name;		//查找到的和cue文件同名的文件名
-            wstring play_file_name2;		//查找到的和cue文件同名的文件名（不含扩展名）
+            CFilePathHelper play_file_path;
             int bitrate;
             Time total_length;
             bool matched_file_found{ false };		//如果查找到了和cue文件相同的文件名，则为true
@@ -192,12 +191,14 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files)
             {
                 if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE && !files[j].is_cue)	//确保该文件不是cue文件，且不是已经解析过的cue音轨
                 {
-                    play_file_name = files[j].file_name;		//信保存文件名
+                    play_file_path.SetFilePath(files[j].file_path);
+                    wstring play_file_name = play_file_path.GetFileName();		//查找到的和cue文件同名的文件名
+                    wstring play_file_name2 = play_file_path.GetFileNameWithoutExtension();		//查找到的和cue文件同名的文件名（不含扩展名）
+                    wstring play_file_dir = play_file_path.GetDir();
                     bitrate = files[j].bitrate;			//保存获取到的比特率
                     total_length = files[j].lengh;
-                    size_t index2 = play_file_name.rfind(L'.');
-                    play_file_name2 = play_file_name.substr(0, index2);
-                    if (CCommon::StringCompareNoCase(play_file_name2, cue_file_name2) || CCommon::StringCompareNoCase(play_file_name, cue_file_name2))
+                    if (cue_dir == play_file_dir &&
+                        (CCommon::StringCompareNoCase(play_file_name2, cue_file_name2) || CCommon::StringCompareNoCase(play_file_name, cue_file_name2)))
                     {
                         files.erase(files.begin() + j);		//从列表中删除该文件
                         matched_file_found = true;
@@ -235,8 +236,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files)
 
             SongInfo song_info{};
             song_info.album = CCommon::StrToUnicode(album_name, code_type);
-            song_info.file_name = play_file_name;
-            song_info.file_path = cue_dir + play_file_name;
+            song_info.file_name = play_file_path.GetFileName();
+            song_info.file_path = play_file_path.GetFilePath();
             song_info.bitrate = bitrate;
             song_info.is_cue = true;
             song_info.info_acquired = true;
@@ -327,12 +328,13 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCo
             //查找和cue文件匹配的音频文件
             for (int j{}; j < size; j++)
             {
-                if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE)
+                if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE && !files[j].is_cue)
                 {
                     wstring audio_file_name;
                     CFilePathHelper file_path1{ files[j].file_path };
                     audio_file_name = file_path1.GetFileNameWithoutExtension();
-                    if (CCommon::StringCompareNoCase(file_name, audio_file_name) || CCommon::StringCompareNoCase(file_name, files[j].file_name))
+                    if (file_path1.GetDir() == cue_dir &&
+                        (CCommon::StringCompareNoCase(file_name, audio_file_name) || CCommon::StringCompareNoCase(file_name, files[j].file_name)))
                     {
                         audio_exist = true;
                         break;

@@ -2486,14 +2486,24 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
         if(CCommon::IsItemInVector(m_items_selected, CPlayer::GetInstance().GetIndex()))	//如果选中的文件中有正在播放的文件，则删除前必须先关闭文件
             CPlayer::GetInstance().MusicControl(Command::CLOSE);
         for (const auto& index : m_items_selected)
-            delected_files.push_back(CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetPlayList()[index].file_name);
+        {
+            const auto& song = CPlayer::GetInstance().GetPlayList()[index];
+            if(!song.is_cue)
+                delected_files.push_back(song.file_path);
+        }
+        if (delected_files.empty())
+            return;
         rtn = CCommon::DeleteFiles(m_hWnd, delected_files);
     }
     else
     {
         if (m_item_selected == CPlayer::GetInstance().GetIndex())	//如果删除的文件是正在播放的文件，则删除前必须先关闭文件
             CPlayer::GetInstance().MusicControl(Command::CLOSE);
-        delected_file = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetPlayList()[m_item_selected].file_name;
+        const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
+        if (song.is_cue)
+            return;
+        delected_file = song.file_path;
+
         rtn = CCommon::DeleteAFile(m_hWnd, delected_file);
     }
     if (rtn == 0)
