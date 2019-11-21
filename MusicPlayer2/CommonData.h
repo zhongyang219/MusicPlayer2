@@ -189,6 +189,7 @@ struct ApperanceSettingData
     bool theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）
     bool show_album_cover;						//显示专辑封面
     CDrawCommon::StretchMode album_cover_fit{ CDrawCommon::StretchMode::FILL };		//专辑封面契合度（拉伸模式）
+    bool enable_background{ true };
     bool album_cover_as_background{ false };	//将专辑封面作为背景
     bool show_spectrum{ true };					//显示频谱分析
     int sprctrum_height{ 100 };					//频谱分析高度比例（%）

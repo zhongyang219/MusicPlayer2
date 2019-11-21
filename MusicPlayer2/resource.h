@@ -740,6 +740,7 @@
 #define IDC_TEST_TOOLBAR                1149
 #define IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3 1150
 #define IDC_PLAYLIST_TOOLBAR            1150
+#define IDC_ENABLE_BACKGROUND_CHECK     1151
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1070,7 +1071,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        404
 #define _APS_NEXT_COMMAND_VALUE         33137
-#define _APS_NEXT_CONTROL_VALUE         1151
+#define _APS_NEXT_CONTROL_VALUE         1152
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

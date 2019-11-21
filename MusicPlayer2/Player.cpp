@@ -1942,7 +1942,7 @@ void CPlayer::SearchAlbumCover()
 
 void CPlayer::AlbumCoverGaussBlur()
 {
-    if (!theApp.m_app_setting_data.background_gauss_blur || !theApp.m_app_setting_data.album_cover_as_background)
+    if (!theApp.m_app_setting_data.background_gauss_blur || !theApp.m_app_setting_data.enable_background)
         return;
     if (m_album_cover.IsNull())
     {

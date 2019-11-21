@@ -467,9 +467,9 @@ void CPlayerUIBase::DrawBackground()
     draw_rect.MoveToXY(0, 0);
 
     //ªÊ÷∆±≥æ∞
-    if (theApp.m_app_setting_data.album_cover_as_background)
+    if (theApp.m_app_setting_data.enable_background)
     {
-        if (CPlayer::GetInstance().AlbumCoverExist())
+        if (CPlayer::GetInstance().AlbumCoverExist() && theApp.m_app_setting_data.album_cover_as_background)
         {
             CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
             m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
@@ -927,7 +927,7 @@ int CPlayerUIBase::DrawAreaHeight() const
 
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
-    return theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
+    return theApp.m_app_setting_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
 }
 
 int CPlayerUIBase::DPI(int pixel)

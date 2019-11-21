@@ -24,30 +24,31 @@ CAppearanceSettingDlg::~CAppearanceSettingDlg()
 
 void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CTabDlg::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_TRANSPARENT_SLIDER, m_transparency_slid);
-	DDX_Control(pDX, IDC_COLOR_STATIC, m_color_static);
-	DDX_Control(pDX, IDC_COLOR_STATIC2, m_color_static1);
-	DDX_Control(pDX, IDC_COLOR_STATIC3, m_color_static2);
-	DDX_Control(pDX, IDC_COLOR_STATIC4, m_color_static3);
-	DDX_Control(pDX, IDC_COLOR_STATIC5, m_color_static4);
-	DDX_Control(pDX, IDC_COLOR_STATIC6, m_color_static5);
-	DDX_Control(pDX, IDC_COLOR_STATIC7, m_color_static6);
-	DDX_Control(pDX, IDC_FOLLOW_SYSTEM_COLOR_CHECK, m_follow_system_color_check);
-	DDX_Text(pDX, IDC_FONT_SIZE_EDIT, m_data.lyric_line_space);
-	DDV_MinMaxInt(pDX, m_data.lyric_line_space, 0, MAX_LINE_SPACE);
-	DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
-	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
-	DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
-	DDX_Control(pDX, IDC_ALBUM_COVER_BACKGROUND_CHECK, m_album_cover_as_background_chk);
-	DDX_Control(pDX, IDC_SHOW_SPECTRUM_CHECK, m_show_spectrum_chk);
-	DDX_Control(pDX, IDC_BACKGROUND_TRANSPARENCY_SLIDER, m_back_transparency_slid);
-	DDX_Control(pDX, IDC_USE_OUT_IMAGE_CHECK, m_use_out_image_chk);
-	DDX_Control(pDX, IDC_GAUSS_BLURE_RADIUS_SLIDER, m_gauss_blur_radius_sld);
-	DDX_Control(pDX, IDC_BACKGROUND_GAUSS_BLUR_CHECK, m_background_gauss_blur_chk);
-	DDX_Control(pDX, IDC_LYRIC_BACKGROUND_CHECK, m_lyric_background_chk);
-	DDX_Control(pDX, IDC_DARK_MODE_CHECK, m_dark_mode_chk);
-	DDX_Control(pDX, IDC_USE_INNER_IMAGE_FIRST_CHECK, m_use_inner_image_first_chk);
+    CTabDlg::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_TRANSPARENT_SLIDER, m_transparency_slid);
+    DDX_Control(pDX, IDC_COLOR_STATIC, m_color_static);
+    DDX_Control(pDX, IDC_COLOR_STATIC2, m_color_static1);
+    DDX_Control(pDX, IDC_COLOR_STATIC3, m_color_static2);
+    DDX_Control(pDX, IDC_COLOR_STATIC4, m_color_static3);
+    DDX_Control(pDX, IDC_COLOR_STATIC5, m_color_static4);
+    DDX_Control(pDX, IDC_COLOR_STATIC6, m_color_static5);
+    DDX_Control(pDX, IDC_COLOR_STATIC7, m_color_static6);
+    DDX_Control(pDX, IDC_FOLLOW_SYSTEM_COLOR_CHECK, m_follow_system_color_check);
+    DDX_Text(pDX, IDC_FONT_SIZE_EDIT, m_data.lyric_line_space);
+    DDV_MinMaxInt(pDX, m_data.lyric_line_space, 0, MAX_LINE_SPACE);
+    DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
+    DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
+    DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
+    DDX_Control(pDX, IDC_ALBUM_COVER_BACKGROUND_CHECK, m_album_cover_as_background_chk);
+    DDX_Control(pDX, IDC_SHOW_SPECTRUM_CHECK, m_show_spectrum_chk);
+    DDX_Control(pDX, IDC_BACKGROUND_TRANSPARENCY_SLIDER, m_back_transparency_slid);
+    DDX_Control(pDX, IDC_USE_OUT_IMAGE_CHECK, m_use_out_image_chk);
+    DDX_Control(pDX, IDC_GAUSS_BLURE_RADIUS_SLIDER, m_gauss_blur_radius_sld);
+    DDX_Control(pDX, IDC_BACKGROUND_GAUSS_BLUR_CHECK, m_background_gauss_blur_chk);
+    DDX_Control(pDX, IDC_LYRIC_BACKGROUND_CHECK, m_lyric_background_chk);
+    DDX_Control(pDX, IDC_DARK_MODE_CHECK, m_dark_mode_chk);
+    DDX_Control(pDX, IDC_USE_INNER_IMAGE_FIRST_CHECK, m_use_inner_image_first_chk);
+    DDX_Control(pDX, IDC_ENABLE_BACKGROUND_CHECK, m_enable_background_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -88,9 +89,10 @@ void CAppearanceSettingDlg::SetControlEnable()
 	m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
 	GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT)->EnableWindow(m_data.use_out_image);
 	m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
-	m_back_transparency_slid.EnableWindow(m_data.album_cover_as_background);
-	m_background_gauss_blur_chk.EnableWindow(m_data.album_cover_as_background);
-	m_gauss_blur_radius_sld.EnableWindow(m_data.album_cover_as_background && m_data.background_gauss_blur);
+    m_album_cover_as_background_chk.EnableWindow(m_data.enable_background);
+	m_back_transparency_slid.EnableWindow(m_data.enable_background);
+	m_background_gauss_blur_chk.EnableWindow(m_data.enable_background && m_data.album_cover_as_background);
+	m_gauss_blur_radius_sld.EnableWindow(m_data.enable_background && m_data.album_cover_as_background && m_data.background_gauss_blur);
 }
 
 void CAppearanceSettingDlg::DrawColor()
@@ -131,6 +133,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_LYRIC_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck)
 	ON_BN_CLICKED(IDC_DARK_MODE_CHECK, &CAppearanceSettingDlg::OnBnClickedDarkModeCheck)
 	ON_BN_CLICKED(IDC_USE_INNER_IMAGE_FIRST_CHECK, &CAppearanceSettingDlg::OnBnClickedUseInnerImageFirstCheck)
+    ON_BN_CLICKED(IDC_ENABLE_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedEnableBackgroundCheck)
 END_MESSAGE_MAP()
 
 
@@ -211,6 +214,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
 	SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());
 
+	m_enable_background_chk.SetCheck(m_data.enable_background);
 	m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);
 	m_show_spectrum_chk.SetCheck(m_data.show_spectrum);
 
@@ -511,7 +515,7 @@ void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
-	SetControlEnable();
+    SetControlEnable();
 }
 
 
@@ -571,4 +575,12 @@ void CAppearanceSettingDlg::OnBnClickedUseInnerImageFirstCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.use_inner_image_first = (m_use_inner_image_first_chk.GetCheck() != 0);
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedEnableBackgroundCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.enable_background = (m_enable_background_chk.GetCheck() != 0);
+    SetControlEnable();
 }

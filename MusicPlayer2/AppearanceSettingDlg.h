@@ -13,17 +13,7 @@ class CAppearanceSettingDlg : public CTabDlg
 	DECLARE_DYNAMIC(CAppearanceSettingDlg)
 
 public:
-	//wstring m_font;
-	//int m_font_size;
-	//int m_line_space;
-	//int window_transparency;
 	HWND m_hMainWnd;		//主窗口的句柄，用于实时更改窗口不透明度
-	//COLORREF theme_color;
-	//bool theme_color_follow_system;
-	//bool show_album_cover{};
-	//CDrawCommon::StretchMode album_cover_fit{};
-	//bool album_cover_as_background;
-	//bool show_spectrum;
 
 	ApperanceSettingData m_data;
 
@@ -72,6 +62,7 @@ protected:
 	CButton m_lyric_background_chk;
 	CButton m_dark_mode_chk;
 	CButton m_use_inner_image_first_chk;
+    CButton m_enable_background_chk;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -115,4 +106,5 @@ public:
 	afx_msg void OnBnClickedLyricBackgroundCheck();
 	afx_msg void OnBnClickedDarkModeCheck();
 	afx_msg void OnBnClickedUseInnerImageFirstCheck();
+    afx_msg void OnBnClickedEnableBackgroundCheck();
 };
