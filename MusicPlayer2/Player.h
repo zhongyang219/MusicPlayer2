@@ -81,7 +81,6 @@ private:
 	wstring m_album_cover_path;		//专辑封面文件的路径
 	int m_album_cover_type;			//专辑封面的格式
 	bool m_inner_cover{ false };			//如果专辑封面是内嵌图片，则为true
-    bool m_album_cover_exist{ true };
 
 	//bool m_no_ape_plugin{ false };		//如果无法加载bass_ape.dll，则为true
 
@@ -200,8 +199,7 @@ public:
 	int GetVolume() const { return m_volume; }
 	CImage& GetAlbumCover() { return m_album_cover; }
 	CImage& GetAlbumCoverBlur() { return m_album_cover_blur; }
-	bool AlbumCoverNotNull() { return !m_album_cover.IsNull(); }
-    bool AlbumCoverExist() { return m_album_cover_exist; }
+	bool AlbumCoverExist() { return !m_album_cover.IsNull(); }
 	wstring GetAlbumCoverPath() const { return m_album_cover_path; }
 	int GetAlbumCoverType() const { return m_album_cover_type; }
 	void DeleteAlbumCover();

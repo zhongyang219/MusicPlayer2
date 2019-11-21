@@ -469,16 +469,16 @@ void CPlayerUIBase::DrawBackground()
     //绘制背景
     if (theApp.m_app_setting_data.album_cover_as_background)
     {
-        if (CPlayer::GetInstance().AlbumCoverNotNull())
+        if (CPlayer::GetInstance().AlbumCoverExist())
         {
             CImage& back_image{ theApp.m_app_setting_data.background_gauss_blur ? CPlayer::GetInstance().GetAlbumCoverBlur() : CPlayer::GetInstance().GetAlbumCover() };
             m_draw.DrawBitmap(back_image, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
         }
-        //else
-        //{
-        //    //MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
-        //    m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
-        //}
+        else
+        {
+            //MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
+            m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
+        }
     }
 
     //填充背景颜色
@@ -927,7 +927,7 @@ int CPlayerUIBase::DrawAreaHeight() const
 
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
-    return theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverNotNull());
+    return theApp.m_app_setting_data.album_cover_as_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
 }
 
 int CPlayerUIBase::DPI(int pixel)

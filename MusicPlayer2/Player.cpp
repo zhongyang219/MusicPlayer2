@@ -1986,11 +1986,6 @@ void CPlayer::SearchOutAlbumCover()
     else
     {
         m_album_cover_path = GetRelatedAlbumCover(GetCurrentFilePath(), GetCurrentSongInfo());
-        m_album_cover_exist = !m_album_cover_path.empty();
-        if (!m_album_cover_exist)
-        {
-            m_album_cover_path = theApp.m_local_dir + L"default_background.jpg";
-        }
     }
     if (!m_album_cover.IsNull())
         m_album_cover.Destroy();

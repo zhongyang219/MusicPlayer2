@@ -172,7 +172,7 @@ void CPlayerUI::_DrawInfo(bool reset)
             rect_tmp.top = rect_tmp.bottom - spetral_height;
             if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
             COLORREF color;
-            if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverNotNull())
+            if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
                 color = m_colors.color_spectrum_cover;
             else
                 color = m_colors.color_spectrum;
@@ -343,7 +343,7 @@ void CPlayerUI::MouseMove(CPoint point)
     //	if (!last_show_cover_tip && show_cover_tip)
     //	{
     //		CString info;
-    //		if (CPlayer::GetInstance().AlbumCoverNotNull())
+    //		if (CPlayer::GetInstance().AlbumCoverExist())
     //		{
     //			info = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
     //			//CFilePathHelper cover_path(CPlayer::GetInstance().GetAlbumCoverPath());

@@ -1258,6 +1258,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     translate_font.size--;
     theApp.m_font_set.lyric_translate.SetFont(translate_font);
 
+    //载入默认背景图片（用于没有专辑封面时显示）
+    theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
+
     m_notify_icon.Init(m_hIcon);
     m_notify_icon.AddNotifyIcon();
 
