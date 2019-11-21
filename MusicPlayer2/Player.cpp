@@ -450,7 +450,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_playing = 1;
         break;
     case Command::STOP:
-        if (GetCurrentSongInfo().is_cue && GetCurrentSongInfo().track > 0)
+        if (GetCurrentSongInfo().is_cue && GetCurrentSongInfo().start_pos > 0)
         {
             SeekTo(0);
             m_pCore->Pause();
