@@ -486,6 +486,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             ConnotPlayWarning();
             m_pCore->Play();
             m_playing = 2;
+            GetPlayerCoreError();
         }
         break;
     case Command::VOLUME_UP:
