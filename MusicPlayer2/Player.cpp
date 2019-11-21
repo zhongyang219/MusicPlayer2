@@ -915,6 +915,8 @@ void CPlayer::AddFiles(const vector<wstring>& files)
     SongInfo song_info;
     for (const auto& file : files)
     {
+        if(file.empty())
+            continue;
         CFilePathHelper file_path{ file };
         song_info.file_name = file_path.GetFileName();
         song_info.file_path = file;

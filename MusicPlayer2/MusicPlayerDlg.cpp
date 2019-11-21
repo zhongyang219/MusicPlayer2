@@ -4121,6 +4121,11 @@ void CMusicPlayerDlg::OnFileOpenUrl()
     if (input_dlg.DoModal() == IDOK)
     {
         wstring strUrl = input_dlg.GetEditText().GetString();
+        if (!CCommon::IsURL(strUrl))
+        {
+            MessageBox(CCommon::LoadText(IDS_URL_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
         CPlayer::GetInstance().OpenFiles(vecUrl);
@@ -4140,6 +4145,11 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
     if (input_dlg.DoModal() == IDOK)
     {
         wstring strUrl = input_dlg.GetEditText().GetString();
+        if (!CCommon::IsURL(strUrl))
+        {
+            MessageBox(CCommon::LoadText(IDS_URL_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            return;
+        }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
         CPlayer::GetInstance().AddFiles(vecUrl);

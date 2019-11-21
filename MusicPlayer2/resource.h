@@ -464,6 +464,7 @@
 #define IDS_DEFAULT_STYLE               425
 #define IDS_MODIFY_DEFAULT_STYLE_WARNING 426
 #define IDS_RESTORE_DEFAULT_STYTLE_WARNING 427
+#define IDS_URL_INVALID_WARNING         428
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
