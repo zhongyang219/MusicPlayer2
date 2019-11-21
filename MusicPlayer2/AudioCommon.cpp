@@ -169,16 +169,16 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
     _findclose(hFile);
 }
 
-void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
+void CAudioCommon::GetCueTracks(vector<SongInfo>& files)
 {
+    wstring cue_dir;
     for (size_t i{}; i < files.size(); i++)
     {
         //依次检查列表中的每首歌曲是否为cue文件
         if (GetAudioTypeByExtension(files[i].file_name) == AU_CUE)
         {
             CFilePathHelper file_path{ files[i].file_path };
-            if (path.empty())
-                path = file_path.GetDir();
+            cue_dir = file_path.GetDir();
             wstring cue_file_name{ files[i].file_name };		//cue文件的文件名
             files.erase(files.begin() + i);		//从列表中删除cue文件
             wstring cue_file_name2 = file_path.GetFileNameWithoutExtension();			//cue文件的文件名（不含扩展名）
@@ -210,7 +210,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 
             //解析cue文件
             string cue_file_contents;
-            ifstream OpenFile{ path + cue_file_name };
+            ifstream OpenFile{ cue_dir + cue_file_name };
             if (OpenFile.fail())
                 return;
             string current_line;
@@ -236,7 +236,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
             SongInfo song_info{};
             song_info.album = CCommon::StrToUnicode(album_name, code_type);
             song_info.file_name = play_file_name;
-            song_info.file_path = path + play_file_name;
+            song_info.file_path = cue_dir + play_file_name;
             song_info.bitrate = bitrate;
             song_info.is_cue = true;
             song_info.info_acquired = true;
@@ -303,14 +303,16 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, wstring path)
 
                 files.push_back(song_info);
             }
+            files.back().end_pos = total_length;
             files.back().lengh = Time(total_length - files.back().start_pos);
             i--;		//解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
         }
     }
 }
 
-void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
+void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
 {
+    wstring cue_dir;
     bool audio_exist;
     int size = files.size();
     for (int i{}; i < size; i++)
@@ -321,10 +323,7 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
             wstring file_name;
             CFilePathHelper file_path{ files[i].file_path };
             file_name = file_path.GetFileNameWithoutExtension();		//获取文件名（不含扩展名）
-            if (path.empty())
-            {
-                path = file_path.GetDir();
-            }
+            cue_dir = file_path.GetDir();
             //查找和cue文件匹配的音频文件
             for (int j{}; j < size; j++)
             {
@@ -345,7 +344,7 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
             {
                 vector<wstring> audio_files;
                 CString find_file_name;
-                find_file_name.Format(_T("%s%s.*"), path.c_str(), file_name.c_str());
+                find_file_name.Format(_T("%s%s.*"), cue_dir.c_str(), file_name.c_str());
                 CCommon::GetFiles(wstring(find_file_name), audio_files);
                 for (const auto& file : audio_files)
                 {
@@ -353,6 +352,9 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, wstring path)
                     {
                         SongInfo song_info;
                         song_info.file_name = file;
+                        song_info.file_path = cue_dir + file;
+                        if(pPlayerCore != nullptr)
+                            pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, false);
                         files.push_back(song_info);
                         return;
                     }

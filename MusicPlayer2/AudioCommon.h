@@ -5,6 +5,7 @@
 #include "FilePathHelper.h"
 #include "Resource.h"
 #include "SongInfo.h"
+#include "IPlayerCore.h"
 
 //音频文件类型
 enum AudioType
@@ -252,11 +253,11 @@ public:
 	//查找path目录下的所有歌词文件，并将文件名保存到files容器中
 	static void GetLyricFiles(wstring path, vector<wstring>& files);
 
-	//处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，path为文件的路径
-	static void GetCueTracks(vector<SongInfo>& files, wstring path);
+	//处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中
+	static void GetCueTracks(vector<SongInfo>& files);
 
 	//检查files容器中是否有和cue文件匹配的音频文件，如果没有，则重新从路径中查找匹配的音频文件
-	static void CheckCueFiles(vector<SongInfo>& files, wstring path);
+	static void CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore);
 
 	//获得标准流派信息
 	static wstring GetGenre(BYTE genre);
