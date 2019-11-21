@@ -139,6 +139,9 @@ public:
 
     static bool IsURL(const wstring& str);
 
+    //删除一个字符串中指定的字符
+    static bool StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replaced);
+
 	//获取当前进程exe文件的路径
 	static wstring GetExePath();
 

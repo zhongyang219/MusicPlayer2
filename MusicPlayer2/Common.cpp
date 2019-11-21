@@ -383,6 +383,20 @@ bool CCommon::IsURL(const wstring& str)
     return (str.substr(0, 7) == L"http://" || str.substr(0, 8) == L"https://" || str.substr(0, 6) == L"ftp://" || str.substr(0, 6) == L"mms://");
 }
 
+bool CCommon::StringCharacterReplace(wstring & str, wchar_t ch, wchar_t ch_replaced)
+{
+    bool replaced = false;
+    for (size_t i = 0; i < str.size(); i++)
+    {
+        if (str[i] == ch)
+        {
+            str[i] = ch_replaced;
+            replaced = true;
+        }
+    }
+    return replaced;
+}
+
 wstring CCommon::GetExePath()
 {
 	wchar_t path[MAX_PATH];

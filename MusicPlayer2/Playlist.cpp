@@ -19,6 +19,13 @@ CPlaylist::~CPlaylist()
 {
 }
 
+wstring DeleteInvalidCh(const wstring& str)
+{
+    wstring result = str;
+    CCommon::StringCharacterReplace(result, L'|', L'_');
+    return result;
+}
+
 void CPlaylist::LoadFromFile(const wstring & file_path)
 {
     ifstream stream{ file_path };
@@ -72,7 +79,8 @@ void CPlaylist::SaveToFile(const wstring & file_path) const
         {
             CString buff;
             buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d", item.is_cue, item.start_pos.toInt(), item.end_pos.toInt(),
-                item.title.c_str(), item.artist.c_str(), item.album.c_str(), item.track, item.bit_rate); 
+                DeleteInvalidCh(item.title).c_str(), DeleteInvalidCh(item.artist).c_str(), DeleteInvalidCh(item.album).c_str(),
+                item.track, item.bit_rate);
             stream << CCommon::UnicodeToStr(buff.GetString(), CodeType::UTF8_NO_BOM);
         }
         stream << std::endl;
