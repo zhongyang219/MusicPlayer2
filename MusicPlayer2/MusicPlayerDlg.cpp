@@ -2475,15 +2475,15 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
     // TODO: 在此添加命令处理程序代码
     if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
         return;
+    CString info;
+    info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { m_items_selected.size() });
+    if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
+        return;
     int rtn;
     wstring delected_file;
     vector<wstring> delected_files;
     if (m_items_selected.size() > 1)
     {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { m_items_selected.size() });
-        if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
-            return;
         if(CCommon::IsItemInVector(m_items_selected, CPlayer::GetInstance().GetIndex()))	//如果选中的文件中有正在播放的文件，则删除前必须先关闭文件
             CPlayer::GetInstance().MusicControl(Command::CLOSE);
         for (const auto& index : m_items_selected)
