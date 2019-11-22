@@ -1082,13 +1082,13 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
     //向“添加到播放列表”菜单追加播放列表
     auto initAddToMenu = [](CMenu* pMenu)
     {
-        for(int i=0; i< ADD_TO_PLAYLIST_MAX_SIZE; i++)
-        {
-            pMenu->DeleteMenu(ID_ADD_TO_MY_FAVOURITE + i + 1, MF_BYCOMMAND);
-        }
-
         if (pMenu != nullptr)
         {
+            for (int i = 0; i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
+            {
+                pMenu->DeleteMenu(ID_ADD_TO_MY_FAVOURITE + i + 1, MF_BYCOMMAND);
+            }
+
             auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
             for (size_t i{}; i < recent_playlist.size() && i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
             {
@@ -1098,7 +1098,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         }
     };
 
-    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(10);
+    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(8);
     ASSERT(add_to_menu != nullptr);
     initAddToMenu(add_to_menu);
 
