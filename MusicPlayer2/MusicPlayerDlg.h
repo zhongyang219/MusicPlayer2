@@ -351,4 +351,6 @@ public:
     afx_msg void OnPlaylistSelectAll();
     afx_msg void OnPlaylistSelectNone();
     afx_msg void OnPlaylistSelectRevert();
+protected:
+    afx_msg LRESULT OnCurPlaylistRenamed(WPARAM wParam, LPARAM lParam);
 };

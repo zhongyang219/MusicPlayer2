@@ -3,8 +3,6 @@
 
 #include "stdafx.h"
 #include "LyricsWindow.h"
-#include "Resource.h"
-
 
 // CLyricsWindow
 

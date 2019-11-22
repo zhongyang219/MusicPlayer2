@@ -26,8 +26,6 @@
 
 #include <gdiplus.h>
 #pragma comment(lib,"GdiPlus.lib")
-#include "DrawCommon.h"
-#include "CommonData.h"
 
 //¸è´Ê½¥±äÄ£Ê½
 enum LyricsGradientMode
