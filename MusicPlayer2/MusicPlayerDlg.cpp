@@ -1098,7 +1098,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         }
     };
 
-    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(8);
+    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(10);
     ASSERT(add_to_menu != nullptr);
     initAddToMenu(add_to_menu);
 
@@ -3297,13 +3297,21 @@ void CMusicPlayerDlg::OnCopyFileTo()
         {
             vector<wstring> source_files;
             for (const auto& index : m_items_selected)
-                source_files.push_back(CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetPlayList()[index].file_name);
+            {
+                const auto& song = CPlayer::GetInstance().GetPlayList()[index];
+                if(!song.is_cue)
+                    source_files.push_back(song.file_path);
+            }
+            if (source_files.empty())
+                return;
             CCommon::CopyFiles(this->GetSafeHwnd(), source_files, wstring(folderPickerDlg.GetPathName()));
         }
         else
         {
-            wstring source_file = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetPlayList()[m_item_selected].file_name;
-            CCommon::CopyAFile(this->GetSafeHwnd(), CPlayer::GetInstance().GetCurrentFilePath(), wstring(folderPickerDlg.GetPathName()));
+            const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
+            if (song.is_cue)
+                return;
+            CCommon::CopyAFile(this->GetSafeHwnd(), song.file_path, wstring(folderPickerDlg.GetPathName()));
         }
     }
 }
@@ -3333,14 +3341,23 @@ void CMusicPlayerDlg::OnMoveFileTo()
             if (CCommon::IsItemInVector(m_items_selected, CPlayer::GetInstance().GetIndex()))	//如果选中的文件中有正在播放的文件，则移动前必须先关闭文件
                 CPlayer::GetInstance().MusicControl(Command::CLOSE);
             for (const auto& index : m_items_selected)
-                source_files.push_back(CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetPlayList()[index].file_name);
+            {
+                const auto& song = CPlayer::GetInstance().GetPlayList()[index];
+                if(!song.is_cue)
+                    source_files.push_back(song.file_path);
+            }
+            if (source_files.empty())
+                return;
             rtn = CCommon::MoveFiles(m_hWnd, source_files, wstring(folderPickerDlg.GetPathName()));
         }
         else
         {
             if (m_item_selected == CPlayer::GetInstance().GetIndex())	//如果移动的文件是正在播放的文件，则移动前必须先关闭文件
                 CPlayer::GetInstance().MusicControl(Command::CLOSE);
-            source_file = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetPlayList()[m_item_selected].file_name;
+            const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
+            if (song.is_cue)
+                return;
+            source_file = song.file_path;
             rtn = CCommon::MoveAFile(m_hWnd, source_file, wstring(folderPickerDlg.GetPathName()));
         }
         if (rtn == 0)
