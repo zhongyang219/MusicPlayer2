@@ -209,6 +209,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_SELECT_ALL, &CMusicPlayerDlg::OnPlaylistSelectAll)
     ON_COMMAND(ID_PLAYLIST_SELECT_NONE, &CMusicPlayerDlg::OnPlaylistSelectNone)
     ON_COMMAND(ID_PLAYLIST_SELECT_REVERT, &CMusicPlayerDlg::OnPlaylistSelectRevert)
+    ON_MESSAGE(WM_CUR_PLAYLIST_RENAMED, &CMusicPlayerDlg::OnCurPlaylistRenamed)
 END_MESSAGE_MAP()
 
 
@@ -4234,4 +4235,11 @@ void CMusicPlayerDlg::OnPlaylistSelectRevert()
     // TODO: 在此添加命令处理程序代码
     m_playlist_list.SelectReverse();
     GetPlaylistItemSelected();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnCurPlaylistRenamed(WPARAM wParam, LPARAM lParam)
+{
+    m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
+    return 0;
 }

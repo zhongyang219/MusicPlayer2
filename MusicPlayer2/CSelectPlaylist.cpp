@@ -429,6 +429,7 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
             if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())          //如果重命名的播放是当前播放的播放列表，就重新设置当前播放列表的路径
             {
                 CPlayer::GetInstance().SetPlaylistPath(new_path);
+                theApp.m_pMainWnd->SendMessage(WM_CUR_PLAYLIST_RENAMED);
             }
             CPlayer::GetInstance().GetRecentPlaylist().SavePlaylistData();
         }
