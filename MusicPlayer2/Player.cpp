@@ -172,8 +172,8 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
-    CAudioCommon::CheckCueFiles(m_playlist, m_pCore);
-    CAudioCommon::GetCueTracks(m_playlist);
+    if(CAudioCommon::CheckCueFiles(m_playlist, m_pCore))
+        CAudioCommon::GetCueTracks(m_playlist);
     //m_song_num = m_playlist.size();
     m_index = m_index_tmp;
     if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
@@ -203,8 +203,12 @@ void CPlayer::IniPlaylistComplate()
 
     //对播放列表排序
     wstring current_file_name = GetCurrentFileName();		//排序前保存当前歌曲文件名
+    bool sorted = false;
     if (m_thread_info.sort && m_playlist.size() > 1)
+    {
         SortPlaylist(false);
+        sorted = true;
+    }
 
     SearchLyrics();
 
@@ -241,7 +245,7 @@ void CPlayer::IniPlaylistComplate()
                     MusicControl(Command::PLAY);
             }
         }
-        else		//如果用户在播放初始化的过程中进行了播放，则根据正在播放的文件名重新查找正在播放的序号
+        else if(sorted)		//如果用户在播放初始化的过程中进行了播放，则根据正在播放的文件名重新查找正在播放的序号
         {
             for (int i{}; i < GetSongNum(); i++)
             {

@@ -311,8 +311,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files)
     }
 }
 
-void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
+bool CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
 {
+    bool rtn = false;
     wstring cue_dir;
     bool audio_exist;
     int size = files.size();
@@ -337,6 +338,7 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCo
                         (CCommon::StringCompareNoCase(file_name, audio_file_name) || CCommon::StringCompareNoCase(file_name, files[j].file_name)))
                     {
                         audio_exist = true;
+                        rtn = true;
                         break;
                     }
                 }
@@ -358,12 +360,13 @@ void CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCo
                         if(pPlayerCore != nullptr)
                             pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, false);
                         files.push_back(song_info);
-                        return;
+                        return true;
                     }
                 }
             }
         }
     }
+    return rtn;
 }
 
 

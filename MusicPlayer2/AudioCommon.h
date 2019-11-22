@@ -257,7 +257,7 @@ public:
 	static void GetCueTracks(vector<SongInfo>& files);
 
 	//检查files容器中是否有和cue文件匹配的音频文件，如果没有，则重新从路径中查找匹配的音频文件
-	static void CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore);
+	static bool CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore);
 
 	//获得标准流派信息
 	static wstring GetGenre(BYTE genre);
