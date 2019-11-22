@@ -134,11 +134,14 @@ void CPlaylist::ToSongList(vector<SongInfo>& song_list)
     }
 }
 
-bool CPlaylist::IsFileInPlaylist(const wstring& file)
+bool CPlaylist::IsFileInPlaylist(const SongInfo& file)
 {
     auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&file](const PlaylistItem& item)
     {
-        return file == item.file_path;
+        if (file.is_cue)
+            return file.file_path == item.file_path && file.track == item.track;
+        else
+            return file.file_path == item.file_path;
     });
     return iter != m_playlist.end();
 }

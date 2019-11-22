@@ -189,8 +189,7 @@ void CPlayer::IniPlaylistComplate()
     favourite_playlist.LoadFromFile(m_recent_playlist.m_favourite_playlist.path);
     for (auto& item : m_playlist)
     {
-        if(!item.is_cue)
-            item.is_favourite = favourite_playlist.IsFileInPlaylist(item.file_path);
+        item.is_favourite = favourite_playlist.IsFileInPlaylist(item);
     }
 
     if(!IsPlaying())
