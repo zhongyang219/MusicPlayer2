@@ -43,4 +43,4 @@ Option settings - Appearance Settings<br>
 Option settings - General Settings<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/en_us/options2.png)<br>
 # Update log
-**[Click here to view the update log.](https://github.com/zhongyang219/MusicPlayer2/blob/master/UpdateLog/update_log_en-us.md)**
+**[Click here to view the update log.](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md)**

@@ -210,7 +210,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_SELECT_NONE, &CMusicPlayerDlg::OnPlaylistSelectNone)
     ON_COMMAND(ID_PLAYLIST_SELECT_REVERT, &CMusicPlayerDlg::OnPlaylistSelectRevert)
     ON_MESSAGE(WM_CUR_PLAYLIST_RENAMED, &CMusicPlayerDlg::OnCurPlaylistRenamed)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_ONLINE_HELP, &CMusicPlayerDlg::OnOnlineHelp)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -4271,4 +4272,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnCurPlaylistRenamed(WPARAM wParam, LPARAM lPar
 {
     m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnOnlineHelp()
+{
+    // TODO: 在此添加命令处理程序代码
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/Introduction.md"), NULL, NULL, SW_SHOW);	//打开超链接
 }

@@ -1,4 +1,4 @@
-**简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/UpdateLog/update_log_en-us.md)**<br>
+**简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md)**<br>
 # MusicPlayer2 更新日志
 ## V2.66 (2019/08/03)
 * 新增播放列表功能，可自由创建和编辑播放列表。

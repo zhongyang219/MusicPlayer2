@@ -353,4 +353,6 @@ public:
     afx_msg void OnPlaylistSelectRevert();
 protected:
     afx_msg LRESULT OnCurPlaylistRenamed(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnOnlineHelp();
 };

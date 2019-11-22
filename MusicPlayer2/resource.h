@@ -1065,13 +1065,15 @@
 #define ID_LYRIC_DEFAULT_STYLE3_MODIFY  33134
 #define ID_33135                        33135
 #define ID_RESTORE_DEFAULT_STYLE        33136
+#define ID_33137                        33137
+#define ID_ONLINE_HELP                  33138
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        404
-#define _APS_NEXT_COMMAND_VALUE         33137
+#define _APS_NEXT_COMMAND_VALUE         33139
 #define _APS_NEXT_CONTROL_VALUE         1152
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
