@@ -17,6 +17,7 @@
 #include "InputDlg.h"
 #include "FileRelateDlg.h"
 #include "TestDlg.h"
+#include "COSUPlayerHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -883,43 +884,45 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
     //弹出右键菜单时，如果没有选中播放列表中的项目，则禁用右键菜单中“播放”、“从列表中删除”、“属性”、“从磁盘删除”项目。
     bool selete_valid = m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum();
-    bool from_playlist{ CPlayer::GetInstance().IsPlaylistMode() };
-    bool is_cue = true;     //选中的曲目是否全是cue音轨，如果是，则不允许“从磁盘删除”、“复制文件到”、“移动文件到”命令
+    bool playlist_mode{ CPlayer::GetInstance().IsPlaylistMode() };
+    bool can_delete = false;     //选中的曲目是否全是cue音轨或osu音乐，如果是，则不允许“从磁盘删除”、“移动文件到”命令
+    bool can_copy = false;       //选中的曲目是否全是cue音轨，如果是，则不允许“复制文件到”命令
     for (auto index : m_items_selected)
     {
         SongInfo selected_song;
         if (index >= 0 && index < CPlayer::GetInstance().GetSongNum())
             selected_song = CPlayer::GetInstance().GetPlayList()[index];
+        if (!selected_song.is_cue && !COSUPlayerHelper::IsOsuFile(selected_song.file_path))
+            can_delete = true;
         if (!selected_song.is_cue)
-        {
-            is_cue = false;
+            can_copy = true;
+        if (can_copy && can_delete)
             break;
-        }
     }
     pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && from_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && playlist_mode ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (selete_valid && !is_cue ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (selete_valid && can_delete ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | (selete_valid && !is_cue ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_MOVE_FILE_TO, MF_BYCOMMAND | (selete_valid && !is_cue ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | (selete_valid && can_copy ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_MOVE_FILE_TO, MF_BYCOMMAND | (selete_valid && can_delete ? MF_ENABLED : MF_GRAYED));
 
-    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FOLDER, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_URL, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_REMOVE_SAME_SONGS, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_REMOVE_INVALID_ITEMS, MF_BYCOMMAND | (from_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FOLDER, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_ADD_URL, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_EMPTY_PLAYLIST, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_REMOVE_SAME_SONGS, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_REMOVE_INVALID_ITEMS, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
 
-    bool move_enable = from_playlist && !m_searched && selete_valid;
+    bool move_enable = playlist_mode && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
 
     //设置“添加到播放列表”子菜单项的可用状态
     bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_DEFAULT };
-    pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(from_playlist && use_default_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(playlist_mode && use_default_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
     bool use_faourite_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE };
-    pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (!(from_playlist && use_faourite_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (!(playlist_mode && use_faourite_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
     wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
     for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE; id++)
     {
@@ -2502,7 +2505,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
         for (const auto& index : m_items_selected)
         {
             const auto& song = CPlayer::GetInstance().GetPlayList()[index];
-            if(!song.is_cue)
+            if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path))
                 delected_files.push_back(song.file_path);
         }
         if (delected_files.empty())
@@ -2514,7 +2517,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
         if (m_item_selected == CPlayer::GetInstance().GetIndex())	//如果删除的文件是正在播放的文件，则删除前必须先关闭文件
             CPlayer::GetInstance().MusicControl(Command::CLOSE);
         const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
-        if (song.is_cue)
+        if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
             return;
         delected_file = song.file_path;
 
@@ -3356,7 +3359,7 @@ void CMusicPlayerDlg::OnMoveFileTo()
             for (const auto& index : m_items_selected)
             {
                 const auto& song = CPlayer::GetInstance().GetPlayList()[index];
-                if(!song.is_cue)
+                if(!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path))
                     source_files.push_back(song.file_path);
             }
             if (source_files.empty())
@@ -3368,7 +3371,7 @@ void CMusicPlayerDlg::OnMoveFileTo()
             if (m_item_selected == CPlayer::GetInstance().GetIndex())	//如果移动的文件是正在播放的文件，则移动前必须先关闭文件
                 CPlayer::GetInstance().MusicControl(Command::CLOSE);
             const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
-            if (song.is_cue)
+            if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
                 return;
             source_file = song.file_path;
             rtn = CCommon::MoveAFile(m_hWnd, source_file, wstring(folderPickerDlg.GetPathName()));
