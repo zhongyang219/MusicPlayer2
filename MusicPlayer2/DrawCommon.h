@@ -90,6 +90,7 @@ public:
     void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = false);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
 
     void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
+    void DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line);
 
     CSize GetTextExtent(LPCTSTR str);
 

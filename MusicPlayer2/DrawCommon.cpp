@@ -438,6 +438,19 @@ void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 	m_pDC->SelectObject(pOldPen);
 }
 
+void CDrawCommon::DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line)
+{
+    CPen aPen, *pOldPen;
+    aPen.CreatePen((dot_line ? PS_DOT : PS_SOLID), width, color);
+    pOldPen = m_pDC->SelectObject(&aPen);
+    CBrush* pOldBrush{ dynamic_cast<CBrush*>(m_pDC->SelectStockObject(NULL_BRUSH)) };
+
+    rect.DeflateRect(width / 2, width / 2);
+    m_pDC->Rectangle(rect);
+    m_pDC->SelectObject(pOldPen);
+    m_pDC->SelectObject(pOldBrush);       // Restore the old brush
+}
+
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 {
 	if (m_pfont != nullptr)

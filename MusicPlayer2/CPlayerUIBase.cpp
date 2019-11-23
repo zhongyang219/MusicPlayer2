@@ -513,11 +513,32 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
         swprintf_s(buff, sizeof(buff) / 2, L"%.3d", CPlayer::GetInstance().GetIndex() + 1);
         m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
 
+        //绘制cue和MIDI标识
+        bool is_cue = CPlayer::GetInstance().GetCurrentSongInfo().is_cue;
+        bool is_midi = CPlayer::GetInstance().IsMidi();
+        int available_width = rect.right - rc_tmp.right;
+        if(available_width >= DPI(50) && (is_cue || is_midi))
+        {
+            wstring tag_str = is_cue ? L"cue" : L"midi";
+            int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
+            rc_tmp.MoveToX(rc_tmp.right);
+            rc_tmp.right = rc_tmp.left + width;
+            m_draw.SetDrawArea(rc_tmp);
+            CRect rc_border = rc_tmp;
+            rc_border.top += DPI(2);
+            rc_border.bottom -= DPI(1);
+            m_draw.DrawRectOutLine(rc_border, m_colors.color_text, DPI(1), false);
+            m_draw.DrawWindowText(rc_tmp, tag_str.c_str(), m_colors.color_text, Alignment::CENTER);
+        }
+
         //绘制文件名
-        rc_tmp.MoveToX(rc_tmp.right);
+        rc_tmp.MoveToX(rc_tmp.right + DPI(4));
         rc_tmp.right = rect.right;
-        static CDrawCommon::ScrollInfo scroll_info1;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetFileName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
+        if(rc_tmp.Width() >= DPI(4))
+        {
+            static CDrawCommon::ScrollInfo scroll_info1;
+            m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetFileName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
+        }
     }
 }
 
