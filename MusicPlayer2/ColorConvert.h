@@ -7,7 +7,9 @@ struct ColorTable
 	//原始的颜色
 	COLORREF original_color;
 	//变换亮度后的颜色
+    COLORREF dark0;
 	COLORREF dark1;
+	COLORREF dark1_5;
 	COLORREF dark2;
 	COLORREF dark3;
 	COLORREF light1;

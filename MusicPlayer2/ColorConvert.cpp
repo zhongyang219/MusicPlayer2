@@ -141,9 +141,17 @@ void CColorConvert::ConvertColor(ColorTable & color_table)
 	RGBtoHSL(&color_rgb, &color_hsl);		//将颜色从RGB模式转换成HSL模式
 
 	float luminance = color_hsl.luminance;		//保存原来的亮度
+	color_hsl.luminance = luminance * 0.2f + 45;		//dark0
+	HSLtoRGB(&color_hsl, &color_rgb);
+	color_table.dark0 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
+
 	color_hsl.luminance = luminance * 0.2f + 35;		//dark1
 	HSLtoRGB(&color_hsl, &color_rgb);
 	color_table.dark1 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
+
+	color_hsl.luminance = luminance * 0.2f + 28;		//dark1_5
+	HSLtoRGB(&color_hsl, &color_rgb);
+	color_table.dark1_5 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
 
 	color_hsl.luminance = luminance * 0.3f + 20;		//dark2
 	HSLtoRGB(&color_hsl, &color_rgb);
