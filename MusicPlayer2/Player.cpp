@@ -132,11 +132,24 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     {
         pInfo->process_percent = i * 100 / song_count + 1;
 
+        //获取cue音轨的信息
         if(GetInstance().m_playlist[i].is_cue)
         {
             if (pInfo->refresh_info)
             {
-                GetInstance().GetPlayerCore()->GetAudioInfo(GetInstance().m_playlist[i].file_path.c_str(), GetInstance().m_playlist[i], AF_BITRATE);
+                auto& song{ GetInstance().m_playlist[i] };
+                static SongInfo last_song;
+                if (last_song.file_path != song.file_path)
+                    GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, AF_BITRATE);  //获取比特率，如果上次获取到的是同一个文件中的音轨，则不再从文件获取比特率
+                else
+                    song.bitrate = last_song.bitrate;
+                last_song = song;
+                if(song.end_pos == 0)   //如果没有获取到cue音轨的结束时间，则将整轨的长度作为结束时间
+                {
+                    GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, AF_BITRATE | AF_LENGTH);
+                    song.end_pos = song.lengh;
+                    song.lengh = song.end_pos - song.start_pos;
+                }
             }
             GetInstance().m_playlist[i].info_acquired = true;
             continue;
