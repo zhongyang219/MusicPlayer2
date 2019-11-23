@@ -33,8 +33,8 @@ public:
     virtual int GetCurPosition() override;
     virtual int GetSongLength() override;
     virtual void SetCurPosition(int position) override;
-    virtual void GetAudioInfo(SongInfo& song_info, bool get_tag = true) override;
-    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, bool get_tag = true) override;
+    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
+    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
 
     virtual bool IsMidi() override;
     virtual bool IsMidiConnotPlay() override;

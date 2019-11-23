@@ -358,7 +358,7 @@ bool CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCo
                         song_info.file_name = file;
                         song_info.file_path = cue_dir + file;
                         if(pPlayerCore != nullptr)
-                            pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, false);
+                            pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, AF_LENGTH|AF_BITRATE);
                         files.push_back(song_info);
                         return true;
                     }

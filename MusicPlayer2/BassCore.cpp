@@ -259,15 +259,19 @@ void CBassCore::RemoveFXHandle()
     }
 }
 
-void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, bool get_tag)
+void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, int flag)
 {
     //获取长度
-    song_info.lengh = CBassCore::GetBASSSongLength(hStream);
+    if (flag&AF_LENGTH)
+        song_info.lengh = CBassCore::GetBASSSongLength(hStream);
     //获取比特率
-    float bitrate{};
-    BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
-    song_info.bitrate = static_cast<int>(bitrate + 0.5f);
-    if(get_tag)
+    if(flag&AF_BITRATE)
+    {
+        float bitrate{};
+        BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
+        song_info.bitrate = static_cast<int>(bitrate + 0.5f);
+    }
+    if(flag&AF_TAG_INFO)
     {
         CAudioTag audio_tag(hStream, file_path, song_info);
         audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
@@ -443,16 +447,16 @@ void CBassCore::SetCurPosition(int position)
     GetMidiPosition();
 }
 
-void CBassCore::GetAudioInfo(SongInfo & song_info, bool get_tag)
+void CBassCore::GetAudioInfo(SongInfo & song_info, int flag)
 {
-    GetBASSAudioInfo(m_musicStream, m_file_path.c_str(), song_info, get_tag);
+    GetBASSAudioInfo(m_musicStream, m_file_path.c_str(), song_info, flag);
 }
 
-void CBassCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, bool get_tag)
+void CBassCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int flag)
 {
     HSTREAM hStream;
     hStream = BASS_StreamCreateFile(FALSE, file_path, 0, 0, BASS_SAMPLE_FLOAT);
-    GetBASSAudioInfo(hStream, file_path, song_info, get_tag);
+    GetBASSAudioInfo(hStream, file_path, song_info, flag);
     BASS_StreamFree(hStream);
 }
 

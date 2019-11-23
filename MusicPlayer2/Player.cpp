@@ -134,6 +134,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
         if(GetInstance().m_playlist[i].is_cue)
         {
+            if (pInfo->refresh_info)
+            {
+                GetInstance().GetPlayerCore()->GetAudioInfo(GetInstance().m_playlist[i].file_path.c_str(), GetInstance().m_playlist[i], AF_BITRATE);
+            }
             GetInstance().m_playlist[i].info_acquired = true;
             continue;
         }
@@ -155,7 +159,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         }
         wstring file_path{ GetInstance().m_playlist[i].file_path };
         bool is_osu_file{ COSUPlayerHelper::IsOsuFile(file_path) };
-        GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], !is_osu_file);
+        int flag = AF_LENGTH | AF_BITRATE;
+        if (!is_osu_file)
+            flag |= AF_TAG_INFO;
+        GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], flag);
         if (is_osu_file)
         {
             COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
@@ -219,13 +226,16 @@ void CPlayer::IniPlaylistComplate()
             {
                 //重新载入播放列表后，查找正在播放项目的序号
                 MusicControl(Command::CLOSE);
-                for (int i{}; i < GetSongNum(); i++)
+                if(sorted)
                 {
-                    if (m_current_file_name_tmp == m_playlist[i].file_name)
+                    for (int i{}; i < GetSongNum(); i++)
                     {
-                        m_index = i;
-                        //m_current_file_name = m_current_file_name_tmp;
-                        break;
+                        if (m_current_file_name_tmp == m_playlist[i].file_name)
+                        {
+                            m_index = i;
+                            //m_current_file_name = m_current_file_name_tmp;
+                            break;
+                        }
                     }
                 }
                 m_current_file_name_tmp.clear();
@@ -409,7 +419,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
         {
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
             {
-                m_pCore->GetAudioInfo(m_playlist[m_index], !IsOsuFile());
+                int flag = AF_BITRATE | AF_LENGTH;
+                if (!IsOsuFile())
+                    flag |= AF_TAG_INFO;
+                m_pCore->GetAudioInfo(m_playlist[m_index], flag);
                 if (IsOsuFile())
                     COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
                 theApp.SaveSongInfo(m_playlist[m_index]);

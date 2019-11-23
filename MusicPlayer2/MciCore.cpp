@@ -197,7 +197,7 @@ void CMciCore::SetCurPosition(int position)
     }
 }
 
-void CMciCore::GetAudioInfo(SongInfo & song_info, bool get_tag)
+void CMciCore::GetAudioInfo(SongInfo & song_info, int flag)
 {
     if (m_success)
     {
@@ -206,9 +206,9 @@ void CMciCore::GetAudioInfo(SongInfo & song_info, bool get_tag)
 
 }
 
-void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, bool get_tag)
+void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int flag)
 {
-    if (m_success)
+    if (m_success && (flag&AF_LENGTH))
     {
         m_error_code = mciSendStringW((L"open \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
         wchar_t buff[16];
