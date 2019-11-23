@@ -513,13 +513,17 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
         swprintf_s(buff, sizeof(buff) / 2, L"%.3d", CPlayer::GetInstance().GetIndex() + 1);
         m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
 
-        //绘制cue和MIDI标识
-        bool is_cue = CPlayer::GetInstance().GetCurrentSongInfo().is_cue;
-        bool is_midi = CPlayer::GetInstance().IsMidi();
+        //绘制标识
+        wstring tag_str;
+        if(CPlayer::GetInstance().GetCurrentSongInfo().is_cue)
+            tag_str = L"cue";
+        else if(CPlayer::GetInstance().IsMidi())
+            tag_str = L"midi";
+        else if (CPlayer::GetInstance().IsOsuFile())
+            tag_str = L"osu";
         int available_width = rect.right - rc_tmp.right;
-        if(available_width >= DPI(50) && (is_cue || is_midi))
+        if(available_width >= DPI(50) && !tag_str.empty())
         {
-            wstring tag_str = is_cue ? L"cue" : L"midi";
             int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
             rc_tmp.MoveToX(rc_tmp.right);
             rc_tmp.right = rc_tmp.left + width;

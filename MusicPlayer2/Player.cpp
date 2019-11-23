@@ -420,6 +420,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
     {
     case Command::OPEN:
         m_error_code = 0;
+        m_is_osu = COSUPlayerHelper::IsOsuFile(GetCurrentFilePath());
         m_pCore->Open(GetCurrentFilePath().c_str());
         //获取音频类型
         m_current_file_type = m_pCore->GetAudioType();		//根据通道信息获取当前音频文件的类型
@@ -428,6 +429,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             CFilePathHelper file_path{ GetCurrentFileName() };
             m_current_file_type = file_path.GetFileExtension(true);
         }
+
         if (GetSongNum() > 0)
         {
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
@@ -2092,8 +2094,7 @@ wstring CPlayer::GetRelatedAlbumCover(const wstring& file_path, const SongInfo& 
 
 bool CPlayer::IsOsuFile() const
 {
-    wstring cur_file_path{ GetCurrentFilePath() };
-    return COSUPlayerHelper::IsOsuFile(cur_file_path);
+    return m_is_osu;
 }
 
 bool CPlayer::IsPlaylistEmpty() const
