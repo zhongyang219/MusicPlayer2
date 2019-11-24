@@ -216,9 +216,6 @@
     <Filter Include="对话框类\FloatPlaylistDlg">
       <UniqueIdentifier>{793816ab-36f6-4c91-9b8f-ae90b52407b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="功能逻辑类\OSUPlayerHelper">
-      <UniqueIdentifier>{67a4bb32-a0f9-40a1-a79c-e0893ec380af}</UniqueIdentifier>
-    </Filter>
     <Filter Include="功能逻辑类\Playlist">
       <UniqueIdentifier>{24b3ec04-656b-465e-a1b5-1e1ba58253bc}</UniqueIdentifier>
     </Filter>
@@ -251,6 +248,12 @@
     </Filter>
     <Filter Include="派生的控件类\PlayerToolBar">
       <UniqueIdentifier>{cefd3a16-652f-47b7-80f0-c01c9654eda2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="公共的类\CueFile">
+      <UniqueIdentifier>{d3baae72-0f8b-41a2-8ce9-57c3491c0dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="公共的类\OSUPlayerHelper">
+      <UniqueIdentifier>{67a4bb32-a0f9-40a1-a79c-e0893ec380af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -506,7 +509,7 @@
       <Filter>PlayerUI</Filter>
     </ClInclude>
     <ClInclude Include="COSUPlayerHelper.h">
-      <Filter>功能逻辑类\OSUPlayerHelper</Filter>
+      <Filter>公共的类\OSUPlayerHelper</Filter>
     </ClInclude>
     <ClInclude Include="Playlist.h">
       <Filter>功能逻辑类\Playlist</Filter>
@@ -558,6 +561,9 @@
     </ClInclude>
     <ClInclude Include="PlayerToolBar.h">
       <Filter>派生的控件类\PlayerToolBar</Filter>
+    </ClInclude>
+    <ClInclude Include="CueFile.h">
+      <Filter>公共的类\CueFile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -787,7 +793,7 @@
       <Filter>PlayerUI</Filter>
     </ClCompile>
     <ClCompile Include="COSUPlayerHelper.cpp">
-      <Filter>功能逻辑类\OSUPlayerHelper</Filter>
+      <Filter>公共的类\OSUPlayerHelper</Filter>
     </ClCompile>
     <ClCompile Include="Playlist.cpp">
       <Filter>功能逻辑类\Playlist</Filter>
@@ -833,6 +839,9 @@
     </ClCompile>
     <ClCompile Include="PlayerToolBar.cpp">
       <Filter>派生的控件类\PlayerToolBar</Filter>
+    </ClCompile>
+    <ClCompile Include="CueFile.cpp">
+      <Filter>公共的类\CueFile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

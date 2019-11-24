@@ -214,6 +214,7 @@
     <ClInclude Include="CLyricDraw.h" />
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
+    <ClInclude Include="CueFile.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DesktopLyric.h" />
     <ClInclude Include="GdiPlusTool.h" />
@@ -315,6 +316,7 @@
     <ClCompile Include="CLyricDraw.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
+    <ClCompile Include="CueFile.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
     <ClCompile Include="GdiPlusTool.cpp" />
     <ClCompile Include="LyricsWindow.cpp" />

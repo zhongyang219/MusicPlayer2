@@ -445,7 +445,7 @@ void CCortanaLyric::SetUIColors()
         m_colors.text_color = theApp.m_app_setting_data.theme_color.light3;
         m_colors.text_color2 = theApp.m_app_setting_data.theme_color.light1;
         m_colors.info_text_color = theApp.m_app_setting_data.theme_color.light3;
-        m_colors.sprctrum_color = theApp.m_app_setting_data.theme_color.dark1;
+        m_colors.sprctrum_color = theApp.m_app_setting_data.theme_color.dark0;
 
         DWORD dwStyle = GetWindowLong(m_hCortanaStatic, GWL_STYLE);
         if ((dwStyle & WS_VISIBLE) != 0)		//根据Cortana搜索框中static控件是否有WS_VISIBLE属性为绘图背景设置不同的背景色
