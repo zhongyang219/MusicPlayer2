@@ -1654,8 +1654,8 @@ void CMusicPlayerDlg::OnSetPath()
         CMediaLibDlg media_lib_dlg{ cur_tab };
         media_lib_dlg.DoModal();
         dialog_exist = false;
-        if (media_lib_dlg.m_playlist_dlg.IsPlaylistModified())
-            IniPlaylistPopupMenu();
+        //if (media_lib_dlg.m_playlist_dlg.IsPlaylistModified())
+        //IniPlaylistPopupMenu();
     }
 }
 
@@ -3855,6 +3855,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
         DrawInfo(true);
         m_findDlg.ClearFindResult();		//更换路径后清除查找结果
         CPlayer::GetInstance().SaveRecentPath();
+        IniPlaylistPopupMenu();
         m_play_error_cnt = 0;
         SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个播放列表播放后，500毫秒内不响应WM_LBUTTONUP消息
         m_no_lbtnup = true;
