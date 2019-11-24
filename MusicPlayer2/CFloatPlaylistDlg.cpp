@@ -25,7 +25,6 @@ void CFloatPlaylistDlg::RefreshData()
 {
     //刷新播放列表数据
     m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format);
-    RefreshState();
 
     m_path_edit.SetWindowText(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
 }
@@ -83,10 +82,11 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
 
 }
 
-void CFloatPlaylistDlg::RefreshState()
+void CFloatPlaylistDlg::RefreshState(bool highlight_visible)
 {
     m_playlist_ctrl.SetHightItem(CPlayer::GetInstance().GetIndex());
-    m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+    if(highlight_visible)
+        m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
     m_playlist_ctrl.Invalidate(FALSE);
 }
 
@@ -183,6 +183,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 
     RefreshData();
+    RefreshState();
 
     //设置窗口大小
     SetWindowPos(nullptr, 0, 0, theApp.m_nc_setting_data.playlist_size.cx, theApp.m_nc_setting_data.playlist_size.cy, SWP_NOMOVE | SWP_NOZORDER);

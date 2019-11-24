@@ -606,7 +606,7 @@ void CMusicPlayerDlg::SetPlayListColor(bool highlight_visible)
 
     if (theApp.m_nc_setting_data.float_playlist && m_pFloatPlaylistDlg != nullptr)
     {
-        m_pFloatPlaylistDlg->RefreshState();
+        m_pFloatPlaylistDlg->RefreshState(highlight_visible);
     }
 }
 
