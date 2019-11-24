@@ -1067,13 +1067,19 @@
 #define ID_RESTORE_DEFAULT_STYLE        33136
 #define ID_33137                        33137
 #define ID_ONLINE_HELP                  33138
+#define ID_33139                        33139
+#define ID_33140                        33140
+#define ID_33141                        33141
+#define ID_SPEED_UP                     33142
+#define ID_SLOW_DOWN                    33143
+#define ID_ORIGINAL_SPEED               33144
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        404
-#define _APS_NEXT_COMMAND_VALUE         33139
+#define _APS_NEXT_COMMAND_VALUE         33145
 #define _APS_NEXT_CONTROL_VALUE         1152
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

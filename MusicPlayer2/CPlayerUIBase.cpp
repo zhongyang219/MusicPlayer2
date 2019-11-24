@@ -527,12 +527,26 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
             int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
             rc_tmp.MoveToX(rc_tmp.right);
             rc_tmp.right = rc_tmp.left + width;
-            m_draw.SetDrawArea(rc_tmp);
-            CRect rc_border = rc_tmp;
-            rc_border.top += DPI(2);
-            rc_border.bottom -= DPI(1);
-            m_draw.DrawRectOutLine(rc_border, m_colors.color_text, DPI(1), false);
-            m_draw.DrawWindowText(rc_tmp, tag_str.c_str(), m_colors.color_text, Alignment::CENTER);
+            DrawPlayTag(rc_tmp, tag_str.c_str());
+        }
+
+        //绘制播放速度
+        if (std::fabs(CPlayer::GetInstance().GetSpeed() - 1) > 1e-3)
+        {
+            wchar_t buff[64];
+            swprintf_s(buff, L"%.2f", CPlayer::GetInstance().GetSpeed());
+            tag_str = buff;
+            if (!tag_str.empty() && tag_str.back() == L'0')
+                tag_str.pop_back();
+            tag_str.push_back(L'X');
+            available_width = rect.right - rc_tmp.right;
+            if (available_width >= DPI(50))
+            {
+                int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
+                rc_tmp.MoveToX(rc_tmp.right + DPI(2));
+                rc_tmp.right = rc_tmp.left + width;
+                DrawPlayTag(rc_tmp, tag_str.c_str());
+            }
         }
 
         //绘制文件名
@@ -550,6 +564,16 @@ void CPlayerUIBase::DrawControlBarBtn(CRect rect, UIButton & btn, const IconRes 
 {
     rect.DeflateRect(DPI(2), DPI(2));
     DrawUIButton(rect, btn, icon);
+}
+
+void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
+{
+    m_draw.SetDrawArea(rect);
+    CRect rc_border = rect;
+    rc_border.top += DPI(2);
+    rc_border.bottom -= DPI(1);
+    m_draw.DrawRectOutLine(rc_border, m_colors.color_text, DPI(1), false);
+    m_draw.DrawWindowText(rect, str_text, m_colors.color_text, Alignment::CENTER);
 }
 
 void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)

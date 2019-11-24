@@ -152,6 +152,10 @@ void CMciCore::SetVolume(int volume)
     }
 }
 
+void CMciCore::SetSpeed(float speed)
+{
+}
+
 int CMciCore::GetCurPosition()
 {
     if (m_success)

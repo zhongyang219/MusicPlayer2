@@ -17,6 +17,9 @@ enum AudioInfoFlag
     AF_TAG_INFO = 4
 };
 
+#define MAX_PLAY_SPEED 4
+#define MIN_PLAY_SPEED 0.1
+
 class IPlayerCore
 {
 public:
@@ -37,6 +40,7 @@ public:
     virtual void Pause() = 0;
     virtual void Stop() = 0;
     virtual void SetVolume(int volume) = 0;
+    virtual void SetSpeed(float speed) = 0;         //设置播放速度（1为原速）
 
     virtual int GetCurPosition() = 0;
     virtual int GetSongLength() = 0;

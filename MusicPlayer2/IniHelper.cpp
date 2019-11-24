@@ -76,6 +76,17 @@ int CIniHelper::GetInt(const wchar_t * AppName, const wchar_t * KeyName, int def
         return _ttoi(rtn.c_str());
 }
 
+void CIniHelper::WriteDouble(const wchar_t * AppName, const wchar_t * KeyName, double value)
+{
+    _WriteString(AppName, KeyName, std::to_wstring(value));
+}
+
+double CIniHelper::GetDouble(const wchar_t * AppName, const wchar_t * KeyName, double default_value) const
+{
+    wstring rtn{ _GetString(AppName, KeyName, std::to_wstring(default_value).c_str()) };
+    return _wtof(rtn.c_str());
+}
+
 void CIniHelper::WriteBool(const wchar_t * AppName, const wchar_t * KeyName, bool value)
 {
 	if(value)

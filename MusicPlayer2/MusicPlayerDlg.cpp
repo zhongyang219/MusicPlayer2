@@ -211,8 +211,11 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_SELECT_NONE, &CMusicPlayerDlg::OnPlaylistSelectNone)
     ON_COMMAND(ID_PLAYLIST_SELECT_REVERT, &CMusicPlayerDlg::OnPlaylistSelectRevert)
     ON_MESSAGE(WM_CUR_PLAYLIST_RENAMED, &CMusicPlayerDlg::OnCurPlaylistRenamed)
-        ON_COMMAND(ID_ONLINE_HELP, &CMusicPlayerDlg::OnOnlineHelp)
-        END_MESSAGE_MAP()
+    ON_COMMAND(ID_ONLINE_HELP, &CMusicPlayerDlg::OnOnlineHelp)
+    ON_COMMAND(ID_SPEED_UP, &CMusicPlayerDlg::OnSpeedUp)
+    ON_COMMAND(ID_SLOW_DOWN, &CMusicPlayerDlg::OnSlowDown)
+    ON_COMMAND(ID_ORIGINAL_SPEED, &CMusicPlayerDlg::OnOriginalSpeed)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1823,6 +1826,26 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                 OnMovePlaylistItemDown();
                 return TRUE;
             }
+            if (pMsg->wParam == VK_OEM_PERIOD)
+            {
+                OnSpeedUp();
+                return TRUE;
+            }
+            if (pMsg->wParam == VK_OEM_COMMA)
+            {
+                OnSlowDown();
+                return TRUE;
+            }
+            if (pMsg->wParam == VK_RETURN)
+            {
+                OnOriginalSpeed();
+                return TRUE;
+            }
+            //if (pMsg->wParam != VK_CONTROL)
+            //{
+            //    return TRUE;
+            //}
+
             if (GetKeyState(VK_SHIFT) & 0x8000)
             {
 				//按下Ctrl + Shift键时
@@ -4283,4 +4306,25 @@ void CMusicPlayerDlg::OnOnlineHelp()
 {
     // TODO: 在此添加命令处理程序代码
     ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/Introduction.md"), NULL, NULL, SW_SHOW);	//打开超链接
+}
+
+
+void CMusicPlayerDlg::OnSpeedUp()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().SpeedUp();
+}
+
+
+void CMusicPlayerDlg::OnSlowDown()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().SlowDown();
+}
+
+
+void CMusicPlayerDlg::OnOriginalSpeed()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().SetOrignalSpeed();
 }

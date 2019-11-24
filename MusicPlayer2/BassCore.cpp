@@ -334,6 +334,7 @@ void CBassCore::Open(const wchar_t * file_path)
         m_midi_lyric.midi_no_lyric = true;
     }
     SetFXHandle();
+    BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_FREQ, &m_freq);
 }
 
 void CBassCore::Close()
@@ -411,6 +412,16 @@ void CBassCore::SetVolume(int vol)
     float volume = static_cast<float>(vol) / 100.0f;
     volume = volume * theApp.m_nc_setting_data.volume_map / 100;
     BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, volume);
+}
+
+void CBassCore::SetSpeed(float speed)
+{
+    float freq;
+    if (std::fabs(m_freq) < 1e-3 || std::fabs(speed - 1) < 1e-3 || speed < MIN_PLAY_SPEED || speed > MAX_PLAY_SPEED)
+        freq = 0;
+    else
+        freq = m_freq * speed;
+    BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_FREQ, freq);
 }
 
 int CBassCore::GetCurPosition()

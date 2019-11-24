@@ -130,6 +130,7 @@ private:
     void SetSongInfoToolTipText();
     void SetCoverToolTipText();
     void DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon);
+    void DrawPlayTag(CRect rect, LPCTSTR str_text);
 
 protected:
     CWnd* m_pMainWnd = nullptr;

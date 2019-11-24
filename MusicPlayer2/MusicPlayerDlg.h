@@ -355,4 +355,7 @@ protected:
     afx_msg LRESULT OnCurPlaylistRenamed(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnOnlineHelp();
+    afx_msg void OnSpeedUp();
+    afx_msg void OnSlowDown();
+    afx_msg void OnOriginalSpeed();
 };

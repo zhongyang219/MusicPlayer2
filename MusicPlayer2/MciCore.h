@@ -29,6 +29,7 @@ public:
     virtual void Pause() override;
     virtual void Stop() override;
     virtual void SetVolume(int volume) override;
+    virtual void SetSpeed(float speed) override;
 
     virtual int GetCurPosition() override;
     virtual int GetSongLength() override;

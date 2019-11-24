@@ -62,6 +62,7 @@ private:
 	int m_playing{ 0 };		//正在播放标志（0：已停止，1：已暂停，2：正在播放）
 	RepeatMode m_repeat_mode;		//循环模式（0：顺序播放，1：随机播放，2：列表循环，3：单曲循环）
 	int m_volume{ 100 };		//音量（百分比）
+    float m_speed{ 1 };     //播放速度
 
 	float m_fft[FFT_SAMPLE];		//储存频谱分析的数据
 	float m_spectral_data[SPECTRUM_ROW]{};	//用于显示的每个频谱柱形的高度
@@ -172,6 +173,10 @@ public:
 	void SetRepeatMode();		//更改循环模式
 	void SetRepeatMode(RepeatMode repeat_mode);	//设置循环模式
 	RepeatMode GetRepeatMode() const;
+    void SpeedUp();
+    void SlowDown();
+    void SetOrignalSpeed();
+    float GetSpeed() { return m_speed; }
 
 	bool GetPlayerCoreError();		//获取BASS音频库的错误
 	bool IsError() const;				//有错误时返回ture，否则返回false

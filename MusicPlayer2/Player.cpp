@@ -454,6 +454,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_song_length = GetCurrentSongInfo().lengh;
         }
         SetVolume();
+        if (std::fabs(m_speed - 1) > 1e-3)
+            m_pCore->SetSpeed(m_speed);
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
         //SetFXHandle();
         if (m_equ_enable)
@@ -526,7 +528,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_volume += volume_step;
             if (m_volume > 100) m_volume = 100;
             SetVolume();
-            SaveConfig();
+            //SaveConfig();
         }
         break;
     case Command::VOLUME_DOWN:
@@ -535,7 +537,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_volume -= volume_step;
             if (m_volume < 0) m_volume = 0;
             SetVolume();
-            SaveConfig();
+            //SaveConfig();
         }
         break;
     case Command::SEEK:		//定位到m_current_position的位置
@@ -980,6 +982,34 @@ RepeatMode CPlayer::GetRepeatMode() const
     return m_repeat_mode;
 }
 
+void CPlayer::SpeedUp()
+{
+    if (m_speed < MAX_PLAY_SPEED)
+    {
+        m_speed += (m_speed*0.1);
+        if (m_speed > MAX_PLAY_SPEED)
+            m_speed = MAX_PLAY_SPEED;
+        m_pCore->SetSpeed(m_speed);
+    }
+}
+
+void CPlayer::SlowDown()
+{
+    if (m_speed > MIN_PLAY_SPEED)
+    {
+        m_speed -= (m_speed*0.1);
+        if (m_speed < MIN_PLAY_SPEED)
+            m_speed = MIN_PLAY_SPEED;
+        m_pCore->SetSpeed(m_speed);
+    }
+}
+
+void CPlayer::SetOrignalSpeed()
+{
+    m_speed = 1;
+    m_pCore->SetSpeed(m_speed);
+}
+
 bool CPlayer::GetPlayerCoreError()
 {
     if (m_loading)
@@ -1026,6 +1056,7 @@ void CPlayer::SaveConfig() const
     ini.WriteBool(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
     ini.WriteString(L"config", L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
     ini.WriteBool(L"config", L"playlist_mode", m_playlist_mode);
+    ini.WriteDouble(L"config", L"speed", m_speed);
 
     //保存均衡器设定
     ini.WriteBool(L"equalizer", L"equalizer_enable", m_equ_enable);
@@ -1069,6 +1100,9 @@ void CPlayer::LoadConfig()
 
     bool playlist_mode_default = !CCommon::FileExist(theApp.m_recent_path_dat_path);
     m_playlist_mode = ini.GetBool(L"config", L"playlist_mode", playlist_mode_default);
+    m_speed = ini.GetDouble(L"config", L"speed", 1);
+    if (m_speed < MIN_PLAY_SPEED || m_speed > MAX_PLAY_SPEED)
+        m_speed = 1;
 
     //读取均衡器设定
     m_equ_enable = ini.GetBool(L"equalizer", L"equalizer_enable", false);
