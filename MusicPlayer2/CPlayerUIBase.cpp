@@ -493,10 +493,43 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
     wchar_t buff[64];
     if (CPlayer::GetInstance().m_loading)
     {
+        CRect rc_tmp{ rect };
+        //绘制进度条（进度条里面包含10格）
+        int bar_width = DPI(4);     //每一格的宽度
+        int progress_width = (bar_width + DPI(2)) * 10 + DPI(2) * 2;
+        rc_tmp.left = rect.right - progress_width;
+        CRect rc_progress{ rc_tmp };
+        rc_progress.DeflateRect(0, DPI(2));
+        m_draw.SetDrawArea(rc_progress);
+        m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
+        int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
+        int bar_cnt = progress_percent / 10 + 1;        //格子数
+        int last_bar_percent = progress_percent % 10;
+        CRect rc_bar{ rc_progress };
+        rc_bar.DeflateRect(DPI(2), DPI(2));
+        rc_bar.right = rc_bar.left + bar_width;
+        int start_x_pos = rc_bar.left;
+        for (int i = 0; i < bar_cnt; i++)
+        {
+            rc_bar.MoveToX(start_x_pos + i * (bar_width + DPI(2)));
+            if (i != bar_cnt - 1)
+            {
+                m_draw.FillRect(rc_bar, m_colors.color_text, true);
+            }
+            else
+            {
+                BYTE alpha = ALPHA_CHG(last_bar_percent * 10);
+                m_draw.FillAlphaRect(rc_bar, m_colors.color_text, alpha, true);
+            }
+        }
+
+        //绘制文字
+        rc_tmp.right = rc_tmp.left - DPI(4);
+        rc_tmp.left = rect.left;
         static CDrawCommon::ScrollInfo scroll_info0;
         CString info;
-        info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum(), CPlayer::GetInstance().m_thread_info.process_percent });
-        m_draw.DrawScrollText(rect, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
+        info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum(), progress_percent });
+        m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
     }
     else
     {
