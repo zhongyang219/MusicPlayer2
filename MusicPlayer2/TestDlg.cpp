@@ -24,10 +24,12 @@ void CTestDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_TEST_TOOLBAR, m_toolbar);
+    DDX_Control(pDX, IDC_TEST_PROGRESS_BAR, m_progress_bar);
 }
 
 
 BEGIN_MESSAGE_MAP(CTestDlg, CDialog)
+    ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -46,6 +48,25 @@ BOOL CTestDlg::OnInitDialog()
     m_toolbar.AddToolButton(theApp.m_icon_set.menu, _T("菜单"), _T("显示菜单"), theApp.m_menu_set.m_main_menu.GetSubMenu(0), true);
     m_toolbar.AddToolButton(theApp.m_icon_set.edit, nullptr, _T("显示菜单"), nullptr, true);
 
+    //进度条
+    m_progress_bar.SetProgress(18);
+    m_progress_bar.SetBarCount(10);
+
+    SetTimer(82373, 80, NULL);
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
+}
+
+
+void CTestDlg::OnTimer(UINT_PTR nIDEvent)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if (nIDEvent == 82373)
+    {
+        m_timer_cnt+=4;
+        m_progress_bar.SetProgress(m_timer_cnt % 100);
+    }
+
+    CDialog::OnTimer(nIDEvent);
 }

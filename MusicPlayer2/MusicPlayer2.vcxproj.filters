@@ -255,6 +255,9 @@
     <Filter Include="公共的类\OSUPlayerHelper">
       <UniqueIdentifier>{67a4bb32-a0f9-40a1-a79c-e0893ec380af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\PlayerProgressBar">
+      <UniqueIdentifier>{acbfba89-930f-4381-953c-27515fddefa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -565,6 +568,9 @@
     <ClInclude Include="CueFile.h">
       <Filter>公共的类\CueFile</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerProgressBar.h">
+      <Filter>派生的控件类\PlayerProgressBar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -842,6 +848,9 @@
     </ClCompile>
     <ClCompile Include="CueFile.cpp">
       <Filter>公共的类\CueFile</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerProgressBar.cpp">
+      <Filter>派生的控件类\PlayerProgressBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

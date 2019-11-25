@@ -465,6 +465,7 @@
 #define IDS_MODIFY_DEFAULT_STYLE_WARNING 426
 #define IDS_RESTORE_DEFAULT_STYTLE_WARNING 427
 #define IDS_URL_INVALID_WARNING         428
+#define IDS_PROGRESS_INFO               429
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -742,6 +743,9 @@
 #define IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3 1150
 #define IDC_PLAYLIST_TOOLBAR            1150
 #define IDC_ENABLE_BACKGROUND_CHECK     1151
+#define IDC_TEST_PROGRESS_BAR           1152
+#define IDC_PROGRESS_TEXT               1153
+#define IDC_PROGRESS_BAR                1154
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1080,7 +1084,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        404
 #define _APS_NEXT_COMMAND_VALUE         33145
-#define _APS_NEXT_CONTROL_VALUE         1152
+#define _APS_NEXT_CONTROL_VALUE         1155
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

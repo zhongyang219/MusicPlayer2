@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "PlayerToolBar.h"
+#include "PlayerProgressBar.h"
 
 // CTestDlg 对话框
 
@@ -24,6 +25,11 @@ protected:
 
 private:
     CPlayerToolBar m_toolbar;
+    CPlayerProgressBar m_progress_bar;
+
+    int m_timer_cnt{};
+
 public:
     virtual BOOL OnInitDialog();
+    afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
