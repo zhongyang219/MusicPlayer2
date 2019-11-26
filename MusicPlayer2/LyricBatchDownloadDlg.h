@@ -5,6 +5,7 @@
 #include "LyricDownloadCommon.h"
 #include "LyricDownloadDlg.h"
 #include "ListCtrlEx.h"
+#include "PlayerProgressBar.h"
 
 // CLyricBatchDownloadDlg 对话框
 
@@ -28,6 +29,7 @@ public:
 	{
 		CListCtrl* list_ctrl;
 		CStatic* static_ctrl;
+        CPlayerProgressBar* progress_bar;
 		const vector<SongInfo>* playlist;
 		bool skip_exist;
 		bool download_translate;
@@ -50,6 +52,7 @@ protected:
 	CListCtrlEx m_song_list_ctrl;
 	CButton m_download_translate_chk;
 	CStatic m_info_static;
+    CPlayerProgressBar m_progress_bar;
 
 	bool m_skip_exist{ true };		//跳过已有歌词的曲目
 	CodeType m_save_code{};		//保存的编码格式

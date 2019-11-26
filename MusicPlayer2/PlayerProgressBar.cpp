@@ -83,7 +83,7 @@ void CPlayerProgressBar::OnPaint()
         bar_width = gap_width + 1;
     int progress_width = bar_width * m_bar_count + theApp.DPI(2) * 2;
     rc_tmp.right = rect.left + progress_width;
-    drawer.SetDrawArea(rc_tmp);
+    drawer.FillRect(rc_tmp, RGB(255, 255, 255));
     drawer.DrawRectOutLine(rc_tmp, m_theme_color.dark1, theApp.DPI(1), false);
     int bar_cnt = m_progress / (100 / m_bar_count) + 1;        //¸ñ×ÓÊý
     int last_bar_percent = m_progress % (100 / m_bar_count);

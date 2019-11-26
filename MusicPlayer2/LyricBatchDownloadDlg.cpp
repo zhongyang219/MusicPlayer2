@@ -63,12 +63,13 @@ bool CLyricBatchDownloadDlg::SaveLyric(const wchar_t * path, const wstring& lyri
 
 void CLyricBatchDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_SKIP_EXIST_CHECK, m_skip_exist_check);
-	DDX_Control(pDX, IDC_COMBO1, m_save_code_combo);
-	DDX_Control(pDX, IDC_SONG_LIST1, m_song_list_ctrl);
-	DDX_Control(pDX, IDC_DOWNLOAD_TRASNLATE_CHECK2, m_download_translate_chk);
-	DDX_Control(pDX, IDC_INFO_STATIC, m_info_static);
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_SKIP_EXIST_CHECK, m_skip_exist_check);
+    DDX_Control(pDX, IDC_COMBO1, m_save_code_combo);
+    DDX_Control(pDX, IDC_SONG_LIST1, m_song_list_ctrl);
+    DDX_Control(pDX, IDC_DOWNLOAD_TRASNLATE_CHECK2, m_download_translate_chk);
+    DDX_Control(pDX, IDC_INFO_STATIC, m_info_static);
+    DDX_Control(pDX, IDC_PROGRESS_BAR, m_progress_bar);
 }
 
 
@@ -149,6 +150,9 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 		m_song_list_ctrl.SetItemText(i, 3, m_playlist[i].file_name.c_str());
 	}
 
+    m_progress_bar.SetBackgroundColor(GetSysColor(COLOR_BTNFACE));
+    m_progress_bar.ShowWindow(SW_HIDE);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -157,6 +161,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 void CLyricBatchDownloadDlg::OnBnClickedStartDownload()
 {
 	// TODO: 在此添加控件通知处理程序代码
+    m_progress_bar.ShowWindow(SW_SHOW);
 
 	//先清除“状态”一列的内容
 	for (size_t i{}; i < m_playlist.size(); i++)
@@ -174,6 +179,7 @@ void CLyricBatchDownloadDlg::OnBnClickedStartDownload()
 	m_thread_info.save_code = m_save_code;
 	m_thread_info.list_ctrl = &m_song_list_ctrl;
 	m_thread_info.static_ctrl = &m_info_static;
+    m_thread_info.progress_bar = &m_progress_bar;
 	m_thread_info.playlist = &m_playlist;
 	theApp.m_batch_download_dialog_exit = false;
 
@@ -229,8 +235,10 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		if (theApp.m_batch_download_dialog_exit)
 			return 0;
 		CString info;
-		info = CCommon::LoadTextFormat(IDS_LYRIC_BATCH_DOWNLOADING_INFO, { i * 100 / pInfo->playlist->size() });
+        int percent = i * 100 / pInfo->playlist->size();
+		info = CCommon::LoadTextFormat(IDS_LYRIC_BATCH_DOWNLOADING_INFO, { percent });
 		pInfo->static_ctrl->SetWindowText(info);
+        pInfo->progress_bar->SetProgress(percent);
 		//SetDlgItemText(IDC_INFO_STATIC, info);
 
 		pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_DOWNLOADING));
