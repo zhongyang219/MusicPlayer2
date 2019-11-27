@@ -15,6 +15,8 @@ public:
 
 private:
     void DoAnalysis();
+    Time PhaseIndex(size_t pos);
+    string GetCommand(const string& str, size_t pos = 0);
 
 private:
     std::wstring m_file_path;
