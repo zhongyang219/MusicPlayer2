@@ -39,7 +39,7 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
 {
     CCommon::DeleteModelessDialog(m_pLyricEdit);
     CCommon::DeleteModelessDialog(m_pLyricBatchDownDlg);
-    //CCommon::DeleteModelessDialog(m_pSetPathDlg);
+    CCommon::DeleteModelessDialog(m_pMediaLibDlg);
     CCommon::DeleteModelessDialog(m_pSoundEffecDlg);
     CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
@@ -1648,18 +1648,25 @@ void CMusicPlayerDlg::OnFF()
 
 void CMusicPlayerDlg::OnSetPath()
 {
-    static bool dialog_exist{ false };
+    //static bool dialog_exist{ false };
 
-    if (!dialog_exist)		//确保对话框已经存在时不再弹出
-    {
-        dialog_exist = true;
-        int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
-        CMediaLibDlg media_lib_dlg{ cur_tab };
-        media_lib_dlg.DoModal();
-        dialog_exist = false;
-        //if (media_lib_dlg.m_playlist_dlg.IsPlaylistModified())
-        //IniPlaylistPopupMenu();
-    }
+    //if (!dialog_exist)		//确保对话框已经存在时不再弹出
+    //{
+    //    dialog_exist = true;
+    //    int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
+    //    CMediaLibDlg media_lib_dlg{ cur_tab };
+    //    media_lib_dlg.DoModal();
+    //    dialog_exist = false;
+    //    //if (media_lib_dlg.m_playlist_dlg.IsPlaylistModified())
+    //    //IniPlaylistPopupMenu();
+    //}
+
+    CCommon::DeleteModelessDialog(m_pMediaLibDlg);
+    int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
+    m_pMediaLibDlg = new CMediaLibDlg(cur_tab);
+    m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG);
+    m_pMediaLibDlg->ShowWindow(SW_SHOW);
+
 }
 
 

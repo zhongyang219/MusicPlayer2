@@ -38,13 +38,13 @@ END_MESSAGE_MAP()
 // CMediaLibDlg 消息处理程序
 
 
-//void CMediaLibDlg::OnCancel()
-//{
-//    // TODO: 在此添加专用代码和/或调用基类
-//    DestroyWindow();
-//
-//    //CDialog::OnCancel();
-//}
+void CMediaLibDlg::OnCancel()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    DestroyWindow();
+
+    //CDialog::OnCancel();
+}
 
 
 BOOL CMediaLibDlg::OnInitDialog()

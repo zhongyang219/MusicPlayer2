@@ -109,7 +109,7 @@ protected:
 
     CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
     CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
-    //CMediaLibDlg* m_pSetPathDlg;		//选择路径对话框（非模态对话框）
+    CMediaLibDlg* m_pMediaLibDlg;		//媒体库对话框（非模态对话框）
     CSoundEffectDlg* m_pSoundEffecDlg;		//音效设定对话框（非模态对话框）
     CFormatConvertDlg* m_pFormatConvertDlg;		//格式转换对话框（非模态对话框）
     CFloatPlaylistDlg* m_pFloatPlaylistDlg;		//浮动播放列表对话框

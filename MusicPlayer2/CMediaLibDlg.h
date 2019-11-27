@@ -35,6 +35,7 @@ public:
     virtual BOOL OnInitDialog();
     afx_msg void OnBnClickedPlaySelected();
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+    virtual void OnCancel();
 protected:
     afx_msg LRESULT OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam);
 };
