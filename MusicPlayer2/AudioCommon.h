@@ -254,10 +254,7 @@ public:
 	static void GetLyricFiles(wstring path, vector<wstring>& files);
 
 	//处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中
-	static void GetCueTracks(vector<SongInfo>& files);
-
-	//检查files容器中是否有和cue文件匹配的音频文件，如果没有，则重新从路径中查找匹配的音频文件
-	static bool CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore);
+	static void GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore);
 
 	//获得标准流派信息
 	static wstring GetGenre(BYTE genre);

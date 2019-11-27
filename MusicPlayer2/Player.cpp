@@ -192,8 +192,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
-    if(CAudioCommon::CheckCueFiles(m_playlist, m_pCore))
-        CAudioCommon::GetCueTracks(m_playlist);
+    CAudioCommon::GetCueTracks(m_playlist, m_pCore);
     //m_song_num = m_playlist.size();
     m_index = m_index_tmp;
     if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数

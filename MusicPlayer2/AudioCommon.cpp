@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AudioCommon.h"
+#include "CueFile.h"
 
 vector<SupportedFormat> CAudioCommon::m_surpported_format;
 vector<wstring> CAudioCommon::m_all_surpported_extensions;
@@ -169,204 +170,63 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
     _findclose(hFile);
 }
 
-void CAudioCommon::GetCueTracks(vector<SongInfo>& files)
+void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
 {
-    wstring cue_dir;
-    for (size_t i{}; i < files.size(); i++)
+    vector<SongInfo> cue_tracks;    //储存解析到的cue音轨
+    for (size_t i = 0; i < files.size(); i++)
     {
         //依次检查列表中的每首歌曲是否为cue文件
         if (GetAudioTypeByExtension(files[i].file_name) == AU_CUE)
         {
             CFilePathHelper file_path{ files[i].file_path };
-            cue_dir = file_path.GetDir();
-            wstring cue_file_name{ files[i].file_name };		//cue文件的文件名
+            wstring cue_dir = file_path.GetDir();
             files.erase(files.begin() + i);		//从列表中删除cue文件
-            wstring cue_file_name2 = file_path.GetFileNameWithoutExtension();			//cue文件的文件名（不含扩展名）
-            //查找和cue文件同名的音频文件
-            CFilePathHelper play_file_path;
-            int bitrate;
-            Time total_length;
-            bool matched_file_found{ false };		//如果查找到了和cue文件相同的文件名，则为true
-            for (size_t j{}; j < files.size(); j++)
-            {
-                if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE && !files[j].is_cue)	//确保该文件不是cue文件，且不是已经解析过的cue音轨
-                {
-                    play_file_path.SetFilePath(files[j].file_path);
-                    wstring play_file_name = play_file_path.GetFileName();		//查找到的和cue文件同名的文件名
-                    wstring play_file_name2 = play_file_path.GetFileNameWithoutExtension();		//查找到的和cue文件同名的文件名（不含扩展名）
-                    wstring play_file_dir = play_file_path.GetDir();
-                    bitrate = files[j].bitrate;			//保存获取到的比特率
-                    total_length = files[j].lengh;
-                    if (cue_dir == play_file_dir &&
-                        (CCommon::StringCompareNoCase(play_file_name2, cue_file_name2) || CCommon::StringCompareNoCase(play_file_name, cue_file_name2)))
-                    {
-                        files.erase(files.begin() + j);		//从列表中删除该文件
-                        matched_file_found = true;
-                        break;
-                    }
-                }
-            }
-            if (!matched_file_found)		//如果没有找到和cue同名的文件，则继续解析下一个cue文件
-                continue;
 
             //解析cue文件
-            string cue_file_contents;
-            ifstream OpenFile{ cue_dir + cue_file_name };
-            if (OpenFile.fail())
-                return;
-            string current_line;
-            char ch;
-            while (!OpenFile.eof())
+            CCueFile cue_file{ file_path.GetFilePath() };
+            //获取cue对应音频文件
+            wstring audio_file_name = cue_file.GetAudioFileName();
+            if(!CCommon::FileExist(cue_dir + audio_file_name))
+                continue;
+
+            int bitrate;
+            Time total_length;
+            //检查files列表中是否包含cue对应的音频文件
+            auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
             {
-                //std::getline(OpenFile, current_line);
-                //cue_file_contents += current_line;
-                OpenFile.get(ch);
-                cue_file_contents.push_back(ch);
-                if (cue_file_contents.size() > 102400) break;	//限制cue文件最大为100KB
-            }
-            CodeType code_type{ CodeType::AUTO };		//cue文件的编码类型
-            if (cue_file_contents.size() >= 3 && cue_file_contents[0] == -17 && cue_file_contents[1] == -69 && cue_file_contents[2] == -65)
-                code_type = CodeType::UTF8;
-            //获取cue文件的专辑标题
-            string album_name;
-            size_t index1 = cue_file_contents.find("TITLE");
-            size_t index2 = cue_file_contents.find('\"', index1);
-            size_t index3 = cue_file_contents.find('\"', index2 + 1);
-            album_name = cue_file_contents.substr(index2 + 1, index3 - index2 - 1);
-
-            SongInfo song_info{};
-            song_info.album = CCommon::StrToUnicode(album_name, code_type);
-            song_info.file_name = play_file_path.GetFileName();
-            song_info.file_path = play_file_path.GetFilePath();
-            song_info.bitrate = bitrate;
-            song_info.is_cue = true;
-            song_info.info_acquired = true;
-
-            size_t index_track{};
-            size_t index_title{};
-            size_t index_artist{};
-            size_t index_pos{};
-            while (true)
+                return CCommon::StringCompareNoCase(song.file_path, cue_dir + audio_file_name);
+            });
+            if (find != files.end())
             {
-                //查找曲目序号
-                index_track = cue_file_contents.find("TRACK ", index_track + 6);
-                if (index_track == string::npos)
-                    break;
-                string track_str = cue_file_contents.substr(index_track + 6, 3);
-                song_info.track = atoi(track_str.c_str());
-                size_t next_track_index = cue_file_contents.find("TRACK ", index_track + 6);
-                //查找曲目标题
-                index_title = cue_file_contents.find("TITLE ", index_track + 6);
-                if (index_title < next_track_index)
-                {
-                    index2 = cue_file_contents.find('\"', index_title);
-                    index3 = cue_file_contents.find('\"', index2 + 1);
-                    song_info.title = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1), code_type);
-                }
-                //else
-                //{
-                //    song_info.title = CCommon::LoadText(IDS_DEFAULT_TITLE);
-                //}
-                //查找曲目艺术家
-                index_artist = cue_file_contents.find("PERFORMER ", index_track + 6);
-                if (index_artist < next_track_index)
-                {
-                    index2 = cue_file_contents.find('\"', index_artist);
-                    index3 = cue_file_contents.find('\"', index2 + 1);
-                    song_info.artist = CCommon::StrToUnicode(cue_file_contents.substr(index2 + 1, index3 - index2 - 1), code_type);
-                }
-                //else
-                //{
-                //    song_info.artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
-                //}
-                //查找曲目位置
-                index_pos = cue_file_contents.find("INDEX ", index_track + 6);
-                index1 = cue_file_contents.find(":", index_pos + 6);
-                index2 = cue_file_contents.rfind(" ", index1);
-                string tmp;
-                Time time;
-                //获取分钟
-                tmp = cue_file_contents.substr(index2 + 1, index1 - index2 - 1);
-                time.min = atoi(tmp.c_str());
-                //获取秒钟
-                tmp = cue_file_contents.substr(index1 + 1, 2);
-                time.sec = atoi(tmp.c_str());
-                //获取毫秒
-                tmp = cue_file_contents.substr(index1 + 4, 2);
-                time.msec = atoi(tmp.c_str()) * 10;
-
-                song_info.start_pos = time;
-                if (!time.isZero() && !files.empty())
-                {
-                    files.back().end_pos = time;
-                    files.back().lengh = Time(time - files.back().start_pos);
-                }
-
-                files.push_back(song_info);
+                bitrate = find->bitrate;
+                total_length = find->lengh;
+                if (find - files.begin() < i)       //如果删除的文件在当前文件的前面，则循环变量减1
+                    i--;
+                files.erase(find);      //找到cue对应的音频文件则把它删除
             }
-            files.back().end_pos = total_length;
-            files.back().lengh = Time(total_length - files.back().start_pos);
+            else
+            {
+                if (pPlayerCore != nullptr)
+                {
+                    SongInfo song;
+                    pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), song, AF_LENGTH | AF_BITRATE);
+                    bitrate = song.bitrate;
+                    total_length = song.lengh;
+                }
+            }
+            cue_file.SetTotalLength(total_length);
+
+            for (const auto& track : cue_file.GetAnalysisResult())
+            {
+                cue_tracks.push_back(track);
+                cue_tracks.back().bitrate = bitrate;
+            }
+
             i--;		//解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
         }
-    }
-}
 
-bool CAudioCommon::CheckCueFiles(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
-{
-    bool rtn = false;
-    wstring cue_dir;
-    bool audio_exist;
-    int size = files.size();
-    for (int i{}; i < size; i++)
-    {
-        if (GetAudioTypeByExtension(files[i].file_name) == AU_CUE)		//查找列表中的cue文件
-        {
-            audio_exist = false;
-            wstring file_name;
-            CFilePathHelper file_path{ files[i].file_path };
-            file_name = file_path.GetFileNameWithoutExtension();		//获取文件名（不含扩展名）
-            cue_dir = file_path.GetDir();
-            //查找和cue文件匹配的音频文件
-            for (int j{}; j < size; j++)
-            {
-                if (GetAudioTypeByExtension(files[j].file_name) != AU_CUE && !files[j].is_cue)
-                {
-                    wstring audio_file_name;
-                    CFilePathHelper file_path1{ files[j].file_path };
-                    audio_file_name = file_path1.GetFileNameWithoutExtension();
-                    if (file_path1.GetDir() == cue_dir &&
-                        (CCommon::StringCompareNoCase(file_name, audio_file_name) || CCommon::StringCompareNoCase(file_name, files[j].file_name)))
-                    {
-                        audio_exist = true;
-                        rtn = true;
-                        break;
-                    }
-                }
-            }
-            //没有找到匹配的音频文件，则在目录下搜索匹配的音频文件
-            if (!audio_exist)
-            {
-                vector<wstring> audio_files;
-                CString find_file_name;
-                find_file_name.Format(_T("%s%s.*"), cue_dir.c_str(), file_name.c_str());
-                CCommon::GetFiles(wstring(find_file_name), audio_files);
-                for (const auto& file : audio_files)
-                {
-                    if (GetAudioTypeByExtension(file) != AU_CUE)
-                    {
-                        SongInfo song_info;
-                        song_info.file_name = file;
-                        song_info.file_path = cue_dir + file;
-                        if(pPlayerCore != nullptr)
-                            pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, AF_LENGTH|AF_BITRATE);
-                        files.push_back(song_info);
-                        return true;
-                    }
-                }
-            }
-        }
     }
-    return rtn;
+    files.insert(files.end(), cue_tracks.begin(), cue_tracks.end());
 }
 
 
