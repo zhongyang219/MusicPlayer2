@@ -197,11 +197,11 @@ wstring COSUFile::GetBeatampSetId()
 wstring COSUFile::GetAlbumCoverFileName()
 {
     size_t index1, index2;
-    index1 = m_events_seg.find("\"");
+    index1 = m_events_seg.find("0,0,\"");
     if (index1 == wstring::npos)
         return wstring();
-    index2 = m_events_seg.find("\"", index1 + 1);
-    string album_cover_name = m_events_seg.substr(index1 + 1, index2 - index1 - 1);
+    index2 = m_events_seg.find("\"", index1 + 6);
+    string album_cover_name = m_events_seg.substr(index1 + 5, index2 - index1 - 5);
     return CCommon::StrToUnicode(album_cover_name, CodeType::UTF8);
 }
 
