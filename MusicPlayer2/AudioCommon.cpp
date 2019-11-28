@@ -194,7 +194,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             //检查files列表中是否包含cue对应的音频文件
             auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
             {
-                return CCommon::StringCompareNoCase(song.file_path, cue_dir + audio_file_name);
+                return CCommon::StringCompareNoCase(song.file_path, cue_dir + audio_file_name) && !song.is_cue;
             });
             if (find != files.end())
             {
