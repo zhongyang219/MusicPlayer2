@@ -90,40 +90,55 @@ void COSUPlayerHelper::GetOSUAudioTitleArtist(SongInfo & song_info)
 
 wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
 {
-    wstring path;
+    wstring dir;
     CFilePathHelper path_helper(file_path);
-    path = path_helper.GetDir();
+    dir = path_helper.GetDir();
 
-    vector<wstring> image_list;
-    CCommon::GetFiles(path + L"*.jpg", image_list);
-    if (!image_list.empty())
-	{
-		return path + image_list[0];
-	}
-	else
-	{
-		//如果没有jpg图片，则查找png图片
-		vector<wstring> image_list;
-		CCommon::GetFiles(path + L"*.png", image_list);
-		if (!image_list.empty())
-		{
-			size_t max_file_size{};
-			wstring max_size_file_name;
-			for (const auto& image_file : image_list)
-			{
-				//由于OSU歌曲目录下可能会有很多皮肤素材png图片，因此查找最大的图片作为背景图片
-				size_t file_size = CCommon::GetFileSize(path + image_file);
-				if (max_file_size < file_size)
-				{
-					max_file_size = file_size;
-					max_size_file_name = image_file;
-				}
-			}
-			return path + max_size_file_name;
-		}
-	}
+    wstring album_cover_file_name;
+    std::vector<wstring> osu_list;
+    CCommon::GetFiles(dir + L"*.osu", osu_list);
+    if (!osu_list.empty())
+    {
+        COSUFile osu_file{ (dir + osu_list.front()).c_str() };
+        album_cover_file_name = osu_file.GetAlbumCoverFileName();
+    }
 
-    return wstring();
+    if (!CCommon::FileExist(dir + album_cover_file_name))
+    {
+        vector<wstring> image_list;
+        CCommon::GetFiles(dir + L"*.jpg", image_list);
+        if (!image_list.empty())
+	    {
+            album_cover_file_name = image_list[0];
+	    }
+	    //else
+	    //{
+		   // //如果没有jpg图片，则查找png图片
+		   // vector<wstring> image_list;
+		   // CCommon::GetFiles(dir + L"*.png", image_list);
+		   // if (!image_list.empty())
+		   // {
+			  //  size_t max_file_size{};
+			  //  wstring max_size_file_name;
+			  //  for (const auto& image_file : image_list)
+			  //  {
+				 //   //由于OSU歌曲目录下可能会有很多皮肤素材png图片，因此查找最大的图片作为背景图片
+				 //   size_t file_size = CCommon::GetFileSize(dir + image_file);
+				 //   if (max_file_size < file_size)
+				 //   {
+					//    max_file_size = file_size;
+					//    max_size_file_name = image_file;
+				 //   }
+			  //  }
+			  //  return dir + max_size_file_name;
+		   // }
+	    //}
+    }
+
+    if (album_cover_file_name.empty())
+        return wstring();
+    else
+        return dir + album_cover_file_name;
 }
 
 void COSUPlayerHelper::GetOSUFile(wstring folder_path)
@@ -145,7 +160,7 @@ COSUFile::COSUFile(const wchar_t * file_path)
 
     GetTag("[General]", m_general_seg);
     GetTag("[Metadata]", m_metadata_seg);
-
+    GetTag("[Events]", m_events_seg);
 }
 
 wstring COSUFile::GetAudioFile()
@@ -177,6 +192,17 @@ wstring COSUFile::GetAlbum()
 wstring COSUFile::GetBeatampSetId()
 {
     return GetTagItem("BeatmapSetID:", m_metadata_seg);
+}
+
+wstring COSUFile::GetAlbumCoverFileName()
+{
+    size_t index1, index2;
+    index1 = m_events_seg.find("\"");
+    if (index1 == wstring::npos)
+        return wstring();
+    index2 = m_events_seg.find("\"", index1 + 1);
+    string album_cover_name = m_events_seg.substr(index1 + 1, index2 - index1 - 1);
+    return CCommon::StrToUnicode(album_cover_name, CodeType::UTF8);
 }
 
 void COSUFile::GetTag(const string & tag, string & tag_content)

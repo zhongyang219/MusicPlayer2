@@ -27,6 +27,7 @@ public:
     wstring GetTitle();
     wstring GetAlbum();
     wstring GetBeatampSetId();
+    wstring GetAlbumCoverFileName();
 
 private:
     void GetTag(const string& tag, string& tag_content);
@@ -36,4 +37,5 @@ private:
     string m_data;
     string m_general_seg;
     string m_metadata_seg;
+    string m_events_seg;
 };
