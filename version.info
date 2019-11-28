@@ -1,9 +1,9 @@
-﻿<version>2.66</version>
-<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.66/MusicPlayer2_V2.66_x86.7z</link>
-<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.66/MusicPlayer2_V2.66_x64.7z</link_x64>
+﻿<version>2.67</version>
+<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.67/MusicPlayer2_V2.67_x86.7z</link>
+<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.67/MusicPlayer2_V2.67_x64.7z</link_x64>
 <update_contents>
-	<contents_zh_cn>新增播放列表功能，可自由创建和编辑播放列表。\n新增歌曲红心的功能。\n修正部分flac音频标签获取不正确的问题。\n新增文件关联功能。\n修正窗口大小改变时会导致GDI句柄泄漏的问题。\n新增声音淡入淡出效果。\n修正了一些bug。\n其他细节方面的改进。</contents_zh_cn>
-	<contents_en>Add the playlist function, you can freely create and edit playlists.\nAdd the function of song red heart.\nFixed the problem that some flac audio tags were incorrectly obtained.\nAdd the function of file association.\nFixed the problem that the GDI handle leaked when the window size changed.\nAdd the sound fade effect.\nFixed some bugs.\nImproved in other details.</contents_en>
+	<contents_zh_cn>新增桌面歌词功能。\n新增播放列表工具栏。\n新增cue音轨可以添加到播放列表。\n新增调整播放速度的功能。\n修正了一些bug。\n其他细节方面的改进。</contents_zh_cn>
+	<contents_en>Add the desktop lyric function.\nAdd a playlist toolbar.\nThe cue track can be added to playlist.\nAdd the function to adjust playback speed.\nFixed some bugs.\nImproved in other details.</contents_en>
 </update_contents>
 <!--以下内容为了兼容旧版本程序的检查更新功能-->
-<contents>新增播放列表功能，可自由创建和编辑播放列表。\n新增歌曲红心的功能。\n修正部分flac音频标签获取不正确的问题。\n新增文件关联功能。\n修正窗口大小改变时会导致GDI句柄泄漏的问题。\n新增声音淡入淡出效果。\n修正了一些bug。\n其他细节方面的改进。</contents>
+<contents>新增桌面歌词功能。\n新增播放列表工具栏。\n新增cue音轨可以添加到播放列表。\n新增调整播放速度的功能。\n修正了一些bug。\n其他细节方面的改进。</contents>

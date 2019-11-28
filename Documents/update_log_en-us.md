@@ -1,5 +1,12 @@
 **[简体中文](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md) | English**<br>
 # MusicPlayer2 Update log
+## V2.67 (2019/11/28)
+* Add the desktop lyric function.
+* Add a playlist toolbar.
+* The cue track can be added to playlist.
+* Add the function to adjust playback speed.
+* Fixed some bugs.
+* Improved in other details.
 ## V2.66 (2019/08/03)
 * Add the playlist function, you can freely create and edit playlists.
 * Add the function of song red heart.

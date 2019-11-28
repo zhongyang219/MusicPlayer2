@@ -1,5 +1,12 @@
 **简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md)**<br>
 # MusicPlayer2 更新日志
+## V2.67 (2019/11/28)
+* 新增桌面歌词功能。
+* 新增播放列表工具栏。
+* 新增cue音轨可以添加到播放列表。
+* 新增调整播放速度的功能。
+* 修正了一些bug。
+* 其他细节方面的改进。
 ## V2.66 (2019/08/03)
 * 新增播放列表功能，可自由创建和编辑播放列表。
 * 新增歌曲红心的功能。
