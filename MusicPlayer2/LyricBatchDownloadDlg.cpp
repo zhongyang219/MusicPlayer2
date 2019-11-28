@@ -377,6 +377,7 @@ afx_msg LRESULT CLyricBatchDownloadDlg::OnBatchDownloadComplate(WPARAM wParam, L
 	CPlayer::GetInstance().SearchLyrics();
 	CPlayer::GetInstance().IniLyrics();
 	EnableControls(true);		//ÆôÓÃ¿Ø¼þ
+    m_progress_bar.SetProgress(100);
 	return 0;
 }
 
