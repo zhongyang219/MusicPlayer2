@@ -32,6 +32,7 @@
 #include "CFloatPlaylistDlg.h"
 #include "CMediaLibDlg.h"
 #include "DesktopLyric.h"
+#include "SearchEditCtrl.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -65,8 +66,8 @@ protected:
     CStaticEx m_path_static;
     CEdit m_path_edit;
     CButton m_set_path_button;
-    CEdit m_search_edit;
-    CButton m_clear_search_button;
+    CSearchEditCtrl m_search_edit;
+    //CButton m_clear_search_button;
 
 #ifndef COMPILE_IN_WIN_XP
     ITaskbarList3* m_pTaskbar { theApp.GetITaskbarList3() };         //用于支持任务栏显示播放进度
@@ -269,7 +270,7 @@ protected:
     afx_msg LRESULT OnConnotPlayWarning(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnEnChangeSearchEdit();
-    afx_msg void OnBnClickedClearSearchButton();
+    //afx_msg void OnBnClickedClearSearchButton();
     afx_msg void OnDownloadAlbumCover();
 protected:
     afx_msg LRESULT OnMusicStreamOpened(WPARAM wParam, LPARAM lParam);
@@ -358,4 +359,6 @@ public:
     afx_msg void OnSpeedUp();
     afx_msg void OnSlowDown();
     afx_msg void OnOriginalSpeed();
+protected:
+    afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 };

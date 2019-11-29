@@ -63,7 +63,7 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
     DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
-    DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
+    //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
 }
 
@@ -147,7 +147,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_PATH_SELECTED, &CMusicPlayerDlg::OnPathSelected)
     ON_MESSAGE(WM_CONNOT_PLAY_WARNING, &CMusicPlayerDlg::OnConnotPlayWarning)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMusicPlayerDlg::OnEnChangeSearchEdit)
-    ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CMusicPlayerDlg::OnBnClickedClearSearchButton)
+    //ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CMusicPlayerDlg::OnBnClickedClearSearchButton)
     ON_COMMAND(ID_DOWNLOAD_ALBUM_COVER, &CMusicPlayerDlg::OnDownloadAlbumCover)
     ON_MESSAGE(WM_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnMusicStreamOpened)
     ON_COMMAND(ID_CURRENT_EXPLORE_ONLINE, &CMusicPlayerDlg::OnCurrentExploreOnline)
@@ -215,6 +215,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SPEED_UP, &CMusicPlayerDlg::OnSpeedUp)
     ON_COMMAND(ID_SLOW_DOWN, &CMusicPlayerDlg::OnSlowDown)
     ON_COMMAND(ID_ORIGINAL_SPEED, &CMusicPlayerDlg::OnOriginalSpeed)
+    ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMusicPlayerDlg::OnSearchEditBtnClicked)
 END_MESSAGE_MAP()
 
 
@@ -534,26 +535,26 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     m_search_edit.GetWindowRect(rect_search);
     if (!theApp.m_ui_data.narrow_mode)
     {
-        rect_search.right = rect_search.left + (cx / 2 - 2 * m_layout.margin - m_layout.margin - rect_search.Height());
+        rect_search.right = rect_search.left + (cx / 2 - 2 * m_layout.margin);
         rect_search.MoveToXY(cx / 2 + m_layout.margin, m_layout.path_edit_height + theApp.DPI(1));
     }
     else
     {
-        rect_search.right = rect_search.left + (cx - 2 * m_layout.margin - m_layout.margin - rect_search.Height());
+        rect_search.right = rect_search.left + (cx - 2 * m_layout.margin);
         rect_search.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.path_edit_height - theApp.DPI(3));
     }
     m_search_edit.MoveWindow(rect_search);
-    //设置清除搜索按钮的大小和位置
-    CRect rect_clear{};
-    rect_clear.right = rect_clear.bottom = rect_search.Height();
-    //if (!theApp.m_ui_data.narrow_mode)
-    rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
-    m_clear_search_button.MoveWindow(rect_clear);
-    m_clear_search_button.Invalidate();
+    ////设置清除搜索按钮的大小和位置
+    //CRect rect_clear{};
+    //rect_clear.right = rect_clear.bottom = rect_search.Height();
+    ////if (!theApp.m_ui_data.narrow_mode)
+    //rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
+    //m_clear_search_button.MoveWindow(rect_clear);
+    //m_clear_search_button.Invalidate();
     //设置播放列表工具栏的大小位置
     CRect rect_toolbar{ rect_search };
     rect_toolbar.top = rect_search.bottom + m_layout.margin;
-    rect_toolbar.right = rect_clear.right;
+    //rect_toolbar.right = rect_search.right;
     rect_toolbar.bottom = rect_toolbar.top + m_layout.toolbar_height;
     m_playlist_toolbar.MoveWindow(rect_toolbar);
     m_playlist_toolbar.Invalidate();
@@ -642,7 +643,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
     m_path_static.ShowWindow(cmdShow);
     m_path_edit.ShowWindow(cmdShow);
     m_search_edit.ShowWindow(cmdShow);
-    m_clear_search_button.ShowWindow(cmdShow);
+    //m_clear_search_button.ShowWindow(cmdShow);
     m_set_path_button.ShowWindow(cmdShow);
     m_playlist_toolbar.ShowWindow(cmdShow);
 }
@@ -747,7 +748,7 @@ void CMusicPlayerDlg::EnablePlaylist(bool enable)
 {
     m_playlist_list.EnableWindow(enable);
     m_search_edit.EnableWindow(enable);
-    m_clear_search_button.EnableWindow(enable);
+    //m_clear_search_button.EnableWindow(enable);
     m_set_path_button.EnableWindow(enable);
     m_playlist_toolbar.EnableWindow(enable);
     m_playlist_toolbar.Invalidate();
@@ -1189,8 +1190,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_Mytip.Create(this, TTS_ALWAYSTIP);
     m_Mytip.SetMaxTipWidth(theApp.DPI(400));
     m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_OPEN_MEDIA_LIB, _T(" (Ctrl+T)")));
-    m_Mytip.AddTool(&m_clear_search_button, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
-    m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
+    //m_Mytip.AddTool(&m_clear_search_button, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
+    //m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
     m_ui.SetToolTip(&m_Mytip);
     m_ui2.SetToolTip(&m_Mytip);
 
@@ -3270,18 +3271,18 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
 }
 
 
-void CMusicPlayerDlg::OnBnClickedClearSearchButton()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    if (m_searched)
-    {
-        //清除搜索结果
-        m_searched = false;
-        m_search_edit.SetWindowText(_T(""));
-        m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
-        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
-    }
-}
+//void CMusicPlayerDlg::OnBnClickedClearSearchButton()
+//{
+//    // TODO: 在此添加控件通知处理程序代码
+//    if (m_searched)
+//    {
+//        //清除搜索结果
+//        m_searched = false;
+//        m_search_edit.SetWindowText(_T(""));
+//        m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+//        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
+//    }
+//}
 
 
 void CMusicPlayerDlg::OnDownloadAlbumCover()
@@ -4334,4 +4335,18 @@ void CMusicPlayerDlg::OnOriginalSpeed()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetOrignalSpeed();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
+{
+    if (m_searched)
+    {
+        //清除搜索结果
+        m_searched = false;
+        m_search_edit.SetWindowText(_T(""));
+        m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
+    }
+    return 0;
 }

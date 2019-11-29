@@ -746,6 +746,7 @@
 #define IDC_TEST_PROGRESS_BAR           1152
 #define IDC_PROGRESS_TEXT               1153
 #define IDC_PROGRESS_BAR                1154
+#define IDC_MFCEDITBROWSE1              1155
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1082,9 +1083,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        404
+#define _APS_NEXT_RESOURCE_VALUE        405
 #define _APS_NEXT_COMMAND_VALUE         33145
-#define _APS_NEXT_CONTROL_VALUE         1155
+#define _APS_NEXT_CONTROL_VALUE         1156
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

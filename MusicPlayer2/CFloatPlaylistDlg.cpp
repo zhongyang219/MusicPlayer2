@@ -50,23 +50,17 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
     rect_edit.right = rect_select_folder.left - m_layout.margin;
     m_path_edit.MoveWindow(rect_edit);
 
-    //设置清除搜索按钮的大小和位置
-    CRect rect_clear{};
-    rect_clear.top = 2 * m_layout.margin + m_layout.search_edit_height;
-    rect_clear.right = cx - m_layout.margin;
-    rect_clear.left = rect_clear.right - m_layout.search_edit_height;
-    rect_clear.bottom = rect_clear.top + m_layout.search_edit_height;
-    m_clear_search_button.MoveWindow(rect_clear);
-
-    //
-    CRect rect_search{ rect_clear };
+    //设置搜索控件的大小和位置
+    CRect rect_search{ };
+    rect_search.top = 2 * m_layout.margin + m_layout.search_edit_height;
     rect_search.left = m_layout.margin;
-    rect_search.right = rect_clear.left - m_layout.margin;
+    rect_search.right = cx - m_layout.margin;
+    rect_search.bottom = rect_search.top + m_layout.search_edit_height;
     m_search_edit.MoveWindow(rect_search);
 
     CRect rect_toolbar{ rect_search };
     rect_toolbar.top = rect_search.bottom + m_layout.margin;
-    rect_toolbar.right = rect_clear.right;
+    rect_toolbar.right = rect_search.right;
     rect_toolbar.bottom = rect_toolbar.top + m_layout.toolbar_height;
     m_playlist_toolbar.MoveWindow(rect_toolbar);
     m_playlist_toolbar.Invalidate();
@@ -133,7 +127,7 @@ void CFloatPlaylistDlg::EnableControl(bool enable)
     m_playlist_ctrl.EnableWindow(enable);
     m_search_edit.EnableWindow(enable);
     m_set_path_button.EnableWindow(enable);
-    m_clear_search_button.EnableWindow(enable);
+    //m_clear_search_button.EnableWindow(enable);
     m_playlist_toolbar.EnableWindow(enable);
     m_playlist_toolbar.Invalidate();
 }
@@ -141,7 +135,7 @@ void CFloatPlaylistDlg::EnableControl(bool enable)
 bool CFloatPlaylistDlg::Initilized() const
 {
     return m_playlist_ctrl.GetSafeHwnd() != NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
-           && m_set_path_button.GetSafeHwnd() != NULL && m_search_edit.GetSafeHwnd() != NULL && m_clear_search_button.GetSafeHwnd() != NULL;
+           && m_set_path_button.GetSafeHwnd() != NULL && m_search_edit.GetSafeHwnd() != NULL/* && m_clear_search_button.GetSafeHwnd() != NULL*/;
 }
 
 void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
@@ -152,7 +146,7 @@ void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
     DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
-    DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
+    //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
 }
 
@@ -162,12 +156,13 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_NOTIFY(NM_RCLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMRClickPlaylistList)
     ON_NOTIFY(NM_DBLCLK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMDblclkPlaylistList)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CFloatPlaylistDlg::OnEnChangeSearchEdit)
-    ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CFloatPlaylistDlg::OnBnClickedClearSearchButton)
+    //ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CFloatPlaylistDlg::OnBnClickedClearSearchButton)
     ON_WM_CLOSE()
     ON_WM_GETMINMAXINFO()
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMClickPlaylistList)
     ON_MESSAGE(WM_INITMENU, &CFloatPlaylistDlg::OnInitmenu)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CFloatPlaylistDlg::OnListItemDragged)
+    ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFloatPlaylistDlg::OnSearchEditBtnClicked)
 END_MESSAGE_MAP()
 
 
@@ -302,17 +297,17 @@ void CFloatPlaylistDlg::OnEnChangeSearchEdit()
     SetDragEnable();
 }
 
-void CFloatPlaylistDlg::OnBnClickedClearSearchButton()
-{
-    if (m_searched)
-    {
-        //清除搜索结果
-        m_searched = false;
-        m_search_edit.SetWindowText(_T(""));
-        m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
-        m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
-    }
-}
+//void CFloatPlaylistDlg::OnBnClickedClearSearchButton()
+//{
+//    if (m_searched)
+//    {
+//        //清除搜索结果
+//        m_searched = false;
+//        m_search_edit.SetWindowText(_T(""));
+//        m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+//        m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
+//    }
+//}
 
 
 void CFloatPlaylistDlg::OnCancel()
@@ -412,5 +407,19 @@ afx_msg LRESULT CFloatPlaylistDlg::OnInitmenu(WPARAM wParam, LPARAM lParam)
 afx_msg LRESULT CFloatPlaylistDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 {
     theApp.m_pMainWnd->SendMessage(WM_LIST_ITEM_DRAGGED, wParam, lParam);
+    return 0;
+}
+
+
+afx_msg LRESULT CFloatPlaylistDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
+{
+    if (m_searched)
+    {
+        //清除搜索结果
+        m_searched = false;
+        m_search_edit.SetWindowText(_T(""));
+        m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+        m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
+    }
     return 0;
 }

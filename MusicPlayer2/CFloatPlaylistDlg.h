@@ -3,6 +3,7 @@
 #include "StaticEx.h"
 #include "CPlayerUIBase.h"
 #include "PlayerToolBar.h"
+#include "SearchEditCtrl.h"
 
 #define WM_FLOAT_PLAYLIST_CLOSED (WM_USER+118)
 
@@ -36,8 +37,8 @@ private:
     CStaticEx m_path_static;
     CEdit m_path_edit;
     CButton m_set_path_button;
-    CEdit m_search_edit;
-    CButton m_clear_search_button;
+    CSearchEditCtrl m_search_edit;
+    //CButton m_clear_search_button;
     CPlayerToolBar m_playlist_toolbar;
 
     SLayoutData m_layout;		//窗口布局的固定数据
@@ -59,7 +60,7 @@ public:
     afx_msg void OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnEnChangeSearchEdit();
-    afx_msg void OnBnClickedClearSearchButton();
+    //afx_msg void OnBnClickedClearSearchButton();
     virtual void OnCancel();
     afx_msg void OnClose();
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
@@ -69,4 +70,5 @@ public:
 protected:
     afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 };

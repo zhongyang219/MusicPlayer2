@@ -5,6 +5,7 @@
 #include "afxcmn.h"
 #include "ListCtrlEx.h"
 #include "TabDlg.h"
+#include "SearchEditCtrl.h"
 
 // CSetPathDlg 对话框
 #define WM_PATH_SELECTED (WM_USER+107)
@@ -32,8 +33,8 @@ protected:
 	CEdit m_path_name;
 	CListCtrlEx m_path_list;
 	CMenu m_menu;
-	CEdit m_search_edit;
-	CToolTipCtrl m_Mytip;
+	CSearchEditCtrl m_search_edit;
+	//CToolTipCtrl m_Mytip;
 
 	CSize m_min_size;		//窗口的最小大小
 
@@ -75,6 +76,8 @@ public:
 	afx_msg void OnClearInvalidPath();
 	afx_msg void OnInitMenu(CMenu* pMenu);
 	afx_msg void OnEnChangeSearchEdit();
-	afx_msg void OnBnClickedClearButton();
+	//afx_msg void OnBnClickedClearButton();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+protected:
+    afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 };

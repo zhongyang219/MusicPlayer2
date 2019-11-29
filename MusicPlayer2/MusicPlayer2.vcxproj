@@ -249,6 +249,7 @@
     <ClInclude Include="GaussBlur.h" />
     <ClInclude Include="IniHelper.h" />
     <ClInclude Include="RegFileRelate.h" />
+    <ClInclude Include="SearchEditCtrl.h" />
     <ClInclude Include="SimpleXML.h" />
     <ClInclude Include="SongInfo.h" />
     <ClInclude Include="StaticEx.h" />
@@ -348,6 +349,7 @@
     <ClCompile Include="GaussBlur.cpp" />
     <ClCompile Include="IniHelper.cpp" />
     <ClCompile Include="RegFileRelate.cpp" />
+    <ClCompile Include="SearchEditCtrl.cpp" />
     <ClCompile Include="SimpleXML.cpp" />
     <ClCompile Include="StaticEx.cpp" />
     <ClCompile Include="SupportedFormatDlg.cpp" />

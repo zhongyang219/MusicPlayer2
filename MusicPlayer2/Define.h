@@ -125,6 +125,6 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_COLOR_SELECTED (WM_USER+123)
 #define WM_CUR_PLAYLIST_RENAMED (WM_USER+124)
 
-#define WM_NEXT_USER_MSG (WM_USER+125)
+#define WM_NEXT_USER_MSG (WM_USER+126)
 
 #define ADD_TO_PLAYLIST_MAX_SIZE 40         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

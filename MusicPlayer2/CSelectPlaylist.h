@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "TabDlg.h"
 #include "ListCtrlEx.h"
+#include "SearchEditCtrl.h"
 
 
 // CSelectPlaylist 对话框
@@ -29,10 +30,10 @@ private:
     int m_row_selected{};
     CMenu m_menu;
     bool m_playlist_modified{ false };
-    CEdit m_search_edit;
+    CSearchEditCtrl m_search_edit;
     vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
     bool m_searched{ false };				//是否处理搜索状态
-    CToolTipCtrl m_Mytip;
+    //CToolTipCtrl m_Mytip;
 
     enum
     {
@@ -71,6 +72,8 @@ public:
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnNewPlaylist();
     afx_msg void OnEnChangeSearchEdit();
-    afx_msg void OnBnClickedClearButton();
+    //afx_msg void OnBnClickedClearButton();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
+protected:
+    afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 };

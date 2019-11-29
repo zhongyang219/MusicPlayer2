@@ -188,7 +188,8 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
 	ON_COMMAND(ID_CLEAR_INVALID_PATH, &CSetPathDlg::OnClearInvalidPath)
 	ON_WM_INITMENU()
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CSetPathDlg::OnEnChangeSearchEdit)
-	ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CSetPathDlg::OnBnClickedClearButton)
+	//ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CSetPathDlg::OnBnClickedClearButton)
+    ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CSetPathDlg::OnSearchEditBtnClicked)
 END_MESSAGE_MAP()
 
 
@@ -230,14 +231,14 @@ BOOL CSetPathDlg::OnInitDialog()
 	m_min_size.cx = rect.Width();
 	m_min_size.cy = rect.Height();
 
-	//初始化提示信息
-	m_Mytip.Create(this, TTS_ALWAYSTIP);
-	m_Mytip.AddTool(GetDlgItem(IDC_CLEAR_BUTTON), CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
-	m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
+	////初始化提示信息
+	//m_Mytip.Create(this, TTS_ALWAYSTIP);
+	//m_Mytip.AddTool(GetDlgItem(IDC_CLEAR_BUTTON), CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
+	//m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
 
-	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
-	m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-	m_Mytip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	////设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
+	//m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	//m_Mytip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	//初始化右键菜单
 	m_menu.LoadMenu(IDR_SET_PATH_POPUP_MENU);
@@ -493,17 +494,17 @@ void CSetPathDlg::OnEnChangeSearchEdit()
 }
 
 
-void CSetPathDlg::OnBnClickedClearButton()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	if (m_searched)
-	{
-		//清除搜索结果
-		m_searched = false;
-		m_search_edit.SetWindowText(_T(""));
-		ShowPathList();
-	}
-}
+//void CSetPathDlg::OnBnClickedClearButton()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	if (m_searched)
+//	{
+//		//清除搜索结果
+//		m_searched = false;
+//		m_search_edit.SetWindowText(_T(""));
+//		ShowPathList();
+//	}
+//}
 
 
 BOOL CSetPathDlg::PreTranslateMessage(MSG* pMsg)
@@ -518,8 +519,21 @@ BOOL CSetPathDlg::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 
-	if (pMsg->message == WM_MOUSEMOVE)
-		m_Mytip.RelayEvent(pMsg);
+	//if (pMsg->message == WM_MOUSEMOVE)
+	//	m_Mytip.RelayEvent(pMsg);
 
 	return CTabDlg::PreTranslateMessage(pMsg);
+}
+
+
+afx_msg LRESULT CSetPathDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
+{
+    if (m_searched)
+    {
+        //清除搜索结果
+        m_searched = false;
+        m_search_edit.SetWindowText(_T(""));
+        ShowPathList();
+    }
+    return 0;
 }

@@ -258,6 +258,9 @@
     <Filter Include="派生的控件类\PlayerProgressBar">
       <UniqueIdentifier>{acbfba89-930f-4381-953c-27515fddefa3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\SearchEdit">
+      <UniqueIdentifier>{cee3861d-6863-47e9-a4d5-782cba6ab080}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -571,6 +574,9 @@
     <ClInclude Include="PlayerProgressBar.h">
       <Filter>派生的控件类\PlayerProgressBar</Filter>
     </ClInclude>
+    <ClInclude Include="SearchEditCtrl.h">
+      <Filter>派生的控件类\SearchEdit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -851,6 +857,9 @@
     </ClCompile>
     <ClCompile Include="PlayerProgressBar.cpp">
       <Filter>派生的控件类\PlayerProgressBar</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchEditCtrl.cpp">
+      <Filter>派生的控件类\SearchEdit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
