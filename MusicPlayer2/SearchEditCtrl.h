@@ -15,8 +15,10 @@ public:
 
     virtual void OnBrowse() override;
     virtual void OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot) override;
+    virtual void OnChangeLayout()override;
 
 protected:
+    void UpdateToolTipPosition();
 
 	DECLARE_MESSAGE_MAP()
 

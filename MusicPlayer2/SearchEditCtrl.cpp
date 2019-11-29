@@ -13,7 +13,6 @@ IMPLEMENT_DYNAMIC(CSearchEditCtrl, CMFCEditBrowseCtrl)
 CSearchEditCtrl::CSearchEditCtrl()
     : m_theme_color(theApp.m_app_setting_data.theme_color)
 {
-
 }
 
 CSearchEditCtrl::~CSearchEditCtrl()
@@ -31,7 +30,7 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
 {
     COLORREF back_color;
     if (bIsButtonPressed)
-        back_color = m_theme_color.light2;
+        back_color = m_theme_color.light1_5;
     else if (bIsButtonHot)
         back_color = m_theme_color.light2_5;
     else
@@ -48,6 +47,42 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
     drawer.DrawIcon(icon.GetIcon(), icon_top_left, icon_size);
 }
 
+
+void CSearchEditCtrl::OnChangeLayout()
+{
+    ASSERT_VALID(this);
+    ENSURE(GetSafeHwnd() != NULL);
+
+    m_nBrowseButtonWidth = max(theApp.DPI(20), m_sizeImage.cx + 8);
+
+    SetWindowPos(NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER | SWP_NOMOVE);
+
+    if (m_Mode != BrowseMode_None)
+    {
+        GetWindowRect(m_rectBtn);
+        m_rectBtn.left = m_rectBtn.right - m_nBrowseButtonWidth;
+
+        ScreenToClient(&m_rectBtn);
+    }
+    else
+    {
+        m_rectBtn.SetRectEmpty();
+    }
+
+}
+
+void CSearchEditCtrl::UpdateToolTipPosition()
+{
+    CRect rc_client;
+    GetWindowRect(rc_client);
+    rc_client.MoveToXY(0, 0);
+    CRect rc_edit = rc_client;
+    rc_edit.right = rc_client.right - m_nBrowseButtonWidth - theApp.DPI(4);
+    CRect rc_btn = rc_client;
+    rc_btn.left = rc_edit.right - theApp.DPI(2);
+    m_tool_tip.SetToolRect(this, 1, rc_btn);
+    m_tool_tip.SetToolRect(this, 2, rc_edit);
+}
 
 BEGIN_MESSAGE_MAP(CSearchEditCtrl, CMFCEditBrowseCtrl)
     ON_WM_SIZE()
@@ -67,6 +102,7 @@ void CSearchEditCtrl::PreSubclassWindow()
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
     m_tool_tip.AddTool(this, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT), CRect(), 1);
     m_tool_tip.AddTool(this, CCommon::LoadText(IDS_INPUT_KEY_WORD), CRect(), 2);
+    UpdateToolTipPosition();
 
     CMFCEditBrowseCtrl::PreSubclassWindow();
 }
@@ -88,14 +124,5 @@ void CSearchEditCtrl::OnSize(UINT nType, int cx, int cy)
     CMFCEditBrowseCtrl::OnSize(nType, cx, cy);
 
     // TODO: 在此处添加消息处理程序代码
-    CRect rc_client;
-    GetWindowRect(rc_client);
-    rc_client.MoveToXY(0, 0);
-    CRect rc_edit = rc_client;
-    rc_edit.right = rc_client.right - theApp.DPI(24);
-    CRect rc_btn = rc_client;
-    rc_btn.left = rc_edit.right - theApp.DPI(2);
-    m_tool_tip.SetToolRect(this, 1, rc_btn);
-    m_tool_tip.SetToolRect(this, 2, rc_edit);
-
+    UpdateToolTipPosition();
 }
