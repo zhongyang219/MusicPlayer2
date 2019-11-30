@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "CLyricDraw.h"
+#include "CUIDrawer.h"
 #include "MusicPlayer2.h"
 
 
-CLyricDraw::CLyricDraw(UIColors& colors)
+CUIDrawer::CUIDrawer(UIColors& colors)
     : m_colors(colors)
 {
 }
 
 
-CLyricDraw::~CLyricDraw()
+CUIDrawer::~CUIDrawer()
 {
 }
 
-void CLyricDraw::DrawLryicCommon(CRect rect)
+void CUIDrawer::DrawLryicCommon(CRect rect)
 {
     SetDrawArea(rect);
 
@@ -23,7 +23,7 @@ void CLyricDraw::DrawLryicCommon(CRect rect)
         DrawLyricTextMultiLine(rect);
 }
 
-int CLyricDraw::GetLyricTextHeight() const
+int CUIDrawer::GetLyricTextHeight() const
 {
     //计算文本高度
     if(!m_for_cortana_lyric)
@@ -33,22 +33,22 @@ int CLyricDraw::GetLyricTextHeight() const
     return m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
 }
 
-void CLyricDraw::Create(CDC * pDC, CWnd * pMainWnd)
+void CUIDrawer::Create(CDC * pDC, CWnd * pMainWnd)
 {
     CDrawCommon::Create(pDC, pMainWnd);
 }
 
-bool CLyricDraw::IsDrawMultiLine(int height) const
+bool CUIDrawer::IsDrawMultiLine(int height) const
 {
     return height >= static_cast<int>(GetLyricTextHeight() * 3.5);
 }
 
-void CLyricDraw::SetForCortanaLyric(bool for_cortana_lyric)
+void CUIDrawer::SetForCortanaLyric(bool for_cortana_lyric)
 {
     m_for_cortana_lyric = for_cortana_lyric;
 }
 
-void CLyricDraw::DrawLyricTextMultiLine(CRect lyric_area)
+void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area)
 {
     int line_space{};
     if (m_for_cortana_lyric)
@@ -186,7 +186,7 @@ void CLyricDraw::DrawLyricTextMultiLine(CRect lyric_area)
     }
 }
 
-void CLyricDraw::DrawLyricTextSingleLine(CRect rect, bool double_line)
+void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line)
 {
     SetLyricFont();
 
@@ -241,7 +241,86 @@ void CLyricDraw::DrawLyricTextSingleLine(CRect rect, bool double_line)
     }
 }
 
-void CLyricDraw::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent)
+void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/)
+{
+    int cols;		//要显示的频谱柱形的数量
+    switch (col)
+    {
+    case CUIDrawer::SC_64:
+        cols = 64;
+        break;
+    case CUIDrawer::SC_32:
+        cols = 32;
+        break;
+    case CUIDrawer::SC_16:
+        cols = 16;
+        break;
+    case CUIDrawer::SC_8:
+        cols = 8;
+        break;
+    default:
+        cols = SPECTRUM_COL;
+        break;
+    }
+    int gap_width{ rect.Width() * (SPECTRUM_COL / cols) / 168 };		//频谱柱形间隙宽度
+    if (gap_width < 1)
+        gap_width = 1;
+    int width = (rect.Width() - (cols - 1) * gap_width) / (cols - 1);
+
+    DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex);
+}
+
+void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex /*= false*/)
+{
+    CRect rc_spectrum_top = rect;
+    if (draw_reflex)     //如果要绘制倒影，则倒影占总高度的1/3
+        rc_spectrum_top.bottom = rect.top + (rect.Height() * 2 / 3);
+
+    CRect rects[SPECTRUM_COL];
+    rects[0] = rc_spectrum_top;
+    rects[0].right = rects[0].left + col_width;
+    for (int i{ 1 }; i < cols; i++)
+    {
+        rects[i] = rects[0];
+        rects[i].left += (i * (col_width + gap_width));
+        rects[i].right += (i * (col_width + gap_width));
+    }
+    for (int i{}; i < cols; i++)
+    {
+        float spetral_data = CPlayer::GetInstance().GetSpectralData()[i * (SPECTRUM_COL / cols)];
+        float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i * (SPECTRUM_COL / cols)];
+
+        CRect rect_tmp{ rects[i] };
+        int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+        int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+        if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+        if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+        rect_tmp.top = rect_tmp.bottom - spetral_height;
+        if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
+        FillRect(rect_tmp, color, true);
+        //绘制倒影
+        if (draw_reflex)
+        {
+            CRect rc_invert = rect_tmp;
+            rc_invert.bottom = rect_tmp.top + rect_tmp.Height() * 2 / 3;
+            rc_invert.MoveToY(rect_tmp.bottom + gap_width);
+            FillAlphaRect(rc_invert, color, 96, true);
+        }
+
+        //绘制顶端
+        CRect rect_peak{ rect_tmp };
+        rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
+        rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
+        FillRect(rect_peak, color, true);
+        ////绘制顶端倒影
+        //CRect rc_peak_invert = rect_peak;
+        //rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
+        //FillAlphaRect(rc_peak_invert, color, 96);
+    }
+
+}
+
+void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent)
 {
     SetLyricFont();
     static bool swap;
@@ -289,7 +368,7 @@ void CLyricDraw::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyr
     }
 }
 
-void CLyricDraw::SetLyricFont()
+void CUIDrawer::SetLyricFont()
 {
     if (!m_for_cortana_lyric)
         SetFont(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
@@ -297,7 +376,7 @@ void CLyricDraw::SetLyricFont()
         SetFont(&theApp.m_font_set.cortana.GetFont());
 }
 
-void CLyricDraw::SetLyricFontTranslated()
+void CUIDrawer::SetLyricFontTranslated()
 {
     if (!m_for_cortana_lyric)
         SetFont(&theApp.m_font_set.lyric_translate.GetFont(theApp.m_ui_data.full_screen));

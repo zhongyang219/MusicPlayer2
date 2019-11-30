@@ -79,7 +79,7 @@ void CSearchEditCtrl::UpdateToolTipPosition()
     CRect rc_edit = rc_client;
     rc_edit.right = rc_client.right - m_nBrowseButtonWidth - theApp.DPI(4);
     CRect rc_btn = rc_client;
-    rc_btn.left = rc_edit.right - theApp.DPI(2);
+    rc_btn.left = rc_edit.right + theApp.DPI(2);
     m_tool_tip.SetToolRect(this, 1, rc_btn);
     m_tool_tip.SetToolRect(this, 2, rc_edit);
 }

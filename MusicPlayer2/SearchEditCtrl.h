@@ -25,7 +25,6 @@ protected:
 private:
     ColorTable& m_theme_color;
     CToolTipCtrl m_tool_tip;
-    bool m_first_draw = true;
 
 private:
     virtual void PreSubclassWindow();

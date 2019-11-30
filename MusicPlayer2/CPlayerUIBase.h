@@ -2,7 +2,7 @@
 #include "MusicPlayer2.h"
 #include "IPlayerUI.h"
 #include "CPlayerUIHelper.h"
-#include "CLyricDraw.h"
+#include "CUIDrawer.h"
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)		//显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
 
@@ -136,7 +136,7 @@ protected:
     CWnd* m_pMainWnd = nullptr;
     CDC* m_pDC;
     UIColors m_colors;
-    CLyricDraw m_draw{ m_colors };		//用于绘制文本的对象
+    CUIDrawer m_draw{ m_colors };		//用于绘制文本的对象
     SLayoutData m_layout;
     //CFont m_font_time;
     DrawData m_draw_data;

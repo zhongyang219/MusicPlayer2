@@ -211,7 +211,7 @@
     <ClInclude Include="CHotKeySettingDlg.h" />
     <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
-    <ClInclude Include="CLyricDraw.h" />
+    <ClInclude Include="CUIDrawer.h" />
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
@@ -315,7 +315,7 @@
     <ClCompile Include="CHotKeySettingDlg.cpp" />
     <ClCompile Include="CListBoxEnhanced.cpp" />
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
-    <ClCompile Include="CLyricDraw.cpp" />
+    <ClCompile Include="CUIDrawer.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="CueFile.cpp" />

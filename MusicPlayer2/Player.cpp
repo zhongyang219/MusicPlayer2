@@ -609,12 +609,12 @@ void CPlayer::CalculateSpectralData()
         memset(m_spectral_data, 0, sizeof(m_spectral_data));
         for (int i{}; i < FFT_SAMPLE; i++)
         {
-            m_spectral_data[i / (FFT_SAMPLE / SPECTRUM_ROW)] += m_fft[i];
+            m_spectral_data[i / (FFT_SAMPLE / SPECTRUM_COL)] += m_fft[i];
         }
 
-        for (int i{}; i < SPECTRUM_ROW; i++)
+        for (int i{}; i < SPECTRUM_COL; i++)
         {
-            m_spectral_data[i] /= (FFT_SAMPLE / SPECTRUM_ROW);
+            m_spectral_data[i] /= (FFT_SAMPLE / SPECTRUM_COL);
             m_spectral_data[i] = std::sqrtf(m_spectral_data[i]);		//对每个频谱柱形的值取平方根，以减少不同频率频谱值的差异
             m_spectral_data[i] *= 60;			//调整这里的乘数可以调整频谱分析柱形图整体的高度
         }
@@ -627,7 +627,7 @@ void CPlayer::CalculateSpectralData()
     if (m_playing != 1)
     {
         static int fall_count;
-        for (int i{}; i < SPECTRUM_ROW; i++)
+        for (int i{}; i < SPECTRUM_COL; i++)
         {
             if (m_spectral_data[i] > m_last_spectral_data[i])
             {

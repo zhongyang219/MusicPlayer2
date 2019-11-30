@@ -86,42 +86,9 @@ void CMiniModeUI::_DrawInfo(bool reset)
     //	m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
     m_draw.SetDrawArea(rc_tmp);
 
-    static const int DATA_ROW{ 16 };			//频谱柱形数据的数量（必须为2的整数次方且小于或等于SPECTRUM_ROW）
-    float spectral_data[DATA_ROW] {};
-    float spectral_data_peak[DATA_ROW] {};
-    CRect rects[DATA_ROW];		//每个柱形的矩形区域
-
     int width{ rc_tmp.Width() / 9 };	//每个柱形的宽度
     int gap{ rc_tmp.Width() / 22 };	//柱形的间隔
-    rects[0] = rc_tmp;
-    rects[0].right = rects[0].left + width - gap;
-    for (int i{ 1 }; i < DATA_ROW; i++)
-    {
-        rects[i] = rects[0];
-        rects[i].left += (i * width);
-        rects[i].right += (i * width);
-    }
-
-    for (int i{}; i < 64; i++)
-    {
-        spectral_data[i / (64 / DATA_ROW)] += CPlayer::GetInstance().GetSpectralData()[i];
-        spectral_data_peak[i / (64 / DATA_ROW)] += CPlayer::GetInstance().GetSpectralPeakData()[i];
-    }
-    for (int i{}; i < DATA_ROW; i++)
-    {
-        CRect rect_tmp{ rects[i] };
-        int spetral_height = static_cast<int>(spectral_data[i] * rc_tmp.Height() / 60 * theApp.m_app_setting_data.sprctrum_height / 100);
-        int peak_height = static_cast<int>(spectral_data_peak[i] * rc_tmp.Height() / 60 * theApp.m_app_setting_data.sprctrum_height / 100);
-        if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-        rect_tmp.top = rect_tmp.bottom - spetral_height;
-        if (rect_tmp.top < 0) rect_tmp.top = 0;
-        m_draw.FillRect(rect_tmp, m_colors.color_spectrum, true);
-
-        CRect rc_peak = rect_tmp;
-        rc_peak.bottom = rect_tmp.bottom - peak_height - theApp.DPI(2);
-        rc_peak.top = rc_peak.bottom - theApp.DPI(1);
-        m_draw.FillRect(rc_peak, m_colors.color_spectrum, true);
-    }
+    m_draw.DrawSpectrum(rc_tmp, width - gap, gap, 16, m_colors.color_spectrum, false);
 
     //绘制播放时间
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);

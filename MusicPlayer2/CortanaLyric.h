@@ -1,7 +1,7 @@
 #pragma once
 #include "ColorConvert.h"
 #include "MusicPlayer2.h"
-#include "CLyricDraw.h"
+#include "CUIDrawer.h"
 
 class CCortanaLyric
 {
@@ -27,7 +27,7 @@ private:
         COLORREF text_color2;		//未播放歌词的颜色
         COLORREF info_text_color;	//歌曲信息文本的颜色
         COLORREF back_color;		//背景色
-        COLORREF sprctrum_color;
+        //COLORREF sprctrum_color;
         bool dark;			//是否使用深色作为背景色绘制
     };
 
@@ -67,7 +67,7 @@ private:
     HWND m_cortana_hwnd{};		//Cortana的句柄
     HWND m_hCortanaStatic;
     wstring m_cortana_default_text;	//Cortana搜索框中原来的文本
-    CLyricDraw m_draw{ m_lyric_colors };		//用于在Cortana搜索框中绘图的对象
+    CUIDrawer m_draw{ m_lyric_colors };		//用于在Cortana搜索框中绘图的对象
     CWnd* m_cortana_wnd{};		//Cortana搜索框的指针
     CFont m_default_font;		//在Cortana搜索框中原来的字体
     CRect m_cortana_rect;		//Cortana搜索框框的矩形区域

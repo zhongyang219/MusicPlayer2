@@ -65,9 +65,9 @@ private:
     float m_speed{ 1 };     //播放速度
 
 	float m_fft[FFT_SAMPLE];		//储存频谱分析的数据
-	float m_spectral_data[SPECTRUM_ROW]{};	//用于显示的每个频谱柱形的高度
-	float m_last_spectral_data[SPECTRUM_ROW]{};	//上一次的频谱数据
-	float m_spectral_peak[SPECTRUM_ROW]{};		//频谱顶端的高度
+	float m_spectral_data[SPECTRUM_COL]{};	//用于显示的每个频谱柱形的高度
+	float m_last_spectral_data[SPECTRUM_COL]{};	//上一次的频谱数据
+	float m_spectral_peak[SPECTRUM_COL]{};		//频谱顶端的高度
 
 	int m_equalizer_gain[EQU_CH_NUM]{};		//用于保存设置好的每个通道的增益
 	bool m_equ_enable{ false };		//指示是否允许均衡器
@@ -84,15 +84,9 @@ private:
 	bool m_inner_cover{ false };			//如果专辑封面是内嵌图片，则为true
     bool m_is_osu{ false };
 
-	//bool m_no_ape_plugin{ false };		//如果无法加载bass_ape.dll，则为true
-
 	SongInfo m_no_use;
 public:
 	CLyrics m_Lyrics;		//歌词
-	//wstring m_lyric_path;	//歌词文件夹的路径
-
-	//bool lyric_karaoke_disp{ true };	//可以是否以卡拉OK样式显示
-	//bool lyric_fuzzy_match{ true };	//歌词模糊匹配
 
 	SortMode m_sort_mode;		//排序方式
 

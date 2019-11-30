@@ -299,39 +299,7 @@ void CCortanaLyric::DrawSpectrum()
 
     m_draw.SetDrawArea(rc_spectrum);
     rc_spectrum.right += theApp.DPI(8);
-
-    const int ROWS = 64;		//要显示的频谱柱形的数量
-    int gap_width{ rc_spectrum.Width() / 160 };		//频谱柱形间隙宽度
-    CRect rects[ROWS];
-    int width = (rc_spectrum.Width() - (ROWS - 1) * gap_width) / (ROWS - 1);		//每个柱形的宽度
-    rects[0] = rc_spectrum;
-    rects[0].right = rects[0].left + width;
-    for (int i{ 1 }; i < ROWS; i++)
-    {
-        rects[i] = rects[0];
-        rects[i].left += (i * (width + gap_width));
-        rects[i].right += (i * (width + gap_width));
-    }
-    for (int i{}; i < ROWS; i++)
-    {
-        float spetral_data = CPlayer::GetInstance().GetSpectralData()[i];
-        float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i];
-
-        CRect rect_tmp{ rects[i] };
-        int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-        int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-        if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-        if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-        rect_tmp.top = rect_tmp.bottom - spetral_height;
-        if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
-        m_draw.FillRect(rect_tmp, m_colors.sprctrum_color, true);
-
-        //绘制顶端
-        CRect rect_peak{ rect_tmp };
-        rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
-        rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
-        m_draw.FillRect(rect_peak, m_colors.sprctrum_color, true);
-    }
+    m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, false);
     m_draw.SetDrawArea(m_cortana_rect);
 }
 
@@ -445,7 +413,7 @@ void CCortanaLyric::SetUIColors()
         m_colors.text_color = theApp.m_app_setting_data.theme_color.light3;
         m_colors.text_color2 = theApp.m_app_setting_data.theme_color.light1;
         m_colors.info_text_color = theApp.m_app_setting_data.theme_color.light3;
-        m_colors.sprctrum_color = theApp.m_app_setting_data.theme_color.dark0;
+        m_lyric_colors.color_spectrum = theApp.m_app_setting_data.theme_color.dark0;
 
         DWORD dwStyle = GetWindowLong(m_hCortanaStatic, GWL_STYLE);
         if ((dwStyle & WS_VISIBLE) != 0)		//根据Cortana搜索框中static控件是否有WS_VISIBLE属性为绘图背景设置不同的背景色
@@ -459,7 +427,7 @@ void CCortanaLyric::SetUIColors()
         m_colors.text_color2 = theApp.m_app_setting_data.theme_color.dark1;
         m_colors.info_text_color = theApp.m_app_setting_data.theme_color.dark2;
         m_colors.back_color = GRAY(240);
-        m_colors.sprctrum_color = theApp.m_app_setting_data.theme_color.dark0;
+        m_lyric_colors.color_spectrum = theApp.m_app_setting_data.theme_color.dark0;
 
 		m_lyric_colors.color_text = theApp.m_app_setting_data.theme_color.dark3;
 		m_lyric_colors.color_text_2 = theApp.m_app_setting_data.theme_color.dark1;

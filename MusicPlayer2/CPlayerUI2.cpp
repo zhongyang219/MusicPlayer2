@@ -159,50 +159,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
                     rc_spectrum.bottom = rc_spectrum.top + max_height;
                 }
 
-                CRect rc_spectrum_top = rc_spectrum;
-                rc_spectrum_top.bottom = rc_spectrum.top + (rc_spectrum.Height() * 2 / 3);
-
-                const int ROWS = 64;		//要显示的频谱柱形的数量
-                int gap_width{ info_rect.Width() / 200 };		//频谱柱形间隙宽度
-                CRect rects[ROWS];
-                int width = (rc_spectrum_top.Width() - (ROWS - 1) * gap_width) / (ROWS - 1);
-                rects[0] = rc_spectrum_top;
-                rects[0].right = rects[0].left + width;
-                for (int i{ 1 }; i < ROWS; i++)
-                {
-                    rects[i] = rects[0];
-                    rects[i].left += (i * (width + gap_width));
-                    rects[i].right += (i * (width + gap_width));
-                }
-                for (int i{}; i < ROWS; i++)
-                {
-                    float spetral_data = CPlayer::GetInstance().GetSpectralData()[i];
-                    float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i];
-
-                    CRect rect_tmp{ rects[i] };
-                    int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-                    int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-                    if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-                    if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-                    rect_tmp.top = rect_tmp.bottom - spetral_height;
-                    if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
-                    m_draw.FillRect(rect_tmp, m_colors.color_spectrum, true);
-                    //绘制倒影
-                    CRect rc_invert = rect_tmp;
-                    rc_invert.bottom = rect_tmp.top + rect_tmp.Height() * 2 / 3;
-                    rc_invert.MoveToY(rect_tmp.bottom + gap_width);
-                    m_draw.FillAlphaRect(rc_invert, m_colors.color_spectrum, 96, true);
-
-                    //绘制顶端
-                    CRect rect_peak{ rect_tmp };
-                    rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
-                    rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
-                    m_draw.FillRect(rect_peak, m_colors.color_spectrum, true);
-                    ////绘制顶端倒影
-                    //CRect rc_peak_invert = rect_peak;
-                    //rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
-                    //m_draw.FillAlphaRect(rc_peak_invert, m_colors.color_spectrum, 96);
-                }
+                m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, true);
             }
         }
         else
@@ -361,10 +318,20 @@ void CPlayerUI2::_DrawInfo(bool reset)
         rc_tmp.right = info_rect.right - EdgeMargin(true);
         DrawToolBar(rc_tmp, true);
 
-        //绘制歌词
         rc_tmp.MoveToY(rc_tmp.bottom + Margin());
         rc_tmp.bottom = cover_side + EdgeMargin(false);
 
+        //绘制频谱分析
+        if (theApp.m_app_setting_data.show_spectrum)
+        {
+            m_draw.SetDrawArea(rc_tmp);
+            if (rc_tmp.Width() > DPI(200))
+                m_draw.DrawSpectrum(rc_tmp);
+            else
+                m_draw.DrawSpectrum(rc_tmp, CUIDrawer::SC_32);
+        }
+
+        //绘制歌词
         if (theApp.m_app_setting_data.lyric_background)
         {
             if (IsDrawBackgroundAlpha())

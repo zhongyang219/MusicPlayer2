@@ -2,12 +2,21 @@
 #include "DrawCommon.h"
 #include "CPlayerUIHelper.h"
 
-class CLyricDraw :
+class CUIDrawer :
     public CDrawCommon
 {
 public:
-    CLyricDraw(UIColors& colors);
-    ~CLyricDraw();
+    enum SpectrumCol        //绘制频谱分析的柱形数量
+    {
+        SC_64,
+        SC_32,
+        SC_16,
+        SC_8
+    };
+
+public:
+    CUIDrawer(UIColors& colors);
+    ~CUIDrawer();
 
     void DrawLryicCommon(CRect rect);
 
@@ -18,6 +27,19 @@ public:
 
     void DrawLyricTextMultiLine(CRect rect);
     void DrawLyricTextSingleLine(CRect rect, bool double_line = true);
+
+    //绘制频谱分析
+    //rect：频谱的矩形区域
+    //col：频谱的列数
+    //draw_reflex：是否绘制倒影
+    void DrawSpectrum(CRect rect, SpectrumCol col = SC_64, bool draw_reflex = false);
+    
+    //绘制频谱分析
+    //col_width：每一个柱形的宽度
+    //gap_width：柱形间间隙的宽度
+    //color：频谱分析的颜色
+    //draw_reflex：是否绘制倒影
+    void DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex = false);
 
 private:
     void SetLyricFont();

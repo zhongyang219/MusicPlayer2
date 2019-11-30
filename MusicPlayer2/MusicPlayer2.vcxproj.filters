@@ -511,9 +511,6 @@
     <ClInclude Include="CFloatPlaylistDlg.h">
       <Filter>对话框类\FloatPlaylistDlg</Filter>
     </ClInclude>
-    <ClInclude Include="CLyricDraw.h">
-      <Filter>PlayerUI</Filter>
-    </ClInclude>
     <ClInclude Include="COSUPlayerHelper.h">
       <Filter>公共的类\OSUPlayerHelper</Filter>
     </ClInclude>
@@ -576,6 +573,9 @@
     </ClInclude>
     <ClInclude Include="SearchEditCtrl.h">
       <Filter>派生的控件类\SearchEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIDrawer.h">
+      <Filter>PlayerUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -801,9 +801,6 @@
     <ClCompile Include="CFloatPlaylistDlg.cpp">
       <Filter>对话框类\FloatPlaylistDlg</Filter>
     </ClCompile>
-    <ClCompile Include="CLyricDraw.cpp">
-      <Filter>PlayerUI</Filter>
-    </ClCompile>
     <ClCompile Include="COSUPlayerHelper.cpp">
       <Filter>公共的类\OSUPlayerHelper</Filter>
     </ClCompile>
@@ -860,6 +857,9 @@
     </ClCompile>
     <ClCompile Include="SearchEditCtrl.cpp">
       <Filter>派生的控件类\SearchEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIDrawer.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

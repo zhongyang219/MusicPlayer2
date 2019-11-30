@@ -146,44 +146,15 @@ void CPlayerUI::_DrawInfo(bool reset)
 
     if (theApp.m_app_setting_data.show_spectrum)
     {
-        const int ROWS = 31;		//要显示的频谱柱形的数量
+        const int ROWS = 32;		//要显示的频谱柱形的数量
         int gap_width{ theApp.DPIRound(1, 0.4) };		//频谱柱形间隙宽度
-        CRect rects[ROWS];
-        int width = (spectral_rect.Width() - (ROWS - 1) * gap_width) / (ROWS - 1);
-        rects[0] = spectral_rect;
-        rects[0].DeflateRect(Margin() / 2, Margin() / 2);
-        rects[0].right = rects[0].left + width;
-        for (int i{ 1 }; i < ROWS; i++)
-        {
-            rects[i] = rects[0];
-            rects[i].left += (i * (width + gap_width));
-            rects[i].right += (i * (width + gap_width));
-        }
-        for (int i{}; i < ROWS; i++)
-        {
-            float spetral_data = (CPlayer::GetInstance().GetSpectralData()[i * 2] + CPlayer::GetInstance().GetSpectralData()[i * 2 + 1]) / 2;
-            float peak_data = (CPlayer::GetInstance().GetSpectralPeakData()[i * 2] + CPlayer::GetInstance().GetSpectralPeakData()[i * 2 + 1]) / 2;
-
-            CRect rect_tmp{ rects[i] };
-            int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-            int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-            if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-            if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-            rect_tmp.top = rect_tmp.bottom - spetral_height;
-            if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
-            COLORREF color;
-            if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
-                color = m_colors.color_spectrum_cover;
-            else
-                color = m_colors.color_spectrum;
-            m_draw.GetDC()->FillSolidRect(rect_tmp, color);
-
-            CRect rect_peak{ rect_tmp };
-            rect_peak.bottom = rect_tmp.bottom - peak_height - theApp.DPIRound(1.1);
-            rect_peak.top = rect_peak.bottom - theApp.DPIRound(1.1);
-            //if (peak_height > 1)
-            m_draw.GetDC()->FillSolidRect(rect_peak, color);
-        }
+        int width = (spectral_rect.Width() - (ROWS - 2) * gap_width) / (ROWS - 2);
+        COLORREF color;
+        if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
+            color = m_colors.color_spectrum_cover;
+        else
+            color = m_colors.color_spectrum;
+        m_draw.DrawSpectrum(spectral_rect, width, gap_width, ROWS, color);
     }
 
     //绘制工具条
