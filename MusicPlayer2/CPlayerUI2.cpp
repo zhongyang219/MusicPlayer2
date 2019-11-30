@@ -266,6 +266,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         rc_tmp.DeflateRect(EdgeMargin(true), EdgeMargin(false));
         rc_tmp.right = rc_tmp.left + cover_side;
         rc_tmp.bottom = rc_tmp.top + cover_side;
+
         if (IsDrawBackgroundAlpha())
             m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
         else
@@ -284,6 +285,21 @@ void CPlayerUI2::_DrawInfo(bool reset)
             int cover_margin = static_cast<int>(rc_tmp.Width() * 0.13);
             rect.DeflateRect(cover_margin, cover_margin);
             m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
+        }
+
+        //绘制频谱分析
+        if (theApp.m_app_setting_data.show_spectrum)
+        {
+            rc_tmp.top = rc_tmp.top + rc_tmp.Height() / 2;
+            const int ROWS = 32;		//要显示的频谱柱形的数量
+            int gap_width{ rc_tmp.Width() / 84 };		//频谱柱形间隙宽度
+            int width = (rc_tmp.Width() - (ROWS - 2) * gap_width) / (ROWS - 2);
+            COLORREF color;
+            if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
+                color = m_colors.color_spectrum_cover;
+            else
+                color = m_colors.color_spectrum;
+            m_draw.DrawSpectrum(rc_tmp, width, gap_width, ROWS, color);
         }
 
         //绘制右上角图标
@@ -320,16 +336,6 @@ void CPlayerUI2::_DrawInfo(bool reset)
 
         rc_tmp.MoveToY(rc_tmp.bottom + Margin());
         rc_tmp.bottom = cover_side + EdgeMargin(false);
-
-        //绘制频谱分析
-        if (theApp.m_app_setting_data.show_spectrum)
-        {
-            m_draw.SetDrawArea(rc_tmp);
-            if (rc_tmp.Width() > DPI(200))
-                m_draw.DrawSpectrum(rc_tmp);
-            else
-                m_draw.DrawSpectrum(rc_tmp, CUIDrawer::SC_32);
-        }
 
         //绘制歌词
         if (theApp.m_app_setting_data.lyric_background)

@@ -154,7 +154,7 @@ void CPlayerUI::_DrawInfo(bool reset)
             color = m_colors.color_spectrum_cover;
         else
             color = m_colors.color_spectrum;
-        m_draw.DrawSpectrum(spectral_rect, width, gap_width, ROWS, color);
+        m_draw.DrawSpectrum(cover_rect, width, gap_width, ROWS, color);
     }
 
     //绘制工具条
