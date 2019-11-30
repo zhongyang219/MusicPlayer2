@@ -30,13 +30,14 @@ public:
 
     //绘制频谱分析
     //rect：频谱的矩形区域
-    //col：频谱的列数
+    //col：频谱的柱形的数量
     //draw_reflex：是否绘制倒影
     void DrawSpectrum(CRect rect, SpectrumCol col = SC_64, bool draw_reflex = false);
     
     //绘制频谱分析
     //col_width：每一个柱形的宽度
     //gap_width：柱形间间隙的宽度
+    //cols：频谱的柱形的数量，必须为2的n次方，且小于或等于SPECTRUM_COL
     //color：频谱分析的颜色
     //draw_reflex：是否绘制倒影
     void DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex = false);

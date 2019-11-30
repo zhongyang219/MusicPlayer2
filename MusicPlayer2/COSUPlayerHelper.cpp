@@ -196,13 +196,25 @@ wstring COSUFile::GetBeatampSetId()
 
 wstring COSUFile::GetAlbumCoverFileName()
 {
-    size_t index1, index2;
-    index1 = m_events_seg.find("0,0,\"");
-    if (index1 == wstring::npos)
-        return wstring();
-    index2 = m_events_seg.find("\"", index1 + 6);
-    string album_cover_name = m_events_seg.substr(index1 + 5, index2 - index1 - 5);
-    return CCommon::StrToUnicode(album_cover_name, CodeType::UTF8);
+    size_t index1{}, index2{};
+    string album_cover_name;
+    while (true)
+    {
+        //查找,"到"之间的字符串
+        index1 = m_events_seg.find(",\"", index1);
+        if (index1 == string::npos)
+            return wstring();
+        index2 = m_events_seg.find("\"", index1 + 2);
+        album_cover_name = m_events_seg.substr(index1 + 2, index2 - index1 - 2);
+        index1 = index2 + 1;
+        size_t index0 = album_cover_name.rfind('.');
+        string ext;
+        if (index0 != string::npos)
+            ext = album_cover_name.substr(index0 + 1);
+        //如果获取到的文件名是图片文件，则将其返回
+        if(CCommon::StringCompareNoCase(ext, string("jpg")) || CCommon::StringCompareNoCase(ext, string("png")) || CCommon::StringCompareNoCase(ext, string("jpeg")))
+            return CCommon::StrToUnicode(album_cover_name, CodeType::UTF8);
+    }
 }
 
 void COSUFile::GetTag(const string & tag, string & tag_content)
