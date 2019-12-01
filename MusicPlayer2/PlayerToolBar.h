@@ -28,6 +28,7 @@ public:
     void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
 
     void SetIconSize(int size);
+    void SetCmdReciveWindow(CWnd* pWnd);        //设置响应工具按钮命令的窗口，如果不设置，则为工具栏的父窗口
 
 protected:
     struct ToolBtn
@@ -46,6 +47,7 @@ protected:
     };
 
     void AddToolTips();
+    CWnd* GetCmdReciveWindow();
 
 protected:
 	CToolTipCtrl m_tool_tip;		//文本提示类
@@ -55,6 +57,7 @@ protected:
     int m_cur_btn_id = 100;
     bool m_first_draw = true;
     bool m_menu_poped_up = false;
+    CWnd* m_pCmdReciveWnd = nullptr;
 
 	DECLARE_MESSAGE_MAP()
 

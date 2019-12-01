@@ -53,6 +53,11 @@ void CPlayerToolBar::SetIconSize(int size)
 }
 
 
+void CPlayerToolBar::SetCmdReciveWindow(CWnd* pWnd)
+{
+    m_pCmdReciveWnd = pWnd;
+}
+
 void CPlayerToolBar::AddToolTips()
 {
     for (size_t i = 0; i < m_buttons.size(); i++)
@@ -62,6 +67,18 @@ void CPlayerToolBar::AddToolTips()
     }
 }
 
+
+CWnd* CPlayerToolBar::GetCmdReciveWindow()
+{
+    CWnd* pWnd;
+    if (m_pCmdReciveWnd != nullptr)
+        pWnd = m_pCmdReciveWnd;
+    else if (GetParent() != nullptr)
+        pWnd = GetParent();
+    else
+        pWnd = AfxGetMainWnd();
+    return pWnd;
+}
 
 BEGIN_MESSAGE_MAP(CPlayerToolBar, CStatic)
 	ON_WM_PAINT()
@@ -217,7 +234,9 @@ void CPlayerToolBar::OnLButtonUp(UINT nFlags, CPoint point)
         if (btn.rect.PtInRect(point) && btn.enable)
         {
             if (btn.is_cmd)
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, btn.cmd_id, 0);
+            {
+                GetCmdReciveWindow()->SendMessage(WM_COMMAND, btn.cmd_id, 0);
+            }
             else if (btn.pMenu != nullptr)
             {
                 CPoint point;
@@ -307,10 +326,7 @@ afx_msg LRESULT CPlayerToolBar::OnInitmenu(WPARAM wParam, LPARAM lParam)
 BOOL CPlayerToolBar::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    CWnd* pParent = GetParent();
-    if (pParent == nullptr)
-        pParent = AfxGetMainWnd();
-    pParent->SendMessage(WM_COMMAND, wParam, lParam);        //将WM_COMMAND消息转发到父窗口
+    GetCmdReciveWindow()->SendMessage(WM_COMMAND, wParam, lParam);        //转发WM_COMMAND消息
 
     return CStatic::OnCommand(wParam, lParam);
 }
