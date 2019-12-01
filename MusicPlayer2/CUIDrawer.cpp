@@ -109,7 +109,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area)
         start_pos = center_pos - y_progress;
         for (int i{ lyric_index - 1 }; i >= 0; i--)
         {
-            if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_ui_data.show_translate)
+            if (theApp.m_ui_data.show_translate && !CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty())
                 start_pos -= lyric_height2;
             else
                 start_pos -= lyric_height;
