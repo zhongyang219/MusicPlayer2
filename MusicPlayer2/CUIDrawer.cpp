@@ -263,6 +263,8 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
         break;
     }
     int gap_width{ rect.Width() * (SPECTRUM_COL / cols) / 168 };		//ÆµÆ×ÖùÐÎ¼äÏ¶¿í¶È
+    if (theApp.m_ui_data.full_screen)
+        gap_width *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
     if (gap_width < 1)
         gap_width = 1;
     int width = (rect.Width() - (cols - 1) * gap_width) / (cols - 1);
