@@ -229,6 +229,11 @@ public:
 	template<class T>
 	static bool IsItemInVector(const vector<T>& items, const T& item);
 
+	//判断一个元素是否在vector中
+    //其中func的原型是 bool func(const T&)
+	template<class T, class Func>
+	static bool IsItemInVector(const vector<T>& items, const T& item, Func func);
+
 	//判断文件名是末尾是否符合“(数字)”的形式
 	//file_name: 要判断的文件名，不包含扩展名
 	//number: 接收括号中的数字
@@ -420,15 +425,26 @@ inline size_t CCommon::StringNatchWholeWord(const T & str, const T & find_str)
 	return -1;
 }
 
-template<class T>
-inline bool CCommon::IsItemInVector(const vector<T>& items, const T & item)
+template<class T, class Func>
+inline bool CCommon::IsItemInVector(const vector<T>& items, const T & item, Func func)
 {
 	for (const auto& an_item : items)
 	{
-		if (an_item == item)
+		if (func(an_item))
 			return true;
 	}
 	return false;
+}
+
+template<class T>
+inline bool CCommon::IsItemInVector(const vector<T>& items, const T& item)
+{
+    for (const auto& an_item : items)
+    {
+        if (an_item == item)
+            return true;
+    }
+    return false;
 }
 
 template<class T>
