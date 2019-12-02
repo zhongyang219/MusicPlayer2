@@ -55,8 +55,8 @@ void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<SongInfo>& files)
         {
             COSUFile osu_file{ (path + folder_name + L"\\" + osu_list.front()).c_str() };
             SongInfo song_info;
-            song_info.file_name = osu_file.GetAudioFile();
-            song_info.file_path = path + folder_name + L"\\" + song_info.file_name;
+            wstring file_name = osu_file.GetAudioFile();
+            song_info.file_path = path + folder_name + L"\\" + file_name;
             //song_info.is_osu_file = true;
             files.push_back(song_info);
         }

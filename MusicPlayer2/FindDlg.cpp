@@ -41,11 +41,11 @@ void CFindDlg::ShowFindResult()
 		{
 			str.Format(_T("%u"), m_find_result[i] + 1);
 			m_find_result_list.InsertItem(i, str);
-			m_find_result_list.SetItemText(i, 1, m_playlist[m_find_result[i]].file_name.c_str());
+			m_find_result_list.SetItemText(i, 1, m_playlist[m_find_result[i]].GetFileName().c_str());
 			m_find_result_list.SetItemText(i, 2, m_playlist[m_find_result[i]].title.c_str());
 			m_find_result_list.SetItemText(i, 3, m_playlist[m_find_result[i]].artist.c_str());
 			m_find_result_list.SetItemText(i, 4, m_playlist[m_find_result[i]].album.c_str());
-			m_find_result_list.SetItemText(i, 5, (CPlayer::GetInstance().GetCurrentDir() + m_playlist[m_find_result[i]].file_name).c_str());
+			m_find_result_list.SetItemText(i, 5, m_playlist[m_find_result[i]].file_path.c_str());
 		}
 	}
 	else
@@ -197,7 +197,7 @@ void CFindDlg::OnBnClickedFindButton()
 				find_flag = false;
 				if (m_find_file)
 				{
-					index = m_playlist[i].file_name.find(m_key_word);
+					index = m_playlist[i].GetFileName().find(m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
 				if (m_find_title)
@@ -466,7 +466,7 @@ void CFindDlg::OnFdOpenFileLocation()
 	if (m_find_current_playlist)
 	{
 		if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
-			file = CPlayer::GetInstance().GetCurrentDir() + m_playlist[m_find_result[m_item_selected]].file_name;
+			file = m_playlist[m_find_result[m_item_selected]].file_path;
 		else
 			return;
 	}

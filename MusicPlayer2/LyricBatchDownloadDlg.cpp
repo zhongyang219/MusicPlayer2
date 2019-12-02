@@ -147,7 +147,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 		m_song_list_ctrl.InsertItem(i, tmp);
 		m_song_list_ctrl.SetItemText(i, 1, m_playlist[i].title.c_str());
 		m_song_list_ctrl.SetItemText(i, 2, m_playlist[i].artist.c_str());
-		m_song_list_ctrl.SetItemText(i, 3, m_playlist[i].file_name.c_str());
+		m_song_list_ctrl.SetItemText(i, 3, m_playlist[i].GetFileName().c_str());
 	}
 
     m_progress_bar.SetBackgroundColor(GetSysColor(COLOR_BTNFACE));
@@ -247,12 +247,14 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		//设置要保存的歌词的路径
 		wstring lyric_path;
 		wstring file_name;
+        wstring dir;
+        dir = CFilePathHelper(pInfo->playlist->at(i).file_path).GetDir();
 		if (!pInfo->playlist->at(i).is_cue)
-			file_name = pInfo->playlist->at(i).file_name;
+			file_name = pInfo->playlist->at(i).GetFileName();
 		else
 			file_name = pInfo->playlist->at(i).artist + L" - " + pInfo->playlist->at(i).title + L".lrc";
 		if (pInfo->save_to_song_folder)
-			lyric_path = CPlayer::GetInstance().GetCurrentDir() + file_name;
+			lyric_path = dir + file_name;
 		else
 			lyric_path = theApp.m_lyric_setting_data.lyric_path + file_name;
 		size_t index = lyric_path.rfind(L'.');		//查找文件名最后一个点
@@ -272,7 +274,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		wstring keyword;		//查找的关键字
 		if (pInfo->playlist->at(i).IsTitleEmpty())		//如果没有标题信息，就把文件名设为搜索关键字
 		{
-			keyword = pInfo->playlist->at(i).file_name;
+			keyword = pInfo->playlist->at(i).GetFileName();
 			size_t index = keyword.rfind(L'.');		//查找最后一个点
 			keyword = keyword.substr(0, index);		//去掉扩展名
 		}
@@ -316,7 +318,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString()) title.clear();
 		if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()) artist.clear();
 		if (album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString()) album.clear();
-		int best_matched = CInternetCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).file_name, true);
+		int best_matched = CInternetCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).GetFileName(), true);
 		if (best_matched < 0)
 		{
             song_info_ori.no_online_lyric = true;

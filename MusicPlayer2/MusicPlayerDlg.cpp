@@ -3029,7 +3029,7 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
         if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
         {
             wstring song_id;
-            song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.file_name).id;
+            song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
             CPlayer::GetInstance().SetRelatedSongID(item_selected, song_id);
         }
 
@@ -3066,7 +3066,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
         {
             //搜索歌曲并获取最佳匹配的项目
-            match_item = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.file_name, false, &result);
+            match_item = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName(), false, &result);
             CPlayer::GetInstance().SetRelatedSongID(match_item.id);
         }
         if (song.song_id.empty())
@@ -3101,7 +3101,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         }
         else				//否则以歌曲文件名为文件名保存
         {
-            cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + song.file_name);
+            cover_file_path.SetFilePath(song.file_path);
         }
         CFilePathHelper url_path(cover_url);
         cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
@@ -3138,7 +3138,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         CFilePathHelper lyric_path;
         wstring file_name;
         if (!song.is_cue)
-            file_name = song.file_name;
+            file_name = song.GetFileName();
         else
             file_name = song.artist + L" - " + song.title;
         //if (CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))

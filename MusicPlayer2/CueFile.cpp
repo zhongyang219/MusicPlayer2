@@ -60,8 +60,8 @@ void CCueFile::DoAnalysis()
     song_info.genre = CCommon::StrToUnicode(GetCommand("REM GENRE"), m_code_type);
     song_info.year = CCommon::StrToUnicode(GetCommand("REM DATE"), m_code_type);
     song_info.comment = CCommon::StrToUnicode(GetCommand("REM COMMENT"), m_code_type);
-    song_info.file_name = m_audio_file_name;
-    song_info.file_path = cue_file_path.GetDir() + song_info.file_name;
+    //song_info.file_name = m_audio_file_name;
+    song_info.file_path = cue_file_path.GetDir() + m_audio_file_name;
     song_info.is_cue = true;
     song_info.info_acquired = true;
 

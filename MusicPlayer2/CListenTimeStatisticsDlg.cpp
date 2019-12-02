@@ -38,7 +38,7 @@ void CListenTimeStatisticsDlg::ShowData()
         if (data.second.listen_time >= 20 && data.second.lengh > 0)
 		{
 			data_list.push_back(data.second);
-			data_list.back().file_name = data.first;
+			data_list.back().file_path = data.first;
 		}
 	}
 
@@ -66,17 +66,16 @@ void CListenTimeStatisticsDlg::ShowData()
 		m_list_ctrl.InsertItem(index, std::to_wstring(index + 1).c_str());
 
 		CString str_track;
-		if (data.IsTitleEmpty() || CAudioCommon::GetAudioTypeByExtension(data.file_name) == AU_MIDI)
+		if (data.IsTitleEmpty() || CAudioCommon::GetAudioTypeByExtension(data.file_path) == AU_MIDI)
 		{
-			CFilePathHelper file_path(data.file_name);
-			str_track = file_path.GetFileName().c_str();
+			str_track = data.GetFileName().c_str();
 		}
 		else
 		{
 			str_track = (data.GetArtist() + L" - " + data.GetTitle()).c_str();
 		}
 		m_list_ctrl.SetItemText(index, 1, str_track);
-		m_list_ctrl.SetItemText(index, 2, data.file_name.c_str());
+		m_list_ctrl.SetItemText(index, 2, data.file_path.c_str());
 
 		int hour, min, sec;
 		sec = data.listen_time % 60;
@@ -94,7 +93,7 @@ void CListenTimeStatisticsDlg::ShowData()
 
 		m_list_ctrl.SetItemText(index, 5, str);
 
-		if (CPlayer::GetInstance().GetCurrentFilePath() == data.file_name)
+		if (CPlayer::GetInstance().GetCurrentFilePath() == data.file_path)
 			m_list_ctrl.SetHightItem(index);
 
 		index++;

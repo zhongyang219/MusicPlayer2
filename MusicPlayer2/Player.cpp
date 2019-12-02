@@ -242,7 +242,7 @@ void CPlayer::IniPlaylistComplate()
                 {
                     for (int i{}; i < GetSongNum(); i++)
                     {
-                        if (m_current_file_name_tmp == m_playlist[i].file_name)
+                        if (m_current_file_name_tmp == m_playlist[i].GetFileName())
                         {
                             m_index = i;
                             //m_current_file_name = m_current_file_name_tmp;
@@ -270,7 +270,7 @@ void CPlayer::IniPlaylistComplate()
         {
             for (int i{}; i < GetSongNum(); i++)
             {
-                if (current_file_name == m_playlist[i].file_name)
+                if (current_file_name == m_playlist[i].GetFileName())
                 {
                     m_index = i;
                     break;
@@ -304,7 +304,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
     //检索播放列表中每一首歌曲的歌词文件，并将歌词文件路径保存到列表中
     for (auto& song : m_playlist)
     {
-        if (song.file_name.size() < 3) continue;
+        if (song.GetFileName().size() < 3) continue;
         song.lyric_file.clear();		//检索歌词前先清除之前已经关联过的歌词
         //if (!song.lyric_file.empty() && CCommon::FileExist(song.lyric_file))		//如果歌曲信息中有歌词文件，且歌词文件存在，则不需要再获取歌词
         //	continue;
@@ -320,7 +320,7 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 
         CFilePathHelper lyric_path{ song.file_path };		//得到路径+文件名的字符串
         lyric_path.ReplaceFileExtension(L"lrc");		//将文件扩展替换成lrc
-        CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.file_name };
+        CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.GetFileName() };
         lyric_path2.ReplaceFileExtension(L"lrc");
         //查找歌词文件名和歌曲文件名完全匹配的歌词
         if (CCommon::FileExist(lyric_path.GetFilePath()))
@@ -888,7 +888,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     {
         SongInfo song_info;
         CFilePathHelper file_path{ file };
-        song_info.file_name = file_path.GetFileName();
+        //song_info.file_name = file_path.GetFileName();
         song_info.file_path = file;
 
         auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [file](const SongInfo& song)
@@ -941,7 +941,7 @@ void CPlayer::OpenAFile(wstring file)
 
 void CPlayer::AddFiles(const vector<wstring>& files)
 {
-    if (m_playlist.size() == 1 && m_playlist[0].file_path.empty() && m_playlist[0].file_name.empty())
+    if (m_playlist.size() == 1 && m_playlist[0].file_path.empty()/* && m_playlist[0].file_name.empty()*/)
         m_playlist.clear();     //删除播放列表中的占位项
 
     SongInfo song_info;
@@ -950,7 +950,7 @@ void CPlayer::AddFiles(const vector<wstring>& files)
         if(file.empty())
             continue;
         CFilePathHelper file_path{ file };
-        song_info.file_name = file_path.GetFileName();
+        //song_info.file_name = file_path.GetFileName();
         song_info.file_path = file;
         if (m_playlist_mode && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
             song_info.is_favourite = true;
@@ -1198,9 +1198,9 @@ wstring CPlayer::GetCurrentFilePath() const
 {
     if (m_index >= 0 && m_index < GetSongNum())
     {
-        if (m_playlist[m_index].file_path.empty())
-            return m_path + m_playlist[m_index].file_name;
-        else
+        //if (m_playlist[m_index].file_path.empty())
+        //    return m_path + m_playlist[m_index].file_name;
+        //else
             return m_playlist[m_index].file_path;
     }
     else
@@ -1664,7 +1664,7 @@ void CPlayer::SortPlaylist(bool change_index)
         {
             for (int i{}; i < GetSongNum(); i++)
             {
-                if (current_file_name == m_playlist[i].file_name)
+                if (current_file_name == m_playlist[i].GetFileName())
                 {
                     m_index = i;
                     break;
@@ -1721,7 +1721,7 @@ void CPlayer::OnExit()
 {
     SaveConfig();
     //退出时保存最后播放的曲目和位置
-    if (!m_playlist_mode && !m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_name.empty())
+    if (!m_playlist_mode && !m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_path.empty())
     {
         m_recent_path[0].track = m_index;
         m_recent_path[0].position = m_current_position.toInt();
@@ -2045,7 +2045,7 @@ void CPlayer::AlbumCoverGaussBlur()
 wstring CPlayer::GetCurrentFileName() const
 {
     if (m_index >= 0 && m_index < GetSongNum())
-        return m_playlist[m_index].file_name;
+        return m_playlist[m_index].GetFileName();
     else
         return wstring();
 }
@@ -2132,7 +2132,7 @@ bool CPlayer::IsOsuFile() const
 
 bool CPlayer::IsPlaylistEmpty() const
 {
-    return m_playlist.empty() || (m_playlist.size() == 1 && m_playlist[0].file_name.empty() && m_playlist[0].file_path.empty());
+    return m_playlist.empty() || (m_playlist.size() == 1 /*&& m_playlist[0].file_name.empty()*/ && m_playlist[0].file_path.empty());
 }
 
 void CPlayer::SetPlaylistPath(const wstring& playlist_path)

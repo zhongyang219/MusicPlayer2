@@ -23,7 +23,7 @@ CPlayListCtrl::~CPlayListCtrl()
 
 wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat display_format)
 {
-	AudioType type{ CAudioCommon::GetAudioTypeByExtension(song_info.file_name) };
+	AudioType type{ CAudioCommon::GetAudioTypeByExtension(song_info.file_path) };
 	if (type == AU_MIDI)		//MIDI只显示文件名
 	{
 		display_format = DF_FILE_NAME;
@@ -31,31 +31,31 @@ wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat d
 	switch (display_format)
 	{
 	case DF_FILE_NAME:		//显示为文件名
-		return song_info.file_name;
+		return song_info.GetFileName();
 	case DF_TITLE:			//显示为歌曲标题
 		if (song_info.IsTitleEmpty())	//如果获取不到歌曲标题，就显示文件名
-			return song_info.file_name;
+			return song_info.GetFileName();
 		else
 			return song_info.title;
 	case DF_ARTIST_TITLE:	//显示为艺术家 - 标题
 		if (song_info.IsTitleEmpty() && song_info.IsArtistEmpty())		//如果标题和艺术家都获取不到，就显示文件名
-			return song_info.file_name;
+			return song_info.GetFileName();
 		else
 			return (song_info.GetArtist() + _T(" - ") + song_info.GetTitle());
 	case DF_TITLE_ARTIST:	//显示为标题 - 艺术家
 		if (song_info.IsTitleEmpty() && song_info.IsArtistEmpty())		//如果标题和艺术家都获取不到，就显示文件名
-			return song_info.file_name;
+			return song_info.GetFileName();
 		else
 			return (song_info.GetTitle() + _T(" - ") + song_info.GetArtist());
 	default:
-		return song_info.file_name;
+		return song_info.GetFileName();
 	}
 }
 
 void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_result)
 {
 	m_searched = search_result;
-	if (m_all_song_info.size() == 1 && m_all_song_info[0].file_name.empty())
+	if (m_all_song_info.size() == 1 && m_all_song_info[0].file_path.empty())
 	{
 		DeleteAllItems();
 		return;
@@ -120,7 +120,7 @@ void CPlayListCtrl::QuickSearch(const wstring & key_word)
 	m_search_result.clear();
 	for (size_t i{}; i < m_all_song_info.size(); i++)
 	{
-		if (CCommon::StringFindNoCase(m_all_song_info[i].file_name, key_word) != wstring::npos
+		if (CCommon::StringFindNoCase(m_all_song_info[i].GetFileName(), key_word) != wstring::npos
 			|| CCommon::StringFindNoCase(m_all_song_info[i].title, key_word) != wstring::npos
 			|| CCommon::StringFindNoCase(m_all_song_info[i].artist, key_word) != wstring::npos
 			|| CCommon::StringFindNoCase(m_all_song_info[i].album, key_word) != wstring::npos)
@@ -226,7 +226,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
                 else
                 {
                     str_tip += CCommon::LoadText(IDS_FILE_NAME, _T(": "));
-                    str_tip += m_all_song_info[song_index].file_name.c_str();
+                    str_tip += m_all_song_info[song_index].GetFileName().c_str();
                 }
 				str_tip += _T("\r\n");
 

@@ -48,7 +48,7 @@ void CPlaylist::LoadFromFile(const wstring & file_path)
             size_t index = current_line_wcs.find(L'|');
             item.file_path = current_line_wcs.substr(0, index);
             CFilePathHelper file_path{ item.file_path };
-            item.file_name = file_path.GetFileName();
+            //item.file_name = file_path.GetFileName();
             if (index < current_line_wcs.size() - 1)
             {
                 vector<wstring> result;

@@ -109,7 +109,7 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
             if (files.size() >= max_file) break;
             if (FileIsAudio(wstring(fileinfo.name)))	//如果找到的文件是音频文件，则保存到容器中
             {
-                song_info.file_name = fileinfo.name;
+                //song_info.file_name = fileinfo.name;
                 song_info.file_path = path + fileinfo.name;
                 files.push_back(song_info);
             }
@@ -176,7 +176,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
     for (size_t i = 0; i < files.size(); i++)
     {
         //依次检查列表中的每首歌曲是否为cue文件
-        if (GetAudioTypeByExtension(files[i].file_name) == AU_CUE)
+        if (GetAudioTypeByExtension(files[i].file_path) == AU_CUE)
         {
             CFilePathHelper file_path{ files[i].file_path };
             wstring cue_dir = file_path.GetDir();

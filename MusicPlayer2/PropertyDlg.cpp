@@ -25,14 +25,14 @@ CPropertyDlg::~CPropertyDlg()
 void CPropertyDlg::ShowInfo()
 {
 	//显示文件名
-	m_file_name_edit.SetWindowText(m_all_song_info[m_index].file_name.c_str());
+	m_file_name_edit.SetWindowText(m_all_song_info[m_index].GetFileName().c_str());
 
 	//显示文件路径
 	m_file_path_edit.SetWindowText((m_all_song_info[m_index].file_path).c_str());
 
 	//显示文件类型
 	wstring file_type;
-	CFilePathHelper file_path{ m_all_song_info[m_index].file_name };
+	CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
 	file_type = file_path.GetFileExtension();
 	//if (file_type == _T("mp3"))
 	//	m_file_type_edit.SetWindowText(_T("MP3音频文件"));

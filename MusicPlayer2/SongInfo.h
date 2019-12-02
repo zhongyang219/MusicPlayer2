@@ -20,8 +20,8 @@ struct SongInfo
     //    }
     //}
 
-    wstring file_name{};	//歌曲的文件名
-    wstring file_path{};
+    //wstring file_name{};	//歌曲的文件名
+    wstring file_path{};    //歌曲的路径
     wstring lyric_file{};	//匹配的歌词文件的路径
     Time lengh{};			//歌曲的长度
     int bitrate{};		//比特率
@@ -50,7 +50,7 @@ struct SongInfo
     //根据文件名的比较函数，用于以文件名排序
     static bool ByFileName(const SongInfo& a, const SongInfo& b)
     {
-        return a.file_name < b.file_name;
+        return a.GetFileName() < b.GetFileName();
     }
     //根据标题的比较函数，用于以标题排序
     static bool ByTitle(const SongInfo& a, const SongInfo& b)
@@ -145,6 +145,19 @@ struct SongInfo
     wstring GetGenre() const
     {
         return genre.empty() ? wstring(CCommon::LoadText(IDS_DEFAULT_GENRE)) : genre;
+    }
+
+    wstring GetFileName() const
+    {
+        wstring file_name;
+        size_t index = file_path.rfind(L'\\');
+        if (index == wstring::npos)
+            index = file_path.rfind(L'/');
+        if (index == wstring::npos)
+            return wstring();
+
+        file_name = file_path.substr(index + 1);
+        return file_name;
     }
 };
 
