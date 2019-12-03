@@ -466,6 +466,7 @@
 #define IDS_RESTORE_DEFAULT_STYTLE_WARNING 427
 #define IDS_URL_INVALID_WARNING         428
 #define IDS_PROGRESS_INFO               429
+#define IDS_BASS_MIX_LOAD_ERROR         430
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

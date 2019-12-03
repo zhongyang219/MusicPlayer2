@@ -8,7 +8,7 @@ CMciCore::CMciCore()
 {
     CDllLib::Init(L"winmm.dll");
 
-    if (!IsSuccessed())
+    if (!IsSucceed())
     {
         CString strInfo = CCommon::LoadText(IDS_MCI_INIT_FAILED);
         theApp.WriteErrorLog(wstring(strInfo));

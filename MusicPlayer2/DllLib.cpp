@@ -32,7 +32,7 @@ void CDllLib::UnInit()
     }
 }
 
-bool CDllLib::IsSuccessed()
+bool CDllLib::IsSucceed()
 {
     return m_success;
 }

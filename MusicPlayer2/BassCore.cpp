@@ -127,7 +127,7 @@ void CBassCore::InitCore()
             m_bass_midi_lib.Init(plugin_dir + plugin_file);
             m_sfont_name = CCommon::LoadText(_T("<"), IDS_NONE, _T(">"));
             m_sfont.font = 0;
-            if (m_bass_midi_lib.IsSuccessed())
+            if (m_bass_midi_lib.IsSucceed())
             {
                 wstring sf2_path = theApp.m_general_setting_data.sf2_path;
                 if (!CCommon::FileExist(sf2_path))		//如果设置的音色库路径不存在，则从.\Plugins\soundfont\目录下查找音色库文件
@@ -167,7 +167,7 @@ void CBassCore::UnInitCore()
 {
     BASS_Stop();	//停止输出
     BASS_Free();	//释放Bass资源
-    if (m_bass_midi_lib.IsSuccessed() && m_sfont.font != 0)
+    if (m_bass_midi_lib.IsSucceed() && m_sfont.font != 0)
         m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
     m_bass_midi_lib.UnInit();
     for (const auto& handle : m_plugin_handles)		//释放插件句柄
@@ -188,7 +188,7 @@ std::wstring CBassCore::GetAudioType()
 
 void CBassCore::MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void * user)
 {
-    if (!m_bass_midi_lib.IsSuccessed())
+    if (!m_bass_midi_lib.IsSucceed())
         return;
     m_midi_lyric.midi_no_lyric = false;
     BASS_MIDI_MARK mark;
@@ -276,7 +276,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, Song
         CAudioTag audio_tag(hStream, file_path, song_info);
         audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
         //获取midi音乐的标题
-        if (CBassCore::m_bass_midi_lib.IsSuccessed() && audio_tag.GetAudioType() == AU_MIDI)
+        if (CBassCore::m_bass_midi_lib.IsSucceed() && audio_tag.GetAudioType() == AU_MIDI)
         {
             BASS_MIDI_MARK mark;
             if (CBassCore::m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
@@ -312,11 +312,11 @@ void CBassCore::Open(const wchar_t * file_path)
         m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, BASS_SAMPLE_FLOAT);
     BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
     m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
-    if (m_bass_midi_lib.IsSuccessed() && m_is_midi && m_sfont.font != 0)
+    if (m_bass_midi_lib.IsSucceed() && m_is_midi && m_sfont.font != 0)
         m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
 
     //如果文件是MIDI音乐，则打开时获取MIDI音乐的信息
-    if (m_is_midi && m_bass_midi_lib.IsSuccessed())
+    if (m_is_midi && m_bass_midi_lib.IsSucceed())
     {
         //获取MIDI音乐信息
         BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_MIDI_PPQN, &m_midi_info.ppqn); // get PPQN value
