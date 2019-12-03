@@ -55,29 +55,9 @@ void CPlayerUI2::_DrawInfo(bool reset)
         //绘制曲目格式
         rc_tmp.MoveToX(EdgeMargin(true));
         rc_tmp.MoveToY(rc_tmp.bottom);
-        int chans = CPlayer::GetInstance().GetChannels();
-        int freq = CPlayer::GetInstance().GetFreq();
-        CString chans_str;
-        if (chans == 1)
-            chans_str = CCommon::LoadText(IDS_MONO);
-        else if (chans == 2)
-            chans_str = CCommon::LoadText(IDS_STEREO);
-        else if (chans > 2)
-            chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), chans);
-        if (!CPlayer::GetInstance().IsMidi())
-        {
-            swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f,
-                       CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
-        }
-        else
-        {
-            const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
-            swprintf_s(buff, L"%s %.1fkHz %s %dbpm %d/%d", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f,
-                       chans_str.GetString(), midi_info.speed, midi_info.midi_position, midi_info.midi_length);
-        }
-
+        wstring format_str = GetDisplayFormatString();
         static CDrawCommon::ScrollInfo scroll_info2;
-        m_draw.DrawScrollText(rc_tmp, buff, m_colors.color_text, DPI(1.5), false, scroll_info2, reset);
+        m_draw.DrawScrollText(rc_tmp, format_str.c_str(), m_colors.color_text, DPI(1.5), false, scroll_info2, reset);
 
         //计算专辑封面的位置
         int bottom_height;		//专辑封面底部到绘图区询问的距离

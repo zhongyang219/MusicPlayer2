@@ -122,6 +122,8 @@ protected:
     bool IsDrawNarrowMode();			//是否使用窄界面模式绘图
     bool IsDrawBackgroundAlpha() const;	//是否需要绘制透明背景
 
+    wstring GetDisplayFormatString();       //获取显示格式的字符串
+
     int DPI(int pixel);
     int DPI(double pixel);
 

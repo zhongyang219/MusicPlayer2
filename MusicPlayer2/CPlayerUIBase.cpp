@@ -1012,6 +1012,30 @@ bool CPlayerUIBase::IsDrawBackgroundAlpha() const
     return theApp.m_app_setting_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
 }
 
+wstring CPlayerUIBase::GetDisplayFormatString()
+{
+    int chans = CPlayer::GetInstance().GetChannels();
+    int freq = CPlayer::GetInstance().GetFreq();
+    CString chans_str;
+    if (chans == 1)
+        chans_str = CCommon::LoadText(IDS_MONO);
+    else if (chans == 2)
+        chans_str = CCommon::LoadText(IDS_STEREO);
+    else if (chans == 6)
+        chans_str = CCommon::LoadText(_T("5.1 "), IDS_CHANNEL);
+    else if (chans == 8)
+        chans_str = CCommon::LoadText(_T("7.1 "), IDS_CHANNEL);
+    else if (chans > 2)
+        chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), chans);
+    wchar_t buff[64];
+    if (!CPlayer::GetInstance().IsMidi())
+        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
+    else
+        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.GetString());
+    return buff;
+
+}
+
 int CPlayerUIBase::DPI(int pixel)
 {
     if (m_ui_data.full_screen)
