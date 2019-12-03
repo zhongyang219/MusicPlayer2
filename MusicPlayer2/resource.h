@@ -666,6 +666,7 @@
 #define IDC_USE_OUT_IMAGE_CHECK         1095
 #define IDC_MIDI_USE_INNER_LYRIC_CHECK  1095
 #define IDC_SOUND_FADE_CHECK            1095
+#define IDC_CHANGE_FREQ_CHECK           1095
 #define IDC_BUTTON3                     1096
 #define IDC_START_CONVERT_BUTTON        1096
 #define IDC_BACKGROUND_TRANSPARENCY_STATIC2 1096
@@ -747,6 +748,7 @@
 #define IDC_PROGRESS_TEXT               1153
 #define IDC_PROGRESS_BAR                1154
 #define IDC_MFCEDITBROWSE1              1155
+#define IDC_FREQ_COMBO                  1156
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1085,7 +1087,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        405
 #define _APS_NEXT_COMMAND_VALUE         33145
-#define _APS_NEXT_CONTROL_VALUE         1156
+#define _APS_NEXT_CONTROL_VALUE         1157
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
