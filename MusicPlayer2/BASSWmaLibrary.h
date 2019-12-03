@@ -1,4 +1,5 @@
 #pragma once
+#include "DllLib.h"
 
 typedef DWORD HWMENCODE;	// WMA encoding handle
 
@@ -10,7 +11,7 @@ typedef DWORD HWMENCODE;	// WMA encoding handle
 
 #define BASS_ERROR_WMA				1001	// Windows Media (9 or above) is not installed
 
-class CBASSWmaLibrary
+class CBASSWmaLibrary : public CDllLib
 {
 	typedef HWMENCODE (WINAPI *_BASS_WMA_EncodeOpenFile)(DWORD freq, DWORD chans, DWORD flags, DWORD bitrate, const char *file);
 	typedef BOOL (WINAPI *_BASS_WMA_EncodeWrite)(HWMENCODE handle, const void *buffer, DWORD length);
@@ -19,10 +20,6 @@ class CBASSWmaLibrary
 public:
 	CBASSWmaLibrary();
 	~CBASSWmaLibrary();
-
-	void Init(const wstring& dll_path);		//载入DLL文件并获取函数入口
-	void UnInit();
-	bool IsSuccessed();		//判断DLL中的函数是否获取成功
 
 	//BASS encoder库中的函数指针
 	_BASS_WMA_EncodeOpenFile BASS_WMA_EncodeOpenFile;
@@ -41,8 +38,7 @@ public:
 	}
 
 private:
-	HMODULE m_dll_module;
-	bool m_successed{ false };
+    virtual bool GetFunction() override;
 
 };
 

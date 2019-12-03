@@ -1,4 +1,5 @@
 #pragma once
+#include "DllLib.h"
 typedef DWORD HENCODE;		// encoder handle
 
 typedef void (CALLBACK ENCODEPROC)(HENCODE handle, DWORD channel, const void *buffer, DWORD length, void *user);
@@ -14,7 +15,7 @@ user   : The 'user' parameter value given when calling BASS_Encode_Start */
 #define BASS_ENCODE_AUTOFREE	0x40000 // free the encoder when the channel is freed
 
 
-class CBASSEncodeLibrary
+class CBASSEncodeLibrary : public CDllLib
 {
 	typedef HENCODE (WINAPI *_BASS_Encode_Start)(DWORD handle, const char *cmdline, DWORD flags, ENCODEPROC *proc, void *user);
 	typedef BOOL (WINAPI *_BASS_Encode_Stop)(DWORD handle);
@@ -22,10 +23,6 @@ class CBASSEncodeLibrary
 public:
 	CBASSEncodeLibrary();
 	~CBASSEncodeLibrary();
-
-	void Init(const wstring& dll_path);		//载入DLL文件并获取函数入口
-	void UnInit();
-	bool IsSuccessed();		//判断DLL中的函数是否获取成功
 
 	//BASS encoder库中的函数指针
 	_BASS_Encode_Start BASS_Encode_Start;
@@ -38,7 +35,6 @@ public:
 	}
 
 private:
-	HMODULE m_dll_module;
-	bool m_successed{ false };
+    virtual bool GetFunction() override;
 };
 

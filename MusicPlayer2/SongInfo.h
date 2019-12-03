@@ -154,7 +154,7 @@ struct SongInfo
         if (index == wstring::npos)
             index = file_path.rfind(L'/');
         if (index == wstring::npos)
-            return wstring();
+            return file_path;
 
         file_name = file_path.substr(index + 1);
         return file_name;

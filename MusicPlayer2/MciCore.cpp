@@ -6,18 +6,9 @@
 
 CMciCore::CMciCore()
 {
-	//载入DLL
-	m_dll_module = ::LoadLibrary(_T("winmm.dll"));
-	//获取函数入口
-    mciSendStringW = (_mciSendStringW)::GetProcAddress(m_dll_module, "mciSendStringW");
-    mciGetErrorStringW = (_mciGetErrorStringW)::GetProcAddress(m_dll_module, "mciGetErrorStringW");
-	//判断是否成功
-	m_success = true;
-	m_success &= (m_dll_module != NULL);
-	m_success &= (mciSendStringW != NULL);
-	m_success &= (mciGetErrorStringW != NULL);
+    CDllLib::Init(L"winmm.dll");
 
-    if (!m_success)
+    if (!IsSuccessed())
     {
         CString strInfo = CCommon::LoadText(IDS_MCI_INIT_FAILED);
         theApp.WriteErrorLog(wstring(strInfo));
@@ -27,11 +18,24 @@ CMciCore::CMciCore()
 
 CMciCore::~CMciCore()
 {
-    if (m_dll_module != NULL)
-    {
-        FreeLibrary(m_dll_module);
-        m_dll_module = NULL;
-    }
+    //if (m_dll_module != NULL)
+    //{
+    //    FreeLibrary(m_dll_module);
+    //    m_dll_module = NULL;
+    //}
+    CDllLib::UnInit();
+}
+
+bool CMciCore::GetFunction()
+{
+    bool rtn = true;
+    //获取函数入口
+    mciSendStringW = (_mciSendStringW)::GetProcAddress(m_dll_module, "mciSendStringW");
+    mciGetErrorStringW = (_mciGetErrorStringW)::GetProcAddress(m_dll_module, "mciGetErrorStringW");
+    //判断是否成功
+    rtn &= (mciSendStringW != NULL);
+    rtn &= (mciGetErrorStringW != NULL);
+    return rtn;
 }
 
 void CMciCore::InitCore()

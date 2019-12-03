@@ -261,6 +261,9 @@
     <Filter Include="派生的控件类\SearchEdit">
       <UniqueIdentifier>{cee3861d-6863-47e9-a4d5-782cba6ab080}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\DllLib">
+      <UniqueIdentifier>{03d73557-49be-4f80-a559-7f99b8fe7799}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -577,6 +580,9 @@
     <ClInclude Include="CUIDrawer.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="DllLib.h">
+      <Filter>公共的类\DllLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -860,6 +866,9 @@
     </ClCompile>
     <ClCompile Include="CUIDrawer.cpp">
       <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DllLib.cpp">
+      <Filter>公共的类\DllLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

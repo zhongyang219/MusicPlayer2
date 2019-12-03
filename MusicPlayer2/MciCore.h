@@ -1,8 +1,9 @@
 #pragma once
 #include "IPlayerCore.h"
+#include "DllLib.h"
 
 class CMciCore :
-    public IPlayerCore
+    public IPlayerCore, public CDllLib
 {
     typedef DWORD   MCIERROR;       /* error return code, 0 means no error */
 
@@ -57,6 +58,8 @@ private:
     void GetMidiPosition();
     int GetMciSongLength(const std::wstring& file_path);
 
+    virtual bool GetFunction() override;
+
 private:
     std::wstring m_file_path;
     bool m_playing{ false };
@@ -65,11 +68,7 @@ private:
 
     MCIERROR m_error_code{ 0 };
 
-    //
-    HMODULE m_dll_module{};
     _mciSendStringW mciSendStringW;
     _mciGetErrorStringW mciGetErrorStringW;
-
-    bool m_success;
 };
 

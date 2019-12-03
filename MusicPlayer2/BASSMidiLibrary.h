@@ -1,5 +1,6 @@
 //封装的BASS MIDI中的若干API函数，通过动态加载的方式
 #pragma once
+#include "DllLib.h"
 typedef DWORD HSOUNDFONT;	// soundfont handle
 struct BASS_MIDI_FONT 
 {
@@ -39,7 +40,7 @@ struct BASS_MIDI_MARK
 
 #define BASS_ATTRIB_MIDI_PPQN		0x12000
 
-class CBASSMidiLibrary
+class CBASSMidiLibrary : public CDllLib
 {
 typedef HSOUNDFONT (WINAPI *_BASS_MIDI_FontInit)(const void* file, DWORD flags);
 typedef BOOL (WINAPI *_BASS_MIDI_StreamSetFonts)(HSTREAM handle, const void* fonts, DWORD count);
@@ -51,10 +52,6 @@ public:
 	CBASSMidiLibrary();
 	~CBASSMidiLibrary();
 
-	void Init(const wstring& dll_path);		//载入DLL文件并获取函数入口
-	void UnInit();
-	bool IsSuccessed() const;		//判断DLL中的函数是否获取成功
-
 	//BASS MIDI库中的函数指针
 	_BASS_MIDI_FontInit BASS_MIDI_FontInit;
 	_BASS_MIDI_StreamSetFonts BASS_MIDI_StreamSetFonts;
@@ -62,8 +59,9 @@ public:
 	_BASS_MIDI_FontFree BASS_MIDI_FontFree;
 	_BASS_MIDI_StreamGetEvent BASS_MIDI_StreamGetEvent;
 	_BASS_MIDI_StreamGetMark BASS_MIDI_StreamGetMark;
+
 private:
-	HMODULE m_dll_module;
-	bool m_successed{ false };
+    virtual bool GetFunction() override;
+
 };
 
