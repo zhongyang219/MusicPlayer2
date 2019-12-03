@@ -583,6 +583,9 @@
     <ClInclude Include="DllLib.h">
       <Filter>公共的类\DllLib</Filter>
     </ClInclude>
+    <ClInclude Include="BassMixLibrary.h">
+      <Filter>公共的类\BASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -869,6 +872,9 @@
     </ClCompile>
     <ClCompile Include="DllLib.cpp">
       <Filter>公共的类\DllLib</Filter>
+    </ClCompile>
+    <ClCompile Include="BassMixLibrary.cpp">
+      <Filter>公共的类\BASS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

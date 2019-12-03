@@ -203,6 +203,7 @@
     <ClInclude Include="BassCore.h" />
     <ClInclude Include="BASSEncodeLibrary.h" />
     <ClInclude Include="BASSMidiLibrary.h" />
+    <ClInclude Include="BassMixLibrary.h" />
     <ClInclude Include="BASSWmaLibrary.h" />
     <ClInclude Include="CDonateDlg.h" />
     <ClInclude Include="CFloatPlaylistDlg.h" />
@@ -308,6 +309,7 @@
     <ClCompile Include="BassCore.cpp" />
     <ClCompile Include="BASSEncodeLibrary.cpp" />
     <ClCompile Include="BASSMidiLibrary.cpp" />
+    <ClCompile Include="BassMixLibrary.cpp" />
     <ClCompile Include="BASSWmaLibrary.cpp" />
     <ClCompile Include="CDonateDlg.cpp" />
     <ClCompile Include="CFloatPlaylistDlg.cpp" />
