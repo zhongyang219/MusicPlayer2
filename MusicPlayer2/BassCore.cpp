@@ -410,7 +410,6 @@ void CBassCore::SetVolume(int vol)
 {
     m_volume = vol;
     float volume = static_cast<float>(vol) / 100.0f;
-    volume = volume * theApp.m_nc_setting_data.volume_map / 100;
     BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, volume);
 }
 

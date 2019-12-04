@@ -595,7 +595,9 @@ void CPlayer::GetPlayerCoreCurrentPosition()
 
 void CPlayer::SetVolume()
 {
-    m_pCore->SetVolume(m_volume);
+    int volume = m_volume;
+    volume = volume * theApp.m_nc_setting_data.volume_map / 100;
+    m_pCore->SetVolume(volume);
     GetPlayerCoreError();
 }
 
