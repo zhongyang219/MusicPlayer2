@@ -130,6 +130,28 @@ bool CRegFileRelate::DeleteFileTypeRelate(LPCTSTR file_ext)
     return deleted;
 }
 
+bool CRegFileRelate::GetAllRelatedExtensions(std::vector<wstring>& extensions)
+{
+    CRegKey key;
+    if (key.Open(HKEY_CURRENT_USER, _T("Software\\Classes\\")) != ERROR_SUCCESS)
+        return false;
+
+    DWORD dwIndex{};
+    DWORD dwSize = MAX_PATH;
+    TCHAR szExtension[MAX_PATH];
+    //遍历"Software\\Classes\\"下的所有项
+    while (ERROR_NO_MORE_ITEMS != key.EnumKey(dwIndex, szExtension, &dwSize))
+    {
+        dwIndex++;
+        dwSize = MAX_PATH;
+
+        //判断该扩展名是否已被程序关联
+        if(IsFileTypeRelated(szExtension))
+            extensions.push_back(szExtension);
+    }
+    return true;
+}
+
 bool CRegFileRelate::OpenItem(CRegKey& key, LPCTSTR item_str)
 {
     if (key.Open(HKEY_CURRENT_USER, item_str) != ERROR_SUCCESS)

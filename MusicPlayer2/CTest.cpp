@@ -88,7 +88,9 @@ void CTest::TestOSUFile()
 void CTest::TestReg()
 {
     CRegFileRelate reg;
-    bool rtn = reg.AddFileTypeRelate(_T(".wma"), 46);
+    //bool rtn = reg.AddFileTypeRelate(_T(".wma"), 46);
     //bool rtn = reg.DeleteFileTypeRelate(_T(".test"));
+    std::vector<wstring> exts;
+    reg.GetAllRelatedExtensions(exts);
     int a = 0;
 }

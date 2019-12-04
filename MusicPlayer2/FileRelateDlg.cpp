@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "AudioCommon.h"
 #include "RegFileRelate.h"
+#include <set>
 
 
 // CFileRelateDlg 对话框
@@ -35,14 +36,26 @@ void CFileRelateDlg::RefreshList()
     m_list_ctrl.DeleteAllItems();
     int index = 0;
     bool checked{ false }, unchecked{ false };
+    CRegFileRelate reg_file;
+    std::set<wstring> extensions;
     for (const auto& item : CAudioCommon::m_all_surpported_extensions)
+        extensions.insert(item);
+    std::vector<wstring> related_extensions;
+    reg_file.GetAllRelatedExtensions(related_extensions);
+    for (auto item : related_extensions)
+    {
+        if (!item.empty() && item[0] == L'.')
+            item = item.substr(1);
+        extensions.insert(item);
+    }
+
+    for (const auto& item : extensions)
     {
         //if(item == L"cue")
         //    continue;
         m_list_ctrl.InsertItem(index, item.c_str());
         wstring description = CAudioCommon::GetAudioDescriptionByExtension(item);
         m_list_ctrl.SetItemText(index, 1, description.c_str());
-        CRegFileRelate reg_file;
         bool related = reg_file.IsFileTypeRelated(item.c_str());
         m_list_ctrl.SetCheck(index, related);
         if (related)

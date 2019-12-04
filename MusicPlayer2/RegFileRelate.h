@@ -17,6 +17,9 @@ public:
     //删除一个文件类型的关联
     bool DeleteFileTypeRelate(LPCTSTR file_ext);
 
+    //获取所有已关联的类型扩展名
+    bool GetAllRelatedExtensions(std::vector<wstring>& extensions);
+
 private:
     bool OpenItem(CRegKey& key, LPCTSTR item_str);
 
