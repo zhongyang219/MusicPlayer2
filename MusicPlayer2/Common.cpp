@@ -198,11 +198,11 @@ bool CCommon::IsFileNameValid(const wstring& file_name)
 
 size_t CCommon::GetFileSize(const wstring & file_name)
 {
-	int l, m;
+	std::streampos l, m;
 	ifstream file(file_name, std::ios::in | std::ios::binary);
-	l = static_cast<int>(file.tellg());
+	l = file.tellg();
 	file.seekg(0, std::ios::end);
-	m = static_cast<int>(file.tellg());
+	m = file.tellg();
 	file.close();
 	return m - l;
 }
