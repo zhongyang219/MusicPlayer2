@@ -10,7 +10,6 @@
 #include"FindDlg.h"
 #include"OptionsDlg.h"
 #include"PropertyDlg.h"
-#include"ProgressStatic.h"
 #include"ColorConvert.h"
 #include"MiniModeDlg.h"
 #include"LyricEditDlg.h"

@@ -5,7 +5,6 @@
 #include "afxcmn.h"
 #include "PlayListCtrl.h"
 #include "ColorConvert.h"
-#include"ProgressStatic.h"
 #include "DrawCommon.h"
 #include "CMiniModeUI.h"
 
