@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "PlayerToolBar.h"
 #include "PlayerProgressBar.h"
+#include "BrowseEdit.h"
 
 // CTestDlg 对话框
 
@@ -32,4 +33,5 @@ private:
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnTimer(UINT_PTR nIDEvent);
+    CBrowseEdit m_browse_edit;
 };

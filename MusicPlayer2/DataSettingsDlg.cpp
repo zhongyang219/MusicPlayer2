@@ -35,10 +35,11 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_COVER_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck)
 	ON_BN_CLICKED(IDC_LYRIC_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck)
 	ON_BN_CLICKED(IDC_CHECK_UPDATE_CHECK, &CDataSettingsDlg::OnBnClickedCheckUpdateCheck)
-	ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDataSettingsDlg::OnBnClickedBrowseButton)
+	//ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDataSettingsDlg::OnBnClickedBrowseButton)
 	ON_BN_CLICKED(IDC_MIDI_USE_INNER_LYRIC_CHECK, &CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck)
 	ON_BN_CLICKED(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, &CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck)
 	ON_EN_CHANGE(IDC_SF2_PATH_EDIT, &CDataSettingsDlg::OnEnChangeSf2PathEdit)
+    ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CDataSettingsDlg::OnEditBrowseChanged)
 END_MESSAGE_MAP()
 
 
@@ -65,7 +66,9 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_lyric);
 	((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->SetCheck(m_data.auto_download_only_tag_full);
 	((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->SetCheck(m_data.check_update_when_start);
-	SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
+    m_sf2_path_edit.SetWindowText(m_data.sf2_path.c_str());
+    CString szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
+    m_sf2_path_edit.EnableFileBrowseButton(_T("SF2"), szFilter);
 	((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->SetCheck(m_data.midi_use_inner_lyric);
 	if (m_data.minimize_to_notify_icon)
 		((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->SetCheck(TRUE);
@@ -187,22 +190,6 @@ void CDataSettingsDlg::OnBnClickedCheckUpdateCheck()
 }
 
 
-void CDataSettingsDlg::OnBnClickedBrowseButton()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//设置过滤器
-	CString szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
-	//构造打开文件对话框
-	CFileDialog fileDlg(TRUE, _T("SF2"), NULL, 0, szFilter, this);
-	//显示打开文件对话框
-	if (IDOK == fileDlg.DoModal())
-	{
-		m_data.sf2_path = fileDlg.GetPathName();	//获取打开的文件路径
-		SetDlgItemText(IDC_SF2_PATH_EDIT, m_data.sf2_path.c_str());
-	}
-}
-
-
 BOOL CDataSettingsDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类
@@ -258,4 +245,13 @@ void CDataSettingsDlg::OnOK()
 	}
 
 	CTabDlg::OnOK();
+}
+
+
+afx_msg LRESULT CDataSettingsDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
+{
+    CString str;
+    m_sf2_path_edit.GetWindowText(str);
+    m_data.sf2_path = str;
+    return 0;
 }

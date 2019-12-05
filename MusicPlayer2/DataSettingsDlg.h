@@ -1,6 +1,7 @@
 #pragma once
 #include"Common.h"
 #include "TabDlg.h"
+#include "BrowseEdit.h"
 
 // CDataSettingsDlg 对话框
 
@@ -22,7 +23,7 @@ public:
 private:
 	size_t m_data_size;		//数据文件的大小
 	CToolTipCtrl m_toolTip;
-	CEdit m_sf2_path_edit;
+	CBrowseEdit m_sf2_path_edit;
 	CComboBox m_language_combo;
 
 	void ShowDataSizeInfo();
@@ -39,10 +40,12 @@ public:
 	afx_msg void OnBnClickedCoverAutoDownloadCheck();
 	afx_msg void OnBnClickedLyricAutoDownloadCheck();
 	afx_msg void OnBnClickedCheckUpdateCheck();
-	afx_msg void OnBnClickedBrowseButton();
+	//afx_msg void OnBnClickedBrowseButton();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedMidiUseInnerLyricCheck();
 	afx_msg void OnBnClickedDownloadWhenTagFullCheck();
 	afx_msg void OnEnChangeSf2PathEdit();
 	virtual void OnOK();
+protected:
+    afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 };

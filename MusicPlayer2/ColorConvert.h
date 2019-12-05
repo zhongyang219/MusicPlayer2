@@ -12,6 +12,7 @@ struct ColorTable
 	COLORREF dark1_5;
 	COLORREF dark2;
 	COLORREF dark3;
+	COLORREF dark4;
 	COLORREF light1;
 	COLORREF light1_5;
 	COLORREF light2;

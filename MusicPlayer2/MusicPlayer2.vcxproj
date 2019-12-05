@@ -205,6 +205,7 @@
     <ClInclude Include="BASSMidiLibrary.h" />
     <ClInclude Include="BassMixLibrary.h" />
     <ClInclude Include="BASSWmaLibrary.h" />
+    <ClInclude Include="BrowseEdit.h" />
     <ClInclude Include="CDonateDlg.h" />
     <ClInclude Include="CFloatPlaylistDlg.h" />
     <ClInclude Include="CHotKey.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="BASSMidiLibrary.cpp" />
     <ClCompile Include="BassMixLibrary.cpp" />
     <ClCompile Include="BASSWmaLibrary.cpp" />
+    <ClCompile Include="BrowseEdit.cpp" />
     <ClCompile Include="CDonateDlg.cpp" />
     <ClCompile Include="CFloatPlaylistDlg.cpp" />
     <ClCompile Include="CHotKey.cpp" />

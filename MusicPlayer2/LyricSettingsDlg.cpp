@@ -49,12 +49,13 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, m_hide_lyric_without_lyric_chk);
     DDX_Control(pDX, IDC_HIDE_LYRIC_PAUSE_CHECK, m_hide_lyric_paused_chk);
     DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, m_lyric_background_penetrate_chk);
+    DDX_Control(pDX, IDC_LYRIC_PATH_EDIT, m_lyric_dir_edit);
 }
 
 
 BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_KARAOKE_DISP, &CLyricSettingsDlg::OnBnClickedKaraokeDisp)
-	ON_BN_CLICKED(IDC_EXPLORE_LYRIC_BUTTON, &CLyricSettingsDlg::OnBnClickedExploreLyricButton)
+	//ON_BN_CLICKED(IDC_EXPLORE_LYRIC_BUTTON, &CLyricSettingsDlg::OnBnClickedExploreLyricButton)
 	ON_BN_CLICKED(IDC_LYRIC_FUZZY_MATCH, &CLyricSettingsDlg::OnBnClickedLyricFuzzyMatch)
 	ON_BN_CLICKED(IDC_SHOW_LYRIC_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowLyricInCortana)
 	ON_BN_CLICKED(IDC_LYRIC_DOUBLE_LINE_CHECK, &CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck)
@@ -87,6 +88,8 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2_MODIFY, &CLyricSettingsDlg::OnLyricDefaultStyle2Modify)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3_MODIFY, &CLyricSettingsDlg::OnLyricDefaultStyle3Modify)
     ON_COMMAND(ID_RESTORE_DEFAULT_STYLE, &CLyricSettingsDlg::OnRestoreDefaultStyle)
+    //ON_EN_CHANGE(IDC_LYRIC_PATH_EDIT, &CLyricSettingsDlg::OnEnChangeLyricPathEdit)
+    ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CLyricSettingsDlg::OnEditBrowseChanged)
 END_MESSAGE_MAP()
 
 
@@ -151,12 +154,13 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 
 	EnableControl();
 
-	SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_data.lyric_path.c_str());
+    m_lyric_dir_edit.SetWindowText(m_data.lyric_path.c_str());
+    m_lyric_dir_edit.EnableFolderBrowseButton();
 
 	m_tool_tip.Create(this);
 	m_tool_tip.SetMaxTipWidth(300);
 	m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, CCommon::LoadText(IDS_LYRIC_FUZZY_MATHC_TIP_INFO));
-	m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_PATH_EDIT), CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
+	m_tool_tip.AddTool(&m_lyric_dir_edit, CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
 	m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
 	m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
 
@@ -223,25 +227,6 @@ void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.lyric_karaoke_disp = (m_karaoke_disp_check.GetCheck() != 0);
-}
-
-
-void CLyricSettingsDlg::OnBnClickedExploreLyricButton()
-{
-	// TODO: 在此添加控件通知处理程序代码
-#ifdef COMPILE_IN_WIN_XP
-	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-	folderPickerDlg.SetInfo(CCommon::LoadText(IDS_SELECT_LYRIC_FOLDER));
-#else
-	CFolderPickerDialog folderPickerDlg(m_data.lyric_path.c_str());
-	folderPickerDlg.m_ofn.lpstrTitle = CCommon::LoadText(IDS_SELECT_LYRIC_FOLDER);		//设置对话框标题
-#endif // COMPILE_IN_WIN_XP
-	if (folderPickerDlg.DoModal() == IDOK)
-	{
-		m_data.lyric_path = folderPickerDlg.GetPathName();
-		if (m_data.lyric_path.back() != L'\\') m_data.lyric_path.push_back(L'\\');	//确保路径末尾有反斜杠
-		SetDlgItemText(IDC_LYRIC_PATH_EDIT, m_data.lyric_path.c_str());
-	}
 }
 
 
@@ -599,4 +584,13 @@ void CLyricSettingsDlg::OnRestoreDefaultStyle()
     {
         m_pDesktopLyric->RestoreDefaultStyle();
     }
+}
+
+
+afx_msg LRESULT CLyricSettingsDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
+{
+    CString str;
+    GetDlgItemText(IDC_LYRIC_PATH_EDIT, str);
+    m_data.lyric_path = str.GetString();
+    return 0;
 }

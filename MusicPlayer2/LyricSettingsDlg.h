@@ -4,6 +4,7 @@
 #include "TabDlg.h"
 #include "ColorStaticEx.h"
 #include "DesktopLyric.h"
+#include "BrowseEdit.h"
 
 // CLyricSettingsDlg ¶Ô»°¿ò
 
@@ -37,6 +38,7 @@ protected:
 	CButton m_show_spectrum_chk;
     CButton m_show_lyric_in_cortana_chk;
 	CButton m_show_desktop_lyric_chk;
+    CBrowseEdit m_lyric_dir_edit;
 
 	CButton m_desktop_lyric_double_line_chk;
 	CColorStaticEx m_text_color1_static;
@@ -102,4 +104,7 @@ public:
     afx_msg void OnLyricDefaultStyle2Modify();
     afx_msg void OnLyricDefaultStyle3Modify();
     afx_msg void OnRestoreDefaultStyle();
+//    afx_msg void OnEnChangeLyricPathEdit();
+protected:
+    afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 };

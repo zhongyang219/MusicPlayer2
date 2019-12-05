@@ -25,6 +25,7 @@ void CTestDlg::DoDataExchange(CDataExchange* pDX)
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_TEST_TOOLBAR, m_toolbar);
     DDX_Control(pDX, IDC_TEST_PROGRESS_BAR, m_progress_bar);
+    DDX_Control(pDX, IDC_MFCEDITBROWSE1, m_browse_edit);
 }
 
 
@@ -53,6 +54,9 @@ BOOL CTestDlg::OnInitDialog()
     m_progress_bar.SetBarCount(10);
 
     SetTimer(82373, 80, NULL);
+
+    CString szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
+    m_browse_edit.EnableFileBrowseButton(_T("SF2"), szFilter);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

@@ -467,6 +467,7 @@
 #define IDS_URL_INVALID_WARNING         428
 #define IDS_PROGRESS_INFO               429
 #define IDS_BASS_MIX_LOAD_ERROR         430
+#define IDS_BROWSE                      431
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -549,6 +550,7 @@
 #define IDC_EXPLORE_LYRIC_BUTTON        1030
 #define IDC_SLIDER1                     1031
 #define IDC_TRANSPARENT_SLIDER          1031
+#define IDC_LYRIC_PATH_EDIT3            1031
 #define IDC_SLIDER2                     1032
 #define IDC_TRANSPARENT_STATIC          1033
 #define IDC_SLIDER3                     1033
@@ -1086,9 +1088,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        405
+#define _APS_NEXT_RESOURCE_VALUE        412
 #define _APS_NEXT_COMMAND_VALUE         33145
-#define _APS_NEXT_CONTROL_VALUE         1157
+#define _APS_NEXT_CONTROL_VALUE         1158
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
