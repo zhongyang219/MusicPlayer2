@@ -195,24 +195,24 @@ void CFindDlg::OnBnClickedFindButton()
 			for (size_t i{ 0 }; i < m_playlist.size(); i++)
 			{
 				find_flag = false;
-				if (m_find_file)
+				if (m_find_file && !find_flag)
 				{
-					index = m_playlist[i].GetFileName().find(m_key_word);
+					index = CCommon::StringFindNoCase(m_playlist[i].GetFileName(), m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
-				if (m_find_title)
+				if (m_find_title && !find_flag)
 				{
-					index = m_playlist[i].title.find(m_key_word);
+					index = CCommon::StringFindNoCase(m_playlist[i].title, m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
-				if (m_find_artist)
+				if (m_find_artist && !find_flag)
 				{
-					index = m_playlist[i].artist.find(m_key_word);
+					index = CCommon::StringFindNoCase(m_playlist[i].artist, m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
-				if (m_find_album)
+				if (m_find_album && !find_flag)
 				{
-					index = m_playlist[i].album.find(m_key_word);
+					index = CCommon::StringFindNoCase(m_playlist[i].album, m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
 
@@ -234,26 +234,24 @@ void CFindDlg::OnBnClickedFindButton()
 			for (const auto& item : theApp.m_song_data)
 			{
 				find_flag = false;
-				if (m_find_file)
+				if (m_find_file && !find_flag)
 				{
-					int index1;
-					index1 = item.first.rfind(L'\\');		//查找路径中最后一个反斜杠
-					index = item.first.find(m_key_word, index1);	//从最后一个反斜杠开始查找关键字
+                    index = CCommon::StringFindNoCase(item.second.GetFileName(), m_key_word);
+                    if (index != string::npos) find_flag = true;
+				}
+				if (m_find_title && !find_flag)
+				{
+					index = CCommon::StringFindNoCase(item.second.title, m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
-				if (m_find_title)
+				if (m_find_artist && !find_flag)
 				{
-					index = item.second.title.find(m_key_word);
+                    index = CCommon::StringFindNoCase(item.second.artist, m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
-				if (m_find_artist)
+				if (m_find_album && !find_flag)
 				{
-					index = item.second.artist.find(m_key_word);
-					if (index != string::npos) find_flag = true;
-				}
-				if (m_find_album)
-				{
-					index = item.second.album.find(m_key_word);
+					index = CCommon::StringFindNoCase(item.second.album, m_key_word);
 					if (index != string::npos) find_flag = true;
 				}
 				if (find_flag)

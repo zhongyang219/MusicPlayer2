@@ -155,9 +155,6 @@
     <Filter Include="派生的控件类\PlayListCtrl">
       <UniqueIdentifier>{a32b41be-78fc-4327-881e-c96b8efb6ea9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="派生的控件类\ProgressStatic">
-      <UniqueIdentifier>{2c601c32-df3d-40c8-a2fb-204f1e67dad4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="派生的控件类\ListCtrlEx">
       <UniqueIdentifier>{82f3d014-6620-46d0-acf8-98fc0f5b868a}</UniqueIdentifier>
     </Filter>
@@ -336,9 +333,6 @@
     </ClInclude>
     <ClInclude Include="PlayListCtrl.h">
       <Filter>派生的控件类\PlayListCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="ProgressStatic.h">
-      <Filter>派生的控件类\ProgressStatic</Filter>
     </ClInclude>
     <ClInclude Include="CortanaLyric.h">
       <Filter>功能逻辑类\CortanaLyric</Filter>
@@ -644,9 +638,6 @@
     </ClCompile>
     <ClCompile Include="PlayListCtrl.cpp">
       <Filter>派生的控件类\PlayListCtrl</Filter>
-    </ClCompile>
-    <ClCompile Include="ProgressStatic.cpp">
-      <Filter>派生的控件类\ProgressStatic</Filter>
     </ClCompile>
     <ClCompile Include="CortanaLyric.cpp">
       <Filter>功能逻辑类\CortanaLyric</Filter>

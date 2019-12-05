@@ -292,7 +292,6 @@
     <ClInclude Include="OptionsDlg.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="LyricSettingsDlg.h" />
-    <ClInclude Include="ProgressStatic.h" />
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ReverbDlg.h" />
@@ -394,7 +393,6 @@
     <ClCompile Include="OptionsDlg.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="LyricSettingsDlg.cpp" />
-    <ClCompile Include="ProgressStatic.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="ReverbDlg.cpp" />
     <ClCompile Include="SetPathDlg.cpp" />
