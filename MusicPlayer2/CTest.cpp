@@ -3,6 +3,7 @@
 #include "InternetCommon.h"
 #include "COSUPlayerHelper.h"
 #include "RegFileRelate.h"
+#include "MediaLibHelper.h"
 
 CTest::CTest()
 {
@@ -21,6 +22,7 @@ void CTest::Test()
     //TestCommon();
     //TestOSUFile();
     //TestReg();
+    TestMediaLib();
 }
 
 void CTest::TestStringMatch()
@@ -93,4 +95,10 @@ void CTest::TestReg()
     std::vector<wstring> exts;
     reg.GetAllRelatedExtensions(exts);
     int a = 0;
+}
+
+void CTest::TestMediaLib()
+{
+    CMediaLibHelper media_lib(CMediaLibHelper::CT_ALBUM);
+
 }

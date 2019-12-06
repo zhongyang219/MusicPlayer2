@@ -264,6 +264,9 @@
     <Filter Include="派生的控件类\BrowseEdit">
       <UniqueIdentifier>{585a2de6-4f62-41d9-8478-e5d5ce213bd5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\MediaLibHelper">
+      <UniqueIdentifier>{818433e4-a872-4205-a9f6-24aa18cd13b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -586,6 +589,9 @@
     <ClInclude Include="BrowseEdit.h">
       <Filter>派生的控件类\BrowseEdit</Filter>
     </ClInclude>
+    <ClInclude Include="MediaLibHelper.h">
+      <Filter>功能逻辑类\MediaLibHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -875,6 +881,9 @@
     </ClCompile>
     <ClCompile Include="BrowseEdit.cpp">
       <Filter>派生的控件类\BrowseEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaLibHelper.cpp">
+      <Filter>功能逻辑类\MediaLibHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

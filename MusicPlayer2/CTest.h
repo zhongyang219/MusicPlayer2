@@ -16,5 +16,6 @@ private:
 	static void TestCommon();
     static void TestOSUFile();
     static void TestReg();
+    static void TestMediaLib();
 };
 
