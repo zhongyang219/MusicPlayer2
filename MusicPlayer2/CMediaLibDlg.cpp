@@ -52,6 +52,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+    CenterWindow();
 
     SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), FALSE);		// 设置小图标
 

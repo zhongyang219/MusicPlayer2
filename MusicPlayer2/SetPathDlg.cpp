@@ -201,7 +201,6 @@ BOOL CSetPathDlg::OnInitDialog()
 	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	//CenterWindow();
 
     if(!CPlayer::GetInstance().IsPlaylistMode())
         m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
