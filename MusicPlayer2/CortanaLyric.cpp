@@ -109,14 +109,10 @@ void CCortanaLyric::DrawInfo()
     if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
     {
         m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
-        //设置缓冲的DC
-        CDC MemDC;
-        CBitmap MemBitmap;
-        MemDC.CreateCompatibleDC(NULL);
-        MemBitmap.CreateCompatibleBitmap(m_pDC, m_cortana_rect.Width(), m_cortana_rect.Height());
-        CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+        //双缓冲绘图
+        CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_cortana_rect);
         //使用m_draw绘图
-        m_draw.SetDC(&MemDC);
+        m_draw.SetDC(drawDoubleBuffer.GetMemDC());
         m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 
         if(theApp.m_lyric_setting_data.cortana_show_spectrum)
@@ -184,10 +180,6 @@ void CCortanaLyric::DrawInfo()
             m_draw.DrawRectTopFrame(rect, m_border_color);
         }
         CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
-        //将缓冲区DC中的图像拷贝到屏幕中显示
-        m_pDC->BitBlt(0, 0, m_cortana_rect.Width(), m_cortana_rect.Height(), &MemDC, 0, 0, SRCCOPY);
-        MemBitmap.DeleteObject();
-        MemDC.DeleteDC();
     }
 
     //使用兼容模式显示歌词，给小娜搜索框设置文本

@@ -103,89 +103,79 @@ void CPlayerToolBar::OnPaint()
     CRect rect;
     GetClientRect(rect);
 
-    //设置缓冲的DC
-    CDC MemDC;
-    CBitmap MemBitmap;
-    MemDC.CreateCompatibleDC(NULL);
-
-    MemBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
-    CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-
-    CDrawCommon drawer;
-    drawer.Create(&MemDC, this);
-
-    //绘制背景
-    drawer.FillRect(rect, CColorConvert::m_gray_color.light3);
-
-    //绘制图标
-    CRect rc_icon = rect;
-    rc_icon.left += theApp.DPI(2);
-    rc_icon.top = (rect.Height() - m_icon_size) / 2;
-    rc_icon.right = rc_icon.left;
-    rc_icon.bottom = rc_icon.top + m_icon_size;
-
-    for (auto iter = m_buttons.begin(); iter!=m_buttons.end(); iter++)
+    //双缓冲绘图
     {
-        if(iter != m_buttons.begin())
-        {
-            rc_icon.left = (iter-1)->rect.right + theApp.DPI(2);
-        }
+        CDrawDoubleBuffer drawDoubleBuffer(&dc, rect);
+        CDrawCommon drawer;
+        drawer.Create(drawDoubleBuffer.GetMemDC(), this);
 
-        bool draw_text = iter->show_text && !(iter->text.IsEmpty());
-        if (draw_text)
-        {
-            CSize text_size = drawer.GetTextExtent(iter->text);
-            rc_icon.right = rc_icon.left + m_icon_size + text_size.cx + theApp.DPI(4);
-        }
-        else
-        {
-            rc_icon.right = rc_icon.left + m_icon_size;
-        }
+        //绘制背景
+        drawer.FillRect(rect, CColorConvert::m_gray_color.light3);
 
-        iter->rect = rc_icon;
-        if (iter->hover)
-            drawer.FillRect(rc_icon, m_theme_color.light2_5);
-        if(iter->pressed)
-            drawer.FillRect(rc_icon, m_theme_color.light1_5);
+        //绘制图标
+        CRect rc_icon = rect;
+        rc_icon.left += theApp.DPI(2);
+        rc_icon.top = (rect.Height() - m_icon_size) / 2;
+        rc_icon.right = rc_icon.left;
+        rc_icon.bottom = rc_icon.top + m_icon_size;
 
-        CRect rc_tmp = rc_icon;
-        //使图标在矩形中居中
-        CSize icon_size = iter->icon.GetSize();
-        if (draw_text)
-            rc_tmp.left = rc_icon.left + theApp.DPI(2);
-        else
-            rc_tmp.left = rc_icon.left + (rc_icon.Width() - icon_size.cx) / 2;
-        rc_tmp.top = rc_icon.top + (rc_icon.Height() - icon_size.cy) / 2;
-        rc_tmp.right = rc_tmp.left + icon_size.cx;
-        rc_tmp.bottom = rc_tmp.top + icon_size.cy;
-        if (iter->pressed)
+        for (auto iter = m_buttons.begin(); iter != m_buttons.end(); iter++)
         {
-            rc_tmp.MoveToX(rc_tmp.left + theApp.DPI(1));
-            rc_tmp.MoveToY(rc_tmp.top + theApp.DPI(1));
-        }
-        drawer.SetDrawArea(rc_tmp);
-        drawer.DrawIcon(iter->icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
-        //绘制文本
-        if (draw_text)
-        {
-            CRect rc_text = rc_icon;
-            rc_text.left = rc_tmp.right + theApp.DPI(2);
-            COLORREF text_color;
-            if (IsWindowEnabled())
-                text_color = CColorConvert::m_gray_color.dark3;
+            if (iter != m_buttons.begin())
+            {
+                rc_icon.left = (iter - 1)->rect.right + theApp.DPI(2);
+            }
+
+            bool draw_text = iter->show_text && !(iter->text.IsEmpty());
+            if (draw_text)
+            {
+                CSize text_size = drawer.GetTextExtent(iter->text);
+                rc_icon.right = rc_icon.left + m_icon_size + text_size.cx + theApp.DPI(4);
+            }
             else
-                text_color = CColorConvert::m_gray_color.dark1;
-            if(iter->pressed)
-                rc_text.MoveToY(rc_text.top + theApp.DPI(1));
-            drawer.DrawWindowText(rc_text, iter->text, text_color);
+            {
+                rc_icon.right = rc_icon.left + m_icon_size;
+            }
+
+            iter->rect = rc_icon;
+            if (iter->hover)
+                drawer.FillRect(rc_icon, m_theme_color.light2_5);
+            if (iter->pressed)
+                drawer.FillRect(rc_icon, m_theme_color.light1_5);
+
+            CRect rc_tmp = rc_icon;
+            //使图标在矩形中居中
+            CSize icon_size = iter->icon.GetSize();
+            if (draw_text)
+                rc_tmp.left = rc_icon.left + theApp.DPI(2);
+            else
+                rc_tmp.left = rc_icon.left + (rc_icon.Width() - icon_size.cx) / 2;
+            rc_tmp.top = rc_icon.top + (rc_icon.Height() - icon_size.cy) / 2;
+            rc_tmp.right = rc_tmp.left + icon_size.cx;
+            rc_tmp.bottom = rc_tmp.top + icon_size.cy;
+            if (iter->pressed)
+            {
+                rc_tmp.MoveToX(rc_tmp.left + theApp.DPI(1));
+                rc_tmp.MoveToY(rc_tmp.top + theApp.DPI(1));
+            }
+            drawer.SetDrawArea(rc_tmp);
+            drawer.DrawIcon(iter->icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
+            //绘制文本
+            if (draw_text)
+            {
+                CRect rc_text = rc_icon;
+                rc_text.left = rc_tmp.right + theApp.DPI(2);
+                COLORREF text_color;
+                if (IsWindowEnabled())
+                    text_color = CColorConvert::m_gray_color.dark3;
+                else
+                    text_color = CColorConvert::m_gray_color.dark1;
+                if (iter->pressed)
+                    rc_text.MoveToY(rc_text.top + theApp.DPI(1));
+                drawer.DrawWindowText(rc_text, iter->text, text_color);
+            }
         }
-
     }
-
-    dc.BitBlt(rect.left, rect.top, rect.Width(), rect.Height(), &MemDC, 0, 0, SRCCOPY);
-    MemDC.SelectObject(pOldBit);
-    MemBitmap.DeleteObject();
-    MemDC.DeleteDC();
 
     if (m_first_draw && !m_buttons.empty())
     {

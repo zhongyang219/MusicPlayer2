@@ -59,16 +59,10 @@ void CPlayerProgressBar::OnPaint()
     CRect rect;
     GetClientRect(rect);
 
-    //ÉèÖÃ»º³åµÄDC
-    CDC MemDC;
-    CBitmap MemBitmap;
-    MemDC.CreateCompatibleDC(NULL);
-
-    MemBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
-    CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
-
+    //Ë«»º³å»æÍ¼
+    CDrawDoubleBuffer drawDoubleBuffer(&dc, rect);
     CDrawCommon drawer;
-    drawer.Create(&MemDC, this);
+    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
 
     //¿ªÊ¼»æÍ¼
     int gap_width = rect.Width() / m_bar_count / 4;
@@ -104,9 +98,4 @@ void CPlayerProgressBar::OnPaint()
             drawer.FillAlphaRect(rc_bar, m_theme_color.dark1, alpha, true);
         }
     }
-
-    dc.BitBlt(rect.left, rect.top, rect.Width(), rect.Height(), &MemDC, 0, 0, SRCCOPY);
-    MemDC.SelectObject(pOldBit);
-    MemBitmap.DeleteObject();
-    MemDC.DeleteDC();
 }

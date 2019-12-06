@@ -21,16 +21,11 @@ CBrowseEdit::~CBrowseEdit()
 
 void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot)
 {
-    //设置缓冲的DC
-    CDC MemDC;
-    CBitmap MemBitmap;
-    MemDC.CreateCompatibleDC(NULL);
-
-    MemBitmap.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
-    CBitmap *pOldBit = MemDC.SelectObject(&MemBitmap);
+    //使用双缓冲绘图
+    CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
 
     CDrawCommon drawer;
-    drawer.Create(&MemDC, this);
+    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
     CRect rc_draw{ rect };
     rc_draw.MoveToXY(0, 0);
 
@@ -53,12 +48,6 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
     CRect rc_text = rc_draw;
     rc_text.left += theApp.DPI(20);
     drawer.DrawWindowText(rc_text, m_btn_str, CColorConvert::m_gray_color.dark4, Alignment::CENTER, true);
-
-    pDC->BitBlt(rect.left, rect.top, rect.Width(), rect.Height(), &MemDC, 0, 0, SRCCOPY);
-    MemDC.SelectObject(pOldBit);
-    MemBitmap.DeleteObject();
-    MemDC.DeleteDC();
-
 }
 
 

@@ -106,3 +106,36 @@ protected:
     CFont* m_pfont{};
 };
 
+
+//用于双缓冲绘图的类
+class CDrawDoubleBuffer
+{
+public:
+    CDrawDoubleBuffer(CDC* pDC, CRect rect)
+        : m_pDC(pDC), m_rect(rect)
+    {
+        m_memDC.CreateCompatibleDC(NULL);
+        m_memBitmap.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
+        m_pOldBit = m_memDC.SelectObject(&m_memBitmap);
+    }
+
+    ~CDrawDoubleBuffer()
+    {
+        m_pDC->BitBlt(m_rect.left, m_rect.top, m_rect.Width(), m_rect.Height(), &m_memDC, 0, 0, SRCCOPY);
+        m_memDC.SelectObject(m_pOldBit);
+        m_memBitmap.DeleteObject();
+        m_memDC.DeleteDC();
+    }
+
+    CDC* GetMemDC()
+    {
+        return &m_memDC;
+    }
+
+private:
+    CDC* m_pDC;
+    CDC m_memDC;
+    CBitmap m_memBitmap;
+    CBitmap* m_pOldBit;
+    CRect m_rect;
+};
