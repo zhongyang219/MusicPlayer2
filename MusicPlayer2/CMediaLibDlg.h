@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CTabCtrlEx.h"
 #include "CSelectPlaylist.h"
+#include "MediaClassifyDlg.h"
 
 // CMediaLibDlg 对话框
 
@@ -20,6 +21,8 @@ public:
 public:
     CSetPathDlg m_path_dlg;
     CSelectPlaylistDlg m_playlist_dlg;
+    CMediaClassifyDlg m_artist_dlg{ CMediaClassifier::CT_ARTIST };
+    CMediaClassifyDlg m_album_dlg{ CMediaClassifier::CT_ALBUM };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

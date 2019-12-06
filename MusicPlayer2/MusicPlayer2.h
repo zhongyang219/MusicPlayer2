@@ -17,6 +17,7 @@
 #include "WinVersionHelper.h"
 #include "CHotkeyManager.h"
 #include "CommonData.h"
+#include "MediaLibHelper.h"
 
 
 // CMusicPlayerApp:
@@ -41,6 +42,9 @@ public:
     std::unordered_map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
     vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
+    CMediaClassifier m_artist_classifer{ CMediaClassifier::CT_ARTIST, true };     //将所有歌曲信息按艺术家分类
+    CMediaClassifier m_album_classifer{ CMediaClassifier::CT_ALBUM, true };       //将所有歌曲信息按唱片集分类
+
     LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
     ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
     GeneralSettingData m_general_setting_data;		//“选项设置”对话框中“常规设置”中的数据
@@ -62,7 +66,6 @@ public:
     void SaveSongData();		//将所有歌曲信息以序列化的方式保存到文件
 
     static void CheckUpdate(bool message);
-    static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
 
     void SaveConfig();
     void LoadConfig();
@@ -98,10 +101,14 @@ public:
 
     void WriteErrorLog(const wstring& log_str);
 
+    void StartClassifySongData();
+
 private:
     void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
 
     static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
+    static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
+    static UINT ClassifySongDataThreadFunc(LPVOID lpParam);	//将歌曲分类的线程函数
 
 private:
     HHOOK m_multimedia_key_hook = NULL;

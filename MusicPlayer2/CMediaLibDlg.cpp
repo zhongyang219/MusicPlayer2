@@ -59,10 +59,14 @@ BOOL CMediaLibDlg::OnInitDialog()
     //创建子对话框
     m_path_dlg.Create(IDD_SET_PATH_DIALOG);
     m_playlist_dlg.Create(IDD_SELECT_PLAYLIST_DIALOG);
+    m_artist_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+    m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
 
     //添加对话框
     m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
     m_tab_ctrl.AddWindow(&m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
+    m_tab_ctrl.AddWindow(&m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
+    m_tab_ctrl.AddWindow(&m_album_dlg, CCommon::LoadText(IDS_ALBUM));
     m_tab_ctrl.SetCurTab(m_init_tab);
 
     //获取初始时窗口的大小

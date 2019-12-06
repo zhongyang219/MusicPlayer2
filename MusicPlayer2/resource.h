@@ -449,6 +449,7 @@
 #define IDS_SEARCH_BOX_OPAQUE_TIP       410
 #define IDS_TOW_COLOR_GRADIENT          411
 #define IDS_THREE_COLOR_GRADIENT        412
+#define IDD_MEDIA_CLASSIFY_DIALOG       412
 #define IDS_NO_GRADIENT                 413
 #define IDS_LRC                         414
 #define IDS_SHOW_DESKTOP_LYRIC          415
@@ -468,6 +469,7 @@
 #define IDS_PROGRESS_INFO               429
 #define IDS_BASS_MIX_LOAD_ERROR         430
 #define IDS_BROWSE                      431
+#define IDS_OTHER                       432
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -550,7 +552,6 @@
 #define IDC_EXPLORE_LYRIC_BUTTON        1030
 #define IDC_SLIDER1                     1031
 #define IDC_TRANSPARENT_SLIDER          1031
-#define IDC_LYRIC_PATH_EDIT3            1031
 #define IDC_SLIDER2                     1032
 #define IDC_TRANSPARENT_STATIC          1033
 #define IDC_SLIDER3                     1033
@@ -752,6 +753,8 @@
 #define IDC_PROGRESS_BAR                1154
 #define IDC_MFCEDITBROWSE1              1155
 #define IDC_FREQ_COMBO                  1156
+#define IDC_CLASSIFY_LIST               1158
+#define IDC_SONG_LIST                   1159
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1088,9 +1091,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        412
+#define _APS_NEXT_RESOURCE_VALUE        415
 #define _APS_NEXT_COMMAND_VALUE         33145
-#define _APS_NEXT_CONTROL_VALUE         1158
+#define _APS_NEXT_CONTROL_VALUE         1160
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

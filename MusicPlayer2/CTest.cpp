@@ -99,6 +99,6 @@ void CTest::TestReg()
 
 void CTest::TestMediaLib()
 {
-    CMediaLibHelper media_lib(CMediaLibHelper::CT_ALBUM);
+    CMediaClassifier media_lib(CMediaClassifier::CT_ARTIST);
 
 }

@@ -192,6 +192,8 @@ BOOL CMusicPlayerApp::InitInstance()
     }
 #endif // !_DEBUG
 
+    //启动后台线程将歌曲数据分类
+    StartClassifySongData();
 
     CColorConvert::Initialize();
 
@@ -419,6 +421,13 @@ UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
     return 0;
 }
 
+UINT CMusicPlayerApp::ClassifySongDataThreadFunc(LPVOID lpParam)
+{
+    theApp.m_artist_classifer.ClassifyMedia();
+    theApp.m_album_classifer.ClassifyMedia();
+    return 0;
+}
+
 void CMusicPlayerApp::SaveConfig()
 {
     CIniHelper ini(m_config_path);
@@ -623,6 +632,11 @@ bool CMusicPlayerApp::IsSongDataModified() const
 void CMusicPlayerApp::WriteErrorLog(const wstring & log_str)
 {
     CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
+}
+
+void CMusicPlayerApp::StartClassifySongData()
+{
+    AfxBeginThread(ClassifySongDataThreadFunc, NULL);
 }
 
 void CMusicPlayerApp::LoadSongData()

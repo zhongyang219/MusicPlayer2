@@ -243,6 +243,7 @@
     <ClInclude Include="InputDlg.h" />
     <ClInclude Include="IPlayerCore.h" />
     <ClInclude Include="IPlayerUI.h" />
+    <ClInclude Include="MediaClassifyDlg.h" />
     <ClInclude Include="MediaLibHelper.h" />
     <ClInclude Include="PlayerProgressBar.h" />
     <ClInclude Include="PlayerToolBar.h" />
@@ -346,6 +347,7 @@
     <ClCompile Include="CVariant.cpp" />
     <ClCompile Include="FileRelateDlg.cpp" />
     <ClCompile Include="InputDlg.cpp" />
+    <ClCompile Include="MediaClassifyDlg.cpp" />
     <ClCompile Include="MediaLibHelper.cpp" />
     <ClCompile Include="PlayerProgressBar.cpp" />
     <ClCompile Include="PlayerToolBar.cpp" />
