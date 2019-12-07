@@ -25,6 +25,40 @@ CMediaClassifyDlg::~CMediaClassifyDlg()
 {
 }
 
+void CMediaClassifyDlg::GetSongsSelected(std::vector<wstring>& song_list) const
+{
+    song_list.clear();
+    if (m_left_selected)
+    {
+        //如果选中了左侧列表，则把选中分类下的所有曲目的路径添加到song_list中
+        for (int index : m_left_selected_items)
+        {
+            CString str_selected = GetClassifyListSelectedString(index);
+            auto iter = m_classifer.GetMeidaList().find(wstring(str_selected));
+            if (iter != m_classifer.GetMeidaList().end())
+            {
+                for (const auto& item : iter->second)
+                {
+                    song_list.push_back(item.file_path);
+                }
+            }
+        }
+    }
+    else
+    {
+        //
+        auto iter = m_classifer.GetMeidaList().find(wstring(m_classify_selected));
+        if (iter != m_classifer.GetMeidaList().end())
+        {
+            for (int index : m_right_selected_items)
+            {
+                if(index >= 0 && index < iter->second.size())
+                    song_list.push_back(iter->second[index].file_path);
+            }
+        }
+    }
+}
+
 void CMediaClassifyDlg::ShowClassifyList()
 {
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
@@ -58,36 +92,66 @@ void CMediaClassifyDlg::ShowSongList()
 {
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
     m_song_list_ctrl.DeleteAllItems();
-    auto iter = media_list.find(wstring(m_classify_selected));
-    if (iter != media_list.end())
+
+    int item_index = 0;
+    for (int index : m_left_selected_items)
     {
-        int index = 0;
-        for (const auto& item : iter->second)
+        CString str_selected = GetClassifyListSelectedString(index);
+
+        auto iter = media_list.find(wstring(str_selected));
+        if (iter != media_list.end())
         {
-            m_song_list_ctrl.InsertItem(index, item.GetTitle().c_str());
-            m_song_list_ctrl.SetItemText(index, 1, item.GetArtist().c_str());
-            m_song_list_ctrl.SetItemText(index, 2, item.GetAlbum().c_str());
-            m_song_list_ctrl.SetItemText(index, 3, item.file_path.c_str());
-            index++;
+            for (const auto& item : iter->second)
+            {
+                m_song_list_ctrl.InsertItem(item_index, item.GetTitle().c_str());
+                m_song_list_ctrl.SetItemText(item_index, 1, item.GetArtist().c_str());
+                m_song_list_ctrl.SetItemText(item_index, 2, item.GetAlbum().c_str());
+                m_song_list_ctrl.SetItemText(item_index, 3, item.file_path.c_str());
+                item_index++;
+            }
         }
     }
 }
 
-void CMediaClassifyDlg::ClassifyListClicked(int index)
+CString CMediaClassifyDlg::GetClassifyListSelectedString(int index) const
 {
-    if (index < 0)
-        return;
     CString str_selected = m_classify_list_ctrl.GetItemText(index, 0);
     if (str_selected == m_default_str)
         str_selected.Empty();
     if (str_selected == CCommon::LoadText(_T("<"), IDS_OTHER, _T(">")))
         str_selected = STR_OTHER_CLASSIFY_TYPE;
-    if (last_selected_index != index)
+    return str_selected;
+}
+
+void CMediaClassifyDlg::ClassifyListClicked(int index)
+{
+    if (index < 0)
+    {
+        SetButtonsEnable(false);
+        return;
+    }
+    m_classify_list_ctrl.GetItemSelected(m_left_selected_items);    //获取选中的项目
+
+    CString str_selected = GetClassifyListSelectedString(index);
+    static size_t last_selected_count = 0;
+    if (last_selected_index != index || last_selected_count != m_left_selected_items.size())
     {
         m_classify_selected = str_selected;
         ShowSongList();
         last_selected_index = index;
+        last_selected_count = m_left_selected_items.size();
     }
+
+    m_left_selected = true;
+    SetButtonsEnable(/*(index >= 0 && index < m_classify_list_ctrl.GetItemCount()) ||*/ !m_left_selected_items.empty());
+
+}
+
+void CMediaClassifyDlg::SongListClicked(int index)
+{
+    m_song_list_ctrl.GetItemSelected(m_right_selected_items);
+    m_left_selected = false;
+    SetButtonsEnable(/*(index >=0 && index < m_song_list_ctrl.GetItemCount()) ||*/ !m_right_selected_items.empty());
 }
 
 bool CMediaClassifyDlg::IsItemMatchKeyWord(const SongInfo& song, const wstring& key_word)
@@ -128,6 +192,27 @@ void CMediaClassifyDlg::QuickSearch(const wstring& key_word)
         m_search_result[STR_OTHER_CLASSIFY_TYPE] = other_list;
 }
 
+void CMediaClassifyDlg::SetButtonsEnable()
+{
+    bool play_enable;
+    if (m_left_selected)
+        play_enable = (m_classify_list_ctrl.GetCurSel() >= 0);
+    else
+        play_enable = (m_song_list_ctrl.GetCurSel() >= 0);
+    SetButtonsEnable(play_enable);
+}
+
+void CMediaClassifyDlg::SetButtonsEnable(bool enable)
+{
+    CWnd* pParent = GetParentWindow();
+    ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
+}
+
+void CMediaClassifyDlg::OnTabEntered()
+{
+    SetButtonsEnable();
+}
+
 void CMediaClassifyDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -142,6 +227,8 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_NOTIFY(NM_RCLICK, IDC_CLASSIFY_LIST, &CMediaClassifyDlg::OnNMRClickClassifyList)
     ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CMediaClassifyDlg::OnEnChangeMfceditbrowse1)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMediaClassifyDlg::OnSearchEditBtnClicked)
+    ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CMediaClassifyDlg::OnNMClickSongList)
+    ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CMediaClassifyDlg::OnNMRClickSongList)
 END_MESSAGE_MAP()
 
 
@@ -237,4 +324,39 @@ afx_msg LRESULT CMediaClassifyDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM 
         m_song_list_ctrl.DeleteAllItems();
     }
     return 0;
+}
+
+
+void CMediaClassifyDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    SongListClicked(pNMItemActivate->iItem);
+    *pResult = 0;
+}
+
+
+void CMediaClassifyDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    SongListClicked(pNMItemActivate->iItem);
+    *pResult = 0;
+}
+
+
+void CMediaClassifyDlg::OnOK()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    std::vector<wstring> files;
+    GetSongsSelected(files);
+    if(!files.empty())
+    {
+        CPlayer::GetInstance().OpenFiles(files);
+
+        CTabDlg::OnOK();
+        CWnd* pParent = GetParentWindow();
+        if (pParent != nullptr)
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+    }
 }

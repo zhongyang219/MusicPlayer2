@@ -95,6 +95,12 @@ void CSelectPlaylistDlg::SetHighlightItem()
     }
 }
 
+void CSelectPlaylistDlg::OnTabEntered()
+{
+    m_row_selected = m_playlist_ctrl.GetCurSel();
+    SetButtonsEnable();
+}
+
 BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSelectPlaylistDlg::OnNMDblclkList1)
     ON_BN_CLICKED(IDC_NEW_PLAYLIST, &CSelectPlaylistDlg::OnBnClickedNewPlaylist)

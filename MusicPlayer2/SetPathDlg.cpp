@@ -122,7 +122,13 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
 
 bool CSetPathDlg::IsSelectedPlayEnable() const
 {
-	return !m_recent_path.empty() && (SelectValid() && GetSelPath() != CPlayer::GetInstance().GetCurrentDir() || CPlayer::GetInstance().IsPlaylistMode());
+	return !m_recent_path.empty() && SelectValid() && (GetSelPath() != CPlayer::GetInstance().GetCurrentDir() || CPlayer::GetInstance().IsPlaylistMode());
+}
+
+void CSetPathDlg::OnTabEntered()
+{
+    m_path_selected = m_path_list.GetCurSel();
+    SetButtonsEnable(IsSelectedPlayEnable());
 }
 
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)

@@ -51,6 +51,10 @@ void CTabCtrlEx::SetCurTab(int index)
 			m_tab_list[i]->ShowWindow(SW_HIDE);
 		}
 	}
+
+    CTabDlg* pTabWnd = dynamic_cast<CTabDlg*>(m_tab_list[index]);
+    if (pTabWnd != nullptr)
+        pTabWnd->OnTabEntered();
 }
 
 CWnd* CTabCtrlEx::GetCurrentTab()

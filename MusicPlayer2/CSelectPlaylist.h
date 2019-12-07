@@ -44,6 +44,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
     void SetHighlightItem();
+    virtual void OnTabEntered() override;
 
 	DECLARE_MESSAGE_MAP()
 public:

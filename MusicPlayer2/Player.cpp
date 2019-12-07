@@ -1297,15 +1297,23 @@ void CPlayer::RemoveSongs(vector<int> indexes)
     if (m_loading)
         return;
     int size = indexes.size();
+    bool is_playing = IsPlaying();
+    Time position = m_pCore->GetCurPosition();
+    SongIdtetity cur_song = GetCurrentSongIdentity();
+    MusicControl(Command::STOP);
+    MusicControl(Command::CLOSE);
     for (int i{}; i < size; i++)
     {
-        RemoveSong(indexes[i]);
+        RemoveSongNotPlay(indexes[i]);
         if (i <= size - 2 && indexes[i + 1] > indexes[i])
         {
             for (int j{ i + 1 }; j < size; j++)
                 indexes[j]--;
         }
     }
+    if(cur_song == GetCurrentSongIdentity())        //如果删除后正在播放的曲目没有变化，就需要重新定位到之前播放到的位置
+        m_current_position = position;
+    AfterSongsRemoved(is_playing);
 }
 
 int CPlayer::RemoveSameSongs()
@@ -2054,6 +2062,52 @@ wstring CPlayer::GetCurrentFileName() const
         return m_playlist[m_index].GetFileName();
     else
         return wstring();
+}
+
+bool CPlayer::RemoveSongNotPlay(int index)
+{
+    if (m_loading)
+        return false;
+
+    if (IsPlaylistEmpty())
+        return false;
+
+    if (index >= 0 && index < GetSongNum())
+    {
+        m_playlist.erase(m_playlist.begin() + index);
+        //m_song_num--;
+        if (!m_playlist.empty())
+        {
+            if (index < m_index)	//如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
+            {
+                m_index--;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+void CPlayer::AfterSongsRemoved(bool play)
+{
+    if (m_playlist.empty())
+        return;
+
+    if (m_index < 0 || m_index >= GetSongNum())
+        m_index = 0;
+
+    MusicControl(Command::OPEN);
+    MusicControl(Command::SEEK);
+    if (play)
+        MusicControl(Command::PLAY);
+}
+
+CPlayer::SongIdtetity CPlayer::GetCurrentSongIdentity()
+{
+    SongIdtetity song_identity;
+    song_identity.file_path = GetCurrentSongInfo().file_path;
+    song_identity.track = GetCurrentSongInfo().track;
+    return song_identity;
 }
 
 void CPlayer::SearchOutAlbumCover()

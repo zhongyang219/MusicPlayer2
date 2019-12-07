@@ -161,3 +161,11 @@ BOOL CTabDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }
+
+
+void CTabDlg::OnOK()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+
+    CDialogEx::OnOK();
+}

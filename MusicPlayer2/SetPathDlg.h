@@ -47,6 +47,7 @@ protected:
 	void CalculateColumeWidth(vector<int>& width);
 	void SetListRowData(int index, const PathInfo& path_info);
 	bool IsSelectedPlayEnable() const;			//判断选中路径是否可以播放
+    virtual void OnTabEntered() override;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

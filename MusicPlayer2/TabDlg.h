@@ -11,6 +11,8 @@ public:
     CWnd* GetParentWindow();
 	void SetScrollbarInfo(int nPage, int nMax);
     void ResetScroll();
+    virtual void OnTabEntered() {}      //当标签切换到当前窗口时被调用
+    virtual void OnOK();
 
 protected:
 	void ScrollWindowSimple(int step);
