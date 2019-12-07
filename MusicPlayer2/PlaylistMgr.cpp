@@ -9,6 +9,7 @@ CPlaylistMgr::CPlaylistMgr()
 {
     m_default_playlist.path = theApp.m_playlist_dir + DEFAULT_PLAYLIST_NAME;
     m_favourite_playlist.path = theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME;
+    m_temp_playlist.path = theApp.m_playlist_dir + TEMP_PLAYLIST_NAME;
 }
 
 
@@ -18,7 +19,7 @@ CPlaylistMgr::~CPlaylistMgr()
 
 void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time)
 {
-    if (path == m_default_playlist.path || path == m_favourite_playlist.path)
+    if (path == m_default_playlist.path || path == m_favourite_playlist.path || path == m_temp_playlist.path)
         return;
 
     for (size_t i{ 0 }; i < m_recent_playlists.size(); i++)
@@ -77,6 +78,13 @@ void CPlaylistMgr::UpdateCurrentPlaylist(int track, int pos, int track_num, int 
         m_favourite_playlist.track_num = track_num;
         m_favourite_playlist.total_time = total_time;
     }
+    else if (m_cur_playlist_type == PT_TEMP)
+    {
+        m_temp_playlist.track = track;
+        m_temp_playlist.position = pos;
+        m_temp_playlist.track_num = track_num;
+        m_temp_playlist.total_time = total_time;
+    }
     else
     {
         wstring current_playlist_path = CPlayer::GetInstance().GetPlaylistPath();
@@ -107,7 +115,7 @@ void CPlaylistMgr::SavePlaylistData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << 2;        //写入数据文件版本
+    ar << 3;        //写入数据文件版本
 
     ar << static_cast<int>(m_cur_playlist_type);
     //写入默认播放列表信息
@@ -121,6 +129,12 @@ void CPlaylistMgr::SavePlaylistData()
         << m_favourite_playlist.position
         << m_favourite_playlist.track_num
         << m_favourite_playlist.total_time;
+
+    //写入临时播放列表信息
+    ar << m_temp_playlist.track
+        << m_temp_playlist.position
+        << m_temp_playlist.track_num
+        << m_temp_playlist.total_time;
 
     ar << static_cast<unsigned int>(m_recent_playlists.size());		//写入m_recent_playlists的大小
     for (auto& path_info : m_recent_playlists)
@@ -177,6 +191,14 @@ void CPlaylistMgr::LoadPlaylistData()
             ar >> m_favourite_playlist.total_time;
         }
 
+        if (version >= 3)
+        {
+            ar >> m_temp_playlist.track;
+            ar >> m_temp_playlist.position;
+            ar >> m_temp_playlist.track_num;
+            ar >> m_temp_playlist.total_time;
+        }
+
         ar >> size;		//读取映射容器的长度
         for (unsigned int i{}; i < size; i++)
         {
@@ -211,7 +233,7 @@ void CPlaylistMgr::LoadPlaylistData()
         {
             CFilePathHelper path_helper{ playlist_info.path };
             wstring file_name = path_helper.GetFileName();
-            if (file_name != DEFAULT_PLAYLIST_NAME && file_name != FAVOURITE_PLAYLIST_NAME)
+            if (file_name != DEFAULT_PLAYLIST_NAME && file_name != FAVOURITE_PLAYLIST_NAME && file_name != TEMP_PLAYLIST_NAME)
             {
                 m_recent_playlists.push_back(playlist_info);
                 files_in_playlist_info.insert(playlist_info.path);
@@ -227,7 +249,7 @@ void CPlaylistMgr::LoadPlaylistData()
     {
         CFilePathHelper path_helper{ theApp.m_playlist_dir + file };
         wstring file_name = path_helper.GetFileName();
-        if(file_name == DEFAULT_PLAYLIST_NAME || file_name == FAVOURITE_PLAYLIST_NAME || files_in_playlist_info.find(path_helper.GetFilePath())!= files_in_playlist_info.end())
+        if(file_name == DEFAULT_PLAYLIST_NAME || file_name == FAVOURITE_PLAYLIST_NAME || file_name == TEMP_PLAYLIST_NAME || files_in_playlist_info.find(path_helper.GetFilePath())!= files_in_playlist_info.end())
             continue;
 
         PlaylistInfo path_info;

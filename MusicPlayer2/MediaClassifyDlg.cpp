@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "MediaClassifyDlg.h"
 #include "afxdialogex.h"
+#include "Playlist.h"
 
 
 // CMediaClassifyDlg 对话框
@@ -27,6 +28,7 @@ CMediaClassifyDlg::~CMediaClassifyDlg()
 
 void CMediaClassifyDlg::GetSongsSelected(std::vector<wstring>& song_list) const
 {
+    auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
     song_list.clear();
     if (m_left_selected)
     {
@@ -34,8 +36,8 @@ void CMediaClassifyDlg::GetSongsSelected(std::vector<wstring>& song_list) const
         for (int index : m_left_selected_items)
         {
             CString str_selected = GetClassifyListSelectedString(index);
-            auto iter = m_classifer.GetMeidaList().find(wstring(str_selected));
-            if (iter != m_classifer.GetMeidaList().end())
+            auto iter = media_list.find(wstring(str_selected));
+            if (iter != media_list.end())
             {
                 for (const auto& item : iter->second)
                 {
@@ -47,8 +49,8 @@ void CMediaClassifyDlg::GetSongsSelected(std::vector<wstring>& song_list) const
     else
     {
         //
-        auto iter = m_classifer.GetMeidaList().find(wstring(m_classify_selected));
-        if (iter != m_classifer.GetMeidaList().end())
+        auto iter = media_list.find(wstring(m_classify_selected));
+        if (iter != media_list.end())
         {
             for (int index : m_right_selected_items)
             {
@@ -352,7 +354,7 @@ void CMediaClassifyDlg::OnOK()
     GetSongsSelected(files);
     if(!files.empty())
     {
-        CPlayer::GetInstance().OpenFiles(files);
+        CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
 
         CTabDlg::OnOK();
         CWnd* pParent = GetParentWindow();

@@ -59,6 +59,8 @@ void CPlayer::Create()
             playlist_info = m_recent_playlist.m_default_playlist;
         else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
             playlist_info = m_recent_playlist.m_favourite_playlist;
+        else if (m_recent_playlist.m_cur_playlist_type == PT_TEMP)
+            playlist_info = m_recent_playlist.m_temp_playlist;
         else
             playlist_info = m_recent_playlist.m_recent_playlists.front();
         SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
@@ -801,6 +803,8 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
         m_recent_playlist.m_cur_playlist_type = PT_DEFAULT;
     else if (playlist_path == m_recent_playlist.m_favourite_playlist.path)
         m_recent_playlist.m_cur_playlist_type = PT_FAVOURITE;
+    else if (playlist_path == m_recent_playlist.m_temp_playlist.path)
+        m_recent_playlist.m_cur_playlist_type = PT_TEMP;
     else
         m_recent_playlist.m_cur_playlist_type = PT_USER;
 
@@ -913,6 +917,45 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
 
     SaveCurrentPlaylist();
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
+
+    IniPlayList(true, false, play);
+}
+
+void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, bool play /*= true*/)
+{
+    //打开文件时始终添加到默认播放列表中
+
+    if (files.empty()) return;
+    if (m_loading) return;
+
+    if (m_pCore->GetHandle() != 0)
+        MusicControl(Command::CLOSE);
+    if (GetSongNum() > 0)
+    {
+        if (!m_playlist_mode || !m_recent_playlist.m_cur_playlist_type == PT_TEMP)
+            SaveCurrentPlaylist();
+        EmplaceCurrentPlaylistToRecent();
+        EmplaceCurrentPathToRecent();
+    }
+
+    m_recent_playlist.m_cur_playlist_type = PT_TEMP;
+    m_playlist_mode = true;
+    m_playlist_path = m_recent_playlist.m_temp_playlist.path;
+
+    m_playlist.clear();
+
+    //将播放的文件添加到临时播放列表
+    for (const auto& file : files)
+    {
+        SongInfo song_info;
+        song_info.file_path = file;
+        m_playlist.push_back(song_info);
+    }
+    m_index = 0;
+    m_current_position = Time();
+
+    SaveCurrentPlaylist();
+    SetTitle();
 
     IniPlayList(true, false, play);
 }
@@ -1830,6 +1873,12 @@ void CPlayer::LoadRecentPlaylist()
             m_index = m_recent_playlist.m_favourite_playlist.track;
             m_current_position.fromInt(m_recent_playlist.m_favourite_playlist.position);
         }
+        else if (m_recent_playlist.m_cur_playlist_type == PT_TEMP)
+        {
+            m_playlist_path = m_recent_playlist.m_temp_playlist.path;
+            m_index = m_recent_playlist.m_temp_playlist.track;
+            m_current_position.fromInt(m_recent_playlist.m_temp_playlist.position);
+        }
         else if (!m_recent_playlist.m_recent_playlists.empty())
         {
             m_playlist_path = m_recent_playlist.m_recent_playlists.front().path;
@@ -1849,6 +1898,8 @@ void CPlayer::SaveCurrentPlaylist()
             current_playlist = m_recent_playlist.m_default_playlist.path;
         else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
             current_playlist = m_recent_playlist.m_favourite_playlist.path;
+        else if (m_recent_playlist.m_cur_playlist_type == PT_TEMP)
+            current_playlist = m_recent_playlist.m_temp_playlist.path;
         else
             current_playlist = m_recent_playlist.m_recent_playlists.front().path;
         CPlaylist playlist;
@@ -1901,6 +1952,13 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
         m_recent_playlist.m_favourite_playlist.track = m_index;
         m_recent_playlist.m_favourite_playlist.track_num = song_num;
         m_recent_playlist.m_favourite_playlist.total_time = m_total_time;
+    }
+    else if (m_recent_playlist.m_cur_playlist_type == PT_TEMP)
+    {
+        m_recent_playlist.m_temp_playlist.position = m_current_position.toInt();
+        m_recent_playlist.m_temp_playlist.track = m_index;
+        m_recent_playlist.m_temp_playlist.track_num = song_num;
+        m_recent_playlist.m_temp_playlist.total_time = m_total_time;
     }
     else
     {

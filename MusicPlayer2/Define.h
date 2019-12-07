@@ -115,6 +115,7 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//¾ùºâÆ÷Ô¤Éè
 #define LOCAL_DIR_STR L"%localdir%"
 #define DEFAULT_PLAYLIST_NAME L"default_playlist.playlist"
 #define FAVOURITE_PLAYLIST_NAME L"favourite.playlist"
+#define TEMP_PLAYLIST_NAME L"temp.playlist"
 #define PLAYLIST_EXTENSION L".playlist"
 #define APP_NAME L"MusicPlayer2"
 

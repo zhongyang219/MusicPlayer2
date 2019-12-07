@@ -14,7 +14,8 @@ enum PlaylistType
 {
     PT_USER,
     PT_DEFAULT,
-    PT_FAVOURITE
+    PT_FAVOURITE,
+    PT_TEMP
 };
 
 class CPlaylistMgr
@@ -34,6 +35,7 @@ public:
 public:
     PlaylistInfo m_default_playlist;
     PlaylistInfo m_favourite_playlist;
+    PlaylistInfo m_temp_playlist;
     std::deque<PlaylistInfo> m_recent_playlists;
     PlaylistType m_cur_playlist_type{ PT_DEFAULT };
 };
