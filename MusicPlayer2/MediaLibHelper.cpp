@@ -37,7 +37,12 @@ void CMediaClassifier::ClassifyMedia()
                 item_names.push_back(std::wstring());
             break;
         case CMediaClassifier::CT_ALBUM:
-            item_names.push_back(song_info.second.album);
+        {
+            wstring str_album = song_info.second.album;
+            if (str_album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
+                str_album.clear();
+            item_names.push_back(str_album);
+        }
             break;
         default:
             break;
