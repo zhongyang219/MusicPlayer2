@@ -16,7 +16,7 @@ public:
     CMediaClassifier(ClassificationType type, bool hide_only_one_classification = false);
     ~CMediaClassifier();
 
-     const std::map<std::wstring, std::vector<SongInfo>>& GetMeidaList() const;
+    const std::map<std::wstring, std::vector<SongInfo>>& GetMeidaList() const;
     void ClassifyMedia();
 
 private:

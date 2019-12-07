@@ -27,12 +27,14 @@ CMediaClassifyDlg::~CMediaClassifyDlg()
 
 void CMediaClassifyDlg::ShowClassifyList()
 {
+    auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
     m_classify_list_ctrl.DeleteAllItems();
     int index = 0;
-    for(const auto& item : m_classifer.GetMeidaList())
+    for(const auto& item : media_list)
     {
         if(item.first == STR_OTHER_CLASSIFY_TYPE)       //跳过“其他”分类
             continue;
+
         CString item_name = item.first.c_str();
         if (item_name.IsEmpty())
         {
@@ -44,8 +46,8 @@ void CMediaClassifyDlg::ShowClassifyList()
     }
 
     //将“其他”分类放到列表的最后面
-    auto iter = m_classifer.GetMeidaList().find(STR_OTHER_CLASSIFY_TYPE);
-    if (iter != m_classifer.GetMeidaList().end())
+    auto iter = media_list.find(STR_OTHER_CLASSIFY_TYPE);
+    if (iter != media_list.end())
     {
         m_classify_list_ctrl.InsertItem(index, CCommon::LoadText(_T("<"), IDS_OTHER, _T(">")));
         m_classify_list_ctrl.SetItemText(index, 1, std::to_wstring(iter->second.size()).c_str());
@@ -54,9 +56,10 @@ void CMediaClassifyDlg::ShowClassifyList()
 
 void CMediaClassifyDlg::ShowSongList()
 {
+    auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
     m_song_list_ctrl.DeleteAllItems();
-    auto iter = m_classifer.GetMeidaList().find(wstring(m_classify_selected));
-    if (iter != m_classifer.GetMeidaList().end())
+    auto iter = media_list.find(wstring(m_classify_selected));
+    if (iter != media_list.end())
     {
         int index = 0;
         for (const auto& item : iter->second)
@@ -72,18 +75,57 @@ void CMediaClassifyDlg::ShowSongList()
 
 void CMediaClassifyDlg::ClassifyListClicked(int index)
 {
-    static int last_index{ -1 };
+    if (index < 0)
+        return;
     CString str_selected = m_classify_list_ctrl.GetItemText(index, 0);
     if (str_selected == m_default_str)
         str_selected.Empty();
     if (str_selected == CCommon::LoadText(_T("<"), IDS_OTHER, _T(">")))
         str_selected = STR_OTHER_CLASSIFY_TYPE;
-    if (last_index != index)
+    if (last_selected_index != index)
     {
         m_classify_selected = str_selected;
         ShowSongList();
-        last_index = index;
+        last_selected_index = index;
     }
+}
+
+bool CMediaClassifyDlg::IsItemMatchKeyWord(const SongInfo& song, const wstring& key_word)
+{
+    if (m_type == CMediaClassifier::CT_ARTIST)
+        return IsItemMatchKeyWord(song.artist, key_word);
+    else if(m_type == CMediaClassifier::CT_ALBUM)
+        return IsItemMatchKeyWord(song.album, key_word);
+    return false;
+}
+
+bool CMediaClassifyDlg::IsItemMatchKeyWord(const wstring& str, const wstring& key_word)
+{
+    return CCommon::StringFindNoCase(str, key_word) != wstring::npos;
+}
+
+void CMediaClassifyDlg::QuickSearch(const wstring& key_word)
+{
+    m_search_result.clear();
+    std::vector<SongInfo> other_list;
+    for (const auto& item : m_classifer.GetMeidaList())
+    {
+        if (item.first == STR_OTHER_CLASSIFY_TYPE)
+        {
+            for (const auto& song : item.second)
+            {
+                if (IsItemMatchKeyWord(song, key_word))
+                    other_list.push_back(song);
+            }
+        }
+        else
+        {
+            if (IsItemMatchKeyWord(item.first, key_word))
+                m_search_result[item.first] = item.second;
+        }
+    }
+    if (!other_list.empty())
+        m_search_result[STR_OTHER_CLASSIFY_TYPE] = other_list;
 }
 
 void CMediaClassifyDlg::DoDataExchange(CDataExchange* pDX)
@@ -98,6 +140,8 @@ void CMediaClassifyDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_NOTIFY(NM_CLICK, IDC_CLASSIFY_LIST, &CMediaClassifyDlg::OnNMClickClassifyList)
     ON_NOTIFY(NM_RCLICK, IDC_CLASSIFY_LIST, &CMediaClassifyDlg::OnNMRClickClassifyList)
+    ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CMediaClassifyDlg::OnEnChangeMfceditbrowse1)
+    ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMediaClassifyDlg::OnSearchEditBtnClicked)
 END_MESSAGE_MAP()
 
 
@@ -135,6 +179,11 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
     m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(300));
 
+    if (m_type == CMediaClassifier::CT_ARTIST)
+        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ARTIST), TRUE);
+    else if(m_type == CMediaClassifier::CT_ALBUM)
+        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ALBUM), TRUE);
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -155,4 +204,37 @@ void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
     // TODO: 在此添加控件通知处理程序代码
     ClassifyListClicked(pNMItemActivate->iItem);
     *pResult = 0;
+}
+
+
+void CMediaClassifyDlg::OnEnChangeMfceditbrowse1()
+{
+    // TODO:  如果该控件是 RICHEDIT 控件，它将不
+    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
+    // 函数并调用 CRichEditCtrl().SetEventMask()，
+    // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+    // TODO:  在此添加控件通知处理程序代码
+    CString str;
+    m_search_edit.GetWindowText(str);
+    QuickSearch(wstring(str));
+    m_searched = !str.IsEmpty();
+    ShowClassifyList();
+    m_song_list_ctrl.DeleteAllItems();
+    last_selected_index = -2;
+}
+
+
+afx_msg LRESULT CMediaClassifyDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
+{
+    //点击搜索框中的叉按钮时清除搜索结果
+    if (m_searched)
+    {
+        //清除搜索结果
+        m_searched = false;
+        m_search_edit.SetWindowText(_T(""));
+        ShowClassifyList();
+        m_song_list_ctrl.DeleteAllItems();
+    }
+    return 0;
 }

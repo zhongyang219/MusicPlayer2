@@ -60,6 +60,7 @@ void CMediaClassifier::ClassifyMedia()
 
     }
 
+    //查找只有一个项目的分类，将其归到“其他”类里
     if (m_hide_only_one_classification)
     {
         std::vector<SongInfo> other_list;
@@ -67,7 +68,13 @@ void CMediaClassifier::ClassifyMedia()
         {
             if (iter->second.size() == 1)
             {
-                other_list.push_back(iter->second[0]);
+                //确保其他类列表里的项目不会重复
+                if (!CCommon::IsItemInVector(other_list, [&](const SongInfo& item) {
+                    return item.file_path == iter->second[0].file_path;
+                }))
+                {
+                    other_list.push_back(iter->second[0]);
+                }
                 iter = m_media_list.erase(iter);
             }
             else

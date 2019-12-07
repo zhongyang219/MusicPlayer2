@@ -470,6 +470,9 @@
 #define IDS_BASS_MIX_LOAD_ERROR         430
 #define IDS_BROWSE                      431
 #define IDS_OTHER                       432
+#define IDS_SEARCH_ARTIST               433
+#define IDS_SEARCH_ARTIST_INFO          433
+#define IDS_SEARCH_ALBUM                434
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
