@@ -2362,6 +2362,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     {
         //获取选中的曲目的路径
         std::vector<SongInfo> selected_item_path;
+        GetPlaylistItemSelected();
         for (auto i : m_items_selected)
         {
             if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
