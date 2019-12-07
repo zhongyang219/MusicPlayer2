@@ -1034,7 +1034,7 @@ void CPlayer::SpeedUp()
 {
     if (m_speed < MAX_PLAY_SPEED)
     {
-        m_speed += (m_speed*0.1);
+        m_speed += (m_speed*0.0594631);     //加速一次频率变为原来的(2的1/12次方=1.0594631)倍，即使单调提高一个半音，减速时同理
         if (m_speed > MAX_PLAY_SPEED)
             m_speed = MAX_PLAY_SPEED;
         m_pCore->SetSpeed(m_speed);
@@ -1045,7 +1045,7 @@ void CPlayer::SlowDown()
 {
     if (m_speed > MIN_PLAY_SPEED)
     {
-        m_speed -= (m_speed*0.1);
+        m_speed -= (m_speed*0.0594631);
         if (m_speed < MIN_PLAY_SPEED)
             m_speed = MIN_PLAY_SPEED;
         m_pCore->SetSpeed(m_speed);
