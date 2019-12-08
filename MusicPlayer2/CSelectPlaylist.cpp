@@ -212,6 +212,12 @@ void CSelectPlaylistDlg::ShowPathList()
             SetListRowData(index, playlist_info);
             index++;
         }
+        //最后一行显示临时的播放列表，只有当列表中有歌曲时才显示
+        if(CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.track_num > 0)
+        {
+            m_playlist_ctrl.InsertItem(index, std::to_wstring(index + 1).c_str());
+            SetListRowData(index, CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist);
+        }
     }
     else		//只显示搜索结果的曲目
     {
@@ -255,6 +261,8 @@ void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_
         playlist_name = CCommon::LoadText(_T("["), IDS_DEFAULT, _T("]"));
     else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
         playlist_name = CCommon::LoadText(_T("["), IDS_MY_FAVURITE, _T("]"));
+    else if (playlist_name == TEMP_PLAYLIST_NAME)
+        playlist_name = CCommon::LoadText(_T("["), IDS_TEMP_PLAYLIST, _T("]"));
     else
         playlist_name = path_helper.GetFileNameWithoutExtension();
 
@@ -280,7 +288,7 @@ bool CSelectPlaylistDlg::SelectValid() const
     if (m_row_selected == 0 || m_row_selected == 1)
         return true;
     int index = m_row_selected - SPEC_PLAYLIST_NUM;
-    return (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()));
+    return (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) + 1);
 }
 
 PlaylistInfo CSelectPlaylistDlg::GetSelectedPlaylist() const
@@ -293,7 +301,7 @@ PlaylistInfo CSelectPlaylistDlg::GetSelectedPlaylist() const
     if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
         return CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index];
     else
-        return PlaylistInfo();
+        return CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist;
 }
 
 void CSelectPlaylistDlg::SetButtonsEnable()
@@ -517,7 +525,7 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     CTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-    bool is_not_default_playlist{ m_row_selected > 1 };
+    bool is_not_default_playlist{ m_row_selected > 1 && m_row_selected < CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size() + SPEC_PLAYLIST_NUM };
     pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));

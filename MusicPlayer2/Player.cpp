@@ -1234,6 +1234,8 @@ wstring CPlayer::GetCurrentFolderOrPlaylistName() const
             return wstring(CCommon::LoadText(_T("["), IDS_DEFAULT, _T("]")));
         else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
             return wstring(CCommon::LoadText(_T("["), IDS_MY_FAVURITE, _T("]")));
+        else if (playlist_name == TEMP_PLAYLIST_NAME)
+            return wstring(CCommon::LoadText(_T("["), IDS_TEMP_PLAYLIST, _T("]")));
         else
             return file_path.GetFileNameWithoutExtension();
     }
