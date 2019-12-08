@@ -17,12 +17,14 @@ IMPLEMENT_DYNAMIC(CMediaClassifyDlg, CTabDlg)
 
 CMediaClassifyDlg::CMediaClassifyDlg(CMediaClassifier::ClassificationType type, CWnd* pParent /*=nullptr*/)
 	: CTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type), 
-    m_classifer(type == CMediaClassifier::CT_ARTIST ? theApp.m_artist_classifer : theApp.m_album_classifer)
+    m_classifer(type == CMediaClassifier::CT_ARTIST ? theApp.m_artist_classifer : (type == CMediaClassifier::CT_ALBUM ? theApp.m_album_classifer : theApp.m_genre_classifer))
 {
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_default_str = CCommon::LoadText(IDS_DEFAULT_ARTIST);
     else if (m_type == CMediaClassifier::CT_ALBUM)
         m_default_str = CCommon::LoadText(IDS_DEFAULT_ALBUM);
+    else if (m_type == CMediaClassifier::CT_GENRE)
+        m_default_str = CCommon::LoadText(IDS_DEFAULT_GENRE);
 }
 
 CMediaClassifyDlg::~CMediaClassifyDlg()
@@ -126,9 +128,10 @@ void CMediaClassifyDlg::ShowSongList()
             for (const auto& item : iter->second)
             {
                 m_song_list_ctrl.InsertItem(item_index, item.GetTitle().c_str());
-                m_song_list_ctrl.SetItemText(item_index, 1, item.GetArtist().c_str());
-                m_song_list_ctrl.SetItemText(item_index, 2, item.GetAlbum().c_str());
-                m_song_list_ctrl.SetItemText(item_index, 3, item.file_path.c_str());
+                m_song_list_ctrl.SetItemText(item_index, COL_ARTIST, item.GetArtist().c_str());
+                m_song_list_ctrl.SetItemText(item_index, COL_ALBUM, item.GetAlbum().c_str());
+                m_song_list_ctrl.SetItemText(item_index, COL_GENRE, item.GetGenre().c_str());
+                m_song_list_ctrl.SetItemText(item_index, COL_PATH, item.file_path.c_str());
                 item_index++;
             }
         }
@@ -283,7 +286,7 @@ UINT CMediaClassifyDlg::ViewOnlineThreadFunc(LPVOID lpParam)
     //此命令用于跳转到歌曲对应的网易云音乐的在线页面
     if (!pThis->m_right_selected_items.empty())
     {
-        wstring file_path = pThis->m_song_list_ctrl.GetItemText(pThis->m_right_selected_items[0], 3).GetString();
+        wstring file_path = pThis->m_song_list_ctrl.GetItemText(pThis->m_right_selected_items[0], COL_PATH).GetString();
         if (CCommon::FileExist(file_path))
         {
             SongInfo song{ theApp.m_song_data[file_path] };
@@ -344,7 +347,9 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         title_name = CCommon::LoadText(IDS_ARTIST);
     else if (m_type == CMediaClassifier::CT_ALBUM)
         title_name = CCommon::LoadText(IDS_ALBUM);
-    int width0, width1;
+    else if (m_type == CMediaClassifier::CT_GENRE)
+        title_name = CCommon::LoadText(IDS_GENRE);
+   int width0, width1;
     width1 = theApp.DPI(50);
     width0 = rc_classify_list.Width() - width1 - theApp.DPI(20) - 1;
     m_classify_list_ctrl.InsertColumn(0, title_name, LVCFMT_LEFT, width0);
@@ -358,12 +363,15 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
     m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
     m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(300));
+    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(400));
 
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ARTIST), TRUE);
     else if(m_type == CMediaClassifier::CT_ALBUM)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ALBUM), TRUE);
+    else if (m_type == CMediaClassifier::CT_GENRE)
+        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_GENRE), TRUE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -507,7 +515,7 @@ void CMediaClassifyDlg::OnExploreTrack()
     // TODO: 在此添加命令处理程序代码
     if (m_right_selected_items.empty())
         return;
-    wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_items[0], 3).GetString();
+    wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_items[0], COL_PATH).GetString();
     if (!file_path.empty())
     {
         CString str;

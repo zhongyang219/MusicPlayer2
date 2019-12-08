@@ -46,6 +46,14 @@ void CMediaClassifier::ClassifyMedia()
                 str_album.clear();
             item_names.push_back(str_album);
         }
+        break;
+        case CMediaClassifier::CT_GENRE:
+        {
+            wstring str_genre = song_info.second.genre;
+            if (str_genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
+                str_genre.clear();
+            item_names.push_back(str_genre);
+        }
             break;
         default:
             break;

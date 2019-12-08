@@ -44,6 +44,7 @@ public:
 
     CMediaClassifier m_artist_classifer{ CMediaClassifier::CT_ARTIST, true };     //将所有歌曲信息按艺术家分类
     CMediaClassifier m_album_classifer{ CMediaClassifier::CT_ALBUM, true };       //将所有歌曲信息按唱片集分类
+    CMediaClassifier m_genre_classifer{ CMediaClassifier::CT_GENRE, true };       //将所有歌曲信息按流派分类
 
     LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
     ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据

@@ -25,6 +25,16 @@ public:
     void GetCurrentSongList(std::vector<SongInfo>& song_list) const;
 
 protected:
+    enum SongColumeIndex
+    {
+        COL_TITLE = 0,
+        COL_ARTIST,
+        COL_ALBUM,
+        COL_GENRE,
+        COL_PATH,
+    };
+
+protected:
     CListCtrlEx m_classify_list_ctrl;
     CListCtrlEx m_song_list_ctrl;
     CSearchEditCtrl m_search_edit;

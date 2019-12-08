@@ -23,6 +23,7 @@ public:
     CSelectPlaylistDlg m_playlist_dlg;
     CMediaClassifyDlg m_artist_dlg{ CMediaClassifier::CT_ARTIST };
     CMediaClassifyDlg m_album_dlg{ CMediaClassifier::CT_ALBUM };
+    CMediaClassifyDlg m_genre_dlg{ CMediaClassifier::CT_GENRE };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

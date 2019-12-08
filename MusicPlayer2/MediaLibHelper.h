@@ -10,6 +10,7 @@ public:
     {
         CT_ARTIST,
         CT_ALBUM,
+        CT_GENRE
     };
 
 public:

@@ -474,6 +474,8 @@
 #define IDS_SEARCH_ARTIST               433
 #define IDS_SEARCH_ALBUM                434
 #define IDS_TEMP_PLAYLIST               435
+#define IDS_GENRE                       436
+#define IDS_SEARCH_GENRE                437
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
