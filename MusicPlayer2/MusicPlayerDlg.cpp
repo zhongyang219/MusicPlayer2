@@ -18,6 +18,7 @@
 #include "FileRelateDlg.h"
 #include "TestDlg.h"
 #include "COSUPlayerHelper.h"
+#include "MusicPlayerCmdHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -216,7 +217,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SLOW_DOWN, &CMusicPlayerDlg::OnSlowDown)
     ON_COMMAND(ID_ORIGINAL_SPEED, &CMusicPlayerDlg::OnOriginalSpeed)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMusicPlayerDlg::OnSearchEditBtnClicked)
-END_MESSAGE_MAP()
+        ON_MESSAGE(WM_INIT_ADD_TO_MENU, &CMusicPlayerDlg::OnInitAddToMenu)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1102,6 +1104,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
     //向“添加到播放列表”菜单追加播放列表
     auto initAddToMenu = [](CMenu* pMenu)
     {
+        ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
             for (int i = 0; i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
@@ -1118,13 +1121,10 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         }
     };
 
-    CMenu* add_to_menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(10);
-    ASSERT(add_to_menu != nullptr);
-    initAddToMenu(add_to_menu);
-
-    CMenu* playlist_add_to_menu = theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0);
-    ASSERT(playlist_add_to_menu != nullptr);
-    initAddToMenu(playlist_add_to_menu);
+    initAddToMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(10));
+    initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0));
+    initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSubMenu(1));
+    initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(1));
 }
 
 void CMusicPlayerDlg::SetPlaylistDragEnable()
@@ -2292,9 +2292,6 @@ void CMusicPlayerDlg::OnItemProperty()
     // TODO: 在此添加命令处理程序代码
     CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
     propertyDlg.m_index = m_item_selected;
-    propertyDlg.m_song_num = CPlayer::GetInstance().GetSongNum();
-    //propertyDlg.m_playing_index = CPlayer::GetInstance().GetIndex();
-    //propertyDlg.m_lyric_name = CPlayer::GetInstance().GetLyricName();
     propertyDlg.DoModal();
     if (propertyDlg.GetListRefresh())
         ShowPlayList();
@@ -2749,7 +2746,6 @@ void CMusicPlayerDlg::OnSongInfo()
     // TODO: 在此添加命令处理程序代码
     CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
     propertyDlg.m_index = CPlayer::GetInstance().GetIndex();
-    propertyDlg.m_song_num = CPlayer::GetInstance().GetSongNum();
     propertyDlg.DoModal();
     if (propertyDlg.GetListRefresh())
         ShowPlayList();
@@ -3025,22 +3021,9 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
     int item_selected = (int)lpParam;
     if (item_selected >= 0 && item_selected < CPlayer::GetInstance().GetSongNum())
     {
-        //查找歌曲并获取最佳匹配项的歌曲ID
-        const SongInfo& song{ CPlayer::GetInstance().GetPlayList()[item_selected] };
-        if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
-        {
-            wstring song_id;
-            song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
-            CPlayer::GetInstance().SetRelatedSongID(item_selected, song_id);
-        }
-
-        if (song.song_id.empty())
-            return 0;
-        //获取网易云音乐中该歌曲的在线接听网址
-        wstring song_url{ L"http://music.163.com/#/song?id=" + song.song_id };
-
-        //打开超链接
-        ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
+        SongInfo& song{ CPlayer::GetInstance().GetPlayList()[item_selected] };
+        CMusicPlayerCmdHelper helper;
+        helper.VeiwOnline(song);
     }
     return 0;
 }
@@ -3438,40 +3421,24 @@ afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lPa
 void CMusicPlayerDlg::OnFormatConvert()
 {
     // TODO: 在此添加命令处理程序代码
-    if (!theApp.m_format_convert_dialog_exit)
-        return;
-    CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
-
-    if (CPlayer::GetInstance().IsMciCore())
+    std::vector<SongInfo> songs;
+    for (int index : m_items_selected)
     {
-        MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
-        return;
+        if (index >= 0 && index < CPlayer::GetInstance().GetSongNum())
+            songs.push_back(CPlayer::GetInstance().GetPlayList()[index]);
     }
-
-    m_pFormatConvertDlg = new CFormatConvertDlg(m_items_selected);
-    m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
-    m_pFormatConvertDlg->ShowWindow(SW_SHOW);
+    CMusicPlayerCmdHelper cmd_helper(this);
+    cmd_helper.FormatConvert(songs);
 }
 
 
 void CMusicPlayerDlg::OnFormatConvert1()
 {
     // TODO: 在此添加命令处理程序代码
-    if (!theApp.m_format_convert_dialog_exit)
-        return;
-    CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
-
-    if (CPlayer::GetInstance().IsMciCore())
-    {
-        MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
-        return;
-    }
-
-    vector<int> items_selected;
-    items_selected.push_back(CPlayer::GetInstance().GetIndex());
-    m_pFormatConvertDlg = new CFormatConvertDlg(items_selected);
-    m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
-    m_pFormatConvertDlg->ShowWindow(SW_SHOW);
+    std::vector<SongInfo> songs;
+    songs.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
+    CMusicPlayerCmdHelper cmd_helper(this);
+    cmd_helper.FormatConvert(songs);
 }
 
 
@@ -4349,5 +4316,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lP
         m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
         m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
     }
+    return 0;
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnInitAddToMenu(WPARAM wParam, LPARAM lParam)
+{
+    IniPlaylistPopupMenu();
     return 0;
 }

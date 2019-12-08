@@ -541,6 +541,7 @@ void CMusicPlayerApp::InitMenuResourse()
 
     m_menu_set.m_playlist_btn_menu.LoadMenu(IDR_PLAYLIST_BTN_MENU);
     m_menu_set.m_lyric_default_style.LoadMenu(IDR_LRYIC_DEFAULT_STYLE_MENU);
+    m_menu_set.m_media_lib_popup_menu.LoadMenu(IDR_MEDIA_LIB_POPUP_MENU);
 }
 
 int CMusicPlayerApp::DPI(int pixel)

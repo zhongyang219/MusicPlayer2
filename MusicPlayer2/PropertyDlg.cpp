@@ -15,7 +15,7 @@ IMPLEMENT_DYNAMIC(CPropertyDlg, CDialog)
 CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent /*=NULL*/)
 	: CDialog(IDD_PROPERTY_DIALOG, pParent), m_all_song_info{ all_song_info }
 {
-
+    m_song_num = all_song_info.size();
 }
 
 CPropertyDlg::~CPropertyDlg()

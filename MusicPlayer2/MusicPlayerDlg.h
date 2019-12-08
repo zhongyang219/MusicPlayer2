@@ -46,6 +46,8 @@ public:
 
     bool IsTaskbarListEnable() const;
 
+    friend class CMusicPlayerCmdHelper;
+
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_MUSICPLAYER2_DIALOG };
@@ -164,7 +166,7 @@ protected:
     void HideFloatPlaylist();
 
     void GetPlaylistItemSelected();
-    void IniPlaylistPopupMenu();
+    void IniPlaylistPopupMenu();        //初始化所有右键菜单中的“添加到播放列表”子菜单
 
     void SetPlaylistDragEnable();       //设置播放列表是事允许拖动排序
 
@@ -360,4 +362,5 @@ public:
     afx_msg void OnOriginalSpeed();
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnInitAddToMenu(WPARAM wParam, LPARAM lParam);
 };

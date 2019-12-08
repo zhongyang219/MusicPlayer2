@@ -19,7 +19,6 @@ public:
 
 	int m_index{};		//当前显示项目的曲目序号
 	//int m_playing_index{};	//正在播放的曲目序号
-	int m_song_num;
 	//wstring m_lyric_name;
 
 	bool GetListRefresh() const { return m_list_refresh; }
@@ -36,6 +35,7 @@ protected:
 	bool m_modified{ false };
 	bool m_genre_modified{ false };
 	bool m_list_refresh{ false };		//用于判断窗口关闭后播放列表是否要刷新，只要有任一首曲目的“标题”或“艺术家”标签编辑过，则置为true
+    int m_song_num;
 
 	//控件变量
 	CEditEx m_file_name_edit;

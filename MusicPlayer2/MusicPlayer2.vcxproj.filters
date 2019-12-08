@@ -595,6 +595,9 @@
     <ClInclude Include="MediaClassifyDlg.h">
       <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
+    <ClInclude Include="MusicPlayerCmdHelper.h">
+      <Filter>MusicPlayerDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -890,6 +893,9 @@
     </ClCompile>
     <ClCompile Include="MediaClassifyDlg.cpp">
       <Filter>对话框类\媒体库对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicPlayerCmdHelper.cpp">
+      <Filter>MusicPlayerDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

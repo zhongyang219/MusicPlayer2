@@ -21,6 +21,8 @@ public:
 
 public:
     void GetSongsSelected(std::vector<wstring>& song_list) const;
+    void GetSongsSelected(std::vector<SongInfo>& song_list) const;
+    void GetCurrentSongList(std::vector<SongInfo>& song_list) const;
 
 protected:
     CListCtrlEx m_classify_list_ctrl;
@@ -51,6 +53,9 @@ protected:
     void SetButtonsEnable();
     void SetButtonsEnable(bool enable);
     virtual void OnTabEntered() override;
+    bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
+
+    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -66,4 +71,14 @@ public:
     afx_msg void OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
     virtual void OnOK();
+    afx_msg void OnPlayItem();
+    afx_msg void OnExploreOnline();
+    afx_msg void OnFormatConvert();
+    afx_msg void OnExploreTrack();
+    afx_msg void OnItemProperty();
+    afx_msg void OnInitMenu(CMenu* pMenu);
+    virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnAddToNewPlaylist();
+    afx_msg void OnAddToNewPalylistAndPlay();
+    virtual void OnCancel();
 };

@@ -783,7 +783,7 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
 
 }
 
-void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init)
+void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init, bool play)
 {
     if (m_loading)
         return;
@@ -824,7 +824,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     m_playlist_path = playlist_path;
     EmplaceCurrentPlaylistToRecent();
 
-    IniPlayList(true);
+    IniPlayList(true, false, play);
 }
 
 void CPlayer::OpenFolder(wstring path)

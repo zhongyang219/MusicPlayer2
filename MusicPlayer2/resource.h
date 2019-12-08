@@ -453,6 +453,7 @@
 #define IDS_NO_GRADIENT                 413
 #define IDS_LRC                         414
 #define IDS_SHOW_DESKTOP_LYRIC          415
+#define IDR_MEDIA_LIB_POPUP_MENU        415
 #define IDS_LOCK_DESKTOP_LYRIC          416
 #define IDS_CLOSE_DESKTOP_LYRIC         417
 #define IDS_LYRIC_DOUBLE_LINE           418
@@ -1089,13 +1090,14 @@
 #define ID_SPEED_UP                     33142
 #define ID_SLOW_DOWN                    33143
 #define ID_ORIGINAL_SPEED               33144
+#define ID_ADD_TO_NEW_PALYLIST_AND_PLAY 33145
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        415
-#define _APS_NEXT_COMMAND_VALUE         33145
+#define _APS_NEXT_RESOURCE_VALUE        416
+#define _APS_NEXT_COMMAND_VALUE         33146
 #define _APS_NEXT_CONTROL_VALUE         1160
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
