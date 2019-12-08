@@ -300,6 +300,9 @@ public:
     //打开一个文件对话框，并将用户选择的文件路径保存到path_list中
     static void DoOpenFileDlg(const wstring& filter, vector<wstring>& path_list, CWnd* pParent = nullptr);
 
+    //为一个对话框设置字体
+    static void SetDialogFont(CWnd* pDlg, CFont* pFont);
+
 	template<class T>
 	static T Min3(T v1, T v2, T v3)
 	{
