@@ -185,6 +185,8 @@ bool CMediaClassifyDlg::IsItemMatchKeyWord(const SongInfo& song, const wstring& 
         return IsItemMatchKeyWord(song.artist, key_word);
     else if(m_type == CMediaClassifier::CT_ALBUM)
         return IsItemMatchKeyWord(song.album, key_word);
+    else if (m_type == CMediaClassifier::CT_GENRE)
+        return IsItemMatchKeyWord(song.genre, key_word);
     return false;
 }
 
