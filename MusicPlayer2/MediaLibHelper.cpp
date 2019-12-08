@@ -113,7 +113,8 @@ void CMediaClassifier::ClassifyMedia()
             std::sort(other_list.begin(), other_list.end(), SongInfo::ByArtist);
         else if(m_type == CT_ALBUM)
             std::sort(other_list.begin(), other_list.end(), SongInfo::ByAlbum);
-        m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
+        if(!other_list.empty())
+            m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }
 
     //将年份不是4位数字的归到“其他”类里
@@ -131,7 +132,8 @@ void CMediaClassifier::ClassifyMedia()
                 ++iter;
             }
         }
-        m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
+        if (!other_list.empty())
+            m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }
 }
 
