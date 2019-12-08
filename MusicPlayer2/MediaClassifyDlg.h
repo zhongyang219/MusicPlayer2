@@ -81,4 +81,6 @@ public:
     afx_msg void OnAddToNewPlaylist();
     afx_msg void OnAddToNewPalylistAndPlay();
     virtual void OnCancel();
+    afx_msg void OnNMDblclkClassifyList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
 };

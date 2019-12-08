@@ -147,12 +147,13 @@ CString CMediaClassifyDlg::GetClassifyListSelectedString(int index) const
 
 void CMediaClassifyDlg::ClassifyListClicked(int index)
 {
+    m_left_selected = true;
+    m_classify_list_ctrl.GetItemSelected(m_left_selected_items);    //获取选中的项目
     if (index < 0)
     {
         SetButtonsEnable(false);
         return;
     }
-    m_classify_list_ctrl.GetItemSelected(m_left_selected_items);    //获取选中的项目
 
     CString str_selected = GetClassifyListSelectedString(index);
     static size_t last_selected_count = 0;
@@ -164,15 +165,14 @@ void CMediaClassifyDlg::ClassifyListClicked(int index)
         last_selected_count = m_left_selected_items.size();
     }
 
-    m_left_selected = true;
     SetButtonsEnable(/*(index >= 0 && index < m_classify_list_ctrl.GetItemCount()) ||*/ !m_left_selected_items.empty());
 
 }
 
 void CMediaClassifyDlg::SongListClicked(int index)
 {
-    m_song_list_ctrl.GetItemSelected(m_right_selected_items);
     m_left_selected = false;
+    m_song_list_ctrl.GetItemSelected(m_right_selected_items);
     SetButtonsEnable(/*(index >=0 && index < m_song_list_ctrl.GetItemCount()) ||*/ !m_right_selected_items.empty());
 }
 
@@ -321,6 +321,8 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_WM_INITMENU()
     ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMediaClassifyDlg::OnAddToNewPlaylist)
     ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CMediaClassifyDlg::OnAddToNewPalylistAndPlay)
+    ON_NOTIFY(NM_DBLCLK, IDC_CLASSIFY_LIST, &CMediaClassifyDlg::OnNMDblclkClassifyList)
+    ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CMediaClassifyDlg::OnNMDblclkSongList)
 END_MESSAGE_MAP()
 
 
@@ -555,6 +557,7 @@ void CMediaClassifyDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_EXPLORE_TRACK, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 
+    pMenu->SetDefaultItem(ID_PLAY_ITEM);
 
     // TODO: 在此处添加消息处理程序代码
 }
@@ -643,4 +646,22 @@ void CMediaClassifyDlg::OnCancel()
     CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
         ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
+}
+
+
+void CMediaClassifyDlg::OnNMDblclkClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    OnOK();
+    *pResult = 0;
+}
+
+
+void CMediaClassifyDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    OnOK();
+    *pResult = 0;
 }
