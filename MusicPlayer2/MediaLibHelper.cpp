@@ -30,11 +30,14 @@ void CMediaClassifier::ClassifyMedia()
         switch (m_type)
         {
         case CMediaClassifier::CT_ARTIST:
-            CCommon::StringSplitWithMulitChars(song_info.second.artist, L"/;&", item_names, true);
+            CCommon::StringSplitWithMulitChars(song_info.second.artist, L"/;&", item_names, true);      //有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
             for (auto& item_name : item_names)
                 CCommon::StringNormalize(item_name);
             if (item_names.empty() || (item_names.size()==1 && item_names[0] == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
+            {
+                item_names.clear();
                 item_names.push_back(std::wstring());
+            }
             break;
         case CMediaClassifier::CT_ALBUM:
         {
