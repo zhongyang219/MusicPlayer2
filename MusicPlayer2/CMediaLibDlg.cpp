@@ -62,6 +62,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_artist_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+    m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
 
     //添加对话框
     m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
@@ -69,6 +70,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_tab_ctrl.AddWindow(&m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
     m_tab_ctrl.AddWindow(&m_album_dlg, CCommon::LoadText(IDS_ALBUM));
     m_tab_ctrl.AddWindow(&m_genre_dlg, CCommon::LoadText(IDS_GENRE));
+    m_tab_ctrl.AddWindow(&m_year_dlg, CCommon::LoadText(IDS_YEAR));
     m_tab_ctrl.SetCurTab(m_init_tab);
 
     //获取初始时窗口的大小

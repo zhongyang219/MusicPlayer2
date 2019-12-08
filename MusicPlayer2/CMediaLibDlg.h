@@ -24,6 +24,7 @@ public:
     CMediaClassifyDlg m_artist_dlg{ CMediaClassifier::CT_ARTIST };
     CMediaClassifyDlg m_album_dlg{ CMediaClassifier::CT_ALBUM };
     CMediaClassifyDlg m_genre_dlg{ CMediaClassifier::CT_GENRE };
+    CMediaClassifyDlg m_year_dlg{ CMediaClassifier::CT_YEAR };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

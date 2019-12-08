@@ -55,6 +55,16 @@ void CMediaClassifier::ClassifyMedia()
             item_names.push_back(str_genre);
         }
             break;
+        case CMediaClassifier::CT_YEAR:
+        {
+            wstring str_year = song_info.second.year;
+            if (str_year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+                str_year.clear();
+            if (str_year.size() > 4)
+                str_year.resize(4);
+            item_names.push_back(str_year);
+        }
+        break;
         default:
             break;
         }
@@ -76,10 +86,11 @@ void CMediaClassifier::ClassifyMedia()
 
     }
 
+    std::vector<SongInfo> other_list;
+
     //查找只有一个项目的分类，将其归到“其他”类里
-    if (m_hide_only_one_classification)
+    if (m_hide_only_one_classification && m_type != CT_YEAR)
     {
-        std::vector<SongInfo> other_list;
         for (auto& iter = m_media_list.begin(); iter != m_media_list.end();)
         {
             if (iter->second.size() == 1)
@@ -104,4 +115,37 @@ void CMediaClassifier::ClassifyMedia()
             std::sort(other_list.begin(), other_list.end(), SongInfo::ByAlbum);
         m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }
+
+    //将年份不是4位数字的归到“其他”类里
+    if (m_type == CT_YEAR)
+    {
+        for (auto& iter = m_media_list.begin(); iter != m_media_list.end();)
+        {
+            if (!iter->first.empty() && !IsStringYear(iter->first))     //如果年份不是4位数字，则添加到其他列表里
+            {
+                other_list.insert(other_list.end(), iter->second.begin(), iter->second.end());
+                iter = m_media_list.erase(iter);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+        m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
+    }
+}
+
+bool CMediaClassifier::IsStringYear(std::wstring str)
+{
+    if (str.size() < 4)
+        return false;
+    str.resize(4);
+
+    for (size_t i = 0; i< 4; i++)
+    {
+        if (str[i] < L'0' || str[i] > L'9')
+            return false;
+    }
+
+    return str > L"1000" && str < L"3000";
 }

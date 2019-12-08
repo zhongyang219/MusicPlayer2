@@ -17,7 +17,10 @@ IMPLEMENT_DYNAMIC(CMediaClassifyDlg, CTabDlg)
 
 CMediaClassifyDlg::CMediaClassifyDlg(CMediaClassifier::ClassificationType type, CWnd* pParent /*=nullptr*/)
 	: CTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type), 
-    m_classifer(type == CMediaClassifier::CT_ARTIST ? theApp.m_artist_classifer : (type == CMediaClassifier::CT_ALBUM ? theApp.m_album_classifer : theApp.m_genre_classifer))
+    m_classifer(type == CMediaClassifier::CT_ARTIST ? theApp.m_artist_classifer : 
+    (type == CMediaClassifier::CT_ALBUM ? theApp.m_album_classifer : 
+        (type == CMediaClassifier::CT_GENRE ? theApp.m_genre_classifer : 
+            theApp.m_year_classifer)))
 {
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_default_str = CCommon::LoadText(IDS_DEFAULT_ARTIST);
@@ -25,6 +28,8 @@ CMediaClassifyDlg::CMediaClassifyDlg(CMediaClassifier::ClassificationType type, 
         m_default_str = CCommon::LoadText(IDS_DEFAULT_ALBUM);
     else if (m_type == CMediaClassifier::CT_GENRE)
         m_default_str = CCommon::LoadText(IDS_DEFAULT_GENRE);
+    else if (m_type == CMediaClassifier::CT_YEAR)
+        m_default_str = CCommon::LoadText(IDS_DEFAULT_YEAR);
 }
 
 CMediaClassifyDlg::~CMediaClassifyDlg()
@@ -85,6 +90,7 @@ void CMediaClassifyDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) con
 
 void CMediaClassifyDlg::ShowClassifyList()
 {
+    CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
     m_classify_list_ctrl.DeleteAllItems();
     int index = 0;
@@ -114,6 +120,7 @@ void CMediaClassifyDlg::ShowClassifyList()
 
 void CMediaClassifyDlg::ShowSongList()
 {
+    CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
     m_song_list_ctrl.DeleteAllItems();
 
@@ -187,6 +194,8 @@ bool CMediaClassifyDlg::IsItemMatchKeyWord(const SongInfo& song, const wstring& 
         return IsItemMatchKeyWord(song.album, key_word);
     else if (m_type == CMediaClassifier::CT_GENRE)
         return IsItemMatchKeyWord(song.genre, key_word);
+    else if (m_type == CMediaClassifier::CT_YEAR)
+        return IsItemMatchKeyWord(song.year, key_word);
     return false;
 }
 
@@ -247,7 +256,8 @@ bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
     //如果选中了左侧列表，则添加到新建播放列表时名称自动填上选中项的名称
 
-    imput_dlg.SetEditText(m_classify_selected);
+    if(m_classify_selected != STR_OTHER_CLASSIFY_TYPE)
+        imput_dlg.SetEditText(m_classify_selected);
     if (imput_dlg.DoModal() == IDOK)
     {
         CString playlist_name = imput_dlg.GetEditText();
@@ -353,6 +363,8 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         title_name = CCommon::LoadText(IDS_ALBUM);
     else if (m_type == CMediaClassifier::CT_GENRE)
         title_name = CCommon::LoadText(IDS_GENRE);
+    else if (m_type == CMediaClassifier::CT_YEAR)
+        title_name = CCommon::LoadText(IDS_YEAR);
    int width0, width1;
     width1 = theApp.DPI(50);
     width0 = rc_classify_list.Width() - width1 - theApp.DPI(20) - 1;
@@ -376,6 +388,8 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ALBUM), TRUE);
     else if (m_type == CMediaClassifier::CT_GENRE)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_GENRE), TRUE);
+    else if (m_type == CMediaClassifier::CT_YEAR)
+        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_YEAR), TRUE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

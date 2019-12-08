@@ -10,7 +10,8 @@ public:
     {
         CT_ARTIST,
         CT_ALBUM,
-        CT_GENRE
+        CT_GENRE,
+        CT_YEAR
     };
 
 public:
@@ -19,6 +20,7 @@ public:
 
     const std::map<std::wstring, std::vector<SongInfo>>& GetMeidaList() const;
     void ClassifyMedia();
+    static bool IsStringYear(std::wstring str);
 
 private:
 
