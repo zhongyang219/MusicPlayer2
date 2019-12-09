@@ -711,46 +711,49 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMHEADER phdr = reinterpret_cast<LPNMHEADER>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
 
-    static bool ascending = false;
-    ascending = !ascending;
-
-    static int last_item = -1;
-    if (last_item != phdr->iItem)
+    if(phdr->hdr.hwndFrom == m_song_list_ctrl.GetHeaderCtrl()->GetSafeHwnd())
     {
-        last_item = phdr->iItem;
-        ascending = true;
-    }
+        static bool ascending = false;
+        ascending = !ascending;
 
-    //对右侧列表排序
-    if (m_left_selected_items.size() == 1)  //仅当左侧列表选中了一项时处理
-    {
-        auto iter = m_classifer.GetMeidaList().find(wstring(m_classify_selected));
-        if(iter!= m_classifer.GetMeidaList().end())
+        static int last_item = -1;
+        if (last_item != phdr->iItem)
         {
-            switch (phdr->iItem)
+            last_item = phdr->iItem;
+            ascending = true;
+        }
+
+        //对右侧列表排序
+        if (m_left_selected_items.size() == 1)  //仅当左侧列表选中了一项时处理
+        {
+            auto iter = m_classifer.GetMeidaList().find(wstring(m_classify_selected));
+            if (iter != m_classifer.GetMeidaList().end())
             {
-            case CMediaClassifyDlg::COL_TITLE:
-                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.title < b.title; else return a.title > b.title; });
-                ShowSongList(false);
-                break;
-            case CMediaClassifyDlg::COL_ARTIST:
-                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.artist < b.artist; else return a.artist > b.artist; });
-                ShowSongList(false);
-                break;
-            case CMediaClassifyDlg::COL_ALBUM:
-                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.album < b.album; else return a.album > b.album; });
-                ShowSongList(false);
-                break;
-            case CMediaClassifyDlg::COL_GENRE:
-                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.genre < b.genre; else return a.genre > b.genre; });
-                ShowSongList(false);
-                break;
-            case CMediaClassifyDlg::COL_PATH:
-                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.file_path < b.file_path; else return a.file_path > b.file_path; });
-                ShowSongList(false);
-                break;
-            default:
-                break;
+                switch (phdr->iItem)
+                {
+                case CMediaClassifyDlg::COL_TITLE:
+                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.title < b.title; else return a.title > b.title; });
+                    ShowSongList(false);
+                    break;
+                case CMediaClassifyDlg::COL_ARTIST:
+                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.artist < b.artist; else return a.artist > b.artist; });
+                    ShowSongList(false);
+                    break;
+                case CMediaClassifyDlg::COL_ALBUM:
+                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.album < b.album; else return a.album > b.album; });
+                    ShowSongList(false);
+                    break;
+                case CMediaClassifyDlg::COL_GENRE:
+                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.genre < b.genre; else return a.genre > b.genre; });
+                    ShowSongList(false);
+                    break;
+                case CMediaClassifyDlg::COL_PATH:
+                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.file_path < b.file_path; else return a.file_path > b.file_path; });
+                    ShowSongList(false);
+                    break;
+                default:
+                    break;
+                }
             }
         }
     }
