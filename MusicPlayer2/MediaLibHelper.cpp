@@ -18,6 +18,11 @@ const std::map<std::wstring, std::vector<SongInfo>>& CMediaClassifier::GetMeidaL
     return m_media_list;
 }
 
+std::map<std::wstring, std::vector<SongInfo>>& CMediaClassifier::GetMeidaList()
+{
+    return m_media_list;
+}
+
 void CMediaClassifier::ClassifyMedia()
 {
     m_media_list.clear();
@@ -111,8 +116,12 @@ void CMediaClassifier::ClassifyMedia()
         }
         if (m_type == CT_ARTIST)
             std::sort(other_list.begin(), other_list.end(), SongInfo::ByArtist);
-        else if(m_type == CT_ALBUM)
+        else if (m_type == CT_ALBUM)
             std::sort(other_list.begin(), other_list.end(), SongInfo::ByAlbum);
+        else if (m_type == CT_GENRE)
+            std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.genre < b.genre; });
+        else if (m_type == CT_YEAR)
+            std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.year < b.year; });
         if(!other_list.empty())
             m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }

@@ -19,6 +19,7 @@ public:
     ~CMediaClassifier();
 
     const std::map<std::wstring, std::vector<SongInfo>>& GetMeidaList() const;
+    std::map<std::wstring, std::vector<SongInfo>>& GetMeidaList();
     void ClassifyMedia();
     static bool IsStringYear(std::wstring str);
 

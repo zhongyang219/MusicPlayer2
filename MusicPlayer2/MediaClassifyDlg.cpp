@@ -88,11 +88,12 @@ void CMediaClassifyDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) con
     }
 }
 
-void CMediaClassifyDlg::ShowClassifyList()
+void CMediaClassifyDlg::ShowClassifyList(bool size_changed)
 {
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
-    m_classify_list_ctrl.DeleteAllItems();
+    if (size_changed)
+        m_classify_list_ctrl.DeleteAllItems();
     int index = 0;
     for(const auto& item : media_list)
     {
@@ -104,7 +105,10 @@ void CMediaClassifyDlg::ShowClassifyList()
         {
             item_name = m_default_str;
         }
-        m_classify_list_ctrl.InsertItem(index, item_name);
+        if (size_changed)
+            m_classify_list_ctrl.InsertItem(index, item_name);
+        else
+            m_classify_list_ctrl.SetItemText(index, 0, item_name);
         m_classify_list_ctrl.SetItemText(index, 1, std::to_wstring(item.second.size()).c_str());
         index++;
     }
@@ -113,16 +117,21 @@ void CMediaClassifyDlg::ShowClassifyList()
     auto iter = media_list.find(STR_OTHER_CLASSIFY_TYPE);
     if (iter != media_list.end())
     {
-        m_classify_list_ctrl.InsertItem(index, CCommon::LoadText(_T("<"), IDS_OTHER, _T(">")));
+        CString item_name = CCommon::LoadText(_T("<"), IDS_OTHER, _T(">"));
+        if (size_changed)
+            m_classify_list_ctrl.InsertItem(index, item_name);
+        else
+            m_classify_list_ctrl.SetItemText(index, 0, item_name);
         m_classify_list_ctrl.SetItemText(index, 1, std::to_wstring(iter->second.size()).c_str());
     }
 }
 
-void CMediaClassifyDlg::ShowSongList()
+void CMediaClassifyDlg::ShowSongList(bool size_changed)
 {
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
-    m_song_list_ctrl.DeleteAllItems();
+    if (size_changed)
+        m_song_list_ctrl.DeleteAllItems();
 
     int item_index = 0;
     for (int index : m_left_selected_items)
@@ -134,7 +143,10 @@ void CMediaClassifyDlg::ShowSongList()
         {
             for (const auto& item : iter->second)
             {
-                m_song_list_ctrl.InsertItem(item_index, item.GetTitle().c_str());
+                if (size_changed)
+                    m_song_list_ctrl.InsertItem(item_index, item.GetTitle().c_str());
+                else
+                    m_song_list_ctrl.SetItemText(item_index, COL_TITLE, item.GetTitle().c_str());
                 m_song_list_ctrl.SetItemText(item_index, COL_ARTIST, item.GetArtist().c_str());
                 m_song_list_ctrl.SetItemText(item_index, COL_ALBUM, item.GetAlbum().c_str());
                 m_song_list_ctrl.SetItemText(item_index, COL_GENRE, item.GetGenre().c_str());
@@ -338,6 +350,7 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CMediaClassifyDlg::OnAddToNewPalylistAndPlay)
     ON_NOTIFY(NM_DBLCLK, IDC_CLASSIFY_LIST, &CMediaClassifyDlg::OnNMDblclkClassifyList)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CMediaClassifyDlg::OnNMDblclkSongList)
+    ON_NOTIFY(HDN_ITEMCLICK, 0, &CMediaClassifyDlg::OnHdnItemclickSongList)
 END_MESSAGE_MAP()
 
 
@@ -689,5 +702,58 @@ void CMediaClassifyDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     OnOK();
+    *pResult = 0;
+}
+
+
+void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMHEADER phdr = reinterpret_cast<LPNMHEADER>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+
+    static bool ascending = false;
+    ascending = !ascending;
+
+    static int last_item = -1;
+    if (last_item != phdr->iItem)
+    {
+        last_item = phdr->iItem;
+        ascending = true;
+    }
+
+    //对右侧列表排序
+    if (m_left_selected_items.size() == 1)  //仅当左侧列表选中了一项时处理
+    {
+        auto iter = m_classifer.GetMeidaList().find(wstring(m_classify_selected));
+        if(iter!= m_classifer.GetMeidaList().end())
+        {
+            switch (phdr->iItem)
+            {
+            case CMediaClassifyDlg::COL_TITLE:
+                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.title < b.title; else return a.title > b.title; });
+                ShowSongList(false);
+                break;
+            case CMediaClassifyDlg::COL_ARTIST:
+                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.artist < b.artist; else return a.artist > b.artist; });
+                ShowSongList(false);
+                break;
+            case CMediaClassifyDlg::COL_ALBUM:
+                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.album < b.album; else return a.album > b.album; });
+                ShowSongList(false);
+                break;
+            case CMediaClassifyDlg::COL_GENRE:
+                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.genre < b.genre; else return a.genre > b.genre; });
+                ShowSongList(false);
+                break;
+            case CMediaClassifyDlg::COL_PATH:
+                std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.file_path < b.file_path; else return a.file_path > b.file_path; });
+                ShowSongList(false);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
     *pResult = 0;
 }

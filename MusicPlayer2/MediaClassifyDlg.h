@@ -40,7 +40,7 @@ protected:
     CSearchEditCtrl m_search_edit;
 
     CMediaClassifier::ClassificationType m_type;
-    const CMediaClassifier& m_classifer;
+    CMediaClassifier& m_classifer;
     CString m_classify_selected;        //左侧列表选中项的文本
     CString m_default_str;              //“艺术家”或“唱片集”为空的字符串
     bool m_searched{ false };           //是否处于搜索状态
@@ -52,8 +52,8 @@ protected:
     bool m_left_selected{};                   //最后一次选中的是左侧还是右侧
 
 protected:
-    void ShowClassifyList();
-    void ShowSongList();
+    void ShowClassifyList(bool size_changed = true);
+    void ShowSongList(bool size_changed = true);
     CString GetClassifyListSelectedString(int index) const;
     void ClassifyListClicked(int index);
     void SongListClicked(int index);
@@ -93,4 +93,5 @@ public:
     virtual void OnCancel();
     afx_msg void OnNMDblclkClassifyList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult);
 };
