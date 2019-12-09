@@ -421,6 +421,8 @@
     <Image Include="res\about.bmp" />
     <Image Include="res\AddTag.ico" />
     <Image Include="res\add_d.ico" />
+    <Image Include="res\album_d.ico" />
+    <Image Include="res\artist_d.ico" />
     <Image Include="res\close_d.ico" />
     <Image Include="res\Cortana_black.bmp" />
     <Image Include="res\Cortana_white.bmp" />
@@ -453,6 +455,7 @@
     <Image Include="res\skn.ico" />
     <Image Include="res\skn_d.ico" />
     <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\year_d.ico" />
     <Image Include="res\上一曲.ico" />
     <Image Include="res\下一曲.ico" />
     <Image Include="res\停止.ico" />

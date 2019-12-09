@@ -1101,5 +1101,14 @@
     <Image Include="res\about.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\album_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\artist_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\year_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

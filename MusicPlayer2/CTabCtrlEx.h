@@ -14,6 +14,7 @@ public:
 	void AddWindow(CWnd* pWnd, LPCTSTR lable_text);		//向当前tab控件添加一个子窗口
 	void SetCurTab(int index);
     CWnd* GetCurrentTab();
+    void AdjustTabWindowSize();
 
 protected:
     void CalSubWindowSize();

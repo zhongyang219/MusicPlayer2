@@ -455,8 +455,12 @@
 #define IDS_SHOW_DESKTOP_LYRIC          415
 #define IDR_MEDIA_LIB_POPUP_MENU        415
 #define IDS_LOCK_DESKTOP_LYRIC          416
+#define IDI_ALBUM_D                     416
 #define IDS_CLOSE_DESKTOP_LYRIC         417
+#define IDI_ARTIST_D                    417
 #define IDS_LYRIC_DOUBLE_LINE           418
+#define IDI_ICON5                       418
+#define IDI_YEAR_D                      418
 #define IDS_LYRIC_BACKGROUND_PENETRATE  419
 #define IDS_ULOCK_DESKTOP_LYRIC         420
 #define IDS_ADD                         421
@@ -1103,7 +1107,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        416
+#define _APS_NEXT_RESOURCE_VALUE        419
 #define _APS_NEXT_COMMAND_VALUE         33148
 #define _APS_NEXT_CONTROL_VALUE         1160
 #define _APS_NEXT_SYMED_VALUE           101

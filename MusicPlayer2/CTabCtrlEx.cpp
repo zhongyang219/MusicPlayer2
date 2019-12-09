@@ -67,15 +67,22 @@ CWnd* CTabCtrlEx::GetCurrentTab()
     return nullptr;
 }
 
+void CTabCtrlEx::AdjustTabWindowSize()
+{
+    CalSubWindowSize();
+    for (size_t i{}; i < m_tab_list.size(); i++)
+    {
+        m_tab_list[i]->MoveWindow(m_tab_rect);
+    }
+}
+
 void CTabCtrlEx::CalSubWindowSize()
 {
     GetClientRect(m_tab_rect);
     CRect rcTabItem;
     GetItemRect(0, rcTabItem);
-    m_tab_rect.top += rcTabItem.Height() + 4;
-    m_tab_rect.left += 4;
-    m_tab_rect.bottom -= 4;
-    m_tab_rect.right -= 4;
+    m_tab_rect.top += rcTabItem.Height();
+    AdjustRect(FALSE, m_tab_rect);
 }
 
 
@@ -117,9 +124,5 @@ void CTabCtrlEx::OnSize(UINT nType, int cx, int cy)
     CTabCtrl::OnSize(nType, cx, cy);
 
     // TODO: 在此处添加消息处理程序代码
-    CalSubWindowSize();
-    for (size_t i{}; i < m_tab_list.size(); i++)
-    {
-        m_tab_list[i]->MoveWindow(m_tab_rect);
-    }
+    AdjustTabWindowSize();
 }

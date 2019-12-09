@@ -335,6 +335,9 @@ struct IconSet
     IconRes close;
     IconRes edit;
     IconRes add;
+    IconRes artist;
+    IconRes album;
+    IconRes year;
 
     IconRes stop_l;
     IconRes previous_l;

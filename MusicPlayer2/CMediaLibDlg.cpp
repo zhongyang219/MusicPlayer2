@@ -64,15 +64,18 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
 
+    m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
+    m_tab_ctrl.AdjustTabWindowSize();
+
     //为每个标签添加图标
     CImageList ImageList;
     ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
     ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.skin.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.info.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.eq.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 
