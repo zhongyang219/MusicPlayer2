@@ -115,7 +115,7 @@ private:
 private:
 	void IniPlayerCore();			//初始化BASS音频库
 	void UnInitPlayerCore();
-	void IniPlayList(bool cmd_para = false, bool refresh_info = false, bool play = false);	//初始化播放列表(如果参数cmd_para为true，表示从命令行直接获取歌曲文件，而不是从指定路径下搜索；
+	void IniPlayList(bool playlist_mode = false, bool refresh_info = false, bool play = false);	//初始化播放列表(如果参数playlist_mode为true，则为播放列表模式，否则从指定目录下搜索文件；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
 
 	void ChangePath(const wstring& path, int track = 0);		//改变当前路径
@@ -173,7 +173,7 @@ public:
 	void OpenFolder(wstring path);	//通过“打开文件夹”来设置路径的处理
 	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开多个文件，play用来设置是否立即播放
 	void OpenFilesInTempPlaylist(const vector<wstring>& files, bool play = true);	//打开多个文件并覆盖临时播放列表，play用来设置是否立即播放
-	void OpenAFile(wstring file);	//打开一个音频文件，参数为文件的绝对路径
+	void OpenAFile(wstring file, bool play = false);	//在文件夹模式下打开一个文件
     void AddFiles(const vector<wstring>& files);
 	void SetRepeatMode();		//更改循环模式
 	void SetRepeatMode(RepeatMode repeat_mode);	//设置循环模式

@@ -1095,13 +1095,15 @@
 #define ID_SLOW_DOWN                    33143
 #define ID_ORIGINAL_SPEED               33144
 #define ID_ADD_TO_NEW_PALYLIST_AND_PLAY 33145
+#define ID_33146                        33146
+#define ID_PLAY_ITEM_IN_FOLDER_MODE     33147
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        416
-#define _APS_NEXT_COMMAND_VALUE         33146
+#define _APS_NEXT_COMMAND_VALUE         33148
 #define _APS_NEXT_CONTROL_VALUE         1160
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

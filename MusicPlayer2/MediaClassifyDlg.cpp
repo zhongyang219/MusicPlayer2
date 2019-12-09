@@ -351,6 +351,7 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_CLASSIFY_LIST, &CMediaClassifyDlg::OnNMDblclkClassifyList)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CMediaClassifyDlg::OnNMDblclkSongList)
     ON_NOTIFY(HDN_ITEMCLICK, 0, &CMediaClassifyDlg::OnHdnItemclickSongList)
+    ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CMediaClassifyDlg::OnPlayItemInFolderMode)
 END_MESSAGE_MAP()
 
 
@@ -583,6 +584,7 @@ void CMediaClassifyDlg::OnInitMenu(CMenu* pMenu)
         select_valid = !m_right_selected_items.empty();
 
     pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAY_ITEM_IN_FOLDER_MODE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE; id++)
@@ -759,4 +761,21 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     }
 
     *pResult = 0;
+}
+
+
+void CMediaClassifyDlg::OnPlayItemInFolderMode()
+{
+    // TODO: 在此添加命令处理程序代码
+
+    if (!m_right_selected_items.empty())
+    {
+        std::wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_items[0], COL_PATH);
+        CPlayer::GetInstance().OpenAFile(file_path, true);
+
+        CTabDlg::OnOK();
+        CWnd* pParent = GetParentWindow();
+        if (pParent != nullptr)
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+    }
 }

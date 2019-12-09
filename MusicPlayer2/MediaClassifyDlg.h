@@ -94,4 +94,5 @@ public:
     afx_msg void OnNMDblclkClassifyList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnPlayItemInFolderMode();
 };

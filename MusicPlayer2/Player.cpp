@@ -87,12 +87,12 @@ void CPlayer::Create(const wstring& path)
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 }
 
-void CPlayer::IniPlayList(bool cmd_para, bool refresh_info, bool play)
+void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
 {
     if (!m_loading)
     {
-        m_playlist_mode = cmd_para;
-        if (!cmd_para)
+        m_playlist_mode = playlist_mode;
+        if (!playlist_mode)     //非播放列表模式下，从当前目录m_path下搜索文件
         {
             if (COSUPlayerHelper::IsOsuFolder(m_path))
                 COSUPlayerHelper::GetOSUAudioFiles(m_path, m_playlist);
@@ -113,7 +113,7 @@ void CPlayer::IniPlayList(bool cmd_para, bool refresh_info, bool play)
         m_loading = true;
         //m_thread_info.playlist = &m_playlist;
         m_thread_info.refresh_info = refresh_info;
-        m_thread_info.sort = !cmd_para;
+        m_thread_info.sort = !playlist_mode;
         m_thread_info.play = play;
         //m_thread_info.path = m_path;
         //创建初始化播放列表的工作线程
@@ -960,7 +960,7 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, bool play /*
     IniPlayList(true, false, play);
 }
 
-void CPlayer::OpenAFile(wstring file)
+void CPlayer::OpenAFile(wstring file, bool play)
 {
     if (file.empty()) return;
     if (m_loading) return;
@@ -985,7 +985,7 @@ void CPlayer::OpenAFile(wstring file)
 
     //初始化播放列表
     m_current_file_name_tmp = file_path.GetFileName();
-    IniPlayList(false, false);		//根据新路径重新初始化播放列表
+    IniPlayList(false, false, play);		//根据新路径重新初始化播放列表
 }
 
 void CPlayer::AddFiles(const vector<wstring>& files)
