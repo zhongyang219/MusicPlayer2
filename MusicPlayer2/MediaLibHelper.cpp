@@ -144,6 +144,16 @@ void CMediaClassifier::ClassifyMedia()
         if (!other_list.empty())
             m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }
+
+    //“唱片集”类别中，默认按音轨序号排序
+    if (m_type == CT_ALBUM)
+    {
+        for (auto& item : m_media_list)
+        {
+            if (item.first != STR_OTHER_CLASSIFY_TYPE)
+                std::sort(item.second.begin(), item.second.end(), [](const SongInfo& a, const SongInfo& b) {return a.track < b.track; });
+        }
+    }
 }
 
 bool CMediaClassifier::IsStringYear(std::wstring str)

@@ -149,6 +149,10 @@ void CMediaClassifyDlg::ShowSongList(bool size_changed)
                     m_song_list_ctrl.SetItemText(item_index, COL_TITLE, item.GetTitle().c_str());
                 m_song_list_ctrl.SetItemText(item_index, COL_ARTIST, item.GetArtist().c_str());
                 m_song_list_ctrl.SetItemText(item_index, COL_ALBUM, item.GetAlbum().c_str());
+                std::wstring track_str;
+                if (item.track != 0)
+                    track_str = std::to_wstring(item.track);
+                m_song_list_ctrl.SetItemText(item_index, COL_TRACK, track_str.c_str());
                 m_song_list_ctrl.SetItemText(item_index, COL_GENRE, item.GetGenre().c_str());
                 m_song_list_ctrl.SetItemText(item_index, COL_PATH, item.file_path.c_str());
                 item_index++;
@@ -393,8 +397,9 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
     m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
     m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(400));
+    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(400));
 
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ARTIST), TRUE);
@@ -743,6 +748,10 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
                     break;
                 case CMediaClassifyDlg::COL_ALBUM:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.album < b.album; else return a.album > b.album; });
+                    ShowSongList(false);
+                    break;
+                case CMediaClassifyDlg::COL_TRACK:
+                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.track < b.track; else return a.track > b.track; });
                     ShowSongList(false);
                     break;
                 case CMediaClassifyDlg::COL_GENRE:

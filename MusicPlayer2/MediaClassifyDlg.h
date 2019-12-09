@@ -30,6 +30,7 @@ protected:
         COL_TITLE = 0,
         COL_ARTIST,
         COL_ALBUM,
+        COL_TRACK,
         COL_GENRE,
         COL_PATH,
     };
