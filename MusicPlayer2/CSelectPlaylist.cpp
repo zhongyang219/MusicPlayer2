@@ -512,9 +512,7 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 
     //弹出右键菜单
     CMenu* pContextMenu = m_menu.GetSubMenu(0);
-    CPoint point1;
-    GetCursorPos(&point1);
-    pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+    m_playlist_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
 }

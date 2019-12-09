@@ -435,9 +435,7 @@ void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
     ASSERT(pMenu != nullptr);
     if (pMenu != nullptr)
     {
-        CPoint point1;
-        GetCursorPos(&point1);
-        pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+        m_classify_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
     }
 
     *pResult = 0;
@@ -497,9 +495,7 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     ASSERT(pMenu != nullptr);
     if (pMenu != nullptr)
     {
-        CPoint point1;
-        GetCursorPos(&point1);
-        pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+        m_song_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
     }
     
     *pResult = 0;

@@ -2259,20 +2259,8 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
         m_playlist_list.GetItemSelectedSearched(m_items_selected);
     }
 
-    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
-    CPoint point;			//定义一个用于确定光标位置的位置
-    GetCursorPos(&point);	//获取当前光标的位置，以便使得菜单可以跟随光标
-
-    if (m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum())
-    {
-        CRect item_rect;
-        m_playlist_list.GetItemRect(pNMItemActivate->iItem, item_rect, LVIR_BOUNDS);		//获取选中项目的矩形区域（以播放列表控件左上角为原点）
-        CRect playlist_rect;
-        m_playlist_list.GetWindowRect(playlist_rect);		//获取播放列表控件的矩形区域（以屏幕左上角为原点）
-        point.y = playlist_rect.top + item_rect.bottom;	//设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
-    }
-
-    pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this); //在指定位置显示弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+    m_playlist_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
 }

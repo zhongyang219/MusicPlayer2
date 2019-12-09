@@ -134,6 +134,21 @@ bool CListCtrlEx::SetRowHeight(int height)
 }
 
 
+void CListCtrlEx::ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd)
+{
+    CPoint point;			//定义一个用于确定光标位置的位置
+    GetCursorPos(&point);	//获取当前光标的位置，以便使得菜单可以跟随光标
+    if(item_index >= 0)
+    {
+        CRect item_rect;
+        GetItemRect(item_index, item_rect, LVIR_BOUNDS);		//获取选中项目的矩形区域（以列表控件左上角为原点）
+        CRect window_rect;
+        GetWindowRect(window_rect);		//获取列表控件的矩形区域（以屏幕左上角为原点）
+        point.y = window_rect.top + item_rect.bottom;	//设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
+    }
+    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pWnd); //在指定位置显示弹出菜单
+}
+
 BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
 	ON_WM_LBUTTONDOWN()
