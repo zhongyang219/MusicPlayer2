@@ -64,6 +64,18 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
 
+    //为每个标签添加图标
+    CImageList ImageList;
+    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
+    ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.skin.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.info.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.eq.GetIcon(true));
+    m_tab_ctrl.SetImageList(&ImageList);
+    ImageList.Detach();
+
     //添加对话框
     m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
     m_tab_ctrl.AddWindow(&m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));

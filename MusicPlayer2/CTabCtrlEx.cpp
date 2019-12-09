@@ -24,7 +24,7 @@ void CTabCtrlEx::AddWindow(CWnd* pWnd, LPCTSTR lable_text)
 	if (pWnd == nullptr || pWnd->GetSafeHwnd() == NULL)
 		return;
 
-	InsertItem(m_tab_list.size(), lable_text);
+    InsertItem(m_tab_list.size(), lable_text, m_tab_list.size());
 
 	pWnd->SetParent(this);
 	pWnd->MoveWindow(m_tab_rect);
