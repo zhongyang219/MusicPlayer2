@@ -459,7 +459,6 @@
 #define IDS_CLOSE_DESKTOP_LYRIC         417
 #define IDI_ARTIST_D                    417
 #define IDS_LYRIC_DOUBLE_LINE           418
-#define IDI_ICON5                       418
 #define IDI_YEAR_D                      418
 #define IDS_LYRIC_BACKGROUND_PENETRATE  419
 #define IDS_ULOCK_DESKTOP_LYRIC         420
@@ -1102,13 +1101,14 @@
 #define ID_ADD_TO_NEW_PALYLIST_AND_PLAY 33145
 #define ID_33146                        33146
 #define ID_PLAY_ITEM_IN_FOLDER_MODE     33147
+#define ID_COPY_TEXT                    33148
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        419
-#define _APS_NEXT_COMMAND_VALUE         33148
+#define _APS_NEXT_COMMAND_VALUE         33149
 #define _APS_NEXT_CONTROL_VALUE         1160
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -50,6 +50,8 @@ protected:
     int last_selected_index{ -2 };
     std::vector<int> m_left_selected_items;   //左侧列表选中的项目的序号
     std::vector<int> m_right_selected_items;   //右侧列表选中的项目的序号
+    int m_right_selected_item{ -1 };
+    CString m_selected_string;
     bool m_left_selected{};                   //最后一次选中的是左侧还是右侧
 
 protected:
@@ -96,4 +98,5 @@ public:
     afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnPlayItemInFolderMode();
+    afx_msg void OnCopyText();
 };

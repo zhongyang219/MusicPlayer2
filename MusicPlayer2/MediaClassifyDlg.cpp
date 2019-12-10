@@ -198,6 +198,7 @@ void CMediaClassifyDlg::ClassifyListClicked(int index)
 void CMediaClassifyDlg::SongListClicked(int index)
 {
     m_left_selected = false;
+    m_right_selected_item = index;
     m_song_list_ctrl.GetItemSelected(m_right_selected_items);
     SetButtonsEnable(/*(index >=0 && index < m_song_list_ctrl.GetItemCount()) ||*/ !m_right_selected_items.empty());
 }
@@ -312,9 +313,9 @@ UINT CMediaClassifyDlg::ViewOnlineThreadFunc(LPVOID lpParam)
         return 0;
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     //此命令用于跳转到歌曲对应的网易云音乐的在线页面
-    if (!pThis->m_right_selected_items.empty())
+    if (pThis->m_right_selected_item >= 0)
     {
-        wstring file_path = pThis->m_song_list_ctrl.GetItemText(pThis->m_right_selected_items[0], COL_PATH).GetString();
+        wstring file_path = pThis->m_song_list_ctrl.GetItemText(pThis->m_right_selected_item, COL_PATH).GetString();
         if (CCommon::FileExist(file_path))
         {
             SongInfo song{ theApp.m_song_data[file_path] };
@@ -356,6 +357,7 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CMediaClassifyDlg::OnNMDblclkSongList)
     ON_NOTIFY(HDN_ITEMCLICK, 0, &CMediaClassifyDlg::OnHdnItemclickSongList)
     ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CMediaClassifyDlg::OnPlayItemInFolderMode)
+    ON_COMMAND(ID_COPY_TEXT, &CMediaClassifyDlg::OnCopyText)
 END_MESSAGE_MAP()
 
 
@@ -429,6 +431,7 @@ void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     ClassifyListClicked(pNMItemActivate->iItem);
+    m_selected_string = m_classify_list_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
 
     //弹出右键菜单
     CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
@@ -489,6 +492,7 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     SongListClicked(pNMItemActivate->iItem);
+    m_selected_string = m_song_list_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
 
     //弹出右键菜单
     CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
@@ -546,9 +550,9 @@ void CMediaClassifyDlg::OnFormatConvert()
 void CMediaClassifyDlg::OnExploreTrack()
 {
     // TODO: 在此添加命令处理程序代码
-    if (m_right_selected_items.empty())
+    if (m_right_selected_item < 0)
         return;
-    wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_items[0], COL_PATH).GetString();
+    wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_item, COL_PATH).GetString();
     if (!file_path.empty())
     {
         CString str;
@@ -562,12 +566,12 @@ void CMediaClassifyDlg::OnExploreTrack()
 void CMediaClassifyDlg::OnItemProperty()
 {
     // TODO: 在此添加命令处理程序代码
-    if (m_right_selected_items.empty())
+    if (m_right_selected_item < 0)
         return;
     std::vector<SongInfo> songs;
     GetCurrentSongList(songs);
     CPropertyDlg propertyDlg(songs);
-    propertyDlg.m_index = m_right_selected_items[0];
+    propertyDlg.m_index = m_right_selected_item;
     propertyDlg.DoModal();
     if (propertyDlg.GetListRefresh())
         ShowSongList();
@@ -773,9 +777,9 @@ void CMediaClassifyDlg::OnPlayItemInFolderMode()
 {
     // TODO: 在此添加命令处理程序代码
 
-    if (!m_right_selected_items.empty())
+    if (m_right_selected_item >= 0)
     {
-        std::wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_items[0], COL_PATH);
+        std::wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_item, COL_PATH);
         CPlayer::GetInstance().OpenAFile(file_path, true);
 
         CTabDlg::OnOK();
@@ -783,4 +787,12 @@ void CMediaClassifyDlg::OnPlayItemInFolderMode()
         if (pParent != nullptr)
             ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
+}
+
+
+void CMediaClassifyDlg::OnCopyText()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
+        MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 }
