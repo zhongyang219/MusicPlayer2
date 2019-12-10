@@ -86,7 +86,6 @@ void CSearchEditCtrl::UpdateToolTipPosition()
 
 BEGIN_MESSAGE_MAP(CSearchEditCtrl, CMFCEditBrowseCtrl)
     ON_WM_SIZE()
-    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -126,13 +125,4 @@ void CSearchEditCtrl::OnSize(UINT nType, int cx, int cy)
 
     // TODO: 在此处添加消息处理程序代码
     UpdateToolTipPosition();
-}
-
-
-BOOL CSearchEditCtrl::OnEraseBkgnd(CDC* pDC)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-
-    //return CMFCEditBrowseCtrl::OnEraseBkgnd(pDC);
-    return TRUE;
 }
