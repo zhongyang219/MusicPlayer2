@@ -53,5 +53,5 @@ Cortana搜索框显示歌词：<br>
 ![](Screenshots/images/image1.JPG)<br>
 只有歌词文件中包含翻译时才能显示翻译，下载歌词时勾选“下载歌词翻译”可以下载带翻译的歌词。如图所示：<br>
 
-![](Screenshots\images\image2.jpg)
+![](Screenshots/images/image2.jpg)
 
