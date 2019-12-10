@@ -79,10 +79,15 @@ void CTabCtrlEx::AdjustTabWindowSize()
 void CTabCtrlEx::CalSubWindowSize()
 {
     GetClientRect(m_tab_rect);
+    CRect rc_temp = m_tab_rect;
+    AdjustRect(FALSE, rc_temp);
+    int margin = rc_temp.left - m_tab_rect.left;
     CRect rcTabItem;
     GetItemRect(0, rcTabItem);
-    m_tab_rect.top += rcTabItem.Height();
-    AdjustRect(FALSE, m_tab_rect);
+    m_tab_rect.top += rcTabItem.Height() + margin;
+    m_tab_rect.left += margin;
+    m_tab_rect.bottom -= margin;
+    m_tab_rect.right -= margin;
 }
 
 
