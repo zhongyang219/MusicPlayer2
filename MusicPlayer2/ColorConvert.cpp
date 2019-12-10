@@ -2,7 +2,15 @@
 #include "ColorConvert.h"
 #include "Common.h"
 
-ColorTable CColorConvert::m_gray_color;
+static ColorTable CreateGrayColor()
+{
+    ColorTable gray_color;
+    gray_color.original_color = GRAY(240);
+    CColorConvert::ConvertColor(gray_color);
+    return gray_color;
+}
+
+ColorTable CColorConvert::m_gray_color = CreateGrayColor();
 
 CColorConvert::CColorConvert()
 {
@@ -11,12 +19,6 @@ CColorConvert::CColorConvert()
 
 CColorConvert::~CColorConvert()
 {
-}
-
-void CColorConvert::Initialize()
-{
-	m_gray_color.original_color = GRAY(240);
-	ConvertColor(m_gray_color);
 }
 
 void CColorConvert::RGBtoHSL(const COLOR_RGB * rgb, COLOR_HSL * hsl)

@@ -47,8 +47,6 @@ public:
 
 	static ColorTable m_gray_color;
 
-	static void Initialize();
-
 	// Converts RGB to HSL
 	static void RGBtoHSL(const COLOR_RGB *rgb, COLOR_HSL *hsl);
 
