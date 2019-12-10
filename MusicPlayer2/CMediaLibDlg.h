@@ -43,4 +43,6 @@ public:
     virtual void OnCancel();
 protected:
     afx_msg LRESULT OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };

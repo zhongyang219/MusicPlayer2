@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CMediaLibDlg, CDialog)
     ON_BN_CLICKED(IDC_PLAY_SELECTED, &CMediaLibDlg::OnBnClickedPlaySelected)
     ON_WM_GETMINMAXINFO()
     ON_MESSAGE(WM_PLAY_SELECTED_BTN_ENABLE, &CMediaLibDlg::OnPlaySelectedBtnEnable)
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -53,6 +54,7 @@ BOOL CMediaLibDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     CenterWindow();
+    ModifyStyle(0, WS_CLIPCHILDREN);
 
     SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), FALSE);		// 设置小图标
 
@@ -133,4 +135,24 @@ afx_msg LRESULT CMediaLibDlg::OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lPar
         pBtn->EnableWindow(enable);
 
     return 0;
+}
+
+
+BOOL CMediaLibDlg::OnEraseBkgnd(CDC* pDC)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+
+    ////重绘背景时设置剪辑区域为窗口区域减去tab控件的区域
+    //CRect rc_tab;
+    //m_tab_ctrl.GetWindowRect(rc_tab);
+    //ScreenToClient(rc_tab);
+    //CRgn tab_rgn;       //tab控件区域
+    //tab_rgn.CreateRectRgnIndirect(rc_tab);
+    //CRect rc_client;
+    //GetClientRect(rc_client);
+    //CRgn draw_rgn;      //需要重绘的区域
+    //draw_rgn.CreateRectRgnIndirect(rc_client);
+    //draw_rgn.CombineRgn(&draw_rgn, &tab_rgn, RGN_DIFF);
+    //pDC->SelectClipRgn(&draw_rgn);
+    return CDialog::OnEraseBkgnd(pDC);
 }
