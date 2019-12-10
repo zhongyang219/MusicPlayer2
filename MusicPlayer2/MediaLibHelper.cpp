@@ -13,12 +13,12 @@ CMediaClassifier::~CMediaClassifier()
 {
 }
 
-const std::map<std::wstring, std::vector<SongInfo>>& CMediaClassifier::GetMeidaList() const
+const CMediaClassifier::MediaList& CMediaClassifier::GetMeidaList() const
 {
     return m_media_list;
 }
 
-std::map<std::wstring, std::vector<SongInfo>>& CMediaClassifier::GetMeidaList()
+CMediaClassifier::MediaList& CMediaClassifier::GetMeidaList()
 {
     return m_media_list;
 }
