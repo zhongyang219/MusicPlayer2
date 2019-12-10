@@ -94,6 +94,7 @@ void CTabCtrlEx::CalSubWindowSize()
 BEGIN_MESSAGE_MAP(CTabCtrlEx, CTabCtrl)
 	ON_NOTIFY_REFLECT(TCN_SELCHANGE, &CTabCtrlEx::OnTcnSelchange)
     ON_WM_SIZE()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -130,4 +131,13 @@ void CTabCtrlEx::OnSize(UINT nType, int cx, int cy)
 
     // TODO: 在此处添加消息处理程序代码
     AdjustTabWindowSize();
+}
+
+
+BOOL CTabCtrlEx::OnEraseBkgnd(CDC* pDC)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+
+    //return CTabCtrl::OnEraseBkgnd(pDC);
+    return TRUE;
 }

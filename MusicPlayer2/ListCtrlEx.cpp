@@ -157,6 +157,7 @@ BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
     ON_NOTIFY_REFLECT(LVN_BEGINDRAG, &CListCtrlEx::OnLvnBegindrag)
     ON_WM_LBUTTONUP()
     ON_WM_SETCURSOR()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -328,4 +329,13 @@ BOOL CListCtrlEx::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
     }
 
     return CListCtrl::OnSetCursor(pWnd, nHitTest, message);
+}
+
+
+BOOL CListCtrlEx::OnEraseBkgnd(CDC* pDC)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+
+    //return CListCtrl::OnEraseBkgnd(pDC);
+    return TRUE;
 }

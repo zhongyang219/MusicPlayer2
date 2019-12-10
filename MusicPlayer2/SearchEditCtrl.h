@@ -31,6 +31,7 @@ private:
 public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnSize(UINT nType, int cx, int cy);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 

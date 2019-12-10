@@ -106,6 +106,7 @@ void CTabDlg::ScrollWindowSimple(int step)
 BEGIN_MESSAGE_MAP(CTabDlg, CDialogEx)
 	ON_WM_VSCROLL()
 	ON_WM_MOUSEWHEEL()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -168,4 +169,13 @@ void CTabDlg::OnOK()
     // TODO: 在此添加专用代码和/或调用基类
 
     CDialogEx::OnOK();
+}
+
+
+BOOL CTabDlg::OnEraseBkgnd(CDC* pDC)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+
+    //return CDialogEx::OnEraseBkgnd(pDC);
+    return TRUE;
 }

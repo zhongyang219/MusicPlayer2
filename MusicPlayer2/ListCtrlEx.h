@@ -46,5 +46,6 @@ public:
     afx_msg void OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
