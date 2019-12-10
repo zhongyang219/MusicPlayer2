@@ -1,4 +1,5 @@
 **简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/README_en-us.md)**<br>
+
 # MusicPlayer2 简介
 MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功能于一身的音频播放软件。支持歌词显示、歌词卡拉OK样式显示、歌词在线下载、歌词编辑、歌曲标签识别、专辑封面显示、专辑封面在线下载、频谱分析、音效设置、任务栏缩略图按钮、主题颜色、格式转换等功能。播放内核为BASS音频库(V2.4)。播放器支持几乎所有常见的音频格式。<br>
 # 相关链接：<br>
@@ -42,5 +43,15 @@ Cortana搜索框显示歌词：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options.png)<br>
 选项设置——常规设置：<br>
 ![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options2.png)<br>
+
 # 更新日志
 **[点击此处查看更新日志](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md)**
+<br>
+
+# 常见问题
+**1、主界面中的“显示歌词翻译”按钮不可用**<br>
+![](Screenshots/images/image1.JPG)<br>
+只有歌词文件中包含翻译时才能显示翻译，下载歌词时勾选“下载歌词翻译”可以下载带翻译的歌词。如图所示：<br>
+
+![](Screenshots\images\image2.jpg)
+
