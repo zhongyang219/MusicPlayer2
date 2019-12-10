@@ -33,17 +33,6 @@ public:
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
 	ThreadInfo m_thread_info;
 
-    //使用文件路径的曲目序号唯一确定一个曲目
-    struct SongIdtetity
-    {
-        wstring file_path;
-        int track;
-        bool operator==(const SongIdtetity& item) const
-        {
-            return file_path == item.file_path && track == item.track;
-        }
-    };
-
 private:
 	CWinThread* m_pThread{};		//初始化播放列表的线程
 
@@ -269,7 +258,6 @@ private:
 	wstring GetCurrentFileName() const;
     bool RemoveSongNotPlay(int index);
     void AfterSongsRemoved(bool play);
-    SongIdtetity GetCurrentSongIdentity();
 
 public:
     void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面

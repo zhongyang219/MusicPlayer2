@@ -159,5 +159,13 @@ struct SongInfo
         file_name = file_path.substr(index + 1);
         return file_name;
     }
+
+    bool IsSameSong(const SongInfo& song) const
+    {
+        if (!is_cue && !song.is_cue)
+            return file_path == song.file_path;
+        else
+            return file_path == song.file_path && track == song.track;
+    }
 };
 

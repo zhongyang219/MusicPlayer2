@@ -1344,7 +1344,7 @@ void CPlayer::RemoveSongs(vector<int> indexes)
     int size = indexes.size();
     bool is_playing = IsPlaying();
     Time position = m_pCore->GetCurPosition();
-    SongIdtetity cur_song = GetCurrentSongIdentity();
+    SongInfo cur_song = GetCurrentSongInfo();
     MusicControl(Command::STOP);
     MusicControl(Command::CLOSE);
     for (int i{}; i < size; i++)
@@ -1356,7 +1356,7 @@ void CPlayer::RemoveSongs(vector<int> indexes)
                 indexes[j]--;
         }
     }
-    if(cur_song == GetCurrentSongIdentity())        //如果删除后正在播放的曲目没有变化，就需要重新定位到之前播放到的位置
+    if(cur_song.IsSameSong(GetCurrentSongInfo()))        //如果删除后正在播放的曲目没有变化，就需要重新定位到之前播放到的位置
         m_current_position = position;
     AfterSongsRemoved(is_playing);
 }
@@ -2160,14 +2160,6 @@ void CPlayer::AfterSongsRemoved(bool play)
     MusicControl(Command::SEEK);
     if (play)
         MusicControl(Command::PLAY);
-}
-
-CPlayer::SongIdtetity CPlayer::GetCurrentSongIdentity()
-{
-    SongIdtetity song_identity;
-    song_identity.file_path = GetCurrentSongInfo().file_path;
-    song_identity.track = GetCurrentSongInfo().track;
-    return song_identity;
 }
 
 void CPlayer::SearchOutAlbumCover()
