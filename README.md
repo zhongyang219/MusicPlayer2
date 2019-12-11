@@ -32,17 +32,17 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 5、直接将文件或文件夹拖放到程序的图标或其快捷方式图标上。<br>
 # 截图
 主窗口：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window.png)<br>
+![](Screenshots/Main_window.png)<br>
 主窗口（隐藏播放列表）：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Main_window2.png)<br>
+![](Screenshots/Main_window2.png)<br>
 迷你模式：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Mini_mode.png)<br>
+![](Screenshots/Mini_mode.png)<br>
 Cortana搜索框显示歌词：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/Cortana_lyric.png)<br>
+![](Screenshots/Cortana_lyric.png)<br>
 选项设置——外观设置：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options.png)<br>
+![](Screenshots/options.png)<br>
 选项设置——常规设置：<br>
-![](https://github.com/zhongyang219/MusicPlayer2/raw/master/Screenshots/options2.png)<br>
+![](Screenshots/options2.png)<br>
 
 # 更新日志
 **[点击此处查看更新日志](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md)**
