@@ -371,7 +371,6 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 	// TODO: 在此处添加消息处理程序代码
 	if (nType != SIZE_MINIMIZED && m_path_list.m_hWnd)
 	{
-		int list_width{ cx - theApp.DPI(29) };
 		vector<int> width;
 		CalculateColumeWidth(width);
 		for (size_t i{}; i < width.size(); i++)

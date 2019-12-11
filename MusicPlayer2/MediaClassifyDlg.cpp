@@ -306,6 +306,16 @@ bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
     return false;
 }
 
+void CMediaClassifyDlg::CalculateClassifyListColumeWidth(std::vector<int>& width)
+{
+    CRect rect;
+    m_classify_list_ctrl.GetWindowRect(rect);
+    width.resize(2);
+
+    width[1] = theApp.DPI(50);
+    width[0] = rect.Width() - width[1] - theApp.DPI(20) - 1;
+}
+
 UINT CMediaClassifyDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 {
     CMediaClassifyDlg* pThis = (CMediaClassifyDlg*)(lpParam);
@@ -358,6 +368,7 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_NOTIFY(HDN_ITEMCLICK, 0, &CMediaClassifyDlg::OnHdnItemclickSongList)
     ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CMediaClassifyDlg::OnPlayItemInFolderMode)
     ON_COMMAND(ID_COPY_TEXT, &CMediaClassifyDlg::OnCopyText)
+    ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -374,8 +385,6 @@ BOOL CMediaClassifyDlg::OnInitDialog()
 
     //初始化左侧列表
     m_classify_list_ctrl.SetExtendedStyle(m_classify_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    CRect rc_classify_list;
-    m_classify_list_ctrl.GetWindowRect(rc_classify_list);
     CString title_name;
     if (m_type == CMediaClassifier::CT_ARTIST)
         title_name = CCommon::LoadText(IDS_ARTIST);
@@ -385,11 +394,12 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         title_name = CCommon::LoadText(IDS_GENRE);
     else if (m_type == CMediaClassifier::CT_YEAR)
         title_name = CCommon::LoadText(IDS_YEAR);
-   int width0, width1;
-    width1 = theApp.DPI(50);
-    width0 = rc_classify_list.Width() - width1 - theApp.DPI(20) - 1;
-    m_classify_list_ctrl.InsertColumn(0, title_name, LVCFMT_LEFT, width0);
-    m_classify_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width1);
+    CRect rc_classify_list;
+    m_classify_list_ctrl.GetWindowRect(rc_classify_list);
+    std::vector<int> width;
+    CalculateClassifyListColumeWidth(width);
+    m_classify_list_ctrl.InsertColumn(0, title_name, LVCFMT_LEFT, width[0]);
+    m_classify_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[1]);
     ShowClassifyList();
 
     //初始化右侧列表
@@ -401,7 +411,7 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
     m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
     m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(400));
+    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
 
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ARTIST), TRUE);
@@ -795,4 +805,19 @@ void CMediaClassifyDlg::OnCopyText()
     // TODO: 在此添加命令处理程序代码
     if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
         MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
+}
+
+
+void CMediaClassifyDlg::OnSize(UINT nType, int cx, int cy)
+{
+    CTabDlg::OnSize(nType, cx, cy);
+
+    // TODO: 在此处添加消息处理程序代码
+    if (nType != SIZE_MINIMIZED && m_classify_list_ctrl.m_hWnd)
+    {
+        std::vector<int> width;
+        CalculateClassifyListColumeWidth(width);
+        for (size_t i{}; i < width.size(); i++)
+            m_classify_list_ctrl.SetColumnWidth(i, width[i]);
+    }
 }

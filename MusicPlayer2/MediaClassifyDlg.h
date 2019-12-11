@@ -68,6 +68,8 @@ protected:
     virtual void OnTabEntered() override;
     bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
 
+    void CalculateClassifyListColumeWidth(std::vector<int>& width);
+
     static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -99,4 +101,5 @@ public:
     afx_msg void OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnPlayItemInFolderMode();
     afx_msg void OnCopyText();
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };
