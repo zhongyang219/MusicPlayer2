@@ -18,14 +18,36 @@ public:
 #endif
 
 protected:
+    enum ColumeIndex
+    {
+        COL_INDEX = 0,
+        COL_TRACK,
+        COL_PATH,
+        COL_TOTAL_TIME,
+        COL_LENGTH,
+        COL_TIMES,
+    };
+
+    struct ListItem
+    {
+        wstring name;
+        wstring path;
+        Time total_time;
+        Time length;
+        double times;
+    };
+
+protected:
 	CListCtrlEx m_list_ctrl;
 
 	CSize m_min_size;
+    vector<ListItem> m_data_list;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-	void ShowData();
+	void ShowData(bool size_changed = true);
+    ListItem SongInfoToListItem(const SongInfo& song);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -33,4 +55,5 @@ public:
 	afx_msg void OnBnClickedExportButton();
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnBnClickedClearButton();
+    afx_msg void OnHdnItemclickList1(NMHDR *pNMHDR, LRESULT *pResult);
 };
