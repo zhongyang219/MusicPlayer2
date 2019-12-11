@@ -9,6 +9,7 @@ Alternate link: Download from [Baidu Netdisk](https://pan.baidu.com/s/1i5QNwFF)<
 * Mini mode
 * Lyrics karaoke style display
 * Show lyrics in Cortana search box
+* Desktop lyrics display
 * Lyrics online download
 * lyrics editing
 * Song tag recognition
@@ -31,16 +32,18 @@ You have the following ways to open and play a song:<br>
 5. Drag and drop the file or folder directly onto the program's icon or its shortcut icon.<br>
 # Screen shoots
 Main window：<br>
-![](Screenshots/en_us/Main_window.png)<br>
+<img src="Screenshots/en_us/Main_window.png" style="zoom:80%;" /><br>
 Main window (Hide playlist):<br>
-![](Screenshots/en_us/Main_window2.png)<br>
+<img src="Screenshots/en_us/Main_window2.png" style="zoom:80%;" /><br>
 Mini mode:<br>
-![](Screenshots/Mini_mode.png)<br>
+<img src="Screenshots/Mini_mode.png" style="zoom:80%;" /><br>
 Show lyrics in Cortana search box<br>
-![](Screenshots/Cortana_lyric.png)<br>
+<img src="Screenshots/Cortana_lyric.png" style="zoom:80%;" /><br>
+<br>Desktop lyrics<br>
+<img src="Screenshots/desktop_lyric.jpg" style="zoom:80%;" /><br>
 Option settings - Appearance Settings<br>
-![](Screenshots/en_us/options.png)<br>
+<img src="Screenshots/en_us/options.png" style="zoom:80%;" /><br>
 Option settings - General Settings<br>
-![](Screenshots/en_us/options2.png)<br>
+<img src="Screenshots/en_us/options2.png" style="zoom:80%;" /><br>
 # Update log
 **[Click here to view the update log.](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md)**

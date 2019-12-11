@@ -10,6 +10,7 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 * 迷你模式
 * 歌词卡拉OK样式显示
 * 小娜搜索框显示歌词
+* 桌面歌词显示
 * 歌词在线下载
 * 歌词编辑
 * 歌曲标签识别
@@ -32,17 +33,19 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 5、直接将文件或文件夹拖放到程序的图标或其快捷方式图标上。<br>
 # 截图
 主窗口：<br>
-![](Screenshots/Main_window.png)<br>
+<img src="Screenshots/Main_window.png" style="zoom:80%;" /><br>
 主窗口（隐藏播放列表）：<br>
-![](Screenshots/Main_window2.png)<br>
+<img src="Screenshots/Main_window2.png" style="zoom:80%;" /><br>
 迷你模式：<br>
-![](Screenshots/Mini_mode.png)<br>
+<img src="Screenshots/Mini_mode.png" style="zoom:80%;" /><br>
 Cortana搜索框显示歌词：<br>
-![](Screenshots/Cortana_lyric.png)<br>
+<img src="Screenshots/Cortana_lyric.png" style="zoom:80%;" /><br>
+<br>桌面歌词：<br>
+<img src="Screenshots/desktop_lyric.jpg" style="zoom:80%;" /><br>
 选项设置——外观设置：<br>
-![](Screenshots/options.png)<br>
+<img src="Screenshots/options.png" style="zoom:80%;" /><br>
 选项设置——常规设置：<br>
-![](Screenshots/options2.png)<br>
+<img src="Screenshots/options2.png" style="zoom:80%;" /><br>
 
 # 更新日志
 **[点击此处查看更新日志](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md)**
@@ -50,7 +53,7 @@ Cortana搜索框显示歌词：<br>
 
 # 常见问题
 **1、主界面中的“显示歌词翻译”按钮不可用**<br>
-![](Screenshots/images/image1.JPG)<br>
+<img src="Screenshots/images/image1.JPG" style="zoom:80%;" /><br>
 只有歌词文件中包含翻译时才能显示翻译，下载歌词时勾选“下载歌词翻译”可以下载带翻译的歌词。如图所示：<br>
 
 ![](Screenshots/images/image2.jpg)
