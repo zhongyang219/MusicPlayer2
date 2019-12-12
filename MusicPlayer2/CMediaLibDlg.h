@@ -2,6 +2,7 @@
 #include "CTabCtrlEx.h"
 #include "CSelectPlaylist.h"
 #include "MediaClassifyDlg.h"
+#include "FolderExploreDlg.h"
 
 // CMediaLibDlg 对话框
 
@@ -25,6 +26,7 @@ public:
     CMediaClassifyDlg m_album_dlg{ CMediaClassifier::CT_ALBUM };
     CMediaClassifyDlg m_genre_dlg{ CMediaClassifier::CT_GENRE };
     CMediaClassifyDlg m_year_dlg{ CMediaClassifier::CT_YEAR };
+    CFolderExploreDlg m_folder_explore_dlg;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

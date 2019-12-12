@@ -65,6 +65,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+    m_folder_explore_dlg.Create(IDD_FOLDER_EXPLORE_DIALOG);
 
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
     m_tab_ctrl.AdjustTabWindowSize();
@@ -78,6 +79,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 
@@ -88,6 +90,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_tab_ctrl.AddWindow(&m_album_dlg, CCommon::LoadText(IDS_ALBUM));
     m_tab_ctrl.AddWindow(&m_genre_dlg, CCommon::LoadText(IDS_GENRE));
     m_tab_ctrl.AddWindow(&m_year_dlg, CCommon::LoadText(IDS_YEAR));
+    m_tab_ctrl.AddWindow(&m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));
     m_tab_ctrl.SetCurTab(m_init_tab);
 
     //获取初始时窗口的大小

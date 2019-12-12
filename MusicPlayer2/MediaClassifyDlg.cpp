@@ -403,7 +403,7 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     ShowClassifyList();
 
     //初始化右侧列表
-    m_song_list_ctrl.SetExtendedStyle(m_classify_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
+    m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
     //CRect rc_song_list;
     //m_song_list_ctrl.GetWindowRect(rc_song_list);
     m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));

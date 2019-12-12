@@ -267,6 +267,9 @@
     <Filter Include="功能逻辑类\MediaLibHelper">
       <UniqueIdentifier>{818433e4-a872-4205-a9f6-24aa18cd13b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\TreeCtrlEx">
+      <UniqueIdentifier>{3551437a-e3b0-4dc6-ac0a-b192e993a818}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -598,6 +601,12 @@
     <ClInclude Include="MusicPlayerCmdHelper.h">
       <Filter>MusicPlayerDlg</Filter>
     </ClInclude>
+    <ClInclude Include="TreeCtrlEx.h">
+      <Filter>派生的控件类\TreeCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderExploreDlg.h">
+      <Filter>对话框类\媒体库对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -896,6 +905,12 @@
     </ClCompile>
     <ClCompile Include="MusicPlayerCmdHelper.cpp">
       <Filter>MusicPlayerDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeCtrlEx.cpp">
+      <Filter>派生的控件类\TreeCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderExploreDlg.cpp">
+      <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

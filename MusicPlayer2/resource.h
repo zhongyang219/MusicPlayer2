@@ -461,6 +461,7 @@
 #define IDS_LYRIC_DOUBLE_LINE           418
 #define IDI_YEAR_D                      418
 #define IDS_LYRIC_BACKGROUND_PENETRATE  419
+#define IDD_FOLDER_EXPLORE_DIALOG       419
 #define IDS_ULOCK_DESKTOP_LYRIC         420
 #define IDS_ADD                         421
 #define IDS_SORT                        422
@@ -482,6 +483,7 @@
 #define IDS_YEAR                        438
 #define IDS_SEARCH_YEAR                 439
 #define IDS_TRACK_NUM                   440
+#define IDS_FOLDER_EXPLORE              441
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -512,6 +514,7 @@
 #define IDC_EXPORT_BUTTON               1012
 #define IDC_PLAY_SELECTED               1012
 #define IDC_NEW_PLAYLIST                1012
+#define IDC_SETTINGS_BUTTON             1012
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013
@@ -767,6 +770,7 @@
 #define IDC_FREQ_COMBO                  1156
 #define IDC_CLASSIFY_LIST               1158
 #define IDC_SONG_LIST                   1159
+#define IDC_FOLDER_EXPLORE_TREE         1160
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1107,9 +1111,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        419
+#define _APS_NEXT_RESOURCE_VALUE        422
 #define _APS_NEXT_COMMAND_VALUE         33149
-#define _APS_NEXT_CONTROL_VALUE         1160
+#define _APS_NEXT_CONTROL_VALUE         1161
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
