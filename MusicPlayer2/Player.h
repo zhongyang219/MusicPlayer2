@@ -107,7 +107,7 @@ private:
 	void IniPlayList(bool playlist_mode = false, bool refresh_info = false, bool play = false);	//初始化播放列表(如果参数playlist_mode为true，则为播放列表模式，否则从指定目录下搜索文件；
 																		//如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
 
-	void ChangePath(const wstring& path, int track = 0);		//改变当前路径
+	void ChangePath(const wstring& path, int track = 0, bool play = false);		//改变当前路径
 
 	void ApplyEqualizer(int channel, int gain);		//应用一个均衡器通道的增益
 
@@ -159,7 +159,7 @@ public:
 	void SetVolume();		//用m_volume的值设置音量
 	void SetPath(const wstring& path, int track, int position, SortMode sort_mode);		//设置路径
     void SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false);
-	void OpenFolder(wstring path);	//通过“打开文件夹”来设置路径的处理
+	void OpenFolder(wstring path, bool play = false);	//通过“打开文件夹”来设置路径的处理
 	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开多个文件，play用来设置是否立即播放
 	void OpenFilesInTempPlaylist(const vector<wstring>& files, bool play = true);	//打开多个文件并覆盖临时播放列表，play用来设置是否立即播放
 	void OpenAFile(wstring file, bool play = false);	//在文件夹模式下打开一个文件

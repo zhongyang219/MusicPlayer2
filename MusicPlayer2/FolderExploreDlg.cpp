@@ -22,6 +22,41 @@ CFolderExploreDlg::~CFolderExploreDlg()
 {
 }
 
+void CFolderExploreDlg::GetSongsSelected(std::vector<wstring>& song_list) const
+{
+    for (int index : m_right_selected_items)
+    {
+        wstring file_path = m_song_list_ctrl.GetItemText(index, COL_PATH).GetString();
+        song_list.push_back(file_path);
+    }
+}
+
+void CFolderExploreDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
+{
+    std::vector<wstring> file_list;
+    GetSongsSelected(file_list);
+    for (const auto& file : file_list)
+    {
+        SongInfo song;
+        auto iter = theApp.m_song_data.find(file);
+        if (iter != theApp.m_song_data.end())
+        {
+            song = iter->second;
+            song.file_path = file;
+            song_list.push_back(song);
+        }
+        else
+        {
+            song.file_path = file;
+            song_list.push_back(song);
+        }
+    }
+}
+
+void CFolderExploreDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) const
+{
+}
+
 void CFolderExploreDlg::ShowFolderTree()
 {
     m_folder_explore_tree.DeleteAllItems();
@@ -78,12 +113,28 @@ void CFolderExploreDlg::ShowSongList(bool size_changed)
 
 void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)
 {
+    m_left_selected = true;
     CString folder_path_selected = m_folder_explore_tree.GetItemPath(hItem);
     if (folder_path_selected != m_folder_path_selected)
     {
         m_folder_path_selected = folder_path_selected;
         ShowSongList();
     }
+    SetButtonsEnable(CCommon::FolderExist(wstring(folder_path_selected)));
+}
+
+void CFolderExploreDlg::SongListClicked(int index)
+{
+    m_left_selected = false;
+    m_right_selected_item = index;
+    m_song_list_ctrl.GetItemSelected(m_right_selected_items);
+    SetButtonsEnable(!m_right_selected_items.empty());
+}
+
+void CFolderExploreDlg::SetButtonsEnable(bool enable)
+{
+    CWnd* pParent = GetParentWindow();
+    ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
 }
 
 void CFolderExploreDlg::DoDataExchange(CDataExchange* pDX)
@@ -98,6 +149,9 @@ void CFolderExploreDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CFolderExploreDlg, CTabDlg)
     ON_NOTIFY(NM_RCLICK, IDC_FOLDER_EXPLORE_TREE, &CFolderExploreDlg::OnNMRClickFolderExploreTree)
     ON_NOTIFY(NM_CLICK, IDC_FOLDER_EXPLORE_TREE, &CFolderExploreDlg::OnNMClickFolderExploreTree)
+    ON_COMMAND(ID_PLAY_ITEM, &CFolderExploreDlg::OnPlayItem)
+    ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMClickSongList)
+    ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMRClickSongList)
 END_MESSAGE_MAP()
 
 
@@ -135,6 +189,8 @@ void CFolderExploreDlg::OnNMRClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pRes
         unsigned int nFlags = 0;
         m_folder_explore_tree.ScreenToClient(&point);
         HTREEITEM hItem = m_folder_explore_tree.HitTest(point, &nFlags);
+        m_tree_item_selected = hItem;
+        m_selected_string = m_folder_explore_tree.GetItemText(hItem);
 
         m_folder_explore_tree.SetFocus();
         m_folder_explore_tree.SelectItem(hItem);
@@ -160,6 +216,7 @@ void CFolderExploreDlg::OnNMClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResu
         unsigned int nFlags = 0;
         m_folder_explore_tree.ScreenToClient(&point);
         HTREEITEM hItem = m_folder_explore_tree.HitTest(point, &nFlags);
+        m_tree_item_selected = hItem;
         if ((nFlags & TVHT_ONITEM) && (hItem != NULL))
         {
             FolderTreeClicked(hItem);
@@ -169,4 +226,64 @@ void CFolderExploreDlg::OnNMClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResu
         //m_folder_explore_tree.SelectItem(hItem);
     }
     *pResult = 0;
+}
+
+
+void CFolderExploreDlg::OnPlayItem()
+{
+    // TODO: 在此添加命令处理程序代码
+    OnOK();
+}
+
+
+void CFolderExploreDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    SongListClicked(pNMItemActivate->iItem);
+    *pResult = 0;
+}
+
+
+void CFolderExploreDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    SongListClicked(pNMItemActivate->iItem);
+    m_selected_string = m_song_list_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
+
+    //弹出右键菜单
+    CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+    ASSERT(pMenu != nullptr);
+    if (pMenu != nullptr)
+    {
+        m_song_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
+    }
+    *pResult = 0;
+}
+
+
+void CFolderExploreDlg::OnOK()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    if (m_left_selected)        //选中左侧树时，播放选中文件夹
+    {
+        wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
+        CPlayer::GetInstance().OpenFolder(folder_path, true);
+    }
+    else
+    {
+        std::vector<wstring> files;
+        GetSongsSelected(files);
+        if (!files.empty())
+        {
+            CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
+        }
+    }
+    CTabDlg::OnOK();
+    CWnd* pParent = GetParentWindow();
+    if (pParent != nullptr)
+        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+
+    CTabDlg::OnOK();
 }

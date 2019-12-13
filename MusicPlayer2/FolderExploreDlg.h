@@ -19,6 +19,11 @@ public:
 	enum { IDD = IDD_FOLDER_EXPLORE_DIALOG };
 #endif
 
+public:
+    void GetSongsSelected(std::vector<wstring>& song_list) const;
+    void GetSongsSelected(std::vector<SongInfo>& song_list) const;
+    void GetCurrentSongList(std::vector<SongInfo>& song_list) const;
+
 protected:
     enum SongColumeIndex
     {
@@ -35,11 +40,18 @@ protected:
     CListCtrlEx m_song_list_ctrl;
 
     CString m_folder_path_selected;
+    bool m_left_selected{};                   //最后一次选中的是左侧还是右侧
+    std::vector<int> m_right_selected_items;   //右侧列表选中的项目的序号
+    int m_right_selected_item{ -1 };
+    HTREEITEM m_tree_item_selected{};
+    CString m_selected_string;
 
 protected:
     void ShowFolderTree();
     void ShowSongList(bool size_changed = true);
     void FolderTreeClicked(HTREEITEM hItem);
+    void SongListClicked(int index);
+    void SetButtonsEnable(bool enable);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -48,4 +60,8 @@ public:
     virtual BOOL OnInitDialog();
     afx_msg void OnNMRClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnPlayItem();
+    afx_msg void OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
+    virtual void OnOK();
 };
