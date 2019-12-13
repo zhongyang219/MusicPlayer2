@@ -24,10 +24,17 @@ CFolderExploreDlg::~CFolderExploreDlg()
 
 void CFolderExploreDlg::GetSongsSelected(std::vector<wstring>& song_list) const
 {
-    for (int index : m_right_selected_items)
+    if (m_left_selected)
     {
-        wstring file_path = m_song_list_ctrl.GetItemText(index, COL_PATH).GetString();
-        song_list.push_back(file_path);
+        CAudioCommon::GetAudioFiles(wstring(m_folder_path_selected), song_list);
+    }
+    else
+    {
+        for (int index : m_right_selected_items)
+        {
+            wstring file_path = m_song_list_ctrl.GetItemText(index, COL_PATH).GetString();
+            song_list.push_back(file_path);
+        }
     }
 }
 
@@ -152,6 +159,14 @@ BEGIN_MESSAGE_MAP(CFolderExploreDlg, CTabDlg)
     ON_COMMAND(ID_PLAY_ITEM, &CFolderExploreDlg::OnPlayItem)
     ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMClickSongList)
     ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMRClickSongList)
+    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CFolderExploreDlg::OnAddToNewPlaylist)
+    ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CFolderExploreDlg::OnAddToNewPalylistAndPlay)
+    ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CFolderExploreDlg::OnPlayItemInFolderMode)
+    ON_COMMAND(ID_EXPLORE_ONLINE, &CFolderExploreDlg::OnExploreOnline)
+    ON_COMMAND(ID_FORMAT_CONVERT, &CFolderExploreDlg::OnFormatConvert)
+    ON_COMMAND(ID_EXPLORE_TRACK, &CFolderExploreDlg::OnExploreTrack)
+    ON_COMMAND(ID_ITEM_PROPERTY, &CFolderExploreDlg::OnItemProperty)
+    ON_COMMAND(ID_COPY_TEXT, &CFolderExploreDlg::OnCopyText)
 END_MESSAGE_MAP()
 
 
@@ -286,4 +301,60 @@ void CFolderExploreDlg::OnOK()
         ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
 
     CTabDlg::OnOK();
+}
+
+
+void CFolderExploreDlg::OnAddToNewPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFolderExploreDlg::OnAddToNewPalylistAndPlay()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFolderExploreDlg::OnPlayItemInFolderMode()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFolderExploreDlg::OnExploreOnline()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFolderExploreDlg::OnFormatConvert()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFolderExploreDlg::OnExploreTrack()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFolderExploreDlg::OnItemProperty()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFolderExploreDlg::OnCopyText()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+BOOL CFolderExploreDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+
+    return CTabDlg::OnCommand(wParam, lParam);
 }

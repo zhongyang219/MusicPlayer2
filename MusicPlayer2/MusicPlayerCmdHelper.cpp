@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
+#include "InputDlg.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -58,6 +59,7 @@ void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
     pPlayerDlg->m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
     pPlayerDlg->m_pFormatConvertDlg->ShowWindow(SW_SHOW);
 }
+
 
 CWnd* CMusicPlayerCmdHelper::GetOwner()
 {

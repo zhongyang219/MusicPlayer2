@@ -3973,43 +3973,19 @@ void CMusicPlayerDlg::OnRemoveSameSongs()
 void CMusicPlayerDlg::OnAddToNewPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    CInputDlg imput_dlg;
-    imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
-    imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
-    if (imput_dlg.DoModal() == IDOK)
+    auto getSongList = [&](std::vector<SongInfo>& song_list)
     {
-        CString playlist_name = imput_dlg.GetEditText();
-        if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
-        {
-            MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
-            return;
-        }
-        wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
-        if (CCommon::FileExist(playlist_path))
-        {
-            MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_EXIST_WARNING, { playlist_name }), NULL, MB_ICONWARNING | MB_OK);
-            return;
-        }
-        //添加空的播放列表
-        CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
-        
-        //获取选中的曲目的路径
-        std::vector<SongInfo> selected_item_path;
         for (auto i : m_items_selected)
         {
             if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
             {
-                selected_item_path.push_back(CPlayer::GetInstance().GetPlayList()[i]);
+                song_list.push_back(CPlayer::GetInstance().GetPlayList()[i]);
             }
         }
-
-        CPlaylist playlist;
-        playlist.LoadFromFile(playlist_path);
-        playlist.AddFiles(selected_item_path);
-        playlist.SaveToFile(playlist_path);
-
-        IniPlaylistPopupMenu();
-    }
+    };
+    CMusicPlayerCmdHelper cmd_helper(this);
+    std::wstring playlist_path;
+    cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
 }
 
 

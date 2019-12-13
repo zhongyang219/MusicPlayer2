@@ -64,4 +64,13 @@ public:
     afx_msg void OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
     virtual void OnOK();
+    afx_msg void OnAddToNewPlaylist();
+    afx_msg void OnAddToNewPalylistAndPlay();
+    afx_msg void OnPlayItemInFolderMode();
+    afx_msg void OnExploreOnline();
+    afx_msg void OnFormatConvert();
+    afx_msg void OnExploreTrack();
+    afx_msg void OnItemProperty();
+    afx_msg void OnCopyText();
+    virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 };
