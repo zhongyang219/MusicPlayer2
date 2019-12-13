@@ -79,7 +79,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 

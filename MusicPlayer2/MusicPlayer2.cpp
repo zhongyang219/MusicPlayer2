@@ -490,6 +490,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.artist.Load(IDI_ARTIST_D, NULL, DPI(16));
     m_icon_set.album.Load(IDI_ALBUM_D, NULL, DPI(16));
     m_icon_set.year.Load(IDI_YEAR_D, NULL, DPI(16));
+    m_icon_set.folder_explore.Load(IDI_FOLDER_EXPLORE_D, NULL, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));

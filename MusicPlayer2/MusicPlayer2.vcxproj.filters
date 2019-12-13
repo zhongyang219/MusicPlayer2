@@ -1125,5 +1125,8 @@
     <Image Include="res\year_d.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\folder_explore_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

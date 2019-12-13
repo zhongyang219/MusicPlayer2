@@ -465,6 +465,8 @@
 #define IDS_ULOCK_DESKTOP_LYRIC         420
 #define IDS_ADD                         421
 #define IDS_SORT                        422
+#define IDI_ICON5                       422
+#define IDI_FOLDER_EXPLORE_D            422
 #define IDS_LIST                        423
 #define IDS_EDIT                        424
 #define IDS_DEFAULT_STYLE               425
@@ -1111,7 +1113,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        422
+#define _APS_NEXT_RESOURCE_VALUE        423
 #define _APS_NEXT_COMMAND_VALUE         33149
 #define _APS_NEXT_CONTROL_VALUE         1161
 #define _APS_NEXT_SYMED_VALUE           101

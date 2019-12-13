@@ -338,6 +338,7 @@ struct IconSet
     IconRes artist;
     IconRes album;
     IconRes year;
+    IconRes folder_explore;
 
     IconRes stop_l;
     IconRes previous_l;
