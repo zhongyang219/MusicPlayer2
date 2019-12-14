@@ -261,7 +261,20 @@ BOOL CFolderExploreDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     CCommon::SetDialogFont(this, theApp.m_pMainWnd->GetFont());     //由于此对话框资源由不同语言共用，所以这里要设置一下字体
     
+    //为树控件设置图标
+    CImageList image_list;
+    image_list.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
+    image_list.Add(ExtractIcon(AfxGetApp()->m_hInstance, L"shell32.dll", 3));
+    m_folder_explore_tree.SetImageList(&image_list, TVSIL_NORMAL);
+    image_list.Detach();
+
     ShowFolderTree();
+
+    ////
+    //CImageList image_list1;
+    //image_list1.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
+    //image_list1.Add(theApp.LoadIcon(IDI_FILE_ICON));
+    //m_song_list_ctrl.SetImageList(&image_list1, LVSIL_SMALL);
 
     //初始化右侧列表
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);

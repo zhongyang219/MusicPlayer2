@@ -213,9 +213,9 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			}
 
 			//用背景色填充单元格，以去掉每行前面的空白
-			CRect rect = nmcd.rc;
-			CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
-			pDC->FillSolidRect(rect, lplvdr->clrTextBk);
+			//CRect rect = nmcd.rc;
+			//CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
+			//pDC->FillSolidRect(rect, lplvdr->clrTextBk);
 		}
 		else		//当控件被禁用时，显示文本设为灰色
 		{
@@ -227,7 +227,12 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	case CDDS_ITEMPOSTPAINT:
 		if (this_item_select)
 			SetItemState(nmcd.dwItemSpec, 0xFF, LVIS_SELECTED);
-		//*pResult = CDRF_DODEFAULT;
+        //用背景色填充单元格，以去掉每行前面的空白
+        CRect rect = nmcd.rc;
+        rect.right = rect.left + theApp.DPI(5);
+        CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
+        pDC->FillSolidRect(rect, lplvdr->clrTextBk);
+        //*pResult = CDRF_DODEFAULT;
 		break;
 	}
 }
