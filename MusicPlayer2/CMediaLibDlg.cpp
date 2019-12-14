@@ -159,3 +159,13 @@ BOOL CMediaLibDlg::OnEraseBkgnd(CDC* pDC)
     //pDC->SelectClipRgn(&draw_rgn);
     return CDialog::OnEraseBkgnd(pDC);
 }
+
+
+void CMediaLibDlg::OnOK()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+
+    CDialog::OnOK();
+    DestroyWindow();
+
+}

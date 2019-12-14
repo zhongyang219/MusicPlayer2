@@ -53,6 +53,9 @@ protected:
     void FolderTreeClicked(HTREEITEM hItem);
     void SongListClicked(int index);
     void SetButtonsEnable(bool enable);
+    bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
+
+    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -74,4 +77,7 @@ public:
     afx_msg void OnItemProperty();
     afx_msg void OnCopyText();
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+    virtual void OnCancel();
+    afx_msg void OnNMDblclkFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
 };

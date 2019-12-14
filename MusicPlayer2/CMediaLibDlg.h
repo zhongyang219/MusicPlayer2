@@ -47,4 +47,5 @@ protected:
     afx_msg LRESULT OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+    virtual void OnOK();
 };

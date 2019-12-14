@@ -280,7 +280,7 @@ bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
         GetSongsSelected(song_list);
     };
     CMusicPlayerCmdHelper cmd_helper(this);
-    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);
 }
 
 void CMediaClassifyDlg::CalculateClassifyListColumeWidth(std::vector<int>& width)
@@ -557,7 +557,7 @@ void CMediaClassifyDlg::OnItemProperty()
         return;
     std::vector<SongInfo> songs;
     GetCurrentSongList(songs);
-    CPropertyDlg propertyDlg(songs);
+    CPropertyDlg propertyDlg(songs, this);
     propertyDlg.m_index = m_right_selected_item;
     propertyDlg.DoModal();
     if (propertyDlg.GetListRefresh())

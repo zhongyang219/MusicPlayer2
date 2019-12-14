@@ -63,7 +63,7 @@ void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
 
 bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<SongInfo>&)> get_song_list, std::wstring& playlist_path, const std::wstring& default_name /*= L""*/)
 {
-    CInputDlg imput_dlg;
+    CInputDlg imput_dlg(GetOwner());
     imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
     imput_dlg.SetEditText(default_name.c_str());

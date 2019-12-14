@@ -47,9 +47,6 @@ CString CTreeCtrlEx::GetItemPath(HTREEITEM hItem)
 
 void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show)
 {
-    if (!is_path_show(path))
-        return;
-
     CFileFind nFindFile;
     CString str = L"";
     CString nPicFileName = L"";
@@ -64,7 +61,7 @@ void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(
             continue;
         nPicFileName = nFindFile.GetFileName();
         //路径
-        if (nFindFile.IsDirectory())
+        if (nFindFile.IsDirectory() && is_path_show(nFindFile.GetFilePath()))
         {
             hSubItem = InsertItem(nPicFileName, hRoot);
             _InsertPath(nFindFile.GetFilePath(), hSubItem, is_path_show);
