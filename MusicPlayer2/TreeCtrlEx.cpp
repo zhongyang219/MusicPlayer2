@@ -7,6 +7,8 @@
 
 // CTreeCtrlEx
 
+std::map<CString, bool> CTreeCtrlEx::m_expand_state;
+
 IMPLEMENT_DYNAMIC(CTreeCtrlEx, CTreeCtrl)
 
 CTreeCtrlEx::CTreeCtrlEx()
@@ -47,27 +49,66 @@ CString CTreeCtrlEx::GetItemPath(HTREEITEM hItem)
 
 void CTreeCtrlEx::ExpandAll(HTREEITEM hItem)
 {
-    HTREEITEM hChild, hNext;
-    Expand(hItem, TVE_EXPAND);
-
-    hChild = GetNextItem(hItem, TVGN_CHILD);
-    if (hChild)
+    IterateItems(hItem, [&](HTREEITEM hChild)
     {
-        //如果有子节点，展开子节点  
-        ExpandAll(hChild);
-        hNext = hChild;
-        do 
-        {
-            hNext = GetNextItem(hNext, TVGN_NEXT);
-            if (hNext != NULL)
-                ExpandAll(hNext);
-        } while (hNext != NULL);
-    }
+        Expand(hChild, TVE_EXPAND);
+    });
 }
 
 void CTreeCtrlEx::ExpandAll()
 {
     ExpandAll(NULL);
+}
+
+void CTreeCtrlEx::IterateItems(HTREEITEM hRoot, std::function<void(HTREEITEM)> func)
+{
+    HTREEITEM hChild, hNext;
+    if(hRoot!=NULL)
+        func(hRoot);
+
+    hChild = GetNextItem(hRoot, TVGN_CHILD);
+    if (hChild)
+    {
+        //遍历子节点  
+        IterateItems(hChild, func);
+        hNext = hChild;
+        do
+        {
+            hNext = GetNextItem(hNext, TVGN_NEXT);
+            if (hNext != NULL)
+                IterateItems(hNext, func);
+        } while (hNext != NULL);
+    }
+}
+
+void CTreeCtrlEx::SaveExpandState()
+{
+    IterateItems(NULL, [&](HTREEITEM hItem)
+    {
+        bool expand = (GetItemState(hItem, TVIS_EXPANDED)&TVIS_EXPANDED) == TVIS_EXPANDED;
+        m_expand_state[GetItemPath(hItem)] = expand;
+    });
+}
+
+void CTreeCtrlEx::SaveItemExpandState(HTREEITEM hItem, bool expand)
+{
+    CString item_path = GetItemPath(hItem);
+    m_expand_state[item_path] = expand;
+}
+
+void CTreeCtrlEx::RestoreExpandState()
+{
+    IterateItems(NULL, [&](HTREEITEM hItem)
+    {
+        CString item_path = GetItemPath(hItem);
+        auto iter = m_expand_state.find(item_path);
+        if(iter != m_expand_state.end())
+        {
+            bool expand = iter->second;
+            Expand(hItem, expand ? TVE_EXPAND : TVE_COLLAPSE);
+        }
+    });
+
 }
 
 void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show)

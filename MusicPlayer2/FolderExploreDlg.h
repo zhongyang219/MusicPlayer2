@@ -45,7 +45,7 @@ protected:
     int m_right_selected_item{ -1 };
     HTREEITEM m_tree_item_selected{};
     CString m_selected_string;
-    std::map<std::wstring, std::vector<std::wstring>> m_folder_map;     //缓存每个目录下的音频文件的路径
+    bool m_searched{ false };
 
 protected:
     void ShowFolderTree();
@@ -83,4 +83,6 @@ public:
     afx_msg void OnEnChangeMfceditbrowse1();
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };

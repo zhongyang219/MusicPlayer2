@@ -83,7 +83,9 @@ void CFolderExploreDlg::ShowFolderTree()
 {
     CString search_key_word;
     m_search_edit.GetWindowText(search_key_word);
-    bool searched = !search_key_word.IsEmpty();
+    m_searched = !search_key_word.IsEmpty();
+    if (m_searched)     //要进入搜索状态前，先保存当前树的展开收缩状态
+        m_folder_explore_tree.SaveExpandState();
 
     m_folder_explore_tree.DeleteAllItems();
     wstring default_folder = CCommon::GetSpecialDir(CSIDL_MYMUSIC);
@@ -91,13 +93,15 @@ void CFolderExploreDlg::ShowFolderTree()
     {
         if (!CAudioCommon::IsPathContainsAudioFile(wstring(folder_path), true))       //排除不包含音频文件的目录
             return false;
-        if(searched)
+        if(m_searched)
             return CCommon::IsFolderMatchKeyWord(wstring(folder_path), wstring(search_key_word));
         return true;
     });
 
-    if (searched)
+    if (m_searched)
         m_folder_explore_tree.ExpandAll();
+    else
+        m_folder_explore_tree.RestoreExpandState();     //不是搜索状态，树刷新后恢复展开收缩状态
 }
 
 void CFolderExploreDlg::ShowSongList(bool size_changed)
@@ -232,6 +236,7 @@ BEGIN_MESSAGE_MAP(CFolderExploreDlg, CTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMDblclkSongList)
     ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CFolderExploreDlg::OnEnChangeMfceditbrowse1)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFolderExploreDlg::OnSearchEditBtnClicked)
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -305,6 +310,14 @@ void CFolderExploreDlg::OnNMClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResu
         if ((nFlags & TVHT_ONITEM) && (hItem != NULL))
         {
             FolderTreeClicked(hItem);
+        }
+
+        //点击加减号时
+        if ((nFlags & TVHT_ONITEMBUTTON) && (hItem != NULL))
+        {
+            bool expand = (m_folder_explore_tree.GetItemState(hItem, TVIS_EXPANDED)&TVIS_EXPANDED) == TVIS_EXPANDED;
+            //保存当前点击节点的展开状态，由于这时item的状态还没有改变，所以要对expand取反
+            m_folder_explore_tree.SaveItemExpandState(hItem, !expand);
         }
 
         //m_folder_explore_tree.SetFocus();
@@ -518,11 +531,18 @@ void CFolderExploreDlg::OnEnChangeMfceditbrowse1()
 
 afx_msg LRESULT CFolderExploreDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
 {
-    CString str;
-    m_search_edit.GetWindowText(str);
-    if(!str.IsEmpty())
+    if(m_searched)
     {
         m_search_edit.SetWindowText(_T(""));
     }
     return 0;
+}
+
+
+void CFolderExploreDlg::OnInitMenu(CMenu* pMenu)
+{
+    CTabDlg::OnInitMenu(pMenu);
+
+    // TODO: 在此处添加消息处理程序代码
+    pMenu->SetDefaultItem(ID_PLAY_ITEM);
 }

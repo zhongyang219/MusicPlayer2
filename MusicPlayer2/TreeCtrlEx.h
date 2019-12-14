@@ -24,6 +24,14 @@ public:
 
     void ExpandAll(HTREEITEM hItem);        //展开指定节点下的所有节点
     void ExpandAll();                       //展开所有节点
+    void IterateItems(HTREEITEM hRoot, std::function<void(HTREEITEM)> func);           //遍历指定节点下的所有节点
+
+    void SaveExpandState();                 //保存所有节点的展开收缩状态
+    void SaveItemExpandState(HTREEITEM hItem, bool expand);     //保存指定节点的展开收缩状态
+    void RestoreExpandState();              //恢复所有节点的展开收缩状态
+
+protected:
+    static std::map<CString, bool> m_expand_state;       //保存每个节点的展开收起状态
 
 private:
     void _InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show = [](const CString&) {return true; });
