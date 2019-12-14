@@ -1662,11 +1662,19 @@ void CMusicPlayerDlg::OnSetPath()
     //    //IniPlaylistPopupMenu();
     //}
 
-    CCommon::DeleteModelessDialog(m_pMediaLibDlg);
-    int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
-    m_pMediaLibDlg = new CMediaLibDlg(cur_tab);
-    m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG, GetDesktopWindow());
-    m_pMediaLibDlg->ShowWindow(SW_SHOW);
+    if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))      //如果媒体库对话框已经存在，则将其激活
+    {
+        m_pMediaLibDlg->ShowWindow(SW_SHOWNORMAL);
+        m_pMediaLibDlg->SetForegroundWindow();
+    }
+    else
+    {
+        CCommon::DeleteModelessDialog(m_pMediaLibDlg);
+        int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
+        m_pMediaLibDlg = new CMediaLibDlg(cur_tab);
+        m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG, GetDesktopWindow());
+        m_pMediaLibDlg->ShowWindow(SW_SHOW);
+    }
 
 }
 
