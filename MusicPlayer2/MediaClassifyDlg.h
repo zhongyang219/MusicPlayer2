@@ -41,7 +41,7 @@ protected:
     CSearchEditCtrl m_search_edit;
 
     CMediaClassifier::ClassificationType m_type;
-    CMediaClassifier& m_classifer;
+    CMediaClassifier m_classifer;
     CString m_classify_selected;        //左侧列表选中项的文本
     CString m_default_str;              //“艺术家”或“唱片集”为空的字符串
     bool m_searched{ false };           //是否处于搜索状态
@@ -53,6 +53,8 @@ protected:
     int m_right_selected_item{ -1 };
     CString m_selected_string;
     bool m_left_selected{};                   //最后一次选中的是左侧还是右侧
+
+    bool m_initialized{ false };
 
 protected:
     void ShowClassifyList(bool size_changed = true);

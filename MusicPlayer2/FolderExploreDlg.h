@@ -45,6 +45,7 @@ protected:
     int m_right_selected_item{ -1 };
     HTREEITEM m_tree_item_selected{};
     CString m_selected_string;
+    std::map<std::wstring, std::vector<std::wstring>> m_folder_map;     //缓存每个目录下的音频文件的路径
 
 protected:
     void ShowFolderTree();

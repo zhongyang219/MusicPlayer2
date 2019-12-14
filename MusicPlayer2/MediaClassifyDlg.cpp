@@ -16,11 +16,7 @@
 IMPLEMENT_DYNAMIC(CMediaClassifyDlg, CTabDlg)
 
 CMediaClassifyDlg::CMediaClassifyDlg(CMediaClassifier::ClassificationType type, CWnd* pParent /*=nullptr*/)
-	: CTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type), 
-    m_classifer(type == CMediaClassifier::CT_ARTIST ? theApp.m_artist_classifer : 
-    (type == CMediaClassifier::CT_ALBUM ? theApp.m_album_classifer : 
-        (type == CMediaClassifier::CT_GENRE ? theApp.m_genre_classifer : 
-            theApp.m_year_classifer)))
+	: CTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type), m_classifer(type)
 {
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_default_str = CCommon::LoadText(IDS_DEFAULT_ARTIST);
@@ -264,6 +260,12 @@ void CMediaClassifyDlg::SetButtonsEnable(bool enable)
 void CMediaClassifyDlg::OnTabEntered()
 {
     SetButtonsEnable();
+    if (!m_initialized)
+    {
+        m_classifer.ClassifyMedia();
+        ShowClassifyList();
+        m_initialized = true;
+    }
 }
 
 bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
@@ -375,7 +377,7 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     CalculateClassifyListColumeWidth(width);
     m_classify_list_ctrl.InsertColumn(0, title_name, LVCFMT_LEFT, width[0]);
     m_classify_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[1]);
-    ShowClassifyList();
+    //ShowClassifyList();
 
     //初始化右侧列表
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);

@@ -126,7 +126,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, 0, 0);
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
-    bool song_data_modified{ false };       //theApp.m_song_data是否有修改
+    //bool song_data_modified{ false };       //theApp.m_song_data是否有修改
     //获取播放列表中每一首歌曲的信息
     //最多只获取MAX_NUM_LENGTH首歌的长度，超过MAX_NUM_LENGTH数量的歌曲的长度在打开时获得。防止文件夹中音频文件过多导致等待时间过长
     int song_num = GetInstance().m_playlist.size();
@@ -184,15 +184,15 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
         }
         theApp.SaveSongInfo(GetInstance().m_playlist[i]);
-        song_data_modified = true;
+        //song_data_modified = true;
         count++;
     }
     GetInstance().m_loading = false;
     //GetInstance().IniPlaylistComplate();
     //GetInstance().IniLyrics();
     PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
-    if (song_data_modified)
-        theApp.StartClassifySongData();
+    //if (song_data_modified)
+    //    theApp.StartClassifySongData();
     return 0;
 }
 

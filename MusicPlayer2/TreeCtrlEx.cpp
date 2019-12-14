@@ -24,6 +24,12 @@ void CTreeCtrlEx::InsertPath(CString path, HTREEITEM hRoot)
     _InsertPath(path, hRootItem);
 }
 
+void CTreeCtrlEx::InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show)
+{
+    HTREEITEM hRootItem = InsertItem(path, hRoot);
+    _InsertPath(path, hRootItem, is_path_show);
+}
+
 CString CTreeCtrlEx::GetItemPath(HTREEITEM hItem)
 {
     CString strPath;
@@ -39,8 +45,11 @@ CString CTreeCtrlEx::GetItemPath(HTREEITEM hItem)
     return strPath;
 }
 
-void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot)
+void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show)
 {
+    if (!is_path_show(path))
+        return;
+
     CFileFind nFindFile;
     CString str = L"";
     CString nPicFileName = L"";
@@ -58,7 +67,7 @@ void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot)
         if (nFindFile.IsDirectory())
         {
             hSubItem = InsertItem(nPicFileName, hRoot);
-            _InsertPath(nFindFile.GetFilePath(), hSubItem);
+            _InsertPath(nFindFile.GetFilePath(), hSubItem, is_path_show);
         }
         //else
         //{

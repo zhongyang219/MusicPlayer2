@@ -193,7 +193,7 @@ BOOL CMusicPlayerApp::InitInstance()
 #endif // !_DEBUG
 
     //启动后台线程将歌曲数据分类
-    StartClassifySongData();
+    //StartClassifySongData();
 
     // 如果一个运行在 Windows XP 上的应用程序清单指定要
     // 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
@@ -419,14 +419,14 @@ UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
     return 0;
 }
 
-UINT CMusicPlayerApp::ClassifySongDataThreadFunc(LPVOID lpParam)
-{
-    theApp.m_artist_classifer.ClassifyMedia();
-    theApp.m_album_classifer.ClassifyMedia();
-    theApp.m_genre_classifer.ClassifyMedia();
-    theApp.m_year_classifer.ClassifyMedia();
-    return 0;
-}
+//UINT CMusicPlayerApp::ClassifySongDataThreadFunc(LPVOID lpParam)
+//{
+//    //theApp.m_artist_classifer.ClassifyMedia();
+//    //theApp.m_album_classifer.ClassifyMedia();
+//    //theApp.m_genre_classifer.ClassifyMedia();
+//    //theApp.m_year_classifer.ClassifyMedia();
+//    return 0;
+//}
 
 void CMusicPlayerApp::SaveConfig()
 {
@@ -639,10 +639,10 @@ void CMusicPlayerApp::WriteErrorLog(const wstring & log_str)
     CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
 }
 
-void CMusicPlayerApp::StartClassifySongData()
-{
-    AfxBeginThread(ClassifySongDataThreadFunc, NULL);
-}
+//void CMusicPlayerApp::StartClassifySongData()
+//{
+//    AfxBeginThread(ClassifySongDataThreadFunc, NULL);
+//}
 
 void CMusicPlayerApp::LoadSongData()
 {

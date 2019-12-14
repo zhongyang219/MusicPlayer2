@@ -1665,7 +1665,7 @@ void CMusicPlayerDlg::OnSetPath()
     CCommon::DeleteModelessDialog(m_pMediaLibDlg);
     int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
     m_pMediaLibDlg = new CMediaLibDlg(cur_tab);
-    m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG);
+    m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG, GetDesktopWindow());
     m_pMediaLibDlg->ShowWindow(SW_SHOW);
 
 }
