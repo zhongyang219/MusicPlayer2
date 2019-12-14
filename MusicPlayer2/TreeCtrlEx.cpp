@@ -48,6 +48,11 @@ CString CTreeCtrlEx::GetItemPath(HTREEITEM hItem)
     return strPath;
 }
 
+bool CTreeCtrlEx::IsItemExpand(HTREEITEM hItem)
+{
+    return (GetItemState(hItem, TVIS_EXPANDED)&TVIS_EXPANDED) == TVIS_EXPANDED;
+}
+
 void CTreeCtrlEx::ExpandAll(HTREEITEM hItem)
 {
     IterateItems(hItem, [&](HTREEITEM hChild)
@@ -86,7 +91,7 @@ void CTreeCtrlEx::SaveExpandState()
 {
     IterateItems(NULL, [&](HTREEITEM hItem)
     {
-        bool expand = (GetItemState(hItem, TVIS_EXPANDED)&TVIS_EXPANDED) == TVIS_EXPANDED;
+        bool expand = IsItemExpand(hItem);
         m_expand_state[GetItemPath(hItem)] = expand;
     });
 }

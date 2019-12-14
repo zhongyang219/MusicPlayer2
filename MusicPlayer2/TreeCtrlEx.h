@@ -22,6 +22,7 @@ public:
     void InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show);
     CString GetItemPath(HTREEITEM hItem);
 
+    bool IsItemExpand(HTREEITEM hItem);
     void ExpandAll(HTREEITEM hItem);        //展开指定节点下的所有节点
     void ExpandAll();                       //展开所有节点
     void IterateItems(HTREEITEM hRoot, std::function<void(HTREEITEM)> func);           //遍历指定节点下的所有节点

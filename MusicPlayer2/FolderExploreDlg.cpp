@@ -108,7 +108,7 @@ void CFolderExploreDlg::ShowFolderTree()
 void CFolderExploreDlg::ShowSongList(bool size_changed)
 {
     CWaitCursor wait_cursor;
-    
+    SetDlgItemText(IDC_PATH_STATIC, m_folder_path_selected);
     std::vector<wstring> files;
     CAudioCommon::GetAudioFiles(wstring(m_folder_path_selected), files, 20000, false);
     std::vector<SongInfo> song_list;
