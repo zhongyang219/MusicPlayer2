@@ -38,6 +38,7 @@ private:
 
 protected:
 	DECLARE_MESSAGE_MAP()
+    virtual void PreSubclassWindow();
 };
 
 

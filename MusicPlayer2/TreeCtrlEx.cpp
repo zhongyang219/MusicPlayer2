@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "TreeCtrlEx.h"
+#include "MusicPlayer2.h"
 
 
 // CTreeCtrlEx
@@ -141,3 +142,18 @@ BEGIN_MESSAGE_MAP(CTreeCtrlEx, CTreeCtrl)
 END_MESSAGE_MAP()
 
 
+
+
+void CTreeCtrlEx::PreSubclassWindow()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+
+    //设置图标
+    CImageList image_list;
+    image_list.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
+    image_list.Add(ExtractIcon(AfxGetApp()->m_hInstance, L"shell32.dll", 3));
+    SetImageList(&image_list, TVSIL_NORMAL);
+    image_list.Detach();
+
+    CTreeCtrl::PreSubclassWindow();
+}
