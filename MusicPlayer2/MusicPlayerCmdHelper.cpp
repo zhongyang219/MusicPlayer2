@@ -56,7 +56,7 @@ void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
         return;
     }
 
-    pPlayerDlg->m_pFormatConvertDlg = new CFormatConvertDlg(songs);
+    pPlayerDlg->m_pFormatConvertDlg = new CFormatConvertDlg(songs, GetOwner());
     pPlayerDlg->m_pFormatConvertDlg->Create(IDD_FORMAT_CONVERT_DIALOG);
     pPlayerDlg->m_pFormatConvertDlg->ShowWindow(SW_SHOW);
 }

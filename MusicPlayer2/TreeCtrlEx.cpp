@@ -45,6 +45,31 @@ CString CTreeCtrlEx::GetItemPath(HTREEITEM hItem)
     return strPath;
 }
 
+void CTreeCtrlEx::ExpandAll(HTREEITEM hItem)
+{
+    HTREEITEM hChild, hNext;
+    Expand(hItem, TVE_EXPAND);
+
+    hChild = GetNextItem(hItem, TVGN_CHILD);
+    if (hChild)
+    {
+        //如果有子节点，展开子节点  
+        ExpandAll(hChild);
+        hNext = hChild;
+        do 
+        {
+            hNext = GetNextItem(hNext, TVGN_NEXT);
+            if (hNext != NULL)
+                ExpandAll(hNext);
+        } while (hNext != NULL);
+    }
+}
+
+void CTreeCtrlEx::ExpandAll()
+{
+    ExpandAll(NULL);
+}
+
 void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show)
 {
     CFileFind nFindFile;
@@ -66,15 +91,6 @@ void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(
             hSubItem = InsertItem(nPicFileName, hRoot);
             _InsertPath(nFindFile.GetFilePath(), hSubItem, is_path_show);
         }
-        //else
-        //{
-        //    //文件
-        //    str = nPicFileName.Right(4);
-        //    if (!str.CompareNoCase(_T(".jpg")) || !str.CompareNoCase(_T(".tif")))
-        //    {
-        //        InsertItem(nPicFileName, hRoot);
-        //    }
-        //}
     }
     nFindFile.Close();
 }

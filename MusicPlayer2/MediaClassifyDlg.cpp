@@ -420,12 +420,15 @@ void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
     ClassifyListClicked(pNMItemActivate->iItem);
     m_selected_string = m_classify_list_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
 
-    //弹出右键菜单
-    CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
-    ASSERT(pMenu != nullptr);
-    if (pMenu != nullptr)
+    if (!m_right_selected_items.empty())
     {
-        m_classify_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
+        //弹出右键菜单
+        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != nullptr)
+        {
+            m_classify_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
+        }
     }
 
     *pResult = 0;

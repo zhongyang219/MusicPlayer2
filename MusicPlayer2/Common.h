@@ -225,6 +225,9 @@ public:
 	//查找指定的图片文件，并保存在files容器中，参数含义同GetFiles函数
 	static void GetImageFiles(wstring file_name, vector<wstring>& files);
 
+    //判断一个文件夹及其子文件夹是否匹配一个关键字
+    static bool IsFolderMatchKeyWord(wstring dir, const wstring& key_word);
+
 	//根据文件扩展名判断一个文件是否为图片文件
 	static bool FileIsImage(const wstring& file_name);
 

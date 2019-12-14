@@ -868,6 +868,48 @@ void CCommon::GetImageFiles(wstring file_name, vector<wstring>& files)
 	_findclose(hFile);
 }
 
+bool CCommon::IsFolderMatchKeyWord(wstring dir, const wstring& key_word)
+{
+    
+
+    //文件句柄
+    intptr_t hFile = 0;
+    //文件信息
+    _wfinddata_t fileinfo;
+    if (dir.back() != '\\' && dir.back() != '/')
+        dir.push_back('\\');
+
+    wstring folder_name;
+    size_t index = dir.rfind(L'\\', dir.size() - 2);
+    folder_name = dir.substr(index + 1, dir.size() - index - 2);
+
+    if ((hFile = _wfindfirst((dir + L"*").c_str(), &fileinfo)) != -1)
+    {
+        do
+        {
+            wstring file_name = fileinfo.name;
+            if (file_name == L"." || file_name == L"..")
+                continue;
+
+            if (CCommon::IsFolder(dir + file_name))        //当前是文件夹，则递归调用
+            {
+                if (IsFolderMatchKeyWord(dir + file_name, key_word))
+                    return true;
+            }
+            //else
+            //{
+            //    if (StringFindNoCase(file_name, key_word) != wstring::npos)
+            //        return true;
+            //}
+        } while (_wfindnext(hFile, &fileinfo) == 0);
+
+        if (StringFindNoCase(folder_name, key_word) != wstring::npos)
+            return true;
+    }
+    _findclose(hFile);
+    return false;
+}
+
 bool CCommon::FileIsImage(const wstring & file_name)
 {
 	size_t index;

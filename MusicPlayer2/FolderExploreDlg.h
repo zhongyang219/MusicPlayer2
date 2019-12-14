@@ -80,4 +80,7 @@ public:
     virtual void OnCancel();
     afx_msg void OnNMDblclkFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnEnChangeMfceditbrowse1();
+protected:
+    afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 };

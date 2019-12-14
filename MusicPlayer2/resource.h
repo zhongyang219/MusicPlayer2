@@ -465,7 +465,6 @@
 #define IDS_ULOCK_DESKTOP_LYRIC         420
 #define IDS_ADD                         421
 #define IDS_SORT                        422
-#define IDI_ICON5                       422
 #define IDI_FOLDER_EXPLORE_D            422
 #define IDS_LIST                        423
 #define IDS_EDIT                        424
@@ -486,6 +485,8 @@
 #define IDS_SEARCH_YEAR                 439
 #define IDS_TRACK_NUM                   440
 #define IDS_FOLDER_EXPLORE              441
+#define IDS_SEARCH_FORDER               442
+#define IDS_BTN_SETTINGS                443
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

@@ -81,12 +81,23 @@ void CFolderExploreDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) con
 
 void CFolderExploreDlg::ShowFolderTree()
 {
+    CString search_key_word;
+    m_search_edit.GetWindowText(search_key_word);
+    bool searched = !search_key_word.IsEmpty();
+
     m_folder_explore_tree.DeleteAllItems();
     wstring default_folder = CCommon::GetSpecialDir(CSIDL_MYMUSIC);
-    m_folder_explore_tree.InsertPath(default_folder.c_str(), NULL, [](const CString& folder_path)
+    m_folder_explore_tree.InsertPath(default_folder.c_str(), NULL, [&](const CString& folder_path)
     {
-        return CAudioCommon::IsPathContainsAudioFile(wstring(folder_path), true);
+        if (!CAudioCommon::IsPathContainsAudioFile(wstring(folder_path), true))       //排除不包含音频文件的目录
+            return false;
+        if(searched)
+            return CCommon::IsFolderMatchKeyWord(wstring(folder_path), wstring(search_key_word));
+        return true;
     });
+
+    if (searched)
+        m_folder_explore_tree.ExpandAll();
 }
 
 void CFolderExploreDlg::ShowSongList(bool size_changed)
@@ -219,6 +230,8 @@ BEGIN_MESSAGE_MAP(CFolderExploreDlg, CTabDlg)
     ON_COMMAND(ID_COPY_TEXT, &CFolderExploreDlg::OnCopyText)
     ON_NOTIFY(NM_DBLCLK, IDC_FOLDER_EXPLORE_TREE, &CFolderExploreDlg::OnNMDblclkFolderExploreTree)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMDblclkSongList)
+    ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CFolderExploreDlg::OnEnChangeMfceditbrowse1)
+    ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFolderExploreDlg::OnSearchEditBtnClicked)
 END_MESSAGE_MAP()
 
 
@@ -230,6 +243,8 @@ BOOL CFolderExploreDlg::OnInitDialog()
     CTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+    CCommon::SetDialogFont(this, theApp.m_pMainWnd->GetFont());     //由于此对话框资源由不同语言共用，所以这里要设置一下字体
+    
     ShowFolderTree();
 
     //初始化右侧列表
@@ -237,10 +252,13 @@ BOOL CFolderExploreDlg::OnInitDialog()
     //CRect rc_song_list;
     //m_song_list_ctrl.GetWindowRect(rc_song_list);
     m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, theApp.DPI(200));
-    m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(180));
     m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
     m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(100));
     m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+
+    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FORDER), TRUE);
+    SetDlgItemText(IDC_SETTINGS_BUTTON, CCommon::LoadText(IDS_BTN_SETTINGS));
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -319,12 +337,15 @@ void CFolderExploreDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     SongListClicked(pNMItemActivate->iItem);
     m_selected_string = m_song_list_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
 
-    //弹出右键菜单
-    CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
-    ASSERT(pMenu != nullptr);
-    if (pMenu != nullptr)
+    if(!m_right_selected_items.empty())
     {
-        m_song_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
+        //弹出右键菜单
+        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != nullptr)
+        {
+            m_song_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
+        }
     }
     *pResult = 0;
 }
@@ -480,4 +501,28 @@ void CFolderExploreDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
     // TODO: 在此添加控件通知处理程序代码
     OnOK();
     *pResult = 0;
+}
+
+
+void CFolderExploreDlg::OnEnChangeMfceditbrowse1()
+{
+    // TODO:  如果该控件是 RICHEDIT 控件，它将不
+    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
+    // 函数并调用 CRichEditCtrl().SetEventMask()，
+    // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+    // TODO:  在此添加控件通知处理程序代码
+    ShowFolderTree();
+}
+
+
+afx_msg LRESULT CFolderExploreDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
+{
+    CString str;
+    m_search_edit.GetWindowText(str);
+    if(!str.IsEmpty())
+    {
+        m_search_edit.SetWindowText(_T(""));
+    }
+    return 0;
 }
