@@ -1,8 +1,12 @@
 #pragma once
 #include <functional>
+#include "ColorConvert.h"
 
 
 // CTreeCtrlEx
+
+//注：此类通过自绘设置了文本及选中项的背景颜色，CTreeCtrl::SetTextColor 将不再起作用，
+//但你仍然可以使用 CTreeCtrl::SetBkColor 设置背景颜色
 
 class CTreeCtrlEx : public CTreeCtrl
 {
@@ -33,6 +37,7 @@ public:
 
 protected:
     static std::map<CString, bool> m_expand_state;       //保存每个节点的展开收起状态
+    ColorTable& m_theme_color;
 
 private:
     void _InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show = [](const CString&) {return true; });
@@ -40,6 +45,8 @@ private:
 protected:
 	DECLARE_MESSAGE_MAP()
     virtual void PreSubclassWindow();
+public:
+    afx_msg void OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 

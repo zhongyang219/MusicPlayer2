@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "TreeCtrlEx.h"
+#include "MusicPlayer2.h"
 
 
 // CTreeCtrlEx
@@ -12,6 +13,7 @@ std::map<CString, bool> CTreeCtrlEx::m_expand_state;
 IMPLEMENT_DYNAMIC(CTreeCtrlEx, CTreeCtrl)
 
 CTreeCtrlEx::CTreeCtrlEx()
+    : m_theme_color(theApp.m_app_setting_data.theme_color)
 {
 
 }
@@ -143,6 +145,7 @@ void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(
 
 
 BEGIN_MESSAGE_MAP(CTreeCtrlEx, CTreeCtrl)
+    ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CTreeCtrlEx::OnNMCustomdraw)
 END_MESSAGE_MAP()
 
 
@@ -153,4 +156,34 @@ void CTreeCtrlEx::PreSubclassWindow()
     // TODO: 在此添加专用代码和/或调用基类
 
     CTreeCtrl::PreSubclassWindow();
+}
+
+
+void CTreeCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    //设置树控件的颜色，参考自（https://blog.csdn.net/daoming1112/article/details/77891525）
+
+    LPNMTVCUSTOMDRAW pNMCD = reinterpret_cast<LPNMTVCUSTOMDRAW>(pNMHDR);
+    NMCUSTOMDRAW nmCustomDraw = pNMCD->nmcd;
+    switch (nmCustomDraw.dwDrawStage)
+    {
+    case CDDS_ITEMPREPAINT:
+    {
+        if (nmCustomDraw.uItemState & CDIS_FOCUS)       //设置选中行的颜色
+        {
+            pNMCD->clrText = m_theme_color.dark3;
+            pNMCD->clrTextBk = m_theme_color.light2;
+        }
+        else
+        {
+            pNMCD->clrText = CColorConvert::m_gray_color.dark3;
+            pNMCD->clrTextBk = GetBkColor();
+        }
+    }
+    default:
+        break;
+    }
+    *pResult = 0;
+    *pResult |= CDRF_NOTIFYPOSTPAINT;
+    *pResult |= CDRF_NOTIFYITEMDRAW;
 }

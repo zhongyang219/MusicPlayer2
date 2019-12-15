@@ -268,6 +268,10 @@ BOOL CFolderExploreDlg::OnInitDialog()
     m_folder_explore_tree.SetImageList(&image_list, TVSIL_NORMAL);
     image_list.Detach();
 
+    //设置行高
+    m_folder_explore_tree.SetItemHeight(theApp.DPI(22));
+
+    //填充数据
     ShowFolderTree();
 
     ////
