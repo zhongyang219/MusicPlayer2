@@ -49,7 +49,7 @@ protected:
 
 protected:
     void ShowFolderTree();
-    void ShowSongList(bool size_changed = true);
+    void ShowSongList();
     void FolderTreeClicked(HTREEITEM hItem);
     void SongListClicked(int index);
     void SetButtonsEnable(bool enable);

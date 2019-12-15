@@ -149,6 +149,28 @@ void CListCtrlEx::ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd)
     pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pWnd); //在指定位置显示弹出菜单
 }
 
+void CListCtrlEx::SetListData(const ListData& list_data)
+{
+    int item_num_before = GetItemCount();
+    int item_num_after = list_data.size();
+    //如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
+    if (item_num_after < item_num_before)
+    {
+        DeleteAllItems();
+        item_num_before = 0;
+    }
+    for (int i{}; i < item_num_after; i++)
+    {
+        const RowData& data_row = list_data[i];
+        if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+            InsertItem(i, data_row.at(0).c_str());
+        for (const auto& item : data_row)
+        {
+            SetItemText(i, item.first, item.second.c_str());
+        }
+    }
+}
+
 BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
 	ON_WM_LBUTTONDOWN()
@@ -227,9 +249,9 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	case CDDS_ITEMPOSTPAINT:
 		if (this_item_select)
 			SetItemState(nmcd.dwItemSpec, 0xFF, LVIS_SELECTED);
-        //用背景色填充单元格，以去掉每行前面的空白
+        //用背景色填充单元格左侧的空白区域
         CRect rect = nmcd.rc;
-        rect.right = rect.left + theApp.DPI(5);
+        rect.right = rect.left + theApp.DPI(4);
         CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
         pDC->FillSolidRect(rect, lplvdr->clrTextBk);
         //*pResult = CDRF_DODEFAULT;

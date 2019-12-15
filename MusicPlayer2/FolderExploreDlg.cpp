@@ -105,10 +105,12 @@ void CFolderExploreDlg::ShowFolderTree()
         m_folder_explore_tree.RestoreExpandState();     //不是搜索状态，树刷新后恢复展开收缩状态
 }
 
-void CFolderExploreDlg::ShowSongList(bool size_changed)
+void CFolderExploreDlg::ShowSongList()
 {
     CWaitCursor wait_cursor;
     SetDlgItemText(IDC_PATH_STATIC, m_folder_path_selected);
+
+    //获取歌曲列表
     std::vector<wstring> files;
     CAudioCommon::GetAudioFiles(wstring(m_folder_path_selected), files, 20000, false);
     std::vector<SongInfo> song_list;
@@ -124,27 +126,19 @@ void CFolderExploreDlg::ShowSongList(bool size_changed)
         song_list.push_back(song);
     }
 
-    if (size_changed)
-        m_song_list_ctrl.DeleteAllItems();
-
-    int item_index = 0;
+    //显示到列表控件中
+    CListCtrlEx::ListData list_data;
     for (const auto& item : song_list)
     {
-        if (size_changed)
-            m_song_list_ctrl.InsertItem(item_index, item.GetFileName().c_str());
-        else
-            m_song_list_ctrl.SetItemText(item_index, COL_FILE_NAME, item.GetFileName().c_str());
-        m_song_list_ctrl.SetItemText(item_index, COL_TITLE, item.GetTitle().c_str());
-        m_song_list_ctrl.SetItemText(item_index, COL_ARTIST, item.GetArtist().c_str());
-        m_song_list_ctrl.SetItemText(item_index, COL_ALBUM, item.GetAlbum().c_str());
-        //std::wstring track_str;
-        //if (item.track != 0)
-        //    track_str = std::to_wstring(item.track);
-        //m_song_list_ctrl.SetItemText(item_index, COL_TRACK, track_str.c_str());
-        //m_song_list_ctrl.SetItemText(item_index, COL_GENRE, item.GetGenre().c_str());
-        m_song_list_ctrl.SetItemText(item_index, COL_PATH, item.file_path.c_str());
-        item_index++;
+        CListCtrlEx::RowData row_data;
+        row_data[COL_FILE_NAME] = item.GetFileName();
+        row_data[COL_TITLE] = item.GetTitle();
+        row_data[COL_ARTIST] = item.GetArtist();
+        row_data[COL_ALBUM] = item.GetAlbum();
+        row_data[COL_PATH] = item.file_path;
+        list_data.push_back(std::move(row_data));
     }
+    m_song_list_ctrl.SetListData(list_data);
 }
 
 void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)

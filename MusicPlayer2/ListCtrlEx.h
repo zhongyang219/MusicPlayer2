@@ -27,6 +27,12 @@ public:
     void SetDragEnable(bool enable = true) { m_drag_enable = enable; }      //是否允许鼠标拖动
     void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd);
 
+    typedef map<int, wstring> RowData;      //列表数据中每一行的数据，，map的key为列序号，value为显示的文本
+    typedef vector<RowData> ListData;       //列表数据，其中vector为每一行的数据
+
+    //设置列表数据
+    void SetListData(const ListData& list_data);
+
 protected:
 	ColorTable& m_theme_color;
 	COLORREF m_background_color{ GRAY(255) };	//列表控件的背景色

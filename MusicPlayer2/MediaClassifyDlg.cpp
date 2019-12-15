@@ -84,29 +84,26 @@ void CMediaClassifyDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) con
     }
 }
 
-void CMediaClassifyDlg::ShowClassifyList(bool size_changed)
+void CMediaClassifyDlg::ShowClassifyList()
 {
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
-    if (size_changed)
-        m_classify_list_ctrl.DeleteAllItems();
-    int index = 0;
+    CListCtrlEx::ListData list_data;
     for(const auto& item : media_list)
     {
         if(item.first == STR_OTHER_CLASSIFY_TYPE)       //跳过“其他”分类
             continue;
 
-        CString item_name = item.first.c_str();
-        if (item_name.IsEmpty())
+        wstring item_name = item.first;
+        if (item_name.empty())
         {
-            item_name = m_default_str;
+            item_name = m_default_str.GetString();
         }
-        if (size_changed)
-            m_classify_list_ctrl.InsertItem(index, item_name);
-        else
-            m_classify_list_ctrl.SetItemText(index, 0, item_name);
-        m_classify_list_ctrl.SetItemText(index, 1, std::to_wstring(item.second.size()).c_str());
-        index++;
+
+        CListCtrlEx::RowData row_data;
+        row_data[0] = item_name;
+        row_data[1] = std::to_wstring(item.second.size());
+        list_data.push_back(std::move(row_data));
     }
 
     //将“其他”分类放到列表的最后面
@@ -114,22 +111,20 @@ void CMediaClassifyDlg::ShowClassifyList(bool size_changed)
     if (iter != media_list.end())
     {
         CString item_name = CCommon::LoadText(_T("<"), IDS_OTHER, _T(">"));
-        if (size_changed)
-            m_classify_list_ctrl.InsertItem(index, item_name);
-        else
-            m_classify_list_ctrl.SetItemText(index, 0, item_name);
-        m_classify_list_ctrl.SetItemText(index, 1, std::to_wstring(iter->second.size()).c_str());
+        CListCtrlEx::RowData row_data;
+        row_data[0] = wstring(item_name);
+        row_data[1] = std::to_wstring(iter->second.size());
+        list_data.push_back(std::move(row_data));
     }
+    m_classify_list_ctrl.SetListData(list_data);
 }
 
-void CMediaClassifyDlg::ShowSongList(bool size_changed)
+void CMediaClassifyDlg::ShowSongList()
 {
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
-    if (size_changed)
-        m_song_list_ctrl.DeleteAllItems();
 
-    int item_index = 0;
+    CListCtrlEx::ListData list_data;
     for (int index : m_left_selected_items)
     {
         CString str_selected = GetClassifyListSelectedString(index);
@@ -139,22 +134,22 @@ void CMediaClassifyDlg::ShowSongList(bool size_changed)
         {
             for (const auto& item : iter->second)
             {
-                if (size_changed)
-                    m_song_list_ctrl.InsertItem(item_index, item.GetTitle().c_str());
-                else
-                    m_song_list_ctrl.SetItemText(item_index, COL_TITLE, item.GetTitle().c_str());
-                m_song_list_ctrl.SetItemText(item_index, COL_ARTIST, item.GetArtist().c_str());
-                m_song_list_ctrl.SetItemText(item_index, COL_ALBUM, item.GetAlbum().c_str());
+                CListCtrlEx::RowData row_data;
+                row_data[COL_TITLE] = item.GetTitle();
+                row_data[COL_ARTIST] = item.GetArtist();
+                row_data[COL_ALBUM] = item.GetAlbum();
                 std::wstring track_str;
                 if (item.track != 0)
                     track_str = std::to_wstring(item.track);
-                m_song_list_ctrl.SetItemText(item_index, COL_TRACK, track_str.c_str());
-                m_song_list_ctrl.SetItemText(item_index, COL_GENRE, item.GetGenre().c_str());
-                m_song_list_ctrl.SetItemText(item_index, COL_PATH, item.file_path.c_str());
-                item_index++;
+                row_data[COL_TRACK] = track_str;
+                row_data[COL_GENRE] = item.GetGenre();
+                row_data[COL_PATH] = item.file_path;
+                list_data.push_back(std::move(row_data));
             }
         }
     }
+
+    m_song_list_ctrl.SetListData(list_data);
 }
 
 CString CMediaClassifyDlg::GetClassifyListSelectedString(int index) const
@@ -733,27 +728,27 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
                 {
                 case CMediaClassifyDlg::COL_TITLE:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.title < b.title; else return a.title > b.title; });
-                    ShowSongList(false);
+                    ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_ARTIST:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.artist < b.artist; else return a.artist > b.artist; });
-                    ShowSongList(false);
+                    ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_ALBUM:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.album < b.album; else return a.album > b.album; });
-                    ShowSongList(false);
+                    ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_TRACK:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.track < b.track; else return a.track > b.track; });
-                    ShowSongList(false);
+                    ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_GENRE:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.genre < b.genre; else return a.genre > b.genre; });
-                    ShowSongList(false);
+                    ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_PATH:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.file_path < b.file_path; else return a.file_path > b.file_path; });
-                    ShowSongList(false);
+                    ShowSongList();
                     break;
                 default:
                     break;

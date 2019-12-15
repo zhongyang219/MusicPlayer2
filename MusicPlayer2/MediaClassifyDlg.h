@@ -57,8 +57,8 @@ protected:
     bool m_initialized{ false };
 
 protected:
-    void ShowClassifyList(bool size_changed = true);
-    void ShowSongList(bool size_changed = true);
+    void ShowClassifyList();
+    void ShowSongList();
     CString GetClassifyListSelectedString(int index) const;
     void ClassifyListClicked(int index);
     void SongListClicked(int index);
