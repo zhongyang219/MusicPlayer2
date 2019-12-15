@@ -16,7 +16,8 @@
 IMPLEMENT_DYNAMIC(CMediaClassifyDlg, CTabDlg)
 
 CMediaClassifyDlg::CMediaClassifyDlg(CMediaClassifier::ClassificationType type, CWnd* pParent /*=nullptr*/)
-	: CTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type), m_classifer(type, true)
+	: CTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type),
+    m_classifer(type, theApp.m_media_lib_setting_data.hide_only_one_classification)
 {
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_default_str = CCommon::LoadText(IDS_DEFAULT_ARTIST);

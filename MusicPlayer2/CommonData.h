@@ -237,6 +237,12 @@ struct GlobalHotKeySettingData
     bool global_multimedia_key_enable{ true };	//是否在全局范围内启用多媒体键
 };
 
+struct MediaSettingData
+{
+    vector<wstring> media_folders;      //媒体库文件夹浏览中显示的文件夹
+    bool hide_only_one_classification;      //媒体库中将只有一项的分类归到其他类中
+};
+
 struct NonCategorizedSettingData
 {
     int volum_step{ 3 };			//点击主界面中的音量调节时一次调整的步长

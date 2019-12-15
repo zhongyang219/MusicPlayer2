@@ -136,6 +136,24 @@ void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& 
 	}
 }
 
+void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wstring>& results, bool skip_empty /*= true*/)
+{
+    results.clear();
+    size_t split_index = 0 - div_str.size();
+    size_t last_split_index = 0 - div_str.size();
+    while (true)
+    {
+        split_index = str.find(div_str, split_index + div_str.size());
+        wstring split_str = str.substr(last_split_index + div_str.size(), split_index - last_split_index - div_str.size());
+        StringNormalize(split_str);
+        if (!split_str.empty() || !skip_empty)
+            results.push_back(split_str);
+        if (split_index == wstring::npos)
+            break;
+        last_split_index = split_index;
+    }
+}
+
 void CCommon::StringSplitWithMulitChars(const wstring& str, const wchar_t* div_ch, vector<wstring>& results, bool skip_empty /*= true*/)
 {
     results.clear();

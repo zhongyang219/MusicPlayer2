@@ -337,6 +337,10 @@ void CMusicPlayerDlg::SaveConfig()
     //保存桌面歌词预设
     m_desktop_lyric.SaveDefaultStyle(ini);
 
+    //媒体库设置
+    ini.WriteStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders);
+    ini.WriteBool(L"media_lib", L"hide_only_one_classification", theApp.m_media_lib_setting_data.hide_only_one_classification);
+
     ini.Save();
 }
 
@@ -457,6 +461,10 @@ void CMusicPlayerDlg::LoadConfig()
 
     //载入桌面歌词预设方案
     m_desktop_lyric.LoadDefaultStyle(ini);
+
+    //载入媒体库设置
+    ini.GetStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders, vector<wstring>{CCommon::GetSpecialDir(CSIDL_MYMUSIC)});
+    theApp.m_media_lib_setting_data.hide_only_one_classification = ini.GetBool(L"media_lib", L"hide_only_one_classification", true);
 }
 
 void CMusicPlayerDlg::SetTransparency()

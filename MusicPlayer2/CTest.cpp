@@ -4,6 +4,7 @@
 #include "COSUPlayerHelper.h"
 #include "RegFileRelate.h"
 #include "MediaLibHelper.h"
+#include "IniHelper.h"
 
 CTest::CTest()
 {
@@ -22,7 +23,7 @@ void CTest::Test()
     //TestCommon();
     //TestOSUFile();
     //TestReg();
-    TestMediaLib();
+    //TestMediaLib();
 }
 
 void CTest::TestStringMatch()
@@ -74,7 +75,24 @@ void CTest::TestCommon()
 
     //CCommon::CreateDir(L"D:\\Temp\\Folder\\");
 
-    wstring rtn = CCommon::FileRename(L"D:\\Temp\\无标题.txt", L"无标题1");
+    //wstring rtn = CCommon::FileRename(L"D:\\Temp\\无标题.txt", L"无标题1");
+
+    wstring str = L"!ABC!,!233!,!DEF!";
+    std::vector<wstring> result;
+    //CCommon::StringSplit(str, L"!,!", result, false);
+
+    //{
+    //    vector<wstring> string_list{ L"abcde", L"233333", L"39485skdj" };
+    //    CIniHelper ini{ L"D:\\Temp\\test.ini" };
+    //    ini.WriteStringList(L"config", L"test", string_list);
+    //    ini.Save();
+    //}
+
+    {
+        vector<wstring> string_results;
+        CIniHelper ini{ L"D:\\Temp\\test.ini" };
+        ini.GetStringList(L"config", L"test", string_results, vector<wstring>{L"567"});
+    }
 
     int a = 0;
 }

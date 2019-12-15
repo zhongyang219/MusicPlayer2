@@ -89,15 +89,18 @@ void CFolderExploreDlg::ShowFolderTree()
         m_folder_explore_tree.SaveExpandState();
 
     m_folder_explore_tree.DeleteAllItems();
-    wstring default_folder = CCommon::GetSpecialDir(CSIDL_MYMUSIC);
-    m_folder_explore_tree.InsertPath(default_folder.c_str(), NULL, [&](const CString& folder_path)
+    //wstring default_folder = CCommon::GetSpecialDir(CSIDL_MYMUSIC);
+    for(const auto& default_folder : theApp.m_media_lib_setting_data.media_folders)
     {
-        if (!CAudioCommon::IsPathContainsAudioFile(wstring(folder_path), true))       //排除不包含音频文件的目录
-            return false;
-        if(m_searched)
-            return CCommon::IsFolderMatchKeyWord(wstring(folder_path), wstring(search_key_word));
-        return true;
-    });
+        m_folder_explore_tree.InsertPath(default_folder.c_str(), NULL, [&](const CString& folder_path)
+        {
+            if (!CAudioCommon::IsPathContainsAudioFile(wstring(folder_path), true))       //排除不包含音频文件的目录
+                return false;
+            if (m_searched)
+                return CCommon::IsFolderMatchKeyWord(wstring(folder_path), wstring(search_key_word));
+            return true;
+        });
+    }
 
     if (m_searched)
         m_folder_explore_tree.ExpandAll();

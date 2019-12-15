@@ -120,6 +120,8 @@ void CTreeCtrlEx::RestoreExpandState()
 
 void CTreeCtrlEx::_InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show)
 {
+    if (!path.IsEmpty() && path.Right(1) == _T("\\"))
+        path = path.Left(path.GetLength() - 1);
     CFileFind nFindFile;
     CString str = L"";
     CString nPicFileName = L"";
