@@ -237,10 +237,11 @@ struct GlobalHotKeySettingData
     bool global_multimedia_key_enable{ true };	//是否在全局范围内启用多媒体键
 };
 
-struct MediaSettingData
+struct MediaLibSettingData
 {
     vector<wstring> media_folders;      //媒体库文件夹浏览中显示的文件夹
-    bool hide_only_one_classification;      //媒体库中将只有一项的分类归到其他类中
+    bool hide_only_one_classification;  //媒体库中将只有一项的分类归到其他类中
+    bool show_tree_tool_tips;           //树控件显示鼠标提示
 };
 
 struct NonCategorizedSettingData

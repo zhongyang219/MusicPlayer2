@@ -357,7 +357,7 @@ void CSelectPlaylistDlg::OnOK()
 void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CInputDlg imput_dlg;
+    CInputDlg imput_dlg(this);
     imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
     if (imput_dlg.DoModal() == IDOK)

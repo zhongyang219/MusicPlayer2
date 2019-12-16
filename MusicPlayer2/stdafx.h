@@ -35,7 +35,6 @@
 
 #include "Define.h"
 #include <afxcontrolbars.h>
-#include <afxwin.h>
 
 
 

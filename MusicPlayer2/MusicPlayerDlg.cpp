@@ -217,8 +217,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SLOW_DOWN, &CMusicPlayerDlg::OnSlowDown)
     ON_COMMAND(ID_ORIGINAL_SPEED, &CMusicPlayerDlg::OnOriginalSpeed)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMusicPlayerDlg::OnSearchEditBtnClicked)
-        ON_MESSAGE(WM_INIT_ADD_TO_MENU, &CMusicPlayerDlg::OnInitAddToMenu)
-        END_MESSAGE_MAP()
+    ON_MESSAGE(WM_INIT_ADD_TO_MENU, &CMusicPlayerDlg::OnInitAddToMenu)
+    ON_MESSAGE(WM_OPTION_SETTINGS, &CMusicPlayerDlg::OnMsgOptionSettings)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -340,6 +341,7 @@ void CMusicPlayerDlg::SaveConfig()
     //媒体库设置
     ini.WriteStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders);
     ini.WriteBool(L"media_lib", L"hide_only_one_classification", theApp.m_media_lib_setting_data.hide_only_one_classification);
+    ini.WriteBool(L"media_lib", L"show_tree_tool_tips", theApp.m_media_lib_setting_data.show_tree_tool_tips);
 
     ini.Save();
 }
@@ -465,6 +467,7 @@ void CMusicPlayerDlg::LoadConfig()
     //载入媒体库设置
     ini.GetStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders, vector<wstring>{CCommon::GetSpecialDir(CSIDL_MYMUSIC)});
     theApp.m_media_lib_setting_data.hide_only_one_classification = ini.GetBool(L"media_lib", L"hide_only_one_classification", true);
+    theApp.m_media_lib_setting_data.show_tree_tool_tips = ini.GetBool(L"media_lib", L"show_tree_tool_tips", false);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -812,6 +815,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     theApp.m_play_setting_data = optionDlg.m_tab4_dlg.m_data;
     theApp.m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
     theApp.m_hot_key_setting_data = optionDlg.m_tab5_dlg.m_data;
+    theApp.m_media_lib_setting_data = optionDlg.m_media_lib_dlg.m_data;
 
     if (reload_sf2 || output_device_changed || player_core_changed)
     {
@@ -1144,6 +1148,53 @@ void CMusicPlayerDlg::SetPlaylistDragEnable()
         m_pFloatPlaylistDlg->SetDragEnable();
     if(m_miniModeDlg.GetSafeHwnd()!=NULL)
         m_miniModeDlg.SetDragEnable();
+}
+
+void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
+{
+    theApp.m_hot_key.UnRegisterAllHotKey();
+
+    COptionsDlg optionDlg(pParent);
+    //初始化对话框中变量的值
+    optionDlg.m_tab_selected = m_tab_selected;
+    optionDlg.m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
+    optionDlg.m_tab1_dlg.m_pDesktopLyric = &m_desktop_lyric;
+    if (m_miniModeDlg.m_hWnd == NULL)
+        optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
+    else
+        optionDlg.m_tab2_dlg.m_hMainWnd = m_miniModeDlg.m_hWnd;
+    optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
+    optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
+    optionDlg.m_tab4_dlg.m_data = theApp.m_play_setting_data;
+    optionDlg.m_tab5_dlg.m_hotkey_group = theApp.m_hot_key.GetHotKeyGroup();
+    optionDlg.m_tab5_dlg.m_data = theApp.m_hot_key_setting_data;
+    optionDlg.m_media_lib_dlg.m_data = theApp.m_media_lib_setting_data;
+
+    int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
+    int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
+    int desktop_lyric_opacity = theApp.m_lyric_setting_data.desktop_lyric_data.opacity;
+
+    if (optionDlg.DoModal() == IDOK)
+    {
+        ApplySettings(optionDlg);
+    }
+    else
+    {
+        SetTransparency();		//如果点击了取消，则需要重新设置窗口透明度
+        SetDesptopLyricTransparency();
+
+        if (m_miniModeDlg.m_hWnd != NULL)
+            m_miniModeDlg.SetTransparency();
+
+        theApp.m_app_setting_data.sprctrum_height = sprctrum_height;
+        theApp.m_app_setting_data.background_transparency = background_transparency;
+        theApp.m_lyric_setting_data.desktop_lyric_data.opacity = desktop_lyric_opacity;
+    }
+
+    m_tab_selected = optionDlg.m_tab_selected;
+
+    if (theApp.m_hot_key_setting_data.hot_key_enable)
+        theApp.m_hot_key.RegisterAllHotKey();
 }
 
 BOOL CMusicPlayerDlg::OnInitDialog()
@@ -2201,50 +2252,7 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 void CMusicPlayerDlg::OnOptionSettings()
 {
     // TODO: 在此添加命令处理程序代码
-
-    theApp.m_hot_key.UnRegisterAllHotKey();
-
-    COptionsDlg optionDlg;
-    //初始化对话框中变量的值
-    optionDlg.m_tab_selected = m_tab_selected;
-    optionDlg.m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
-    optionDlg.m_tab1_dlg.m_pDesktopLyric = &m_desktop_lyric;
-    if (m_miniModeDlg.m_hWnd == NULL)
-        optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
-    else
-        optionDlg.m_tab2_dlg.m_hMainWnd = m_miniModeDlg.m_hWnd;
-    optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
-    optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
-    optionDlg.m_tab4_dlg.m_data = theApp.m_play_setting_data;
-    optionDlg.m_tab5_dlg.m_hotkey_group = theApp.m_hot_key.GetHotKeyGroup();
-    optionDlg.m_tab5_dlg.m_data = theApp.m_hot_key_setting_data;
-
-    int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
-    int background_transparency = theApp.m_app_setting_data.background_transparency;		//同上
-    int desktop_lyric_opacity = theApp.m_lyric_setting_data.desktop_lyric_data.opacity;
-
-    if (optionDlg.DoModal() == IDOK)
-    {
-        ApplySettings(optionDlg);
-    }
-    else
-    {
-        SetTransparency();		//如果点击了取消，则需要重新设置窗口透明度
-        SetDesptopLyricTransparency();
-
-        if (m_miniModeDlg.m_hWnd != NULL)
-            m_miniModeDlg.SetTransparency();
-
-        theApp.m_app_setting_data.sprctrum_height = sprctrum_height;
-        theApp.m_app_setting_data.background_transparency = background_transparency;
-        theApp.m_lyric_setting_data.desktop_lyric_data.opacity = desktop_lyric_opacity;
-    }
-
-    m_tab_selected = optionDlg.m_tab_selected;
-
-    if(theApp.m_hot_key_setting_data.hot_key_enable)
-        theApp.m_hot_key.RegisterAllHotKey();
-
+    _OnOptionSettings(this);
 }
 
 
@@ -2342,10 +2350,6 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         break;
     case IDT_NEXT:
         OnNext();
-        break;
-    case ID_OPTION_SETTINGS2:
-        m_tab_selected = lParam;
-        OnOptionSettings();
         break;
     case ID_TEST:
         CTest::Test();
@@ -4303,5 +4307,13 @@ afx_msg LRESULT CMusicPlayerDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lP
 afx_msg LRESULT CMusicPlayerDlg::OnInitAddToMenu(WPARAM wParam, LPARAM lParam)
 {
     IniPlaylistPopupMenu();
+    return 0;
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnMsgOptionSettings(WPARAM wParam, LPARAM lParam)
+{
+    m_tab_selected = wParam;
+    _OnOptionSettings((CWnd*)lParam);
     return 0;
 }

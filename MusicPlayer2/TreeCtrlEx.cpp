@@ -15,7 +15,6 @@ IMPLEMENT_DYNAMIC(CTreeCtrlEx, CTreeCtrl)
 CTreeCtrlEx::CTreeCtrlEx()
     : m_theme_color(theApp.m_app_setting_data.theme_color)
 {
-
 }
 
 CTreeCtrlEx::~CTreeCtrlEx()

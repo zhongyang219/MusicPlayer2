@@ -467,9 +467,9 @@
 #define IDS_SORT                        422
 #define IDI_FOLDER_EXPLORE_D            422
 #define IDS_LIST                        423
-#define IDI_ICON5                       423
 #define IDI_EXPLORE_FOLDER              423
 #define IDS_EDIT                        424
+#define IDD_MEDIA_LIB_SETTING_DIALOG    424
 #define IDS_DEFAULT_STYLE               425
 #define IDS_MODIFY_DEFAULT_STYLE_WARNING 426
 #define IDS_RESTORE_DEFAULT_STYTLE_WARNING 427
@@ -523,6 +523,7 @@
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013
+#define IDC_PLAY_SELECTED2              1013
 #define IDC_VOLUME_DOWN                 1014
 #define IDC_PLAYLIST_LIST               1015
 #define IDC_FIND_EDIT                   1016
@@ -546,6 +547,7 @@
 #define IDC_HOT_KEY_ENABLE_CHECK        1025
 #define IDC_SHOW_SPECTRUM_IN_CORTANA    1025
 #define IDC_SELECT_ALL_CHECK            1025
+#define IDC_CLASSIFY_OTHER_CHECK        1025
 #define IDC_CHECK2                      1026
 #define IDC_KARAOKE_DISP                1026
 #define IDC_FIND_TITLE_CHECK            1026
@@ -556,6 +558,7 @@
 #define IDC_AUTO_PLAY_WHEN_START_CHECK  1026
 #define IDC_ENABLE_GLABOL_MULTIMEDIA_KEY_CHECK 1026
 #define IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK 1026
+#define IDC_SHOW_TREE_TOOL_TIPS_CHECK   1026
 #define IDC_FONT_NAME_EDIT              1027
 #define IDC_FIND_ARTIST_CHECK           1027
 #define IDC_KARAOKE_DISP2               1027
@@ -670,6 +673,7 @@
 #define IDC_SAVE_TO_FILE_BUTTON         1082
 #define IDC_BROWSE_BUTTON               1082
 #define IDC_DEFAULT_STYLE               1082
+#define IDC_MEDIA_LIB_SETTINGS_BTN      1082
 #define IDC_TAB1                        1083
 #define IDC_REVERB_MIX_SLIDER           1084
 #define IDC_REVERB_TIME_SLIDER          1085
@@ -776,6 +780,7 @@
 #define IDC_CLASSIFY_LIST               1158
 #define IDC_SONG_LIST                   1159
 #define IDC_FOLDER_EXPLORE_TREE         1160
+#define IDC_DIR_LIST                    1161
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1116,9 +1121,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        424
+#define _APS_NEXT_RESOURCE_VALUE        426
 #define _APS_NEXT_COMMAND_VALUE         33149
-#define _APS_NEXT_CONTROL_VALUE         1161
+#define _APS_NEXT_CONTROL_VALUE         1162
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -58,6 +58,7 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab2_dlg.Create(IDD_APPEREANCE_SETTING_DLG);
 	m_tab3_dlg.Create(IDD_DATA_SETTINGS_DIALOG);
 	m_tab4_dlg.Create(IDD_PLAY_SETTING_DIALOG);
+	m_media_lib_dlg.Create(IDD_MEDIA_LIB_SETTING_DIALOG);
 	m_tab5_dlg.Create(IDD_HOT_KEY_SETTINGS_DIALOG);
 
 	//保存子对话框
@@ -65,6 +66,7 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab_vect.push_back(&m_tab2_dlg);
 	m_tab_vect.push_back(&m_tab3_dlg);
 	m_tab_vect.push_back(&m_tab4_dlg);
+	m_tab_vect.push_back(&m_media_lib_dlg);
 	m_tab_vect.push_back(&m_tab5_dlg);
 
 	//获取子对话框的初始高度
@@ -80,6 +82,7 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab.AddWindow(&m_tab2_dlg, CCommon::LoadText(IDS_APPEARANCE_SETTINGS));
 	m_tab.AddWindow(&m_tab3_dlg, CCommon::LoadText(IDS_GENERAL_SETTINGS));
 	m_tab.AddWindow(&m_tab4_dlg, CCommon::LoadText(IDS_PLAY_SETTINGS));
+	m_tab.AddWindow(&m_media_lib_dlg, CCommon::LoadText(IDS_MEDIA_LIB));
 	m_tab.AddWindow(&m_tab5_dlg, CCommon::LoadText(IDS_GLOBLE_HOTKEY));
 
 	//为每个子窗口设置滚动信息

@@ -170,6 +170,8 @@ protected:
 
     void SetPlaylistDragEnable();       //设置播放列表是事允许拖动排序
 
+    void _OnOptionSettings(CWnd* pParent);
+
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -363,4 +365,5 @@ public:
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnInitAddToMenu(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnMsgOptionSettings(WPARAM wParam, LPARAM lParam);
 };

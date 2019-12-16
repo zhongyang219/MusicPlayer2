@@ -268,6 +268,9 @@ BOOL CFolderExploreDlg::OnInitDialog()
     //设置行高
     m_folder_explore_tree.SetItemHeight(theApp.DPI(22));
 
+    if(!theApp.m_media_lib_setting_data.show_tree_tool_tips)
+        m_folder_explore_tree.ModifyStyle(0, TVS_NOTOOLTIPS);
+
     //填充数据
     ShowFolderTree();
 
@@ -288,7 +291,7 @@ BOOL CFolderExploreDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FORDER), TRUE);
-    SetDlgItemText(IDC_SETTINGS_BUTTON, CCommon::LoadText(IDS_BTN_SETTINGS));
+    //SetDlgItemText(IDC_SETTINGS_BUTTON, CCommon::LoadText(IDS_BTN_SETTINGS));
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

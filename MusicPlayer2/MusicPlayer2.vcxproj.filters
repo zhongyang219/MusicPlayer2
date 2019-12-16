@@ -270,6 +270,9 @@
     <Filter Include="派生的控件类\TreeCtrlEx">
       <UniqueIdentifier>{3551437a-e3b0-4dc6-ac0a-b192e993a818}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\选项设置对话框\MediaLibSettingDlg">
+      <UniqueIdentifier>{2c8a5028-904f-47e3-a143-234bf75e2a6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -607,6 +610,9 @@
     <ClInclude Include="FolderExploreDlg.h">
       <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
+    <ClInclude Include="MediaLibSettingDlg.h">
+      <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -911,6 +917,9 @@
     </ClCompile>
     <ClCompile Include="FolderExploreDlg.cpp">
       <Filter>对话框类\媒体库对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaLibSettingDlg.cpp">
+      <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

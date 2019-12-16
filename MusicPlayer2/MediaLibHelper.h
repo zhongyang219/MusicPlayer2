@@ -39,6 +39,7 @@ public:
     MediaList& GetMeidaList();
     void ClassifyMedia();
     static bool IsStringYear(std::wstring str);
+    void ClearResult();
 
 private:
 

@@ -170,3 +170,8 @@ bool CMediaClassifier::IsStringYear(std::wstring str)
 
     return str > L"1000" && str < L"3000";
 }
+
+void CMediaClassifier::ClearResult()
+{
+    m_media_list.clear();
+}

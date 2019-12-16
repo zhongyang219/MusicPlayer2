@@ -342,6 +342,7 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CMediaClassifyDlg::OnPlayItemInFolderMode)
     ON_COMMAND(ID_COPY_TEXT, &CMediaClassifyDlg::OnCopyText)
     ON_WM_SIZE()
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -799,4 +800,13 @@ void CMediaClassifyDlg::OnSize(UINT nType, int cx, int cy)
         for (size_t i{}; i < width.size(); i++)
             m_classify_list_ctrl.SetColumnWidth(i, width[i]);
     }
+}
+
+
+void CMediaClassifyDlg::OnDestroy()
+{
+    CTabDlg::OnDestroy();
+
+    // TODO: 在此处添加消息处理程序代码
+    m_classifer.ClearResult();
 }

@@ -53,7 +53,7 @@ public:
     PlaySettingData m_play_setting_data;			//“选项设置”对话框中“播放设置”中的数据
     NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
     GlobalHotKeySettingData m_hot_key_setting_data;	//“全局快捷键”设置
-    MediaSettingData m_media_lib_setting_data;  	//“媒体库”设置
+    MediaLibSettingData m_media_lib_setting_data;  	//“媒体库”设置
     CHotkeyManager m_hot_key;
 
     UIData m_ui_data;

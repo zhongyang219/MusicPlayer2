@@ -48,4 +48,5 @@ protected:
 public:
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     virtual void OnOK();
+    afx_msg void OnBnClickedMediaLibSettingsBtn();
 };

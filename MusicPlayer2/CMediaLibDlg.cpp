@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CMediaLibDlg, CDialog)
     ON_WM_GETMINMAXINFO()
     ON_MESSAGE(WM_PLAY_SELECTED_BTN_ENABLE, &CMediaLibDlg::OnPlaySelectedBtnEnable)
     ON_WM_ERASEBKGND()
+    ON_BN_CLICKED(IDC_MEDIA_LIB_SETTINGS_BTN, &CMediaLibDlg::OnBnClickedMediaLibSettingsBtn)
 END_MESSAGE_MAP()
 
 
@@ -168,4 +169,11 @@ void CMediaLibDlg::OnOK()
     CDialog::OnOK();
     DestroyWindow();
 
+}
+
+
+void CMediaLibDlg::OnBnClickedMediaLibSettingsBtn()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    theApp.m_pMainWnd->SendMessage(WM_OPTION_SETTINGS, 4, LPARAM(this));
 }

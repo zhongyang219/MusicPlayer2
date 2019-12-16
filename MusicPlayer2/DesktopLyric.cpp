@@ -512,7 +512,7 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
                 return;
 
             case BTN_SETTING:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS2, 0);
+                theApp.m_pMainWnd->SendMessage(WM_OPTION_SETTINGS, 0, 0);
                 return;
 
             case BTN_DEFAULT_STYLE:
