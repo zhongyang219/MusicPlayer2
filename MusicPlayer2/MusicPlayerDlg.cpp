@@ -1765,31 +1765,8 @@ void CMusicPlayerDlg::OnFind()
     {
         if (m_findDlg.GetFindCurrentPlaylist())
         {
-            int selected_track{ m_findDlg.GetSelectedTrack() };
-            if (selected_track >= 0)
-            {
-                CPlayer::GetInstance().PlayTrack(m_findDlg.GetSelectedTrack());
-                SwitchTrack();
-                UpdatePlayPauseButton();
-            }
-        }
-        else
-        {
-            wstring selected_song_path{ m_findDlg.GetSelectedSongPath() };
-            if (!CCommon::FileExist(selected_song_path))
-            {
-                //如果文件不存在，则弹出错误信息
-                CString info;
-                info = CCommon::LoadTextFormat(IDS_CONNOT_FIND_FILE, { selected_song_path });
-                MessageBox(info, NULL, MB_ICONWARNING);
-                return;
-            }
-            if (!selected_song_path.empty())
-            {
-                CPlayer::GetInstance().OpenFiles(vector<wstring>{ selected_song_path });
-                SwitchTrack();
-                UpdatePlayPauseButton();
-            }
+            SwitchTrack();
+            UpdatePlayPauseButton();
         }
     }
 }
@@ -2966,6 +2943,15 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     theApp.DoWaitCursor(-1);
 
     SetPlaylistDragEnable();
+
+    static int last_play_mode = -1;
+    int play_mode = CPlayer::GetInstance().IsPlaylistMode();
+    if (last_play_mode != play_mode)
+    {
+        //在文件夹模式和播放列表模式间切换时
+        m_findDlg.ClearFindResult();
+        last_play_mode = play_mode;
+    }
 
     return 0;
 }

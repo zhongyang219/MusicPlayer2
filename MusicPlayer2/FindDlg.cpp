@@ -5,6 +5,8 @@
 #include "MusicPlayer2.h"
 #include "FindDlg.h"
 #include "afxdialogex.h"
+#include "MusicPlayerCmdHelper.h"
+#include "PropertyDlg.h"
 
 
 // CFindDlg 对话框
@@ -41,11 +43,11 @@ void CFindDlg::ShowFindResult()
 		{
 			str.Format(_T("%u"), m_find_result[i] + 1);
 			m_find_result_list.InsertItem(i, str);
-			m_find_result_list.SetItemText(i, 1, m_playlist[m_find_result[i]].GetFileName().c_str());
-			m_find_result_list.SetItemText(i, 2, m_playlist[m_find_result[i]].title.c_str());
-			m_find_result_list.SetItemText(i, 3, m_playlist[m_find_result[i]].artist.c_str());
-			m_find_result_list.SetItemText(i, 4, m_playlist[m_find_result[i]].album.c_str());
-			m_find_result_list.SetItemText(i, 5, m_playlist[m_find_result[i]].file_path.c_str());
+			m_find_result_list.SetItemText(i, COL_FILE_NAME, m_playlist[m_find_result[i]].GetFileName().c_str());
+			m_find_result_list.SetItemText(i, COL_TITLE, m_playlist[m_find_result[i]].title.c_str());
+			m_find_result_list.SetItemText(i, COL_ARTIST, m_playlist[m_find_result[i]].artist.c_str());
+			m_find_result_list.SetItemText(i, COL_ALBUM, m_playlist[m_find_result[i]].album.c_str());
+			m_find_result_list.SetItemText(i, COL_PATH, m_playlist[m_find_result[i]].file_path.c_str());
 		}
 	}
 	else
@@ -56,11 +58,11 @@ void CFindDlg::ShowFindResult()
 			m_find_result_list.InsertItem(i, str);
 			int index = m_all_find_result[i].rfind(L'\\');
 			wstring file_name = m_all_find_result[i].substr(index + 1);
-			m_find_result_list.SetItemText(i, 1, file_name.c_str());
-			m_find_result_list.SetItemText(i, 2, theApp.m_song_data[m_all_find_result[i]].title.c_str());
-			m_find_result_list.SetItemText(i, 3, theApp.m_song_data[m_all_find_result[i]].artist.c_str());
-			m_find_result_list.SetItemText(i, 4, theApp.m_song_data[m_all_find_result[i]].album.c_str());
-			m_find_result_list.SetItemText(i, 5, m_all_find_result[i].c_str());
+			m_find_result_list.SetItemText(i, COL_FILE_NAME, file_name.c_str());
+			m_find_result_list.SetItemText(i, COL_TITLE, theApp.m_song_data[m_all_find_result[i]].title.c_str());
+			m_find_result_list.SetItemText(i, COL_ARTIST, theApp.m_song_data[m_all_find_result[i]].artist.c_str());
+			m_find_result_list.SetItemText(i, COL_ALBUM, theApp.m_song_data[m_all_find_result[i]].album.c_str());
+			m_find_result_list.SetItemText(i, COL_PATH, m_all_find_result[i].c_str());
 		}
 	}
 }
@@ -75,6 +77,37 @@ void CFindDlg::ShowFindInfo()
 		result_mun = m_all_find_result.size();
 	str = CCommon::LoadTextFormat(IDS_FIND_DLG_INFO, { m_key_word, result_mun });
 	SetDlgItemText(IDC_FIND_INFO_STATIC, str);
+}
+
+bool CFindDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
+{
+    auto getSongList = [&](std::vector<SongInfo>& song_list)
+    {
+        GetSongsSelected(song_list);
+    };
+    CMusicPlayerCmdHelper cmd_helper(this);
+    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+}
+
+UINT CFindDlg::ViewOnlineThreadFunc(LPVOID lpParam)
+{
+    CFindDlg* pThis = (CFindDlg*)(lpParam);
+    if (pThis == nullptr)
+        return 0;
+    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    //此命令用于跳转到歌曲对应的网易云音乐的在线页面
+    if (pThis->m_item_selected >= 0)
+    {
+        wstring file_path = pThis->m_find_result_list.GetItemText(pThis->m_item_selected, COL_PATH).GetString();
+        if (CCommon::FileExist(file_path))
+        {
+            SongInfo song{ theApp.m_song_data[file_path] };
+            song.file_path = file_path;
+            CMusicPlayerCmdHelper cmd_helper(pThis);
+            cmd_helper.VeiwOnline(song);
+        }
+    }
+    return 0;
 }
 
 void CFindDlg::ClearFindResult()
@@ -126,14 +159,53 @@ bool CFindDlg::GetFindCurrentPlaylist() const
 	return m_find_current_playlist;
 }
 
-wstring CFindDlg::GetSelectedSongPath() const
+
+void CFindDlg::GetSelectedSongPath(vector<wstring>& files) const
 {
-	if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_all_find_result.size()))
-		return m_all_find_result[m_item_selected];
-	else
-		return wstring();
+    files.clear();
+    for (int index : m_items_selected)
+    {
+        if (index >= 0 && index < m_find_result_list.GetItemCount())
+        {
+            wstring file_path = m_find_result_list.GetItemText(index, COL_PATH).GetString();
+            files.push_back(file_path);
+        }
+    }
 }
 
+void CFindDlg::GetSongsSelected(vector<SongInfo>& songs) const
+{
+    songs.clear();
+    vector<wstring> files;
+    GetSelectedSongPath(files);
+    for (const auto& file : files)
+    {
+        SongInfo song;
+        auto iter = theApp.m_song_data.find(file);
+        if (iter != theApp.m_song_data.end())
+        {
+            song = iter->second;
+        }
+        song.file_path = file;
+        songs.push_back(song);
+    }
+}
+
+void CFindDlg::GetCurrentSongList(std::vector<SongInfo>& song_list)
+{
+    for (int index = 0; index < m_find_result_list.GetItemCount(); index++)
+    {
+        std::wstring file = m_find_result_list.GetItemText(index, COL_PATH);
+        SongInfo song;
+        auto iter = theApp.m_song_data.find(file);
+        if (iter != theApp.m_song_data.end())
+        {
+            song = iter->second;
+        }
+        song.file_path = file;
+        song_list.push_back(song);
+    }
+}
 
 BEGIN_MESSAGE_MAP(CFindDlg, CDialog)
 	ON_EN_CHANGE(IDC_FIND_EDIT, &CFindDlg::OnEnChangeFindEdit)
@@ -157,6 +229,7 @@ BEGIN_MESSAGE_MAP(CFindDlg, CDialog)
     ON_COMMAND(ID_EXPLORE_ONLINE, &CFindDlg::OnExploreOnline)
     ON_COMMAND(ID_FORMAT_CONVERT, &CFindDlg::OnFormatConvert)
     ON_COMMAND(ID_ITEM_PROPERTY, &CFindDlg::OnItemProperty)
+    ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CFindDlg::OnAddToNewPalylistAndPlay)
 END_MESSAGE_MAP()
 
 
@@ -182,6 +255,7 @@ void CFindDlg::OnNMClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	// TODO: 在此添加控件通知处理程序代码
 	//NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 	m_item_selected = pNMItemActivate->iItem;		//单击查找结果列表时保存选中的项目序号
+    m_find_result_list.GetItemSelected(m_items_selected);
 	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 	*pResult = 0;
 }
@@ -343,7 +417,8 @@ void CFindDlg::OnNMDblclkFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_item_selected = pNMItemActivate->iItem;
-	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
+    m_find_result_list.GetItemSelected(m_items_selected);
+    GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 
 	//双击列表项目后关闭对话框并播放选中项目
 	OnPlayItem();
@@ -491,7 +566,8 @@ void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_item_selected = pNMItemActivate->iItem;
-	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
+    m_find_result_list.GetItemSelected(m_items_selected);
+    GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 
 	if (m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
 		|| !m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_all_find_result.size())))
@@ -520,28 +596,91 @@ void CFindDlg::OnCopyText()
 void CFindDlg::OnPlayItemInFolderMode()
 {
     // TODO: 在此添加命令处理程序代码
+    if (m_item_selected >= 0)
+    {
+        std::wstring file_path = m_find_result_list.GetItemText(m_item_selected, COL_PATH);
+        CPlayer::GetInstance().OpenAFile(file_path, true);
+
+        OnCancel();
+    }
+
 }
 
 
 void CFindDlg::OnAddToNewPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
+    wstring playlist_path;
+    _OnAddToNewPlaylist(playlist_path);
 }
 
 
 void CFindDlg::OnExploreOnline()
 {
     // TODO: 在此添加命令处理程序代码
+    AfxBeginThread(ViewOnlineThreadFunc, (void*)this);
 }
 
 
 void CFindDlg::OnFormatConvert()
 {
     // TODO: 在此添加命令处理程序代码
+    std::vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    CMusicPlayerCmdHelper cmd_helper(this);
+    cmd_helper.FormatConvert(songs);
 }
 
 
 void CFindDlg::OnItemProperty()
 {
     // TODO: 在此添加命令处理程序代码
+    if (m_item_selected < 0)
+        return;
+    std::vector<SongInfo> songs;
+    GetCurrentSongList(songs);
+    CPropertyDlg propertyDlg(songs, this, true);
+    propertyDlg.m_index = m_item_selected;
+    propertyDlg.DoModal();
+}
+
+
+void CFindDlg::OnOK()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    if (GetFindCurrentPlaylist())
+    {
+        int selected_track{ GetSelectedTrack() };
+        if (selected_track >= 0)
+        {
+            CPlayer::GetInstance().PlayTrack(GetSelectedTrack());
+        }
+    }
+    else
+    {
+        vector<wstring> files;
+        GetSelectedSongPath(files);
+        if (!files.empty())
+        {
+            if (files.size() == 1)
+                CPlayer::GetInstance().OpenFiles(files);
+            else
+                CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
+        }
+    }
+
+    CDialog::OnOK();
+}
+
+
+void CFindDlg::OnAddToNewPalylistAndPlay()
+{
+    // TODO: 在此添加命令处理程序代码
+    wstring playlist_path;
+    if (_OnAddToNewPlaylist(playlist_path))
+    {
+        CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, false, true);
+        CPlayer::GetInstance().SaveRecentPath();
+        OnCancel();
+    }
 }

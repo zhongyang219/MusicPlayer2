@@ -503,7 +503,10 @@ void CMediaClassifyDlg::OnOK()
     GetSongsSelected(files);
     if(!files.empty())
     {
-        CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
+        if (files.size() == 1)
+            CPlayer::GetInstance().OpenFiles(files);
+        else
+            CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
 
         CTabDlg::OnOK();
         CWnd* pParent = GetParentWindow();
@@ -560,11 +563,11 @@ void CMediaClassifyDlg::OnItemProperty()
         return;
     std::vector<SongInfo> songs;
     GetCurrentSongList(songs);
-    CPropertyDlg propertyDlg(songs, this);
+    CPropertyDlg propertyDlg(songs, this, true);
     propertyDlg.m_index = m_right_selected_item;
     propertyDlg.DoModal();
-    if (propertyDlg.GetListRefresh())
-        ShowSongList();
+    //if (propertyDlg.GetListRefresh())
+    //    ShowSongList();
 }
 
 

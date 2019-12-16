@@ -20,7 +20,8 @@ public:
 
 	int GetSelectedTrack() const;
 	bool GetFindCurrentPlaylist() const;
-	wstring GetSelectedSongPath() const;
+	void GetSelectedSongPath(vector<wstring>& files) const;
+	void GetSongsSelected(vector<SongInfo>& files) const;
 	void SaveConfig();
 	void LoadConfig();
 
@@ -30,6 +31,15 @@ public:
 #endif
 
 protected:
+    enum ColumeIndex
+    {
+        COL_INDEX = 0,
+        COL_FILE_NAME,
+        COL_TITLE,
+        COL_ARTIST,
+        COL_ALBUM,
+        COL_PATH,
+    };
 
 	const vector<SongInfo>& m_playlist;		//播放列表
 	vector<int> m_find_result;			//储存当前播放列表的查找结果（曲目序号）
@@ -38,6 +48,7 @@ protected:
 
 	CListCtrlEx m_find_result_list;		//查找结果控件
 	int m_item_selected{ -1 };		//鼠标选中的项目序号
+    vector<int> m_items_selected;
 	//CMenu m_menu;
 
 	//int m_dpi;
@@ -63,6 +74,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	void ShowFindResult();
 	void ShowFindInfo();
+    bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
+    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
+    void GetCurrentSongList(std::vector<SongInfo>& song_list);
+
 public: 
 	void ClearFindResult();
 
@@ -92,4 +107,7 @@ public:
     afx_msg void OnExploreOnline();
     afx_msg void OnFormatConvert();
     afx_msg void OnItemProperty();
+    virtual void OnOK();
+    afx_msg void OnAddToNewPalylistAndPlay();
+private:
 };

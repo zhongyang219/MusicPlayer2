@@ -14,7 +14,7 @@ class CPropertyDlg : public CDialog
 	DECLARE_DYNAMIC(CPropertyDlg)
 
 public:
-	CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent = NULL);   // 标准构造函数
+	CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent = NULL, bool read_only = false);   // 标准构造函数
 	virtual ~CPropertyDlg();
 
 	int m_index{};		//当前显示项目的曲目序号
@@ -36,6 +36,7 @@ protected:
 	bool m_genre_modified{ false };
 	bool m_list_refresh{ false };		//用于判断窗口关闭后播放列表是否要刷新，只要有任一首曲目的“标题”或“艺术家”标签编辑过，则置为true
     int m_song_num;
+    bool m_read_only;
 
 	//控件变量
 	CEditEx m_file_name_edit;

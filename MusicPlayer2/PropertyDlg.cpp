@@ -12,8 +12,8 @@
 
 IMPLEMENT_DYNAMIC(CPropertyDlg, CDialog)
 
-CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_PROPERTY_DIALOG, pParent), m_all_song_info{ all_song_info }
+CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent /*=NULL*/, bool read_only)
+    : CDialog(IDD_PROPERTY_DIALOG, pParent), m_all_song_info{ all_song_info }, m_read_only{ read_only }
 {
     m_song_num = all_song_info.size();
 }
@@ -146,7 +146,8 @@ void CPropertyDlg::SetWreteEnable()
 	//目前暂时只支持MP3的ID3V1标签写入
 	CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
 	m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && file_path.GetFileExtension() == L"mp3" && m_all_song_info[m_index].tag_type != 2);
-	SetEditReadOnly(!m_write_enable);
+    m_write_enable &= !m_read_only;
+    SetEditReadOnly(!m_write_enable);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 	if (m_write_enable)
 		m_year_edit.SetLimitText(4);
