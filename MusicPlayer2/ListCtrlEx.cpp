@@ -9,9 +9,6 @@ CListCtrlEx::CListCtrlEx()
 	: m_theme_color(theApp.m_app_setting_data.theme_color)
 {
 	
-	//初始化颜色
-	//m_theme_color.original_color = GRAY(180);
-	//CColorConvert::ConvertColor(m_theme_color);
     m_drag_cursor = AfxGetApp()->LoadCursor(IDC_DRAG_CURSOR);
 }
 
@@ -251,7 +248,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			SetItemState(nmcd.dwItemSpec, 0xFF, LVIS_SELECTED);
         //用背景色填充单元格左侧的空白区域
         CRect rect = nmcd.rc;
-        rect.right = rect.left + theApp.DPI(4);
+        rect.right = rect.left + 5;
         CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
         pDC->FillSolidRect(rect, lplvdr->clrTextBk);
         //*pResult = CDRF_DODEFAULT;

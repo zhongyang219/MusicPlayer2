@@ -1107,26 +1107,29 @@
     <Image Include="res\heart.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\edit_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\add_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\about.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\album_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\artist_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\year_d.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\edit_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\explorer_folder.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\folder_explore_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\year_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\about.bmp">
+      <Filter>资源文件\其他</Filter>
     </Image>
   </ItemGroup>
 </Project>

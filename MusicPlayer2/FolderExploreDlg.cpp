@@ -261,7 +261,7 @@ BOOL CFolderExploreDlg::OnInitDialog()
     //为树控件设置图标
     CImageList image_list;
     image_list.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    image_list.Add(ExtractIcon(AfxGetApp()->m_hInstance, L"shell32.dll", 3));
+    image_list.Add(CDrawCommon::LoadIconResource(IDI_EXPLORE_FOLDER, theApp.DPI(16), theApp.DPI(16)));
     m_folder_explore_tree.SetImageList(&image_list, TVSIL_NORMAL);
     image_list.Detach();
 
