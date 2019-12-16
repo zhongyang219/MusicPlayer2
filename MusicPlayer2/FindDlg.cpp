@@ -148,10 +148,15 @@ BEGIN_MESSAGE_MAP(CFindDlg, CDialog)
 	ON_BN_CLICKED(IDC_FIND_ALL_PLAYLIST_RADIO, &CFindDlg::OnBnClickedFindAllPlaylistRadio)
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
-	ON_COMMAND(ID_FD_PLAY, &CFindDlg::OnFdPlay)
-	ON_COMMAND(ID_FD_OPEN_FILE_LOCATION, &CFindDlg::OnFdOpenFileLocation)
+	ON_COMMAND(ID_PLAY_ITEM, &CFindDlg::OnPlayItem)
+	ON_COMMAND(ID_EXPLORE_TRACK, &CFindDlg::OnExploreTrack)
 	ON_NOTIFY(NM_RCLICK, IDC_FIND_LIST, &CFindDlg::OnNMRClickFindList)
-	ON_COMMAND(ID_FD_COPY_TEXT, &CFindDlg::OnFdCopyText)
+	ON_COMMAND(ID_COPY_TEXT, &CFindDlg::OnCopyText)
+    ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CFindDlg::OnPlayItemInFolderMode)
+    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CFindDlg::OnAddToNewPlaylist)
+    ON_COMMAND(ID_EXPLORE_ONLINE, &CFindDlg::OnExploreOnline)
+    ON_COMMAND(ID_FORMAT_CONVERT, &CFindDlg::OnFormatConvert)
+    ON_COMMAND(ID_ITEM_PROPERTY, &CFindDlg::OnItemProperty)
 END_MESSAGE_MAP()
 
 
@@ -322,9 +327,9 @@ BOOL CFindDlg::OnInitDialog()
 	m_min_height = rect.Height();
 
 	//初始化右键菜单
-	if (m_menu.m_hMenu == NULL)
-		m_menu.LoadMenu(IDR_FIND_POPUP_MENU);
-	m_menu.GetSubMenu(0)->SetDefaultItem(ID_FD_PLAY);
+	//if (m_menu.m_hMenu == NULL)
+	//	m_menu.LoadMenu(IDR_FIND_POPUP_MENU);
+	//m_menu.GetSubMenu(0)->SetDefaultItem(ID_FD_PLAY);
 
 	GetDlgItem(IDOK)->EnableWindow(FALSE);	//禁用“播放选中曲目”按钮，除非选中了一个项目
 
@@ -341,7 +346,7 @@ void CFindDlg::OnNMDblclkFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 
 	//双击列表项目后关闭对话框并播放选中项目
-	OnFdPlay();
+	OnPlayItem();
 	*pResult = 0;
 }
 
@@ -441,7 +446,7 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 }
 
 
-void CFindDlg::OnFdPlay()
+void CFindDlg::OnPlayItem()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_find_current_playlist)
@@ -457,7 +462,7 @@ void CFindDlg::OnFdPlay()
 }
 
 
-void CFindDlg::OnFdOpenFileLocation()
+void CFindDlg::OnExploreTrack()
 {
 	// TODO: 在此添加命令处理程序代码
 	wstring file;
@@ -496,7 +501,7 @@ void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 		sub_item = pNMItemActivate->iSubItem;
 		m_selected_string = m_find_result_list.GetItemText(m_item_selected, sub_item);
 		//弹出右键菜单
-		CMenu* pContextMenu = m_menu.GetSubMenu(0);	//获取第一个弹出菜单
+		CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
         m_find_result_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     }
 
@@ -504,9 +509,39 @@ void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CFindDlg::OnFdCopyText()
+void CFindDlg::OnCopyText()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
 		MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
+}
+
+
+void CFindDlg::OnPlayItemInFolderMode()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFindDlg::OnAddToNewPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFindDlg::OnExploreOnline()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFindDlg::OnFormatConvert()
+{
+    // TODO: 在此添加命令处理程序代码
+}
+
+
+void CFindDlg::OnItemProperty()
+{
+    // TODO: 在此添加命令处理程序代码
 }

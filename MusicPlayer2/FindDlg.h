@@ -38,7 +38,7 @@ protected:
 
 	CListCtrlEx m_find_result_list;		//查找结果控件
 	int m_item_selected{ -1 };		//鼠标选中的项目序号
-	CMenu m_menu;
+	//CMenu m_menu;
 
 	//int m_dpi;
 
@@ -83,8 +83,13 @@ public:
 	afx_msg void OnBnClickedFindAllPlaylistRadio();
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnFdPlay();
-	afx_msg void OnFdOpenFileLocation();
+	afx_msg void OnPlayItem();
+	afx_msg void OnExploreTrack();
 	afx_msg void OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnFdCopyText();
+	afx_msg void OnCopyText();
+    afx_msg void OnPlayItemInFolderMode();
+    afx_msg void OnAddToNewPlaylist();
+    afx_msg void OnExploreOnline();
+    afx_msg void OnFormatConvert();
+    afx_msg void OnItemProperty();
 };

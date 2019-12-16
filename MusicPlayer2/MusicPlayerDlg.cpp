@@ -1786,7 +1786,7 @@ void CMusicPlayerDlg::OnFind()
             }
             if (!selected_song_path.empty())
             {
-                CPlayer::GetInstance().OpenAFile(selected_song_path);
+                CPlayer::GetInstance().OpenFiles(vector<wstring>{ selected_song_path });
                 SwitchTrack();
                 UpdatePlayPauseButton();
             }
