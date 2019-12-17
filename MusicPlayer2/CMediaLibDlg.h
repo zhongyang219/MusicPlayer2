@@ -29,6 +29,9 @@ public:
     CFolderExploreDlg m_folder_explore_dlg;
 
 protected:
+    void SaveConfig() const;
+    void LoadConfig();
+
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
@@ -37,6 +40,7 @@ private:
     CTabCtrlEx m_tab_ctrl;
     CSize m_min_size{};
     int m_init_tab{};
+    CSize m_window_size{};
 
 public:
     virtual BOOL OnInitDialog();
@@ -49,4 +53,5 @@ public:
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     virtual void OnOK();
     afx_msg void OnBnClickedMediaLibSettingsBtn();
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };

@@ -145,13 +145,14 @@ void CMediaClassifier::ClassifyMedia()
             m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }
 
-    //“唱片集”类别中，默认按音轨序号排序
-    if (m_type == CT_ALBUM)
+    for (auto& item : m_media_list)
     {
-        for (auto& item : m_media_list)
+        if (item.first != STR_OTHER_CLASSIFY_TYPE)
         {
-            if (item.first != STR_OTHER_CLASSIFY_TYPE)
+            if (m_type == CT_ALBUM)    //“唱片集”类别中，默认按音轨序号排序
                 std::sort(item.second.begin(), item.second.end(), [](const SongInfo& a, const SongInfo& b) {return a.track < b.track; });
+            else    //其他类别默认按文件路径排序
+                std::sort(item.second.begin(), item.second.end(), [](const SongInfo& a, const SongInfo& b) {return a.file_path < b.file_path; });
         }
     }
 }

@@ -14,11 +14,26 @@ IMPLEMENT_DYNAMIC(CMediaLibDlg, CDialog)
 CMediaLibDlg::CMediaLibDlg(int cur_tab, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_MEDIA_LIB_DIALOG, pParent), m_init_tab(cur_tab)
 {
-
 }
 
 CMediaLibDlg::~CMediaLibDlg()
 {
+    SaveConfig();
+}
+
+void CMediaLibDlg::SaveConfig() const
+{
+    CIniHelper ini{ theApp.m_config_path };
+    ini.WriteInt(L"media_lib", L"width", m_window_size.cx);
+    ini.WriteInt(L"media_lib", L"height", m_window_size.cy);
+    ini.Save();
+}
+
+void CMediaLibDlg::LoadConfig()
+{
+    CIniHelper ini{ theApp.m_config_path };
+    m_window_size.cx = ini.GetInt(L"media_lib", L"width", -1);
+    m_window_size.cy = ini.GetInt(L"media_lib", L"height", -1);
 }
 
 void CMediaLibDlg::DoDataExchange(CDataExchange* pDX)
@@ -34,6 +49,7 @@ BEGIN_MESSAGE_MAP(CMediaLibDlg, CDialog)
     ON_MESSAGE(WM_PLAY_SELECTED_BTN_ENABLE, &CMediaLibDlg::OnPlaySelectedBtnEnable)
     ON_WM_ERASEBKGND()
     ON_BN_CLICKED(IDC_MEDIA_LIB_SETTINGS_BTN, &CMediaLibDlg::OnBnClickedMediaLibSettingsBtn)
+    ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -54,7 +70,6 @@ BOOL CMediaLibDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    CenterWindow();
     ModifyStyle(0, WS_CLIPCHILDREN);
 
     SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), FALSE);		// 设置小图标
@@ -101,6 +116,13 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_min_size.cy = rect.Height();
 
     OnPlaySelectedBtnEnable(0, 0);
+
+    LoadConfig();
+    if (m_window_size.cx > 0 && m_window_size.cy > 0)
+    {
+        SetWindowPos(nullptr, 0, 0, m_window_size.cx, m_window_size.cy, SWP_NOMOVE | SWP_NOZORDER);
+    }
+    CenterWindow(GetDesktopWindow());
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -176,4 +198,18 @@ void CMediaLibDlg::OnBnClickedMediaLibSettingsBtn()
 {
     // TODO: 在此添加控件通知处理程序代码
     theApp.m_pMainWnd->SendMessage(WM_OPTION_SETTINGS, 4, LPARAM(this));
+}
+
+
+void CMediaLibDlg::OnSize(UINT nType, int cx, int cy)
+{
+    CDialog::OnSize(nType, cx, cy);
+
+    // TODO: 在此处添加消息处理程序代码
+    if (nType != SIZE_MINIMIZED && nType != SIZE_MAXIMIZED)
+    {
+        CRect rect;
+        GetWindowRect(&rect);
+        m_window_size = rect.Size();
+    }
 }
