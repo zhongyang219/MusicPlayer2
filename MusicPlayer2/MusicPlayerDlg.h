@@ -75,7 +75,7 @@ protected:
     THUMBBUTTON m_thumbButton[3] {};
 #endif
 
-    CFindDlg m_findDlg{ CPlayer::GetInstance().GetPlayList() };		//查找对话框
+    CFindDlg m_findDlg;		//查找对话框
 
     wstring m_cmdLine;	//命令行参数
 

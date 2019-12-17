@@ -1748,7 +1748,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
         //SetPorgressBarSize();
         //ShowTime();
         DrawInfo(true);
-        m_findDlg.ClearFindResult();		//更换路径后清除查找结果
+        //m_findDlg.ClearFindResult();		//更换路径后清除查找结果
         CPlayer::GetInstance().SaveRecentPath();
         m_play_error_cnt = 0;
         SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个文件夹播放后，500毫秒内不响应WM_LBUTTONUP消息
@@ -1763,7 +1763,7 @@ void CMusicPlayerDlg::OnFind()
     // TODO: 在此添加命令处理程序代码
     if (m_findDlg.DoModal() == IDOK)
     {
-        if (m_findDlg.GetFindCurrentPlaylist())
+        if (m_findDlg.IsFindCurrentPlaylist())
         {
             SwitchTrack();
             UpdatePlayPauseButton();
@@ -2944,14 +2944,14 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 
     SetPlaylistDragEnable();
 
-    static int last_play_mode = -1;
-    int play_mode = CPlayer::GetInstance().IsPlaylistMode();
-    if (last_play_mode != play_mode)
-    {
-        //在文件夹模式和播放列表模式间切换时
-        m_findDlg.ClearFindResult();
-        last_play_mode = play_mode;
-    }
+    //static int last_play_mode = -1;
+    //int play_mode = CPlayer::GetInstance().IsPlaylistMode();
+    //if (last_play_mode != play_mode)
+    //{
+    //    //在文件夹模式和播放列表模式间切换时
+    //    m_findDlg.ClearFindResult();
+    //    last_play_mode = play_mode;
+    //}
 
     return 0;
 }
@@ -3846,7 +3846,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
         //SetPorgressBarSize();
         //ShowTime();
         DrawInfo(true);
-        m_findDlg.ClearFindResult();		//更换路径后清除查找结果
+        //m_findDlg.ClearFindResult();		//更换路径后清除查找结果
         CPlayer::GetInstance().SaveRecentPath();
         IniPlaylistPopupMenu();
         m_play_error_cnt = 0;

@@ -13,14 +13,14 @@ class CFindDlg : public CDialog
 	DECLARE_DYNAMIC(CFindDlg)
 
 public:
-	CFindDlg(const vector<SongInfo>& playlist, CWnd* pParent = NULL);   // 标准构造函数
+	CFindDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CFindDlg();
 
 	//wstring m_config_path;
 
-	int GetSelectedTrack() const;
-	bool GetFindCurrentPlaylist() const;
-	void GetSelectedSongPath(vector<wstring>& files) const;
+	//int GetSelectedTrack() const;
+	bool IsFindCurrentPlaylist() const;
+	void GetSongsSelected(vector<wstring>& files) const;
 	void GetSongsSelected(vector<SongInfo>& files) const;
 	void SaveConfig();
 	void LoadConfig();
@@ -41,10 +41,10 @@ protected:
         COL_PATH,
     };
 
-	const vector<SongInfo>& m_playlist;		//播放列表
-	vector<int> m_find_result;			//储存当前播放列表的查找结果（曲目序号）
+	//const vector<SongInfo>& m_playlist;		//播放列表
+	//vector<int> m_find_result;			//储存当前播放列表的查找结果（曲目序号）
 	wstring m_key_word;				//查找的字符串
-	vector<wstring> m_all_find_result;		//储存所有播放列表的查找结果（文件绝对路径）
+	vector<SongInfo> m_find_result;		//储存所有播放列表的查找结果
 
 	CListCtrlEx m_find_result_list;		//查找结果控件
 	int m_item_selected{ -1 };		//鼠标选中的项目序号
@@ -59,6 +59,7 @@ protected:
 	CButton m_find_album_check;
 
 	bool m_find_current_playlist{ true };		//如果查找范围为当前播放列表，则为true，如果是所有播放列表，则为false
+    bool m_result_in_current_playlist{ true };  //查找结果是否为当前播放列表
 	bool m_find_file{ true };
 	bool m_find_title{ true };
 	bool m_find_artist{ true };
@@ -110,4 +111,6 @@ public:
     virtual void OnOK();
     afx_msg void OnAddToNewPalylistAndPlay();
 private:
+public:
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };

@@ -90,6 +90,8 @@ public:
         return m_dpi;
     }
 
+    SongInfo GetSongInfo(wstring& file_path);
+
     WORD GetCurrentLanguage() const;
     bool IsGlobalMultimediaKeyEnabled() const;
 

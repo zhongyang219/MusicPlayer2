@@ -573,6 +573,16 @@ void CMusicPlayerApp::GetDPIFromWindow(CWnd * pWnd)
     m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 }
 
+SongInfo CMusicPlayerApp::GetSongInfo(wstring& file_path)
+{
+    SongInfo song;
+    auto iter = m_song_data.find(file_path);
+    if (iter != m_song_data.end())
+        song = iter->second;
+    song.file_path = file_path;
+    return song;
+}
+
 WORD CMusicPlayerApp::GetCurrentLanguage() const
 {
     switch (m_general_setting_data.language)
