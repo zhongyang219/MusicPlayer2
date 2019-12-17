@@ -1827,11 +1827,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             //	OnMenuExit();
             //	return TRUE;
             //}
-            if (pMsg->wParam == 'R')		//设置按Ctr+R打开录音机
-            {
-                OnRecorder();
-                return TRUE;
-            }
+            //if (pMsg->wParam == 'R')		//设置按Ctr+R打开录音机
+            //{
+            //    OnRecorder();
+            //    return TRUE;
+            //}
             if (pMsg->wParam == 'M')		//设置按Ctr+M进入迷你模式
             {
                 OnMiniMode();
@@ -1904,10 +1904,7 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 #ifdef _DEBUG
 				if (pMsg->wParam == 'Z')
 				{
-                    //vector<wstring> files;
-                    //files.push_back(L"D:\\Music\\纯音乐\\[.que] - Decide.mp3");
-                    //files.push_back(L"D:\\Music\\小冰\\小冰 - 24小时之歌.mp3");
-                    //CPlayer::GetInstance().OpenFiles(files, false);
+                    CTest::Test();
                 }
 #endif
             }

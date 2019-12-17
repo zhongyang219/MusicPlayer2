@@ -52,7 +52,7 @@ protected:
 protected:
 	CToolTipCtrl m_tool_tip;		//文本提示类
     std::vector<ToolBtn> m_buttons;
-    ColorTable& m_theme_color;
+    const ColorTable& m_theme_color;
     int m_icon_size = 20;
     int m_cur_btn_id = 100;
     bool m_first_draw = true;

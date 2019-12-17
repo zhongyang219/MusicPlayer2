@@ -34,7 +34,7 @@ public:
     void SetListData(const ListData& list_data);
 
 protected:
-	ColorTable& m_theme_color;
+	const ColorTable& m_theme_color;
 	COLORREF m_background_color{ GRAY(255) };	//列表控件的背景色
 	int m_highlight_item{ -1 };			//高亮的项目
     bool m_drag_enable{ false };

@@ -37,7 +37,7 @@ public:
 
 protected:
     static std::map<CString, bool> m_expand_state;       //保存每个节点的展开收起状态
-    ColorTable& m_theme_color;
+    const ColorTable& m_theme_color;
 
 private:
     void _InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show = [](const CString&) {return true; });

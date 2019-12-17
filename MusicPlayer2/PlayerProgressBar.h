@@ -17,7 +17,7 @@ public:
 
 protected:
     int m_progress;       //当前进度（百分比）
-    ColorTable& m_theme_color;
+    const ColorTable& m_theme_color;
     COLORREF m_back_color{ RGB(255, 255, 255) };
     int m_bar_count{ 10 };
 
