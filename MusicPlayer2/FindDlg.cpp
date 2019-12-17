@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
+#include "Playlist.h"
 
 
 // CFindDlg 对话框
@@ -504,16 +505,7 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 void CFindDlg::OnPlayItem()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_find_current_playlist)
-	{
-		if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
-			OnOK();
-	}
-	else
-	{
-		if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
-			OnOK();
-	}
+    OnOK();
 }
 
 
@@ -522,12 +514,12 @@ void CFindDlg::OnExploreTrack()
 	// TODO: 在此添加命令处理程序代码
 	wstring file;
 	if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
-		file = m_find_result[m_item_selected].file_path;
-	else
-		return;
-	CString str;
-	str.Format(_T("/select,\"%s\""), file.c_str());
-	ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
+    {
+        file = m_find_result[m_item_selected].file_path;
+	    CString str;
+	    str.Format(_T("/select,\"%s\""), file.c_str());
+	    ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
+    }
 }
 
 
@@ -670,4 +662,57 @@ void CFindDlg::OnInitMenu(CMenu* pMenu)
 
     // TODO: 在此处添加消息处理程序代码
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
+}
+
+
+BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    WORD command = LOWORD(wParam);
+    //响应播放列表右键菜单中的“添加到播放列表”
+    if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
+    {
+        //获取选中的曲目的路径
+        std::vector<SongInfo> selected_item_path;
+        GetSongsSelected(selected_item_path);
+        if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
+        {
+            std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
+            CPlaylist playlist;
+            playlist.LoadFromFile(default_playlist_path);
+            playlist.AddFiles(selected_item_path);
+            playlist.SaveToFile(default_playlist_path);
+
+        }
+        else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
+        {
+            std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
+            CPlaylist playlist;
+            playlist.LoadFromFile(favourite_playlist_path);
+            playlist.AddFiles(selected_item_path);
+            playlist.SaveToFile(favourite_playlist_path);
+        }
+        else        //添加到选中的播放列表
+        {
+            CString menu_string;
+            theApp.m_menu_set.m_list_popup_menu.GetMenuString(command, menu_string, 0);
+            if (!menu_string.IsEmpty())
+            {
+                wstring playlist_path = theApp.m_playlist_dir + menu_string.GetString() + PLAYLIST_EXTENSION;
+                if (CCommon::FileExist(playlist_path))
+                {
+                    CPlaylist playlist;
+                    playlist.LoadFromFile(playlist_path);
+                    playlist.AddFiles(selected_item_path);
+                    playlist.SaveToFile(playlist_path);
+                }
+                else
+                {
+                    MessageBox(CCommon::LoadText(IDS_ADD_TO_PLAYLIST_FAILED_WARNING), NULL, MB_ICONWARNING | MB_OK);
+                }
+            }
+        }
+    }
+
+    return CDialog::OnCommand(wParam, lParam);
 }
