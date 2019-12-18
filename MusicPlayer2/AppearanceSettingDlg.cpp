@@ -49,6 +49,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_DARK_MODE_CHECK, m_dark_mode_chk);
     DDX_Control(pDX, IDC_USE_INNER_IMAGE_FIRST_CHECK, m_use_inner_image_first_chk);
     DDX_Control(pDX, IDC_ENABLE_BACKGROUND_CHECK, m_enable_background_chk);
+    DDX_Control(pDX, IDC_LOW_FREQ_IN_CENTER_CHECK, m_low_freq_in_center_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -134,6 +135,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_DARK_MODE_CHECK, &CAppearanceSettingDlg::OnBnClickedDarkModeCheck)
 	ON_BN_CLICKED(IDC_USE_INNER_IMAGE_FIRST_CHECK, &CAppearanceSettingDlg::OnBnClickedUseInnerImageFirstCheck)
     ON_BN_CLICKED(IDC_ENABLE_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedEnableBackgroundCheck)
+    ON_BN_CLICKED(IDC_LOW_FREQ_IN_CENTER_CHECK, &CAppearanceSettingDlg::OnBnClickedLowFreqInCenterCheck)
 END_MESSAGE_MAP()
 
 
@@ -233,6 +235,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_lyric_background_chk.SetCheck(m_data.lyric_background);
 	m_dark_mode_chk.SetCheck(m_data.dark_mode);
 	m_use_inner_image_first_chk.SetCheck(m_data.use_inner_image_first);
+    m_low_freq_in_center_chk.SetCheck(m_data.spectrum_low_freq_in_center);
 
 	SetControlEnable();
 
@@ -583,4 +586,11 @@ void CAppearanceSettingDlg::OnBnClickedEnableBackgroundCheck()
     // TODO: 在此添加控件通知处理程序代码
     m_data.enable_background = (m_enable_background_chk.GetCheck() != 0);
     SetControlEnable();
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedLowFreqInCenterCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.spectrum_low_freq_in_center = (m_low_freq_in_center_chk.GetCheck() != 0);
 }
