@@ -253,6 +253,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"spectrum_height", theApp.m_app_setting_data.sprctrum_height);
     ini.WriteBool(L"config", L"cortana_lyric_double_line", theApp.m_lyric_setting_data.cortana_lyric_double_line);
     ini.WriteBool(L"config", L"show_spectrum", theApp.m_app_setting_data.show_spectrum);
+    ini.WriteBool(L"config", L"spectrum_low_freq_in_center", theApp.m_app_setting_data.spectrum_low_freq_in_center);
     ini.WriteBool(L"config", L"show_album_cover", theApp.m_app_setting_data.show_album_cover);
     ini.WriteInt(L"config", L"album_cover_fit", static_cast<int>(theApp.m_app_setting_data.album_cover_fit));
     ini.WriteBool(L"config", L"enable_background", theApp.m_app_setting_data.enable_background);
@@ -375,6 +376,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 80);
     theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(L"config", L"cortana_lyric_double_line", true);
     theApp.m_app_setting_data.show_spectrum = ini.GetBool(L"config", L"show_spectrum", 1);
+    theApp.m_app_setting_data.spectrum_low_freq_in_center = ini.GetBool(L"config", L"spectrum_low_freq_in_center", false);
     theApp.m_app_setting_data.show_album_cover = ini.GetBool(L"config", L"show_album_cover", 1);
     theApp.m_app_setting_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(ini.GetInt(L"config", L"album_cover_fit", 1));
     theApp.m_app_setting_data.enable_background = ini.GetBool(L"config", L"enable_background", true);

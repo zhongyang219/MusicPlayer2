@@ -241,7 +241,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line)
     }
 }
 
-void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/)
+void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center)
 {
     int cols;		//要显示的频谱柱形的数量
     switch (col)
@@ -269,10 +269,10 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
         gap_width = 1;
     int width = (rect.Width() - (cols - 1) * gap_width) / (cols - 1);
 
-    DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex);
+    DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex, low_freq_in_center);
 }
 
-void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex /*= false*/)
+void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex /*= false*/, bool low_freq_in_center)
 {
     CRect rc_spectrum_top = rect;
     if (draw_reflex)     //如果要绘制倒影，则倒影占总高度的1/3
@@ -289,8 +289,24 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
     }
     for (int i{}; i < cols; i++)
     {
-        float spetral_data = CPlayer::GetInstance().GetSpectralData()[i * (SPECTRUM_COL / cols)];
-        float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[i * (SPECTRUM_COL / cols)];
+        int index;
+        if (low_freq_in_center)
+        {
+            if (i < cols / 2)
+                index = (-i + cols / 2) * 2 - 1;
+            else
+                index = (i - cols / 2) * 2;
+        }
+        else
+        {
+            index = i;
+        }
+        if (index >= cols)
+            index = cols;
+        if (index < 0)
+            index = 0;
+        float spetral_data = CPlayer::GetInstance().GetSpectralData()[index * (SPECTRUM_COL / cols)];
+        float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[index * (SPECTRUM_COL / cols)];
 
         CRect rect_tmp{ rects[i] };
         int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);

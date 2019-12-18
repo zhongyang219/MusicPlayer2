@@ -193,6 +193,7 @@ struct ApperanceSettingData
     bool album_cover_as_background{ false };	//将专辑封面作为背景
     bool show_spectrum{ true };					//显示频谱分析
     int sprctrum_height{ 100 };					//频谱分析高度比例（%）
+    bool spectrum_low_freq_in_center{ false };  //频谱分析低频部分显示在中间
     int background_transparency{ 80 };			//背景的透明度
     bool use_out_image{ true };					//使用外部图片作为专辑封面
     bool use_inner_image_first{ true };			//优先使用内嵌专辑封面

@@ -291,7 +291,7 @@ void CCortanaLyric::DrawSpectrum()
 
     m_draw.SetDrawArea(rc_spectrum);
     rc_spectrum.right += theApp.DPI(8);
-    m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, false);
+    m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
     m_draw.SetDrawArea(m_cortana_rect);
 }
 

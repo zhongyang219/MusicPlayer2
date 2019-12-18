@@ -139,7 +139,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
                     rc_spectrum.bottom = rc_spectrum.top + max_height;
                 }
 
-                m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, true);
+                m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, true, theApp.m_app_setting_data.spectrum_low_freq_in_center);
             }
         }
         else
@@ -279,7 +279,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
                 color = m_colors.color_spectrum_cover;
             else
                 color = m_colors.color_spectrum;
-            m_draw.DrawSpectrum(rc_tmp, width, gap_width, ROWS, color);
+            m_draw.DrawSpectrum(rc_tmp, width, gap_width, ROWS, color, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
         }
 
         //ªÊ÷∆”“…œΩ«Õº±Í
