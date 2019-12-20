@@ -219,6 +219,9 @@ BOOL CPropertyDlg::OnInitDialog()
 	ShowInfo();
 	m_genre_combo.SetEditReadOnly();
 
+    if (m_read_only)
+        m_save_button.ShowWindow(SW_HIDE);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
