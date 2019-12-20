@@ -25,14 +25,14 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_CLASSIFY_OTHER_CHECK, m_classify_other_chk);
-    DDX_Control(pDX, IDC_SHOW_TREE_TOOL_TIPS_CHECK, m_show_tree_tool_tips_chk);
+    //DDX_Control(pDX, IDC_SHOW_TREE_TOOL_TIPS_CHECK, m_show_tree_tool_tips_chk);
     DDX_Control(pDX, IDC_DIR_LIST, m_dir_list_ctrl);
 }
 
 
 BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_CLASSIFY_OTHER_CHECK, &CMediaLibSettingDlg::OnBnClickedClassifyOtherCheck)
-    ON_BN_CLICKED(IDC_SHOW_TREE_TOOL_TIPS_CHECK, &CMediaLibSettingDlg::OnBnClickedShowTreeToolTipsCheck)
+    //ON_BN_CLICKED(IDC_SHOW_TREE_TOOL_TIPS_CHECK, &CMediaLibSettingDlg::OnBnClickedShowTreeToolTipsCheck)
     ON_BN_CLICKED(IDC_ADD_BUTTON, &CMediaLibSettingDlg::OnBnClickedAddButton)
     ON_BN_CLICKED(IDC_DELETE_BUTTON, &CMediaLibSettingDlg::OnBnClickedDeleteButton)
 END_MESSAGE_MAP()
@@ -47,7 +47,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     m_classify_other_chk.SetCheck(m_data.hide_only_one_classification);
-    m_show_tree_tool_tips_chk.SetCheck(m_data.show_tree_tool_tips);
+    //m_show_tree_tool_tips_chk.SetCheck(m_data.show_tree_tool_tips);
 
     for (const auto& str : m_data.media_folders)
         m_dir_list_ctrl.AddString(str.c_str());
@@ -64,11 +64,11 @@ void CMediaLibSettingDlg::OnBnClickedClassifyOtherCheck()
 }
 
 
-void CMediaLibSettingDlg::OnBnClickedShowTreeToolTipsCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.show_tree_tool_tips = (m_show_tree_tool_tips_chk.GetCheck() != 0);
-}
+//void CMediaLibSettingDlg::OnBnClickedShowTreeToolTipsCheck()
+//{
+//    // TODO: 在此添加控件通知处理程序代码
+//    m_data.show_tree_tool_tips = (m_show_tree_tool_tips_chk.GetCheck() != 0);
+//}
 
 
 void CMediaLibSettingDlg::OnBnClickedAddButton()

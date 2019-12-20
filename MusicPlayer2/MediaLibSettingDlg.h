@@ -22,7 +22,7 @@ public:
 
 private:
     CButton m_classify_other_chk;
-    CButton m_show_tree_tool_tips_chk;
+    //CButton m_show_tree_tool_tips_chk;
     CListBoxEnhanced m_dir_list_ctrl;
 
 protected:
@@ -32,7 +32,7 @@ protected:
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnBnClickedClassifyOtherCheck();
-    afx_msg void OnBnClickedShowTreeToolTipsCheck();
+    //afx_msg void OnBnClickedShowTreeToolTipsCheck();
     afx_msg void OnBnClickedAddButton();
     afx_msg void OnBnClickedDeleteButton();
 };
