@@ -1122,10 +1122,11 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
+            //将ID_ADD_TO_MY_FAVOURITE后面的所有菜单项删除
             int start_pos = CCommon::GetMenuItemPosition(pMenu, ID_ADD_TO_MY_FAVOURITE) + 1;
-            for (int i = start_pos; i < ADD_TO_PLAYLIST_MAX_SIZE + start_pos + 2; i++)
+            while (pMenu->GetMenuItemCount() > start_pos)
             {
-                pMenu->DeleteMenu(i, MF_BYPOSITION);
+                pMenu->DeleteMenu(start_pos, MF_BYPOSITION);
             }
 
             auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };

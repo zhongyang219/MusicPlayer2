@@ -273,6 +273,9 @@
     <Filter Include="对话框类\选项设置对话框\MediaLibSettingDlg">
       <UniqueIdentifier>{2c8a5028-904f-47e3-a143-234bf75e2a6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\AddToPlaylistDlg">
+      <UniqueIdentifier>{a50ebbf3-3c62-4e69-8292-c4af838bbacd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -614,7 +617,7 @@
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClInclude>
     <ClInclude Include="AddToPlaylistDlg.h">
-      <Filter>头文件</Filter>
+      <Filter>对话框类\AddToPlaylistDlg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -924,7 +927,9 @@
     <ClCompile Include="MediaLibSettingDlg.cpp">
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClCompile>
-    <ClCompile Include="AddToPlaylistDlg.cpp" />
+    <ClCompile Include="AddToPlaylistDlg.cpp">
+      <Filter>对话框类\AddToPlaylistDlg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
