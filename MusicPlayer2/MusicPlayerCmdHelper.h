@@ -17,6 +17,8 @@ public:
     //default_name：新播放列表的默认名称
     bool OnAddToNewPlaylist(std::function<void(std::vector<SongInfo>&)> get_song_list, std::wstring& playlist_path, const std::wstring& default_name = L"");
 
+    void OnAddToPlaylistCommand(std::function<void(std::vector<SongInfo>&)> get_song_list, DWORD command);
+
 private:
     CWnd* GetOwner();
 

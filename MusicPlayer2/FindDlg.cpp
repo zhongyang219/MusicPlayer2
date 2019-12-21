@@ -8,6 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "Playlist.h"
+#include "AddToPlaylistDlg.h"
 
 
 // CFindDlg 对话框
@@ -669,50 +670,13 @@ BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
-    //响应播放列表右键菜单中的“添加到播放列表”
-    if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
+    auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
     {
-        //获取选中的曲目的路径
-        std::vector<SongInfo> selected_item_path;
-        GetSongsSelected(selected_item_path);
-        if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
-        {
-            std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
-            CPlaylist playlist;
-            playlist.LoadFromFile(default_playlist_path);
-            playlist.AddFiles(selected_item_path);
-            playlist.SaveToFile(default_playlist_path);
-
-        }
-        else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
-        {
-            std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
-            CPlaylist playlist;
-            playlist.LoadFromFile(favourite_playlist_path);
-            playlist.AddFiles(selected_item_path);
-            playlist.SaveToFile(favourite_playlist_path);
-        }
-        else        //添加到选中的播放列表
-        {
-            CString menu_string;
-            theApp.m_menu_set.m_list_popup_menu.GetMenuString(command, menu_string, 0);
-            if (!menu_string.IsEmpty())
-            {
-                wstring playlist_path = theApp.m_playlist_dir + menu_string.GetString() + PLAYLIST_EXTENSION;
-                if (CCommon::FileExist(playlist_path))
-                {
-                    CPlaylist playlist;
-                    playlist.LoadFromFile(playlist_path);
-                    playlist.AddFiles(selected_item_path);
-                    playlist.SaveToFile(playlist_path);
-                }
-                else
-                {
-                    MessageBox(CCommon::LoadText(IDS_ADD_TO_PLAYLIST_FAILED_WARNING), NULL, MB_ICONWARNING | MB_OK);
-                }
-            }
-        }
-    }
+        GetSongsSelected(item_list);
+    };
+    //响应播放列表右键菜单中的“添加到播放列表”
+    CMusicPlayerCmdHelper cmd_helper;
+    cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
     return CDialog::OnCommand(wParam, lParam);
 }

@@ -472,6 +472,7 @@
 #define IDD_MEDIA_LIB_SETTING_DIALOG    424
 #define IDS_DEFAULT_STYLE               425
 #define IDS_MODIFY_DEFAULT_STYLE_WARNING 426
+#define IDD_ADD_TO_PLAYLIST_DIALOG      426
 #define IDS_RESTORE_DEFAULT_STYTLE_WARNING 427
 #define IDS_URL_INVALID_WARNING         428
 #define IDS_PROGRESS_INFO               429
@@ -489,6 +490,7 @@
 #define IDS_FOLDER_EXPLORE              441
 #define IDS_SEARCH_FORDER               442
 #define IDS_BTN_SETTINGS                443
+#define IDS_MORE_PLAYLIST               444
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1065,7 +1067,7 @@
 #define ID_ADD_TO_MY_FAVOURITE          33052
 #define ID_FILE_RELATE                  33095
 #define ID_TOOL_FILE_RELATE             33096
-#define ID_33097                        33097
+#define ID_ADD_TO_OTHER_PLAYLIST        33097
 #define ID_33098                        33098
 #define ID_MENU_ADD                     33099
 #define ID_MENU_DELETE                  33100
@@ -1122,7 +1124,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        426
+#define _APS_NEXT_RESOURCE_VALUE        428
 #define _APS_NEXT_COMMAND_VALUE         33149
 #define _APS_NEXT_CONTROL_VALUE         1163
 #define _APS_NEXT_SYMED_VALUE           101

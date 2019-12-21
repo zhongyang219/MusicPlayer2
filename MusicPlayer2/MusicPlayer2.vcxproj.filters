@@ -613,6 +613,9 @@
     <ClInclude Include="MediaLibSettingDlg.h">
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClInclude>
+    <ClInclude Include="AddToPlaylistDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -921,6 +924,7 @@
     <ClCompile Include="MediaLibSettingDlg.cpp">
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClCompile>
+    <ClCompile Include="AddToPlaylistDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
