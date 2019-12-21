@@ -1085,6 +1085,21 @@ bool CCommon::IsMenuItemInMenu(CMenu* pMenu, UINT id)
 	return false;
 }
 
+int CCommon::GetMenuItemPosition(CMenu* pMenu, UINT id)
+{
+    int pos = -1;
+    int item_count = pMenu->GetMenuItemCount();
+    for (int i = 0; i < item_count; i++)
+    {
+        if (pMenu->GetMenuItemID(i) == id)
+        {
+            pos = i;
+            break;
+        }
+    }
+    return pos;
+}
+
 CString CCommon::LoadText(UINT id, LPCTSTR back_str)
 {
 	CString str;
