@@ -34,7 +34,7 @@ int CListBoxEnhanced::CalculateColumnWidth()
 {
     CRect rect;
     GetWindowRect(rect);
-    return rect.Width() - theApp.DPI(20) - 1;
+    return rect.Width() - theApp.DPI(20);
 }
 
 BEGIN_MESSAGE_MAP(CListBoxEnhanced, CListCtrlEx)
