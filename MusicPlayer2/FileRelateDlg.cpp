@@ -103,6 +103,7 @@ BOOL CFileRelateDlg::OnInitDialog()
     RefreshList();
 
     m_list_ctrl.SetRowHeight(theApp.DPI(22));
+    m_list_ctrl.SetFillLeftSpace(false);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

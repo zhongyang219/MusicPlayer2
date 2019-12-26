@@ -146,6 +146,11 @@ void CListCtrlEx::ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd)
     pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pWnd); //在指定位置显示弹出菜单
 }
 
+void CListCtrlEx::SetFillLeftSpace(bool fill)
+{
+    m_fill_left_space = fill;
+}
+
 void CListCtrlEx::SetListData(const ListData& list_data)
 {
     int item_num_before = GetItemCount();
@@ -247,10 +252,13 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		if (this_item_select)
 			SetItemState(nmcd.dwItemSpec, 0xFF, LVIS_SELECTED);
         //用背景色填充单元格左侧的空白区域
-        CRect rect = nmcd.rc;
-        rect.right = rect.left + 5;
-        CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
-        pDC->FillSolidRect(rect, lplvdr->clrTextBk);
+        if(m_fill_left_space)
+        {
+            CRect rect = nmcd.rc;
+            rect.right = rect.left + 5;
+            CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
+            pDC->FillSolidRect(rect, lplvdr->clrTextBk);
+        }
         //*pResult = CDRF_DODEFAULT;
 		break;
 	}

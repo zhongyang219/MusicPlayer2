@@ -26,6 +26,7 @@ public:
 	void SetHightItem(int item) { m_highlight_item = item; }			//设置高亮的项目（播放列表中正在播放的项目）
     void SetDragEnable(bool enable = true) { m_drag_enable = enable; }      //是否允许鼠标拖动
     void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd);
+    void SetFillLeftSpace(bool fill);
 
     typedef map<int, wstring> RowData;      //列表数据中每一行的数据，，map的key为列序号，value为显示的文本
     typedef vector<RowData> ListData;       //列表数据，其中vector为每一行的数据
@@ -40,6 +41,7 @@ protected:
     bool m_drag_enable{ false };
     bool m_dragging{ false };
     HCURSOR m_drag_cursor{};
+    bool m_fill_left_space{ true };     //是否用背景色填充每行左侧的空白
 
 public:
 	DECLARE_MESSAGE_MAP()
