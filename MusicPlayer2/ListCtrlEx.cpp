@@ -146,9 +146,9 @@ void CListCtrlEx::ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd)
     pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pWnd); //在指定位置显示弹出菜单
 }
 
-void CListCtrlEx::SetFillLeftSpace(bool fill)
+void CListCtrlEx::FillLeftSpaceAfterPaint(bool fill)
 {
-    m_fill_left_space = fill;
+    m_fill_left_space_after_paint = fill;
 }
 
 void CListCtrlEx::SetListData(const ListData& list_data)
@@ -187,6 +187,9 @@ END_MESSAGE_MAP()
 
 void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 {
+    DWORD style = GetExtendedStyle();
+    
+
 	*pResult = CDRF_DODEFAULT;
 	LPNMLVCUSTOMDRAW lplvdr = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
 	NMCUSTOMDRAW& nmcd = lplvdr->nmcd;
@@ -237,9 +240,12 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			}
 
 			//用背景色填充单元格，以去掉每行前面的空白
-			//CRect rect = nmcd.rc;
-			//CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
-			//pDC->FillSolidRect(rect, lplvdr->clrTextBk);
+            if(!m_fill_left_space_after_paint)
+            {
+                CRect rect = nmcd.rc;
+                CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
+                pDC->FillSolidRect(rect, lplvdr->clrTextBk);
+            }
 		}
 		else		//当控件被禁用时，显示文本设为灰色
 		{
@@ -252,7 +258,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		if (this_item_select)
 			SetItemState(nmcd.dwItemSpec, 0xFF, LVIS_SELECTED);
         //用背景色填充单元格左侧的空白区域
-        if(m_fill_left_space)
+        if(m_fill_left_space_after_paint)
         {
             CRect rect = nmcd.rc;
             rect.right = rect.left + 5;
