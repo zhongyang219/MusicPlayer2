@@ -12,9 +12,13 @@ public:
 
 	void AddString(LPCTSTR str);
 
+protected:
 	virtual void PreSubclassWindow();
+    int CalculateColumnWidth();
+
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnNMClick(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 

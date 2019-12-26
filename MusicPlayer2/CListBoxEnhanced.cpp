@@ -25,16 +25,22 @@ void CListBoxEnhanced::PreSubclassWindow()
     SetExtendedStyle(GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_INFOTIP);
 	ModifyStyle(0, LVS_NOCOLUMNHEADER);
 
-	CRect rect;
-	GetWindowRect(rect);
-	InsertColumn(0, _T("text"), LVCFMT_LEFT, rect.Width() - theApp.DPI(20) - 1);
-
+	InsertColumn(0, _T("text"), LVCFMT_LEFT, CalculateColumnWidth());
 
 	CListCtrlEx::PreSubclassWindow();
 }
+
+int CListBoxEnhanced::CalculateColumnWidth()
+{
+    CRect rect;
+    GetWindowRect(rect);
+    return rect.Width() - theApp.DPI(20) - 1;
+}
+
 BEGIN_MESSAGE_MAP(CListBoxEnhanced, CListCtrlEx)
 	ON_NOTIFY_REFLECT(NM_CLICK, &CListBoxEnhanced::OnNMClick)
 	ON_NOTIFY_REFLECT(NM_RCLICK, &CListBoxEnhanced::OnNMRClick)
+    ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -59,4 +65,14 @@ void CListBoxEnhanced::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 		pParent->SendMessage(WM_LISTBOX_SEL_CHANGED, (WPARAM)this, (LPARAM)pNMItemActivate->iItem);
 
 	*pResult = 0;
+}
+
+
+void CListBoxEnhanced::OnSize(UINT nType, int cx, int cy)
+{
+    CListCtrlEx::OnSize(nType, cx, cy);
+
+    // TODO: 在此处添加消息处理程序代码
+    SetColumnWidth(0, CalculateColumnWidth());
+    ShowScrollBar(SB_HORZ, FALSE);
 }
