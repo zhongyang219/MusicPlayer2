@@ -8,18 +8,21 @@ enum DownloadResult     //下载结果
     DR_DOWNLOAD_ERROR       //下载失败
 };
 
-
-class CInternetCommon
-{
 #define  NORMAL_CONNECT INTERNET_FLAG_KEEP_CONNECTION
 #define  SECURE_CONNECT NORMAL_CONNECT | INTERNET_FLAG_SECURE
 #define  NORMAL_REQUEST INTERNET_FLAG_RELOAD | INTERNET_FLAG_DONT_CACHE 
 #define  SECURE_REQUEST NORMAL_REQUEST | INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_CN_INVALID
-#define SUCCESS 0	// 操作成功
-#define FAILURE 1	// 操作失败
-#define OUTTIME 2	// 操作超时
 
+class CInternetCommon
+{
 public:
+    enum HttpResult
+    {
+        SUCCESS = 0,	// 操作成功
+        FAILURE = 1,	// 操作失败
+        OUTTIME = 2,	// 操作超时
+    };
+
 	//一个搜索结果的信息
 	struct ItemInfo
 	{

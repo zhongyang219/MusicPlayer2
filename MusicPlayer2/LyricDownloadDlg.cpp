@@ -372,10 +372,13 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	//响应WM_SEARCH_CONPLATE消息
 	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(TRUE);	//搜索完成之后启用该按钮
 	m_search_result = m_search_thread_info.result;
+    if(m_search_thread_info.rtn != CInternetCommon::SUCCESS)
+        SetDlgItemText(IDC_STATIC_INFO, CCommon::LoadText(IDS_SEARCH_RESULT));
+
 	switch (m_search_thread_info.rtn)
 	{
-	case 1: MessageBox(CCommon::LoadText(IDS_SEARCH_FAILED_INFO), NULL, MB_ICONWARNING); return 0;
-	case 2: MessageBox(CCommon::LoadText(IDS_SEARCH_TIME_OUT), NULL, MB_ICONWARNING); return 0;
+    case CInternetCommon::FAILURE: MessageBox(CCommon::LoadText(IDS_SEARCH_FAILED_INFO), NULL, MB_ICONWARNING); return 0;
+	case CInternetCommon::OUTTIME: MessageBox(CCommon::LoadText(IDS_SEARCH_TIME_OUT), NULL, MB_ICONWARNING); return 0;
 	default: break;
 	}
 	//DEBUG模式下，将查找返回的结果保存到文件
