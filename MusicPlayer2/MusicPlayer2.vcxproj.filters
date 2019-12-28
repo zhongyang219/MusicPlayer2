@@ -276,6 +276,9 @@
     <Filter Include="对话框类\AddToPlaylistDlg">
       <UniqueIdentifier>{a50ebbf3-3c62-4e69-8292-c4af838bbacd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\UpdateHelper">
+      <UniqueIdentifier>{01b55622-10b9-4945-a9e8-2dac28d0f7e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -619,6 +622,9 @@
     <ClInclude Include="AddToPlaylistDlg.h">
       <Filter>对话框类\AddToPlaylistDlg</Filter>
     </ClInclude>
+    <ClInclude Include="UpdateHelper.h">
+      <Filter>公共的类\UpdateHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -929,6 +935,9 @@
     </ClCompile>
     <ClCompile Include="AddToPlaylistDlg.cpp">
       <Filter>对话框类\AddToPlaylistDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateHelper.cpp">
+      <Filter>公共的类\UpdateHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

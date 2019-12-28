@@ -267,6 +267,7 @@
     <ClInclude Include="TagEditDlg.h" />
     <ClInclude Include="TestDlg.h" />
     <ClInclude Include="TreeCtrlEx.h" />
+    <ClInclude Include="UpdateHelper.h" />
     <ClInclude Include="WinVersionHelper.h" />
     <ClInclude Include="WmaEncodeCfgDlg.h" />
     <ClInclude Include="FilePathHelper.h" />
@@ -375,6 +376,7 @@
     <ClCompile Include="TagEditDlg.cpp" />
     <ClCompile Include="TestDlg.cpp" />
     <ClCompile Include="TreeCtrlEx.cpp" />
+    <ClCompile Include="UpdateHelper.cpp" />
     <ClCompile Include="WinVersionHelper.cpp" />
     <ClCompile Include="WmaEncodeCfgDlg.cpp" />
     <ClCompile Include="FilePathHelper.cpp" />
