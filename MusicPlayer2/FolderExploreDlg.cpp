@@ -30,7 +30,7 @@ void CFolderExploreDlg::GetSongsSelected(std::vector<wstring>& song_list) const
 {
     if (m_left_selected)
     {
-        CAudioCommon::GetAudioFiles(wstring(m_folder_path_selected), song_list);
+        CAudioCommon::GetAudioFiles(wstring(m_folder_path_selected), song_list, 20000, true);
     }
     else
     {
