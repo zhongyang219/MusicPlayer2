@@ -7,6 +7,7 @@
 #include "InputDlg.h"
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
+#include "AudioCommon.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -182,6 +183,35 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         }
     }
 
+}
+
+int CMusicPlayerCmdHelper::UpdateMediaLib()
+{
+    if (CPlayer::GetInstance().IsMciCore())
+        return 0;
+
+    int new_media_num{};
+    std::vector<wstring> all_media_files;
+    //获取所有音频文件的路径
+    for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
+    {
+        CAudioCommon::GetAudioFiles(item, all_media_files, 50000, true);
+    }
+
+    std::map<wstring, SongInfo> new_songs_map;
+    for (const auto& file_path : all_media_files)
+    {
+        auto iter = theApp.m_song_data.find(file_path);
+        if (iter == theApp.m_song_data.end())       //如果还没有获取到该歌曲的信息，则在这里获取
+        {
+            SongInfo song_info;
+            CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), song_info);
+            theApp.m_song_data[file_path] = song_info;
+            new_media_num++;
+        }
+    }
+
+    return new_media_num;
 }
 
 CWnd* CMusicPlayerCmdHelper::GetOwner()

@@ -17,6 +17,12 @@ enum AudioInfoFlag
     AF_TAG_INFO = 4
 };
 
+enum PlayerCoreType
+{
+    PT_BASS,
+    PT_MCI
+};
+
 #define MAX_PLAY_SPEED 4
 #define MIN_PLAY_SPEED 0.1
 
@@ -62,5 +68,5 @@ public:
     virtual int GetErrorCode() = 0;                         //获取错误代码
     virtual std::wstring GetErrorInfo(int error_code) = 0;  //根据错误代码获取错误信息
 
-    virtual std::wstring GetCoreName() = 0;
+    virtual PlayerCoreType GetCoreType() = 0;
 };

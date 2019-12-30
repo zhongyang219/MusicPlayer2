@@ -54,7 +54,7 @@ public:
     virtual int GetErrorCode() override;
     virtual std::wstring GetErrorInfo(int error_code) override;
 
-    virtual std::wstring GetCoreName() override { return L"BASS"; }
+    virtual PlayerCoreType GetCoreType() override { return PT_BASS; }
 
     static int GetBASSCurrentPosition(HSTREAM hStream);
     static Time GetBASSSongLength(HSTREAM hStream);

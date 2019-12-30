@@ -2259,5 +2259,5 @@ wstring CPlayer::GetPlaylistPath() const
 
 bool CPlayer::IsMciCore() const
 {
-    return m_pCore->GetCoreName() == L"MCI";
+    return m_pCore->GetCoreType() == PT_MCI;
 }

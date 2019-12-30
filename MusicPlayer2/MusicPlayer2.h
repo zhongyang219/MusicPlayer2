@@ -107,6 +107,9 @@ public:
     void WriteErrorLog(const wstring& log_str);
 
     //void StartClassifySongData();
+    void StartUpdateMediaLib();
+    bool IsInitializingMeidaLib() { return m_initalizing_media_lib; }
+    void SetInitializingMeidaLib(bool is_initializing) { m_initalizing_media_lib = is_initializing; }
 
 private:
     void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
@@ -122,6 +125,7 @@ private:
     bool m_song_data_modified{ false };
 
 	ULONG_PTR m_gdiplusToken;
+    bool m_initalizing_media_lib{ false };
 
 // 重写
 public:

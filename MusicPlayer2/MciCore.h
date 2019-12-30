@@ -52,7 +52,7 @@ public:
     virtual int GetErrorCode() override;
     virtual std::wstring GetErrorInfo(int error_code) override;
 
-    virtual std::wstring GetCoreName() override { return L"MCI"; }
+    virtual PlayerCoreType GetCoreType() override { return PT_MCI; }
 
 private:
     void GetMidiPosition();

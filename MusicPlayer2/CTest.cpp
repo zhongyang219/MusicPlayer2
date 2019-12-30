@@ -5,6 +5,7 @@
 #include "RegFileRelate.h"
 #include "MediaLibHelper.h"
 #include "IniHelper.h"
+#include "MusicPlayerCmdHelper.h"
 
 CTest::CTest()
 {
@@ -20,7 +21,7 @@ void CTest::Test()
     //TestStringMatch();
     //TestCrash();
     //TestShortCut();
-    //TestCommon();
+    TestCommon();
     //TestOSUFile();
     //TestReg();
     //TestMediaLib();
@@ -77,8 +78,8 @@ void CTest::TestCommon()
 
     //wstring rtn = CCommon::FileRename(L"D:\\Temp\\无标题.txt", L"无标题1");
 
-    wstring str = L"!ABC!,!233!,!DEF!";
-    std::vector<wstring> result;
+    //wstring str = L"!ABC!,!233!,!DEF!";
+    //std::vector<wstring> result;
     //CCommon::StringSplit(str, L"!,!", result, false);
 
     //{
@@ -88,11 +89,14 @@ void CTest::TestCommon()
     //    ini.Save();
     //}
 
-    {
-        vector<wstring> string_results;
-        CIniHelper ini{ L"D:\\Temp\\test.ini" };
-        ini.GetStringList(L"config", L"test", string_results, vector<wstring>{L"567"});
-    }
+    //{
+    //    vector<wstring> string_results;
+    //    CIniHelper ini{ L"D:\\Temp\\test.ini" };
+    //    ini.GetStringList(L"config", L"test", string_results, vector<wstring>{L"567"});
+    //}
+
+    CMusicPlayerCmdHelper helper;
+    helper.UpdateMediaLib();
 
     int a = 0;
 }

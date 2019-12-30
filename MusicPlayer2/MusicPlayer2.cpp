@@ -9,6 +9,7 @@
 #include "crashtool.h"
 #include <Gdiplus.h>
 #include "UpdateHelper.h"
+#include "MusicPlayerCmdHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -648,6 +649,20 @@ bool CMusicPlayerApp::IsSongDataModified() const
 void CMusicPlayerApp::WriteErrorLog(const wstring & log_str)
 {
     CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
+}
+
+void CMusicPlayerApp::StartUpdateMediaLib()
+{
+    if(!m_initalizing_media_lib)
+    {
+        m_initalizing_media_lib = true;
+        AfxBeginThread([](LPVOID lpParam)->UINT
+        {
+            CMusicPlayerCmdHelper::UpdateMediaLib();
+            theApp.SetInitializingMeidaLib(false);
+            return 0;
+        }, NULL);
+    }
 }
 
 //void CMusicPlayerApp::StartClassifySongData()
