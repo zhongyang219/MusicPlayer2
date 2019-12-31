@@ -1123,13 +1123,14 @@
 #define ID_33146                        33146
 #define ID_PLAY_ITEM_IN_FOLDER_MODE     33147
 #define ID_COPY_TEXT                    33148
+#define ID_ALWAYS_SHOW_STATUS_BAR       33149
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        428
-#define _APS_NEXT_COMMAND_VALUE         33149
+#define _APS_NEXT_COMMAND_VALUE         33150
 #define _APS_NEXT_CONTROL_VALUE         1163
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

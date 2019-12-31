@@ -366,4 +366,6 @@ protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnInitAddToMenu(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnMsgOptionSettings(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnAlwaysShowStatusBar();
 };

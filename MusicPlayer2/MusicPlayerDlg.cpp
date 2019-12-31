@@ -220,6 +220,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMusicPlayerDlg::OnSearchEditBtnClicked)
     ON_MESSAGE(WM_INIT_ADD_TO_MENU, &CMusicPlayerDlg::OnInitAddToMenu)
     ON_MESSAGE(WM_OPTION_SETTINGS, &CMusicPlayerDlg::OnMsgOptionSettings)
+    ON_COMMAND(ID_ALWAYS_SHOW_STATUS_BAR, &CMusicPlayerDlg::OnAlwaysShowStatusBar)
 END_MESSAGE_MAP()
 
 
@@ -236,6 +237,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_translate", theApp.m_ui_data.show_translate);
     ini.WriteBool(L"config", L"show_playlist", theApp.m_ui_data.show_playlist);
     ini.WriteBool(L"config", L"show_menu_bar", theApp.m_ui_data.show_menu_bar);
+    ini.WriteBool(L"config", L"always_show_statusbar", theApp.m_ui_data.always_show_statusbar);
     ini.WriteBool(L"config", L"float_playlist", theApp.m_nc_setting_data.float_playlist);
     ini.WriteInt(L"config", L"float_playlist_width", theApp.m_nc_setting_data.playlist_size.cx);
     ini.WriteInt(L"config", L"float_playlist_height", theApp.m_nc_setting_data.playlist_size.cy);
@@ -361,6 +363,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_ui_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
     theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", true);
     theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", true);
+    theApp.m_ui_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
     theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(530));
@@ -983,6 +986,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_DARK_MODE, MF_BYCOMMAND | (theApp.m_app_setting_data.dark_mode ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_ALWAYS_ON_TOP, MF_BYCOMMAND | (theApp.m_nc_setting_data.always_on_top ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_ALWAYS_SHOW_STATUS_BAR, MF_BYCOMMAND | (theApp.m_ui_data.always_show_statusbar ? MF_CHECKED : MF_UNCHECKED));
 
     pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));        //全屏时禁止显示/关闭菜单栏
     pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //迷你模式下禁用全屏模式
@@ -4276,4 +4280,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnMsgOptionSettings(WPARAM wParam, LPARAM lPara
     m_tab_selected = wParam;
     _OnOptionSettings((CWnd*)lParam);
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnAlwaysShowStatusBar()
+{
+    // TODO: 在此添加命令处理程序代码
+    theApp.m_ui_data.always_show_statusbar = !theApp.m_ui_data.always_show_statusbar;
 }

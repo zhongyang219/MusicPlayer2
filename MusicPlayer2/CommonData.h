@@ -375,6 +375,7 @@ struct UIData
     bool show_playlist{ true };
     bool show_menu_bar{ true };
     bool full_screen{ false };
+    bool always_show_statusbar{ false };    //总是显示状态栏
 
     int client_width;					//窗口客户区宽度
     int client_height;					//窗口客户区高度
