@@ -112,6 +112,10 @@ void CDataSettingsDlg::EnableControl()
     pWnd = GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK);
     if (pWnd != nullptr)
         pWnd->EnableWindow(enable);
+
+    ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->EnableWindow(m_data.auto_download_lyric);
+    ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->EnableWindow(m_data.auto_download_lyric && CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path));
+
 }
 
 
@@ -133,6 +137,7 @@ void CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.auto_download_lyric = (((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->GetCheck() != 0);
+    EnableControl();
 }
 
 
