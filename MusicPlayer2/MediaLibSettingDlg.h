@@ -24,8 +24,14 @@ private:
     CButton m_classify_other_chk;
     //CButton m_show_tree_tool_tips_chk;
     CListBoxEnhanced m_dir_list_ctrl;
+    CButton m_update_media_lib_chk;
+
+    CToolTipCtrl m_toolTip;
+    size_t m_data_size;		//数据文件的大小
 
 protected:
+    void ShowDataSizeInfo();
+
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
@@ -35,4 +41,7 @@ public:
     //afx_msg void OnBnClickedShowTreeToolTipsCheck();
     afx_msg void OnBnClickedAddButton();
     afx_msg void OnBnClickedDeleteButton();
+    afx_msg void OnBnClickedUpdateMediaLibChk();
+    afx_msg void OnBnClickedCleanDataFileButton();
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

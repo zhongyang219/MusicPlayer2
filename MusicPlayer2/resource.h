@@ -492,6 +492,8 @@
 #define IDS_BTN_SETTINGS                443
 #define IDS_MORE_PLAYLIST               444
 #define IDS_SEARCH_RESULT               445
+#define IDS_UPDATING_MEDIA_LIB_INFO     446
+#define IDS_UPDATE_MEDIA_LIB_TIP        448
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -562,6 +564,7 @@
 #define IDC_ENABLE_GLABOL_MULTIMEDIA_KEY_CHECK 1026
 #define IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK 1026
 #define IDC_SHOW_TREE_TOOL_TIPS_CHECK   1026
+#define IDC_UPDATE_MEDIA_LIB_CHK        1026
 #define IDC_FONT_NAME_EDIT              1027
 #define IDC_FIND_ARTIST_CHECK           1027
 #define IDC_KARAOKE_DISP2               1027

@@ -17,6 +17,15 @@ void CPlayerUI::_DrawInfo(bool reset)
     CRect draw_rect{ m_draw_rect };
     draw_rect.MoveToXY(0, 0);
 
+    //绘制状态条
+    if (CPlayerUIHelper::IsDrawStatusBar())
+    {
+        CRect rc_status_bar = draw_rect;
+        draw_rect.bottom -= DPI(20);
+        rc_status_bar.top = draw_rect.bottom;
+        DrawStatusBar(rc_status_bar, reset);
+    }
+
     CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(true), draw_rect.top + EdgeMargin(false) };		//文本的起始坐标
     int text_height{ DPI(18) };		//文本的高度
 
@@ -183,7 +192,7 @@ void CPlayerUI::_DrawInfo(bool reset)
 
         lyric_rect = draw_rect;
         lyric_rect.MoveToY(other_info_rect.bottom + Margin() + control_bar_height);
-        lyric_rect.bottom = m_draw_rect.Height()/* - Margin()*/;
+        lyric_rect.bottom = draw_rect.Height()/* - Margin()*/;
         DrawLyricsArea(lyric_rect);
         //}
     }

@@ -653,13 +653,13 @@ void CMusicPlayerApp::WriteErrorLog(const wstring & log_str)
 
 void CMusicPlayerApp::StartUpdateMediaLib()
 {
-    if(!m_initalizing_media_lib)
+    if(!m_media_lib_updating)
     {
-        m_initalizing_media_lib = true;
+        m_media_lib_updating = true;
         AfxBeginThread([](LPVOID lpParam)->UINT
         {
             CMusicPlayerCmdHelper::UpdateMediaLib();
-            theApp.SetInitializingMeidaLib(false);
+            theApp.m_media_lib_updating = false;
             return 0;
         }, NULL);
     }

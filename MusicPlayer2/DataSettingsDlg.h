@@ -21,12 +21,10 @@ public:
 	GeneralSettingData m_data;
 
 private:
-	size_t m_data_size;		//数据文件的大小
 	CToolTipCtrl m_toolTip;
 	CBrowseEdit m_sf2_path_edit;
 	CComboBox m_language_combo;
 
-	void ShowDataSizeInfo();
     void EnableControl();
 
 protected:
@@ -35,7 +33,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	afx_msg void OnBnClickedCleanDataFileButton();
 	afx_msg void OnBnClickedId3v2FirstCheck();
 	afx_msg void OnBnClickedCoverAutoDownloadCheck();
 	afx_msg void OnBnClickedLyricAutoDownloadCheck();

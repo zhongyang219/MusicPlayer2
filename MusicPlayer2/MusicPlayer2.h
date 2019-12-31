@@ -65,6 +65,7 @@ public:
     volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
     volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
     volatile bool m_format_convert_dialog_exit{ true };		//用于指示格式对话框已经退出
+    volatile int m_media_num_added{};                       //更新媒体库时新增的音频文件数量
 
     void SaveSongData();		//将所有歌曲信息以序列化的方式保存到文件
 
@@ -108,8 +109,7 @@ public:
 
     //void StartClassifySongData();
     void StartUpdateMediaLib();
-    bool IsInitializingMeidaLib() { return m_initalizing_media_lib; }
-    void SetInitializingMeidaLib(bool is_initializing) { m_initalizing_media_lib = is_initializing; }
+    bool IsMeidaLibUpdating() { return m_media_lib_updating; }
 
 private:
     void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
@@ -125,7 +125,7 @@ private:
     bool m_song_data_modified{ false };
 
 	ULONG_PTR m_gdiplusToken;
-    bool m_initalizing_media_lib{ false };
+    bool m_media_lib_updating{ false };
 
 // 重写
 public:

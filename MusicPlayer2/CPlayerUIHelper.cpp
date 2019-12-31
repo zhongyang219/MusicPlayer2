@@ -54,3 +54,13 @@ bool CPlayerUIHelper::IsMidiLyric()
 {
     return CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric();
 }
+
+bool CPlayerUIHelper::IsDrawStatusBar()
+{
+#ifdef DEBUG
+    return true;
+#else
+    return CPlayer::GetInstance().m_loading || (theApp.IsMeidaLibUpdating() && theApp.m_media_num_added > 0);
+#endif // DEBUG
+
+}

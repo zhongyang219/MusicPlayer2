@@ -26,5 +26,6 @@ public:
     static UIColors GetUIColors(const ColorTable& colorTable, bool dark);
 
     static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
+    static bool IsDrawStatusBar();  //是否绘制状态栏
 };
 

@@ -105,6 +105,7 @@ protected:
     void DrawTranslateButton(CRect rect);
     int DrawTopRightIcons();			//绘制右上角的图标。返回总宽度
     void DrawCurrentTime();				//在右上角绘制当前系统时间
+    void DrawStatusBar(CRect rect, bool reset = false);
 
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);

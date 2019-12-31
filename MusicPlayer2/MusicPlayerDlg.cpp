@@ -344,6 +344,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders);
     ini.WriteBool(L"media_lib", L"hide_only_one_classification", theApp.m_media_lib_setting_data.hide_only_one_classification);
     ini.WriteBool(L"media_lib", L"show_tree_tool_tips", theApp.m_media_lib_setting_data.show_tree_tool_tips);
+    ini.WriteBool(L"media_lib", L"update_media_lib_when_start_up", theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
 
     ini.Save();
 }
@@ -471,6 +472,7 @@ void CMusicPlayerDlg::LoadConfig()
     ini.GetStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders, vector<wstring>{CCommon::GetSpecialDir(CSIDL_MYMUSIC)});
     theApp.m_media_lib_setting_data.hide_only_one_classification = ini.GetBool(L"media_lib", L"hide_only_one_classification", true);
     theApp.m_media_lib_setting_data.show_tree_tool_tips = ini.GetBool(L"media_lib", L"show_tree_tool_tips", false);
+    theApp.m_media_lib_setting_data.update_media_lib_when_start_up = ini.GetBool(L"media_lib", L"update_media_lib_when_start_up", false);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -2911,6 +2913,17 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     //    m_findDlg.ClearFindResult();
     //    last_play_mode = play_mode;
     //}
+
+    //启动时第一次初始化完播放列表后更新媒体库
+    if(theApp.m_media_lib_setting_data.update_media_lib_when_start_up)
+    {
+        static bool first_init{ true };
+        if (first_init)
+        {
+            theApp.StartUpdateMediaLib();
+            first_init = false;
+        }
+    }
 
     return 0;
 }

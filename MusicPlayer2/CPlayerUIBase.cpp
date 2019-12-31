@@ -481,106 +481,63 @@ void CPlayerUIBase::DrawBackground()
 
 void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 {
-    wchar_t buff[64];
-    if (CPlayer::GetInstance().m_loading)
-    {
-        CRect rc_tmp{ rect };
-        //绘制进度条（进度条里面包含10格）
-        int bar_width = DPI(4);     //每一格的宽度
-        int progress_width = (bar_width + DPI(2)) * 10 + DPI(2) * 2;
-        rc_tmp.left = rect.right - progress_width;
-        CRect rc_progress{ rc_tmp };
-        rc_progress.DeflateRect(0, DPI(2));
-        m_draw.SetDrawArea(rc_progress);
-        m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
-        int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
-        int bar_cnt = progress_percent / 10 + 1;        //格子数
-        int last_bar_percent = progress_percent % 10;
-        CRect rc_bar{ rc_progress };
-        rc_bar.DeflateRect(DPI(2), DPI(2));
-        rc_bar.right = rc_bar.left + bar_width;
-        int start_x_pos = rc_bar.left;
-        for (int i = 0; i < bar_cnt; i++)
-        {
-            rc_bar.MoveToX(start_x_pos + i * (bar_width + DPI(2)));
-            if (i != bar_cnt - 1)
-            {
-                m_draw.FillRect(rc_bar, m_colors.color_text, true);
-            }
-            else
-            {
-                BYTE alpha = ALPHA_CHG(last_bar_percent * 10);
-                m_draw.FillAlphaRect(rc_bar, m_colors.color_text, alpha, true);
-            }
-        }
+    //绘制播放状态
+    CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
+    CRect rc_tmp{ rect };
+    //m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
+    rc_tmp.right = rc_tmp.left + m_draw.GetTextExtent(play_state_str).cx + DPI(4);
+    m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
 
-        //绘制文字
-        rc_tmp.right = rc_tmp.left - DPI(4);
-        rc_tmp.left = rect.left;
-        static CDrawCommon::ScrollInfo scroll_info0;
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum(), progress_percent });
-        m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
-    }
-    else
-    {
-        //绘制播放状态
-        CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
-        CRect rc_tmp{ rect };
-        //m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
-        rc_tmp.right = rc_tmp.left + m_draw.GetTextExtent(play_state_str).cx + DPI(4);
-        m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
+    //绘制歌曲序号
+    rc_tmp.MoveToX(rc_tmp.right);
+    rc_tmp.right = rc_tmp.left + DPI(30);
+    wchar_t buff[128];
+    swprintf_s(buff, sizeof(buff) / 2, L"%.3d", CPlayer::GetInstance().GetIndex() + 1);
+    m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
 
-        //绘制歌曲序号
+    //绘制标识
+    wstring tag_str;
+    if(CPlayer::GetInstance().GetCurrentSongInfo().is_cue)
+        tag_str = L"cue";
+    else if(CPlayer::GetInstance().IsMidi())
+        tag_str = L"midi";
+    else if (CPlayer::GetInstance().IsOsuFile())
+        tag_str = L"osu";
+    int available_width = rect.right - rc_tmp.right;
+    if(available_width >= DPI(50) && !tag_str.empty())
+    {
+        int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
         rc_tmp.MoveToX(rc_tmp.right);
-        rc_tmp.right = rc_tmp.left + DPI(30);
-        swprintf_s(buff, sizeof(buff) / 2, L"%.3d", CPlayer::GetInstance().GetIndex() + 1);
-        m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
+        rc_tmp.right = rc_tmp.left + width;
+        DrawPlayTag(rc_tmp, tag_str.c_str());
+    }
 
-        //绘制标识
-        wstring tag_str;
-        if(CPlayer::GetInstance().GetCurrentSongInfo().is_cue)
-            tag_str = L"cue";
-        else if(CPlayer::GetInstance().IsMidi())
-            tag_str = L"midi";
-        else if (CPlayer::GetInstance().IsOsuFile())
-            tag_str = L"osu";
-        int available_width = rect.right - rc_tmp.right;
-        if(available_width >= DPI(50) && !tag_str.empty())
+    //绘制播放速度
+    if (std::fabs(CPlayer::GetInstance().GetSpeed() - 1) > 1e-3)
+    {
+        wchar_t buff[64];
+        swprintf_s(buff, L"%.2f", CPlayer::GetInstance().GetSpeed());
+        tag_str = buff;
+        if (!tag_str.empty() && tag_str.back() == L'0')
+            tag_str.pop_back();
+        tag_str.push_back(L'X');
+        available_width = rect.right - rc_tmp.right;
+        if (available_width >= DPI(50))
         {
             int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
-            rc_tmp.MoveToX(rc_tmp.right);
+            rc_tmp.MoveToX(rc_tmp.right + DPI(2));
             rc_tmp.right = rc_tmp.left + width;
             DrawPlayTag(rc_tmp, tag_str.c_str());
         }
+    }
 
-        //绘制播放速度
-        if (std::fabs(CPlayer::GetInstance().GetSpeed() - 1) > 1e-3)
-        {
-            wchar_t buff[64];
-            swprintf_s(buff, L"%.2f", CPlayer::GetInstance().GetSpeed());
-            tag_str = buff;
-            if (!tag_str.empty() && tag_str.back() == L'0')
-                tag_str.pop_back();
-            tag_str.push_back(L'X');
-            available_width = rect.right - rc_tmp.right;
-            if (available_width >= DPI(50))
-            {
-                int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
-                rc_tmp.MoveToX(rc_tmp.right + DPI(2));
-                rc_tmp.right = rc_tmp.left + width;
-                DrawPlayTag(rc_tmp, tag_str.c_str());
-            }
-        }
-
-        //绘制文件名
-        rc_tmp.MoveToX(rc_tmp.right + DPI(4));
-        rc_tmp.right = rect.right;
-        if(rc_tmp.Width() >= DPI(4))
-        {
-            static CDrawCommon::ScrollInfo scroll_info1;
-            m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetFileName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
-        }
+    //绘制文件名
+    rc_tmp.MoveToX(rc_tmp.right + DPI(4));
+    rc_tmp.right = rect.right;
+    if(rc_tmp.Width() >= DPI(4))
+    {
+        static CDrawCommon::ScrollInfo scroll_info1;
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetFileName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
     }
 }
 
@@ -1252,6 +1209,80 @@ void CPlayerUIBase::DrawCurrentTime()
     m_draw.SetFont(&theApp.m_font_set.time.GetFont(m_ui_data.full_screen));
     m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
     m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+}
+
+void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
+{
+    bool draw_background{ IsDrawBackgroundAlpha() };
+    //绘制背景
+    BYTE alpha;
+    if (theApp.m_app_setting_data.dark_mode)
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    else
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+
+    if (draw_background)
+        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+    else
+        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+
+    CRect rc_text = rect;
+    rect.DeflateRect(DPI(4), 0);
+
+    //显示播放列表载入状态
+    if (CPlayer::GetInstance().m_loading)
+    {
+        CRect rc_tmp{ rect };
+        //绘制进度条（进度条里面包含10格）
+        int bar_width = DPI(4);     //每一格的宽度
+        int progress_width = (bar_width + DPI(2)) * 10 + DPI(2) * 2;
+        rc_tmp.left = rect.right - progress_width;
+        CRect rc_progress{ rc_tmp };
+        rc_progress.DeflateRect(0, DPI(2));
+        m_draw.SetDrawArea(rc_progress);
+        m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
+        int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
+        int bar_cnt = progress_percent / 10 + 1;        //格子数
+        int last_bar_percent = progress_percent % 10;
+        CRect rc_bar{ rc_progress };
+        rc_bar.DeflateRect(DPI(2), DPI(2));
+        rc_bar.right = rc_bar.left + bar_width;
+        int start_x_pos = rc_bar.left;
+        for (int i = 0; i < bar_cnt; i++)
+        {
+            rc_bar.MoveToX(start_x_pos + i * (bar_width + DPI(2)));
+            if (i != bar_cnt - 1)
+            {
+                m_draw.FillRect(rc_bar, m_colors.color_text, true);
+            }
+            else
+            {
+                BYTE alpha = ALPHA_CHG(last_bar_percent * 10);
+                m_draw.FillAlphaRect(rc_bar, m_colors.color_text, alpha, true);
+            }
+        }
+
+        //绘制文字
+        rc_tmp.right = rc_tmp.left - DPI(4);
+        rc_tmp.left = rect.left;
+        static CDrawCommon::ScrollInfo scroll_info0;
+        CString info;
+        info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum(), progress_percent });
+        m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
+    }
+
+    //显示媒体库更新状态
+    else if(theApp.IsMeidaLibUpdating() && theApp.m_media_num_added > 0)
+    {
+        CString info = CCommon::LoadTextFormat(IDS_UPDATING_MEDIA_LIB_INFO, { theApp.m_media_num_added });
+        static CDrawCommon::ScrollInfo scroll_info2;
+        m_draw.DrawScrollText(rect, info, m_colors.color_text, DPI(1.5), false, scroll_info2, reset);
+    }
+
+    else
+    {
+        m_draw.DrawWindowText(rect, CPlayer::GetInstance().GetPlayingState().c_str(), m_colors.color_text);
+    }
 }
 
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
