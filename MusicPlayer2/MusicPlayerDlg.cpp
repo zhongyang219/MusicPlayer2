@@ -313,6 +313,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
     ini.WriteBool(L"general", L"auto_download_album_cover", theApp.m_general_setting_data.auto_download_album_cover);
     ini.WriteBool(L"general", L"auto_download_only_tag_full", theApp.m_general_setting_data.auto_download_only_tag_full);
+    ini.WriteBool(L"general", L"save_lyric_to_song_folder", theApp.m_general_setting_data.save_lyric_to_song_folder);
     ini.WriteString(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path);
     ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric);
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
@@ -438,6 +439,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(L"general", L"auto_download_lyric", 1);
     theApp.m_general_setting_data.auto_download_album_cover = ini.GetBool(L"general", L"auto_download_album_cover", 1);
     theApp.m_general_setting_data.auto_download_only_tag_full = ini.GetBool(L"general", L"auto_download_only_tag_full", 1);
+    theApp.m_general_setting_data.save_lyric_to_song_folder = ini.GetBool(L"general", L"save_lyric_to_song_folder", true);
     theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
     theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(L"general", L"midi_use_inner_lyric", 0);
     theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
@@ -3091,14 +3093,14 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             file_name = song.GetFileName();
         else
             file_name = song.artist + L" - " + song.title;
-        //if (CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
-        //{
-        //	lyric_path.SetFilePath(theApp.m_lyric_setting_data.lyric_path + CPlayer::GetInstance().GetCurrentSongInfo().file_name);
-        //}
-        //else
-        //{
-        lyric_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + file_name);
-        //}
+        if (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
+        {
+            lyric_path.SetFilePath(theApp.m_lyric_setting_data.lyric_path + file_name);
+        }
+        else
+        {
+            lyric_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + file_name);
+        }
         lyric_path.ReplaceFileExtension(L"lrc");
         string _lyric_str = CCommon::UnicodeToStr(lyric_str, CodeType::UTF8);
         ofstream out_put{ lyric_path.GetFilePath(), std::ios::binary };
