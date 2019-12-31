@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "SetPathDlg.h"
 #include "afxdialogex.h"
+#include "MusicPlayerCmdHelper.h"
 
 
 // CSetPathDlg 对话框
@@ -450,17 +451,8 @@ void CSetPathDlg::OnClearInvalidPath()
 	// TODO: 在此添加命令处理程序代码
 	if (MessageBox(CCommon::LoadText(IDS_CLEAR_PATH_INQUARY), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
 		return;
-	int cleard_cnt{};
-	for (size_t i{}; i < m_recent_path.size(); i++)
-	{
-		if (!CCommon::FolderExist(m_recent_path[i].path))
-		{
-			m_recent_path.erase(m_recent_path.begin() + i);		//删除不存在的路径
-			i--;
-			cleard_cnt++;
-		}
-	}
-	ShowPathList();		//重新显示路径列表
+    int cleard_cnt = CMusicPlayerCmdHelper::CleanUpRecentFolders();
+    ShowPathList();		//重新显示路径列表
 	CString info;
 	info = CCommon::LoadTextFormat(IDS_PATH_CLEAR_COMPLETE, { cleard_cnt });
 	MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);

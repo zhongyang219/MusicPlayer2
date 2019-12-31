@@ -221,6 +221,41 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     return theApp.m_media_num_added;
 }
 
+int CMusicPlayerCmdHelper::CleanUpSongData()
+{
+    int clear_cnt{};		//统计删除的项目的数量
+    //遍历映射容器，删除不必要的条目。
+    for (auto iter{ theApp.m_song_data.begin() }; iter != theApp.m_song_data.end();)
+    {
+        if (!CCommon::FileExist(iter->first))
+        {
+            iter = theApp.m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目
+            clear_cnt++;
+        }
+        else
+        {
+            iter++;
+        }
+    }
+    return clear_cnt;
+}
+
+int CMusicPlayerCmdHelper::CleanUpRecentFolders()
+{
+    int cleard_cnt{};
+    auto& recent_folders{ CPlayer::GetInstance().GetRecentPath() };
+    for (size_t i{}; i < recent_folders.size(); i++)
+    {
+        if (!CCommon::FolderExist(recent_folders[i].path))
+        {
+            recent_folders.erase(recent_folders.begin() + i);		//删除不存在的路径
+            i--;
+            cleard_cnt++;
+        }
+    }
+    return cleard_cnt;
+}
+
 CWnd* CMusicPlayerCmdHelper::GetOwner()
 {
     if (m_pOwner != nullptr)

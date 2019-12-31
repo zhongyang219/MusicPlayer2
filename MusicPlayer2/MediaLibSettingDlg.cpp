@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "MediaLibSettingDlg.h"
 #include "afxdialogex.h"
+#include "MusicPlayerCmdHelper.h"
 
 
 // CMediaLibSettingDlg 对话框
@@ -134,34 +135,7 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
 {
     // TODO: 在此添加控件通知处理程序代码
     CWaitCursor wait_cursor;	//显示等待光标
-    int clear_cnt{};		//统计删除的项目的数量
-    //遍历映射容器，删除不必要的条目。
-    for (auto iter{ theApp.m_song_data.begin() }; iter != theApp.m_song_data.end();)
-    {
-        ////检查该条目对应的文件所在的路径是否在“最近播放路径”列表里
-        //bool path_exist{ false };	//如果iter指向的条目的文件路径在“最近播放路径”列表(CPlayer::GetInstance().GetRecentPath())里，则为true
-        //wstring item_path;
-        //size_t index = iter->first.rfind(L'\\');
-        //item_path = iter->first.substr(0, index + 1);		//获取iter指向项目的文件目录
-        //for (size_t i{}; i < CPlayer::GetInstance().GetRecentPath().size(); i++)
-        //{
-        //	if (item_path == CPlayer::GetInstance().GetRecentPath()[i].path)
-        //	{
-        //		path_exist = true;
-        //		break;
-        //	}
-        //}
-        //如果该条目对应的文件所在的路径不在“最近播放路径”列表里，或该条目对应的文件不存在，则删除该条目
-        if (/*!path_exist || */!CCommon::FileExist(iter->first))
-        {
-            iter = theApp.m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目
-            clear_cnt++;
-        }
-        else
-        {
-            iter++;
-        }
-    }
+    int clear_cnt = CMusicPlayerCmdHelper::CleanUpSongData();
     theApp.SaveSongData();		//清理后将数据写入文件
 
     size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小

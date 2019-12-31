@@ -22,6 +22,9 @@ public:
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）
     static int UpdateMediaLib();
 
+    static int CleanUpSongData();
+    static int CleanUpRecentFolders();
+
 private:
     CWnd* GetOwner();
 
