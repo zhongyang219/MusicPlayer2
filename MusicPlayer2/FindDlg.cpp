@@ -44,9 +44,9 @@ void CFindDlg::ShowFindResult()
         str.Format(_T("%u"), i + 1);
         m_find_result_list.InsertItem(i, str);
         m_find_result_list.SetItemText(i, COL_FILE_NAME, m_find_result[i].GetFileName().c_str());
-        m_find_result_list.SetItemText(i, COL_TITLE, m_find_result[i].title.c_str());
-        m_find_result_list.SetItemText(i, COL_ARTIST, m_find_result[i].artist.c_str());
-        m_find_result_list.SetItemText(i, COL_ALBUM, m_find_result[i].album.c_str());
+        m_find_result_list.SetItemText(i, COL_TITLE, m_find_result[i].GetTitle().c_str());
+        m_find_result_list.SetItemText(i, COL_ARTIST, m_find_result[i].GetArtist().c_str());
+        m_find_result_list.SetItemText(i, COL_ALBUM, m_find_result[i].GetAlbum().c_str());
         m_find_result_list.SetItemText(i, COL_PATH, m_find_result[i].file_path.c_str());
     }
 }
