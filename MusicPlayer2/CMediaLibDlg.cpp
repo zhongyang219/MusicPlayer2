@@ -122,7 +122,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     {
         SetWindowPos(nullptr, 0, 0, m_window_size.cx, m_window_size.cy, SWP_NOMOVE | SWP_NOZORDER);
     }
-    CenterWindow(GetDesktopWindow());
+    CenterWindow(GetParent());
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
