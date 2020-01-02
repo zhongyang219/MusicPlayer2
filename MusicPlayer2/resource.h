@@ -493,7 +493,10 @@
 #define IDS_MORE_PLAYLIST               444
 #define IDS_SEARCH_RESULT               445
 #define IDS_UPDATING_MEDIA_LIB_INFO     446
+#define IDS_ERROR_CODE                  447
 #define IDS_UPDATE_MEDIA_LIB_TIP        448
+#define IDS_FILE_NOT_EXIST              449
+#define IDS_FILE_CONNOT_BE_OPEND        450
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

@@ -275,9 +275,16 @@ int CMciCore::GetErrorCode()
 
 std::wstring CMciCore::GetErrorInfo(int error_code)
 {
-    wchar_t buff[64]{};
+    wchar_t buff[128]{};
     mciGetErrorStringW(error_code, buff, sizeof(buff) / sizeof(wchar_t));		//根据错误代码获取错误信息
     return L"MCI: " + wstring(buff) + m_file_path;
+}
+
+std::wstring CMciCore::GetErrorInfo()
+{
+    wchar_t buff[128]{};
+    mciGetErrorStringW(m_error_code, buff, sizeof(buff) / sizeof(wchar_t));
+    return buff;
 }
 
 void CMciCore::GetMidiPosition()

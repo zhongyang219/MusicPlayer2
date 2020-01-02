@@ -4287,4 +4287,6 @@ void CMusicPlayerDlg::OnAlwaysShowStatusBar()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_ui_data.always_show_statusbar = !theApp.m_ui_data.always_show_statusbar;
+    DrawInfo(true);
+    m_pUI->UpdateToolTipPosition();
 }

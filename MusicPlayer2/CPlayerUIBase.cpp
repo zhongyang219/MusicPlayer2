@@ -1217,16 +1217,15 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     //绘制背景
     BYTE alpha;
     if (theApp.m_app_setting_data.dark_mode)
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
     else
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
     if (draw_background)
         m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
     else
         m_draw.FillRect(rect, m_colors.color_control_bar_back);
 
-    CRect rc_text = rect;
     rect.DeflateRect(DPI(4), 0);
 
     //显示播放列表载入状态
@@ -1238,7 +1237,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         int progress_width = (bar_width + DPI(2)) * 10 + DPI(2) * 2;
         rc_tmp.left = rect.right - progress_width;
         CRect rc_progress{ rc_tmp };
-        rc_progress.DeflateRect(0, DPI(2));
+        rc_progress.DeflateRect(0, DPI(4));
         m_draw.SetDrawArea(rc_progress);
         m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
         int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
@@ -1281,7 +1280,18 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 
     else
     {
-        m_draw.DrawWindowText(rect, CPlayer::GetInstance().GetPlayingState().c_str(), m_colors.color_text);
+        wstring str_info;
+        if (CPlayer::GetInstance().IsError())
+        {
+            str_info = CCommon::LoadText(IDS_PLAY_ERROR).GetString();
+            str_info += L": ";
+            str_info += CPlayer::GetInstance().GetErrorInfo();
+        }
+        else
+        {
+            str_info = CPlayer::GetInstance().GetPlayingState();
+        }
+        m_draw.DrawWindowText(rect, str_info.c_str(), m_colors.color_text);
     }
 }
 

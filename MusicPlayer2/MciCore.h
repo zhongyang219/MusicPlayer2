@@ -51,6 +51,7 @@ public:
 
     virtual int GetErrorCode() override;
     virtual std::wstring GetErrorInfo(int error_code) override;
+    virtual std::wstring GetErrorInfo() override;
 
     virtual PlayerCoreType GetCoreType() override { return PT_MCI; }
 

@@ -419,14 +419,20 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 void CPlayer::MusicControl(Command command, int volume_step)
 {
     if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
+    {
+        m_error_state = ES_FILE_NOT_EXIST;
         return;
+    }
 
     switch (command)
     {
     case Command::OPEN:
         m_error_code = 0;
+        m_error_state = ES_NO_ERROR;
         m_is_osu = COSUPlayerHelper::IsOsuFile(GetCurrentFilePath());
         m_pCore->Open(GetCurrentFilePath().c_str());
+        if (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0)
+            m_error_state = ES_FILE_CONNOT_BE_OPEN;
         //获取音频类型
         m_current_file_type = m_pCore->GetAudioType();		//根据通道信息获取当前音频文件的类型
         if (m_current_file_type.empty())		//如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
@@ -1076,7 +1082,19 @@ bool CPlayer::IsError() const
     if (m_loading)		//如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_code != 0 || (!IsMciCore() && m_pCore->GetHandle() == 0));
+        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0));
+}
+
+std::wstring CPlayer::GetErrorInfo()
+{
+    wstring error_info;
+    if (m_error_state == ES_FILE_NOT_EXIST)
+        error_info = CCommon::LoadText(IDS_FILE_NOT_EXIST).GetString();
+    else if (m_error_state == ES_FILE_CONNOT_BE_OPEN)
+        error_info = CCommon::LoadText(IDS_FILE_CONNOT_BE_OPEND).GetString();
+    else
+        error_info = m_pCore->GetErrorInfo();
+    return error_info;
 }
 
 void CPlayer::SetTitle() const

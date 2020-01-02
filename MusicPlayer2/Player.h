@@ -33,6 +33,13 @@ public:
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
 	ThreadInfo m_thread_info;
 
+    enum ErrorState
+    {
+        ES_NO_ERROR,
+        ES_FILE_NOT_EXIST,
+        ES_FILE_CONNOT_BE_OPEN
+    };
+
 private:
 	CWinThread* m_pThread{};		//初始化播放列表的线程
 
@@ -58,6 +65,7 @@ private:
 	int m_index_tmp{ 0 };
 	//int m_song_num{ 0 };	//播放列表中的歌曲总数
 	int m_error_code{ 0 };	//储存错误代码
+    ErrorState m_error_state{};
 	int m_playing{ 0 };		//正在播放标志（0：已停止，1：已暂停，2：正在播放）
 	RepeatMode m_repeat_mode;		//循环模式（0：顺序播放，1：随机播放，2：列表循环，3：单曲循环）
 	int m_volume{ 100 };		//音量（百分比）
@@ -174,6 +182,7 @@ public:
 
 	bool GetPlayerCoreError();		//获取BASS音频库的错误
 	bool IsError() const;				//有错误时返回ture，否则返回false
+    std::wstring GetErrorInfo();
 
 	void SetTitle() const;		//设置窗口标题
 

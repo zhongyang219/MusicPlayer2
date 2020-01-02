@@ -546,6 +546,14 @@ std::wstring CBassCore::GetErrorInfo(int error_code)
     return std::wstring(info);
 }
 
+std::wstring CBassCore::GetErrorInfo()
+{
+    CString info = CCommon::LoadText(IDS_ERROR_CODE, _T(": "));
+    int error_code = BASS_ErrorGetCode();
+    info += std::to_wstring(error_code).c_str();
+    return std::wstring(info);
+}
+
 int CBassCore::GetBASSCurrentPosition(HSTREAM hStream)
 {
     QWORD pos_bytes;
