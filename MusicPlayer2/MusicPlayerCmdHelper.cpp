@@ -198,7 +198,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
         CAudioCommon::GetAudioFiles(item, all_media_files, 50000, true);
     }
 
-    std::unordered_map<wstring, SongInfo> new_songs_map;
+    //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& file_path : all_media_files)
     {
         auto iter = theApp.m_song_data.find(file_path);
@@ -206,15 +206,15 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
         {
             SongInfo song_info;
             CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), song_info);
-            new_songs_map[file_path] = song_info;
+            theApp.m_song_data[file_path] = song_info;
             theApp.m_media_num_added++;
         }
     }
 
-    for (const auto& item : new_songs_map)
-    {
-        theApp.m_song_data[item.first] = item.second;
-    }
+    //for (const auto& item : new_songs_map)
+    //{
+    //    theApp.m_song_data[item.first] = item.second;
+    //}
 
     if(theApp.m_media_num_added > 0)
         theApp.SetSongDataModified();
