@@ -18,7 +18,8 @@ void CPlayerUI::_DrawInfo(bool reset)
     draw_rect.MoveToXY(0, 0);
 
     //绘制状态条
-    if (CPlayerUIHelper::IsDrawStatusBar())
+    bool draw_status_bar = CPlayerUIHelper::IsDrawStatusBar();
+    if (draw_status_bar)
     {
         CRect rc_status_bar = draw_rect;
         draw_rect.bottom -= DPI(20);
@@ -226,6 +227,13 @@ void CPlayerUI::_DrawInfo(bool reset)
 
     //绘制音量调按钮，因为必须在上层，所以必须在最后绘制
     DrawVolumnAdjBtn();
+
+    static bool last_draw_status_bar{ false };
+    if (draw_status_bar != last_draw_status_bar)
+    {
+        last_draw_status_bar = draw_status_bar;
+        UpdateToolTipPosition();
+    }
 }
 
 void CPlayerUI::DrawLyricsArea(CRect lyric_rect)

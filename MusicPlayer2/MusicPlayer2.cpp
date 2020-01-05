@@ -312,8 +312,8 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.663"));			//写入数据版本
-    ar << m_song_data.size();		//写入映射容器的大小
+    ar << CString(_T("2.664"));			//写入数据版本
+    ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
         ar << CString(song_data.first.c_str())		//保存映射容器的键，即歌曲的绝对路径
@@ -681,7 +681,7 @@ void CMusicPlayerApp::LoadSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::load);
     // 读数据
-    size_t size{};
+    int size{};
     SongInfo song_info;
     CString song_path;
     CString temp;
@@ -693,7 +693,16 @@ void CMusicPlayerApp::LoadSongData()
         ar >> version_str;
 		if (!CCommon::StringIsVersion(version_str))
 			version_str = _T("0.00");
-        ar >> size;		//读取映射容器的长度
+        if (version_str >= _T("2.664"))
+        {
+            ar >> size;		//读取映射容器的长度
+        }
+        else
+        {
+            size_t size_1;
+            ar >> size_1;
+            size = static_cast<int>(size_1);
+        }
         for (size_t i{}; i < size; i++)
         {
             ar >> song_path;

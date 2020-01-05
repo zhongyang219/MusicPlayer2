@@ -21,7 +21,8 @@ void CPlayerUI2::_DrawInfo(bool reset)
     draw_rect.MoveToXY(0, 0);
 
     //»æÖÆ×´Ì¬Ìõ
-    if (CPlayerUIHelper::IsDrawStatusBar())
+    bool draw_status_bar = CPlayerUIHelper::IsDrawStatusBar();
+    if (draw_status_bar)
     {
         CRect rc_status_bar = draw_rect;
         draw_rect.bottom -= DPI(20);
@@ -347,6 +348,13 @@ void CPlayerUI2::_DrawInfo(bool reset)
         rc_tmp.right = draw_rect.right - EdgeMargin(true);
         rc_tmp.bottom = draw_rect.bottom - EdgeMargin(false);
         DrawControlBar(rc_tmp);
+    }
+
+    static bool last_draw_status_bar{ false };
+    if (draw_status_bar != last_draw_status_bar)
+    {
+        last_draw_status_bar = draw_status_bar;
+        UpdateToolTipPosition();
     }
 }
 
