@@ -64,6 +64,7 @@ protected:
 	CButton m_use_inner_image_first_chk;
     CButton m_enable_background_chk;
     CButton m_low_freq_in_center_chk;
+    CComboBox m_alignment_combo;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 
@@ -109,4 +110,5 @@ public:
 	afx_msg void OnBnClickedUseInnerImageFirstCheck();
     afx_msg void OnBnClickedEnableBackgroundCheck();
     afx_msg void OnBnClickedLowFreqInCenterCheck();
+    afx_msg void OnCbnSelchangeAlignmentCombo();
 };

@@ -61,7 +61,7 @@ public:
     //split: 颜色分割位置，取值为0~1000（用于歌词动态显示）
     //center: 文本是否居中
     //no_clip_area: 如果为true，则不在输出文字时限制绘图区域
-    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, bool center, bool no_clip_area = false);
+    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align = Alignment::LEFT, bool no_clip_area = false);
 
     //在控件上绘制滚动的文本（当长度不够时），pixel指定此函数调用一次移动的像素值，如果reset为true，则滚动到初始位置
     //rect: 文本的矩形区域

@@ -181,7 +181,7 @@ void CPlayerUI::_DrawInfo(bool reset)
                 m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
         }
 
-        m_draw.DrawLryicCommon(lyric_rect);
+        m_draw.DrawLryicCommon(lyric_rect, theApp.m_app_setting_data.lyric_align);
     }
     else
     {
@@ -272,7 +272,7 @@ void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
     //CDrawCommon::SetDrawArea(pDC, lyric_area);
 
     //ªÊ÷∆∏Ë¥ Œƒ±æ
-    m_draw.DrawLryicCommon(lyric_area);
+    m_draw.DrawLryicCommon(lyric_area, theApp.m_app_setting_data.lyric_align);
 }
 
 CSize CPlayerUI::SpectralSize()

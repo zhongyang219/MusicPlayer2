@@ -18,15 +18,15 @@ public:
     CUIDrawer(UIColors& colors);
     ~CUIDrawer();
 
-    void DrawLryicCommon(CRect rect);
+    void DrawLryicCommon(CRect rect, Alignment align = Alignment::CENTER);
 
     int GetLyricTextHeight() const;
     virtual void Create(CDC* pDC, CWnd* pMainWnd /* = nullptr */) override;
     bool IsDrawMultiLine(int height) const;			//根据一个高度判断是否绘制多行歌词
     void SetForCortanaLyric(bool for_cortana_lyric = true);
 
-    void DrawLyricTextMultiLine(CRect rect);
-    void DrawLyricTextSingleLine(CRect rect, bool double_line = true);
+    void DrawLyricTextMultiLine(CRect rect, Alignment align = Alignment::CENTER);
+    void DrawLyricTextSingleLine(CRect rect, bool double_line = true, Alignment align = Alignment::CENTER);
 
     //绘制频谱分析
     //rect：频谱的矩形区域

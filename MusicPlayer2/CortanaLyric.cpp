@@ -136,11 +136,11 @@ void CCortanaLyric::DrawInfo()
             {
 				if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
 				{
-					m_draw.DrawLyricTextMultiLine(TextRect());
+					m_draw.DrawLyricTextMultiLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_align);
 				}
 				else
 				{
-					m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line);
+					m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
 				}
             }
             else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
@@ -242,9 +242,9 @@ void CCortanaLyric::DrawCortanaText(LPCTSTR str, int progress)
     {
         CRect text_rect{ TextRect() };
         if(theApp.m_lyric_setting_data.lyric_karaoke_disp)
-            m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color2, progress, false);
+            m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color2, progress);
         else
-            m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color, progress, false);
+            m_draw.DrawWindowText(text_rect, str, m_colors.text_color, m_colors.text_color, progress);
     }
 }
 

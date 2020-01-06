@@ -175,6 +175,7 @@ struct LyricSettingData
     bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
     bool cortana_show_spectrum{ false };		//是否在搜索框显示频谱
 	bool cortana_opaque{ false };				//搜索框不透明
+    Alignment cortana_lyric_align{ Alignment::CENTER };               //搜索框歌词对齐方式
 
 	bool show_desktop_lyric{ false };			//显示桌面歌词
 	DesktopLyricSettingData desktop_lyric_data;
@@ -184,6 +185,7 @@ struct ApperanceSettingData
 {
     FontInfo lyric_font;						//歌词字体
     int lyric_line_space{ 2 };					//歌词的行间距
+    Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
     int window_transparency{ 100 };				//窗口透明度
     ColorTable theme_color;						//主题颜色
     bool theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）

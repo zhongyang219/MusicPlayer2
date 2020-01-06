@@ -13,14 +13,14 @@ CUIDrawer::~CUIDrawer()
 {
 }
 
-void CUIDrawer::DrawLryicCommon(CRect rect)
+void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align)
 {
     SetDrawArea(rect);
 
     if (!IsDrawMultiLine(rect.Height()))
-        DrawLyricTextSingleLine(rect);
+        DrawLyricTextSingleLine(rect, true, align);
     else
-        DrawLyricTextMultiLine(rect);
+        DrawLyricTextMultiLine(rect, align);
 }
 
 int CUIDrawer::GetLyricTextHeight() const
@@ -48,7 +48,7 @@ void CUIDrawer::SetForCortanaLyric(bool for_cortana_lyric)
     m_for_cortana_lyric = for_cortana_lyric;
 }
 
-void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area)
+void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
 {
     int line_space{};
     if (m_for_cortana_lyric)
@@ -147,14 +147,14 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area)
                     //绘制歌词文本
                     SetLyricFont();
                     if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-                        DrawWindowText(rect_text, lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
+                        DrawWindowText(rect_text, lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
                     else
-                        DrawWindowText(rect_text, lyric.text.c_str(), text_color, text_color, progress, true, true);
+                        DrawWindowText(rect_text, lyric.text.c_str(), text_color, text_color, progress, align, true);
                     //绘制翻译文本
                     if (!lyric.translate.empty() && theApp.m_ui_data.show_translate)
                     {
                         SetLyricFontTranslated();
-                        DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, text_color, progress, true, true);
+                        DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, text_color, progress, align, true);
                     }
                 }
                 else		//绘制非正在播放的歌词
@@ -173,12 +173,12 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area)
                         text_color = m_colors.color_text_2;
                     }
                     //绘制歌词文本
-                    DrawWindowText(rect_text, CPlayer::GetInstance().m_Lyrics.GetLyric(i).text.c_str(), text_color, Alignment::CENTER, true);
+                    DrawWindowText(rect_text, CPlayer::GetInstance().m_Lyrics.GetLyric(i).text.c_str(), text_color, align, true);
                     //绘制翻译文本
                     if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_ui_data.show_translate)
                     {
                         SetLyricFontTranslated();
-                        DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, Alignment::CENTER, true);
+                        DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, align, true);
                     }
                 }
             }
@@ -186,7 +186,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area)
     }
 }
 
-void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line)
+void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment align)
 {
     SetLyricFont();
 
@@ -208,6 +208,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line)
             current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
         int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//获取当前歌词进度（范围为0~1000）
 
+        //双行显示歌词
         if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_ui_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
             wstring next_lyric_text = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
@@ -227,14 +228,14 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line)
                 translate_rect.MoveToY(lyric_rect.bottom);
 
                 SetLyricFontTranslated();
-                DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
+                DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
             }
 
             SetLyricFont();
             if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, true, true);
+                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
             else
-                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, true, true);
+                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
         }
 
         SetFont(m_pMainWnd->GetFont());
@@ -376,13 +377,13 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
 
     if (!swap)
     {
-        DrawWindowText(up_rect, lyric, color1, color2, progress, false);
+        DrawWindowText(up_rect, lyric, color1, color2, progress);
         DrawWindowText(down_rect, next_lyric, m_colors.color_text_2);
     }
     else
     {
         DrawWindowText(up_rect, next_lyric, m_colors.color_text_2);
-        DrawWindowText(down_rect, lyric, color1, color2, progress, false);
+        DrawWindowText(down_rect, lyric, color1, color2, progress);
     }
 }
 

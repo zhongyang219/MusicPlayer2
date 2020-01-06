@@ -72,7 +72,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	}
 }
 
-void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, bool center, bool no_clip_area)
+void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align, bool no_clip_area)
 {
 	if (split < 0) split = 0;
 	if (split > 1000) split = 1000;
@@ -90,8 +90,10 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 	text_size = m_pDC->GetTextExtent(lpszString);
 	//计算文字的起始坐标
 	text_top = rect.top + (rect.Height() - text_size.cy) / 2;
-	if (center)
-		text_left = rect.left + (rect.Width() - text_size.cx) / 2;
+    if (align == Alignment::CENTER)
+        text_left = rect.left + (rect.Width() - text_size.cx) / 2;
+    else if (align == Alignment::RIGHT)
+        text_left = rect.left + (rect.Width() - text_size.cx);
 	else
 		text_left = rect.left;
 	//计算背景文字和覆盖文字的矩形区域

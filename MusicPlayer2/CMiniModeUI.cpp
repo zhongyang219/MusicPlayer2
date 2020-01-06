@@ -180,7 +180,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
             COLORREF color2 = (theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text);
             if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
                 current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-            m_draw.DrawWindowText(rc_tmp, current_lyric.text.c_str(), m_colors.color_text, color2, progress, true);
+            m_draw.DrawWindowText(rc_tmp, current_lyric.text.c_str(), m_colors.color_text, color2, progress, Alignment::CENTER);
         }
     }
 }

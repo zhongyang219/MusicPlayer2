@@ -52,6 +52,7 @@ protected:
     CButton m_hide_lyric_without_lyric_chk;
     CButton m_hide_lyric_paused_chk;
     CButton m_lyric_background_penetrate_chk;
+    CComboBox m_alignment_combo;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -107,4 +108,6 @@ public:
 //    afx_msg void OnEnChangeLyricPathEdit();
 protected:
     afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnCbnSelchangeAlignmentCombo();
 };

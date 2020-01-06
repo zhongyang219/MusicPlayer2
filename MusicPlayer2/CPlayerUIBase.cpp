@@ -690,7 +690,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         }
         rc_tmp.right = rc_tmp.left;
         rc_tmp.left = rc_tmp.right - DPI(44);
-        m_draw.DrawWindowText(rc_tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress, false);
+        m_draw.DrawWindowText(rc_tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress);
     }
 
 

@@ -50,6 +50,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_HIDE_LYRIC_PAUSE_CHECK, m_hide_lyric_paused_chk);
     DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, m_lyric_background_penetrate_chk);
     DDX_Control(pDX, IDC_LYRIC_PATH_EDIT, m_lyric_dir_edit);
+    DDX_Control(pDX, IDC_ALIGNMENT_COMBO, m_alignment_combo);
 }
 
 
@@ -90,6 +91,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_COMMAND(ID_RESTORE_DEFAULT_STYLE, &CLyricSettingsDlg::OnRestoreDefaultStyle)
     //ON_EN_CHANGE(IDC_LYRIC_PATH_EDIT, &CLyricSettingsDlg::OnEnChangeLyricPathEdit)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CLyricSettingsDlg::OnEditBrowseChanged)
+    ON_CBN_SELCHANGE(IDC_ALIGNMENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo)
 END_MESSAGE_MAP()
 
 
@@ -171,6 +173,11 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_cortana_color_combo.AddString(CCommon::LoadText(IDS_WHITE));
 	m_cortana_color_combo.SetCurSel(m_data.cortana_color);
 
+    m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
+    m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
+    m_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
+    m_alignment_combo.SetCurSel(static_cast<int>(m_data.cortana_lyric_align));
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -188,6 +195,7 @@ void CLyricSettingsDlg::EnableControl()
 	m_show_spectrum_chk.EnableWindow(enable);
 	m_lyric_compatible_mode_chk.EnableWindow(m_data.cortana_info_enable);
     m_search_box_opaque_chk.EnableWindow(m_data.cortana_info_enable);
+    m_alignment_combo.EnableWindow(enable && m_data.cortana_show_lyric);
 
     bool desktop_lyric_enable = m_data.show_desktop_lyric;
     m_desktop_lyric_double_line_chk.EnableWindow(desktop_lyric_enable);
@@ -593,4 +601,11 @@ afx_msg LRESULT CLyricSettingsDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lPa
     GetDlgItemText(IDC_LYRIC_PATH_EDIT, str);
     m_data.lyric_path = str.GetString();
     return 0;
+}
+
+
+void CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.cortana_lyric_align = static_cast<Alignment>(m_alignment_combo.GetCurSel());
 }
