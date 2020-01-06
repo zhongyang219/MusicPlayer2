@@ -60,12 +60,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 	virtual BOOL OnInitDialog();
 	void EnableControl();
+    void EnableControlForDesktopLyric();
     void ApplyDefaultLyricStyle(const LyricStyleDefaultData& style);
 
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedKaraokeDisp();
-	afx_msg void OnBnClickedExploreLyricButton();
+	//afx_msg void OnBnClickedExploreLyricButton();
 	virtual void OnCancel();
 	virtual void OnOK();
 	afx_msg void OnBnClickedLyricFuzzyMatch();

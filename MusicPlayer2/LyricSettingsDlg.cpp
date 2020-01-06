@@ -155,6 +155,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	}
 
 	EnableControl();
+    EnableControlForDesktopLyric();
 
     m_lyric_dir_edit.SetWindowText(m_data.lyric_path.c_str());
     m_lyric_dir_edit.EnableFolderBrowseButton();
@@ -195,8 +196,11 @@ void CLyricSettingsDlg::EnableControl()
 	m_show_spectrum_chk.EnableWindow(enable);
 	m_lyric_compatible_mode_chk.EnableWindow(m_data.cortana_info_enable);
     m_search_box_opaque_chk.EnableWindow(m_data.cortana_info_enable);
-    m_alignment_combo.EnableWindow(enable && m_data.cortana_show_lyric);
+    m_alignment_combo.EnableWindow(enable && m_data.cortana_show_lyric/* && !m_data.cortana_lyric_double_line*/);
+}
 
+void CLyricSettingsDlg::EnableControlForDesktopLyric()
+{
     bool desktop_lyric_enable = m_data.show_desktop_lyric;
     m_desktop_lyric_double_line_chk.EnableWindow(desktop_lyric_enable);
     m_text_color1_static.EnableWindow(desktop_lyric_enable);
@@ -374,7 +378,7 @@ void CLyricSettingsDlg::OnBnClickedShowDesktopLyric()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.show_desktop_lyric = (m_show_desktop_lyric_chk.GetCheck() != 0);
-    EnableControl();
+    EnableControlForDesktopLyric();
 }
 
 
