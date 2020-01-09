@@ -344,6 +344,7 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CTabDlg)
     ON_COMMAND(ID_COPY_TEXT, &CMediaClassifyDlg::OnCopyText)
     ON_WM_SIZE()
     ON_WM_DESTROY()
+    ON_COMMAND(ID_DELETE_FROM_DISK, &CMediaClassifyDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
 
@@ -776,4 +777,20 @@ void CMediaClassifyDlg::OnDestroy()
 
     // TODO: 在此处添加消息处理程序代码
     m_classifer.ClearResult();
+}
+
+
+void CMediaClassifyDlg::OnDeleteFromDisk()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<SongInfo> songs_selected;
+    GetSongsSelected(songs_selected);
+    CMusicPlayerCmdHelper helper;
+    if (helper.DeleteSongsFromDisk(songs_selected))
+    {
+        //删除成功，则刷新列表
+        m_classifer.RemoveFiles(songs_selected);
+        ShowSongList();
+    }
+
 }

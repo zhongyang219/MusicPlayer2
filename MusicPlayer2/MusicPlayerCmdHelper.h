@@ -19,6 +19,9 @@ public:
 
     void OnAddToPlaylistCommand(std::function<void(std::vector<SongInfo>&)> get_song_list, DWORD command);
 
+    //从磁盘删除歌曲
+    bool DeleteSongsFromDisk(const std::vector<SongInfo>& files);
+
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）
     static int UpdateMediaLib();
 

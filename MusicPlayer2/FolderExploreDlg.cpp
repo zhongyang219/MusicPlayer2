@@ -246,6 +246,7 @@ BEGIN_MESSAGE_MAP(CFolderExploreDlg, CTabDlg)
     ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CFolderExploreDlg::OnEnChangeMfceditbrowse1)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFolderExploreDlg::OnSearchEditBtnClicked)
     ON_WM_INITMENU()
+    ON_COMMAND(ID_DELETE_FROM_DISK, &CFolderExploreDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
 
@@ -602,4 +603,18 @@ void CFolderExploreDlg::OnInitMenu(CMenu* pMenu)
 
     // TODO: 在此处添加消息处理程序代码
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
+}
+
+
+void CFolderExploreDlg::OnDeleteFromDisk()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<SongInfo> songs_selected;
+    GetSongsSelected(songs_selected);
+    CMusicPlayerCmdHelper helper;
+    if (helper.DeleteSongsFromDisk(songs_selected))
+    {
+        //删除成功，则刷新列表
+        ShowSongList();
+    }
 }

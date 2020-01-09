@@ -176,3 +176,21 @@ void CMediaClassifier::ClearResult()
 {
     m_media_list.clear();
 }
+
+void CMediaClassifier::RemoveFiles(std::vector<SongInfo> songs)
+{
+    auto isRemoved = [&](const SongInfo& song)
+    {
+        for (const auto& item : songs)
+        {
+            if (item.IsSameSong(song))
+                return true;
+        }
+        return false;
+    };
+    for (auto& item : m_media_list)
+    {
+        auto iter_removed = std::remove_if(item.second.begin(), item.second.end(), isRemoved);
+        item.second.erase(iter_removed, item.second.end());
+    }
+}

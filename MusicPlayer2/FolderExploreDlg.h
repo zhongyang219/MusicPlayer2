@@ -86,4 +86,5 @@ protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnInitMenu(CMenu* pMenu);
+    afx_msg void OnDeleteFromDisk();
 };

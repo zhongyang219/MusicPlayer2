@@ -207,6 +207,7 @@ BEGIN_MESSAGE_MAP(CFindDlg, CDialog)
     ON_COMMAND(ID_ITEM_PROPERTY, &CFindDlg::OnItemProperty)
     ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CFindDlg::OnAddToNewPalylistAndPlay)
     ON_WM_INITMENU()
+    ON_COMMAND(ID_DELETE_FROM_DISK, &CFindDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
 
@@ -679,4 +680,29 @@ BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
     return CDialog::OnCommand(wParam, lParam);
+}
+
+
+void CFindDlg::OnDeleteFromDisk()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<SongInfo> songs_selected;
+    GetSongsSelected(songs_selected);
+    CMusicPlayerCmdHelper helper;
+    if (helper.DeleteSongsFromDisk(songs_selected))
+    {
+        //删除成功，则刷新列表
+        auto isRemoved = [&](const SongInfo& song)
+        {
+            for (const auto& item : songs_selected)
+            {
+                if (item.IsSameSong(song))
+                    return true;
+            }
+            return false;
+        };
+        auto iter_removed = std::remove_if(m_find_result.begin(), m_find_result.end(), isRemoved);
+        m_find_result.erase(iter_removed, m_find_result.end());
+        ShowFindResult();
+    }
 }

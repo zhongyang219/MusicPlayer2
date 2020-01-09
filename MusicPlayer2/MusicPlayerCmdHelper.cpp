@@ -8,6 +8,7 @@
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
 #include "AudioCommon.h"
+#include "COSUPlayerHelper.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -188,6 +189,64 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         }
     }
 
+}
+
+bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& files)
+{
+    vector<wstring> delected_files;
+    for (const auto& song : files)
+    {
+        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path))
+            delected_files.push_back(song.file_path);
+
+    }
+    if (delected_files.empty())
+        return false;
+
+    wstring current_file = CPlayer::GetInstance().GetCurrentSongInfo().file_path;
+    //如何要删除的文件是正在播放的文件，则先停止播放
+    if (CCommon::IsItemInVector(delected_files, current_file))
+    {
+        CPlayer::GetInstance().MusicControl(Command::STOP);
+        CPlayer::GetInstance().MusicControl(Command::CLOSE);
+    }
+    int rtn{};
+    rtn = CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
+    if (rtn == 0)
+    {
+        //如果文件删除成功，则从歌曲数据中删除
+        for (const auto& file : delected_files)
+        {
+            auto iter = theApp.m_song_data.find(file);
+            if (iter != theApp.m_song_data.end())
+            {
+                theApp.m_song_data.erase(iter);
+            }
+        }
+        //文件删除后同时删除和文件同名的图片文件和歌词文件
+        for (auto& file : delected_files)
+        {
+            CFilePathHelper file_path(file);
+            file = file_path.ReplaceFileExtension(L"jpg").c_str();
+        }
+        CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
+        for (auto& file : delected_files)
+        {
+            CFilePathHelper file_path(file);
+            file = file_path.ReplaceFileExtension(L"lrc").c_str();
+        }
+        CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
+    }
+    else if (rtn == 1223)	//如果在弹出的对话框中点击“取消”则返回值为1223
+    {
+        return false;
+    }
+    else
+    {
+        GetOwner()->MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
+        return false;
+    }
+    return true;
 }
 
 int CMusicPlayerCmdHelper::UpdateMediaLib()

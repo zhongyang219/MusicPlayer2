@@ -114,4 +114,5 @@ private:
 public:
     afx_msg void OnInitMenu(CMenu* pMenu);
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnDeleteFromDisk();
 };
