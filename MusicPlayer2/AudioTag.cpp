@@ -212,7 +212,7 @@ bool CAudioTag::GetID3V2Tag()
 			{
 				tag_index = tag_content.find("TPE2");
 			}
-			if (tag_index != string::npos)
+			if (tag_index != string::npos && tag_index < tag_content.size() - 8)
 			{
 				string size = tag_content.substr(tag_index + 4, 4);
 				const size_t tag_size = (BYTE)size[0] * 0x1000000 + (BYTE)size[1] * 0x10000 + (BYTE)size[2] * 0x100 + (BYTE)size[3];	//获取当前标签的大小

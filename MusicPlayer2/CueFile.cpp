@@ -105,10 +105,14 @@ void CCueFile::DoAnalysis()
         time_index01 = PhaseIndex(index01_pos);
 
         song_info.start_pos = time_index01;
-        if (!time_index00.isZero() && !m_result.empty())
+        if (!m_result.empty())
         {
-            m_result.back().end_pos = time_index00;
-            m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
+			if(!time_index00.isZero())
+				m_result.back().end_pos = time_index00;
+			else
+				m_result.back().end_pos = time_index01;
+			if(!m_result.back().end_pos.isZero())
+				m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
         }
 
         m_result.push_back(song_info);
