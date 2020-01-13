@@ -364,32 +364,32 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
                 }
             }
 
-            //没有找到的话就寻找歌词文件中只包含歌曲标题的歌词文件
-            if (matched_lyric.empty())
-            {
-                for (const auto& str : m_current_path_lyrics)	//在当前目录下寻找
-                {
-                    //if (str.find(song.title) != string::npos)
-                    if (CCommon::StringNatchWholeWord(str, song.title) != -1)
-                    {
-                        matched_lyric = (m_playlist_mode ? file_dir : m_path) + str;
-                        break;
-                    }
-                }
-            }
+            ////没有找到的话就寻找歌词文件中只包含歌曲标题的歌词文件
+            //if (matched_lyric.empty())
+            //{
+            //    for (const auto& str : m_current_path_lyrics)	//在当前目录下寻找
+            //    {
+            //        //if (str.find(song.title) != string::npos)
+            //        if (CCommon::StringNatchWholeWord(str, song.title) != -1)
+            //        {
+            //            matched_lyric = (m_playlist_mode ? file_dir : m_path) + str;
+            //            break;
+            //        }
+            //    }
+            //}
 
-            if (matched_lyric.empty())
-            {
-                for (const auto& str : m_lyric_path_lyrics)	//在歌词目录下寻找
-                {
-                    //if (str.find(song.title) != string::npos)
-                    if (CCommon::StringNatchWholeWord(str, song.title) != -1)
-                    {
-                        matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
-                        break;
-                    }
-                }
-            }
+            //if (matched_lyric.empty())
+            //{
+            //    for (const auto& str : m_lyric_path_lyrics)	//在歌词目录下寻找
+            //    {
+            //        //if (str.find(song.title) != string::npos)
+            //        if (CCommon::StringNatchWholeWord(str, song.title) != -1)
+            //        {
+            //            matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
+            //            break;
+            //        }
+            //    }
+            //}
 
             if (!matched_lyric.empty())
                 song.lyric_file = matched_lyric;

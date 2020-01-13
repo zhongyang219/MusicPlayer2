@@ -22,6 +22,10 @@ public:
     //从磁盘删除歌曲
     bool DeleteSongsFromDisk(const std::vector<SongInfo>& files);
 
+	//查找匹配的歌词文件（暂未使用）
+	void SearchLyricFiles(const SongInfo& song, std::vector<std::wstring>& result, bool fuzzy_match);
+	std::wstring SearchLyricFile(const SongInfo& song, bool fuzzy_match);
+
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）
     static int UpdateMediaLib();
 
