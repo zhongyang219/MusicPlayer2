@@ -475,6 +475,7 @@
 #define IDD_ADD_TO_PLAYLIST_DIALOG      426
 #define IDS_RESTORE_DEFAULT_STYTLE_WARNING 427
 #define IDS_URL_INVALID_WARNING         428
+#define IDD_ALL_MEDIA_DIALOG            428
 #define IDS_PROGRESS_INFO               429
 #define IDS_BASS_MIX_LOAD_ERROR         430
 #define IDS_BROWSE                      431
@@ -500,6 +501,7 @@
 #define IDS_ALIGN_LEFT                  451
 #define IDS_ALIGN_RIGHT                 452
 #define IDS_CENTER                      453
+#define IDS_ALL_TRACKS                  454
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1136,7 +1138,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        428
+#define _APS_NEXT_RESOURCE_VALUE        431
 #define _APS_NEXT_COMMAND_VALUE         33150
 #define _APS_NEXT_CONTROL_VALUE         1164
 #define _APS_NEXT_SYMED_VALUE           101

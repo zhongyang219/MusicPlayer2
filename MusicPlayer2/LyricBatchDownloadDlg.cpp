@@ -145,8 +145,8 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 		CString tmp;
 		tmp.Format(_T("%d"), i + 1);
 		m_song_list_ctrl.InsertItem(i, tmp);
-		m_song_list_ctrl.SetItemText(i, 1, m_playlist[i].title.c_str());
-		m_song_list_ctrl.SetItemText(i, 2, m_playlist[i].artist.c_str());
+		m_song_list_ctrl.SetItemText(i, 1, m_playlist[i].GetTitle().c_str());
+		m_song_list_ctrl.SetItemText(i, 2, m_playlist[i].GetArtist().c_str());
 		m_song_list_ctrl.SetItemText(i, 3, m_playlist[i].GetFileName().c_str());
 	}
 

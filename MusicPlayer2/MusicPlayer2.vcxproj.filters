@@ -625,6 +625,9 @@
     <ClInclude Include="UpdateHelper.h">
       <Filter>公共的类\UpdateHelper</Filter>
     </ClInclude>
+    <ClInclude Include="AllMediaDlg.h">
+      <Filter>对话框类\媒体库对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -938,6 +941,9 @@
     </ClCompile>
     <ClCompile Include="UpdateHelper.cpp">
       <Filter>公共的类\UpdateHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="AllMediaDlg.cpp">
+      <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

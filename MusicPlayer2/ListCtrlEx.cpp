@@ -165,7 +165,13 @@ void CListCtrlEx::SetListData(const ListData& list_data)
     {
         const RowData& data_row = list_data[i];
         if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
-            InsertItem(i, data_row.at(0).c_str());
+		{
+			auto iter = data_row.find(0);
+			if (iter != data_row.end())
+				InsertItem(i, data_row.at(0).c_str());
+			else
+				InsertItem(i, _T(""));
+		}
         for (const auto& item : data_row)
         {
             SetItemText(i, item.first, item.second.c_str());

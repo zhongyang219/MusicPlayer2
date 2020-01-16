@@ -3,6 +3,7 @@
 #include "CSelectPlaylist.h"
 #include "MediaClassifyDlg.h"
 #include "FolderExploreDlg.h"
+#include "AllMediaDlg.h"
 
 // CMediaLibDlg 对话框
 
@@ -26,6 +27,7 @@ public:
     CMediaClassifyDlg m_album_dlg{ CMediaClassifier::CT_ALBUM };
     CMediaClassifyDlg m_genre_dlg{ CMediaClassifier::CT_GENRE };
     CMediaClassifyDlg m_year_dlg{ CMediaClassifier::CT_YEAR };
+	CAllMediaDlg m_all_media_dlg;
     CFolderExploreDlg m_folder_explore_dlg;
 
 protected:

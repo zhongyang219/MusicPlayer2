@@ -197,6 +197,7 @@
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AddToPlaylistDlg.h" />
+    <ClInclude Include="AllMediaDlg.h" />
     <ClInclude Include="AppearanceSettingDlg.h" />
     <ClInclude Include="AudioCommon.h" />
     <ClInclude Include="AudioTag.h" />
@@ -312,6 +313,7 @@
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="AddToPlaylistDlg.cpp" />
+    <ClCompile Include="AllMediaDlg.cpp" />
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
     <ClCompile Include="AudioTag.cpp" />
