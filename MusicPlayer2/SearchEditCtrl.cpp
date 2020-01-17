@@ -23,7 +23,7 @@ void CSearchEditCtrl::OnBrowse()
 {
     CWnd* pParent = GetParent();
     if (pParent != nullptr)
-        pParent->SendMessage(WM_SEARCH_EDIT_BTN_CLICKED, 0, 0);
+        pParent->SendMessage(WM_SEARCH_EDIT_BTN_CLICKED, (WPARAM)this, 0);
 }
 
 void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot)

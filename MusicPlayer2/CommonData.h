@@ -349,6 +349,7 @@ struct IconSet
     IconRes add;
     IconRes artist;
     IconRes album;
+    IconRes genre;
     IconRes year;
     IconRes folder_explore;
 

@@ -302,11 +302,10 @@ UINT CMediaClassifyDlg::ViewOnlineThreadFunc(LPVOID lpParam)
         wstring file_path = pThis->m_song_list_ctrl.GetItemText(pThis->m_right_selected_item, COL_PATH).GetString();
         if (CCommon::FileExist(file_path))
         {
-            SongInfo song{ theApp.m_song_data[file_path] };
-            song.file_path = file_path;
-            CMusicPlayerCmdHelper cmd_helper(pThis);
-            cmd_helper.VeiwOnline(song);
-        }
+			SongInfo song{ theApp.GetSongInfo(file_path) };
+			CMusicPlayerCmdHelper cmd_helper(pThis);
+			cmd_helper.VeiwOnline(song);
+		}
 
     }
     return 0;

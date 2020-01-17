@@ -452,6 +452,7 @@
     <Image Include="res\file_icon.ico" />
     <Image Include="res\Find.ico" />
     <Image Include="res\folder_explore_d.ico" />
+    <Image Include="res\genre_d.ico" />
     <Image Include="res\heart.ico" />
     <Image Include="res\lock_d.ico" />
     <Image Include="res\media_lib.ico" />

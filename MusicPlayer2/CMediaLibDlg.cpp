@@ -94,7 +94,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
     ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));

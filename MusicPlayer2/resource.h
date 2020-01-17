@@ -479,6 +479,7 @@
 #define IDS_PROGRESS_INFO               429
 #define IDS_BASS_MIX_LOAD_ERROR         430
 #define IDS_BROWSE                      431
+#define IDI_GENRE_D                     431
 #define IDS_OTHER                       432
 #define IDS_SEARCH_ARTIST               433
 #define IDS_SEARCH_ALBUM                434
@@ -1138,7 +1139,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        431
+#define _APS_NEXT_RESOURCE_VALUE        432
 #define _APS_NEXT_COMMAND_VALUE         33150
 #define _APS_NEXT_CONTROL_VALUE         1164
 #define _APS_NEXT_SYMED_VALUE           101

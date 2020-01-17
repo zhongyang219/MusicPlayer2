@@ -168,7 +168,7 @@ void CListCtrlEx::SetListData(const ListData& list_data)
 		{
 			auto iter = data_row.find(0);
 			if (iter != data_row.end())
-				InsertItem(i, data_row.at(0).c_str());
+				InsertItem(i, iter->second.c_str());
 			else
 				InsertItem(i, _T(""));
 		}
