@@ -151,20 +151,30 @@ void CListCtrlEx::FillLeftSpaceAfterPaint(bool fill)
     m_fill_left_space_after_paint = fill;
 }
 
-void CListCtrlEx::SetListData(const ListData& list_data)
+void CListCtrlEx::SetListData(ListData* pListData)
 {
-    int item_num_before = GetItemCount();
-    int item_num_after = list_data.size();
-    //如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
-    if (item_num_after < item_num_before)
-    {
-        DeleteAllItems();
-        item_num_before = 0;
-    }
-    for (int i{}; i < item_num_after; i++)
-    {
-        const RowData& data_row = list_data[i];
-        if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+	if (pListData == nullptr)
+		return;
+
+	m_pListData = pListData;
+
+	SetItemCount(pListData->size());
+}
+
+void CListCtrlEx::SetListData(const ListData & list_data)
+{
+	int item_num_before = GetItemCount();
+	int item_num_after = list_data.size();
+	//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
+	if (item_num_after < item_num_before)
+	{
+		DeleteAllItems();
+		item_num_before = 0;
+	}
+	for (int i{}; i < item_num_after; i++)
+	{
+		const RowData& data_row = list_data[i];
+		if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
 		{
 			auto iter = data_row.find(0);
 			if (iter != data_row.end())
@@ -172,11 +182,11 @@ void CListCtrlEx::SetListData(const ListData& list_data)
 			else
 				InsertItem(i, _T(""));
 		}
-        for (const auto& item : data_row)
-        {
-            SetItemText(i, item.first, item.second.c_str());
-        }
-    }
+		for (const auto& item : data_row)
+		{
+			SetItemText(i, item.first, item.second.c_str());
+		}
+	}
 }
 
 BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
@@ -188,6 +198,7 @@ BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
     ON_WM_LBUTTONUP()
     ON_WM_SETCURSOR()
     ON_WM_ERASEBKGND()
+	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &CListCtrlEx::OnLvnGetdispinfo)
 END_MESSAGE_MAP()
 
 
@@ -221,7 +232,8 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 			{
 				this_item_select = true;
-				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				//注：当使用虚拟列表时，如果取消下面一行的注释，会导致当列表选中行处理可见状态时，窗口刷新不正常，甚至主窗口OnTimer也无法响应，原因暂时不明
+				//SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 				lplvdr->clrText = m_theme_color.dark3;
 				lplvdr->clrTextBk = m_theme_color.light2;
 			}
@@ -382,4 +394,22 @@ BOOL CListCtrlEx::OnEraseBkgnd(CDC* pDC)
 
     //return CListCtrl::OnEraseBkgnd(pDC);
     return TRUE;
+}
+
+
+void CListCtrlEx::OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	NMLVDISPINFO *pDispInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	if (pDispInfo->hdr.hwndFrom == m_hWnd && m_pListData != nullptr)
+	{
+		if (pDispInfo->item.iItem >= 0 && pDispInfo->item.iItem < static_cast<int>(m_pListData->size()))
+		{
+			auto& row_data{ m_pListData->at(pDispInfo->item.iItem) };
+			auto iter = row_data.find(pDispInfo->item.iSubItem);
+			if (iter != row_data.end())
+				CCommon::WStringCopy(pDispInfo->item.pszText, pDispInfo->item.cchTextMax, iter->second.c_str());
+		}
+	}
+	*pResult = 0;
 }

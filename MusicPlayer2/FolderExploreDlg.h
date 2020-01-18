@@ -46,6 +46,7 @@ protected:
     HTREEITEM m_tree_item_selected{};
     CString m_selected_string;
     bool m_searched{ false };
+	CListCtrlEx::ListData m_list_data;	//右侧列表数据
 
 protected:
     void ShowFolderTree();

@@ -46,6 +46,8 @@ protected:
     CString m_default_str;              //“艺术家”或“唱片集”为空的字符串
     bool m_searched{ false };           //是否处于搜索状态
     CMediaClassifier::MediaList m_search_result;  //保存搜索结果
+	CListCtrlEx::ListData m_list_data_left;	//左侧列表数据
+	CListCtrlEx::ListData m_list_data;	//右侧列表数据
 
     int last_selected_index{ -2 };
     std::vector<int> m_left_selected_items;   //左侧列表选中的项目的序号

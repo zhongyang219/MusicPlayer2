@@ -57,6 +57,7 @@ void CAllMediaDlg::OnTabEntered()
 	SetButtonsEnable(m_song_list_ctrl.GetCurSel() >= 0);
 	if (!m_initialized)
 	{
+		CWaitCursor wait_cursor;
 		InitListData();
 		ShowSongList();
 		m_initialized = true;
@@ -103,9 +104,9 @@ void CAllMediaDlg::ShowSongList()
 {
 	CWaitCursor wait_cursor;
 	if (m_searched)
-		m_song_list_ctrl.SetListData(m_list_data_searched);
+		m_song_list_ctrl.SetListData(&m_list_data_searched);
 	else
-		m_song_list_ctrl.SetListData(m_list_data);
+		m_song_list_ctrl.SetListData(&m_list_data);
 }
 
 void CAllMediaDlg::QuickSearch(const wstring& key_word)

@@ -131,7 +131,7 @@ void CFolderExploreDlg::ShowSongList()
     }
 
     //显示到列表控件中
-    CListCtrlEx::ListData list_data;
+	m_list_data.clear();
     for (const auto& item : song_list)
     {
         CListCtrlEx::RowData row_data;
@@ -140,9 +140,9 @@ void CFolderExploreDlg::ShowSongList()
         row_data[COL_ARTIST] = item.GetArtist();
         row_data[COL_ALBUM] = item.GetAlbum();
         row_data[COL_PATH] = item.file_path;
-        list_data.push_back(std::move(row_data));
+		m_list_data.push_back(std::move(row_data));
     }
-    m_song_list_ctrl.SetListData(list_data);
+    m_song_list_ctrl.SetListData(&m_list_data);
 }
 
 void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)

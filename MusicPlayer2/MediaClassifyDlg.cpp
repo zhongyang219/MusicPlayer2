@@ -90,8 +90,8 @@ void CMediaClassifyDlg::ShowClassifyList()
 {
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
-    CListCtrlEx::ListData list_data;
-    for(const auto& item : media_list)
+	m_list_data_left.clear();
+	for(const auto& item : media_list)
     {
         if(item.first == STR_OTHER_CLASSIFY_TYPE)       //跳过“其他”分类
             continue;
@@ -105,7 +105,7 @@ void CMediaClassifyDlg::ShowClassifyList()
         CListCtrlEx::RowData row_data;
         row_data[0] = item_name;
         row_data[1] = std::to_wstring(item.second.size());
-        list_data.push_back(std::move(row_data));
+		m_list_data_left.push_back(std::move(row_data));
     }
 
     //将“其他”分类放到列表的最后面
@@ -116,9 +116,9 @@ void CMediaClassifyDlg::ShowClassifyList()
         CListCtrlEx::RowData row_data;
         row_data[0] = wstring(item_name);
         row_data[1] = std::to_wstring(iter->second.size());
-        list_data.push_back(std::move(row_data));
+		m_list_data_left.push_back(std::move(row_data));
     }
-    m_classify_list_ctrl.SetListData(list_data);
+    m_classify_list_ctrl.SetListData(&m_list_data_left);
 }
 
 void CMediaClassifyDlg::ShowSongList()
@@ -126,7 +126,7 @@ void CMediaClassifyDlg::ShowSongList()
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
 
-    CListCtrlEx::ListData list_data;
+	m_list_data.clear();
     for (int index : m_left_selected_items)
     {
         CString str_selected = GetClassifyListSelectedString(index);
@@ -146,12 +146,12 @@ void CMediaClassifyDlg::ShowSongList()
                 row_data[COL_TRACK] = track_str;
                 row_data[COL_GENRE] = item.GetGenre();
                 row_data[COL_PATH] = item.file_path;
-                list_data.push_back(std::move(row_data));
+				m_list_data.push_back(std::move(row_data));
             }
         }
     }
 
-    m_song_list_ctrl.SetListData(list_data);
+    m_song_list_ctrl.SetListData(&m_list_data);
 }
 
 CString CMediaClassifyDlg::GetClassifyListSelectedString(int index) const
@@ -259,7 +259,8 @@ void CMediaClassifyDlg::OnTabEntered()
     SetButtonsEnable();
     if (!m_initialized)
     {
-        m_classifer.ClassifyMedia();
+		CWaitCursor wait_cursor;
+		m_classifer.ClassifyMedia();
         ShowClassifyList();
         m_initialized = true;
     }

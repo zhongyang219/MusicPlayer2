@@ -28,11 +28,17 @@ public:
     void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd);
     void FillLeftSpaceAfterPaint(bool fill);        //如果为true，则在每行绘制之后填充左侧空白，否则在绘制之前填充（如果表格没有图标或复选框，则应设置为true，否则设置为false）
 
-    typedef map<int, wstring> RowData;      //列表数据中每一行的数据，，map的key为列序号，value为显示的文本
+    typedef map<int, wstring> RowData;      //列表数据中每一行的数据，map的key为列序号，value为显示的文本
     typedef vector<RowData> ListData;       //列表数据，其中vector为每一行的数据
 
     //设置列表数据
-    void SetListData(const ListData& list_data);
+	//（注：使用此函数设置列表数据使用了虚拟列表的方式，可显著提升在数据量很多的情况下的加载速度，
+	//使用此函数时必须确保列表具有 LVS_OWNERDATA 样式）
+    void SetListData(ListData* pListData);
+
+	//设置列表数据
+	//（使用传统的方式）
+	void SetListData(const ListData& list_data);
 
 protected:
 	const ColorTable& m_theme_color;
@@ -42,6 +48,7 @@ protected:
     bool m_dragging{ false };
     HCURSOR m_drag_cursor{};
     bool m_fill_left_space_after_paint{ true };
+	ListData* m_pListData{};
 
 public:
 	DECLARE_MESSAGE_MAP()
@@ -55,5 +62,6 @@ public:
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg void OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
