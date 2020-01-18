@@ -68,13 +68,12 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 		for (const auto& song : m_all_song_info)
 		{
 			CListCtrlEx::RowData row_data;
-			row_data[0] = std::to_wstring(index);
+			row_data[0] = std::to_wstring(index + 1);
 			row_data[1] = GetDisplayStr(song, display_format);
 			row_data[2] = song.lengh.toString();
 			m_list_data.push_back(std::move(row_data));
 			index++;
 		}
-		SetListData(&m_list_data);
 	}
 	else		//只显示搜索结果的曲目
 	{
@@ -91,14 +90,14 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 			for (int index : m_search_result)
 			{
 				CListCtrlEx::RowData row_data;
-				row_data[0] = std::to_wstring(index);
+				row_data[0] = std::to_wstring(index + 1);
 				row_data[1] = GetDisplayStr(m_all_song_info[index], display_format);
 				row_data[2] = m_all_song_info[index].lengh.toString();
 				m_list_data.push_back(std::move(row_data));
 			}
 		}
-		SetListData(&m_list_data);
 	}
+	SetListData(&m_list_data);
 }
 
 void CPlayListCtrl::QuickSearch(const wstring & key_word)

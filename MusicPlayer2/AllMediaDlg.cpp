@@ -247,10 +247,23 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			std::sort(list_data.begin(), list_data.end(), [&](const CListCtrlEx::RowData& a, const CListCtrlEx::RowData& b)
 			{ 
-				if (ascending)
-					return a.at(phdr->iItem) < b.at(phdr->iItem);
+				if (phdr->iItem == COL_TRACK)		//如果是对“音轨号”排序，则需要将字符串转换成数字
+				{
+					int index_a, index_b;
+					index_a = _ttoi(a.at(phdr->iItem).c_str());
+					index_b = _ttoi(b.at(phdr->iItem).c_str());
+					if (ascending)
+						return index_a < index_b;
+					else
+						return index_a > index_b;
+				}
 				else
-					return a.at(phdr->iItem) > b.at(phdr->iItem);
+				{
+					if (ascending)
+						return a.at(phdr->iItem) < b.at(phdr->iItem);
+					else
+						return a.at(phdr->iItem) > b.at(phdr->iItem);
+				}
 			});
 			if (!m_searched)
 				UpdateListIndex();

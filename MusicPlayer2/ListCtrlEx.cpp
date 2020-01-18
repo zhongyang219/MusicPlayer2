@@ -155,14 +155,13 @@ void CListCtrlEx::SetListData(ListData* pListData)
 {
 	if (pListData == nullptr)
 		return;
-
 	m_pListData = pListData;
-
 	SetItemCount(pListData->size());
 }
 
 void CListCtrlEx::SetListData(const ListData & list_data)
 {
+	m_pListData = nullptr;
 	int item_num_before = GetItemCount();
 	int item_num_after = list_data.size();
 	//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
