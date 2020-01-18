@@ -35,6 +35,7 @@ protected:
 	const vector<SongInfo>& m_all_song_info;		//储存播放列表中所有歌曲的信息
 	vector<int> m_search_result;					//储存快速搜索结果的歌曲序号
 	bool m_searched{ false };
+	ListData m_list_data;
 
 protected:
 	void CalculateColumeWidth(vector<int>& width);

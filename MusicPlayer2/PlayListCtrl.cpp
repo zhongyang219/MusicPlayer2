@@ -55,63 +55,49 @@ wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat d
 void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_result)
 {
 	m_searched = search_result;
+	m_list_data.clear();
 	if (m_all_song_info.size() == 1 && m_all_song_info[0].file_path.empty())
 	{
 		DeleteAllItems();
 		return;
 	}
+
 	if (!search_result)		//显示所有曲目
 	{
-		int item_num_before = GetItemCount();
-		int item_num_after = CPlayer::GetInstance().GetSongNum();
-		//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
-		if (item_num_after < item_num_before)
+		int index{};
+		for (const auto& song : m_all_song_info)
 		{
-			DeleteAllItems();
-			item_num_before = 0;
+			CListCtrlEx::RowData row_data;
+			row_data[0] = std::to_wstring(index);
+			row_data[1] = GetDisplayStr(song, display_format);
+			row_data[2] = song.lengh.toString();
+			m_list_data.push_back(std::move(row_data));
+			index++;
 		}
-		CString str;
-		for (int i{}; i < item_num_after; i++)
-		{
-			str.Format(_T("%u"), i + 1);
-			if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
-			{
-				InsertItem(i, str);
-			}
-			SetItemText(i, 0, str);
-			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[i], display_format)).c_str());
-			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(i).toString().c_str());
-		}
+		SetListData(&m_list_data);
 	}
 	else		//只显示搜索结果的曲目
 	{
 		if (m_search_result.empty())
 		{
-			DeleteAllItems();
-			InsertItem(0, _T(""));
-			SetItemText(0, 1, CCommon::LoadText(IDS_NO_RESULT_TO_SHOW));
-			return;
+			CListCtrlEx::RowData row_data;
+			row_data[0] = wstring();
+			row_data[1] = CCommon::LoadText(IDS_NO_RESULT_TO_SHOW).GetString();
+			m_list_data.push_back(std::move(row_data));
+
 		}
-		int item_num_before = GetItemCount();
-		int item_num_after = m_search_result.size();
-		//如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
-		if (item_num_after < item_num_before)
+		else
 		{
-			DeleteAllItems();
-			item_num_before = 0;
-		}
-		CString str;
-		for (int i{}; i < item_num_after; i++)
-		{
-			str.Format(_T("%u"), m_search_result[i] + 1);
-			if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+			for (int index : m_search_result)
 			{
-				InsertItem(i, str);
+				CListCtrlEx::RowData row_data;
+				row_data[0] = std::to_wstring(index);
+				row_data[1] = GetDisplayStr(m_all_song_info[index], display_format);
+				row_data[2] = m_all_song_info[index].lengh.toString();
+				m_list_data.push_back(std::move(row_data));
 			}
-			SetItemText(i, 0, str);
-			SetItemText(i, 1, (GetDisplayStr(m_all_song_info[m_search_result[i]], display_format)).c_str());
-			SetItemText(i, 2, CPlayer::GetInstance().GetAllSongLength(m_search_result[i]).toString().c_str());
 		}
+		SetListData(&m_list_data);
 	}
 }
 
@@ -348,7 +334,7 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == hightlight_item)
 				{
 					this_item_select = true;
-					SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+					//SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 					lplvdr->clrText = m_theme_color.light3;
 					lplvdr->clrTextBk = m_theme_color.dark1;
 				}
@@ -356,7 +342,7 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 				{
 					this_item_select = true;
-					SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+					//SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 					lplvdr->clrText = m_theme_color.dark3;
 					lplvdr->clrTextBk = m_theme_color.light2;
 				}

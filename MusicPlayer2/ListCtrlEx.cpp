@@ -224,7 +224,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
 			{
 				this_item_select = true;
-				SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
+				//SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 				lplvdr->clrText = m_theme_color.light3;
 				lplvdr->clrTextBk = m_theme_color.dark1;
 			}
