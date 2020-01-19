@@ -190,9 +190,15 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
     if (CPlayer::GetInstance().IsPlaylistMode())
-        m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+	{
+		m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+		m_path_static.SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+	}
     else
-        m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
+	{
+		m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
+		m_path_static.SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+	}
 
     //初始化播放列表工具栏
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));

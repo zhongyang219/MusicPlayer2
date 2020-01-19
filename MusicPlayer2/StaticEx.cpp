@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "StaticEx.h"
 #include "DrawCommon.h"
+#include "MusicPlayer2.h"
 
 
 CStaticEx::CStaticEx()
@@ -36,6 +37,12 @@ CString CStaticEx::GetWindowText() const
     return str;
 }
 
+void CStaticEx::SetIcon(HICON hIcon, CSize size)
+{
+	m_hIcon = hIcon;
+	m_icon_size = size;
+}
+
 BEGIN_MESSAGE_MAP(CStaticEx, CStatic)
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
@@ -54,9 +61,28 @@ void CStaticEx::OnPaint()
 	GetClientRect(rect);
 	CString str;
 	CStatic::GetWindowText(str);
+	//绘制背景
 	if(!m_transparent)
 		draw.FillRect(rect, m_back_color);
 	else
 		DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//重绘控件区域以解决文字重叠的问题
-	draw.DrawWindowText(rect, str, m_text_color);
+
+	CRect rc_text = rect;
+
+	//绘制图标
+	bool draw_icon = (m_hIcon != NULL && m_icon_size.cx > 0 && m_icon_size.cy > 0);
+	if (draw_icon)
+	{
+		CRect rc_tmp = rect;
+		rc_tmp.right = rc_tmp.left + m_icon_size.cx + theApp.DPI(4);
+		rc_text.left = rc_tmp.right;
+		CPoint icon_left_top;
+		icon_left_top.x = rc_tmp.left + (rc_tmp.Width() - m_icon_size.cx) / 2;
+		icon_left_top.y = rc_tmp.top + (rc_tmp.Height() - m_icon_size.cy) / 2;
+		draw.SetDrawArea(rc_tmp);
+		draw.DrawIcon(m_hIcon, icon_left_top, m_icon_size);
+	}
+
+	//绘制文本
+	draw.DrawWindowText(rc_text, str, m_text_color);
 }

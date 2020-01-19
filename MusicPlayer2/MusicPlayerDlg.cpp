@@ -479,7 +479,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     //‘ÿ»Î√ΩÃÂø‚…Ë÷√
     ini.GetStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders, vector<wstring>{CCommon::GetSpecialDir(CSIDL_MYMUSIC)});
-    theApp.m_media_lib_setting_data.hide_only_one_classification = ini.GetBool(L"media_lib", L"hide_only_one_classification", true);
+    theApp.m_media_lib_setting_data.hide_only_one_classification = ini.GetBool(L"media_lib", L"hide_only_one_classification", false);
     theApp.m_media_lib_setting_data.show_tree_tool_tips = ini.GetBool(L"media_lib", L"show_tree_tool_tips", true);
     theApp.m_media_lib_setting_data.update_media_lib_when_start_up = ini.GetBool(L"media_lib", L"update_media_lib_when_start_up", false);
 }
@@ -609,9 +609,15 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
     else
         pStatic = &m_pFloatPlaylistDlg->GetPathStatic();
     if (CPlayer::GetInstance().IsPlaylistMode())
-        pStatic->SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+	{
+		pStatic->SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+		pStatic->SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+	}
     else
-        pStatic->SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
+	{
+		pStatic->SetWindowText(CCommon::LoadText(IDS_FOLDER, _T(":")));
+		pStatic->SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+	}
 
     if (m_miniModeDlg.m_hWnd != NULL)
     {
