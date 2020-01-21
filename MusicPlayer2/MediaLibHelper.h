@@ -41,6 +41,7 @@ public:
     static bool IsStringYear(std::wstring str);
     void ClearResult();
     void RemoveFiles(std::vector<SongInfo> songs);      //从结果中删除指定文件
+	void SetHideOnlyOneClassification(bool hide_only_one_classification);
 
 private:
 

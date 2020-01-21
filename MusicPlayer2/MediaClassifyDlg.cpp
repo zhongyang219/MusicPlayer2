@@ -86,6 +86,16 @@ void CMediaClassifyDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) con
     }
 }
 
+void CMediaClassifyDlg::RefreshData()
+{
+	m_classifer.SetHideOnlyOneClassification(theApp.m_media_lib_setting_data.hide_only_one_classification);
+	if(m_initialized)
+	{
+		m_classifer.ClassifyMedia();
+		ShowClassifyList();
+	}
+}
+
 void CMediaClassifyDlg::ShowClassifyList()
 {
     CWaitCursor wait_cursor;

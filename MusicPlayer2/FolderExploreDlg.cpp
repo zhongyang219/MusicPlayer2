@@ -81,6 +81,11 @@ void CFolderExploreDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) con
     }
 }
 
+void CFolderExploreDlg::RefreshData()
+{
+	ShowFolderTree();
+}
+
 void CFolderExploreDlg::ShowFolderTree()
 {
     CString search_key_word;

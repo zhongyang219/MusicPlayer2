@@ -23,6 +23,7 @@ public:
     void GetSongsSelected(std::vector<wstring>& song_list) const;
     void GetSongsSelected(std::vector<SongInfo>& song_list) const;
     void GetCurrentSongList(std::vector<SongInfo>& song_list) const;
+	void RefreshData();
 
 protected:
     enum SongColumeIndex

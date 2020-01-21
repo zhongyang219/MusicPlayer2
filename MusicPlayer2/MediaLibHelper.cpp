@@ -194,3 +194,8 @@ void CMediaClassifier::RemoveFiles(std::vector<SongInfo> songs)
         item.second.erase(iter_removed, item.second.end());
     }
 }
+
+void CMediaClassifier::SetHideOnlyOneClassification(bool hide_only_one_classification)
+{
+	m_hide_only_one_classification = hide_only_one_classification;
+}

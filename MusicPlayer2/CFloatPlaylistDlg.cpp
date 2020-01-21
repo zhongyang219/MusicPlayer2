@@ -196,7 +196,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 	}
     else
 	{
-		m_path_static.SetWindowText(CCommon::LoadText(IDS_CURRENT_FOLDER, _T(":")));
+		m_path_static.SetWindowText(CCommon::LoadText(IDS_FOLDER, _T(":")));
 		m_path_static.SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
 	}
 
