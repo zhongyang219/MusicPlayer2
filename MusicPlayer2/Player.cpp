@@ -938,7 +938,7 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, bool play /*
         MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
-        if (!m_playlist_mode || !m_recent_playlist.m_cur_playlist_type == PT_TEMP)
+        if (!m_playlist_mode || m_recent_playlist.m_cur_playlist_type != PT_TEMP)
             SaveCurrentPlaylist();
         EmplaceCurrentPlaylistToRecent();
         EmplaceCurrentPathToRecent();
