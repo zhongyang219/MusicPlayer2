@@ -47,6 +47,9 @@ BOOL CAboutDlg::OnInitDialog()
 	CString temp_str;
 	GetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
 	temp_str.Replace(_T("<compile_date>"), COMPILE_DATE);
+	CString year{ COMPILE_DATE };
+	year = year.Left(4);
+	temp_str.Replace(_T("<year>"), year);
 	SetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
 
 	m_tool_tip.Create(this);
