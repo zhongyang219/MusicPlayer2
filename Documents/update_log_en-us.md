@@ -1,5 +1,15 @@
 **[简体中文](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md) | English**<br>
 # MusicPlayer2 Update log
+## V2.68 (2020/01/22)
+* Add "Artist", "Album", "Genre" and other ways to organize songs in the media library. Add "All tracks" and "Folder explore" in the media library.
+* Add the media library options.
+* Add the function of automatically scanning audio files in the specified directory at startup.
+* Add the function to convert the frequency in format convert.
+* Add more functions in the right-click menu of the "Find" dialog.
+* Fixed the problem that when converting to MP3 format if the file name contains Unicode characters, the conversion will be failed.
+* Add the option of the file saved location when downloading lyrics automatically.
+* Add the option of lyrics alignment.
+* Some bug fixes and Improved in details.
 ## V2.67 (2019/11/28)
 * Add the desktop lyric function.
 * Add a playlist toolbar.
