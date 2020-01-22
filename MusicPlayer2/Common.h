@@ -176,6 +176,8 @@ public:
 	static int CopyFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
 
 	//移动一个文件
+	//file_from：要移动的文件的路径
+	//file_to：移动目标的目录的位置
 	static int MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to);
 
 	//移动多个文件

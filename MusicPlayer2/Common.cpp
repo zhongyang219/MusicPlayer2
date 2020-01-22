@@ -462,7 +462,7 @@ wstring CCommon::GetTemplatePath()
 	wchar_t buff[MAX_PATH];
 	GetTempPath(MAX_PATH, buff);		//获取临时文件夹的路径
 	result = buff;
-	if (result.back() != L'\\' && result.back() != L'/')		//确保路径后面有斜杠
+	if (!result.empty() && result.back() != L'\\' && result.back() != L'/')		//确保路径后面有斜杠
 		result.push_back(L'\\');
 	return result;
 }
