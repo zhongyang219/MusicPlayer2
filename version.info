@@ -2,8 +2,8 @@
 <link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.67/MusicPlayer2_V2.67_x86.7z</link>
 <link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.67/MusicPlayer2_V2.67_x64.7z</link_x64>
 <update_contents>
-	<contents_zh_cn>新增桌面歌词功能。\n新增播放列表工具栏。\n新增cue音轨可以添加到播放列表。\n新增调整播放速度的功能。\n修正了一些bug。\n其他细节方面的改进。</contents_zh_cn>
-	<contents_en>Add the desktop lyric function.\nAdd a playlist toolbar.\nThe cue track can be added to playlist.\nAdd the function to adjust playback speed.\nFixed some bugs.\nImproved in other details.</contents_en>
+	<contents_zh_cn>媒体库中增加“艺术家”、“唱片集”、“流派”等组织歌曲的方式，增加所有歌曲和文件夹浏览\n新增媒体库选项\n新增启动时自动扫描指定目录下音频文件的功能\n转换格式中增加转换频率的功能\n查找界面右键菜单增加更多功能\n修正转换成MP3格式时如果文件名中含有Unicode字符会导致转换失败的问题\n新增自动下载歌词时文件保存位置的选项\n新增歌词对齐方式的选项\n一些bug修复及细节方面的改进</contents_zh_cn>
+	<contents_en>Add "Artist", "Album", "Genre" and other ways to organize songs in the media library. Add "All tracks" and "Folder explore" in the media library.\nAdd the media library options.\nAdd the function of automatically scanning audio files in the specified directory at startup.\nAdd the function to convert the frequency in format\nconvert.\nAdd more functions in the right-click menu of the "Find" dialog.\nFixed the problem that when converting to MP3 format if the file name contains Unicode characters, the conversion will be failed.\nAdd the option of the file saved location when downloading lyrics automatically.\nAdd the option of lyrics alignment.\nSome bug fixes and Improved in details.</contents_en>
 </update_contents>
 <!--以下内容为了兼容旧版本程序的检查更新功能-->
-<contents>新增桌面歌词功能。\n新增播放列表工具栏。\n新增cue音轨可以添加到播放列表。\n新增调整播放速度的功能。\n修正了一些bug。\n其他细节方面的改进。</contents>
+<contents>媒体库中增加“艺术家”、“唱片集”、“流派”等组织歌曲的方式，增加所有歌曲和文件夹浏览\n新增媒体库选项\n新增启动时自动扫描指定目录下音频文件的功能\n转换格式中增加转换频率的功能\n查找界面右键菜单增加更多功能\n修正转换成MP3格式时如果文件名中含有Unicode字符会导致转换失败的问题\n新增自动下载歌词时文件保存位置的选项\n新增歌词对齐方式的选项\n一些bug修复及细节方面的改进</contents>
