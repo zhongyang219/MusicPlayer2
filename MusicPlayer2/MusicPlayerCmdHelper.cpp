@@ -193,6 +193,10 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
 
 bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& files)
 {
+	CString info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { files.size() });
+	if (GetOwner()->MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
+		return false;
+
     vector<wstring> delected_files;
     for (const auto& song : files)
     {
