@@ -2920,6 +2920,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     CPlayer::GetInstance().IniPlaylistComplate();
     theApp.DoWaitCursor(0);
     ShowPlayList();
+	m_playlist_list.SelectNone();
     //ShowTime();
     DrawInfo(true);
     //SetPorgressBarSize();
