@@ -16,6 +16,7 @@
 #define WM_SET_TITLE (WM_USER+106)					//设置窗口标题的消息
 #define WM_CONNOT_PLAY_WARNING (WM_USER+108)		//无法播放文件时弹出警告提示框的消息
 #define WM_MUSIC_STREAM_OPENED (WM_USER+109)		//当音频文件打开时的消息
+#define WM_POST_MUSIC_STREAM_OPENED (WM_USER+129)		//当音频文件打开前的消息
 
 
 class CPlayer

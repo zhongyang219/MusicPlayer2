@@ -276,6 +276,7 @@ public:
     //afx_msg void OnBnClickedClearSearchButton();
     afx_msg void OnDownloadAlbumCover();
 protected:
+	afx_msg LRESULT OnPostMusicStreamOpened(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnMusicStreamOpened(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnCurrentExploreOnline();

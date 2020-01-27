@@ -427,6 +427,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
     switch (command)
     {
     case Command::OPEN:
+		SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_POST_MUSIC_STREAM_OPENED, 0, 0);
         m_error_code = 0;
         m_error_state = ES_NO_ERROR;
         m_is_osu = COSUPlayerHelper::IsOsuFile(GetCurrentFilePath());

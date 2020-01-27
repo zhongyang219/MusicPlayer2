@@ -39,6 +39,7 @@ protected:
     CButton m_show_lyric_in_cortana_chk;
 	CButton m_show_desktop_lyric_chk;
     CBrowseEdit m_lyric_dir_edit;
+	CComboBox m_lyric_save_policy_combo;
 
 	CButton m_desktop_lyric_double_line_chk;
 	CColorStaticEx m_text_color1_static;
@@ -111,4 +112,5 @@ protected:
     afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnCbnSelchangeAlignmentCombo();
+	afx_msg void OnCbnSelchangeLyricSaveCombo();
 };

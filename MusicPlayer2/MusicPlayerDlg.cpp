@@ -221,6 +221,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_INIT_ADD_TO_MENU, &CMusicPlayerDlg::OnInitAddToMenu)
     ON_MESSAGE(WM_OPTION_SETTINGS, &CMusicPlayerDlg::OnMsgOptionSettings)
     ON_COMMAND(ID_ALWAYS_SHOW_STATUS_BAR, &CMusicPlayerDlg::OnAlwaysShowStatusBar)
+	ON_MESSAGE(WM_POST_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnPostMusicStreamOpened)
 END_MESSAGE_MAP()
 
 
@@ -242,6 +243,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"float_playlist_width", theApp.m_nc_setting_data.playlist_size.cx);
     ini.WriteInt(L"config", L"float_playlist_height", theApp.m_nc_setting_data.playlist_size.cy);
     ini.WriteBool(L"config", L"playlist_btn_for_float_playlist", theApp.m_nc_setting_data.playlist_btn_for_float_playlist);
+
+	ini.WriteInt(L"config", L"lyric_save_policy", static_cast<int>(theApp.m_lyric_setting_data.lyric_save_policy));
 
     ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
     ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -370,6 +373,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
     theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(530));
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = ini.GetBool(L"config", L"playlist_btn_for_float_playlist", false);
+
+	theApp.m_lyric_setting_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(ini.GetInt(L"config", L"lyric_save_policy", 0));
 
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
@@ -3271,6 +3276,35 @@ void CMusicPlayerDlg::OnDownloadAlbumCover()
     //_OnDownloadAlbumCover(true);
     CCoverDownloadDlg dlg;
     dlg.DoModal();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnPostMusicStreamOpened(WPARAM wParam, LPARAM lParam)
+{
+	//保存修改过的歌词
+	bool midi_lyric{ CPlayerUIHelper::IsMidiLyric() };
+	bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
+	if (!lyric_disable && CPlayer::GetInstance().m_Lyrics.IsModified())		//如果有歌词修改过
+	{
+		switch (theApp.m_lyric_setting_data.lyric_save_policy)
+		{
+		case LyricSettingData::LS_DO_NOT_SAVE:
+			break;
+		case LyricSettingData::LS_AUTO_SAVE:
+			OnSaveModifiedLyric();
+			break;
+		case LyricSettingData::LS_INQUIRY:
+			if (MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION))
+			{
+				OnSaveModifiedLyric();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	return 0;
 }
 
 

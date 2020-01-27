@@ -164,6 +164,16 @@ struct LyricSettingData
     bool lyric_fuzzy_match{ true };				//歌词模糊匹配
     bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
     wstring lyric_path;							//歌词文件夹的路径
+
+	enum LyricSavePolicy		//歌词保存策略
+	{
+		LS_DO_NOT_SAVE,			//不保存（手动保存）
+		LS_AUTO_SAVE,			//自动保存
+		LS_INQUIRY				//询问
+	};
+
+	LyricSavePolicy lyric_save_policy{};		//歌词自动保存策略
+
     bool cortana_info_enable{};				    //是否允许在Cortana的搜索框中显示信息
     bool cortana_show_lyric{ true };            //是否在Cortana搜索框中显示歌词
     bool cortana_lyric_double_line{ true };		//是否在Cortana搜索中以双行显示歌词

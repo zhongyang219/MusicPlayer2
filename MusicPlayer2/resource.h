@@ -503,6 +503,9 @@
 #define IDS_ALIGN_RIGHT                 452
 #define IDS_CENTER                      453
 #define IDS_ALL_TRACKS                  454
+#define IDS_DO_NOT_SAVE                 455
+#define IDS_AUTO_SAVE                   456
+#define IDS_INQUIRY                     457
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -798,6 +801,7 @@
 #define IDC_DIR_LIST                    1161
 #define IDC_LOW_FREQ_IN_CENTER_CHECK    1162
 #define IDC_ALIGNMENT_COMBO             1163
+#define IDC_LYRIC_SAVE_COMBO            1164
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1141,7 +1145,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        432
 #define _APS_NEXT_COMMAND_VALUE         33150
-#define _APS_NEXT_CONTROL_VALUE         1164
+#define _APS_NEXT_CONTROL_VALUE         1165
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

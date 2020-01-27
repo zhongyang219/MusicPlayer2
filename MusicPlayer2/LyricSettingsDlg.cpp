@@ -23,34 +23,35 @@ CLyricSettingsDlg::~CLyricSettingsDlg()
 
 void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CTabDlg::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
-    DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
-    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
-    DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
-    DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
-    DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
-    DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
-    DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
-    DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
-    DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
-    DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
-    DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
-    DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
-    DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK2, m_desktop_lyric_double_line_chk);
-    DDX_Control(pDX, IDC_TEXT_COLOR1_STATIC, m_text_color1_static);
-    DDX_Control(pDX, IDC_TEXT_COLOR2_STATIC, m_text_color2_static);
-    DDX_Control(pDX, IDC_TEXT_GRADIENT_COMBO, m_text_gradient_combo);
-    DDX_Control(pDX, IDC_HIGHLIGHT_COLOR1_STATIC, m_highlight_color1_static);
-    DDX_Control(pDX, IDC_HIGHLIGHT_COLOR2_STATIC, m_highlight_color2_static);
-    DDX_Control(pDX, IDC_HIGHLIGHT_GRADIENT_COMBO, m_highlight_gradient_combo);
-    DDX_Control(pDX, IDC_LYRIC_OPACITY_SLIDER, m_desktop_lyric_opacity_sld);
-    DDX_Control(pDX, IDC_LOCK_DESKTOP_LYRIC_CHECK, m_lock_desktop_lyric_chk);
-    DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, m_hide_lyric_without_lyric_chk);
-    DDX_Control(pDX, IDC_HIDE_LYRIC_PAUSE_CHECK, m_hide_lyric_paused_chk);
-    DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, m_lyric_background_penetrate_chk);
-    DDX_Control(pDX, IDC_LYRIC_PATH_EDIT, m_lyric_dir_edit);
-    DDX_Control(pDX, IDC_ALIGNMENT_COMBO, m_alignment_combo);
+	CTabDlg::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_KARAOKE_DISP, m_karaoke_disp_check);
+	DDX_Control(pDX, IDC_LYRIC_FUZZY_MATCH, m_lyric_fuzzy_match_check);
+	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
+	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
+	DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
+	DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
+	DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
+	DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
+	DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
+	DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
+	DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
+	DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
+	DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
+	DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK2, m_desktop_lyric_double_line_chk);
+	DDX_Control(pDX, IDC_TEXT_COLOR1_STATIC, m_text_color1_static);
+	DDX_Control(pDX, IDC_TEXT_COLOR2_STATIC, m_text_color2_static);
+	DDX_Control(pDX, IDC_TEXT_GRADIENT_COMBO, m_text_gradient_combo);
+	DDX_Control(pDX, IDC_HIGHLIGHT_COLOR1_STATIC, m_highlight_color1_static);
+	DDX_Control(pDX, IDC_HIGHLIGHT_COLOR2_STATIC, m_highlight_color2_static);
+	DDX_Control(pDX, IDC_HIGHLIGHT_GRADIENT_COMBO, m_highlight_gradient_combo);
+	DDX_Control(pDX, IDC_LYRIC_OPACITY_SLIDER, m_desktop_lyric_opacity_sld);
+	DDX_Control(pDX, IDC_LOCK_DESKTOP_LYRIC_CHECK, m_lock_desktop_lyric_chk);
+	DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, m_hide_lyric_without_lyric_chk);
+	DDX_Control(pDX, IDC_HIDE_LYRIC_PAUSE_CHECK, m_hide_lyric_paused_chk);
+	DDX_Control(pDX, IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, m_lyric_background_penetrate_chk);
+	DDX_Control(pDX, IDC_LYRIC_PATH_EDIT, m_lyric_dir_edit);
+	DDX_Control(pDX, IDC_ALIGNMENT_COMBO, m_alignment_combo);
+	DDX_Control(pDX, IDC_LYRIC_SAVE_COMBO, m_lyric_save_policy_combo);
 }
 
 
@@ -92,6 +93,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     //ON_EN_CHANGE(IDC_LYRIC_PATH_EDIT, &CLyricSettingsDlg::OnEnChangeLyricPathEdit)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CLyricSettingsDlg::OnEditBrowseChanged)
     ON_CBN_SELCHANGE(IDC_ALIGNMENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo)
+	ON_CBN_SELCHANGE(IDC_LYRIC_SAVE_COMBO, &CLyricSettingsDlg::OnCbnSelchangeLyricSaveCombo)
 END_MESSAGE_MAP()
 
 
@@ -107,6 +109,11 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	//初始化各控件的状态
 	m_karaoke_disp_check.SetCheck(m_data.lyric_karaoke_disp);
 	m_lyric_fuzzy_match_check.SetCheck(m_data.lyric_fuzzy_match);
+	m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_DO_NOT_SAVE));
+	m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_AUTO_SAVE));
+	m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_INQUIRY));
+	m_lyric_save_policy_combo.SetCurSel(static_cast<int>(m_data.lyric_save_policy));
+
 	m_lyric_double_line_chk.SetCheck(m_data.cortana_lyric_double_line);
 	m_show_album_cover_in_cortana_check.SetCheck(m_data.cortana_show_album_cover);
 	m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
@@ -612,4 +619,11 @@ void CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.cortana_lyric_align = static_cast<Alignment>(m_alignment_combo.GetCurSel());
+}
+
+
+void CLyricSettingsDlg::OnCbnSelchangeLyricSaveCombo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(m_lyric_save_policy_combo.GetCurSel());
 }
