@@ -222,6 +222,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_OPTION_SETTINGS, &CMusicPlayerDlg::OnMsgOptionSettings)
     ON_COMMAND(ID_ALWAYS_SHOW_STATUS_BAR, &CMusicPlayerDlg::OnAlwaysShowStatusBar)
 	ON_MESSAGE(WM_POST_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnPostMusicStreamOpened)
+	ON_COMMAND(ID_SHOW_MAIN_WINDOW, &CMusicPlayerDlg::OnShowMainWindow)
 END_MESSAGE_MAP()
 
 
@@ -4354,4 +4355,16 @@ void CMusicPlayerDlg::OnAlwaysShowStatusBar()
     theApp.m_ui_data.always_show_statusbar = !theApp.m_ui_data.always_show_statusbar;
     DrawInfo(true);
     m_pUI->UpdateToolTipPosition();
+}
+
+
+void CMusicPlayerDlg::OnShowMainWindow()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_miniModeDlg.m_hWnd != NULL)		//如果是迷你模式，则退出迷你模式
+		::SendMessage(m_miniModeDlg.m_hWnd, WM_COMMAND, IDOK, NULL);
+
+	ShowWindow(SW_SHOWNORMAL);	//激活并显示窗口
+	SetForegroundWindow();		//将窗口设置为焦点
+
 }

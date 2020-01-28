@@ -297,12 +297,12 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
+		rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
         rcIcon.MoveToX(rcIcon.right);
 		DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
 		rcIcon.MoveToX(rcIcon.right);
 		DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
-		rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         rcIcon.MoveToX(rcIcon.right);

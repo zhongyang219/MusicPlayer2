@@ -371,4 +371,5 @@ protected:
     afx_msg LRESULT OnMsgOptionSettings(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnAlwaysShowStatusBar();
+	afx_msg void OnShowMainWindow();
 };
