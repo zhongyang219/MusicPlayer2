@@ -481,7 +481,9 @@
 #define IDS_BROWSE                      431
 #define IDI_GENRE_D                     431
 #define IDS_OTHER                       432
+#define IDI_LYRIC_DELAY_D               432
 #define IDS_SEARCH_ARTIST               433
+#define IDI_LYRIC_FORWARD_D             433
 #define IDS_SEARCH_ALBUM                434
 #define IDS_TEMP_PLAYLIST               435
 #define IDS_GENRE                       436
@@ -506,6 +508,8 @@
 #define IDS_DO_NOT_SAVE                 455
 #define IDS_AUTO_SAVE                   456
 #define IDS_INQUIRY                     457
+#define IDS_LYRIC_FORWARD               458
+#define IDS_LYRIC_DELAY                 459
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1143,7 +1147,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        432
+#define _APS_NEXT_RESOURCE_VALUE        434
 #define _APS_NEXT_COMMAND_VALUE         33150
 #define _APS_NEXT_CONTROL_VALUE         1165
 #define _APS_NEXT_SYMED_VALUE           101

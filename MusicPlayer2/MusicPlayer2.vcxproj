@@ -455,6 +455,8 @@
     <Image Include="res\genre_d.ico" />
     <Image Include="res\heart.ico" />
     <Image Include="res\lock_d.ico" />
+    <Image Include="res\lyric_delay.ico" />
+    <Image Include="res\lyric_forward.ico" />
     <Image Include="res\media_lib.ico" />
     <Image Include="res\media_lib_d.ico" />
     <Image Include="res\menu.ico" />

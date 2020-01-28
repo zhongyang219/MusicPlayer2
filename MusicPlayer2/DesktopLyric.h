@@ -39,6 +39,8 @@ public:
         BTN_DOUBLE_LINE,
         BTN_BACKGROUND_PENETRATE,
         BTN_SETTING,
+		BTN_LYRIC_DELAY,
+		BTN_LYRIC_FORWARD,
         BTN_DEFAULT_STYLE,
         BTN_CLOSE,
         MAX             //用于指示枚举的最大个数

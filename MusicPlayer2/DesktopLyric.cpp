@@ -298,6 +298,10 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
         rcIcon.MoveToX(rcIcon.right);
+		DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
+		rcIcon.MoveToX(rcIcon.right);
+		DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
+		rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
@@ -371,6 +375,8 @@ void CDesktopLyric::AddToolTips()
     AddMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY_PAUSE));
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
+    AddMouseToolTip(BTN_LYRIC_FORWARD, CCommon::LoadText(IDS_LYRIC_FORWARD));
+    AddMouseToolTip(BTN_LYRIC_DELAY, CCommon::LoadText(IDS_LYRIC_DELAY));
     AddMouseToolTip(BTN_DEFAULT_STYLE, CCommon::LoadText(IDS_DEFAULT_STYLE));
     AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
     AddMouseToolTip(BTN_BACKGROUND_PENETRATE, CCommon::LoadText(IDS_LYRIC_BACKGROUND_PENETRATE));
@@ -514,6 +520,14 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
             case BTN_SETTING:
                 theApp.m_pMainWnd->SendMessage(WM_OPTION_SETTINGS, 0, 0);
                 return;
+
+            case BTN_LYRIC_FORWARD:
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_FORWARD, 0);
+                return;
+
+            case BTN_LYRIC_DELAY:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_DELAY, 0);
+				return;
 
             case BTN_DEFAULT_STYLE:
             {

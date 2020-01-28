@@ -172,6 +172,8 @@ protected:
 
     void _OnOptionSettings(CWnd* pParent);
 
+	void DoLyricsAutoSave();
+
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);

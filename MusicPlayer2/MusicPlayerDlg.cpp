@@ -374,7 +374,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(530));
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = ini.GetBool(L"config", L"playlist_btn_for_float_playlist", false);
 
-	theApp.m_lyric_setting_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(ini.GetInt(L"config", L"lyric_save_policy", 0));
+	theApp.m_lyric_setting_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(ini.GetInt(L"config", L"lyric_save_policy", 2));
 
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
@@ -1243,6 +1243,31 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
         theApp.m_hot_key.RegisterAllHotKey();
 }
 
+void CMusicPlayerDlg::DoLyricsAutoSave()
+{
+	bool midi_lyric{ CPlayerUIHelper::IsMidiLyric() };
+	bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
+	if (!lyric_disable && CPlayer::GetInstance().m_Lyrics.IsModified())		//如果有歌词修改过
+	{
+		switch (theApp.m_lyric_setting_data.lyric_save_policy)
+		{
+		case LyricSettingData::LS_DO_NOT_SAVE:
+			break;
+		case LyricSettingData::LS_AUTO_SAVE:
+			OnSaveModifiedLyric();
+			break;
+		case LyricSettingData::LS_INQUIRY:
+			if (MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION))
+			{
+				OnSaveModifiedLyric();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -2056,6 +2081,9 @@ void CMusicPlayerDlg::OnDestroy()
     ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rect);
     m_desktop_lyric_pos = rect.TopLeft();
     m_desktop_lyric_size = rect.Size();
+
+	//保存修改过的歌词
+	DoLyricsAutoSave();
 
     //退出时保存设置
     CPlayer::GetInstance().OnExit();
@@ -3282,28 +3310,7 @@ void CMusicPlayerDlg::OnDownloadAlbumCover()
 afx_msg LRESULT CMusicPlayerDlg::OnPostMusicStreamOpened(WPARAM wParam, LPARAM lParam)
 {
 	//保存修改过的歌词
-	bool midi_lyric{ CPlayerUIHelper::IsMidiLyric() };
-	bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
-	if (!lyric_disable && CPlayer::GetInstance().m_Lyrics.IsModified())		//如果有歌词修改过
-	{
-		switch (theApp.m_lyric_setting_data.lyric_save_policy)
-		{
-		case LyricSettingData::LS_DO_NOT_SAVE:
-			break;
-		case LyricSettingData::LS_AUTO_SAVE:
-			OnSaveModifiedLyric();
-			break;
-		case LyricSettingData::LS_INQUIRY:
-			if (MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION))
-			{
-				OnSaveModifiedLyric();
-			}
-			break;
-		default:
-			break;
-		}
-	}
-
+	DoLyricsAutoSave();
 	return 0;
 }
 

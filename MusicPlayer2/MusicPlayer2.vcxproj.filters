@@ -1167,5 +1167,11 @@
     <Image Include="res\genre_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\lyric_delay.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\lyric_forward.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
