@@ -1168,10 +1168,13 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\lyric_delay.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\lyric_forward.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\recent_songs_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -312,7 +312,7 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.664"));			//写入数据版本
+    ar << CString(_T("2.680"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -335,6 +335,7 @@ void CMusicPlayerApp::SaveSongData()
            //<< song_data.second.is_favourite
            << song_data.second.no_online_album_cover
            << song_data.second.no_online_lyric
+		   << song_data.second.last_played_time
            ;
     }
     // 关闭CArchive对象
@@ -496,6 +497,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.folder_explore.Load(IDI_FOLDER_EXPLORE_D, NULL, DPI(16));
 	m_icon_set.lyric_forward.Load(IDI_LYRIC_FORWARD_D, NULL, DPI(16));
 	m_icon_set.lyric_delay.Load(IDI_LYRIC_DELAY_D, NULL, DPI(16));
+	m_icon_set.recent_songs.Load(IDI_RECENT_SONG_D, NULL, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));
@@ -586,6 +588,20 @@ SongInfo CMusicPlayerApp::GetSongInfo(wstring& file_path)
         song = iter->second;
     song.file_path = file_path;
     return song;
+}
+
+SongInfo& CMusicPlayerApp::GetSongInfoRef(wstring& file_path)
+{
+	auto iter = m_song_data.find(file_path);
+	if (iter != m_song_data.end())
+	{
+		return iter->second;
+	}
+	else
+	{
+		static SongInfo song;
+		return song;
+	}
 }
 
 WORD CMusicPlayerApp::GetCurrentLanguage() const
@@ -757,6 +773,11 @@ void CMusicPlayerApp::LoadSongData()
                 ar >> song_info.no_online_album_cover;
                 ar >> song_info.no_online_lyric;
             }
+
+			if (version_str >= _T("2.680"))
+			{
+				ar >> song_info.last_played_time;
+			}
             m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
         }
     }

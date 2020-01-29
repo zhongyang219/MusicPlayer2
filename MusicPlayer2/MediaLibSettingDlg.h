@@ -44,4 +44,5 @@ public:
     afx_msg void OnBnClickedUpdateMediaLibChk();
     afx_msg void OnBnClickedCleanDataFileButton();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnBnClickedClearRecentPlayedListBtn();
 };

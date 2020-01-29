@@ -485,6 +485,8 @@
 #define IDS_SEARCH_ARTIST               433
 #define IDI_LYRIC_FORWARD_D             433
 #define IDS_SEARCH_ALBUM                434
+#define IDI_ICON5                       434
+#define IDI_RECENT_SONG_D               434
 #define IDS_TEMP_PLAYLIST               435
 #define IDS_GENRE                       436
 #define IDS_SEARCH_GENRE                437
@@ -510,6 +512,9 @@
 #define IDS_INQUIRY                     457
 #define IDS_LYRIC_FORWARD               458
 #define IDS_LYRIC_DELAY                 459
+#define IDS_RECENT_PLAYED               460
+#define IDS_LAST_PLAYED_TIME            461
+#define IDS_CLEAR_RECENT_PLAYLIST_INFO  462
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -545,6 +550,7 @@
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013
 #define IDC_PLAY_SELECTED2              1013
+#define IDC_CLEAR_RECENT_PLAYED_LIST_BTN 1013
 #define IDC_VOLUME_DOWN                 1014
 #define IDC_PLAYLIST_LIST               1015
 #define IDC_FIND_EDIT                   1016
@@ -1148,7 +1154,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        434
+#define _APS_NEXT_RESOURCE_VALUE        435
 #define _APS_NEXT_COMMAND_VALUE         33151
 #define _APS_NEXT_CONTROL_VALUE         1165
 #define _APS_NEXT_SYMED_VALUE           101

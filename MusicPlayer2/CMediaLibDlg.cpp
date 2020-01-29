@@ -82,6 +82,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
 	m_all_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
+	m_recent_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
     m_folder_explore_dlg.Create(IDD_FOLDER_EXPLORE_DIALOG);
 
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
@@ -90,14 +91,15 @@ BOOL CMediaLibDlg::OnInitDialog()
     //为每个标签添加图标
     CImageList ImageList;
     ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));		//文件夹
+    ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));		//播放列表
+    ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));				//艺术家
+    ImageList.Add(theApp.m_icon_set.album.GetIcon(true));				//唱片集
+    ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));				//流派
+    ImageList.Add(theApp.m_icon_set.year.GetIcon(true));				//年份
+    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));			//所有曲目
+    ImageList.Add(theApp.m_icon_set.recent_songs.GetIcon(true));		//最近播放
+    ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));		//文件夹浏览
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 
@@ -109,6 +111,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_tab_ctrl.AddWindow(&m_genre_dlg, CCommon::LoadText(IDS_GENRE));
     m_tab_ctrl.AddWindow(&m_year_dlg, CCommon::LoadText(IDS_YEAR));
 	m_tab_ctrl.AddWindow(&m_all_media_dlg, CCommon::LoadText(IDS_ALL_TRACKS));
+	m_tab_ctrl.AddWindow(&m_recent_media_dlg, CCommon::LoadText(IDS_RECENT_PLAYED));
     m_tab_ctrl.AddWindow(&m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));
     m_tab_ctrl.SetCurTab(m_init_tab);
 

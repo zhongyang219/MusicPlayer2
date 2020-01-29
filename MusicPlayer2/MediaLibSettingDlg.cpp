@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_DELETE_BUTTON, &CMediaLibSettingDlg::OnBnClickedDeleteButton)
     ON_BN_CLICKED(IDC_UPDATE_MEDIA_LIB_CHK, &CMediaLibSettingDlg::OnBnClickedUpdateMediaLibChk)
     ON_BN_CLICKED(IDC_CLEAN_DATA_FILE_BUTTON, &CMediaLibSettingDlg::OnBnClickedCleanDataFileButton)
+	ON_BN_CLICKED(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, &CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn)
 END_MESSAGE_MAP()
 
 
@@ -156,4 +157,21 @@ BOOL CMediaLibSettingDlg::PreTranslateMessage(MSG* pMsg)
         m_toolTip.RelayEvent(pMsg);
 
     return CTabDlg::PreTranslateMessage(pMsg);
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	//清除歌曲的上次播放时间
+	if(MessageBox(CCommon::LoadText(IDS_CLEAR_RECENT_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+	{
+		for (auto& item : theApp.m_song_data)
+		{
+			item.second.last_played_time = 0;
+		}
+		theApp.SetSongDataModified();
+		::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_PLAYED_LIST_CLEARED, 0, 0);
+	}
 }

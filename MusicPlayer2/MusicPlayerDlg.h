@@ -372,4 +372,6 @@ protected:
 public:
     afx_msg void OnAlwaysShowStatusBar();
 	afx_msg void OnShowMainWindow();
+protected:
+	afx_msg LRESULT OnRecentPlayedListCleared(WPARAM wParam, LPARAM lParam);
 };

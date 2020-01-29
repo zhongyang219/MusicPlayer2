@@ -92,6 +92,7 @@ public:
     }
 
     SongInfo GetSongInfo(wstring& file_path);
+	SongInfo& GetSongInfoRef(wstring& file_path);
 
     WORD GetCurrentLanguage() const;
     bool IsGlobalMultimediaKeyEnabled() const;

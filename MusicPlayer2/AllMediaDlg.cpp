@@ -12,8 +12,8 @@
 
 IMPLEMENT_DYNAMIC(CAllMediaDlg, CTabDlg)
 
-CAllMediaDlg::CAllMediaDlg(CWnd* pParent /*=nullptr*/)
-	: CTabDlg(IDD_ALL_MEDIA_DIALOG, pParent)
+CAllMediaDlg::CAllMediaDlg(CAllMediaDlg::DialogType type, CWnd* pParent /*=nullptr*/)
+	: CTabDlg(IDD_ALL_MEDIA_DIALOG, pParent), m_type{ type }
 {
 
 }
@@ -52,6 +52,13 @@ void CAllMediaDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) const
 	}
 }
 
+void CAllMediaDlg::RefreshData()
+{
+	InitListData();
+	ShowSongList();
+	m_initialized = true;
+}
+
 void CAllMediaDlg::OnTabEntered()
 {
 	SetButtonsEnable(m_song_list_ctrl.GetCurSel() >= 0);
@@ -67,9 +74,17 @@ void CAllMediaDlg::OnTabEntered()
 void CAllMediaDlg::InitListData()
 {
 	m_list_data.clear();
+
 	for (const auto& item : theApp.m_song_data)
 	{
 		CListCtrlEx::RowData row_data;
+
+		if (m_type == DT_RECENT_MEDIA)		//如果显示最近播放曲目，则跳过没有播放过的曲目
+		{
+			if(item.second.last_played_time == 0)
+				continue;
+		}
+
 		//row_data[COL_INDEX] = std::to_wstring(index);
 		row_data[COL_TITLE] = item.second.GetTitle();
 		row_data[COL_ARTIST] = item.second.GetArtist();
@@ -81,11 +96,29 @@ void CAllMediaDlg::InitListData()
 		row_data[COL_GENRE] = item.second.GetGenre();
 		row_data[COL_YEAR] = item.second.GetYear();
 		row_data[COL_PATH] = item.first;
+		if(item.second.last_played_time != 0)
+		{
+			CTime played_time(item.second.last_played_time);
+			wchar_t buff[64];
+			swprintf_s(buff, L"%d/%.2d/%.2d %.2d:%.2d:%.2d", played_time.GetYear(), played_time.GetMonth(), played_time.GetDay(),
+				played_time.GetHour(), played_time.GetMinute(), played_time.GetSecond());
+			row_data[COL_LAST_PLAYED_TIME] = buff;
+		}
 		m_list_data.push_back(std::move(row_data));
 	}
-	std::sort(m_list_data.begin(), m_list_data.end(), [](const CListCtrlEx::RowData& a, const CListCtrlEx::RowData& b)
+	std::sort(m_list_data.begin(), m_list_data.end(), [&](const CListCtrlEx::RowData& a, const CListCtrlEx::RowData& b)
 	{
-		return a.at(COL_TITLE) < b.at(COL_TITLE);		//默认按标题排序
+		int sort_col{ m_type == DT_RECENT_MEDIA ? COL_LAST_PLAYED_TIME : COL_TITLE };  //排序的列，显示所有曲目时默认按标题排序，显示最近曲目时默认按最近播放时间排序
+		wstring str_a, str_b;
+		if (a.find(sort_col) != a.end())
+			str_a = a.at(sort_col);
+		if (b.find(sort_col) != b.end())
+			str_b = b.at(sort_col);
+
+		if (m_type == DT_RECENT_MEDIA)
+			return str_a > str_b;
+		else
+			return str_a < str_b;
 	});
 	UpdateListIndex();
 }
@@ -217,6 +250,7 @@ BOOL CAllMediaDlg::OnInitDialog()
 	m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
 	m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_YEAR), LVCFMT_LEFT, theApp.DPI(60));
 	m_song_list_ctrl.InsertColumn(7, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+	m_song_list_ctrl.InsertColumn(8, CCommon::LoadText(IDS_LAST_PLAYED_TIME), LVCFMT_LEFT, theApp.DPI(140));
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
@@ -247,11 +281,17 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			std::sort(list_data.begin(), list_data.end(), [&](const CListCtrlEx::RowData& a, const CListCtrlEx::RowData& b)
 			{ 
+				wstring str_a, str_b;
+				if (a.find(phdr->iItem) != a.end())
+					str_a = a.at(phdr->iItem);
+				if (b.find(phdr->iItem) != b.end())
+					str_b = b.at(phdr->iItem);
+
 				if (phdr->iItem == COL_TRACK)		//如果是对“音轨号”排序，则需要将字符串转换成数字
 				{
 					int index_a, index_b;
-					index_a = _ttoi(a.at(phdr->iItem).c_str());
-					index_b = _ttoi(b.at(phdr->iItem).c_str());
+					index_a = _ttoi(str_a.c_str());
+					index_b = _ttoi(str_b.c_str());
 					if (ascending)
 						return index_a < index_b;
 					else
@@ -260,9 +300,9 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 				else
 				{
 					if (ascending)
-						return a.at(phdr->iItem) < b.at(phdr->iItem);
+						return str_a < str_b;
 					else
-						return a.at(phdr->iItem) > b.at(phdr->iItem);
+						return str_a > str_b;
 				}
 			});
 			if (!m_searched)

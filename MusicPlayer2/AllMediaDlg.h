@@ -11,7 +11,14 @@ class CAllMediaDlg : public CTabDlg
 	DECLARE_DYNAMIC(CAllMediaDlg)
 
 public:
-	CAllMediaDlg(CWnd* pParent = nullptr);   // 标准构造函数
+	enum DialogType
+	{
+		DT_ALL_MEDIA,			//所有曲目
+		DT_RECENT_MEDIA			//最近播放的曲目
+	};
+
+public:
+	CAllMediaDlg(CAllMediaDlg::DialogType type, CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CAllMediaDlg();
 
 // 对话框数据
@@ -23,6 +30,7 @@ public:
 	void GetSongsSelected(std::vector<wstring>& song_list) const;
 	void GetSongsSelected(std::vector<SongInfo>& song_list) const;
 	void GetCurrentSongList(std::vector<SongInfo>& song_list) const;
+	void RefreshData();
 
 protected:
 	enum SongColumeIndex
@@ -35,6 +43,7 @@ protected:
 		COL_GENRE,
 		COL_YEAR,
 		COL_PATH,
+		COL_LAST_PLAYED_TIME,
 		COL_MAX,
 	};
 
@@ -50,6 +59,8 @@ protected:
 	std::vector<int> m_selected_items;   //列表选中的项目的序号
 	int m_selected_item{ -1 };
 	CString m_selected_string;
+
+	DialogType m_type{};
 
 protected:
 	virtual void OnTabEntered() override;

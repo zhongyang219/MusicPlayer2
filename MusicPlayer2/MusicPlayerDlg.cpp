@@ -223,6 +223,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_ALWAYS_SHOW_STATUS_BAR, &CMusicPlayerDlg::OnAlwaysShowStatusBar)
 	ON_MESSAGE(WM_POST_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnPostMusicStreamOpened)
 	ON_COMMAND(ID_SHOW_MAIN_WINDOW, &CMusicPlayerDlg::OnShowMainWindow)
+	ON_MESSAGE(WM_RECENT_PLAYED_LIST_CLEARED, &CMusicPlayerDlg::OnRecentPlayedListCleared)
 END_MESSAGE_MAP()
 
 
@@ -3325,6 +3326,13 @@ afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lPara
 
 	m_desktop_lyric.ClearLyric();
 
+	//保存播放时间
+	SYSTEMTIME sys_time;
+	GetLocalTime(&sys_time);
+	CTime cur_time(sys_time);
+	auto cur_time_int = cur_time.GetTime();
+	theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()).last_played_time = cur_time_int;
+
     return 0;
 }
 
@@ -4367,4 +4375,16 @@ void CMusicPlayerDlg::OnShowMainWindow()
 	ShowWindow(SW_SHOWNORMAL);	//激活并显示窗口
 	SetForegroundWindow();		//将窗口设置为焦点
 
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnRecentPlayedListCleared(WPARAM wParam, LPARAM lParam)
+{
+	if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))
+	{
+		CWaitCursor wait_cursor;
+		m_pMediaLibDlg->m_recent_media_dlg.RefreshData();
+	}
+
+	return 0;
 }

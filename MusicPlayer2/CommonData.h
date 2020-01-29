@@ -364,6 +364,7 @@ struct IconSet
     IconRes folder_explore;
 	IconRes lyric_forward;
 	IconRes lyric_delay;
+	IconRes recent_songs;
 
     IconRes stop_l;
     IconRes previous_l;
