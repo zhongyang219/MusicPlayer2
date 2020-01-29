@@ -3108,7 +3108,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 
         //获取要保存的专辑封面的文件路径
         CFilePathHelper cover_file_path;
-        if (match_item.album == song.album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
+        if (match_item.album == song.album && !song.album.empty())		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
         {
             wstring album_name{ match_item.album };
             CCommon::FileNameNormalize(album_name);
