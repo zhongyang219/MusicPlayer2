@@ -4,6 +4,7 @@
 #include "PlayListCtrl.h"
 #include "GdiPlusTool.h"
 #include "Define.h"
+#include "CPlayerUIHelper.h"
 
 CDesktopLyric::CDesktopLyric()
 {
@@ -52,7 +53,21 @@ void CDesktopLyric::ShowLyric()
 	if (!IsWindowVisible())
 		return;
 
-	if(!CPlayer::GetInstance().m_Lyrics.IsEmpty())
+	if (CPlayerUIHelper::IsMidiLyric())
+	{
+		wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
+		if (current_lyric != GetLyricStr().GetString())
+		{
+			UpdateLyrics(current_lyric.c_str(), 0);
+		}
+		else
+		{
+			UpdateLyrics(0);
+		}
+		UpdateLyricTranslate(_T(""));
+		SetNextLyric(_T(""));
+	}
+	else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())
 	{
 		Time time{ CPlayer::GetInstance().GetCurrentPosition() };
 		int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
