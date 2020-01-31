@@ -2952,6 +2952,7 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lParam)
 {
+	DoLyricsAutoSave();
     CPlayer::GetInstance().IniPlaylistComplate();
     theApp.DoWaitCursor(0);
     ShowPlayList();
