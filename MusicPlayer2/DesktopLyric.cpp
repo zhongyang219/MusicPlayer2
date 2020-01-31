@@ -326,6 +326,11 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+
+		bool lyric_disable{ CPlayer::GetInstance().m_Lyrics.IsEmpty() || CPlayerUIHelper::IsMidiLyric() };
+		m_buttons[BTN_LYRIC_FORWARD].enable = !lyric_disable;
+		m_buttons[BTN_LYRIC_DELAY].enable = !lyric_disable;
+
     }
     static bool last_locked = !bLocked;
     if (last_locked != bLocked)
@@ -341,7 +346,7 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
     auto& btn = m_buttons[btn_key];
     btn.rect = rect;
 
-    if (btn.pressed)
+    if (btn.pressed && btn.enable)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
 
     Gdiplus::Color back_color;
@@ -480,7 +485,7 @@ void CDesktopLyric::OnLButtonDown(UINT nFlags, CPoint point)
     bool point_in_btns = false;
     for (auto& btn : m_buttons)
     {
-        if (btn.second.rect.PtInRect(point1) != FALSE)
+        if (btn.second.enable && btn.second.rect.PtInRect(point1) != FALSE)
         {
             btn.second.pressed = true;
             point_in_btns = true;
@@ -593,7 +598,8 @@ void CDesktopLyric::OnMouseMove(UINT nFlags, CPoint point)
     point1.y += m_frameSize.cy;
     for (auto& btn : m_buttons)
     {
-        btn.second.hover = (btn.second.rect.PtInRect(point1) != FALSE);
+		if (btn.second.enable)
+			btn.second.hover = (btn.second.rect.PtInRect(point1) != FALSE);
     }
 
     TRACKMOUSEEVENT tme;
