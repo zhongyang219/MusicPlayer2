@@ -2,11 +2,12 @@
 #include "TabDlg.h"
 #include "ListCtrlEx.h"
 #include "SearchEditCtrl.h"
+#include "MediaLibTabDlg.h"
 
 
 // CAllMediaDlg 对话框
 
-class CAllMediaDlg : public CTabDlg
+class CAllMediaDlg : public CMediaLibTabDlg
 {
 	DECLARE_DYNAMIC(CAllMediaDlg)
 
@@ -27,9 +28,6 @@ public:
 #endif
 
 public:
-	void GetSongsSelected(std::vector<wstring>& song_list) const;
-	void GetSongsSelected(std::vector<SongInfo>& song_list) const;
-	void GetCurrentSongList(std::vector<SongInfo>& song_list) const;
 	void RefreshData();
 
 protected:
@@ -70,9 +68,13 @@ protected:
 	void QuickSearch(const wstring& key_word);		//根据关键字执行快速查找，将结果保存在m_list_data_searched中
 	void SongListClicked(int index);
 	void SetButtonsEnable(bool enable);
-	bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
 
-	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
+	virtual const CListCtrlEx& GetSongListCtrl() const override;
+	virtual int GetItemSelected() const override;
+	virtual const vector<int>& GetItemsSelected() const override;
+	virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
+	virtual int GetPathColIndex() const override;
+	virtual wstring GetSelectedString() const override;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -84,21 +86,7 @@ public:
 	afx_msg void OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
-	virtual void OnOK();
 protected:
 	afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 public:
-	afx_msg void OnInitMenu(CMenu* pMenu);
-	afx_msg void OnPlayItem();
-	afx_msg void OnPlayItemInFolderMode();
-	afx_msg void OnAddToNewPlaylist();
-	afx_msg void OnAddToNewPalylistAndPlay();
-	afx_msg void OnExploreOnline();
-	afx_msg void OnExploreTrack();
-	afx_msg void OnFormatConvert();
-	afx_msg void OnDeleteFromDisk();
-	afx_msg void OnItemProperty();
-	afx_msg void OnCopyText();
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-	virtual void OnCancel();
 };

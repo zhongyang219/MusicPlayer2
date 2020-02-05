@@ -580,7 +580,7 @@ void CMusicPlayerApp::GetDPIFromWindow(CWnd * pWnd)
     m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 }
 
-SongInfo CMusicPlayerApp::GetSongInfo(wstring& file_path)
+SongInfo CMusicPlayerApp::GetSongInfo(const wstring& file_path)
 {
     SongInfo song;
     auto iter = m_song_data.find(file_path);
@@ -590,7 +590,7 @@ SongInfo CMusicPlayerApp::GetSongInfo(wstring& file_path)
     return song;
 }
 
-SongInfo& CMusicPlayerApp::GetSongInfoRef(wstring& file_path)
+SongInfo& CMusicPlayerApp::GetSongInfoRef(const wstring& file_path)
 {
 	auto iter = m_song_data.find(file_path);
 	if (iter != m_song_data.end())

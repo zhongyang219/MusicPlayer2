@@ -14,10 +14,10 @@
 
 // CFolderExploreDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFolderExploreDlg, CTabDlg)
+IMPLEMENT_DYNAMIC(CFolderExploreDlg, CMediaLibTabDlg)
 
 CFolderExploreDlg::CFolderExploreDlg(CWnd* pParent /*=nullptr*/)
-	: CTabDlg(IDD_FOLDER_EXPLORE_DIALOG, pParent)
+	: CMediaLibTabDlg(IDD_FOLDER_EXPLORE_DIALOG, pParent)
 {
 
 }
@@ -223,34 +223,55 @@ UINT CFolderExploreDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 
 }
 
+const CListCtrlEx & CFolderExploreDlg::GetSongListCtrl() const
+{
+	return m_song_list_ctrl;
+}
+
+int CFolderExploreDlg::GetItemSelected() const
+{
+	return m_right_selected_item;
+}
+
+const vector<int>& CFolderExploreDlg::GetItemsSelected() const
+{
+	return m_right_selected_items;
+}
+
+void CFolderExploreDlg::AfterDeleteFromDisk(const std::vector<SongInfo>& files)
+{
+	//删除成功，则刷新列表
+	ShowSongList();
+}
+
+int CFolderExploreDlg::GetPathColIndex() const
+{
+	return COL_PATH;
+}
+
+wstring CFolderExploreDlg::GetSelectedString() const
+{
+	return wstring(m_selected_string);
+}
+
 void CFolderExploreDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CTabDlg::DoDataExchange(pDX);
+    CMediaLibTabDlg::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_MFCEDITBROWSE1, m_search_edit);
     DDX_Control(pDX, IDC_FOLDER_EXPLORE_TREE, m_folder_explore_tree);
     DDX_Control(pDX, IDC_SONG_LIST, m_song_list_ctrl);
 }
 
 
-BEGIN_MESSAGE_MAP(CFolderExploreDlg, CTabDlg)
+BEGIN_MESSAGE_MAP(CFolderExploreDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_RCLICK, IDC_FOLDER_EXPLORE_TREE, &CFolderExploreDlg::OnNMRClickFolderExploreTree)
     ON_NOTIFY(NM_CLICK, IDC_FOLDER_EXPLORE_TREE, &CFolderExploreDlg::OnNMClickFolderExploreTree)
-    ON_COMMAND(ID_PLAY_ITEM, &CFolderExploreDlg::OnPlayItem)
     ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMClickSongList)
     ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMRClickSongList)
-    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CFolderExploreDlg::OnAddToNewPlaylist)
-    ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CFolderExploreDlg::OnAddToNewPalylistAndPlay)
-    ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CFolderExploreDlg::OnPlayItemInFolderMode)
-    ON_COMMAND(ID_EXPLORE_ONLINE, &CFolderExploreDlg::OnExploreOnline)
-    ON_COMMAND(ID_FORMAT_CONVERT, &CFolderExploreDlg::OnFormatConvert)
-    ON_COMMAND(ID_EXPLORE_TRACK, &CFolderExploreDlg::OnExploreTrack)
-    ON_COMMAND(ID_ITEM_PROPERTY, &CFolderExploreDlg::OnItemProperty)
-    ON_COMMAND(ID_COPY_TEXT, &CFolderExploreDlg::OnCopyText)
     ON_NOTIFY(NM_DBLCLK, IDC_FOLDER_EXPLORE_TREE, &CFolderExploreDlg::OnNMDblclkFolderExploreTree)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMDblclkSongList)
     ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CFolderExploreDlg::OnEnChangeMfceditbrowse1)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFolderExploreDlg::OnSearchEditBtnClicked)
-    ON_WM_INITMENU()
     ON_COMMAND(ID_DELETE_FROM_DISK, &CFolderExploreDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
@@ -260,7 +281,7 @@ END_MESSAGE_MAP()
 
 BOOL CFolderExploreDlg::OnInitDialog()
 {
-    CTabDlg::OnInitDialog();
+    CMediaLibTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
     CCommon::SetDialogFont(this, theApp.m_pMainWnd->GetFont());     //由于此对话框资源由不同语言共用，所以这里要设置一下字体
@@ -371,13 +392,6 @@ void CFolderExploreDlg::OnNMClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pResu
 }
 
 
-void CFolderExploreDlg::OnPlayItem()
-{
-    // TODO: 在此添加命令处理程序代码
-    OnOK();
-}
-
-
 void CFolderExploreDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
@@ -405,153 +419,6 @@ void CFolderExploreDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
         }
     }
     *pResult = 0;
-}
-
-
-void CFolderExploreDlg::OnOK()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-    if (m_left_selected)        //选中左侧树时，播放选中文件夹
-    {
-        wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
-        CPlayer::GetInstance().OpenFolder(folder_path, true);
-    }
-    else
-    {
-        std::vector<wstring> files;
-        GetSongsSelected(files);
-        if (!files.empty())
-        {
-            if (files.size() == 1)
-                CPlayer::GetInstance().OpenFiles(files);
-            else
-                CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
-        }
-    }
-    CTabDlg::OnOK();
-    CWnd* pParent = GetParentWindow();
-    if (pParent != nullptr)
-        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
-}
-
-
-void CFolderExploreDlg::OnAddToNewPlaylist()
-{
-    // TODO: 在此添加命令处理程序代码
-    wstring playlist_path;
-    _OnAddToNewPlaylist(playlist_path);
-}
-
-
-void CFolderExploreDlg::OnAddToNewPalylistAndPlay()
-{
-    // TODO: 在此添加命令处理程序代码
-    wstring playlist_path;
-    if (_OnAddToNewPlaylist(playlist_path))
-    {
-        CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, false, true);
-        CPlayer::GetInstance().SaveRecentPath();
-        OnCancel();
-    }
-}
-
-
-void CFolderExploreDlg::OnPlayItemInFolderMode()
-{
-    // TODO: 在此添加命令处理程序代码
-    if (m_right_selected_item >= 0)
-    {
-        std::wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_item, COL_PATH);
-        CPlayer::GetInstance().OpenAFile(file_path, true);
-
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
-    }
-}
-
-
-void CFolderExploreDlg::OnExploreOnline()
-{
-    // TODO: 在此添加命令处理程序代码
-    AfxBeginThread(ViewOnlineThreadFunc, (void*)this);
-}
-
-
-void CFolderExploreDlg::OnFormatConvert()
-{
-    // TODO: 在此添加命令处理程序代码
-    std::vector<SongInfo> songs;
-    GetSongsSelected(songs);
-    CMusicPlayerCmdHelper cmd_helper(this);
-    cmd_helper.FormatConvert(songs);
-}
-
-
-void CFolderExploreDlg::OnExploreTrack()
-{
-    // TODO: 在此添加命令处理程序代码
-    if (m_right_selected_item < 0)
-        return;
-    wstring file_path = m_song_list_ctrl.GetItemText(m_right_selected_item, COL_PATH).GetString();
-    if (!file_path.empty())
-    {
-        CString str;
-        str.Format(_T("/select,\"%s\""), file_path.c_str());
-        ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
-    }
-}
-
-
-void CFolderExploreDlg::OnItemProperty()
-{
-    // TODO: 在此添加命令处理程序代码
-    if (m_right_selected_item < 0)
-        return;
-    std::vector<SongInfo> songs;
-    GetCurrentSongList(songs);
-    CPropertyDlg propertyDlg(songs, this, true);
-    propertyDlg.m_index = m_right_selected_item;
-    propertyDlg.DoModal();
-    //if (propertyDlg.GetListRefresh())
-    //    ShowSongList();
-}
-
-
-void CFolderExploreDlg::OnCopyText()
-{
-    // TODO: 在此添加命令处理程序代码
-    if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
-        MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
-}
-
-
-BOOL CFolderExploreDlg::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-    // TODO: 在此添加专用代码和/或调用基类
-    WORD command = LOWORD(wParam);
-    auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
-    {
-        GetSongsSelected(item_list);
-    };
-    //响应播放列表右键菜单中的“添加到播放列表”
-    CMusicPlayerCmdHelper cmd_helper;
-    cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
-
-    return CTabDlg::OnCommand(wParam, lParam);
-}
-
-
-void CFolderExploreDlg::OnCancel()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-
-    CTabDlg::OnCancel();
-
-    CWnd* pParent = GetParentWindow();
-    if (pParent != nullptr)
-        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
 }
 
 
@@ -583,7 +450,7 @@ void CFolderExploreDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
 void CFolderExploreDlg::OnEnChangeMfceditbrowse1()
 {
     // TODO:  如果该控件是 RICHEDIT 控件，它将不
-    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
+    // 发送此通知，除非重写 CMediaLibTabDlg::OnInitDialog()
     // 函数并调用 CRichEditCtrl().SetEventMask()，
     // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -604,22 +471,41 @@ afx_msg LRESULT CFolderExploreDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM 
 
 void CFolderExploreDlg::OnInitMenu(CMenu* pMenu)
 {
-    CTabDlg::OnInitMenu(pMenu);
+    CMediaLibTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
 }
 
 
-void CFolderExploreDlg::OnDeleteFromDisk()
+//void CFolderExploreDlg::OnDeleteFromDisk()
+//{
+//    // TODO: 在此添加命令处理程序代码
+//    vector<SongInfo> songs_selected;
+//    GetSongsSelected(songs_selected);
+//    CMusicPlayerCmdHelper helper;
+//    if (helper.DeleteSongsFromDisk(songs_selected))
+//    {
+//        //删除成功，则刷新列表
+//        ShowSongList();
+//    }
+//}
+
+
+void CFolderExploreDlg::OnOK()
 {
-    // TODO: 在此添加命令处理程序代码
-    vector<SongInfo> songs_selected;
-    GetSongsSelected(songs_selected);
-    CMusicPlayerCmdHelper helper;
-    if (helper.DeleteSongsFromDisk(songs_selected))
-    {
-        //删除成功，则刷新列表
-        ShowSongList();
-    }
+	// TODO: 在此添加专用代码和/或调用基类
+	if (m_left_selected)        //选中左侧树时，播放选中文件夹
+	{
+		wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
+		CPlayer::GetInstance().OpenFolder(folder_path, true);
+		CTabDlg::OnOK();
+		CWnd* pParent = GetParentWindow();
+		if (pParent != nullptr)
+			::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+	}
+	else
+	{
+		CMediaLibTabDlg::OnOK();
+	}
 }

@@ -279,6 +279,21 @@
     <Filter Include="公共的类\UpdateHelper">
       <UniqueIdentifier>{01b55622-10b9-4945-a9e8-2dac28d0f7e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\媒体库对话框\文件夹">
+      <UniqueIdentifier>{549f3057-94f4-456e-8d06-2f8afc68f69f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\媒体库对话框\播放列表">
+      <UniqueIdentifier>{07bb463f-94dc-41ed-b41d-e2d7d648e3fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\媒体库对话框\艺术家、唱片集、流派、年份">
+      <UniqueIdentifier>{1110b51e-4ae8-4003-8e3b-03228e018806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\媒体库对话框\所有曲目、最近播放">
+      <UniqueIdentifier>{3c3ae836-6765-4c69-a601-d8fb9c6250ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\媒体库对话框\文件夹浏览">
+      <UniqueIdentifier>{b109aca1-cfaf-4f5f-9612-96c66b07d09c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -312,9 +327,6 @@
     </ClInclude>
     <ClInclude Include="PropertyDlg.h">
       <Filter>对话框类\PropertyDlg</Filter>
-    </ClInclude>
-    <ClInclude Include="SetPathDlg.h">
-      <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
     <ClInclude Include="SoundEffectDlg.h">
       <Filter>对话框类\Sound Effect Dialog</Filter>
@@ -535,9 +547,6 @@
     <ClInclude Include="CMediaLibDlg.h">
       <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
-    <ClInclude Include="CSelectPlaylist.h">
-      <Filter>对话框类\媒体库对话框</Filter>
-    </ClInclude>
     <ClInclude Include="PlaylistMgr.h">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClInclude>
@@ -604,17 +613,11 @@
     <ClInclude Include="MediaLibHelper.h">
       <Filter>功能逻辑类\MediaLibHelper</Filter>
     </ClInclude>
-    <ClInclude Include="MediaClassifyDlg.h">
-      <Filter>对话框类\媒体库对话框</Filter>
-    </ClInclude>
     <ClInclude Include="MusicPlayerCmdHelper.h">
       <Filter>MusicPlayerDlg</Filter>
     </ClInclude>
     <ClInclude Include="TreeCtrlEx.h">
       <Filter>派生的控件类\TreeCtrlEx</Filter>
-    </ClInclude>
-    <ClInclude Include="FolderExploreDlg.h">
-      <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
     <ClInclude Include="MediaLibSettingDlg.h">
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
@@ -625,8 +628,23 @@
     <ClInclude Include="UpdateHelper.h">
       <Filter>公共的类\UpdateHelper</Filter>
     </ClInclude>
-    <ClInclude Include="AllMediaDlg.h">
+    <ClInclude Include="MediaLibTabDlg.h">
       <Filter>对话框类\媒体库对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPathDlg.h">
+      <Filter>对话框类\媒体库对话框\文件夹</Filter>
+    </ClInclude>
+    <ClInclude Include="CSelectPlaylist.h">
+      <Filter>对话框类\媒体库对话框\播放列表</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaClassifyDlg.h">
+      <Filter>对话框类\媒体库对话框\艺术家、唱片集、流派、年份</Filter>
+    </ClInclude>
+    <ClInclude Include="AllMediaDlg.h">
+      <Filter>对话框类\媒体库对话框\所有曲目、最近播放</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderExploreDlg.h">
+      <Filter>对话框类\媒体库对话框\文件夹浏览</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -644,9 +662,6 @@
     </ClCompile>
     <ClCompile Include="PropertyDlg.cpp">
       <Filter>对话框类\PropertyDlg</Filter>
-    </ClCompile>
-    <ClCompile Include="SetPathDlg.cpp">
-      <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
     <ClCompile Include="SoundEffectDlg.cpp">
       <Filter>对话框类\Sound Effect Dialog</Filter>
@@ -858,9 +873,6 @@
     <ClCompile Include="CMediaLibDlg.cpp">
       <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
-    <ClCompile Include="CSelectPlaylist.cpp">
-      <Filter>对话框类\媒体库对话框</Filter>
-    </ClCompile>
     <ClCompile Include="PlaylistMgr.cpp">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClCompile>
@@ -921,17 +933,11 @@
     <ClCompile Include="MediaLibHelper.cpp">
       <Filter>功能逻辑类\MediaLibHelper</Filter>
     </ClCompile>
-    <ClCompile Include="MediaClassifyDlg.cpp">
-      <Filter>对话框类\媒体库对话框</Filter>
-    </ClCompile>
     <ClCompile Include="MusicPlayerCmdHelper.cpp">
       <Filter>MusicPlayerDlg</Filter>
     </ClCompile>
     <ClCompile Include="TreeCtrlEx.cpp">
       <Filter>派生的控件类\TreeCtrlEx</Filter>
-    </ClCompile>
-    <ClCompile Include="FolderExploreDlg.cpp">
-      <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
     <ClCompile Include="MediaLibSettingDlg.cpp">
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
@@ -942,8 +948,23 @@
     <ClCompile Include="UpdateHelper.cpp">
       <Filter>公共的类\UpdateHelper</Filter>
     </ClCompile>
-    <ClCompile Include="AllMediaDlg.cpp">
+    <ClCompile Include="MediaLibTabDlg.cpp">
       <Filter>对话框类\媒体库对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPathDlg.cpp">
+      <Filter>对话框类\媒体库对话框\文件夹</Filter>
+    </ClCompile>
+    <ClCompile Include="CSelectPlaylist.cpp">
+      <Filter>对话框类\媒体库对话框\播放列表</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaClassifyDlg.cpp">
+      <Filter>对话框类\媒体库对话框\艺术家、唱片集、流派、年份</Filter>
+    </ClCompile>
+    <ClCompile Include="AllMediaDlg.cpp">
+      <Filter>对话框类\媒体库对话框\所有曲目、最近播放</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderExploreDlg.cpp">
+      <Filter>对话框类\媒体库对话框\文件夹浏览</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -170,7 +170,7 @@ public:
     void SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false);
 	void OpenFolder(wstring path, bool play = false);	//通过“打开文件夹”来设置路径的处理
 	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开多个文件，play用来设置是否立即播放
-	void OpenFilesInTempPlaylist(const vector<wstring>& files, bool play = true);	//打开多个文件并覆盖临时播放列表，play用来设置是否立即播放
+	void OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index = 0, bool play = true);	//打开多个文件并覆盖临时播放列表，play用来设置是否立即播放
 	void OpenAFile(wstring file, bool play = false);	//在文件夹模式下打开一个文件
     void AddFiles(const vector<wstring>& files);
 	void SetRepeatMode();		//更改循环模式

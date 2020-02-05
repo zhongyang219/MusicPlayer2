@@ -928,7 +928,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     IniPlayList(true, false, play);
 }
 
-void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, bool play /*= true*/)
+void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index, bool play /*= true*/)
 {
     //打开文件时始终添加到默认播放列表中
 
@@ -958,7 +958,7 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, bool play /*
         song_info.file_path = file;
         m_playlist.push_back(song_info);
     }
-    m_index = 0;
+    m_index = play_index;
     m_current_position = Time();
 
     SaveCurrentPlaylist();

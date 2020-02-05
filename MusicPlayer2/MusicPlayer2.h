@@ -91,8 +91,8 @@ public:
         return m_dpi;
     }
 
-    SongInfo GetSongInfo(wstring& file_path);
-	SongInfo& GetSongInfoRef(wstring& file_path);
+    SongInfo GetSongInfo(const wstring& file_path);
+	SongInfo& GetSongInfoRef(const wstring& file_path);
 
     WORD GetCurrentLanguage() const;
     bool IsGlobalMultimediaKeyEnabled() const;
