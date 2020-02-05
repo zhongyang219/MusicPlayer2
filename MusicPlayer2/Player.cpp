@@ -244,7 +244,7 @@ void CPlayer::IniPlaylistComplate()
             {
                 //重新载入播放列表后，查找正在播放项目的序号
                 MusicControl(Command::CLOSE);
-                if(sorted)
+                if(sorted || m_thread_info.find_current_track)
                 {
                     for (int i{}; i < GetSongNum(); i++)
                     {
@@ -293,6 +293,8 @@ void CPlayer::IniPlaylistComplate()
     m_shuffle_list.clear();
     if (m_repeat_mode == RM_PLAY_SHUFFLE)
         m_shuffle_list.push_back(m_index);
+
+	m_thread_info = ThreadInfo();
 }
 
 void CPlayer::SearchLyrics(/*bool refresh*/)
@@ -964,6 +966,12 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_ind
     SaveCurrentPlaylist();
     SetTitle();
 
+	if(play_index > 0)
+	{
+		m_thread_info.find_current_track = true;
+		if (play_index >= 0 && play_index < static_cast<int>(files.size()))
+			m_current_file_name_tmp = CFilePathHelper(files[play_index]).GetFileName();
+	}
     IniPlayList(true, false, play);
 }
 

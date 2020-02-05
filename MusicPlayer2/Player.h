@@ -25,10 +25,11 @@ public:
 	//用于向初始化播放列表传递信息的结构体
 	struct ThreadInfo
 	{
-		bool refresh_info;
-		bool sort;		//指示加载完播放列表后是否要排序
-        bool play;      //加载完播放列表后是否立即播放
-		int process_percent;
+		bool refresh_info{};
+		bool sort{};		//指示加载完播放列表后是否要排序
+		bool play{};      //加载完播放列表后是否立即播放
+		bool find_current_track{ false };		//加载完成后是否要重新查找当前播放曲目
+		int process_percent{};
 	};
 	//初始化播放列表的工作线程函数
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);

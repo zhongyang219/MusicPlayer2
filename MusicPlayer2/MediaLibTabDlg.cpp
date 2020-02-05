@@ -34,6 +34,7 @@ END_MESSAGE_MAP()
 
 void CMediaLibTabDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
 {
+	song_list.clear();
 	std::vector<wstring> file_list;
 	GetSongsSelected(file_list);
 	for (const auto& file : file_list)
@@ -54,6 +55,7 @@ void CMediaLibTabDlg::GetSongsSelected(std::vector<wstring>& song_list) const
 
 void CMediaLibTabDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) const
 {
+	song_list.clear();
 	std::vector<wstring> file_list;
 	GetCurrentSongList(file_list);
 	for (const auto& file : file_list)
