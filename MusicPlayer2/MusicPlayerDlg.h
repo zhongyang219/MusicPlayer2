@@ -173,6 +173,7 @@ protected:
     void _OnOptionSettings(CWnd* pParent);
 
 	void DoLyricsAutoSave();
+	void UpdateABRepeatToolTip();
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
@@ -374,4 +375,6 @@ public:
 	afx_msg void OnShowMainWindow();
 protected:
 	afx_msg LRESULT OnRecentPlayedListCleared(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnAbRepeat();
 };

@@ -2072,6 +2072,52 @@ void CPlayer::EnableReverb(bool enable)
 }
 
 
+bool CPlayer::SetARepeatPoint()
+{
+	m_a_repeat = m_current_position;
+	m_ab_repeat_mode = AM_A_SELECTED;
+	return true;
+}
+
+bool CPlayer::SetBRepeatPoint()
+{
+	Time time_span = m_current_position - m_a_repeat;
+	if(time_span > 200 && time_span < m_song_length)		//B点位置必须至少超过A点200毫秒
+	{
+		m_b_repeat = m_current_position;
+		m_ab_repeat_mode = AM_AB_REPEAT;
+		return true;
+	}
+	else		//否则清除AB重复状态
+	{
+		ResetABRepeat();
+		return false;
+	}
+}
+
+void CPlayer::DoABRepeat()
+{
+	switch (m_ab_repeat_mode)
+	{
+	case CPlayer::AM_NONE:
+		SetARepeatPoint();
+		break;
+	case CPlayer::AM_A_SELECTED:
+		SetBRepeatPoint();
+		break;
+	case CPlayer::AM_AB_REPEAT:
+		ResetABRepeat();
+		break;
+	default:
+		break;
+	}
+}
+
+void CPlayer::ResetABRepeat()
+{
+	m_ab_repeat_mode = AM_NONE;
+}
+
 void CPlayer::ConnotPlayWarning() const
 {
     if (m_pCore->IsMidiConnotPlay())

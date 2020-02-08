@@ -224,6 +224,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_MESSAGE(WM_POST_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnPostMusicStreamOpened)
 	ON_COMMAND(ID_SHOW_MAIN_WINDOW, &CMusicPlayerDlg::OnShowMainWindow)
 	ON_MESSAGE(WM_RECENT_PLAYED_LIST_CLEARED, &CMusicPlayerDlg::OnRecentPlayedListCleared)
+	ON_COMMAND(ID_AB_REPEAT, &CMusicPlayerDlg::OnAbRepeat)
 END_MESSAGE_MAP()
 
 
@@ -653,6 +654,9 @@ void CMusicPlayerDlg::SetPlayListColor(bool highlight_visible)
 
 void CMusicPlayerDlg::SwitchTrack()
 {
+	CPlayer::GetInstance().ResetABRepeat();
+	UpdateABRepeatToolTip();
+
     //当切换正在播放的歌曲时设置播放列表中突出显示的项目
     SetPlayListColor();
     if (m_miniModeDlg.m_hWnd != NULL)
@@ -1270,6 +1274,18 @@ void CMusicPlayerDlg::DoLyricsAutoSave()
 	}
 }
 
+void CMusicPlayerDlg::UpdateABRepeatToolTip()
+{
+	CString tooltip_info;
+	if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
+		tooltip_info = CCommon::LoadText(IDS_AB_REPEAT_A_SELECTED);
+	else if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
+		tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, { CPlayer::GetInstance().GetARepeatPosition().toString(), CPlayer::GetInstance().GetBRepeatPosition().toString() });
+	else
+		tooltip_info = CCommon::LoadText(IDS_AB_REPEAT);
+	m_pUI->UpdateMouseToolTip(CPlayerUIBase::BTN_AB_REPEAT, tooltip_info);
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -1685,6 +1701,26 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             CPlayer::GetInstance().MusicControl(Command::PAUSE);
             UpdatePlayPauseButton();
         }
+
+		//处理AB重复
+		if(CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
+		{
+			Time a_position = CPlayer::GetInstance().GetARepeatPosition();
+			Time b_position = CPlayer::GetInstance().GetBRepeatPosition();
+			if (a_position > CPlayer::GetInstance().GetSongLength() || b_position > CPlayer::GetInstance().GetSongLength())
+			{
+				CPlayer::GetInstance().ResetABRepeat();
+				UpdateABRepeatToolTip();
+			}
+			else
+			{
+				Time current_play_time{ CPlayer::GetInstance().GetCurrentPosition() };
+				if (current_play_time < CPlayer::GetInstance().GetARepeatPosition() || current_play_time > CPlayer::GetInstance().GetBRepeatPosition())
+				{
+					CPlayer::GetInstance().SeekTo(CPlayer::GetInstance().GetARepeatPosition().toInt());
+				}
+			}
+		}
 
         //if (m_timer_count % 10 == 0)
         //	m_cortana_lyric.CheckDarkMode();
@@ -2403,6 +2439,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         break;
     case ID_TEST:
         CTest::Test();
+		//CPlayer::GetInstance().DoABRepeat();
         break;
     case ID_TEST_DIALOG:
     {
@@ -3314,6 +3351,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnPostMusicStreamOpened(WPARAM wParam, LPARAM l
 {
 	//保存修改过的歌词
 	DoLyricsAutoSave();
+
+	CPlayer::GetInstance().ResetABRepeat();
+	UpdateABRepeatToolTip();
+
 	return 0;
 }
 
@@ -4388,4 +4429,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentPlayedListCleared(WPARAM wParam, LPARAM
 	}
 
 	return 0;
+}
+
+
+void CMusicPlayerDlg::OnAbRepeat()
+{
+	// TODO: 在此添加命令处理程序代码
+	CPlayer::GetInstance().DoABRepeat();
+	UpdateABRepeatToolTip();
 }

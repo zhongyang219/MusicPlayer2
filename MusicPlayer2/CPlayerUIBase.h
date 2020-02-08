@@ -54,7 +54,7 @@ public:
     int WidthThreshold() const;
     int DrawAreaHeight() const;		//窄界面模式下显示播放列表时绘图区的高度
 
-protected:
+public:
     enum BtnKey		//标识按钮的类型
     {
         BTN_REPETEMODE,			//“循环模式”按钮
@@ -69,6 +69,7 @@ protected:
         BTN_INFO,				//曲目信息按钮
         BTN_FIND,				//查找歌曲按钮
         BTN_LRYIC,              //桌面歌词按钮
+		BTN_AB_REPEAT,			//AB重复按钮
         BTN_STOP,				//停止
         BTN_PREVIOUS,			//上一曲
         BTN_PLAY_PAUSE,			//播放/暂停
@@ -85,7 +86,8 @@ protected:
 
     };
 
-    struct DrawData
+protected:
+	struct DrawData
     {
         //CRect cover_rect;
         CRect lyric_rect;
@@ -113,6 +115,8 @@ protected:
 
     virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
+	virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override { UpdateMouseToolTip(static_cast<BtnKey>(btn), str); }
+
     virtual void UpdateToolTipPosition() = 0;
 
     virtual void AddToolTips();			//为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）

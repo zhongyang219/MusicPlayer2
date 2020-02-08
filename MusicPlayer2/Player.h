@@ -42,6 +42,13 @@ public:
         ES_FILE_CONNOT_BE_OPEN
     };
 
+	enum ABRepeatMode		//AB循环的模式
+	{
+		AM_NONE,			//无AB循环
+		AM_A_SELECTED,		//已选择A点
+		AM_AB_REPEAT		//AB循环中
+	};
+
 private:
 	CWinThread* m_pThread{};		//初始化播放列表的线程
 
@@ -111,6 +118,10 @@ private:
 
     bool m_playlist_mode{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
 
+	Time m_a_repeat{};		//AB循环中A点的时间
+	Time m_b_repeat{};		//AB循环中B点的时间
+	ABRepeatMode m_ab_repeat_mode{};
+
 private:
 	void IniPlayerCore();			//初始化BASS音频库
 	void UnInitPlayerCore();
@@ -142,6 +153,15 @@ public:
 	int GetReverbTime() const { return m_reverb_time; }
 	void EnableReverb(bool enable);		//混响开关
 	bool GetReverbEnable() const { return m_reverb_enable; }
+
+	Time GetARepeatPosition() const { return m_a_repeat; }
+	Time GetBRepeatPosition() const { return m_b_repeat; }
+	ABRepeatMode GetABRepeatMode() const { return m_ab_repeat_mode; }
+
+	bool SetARepeatPoint();
+	bool SetBRepeatPoint();
+	void DoABRepeat();
+	void ResetABRepeat();
 
 private:
 	CPlayer();

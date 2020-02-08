@@ -204,6 +204,10 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_lyric_setting_data.show_desktop_lyric = !theApp.m_lyric_setting_data.show_desktop_lyric;
                 return;
 
+			case BTN_AB_REPEAT:
+				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_AB_REPEAT);
+				return;
+
             case BTN_STOP:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_STOP);
                 return;
@@ -641,9 +645,30 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         m_buttons[BTN_FIND].rect = CRect();
     }
 
+	//绘制AB重复按钮
+	if (rect.Width() >= DPI(262))
+	{
+		rc_tmp.MoveToX(rc_tmp.right);
+		CRect rc_btn = rc_tmp;
+		rc_btn.DeflateRect(DPI(2), DPI(2));
+		CString info;
+		CPlayer::ABRepeatMode ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
+		if(ab_repeat_mode == CPlayer::AM_A_SELECTED)
+			info = _T("A-");
+		else
+			info = _T("A-B");
+		CFont* pOldFont = m_draw.GetFont();
+		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
+		DrawTextButton(rc_btn, m_buttons[BTN_AB_REPEAT], info, ab_repeat_mode != CPlayer::AM_NONE);
+		m_draw.SetFont(pOldFont);
+	}
+	else
+	{
+		m_buttons[BTN_AB_REPEAT].rect = CRect();
+	}
 
     //绘制翻译按钮
-    if (draw_translate_button && rect.Width() >= DPI(262))
+    if (draw_translate_button && rect.Width() >= DPI(286))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;
@@ -656,7 +681,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     }
 
     //绘制桌面歌词按钮
-    if (rect.Width() >= DPI(286))
+    if (rect.Width() >= DPI(310))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;
@@ -671,7 +696,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     rc_tmp.left = rc_tmp.right = rect.right;
 
     //显示<<<<
-    if (rect.Width() >= DPI(337))
+    if (rect.Width() >= DPI(361))
     {
         int progress;
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
@@ -1269,7 +1294,16 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum(), progress_percent });
         m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
     }
-
+	//显示AB重复状态
+	else if (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE)
+	{
+		CString info;
+		if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
+			info = CCommon::LoadText(IDS_AB_REPEAT_A_SELECTED);
+		else if(CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
+			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, {CPlayer::GetInstance().GetARepeatPosition().toString(), CPlayer::GetInstance().GetBRepeatPosition().toString() });
+		m_draw.DrawWindowText(rect, info, m_colors.color_text);
+	}
     //显示媒体库更新状态
     else if(theApp.IsMeidaLibUpdating() && theApp.m_media_num_added > 0)
     {
@@ -1277,7 +1311,6 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         static CDrawCommon::ScrollInfo scroll_info2;
         m_draw.DrawScrollText(rect, info, m_colors.color_text, DPI(1.5), false, scroll_info2, reset);
     }
-
     else
     {
         wstring str_info;
@@ -1328,5 +1361,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
+    AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT));
 }
 

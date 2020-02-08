@@ -57,6 +57,7 @@ bool CPlayerUIHelper::IsMidiLyric()
 
 bool CPlayerUIHelper::IsDrawStatusBar()
 {
-    return theApp.m_ui_data.always_show_statusbar || CPlayer::GetInstance().m_loading || (theApp.IsMeidaLibUpdating() && theApp.m_media_num_added > 0);
+    return theApp.m_ui_data.always_show_statusbar || CPlayer::GetInstance().m_loading || (theApp.IsMeidaLibUpdating() && theApp.m_media_num_added > 0)
+		/*|| CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE*/;
 
 }
