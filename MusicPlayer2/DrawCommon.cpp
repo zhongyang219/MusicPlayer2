@@ -205,6 +205,12 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	{
 		scroll_info.freez--;
 	}
+	if ((rect & text_rect).IsRectEmpty())		//如果文本矩形区域已经超出了绘图区域，则重置滚动
+	{
+		reset = true;
+		scroll_info.shift_cnt = 0;
+		scroll_info.freez = 20;
+	}
 }
 
 void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo & scroll_info, bool reset)
@@ -262,6 +268,12 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
 		scroll_info.freez--;
 		if (scroll_info.freez == 10)		//当freez递减到一半时将文本复位
 			scroll_info.shift_cnt = 0;
+	}
+	if ((rect & text_rect).IsRectEmpty())		//如果文本矩形区域已经超出了绘图区域，则重置滚动
+	{
+		reset = true;
+		scroll_info.shift_cnt = 0;
+		scroll_info.freez = 20;
 	}
 }
 
