@@ -1158,13 +1158,14 @@
 #define ID_RESET_AB_REPEAT              33155
 #define ID_AB33156                      33156
 #define ID_NEXT_AB_REPEAT               33157
+#define ID_SAVE_CURRENT_PLAYLIST_AS     33158
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        435
-#define _APS_NEXT_COMMAND_VALUE         33158
+#define _APS_NEXT_COMMAND_VALUE         33159
 #define _APS_NEXT_CONTROL_VALUE         1165
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

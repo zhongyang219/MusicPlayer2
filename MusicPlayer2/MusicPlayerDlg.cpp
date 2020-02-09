@@ -229,6 +229,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_SET_B_POINT, &CMusicPlayerDlg::OnSetBPoint)
 	ON_COMMAND(ID_RESET_AB_REPEAT, &CMusicPlayerDlg::OnResetAbRepeat)
 	ON_COMMAND(ID_NEXT_AB_REPEAT, &CMusicPlayerDlg::OnNextAbRepeat)
+	ON_COMMAND(ID_SAVE_CURRENT_PLAYLIST_AS, &CMusicPlayerDlg::OnSaveCurrentPlaylistAs)
 END_MESSAGE_MAP()
 
 
@@ -4496,4 +4497,19 @@ void CMusicPlayerDlg::OnNextAbRepeat()
 	// TODO: 在此添加命令处理程序代码
 	CPlayer::GetInstance().ContinueABRepeat();
 	UpdateABRepeatToolTip();
+}
+
+
+void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
+{
+	// TODO: 在此添加命令处理程序代码
+	auto getSongList = [&](std::vector<SongInfo>& song_list)
+	{
+		for (const auto& item : CPlayer::GetInstance().GetPlayList())
+			song_list.push_back(item);
+	};
+	wstring playlist_path;
+	CMusicPlayerCmdHelper cmd_helper(this);
+	cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+
 }
