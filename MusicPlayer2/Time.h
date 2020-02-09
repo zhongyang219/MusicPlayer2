@@ -100,10 +100,10 @@ public:
 	}
 
 	//将时间转换成字符串（格式：分:秒）
-	wstring toString() const
+	wstring toString(bool no_zero = true) const
 	{
 		wchar_t buff[16];
-		if (*this == Time{ 0,0,0 })
+		if (no_zero && *this == Time{ 0,0,0 })
 			wcscpy_s(buff, L"-:--");
 		else
 			swprintf_s(buff, L"%d:%.2d", min, sec);
@@ -111,10 +111,10 @@ public:
 	}
 
 	//将时间转换成字符串（格式：分:秒.毫秒）
-	wstring toString2() const
+	wstring toString2(bool no_zero = true) const
 	{
 		wchar_t buff[16];
-		if (*this == Time{ 0,0,0 })
+		if (no_zero && *this == Time{ 0,0,0 })
 			wcscpy_s(buff, L"-:--");
 		else
 			swprintf_s(buff, L"%d:%.2d.%.3d", min, sec, msec);
@@ -122,13 +122,13 @@ public:
 	}
 
 	//将时间转换成字符串（格式：时:分:秒）
-	wstring toString3() const
+	wstring toString3(bool no_zero = true) const
 	{
 		int hour, min1;
 		hour = min / 60;
 		min1 = min % 60;
 		wchar_t buff[16];
-		if (*this == Time{ 0,0,0 })
+		if (no_zero && *this == Time{ 0,0,0 })
 			wcscpy_s(buff, L"-:--:--");
 		else
 			swprintf_s(buff, L"%d:%.2d:%.2d", hour, min1, sec);

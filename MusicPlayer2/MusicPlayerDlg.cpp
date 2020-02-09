@@ -1124,6 +1124,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_LYRIC_BACKGROUND_PENETRATE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate ? MF_CHECKED : MF_UNCHECKED));
 
 	pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_SET_B_POINT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE ? MF_ENABLED : MF_GRAYED));
 }
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
@@ -1285,9 +1286,9 @@ void CMusicPlayerDlg::UpdateABRepeatToolTip()
 {
 	CString tooltip_info;
 	if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
-		tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString() });
+		tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString(false) });
 	else if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
-		tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, { CPlayer::GetInstance().GetARepeatPosition().toString(), CPlayer::GetInstance().GetBRepeatPosition().toString() });
+		tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, { CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
 	else
 		tooltip_info = CCommon::LoadText(IDS_AB_REPEAT);
 	m_pUI->UpdateMouseToolTip(CPlayerUIBase::BTN_AB_REPEAT, tooltip_info);

@@ -2081,12 +2081,15 @@ bool CPlayer::SetARepeatPoint()
 
 bool CPlayer::SetBRepeatPoint()
 {
-	Time time_span = m_current_position - m_a_repeat;
-	if(time_span > 200 && time_span < m_song_length)		//B点位置必须至少超过A点200毫秒
+	if(m_ab_repeat_mode != AM_NONE)
 	{
-		m_b_repeat = m_current_position;
-		m_ab_repeat_mode = AM_AB_REPEAT;
-		return true;
+		Time time_span = m_current_position - m_a_repeat;
+		if (time_span > 200 && time_span < m_song_length)		//B点位置必须至少超过A点200毫秒
+		{
+			m_b_repeat = m_current_position;
+			m_ab_repeat_mode = AM_AB_REPEAT;
+			return true;
+		}
 	}
 	return false;
 }

@@ -1307,9 +1307,9 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 	{
 		CString info;
 		if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
-			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString() });
+			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString(false) });
 		else if(CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
-			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, {CPlayer::GetInstance().GetARepeatPosition().toString(), CPlayer::GetInstance().GetBRepeatPosition().toString() });
+			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, {CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
 		m_draw.DrawWindowText(rect, info, m_colors.color_text);
 	}
     //显示媒体库更新状态
