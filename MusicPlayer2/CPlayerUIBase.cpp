@@ -91,6 +91,14 @@ void CPlayerUIBase::RButtonUp(CPoint point)
         return;
     }
 
+	if (m_buttons[BTN_AB_REPEAT].rect.PtInRect(point))
+	{
+		CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(1)->GetSubMenu(13);
+		if(pMenu != nullptr)
+			pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+		return;
+	}
+
     for (auto& btn : m_buttons)
     {
         //按钮上点击右键不弹出菜单
@@ -1299,7 +1307,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 	{
 		CString info;
 		if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
-			info = CCommon::LoadText(IDS_AB_REPEAT_A_SELECTED);
+			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString() });
 		else if(CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
 			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, {CPlayer::GetInstance().GetARepeatPosition().toString(), CPlayer::GetInstance().GetBRepeatPosition().toString() });
 		m_draw.DrawWindowText(rect, info, m_colors.color_text);

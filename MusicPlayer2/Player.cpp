@@ -2088,11 +2088,19 @@ bool CPlayer::SetBRepeatPoint()
 		m_ab_repeat_mode = AM_AB_REPEAT;
 		return true;
 	}
-	else		//否则清除AB重复状态
+	return false;
+}
+
+bool CPlayer::ContinueABRepeat()
+{
+	if (m_ab_repeat_mode == AM_AB_REPEAT)		//在AB重复状态下，将当前重复B点设置为下一次的重复A点
 	{
-		ResetABRepeat();
-		return false;
+		m_a_repeat = m_b_repeat;
+		m_ab_repeat_mode = AM_A_SELECTED;
+		SeekTo(m_a_repeat.toInt());
+		return true;
 	}
+	return false;
 }
 
 void CPlayer::DoABRepeat()
@@ -2103,7 +2111,8 @@ void CPlayer::DoABRepeat()
 		SetARepeatPoint();
 		break;
 	case CPlayer::AM_A_SELECTED:
-		SetBRepeatPoint();
+		if (!SetBRepeatPoint())
+			ResetABRepeat();
 		break;
 	case CPlayer::AM_AB_REPEAT:
 		ResetABRepeat();

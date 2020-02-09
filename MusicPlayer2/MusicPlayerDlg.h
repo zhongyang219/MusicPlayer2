@@ -377,4 +377,8 @@ protected:
 	afx_msg LRESULT OnRecentPlayedListCleared(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnAbRepeat();
+	afx_msg void OnSetAPoint();
+	afx_msg void OnSetBPoint();
+	afx_msg void OnResetAbRepeat();
+	afx_msg void OnNextAbRepeat();
 };

@@ -1152,13 +1152,19 @@
 #define ID_ALWAYS_SHOW_STATUS_BAR       33149
 #define ID_SHOW_MAIN_WINDOW             33150
 #define ID_AB_REPEAT                    33151
+#define ID_33152                        33152
+#define ID_SET_A_POINT                  33153
+#define ID_SET_B_POINT                  33154
+#define ID_RESET_AB_REPEAT              33155
+#define ID_AB33156                      33156
+#define ID_NEXT_AB_REPEAT               33157
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        435
-#define _APS_NEXT_COMMAND_VALUE         33152
+#define _APS_NEXT_COMMAND_VALUE         33158
 #define _APS_NEXT_CONTROL_VALUE         1165
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

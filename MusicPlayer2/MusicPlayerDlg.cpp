@@ -225,6 +225,10 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_SHOW_MAIN_WINDOW, &CMusicPlayerDlg::OnShowMainWindow)
 	ON_MESSAGE(WM_RECENT_PLAYED_LIST_CLEARED, &CMusicPlayerDlg::OnRecentPlayedListCleared)
 	ON_COMMAND(ID_AB_REPEAT, &CMusicPlayerDlg::OnAbRepeat)
+	ON_COMMAND(ID_SET_A_POINT, &CMusicPlayerDlg::OnSetAPoint)
+	ON_COMMAND(ID_SET_B_POINT, &CMusicPlayerDlg::OnSetBPoint)
+	ON_COMMAND(ID_RESET_AB_REPEAT, &CMusicPlayerDlg::OnResetAbRepeat)
+	ON_COMMAND(ID_NEXT_AB_REPEAT, &CMusicPlayerDlg::OnNextAbRepeat)
 END_MESSAGE_MAP()
 
 
@@ -1117,6 +1121,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_DISPLAYED_DOUBLE_LINE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_BACKGROUND_PENETRATE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate ? MF_CHECKED : MF_UNCHECKED));
+
+	pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
 }
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
@@ -1278,7 +1284,7 @@ void CMusicPlayerDlg::UpdateABRepeatToolTip()
 {
 	CString tooltip_info;
 	if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
-		tooltip_info = CCommon::LoadText(IDS_AB_REPEAT_A_SELECTED);
+		tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString() });
 	else if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
 		tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, { CPlayer::GetInstance().GetARepeatPosition().toString(), CPlayer::GetInstance().GetBRepeatPosition().toString() });
 	else
@@ -1896,7 +1902,39 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
         //按下Ctrl键时
         if (GetKeyState(VK_CONTROL) & 0x80)
         {
-            if (pMsg->wParam == 'O')		//设置按Ctr+O打开文件
+			//按下Ctrl + Shift键时
+			if (GetKeyState(VK_SHIFT) & 0x8000)
+			{
+#ifdef _DEBUG
+				if (pMsg->wParam == 'Z')
+				{
+					CTest::Test();
+					return TRUE;
+				}
+#endif
+				if (pMsg->wParam == 'A')
+				{
+					OnSetAPoint();
+					return TRUE;
+				}
+				if (pMsg->wParam == 'B')
+				{
+					OnSetBPoint();
+					return TRUE;
+				}
+				if (pMsg->wParam == 'N')
+				{
+					OnNextAbRepeat();
+					return TRUE;
+				}
+				if (pMsg->wParam == 'C')
+				{
+					OnResetAbRepeat();
+					return TRUE;
+				}
+			}
+			
+			if (pMsg->wParam == 'O')		//设置按Ctr+O打开文件
             {
                 OnFileOpen();
                 return TRUE;
@@ -1936,11 +1974,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             //	OnMenuExit();
             //	return TRUE;
             //}
-            //if (pMsg->wParam == 'R')		//设置按Ctr+R打开录音机
-            //{
-            //    OnRecorder();
-            //    return TRUE;
-            //}
+            if (pMsg->wParam == 'R')		//设置按Ctr+R执行AB重复
+            {
+                OnAbRepeat();
+                return TRUE;
+            }
             if (pMsg->wParam == 'M')		//设置按Ctr+M进入迷你模式
             {
                 OnMiniMode();
@@ -2006,17 +2044,6 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             //{
             //    return TRUE;
             //}
-
-            if (GetKeyState(VK_SHIFT) & 0x8000)
-            {
-				//按下Ctrl + Shift键时
-#ifdef _DEBUG
-				if (pMsg->wParam == 'Z')
-				{
-                    CTest::Test();
-                }
-#endif
-            }
         }
         else
         {
@@ -4436,5 +4463,37 @@ void CMusicPlayerDlg::OnAbRepeat()
 {
 	// TODO: 在此添加命令处理程序代码
 	CPlayer::GetInstance().DoABRepeat();
+	UpdateABRepeatToolTip();
+}
+
+
+void CMusicPlayerDlg::OnSetAPoint()
+{
+	// TODO: 在此添加命令处理程序代码
+	CPlayer::GetInstance().SetARepeatPoint();
+	UpdateABRepeatToolTip();
+}
+
+
+void CMusicPlayerDlg::OnSetBPoint()
+{
+	// TODO: 在此添加命令处理程序代码
+	CPlayer::GetInstance().SetBRepeatPoint();
+	UpdateABRepeatToolTip();
+}
+
+
+void CMusicPlayerDlg::OnResetAbRepeat()
+{
+	// TODO: 在此添加命令处理程序代码
+	CPlayer::GetInstance().ResetABRepeat();
+	UpdateABRepeatToolTip();
+}
+
+
+void CMusicPlayerDlg::OnNextAbRepeat()
+{
+	// TODO: 在此添加命令处理程序代码
+	CPlayer::GetInstance().ContinueABRepeat();
 	UpdateABRepeatToolTip();
 }

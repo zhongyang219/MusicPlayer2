@@ -158,10 +158,11 @@ public:
 	Time GetBRepeatPosition() const { return m_b_repeat; }
 	ABRepeatMode GetABRepeatMode() const { return m_ab_repeat_mode; }
 
-	bool SetARepeatPoint();
-	bool SetBRepeatPoint();
+	bool SetARepeatPoint();		//设置当前播放位置为重复A点
+	bool SetBRepeatPoint();		//设置当前播放位置为重复B点
+	bool ContinueABRepeat();	//继续下一句AB重复（将当前重复B点设置为下一句重复A点，处于AB重复状态下才有效）
 	void DoABRepeat();
-	void ResetABRepeat();
+	void ResetABRepeat();		//取消AB重复 
 
 private:
 	CPlayer();
