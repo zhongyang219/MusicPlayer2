@@ -465,6 +465,19 @@ void CDrawCommon::DrawRectOutLine(CRect rect, COLORREF color, int width, bool do
     m_pDC->SelectObject(pOldBrush);       // Restore the old brush
 }
 
+void CDrawCommon::DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line)
+{
+	CPen aPen, *pOldPen;
+	aPen.CreatePen((dot_line ? PS_DOT : PS_SOLID), width, color);
+	pOldPen = m_pDC->SelectObject(&aPen);
+	CBrush* pOldBrush{ dynamic_cast<CBrush*>(m_pDC->SelectStockObject(NULL_BRUSH)) };
+
+	m_pDC->MoveTo(point1);
+	m_pDC->LineTo(point2);
+	m_pDC->SelectObject(pOldPen);
+	m_pDC->SelectObject(pOldBrush);       // Restore the old brush
+}
+
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 {
 	if (m_pfont != nullptr)

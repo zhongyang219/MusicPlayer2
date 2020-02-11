@@ -1173,9 +1173,47 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, DPI(3));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
-    progress_rect.right = progress_rect.left + static_cast<int>(progress * progress_rect.Width());
-    if (progress_rect.right > progress_rect.left)
-        m_draw.FillRect(progress_rect, m_colors.color_spectrum);
+	CRect played_rect = progress_rect;
+    played_rect.right = played_rect.left + static_cast<int>(progress * progress_rect.Width());
+    if (played_rect.right > played_rect.left)
+        m_draw.FillRect(played_rect, m_colors.color_spectrum);
+
+	//绘制AB重复的标记
+	auto ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
+	if(ab_repeat_mode == CPlayer::AM_A_SELECTED || ab_repeat_mode == CPlayer::AM_AB_REPEAT)
+	{
+		CFont* pOldFont = m_draw.GetFont();
+		//设置字体
+		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
+
+		double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
+		double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
+		CRect rect_draw = rect;
+		rect_draw.bottom += DPI(12);
+		m_draw.SetDrawArea(rect_draw);
+		CPoint point1, point2;
+		//绘制A点标记
+		point1.x = point2.x = progress_rect.left + static_cast<int>(a_point_progres * progress_rect.Width());
+		point1.y = progress_rect.top - DPI(2);
+		point2.y = progress_rect.bottom+ DPI(2);
+		m_draw.DrawLine(point1, point2, m_colors.color_text, DPI(1), false);
+		CRect rect_text;
+		rect_text.top = point2.y;
+		rect_text.left = point1.x - DPI(8);
+		rect_text.right = point1.x + DPI(8);
+		rect_text.bottom = rect_text.top + DPI(12);
+		m_draw.DrawWindowText(rect_text, _T("A"), m_colors.color_text, Alignment::CENTER, true);
+		//绘制B点标记
+		if(ab_repeat_mode == CPlayer::AM_AB_REPEAT)
+		{
+			point1.x = point2.x = progress_rect.left + static_cast<int>(b_point_progres * progress_rect.Width());
+			m_draw.DrawLine(point1, point2, m_colors.color_text, DPI(1), false);
+			rect_text.MoveToX(point1.x - DPI(8));
+			m_draw.DrawWindowText(rect_text, _T("B"), m_colors.color_text, Alignment::CENTER, true);
+		}
+		//恢复字体
+		m_draw.SetFont(pOldFont);
+	}
 }
 
 void CPlayerUIBase::DrawTranslateButton(CRect rect)

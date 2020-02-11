@@ -92,6 +92,7 @@ public:
 
     void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
     void DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line);
+	void DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line);
 
     CSize GetTextExtent(LPCTSTR str);
 
