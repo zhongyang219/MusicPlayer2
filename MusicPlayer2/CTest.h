@@ -17,5 +17,6 @@ private:
     static void TestOSUFile();
     static void TestReg();
     static void TestMediaLib();
+	static void TestAudioTag();
 };
 

@@ -21,10 +21,11 @@ void CTest::Test()
     //TestStringMatch();
     //TestCrash();
     //TestShortCut();
-    TestCommon();
+    //TestCommon();
     //TestOSUFile();
     //TestReg();
     //TestMediaLib();
+	TestAudioTag();
 }
 
 void CTest::TestStringMatch()
@@ -123,4 +124,15 @@ void CTest::TestMediaLib()
 {
     CMediaClassifier media_lib(CMediaClassifier::CT_ARTIST);
 
+}
+
+void CTest::TestAudioTag()
+{
+	wstring file_path = L"D:\\Temp\\test.mp3";
+	HSTREAM hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+	SongInfo song_info;
+	CAudioTag audio_tag(hStream, file_path, song_info);
+	audio_tag.GetAudioTag(true);
+	wstring str_lyric = audio_tag.GetAudioLyric();
+	int a = 0;
 }

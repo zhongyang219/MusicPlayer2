@@ -87,6 +87,17 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
 	return wstring();
 }
 
+wstring CAudioTag::GetAudioLyric()
+{
+	string tag_contents = GetID3V2TagContents();
+	if (!tag_contents.empty())
+	{
+		wstring lyric_str = GetSpecifiedId3V2Tag(tag_contents, "USLT");
+		return lyric_str;
+	}
+	return wstring();
+}
+
 bool CAudioTag::WriteMp3Tag(LPCTSTR file_path, const SongInfo & song_info, bool & text_cut_off)
 {
 	string title, artist, album, year, comment;
@@ -190,75 +201,28 @@ bool CAudioTag::GetID3V1Tag()
 
 bool CAudioTag::GetID3V2Tag()
 {
-	const char* id3v2;
-	id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
 	bool success;
-	if (id3v2 != nullptr)
+	string tag_content = GetID3V2TagContents();
+	if (!tag_content.empty())
 	{
-		const char* size;
-		size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
-		const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
-		string tag_content;
-		tag_content.assign(id3v2, tag_size);	//将标签区域的内容保存到一个string对象里
-
 		const int TAG_NUM{ 7 };
 		//要查找的标签标识字符串（标题、艺术家、唱片集、年份、注释、流派、音轨号）
 		const string tag_identify[TAG_NUM]{ "TIT2","TPE1","TALB","TYER","COMM","TCON","TRCK" };
 		for (int i{}; i < TAG_NUM; i++)
 		{
-			size_t tag_index;
-			tag_index = tag_content.find(tag_identify[i]);	//查找一个标签标识字符串
-			if (i == 1 && tag_index == string::npos)	//如果在查找艺术家时找不到TPE1标签，尝试查找TPE2标签
+			wstring tag_info;
+			tag_info = GetSpecifiedId3V2Tag(tag_content, tag_identify[i]);
+			if (!tag_info.empty())
 			{
-				tag_index = tag_content.find("TPE2");
-			}
-			if (tag_index != string::npos && tag_index < tag_content.size() - 8)
-			{
-				string size = tag_content.substr(tag_index + 4, 4);
-				const size_t tag_size = (BYTE)size[0] * 0x1000000 + (BYTE)size[1] * 0x10000 + (BYTE)size[2] * 0x100 + (BYTE)size[3];	//获取当前标签的大小
-				if (tag_size <= 0) continue;
-				if (tag_index + 11 >= tag_content.size()) continue;
-				//判断标签的编码格式
-				CodeType default_code, code_type;
-				switch (tag_content[tag_index + 10])
+				switch (i)
 				{
-				case 1: case 2:
-					default_code = CodeType::UTF16;
-					break;
-				case 3:
-					default_code = CodeType::UTF8;
-					break;
-				default:
-					default_code = CodeType::ANSI;
-					break;
-				}
-				string tag_info_str;
-				if (i == 4)
-				{
-					if(default_code == CodeType::UTF16)
-						tag_info_str = tag_content.substr(tag_index + 18, tag_size - 8);
-					else
-						tag_info_str = tag_content.substr(tag_index + 15, tag_size - 5);
-				}
-				else
-				{
-					tag_info_str = tag_content.substr(tag_index + 11, tag_size - 1);
-				}
-				code_type = CCommon::JudgeCodeType(tag_info_str, default_code);
-				wstring tag_info;
-				tag_info = CCommon::StrToUnicode(tag_info_str, code_type);
-				if (!tag_info.empty())
-				{
-					switch (i)
-					{
-					case 0: m_song_info.title = tag_info; break;
-					case 1: m_song_info.artist = tag_info; break;
-					case 2: m_song_info.album = tag_info; break;
-					case 3: m_song_info.year = tag_info; break;
-					case 4: m_song_info.comment = tag_info; break;
-					case 5: m_song_info.genre = CAudioCommon::GenreConvert(tag_info); break;
-					case 6: m_song_info.track = _wtoi(tag_info.c_str()); break;
-					}
+				case 0: m_song_info.title = tag_info; break;
+				case 1: m_song_info.artist = tag_info; break;
+				case 2: m_song_info.album = tag_info; break;
+				case 3: m_song_info.year = tag_info; break;
+				case 4: m_song_info.comment = tag_info; break;
+				case 5: m_song_info.genre = CAudioCommon::GenreConvert(tag_info); break;
+				case 6: m_song_info.track = _wtoi(tag_info.c_str()); break;
 				}
 			}
 		}
@@ -595,6 +559,70 @@ bool CAudioTag::GetFlacTag()
 	return true;
 }
 
+
+string CAudioTag::GetID3V2TagContents()
+{
+	const char* id3v2;
+	id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
+	string tag_content;
+	if (id3v2 != nullptr)
+	{
+		const char* size;
+		size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
+		const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
+		tag_content.assign(id3v2, tag_size);	//将标签区域的内容保存到一个string对象里
+	}
+	return tag_content;
+}
+
+wstring CAudioTag::GetSpecifiedId3V2Tag(const string& tag_contents, const string& tag_identify)
+{
+	wstring tag_info;
+	size_t tag_index;
+	tag_index = tag_contents.find(tag_identify);	//查找一个标签标识字符串
+	if (tag_contents == "TPE1" && tag_index == string::npos)	//如果在查找艺术家时找不到TPE1标签，尝试查找TPE2标签
+	{
+		tag_index = tag_contents.find("TPE2");
+	}
+	if (tag_index != string::npos && tag_index < tag_contents.size() - 8)
+	{
+		string size = tag_contents.substr(tag_index + 4, 4);
+		const size_t tag_size = (BYTE)size[0] * 0x1000000 + (BYTE)size[1] * 0x10000 + (BYTE)size[2] * 0x100 + (BYTE)size[3];	//获取当前标签的大小
+		if (tag_size <= 0)
+			return wstring();
+		if (tag_index + 11 >= tag_contents.size())
+			return wstring();
+		//判断标签的编码格式
+		CodeType default_code, code_type;
+		switch (tag_contents[tag_index + 10])
+		{
+		case 1: case 2:
+			default_code = CodeType::UTF16;
+			break;
+		case 3:
+			default_code = CodeType::UTF8;
+			break;
+		default:
+			default_code = CodeType::ANSI;
+			break;
+		}
+		string tag_info_str;
+		if (tag_identify == "COMM")
+		{
+			if (default_code == CodeType::UTF16)
+				tag_info_str = tag_contents.substr(tag_index + 18, tag_size - 8);
+			else
+				tag_info_str = tag_contents.substr(tag_index + 15, tag_size - 5);
+		}
+		else
+		{
+			tag_info_str = tag_contents.substr(tag_index + 11, tag_size - 1);
+		}
+		code_type = CCommon::JudgeCodeType(tag_info_str, default_code);
+		tag_info = CCommon::StrToUnicode(tag_info_str, code_type);
+	}
+	return tag_info;
+}
 
 void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 {

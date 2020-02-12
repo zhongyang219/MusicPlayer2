@@ -10,14 +10,17 @@ public:
 	//id3v2_first：是否优先获取ID3V2标签，否则，优先获取ID3V1标签
 	void GetAudioTag(bool id3v2_first);
 
-	//
-	void GetAllSongInfo(bool id3v2_first);
+	////
+	//void GetAllSongInfo(bool id3v2_first);
 
 	//获取音频文件的专辑封面，并保存到临时目录
 	//image_type：用来接收封面的格式 0:jpg, 1:png, 2:gif
 	//file_name: 指定保存的专辑封面的文件名，如果为nullptr，则使用默认的文件名
 	//返回值：专辑封面的保存路径
 	wstring GetAlbumCover(int& image_type, wchar_t* file_name = nullptr);
+
+	//获取音频的内嵌歌词
+	wstring GetAudioLyric();
 
 	//向一个MP3文件写入ID3V1标签
 	//file_path：mp3文件的路径
@@ -41,6 +44,14 @@ private:
 	bool GetMp4Tag();
 	bool GetOggTag();
 	bool GetFlacTag();
+
+	//获取ID3V2标签区域的内容
+	string GetID3V2TagContents();
+
+	//从ID3V2标签区域的内容中提取出指定的ID3标签
+	//tag_contents：整个标签区域的内容
+	//tag_identify：标签的标识
+	wstring GetSpecifiedId3V2Tag(const string& tag_contents, const string& tag_identify);
 
 	//获取FLAC音频的标签区域的内容
 	static void GetFlacTagContents(wstring file_path, string& contents_buff);
