@@ -405,7 +405,20 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 
 void CPlayer::IniLyrics()
 {
-    if (!m_playlist.empty() && !m_playlist[m_index].lyric_file.empty())
+	wstring lyric_str;
+	if(theApp.m_lyric_setting_data.use_inner_lyric_first)	//³¢ÊÔ»ñÈ¡ÄÚÇ¶¸è´Ê
+	{
+		SongInfo song;
+		CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), song);
+		lyric_str = audio_tag.GetAudioLyric();
+	}
+	m_inner_lyric = !lyric_str.empty();
+	if (m_inner_lyric)
+	{
+		m_Lyrics = CLyrics{};
+		m_Lyrics.LyricsFromRowString(lyric_str);
+	}
+    else if (!m_playlist.empty() && !m_playlist[m_index].lyric_file.empty())
         m_Lyrics = CLyrics{ m_playlist[m_index].lyric_file };
     else
         m_Lyrics = CLyrics{};

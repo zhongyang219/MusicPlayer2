@@ -164,6 +164,7 @@ struct LyricSettingData
     bool lyric_fuzzy_match{ true };				//歌词模糊匹配
     bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
     wstring lyric_path;							//歌词文件夹的路径
+	bool use_inner_lyric_first{};				//优先使用内嵌歌词
 
 	enum LyricSavePolicy		//歌词保存策略
 	{

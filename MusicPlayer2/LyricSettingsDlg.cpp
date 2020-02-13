@@ -52,6 +52,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LYRIC_PATH_EDIT, m_lyric_dir_edit);
 	DDX_Control(pDX, IDC_ALIGNMENT_COMBO, m_alignment_combo);
 	DDX_Control(pDX, IDC_LYRIC_SAVE_COMBO, m_lyric_save_policy_combo);
+	DDX_Control(pDX, IDC_USE_INNER_LYRIC_CHECK, m_use_inner_lyric_chk);
 }
 
 
@@ -94,6 +95,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CLyricSettingsDlg::OnEditBrowseChanged)
     ON_CBN_SELCHANGE(IDC_ALIGNMENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo)
 	ON_CBN_SELCHANGE(IDC_LYRIC_SAVE_COMBO, &CLyricSettingsDlg::OnCbnSelchangeLyricSaveCombo)
+	ON_BN_CLICKED(IDC_USE_INNER_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedUseInnerLyricCheck)
 END_MESSAGE_MAP()
 
 
@@ -109,6 +111,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	//初始化各控件的状态
 	m_karaoke_disp_check.SetCheck(m_data.lyric_karaoke_disp);
 	m_lyric_fuzzy_match_check.SetCheck(m_data.lyric_fuzzy_match);
+	m_use_inner_lyric_chk.SetCheck(m_data.use_inner_lyric_first);
 	m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_DO_NOT_SAVE));
 	m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_AUTO_SAVE));
 	m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_INQUIRY));
@@ -626,4 +629,11 @@ void CLyricSettingsDlg::OnCbnSelchangeLyricSaveCombo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(m_lyric_save_policy_combo.GetCurSel());
+}
+
+
+void CLyricSettingsDlg::OnBnClickedUseInnerLyricCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.use_inner_lyric_first = (m_use_inner_lyric_chk.GetCheck() != 0);
 }

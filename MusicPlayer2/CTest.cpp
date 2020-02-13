@@ -25,7 +25,7 @@ void CTest::Test()
     //TestOSUFile();
     //TestReg();
     //TestMediaLib();
-	TestAudioTag();
+	//TestAudioTag();
 }
 
 void CTest::TestStringMatch()
@@ -134,5 +134,5 @@ void CTest::TestAudioTag()
 	CAudioTag audio_tag(hStream, file_path, song_info);
 	audio_tag.GetAudioTag(true);
 	wstring str_lyric = audio_tag.GetAudioLyric();
-	int a = 0;
+	BASS_StreamFree(hStream);
 }

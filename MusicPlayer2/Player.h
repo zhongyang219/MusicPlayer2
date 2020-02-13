@@ -97,7 +97,8 @@ private:
 	CImage m_album_cover_blur;		//高斯模糊后的专辑封面
 	wstring m_album_cover_path;		//专辑封面文件的路径
 	int m_album_cover_type;			//专辑封面的格式
-	bool m_inner_cover{ false };			//如果专辑封面是内嵌图片，则为true
+	bool m_inner_cover{ false };	//如果专辑封面是内嵌图片，则为true
+	bool m_inner_lyric{ false };	//如果是内嵌歌词，则为true
     bool m_is_osu{ false };
 
 	SongInfo m_no_use;
@@ -268,6 +269,7 @@ public:
     void SetFavourite(bool favourite);          //为当前歌曲设置“我喜欢”标记
     bool IsFavourite();
 	bool IsInnerCover() const { return m_inner_cover; }		//判断当前专辑封面是否是内嵌图片
+	bool IsInnerLyric() const { return m_inner_lyric; }		//判断当前歌词是否是内嵌歌词
 
 	void AddListenTime(int sec);		//为当前歌曲增加累计已播放时间
 

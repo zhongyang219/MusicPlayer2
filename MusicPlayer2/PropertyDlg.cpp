@@ -85,7 +85,9 @@ void CPropertyDlg::ShowInfo()
 	m_bit_rate_edit.SetWindowText(info);
 
 	//显示歌词路径
-	if(!m_all_song_info[m_index].lyric_file.empty())
+	if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
+		m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_INNER_LYRIC));
+	else if(!m_all_song_info[m_index].lyric_file.empty())
 		m_lyric_file_edit.SetWindowText(m_all_song_info[m_index].lyric_file.c_str());
 	else
 		m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
@@ -220,7 +222,13 @@ BOOL CPropertyDlg::OnInitDialog()
 	m_genre_combo.SetEditReadOnly();
 
     if (m_read_only)
-        m_save_button.ShowWindow(SW_HIDE);
+	{
+		m_save_button.ShowWindow(SW_HIDE);
+		CWnd* pWnd = GetDlgItem(IDC_LYRIC_FILE_STATIC);
+		if(pWnd!=nullptr)
+			pWnd->ShowWindow(SW_HIDE);
+		m_lyric_file_edit.ShowWindow(SW_HIDE);
+	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE

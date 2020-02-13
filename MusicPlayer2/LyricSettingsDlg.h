@@ -29,6 +29,7 @@ public:
 protected:
 	CButton m_karaoke_disp_check;
 	CButton m_lyric_fuzzy_match_check;
+	CButton m_use_inner_lyric_chk;
 	CButton m_lyric_double_line_chk;
 	CButton m_show_album_cover_in_cortana_check;
 	CButton m_cortana_icon_beat_check;
@@ -40,6 +41,8 @@ protected:
 	CButton m_show_desktop_lyric_chk;
     CBrowseEdit m_lyric_dir_edit;
 	CComboBox m_lyric_save_policy_combo;
+	CButton m_cortana_info_enable_check;
+	CButton m_search_box_opaque_chk;
 
 	CButton m_desktop_lyric_double_line_chk;
 	CColorStaticEx m_text_color1_static;
@@ -72,7 +75,6 @@ public:
 	virtual void OnOK();
 	afx_msg void OnBnClickedLyricFuzzyMatch();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	CButton m_cortana_info_enable_check;
 	afx_msg void OnBnClickedShowLyricInCortana();
 	afx_msg void OnBnClickedLyricDoubleLineCheck();
 	afx_msg void OnCbnSelchangeCortanaColorCombo();
@@ -83,7 +85,6 @@ public:
 	afx_msg void OnBnClickedKeepDisplayCheck();
 	afx_msg void OnBnClickedShowSpectrumInCortana();
     afx_msg void OnBnClickedShowLyricInCortana2();
-	CButton m_search_box_opaque_chk;
     afx_msg void OnBnClickedSearchBoxOpaqueCheck();
 	afx_msg void OnBnClickedShowDesktopLyric();
 	afx_msg void OnBnClickedSetFont2();
@@ -113,4 +114,5 @@ protected:
 public:
     afx_msg void OnCbnSelchangeAlignmentCombo();
 	afx_msg void OnCbnSelchangeLyricSaveCombo();
+	afx_msg void OnBnClickedUseInnerLyricCheck();
 };

@@ -203,7 +203,16 @@ BOOL CLyricEditDlg::OnInitDialog()
 	//获取歌词信息
 	//m_lyric_string = CPlayer::GetInstance().m_Lyrics.GetLyricsString();
 	//m_lyric_path = CPlayer::GetInstance().m_Lyrics.GetPathName();
-	OpenLyric(CPlayer::GetInstance().m_Lyrics.GetPathName().c_str());
+	if (CPlayer::GetInstance().IsInnerLyric())
+	{
+		CLyrics lyrics = CPlayer::GetInstance().m_Lyrics;
+		m_lyric_string = lyrics.GetLyricsString();
+		m_code_type = lyrics.GetCodeType();
+	}
+	else
+	{
+		OpenLyric(CPlayer::GetInstance().m_Lyrics.GetPathName().c_str());
+	}
 	m_original_lyric_path = m_lyric_path;
 	//m_code_type = CPlayer::GetInstance().m_Lyrics.GetCodeType();
 	m_current_song_name = CPlayer::GetInstance().GetFileName();

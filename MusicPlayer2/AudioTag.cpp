@@ -90,6 +90,9 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
 wstring CAudioTag::GetAudioLyric()
 {
 	string tag_contents = GetID3V2TagContents();
+	//ofstream out_put{ "D:\\Temp\\test.bin", std::ios::binary };
+	//out_put << tag_contents;
+
 	if (!tag_contents.empty())
 	{
 		wstring lyric_str = GetSpecifiedId3V2Tag(tag_contents, "USLT");
@@ -607,7 +610,7 @@ wstring CAudioTag::GetSpecifiedId3V2Tag(const string& tag_contents, const string
 			break;
 		}
 		string tag_info_str;
-		if (tag_identify == "COMM")
+		if (tag_identify == "COMM" || tag_identify == "USLT")
 		{
 			if (default_code == CodeType::UTF16)
 				tag_info_str = tag_contents.substr(tag_index + 18, tag_size - 8);

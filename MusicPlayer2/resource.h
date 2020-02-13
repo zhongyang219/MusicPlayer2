@@ -517,6 +517,7 @@
 #define IDS_AB_REPEAT_A_SELECTED        463
 #define IDS_AB_REPEAT_ON_INFO           464
 #define IDS_AB_REPEAT                   465
+#define IDS_INNER_LYRIC                 466
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -814,6 +815,8 @@
 #define IDC_LOW_FREQ_IN_CENTER_CHECK    1162
 #define IDC_ALIGNMENT_COMBO             1163
 #define IDC_LYRIC_SAVE_COMBO            1164
+#define IDC_USE_INNER_LYRIC_CHECK       1165
+#define IDC_LYRIC_FILE_STATIC           1166
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1166,7 +1169,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        435
 #define _APS_NEXT_COMMAND_VALUE         33159
-#define _APS_NEXT_CONTROL_VALUE         1165
+#define _APS_NEXT_CONTROL_VALUE         1167
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
