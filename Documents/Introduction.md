@@ -1,4 +1,6 @@
 # MusicPlayer2 帮助
+> Note: This page is currently only available in Chinese.
+>
 > 注：此页面尚未完善。
 
 ## 简介
@@ -14,6 +16,41 @@ MusicPlayer2是一款功能完善的本地音乐播放，旨在为Windows用户�
 播放器目前提供两套界面布局，点击主界面工具栏中的“切换界面”按钮<img src="images/image10.jpg" style="zoom:80%;" />可以在两种界面布局中切换，如下图所示。
 
 <img src="images/image11.jpg" style="zoom:80%;" />
+
+当窗口的宽度小于一定的值时，播放列表会放到窗口的下方，如图所示：
+
+<img src="images/image19.jpg" style="zoom:80%;" />
+
+#### 界面工具栏和按钮
+
+##### 工具栏
+
+<img src="images/image16.jpg" style="zoom:80%;" />
+
+* <img src="images/image17.png" style="zoom:80%;" /> 循环模式按钮
+
+  点击此按钮会在“顺序播放”、“随机播放”、“列表循环”和“单曲循环”四种模式中循环切换。
+
+  在此按钮在点击鼠标右键会弹出右键菜单。
+
+  <img src="images/image18.jpg" style="zoom:80%;" />
+
+* <img src="images/image19.png" style="zoom:80%;" />设置按钮
+  
+  点击此按钮会弹出选项设置。
+
+##### 其他按钮
+
+* “我喜欢”按钮
+
+  点击此按钮会将正在播放的歌曲添加到“我喜欢的音乐”播放列表中，再点击一次则会从“我喜欢的音乐”播放列表中移除。
+
+* 媒体库按钮
+  点击此按钮打开媒体库。
+* 播放列表按钮
+  点击此按钮显示或隐藏播放列表。
+  右击此按钮会弹出右键菜单。
+  在右键菜单中选择“停靠的播放列表”，则点击此按钮的功能是显示或隐藏停靠的播放列表。如果选择“浮动的播放列表”，则点击此按钮的功能是显示或隐藏浮动的播放列表。
 
 #### 主界面设置
 
