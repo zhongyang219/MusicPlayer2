@@ -20,7 +20,7 @@ Alternate link: Download from [Baidu Netdisk](https://pan.baidu.com/s/1i5QNwFF)<
 * Sound effect settings (equalizer and reverb)
 * Taskbar thumbnail button
 * Theme color
-* Support for cue foramt
+* Support for cue format
 * Background Gaussian Blur
 * Format conversion
 # Operating Instructions
@@ -30,7 +30,13 @@ You have the following ways to open and play a song:<br>
 3. Click the "Select Folder" button or select the "Select Folder" item on the "Tools" menu, select a recently played folder in the popped up dialog, or click the "Open new folder" button to play a new folder;<br>
 4. Drag and drop the file or folder directly into the main window of the program;<br>
 5. Drag and drop the file or folder directly onto the program's icon or its shortcut icon.<br>
+
+# Instructions for use
+
+**[Click here](./ Documents / Introduction.md) to view the documentation (Only Chinese Available).**
+
 # Screen shoots
+
 Main window：<br>
 <img src="Screenshots/en_us/Main_window.png" style="zoom:80%;" /><br>
 Main window (Hide playlist):<br>
