@@ -107,7 +107,7 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
         do
         {
             if (files.size() >= max_file) break;
-            if (FileIsAudio(wstring(fileinfo.name)))	//如果找到的文件是音频文件，则保存到容器中
+            if (!CCommon::IsFolder(path + fileinfo.name) && FileIsAudio(wstring(fileinfo.name)))	//如果找到的文件是音频文件，则保存到容器中
             {
                 //song_info.file_name = fileinfo.name;
                 song_info.file_path = path + fileinfo.name;
