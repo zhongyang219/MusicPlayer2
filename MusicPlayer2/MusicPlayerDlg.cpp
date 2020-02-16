@@ -993,13 +993,14 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     bool use_faourite_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE };
     pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (!(playlist_mode && use_faourite_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
     wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
-    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE; id++)
+    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
     {
         CString menu_string;
         pMenu->GetMenuString(id, menu_string, 0);
         pMenu->EnableMenuItem(id, MF_BYCOMMAND | (selete_valid && current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
     }
     pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
 
     //打开菜单时，如果播放列表中没有歌曲，则禁用主菜单和右键菜单中的“打开文件位置”项目
     if (CPlayer::GetInstance().GetSongNum() == 0)

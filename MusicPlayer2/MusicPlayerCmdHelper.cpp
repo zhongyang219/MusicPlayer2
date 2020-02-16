@@ -403,7 +403,10 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
         if (iter == theApp.m_song_data.end())       //如果还没有获取到该歌曲的信息，则在这里获取
         {
             SongInfo song_info;
-            CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), song_info);
+			IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
+			if(pPlayerCore == nullptr)
+				break;
+			pPlayerCore->GetAudioInfo(file_path.c_str(), song_info);;
             theApp.m_song_data[file_path] = song_info;
             theApp.m_media_num_added++;
         }
