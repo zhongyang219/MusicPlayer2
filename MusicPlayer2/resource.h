@@ -518,6 +518,7 @@
 #define IDS_AB_REPEAT_ON_INFO           464
 #define IDS_AB_REPEAT                   465
 #define IDS_INNER_LYRIC                 466
+#define IDS_SHOW_ONLINE_HELP_INFO       467
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

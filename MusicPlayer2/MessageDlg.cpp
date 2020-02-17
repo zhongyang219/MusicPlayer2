@@ -35,6 +35,12 @@ void CMessageDlg::SetMessageText(LPCTSTR str)
 	m_message = str;
 }
 
+void CMessageDlg::SetLinkInfo(LPCTSTR text, LPCTSTR url)
+{
+	m_link_text = text;
+	m_link_url = url;
+}
+
 void CMessageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -45,6 +51,7 @@ void CMessageDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CMessageDlg, CDialog)
 	ON_WM_GETMINMAXINFO()
+	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CMessageDlg::OnNMClickSyslink1)
 END_MESSAGE_MAP()
 
 
@@ -69,6 +76,13 @@ BOOL CMessageDlg::OnInitDialog()
 	m_info_static.SetWindowText(m_info);
 	m_message_edit.SetWindowText(m_message);
 
+	CWnd* pLinkCtrl = GetDlgItem(IDC_SYSLINK1);
+	if (pLinkCtrl != nullptr)
+	{
+		pLinkCtrl->ShowWindow(m_show_link_ctrl);
+		pLinkCtrl->SetWindowText(_T("<a>") + m_link_text + _T("</a>"));
+	}
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -82,4 +96,14 @@ void CMessageDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+
+void CMessageDlg::OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if(!m_link_url.IsEmpty())
+		ShellExecute(NULL, _T("open"), m_link_url, NULL, NULL, SW_SHOW);	//打开超链接
+
+	*pResult = 0;
 }
