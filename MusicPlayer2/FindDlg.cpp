@@ -295,7 +295,8 @@ void CFindDlg::OnBnClickedFindButton()
 				find_flag = false;
 				if (m_find_file && !find_flag)
 				{
-                    index = CCommon::StringFindNoCase(item.second.GetFileName(), m_key_word);
+					wstring file_name = CFilePathHelper(item.first).GetFileName();
+                    index = CCommon::StringFindNoCase(file_name, m_key_word);
                     if (index != string::npos) find_flag = true;
 				}
 				if (m_find_title && !find_flag)
