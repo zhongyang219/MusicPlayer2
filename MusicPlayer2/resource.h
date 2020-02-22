@@ -598,6 +598,7 @@
 #define IDC_SHOW_SPECTRUM_CHECK         1027
 #define IDC_LYRIC_AUTO_DOWNLOAD_CHECK   1027
 #define IDC_SHOW_PLAY_STATE_ICON_CHECK  1027
+#define IDC_OPEN_TARGET_DIR_CHECK       1027
 #define IDC_FONT_SIZE_EDIT              1028
 #define IDC_CHECK5                      1028
 #define IDC_FIND_ALBUM_CHECK            1028

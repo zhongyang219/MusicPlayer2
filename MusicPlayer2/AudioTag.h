@@ -53,6 +53,16 @@ private:
 	//tag_identify：标签的标识
 	wstring GetSpecifiedId3V2Tag(const string& tag_contents, const string& tag_identify);
 
+	//获取wma/mp4/ogg格式的UTF8格式的标签区域
+	string GetUtf8TagContents(const char* tag_start);
+
+	string GetWmaTagContents();
+	string GetMp4TagContents();
+	string GetOggTagContents();
+
+	//从UTF8标签区域的内容中提取出指定的标签
+	wstring GetSpecifiedUtf8Tag(const string& tag_contents, const string& tag_identify);
+
 	//获取FLAC音频的标签区域的内容
 	static void GetFlacTagContents(wstring file_path, string& contents_buff);
 

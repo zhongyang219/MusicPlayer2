@@ -1292,6 +1292,16 @@ bool CCommon::GetFileContent(const wchar_t * file_path, string & contents_buff, 
     return true;
 }
 
+bool CCommon::SaveDataToFile(const string& data, const wstring& file_path)
+{
+	ofstream out_put{ file_path, std::ios::binary };
+	if (out_put.fail())
+		return false;
+	out_put << data;
+	out_put.close();
+	return true;
+}
+
 void CCommon::DoOpenFileDlg(const wstring& filter, vector<wstring>& path_list, CWnd* pParent)
 {
     path_list.clear();

@@ -89,15 +89,26 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
 
 wstring CAudioTag::GetAudioLyric()
 {
-	string tag_contents = GetID3V2TagContents();
-	//ofstream out_put{ "D:\\Temp\\test.bin", std::ios::binary };
-	//out_put << tag_contents;
-
-	if (!tag_contents.empty())
+	string tag_contents;
+	if (m_type == AU_MP3)
 	{
-		wstring lyric_str = GetSpecifiedId3V2Tag(tag_contents, "USLT");
-		return lyric_str;
+		tag_contents = GetID3V2TagContents();
+		if (!tag_contents.empty())
+		{
+			wstring lyric_str = GetSpecifiedId3V2Tag(tag_contents, "USLT");
+			return lyric_str;
+		}
 	}
+	else if(m_type == AU_MP4)
+	{
+		tag_contents = GetMp4TagContents();
+		if (!tag_contents.empty())
+		{
+			wstring lyric_str = GetSpecifiedUtf8Tag(tag_contents, "Lyrics");
+			return lyric_str;
+		}
+	}
+
 	return wstring();
 }
 
@@ -248,91 +259,23 @@ bool CAudioTag::GetID3V2Tag()
 
 bool CAudioTag::GetWmaTag()
 {
-	//获取wma标签。wma标签是若干个UTF8的字符串，每个字符串以\0结尾，标签区域以两个连续的\0结尾
-	const char* wma_tag;
-	wma_tag = BASS_ChannelGetTags(m_hStream, BASS_TAG_WMA);
-
-	if (wma_tag != nullptr)
+	string tag_content = GetWmaTagContents();
+	if (!tag_content.empty())
 	{
-		string wma_tag_str;
-		string wma_tag_title;
-		string wma_tag_artist;
-		string wma_tag_album;
-		string wma_tag_year;
-		string wma_tag_genre;
-		string wma_tag_comment;
-		string wma_tag_track;
-		char tag_count{};
-
-		for (int i{}; i < 2048; i++)	//只获取标签前面指定个数的字节
+		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
+		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Author");
+		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "WM/AlbumTitle");
+		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "WM/Year");
+		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "WM/Genre");
+		if (CCommon::StrIsNumber(m_song_info.genre))
 		{
-			wma_tag_str.push_back(wma_tag[i]);
-			if (wma_tag[i] == '\0')		//遇到'\0'，一组标签结束
-			{
-				size_t index;
-				index = wma_tag_str.find_first_of('=');
-				//size_t index2;
-				//index2 = wma_tag_str.find("Title");
-				if (wma_tag_str.find("WM/AlbumTitle") != string::npos)
-				{
-					wma_tag_album = wma_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (wma_tag_str.find("Title") != string::npos && index == 5)		//只有当找到"Title"字符串且等号的位置为5才说明这是标题的标签
-				{
-					wma_tag_title = wma_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (wma_tag_str.find("Author") != string::npos && index == 6)
-				{
-					wma_tag_artist = wma_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (wma_tag_str.find("WM/Year") != string::npos)
-				{
-					wma_tag_year = wma_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (wma_tag_str.find("WM/TrackNumber") != string::npos)
-				{
-					wma_tag_track = wma_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (wma_tag_str.find("WM/Genre") != string::npos)
-				{
-					wma_tag_genre = wma_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (wma_tag_str.find("Description") != string::npos)
-				{
-					wma_tag_comment = wma_tag_str.substr(index + 1);
-					tag_count++;
-				}
-
-				wma_tag_str.clear();
-			}
-
-			if (tag_count >= 7)		//已经获取到了7个标签，退出循环
-				break;
-
-			if (wma_tag[i] == '\0' && wma_tag[i + 1] == '\0')	//遇到连续的两个'\0'，退出循环
-				break;
+			int genre_num = _wtoi(m_song_info.genre.c_str());
+			m_song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
 		}
+		wstring track_str = GetSpecifiedUtf8Tag(tag_content, "WM/TrackNumber");
+		m_song_info.track = _wtoi(track_str.c_str());
+		m_song_info.comment = GetSpecifiedUtf8Tag(tag_content, "Description");
 
-		if (!wma_tag_title.empty())
-			m_song_info.title = CCommon::StrToUnicode(wma_tag_title, CodeType::UTF8);
-		if (!wma_tag_artist.empty())
-			m_song_info.artist = CCommon::StrToUnicode(wma_tag_artist, CodeType::UTF8);
-		if (!wma_tag_album.empty())
-			m_song_info.album = CCommon::StrToUnicode(wma_tag_album, CodeType::UTF8);
-		if (!wma_tag_year.empty())
-			m_song_info.year = CCommon::StrToUnicode(wma_tag_year, CodeType::UTF8);
-		if (!wma_tag_track.empty())
-			m_song_info.track = atoi(wma_tag_track.c_str());
-		if (!wma_tag_genre.empty())
-			m_song_info.genre = CAudioCommon::GenreConvert(CCommon::StrToUnicode(wma_tag_genre, CodeType::UTF8));
-		if (!wma_tag_comment.empty())
-			m_song_info.comment = CCommon::StrToUnicode(wma_tag_comment, CodeType::UTF8);
 		return true;
 	}
 	return false;
@@ -340,79 +283,24 @@ bool CAudioTag::GetWmaTag()
 
 bool CAudioTag::GetMp4Tag()
 {
-	const char* mp4_tag;
-	mp4_tag = BASS_ChannelGetTags(m_hStream, BASS_TAG_MP4);
-	if (mp4_tag != nullptr)
+	string tag_content = GetMp4TagContents();
+	if (!tag_content.empty())
 	{
-		string mp4_tag_str;
-		string mp4_tag_title;
-		string mp4_tag_artist;
-		string mp4_tag_album;
-		string mp4_tag_track;
-		string mp4_tag_year;
-		string mp4_tag_genre;
-		char tag_count{};
-
-		for (int i{}; i < 1024; i++)	//只获取标签前面指定个数的字节
+		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
+		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Artist");
+		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "Album");
+		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "Date");
+		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "Genre");
+		if (CCommon::StrIsNumber(m_song_info.genre))
 		{
-			mp4_tag_str.push_back(mp4_tag[i]);
-			if (mp4_tag[i] == '\0')		//遇到'\0'，一组标签结束
-			{
-				size_t index;
-				index = mp4_tag_str.find_first_of('=');
-				if (mp4_tag_str.find("Title") != string::npos)
-				{
-					mp4_tag_title = mp4_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (mp4_tag_str.find("Artist") != string::npos)
-				{
-					mp4_tag_artist = mp4_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (mp4_tag_str.find("Album") != string::npos)
-				{
-					mp4_tag_album = mp4_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (mp4_tag_str.find("TrackNumber") != string::npos)
-				{
-					mp4_tag_track = mp4_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (mp4_tag_str.find("Date") != string::npos)
-				{
-					mp4_tag_year = mp4_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (mp4_tag_str.find("Genre") != string::npos)
-				{
-					mp4_tag_genre = mp4_tag_str.substr(index + 1);
-					tag_count++;
-				}
-
-				mp4_tag_str.clear();
-			}
-
-			if (tag_count >= 6)		//已经获取到了6个标签，退出循环
-				break;
-
-			if (mp4_tag[i] == '\0' && mp4_tag[i + 1] == '\0')	//遇到连续的两个'\0'，退出循环
-				break;
+			int genre_num = _wtoi(m_song_info.genre.c_str());
+			m_song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
 		}
+		wstring track_str = GetSpecifiedUtf8Tag(tag_content, "TrackNumber");
+		if(track_str.empty())
+			track_str = GetSpecifiedUtf8Tag(tag_content, "Track");
+		m_song_info.track = _wtoi(track_str.c_str());
 
-		if (!mp4_tag_title.empty())
-			m_song_info.title = CCommon::StrToUnicode(mp4_tag_title, CodeType::UTF8);
-		if (!mp4_tag_artist.empty())
-			m_song_info.artist = CCommon::StrToUnicode(mp4_tag_artist, CodeType::UTF8);
-		if (!mp4_tag_album.empty())
-			m_song_info.album = CCommon::StrToUnicode(mp4_tag_album, CodeType::UTF8);
-		if (!mp4_tag_track.empty())
-			m_song_info.track = atoi(mp4_tag_track.c_str());
-		if (!mp4_tag_year.empty())
-			m_song_info.year = CCommon::StrToUnicode(mp4_tag_year, CodeType::UTF8);;
-		if (!mp4_tag_genre.empty())
-			m_song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(atoi(mp4_tag_genre.c_str()) - 1));
 		return true;
 	}
 	return false;
@@ -420,64 +308,24 @@ bool CAudioTag::GetMp4Tag()
 
 bool CAudioTag::GetOggTag()
 {
-	const char* ogg_tag;
-	//查找OGG标签
-	ogg_tag = BASS_ChannelGetTags(m_hStream, BASS_TAG_OGG);
-	if (ogg_tag != nullptr)
+	string tag_content = GetOggTagContents();
+	if (!tag_content.empty())
 	{
-		string ogg_tag_str;
-		string ogg_tag_title;
-		string ogg_tag_artist;
-		string ogg_tag_album;
-		string ogg_tag_track;
-		char tag_count{};
-
-		for (int i{}; i < 1024; i++)	//只获取标签前面指定个数的字节
+		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
+		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Artist");
+		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "Album");
+		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "Date");
+		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "Genre");
+		if (CCommon::StrIsNumber(m_song_info.genre))
 		{
-			ogg_tag_str.push_back(ogg_tag[i]);
-			if (ogg_tag[i] == '\0')		//遇到'\0'，一组标签结束
-			{
-				size_t index;
-				index = ogg_tag_str.find_first_of('=');
-				if(CCommon::StringFindNoCase(ogg_tag_str, string("Title"))!= string::npos)
-				{
-					ogg_tag_title = ogg_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (CCommon::StringFindNoCase(ogg_tag_str, string("Artist")) != string::npos)
-				{
-					ogg_tag_artist = ogg_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (CCommon::StringFindNoCase(ogg_tag_str, string("Album")) != string::npos)
-				{
-					ogg_tag_album = ogg_tag_str.substr(index + 1);
-					tag_count++;
-				}
-				else if (CCommon::StringFindNoCase(ogg_tag_str, string("Tracknumber")) != string::npos)
-				{
-					ogg_tag_track = ogg_tag_str.substr(index + 1);
-					tag_count++;
-				}
-
-				ogg_tag_str.clear();
-			}
-
-			if (tag_count >= 4)		//已经获取到了4个标签，退出循环
-				break;
-
-			if (ogg_tag[i] == '\0' && ogg_tag[i + 1] == '\0')	//遇到连续的两个'\0'，退出循环
-				break;
+			int genre_num = _wtoi(m_song_info.genre.c_str());
+			m_song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
 		}
+		wstring track_str = GetSpecifiedUtf8Tag(tag_content, "TrackNumber");
+		if (track_str.empty())
+			track_str = GetSpecifiedUtf8Tag(tag_content, "Track");
+		m_song_info.track = _wtoi(track_str.c_str());
 
-		if (!ogg_tag_title.empty())
-			m_song_info.title = CCommon::StrToUnicode(ogg_tag_title, CodeType::UTF8);
-		if (!ogg_tag_artist.empty())
-			m_song_info.artist = CCommon::StrToUnicode(ogg_tag_artist, CodeType::UTF8);
-		if (!ogg_tag_album.empty())
-			m_song_info.album = CCommon::StrToUnicode(ogg_tag_album, CodeType::UTF8);
-		if (!ogg_tag_track.empty())
-			m_song_info.track = atoi(ogg_tag_track.c_str());
 		return true;
 	}
 	return false;
@@ -625,6 +473,72 @@ wstring CAudioTag::GetSpecifiedId3V2Tag(const string& tag_contents, const string
 		tag_info = CCommon::StrToUnicode(tag_info_str, code_type);
 	}
 	return tag_info;
+}
+
+string CAudioTag::GetUtf8TagContents(const char* tag_start)
+{
+	string tag_contents;
+	for (int i = 0; ; i++)
+	{
+		if (!tag_contents.empty() && tag_contents.back() == '\0' && tag_start[i] == '\0')		//遇到两个连续的0则退出
+			break;
+		tag_contents.push_back(tag_start[i]);
+	}
+	return tag_contents;
+}
+
+string CAudioTag::GetWmaTagContents()
+{
+	const char* wma_tag;
+	wma_tag = BASS_ChannelGetTags(m_hStream, BASS_TAG_WMA);
+	if(wma_tag != nullptr)
+	{
+		string tag_content = GetUtf8TagContents(wma_tag);
+		return tag_content;
+	}
+	return string();
+}
+
+string CAudioTag::GetMp4TagContents()
+{
+	const char* mp4_tag;
+	mp4_tag = BASS_ChannelGetTags(m_hStream, BASS_TAG_MP4);
+	if (mp4_tag != nullptr)
+	{
+		string tag_content = GetUtf8TagContents(mp4_tag);
+		return tag_content;
+	}
+	return string();
+}
+
+string CAudioTag::GetOggTagContents()
+{
+	const char* ogg_tag;
+	ogg_tag = BASS_ChannelGetTags(m_hStream, BASS_TAG_OGG);
+	if (ogg_tag != nullptr)
+	{
+		string tag_content = GetUtf8TagContents(ogg_tag);
+		return tag_content;
+	}
+	return string();
+}
+
+wstring CAudioTag::GetSpecifiedUtf8Tag(const string& tag_contents, const string& tag_identify)
+{
+	string find_str = '\0' + tag_identify;
+	size_t index = tag_contents.find(find_str);
+	if (index == string::npos)
+		return wstring();
+
+	size_t index1 = tag_contents.find('=', index + 2);
+	if (index1 == string::npos)
+		return wstring();
+
+	size_t index2 = tag_contents.find('\0', index1 + 1);
+
+	string tag_str = tag_contents.substr(index1 + 1, index2 - index1 - 1);
+	wstring tag_wcs = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
+	return tag_wcs;
 }
 
 void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)

@@ -306,6 +306,9 @@ public:
     //读取文件内容
     static bool GetFileContent(const wchar_t* file_path, string& contents_buff, bool binary = true, size_t max_size = 0x500000);
 
+	//将数据保存到文件
+	static bool SaveDataToFile(const string& data, const wstring& file_path);
+
     //打开一个文件对话框，并将用户选择的文件路径保存到path_list中
     static void DoOpenFileDlg(const wstring& filter, vector<wstring>& path_list, CWnd* pParent = nullptr);
 
