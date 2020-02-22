@@ -405,23 +405,40 @@ void CPlayer::SearchLyrics(/*bool refresh*/)
 
 void CPlayer::IniLyrics()
 {
-	wstring lyric_str;
-	if(theApp.m_lyric_setting_data.use_inner_lyric_first)	//尝试获取内嵌歌词
+	//尝试获取内嵌歌词
+	CLyrics inner_lyrics;		//音频文件内嵌歌词
+	wstring lyric_str;			//内嵌歌词的原始文本
+	if(theApp.m_lyric_setting_data.use_inner_lyric_first)
 	{
 		SongInfo song;
 		CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), song);
 		lyric_str = audio_tag.GetAudioLyric();
+		inner_lyrics.LyricsFromRowString(lyric_str);
 	}
-	m_inner_lyric = !lyric_str.empty();
-	if (m_inner_lyric)
+
+	//获取关联歌词文件的歌词
+	CLyrics file_lyrics;		//来自歌词文件
+	if (!m_playlist.empty() && !GetCurrentSongInfo().lyric_file.empty())
 	{
-		m_Lyrics = CLyrics{};
-		m_Lyrics.LyricsFromRowString(lyric_str);
+		file_lyrics = CLyrics{ GetCurrentSongInfo().lyric_file };
 	}
-    else if (!m_playlist.empty() && !m_playlist[m_index].lyric_file.empty())
-        m_Lyrics = CLyrics{ m_playlist[m_index].lyric_file };
-    else
-        m_Lyrics = CLyrics{};
+
+	//判断使用内嵌歌词还是关联歌词文件的歌词
+	if (inner_lyrics.IsEmpty() && !file_lyrics.IsEmpty())
+	{
+		m_Lyrics = file_lyrics;
+		m_inner_lyric = false;
+	}
+	else if(theApp.m_lyric_setting_data.use_inner_lyric_first)
+	{
+		m_Lyrics = inner_lyrics;
+		m_inner_lyric = !lyric_str.empty();
+	}
+	else
+	{
+		m_Lyrics = CLyrics();
+		m_inner_lyric = false;
+	}
 }
 
 void CPlayer::IniLyrics(const wstring& lyric_path)
