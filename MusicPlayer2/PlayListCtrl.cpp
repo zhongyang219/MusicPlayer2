@@ -255,13 +255,6 @@ BOOL CPlayListCtrl::PreTranslateMessage(MSG* pMsg)
 		m_toolTip.RelayEvent(pMsg);
 	}
 
-	//按Ctrl+A全选
-	if ((GetKeyState(VK_CONTROL) & 0x80) && (pMsg->wParam == 'A'))
-	{
-		SelectAll();
-		return TRUE;
-	}
-
 	return CListCtrlEx::PreTranslateMessage(pMsg);
 }
 
@@ -286,7 +279,8 @@ void CPlayListCtrl::PreSubclassWindow()
 	InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, width[1]);		//插入第2列
 	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width[2]);		//插入第3列
 	EnableTip();
-
+	SetCtrlAEnable(true);
+	
 	SetRowHeight(theApp.DPI(24));
 
 }

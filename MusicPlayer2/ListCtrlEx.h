@@ -40,6 +40,8 @@ public:
 	//（使用传统的方式）
 	void SetListData(const ListData& list_data);
 
+	void SetCtrlAEnable(bool enable) { m_enable_ctrl_a = enable; }		//是否允许Ctrl + A全选
+
 protected:
 	const ColorTable& m_theme_color;
 	COLORREF m_background_color{ GRAY(255) };	//列表控件的背景色
@@ -49,6 +51,7 @@ protected:
     HCURSOR m_drag_cursor{};
     bool m_fill_left_space_after_paint{ true };
 	ListData* m_pListData{};
+	bool m_enable_ctrl_a{ false };	//是否允许Ctrl+A全选
 
 public:
 	DECLARE_MESSAGE_MAP()

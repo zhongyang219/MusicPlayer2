@@ -248,6 +248,7 @@ BOOL CAllMediaDlg::OnInitDialog()
 	m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_YEAR), LVCFMT_LEFT, theApp.DPI(60));
 	m_song_list_ctrl.InsertColumn(7, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
 	m_song_list_ctrl.InsertColumn(8, CCommon::LoadText(IDS_LAST_PLAYED_TIME), LVCFMT_LEFT, theApp.DPI(140));
+	m_song_list_ctrl.SetCtrlAEnable(true);
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
