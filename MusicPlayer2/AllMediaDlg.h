@@ -77,6 +77,7 @@ protected:
 	virtual wstring GetSelectedString() const override;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void OnOK() override;
 
 	DECLARE_MESSAGE_MAP()
 public:

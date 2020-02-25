@@ -193,6 +193,29 @@ void CAllMediaDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
+void CAllMediaDlg::OnOK()
+{
+	//这里重写了基类CMediaLibTabDlg的OnOK函数
+	//在“所有曲目”和“最近播放”标签中双击一项，会在“默认”播放列表中打开选中的曲目
+
+	std::vector<wstring> files;
+	GetSongsSelected(files);
+	if (!files.empty())
+	{
+		if (files.size() == 1)
+		{
+			CPlayer::GetInstance().OpenFiles(files);
+		}
+		else
+			CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
+
+		CTabDlg::OnOK();
+		CWnd* pParent = GetParentWindow();
+		if (pParent != nullptr)
+			::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+	}
+}
+
 BEGIN_MESSAGE_MAP(CAllMediaDlg, CMediaLibTabDlg)
 	ON_NOTIFY(HDN_ITEMCLICK, 0, &CAllMediaDlg::OnHdnItemclickSongList)
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CAllMediaDlg::OnEnChangeSearchEdit)
