@@ -42,6 +42,11 @@ bool CSelectPlaylistDlg::IsPlaylistModified() const
     return m_playlist_modified;
 }
 
+void CSelectPlaylistDlg::SetUpdateFlag()
+{
+	m_update_flag = true;
+}
+
 void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -99,6 +104,8 @@ void CSelectPlaylistDlg::OnTabEntered()
 {
     m_row_selected = m_playlist_ctrl.GetCurSel();
     SetButtonsEnable();
+	if (m_update_flag)
+		ShowPathList();
 }
 
 BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
@@ -250,7 +257,7 @@ void CSelectPlaylistDlg::ShowPathList()
             SetListRowData(i, recent_playlists[m_search_result[i]]);
         }
     }
-
+	m_update_flag = false;
 }
 
 void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_info)

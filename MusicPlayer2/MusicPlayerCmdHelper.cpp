@@ -101,6 +101,13 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         playlist.AddFiles(selected_item_path);
         playlist.SaveToFile(playlist_path);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
+
+		CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+		if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
+		{
+			pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.SetUpdateFlag();		//设置数据刷新标志
+		}
+
         return true;
     }
     return false;
