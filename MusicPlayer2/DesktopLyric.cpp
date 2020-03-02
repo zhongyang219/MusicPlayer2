@@ -5,6 +5,7 @@
 #include "GdiPlusTool.h"
 #include "Define.h"
 #include "CPlayerUIHelper.h"
+#include "MusicPlayerDlg.h"
 
 CDesktopLyric::CDesktopLyric()
 {
@@ -25,12 +26,15 @@ BEGIN_MESSAGE_MAP(CDesktopLyric, CLyricsWindow)
     ON_WM_SIZING()
     ON_WM_RBUTTONUP()
     ON_WM_GETMINMAXINFO()
-    ON_MESSAGE(WM_INITMENU, &CDesktopLyric::OnInitmenu)
+//    ON_MESSAGE(WM_INITMENU, &CDesktopLyric::OnInitmenu)
     ON_WM_TIMER()
 
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1, &CDesktopLyric::OnLyricDefaultStyle1)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CDesktopLyric::OnLyricDefaultStyle2)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CDesktopLyric::OnLyricDefaultStyle3)
+	ON_WM_LBUTTONDBLCLK()
+	ON_WM_MOUSEWHEEL()
+	ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 void CDesktopLyric::Create()
@@ -691,11 +695,11 @@ void CDesktopLyric::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 }
 
 
-afx_msg LRESULT CDesktopLyric::OnInitmenu(WPARAM wParam, LPARAM lParam)
-{
-    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
-    return 0;
-}
+//afx_msg LRESULT CDesktopLyric::OnInitmenu(WPARAM wParam, LPARAM lParam)
+//{
+//    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
+//    return 0;
+//}
 
 
 BOOL CDesktopLyric::PreTranslateMessage(MSG* pMsg)
@@ -769,4 +773,41 @@ void CDesktopLyric::OnLyricDefaultStyle3()
     auto style = GetDefaultStyle(2);
     LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
     ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
+}
+
+
+void CDesktopLyric::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_SHOW_MAIN_WINDOW);
+
+	CLyricsWindow::OnLButtonDblClk(nFlags, point);
+}
+
+
+BOOL CDesktopLyric::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (zDelta > 0)
+	{
+		AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_UP);
+	}
+	if (zDelta < 0)
+	{
+		AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_DOWN);
+	}
+
+	return CLyricsWindow::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+
+void CDesktopLyric::OnInitMenu(CMenu* pMenu)
+{
+	CLyricsWindow::OnInitMenu(pMenu);
+
+	// TODO: 在此处添加消息处理程序代码
+	CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(AfxGetMainWnd());
+	if(pPlayerDlg != nullptr)
+		pPlayerDlg->SetMenuState(pMenu);
+	pMenu->SetDefaultItem(ID_SHOW_MAIN_WINDOW);
 }

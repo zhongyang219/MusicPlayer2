@@ -142,6 +142,8 @@ private:
 
 public:
     void ShowPlayList(bool highlight_visible = true);
+	void SetMenuState(CMenu* pMenu);
+
 protected:
     void SetPlayListColor(bool highlight_visible = true);
     void SwitchTrack();		//当切换正在播放的歌曲时的处理
@@ -160,7 +162,6 @@ protected:
 
     void ThemeColorChanged();
 
-    void SetMenuState(CMenu* pMenu);
 
     void ShowFloatPlaylist();
     void HideFloatPlaylist();

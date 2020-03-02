@@ -112,7 +112,7 @@ public:
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 protected:
-    afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
+//    afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
 public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -121,5 +121,8 @@ public:
     afx_msg void OnLyricDefaultStyle1();
     afx_msg void OnLyricDefaultStyle2();
     afx_msg void OnLyricDefaultStyle3();
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	afx_msg void OnInitMenu(CMenu* pMenu);
 };
 
