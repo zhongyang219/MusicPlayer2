@@ -229,10 +229,10 @@ void CLyricDownloadDlg::OnBnClickedSearchButton2()
 	SetDlgItemText(IDC_STATIC_INFO, CCommon::LoadText(IDS_SEARCHING));
 	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
 	wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
-	wchar_t buff[1024];
-	swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), m_search_max_item);
+	CString url;
+	url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), m_search_max_item);
 	//int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
-	m_search_thread_info.url = buff;
+	m_search_thread_info.url = url;
 	m_search_thread_info.hwnd = GetSafeHwnd();
 	theApp.m_lyric_download_dialog_exit = false;
 	m_pSearchThread = AfxBeginThread(LyricSearchThreadFunc, &m_search_thread_info);

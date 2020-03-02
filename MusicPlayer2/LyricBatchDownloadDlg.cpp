@@ -289,9 +289,9 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
 		//搜索歌曲
 		wstring keyword_url = CInternetCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
-		wchar_t buff[1024];
-		swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
-		int rtn = CInternetCommon::HttpPost(buff, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+		CString url;
+		url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
+		int rtn = CInternetCommon::HttpPost(wstring(url), search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
 		if (theApp.m_batch_download_dialog_exit)		//由于CLyricDownloadCommon::HttpPost函数执行的时间比较长，所有在这里执行判断是否退出线程的处理
 			return 0;
 		if (rtn != 0)

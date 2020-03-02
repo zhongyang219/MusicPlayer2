@@ -445,9 +445,9 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 
 	//搜索歌曲
 	wstring keyword_url = CInternetCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
-	wchar_t buff[1024];
-	swprintf_s(buff, L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
-	int rtn = CInternetCommon::HttpPost(buff, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+	CString url;
+	url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
+	int rtn = CInternetCommon::HttpPost(wstring(url), search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
 	if (rtn != 0)
 	{
 		if(message)
