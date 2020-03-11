@@ -41,6 +41,9 @@ void CAudioTag::GetAudioTag(bool id3v2_first)
 	case AU_MP4:
 		GetMp4Tag();
 		break;
+	case AU_APE:
+		GetApeTag();
+		break;
 	case AU_FLAC:
 		GetFlacTag();
 		break;
@@ -331,6 +334,32 @@ bool CAudioTag::GetOggTag()
 	return false;
 }
 
+bool CAudioTag::GetApeTag()
+{
+	string tag_content = GetApeTagContents();
+	//CCommon::SaveDataToFile(tag_content, L"D://Temp//test.bin");
+	if (!tag_content.empty())
+	{
+		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
+		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Artist");
+		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "Album");
+		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "Year");
+		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "Genre");
+		if (CCommon::StrIsNumber(m_song_info.genre))
+		{
+			int genre_num = _wtoi(m_song_info.genre.c_str());
+			m_song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
+		}
+		wstring track_str = GetSpecifiedUtf8Tag(tag_content, "TrackNumber");
+		if (track_str.empty())
+			track_str = GetSpecifiedUtf8Tag(tag_content, "Track");
+		m_song_info.track = _wtoi(track_str.c_str());
+
+		return true;
+	}
+	return false;
+}
+
 bool CAudioTag::GetFlacTag()
 {
 	string tag_contents;		//整个标签区域的内容
@@ -518,6 +547,18 @@ string CAudioTag::GetOggTagContents()
 	if (ogg_tag != nullptr)
 	{
 		string tag_content = GetUtf8TagContents(ogg_tag);
+		return tag_content;
+	}
+	return string();
+}
+
+string CAudioTag::GetApeTagContents()
+{
+	const char* ape_tag;
+	ape_tag = BASS_ChannelGetTags(m_hStream, BASS_TAG_APE);
+	if (ape_tag != nullptr)
+	{
+		string tag_content = GetUtf8TagContents(ape_tag);
 		return tag_content;
 	}
 	return string();

@@ -43,6 +43,7 @@ private:
 	bool GetWmaTag();
 	bool GetMp4Tag();
 	bool GetOggTag();
+	bool GetApeTag();
 	bool GetFlacTag();
 
 	//获取ID3V2标签区域的内容
@@ -59,6 +60,7 @@ private:
 	string GetWmaTagContents();
 	string GetMp4TagContents();
 	string GetOggTagContents();
+	string GetApeTagContents();
 
 	//从UTF8标签区域的内容中提取出指定的标签
 	wstring GetSpecifiedUtf8Tag(const string& tag_contents, const string& tag_identify);
