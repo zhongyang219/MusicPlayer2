@@ -383,4 +383,5 @@ public:
 	afx_msg void OnResetAbRepeat();
 	afx_msg void OnNextAbRepeat();
 	afx_msg void OnSaveCurrentPlaylistAs();
+	afx_msg void OnFileOpenPlaylist();
 };

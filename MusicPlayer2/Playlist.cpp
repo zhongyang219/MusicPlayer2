@@ -10,12 +10,12 @@
 目前除了cue音轨外，其他曲目只保存文件路径
 */
 
-CPlaylist::CPlaylist()
+CPlaylistFile::CPlaylistFile()
 {
 }
 
 
-CPlaylist::~CPlaylist()
+CPlaylistFile::~CPlaylistFile()
 {
 }
 
@@ -26,64 +26,27 @@ wstring DeleteInvalidCh(const wstring& str)
     return result;
 }
 
-void CPlaylist::LoadFromFile(const wstring & file_path)
+void CPlaylistFile::LoadFromFile(const wstring & file_path)
 {
     ifstream stream{ file_path };
     if (stream.fail())
         return;
+
+	//判断文件编码
+	bool utf8{};
+	wstring file_extension = CFilePathHelper(file_path).GetFileExtension();
+	utf8 = (file_extension != L"m3u");
+
     string current_line;
     while (!stream.eof())
     {
         std::getline(stream, current_line);
-        CCommon::DeleteStringBom(current_line);
-        if (!current_line.empty() && current_line.front() == '\"')
-            current_line = current_line.substr(1);
-        if (!current_line.empty() && current_line.back() == '\"')
-            current_line.pop_back();
-
-        if(current_line.size()>3)
-        {
-            SongInfo item;
-            wstring current_line_wcs = CCommon::StrToUnicode(current_line, CodeType::UTF8_NO_BOM);
-            size_t index = current_line_wcs.find(L'|');
-            item.file_path = current_line_wcs.substr(0, index);
-            CFilePathHelper file_path{ item.file_path };
-            //item.file_name = file_path.GetFileName();
-            if (index < current_line_wcs.size() - 1)
-            {
-                vector<wstring> result;
-                CCommon::StringSplit(current_line_wcs, L'|', result, false);
-                if (result.size() >= 2)
-                    item.is_cue = (_wtoi(result[1].c_str()) != 0);
-                if (result.size() >= 3)
-                    item.start_pos.fromInt(_wtoi(result[2].c_str()));
-                if (result.size() >= 4)
-                    item.end_pos.fromInt(_wtoi(result[3].c_str()));
-                item.lengh = item.end_pos - item.start_pos;
-                if (result.size() >= 5)
-                    item.title = result[4];
-                if (result.size() >= 6)
-                    item.artist = result[5];
-                if (result.size() >= 7)
-                    item.album = result[6];
-                if (result.size() >= 8)
-                    item.track = _wtoi(result[7].c_str());
-                if (result.size() >= 9)
-                    item.bitrate = _wtoi(result[8].c_str());
-                if (result.size() >= 10)
-                    item.genre = result[9];
-                if (result.size() >= 11)
-                    item.year = result[10];
-                if (result.size() >= 12)
-                    item.comment = result[11];
-            }
-            m_playlist.push_back(item);
-        }
+		DisposePlaylistFileLine(current_line, utf8);
     }
 
 }
 
-void CPlaylist::SaveToFile(const wstring & file_path, Type type) const
+void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
 {
     ofstream stream{ file_path };
     for (const auto& item : m_playlist)
@@ -113,12 +76,12 @@ void CPlaylist::SaveToFile(const wstring & file_path, Type type) const
     }
 }
 
-vector<SongInfo> CPlaylist::GetPlaylist() const
+vector<SongInfo> CPlaylistFile::GetPlaylist() const
 {
     return m_playlist;
 }
 
-void CPlaylist::AddFiles(const vector<wstring>& files)
+void CPlaylistFile::AddFiles(const vector<wstring>& files)
 {
     for (const auto& file : files)
     {
@@ -128,7 +91,7 @@ void CPlaylist::AddFiles(const vector<wstring>& files)
     }
 }
 
-void CPlaylist::AddFiles(const vector<SongInfo>& files)
+void CPlaylistFile::AddFiles(const vector<SongInfo>& files)
 {
     for (const auto& file : files)
     {
@@ -137,12 +100,12 @@ void CPlaylist::AddFiles(const vector<SongInfo>& files)
 
 }
 
-void CPlaylist::FromSongList(const vector<SongInfo>& song_list)
+void CPlaylistFile::FromSongList(const vector<SongInfo>& song_list)
 {
     m_playlist = song_list;
 }
 
-void CPlaylist::ToSongList(vector<SongInfo>& song_list)
+void CPlaylistFile::ToSongList(vector<SongInfo>& song_list)
 {
     for (const auto& item : m_playlist)
     {
@@ -150,7 +113,7 @@ void CPlaylist::ToSongList(vector<SongInfo>& song_list)
     }
 }
 
-bool CPlaylist::IsFileInPlaylist(const SongInfo& file)
+bool CPlaylistFile::IsFileInPlaylist(const SongInfo& file)
 {
     auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&file](const SongInfo& item)
     {
@@ -162,7 +125,7 @@ bool CPlaylist::IsFileInPlaylist(const SongInfo& file)
     return iter != m_playlist.end();
 }
 
-void CPlaylist::RemoveFile(const wstring& file)
+void CPlaylistFile::RemoveFile(const wstring& file)
 {
     auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&file](const SongInfo& item)
     {
@@ -172,4 +135,53 @@ void CPlaylist::RemoveFile(const wstring& file)
     {
         m_playlist.erase(iter);
     }
+}
+
+void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool utf8)
+{
+	string current_line = str_current_line;
+	CCommon::DeleteStringBom(current_line);
+	if (!current_line.empty() && current_line.front() == '\"')
+		current_line = current_line.substr(1);
+	if (!current_line.empty() && current_line.back() == '\"')
+		current_line.pop_back();
+
+	if (current_line.size() > 3)
+	{
+		SongInfo item;
+		wstring current_line_wcs = CCommon::StrToUnicode(current_line, utf8 ? CodeType::UTF8 : CodeType::ANSI);
+		size_t index = current_line_wcs.find(L'|');
+		item.file_path = current_line_wcs.substr(0, index);
+
+		if (index < current_line_wcs.size() - 1)
+		{
+			vector<wstring> result;
+			CCommon::StringSplit(current_line_wcs, L'|', result, false);
+			if (result.size() >= 2)
+				item.is_cue = (_wtoi(result[1].c_str()) != 0);
+			if (result.size() >= 3)
+				item.start_pos.fromInt(_wtoi(result[2].c_str()));
+			if (result.size() >= 4)
+				item.end_pos.fromInt(_wtoi(result[3].c_str()));
+			item.lengh = item.end_pos - item.start_pos;
+			if (result.size() >= 5)
+				item.title = result[4];
+			if (result.size() >= 6)
+				item.artist = result[5];
+			if (result.size() >= 7)
+				item.album = result[6];
+			if (result.size() >= 8)
+				item.track = _wtoi(result[7].c_str());
+			if (result.size() >= 9)
+				item.bitrate = _wtoi(result[8].c_str());
+			if (result.size() >= 10)
+				item.genre = result[9];
+			if (result.size() >= 11)
+				item.year = result[10];
+			if (result.size() >= 12)
+				item.comment = result[11];
+		}
+		if(CCommon::FileExist(item.file_path))
+			m_playlist.push_back(item);
+	}
 }

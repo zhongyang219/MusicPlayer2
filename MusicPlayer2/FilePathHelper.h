@@ -1,5 +1,4 @@
 #pragma once
-#include "Common.h"
 class CFilePathHelper
 {
 public:
@@ -9,7 +8,7 @@ public:
 
 	void SetFilePath(const wstring& file_path) { m_file_path = file_path; }
 
-	wstring GetFileExtension(bool upper = false) const;		//获取文件的扩展名（不包含“.”）
+	wstring GetFileExtension(bool upper = false, bool width_dot = false) const;		//获取文件的扩展名(upper:是否大写; width_dot:是否包含“.”)
 	wstring GetFileName() const;							//获取文件名
 	wstring GetFileNameWithoutExtension() const;			//获取文件名（不含扩展名）
 	wstring GetFolderName() const;							//获取文件夹名

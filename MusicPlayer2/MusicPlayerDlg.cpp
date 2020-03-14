@@ -230,6 +230,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_RESET_AB_REPEAT, &CMusicPlayerDlg::OnResetAbRepeat)
 	ON_COMMAND(ID_NEXT_AB_REPEAT, &CMusicPlayerDlg::OnNextAbRepeat)
 	ON_COMMAND(ID_SAVE_CURRENT_PLAYLIST_AS, &CMusicPlayerDlg::OnSaveCurrentPlaylistAs)
+	ON_COMMAND(ID_FILE_OPEN_PLAYLIST, &CMusicPlayerDlg::OnFileOpenPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -3946,7 +3947,7 @@ LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 //    //显示打开文件对话框
 //    if (IDOK == fileDlg.DoModal())
 //    {
-//        CPlaylist playlist;
+//        CPlaylistFile playlist;
 //        playlist.LoadFromFile(wstring(fileDlg.GetPathName()));
 //        CPlayer::GetInstance().OpenFiles(playlist.GetPlaylist(), false);
 //    }
@@ -4229,7 +4230,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
     {
         SongInfo current_file = CPlayer::GetInstance().GetCurrentSongInfo();
         std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
-        CPlaylist playlist;
+        CPlaylistFile playlist;
         playlist.LoadFromFile(favourite_playlist_path);
         if (!CPlayer::GetInstance().IsFavourite())
         {
@@ -4515,5 +4516,22 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
 	wstring playlist_path;
 	CMusicPlayerCmdHelper cmd_helper(this);
 	cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+
+}
+
+
+void CMusicPlayerDlg::OnFileOpenPlaylist()
+{
+	// TODO: 在此添加命令处理程序代码
+	//设置过滤器
+	CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILE_FILTER);
+	//构造打开文件对话框
+	CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);
+	//显示打开文件对话框
+	if (IDOK == fileDlg.DoModal())
+	{
+		wstring file_path = fileDlg.GetPathName();
+		CPlayer::GetInstance().OpenPlaylistFile(file_path);
+	}
 
 }

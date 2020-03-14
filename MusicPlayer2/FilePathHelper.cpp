@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "FilePathHelper.h"
+#include "Common.h"
 
 
 CFilePathHelper::CFilePathHelper(const wstring & file_path)
@@ -11,13 +12,13 @@ CFilePathHelper::~CFilePathHelper()
 {
 }
 
-wstring CFilePathHelper::GetFileExtension(bool upper) const
+wstring CFilePathHelper::GetFileExtension(bool upper, bool width_dot) const
 {
 	size_t index;
 	index = m_file_path.rfind('.');
 	if (index == wstring::npos || index == m_file_path.size() - 1)
 		return wstring();
-	wstring file_extension{ m_file_path.substr(index + 1) };
+	wstring file_extension{ m_file_path.substr(width_dot ? index : index + 1) };
 	CCommon::StringTransform(file_extension, upper);
 	return file_extension;
 }

@@ -210,7 +210,7 @@ void CPlayer::IniPlaylistComplate()
     }
 
     //检查列表中的曲目是否在“我喜欢”播放列表中
-    CPlaylist favourite_playlist;
+    CPlaylistFile favourite_playlist;
     favourite_playlist.LoadFromFile(m_recent_playlist.m_favourite_playlist.path);
     for (auto& item : m_playlist)
     {
@@ -848,7 +848,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
         m_recent_playlist.m_cur_playlist_type = PT_USER;
 
     m_playlist.clear();
-    CPlaylist playlist;
+    CPlaylistFile playlist;
     playlist.LoadFromFile(playlist_path);
 
     auto playlist_files{ playlist.GetPlaylist() };
@@ -927,7 +927,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
 
     //加载默认播放列表
     m_playlist.clear();
-    CPlaylist playlist;
+    CPlaylistFile playlist;
     playlist.LoadFromFile(m_recent_playlist.m_default_playlist.path);
     playlist.ToSongList(m_playlist);
 
@@ -1031,6 +1031,36 @@ void CPlayer::OpenAFile(wstring file, bool play)
     //初始化播放列表
     m_current_file_name_tmp = file_path.GetFileName();
     IniPlayList(false, false, play);		//根据新路径重新初始化播放列表
+}
+
+void CPlayer::OpenPlaylistFile(const wstring& file_path)
+{
+	CFilePathHelper helper(file_path);
+	if (!CCommon::StringCompareNoCase(helper.GetDir(), theApp.m_playlist_dir))		//如果打开的播放列表文件不是程序默认的播放列表目录，则将其转换为*.playlist格式并复制到默认的播放列表目录
+	{
+		//设置新的路径
+		wstring playlist_name = helper.GetFileNameWithoutExtension();
+		wstring new_path = theApp.m_playlist_dir + playlist_name + PLAYLIST_EXTENSION;
+		CCommon::FileAutoRename(new_path);
+
+		wstring file_extension = helper.GetFileExtension(false, true);
+		if (file_extension == PLAYLIST_EXTENSION)		//播放列表文件是*.playlist格式，则直接复制到默认播放列表目录
+		{
+			CCommon::CopyAFile(AfxGetMainWnd()->GetSafeHwnd(), file_path, new_path);
+		}
+		else	//否则将其转换成*.playlist格式
+		{
+			CPlaylistFile playlist;
+			playlist.LoadFromFile(file_path);
+			playlist.SaveToFile(new_path);
+		}
+		SetPlaylist(new_path, 0, 0);
+	}
+	else		//如果打开的播放文件就在默认播放列表目录下，则直接打开
+	{
+		SetPlaylist(file_path, 0, 0);
+	}
+
 }
 
 void CPlayer::AddFiles(const vector<wstring>& files)
@@ -1342,7 +1372,7 @@ void CPlayer::ReloadPlaylist()
     else
     {
         m_playlist.clear();
-        CPlaylist playlist;
+        CPlaylistFile playlist;
         playlist.LoadFromFile(m_playlist_path);
         playlist.ToSongList(m_playlist);
 
@@ -1961,7 +1991,7 @@ void CPlayer::SaveCurrentPlaylist()
             current_playlist = m_recent_playlist.m_temp_playlist.path;
         else
             current_playlist = m_recent_playlist.m_recent_playlists.front().path;
-        CPlaylist playlist;
+        CPlaylistFile playlist;
         playlist.FromSongList(m_playlist);
         playlist.SaveToFile(m_playlist_path);
     }

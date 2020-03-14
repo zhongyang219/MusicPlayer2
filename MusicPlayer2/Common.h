@@ -315,6 +315,9 @@ public:
     //为一个对话框设置字体
     static void SetDialogFont(CWnd* pDlg, CFont* pFont);
 
+	//对一个文件路径自动重命名，如果file_path存在，则在其后面加上“(1)”，如果文件名后面存在带括号的数字的形式，则括号内的数字加1
+	static void FileAutoRename(wstring& file_path);
+
 	template<class T>
 	static T Min3(T v1, T v2, T v3)
 	{

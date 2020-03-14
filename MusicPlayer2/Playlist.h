@@ -1,6 +1,6 @@
 #pragma once
 #include "SongInfo.h"
-class CPlaylist
+class CPlaylistFile
 {
 public:
 	enum Type			//播放列表格式
@@ -10,8 +10,8 @@ public:
 		PL_M3U8			//m3u8播放列表
 	};
 
-    CPlaylist();
-    ~CPlaylist();
+    CPlaylistFile();
+    ~CPlaylistFile();
     void LoadFromFile(const wstring& file_path);
     void SaveToFile(const wstring& file_path, Type type = PL_PLAYLIST) const;
     vector<SongInfo> GetPlaylist() const;
@@ -21,6 +21,9 @@ public:
     void ToSongList(vector<SongInfo>& song_list);
     bool IsFileInPlaylist(const SongInfo& file);
     void RemoveFile(const wstring& file);
+
+private:
+	void DisposePlaylistFileLine(const string& str_current_line, bool utf8);
 
 private:
     vector<SongInfo> m_playlist;

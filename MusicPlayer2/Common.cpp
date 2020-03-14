@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include "resource.h"
+#include "FilePathHelper.h"
 
 CCommon::CCommon()
 {
@@ -1338,5 +1339,33 @@ void CCommon::SetDialogFont(CWnd* pDlg, CFont* pFont)
             pWndChild = pWndChild->GetWindow(GW_HWNDNEXT);
         }
     }
+}
+
+void CCommon::FileAutoRename(wstring& file_path)
+{
+	while (CCommon::FileExist(file_path))
+	{
+		//判断文件名的末尾是否符合“(数字)”的形式
+		wstring file_name;		//文件名（不含扩展名）
+		CFilePathHelper c_file_path(file_path);
+		file_name = c_file_path.GetFileNameWithoutExtension();
+		wstring ext{ c_file_path.GetFileExtension() };
+		int num;
+		size_t index;
+		bool is_numbered{ CCommon::IsFileNameNumbered(file_name, num, index) };		//文件名的末尾是否符合“(数字)”的形式
+		if (!is_numbered)		//如果文件名末尾没有“(数字)”，则在末尾添加“ (1)”
+		{
+			file_name += L" (1)";
+		}
+		else		//否则，将原来的数字加1
+		{
+			file_name = file_name.substr(0, index);
+			CString num_str;
+			num_str.Format(_T("(%d)"), num + 1);
+			file_name += num_str;
+		}
+		file_path = c_file_path.GetDir() + file_name + L'.' + ext;
+	}
+
 }
 

@@ -41,7 +41,7 @@ void CPlaylistMgr::AddNewPlaylist(const wstring& path)
     PlaylistInfo playlist_info{};
     playlist_info.path = path;
     m_recent_playlists.push_back(playlist_info);
-    CPlaylist playlist;
+    CPlaylistFile playlist;
     playlist.SaveToFile(path);      //创建空的播放列表文件
 }
 
