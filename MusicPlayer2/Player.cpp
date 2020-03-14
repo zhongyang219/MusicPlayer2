@@ -87,6 +87,16 @@ void CPlayer::Create(const wstring& path)
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
 }
 
+void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
+{
+	IniPlayerCore();
+	LoadConfig();
+	LoadRecentPath();
+	LoadRecentPlaylist();
+	OpenPlaylistFile(playlist_path);
+	SetTitle();
+}
+
 void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
 {
     if (!m_loading)

@@ -22,6 +22,11 @@ public:
     bool IsFileInPlaylist(const SongInfo& file);
     void RemoveFile(const wstring& file);
 
+	static bool IsPlaylistFile(const wstring& file_path);
+
+public:
+    const static vector<wstring> m_surpported_playlist;		//支持的播放列表文件的扩展名列表
+
 private:
 	void DisposePlaylistFileLine(const string& str_current_line, bool utf8);
 

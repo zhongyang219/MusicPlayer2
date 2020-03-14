@@ -177,6 +177,7 @@ public:
 	void Create();		//初始化CPlayer类
 	void Create(const vector<wstring>& files);	//初始化CPlayer类
 	void Create(const wstring & path);
+	void CreateWithPlaylist(const wstring& playlist_path);			//使用一个播放列表文件来初始化CPlayer类
 	void MusicControl(Command command, int volume_step = 2);		//控制音乐播放
 	bool SongIsOver() const;			//判断当前音乐是否播放完毕
 	void GetPlayerCoreCurrentPosition();		//从BASS音频库获取当前播放到的位置

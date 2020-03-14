@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 
+const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L"m3u8" };
+
 /*
 播放列表文件格式说明
 每行一个曲目，每一行的格式为：
@@ -135,6 +137,12 @@ void CPlaylistFile::RemoveFile(const wstring& file)
     {
         m_playlist.erase(iter);
     }
+}
+
+bool CPlaylistFile::IsPlaylistFile(const wstring& file_path)
+{
+    wstring file_extension = CFilePathHelper(file_path).GetFileExtension(false, true);
+    return CCommon::IsItemInVector(m_surpported_playlist, file_extension);
 }
 
 void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool utf8)

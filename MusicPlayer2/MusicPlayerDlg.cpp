@@ -1621,9 +1621,16 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 vector<wstring> files;
                 wstring path = CCommon::DisposeCmdLineFiles(m_cmdLine, files);
                 if (!path.empty())
-                    CPlayer::GetInstance().Create(path);
+				{
+					CPlayer::GetInstance().Create(path);
+				}
                 else
-                    CPlayer::GetInstance().Create(files);
+				{
+					if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
+						CPlayer::GetInstance().CreateWithPlaylist(files[0]);
+					else
+						CPlayer::GetInstance().Create(files);
+				}
                 //MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
             }
             DrawInfo();
@@ -2236,6 +2243,10 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
     {
         //file_path_wcs.push_back(L'\\');
         CPlayer::GetInstance().OpenFolder(file_path_wcs);
+    }
+    else if (CPlaylistFile::IsPlaylistFile(file_path_wcs))
+    {
+        CPlayer::GetInstance().OpenPlaylistFile(file_path_wcs);
     }
     else
     {
@@ -3534,7 +3545,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lPa
         return 0;
     vector<wstring> files;
     CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
-    CPlayer::GetInstance().OpenFiles(files);
+    if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
+        CPlayer::GetInstance().OpenPlaylistFile(files[0]);
+    else
+        CPlayer::GetInstance().OpenFiles(files);
     return 0;
 }
 
