@@ -27,7 +27,7 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 	int tag_index;		//要操作的时间标签的位置
 	m_lyric_edit.GetSel(start, end);
 	tag_index = m_lyric_string.rfind(L"\r\n", start - 1);	//从光标位置向前查找\r\n的位置
-	if (tag_index == string::npos)
+	if (tag_index == string::npos || start == 0)
 		tag_index = 0;									//如果没有找到，则插入点的位置是最前面
 	else
 		tag_index += 2;
