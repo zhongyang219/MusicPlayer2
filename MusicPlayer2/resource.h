@@ -520,6 +520,8 @@
 #define IDS_INNER_LYRIC                 466
 #define IDS_SHOW_ONLINE_HELP_INFO       467
 #define IDS_PLAYLIST_FILE_FILTER        468
+#define IDS_SAVE_PLAYLIST_FILTER        469
+#define IDS_PLAYLIST_FILE_FILTER2       469
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1167,13 +1169,17 @@
 #define ID_SAVE_CURRENT_PLAYLIST_AS     33158
 #define ID_33159                        33159
 #define ID_FILE_OPEN_PLAYLIST           33160
+#define ID_33161                        33161
+#define ID_EXPORT_CURRENT_PLAYLIST      33162
+#define ID_33163                        33163
+#define ID_SAVE_AS_NEW_PLAYLIST         33164
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        435
-#define _APS_NEXT_COMMAND_VALUE         33161
+#define _APS_NEXT_COMMAND_VALUE         33165
 #define _APS_NEXT_CONTROL_VALUE         1167
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

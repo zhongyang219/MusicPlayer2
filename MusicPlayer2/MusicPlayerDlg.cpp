@@ -231,6 +231,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_NEXT_AB_REPEAT, &CMusicPlayerDlg::OnNextAbRepeat)
 	ON_COMMAND(ID_SAVE_CURRENT_PLAYLIST_AS, &CMusicPlayerDlg::OnSaveCurrentPlaylistAs)
 	ON_COMMAND(ID_FILE_OPEN_PLAYLIST, &CMusicPlayerDlg::OnFileOpenPlaylist)
+    //ON_COMMAND(ID_EXPORT_CURRENT_PLAYLIST, &CMusicPlayerDlg::OnExportCurrentPlaylist)
+    ON_COMMAND(ID_SAVE_AS_NEW_PLAYLIST, &CMusicPlayerDlg::OnSaveAsNewPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -4522,14 +4524,30 @@ void CMusicPlayerDlg::OnNextAbRepeat()
 void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
 {
 	// TODO: 在此添加命令处理程序代码
-	auto getSongList = [&](std::vector<SongInfo>& song_list)
-	{
-		for (const auto& item : CPlayer::GetInstance().GetPlayList())
-			song_list.push_back(item);
-	};
-	wstring playlist_path;
-	CMusicPlayerCmdHelper cmd_helper(this);
-	cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    wstring playlist_name = CPlayer::GetInstance().GetCurrentFolderOrPlaylistName();
+    if (!CPlayer::GetInstance().IsPlaylistMode())
+    {
+        playlist_name = CFilePathHelper(playlist_name).GetFolderName();
+    }
+    CFileDialog fileDlg(FALSE, _T("m3u"), playlist_name.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_SAVE_PLAYLIST_FILTER), this);
+    if (IDOK == fileDlg.DoModal())
+    {
+        CPlaylistFile playlist;
+        playlist.FromSongList(CPlayer::GetInstance().GetPlayList());        //获取当前播放列表
+        //将当前播放列表保存到文件
+        wstring file_path = fileDlg.GetPathName();
+        wstring file_extension = fileDlg.GetFileExt();
+        file_extension = L'.' + file_extension;
+        auto ofn = fileDlg.m_ofn;
+        CPlaylistFile::Type file_type{};
+        if (file_extension == PLAYLIST_EXTENSION)
+            file_type = CPlaylistFile::PL_PLAYLIST;
+        else if (file_extension == L".m3u")
+            file_type = CPlaylistFile::PL_M3U;
+        else if (file_extension == L".m3u8")
+            file_type = CPlaylistFile::PL_M3U8;
+        playlist.SaveToFile(file_path, file_type);
+    }
 
 }
 
@@ -4548,4 +4566,25 @@ void CMusicPlayerDlg::OnFileOpenPlaylist()
 		CPlayer::GetInstance().OpenPlaylistFile(file_path);
 	}
 
+}
+
+
+//void CMusicPlayerDlg::OnExportCurrentPlaylist()
+//{
+//    // TODO: 在此添加命令处理程序代码
+//
+//}
+
+
+void CMusicPlayerDlg::OnSaveAsNewPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto getSongList = [&](std::vector<SongInfo>& song_list)
+    {
+        for (const auto& item : CPlayer::GetInstance().GetPlayList())
+            song_list.push_back(item);
+    };
+    wstring playlist_path;
+    CMusicPlayerCmdHelper cmd_helper(this);
+    cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
 }

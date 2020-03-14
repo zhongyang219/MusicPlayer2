@@ -51,30 +51,37 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
 void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
 {
     ofstream stream{ file_path };
-    for (const auto& item : m_playlist)
+    if(type == PL_PLAYLIST)
     {
-		if(type == PL_PLAYLIST)
-		{
-			stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
-			if (item.is_cue)
-			{
-				CString buff;
-				buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s", item.is_cue, item.start_pos.toInt(), item.end_pos.toInt(),
-					DeleteInvalidCh(item.title).c_str(), DeleteInvalidCh(item.artist).c_str(), DeleteInvalidCh(item.album).c_str(),
-					item.track, item.bitrate,
-					DeleteInvalidCh(item.genre).c_str(), DeleteInvalidCh(item.year).c_str(), DeleteInvalidCh(item.comment).c_str());
-				stream << CCommon::UnicodeToStr(buff.GetString(), CodeType::UTF8_NO_BOM);
-			}
-		}
-		else if (type == PL_M3U)
-		{
-			stream << CCommon::UnicodeToStr(item.file_path, CodeType::ANSI);
-		}
-		else if (type == PL_M3U8)
-		{
-			stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
-		}
-        stream << std::endl;
+        for (const auto& item : m_playlist)
+        {
+            stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
+            if (item.is_cue)
+            {
+                CString buff;
+                buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s", item.is_cue, item.start_pos.toInt(), item.end_pos.toInt(),
+                    DeleteInvalidCh(item.title).c_str(), DeleteInvalidCh(item.artist).c_str(), DeleteInvalidCh(item.album).c_str(),
+                    item.track, item.bitrate,
+                    DeleteInvalidCh(item.genre).c_str(), DeleteInvalidCh(item.year).c_str(), DeleteInvalidCh(item.comment).c_str());
+                stream << CCommon::UnicodeToStr(buff.GetString(), CodeType::UTF8_NO_BOM);
+            }
+            stream << std::endl;
+        }
+    }
+    else if (type == PL_M3U || type == PL_M3U8)
+    {
+        CodeType code_type{ CodeType::ANSI };
+        if (type == PL_M3U8)
+            code_type = CodeType::UTF8_NO_BOM;
+
+        stream << "#EXTM3U" << std::endl;
+        for (const auto& item : m_playlist)
+        {
+            CString buff;
+            buff.Format(_T("#EXTINF:%d,%s - %s"), item.lengh.toInt() / 1000, item.GetArtist().c_str(), item.GetTitle().c_str());
+            stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << std::endl;
+            stream << CCommon::UnicodeToStr(item.file_path, code_type) << std::endl;
+        }
     }
 }
 
