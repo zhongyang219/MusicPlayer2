@@ -89,6 +89,12 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
         return wstring(L"Audio Interchange File");
     else if (extension == L"cda")
         return wstring(CCommon::LoadText(_T("CD "), IDS_AUDIO_FILE, _T(" (CDA)")));
+    else if (extension == L"playlist")
+        return wstring(CCommon::LoadText(_T("MusicPlayer2 "), IDS_PLAYLIST));
+    else if (extension == L"m3u")
+        return wstring(CCommon::LoadText(_T("M3U "), IDS_PLAYLIST));
+    else if (extension == L"m3u8")
+        return wstring(CCommon::LoadText(_T("M3U8 "), IDS_PLAYLIST));
     else
         return wstring(extension + CCommon::LoadText(_T(" "), IDS_AUDIO_FILE).GetString());
 }

@@ -257,3 +257,30 @@ void CPlaylistMgr::LoadPlaylistData()
         m_recent_playlists.push_back(path_info);
     }
 }
+
+PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str)
+{
+    if (m_default_playlist.path.find(str) != wstring::npos)
+    {
+        return m_default_playlist;
+    }
+    else if (m_favourite_playlist.path.find(str) != wstring::npos)
+    {
+        return m_favourite_playlist;
+    }
+    else if (m_temp_playlist.path.find(str) != wstring::npos)
+    {
+        return m_temp_playlist;
+    }
+    else
+    {
+        auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [&](const PlaylistInfo& playlist_info)
+        {
+            return (playlist_info.path.find(str) != wstring::npos);
+        });
+        if (iter == m_recent_playlists.end())
+            return PlaylistInfo();
+        else
+            return *iter;
+    }
+}

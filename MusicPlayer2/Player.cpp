@@ -839,7 +839,8 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
 
     if(!init)
     {
-        SaveCurrentPlaylist();
+        if (!CCommon::StringCompareNoCase(playlist_path, m_playlist_path))
+            SaveCurrentPlaylist();
         if (m_playlist_mode)
             EmplaceCurrentPlaylistToRecent();
         else
@@ -1068,7 +1069,8 @@ void CPlayer::OpenPlaylistFile(const wstring& file_path)
 	}
 	else		//如果打开的播放文件就在默认播放列表目录下，则直接打开
 	{
-		SetPlaylist(file_path, 0, 0);
+        auto path_info = m_recent_playlist.FindPlaylistInfo(file_path);
+		SetPlaylist(file_path, path_info.track, path_info.position);
 	}
 
 }

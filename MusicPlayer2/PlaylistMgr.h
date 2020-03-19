@@ -32,6 +32,8 @@ public:
     void SavePlaylistData();
     void LoadPlaylistData();
 
+    PlaylistInfo FindPlaylistInfo(const wstring& str);
+
 public:
     PlaylistInfo m_default_playlist;
     PlaylistInfo m_favourite_playlist;

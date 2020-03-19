@@ -8,6 +8,7 @@
 #include "AudioCommon.h"
 #include "RegFileRelate.h"
 #include <set>
+#include "Playlist.h"
 
 
 // CFileRelateDlg 对话框
@@ -43,6 +44,12 @@ void CFileRelateDlg::RefreshList()
     std::vector<wstring> related_extensions;
     reg_file.GetAllRelatedExtensions(related_extensions);
     for (auto item : related_extensions)
+    {
+        if (!item.empty() && item[0] == L'.')
+            item = item.substr(1);
+        extensions.insert(item);
+    }
+    for (auto item : CPlaylistFile::m_surpported_playlist)
     {
         if (!item.empty() && item[0] == L'.')
             item = item.substr(1);

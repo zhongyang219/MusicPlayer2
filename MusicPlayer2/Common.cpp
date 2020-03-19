@@ -691,7 +691,8 @@ wstring CCommon::DisposeCmdLineFiles(const wstring & cmd_line, vector<wstring>& 
 	}
 	int path_size = path.size();
 	if (path_size < 2) return wstring();
-	if (files[0].size() > 4 && files[0][files[0].size() - 4] != L'.' && files[0][files[0].size() - 5] != L'.')
+	if (IsFolder(files[0]))
+	//if (files[0].size() > 4 && files[0][files[0].size() - 4] != L'.' && files[0][files[0].size() - 5] != L'.')
 	{
 		//如果第1个文件不是文件而是文件夹，则返直接回该文件夹的路径
 		return files[0];
