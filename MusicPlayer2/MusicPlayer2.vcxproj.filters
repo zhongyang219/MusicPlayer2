@@ -1197,5 +1197,8 @@
     <Image Include="res\recent_songs_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\file_playlist_icon.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

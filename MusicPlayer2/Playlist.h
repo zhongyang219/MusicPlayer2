@@ -23,6 +23,7 @@ public:
     void RemoveFile(const wstring& file);
 
 	static bool IsPlaylistFile(const wstring& file_path);
+    static bool IsPlaylistExt(wstring ext);
 
 public:
     const static vector<wstring> m_surpported_playlist;		//支持的播放列表文件的扩展名列表

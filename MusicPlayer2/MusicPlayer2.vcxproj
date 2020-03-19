@@ -452,6 +452,7 @@
     <Image Include="res\favourite.ico" />
     <Image Include="res\favourite_d.ico" />
     <Image Include="res\file_icon.ico" />
+    <Image Include="res\file_playlist_icon.ico" />
     <Image Include="res\Find.ico" />
     <Image Include="res\folder_explore_d.ico" />
     <Image Include="res\genre_d.ico" />

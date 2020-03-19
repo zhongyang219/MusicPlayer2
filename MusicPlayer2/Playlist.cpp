@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 
-const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L"m3u8" };
+const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L".m3u8" };
 
 /*
 播放列表文件格式说明
@@ -150,6 +150,15 @@ bool CPlaylistFile::IsPlaylistFile(const wstring& file_path)
 {
     wstring file_extension = CFilePathHelper(file_path).GetFileExtension(false, true);
     return CCommon::IsItemInVector(m_surpported_playlist, file_extension);
+}
+
+bool CPlaylistFile::IsPlaylistExt(wstring ext)
+{
+    if (ext.empty())
+        return false;
+    if (ext.front() != L'.')
+        ext = L'.' + ext;
+    return CCommon::IsItemInVector(m_surpported_playlist, ext);
 }
 
 void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool utf8)

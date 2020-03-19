@@ -24,7 +24,7 @@ void CRegFileRelate::SetAppName(LPCTSTR app_name)
     m_app_name = app_name;
 }
 
-bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool default_icon)
+bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool default_icon, LPCTSTR description)
 {
     CString str_ext{ file_ext };
     if (str_ext.IsEmpty())
@@ -43,6 +43,15 @@ bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool 
 
     if (key.SetStringValue(NULL, m_app_name + str_ext) != ERROR_SUCCESS)
         return false;
+
+    //设置该类型的描述
+    if (description != NULL && *description != _T('\0'))
+    {
+        if (OpenItem(key, CString("Software\\Classes\\") + m_app_name + str_ext))
+        {
+            key.SetStringValue(NULL, description);
+        }
+    }
 
     //添加shell\Open\Command的项
     if (!OpenItem(key, CString("Software\\Classes\\") + m_app_name + str_ext + _T("\\shell\\Open\\Command")))
@@ -70,11 +79,11 @@ bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool 
     return true;
 }
 
-bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, int ico_index, bool default_icon)
+bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, int ico_index, bool default_icon, LPCTSTR description)
 {
     CString icon_path;
     icon_path.Format(_T("%s,%d"), m_model_path.GetString(), ico_index);
-    return AddFileTypeRelate(file_ext, icon_path, default_icon);
+    return AddFileTypeRelate(file_ext, icon_path, default_icon, description);
 }
 
 bool CRegFileRelate::IsFileTypeRelated(LPCTSTR file_ext)

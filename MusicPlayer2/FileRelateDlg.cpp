@@ -126,9 +126,19 @@ void CFileRelateDlg::OnOK()
         bool checked = m_list_ctrl.GetCheck(i) != FALSE;
         CRegFileRelate reg_file;
         if (checked)
-            reg_file.AddFileTypeRelate(m_list_ctrl.GetItemText(i, 0), 46);
+        {
+            CString file_ext = m_list_ctrl.GetItemText(i, 0);
+            wstring description = CAudioCommon::GetAudioDescriptionByExtension(wstring(file_ext));
+
+            if (CPlaylistFile::IsPlaylistExt(wstring(file_ext)))
+                reg_file.AddFileTypeRelate(file_ext, 66, false, description.c_str());
+            else
+                reg_file.AddFileTypeRelate(file_ext, 46, false, description.c_str());
+        }
         else
+        {
             reg_file.DeleteFileTypeRelate(m_list_ctrl.GetItemText(i, 0));
+        }
     }
 
     CDialog::OnOK();

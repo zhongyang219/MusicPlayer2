@@ -487,6 +487,8 @@
 #define IDS_SEARCH_ALBUM                434
 #define IDI_RECENT_SONG_D               434
 #define IDS_TEMP_PLAYLIST               435
+#define IDI_ICON5                       435
+#define IDI_FILE_PLAYLIST               435
 #define IDS_GENRE                       436
 #define IDS_SEARCH_GENRE                437
 #define IDS_YEAR                        438
@@ -521,7 +523,6 @@
 #define IDS_SHOW_ONLINE_HELP_INFO       467
 #define IDS_PLAYLIST_FILE_FILTER        468
 #define IDS_SAVE_PLAYLIST_FILTER        469
-#define IDS_PLAYLIST_FILE_FILTER2       469
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1178,7 +1179,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        435
+#define _APS_NEXT_RESOURCE_VALUE        436
 #define _APS_NEXT_COMMAND_VALUE         33165
 #define _APS_NEXT_CONTROL_VALUE         1167
 #define _APS_NEXT_SYMED_VALUE           101
