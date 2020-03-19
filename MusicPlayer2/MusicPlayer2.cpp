@@ -139,6 +139,8 @@ BOOL CMusicPlayerApp::InitInstance()
                         ::SendMessage(handle, WM_COMMAND, ID_VOLUME_UP, 0);
                     if (m_cmd & ControlCmd::VOLUME_DOWM)
                         ::SendMessage(handle, WM_COMMAND, ID_VOLUME_DOWN, 0);
+                    if (m_cmd & ControlCmd::MINI_MODE)
+                        ::PostMessage(handle, WM_COMMAND, ID_MINI_MODE, 0);     //这里应该用PostMessage，因为响应ID_MINI_MODE的函数中有DoModel函数，只有当模态对话框关闭后函数才会返回
                 }
 
                 if (!cmd_line.empty())		//如果通过命令行传递了打开的文件名，且已有一个进程在运行，则将打开文件的命令和命令行参数传递给该进程
