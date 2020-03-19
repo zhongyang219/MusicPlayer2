@@ -18,17 +18,19 @@ enum class Command
 	SEEK
 };
 
-enum class ControlCmd
+namespace ControlCmd
 {
-	PLAY_PAUSE,
-	_PREVIOUS,
-	_NEXT,
-	STOP,
-	FF,
-	REW,
-	VOLUME_UP,
-	VOLUME_DOWM
-};
+    const int NONE = 0;
+    const int PLAY_PAUSE = 1 << 1;
+    const int _PREVIOUS = 1 << 2;
+    const int _NEXT = 1 << 3;
+    const int STOP = 1 << 4;
+    const int FF = 1 << 5;
+    const int REW = 1 << 6;
+    const int VOLUME_UP = 1 << 7;
+    const int VOLUME_DOWM = 1 << 8;
+    const int MINI_MODE = 1 << 9;
+}
 
 enum class CodeType
 {
@@ -204,7 +206,7 @@ public:
 	static wstring DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files);
 
 	//解析命令行参数中的命令
-	static bool GetCmdLineCommand(const wstring& cmd_line, ControlCmd& command);
+	static bool GetCmdLineCommand(const wstring& cmd_line, int& command);
 
 	/*
 	函数功能：对指定文件在指定的目录下创建其快捷方式

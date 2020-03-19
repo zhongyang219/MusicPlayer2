@@ -724,28 +724,27 @@ wstring CCommon::DisposeCmdLineFiles(const wstring & cmd_line, vector<wstring>& 
 	//CCommon::WriteLog(L".\\command.log", wstring{ out_info });
 }
 
-bool CCommon::GetCmdLineCommand(const wstring & cmd_line, ControlCmd & command)
+bool CCommon::GetCmdLineCommand(const wstring & cmd_line, int & command)
 {
-	bool rtn = true;
-	if (cmd_line == L"-play_pause" || cmd_line == L"-p")
-		command = ControlCmd::PLAY_PAUSE;
-	else if (cmd_line == L"-previous" || cmd_line == L"-pre")
-		command = ControlCmd::_PREVIOUS;
-	else if (cmd_line == L"-next" || cmd_line == L"-n")
-		command = ControlCmd::_NEXT;
-	else if (cmd_line == L"-stop" || cmd_line == L"-s")
-		command = ControlCmd::STOP;
-	else if (cmd_line == L"-ff")
-		command = ControlCmd::FF;
-	else if (cmd_line == L"-rew")
-		command = ControlCmd::REW;
-	else if (cmd_line == L"-vol_up")
-		command = ControlCmd::VOLUME_UP;
-	else if (cmd_line == L"-vol_down")
-		command = ControlCmd::VOLUME_DOWM;
-	else
-		rtn = false;
-	return rtn;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-play_pause")) != string::npos || CCommon::StringNatchWholeWord(cmd_line, wstring(L"-p")) != string::npos)
+        command |= ControlCmd::PLAY_PAUSE;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-previous")) != string::npos || CCommon::StringNatchWholeWord(cmd_line, wstring(L"-pre")) != string::npos)
+        command |= ControlCmd::_PREVIOUS;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-next")) != string::npos || CCommon::StringNatchWholeWord(cmd_line, wstring(L"-n")) != string::npos)
+        command |= ControlCmd::_NEXT;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-stop")) != string::npos || CCommon::StringNatchWholeWord(cmd_line, wstring(L"-s")) != string::npos)
+        command |= ControlCmd::STOP;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-ff")) != string::npos)
+        command |= ControlCmd::FF;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-rew")) != string::npos)
+        command |= ControlCmd::REW;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-vol_up")) != string::npos)
+        command |= ControlCmd::VOLUME_UP;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-vol_down")) != string::npos)
+        command |= ControlCmd::VOLUME_DOWM;
+    if (CCommon::StringNatchWholeWord(cmd_line, wstring(L"-mini")) != string::npos)
+        command |= ControlCmd::MINI_MODE;
+	return command!=ControlCmd::NONE;
 }
 
 bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, LPCTSTR lpszLnkFileName, LPCTSTR lpszWorkDir, WORD wHotkey, LPCTSTR lpszDescription, int iShowCmd, LPCTSTR lpszArguments, int nIconOffset)

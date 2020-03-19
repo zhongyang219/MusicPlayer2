@@ -61,6 +61,8 @@ public:
     FontSet m_font_set;			//字体资源
     MenuSet m_menu_set;			//菜单资源
 
+    int m_cmd;
+
     volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
     volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
     volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出

@@ -1311,6 +1311,12 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     // TODO: 在此添加额外的初始化代码
 
+    //如果以迷你模式启动，则先隐藏主窗口
+    if (theApp.m_cmd & ControlCmd::MINI_MODE)
+    {
+        CCommon::SetWindowOpacity(m_hWnd, 0);
+    }
+
     //载入图标资源
     theApp.LoadIconResource();
 
@@ -1335,8 +1341,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
         theApp.m_lyric_setting_data.cortana_info_enable = false;
     m_cortana_lyric.SetEnable(CWinVersionHelper::IsWindows10OrLater());
 
-    //设置窗口不透明度
-    SetTransparency();
+    //设置桌面歌词窗口不透明度
     SetDesptopLyricTransparency();
 
     //初始化窗口大小
@@ -1655,10 +1660,19 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
             ThemeColorChanged();
 
+            //设置窗口不透明度
+            SetTransparency();
+
             if (theApp.m_nc_setting_data.float_playlist)
                 ShowFloatPlaylist();
 
             IniPlaylistPopupMenu();
+
+            //命令行有迷你模式参数，则启动时直接进入迷你模式
+            if (theApp.m_cmd & ControlCmd::MINI_MODE)
+            {
+                OnMiniMode();
+            }
 
             //提示用户是否创建桌面快捷方式
             CreateDesktopShortcut();

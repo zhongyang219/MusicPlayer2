@@ -91,8 +91,7 @@ BOOL CMusicPlayerApp::InitInstance()
         return FALSE;
     }
 
-    ControlCmd cmd;
-    bool cmd_control = CCommon::GetCmdLineCommand(cmd_line, cmd);		//命令行参数是否包含参数命令
+    bool cmd_control = CCommon::GetCmdLineCommand(cmd_line, m_cmd);		//命令行参数是否包含参数命令
     if (cmd_control)		//如果从命令行参数解析到了命令，则将命令行参数清除
         cmd_line.clear();
 
@@ -108,7 +107,7 @@ BOOL CMusicPlayerApp::InitInstance()
             if (handle != NULL)
             {
                 HWND minidlg_handle = FindWindow(_T("MiniDlg_ByH87M"), NULL);
-                if (!cmd_control)
+                if (!cmd_control || m_cmd == ControlCmd::MINI_MODE)
                 {
                     if (minidlg_handle == NULL)			//没有找到“迷你模式”窗口，则激活主窗口
                     {
@@ -124,36 +123,22 @@ BOOL CMusicPlayerApp::InitInstance()
 
                 if (cmd_control)
                 {
-                    switch (cmd)
-                    {
-                    case ControlCmd::PLAY_PAUSE:
+                    if(m_cmd & ControlCmd::PLAY_PAUSE)
                         ::SendMessage(handle, WM_COMMAND, ID_PLAY_PAUSE, 0);
-                        break;
-                    case ControlCmd::_PREVIOUS:
+                    if(m_cmd & ControlCmd::_PREVIOUS)
                         ::SendMessage(handle, WM_COMMAND, ID_PREVIOUS, 0);
-                        break;
-                    case ControlCmd::_NEXT:
+                    if (m_cmd & ControlCmd::_NEXT)
                         ::SendMessage(handle, WM_COMMAND, ID_NEXT, 0);
-                        break;
-                    case ControlCmd::STOP:
+                    if (m_cmd & ControlCmd::STOP)
                         ::SendMessage(handle, WM_COMMAND, ID_STOP, 0);
-                        break;
-                    case ControlCmd::FF:
+                    if (m_cmd & ControlCmd::FF)
                         ::SendMessage(handle, WM_COMMAND, ID_FF, 0);
-                        break;
-                    case ControlCmd::REW:
+                    if (m_cmd & ControlCmd::REW)
                         ::SendMessage(handle, WM_COMMAND, ID_REW, 0);
-                        break;
-                    case ControlCmd::VOLUME_UP:
+                    if (m_cmd & ControlCmd::VOLUME_UP)
                         ::SendMessage(handle, WM_COMMAND, ID_VOLUME_UP, 0);
-                        break;
-                    case ControlCmd::VOLUME_DOWM:
+                    if (m_cmd & ControlCmd::VOLUME_DOWM)
                         ::SendMessage(handle, WM_COMMAND, ID_VOLUME_DOWN, 0);
-                        break;
-
-                    default:
-                        break;
-                    }
                 }
 
                 if (!cmd_line.empty())		//如果通过命令行传递了打开的文件名，且已有一个进程在运行，则将打开文件的命令和命令行参数传递给该进程
