@@ -386,4 +386,6 @@ public:
 	afx_msg void OnFileOpenPlaylist();
     //afx_msg void OnExportCurrentPlaylist();
     afx_msg void OnSaveAsNewPlaylist();
+    afx_msg void OnCreateDesktopShortcut();
+    afx_msg void OnCreateMiniModeShortCut();
 };

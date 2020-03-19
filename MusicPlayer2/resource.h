@@ -523,6 +523,8 @@
 #define IDS_SHOW_ONLINE_HELP_INFO       467
 #define IDS_PLAYLIST_FILE_FILTER        468
 #define IDS_SAVE_PLAYLIST_FILTER        469
+#define IDS_CREATE_MINI_MODE_SHORTCUT_INFO 470
+#define IDS_CREATE_DESKTOP_SHORTCUT_INFO 471
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1174,13 +1176,15 @@
 #define ID_EXPORT_CURRENT_PLAYLIST      33162
 #define ID_33163                        33163
 #define ID_SAVE_AS_NEW_PLAYLIST         33164
+#define ID_CREATE_DESKTOP_SHORTCUT      33165
+#define ID_CREATE_MINI_MODE_SHORT_CUT   33166
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        436
-#define _APS_NEXT_COMMAND_VALUE         33165
+#define _APS_NEXT_COMMAND_VALUE         33167
 #define _APS_NEXT_CONTROL_VALUE         1167
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

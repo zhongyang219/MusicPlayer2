@@ -233,7 +233,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_FILE_OPEN_PLAYLIST, &CMusicPlayerDlg::OnFileOpenPlaylist)
     //ON_COMMAND(ID_EXPORT_CURRENT_PLAYLIST, &CMusicPlayerDlg::OnExportCurrentPlaylist)
     ON_COMMAND(ID_SAVE_AS_NEW_PLAYLIST, &CMusicPlayerDlg::OnSaveAsNewPlaylist)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_CREATE_DESKTOP_SHORTCUT, &CMusicPlayerDlg::OnCreateDesktopShortcut)
+        ON_COMMAND(ID_CREATE_MINI_MODE_SHORT_CUT, &CMusicPlayerDlg::OnCreateMiniModeShortCut)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -4601,4 +4603,39 @@ void CMusicPlayerDlg::OnSaveAsNewPlaylist()
     wstring playlist_path;
     CMusicPlayerCmdHelper cmd_helper(this);
     cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+}
+
+
+void CMusicPlayerDlg::OnCreateDesktopShortcut()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (MessageBox(CCommon::LoadText(IDS_CREATE_DESKTOP_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+    {
+        if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
+        {
+            CString info;
+            info = CCommon::LoadTextFormat(IDS_SHORTCUT_CREATED, { theApp.m_desktop_path });
+            MessageBox(info, NULL, MB_ICONINFORMATION);
+        }
+        else
+        {
+            MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+        }
+    }
+}
+
+
+void CMusicPlayerDlg::OnCreateMiniModeShortCut()
+{
+    // TODO: 在此添加命令处理程序代码
+    
+    if (MessageBox(CCommon::LoadText(IDS_CREATE_MINI_MODE_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+    {
+        CString file_name = CCommon::LoadText(IDS_MINI_MODE, L".lnk");
+        if (CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, file_name, NULL, 0, 0, 1, L"-mini"))
+            MessageBox(CCommon::LoadTextFormat(IDS_SHORTCUT_CREATED, { theApp.m_module_dir }), NULL, MB_ICONINFORMATION);
+        else
+            MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+    }
+
 }
