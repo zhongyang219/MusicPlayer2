@@ -1200,5 +1200,8 @@
     <Image Include="res\file_playlist_icon.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\donate_wechat.bmp">
+      <Filter>资源文件\其他</Filter>
+    </Image>
   </ItemGroup>
 </Project>

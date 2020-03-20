@@ -490,6 +490,8 @@
 #define IDI_ICON5                       435
 #define IDI_FILE_PLAYLIST               435
 #define IDS_GENRE                       436
+#define IDB_BITMAP3                     436
+#define IDB_DONATE_WECHAT               436
 #define IDS_SEARCH_GENRE                437
 #define IDS_YEAR                        438
 #define IDS_SEARCH_YEAR                 439
@@ -1183,7 +1185,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        436
+#define _APS_NEXT_RESOURCE_VALUE        437
 #define _APS_NEXT_COMMAND_VALUE         33167
 #define _APS_NEXT_CONTROL_VALUE         1167
 #define _APS_NEXT_SYMED_VALUE           101
