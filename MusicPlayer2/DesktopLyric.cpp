@@ -79,7 +79,7 @@ void CDesktopLyric::ShowLyric()
 		if (lyric.text.empty())
 			lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
 
-        SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+        SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line && !theApp.m_ui_data.show_translate);
         SetShowTranslate(theApp.m_ui_data.show_translate);
         if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
