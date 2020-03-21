@@ -441,20 +441,23 @@ void CLyrics::SaveLyric2()
         out_put << buff;
     }
     //输出标识标签
-    if(m_id_tag) out_put << "[id:" << CCommon::UnicodeToStr(m_id, m_code_type) << "]" << std::endl;
-    if(m_ti_tag) out_put << "[ti:" << CCommon::UnicodeToStr(m_ti, m_code_type) << "]" << std::endl;
-    if (m_ar_tag) out_put << "[ar:" << CCommon::UnicodeToStr(m_ar, m_code_type) << "]" << std::endl;
-    if (m_al_tag) out_put << "[al:" << CCommon::UnicodeToStr(m_al, m_code_type) << "]" << std::endl;
-    if (m_by_tag) out_put << "[by:" << CCommon::UnicodeToStr(m_by, m_code_type) << "]" << std::endl;
+    CodeType text_code_type{ m_code_type };
+    if (text_code_type == CodeType::UTF8)
+        text_code_type = CodeType::UTF8_NO_BOM;
+    if(m_id_tag) out_put << "[id:" << CCommon::UnicodeToStr(m_id, text_code_type) << "]" << std::endl;
+    if(m_ti_tag) out_put << "[ti:" << CCommon::UnicodeToStr(m_ti, text_code_type) << "]" << std::endl;
+    if (m_ar_tag) out_put << "[ar:" << CCommon::UnicodeToStr(m_ar, text_code_type) << "]" << std::endl;
+    if (m_al_tag) out_put << "[al:" << CCommon::UnicodeToStr(m_al, text_code_type) << "]" << std::endl;
+    if (m_by_tag) out_put << "[by:" << CCommon::UnicodeToStr(m_by, text_code_type) << "]" << std::endl;
     if (m_offset_tag) out_put << "[offset:0]" << std::endl;		//由于偏移量被保存到时间标签中，所以offset标签中的偏移量为0
     char time_buff[16];
     for (auto a_lyric : m_lyrics)
     {
         Time a_time{ a_lyric.GetTime(m_offset) };
         sprintf_s(time_buff, "[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-        out_put << time_buff << CCommon::UnicodeToStr(a_lyric.text, m_code_type);
+        out_put << time_buff << CCommon::UnicodeToStr(a_lyric.text, text_code_type);
         if (!a_lyric.translate.empty())
-            out_put << " / " << CCommon::UnicodeToStr(a_lyric.translate, m_code_type);
+            out_put << " / " << CCommon::UnicodeToStr(a_lyric.translate, text_code_type);
         out_put << std::endl;
     }
     out_put.close();
