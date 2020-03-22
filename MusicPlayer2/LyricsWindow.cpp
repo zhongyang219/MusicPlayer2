@@ -198,7 +198,8 @@ void CLyricsWindow::Draw()
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
 
     PreDrawLyric(pGraphics);
-    if (m_bDoubleLine && !m_strNextLyric.IsEmpty())
+    bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
+    if (m_bDoubleLine && !m_strNextLyric.IsEmpty() && !bDrawTranslate)
         DrawLyricsDoubleLine(pGraphics);
     else
         DrawLyrics(pGraphics);
