@@ -233,9 +233,11 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 	ON_COMMAND(ID_FILE_OPEN_PLAYLIST, &CMusicPlayerDlg::OnFileOpenPlaylist)
     //ON_COMMAND(ID_EXPORT_CURRENT_PLAYLIST, &CMusicPlayerDlg::OnExportCurrentPlaylist)
     ON_COMMAND(ID_SAVE_AS_NEW_PLAYLIST, &CMusicPlayerDlg::OnSaveAsNewPlaylist)
-        ON_COMMAND(ID_CREATE_DESKTOP_SHORTCUT, &CMusicPlayerDlg::OnCreateDesktopShortcut)
-        ON_COMMAND(ID_CREATE_MINI_MODE_SHORT_CUT, &CMusicPlayerDlg::OnCreateMiniModeShortCut)
-        END_MESSAGE_MAP()
+    ON_COMMAND(ID_CREATE_DESKTOP_SHORTCUT, &CMusicPlayerDlg::OnCreateDesktopShortcut)
+    ON_COMMAND(ID_CREATE_MINI_MODE_SHORT_CUT, &CMusicPlayerDlg::OnCreateMiniModeShortCut)
+    ON_COMMAND(ID_REMOVE_CURRENT_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveCurrentFromPlaylist)
+    ON_COMMAND(ID_DELETE_CURRENT_FROM_DISK, &CMusicPlayerDlg::OnDeleteCurrentFromDisk)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1133,6 +1135,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
 	pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_SET_B_POINT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE ? MF_ENABLED : MF_GRAYED));
+
+    pMenu->EnableMenuItem(ID_REMOVE_CURRENT_FROM_PLAYLIST, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
 }
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
@@ -1963,7 +1967,12 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 					OnResetAbRepeat();
 					return TRUE;
 				}
-			}
+                if (pMsg->wParam == VK_DELETE)  //按Ctrl+Shift+Del将正在播放的曲目从磁盘删除
+                {
+                    OnDeleteCurrentFromDisk();
+                    return TRUE;
+                }
+            }
 			
 			if (pMsg->wParam == 'O')		//设置按Ctr+O打开文件
             {
@@ -2075,7 +2084,12 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             //{
             //    return TRUE;
             //}
-        }
+            if (pMsg->wParam == VK_DELETE)      //按Ctrl+Del从播放列表移除正在播放的曲目
+            {
+                OnRemoveCurrentFromPlaylist();
+                return TRUE;
+            }
+}
         else
         {
             if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P'/* || pMsg->wParam == VK_MEDIA_PLAY_PAUSE*/)		//按空格键/P键播放/暂停
@@ -4636,6 +4650,68 @@ void CMusicPlayerDlg::OnCreateMiniModeShortCut()
             MessageBox(CCommon::LoadTextFormat(IDS_SHORTCUT_CREATED, { theApp.m_module_dir }), NULL, MB_ICONINFORMATION);
         else
             MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+    }
+
+}
+
+
+void CMusicPlayerDlg::OnRemoveCurrentFromPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    if(CPlayer::GetInstance().IsPlaylistMode())
+    {
+        CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+        ShowPlayList(false);
+    }
+}
+
+
+void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
+{
+    // TODO: 在此添加命令处理程序代码
+    CString info;
+    wstring file_path = CPlayer::GetInstance().GetCurrentFilePath();
+    if (file_path.empty())
+        return;
+    info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { CPlayer::GetInstance().GetCurrentFilePath() });
+    if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
+        return;
+    bool file_exist = CCommon::FileExist(file_path);
+    int rtn;
+    if(file_exist)
+    {
+        vector<wstring> delected_files;
+        CPlayer::GetInstance().MusicControl(Command::CLOSE);
+        const auto& song = CPlayer::GetInstance().GetCurrentSongInfo();
+        if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
+            return;
+        rtn = CCommon::DeleteAFile(m_hWnd, file_path);
+    }
+    if (rtn == 0 || !file_exist)
+    {
+        //如果文件删除成功，同时从播放列表中移除
+        CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
+        ShowPlayList(false);
+        UpdatePlayPauseButton();
+        DrawInfo(true);
+        //文件删除后同时删除和文件同名的图片文件和歌词文件
+        CFilePathHelper file_path(file_path);
+        CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
+        CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
+    }
+    else if (rtn == 1223)	//如果在弹出的对话框中点击“取消”则返回值为1223
+    {
+        //如果点击了“取消”，则重新打开当前文件
+        CPlayer::GetInstance().MusicControl(Command::OPEN);
+        CPlayer::GetInstance().MusicControl(Command::SEEK);
+        //CPlayer::GetInstance().Refresh();
+        UpdatePlayPauseButton();
+        DrawInfo(true);
+    }
+    else
+    {
+        MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
     }
 
 }

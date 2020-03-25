@@ -490,7 +490,6 @@
 #define IDI_ICON5                       435
 #define IDI_FILE_PLAYLIST               435
 #define IDS_GENRE                       436
-#define IDB_BITMAP3                     436
 #define IDB_DONATE_WECHAT               436
 #define IDS_SEARCH_GENRE                437
 #define IDS_YEAR                        438
@@ -527,6 +526,7 @@
 #define IDS_SAVE_PLAYLIST_FILTER        469
 #define IDS_CREATE_MINI_MODE_SHORTCUT_INFO 470
 #define IDS_CREATE_DESKTOP_SHORTCUT_INFO 471
+#define IDS_DELETE_SINGLE_FILE_INQUIRY  472
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1180,13 +1180,15 @@
 #define ID_SAVE_AS_NEW_PLAYLIST         33164
 #define ID_CREATE_DESKTOP_SHORTCUT      33165
 #define ID_CREATE_MINI_MODE_SHORT_CUT   33166
+#define ID_REMOVE_CURRENT_FROM_PLAYLIST 33167
+#define ID_DELETE_CURRENT_FROM_DISK     33168
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        437
-#define _APS_NEXT_COMMAND_VALUE         33167
+#define _APS_NEXT_COMMAND_VALUE         33169
 #define _APS_NEXT_CONTROL_VALUE         1167
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

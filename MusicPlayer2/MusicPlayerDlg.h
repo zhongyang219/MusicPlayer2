@@ -388,4 +388,6 @@ public:
     afx_msg void OnSaveAsNewPlaylist();
     afx_msg void OnCreateDesktopShortcut();
     afx_msg void OnCreateMiniModeShortCut();
+    afx_msg void OnRemoveCurrentFromPlaylist();
+    afx_msg void OnDeleteCurrentFromDisk();
 };
