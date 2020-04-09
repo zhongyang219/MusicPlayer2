@@ -36,11 +36,12 @@ void CMediaLibSettingDlg::ShowDataSizeInfo()
 
 void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CTabDlg::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_CLASSIFY_OTHER_CHECK, m_classify_other_chk);
-    //DDX_Control(pDX, IDC_SHOW_TREE_TOOL_TIPS_CHECK, m_show_tree_tool_tips_chk);
-    DDX_Control(pDX, IDC_DIR_LIST, m_dir_list_ctrl);
-    DDX_Control(pDX, IDC_UPDATE_MEDIA_LIB_CHK, m_update_media_lib_chk);
+	CTabDlg::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_CLASSIFY_OTHER_CHECK, m_classify_other_chk);
+	//DDX_Control(pDX, IDC_SHOW_TREE_TOOL_TIPS_CHECK, m_show_tree_tool_tips_chk);
+	DDX_Control(pDX, IDC_DIR_LIST, m_dir_list_ctrl);
+	DDX_Control(pDX, IDC_UPDATE_MEDIA_LIB_CHK, m_update_media_lib_chk);
+	DDX_Control(pDX, IDC_DISABLE_DRAGE_SORT_CHECK, m_disable_drag_sort_chk);
 }
 
 
@@ -52,6 +53,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_UPDATE_MEDIA_LIB_CHK, &CMediaLibSettingDlg::OnBnClickedUpdateMediaLibChk)
     ON_BN_CLICKED(IDC_CLEAN_DATA_FILE_BUTTON, &CMediaLibSettingDlg::OnBnClickedCleanDataFileButton)
 	ON_BN_CLICKED(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, &CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn)
+	ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
 END_MESSAGE_MAP()
 
 
@@ -69,6 +71,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_classify_other_chk.SetCheck(m_data.hide_only_one_classification);
     //m_show_tree_tool_tips_chk.SetCheck(m_data.show_tree_tool_tips);
     m_update_media_lib_chk.SetCheck(m_data.update_media_lib_when_start_up);
+	m_disable_drag_sort_chk.SetCheck(m_data.disable_drag_sort);
 
     for (const auto& str : m_data.media_folders)
         m_dir_list_ctrl.AddString(str.c_str());
@@ -174,4 +177,11 @@ void CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn()
 		theApp.SetSongDataModified();
 		::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_PLAYED_LIST_CLEARED, 0, 0);
 	}
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck()
+{
+	// TODO: Add your control notification handler code here
+	m_data.disable_drag_sort = (m_disable_drag_sort_chk.GetCheck() != 0);
 }

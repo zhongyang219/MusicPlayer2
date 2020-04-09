@@ -25,6 +25,7 @@ private:
     //CButton m_show_tree_tool_tips_chk;
     CListBoxEnhanced m_dir_list_ctrl;
     CButton m_update_media_lib_chk;
+	CButton m_disable_drag_sort_chk;
 
     CToolTipCtrl m_toolTip;
     size_t m_data_size;		//数据文件的大小
@@ -45,4 +46,5 @@ public:
     afx_msg void OnBnClickedCleanDataFileButton();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedClearRecentPlayedListBtn();
+	afx_msg void OnBnClickedDisableDrageSortCheck();
 };

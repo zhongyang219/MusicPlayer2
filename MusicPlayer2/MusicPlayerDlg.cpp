@@ -905,6 +905,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
 	m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
 
+	SetPlaylistDragEnable();
+
     SaveConfig();		//将设置写入到ini文件
     theApp.SaveConfig();
     CPlayer::GetInstance().SaveConfig();
