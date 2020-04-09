@@ -92,10 +92,13 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
 	m_playlist_display_mode_combo.SetCurSel(static_cast<int>(m_data.display_format));
 
 	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_ALL));
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_TODAY));
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_THREE_DAYS));
 	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_WEEK));
 	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_MONTH));
 	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_HALF_YEAR));
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_ALL));
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_YEAR));
+    m_recent_played_range_combo.SetCurSel(static_cast<int>(m_data.recent_played_range));
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -213,4 +216,5 @@ void CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo()
 void CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo()
 {
 	// TODO: Add your control notification handler code here
+    m_data.recent_played_range = static_cast<RecentPlayedRange>(m_recent_played_range_combo.GetCurSel());
 }

@@ -62,7 +62,15 @@ void CAllMediaDlg::InitListData()
 			//如果时间差超过了列表显示的范围，则跳过它
 			switch (theApp.m_media_lib_setting_data.recent_played_range)
 			{
-			case RPR_WEAK:
+            case RPR_TODAY:
+                if (time_span > 24 * 3600)
+                    continue;
+                break;
+            case RPR_THREE_DAYS:
+                if (time_span > 3 * 24 * 3600)
+                    continue;
+                break;
+            case RPR_WEAK:
 				if (time_span > 7 * 24 * 3600)
 					continue;
 				break;
@@ -79,7 +87,7 @@ void CAllMediaDlg::InitListData()
 					continue;
 				break;
 			default:
-				break;
+                break;
 			}
 		}
 

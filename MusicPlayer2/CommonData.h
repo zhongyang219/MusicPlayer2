@@ -152,6 +152,8 @@ enum DisplayFormat
 enum RecentPlayedRange
 {
 	RPR_ALL,			//显示全部
+    RPR_TODAY,          //今天
+    RPR_THREE_DAYS,     //最近三天
 	RPR_WEAK,			//最近一个星期
 	RPR_MONTH,			//最近一个月
 	RPR_HALF_YEAR,		//最近半年
