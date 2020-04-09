@@ -1,4 +1,4 @@
-// SoundEffectDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// SoundEffectDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CSoundEffectDlg ¶Ô»°¿ò
+// CSoundEffectDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CSoundEffectDlg, CDialog)
 
@@ -33,22 +33,22 @@ BEGIN_MESSAGE_MAP(CSoundEffectDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CSoundEffectDlg ÏûÏ¢´¦Àí³ÌĞò
+// CSoundEffectDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CSoundEffectDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	CenterWindow();
-	//²åÈë±êÇ©
+	//æ’å…¥æ ‡ç­¾
 	m_tab.InsertItem(0, CCommon::LoadText(IDS_EQUALIZER));
 	m_tab.InsertItem(1, CCommon::LoadText(IDS_REVERB));
-	//´´½¨×Ó¶Ô»°¿ò
+	//åˆ›å»ºå­å¯¹è¯æ¡†
 	m_equ_dlg.Create(IDD_EQUALIZER_DIALOG, &m_tab);
 	m_reverb_dlg.Create(IDD_REVERB_DIALOG, &m_tab);
-	//µ÷Õû×Ó¶Ô»°¿òµÄ´óĞ¡ºÍÎ»ÖÃ
+	//è°ƒæ•´å­å¯¹è¯æ¡†çš„å¤§å°å’Œä½ç½®
 	CRect rect;
 	m_tab.GetClientRect(rect);
 	CRect rcTabItem;
@@ -59,18 +59,18 @@ BOOL CSoundEffectDlg::OnInitDialog()
 	rect.right -= 4;
 	m_equ_dlg.MoveWindow(&rect);
 	m_reverb_dlg.MoveWindow(&rect);
-	//Ä¬ÈÏÑ¡ÖĞµÚÒ»¸ö±êÇ©
+	//é»˜è®¤é€‰ä¸­ç¬¬ä¸€ä¸ªæ ‡ç­¾
 	m_equ_dlg.ShowWindow(SW_SHOW);
 	m_tab.SetCurFocus(0);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CSoundEffectDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_tab_selected = m_tab.GetCurSel();
 	switch (m_tab_selected)
 	{
@@ -91,7 +91,7 @@ void CSoundEffectDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CSoundEffectDlg::OnCancel()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	DestroyWindow();
 
 	//CDialog::OnCancel();

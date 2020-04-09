@@ -1,4 +1,4 @@
-//��װ��BASS MIDI�е�����API������ͨ����̬���صķ�ʽ
+﻿//封装的BASS MIDI中的若干API函数，通过动态加载的方式
 #pragma once
 #include "DllLib.h"
 typedef DWORD HSOUNDFONT;	// soundfont handle
@@ -52,7 +52,7 @@ public:
 	CBASSMidiLibrary();
 	~CBASSMidiLibrary();
 
-	//BASS MIDI���еĺ���ָ��
+	//BASS MIDI库中的函数指针
 	_BASS_MIDI_FontInit BASS_MIDI_FontInit;
 	_BASS_MIDI_StreamSetFonts BASS_MIDI_StreamSetFonts;
 	_BASS_MIDI_FontGetInfo BASS_MIDI_FontGetInfo;

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ColorStaticEx.h"
 
 
@@ -19,7 +19,7 @@ COLORREF CColorStaticEx::GetFillColor() const
 
 void CColorStaticEx::PreSubclassWindow()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	DWORD dwStyle = GetStyle();
 	::SetWindowLong(GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
@@ -33,19 +33,19 @@ END_MESSAGE_MAP()
 
 //void CColorStaticEx::OnStnClicked()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼þÍ¨Öª´¦Àí³ÌÐò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æŽ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //}
 
 
 void CColorStaticEx::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	CColorDialog color_dlg(m_fill_color);
 	if (color_dlg.DoModal() == IDOK)
 	{
 		SetFillColor(color_dlg.GetColor());
 
-        //Ïò¸¸´°¿Ú·¢ËÍWM_COLOR_SELECTEDÏûÏ¢
+        //å‘çˆ¶çª—å£å‘é€WM_COLOR_SELECTEDæ¶ˆæ¯
         CWnd* pParent = GetParent();
         if(pParent!=nullptr)
             ::SendMessage(pParent->GetSafeHwnd(), WM_COLOR_SELECTED, (WPARAM)this, 0);

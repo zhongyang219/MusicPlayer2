@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "DllLib.h"
 
 // BASS_Mixer_StreamCreate flags

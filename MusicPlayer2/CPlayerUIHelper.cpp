@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CPlayerUIHelper.h"
 #include "MusicPlayer2.h"
 

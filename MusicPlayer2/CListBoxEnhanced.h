@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ListCtrlEx.h"
 
 #define WM_LISTBOX_SEL_CHANGED (WM_USER+116)

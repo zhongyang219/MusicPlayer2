@@ -1,4 +1,4 @@
-// ColorStatic.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// ColorStatic.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -31,7 +31,7 @@ END_MESSAGE_MAP()
 
 
 
-// CColorStatic ÏûÏ¢´¦Àí³ÌĞò
+// CColorStatic æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 
@@ -39,8 +39,8 @@ END_MESSAGE_MAP()
 void CColorStatic::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-					   // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
-					   // ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CStatic::OnPaint()
+					   // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+					   // ä¸ä¸ºç»˜å›¾æ¶ˆæ¯è°ƒç”¨ CStatic::OnPaint()
 	CRect rect;
 	GetClientRect(rect);
 	dc.FillSolidRect(rect, m_fill_color);

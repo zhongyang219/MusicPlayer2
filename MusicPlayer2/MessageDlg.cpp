@@ -1,4 +1,4 @@
-// HelpDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// HelpDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -6,7 +6,7 @@
 #include "MessageDlg.h"
 
 
-// CMessageDlg ¶Ô»°¿ò
+// CMessageDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CMessageDlg, CDialog)
 
@@ -55,18 +55,18 @@ BEGIN_MESSAGE_MAP(CMessageDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CMessageDlg ÏûÏ¢´¦Àí³ÌĞò
+// CMessageDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CMessageDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 
-	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// ÉèÖÃĞ¡Í¼±ê
+	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// è®¾ç½®å°å›¾æ ‡
 
-	//»ñÈ¡³õÊ¼Ê±´°¿ÚµÄ´óĞ¡
+	//è·å–åˆå§‹æ—¶çª—å£çš„å¤§å°
 	CRect rect;
 	GetWindowRect(rect);
 	m_min_size.cx = rect.Width();
@@ -84,16 +84,16 @@ BOOL CMessageDlg::OnInitDialog()
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CMessageDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//ÏŞÖÆ´°¿Ú×îĞ¡´óĞ¡
-	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//ÉèÖÃ×îĞ¡¿í¶È
-	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//ÉèÖÃ×îĞ¡¸ß¶È
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	//é™åˆ¶çª—å£æœ€å°å¤§å°
+	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//è®¾ç½®æœ€å°å®½åº¦
+	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//è®¾ç½®æœ€å°é«˜åº¦
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
@@ -101,9 +101,9 @@ void CMessageDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
 void CMessageDlg::OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if(!m_link_url.IsEmpty())
-		ShellExecute(NULL, _T("open"), m_link_url, NULL, NULL, SW_SHOW);	//´ò¿ª³¬Á´½Ó
+		ShellExecute(NULL, _T("open"), m_link_url, NULL, NULL, SW_SHOW);	//æ‰“å¼€è¶…é“¾æ¥
 
 	*pResult = 0;
 }

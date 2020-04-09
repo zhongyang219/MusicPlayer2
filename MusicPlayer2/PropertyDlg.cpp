@@ -1,4 +1,4 @@
-// PropertyDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// PropertyDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -8,7 +8,7 @@
 #include "COSUPlayerHelper.h"
 
 
-// CPropertyDlg ¶Ô»°¿ò
+// CPropertyDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CPropertyDlg, CDialog)
 
@@ -24,33 +24,33 @@ CPropertyDlg::~CPropertyDlg()
 
 void CPropertyDlg::ShowInfo()
 {
-	//ÏÔÊ¾ÎÄ¼şÃû
+	//æ˜¾ç¤ºæ–‡ä»¶å
 	m_file_name_edit.SetWindowText(m_all_song_info[m_index].GetFileName().c_str());
 
-	//ÏÔÊ¾ÎÄ¼şÂ·¾¶
+	//æ˜¾ç¤ºæ–‡ä»¶è·¯å¾„
 	m_file_path_edit.SetWindowText((m_all_song_info[m_index].file_path).c_str());
 
-	//ÏÔÊ¾ÎÄ¼şÀàĞÍ
+	//æ˜¾ç¤ºæ–‡ä»¶ç±»å‹
 	wstring file_type;
 	CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
 	file_type = file_path.GetFileExtension();
 	//if (file_type == _T("mp3"))
-	//	m_file_type_edit.SetWindowText(_T("MP3ÒôÆµÎÄ¼ş"));
+	//	m_file_type_edit.SetWindowText(_T("MP3éŸ³é¢‘æ–‡ä»¶"));
 	//else if (file_type == _T("wma"))
-	//	m_file_type_edit.SetWindowText(_T("Windows Media ÒôÆµÎÄ¼ş"));
+	//	m_file_type_edit.SetWindowText(_T("Windows Media éŸ³é¢‘æ–‡ä»¶"));
 	//else if (file_type == _T("wav"))
-	//	m_file_type_edit.SetWindowText(_T("WAVÒôÆµÎÄ¼ş"));
+	//	m_file_type_edit.SetWindowText(_T("WAVéŸ³é¢‘æ–‡ä»¶"));
 	//else if (file_type == _T("mid"))
-	//	m_file_type_edit.SetWindowText(_T("MIDIĞòÁĞ"));
+	//	m_file_type_edit.SetWindowText(_T("MIDIåºåˆ—"));
 	//else if (file_type == _T("ogg"))
-	//	m_file_type_edit.SetWindowText(_T("OGGÒôÆµÎÄ¼ş"));
+	//	m_file_type_edit.SetWindowText(_T("OGGéŸ³é¢‘æ–‡ä»¶"));
 	//else if (file_type == _T("m4a"))
-	//	m_file_type_edit.SetWindowText(_T("MPEG-4 ÒôÆµÎÄ¼ş"));
+	//	m_file_type_edit.SetWindowText(_T("MPEG-4 éŸ³é¢‘æ–‡ä»¶"));
 	//else
-	//	m_file_type_edit.SetWindowText((file_type + _T("ÎÄ¼ş")).c_str());
+	//	m_file_type_edit.SetWindowText((file_type + _T("æ–‡ä»¶")).c_str());
 	m_file_type_edit.SetWindowText((CAudioCommon::GetAudioDescriptionByExtension(file_type)).c_str());
 
-	//ÏÔÊ¾ÎÄ¼ş³¤¶È
+	//æ˜¾ç¤ºæ–‡ä»¶é•¿åº¦
 	wstring song_length;
 	if (m_all_song_info[m_index].lengh.isZero())
 		song_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);
@@ -58,7 +58,7 @@ void CPropertyDlg::ShowInfo()
 		song_length = m_all_song_info[m_index].lengh.toString2();
 	m_song_length_edit.SetWindowText(song_length.c_str());
 
-	//ÏÔÊ¾ÎÄ¼ş´óĞ¡
+	//æ˜¾ç¤ºæ–‡ä»¶å¤§å°
 	size_t file_size;
 	file_size = CCommon::GetFileSize(m_all_song_info[m_index].file_path);
 	CString size_info;
@@ -72,9 +72,9 @@ void CPropertyDlg::ShowInfo()
 		size_info.Format(_T("%.2f GB"), file_size / 1024.0f / 1024.0f / 1024.0f);
 	m_file_size_edit.SetWindowText(size_info);
 
-	//ÏÔÊ¾±ÈÌØÂÊ
+	//æ˜¾ç¤ºæ¯”ç‰¹ç‡
 	CString info;
-	if (file_size == 0 || m_all_song_info[m_index].bitrate == 0)		//ÎÄ¼ş´óĞ¡Îª0¡¢ÎÄ¼ş³¤¶ÈÎª0»òÎÄ¼şÎªmidiÒôÀÖÊ±²»ÏÔÊ¾±ÈÌØÂÊ
+	if (file_size == 0 || m_all_song_info[m_index].bitrate == 0)		//æ–‡ä»¶å¤§å°ä¸º0ã€æ–‡ä»¶é•¿åº¦ä¸º0æˆ–æ–‡ä»¶ä¸ºmidiéŸ³ä¹æ—¶ä¸æ˜¾ç¤ºæ¯”ç‰¹ç‡
 	{
 		info = _T("-");
 	}
@@ -84,7 +84,7 @@ void CPropertyDlg::ShowInfo()
 	}
 	m_bit_rate_edit.SetWindowText(info);
 
-	//ÏÔÊ¾¸è´ÊÂ·¾¶
+	//æ˜¾ç¤ºæ­Œè¯è·¯å¾„
 	if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
 		m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_INNER_LYRIC));
 	else if(!m_all_song_info[m_index].lyric_file.empty())
@@ -92,7 +92,7 @@ void CPropertyDlg::ShowInfo()
 	else
 		m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
 
-	//ÏÔÊ¾ÒôÆµĞÅÏ¢
+	//æ˜¾ç¤ºéŸ³é¢‘ä¿¡æ¯
 	//CString info;
 	m_title_edit.SetWindowText(m_all_song_info[m_index].GetTitle().c_str());
 	m_artist_edit.SetWindowText(m_all_song_info[m_index].GetArtist().c_str());
@@ -106,7 +106,7 @@ void CPropertyDlg::ShowInfo()
 	m_genre_combo.SetWindowText(m_all_song_info[m_index].GetGenre().c_str());
 	m_comment_edit.SetWindowText(m_all_song_info[m_index].comment.c_str());
 
-	//ÏÔÊ¾±êÇ©ÀàĞÍ
+	//æ˜¾ç¤ºæ ‡ç­¾ç±»å‹
 	if (file_type == _T("mp3"))
 	{
 		CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
@@ -124,7 +124,7 @@ void CPropertyDlg::ShowInfo()
 	}
 
 
-	//ÏÔÊ¾Ò³Êı
+	//æ˜¾ç¤ºé¡µæ•°
 	CString item_info;
 	item_info.Format(_T("%d/%d"), m_index + 1, m_song_num);
 	SetDlgItemText(IDC_ITEM_STATIC, item_info);
@@ -138,14 +138,14 @@ void CPropertyDlg::SetEditReadOnly(bool read_only)
 	m_track_edit.SetReadOnly(read_only);
 	m_year_edit.SetReadOnly(read_only);
 	//m_genre_edit.SetReadOnly(read_only);
-	//((CEdit*)m_genre_combo.GetWindow(GW_CHILD))->SetReadOnly(read_only);		//½«combo boxÉèÎªÖ»¶Á
+	//((CEdit*)m_genre_combo.GetWindow(GW_CHILD))->SetReadOnly(read_only);		//å°†combo boxè®¾ä¸ºåªè¯»
 	m_genre_combo.SetReadOnly(read_only);
 	m_comment_edit.SetReadOnly(read_only);
 }
 
 void CPropertyDlg::SetWreteEnable()
 {
-	//Ä¿Ç°ÔİÊ±Ö»Ö§³ÖMP3µÄID3V1±êÇ©Ğ´Èë
+	//ç›®å‰æš‚æ—¶åªæ”¯æŒMP3çš„ID3V1æ ‡ç­¾å†™å…¥
 	CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
 	m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && file_path.GetFileExtension() == L"mp3" && m_all_song_info[m_index].tag_type != 2);
     m_write_enable &= !m_read_only;
@@ -197,25 +197,25 @@ BEGIN_MESSAGE_MAP(CPropertyDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CPropertyDlg ÏûÏ¢´¦Àí³ÌĞò
+// CPropertyDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CPropertyDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	m_modified = false;
 	m_genre_modified = false;
 	m_list_refresh = false;
 
-	//³õÊ¼»¯Á÷ÅÉÁĞ±í
+	//åˆå§‹åŒ–æµæ´¾åˆ—è¡¨
 	for (int i{}; i < GENRE_MAX; i++)
 	{
 		m_genre_combo.AddString(GENRE_TABLE[i]);
 	}
 	CRect rect;
-	m_genre_combo.SetMinVisibleItems(15);		//ÉèÖÃÏÂÀ­ÁĞ±íµÄ¸ß¶È
+	m_genre_combo.SetMinVisibleItems(15);		//è®¾ç½®ä¸‹æ‹‰åˆ—è¡¨çš„é«˜åº¦
 
 	SetWreteEnable();
 	ShowInfo();
@@ -231,13 +231,13 @@ BOOL CPropertyDlg::OnInitDialog()
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CPropertyDlg::OnBnClickedPreviousButton()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = false;
 	m_genre_modified = false;
 	m_index--;
@@ -250,7 +250,7 @@ void CPropertyDlg::OnBnClickedPreviousButton()
 
 void CPropertyDlg::OnBnClickedNextButton()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = false;
 	m_genre_modified = false;
 	m_index++;
@@ -262,7 +262,7 @@ void CPropertyDlg::OnBnClickedNextButton()
 
 BOOL CPropertyDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (pMsg->message == WM_KEYDOWN)
 	{
 		if (pMsg->wParam == VK_UP)
@@ -282,8 +282,8 @@ BOOL CPropertyDlg::PreTranslateMessage(MSG* pMsg)
 
 BOOL CPropertyDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//Í¨¹ıÊó±ê¹öÂÖ·­Ò³
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	//é€šè¿‡é¼ æ ‡æ»šè½®ç¿»é¡µ
 	if (zDelta > 0)
 	{
 		OnBnClickedPreviousButton();
@@ -299,12 +299,12 @@ BOOL CPropertyDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CPropertyDlg::OnEnChangeTitelEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = (m_title_edit.GetModify() != 0);
 	m_list_refresh = m_modified;
 	m_save_button.EnableWindow(m_write_enable && m_modified);
@@ -313,12 +313,12 @@ void CPropertyDlg::OnEnChangeTitelEdit()
 
 void CPropertyDlg::OnEnChangeArtistEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = (m_artist_edit.GetModify() != 0);
 	m_list_refresh = m_modified;
 	m_save_button.EnableWindow(m_write_enable && m_modified);
@@ -327,12 +327,12 @@ void CPropertyDlg::OnEnChangeArtistEdit()
 
 void CPropertyDlg::OnEnChangeAlbumEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = (m_album_edit.GetModify() != 0);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }
@@ -340,12 +340,12 @@ void CPropertyDlg::OnEnChangeAlbumEdit()
 
 void CPropertyDlg::OnEnChangeTrackEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = (m_track_edit.GetModify() != 0);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }
@@ -353,12 +353,12 @@ void CPropertyDlg::OnEnChangeTrackEdit()
 
 void CPropertyDlg::OnEnChangeYearEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = (m_year_edit.GetModify() != 0);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }
@@ -366,12 +366,12 @@ void CPropertyDlg::OnEnChangeYearEdit()
 
 void CPropertyDlg::OnEnChangeCommentEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = (m_comment_edit.GetModify() != 0);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }
@@ -379,7 +379,7 @@ void CPropertyDlg::OnEnChangeCommentEdit()
 
 //void CPropertyDlg::OnCbnEditchangeGenreCombo()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	m_modified = true;
 //	m_save_button.EnableWindow(m_write_enable && m_modified);
 //}
@@ -387,7 +387,7 @@ void CPropertyDlg::OnEnChangeCommentEdit()
 
 void CPropertyDlg::OnBnClickedSaveToFileButton()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if (!m_write_enable) return;
 	CWaitCursor wait_cursor;
 	SongInfo song_info;
@@ -405,7 +405,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 	if (m_genre_modified)
 		song_info.genre_idx = static_cast<BYTE>(m_genre_combo.GetCurSel());
 	else
-		song_info.genre_idx = m_all_song_info[m_index].genre_idx;		//Èç¹ûÁ÷ÅÉÃ»ÓĞĞŞ¸Ä£¬Ôò½«Ô­À´µÄÁ÷ÅÉºÅĞ´»ØÎÄ¼şÖĞ
+		song_info.genre_idx = m_all_song_info[m_index].genre_idx;		//å¦‚æœæµæ´¾æ²¡æœ‰ä¿®æ”¹ï¼Œåˆ™å°†åŸæ¥çš„æµæ´¾å·å†™å›æ–‡ä»¶ä¸­
 	m_comment_edit.GetWindowText(str_temp);
 	song_info.comment = str_temp;
 
@@ -418,7 +418,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 	}
 	else
 	{
-		//ÖØĞÂ´ÓÎÄ¼ş¶ÁÈ¡¸Ã¸èÇúµÄ±êÇ©
+		//é‡æ–°ä»æ–‡ä»¶è¯»å–è¯¥æ­Œæ›²çš„æ ‡ç­¾
 		HSTREAM hStream;
 		hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		//CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
@@ -436,20 +436,20 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 
 void CPropertyDlg::OnCbnSelchangeGenreCombo()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_modified = true;
 	m_genre_modified = true;
 	m_save_button.EnableWindow(m_write_enable && m_modified);
 }
 
 
-//ÓÃÓÚ²âÊÔ
+//ç”¨äºæµ‹è¯•
 //void CPropertyDlg::OnBnClickedButton3()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	wstring str = CCommon::GetRandomString(32);
 //
-//	//ÖØĞÂ´ÓÎÄ¼ş¶ÁÈ¡¸Ã¸èÇúµÄ±êÇ©
+//	//é‡æ–°ä»æ–‡ä»¶è¯»å–è¯¥æ­Œæ›²çš„æ ‡ç­¾
 //	wstring file_path;
 //	file_path = CPlayer::GetInstance().GetCurrentDir() + m_all_song_info[m_index].file_name;
 //	HSTREAM hStream;

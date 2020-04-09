@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "IniHelper.h"
 
 
@@ -10,17 +10,17 @@ CIniHelper::CIniHelper(const wstring& file_path)
 	{
 		return;
 	}
-	//¶ÁÈ¡ÎÄ¼şÄÚÈİ
+	//è¯»å–æ–‡ä»¶å†…å®¹
 	string ini_str;
 	while (!file_stream.eof())
 	{
 		ini_str.push_back(file_stream.get());
 	}
 	ini_str.pop_back();
-	if (!ini_str.empty() && ini_str.back() != L'\n')		//È·±£ÎÄ¼şÄ©Î²ÓĞ»Ø³µ·û
+	if (!ini_str.empty() && ini_str.back() != L'\n')		//ç¡®ä¿æ–‡ä»¶æœ«å°¾æœ‰å›è½¦ç¬¦
 		ini_str.push_back(L'\n');
 
-	//×ª»»³ÉUnicode
+	//è½¬æ¢æˆUnicode
 	m_ini_str = CCommon::StrToUnicode(ini_str.c_str(), CodeType::AUTO);
 }
 
@@ -37,7 +37,7 @@ void CIniHelper::SetSaveAsUTF8(bool utf8)
 void CIniHelper::WriteString(const wchar_t * AppName, const wchar_t * KeyName, const wstring& str)
 {
 	wstring write_str{ str };
-	if (!write_str.empty() && (write_str[0] == L' ' || write_str.back() == L' '))		//Èç¹û×Ö·û´®Ç°ºóº¬ÓĞ¿Õ¸ñ£¬ÔòÔÚ×Ö·û´®Ç°ºóÌí¼ÓÒıºÅ
+	if (!write_str.empty() && (write_str[0] == L' ' || write_str.back() == L' '))		//å¦‚æœå­—ç¬¦ä¸²å‰åå«æœ‰ç©ºæ ¼ï¼Œåˆ™åœ¨å­—ç¬¦ä¸²å‰åæ·»åŠ å¼•å·
 	{
 		write_str = L'\"' + write_str;
 		write_str.push_back(L'\"');
@@ -48,7 +48,7 @@ void CIniHelper::WriteString(const wchar_t * AppName, const wchar_t * KeyName, c
 wstring CIniHelper::GetString(const wchar_t * AppName, const wchar_t * KeyName, const wchar_t* default_str) const
 {
 	wstring rtn{_GetString(AppName, KeyName, default_str)};
-	//Èç¹û¶ÁÈ¡µÄ×Ö·û´®Ç°ºóÓĞÒıºÅ£¬ÔòÉ¾³ıËü
+	//å¦‚æœè¯»å–çš„å­—ç¬¦ä¸²å‰åæœ‰å¼•å·ï¼Œåˆ™åˆ é™¤å®ƒ
 	if (!rtn.empty() && rtn.front() == L'\"')
 		rtn = rtn.substr(1);
 	if (!rtn.empty() && rtn.back() == L'\"')
@@ -133,7 +133,7 @@ void CIniHelper::GetIntArray(const wchar_t * AppName, const wchar_t * KeyName, i
 		if (index0 == index)
 		{
 			if(i!=0)
-				values[i] = values[i - 1];		//Èç¹ûºóÃæÒÑ¾­Ã»ÓĞÊı¾İ£¬ÔòÌî³äÎªÇ°Ò»¸öÊı¾İ
+				values[i] = values[i - 1];		//å¦‚æœåé¢å·²ç»æ²¡æœ‰æ•°æ®ï¼Œåˆ™å¡«å……ä¸ºå‰ä¸€ä¸ªæ•°æ®
 			else
 				values[i] = default_value;
 		}
@@ -206,7 +206,7 @@ bool CIniHelper::Save()
 	if(file_stream.fail())
 		return false;
 	string ini_str{ CCommon::UnicodeToStr(m_ini_str.c_str(), m_save_as_utf8 ? CodeType::UTF8_NO_BOM : CodeType::ANSI) };
-	if (m_save_as_utf8)		//Èç¹ûÒÔUTF8±àÂë±£´æ£¬ÏÈ²åÈëBOM
+	if (m_save_as_utf8)		//å¦‚æœä»¥UTF8ç¼–ç ä¿å­˜ï¼Œå…ˆæ’å…¥BOM
 	{
 		string utf8_bom;
 		utf8_bom.push_back(-17);
@@ -225,7 +225,7 @@ void CIniHelper::_WriteString(const wchar_t * AppName, const wchar_t * KeyName, 
 	app_str.append(AppName).append(L"]");
 	size_t app_pos{}, app_end_pos, key_pos;
 	app_pos = m_ini_str.find(app_str);
-	if (app_pos == wstring::npos)		//ÕÒ²»µ½AppName£¬ÔòÔÚ×îºóÃæÌí¼Ó
+	if (app_pos == wstring::npos)		//æ‰¾ä¸åˆ°AppNameï¼Œåˆ™åœ¨æœ€åé¢æ·»åŠ 
 	{
 		if (!m_ini_str.empty() && m_ini_str.back() != L'\n')
 			m_ini_str += L"\n";
@@ -237,10 +237,10 @@ void CIniHelper::_WriteString(const wchar_t * AppName, const wchar_t * KeyName, 
 	if (app_end_pos != wstring::npos)
 		app_end_pos++;
 
-	key_pos = m_ini_str.find(wstring(L"\n") + KeyName + L' ', app_pos);		//²éÕÒ¡°\nkey_name ¡±
-	if (key_pos >= app_end_pos)		//Èç¹ûÕÒ²»µ½¡°\nkey_name ¡±£¬Ôò²éÕÒ¡°\nkey_name=¡±
+	key_pos = m_ini_str.find(wstring(L"\n") + KeyName + L' ', app_pos);		//æŸ¥æ‰¾â€œ\nkey_name â€
+	if (key_pos >= app_end_pos)		//å¦‚æœæ‰¾ä¸åˆ°â€œ\nkey_name â€ï¼Œåˆ™æŸ¥æ‰¾â€œ\nkey_name=â€
 		key_pos = m_ini_str.find(wstring(L"\n") + KeyName + L'=', app_pos);
-	if (key_pos >= app_end_pos)				//ÕÒ²»µ½KeyName£¬Ôò²åÈëÒ»¸ö
+	if (key_pos >= app_end_pos)				//æ‰¾ä¸åˆ°KeyNameï¼Œåˆ™æ’å…¥ä¸€ä¸ª
 	{
 		wchar_t buff[256];
 		swprintf_s(buff, L"%s = %s\n", KeyName, str.c_str());
@@ -249,12 +249,12 @@ void CIniHelper::_WriteString(const wchar_t * AppName, const wchar_t * KeyName, 
 		else
 			m_ini_str.insert(app_end_pos, buff);
 	}
-	else	//ÕÒµ½ÁËKeyName£¬½«µÈºÅµ½»»ĞĞ·ûÖ®¼äµÄÎÄ±¾Ìæ»»
+	else	//æ‰¾åˆ°äº†KeyNameï¼Œå°†ç­‰å·åˆ°æ¢è¡Œç¬¦ä¹‹é—´çš„æ–‡æœ¬æ›¿æ¢
 	{
 		size_t str_pos;
 		str_pos = m_ini_str.find(L'=', key_pos + 2);
 		size_t line_end_pos = m_ini_str.find(L'\n', key_pos + 2);
-		if (str_pos > line_end_pos)	//ËùÔÚĞĞÃ»ÓĞµÈºÅ£¬Ôò²åÈëÒ»¸öµÈºÅ
+		if (str_pos > line_end_pos)	//æ‰€åœ¨è¡Œæ²¡æœ‰ç­‰å·ï¼Œåˆ™æ’å…¥ä¸€ä¸ªç­‰å·
 		{
 			m_ini_str.insert(key_pos + wcslen(KeyName) + 1, L" =");
 			str_pos = key_pos + wcslen(KeyName) + 2;
@@ -275,26 +275,26 @@ wstring CIniHelper::_GetString(const wchar_t * AppName, const wchar_t * KeyName,
 	app_str.append(AppName).append(L"]");
 	size_t app_pos{}, app_end_pos, key_pos;
 	app_pos = m_ini_str.find(app_str);
-	if (app_pos == wstring::npos)		//ÕÒ²»µ½AppName£¬·µ»ØÄ¬ÈÏ×Ö·û´®
+	if (app_pos == wstring::npos)		//æ‰¾ä¸åˆ°AppNameï¼Œè¿”å›é»˜è®¤å­—ç¬¦ä¸²
 		return default_str;
 
 	app_end_pos = m_ini_str.find(L"\n[", app_pos + 2);
 	if (app_end_pos != wstring::npos)
 		app_end_pos++;
 
-	key_pos = m_ini_str.find(wstring(L"\n") + KeyName + L' ', app_pos);		//²éÕÒ¡°\nkey_name ¡±
-	if (key_pos >= app_end_pos)		//Èç¹ûÕÒ²»µ½¡°\nkey_name ¡±£¬Ôò²éÕÒ¡°\nkey_name=¡±
+	key_pos = m_ini_str.find(wstring(L"\n") + KeyName + L' ', app_pos);		//æŸ¥æ‰¾â€œ\nkey_name â€
+	if (key_pos >= app_end_pos)		//å¦‚æœæ‰¾ä¸åˆ°â€œ\nkey_name â€ï¼Œåˆ™æŸ¥æ‰¾â€œ\nkey_name=â€
 		key_pos = m_ini_str.find(wstring(L"\n") + KeyName + L'=', app_pos);
-	if (key_pos >= app_end_pos)				//ÕÒ²»µ½KeyName£¬·µ»ØÄ¬ÈÏ×Ö·û´®
+	if (key_pos >= app_end_pos)				//æ‰¾ä¸åˆ°KeyNameï¼Œè¿”å›é»˜è®¤å­—ç¬¦ä¸²
 	{
 		return default_str;
 	}
-	else	//ÕÒµ½ÁËKeyName£¬»ñÈ¡µÈºÅµ½»»ĞĞ·ûÖ®¼äµÄÎÄ±¾
+	else	//æ‰¾åˆ°äº†KeyNameï¼Œè·å–ç­‰å·åˆ°æ¢è¡Œç¬¦ä¹‹é—´çš„æ–‡æœ¬
 	{
 		size_t str_pos;
 		str_pos = m_ini_str.find(L'=', key_pos + 2);
 		size_t line_end_pos = m_ini_str.find(L'\n', key_pos + 2);
-		if (str_pos > line_end_pos)	//ËùÔÚĞĞÃ»ÓĞµÈºÅ£¬·µ»ØÄ¬ÈÏ×Ö·û´®
+		if (str_pos > line_end_pos)	//æ‰€åœ¨è¡Œæ²¡æœ‰ç­‰å·ï¼Œè¿”å›é»˜è®¤å­—ç¬¦ä¸²
 		{
 			return default_str;
 		}
@@ -304,9 +304,9 @@ wstring CIniHelper::_GetString(const wchar_t * AppName, const wchar_t * KeyName,
 		}
 		size_t str_end_pos;
 		str_end_pos = m_ini_str.find(L"\n", str_pos);
-		//»ñÈ¡ÎÄ±¾
+		//è·å–æ–‡æœ¬
 		wstring return_str{ m_ini_str.substr(str_pos, str_end_pos - str_pos) };
-		//Èç¹ûÇ°ºóÓĞ¿Õ¸ñ£¬Ôò½«ÆäÉ¾³ı
+		//å¦‚æœå‰åæœ‰ç©ºæ ¼ï¼Œåˆ™å°†å…¶åˆ é™¤
 		CCommon::StringNormalize(return_str);
 		return return_str;
 	}
@@ -316,7 +316,7 @@ wstring CIniHelper::MergeStringList(const vector<wstring>& values)
 {
     wstring str_merge;
     int index = 0;
-    //ÔÚÃ¿¸ö×Ö·û´®Ç°ºó¼ÓÉÏÒıºÅ£¬ÔÙ½«ËüÃÇÓÃ¶ººÅÁ¬½ÓÆğÀ´
+    //åœ¨æ¯ä¸ªå­—ç¬¦ä¸²å‰ååŠ ä¸Šå¼•å·ï¼Œå†å°†å®ƒä»¬ç”¨é€—å·è¿æ¥èµ·æ¥
     for (const wstring& str : values)
     {
         if (index > 0)
@@ -334,7 +334,7 @@ void CIniHelper::SplitStringList(vector<wstring>& values, wstring str_value)
     CCommon::StringSplit(str_value, L"\",\"", values);
     if (!values.empty())
     {
-        //½á¹ûÖĞµÚÒ»ÏîÇ°ÃæºÍ×îºóÒ»ÏîµÄºóÃæ¸÷»¹ÓĞÒ»¸öÒıºÅ£¬½«ËüÃÇÉ¾³ı
+        //ç»“æœä¸­ç¬¬ä¸€é¡¹å‰é¢å’Œæœ€åä¸€é¡¹çš„åé¢å„è¿˜æœ‰ä¸€ä¸ªå¼•å·ï¼Œå°†å®ƒä»¬åˆ é™¤
         values.front() = values.front().substr(1);
         values.back().pop_back();
     }

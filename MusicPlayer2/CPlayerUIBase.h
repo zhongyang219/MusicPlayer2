@@ -1,21 +1,21 @@
-#pragma once
+ï»¿#pragma once
 #include "MusicPlayer2.h"
 #include "IPlayerUI.h"
 #include "CPlayerUIHelper.h"
 #include "CUIDrawer.h"
 
-#define WM_MAIN_MENU_POPEDUP (WM_USER+117)		//ÏÔÊ¾µ¯³öÊ½Ö÷²Ëµ¥µÄÏûÏ¢£¬wParaÎª±íÊ¾²Ëµ¥ÏÔÊ¾Î»ÖÃµÄCPointµÄÖ¸Õë
+#define WM_MAIN_MENU_POPEDUP (WM_USER+117)		//æ˜¾ç¤ºå¼¹å‡ºå¼ä¸»èœå•çš„æ¶ˆæ¯ï¼ŒwParaä¸ºè¡¨ç¤ºèœå•æ˜¾ç¤ºä½ç½®çš„CPointçš„æŒ‡é’ˆ
 
 struct SLayoutData
 {
-    const int margin = theApp.DPI(4);							//±ßÔµµÄÓàÁ¿
-    const int width_threshold = theApp.DPI(600);				//½çÃæ´ÓÆÕÍ¨½çÃæÄ£Ê½ÇĞ»»µ½Õ­½çÃæÄ£Ê½Ê±½çÃæ¿í¶ÈµÄãĞÖµ
-    const int info_height = theApp.DPI(216);					//Õ­½çÃæÄ£Ê½Ê±ÏÔÊ¾ĞÅÏ¢ÇøÓòµÄ¸ß¶È
-    const int path_edit_height = theApp.DPI(32);				//Ç°Â·¾¶Edit¿Ø¼şÇøÓòµÄ¸ß¶È
-    const int search_edit_height = theApp.DPI(26);				//¸èÇúËÑË÷¿òEdit¿Ø¼şÇøÓòµÄ¸ß¶È
-    const int select_folder_width = theApp.DPI(90);	//¡°Ñ¡ÔñÎÄ¼ş¼Ğ¡±°´Å¥µÄ¿í¶È
-    const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };	//ÆµÆ×·ÖÎöÇøÓòµÄ´óĞ¡
-    const int toolbar_height = theApp.DPI(24);                  //²¥·ÅÁĞ±í¹¤¾ßÀ¸µÄ¸ß¶È
+    const int margin = theApp.DPI(4);							//è¾¹ç¼˜çš„ä½™é‡
+    const int width_threshold = theApp.DPI(600);				//ç•Œé¢ä»æ™®é€šç•Œé¢æ¨¡å¼åˆ‡æ¢åˆ°çª„ç•Œé¢æ¨¡å¼æ—¶ç•Œé¢å®½åº¦çš„é˜ˆå€¼
+    const int info_height = theApp.DPI(216);					//çª„ç•Œé¢æ¨¡å¼æ—¶æ˜¾ç¤ºä¿¡æ¯åŒºåŸŸçš„é«˜åº¦
+    const int path_edit_height = theApp.DPI(32);				//å‰è·¯å¾„Editæ§ä»¶åŒºåŸŸçš„é«˜åº¦
+    const int search_edit_height = theApp.DPI(26);				//æ­Œæ›²æœç´¢æ¡†Editæ§ä»¶åŒºåŸŸçš„é«˜åº¦
+    const int select_folder_width = theApp.DPI(90);	//â€œé€‰æ‹©æ–‡ä»¶å¤¹â€æŒ‰é’®çš„å®½åº¦
+    const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };	//é¢‘è°±åˆ†æåŒºåŸŸçš„å¤§å°
+    const int toolbar_height = theApp.DPI(24);                  //æ’­æ”¾åˆ—è¡¨å·¥å…·æ çš„é«˜åº¦
 };
 
 
@@ -52,37 +52,37 @@ public:
     int Margin() const;
     int EdgeMargin(bool x = true) const;
     int WidthThreshold() const;
-    int DrawAreaHeight() const;		//Õ­½çÃæÄ£Ê½ÏÂÏÔÊ¾²¥·ÅÁĞ±íÊ±»æÍ¼ÇøµÄ¸ß¶È
+    int DrawAreaHeight() const;		//çª„ç•Œé¢æ¨¡å¼ä¸‹æ˜¾ç¤ºæ’­æ”¾åˆ—è¡¨æ—¶ç»˜å›¾åŒºçš„é«˜åº¦
 
 public:
-    enum BtnKey		//±êÊ¶°´Å¥µÄÀàĞÍ
+    enum BtnKey		//æ ‡è¯†æŒ‰é’®çš„ç±»å‹
     {
-        BTN_REPETEMODE,			//¡°Ñ­»·Ä£Ê½¡±°´Å¥
-        BTN_VOLUME,				//ÒôÁ¿°´Å¥
+        BTN_REPETEMODE,			//â€œå¾ªç¯æ¨¡å¼â€æŒ‰é’®
+        BTN_VOLUME,				//éŸ³é‡æŒ‰é’®
         BTN_VOLUME_UP,
         BTN_VOLUME_DOWN,
-        BTN_TRANSLATE,			//¸è´Ê·­Òë°´Å¥
-        BTN_SKIN,				//ÇĞ»»½çÃæ°´Å¥
-        BTN_EQ,					//ÒôĞ§Éè¶¨°´Å¥
-        BTN_SETTING,			//ÉèÖÃ°´Å¥
-        BTN_MINI,				//ÃÔÄãÄ£Ê½°´Å¥
-        BTN_INFO,				//ÇúÄ¿ĞÅÏ¢°´Å¥
-        BTN_FIND,				//²éÕÒ¸èÇú°´Å¥
-        BTN_LRYIC,              //×ÀÃæ¸è´Ê°´Å¥
-		BTN_AB_REPEAT,			//ABÖØ¸´°´Å¥
-        BTN_STOP,				//Í£Ö¹
-        BTN_PREVIOUS,			//ÉÏÒ»Çú
-        BTN_PLAY_PAUSE,			//²¥·Å/ÔİÍ£
-        BTN_NEXT,				//ÏÂÒ»Çú
-        BTN_SHOW_PLAYLIST,		//ÏÔÊ¾/Òş²Ø²¥·ÅÁĞ±í
-        BTN_SELECT_FOLDER,		//Ñ¡ÔñÎÄ¼ş¼Ğ
-        BTN_PROGRESS,			//½ø¶ÈÌõ
-        BTN_COVER,				//×¨¼­·âÃæ
-        BTN_FULL_SCREEN,		//È«ÆÁÏÔÊ¾°´Å¥
-        BTN_MENU,				//Ö÷²Ëµ¥°´Å¥
-        BTN_FAVOURITE,		    //¡°ÎÒÏ²»¶¡±°´Å¥
-        BTN_CLOSE,				//¹Ø±Õ°´Å¥£¨ÃÔÄãÄ£Ê½£©
-        BTN_RETURN,				//·µ»Ø°´Å¥£¨ÃÔÄãÄ£Ê½£©
+        BTN_TRANSLATE,			//æ­Œè¯ç¿»è¯‘æŒ‰é’®
+        BTN_SKIN,				//åˆ‡æ¢ç•Œé¢æŒ‰é’®
+        BTN_EQ,					//éŸ³æ•ˆè®¾å®šæŒ‰é’®
+        BTN_SETTING,			//è®¾ç½®æŒ‰é’®
+        BTN_MINI,				//è¿·ä½ æ¨¡å¼æŒ‰é’®
+        BTN_INFO,				//æ›²ç›®ä¿¡æ¯æŒ‰é’®
+        BTN_FIND,				//æŸ¥æ‰¾æ­Œæ›²æŒ‰é’®
+        BTN_LRYIC,              //æ¡Œé¢æ­Œè¯æŒ‰é’®
+		BTN_AB_REPEAT,			//ABé‡å¤æŒ‰é’®
+        BTN_STOP,				//åœæ­¢
+        BTN_PREVIOUS,			//ä¸Šä¸€æ›²
+        BTN_PLAY_PAUSE,			//æ’­æ”¾/æš‚åœ
+        BTN_NEXT,				//ä¸‹ä¸€æ›²
+        BTN_SHOW_PLAYLIST,		//æ˜¾ç¤º/éšè—æ’­æ”¾åˆ—è¡¨
+        BTN_SELECT_FOLDER,		//é€‰æ‹©æ–‡ä»¶å¤¹
+        BTN_PROGRESS,			//è¿›åº¦æ¡
+        BTN_COVER,				//ä¸“è¾‘å°é¢
+        BTN_FULL_SCREEN,		//å…¨å±æ˜¾ç¤ºæŒ‰é’®
+        BTN_MENU,				//ä¸»èœå•æŒ‰é’®
+        BTN_FAVOURITE,		    //â€œæˆ‘å–œæ¬¢â€æŒ‰é’®
+        BTN_CLOSE,				//å…³é—­æŒ‰é’®ï¼ˆè¿·ä½ æ¨¡å¼ï¼‰
+        BTN_RETURN,				//è¿”å›æŒ‰é’®ï¼ˆè¿·ä½ æ¨¡å¼ï¼‰
 
     };
 
@@ -105,29 +105,29 @@ protected:
     void DrawControlBar(CRect rect);
     void DrawProgressBar(CRect rect);
     void DrawTranslateButton(CRect rect);
-    int DrawTopRightIcons();			//»æÖÆÓÒÉÏ½ÇµÄÍ¼±ê¡£·µ»Ø×Ü¿í¶È
-    void DrawCurrentTime();				//ÔÚÓÒÉÏ½Ç»æÖÆµ±Ç°ÏµÍ³Ê±¼ä
+    int DrawTopRightIcons();			//ç»˜åˆ¶å³ä¸Šè§’çš„å›¾æ ‡ã€‚è¿”å›æ€»å®½åº¦
+    void DrawCurrentTime();				//åœ¨å³ä¸Šè§’ç»˜åˆ¶å½“å‰ç³»ç»Ÿæ—¶é—´
     void DrawStatusBar(CRect rect, bool reset = false);
 
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);
 
-    virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//ÎªÒ»¸ö°´Å¥Ìí¼ÓÊó±êÌáÊ¾
+    virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//ä¸ºä¸€ä¸ªæŒ‰é’®æ·»åŠ é¼ æ ‡æç¤º
     virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
 	virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override { UpdateMouseToolTip(static_cast<BtnKey>(btn), str); }
 
     virtual void UpdateToolTipPosition() = 0;
 
-    virtual void AddToolTips();			//ÎªÃ¿Ò»¸ö°´Å¥Ìí¼ÓÊó±êÌáÊ¾£¨ÓÉÓÚ°´Å¥µÄ¾ØĞÎÇøÓòÖ»ÓĞÔÚµÚÒ»´Î»æÍ¼Ö®ºó²ÅÄÜÈ·¶¨£¬ËùÒÔ´Ëº¯Êı±ØĞëÔÚµÚÒ»´Î»æÍ¼Ö®ºóµ÷ÓÃ£©
+    virtual void AddToolTips();			//ä¸ºæ¯ä¸€ä¸ªæŒ‰é’®æ·»åŠ é¼ æ ‡æç¤ºï¼ˆç”±äºæŒ‰é’®çš„çŸ©å½¢åŒºåŸŸåªæœ‰åœ¨ç¬¬ä¸€æ¬¡ç»˜å›¾ä¹‹åæ‰èƒ½ç¡®å®šï¼Œæ‰€ä»¥æ­¤å‡½æ•°å¿…é¡»åœ¨ç¬¬ä¸€æ¬¡ç»˜å›¾ä¹‹åè°ƒç”¨ï¼‰
 
     static CRect DrawAreaToClient(CRect rect, CRect draw_area);
     static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
-    bool IsDrawNarrowMode();			//ÊÇ·ñÊ¹ÓÃÕ­½çÃæÄ£Ê½»æÍ¼
-    bool IsDrawBackgroundAlpha() const;	//ÊÇ·ñĞèÒª»æÖÆÍ¸Ã÷±³¾°
+    bool IsDrawNarrowMode();			//æ˜¯å¦ä½¿ç”¨çª„ç•Œé¢æ¨¡å¼ç»˜å›¾
+    bool IsDrawBackgroundAlpha() const;	//æ˜¯å¦éœ€è¦ç»˜åˆ¶é€æ˜èƒŒæ™¯
 
-    wstring GetDisplayFormatString();       //»ñÈ¡ÏÔÊ¾¸ñÊ½µÄ×Ö·û´®
+    wstring GetDisplayFormatString();       //è·å–æ˜¾ç¤ºæ ¼å¼çš„å­—ç¬¦ä¸²
 
     int DPI(int pixel);
     int DPI(double pixel);
@@ -143,7 +143,7 @@ protected:
     CWnd* m_pMainWnd = nullptr;
     CDC* m_pDC;
     UIColors m_colors;
-    CUIDrawer m_draw{ m_colors };		//ÓÃÓÚ»æÖÆÎÄ±¾µÄ¶ÔÏó
+    CUIDrawer m_draw{ m_colors };		//ç”¨äºç»˜åˆ¶æ–‡æœ¬çš„å¯¹è±¡
     SLayoutData m_layout;
     //CFont m_font_time;
     DrawData m_draw_data;
@@ -157,13 +157,13 @@ protected:
 
     UIData& m_ui_data;
 
-    //UI Êı¾İ
-    CRect m_draw_rect;						//»æÍ¼ÇøÓò
-    bool m_show_volume_adj{ false };		//ÏÔÊ¾ÒôÁ¿µ÷Õû°´Å¥
+    //UI æ•°æ®
+    CRect m_draw_rect;						//ç»˜å›¾åŒºåŸŸ
+    bool m_show_volume_adj{ false };		//æ˜¾ç¤ºéŸ³é‡è°ƒæ•´æŒ‰é’®
 
     std::map<BtnKey, UIButton> m_buttons;
 
-    const int m_progress_on_top_threshold = theApp.DPI(350);		//µ±¿ØÖÆÌõµÄ¿í¶ÈĞ¡ÓÚ´ËÖµ£¬½«½ø¶ÈÌõÏÔÊ¾ÔÚ²¥·Å¿ØÖÆ°´Å¥µÄÉÏ·½
+    const int m_progress_on_top_threshold = theApp.DPI(350);		//å½“æ§åˆ¶æ¡çš„å®½åº¦å°äºæ­¤å€¼ï¼Œå°†è¿›åº¦æ¡æ˜¾ç¤ºåœ¨æ’­æ”¾æ§åˆ¶æŒ‰é’®çš„ä¸Šæ–¹
 
     bool m_first_draw{ true };
 

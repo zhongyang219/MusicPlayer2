@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <afxwin.h>
 class CStaticEx :
 	public CStatic
@@ -11,7 +11,7 @@ public:
 	void SetBackgroundColor(COLORREF back_color);
     void SetWindowText(LPCTSTR lpszString);
     CString GetWindowText() const;
-	void SetIcon(HICON hIcon, CSize size);		//ÉèÖÃÔÚÎÄ±¾Ç°ÃæµÄÍ¼±ê
+	void SetIcon(HICON hIcon, CSize size);		//è®¾ç½®åœ¨æ–‡æœ¬å‰é¢çš„å›¾æ ‡
 
 private:
 	COLORREF m_text_color{ GRAY(0) };

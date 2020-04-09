@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IPlayerUI.h"
 #include "MusicPlayer2.h"
 #include "CPlayerUIHelper.h"
@@ -15,7 +15,7 @@ public:
 		int window_height = theApp.DPI(44);
 		int window_height2 = theApp.DPI(336);
 		int margin = theApp.DPI(3);
-		bool m_show_volume{ false };	//ÓÃÓÚÖ¸Ê¾ÊÇ·ñÔÚÏÔÊ¾Ê±¼äµÄ¿Ø¼şÏÔÊ¾ÒôÁ¿£¬µ±¹ö¶¯Êó±ê¹öÂÖÊ±µÄ1.5ÃëÄÚ£¬´Ë±äÁ¿µÄÖµÎªtrue
+		bool m_show_volume{ false };	//ç”¨äºæŒ‡ç¤ºæ˜¯å¦åœ¨æ˜¾ç¤ºæ—¶é—´çš„æ§ä»¶æ˜¾ç¤ºéŸ³é‡ï¼Œå½“æ»šåŠ¨é¼ æ ‡æ»šè½®æ—¶çš„1.5ç§’å†…ï¼Œæ­¤å˜é‡çš„å€¼ä¸ºtrue
 	};
 
 public:
@@ -24,7 +24,7 @@ public:
 
 	virtual void Init(CDC* pDC) override;
 
-	bool PointInControlArea(CPoint point) const;		//ÅĞ¶ÏÒ»¸öµãµÄÎ»ÖÃÊÇ·ñÔÚ¿Ø¼şÇøÓò
+	bool PointInControlArea(CPoint point) const;		//åˆ¤æ–­ä¸€ä¸ªç‚¹çš„ä½ç½®æ˜¯å¦åœ¨æ§ä»¶åŒºåŸŸ
 
 	virtual void RButtonUp(CPoint point) override;
 	virtual void LButtonUp(CPoint point) override;
@@ -37,7 +37,7 @@ public:
 private:
 	virtual void _DrawInfo(bool reset = false) override;
 	virtual void PreDrawInfo() override;
-	void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//ÎªÒ»¸ö°´Å¥Ìí¼ÓÊó±êÌáÊ¾
+	void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//ä¸ºä¸€ä¸ªæŒ‰é’®æ·»åŠ é¼ æ ‡æç¤º
 	void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) override;
 	virtual void UpdateToolTipPosition() override;
 

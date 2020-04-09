@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DrawCommon.h"
 #include "CPlayerUIBase.h"
 
@@ -9,11 +9,11 @@ public:
 	CPlayerUI2(UIData& ui_data, CWnd* pMainWnd);
 	~CPlayerUI2();
 
-	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//ÎªÒ»¸ö°´Å¥Ìí¼ÓÊó±êÌáÊ¾
+	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//ä¸ºä¸€ä¸ªæŒ‰é’®æ·»åŠ é¼ æ ‡æç¤º
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) override;
 	virtual void UpdateToolTipPosition() override;
 
 private:
-	virtual void _DrawInfo(bool reset = false) override;		//»æÖÆĞÅÏ¢
+	virtual void _DrawInfo(bool reset = false) override;		//ç»˜åˆ¶ä¿¡æ¯
 };
 

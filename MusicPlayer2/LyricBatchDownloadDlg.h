@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "afxwin.h"
 #include "Common.h"
 #include "afxcmn.h"
@@ -7,24 +7,24 @@
 #include "ListCtrlEx.h"
 #include "PlayerProgressBar.h"
 
-// CLyricBatchDownloadDlg ¶Ô»°¿ò
+// CLyricBatchDownloadDlg å¯¹è¯æ¡†
 
 class CLyricBatchDownloadDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CLyricBatchDownloadDlg)
 
 public:
-	CLyricBatchDownloadDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CLyricBatchDownloadDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CLyricBatchDownloadDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_LYRIC_BATCH_DOWN_DIALOG };
 #endif
 
-#define WM_BATCH_DOWNLOAD_COMPLATE (WM_USER+103)		//¸è´ÊÅúÁ¿ÏÂÔØÍê³ÉÏûÏ¢
+#define WM_BATCH_DOWNLOAD_COMPLATE (WM_USER+103)		//æ­Œè¯æ‰¹é‡ä¸‹è½½å®Œæˆæ¶ˆæ¯
 
-	//ÓÃÓÚÏò¶àÏÂÔØÏß³Ì´«µİÊı¾İµÄ½á¹¹Ìå
+	//ç”¨äºå‘å¤šä¸‹è½½çº¿ç¨‹ä¼ é€’æ•°æ®çš„ç»“æ„ä½“
 	struct ThreadInfo
 	{
 		CListCtrl* list_ctrl;
@@ -39,12 +39,12 @@ public:
 		//bool exit;
 	};
 
-	//¹¤×÷Ïß³Ìº¯Êı
+	//å·¥ä½œçº¿ç¨‹å‡½æ•°
 	static UINT ThreadFunc(LPVOID lpParam);
 
 	ThreadInfo m_thread_info;
 
-	static bool SaveLyric(const wchar_t* path, const wstring& lyric_wcs, CodeType code_type, bool* char_cannot_convert);		//±£´æ¸è´Ê£¬Èç¹û½«¸è´Ê±£´æÎªANSI¸ñÊ½Ê±ÓĞÎŞ·¨×ª»»µÄUnicode×Ö·û£¬Ôòchar_cannot_convertÖÃÎªtrue
+	static bool SaveLyric(const wchar_t* path, const wstring& lyric_wcs, CodeType code_type, bool* char_cannot_convert);		//ä¿å­˜æ­Œè¯ï¼Œå¦‚æœå°†æ­Œè¯ä¿å­˜ä¸ºANSIæ ¼å¼æ—¶æœ‰æ— æ³•è½¬æ¢çš„Unicodeå­—ç¬¦ï¼Œåˆ™char_cannot_convertç½®ä¸ºtrue
 
 protected:
 	CButton m_skip_exist_check;
@@ -54,22 +54,22 @@ protected:
 	CStatic m_info_static;
     CPlayerProgressBar m_progress_bar;
 
-	bool m_skip_exist{ true };		//Ìø¹ıÒÑÓĞ¸è´ÊµÄÇúÄ¿
-	CodeType m_save_code{};		//±£´æµÄ±àÂë¸ñÊ½
-	bool m_download_translate{ false };		//ÊÇ·ñÏÂÔØ¸è´Ê·­Òë
-	bool m_save_to_song_folder{ true };		//ÊÇ·ñ±£´æµ½¸èÇúËùÔÚÄ¿Â¼
-	const vector<SongInfo>& m_playlist{ CPlayer::GetInstance().GetPlayList() };	//²¥·ÅÁĞ±íµÄÒıÓÃ
+	bool m_skip_exist{ true };		//è·³è¿‡å·²æœ‰æ­Œè¯çš„æ›²ç›®
+	CodeType m_save_code{};		//ä¿å­˜çš„ç¼–ç æ ¼å¼
+	bool m_download_translate{ false };		//æ˜¯å¦ä¸‹è½½æ­Œè¯ç¿»è¯‘
+	bool m_save_to_song_folder{ true };		//æ˜¯å¦ä¿å­˜åˆ°æ­Œæ›²æ‰€åœ¨ç›®å½•
+	const vector<SongInfo>& m_playlist{ CPlayer::GetInstance().GetPlayList() };	//æ’­æ”¾åˆ—è¡¨çš„å¼•ç”¨
 
 	bool m_lyric_path_not_exit{ false };
 
-	CWinThread* m_pThread{};		//ÏÂÔØ¸è´ÊµÄÏß³Ì
+	CWinThread* m_pThread{};		//ä¸‹è½½æ­Œè¯çš„çº¿ç¨‹
 
 	void SaveConfig() const;
 	void LoadConfig();
 
-	void EnableControls(bool enable);		//ÆôÓÃ»ò½ûÓÃ¿Ø¼ş
+	void EnableControls(bool enable);		//å¯ç”¨æˆ–ç¦ç”¨æ§ä»¶
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

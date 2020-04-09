@@ -1,4 +1,4 @@
-// SetPathDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// SetPathDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -8,7 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 
 
-// CSetPathDlg ¶Ô»°¿ò
+// CSetPathDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CSetPathDlg, CTabDlg)
 
@@ -35,7 +35,7 @@ void CSetPathDlg::QuickSearch(const wstring & key_word)
 void CSetPathDlg::ShowPathList()
 {
 	m_path_list.EnableWindow(TRUE);
-	if (!m_searched)		//ÏÔÊ¾ËùÓĞÏîÄ¿
+	if (!m_searched)		//æ˜¾ç¤ºæ‰€æœ‰é¡¹ç›®
 	{
 		m_path_list.DeleteAllItems();
 		CString path_str;
@@ -48,7 +48,7 @@ void CSetPathDlg::ShowPathList()
 			SetListRowData(i, m_recent_path[i]);
 		}
 	}
-	else		//Ö»ÏÔÊ¾ËÑË÷½á¹ûµÄÇúÄ¿
+	else		//åªæ˜¾ç¤ºæœç´¢ç»“æœçš„æ›²ç›®
 	{
 		if (m_search_result.empty())
 		{
@@ -61,7 +61,7 @@ void CSetPathDlg::ShowPathList()
 
 		int item_num_before = m_path_list.GetItemCount();
 		int item_num_after = m_search_result.size();
-		//Èç¹ûµ±Ç°ÁĞ±íÖĞÏîÄ¿µÄÊıÁ¿Ğ¡ÓÚÔ­À´µÄ£¬ÔòÖ±½ÓÇå¿ÕÔ­À´ÁĞ±íÖĞËùÓĞµÄÏîÄ¿£¬ÖØĞÂÌí¼Ó
+		//å¦‚æœå½“å‰åˆ—è¡¨ä¸­é¡¹ç›®çš„æ•°é‡å°äºåŸæ¥çš„ï¼Œåˆ™ç›´æ¥æ¸…ç©ºåŸæ¥åˆ—è¡¨ä¸­æ‰€æœ‰çš„é¡¹ç›®ï¼Œé‡æ–°æ·»åŠ 
 		if (item_num_after < item_num_before)
 		{
 			m_path_list.DeleteAllItems();
@@ -71,7 +71,7 @@ void CSetPathDlg::ShowPathList()
 		for (int i{}; i < item_num_after; i++)
 		{
 			str.Format(_T("%u"), m_search_result[i] + 1);
-			if (i >= item_num_before)	//Èç¹ûµ±Ç°ÁĞ±íÖĞµÄÏîÄ¿ÊıÁ¿´óÓÚÖ®Ç°µÄÊıÁ¿£¬ÔòĞèÒªÔÚ²»¹»Ê±²åÈëĞÂµÄÏîÄ¿
+			if (i >= item_num_before)	//å¦‚æœå½“å‰åˆ—è¡¨ä¸­çš„é¡¹ç›®æ•°é‡å¤§äºä¹‹å‰çš„æ•°é‡ï¼Œåˆ™éœ€è¦åœ¨ä¸å¤Ÿæ—¶æ’å…¥æ–°çš„é¡¹ç›®
 			{
 				m_path_list.InsertItem(i, str);
 			}
@@ -200,22 +200,22 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
 END_MESSAGE_MAP()
 
 
-// CSetPathDlg ÏûÏ¢´¦Àí³ÌĞò
+// CSetPathDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CSetPathDlg::OnInitDialog()
 {
 	CTabDlg::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 
     if(!CPlayer::GetInstance().IsPlaylistMode())
         m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
 
-	//ÉèÖÃÁĞ±í¿Ø¼şÖ÷ÌâÑÕÉ«
+	//è®¾ç½®åˆ—è¡¨æ§ä»¶ä¸»é¢˜é¢œè‰²
 	//m_path_list.SetColor(theApp.m_app_setting_data.theme_color);
 
-	//³õÊ¼»¯²¥·ÅÁĞ±í¿Ø¼ş
+	//åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨æ§ä»¶
 	vector<int> width;
 	CalculateColumeWidth(width);
     m_path_list.SetExtendedStyle(m_path_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
@@ -227,37 +227,37 @@ BOOL CSetPathDlg::OnInitDialog()
 	m_path_list.InsertColumn(5, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[5]);
 
 	ShowPathList();
-	m_search_edit.SetFocus();		//³õÊ¼Ê±½«½¹µãÉèÖÃµ½ËÑË÷¿ò
+	m_search_edit.SetFocus();		//åˆå§‹æ—¶å°†ç„¦ç‚¹è®¾ç½®åˆ°æœç´¢æ¡†
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
-	//»ñÈ¡³õÊ¼Ê±´°¿ÚµÄ´óĞ¡
+	//è·å–åˆå§‹æ—¶çª—å£çš„å¤§å°
 	CRect rect;
 	GetWindowRect(rect);
 	m_min_size.cx = rect.Width();
 	m_min_size.cy = rect.Height();
 
-	////³õÊ¼»¯ÌáÊ¾ĞÅÏ¢
+	////åˆå§‹åŒ–æç¤ºä¿¡æ¯
 	//m_Mytip.Create(this, TTS_ALWAYSTIP);
 	//m_Mytip.AddTool(GetDlgItem(IDC_CLEAR_BUTTON), CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
 	//m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
 
-	////ÉèÖÃÁĞ±í¿Ø¼şµÄÌáÊ¾×ÜÊÇÖÃ¶¥£¬ÓÃÓÚ½â¾öÈç¹ûµ¯³ö´Ë´°¿ÚµÄ¸¸´°¿Ú¾ßÓĞÖÃ¶¥ÊôĞÔÊ±£¬ÌáÊ¾ĞÅÏ¢ÔÚ´°¿ÚÏÂÃæµÄÎÊÌâ
+	////è®¾ç½®åˆ—è¡¨æ§ä»¶çš„æç¤ºæ€»æ˜¯ç½®é¡¶ï¼Œç”¨äºè§£å†³å¦‚æœå¼¹å‡ºæ­¤çª—å£çš„çˆ¶çª—å£å…·æœ‰ç½®é¡¶å±æ€§æ—¶ï¼Œæç¤ºä¿¡æ¯åœ¨çª—å£ä¸‹é¢çš„é—®é¢˜
 	//m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	//m_Mytip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-	//³õÊ¼»¯ÓÒ¼ü²Ëµ¥
+	//åˆå§‹åŒ–å³é”®èœå•
 	m_menu.LoadMenu(IDR_SET_PATH_POPUP_MENU);
 	m_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PATH);
 
 	return FALSE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 //void CSetPathDlg::OnLbnSelchangeList1()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	m_path_selected = m_path_list.GetCurSel();
 //}
 
@@ -266,29 +266,29 @@ void CSetPathDlg::OnDestroy()
 {
 	CTabDlg::OnDestroy();
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	//m_path_selected = m_path_list.GetCurSel();
 }
 
 
 //void CSetPathDlg::OnBnClickedDeletePathButton()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	//m_path_selected = m_path_list.GetCurSel();
 //	if (SelectValid())
 //	{
-//		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//É¾³ıÑ¡ÖĞµÄÂ·¾¶
-//		ShowPathList();		//ÖØĞÂÏÔÊ¾Â·¾¶ÁĞ±í
+//		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//åˆ é™¤é€‰ä¸­çš„è·¯å¾„
+//		ShowPathList();		//é‡æ–°æ˜¾ç¤ºè·¯å¾„åˆ—è¡¨
 //	}
 //}
 
 
 //BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+//	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 //	if (wParam == ID_FILE_OPEN_FOLDER)
 //	{
-//		OnCancel();		//µã»÷ÁË¡°´ò¿ªĞÂÂ·¾¶¡±°´Å¥ºó¹Ø±ÕÉèÖÃÂ·¾¶¶Ô»°¿ò
+//		OnCancel();		//ç‚¹å‡»äº†â€œæ‰“å¼€æ–°è·¯å¾„â€æŒ‰é’®åå…³é—­è®¾ç½®è·¯å¾„å¯¹è¯æ¡†
 //	}
 //
 //	return CTabDlg::OnCommand(wParam, lParam);
@@ -298,8 +298,8 @@ void CSetPathDlg::OnDestroy()
 void CSetPathDlg::OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	if (!m_searched)	//Èç¹û²¥·ÅÁĞ±í²»ÔÚËÑË÷×´Ì¬£¬Ôòµ±Ç°Ñ¡ÖĞÏîµÄĞĞºÅ¾ÍÊÇÇúÄ¿µÄË÷Òı
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	if (!m_searched)	//å¦‚æœæ’­æ”¾åˆ—è¡¨ä¸åœ¨æœç´¢çŠ¶æ€ï¼Œåˆ™å½“å‰é€‰ä¸­é¡¹çš„è¡Œå·å°±æ˜¯æ›²ç›®çš„ç´¢å¼•
 	{
 		m_path_selected = pNMItemActivate->iItem;
 	}
@@ -319,12 +319,12 @@ void CSetPathDlg::OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_path_selected = pNMItemActivate->iItem;
 	SetButtonsEnable(m_path_selected != -1);
 
-	//µ¯³öÓÒ¼ü²Ëµ¥
-	CMenu* pContextMenu = m_menu.GetSubMenu(0);	//»ñÈ¡µÚÒ»¸öµ¯³ö²Ëµ¥
+	//å¼¹å‡ºå³é”®èœå•
+	CMenu* pContextMenu = m_menu.GetSubMenu(0);	//è·å–ç¬¬ä¸€ä¸ªå¼¹å‡ºèœå•
     m_path_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
 	*pResult = 0;
@@ -334,8 +334,8 @@ void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 void CSetPathDlg::OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	if (!m_searched)	//Èç¹û²¥·ÅÁĞ±í²»ÔÚËÑË÷×´Ì¬£¬Ôòµ±Ç°Ñ¡ÖĞÏîµÄĞĞºÅ¾ÍÊÇÇúÄ¿µÄË÷Òı
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	if (!m_searched)	//å¦‚æœæ’­æ”¾åˆ—è¡¨ä¸åœ¨æœç´¢çŠ¶æ€ï¼Œåˆ™å½“å‰é€‰ä¸­é¡¹çš„è¡Œå·å°±æ˜¯æ›²ç›®çš„ç´¢å¼•
 	{
 		m_path_selected = pNMItemActivate->iItem;
 	}
@@ -356,10 +356,10 @@ void CSetPathDlg::OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CSetPathDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//ÏŞÖÆ´°¿Ú×îĞ¡´óĞ¡
-	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//ÉèÖÃ×îĞ¡¿í¶È
-	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//ÉèÖÃ×îĞ¡¸ß¶È
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	//é™åˆ¶çª—å£æœ€å°å¤§å°
+	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//è®¾ç½®æœ€å°å®½åº¦
+	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//è®¾ç½®æœ€å°é«˜åº¦
 
 	CTabDlg::OnGetMinMaxInfo(lpMMI);
 }
@@ -369,7 +369,7 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CTabDlg::OnSize(nType, cx, cy);
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	if (nType != SIZE_MINIMIZED && m_path_list.m_hWnd)
 	{
 		vector<int> width;
@@ -382,7 +382,7 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 
 //void CSetPathDlg::OnCancel()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+//	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 //	DestroyWindow();
 //
 //	//CTabDlg::OnCancel();
@@ -391,7 +391,7 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 
 void CSetPathDlg::OnOK()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (SelectValid())
 		::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(),WM_PATH_SELECTED, (WPARAM)this, 0);
 	CTabDlg::OnOK();
@@ -406,9 +406,9 @@ void CSetPathDlg::OnOK()
 
 void CSetPathDlg::OnBnClickedOpenFolder()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_COMMAND, ID_FILE_OPEN_FOLDER, 0);
-	OnCancel();			//µã»÷ÁË¡°´ò¿ªĞÂÂ·¾¶¡±°´Å¥ºó¹Ø±ÕÉèÖÃÂ·¾¶¶Ô»°¿ò
+	OnCancel();			//ç‚¹å‡»äº†â€œæ‰“å¼€æ–°è·¯å¾„â€æŒ‰é’®åå…³é—­è®¾ç½®è·¯å¾„å¯¹è¯æ¡†
     CWnd* pParent = GetParent();
     if (pParent != nullptr)
     {
@@ -422,25 +422,25 @@ void CSetPathDlg::OnBnClickedOpenFolder()
 
 void CSetPathDlg::OnPlayPath()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	OnOK();
 }
 
 
 void CSetPathDlg::OnDeletePath()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (SelectValid())
 	{
-		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//É¾³ıÑ¡ÖĞµÄÂ·¾¶
-		ShowPathList();		//ÖØĞÂÏÔÊ¾Â·¾¶ÁĞ±í
+		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//åˆ é™¤é€‰ä¸­çš„è·¯å¾„
+		ShowPathList();		//é‡æ–°æ˜¾ç¤ºè·¯å¾„åˆ—è¡¨
 	}
 }
 
 
 void CSetPathDlg::OnBrowsePath()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (SelectValid())
 		ShellExecute(NULL, _T("open"), _T("explorer"), m_recent_path[m_path_selected].path.c_str(), NULL, SW_SHOWNORMAL);
 }
@@ -448,11 +448,11 @@ void CSetPathDlg::OnBrowsePath()
 
 void CSetPathDlg::OnClearInvalidPath()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (MessageBox(CCommon::LoadText(IDS_CLEAR_PATH_INQUARY), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
 		return;
     int cleard_cnt = CMusicPlayerCmdHelper::CleanUpRecentFolders();
-    ShowPathList();		//ÖØĞÂÏÔÊ¾Â·¾¶ÁĞ±í
+    ShowPathList();		//é‡æ–°æ˜¾ç¤ºè·¯å¾„åˆ—è¡¨
 	CString info;
 	info = CCommon::LoadTextFormat(IDS_PATH_CLEAR_COMPLETE, { cleard_cnt });
 	MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
@@ -463,7 +463,7 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
 {
 	CTabDlg::OnInitMenu(pMenu);
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	bool select_valid{ SelectValid() };
 	pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
@@ -473,12 +473,12 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
 
 void CSetPathDlg::OnEnChangeSearchEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CTabDlg::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CTabDlg::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString key_word;
 	m_search_edit.GetWindowText(key_word);
 	m_searched = (key_word.GetLength() != 0);
@@ -490,10 +490,10 @@ void CSetPathDlg::OnEnChangeSearchEdit()
 
 //void CSetPathDlg::OnBnClickedClearButton()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	if (m_searched)
 //	{
-//		//Çå³ıËÑË÷½á¹û
+//		//æ¸…é™¤æœç´¢ç»“æœ
 //		m_searched = false;
 //		m_search_edit.SetWindowText(_T(""));
 //		ShowPathList();
@@ -503,10 +503,10 @@ void CSetPathDlg::OnEnChangeSearchEdit()
 
 BOOL CSetPathDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
 	{
-		if (pMsg->wParam == 'F')	//°´F¼ü¿ìËÙ²éÕÒ
+		if (pMsg->wParam == 'F')	//æŒ‰Fé”®å¿«é€ŸæŸ¥æ‰¾
 		{
 			m_search_edit.SetFocus();
 			return TRUE;
@@ -524,7 +524,7 @@ afx_msg LRESULT CSetPathDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam
 {
     if (m_searched)
     {
-        //Çå³ıËÑË÷½á¹û
+        //æ¸…é™¤æœç´¢ç»“æœ
         m_searched = false;
         m_search_edit.SetWindowText(_T(""));
         ShowPathList();

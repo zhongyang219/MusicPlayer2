@@ -1,17 +1,17 @@
-#pragma once
+ï»¿#pragma once
 
-//Ê¹ÓÃ¶¯Ì¬·½Ê½¼ÓÔØDll
+//ä½¿ç”¨åŠ¨æ€æ–¹å¼åŠ è½½Dll
 class CDllLib
 {
 public:
     CDllLib();
     ~CDllLib();
-    void Init(const wstring& dll_path);		//ÔØÈëDLLÎÄ¼ş²¢»ñÈ¡º¯ÊıÈë¿Ú
+    void Init(const wstring& dll_path);		//è½½å…¥DLLæ–‡ä»¶å¹¶è·å–å‡½æ•°å…¥å£
     void UnInit();
-    bool IsSucceed();		//ÅĞ¶ÏDLLÖĞµÄº¯ÊıÊÇ·ñ»ñÈ¡³É¹¦
+    bool IsSucceed();		//åˆ¤æ–­DLLä¸­çš„å‡½æ•°æ˜¯å¦è·å–æˆåŠŸ
 
 protected:
-    virtual bool GetFunction() = 0;     //´ÓDLLÖĞ»ñÈ¡º¯ÊıÈë¿ÚµØÖ·²¢±£´æÆğÀ´£¬³É¹¦Ôò·µ»Øtrue
+    virtual bool GetFunction() = 0;     //ä»DLLä¸­è·å–å‡½æ•°å…¥å£åœ°å€å¹¶ä¿å­˜èµ·æ¥ï¼ŒæˆåŠŸåˆ™è¿”å›true
 
 protected:
     HMODULE m_dll_module;

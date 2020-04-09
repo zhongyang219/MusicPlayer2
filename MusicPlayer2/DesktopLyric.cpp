@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "DesktopLyric.h"
 #include "MusicPlayer2.h"
 #include "PlayListCtrl.h"
@@ -43,11 +43,11 @@ void CDesktopLyric::Create()
 
     m_popupMenu.LoadMenu(IDR_DESKTOP_LYRIC_POPUP_MENU);
 
-    //³õÊ¼»¯ÌáÊ¾ĞÅÏ¢
+    //åˆå§‹åŒ–æç¤ºä¿¡æ¯
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
-    //³õÊ¼»¯¶¨Ê±Æ÷
+    //åˆå§‹åŒ–å®šæ—¶å™¨
     SetTimer(TIMER_DESKTOP_LYRIC, 200, NULL);
 
 }
@@ -138,7 +138,7 @@ void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
     //SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
     m_bLocked = data.lock_desktop_lyric;
     m_lyricBackgroundPenetrate = data.lyric_background_penetrate;
-    SetTimer(TIMER_DESKTOP_LYRIC_2, 200, NULL);     //ÑÓ³Ù200ºÁÃëÉèÖÃËø¶¨¸è´Ê´°¿ÚºÍ±³¾°´©Í¸
+    SetTimer(TIMER_DESKTOP_LYRIC_2, 200, NULL);     //å»¶è¿Ÿ200æ¯«ç§’è®¾ç½®é”å®šæ­Œè¯çª—å£å’ŒèƒŒæ™¯ç©¿é€
 }
 
 void CDesktopLyric::SetLyricWindowVisible(bool visible)
@@ -283,7 +283,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     toolbar_rect.Width = toolbar_width;
     toolbar_rect.Height = btn_size;
 
-    //»æÖÆ±³¾°
+    //ç»˜åˆ¶èƒŒæ™¯
     Gdiplus::Color back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light2, 180);
     Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(back_color);
     pGraphics->FillRectangle(pBrush, toolbar_rect);
@@ -292,7 +292,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     CRect rcIcon = CRect(toolbar_rect.X, toolbar_rect.Y, toolbar_rect.GetRight(), toolbar_rect.GetBottom());
     rcIcon.right = rcIcon.left + btn_size;
 
-    if (bLocked)    //Èç¹û´¦ÀíËø¶¨×´Ì¬£¬Ö»»æÖÆÒ»¸ö½âËøÍ¼±ê
+    if (bLocked)    //å¦‚æœå¤„ç†é”å®šçŠ¶æ€ï¼Œåªç»˜åˆ¶ä¸€ä¸ªè§£é”å›¾æ ‡
     {
         for (auto& btn : m_buttons)
         {
@@ -377,7 +377,7 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
     }
 
     CRect rc_tmp = rect;
-    //Ê¹Í¼±êÔÚ¾ØĞÎÖĞ¾ÓÖĞ
+    //ä½¿å›¾æ ‡åœ¨çŸ©å½¢ä¸­å±…ä¸­
     CSize icon_size = icon.GetSize();
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
@@ -441,7 +441,7 @@ void CDesktopLyric::UpdateToolTipPosition()
 
 void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics)
 {
-    //»æÖÆ°ëÍ¸Ã÷±³¾°
+    //ç»˜åˆ¶åŠé€æ˜èƒŒæ™¯
     if (!m_bLocked && !m_lyricBackgroundPenetrate)
     {
         BYTE alpha = (m_bHover) ? 80 : 1;
@@ -453,7 +453,7 @@ void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics)
 
 void CDesktopLyric::AfterDrawLyric(Gdiplus::Graphics* pGraphics)
 {
-    //»æÖÆ¹¤¾ßÌõ
+    //ç»˜åˆ¶å·¥å…·æ¡
     bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
     if (m_lyricBackgroundPenetrate || m_bLocked ? m_bMouseInWindowRect : m_bHover)
     {
@@ -503,7 +503,7 @@ void CDesktopLyric::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     CPoint point1 = point;
     point1.x += m_frameSize.cx;
     point1.y += m_frameSize.cy;
@@ -596,7 +596,7 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CDesktopLyric::OnMouseMove(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     CPoint point1 = point;
     point1.x += m_frameSize.cx;
     point1.y += m_frameSize.cy;
@@ -619,7 +619,7 @@ void CDesktopLyric::OnMouseMove(UINT nFlags, CPoint point)
 
 void CDesktopLyric::OnMouseHover(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (!m_bHover)
     {
         m_bHover = true;
@@ -634,7 +634,7 @@ void CDesktopLyric::OnMouseHover(UINT nFlags, CPoint point)
 
 void CDesktopLyric::OnMouseLeave()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (!m_bMenuPopedUp)
     {
         m_bHover = false;
@@ -654,7 +654,7 @@ void CDesktopLyric::OnSizing(UINT fwSide, LPRECT pRect)
 {
     CLyricsWindow::OnSizing(fwSide, pRect);
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
     m_bHover = true;
     UpdateToolTipPosition();
 }
@@ -662,10 +662,10 @@ void CDesktopLyric::OnSizing(UINT fwSide, LPRECT pRect)
 
 void CDesktopLyric::OnRButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_bMenuPopedUp = true;
-    CPoint point1;		//¶¨ÒåÒ»¸öÓÃÓÚÈ·¶¨¹â±êÎ»ÖÃµÄÎ»ÖÃ
-    GetCursorPos(&point1);	//»ñÈ¡µ±Ç°¹â±êµÄÎ»ÖÃ£¬ÒÔ±ãÊ¹µÃ²Ëµ¥¿ÉÒÔ¸úËæ¹â±ê£¬¸ÃÎ»ÖÃÒÔÆÁÄ»×óÉÏ½ÇµãÎªÔ­µã£¬pointÔòÒÔ¿Í»§Çø×óÉÏ½ÇÎªÔ­µã
+    CPoint point1;		//å®šä¹‰ä¸€ä¸ªç”¨äºç¡®å®šå…‰æ ‡ä½ç½®çš„ä½ç½®
+    GetCursorPos(&point1);	//è·å–å½“å‰å…‰æ ‡çš„ä½ç½®ï¼Œä»¥ä¾¿ä½¿å¾—èœå•å¯ä»¥è·Ÿéšå…‰æ ‡ï¼Œè¯¥ä½ç½®ä»¥å±å¹•å·¦ä¸Šè§’ç‚¹ä¸ºåŸç‚¹ï¼Œpointåˆ™ä»¥å®¢æˆ·åŒºå·¦ä¸Šè§’ä¸ºåŸç‚¹
     CMenu* pMenu = m_popupMenu.GetSubMenu(0);
     if (pMenu != NULL)
         pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
@@ -676,10 +676,10 @@ void CDesktopLyric::OnRButtonUp(UINT nFlags, CPoint point)
 
 BOOL CDesktopLyric::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     WORD command = LOWORD(wParam);
     if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), command) || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_menu, command))
-        AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//½«²Ëµ¥ÃüÁî×ª·¢µ½Ö÷´°¿Ú
+        AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//å°†èœå•å‘½ä»¤è½¬å‘åˆ°ä¸»çª—å£
 
     return CLyricsWindow::OnCommand(wParam, lParam);
 }
@@ -687,7 +687,7 @@ BOOL CDesktopLyric::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void CDesktopLyric::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     lpMMI->ptMinTrackSize.x = theApp.DPI(400);
     lpMMI->ptMinTrackSize.y = theApp.DPI(100);
 
@@ -697,14 +697,14 @@ void CDesktopLyric::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
 //afx_msg LRESULT CDesktopLyric::OnInitmenu(WPARAM wParam, LPARAM lParam)
 //{
-//    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //½«WM_INITMENUÏûÏ¢×ª·¢µ½Ö÷´°¿Ú
+//    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //å°†WM_INITMENUæ¶ˆæ¯è½¬å‘åˆ°ä¸»çª—å£
 //    return 0;
 //}
 
 
 BOOL CDesktopLyric::PreTranslateMessage(MSG* pMsg)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     if (pMsg->message == WM_MOUSEMOVE)
         m_tool_tip.RelayEvent(pMsg);
 
@@ -714,7 +714,7 @@ BOOL CDesktopLyric::PreTranslateMessage(MSG* pMsg)
 
 void CDesktopLyric::OnTimer(UINT_PTR nIDEvent)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (nIDEvent == TIMER_DESKTOP_LYRIC)
     {
         CPoint point;
@@ -722,19 +722,19 @@ void CDesktopLyric::OnTimer(UINT_PTR nIDEvent)
         m_bMouseInWindowRect = m_rcWindow.PtInRect(point);
 
         bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
-        if (bLocked)        //´¦ÓÚËø¶¨×´Ì¬Ê±£¬Èç¹ûÖ¸Õë´¦Àí¡°Ëø¶¨¡±°´Å¥ÇøÓòÄÚ£¬ÔòÈ¡ÏûÊó±ê´©Í¸×´Ì¬£¬ÒÔÊ¹µÃ¡°Ëø¶¨¡±°´Å¥¿ÉÒÔµã»÷
+        if (bLocked)        //å¤„äºé”å®šçŠ¶æ€æ—¶ï¼Œå¦‚æœæŒ‡é’ˆå¤„ç†â€œé”å®šâ€æŒ‰é’®åŒºåŸŸå†…ï¼Œåˆ™å–æ¶ˆé¼ æ ‡ç©¿é€çŠ¶æ€ï¼Œä»¥ä½¿å¾—â€œé”å®šâ€æŒ‰é’®å¯ä»¥ç‚¹å‡»
         {
             CRect rcLockBtn = m_buttons[BTN_LOCK].rect;
             rcLockBtn.MoveToX(rcLockBtn.left + m_rcWindow.left);
             rcLockBtn.MoveToY(rcLockBtn.top + m_rcWindow.top);
             if (rcLockBtn.PtInRect(point))
             {
-                SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) & (~WS_EX_TRANSPARENT));		//È¡ÏûÊó±ê´©Í¸
+                SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) & (~WS_EX_TRANSPARENT));		//å–æ¶ˆé¼ æ ‡ç©¿é€
                 m_buttons[BTN_LOCK].hover = true;
             }
             else
             {
-                SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);		//ÉèÖÃÊó±ê´©Í¸
+                SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);		//è®¾ç½®é¼ æ ‡ç©¿é€
                 m_buttons[BTN_LOCK].hover = false;
             }
         }
@@ -751,7 +751,7 @@ void CDesktopLyric::OnTimer(UINT_PTR nIDEvent)
 
 void CDesktopLyric::OnLyricDefaultStyle1()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     auto style = GetDefaultStyle(0);
     LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
     ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
@@ -760,7 +760,7 @@ void CDesktopLyric::OnLyricDefaultStyle1()
 
 void CDesktopLyric::OnLyricDefaultStyle2()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     auto style = GetDefaultStyle(1);
     LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
     ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
@@ -769,7 +769,7 @@ void CDesktopLyric::OnLyricDefaultStyle2()
 
 void CDesktopLyric::OnLyricDefaultStyle3()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     auto style = GetDefaultStyle(2);
     LyricStyleDefaultDataToLyricSettingData(style, theApp.m_lyric_setting_data.desktop_lyric_data);
     ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
@@ -778,7 +778,7 @@ void CDesktopLyric::OnLyricDefaultStyle3()
 
 void CDesktopLyric::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_SHOW_MAIN_WINDOW);
 
 	CLyricsWindow::OnLButtonDblClk(nFlags, point);
@@ -787,7 +787,7 @@ void CDesktopLyric::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 BOOL CDesktopLyric::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	if (zDelta > 0)
 	{
 		AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_UP);
@@ -805,7 +805,7 @@ void CDesktopLyric::OnInitMenu(CMenu* pMenu)
 {
 	CLyricsWindow::OnInitMenu(pMenu);
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(AfxGetMainWnd());
 	if(pPlayerDlg != nullptr)
 		pPlayerDlg->SetMenuState(pMenu);

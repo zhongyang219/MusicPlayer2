@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MusicPlayerCmdHelper.h"
 #include "InternetCommon.h"
 #include "Player.h"
@@ -21,8 +21,8 @@ CMusicPlayerCmdHelper::~CMusicPlayerCmdHelper()
 
 void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
 {
-    //²éÕÒ¸èÇú²¢»ñÈ¡×î¼ÑÆ¥ÅäÏîµÄ¸èÇúID
-    if (song.song_id.empty())		//Èç¹ûÃ»ÓĞ»ñÈ¡¹ıID£¬Ôò»ñÈ¡Ò»´ÎID
+    //æŸ¥æ‰¾æ­Œæ›²å¹¶è·å–æœ€ä½³åŒ¹é…é¡¹çš„æ­Œæ›²ID
+    if (song.song_id.empty())		//å¦‚æœæ²¡æœ‰è·å–è¿‡IDï¼Œåˆ™è·å–ä¸€æ¬¡ID
     {
         wstring song_id;
         song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
@@ -35,10 +35,10 @@ void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
 
     if (song.song_id.empty())
         return;
-    //»ñÈ¡ÍøÒ×ÔÆÒôÀÖÖĞ¸Ã¸èÇúµÄÔÚÏß½ÓÌıÍøÖ·
+    //è·å–ç½‘æ˜“äº‘éŸ³ä¹ä¸­è¯¥æ­Œæ›²çš„åœ¨çº¿æ¥å¬ç½‘å€
     wstring song_url{ L"http://music.163.com/#/song?id=" + song.song_id };
 
-    //´ò¿ª³¬Á´½Ó
+    //æ‰“å¼€è¶…é“¾æ¥
     ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
 
 }
@@ -89,10 +89,10 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
             GetOwner()->MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_EXIST_WARNING, { playlist_name }), NULL, MB_ICONWARNING | MB_OK);
             return false;
         }
-        //Ìí¼Ó¿ÕµÄ²¥·ÅÁĞ±í
+        //æ·»åŠ ç©ºçš„æ’­æ”¾åˆ—è¡¨
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
 
-        //»ñÈ¡Ñ¡ÖĞµÄÇúÄ¿µÄÂ·¾¶
+        //è·å–é€‰ä¸­çš„æ›²ç›®çš„è·¯å¾„
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
@@ -105,7 +105,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
 		CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
 		if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
 		{
-			pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.SetUpdateFlag();		//ÉèÖÃÊı¾İË¢ĞÂ±êÖ¾
+			pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.SetUpdateFlag();		//è®¾ç½®æ•°æ®åˆ·æ–°æ ‡å¿—
 		}
 
         return true;
@@ -115,10 +115,10 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
 
 void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vector<SongInfo>&)> get_song_list, DWORD command)
 {
-    //ÏìÓ¦²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥ÖĞµÄ¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±
+    //å“åº”æ’­æ”¾åˆ—è¡¨å³é”®èœå•ä¸­çš„â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€
     if ((command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE) || command == ID_ADD_TO_OTHER_PLAYLIST)
     {
-        //»ñÈ¡Ñ¡ÖĞµÄÇúÄ¿µÄÂ·¾¶
+        //è·å–é€‰ä¸­çš„æ›²ç›®çš„è·¯å¾„
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
@@ -137,7 +137,7 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 }
             }
         }
-        else if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //Ìí¼Óµ½Ä¬ÈÏ²¥·ÅÁĞ±í
+        else if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //æ·»åŠ åˆ°é»˜è®¤æ’­æ”¾åˆ—è¡¨
         {
             std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
             CPlaylistFile playlist;
@@ -146,7 +146,7 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             playlist.SaveToFile(default_playlist_path);
 
         }
-        else if (command == ID_ADD_TO_MY_FAVOURITE)      //Ìí¼Óµ½¡°ÎÒÏ²»¶¡±²¥·ÅÁĞ±í
+        else if (command == ID_ADD_TO_MY_FAVOURITE)      //æ·»åŠ åˆ°â€œæˆ‘å–œæ¬¢â€æ’­æ”¾åˆ—è¡¨
         {
             std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
             CPlaylistFile playlist;
@@ -154,7 +154,7 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             playlist.AddFiles(selected_item_path);
             playlist.SaveToFile(favourite_playlist_path);
 
-            //Ìí¼Óµ½¡°ÎÒÏ²»¶¡±²¥·ÅÁĞ±íºó£¬ÎªÌí¼ÓµÄÏîÄ¿ÉèÖÃfavourite±ê¼Ç
+            //æ·»åŠ åˆ°â€œæˆ‘å–œæ¬¢â€æ’­æ”¾åˆ—è¡¨åï¼Œä¸ºæ·»åŠ çš„é¡¹ç›®è®¾ç½®favouriteæ ‡è®°
             for (const auto& item : selected_item_path)
             {
                 auto& cur_playlist{ CPlayer::GetInstance().GetPlayList() };
@@ -174,7 +174,7 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             //}
 
         }
-        else        //Ìí¼Óµ½Ñ¡ÖĞµÄ²¥·ÅÁĞ±í
+        else        //æ·»åŠ åˆ°é€‰ä¸­çš„æ’­æ”¾åˆ—è¡¨
         {
             CString menu_string;
             theApp.m_menu_set.m_list_popup_menu.GetMenuString(command, menu_string, 0);
@@ -215,7 +215,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
         return false;
 
     wstring current_file = CPlayer::GetInstance().GetCurrentSongInfo().file_path;
-    //ÈçºÎÒªÉ¾³ıµÄÎÄ¼şÊÇÕıÔÚ²¥·ÅµÄÎÄ¼ş£¬ÔòÏÈÍ£Ö¹²¥·Å
+    //å¦‚ä½•è¦åˆ é™¤çš„æ–‡ä»¶æ˜¯æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶ï¼Œåˆ™å…ˆåœæ­¢æ’­æ”¾
     if (CCommon::IsItemInVector(delected_files, current_file))
     {
         CPlayer::GetInstance().MusicControl(Command::STOP);
@@ -225,7 +225,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
     rtn = CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
     if (rtn == 0)
     {
-        //Èç¹ûÎÄ¼şÉ¾³ı³É¹¦£¬Ôò´Ó¸èÇúÊı¾İÖĞÉ¾³ı
+        //å¦‚æœæ–‡ä»¶åˆ é™¤æˆåŠŸï¼Œåˆ™ä»æ­Œæ›²æ•°æ®ä¸­åˆ é™¤
         for (const auto& file : delected_files)
         {
             auto iter = theApp.m_song_data.find(file);
@@ -234,7 +234,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
                 theApp.m_song_data.erase(iter);
             }
         }
-        //ÎÄ¼şÉ¾³ıºóÍ¬Ê±É¾³ıºÍÎÄ¼şÍ¬ÃûµÄÍ¼Æ¬ÎÄ¼şºÍ¸è´ÊÎÄ¼ş
+        //æ–‡ä»¶åˆ é™¤ååŒæ—¶åˆ é™¤å’Œæ–‡ä»¶åŒåçš„å›¾ç‰‡æ–‡ä»¶å’Œæ­Œè¯æ–‡ä»¶
         for (auto& file : delected_files)
         {
             CFilePathHelper file_path(file);
@@ -248,7 +248,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
         }
         CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
     }
-    else if (rtn == 1223)	//Èç¹ûÔÚµ¯³öµÄ¶Ô»°¿òÖĞµã»÷¡°È¡Ïû¡±Ôò·µ»ØÖµÎª1223
+    else if (rtn == 1223)	//å¦‚æœåœ¨å¼¹å‡ºçš„å¯¹è¯æ¡†ä¸­ç‚¹å‡»â€œå–æ¶ˆâ€åˆ™è¿”å›å€¼ä¸º1223
     {
         return false;
     }
@@ -265,11 +265,11 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const SongInfo & song, std::vector<
 	result.clear();
 	if (song.GetFileName().size() < 3) return;
 	
-	CFilePathHelper lyric_path{ song.file_path };		//µÃµ½Â·¾¶+ÎÄ¼şÃûµÄ×Ö·û´®
-	lyric_path.ReplaceFileExtension(L"lrc");		//½«ÎÄ¼şÀ©Õ¹Ìæ»»³Élrc
+	CFilePathHelper lyric_path{ song.file_path };		//å¾—åˆ°è·¯å¾„+æ–‡ä»¶åçš„å­—ç¬¦ä¸²
+	lyric_path.ReplaceFileExtension(L"lrc");		//å°†æ–‡ä»¶æ‰©å±•æ›¿æ¢æˆlrc
 	CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.GetFileName() };
 	lyric_path2.ReplaceFileExtension(L"lrc");
-	//²éÕÒ¸è´ÊÎÄ¼şÃûºÍ¸èÇúÎÄ¼şÃûÍêÈ«Æ¥ÅäµÄ¸è´Ê
+	//æŸ¥æ‰¾æ­Œè¯æ–‡ä»¶åå’Œæ­Œæ›²æ–‡ä»¶åå®Œå…¨åŒ¹é…çš„æ­Œè¯
 	if (CCommon::FileExist(lyric_path.GetFilePath()))
 	{
 		result.push_back(lyric_path.GetFilePath());
@@ -280,13 +280,13 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const SongInfo & song, std::vector<
 	}
 	if (fuzzy_match)
 	{
-		vector<wstring> current_path_lyrics;	//´¢´æµ±Ç°Â·¾¶ÏÂµÄ¸è´ÊÎÄ¼şµÄÎÄ¼şÃû
-		vector<wstring> lyric_path_lyrics;		//´¢´æ¸è´ÊÎÄ¼ş¼ĞÏÂµÄ¸è´ÊÎÄ¼şµÄÎÄ¼şÃû
+		vector<wstring> current_path_lyrics;	//å‚¨å­˜å½“å‰è·¯å¾„ä¸‹çš„æ­Œè¯æ–‡ä»¶çš„æ–‡ä»¶å
+		vector<wstring> lyric_path_lyrics;		//å‚¨å­˜æ­Œè¯æ–‡ä»¶å¤¹ä¸‹çš„æ­Œè¯æ–‡ä»¶çš„æ–‡ä»¶å
 		CAudioCommon::GetLyricFiles(lyric_path.GetDir(), current_path_lyrics);
 		CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, lyric_path_lyrics);
 
-		//Ñ°ÕÒ¸è´ÊÎÄ¼şÖĞÍ¬Ê±°üº¬¸èÇú±êÌâµÄ¸è´ÊÎÄ¼ş
-		for (const auto& str : current_path_lyrics)	//ÔÚµ±Ç°Ä¿Â¼ÏÂÑ°ÕÒ
+		//å¯»æ‰¾æ­Œè¯æ–‡ä»¶ä¸­åŒæ—¶åŒ…å«æ­Œæ›²æ ‡é¢˜çš„æ­Œè¯æ–‡ä»¶
+		for (const auto& str : current_path_lyrics)	//åœ¨å½“å‰ç›®å½•ä¸‹å¯»æ‰¾
 		{
 			//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
 			if (CCommon::StringNatchWholeWord(str, song.title) != -1)
@@ -296,7 +296,7 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const SongInfo & song, std::vector<
 			}
 		}
 
-		for (const auto& str : lyric_path_lyrics)	//ÔÚ¸è´ÊÄ¿Â¼ÏÂÑ°ÕÒ
+		for (const auto& str : lyric_path_lyrics)	//åœ¨æ­Œè¯ç›®å½•ä¸‹å¯»æ‰¾
 		{
 			//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
 			if (CCommon::StringNatchWholeWord(str, song.title) != -1)
@@ -315,29 +315,29 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
 {
 	if (song.GetFileName().size() < 3) return wstring();
 
-	CFilePathHelper lyric_path{ song.file_path };		//µÃµ½Â·¾¶+ÎÄ¼şÃûµÄ×Ö·û´®
-	lyric_path.ReplaceFileExtension(L"lrc");		//½«ÎÄ¼şÀ©Õ¹Ìæ»»³Élrc
+	CFilePathHelper lyric_path{ song.file_path };		//å¾—åˆ°è·¯å¾„+æ–‡ä»¶åçš„å­—ç¬¦ä¸²
+	lyric_path.ReplaceFileExtension(L"lrc");		//å°†æ–‡ä»¶æ‰©å±•æ›¿æ¢æˆlrc
 	CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.GetFileName() };
 	lyric_path2.ReplaceFileExtension(L"lrc");
-	//²éÕÒ¸è´ÊÎÄ¼şÃûºÍ¸èÇúÎÄ¼şÃûÍêÈ«Æ¥ÅäµÄ¸è´Ê
+	//æŸ¥æ‰¾æ­Œè¯æ–‡ä»¶åå’Œæ­Œæ›²æ–‡ä»¶åå®Œå…¨åŒ¹é…çš„æ­Œè¯
 	if (CCommon::FileExist(lyric_path.GetFilePath()))
 	{
 		return lyric_path.GetFilePath();
 	}
-	else if (CCommon::FileExist(lyric_path2.GetFilePath()))		//µ±Ç°Ä¿Â¼ÏÂÃ»ÓĞ¶ÔÓ¦µÄ¸è´ÊÎÄ¼şÊ±£¬¾ÍÔÚtheApp.m_lyric_setting_data.m_lyric_pathÄ¿Â¼ÏÂÑ°ÕÒ¸è´ÊÎÄ¼ş
+	else if (CCommon::FileExist(lyric_path2.GetFilePath()))		//å½“å‰ç›®å½•ä¸‹æ²¡æœ‰å¯¹åº”çš„æ­Œè¯æ–‡ä»¶æ—¶ï¼Œå°±åœ¨theApp.m_lyric_setting_data.m_lyric_pathç›®å½•ä¸‹å¯»æ‰¾æ­Œè¯æ–‡ä»¶
 	{
 		return lyric_path2.GetFilePath();
 	}
 	else if (fuzzy_match)
 	{
-		vector<wstring> current_path_lyrics;	//´¢´æµ±Ç°Â·¾¶ÏÂµÄ¸è´ÊÎÄ¼şµÄÎÄ¼şÃû
-		vector<wstring> lyric_path_lyrics;		//´¢´æ¸è´ÊÎÄ¼ş¼ĞÏÂµÄ¸è´ÊÎÄ¼şµÄÎÄ¼şÃû
+		vector<wstring> current_path_lyrics;	//å‚¨å­˜å½“å‰è·¯å¾„ä¸‹çš„æ­Œè¯æ–‡ä»¶çš„æ–‡ä»¶å
+		vector<wstring> lyric_path_lyrics;		//å‚¨å­˜æ­Œè¯æ–‡ä»¶å¤¹ä¸‹çš„æ­Œè¯æ–‡ä»¶çš„æ–‡ä»¶å
 		CAudioCommon::GetLyricFiles(lyric_path.GetDir(), current_path_lyrics);
 		CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, lyric_path_lyrics);
 
-		wstring matched_lyric;		//Æ¥ÅäµÄ¸è´ÊµÄÂ·¾¶
-		//ÏÈÑ°ÕÒ¸è´ÊÎÄ¼şÖĞÍ¬Ê±°üº¬¸èÇú±êÌâºÍÒÕÊõ¼ÒµÄ¸è´ÊÎÄ¼ş
-		for (const auto& str : current_path_lyrics)	//ÔÚµ±Ç°Ä¿Â¼ÏÂÑ°ÕÒ
+		wstring matched_lyric;		//åŒ¹é…çš„æ­Œè¯çš„è·¯å¾„
+		//å…ˆå¯»æ‰¾æ­Œè¯æ–‡ä»¶ä¸­åŒæ—¶åŒ…å«æ­Œæ›²æ ‡é¢˜å’Œè‰ºæœ¯å®¶çš„æ­Œè¯æ–‡ä»¶
+		for (const auto& str : current_path_lyrics)	//åœ¨å½“å‰ç›®å½•ä¸‹å¯»æ‰¾
 		{
 			//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
 			if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
@@ -347,9 +347,9 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
 			}
 		}
 
-		if (matched_lyric.empty())		//Èç¹ûµ±Ç°Ä¿Â¼ÏÂÃ»ÕÒµ½
+		if (matched_lyric.empty())		//å¦‚æœå½“å‰ç›®å½•ä¸‹æ²¡æ‰¾åˆ°
 		{
-			for (const auto& str : lyric_path_lyrics)	//ÔÚ¸è´ÊÄ¿Â¼ÏÂÑ°ÕÒ
+			for (const auto& str : lyric_path_lyrics)	//åœ¨æ­Œè¯ç›®å½•ä¸‹å¯»æ‰¾
 			{
 				//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
 				if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
@@ -360,10 +360,10 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
 			}
 		}
 
-		//Ã»ÓĞÕÒµ½µÄ»°¾ÍÑ°ÕÒ¸è´ÊÎÄ¼şÖĞÖ»°üº¬¸èÇú±êÌâµÄ¸è´ÊÎÄ¼ş
+		//æ²¡æœ‰æ‰¾åˆ°çš„è¯å°±å¯»æ‰¾æ­Œè¯æ–‡ä»¶ä¸­åªåŒ…å«æ­Œæ›²æ ‡é¢˜çš„æ­Œè¯æ–‡ä»¶
 		if (matched_lyric.empty())
 		{
-			for (const auto& str : current_path_lyrics)	//ÔÚµ±Ç°Ä¿Â¼ÏÂÑ°ÕÒ
+			for (const auto& str : current_path_lyrics)	//åœ¨å½“å‰ç›®å½•ä¸‹å¯»æ‰¾
 			{
 				//if (str.find(song.title) != string::npos)
 				if (CCommon::StringNatchWholeWord(str, song.title) != -1)
@@ -376,7 +376,7 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
 
 		if (matched_lyric.empty())
 		{
-			for (const auto& str : lyric_path_lyrics)	//ÔÚ¸è´ÊÄ¿Â¼ÏÂÑ°ÕÒ
+			for (const auto& str : lyric_path_lyrics)	//åœ¨æ­Œè¯ç›®å½•ä¸‹å¯»æ‰¾
 			{
 				//if (str.find(song.title) != string::npos)
 				if (CCommon::StringNatchWholeWord(str, song.title) != -1)
@@ -397,7 +397,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
 
     theApp.m_media_num_added = 0;
     std::vector<wstring> all_media_files;
-    //»ñÈ¡ËùÓĞÒôÆµÎÄ¼şµÄÂ·¾¶
+    //è·å–æ‰€æœ‰éŸ³é¢‘æ–‡ä»¶çš„è·¯å¾„
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
     {
         CAudioCommon::GetAudioFiles(item, all_media_files, 50000, true);
@@ -407,7 +407,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     for (const auto& file_path : all_media_files)
     {
         auto iter = theApp.m_song_data.find(file_path);
-        if (iter == theApp.m_song_data.end())       //Èç¹û»¹Ã»ÓĞ»ñÈ¡µ½¸Ã¸èÇúµÄĞÅÏ¢£¬ÔòÔÚÕâÀï»ñÈ¡
+        if (iter == theApp.m_song_data.end())       //å¦‚æœè¿˜æ²¡æœ‰è·å–åˆ°è¯¥æ­Œæ›²çš„ä¿¡æ¯ï¼Œåˆ™åœ¨è¿™é‡Œè·å–
         {
             SongInfo song_info;
 			IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
@@ -431,13 +431,13 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
 
 int CMusicPlayerCmdHelper::CleanUpSongData()
 {
-    int clear_cnt{};		//Í³¼ÆÉ¾³ıµÄÏîÄ¿µÄÊıÁ¿
-    //±éÀúÓ³ÉäÈİÆ÷£¬É¾³ı²»±ØÒªµÄÌõÄ¿¡£
+    int clear_cnt{};		//ç»Ÿè®¡åˆ é™¤çš„é¡¹ç›®çš„æ•°é‡
+    //éå†æ˜ å°„å®¹å™¨ï¼Œåˆ é™¤ä¸å¿…è¦çš„æ¡ç›®ã€‚
     for (auto iter{ theApp.m_song_data.begin() }; iter != theApp.m_song_data.end();)
     {
         if (!CCommon::FileExist(iter->first))
         {
-            iter = theApp.m_song_data.erase(iter);		//É¾³ıÌõÄ¿Ö®ºó½«µü´úÆ÷Ö¸Ïò±»É¾³ıÌõÄ¿µÄÇ°Ò»¸öÌõÄ¿
+            iter = theApp.m_song_data.erase(iter);		//åˆ é™¤æ¡ç›®ä¹‹åå°†è¿­ä»£å™¨æŒ‡å‘è¢«åˆ é™¤æ¡ç›®çš„å‰ä¸€ä¸ªæ¡ç›®
             clear_cnt++;
         }
         else
@@ -456,7 +456,7 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
     {
         if (!CCommon::FolderExist(recent_folders[i].path))
         {
-            recent_folders.erase(recent_folders.begin() + i);		//É¾³ı²»´æÔÚµÄÂ·¾¶
+            recent_folders.erase(recent_folders.begin() + i);		//åˆ é™¤ä¸å­˜åœ¨çš„è·¯å¾„
             i--;
             cleard_cnt++;
         }

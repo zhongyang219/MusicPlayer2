@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "stdafx.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"
@@ -7,25 +7,25 @@
 
 namespace CONSTVAL
 {
-    const COLORREF BACKGROUND_COLOR = GRAY(255);		//¸ü¸Ä´ËÑÕÉ«µÄÖµ¿ÉÒÔĞŞ¸ÄÖ÷´°¿Ú±³¾°É«
+    const COLORREF BACKGROUND_COLOR = GRAY(255);		//æ›´æ”¹æ­¤é¢œè‰²çš„å€¼å¯ä»¥ä¿®æ”¹ä¸»çª—å£èƒŒæ™¯è‰²
     const double FULL_SCREEN_ZOOM_FACTOR = 1.5;
 }
 
-struct DeviceInfo	//²¥·ÅÉè±¸µÄĞÅÏ¢
+struct DeviceInfo	//æ’­æ”¾è®¾å¤‡çš„ä¿¡æ¯
 {
-    int index;		//Éè±¸µÄË÷Òı
-    wstring name;	//Éè±¸µÄÃû³Æ
-    wstring driver;	//Éè±¸µÄÇı¶¯³ÌĞò
-    DWORD flags;	//Éè±¸µÄ×´Ì¬
+    int index;		//è®¾å¤‡çš„ç´¢å¼•
+    wstring name;	//è®¾å¤‡çš„åç§°
+    wstring driver;	//è®¾å¤‡çš„é©±åŠ¨ç¨‹åº
+    DWORD flags;	//è®¾å¤‡çš„çŠ¶æ€
 };
 
 
 struct FontStyle
 {
-    bool bold{ false };			//´ÖÌå
-    bool italic{ false };		//Ğ±Ìå
-    bool underline{ false };	//ÏÂ»®Ïß
-    bool strike_out{ false };	//É¾³ıÏß
+    bool bold{ false };			//ç²—ä½“
+    bool italic{ false };		//æ–œä½“
+    bool underline{ false };	//ä¸‹åˆ’çº¿
+    bool strike_out{ false };	//åˆ é™¤çº¿
 
     int ToInt()
     {
@@ -52,9 +52,9 @@ struct FontStyle
 
 struct FontInfo
 {
-    wstring name;	//×ÖÌåÃû³Æ
-    int size;		//×ÖÌå´óĞ¡
-    FontStyle style;	//×ÖÌåÑùÊ½
+    wstring name;	//å­—ä½“åç§°
+    int size;		//å­—ä½“å¤§å°
+    FontStyle style;	//å­—ä½“æ ·å¼
 };
 
 
@@ -108,7 +108,7 @@ public:
             font_name);
     }
 
-    //½«×ÖºÅ×ª³ÉLOGFONT½á¹¹ÖĞµÄlfHeight
+    //å°†å­—å·è½¬æˆLOGFONTç»“æ„ä¸­çš„lfHeight
     static int FontSizeToLfHeight(int font_size)
     {
         HDC hDC = ::GetDC(HWND_DESKTOP);
@@ -121,14 +121,14 @@ public:
 
 struct FontSet
 {
-    UIFont normal;				//ÆÕÍ¨µÄ×ÖÌå
-    UIFont time;				//ÏÔÊ¾²¥·ÅÊ±¼ä
-    UIFont title;				//½çÃæ2µÄ¸èÇú±êÌâ
+    UIFont normal;				//æ™®é€šçš„å­—ä½“
+    UIFont time;				//æ˜¾ç¤ºæ’­æ”¾æ—¶é—´
+    UIFont title;				//ç•Œé¢2çš„æ­Œæ›²æ ‡é¢˜
 
-    UIFont lyric;				//¸è´Ê×ÖÌå
-    UIFont lyric_translate;		//¸è´Ê·­ÒëµÄ×ÖÌå
-    UIFont cortana;				//ËÑË÷¿ò×ÖÌå
-    UIFont cortana_translate;	//ËÑË÷¿ò·­Òë×ÖÌå
+    UIFont lyric;				//æ­Œè¯å­—ä½“
+    UIFont lyric_translate;		//æ­Œè¯ç¿»è¯‘çš„å­—ä½“
+    UIFont cortana;				//æœç´¢æ¡†å­—ä½“
+    UIFont cortana_translate;	//æœç´¢æ¡†ç¿»è¯‘å­—ä½“
 
     void Init()
     {
@@ -139,9 +139,9 @@ struct FontSet
 };
 
 
-//Ñ¡ÏîÉèÖÃÊı¾İ
+//é€‰é¡¹è®¾ç½®æ•°æ®
 
-struct DesktopLyricSettingData		//×ÀÃæ¸è´ÊÉèÖÃ
+struct DesktopLyricSettingData		//æ¡Œé¢æ­Œè¯è®¾ç½®
 {
 	bool lyric_double_line{ false };
 	FontInfo lyric_font;
@@ -153,129 +153,130 @@ struct DesktopLyricSettingData		//×ÀÃæ¸è´ÊÉèÖÃ
 	int highlight_gradient{};
 	int opacity{ 100 };
 	bool lock_desktop_lyric{ false };
-	bool hide_lyric_window_without_lyric{ false };	//Ã»ÓĞ¸è´ÊÊ±Òş²Ø¸è´Ê´°¿Ú
-	bool hide_lyric_window_when_paused{ false };	//ÔİÍ£Ê±Òş²Ø¸è´Ê´°¿Ú
+	bool hide_lyric_window_without_lyric{ false };	//æ²¡æœ‰æ­Œè¯æ—¶éšè—æ­Œè¯çª—å£
+	bool hide_lyric_window_when_paused{ false };	//æš‚åœæ—¶éšè—æ­Œè¯çª—å£
     bool lyric_background_penetrate{ false };
 };
 
 struct LyricSettingData
 {
-    bool lyric_karaoke_disp{ true };			//¿ÉÒÔÊÇ·ñÒÔ¿¨À­OKÑùÊ½ÏÔÊ¾
-    bool lyric_fuzzy_match{ true };				//¸è´ÊÄ£ºıÆ¥Åä
-    bool save_lyric_in_offset{};				//ÊÇ·ñ½«¸è´Ê±£´æÔÚoffset±êÇ©ÖĞ£¬»¹ÊÇ±£´æÔÚÃ¿¸öÊ±¼ä±êÇ©ÖĞ
-    wstring lyric_path;							//¸è´ÊÎÄ¼ş¼ĞµÄÂ·¾¶
-	bool use_inner_lyric_first{};				//ÓÅÏÈÊ¹ÓÃÄÚÇ¶¸è´Ê
+    bool lyric_karaoke_disp{ true };			//å¯ä»¥æ˜¯å¦ä»¥å¡æ‹‰OKæ ·å¼æ˜¾ç¤º
+    bool lyric_fuzzy_match{ true };				//æ­Œè¯æ¨¡ç³ŠåŒ¹é…
+    bool save_lyric_in_offset{};				//æ˜¯å¦å°†æ­Œè¯ä¿å­˜åœ¨offsetæ ‡ç­¾ä¸­ï¼Œè¿˜æ˜¯ä¿å­˜åœ¨æ¯ä¸ªæ—¶é—´æ ‡ç­¾ä¸­
+    wstring lyric_path;							//æ­Œè¯æ–‡ä»¶å¤¹çš„è·¯å¾„
+	bool use_inner_lyric_first{};				//ä¼˜å…ˆä½¿ç”¨å†…åµŒæ­Œè¯
 
-	enum LyricSavePolicy		//¸è´Ê±£´æ²ßÂÔ
+	enum LyricSavePolicy		//æ­Œè¯ä¿å­˜ç­–ç•¥
 	{
-		LS_DO_NOT_SAVE,			//²»±£´æ£¨ÊÖ¶¯±£´æ£©
-		LS_AUTO_SAVE,			//×Ô¶¯±£´æ
-		LS_INQUIRY				//Ñ¯ÎÊ
+		LS_DO_NOT_SAVE,			//ä¸ä¿å­˜ï¼ˆæ‰‹åŠ¨ä¿å­˜ï¼‰
+		LS_AUTO_SAVE,			//è‡ªåŠ¨ä¿å­˜
+		LS_INQUIRY				//è¯¢é—®
 	};
 
-	LyricSavePolicy lyric_save_policy{};		//¸è´Ê×Ô¶¯±£´æ²ßÂÔ
+	LyricSavePolicy lyric_save_policy{};		//æ­Œè¯è‡ªåŠ¨ä¿å­˜ç­–ç•¥
 
-    bool cortana_info_enable{};				    //ÊÇ·ñÔÊĞíÔÚCortanaµÄËÑË÷¿òÖĞÏÔÊ¾ĞÅÏ¢
-    bool cortana_show_lyric{ true };            //ÊÇ·ñÔÚCortanaËÑË÷¿òÖĞÏÔÊ¾¸è´Ê
-    bool cortana_lyric_double_line{ true };		//ÊÇ·ñÔÚCortanaËÑË÷ÖĞÒÔË«ĞĞÏÔÊ¾¸è´Ê
-    int cortana_color{ 0 };						//CortanaËÑË÷¿òµÄ±³¾°ÑÕÉ«£¨0£º¸úËæÏµÍ³£¬1£ººÚÉ«£¬2£º°×É«£©
-    bool cortana_show_album_cover{ true };		//ÊÇ·ñÔÚCortanaËÑË÷¿òÏÔÊ¾×¨¼­·âÃæ
-    bool cortana_icon_beat{ true };				//CortanaÍ¼±êËæÒôÀÖ½Ú×àÌø¶¯
-    bool cortana_lyric_compatible_mode{ false };	//CortanaËÑË÷¿ò¸è´ÊÏÔÊ¾Ê¹ÓÃ¼æÈİÄ£Ê½
-    FontInfo cortana_font;						//ËÑË÷¿ò×ÖÌå
-    bool cortana_lyric_keep_display{ false };	//ËÑË÷¿ò¸è´ÊÊÇ·ñÔÚÔİÍ£Ê±±£³ÖÏÔÊ¾
-    bool cortana_show_spectrum{ false };		//ÊÇ·ñÔÚËÑË÷¿òÏÔÊ¾ÆµÆ×
-	bool cortana_opaque{ false };				//ËÑË÷¿ò²»Í¸Ã÷
-    Alignment cortana_lyric_align{ Alignment::CENTER };               //ËÑË÷¿ò¸è´Ê¶ÔÆë·½Ê½
+    bool cortana_info_enable{};				    //æ˜¯å¦å…è®¸åœ¨Cortanaçš„æœç´¢æ¡†ä¸­æ˜¾ç¤ºä¿¡æ¯
+    bool cortana_show_lyric{ true };            //æ˜¯å¦åœ¨Cortanaæœç´¢æ¡†ä¸­æ˜¾ç¤ºæ­Œè¯
+    bool cortana_lyric_double_line{ true };		//æ˜¯å¦åœ¨Cortanaæœç´¢ä¸­ä»¥åŒè¡Œæ˜¾ç¤ºæ­Œè¯
+    int cortana_color{ 0 };						//Cortanaæœç´¢æ¡†çš„èƒŒæ™¯é¢œè‰²ï¼ˆ0ï¼šè·Ÿéšç³»ç»Ÿï¼Œ1ï¼šé»‘è‰²ï¼Œ2ï¼šç™½è‰²ï¼‰
+    bool cortana_show_album_cover{ true };		//æ˜¯å¦åœ¨Cortanaæœç´¢æ¡†æ˜¾ç¤ºä¸“è¾‘å°é¢
+    bool cortana_icon_beat{ true };				//Cortanaå›¾æ ‡éšéŸ³ä¹èŠ‚å¥è·³åŠ¨
+    bool cortana_lyric_compatible_mode{ false };	//Cortanaæœç´¢æ¡†æ­Œè¯æ˜¾ç¤ºä½¿ç”¨å…¼å®¹æ¨¡å¼
+    FontInfo cortana_font;						//æœç´¢æ¡†å­—ä½“
+    bool cortana_lyric_keep_display{ false };	//æœç´¢æ¡†æ­Œè¯æ˜¯å¦åœ¨æš‚åœæ—¶ä¿æŒæ˜¾ç¤º
+    bool cortana_show_spectrum{ false };		//æ˜¯å¦åœ¨æœç´¢æ¡†æ˜¾ç¤ºé¢‘è°±
+	bool cortana_opaque{ false };				//æœç´¢æ¡†ä¸é€æ˜
+    Alignment cortana_lyric_align{ Alignment::CENTER };               //æœç´¢æ¡†æ­Œè¯å¯¹é½æ–¹å¼
 
-	bool show_desktop_lyric{ false };			//ÏÔÊ¾×ÀÃæ¸è´Ê
+	bool show_desktop_lyric{ false };			//æ˜¾ç¤ºæ¡Œé¢æ­Œè¯
 	DesktopLyricSettingData desktop_lyric_data;
 };
 
 struct ApperanceSettingData
 {
-    FontInfo lyric_font;						//¸è´Ê×ÖÌå
-    int lyric_line_space{ 2 };					//¸è´ÊµÄĞĞ¼ä¾à
-    Alignment lyric_align{ Alignment::CENTER }; //¸è´ÊµÄ¶ÔÆë·½Ê½
-    int window_transparency{ 100 };				//´°¿ÚÍ¸Ã÷¶È
-    ColorTable theme_color;						//Ö÷ÌâÑÕÉ«
-    bool theme_color_follow_system{ true };		//Ö÷ÌâÑÕÉ«¸úËæÏµÍ³£¨½öWin8ÒÔÉÏÖ§³Ö£©
-    bool show_album_cover;						//ÏÔÊ¾×¨¼­·âÃæ
-    CDrawCommon::StretchMode album_cover_fit{ CDrawCommon::StretchMode::FILL };		//×¨¼­·âÃæÆõºÏ¶È£¨À­ÉìÄ£Ê½£©
+    FontInfo lyric_font;						//æ­Œè¯å­—ä½“
+    int lyric_line_space{ 2 };					//æ­Œè¯çš„è¡Œé—´è·
+    Alignment lyric_align{ Alignment::CENTER }; //æ­Œè¯çš„å¯¹é½æ–¹å¼
+    int window_transparency{ 100 };				//çª—å£é€æ˜åº¦
+    ColorTable theme_color;						//ä¸»é¢˜é¢œè‰²
+    bool theme_color_follow_system{ true };		//ä¸»é¢˜é¢œè‰²è·Ÿéšç³»ç»Ÿï¼ˆä»…Win8ä»¥ä¸Šæ”¯æŒï¼‰
+    bool show_album_cover;						//æ˜¾ç¤ºä¸“è¾‘å°é¢
+    CDrawCommon::StretchMode album_cover_fit{ CDrawCommon::StretchMode::FILL };		//ä¸“è¾‘å°é¢å¥‘åˆåº¦ï¼ˆæ‹‰ä¼¸æ¨¡å¼ï¼‰
     bool enable_background{ true };
-    bool album_cover_as_background{ false };	//½«×¨¼­·âÃæ×÷Îª±³¾°
-    bool show_spectrum{ true };					//ÏÔÊ¾ÆµÆ×·ÖÎö
-    int sprctrum_height{ 100 };					//ÆµÆ×·ÖÎö¸ß¶È±ÈÀı£¨%£©
-    bool spectrum_low_freq_in_center{ false };  //ÆµÆ×·ÖÎöµÍÆµ²¿·ÖÏÔÊ¾ÔÚÖĞ¼ä
-    int background_transparency{ 80 };			//±³¾°µÄÍ¸Ã÷¶È
-    bool use_out_image{ true };					//Ê¹ÓÃÍâ²¿Í¼Æ¬×÷Îª×¨¼­·âÃæ
-    bool use_inner_image_first{ true };			//ÓÅÏÈÊ¹ÓÃÄÚÇ¶×¨¼­·âÃæ
-    vector<wstring> default_album_name;			//Ä¬ÈÏµÄ×¨¼­·âÃæÎÄ¼şÃû
-    bool background_gauss_blur{ true };			//±³¾°¸ßË¹Ä£ºı
-    int gauss_blur_radius{ 60 };				//¸ßË¹Ä£ºı°ë¾¶*10
-    bool lyric_background{ true };				//¸è´Ê½çÃæ±³¾°
-    bool dark_mode{ false };					//ÉîÉ«Ä£Ê½
+    bool album_cover_as_background{ false };	//å°†ä¸“è¾‘å°é¢ä½œä¸ºèƒŒæ™¯
+    bool show_spectrum{ true };					//æ˜¾ç¤ºé¢‘è°±åˆ†æ
+    int sprctrum_height{ 100 };					//é¢‘è°±åˆ†æé«˜åº¦æ¯”ä¾‹ï¼ˆ%ï¼‰
+    bool spectrum_low_freq_in_center{ false };  //é¢‘è°±åˆ†æä½é¢‘éƒ¨åˆ†æ˜¾ç¤ºåœ¨ä¸­é—´
+    int background_transparency{ 80 };			//èƒŒæ™¯çš„é€æ˜åº¦
+    bool use_out_image{ true };					//ä½¿ç”¨å¤–éƒ¨å›¾ç‰‡ä½œä¸ºä¸“è¾‘å°é¢
+    bool use_inner_image_first{ true };			//ä¼˜å…ˆä½¿ç”¨å†…åµŒä¸“è¾‘å°é¢
+    vector<wstring> default_album_name;			//é»˜è®¤çš„ä¸“è¾‘å°é¢æ–‡ä»¶å
+    bool background_gauss_blur{ true };			//èƒŒæ™¯é«˜æ–¯æ¨¡ç³Š
+    int gauss_blur_radius{ 60 };				//é«˜æ–¯æ¨¡ç³ŠåŠå¾„*10
+    bool lyric_background{ true };				//æ­Œè¯ç•Œé¢èƒŒæ™¯
+    bool dark_mode{ false };					//æ·±è‰²æ¨¡å¼
 };
 
 struct GeneralSettingData
 {
-    bool id3v2_first{ false };					//ÓÅÏÈ»ñÈ¡ID3V2±êÇ©
-    bool auto_download_lyric{ false };			//ÊÇ·ñ×Ô¶¯ÏÂÔØ¸è´Ê
-    bool auto_download_album_cover{ true };		//ÊÇ·ñ×Ô¶¯ÏÂÔØ×¨¼­·âÃæ
-    bool auto_download_only_tag_full{ true };	//½öÔÚ¸èÇúĞÅÏ¢ÍêÕûÊ±×Ô¶¯ÏÂÔØ
-    bool save_lyric_to_song_folder{ true };     //½«¸è´ÊÎÄ¼ş±£´æÔÚ¸èÇúÎÄ¼ş¼Ğ
-    bool check_update_when_start{ true };		//ÊÇ·ñÔÚ³ÌĞòÆô¶¯Ê±¼ì²é¸üĞÂ
-    wstring sf2_path;							//MIDIÒôÉ«¿âÂ·¾¶
-    bool midi_use_inner_lyric{ false };			//²¥·ÅMIDIÒôÀÖÊ±ÏÔÊ¾ÄÚÇ¶¸è´Ê
-    bool minimize_to_notify_icon{ false };		//ÊÇ·ñ×îĞ¡µ½Í¨ÖªÇøÍ¼±ê
+    bool id3v2_first{ false };					//ä¼˜å…ˆè·å–ID3V2æ ‡ç­¾
+    bool auto_download_lyric{ false };			//æ˜¯å¦è‡ªåŠ¨ä¸‹è½½æ­Œè¯
+    bool auto_download_album_cover{ true };		//æ˜¯å¦è‡ªåŠ¨ä¸‹è½½ä¸“è¾‘å°é¢
+    bool auto_download_only_tag_full{ true };	//ä»…åœ¨æ­Œæ›²ä¿¡æ¯å®Œæ•´æ—¶è‡ªåŠ¨ä¸‹è½½
+    bool save_lyric_to_song_folder{ true };     //å°†æ­Œè¯æ–‡ä»¶ä¿å­˜åœ¨æ­Œæ›²æ–‡ä»¶å¤¹
+    bool check_update_when_start{ true };		//æ˜¯å¦åœ¨ç¨‹åºå¯åŠ¨æ—¶æ£€æŸ¥æ›´æ–°
+    wstring sf2_path;							//MIDIéŸ³è‰²åº“è·¯å¾„
+    bool midi_use_inner_lyric{ false };			//æ’­æ”¾MIDIéŸ³ä¹æ—¶æ˜¾ç¤ºå†…åµŒæ­Œè¯
+    bool minimize_to_notify_icon{ false };		//æ˜¯å¦æœ€å°åˆ°é€šçŸ¥åŒºå›¾æ ‡
 
     Language language;
 };
 
 struct PlaySettingData
 {
-    bool stop_when_error{ true };				//³öÏÖ´íÎóÊ±Í£Ö¹²¥·Å
-    bool auto_play_when_start{ false };			//³ÌĞòÆô¶¯Ê±×Ô¶¯²¥·Å
-    bool show_taskbar_progress{ false };		//ÔÚÈÎÎñÀ¸°´Å¥ÉÏÏÔÊ¾²¥·Å½ø¶È
-    bool show_playstate_icon{ true };			//ÔÚÈÎÎñÀ¸°´Å¥ÉÏÏÔÊ¾²¥·Å×´Ì¬µÄ½Ç±ê
-    wstring output_device;						//²¥·ÅÉè±¸µÄÃû³Æ
+    bool stop_when_error{ true };				//å‡ºç°é”™è¯¯æ—¶åœæ­¢æ’­æ”¾
+    bool auto_play_when_start{ false };			//ç¨‹åºå¯åŠ¨æ—¶è‡ªåŠ¨æ’­æ”¾
+    bool show_taskbar_progress{ false };		//åœ¨ä»»åŠ¡æ æŒ‰é’®ä¸Šæ˜¾ç¤ºæ’­æ”¾è¿›åº¦
+    bool show_playstate_icon{ true };			//åœ¨ä»»åŠ¡æ æŒ‰é’®ä¸Šæ˜¾ç¤ºæ’­æ”¾çŠ¶æ€çš„è§’æ ‡
+    wstring output_device;						//æ’­æ”¾è®¾å¤‡çš„åç§°
     int device_selected{};
-    bool fade_effect{ true };                   //²¥·Åµ­Èëµ­³öĞ§¹û
-    int fade_time{ 500 };                      //µ­Èëµ­³öÊ±¼ä£¨ºÁÃë£©
+    bool fade_effect{ true };                   //æ’­æ”¾æ·¡å…¥æ·¡å‡ºæ•ˆæœ
+    int fade_time{ 500 };                      //æ·¡å…¥æ·¡å‡ºæ—¶é—´ï¼ˆæ¯«ç§’ï¼‰
 
-    bool use_mci{ false };              //ÊÇ·ñÊ¹ÓÃMCIÄÚºË
+    bool use_mci{ false };              //æ˜¯å¦ä½¿ç”¨MCIå†…æ ¸
 };
 
 struct GlobalHotKeySettingData
 {
     bool hot_key_enable = true;
-    bool global_multimedia_key_enable{ true };	//ÊÇ·ñÔÚÈ«¾Ö·¶Î§ÄÚÆôÓÃ¶àÃ½Ìå¼ü
+    bool global_multimedia_key_enable{ true };	//æ˜¯å¦åœ¨å…¨å±€èŒƒå›´å†…å¯ç”¨å¤šåª’ä½“é”®
 };
 
 struct MediaLibSettingData
 {
-    vector<wstring> media_folders;      //Ã½Ìå¿âÎÄ¼ş¼Ğä¯ÀÀÖĞÏÔÊ¾µÄÎÄ¼ş¼Ğ
-    bool hide_only_one_classification;  //Ã½Ìå¿âÖĞ½«Ö»ÓĞÒ»ÏîµÄ·ÖÀà¹éµ½ÆäËûÀàÖĞ
-    bool show_tree_tool_tips;           //Ê÷¿Ø¼şÏÔÊ¾Êó±êÌáÊ¾
-    bool update_media_lib_when_start_up;    //Æô¶¯Ê±×Ô¶¯¸üĞÂÃ½Ìå¿â
+    vector<wstring> media_folders;      //åª’ä½“åº“æ–‡ä»¶å¤¹æµè§ˆä¸­æ˜¾ç¤ºçš„æ–‡ä»¶å¤¹
+    bool hide_only_one_classification;  //åª’ä½“åº“ä¸­å°†åªæœ‰ä¸€é¡¹çš„åˆ†ç±»å½’åˆ°å…¶ä»–ç±»ä¸­
+    bool show_tree_tool_tips;           //æ ‘æ§ä»¶æ˜¾ç¤ºé¼ æ ‡æç¤º
+    bool update_media_lib_when_start_up;    //å¯åŠ¨æ—¶è‡ªåŠ¨æ›´æ–°åª’ä½“åº“
+	bool disable_drag_sort;				//ç¦æ­¢é€šè¿‡æ‹–æ”¾æ’åº
 };
 
 struct NonCategorizedSettingData
 {
-    int volum_step{ 3 };			//µã»÷Ö÷½çÃæÖĞµÄÒôÁ¿µ÷½ÚÊ±Ò»´Îµ÷ÕûµÄ²½³¤
-    int mouse_volum_step{ 2 };		//Í¨¹ıÊó±ê¹öÂÖµ÷½ÚÒôÁ¿Ê±µÄ²½³¤
-    int volume_map{ 100 };			//ÒôÁ¿Ó³Éä£¨ÀıÈç£ºÈç¹û½«´ËÖµ´Ó100¸ÄÎª60£¬Ôòµ±ÒôÁ¿ÉèÖÃÎª×î´ó£¨100%£©Ê±µÄÒôÁ¿´óĞ¡ÎªÔ­À´µÄ60%£©
-    bool show_cover_tip{ true };	//ÊÇ·ñÏÔÊ¾×¨¼­·âÃæÉÏµÄÊó±êÌáÊ¾
-    //wstring default_back_image_path{};	//Ã»ÓĞ×¨¼­·âÃæÊ±µÄÄ¬ÈÏ±³¾°µÄÂ·¾¶
-    bool no_sf2_warning{ true };	//ÊÇ·ñÔÚÃ»ÓĞMIDIÒôÉ«¿âÊ±µ¯³öÌáÊ¾ĞÅÏ¢
-    bool show_hide_menu_bar_tip{ true };	//ÊÇÒş²Ø²Ëµ¥À¸ÊÇ·ñµ¯³öÌáÊ¾ĞÅÏ¢
-    bool always_on_top{ false };	//ÊÇ·ñ×ÜÊÇÖÃ¶¥
+    int volum_step{ 3 };			//ç‚¹å‡»ä¸»ç•Œé¢ä¸­çš„éŸ³é‡è°ƒèŠ‚æ—¶ä¸€æ¬¡è°ƒæ•´çš„æ­¥é•¿
+    int mouse_volum_step{ 2 };		//é€šè¿‡é¼ æ ‡æ»šè½®è°ƒèŠ‚éŸ³é‡æ—¶çš„æ­¥é•¿
+    int volume_map{ 100 };			//éŸ³é‡æ˜ å°„ï¼ˆä¾‹å¦‚ï¼šå¦‚æœå°†æ­¤å€¼ä»100æ”¹ä¸º60ï¼Œåˆ™å½“éŸ³é‡è®¾ç½®ä¸ºæœ€å¤§ï¼ˆ100%ï¼‰æ—¶çš„éŸ³é‡å¤§å°ä¸ºåŸæ¥çš„60%ï¼‰
+    bool show_cover_tip{ true };	//æ˜¯å¦æ˜¾ç¤ºä¸“è¾‘å°é¢ä¸Šçš„é¼ æ ‡æç¤º
+    //wstring default_back_image_path{};	//æ²¡æœ‰ä¸“è¾‘å°é¢æ—¶çš„é»˜è®¤èƒŒæ™¯çš„è·¯å¾„
+    bool no_sf2_warning{ true };	//æ˜¯å¦åœ¨æ²¡æœ‰MIDIéŸ³è‰²åº“æ—¶å¼¹å‡ºæç¤ºä¿¡æ¯
+    bool show_hide_menu_bar_tip{ true };	//æ˜¯éšè—èœå•æ æ˜¯å¦å¼¹å‡ºæç¤ºä¿¡æ¯
+    bool always_on_top{ false };	//æ˜¯å¦æ€»æ˜¯ç½®é¡¶
     COLORREF cortana_transparent_color{};
 	wstring default_osu_img;
 
-    bool float_playlist{ false };		//¸¡¶¯²¥·ÅÁĞ±í
-    CSize playlist_size{320, 530};		//¸¡¶¯²¥·ÅÁĞ±íµÄ´óĞ¡
-    bool playlist_btn_for_float_playlist{ false };		//Ö¸¶¨Ö÷½çÃæÖĞ½ø¶ÈÌõÓÒ²àµÄ¡°ÏÔÊ¾/Òş²Ø²¥·ÅÁĞ±í¡±°´Å¥µÄ¹¦ÄÜÊÇ·ñÎªÏÔÊ¾¸¡¶¯²¥·ÅÁĞ±í
+    bool float_playlist{ false };		//æµ®åŠ¨æ’­æ”¾åˆ—è¡¨
+    CSize playlist_size{320, 530};		//æµ®åŠ¨æ’­æ”¾åˆ—è¡¨çš„å¤§å°
+    bool playlist_btn_for_float_playlist{ false };		//æŒ‡å®šä¸»ç•Œé¢ä¸­è¿›åº¦æ¡å³ä¾§çš„â€œæ˜¾ç¤º/éšè—æ’­æ”¾åˆ—è¡¨â€æŒ‰é’®çš„åŠŸèƒ½æ˜¯å¦ä¸ºæ˜¾ç¤ºæµ®åŠ¨æ’­æ”¾åˆ—è¡¨
 };
 
 struct IconRes
@@ -375,40 +376,40 @@ struct IconSet
 };
 
 
-//²¥·ÅÁĞ±íÖĞÏîÄ¿µÄÏÔÊ¾¸ñÊ½
+//æ’­æ”¾åˆ—è¡¨ä¸­é¡¹ç›®çš„æ˜¾ç¤ºæ ¼å¼
 enum DisplayFormat
 {
-    DF_FILE_NAME,		//ÎÄ¼şÃû
-    DF_TITLE,			//±êÌâ
-    DF_ARTIST_TITLE,	//ÒÕÊõ¼Ò - ±êÌâ
-    DF_TITLE_ARTIST		//±êÌâ - ÒÕÊõ¼Ò
+    DF_FILE_NAME,		//æ–‡ä»¶å
+    DF_TITLE,			//æ ‡é¢˜
+    DF_ARTIST_TITLE,	//è‰ºæœ¯å®¶ - æ ‡é¢˜
+    DF_TITLE_ARTIST		//æ ‡é¢˜ - è‰ºæœ¯å®¶
 };
 
-//½çÃæÏà¹ØµÄÒ»Ğ©Ñ¡Ïî
+//ç•Œé¢ç›¸å…³çš„ä¸€äº›é€‰é¡¹
 struct UIData
 {
-    bool show_translate{ true };		//¸è´ÊÊÇ·ñÏÔÊ¾·­Òë
-    bool narrow_mode;					//Õ­½çÃæÄ£Ê½
+    bool show_translate{ true };		//æ­Œè¯æ˜¯å¦æ˜¾ç¤ºç¿»è¯‘
+    bool narrow_mode;					//çª„ç•Œé¢æ¨¡å¼
     bool show_playlist{ true };
     bool show_menu_bar{ true };
     bool full_screen{ false };
-    bool always_show_statusbar{ false };    //×ÜÊÇÏÔÊ¾×´Ì¬À¸
+    bool always_show_statusbar{ false };    //æ€»æ˜¯æ˜¾ç¤ºçŠ¶æ€æ 
 
-    int client_width;					//´°¿Ú¿Í»§Çø¿í¶È
-    int client_height;					//´°¿Ú¿Í»§Çø¸ß¶È
-    CImage default_background;			//Ä¬ÈÏµÄ±³¾°
-    DisplayFormat display_format{};		//²¥·ÅÁĞ±íÖĞÏîÄ¿µÄÏÔÊ¾ÑùÊ½
+    int client_width;					//çª—å£å®¢æˆ·åŒºå®½åº¦
+    int client_height;					//çª—å£å®¢æˆ·åŒºé«˜åº¦
+    CImage default_background;			//é»˜è®¤çš„èƒŒæ™¯
+    DisplayFormat display_format{};		//æ’­æ”¾åˆ—è¡¨ä¸­é¡¹ç›®çš„æ˜¾ç¤ºæ ·å¼
 };
 
 struct MenuSet
 {
-    CMenu m_main_menu;				//²Ëµ¥À¸ÉÏµÄ²Ëµ¥
-    CMenu m_list_popup_menu;		//²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥
-    CMenu m_main_menu_popup;		//°´×¡Shift¼üÊ±µ¯³öµÄÓÒ¼ü²Ëµ¥
-    CMenu m_popup_menu;			//¸è´ÊÓÒ¼ü²Ëµ¥
+    CMenu m_main_menu;				//èœå•æ ä¸Šçš„èœå•
+    CMenu m_list_popup_menu;		//æ’­æ”¾åˆ—è¡¨å³é”®èœå•
+    CMenu m_main_menu_popup;		//æŒ‰ä½Shifté”®æ—¶å¼¹å‡ºçš„å³é”®èœå•
+    CMenu m_popup_menu;			//æ­Œè¯å³é”®èœå•
     CMenu m_main_popup_menu;
-    CMenu m_playlist_btn_menu;		//²¥·ÅÁĞ±í°´Å¥ÉÏµÄÓÒ¼ü²Ëµ¥
+    CMenu m_playlist_btn_menu;		//æ’­æ”¾åˆ—è¡¨æŒ‰é’®ä¸Šçš„å³é”®èœå•
     CMenu m_playlist_toolbar_menu;
-    CMenu m_lyric_default_style;     //×ÀÃæ¸è´ÊÔ¤Éè·½°¸²Ëµ¥
+    CMenu m_lyric_default_style;     //æ¡Œé¢æ­Œè¯é¢„è®¾æ–¹æ¡ˆèœå•
     CMenu m_media_lib_popup_menu;
 };

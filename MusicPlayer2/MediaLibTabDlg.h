@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "TabDlg.h"
 #include "SongInfo.h"
 #include "ListCtrlEx.h"
@@ -25,10 +25,10 @@ protected:
 	virtual int GetPathColIndex() const = 0;
 	virtual wstring GetSelectedString() const = 0;
 
-	virtual bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //Ö´ĞĞÌí¼Óµ½ĞÂ½¨²¥·ÅÁĞ±íÃüÁî£¬³É¹¦·µ»Øtrue£¬playlist_pathÓÃÓÚ½ÓÊÕĞÂ²¥·ÅÁĞ±íµÄÂ·¾¶
+	virtual bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //æ‰§è¡Œæ·»åŠ åˆ°æ–°å»ºæ’­æ”¾åˆ—è¡¨å‘½ä»¤ï¼ŒæˆåŠŸè¿”å›trueï¼Œplaylist_pathç”¨äºæ¥æ”¶æ–°æ’­æ”¾åˆ—è¡¨çš„è·¯å¾„
 
 private:
-	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//Ö´ĞĞÔÚÏß²é¿´µÄÏß³Ìº¯Êı
+	static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//æ‰§è¡Œåœ¨çº¿æŸ¥çœ‹çš„çº¿ç¨‹å‡½æ•°
 
 public:
 	virtual void OnOK();

@@ -1,4 +1,4 @@
-// ProgressStatic.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// ProgressStatic.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -92,27 +92,27 @@ END_MESSAGE_MAP()
 
 
 
-// CPlayerToolBar ÏûÏ¢´¦Àí³ÌĞò
+// CPlayerToolBar æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 void CPlayerToolBar::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
-	// ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CStatic::OnPaint()
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+	// ä¸ä¸ºç»˜å›¾æ¶ˆæ¯è°ƒç”¨ CStatic::OnPaint()
 
     CRect rect;
     GetClientRect(rect);
 
-    //Ë«»º³å»æÍ¼
+    //åŒç¼“å†²ç»˜å›¾
     {
         CDrawDoubleBuffer drawDoubleBuffer(&dc, rect);
         CDrawCommon drawer;
         drawer.Create(drawDoubleBuffer.GetMemDC(), this);
 
-        //»æÖÆ±³¾°
+        //ç»˜åˆ¶èƒŒæ™¯
         drawer.FillRect(rect, CColorConvert::m_gray_color.light3);
 
-        //»æÖÆÍ¼±ê
+        //ç»˜åˆ¶å›¾æ ‡
         CRect rc_icon = rect;
         rc_icon.left += theApp.DPI(2);
         rc_icon.top = (rect.Height() - m_icon_size) / 2;
@@ -144,7 +144,7 @@ void CPlayerToolBar::OnPaint()
                 drawer.FillRect(rc_icon, m_theme_color.light1_5);
 
             CRect rc_tmp = rc_icon;
-            //Ê¹Í¼±êÔÚ¾ØĞÎÖĞ¾ÓÖĞ
+            //ä½¿å›¾æ ‡åœ¨çŸ©å½¢ä¸­å±…ä¸­
             CSize icon_size = iter->icon.GetSize();
             if (draw_text)
                 rc_tmp.left = rc_icon.left + theApp.DPI(2);
@@ -160,7 +160,7 @@ void CPlayerToolBar::OnPaint()
             }
             drawer.SetDrawArea(rc_tmp);
             drawer.DrawIcon(iter->icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
-            //»æÖÆÎÄ±¾
+            //ç»˜åˆ¶æ–‡æœ¬
             if (draw_text)
             {
                 CRect rc_text = rc_icon;
@@ -179,7 +179,7 @@ void CPlayerToolBar::OnPaint()
 
     if (m_first_draw && !m_buttons.empty())
     {
-        AddToolTips();              //ÔÚµÚÒ»´Î»æÖÆÍê³ÉÖ®ºóÌí¼ÓÊó±êÌáÊ¾£¬ÒòÎªÔÚ»æÖÆÖ®Ç°ÎŞ·¨È·¶¨°´Å¥¾ØĞÎÇøÓò
+        AddToolTips();              //åœ¨ç¬¬ä¸€æ¬¡ç»˜åˆ¶å®Œæˆä¹‹åæ·»åŠ é¼ æ ‡æç¤ºï¼Œå› ä¸ºåœ¨ç»˜åˆ¶ä¹‹å‰æ— æ³•ç¡®å®šæŒ‰é’®çŸ©å½¢åŒºåŸŸ
         m_first_draw = false;
     }
 }
@@ -187,11 +187,11 @@ void CPlayerToolBar::OnPaint()
 
 void CPlayerToolBar::PreSubclassWindow()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
-	//Îª¿Ø¼şÉèÖÃSS_NOTIFYÊôĞÔ
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
+	//ä¸ºæ§ä»¶è®¾ç½®SS_NOTIFYå±æ€§
     ModifyStyle(NULL, SS_NOTIFY);
 
-    //³õÊ¼»¯ÌáÊ¾ĞÅÏ¢
+    //åˆå§‹åŒ–æç¤ºä¿¡æ¯
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
@@ -201,7 +201,7 @@ void CPlayerToolBar::PreSubclassWindow()
 
 void CPlayerToolBar::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     for (auto& btn : m_buttons)
     {
         if (btn.rect.PtInRect(point) != FALSE)
@@ -217,7 +217,7 @@ void CPlayerToolBar::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CPlayerToolBar::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     for (auto& btn : m_buttons)
     {
         btn.pressed = false;
@@ -246,7 +246,7 @@ void CPlayerToolBar::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CPlayerToolBar::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     for (auto& btn : m_buttons)
     {
         bool hover = (btn.rect.PtInRect(point) != FALSE);
@@ -270,7 +270,7 @@ void CPlayerToolBar::OnMouseMove(UINT nFlags, CPoint point)
 
 BOOL CPlayerToolBar::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (m_tool_tip.GetSafeHwnd() && pMsg->message == WM_MOUSEMOVE)
 	{
 		m_tool_tip.RelayEvent(pMsg);
@@ -283,7 +283,7 @@ BOOL CPlayerToolBar::PreTranslateMessage(MSG* pMsg)
 
 void CPlayerToolBar::OnMouseLeave()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if(!m_menu_poped_up)
     {
         for (auto& btn : m_buttons)
@@ -300,7 +300,7 @@ void CPlayerToolBar::OnMouseLeave()
 
 void CPlayerToolBar::OnMouseHover(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
     CStatic::OnMouseHover(nFlags, point);
 }
@@ -308,15 +308,15 @@ void CPlayerToolBar::OnMouseHover(UINT nFlags, CPoint point)
 
 afx_msg LRESULT CPlayerToolBar::OnInitmenu(WPARAM wParam, LPARAM lParam)
 {
-    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //½«WM_INITMENUÏûÏ¢×ª·¢µ½Ö÷´°¿Ú
+    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //å°†WM_INITMENUæ¶ˆæ¯è½¬å‘åˆ°ä¸»çª—å£
     return 0;
 }
 
 
 BOOL CPlayerToolBar::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
-    GetCmdReciveWindow()->SendMessage(WM_COMMAND, wParam, lParam);        //×ª·¢WM_COMMANDÏûÏ¢
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
+    GetCmdReciveWindow()->SendMessage(WM_COMMAND, wParam, lParam);        //è½¬å‘WM_COMMANDæ¶ˆæ¯
 
     return CStatic::OnCommand(wParam, lParam);
 }

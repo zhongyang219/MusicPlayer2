@@ -1,20 +1,20 @@
-#pragma once
+ï»¿#pragma once
 #include "ColorConvert.h"
 
-struct UIColors		//½çÃæÑÕÉ«
+struct UIColors		//ç•Œé¢é¢œè‰²
 {
-    COLORREF color_text;				//ÎÄ±¾ÑÕÉ«
-    COLORREF color_text_lable;			//±êÇ©ÎÄ±¾µÄÑÕÉ«
-    COLORREF color_text_2;				//¸è´ÊÎ´²¥·ÅÎÄ±¾µÄÑÕÉ«
-    COLORREF color_text_heighlight;		//Êó±êÖ¸ÏòÊ±ÎÄ±¾µÄÑÕÉ«
-    COLORREF color_back;				//±³¾°ÑÕÉ«
-    COLORREF color_lyric_back;			//¸è´Ê½çÃæ±³¾°ÑÕÉ«
-    COLORREF color_control_bar_back;	//¿ØÖÆÌõ±³¾°ÑÕÉ«
-    COLORREF color_spectrum;			//ÆµÆ×·ÖÎöÖùĞÎµÄÑÕÉ«
-    COLORREF color_spectrum_cover;		//ÓĞ×¨¼­·âÃæÊ±µÄÆµÆ×·ÖÎöÖùĞÎµÄÑÕÉ«
-    COLORREF color_spectrum_back;		//ÆµÆ×·ÖÎöµÄ±³¾°ÑÕÉ«
-    COLORREF color_button_back;			//¸è´Ê·­Òë°´Å¥µÄ±³¾°É«
-    COLORREF color_button_pressed;		//°´Å¥°´ÏÂµÄÑÕÉ«
+    COLORREF color_text;				//æ–‡æœ¬é¢œè‰²
+    COLORREF color_text_lable;			//æ ‡ç­¾æ–‡æœ¬çš„é¢œè‰²
+    COLORREF color_text_2;				//æ­Œè¯æœªæ’­æ”¾æ–‡æœ¬çš„é¢œè‰²
+    COLORREF color_text_heighlight;		//é¼ æ ‡æŒ‡å‘æ—¶æ–‡æœ¬çš„é¢œè‰²
+    COLORREF color_back;				//èƒŒæ™¯é¢œè‰²
+    COLORREF color_lyric_back;			//æ­Œè¯ç•Œé¢èƒŒæ™¯é¢œè‰²
+    COLORREF color_control_bar_back;	//æ§åˆ¶æ¡èƒŒæ™¯é¢œè‰²
+    COLORREF color_spectrum;			//é¢‘è°±åˆ†ææŸ±å½¢çš„é¢œè‰²
+    COLORREF color_spectrum_cover;		//æœ‰ä¸“è¾‘å°é¢æ—¶çš„é¢‘è°±åˆ†ææŸ±å½¢çš„é¢œè‰²
+    COLORREF color_spectrum_back;		//é¢‘è°±åˆ†æçš„èƒŒæ™¯é¢œè‰²
+    COLORREF color_button_back;			//æ­Œè¯ç¿»è¯‘æŒ‰é’®çš„èƒŒæ™¯è‰²
+    COLORREF color_button_pressed;		//æŒ‰é’®æŒ‰ä¸‹çš„é¢œè‰²
 };
 
 class CPlayerUIHelper
@@ -25,7 +25,7 @@ public:
 
     static UIColors GetUIColors(const ColorTable& colorTable, bool dark);
 
-    static bool IsMidiLyric();		//ÊÇ·ñ»æÖÆMIDIÒôÀÖµÄ¸è´Ê
-    static bool IsDrawStatusBar();  //ÊÇ·ñ»æÖÆ×´Ì¬À¸
+    static bool IsMidiLyric();		//æ˜¯å¦ç»˜åˆ¶MIDIéŸ³ä¹çš„æ­Œè¯
+    static bool IsDrawStatusBar();  //æ˜¯å¦ç»˜åˆ¶çŠ¶æ€æ 
 };
 

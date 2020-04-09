@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ColorConvert.h"
 
 // CPlayerProgressBar
@@ -16,7 +16,7 @@ public:
     void SetBarCount(int bar_cnt);
 
 protected:
-    int m_progress;       //µ±Ç°½ø¶È£¨°Ù·Ö±È£©
+    int m_progress;       //å½“å‰è¿›åº¦ï¼ˆç™¾åˆ†æ¯”ï¼‰
     const ColorTable& m_theme_color;
     COLORREF m_back_color{ RGB(255, 255, 255) };
     int m_bar_count{ 10 };

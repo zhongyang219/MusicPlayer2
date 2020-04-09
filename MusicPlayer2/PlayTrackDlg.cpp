@@ -1,4 +1,4 @@
-// PlayTrackDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// PlayTrackDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CPlayTrackDlg ¶Ô»°¿ò
+// CPlayTrackDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CPlayTrackDlg, CDialogEx)
 
@@ -33,7 +33,7 @@ BEGIN_MESSAGE_MAP(CPlayTrackDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CPlayTrackDlg ÏûÏ¢´¦Àí³ÌĞò
+// CPlayTrackDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 int CPlayTrackDlg::GetTrack() const
@@ -43,12 +43,12 @@ int CPlayTrackDlg::GetTrack() const
 
 void CPlayTrackDlg::OnEnChangeEditTrack()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialogEx::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialogEx::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString str;
 	m_track_edit.GetWindowText(str);
 	m_track = _wtoi(str);
@@ -59,10 +59,10 @@ BOOL CPlayTrackDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	m_track_edit.SetLimitText(6);
-	m_track_edit.SetFocus();		//³õÊ¼Ê±½«½¹µãÉèÖÃµ½±à¼­¿Ø¼ş
+	m_track_edit.SetFocus();		//åˆå§‹æ—¶å°†ç„¦ç‚¹è®¾ç½®åˆ°ç¼–è¾‘æ§ä»¶
 
 	return FALSE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }

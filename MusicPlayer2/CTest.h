@@ -1,6 +1,6 @@
-#pragma once
+ï»¿#pragma once
 
-//ÓÃÓÚ²âÊÔµÄ´úÂë
+//ç”¨äºæµ‹è¯•çš„ä»£ç 
 class CTest
 {
 public:

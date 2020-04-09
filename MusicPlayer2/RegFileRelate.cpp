@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "RegFileRelate.h"
 
 
@@ -34,7 +34,7 @@ bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool 
         str_ext = _T('.') + str_ext;
 
     CRegKey key;
-    //´ò¿ªSoftware\Classes\.À©Õ¹Ãû µÄÏî£¬²¢½«ÆäÄ¬ÈÏ¼üÖµ¸ÄÎª ¡°app_name.À©Õ¹Ãû¡±
+    //æ‰“å¼€Software\Classes\.æ‰©å±•å çš„é¡¹ï¼Œå¹¶å°†å…¶é»˜è®¤é”®å€¼æ”¹ä¸º â€œapp_name.æ‰©å±•åâ€
     if (!OpenItem(key, CString("Software\\Classes\\") + str_ext))
         return false;
 
@@ -44,7 +44,7 @@ bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool 
     if (key.SetStringValue(NULL, m_app_name + str_ext) != ERROR_SUCCESS)
         return false;
 
-    //ÉèÖÃ¸ÃÀàĞÍµÄÃèÊö
+    //è®¾ç½®è¯¥ç±»å‹çš„æè¿°
     if (description != NULL && *description != _T('\0'))
     {
         if (OpenItem(key, CString("Software\\Classes\\") + m_app_name + str_ext))
@@ -53,7 +53,7 @@ bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool 
         }
     }
 
-    //Ìí¼Óshell\Open\CommandµÄÏî
+    //æ·»åŠ shell\Open\Commandçš„é¡¹
     if (!OpenItem(key, CString("Software\\Classes\\") + m_app_name + str_ext + _T("\\shell\\Open\\Command")))
         return false;
 
@@ -67,7 +67,7 @@ bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool 
     if (key.SetStringValue(NULL, str_value) != ERROR_SUCCESS)
         return false;
 
-    //Ìí¼ÓÄ¬ÈÏÍ¼±ê
+    //æ·»åŠ é»˜è®¤å›¾æ ‡
     if (ico_path != nullptr)
     {
         if (OpenItem(key, CString("Software\\Classes\\") + m_app_name + str_ext + _T("\\DefaultIcon")))
@@ -117,7 +117,7 @@ bool CRegFileRelate::DeleteFileTypeRelate(LPCTSTR file_ext)
         str_ext = _T('.') + str_ext;
 
     CRegKey key;
-    //´ò¿ªSoftware\Classes\.À©Õ¹Ãû µÄÏî£¬²¢½«ÆäÄ¬ÈÏ¼üÖµÉ¾³ı
+    //æ‰“å¼€Software\Classes\.æ‰©å±•å çš„é¡¹ï¼Œå¹¶å°†å…¶é»˜è®¤é”®å€¼åˆ é™¤
     if (!OpenItem(key, CString("Software\\Classes\\") + str_ext))
         return false;
 
@@ -148,13 +148,13 @@ bool CRegFileRelate::GetAllRelatedExtensions(std::vector<wstring>& extensions)
     DWORD dwIndex{};
     DWORD dwSize = MAX_PATH;
     TCHAR szExtension[MAX_PATH];
-    //±éÀú"Software\\Classes\\"ÏÂµÄËùÓĞÏî
+    //éå†"Software\\Classes\\"ä¸‹çš„æ‰€æœ‰é¡¹
     while (ERROR_NO_MORE_ITEMS != key.EnumKey(dwIndex, szExtension, &dwSize))
     {
         dwIndex++;
         dwSize = MAX_PATH;
 
-        //ÅĞ¶Ï¸ÃÀ©Õ¹ÃûÊÇ·ñÒÑ±»³ÌĞò¹ØÁª
+        //åˆ¤æ–­è¯¥æ‰©å±•åæ˜¯å¦å·²è¢«ç¨‹åºå…³è”
         if(IsFileTypeRelated(szExtension))
             extensions.push_back(szExtension);
     }
@@ -165,10 +165,10 @@ bool CRegFileRelate::OpenItem(CRegKey& key, LPCTSTR item_str)
 {
     if (key.Open(HKEY_CURRENT_USER, item_str) != ERROR_SUCCESS)
     {
-        //Èç¹ûÏî²»´æÔÚ£¬Ôò´´½¨
+        //å¦‚æœé¡¹ä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»º
         if (key.Create(HKEY_CURRENT_USER, item_str) != ERROR_SUCCESS)
             return false;
-        //ÔÙ´Î´ò¿ª
+        //å†æ¬¡æ‰“å¼€
         if (key.Open(HKEY_CURRENT_USER, item_str) != ERROR_SUCCESS)
             return false;
     }

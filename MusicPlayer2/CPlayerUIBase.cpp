@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CPlayerUIBase.h"
 
 
@@ -29,16 +29,16 @@ void CPlayerUIBase::DrawInfo(bool reset)
 {
     PreDrawInfo();
 
-    //Ë«»º³å»æÍ¼
+    //åŒç¼“å†²ç»˜å›¾
     {
         CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
-        m_draw.SetDC(drawDoubleBuffer.GetMemDC());	//½«m_drawÖĞµÄ»æÍ¼DCÉèÖÃÎª»º³åµÄDC
+        m_draw.SetDC(drawDoubleBuffer.GetMemDC());	//å°†m_drawä¸­çš„ç»˜å›¾DCè®¾ç½®ä¸ºç¼“å†²çš„DC
         m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
 
-        //»æÖÆ±³¾°
+        //ç»˜åˆ¶èƒŒæ™¯
         DrawBackground();
 
-        //»æÖÆ½çÃæÖĞÆäËûĞÅÏ¢
+        //ç»˜åˆ¶ç•Œé¢ä¸­å…¶ä»–ä¿¡æ¯
         _DrawInfo(reset);
     }
 
@@ -73,9 +73,9 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
         m_show_volume_adj = false;
 
-    CPoint point1;		//¶¨ÒåÒ»¸öÓÃÓÚÈ·¶¨¹â±êÎ»ÖÃµÄÎ»ÖÃ
-    GetCursorPos(&point1);	//»ñÈ¡µ±Ç°¹â±êµÄÎ»ÖÃ£¬ÒÔ±ãÊ¹µÃ²Ëµ¥¿ÉÒÔ¸úËæ¹â±ê£¬¸ÃÎ»ÖÃÒÔÆÁÄ»×óÉÏ½ÇµãÎªÔ­µã£¬pointÔòÒÔ¿Í»§Çø×óÉÏ½ÇÎªÔ­µã
-    if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))		//Èç¹ûÔÚ¡°Ñ­»·Ä£Ê½¡±µÄ¾ØĞÎÇøÓòÄÚµã»÷Êó±êÓÒ¼ü£¬Ôòµ¯³ö¡°Ñ­»·Ä£Ê½¡±µÄ×Ó²Ëµ¥
+    CPoint point1;		//å®šä¹‰ä¸€ä¸ªç”¨äºç¡®å®šå…‰æ ‡ä½ç½®çš„ä½ç½®
+    GetCursorPos(&point1);	//è·å–å½“å‰å…‰æ ‡çš„ä½ç½®ï¼Œä»¥ä¾¿ä½¿å¾—èœå•å¯ä»¥è·Ÿéšå…‰æ ‡ï¼Œè¯¥ä½ç½®ä»¥å±å¹•å·¦ä¸Šè§’ç‚¹ä¸ºåŸç‚¹ï¼Œpointåˆ™ä»¥å®¢æˆ·åŒºå·¦ä¸Šè§’ä¸ºåŸç‚¹
+    if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))		//å¦‚æœåœ¨â€œå¾ªç¯æ¨¡å¼â€çš„çŸ©å½¢åŒºåŸŸå†…ç‚¹å‡»é¼ æ ‡å³é”®ï¼Œåˆ™å¼¹å‡ºâ€œå¾ªç¯æ¨¡å¼â€çš„å­èœå•
     {
         CMenu* pMenu = theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
         if (pMenu != NULL)
@@ -101,12 +101,12 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 
     for (auto& btn : m_buttons)
     {
-        //°´Å¥ÉÏµã»÷ÓÒ¼ü²»µ¯³ö²Ëµ¥
+        //æŒ‰é’®ä¸Šç‚¹å‡»å³é”®ä¸å¼¹å‡ºèœå•
         if (btn.first != BTN_COVER && btn.second.rect.PtInRect(point) != FALSE)
             return;
     }
 
-    if (!m_draw_data.lyric_rect.PtInRect(point))	//Èç¹ûÔÚ¸è´ÊÇøÓòµã»÷ÁËÊó±êÓÒ¼ü
+    if (!m_draw_data.lyric_rect.PtInRect(point))	//å¦‚æœåœ¨æ­Œè¯åŒºåŸŸç‚¹å‡»äº†é¼ æ ‡å³é”®
     {
         theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     }
@@ -127,7 +127,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
 
     m_buttons[BTN_PROGRESS].hover = m_buttons[BTN_PROGRESS].hover && !(m_show_volume_adj && (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point)));
 
-    //Êó±êÖ¸Ïò½ø¶ÈÌõÊ±ÏÔÊ¾¶¨Î»µ½¼¸·Ö¼¸Ãë
+    //é¼ æ ‡æŒ‡å‘è¿›åº¦æ¡æ—¶æ˜¾ç¤ºå®šä½åˆ°å‡ åˆ†å‡ ç§’
     if (m_buttons[BTN_PROGRESS].hover)
     {
         __int64 song_pos;
@@ -136,7 +136,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
         song_pos_time.fromInt(static_cast<int>(song_pos));
         CString str;
         static int last_sec{};
-        if (last_sec != song_pos_time.sec)		//Ö»ÓĞÊó±êÖ¸ÏòÎ»ÖÃ¶ÔÓ¦µÄÃëÊı±ä»¯ÁË²Å¸üĞÂÊó±êÌáÊ¾
+        if (last_sec != song_pos_time.sec)		//åªæœ‰é¼ æ ‡æŒ‡å‘ä½ç½®å¯¹åº”çš„ç§’æ•°å˜åŒ–äº†æ‰æ›´æ–°é¼ æ ‡æç¤º
         {
             str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
             UpdateMouseToolTip(BTN_PROGRESS, str);
@@ -154,9 +154,9 @@ void CPlayerUIBase::MouseMove(CPoint point)
 
 void CPlayerUIBase::LButtonUp(CPoint point)
 {
-    if (!m_show_volume_adj)		//Èç¹ûÉèÓĞÏÔÊ¾ÒôÁ¿µ÷Õû°´Å¥£¬Ôòµã»÷ÒôÁ¿ÇøÓò¾ÍÏÔÊ¾ÒôÁ¿µ÷Õû°´Å¥
+    if (!m_show_volume_adj)		//å¦‚æœè®¾æœ‰æ˜¾ç¤ºéŸ³é‡è°ƒæ•´æŒ‰é’®ï¼Œåˆ™ç‚¹å‡»éŸ³é‡åŒºåŸŸå°±æ˜¾ç¤ºéŸ³é‡è°ƒæ•´æŒ‰é’®
         m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
-    else		//Èç¹ûÒÑ¾­ÏÔÊ¾ÁËÒôÁ¿µ÷Õû°´Å¥£¬Ôòµã»÷ÒôÁ¿µ÷ÕûÊ±±£³ÖÒôÁ¿µ÷Õû°´Å¥µÄÏÔÊ¾
+    else		//å¦‚æœå·²ç»æ˜¾ç¤ºäº†éŸ³é‡è°ƒæ•´æŒ‰é’®ï¼Œåˆ™ç‚¹å‡»éŸ³é‡è°ƒæ•´æ—¶ä¿æŒéŸ³é‡è°ƒæ•´æŒ‰é’®çš„æ˜¾ç¤º
         m_show_volume_adj = (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point));
 
     for (auto& btn : m_buttons)
@@ -301,11 +301,11 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 {
     CRect redraw_rect;
-    if (!m_ui_data.narrow_mode)	//ÔÚÆÕÍ¨½çÃæÄ£Ê½ÏÂ
+    if (!m_ui_data.narrow_mode)	//åœ¨æ™®é€šç•Œé¢æ¨¡å¼ä¸‹
     {
-        if (cx < m_ui_data.client_width)	//Èç¹û½çÃæ¿í¶È±äÕ­ÁË
+        if (cx < m_ui_data.client_width)	//å¦‚æœç•Œé¢å®½åº¦å˜çª„äº†
         {
-            //ÖØĞÂ½«»æÍ¼ÇøÓòÓÒ²àÇøÓòµÄ¾ØĞÎÇøÓòÌî³äÎª¶Ô»°¿ò±³¾°É«
+            //é‡æ–°å°†ç»˜å›¾åŒºåŸŸå³ä¾§åŒºåŸŸçš„çŸ©å½¢åŒºåŸŸå¡«å……ä¸ºå¯¹è¯æ¡†èƒŒæ™¯è‰²
             redraw_rect = m_draw_rect;
             if (m_ui_data.show_playlist)
             {
@@ -319,30 +319,30 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
             //	redraw_rect.right = cx;
             //}
         }
-        //if (cy < m_ui_data.client_height)	//Èç¹û½çÃæ¸ß¶È±äĞ¡ÁË
+        //if (cy < m_ui_data.client_height)	//å¦‚æœç•Œé¢é«˜åº¦å˜å°äº†
         //{
-        //	//ÖØĞÂ½«»æÍ¼ÇøÓòÏÂ·½ÇøÓòµÄ¾ØĞÎÇøÓòÌî³äÎª¶Ô»°¿ò±³¾°É«
+        //	//é‡æ–°å°†ç»˜å›¾åŒºåŸŸä¸‹æ–¹åŒºåŸŸçš„çŸ©å½¢åŒºåŸŸå¡«å……ä¸ºå¯¹è¯æ¡†èƒŒæ™¯è‰²
         //	redraw_rect = m_draw_rect;
         //	redraw_rect.top = cy - Margin();
         //	redraw_rect.bottom = cy;
         //	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
         //}
     }
-    else if (m_ui_data.narrow_mode)	//ÔÚÕ­½çÃæÄ£Ê½ÏÂ
+    else if (m_ui_data.narrow_mode)	//åœ¨çª„ç•Œé¢æ¨¡å¼ä¸‹
     {
-        //if (cx < m_ui_data.client_width)		//Èç¹û¿í¶È±äÕ­ÁË
+        //if (cx < m_ui_data.client_width)		//å¦‚æœå®½åº¦å˜çª„äº†
         //{
-        //	//ÖØĞÂ½«»æÍ¼ÇøÓòÓÒ²àÇøÓòµÄ¾ØĞÎÇøÓòÌî³äÎª¶Ô»°¿ò±³¾°É«
+        //	//é‡æ–°å°†ç»˜å›¾åŒºåŸŸå³ä¾§åŒºåŸŸçš„çŸ©å½¢åŒºåŸŸå¡«å……ä¸ºå¯¹è¯æ¡†èƒŒæ™¯è‰²
         //	redraw_rect = m_draw_rect;
         //	redraw_rect.left = cx - Margin();
         //	redraw_rect.right = cx;
         //	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
         //}
-        //if (cy < m_ui_data.client_height)	//Èç¹û½çÃæ¸ß¶È±äĞ¡ÁË
+        //if (cy < m_ui_data.client_height)	//å¦‚æœç•Œé¢é«˜åº¦å˜å°äº†
         //{
         //	if (!m_ui_data.show_playlist)
         //	{
-        //		//ÖØĞÂ½«»æÍ¼ÇøÓòÏÂ·½ÇøÓòµÄ¾ØĞÎÇøÓòÌî³äÎª¶Ô»°¿ò±³¾°É«
+        //		//é‡æ–°å°†ç»˜å›¾åŒºåŸŸä¸‹æ–¹åŒºåŸŸçš„çŸ©å½¢åŒºåŸŸå¡«å……ä¸ºå¯¹è¯æ¡†èƒŒæ™¯è‰²
         //		redraw_rect = m_draw_rect;
         //		redraw_rect.top = cy - Margin();
         //		redraw_rect.bottom = cy;
@@ -354,7 +354,7 @@ void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
 
 CRect CPlayerUIBase::GetThumbnailClipArea()
 {
-    //»ñÈ¡²Ëµ¥À¸µÄ¸ß¶È
+    //è·å–èœå•æ çš„é«˜åº¦
     int menu_bar_height = 0;
     if (m_ui_data.show_menu_bar)
     {
@@ -430,14 +430,14 @@ void CPlayerUIBase::ClearBtnRect()
 
 void CPlayerUIBase::PreDrawInfo()
 {
-    //ÉèÖÃÑÕÉ«
+    //è®¾ç½®é¢œè‰²
     m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode);
 
     //if (m_repeat_mode_tip.IsEmpty())
     SetRepeatModeToolTipText();
     SetSongInfoToolTipText();
 
-    //ÉèÖÃ»æÖÆµÄ¾ØĞÎÇøÓò
+    //è®¾ç½®ç»˜åˆ¶çš„çŸ©å½¢åŒºåŸŸ
     SetDrawRect();
 }
 
@@ -469,7 +469,7 @@ void CPlayerUIBase::DrawBackground()
     CRect draw_rect = m_draw_rect;
     draw_rect.MoveToXY(0, 0);
 
-    //»æÖÆ±³¾°
+    //ç»˜åˆ¶èƒŒæ™¯
     if (theApp.m_app_setting_data.enable_background)
     {
         if (CPlayer::GetInstance().AlbumCoverExist() && theApp.m_app_setting_data.album_cover_as_background)
@@ -479,12 +479,12 @@ void CPlayerUIBase::DrawBackground()
         }
         else
         {
-            //MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//¸ø»º³åDCµÄ»æÍ¼ÇøÓòÌî³ä¶Ô»°¿òµÄ±³¾°ÑÕÉ«
+            //MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//ç»™ç¼“å†²DCçš„ç»˜å›¾åŒºåŸŸå¡«å……å¯¹è¯æ¡†çš„èƒŒæ™¯é¢œè‰²
             m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
         }
     }
 
-    //Ìî³ä±³¾°ÑÕÉ«
+    //å¡«å……èƒŒæ™¯é¢œè‰²
     if (IsDrawBackgroundAlpha())
         m_draw.FillAlphaRect(draw_rect, m_colors.color_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency));
     else
@@ -493,21 +493,21 @@ void CPlayerUIBase::DrawBackground()
 
 void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 {
-    //»æÖÆ²¥·Å×´Ì¬
+    //ç»˜åˆ¶æ’­æ”¾çŠ¶æ€
     CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
     CRect rc_tmp{ rect };
     //m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
     rc_tmp.right = rc_tmp.left + m_draw.GetTextExtent(play_state_str).cx + DPI(4);
     m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
 
-    //»æÖÆ¸èÇúĞòºÅ
+    //ç»˜åˆ¶æ­Œæ›²åºå·
     rc_tmp.MoveToX(rc_tmp.right);
     rc_tmp.right = rc_tmp.left + DPI(30);
     wchar_t buff[128];
     swprintf_s(buff, sizeof(buff) / 2, L"%.3d", CPlayer::GetInstance().GetIndex() + 1);
     m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
 
-    //»æÖÆ±êÊ¶
+    //ç»˜åˆ¶æ ‡è¯†
     wstring tag_str;
     if(CPlayer::GetInstance().GetCurrentSongInfo().is_cue)
         tag_str = L"cue";
@@ -524,7 +524,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
         DrawPlayTag(rc_tmp, tag_str.c_str());
     }
 
-    //»æÖÆ²¥·ÅËÙ¶È
+    //ç»˜åˆ¶æ’­æ”¾é€Ÿåº¦
     if (std::fabs(CPlayer::GetInstance().GetSpeed() - 1) > 1e-3)
     {
         wchar_t buff[64];
@@ -543,7 +543,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
         }
     }
 
-    //»æÖÆÎÄ¼şÃû
+    //ç»˜åˆ¶æ–‡ä»¶å
     rc_tmp.MoveToX(rc_tmp.right + DPI(4));
     rc_tmp.right = rect.right;
     if(rc_tmp.Width() >= DPI(4))
@@ -572,7 +572,7 @@ void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
 void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 {
     bool draw_background{ IsDrawBackgroundAlpha() };
-    //»æÖÆ±³¾°
+    //ç»˜åˆ¶èƒŒæ™¯
     BYTE alpha;
     if (theApp.m_app_setting_data.dark_mode)
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
@@ -586,7 +586,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
     CRect rc_tmp = rect;
 
-    //»æÖÆÑ­»·Ä£Ê½
+    //ç»˜åˆ¶å¾ªç¯æ¨¡å¼
     rc_tmp.right = rect.left + rect.Height();
     IconRes* pIcon = nullptr;
     switch (CPlayer::GetInstance().GetRepeatMode())
@@ -607,19 +607,19 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     if (pIcon != nullptr)
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
 
-    //»æÖÆÉèÖÃ°´Å¥
+    //ç»˜åˆ¶è®¾ç½®æŒ‰é’®
     rc_tmp.MoveToX(rc_tmp.right);
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_SETTING], theApp.m_icon_set.setting);
 
-    //»æÖÆ¾ùºâÆ÷°´Å¥
+    //ç»˜åˆ¶å‡è¡¡å™¨æŒ‰é’®
     rc_tmp.MoveToX(rc_tmp.right);
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_EQ], theApp.m_icon_set.eq);
 
-    //»æÖÆÇĞ»»½çÃæ°´Å¥
+    //ç»˜åˆ¶åˆ‡æ¢ç•Œé¢æŒ‰é’®
     rc_tmp.MoveToX(rc_tmp.right);
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
 
-    //»æÖÆÃÔÄãÄ£Ê½°´Å¥
+    //ç»˜åˆ¶è¿·ä½ æ¨¡å¼æŒ‰é’®
     if (rect.Width() >= DPI(190))
     {
         rc_tmp.MoveToX(rc_tmp.right);
@@ -631,7 +631,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         m_buttons[BTN_MINI].rect = CRect();
     }
 
-    //»æÖÆÇúÄ¿ĞÅÏ¢°´Å¥
+    //ç»˜åˆ¶æ›²ç›®ä¿¡æ¯æŒ‰é’®
     if (rect.Width() >= DPI(214))
     {
         rc_tmp.MoveToX(rc_tmp.right);
@@ -642,7 +642,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         m_buttons[BTN_INFO].rect = CRect();
     }
 
-    //»æÖÆ²éÕÒ°´Å¥
+    //ç»˜åˆ¶æŸ¥æ‰¾æŒ‰é’®
     if (rect.Width() >= DPI(238))
     {
         rc_tmp.MoveToX(rc_tmp.right);
@@ -653,7 +653,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         m_buttons[BTN_FIND].rect = CRect();
     }
 
-	//»æÖÆABÖØ¸´°´Å¥
+	//ç»˜åˆ¶ABé‡å¤æŒ‰é’®
 	if (rect.Width() >= DPI(262))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
@@ -666,7 +666,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 		else
 			info = _T("A-B");
 		CFont* pOldFont = m_draw.GetFont();
-		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//ABÖØ¸´Ê¹ÓÃĞ¡Ò»ºÅ×ÖÌå£¬¼´²¥·ÅÊ±¼äµÄ×ÖÌå
+		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//ABé‡å¤ä½¿ç”¨å°ä¸€å·å­—ä½“ï¼Œå³æ’­æ”¾æ—¶é—´çš„å­—ä½“
 		DrawTextButton(rc_btn, m_buttons[BTN_AB_REPEAT], info, ab_repeat_mode != CPlayer::AM_NONE);
 		m_draw.SetFont(pOldFont);
 	}
@@ -675,7 +675,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 		m_buttons[BTN_AB_REPEAT].rect = CRect();
 	}
 
-    //»æÖÆ·­Òë°´Å¥
+    //ç»˜åˆ¶ç¿»è¯‘æŒ‰é’®
     if (draw_translate_button && rect.Width() >= DPI(286))
     {
         rc_tmp.MoveToX(rc_tmp.right);
@@ -688,7 +688,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         m_buttons[BTN_TRANSLATE].rect = CRect();
     }
 
-    //»æÖÆ×ÀÃæ¸è´Ê°´Å¥
+    //ç»˜åˆ¶æ¡Œé¢æ­Œè¯æŒ‰é’®
     if (rect.Width() >= DPI(310))
     {
         rc_tmp.MoveToX(rc_tmp.right);
@@ -703,7 +703,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
     rc_tmp.left = rc_tmp.right = rect.right;
 
-    //ÏÔÊ¾<<<<
+    //æ˜¾ç¤º<<<<
     if (rect.Width() >= DPI(361))
     {
         int progress;
@@ -727,7 +727,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     }
 
 
-    //ÏÔÊ¾ÒôÁ¿
+    //æ˜¾ç¤ºéŸ³é‡
     wchar_t buff[64];
     rc_tmp.right = rc_tmp.left;
     rc_tmp.left = rc_tmp.right - DPI(72);
@@ -735,11 +735,11 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     CRect rc_vol{ rc_tmp };
     if (m_buttons[BTN_VOLUME].pressed)
         rc_vol.MoveToXY(rc_vol.left + theApp.DPI(1), rc_vol.top + theApp.DPI(1));
-    if (m_buttons[BTN_VOLUME].hover)		//Êó±êÖ¸ÏòÒôÁ¿ÇøÓòÊ±£¬ÒÔÁíÍâÒ»ÖÖÑÕÉ«ÏÔÊ¾
+    if (m_buttons[BTN_VOLUME].hover)		//é¼ æ ‡æŒ‡å‘éŸ³é‡åŒºåŸŸæ—¶ï¼Œä»¥å¦å¤–ä¸€ç§é¢œè‰²æ˜¾ç¤º
         m_draw.DrawWindowText(rc_vol, buff, m_colors.color_text_heighlight);
     else
         m_draw.DrawWindowText(rc_vol, buff, m_colors.color_text);
-    //ÉèÖÃÒôÁ¿µ÷Õû°´Å¥µÄÎ»ÖÃ
+    //è®¾ç½®éŸ³é‡è°ƒæ•´æŒ‰é’®çš„ä½ç½®
     m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
     m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
     m_buttons[BTN_VOLUME].rect.right -= DPI(12);
@@ -788,7 +788,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & ico
     btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 
     rc_tmp = rect;
-    //Ê¹Í¼±êÔÚ¾ØĞÎÖĞ¾ÓÖĞ
+    //ä½¿å›¾æ ‡åœ¨çŸ©å½¢ä¸­å±…ä¸­
     CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
@@ -824,7 +824,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
     btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 
     rc_tmp = rect;
-    //Ê¹Í¼±êÔÚ¾ØĞÎÖĞ¾ÓÖĞ
+    //ä½¿å›¾æ ‡åœ¨çŸ©å½¢ä¸­å±…ä¸­
     CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
@@ -955,10 +955,10 @@ int CPlayerUIBase::Margin() const
 
 int CPlayerUIBase::EdgeMargin(bool x) const
 {
-    /*È«ÆÁÊ±½çÃæÍâ²à±ß¾àµÄ¼ÆËã
-    ±ß¾à = ÆÁÄ»ÏñËØÖµ x ÆÁÄ»¿í¶ÈµÄÓ¢´çÖµ / ³£Êı
-    ´Ë¼ÆËã·½·¨¿ÉÒÔÈ·±£±ß¾àÕ¼ÆÁÄ»¿í¶ÈµÄ±ÈÀıÓëÆÁÄ»¿í¶ÈµÄÓ¢´çÖµ³ÉÕı±È£¬¼´½çÃæ¿´ÆğÀ´Ô½¿Õ¿õ£¬Íâ²à±ß¾à¾ÍÔ½´ó
-    ×îºóÈ¡ÒÔÉÏÖµºÍtheApp.DPI(40)Á½ÕßÖĞ½Ï´óµÄÖµ¡£
+    /*å…¨å±æ—¶ç•Œé¢å¤–ä¾§è¾¹è·çš„è®¡ç®—
+    è¾¹è· = å±å¹•åƒç´ å€¼ x å±å¹•å®½åº¦çš„è‹±å¯¸å€¼ / å¸¸æ•°
+    æ­¤è®¡ç®—æ–¹æ³•å¯ä»¥ç¡®ä¿è¾¹è·å å±å¹•å®½åº¦çš„æ¯”ä¾‹ä¸å±å¹•å®½åº¦çš„è‹±å¯¸å€¼æˆæ­£æ¯”ï¼Œå³ç•Œé¢çœ‹èµ·æ¥è¶Šç©ºæ—·ï¼Œå¤–ä¾§è¾¹è·å°±è¶Šå¤§
+    æœ€åå–ä»¥ä¸Šå€¼å’ŒtheApp.DPI(40)ä¸¤è€…ä¸­è¾ƒå¤§çš„å€¼ã€‚
     */
     if (m_ui_data.full_screen)
     {
@@ -1098,7 +1098,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
         rect.top = progress_rect.bottom;
     }
 
-    //»æÖÆ²¥·Å¿ØÖÆ°´Å¥
+    //ç»˜åˆ¶æ’­æ”¾æ§åˆ¶æŒ‰é’®
     const int btn_width = DPI(36);
     const int btn_height = min(rect.Height(), btn_width);
 
@@ -1117,7 +1117,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
 
     int progressbar_left = rc_btn.right + Margin();
 
-    //»æÖÆÓÒ²à°´Å¥
+    //ç»˜åˆ¶å³ä¾§æŒ‰é’®
     const int btn_side = DPI(24);
     rc_btn.right = rect.right;
     rc_btn.left = rc_btn.right - btn_side;
@@ -1146,7 +1146,7 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
 
 void CPlayerUIBase::DrawProgressBar(CRect rect)
 {
-    //»æÖÆ²¥·ÅÊ±¼ä
+    //ç»˜åˆ¶æ’­æ”¾æ—¶é—´
     CRect rc_time = rect;
     wstring strTime = CPlayer::GetInstance().GetTimeString();
 
@@ -1157,7 +1157,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     rc_time.top -= DPI(1);
     m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
 
-    //»æÖÆ½ø¶ÈÌõ
+    //ç»˜åˆ¶è¿›åº¦æ¡
     const int progress_height = DPI(4);
     CRect progress_rect = rect;
     progress_rect.right = rc_time.left - Margin();
@@ -1178,13 +1178,13 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     if (played_rect.right > played_rect.left)
         m_draw.FillRect(played_rect, m_colors.color_spectrum);
 
-	//»æÖÆABÖØ¸´µÄ±ê¼Ç
+	//ç»˜åˆ¶ABé‡å¤çš„æ ‡è®°
 	auto ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
 	if(ab_repeat_mode == CPlayer::AM_A_SELECTED || ab_repeat_mode == CPlayer::AM_AB_REPEAT)
 	{
 		CFont* pOldFont = m_draw.GetFont();
-		//ÉèÖÃ×ÖÌå
-		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//ABÖØ¸´Ê¹ÓÃĞ¡Ò»ºÅ×ÖÌå£¬¼´²¥·ÅÊ±¼äµÄ×ÖÌå
+		//è®¾ç½®å­—ä½“
+		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//ABé‡å¤ä½¿ç”¨å°ä¸€å·å­—ä½“ï¼Œå³æ’­æ”¾æ—¶é—´çš„å­—ä½“
 
 		double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
 		double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
@@ -1192,7 +1192,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 		rect_draw.bottom += DPI(12);
 		m_draw.SetDrawArea(rect_draw);
 		CPoint point1, point2;
-		//»æÖÆAµã±ê¼Ç
+		//ç»˜åˆ¶Aç‚¹æ ‡è®°
 		point1.x = point2.x = progress_rect.left + static_cast<int>(a_point_progres * progress_rect.Width());
 		point1.y = progress_rect.top - DPI(2);
 		point2.y = progress_rect.bottom+ DPI(2);
@@ -1203,7 +1203,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 		rect_text.right = point1.x + DPI(8);
 		rect_text.bottom = rect_text.top + DPI(12);
 		m_draw.DrawWindowText(rect_text, _T("A"), m_colors.color_text, Alignment::CENTER, true);
-		//»æÖÆBµã±ê¼Ç
+		//ç»˜åˆ¶Bç‚¹æ ‡è®°
 		if(ab_repeat_mode == CPlayer::AM_AB_REPEAT)
 		{
 			point1.x = point2.x = progress_rect.left + static_cast<int>(b_point_progres * progress_rect.Width());
@@ -1211,7 +1211,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
 			rect_text.MoveToX(point1.x - DPI(8));
 			m_draw.DrawWindowText(rect_text, _T("B"), m_colors.color_text, Alignment::CENTER, true);
 		}
-		//»Ö¸´×ÖÌå
+		//æ¢å¤å­—ä½“
 		m_draw.SetFont(pOldFont);
 	}
 }
@@ -1226,7 +1226,7 @@ int CPlayerUIBase::DrawTopRightIcons()
 {
     int total_width = 0;
     const int icon_size = DPI(28);
-    //»æÖÆ¡°È«ÆÁ¡±Í¼±ê
+    //ç»˜åˆ¶â€œå…¨å±â€å›¾æ ‡
     if (!m_ui_data.show_playlist || m_ui_data.full_screen)
     {
         total_width = icon_size;
@@ -1245,7 +1245,7 @@ int CPlayerUIBase::DrawTopRightIcons()
         m_buttons[BTN_FULL_SCREEN].rect.SetRectEmpty();
     }
 
-    //»æÖÆ¡°Ö÷²Ëµ¥¡±Í¼±ê
+    //ç»˜åˆ¶â€œä¸»èœå•â€å›¾æ ‡
     if (!m_ui_data.show_menu_bar || m_ui_data.full_screen)
     {
         CRect rc_tmp;
@@ -1285,7 +1285,7 @@ void CPlayerUIBase::DrawCurrentTime()
 void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 {
     bool draw_background{ IsDrawBackgroundAlpha() };
-    //»æÖÆ±³¾°
+    //ç»˜åˆ¶èƒŒæ™¯
     BYTE alpha;
     if (theApp.m_app_setting_data.dark_mode)
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
@@ -1299,12 +1299,12 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 
     rect.DeflateRect(DPI(4), 0);
 
-    //ÏÔÊ¾²¥·ÅÁĞ±íÔØÈë×´Ì¬
+    //æ˜¾ç¤ºæ’­æ”¾åˆ—è¡¨è½½å…¥çŠ¶æ€
     if (CPlayer::GetInstance().m_loading)
     {
         CRect rc_tmp{ rect };
-        //»æÖÆ½ø¶ÈÌõ£¨½ø¶ÈÌõÀïÃæ°üº¬10¸ñ£©
-        int bar_width = DPI(4);     //Ã¿Ò»¸ñµÄ¿í¶È
+        //ç»˜åˆ¶è¿›åº¦æ¡ï¼ˆè¿›åº¦æ¡é‡Œé¢åŒ…å«10æ ¼ï¼‰
+        int bar_width = DPI(4);     //æ¯ä¸€æ ¼çš„å®½åº¦
         int progress_width = (bar_width + DPI(2)) * 10 + DPI(2) * 2;
         rc_tmp.left = rect.right - progress_width;
         CRect rc_progress{ rc_tmp };
@@ -1312,7 +1312,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         m_draw.SetDrawArea(rc_progress);
         m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
         int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
-        int bar_cnt = progress_percent / 10 + 1;        //¸ñ×ÓÊı
+        int bar_cnt = progress_percent / 10 + 1;        //æ ¼å­æ•°
         int last_bar_percent = progress_percent % 10;
         CRect rc_bar{ rc_progress };
         rc_bar.DeflateRect(DPI(2), DPI(2));
@@ -1332,7 +1332,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
             }
         }
 
-        //»æÖÆÎÄ×Ö
+        //ç»˜åˆ¶æ–‡å­—
         rc_tmp.right = rc_tmp.left - DPI(4);
         rc_tmp.left = rect.left;
         static CDrawCommon::ScrollInfo scroll_info0;
@@ -1340,7 +1340,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum(), progress_percent });
         m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
     }
-	//ÏÔÊ¾ABÖØ¸´×´Ì¬
+	//æ˜¾ç¤ºABé‡å¤çŠ¶æ€
 	else if (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE)
 	{
 		CString info;
@@ -1350,7 +1350,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 			info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, {CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
 		m_draw.DrawWindowText(rect, info, m_colors.color_text);
 	}
-    //ÏÔÊ¾Ã½Ìå¿â¸üĞÂ×´Ì¬
+    //æ˜¾ç¤ºåª’ä½“åº“æ›´æ–°çŠ¶æ€
     else if(theApp.IsMeidaLibUpdating() && theApp.m_media_num_added > 0)
     {
         CString info = CCommon::LoadTextFormat(IDS_UPDATING_MEDIA_LIB_INFO, { theApp.m_media_num_added });

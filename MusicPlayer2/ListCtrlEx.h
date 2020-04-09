@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include "afxcmn.h"
 #include "ColorConvert.h"
 
-//Êó±êÍÏ¶¯Íê³ÉÏò¸¸´°¿Ú·¢ËÍ´ËÏûÏ¢£¬Í¨¹ıwPara´«µİÍÏ·Å½áÊøµÄÎ»ÖÃ
-//×¢Òâ£¬Ö´ĞĞÍÏ¶¯²Ù×÷ºóÁĞ±íÏîÄ¿µÄÎ»ÖÃ²»»á¸Ä±ä£¬ĞèÒªÔÚÏìÓ¦´ËÏûÏ¢ºóÊÖ¶¯Ë¢ĞÂÁĞ±í
+//é¼ æ ‡æ‹–åŠ¨å®Œæˆå‘çˆ¶çª—å£å‘é€æ­¤æ¶ˆæ¯ï¼Œé€šè¿‡wParaä¼ é€’æ‹–æ”¾ç»“æŸçš„ä½ç½®
+//æ³¨æ„ï¼Œæ‰§è¡Œæ‹–åŠ¨æ“ä½œååˆ—è¡¨é¡¹ç›®çš„ä½ç½®ä¸ä¼šæ”¹å˜ï¼Œéœ€è¦åœ¨å“åº”æ­¤æ¶ˆæ¯åæ‰‹åŠ¨åˆ·æ–°åˆ—è¡¨
 #define WM_LIST_ITEM_DRAGGED (WM_USER+121)
 
 class CListCtrlEx :
@@ -16,42 +16,42 @@ public:
 
 	//void SetColor(const ColorTable& colors);
 	void GetItemSelected(vector<int>& item_selected) const;
-	int GetCurSel() const;		//»ñÈ¡µ±Ç°Ñ¡ÖĞµÄÏîÄ¿
+	int GetCurSel() const;		//è·å–å½“å‰é€‰ä¸­çš„é¡¹ç›®
 	void SetCurSel(int select);
     void SetCurSel(int first, int last);
 	void SelectAll();
 	void SelectNone();
 	void SelectReverse();
-	bool SetRowHeight(int height);		//ÉèÖÃ±í¸ñĞĞ¸ß
-	void SetHightItem(int item) { m_highlight_item = item; }			//ÉèÖÃ¸ßÁÁµÄÏîÄ¿£¨²¥·ÅÁĞ±íÖĞÕıÔÚ²¥·ÅµÄÏîÄ¿£©
-    void SetDragEnable(bool enable = true) { m_drag_enable = enable; }      //ÊÇ·ñÔÊĞíÊó±êÍÏ¶¯
+	bool SetRowHeight(int height);		//è®¾ç½®è¡¨æ ¼è¡Œé«˜
+	void SetHightItem(int item) { m_highlight_item = item; }			//è®¾ç½®é«˜äº®çš„é¡¹ç›®ï¼ˆæ’­æ”¾åˆ—è¡¨ä¸­æ­£åœ¨æ’­æ”¾çš„é¡¹ç›®ï¼‰
+    void SetDragEnable(bool enable = true) { m_drag_enable = enable; }      //æ˜¯å¦å…è®¸é¼ æ ‡æ‹–åŠ¨
     void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd);
-    void FillLeftSpaceAfterPaint(bool fill);        //Èç¹ûÎªtrue£¬ÔòÔÚÃ¿ĞĞ»æÖÆÖ®ºóÌî³ä×ó²à¿Õ°×£¬·ñÔòÔÚ»æÖÆÖ®Ç°Ìî³ä£¨Èç¹û±í¸ñÃ»ÓĞÍ¼±ê»ò¸´Ñ¡¿ò£¬ÔòÓ¦ÉèÖÃÎªtrue£¬·ñÔòÉèÖÃÎªfalse£©
+    void FillLeftSpaceAfterPaint(bool fill);        //å¦‚æœä¸ºtrueï¼Œåˆ™åœ¨æ¯è¡Œç»˜åˆ¶ä¹‹åå¡«å……å·¦ä¾§ç©ºç™½ï¼Œå¦åˆ™åœ¨ç»˜åˆ¶ä¹‹å‰å¡«å……ï¼ˆå¦‚æœè¡¨æ ¼æ²¡æœ‰å›¾æ ‡æˆ–å¤é€‰æ¡†ï¼Œåˆ™åº”è®¾ç½®ä¸ºtrueï¼Œå¦åˆ™è®¾ç½®ä¸ºfalseï¼‰
 
-    typedef map<int, wstring> RowData;      //ÁĞ±íÊı¾İÖĞÃ¿Ò»ĞĞµÄÊı¾İ£¬mapµÄkeyÎªÁĞĞòºÅ£¬valueÎªÏÔÊ¾µÄÎÄ±¾
-    typedef vector<RowData> ListData;       //ÁĞ±íÊı¾İ£¬ÆäÖĞvectorÎªÃ¿Ò»ĞĞµÄÊı¾İ
+    typedef map<int, wstring> RowData;      //åˆ—è¡¨æ•°æ®ä¸­æ¯ä¸€è¡Œçš„æ•°æ®ï¼Œmapçš„keyä¸ºåˆ—åºå·ï¼Œvalueä¸ºæ˜¾ç¤ºçš„æ–‡æœ¬
+    typedef vector<RowData> ListData;       //åˆ—è¡¨æ•°æ®ï¼Œå…¶ä¸­vectorä¸ºæ¯ä¸€è¡Œçš„æ•°æ®
 
-    //ÉèÖÃÁĞ±íÊı¾İ
-	//£¨×¢£ºÊ¹ÓÃ´Ëº¯ÊıÉèÖÃÁĞ±íÊı¾İÊ¹ÓÃÁËĞéÄâÁĞ±íµÄ·½Ê½£¬¿ÉÏÔÖøÌáÉıÔÚÊı¾İÁ¿ºÜ¶àµÄÇé¿öÏÂµÄ¼ÓÔØËÙ¶È£¬
-	//Ê¹ÓÃ´Ëº¯ÊıÊ±±ØĞëÈ·±£ÁĞ±í¾ßÓĞ LVS_OWNERDATA ÑùÊ½£©
+    //è®¾ç½®åˆ—è¡¨æ•°æ®
+	//ï¼ˆæ³¨ï¼šä½¿ç”¨æ­¤å‡½æ•°è®¾ç½®åˆ—è¡¨æ•°æ®ä½¿ç”¨äº†è™šæ‹Ÿåˆ—è¡¨çš„æ–¹å¼ï¼Œå¯æ˜¾è‘—æå‡åœ¨æ•°æ®é‡å¾ˆå¤šçš„æƒ…å†µä¸‹çš„åŠ è½½é€Ÿåº¦ï¼Œ
+	//ä½¿ç”¨æ­¤å‡½æ•°æ—¶å¿…é¡»ç¡®ä¿åˆ—è¡¨å…·æœ‰ LVS_OWNERDATA æ ·å¼ï¼‰
     void SetListData(ListData* pListData);
 
-	//ÉèÖÃÁĞ±íÊı¾İ
-	//£¨Ê¹ÓÃ´«Í³µÄ·½Ê½£©
+	//è®¾ç½®åˆ—è¡¨æ•°æ®
+	//ï¼ˆä½¿ç”¨ä¼ ç»Ÿçš„æ–¹å¼ï¼‰
 	void SetListData(const ListData& list_data);
 
-	void SetCtrlAEnable(bool enable) { m_enable_ctrl_a = enable; }		//ÊÇ·ñÔÊĞíCtrl + AÈ«Ñ¡
+	void SetCtrlAEnable(bool enable) { m_enable_ctrl_a = enable; }		//æ˜¯å¦å…è®¸Ctrl + Aå…¨é€‰
 
 protected:
 	const ColorTable& m_theme_color;
-	COLORREF m_background_color{ GRAY(255) };	//ÁĞ±í¿Ø¼şµÄ±³¾°É«
-	int m_highlight_item{ -1 };			//¸ßÁÁµÄÏîÄ¿
+	COLORREF m_background_color{ GRAY(255) };	//åˆ—è¡¨æ§ä»¶çš„èƒŒæ™¯è‰²
+	int m_highlight_item{ -1 };			//é«˜äº®çš„é¡¹ç›®
     bool m_drag_enable{ false };
     bool m_dragging{ false };
     HCURSOR m_drag_cursor{};
     bool m_fill_left_space_after_paint{ true };
 	ListData* m_pListData{};
-	bool m_enable_ctrl_a{ false };	//ÊÇ·ñÔÊĞíCtrl+AÈ«Ñ¡
+	bool m_enable_ctrl_a{ false };	//æ˜¯å¦å…è®¸Ctrl+Aå…¨é€‰
 
 public:
 	DECLARE_MESSAGE_MAP()

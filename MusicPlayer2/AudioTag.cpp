@@ -1,17 +1,17 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "AudioTag.h"
 
 
 CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 	: m_hStream{ hStream }, m_file_path{ file_path }, m_song_info{ m_song_info }
 {
-	//»ñÈ¡Í¨µÀĞÅÏ¢
+	//è·å–é€šé“ä¿¡æ¯
 	BASS_CHANNELINFO channel_info;
 	BASS_ChannelGetInfo(m_hStream, &channel_info);
-	//¸ù¾İÍ¨µÀĞÅÏ¢ÅĞ¶ÏÒôÆµÎÄ¼şµÄÀàĞÍ
+	//æ ¹æ®é€šé“ä¿¡æ¯åˆ¤æ–­éŸ³é¢‘æ–‡ä»¶çš„ç±»å‹
 	m_type = CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype);
 
-	//Èç¹û»ñÈ¡²»µ½ÎÄ¼şÀàĞÍ£¬ÕâÀï¸ù¾İÀ©Õ¹ÃûÔÙÅĞ¶Ï
+	//å¦‚æœè·å–ä¸åˆ°æ–‡ä»¶ç±»å‹ï¼Œè¿™é‡Œæ ¹æ®æ‰©å±•åå†åˆ¤æ–­
 	if (m_type == AudioType::AU_OTHER)
 		m_type = CAudioCommon::GetAudioTypeByExtension(m_file_path);
 }
@@ -71,11 +71,11 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
 		if (id3v2 == nullptr)
 			return wstring();
 		const char* size;
-		size = id3v2 + 6;	//±êÇ©Í·¿ªÊ¼ÍùºóÆ«ÒÆ6¸ö×Ö½Ú¿ªÊ¼µÄ4¸ö×Ö½ÚÊÇÕû¸ö±êÇ©µÄ´óĞ¡
-		const int id3tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//»ñÈ¡±êÇ©ÇøÓòµÄ×Ü´óĞ¡
+		size = id3v2 + 6;	//æ ‡ç­¾å¤´å¼€å§‹å¾€ååç§»6ä¸ªå­—èŠ‚å¼€å§‹çš„4ä¸ªå­—èŠ‚æ˜¯æ•´ä¸ªæ ‡ç­¾çš„å¤§å°
+		const int id3tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//è·å–æ ‡ç­¾åŒºåŸŸçš„æ€»å¤§å°
 		string tag_content;
-		tag_content.assign(id3v2, id3tag_size);	//½«±êÇ©ÇøÓòµÄÄÚÈİ±£´æµ½Ò»¸östring¶ÔÏóÀï
-		size_t cover_index = tag_content.find("APIC");		//²éÕÒ×¨¼­·âÃæµÄ±êÊ¶×Ö·û´®
+		tag_content.assign(id3v2, id3tag_size);	//å°†æ ‡ç­¾åŒºåŸŸçš„å†…å®¹ä¿å­˜åˆ°ä¸€ä¸ªstringå¯¹è±¡é‡Œ
+		size_t cover_index = tag_content.find("APIC");		//æŸ¥æ‰¾ä¸“è¾‘å°é¢çš„æ ‡è¯†å­—ç¬¦ä¸²
 		if (cover_index == string::npos)
 			return wstring();
 		return _GetAlbumCover(tag_content, cover_index, image_type, file_name);
@@ -142,17 +142,17 @@ bool CAudioTag::WriteMp3Tag(LPCTSTR file_path, const SongInfo & song_info, bool 
 	fout.open(file_path, std::fstream::binary | std::fstream::out | std::fstream::in);
 	if (fout.fail())
 		return false;
-	fout.seekp(-128, std::ios::end);		//ÒÆ¶¯µ½ÎÄ¼şÄ©Î²µÄ128¸ö×Ö½Ú´¦
+	fout.seekp(-128, std::ios::end);		//ç§»åŠ¨åˆ°æ–‡ä»¶æœ«å°¾çš„128ä¸ªå­—èŠ‚å¤„
 	//char buff[4];
 	//fout.get(buff, 4);
-	//if (buff[0] == 'T'&&buff[1] == 'A'&&buff[2] == 'G')		//Èç¹ûÒÑ¾­ÓĞID3V1±êÇ©
+	//if (buff[0] == 'T'&&buff[1] == 'A'&&buff[2] == 'G')		//å¦‚æœå·²ç»æœ‰ID3V1æ ‡ç­¾
 	//{
-	fout.write((const char*)&id3, 128);		//½«TAG_ID3V1½á¹¹ÌåµÄ128¸ö×Ö½ÚĞ´µ½ÎÄ¼şÄ©Î²
+	fout.write((const char*)&id3, 128);		//å°†TAG_ID3V1ç»“æ„ä½“çš„128ä¸ªå­—èŠ‚å†™åˆ°æ–‡ä»¶æœ«å°¾
 	fout.close();
 	//}
 	//else
 	//{
-	//	//ÎÄ¼şÃ»ÓĞID3V1±êÇ©£¬ÔòÔÚÎÄ¼şÄ©Î²×·¼Ó
+	//	//æ–‡ä»¶æ²¡æœ‰ID3V1æ ‡ç­¾ï¼Œåˆ™åœ¨æ–‡ä»¶æœ«å°¾è¿½åŠ 
 	//	fout.close();
 	//	fout.open(file_name, std::fstream::binary | std::fstream::out | std::fstream::app);
 	//	if (fout.fail())
@@ -203,7 +203,7 @@ bool CAudioTag::GetID3V1Tag()
 		m_song_info.genre = CAudioCommon::GetGenre(id3->genre);
 		m_song_info.genre_idx = id3->genre;
 		
-		bool id3_empty;		//ID3V1±êÇ©ĞÅÏ¢ÊÇ·ñÎª¿Õ
+		bool id3_empty;		//ID3V1æ ‡ç­¾ä¿¡æ¯æ˜¯å¦ä¸ºç©º
 		id3_empty = (m_song_info.IsTitleEmpty() && m_song_info.IsArtistEmpty() && m_song_info.IsAlbumEmpty()
 			&& m_song_info.track == 0 && m_song_info.IsYearEmpty());
 		success = !id3_empty;
@@ -223,7 +223,7 @@ bool CAudioTag::GetID3V2Tag()
 	if (!tag_content.empty())
 	{
 		const int TAG_NUM{ 7 };
-		//Òª²éÕÒµÄ±êÇ©±êÊ¶×Ö·û´®£¨±êÌâ¡¢ÒÕÊõ¼Ò¡¢³ªÆ¬¼¯¡¢Äê·İ¡¢×¢ÊÍ¡¢Á÷ÅÉ¡¢Òô¹ìºÅ£©
+		//è¦æŸ¥æ‰¾çš„æ ‡ç­¾æ ‡è¯†å­—ç¬¦ä¸²ï¼ˆæ ‡é¢˜ã€è‰ºæœ¯å®¶ã€å”±ç‰‡é›†ã€å¹´ä»½ã€æ³¨é‡Šã€æµæ´¾ã€éŸ³è½¨å·ï¼‰
 		const string tag_identify[TAG_NUM]{ "TIT2","TPE1","TALB","TYER","COMM","TCON","TRCK" };
 		for (int i{}; i < TAG_NUM; i++)
 		{
@@ -246,7 +246,7 @@ bool CAudioTag::GetID3V2Tag()
 		CAudioCommon::TagStrNormalize(m_song_info.title);
 		CAudioCommon::TagStrNormalize(m_song_info.artist);
 		CAudioCommon::TagStrNormalize(m_song_info.album);
-		bool id3_empty;		//ID3±êÇ©ĞÅÏ¢ÊÇ·ñÎª¿Õ
+		bool id3_empty;		//ID3æ ‡ç­¾ä¿¡æ¯æ˜¯å¦ä¸ºç©º
 		id3_empty = ((m_song_info.IsTitleEmpty()) && (m_song_info.IsArtistEmpty()) && (m_song_info.IsAlbumEmpty())
 			&& m_song_info.track == 0 && m_song_info.IsYearEmpty());
 		success = !id3_empty;
@@ -362,19 +362,19 @@ bool CAudioTag::GetApeTag()
 
 bool CAudioTag::GetFlacTag()
 {
-	string tag_contents;		//Õû¸ö±êÇ©ÇøÓòµÄÄÚÈİ
+	string tag_contents;		//æ•´ä¸ªæ ‡ç­¾åŒºåŸŸçš„å†…å®¹
 	GetFlacTagContents(m_file_path, tag_contents);
-	string flac_tag_str;		//µ±Ç°±êÇ©µÄ×Ö·û
+	string flac_tag_str;		//å½“å‰æ ‡ç­¾çš„å­—ç¬¦
 	char tag_count{};
 	int tag_size = tag_contents.size();
 	if (tag_size < 4)
 		return false;
 
-	for (int i{}; i < tag_size; i++)	//Ö»»ñÈ¡±êÇ©Ç°ÃæÖ¸¶¨¸öÊıµÄ×Ö½Ú
+	for (int i{}; i < tag_size; i++)	//åªè·å–æ ‡ç­¾å‰é¢æŒ‡å®šä¸ªæ•°çš„å­—èŠ‚
 	{
 		flac_tag_str.push_back(tag_contents[i]);
         const std::vector<std::string> TAG_IDENTIFY{ "title=", "Artist=", "Album=", "TrackNumber=", "Date=", "Genre=" };
-		if ((tag_contents[i] == '\0' && tag_contents[i + 1] == '\0' && tag_contents[i + 2] == '\0') || i >= tag_size - 1)		//Óöµ½3¸ö'\0'£¬Ò»×é±êÇ©½áÊø
+		if ((tag_contents[i] == '\0' && tag_contents[i + 1] == '\0' && tag_contents[i + 2] == '\0') || i >= tag_size - 1)		//é‡åˆ°3ä¸ª'\0'ï¼Œä¸€ç»„æ ‡ç­¾ç»“æŸ
 		{
 			if (flac_tag_str.size() < 2)
 			{
@@ -421,10 +421,10 @@ bool CAudioTag::GetFlacTag()
 			flac_tag_str.clear();
 		}
 
-		if (tag_count >= 6)		//ÒÑ¾­»ñÈ¡µ½ÁË6¸ö±êÇ©£¬ÍË³öÑ­»·
+		if (tag_count >= 6)		//å·²ç»è·å–åˆ°äº†6ä¸ªæ ‡ç­¾ï¼Œé€€å‡ºå¾ªç¯
 			break;
 
-		//if (tag_contents.substr(i, 6) == "image/")	//Óöµ½"image/"£¬ºóÃæ¾ÍÊÇ×¨¼­·âÃæÁË
+		//if (tag_contents.substr(i, 6) == "image/")	//é‡åˆ°"image/"ï¼Œåé¢å°±æ˜¯ä¸“è¾‘å°é¢äº†
 		//	break;
 	}
 
@@ -448,9 +448,9 @@ string CAudioTag::GetID3V2TagContents()
 	if (id3v2 != nullptr)
 	{
 		const char* size;
-		size = id3v2 + 6;	//±êÇ©Í·¿ªÊ¼ÍùºóÆ«ÒÆ6¸ö×Ö½Ú¿ªÊ¼µÄ4¸ö×Ö½ÚÊÇÕû¸ö±êÇ©µÄ´óĞ¡
-		const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//»ñÈ¡±êÇ©ÇøÓòµÄ×Ü´óĞ¡
-		tag_content.assign(id3v2, tag_size);	//½«±êÇ©ÇøÓòµÄÄÚÈİ±£´æµ½Ò»¸östring¶ÔÏóÀï
+		size = id3v2 + 6;	//æ ‡ç­¾å¤´å¼€å§‹å¾€ååç§»6ä¸ªå­—èŠ‚å¼€å§‹çš„4ä¸ªå­—èŠ‚æ˜¯æ•´ä¸ªæ ‡ç­¾çš„å¤§å°
+		const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//è·å–æ ‡ç­¾åŒºåŸŸçš„æ€»å¤§å°
+		tag_content.assign(id3v2, tag_size);	//å°†æ ‡ç­¾åŒºåŸŸçš„å†…å®¹ä¿å­˜åˆ°ä¸€ä¸ªstringå¯¹è±¡é‡Œ
 	}
 	return tag_content;
 }
@@ -459,20 +459,20 @@ wstring CAudioTag::GetSpecifiedId3V2Tag(const string& tag_contents, const string
 {
 	wstring tag_info;
 	size_t tag_index;
-	tag_index = tag_contents.find(tag_identify);	//²éÕÒÒ»¸ö±êÇ©±êÊ¶×Ö·û´®
-	if (tag_contents == "TPE1" && tag_index == string::npos)	//Èç¹ûÔÚ²éÕÒÒÕÊõ¼ÒÊ±ÕÒ²»µ½TPE1±êÇ©£¬³¢ÊÔ²éÕÒTPE2±êÇ©
+	tag_index = tag_contents.find(tag_identify);	//æŸ¥æ‰¾ä¸€ä¸ªæ ‡ç­¾æ ‡è¯†å­—ç¬¦ä¸²
+	if (tag_contents == "TPE1" && tag_index == string::npos)	//å¦‚æœåœ¨æŸ¥æ‰¾è‰ºæœ¯å®¶æ—¶æ‰¾ä¸åˆ°TPE1æ ‡ç­¾ï¼Œå°è¯•æŸ¥æ‰¾TPE2æ ‡ç­¾
 	{
 		tag_index = tag_contents.find("TPE2");
 	}
 	if (tag_index != string::npos && tag_index < tag_contents.size() - 8)
 	{
 		string size = tag_contents.substr(tag_index + 4, 4);
-		const size_t tag_size = (BYTE)size[0] * 0x1000000 + (BYTE)size[1] * 0x10000 + (BYTE)size[2] * 0x100 + (BYTE)size[3];	//»ñÈ¡µ±Ç°±êÇ©µÄ´óĞ¡
+		const size_t tag_size = (BYTE)size[0] * 0x1000000 + (BYTE)size[1] * 0x10000 + (BYTE)size[2] * 0x100 + (BYTE)size[3];	//è·å–å½“å‰æ ‡ç­¾çš„å¤§å°
 		if (tag_size <= 0)
 			return wstring();
 		if (tag_index + 11 >= tag_contents.size())
 			return wstring();
-		//ÅĞ¶Ï±êÇ©µÄ±àÂë¸ñÊ½
+		//åˆ¤æ–­æ ‡ç­¾çš„ç¼–ç æ ¼å¼
 		CodeType default_code, code_type;
 		switch (tag_contents[tag_index + 10])
 		{
@@ -509,7 +509,7 @@ string CAudioTag::GetUtf8TagContents(const char* tag_start)
 	string tag_contents;
 	for (int i = 0; ; i++)
 	{
-		if (!tag_contents.empty() && tag_contents.back() == '\0' && tag_start[i] == '\0')		//Óöµ½Á½¸öÁ¬ĞøµÄ0ÔòÍË³ö
+		if (!tag_contents.empty() && tag_contents.back() == '\0' && tag_start[i] == '\0')		//é‡åˆ°ä¸¤ä¸ªè¿ç»­çš„0åˆ™é€€å‡º
 			break;
 		tag_contents.push_back(tag_start[i]);
 	}
@@ -597,7 +597,7 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 		contents_buff.push_back(file.get());
 		if (size > 1024 * 1024)
 			break;
-		//ÕÒµ½flacÒôÆµµÄÆğÊ¼×Ö½ÚÊ±£¨¶ş½øÖÆ13¸ö1,1¸ö0£©£¬±íÊ¾±êÇ©ĞÅÏ¢ÒÑ¾­¶ÁÈ¡ÍêÁË
+		//æ‰¾åˆ°flacéŸ³é¢‘çš„èµ·å§‹å­—èŠ‚æ—¶ï¼ˆäºŒè¿›åˆ¶13ä¸ª1,1ä¸ª0ï¼‰ï¼Œè¡¨ç¤ºæ ‡ç­¾ä¿¡æ¯å·²ç»è¯»å–å®Œäº†
 		if (size > 5 && (contents_buff[size - 1] & (BYTE)0xFC) == (BYTE)0xF8 && contents_buff[size - 2] == -1 && contents_buff[size - 3] == 0)
 			break;
 	}
@@ -605,17 +605,17 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 
 wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index, int & image_type, wchar_t* file_name)
 {
-	//»ñÈ¡Í¼Æ¬ÆğÊ¼Î»ÖÃ
+	//è·å–å›¾ç‰‡èµ·å§‹ä½ç½®
 	size_t type_index = tag_content.find("image", cover_index);
 	if (type_index == wstring::npos)
 		type_index = cover_index;
 	//string image_type_str = tag_content.substr(type_index, 10);
 	//string image_type_str2 = tag_content.substr(type_index, 9);
 
-	//¸ù¾İÍ¼Æ¬ÀàĞÍÉèÖÃÎÄ¼şÀ©Õ¹Ãû
-	size_t image_index;		//Í¼Æ¬Êı¾İµÄÆğÊ¼Î»ÖÃ
-	size_t image_size;		//¸ù¾İÍ¼Æ¬½áÊø×Ö½Ú¼ÆËã³öµÄÍ¼Æ¬´óĞ¡
-							//ÉèÖÃÍ¼Æ¬ÎÄ¼şµÄÍ·ºÍÎ²
+	//æ ¹æ®å›¾ç‰‡ç±»å‹è®¾ç½®æ–‡ä»¶æ‰©å±•å
+	size_t image_index;		//å›¾ç‰‡æ•°æ®çš„èµ·å§‹ä½ç½®
+	size_t image_size;		//æ ¹æ®å›¾ç‰‡ç»“æŸå­—èŠ‚è®¡ç®—å‡ºçš„å›¾ç‰‡å¤§å°
+							//è®¾ç½®å›¾ç‰‡æ–‡ä»¶çš„å¤´å’Œå°¾
 
 	const string jpg_head{ '\xff', '\xd8' };
 	const string jpg_tail{ '\xff', '\xd9' };
@@ -627,27 +627,27 @@ wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index
 	string image_contents;
 	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
 	image_index = tag_content.find(jpg_head, type_index);
-	if (image_index < type_index + 100)		//ÔÚ×¨¼­·âÃæ¿ªÊ¼´¦µÄ100¸ö×Ö½Ú²éÕÒ
+	if (image_index < type_index + 100)		//åœ¨ä¸“è¾‘å°é¢å¼€å§‹å¤„çš„100ä¸ªå­—èŠ‚æŸ¥æ‰¾
 	{
 		image_type = 0;
 		size_t end_index = tag_content.find(jpg_tail, image_index + jpg_head.size());
 		image_size = end_index - image_index + jpg_tail.size();
 		image_contents = tag_content.substr(image_index, image_size);
 	}
-	else		//Ã»ÓĞÕÒµ½jpgÎÄ¼şÍ·Ôò²éÕÒpngÎÄ¼şÍ·
+	else		//æ²¡æœ‰æ‰¾åˆ°jpgæ–‡ä»¶å¤´åˆ™æŸ¥æ‰¾pngæ–‡ä»¶å¤´
 	{
 		image_index = tag_content.find(png_head, type_index);
-		if (image_index < type_index + 100)		//ÔÚ×¨¼­·âÃæ¿ªÊ¼´¦µÄ100¸ö×Ö½Ú²éÕÒ
+		if (image_index < type_index + 100)		//åœ¨ä¸“è¾‘å°é¢å¼€å§‹å¤„çš„100ä¸ªå­—èŠ‚æŸ¥æ‰¾
 		{
 			image_type = 1;
 			size_t end_index = tag_content.find(png_tail, image_index + png_head.size());
 			image_size = end_index - image_index + png_tail.size();
 			image_contents = tag_content.substr(image_index, image_size);
 		}
-		else		//Ã»ÓĞÕÒµ½pngÎÄ¼şÍ·Ôò²éÕÒgifÎÄ¼şÍ·
+		else		//æ²¡æœ‰æ‰¾åˆ°pngæ–‡ä»¶å¤´åˆ™æŸ¥æ‰¾gifæ–‡ä»¶å¤´
 		{
 			image_index = tag_content.find(gif_head, type_index);
-			if (image_index < type_index + 100)		//ÔÚ×¨¼­·âÃæ¿ªÊ¼´¦µÄ100¸ö×Ö½Ú²éÕÒ
+			if (image_index < type_index + 100)		//åœ¨ä¸“è¾‘å°é¢å¼€å§‹å¤„çš„100ä¸ªå­—èŠ‚æŸ¥æ‰¾
 			{
 				image_type = 2;
 				size_t end_index = tag_content.find(gif_tail, image_index + gif_head.size());
@@ -657,7 +657,7 @@ wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index
 		}
 	}
 
-	//½«×¨¼­·âÃæ±£´æµ½ÁÙÊ±Ä¿Â¼
+	//å°†ä¸“è¾‘å°é¢ä¿å­˜åˆ°ä¸´æ—¶ç›®å½•
 	wstring file_path{ CCommon::GetTemplatePath() };
 	wstring _file_name;
 	if (file_name == nullptr)

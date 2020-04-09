@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 
 namespace CRASHREPORT
 {
     /**@brief
-        ¿ªÆôdmupÄ£Ê½
-        ¿ªÆôºó£¬µ±³ÌĞò±ÀÀ£Ê±£¬»áÉú³ÉÒ»¸ödumpÎÄ¼ş£¬¸ÃÎÄ¼şÔÚC:\Users\<ÓÃ»§Ãû>\AppData\Local\TempÄ¿Â¼
-        ÎÄ¼şÃû¸ñÊ½£º±ÀÀ£Ê±¼ä_³ÌĞòÃû³Æ.exe.dmp
-        ÈçÏÂ
+        å¼€å¯dmupæ¨¡å¼
+        å¼€å¯åï¼Œå½“ç¨‹åºå´©æºƒæ—¶ï¼Œä¼šç”Ÿæˆä¸€ä¸ªdumpæ–‡ä»¶ï¼Œè¯¥æ–‡ä»¶åœ¨C:\Users\<ç”¨æˆ·å>\AppData\Local\Tempç›®å½•
+        æ–‡ä»¶åæ ¼å¼ï¼šå´©æºƒæ—¶é—´_ç¨‹åºåç§°.exe.dmp
+        å¦‚ä¸‹
         20150116174802_CrashShare.exe.dmp
     */
     void StartCrashReport();

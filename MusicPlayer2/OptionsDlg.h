@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "afxcmn.h"
 #include "LyricSettingsDlg.h"
 #include "AppearanceSettingDlg.h"
@@ -8,7 +8,7 @@
 #include "CHotKeySettingDlg.h"
 #include "MediaLibSettingDlg.h"
 
-// COptionsDlg ¶Ô»°¿ò
+// COptionsDlg å¯¹è¯æ¡†
 #define TIMER_ID2 1122
 #define WM_SETTINGS_APPLIED (WM_USER+113)
 
@@ -17,31 +17,31 @@ class COptionsDlg : public CDialog
 	DECLARE_DYNAMIC(COptionsDlg)
 
 public:
-	COptionsDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	COptionsDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~COptionsDlg();
 
-	CLyricSettingsDlg m_tab1_dlg{ this };		//¡°¸è´ÊÉèÖÃ¡±×Ó¶Ô»°¿ò
-	CAppearanceSettingDlg m_tab2_dlg{ this };	//¡°Íâ¹ÛÉèÖÃ¡±×Ó¶Ô»°¿ò
-	CDataSettingsDlg m_tab3_dlg{ this };		//¡°³£¹æÉèÖÃ¡±×Ó¶Ô»°¿ò
-	CPlaySettingsDlg m_tab4_dlg{ this };		//¡°²¥·ÅÑ¡Ïî¡±×Ó¶Ô»°¿ò
-	CHotKeySettingDlg m_tab5_dlg{ this };		//¡°È«¾Ö¿ì½İ¼ü¡±×Ó¶Ô»°¿ò
-	CMediaLibSettingDlg m_media_lib_dlg{ this };		//¡°Ã½Ìå¿â¡±×Ó¶Ô»°¿ò
+	CLyricSettingsDlg m_tab1_dlg{ this };		//â€œæ­Œè¯è®¾ç½®â€å­å¯¹è¯æ¡†
+	CAppearanceSettingDlg m_tab2_dlg{ this };	//â€œå¤–è§‚è®¾ç½®â€å­å¯¹è¯æ¡†
+	CDataSettingsDlg m_tab3_dlg{ this };		//â€œå¸¸è§„è®¾ç½®â€å­å¯¹è¯æ¡†
+	CPlaySettingsDlg m_tab4_dlg{ this };		//â€œæ’­æ”¾é€‰é¡¹â€å­å¯¹è¯æ¡†
+	CHotKeySettingDlg m_tab5_dlg{ this };		//â€œå…¨å±€å¿«æ·é”®â€å­å¯¹è¯æ¡†
+	CMediaLibSettingDlg m_media_lib_dlg{ this };		//â€œåª’ä½“åº“â€å­å¯¹è¯æ¡†
 
 	int m_tab_selected{};
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_OPTIONS_DIALOG };
 #endif
 
 protected:
 
-	CTabCtrlEx m_tab;		//Ñ¡Ïî¿¨¿Ø¼ş
+	CTabCtrlEx m_tab;		//é€‰é¡¹å¡æ§ä»¶
     std::vector<CTabDlg*> m_tab_vect;
     std::vector<int> m_tab_height;
     CSize m_min_size{};
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

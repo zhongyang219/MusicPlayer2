@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 class CPlaylistFile
 {
 public:
-	enum Type			//²¥·ÅÁĞ±í¸ñÊ½
+	enum Type			//æ’­æ”¾åˆ—è¡¨æ ¼å¼
 	{
-		PL_PLAYLIST,	//MusicPlayer2²¥·ÅÁĞ±í
-		PL_M3U,			//m3u²¥·ÅÁĞ±í
-		PL_M3U8			//m3u8²¥·ÅÁĞ±í
+		PL_PLAYLIST,	//MusicPlayer2æ’­æ”¾åˆ—è¡¨
+		PL_M3U,			//m3uæ’­æ”¾åˆ—è¡¨
+		PL_M3U8			//m3u8æ’­æ”¾åˆ—è¡¨
 	};
 
     CPlaylistFile();
@@ -26,7 +26,7 @@ public:
     static bool IsPlaylistExt(wstring ext);
 
 public:
-    const static vector<wstring> m_surpported_playlist;		//Ö§³ÖµÄ²¥·ÅÁĞ±íÎÄ¼şµÄÀ©Õ¹ÃûÁĞ±í
+    const static vector<wstring> m_surpported_playlist;		//æ”¯æŒçš„æ’­æ”¾åˆ—è¡¨æ–‡ä»¶çš„æ‰©å±•ååˆ—è¡¨
 
 private:
 	void DisposePlaylistFileLine(const string& str_current_line, bool utf8);

@@ -1,5 +1,5 @@
-
-// MusicPlayerDlg.h : Í·ÎÄ¼ş
+ï»¿
+// MusicPlayerDlg.h : å¤´æ–‡ä»¶
 //
 
 #pragma once
@@ -33,37 +33,37 @@
 #include "DesktopLyric.h"
 #include "SearchEditCtrl.h"
 
-#define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//×Ô¶¯ÏÂÔØ×¨¼­·âÃæºÍ¸è´ÊÍê³ÉÊ±·¢³öµÄÏûÏ¢
+#define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//è‡ªåŠ¨ä¸‹è½½ä¸“è¾‘å°é¢å’Œæ­Œè¯å®Œæˆæ—¶å‘å‡ºçš„æ¶ˆæ¯
 
-// CMusicPlayerDlg ¶Ô»°¿ò
+// CMusicPlayerDlg å¯¹è¯æ¡†
 class CMusicPlayerDlg : public CMainDialogBase
 {
 
-// ¹¹Ôì
+// æ„é€ 
 public:
-    CMusicPlayerDlg(wstring cmdLine = wstring(), CWnd* pParent = NULL);	// ±ê×¼¹¹Ôìº¯Êı
+    CMusicPlayerDlg(wstring cmdLine = wstring(), CWnd* pParent = NULL);	// æ ‡å‡†æ„é€ å‡½æ•°
     ~CMusicPlayerDlg();
 
     bool IsTaskbarListEnable() const;
 
     friend class CMusicPlayerCmdHelper;
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_MUSICPLAYER2_DIALOG };
 #endif
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV Ö§³Ö
+    virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV æ”¯æŒ
 
 
-// ÊµÏÖ
+// å®ç°
 protected:
     HICON m_hIcon;
     CToolTipCtrl m_Mytip;
-    //¿Ø¼ş±äÁ¿
-    CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };		//²¥·ÅÁĞ±í¿Ø¼ş(³õÊ¼»¯Ê±Í¨¹ı¹¹Ôìº¯Êı´«µİ¸èÇúĞÅÏ¢µÄÒıÓÃ£¬
-    //ÓÃÓÚÖ§³ÖÊó±êÖ¸ÏòÁĞ±íÖĞµÄÏîÄ¿Ê±ÏÔÊ¾¸èÇúĞÅÏ¢)
+    //æ§ä»¶å˜é‡
+    CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };		//æ’­æ”¾åˆ—è¡¨æ§ä»¶(åˆå§‹åŒ–æ—¶é€šè¿‡æ„é€ å‡½æ•°ä¼ é€’æ­Œæ›²ä¿¡æ¯çš„å¼•ç”¨ï¼Œ
+    //ç”¨äºæ”¯æŒé¼ æ ‡æŒ‡å‘åˆ—è¡¨ä¸­çš„é¡¹ç›®æ—¶æ˜¾ç¤ºæ­Œæ›²ä¿¡æ¯)
     CStaticEx m_path_static;
     CEdit m_path_edit;
     CButton m_set_path_button;
@@ -71,73 +71,73 @@ protected:
     //CButton m_clear_search_button;
 
 #ifndef COMPILE_IN_WIN_XP
-    ITaskbarList3* m_pTaskbar { theApp.GetITaskbarList3() };         //ÓÃÓÚÖ§³ÖÈÎÎñÀ¸ÏÔÊ¾²¥·Å½ø¶È
+    ITaskbarList3* m_pTaskbar { theApp.GetITaskbarList3() };         //ç”¨äºæ”¯æŒä»»åŠ¡æ æ˜¾ç¤ºæ’­æ”¾è¿›åº¦
     THUMBBUTTON m_thumbButton[3] {};
 #endif
 
-    CFindDlg m_findDlg;		//²éÕÒ¶Ô»°¿ò
+    CFindDlg m_findDlg;		//æŸ¥æ‰¾å¯¹è¯æ¡†
 
-    wstring m_cmdLine;	//ÃüÁîĞĞ²ÎÊı
+    wstring m_cmdLine;	//å‘½ä»¤è¡Œå‚æ•°
 
-    CDC* m_pDC;				//µ±Ç°´°¿ÚµÄDC
+    CDC* m_pDC;				//å½“å‰çª—å£çš„DC
     CPlayerUI m_ui{ theApp.m_ui_data, this };
     CPlayerUI2 m_ui2{ theApp.m_ui_data, this };
     IPlayerUI* m_pUI = nullptr;
 
-    bool m_first_start{ true };		//³õÊ¼Ê±Îªtrue£¬ÔÚ¶¨Ê±Æ÷µÚÒ»´ÎÆô¶¯ºóÖÃÎªflase
+    bool m_first_start{ true };		//åˆå§‹æ—¶ä¸ºtrueï¼Œåœ¨å®šæ—¶å™¨ç¬¬ä¸€æ¬¡å¯åŠ¨åç½®ä¸ºflase
 
-    int m_window_width;		//´°¿ÚµÄ¿í¶È
-    int m_window_height;	//´°¿ÚµÄ¸ß¶È
-    CPoint m_desktop_lyric_pos{ -1, -1 };     //×ÀÃæ¸è´Ê´°¿ÚµÄÎ»ÖÃ
+    int m_window_width;		//çª—å£çš„å®½åº¦
+    int m_window_height;	//çª—å£çš„é«˜åº¦
+    CPoint m_desktop_lyric_pos{ -1, -1 };     //æ¡Œé¢æ­Œè¯çª—å£çš„ä½ç½®
     CSize m_desktop_lyric_size{ 0, 0 };
 
-    SLayoutData m_layout;		//´°¿Ú²¼¾ÖµÄ¹Ì¶¨Êı¾İ
+    SLayoutData m_layout;		//çª—å£å¸ƒå±€çš„å›ºå®šæ•°æ®
 
 
 
-    bool m_searched;		//²¥·ÅÁĞ±íÊÇ·ñ´¦ÓÚËÑË÷×´Ì¬
+    bool m_searched;		//æ’­æ”¾åˆ—è¡¨æ˜¯å¦å¤„äºæœç´¢çŠ¶æ€
 
     unsigned int m_timer_count{};
 
 
-    int m_item_selected{ -1 };		//²¥·ÅÁĞ±íÖĞÊó±êÑ¡ÖĞµÄÏîÄ¿
+    int m_item_selected{ -1 };		//æ’­æ”¾åˆ—è¡¨ä¸­é¼ æ ‡é€‰ä¸­çš„é¡¹ç›®
     vector<int> m_items_selected;
-    int m_tab_selected{};		//Ñ¡ÏîÉèÖÃÖĞÑ¡ÔñµÄ±êÇ©
+    int m_tab_selected{};		//é€‰é¡¹è®¾ç½®ä¸­é€‰æ‹©çš„æ ‡ç­¾
 
-    CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected };		//ÃÔÄãÄ£Ê½¶Ô»°¿ò
+    CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected };		//è¿·ä½ æ¨¡å¼å¯¹è¯æ¡†
 
-    CCortanaLyric m_cortana_lyric;		//ÓÃÓÚÏÔÊ¾Cortana¸è´Ê
-	CDesktopLyric m_desktop_lyric;		//×ÀÃæ¸è´Ê
+    CCortanaLyric m_cortana_lyric;		//ç”¨äºæ˜¾ç¤ºCortanaæ­Œè¯
+	CDesktopLyric m_desktop_lyric;		//æ¡Œé¢æ­Œè¯
 
-    CLyricEditDlg* m_pLyricEdit;		//¸è´Ê±à¼­¶Ô»°¿ò£¨·ÇÄ£Ì¬¶Ô»°¿ò£©
-    CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//¸è´ÊÅúÁ¿ÏÂÔØ¶Ô»°¿ò£¨·ÇÄ£Ì¬¶Ô»°¿ò£©
-    CMediaLibDlg* m_pMediaLibDlg;		//Ã½Ìå¿â¶Ô»°¿ò£¨·ÇÄ£Ì¬¶Ô»°¿ò£©
-    CSoundEffectDlg* m_pSoundEffecDlg;		//ÒôĞ§Éè¶¨¶Ô»°¿ò£¨·ÇÄ£Ì¬¶Ô»°¿ò£©
-    CFormatConvertDlg* m_pFormatConvertDlg;		//¸ñÊ½×ª»»¶Ô»°¿ò£¨·ÇÄ£Ì¬¶Ô»°¿ò£©
-    CFloatPlaylistDlg* m_pFloatPlaylistDlg;		//¸¡¶¯²¥·ÅÁĞ±í¶Ô»°¿ò
-    CPoint m_float_playlist_pos;				//¸¡¶¯²¥·ÅÁĞ±íµÄÎ»ÖÃ
+    CLyricEditDlg* m_pLyricEdit;		//æ­Œè¯ç¼–è¾‘å¯¹è¯æ¡†ï¼ˆéæ¨¡æ€å¯¹è¯æ¡†ï¼‰
+    CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//æ­Œè¯æ‰¹é‡ä¸‹è½½å¯¹è¯æ¡†ï¼ˆéæ¨¡æ€å¯¹è¯æ¡†ï¼‰
+    CMediaLibDlg* m_pMediaLibDlg;		//åª’ä½“åº“å¯¹è¯æ¡†ï¼ˆéæ¨¡æ€å¯¹è¯æ¡†ï¼‰
+    CSoundEffectDlg* m_pSoundEffecDlg;		//éŸ³æ•ˆè®¾å®šå¯¹è¯æ¡†ï¼ˆéæ¨¡æ€å¯¹è¯æ¡†ï¼‰
+    CFormatConvertDlg* m_pFormatConvertDlg;		//æ ¼å¼è½¬æ¢å¯¹è¯æ¡†ï¼ˆéæ¨¡æ€å¯¹è¯æ¡†ï¼‰
+    CFloatPlaylistDlg* m_pFloatPlaylistDlg;		//æµ®åŠ¨æ’­æ”¾åˆ—è¡¨å¯¹è¯æ¡†
+    CPoint m_float_playlist_pos;				//æµ®åŠ¨æ’­æ”¾åˆ—è¡¨çš„ä½ç½®
 
-    CWinThread* m_pThread;		//Ö´ĞĞÔÚÏß²é¿´µÄÏß³Ì
-    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//Ö´ĞĞÔÚÏß²é¿´µÄÏß³Ìº¯Êı
+    CWinThread* m_pThread;		//æ‰§è¡Œåœ¨çº¿æŸ¥çœ‹çš„çº¿ç¨‹
+    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//æ‰§è¡Œåœ¨çº¿æŸ¥çœ‹çš„çº¿ç¨‹å‡½æ•°
 
-    CWinThread* m_pDownloadThread;		//Ö´ĞĞ×Ô¶¯ÏÂÔØ¸è´ÊºÍ×¨¼­·âÃæµÄÏß³Ì
-    static UINT DownloadLyricAndCoverThreadFunc(LPVOID lpParam);	//Ö´ĞĞ×Ô¶¯ÏÂÔØ¸è´ÊºÍ×¨¼­·âÃæµÄÏß³Ìº¯Êı
+    CWinThread* m_pDownloadThread;		//æ‰§è¡Œè‡ªåŠ¨ä¸‹è½½æ­Œè¯å’Œä¸“è¾‘å°é¢çš„çº¿ç¨‹
+    static UINT DownloadLyricAndCoverThreadFunc(LPVOID lpParam);	//æ‰§è¡Œè‡ªåŠ¨ä¸‹è½½æ­Œè¯å’Œä¸“è¾‘å°é¢çš„çº¿ç¨‹å‡½æ•°
 
-    int m_play_error_cnt{};		//Í³¼Æ²¥·Å³ö´íµÄ´ÎÊı
+    int m_play_error_cnt{};		//ç»Ÿè®¡æ’­æ”¾å‡ºé”™çš„æ¬¡æ•°
 
     CNotifyIcon m_notify_icon;
     CPlayerToolBar m_playlist_toolbar;
 
-    bool m_no_lbtnup{ false };      //µ±ËüÎªtrueÊ±£¬²»ÏìÓ¦WM_LBUTTONUPÏûÏ¢
+    bool m_no_lbtnup{ false };      //å½“å®ƒä¸ºtrueæ—¶ï¼Œä¸å“åº”WM_LBUTTONUPæ¶ˆæ¯
     enum { DELAY_TIMER_ID = 1200 };
 
 private:
-    void SaveConfig();		//±£´æÉèÖÃµ½iniÎÄ¼ş
-    void LoadConfig();		//´ÓiniÎÄ¼ş¶ÁÈ¡ÉèÖÃ
-    void SetTransparency();			//¸ù¾İm_transparencyµÄÖµÉèÖÃ´°¿ÚÍ¸Ã÷¶È
+    void SaveConfig();		//ä¿å­˜è®¾ç½®åˆ°iniæ–‡ä»¶
+    void LoadConfig();		//ä»iniæ–‡ä»¶è¯»å–è®¾ç½®
+    void SetTransparency();			//æ ¹æ®m_transparencyçš„å€¼è®¾ç½®çª—å£é€æ˜åº¦
     void SetDesptopLyricTransparency();
-    void DrawInfo(bool reset = false);		//»æÖÆĞÅÏ¢
-    void SetPlaylistSize(int cx, int cy);		//ÉèÖÃ²¥·ÅÁĞ±íµÄ´óĞ¡
+    void DrawInfo(bool reset = false);		//ç»˜åˆ¶ä¿¡æ¯
+    void SetPlaylistSize(int cx, int cy);		//è®¾ç½®æ’­æ”¾åˆ—è¡¨çš„å¤§å°
     void SetAlwaysOnTop();
 
 public:
@@ -146,19 +146,19 @@ public:
 
 protected:
     void SetPlayListColor(bool highlight_visible = true);
-    void SwitchTrack();		//µ±ÇĞ»»ÕıÔÚ²¥·ÅµÄ¸èÇúÊ±µÄ´¦Àí
+    void SwitchTrack();		//å½“åˆ‡æ¢æ­£åœ¨æ’­æ”¾çš„æ­Œæ›²æ—¶çš„å¤„ç†
     void SetPlaylistVisible();
     void SetMenubarVisible();
 
-    void UpdateTaskBarProgress();	//¸üĞÂÈÎÎñÀ¸°´Å¥ÉÏµÄ½ø¶È
-    void UpdatePlayPauseButton();		//¸ù¾İµ±Ç°²¥·Å×´Ì¬¸üĞÂ¡°²¥·Å/ÔİÍ£¡±°´Å¥ÉÏµÄÎÄ×ÖºÍÍ¼±ê
-    void SetThumbnailClipArea();		//ÉèÖÃÈÎÎñÀ¸ËõÂÔÍ¼µÄÇøÓò
-    void EnablePlaylist(bool enable);		//ÉèÖÃÆôÓÃ»ò½ûÓÃ²¥·ÅÁĞ±í¿Ø¼ş
+    void UpdateTaskBarProgress();	//æ›´æ–°ä»»åŠ¡æ æŒ‰é’®ä¸Šçš„è¿›åº¦
+    void UpdatePlayPauseButton();		//æ ¹æ®å½“å‰æ’­æ”¾çŠ¶æ€æ›´æ–°â€œæ’­æ”¾/æš‚åœâ€æŒ‰é’®ä¸Šçš„æ–‡å­—å’Œå›¾æ ‡
+    void SetThumbnailClipArea();		//è®¾ç½®ä»»åŠ¡æ ç¼©ç•¥å›¾çš„åŒºåŸŸ
+    void EnablePlaylist(bool enable);		//è®¾ç½®å¯ç”¨æˆ–ç¦ç”¨æ’­æ”¾åˆ—è¡¨æ§ä»¶
 
-    void CreateDesktopShortcut();		//ÓÃÓÚÔÚÌáÊ¾ÓÃ»§´´½¨×ÀÃæ¿ì½İ·½Ê½
+    void CreateDesktopShortcut();		//ç”¨äºåœ¨æç¤ºç”¨æˆ·åˆ›å»ºæ¡Œé¢å¿«æ·æ–¹å¼
 
-    void ApplySettings(const COptionsDlg& optionDlg);		//´ÓÑ¡ÏîÉèÖÃ¶Ô»°¿ò»ñÈ¡ÉèÖÃ
-    void ApplyThemeColor();			//Ó¦ÓÃÖ÷ÌâÑÕÉ«ÉèÖÃ
+    void ApplySettings(const COptionsDlg& optionDlg);		//ä»é€‰é¡¹è®¾ç½®å¯¹è¯æ¡†è·å–è®¾ç½®
+    void ApplyThemeColor();			//åº”ç”¨ä¸»é¢˜é¢œè‰²è®¾ç½®
 
     void ThemeColorChanged();
 
@@ -167,16 +167,16 @@ protected:
     void HideFloatPlaylist();
 
     void GetPlaylistItemSelected();
-    void IniPlaylistPopupMenu();        //³õÊ¼»¯ËùÓĞÓÒ¼ü²Ëµ¥ÖĞµÄ¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±×Ó²Ëµ¥
+    void IniPlaylistPopupMenu();        //åˆå§‹åŒ–æ‰€æœ‰å³é”®èœå•ä¸­çš„â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€å­èœå•
 
-    void SetPlaylistDragEnable();       //ÉèÖÃ²¥·ÅÁĞ±íÊÇÊÂÔÊĞíÍÏ¶¯ÅÅĞò
+    void SetPlaylistDragEnable();       //è®¾ç½®æ’­æ”¾åˆ—è¡¨æ˜¯äº‹å…è®¸æ‹–åŠ¨æ’åº
 
     void _OnOptionSettings(CWnd* pParent);
 
 	void DoLyricsAutoSave();
 	void UpdateABRepeatToolTip();
 
-    // Éú³ÉµÄÏûÏ¢Ó³Éäº¯Êı
+    // ç”Ÿæˆçš„æ¶ˆæ¯æ˜ å°„å‡½æ•°
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
     afx_msg void OnPaint();

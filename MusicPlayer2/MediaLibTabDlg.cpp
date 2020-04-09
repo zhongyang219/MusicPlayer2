@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MediaLibTabDlg.h"
 #include "MusicPlayer2.h"
 #include "MusicPlayerCmdHelper.h"
@@ -89,7 +89,7 @@ UINT CMediaLibTabDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 	if (pThis == nullptr)
 		return 0;
 	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-	//´ËÃüÁîÓÃÓÚÌø×ªµ½¸èÇú¶ÔÓ¦µÄÍøÒ×ÔÆÒôÀÖµÄÔÚÏßÒ³Ãæ
+	//æ­¤å‘½ä»¤ç”¨äºè·³è½¬åˆ°æ­Œæ›²å¯¹åº”çš„ç½‘æ˜“äº‘éŸ³ä¹çš„åœ¨çº¿é¡µé¢
 	if (pThis->GetItemSelected() >= 0)
 	{
 		wstring file_path = pThis->GetSongListCtrl().GetItemText(pThis->GetItemSelected(), pThis->GetPathColIndex()).GetString();
@@ -105,7 +105,7 @@ UINT CMediaLibTabDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 
 void CMediaLibTabDlg::OnOK()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	std::vector<wstring> files;
 	GetSongsSelected(files);
@@ -130,7 +130,7 @@ void CMediaLibTabDlg::OnOK()
 
 void CMediaLibTabDlg::OnCancel()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	CTabDlg::OnCancel();
 
@@ -142,14 +142,14 @@ void CMediaLibTabDlg::OnCancel()
 
 BOOL CMediaLibTabDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	WORD command = LOWORD(wParam);
 	auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
 	{
 		GetSongsSelected(item_list);
 	};
-	//ÏìÓ¦²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥ÖĞµÄ¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±
+	//å“åº”æ’­æ”¾åˆ—è¡¨å³é”®èœå•ä¸­çš„â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€
 	CMusicPlayerCmdHelper cmd_helper;
 	cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
@@ -160,21 +160,21 @@ void CMediaLibTabDlg::OnInitMenu(CMenu* pMenu)
 {
 	CTabDlg::OnInitMenu(pMenu);
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	pMenu->SetDefaultItem(ID_PLAY_ITEM);
 }
 
 
 void CMediaLibTabDlg::OnPlayItem()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	OnOK();
 }
 
 
 void CMediaLibTabDlg::OnPlayItemInFolderMode()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (GetItemSelected() >= 0)
 	{
 		std::wstring file_path = GetSongListCtrl().GetItemText(GetItemSelected(), GetPathColIndex());
@@ -190,7 +190,7 @@ void CMediaLibTabDlg::OnPlayItemInFolderMode()
 
 void CMediaLibTabDlg::OnAddToNewPlaylist()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	wstring playlist_path;
 	_OnAddToNewPlaylist(playlist_path);
 }
@@ -198,7 +198,7 @@ void CMediaLibTabDlg::OnAddToNewPlaylist()
 
 void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	wstring playlist_path;
 	if (_OnAddToNewPlaylist(playlist_path))
 	{
@@ -211,14 +211,14 @@ void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
 
 void CMediaLibTabDlg::OnExploreOnline()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	AfxBeginThread(ViewOnlineThreadFunc, (void*)this);
 }
 
 
 void CMediaLibTabDlg::OnExploreTrack()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (GetItemSelected() < 0)
 		return;
 	wstring file_path = GetSongListCtrl().GetItemText(GetItemSelected(), GetPathColIndex()).GetString();
@@ -233,7 +233,7 @@ void CMediaLibTabDlg::OnExploreTrack()
 
 void CMediaLibTabDlg::OnFormatConvert()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	std::vector<SongInfo> songs;
 	GetSongsSelected(songs);
 	CMusicPlayerCmdHelper cmd_helper(this);
@@ -243,7 +243,7 @@ void CMediaLibTabDlg::OnFormatConvert()
 
 void CMediaLibTabDlg::OnDeleteFromDisk()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	vector<SongInfo> songs_selected;
 	GetSongsSelected(songs_selected);
 	CMusicPlayerCmdHelper helper;
@@ -256,7 +256,7 @@ void CMediaLibTabDlg::OnDeleteFromDisk()
 
 void CMediaLibTabDlg::OnItemProperty()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (GetItemSelected() < 0)
 		return;
 	std::vector<SongInfo> songs;
@@ -269,7 +269,7 @@ void CMediaLibTabDlg::OnItemProperty()
 
 void CMediaLibTabDlg::OnCopyText()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (!CCommon::CopyStringToClipboard(GetSelectedString()))
 		MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 }

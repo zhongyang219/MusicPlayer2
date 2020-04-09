@@ -1,15 +1,15 @@
-#pragma once
+ï»¿#pragma once
 #include "stdafx.h"
 
 class IPlayerUI
 {
 public:
-	struct UIButton		//½çÃæÖĞ»æÖÆµÄ°´Å¥
+	struct UIButton		//ç•Œé¢ä¸­ç»˜åˆ¶çš„æŒ‰é’®
 	{
-		CRect rect;				//°´Å¥µÄ¾ØĞÎÇøÓò
-		bool hover{ false };	//Êó±êÊÇ·ñÖ¸Ïò°´Å¥
-		bool pressed{ false };	//°´Å¥ÊÇ·ñ°´ÏÂ
-		bool enable{ true };	//°´Å¥ÊÇ·ñÆôÓÃ
+		CRect rect;				//æŒ‰é’®çš„çŸ©å½¢åŒºåŸŸ
+		bool hover{ false };	//é¼ æ ‡æ˜¯å¦æŒ‡å‘æŒ‰é’®
+		bool pressed{ false };	//æŒ‰é’®æ˜¯å¦æŒ‰ä¸‹
+		bool enable{ true };	//æŒ‰é’®æ˜¯å¦å¯ç”¨
 	};
 
 public:

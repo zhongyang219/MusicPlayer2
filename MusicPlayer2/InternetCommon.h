@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #include "Common.h"
 
-enum DownloadResult     //ÏÂÔØ½á¹û
+enum DownloadResult     //ä¸‹è½½ç»“æœ
 {
-    DR_SUCCESS,             //³É¹¦
-    DR_NETWORK_ERROR,       //ÍøÂçÁ¬½ÓÊ§°Ü
-    DR_DOWNLOAD_ERROR       //ÏÂÔØÊ§°Ü
+    DR_SUCCESS,             //æˆåŠŸ
+    DR_NETWORK_ERROR,       //ç½‘ç»œè¿æ¥å¤±è´¥
+    DR_DOWNLOAD_ERROR       //ä¸‹è½½å¤±è´¥
 };
 
 #define  NORMAL_CONNECT INTERNET_FLAG_KEEP_CONNECTION
@@ -18,47 +18,47 @@ class CInternetCommon
 public:
     enum HttpResult
     {
-        SUCCESS = 0,	// ²Ù×÷³É¹¦
-        FAILURE = 1,	// ²Ù×÷Ê§°Ü
-        OUTTIME = 2,	// ²Ù×÷³¬Ê±
+        SUCCESS = 0,	// æ“ä½œæˆåŠŸ
+        FAILURE = 1,	// æ“ä½œå¤±è´¥
+        OUTTIME = 2,	// æ“ä½œè¶…æ—¶
     };
 
-	//Ò»¸öËÑË÷½á¹ûµÄĞÅÏ¢
+	//ä¸€ä¸ªæœç´¢ç»“æœçš„ä¿¡æ¯
 	struct ItemInfo
 	{
-		wstring id;		//¸èÇúµÄID
-		wstring title;		//¸èÇúµÄ±êÌâ
-		wstring artist;		//¸èÇúµÄÒÕÊõ¼Ò
-		wstring album;		//¸èÇúµÄ³ªÆ¬¼¯
+		wstring id;		//æ­Œæ›²çš„ID
+		wstring title;		//æ­Œæ›²çš„æ ‡é¢˜
+		wstring artist;		//æ­Œæ›²çš„è‰ºæœ¯å®¶
+		wstring album;		//æ­Œæ›²çš„å”±ç‰‡é›†
 	};
 
 	CInternetCommon();
 	~CInternetCommon();
 
-	//½«Ò»¸ö×Ö·û´®×ª»»³ÉURL±àÂë£¨ÒÔUTF8±àÂë¸ñÊ½£©
+	//å°†ä¸€ä¸ªå­—ç¬¦ä¸²è½¬æ¢æˆURLç¼–ç ï¼ˆä»¥UTF8ç¼–ç æ ¼å¼ï¼‰
 	static wstring URLEncode(const wstring& wstr);
 
 	static bool GetURL(const wstring& str_url, wstring& result);
 
-	//ÏòÖ¸¶¨µÄurl·¢ËÍhttp postÇëÇó£¬½á¹û±£´æÔÚresultÖĞ
+	//å‘æŒ‡å®šçš„urlå‘é€http postè¯·æ±‚ï¼Œç»“æœä¿å­˜åœ¨resultä¸­
 	static int HttpPost(const wstring& str_url, wstring& result);
 
-	static void DeleteStrSlash(wstring& str);		//Èç¹û×Ö·û´®ÖĞµÄ¡°\"¡±£¬É¾³ı×Ö·û´®ÖĞµÄ·´Ğ±¸Ü
-	static void DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count = 30);		//´ÓËÑË÷½á¹ûsearch_resultÖĞÌáÈ¡³ö¸èÇúµÄĞÅÏ¢£¬²¢±£´æÔÚdown_listÈİÆ÷Àï
+	static void DeleteStrSlash(wstring& str);		//å¦‚æœå­—ç¬¦ä¸²ä¸­çš„â€œ\"â€ï¼Œåˆ é™¤å­—ç¬¦ä¸²ä¸­çš„åæ–œæ 
+	static void DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count = 30);		//ä»æœç´¢ç»“æœsearch_resultä¸­æå–å‡ºæ­Œæ›²çš„ä¿¡æ¯ï¼Œå¹¶ä¿å­˜åœ¨down_listå®¹å™¨é‡Œ
 
-	//ÅĞ¶ÏÁ½¸ö×Ö·ûµÄÆ¥Åä¶È
+	//åˆ¤æ–­ä¸¤ä¸ªå­—ç¬¦çš„åŒ¹é…åº¦
 	static double CharacterSimilarDegree(wchar_t ch1, wchar_t ch2);
 
 	/// <summary>
-	/// ×Ö·û´®ÏàËÆ¶ÈËã·¨-±à¼­¾àÀë·¨
+	/// å­—ç¬¦ä¸²ç›¸ä¼¼åº¦ç®—æ³•-ç¼–è¾‘è·ç¦»æ³•
 	/// </summary>
-	/// <returns>·µ»ØµÄÖµÎª0~1£¬Ô½´óÏàËÆ¶ÈÔ½¸ß</returns>
+	/// <returns>è¿”å›çš„å€¼ä¸º0~1ï¼Œè¶Šå¤§ç›¸ä¼¼åº¦è¶Šé«˜</returns>
 	static double StringSimilarDegree_LD(const wstring& srcString, const wstring& matchString);
 
-	//¸ù¾İ²ÎÊıÌá¹©µÄ¸èÇú±êÌâ¡¢ÒÕÊõ¼Ò¡¢³ªÆ¬¼¯ºÍÎÄ¼şÃû£¬ÔÚdown_listÈİÆ÷ÖĞ²éÕÒ×îÆ¥ÅäµÄÒ»Ïî£¬²¢·µ»ØË÷ÒıµÄÖµ
+	//æ ¹æ®å‚æ•°æä¾›çš„æ­Œæ›²æ ‡é¢˜ã€è‰ºæœ¯å®¶ã€å”±ç‰‡é›†å’Œæ–‡ä»¶åï¼Œåœ¨down_listå®¹å™¨ä¸­æŸ¥æ‰¾æœ€åŒ¹é…çš„ä¸€é¡¹ï¼Œå¹¶è¿”å›ç´¢å¼•çš„å€¼
 	static int SelectMatchedItem(const vector<ItemInfo>& down_list, const wstring& title, const wstring& artist, const wstring& album, const wstring& filename, bool write_log = false);
 
-	//×Ô¶¯ËÑË÷¸èÇú²¢·µ»Ø×î¼ÑÆ¥ÅäÏîµÄID£¬Èç¹ûmessageÎªtrue£¬Ôò»áÔÚÊ§°ÜÊ±µ¯³öÌáÊ¾
+	//è‡ªåŠ¨æœç´¢æ­Œæ›²å¹¶è¿”å›æœ€ä½³åŒ¹é…é¡¹çš„IDï¼Œå¦‚æœmessageä¸ºtrueï¼Œåˆ™ä¼šåœ¨å¤±è´¥æ—¶å¼¹å‡ºæç¤º
 	static ItemInfo SearchSongAndGetMatched(const wstring& title, const wstring& artist, const wstring& album, const wstring& file_name, bool message = true, DownloadResult* result = nullptr);
 };
 

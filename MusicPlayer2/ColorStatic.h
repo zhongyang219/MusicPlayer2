@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 // CColorStatic
@@ -11,7 +11,7 @@ public:
 	CColorStatic();
 	virtual ~CColorStatic();
 
-	void SetFillColor(COLORREF fill_color);		//ÉèÖÃÒªÌî³äµÄ±³¾°É«
+	void SetFillColor(COLORREF fill_color);		//è®¾ç½®è¦å¡«å……çš„èƒŒæ™¯è‰²
 
 protected:
 	COLORREF m_fill_color{ RGB(255, 255,255) };

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Playlist.h"
 #include "Common.h"
 #include "FilePathHelper.h"
@@ -6,10 +6,10 @@
 const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L".m3u8" };
 
 /*
-²¥·ÅÁĞ±íÎÄ¼ş¸ñÊ½ËµÃ÷
-Ã¿ĞĞÒ»¸öÇúÄ¿£¬Ã¿Ò»ĞĞµÄ¸ñÊ½Îª£º
-ÎÄ¼şÂ·¾¶|ÊÇ·ñÎªcueÒô¹ì|cueÒô¹ìÆğÊ¼Ê±¼ä|cueÒô¹ì½áÊøÊ±¼ä|±êÌâ|ÒÕÊõ¼Ò|³ªÆ¬¼¯|ÇúÄ¿ĞòºÅ|±ÈÌØÂÊ|Á÷ÅÉ|Äê·İ|×¢ÊÍ
-Ä¿Ç°³ıÁËcueÒô¹ìÍâ£¬ÆäËûÇúÄ¿Ö»±£´æÎÄ¼şÂ·¾¶
+æ’­æ”¾åˆ—è¡¨æ–‡ä»¶æ ¼å¼è¯´æ˜
+æ¯è¡Œä¸€ä¸ªæ›²ç›®ï¼Œæ¯ä¸€è¡Œçš„æ ¼å¼ä¸ºï¼š
+æ–‡ä»¶è·¯å¾„|æ˜¯å¦ä¸ºcueéŸ³è½¨|cueéŸ³è½¨èµ·å§‹æ—¶é—´|cueéŸ³è½¨ç»“æŸæ—¶é—´|æ ‡é¢˜|è‰ºæœ¯å®¶|å”±ç‰‡é›†|æ›²ç›®åºå·|æ¯”ç‰¹ç‡|æµæ´¾|å¹´ä»½|æ³¨é‡Š
+ç›®å‰é™¤äº†cueéŸ³è½¨å¤–ï¼Œå…¶ä»–æ›²ç›®åªä¿å­˜æ–‡ä»¶è·¯å¾„
 */
 
 CPlaylistFile::CPlaylistFile()
@@ -34,7 +34,7 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
     if (stream.fail())
         return;
 
-	//ÅĞ¶ÏÎÄ¼ş±àÂë
+	//åˆ¤æ–­æ–‡ä»¶ç¼–ç 
 	bool utf8{};
 	wstring file_extension = CFilePathHelper(file_path).GetFileExtension();
 	utf8 = (file_extension != L"m3u");

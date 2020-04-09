@@ -1,18 +1,18 @@
-#pragma once
+ï»¿#pragma once
 #include "afxwin.h"
 
 
-// CPlayTrackDlg ¶Ô»°¿ò
+// CPlayTrackDlg å¯¹è¯æ¡†
 
 class CPlayTrackDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CPlayTrackDlg)
 
 public:
-	CPlayTrackDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CPlayTrackDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CPlayTrackDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_PLAY_TRACK_DIALOG };
 #endif
@@ -20,7 +20,7 @@ public:
 protected:
 	int m_track;
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

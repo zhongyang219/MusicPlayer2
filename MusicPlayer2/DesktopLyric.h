@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "LyricsWindow.h"
 #include "CommonData.h"
 #include "IniHelper.h"
@@ -10,7 +10,7 @@ struct LyricStyle
     int gradient_mode = 0;
 };
 
-struct LyricStyleDefaultData        //×ÀÃæ¸è´ÊÔ¤ÉèÊı¾İ
+struct LyricStyleDefaultData        //æ¡Œé¢æ­Œè¯é¢„è®¾æ•°æ®
 {
     LyricStyle normal_style;
     LyricStyle highlight_style;
@@ -20,21 +20,21 @@ const int LYRIC_DEFAULT_STYLE_NUM = 3;
 class CDesktopLyric : public CLyricsWindow
 {
 public:
-    struct UIButton		//½çÃæÖĞ»æÖÆµÄ°´Å¥
+    struct UIButton		//ç•Œé¢ä¸­ç»˜åˆ¶çš„æŒ‰é’®
     {
-        CRect rect;				//°´Å¥µÄ¾ØĞÎÇøÓò
-        bool hover{ false };	//Êó±êÊÇ·ñÖ¸Ïò°´Å¥
-        bool pressed{ false };	//°´Å¥ÊÇ·ñ°´ÏÂ
-        bool enable{ true };	//°´Å¥ÊÇ·ñÆôÓÃ
+        CRect rect;				//æŒ‰é’®çš„çŸ©å½¢åŒºåŸŸ
+        bool hover{ false };	//é¼ æ ‡æ˜¯å¦æŒ‡å‘æŒ‰é’®
+        bool pressed{ false };	//æŒ‰é’®æ˜¯å¦æŒ‰ä¸‹
+        bool enable{ true };	//æŒ‰é’®æ˜¯å¦å¯ç”¨
     };
 
-    enum BtnKey		//±êÊ¶°´Å¥µÄÀàĞÍ
+    enum BtnKey		//æ ‡è¯†æŒ‰é’®çš„ç±»å‹
     {
         BTN_APP,
-        BTN_STOP,				//Í£Ö¹
-        BTN_PREVIOUS,			//ÉÏÒ»Çú
-        BTN_PLAY_PAUSE,			//²¥·Å/ÔİÍ£
-        BTN_NEXT,				//ÏÂÒ»Çú
+        BTN_STOP,				//åœæ­¢
+        BTN_PREVIOUS,			//ä¸Šä¸€æ›²
+        BTN_PLAY_PAUSE,			//æ’­æ”¾/æš‚åœ
+        BTN_NEXT,				//ä¸‹ä¸€æ›²
         BTN_LOCK,
         BTN_DOUBLE_LINE,
         BTN_BACKGROUND_PENETRATE,
@@ -43,7 +43,7 @@ public:
 		BTN_LYRIC_FORWARD,
         BTN_DEFAULT_STYLE,
         BTN_CLOSE,
-        MAX             //ÓÃÓÚÖ¸Ê¾Ã¶¾ÙµÄ×î´ó¸öÊı
+        MAX             //ç”¨äºæŒ‡ç¤ºæšä¸¾çš„æœ€å¤§ä¸ªæ•°
     };
 
 public:
@@ -72,13 +72,13 @@ public:
     void UpdateToolTipPosition();
 
 protected:
-    //Ìí¼ÓÊó±êÌáÊ¾
+    //æ·»åŠ é¼ æ ‡æç¤º
     void AddToolTips();
-    //ÎªÒ»¸ö°´Å¥Ìí¼ÓÊó±êÌáÊ¾
+    //ä¸ºä¸€ä¸ªæŒ‰é’®æ·»åŠ é¼ æ ‡æç¤º
     void AddMouseToolTip(BtnKey btn, LPCTSTR str);
-    //»æÖÆ¹¤¾ßÌõ
+    //ç»˜åˆ¶å·¥å…·æ¡
     void DrawToolbar(Gdiplus::Graphics* pGraphics);
-    //»æÖÆ¹¤¾ßÌõÉÏµÄÍ¼±ê
+    //ç»˜åˆ¶å·¥å…·æ¡ä¸Šçš„å›¾æ ‡
     void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
 
     virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics) override;
@@ -94,11 +94,11 @@ private:
     CMenu m_popupMenu;
     CToolTipCtrl m_tool_tip;
     std::map<BtnKey, UIButton> m_buttons;
-    bool m_first_draw = true;       //µÚÒ»´Î»æÖÆ¹¤¾ßÌõÊ±£¬ÔòÎªtrue
-    bool m_bHover = false;                  //Êó±êÊÇ·ñÔÚÖ¸Ïò´°¿Ú
-    bool m_bMouseInWindowRect = false;      //Êó±êÊÇ·ñÔÚµ±Ç°´°¿ÚÇøÓòÄÚ
+    bool m_first_draw = true;       //ç¬¬ä¸€æ¬¡ç»˜åˆ¶å·¥å…·æ¡æ—¶ï¼Œåˆ™ä¸ºtrue
+    bool m_bHover = false;                  //é¼ æ ‡æ˜¯å¦åœ¨æŒ‡å‘çª—å£
+    bool m_bMouseInWindowRect = false;      //é¼ æ ‡æ˜¯å¦åœ¨å½“å‰çª—å£åŒºåŸŸå†…
     bool m_bMenuPopedUp = false;
-    bool m_bLocked = false;     	//ÊÇ·ñËø¶¨¸è´Ê´°¿Ú
+    bool m_bLocked = false;     	//æ˜¯å¦é”å®šæ­Œè¯çª—å£
     bool m_lyricBackgroundPenetrate = false;
 
 public:

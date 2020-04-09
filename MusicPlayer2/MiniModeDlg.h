@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"Player.h"
 #include "afxwin.h"
 #include "PropertyDlg.h"
@@ -8,17 +8,17 @@
 #include "DrawCommon.h"
 #include "CMiniModeUI.h"
 
-// CMiniModeDlg ¶Ô»°¿ò
+// CMiniModeDlg å¯¹è¯æ¡†
 
 class CMiniModeDlg : public CDialogEx
 {
     DECLARE_DYNAMIC(CMiniModeDlg)
 
 public:
-    CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+    CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
     virtual ~CMiniModeDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_MINI_DIALOG };
 #endif
@@ -42,9 +42,9 @@ protected:
 
     int m_screen_width;
     int m_screen_height;
-    bool m_show_playlist{ false };		//ÊÇ·ñÏÔÊ¾²¥·ÅÁĞ±í
+    bool m_show_playlist{ false };		//æ˜¯å¦æ˜¾ç¤ºæ’­æ”¾åˆ—è¡¨
 
-    int& m_item_selected;		//²¥·ÅÁĞ±íÖĞÊó±êÑ¡ÖĞµÄÏîÄ¿£¬ÒıÓÃMusicPlayerDlgÀàÖĞµÄÍ¬Ãû±äÁ¿£¬µ±ÃÔÄã´°¿ÚÖĞ²¥·ÅÁĞ±íÑ¡ÖĞµÄÏîÄ¿±ä»¯Ê±£¬Í¬²½µ½Ö÷´°¿ÚÖĞÑ¡ÖĞµÄÏîÄ¿
+    int& m_item_selected;		//æ’­æ”¾åˆ—è¡¨ä¸­é¼ æ ‡é€‰ä¸­çš„é¡¹ç›®ï¼Œå¼•ç”¨MusicPlayerDlgç±»ä¸­çš„åŒåå˜é‡ï¼Œå½“è¿·ä½ çª—å£ä¸­æ’­æ”¾åˆ—è¡¨é€‰ä¸­çš„é¡¹ç›®å˜åŒ–æ—¶ï¼ŒåŒæ­¥åˆ°ä¸»çª—å£ä¸­é€‰ä¸­çš„é¡¹ç›®
     vector<int>& m_items_selected;
 
     CToolTipCtrl m_Mytip;
@@ -60,7 +60,7 @@ protected:
     bool m_first_start{ true };
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
     void SaveConfig() const;
     void LoadConfig();

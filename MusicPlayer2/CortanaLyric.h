@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ColorConvert.h"
 #include "MusicPlayer2.h"
 #include "CUIDrawer.h"
@@ -9,48 +9,48 @@ public:
     CCortanaLyric();
     ~CCortanaLyric();
 
-    void Init();	//³õÊ¼»¯£¬»ñÈ¡Cortana¾ä±ú¡¢¾ØĞÎÇøÓòµÈ
+    void Init();	//åˆå§‹åŒ–ï¼Œè·å–Cortanaå¥æŸ„ã€çŸ©å½¢åŒºåŸŸç­‰
     static void InitFont();
     void SetEnable(bool enable);
 
     void DrawInfo();
 
-    void ResetCortanaText();		//½«CortanaËÑË÷¿òµÄÎÄ±¾»Ö¸´ÎªÄ¬ÈÏ
+    void ResetCortanaText();		//å°†Cortanaæœç´¢æ¡†çš„æ–‡æœ¬æ¢å¤ä¸ºé»˜è®¤
     void AlbumCoverEnable(bool enable);
     void SetBeatAmp(int beat_amp);
     void SetUIColors();
 
 private:
-    struct CortanaUIColors		//½çÃæÑÕÉ«
+    struct CortanaUIColors		//ç•Œé¢é¢œè‰²
     {
-        COLORREF text_color;		//ÒÑ²¥·Å¸è´ÊµÄÑÕÉ«
-        COLORREF text_color2;		//Î´²¥·Å¸è´ÊµÄÑÕÉ«
-        COLORREF info_text_color;	//¸èÇúĞÅÏ¢ÎÄ±¾µÄÑÕÉ«
-        COLORREF back_color;		//±³¾°É«
+        COLORREF text_color;		//å·²æ’­æ”¾æ­Œè¯çš„é¢œè‰²
+        COLORREF text_color2;		//æœªæ’­æ”¾æ­Œè¯çš„é¢œè‰²
+        COLORREF info_text_color;	//æ­Œæ›²ä¿¡æ¯æ–‡æœ¬çš„é¢œè‰²
+        COLORREF back_color;		//èƒŒæ™¯è‰²
         //COLORREF sprctrum_color;
-        bool dark;			//ÊÇ·ñÊ¹ÓÃÉîÉ«×÷Îª±³¾°É«»æÖÆ
+        bool dark;			//æ˜¯å¦ä½¿ç”¨æ·±è‰²ä½œä¸ºèƒŒæ™¯è‰²ç»˜åˆ¶
     };
 
 private:
-    void CheckDarkMode();			//¼ì²éCortanaËÑË÷¿òÊÇ·ñÎªºÚÉ«Ä£Ê½
+    void CheckDarkMode();			//æ£€æŸ¥Cortanaæœç´¢æ¡†æ˜¯å¦ä¸ºé»‘è‰²æ¨¡å¼
 
-    //ÔÚCortanaËÑË÷¿òÉÏ»æÖÆÎÄ±¾
-    //str:	Òª»æÖÆµÄ×Ö·û´®
-    //align:	¶ÔÆë·½Ê½
+    //åœ¨Cortanaæœç´¢æ¡†ä¸Šç»˜åˆ¶æ–‡æœ¬
+    //str:	è¦ç»˜åˆ¶çš„å­—ç¬¦ä¸²
+    //align:	å¯¹é½æ–¹å¼
     void DrawCortanaTextSimple(LPCTSTR str, Alignment align);
 
-    /* ÔÚCortanaËÑË÷¿òÉÏ»æÖÆ¹ö¶¯ÏÔÊ¾µÄÎÄ±¾
-    ²ÎÊı£º
-    	str:	Òª»æÖÆµÄ×Ö·û´®
-    	reset:	Èç¹ûÎªtrueÔòÖØÖÃ¹ö¶¯Î»ÖÃ
-    	scroll_pixel:	ÎÄ±¾¹ö¶¯Ò»´ÎÒÆ¶¯µÄÏñËØÖµ£¨Õâ¸öÖµÔ½´óÔò¹ö¶¯Ô½¿ì£©
+    /* åœ¨Cortanaæœç´¢æ¡†ä¸Šç»˜åˆ¶æ»šåŠ¨æ˜¾ç¤ºçš„æ–‡æœ¬
+    å‚æ•°ï¼š
+    	str:	è¦ç»˜åˆ¶çš„å­—ç¬¦ä¸²
+    	reset:	å¦‚æœä¸ºtrueåˆ™é‡ç½®æ»šåŠ¨ä½ç½®
+    	scroll_pixel:	æ–‡æœ¬æ»šåŠ¨ä¸€æ¬¡ç§»åŠ¨çš„åƒç´ å€¼ï¼ˆè¿™ä¸ªå€¼è¶Šå¤§åˆ™æ»šåŠ¨è¶Šå¿«ï¼‰
     */
     void DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel);
 
-    /* ÔÚCortanaËÑË÷¿òÉÏ»æÖÆ¶¯Ì¬ÏÔÊ¾¸è´ÊµÄÎÄ±¾
-    ²ÎÊı£º
-    	str:	Òª»æÖÆµÄ×Ö·û´®
-    	progress:	µ±Ç°¸è´ÊµÄ½ø¶È£¨·¶Î§Îª0~1000£©
+    /* åœ¨Cortanaæœç´¢æ¡†ä¸Šç»˜åˆ¶åŠ¨æ€æ˜¾ç¤ºæ­Œè¯çš„æ–‡æœ¬
+    å‚æ•°ï¼š
+    	str:	è¦ç»˜åˆ¶çš„å­—ç¬¦ä¸²
+    	progress:	å½“å‰æ­Œè¯çš„è¿›åº¦ï¼ˆèŒƒå›´ä¸º0~1000ï¼‰
     */
     void DrawCortanaText(LPCTSTR str, int progress);
 
@@ -63,30 +63,30 @@ private:
 
 private:
     bool m_enable;
-	HWND m_hCortanaBar{};		////CortanaÀ¸µÄ¾ä±ú
-    HWND m_cortana_hwnd{};		//CortanaµÄ¾ä±ú
+	HWND m_hCortanaBar{};		////Cortanaæ çš„å¥æŸ„
+    HWND m_cortana_hwnd{};		//Cortanaçš„å¥æŸ„
     HWND m_hCortanaStatic;
-    wstring m_cortana_default_text;	//CortanaËÑË÷¿òÖĞÔ­À´µÄÎÄ±¾
-    CUIDrawer m_draw{ m_lyric_colors };		//ÓÃÓÚÔÚCortanaËÑË÷¿òÖĞ»æÍ¼µÄ¶ÔÏó
-    CWnd* m_cortana_wnd{};		//CortanaËÑË÷¿òµÄÖ¸Õë
-    CFont m_default_font;		//ÔÚCortanaËÑË÷¿òÖĞÔ­À´µÄ×ÖÌå
-    CRect m_cortana_rect;		//CortanaËÑË÷¿ò¿òµÄ¾ØĞÎÇøÓò
+    wstring m_cortana_default_text;	//Cortanaæœç´¢æ¡†ä¸­åŸæ¥çš„æ–‡æœ¬
+    CUIDrawer m_draw{ m_lyric_colors };		//ç”¨äºåœ¨Cortanaæœç´¢æ¡†ä¸­ç»˜å›¾çš„å¯¹è±¡
+    CWnd* m_cortana_wnd{};		//Cortanaæœç´¢æ¡†çš„æŒ‡é’ˆ
+    CFont m_default_font;		//åœ¨Cortanaæœç´¢æ¡†ä¸­åŸæ¥çš„å­—ä½“
+    CRect m_cortana_rect;		//Cortanaæœç´¢æ¡†æ¡†çš„çŸ©å½¢åŒºåŸŸ
     int m_cover_width;
-    CDC* m_pDC{};				//ÔÚCortanaËÑË÷¿òÖĞ»æÍ¼µÄDC
+    CDC* m_pDC{};				//åœ¨Cortanaæœç´¢æ¡†ä¸­ç»˜å›¾çš„DC
 
-    bool m_dark_mode{ true };			//CortanaËÑË÷¿òÊÇ·ñ´¦ÓÚÉîÉ«Ä£Ê½
+    bool m_dark_mode{ true };			//Cortanaæœç´¢æ¡†æ˜¯å¦å¤„äºæ·±è‰²æ¨¡å¼
 
-    CPoint m_check_dark_point{};			//ÓÃÓÚÅĞ¶ÏCortanaËÑË÷¿òÊÇ·ñÎªÉîÉ«Ä£Ê½µÄµãµÄÎ»ÖÃ
+    CPoint m_check_dark_point{};			//ç”¨äºåˆ¤æ–­Cortanaæœç´¢æ¡†æ˜¯å¦ä¸ºæ·±è‰²æ¨¡å¼çš„ç‚¹çš„ä½ç½®
     //COLORREF m_back_color;
-    const COLORREF m_border_color{ GRAY(180) };		//Ç³É«Ä£Ê½Ê±±ß¿òµÄÑÕÉ«
+    const COLORREF m_border_color{ GRAY(180) };		//æµ…è‰²æ¨¡å¼æ—¶è¾¹æ¡†çš„é¢œè‰²
 
     CortanaUIColors m_colors;
     UIColors m_lyric_colors;
 
-    bool m_show_album_cover{ false };			//ÊÇ·ñÔÚCortanaÍ¼±ê´¦ÏÔÊ¾×¨¼­·âÃæ
-    int m_beat_amp{0};						//Ğ¡ÄÈÍ¼±êÌø¶¯µÄ·ùÖµ£¬È¡ÖµÎª0~1000
+    bool m_show_album_cover{ false };			//æ˜¯å¦åœ¨Cortanaå›¾æ ‡å¤„æ˜¾ç¤ºä¸“è¾‘å°é¢
+    int m_beat_amp{0};						//å°å¨œå›¾æ ‡è·³åŠ¨çš„å¹…å€¼ï¼Œå–å€¼ä¸º0~1000
 
-    bool m_cortana_opaque{ false };           //ÊÇ·ñÉèÖÃÁËËÑË÷¿ò²»Í¸Ã÷
+    bool m_cortana_opaque{ false };           //æ˜¯å¦è®¾ç½®äº†æœç´¢æ¡†ä¸é€æ˜
 
 public:
     //bool m_cortana_disabled;

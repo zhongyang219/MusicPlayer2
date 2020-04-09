@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ColorConvert.h"
 #include "Common.h"
 
@@ -123,10 +123,10 @@ void CColorConvert::HSLtoRGB(const COLOR_HSL * hsl, COLOR_RGB * rgb)
 	rgb->blue = (int)((B>255) ? 255 : ((B<0) ? 0 : B));
 }
 
-// ÔÚWindowsÏµÍ³ÏÂ£¬HSL·ÖÁ¿µÄ·¶Î§ÊÇ[0£¬240].²Î¿¼¡°»­±Ê¡±³ÌÐò£¬¿ÉÒÔ¿´µ½RGB£¨ºì|ÂÌ|À¶£©
-// ºÍHSL£¨É«µ÷|±¥ºÍ¶È|ÁÁ¶È£©µÄÁªÏµ¡£
-// ÏÂÃæµÄ´úÂë£¬°ÑCOLOR_HSLµÄ·ÖÁ¿Öµ±äÎªWindowsµÄHSL·ÖÁ¿£¬È¡ÖµÔÚ[0£¬240]Ö®¼ä£¬ÐèÒª£º
-// ÏÂÃæÎªCOLOR_HSLµ½WindowsµÄHSLµÄ×ª»»£º
+// åœ¨Windowsç³»ç»Ÿä¸‹ï¼ŒHSLåˆ†é‡çš„èŒƒå›´æ˜¯[0ï¼Œ240].å‚è€ƒâ€œç”»ç¬”â€ç¨‹åºï¼Œå¯ä»¥çœ‹åˆ°RGBï¼ˆçº¢|ç»¿|è“ï¼‰
+// å’ŒHSLï¼ˆè‰²è°ƒ|é¥±å’Œåº¦|äº®åº¦ï¼‰çš„è”ç³»ã€‚
+// ä¸‹é¢çš„ä»£ç ï¼ŒæŠŠCOLOR_HSLçš„åˆ†é‡å€¼å˜ä¸ºWindowsçš„HSLåˆ†é‡ï¼Œå–å€¼åœ¨[0ï¼Œ240]ä¹‹é—´ï¼Œéœ€è¦ï¼š
+// ä¸‹é¢ä¸ºCOLOR_HSLåˆ°Windowsçš„HSLçš„è½¬æ¢ï¼š
 // win_H = 240 * hsl.hue / 360.f;
 // win_S = 240 * hsl.saturation / 100.f;
 // win_L = 240 * hsl.luminance / 100.f;
@@ -140,9 +140,9 @@ void CColorConvert::ConvertColor(ColorTable & color_table)
 	color_rgb.blue = GetBValue(color_table.original_color);
 
 	COLOR_HSL color_hsl;
-	RGBtoHSL(&color_rgb, &color_hsl);		//½«ÑÕÉ«´ÓRGBÄ£Ê½×ª»»³ÉHSLÄ£Ê½
+	RGBtoHSL(&color_rgb, &color_hsl);		//å°†é¢œè‰²ä»ŽRGBæ¨¡å¼è½¬æ¢æˆHSLæ¨¡å¼
 
-	float luminance = color_hsl.luminance;		//±£´æÔ­À´µÄÁÁ¶È
+	float luminance = color_hsl.luminance;		//ä¿å­˜åŽŸæ¥çš„äº®åº¦
 	color_hsl.luminance = luminance * 0.2f + 45;		//dark0
 	HSLtoRGB(&color_hsl, &color_rgb);
 	color_table.dark0 = RGB(color_rgb.red, color_rgb.green, color_rgb.blue);
@@ -209,10 +209,10 @@ void CColorConvert::ReduceLuminance(COLORREF & color)
 	color_rgb.blue = GetBValue(color);
 
 	COLOR_HSL color_hsl;
-	RGBtoHSL(&color_rgb, &color_hsl);		//½«ÑÕÉ«´ÓRGBÄ£Ê½×ª»»³ÉHSLÄ£Ê½
+	RGBtoHSL(&color_rgb, &color_hsl);		//å°†é¢œè‰²ä»ŽRGBæ¨¡å¼è½¬æ¢æˆHSLæ¨¡å¼
 
-	float luminance = color_hsl.luminance;		//±£´æÔ­À´µÄÁÁ¶È
-	if (luminance < 24)						//µ±ÁÁ¶ÈÐ¡ÓÚÒ»¶¨ÖµÊ±½µµÍÑÕÉ«µÄÁÁ¶È
+	float luminance = color_hsl.luminance;		//ä¿å­˜åŽŸæ¥çš„äº®åº¦
+	if (luminance < 24)						//å½“äº®åº¦å°äºŽä¸€å®šå€¼æ—¶é™ä½Žé¢œè‰²çš„äº®åº¦
 	{
 		color_hsl.luminance = luminance * 0.2f + 40;
 		HSLtoRGB(&color_hsl, &color_rgb);

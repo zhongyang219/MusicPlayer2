@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "DllLib.h"
 
 
@@ -13,13 +13,13 @@ CDllLib::~CDllLib()
 
 void CDllLib::Init(const wstring & dll_path)
 {
-    //ÔØÈëDLL
+    //è½½å…¥DLL
     m_dll_module = ::LoadLibrary(dll_path.c_str());
-    //»ñÈ¡º¯ÊıÈë¿Ú
+    //è·å–å‡½æ•°å…¥å£
     bool rtn = false;
     if(m_dll_module != NULL)
         rtn = GetFunction();
-    //ÅĞ¶ÏÊÇ·ñ³É¹¦
+    //åˆ¤æ–­æ˜¯å¦æˆåŠŸ
     m_success = (m_dll_module != NULL && rtn);
 }
 

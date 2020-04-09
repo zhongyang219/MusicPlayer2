@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "FilePathHelper.h"
 #include "Common.h"
 
@@ -84,14 +84,14 @@ const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extensi
 	size_t index, index1;
 	index = m_file_path.rfind('.');
 	index1 = m_file_path.rfind('\\');
-	if (index == wstring::npos || index < index1)		//Èç¹ûÃ»ÓÐÕÒµ½¡°.¡±£¬»òÕß¡°.¡±ÔÚ·´Ð±¸ÜµÄ×ó±ß£¬ÔòÔÚÄ©Î²Ìí¼ÓÒ»¸ö¡°.¡±
+	if (index == wstring::npos || index < index1)		//å¦‚æžœæ²¡æœ‰æ‰¾åˆ°â€œ.â€ï¼Œæˆ–è€…â€œ.â€åœ¨åæ–œæ çš„å·¦è¾¹ï¼Œåˆ™åœ¨æœ«å°¾æ·»åŠ ä¸€ä¸ªâ€œ.â€
 	{
 		m_file_path.push_back(L'.');
 	}
-	else if (index != m_file_path.size() - 1)	//Èç¹û¡°.¡±²»ÔÚ×îºóµÄÎ»ÖÃ£¬ÔòÉ¾³ý¡°.¡±ºóÃæµÄ×Ö·û´®
+	else if (index != m_file_path.size() - 1)	//å¦‚æžœâ€œ.â€ä¸åœ¨æœ€åŽçš„ä½ç½®ï¼Œåˆ™åˆ é™¤â€œ.â€åŽé¢çš„å­—ç¬¦ä¸²
 	{
 		m_file_path.erase(index + 1);
 	}
-	m_file_path.append(new_extension);		//ÔÚÄ©Î²Ìí¼ÓÀ©Õ¹Ãû
+	m_file_path.append(new_extension);		//åœ¨æœ«å°¾æ·»åŠ æ‰©å±•å
 	return m_file_path;
 }

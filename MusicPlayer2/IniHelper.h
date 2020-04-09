@@ -1,7 +1,7 @@
-//ini¶ÁĞ´Àà
-//Ê¹ÓÃÊ±½«iniÎÄ¼şÂ·¾¶Í¨¹ı¹¹Ôìº¯Êı²ÎÊı´«µİ
-//ÔÚÏòiniÎÄ¼şĞ´ÈëÊı¾İÊ±£¬ĞèÒªÔÚ×îºóµ÷ÓÃSave()º¯ÊıÒÔ½«¸ü¸Ä±£´æµ½ÎÄ¼ş
-//Ä¬ÈÏÒÔUTF8_BOM±àÂë±£´æ£¬Èç¹ûÒªÒÔANSI±£´æ£¬Çëµ÷ÓÃSetSaveAsUTF8(false);
+ï»¿//iniè¯»å†™ç±»
+//ä½¿ç”¨æ—¶å°†iniæ–‡ä»¶è·¯å¾„é€šè¿‡æ„é€ å‡½æ•°å‚æ•°ä¼ é€’
+//åœ¨å‘iniæ–‡ä»¶å†™å…¥æ•°æ®æ—¶ï¼Œéœ€è¦åœ¨æœ€åè°ƒç”¨Save()å‡½æ•°ä»¥å°†æ›´æ”¹ä¿å­˜åˆ°æ–‡ä»¶
+//é»˜è®¤ä»¥UTF8_BOMç¼–ç ä¿å­˜ï¼Œå¦‚æœè¦ä»¥ANSIä¿å­˜ï¼Œè¯·è°ƒç”¨SetSaveAsUTF8(false);
 #pragma once
 #include "Common.h"
 
@@ -21,22 +21,22 @@ public:
     double GetDouble(const wchar_t * AppName, const wchar_t * KeyName, double default_value) const;
 	void WriteBool(const wchar_t * AppName, const wchar_t * KeyName, bool value);
 	bool GetBool(const wchar_t * AppName, const wchar_t * KeyName, bool default_value) const;
-	void WriteIntArray(const wchar_t * AppName, const wchar_t * KeyName, const int* values, int size);		//Ğ´ÈëÒ»¸öintÊı×é£¬ÔªËØ¸öÊıÎªsize
-	void GetIntArray(const wchar_t * AppName, const wchar_t * KeyName, int* values, int size, int default_value = 0) const;		//¶ÁÈ¡Ò»¸öintÊı×é£¬´¢´æµ½values£¬ÔªËØ¸öÊıÎªsize
+	void WriteIntArray(const wchar_t * AppName, const wchar_t * KeyName, const int* values, int size);		//å†™å…¥ä¸€ä¸ªintæ•°ç»„ï¼Œå…ƒç´ ä¸ªæ•°ä¸ºsize
+	void GetIntArray(const wchar_t * AppName, const wchar_t * KeyName, int* values, int size, int default_value = 0) const;		//è¯»å–ä¸€ä¸ªintæ•°ç»„ï¼Œå‚¨å­˜åˆ°valuesï¼Œå…ƒç´ ä¸ªæ•°ä¸ºsize
 	void WriteBoolArray(const wchar_t * AppName, const wchar_t * KeyName, const bool* values, int size);
 	void GetBoolArray(const wchar_t * AppName, const wchar_t * KeyName, bool* values, int size, bool default_value = false) const;
-    void WriteStringList(const wchar_t * AppName, const wchar_t * KeyName, const vector<wstring>& values);      //Ğ´ÈëÒ»¸ö×Ö·û´®ÁĞ±í£¬ÓÉÓÚ±£´æµ½iniÎÄ¼şÖĞÊ±×Ö·û´®Ç°ºó»á¼ÓÉÏÒıºÅ£¬ËùÒÔ×Ö·û´®ÖĞ²»ÄÜ°üº¬ÒıºÅ
+    void WriteStringList(const wchar_t * AppName, const wchar_t * KeyName, const vector<wstring>& values);      //å†™å…¥ä¸€ä¸ªå­—ç¬¦ä¸²åˆ—è¡¨ï¼Œç”±äºä¿å­˜åˆ°iniæ–‡ä»¶ä¸­æ—¶å­—ç¬¦ä¸²å‰åä¼šåŠ ä¸Šå¼•å·ï¼Œæ‰€ä»¥å­—ç¬¦ä¸²ä¸­ä¸èƒ½åŒ…å«å¼•å·
     void GetStringList(const wchar_t * AppName, const wchar_t * KeyName, vector<wstring>& values, const vector<wstring>& default_value) const;
 
 	CVariant GetValue(const wchar_t * AppName, const wchar_t * KeyName, CVariant default_values) const;
 	void WriteValue(const wchar_t * AppName, const wchar_t * KeyName, CVariant value);
 
-	bool Save();		//½«iniÎÄ¼ş±£´æµ½ÎÄ¼ş£¬³É¹¦·µ»Øtrue
+	bool Save();		//å°†iniæ–‡ä»¶ä¿å­˜åˆ°æ–‡ä»¶ï¼ŒæˆåŠŸè¿”å›true
 
 protected:
 	wstring m_file_path;
 	wstring m_ini_str;
-	bool m_save_as_utf8{ true };		//ÊÇ·ñÒÔUTF8±àÂë±£´æ
+	bool m_save_as_utf8{ true };		//æ˜¯å¦ä»¥UTF8ç¼–ç ä¿å­˜
 
 	void _WriteString(const wchar_t* AppName, const wchar_t* KeyName, const wstring& str);
 	wstring _GetString(const wchar_t* AppName, const wchar_t* KeyName, const wchar_t* default_str) const;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class CMyComboBox : public CComboBox
 {
 	DECLARE_DYNAMIC(CMyComboBox)
@@ -12,7 +12,7 @@ public:
 
 protected:
 	bool m_read_only{ false };
-	CRect m_arrow_rect;		//ÏÂÀ­¼ýÍ·µÄ¾ØÐÎÇøÓò
+	CRect m_arrow_rect;		//ä¸‹æ‹‰ç®­å¤´çš„çŸ©å½¢åŒºåŸŸ
 
 public:
 	DECLARE_MESSAGE_MAP()

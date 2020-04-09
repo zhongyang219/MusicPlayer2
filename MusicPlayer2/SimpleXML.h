@@ -1,4 +1,4 @@
-//Ò»¸ö¼òÒ×µÄXML½âÎöµÄÀà
+ï»¿//ä¸€ä¸ªç®€æ˜“çš„XMLè§£æžçš„ç±»
 #pragma once
 #include "Common.h"
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 // CTabCtrlEx
@@ -11,7 +11,7 @@ public:
 	CTabCtrlEx();
 	virtual ~CTabCtrlEx();
 
-	void AddWindow(CWnd* pWnd, LPCTSTR lable_text);		//Ïòµ±Ç°tab¿Ø¼şÌí¼ÓÒ»¸ö×Ó´°¿Ú
+	void AddWindow(CWnd* pWnd, LPCTSTR lable_text);		//å‘å½“å‰tabæ§ä»¶æ·»åŠ ä¸€ä¸ªå­çª—å£
 	void SetCurTab(int index);
     CWnd* GetCurrentTab();
     void AdjustTabWindowSize();
@@ -22,7 +22,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 protected:
-	vector<CWnd*> m_tab_list;		//±£´ætab¿Ø¼şÃ¿¸ö×Ó´°¿ÚµÄÖ¸Õë
+	vector<CWnd*> m_tab_list;		//ä¿å­˜tabæ§ä»¶æ¯ä¸ªå­çª—å£çš„æŒ‡é’ˆ
 public:
 	afx_msg void OnTcnSelchange(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void PreSubclassWindow();

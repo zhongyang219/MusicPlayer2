@@ -1,7 +1,7 @@
-//Õâ¸öÀàÓÃÓÚ¶¨ÒåÓÃÓÚ»æÍ¼µÄº¯Êı
+ï»¿//è¿™ä¸ªç±»ç”¨äºå®šä¹‰ç”¨äºç»˜å›¾çš„å‡½æ•°
 #pragma once
 
-enum class Alignment	//¶ÔÆë·½Ê½
+enum class Alignment	//å¯¹é½æ–¹å¼
 {
     LEFT,
     RIGHT,
@@ -12,75 +12,75 @@ class CDrawCommon
 {
 public:
 
-    //À­ÉìÄ£Ê½
+    //æ‹‰ä¼¸æ¨¡å¼
     enum class StretchMode
     {
-        STRETCH,		//À­Éì£¬»á¸Ä±ä±ÈÀı
-        FILL,			//Ìî³ä£¬²»¸Ä±ä±ÈÀı£¬»á²Ã¼ô³¤±ß
-        FIT			//ÊÊÓ¦£¬²»»á¸Ä±ä±ÈÀı£¬²»²Ã¼ô
+        STRETCH,		//æ‹‰ä¼¸ï¼Œä¼šæ”¹å˜æ¯”ä¾‹
+        FILL,			//å¡«å……ï¼Œä¸æ”¹å˜æ¯”ä¾‹ï¼Œä¼šè£å‰ªé•¿è¾¹
+        FIT			//é€‚åº”ï¼Œä¸ä¼šæ”¹å˜æ¯”ä¾‹ï¼Œä¸è£å‰ª
     };
 
-    //ÓÃÓÚÔÚDrawScrollTextº¯Êıµ÷ÓÃÊ±Ê¹ÓÃµÄÒ»Ğ©ĞèÒªÔÚº¯Êıµ÷ÓÃÍê±Ïºó¼ÌĞø´æÔÚµÄ±äÁ¿
+    //ç”¨äºåœ¨DrawScrollTextå‡½æ•°è°ƒç”¨æ—¶ä½¿ç”¨çš„ä¸€äº›éœ€è¦åœ¨å‡½æ•°è°ƒç”¨å®Œæ¯•åç»§ç»­å­˜åœ¨çš„å˜é‡
     struct ScrollInfo
     {
-        int shift_cnt{};		//ÒÆ¶¯µÄ´ÎÊı
-        bool shift_dir{};		//ÒÆ¶¯µÄ·½Ïò£¬ÓÒÒÆÎªfalse£¬×óÒÆÎªtrue
-        int freez{};			//µ±¸Ã±äÁ¿´óÓÚ0Ê±£¬ÎÄ±¾²»¹ö¶¯£¬Ö±µ½Ğ¡ÓÚµÈÓÚ0ÎªÖ¹
-        bool dir_changed{ false };	//Èç¹û·½Ïò·¢ÉúÁË±ä»¯£¬ÔòÎªtrue
-        CString last_string;        //ÉÏÒ»´Î»æÖÆµÄÎÄ±¾
+        int shift_cnt{};		//ç§»åŠ¨çš„æ¬¡æ•°
+        bool shift_dir{};		//ç§»åŠ¨çš„æ–¹å‘ï¼Œå³ç§»ä¸ºfalseï¼Œå·¦ç§»ä¸ºtrue
+        int freez{};			//å½“è¯¥å˜é‡å¤§äº0æ—¶ï¼Œæ–‡æœ¬ä¸æ»šåŠ¨ï¼Œç›´åˆ°å°äºç­‰äº0ä¸ºæ­¢
+        bool dir_changed{ false };	//å¦‚æœæ–¹å‘å‘ç”Ÿäº†å˜åŒ–ï¼Œåˆ™ä¸ºtrue
+        CString last_string;        //ä¸Šä¸€æ¬¡ç»˜åˆ¶çš„æ–‡æœ¬
     };
 
     CDrawCommon();
     ~CDrawCommon();
 
     virtual void Create(CDC* pDC, CWnd* pMainWnd = nullptr);
-    //void SetBackColor(COLORREF back_color);		//ÉèÖÃ»æÖÆÎÄ±¾Ê±Ìî³äµÄ±³¾°ÑÕÉ«
+    //void SetBackColor(COLORREF back_color);		//è®¾ç½®ç»˜åˆ¶æ–‡æœ¬æ—¶å¡«å……çš„èƒŒæ™¯é¢œè‰²
     //COLORREF GetBackColor() const { return m_backColor; }
-    void SetFont(CFont* pfont);		//ÉèÖÃ»æÖÆÎÄ±¾µÄ×ÖÌå
+    void SetFont(CFont* pfont);		//è®¾ç½®ç»˜åˆ¶æ–‡æœ¬çš„å­—ä½“
 	CFont* GetFont() { return m_pfont; }
-    void SetDC(CDC* pDC);		//ÉèÖÃ»æÍ¼µÄDC
+    void SetDC(CDC* pDC);		//è®¾ç½®ç»˜å›¾çš„DC
     CDC* GetDC()
     {
         return m_pDC;
     }
 
-    //ÔÚÖ¸¶¨µÄ¾ØĞÎÇøÓòÄÚ»æÖÆÓĞÑÕÉ«µÄÎÄ±¾
-    //rect: ÎÄ±¾µÄ¾ØĞÎÇøÓò
-    //lpszString: Òª»æÖÆµÄÎÄ±¾
-    //color: ÎÄ±¾µÄÑÕÉ«
-    //align: ÎÄ±¾µÄ¶ÔÆë·½Ê½£¨Ä¬ÈÏÖµ£º×ó¶ÔÆë£©
-    //no_clip_area: Èç¹ûÎªtrue£¬Ôò²»ÔÚÊä³öÎÄ×ÖÊ±ÏŞÖÆ»æÍ¼ÇøÓò
-    //multi_line: ÊÇ·ñ¶àĞĞÏÔÊ¾
-    //default_right_align: Èç¹ûÎÄ±¾µÄ¿í¶È´óÓÚ¾ØĞÎÇøÓò£¬ÊÇ·ñÓÒ¶ÔÆë
+    //åœ¨æŒ‡å®šçš„çŸ©å½¢åŒºåŸŸå†…ç»˜åˆ¶æœ‰é¢œè‰²çš„æ–‡æœ¬
+    //rect: æ–‡æœ¬çš„çŸ©å½¢åŒºåŸŸ
+    //lpszString: è¦ç»˜åˆ¶çš„æ–‡æœ¬
+    //color: æ–‡æœ¬çš„é¢œè‰²
+    //align: æ–‡æœ¬çš„å¯¹é½æ–¹å¼ï¼ˆé»˜è®¤å€¼ï¼šå·¦å¯¹é½ï¼‰
+    //no_clip_area: å¦‚æœä¸ºtrueï¼Œåˆ™ä¸åœ¨è¾“å‡ºæ–‡å­—æ—¶é™åˆ¶ç»˜å›¾åŒºåŸŸ
+    //multi_line: æ˜¯å¦å¤šè¡Œæ˜¾ç¤º
+    //default_right_align: å¦‚æœæ–‡æœ¬çš„å®½åº¦å¤§äºçŸ©å½¢åŒºåŸŸï¼Œæ˜¯å¦å³å¯¹é½
     void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align = Alignment::LEFT, bool no_clip_area = false, bool multi_line = false, bool default_right_align = false);
 
-    //ÔÚÖ¸¶¨µÄ¾ØĞÎÇøÓòÄÚ»æÖÆ·Ö¸îÑÕÉ«µÄÎÄ±¾
-    //rect: ÎÄ±¾µÄ¾ØĞÎÇøÓò
-    //lpszString: Òª»æÖÆµÄÎÄ±¾
-    //color1: ·Ö¸îÎ»ÖÃ×ó±ßµÄÎÄ±¾ÑÕÉ«
-    //color2: ·Ö¸îÎ»ÖÃÓÒ±ßµÄÎÄ±¾ÑÕÉ«
-    //split: ÑÕÉ«·Ö¸îÎ»ÖÃ£¬È¡ÖµÎª0~1000£¨ÓÃÓÚ¸è´Ê¶¯Ì¬ÏÔÊ¾£©
-    //center: ÎÄ±¾ÊÇ·ñ¾ÓÖĞ
-    //no_clip_area: Èç¹ûÎªtrue£¬Ôò²»ÔÚÊä³öÎÄ×ÖÊ±ÏŞÖÆ»æÍ¼ÇøÓò
+    //åœ¨æŒ‡å®šçš„çŸ©å½¢åŒºåŸŸå†…ç»˜åˆ¶åˆ†å‰²é¢œè‰²çš„æ–‡æœ¬
+    //rect: æ–‡æœ¬çš„çŸ©å½¢åŒºåŸŸ
+    //lpszString: è¦ç»˜åˆ¶çš„æ–‡æœ¬
+    //color1: åˆ†å‰²ä½ç½®å·¦è¾¹çš„æ–‡æœ¬é¢œè‰²
+    //color2: åˆ†å‰²ä½ç½®å³è¾¹çš„æ–‡æœ¬é¢œè‰²
+    //split: é¢œè‰²åˆ†å‰²ä½ç½®ï¼Œå–å€¼ä¸º0~1000ï¼ˆç”¨äºæ­Œè¯åŠ¨æ€æ˜¾ç¤ºï¼‰
+    //center: æ–‡æœ¬æ˜¯å¦å±…ä¸­
+    //no_clip_area: å¦‚æœä¸ºtrueï¼Œåˆ™ä¸åœ¨è¾“å‡ºæ–‡å­—æ—¶é™åˆ¶ç»˜å›¾åŒºåŸŸ
     void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align = Alignment::LEFT, bool no_clip_area = false);
 
-    //ÔÚ¿Ø¼şÉÏ»æÖÆ¹ö¶¯µÄÎÄ±¾£¨µ±³¤¶È²»¹»Ê±£©£¬pixelÖ¸¶¨´Ëº¯Êıµ÷ÓÃÒ»´ÎÒÆ¶¯µÄÏñËØÖµ£¬Èç¹ûresetÎªtrue£¬Ôò¹ö¶¯µ½³õÊ¼Î»ÖÃ
-    //rect: ÎÄ±¾µÄ¾ØĞÎÇøÓò
-    //lpszString: Òª»æÖÆµÄÎÄ±¾
-    //color: ÎÄ±¾µÄÑÕÉ«
-    //pixel: ´Ëº¯Êıµ÷ÓÃÒ»´Î¹ö¶¯µÄÏñËØÖµ
-    //center: ÎÄ±¾ÊÇ·ñ¾ÓÖĞ
-    //scroll_info: ÓÃÀ´±£´æÒ»Ğ©µ±Ç°ÎÄ±¾¹ö¶¯µÄ×´Ì¬ĞÅÏ¢
-    //reset: Èç¹ûresetÎªtrue£¬ÔòÖØÖÃscroll_info£¬²¢¹ö¶¯µ½³õÊ¼Î»ÖÃ
+    //åœ¨æ§ä»¶ä¸Šç»˜åˆ¶æ»šåŠ¨çš„æ–‡æœ¬ï¼ˆå½“é•¿åº¦ä¸å¤Ÿæ—¶ï¼‰ï¼ŒpixelæŒ‡å®šæ­¤å‡½æ•°è°ƒç”¨ä¸€æ¬¡ç§»åŠ¨çš„åƒç´ å€¼ï¼Œå¦‚æœresetä¸ºtrueï¼Œåˆ™æ»šåŠ¨åˆ°åˆå§‹ä½ç½®
+    //rect: æ–‡æœ¬çš„çŸ©å½¢åŒºåŸŸ
+    //lpszString: è¦ç»˜åˆ¶çš„æ–‡æœ¬
+    //color: æ–‡æœ¬çš„é¢œè‰²
+    //pixel: æ­¤å‡½æ•°è°ƒç”¨ä¸€æ¬¡æ»šåŠ¨çš„åƒç´ å€¼
+    //center: æ–‡æœ¬æ˜¯å¦å±…ä¸­
+    //scroll_info: ç”¨æ¥ä¿å­˜ä¸€äº›å½“å‰æ–‡æœ¬æ»šåŠ¨çš„çŠ¶æ€ä¿¡æ¯
+    //reset: å¦‚æœresetä¸ºtrueï¼Œåˆ™é‡ç½®scroll_infoï¼Œå¹¶æ»šåŠ¨åˆ°åˆå§‹ä½ç½®
     void DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);
 
-    //º¯Êı¹¦ÄÜºÍDrawScrollTextÒ»Ñù£¬Ö»ÊÇÕâ¸öº¯ÊıÖ»»á´Ó×óµ½ÓÒ¹ö¶¯£¬²»»á¸ü»»·½Ïò
+    //å‡½æ•°åŠŸèƒ½å’ŒDrawScrollTextä¸€æ ·ï¼Œåªæ˜¯è¿™ä¸ªå‡½æ•°åªä¼šä»å·¦åˆ°å³æ»šåŠ¨ï¼Œä¸ä¼šæ›´æ¢æ–¹å‘
     void DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);
 
     static void SetDrawArea(CDC* pDC, CRect rect);
     void SetDrawArea(CRect rect);
 
-    //»æÖÆÒ»¸öÎ»Í¼
+    //ç»˜åˆ¶ä¸€ä¸ªä½å›¾
     void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
     void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode);
     void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
@@ -88,7 +88,7 @@ public:
     void DrawIcon(HICON hIcon, CPoint start_point, CSize size);
 
     void FillRect(CRect rect, COLORREF color, bool no_clip_area = false);
-    void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = false);		//Ìî³äÒ»¸ö°ëÍ¸Ã÷µÄ¾ØĞÎ£¨²ÎÕÕhttp://blog.csdn.net/lee353086/article/details/38311421£©
+    void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = false);		//å¡«å……ä¸€ä¸ªåŠé€æ˜çš„çŸ©å½¢ï¼ˆå‚ç…§http://blog.csdn.net/lee353086/article/details/38311421ï¼‰
 
     void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
     void DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line);
@@ -96,20 +96,20 @@ public:
 
     CSize GetTextExtent(LPCTSTR str);
 
-    //½«Í¼Æ¬À­Éìµ½Ö¸¶¨³ß´ç(https://blog.csdn.net/sichuanpb/article/details/22986877)
+    //å°†å›¾ç‰‡æ‹‰ä¼¸åˆ°æŒ‡å®šå°ºå¯¸(https://blog.csdn.net/sichuanpb/article/details/22986877)
     static bool BitmapStretch(CImage *pImage, CImage *ResultImage, CSize size);
 
     static HICON LoadIconResource(UINT id, int width, int height);
 
 protected:
-    CDC* m_pDC{};		//ÓÃÓÚ»æÍ¼µÄCDCÀàµÄÖ¸Õë
-    CWnd* m_pMainWnd{};	//»æÍ¼´°¿ÚµÄ¾ä±ú
+    CDC* m_pDC{};		//ç”¨äºç»˜å›¾çš„CDCç±»çš„æŒ‡é’ˆ
+    CWnd* m_pMainWnd{};	//ç»˜å›¾çª—å£çš„å¥æŸ„
     //COLORREF m_backColor{ RGB(255,255,255) };
     CFont* m_pfont{};
 };
 
 
-//ÓÃÓÚË«»º³å»æÍ¼µÄÀà
+//ç”¨äºåŒç¼“å†²ç»˜å›¾çš„ç±»
 class CDrawDoubleBuffer
 {
 public:

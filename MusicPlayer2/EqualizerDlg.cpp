@@ -1,4 +1,4 @@
-// EqualizerDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// EqualizerDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CEqualizerDlg ¶Ô»°¿ò
+// CEqualizerDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CEqualizerDlg, CDialogEx)
 
@@ -35,7 +35,7 @@ void CEqualizerDlg::SaveConfig() const
 	CIniHelper ini(theApp.m_config_path);
 
 	ini.WriteInt(L"equalizer", L"equalizer_style", m_equ_style_selected);
-	//±£´æ×Ô¶¨ÒåµÄÃ¿¸ö¾ùºâÆ÷Í¨µÀµÄÔöÒæ
+	//ä¿å­˜è‡ªå®šä¹‰çš„æ¯ä¸ªå‡è¡¡å™¨é€šé“çš„å¢ç›Š
 	wchar_t buff[16];
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
@@ -50,7 +50,7 @@ void CEqualizerDlg::LoadConfig()
 	CIniHelper ini(theApp.m_config_path);
 
 	m_equ_style_selected = ini.GetInt(L"equalizer", L"equalizer_style", 0);
-	//¶ÁÈ¡×Ô¶¨ÒåµÄÃ¿¸ö¾ùºâÆ÷Í¨µÀµÄÔöÒæ
+	//è¯»å–è‡ªå®šä¹‰çš„æ¯ä¸ªå‡è¡¡å™¨é€šé“çš„å¢ç›Š
 	wchar_t buff[16];
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
@@ -64,7 +64,7 @@ void CEqualizerDlg::UpdateChannelTip(int channel, int gain)
 	if (channel < 0 || channel >= EQU_CH_NUM) return;
 	wchar_t buff[8];
 	swprintf_s(buff, L"%ddB", gain);
-	m_Mytip.UpdateTipText(buff, &m_sliders[channel]);		//¸üĞÂÊó±êÌáÊ¾
+	m_Mytip.UpdateTipText(buff, &m_sliders[channel]);		//æ›´æ–°é¼ æ ‡æç¤º
 }
 
 void CEqualizerDlg::DoDataExchange(CDataExchange* pDX)
@@ -95,26 +95,26 @@ BEGIN_MESSAGE_MAP(CEqualizerDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CEqualizerDlg ÏûÏ¢´¦Àí³ÌĞò
+// CEqualizerDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CEqualizerDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	LoadConfig();
-	//³õÊ¼»¯»¬¶¯ÌõµÄÎ»ÖÃ
+	//åˆå§‹åŒ–æ»‘åŠ¨æ¡çš„ä½ç½®
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		m_sliders[i].SetRange(-15, 15, TRUE);
 		m_sliders[i].SetPos(-CPlayer::GetInstance().GeEqualizer(i));
 	}
 
-	//³õÊ¼»¯¾ùºâÆ÷¿ª¹Ø¸´Ñ¡¿ò
+	//åˆå§‹åŒ–å‡è¡¡å™¨å¼€å…³å¤é€‰æ¡†
 	m_enable_equ_check.SetCheck(CPlayer::GetInstance().GetEqualizerEnable());
 
-	//³õÊ¼»¯¡°¾ùºâÆ÷Ô¤Éè¡±ÁĞ±í
+	//åˆå§‹åŒ–â€œå‡è¡¡å™¨é¢„è®¾â€åˆ—è¡¨
 	m_equ_style_list.AddString(CCommon::LoadText(IDS_NONE));
 	m_equ_style_list.AddString(CCommon::LoadText(IDS_CLASSICAL));
 	m_equ_style_list.AddString(CCommon::LoadText(IDS_POP));
@@ -127,10 +127,10 @@ BOOL CEqualizerDlg::OnInitDialog()
 	m_equ_style_list.AddString(CCommon::LoadText(IDS_USER_DEFINE));
 	m_equ_style_list.SetCurSel(m_equ_style_selected);
 
-	//³õÊ¼»¯¿Ø¼şµÄÆôÓÃ½ûÓÃ×´Ì¬
+	//åˆå§‹åŒ–æ§ä»¶çš„å¯ç”¨ç¦ç”¨çŠ¶æ€
 	EnableControls(CPlayer::GetInstance().GetEqualizerEnable());
 	
-	//³õÊ¼»¯ÌáÊ¾ĞÅÏ¢
+	//åˆå§‹åŒ–æç¤ºä¿¡æ¯
 	m_Mytip.Create(this, TTS_ALWAYSTIP);
 	wchar_t buff[8];
 	for (int i{}; i < EQU_CH_NUM; i++)
@@ -142,33 +142,33 @@ BOOL CEqualizerDlg::OnInitDialog()
 	SetBackgroundColor(RGB(255, 255, 255));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CEqualizerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		if (pScrollBar->GetSafeHwnd() == m_sliders[i].GetSafeHwnd())
 		{
-			int gain{ -m_sliders[i].GetPos() };		//ÓÉÓÚ»¬¶¯ÌõµÄÖµÔ½ÍùÉÏÔ½Ğ¡£¬ËùÒÔÕâÀïÈ¡¸ºÊı
-			CPlayer::GetInstance().SetEqualizer(i, gain);		//ÉèÖÃÍ¨µÀiµÄÔöÒæ
-			UpdateChannelTip(i, gain);		//¸üĞÂÊó±êÌáÊ¾
+			int gain{ -m_sliders[i].GetPos() };		//ç”±äºæ»‘åŠ¨æ¡çš„å€¼è¶Šå¾€ä¸Šè¶Šå°ï¼Œæ‰€ä»¥è¿™é‡Œå–è´Ÿæ•°
+			CPlayer::GetInstance().SetEqualizer(i, gain);		//è®¾ç½®é€šé“içš„å¢ç›Š
+			UpdateChannelTip(i, gain);		//æ›´æ–°é¼ æ ‡æç¤º
 
-			if (m_equ_style_list.GetCurSel() == 9)		//Èç¹û¡°¾ùºâÆ÷Ô¤Éè¡±ÖĞÑ¡ÖĞµÄÊÇ×Ô¶¨Òå
+			if (m_equ_style_list.GetCurSel() == 9)		//å¦‚æœâ€œå‡è¡¡å™¨é¢„è®¾â€ä¸­é€‰ä¸­çš„æ˜¯è‡ªå®šä¹‰
 			{
-				m_user_defined_gain[i] = gain;		//½«ÔöÒæÖµ±£´æµ½ÓÃ»§×Ô¶¨ÒåÔöÒæÀï
+				m_user_defined_gain[i] = gain;		//å°†å¢ç›Šå€¼ä¿å­˜åˆ°ç”¨æˆ·è‡ªå®šä¹‰å¢ç›Šé‡Œ
 			}
 			else
 			{
-				//·ñÔò£¬½«µ±Ç°Ã¿¸ö»¬¶¯ÌõÉÏµÄÔöÒæÉèÖÃ±£´æµ½m_user_defined_gainÀï
+				//å¦åˆ™ï¼Œå°†å½“å‰æ¯ä¸ªæ»‘åŠ¨æ¡ä¸Šçš„å¢ç›Šè®¾ç½®ä¿å­˜åˆ°m_user_defined_gainé‡Œ
 				for (int j{}; j < EQU_CH_NUM; j++)
 				{
 					m_user_defined_gain[j] = -m_sliders[j].GetPos();
 				}
-				m_equ_style_list.SetCurSel(9);		//¸ü¸ÄÁË¾ùºâÆ÷µÄÉè¶¨£¬¡°¾ùºâÆ÷Ô¤Éè¡±ÖĞ×Ô¶¯Ñ¡ÖĞ¡°×Ô¶¨Òå¡±
+				m_equ_style_list.SetCurSel(9);		//æ›´æ”¹äº†å‡è¡¡å™¨çš„è®¾å®šï¼Œâ€œå‡è¡¡å™¨é¢„è®¾â€ä¸­è‡ªåŠ¨é€‰ä¸­â€œè‡ªå®šä¹‰â€
 				m_equ_style_selected = 9;
 			}
 			break;
@@ -181,7 +181,7 @@ void CEqualizerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 BOOL CEqualizerDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_Mytip.RelayEvent(pMsg);
 
@@ -191,7 +191,7 @@ BOOL CEqualizerDlg::PreTranslateMessage(MSG* pMsg)
 
 void CEqualizerDlg::OnBnClickedEnableEquCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	bool enable = (m_enable_equ_check.GetCheck() != 0);
 	CPlayer::GetInstance().EnableEqualizer(enable);
 	EnableControls(enable);
@@ -205,23 +205,23 @@ afx_msg LRESULT CEqualizerDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lParam)
 		m_equ_style_selected = (int)lParam;
 		if (m_equ_style_selected >= 0 && m_equ_style_selected < 9)
 		{
-			//¸ù¾İÑ¡ÖĞµÄ¾ùºâÆ÷·ç¸ñÉèÖÃÃ¿¸öÍ¨µÀµÄÔöÒæ
+			//æ ¹æ®é€‰ä¸­çš„å‡è¡¡å™¨é£æ ¼è®¾ç½®æ¯ä¸ªé€šé“çš„å¢ç›Š
 			for (int i{}; i < EQU_CH_NUM; i++)
 			{
 				int gain = EQU_STYLE_TABLE[m_equ_style_selected][i];
 				CPlayer::GetInstance().SetEqualizer(i, gain);
 				m_sliders[i].SetPos(-gain);
-				UpdateChannelTip(i, gain);		//¸üĞÂÊó±êÌáÊ¾
+				UpdateChannelTip(i, gain);		//æ›´æ–°é¼ æ ‡æç¤º
 			}
 		}
-		else if (m_equ_style_selected == 9)		//Èç¹ûÑ¡ÔñÁË¡°×Ô¶¨Òå¡±
+		else if (m_equ_style_selected == 9)		//å¦‚æœé€‰æ‹©äº†â€œè‡ªå®šä¹‰â€
 		{
 			for (int i{}; i < EQU_CH_NUM; i++)
 			{
 				int gain = m_user_defined_gain[i];
 				CPlayer::GetInstance().SetEqualizer(i, gain);
 				m_sliders[i].SetPos(-gain);
-				UpdateChannelTip(i, gain);		//¸üĞÂÊó±êÌáÊ¾
+				UpdateChannelTip(i, gain);		//æ›´æ–°é¼ æ ‡æç¤º
 			}
 		}
 
@@ -234,7 +234,7 @@ void CEqualizerDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	SaveConfig();
 }
 
@@ -243,8 +243,8 @@ HBRUSH CEqualizerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
-	// TODO:  ÔÚ´Ë¸ü¸Ä DC µÄÈÎºÎÌØĞÔ
-	//ÉèÖÃ¾ùºâÆ÷Í¨µÀ»¬¶¯ÌõµÄ±³¾°É«Îª°×É«
+	// TODO:  åœ¨æ­¤æ›´æ”¹ DC çš„ä»»ä½•ç‰¹æ€§
+	//è®¾ç½®å‡è¡¡å™¨é€šé“æ»‘åŠ¨æ¡çš„èƒŒæ™¯è‰²ä¸ºç™½è‰²
 	for (int i{}; i < EQU_CH_NUM; i++)
 	{
 		if (pWnd == &m_sliders[i])
@@ -253,6 +253,6 @@ HBRUSH CEqualizerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		}
 	}
 
-	// TODO:  Èç¹ûÄ¬ÈÏµÄ²»ÊÇËùĞè»­±Ê£¬Ôò·µ»ØÁíÒ»¸ö»­±Ê
+	// TODO:  å¦‚æœé»˜è®¤çš„ä¸æ˜¯æ‰€éœ€ç”»ç¬”ï¼Œåˆ™è¿”å›å¦ä¸€ä¸ªç”»ç¬”
 	return hbr;
 }

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "SimpleXML.h"
 
 
@@ -9,20 +9,20 @@ CSimpleXML::CSimpleXML(const wstring & xml_path)
 	{
 		return;
 	}
-	//¶ÁÈ¡ÎÄ¼şÄÚÈİ
+	//è¯»å–æ–‡ä»¶å†…å®¹
 	string xml_str;
 	while (!file_stream.eof())
 	{
 		xml_str.push_back(file_stream.get());
 	}
 	xml_str.pop_back();
-	if (!xml_str.empty() && xml_str.back() != L'\n')		//È·±£ÎÄ¼şÄ©Î²ÓĞ»Ø³µ·û
+	if (!xml_str.empty() && xml_str.back() != L'\n')		//ç¡®ä¿æ–‡ä»¶æœ«å°¾æœ‰å›è½¦ç¬¦
 		xml_str.push_back(L'\n');
-	//ÅĞ¶ÏÎÄ¼şÊÇ·ñÊÇutf8±àÂë
+	//åˆ¤æ–­æ–‡ä»¶æ˜¯å¦æ˜¯utf8ç¼–ç 
 	bool is_utf8;
 	if (xml_str.size() >= 3 && xml_str[0] == -17 && xml_str[1] == -69 && xml_str[2] == -65)
 	{
-		//Èç¹ûÓĞUTF8µÄBOM£¬ÔòÉ¾³ıBOM
+		//å¦‚æœæœ‰UTF8çš„BOMï¼Œåˆ™åˆ é™¤BOM
 		is_utf8 = true;
 		xml_str = xml_str.substr(3);
 	}
@@ -30,7 +30,7 @@ CSimpleXML::CSimpleXML(const wstring & xml_path)
 	{
 		is_utf8 = false;
 	}
-	//×ª»»³ÉUnicode
+	//è½¬æ¢æˆUnicode
 	m_xml_content = CCommon::StrToUnicode(xml_str.c_str(), (is_utf8 ? CodeType::UTF8_NO_BOM : CodeType::ANSI));
 }
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DrawCommon.h"
 #include "CPlayerUIHelper.h"
 
@@ -6,7 +6,7 @@ class CUIDrawer :
     public CDrawCommon
 {
 public:
-    enum SpectrumCol        //»æÖÆÆµÆ×·ÖÎöµÄÖùĞÎÊıÁ¿
+    enum SpectrumCol        //ç»˜åˆ¶é¢‘è°±åˆ†æçš„æŸ±å½¢æ•°é‡
     {
         SC_64,
         SC_32,
@@ -22,24 +22,24 @@ public:
 
     int GetLyricTextHeight() const;
     virtual void Create(CDC* pDC, CWnd* pMainWnd /* = nullptr */) override;
-    bool IsDrawMultiLine(int height) const;			//¸ù¾İÒ»¸ö¸ß¶ÈÅĞ¶ÏÊÇ·ñ»æÖÆ¶àĞĞ¸è´Ê
+    bool IsDrawMultiLine(int height) const;			//æ ¹æ®ä¸€ä¸ªé«˜åº¦åˆ¤æ–­æ˜¯å¦ç»˜åˆ¶å¤šè¡Œæ­Œè¯
     void SetForCortanaLyric(bool for_cortana_lyric = true);
 
     void DrawLyricTextMultiLine(CRect rect, Alignment align = Alignment::CENTER);
     void DrawLyricTextSingleLine(CRect rect, bool double_line = true, Alignment align = Alignment::CENTER);
 
-    //»æÖÆÆµÆ×·ÖÎö
-    //rect£ºÆµÆ×µÄ¾ØĞÎÇøÓò
-    //col£ºÆµÆ×µÄÖùĞÎµÄÊıÁ¿
-    //draw_reflex£ºÊÇ·ñ»æÖÆµ¹Ó°
+    //ç»˜åˆ¶é¢‘è°±åˆ†æ
+    //rectï¼šé¢‘è°±çš„çŸ©å½¢åŒºåŸŸ
+    //colï¼šé¢‘è°±çš„æŸ±å½¢çš„æ•°é‡
+    //draw_reflexï¼šæ˜¯å¦ç»˜åˆ¶å€’å½±
     void DrawSpectrum(CRect rect, SpectrumCol col = SC_64, bool draw_reflex = false, bool low_freq_in_center = false);
     
-    //»æÖÆÆµÆ×·ÖÎö
-    //col_width£ºÃ¿Ò»¸öÖùĞÎµÄ¿í¶È
-    //gap_width£ºÖùĞÎ¼ä¼äÏ¶µÄ¿í¶È
-    //cols£ºÆµÆ×µÄÖùĞÎµÄÊıÁ¿£¬±ØĞëÎª2µÄn´Î·½£¬ÇÒĞ¡ÓÚ»òµÈÓÚSPECTRUM_COL
-    //color£ºÆµÆ×·ÖÎöµÄÑÕÉ«
-    //draw_reflex£ºÊÇ·ñ»æÖÆµ¹Ó°
+    //ç»˜åˆ¶é¢‘è°±åˆ†æ
+    //col_widthï¼šæ¯ä¸€ä¸ªæŸ±å½¢çš„å®½åº¦
+    //gap_widthï¼šæŸ±å½¢é—´é—´éš™çš„å®½åº¦
+    //colsï¼šé¢‘è°±çš„æŸ±å½¢çš„æ•°é‡ï¼Œå¿…é¡»ä¸º2çš„næ¬¡æ–¹ï¼Œä¸”å°äºæˆ–ç­‰äºSPECTRUM_COL
+    //colorï¼šé¢‘è°±åˆ†æçš„é¢œè‰²
+    //draw_reflexï¼šæ˜¯å¦ç»˜åˆ¶å€’å½±
     void DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex = false, bool low_freq_in_center = false);
 
 private:
@@ -49,6 +49,6 @@ private:
 
 private:
     UIColors& m_colors;
-    bool m_for_cortana_lyric{ false };		//ÊÇ·ñÓÃÓÚÏÔÊ¾ËÑË÷¿ò¸è´Ê
+    bool m_for_cortana_lyric{ false };		//æ˜¯å¦ç”¨äºæ˜¾ç¤ºæœç´¢æ¡†æ­Œè¯
 };
 

@@ -1,4 +1,4 @@
-// EditEx.cpp : ÊµÏÖÎÄ¼þ
+ï»¿// EditEx.cpp : å®žçŽ°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -25,15 +25,15 @@ END_MESSAGE_MAP()
 
 
 
-// CEditEx ÏûÏ¢´¦Àí³ÌÐò
+// CEditEx æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 
 
 BOOL CEditEx::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
-	//°´Ctrl+AÈ«Ñ¡
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
+	//æŒ‰Ctrl+Aå…¨é€‰
 	if ((GetKeyState(VK_CONTROL) & 0x80) && (pMsg->wParam == 'A'))
 	{
 		SetSel(0, -1);

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CueFile.h"
 #include "FilePathHelper.h"
 
@@ -15,9 +15,9 @@ CCueFile::CCueFile(const std::wstring& file_path)
     {
         OpenFile.get(ch);
         m_file_content.push_back(ch);
-        if (m_file_content.size() > 102400) break;	//ÏŞÖÆcueÎÄ¼ş×î´óÎª100KB
+        if (m_file_content.size() > 102400) break;	//é™åˆ¶cueæ–‡ä»¶æœ€å¤§ä¸º100KB
     }
-    CodeType m_code_type{ CodeType::AUTO };		//cueÎÄ¼şµÄ±àÂëÀàĞÍ
+    CodeType m_code_type{ CodeType::AUTO };		//cueæ–‡ä»¶çš„ç¼–ç ç±»å‹
     if (m_file_content.size() >= 3 && m_file_content[0] == -17 && m_file_content[1] == -69 && m_file_content[2] == -65)
         m_code_type = CodeType::UTF8;
 
@@ -52,7 +52,7 @@ void CCueFile::DoAnalysis()
 {
     CFilePathHelper cue_file_path{ m_file_path };
 
-    //»ñÈ¡¹ØÁªÒôÆµÎÄ¼şµÄÎÄ¼şÃû
+    //è·å–å…³è”éŸ³é¢‘æ–‡ä»¶çš„æ–‡ä»¶å
     m_audio_file_name = CCommon::StrToUnicode(GetCommand("FILE"), m_code_type);
 
     SongInfo song_info{};
@@ -70,14 +70,14 @@ void CCueFile::DoAnalysis()
     size_t index_artist{};
     while (true)
     {
-        //²éÕÒÇúÄ¿ĞòºÅ
+        //æŸ¥æ‰¾æ›²ç›®åºå·
         index_track = m_file_content.find("TRACK ", index_track + 6);
         if (index_track == string::npos)
             break;
         string track_str = m_file_content.substr(index_track + 6, 3);
         song_info.track = atoi(track_str.c_str());
         size_t next_track_index = m_file_content.find("TRACK ", index_track + 6);
-        //²éÕÒÇúÄ¿±êÌâ
+        //æŸ¥æ‰¾æ›²ç›®æ ‡é¢˜
         size_t index2, index3;
         index_title = m_file_content.find("TITLE ", index_track + 6);
         if (index_title < next_track_index)
@@ -87,7 +87,7 @@ void CCueFile::DoAnalysis()
             song_info.title = CCommon::StrToUnicode(m_file_content.substr(index2 + 1, index3 - index2 - 1), m_code_type);
         }
 
-        //²éÕÒÇúÄ¿ÒÕÊõ¼Ò
+        //æŸ¥æ‰¾æ›²ç›®è‰ºæœ¯å®¶
         index_artist = m_file_content.find("PERFORMER ", index_track + 6);
         if (index_artist < next_track_index)
         {
@@ -96,7 +96,7 @@ void CCueFile::DoAnalysis()
             song_info.artist = CCommon::StrToUnicode(m_file_content.substr(index2 + 1, index3 - index2 - 1), m_code_type);
         }
 
-        //²éÕÒÇúÄ¿Î»ÖÃ
+        //æŸ¥æ‰¾æ›²ç›®ä½ç½®
         Time time_index00, time_index01;
         size_t index00_pos{}, index01_pos{};
         index00_pos = m_file_content.find("INDEX 00", index_track + 6);
@@ -129,13 +129,13 @@ Time CCueFile::PhaseIndex(size_t pos)
     size_t index2 = m_file_content.rfind(" ", index1);
     string tmp;
     Time time;
-    //»ñÈ¡·ÖÖÓ
+    //è·å–åˆ†é’Ÿ
     tmp = m_file_content.substr(index2 + 1, index1 - index2 - 1);
     time.min = atoi(tmp.c_str());
-    //»ñÈ¡ÃëÖÓ
+    //è·å–ç§’é’Ÿ
     tmp = m_file_content.substr(index1 + 1, 2);
     time.sec = atoi(tmp.c_str());
-    //»ñÈ¡ºÁÃë
+    //è·å–æ¯«ç§’
     tmp = m_file_content.substr(index1 + 4, 2);
     time.msec = atoi(tmp.c_str()) * 10;
 
@@ -154,11 +154,11 @@ string CCueFile::GetCommand(const string& str, size_t pos)
     size_t index2 = m_file_content.find('\"', index1 + str.size());
     size_t index3 = m_file_content.find('\"', index2 + 1);
     size_t index_rtn = m_file_content.find('\n', index1);
-    if (index2 < index_rtn)     //µ±Ç°ĞĞÕÒµ½ÁËÒıºÅ£¬Ôò»ñÈ¡ÒıºÅÖ®¼äµÄ×Ö·û´®
+    if (index2 < index_rtn)     //å½“å‰è¡Œæ‰¾åˆ°äº†å¼•å·ï¼Œåˆ™è·å–å¼•å·ä¹‹é—´çš„å­—ç¬¦ä¸²
     {
         command = m_file_content.substr(index2 + 1, index3 - index2 - 1);
     }
-    else        //µ±Ç°ĞĞÃ»ÓĞÕÒµ½ÒıºÅ
+    else        //å½“å‰è¡Œæ²¡æœ‰æ‰¾åˆ°å¼•å·
     {
         index2 = m_file_content.find(' ', index1 + str.size());
         index3 = index_rtn;

@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #include "stdafx.h"
 #include "Time.h"
 #include "Common.h"
 #include "Resource.h"
 
 
-//Ò»Ê×¸èÇúµÄĞÅÏ¢
+//ä¸€é¦–æ­Œæ›²çš„ä¿¡æ¯
 struct SongInfo
 {
     //SongInfo(bool ini = true)
@@ -20,60 +20,60 @@ struct SongInfo
     //    }
     //}
 
-    //wstring file_name{};	//¸èÇúµÄÎÄ¼şÃû
-    wstring file_path{};    //¸èÇúµÄÂ·¾¶
-    wstring lyric_file{};	//Æ¥ÅäµÄ¸è´ÊÎÄ¼şµÄÂ·¾¶
-    Time lengh{};			//¸èÇúµÄ³¤¶È
-    int bitrate{};		//±ÈÌØÂÊ
-    wstring title;		//±êÌâ
-    wstring artist;		//ÒÕÊõ¼Ò
-    wstring album;		//³ªÆ¬¼¯
-    wstring year;		//Äê·İ
-    wstring comment;	//×¢ÊÍ
-    wstring genre;		//Á÷ÅÉ
-    BYTE genre_idx{ 255 };		//ÒÔ×Ö½Ú±íÊ¾µÄÁ÷ÅÉºÅ
-    int track{};		//Òô¹ìĞòºÅ
-    int tag_type{};		//±êÇ©µÄÀàĞÍ£¨0£ºÆäËû£»1£ºID3v1£»2£ºID3v2£©
-    bool info_acquired{ false };		//Èç¹ûÒÑ¾­»ñÈ¡µ½ÁËĞÅÏ¢£¬ÔòÎªture
-    Time start_pos{};		//ÒôÆµµÄÆğÊ¼Î»ÖÃ£¬ÓÃÓÚcue·Ö¹ì
+    //wstring file_name{};	//æ­Œæ›²çš„æ–‡ä»¶å
+    wstring file_path{};    //æ­Œæ›²çš„è·¯å¾„
+    wstring lyric_file{};	//åŒ¹é…çš„æ­Œè¯æ–‡ä»¶çš„è·¯å¾„
+    Time lengh{};			//æ­Œæ›²çš„é•¿åº¦
+    int bitrate{};		//æ¯”ç‰¹ç‡
+    wstring title;		//æ ‡é¢˜
+    wstring artist;		//è‰ºæœ¯å®¶
+    wstring album;		//å”±ç‰‡é›†
+    wstring year;		//å¹´ä»½
+    wstring comment;	//æ³¨é‡Š
+    wstring genre;		//æµæ´¾
+    BYTE genre_idx{ 255 };		//ä»¥å­—èŠ‚è¡¨ç¤ºçš„æµæ´¾å·
+    int track{};		//éŸ³è½¨åºå·
+    int tag_type{};		//æ ‡ç­¾çš„ç±»å‹ï¼ˆ0ï¼šå…¶ä»–ï¼›1ï¼šID3v1ï¼›2ï¼šID3v2ï¼‰
+    bool info_acquired{ false };		//å¦‚æœå·²ç»è·å–åˆ°äº†ä¿¡æ¯ï¼Œåˆ™ä¸ºture
+    Time start_pos{};		//éŸ³é¢‘çš„èµ·å§‹ä½ç½®ï¼Œç”¨äºcueåˆ†è½¨
     Time end_pos{};
-    bool is_cue{ false };		//Èç¹ûÇúÄ¿ÊÇcue·Ö¹ì£¬ÔòÎªtrue
-    wstring song_id{};			//¸èÇú¶ÔÓ¦µÄÍøÒ×ÔÆÒôÀÖÖĞµÄ¸èÇúID
-    int listen_time{};			//¸èÇúÀÛ¼ÆÌıµÄÊ±¼ä£¨µ¥Î»ÎªÃë£©
-    bool no_online_lyric{ false };         //Èç¹ûÎªtrue£¬Ôò²»ÔÚÏßÏÂÔØ¸è´Ê
-    bool no_online_album_cover{ false };   //Èç¹ûÎªtrue£¬Ôò²»ÔÚÏßÏÂÔØ×¨¼­·âÃæ
+    bool is_cue{ false };		//å¦‚æœæ›²ç›®æ˜¯cueåˆ†è½¨ï¼Œåˆ™ä¸ºtrue
+    wstring song_id{};			//æ­Œæ›²å¯¹åº”çš„ç½‘æ˜“äº‘éŸ³ä¹ä¸­çš„æ­Œæ›²ID
+    int listen_time{};			//æ­Œæ›²ç´¯è®¡å¬çš„æ—¶é—´ï¼ˆå•ä½ä¸ºç§’ï¼‰
+    bool no_online_lyric{ false };         //å¦‚æœä¸ºtrueï¼Œåˆ™ä¸åœ¨çº¿ä¸‹è½½æ­Œè¯
+    bool no_online_album_cover{ false };   //å¦‚æœä¸ºtrueï¼Œåˆ™ä¸åœ¨çº¿ä¸‹è½½ä¸“è¾‘å°é¢
 
     bool is_favourite{ false };
 
-	__int64 last_played_time{};		//ÉÏ´Î²¥·ÅµÄÊ±¼ä
+	__int64 last_played_time{};		//ä¸Šæ¬¡æ’­æ”¾çš„æ—¶é—´
 
-    //¸ù¾İÎÄ¼şÃûµÄ±È½Ïº¯Êı£¬ÓÃÓÚÒÔÎÄ¼şÃûÅÅĞò
+    //æ ¹æ®æ–‡ä»¶åçš„æ¯”è¾ƒå‡½æ•°ï¼Œç”¨äºä»¥æ–‡ä»¶åæ’åº
     static bool ByFileName(const SongInfo& a, const SongInfo& b)
     {
         return a.GetFileName() < b.GetFileName();
     }
-    //¸ù¾İ±êÌâµÄ±È½Ïº¯Êı£¬ÓÃÓÚÒÔ±êÌâÅÅĞò
+    //æ ¹æ®æ ‡é¢˜çš„æ¯”è¾ƒå‡½æ•°ï¼Œç”¨äºä»¥æ ‡é¢˜æ’åº
     static bool ByTitle(const SongInfo& a, const SongInfo& b)
     {
         return a.title < b.title;
     }
-    //¸ù¾İÒÕÊõ¼ÒµÄ±È½Ïº¯Êı£¬ÓÃÓÚÒÔÒÕÊõ¼ÒÅÅĞò
+    //æ ¹æ®è‰ºæœ¯å®¶çš„æ¯”è¾ƒå‡½æ•°ï¼Œç”¨äºä»¥è‰ºæœ¯å®¶æ’åº
     static bool ByArtist(const SongInfo& a, const SongInfo& b)
     {
         return a.artist < b.artist;
     }
-    //¸ù¾İ³ªÆ¬¼¯µÄ±È½Ïº¯Êı£¬ÓÃÓÚÒÔ³ªÆ¬¼¯ÅÅĞò
+    //æ ¹æ®å”±ç‰‡é›†çš„æ¯”è¾ƒå‡½æ•°ï¼Œç”¨äºä»¥å”±ç‰‡é›†æ’åº
     static bool ByAlbum(const SongInfo& a, const SongInfo& b)
     {
         return a.album < b.album;
     }
-    //¸ù¾İÒô¹ìĞòºÅµÄ±È½Ïº¯Êı£¬ÓÃÓÚÒÔÒô¹ìĞòºÅÅÅĞò
+    //æ ¹æ®éŸ³è½¨åºå·çš„æ¯”è¾ƒå‡½æ•°ï¼Œç”¨äºä»¥éŸ³è½¨åºå·æ’åº
     static bool ByTrack(const SongInfo& a, const SongInfo& b)
     {
         return a.track < b.track;
     }
 
-    //´ÓÁíÒ»¸öSongInfo¶ÔÏó¸´ÖÆ±êÇ©ĞÅÏ¢
+    //ä»å¦ä¸€ä¸ªSongInfoå¯¹è±¡å¤åˆ¶æ ‡ç­¾ä¿¡æ¯
     void CopyAudioTag(const SongInfo& song_info)
     {
         title = song_info.title;

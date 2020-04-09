@@ -1,19 +1,19 @@
-#pragma once
+ï»¿#pragma once
 #include"Common.h"
 #include "TabDlg.h"
 #include "BrowseEdit.h"
 
-// CDataSettingsDlg ¶Ô»°¿ò
+// CDataSettingsDlg å¯¹è¯æ¡†
 
 class CDataSettingsDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CDataSettingsDlg)
 
 public:
-	CDataSettingsDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CDataSettingsDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CDataSettingsDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DATA_SETTINGS_DIALOG };
 #endif
@@ -28,7 +28,7 @@ private:
     void EnableControl();
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

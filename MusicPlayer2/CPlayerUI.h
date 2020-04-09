@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DrawCommon.h"
 #include "CPlayerUIBase.h"
 
@@ -15,14 +15,14 @@ public:
 
 	//virtual CRect GetThumbnailClipArea() override;
 
-	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//ÎªÒ»¸ö°´Å¥Ìí¼ÓÊó±êÌáÊ¾
+	virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;		//ä¸ºä¸€ä¸ªæŒ‰é’®æ·»åŠ é¼ æ ‡æç¤º
 	virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) override;
 	virtual void UpdateToolTipPosition() override;
 
 private:
-	virtual void _DrawInfo(bool reset = false) override;		//»æÖÆĞÅÏ¢
+	virtual void _DrawInfo(bool reset = false) override;		//ç»˜åˆ¶ä¿¡æ¯
 
-	void DrawLyricsArea(CRect lyric_rect);			//ÆÕÍ¨Ä£Ê½ÏÂ»æÖÆ¸è´ÊÇøÓò
+	void DrawLyricsArea(CRect lyric_rect);			//æ™®é€šæ¨¡å¼ä¸‹ç»˜åˆ¶æ­Œè¯åŒºåŸŸ
 	CSize SpectralSize();
 };
 

@@ -1,4 +1,4 @@
-//ÊµÏÖ¸ßË¹Ä£ºıµÄÀà£¬Ëã·¨À´×Ô£ºhttp://www.cnblogs.com/hoodlum1980/p/4528486.html
+ï»¿//å®ç°é«˜æ–¯æ¨¡ç³Šçš„ç±»ï¼Œç®—æ³•æ¥è‡ªï¼šhttp://www.cnblogs.com/hoodlum1980/p/4528486.html
 #pragma once
 
 class CGaussBlurThreadParams
@@ -6,19 +6,19 @@ class CGaussBlurThreadParams
 public:
 	int r;
 	double* pTempl;
-	LPBYTE pSrc;	//Src  Î»Í¼µÄÎ»Í¼Êı¾İÆğµã £¨¶ÔËùÓĞÏß³Ì£¬pSrc£¬pDest ÊÇÏàÍ¬µÄ£©
-	LPBYTE pDest;	//Dest Î»Í¼µÄÎ»Í¼Êı¾İÆğµã
+	LPBYTE pSrc;	//Src  ä½å›¾çš„ä½å›¾æ•°æ®èµ·ç‚¹ ï¼ˆå¯¹æ‰€æœ‰çº¿ç¨‹ï¼ŒpSrcï¼ŒpDest æ˜¯ç›¸åŒçš„ï¼‰
+	LPBYTE pDest;	//Dest ä½å›¾çš„ä½å›¾æ•°æ®èµ·ç‚¹
 
-	int width;		//Í¼Ïñ¿í¶È
-	int height;		//Í¼Ïñ¸ß¶È£¨ÒÑ¾­±»È¡¾ø¶ÔÖµ£©
+	int width;		//å›¾åƒå®½åº¦
+	int height;		//å›¾åƒé«˜åº¦ï¼ˆå·²ç»è¢«å–ç»å¯¹å€¼ï¼‰
 
-	//´¦ÀíµÄĞĞ·¶Î§£º[rowBegin, rowEnd) £¬²»°üÀ¨ rowEnd £¨Ã¿¸öÏß³Ì²»Í¬£©
+	//å¤„ç†çš„è¡ŒèŒƒå›´ï¼š[rowBegin, rowEnd) ï¼Œä¸åŒ…æ‹¬ rowEnd ï¼ˆæ¯ä¸ªçº¿ç¨‹ä¸åŒï¼‰
 	int rowBegin;
 	int rowEnd;
-	int stride;		//É¨ÃèĞĞ¿í¶È£¨bytes£©
-	int pixelSize;	//ÏñËØ´óĞ¡ =bpp/8;
+	int stride;		//æ‰«æè¡Œå®½åº¦ï¼ˆbytesï¼‰
+	int pixelSize;	//åƒç´ å¤§å° =bpp/8;
 
-	bool bHorz;		//true-Ë®Æ½Ä£ºı£¬false-×İÏòÄ£ºı
+	bool bHorz;		//true-æ°´å¹³æ¨¡ç³Šï¼Œfalse-çºµå‘æ¨¡ç³Š
 };
 
 
@@ -28,14 +28,14 @@ public:
 	CGaussBlur();
 	~CGaussBlur();
 
-	void SetSigma(double sigma);		//ÉèÖÃ¸ßË¹Ä£ºı°ë¾¶
+	void SetSigma(double sigma);		//è®¾ç½®é«˜æ–¯æ¨¡ç³ŠåŠå¾„
 	void Reset();
-	void DoGaussBlur(const CImage& image_src, CImage& image_dest);		//¶Ôimage_srcÖ´ĞĞ¸ßË¹Ä£ºı£¬½á¹û±£´æÔÚimage_destÀï
+	void DoGaussBlur(const CImage& image_src, CImage& image_dest);		//å¯¹image_srcæ‰§è¡Œé«˜æ–¯æ¨¡ç³Šï¼Œç»“æœä¿å­˜åœ¨image_desté‡Œ
 
 protected:
-	int m_r;		//ÍêÕûÄ£°åÕı·½ĞÎµÄ±ß³¤Îª (2 * r + 1)
-	double m_sigma;		//¸ßË¹°ë¾¶£¨·½²îµÄÆ½·½¸ù£©
-	double* m_pTempl;	//Ä£°åT[r+1];
+	int m_r;		//å®Œæ•´æ¨¡æ¿æ­£æ–¹å½¢çš„è¾¹é•¿ä¸º (2 * r + 1)
+	double m_sigma;		//é«˜æ–¯åŠå¾„ï¼ˆæ–¹å·®çš„å¹³æ–¹æ ¹ï¼‰
+	double* m_pTempl;	//æ¨¡æ¿T[r+1];
 
 	bool Filter(LPCVOID pSrc, LPVOID pDest, int width, int height, int bpp);
 

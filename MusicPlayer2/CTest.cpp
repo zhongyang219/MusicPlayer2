@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CTest.h"
 #include "InternetCommon.h"
 #include "COSUPlayerHelper.h"
@@ -77,7 +77,7 @@ void CTest::TestCommon()
 
     //CCommon::CreateDir(L"D:\\Temp\\Folder\\");
 
-    //wstring rtn = CCommon::FileRename(L"D:\\Temp\\ÎÞ±êÌâ.txt", L"ÎÞ±êÌâ1");
+    //wstring rtn = CCommon::FileRename(L"D:\\Temp\\æ— æ ‡é¢˜.txt", L"æ— æ ‡é¢˜1");
 
     //wstring str = L"!ABC!,!233!,!DEF!";
     //std::vector<wstring> result;

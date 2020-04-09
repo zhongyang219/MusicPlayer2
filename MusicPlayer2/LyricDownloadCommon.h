@@ -1,5 +1,5 @@
-//´ËÀàÓÃÓÚ¶¨ÒåÍ¨¹ıÍøÂçÏÂÔØ¸è´ÊÏà¹ØµÄÈ«¾Öº¯Êı
-//¸è´ÊµÄÏÂÔØµ÷ÓÃÁËÍøÒ×ÔÆÒôÀÖµÄAPI
+ï»¿//æ­¤ç±»ç”¨äºå®šä¹‰é€šè¿‡ç½‘ç»œä¸‹è½½æ­Œè¯ç›¸å…³çš„å…¨å±€å‡½æ•°
+//æ­Œè¯çš„ä¸‹è½½è°ƒç”¨äº†ç½‘æ˜“äº‘éŸ³ä¹çš„API
 #pragma once
 #include "InternetCommon.h"
 
@@ -11,10 +11,10 @@ public:
 	~CLyricDownloadCommon();
 
 
-	//¸ù¾İÍøÒ×ÔÆÒôÀÖÖĞ¸èÇúµÄidÏÂÔØ¸è´Ê£¬½á¹û±£´æÖĞresultÖĞ£¬download_translate²ÎÊıÖ¸¶¨ÊÇ·ñÏÂÔØ´ø·­ÒëµÄ¸è´Ê
+	//æ ¹æ®ç½‘æ˜“äº‘éŸ³ä¹ä¸­æ­Œæ›²çš„idä¸‹è½½æ­Œè¯ï¼Œç»“æœä¿å­˜ä¸­resultä¸­ï¼Œdownload_translateå‚æ•°æŒ‡å®šæ˜¯å¦ä¸‹è½½å¸¦ç¿»è¯‘çš„æ­Œè¯
 	static bool DownloadLyric(const wstring& song_id, wstring& result, bool download_translate = true);
 
-	static bool DisposeLryic(wstring& lyric_str);	//¶Ô´ÓÍøÒ×ÔÆÒôÀÖÏÂÔØµÄ¸è´Ê½øĞĞ´¦Àí£¬×ª»»³ÉÕıÈ·µÄ¸è´ÊÎÄ±¾
-	static void AddLyricTag(wstring& lyric_str, const wstring& song_id, const wstring& title = _T(""), const wstring& artist = _T(""), const wstring& album = _T(""));		//ÔÚ¸è´ÊÇ°Ãæ¼ÓÉÏ±êÇ©ĞÅÏ¢
+	static bool DisposeLryic(wstring& lyric_str);	//å¯¹ä»ç½‘æ˜“äº‘éŸ³ä¹ä¸‹è½½çš„æ­Œè¯è¿›è¡Œå¤„ç†ï¼Œè½¬æ¢æˆæ­£ç¡®çš„æ­Œè¯æ–‡æœ¬
+	static void AddLyricTag(wstring& lyric_str, const wstring& song_id, const wstring& title = _T(""), const wstring& artist = _T(""), const wstring& album = _T(""));		//åœ¨æ­Œè¯å‰é¢åŠ ä¸Šæ ‡ç­¾ä¿¡æ¯
 };
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CortanaLyric.h"
 #include "PlayListCtrl.h"
 #include "CPlayerUIBase.h"
@@ -15,7 +15,7 @@ CCortanaLyric::~CCortanaLyric()
     if (m_pDC != nullptr)
         m_cortana_wnd->ReleaseDC(m_pDC);
 
-	//ÍË³öÊ±»Ö¸´Cortana´°¿ÚÍ¸Ã÷
+	//é€€å‡ºæ—¶æ¢å¤Cortanaçª—å£é€æ˜
 #ifndef COMPILE_IN_WIN_XP
 	if (m_cortana_opaque)
 	{
@@ -29,23 +29,23 @@ void CCortanaLyric::Init()
 {
     if (m_enable)
     {
-        HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//ÈÎÎñÀ¸µÄ¾ä±ú
-        m_hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("TrayDummySearchControl"), NULL);	//CortanaÀ¸µÄ¾ä±ú£¨ÆäÖĞ°üº¬3¸ö×Ó´°¿Ú£©
-        m_cortana_hwnd = ::FindWindowEx(m_hCortanaBar, NULL, _T("Button"), NULL);	//CortanaËÑË÷¿òÖĞÀàÃûÎª¡°Button¡±µÄ´°¿ÚµÄ¾ä±ú
-        m_hCortanaStatic = ::FindWindowEx(m_hCortanaBar, NULL, _T("Static"), NULL);		//CortanaËÑË÷¿òÖĞÀàÃûÎª¡°Static¡±µÄ´°¿ÚµÄ¾ä±ú
+        HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//ä»»åŠ¡æ çš„å¥æŸ„
+        m_hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("TrayDummySearchControl"), NULL);	//Cortanaæ çš„å¥æŸ„ï¼ˆå…¶ä¸­åŒ…å«3ä¸ªå­çª—å£ï¼‰
+        m_cortana_hwnd = ::FindWindowEx(m_hCortanaBar, NULL, _T("Button"), NULL);	//Cortanaæœç´¢æ¡†ä¸­ç±»åä¸ºâ€œButtonâ€çš„çª—å£çš„å¥æŸ„
+        m_hCortanaStatic = ::FindWindowEx(m_hCortanaBar, NULL, _T("Static"), NULL);		//Cortanaæœç´¢æ¡†ä¸­ç±»åä¸ºâ€œStaticâ€çš„çª—å£çš„å¥æŸ„
         if (m_cortana_hwnd == NULL) return;
         wchar_t buff[32];
-        ::GetWindowText(m_cortana_hwnd, buff, 31);		//»ñÈ¡CortanaËÑË÷¿òÖĞÔ­À´µÄ×Ö·û´®£¬ÓÃÓÚÔÚ³ÌĞòÍË³öÊ±»Ö¸´
+        ::GetWindowText(m_cortana_hwnd, buff, 31);		//è·å–Cortanaæœç´¢æ¡†ä¸­åŸæ¥çš„å­—ç¬¦ä¸²ï¼Œç”¨äºåœ¨ç¨‹åºé€€å‡ºæ—¶æ¢å¤
         m_cortana_default_text = buff;
-        m_cortana_wnd = CWnd::FromHandle(m_cortana_hwnd);		//»ñÈ¡CortanaËÑË÷¿òµÄCWndÀàµÄÖ¸Õë
+        m_cortana_wnd = CWnd::FromHandle(m_cortana_hwnd);		//è·å–Cortanaæœç´¢æ¡†çš„CWndç±»çš„æŒ‡é’ˆ
         if (m_cortana_wnd == nullptr) return;
 
-        ::GetClientRect(m_hCortanaBar, m_cortana_rect);	//»ñÈ¡CortanaËÑË÷¿òµÄ¾ØĞÎÇøÓò
+        ::GetClientRect(m_hCortanaBar, m_cortana_rect);	//è·å–Cortanaæœç´¢æ¡†çš„çŸ©å½¢åŒºåŸŸ
 
         CRect cortana_rect;
-        CRect cortana_static_rect;		//CortanaËÑË÷¿òÖĞstatic¿Ø¼şµÄ¾ØĞÎÇøÓò
+        CRect cortana_static_rect;		//Cortanaæœç´¢æ¡†ä¸­staticæ§ä»¶çš„çŸ©å½¢åŒºåŸŸ
         ::GetWindowRect(m_hCortanaBar, cortana_rect);
-        ::GetWindowRect(m_hCortanaStatic, cortana_static_rect);	//»ñÈ¡CortanaËÑË÷¿òÖĞstatic¿Ø¼şµÄ¾ØĞÎÇøÓò
+        ::GetWindowRect(m_hCortanaStatic, cortana_static_rect);	//è·å–Cortanaæœç´¢æ¡†ä¸­staticæ§ä»¶çš„çŸ©å½¢åŒºåŸŸ
 
         const int min_conver_width = theApp.DPI(40);
         m_cover_width = cortana_static_rect.left - cortana_rect.left;
@@ -56,23 +56,23 @@ void CCortanaLyric::Init()
         m_draw.Create(m_pDC, m_cortana_wnd);
 
 
-        //»ñÈ¡ÓÃÀ´¼ì²éĞ¡ÄÈÊÇ·ñÎªÉîÉ«Ä£Ê½µÄ²ÉÑùµãµÄ×ø±ê
+        //è·å–ç”¨æ¥æ£€æŸ¥å°å¨œæ˜¯å¦ä¸ºæ·±è‰²æ¨¡å¼çš„é‡‡æ ·ç‚¹çš„åæ ‡
         m_check_dark_point.x = cortana_rect.right - 2;
         m_check_dark_point.y = cortana_rect.top + 2;
 
         CheckDarkMode();
         SetUIColors();
 
-        //ÉèÖÃ×ÖÌå
+        //è®¾ç½®å­—ä½“
         LOGFONT lf;
-        SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(LOGFONT), &lf, 0);		//»ñÈ¡ÏµÍ³Ä¬ÈÏ×ÖÌå
+        SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(LOGFONT), &lf, 0);		//è·å–ç³»ç»Ÿé»˜è®¤å­—ä½“
         if (m_default_font.m_hObject)
             m_default_font.DeleteObject();
         m_default_font.CreatePointFont(110, lf.lfFaceName);
 
         InitFont();
 
-        //ÎªCortanaËÑË÷¿òÉèÖÃÒ»¸öÍ¸Ã÷É«£¬Ê¹CortanaËÑË÷¿ò²»Í¸Ã÷
+        //ä¸ºCortanaæœç´¢æ¡†è®¾ç½®ä¸€ä¸ªé€æ˜è‰²ï¼Œä½¿Cortanaæœç´¢æ¡†ä¸é€æ˜
 #ifndef COMPILE_IN_WIN_XP
         if(theApp.m_lyric_setting_data.cortana_opaque)
         {
@@ -105,13 +105,13 @@ void CCortanaLyric::DrawInfo()
 
     bool is_midi_lyric = CPlayerUIHelper::IsMidiLyric();
 
-    //²»Ê¹ÓÃ¼æÈİÄ£Ê½ÏÔÊ¾¸è´Ê£¬Ö±½ÓÔÚĞ¡ÄÈËÑË÷¿òÄÚ»æÍ¼
+    //ä¸ä½¿ç”¨å…¼å®¹æ¨¡å¼æ˜¾ç¤ºæ­Œè¯ï¼Œç›´æ¥åœ¨å°å¨œæœç´¢æ¡†å†…ç»˜å›¾
     if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
     {
         m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
-        //Ë«»º³å»æÍ¼
+        //åŒç¼“å†²ç»˜å›¾
         CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_cortana_rect);
-        //Ê¹ÓÃm_draw»æÍ¼
+        //ä½¿ç”¨m_drawç»˜å›¾
         m_draw.SetDC(drawDoubleBuffer.GetMemDC());
         m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 
@@ -129,10 +129,10 @@ void CCortanaLyric::DrawInfo()
 			int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
 			CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
             bool no_lyric{ false };
-            //Èç¹ûµ±Ç°Ò»¾ä¸è´ÊÎª¿Õ£¬ÇÒ³ÖĞøÁË³¬¹ıÁË20Ãë£¬Ôò²»ÏÔÊ¾¸è´Ê
+            //å¦‚æœå½“å‰ä¸€å¥æ­Œè¯ä¸ºç©ºï¼Œä¸”æŒç»­äº†è¶…è¿‡äº†20ç§’ï¼Œåˆ™ä¸æ˜¾ç¤ºæ­Œè¯
             no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time.toInt() > 20000) || progress >= 1000;
 
-            if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric && theApp.m_lyric_setting_data.cortana_show_lyric)		//ÓĞ¸è´ÊÊ±ÏÔÊ¾¸è´Ê
+            if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric && theApp.m_lyric_setting_data.cortana_show_lyric)		//æœ‰æ­Œè¯æ—¶æ˜¾ç¤ºæ­Œè¯
             {
 				if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
 				{
@@ -143,11 +143,11 @@ void CCortanaLyric::DrawInfo()
 					m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
 				}
             }
-            else			//Ã»ÓĞ¸è´ÊÊ±ÔÚCortanaËÑË÷¿òÉÏÒÔ¹ö¶¯µÄ·½Ê½ÏÔÊ¾µ±Ç°²¥·Å¸èÇúµÄÎÄ¼şÃû
+            else			//æ²¡æœ‰æ­Œè¯æ—¶åœ¨Cortanaæœç´¢æ¡†ä¸Šä»¥æ»šåŠ¨çš„æ–¹å¼æ˜¾ç¤ºå½“å‰æ’­æ”¾æ­Œæ›²çš„æ–‡ä»¶å
             {
                 static int index{};
                 static wstring song_name{};
-                //Èç¹ûµ±Ç°²¥·ÅµÄ¸èÇú·¢Éú±ä»¯£¬DrawCortanaTextº¯ÊıµÄµÚ2²ÎÊıÎªtrue£¬¼´ÖØÖÃ¹ö¶¯Î»ÖÃ
+                //å¦‚æœå½“å‰æ’­æ”¾çš„æ­Œæ›²å‘ç”Ÿå˜åŒ–ï¼ŒDrawCortanaTextå‡½æ•°çš„ç¬¬2å‚æ•°ä¸ºtrueï¼Œå³é‡ç½®æ»šåŠ¨ä½ç½®
                 if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
                 {
                     DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str()), true, theApp.DPI(2));
@@ -161,19 +161,19 @@ void CCortanaLyric::DrawInfo()
             }
         }
 
-        //¼ÆËãÆµÆ×£¬¸ù¾İÆµÆ×·ùÖµÊ¹CortanaÍ¼±êÏÔÊ¾¶¯Ì¬Ğ§¹û
-        float spectrum_avr{};		//È¡Ç°ÃæN¸öÆµ¶ÎÆµÆ×ÖµµÄÆ½¾ùÖµ
+        //è®¡ç®—é¢‘è°±ï¼Œæ ¹æ®é¢‘è°±å¹…å€¼ä½¿Cortanaå›¾æ ‡æ˜¾ç¤ºåŠ¨æ€æ•ˆæœ
+        float spectrum_avr{};		//å–å‰é¢Nä¸ªé¢‘æ®µé¢‘è°±å€¼çš„å¹³å‡å€¼
         const int N = 8;
         for (int i{}; i < N; i++)
             spectrum_avr += CPlayer::GetInstance().GetFFTData()[i];
         spectrum_avr /= N;
-        int spetraum = static_cast<int>(spectrum_avr * 4000);		//µ÷Õû³ËºÅºóÃæµÄÊıÖµ¿ÉÒÔµ÷ÕûCortanaÍ¼±êÌø¶¯Ê±Ëõ·ÅµÄ´óĞ¡
+        int spetraum = static_cast<int>(spectrum_avr * 4000);		//è°ƒæ•´ä¹˜å·åé¢çš„æ•°å€¼å¯ä»¥è°ƒæ•´Cortanaå›¾æ ‡è·³åŠ¨æ—¶ç¼©æ”¾çš„å¤§å°
         SetBeatAmp(spetraum);
-        //ÏÔÊ¾×¨¼­·âÃæ£¬Èç¹ûÃ»ÓĞ×¨¼­·âÃæ£¬ÔòÏÔÊ¾CortanaÍ¼±ê
+        //æ˜¾ç¤ºä¸“è¾‘å°é¢ï¼Œå¦‚æœæ²¡æœ‰ä¸“è¾‘å°é¢ï¼Œåˆ™æ˜¾ç¤ºCortanaå›¾æ ‡
         AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
         DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
 
-        if (!m_colors.dark && !theApp.m_lyric_setting_data.cortana_opaque)		//·ÇÉîÉ«Ä£Ê½ÏÂ£¬ÔÚËÑË÷¶¥²¿»æÖÆ±ß¿ò
+        if (!m_colors.dark && !theApp.m_lyric_setting_data.cortana_opaque)		//éæ·±è‰²æ¨¡å¼ä¸‹ï¼Œåœ¨æœç´¢é¡¶éƒ¨ç»˜åˆ¶è¾¹æ¡†
         {
             CRect rect{ m_cortana_rect };
             rect.left += m_cover_width;
@@ -182,7 +182,7 @@ void CCortanaLyric::DrawInfo()
         CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
     }
 
-    //Ê¹ÓÃ¼æÈİÄ£Ê½ÏÔÊ¾¸è´Ê£¬¸øĞ¡ÄÈËÑË÷¿òÉèÖÃÎÄ±¾
+    //ä½¿ç”¨å…¼å®¹æ¨¡å¼æ˜¾ç¤ºæ­Œè¯ï¼Œç»™å°å¨œæœç´¢æ¡†è®¾ç½®æ–‡æœ¬
     else
     {
         CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);
@@ -194,7 +194,7 @@ void CCortanaLyric::DrawInfo()
             {
                 str_disp = CPlayer::GetInstance().GetMidiLyric();
             }
-            else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//ÓĞ¸è´ÊÊ±ÏÔÊ¾¸è´Ê
+            else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//æœ‰æ­Œè¯æ—¶æ˜¾ç¤ºæ­Œè¯
             {
                 Time time{ CPlayer::GetInstance().GetCurrentPosition() };
                 str_disp = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0).text;
@@ -203,7 +203,7 @@ void CCortanaLyric::DrawInfo()
             }
             else
             {
-                //Ã»ÓĞ¸è´ÊÊ±ÏÔÊ¾µ±Ç°²¥·Å¸èÇúµÄÃû³Æ
+                //æ²¡æœ‰æ­Œè¯æ—¶æ˜¾ç¤ºå½“å‰æ’­æ”¾æ­Œæ›²çš„åç§°
                 str_disp = CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")).GetString() + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format);
             }
 
@@ -285,7 +285,7 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
 void CCortanaLyric::DrawSpectrum()
 {
     CRect rc_spectrum{ TextRect() };
-	const int max_spectrum_height{ theApp.DPI(80) };		//ÆµÆ×ÇøÓòµÄ×î´ó¸ß¶È
+	const int max_spectrum_height{ theApp.DPI(80) };		//é¢‘è°±åŒºåŸŸçš„æœ€å¤§é«˜åº¦
 	if (rc_spectrum.Height() > max_spectrum_height)
 		rc_spectrum.top = rc_spectrum.bottom - max_spectrum_height;
 
@@ -330,16 +330,16 @@ void CCortanaLyric::ResetCortanaText()
         if (!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
         {
             m_draw.SetFont(&m_default_font);
-            COLORREF color;		//CortanaÄ¬ÈÏÎÄ±¾µÄÑÕÉ«
+            COLORREF color;		//Cortanaé»˜è®¤æ–‡æœ¬çš„é¢œè‰²
             color = (m_dark_mode ? GRAY(173) : GRAY(16));
             m_draw.SetDC(m_pDC);
-            //ÏÈ»æÖÆCortanaÍ¼±ê
+            //å…ˆç»˜åˆ¶Cortanaå›¾æ ‡
             CRect cover_rect = CoverRect();
             if (m_dark_mode)
                 m_draw.DrawBitmap(IDB_CORTANA_BLACK, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
             else
                 m_draw.DrawBitmap(IDB_CORTANA_WHITE, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
-            //ÔÙ»æÖÆCortanaÄ¬ÈÏÎÄ±¾
+            //å†ç»˜åˆ¶Cortanaé»˜è®¤æ–‡æœ¬
             CRect rect{ m_cortana_rect };
             rect.left += m_cover_width;
             m_draw.FillRect(rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
@@ -360,10 +360,10 @@ void CCortanaLyric::CheckDarkMode()
     {
         HDC hDC = ::GetDC(NULL);
         COLORREF color;
-        //»ñÈ¡Cortana×óÉÏ½ÇµãµÄÑÕÉ«
+        //è·å–Cortanaå·¦ä¸Šè§’ç‚¹çš„é¢œè‰²
         color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
         int brightness;
-        brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R¡¢G¡¢BµÄÆ½¾ùÖµ
+        brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//Rã€Gã€Bçš„å¹³å‡å€¼
         m_dark_mode = (brightness < 220);
         ::ReleaseDC(NULL, hDC);
     }
@@ -408,10 +408,10 @@ void CCortanaLyric::SetUIColors()
         m_lyric_colors.color_spectrum = theApp.m_app_setting_data.theme_color.dark0;
 
         DWORD dwStyle = GetWindowLong(m_hCortanaStatic, GWL_STYLE);
-        if ((dwStyle & WS_VISIBLE) != 0)		//¸ù¾İCortanaËÑË÷¿òÖĞstatic¿Ø¼şÊÇ·ñÓĞWS_VISIBLEÊôĞÔÎª»æÍ¼±³¾°ÉèÖÃ²»Í¬µÄ±³¾°É«
-            m_colors.back_color = GRAY(47);	//ÉèÖÃ»æÍ¼µÄ±³¾°ÑÕÉ«
+        if ((dwStyle & WS_VISIBLE) != 0)		//æ ¹æ®Cortanaæœç´¢æ¡†ä¸­staticæ§ä»¶æ˜¯å¦æœ‰WS_VISIBLEå±æ€§ä¸ºç»˜å›¾èƒŒæ™¯è®¾ç½®ä¸åŒçš„èƒŒæ™¯è‰²
+            m_colors.back_color = GRAY(47);	//è®¾ç½®ç»˜å›¾çš„èƒŒæ™¯é¢œè‰²
         else
-            m_colors.back_color = GRAY(10);	//ÉèÖÃ»æÍ¼µÄ±³¾°ÑÕÉ«
+            m_colors.back_color = GRAY(10);	//è®¾ç½®ç»˜å›¾çš„èƒŒæ™¯é¢œè‰²
     }
     else
     {

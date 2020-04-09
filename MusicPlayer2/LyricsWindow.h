@@ -1,25 +1,25 @@
+ï»¿// ========================================================
+// æ–‡ä»¶:LyricsWindow.h
+// ç±»å:CLyricsWindow
+// åŠŸèƒ½:æ­Œè¯æ˜¾ç¤ºçª—å£
+// æè¿°:ä½¿ç”¨GDIPlusç»˜åˆ¶æ­Œè¯
+// ä½œè€…:é‚“å­¦å½¬(æ³ªé—¯å¤©æ¶¯)
 // ========================================================
-// ÎÄ¼ş:LyricsWindow.h
-// ÀàÃû:CLyricsWindow
-// ¹¦ÄÜ:¸è´ÊÏÔÊ¾´°¿Ú
-// ÃèÊö:Ê¹ÓÃGDIPlus»æÖÆ¸è´Ê
-// ×÷Õß:µËÑ§±ò(Àá´³ÌìÑÄ)
-// ========================================================
-// ½Ó¿ÚËµÃ÷
-// Create				´´½¨¸è´Ê´°¿Ú 
-// UpdateLyrics			¸üĞÂ¸è´Ê(¸è´ÊÎÄ±¾,¸ßÁÁ½ø¶È°Ù·Ö±È)
-// Draw					ÖØ»­¸è´Ê´°¿Ú
-// SetLyricsColor		ÉèÖÃ¸è´ÊÑÕÉ«
-// SetLyricsBorder		ÉèÖÃ¸è´Ê±ß¿ò
-// SetHighlightColor	ÉèÖÃ¸ßÁÁ¸è´ÊÑÕÉ«
-// SetHighlightBorder	ÉèÖÃ¸ßÁÁ¸è´Ê±ß¿ò
-// SetLyricsShadow		ÉèÖÃ¸è´ÊÒõÓ°
-// SetLyricsFont		ÉèÖÃ¸è´Ê×ÖÌå
+// æ¥å£è¯´æ˜
+// Create				åˆ›å»ºæ­Œè¯çª—å£ 
+// UpdateLyrics			æ›´æ–°æ­Œè¯(æ­Œè¯æ–‡æœ¬,é«˜äº®è¿›åº¦ç™¾åˆ†æ¯”)
+// Draw					é‡ç”»æ­Œè¯çª—å£
+// SetLyricsColor		è®¾ç½®æ­Œè¯é¢œè‰²
+// SetLyricsBorder		è®¾ç½®æ­Œè¯è¾¹æ¡†
+// SetHighlightColor	è®¾ç½®é«˜äº®æ­Œè¯é¢œè‰²
+// SetHighlightBorder	è®¾ç½®é«˜äº®æ­Œè¯è¾¹æ¡†
+// SetLyricsShadow		è®¾ç½®æ­Œè¯é˜´å½±
+// SetLyricsFont		è®¾ç½®æ­Œè¯å­—ä½“
 // ========================================================
 
 /*
-ËµÃ÷£º´ËÀàµÄÔ­×÷Õß£ºµËÑ§±ò£¬µØÖ·£ºhttps://blog.csdn.net/CometNet/article/details/37508613
-ÔÚÔ­ÓĞµÄ»ù´¡ÉÏÓĞĞŞ¸Ä
+è¯´æ˜ï¼šæ­¤ç±»çš„åŸä½œè€…ï¼šé‚“å­¦å½¬ï¼Œåœ°å€ï¼šhttps://blog.csdn.net/CometNet/article/details/37508613
+åœ¨åŸæœ‰çš„åŸºç¡€ä¸Šæœ‰ä¿®æ”¹
 */
 
 #pragma once
@@ -27,12 +27,12 @@
 #include <gdiplus.h>
 #pragma comment(lib,"GdiPlus.lib")
 
-//¸è´Ê½¥±äÄ£Ê½
+//æ­Œè¯æ¸å˜æ¨¡å¼
 enum LyricsGradientMode
 {
-	LyricsGradientMode_None		=0, //ÎŞ½¥±ä
-	LyricsGradientMode_Two		=1, //Á½É«½¥±ä
-	LyricsGradientMode_Three	=2 //ÈıÉ«½¥±ä
+	LyricsGradientMode_None		=0, //æ— æ¸å˜
+	LyricsGradientMode_Two		=1, //ä¸¤è‰²æ¸å˜
+	LyricsGradientMode_Three	=2 //ä¸‰è‰²æ¸å˜
 };
 
 // CLyricsWindow
@@ -45,91 +45,91 @@ public:
 	CLyricsWindow();
 	virtual ~CLyricsWindow();
 public:
-	//´´½¨´°¿Ú 
+	//åˆ›å»ºçª—å£ 
 	BOOL Create(int nHeight = -1);
 	BOOL Create(LPCTSTR lpszClassName);
 	BOOL Create(LPCTSTR lpszClassName,int nWidth,int nHeight);
 public:
-	//¸üĞÂ¸è´Ê(¸è´ÊÎÄ±¾,¸ßÁÁ½ø¶È°Ù·Ö±È)
+	//æ›´æ–°æ­Œè¯(æ­Œè¯æ–‡æœ¬,é«˜äº®è¿›åº¦ç™¾åˆ†æ¯”)
 	void UpdateLyrics(LPCTSTR lpszLyrics,int nHighlight);
-	//¸üĞÂ¸ßÁÁ½ø¶È(¸ßÁÁ½ø¶È°Ù·Ö±È)
+	//æ›´æ–°é«˜äº®è¿›åº¦(é«˜äº®è¿›åº¦ç™¾åˆ†æ¯”)
 	void UpdateLyrics(int nHighlight);
-	//¸üĞÂ¸è´Ê·­ÒëÎÄ±¾
+	//æ›´æ–°æ­Œè¯ç¿»è¯‘æ–‡æœ¬
 	void UpdateLyricTranslate(LPCTSTR lpszLyricTranslate);
-	//ÖØ»­¸è´Ê´°¿Ú
+	//é‡ç”»æ­Œè¯çª—å£
 	void Draw();
-	//ÉèÖÃ¸è´ÊÑÕÉ«
+	//è®¾ç½®æ­Œè¯é¢œè‰²
 	void SetLyricsColor(Gdiplus::Color TextColor1);
 	void SetLyricsColor(Gdiplus::Color TextColor1,Gdiplus::Color TextColor2,LyricsGradientMode TextGradientMode);
-	//ÉèÖÃ¸è´Ê±ß¿ò
+	//è®¾ç½®æ­Œè¯è¾¹æ¡†
 	void SetLyricsBorder(Gdiplus::Color BorderColor, Gdiplus::REAL BorderWidth = 1.0f);
-	//ÉèÖÃ¸ßÁÁ¸è´ÊÑÕÉ«
+	//è®¾ç½®é«˜äº®æ­Œè¯é¢œè‰²
 	void SetHighlightColor(Gdiplus::Color TextColor1);
 	void SetHighlightColor(Gdiplus::Color TextColor1,Gdiplus::Color TextColor2,LyricsGradientMode TextGradientMode);
-	//ÉèÖÃ¸ßÁÁ¸è´Ê±ß¿ò
+	//è®¾ç½®é«˜äº®æ­Œè¯è¾¹æ¡†
 	void SetHighlightBorder(Gdiplus::Color BorderColor, Gdiplus::REAL BorderWidth = 1.0f);
-	//ÉèÖÃ¸è´ÊÒõÓ°
+	//è®¾ç½®æ­Œè¯é˜´å½±
 	void SetLyricsShadow(Gdiplus::Color ShadowColor,int nShadowOffset=2);
-	//ÉèÖÃ¸è´Ê×ÖÌå
+	//è®¾ç½®æ­Œè¯å­—ä½“
 	void SetLyricsFont(const WCHAR * familyName, Gdiplus::REAL emSize,INT style= Gdiplus::FontStyleRegular, Gdiplus::Unit unit= Gdiplus::UnitPixel);
-	//ÉèÖÃÊÇ·ñË«ĞĞÏÔÊ¾
+	//è®¾ç½®æ˜¯å¦åŒè¡Œæ˜¾ç¤º
 	void SetLyricDoubleLine(bool doubleLine);
 	void SetNextLyric(LPCTSTR lpszNextLyric);
     void SetShowTranslate(bool showTranslate);
-    //ÉèÖÃ²»Í¸Ã÷¶È
+    //è®¾ç½®ä¸é€æ˜åº¦
     void SetAlpha(int alpha);
-    //»ñÈ¡µ±Ç°¸è´ÊÎÄ±¾
+    //è·å–å½“å‰æ­Œè¯æ–‡æœ¬
     const CString& GetLyricStr() const;
     void SetLyricChangeFlag(bool bFlag);
 private:
-	//»æÖÆ¸ßÁÁ¸è´Ê
+	//ç»˜åˆ¶é«˜äº®æ­Œè¯
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
-	//´´½¨½¥±ä»­Ë¢
+	//åˆ›å»ºæ¸å˜ç”»åˆ·
 	Gdiplus::Brush* CreateGradientBrush(LyricsGradientMode TextGradientMode,Gdiplus::Color& Color1,Gdiplus::Color& Color2, Gdiplus::RectF& dstRect);
-	//×¢²á´°¿ÚÀà
+	//æ³¨å†Œçª—å£ç±»
 	BOOL RegisterWndClass(LPCTSTR lpszClassName);
 
 protected:
 	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate = false);
-	//»æÖÆ¸è´Ê
+	//ç»˜åˆ¶æ­Œè¯
 	void DrawLyrics(Gdiplus::Graphics* pGraphics);
     void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
-    //ÔÚ»æÖÆ¸è´ÊÇ°»æÖÆµÄÄÚÈİ
+    //åœ¨ç»˜åˆ¶æ­Œè¯å‰ç»˜åˆ¶çš„å†…å®¹
     virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics) { }
-    //ÔÚ»æÖÆ¸è´Êºó»æÖÆµÄÄÚÈİ
+    //åœ¨ç»˜åˆ¶æ­Œè¯åç»˜åˆ¶çš„å†…å®¹
     virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) { }
 
 protected:
 	DECLARE_MESSAGE_MAP()
 private:
-	HDC m_hCacheDC;//»º´æDC
+	HDC m_hCacheDC;//ç¼“å­˜DC
 	int m_nWidth;
 	int m_nHeight;
-	CString m_lpszLyrics;//Unicode¸ñÊ½µÄ¸è´Ê
-	int m_nHighlight;//¸ßÁÁ¸è´ÊµÄ°Ù·Ö±È 0--1000
-	Gdiplus::Color m_TextColor1;//ÆÕÍ¨¸è´ÊÑÕÉ«,ARGBÑÕÉ«
-	Gdiplus::Color m_TextColor2;//ÆÕÍ¨¸è´ÊÑÕÉ«,ARGBÑÕÉ«
-	LyricsGradientMode m_TextGradientMode;//ÆÕÍ¨¸è´Ê½¥±äÄ£Ê½
-	Gdiplus::Pen* m_pTextPen;//ÆÕÍ¨¸è´Ê±ß¿ò»­±Ê
-	Gdiplus::Color m_HighlightColor1;//¸ßÁÁ¸è´ÊÑÕÉ«,ARGBÑÕÉ«
-	Gdiplus::Color m_HighlightColor2;//¸ßÁÁ¸è´ÊÑÕÉ«,ARGBÑÕÉ«
-	LyricsGradientMode m_HighlightGradientMode;//¸ßÁÁ¸è´Ê½¥±äÄ£Ê½
-	Gdiplus::Pen*m_pHighlightPen;//¸ßÁÁ¸è´Ê±ß¿ò»­±Ê
-	Gdiplus::Brush* m_pShadowBrush;//ÒõÓ°»­Ë¢,GDIPlus»­Ë¢ 
-	int m_nShadowOffset;//ÒõÓ°Æ«ÒÆ
-	Gdiplus::Font* m_pFont;//GDIPlus×ÖÌå
+	CString m_lpszLyrics;//Unicodeæ ¼å¼çš„æ­Œè¯
+	int m_nHighlight;//é«˜äº®æ­Œè¯çš„ç™¾åˆ†æ¯” 0--1000
+	Gdiplus::Color m_TextColor1;//æ™®é€šæ­Œè¯é¢œè‰²,ARGBé¢œè‰²
+	Gdiplus::Color m_TextColor2;//æ™®é€šæ­Œè¯é¢œè‰²,ARGBé¢œè‰²
+	LyricsGradientMode m_TextGradientMode;//æ™®é€šæ­Œè¯æ¸å˜æ¨¡å¼
+	Gdiplus::Pen* m_pTextPen;//æ™®é€šæ­Œè¯è¾¹æ¡†ç”»ç¬”
+	Gdiplus::Color m_HighlightColor1;//é«˜äº®æ­Œè¯é¢œè‰²,ARGBé¢œè‰²
+	Gdiplus::Color m_HighlightColor2;//é«˜äº®æ­Œè¯é¢œè‰²,ARGBé¢œè‰²
+	LyricsGradientMode m_HighlightGradientMode;//é«˜äº®æ­Œè¯æ¸å˜æ¨¡å¼
+	Gdiplus::Pen*m_pHighlightPen;//é«˜äº®æ­Œè¯è¾¹æ¡†ç”»ç¬”
+	Gdiplus::Brush* m_pShadowBrush;//é˜´å½±ç”»åˆ·,GDIPlusç”»åˆ· 
+	int m_nShadowOffset;//é˜´å½±åç§»
+	Gdiplus::Font* m_pFont;//GDIPluså­—ä½“
 	int m_FontStyle;
 	Gdiplus::REAL m_FontSize;
 	Gdiplus::FontFamily* m_pFontFamily;
 	Gdiplus::StringFormat* m_pTextFormat;
 
 protected:
-	bool m_bDoubleLine = false;		//¸è´ÊË«ĞĞÏÔÊ¾
-    bool m_bShowTranslate = false;  //ÏÔÊ¾¸è´Ê·­Òë
-	CString m_strTranslate;			//¸è´Ê·­Òë
-	CString m_strNextLyric;			//ÏÂÒ»¾ä¸è´Ê
-    int m_alpha = 255;              //²»Í¸Ã÷¶È
-    bool m_lyricChangeFlag = false; //¸è´Ê·¢Éú¸Ä±ä±êÖ¾
+	bool m_bDoubleLine = false;		//æ­Œè¯åŒè¡Œæ˜¾ç¤º
+    bool m_bShowTranslate = false;  //æ˜¾ç¤ºæ­Œè¯ç¿»è¯‘
+	CString m_strTranslate;			//æ­Œè¯ç¿»è¯‘
+	CString m_strNextLyric;			//ä¸‹ä¸€å¥æ­Œè¯
+    int m_alpha = 255;              //ä¸é€æ˜åº¦
+    bool m_lyricChangeFlag = false; //æ­Œè¯å‘ç”Ÿæ”¹å˜æ ‡å¿—
     CSize m_frameSize{};
     CRect m_rcWindow;
     int m_toobar_height = 0;

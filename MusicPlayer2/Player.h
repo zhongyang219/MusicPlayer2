@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"Common.h"
 #include"Lyric.h"
 #include"SetPathDlg.h"
@@ -11,27 +11,27 @@
 #include "IPlayerCore.h"
 #include "BassCore.h"
 
-#define WM_PLAYLIST_INI_START (WM_USER+104)			//²¥·ÅÁĞ±í¿ªÊ¼¼ÓÔØÊ±µÄÏûÏ¢
-#define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//²¥·ÅÁĞ±í¼ÓÔØÍê³ÉÏûÏ¢
-#define WM_SET_TITLE (WM_USER+106)					//ÉèÖÃ´°¿Ú±êÌâµÄÏûÏ¢
-#define WM_CONNOT_PLAY_WARNING (WM_USER+108)		//ÎŞ·¨²¥·ÅÎÄ¼şÊ±µ¯³ö¾¯¸æÌáÊ¾¿òµÄÏûÏ¢
-#define WM_MUSIC_STREAM_OPENED (WM_USER+109)		//µ±ÒôÆµÎÄ¼ş´ò¿ªÊ±µÄÏûÏ¢
-#define WM_POST_MUSIC_STREAM_OPENED (WM_USER+129)		//µ±ÒôÆµÎÄ¼ş´ò¿ªÇ°µÄÏûÏ¢
+#define WM_PLAYLIST_INI_START (WM_USER+104)			//æ’­æ”¾åˆ—è¡¨å¼€å§‹åŠ è½½æ—¶çš„æ¶ˆæ¯
+#define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//æ’­æ”¾åˆ—è¡¨åŠ è½½å®Œæˆæ¶ˆæ¯
+#define WM_SET_TITLE (WM_USER+106)					//è®¾ç½®çª—å£æ ‡é¢˜çš„æ¶ˆæ¯
+#define WM_CONNOT_PLAY_WARNING (WM_USER+108)		//æ— æ³•æ’­æ”¾æ–‡ä»¶æ—¶å¼¹å‡ºè­¦å‘Šæç¤ºæ¡†çš„æ¶ˆæ¯
+#define WM_MUSIC_STREAM_OPENED (WM_USER+109)		//å½“éŸ³é¢‘æ–‡ä»¶æ‰“å¼€æ—¶çš„æ¶ˆæ¯
+#define WM_POST_MUSIC_STREAM_OPENED (WM_USER+129)		//å½“éŸ³é¢‘æ–‡ä»¶æ‰“å¼€å‰çš„æ¶ˆæ¯
 
 
 class CPlayer
 {
 public:
-	//ÓÃÓÚÏò³õÊ¼»¯²¥·ÅÁĞ±í´«µİĞÅÏ¢µÄ½á¹¹Ìå
+	//ç”¨äºå‘åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨ä¼ é€’ä¿¡æ¯çš„ç»“æ„ä½“
 	struct ThreadInfo
 	{
 		bool refresh_info{};
-		bool sort{};		//Ö¸Ê¾¼ÓÔØÍê²¥·ÅÁĞ±íºóÊÇ·ñÒªÅÅĞò
-		bool play{};      //¼ÓÔØÍê²¥·ÅÁĞ±íºóÊÇ·ñÁ¢¼´²¥·Å
-		bool find_current_track{ false };		//¼ÓÔØÍê³ÉºóÊÇ·ñÒªÖØĞÂ²éÕÒµ±Ç°²¥·ÅÇúÄ¿
+		bool sort{};		//æŒ‡ç¤ºåŠ è½½å®Œæ’­æ”¾åˆ—è¡¨åæ˜¯å¦è¦æ’åº
+		bool play{};      //åŠ è½½å®Œæ’­æ”¾åˆ—è¡¨åæ˜¯å¦ç«‹å³æ’­æ”¾
+		bool find_current_track{ false };		//åŠ è½½å®Œæˆåæ˜¯å¦è¦é‡æ–°æŸ¥æ‰¾å½“å‰æ’­æ”¾æ›²ç›®
 		int process_percent{};
 	};
-	//³õÊ¼»¯²¥·ÅÁĞ±íµÄ¹¤×÷Ïß³Ìº¯Êı
+	//åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨çš„å·¥ä½œçº¿ç¨‹å‡½æ•°
 	static UINT IniPlaylistThreadFunc(LPVOID lpParam);
 	ThreadInfo m_thread_info;
 
@@ -42,193 +42,193 @@ public:
         ES_FILE_CONNOT_BE_OPEN
     };
 
-	enum ABRepeatMode		//ABÑ­»·µÄÄ£Ê½
+	enum ABRepeatMode		//ABå¾ªç¯çš„æ¨¡å¼
 	{
-		AM_NONE,			//ÎŞABÑ­»·
-		AM_A_SELECTED,		//ÒÑÑ¡ÔñAµã
-		AM_AB_REPEAT		//ABÑ­»·ÖĞ
+		AM_NONE,			//æ— ABå¾ªç¯
+		AM_A_SELECTED,		//å·²é€‰æ‹©Aç‚¹
+		AM_AB_REPEAT		//ABå¾ªç¯ä¸­
 	};
 
 private:
-	CWinThread* m_pThread{};		//³õÊ¼»¯²¥·ÅÁĞ±íµÄÏß³Ì
+	CWinThread* m_pThread{};		//åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨çš„çº¿ç¨‹
 
 	//
     IPlayerCore* m_pCore{};
 
 
-	vector<SongInfo> m_playlist;		//²¥·ÅÁĞ±í£¬´¢´æÃ¿¸öÒôÀÖÎÄ¼şµÄ¸÷ÖÖĞÅÏ¢
-	wstring m_path;		            //ÎÄ¼ş¼ĞÄ£Ê½ÏÂ£¬µ±Ç°²¥·ÅÎÄ¼şµÄÄ¿Â¼
-    wstring m_playlist_path;        //µ±Ç°²¥·ÅÁĞ±íÎÄ¼şµÄÂ·¾¶
-	wstring m_current_file_name_tmp;	//´ò¿ªµ¥¸öÒôÆµÊ±ÓÃÓÚÁÙÊ±´¢´æÎÄ¼şÃû
+	vector<SongInfo> m_playlist;		//æ’­æ”¾åˆ—è¡¨ï¼Œå‚¨å­˜æ¯ä¸ªéŸ³ä¹æ–‡ä»¶çš„å„ç§ä¿¡æ¯
+	wstring m_path;		            //æ–‡ä»¶å¤¹æ¨¡å¼ä¸‹ï¼Œå½“å‰æ’­æ”¾æ–‡ä»¶çš„ç›®å½•
+    wstring m_playlist_path;        //å½“å‰æ’­æ”¾åˆ—è¡¨æ–‡ä»¶çš„è·¯å¾„
+	wstring m_current_file_name_tmp;	//æ‰“å¼€å•ä¸ªéŸ³é¢‘æ—¶ç”¨äºä¸´æ—¶å‚¨å­˜æ–‡ä»¶å
 	wstring m_current_file_type;
-	deque<PathInfo> m_recent_path;		//×î½ü´ò¿ª¹ıµÄÂ·¾¶
+	deque<PathInfo> m_recent_path;		//æœ€è¿‘æ‰“å¼€è¿‡çš„è·¯å¾„
     CPlaylistMgr m_recent_playlist;
 
-	Time m_song_length;		//ÕıÔÚ²¥·ÅµÄÎÄ¼şµÄ³¤¶È
-	Time m_current_position;		//µ±Ç°²¥·Åµ½µÄÎ»ÖÃ
-	//int m_song_length_int;		//ÕıÔÚ²¥·ÅµÄÎÄ¼şµÄ³¤¶È£¨intÀàĞÍ£©
-	//int m_current_position_int;		//µ±Ç°²¥·Åµ½µÄÎ»ÖÃ£¨intÀàĞÍ£©
-	int m_total_time;		//²¥·ÅÁĞ±íÖĞËùÓĞÇúÄ¿µÄÊ±¼ä£¨ºÁÃë£©
+	Time m_song_length;		//æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶çš„é•¿åº¦
+	Time m_current_position;		//å½“å‰æ’­æ”¾åˆ°çš„ä½ç½®
+	//int m_song_length_int;		//æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶çš„é•¿åº¦ï¼ˆintç±»å‹ï¼‰
+	//int m_current_position_int;		//å½“å‰æ’­æ”¾åˆ°çš„ä½ç½®ï¼ˆintç±»å‹ï¼‰
+	int m_total_time;		//æ’­æ”¾åˆ—è¡¨ä¸­æ‰€æœ‰æ›²ç›®çš„æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰
 
-	int m_index{ 0 };	//µ±Ç°²¥·ÅÒôÀÖµÄĞòºÅ
+	int m_index{ 0 };	//å½“å‰æ’­æ”¾éŸ³ä¹çš„åºå·
 	int m_index_tmp{ 0 };
-	//int m_song_num{ 0 };	//²¥·ÅÁĞ±íÖĞµÄ¸èÇú×ÜÊı
-	int m_error_code{ 0 };	//´¢´æ´íÎó´úÂë
+	//int m_song_num{ 0 };	//æ’­æ”¾åˆ—è¡¨ä¸­çš„æ­Œæ›²æ€»æ•°
+	int m_error_code{ 0 };	//å‚¨å­˜é”™è¯¯ä»£ç 
     ErrorState m_error_state{};
-	int m_playing{ 0 };		//ÕıÔÚ²¥·Å±êÖ¾£¨0£ºÒÑÍ£Ö¹£¬1£ºÒÑÔİÍ££¬2£ºÕıÔÚ²¥·Å£©
-	RepeatMode m_repeat_mode;		//Ñ­»·Ä£Ê½£¨0£ºË³Ğò²¥·Å£¬1£ºËæ»ú²¥·Å£¬2£ºÁĞ±íÑ­»·£¬3£ºµ¥ÇúÑ­»·£©
-	int m_volume{ 100 };		//ÒôÁ¿£¨°Ù·Ö±È£©
-    float m_speed{ 1 };     //²¥·ÅËÙ¶È
+	int m_playing{ 0 };		//æ­£åœ¨æ’­æ”¾æ ‡å¿—ï¼ˆ0ï¼šå·²åœæ­¢ï¼Œ1ï¼šå·²æš‚åœï¼Œ2ï¼šæ­£åœ¨æ’­æ”¾ï¼‰
+	RepeatMode m_repeat_mode;		//å¾ªç¯æ¨¡å¼ï¼ˆ0ï¼šé¡ºåºæ’­æ”¾ï¼Œ1ï¼šéšæœºæ’­æ”¾ï¼Œ2ï¼šåˆ—è¡¨å¾ªç¯ï¼Œ3ï¼šå•æ›²å¾ªç¯ï¼‰
+	int m_volume{ 100 };		//éŸ³é‡ï¼ˆç™¾åˆ†æ¯”ï¼‰
+    float m_speed{ 1 };     //æ’­æ”¾é€Ÿåº¦
 
-	float m_fft[FFT_SAMPLE];		//´¢´æÆµÆ×·ÖÎöµÄÊı¾İ
-	float m_spectral_data[SPECTRUM_COL]{};	//ÓÃÓÚÏÔÊ¾µÄÃ¿¸öÆµÆ×ÖùĞÎµÄ¸ß¶È
-	float m_last_spectral_data[SPECTRUM_COL]{};	//ÉÏÒ»´ÎµÄÆµÆ×Êı¾İ
-	float m_spectral_peak[SPECTRUM_COL]{};		//ÆµÆ×¶¥¶ËµÄ¸ß¶È
+	float m_fft[FFT_SAMPLE];		//å‚¨å­˜é¢‘è°±åˆ†æçš„æ•°æ®
+	float m_spectral_data[SPECTRUM_COL]{};	//ç”¨äºæ˜¾ç¤ºçš„æ¯ä¸ªé¢‘è°±æŸ±å½¢çš„é«˜åº¦
+	float m_last_spectral_data[SPECTRUM_COL]{};	//ä¸Šä¸€æ¬¡çš„é¢‘è°±æ•°æ®
+	float m_spectral_peak[SPECTRUM_COL]{};		//é¢‘è°±é¡¶ç«¯çš„é«˜åº¦
 
-	int m_equalizer_gain[EQU_CH_NUM]{};		//ÓÃÓÚ±£´æÉèÖÃºÃµÄÃ¿¸öÍ¨µÀµÄÔöÒæ
-	bool m_equ_enable{ false };		//Ö¸Ê¾ÊÇ·ñÔÊĞí¾ùºâÆ÷
+	int m_equalizer_gain[EQU_CH_NUM]{};		//ç”¨äºä¿å­˜è®¾ç½®å¥½çš„æ¯ä¸ªé€šé“çš„å¢ç›Š
+	bool m_equ_enable{ false };		//æŒ‡ç¤ºæ˜¯å¦å…è®¸å‡è¡¡å™¨
 
 	int m_equ_style{};
-	int m_reverb_mix{};		//»ìÏìÇ¿¶È£¨0~100£©
-	int m_reverb_time{1};	//»ìÏìÊ±¼ä£¨µ¥Î»10ms£¬1~300£©
-	bool m_reverb_enable{ false };		//Ö¸Ê¾ÊÇ·ñÔÊĞí»ìÏì
+	int m_reverb_mix{};		//æ··å“å¼ºåº¦ï¼ˆ0~100ï¼‰
+	int m_reverb_time{1};	//æ··å“æ—¶é—´ï¼ˆå•ä½10msï¼Œ1~300ï¼‰
+	bool m_reverb_enable{ false };		//æŒ‡ç¤ºæ˜¯å¦å…è®¸æ··å“
 
-	CImage m_album_cover;			//×¨¼­·âÃæ
-	CImage m_album_cover_blur;		//¸ßË¹Ä£ºıºóµÄ×¨¼­·âÃæ
-	wstring m_album_cover_path;		//×¨¼­·âÃæÎÄ¼şµÄÂ·¾¶
-	int m_album_cover_type;			//×¨¼­·âÃæµÄ¸ñÊ½
-	bool m_inner_cover{ false };	//Èç¹û×¨¼­·âÃæÊÇÄÚÇ¶Í¼Æ¬£¬ÔòÎªtrue
-	bool m_inner_lyric{ false };	//Èç¹ûÊÇÄÚÇ¶¸è´Ê£¬ÔòÎªtrue
+	CImage m_album_cover;			//ä¸“è¾‘å°é¢
+	CImage m_album_cover_blur;		//é«˜æ–¯æ¨¡ç³Šåçš„ä¸“è¾‘å°é¢
+	wstring m_album_cover_path;		//ä¸“è¾‘å°é¢æ–‡ä»¶çš„è·¯å¾„
+	int m_album_cover_type;			//ä¸“è¾‘å°é¢çš„æ ¼å¼
+	bool m_inner_cover{ false };	//å¦‚æœä¸“è¾‘å°é¢æ˜¯å†…åµŒå›¾ç‰‡ï¼Œåˆ™ä¸ºtrue
+	bool m_inner_lyric{ false };	//å¦‚æœæ˜¯å†…åµŒæ­Œè¯ï¼Œåˆ™ä¸ºtrue
     bool m_is_osu{ false };
 
 	SongInfo m_no_use;
 public:
-	CLyrics m_Lyrics;		//¸è´Ê
+	CLyrics m_Lyrics;		//æ­Œè¯
 
-	SortMode m_sort_mode;		//ÅÅĞò·½Ê½
+	SortMode m_sort_mode;		//æ’åºæ–¹å¼
 
-	bool m_loading{ false };		//Èç¹ûÕıÔÚÔØÈë²¥·ÅÁĞ±í£¬ÔòÎªtrue
+	bool m_loading{ false };		//å¦‚æœæ­£åœ¨è½½å…¥æ’­æ”¾åˆ—è¡¨ï¼Œåˆ™ä¸ºtrue
 
-	//bool m_is_ous_folder{ false };	//Èç¹û´ò¿ªµÄÊÇOUSµÄSongsÄ¿Â¼£¬ÔòÎªtrue
+	//bool m_is_ous_folder{ false };	//å¦‚æœæ‰“å¼€çš„æ˜¯OUSçš„Songsç›®å½•ï¼Œåˆ™ä¸ºtrue
 
 private:
-	vector<wstring> m_current_path_lyrics;	//´¢´æµ±Ç°Â·¾¶ÏÂµÄ¸è´ÊÎÄ¼şµÄÎÄ¼şÃû£¨ÓÃÓÚ¸è´ÊÄ£ºıÆ¥ÅäÊ±¼ìË÷£©
-	vector<wstring> m_lyric_path_lyrics;		//´¢´æ¸è´ÊÎÄ¼ş¼ĞÏÂµÄ¸è´ÊÎÄ¼şµÄÎÄ¼şÃû£¨ÓÃÓÚ¸è´ÊÄ£ºıÆ¥ÅäÊ±¼ìË÷£©
+	vector<wstring> m_current_path_lyrics;	//å‚¨å­˜å½“å‰è·¯å¾„ä¸‹çš„æ­Œè¯æ–‡ä»¶çš„æ–‡ä»¶åï¼ˆç”¨äºæ­Œè¯æ¨¡ç³ŠåŒ¹é…æ—¶æ£€ç´¢ï¼‰
+	vector<wstring> m_lyric_path_lyrics;		//å‚¨å­˜æ­Œè¯æ–‡ä»¶å¤¹ä¸‹çš„æ­Œè¯æ–‡ä»¶çš„æ–‡ä»¶åï¼ˆç”¨äºæ­Œè¯æ¨¡ç³ŠåŒ¹é…æ—¶æ£€ç´¢ï¼‰
 
-	vector<int> m_shuffle_list;			//´¢´æËæ»ú²¥·Å¹ıµÄÇúÄ¿ĞòºÅ
+	vector<int> m_shuffle_list;			//å‚¨å­˜éšæœºæ’­æ”¾è¿‡çš„æ›²ç›®åºå·
 
-    bool m_playlist_mode{ false };       //Èç¹û²¥·ÅÁĞ±íÖĞµÄÇúÄ¿À´×Ô²¥·ÅÁĞ±íÎÄ¼ş£¬¶ø²»ÊÇ´ÓÒ»¸öÂ·¾¶ÏÂËÑË÷µ½µÄ£¬ÔòÎªtrue
+    bool m_playlist_mode{ false };       //å¦‚æœæ’­æ”¾åˆ—è¡¨ä¸­çš„æ›²ç›®æ¥è‡ªæ’­æ”¾åˆ—è¡¨æ–‡ä»¶ï¼Œè€Œä¸æ˜¯ä»ä¸€ä¸ªè·¯å¾„ä¸‹æœç´¢åˆ°çš„ï¼Œåˆ™ä¸ºtrue
 
-	Time m_a_repeat{};		//ABÑ­»·ÖĞAµãµÄÊ±¼ä
-	Time m_b_repeat{};		//ABÑ­»·ÖĞBµãµÄÊ±¼ä
+	Time m_a_repeat{};		//ABå¾ªç¯ä¸­Aç‚¹çš„æ—¶é—´
+	Time m_b_repeat{};		//ABå¾ªç¯ä¸­Bç‚¹çš„æ—¶é—´
 	ABRepeatMode m_ab_repeat_mode{};
 
 private:
-	void IniPlayerCore();			//³õÊ¼»¯BASSÒôÆµ¿â
+	void IniPlayerCore();			//åˆå§‹åŒ–BASSéŸ³é¢‘åº“
 	void UnInitPlayerCore();
-	void IniPlayList(bool playlist_mode = false, bool refresh_info = false, bool play = false);	//³õÊ¼»¯²¥·ÅÁĞ±í(Èç¹û²ÎÊıplaylist_modeÎªtrue£¬ÔòÎª²¥·ÅÁĞ±íÄ£Ê½£¬·ñÔò´ÓÖ¸¶¨Ä¿Â¼ÏÂËÑË÷ÎÄ¼ş£»
-																		//Èç¹ûrefresh_infoÎªtrue£¬Ôò²»¹ÜtheApp.m_song_dataÀïÊÇ·ñÓĞµ±Ç°¸èÇúµÄĞÅÏ¢£¬¶¼´ÓÎÄ¼şÖØĞÂ»ñÈ¡ĞÅÏ¢)
+	void IniPlayList(bool playlist_mode = false, bool refresh_info = false, bool play = false);	//åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨(å¦‚æœå‚æ•°playlist_modeä¸ºtrueï¼Œåˆ™ä¸ºæ’­æ”¾åˆ—è¡¨æ¨¡å¼ï¼Œå¦åˆ™ä»æŒ‡å®šç›®å½•ä¸‹æœç´¢æ–‡ä»¶ï¼›
+																		//å¦‚æœrefresh_infoä¸ºtrueï¼Œåˆ™ä¸ç®¡theApp.m_song_dataé‡Œæ˜¯å¦æœ‰å½“å‰æ­Œæ›²çš„ä¿¡æ¯ï¼Œéƒ½ä»æ–‡ä»¶é‡æ–°è·å–ä¿¡æ¯)
 
-	void ChangePath(const wstring& path, int track = 0, bool play = false);		//¸Ä±äµ±Ç°Â·¾¶
+	void ChangePath(const wstring& path, int track = 0, bool play = false);		//æ”¹å˜å½“å‰è·¯å¾„
 
-	void ApplyEqualizer(int channel, int gain);		//Ó¦ÓÃÒ»¸ö¾ùºâÆ÷Í¨µÀµÄÔöÒæ
+	void ApplyEqualizer(int channel, int gain);		//åº”ç”¨ä¸€ä¸ªå‡è¡¡å™¨é€šé“çš„å¢ç›Š
 
-	void LoadRecentPath();		//´ÓÎÄ¼şÔØÈë×î½üÂ·¾¶ÁĞ±í
+	void LoadRecentPath();		//ä»æ–‡ä»¶è½½å…¥æœ€è¿‘è·¯å¾„åˆ—è¡¨
     void LoadRecentPlaylist();
 public:
     void SaveCurrentPlaylist();
-	void EmplaceCurrentPathToRecent();		//½«µ±Ç°Â·¾¶²åÈëµ½×î½üÂ·¾¶ÖĞ
+	void EmplaceCurrentPathToRecent();		//å°†å½“å‰è·¯å¾„æ’å…¥åˆ°æœ€è¿‘è·¯å¾„ä¸­
     void EmplaceCurrentPlaylistToRecent();
-	void SaveRecentPath() const;		//½«×î½üÂ·¾¶ÁĞ±í±£´æµ½ÎÄ¼ş
-	void OnExit();		//ÍË³öÊ±µÄ´¦Àí
-	void IniPlaylistComplate();		//²¥·ÅÁĞ±í¼ÓÔØÍê±ÏÊ±µÄ´¦Àí
+	void SaveRecentPath() const;		//å°†æœ€è¿‘è·¯å¾„åˆ—è¡¨ä¿å­˜åˆ°æ–‡ä»¶
+	void OnExit();		//é€€å‡ºæ—¶çš„å¤„ç†
+	void IniPlaylistComplate();		//æ’­æ”¾åˆ—è¡¨åŠ è½½å®Œæ¯•æ—¶çš„å¤„ç†
 
-	void SetEqualizer(int channel, int gain);		//ÉèÖÃ¾ùºâÆ÷£¨channelÎªÍ¨µÀ£¬È¡ÖµÎª0~9£¬gainÎªÔöÒæ£¬È¡ÖµÎª-15~15£©
-	int GeEqualizer(int channel);		//»ñÈ¡Ö¸¶¨¾ùºâÆ÷Í¨µÀµÄÔöÒæ
-	void SetAllEqualizer();			//½«±£´æºÃµÄÃ¿¸öÍ¨µÀµÄÔöÒæ£¨m_equalizer_gain£©ÉèÖÃµ½¾ùºâÆ÷
-	void ClearAllEqulizer();		//½«Ã¿¸ö¾ùºâÆ÷Í¨µÀµÄÔöÒæ¸´Î»
-	void EnableEqualizer(bool enable);			//¾ùºâÆ÷¿ª¹Ø
+	void SetEqualizer(int channel, int gain);		//è®¾ç½®å‡è¡¡å™¨ï¼ˆchannelä¸ºé€šé“ï¼Œå–å€¼ä¸º0~9ï¼Œgainä¸ºå¢ç›Šï¼Œå–å€¼ä¸º-15~15ï¼‰
+	int GeEqualizer(int channel);		//è·å–æŒ‡å®šå‡è¡¡å™¨é€šé“çš„å¢ç›Š
+	void SetAllEqualizer();			//å°†ä¿å­˜å¥½çš„æ¯ä¸ªé€šé“çš„å¢ç›Šï¼ˆm_equalizer_gainï¼‰è®¾ç½®åˆ°å‡è¡¡å™¨
+	void ClearAllEqulizer();		//å°†æ¯ä¸ªå‡è¡¡å™¨é€šé“çš„å¢ç›Šå¤ä½
+	void EnableEqualizer(bool enable);			//å‡è¡¡å™¨å¼€å…³
 	bool GetEqualizerEnable() const { return m_equ_enable; }
 
 	int GetReverbMix() const { return m_reverb_mix; }
 	int GetReverbTime() const { return m_reverb_time; }
-	void EnableReverb(bool enable);		//»ìÏì¿ª¹Ø
+	void EnableReverb(bool enable);		//æ··å“å¼€å…³
 	bool GetReverbEnable() const { return m_reverb_enable; }
 
 	Time GetARepeatPosition() const { return m_a_repeat; }
 	Time GetBRepeatPosition() const { return m_b_repeat; }
 	ABRepeatMode GetABRepeatMode() const { return m_ab_repeat_mode; }
 
-	bool SetARepeatPoint();		//ÉèÖÃµ±Ç°²¥·ÅÎ»ÖÃÎªÖØ¸´Aµã
-	bool SetBRepeatPoint();		//ÉèÖÃµ±Ç°²¥·ÅÎ»ÖÃÎªÖØ¸´Bµã
-	bool ContinueABRepeat();	//¼ÌĞøÏÂÒ»¾äABÖØ¸´£¨½«µ±Ç°ÖØ¸´BµãÉèÖÃÎªÏÂÒ»¾äÖØ¸´Aµã£¬´¦ÓÚABÖØ¸´×´Ì¬ÏÂ²ÅÓĞĞ§£©
+	bool SetARepeatPoint();		//è®¾ç½®å½“å‰æ’­æ”¾ä½ç½®ä¸ºé‡å¤Aç‚¹
+	bool SetBRepeatPoint();		//è®¾ç½®å½“å‰æ’­æ”¾ä½ç½®ä¸ºé‡å¤Bç‚¹
+	bool ContinueABRepeat();	//ç»§ç»­ä¸‹ä¸€å¥ABé‡å¤ï¼ˆå°†å½“å‰é‡å¤Bç‚¹è®¾ç½®ä¸ºä¸‹ä¸€å¥é‡å¤Aç‚¹ï¼Œå¤„äºABé‡å¤çŠ¶æ€ä¸‹æ‰æœ‰æ•ˆï¼‰
 	void DoABRepeat();
-	void ResetABRepeat();		//È¡ÏûABÖØ¸´ 
+	void ResetABRepeat();		//å–æ¶ˆABé‡å¤ 
 
 private:
 	CPlayer();
 
 private:
-	static CPlayer m_instance;		//CPlayerÀàÎ¨Ò»µÄ¶ÔÏó
+	static CPlayer m_instance;		//CPlayerç±»å”¯ä¸€çš„å¯¹è±¡
 	 
 public:
-	static CPlayer& GetInstance();		//»ñÈ¡CPlayerÀàµÄÎ¨Ò»µÄ¶ÔÏó
+	static CPlayer& GetInstance();		//è·å–CPlayerç±»çš„å”¯ä¸€çš„å¯¹è±¡
 	~CPlayer();
-	void Create();		//³õÊ¼»¯CPlayerÀà
-	void Create(const vector<wstring>& files);	//³õÊ¼»¯CPlayerÀà
+	void Create();		//åˆå§‹åŒ–CPlayerç±»
+	void Create(const vector<wstring>& files);	//åˆå§‹åŒ–CPlayerç±»
 	void Create(const wstring & path);
-	void CreateWithPlaylist(const wstring& playlist_path);			//Ê¹ÓÃÒ»¸ö²¥·ÅÁĞ±íÎÄ¼şÀ´³õÊ¼»¯CPlayerÀà
-	void MusicControl(Command command, int volume_step = 2);		//¿ØÖÆÒôÀÖ²¥·Å
-	bool SongIsOver() const;			//ÅĞ¶Ïµ±Ç°ÒôÀÖÊÇ·ñ²¥·ÅÍê±Ï
-	void GetPlayerCoreCurrentPosition();		//´ÓBASSÒôÆµ¿â»ñÈ¡µ±Ç°²¥·Åµ½µÄÎ»ÖÃ
-	void GetPlayerCoreSongLength();			//´ÓBASSÒôÆµ¿â»ñÈ¡ÕıÔÚ²¥·ÅÎÄ¼şµÄ³¤¶È
+	void CreateWithPlaylist(const wstring& playlist_path);			//ä½¿ç”¨ä¸€ä¸ªæ’­æ”¾åˆ—è¡¨æ–‡ä»¶æ¥åˆå§‹åŒ–CPlayerç±»
+	void MusicControl(Command command, int volume_step = 2);		//æ§åˆ¶éŸ³ä¹æ’­æ”¾
+	bool SongIsOver() const;			//åˆ¤æ–­å½“å‰éŸ³ä¹æ˜¯å¦æ’­æ”¾å®Œæ¯•
+	void GetPlayerCoreCurrentPosition();		//ä»BASSéŸ³é¢‘åº“è·å–å½“å‰æ’­æ”¾åˆ°çš„ä½ç½®
+	void GetPlayerCoreSongLength();			//ä»BASSéŸ³é¢‘åº“è·å–æ­£åœ¨æ’­æ”¾æ–‡ä»¶çš„é•¿åº¦
 
-	void CalculateSpectralData();		//ÆµÆ×·ÖÎö
-	int GetCurrentSecond();		//»ñÈ¡µ±Ç°²¥·Åµ½µÄÎ»ÖÃµÄÃëÊı
-	bool IsPlaying() const;			//ÅĞ¶Ïµ±Ç°ÊÇ·ñÕıÔÚ²¥·Å
+	void CalculateSpectralData();		//é¢‘è°±åˆ†æ
+	int GetCurrentSecond();		//è·å–å½“å‰æ’­æ”¾åˆ°çš„ä½ç½®çš„ç§’æ•°
+	bool IsPlaying() const;			//åˆ¤æ–­å½“å‰æ˜¯å¦æ­£åœ¨æ’­æ”¾
 
-	bool PlayTrack(int song_track);		//²¥·ÅÖ¸¶¨ĞòºÅµÄ¸èÇú
+	bool PlayTrack(int song_track);		//æ’­æ”¾æŒ‡å®šåºå·çš„æ­Œæ›²
 
-	void SetVolume();		//ÓÃm_volumeµÄÖµÉèÖÃÒôÁ¿
-	void SetPath(const wstring& path, int track, int position, SortMode sort_mode);		//ÉèÖÃÂ·¾¶
+	void SetVolume();		//ç”¨m_volumeçš„å€¼è®¾ç½®éŸ³é‡
+	void SetPath(const wstring& path, int track, int position, SortMode sort_mode);		//è®¾ç½®è·¯å¾„
     void SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false);
-	void OpenFolder(wstring path, bool play = false);	//Í¨¹ı¡°´ò¿ªÎÄ¼ş¼Ğ¡±À´ÉèÖÃÂ·¾¶µÄ´¦Àí
-	void OpenFiles(const vector<wstring>& files, bool play = true);	//´ò¿ª¶à¸öÎÄ¼ş£¬playÓÃÀ´ÉèÖÃÊÇ·ñÁ¢¼´²¥·Å
-	void OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index = 0, bool play = true);	//´ò¿ª¶à¸öÎÄ¼ş²¢¸²¸ÇÁÙÊ±²¥·ÅÁĞ±í£¬playÓÃÀ´ÉèÖÃÊÇ·ñÁ¢¼´²¥·Å
-	void OpenAFile(wstring file, bool play = false);	//ÔÚÎÄ¼ş¼ĞÄ£Ê½ÏÂ´ò¿ªÒ»¸öÎÄ¼ş
-	void OpenPlaylistFile(const wstring& file_path);		//´ò¿ªÒ»¸ö²¥·ÅÁĞ±íÎÄ¼ş
+	void OpenFolder(wstring path, bool play = false);	//é€šè¿‡â€œæ‰“å¼€æ–‡ä»¶å¤¹â€æ¥è®¾ç½®è·¯å¾„çš„å¤„ç†
+	void OpenFiles(const vector<wstring>& files, bool play = true);	//æ‰“å¼€å¤šä¸ªæ–‡ä»¶ï¼Œplayç”¨æ¥è®¾ç½®æ˜¯å¦ç«‹å³æ’­æ”¾
+	void OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index = 0, bool play = true);	//æ‰“å¼€å¤šä¸ªæ–‡ä»¶å¹¶è¦†ç›–ä¸´æ—¶æ’­æ”¾åˆ—è¡¨ï¼Œplayç”¨æ¥è®¾ç½®æ˜¯å¦ç«‹å³æ’­æ”¾
+	void OpenAFile(wstring file, bool play = false);	//åœ¨æ–‡ä»¶å¤¹æ¨¡å¼ä¸‹æ‰“å¼€ä¸€ä¸ªæ–‡ä»¶
+	void OpenPlaylistFile(const wstring& file_path);		//æ‰“å¼€ä¸€ä¸ªæ’­æ”¾åˆ—è¡¨æ–‡ä»¶
     void AddFiles(const vector<wstring>& files);
-	void SetRepeatMode();		//¸ü¸ÄÑ­»·Ä£Ê½
-	void SetRepeatMode(RepeatMode repeat_mode);	//ÉèÖÃÑ­»·Ä£Ê½
+	void SetRepeatMode();		//æ›´æ”¹å¾ªç¯æ¨¡å¼
+	void SetRepeatMode(RepeatMode repeat_mode);	//è®¾ç½®å¾ªç¯æ¨¡å¼
 	RepeatMode GetRepeatMode() const;
     void SpeedUp();
     void SlowDown();
     void SetOrignalSpeed();
     float GetSpeed() { return m_speed; }
 
-	bool GetPlayerCoreError();		//»ñÈ¡BASSÒôÆµ¿âµÄ´íÎó
-	bool IsError() const;				//ÓĞ´íÎóÊ±·µ»Øture£¬·ñÔò·µ»Øfalse
+	bool GetPlayerCoreError();		//è·å–BASSéŸ³é¢‘åº“çš„é”™è¯¯
+	bool IsError() const;				//æœ‰é”™è¯¯æ—¶è¿”å›tureï¼Œå¦åˆ™è¿”å›false
     std::wstring GetErrorInfo();
 
-	void SetTitle() const;		//ÉèÖÃ´°¿Ú±êÌâ
+	void SetTitle() const;		//è®¾ç½®çª—å£æ ‡é¢˜
 
-	void SaveConfig() const;		//±£´æÅäÖÃµ½iniÎÄ¼ş
-	void LoadConfig();		//´ÓiniÎÄ¼ş¶ÁÈ¡ÅäÖÃ
+	void SaveConfig() const;		//ä¿å­˜é…ç½®åˆ°iniæ–‡ä»¶
+	void LoadConfig();		//ä»iniæ–‡ä»¶è¯»å–é…ç½®
 
-	void SearchLyrics(/*bool refresh = false*/);		//¼ìË÷¸è´ÊÎÄ¼ş(Èç¹ûÈç¹ûrefreshÎªtrue£¬Ôò²»¹ÜtheApp.m_song_dataÀïÊÇ·ñÓĞµ±Ç°¸èÇúµÄÎÄ¼şÂ·¾¶£¬¶¼´ÓÎÄ¼şÖØĞÂ¼ìË÷¸è´Ê)
-	void IniLyrics();		//³õÊ¼»¯¸è´Ê
+	void SearchLyrics(/*bool refresh = false*/);		//æ£€ç´¢æ­Œè¯æ–‡ä»¶(å¦‚æœå¦‚æœrefreshä¸ºtrueï¼Œåˆ™ä¸ç®¡theApp.m_song_dataé‡Œæ˜¯å¦æœ‰å½“å‰æ­Œæ›²çš„æ–‡ä»¶è·¯å¾„ï¼Œéƒ½ä»æ–‡ä»¶é‡æ–°æ£€ç´¢æ­Œè¯)
+	void IniLyrics();		//åˆå§‹åŒ–æ­Œè¯
 	void IniLyrics(const wstring& lyric_path);
 
-	void ExplorePath(int track = -1) const;	//ÓÃ×ÊÔ´¹ÜÀíÆ÷´ò¿ªµ±Ç°Â·¾¶²¢Ñ¡ÖĞÖ¸¶¨Ö¸¶¨ÎÄ¼ş£¨µ±trackĞ¡ÓÚ0Ê±Ñ¡ÖĞµ±Ç°ÕıÔÚ²¥·ÅµÄÎÄ¼ş£©
-	void ExploreLyric() const;		//ÓÃ×ÊÔ´¹ÜÀíÆ÷´ò¿ª¸è´ÊÎÄ¼şËùÔÚµÄÎ»ÖÃ
+	void ExplorePath(int track = -1) const;	//ç”¨èµ„æºç®¡ç†å™¨æ‰“å¼€å½“å‰è·¯å¾„å¹¶é€‰ä¸­æŒ‡å®šæŒ‡å®šæ–‡ä»¶ï¼ˆå½“trackå°äº0æ—¶é€‰ä¸­å½“å‰æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶ï¼‰
+	void ExploreLyric() const;		//ç”¨èµ„æºç®¡ç†å™¨æ‰“å¼€æ­Œè¯æ–‡ä»¶æ‰€åœ¨çš„ä½ç½®
 
-	vector<SongInfo>& GetPlayList() { return m_playlist; }	//»ñÈ¡²¥·ÅÁĞ±íµÄÒıÓÃ
-	Time GetAllSongLength(int track) const;				//»ñÈ¡Ö¸¶¨ĞòºÅµÄ¸èÇúµÄ³¤¶È
-	int GetSongNum() const;			//»ñÈ¡¸èÇú×ÜÊı
-    wstring GetCurrentDir() const;   	//»ñÈ¡µ±Ç°Ä¿Â¼
+	vector<SongInfo>& GetPlayList() { return m_playlist; }	//è·å–æ’­æ”¾åˆ—è¡¨çš„å¼•ç”¨
+	Time GetAllSongLength(int track) const;				//è·å–æŒ‡å®šåºå·çš„æ­Œæ›²çš„é•¿åº¦
+	int GetSongNum() const;			//è·å–æ­Œæ›²æ€»æ•°
+    wstring GetCurrentDir() const;   	//è·å–å½“å‰ç›®å½•
     wstring GetCurrentFolderOrPlaylistName() const;
-    wstring GetCurrentFilePath() const;		//»ñÈ¡ÕıÔÚ²¥·ÅÎÄ¼şµÄÂ·¾¶
-	int GetIndex() const { return m_index; }		//»ñÈ¡µ±Ç°²¥·ÅµÄÇúÄ¿ĞòºÅ
+    wstring GetCurrentFilePath() const;		//è·å–æ­£åœ¨æ’­æ”¾æ–‡ä»¶çš„è·¯å¾„
+	int GetIndex() const { return m_index; }		//è·å–å½“å‰æ’­æ”¾çš„æ›²ç›®åºå·
 	wstring GetFileName() const;
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
@@ -239,41 +239,41 @@ public:
 	int GetAlbumCoverType() const { return m_album_cover_type; }
 	void DeleteAlbumCover();
 	
-	void ReloadPlaylist();		//ÖØĞÂÔØÈë²¥·ÅÁĞ±í
+	void ReloadPlaylist();		//é‡æ–°è½½å…¥æ’­æ”¾åˆ—è¡¨
 
-	bool RemoveSong(int index);		//´Ó²¥·ÅÁĞ±íÖĞÉ¾³ıÖ¸¶¨µÄÏîÄ¿
-	void RemoveSongs(vector<int> indexes);	//´Ó²¥·ÅÁĞ±íÖĞÉ¾³ı¶à¸öÖ¸¶¨µÄÏîÄ¿
-    int RemoveSameSongs();         //´Ó²¥·ÅÁĞ±íÖĞÒÆ³ıÏàÍ¬µÄÇúÄ¿£¬·µ»ØÒÑÒÆ³ıµÄÇúÄ¿ÊıÁ¿
-    int RemoveInvalidSongs();       //´Ó²¥·ÅÁĞ±íÖĞÒÆ³ıÎŞĞ§µÄÇúÄ¿£¬·µ»ØÒÑÒÆ³ıµÄÇúÄ¿ÊıÁ¿
-	void ClearPlaylist();			//Çå¿Õ²¥·ÅÁĞ±í
-    bool MoveUp(int first, int last);        //½«Ö¸¶¨·¶Î§ÄÚµÄÏîÄ¿ÉÏÒÆ
-    bool MoveDown(int first, int last);      //½«Ö¸¶¨·¶Î§ÄÚµÄÏîÄ¿ÏÂÒÆ
-    int MoveItems(std::vector<int> indexes, int dest);      //ÒÆ¶¯¶à¸öÏîÄ¿µ½destµÄÎ»ÖÃ£¬·µ»ØÒÆ¶¯ºóµÚ1¸öÏîÄ¿µÄË÷Òı
+	bool RemoveSong(int index);		//ä»æ’­æ”¾åˆ—è¡¨ä¸­åˆ é™¤æŒ‡å®šçš„é¡¹ç›®
+	void RemoveSongs(vector<int> indexes);	//ä»æ’­æ”¾åˆ—è¡¨ä¸­åˆ é™¤å¤šä¸ªæŒ‡å®šçš„é¡¹ç›®
+    int RemoveSameSongs();         //ä»æ’­æ”¾åˆ—è¡¨ä¸­ç§»é™¤ç›¸åŒçš„æ›²ç›®ï¼Œè¿”å›å·²ç§»é™¤çš„æ›²ç›®æ•°é‡
+    int RemoveInvalidSongs();       //ä»æ’­æ”¾åˆ—è¡¨ä¸­ç§»é™¤æ— æ•ˆçš„æ›²ç›®ï¼Œè¿”å›å·²ç§»é™¤çš„æ›²ç›®æ•°é‡
+	void ClearPlaylist();			//æ¸…ç©ºæ’­æ”¾åˆ—è¡¨
+    bool MoveUp(int first, int last);        //å°†æŒ‡å®šèŒƒå›´å†…çš„é¡¹ç›®ä¸Šç§»
+    bool MoveDown(int first, int last);      //å°†æŒ‡å®šèŒƒå›´å†…çš„é¡¹ç›®ä¸‹ç§»
+    int MoveItems(std::vector<int> indexes, int dest);      //ç§»åŠ¨å¤šä¸ªé¡¹ç›®åˆ°destçš„ä½ç½®ï¼Œè¿”å›ç§»åŠ¨åç¬¬1ä¸ªé¡¹ç›®çš„ç´¢å¼•
 
-	void SeekTo(int position);		//¶¨Î»µ½Ö¸¶¨Î»ÖÃ
-	void SeekTo(double position);	//¶¨Î»µ½Ö¸¶¨Î»ÖÃ(·¶Î§0~1)
+	void SeekTo(int position);		//å®šä½åˆ°æŒ‡å®šä½ç½®
+	void SeekTo(double position);	//å®šä½åˆ°æŒ‡å®šä½ç½®(èŒƒå›´0~1)
 	//static void SeekTo(HSTREAM hStream, int position);
-	void ClearLyric();		//Çå³ıµ±Ç°ÎÄ¼şµÄ¸è´Ê¹ØÁª
+	void ClearLyric();		//æ¸…é™¤å½“å‰æ–‡ä»¶çš„æ­Œè¯å…³è”
 
-	int GetCurrentPosition() const { return m_current_position.toInt(); }		//·µ»Øµ±Ç°²¥·Åµ½µÄÎ»ÖÃ
-	int GetSongLength() const { return m_song_length.toInt(); }				//·µ»ØÕıÔÚ²¥·ÅÎÄ¼şµÄ³¤¶È
-	wstring GetTimeString() const;				//·µ»Øµ±Ç°²¥·ÅÊ±¼äµÄ×Ö·û´®ĞÎÊ½
-	const float* GetSpectralData() const { return m_spectral_data; }	//·µ»ØÆµÆ×·ÖÎöÃ¿¸öÖùĞÎµÄ¸ß¶ÈµÄÊı¾İ
+	int GetCurrentPosition() const { return m_current_position.toInt(); }		//è¿”å›å½“å‰æ’­æ”¾åˆ°çš„ä½ç½®
+	int GetSongLength() const { return m_song_length.toInt(); }				//è¿”å›æ­£åœ¨æ’­æ”¾æ–‡ä»¶çš„é•¿åº¦
+	wstring GetTimeString() const;				//è¿”å›å½“å‰æ’­æ”¾æ—¶é—´çš„å­—ç¬¦ä¸²å½¢å¼
+	const float* GetSpectralData() const { return m_spectral_data; }	//è¿”å›é¢‘è°±åˆ†ææ¯ä¸ªæŸ±å½¢çš„é«˜åº¦çš„æ•°æ®
 	const float* GetSpectralPeakData() const { return m_spectral_peak; }
-	const float* GetFFTData() const { return m_fft; }			//·µ»ØÆµÆ×·ÖÎöµÄÔ­Ê¼Êı¾İ
-	deque<PathInfo>& GetRecentPath() { return m_recent_path; }	//·µ»Ø×î½ü²¥·ÅÂ·¾¶ÁĞ±íµÄÒıÓÃ
+	const float* GetFFTData() const { return m_fft; }			//è¿”å›é¢‘è°±åˆ†æçš„åŸå§‹æ•°æ®
+	deque<PathInfo>& GetRecentPath() { return m_recent_path; }	//è¿”å›æœ€è¿‘æ’­æ”¾è·¯å¾„åˆ—è¡¨çš„å¼•ç”¨
     CPlaylistMgr& GetRecentPlaylist() { return m_recent_playlist; }
-	wstring GetPlayingState() const;		//»ñÈ¡²¥·Å×´Ì¬µÄ×Ö·û´®
-	int GetPlayingState2() const { return m_playing; }	//»ñÈ¡ÕıÔÚ²¥·Å×´Ì¬£¨0£ºÒÑÍ£Ö¹£¬1£ºÒÑÔİÍ££¬2£ºÕıÔÚ²¥·Å£©
+	wstring GetPlayingState() const;		//è·å–æ’­æ”¾çŠ¶æ€çš„å­—ç¬¦ä¸²
+	int GetPlayingState2() const { return m_playing; }	//è·å–æ­£åœ¨æ’­æ”¾çŠ¶æ€ï¼ˆ0ï¼šå·²åœæ­¢ï¼Œ1ï¼šå·²æš‚åœï¼Œ2ï¼šæ­£åœ¨æ’­æ”¾ï¼‰
 	const SongInfo& GetCurrentSongInfo() const;
-	void SetRelatedSongID(wstring song_id);		//Îªµ±Ç°¸èÇúÉèÖÃ¹ØÁªµÄÍøÒ×ÔÆÒôÀÖ¸èÇúID
-	void SetRelatedSongID(int index, wstring song_id);		//ÎªµÚindexÊ×¸èÇúÉèÖÃ¹ØÁªµÄÍøÒ×ÔÆÒôÀÖ¸èÇúID
-    void SetFavourite(bool favourite);          //Îªµ±Ç°¸èÇúÉèÖÃ¡°ÎÒÏ²»¶¡±±ê¼Ç
+	void SetRelatedSongID(wstring song_id);		//ä¸ºå½“å‰æ­Œæ›²è®¾ç½®å…³è”çš„ç½‘æ˜“äº‘éŸ³ä¹æ­Œæ›²ID
+	void SetRelatedSongID(int index, wstring song_id);		//ä¸ºç¬¬indexé¦–æ­Œæ›²è®¾ç½®å…³è”çš„ç½‘æ˜“äº‘éŸ³ä¹æ­Œæ›²ID
+    void SetFavourite(bool favourite);          //ä¸ºå½“å‰æ­Œæ›²è®¾ç½®â€œæˆ‘å–œæ¬¢â€æ ‡è®°
     bool IsFavourite();
-	bool IsInnerCover() const { return m_inner_cover; }		//ÅĞ¶Ïµ±Ç°×¨¼­·âÃæÊÇ·ñÊÇÄÚÇ¶Í¼Æ¬
-	bool IsInnerLyric() const { return m_inner_lyric; }		//ÅĞ¶Ïµ±Ç°¸è´ÊÊÇ·ñÊÇÄÚÇ¶¸è´Ê
+	bool IsInnerCover() const { return m_inner_cover; }		//åˆ¤æ–­å½“å‰ä¸“è¾‘å°é¢æ˜¯å¦æ˜¯å†…åµŒå›¾ç‰‡
+	bool IsInnerLyric() const { return m_inner_lyric; }		//åˆ¤æ–­å½“å‰æ­Œè¯æ˜¯å¦æ˜¯å†…åµŒæ­Œè¯
 
-	void AddListenTime(int sec);		//Îªµ±Ç°¸èÇúÔö¼ÓÀÛ¼ÆÒÑ²¥·ÅÊ±¼ä
+	void AddListenTime(int sec);		//ä¸ºå½“å‰æ­Œæ›²å¢åŠ ç´¯è®¡å·²æ’­æ”¾æ—¶é—´
 
 	bool IsMidi() const { return m_pCore->IsMidi(); }
 	MidiInfo GetMidiInfo() const { return m_pCore->GetMidiInfo(); }
@@ -284,21 +284,21 @@ public:
     int GetChannels();
     int GetFreq();
 
-	void ReIniPlayerCore(bool replay = false);		//ÖØĞÂ³õÊ¼»¯BASS¡£µ±replayÎªtrueÊ±£¬Èç¹ûÔ­À´ÕıÔÚ²¥·Å£¬ÔòÖØĞÂ³õÊ¼»¯ºó¼ÌĞø²¥·Å
+	void ReIniPlayerCore(bool replay = false);		//é‡æ–°åˆå§‹åŒ–BASSã€‚å½“replayä¸ºtrueæ—¶ï¼Œå¦‚æœåŸæ¥æ­£åœ¨æ’­æ”¾ï¼Œåˆ™é‡æ–°åˆå§‹åŒ–åç»§ç»­æ’­æ”¾
 
-	void SortPlaylist(bool change_index = true);	//²¥·ÅÁĞ±í°´ÕÕm_sort_modeÅÅĞò£¨µ±change_indexÎªtrueÊ±£¬ÅÅĞòºóÖØĞÂ²éÕÒÕıÔÚ²¥·ÅµÄ¸èÇú£©
+	void SortPlaylist(bool change_index = true);	//æ’­æ”¾åˆ—è¡¨æŒ‰ç…§m_sort_modeæ’åºï¼ˆå½“change_indexä¸ºtrueæ—¶ï¼Œæ’åºåé‡æ–°æŸ¥æ‰¾æ­£åœ¨æ’­æ”¾çš„æ­Œæ›²ï¼‰
 
 private:
-	void ConnotPlayWarning() const;		//µ±ÎŞ·¨²¥·ÅÊ±µ¯³öÌáÊ¾ĞÅÏ¢
-	void SearchAlbumCover();		//»ñÈ¡×¨¼­·âÃæ
+	void ConnotPlayWarning() const;		//å½“æ— æ³•æ’­æ”¾æ—¶å¼¹å‡ºæç¤ºä¿¡æ¯
+	void SearchAlbumCover();		//è·å–ä¸“è¾‘å°é¢
 	wstring GetCurrentFileName() const;
     bool RemoveSongNotPlay(int index);
     void AfterSongsRemoved(bool play);
 
 public:
-    void SearchOutAlbumCover();		//²éÕÒÆ¥ÅäµÄÍâ²¿×¨¼­·âÃæ£¬²¢¼ÓÔØ×¨¼­·âÃæ
-	void AlbumCoverGaussBlur();		//×¨¼­·âÃæ¸ßË¹Ä£ºı
-	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//»ñÈ¡¹ØÁªµÄÍâ²¿×¨¼­·âÃæÍ¼Æ¬£¬·µ»ØÎÄ¼şÂ·¾¶
+    void SearchOutAlbumCover();		//æŸ¥æ‰¾åŒ¹é…çš„å¤–éƒ¨ä¸“è¾‘å°é¢ï¼Œå¹¶åŠ è½½ä¸“è¾‘å°é¢
+	void AlbumCoverGaussBlur();		//ä¸“è¾‘å°é¢é«˜æ–¯æ¨¡ç³Š
+	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//è·å–å…³è”çš„å¤–éƒ¨ä¸“è¾‘å°é¢å›¾ç‰‡ï¼Œè¿”å›æ–‡ä»¶è·¯å¾„
 	wstring GetCurrentFileType() { return m_current_file_type; }
     bool IsOsuFile() const;
     bool IsPlaylistMode() const { return m_playlist_mode; }

@@ -1,4 +1,4 @@
-// FindDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// FindDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -11,7 +11,7 @@
 #include "AddToPlaylistDlg.h"
 
 
-// CFindDlg ¶Ô»°¿ò
+// CFindDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CFindDlg, CDialog)
 
@@ -79,7 +79,7 @@ UINT CFindDlg::ViewOnlineThreadFunc(LPVOID lpParam)
     if (pThis == nullptr)
         return 0;
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    //´ËÃüÁîÓÃÓÚÌø×ªµ½¸èÇú¶ÔÓ¦µÄÍøÒ×ÔÆÒôÀÖµÄÔÚÏßÒ³Ãæ
+    //æ­¤å‘½ä»¤ç”¨äºè·³è½¬åˆ°æ­Œæ›²å¯¹åº”çš„ç½‘æ˜“äº‘éŸ³ä¹çš„åœ¨çº¿é¡µé¢
     if (pThis->m_item_selected >= 0)
     {
         wstring file_path = pThis->m_find_result_list.GetItemText(pThis->m_item_selected, COL_PATH).GetString();
@@ -211,16 +211,16 @@ BEGIN_MESSAGE_MAP(CFindDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CFindDlg ÏûÏ¢´¦Àí³ÌĞò
+// CFindDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 void CFindDlg::OnEnChangeFindEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString find_string;
 	GetDlgItemText(IDC_FIND_EDIT, find_string);
 	m_key_word = find_string;
@@ -230,9 +230,9 @@ void CFindDlg::OnEnChangeFindEdit()
 void CFindDlg::OnNMClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	//NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
-	m_item_selected = pNMItemActivate->iItem;		//µ¥»÷²éÕÒ½á¹ûÁĞ±íÊ±±£´æÑ¡ÖĞµÄÏîÄ¿ĞòºÅ
+	m_item_selected = pNMItemActivate->iItem;		//å•å‡»æŸ¥æ‰¾ç»“æœåˆ—è¡¨æ—¶ä¿å­˜é€‰ä¸­çš„é¡¹ç›®åºå·
     m_find_result_list.GetItemSelected(m_items_selected);
 	GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 	*pResult = 0;
@@ -241,10 +241,10 @@ void CFindDlg::OnNMClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CFindDlg::OnBnClickedFindButton()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if (!m_key_word.empty())
 	{
-		if (m_find_current_playlist)		//²éÕÒµ±Ç°²¥·ÅÁĞ±íÊ±£¬ÔÚm_playlist´°¿ÚÖĞ²éÕÒ
+		if (m_find_current_playlist)		//æŸ¥æ‰¾å½“å‰æ’­æ”¾åˆ—è¡¨æ—¶ï¼Œåœ¨m_playlistçª—å£ä¸­æŸ¥æ‰¾
 		{
 			m_find_result.clear();
 			int index;
@@ -284,7 +284,7 @@ void CFindDlg::OnBnClickedFindButton()
 			else
 				SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_NO_RESULT));
 		}
-		else			//²éÕÒËùÓĞ²¥·ÅÁĞ±íÊ±£¬ÔÚtheApp.m_song_data´°¿ÚÖĞ²éÕÒ
+		else			//æŸ¥æ‰¾æ‰€æœ‰æ’­æ”¾åˆ—è¡¨æ—¶ï¼Œåœ¨theApp.m_song_dataçª—å£ä¸­æŸ¥æ‰¾
 		{
 			m_find_result.clear();
 			wstring a_result;
@@ -318,7 +318,7 @@ void CFindDlg::OnBnClickedFindButton()
                 {
                     SongInfo song = item.second;
                     song.file_path = item.first;
-                    m_find_result.push_back(song);		//Èç¹ûÕÒµ½ÁË£¬¾Í±£´æ½á¹û
+                    m_find_result.push_back(song);		//å¦‚æœæ‰¾åˆ°äº†ï¼Œå°±ä¿å­˜ç»“æœ
                 }
 			}
 			ShowFindResult();
@@ -339,11 +339,11 @@ BOOL CFindDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 
-	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// ÉèÖÃĞ¡Í¼±ê
+	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// è®¾ç½®å°å›¾æ ‡
 
-	//ÉèÖÃ²éÕÒÑ¡Ïî¸´Ñ¡°´Å¥µÄ×´Ì¬
+	//è®¾ç½®æŸ¥æ‰¾é€‰é¡¹å¤é€‰æŒ‰é’®çš„çŠ¶æ€
 	m_find_file_check.SetCheck(m_find_file);
 	m_find_title_check.SetCheck(m_find_title);
 	m_find_artist_check.SetCheck(m_find_artist);
@@ -354,57 +354,57 @@ BOOL CFindDlg::OnInitDialog()
 	else
 		((CButton*)GetDlgItem(IDC_FIND_ALL_PLAYLIST_RADIO))->SetCheck(TRUE);
 
-	//³õÊ¼»¯ÁĞ±í¿Ø¼ş
+	//åˆå§‹åŒ–åˆ—è¡¨æ§ä»¶
 	CRect rect;
 	m_find_result_list.GetClientRect(rect);
     m_find_result_list.SetExtendedStyle(m_find_result_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	int list_width{ rect.Width() - theApp.DPI(20) - 1 };		//ÁĞ±í¿Ø¼ş¿í¶È¼õÈ¥Áô¸ø´¹Ö±¹ö¶¯ÌõµÄ¿í¶ÈÓàÁ¿
+	int list_width{ rect.Width() - theApp.DPI(20) - 1 };		//åˆ—è¡¨æ§ä»¶å®½åº¦å‡å»ç•™ç»™å‚ç›´æ»šåŠ¨æ¡çš„å®½åº¦ä½™é‡
 	int width0, width1, width2;
 	width0 = theApp.DPI(40);
 	width2 = (list_width - width0) / 5;
 	width1 = list_width - width0 - width2 * 4;
-	m_find_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//²åÈëµÚ0ÁĞ
-	m_find_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width1);		//²åÈëµÚ1ÁĞ
-	m_find_result_list.InsertColumn(2, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width2);		//²åÈëµÚ2ÁĞ
-	m_find_result_list.InsertColumn(3, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//²åÈëµÚ3ÁĞ
-	m_find_result_list.InsertColumn(4, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width2);		//²åÈëµÚ4ÁĞ
-	m_find_result_list.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, width2);		//²åÈëµÚ5ÁĞ
+	m_find_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//æ’å…¥ç¬¬0åˆ—
+	m_find_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width1);		//æ’å…¥ç¬¬1åˆ—
+	m_find_result_list.InsertColumn(2, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width2);		//æ’å…¥ç¬¬2åˆ—
+	m_find_result_list.InsertColumn(3, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//æ’å…¥ç¬¬3åˆ—
+	m_find_result_list.InsertColumn(4, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width2);		//æ’å…¥ç¬¬4åˆ—
+	m_find_result_list.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, width2);		//æ’å…¥ç¬¬5åˆ—
 
-	ShowFindResult();	//ÏÔÊ¾£¨ÉÏÒ»´ÎµÄ£©²éÕÒ½á¹û
+	ShowFindResult();	//æ˜¾ç¤ºï¼ˆä¸Šä¸€æ¬¡çš„ï¼‰æŸ¥æ‰¾ç»“æœ
 	ShowFindInfo();
 
 	m_key_word.clear();
 
-	GetDlgItem(IDC_FIND_EDIT)->SetFocus();		//½«½¹µãÉèÖÃµ½ËÑË÷¿ò
+	GetDlgItem(IDC_FIND_EDIT)->SetFocus();		//å°†ç„¦ç‚¹è®¾ç½®åˆ°æœç´¢æ¡†
 
-	//ÉèÖÃÁĞ±í¿Ø¼şµÄÌáÊ¾×ÜÊÇÖÃ¶¥£¬ÓÃÓÚ½â¾öÈç¹ûµ¯³ö´Ë´°¿ÚµÄ¸¸´°¿Ú¾ßÓĞÖÃ¶¥ÊôĞÔÊ±£¬ÌáÊ¾ĞÅÏ¢ÔÚ´°¿ÚÏÂÃæµÄÎÊÌâ
+	//è®¾ç½®åˆ—è¡¨æ§ä»¶çš„æç¤ºæ€»æ˜¯ç½®é¡¶ï¼Œç”¨äºè§£å†³å¦‚æœå¼¹å‡ºæ­¤çª—å£çš„çˆ¶çª—å£å…·æœ‰ç½®é¡¶å±æ€§æ—¶ï¼Œæç¤ºä¿¡æ¯åœ¨çª—å£ä¸‹é¢çš„é—®é¢˜
 	m_find_result_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	GetWindowRect(rect);
 	m_min_width = rect.Width();
 	m_min_height = rect.Height();
 
-	//³õÊ¼»¯ÓÒ¼ü²Ëµ¥
+	//åˆå§‹åŒ–å³é”®èœå•
 	//if (m_menu.m_hMenu == NULL)
 	//	m_menu.LoadMenu(IDR_FIND_POPUP_MENU);
 	//m_menu.GetSubMenu(0)->SetDefaultItem(ID_FD_PLAY);
 
-	GetDlgItem(IDOK)->EnableWindow(FALSE);	//½ûÓÃ¡°²¥·ÅÑ¡ÖĞÇúÄ¿¡±°´Å¥£¬³ı·ÇÑ¡ÖĞÁËÒ»¸öÏîÄ¿
+	GetDlgItem(IDOK)->EnableWindow(FALSE);	//ç¦ç”¨â€œæ’­æ”¾é€‰ä¸­æ›²ç›®â€æŒ‰é’®ï¼Œé™¤éé€‰ä¸­äº†ä¸€ä¸ªé¡¹ç›®
 
 	return FALSE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CFindDlg::OnNMDblclkFindList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_item_selected = pNMItemActivate->iItem;
     m_find_result_list.GetItemSelected(m_items_selected);
     GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 
-	//Ë«»÷ÁĞ±íÏîÄ¿ºó¹Ø±Õ¶Ô»°¿ò²¢²¥·ÅÑ¡ÖĞÏîÄ¿
+	//åŒå‡»åˆ—è¡¨é¡¹ç›®åå…³é—­å¯¹è¯æ¡†å¹¶æ’­æ”¾é€‰ä¸­é¡¹ç›®
 	OnPlayItem();
 	*pResult = 0;
 }
@@ -412,13 +412,13 @@ void CFindDlg::OnNMDblclkFindList(NMHDR *pNMHDR, LRESULT *pResult)
 
 BOOL CFindDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
-	if (pMsg->message == WM_KEYUP && pMsg->wParam == VK_RETURN)		//°´»Ø³µ¼üÖ´ĞĞËÑË÷²Ù×÷
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
+	if (pMsg->message == WM_KEYUP && pMsg->wParam == VK_RETURN)		//æŒ‰å›è½¦é”®æ‰§è¡Œæœç´¢æ“ä½œ
 	{
 		OnBnClickedFindButton();
 		return TRUE;
 	}
-	if (pMsg->wParam == VK_RETURN)		//ÆÁ±Î°´»Ø³µ¼üÍË³ö
+	if (pMsg->wParam == VK_RETURN)		//å±è”½æŒ‰å›è½¦é”®é€€å‡º
 	{
 		return TRUE;
 	}
@@ -429,28 +429,28 @@ BOOL CFindDlg::PreTranslateMessage(MSG* pMsg)
 
 void CFindDlg::OnBnClickedFindFileCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_find_file = (m_find_file_check.GetCheck() != 0);
 }
 
 
 void CFindDlg::OnBnClickedFindTitleCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_find_title = (m_find_title_check.GetCheck() != 0);
 }
 
 
 void CFindDlg::OnBnClickedFindArtistCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_find_artist = (m_find_artist_check.GetCheck() != 0);
 }
 
 
 void CFindDlg::OnBnClickedFindAlbumCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_find_album = (m_find_album_check.GetCheck() != 0);
 }
 
@@ -458,24 +458,24 @@ void CFindDlg::OnBnClickedFindAlbumCheck()
 
 void CFindDlg::OnBnClickedFindCurrentPlaylistRadio()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_find_current_playlist = true;
 }
 
 
 void CFindDlg::OnBnClickedFindAllPlaylistRadio()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_find_current_playlist = false;
 }
 
 
 void CFindDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//ÏŞÖÆ´°¿Ú×îĞ¡´óĞ¡
-	lpMMI->ptMinTrackSize.x = m_min_width;		//ÉèÖÃ×îĞ¡¿í¶È
-	lpMMI->ptMinTrackSize.y = m_min_height;		//ÉèÖÃ×îĞ¡¸ß¶È
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	//é™åˆ¶çª—å£æœ€å°å¤§å°
+	lpMMI->ptMinTrackSize.x = m_min_width;		//è®¾ç½®æœ€å°å®½åº¦
+	lpMMI->ptMinTrackSize.y = m_min_height;		//è®¾ç½®æœ€å°é«˜åº¦
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
@@ -485,13 +485,13 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	if (m_find_result_list.m_hWnd != NULL&&nType != SIZE_MINIMIZED)
 	{
-		//µ÷ÕûÁĞ±íÖĞÏîÄ¿µÄ¿í¶È
+		//è°ƒæ•´åˆ—è¡¨ä¸­é¡¹ç›®çš„å®½åº¦
 		CRect rect;
 		m_find_result_list.GetWindowRect(rect);
-		int list_width{ rect.Width() - theApp.DPI(20) - 1 };		//ÁĞ±í¿Ø¼ş¿í¶È¼õÈ¥Áô¸ø´¹Ö±¹ö¶¯ÌõµÄ¿í¶ÈÓàÁ¿
+		int list_width{ rect.Width() - theApp.DPI(20) - 1 };		//åˆ—è¡¨æ§ä»¶å®½åº¦å‡å»ç•™ç»™å‚ç›´æ»šåŠ¨æ¡çš„å®½åº¦ä½™é‡
 		int width0, width1, width2;
 		width0 = theApp.DPI(40);
 		width2 = (list_width - width0) / 5;
@@ -507,14 +507,14 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 
 void CFindDlg::OnPlayItem()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     OnOK();
 }
 
 
 void CFindDlg::OnExploreTrack()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	wstring file;
 	if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
     {
@@ -529,7 +529,7 @@ void CFindDlg::OnExploreTrack()
 void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_item_selected = pNMItemActivate->iItem;
     m_find_result_list.GetItemSelected(m_items_selected);
     GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
@@ -537,11 +537,11 @@ void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 	if (m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
 		|| !m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size())))
 	{
-		//»ñÈ¡Êó±êµã»÷´¦µÄÎÄ±¾
+		//è·å–é¼ æ ‡ç‚¹å‡»å¤„çš„æ–‡æœ¬
 		int sub_item;
 		sub_item = pNMItemActivate->iSubItem;
 		m_selected_string = m_find_result_list.GetItemText(m_item_selected, sub_item);
-		//µ¯³öÓÒ¼ü²Ëµ¥
+		//å¼¹å‡ºå³é”®èœå•
 		CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
         m_find_result_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     }
@@ -552,7 +552,7 @@ void CFindDlg::OnNMRClickFindList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CFindDlg::OnCopyText()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
 		MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 }
@@ -560,7 +560,7 @@ void CFindDlg::OnCopyText()
 
 void CFindDlg::OnPlayItemInFolderMode()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_item_selected >= 0)
     {
         std::wstring file_path = m_find_result_list.GetItemText(m_item_selected, COL_PATH);
@@ -574,7 +574,7 @@ void CFindDlg::OnPlayItemInFolderMode()
 
 void CFindDlg::OnAddToNewPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     wstring playlist_path;
     _OnAddToNewPlaylist(playlist_path);
 }
@@ -582,14 +582,14 @@ void CFindDlg::OnAddToNewPlaylist()
 
 void CFindDlg::OnExploreOnline()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     AfxBeginThread(ViewOnlineThreadFunc, (void*)this);
 }
 
 
 void CFindDlg::OnFormatConvert()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     std::vector<SongInfo> songs;
     GetSongsSelected(songs);
     CMusicPlayerCmdHelper cmd_helper(this);
@@ -599,7 +599,7 @@ void CFindDlg::OnFormatConvert()
 
 void CFindDlg::OnItemProperty()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_item_selected < 0)
         return;
     std::vector<SongInfo> songs;
@@ -612,7 +612,7 @@ void CFindDlg::OnItemProperty()
 
 void CFindDlg::OnOK()
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
     SongInfo song_selected;
     if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_find_result.size()))
@@ -622,7 +622,7 @@ void CFindDlg::OnOK()
     {
         return song.IsSameSong(song_selected);
     });
-    if (iter != CPlayer::GetInstance().GetPlayList().end())      //Èç¹û²éÕÒ½á¹ûÊÇµ±Ç°²¥·ÅÁĞ±íÖĞµÄÇúÄ¿£¬ÔòÔÚµ±Ç°²¥·ÅÁĞ±íÖĞ²éÕÒÑ¡ÖĞµÄÇúÄ¿£¬²¢²¥·Å
+    if (iter != CPlayer::GetInstance().GetPlayList().end())      //å¦‚æœæŸ¥æ‰¾ç»“æœæ˜¯å½“å‰æ’­æ”¾åˆ—è¡¨ä¸­çš„æ›²ç›®ï¼Œåˆ™åœ¨å½“å‰æ’­æ”¾åˆ—è¡¨ä¸­æŸ¥æ‰¾é€‰ä¸­çš„æ›²ç›®ï¼Œå¹¶æ’­æ”¾
     {
         int selected_track = iter - CPlayer::GetInstance().GetPlayList().begin();
         CPlayer::GetInstance().PlayTrack(selected_track);
@@ -648,7 +648,7 @@ void CFindDlg::OnOK()
 
 void CFindDlg::OnAddToNewPalylistAndPlay()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     wstring playlist_path;
     if (_OnAddToNewPlaylist(playlist_path))
     {
@@ -663,20 +663,20 @@ void CFindDlg::OnInitMenu(CMenu* pMenu)
 {
     CDialog::OnInitMenu(pMenu);
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
 }
 
 
 BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     WORD command = LOWORD(wParam);
     auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
     {
         GetSongsSelected(item_list);
     };
-    //ÏìÓ¦²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥ÖĞµÄ¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±
+    //å“åº”æ’­æ”¾åˆ—è¡¨å³é”®èœå•ä¸­çš„â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€
     CMusicPlayerCmdHelper cmd_helper;
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
@@ -686,13 +686,13 @@ BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void CFindDlg::OnDeleteFromDisk()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     vector<SongInfo> songs_selected;
     GetSongsSelected(songs_selected);
     CMusicPlayerCmdHelper helper;
     if (helper.DeleteSongsFromDisk(songs_selected))
     {
-        //É¾³ı³É¹¦£¬ÔòË¢ĞÂÁĞ±í
+        //åˆ é™¤æˆåŠŸï¼Œåˆ™åˆ·æ–°åˆ—è¡¨
         auto isRemoved = [&](const SongInfo& song)
         {
             for (const auto& item : songs_selected)

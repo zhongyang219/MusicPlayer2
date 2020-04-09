@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 #include <functional>
 #include "ColorConvert.h"
 
 
 // CTreeCtrlEx
 
-//×¢£º´ËÀàÍ¨¹ı×Ô»æÉèÖÃÁËÎÄ±¾¼°Ñ¡ÖĞÏîµÄ±³¾°ÑÕÉ«£¬CTreeCtrl::SetTextColor ½«²»ÔÙÆğ×÷ÓÃ£¬
-//µ«ÄãÈÔÈ»¿ÉÒÔÊ¹ÓÃ CTreeCtrl::SetBkColor ÉèÖÃ±³¾°ÑÕÉ«
+//æ³¨ï¼šæ­¤ç±»é€šè¿‡è‡ªç»˜è®¾ç½®äº†æ–‡æœ¬åŠé€‰ä¸­é¡¹çš„èƒŒæ™¯é¢œè‰²ï¼ŒCTreeCtrl::SetTextColor å°†ä¸å†èµ·ä½œç”¨ï¼Œ
+//ä½†ä½ ä»ç„¶å¯ä»¥ä½¿ç”¨ CTreeCtrl::SetBkColor è®¾ç½®èƒŒæ™¯é¢œè‰²
 
 class CTreeCtrlEx : public CTreeCtrl
 {
@@ -19,24 +19,24 @@ public:
 public:
     void InsertPath(CString path, HTREEITEM hRoot);
 
-    //ÏòÊ÷ÖĞ²åÈëÒ»¸öÎÄ¼ş¼Ğ½á¹¹
-    //path: ÎÄ¼ş¼ĞµÄ¸ùÄ¿Â¼
-    //hRoot: Òª²åÈëµÄ¸ùÄ¿Â¼ÔÚÊ÷¿Ø¼şÖĞµÄÎ»ÖÃ
-    //is_path_show: Ò»¸öº¯Êı¶ÔÏó£¬ÓÃÓÚÅĞ¶ÏÒ»¸öÎÄ¼ş¼ĞÊÇ·ñĞèÒªÏÔÊ¾
+    //å‘æ ‘ä¸­æ’å…¥ä¸€ä¸ªæ–‡ä»¶å¤¹ç»“æ„
+    //path: æ–‡ä»¶å¤¹çš„æ ¹ç›®å½•
+    //hRoot: è¦æ’å…¥çš„æ ¹ç›®å½•åœ¨æ ‘æ§ä»¶ä¸­çš„ä½ç½®
+    //is_path_show: ä¸€ä¸ªå‡½æ•°å¯¹è±¡ï¼Œç”¨äºåˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶å¤¹æ˜¯å¦éœ€è¦æ˜¾ç¤º
     void InsertPath(CString path, HTREEITEM hRoot, std::function<bool(const CString&)> is_path_show);
     CString GetItemPath(HTREEITEM hItem);
 
     bool IsItemExpand(HTREEITEM hItem);
-    void ExpandAll(HTREEITEM hItem);        //Õ¹¿ªÖ¸¶¨½ÚµãÏÂµÄËùÓĞ½Úµã
-    void ExpandAll();                       //Õ¹¿ªËùÓĞ½Úµã
-    void IterateItems(HTREEITEM hRoot, std::function<void(HTREEITEM)> func);           //±éÀúÖ¸¶¨½ÚµãÏÂµÄËùÓĞ½Úµã
+    void ExpandAll(HTREEITEM hItem);        //å±•å¼€æŒ‡å®šèŠ‚ç‚¹ä¸‹çš„æ‰€æœ‰èŠ‚ç‚¹
+    void ExpandAll();                       //å±•å¼€æ‰€æœ‰èŠ‚ç‚¹
+    void IterateItems(HTREEITEM hRoot, std::function<void(HTREEITEM)> func);           //éå†æŒ‡å®šèŠ‚ç‚¹ä¸‹çš„æ‰€æœ‰èŠ‚ç‚¹
 
-    void SaveExpandState();                 //±£´æËùÓĞ½ÚµãµÄÕ¹¿ªÊÕËõ×´Ì¬
-    void SaveItemExpandState(HTREEITEM hItem, bool expand);     //±£´æÖ¸¶¨½ÚµãµÄÕ¹¿ªÊÕËõ×´Ì¬
-    void RestoreExpandState();              //»Ö¸´ËùÓĞ½ÚµãµÄÕ¹¿ªÊÕËõ×´Ì¬
+    void SaveExpandState();                 //ä¿å­˜æ‰€æœ‰èŠ‚ç‚¹çš„å±•å¼€æ”¶ç¼©çŠ¶æ€
+    void SaveItemExpandState(HTREEITEM hItem, bool expand);     //ä¿å­˜æŒ‡å®šèŠ‚ç‚¹çš„å±•å¼€æ”¶ç¼©çŠ¶æ€
+    void RestoreExpandState();              //æ¢å¤æ‰€æœ‰èŠ‚ç‚¹çš„å±•å¼€æ”¶ç¼©çŠ¶æ€
 
 protected:
-    static std::map<CString, bool> m_expand_state;       //±£´æÃ¿¸ö½ÚµãµÄÕ¹¿ªÊÕÆğ×´Ì¬
+    static std::map<CString, bool> m_expand_state;       //ä¿å­˜æ¯ä¸ªèŠ‚ç‚¹çš„å±•å¼€æ”¶èµ·çŠ¶æ€
     const ColorTable& m_theme_color;
 
 private:

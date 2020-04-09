@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 struct WinVersion
 {
@@ -15,11 +15,11 @@ class CWinVersionHelper
 public:
 	~CWinVersionHelper();
 
-	static bool IsWindows10FallCreatorOrLater();		//�жϵ�ǰWindows�汾�Ƿ�ΪWin10�＾�����߸��»���µİ汾
+	static bool IsWindows10FallCreatorOrLater();		//判断当前Windows版本是否为Win10秋季创意者更新或更新的版本
 	static bool IsWindowsVista();
-	static bool IsWindows7();					//�ж�Windows�汾�Ƿ�ΪWindows7
+	static bool IsWindows7();					//判断Windows版本是否为Windows7
 	static bool IsWindows7OrLater();
-	static bool IsWindows8Or8point1();			//�ж�Windows�汾�Ƿ�ΪWindows8��Windows8.1
+	static bool IsWindows8Or8point1();			//判断Windows版本是否为Windows8或Windows8.1
 	static bool IsWindows8OrLater();
 	static bool IsWindows10OrLater();
 	static bool IsWindows10Version1809OrLater();

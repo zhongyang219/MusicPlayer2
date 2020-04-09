@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ColorStatic.h"
 class CColorStaticEx :
 	public CColorStatic

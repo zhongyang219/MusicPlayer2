@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MciCore.h"
 #include "AudioCommon.h"
 #include "MusicPlayer2.h"
@@ -29,10 +29,10 @@ CMciCore::~CMciCore()
 bool CMciCore::GetFunction()
 {
     bool rtn = true;
-    //»ñÈ¡º¯ÊıÈë¿Ú
+    //è·å–å‡½æ•°å…¥å£
     mciSendStringW = (_mciSendStringW)::GetProcAddress(m_dll_module, "mciSendStringW");
     mciGetErrorStringW = (_mciGetErrorStringW)::GetProcAddress(m_dll_module, "mciGetErrorStringW");
-    //ÅĞ¶ÏÊÇ·ñ³É¹¦
+    //åˆ¤æ–­æ˜¯å¦æˆåŠŸ
     rtn &= (mciSendStringW != NULL);
     rtn &= (mciGetErrorStringW != NULL);
     return rtn;
@@ -40,7 +40,7 @@ bool CMciCore::GetFunction()
 
 void CMciCore::InitCore()
 {
-    //ÏòÖ§³ÖµÄÎÄ¼şÁĞ±í²åÈëÔ­ÉúÖ§³ÖµÄÎÄ¼ş¸ñÊ½
+    //å‘æ”¯æŒçš„æ–‡ä»¶åˆ—è¡¨æ’å…¥åŸç”Ÿæ”¯æŒçš„æ–‡ä»¶æ ¼å¼
     CAudioCommon::m_surpported_format.clear();
     SupportedFormat format;
     format.description = CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT);
@@ -94,7 +94,7 @@ void CMciCore::Open(const wchar_t * file_path)
     {
         m_error_code = mciSendStringW((L"open \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
 
-        //»ñÈ¡MIDIĞÅÏ¢
+        //è·å–MIDIä¿¡æ¯
         if (IsMidi())
         {
             wchar_t buff[16];
@@ -151,7 +151,7 @@ void CMciCore::SetVolume(int volume)
     if (m_success && !IsMidi())
     {
         wchar_t buff[16];
-        _itow_s(volume * 10, buff, 10);		//ÉèÖÃÒôÁ¿100%Ê±Îª1000
+        _itow_s(volume * 10, buff, 10);		//è®¾ç½®éŸ³é‡100%æ—¶ä¸º1000
         m_error_code = mciSendStringW((L"setaudio \"" + m_file_path + L"\" volume to " + buff).c_str(), NULL, 0, 0);
     }
 }
@@ -167,7 +167,7 @@ int CMciCore::GetCurPosition()
         wchar_t buff[16];
         m_error_code = mciSendStringW((L"status \"" + m_file_path + L"\" position").c_str(), buff, 15, 0);
         int position = _wtoi(buff);
-        if(IsMidi())        //Èç¹ûÊÇMIDI£¬MCI»ñÈ¡µ½µÄ³¤¶È²¢²»ÊÇºÁÃëÊı£¬¶øÊÇMIDIµÄ½ÚÅÄÊı
+        if(IsMidi())        //å¦‚æœæ˜¯MIDIï¼ŒMCIè·å–åˆ°çš„é•¿åº¦å¹¶ä¸æ˜¯æ¯«ç§’æ•°ï¼Œè€Œæ˜¯MIDIçš„èŠ‚æ‹æ•°
         {
             m_midi_info.midi_position = position / 4;
             position = position * m_midi_info.speed;
@@ -198,9 +198,9 @@ void CMciCore::SetCurPosition(int position)
 
         wchar_t buff[16];
         _itow_s(position, buff, 10);
-        m_error_code = mciSendStringW((L"seek \"" + m_file_path + L"\" to " + buff).c_str(), NULL, 0, 0);		//¶¨Î»µ½ĞÂµÄÎ»ÖÃ
+        m_error_code = mciSendStringW((L"seek \"" + m_file_path + L"\" to " + buff).c_str(), NULL, 0, 0);		//å®šä½åˆ°æ–°çš„ä½ç½®
         if (m_playing)
-            m_error_code = mciSendStringW((L"play \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);		//¼ÌĞø²¥·Å
+            m_error_code = mciSendStringW((L"play \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);		//ç»§ç»­æ’­æ”¾
 
     }
 }
@@ -220,7 +220,7 @@ void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int
     {
         m_error_code = mciSendStringW((L"open \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
         wchar_t buff[16];
-        m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//»ñÈ¡µ±Ç°¸èÇúµÄ³¤¶È£¬²¢´¢´æÔÚbuffÊı×éÀï
+        m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//è·å–å½“å‰æ­Œæ›²çš„é•¿åº¦ï¼Œå¹¶å‚¨å­˜åœ¨buffæ•°ç»„é‡Œ
         song_info.lengh = _wtoi(buff);
         m_error_code = mciSendStringW((L"close \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
     }
@@ -276,7 +276,7 @@ int CMciCore::GetErrorCode()
 std::wstring CMciCore::GetErrorInfo(int error_code)
 {
     wchar_t buff[128]{};
-    mciGetErrorStringW(error_code, buff, sizeof(buff) / sizeof(wchar_t));		//¸ù¾İ´íÎó´úÂë»ñÈ¡´íÎóĞÅÏ¢
+    mciGetErrorStringW(error_code, buff, sizeof(buff) / sizeof(wchar_t));		//æ ¹æ®é”™è¯¯ä»£ç è·å–é”™è¯¯ä¿¡æ¯
     return L"MCI: " + wstring(buff) + m_file_path;
 }
 
@@ -300,7 +300,7 @@ void CMciCore::GetMidiPosition()
 int CMciCore::GetMciSongLength(const std::wstring& file_path)
 {
     wchar_t buff[16];
-    mciSendStringW((L"status \"" + file_path + L"\" length").c_str(), buff, 15, 0);		//»ñÈ¡µ±Ç°¸èÇúµÄ³¤¶È£¬²¢´¢´æÔÚbuffÊı×éÀï
+    mciSendStringW((L"status \"" + file_path + L"\" length").c_str(), buff, 15, 0);		//è·å–å½“å‰æ­Œæ›²çš„é•¿åº¦ï¼Œå¹¶å‚¨å­˜åœ¨buffæ•°ç»„é‡Œ
     int length = _wtoi(buff);
     if (IsMidi())
     {

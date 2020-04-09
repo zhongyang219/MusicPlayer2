@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "AboutDlg.h"
 #include "CDonateDlg.h"
@@ -24,7 +24,7 @@ BOOL CAboutDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 
 	CString version_info;
 	GetDlgItemText(IDC_STATIC_VERSION, version_info);
@@ -43,7 +43,7 @@ BOOL CAboutDlg::OnInitDialog()
 
 	SetDlgItemText(IDC_STATIC_VERSION, version_info);
 
-	//ÉèÖÃ×îºó±àÒëÈÕÆÚ
+	//è®¾ç½®æœ€åç¼–è¯‘æ—¥æœŸ
 	CString temp_str;
 	GetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
 	temp_str.Replace(_T("<compile_date>"), COMPILE_DATE);
@@ -55,10 +55,10 @@ BOOL CAboutDlg::OnInitDialog()
 	m_tool_tip.Create(this);
 	m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), CCommon::LoadText(IDS_SEND_EMAIL_TO_ATHOUR, _T("\r\nmailto:zhongyang219@hotmail.com")));
 	m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), CCommon::LoadText(IDS_GOTO_GITHUB, _T("\r\nhttps://github.com/zhongyang219/MusicPlayer2")));
-	m_tool_tip.SetDelayTime(300);	//ÉèÖÃÑÓ³Ù
+	m_tool_tip.SetDelayTime(300);	//è®¾ç½®å»¶è¿Ÿ
 	m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
-    //ÉèÖÃÍ¼Æ¬µÄÎ»ÖÃ
+    //è®¾ç½®å›¾ç‰‡çš„ä½ç½®
     CRect rect;
     GetClientRect(rect);
     m_rc_pic = rect;
@@ -69,35 +69,35 @@ BOOL CAboutDlg::OnInitDialog()
         m_rc_pic.bottom = m_rc_pic.top + theApp.DPI(50);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 void CAboutDlg::OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	//µã»÷ÁË¡°ÁªÏµ×÷Õß¡±
-	ShellExecute(NULL, _T("open"), _T("mailto:zhongyang219@hotmail.com"), NULL, NULL, SW_SHOW);	//´ò¿ª³¬Á´½Ó
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	//ç‚¹å‡»äº†â€œè”ç³»ä½œè€…â€
+	ShellExecute(NULL, _T("open"), _T("mailto:zhongyang219@hotmail.com"), NULL, NULL, SW_SHOW);	//æ‰“å¼€è¶…é“¾æ¥
 	*pResult = 0;
 }
 
 void CAboutDlg::OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	//µã»÷ÁË¡°¼ì²é¸üĞÂ¡±
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	//ç‚¹å‡»äº†â€œæ£€æŸ¥æ›´æ–°â€
 	theApp.CheckUpdate(true);
 	*pResult = 0;
 }
 
 void CAboutDlg::OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);	//´ò¿ª³¬Á´½Ó
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);	//æ‰“å¼€è¶…é“¾æ¥
 	*pResult = 0;
 }
 
 BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_tool_tip.RelayEvent(pMsg);
 
@@ -118,7 +118,7 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 
 void CAboutDlg::OnNMClickDonateSyslink(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CDonateDlg dlg;
 	dlg.DoModal();
 
@@ -129,8 +129,8 @@ void CAboutDlg::OnNMClickDonateSyslink(NMHDR *pNMHDR, LRESULT *pResult)
 void CAboutDlg::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
-                       // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
-                       // ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CDialog::OnPaint()
+                       // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+                       // ä¸ä¸ºç»˜å›¾æ¶ˆæ¯è°ƒç”¨ CDialog::OnPaint()
     CDrawCommon draw;
     draw.Create(&dc, this);
     draw.GetDC()->FillSolidRect(m_rc_pic, RGB(161, 200, 255));

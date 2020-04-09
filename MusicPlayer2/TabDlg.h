@@ -1,4 +1,4 @@
-//ÕâÊÇÓÃÓÚTab±êÇ©ÖĞµÄ×Ó¶Ô»°¿òÀà
+ï»¿//è¿™æ˜¯ç”¨äºTabæ ‡ç­¾ä¸­çš„å­å¯¹è¯æ¡†ç±»
 #pragma once
 class CTabDlg : public CDialogEx
 {
@@ -11,7 +11,7 @@ public:
     CWnd* GetParentWindow();
 	void SetScrollbarInfo(int nPage, int nMax);
     void ResetScroll();
-    virtual void OnTabEntered() {}      //µ±±êÇ©ÇĞ»»µ½µ±Ç°´°¿ÚÊ±±»µ÷ÓÃ
+    virtual void OnTabEntered() {}      //å½“æ ‡ç­¾åˆ‡æ¢åˆ°å½“å‰çª—å£æ—¶è¢«è°ƒç”¨
     virtual void OnOK();
 
 protected:

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CoverDownloadCommon.h"
 
 
@@ -15,11 +15,11 @@ wstring CCoverDownloadCommon::GetAlbumCoverURL(const wstring & song_id)
 {
 	if(song_id.empty())
 		return wstring();
-	//»ñÈ¡×¨¼­·âÃæ½Ó¿ÚµÄURL
+	//è·å–ä¸“è¾‘å°é¢æ¥å£çš„URL
 	wchar_t buff[256];
 	swprintf_s(buff, L"http://music.163.com/api/song/detail/?id=%s&ids=%%5B%s%%5D&csrf_token=", song_id.c_str(), song_id.c_str());
 	wstring contents;
-	//½«URLÄÚÈİ±£´æµ½ÄÚ´æ
+	//å°†URLå†…å®¹ä¿å­˜åˆ°å†…å­˜
 	if(!CInternetCommon::GetURL(wstring(buff), contents))
 		return wstring();
 #ifdef _DEBUG

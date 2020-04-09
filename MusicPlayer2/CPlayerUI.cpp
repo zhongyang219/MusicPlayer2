@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CPlayerUI.h"
 
 
@@ -17,7 +17,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     CRect draw_rect{ m_draw_rect };
     draw_rect.MoveToXY(0, 0);
 
-    //����״̬��
+    //绘制状态条
     bool draw_status_bar = CPlayerUIHelper::IsDrawStatusBar();
     if (draw_status_bar)
     {
@@ -27,20 +27,20 @@ void CPlayerUI::_DrawInfo(bool reset)
         DrawStatusBar(rc_status_bar, reset);
     }
 
-    CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(true), draw_rect.top + EdgeMargin(false) };		//�ı�����ʼ����
-    int text_height{ DPI(18) };		//�ı��ĸ߶�
+    CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(true), draw_rect.top + EdgeMargin(false) };		//文本的起始坐标
+    int text_height{ DPI(18) };		//文本的高度
 
-    //ȫ��ģʽʱ�����Ͻǻ���ʱ��
+    //全屏模式时在右上角绘制时间
     if (m_ui_data.full_screen)
     {
         DrawCurrentTime();
     }
 
 
-    //�������Ͻ�ͼ��
+    //绘制右上角图标
     int top_right_icon_size = DrawTopRightIcons();
 
-    //��ʾ������Ϣ
+    //显示歌曲信息
     m_draw.SetFont(&theApp.m_font_set.normal.GetFont(m_ui_data.full_screen));
     //m_draw.SetBackColor(color_back);
     CRect tmp{ text_start, CSize{1, text_height} };
@@ -61,7 +61,7 @@ void CPlayerUI::_DrawInfo(bool reset)
         swprintf_s(buff, L"%d/%d (%dbpm)", midi_info.midi_position, midi_info.midi_length, midi_info.speed);
         lable2_content = buff;
 
-        //lable3_str = _T("�ٶȣ�");
+        //lable3_str = _T("速度：");
         //swprintf_s(buff, L"%d bpm", midi_info.speed);
         //lable3_content = buff;
 
@@ -78,7 +78,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     lable4_str = CCommon::LoadText(IDS_FORMAT, _T(": "));
     //const BASS_CHANNELINFO channel_info{ CPlayer::GetInstance().GetChannelInfo() };
     lable4_content = GetDisplayFormatString();
-    //��ʾ����
+    //显示标题
     tmp.MoveToXY(text_start.x, text_start.y + text_height);
     tmp.right = tmp.left + DPI(52);
     m_draw.DrawWindowText(tmp, lable1_str.c_str(), m_colors.color_text_lable);
@@ -86,7 +86,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     tmp.right = draw_rect.right - EdgeMargin(true) - top_right_icon_size;
     static CDrawCommon::ScrollInfo scroll_info2;
     m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info2, reset);
-    //��ʾ������
+    //显示艺术家
     tmp.MoveToXY(text_start.x, text_start.y + 2 * text_height);
     tmp.right = tmp.left + DPI(52);
     m_draw.DrawWindowText(tmp, lable2_str.c_str(), m_colors.color_text_lable);
@@ -97,7 +97,7 @@ void CPlayerUI::_DrawInfo(bool reset)
         m_draw.DrawWindowText(tmp, lable2_content.c_str(), m_colors.color_text);
     else
         m_draw.DrawScrollText2(tmp, lable2_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info3, reset);
-    //��ʾ��Ƭ��
+    //显示唱片集
     tmp.MoveToXY(text_start.x, text_start.y + 3 * text_height);
     tmp.right = tmp.left + DPI(52);
     m_draw.DrawWindowText(tmp, lable3_str.c_str(), m_colors.color_text_lable);
@@ -105,7 +105,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     tmp.right = draw_rect.right - EdgeMargin(true);
     static CDrawCommon::ScrollInfo scroll_info4;
     m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info4, reset);
-    //��ʾ�ļ���ʽ�ͱ�����
+    //显示文件格式和比特率
     tmp.MoveToXY(text_start.x, text_start.y + 4 * text_height);
     tmp.right = tmp.left + DPI(52);
     m_draw.DrawWindowText(tmp, lable4_str.c_str(), m_colors.color_text_lable);
@@ -114,9 +114,9 @@ void CPlayerUI::_DrawInfo(bool reset)
     static CDrawCommon::ScrollInfo scroll_info5;
     m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info5, reset);
 
-    //��ʾƵ�׷���
+    //显示频谱分析
     CRect spectral_rect{ CPoint{draw_rect.left + EdgeMargin(true), draw_rect.top + EdgeMargin(false)}, SpectralSize() };
-    //���Ʊ���
+    //绘制背景
     if (IsDrawBackgroundAlpha())
         m_draw.FillAlphaRect(spectral_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
     else
@@ -127,7 +127,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     m_buttons[BTN_COVER].rect = DrawAreaToClient(cover_rect, m_draw_rect);
     if (theApp.m_app_setting_data.show_album_cover)
     {
-        //����ר������
+        //绘制专辑封面
         if (CPlayer::GetInstance().AlbumCoverExist())
         {
             m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
@@ -143,8 +143,8 @@ void CPlayerUI::_DrawInfo(bool reset)
 
     if (theApp.m_app_setting_data.show_spectrum)
     {
-        const int ROWS = 32;		//Ҫ��ʾ��Ƶ�����ε�����
-        int gap_width{ theApp.DPIRound(1, 0.4) };		//Ƶ�����μ�϶����
+        const int ROWS = 32;		//要显示的频谱柱形的数量
+        int gap_width{ theApp.DPIRound(1, 0.4) };		//频谱柱形间隙宽度
         int width = (spectral_rect.Width() - (ROWS - 2) * gap_width) / (ROWS - 2);
         COLORREF color;
         if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
@@ -154,25 +154,25 @@ void CPlayerUI::_DrawInfo(bool reset)
         m_draw.DrawSpectrum(cover_rect, width, gap_width, ROWS, color, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
     }
 
-    //���ƹ�����
+    //绘制工具条
     CPoint point{ spectral_rect.left, spectral_rect.bottom };
     point.y += 2 * Margin();
     CRect other_info_rect{ point, CSize(draw_rect.Width() - 2 * EdgeMargin(true), DPI(24)) };
     DrawToolBar(other_info_rect, IsDrawNarrowMode());
 
-    //��ʾ���
+    //显示歌词
     CRect lyric_rect;
     if (IsDrawNarrowMode())
     {
         lyric_rect = other_info_rect;
         lyric_rect.MoveToY(other_info_rect.bottom + Margin());
-        if (lyric_rect.Width() >= m_progress_on_top_threshold)		//�����������㹻���½���������ʾ�ڰ�ť�Ϸ������Ҳ࣬������������и���ĸ߶�
+        if (lyric_rect.Width() >= m_progress_on_top_threshold)		//如果界面宽度足够大导致进度条不显示在按钮上方而是右侧，则歌词区域可以有更大的高度
             lyric_rect.bottom += DPI(16);
 
         if (draw_rect.bottom - lyric_rect.bottom < DPI(40))
             lyric_rect.bottom = draw_rect.bottom - DPI(40);
 
-        //���Ʊ���
+        //绘制背景
         if (theApp.m_app_setting_data.lyric_background)
         {
             if (IsDrawBackgroundAlpha())
@@ -189,7 +189,7 @@ void CPlayerUI::_DrawInfo(bool reset)
         //{
 
         int control_bar_height;
-        if (draw_rect.Width() - 2 * EdgeMargin(true) < m_progress_on_top_threshold)		//����������Ŀ���С��һ��ֵ����������߶ȣ��Ա㽫��������ʾ�ڰ�ť�Ϸ�
+        if (draw_rect.Width() - 2 * EdgeMargin(true) < m_progress_on_top_threshold)		//如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
             control_bar_height = DPI(50);
         else
             control_bar_height = DPI(36);
@@ -207,7 +207,7 @@ void CPlayerUI::_DrawInfo(bool reset)
         m_draw_data.thumbnail_rect.bottom = lyric_rect.top;
     }
 
-    //���Ʋ��ſ�����
+    //绘制播放控制条
     CRect rc_control_bar;
     if (IsDrawNarrowMode())
     {
@@ -225,7 +225,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     }
     DrawControlBar(rc_control_bar);
 
-    //������������ť����Ϊ�������ϲ㣬���Ա�����������
+    //绘制音量调按钮，因为必须在上层，所以必须在最后绘制
     DrawVolumnAdjBtn();
 
     static bool last_draw_status_bar{ false };
@@ -240,21 +240,21 @@ void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
 {
     bool draw_background{ IsDrawBackgroundAlpha() };
     bool midi_lyric = CPlayerUIHelper::IsMidiLyric();
-    //��ʾ������㡱
+    //显示“歌词秀”
     CRect tmp;
     tmp = lyric_rect;
     tmp.left += (Margin() + EdgeMargin(true));
     tmp.bottom = tmp.top + DPI(28);
     m_draw.SetFont(&theApp.m_font_set.normal.GetFont(m_ui_data.full_screen));
     m_draw.DrawWindowText(tmp, CCommon::LoadText(IDS_LYRIC_SHOW, _T(": ")), m_colors.color_text);
-    //��ʾ���밴ť
+    //显示翻译按钮
     CRect translate_rect{ tmp };
     translate_rect.DeflateRect(DPI(4), DPI(4));
     translate_rect.right = lyric_rect.right - (Margin() + EdgeMargin(true));
     translate_rect.left = translate_rect.right - translate_rect.Height();
     DrawTranslateButton(translate_rect);
 
-    //��������򱳾�ɫ
+    //填充歌词区域背景色
     CRect lyric_area = lyric_rect;
     lyric_area.DeflateRect(Margin() + EdgeMargin(true), 0);
     lyric_area.top += 2 * Margin();
@@ -267,11 +267,11 @@ void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
         else
             m_draw.FillRect(lyric_area, m_colors.color_lyric_back);
     }
-    //���ø����������
+    //设置歌词文字区域
     lyric_area.DeflateRect(2 * Margin(), 2 * Margin());
     //CDrawCommon::SetDrawArea(pDC, lyric_area);
 
-    //���Ƹ���ı�
+    //绘制歌词文本
     m_draw.DrawLryicCommon(lyric_area, theApp.m_app_setting_data.lyric_align);
 }
 
@@ -293,8 +293,8 @@ CSize CPlayerUI::SpectralSize()
 //	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
 //		return;
 //
-//	CPoint point1;		//����һ������ȷ�����λ�õ�λ��
-//	GetCursorPos(&point1);	//��ȡ��ǰ����λ�ã��Ա�ʹ�ò˵����Ը����꣬��λ������Ļ���Ͻǵ�Ϊԭ�㣬point���Կͻ������Ͻ�Ϊԭ��
+//	CPoint point1;		//定义一个用于确定光标位置的位置
+//	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
 //
 //	if (!m_draw_data.lyric_rect.PtInRect(point))
 //	{
@@ -311,7 +311,7 @@ void CPlayerUI::MouseMove(CPoint point)
 {
     CPlayerUIBase::MouseMove(point);
 
-    ////��ʾר���������ʾ
+    ////显示专辑封面的提示
     //if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
     //{
     //	CRect cover_rect{ m_draw_data.cover_rect };

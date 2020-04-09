@@ -1,5 +1,5 @@
-//²¥·ÅÁĞ±í×¨ÓÃµÄ¿Ø¼şÀà£¬´ÓCListCtrlExÅÉÉú£¬ÓÃÓÚÊµÏÖÉèÖÃCListCtrl¿Ø¼şÎÄ×ÖÑÕÉ«
-//ÒÔ¼°Êó±êÌáÊ¾ĞÅÏ¢
+ï»¿//æ’­æ”¾åˆ—è¡¨ä¸“ç”¨çš„æ§ä»¶ç±»ï¼Œä»CListCtrlExæ´¾ç”Ÿï¼Œç”¨äºå®ç°è®¾ç½®CListCtrlæ§ä»¶æ–‡å­—é¢œè‰²
+//ä»¥åŠé¼ æ ‡æç¤ºä¿¡æ¯
 #pragma once
 #include "AudioCommon.h"
 #include "ColorConvert.h"
@@ -16,24 +16,24 @@ public:
 	CPlayListCtrl(const vector<SongInfo>& all_song_info);
 	virtual ~CPlayListCtrl();
 
-	void EnableTip(bool enable = true) { m_bEnableTips = enable; }		//ÉèÖÃÊÇ·ñ¿ªÆôÌáÊ¾
+	void EnableTip(bool enable = true) { m_bEnableTips = enable; }		//è®¾ç½®æ˜¯å¦å¼€å¯æç¤º
 
-	static wstring GetDisplayStr(const SongInfo& song_info, DisplayFormat display_format);		//¸ù¾İdisplay_formatÖ¸¶¨µÄÏÔÊ¾¸ñÊ½£¬·µ»ØÒ»Ê×ÇúÄ¿ÏÔÊ¾µÄ×Ö·û´®
-	void ShowPlaylist(DisplayFormat display_format, bool search_result = false);		//ÏÔÊ¾²¥·ÅÁĞ±í
-	void QuickSearch(const wstring& key_words);		//¸ù¾İ¹Ø¼ü×ÖÖ´ĞĞ¿ìËÙ²éÕÒ£¬²éÕÒÎÄ¼şÃû¡¢¸èÇú±êÌâ¡¢ÒÕÊõ¼ÒºÍ³ªÆ¬¼¯£¬½«ÕÒµ½µÄÇúÄ¿µÄĞòºÅ±£´æÔÚm_search_resultÖĞ
-	void GetItemSelectedSearched(vector<int>& item_selected);		//»ñÈ¡´¦ÓÚËÑË÷×´Ì¬ÏÂ²¥·ÅÁĞ±íÑ¡ÖĞµÄÏîÄ¿
+	static wstring GetDisplayStr(const SongInfo& song_info, DisplayFormat display_format);		//æ ¹æ®display_formatæŒ‡å®šçš„æ˜¾ç¤ºæ ¼å¼ï¼Œè¿”å›ä¸€é¦–æ›²ç›®æ˜¾ç¤ºçš„å­—ç¬¦ä¸²
+	void ShowPlaylist(DisplayFormat display_format, bool search_result = false);		//æ˜¾ç¤ºæ’­æ”¾åˆ—è¡¨
+	void QuickSearch(const wstring& key_words);		//æ ¹æ®å…³é”®å­—æ‰§è¡Œå¿«é€ŸæŸ¥æ‰¾ï¼ŒæŸ¥æ‰¾æ–‡ä»¶åã€æ­Œæ›²æ ‡é¢˜ã€è‰ºæœ¯å®¶å’Œå”±ç‰‡é›†ï¼Œå°†æ‰¾åˆ°çš„æ›²ç›®çš„åºå·ä¿å­˜åœ¨m_search_resultä¸­
+	void GetItemSelectedSearched(vector<int>& item_selected);		//è·å–å¤„äºæœç´¢çŠ¶æ€ä¸‹æ’­æ”¾åˆ—è¡¨é€‰ä¸­çš„é¡¹ç›®
 
 	void AdjustColumnWidth();
 
 protected:
 
-	CToolTipCtrl m_toolTip;		//ÎÄ±¾ÌáÊ¾Àà
-	int m_nItem;				//´æ·ÅĞĞºÅ
-	//int m_nSubItem;			//´æ·ÅÁĞºÅ
-	bool m_bEnableTips{ false };	//ÊÇ·ñ¿ªÆôÎÄ±¾ÌáÊ¾
+	CToolTipCtrl m_toolTip;		//æ–‡æœ¬æç¤ºç±»
+	int m_nItem;				//å­˜æ”¾è¡Œå·
+	//int m_nSubItem;			//å­˜æ”¾åˆ—å·
+	bool m_bEnableTips{ false };	//æ˜¯å¦å¼€å¯æ–‡æœ¬æç¤º
 
-	const vector<SongInfo>& m_all_song_info;		//´¢´æ²¥·ÅÁĞ±íÖĞËùÓĞ¸èÇúµÄĞÅÏ¢
-	vector<int> m_search_result;					//´¢´æ¿ìËÙËÑË÷½á¹ûµÄ¸èÇúĞòºÅ
+	const vector<SongInfo>& m_all_song_info;		//å‚¨å­˜æ’­æ”¾åˆ—è¡¨ä¸­æ‰€æœ‰æ­Œæ›²çš„ä¿¡æ¯
+	vector<int> m_search_result;					//å‚¨å­˜å¿«é€Ÿæœç´¢ç»“æœçš„æ­Œæ›²åºå·
 	bool m_searched{ false };
 	ListData m_list_data;
 

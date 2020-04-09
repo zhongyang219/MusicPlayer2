@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "afxwin.h"
 #include "Common.h"
 #include "AudioCommon.h"
@@ -7,7 +7,7 @@
 #include "TabDlg.h"
 #include "SearchEditCtrl.h"
 
-// CSetPathDlg ¶Ô»°¿ò
+// CSetPathDlg å¯¹è¯æ¡†
 #define WM_PATH_SELECTED (WM_USER+107)
 
 class CSetPathDlg : public CTabDlg
@@ -15,20 +15,20 @@ class CSetPathDlg : public CTabDlg
 	DECLARE_DYNAMIC(CSetPathDlg)
 
 public:
-	CSetPathDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CSetPathDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CSetPathDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_SET_PATH_DIALOG };
 #endif
 
 public:
-	void QuickSearch(const wstring& key_words);		//¸ù¾İ¹Ø¼ü×ÖÖ´ĞĞ¿ìËÙ²éÕÒm_search_resultÖĞ
+	void QuickSearch(const wstring& key_words);		//æ ¹æ®å…³é”®å­—æ‰§è¡Œå¿«é€ŸæŸ¥æ‰¾m_search_resultä¸­
 
 protected:
-	deque<PathInfo>& m_recent_path;		//×î½ü´ò¿ª¹ıµÄÂ·¾¶
-	int m_path_selected{};		//Ñ¡ÔñµÄÂ·¾¶
+	deque<PathInfo>& m_recent_path;		//æœ€è¿‘æ‰“å¼€è¿‡çš„è·¯å¾„
+	int m_path_selected{};		//é€‰æ‹©çš„è·¯å¾„
 
 	CEdit m_path_name;
 	CListCtrlEx m_path_list;
@@ -36,28 +36,28 @@ protected:
 	CSearchEditCtrl m_search_edit;
 	//CToolTipCtrl m_Mytip;
 
-	CSize m_min_size;		//´°¿ÚµÄ×îĞ¡´óĞ¡
+	CSize m_min_size;		//çª—å£çš„æœ€å°å¤§å°
 
-	vector<int> m_search_result;			//´¢´æ¿ìËÙËÑË÷½á¹ûµÄ¸èÇúĞòºÅ
-	bool m_searched{ false };				//ÊÇ·ñ´¦ÀíËÑË÷×´Ì¬
+	vector<int> m_search_result;			//å‚¨å­˜å¿«é€Ÿæœç´¢ç»“æœçš„æ­Œæ›²åºå·
+	bool m_searched{ false };				//æ˜¯å¦å¤„ç†æœç´¢çŠ¶æ€
 
 protected:
 	void ShowPathList();
 	void SetButtonsEnable(bool enable);
 	void CalculateColumeWidth(vector<int>& width);
 	void SetListRowData(int index, const PathInfo& path_info);
-	bool IsSelectedPlayEnable() const;			//ÅĞ¶ÏÑ¡ÖĞÂ·¾¶ÊÇ·ñ¿ÉÒÔ²¥·Å
+	bool IsSelectedPlayEnable() const;			//åˆ¤æ–­é€‰ä¸­è·¯å¾„æ˜¯å¦å¯ä»¥æ’­æ”¾
     virtual void OnTabEntered() override;
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:
-	wstring GetSelPath() const;		//»ñÈ¡Ñ¡ÔñµÄÂ·¾¶
+	wstring GetSelPath() const;		//è·å–é€‰æ‹©çš„è·¯å¾„
 	int GetTrack() const;
 	int GetPosition() const;
 	SortMode GetSortMode() const;
-	bool SelectValid() const;		//ÅĞ¶ÏÑ¡ÔñÊÇ·ñÓĞĞ§
+	bool SelectValid() const;		//åˆ¤æ–­é€‰æ‹©æ˜¯å¦æœ‰æ•ˆ
 
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();

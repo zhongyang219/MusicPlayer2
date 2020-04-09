@@ -118,7 +118,7 @@ void CFloatPlaylistDlg::GetPlaylistItemSelected()
 
 void CFloatPlaylistDlg::SetDragEnable()
 {
-    bool enable = CPlayer::GetInstance().IsPlaylistMode() && !m_searched;   //处于播放列表模式且不处理搜索状态时才允许拖动排序
+    bool enable = CPlayer::GetInstance().IsPlaylistMode() && !theApp.m_media_lib_setting_data.disable_drag_sort && !m_searched;   //处于播放列表模式且不处理搜索状态时才允许拖动排序
     m_playlist_ctrl.SetDragEnable(enable);
 }
 

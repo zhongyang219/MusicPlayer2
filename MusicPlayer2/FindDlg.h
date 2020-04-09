@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "afxcmn.h"
 #include "AudioCommon.h"
 #include "afxwin.h"
@@ -6,14 +6,14 @@
 #include "Common.h"
 
 
-// CFindDlg ¶Ô»°¿ò
+// CFindDlg å¯¹è¯æ¡†
 
 class CFindDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CFindDlg)
 
 public:
-	CFindDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CFindDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CFindDlg();
 
 	//wstring m_config_path;
@@ -25,7 +25,7 @@ public:
 	void SaveConfig();
 	void LoadConfig();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_FIND_DIALOG };
 #endif
@@ -41,13 +41,13 @@ protected:
         COL_PATH,
     };
 
-	//const vector<SongInfo>& m_playlist;		//²¥·ÅÁĞ±í
-	//vector<int> m_find_result;			//´¢´æµ±Ç°²¥·ÅÁĞ±íµÄ²éÕÒ½á¹û£¨ÇúÄ¿ĞòºÅ£©
-	wstring m_key_word;				//²éÕÒµÄ×Ö·û´®
-	vector<SongInfo> m_find_result;		//´¢´æËùÓĞ²¥·ÅÁĞ±íµÄ²éÕÒ½á¹û
+	//const vector<SongInfo>& m_playlist;		//æ’­æ”¾åˆ—è¡¨
+	//vector<int> m_find_result;			//å‚¨å­˜å½“å‰æ’­æ”¾åˆ—è¡¨çš„æŸ¥æ‰¾ç»“æœï¼ˆæ›²ç›®åºå·ï¼‰
+	wstring m_key_word;				//æŸ¥æ‰¾çš„å­—ç¬¦ä¸²
+	vector<SongInfo> m_find_result;		//å‚¨å­˜æ‰€æœ‰æ’­æ”¾åˆ—è¡¨çš„æŸ¥æ‰¾ç»“æœ
 
-	CListCtrlEx m_find_result_list;		//²éÕÒ½á¹û¿Ø¼ş
-	int m_item_selected{ -1 };		//Êó±êÑ¡ÖĞµÄÏîÄ¿ĞòºÅ
+	CListCtrlEx m_find_result_list;		//æŸ¥æ‰¾ç»“æœæ§ä»¶
+	int m_item_selected{ -1 };		//é¼ æ ‡é€‰ä¸­çš„é¡¹ç›®åºå·
     vector<int> m_items_selected;
 	//CMenu m_menu;
 
@@ -58,25 +58,25 @@ protected:
 	CButton m_find_artist_check;
 	CButton m_find_album_check;
 
-	bool m_find_current_playlist{ true };		//Èç¹û²éÕÒ·¶Î§Îªµ±Ç°²¥·ÅÁĞ±í£¬ÔòÎªtrue£¬Èç¹ûÊÇËùÓĞ²¥·ÅÁĞ±í£¬ÔòÎªfalse
-    bool m_result_in_current_playlist{ true };  //²éÕÒ½á¹ûÊÇ·ñÎªµ±Ç°²¥·ÅÁĞ±í
+	bool m_find_current_playlist{ true };		//å¦‚æœæŸ¥æ‰¾èŒƒå›´ä¸ºå½“å‰æ’­æ”¾åˆ—è¡¨ï¼Œåˆ™ä¸ºtrueï¼Œå¦‚æœæ˜¯æ‰€æœ‰æ’­æ”¾åˆ—è¡¨ï¼Œåˆ™ä¸ºfalse
+    bool m_result_in_current_playlist{ true };  //æŸ¥æ‰¾ç»“æœæ˜¯å¦ä¸ºå½“å‰æ’­æ”¾åˆ—è¡¨
 	bool m_find_file{ true };
 	bool m_find_title{ true };
 	bool m_find_artist{ true };
 	bool m_find_album{ true };
 
-	int m_find_option_data{};		//±£´æ²éÕÒÑ¡ÏîµÄÊı¾İ£¬ÓÃÃ¿Ò»¸öbitÎ»±íÊ¾Ã¿¸ö²éÕÒÑ¡ÏîÊÇ·ñÑ¡ÖĞ
+	int m_find_option_data{};		//ä¿å­˜æŸ¥æ‰¾é€‰é¡¹çš„æ•°æ®ï¼Œç”¨æ¯ä¸€ä¸ªbitä½è¡¨ç¤ºæ¯ä¸ªæŸ¥æ‰¾é€‰é¡¹æ˜¯å¦é€‰ä¸­
 
 	int m_min_width{};
 	int m_min_height{};
 
 	CString m_selected_string;
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 	void ShowFindResult();
 	void ShowFindInfo();
-    bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //Ö´ĞĞÌí¼Óµ½ĞÂ½¨²¥·ÅÁĞ±íÃüÁî£¬³É¹¦·µ»Øtrue£¬playlist_pathÓÃÓÚ½ÓÊÕĞÂ²¥·ÅÁĞ±íµÄÂ·¾¶
-    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//Ö´ĞĞÔÚÏß²é¿´µÄÏß³Ìº¯Êı
+    bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //æ‰§è¡Œæ·»åŠ åˆ°æ–°å»ºæ’­æ”¾åˆ—è¡¨å‘½ä»¤ï¼ŒæˆåŠŸè¿”å›trueï¼Œplaylist_pathç”¨äºæ¥æ”¶æ–°æ’­æ”¾åˆ—è¡¨çš„è·¯å¾„
+    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//æ‰§è¡Œåœ¨çº¿æŸ¥çœ‹çš„çº¿ç¨‹å‡½æ•°
     void GetCurrentSongList(std::vector<SongInfo>& song_list);
 
 public: 

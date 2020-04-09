@@ -1,5 +1,5 @@
-
-// MusicPlayerDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿
+// MusicPlayerDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -27,9 +27,9 @@
 
 
 
-// CMusicPlayerDlg ¶Ô»°¿ò
+// CMusicPlayerDlg å¯¹è¯æ¡†
 
-const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };	//×¢²áÈÎÎñÀ¸½¨Á¢µÄÏûÏ¢
+const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };	//æ³¨å†Œä»»åŠ¡æ å»ºç«‹çš„æ¶ˆæ¯
 
 CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{cmdLine}, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
@@ -240,7 +240,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
 END_MESSAGE_MAP()
 
 
-// CMusicPlayerDlg ÏûÏ¢´¦Àí³ÌĞò
+// CMusicPlayerDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 void CMusicPlayerDlg::SaveConfig()
 {
@@ -357,18 +357,19 @@ void CMusicPlayerDlg::SaveConfig()
         ui_selected = 1;
     ini.WriteInt(L"config", L"UI_selected", ui_selected);
 
-    //±£´æÈÈ¼üÉèÖÃ
+    //ä¿å­˜çƒ­é”®è®¾ç½®
     ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_setting_data.hot_key_enable);
     theApp.m_hot_key.SaveToTni(ini);
 
-    //±£´æ×ÀÃæ¸è´ÊÔ¤Éè
+    //ä¿å­˜æ¡Œé¢æ­Œè¯é¢„è®¾
     m_desktop_lyric.SaveDefaultStyle(ini);
 
-    //Ã½Ìå¿âÉèÖÃ
+    //åª’ä½“åº“è®¾ç½®
     ini.WriteStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders);
     ini.WriteBool(L"media_lib", L"hide_only_one_classification", theApp.m_media_lib_setting_data.hide_only_one_classification);
     ini.WriteBool(L"media_lib", L"show_tree_tool_tips", theApp.m_media_lib_setting_data.show_tree_tool_tips);
     ini.WriteBool(L"media_lib", L"update_media_lib_when_start_up", theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
+    ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
 
     ini.Save();
 }
@@ -492,18 +493,19 @@ void CMusicPlayerDlg::LoadConfig()
     else
         m_pUI = &m_ui2;
 
-    //ÔØÈëÈÈ¼üÉèÖÃ
+    //è½½å…¥çƒ­é”®è®¾ç½®
     theApp.m_hot_key_setting_data.hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
     theApp.m_hot_key.LoadFromIni(ini);
 
-    //ÔØÈë×ÀÃæ¸è´ÊÔ¤Éè·½°¸
+    //è½½å…¥æ¡Œé¢æ­Œè¯é¢„è®¾æ–¹æ¡ˆ
     m_desktop_lyric.LoadDefaultStyle(ini);
 
-    //ÔØÈëÃ½Ìå¿âÉèÖÃ
+    //è½½å…¥åª’ä½“åº“è®¾ç½®
     ini.GetStringList(L"media_lib", L"media_folders", theApp.m_media_lib_setting_data.media_folders, vector<wstring>{CCommon::GetSpecialDir(CSIDL_MYMUSIC)});
     theApp.m_media_lib_setting_data.hide_only_one_classification = ini.GetBool(L"media_lib", L"hide_only_one_classification", false);
     theApp.m_media_lib_setting_data.show_tree_tool_tips = ini.GetBool(L"media_lib", L"show_tree_tool_tips", true);
     theApp.m_media_lib_setting_data.update_media_lib_when_start_up = ini.GetBool(L"media_lib", L"update_media_lib_when_start_up", false);
+    theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -518,13 +520,13 @@ void CMusicPlayerDlg::SetDesptopLyricTransparency()
 
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
-    if (!IsIconic() && IsWindowVisible())		//´°¿Ú×îĞ¡»¯»òÒş²ØÊ±²»»æÖÆ£¬ÒÔ½µµÍCPUÀûÓÃÂÊ
+    if (!IsIconic() && IsWindowVisible())		//çª—å£æœ€å°åŒ–æˆ–éšè—æ—¶ä¸ç»˜åˆ¶ï¼Œä»¥é™ä½CPUåˆ©ç”¨ç‡
         m_pUI->DrawInfo(reset);
 }
 
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 {
-    //ÉèÖÃ²¥·ÅÁĞ±í´óĞ¡
+    //è®¾ç½®æ’­æ”¾åˆ—è¡¨å¤§å°
     if (!theApp.m_ui_data.narrow_mode)
     {
         m_playlist_list.MoveWindow(cx / 2 + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + 2 * m_layout.margin,
@@ -537,7 +539,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     }
     m_playlist_list.AdjustColumnWidth();
 
-    //ÉèÖÃ¡°µ±Ç°Â·¾¶¡±static¿Ø¼ş´óĞ¡
+    //è®¾ç½®â€œå½“å‰è·¯å¾„â€staticæ§ä»¶å¤§å°
     CRect rect_static;
     m_path_static.GetWindowRect(rect_static);
     rect_static.bottom = rect_static.top + m_layout.path_edit_height - 2 * m_layout.margin;
@@ -556,7 +558,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
         rect_static.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight());
     m_path_static.MoveWindow(rect_static);
 
-    //ÉèÖÃ¡°µ±Ç°Â·¾¶¡±edit¿Ø¼ş´óĞ¡
+    //è®¾ç½®â€œå½“å‰è·¯å¾„â€editæ§ä»¶å¤§å°
     CRect rect_edit;
     m_path_edit.GetWindowRect(rect_edit);
     if (!theApp.m_ui_data.narrow_mode)
@@ -571,7 +573,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     }
     m_path_edit.MoveWindow(rect_edit);
 
-    //ÉèÖÃ¡°Ñ¡ÔñÎÄ¼ş¼Ğ¡±°´Å¥µÄ´óĞ¡ºÍÎ»ÖÃ
+    //è®¾ç½®â€œé€‰æ‹©æ–‡ä»¶å¤¹â€æŒ‰é’®çš„å¤§å°å’Œä½ç½®
     CRect rect_select_folder{ rect_edit };
     rect_select_folder.left = rect_edit.right + m_layout.margin;
     rect_select_folder.right = cx - m_layout.margin;
@@ -579,7 +581,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     rect_select_folder.bottom++;
     m_set_path_button.MoveWindow(rect_select_folder);
 
-    //ÉèÖÃ¸èÇúËÑË÷¿òµÄ´óĞ¡ºÍÎ»ÖÃ
+    //è®¾ç½®æ­Œæ›²æœç´¢æ¡†çš„å¤§å°å’Œä½ç½®
     CRect rect_search;
     m_search_edit.GetWindowRect(rect_search);
     if (!theApp.m_ui_data.narrow_mode)
@@ -593,14 +595,14 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
         rect_search.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.path_edit_height - theApp.DPI(3));
     }
     m_search_edit.MoveWindow(rect_search);
-    ////ÉèÖÃÇå³ıËÑË÷°´Å¥µÄ´óĞ¡ºÍÎ»ÖÃ
+    ////è®¾ç½®æ¸…é™¤æœç´¢æŒ‰é’®çš„å¤§å°å’Œä½ç½®
     //CRect rect_clear{};
     //rect_clear.right = rect_clear.bottom = rect_search.Height();
     ////if (!theApp.m_ui_data.narrow_mode)
     //rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
     //m_clear_search_button.MoveWindow(rect_clear);
     //m_clear_search_button.Invalidate();
-    //ÉèÖÃ²¥·ÅÁĞ±í¹¤¾ßÀ¸µÄ´óĞ¡Î»ÖÃ
+    //è®¾ç½®æ’­æ”¾åˆ—è¡¨å·¥å…·æ çš„å¤§å°ä½ç½®
     CRect rect_toolbar{ rect_search };
     rect_toolbar.top = rect_search.bottom + m_layout.margin;
     //rect_toolbar.right = rect_search.right;
@@ -612,18 +614,18 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 void CMusicPlayerDlg::SetAlwaysOnTop()
 {
     if (theApp.m_nc_setting_data.always_on_top)
-        SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);			//ÉèÖÃÖÃ¶¥
+        SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);			//è®¾ç½®ç½®é¡¶
     else
-        SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);		//È¡ÏûÖÃ¶¥
+        SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);		//å–æ¶ˆç½®é¡¶
 }
 
 void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
 {
     m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format);
     m_playlist_list.SetCurSel(-1);
-    //ÉèÖÃ²¥·ÅÁĞ±íÖĞÍ»³öÏÔÊ¾µÄÏîÄ¿
+    //è®¾ç½®æ’­æ”¾åˆ—è¡¨ä¸­çªå‡ºæ˜¾ç¤ºçš„é¡¹ç›®
     SetPlayListColor(highlight_visible);
-    //ÏÔÊ¾µ±Ç°Â·¾¶
+    //æ˜¾ç¤ºå½“å‰è·¯å¾„
     m_path_edit.SetWindowTextW(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
     CStaticEx* pStatic{};
     if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
@@ -671,7 +673,7 @@ void CMusicPlayerDlg::SwitchTrack()
 	CPlayer::GetInstance().ResetABRepeat();
 	UpdateABRepeatToolTip();
 
-    //µ±ÇĞ»»ÕıÔÚ²¥·ÅµÄ¸èÇúÊ±ÉèÖÃ²¥·ÅÁĞ±íÖĞÍ»³öÏÔÊ¾µÄÏîÄ¿
+    //å½“åˆ‡æ¢æ­£åœ¨æ’­æ”¾çš„æ­Œæ›²æ—¶è®¾ç½®æ’­æ”¾åˆ—è¡¨ä¸­çªå‡ºæ˜¾ç¤ºçš„é¡¹ç›®
     SetPlayListColor();
     if (m_miniModeDlg.m_hWnd != NULL)
     {
@@ -679,7 +681,7 @@ void CMusicPlayerDlg::SwitchTrack()
         //m_miniModeDlg.RePaint();
         m_miniModeDlg.Invalidate(FALSE);
     }
-    //ÇĞ»»¸èÇúÊ±Èç¹ûµ±Ç°¸èÇúµÄÊ±¼äÃ»ÓĞÏÔÊ¾£¬ÔòÏÔÊ¾³öÀ´
+    //åˆ‡æ¢æ­Œæ›²æ—¶å¦‚æœå½“å‰æ­Œæ›²çš„æ—¶é—´æ²¡æœ‰æ˜¾ç¤ºï¼Œåˆ™æ˜¾ç¤ºå‡ºæ¥
     CString song_length_str;
     int index{ CPlayer::GetInstance().GetIndex() };
     song_length_str = m_playlist_list.GetItemText(index, 2);
@@ -723,7 +725,7 @@ void CMusicPlayerDlg::UpdateTaskBarProgress()
 #ifndef COMPILE_IN_WIN_XP
     if (IsTaskbarListEnable())
     {
-        //¸ù¾İ²¥·Å×´Ì¬ÉèÖÃÈÎÎñÀ¸×´Ì¬ºÍ½ø¶È
+        //æ ¹æ®æ’­æ”¾çŠ¶æ€è®¾ç½®ä»»åŠ¡æ çŠ¶æ€å’Œè¿›åº¦
         if (theApp.m_play_setting_data.show_taskbar_progress)
         {
             int position, length;
@@ -754,10 +756,10 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
         {
-            //¸üĞÂÈÎÎñÀ¸ËõÂÔÍ¼ÉÏ¡°²¥·Å/ÔİÍ£¡±µÄÍ¼±ê
+            //æ›´æ–°ä»»åŠ¡æ ç¼©ç•¥å›¾ä¸Šâ€œæ’­æ”¾/æš‚åœâ€çš„å›¾æ ‡
             m_thumbButton[1].hIcon = theApp.m_icon_set.pause.GetIcon();
             wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PAUSE));
-            //¸üĞÂÈÎÎñ°´Å¥ÉÏµÄ²¥·Å×´Ì¬Í¼±ê
+            //æ›´æ–°ä»»åŠ¡æŒ‰é’®ä¸Šçš„æ’­æ”¾çŠ¶æ€å›¾æ ‡
             if (theApp.m_play_setting_data.show_playstate_icon)
                 m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.play.GetIcon(), L"");
             else
@@ -770,10 +772,10 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
         {
-            //¸üĞÂÈÎÎñÀ¸ËõÂÔÍ¼ÉÏ¡°²¥·Å/ÔİÍ£¡±µÄÍ¼±ê
+            //æ›´æ–°ä»»åŠ¡æ ç¼©ç•¥å›¾ä¸Šâ€œæ’­æ”¾/æš‚åœâ€çš„å›¾æ ‡
             m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
             wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
-            //¸üĞÂÈÎÎñ°´Å¥ÉÏµÄ²¥·Å×´Ì¬Í¼±ê
+            //æ›´æ–°ä»»åŠ¡æŒ‰é’®ä¸Šçš„æ’­æ”¾çŠ¶æ€å›¾æ ‡
             if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
                 m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
             else
@@ -820,7 +822,7 @@ void CMusicPlayerDlg::EnablePlaylist(bool enable)
 
 void CMusicPlayerDlg::CreateDesktopShortcut()
 {
-    //Èç¹ûÄ¿Â¼ÏÂÃ»ÓĞrecent_pathºÍsong_dataÎÄ¼ş£¬¾ÍÅĞ¶ÏÎªÊÇµÚÒ»´ÎÔËĞĞ³ÌĞò£¬ÌáÊ¾ÓÃ»§ÊÇ·ñ´´½¨×ÀÃæ¿ì½İ·½Ê½
+    //å¦‚æœç›®å½•ä¸‹æ²¡æœ‰recent_pathå’Œsong_dataæ–‡ä»¶ï¼Œå°±åˆ¤æ–­ä¸ºæ˜¯ç¬¬ä¸€æ¬¡è¿è¡Œç¨‹åºï¼Œæç¤ºç”¨æˆ·æ˜¯å¦åˆ›å»ºæ¡Œé¢å¿«æ·æ–¹å¼
     if (!CCommon::FileExist(theApp.m_song_data_path) && !CCommon::FileExist(theApp.m_recent_path_dat_path))
     {
         wstring shortcut_path;
@@ -843,8 +845,8 @@ void CMusicPlayerDlg::CreateDesktopShortcut()
 
 void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 {
-    //»ñÈ¡Ñ¡ÏîÉèÖÃ¶Ô»°¿òÖĞµÄÉèÖÃÊı¾İ
-    if (theApp.m_lyric_setting_data.cortana_info_enable == true && optionDlg.m_tab1_dlg.m_data.cortana_info_enable == false)	//Èç¹ûÔÚÑ¡ÏîÖĞ¹Ø±ÕÁË¡°ÔÚCortanaËÑË÷¿òÖĞÏÔÊ¾¸è´Ê¡±µÄÑ¡Ïî£¬ÔòÖØÖÃCortanaËÑË÷¿òµÄÎÄ±¾
+    //è·å–é€‰é¡¹è®¾ç½®å¯¹è¯æ¡†ä¸­çš„è®¾ç½®æ•°æ®
+    if (theApp.m_lyric_setting_data.cortana_info_enable == true && optionDlg.m_tab1_dlg.m_data.cortana_info_enable == false)	//å¦‚æœåœ¨é€‰é¡¹ä¸­å…³é—­äº†â€œåœ¨Cortanaæœç´¢æ¡†ä¸­æ˜¾ç¤ºæ­Œè¯â€çš„é€‰é¡¹ï¼Œåˆ™é‡ç½®Cortanaæœç´¢æ¡†çš„æ–‡æœ¬
         m_cortana_lyric.ResetCortanaText();
 
     bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
@@ -903,7 +905,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
 	m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
 
-    SaveConfig();		//½«ÉèÖÃĞ´Èëµ½iniÎÄ¼ş
+    SaveConfig();		//å°†è®¾ç½®å†™å…¥åˆ°iniæ–‡ä»¶
     theApp.SaveConfig();
     CPlayer::GetInstance().SaveConfig();
     DrawInfo(true);
@@ -928,8 +930,8 @@ void CMusicPlayerDlg::ThemeColorChanged()
         return;
     COLORREF color{};
     color = CCommon::GetWindowsThemeColor();
-    CColorConvert::ReduceLuminance(color);				//Èç¹ûÖ÷ÌâÑÕÉ«¹ıÉî£¬¾Í½«Æä½µµÍÒ»µãÁÁ¶È
-    if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255, 255, 255))	//µ±Ç°Ö÷ÌâÉ«±äÁËµÄÊ±ºòÖØĞÂÉèÖÃÖ÷ÌâÉ«£¬µ«ÊÇÈ·±£»ñÈ¡µ½µÄÑÕÉ«²»ÊÇ´¿°×É«
+    CColorConvert::ReduceLuminance(color);				//å¦‚æœä¸»é¢˜é¢œè‰²è¿‡æ·±ï¼Œå°±å°†å…¶é™ä½ä¸€ç‚¹äº®åº¦
+    if (theApp.m_app_setting_data.theme_color.original_color != color && color != RGB(255, 255, 255))	//å½“å‰ä¸»é¢˜è‰²å˜äº†çš„æ—¶å€™é‡æ–°è®¾ç½®ä¸»é¢˜è‰²ï¼Œä½†æ˜¯ç¡®ä¿è·å–åˆ°çš„é¢œè‰²ä¸æ˜¯çº¯ç™½è‰²
     {
         theApp.m_app_setting_data.theme_color.original_color = color;
         ApplyThemeColor();
@@ -938,7 +940,7 @@ void CMusicPlayerDlg::ThemeColorChanged()
 
 void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 {
-    //ÉèÖÃÑ­»·Ä£Ê½²Ëµ¥µÄµ¥Ñ¡±ê¼Ç
+    //è®¾ç½®å¾ªç¯æ¨¡å¼èœå•çš„å•é€‰æ ‡è®°
     RepeatMode repeat_mode{ CPlayer::GetInstance().GetRepeatMode() };
     switch (repeat_mode)
     {
@@ -958,11 +960,11 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         break;
     }
 
-    //µ¯³öÓÒ¼ü²Ëµ¥Ê±£¬Èç¹ûÃ»ÓĞÑ¡ÖĞ²¥·ÅÁĞ±íÖĞµÄÏîÄ¿£¬Ôò½ûÓÃÓÒ¼ü²Ëµ¥ÖĞ¡°²¥·Å¡±¡¢¡°´ÓÁĞ±íÖĞÉ¾³ı¡±¡¢¡°ÊôĞÔ¡±¡¢¡°´Ó´ÅÅÌÉ¾³ı¡±ÏîÄ¿¡£
+    //å¼¹å‡ºå³é”®èœå•æ—¶ï¼Œå¦‚æœæ²¡æœ‰é€‰ä¸­æ’­æ”¾åˆ—è¡¨ä¸­çš„é¡¹ç›®ï¼Œåˆ™ç¦ç”¨å³é”®èœå•ä¸­â€œæ’­æ”¾â€ã€â€œä»åˆ—è¡¨ä¸­åˆ é™¤â€ã€â€œå±æ€§â€ã€â€œä»ç£ç›˜åˆ é™¤â€é¡¹ç›®ã€‚
     bool selete_valid = m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum();
     bool playlist_mode{ CPlayer::GetInstance().IsPlaylistMode() };
-    bool can_delete = false;     //Ñ¡ÖĞµÄÇúÄ¿ÊÇ·ñÈ«ÊÇcueÒô¹ì»òosuÒôÀÖ£¬Èç¹ûÊÇ£¬Ôò²»ÔÊĞí¡°´Ó´ÅÅÌÉ¾³ı¡±¡¢¡°ÒÆ¶¯ÎÄ¼şµ½¡±ÃüÁî
-    bool can_copy = false;       //Ñ¡ÖĞµÄÇúÄ¿ÊÇ·ñÈ«ÊÇcueÒô¹ì£¬Èç¹ûÊÇ£¬Ôò²»ÔÊĞí¡°¸´ÖÆÎÄ¼şµ½¡±ÃüÁî
+    bool can_delete = false;     //é€‰ä¸­çš„æ›²ç›®æ˜¯å¦å…¨æ˜¯cueéŸ³è½¨æˆ–osuéŸ³ä¹ï¼Œå¦‚æœæ˜¯ï¼Œåˆ™ä¸å…è®¸â€œä»ç£ç›˜åˆ é™¤â€ã€â€œç§»åŠ¨æ–‡ä»¶åˆ°â€å‘½ä»¤
+    bool can_copy = false;       //é€‰ä¸­çš„æ›²ç›®æ˜¯å¦å…¨æ˜¯cueéŸ³è½¨ï¼Œå¦‚æœæ˜¯ï¼Œåˆ™ä¸å…è®¸â€œå¤åˆ¶æ–‡ä»¶åˆ°â€å‘½ä»¤
     for (auto index : m_items_selected)
     {
         SongInfo selected_song;
@@ -994,7 +996,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
 
-    //ÉèÖÃ¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±×Ó²Ëµ¥ÏîµÄ¿ÉÓÃ×´Ì¬
+    //è®¾ç½®â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€å­èœå•é¡¹çš„å¯ç”¨çŠ¶æ€
     bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_DEFAULT };
     pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(playlist_mode && use_default_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
     bool use_faourite_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE };
@@ -1009,7 +1011,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
 
-    //´ò¿ª²Ëµ¥Ê±£¬Èç¹û²¥·ÅÁĞ±íÖĞÃ»ÓĞ¸èÇú£¬Ôò½ûÓÃÖ÷²Ëµ¥ºÍÓÒ¼ü²Ëµ¥ÖĞµÄ¡°´ò¿ªÎÄ¼şÎ»ÖÃ¡±ÏîÄ¿
+    //æ‰“å¼€èœå•æ—¶ï¼Œå¦‚æœæ’­æ”¾åˆ—è¡¨ä¸­æ²¡æœ‰æ­Œæ›²ï¼Œåˆ™ç¦ç”¨ä¸»èœå•å’Œå³é”®èœå•ä¸­çš„â€œæ‰“å¼€æ–‡ä»¶ä½ç½®â€é¡¹ç›®
     if (CPlayer::GetInstance().GetSongNum() == 0)
     {
         pMenu->EnableMenuItem(ID_EXPLORE_PATH, MF_BYCOMMAND | MF_GRAYED);
@@ -1029,7 +1031,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         pMenu->EnableMenuItem(ID_LYRIC_BATCH_DOWNLOAD, MF_BYCOMMAND | MF_ENABLED);
     }
 
-    //ÉèÖÃ¡°ÊÓÍ¼¡±²Ëµ¥ÏÂµÄ¸´Ñ¡±ê¼Ç
+    //è®¾ç½®â€œè§†å›¾â€èœå•ä¸‹çš„å¤é€‰æ ‡è®°
     pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
@@ -1037,13 +1039,13 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_ALWAYS_ON_TOP, MF_BYCOMMAND | (theApp.m_nc_setting_data.always_on_top ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_ALWAYS_SHOW_STATUS_BAR, MF_BYCOMMAND | (theApp.m_ui_data.always_show_statusbar ? MF_CHECKED : MF_UNCHECKED));
 
-    pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));        //È«ÆÁÊ±½ûÖ¹ÏÔÊ¾/¹Ø±Õ²Ëµ¥À¸
-    pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //ÃÔÄãÄ£Ê½ÏÂ½ûÓÃÈ«ÆÁÄ£Ê½
-    pMenu->EnableMenuItem(ID_MINI_MODE, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));            //È«ÆÁÊ±½ûÖ¹½øÈëÃÔÄãÄ£Ê½
+    pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));        //å…¨å±æ—¶ç¦æ­¢æ˜¾ç¤º/å…³é—­èœå•æ 
+    pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //è¿·ä½ æ¨¡å¼ä¸‹ç¦ç”¨å…¨å±æ¨¡å¼
+    pMenu->EnableMenuItem(ID_MINI_MODE, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));            //å…¨å±æ—¶ç¦æ­¢è¿›å…¥è¿·ä½ æ¨¡å¼
 
     pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
 
-    //ÉèÖÃ²¥·ÅÁĞ±í²Ëµ¥ÖĞÅÅĞò·½Ê½µÄµ¥Ñ¡±ê¼Ç
+    //è®¾ç½®æ’­æ”¾åˆ—è¡¨èœå•ä¸­æ’åºæ–¹å¼çš„å•é€‰æ ‡è®°
     if(!CPlayer::GetInstance().IsPlaylistMode())
     {
         switch (CPlayer::GetInstance().m_sort_mode)
@@ -1074,7 +1076,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         pMenu->CheckMenuItem(ID_SORT_BY_TRACK, MF_UNCHECKED);
     }
 
-    //ÉèÖÃ²¥·ÅÁĞ±í²Ëµ¥ÖĞ¡°²¥·ÅÁĞ±íÏÔÊ¾ÑùÊ½¡±µÄµ¥Ñ¡±ê¼Ç
+    //è®¾ç½®æ’­æ”¾åˆ—è¡¨èœå•ä¸­â€œæ’­æ”¾åˆ—è¡¨æ˜¾ç¤ºæ ·å¼â€çš„å•é€‰æ ‡è®°
     switch (theApp.m_ui_data.display_format)
     {
     case DF_FILE_NAME:
@@ -1096,10 +1098,10 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     else
         pMenu->CheckMenuRadioItem(ID_DOCKED_PLAYLIST, ID_FLOATED_PLAYLIST, ID_DOCKED_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
 
-    //ÉèÖÃ²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥µÄÄ¬ÈÏ²Ëµ¥Ïî
+    //è®¾ç½®æ’­æ”¾åˆ—è¡¨å³é”®èœå•çš„é»˜è®¤èœå•é¡¹
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
 
-    //¸ù¾İ¸è´ÊÊÇ·ñ´æÔÚÉèÖÃÆôÓÃ»ò½ûÓÃ²Ëµ¥Ïî
+    //æ ¹æ®æ­Œè¯æ˜¯å¦å­˜åœ¨è®¾ç½®å¯ç”¨æˆ–ç¦ç”¨èœå•é¡¹
     bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
     bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
     bool no_lyric{ CPlayer::GetInstance().m_Lyrics.IsEmpty() && CPlayer::GetInstance().MidiNoLyric() };
@@ -1113,7 +1115,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     if (midi_lyric)
         pMenu->EnableMenuItem(ID_DELETE_LYRIC, MF_BYCOMMAND | MF_GRAYED);
     else
-        pMenu->EnableMenuItem(ID_DELETE_LYRIC, MF_BYCOMMAND | (CCommon::FileExist(CPlayer::GetInstance().m_Lyrics.GetPathName()) ? MF_ENABLED : MF_GRAYED));		//µ±¸è´ÊÎÄ¼ş´æÔÚÊ±ÆôÓÃ¡°É¾³ı¸è´Ê¡±²Ëµ¥Ïî
+        pMenu->EnableMenuItem(ID_DELETE_LYRIC, MF_BYCOMMAND | (CCommon::FileExist(CPlayer::GetInstance().m_Lyrics.GetPathName()) ? MF_ENABLED : MF_GRAYED));		//å½“æ­Œè¯æ–‡ä»¶å­˜åœ¨æ—¶å¯ç”¨â€œåˆ é™¤æ­Œè¯â€èœå•é¡¹
     pMenu->EnableMenuItem(ID_BROWSE_LYRIC, MF_BYCOMMAND | (!lyric_disable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, MF_BYCOMMAND | (!lyric_disable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, MF_BYCOMMAND | (!lyric_disable ? MF_ENABLED : MF_GRAYED));
@@ -1125,7 +1127,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | ((!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() && CPlayer::GetInstance().AlbumCoverExist()) ? MF_ENABLED : MF_GRAYED));
 
-    //ÕıÔÚÖ´ĞĞ¸ñÊ½×ª»»Ê±½ûÓÃ¡°¸ñÊ½×ª»»¡±²Ëµ¥Ïî
+    //æ­£åœ¨æ‰§è¡Œæ ¼å¼è½¬æ¢æ—¶ç¦ç”¨â€œæ ¼å¼è½¬æ¢â€èœå•é¡¹
     pMenu->EnableMenuItem(ID_FORMAT_CONVERT, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_FORMAT_CONVERT1, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
 
@@ -1163,8 +1165,8 @@ void CMusicPlayerDlg::GetPlaylistItemSelected()
 {
     if (!m_searched)
     {
-        m_item_selected = m_playlist_list.GetCurSel();	//»ñÈ¡Êó±êÑ¡ÖĞµÄÏîÄ¿
-        m_playlist_list.GetItemSelected(m_items_selected);		//»ñÈ¡¶à¸öÑ¡ÖĞµÄÏîÄ¿
+        m_item_selected = m_playlist_list.GetCurSel();	//è·å–é¼ æ ‡é€‰ä¸­çš„é¡¹ç›®
+        m_playlist_list.GetItemSelected(m_items_selected);		//è·å–å¤šä¸ªé€‰ä¸­çš„é¡¹ç›®
     }
     else
     {
@@ -1178,13 +1180,13 @@ void CMusicPlayerDlg::GetPlaylistItemSelected()
 
 void CMusicPlayerDlg::IniPlaylistPopupMenu()
 {
-    //Ïò¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±²Ëµ¥×·¼Ó²¥·ÅÁĞ±í
+    //å‘â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€èœå•è¿½åŠ æ’­æ”¾åˆ—è¡¨
     auto initAddToMenu = [](CMenu* pMenu)
     {
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
-            //½«ID_ADD_TO_MY_FAVOURITEºóÃæµÄËùÓĞ²Ëµ¥ÏîÉ¾³ı
+            //å°†ID_ADD_TO_MY_FAVOURITEåé¢çš„æ‰€æœ‰èœå•é¡¹åˆ é™¤
             int start_pos = CCommon::GetMenuItemPosition(pMenu, ID_ADD_TO_MY_FAVOURITE) + 1;
             while (pMenu->GetMenuItemCount() > start_pos)
             {
@@ -1213,7 +1215,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
 
 void CMusicPlayerDlg::SetPlaylistDragEnable()
 {
-    bool enable = CPlayer::GetInstance().IsPlaylistMode() && !m_searched;   //´¦ÓÚ²¥·ÅÁĞ±íÄ£Ê½ÇÒ²»´¦ÀíËÑË÷×´Ì¬Ê±²ÅÔÊĞíÍÏ¶¯ÅÅĞò
+    bool enable = CPlayer::GetInstance().IsPlaylistMode() && !theApp.m_media_lib_setting_data.disable_drag_sort && !m_searched;   //å¤„äºæ’­æ”¾åˆ—è¡¨æ¨¡å¼ä¸”ä¸å¤„ç†æœç´¢çŠ¶æ€æ—¶æ‰å…è®¸æ‹–åŠ¨æ’åº
     m_playlist_list.SetDragEnable(enable);
 
     if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
@@ -1227,7 +1229,7 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
     theApp.m_hot_key.UnRegisterAllHotKey();
 
     COptionsDlg optionDlg(pParent);
-    //³õÊ¼»¯¶Ô»°¿òÖĞ±äÁ¿µÄÖµ
+    //åˆå§‹åŒ–å¯¹è¯æ¡†ä¸­å˜é‡çš„å€¼
     optionDlg.m_tab_selected = m_tab_selected;
     optionDlg.m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
     optionDlg.m_tab1_dlg.m_pDesktopLyric = &m_desktop_lyric;
@@ -1242,8 +1244,8 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
     optionDlg.m_tab5_dlg.m_data = theApp.m_hot_key_setting_data;
     optionDlg.m_media_lib_dlg.m_data = theApp.m_media_lib_setting_data;
 
-    int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//±£´ætheApp.m_app_setting_data.sprctrum_heightµÄÖµ£¬Èç¹ûÓÃ»§µã»÷ÁËÑ¡Ïî¶Ô»°¿òµÄÈ¡Ïû£¬ÔòĞèÒª°Ñ»Ö¸´ÎªÔ­À´µÄ
-    int background_transparency = theApp.m_app_setting_data.background_transparency;		//Í¬ÉÏ
+    int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;		//ä¿å­˜theApp.m_app_setting_data.sprctrum_heightçš„å€¼ï¼Œå¦‚æœç”¨æˆ·ç‚¹å‡»äº†é€‰é¡¹å¯¹è¯æ¡†çš„å–æ¶ˆï¼Œåˆ™éœ€è¦æŠŠæ¢å¤ä¸ºåŸæ¥çš„
+    int background_transparency = theApp.m_app_setting_data.background_transparency;		//åŒä¸Š
     int desktop_lyric_opacity = theApp.m_lyric_setting_data.desktop_lyric_data.opacity;
 
     if (optionDlg.DoModal() == IDOK)
@@ -1252,7 +1254,7 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
     }
     else
     {
-        SetTransparency();		//Èç¹ûµã»÷ÁËÈ¡Ïû£¬ÔòĞèÒªÖØĞÂÉèÖÃ´°¿ÚÍ¸Ã÷¶È
+        SetTransparency();		//å¦‚æœç‚¹å‡»äº†å–æ¶ˆï¼Œåˆ™éœ€è¦é‡æ–°è®¾ç½®çª—å£é€æ˜åº¦
         SetDesptopLyricTransparency();
 
         if (m_miniModeDlg.m_hWnd != NULL)
@@ -1273,7 +1275,7 @@ void CMusicPlayerDlg::DoLyricsAutoSave()
 {
 	bool midi_lyric{ CPlayerUIHelper::IsMidiLyric() };
 	bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
-	if (!lyric_disable && CPlayer::GetInstance().m_Lyrics.IsModified())		//Èç¹ûÓĞ¸è´ÊĞŞ¸Ä¹ı
+	if (!lyric_disable && CPlayer::GetInstance().m_Lyrics.IsModified())		//å¦‚æœæœ‰æ­Œè¯ä¿®æ”¹è¿‡
 	{
 		switch (theApp.m_lyric_setting_data.lyric_save_policy)
 		{
@@ -1310,31 +1312,31 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
 
-    // ÉèÖÃ´Ë¶Ô»°¿òµÄÍ¼±ê¡£  µ±Ó¦ÓÃ³ÌĞòÖ÷´°¿Ú²»ÊÇ¶Ô»°¿òÊ±£¬¿ò¼Ü½«×Ô¶¯
-    //  Ö´ĞĞ´Ë²Ù×÷
-    SetIcon(m_hIcon, TRUE);			// ÉèÖÃ´óÍ¼±ê
-    SetIcon(m_hIcon, FALSE);		// ÉèÖÃĞ¡Í¼±ê
+    // è®¾ç½®æ­¤å¯¹è¯æ¡†çš„å›¾æ ‡ã€‚  å½“åº”ç”¨ç¨‹åºä¸»çª—å£ä¸æ˜¯å¯¹è¯æ¡†æ—¶ï¼Œæ¡†æ¶å°†è‡ªåŠ¨
+    //  æ‰§è¡Œæ­¤æ“ä½œ
+    SetIcon(m_hIcon, TRUE);			// è®¾ç½®å¤§å›¾æ ‡
+    SetIcon(m_hIcon, FALSE);		// è®¾ç½®å°å›¾æ ‡
 
-    // TODO: ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–ä»£ç 
 
-    //Èç¹ûÒÔÃÔÄãÄ£Ê½Æô¶¯£¬ÔòÏÈÒş²ØÖ÷´°¿Ú
+    //å¦‚æœä»¥è¿·ä½ æ¨¡å¼å¯åŠ¨ï¼Œåˆ™å…ˆéšè—ä¸»çª—å£
     if (theApp.m_cmd & ControlCmd::MINI_MODE)
     {
         CCommon::SetWindowOpacity(m_hWnd, 0);
     }
 
-    //ÔØÈëÍ¼±ê×ÊÔ´
+    //è½½å…¥å›¾æ ‡èµ„æº
     theApp.LoadIconResource();
 
-    //³õÊ¼»¯×ÖÌå
+    //åˆå§‹åŒ–å­—ä½“
     theApp.m_font_set.Init();
 
     theApp.InitMenuResourse();
 
-    //ÔØÈëÉèÖÃ
+    //è½½å…¥è®¾ç½®
     LoadConfig();
 
-    //Ö»ÓĞWindows VistaÒÔÉÏµÄÏµÍ³²ÅÄÜ¸úËæÏµÍ³Ö÷ÌâÉ«
+    //åªæœ‰Windows Vistaä»¥ä¸Šçš„ç³»ç»Ÿæ‰èƒ½è·Ÿéšç³»ç»Ÿä¸»é¢˜è‰²
 #ifdef COMPILE_IN_WIN_XP
     theApp.m_app_setting_data.theme_color_follow_system = false;
 //#else
@@ -1342,15 +1344,15 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 //		theApp.m_app_setting_data.theme_color_follow_system = false;
 #endif
 
-    //Ö»ÓĞWin10ÒÔÉÏµÄÏµÍ³²ÅÄÜÔÚCortanaËÑË÷¿òÖĞÏÔÊ¾¸è´Ê
+    //åªæœ‰Win10ä»¥ä¸Šçš„ç³»ç»Ÿæ‰èƒ½åœ¨Cortanaæœç´¢æ¡†ä¸­æ˜¾ç¤ºæ­Œè¯
     if (!CWinVersionHelper::IsWindows10OrLater())
         theApp.m_lyric_setting_data.cortana_info_enable = false;
     m_cortana_lyric.SetEnable(CWinVersionHelper::IsWindows10OrLater());
 
-    //ÉèÖÃ×ÀÃæ¸è´Ê´°¿Ú²»Í¸Ã÷¶È
+    //è®¾ç½®æ¡Œé¢æ­Œè¯çª—å£ä¸é€æ˜åº¦
     SetDesptopLyricTransparency();
 
-    //³õÊ¼»¯´°¿Ú´óĞ¡
+    //åˆå§‹åŒ–çª—å£å¤§å°
     //rect.right = m_window_width;
     //rect.bottom = m_window_height;
     if (m_window_height != -1 && m_window_width != -1)
@@ -1359,7 +1361,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
         SetWindowPos(nullptr, 0, 0, m_window_width, m_window_height, SWP_NOZORDER | SWP_NOMOVE);
     }
 
-    //³õÊ¼»¯ÌáÊ¾ĞÅÏ¢
+    //åˆå§‹åŒ–æç¤ºä¿¡æ¯
     m_Mytip.Create(this, TTS_ALWAYSTIP);
     m_Mytip.SetMaxTipWidth(theApp.DPI(400));
     m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_OPEN_MEDIA_LIB, _T(" (Ctrl+T)")));
@@ -1373,26 +1375,26 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
-    //CoInitialize(0);	//³õÊ¼»¯COM×é¼ş£¬ÓÃÓÚÖ§³ÖÈÎÎñÀ¸ÏÔÊ¾½ø¶ÈºÍËõÂÔÍ¼°´Å¥
+    //CoInitialize(0);	//åˆå§‹åŒ–COMç»„ä»¶ï¼Œç”¨äºæ”¯æŒä»»åŠ¡æ æ˜¾ç¤ºè¿›åº¦å’Œç¼©ç•¥å›¾æŒ‰é’®
 #ifndef COMPILE_IN_WIN_XP
     //if (CWinVersionHelper::IsWindows7OrLater())
-    //	CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pTaskbar));	//´´½¨ITaskbarList3µÄÊµÀı
+    //	CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pTaskbar));	//åˆ›å»ºITaskbarList3çš„å®ä¾‹
 
-    //³õÊ¼»¯ÈÎÎñÀ¸ËõÂÔÍ¼ÖĞµÄ°´Å¥
+    //åˆå§‹åŒ–ä»»åŠ¡æ ç¼©ç•¥å›¾ä¸­çš„æŒ‰é’®
     THUMBBUTTONMASK dwMask = THB_ICON | THB_TOOLTIP | THB_FLAGS;
-    //ÉÏÒ»Çú°´Å¥
+    //ä¸Šä¸€æ›²æŒ‰é’®
     m_thumbButton[0].dwMask = dwMask;
     m_thumbButton[0].iId = IDT_PREVIOUS;
     m_thumbButton[0].hIcon = theApp.m_icon_set.previous.GetIcon();
     wcscpy_s(m_thumbButton[0].szTip, CCommon::LoadText(IDS_PREVIOUS));
     m_thumbButton[0].dwFlags = THBF_ENABLED;
-    //²¥·Å/ÔİÍ£°´Å¥
+    //æ’­æ”¾/æš‚åœæŒ‰é’®
     m_thumbButton[1].dwMask = dwMask;
     m_thumbButton[1].iId = IDT_PLAY_PAUSE;
     m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
     wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
     m_thumbButton[1].dwFlags = THBF_ENABLED;
-    //ÏÂÒ»Çú°´Å¥
+    //ä¸‹ä¸€æ›²æŒ‰é’®
     m_thumbButton[2].dwMask = dwMask;
     m_thumbButton[2].iId = IDT_NEXT;
     m_thumbButton[2].hIcon = theApp.m_icon_set.next.GetIcon();
@@ -1400,20 +1402,20 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
 
-    //×¢²áÈ«¾ÖÈÈ¼ü
+    //æ³¨å†Œå…¨å±€çƒ­é”®
     if(theApp.m_hot_key_setting_data.hot_key_enable)
         theApp.m_hot_key.RegisterAllHotKey();
 
-    //ÉèÖÃ½çÃæµÄÑÕÉ«
+    //è®¾ç½®ç•Œé¢çš„é¢œè‰²
     CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 
-    //³õÊ¼»¯²éÕÒ¶Ô»°¿òÖĞµÄÊı¾İ
+    //åˆå§‹åŒ–æŸ¥æ‰¾å¯¹è¯æ¡†ä¸­çš„æ•°æ®
     m_findDlg.LoadConfig();
 
-    //»ñÈ¡Cortana¸è´Ê
+    //è·å–Cortanaæ­Œè¯
     m_cortana_lyric.Init();
 
-	//³õÊ¼»¯×ÀÃæ¸è´Ê
+	//åˆå§‹åŒ–æ¡Œé¢æ­Œè¯
 	m_desktop_lyric.Create();
 	m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
     if (m_desktop_lyric_pos.x != -1 && m_desktop_lyric_pos.y != -1)
@@ -1441,26 +1443,26 @@ BOOL CMusicPlayerDlg::OnInitDialog()
         ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, 0, 0, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOMOVE | SWP_NOZORDER);
     }
 
-    //³õÊ¼»¯»æÍ¼µÄÀà
+    //åˆå§‹åŒ–ç»˜å›¾çš„ç±»
     m_pDC = GetDC();
     //m_draw.Create(m_pDC, this);
     m_ui.Init(m_pDC);
     m_ui2.Init(m_pDC);
     //m_pUI = &m_ui2;
 
-    //³õÊ¼»¯¸è´Ê×ÖÌå
+    //åˆå§‹åŒ–æ­Œè¯å­—ä½“
     theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
     FontInfo translate_font = theApp.m_app_setting_data.lyric_font;
     translate_font.size--;
     theApp.m_font_set.lyric_translate.SetFont(translate_font);
 
-    //ÔØÈëÄ¬ÈÏ±³¾°Í¼Æ¬£¨ÓÃÓÚÃ»ÓĞ×¨¼­·âÃæÊ±ÏÔÊ¾£©
+    //è½½å…¥é»˜è®¤èƒŒæ™¯å›¾ç‰‡ï¼ˆç”¨äºæ²¡æœ‰ä¸“è¾‘å°é¢æ—¶æ˜¾ç¤ºï¼‰
     theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
 
     m_notify_icon.Init(m_hIcon);
     m_notify_icon.AddNotifyIcon();
 
-    //³õÊ¼»¯²¥·ÅÁĞ±í¹¤¾ßÀ¸
+    //åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨å·¥å…·æ 
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
@@ -1468,11 +1470,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
 
-    //ÉèÖÃ¶¨Ê±Æ÷
+    //è®¾ç½®å®šæ—¶å™¨
     SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
     SetTimer(TIMER_1_SEC, 1000, NULL);
 
-    return TRUE;  // ³ı·Ç½«½¹µãÉèÖÃµ½¿Ø¼ş£¬·ñÔò·µ»Ø TRUE
+    return TRUE;  // é™¤éå°†ç„¦ç‚¹è®¾ç½®åˆ°æ§ä»¶ï¼Œå¦åˆ™è¿”å› TRUE
 }
 
 void CMusicPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -1498,19 +1500,19 @@ void CMusicPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
     }
 }
 
-// Èç¹ûÏò¶Ô»°¿òÌí¼Ó×îĞ¡»¯°´Å¥£¬ÔòĞèÒªÏÂÃæµÄ´úÂë
-//  À´»æÖÆ¸ÃÍ¼±ê¡£  ¶ÔÓÚÊ¹ÓÃÎÄµµ/ÊÓÍ¼Ä£ĞÍµÄ MFC Ó¦ÓÃ³ÌĞò£¬
-//  Õâ½«ÓÉ¿ò¼Ü×Ô¶¯Íê³É¡£
+// å¦‚æœå‘å¯¹è¯æ¡†æ·»åŠ æœ€å°åŒ–æŒ‰é’®ï¼Œåˆ™éœ€è¦ä¸‹é¢çš„ä»£ç 
+//  æ¥ç»˜åˆ¶è¯¥å›¾æ ‡ã€‚  å¯¹äºä½¿ç”¨æ–‡æ¡£/è§†å›¾æ¨¡å‹çš„ MFC åº”ç”¨ç¨‹åºï¼Œ
+//  è¿™å°†ç”±æ¡†æ¶è‡ªåŠ¨å®Œæˆã€‚
 
 void CMusicPlayerDlg::OnPaint()
 {
     if (IsIconic())
     {
-        CPaintDC dc(this); // ÓÃÓÚ»æÖÆµÄÉè±¸ÉÏÏÂÎÄ
+        CPaintDC dc(this); // ç”¨äºç»˜åˆ¶çš„è®¾å¤‡ä¸Šä¸‹æ–‡
 
         SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-        // Ê¹Í¼±êÔÚ¹¤×÷Çø¾ØĞÎÖĞ¾ÓÖĞ
+        // ä½¿å›¾æ ‡åœ¨å·¥ä½œåŒºçŸ©å½¢ä¸­å±…ä¸­
         int cxIcon = GetSystemMetrics(SM_CXICON);
         int cyIcon = GetSystemMetrics(SM_CYICON);
         CRect rect;
@@ -1518,7 +1520,7 @@ void CMusicPlayerDlg::OnPaint()
         int x = (rect.Width() - cxIcon + 1) / 2;
         int y = (rect.Height() - cyIcon + 1) / 2;
 
-        // »æÖÆÍ¼±ê
+        // ç»˜åˆ¶å›¾æ ‡
         dc.DrawIcon(x, y, m_hIcon);
     }
     else
@@ -1528,8 +1530,8 @@ void CMusicPlayerDlg::OnPaint()
     //DrawInfo();
 }
 
-//µ±ÓÃ»§ÍÏ¶¯×îĞ¡»¯´°¿ÚÊ±ÏµÍ³µ÷ÓÃ´Ëº¯ÊıÈ¡µÃ¹â±ê
-//ÏÔÊ¾¡£
+//å½“ç”¨æˆ·æ‹–åŠ¨æœ€å°åŒ–çª—å£æ—¶ç³»ç»Ÿè°ƒç”¨æ­¤å‡½æ•°å–å¾—å…‰æ ‡
+//æ˜¾ç¤ºã€‚
 HCURSOR CMusicPlayerDlg::OnQueryDragIcon()
 {
     return static_cast<HCURSOR>(m_hIcon);
@@ -1544,7 +1546,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         if (m_pDC != NULL)
         {
             DrawInfo(true);
-            if ((cx < m_ui.WidthThreshold()) != theApp.m_ui_data.narrow_mode)	//Èç¹ûÔÚÕ­½çÃæÄ£Ê½ºÍÆÕÍ¨Ä£Ê½Ö®¼ä½øĞĞÁËÇĞ»»£¬ÔòÖØ»æ¿Í»§Çø
+            if ((cx < m_ui.WidthThreshold()) != theApp.m_ui_data.narrow_mode)	//å¦‚æœåœ¨çª„ç•Œé¢æ¨¡å¼å’Œæ™®é€šæ¨¡å¼ä¹‹é—´è¿›è¡Œäº†åˆ‡æ¢ï¼Œåˆ™é‡ç»˜å®¢æˆ·åŒº
             {
                 Invalidate(FALSE);
                 //m_time_static.Invalidate(FALSE);
@@ -1572,7 +1574,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
             m_window_height = rect.Height();
         }
 
-        //´°¿Ú´óĞ¡±ä»¯Ê±¸üĞÂ½çÃæÊó±êÌáÊ¾µÄÎ»ÖÃ
+        //çª—å£å¤§å°å˜åŒ–æ—¶æ›´æ–°ç•Œé¢é¼ æ ‡æç¤ºçš„ä½ç½®
         static UINT last_type;
         if (last_type != nType)
         {
@@ -1586,25 +1588,25 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
     SetThumbnailClipArea();
 
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 }
 
 
 void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
-    //ÏìÓ¦Ö÷¶¨Ê±Æ÷
+    //å“åº”ä¸»å®šæ—¶å™¨
     if(nIDEvent == TIMER_ID)
     {
         if (m_first_start)
         {
-            //´ËifÓï¾äÖ»ÔÚ¶¨Ê±Æ÷µÚ1´Î´¥·¢Ê±²ÅÖ´ĞĞ
+            //æ­¤ifè¯­å¥åªåœ¨å®šæ—¶å™¨ç¬¬1æ¬¡è§¦å‘æ—¶æ‰æ‰§è¡Œ
             m_first_start = false;
 #ifndef COMPILE_IN_WIN_XP
             if (IsTaskbarListEnable())
             {
-                //ÉèÖÃÈÎÎñÀ¸ËõÂÔÍ¼´°¿Ú°´Å¥
+                //è®¾ç½®ä»»åŠ¡æ ç¼©ç•¥å›¾çª—å£æŒ‰é’®
                 m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
             }
 #endif
@@ -1612,24 +1614,24 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             GetClientRect(rect);
             theApp.m_ui_data.client_width = rect.Width();
             theApp.m_ui_data.client_height = rect.Height();
-            SetPlaylistSize(rect.Width(), rect.Height());		//µ÷Õû²¥·ÅÁĞ±íµÄ´óĞ¡ºÍÎ»ÖÃ
+            SetPlaylistSize(rect.Width(), rect.Height());		//è°ƒæ•´æ’­æ”¾åˆ—è¡¨çš„å¤§å°å’Œä½ç½®
             m_path_static.Invalidate();
-            //SetPorgressBarSize(rect.Width(), rect.Height());		//µ÷Õû½ø¶ÈÌõÔÚ´°¿ÚÖĞµÄ´óĞ¡ºÍÎ»ÖÃ
+            //SetPorgressBarSize(rect.Width(), rect.Height());		//è°ƒæ•´è¿›åº¦æ¡åœ¨çª—å£ä¸­çš„å¤§å°å’Œä½ç½®
             SetPlaylistVisible();
 
-            if (m_cmdLine.empty())		//Ã»ÓĞÓĞÍ¨¹ıÃüÁîĞĞ´ò¿ªÎÄ¼ş
+            if (m_cmdLine.empty())		//æ²¡æœ‰æœ‰é€šè¿‡å‘½ä»¤è¡Œæ‰“å¼€æ–‡ä»¶
             {
                 CPlayer::GetInstance().Create();
             }
-            else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//Èç¹ûÃüÁîĞĞ²ÎÊıÖĞÓĞRestartByRestartManager£¬ÔòºöÂÔÃüÁîĞĞ²ÎÊı
+            else if (m_cmdLine.find(L"RestartByRestartManager") != wstring::npos)		//å¦‚æœå‘½ä»¤è¡Œå‚æ•°ä¸­æœ‰RestartByRestartManagerï¼Œåˆ™å¿½ç•¥å‘½ä»¤è¡Œå‚æ•°
             {
                 CPlayer::GetInstance().Create();
-                ////½«ÃüÁîĞĞ²ÎÊıĞ´ÈëÈÕÖ¾ÎÄ¼ş
+                ////å°†å‘½ä»¤è¡Œå‚æ•°å†™å…¥æ—¥å¿—æ–‡ä»¶
                 //wchar_t buff[256];
-                //swprintf_s(buff, L"³ÌĞòÒÑ±»WindowsµÄRestartManagerÖØÆô£¬ÖØÆô²ÎÊı£º%s", m_cmdLine.c_str());
+                //swprintf_s(buff, L"ç¨‹åºå·²è¢«Windowsçš„RestartManageré‡å¯ï¼Œé‡å¯å‚æ•°ï¼š%s", m_cmdLine.c_str());
                 //theApp.WriteErrorLog(wstring{ buff });
             }
-            else		//´ÓÃüÁîĞĞ²ÎÊı»ñÈ¡Òª´ò¿ªµÄÎÄ¼ş
+            else		//ä»å‘½ä»¤è¡Œå‚æ•°è·å–è¦æ‰“å¼€çš„æ–‡ä»¶
             {
                 vector<wstring> files;
                 wstring path = CCommon::DisposeCmdLineFiles(m_cmdLine, files);
@@ -1649,16 +1651,16 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             DrawInfo();
             SetThumbnailClipArea();
 
-            //×¢£º²»Ó¦¸ÃÔÚÕâÀï´ò¿ª»ò²¥·Å¸èÇú£¬Ó¦¸ÃÔÚ²¥·ÅÁĞ±í³õÊ¼»¯Íê±ÏÊ±Ö´ĞĞ¡£
+            //æ³¨ï¼šä¸åº”è¯¥åœ¨è¿™é‡Œæ‰“å¼€æˆ–æ’­æ”¾æ­Œæ›²ï¼Œåº”è¯¥åœ¨æ’­æ”¾åˆ—è¡¨åˆå§‹åŒ–å®Œæ¯•æ—¶æ‰§è¡Œã€‚
             //CPlayer::GetInstance().MusicControl(Command::OPEN);
             //CPlayer::GetInstance().MusicControl(Command::SEEK);
             //CPlayer::GetInstance().GetPlayerCoreError();
-            //SetPorgressBarSize(rect.Width(), rect.Height());		//ÖØĞÂµ÷Õû½ø¶ÈÌõÔÚ´°¿ÚÖĞµÄ´óĞ¡ºÍÎ»ÖÃ£¨ĞèÒª¸ù¾İ¸èÇúµÄÊ±³¤µ÷ÕûÏÔÊ¾Ê±¼ä¿Ø¼şµÄ¿í¶È£©
+            //SetPorgressBarSize(rect.Width(), rect.Height());		//é‡æ–°è°ƒæ•´è¿›åº¦æ¡åœ¨çª—å£ä¸­çš„å¤§å°å’Œä½ç½®ï¼ˆéœ€è¦æ ¹æ®æ­Œæ›²çš„æ—¶é•¿è°ƒæ•´æ˜¾ç¤ºæ—¶é—´æ§ä»¶çš„å®½åº¦ï¼‰
             //ShowTime();
             //m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
 
             //if(!m_cmdLine.empty())
-            //	CPlayer::GetInstance().MusicControl(Command::PLAY);	//Èç¹ûÎÄ¼şÊÇÍ¨¹ıÃüÁîĞĞ´ò¿ªµÄ£¬Ôò´ò¿ªºóÖ±½Ó²¥·Å
+            //	CPlayer::GetInstance().MusicControl(Command::PLAY);	//å¦‚æœæ–‡ä»¶æ˜¯é€šè¿‡å‘½ä»¤è¡Œæ‰“å¼€çš„ï¼Œåˆ™æ‰“å¼€åç›´æ¥æ’­æ”¾
 
             UpdatePlayPauseButton();
             //SetForegroundWindow();
@@ -1666,7 +1668,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
             ThemeColorChanged();
 
-            //ÉèÖÃ´°¿Ú²»Í¸Ã÷¶È
+            //è®¾ç½®çª—å£ä¸é€æ˜åº¦
             SetTransparency();
 
             if (theApp.m_nc_setting_data.float_playlist)
@@ -1674,13 +1676,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
             IniPlaylistPopupMenu();
 
-            //ÃüÁîĞĞÓĞÃÔÄãÄ£Ê½²ÎÊı£¬ÔòÆô¶¯Ê±Ö±½Ó½øÈëÃÔÄãÄ£Ê½
+            //å‘½ä»¤è¡Œæœ‰è¿·ä½ æ¨¡å¼å‚æ•°ï¼Œåˆ™å¯åŠ¨æ—¶ç›´æ¥è¿›å…¥è¿·ä½ æ¨¡å¼
             if (theApp.m_cmd & ControlCmd::MINI_MODE)
             {
                 OnMiniMode();
             }
 
-            //ÌáÊ¾ÓÃ»§ÊÇ·ñ´´½¨×ÀÃæ¿ì½İ·½Ê½
+            //æç¤ºç”¨æˆ·æ˜¯å¦åˆ›å»ºæ¡Œé¢å¿«æ·æ–¹å¼
             CreateDesktopShortcut();
 
             SetAlwaysOnTop();
@@ -1692,22 +1694,22 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //UpdateProgress();
 
         //CPlayer::GetInstance().GetPlayerCoreError();
-        if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//½øÈëÃÔÄãÄ£Ê½Ê±²»Ë¢ĞÂ£¬²»ÔÚ²¥·ÅÇÒ´°¿Ú´¦ÓÚºóÌ¨Ê±²»Ë¢ĞÂ
-            DrawInfo();			//»æÖÆ½çÃæÉÏµÄĞÅÏ¢£¨Èç¹ûÏÔÊ¾ÁËÃÔÄãÄ£Ê½£¬Ôò²»»æÖÆ½çÃæĞÅÏ¢£©
+        if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//è¿›å…¥è¿·ä½ æ¨¡å¼æ—¶ä¸åˆ·æ–°ï¼Œä¸åœ¨æ’­æ”¾ä¸”çª—å£å¤„äºåå°æ—¶ä¸åˆ·æ–°
+            DrawInfo();			//ç»˜åˆ¶ç•Œé¢ä¸Šçš„ä¿¡æ¯ï¼ˆå¦‚æœæ˜¾ç¤ºäº†è¿·ä½ æ¨¡å¼ï¼Œåˆ™ä¸ç»˜åˆ¶ç•Œé¢ä¿¡æ¯ï¼‰
         CPlayer::GetInstance().CalculateSpectralData();
         if (CPlayer::GetInstance().IsPlaying())
         {
             CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
         }
 
-        //ÔÚCortanaËÑË÷¿òÀïÏÔÊ¾¸è´Ê
+        //åœ¨Cortanaæœç´¢æ¡†é‡Œæ˜¾ç¤ºæ­Œè¯
         if (theApp.m_lyric_setting_data.cortana_info_enable)
         {
             if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
                 m_cortana_lyric.DrawInfo();
         }
 
-		//ÏÔÊ¾×ÀÃæ¸è´Ê
+		//æ˜¾ç¤ºæ¡Œé¢æ­Œè¯
 		bool desktop_lyric_visible = theApp.m_lyric_setting_data.show_desktop_lyric;
 		if (CPlayer::GetInstance().m_Lyrics.IsEmpty() && theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric)
 			desktop_lyric_visible = false;
@@ -1719,17 +1721,17 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			m_desktop_lyric.ShowLyric();
 		}
 
-        //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//µ±Ç°ÇúÄ¿²¥·ÅÍê±ÏÇÒÃ»ÓĞ³öÏÖ´íÎóÊ±²Å²¥·ÅÏÂÒ»Çú
-        if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//µ±Ç°ÇúÄ¿²¥·ÅÍê±ÏÇÒÃ»ÓĞ³öÏÖ´íÎóÊ±²Å²¥·ÅÏÂÒ»Çú
+        //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//å½“å‰æ›²ç›®æ’­æ”¾å®Œæ¯•ä¸”æ²¡æœ‰å‡ºç°é”™è¯¯æ—¶æ‰æ’­æ”¾ä¸‹ä¸€æ›²
+        if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum())	//å½“å‰æ›²ç›®æ’­æ”¾å®Œæ¯•ä¸”æ²¡æœ‰å‡ºç°é”™è¯¯æ—¶æ‰æ’­æ”¾ä¸‹ä¸€æ›²
         {
             if (CPlayer::GetInstance().IsError())
                 m_play_error_cnt++;
             else
                 m_play_error_cnt = 0;
-            //µ±Ç°ÕıÔÚ±à¼­¸è´Ê£¬»òË³Ğò²¥·ÅÄ£Ê½ÏÂÁĞ±íÖĞµÄ¸èÇú²¥·ÅÍê±ÏÊ±£¨PlayTrackº¯Êı»á·µ»Øfalse£©£¬²¥·ÅÍêµ±Ç°¸èÇú¾ÍÍ£Ö¹²¥·Å
+            //å½“å‰æ­£åœ¨ç¼–è¾‘æ­Œè¯ï¼Œæˆ–é¡ºåºæ’­æ”¾æ¨¡å¼ä¸‹åˆ—è¡¨ä¸­çš„æ­Œæ›²æ’­æ”¾å®Œæ¯•æ—¶ï¼ˆPlayTrackå‡½æ•°ä¼šè¿”å›falseï¼‰ï¼Œæ’­æ”¾å®Œå½“å‰æ­Œæ›²å°±åœæ­¢æ’­æ”¾
             if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT))
             {
-                CPlayer::GetInstance().MusicControl(Command::STOP);		//Í£Ö¹²¥·Å
+                CPlayer::GetInstance().MusicControl(Command::STOP);		//åœæ­¢æ’­æ”¾
                 //ShowTime();
                 if (theApp.m_lyric_setting_data.cortana_info_enable)
                     m_cortana_lyric.ResetCortanaText();
@@ -1743,7 +1745,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             UpdatePlayPauseButton();
         }
 
-		//´¦ÀíABÖØ¸´
+		//å¤„ç†ABé‡å¤
 		if(CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
 		{
 			Time a_position = CPlayer::GetInstance().GetARepeatPosition();
@@ -1776,12 +1778,12 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         {
             //CPlayer::GetInstance().EmplaceCurrentPathToRecent();
             //CPlayer::GetInstance().SaveRecentPath();
-            if(theApp.IsSongDataModified())				//ÔÚ¸èÇúĞÅÏ¢±»ĞŞ¸Ä¹ıµÄÇé¿öÏÂ£¬Ã¿¸ôÒ»¶¨µÄÊ±¼ä±£´æÒ»´Î
+            if(theApp.IsSongDataModified())				//åœ¨æ­Œæ›²ä¿¡æ¯è¢«ä¿®æ”¹è¿‡çš„æƒ…å†µä¸‹ï¼Œæ¯éš”ä¸€å®šçš„æ—¶é—´ä¿å­˜ä¸€æ¬¡
                 theApp.SaveSongData();
         }
     }
 
-    //ÏìÓ¦1Ãë¶¨Ê±Æ÷
+    //å“åº”1ç§’å®šæ—¶å™¨
     else if (nIDEvent == TIMER_1_SEC)
     {
         if (CPlayer::GetInstance().IsPlaying())
@@ -1803,7 +1805,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
 void CMusicPlayerDlg::OnPlayPause()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().MusicControl(Command::PLAY_PAUSE);
     if (!CPlayer::GetInstance().IsPlaying())
         DrawInfo();
@@ -1813,7 +1815,7 @@ void CMusicPlayerDlg::OnPlayPause()
 
 void CMusicPlayerDlg::OnStop()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().MusicControl(Command::STOP);
     UpdatePlayPauseButton();
     //ShowTime();
@@ -1822,7 +1824,7 @@ void CMusicPlayerDlg::OnStop()
 
 void CMusicPlayerDlg::OnPrevious()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().PlayTrack(PREVIOUS);
     SwitchTrack();
     UpdatePlayPauseButton();
@@ -1831,7 +1833,7 @@ void CMusicPlayerDlg::OnPrevious()
 
 void CMusicPlayerDlg::OnNext()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().PlayTrack(NEXT);
     SwitchTrack();
     UpdatePlayPauseButton();
@@ -1840,7 +1842,7 @@ void CMusicPlayerDlg::OnNext()
 
 void CMusicPlayerDlg::OnRew()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().MusicControl(Command::REW);
     UpdateTaskBarProgress();
     //ShowTime();
@@ -1849,7 +1851,7 @@ void CMusicPlayerDlg::OnRew()
 
 void CMusicPlayerDlg::OnFF()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().MusicControl(Command::FF);
     UpdateTaskBarProgress();
     //ShowTime();
@@ -1860,7 +1862,7 @@ void CMusicPlayerDlg::OnSetPath()
 {
     //static bool dialog_exist{ false };
 
-    //if (!dialog_exist)		//È·±£¶Ô»°¿òÒÑ¾­´æÔÚÊ±²»ÔÙµ¯³ö
+    //if (!dialog_exist)		//ç¡®ä¿å¯¹è¯æ¡†å·²ç»å­˜åœ¨æ—¶ä¸å†å¼¹å‡º
     //{
     //    dialog_exist = true;
     //    int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
@@ -1871,7 +1873,7 @@ void CMusicPlayerDlg::OnSetPath()
     //    //IniPlaylistPopupMenu();
     //}
 
-    if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))      //Èç¹ûÃ½Ìå¿â¶Ô»°¿òÒÑ¾­´æÔÚ£¬Ôò½«Æä¼¤»î
+    if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))      //å¦‚æœåª’ä½“åº“å¯¹è¯æ¡†å·²ç»å­˜åœ¨ï¼Œåˆ™å°†å…¶æ¿€æ´»
     {
         m_pMediaLibDlg->ShowWindow(SW_SHOWNORMAL);
         m_pMediaLibDlg->SetForegroundWindow();
@@ -1898,10 +1900,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
         //SetPorgressBarSize();
         //ShowTime();
         DrawInfo(true);
-        //m_findDlg.ClearFindResult();		//¸ü»»Â·¾¶ºóÇå³ı²éÕÒ½á¹û
+        //m_findDlg.ClearFindResult();		//æ›´æ¢è·¯å¾„åæ¸…é™¤æŸ¥æ‰¾ç»“æœ
         CPlayer::GetInstance().SaveRecentPath();
         m_play_error_cnt = 0;
-        SetTimer(DELAY_TIMER_ID, 500, NULL);        //ÔÚÃ½Ìå¿â¶Ô»°¿òÖĞÑ¡ÔñÁËÒ»¸öÎÄ¼ş¼Ğ²¥·Åºó£¬500ºÁÃëÄÚ²»ÏìÓ¦WM_LBUTTONUPÏûÏ¢
+        SetTimer(DELAY_TIMER_ID, 500, NULL);        //åœ¨åª’ä½“åº“å¯¹è¯æ¡†ä¸­é€‰æ‹©äº†ä¸€ä¸ªæ–‡ä»¶å¤¹æ’­æ”¾åï¼Œ500æ¯«ç§’å†…ä¸å“åº”WM_LBUTTONUPæ¶ˆæ¯
         m_no_lbtnup = true;
     }
     return 0;
@@ -1910,7 +1912,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnFind()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_findDlg.DoModal() == IDOK)
     {
         if (m_findDlg.IsFindCurrentPlaylist())
@@ -1924,20 +1926,20 @@ void CMusicPlayerDlg::OnFind()
 
 void CMusicPlayerDlg::OnExplorePath()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().ExplorePath();
 }
 
 
 BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
     {
-        //°´ÏÂCtrl¼üÊ±
+        //æŒ‰ä¸‹Ctrlé”®æ—¶
         if (GetKeyState(VK_CONTROL) & 0x80)
         {
-			//°´ÏÂCtrl + Shift¼üÊ±
+			//æŒ‰ä¸‹Ctrl + Shifté”®æ—¶
 			if (GetKeyState(VK_SHIFT) & 0x8000)
 			{
 #ifdef _DEBUG
@@ -1967,90 +1969,90 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 					OnResetAbRepeat();
 					return TRUE;
 				}
-                if (pMsg->wParam == VK_DELETE)  //°´Ctrl+Shift+Del½«ÕıÔÚ²¥·ÅµÄÇúÄ¿´Ó´ÅÅÌÉ¾³ı
+                if (pMsg->wParam == VK_DELETE)  //æŒ‰Ctrl+Shift+Delå°†æ­£åœ¨æ’­æ”¾çš„æ›²ç›®ä»ç£ç›˜åˆ é™¤
                 {
                     OnDeleteCurrentFromDisk();
                     return TRUE;
                 }
             }
 			
-			if (pMsg->wParam == 'O')		//ÉèÖÃ°´Ctr+O´ò¿ªÎÄ¼ş
+			if (pMsg->wParam == 'O')		//è®¾ç½®æŒ‰Ctr+Oæ‰“å¼€æ–‡ä»¶
             {
                 OnFileOpen();
                 return TRUE;
             }
-            if (pMsg->wParam == 'D')		//ÉèÖÃ°´Ctr+D´ò¿ªÎÄ¼ş¼Ğ
+            if (pMsg->wParam == 'D')		//è®¾ç½®æŒ‰Ctr+Dæ‰“å¼€æ–‡ä»¶å¤¹
             {
                 OnFileOpenFolder();
                 return TRUE;
             }
-            if (pMsg->wParam == 'B')		//ÉèÖÃ°´Ctr+Bä¯ÀÀÎÄ¼ş
+            if (pMsg->wParam == 'B')		//è®¾ç½®æŒ‰Ctr+Bæµè§ˆæ–‡ä»¶
             {
                 OnExplorePath();
                 return TRUE;
             }
-            if (pMsg->wParam == 'N')		//ÉèÖÃ°´Ctr+N´ò¿ªÇúÄ¿ĞÅÏ¢
+            if (pMsg->wParam == 'N')		//è®¾ç½®æŒ‰Ctr+Næ‰“å¼€æ›²ç›®ä¿¡æ¯
             {
                 OnSongInfo();
                 return TRUE;
             }
-            if (pMsg->wParam == 'F')		//°´Ctr+F¼ü²éÕÒÎÄ¼ş
+            if (pMsg->wParam == 'F')		//æŒ‰Ctr+Fé”®æŸ¥æ‰¾æ–‡ä»¶
             {
                 OnFind();
                 return TRUE;
             }
-            if (pMsg->wParam == 'T')		//°´Ctr+T¼üÉèÖÃÂ·¾¶
+            if (pMsg->wParam == 'T')		//æŒ‰Ctr+Té”®è®¾ç½®è·¯å¾„
             {
                 OnSetPath();
                 return TRUE;
             }
-            if (pMsg->wParam == 'I')		//ÉèÖÃ°´Ctr+I´ò¿ªÉèÖÃ
+            if (pMsg->wParam == 'I')		//è®¾ç½®æŒ‰Ctr+Iæ‰“å¼€è®¾ç½®
             {
                 OnOptionSettings();
                 return TRUE;
             }
-            //if (pMsg->wParam == 'X')		//ÉèÖÃ°´Ctr+XÍË³ö
+            //if (pMsg->wParam == 'X')		//è®¾ç½®æŒ‰Ctr+Xé€€å‡º
             //{
             //	OnMenuExit();
             //	return TRUE;
             //}
-            if (pMsg->wParam == 'R')		//ÉèÖÃ°´Ctr+RÖ´ĞĞABÖØ¸´
+            if (pMsg->wParam == 'R')		//è®¾ç½®æŒ‰Ctr+Ræ‰§è¡ŒABé‡å¤
             {
                 OnAbRepeat();
                 return TRUE;
             }
-            if (pMsg->wParam == 'M')		//ÉèÖÃ°´Ctr+M½øÈëÃÔÄãÄ£Ê½
+            if (pMsg->wParam == 'M')		//è®¾ç½®æŒ‰Ctr+Mè¿›å…¥è¿·ä½ æ¨¡å¼
             {
                 OnMiniMode();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_PRIOR)		//ÉèÖÃ°´Ctr+PgUp¸è´ÊÌáÇ°0.5Ãë
+            if (pMsg->wParam == VK_PRIOR)		//è®¾ç½®æŒ‰Ctr+PgUpæ­Œè¯æå‰0.5ç§’
             {
                 OnLyricForward();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_NEXT)		//ÉèÖÃ°´Ctr+PgDn¸è´ÊÑÓºó0.5Ãë
+            if (pMsg->wParam == VK_NEXT)		//è®¾ç½®æŒ‰Ctr+PgDnæ­Œè¯å»¶å0.5ç§’
             {
                 OnLyricDelay();
                 return TRUE;
             }
-            if (pMsg->wParam == 'S')		//ÉèÖÃ°´Ctr+S±£´æ¸è´Ê¸ü¸Ä
+            if (pMsg->wParam == 'S')		//è®¾ç½®æŒ‰Ctr+Sä¿å­˜æ­Œè¯æ›´æ”¹
             {
                 if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && CPlayer::GetInstance().m_Lyrics.IsModified())
                     OnSaveModifiedLyric();
                 return TRUE;
             }
-            if (pMsg->wParam == 'E')		//ÉèÖÃ°´Ctr+S´ò¿ª¾ùºâÆ÷
+            if (pMsg->wParam == 'E')		//è®¾ç½®æŒ‰Ctr+Sæ‰“å¼€å‡è¡¡å™¨
             {
                 OnEqualizer();
                 return TRUE;
             }
-            if (pMsg->wParam == 'L')		//ÉèÖÃ°´Ctr+LÏÔÊ¾/Òş²Ø²¥·ÅÁĞ±í
+            if (pMsg->wParam == 'L')		//è®¾ç½®æŒ‰Ctr+Læ˜¾ç¤º/éšè—æ’­æ”¾åˆ—è¡¨
             {
                 OnShowPlaylist();
                 return TRUE;
             }
-            if (pMsg->wParam == 'K')		//ÉèÖÃ°´Ctr+KÏÔÊ¾¸¡¶¯²¥·ÅÁĞ±í
+            if (pMsg->wParam == 'K')		//è®¾ç½®æŒ‰Ctr+Kæ˜¾ç¤ºæµ®åŠ¨æ’­æ”¾åˆ—è¡¨
             {
                 OnFloatPlaylist();
                 return TRUE;
@@ -2084,7 +2086,7 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             //{
             //    return TRUE;
             //}
-            if (pMsg->wParam == VK_DELETE)      //°´Ctrl+Del´Ó²¥·ÅÁĞ±íÒÆ³ıÕıÔÚ²¥·ÅµÄÇúÄ¿
+            if (pMsg->wParam == VK_DELETE)      //æŒ‰Ctrl+Delä»æ’­æ”¾åˆ—è¡¨ç§»é™¤æ­£åœ¨æ’­æ”¾çš„æ›²ç›®
             {
                 OnRemoveCurrentFromPlaylist();
                 return TRUE;
@@ -2092,64 +2094,64 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 }
         else
         {
-            if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P'/* || pMsg->wParam == VK_MEDIA_PLAY_PAUSE*/)		//°´¿Õ¸ñ¼ü/P¼ü²¥·Å/ÔİÍ£
+            if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P'/* || pMsg->wParam == VK_MEDIA_PLAY_PAUSE*/)		//æŒ‰ç©ºæ ¼é”®/Pé”®æ’­æ”¾/æš‚åœ
             {
                 OnPlayPause();
                 return TRUE;
             }
-            if (pMsg->wParam == 'S')	//°´S¼üÍ£Ö¹
+            if (pMsg->wParam == 'S')	//æŒ‰Sé”®åœæ­¢
             {
                 OnStop();
                 return TRUE;
             }
-            if (pMsg->wParam == 'V')	//°´V¼üÉÏÒ»Çú
+            if (pMsg->wParam == 'V')	//æŒ‰Vé”®ä¸Šä¸€æ›²
             {
                 OnPrevious();
                 return TRUE;
             }
-            if (pMsg->wParam == 'N')	//°´N¼üÏÂÒ»Çú
+            if (pMsg->wParam == 'N')	//æŒ‰Né”®ä¸‹ä¸€æ›²
             {
                 OnNext();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_LEFT)	//°´×ó·½Ïò¼üÏÂ¿ìÍË5Ãë
+            if (pMsg->wParam == VK_LEFT)	//æŒ‰å·¦æ–¹å‘é”®ä¸‹å¿«é€€5ç§’
             {
                 OnRew();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_RIGHT)	//°´ÓÒ·½Ïò¼üÏÂ¿ì½ø5Ãë
+            if (pMsg->wParam == VK_RIGHT)	//æŒ‰å³æ–¹å‘é”®ä¸‹å¿«è¿›5ç§’
             {
                 OnFF();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_UP)	//°´ÉÏ·½Ïò¼üÏÂÒôÁ¿¼Ó
+            if (pMsg->wParam == VK_UP)	//æŒ‰ä¸Šæ–¹å‘é”®ä¸‹éŸ³é‡åŠ 
             {
                 OnVolumeUp();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_DOWN)	//°´ÏÂ·½Ïò¼üÒôÁ¿¼õ
+            if (pMsg->wParam == VK_DOWN)	//æŒ‰ä¸‹æ–¹å‘é”®éŸ³é‡å‡
             {
                 OnVolumeDown();
                 return TRUE;
             }
-            if (pMsg->wParam == 'M')	//°´M¼üÉèÖÃÑ­»·Ä£Ê½
+            if (pMsg->wParam == 'M')	//æŒ‰Mé”®è®¾ç½®å¾ªç¯æ¨¡å¼
             {
                 CPlayer::GetInstance().SetRepeatMode();
                 m_ui.UpdateRepeatModeToolTip();
                 m_ui2.UpdateRepeatModeToolTip();
                 return TRUE;
             }
-            if (pMsg->wParam == 'F')	//°´F¼ü¿ìËÙ²éÕÒ
+            if (pMsg->wParam == 'F')	//æŒ‰Fé”®å¿«é€ŸæŸ¥æ‰¾
             {
                 m_search_edit.SetFocus();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_F11)	//°´F11¼ü½øÈë»òÍË³öÈ«ÆÁÄ£Ê½
+            if (pMsg->wParam == VK_F11)	//æŒ‰F11é”®è¿›å…¥æˆ–é€€å‡ºå…¨å±æ¨¡å¼
             {
                 OnFullScreen();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_ESCAPE)	//°´ESC¼üÍË³öÈ«ÆÁÄ£Ê½
+            if (pMsg->wParam == VK_ESCAPE)	//æŒ‰ESCé”®é€€å‡ºå…¨å±æ¨¡å¼
             {
                 if (theApp.m_ui_data.full_screen)
                 {
@@ -2158,7 +2160,7 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                 }
             }
 
-            if (pMsg->wParam == VK_APPS)		//°´²Ëµ¥¼üµ¯³öÖ÷²Ëµ¥
+            if (pMsg->wParam == VK_APPS)		//æŒ‰èœå•é”®å¼¹å‡ºä¸»èœå•
             {
                 SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&CPoint(0, 0));
                 return TRUE;
@@ -2166,7 +2168,7 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
         }
     }
 
-    if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))		//ÆÁ±Î°´»Ø³µ¼üºÍESC¼üÍË³ö
+    if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))		//å±è”½æŒ‰å›è½¦é”®å’ŒESCé”®é€€å‡º
     {
         return TRUE;
     }
@@ -2184,29 +2186,29 @@ void CMusicPlayerDlg::OnDestroy()
 {
     CMainDialogBase::OnDestroy();
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 
-    //»ñÈ¡×ÀÃæ¸è´Ê´°¿ÚµÄÎ»ÖÃ
+    //è·å–æ¡Œé¢æ­Œè¯çª—å£çš„ä½ç½®
     CRect rect;
     ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rect);
     m_desktop_lyric_pos = rect.TopLeft();
     m_desktop_lyric_size = rect.Size();
 
-	//±£´æĞŞ¸Ä¹ıµÄ¸è´Ê
+	//ä¿å­˜ä¿®æ”¹è¿‡çš„æ­Œè¯
 	DoLyricsAutoSave();
 
-    //ÍË³öÊ±±£´æÉèÖÃ
+    //é€€å‡ºæ—¶ä¿å­˜è®¾ç½®
     CPlayer::GetInstance().OnExit();
     SaveConfig();
     m_findDlg.SaveConfig();
     theApp.SaveConfig();
-    //½â³ıÈ«¾ÖÈÈ¼ü
+    //è§£é™¤å…¨å±€çƒ­é”®
     theApp.m_hot_key.UnRegisterAllHotKey();
 
-    //ÍË³öÊ±»Ö¸´CortanaµÄÄ¬ÈÏÎÄ±¾
+    //é€€å‡ºæ—¶æ¢å¤Cortanaçš„é»˜è®¤æ–‡æœ¬
     m_cortana_lyric.ResetCortanaText();
 
-    ////ÍË³öÊ±É¾³ı×¨¼­·âÃæÁÙÊ±ÎÄ¼ş
+    ////é€€å‡ºæ—¶åˆ é™¤ä¸“è¾‘å°é¢ä¸´æ—¶æ–‡ä»¶
     //DeleteFile(CPlayer::GetInstance().GetAlbumCoverPath().c_str());
 
     m_notify_icon.DeleteNotifyIcon();
@@ -2222,9 +2224,9 @@ void CMusicPlayerDlg::OnAppAbout()
 
 void CMusicPlayerDlg::OnFileOpen()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    vector<wstring> files;	//´¢´æ´ò¿ªµÄ¶à¸öÎÄ¼şÂ·¾¶
-    //ÉèÖÃ¹ıÂËÆ÷
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    vector<wstring> files;	//å‚¨å­˜æ‰“å¼€çš„å¤šä¸ªæ–‡ä»¶è·¯å¾„
+    //è®¾ç½®è¿‡æ»¤å™¨
     wstring filter = CAudioCommon::GetFileDlgFilter();
 
     CCommon::DoOpenFileDlg(filter, files, this);
@@ -2240,7 +2242,7 @@ void CMusicPlayerDlg::OnFileOpen()
 
 void CMusicPlayerDlg::OnFileOpenFolder()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
@@ -2263,11 +2265,11 @@ void CMusicPlayerDlg::OnFileOpenFolder()
 
 void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-    vector<wstring> files;	//´¢´æÍÏ·Åµ½´°¿ÚµÄ¶à¸öÎÄ¼şÂ·¾¶
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    vector<wstring> files;	//å‚¨å­˜æ‹–æ”¾åˆ°çª—å£çš„å¤šä¸ªæ–‡ä»¶è·¯å¾„
     TCHAR file_path[MAX_PATH];
-    int drop_count = DragQueryFile(hDropInfo, -1, NULL, 0);		//È¡µÃ±»ÍÏ¶¯ÎÄ¼şµÄÊıÄ¿
-    //»ñÈ¡µÚ1¸öÎÄ¼ş
+    int drop_count = DragQueryFile(hDropInfo, -1, NULL, 0);		//å–å¾—è¢«æ‹–åŠ¨æ–‡ä»¶çš„æ•°ç›®
+    //è·å–ç¬¬1ä¸ªæ–‡ä»¶
     DragQueryFile(hDropInfo, 0, file_path, MAX_PATH);
     wstring file_path_wcs{ file_path };
     //if (file_path_wcs.size() > 4 && file_path_wcs[file_path_wcs.size() - 4] != L'.' && file_path_wcs[file_path_wcs.size() - 5] != L'.')
@@ -2284,7 +2286,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
     {
         for (int i{}; i < drop_count; i++)
         {
-            DragQueryFile(hDropInfo, i, file_path, MAX_PATH);	//»ñÈ¡µÚi¸öÎÄ¼ş
+            DragQueryFile(hDropInfo, i, file_path, MAX_PATH);	//è·å–ç¬¬iä¸ªæ–‡ä»¶
             if (CAudioCommon::FileIsAudio(wstring(file_path)))
                 files.push_back(file_path);
         }
@@ -2306,7 +2308,7 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 {
     CMainDialogBase::OnInitMenu(pMenu);
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
     SetMenuState(pMenu);
 
     CMenu* pSysMenu = GetSystemMenu(FALSE);
@@ -2316,8 +2318,8 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 
 void CMusicPlayerDlg::OnPlayOrder()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_ORDER);		//ÉèÖÃË³Ğò²¥·Å
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_ORDER);		//è®¾ç½®é¡ºåºæ’­æ”¾
     m_ui.UpdateRepeatModeToolTip();
     m_ui2.UpdateRepeatModeToolTip();
 }
@@ -2325,8 +2327,8 @@ void CMusicPlayerDlg::OnPlayOrder()
 
 void CMusicPlayerDlg::OnPlayShuffle()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_SHUFFLE);		//ÉèÖÃËæ»ú²¥·Å
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_SHUFFLE);		//è®¾ç½®éšæœºæ’­æ”¾
     m_ui.UpdateRepeatModeToolTip();
     m_ui2.UpdateRepeatModeToolTip();
 }
@@ -2334,8 +2336,8 @@ void CMusicPlayerDlg::OnPlayShuffle()
 
 void CMusicPlayerDlg::OnLoopPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    CPlayer::GetInstance().SetRepeatMode(RM_LOOP_PLAYLIST);		//ÉèÖÃÁĞ±íÑ­»·
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    CPlayer::GetInstance().SetRepeatMode(RM_LOOP_PLAYLIST);		//è®¾ç½®åˆ—è¡¨å¾ªç¯
     m_ui.UpdateRepeatModeToolTip();
     m_ui2.UpdateRepeatModeToolTip();
 }
@@ -2343,8 +2345,8 @@ void CMusicPlayerDlg::OnLoopPlaylist()
 
 void CMusicPlayerDlg::OnLoopTrack()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    CPlayer::GetInstance().SetRepeatMode(RM_LOOP_TRACK);		//ÉèÖÃµ¥ÇúÑ­»·
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    CPlayer::GetInstance().SetRepeatMode(RM_LOOP_TRACK);		//è®¾ç½®å•æ›²å¾ªç¯
     m_ui.UpdateRepeatModeToolTip();
     m_ui2.UpdateRepeatModeToolTip();
 }
@@ -2352,7 +2354,7 @@ void CMusicPlayerDlg::OnLoopTrack()
 
 BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (zDelta > 0)
     {
         OnVolumeUp();
@@ -2368,10 +2370,10 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-    //ÏŞÖÆ´°¿Ú×îĞ¡´óĞ¡
-    lpMMI->ptMinTrackSize.x = theApp.DPI(340);		//ÉèÖÃ×îĞ¡¿í¶È
-    lpMMI->ptMinTrackSize.y = theApp.DPI(360);		//ÉèÖÃ×îĞ¡¸ß¶È
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    //é™åˆ¶çª—å£æœ€å°å¤§å°
+    lpMMI->ptMinTrackSize.x = theApp.DPI(340);		//è®¾ç½®æœ€å°å®½åº¦
+    lpMMI->ptMinTrackSize.y = theApp.DPI(360);		//è®¾ç½®æœ€å°é«˜åº¦
 
     CMainDialogBase::OnGetMinMaxInfo(lpMMI);
 }
@@ -2380,14 +2382,14 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-    if (!m_searched)	//Èç¹û²¥·ÅÁĞ±í²»ÔÚËÑË÷×´Ì¬£¬Ôòµ±Ç°Ñ¡ÖĞÏîµÄĞĞºÅ¾ÍÊÇÇúÄ¿µÄË÷Òı
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+    if (!m_searched)	//å¦‚æœæ’­æ”¾åˆ—è¡¨ä¸åœ¨æœç´¢çŠ¶æ€ï¼Œåˆ™å½“å‰é€‰ä¸­é¡¹çš„è¡Œå·å°±æ˜¯æ›²ç›®çš„ç´¢å¼•
     {
         if (pNMItemActivate->iItem < 0)
             return;
         CPlayer::GetInstance().PlayTrack(pNMItemActivate->iItem);
     }
-    else		//Èç¹û²¥·ÅÁĞ±í´¦ÀíÑ¡ÖĞ×´Ì¬£¬ÔòÇúÄ¿µÄË÷ÒıÊÇÑ¡ÖĞĞĞµÚÒ»ÁĞµÄÊı×Ö-1
+    else		//å¦‚æœæ’­æ”¾åˆ—è¡¨å¤„ç†é€‰ä¸­çŠ¶æ€ï¼Œåˆ™æ›²ç›®çš„ç´¢å¼•æ˜¯é€‰ä¸­è¡Œç¬¬ä¸€åˆ—çš„æ•°å­—-1
     {
         int song_index;
         CString str;
@@ -2406,21 +2408,21 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 
 //void CMusicPlayerDlg::OnRefreshPlaylist()
 //{
-//	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 //	ShowPlayList();
 //}
 
 
 void CMusicPlayerDlg::OnOptionSettings()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     _OnOptionSettings(this);
 }
 
 
 void CMusicPlayerDlg::OnReloadPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().ReloadPlaylist();
     //ShowPlayList();
     //UpdatePlayPauseButton();
@@ -2431,11 +2433,11 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     if (!m_searched)
     {
-        m_item_selected = pNMItemActivate->iItem;	//»ñÈ¡Êó±êÑ¡ÖĞµÄÏîÄ¿
-        m_playlist_list.GetItemSelected(m_items_selected);		//»ñÈ¡¶à¸öÑ¡ÖĞµÄÏîÄ¿
+        m_item_selected = pNMItemActivate->iItem;	//è·å–é¼ æ ‡é€‰ä¸­çš„é¡¹ç›®
+        m_playlist_list.GetItemSelected(m_items_selected);		//è·å–å¤šä¸ªé€‰ä¸­çš„é¡¹ç›®
     }
     else
     {
@@ -2454,7 +2456,7 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMusicPlayerDlg::OnPlayItem()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().PlayTrack(m_item_selected);
     SwitchTrack();
     UpdatePlayPauseButton();
@@ -2463,7 +2465,7 @@ void CMusicPlayerDlg::OnPlayItem()
 
 void CMusicPlayerDlg::OnItemProperty()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
     propertyDlg.m_index = m_item_selected;
     propertyDlg.DoModal();
@@ -2474,7 +2476,7 @@ void CMusicPlayerDlg::OnItemProperty()
 
 //void CMusicPlayerDlg::OnRemoveFromPlaylist()
 //{
-//	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 //	CPlayer::GetInstance().RemoveSong(m_item_selected);
 //	ShowPlayList();
 //	UpdatePlayPauseButton();
@@ -2483,7 +2485,7 @@ void CMusicPlayerDlg::OnItemProperty()
 
 //void CMusicPlayerDlg::OnClearPlaylist()
 //{
-//	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 //	CPlayer::GetInstance().ClearPlaylist();
 //	ShowPlayList();
 //	UpdatePlayPauseButton();
@@ -2492,15 +2494,15 @@ void CMusicPlayerDlg::OnItemProperty()
 
 void CMusicPlayerDlg::OnExploreTrack()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().ExplorePath(m_item_selected);
 }
 
 
 BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
-    //ÏìÓ¦ÈÎÎñÀ¸ËõÂÔÍ¼°´Å¥
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
+    //å“åº”ä»»åŠ¡æ ç¼©ç•¥å›¾æŒ‰é’®
     WORD command = LOWORD(wParam);
     switch(command)
     {
@@ -2536,7 +2538,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             }
         }
     };
-    //ÏìÓ¦²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥ÖĞµÄ¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±
+    //å“åº”æ’­æ”¾åˆ—è¡¨å³é”®èœå•ä¸­çš„â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€
     CMusicPlayerCmdHelper cmd_helper;
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
@@ -2546,8 +2548,8 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-    //ÏìÓ¦È«¾Ö¿ì½İ¼ü
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    //å“åº”å…¨å±€å¿«æ·é”®
     switch (nHotKeyId)
     {
     case HK_PLAY_PAUSE:
@@ -2587,7 +2589,7 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 
 void CMusicPlayerDlg::OnReIniBass()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().ReIniPlayerCore();
     UpdatePlayPauseButton();
 }
@@ -2595,7 +2597,7 @@ void CMusicPlayerDlg::OnReIniBass()
 
 void CMusicPlayerDlg::OnSortByFile()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().m_sort_mode = SM_FILE;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
@@ -2604,7 +2606,7 @@ void CMusicPlayerDlg::OnSortByFile()
 
 void CMusicPlayerDlg::OnSortByTitle()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().m_sort_mode = SM_TITLE;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
@@ -2613,7 +2615,7 @@ void CMusicPlayerDlg::OnSortByTitle()
 
 void CMusicPlayerDlg::OnSortByArtist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().m_sort_mode = SM_ARTIST;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
@@ -2622,7 +2624,7 @@ void CMusicPlayerDlg::OnSortByArtist()
 
 void CMusicPlayerDlg::OnSortByAlbum()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().m_sort_mode = SM_ALBUM;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
@@ -2631,7 +2633,7 @@ void CMusicPlayerDlg::OnSortByAlbum()
 
 void CMusicPlayerDlg::OnSortByTrack()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().m_sort_mode = SM_TRACK;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
@@ -2640,7 +2642,7 @@ void CMusicPlayerDlg::OnSortByTrack()
 
 void CMusicPlayerDlg::OnDeleteFromDisk()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
         return;
     CString info;
@@ -2652,7 +2654,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
     vector<wstring> delected_files;
     if (m_items_selected.size() > 1)
     {
-        if(CCommon::IsItemInVector(m_items_selected, CPlayer::GetInstance().GetIndex()))	//Èç¹ûÑ¡ÖĞµÄÎÄ¼şÖĞÓĞÕıÔÚ²¥·ÅµÄÎÄ¼ş£¬ÔòÉ¾³ıÇ°±ØĞëÏÈ¹Ø±ÕÎÄ¼ş
+        if(CCommon::IsItemInVector(m_items_selected, CPlayer::GetInstance().GetIndex()))	//å¦‚æœé€‰ä¸­çš„æ–‡ä»¶ä¸­æœ‰æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶ï¼Œåˆ™åˆ é™¤å‰å¿…é¡»å…ˆå…³é—­æ–‡ä»¶
             CPlayer::GetInstance().MusicControl(Command::CLOSE);
         for (const auto& index : m_items_selected)
         {
@@ -2666,7 +2668,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
     }
     else
     {
-        if (m_item_selected == CPlayer::GetInstance().GetIndex())	//Èç¹ûÉ¾³ıµÄÎÄ¼şÊÇÕıÔÚ²¥·ÅµÄÎÄ¼ş£¬ÔòÉ¾³ıÇ°±ØĞëÏÈ¹Ø±ÕÎÄ¼ş
+        if (m_item_selected == CPlayer::GetInstance().GetIndex())	//å¦‚æœåˆ é™¤çš„æ–‡ä»¶æ˜¯æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶ï¼Œåˆ™åˆ é™¤å‰å¿…é¡»å…ˆå…³é—­æ–‡ä»¶
             CPlayer::GetInstance().MusicControl(Command::CLOSE);
         const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
         if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
@@ -2677,7 +2679,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
     }
     if (rtn == 0)
     {
-        //Èç¹ûÎÄ¼şÉ¾³ı³É¹¦£¬Í¬Ê±´Ó²¥·ÅÁĞ±íÖĞÒÆ³ı
+        //å¦‚æœæ–‡ä»¶åˆ é™¤æˆåŠŸï¼ŒåŒæ—¶ä»æ’­æ”¾åˆ—è¡¨ä¸­ç§»é™¤
         if (m_items_selected.size() > 1)
             CPlayer::GetInstance().RemoveSongs(m_items_selected);
         else
@@ -2685,7 +2687,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
         ShowPlayList(false);
         UpdatePlayPauseButton();
         DrawInfo(true);
-        //ÎÄ¼şÉ¾³ıºóÍ¬Ê±É¾³ıºÍÎÄ¼şÍ¬ÃûµÄÍ¼Æ¬ÎÄ¼şºÍ¸è´ÊÎÄ¼ş
+        //æ–‡ä»¶åˆ é™¤ååŒæ—¶åˆ é™¤å’Œæ–‡ä»¶åŒåçš„å›¾ç‰‡æ–‡ä»¶å’Œæ­Œè¯æ–‡ä»¶
         if (m_items_selected.size() > 1)
         {
             for (auto& file : delected_files)
@@ -2708,9 +2710,9 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
             CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
         }
     }
-    else if (rtn == 1223)	//Èç¹ûÔÚµ¯³öµÄ¶Ô»°¿òÖĞµã»÷¡°È¡Ïû¡±Ôò·µ»ØÖµÎª1223
+    else if (rtn == 1223)	//å¦‚æœåœ¨å¼¹å‡ºçš„å¯¹è¯æ¡†ä¸­ç‚¹å‡»â€œå–æ¶ˆâ€åˆ™è¿”å›å€¼ä¸º1223
     {
-        if (m_item_selected == CPlayer::GetInstance().GetIndex())		//Èç¹ûÉ¾³ıµÄÎÄ¼şÊÇÕıÔÚ²¥·ÅµÄÎÄ¼ş£¬ÓÖµã»÷ÁË¡°È¡Ïû¡±£¬ÔòÖØĞÂ´ò¿ªµ±Ç°ÎÄ¼ş
+        if (m_item_selected == CPlayer::GetInstance().GetIndex())		//å¦‚æœåˆ é™¤çš„æ–‡ä»¶æ˜¯æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶ï¼Œåˆç‚¹å‡»äº†â€œå–æ¶ˆâ€ï¼Œåˆ™é‡æ–°æ‰“å¼€å½“å‰æ–‡ä»¶
         {
             CPlayer::GetInstance().MusicControl(Command::OPEN);
             CPlayer::GetInstance().MusicControl(Command::SEEK);
@@ -2731,17 +2733,17 @@ afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
 #ifndef COMPILE_IN_WIN_XP
     if (IsTaskbarListEnable())
     {
-        //µ±×ÊÔ´¹ÜÀíÆ÷ÖØÆôºóÖØĞÂÌí¼ÓÈÎÎñÀ¸ËõÂÔÍ¼´°¿Ú°´Å¥
+        //å½“èµ„æºç®¡ç†å™¨é‡å¯åé‡æ–°æ·»åŠ ä»»åŠ¡æ ç¼©ç•¥å›¾çª—å£æŒ‰é’®
         m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
         SetThumbnailClipArea();
-        //ÖØĞÂ¸üĞÂÈÎÎñÀ¸ÉÏµÄ²¥·Å×´Ì¬½Ç±ê
+        //é‡æ–°æ›´æ–°ä»»åŠ¡æ ä¸Šçš„æ’­æ”¾çŠ¶æ€è§’æ ‡
         UpdatePlayPauseButton();
     }
 #endif
-    //×ÊÔ´¹ÜÀíÆ÷ÖØÆôºóCortanaµÄ¾ä±ú»á·¢Éú¸Ä±ä£¬´ËÊ±ÒªÖØĞÂ»ñÈ¡CortanaµÄ¾ä±ú
+    //èµ„æºç®¡ç†å™¨é‡å¯åCortanaçš„å¥æŸ„ä¼šå‘ç”Ÿæ”¹å˜ï¼Œæ­¤æ—¶è¦é‡æ–°è·å–Cortanaçš„å¥æŸ„
     m_cortana_lyric.Init();
 
-    m_notify_icon.AddNotifyIcon();		//ÖØĞÂÌí¼ÓÍ¨ÖªÇøÍ¼±ê
+    m_notify_icon.AddNotifyIcon();		//é‡æ–°æ·»åŠ é€šçŸ¥åŒºå›¾æ ‡
 
     return 0;
 }
@@ -2749,7 +2751,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnDispFileName()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_ui_data.display_format = DF_FILE_NAME;
     ShowPlayList();
 }
@@ -2757,7 +2759,7 @@ void CMusicPlayerDlg::OnDispFileName()
 
 void CMusicPlayerDlg::OnDispTitle()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_ui_data.display_format = DF_TITLE;
     ShowPlayList();
 }
@@ -2765,7 +2767,7 @@ void CMusicPlayerDlg::OnDispTitle()
 
 void CMusicPlayerDlg::OnDispArtistTitle()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_ui_data.display_format = DF_ARTIST_TITLE;
     ShowPlayList();
 }
@@ -2773,7 +2775,7 @@ void CMusicPlayerDlg::OnDispArtistTitle()
 
 void CMusicPlayerDlg::OnDispTitleArtist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_ui_data.display_format = DF_TITLE_ARTIST;
     ShowPlayList();
 }
@@ -2781,11 +2783,11 @@ void CMusicPlayerDlg::OnDispTitleArtist()
 
 void CMusicPlayerDlg::OnMiniMode()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_miniModeDlg.m_hWnd != NULL)
         return;
 
-    if (theApp.m_ui_data.full_screen)   //È«ÆÁÄ£Ê½ÏÂ½ûÓÃÏìÓ¦ÃÔÄãÄ£Ê½
+    if (theApp.m_ui_data.full_screen)   //å…¨å±æ¨¡å¼ä¸‹ç¦ç”¨å“åº”è¿·ä½ æ¨¡å¼
         return;
 
     //m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);
@@ -2802,8 +2804,8 @@ void CMusicPlayerDlg::OnMiniMode()
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
         {
-            m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//ÖØĞÂÌí¼ÓÈÎÎñÀ¸ËõÂÔÍ¼°´Å¥
-            SetThumbnailClipArea();		//ÖØĞÂÉèÖÃÈÎÎñÀ¸ËõÂÔÍ¼
+            m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//é‡æ–°æ·»åŠ ä»»åŠ¡æ ç¼©ç•¥å›¾æŒ‰é’®
+            SetThumbnailClipArea();		//é‡æ–°è®¾ç½®ä»»åŠ¡æ ç¼©ç•¥å›¾
         }
 #endif
         SetForegroundWindow();
@@ -2816,7 +2818,7 @@ void CMusicPlayerDlg::OnMiniMode()
 
 void CMusicPlayerDlg::OnBnClickedStop()
 {
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     SetFocus();
     OnStop();
 }
@@ -2824,7 +2826,7 @@ void CMusicPlayerDlg::OnBnClickedStop()
 
 void CMusicPlayerDlg::OnBnClickedPrevious()
 {
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     SetFocus();
     OnPrevious();
 }
@@ -2832,7 +2834,7 @@ void CMusicPlayerDlg::OnBnClickedPrevious()
 
 void CMusicPlayerDlg::OnBnClickedPlayPause()
 {
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     SetFocus();
     OnPlayPause();
 }
@@ -2840,7 +2842,7 @@ void CMusicPlayerDlg::OnBnClickedPlayPause()
 
 void CMusicPlayerDlg::OnBnClickedNext()
 {
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     SetFocus();
     OnNext();
 }
@@ -2850,14 +2852,14 @@ void CMusicPlayerDlg::OnBnClickedNext()
 //{
 //	CMainDialogBase::OnMove(x, y);
 //
-//	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 //	SetMaskWindowPos();
 //}
 
 
 void CMusicPlayerDlg::OnReloadLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CWaitCursor wait_cursor;
     CPlayer::GetInstance().SearchLyrics();
     CPlayer::GetInstance().IniLyrics();
@@ -2866,7 +2868,7 @@ void CMusicPlayerDlg::OnReloadLyric()
 
 void CMusicPlayerDlg::OnSongInfo()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
     propertyDlg.m_index = CPlayer::GetInstance().GetIndex();
     propertyDlg.DoModal();
@@ -2877,7 +2879,7 @@ void CMusicPlayerDlg::OnSongInfo()
 
 void CMusicPlayerDlg::OnCopyCurrentLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
     wstring lyric_str;
     if (midi_lyric)
@@ -2895,7 +2897,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
         }
     }
     if (!CCommon::CopyStringToClipboard(lyric_str))
-        //	MessageBox(_T("µ±Ç°¸è´ÊÒÑ³É¹¦¸´ÖÆµ½¼ôÌù°å¡£"), NULL, MB_ICONINFORMATION);
+        //	MessageBox(_T("å½“å‰æ­Œè¯å·²æˆåŠŸå¤åˆ¶åˆ°å‰ªè´´æ¿ã€‚"), NULL, MB_ICONINFORMATION);
         //else
         MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
 }
@@ -2903,7 +2905,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
 
 void CMusicPlayerDlg::OnCopyAllLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (CCommon::CopyStringToClipboard(CPlayer::GetInstance().m_Lyrics.GetAllLyricText(theApp.m_ui_data.show_translate)))
         MessageBox(CCommon::LoadText(IDS_ALL_LRYIC_COPIED), NULL, MB_ICONINFORMATION);
     else
@@ -2913,9 +2915,9 @@ void CMusicPlayerDlg::OnCopyAllLyric()
 
 void CMusicPlayerDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
-    ////Ë«»÷Êó±ê×ó¼ü½øÈëÃÔÄãÄ£Ê½
+    ////åŒå‡»é¼ æ ‡å·¦é”®è¿›å…¥è¿·ä½ æ¨¡å¼
     //if (!theApp.m_ui_data.repetemode_rect.PtInRect(point) && !theApp.m_ui_data.volume_btn.rect.PtInRect(point)
     //	&& !theApp.m_ui_data.volume_up_rect.PtInRect(point) && !theApp.m_ui_data.volume_down_rect.PtInRect(point)
     //	&& !theApp.m_ui_data.translate_btn.rect.PtInRect(point))
@@ -2926,8 +2928,8 @@ void CMusicPlayerDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 void CMusicPlayerDlg::OnLyricForward()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    //¸è´ÊÌáÇ°0.5Ãë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    //æ­Œè¯æå‰0.5ç§’
     CPlayer::GetInstance().m_Lyrics.AdjustLyric(-500);
 
 }
@@ -2935,16 +2937,16 @@ void CMusicPlayerDlg::OnLyricForward()
 
 void CMusicPlayerDlg::OnLyricDelay()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    //¸è´ÊÑÓºó0.5Ãë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    //æ­Œè¯å»¶å0.5ç§’
     CPlayer::GetInstance().m_Lyrics.AdjustLyric(500);
 }
 
 
 void CMusicPlayerDlg::OnSaveModifiedLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())		//Èç¹ûÖ´ĞĞÁËÖĞÎÄ·±¼ò×ª»»£¬Ôò±£´æÊ±²»¹ÜÑ¡ÏîÉèÖÃÈçºÎ¶¼µ÷ÓÃSaveLyric2()
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())		//å¦‚æœæ‰§è¡Œäº†ä¸­æ–‡ç¹ç®€è½¬æ¢ï¼Œåˆ™ä¿å­˜æ—¶ä¸ç®¡é€‰é¡¹è®¾ç½®å¦‚ä½•éƒ½è°ƒç”¨SaveLyric2()
         CPlayer::GetInstance().m_Lyrics.SaveLyric();
     else
         CPlayer::GetInstance().m_Lyrics.SaveLyric2();
@@ -2953,7 +2955,7 @@ void CMusicPlayerDlg::OnSaveModifiedLyric()
 
 void CMusicPlayerDlg::OnEditLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     //ShellExecute(NULL, _T("open"), CPlayer::GetInstance().m_Lyrics.GetPathName().c_str(), NULL, NULL, SW_SHOWNORMAL);
     CCommon::DeleteModelessDialog(m_pLyricEdit);
     m_pLyricEdit = new CLyricEditDlg;
@@ -2964,7 +2966,7 @@ void CMusicPlayerDlg::OnEditLyric()
 
 void CMusicPlayerDlg::OnDownloadLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CLyricDownloadDlg aDlg;
     aDlg.DoModal();
 }
@@ -2972,7 +2974,7 @@ void CMusicPlayerDlg::OnDownloadLyric()
 
 void CMusicPlayerDlg::OnLyricBatchDownload()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     //CLyricBatchDownloadDlg aDlg;
     //aDlg.DoModal();
     CCommon::DeleteModelessDialog(m_pLyricBatchDownDlg);
@@ -2985,11 +2987,11 @@ void CMusicPlayerDlg::OnLyricBatchDownload()
 
 void CMusicPlayerDlg::OnDeleteLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (CCommon::FileExist(CPlayer::GetInstance().m_Lyrics.GetPathName()))
     {
-        int rtn = CCommon::DeleteAFile(m_hWnd, CPlayer::GetInstance().m_Lyrics.GetPathName());		//É¾³ı¸è´ÊÎÄ¼ş
-        CPlayer::GetInstance().ClearLyric();		//Çå³ı¸è´Ê¹ØÁª
+        int rtn = CCommon::DeleteAFile(m_hWnd, CPlayer::GetInstance().m_Lyrics.GetPathName());		//åˆ é™¤æ­Œè¯æ–‡ä»¶
+        CPlayer::GetInstance().ClearLyric();		//æ¸…é™¤æ­Œè¯å…³è”
     }
 
     SongInfo& song_info{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
@@ -3000,8 +3002,8 @@ void CMusicPlayerDlg::OnDeleteLyric()
 
 void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-    if (nFlags == MK_SHIFT)		//°´×¡Shift¼üµã»÷Êó±êÓÒ¼üÊ±£¬µ¯³öÏµÍ³²Ëµ¥
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    if (nFlags == MK_SHIFT)		//æŒ‰ä½Shifté”®ç‚¹å‡»é¼ æ ‡å³é”®æ—¶ï¼Œå¼¹å‡ºç³»ç»Ÿèœå•
     {
         CPoint point1;
         GetCursorPos(&point1);
@@ -3018,7 +3020,7 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_pUI->MouseMove(point);
 
     CMainDialogBase::OnMouseMove(nFlags, point);
@@ -3027,7 +3029,7 @@ void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (!m_no_lbtnup)
         m_pUI->LButtonUp(point);
 
@@ -3037,7 +3039,7 @@ void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CMusicPlayerDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_pUI->LButtonDown(point);
 
     CMainDialogBase::OnLButtonDown(nFlags, point);
@@ -3048,9 +3050,9 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
     HBRUSH hbr = CMainDialogBase::OnCtlColor(pDC, pWnd, nCtlColor);
 
-    // TODO:  ÔÚ´Ë¸ü¸Ä DC µÄÈÎºÎÌØĞÔ
+    // TODO:  åœ¨æ­¤æ›´æ”¹ DC çš„ä»»ä½•ç‰¹æ€§
 
-    // TODO:  Èç¹ûÄ¬ÈÏµÄ²»ÊÇËùĞè»­±Ê£¬Ôò·µ»ØÁíÒ»¸ö»­±Ê
+    // TODO:  å¦‚æœé»˜è®¤çš„ä¸æ˜¯æ‰€éœ€ç”»ç¬”ï¼Œåˆ™è¿”å›å¦ä¸€ä¸ªç”»ç¬”
     if (pWnd == this /*|| pWnd == &m_path_static*/)
     {
         static HBRUSH hBackBrush{};
@@ -3088,12 +3090,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     //int play_mode = CPlayer::GetInstance().IsPlaylistMode();
     //if (last_play_mode != play_mode)
     //{
-    //    //ÔÚÎÄ¼ş¼ĞÄ£Ê½ºÍ²¥·ÅÁĞ±íÄ£Ê½¼äÇĞ»»Ê±
+    //    //åœ¨æ–‡ä»¶å¤¹æ¨¡å¼å’Œæ’­æ”¾åˆ—è¡¨æ¨¡å¼é—´åˆ‡æ¢æ—¶
     //    m_findDlg.ClearFindResult();
     //    last_play_mode = play_mode;
     //}
 
-    //Æô¶¯Ê±µÚÒ»´Î³õÊ¼»¯Íê²¥·ÅÁĞ±íºó¸üĞÂÃ½Ìå¿â
+    //å¯åŠ¨æ—¶ç¬¬ä¸€æ¬¡åˆå§‹åŒ–å®Œæ’­æ”¾åˆ—è¡¨åæ›´æ–°åª’ä½“åº“
     if(theApp.m_media_lib_setting_data.update_media_lib_when_start_up)
     {
         static bool first_init{ true };
@@ -3126,7 +3128,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
     title_suffix += CCommon::LoadText(IDS_DEBUG_MODE);
 #endif
 
-    SetWindowText(title + title_suffix);		//ÓÃµ±Ç°ÕıÔÚ²¥·ÅµÄ¸èÇúÃû×÷Îª´°¿Ú±êÌâ
+    SetWindowText(title + title_suffix);		//ç”¨å½“å‰æ­£åœ¨æ’­æ”¾çš„æ­Œæ›²åä½œä¸ºçª—å£æ ‡é¢˜
 
     int title_length = 128 - title_suffix.GetLength() - 1;
     if(title.GetLength() > title_length)
@@ -3139,7 +3141,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnEqualizer()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (CPlayer::GetInstance().IsMciCore())
     {
         MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
@@ -3155,14 +3157,14 @@ void CMusicPlayerDlg::OnEqualizer()
 
 void CMusicPlayerDlg::OnExploreOnline()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     m_pThread = AfxBeginThread(ViewOnlineThreadFunc, (void*)m_item_selected);
 }
 
 UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    //´ËÃüÁîÓÃÓÚÌø×ªµ½¸èÇú¶ÔÓ¦µÄÍøÒ×ÔÆÒôÀÖµÄÔÚÏßÒ³Ãæ
+    //æ­¤å‘½ä»¤ç”¨äºè·³è½¬åˆ°æ­Œæ›²å¯¹åº”çš„ç½‘æ˜“äº‘éŸ³ä¹çš„åœ¨çº¿é¡µé¢
     int item_selected = (int)lpParam;
     if (item_selected >= 0 && item_selected < CPlayer::GetInstance().GetSongNum())
     {
@@ -3178,7 +3180,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     //CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
     const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
-    if (theApp.m_general_setting_data.auto_download_only_tag_full)		//ÉèÖÃÁË¡°½öµ±¸èÇúĞÅÏ¢ÍêÕû½ø²Å×Ô¶¯ÏÂÔØ¡±Ê±£¬Èç¹û¸èÇú±êÌâºÍÒÕÊõ¼ÒÓĞÒ»¸öÎª¿Õ£¬Ôò²»×Ô¶¯ÏÂÔØ
+    if (theApp.m_general_setting_data.auto_download_only_tag_full)		//è®¾ç½®äº†â€œä»…å½“æ­Œæ›²ä¿¡æ¯å®Œæ•´è¿›æ‰è‡ªåŠ¨ä¸‹è½½â€æ—¶ï¼Œå¦‚æœæ­Œæ›²æ ‡é¢˜å’Œè‰ºæœ¯å®¶æœ‰ä¸€ä¸ªä¸ºç©ºï¼Œåˆ™ä¸è‡ªåŠ¨ä¸‹è½½
     {
         if (song.IsTitleEmpty() || song.IsArtistEmpty())
             return 0;
@@ -3192,15 +3194,15 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     if (download_cover || download_lyric)
     {
 		DownloadResult result{};
-        if (song.song_id.empty())		//Èç¹ûÃ»ÓĞ»ñÈ¡¹ıID£¬Ôò»ñÈ¡Ò»´ÎID
+        if (song.song_id.empty())		//å¦‚æœæ²¡æœ‰è·å–è¿‡IDï¼Œåˆ™è·å–ä¸€æ¬¡ID
         {
-            //ËÑË÷¸èÇú²¢»ñÈ¡×î¼ÑÆ¥ÅäµÄÏîÄ¿
+            //æœç´¢æ­Œæ›²å¹¶è·å–æœ€ä½³åŒ¹é…çš„é¡¹ç›®
             match_item = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName(), false, &result);
             CPlayer::GetInstance().SetRelatedSongID(match_item.id);
         }
         if (song.song_id.empty())
         {
-            if(result == DR_DOWNLOAD_ERROR)     //Èç¹ûËÑË÷¸èÇúÊ§°Ü£¬Ôò±ê¼ÇÎªÃ»ÓĞÔÚÏß¸è´ÊºÍ×¨¼­·âÃæ
+            if(result == DR_DOWNLOAD_ERROR)     //å¦‚æœæœç´¢æ­Œæ›²å¤±è´¥ï¼Œåˆ™æ ‡è®°ä¸ºæ²¡æœ‰åœ¨çº¿æ­Œè¯å’Œä¸“è¾‘å°é¢
             {
                 song_info_ori.no_online_album_cover = true;
                 song_info_ori.no_online_lyric = true;
@@ -3209,7 +3211,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             return 0;
         }
     }
-    //×Ô¶¯ÏÂÔØ×¨¼­·âÃæ
+    //è‡ªåŠ¨ä¸‹è½½ä¸“è¾‘å°é¢
     if (download_cover && !CPlayer::GetInstance().IsOsuFile())
     {
         wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song.song_id);
@@ -3220,35 +3222,35 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             return 0;
         }
 
-        //»ñÈ¡Òª±£´æµÄ×¨¼­·âÃæµÄÎÄ¼şÂ·¾¶
+        //è·å–è¦ä¿å­˜çš„ä¸“è¾‘å°é¢çš„æ–‡ä»¶è·¯å¾„
         CFilePathHelper cover_file_path;
-        if (match_item.album == song.album && !song.album.empty())		//Èç¹ûÔÚÏßËÑË÷½á¹ûµÄ³ªÆ¬¼¯Ãû³ÆºÍ¸èÇúµÄÏàÍ¬£¬ÔòÒÔ¡°³ªÆ¬¼¯¡±ÎªÎÄ¼şÃû±£´æ
+        if (match_item.album == song.album && !song.album.empty())		//å¦‚æœåœ¨çº¿æœç´¢ç»“æœçš„å”±ç‰‡é›†åç§°å’Œæ­Œæ›²çš„ç›¸åŒï¼Œåˆ™ä»¥â€œå”±ç‰‡é›†â€ä¸ºæ–‡ä»¶åä¿å­˜
         {
             wstring album_name{ match_item.album };
             CCommon::FileNameNormalize(album_name);
             cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name);
         }
-        else				//·ñÔòÒÔ¸èÇúÎÄ¼şÃûÎªÎÄ¼şÃû±£´æ
+        else				//å¦åˆ™ä»¥æ­Œæ›²æ–‡ä»¶åä¸ºæ–‡ä»¶åä¿å­˜
         {
             cover_file_path.SetFilePath(song.file_path);
         }
         CFilePathHelper url_path(cover_url);
         cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
 
-        //ÏÂÃæ×¨¼­·âÃæ
+        //ä¸‹é¢ä¸“è¾‘å°é¢
         URLDownloadToFile(0, cover_url.c_str(), cover_file_path.GetFilePath().c_str(), 0, NULL);
 
-        //½«ÏÂÔØµÄ×¨¼­·âÃæ¸ÄÎªÒş²ØÊôĞÔ
+        //å°†ä¸‹è½½çš„ä¸“è¾‘å°é¢æ”¹ä¸ºéšè—å±æ€§
         SetFileAttributes(cover_file_path.GetFilePath().c_str(), FILE_ATTRIBUTE_HIDDEN);
 
-        //ÖØĞÂ´Ó±¾µØ»ñÈ¡×¨¼­·âÃæ
+        //é‡æ–°ä»æœ¬åœ°è·å–ä¸“è¾‘å°é¢
         CPlayer::GetInstance().SearchOutAlbumCover();
         ::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_ALBUM_COVER_DOWNLOAD_COMPLETE, 0, 0);
     }
-    //×Ô¶¯ÏÂÔØ¸è´Ê
+    //è‡ªåŠ¨ä¸‹è½½æ­Œè¯
     if (download_lyric)
     {
-        //ÏÂÔØ¸è´Ê
+        //ä¸‹è½½æ­Œè¯
         wstring lyric_str;
         if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, true))
         {
@@ -3263,7 +3265,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             return 0;
         }
         CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
-        //±£´æ¸è´Ê
+        //ä¿å­˜æ­Œè¯
         CFilePathHelper lyric_path;
         wstring file_name;
         if (!song.is_cue)
@@ -3283,10 +3285,10 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         ofstream out_put{ lyric_path.GetFilePath(), std::ios::binary };
         out_put << _lyric_str;
         out_put.close();
-        //´¦Àí¸è´Ê·­Òë
-        CLyrics lyrics{ lyric_path.GetFilePath() };		//´ò¿ª±£´æ¹ıµÄ¸è´Ê
-        lyrics.DeleteRedundantLyric();		//É¾³ı¶àÓàµÄ¸è´Ê
-        lyrics.CombineSameTimeLyric();		//½«¸è´Ê·­ÒëºÍÔ­Ê¼¸è´ÊºÏ²¢³ÉÒ»¾ä
+        //å¤„ç†æ­Œè¯ç¿»è¯‘
+        CLyrics lyrics{ lyric_path.GetFilePath() };		//æ‰“å¼€ä¿å­˜è¿‡çš„æ­Œè¯
+        lyrics.DeleteRedundantLyric();		//åˆ é™¤å¤šä½™çš„æ­Œè¯
+        lyrics.CombineSameTimeLyric();		//å°†æ­Œè¯ç¿»è¯‘å’ŒåŸå§‹æ­Œè¯åˆå¹¶æˆä¸€å¥
         lyrics.SaveLyric2();
 
         CPlayer::GetInstance().IniLyrics(lyric_path.GetFilePath());
@@ -3306,14 +3308,14 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam
 
 void CMusicPlayerDlg::OnBrowseLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().ExploreLyric();
 }
 
 
 void CMusicPlayerDlg::OnTranslateToSimplifiedChinese()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CWaitCursor wait_cursor;
     CPlayer::GetInstance().m_Lyrics.ChineseConvertion(true);
 }
@@ -3321,7 +3323,7 @@ void CMusicPlayerDlg::OnTranslateToSimplifiedChinese()
 
 void CMusicPlayerDlg::OnTranslateToTranditionalChinese()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CWaitCursor wait_cursor;
     CPlayer::GetInstance().m_Lyrics.ChineseConvertion(false);
 }
@@ -3329,10 +3331,10 @@ void CMusicPlayerDlg::OnTranslateToTranditionalChinese()
 
 void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    //ÉèÖÃ¹ıÂËÆ÷
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    //è®¾ç½®è¿‡æ»¤å™¨
     CString szFilter = CCommon::LoadText(IDS_ALL_FILES, _T("(*.*)|*.*||"));
-    //ÉèÖÃÁí´æÎªÊ±µÄÄ¬ÈÏÎÄ¼şÃû
+    //è®¾ç½®å¦å­˜ä¸ºæ—¶çš„é»˜è®¤æ–‡ä»¶å
     CString file_name;
     CString extension;
     if (CPlayer::GetInstance().IsInnerCover())
@@ -3359,15 +3361,15 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
     }
     file_name.Format(_T("AlbumCover - %s - %s.%s"), CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), CPlayer::GetInstance().GetCurrentSongInfo().album.c_str(), extension);
     wstring file_name_wcs{ file_name };
-    CCommon::FileNameNormalize(file_name_wcs);		//Ìæ»»µôÎÄ¼şÃûÖĞµÄÎŞĞ§×Ö·û
-    //¹¹Ôì±£´æÎÄ¼ş¶Ô»°¿ò
+    CCommon::FileNameNormalize(file_name_wcs);		//æ›¿æ¢æ‰æ–‡ä»¶åä¸­çš„æ— æ•ˆå­—ç¬¦
+    //æ„é€ ä¿å­˜æ–‡ä»¶å¯¹è¯æ¡†
     CFileDialog fileDlg(FALSE, _T("txt"), file_name_wcs.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
-    //ÏÔÊ¾±£´æÎÄ¼ş¶Ô»°¿ò
+    //æ˜¾ç¤ºä¿å­˜æ–‡ä»¶å¯¹è¯æ¡†
     if (IDOK == fileDlg.DoModal())
     {
         CString dest_file = fileDlg.GetPathName();
         ::CopyFile(CPlayer::GetInstance().GetAlbumCoverPath().c_str(), dest_file, FALSE);
-        SetFileAttributes(dest_file, FILE_ATTRIBUTE_NORMAL);		//È¡ÏûÎÄ¼şµÄÒş²ØÊôĞÔ
+        SetFileAttributes(dest_file, FILE_ATTRIBUTE_NORMAL);		//å–æ¶ˆæ–‡ä»¶çš„éšè—å±æ€§
     }
 }
 
@@ -3385,12 +3387,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lPara
 
 void CMusicPlayerDlg::OnEnChangeSearchEdit()
 {
-    // TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-    // ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CMainDialogBase::OnInitDialog()
-    // º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-    // Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+    // TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+    // å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CMainDialogBase::OnInitDialog()
+    // å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+    // åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-    // TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     CString key_word;
     m_search_edit.GetWindowText(key_word);
     m_searched = (key_word.GetLength() != 0);
@@ -3402,21 +3404,21 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
 
 //void CMusicPlayerDlg::OnBnClickedClearSearchButton()
 //{
-//    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //    if (m_searched)
 //    {
-//        //Çå³ıËÑË÷½á¹û
+//        //æ¸…é™¤æœç´¢ç»“æœ
 //        m_searched = false;
 //        m_search_edit.SetWindowText(_T(""));
 //        m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
-//        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//Çå³ıËÑË÷½á¹ûºóÈ·±£ÕıÔÚ²¥·ÅÇúÄ¿¿É¼û
+//        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//æ¸…é™¤æœç´¢ç»“æœåç¡®ä¿æ­£åœ¨æ’­æ”¾æ›²ç›®å¯è§
 //    }
 //}
 
 
 void CMusicPlayerDlg::OnDownloadAlbumCover()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     //_OnDownloadAlbumCover(true);
     CCoverDownloadDlg dlg;
     dlg.DoModal();
@@ -3425,7 +3427,7 @@ void CMusicPlayerDlg::OnDownloadAlbumCover()
 
 afx_msg LRESULT CMusicPlayerDlg::OnPostMusicStreamOpened(WPARAM wParam, LPARAM lParam)
 {
-	//±£´æĞŞ¸Ä¹ıµÄ¸è´Ê
+	//ä¿å­˜ä¿®æ”¹è¿‡çš„æ­Œè¯
 	DoLyricsAutoSave();
 
 	CPlayer::GetInstance().ResetABRepeat();
@@ -3437,14 +3439,14 @@ afx_msg LRESULT CMusicPlayerDlg::OnPostMusicStreamOpened(WPARAM wParam, LPARAM l
 
 afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lParam)
 {
-    //×¨¼­·âÃæ¸ßË¹Ä£ºı´¦Àí£¨·Åµ½ÕâÀïÊÇÎªÁË±ÜÃâ´Ëº¯ÊıÔÚ¹¤×÷Ïß³ÌÖĞ±»µ÷ÓÃ£¬ÔÚ¹¤×÷Ïß³ÌÖĞ£¬À­ÉìÍ¼Æ¬µÄ´¦ÀíCDrawCommon::BitmapStretchÓĞÒ»¶¨µÄ¸ÅÂÊ³ö´í£¬Ô­ÒòÎ´Öª£©
+    //ä¸“è¾‘å°é¢é«˜æ–¯æ¨¡ç³Šå¤„ç†ï¼ˆæ”¾åˆ°è¿™é‡Œæ˜¯ä¸ºäº†é¿å…æ­¤å‡½æ•°åœ¨å·¥ä½œçº¿ç¨‹ä¸­è¢«è°ƒç”¨ï¼Œåœ¨å·¥ä½œçº¿ç¨‹ä¸­ï¼Œæ‹‰ä¼¸å›¾ç‰‡çš„å¤„ç†CDrawCommon::BitmapStretchæœ‰ä¸€å®šçš„æ¦‚ç‡å‡ºé”™ï¼ŒåŸå› æœªçŸ¥ï¼‰
     CPlayer::GetInstance().AlbumCoverGaussBlur();
-    //×Ô¶¯ÏÂÔØ×¨¼­·âÃæ
+    //è‡ªåŠ¨ä¸‹è½½ä¸“è¾‘å°é¢
     m_pDownloadThread = AfxBeginThread(DownloadLyricAndCoverThreadFunc, this);
 
 	m_desktop_lyric.ClearLyric();
 
-	//±£´æ²¥·ÅÊ±¼ä
+	//ä¿å­˜æ’­æ”¾æ—¶é—´
 	SYSTEMTIME sys_time;
 	GetLocalTime(&sys_time);
 	CTime cur_time(sys_time);
@@ -3457,14 +3459,14 @@ afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lPara
 
 void CMusicPlayerDlg::OnCurrentExploreOnline()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     m_pThread = AfxBeginThread(ViewOnlineThreadFunc, (void*)CPlayer::GetInstance().GetIndex());
 }
 
 
 void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().DeleteAlbumCover();
     SongInfo& song_info{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
     song_info.no_online_album_cover = true;
@@ -3474,7 +3476,7 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
 
 void CMusicPlayerDlg::OnCopyFileTo()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     LPCTSTR title{ CCommon::LoadText(IDS_SELECT_COPY_TARGET_FOLDER) };
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
@@ -3514,7 +3516,7 @@ void CMusicPlayerDlg::OnCopyFileTo()
 
 void CMusicPlayerDlg::OnMoveFileTo()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     LPCTSTR title{ CCommon::LoadText(IDS_SELECT_MOVE_TARGET_FOLDER) };
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
@@ -3533,7 +3535,7 @@ void CMusicPlayerDlg::OnMoveFileTo()
         int rtn;
         if (m_items_selected.size() > 1)
         {
-            if (CCommon::IsItemInVector(m_items_selected, CPlayer::GetInstance().GetIndex()))	//Èç¹ûÑ¡ÖĞµÄÎÄ¼şÖĞÓĞÕıÔÚ²¥·ÅµÄÎÄ¼ş£¬ÔòÒÆ¶¯Ç°±ØĞëÏÈ¹Ø±ÕÎÄ¼ş
+            if (CCommon::IsItemInVector(m_items_selected, CPlayer::GetInstance().GetIndex()))	//å¦‚æœé€‰ä¸­çš„æ–‡ä»¶ä¸­æœ‰æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶ï¼Œåˆ™ç§»åŠ¨å‰å¿…é¡»å…ˆå…³é—­æ–‡ä»¶
                 CPlayer::GetInstance().MusicControl(Command::CLOSE);
             for (const auto& index : m_items_selected)
             {
@@ -3547,7 +3549,7 @@ void CMusicPlayerDlg::OnMoveFileTo()
         }
         else
         {
-            if (m_item_selected == CPlayer::GetInstance().GetIndex())	//Èç¹ûÒÆ¶¯µÄÎÄ¼şÊÇÕıÔÚ²¥·ÅµÄÎÄ¼ş£¬ÔòÒÆ¶¯Ç°±ØĞëÏÈ¹Ø±ÕÎÄ¼ş
+            if (m_item_selected == CPlayer::GetInstance().GetIndex())	//å¦‚æœç§»åŠ¨çš„æ–‡ä»¶æ˜¯æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶ï¼Œåˆ™ç§»åŠ¨å‰å¿…é¡»å…ˆå…³é—­æ–‡ä»¶
                 CPlayer::GetInstance().MusicControl(Command::CLOSE);
             const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
             if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
@@ -3557,7 +3559,7 @@ void CMusicPlayerDlg::OnMoveFileTo()
         }
         if (rtn == 0)
         {
-            //Èç¹ûÎÄ¼şÒÆ¶¯³É¹¦£¬Í¬Ê±´Ó²¥·ÅÁĞ±íÖĞÒÆ³ı
+            //å¦‚æœæ–‡ä»¶ç§»åŠ¨æˆåŠŸï¼ŒåŒæ—¶ä»æ’­æ”¾åˆ—è¡¨ä¸­ç§»é™¤
             if (m_items_selected.size() > 1)
                 CPlayer::GetInstance().RemoveSongs(m_items_selected);
             else
@@ -3587,7 +3589,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lPa
 
 void CMusicPlayerDlg::OnFormatConvert()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     std::vector<SongInfo> songs;
     for (int index : m_items_selected)
     {
@@ -3601,7 +3603,7 @@ void CMusicPlayerDlg::OnFormatConvert()
 
 void CMusicPlayerDlg::OnFormatConvert1()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     std::vector<SongInfo> songs;
     songs.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
     CMusicPlayerCmdHelper cmd_helper(this);
@@ -3621,7 +3623,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSettingsApplied(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnRecorder()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CRecorderDlg dlg;
     dlg.DoModal();
 }
@@ -3629,8 +3631,8 @@ void CMusicPlayerDlg::OnRecorder()
 
 afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPARAM lParam)
 {
-    //ÓÉÓÚ´Ëº¯Êı·Åµ½Ïß³ÌÖĞ´¦ÀíÊ±£¬À­ÉìÍ¼Æ¬µÄ´¦ÀíCDrawCommon::BitmapStretchÓĞÒ»¶¨µÄ¸ÅÂÊ³ö´í£¬Ô­ÒòÎ´Öª
-    //µ¼ÖÂ×¨¼­·âÃæ±³¾°ÊÇºÚÉ«µÄ£¬Òò´ËÍ¨¹ı·¢ËÍÏûÏ¢·Åµ½Ö÷Ïß³ÌÖĞ´¦Àí
+    //ç”±äºæ­¤å‡½æ•°æ”¾åˆ°çº¿ç¨‹ä¸­å¤„ç†æ—¶ï¼Œæ‹‰ä¼¸å›¾ç‰‡çš„å¤„ç†CDrawCommon::BitmapStretchæœ‰ä¸€å®šçš„æ¦‚ç‡å‡ºé”™ï¼ŒåŸå› æœªçŸ¥
+    //å¯¼è‡´ä¸“è¾‘å°é¢èƒŒæ™¯æ˜¯é»‘è‰²çš„ï¼Œå› æ­¤é€šè¿‡å‘é€æ¶ˆæ¯æ”¾åˆ°ä¸»çº¿ç¨‹ä¸­å¤„ç†
     CPlayer::GetInstance().AlbumCoverGaussBlur();
 
     if(theApp.m_nc_setting_data.show_cover_tip)
@@ -3645,11 +3647,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPA
 
 void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity)
 {
-    // ´Ë¹¦ÄÜÒªÇó Windows Vista »ò¸ü¸ß°æ±¾¡£
-    // _WIN32_WINNT ·ûºÅ±ØĞë >= 0x0600¡£
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // æ­¤åŠŸèƒ½è¦æ±‚ Windows Vista æˆ–æ›´é«˜ç‰ˆæœ¬ã€‚
+    // _WIN32_WINNT ç¬¦å·å¿…é¡» >= 0x0600ã€‚
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
-    //ÏìÓ¦Ö÷ÌâÑÕÉ«¸Ä±äÏûÏ¢
+    //å“åº”ä¸»é¢˜é¢œè‰²æ”¹å˜æ¶ˆæ¯
     ThemeColorChanged();
 
     CMainDialogBase::OnColorizationColorChanged(dwColorizationColor, bOpacity);
@@ -3658,7 +3660,7 @@ void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL
 
 void CMusicPlayerDlg::OnSupportedFormat()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CSupportedFormatDlg dlg;
     dlg.DoModal();
 }
@@ -3666,7 +3668,7 @@ void CMusicPlayerDlg::OnSupportedFormat()
 
 void CMusicPlayerDlg::OnSwitchUi()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
     if (m_pUI == &m_ui)
     {
@@ -3714,8 +3716,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
         {
-            m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//ÖØĞÂÌí¼ÓÈÎÎñÀ¸ËõÂÔÍ¼°´Å¥
-            SetThumbnailClipArea();		//ÖØĞÂÉèÖÃÈÎÎñÀ¸ËõÂÔÍ¼
+            m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//é‡æ–°æ·»åŠ ä»»åŠ¡æ ç¼©ç•¥å›¾æŒ‰é’®
+            SetThumbnailClipArea();		//é‡æ–°è®¾ç½®ä»»åŠ¡æ ç¼©ç•¥å›¾
         }
 #endif
         UpdatePlayPauseButton();
@@ -3727,7 +3729,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnClose()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
     CMainDialogBase::OnClose();
 }
@@ -3735,7 +3737,7 @@ void CMusicPlayerDlg::OnClose()
 
 void CMusicPlayerDlg::OnCancel()
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     if(theApp.m_general_setting_data.minimize_to_notify_icon)
         this->ShowWindow(HIDE_WINDOW);
     else
@@ -3745,7 +3747,7 @@ void CMusicPlayerDlg::OnCancel()
 
 void CMusicPlayerDlg::OnMenuExit()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_miniModeDlg.m_hWnd == NULL)
     {
         CMainDialogBase::OnCancel();
@@ -3759,7 +3761,7 @@ void CMusicPlayerDlg::OnMenuExit()
 
 void CMusicPlayerDlg::OnMinimodeRestore()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_miniModeDlg.m_hWnd == NULL)
     {
         OnMiniMode();
@@ -3773,11 +3775,11 @@ void CMusicPlayerDlg::OnMinimodeRestore()
 
 void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey)
 {
-    // ¸Ã¹¦ÄÜÒªÇóÊ¹ÓÃ Windows 2000 »ò¸ü¸ß°æ±¾¡£
-    // ·ûºÅ _WIN32_WINNT ºÍ WINVER ±ØĞë >= 0x0500¡£
+    // è¯¥åŠŸèƒ½è¦æ±‚ä½¿ç”¨ Windows 2000 æˆ–æ›´é«˜ç‰ˆæœ¬ã€‚
+    // ç¬¦å· _WIN32_WINNT å’Œ WINVER å¿…é¡» >= 0x0500ã€‚
 
-    //ÏìÓ¦¶àÃ½Ìå¼ü
-    if (!theApp.IsGlobalMultimediaKeyEnabled())	//Èç¹ûÃ»ÓĞÉèÖÃÏìÓ¦È«¾ÖµÄ¶àÃ½Ìå°´¼üÏûÏ¢£¬ÔòÔÚµ±Ç°´°¿ÚÄÚÏìÓ¦¶àÃ½Ìå°´¼üÏûÏ¢
+    //å“åº”å¤šåª’ä½“é”®
+    if (!theApp.IsGlobalMultimediaKeyEnabled())	//å¦‚æœæ²¡æœ‰è®¾ç½®å“åº”å…¨å±€çš„å¤šåª’ä½“æŒ‰é”®æ¶ˆæ¯ï¼Œåˆ™åœ¨å½“å‰çª—å£å†…å“åº”å¤šåª’ä½“æŒ‰é”®æ¶ˆæ¯
     {
         switch (nCmd)
         {
@@ -3805,7 +3807,7 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 
 void CMusicPlayerDlg::OnShowPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     m_pUI->ClearInfo();
     theApp.m_ui_data.show_playlist = !theApp.m_ui_data.show_playlist;
 
@@ -3818,7 +3820,7 @@ void CMusicPlayerDlg::OnShowPlaylist()
 
 BOOL CMusicPlayerDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (m_pUI->SetCursor())
         return TRUE;
     else
@@ -3828,7 +3830,7 @@ BOOL CMusicPlayerDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 
 void CMusicPlayerDlg::OnMouseLeave()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_pUI->MouseLeave();
 
     CMainDialogBase::OnMouseLeave();
@@ -3837,14 +3839,14 @@ void CMusicPlayerDlg::OnMouseLeave()
 
 void CMusicPlayerDlg::OnShowMenuBar()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
     SetMenubarVisible();
     SetThumbnailClipArea();
     DrawInfo();
     m_pUI->UpdateToolTipPosition();
 
-    //Òş²Ø²Ëµ¥À¸ºóµ¯³öÌáÊ¾£¬¸æËßÓÃ»§ÈçºÎÔÙ´ÎÏÔÊ¾²Ëµ¥À¸
+    //éšè—èœå•æ åå¼¹å‡ºæç¤ºï¼Œå‘Šè¯‰ç”¨æˆ·å¦‚ä½•å†æ¬¡æ˜¾ç¤ºèœå•æ 
     if (!theApp.m_ui_data.show_menu_bar)
     {
         if (theApp.m_nc_setting_data.show_hide_menu_bar_tip)
@@ -3858,9 +3860,9 @@ void CMusicPlayerDlg::OnShowMenuBar()
 
 void CMusicPlayerDlg::OnFullScreen()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
-    if (m_miniModeDlg.m_hWnd != NULL)	//ÃÔÄãÄ£Ê½ÏÂ²»ÔÊĞíÏìÓ¦È«ÆÁÏÔÊ¾
+    if (m_miniModeDlg.m_hWnd != NULL)	//è¿·ä½ æ¨¡å¼ä¸‹ä¸å…è®¸å“åº”å…¨å±æ˜¾ç¤º
         return;
 
     theApp.m_ui_data.full_screen = !theApp.m_ui_data.full_screen;
@@ -3874,24 +3876,24 @@ void CMusicPlayerDlg::OnFullScreen()
 
 void CMusicPlayerDlg::OnCreatePlayShortcut()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
     if (MessageBox(CCommon::LoadText(IDS_CREATE_PLAY_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
-        //´´½¨²¥·Å/ÔİÍ£¿ì½İ·½Ê½
+        //åˆ›å»ºæ’­æ”¾/æš‚åœå¿«æ·æ–¹å¼
         wstring play_pause = CCommon::LoadText(IDS_PLAY_PAUSE, L".lnk");
         CCommon::FileNameNormalize(play_pause);
 
         bool success = true;
         success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, play_pause.c_str(), NULL, 0, 0, 1, L"-play_pause", 2);
 
-        //´´½¨ÉÏÒ»Çú¿ì½İ·½Ê½
+        //åˆ›å»ºä¸Šä¸€æ›²å¿«æ·æ–¹å¼
         success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_PREVIOUS, L".lnk"), NULL, 0, 0, 1, L"-previous", 1);
 
-        //´´½¨ÏÂÒ»Çú¿ì½İ·½Ê½
+        //åˆ›å»ºä¸‹ä¸€æ›²å¿«æ·æ–¹å¼
         success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_NEXT, L".lnk"), NULL, 0, 0, 1, L"-next", 3);
 
-        //´´½¨Í£Ö¹¿ì½İ·½Ê½
+        //åˆ›å»ºåœæ­¢å¿«æ·æ–¹å¼
         success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_STOP, L".lnk"), NULL, 0, 0, 1, L"-stop", 6);
 
         if (success)
@@ -3904,7 +3906,7 @@ void CMusicPlayerDlg::OnCreatePlayShortcut()
 
 void CMusicPlayerDlg::OnListenStatistics()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CListenTimeStatisticsDlg dlg;
     dlg.DoModal();
 }
@@ -3912,7 +3914,7 @@ void CMusicPlayerDlg::OnListenStatistics()
 
 void CMusicPlayerDlg::OnDarkMode()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_app_setting_data.dark_mode = !theApp.m_app_setting_data.dark_mode;
     if (theApp.m_app_setting_data.dark_mode)
         theApp.m_app_setting_data.background_transparency = 50;
@@ -3935,7 +3937,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainMenuPopup(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnAlwaysOnTop()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_nc_setting_data.always_on_top = !theApp.m_nc_setting_data.always_on_top;
     SetAlwaysOnTop();
 }
@@ -3943,7 +3945,7 @@ void CMusicPlayerDlg::OnAlwaysOnTop()
 
 void CMusicPlayerDlg::OnFloatPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
     theApp.m_nc_setting_data.float_playlist = !theApp.m_nc_setting_data.float_playlist;
     if(theApp.m_nc_setting_data.float_playlist)
@@ -3959,14 +3961,14 @@ void CMusicPlayerDlg::OnFloatPlaylist()
 
 void CMusicPlayerDlg::OnDockedPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = false;
 }
 
 
 void CMusicPlayerDlg::OnFloatedPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = true;
 }
 
@@ -3986,11 +3988,11 @@ LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 
 //void CMusicPlayerDlg::OnFileOpenPalylist()
 //{
-//    //ÉèÖÃ¹ıÂËÆ÷
+//    //è®¾ç½®è¿‡æ»¤å™¨
 //    CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILTER);
-//    //¹¹Ôì´ò¿ªÎÄ¼ş¶Ô»°¿ò
+//    //æ„é€ æ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
 //    CFileDialog fileDlg(TRUE, _T("playlist"), NULL, 0, szFilter, this);
-//    //ÏÔÊ¾´ò¿ªÎÄ¼ş¶Ô»°¿ò
+//    //æ˜¾ç¤ºæ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
 //    if (IDOK == fileDlg.DoModal())
 //    {
 //        CPlaylistFile playlist;
@@ -4006,7 +4008,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
     CSelectPlaylistDlg* pPathDlg = (CSelectPlaylistDlg*)wParam;
     if (pPathDlg != nullptr)
     {
-        if(lParam == TRUE)      //µ±lParamÎª1Ê±£¬²¥·ÅÄ¬ÈÏµÄ²¥·ÅÁĞ±í
+        if(lParam == TRUE)      //å½“lParamä¸º1æ—¶ï¼Œæ’­æ”¾é»˜è®¤çš„æ’­æ”¾åˆ—è¡¨
         {
             auto default_playlist = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
             CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
@@ -4019,11 +4021,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
         //SetPorgressBarSize();
         //ShowTime();
         DrawInfo(true);
-        //m_findDlg.ClearFindResult();		//¸ü»»Â·¾¶ºóÇå³ı²éÕÒ½á¹û
+        //m_findDlg.ClearFindResult();		//æ›´æ¢è·¯å¾„åæ¸…é™¤æŸ¥æ‰¾ç»“æœ
         CPlayer::GetInstance().SaveRecentPath();
         IniPlaylistPopupMenu();
         m_play_error_cnt = 0;
-        SetTimer(DELAY_TIMER_ID, 500, NULL);        //ÔÚÃ½Ìå¿â¶Ô»°¿òÖĞÑ¡ÔñÁËÒ»¸ö²¥·ÅÁĞ±í²¥·Åºó£¬500ºÁÃëÄÚ²»ÏìÓ¦WM_LBUTTONUPÏûÏ¢
+        SetTimer(DELAY_TIMER_ID, 500, NULL);        //åœ¨åª’ä½“åº“å¯¹è¯æ¡†ä¸­é€‰æ‹©äº†ä¸€ä¸ªæ’­æ”¾åˆ—è¡¨æ’­æ”¾åï¼Œ500æ¯«ç§’å†…ä¸å“åº”WM_LBUTTONUPæ¶ˆæ¯
         m_no_lbtnup = true;
     }
     return 0;
@@ -4032,7 +4034,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
 
 void CMusicPlayerDlg::OnPlaylistAddFile()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
     if (!CPlayer::GetInstance().IsPlaylistMode())
         return;
@@ -4050,7 +4052,7 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
 
 void CMusicPlayerDlg::OnRemoveFromPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().RemoveSongs(m_items_selected);
     CPlayer::GetInstance().SaveCurrentPlaylist();
     ShowPlayList(false);
@@ -4059,7 +4061,7 @@ void CMusicPlayerDlg::OnRemoveFromPlaylist()
 
 void CMusicPlayerDlg::OnEmptyPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (MessageBox(CCommon::LoadText(IDS_CLEAR_PLAYLIST_WARNING), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         CPlayer::GetInstance().ClearPlaylist();
@@ -4071,7 +4073,7 @@ void CMusicPlayerDlg::OnEmptyPlaylist()
 
 void CMusicPlayerDlg::OnMovePlaylistItemUp()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_items_selected.empty())
         return;
 
@@ -4100,7 +4102,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemUp()
 
 void CMusicPlayerDlg::OnMovePlaylistItemDown()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_items_selected.empty())
         return;
 
@@ -4130,7 +4132,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemDown()
 void CMusicPlayerDlg::OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     GetPlaylistItemSelected();
     *pResult = 0;
 }
@@ -4138,7 +4140,7 @@ void CMusicPlayerDlg::OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMusicPlayerDlg::OnRemoveSameSongs()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     int removed = CPlayer::GetInstance().RemoveSameSongs();
     if (removed > 0)
     {
@@ -4151,7 +4153,7 @@ void CMusicPlayerDlg::OnRemoveSameSongs()
 
 void CMusicPlayerDlg::OnAddToNewPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     auto getSongList = [&](std::vector<SongInfo>& song_list)
     {
         for (auto i : m_items_selected)
@@ -4170,7 +4172,7 @@ void CMusicPlayerDlg::OnAddToNewPlaylist()
 
 void CMusicPlayerDlg::OnToolFileRelate()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CFileRelateDlg dlg;
     dlg.DoModal();
 }
@@ -4178,7 +4180,7 @@ void CMusicPlayerDlg::OnToolFileRelate()
 
 void CMusicPlayerDlg::OnPlaylistAddFolder()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
     if (!CPlayer::GetInstance().IsPlaylistMode())
         return;
@@ -4190,7 +4192,7 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
 #else
     CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
     CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
-    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, CCommon::LoadText(IDS_INCLUDE_SUB_DIR), include_sub_dir);     //ÔÚ´ò¿ª¶Ô»°¿òÖĞÌí¼ÓÒ»¸ö¸´Ñ¡¿ò
+    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, CCommon::LoadText(IDS_INCLUDE_SUB_DIR), include_sub_dir);     //åœ¨æ‰“å¼€å¯¹è¯æ¡†ä¸­æ·»åŠ ä¸€ä¸ªå¤é€‰æ¡†
 #endif
     if (folderPickerDlg.DoModal() == IDOK)
     {
@@ -4210,7 +4212,7 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
 
 void CMusicPlayerDlg::OnRemoveInvalidItems()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     int removed = CPlayer::GetInstance().RemoveInvalidSongs();
     if (removed > 0)
     {
@@ -4240,7 +4242,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
     int index = CPlayer::GetInstance().MoveItems(drag_items, drop_index);
     ShowPlayList(false);
 
-    //ÒÆ¶¯ºóÉèÖÃµ±Ç°Ñ¡ÖĞĞĞ
+    //ç§»åŠ¨åè®¾ç½®å½“å‰é€‰ä¸­è¡Œ
     if (m_pFloatPlaylistDlg->GetSafeHwnd() == NULL)
     {
         m_playlist_list.SetCurSel(index, index + drag_items.size() - 1);
@@ -4261,10 +4263,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnAddRemoveFromFavourite()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
     {
-        //Èç¹ûµ±Ç°²¥·ÅÁĞ±í¾ÍÊÇ¡°ÎÒÏ²»¶¡±²¥·ÅÁĞ±í£¬ÔòÖ±½Ó½«µ±Ç°¸èÇú´ÓÁĞ±íÖĞÒÆ³ı
+        //å¦‚æœå½“å‰æ’­æ”¾åˆ—è¡¨å°±æ˜¯â€œæˆ‘å–œæ¬¢â€æ’­æ”¾åˆ—è¡¨ï¼Œåˆ™ç›´æ¥å°†å½“å‰æ­Œæ›²ä»åˆ—è¡¨ä¸­ç§»é™¤
         if(MessageBox(CCommon::LoadText(IDS_REMOVE_MY_FAVOURITE_WARNING), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
         {
             CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
@@ -4280,7 +4282,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
         playlist.LoadFromFile(favourite_playlist_path);
         if (!CPlayer::GetInstance().IsFavourite())
         {
-            //Ìí¼Óµ½¡°ÎÒÏ²»¶¡±²¥·ÅÁĞ±í
+            //æ·»åŠ åˆ°â€œæˆ‘å–œæ¬¢â€æ’­æ”¾åˆ—è¡¨
             if (!playlist.IsFileInPlaylist(current_file))
             {
                 playlist.AddFiles(std::vector<SongInfo> {current_file});
@@ -4290,7 +4292,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
         }
         else
         {
-            //´Ó¡°ÎÒÏ²»¶¡±²¥·ÅÁĞ±íÒÆ³ı
+            //ä»â€œæˆ‘å–œæ¬¢â€æ’­æ”¾åˆ—è¡¨ç§»é™¤
             playlist.RemoveFile(current_file.file_path);
             playlist.SaveToFile(favourite_playlist_path);
             CPlayer::GetInstance().SetFavourite(false);
@@ -4301,7 +4303,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
 
 void CMusicPlayerDlg::OnFileOpenUrl()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CInputDlg input_dlg;
     input_dlg.SetTitle(CCommon::LoadText(IDS_OPEN_URL));
     input_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_URL_TIP));
@@ -4325,7 +4327,7 @@ void CMusicPlayerDlg::OnFileOpenUrl()
 
 void CMusicPlayerDlg::OnPlaylistAddUrl()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CInputDlg input_dlg;
     input_dlg.SetTitle(CCommon::LoadText(IDS_ADD_URL));
     input_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_URL_TIP));
@@ -4356,7 +4358,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetMenuState(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnLockDesktopLryic()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = !theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
     m_desktop_lyric.SetLyricWindowLock(theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
     CString strTip;
@@ -4370,21 +4372,21 @@ void CMusicPlayerDlg::OnLockDesktopLryic()
 
 void CMusicPlayerDlg::OnCloseDesktopLyric()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_lyric_setting_data.show_desktop_lyric = false;
 }
 
 
 void CMusicPlayerDlg::OnLyricDisplayedDoubleLine()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line = !theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line;
 }
 
 
 void CMusicPlayerDlg::OnLyricBackgroundPenetrate()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate = !theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate;
     m_desktop_lyric.SetLyricBackgroundPenetrate(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
 }
@@ -4392,7 +4394,7 @@ void CMusicPlayerDlg::OnLyricBackgroundPenetrate()
 
 void CMusicPlayerDlg::OnPlaylistSelectAll()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     m_playlist_list.SelectAll();
     GetPlaylistItemSelected();
 }
@@ -4400,7 +4402,7 @@ void CMusicPlayerDlg::OnPlaylistSelectAll()
 
 void CMusicPlayerDlg::OnPlaylistSelectNone()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     m_playlist_list.SelectNone();
     GetPlaylistItemSelected();
 }
@@ -4408,7 +4410,7 @@ void CMusicPlayerDlg::OnPlaylistSelectNone()
 
 void CMusicPlayerDlg::OnPlaylistSelectRevert()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     m_playlist_list.SelectReverse();
     GetPlaylistItemSelected();
 }
@@ -4423,28 +4425,28 @@ afx_msg LRESULT CMusicPlayerDlg::OnCurPlaylistRenamed(WPARAM wParam, LPARAM lPar
 
 void CMusicPlayerDlg::OnOnlineHelp()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/Introduction.md"), NULL, NULL, SW_SHOW);	//´ò¿ª³¬Á´½Ó
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/Introduction.md"), NULL, NULL, SW_SHOW);	//æ‰“å¼€è¶…é“¾æ¥
 }
 
 
 void CMusicPlayerDlg::OnSpeedUp()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().SpeedUp();
 }
 
 
 void CMusicPlayerDlg::OnSlowDown()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().SlowDown();
 }
 
 
 void CMusicPlayerDlg::OnOriginalSpeed()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CPlayer::GetInstance().SetOrignalSpeed();
 }
 
@@ -4453,11 +4455,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lP
 {
     if (m_searched)
     {
-        //Çå³ıËÑË÷½á¹û
+        //æ¸…é™¤æœç´¢ç»“æœ
         m_searched = false;
         m_search_edit.SetWindowText(_T(""));
         m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
-        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//Çå³ıËÑË÷½á¹ûºóÈ·±£ÕıÔÚ²¥·ÅÇúÄ¿¿É¼û
+        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//æ¸…é™¤æœç´¢ç»“æœåç¡®ä¿æ­£åœ¨æ’­æ”¾æ›²ç›®å¯è§
     }
     return 0;
 }
@@ -4480,7 +4482,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMsgOptionSettings(WPARAM wParam, LPARAM lPara
 
 void CMusicPlayerDlg::OnAlwaysShowStatusBar()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     theApp.m_ui_data.always_show_statusbar = !theApp.m_ui_data.always_show_statusbar;
     DrawInfo(true);
     m_pUI->UpdateToolTipPosition();
@@ -4489,12 +4491,12 @@ void CMusicPlayerDlg::OnAlwaysShowStatusBar()
 
 void CMusicPlayerDlg::OnShowMainWindow()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-	if (m_miniModeDlg.m_hWnd != NULL)		//Èç¹ûÊÇÃÔÄãÄ£Ê½£¬ÔòÍË³öÃÔÄãÄ£Ê½
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+	if (m_miniModeDlg.m_hWnd != NULL)		//å¦‚æœæ˜¯è¿·ä½ æ¨¡å¼ï¼Œåˆ™é€€å‡ºè¿·ä½ æ¨¡å¼
 		::SendMessage(m_miniModeDlg.m_hWnd, WM_COMMAND, IDOK, NULL);
 
-	ShowWindow(SW_SHOWNORMAL);	//¼¤»î²¢ÏÔÊ¾´°¿Ú
-	SetForegroundWindow();		//½«´°¿ÚÉèÖÃÎª½¹µã
+	ShowWindow(SW_SHOWNORMAL);	//æ¿€æ´»å¹¶æ˜¾ç¤ºçª—å£
+	SetForegroundWindow();		//å°†çª—å£è®¾ç½®ä¸ºç„¦ç‚¹
 
 }
 
@@ -4513,7 +4515,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentPlayedListCleared(WPARAM wParam, LPARAM
 
 void CMusicPlayerDlg::OnAbRepeat()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	CPlayer::GetInstance().DoABRepeat();
 	UpdateABRepeatToolTip();
 }
@@ -4521,7 +4523,7 @@ void CMusicPlayerDlg::OnAbRepeat()
 
 void CMusicPlayerDlg::OnSetAPoint()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	CPlayer::GetInstance().SetARepeatPoint();
 	UpdateABRepeatToolTip();
 }
@@ -4529,7 +4531,7 @@ void CMusicPlayerDlg::OnSetAPoint()
 
 void CMusicPlayerDlg::OnSetBPoint()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	CPlayer::GetInstance().SetBRepeatPoint();
 	UpdateABRepeatToolTip();
 }
@@ -4537,7 +4539,7 @@ void CMusicPlayerDlg::OnSetBPoint()
 
 void CMusicPlayerDlg::OnResetAbRepeat()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	CPlayer::GetInstance().ResetABRepeat();
 	UpdateABRepeatToolTip();
 }
@@ -4545,7 +4547,7 @@ void CMusicPlayerDlg::OnResetAbRepeat()
 
 void CMusicPlayerDlg::OnNextAbRepeat()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	CPlayer::GetInstance().ContinueABRepeat();
 	UpdateABRepeatToolTip();
 }
@@ -4553,7 +4555,7 @@ void CMusicPlayerDlg::OnNextAbRepeat()
 
 void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     wstring playlist_name = CPlayer::GetInstance().GetCurrentFolderOrPlaylistName();
     if (!CPlayer::GetInstance().IsPlaylistMode())
     {
@@ -4563,8 +4565,8 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
     if (IDOK == fileDlg.DoModal())
     {
         CPlaylistFile playlist;
-        playlist.FromSongList(CPlayer::GetInstance().GetPlayList());        //»ñÈ¡µ±Ç°²¥·ÅÁĞ±í
-        //½«µ±Ç°²¥·ÅÁĞ±í±£´æµ½ÎÄ¼ş
+        playlist.FromSongList(CPlayer::GetInstance().GetPlayList());        //è·å–å½“å‰æ’­æ”¾åˆ—è¡¨
+        //å°†å½“å‰æ’­æ”¾åˆ—è¡¨ä¿å­˜åˆ°æ–‡ä»¶
         wstring file_path = fileDlg.GetPathName();
         wstring file_extension = fileDlg.GetFileExt();
         file_extension = L'.' + file_extension;
@@ -4584,12 +4586,12 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
 
 void CMusicPlayerDlg::OnFileOpenPlaylist()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-	//ÉèÖÃ¹ıÂËÆ÷
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+	//è®¾ç½®è¿‡æ»¤å™¨
 	CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILE_FILTER);
-	//¹¹Ôì´ò¿ªÎÄ¼ş¶Ô»°¿ò
+	//æ„é€ æ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
 	CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);
-	//ÏÔÊ¾´ò¿ªÎÄ¼ş¶Ô»°¿ò
+	//æ˜¾ç¤ºæ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
 	if (IDOK == fileDlg.DoModal())
 	{
 		wstring file_path = fileDlg.GetPathName();
@@ -4601,14 +4603,14 @@ void CMusicPlayerDlg::OnFileOpenPlaylist()
 
 //void CMusicPlayerDlg::OnExportCurrentPlaylist()
 //{
-//    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+//    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 //
 //}
 
 
 void CMusicPlayerDlg::OnSaveAsNewPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     auto getSongList = [&](std::vector<SongInfo>& song_list)
     {
         for (const auto& item : CPlayer::GetInstance().GetPlayList())
@@ -4622,7 +4624,7 @@ void CMusicPlayerDlg::OnSaveAsNewPlaylist()
 
 void CMusicPlayerDlg::OnCreateDesktopShortcut()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (MessageBox(CCommon::LoadText(IDS_CREATE_DESKTOP_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
@@ -4641,7 +4643,7 @@ void CMusicPlayerDlg::OnCreateDesktopShortcut()
 
 void CMusicPlayerDlg::OnCreateMiniModeShortCut()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     
     if (MessageBox(CCommon::LoadText(IDS_CREATE_MINI_MODE_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
@@ -4657,7 +4659,7 @@ void CMusicPlayerDlg::OnCreateMiniModeShortCut()
 
 void CMusicPlayerDlg::OnRemoveCurrentFromPlaylist()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if(CPlayer::GetInstance().IsPlaylistMode())
     {
         CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
@@ -4669,7 +4671,7 @@ void CMusicPlayerDlg::OnRemoveCurrentFromPlaylist()
 
 void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     CString info;
     wstring file_path = CPlayer::GetInstance().GetCurrentFilePath();
     if (file_path.empty())
@@ -4690,19 +4692,19 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
     }
     if (rtn == 0 || !file_exist)
     {
-        //Èç¹ûÎÄ¼şÉ¾³ı³É¹¦£¬Í¬Ê±´Ó²¥·ÅÁĞ±íÖĞÒÆ³ı
+        //å¦‚æœæ–‡ä»¶åˆ é™¤æˆåŠŸï¼ŒåŒæ—¶ä»æ’­æ”¾åˆ—è¡¨ä¸­ç§»é™¤
         CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
         ShowPlayList(false);
         UpdatePlayPauseButton();
         DrawInfo(true);
-        //ÎÄ¼şÉ¾³ıºóÍ¬Ê±É¾³ıºÍÎÄ¼şÍ¬ÃûµÄÍ¼Æ¬ÎÄ¼şºÍ¸è´ÊÎÄ¼ş
+        //æ–‡ä»¶åˆ é™¤ååŒæ—¶åˆ é™¤å’Œæ–‡ä»¶åŒåçš„å›¾ç‰‡æ–‡ä»¶å’Œæ­Œè¯æ–‡ä»¶
         CFilePathHelper file_path(file_path);
         CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
         CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
     }
-    else if (rtn == 1223)	//Èç¹ûÔÚµ¯³öµÄ¶Ô»°¿òÖĞµã»÷¡°È¡Ïû¡±Ôò·µ»ØÖµÎª1223
+    else if (rtn == 1223)	//å¦‚æœåœ¨å¼¹å‡ºçš„å¯¹è¯æ¡†ä¸­ç‚¹å‡»â€œå–æ¶ˆâ€åˆ™è¿”å›å€¼ä¸º1223
     {
-        //Èç¹ûµã»÷ÁË¡°È¡Ïû¡±£¬ÔòÖØĞÂ´ò¿ªµ±Ç°ÎÄ¼ş
+        //å¦‚æœç‚¹å‡»äº†â€œå–æ¶ˆâ€ï¼Œåˆ™é‡æ–°æ‰“å¼€å½“å‰æ–‡ä»¶
         CPlayer::GetInstance().MusicControl(Command::OPEN);
         CPlayer::GetInstance().MusicControl(Command::SEEK);
         //CPlayer::GetInstance().Refresh();

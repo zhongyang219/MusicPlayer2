@@ -1,4 +1,4 @@
-// LyricEditDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// LyricEditDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CLyricEditDlg ¶Ô»°¿ò
+// CLyricEditDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CLyricEditDlg, CDialog)
 
@@ -23,33 +23,33 @@ CLyricEditDlg::~CLyricEditDlg()
 
 void CLyricEditDlg::OpreateTag(TagOpreation operation)
 {
-	int start, end;			//¹â±êÑ¡ÖĞµÄÆğÊ¼µÄ½áÊøÎ»ÖÃ
-	int tag_index;		//Òª²Ù×÷µÄÊ±¼ä±êÇ©µÄÎ»ÖÃ
+	int start, end;			//å…‰æ ‡é€‰ä¸­çš„èµ·å§‹çš„ç»“æŸä½ç½®
+	int tag_index;		//è¦æ“ä½œçš„æ—¶é—´æ ‡ç­¾çš„ä½ç½®
 	m_lyric_edit.GetSel(start, end);
-	tag_index = m_lyric_string.rfind(L"\r\n", start - 1);	//´Ó¹â±êÎ»ÖÃÏòÇ°²éÕÒ\r\nµÄÎ»ÖÃ
+	tag_index = m_lyric_string.rfind(L"\r\n", start - 1);	//ä»å…‰æ ‡ä½ç½®å‘å‰æŸ¥æ‰¾\r\nçš„ä½ç½®
 	if (tag_index == string::npos || start == 0)
-		tag_index = 0;									//Èç¹ûÃ»ÓĞÕÒµ½£¬Ôò²åÈëµãµÄÎ»ÖÃÊÇ×îÇ°Ãæ
+		tag_index = 0;									//å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œåˆ™æ’å…¥ç‚¹çš„ä½ç½®æ˜¯æœ€å‰é¢
 	else
 		tag_index += 2;
 
-	Time time_tag{ CPlayer::GetInstance().GetCurrentPosition() };		//»ñÈ¡µ±Ç°²¥·ÅÊ±¼ä
+	Time time_tag{ CPlayer::GetInstance().GetCurrentPosition() };		//è·å–å½“å‰æ’­æ”¾æ—¶é—´
 	wchar_t time_tag_str[16];
 	swprintf_s(time_tag_str, L"[%.2d:%.2d.%.2d]", time_tag.min, time_tag.sec, time_tag.msec / 10);
 
-	int index2;		//µ±Ç°Ê±¼ä±êÇ©µÄ½áÊøÎ»ÖÃ
-	int tag_length;		//µ±Ç°Ê±¼ä±êÇ©µÄ³¤¶È
-	int tag_index2;		//¹â±êËùÔÚ´¦Ê±¼ä±êÇ©¿ªÊ¼µÄÎ»ÖÃ
+	int index2;		//å½“å‰æ—¶é—´æ ‡ç­¾çš„ç»“æŸä½ç½®
+	int tag_length;		//å½“å‰æ—¶é—´æ ‡ç­¾çš„é•¿åº¦
+	int tag_index2;		//å…‰æ ‡æ‰€åœ¨å¤„æ—¶é—´æ ‡ç­¾å¼€å§‹çš„ä½ç½®
 	index2 = m_lyric_string.find(L']', tag_index);
 	tag_length = index2 - tag_index + 1;
 	switch (operation)
 	{
-	case TagOpreation::INSERT:			//²åÈëÊ±¼ä±êÇ©£¨ÔÚ¹â±êËùÔÚĞĞµÄ×î×ó±ß²åÈë£©
+	case TagOpreation::INSERT:			//æ’å…¥æ—¶é—´æ ‡ç­¾ï¼ˆåœ¨å…‰æ ‡æ‰€åœ¨è¡Œçš„æœ€å·¦è¾¹æ’å…¥ï¼‰
 		m_lyric_string.insert(tag_index, time_tag_str);
 		break;
-	case TagOpreation::REPLACE:			//Ìæ»»Ê±¼ä±êÇ©£¨Ìæ»»¹â±êËùÔÚĞĞµÄ×ó±ßµÄ±êÇ©£©
+	case TagOpreation::REPLACE:			//æ›¿æ¢æ—¶é—´æ ‡ç­¾ï¼ˆæ›¿æ¢å…‰æ ‡æ‰€åœ¨è¡Œçš„å·¦è¾¹çš„æ ‡ç­¾ï¼‰
 		m_lyric_string.replace(tag_index,tag_length, time_tag_str, wcslen(time_tag_str));
 		break;
-	case TagOpreation::DELETE_:			//É¾³ıÊ±¼ä±êÇ©£¨É¾³ı¹â±êËùÔÚ´¦µÄ±êÇ©£©
+	case TagOpreation::DELETE_:			//åˆ é™¤æ—¶é—´æ ‡ç­¾ï¼ˆåˆ é™¤å…‰æ ‡æ‰€åœ¨å¤„çš„æ ‡ç­¾ï¼‰
 		tag_index2 = m_lyric_string.rfind(L'[', start);
 		if (tag_index2 < tag_index) tag_index2 = tag_index;
 		index2 = m_lyric_string.find(L']', tag_index2);
@@ -59,12 +59,12 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 	}
 	
 
-	int next_index;			//ÏÂÒ»ĞĞµÄÆğÊ¼Î»ÖÃ
+	int next_index;			//ä¸‹ä¸€è¡Œçš„èµ·å§‹ä½ç½®
 	next_index = m_lyric_string.find(L"\r\n", start);
 	if (next_index == string::npos)
 	{
 		if (operation != TagOpreation::DELETE_)
-			m_lyric_string += L"\r\n";				//Èç¹ûÃ»ÓĞÕÒµ½£¬ËµÃ÷µ±Ç°ÒÑ¾­ÊÇ×îºóÒ»ĞĞÁË£¬ÔÚÄ©Î²¼ÓÉÏ»»ĞĞ·û
+			m_lyric_string += L"\r\n";				//å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œè¯´æ˜å½“å‰å·²ç»æ˜¯æœ€åä¸€è¡Œäº†ï¼Œåœ¨æœ«å°¾åŠ ä¸Šæ¢è¡Œç¬¦
 		next_index = m_lyric_string.size() - 1;
 	}
 	else
@@ -84,7 +84,7 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 
 bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 {
-	if (path[0] == L'\0')		//Èç¹û±£´æÊ±´«µİµÄÂ·¾¶µÄ¿Õ×Ö·û´®£¬Ôò½«±£´æÂ·¾¶ÉèÖÃÎªµ±Ç°¸èÇúËùÔÚÂ·¾¶
+	if (path[0] == L'\0')		//å¦‚æœä¿å­˜æ—¶ä¼ é€’çš„è·¯å¾„çš„ç©ºå­—ç¬¦ä¸²ï¼Œåˆ™å°†ä¿å­˜è·¯å¾„è®¾ç½®ä¸ºå½“å‰æ­Œæ›²æ‰€åœ¨è·¯å¾„
 	{
 		const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
 		if (!song.is_cue)
@@ -104,11 +104,11 @@ bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 	}
 	bool char_connot_convert;
 	string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
-	if (char_connot_convert)	//µ±ÎÄ¼şÖĞ°üº¬Unicode×Ö·ûÊ±£¬Ñ¯ÎÊÓÃ»§ÊÇ·ñÒªÑ¡ÔñÒ»¸öUnicode±àÂë¸ñÊ½ÔÙ±£´æ
+	if (char_connot_convert)	//å½“æ–‡ä»¶ä¸­åŒ…å«Unicodeå­—ç¬¦æ—¶ï¼Œè¯¢é—®ç”¨æˆ·æ˜¯å¦è¦é€‰æ‹©ä¸€ä¸ªUnicodeç¼–ç æ ¼å¼å†ä¿å­˜
 	{
 		CString info;
-		info.LoadString(IDS_STRING103);		//´Óstring tableÔØÈë×Ö·û´®
-		if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK) return false;		//Èç¹ûÓÃ»§µã»÷ÁËÈ¡Ïû°´Å¥£¬Ôò·µ»Øfalse
+		info.LoadString(IDS_STRING103);		//ä»string tableè½½å…¥å­—ç¬¦ä¸²
+		if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK) return false;		//å¦‚æœç”¨æˆ·ç‚¹å‡»äº†å–æ¶ˆæŒ‰é’®ï¼Œåˆ™è¿”å›false
 	}
 	ofstream out_put{ path, std::ios::binary };
 	out_put << lyric_str;
@@ -121,14 +121,14 @@ bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 void CLyricEditDlg::UpdateStatusbarInfo()
 {
 	CString str;
-	//ÏÔÊ¾×Ö·ûÊı
+	//æ˜¾ç¤ºå­—ç¬¦æ•°
 	str = CCommon::LoadTextFormat(IDS_CHARACTER_TOTAL, { m_lyric_string.size() });
 	m_status_bar.SetText(str, 0, 0);
 
-	//ÏÔÊ¾ÊÇ·ñĞŞ¸Ä
+	//æ˜¾ç¤ºæ˜¯å¦ä¿®æ”¹
 	m_status_bar.SetText(m_modified ? CCommon::LoadText(IDS_MODIFIED) : CCommon::LoadText(IDS_UNMODIFIED), 1, 0);
 
-	//ÏÔÊ¾±àÂë¸ñÊ½
+	//æ˜¾ç¤ºç¼–ç æ ¼å¼
 	str = CCommon::LoadText(IDS_ENCODE_FORMAT, _T(": "));
 	switch (m_code_type)
 	{
@@ -142,14 +142,14 @@ void CLyricEditDlg::UpdateStatusbarInfo()
 
 void CLyricEditDlg::StatusBarSetParts(int width)
 {
-	int nParts[3] = { width - theApp.DPI(240), width - theApp.DPI(160), -1 }; //·Ö¸î³ß´ç
-	m_status_bar.SetParts(3, nParts); //·Ö¸î×´Ì¬À¸
+	int nParts[3] = { width - theApp.DPI(240), width - theApp.DPI(160), -1 }; //åˆ†å‰²å°ºå¯¸
+	m_status_bar.SetParts(3, nParts); //åˆ†å‰²çŠ¶æ€æ 
 }
 
 void CLyricEditDlg::OpenLyric(const wchar_t * path)
 {
 	m_lyric_path = path;
-	CLyrics lyrics{ m_lyric_path };					//´ò¿ªÎÄ¼ş
+	CLyrics lyrics{ m_lyric_path };					//æ‰“å¼€æ–‡ä»¶
 	m_lyric_string = lyrics.GetLyricsString();
 	m_code_type = lyrics.GetCodeType();
 }
@@ -189,18 +189,18 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CLyricEditDlg ÏûÏ¢´¦Àí³ÌĞò
+// CLyricEditDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CLyricEditDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	CenterWindow();
 
-	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// ÉèÖÃĞ¡Í¼±ê
-	//»ñÈ¡¸è´ÊĞÅÏ¢
+	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// è®¾ç½®å°å›¾æ ‡
+	//è·å–æ­Œè¯ä¿¡æ¯
 	//m_lyric_string = CPlayer::GetInstance().m_Lyrics.GetLyricsString();
 	//m_lyric_path = CPlayer::GetInstance().m_Lyrics.GetPathName();
 	if (CPlayer::GetInstance().IsInnerLyric())
@@ -217,33 +217,33 @@ BOOL CLyricEditDlg::OnInitDialog()
 	//m_code_type = CPlayer::GetInstance().m_Lyrics.GetCodeType();
 	m_current_song_name = CPlayer::GetInstance().GetFileName();
 
-	//³õÊ¼»¯±à¼­Çø×ÖÌå
+	//åˆå§‹åŒ–ç¼–è¾‘åŒºå­—ä½“
 	m_font.CreatePointFont(100, CCommon::LoadText(IDS_DEFAULT_FONT));
 	m_lyric_edit.SetFont(&m_font);
 
 	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
 	SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
 
-	////³õÊ¼»¯ÌáÊ¾ĞÅÏ¢
+	////åˆå§‹åŒ–æç¤ºä¿¡æ¯
 	//m_Mytip.Create(this, TTS_ALWAYSTIP);
-	//m_Mytip.AddTool(GetDlgItem(IDC_INSERT_TAG_BUTTON), _T("ÔÚ¹â±êËùÔÚĞĞµÄ×î×ó±ß²åÈëÒ»¸öÊ±¼ä±êÇ©£¬¿ì½İ¼ü£ºF8"));
-	//m_Mytip.AddTool(GetDlgItem(IDC_REPLACE_TAG_BUTTON), _T("Ìæ»»¹â±êËùÔÚĞĞ×î×ó±ßµÄÊ±¼ä±êÇ©£¬¿ì½İ¼ü£ºF9"));
-	//m_Mytip.AddTool(GetDlgItem(IDC_DELETE_TAG__BUTTON), _T("É¾³ı¹â±ê´¦µÄÊ±¼ä±êÇ©£¬¿ì½İ¼ü£ºCtrl+Del"));
-	//m_Mytip.AddTool(GetDlgItem(IDC_SAVE_LYRIC_BUTTON), _T("¿ì½İ¼ü£ºCtrl+S"));
-	//m_Mytip.AddTool(GetDlgItem(ID_PLAY_PAUSE), _T("¿ì½İ¼ü£ºCtrl+P"));
-	//m_Mytip.AddTool(GetDlgItem(ID_REW), _T("¿ì½İ¼ü£ºCtrl+¡û"));
-	//m_Mytip.AddTool(GetDlgItem(ID_FF), _T("¿ì½İ¼ü£ºCtrl+¡ú"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_INSERT_TAG_BUTTON), _T("åœ¨å…‰æ ‡æ‰€åœ¨è¡Œçš„æœ€å·¦è¾¹æ’å…¥ä¸€ä¸ªæ—¶é—´æ ‡ç­¾ï¼Œå¿«æ·é”®ï¼šF8"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_REPLACE_TAG_BUTTON), _T("æ›¿æ¢å…‰æ ‡æ‰€åœ¨è¡Œæœ€å·¦è¾¹çš„æ—¶é—´æ ‡ç­¾ï¼Œå¿«æ·é”®ï¼šF9"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_DELETE_TAG__BUTTON), _T("åˆ é™¤å…‰æ ‡å¤„çš„æ—¶é—´æ ‡ç­¾ï¼Œå¿«æ·é”®ï¼šCtrl+Del"));
+	//m_Mytip.AddTool(GetDlgItem(IDC_SAVE_LYRIC_BUTTON), _T("å¿«æ·é”®ï¼šCtrl+S"));
+	//m_Mytip.AddTool(GetDlgItem(ID_PLAY_PAUSE), _T("å¿«æ·é”®ï¼šCtrl+P"));
+	//m_Mytip.AddTool(GetDlgItem(ID_REW), _T("å¿«æ·é”®ï¼šCtrl+â†"));
+	//m_Mytip.AddTool(GetDlgItem(ID_FF), _T("å¿«æ·é”®ï¼šCtrl+â†’"));
 
-	////»ñÈ¡³õÊ¼Ê±´°¿ÚµÄ´óĞ¡
+	////è·å–åˆå§‹æ—¶çª—å£çš„å¤§å°
 	//CRect rect;
 	//GetWindowRect(rect);
 	//m_min_size.cx = rect.Width();
 	//m_min_size.cy = rect.Height();
 
-	//³õÊ¼»¯¹¤¾ßÀ¸
+	//åˆå§‹åŒ–å·¥å…·æ 
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE/* | CBRS_TOP*/ | CBRS_ALIGN_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_TOP
 		/*| CBRS_GRIPPER*/ | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndToolBar.LoadToolBar(IDR_LYRIC_EDIT_TOOLBAR))  //Ö¸¶¨¹¤¾ßÀ¸IDºÅ
+		!m_wndToolBar.LoadToolBar(IDR_LYRIC_EDIT_TOOLBAR))  //æŒ‡å®šå·¥å…·æ IDå·
 	{
 		TRACE0("Failed to create toolbar/n");
 		return -1;      // fail to create
@@ -252,8 +252,8 @@ BOOL CLyricEditDlg::OnInitDialog()
 	CImageList ImageList;
 	ImageList.Create(theApp.DPI(20), theApp.DPI(20), ILC_COLOR32 | ILC_MASK, 2, 2);
 
-	//Í¨¹ıImageList¶ÔÏó¼ÓÔØÍ¼±ê×÷Îª¹¤¾ßÀ¸µÄÍ¼±ê
-	//Ìí¼ÓÍ¼±ê
+	//é€šè¿‡ImageListå¯¹è±¡åŠ è½½å›¾æ ‡ä½œä¸ºå·¥å…·æ çš„å›¾æ ‡
+	//æ·»åŠ å›¾æ ‡
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_ADD_TAG));
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REPLACE_TAG));
 	ImageList.Add(AfxGetApp()->LoadIcon(IDI_DELETE_TAG));
@@ -266,13 +266,13 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_wndToolBar.GetToolBarCtrl().SetImageList(&ImageList);
 	ImageList.Detach();
 
-	//ÉèÖÃ¹¤¾ßÀ¸¸ß¶È
+	//è®¾ç½®å·¥å…·æ é«˜åº¦
 	CRect rect1;
 	m_wndToolBar.GetClientRect(rect1);
 	rect1.bottom = rect1.top + TOOLBAR_HEIGHT;
 	m_wndToolBar.MoveWindow(rect1);
 
-	//³õÊ¼»¯×´Ì¬À¸
+	//åˆå§‹åŒ–çŠ¶æ€æ 
 	CRect rect;
 	GetClientRect(&rect);
 	rect.top = rect.bottom - theApp.DPI(20);
@@ -284,13 +284,13 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_dlg_exist = true;
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CLyricEditDlg::OnCancel()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	DestroyWindow();
 
 	//CDialog::OnCancel();
@@ -299,56 +299,56 @@ void CLyricEditDlg::OnCancel()
 
 //void CLyricEditDlg::OnBnClickedInsertTagButton()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	OpreateTag(TagOpreation::INSERT);
 //}
 //
 //
 //void CLyricEditDlg::OnBnClickedReplaceTagButton()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	OpreateTag(TagOpreation::REPLACE);
 //}
 //
 //
 //void CLyricEditDlg::OnBnClickedDeleteTag()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	OpreateTag(TagOpreation::DELETE_);
 //}
 
 
 //void CLyricEditDlg::OnBnClickedSaveLyricButton()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	OnLyricSave();
 //}
 
 
 //void CLyricEditDlg::OnBnClickedSaveAsButton5()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //}
 
 
 void CLyricEditDlg::OnDestroy()
 {
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	CDialog::OnDestroy();
 	m_dlg_exist = false;
-	if (m_current_song_name == CPlayer::GetInstance().GetFileName() && m_lyric_saved)		//¹Ø±Õ¸è´Ê±à¼­´°¿ÚÊ±Èç¹ûÕıÔÚ²¥·ÅµÄ¸èÇúÃ»ÓĞ±ä£¬ÇÒÖ´ĞĞ¹ı±£´æ²Ù×÷£¬¾ÍÖØĞÂ³õÊ¼»¯¸è´Ê
+	if (m_current_song_name == CPlayer::GetInstance().GetFileName() && m_lyric_saved)		//å…³é—­æ­Œè¯ç¼–è¾‘çª—å£æ—¶å¦‚æœæ­£åœ¨æ’­æ”¾çš„æ­Œæ›²æ²¡æœ‰å˜ï¼Œä¸”æ‰§è¡Œè¿‡ä¿å­˜æ“ä½œï¼Œå°±é‡æ–°åˆå§‹åŒ–æ­Œè¯
 		CPlayer::GetInstance().IniLyrics(m_original_lyric_path);
 }
 
 
 void CLyricEditDlg::OnEnChangeEdit1()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString lyric_str;
 	m_lyric_edit.GetWindowText(lyric_str);
 	m_lyric_string = lyric_str;
@@ -359,7 +359,7 @@ void CLyricEditDlg::OnEnChangeEdit1()
 
 BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	if (pMsg->message == WM_KEYDOWN)
 	{
@@ -427,7 +427,7 @@ BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
 
 void CLyricEditDlg::OnClose()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	if (m_modified)
 	{
 		int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
@@ -445,13 +445,13 @@ void CLyricEditDlg::OnClose()
 
 //void CLyricEditDlg::OnBnClickedOpenLyricButton()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //}
 
 
 void CLyricEditDlg::OnLyricOpen()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (m_modified)
 	{
 		int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
@@ -463,14 +463,14 @@ void CLyricEditDlg::OnLyricOpen()
 		}
 	}
 
-	//ÉèÖÃ¹ıÂËÆ÷
+	//è®¾ç½®è¿‡æ»¤å™¨
 	CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
-	//¹¹Ôì´ò¿ªÎÄ¼ş¶Ô»°¿ò
+	//æ„é€ æ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
 	CFileDialog fileDlg(TRUE, _T("txt"), NULL, 0, szFilter, this);
-	//ÏÔÊ¾´ò¿ªÎÄ¼ş¶Ô»°¿ò
+	//æ˜¾ç¤ºæ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
 	if (IDOK == fileDlg.DoModal())
 	{
-		//m_lyric_path = fileDlg.GetPathName();	//»ñÈ¡´ò¿ªµÄÎÄ¼şÂ·¾¶
+		//m_lyric_path = fileDlg.GetPathName();	//è·å–æ‰“å¼€çš„æ–‡ä»¶è·¯å¾„
 		OpenLyric(fileDlg.GetPathName());
 		SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
 		m_lyric_edit.SetWindowText(m_lyric_string.c_str());
@@ -480,7 +480,7 @@ void CLyricEditDlg::OnLyricOpen()
 
 void CLyricEditDlg::OnLyricSave()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (m_modified)
 		SaveLyric(m_lyric_path.c_str(), m_code_type);
 }
@@ -488,25 +488,25 @@ void CLyricEditDlg::OnLyricSave()
 
 void CLyricEditDlg::OnLyricSaveAs()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-	//¹¹Ôì±£´æÎÄ¼ş¶Ô»°¿ò
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+	//æ„é€ ä¿å­˜æ–‡ä»¶å¯¹è¯æ¡†
 	CFileDialog fileDlg(FALSE, _T("txt"), m_lyric_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_LYRIC_FILE_FILTER), this);
-	//Îª¡°Áí´æÎª¡±¶Ô»°¿òÌí¼ÓÒ»¸ö×éºÏÑ¡Ôñ¿ò
+	//ä¸ºâ€œå¦å­˜ä¸ºâ€å¯¹è¯æ¡†æ·»åŠ ä¸€ä¸ªç»„åˆé€‰æ‹©æ¡†
 	fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
-	//Îª×éºÏÑ¡Ôñ¿òÌí¼ÓÏîÄ¿
+	//ä¸ºç»„åˆé€‰æ‹©æ¡†æ·»åŠ é¡¹ç›®
 	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, CCommon::LoadText(IDS_SAVE_AS_ANSI));
 	fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, CCommon::LoadText(IDS_SAVE_AS_UTF8));
-	//Îª×éºÏÑ¡Ôñ¿òÉèÖÃÄ¬ÈÏÑ¡ÖĞµÄÏîÄ¿
+	//ä¸ºç»„åˆé€‰æ‹©æ¡†è®¾ç½®é»˜è®¤é€‰ä¸­çš„é¡¹ç›®
 	DWORD default_selected{ 0 };
 	if (m_code_type == CodeType::UTF8 || m_code_type == CodeType::UTF8_NO_BOM)
 		default_selected = 1;
 	fileDlg.SetSelectedControlItem(IDC_SAVE_COMBO_BOX, default_selected);
 
-	//ÏÔÊ¾±£´æÎÄ¼ş¶Ô»°¿ò
+	//æ˜¾ç¤ºä¿å­˜æ–‡ä»¶å¯¹è¯æ¡†
 	if (IDOK == fileDlg.DoModal())
 	{
 		DWORD selected_item;
-		fileDlg.GetSelectedControlItem(IDC_SAVE_COMBO_BOX, selected_item);	//»ñÈ¡¡°±àÂë¸ñÊ½¡±ÖĞÑ¡ÖĞµÄÏîÄ¿
+		fileDlg.GetSelectedControlItem(IDC_SAVE_COMBO_BOX, selected_item);	//è·å–â€œç¼–ç æ ¼å¼â€ä¸­é€‰ä¸­çš„é¡¹ç›®
 		CodeType save_code{};
 		switch (selected_item)
 		{
@@ -521,7 +521,7 @@ void CLyricEditDlg::OnLyricSaveAs()
 
 void CLyricEditDlg::OnLyricFind()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (m_pFindDlg == nullptr)
 	{
 		m_pFindDlg = new CFindReplaceDialog;
@@ -534,7 +534,7 @@ void CLyricEditDlg::OnLyricFind()
 
 void CLyricEditDlg::OnLyricReplace()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (m_pReplaceDlg == nullptr)
 	{
 		m_pReplaceDlg = new CFindReplaceDialog;
@@ -551,11 +551,11 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 	{
 		m_find_str = m_pFindDlg->GetFindString();
 		m_find_down = (m_pFindDlg->SearchDown() != 0);
-		if (m_pFindDlg->FindNext())		//²éÕÒÏÂÒ»¸öÊ±
+		if (m_pFindDlg->FindNext())		//æŸ¥æ‰¾ä¸‹ä¸€ä¸ªæ—¶
 		{
 			OnFindNext();
 		}
-		if (m_pFindDlg->IsTerminating())	//¹Ø±Õ´°¿ÚÊ±
+		if (m_pFindDlg->IsTerminating())	//å…³é—­çª—å£æ—¶
 		{
 			//m_pFindDlg->DestroyWindow();
 			m_pFindDlg = nullptr;
@@ -567,39 +567,39 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 	{
 		m_find_str = m_pReplaceDlg->GetFindString();
 		m_replace_str = m_pReplaceDlg->GetReplaceString();
-		if (m_pReplaceDlg->FindNext())		//²éÕÒÏÂÒ»¸öÊ±
+		if (m_pReplaceDlg->FindNext())		//æŸ¥æ‰¾ä¸‹ä¸€ä¸ªæ—¶
 		{
 			OnFindNext();
 		}
-		if (m_pReplaceDlg->ReplaceCurrent())	//Ìæ»»µ±Ç°Ê±
+		if (m_pReplaceDlg->ReplaceCurrent())	//æ›¿æ¢å½“å‰æ—¶
 		{
 			if (m_find_flag)
 			{
-				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//Ìæ»»ÕÒµ½µÄ×Ö·û´®
+				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//æ›¿æ¢æ‰¾åˆ°çš„å­—ç¬¦ä¸²
 				m_lyric_edit.SetWindowText(m_lyric_string.c_str());
 				m_modified = true;
 				UpdateStatusbarInfo();
 				OnFindNext();
-				m_lyric_edit.SetSel(m_find_index, m_find_index + m_replace_str.size());	//Ñ¡ÖĞÌæ»»µÄ×Ö·û´®
-				SetActiveWindow();		//½«±à¼­Æ÷´°¿ÚÉèÖÃ»î¶¯´°¿Ú
+				m_lyric_edit.SetSel(m_find_index, m_find_index + m_replace_str.size());	//é€‰ä¸­æ›¿æ¢çš„å­—ç¬¦ä¸²
+				SetActiveWindow();		//å°†ç¼–è¾‘å™¨çª—å£è®¾ç½®æ´»åŠ¨çª—å£
 			}
 			else
 			{
 				OnFindNext();
 			}
 		}
-		if (m_pReplaceDlg->ReplaceAll())		//Ìæ»»È«²¿Ê±
+		if (m_pReplaceDlg->ReplaceAll())		//æ›¿æ¢å…¨éƒ¨æ—¶
 		{
-			int replace_count{};	//Í³¼ÆÌæ»»µÄ×Ö·û´®µÄ¸öÊı
+			int replace_count{};	//ç»Ÿè®¡æ›¿æ¢çš„å­—ç¬¦ä¸²çš„ä¸ªæ•°
 			while (true)
 			{
 				int index_offset = m_replace_str.size() - m_find_str.size();
 				if (index_offset < 0)
 					index_offset = 0;
-				m_find_index = m_lyric_string.find(m_find_str, m_find_index + index_offset + 1);	//²éÕÒ×Ö·û´®
+				m_find_index = m_lyric_string.find(m_find_str, m_find_index + index_offset + 1);	//æŸ¥æ‰¾å­—ç¬¦ä¸²
 				if (m_find_index == string::npos)
 					break;
-				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//Ìæ»»ÕÒµ½µÄ×Ö·û´®
+				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//æ›¿æ¢æ‰¾åˆ°çš„å­—ç¬¦ä¸²
 				replace_count++;
 			}
 			m_lyric_edit.SetWindowText(m_lyric_string.c_str());
@@ -623,11 +623,11 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 
 void CLyricEditDlg::OnFindNext()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (m_find_down)
-		m_find_index = m_lyric_string.find(m_find_str, m_find_index + 1);	//Ïòºó²éÕÒ
+		m_find_index = m_lyric_string.find(m_find_str, m_find_index + 1);	//å‘åæŸ¥æ‰¾
 	else
-		m_find_index = m_lyric_string.rfind(m_find_str, m_find_index - 1);	//ÏòÇ°²éÕÒ
+		m_find_index = m_lyric_string.rfind(m_find_str, m_find_index - 1);	//å‘å‰æŸ¥æ‰¾
 	if (m_find_index == string::npos)
 	{
 		CString info;
@@ -637,8 +637,8 @@ void CLyricEditDlg::OnFindNext()
 	}
 	else
 	{
-		m_lyric_edit.SetSel(m_find_index, m_find_index + m_find_str.size());		//Ñ¡ÖĞÕÒµ½µÄ×Ö·û´®
-		SetActiveWindow();		//½«±à¼­Æ÷´°¿ÚÉèÎª»î¶¯´°¿Ú
+		m_lyric_edit.SetSel(m_find_index, m_find_index + m_find_str.size());		//é€‰ä¸­æ‰¾åˆ°çš„å­—ç¬¦ä¸²
+		SetActiveWindow();		//å°†ç¼–è¾‘å™¨çª—å£è®¾ä¸ºæ´»åŠ¨çª—å£
 		m_lyric_edit.SetFocus();
 		m_find_flag = true;
 	}
@@ -647,10 +647,10 @@ void CLyricEditDlg::OnFindNext()
 
 void CLyricEditDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//ÏŞÖÆ´°¿Ú×îĞ¡´óĞ¡
-	lpMMI->ptMinTrackSize.x = theApp.DPI(300);		//ÉèÖÃ×îĞ¡¿í¶È
-	lpMMI->ptMinTrackSize.y = theApp.DPI(300);		//ÉèÖÃ×îĞ¡¸ß¶È
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	//é™åˆ¶çª—å£æœ€å°å¤§å°
+	lpMMI->ptMinTrackSize.x = theApp.DPI(300);		//è®¾ç½®æœ€å°å®½åº¦
+	lpMMI->ptMinTrackSize.y = theApp.DPI(300);		//è®¾ç½®æœ€å°é«˜åº¦
 
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
@@ -660,8 +660,8 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
-	//´°¿Ú´óĞ¡±ä»¯Ê±µ÷Õû×´Ì¬À¸µÄ´óĞ¡ºÍÎ»ÖÃ
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+	//çª—å£å¤§å°å˜åŒ–æ—¶è°ƒæ•´çŠ¶æ€æ çš„å¤§å°å’Œä½ç½®
 	if (nType != SIZE_MINIMIZED && m_status_bar.m_hWnd)
 	{
 		CRect rect;
@@ -672,7 +672,7 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 		StatusBarSetParts(cx);
 	}
 
-	//µ÷Õû´°¿ÚµÄ´óĞ¡ºÍÎ»ÖÃ
+	//è°ƒæ•´çª—å£çš„å¤§å°å’Œä½ç½®
 	if (nType != SIZE_MINIMIZED)
 	{
 		CRect rect;
@@ -708,7 +708,7 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 
 void CLyricEditDlg::OnLeTranslateToSimplifiedChinese()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	m_lyric_string = CCommon::TranslateToSimplifiedChinese(m_lyric_string);
 	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
 	m_modified = true;
@@ -718,7 +718,7 @@ void CLyricEditDlg::OnLeTranslateToSimplifiedChinese()
 
 void CLyricEditDlg::OnLeTranslateToTranditionalChinese()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	m_lyric_string = CCommon::TranslateToTranditionalChinese(m_lyric_string);
 	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
 	m_modified = true;
@@ -728,28 +728,28 @@ void CLyricEditDlg::OnLeTranslateToTranditionalChinese()
 
 void CLyricEditDlg::OnLyricInsertTag()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	OpreateTag(TagOpreation::INSERT);
 }
 
 
 void CLyricEditDlg::OnLyricReplaceTag()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	OpreateTag(TagOpreation::REPLACE);
 }
 
 
 void CLyricEditDlg::OnLyricDeleteTag()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	OpreateTag(TagOpreation::DELETE_);
 }
 
 BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR * pNMHDR, LRESULT * pResult)
 {
-	TOOLTIPTEXT* pT = (TOOLTIPTEXT*)pNMHDR; //½«pNMHDR×ª»»³ÉTOOLTIPTEXTÖ¸ÕëÀàĞÍÊı¾İ
-	UINT nID = pNMHDR->idFrom;  //»ñÈ¡¹¤¾ßÌõÉÏ°´Å¥µÄID
+	TOOLTIPTEXT* pT = (TOOLTIPTEXT*)pNMHDR; //å°†pNMHDRè½¬æ¢æˆTOOLTIPTEXTæŒ‡é’ˆç±»å‹æ•°æ®
+	UINT nID = pNMHDR->idFrom;  //è·å–å·¥å…·æ¡ä¸ŠæŒ‰é’®çš„ID
 	CString tipInfo;
 	switch (nID)
 	{

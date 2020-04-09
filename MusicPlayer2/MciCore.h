@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IPlayerCore.h"
 #include "DllLib.h"
 
@@ -7,7 +7,7 @@ class CMciCore :
 {
     typedef DWORD   MCIERROR;       /* error return code, 0 means no error */
 
-    //Ê¹ÓÃ¶¯Ì¬¼ÓÔØµÄ·½Ê½¼ÓÔØMCIµÄAPI£¬Èç¹ûÃ»ÓĞÊ¹ÓÃMCIÄÚºË£¬Ôò²»¼ÓÔØ
+    //ä½¿ç”¨åŠ¨æ€åŠ è½½çš„æ–¹å¼åŠ è½½MCIçš„APIï¼Œå¦‚æœæ²¡æœ‰ä½¿ç”¨MCIå†…æ ¸ï¼Œåˆ™ä¸åŠ è½½
     typedef MCIERROR(WINAPI *_mciSendStringW)(LPCWSTR lpstrCommand, LPWSTR lpstrReturnString, UINT uReturnLength, HWND hwndCallback);
     typedef BOOL(WINAPI *_mciGetErrorStringW)(MCIERROR mcierr, LPWSTR pszText, UINT cchText);
 

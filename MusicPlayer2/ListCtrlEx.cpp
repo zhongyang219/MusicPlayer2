@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ListCtrlEx.h"
 #include "MusicPlayer2.h"
 #include <set>
@@ -54,12 +54,12 @@ void CListCtrlEx::SetCurSel(int select)
 	int size = GetItemCount();
 	if (select >= 0 && select < size)
 	{
-		SetItemState(select, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//Ñ¡ÖĞĞĞ
-		EnsureVisible(select, FALSE);		//Ê¹Ñ¡ÖĞĞĞ±£³Ö¿É¼û
+		SetItemState(select, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//é€‰ä¸­è¡Œ
+		EnsureVisible(select, FALSE);		//ä½¿é€‰ä¸­è¡Œä¿æŒå¯è§
 	}
 	else
 	{
-		//È¡ÏûËùÓĞĞĞµÄÑ¡ÖĞ
+		//å–æ¶ˆæ‰€æœ‰è¡Œçš„é€‰ä¸­
 		for(int i{}; i<size; i++)
 			SetItemState(i, 0, LVIS_SELECTED);
 	}
@@ -119,7 +119,7 @@ bool CListCtrlEx::SetRowHeight(int height)
 {
 	if (height > 0 && height <= 512)
 	{
-		CImageList imgList;		//ÎªClistCtrlÉèÖÃÒ»¸öÍ¼ÏñÁĞ±í£¬ÒÔÉèÖÃĞĞ¸ß
+		CImageList imgList;		//ä¸ºClistCtrlè®¾ç½®ä¸€ä¸ªå›¾åƒåˆ—è¡¨ï¼Œä»¥è®¾ç½®è¡Œé«˜
 		BOOL rtn = imgList.Create(1, height, ILC_COLOR, 1, 1);
 		if (rtn != FALSE)
 		{
@@ -133,17 +133,17 @@ bool CListCtrlEx::SetRowHeight(int height)
 
 void CListCtrlEx::ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd)
 {
-    CPoint point;			//¶¨ÒåÒ»¸öÓÃÓÚÈ·¶¨¹â±êÎ»ÖÃµÄÎ»ÖÃ
-    GetCursorPos(&point);	//»ñÈ¡µ±Ç°¹â±êµÄÎ»ÖÃ£¬ÒÔ±ãÊ¹µÃ²Ëµ¥¿ÉÒÔ¸úËæ¹â±ê
+    CPoint point;			//å®šä¹‰ä¸€ä¸ªç”¨äºç¡®å®šå…‰æ ‡ä½ç½®çš„ä½ç½®
+    GetCursorPos(&point);	//è·å–å½“å‰å…‰æ ‡çš„ä½ç½®ï¼Œä»¥ä¾¿ä½¿å¾—èœå•å¯ä»¥è·Ÿéšå…‰æ ‡
     if(item_index >= 0)
     {
         CRect item_rect;
-        GetItemRect(item_index, item_rect, LVIR_BOUNDS);		//»ñÈ¡Ñ¡ÖĞÏîÄ¿µÄ¾ØĞÎÇøÓò£¨ÒÔÁĞ±í¿Ø¼ş×óÉÏ½ÇÎªÔ­µã£©
+        GetItemRect(item_index, item_rect, LVIR_BOUNDS);		//è·å–é€‰ä¸­é¡¹ç›®çš„çŸ©å½¢åŒºåŸŸï¼ˆä»¥åˆ—è¡¨æ§ä»¶å·¦ä¸Šè§’ä¸ºåŸç‚¹ï¼‰
         CRect window_rect;
-        GetWindowRect(window_rect);		//»ñÈ¡ÁĞ±í¿Ø¼şµÄ¾ØĞÎÇøÓò£¨ÒÔÆÁÄ»×óÉÏ½ÇÎªÔ­µã£©
-        point.y = window_rect.top + item_rect.bottom;	//ÉèÖÃÊó±êÒªµ¯³öµÄy×ø±êÎªÑ¡ÖĞÏîÄ¿µÄÏÂ±ß¿òÎ»ÖÃ£¬·ÀÖ¹ÓÒ¼ü²Ëµ¥µ²×¡Ñ¡ÖĞµÄÏîÄ¿
+        GetWindowRect(window_rect);		//è·å–åˆ—è¡¨æ§ä»¶çš„çŸ©å½¢åŒºåŸŸï¼ˆä»¥å±å¹•å·¦ä¸Šè§’ä¸ºåŸç‚¹ï¼‰
+        point.y = window_rect.top + item_rect.bottom;	//è®¾ç½®é¼ æ ‡è¦å¼¹å‡ºçš„yåæ ‡ä¸ºé€‰ä¸­é¡¹ç›®çš„ä¸‹è¾¹æ¡†ä½ç½®ï¼Œé˜²æ­¢å³é”®èœå•æŒ¡ä½é€‰ä¸­çš„é¡¹ç›®
     }
-    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pWnd); //ÔÚÖ¸¶¨Î»ÖÃÏÔÊ¾µ¯³ö²Ëµ¥
+    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pWnd); //åœ¨æŒ‡å®šä½ç½®æ˜¾ç¤ºå¼¹å‡ºèœå•
 }
 
 void CListCtrlEx::FillLeftSpaceAfterPaint(bool fill)
@@ -164,7 +164,7 @@ void CListCtrlEx::SetListData(const ListData & list_data)
 	m_pListData = nullptr;
 	int item_num_before = GetItemCount();
 	int item_num_after = list_data.size();
-	//Èç¹ûµ±Ç°ÁĞ±íÖĞÏîÄ¿µÄÊıÁ¿Ğ¡ÓÚÔ­À´µÄ£¬ÔòÖ±½ÓÇå¿ÕÔ­À´ÁĞ±íÖĞËùÓĞµÄÏîÄ¿£¬ÖØĞÂÌí¼Ó
+	//å¦‚æœå½“å‰åˆ—è¡¨ä¸­é¡¹ç›®çš„æ•°é‡å°äºåŸæ¥çš„ï¼Œåˆ™ç›´æ¥æ¸…ç©ºåŸæ¥åˆ—è¡¨ä¸­æ‰€æœ‰çš„é¡¹ç›®ï¼Œé‡æ–°æ·»åŠ 
 	if (item_num_after < item_num_before)
 	{
 		DeleteAllItems();
@@ -173,7 +173,7 @@ void CListCtrlEx::SetListData(const ListData & list_data)
 	for (int i{}; i < item_num_after; i++)
 	{
 		const RowData& data_row = list_data[i];
-		if (i >= item_num_before)	//Èç¹ûµ±Ç°ÁĞ±íÖĞµÄÏîÄ¿ÊıÁ¿´óÓÚÖ®Ç°µÄÊıÁ¿£¬ÔòĞèÒªÔÚ²»¹»Ê±²åÈëĞÂµÄÏîÄ¿
+		if (i >= item_num_before)	//å¦‚æœå½“å‰åˆ—è¡¨ä¸­çš„é¡¹ç›®æ•°é‡å¤§äºä¹‹å‰çš„æ•°é‡ï¼Œåˆ™éœ€è¦åœ¨ä¸å¤Ÿæ—¶æ’å…¥æ–°çš„é¡¹ç›®
 		{
 			auto iter = data_row.find(0);
 			if (iter != data_row.end())
@@ -210,16 +210,16 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMLVCUSTOMDRAW lplvdr = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
 	NMCUSTOMDRAW& nmcd = lplvdr->nmcd;
 	static bool this_item_select = false;
-	switch (lplvdr->nmcd.dwDrawStage)	//ÅĞ¶Ï×´Ì¬   
+	switch (lplvdr->nmcd.dwDrawStage)	//åˆ¤æ–­çŠ¶æ€   
 	{
 	case CDDS_PREPAINT:
 		*pResult = CDRF_NOTIFYITEMDRAW;
 		break;
-	case CDDS_ITEMPREPAINT:			//Èç¹ûÎª»­ITEMÖ®Ç°¾ÍÒª½øĞĞÑÕÉ«µÄ¸Ä±ä
+	case CDDS_ITEMPREPAINT:			//å¦‚æœä¸ºç”»ITEMä¹‹å‰å°±è¦è¿›è¡Œé¢œè‰²çš„æ”¹å˜
 		this_item_select = false;
 		if (IsWindowEnabled())
 		{
-			//µ±Ñ¡ÖĞĞĞÓÖÊÇ¸ßÁÁĞĞÊ±ÉèÖÃÑÕÉ«
+			//å½“é€‰ä¸­è¡Œåˆæ˜¯é«˜äº®è¡Œæ—¶è®¾ç½®é¢œè‰²
 			if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
 			{
 				this_item_select = true;
@@ -227,44 +227,44 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 				lplvdr->clrText = m_theme_color.light3;
 				lplvdr->clrTextBk = m_theme_color.dark1;
 			}
-			//ÉèÖÃÑ¡ÖĞĞĞµÄÑÕÉ«
+			//è®¾ç½®é€‰ä¸­è¡Œçš„é¢œè‰²
 			else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
 			{
 				this_item_select = true;
-				//×¢£ºµ±Ê¹ÓÃĞéÄâÁĞ±íÊ±£¬Èç¹ûÈ¡ÏûÏÂÃæÒ»ĞĞµÄ×¢ÊÍ£¬»áµ¼ÖÂµ±ÁĞ±íÑ¡ÖĞĞĞ´¦Àí¿É¼û×´Ì¬Ê±£¬´°¿ÚË¢ĞÂ²»Õı³££¬ÉõÖÁÖ÷´°¿ÚOnTimerÒ²ÎŞ·¨ÏìÓ¦£¬Ô­ÒòÔİÊ±²»Ã÷
+				//æ³¨ï¼šå½“ä½¿ç”¨è™šæ‹Ÿåˆ—è¡¨æ—¶ï¼Œå¦‚æœå–æ¶ˆä¸‹é¢ä¸€è¡Œçš„æ³¨é‡Šï¼Œä¼šå¯¼è‡´å½“åˆ—è¡¨é€‰ä¸­è¡Œå¤„ç†å¯è§çŠ¶æ€æ—¶ï¼Œçª—å£åˆ·æ–°ä¸æ­£å¸¸ï¼Œç”šè‡³ä¸»çª—å£OnTimerä¹Ÿæ— æ³•å“åº”ï¼ŒåŸå› æš‚æ—¶ä¸æ˜
 				//SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
 				lplvdr->clrText = m_theme_color.dark3;
 				lplvdr->clrTextBk = m_theme_color.light2;
 			}
-			//ÉèÖÃ¸ßÁÁĞĞµÄÑÕÉ«
+			//è®¾ç½®é«˜äº®è¡Œçš„é¢œè‰²
 			else if (nmcd.dwItemSpec == m_highlight_item)
 			{
 				lplvdr->clrText = m_theme_color.dark2;
 				//lplvdr->clrText = 0;
 				lplvdr->clrTextBk = m_theme_color.light3;
 			}
-			//ÉèÖÃÅ¼ÊıĞĞµÄÑÕÉ«
+			//è®¾ç½®å¶æ•°è¡Œçš„é¢œè‰²
 			else if (nmcd.dwItemSpec % 2 == 0)
 			{
 				lplvdr->clrText = CColorConvert::m_gray_color.dark3;
 				lplvdr->clrTextBk = CColorConvert::m_gray_color.light3;
 			}
-			//ÉèÖÃÆæÊıĞĞµÄÑÕÉ«
+			//è®¾ç½®å¥‡æ•°è¡Œçš„é¢œè‰²
 			else
 			{
 				lplvdr->clrText = CColorConvert::m_gray_color.dark3;
 				lplvdr->clrTextBk = CColorConvert::m_gray_color.light4;
 			}
 
-			//ÓÃ±³¾°É«Ìî³äµ¥Ôª¸ñ£¬ÒÔÈ¥µôÃ¿ĞĞÇ°ÃæµÄ¿Õ°×
+			//ç”¨èƒŒæ™¯è‰²å¡«å……å•å…ƒæ ¼ï¼Œä»¥å»æ‰æ¯è¡Œå‰é¢çš„ç©ºç™½
             if(!m_fill_left_space_after_paint)
             {
                 CRect rect = nmcd.rc;
-                CDC* pDC = CDC::FromHandle(nmcd.hdc);		//»ñÈ¡»æÍ¼DC
+                CDC* pDC = CDC::FromHandle(nmcd.hdc);		//è·å–ç»˜å›¾DC
                 pDC->FillSolidRect(rect, lplvdr->clrTextBk);
             }
 		}
-		else		//µ±¿Ø¼ş±»½ûÓÃÊ±£¬ÏÔÊ¾ÎÄ±¾ÉèÎª»ÒÉ«
+		else		//å½“æ§ä»¶è¢«ç¦ç”¨æ—¶ï¼Œæ˜¾ç¤ºæ–‡æœ¬è®¾ä¸ºç°è‰²
 		{
 			lplvdr->clrText = GRAY(140);
 			lplvdr->clrTextBk = GRAY(240);
@@ -274,12 +274,12 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	case CDDS_ITEMPOSTPAINT:
 		if (this_item_select)
 			SetItemState(nmcd.dwItemSpec, 0xFF, LVIS_SELECTED);
-        //ÓÃ±³¾°É«Ìî³äµ¥Ôª¸ñ×ó²àµÄ¿Õ°×ÇøÓò
+        //ç”¨èƒŒæ™¯è‰²å¡«å……å•å…ƒæ ¼å·¦ä¾§çš„ç©ºç™½åŒºåŸŸ
         if(m_fill_left_space_after_paint)
         {
             CRect rect = nmcd.rc;
             rect.right = rect.left + 5;
-            CDC* pDC = CDC::FromHandle(nmcd.hdc);		//»ñÈ¡»æÍ¼DC
+            CDC* pDC = CDC::FromHandle(nmcd.hdc);		//è·å–ç»˜å›¾DC
             pDC->FillSolidRect(rect, lplvdr->clrTextBk);
         }
         //*pResult = CDRF_DODEFAULT;
@@ -290,11 +290,11 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CListCtrlEx::PreSubclassWindow()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	CListCtrl::PreSubclassWindow();
 
     DWORD style = GetExtendedStyle();
-    SetExtendedStyle(style | LVS_EX_DOUBLEBUFFER);      //ÉèÖÃË«»º³å»æÍ¼
+    SetExtendedStyle(style | LVS_EX_DOUBLEBUFFER);      //è®¾ç½®åŒç¼“å†²ç»˜å›¾
 
 	SetBkColor(m_background_color);
 	//SetHightItem(-1);
@@ -304,7 +304,7 @@ void CListCtrlEx::PreSubclassWindow()
 
 void CListCtrlEx::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	this->SetFocus();
     m_dragging = false;
     CListCtrl::OnLButtonDown(nFlags, point);
@@ -313,7 +313,7 @@ void CListCtrlEx::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CListCtrlEx::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	this->SetFocus();
     m_dragging = false;
     CListCtrl::OnRButtonDown(nFlags, point);
@@ -322,12 +322,12 @@ void CListCtrlEx::OnRButtonDown(UINT nFlags, CPoint point)
 
 BOOL CListCtrlEx::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
-	//if (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)		//ÆÁ±ÎÁĞ±í¿Ø¼şµÄ¼üÅÌÏûÏ¢£¬·ÀÖ¹Ã¿´Î°´ÏÂÒ»¸ö¼üÊ±ÁĞ±íÑ¡ÖĞĞĞ»á³öÏÖÌÖÑáµÄ¡¢ÄÑ¿´µÄĞéÏß¿ò
+	//if (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)		//å±è”½åˆ—è¡¨æ§ä»¶çš„é”®ç›˜æ¶ˆæ¯ï¼Œé˜²æ­¢æ¯æ¬¡æŒ‰ä¸‹ä¸€ä¸ªé”®æ—¶åˆ—è¡¨é€‰ä¸­è¡Œä¼šå‡ºç°è®¨åŒçš„ã€éš¾çœ‹çš„è™šçº¿æ¡†
 	//	return TRUE;
 
-	//°´Ctrl+AÈ«Ñ¡
+	//æŒ‰Ctrl+Aå…¨é€‰
 	if(m_enable_ctrl_a)
 	{
 		if ((GetKeyState(VK_CONTROL) & 0x80) && (pMsg->wParam == 'A'))
@@ -345,16 +345,16 @@ void CListCtrlEx::OnSetFocus(CWnd* pOldWnd)
 {
 	CListCtrl::OnSetFocus(pOldWnd);
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 
-	SendMessage(WM_KILLFOCUS);				//½ûÖ¹ÁĞ±í¿Ø¼ş»ñÈ¡½¹µã£¬·ÀÖ¹Ñ¡ÖĞĞĞ»á³öÏÖÄÑ¿´µÄĞéÏß¿ò
+	SendMessage(WM_KILLFOCUS);				//ç¦æ­¢åˆ—è¡¨æ§ä»¶è·å–ç„¦ç‚¹ï¼Œé˜²æ­¢é€‰ä¸­è¡Œä¼šå‡ºç°éš¾çœ‹çš„è™šçº¿æ¡†
 }
 
 
 void CListCtrlEx::OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     if (m_drag_enable)
     {
         m_dragging = true;
@@ -366,18 +366,18 @@ void CListCtrlEx::OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CListCtrlEx::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (m_dragging)
     {
         CPoint pt(point);
-        int drop_index = this->HitTest(pt);     //Êó±êËÉ¿ªÊ±µÄÏîÄ¿ĞòºÅ
+        int drop_index = this->HitTest(pt);     //é¼ æ ‡æ¾å¼€æ—¶çš„é¡¹ç›®åºå·
         CWnd* pParent{ GetParent() };
         if (pParent != nullptr)
         {
-            pParent->SendMessage(WM_LIST_ITEM_DRAGGED, drop_index, 0);       //½áÊøÍÏ·ÅÊ±Ïò¸¸´°¿Ú·¢ËÍÏûÏ¢£¬´«µİÍÏ·Å½áÊøÎ»ÖÃË÷Òı
+            pParent->SendMessage(WM_LIST_ITEM_DRAGGED, drop_index, 0);       //ç»“æŸæ‹–æ”¾æ—¶å‘çˆ¶çª—å£å‘é€æ¶ˆæ¯ï¼Œä¼ é€’æ‹–æ”¾ç»“æŸä½ç½®ç´¢å¼•
         }
         m_dragging = false;
-        SendMessage(WM_SETCURSOR);      //Êó±êËÉ¿ªÊ±Ë¢ĞÂ¹â±ê
+        SendMessage(WM_SETCURSOR);      //é¼ æ ‡æ¾å¼€æ—¶åˆ·æ–°å…‰æ ‡
     }
 
     CListCtrl::OnLButtonUp(nFlags, point);
@@ -386,7 +386,7 @@ void CListCtrlEx::OnLButtonUp(UINT nFlags, CPoint point)
 
 BOOL CListCtrlEx::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (m_dragging)
     {
         ::SetCursor(m_drag_cursor);
@@ -399,7 +399,7 @@ BOOL CListCtrlEx::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 
 BOOL CListCtrlEx::OnEraseBkgnd(CDC* pDC)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
     //return CListCtrl::OnEraseBkgnd(pDC);
     return TRUE;
@@ -409,7 +409,7 @@ BOOL CListCtrlEx::OnEraseBkgnd(CDC* pDC)
 void CListCtrlEx::OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	NMLVDISPINFO *pDispInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if (pDispInfo->hdr.hwndFrom == m_hWnd && m_pListData != nullptr)
 	{
 		if (pDispInfo->item.iItem >= 0 && pDispInfo->item.iItem < static_cast<int>(m_pListData->size()))

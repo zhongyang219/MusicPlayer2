@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 #include "afxwin.h"
 
-// CMessageDlg ¶Ô»°¿ò
+// CMessageDlg å¯¹è¯æ¡†
 
 class CMessageDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CMessageDlg)
 
 public:
-	CMessageDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CMessageDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CMessageDlg();
 
 	void SetWindowTitle(LPCTSTR str);
@@ -17,14 +17,14 @@ public:
 	void ShowLinkStatic(bool show = true) { m_show_link_ctrl = show; }
 	void SetLinkInfo(LPCTSTR text, LPCTSTR url);
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_MESSAGE_DIALOG };
 #endif
 
 protected:
 	CEdit m_message_edit;
-	CSize m_min_size;		//´°¿ÚµÄ×îĞ¡´óĞ¡
+	CSize m_min_size;		//çª—å£çš„æœ€å°å¤§å°
 	CStatic m_info_static;
 
 	CString m_title;
@@ -37,7 +37,7 @@ protected:
 	bool m_show_link_ctrl{ false };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 

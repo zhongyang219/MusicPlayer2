@@ -1,69 +1,69 @@
-#pragma once
+ï»¿#pragma once
 #include "afxwin.h"
 #include "Time.h"
 #include "EditEx.h"
 
-const int WM_FINDREPLACE = ::RegisterWindowMessage(FINDMSGSTRING);	//½«FINDMSGSTRING×¢²áÎªWM_FINDREPLACEÏûÏ¢
+const int WM_FINDREPLACE = ::RegisterWindowMessage(FINDMSGSTRING);	//å°†FINDMSGSTRINGæ³¨å†Œä¸ºWM_FINDREPLACEæ¶ˆæ¯
 
-// CLyricEditDlg ¶Ô»°¿ò
+// CLyricEditDlg å¯¹è¯æ¡†
 
 class CLyricEditDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CLyricEditDlg)
 
 public:
-	//¶¨Òå²Ù×÷Ê±¼ä±êÇ©µÄÃ¶¾Ù
+	//å®šä¹‰æ“ä½œæ—¶é—´æ ‡ç­¾çš„æšä¸¾
 	enum class TagOpreation
 	{
-		INSERT,		//²åÈë
-		REPLACE,	//Ìæ»»
-		DELETE_		//É¾³ı
+		INSERT,		//æ’å…¥
+		REPLACE,	//æ›¿æ¢
+		DELETE_		//åˆ é™¤
 	};
 
-	bool m_dlg_exist{ false };		//Èç¹û¶Ô»°¿ò´æÔÚ£¬ÔòÎªtrue
+	bool m_dlg_exist{ false };		//å¦‚æœå¯¹è¯æ¡†å­˜åœ¨ï¼Œåˆ™ä¸ºtrue
 
-	CLyricEditDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CLyricEditDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CLyricEditDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_LYRIC_EDIT_DIALOG };
 #endif
 
 protected:
-	CFont m_font;			//¸è´Ê±à¼­½çÃæ×ÖÌå
-	wstring m_lyric_string;		//¸è´Ê×Ö·û´®
-	wstring m_lyric_path;		//¸è´ÊÂ·¾¶
-	wstring m_original_lyric_path;	//Ô­À´µÄ¸è´Ê£¨µ±Ç°²¥·Å¸èÇú¶ÔÓ¦µÄ¸è´Ê£©µÄÂ·¾¶
-	CodeType m_code_type;		//¸è´Ê±àÂë
-	wstring m_current_song_name;	//ÕıÔÚ²¥·ÅµÄ¸èÇúÃû
-	bool m_modified{ false };	//Èç¹û¸è´ÊÒÑ¸ü¸Ä£¬ÔòÎªtrue
-	bool m_lyric_saved{ false };	//Èç¹ûÖ´ĞĞ¹ı±£´æ²Ù×÷£¬ÔòÎªtrue
+	CFont m_font;			//æ­Œè¯ç¼–è¾‘ç•Œé¢å­—ä½“
+	wstring m_lyric_string;		//æ­Œè¯å­—ç¬¦ä¸²
+	wstring m_lyric_path;		//æ­Œè¯è·¯å¾„
+	wstring m_original_lyric_path;	//åŸæ¥çš„æ­Œè¯ï¼ˆå½“å‰æ’­æ”¾æ­Œæ›²å¯¹åº”çš„æ­Œè¯ï¼‰çš„è·¯å¾„
+	CodeType m_code_type;		//æ­Œè¯ç¼–ç 
+	wstring m_current_song_name;	//æ­£åœ¨æ’­æ”¾çš„æ­Œæ›²å
+	bool m_modified{ false };	//å¦‚æœæ­Œè¯å·²æ›´æ”¹ï¼Œåˆ™ä¸ºtrue
+	bool m_lyric_saved{ false };	//å¦‚æœæ‰§è¡Œè¿‡ä¿å­˜æ“ä½œï¼Œåˆ™ä¸ºtrue
 
-	//CToolTipCtrl m_Mytip;		//Êó±êÌáÊ¾
-	CStatusBarCtrl m_status_bar;	//×´Ì¬À¸
-	CToolBar m_wndToolBar;		//¹¤¾ßÀ¸
-	//CSize m_min_size;		//´°¿ÚµÄ×îĞ¡´óĞ¡
+	//CToolTipCtrl m_Mytip;		//é¼ æ ‡æç¤º
+	CStatusBarCtrl m_status_bar;	//çŠ¶æ€æ 
+	CToolBar m_wndToolBar;		//å·¥å…·æ 
+	//CSize m_min_size;		//çª—å£çš„æœ€å°å¤§å°
 #define MARGIN theApp.DPI(8)
 #define TOOLBAR_HEIGHT theApp.DPI(29)
 #define STATUSBAR_HEIGHT theApp.DPI(20)
 
-	CFindReplaceDialog* m_pFindDlg{};   //²éÕÒ¶Ô»°¿ò
-	CFindReplaceDialog* m_pReplaceDlg{};    //Ìæ»»¶Ô»°¿ò
-	wstring m_find_str;		//²éÕÒµÄ×Ö·û´®
-	wstring m_replace_str;	//Ìæ»»µÄ×Ö·û´®
-	int m_find_index{ -1 };	//²éÕÒµÄ×Ö·û´®µÄË÷Òı
-	bool m_find_down{ true };		//ÊÇ·ñÏòºó²éÕÒ
+	CFindReplaceDialog* m_pFindDlg{};   //æŸ¥æ‰¾å¯¹è¯æ¡†
+	CFindReplaceDialog* m_pReplaceDlg{};    //æ›¿æ¢å¯¹è¯æ¡†
+	wstring m_find_str;		//æŸ¥æ‰¾çš„å­—ç¬¦ä¸²
+	wstring m_replace_str;	//æ›¿æ¢çš„å­—ç¬¦ä¸²
+	int m_find_index{ -1 };	//æŸ¥æ‰¾çš„å­—ç¬¦ä¸²çš„ç´¢å¼•
+	bool m_find_down{ true };		//æ˜¯å¦å‘åæŸ¥æ‰¾
 	bool m_find_flag{ false };
 
 	void OpreateTag(TagOpreation operation);
 	bool SaveLyric(const wchar_t* path, CodeType code_type);
-	void UpdateStatusbarInfo();			//¸üĞÂ×´Ì¬À¸ĞÅÏ¢
-	void StatusBarSetParts(int width);			//ÉèÖÃ×´Ì¬À¸¸÷²¿·ÖµÄ¿í¶È
+	void UpdateStatusbarInfo();			//æ›´æ–°çŠ¶æ€æ ä¿¡æ¯
+	void StatusBarSetParts(int width);			//è®¾ç½®çŠ¶æ€æ å„éƒ¨åˆ†çš„å®½åº¦
 
-	void OpenLyric(const wchar_t* path);		//´ò¿ªÒ»¸ö¸è´ÊÎÄ¼ş
+	void OpenLyric(const wchar_t* path);		//æ‰“å¼€ä¸€ä¸ªæ­Œè¯æ–‡ä»¶
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

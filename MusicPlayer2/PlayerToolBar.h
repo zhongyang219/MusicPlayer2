@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "CommonData.h"
 
 // CPlayerToolBar
-// ×Ô»æµÄ¹¤¾ßÀ¸
+// è‡ªç»˜çš„å·¥å…·æ 
 
 class CPlayerToolBar : public CStatic
 {
@@ -11,46 +11,46 @@ public:
 	CPlayerToolBar();
 	virtual ~CPlayerToolBar();
 
-    // Ìí¼ÓÒ»¸ö°´Å¥£¬µã»÷ºóÖ´ĞĞÒ»¸öÃüÁî
-    // IconRes icon: Í¼±ê×ÊÔ´
-    // LPCTSTR strText: Í¼±êÓÒ²àµÄÎÄ±¾
-    // LPCTSTR strToolTip: Êó±êÌáÊ¾µÄÎÄ±¾
-    // UINT cmdId: µã»÷ºóÖ´ĞĞµÄÃüÁîID
-    // bool showText: ÊÇ·ñÔÚÍ¼±êÓÒ²àÏÔÊ¾ÎÄ±¾
+    // æ·»åŠ ä¸€ä¸ªæŒ‰é’®ï¼Œç‚¹å‡»åæ‰§è¡Œä¸€ä¸ªå‘½ä»¤
+    // IconRes icon: å›¾æ ‡èµ„æº
+    // LPCTSTR strText: å›¾æ ‡å³ä¾§çš„æ–‡æœ¬
+    // LPCTSTR strToolTip: é¼ æ ‡æç¤ºçš„æ–‡æœ¬
+    // UINT cmdId: ç‚¹å‡»åæ‰§è¡Œçš„å‘½ä»¤ID
+    // bool showText: æ˜¯å¦åœ¨å›¾æ ‡å³ä¾§æ˜¾ç¤ºæ–‡æœ¬
     void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText = false);
 
-    // Ìí¼ÓÒ»¸ö°´Å¥£¬µã»÷ºóµ¯³ö²Ëµ¥
-    // IconRes icon: Í¼±ê×ÊÔ´
-    // LPCTSTR strText: Í¼±êÓÒ²àµÄÎÄ±¾
-    // LPCTSTR strToolTip: Êó±êÌáÊ¾µÄÎÄ±¾
-    // CMenu * pMenu: µã»÷ºóµ¯³öµÄ²Ëµ¥
-    // bool showText: ÊÇ·ñÔÚÍ¼±êÓÒ²àÏÔÊ¾ÎÄ±¾
+    // æ·»åŠ ä¸€ä¸ªæŒ‰é’®ï¼Œç‚¹å‡»åå¼¹å‡ºèœå•
+    // IconRes icon: å›¾æ ‡èµ„æº
+    // LPCTSTR strText: å›¾æ ‡å³ä¾§çš„æ–‡æœ¬
+    // LPCTSTR strToolTip: é¼ æ ‡æç¤ºçš„æ–‡æœ¬
+    // CMenu * pMenu: ç‚¹å‡»åå¼¹å‡ºçš„èœå•
+    // bool showText: æ˜¯å¦åœ¨å›¾æ ‡å³ä¾§æ˜¾ç¤ºæ–‡æœ¬
     void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
 
     void SetIconSize(int size);
-    void SetCmdReciveWindow(CWnd* pWnd);        //ÉèÖÃÏìÓ¦¹¤¾ß°´Å¥ÃüÁîµÄ´°¿Ú£¬Èç¹û²»ÉèÖÃ£¬ÔòÎª¹¤¾ßÀ¸µÄ¸¸´°¿Ú
+    void SetCmdReciveWindow(CWnd* pWnd);        //è®¾ç½®å“åº”å·¥å…·æŒ‰é’®å‘½ä»¤çš„çª—å£ï¼Œå¦‚æœä¸è®¾ç½®ï¼Œåˆ™ä¸ºå·¥å…·æ çš„çˆ¶çª—å£
 
 protected:
     struct ToolBtn
     {
-        IconRes icon;           //Í¼±ê
-        CString text;           //ÏÔÊ¾ÎÄ±¾
-        bool show_text = false; //ÊÇ·ñÏÔÊ¾ÎÄ±¾
-        UINT cmd_id;            //µã»÷ºó·¢ËÍµÄÃüÁîID
-        CMenu* pMenu = nullptr; //µã»÷ºóµ¯³öµÄ²Ëµ¥
-        bool is_cmd = true;     //µã»÷ºó·¢ËÍÃüÁî»¹ÊÇµ¯³ö²Ëµ¥
-        CString tooltip_text;   //Êó±êÌáÊ¾ÎÄ±¾
-        CRect rect;				//°´Å¥µÄ¾ØĞÎÇøÓò
-        bool hover{ false };	//Êó±êÊÇ·ñÖ¸Ïò°´Å¥
-        bool pressed{ false };	//°´Å¥ÊÇ·ñ°´ÏÂ
-        bool enable{ true };	//°´Å¥ÊÇ·ñÆôÓÃ
+        IconRes icon;           //å›¾æ ‡
+        CString text;           //æ˜¾ç¤ºæ–‡æœ¬
+        bool show_text = false; //æ˜¯å¦æ˜¾ç¤ºæ–‡æœ¬
+        UINT cmd_id;            //ç‚¹å‡»åå‘é€çš„å‘½ä»¤ID
+        CMenu* pMenu = nullptr; //ç‚¹å‡»åå¼¹å‡ºçš„èœå•
+        bool is_cmd = true;     //ç‚¹å‡»åå‘é€å‘½ä»¤è¿˜æ˜¯å¼¹å‡ºèœå•
+        CString tooltip_text;   //é¼ æ ‡æç¤ºæ–‡æœ¬
+        CRect rect;				//æŒ‰é’®çš„çŸ©å½¢åŒºåŸŸ
+        bool hover{ false };	//é¼ æ ‡æ˜¯å¦æŒ‡å‘æŒ‰é’®
+        bool pressed{ false };	//æŒ‰é’®æ˜¯å¦æŒ‰ä¸‹
+        bool enable{ true };	//æŒ‰é’®æ˜¯å¦å¯ç”¨
     };
 
     void AddToolTips();
     CWnd* GetCmdReciveWindow();
 
 protected:
-	CToolTipCtrl m_tool_tip;		//ÎÄ±¾ÌáÊ¾Àà
+	CToolTipCtrl m_tool_tip;		//æ–‡æœ¬æç¤ºç±»
     std::vector<ToolBtn> m_buttons;
     const ColorTable& m_theme_color;
     int m_icon_size = 20;

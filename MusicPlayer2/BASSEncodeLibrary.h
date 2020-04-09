@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DllLib.h"
 typedef DWORD HENCODE;		// encoder handle
 
@@ -24,7 +24,7 @@ public:
 	CBASSEncodeLibrary();
 	~CBASSEncodeLibrary();
 
-	//BASS encoder¿âÖÐµÄº¯ÊýÖ¸Õë
+	//BASS encoderåº“ä¸­çš„å‡½æ•°æŒ‡é’ˆ
 	_BASS_Encode_Start BASS_Encode_Start;
 	_BASS_Encode_Stop BASS_Encode_Stop;
 	_BASS_Encode_IsActive BASS_Encode_IsActive;

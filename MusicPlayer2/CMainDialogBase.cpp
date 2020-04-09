@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CMainDialogBase.h"
 #include "Common.h"
 #include "MusicPlayer2.h"
@@ -20,37 +20,37 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 	m_bFullScreen = full_screen;
 	if (full_screen)
 	{
-		//»ñÈ¡ÏµÍ³ÆÁÄ»¿í¸ß  
+		//èŽ·å–ç³»ç»Ÿå±å¹•å®½é«˜  
 		int g_iCurScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 		int g_iCurScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-		//µ±Ç°²Ëµ¥À¸µÄ¸ß¶È¼õÈ¥Ò»ÐÐ²Ëµ¥À¸µÄ¸ß¶È
+		//å½“å‰èœå•æ çš„é«˜åº¦å‡åŽ»ä¸€è¡Œèœå•æ çš„é«˜åº¦
 		int height_comp = 0;
 		if(theApp.m_ui_data.show_menu_bar)
 			height_comp = CCommon::GetMenuBarHeight(m_hWnd) - theApp.DPIRound(19);
 
 
-		//ÓÃm_struOldWndplµÃµ½µ±Ç°´°¿ÚµÄÏÔÊ¾×´Ì¬ºÍ´°ÌåÎ»ÖÃ£¬ÒÔ¹©ÍË³öÈ«ÆÁºóÊ¹ÓÃ  
+		//ç”¨m_struOldWndplå¾—åˆ°å½“å‰çª—å£çš„æ˜¾ç¤ºçŠ¶æ€å’Œçª—ä½“ä½ç½®ï¼Œä»¥ä¾›é€€å‡ºå…¨å±åŽä½¿ç”¨  
 		GetWindowPlacement(&m_struOldWndpl);
 
-		//¼ÆËã³ö´°¿ÚÈ«ÆÁÏÔÊ¾¿Í»§¶ËËùÓ¦¸ÃÉèÖÃµÄ´°¿Ú´óÐ¡£¬Ö÷ÒªÎªÁË½«²»ÐèÒªÏÔÊ¾µÄ´°Ìå±ß¿òµÈ²¿·ÖÅÅ³ýÔÚÆÁÄ»Íâ  
+		//è®¡ç®—å‡ºçª—å£å…¨å±æ˜¾ç¤ºå®¢æˆ·ç«¯æ‰€åº”è¯¥è®¾ç½®çš„çª—å£å¤§å°ï¼Œä¸»è¦ä¸ºäº†å°†ä¸éœ€è¦æ˜¾ç¤ºçš„çª—ä½“è¾¹æ¡†ç­‰éƒ¨åˆ†æŽ’é™¤åœ¨å±å¹•å¤–  
 		CRect rectWholeDlg;
 		CRect rectClient;
-		GetWindowRect(&rectWholeDlg);//µÃµ½µ±Ç°´°ÌåµÄ×ÜµÄÏà¶ÔÓÚÆÁÄ»µÄ×ø±ê  
-		RepositionBars(0, 0xffff, AFX_IDW_PANE_FIRST, reposQuery, &rectClient);//µÃµ½´°¿Ú¿Í»§Çø×ø±ê  
-		ClientToScreen(&rectClient);//½«¿Í»§ÇøÏà¶Ô´°ÌåµÄ×ø±ê×ªÎªÏà¶ÔÆÁÄ»×ø±ê  
+		GetWindowRect(&rectWholeDlg);//å¾—åˆ°å½“å‰çª—ä½“çš„æ€»çš„ç›¸å¯¹äºŽå±å¹•çš„åæ ‡  
+		RepositionBars(0, 0xffff, AFX_IDW_PANE_FIRST, reposQuery, &rectClient);//å¾—åˆ°çª—å£å®¢æˆ·åŒºåæ ‡  
+		ClientToScreen(&rectClient);//å°†å®¢æˆ·åŒºç›¸å¯¹çª—ä½“çš„åæ ‡è½¬ä¸ºç›¸å¯¹å±å¹•åæ ‡  
 		m_rectFullScreen.left = rectWholeDlg.left - rectClient.left;
 		m_rectFullScreen.top = rectWholeDlg.top - rectClient.top + height_comp;
 		m_rectFullScreen.right = rectWholeDlg.right + g_iCurScreenWidth - rectClient.right;
 		m_rectFullScreen.bottom = rectWholeDlg.bottom + g_iCurScreenHeight - rectClient.bottom;
 
-		//ÉèÖÃ´°¿Ú¶ÔÏó²ÎÊý£¬ÎªÈ«ÆÁ×öºÃ×¼±¸²¢½øÈëÈ«ÆÁ×´Ì¬  
+		//è®¾ç½®çª—å£å¯¹è±¡å‚æ•°ï¼Œä¸ºå…¨å±åšå¥½å‡†å¤‡å¹¶è¿›å…¥å…¨å±çŠ¶æ€  
 		WINDOWPLACEMENT struWndpl;
 		struWndpl.length = sizeof(WINDOWPLACEMENT);
 		struWndpl.flags = 0;
 		struWndpl.showCmd = SW_SHOWNORMAL;
 		struWndpl.rcNormalPosition = m_rectFullScreen;
-		SetWindowPlacement(&struWndpl);//¸Ãº¯ÊýÉèÖÃÖ¸¶¨´°¿ÚµÄÏÔÊ¾×´Ì¬ºÍÏÔÊ¾´óÐ¡Î»ÖÃµÈ£¬ÊÇÎÒÃÇ¸Ã³ÌÐò×îÎªÖØÒªµÄº¯Êý  
+		SetWindowPlacement(&struWndpl);//è¯¥å‡½æ•°è®¾ç½®æŒ‡å®šçª—å£çš„æ˜¾ç¤ºçŠ¶æ€å’Œæ˜¾ç¤ºå¤§å°ä½ç½®ç­‰ï¼Œæ˜¯æˆ‘ä»¬è¯¥ç¨‹åºæœ€ä¸ºé‡è¦çš„å‡½æ•°  
 	}
 	else
 	{
@@ -64,7 +64,7 @@ END_MESSAGE_MAP()
 
 void CMainDialogBase::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	if (m_bFullScreen)
 	{
 		lpMMI->ptMaxSize.x = m_rectFullScreen.Width();

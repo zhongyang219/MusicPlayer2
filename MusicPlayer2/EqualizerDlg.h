@@ -1,39 +1,39 @@
-#pragma once
+ï»¿#pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
 #include "CListBoxEnhanced.h"
 
 
-// CEqualizerDlg ¶Ô»°¿ò
+// CEqualizerDlg å¯¹è¯æ¡†
 
 class CEqualizerDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CEqualizerDlg)
 
 public:
-	CEqualizerDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CEqualizerDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CEqualizerDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_EQUALIZER_DIALOG };
 #endif
 
 protected:
-	int m_user_defined_gain[EQU_CH_NUM]{};		//ÓÃ»§×Ô¶¨ÒåµÄ¾ùºâÆ÷ÉèÖÃ
+	int m_user_defined_gain[EQU_CH_NUM]{};		//ç”¨æˆ·è‡ªå®šä¹‰çš„å‡è¡¡å™¨è®¾ç½®
 
 	CSliderCtrl m_sliders[EQU_CH_NUM];
 	CListBoxEnhanced m_equ_style_list;
 	CButton m_enable_equ_check;
-	CToolTipCtrl m_Mytip;		//Êó±êÌáÊ¾
-	int m_equ_style_selected{};		//Ñ¡ÖĞµÄ¾ùºâÆ÷Ô¤Éè
+	CToolTipCtrl m_Mytip;		//é¼ æ ‡æç¤º
+	int m_equ_style_selected{};		//é€‰ä¸­çš„å‡è¡¡å™¨é¢„è®¾
 
-	void EnableControls(bool enable);		//ÆôÓÃ»ò½ûÓÃ¿Ø¼ş
+	void EnableControls(bool enable);		//å¯ç”¨æˆ–ç¦ç”¨æ§ä»¶
 	void SaveConfig() const;
 	void LoadConfig();
-	void UpdateChannelTip(int channel, int gain);		//¸üĞÂÍ¨µÀ»¬¶¯ÌõµÄÊó±êÌáÊ¾
+	void UpdateChannelTip(int channel, int gain);		//æ›´æ–°é€šé“æ»‘åŠ¨æ¡çš„é¼ æ ‡æç¤º
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 protected:

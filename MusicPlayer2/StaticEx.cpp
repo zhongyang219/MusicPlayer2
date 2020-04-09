@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "StaticEx.h"
 #include "DrawCommon.h"
 #include "MusicPlayer2.h"
@@ -51,8 +51,8 @@ END_MESSAGE_MAP()
 void CStaticEx::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-					   // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂë
-					   // ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CStatic::OnPaint()
+					   // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+					   // ä¸ä¸ºç»˜å›¾æ¶ˆæ¯è°ƒç”¨ CStatic::OnPaint()
 
 	CDrawCommon draw;
 	draw.Create(&dc, this);
@@ -61,15 +61,15 @@ void CStaticEx::OnPaint()
 	GetClientRect(rect);
 	CString str;
 	CStatic::GetWindowText(str);
-	//»æÖÆ±³¾°
+	//ç»˜åˆ¶èƒŒæ™¯
 	if(!m_transparent)
 		draw.FillRect(rect, m_back_color);
 	else
-		DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//ÖØ»æ¿Ø¼þÇøÓòÒÔ½â¾öÎÄ×ÖÖØµþµÄÎÊÌâ
+		DrawThemeParentBackground(m_hWnd, dc.GetSafeHdc(), &rect);	//é‡ç»˜æŽ§ä»¶åŒºåŸŸä»¥è§£å†³æ–‡å­—é‡å çš„é—®é¢˜
 
 	CRect rc_text = rect;
 
-	//»æÖÆÍ¼±ê
+	//ç»˜åˆ¶å›¾æ ‡
 	bool draw_icon = (m_hIcon != NULL && m_icon_size.cx > 0 && m_icon_size.cy > 0);
 	if (draw_icon)
 	{
@@ -83,6 +83,6 @@ void CStaticEx::OnPaint()
 		draw.DrawIcon(m_hIcon, icon_left_top, m_icon_size);
 	}
 
-	//»æÖÆÎÄ±¾
+	//ç»˜åˆ¶æ–‡æœ¬
 	draw.DrawWindowText(rc_text, str, m_text_color);
 }

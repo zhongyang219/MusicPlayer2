@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "DrawCommon.h"
 
 
@@ -39,13 +39,13 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	m_pDC->SetBkMode(TRANSPARENT);
 	if (m_pfont != nullptr)
 		m_pDC->SelectObject(m_pfont);
-	//ÉèÖÃ»æÍ¼µÄ¼ô¼­ÇøÓò
+	//è®¾ç½®ç»˜å›¾çš„å‰ªè¾‘åŒºåŸŸ
 	if (!no_clip_area)
 	{
 		SetDrawArea(m_pDC, rect);
 	}
 	CSize text_size = m_pDC->GetTextExtent(lpszString);
-	//ÓÃ±³¾°É«Ìî³ä¾ØĞÎÇøÓò
+	//ç”¨èƒŒæ™¯è‰²å¡«å……çŸ©å½¢åŒºåŸŸ
 	//m_pDC->FillSolidRect(rect, m_backColor);
 	UINT format{};
 	switch (align)
@@ -64,7 +64,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	}
 	else
 	{
-		if (text_size.cx > rect.Width())		//Èç¹ûÎÄ±¾¿í¶È³¬¹ıÁË¾ØĞÎÇøÓòµÄ¿í¶È£¬ÉèÖÃÁË¾ÓÖĞÊ±×ó¶ÔÆë
+		if (text_size.cx > rect.Width())		//å¦‚æœæ–‡æœ¬å®½åº¦è¶…è¿‡äº†çŸ©å½¢åŒºåŸŸçš„å®½åº¦ï¼Œè®¾ç½®äº†å±…ä¸­æ—¶å·¦å¯¹é½
 		{
 			format = (default_right_align ? DT_RIGHT : 0);
 		}
@@ -79,16 +79,16 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 	m_pDC->SetBkMode(TRANSPARENT);
 	if (m_pfont != nullptr)
 		m_pDC->SelectObject(m_pfont);
-	CSize text_size;	//ÎÄ±¾µÄ´óĞ¡
-	int text_top, text_left;		//Êä³öÎÄ±¾µÄtopºÍleftÎ»ÖÃ
-	//ÉèÖÃ»æÍ¼µÄ¼ô¼­ÇøÓò£¬·ÀÖ¹ÎÄ×ÖÊä³ö³¬³ö¿Ø¼şÇøÓò
+	CSize text_size;	//æ–‡æœ¬çš„å¤§å°
+	int text_top, text_left;		//è¾“å‡ºæ–‡æœ¬çš„topå’Œleftä½ç½®
+	//è®¾ç½®ç»˜å›¾çš„å‰ªè¾‘åŒºåŸŸï¼Œé˜²æ­¢æ–‡å­—è¾“å‡ºè¶…å‡ºæ§ä»¶åŒºåŸŸ
 	if (!no_clip_area)
 	{
 		SetDrawArea(m_pDC, rect);
 	}
-	//»ñÈ¡ÎÄ×ÖµÄ¿í¶ÈºÍ¸ß¶È
+	//è·å–æ–‡å­—çš„å®½åº¦å’Œé«˜åº¦
 	text_size = m_pDC->GetTextExtent(lpszString);
-	//¼ÆËãÎÄ×ÖµÄÆğÊ¼×ø±ê
+	//è®¡ç®—æ–‡å­—çš„èµ·å§‹åæ ‡
 	text_top = rect.top + (rect.Height() - text_size.cy) / 2;
     if (align == Alignment::CENTER)
         text_left = rect.left + (rect.Width() - text_size.cx) / 2;
@@ -96,25 +96,25 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
         text_left = rect.left + (rect.Width() - text_size.cx);
 	else
 		text_left = rect.left;
-	//¼ÆËã±³¾°ÎÄ×ÖºÍ¸²¸ÇÎÄ×ÖµÄ¾ØĞÎÇøÓò
-	CRect text_rect{ CPoint{ text_left, text_top }, text_size };		//±³¾°ÎÄ×ÖµÄÇøÓò
-	CRect text_f_rect{ CPoint{ text_left, text_top }, CSize{ text_size.cx * split / 1000, text_size.cy } };		//¸²¸ÇÎÄ×ÖµÄÇøÓò
-																												//Èç¹ûÎÄ±¾¿í¶È´óÓÚ¿Ø¼ş¿í¶È£¬¾ÍÒª¸ù¾İ·Ö¸îµÄÎ»ÖÃ¹ö¶¯ÎÄ±¾
+	//è®¡ç®—èƒŒæ™¯æ–‡å­—å’Œè¦†ç›–æ–‡å­—çš„çŸ©å½¢åŒºåŸŸ
+	CRect text_rect{ CPoint{ text_left, text_top }, text_size };		//èƒŒæ™¯æ–‡å­—çš„åŒºåŸŸ
+	CRect text_f_rect{ CPoint{ text_left, text_top }, CSize{ text_size.cx * split / 1000, text_size.cy } };		//è¦†ç›–æ–‡å­—çš„åŒºåŸŸ
+																												//å¦‚æœæ–‡æœ¬å®½åº¦å¤§äºæ§ä»¶å®½åº¦ï¼Œå°±è¦æ ¹æ®åˆ†å‰²çš„ä½ç½®æ»šåŠ¨æ–‡æœ¬
 	if (text_size.cx > rect.Width())
 	{
-		//Èç¹û·Ö¸îµÄÎ»ÖÃ£¨¸è´Ê½ø¶È£©Ê£ÏÂµÄ¿í¶ÈÒÑ¾­Ğ¡ÓÚ¿Ø¼ş¿í¶ÈµÄÒ»°ë£¬´ËÊ±Ê¹ÎÄ±¾ÓÒ²àºÍ¿Ø¼şÓÒ²à¶ÔÆë
+		//å¦‚æœåˆ†å‰²çš„ä½ç½®ï¼ˆæ­Œè¯è¿›åº¦ï¼‰å‰©ä¸‹çš„å®½åº¦å·²ç»å°äºæ§ä»¶å®½åº¦çš„ä¸€åŠï¼Œæ­¤æ—¶ä½¿æ–‡æœ¬å³ä¾§å’Œæ§ä»¶å³ä¾§å¯¹é½
 		if (text_rect.Width() - text_f_rect.Width() < rect.Width() / 2)
 		{
 			text_rect.MoveToX(rect.left - (text_rect.Width() - rect.Width()));
 			text_f_rect.MoveToX(text_rect.left);
 		}
-		//·Ö¸îÎ»ÖÃÊ£ÏÂµÄ¿í¶È»¹Ã»ÓĞµ½Ğ¡ÓÚ¿Ø¼ş¿í¶ÈµÄÒ»°ë£¬µ«ÊÇ·Ö¸îÎ»ÖÃµÄ¿í¶ÈÒÑ¾­´óÓÚ¿Ø¼ş¿í¶ÈµÄÒ»°ëÊ±£¬ĞèÒªÒÆ¶¯ÎÄ±¾Ê¹·Ö¸îÎ»ÖÃÕıºÃÔÚ¿Ø¼şµÄÖĞ¼ä
+		//åˆ†å‰²ä½ç½®å‰©ä¸‹çš„å®½åº¦è¿˜æ²¡æœ‰åˆ°å°äºæ§ä»¶å®½åº¦çš„ä¸€åŠï¼Œä½†æ˜¯åˆ†å‰²ä½ç½®çš„å®½åº¦å·²ç»å¤§äºæ§ä»¶å®½åº¦çš„ä¸€åŠæ—¶ï¼Œéœ€è¦ç§»åŠ¨æ–‡æœ¬ä½¿åˆ†å‰²ä½ç½®æ­£å¥½åœ¨æ§ä»¶çš„ä¸­é—´
 		else if (text_f_rect.Width() > rect.Width() / 2)
 		{
 			text_rect.MoveToX(rect.left - (text_f_rect.Width() - rect.Width() / 2));
 			text_f_rect.MoveToX(text_rect.left);
 		}
-		//·Ö¸îÎ»ÖÃ»¹²»µ½¿Ø¼ş¿í¶ÈµÄÒ»°ëÊ±£¬Ê¹ÎÄ±¾×ó²àºÍ¿Ø¼ş×ó²à¶ÔÆë
+		//åˆ†å‰²ä½ç½®è¿˜ä¸åˆ°æ§ä»¶å®½åº¦çš„ä¸€åŠæ—¶ï¼Œä½¿æ–‡æœ¬å·¦ä¾§å’Œæ§ä»¶å·¦ä¾§å¯¹é½
 		else
 		{
 			text_rect.MoveToX(rect.left);
@@ -122,26 +122,26 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 		}
 	}
 
-	//ÓÃ±³¾°É«Ìî³ä¾ØĞÎÇøÓò
+	//ç”¨èƒŒæ™¯è‰²å¡«å……çŸ©å½¢åŒºåŸŸ
 	//m_pDC->FillSolidRect(rect, m_backColor);
-	//Êä³öÎÄ±¾
+	//è¾“å‡ºæ–‡æœ¬
 	m_pDC->SetTextColor(color2);
-	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);		//»æÖÆ±³¾°ÎÄ×Ö
+	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);		//ç»˜åˆ¶èƒŒæ™¯æ–‡å­—
 	if (color1 != color2)
 	{
 		m_pDC->SetTextColor(color1);
-		m_pDC->DrawText(lpszString, text_f_rect, DT_SINGLELINE | DT_NOPREFIX);		//»æÖÆ¸²¸ÇÎÄ×Ö
+		m_pDC->DrawText(lpszString, text_f_rect, DT_SINGLELINE | DT_NOPREFIX);		//ç»˜åˆ¶è¦†ç›–æ–‡å­—
 	}
 }
 
 void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset)
 {
-	//static int shift_cnt;		//ÒÆ¶¯µÄ´ÎÊı
-	//static bool shift_dir;		//ÒÆ¶¯µÄ·½Ïò£¬ÓÒÒÆÎªfalse£¬×óÒÆÎªtrue
-	//static int freez;			//µ±¸Ã±äÁ¿´óÓÚ0Ê±£¬ÎÄ±¾²»¹ö¶¯£¬Ö±µ½Ğ¡ÓÚµÈÓÚ0ÎªÖ¹
-	//static bool dir_changed{ false };	//Èç¹û·½Ïò·¢ÉúÁË±ä»¯£¬ÔòÎªtrue
+	//static int shift_cnt;		//ç§»åŠ¨çš„æ¬¡æ•°
+	//static bool shift_dir;		//ç§»åŠ¨çš„æ–¹å‘ï¼Œå³ç§»ä¸ºfalseï¼Œå·¦ç§»ä¸ºtrue
+	//static int freez;			//å½“è¯¥å˜é‡å¤§äº0æ—¶ï¼Œæ–‡æœ¬ä¸æ»šåŠ¨ï¼Œç›´åˆ°å°äºç­‰äº0ä¸ºæ­¢
+	//static bool dir_changed{ false };	//å¦‚æœæ–¹å‘å‘ç”Ÿäº†å˜åŒ–ï¼Œåˆ™ä¸ºtrue
 
-    if (scroll_info.last_string.GetLength() != CString(lpszString).GetLength())      //µ±ÏÔÊ¾ÎÄ±¾³¤¶È·¢Éú±ä»¯Ê±£¬ÖØÖÃ¹ö¶¯Î»ÖÃ
+    if (scroll_info.last_string.GetLength() != CString(lpszString).GetLength())      //å½“æ˜¾ç¤ºæ–‡æœ¬é•¿åº¦å‘ç”Ÿå˜åŒ–æ—¶ï¼Œé‡ç½®æ»šåŠ¨ä½ç½®
     {
         reset = true;
         scroll_info.last_string = lpszString;
@@ -158,30 +158,30 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	m_pDC->SetBkMode(TRANSPARENT);
 	if (m_pfont != nullptr)
 		m_pDC->SelectObject(m_pfont);
-	CSize text_size;	//ÎÄ±¾µÄ´óĞ¡
-	int text_top, text_left;		//Êä³öÎÄ±¾µÄtopºÍleftÎ»ÖÃ
-	//ÉèÖÃ»æÍ¼µÄ¼ô¼­ÇøÓò£¬·ÀÖ¹ÎÄ×ÖÊä³ö³¬³ö¿Ø¼şÇøÓò
+	CSize text_size;	//æ–‡æœ¬çš„å¤§å°
+	int text_top, text_left;		//è¾“å‡ºæ–‡æœ¬çš„topå’Œleftä½ç½®
+	//è®¾ç½®ç»˜å›¾çš„å‰ªè¾‘åŒºåŸŸï¼Œé˜²æ­¢æ–‡å­—è¾“å‡ºè¶…å‡ºæ§ä»¶åŒºåŸŸ
 	SetDrawArea(m_pDC, rect);
-	//»ñÈ¡ÎÄ×ÖµÄ¿í¶ÈºÍ¸ß¶È
+	//è·å–æ–‡å­—çš„å®½åº¦å’Œé«˜åº¦
 	text_size = m_pDC->GetTextExtent(lpszString);
-	//¼ÆËãÎÄ×ÖµÄÆğÊ¼×ø±ê
+	//è®¡ç®—æ–‡å­—çš„èµ·å§‹åæ ‡
 	text_top = rect.top + (rect.Height() - text_size.cy) / 2;
 	if (center)
 		text_left = rect.left + (rect.Width() - text_size.cx) / 2;
 	else
 		text_left = rect.left;
-	//¼ÆËãÎÄ×ÖµÄ¾ØĞÎÇøÓò
+	//è®¡ç®—æ–‡å­—çš„çŸ©å½¢åŒºåŸŸ
 	CRect text_rect{ CPoint{ text_left, text_top }, text_size };
-	//Èç¹ûÎÄ±¾¿í¶È´óÓÚ¿Ø¼ş¿í¶È£¬¾Í¹ö¶¯ÎÄ±¾
+	//å¦‚æœæ–‡æœ¬å®½åº¦å¤§äºæ§ä»¶å®½åº¦ï¼Œå°±æ»šåŠ¨æ–‡æœ¬
 	if (text_size.cx > rect.Width())
 	{
 		text_rect.MoveToX(rect.left - scroll_info.shift_cnt*pixel);
-		if ((text_rect.right < rect.right || text_rect.left > rect.left))		//ÒÆ¶¯µ½±ß½çÊ±»»·½Ïò
+		if ((text_rect.right < rect.right || text_rect.left > rect.left))		//ç§»åŠ¨åˆ°è¾¹ç•Œæ—¶æ¢æ–¹å‘
 		{
 			if (!scroll_info.dir_changed)
 			{
 				scroll_info.shift_dir = !scroll_info.shift_dir;
-				scroll_info.freez = 20;		//±ä»»·½ÏòÊ±ÉÔÎ¢ÔİÍ£¹ö¶¯Ò»¶ÎÊ±¼ä
+				scroll_info.freez = 20;		//å˜æ¢æ–¹å‘æ—¶ç¨å¾®æš‚åœæ»šåŠ¨ä¸€æ®µæ—¶é—´
 			}
 			scroll_info.dir_changed = true;
 		}
@@ -190,11 +190,11 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 			scroll_info.dir_changed = false;
 		}
 	}
-	//ÓÃ±³¾°É«Ìî³ä¾ØĞÎÇøÓò
+	//ç”¨èƒŒæ™¯è‰²å¡«å……çŸ©å½¢åŒºåŸŸ
 	//m_pDC->FillSolidRect(rect, m_backColor);
-	//Êä³öÎÄ±¾
+	//è¾“å‡ºæ–‡æœ¬
 	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);
-	if (scroll_info.freez <= 0)		//µ±freezÎª0µÄÊ±ºò²Å¹ö¶¯
+	if (scroll_info.freez <= 0)		//å½“freezä¸º0çš„æ—¶å€™æ‰æ»šåŠ¨
 	{
 		if (scroll_info.shift_dir)
 			scroll_info.shift_cnt--;
@@ -205,7 +205,7 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	{
 		scroll_info.freez--;
 	}
-	if ((rect & text_rect).IsRectEmpty())		//Èç¹ûÎÄ±¾¾ØĞÎÇøÓòÒÑ¾­³¬³öÁË»æÍ¼ÇøÓò£¬ÔòÖØÖÃ¹ö¶¯
+	if ((rect & text_rect).IsRectEmpty())		//å¦‚æœæ–‡æœ¬çŸ©å½¢åŒºåŸŸå·²ç»è¶…å‡ºäº†ç»˜å›¾åŒºåŸŸï¼Œåˆ™é‡ç½®æ»šåŠ¨
 	{
 		reset = true;
 		scroll_info.shift_cnt = 0;
@@ -215,7 +215,7 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 
 void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo & scroll_info, bool reset)
 {
-    if (scroll_info.last_string.GetLength() != CString(lpszString).GetLength())      //µ±ÏÔÊ¾ÎÄ±¾³¤¶È·¢Éú±ä»¯Ê±£¬ÖØÖÃ¹ö¶¯Î»ÖÃ
+    if (scroll_info.last_string.GetLength() != CString(lpszString).GetLength())      //å½“æ˜¾ç¤ºæ–‡æœ¬é•¿åº¦å‘ç”Ÿå˜åŒ–æ—¶ï¼Œé‡ç½®æ»šåŠ¨ä½ç½®
     {
         reset = true;
         scroll_info.last_string = lpszString;
@@ -230,46 +230,46 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
 	m_pDC->SetBkMode(TRANSPARENT);
 	if (m_pfont != nullptr)
 		m_pDC->SelectObject(m_pfont);
-	CSize text_size;	//ÎÄ±¾µÄ´óĞ¡
-	int text_top, text_left;		//Êä³öÎÄ±¾µÄtopºÍleftÎ»ÖÃ
-	//ÉèÖÃ»æÍ¼µÄ¼ô¼­ÇøÓò£¬·ÀÖ¹ÎÄ×ÖÊä³ö³¬³ö¿Ø¼şÇøÓò
+	CSize text_size;	//æ–‡æœ¬çš„å¤§å°
+	int text_top, text_left;		//è¾“å‡ºæ–‡æœ¬çš„topå’Œleftä½ç½®
+	//è®¾ç½®ç»˜å›¾çš„å‰ªè¾‘åŒºåŸŸï¼Œé˜²æ­¢æ–‡å­—è¾“å‡ºè¶…å‡ºæ§ä»¶åŒºåŸŸ
 	SetDrawArea(m_pDC, rect);
-	//»ñÈ¡ÎÄ×ÖµÄ¿í¶ÈºÍ¸ß¶È
+	//è·å–æ–‡å­—çš„å®½åº¦å’Œé«˜åº¦
 	text_size = m_pDC->GetTextExtent(lpszString);
-	//¼ÆËãÎÄ×ÖµÄÆğÊ¼×ø±ê
+	//è®¡ç®—æ–‡å­—çš„èµ·å§‹åæ ‡
 	text_top = rect.top + (rect.Height() - text_size.cy) / 2;
 	if (center)
 		text_left = rect.left + (rect.Width() - text_size.cx) / 2;
 	else
 		text_left = rect.left;
-	//¼ÆËãÎÄ×ÖµÄ¾ØĞÎÇøÓò
+	//è®¡ç®—æ–‡å­—çš„çŸ©å½¢åŒºåŸŸ
 	CRect text_rect{ CPoint{ text_left, text_top }, text_size };
-	//Èç¹ûÎÄ±¾¿í¶È´óÓÚ¿Ø¼ş¿í¶È£¬¾Í¹ö¶¯ÎÄ±¾
+	//å¦‚æœæ–‡æœ¬å®½åº¦å¤§äºæ§ä»¶å®½åº¦ï¼Œå°±æ»šåŠ¨æ–‡æœ¬
 	if (text_size.cx > rect.Width())
 	{
 		text_rect.MoveToX(rect.left - scroll_info.shift_cnt*pixel);
-		if ((text_rect.right < rect.right || text_rect.left > rect.left))		//ÒÆ¶¯³¬³ö±ß½çÊ±ÔİÍ£¹ö¶¯£¬freez´Ó20¿ªÊ¼µİ¼õ
+		if ((text_rect.right < rect.right || text_rect.left > rect.left))		//ç§»åŠ¨è¶…å‡ºè¾¹ç•Œæ—¶æš‚åœæ»šåŠ¨ï¼Œfreezä»20å¼€å§‹é€’å‡
 		{
-			scroll_info.shift_cnt--;	//ÈÃÎÄ±¾Íù»ØÒÆ¶¯Ò»´Î£¬·ÀÖ¹·´¸´ÅĞ¶ÏÎª³¬³ö±ß½ç
+			scroll_info.shift_cnt--;	//è®©æ–‡æœ¬å¾€å›ç§»åŠ¨ä¸€æ¬¡ï¼Œé˜²æ­¢åå¤åˆ¤æ–­ä¸ºè¶…å‡ºè¾¹ç•Œ
 			text_rect.MoveToX(rect.left - scroll_info.shift_cnt*pixel);
-			scroll_info.freez = 20;		//±ä»»·½ÏòÊ±ÉÔÎ¢ÔİÍ£¹ö¶¯Ò»¶ÎÊ±¼ä
+			scroll_info.freez = 20;		//å˜æ¢æ–¹å‘æ—¶ç¨å¾®æš‚åœæ»šåŠ¨ä¸€æ®µæ—¶é—´
 		}
 	}
-	//ÓÃ±³¾°É«Ìî³ä¾ØĞÎÇøÓò
+	//ç”¨èƒŒæ™¯è‰²å¡«å……çŸ©å½¢åŒºåŸŸ
 	//m_pDC->FillSolidRect(rect, m_backColor);
-	//Êä³öÎÄ±¾
+	//è¾“å‡ºæ–‡æœ¬
 	m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);
-	if (scroll_info.freez <= 0)		//µ±freezÎª0µÄÊ±ºò²Å¹ö¶¯
+	if (scroll_info.freez <= 0)		//å½“freezä¸º0çš„æ—¶å€™æ‰æ»šåŠ¨
 	{
 		scroll_info.shift_cnt++;
 	}
 	else
 	{
 		scroll_info.freez--;
-		if (scroll_info.freez == 10)		//µ±freezµİ¼õµ½Ò»°ëÊ±½«ÎÄ±¾¸´Î»
+		if (scroll_info.freez == 10)		//å½“freezé€’å‡åˆ°ä¸€åŠæ—¶å°†æ–‡æœ¬å¤ä½
 			scroll_info.shift_cnt = 0;
 	}
-	if ((rect & text_rect).IsRectEmpty())		//Èç¹ûÎÄ±¾¾ØĞÎÇøÓòÒÑ¾­³¬³öÁË»æÍ¼ÇøÓò£¬ÔòÖØÖÃ¹ö¶¯
+	if ((rect & text_rect).IsRectEmpty())		//å¦‚æœæ–‡æœ¬çŸ©å½¢åŒºåŸŸå·²ç»è¶…å‡ºäº†ç»˜å›¾åŒºåŸŸï¼Œåˆ™é‡ç½®æ»šåŠ¨
 	{
 		reset = true;
 		scroll_info.shift_cnt = 0;
@@ -305,17 +305,17 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 {
 	CDC memDC;
 
-	//»ñÈ¡Í¼ÏñÊµ¼Ê´óĞ¡
+	//è·å–å›¾åƒå®é™…å¤§å°
 	BITMAP bm;
 	GetObject(bitmap, sizeof(BITMAP), &bm);
 
 	memDC.CreateCompatibleDC(m_pDC);
 	memDC.SelectObject(&bitmap);
-	// ÒÔÏÂÁ½ĞĞ±ÜÃâÍ¼Æ¬Ê§Õæ
+	// ä»¥ä¸‹ä¸¤è¡Œé¿å…å›¾ç‰‡å¤±çœŸ
 	m_pDC->SetStretchBltMode(HALFTONE);
 	m_pDC->SetBrushOrg(0, 0);
 	CSize draw_size;
-	if (size.cx == 0 || size.cy == 0)		//Èç¹ûÖ¸¶¨µÄsizeÎª0£¬ÔòÊ¹ÓÃÎ»Í¼µÄÊµ¼Ê´óĞ¡»æÖÆ
+	if (size.cx == 0 || size.cy == 0)		//å¦‚æœæŒ‡å®šçš„sizeä¸º0ï¼Œåˆ™ä½¿ç”¨ä½å›¾çš„å®é™…å¤§å°ç»˜åˆ¶
 	{
 		draw_size = CSize(bm.bmWidth, bm.bmHeight);
 	}
@@ -325,19 +325,19 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 		if (stretch_mode == StretchMode::FILL)
 		{
 			SetDrawArea(m_pDC, CRect(start_point, draw_size));
-			float w_h_ratio, w_h_ratio_draw;		//Í¼ÏñµÄ¿í¸ß±È¡¢»æÖÆ´óĞ¡µÄ¿í¸ß±È
+			float w_h_ratio, w_h_ratio_draw;		//å›¾åƒçš„å®½é«˜æ¯”ã€ç»˜åˆ¶å¤§å°çš„å®½é«˜æ¯”
 			w_h_ratio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
 			w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
-			if (w_h_ratio > w_h_ratio_draw)		//Èç¹ûÍ¼ÏñµÄ¿í¸ß±È´óÓÚ»æÖÆÇøÓòµÄ¿í¸ß±È£¬ÔòĞèÒª²Ã¼ôÁ½±ßµÄÍ¼Ïñ
+			if (w_h_ratio > w_h_ratio_draw)		//å¦‚æœå›¾åƒçš„å®½é«˜æ¯”å¤§äºç»˜åˆ¶åŒºåŸŸçš„å®½é«˜æ¯”ï¼Œåˆ™éœ€è¦è£å‰ªä¸¤è¾¹çš„å›¾åƒ
 			{
-				int image_width;		//°´±ÈÀıËõ·ÅºóµÄ¿í¶È
+				int image_width;		//æŒ‰æ¯”ä¾‹ç¼©æ”¾åçš„å®½åº¦
 				image_width = bm.bmWidth * draw_size.cy / bm.bmHeight;
 				start_point.x -= ((image_width - draw_size.cx) / 2);
 				draw_size.cx = image_width;
 			}
 			else
 			{
-				int image_height;		//°´±ÈÀıËõ·ÅºóµÄ¸ß¶È
+				int image_height;		//æŒ‰æ¯”ä¾‹ç¼©æ”¾åçš„é«˜åº¦
 				image_height = bm.bmHeight * draw_size.cx / bm.bmWidth;
 				start_point.y -= ((image_height - draw_size.cy) / 2);
 				draw_size.cy = image_height;
@@ -346,10 +346,10 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 		else if (stretch_mode == StretchMode::FIT)
 		{
 			draw_size = CSize(bm.bmWidth, bm.bmHeight);
-			float w_h_ratio, w_h_ratio_draw;		//Í¼ÏñµÄ¿í¸ß±È¡¢»æÖÆ´óĞ¡µÄ¿í¸ß±È
+			float w_h_ratio, w_h_ratio_draw;		//å›¾åƒçš„å®½é«˜æ¯”ã€ç»˜åˆ¶å¤§å°çš„å®½é«˜æ¯”
 			w_h_ratio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
 			w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
-			if (w_h_ratio > w_h_ratio_draw)		//Èç¹ûÍ¼ÏñµÄ¿í¸ß±È´óÓÚ»æÖÆÇøÓòµÄ¿í¸ß±È
+			if (w_h_ratio > w_h_ratio_draw)		//å¦‚æœå›¾åƒçš„å®½é«˜æ¯”å¤§äºç»˜åˆ¶åŒºåŸŸçš„å®½é«˜æ¯”
 			{
 				draw_size.cy = draw_size.cy * size.cx / draw_size.cx;
 				draw_size.cx = size.cx;
@@ -421,7 +421,7 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_
 	CRect src(rect);
 	src.MoveToXY(0, 0);
 	pOldBitmap = cdc.SelectObject(&bitmap);
-	cdc.FillSolidRect(src, color); //Í¸Ã÷É«
+	cdc.FillSolidRect(src, color); //é€æ˜è‰²
 
 	if (::AlphaBlend == 0)
 	{
@@ -431,7 +431,7 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_
 	{
 		BLENDFUNCTION bf;
 		memset(&bf, 0, sizeof(bf));
-		bf.SourceConstantAlpha = alpha; //Í¸Ã÷³Ì¶È//ÖµÔ½´óÔ½²»Í¸Ã÷
+		bf.SourceConstantAlpha = alpha; //é€æ˜ç¨‹åº¦//å€¼è¶Šå¤§è¶Šä¸é€æ˜
 		bf.BlendOp = AC_SRC_OVER;
 		::AlphaBlend(m_pDC->GetSafeHdc(), rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
 			cdc.GetSafeHdc(), src.left, src.top, src.right - src.left, src.bottom - src.top, bf);
@@ -489,23 +489,23 @@ bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize siz
 {
 	if (pImage->IsDIBSection())
 	{
-		// È¡µÃ pImage µÄ DC
-		CDC* pImageDC1 = CDC::FromHandle(pImage->GetDC()); // Image ÒòéÓĞ×Ô¼ºµÄ DC, ËùÒÔ±ØíšÊ¹ÓÃ FromHandle È¡µÃŒ¦‘ªµÄ DC
+		// å–å¾— pImage çš„ DC
+		CDC* pImageDC1 = CDC::FromHandle(pImage->GetDC()); // Image å› ç‚ºæœ‰è‡ªå·±çš„ DC, æ‰€ä»¥å¿…é ˆä½¿ç”¨ FromHandle å–å¾—å°æ‡‰çš„ DC
 
 		CBitmap *bitmap1 = pImageDC1->GetCurrentBitmap();
 		BITMAP bmpInfo;
 		bitmap1->GetBitmap(&bmpInfo);
 
-		// ½¨Á¢ĞÂµÄ CImage
+		// å»ºç«‹æ–°çš„ CImage
 		//ResultImage->Create(size.cx, size.cy, bmpInfo.bmBitsPixel);
-		ResultImage->Create(size.cx, size.cy, 24);		//×ÜÊÇ½«Ä¿±êÍ¼Æ¬×ª»»³É24Î»Í¼
+		ResultImage->Create(size.cx, size.cy, 24);		//æ€»æ˜¯å°†ç›®æ ‡å›¾ç‰‡è½¬æ¢æˆ24ä½å›¾
 		CDC* ResultImageDC = CDC::FromHandle(ResultImage->GetDC());
 
-		// ®” Destination ±Èİ^Ğ¡µÄ•rºò, •ş¸ù“ş Destination DC ÉÏµÄ Stretch Blt mode ›Q¶¨ÊÇ·ñÒª±£Áô±»„h³ıücµÄÙYÓ
-		ResultImageDC->SetStretchBltMode(HALFTONE); // Ê¹ÓÃ×î¸ßÆ·Ù|µÄ·½Ê½
-		::SetBrushOrgEx(ResultImageDC->m_hDC, 0, 0, NULL); // Õ{Õû Brush µÄÆğüc
+		// ç•¶ Destination æ¯”è¼ƒå°çš„æ™‚å€™, æœƒæ ¹æ“š Destination DC ä¸Šçš„ Stretch Blt mode æ±ºå®šæ˜¯å¦è¦ä¿ç•™è¢«åˆªé™¤é»çš„è³‡è¨Š
+		ResultImageDC->SetStretchBltMode(HALFTONE); // ä½¿ç”¨æœ€é«˜å“è³ªçš„æ–¹å¼
+		::SetBrushOrgEx(ResultImageDC->m_hDC, 0, 0, NULL); // èª¿æ•´ Brush çš„èµ·é»
 
-		// °Ñ pImage ®‹µ½ ResultImage ÉÏÃæ
+		// æŠŠ pImage ç•«åˆ° ResultImage ä¸Šé¢
 		BOOL rtn = StretchBlt(*ResultImageDC, 0, 0, size.cx, size.cy, *pImageDC1, 0, 0, pImage->GetWidth(), pImage->GetHeight(), SRCCOPY);
 		// pImage->Draw(*ResultImageDC,0,0,StretchWidth,StretchHeight,0,0,pImage->GetWidth(),pImage->GetHeight());
 

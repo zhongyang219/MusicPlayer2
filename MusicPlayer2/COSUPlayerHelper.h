@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 class COSUPlayerHelper
 {
@@ -17,7 +17,7 @@ private:
 };
 
 
-//½âÎöosuÎÄ¼şµÄÀà
+//è§£æosuæ–‡ä»¶çš„ç±»
 class COSUFile
 {
 public:

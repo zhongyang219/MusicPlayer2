@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <vector>
 #include "Time.h"
 #include "SongInfo.h"
@@ -9,7 +9,7 @@ class CCueFile
 public:
     CCueFile(const std::wstring& file_path);
     ~CCueFile();
-    void SetTotalLength(Time length);       //ÉèÖÃcue¶ÔÓ¦ÒôÆµÎÄ¼şµÄ×Ü³¤¶È£¨ĞèÒªÔÚ½âÎöÍê³Éºóµ÷ÓÃGetAudioFileName»ñÈ¡½âÎöµ½µÄÒôÆµÎÄ¼şÂ·¾¶£¬ÔÙ»ñÈ¡¸ÃÒôÆµÎÄ¼şµÄ³¤¶È£©
+    void SetTotalLength(Time length);       //è®¾ç½®cueå¯¹åº”éŸ³é¢‘æ–‡ä»¶çš„æ€»é•¿åº¦ï¼ˆéœ€è¦åœ¨è§£æå®Œæˆåè°ƒç”¨GetAudioFileNameè·å–è§£æåˆ°çš„éŸ³é¢‘æ–‡ä»¶è·¯å¾„ï¼Œå†è·å–è¯¥éŸ³é¢‘æ–‡ä»¶çš„é•¿åº¦ï¼‰
     const std::vector<SongInfo>& GetAnalysisResult() const;
     std::wstring GetAudioFileName() const;
 

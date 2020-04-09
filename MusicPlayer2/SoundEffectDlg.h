@@ -1,33 +1,33 @@
-#pragma once
+ï»¿#pragma once
 #include "EqualizerDlg.h"
 #include "ReverbDlg.h"
 #include "afxcmn.h"
 
-// CSoundEffectDlg ¶Ô»°¿ò
+// CSoundEffectDlg å¯¹è¯æ¡†
 
 class CSoundEffectDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CSoundEffectDlg)
 
 public:
-	CSoundEffectDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CSoundEffectDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CSoundEffectDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_SOUND_EFFECT_DIALOG };
 #endif
 
 private:
-	CEqualizerDlg m_equ_dlg;		//¾ùºâÆ÷¶Ô»°¿ò
-	CReverbDlg m_reverb_dlg;		//»ìÏì¶Ô»°¿ò
+	CEqualizerDlg m_equ_dlg;		//å‡è¡¡å™¨å¯¹è¯æ¡†
+	CReverbDlg m_reverb_dlg;		//æ··å“å¯¹è¯æ¡†
 
 	int m_tab_selected{};
 	CTabCtrl m_tab;
 
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

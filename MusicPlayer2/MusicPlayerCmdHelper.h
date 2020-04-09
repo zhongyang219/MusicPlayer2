@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 #include "FormatConvertDlg.h"
 #include <functional>
@@ -11,22 +11,22 @@ public:
     void VeiwOnline(SongInfo& song);
     void FormatConvert(const std::vector<SongInfo>& songs);
 
-    //Ö´ĞĞÌí¼Óµ½ĞÂ½¨²¥·ÅÁĞ±íÃüÁî£¬³É¹¦·µ»Øtrue
-    //get_song_list: »ñÈ¡ÒªÌí¼ÓµÄÎÄ¼şÁĞ±íµÄ»Øµ÷º¯Êı£¬º¯ÊıÔ­ĞÍÎª void Func(std::vector<SongInfo>&)
-    //playlist_path: ½ÓÊÕĞÂ²¥·ÅÁĞ±íµÄÂ·¾¶
-    //default_name£ºĞÂ²¥·ÅÁĞ±íµÄÄ¬ÈÏÃû³Æ
+    //æ‰§è¡Œæ·»åŠ åˆ°æ–°å»ºæ’­æ”¾åˆ—è¡¨å‘½ä»¤ï¼ŒæˆåŠŸè¿”å›true
+    //get_song_list: è·å–è¦æ·»åŠ çš„æ–‡ä»¶åˆ—è¡¨çš„å›è°ƒå‡½æ•°ï¼Œå‡½æ•°åŸå‹ä¸º void Func(std::vector<SongInfo>&)
+    //playlist_path: æ¥æ”¶æ–°æ’­æ”¾åˆ—è¡¨çš„è·¯å¾„
+    //default_nameï¼šæ–°æ’­æ”¾åˆ—è¡¨çš„é»˜è®¤åç§°
     bool OnAddToNewPlaylist(std::function<void(std::vector<SongInfo>&)> get_song_list, std::wstring& playlist_path, const std::wstring& default_name = L"");
 
     void OnAddToPlaylistCommand(std::function<void(std::vector<SongInfo>&)> get_song_list, DWORD command);
 
-    //´Ó´ÅÅÌÉ¾³ı¸èÇú
+    //ä»ç£ç›˜åˆ é™¤æ­Œæ›²
     bool DeleteSongsFromDisk(const std::vector<SongInfo>& files);
 
-	//²éÕÒÆ¥ÅäµÄ¸è´ÊÎÄ¼ş£¨ÔİÎ´Ê¹ÓÃ£©
+	//æŸ¥æ‰¾åŒ¹é…çš„æ­Œè¯æ–‡ä»¶ï¼ˆæš‚æœªä½¿ç”¨ï¼‰
 	void SearchLyricFiles(const SongInfo& song, std::vector<std::wstring>& result, bool fuzzy_match);
 	std::wstring SearchLyricFile(const SongInfo& song, bool fuzzy_match);
 
-    //¸üĞÂÃ½Ìå¿â£¬·µ»ØĞÂÔöµÄ¸èÇúÊı¡££¨´Ëº¯ÊıÖ´ĞĞÊ±¼ä¿ÉÄÜ»á½Ï³¤£¬Ó¦¸ÃÔÚºóÌ¨Ïß³ÌÖĞÖ´ĞĞ£©
+    //æ›´æ–°åª’ä½“åº“ï¼Œè¿”å›æ–°å¢çš„æ­Œæ›²æ•°ã€‚ï¼ˆæ­¤å‡½æ•°æ‰§è¡Œæ—¶é—´å¯èƒ½ä¼šè¾ƒé•¿ï¼Œåº”è¯¥åœ¨åå°çº¿ç¨‹ä¸­æ‰§è¡Œï¼‰
     static int UpdateMediaLib();
 
     static int CleanUpSongData();

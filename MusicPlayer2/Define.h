@@ -1,5 +1,5 @@
-#pragma once
-//×Ô¶¨Òå°üº¬ÎÄ¼þ
+ï»¿#pragma once
+//è‡ªå®šä¹‰åŒ…å«æ–‡ä»¶
 #include <conio.h >
 #include <vector>
 #include <io.h>
@@ -23,7 +23,7 @@ using std::vector;
 using std::deque;
 using std::map;
 
-//ÓÃÓÚBASSÒôÆµ¿âµÄÖ§³Ö
+//ç”¨äºŽBASSéŸ³é¢‘åº“çš„æ”¯æŒ
 #include"bass.h"
 //#ifdef _M_X64
 //#pragma comment(lib,"bass_x64.lib")
@@ -31,17 +31,17 @@ using std::map;
 //#pragma comment(lib,"bass.lib")
 //#endif
 
-//Èç¹ûÐèÒªÎªWindows XP±àÒë£¬ÇëÈ¥µôÏÂÃæÒ»ÐÐ´úÂëµÄ×¢ÊÍ
+//å¦‚æžœéœ€è¦ä¸ºWindows XPç¼–è¯‘ï¼Œè¯·åŽ»æŽ‰ä¸‹é¢ä¸€è¡Œä»£ç çš„æ³¨é‡Š
 //#define COMPILE_IN_WIN_XP
 
 #ifndef COMPILE_IN_WIN_XP
-//ÓÃÓÚ»ñÈ¡ÏµÍ³Ö÷ÌâÑÕÉ«
+//ç”¨äºŽèŽ·å–ç³»ç»Ÿä¸»é¢˜é¢œè‰²
 #pragma comment(lib,"Dwmapi.lib")
 #endif
 
-#include <afxinet.h>	//ÓÃÓÚÖ§³ÖÊ¹ÓÃÍøÂçÏà¹ØµÄÀà
+#include <afxinet.h>	//ç”¨äºŽæ”¯æŒä½¿ç”¨ç½‘ç»œç›¸å…³çš„ç±»
 
-//×Ô¶¨ÒåµÄºê
+//è‡ªå®šä¹‰çš„å®
 
 #ifdef UNICODE
 using _tstring = std::wstring;
@@ -49,28 +49,28 @@ using _tstring = std::wstring;
 using _tstring = std::string;
 #endif // !UNICODE
 
-//CPlayerÀàÖÐÓÃµ½µÄ³£Á¿
-#define NEXT (-999)		//¶¨Òå¡°ÏÂÒ»Çú¡±³£Á¿
-#define PREVIOUS (-998)		//¶¨Òå¡°ÉÏÒ»Çú¡±³£Á¿
+//CPlayerç±»ä¸­ç”¨åˆ°çš„å¸¸é‡
+#define NEXT (-999)		//å®šä¹‰â€œä¸‹ä¸€æ›²â€å¸¸é‡
+#define PREVIOUS (-998)		//å®šä¹‰â€œä¸Šä¸€æ›²â€å¸¸é‡
 
-#define MAX_NUM_LENGTH 5000		//¶¨Òå»ñÈ¡ÒôÆµÎÄ¼þÐÅÏ¢ÊýÁ¿µÄ×î´óÖµ
-#define MAX_SONG_NUM 9999		//²¥·ÅÁÐ±íÖÐÎÄ¼þÊýÁ¿µÄ×î´óÖµ
+#define MAX_NUM_LENGTH 5000		//å®šä¹‰èŽ·å–éŸ³é¢‘æ–‡ä»¶ä¿¡æ¯æ•°é‡çš„æœ€å¤§å€¼
+#define MAX_SONG_NUM 9999		//æ’­æ”¾åˆ—è¡¨ä¸­æ–‡ä»¶æ•°é‡çš„æœ€å¤§å€¼
 
-#define VERSION L"2.68"	//³ÌÐò°æ±¾
+#define VERSION L"2.68"	//ç¨‹åºç‰ˆæœ¬
 #define COMPILE_DATE L"2020/01/22"
 
-//ÈÎÎñÀ¸Í¼°´Å¥
-#define IDT_PLAY_PAUSE 1321		//ÈÎÎñÀ¸ËõÂÔÍ¼¡°²¥·Å/ÔÝÍ£¡±°´Å¥µÄID
-#define IDT_PREVIOUS 1322		//ÈÎÎñÀ¸ËõÂÔÍ¼¡°ÉÏÒ»Çú¡±°´Å¥µÄID
-#define IDT_NEXT 1323			//ÈÎÎñÀ¸ËõÂÔÍ¼¡°ÏÂÒ»Çú¡±°´Å¥µÄID
+//ä»»åŠ¡æ å›¾æŒ‰é’®
+#define IDT_PLAY_PAUSE 1321		//ä»»åŠ¡æ ç¼©ç•¥å›¾â€œæ’­æ”¾/æš‚åœâ€æŒ‰é’®çš„ID
+#define IDT_PREVIOUS 1322		//ä»»åŠ¡æ ç¼©ç•¥å›¾â€œä¸Šä¸€æ›²â€æŒ‰é’®çš„ID
+#define IDT_NEXT 1323			//ä»»åŠ¡æ ç¼©ç•¥å›¾â€œä¸‹ä¸€æ›²â€æŒ‰é’®çš„ID
 
 
-//¶¨Ê±Æ÷
-#define TIMER_ID 1234			//¶¨Òå¶¨Ê±Æ÷µÄID
-#define TIMER_ELAPSE 80		//¶¨Òå¶¨Ê±Æ÷ÏìÓ¦µÄÊ±¼ä¼ä¸ô£¨ºÁÃë£©
-#define TIMER_ID_MINI 1235		//ÃÔÄãÄ£Ê½ÖÐµÄ¶¨Ê±Æ÷ID
-#define TIMER_ID_MINI2 1236		//ÃÔÄãÄ£Ê½ÖÐµÄ¶¨Ê±Æ÷ID£¬ÓÃÓÚÏÔÊ¾ÆµÆ×·ÖÎö
-#define TIMER_ELAPSE_MINI 200	//¶¨ÒåÃÔÄãÄ£Ê½ÖÐµÄ¶¨Ê±Æ÷ÏìÓ¦µÄÊ±¼ä¼ä¸ô£¨ºÁÃë£©
+//å®šæ—¶å™¨
+#define TIMER_ID 1234			//å®šä¹‰å®šæ—¶å™¨çš„ID
+#define TIMER_ELAPSE 80		//å®šä¹‰å®šæ—¶å™¨å“åº”çš„æ—¶é—´é—´éš”ï¼ˆæ¯«ç§’ï¼‰
+#define TIMER_ID_MINI 1235		//è¿·ä½ æ¨¡å¼ä¸­çš„å®šæ—¶å™¨ID
+#define TIMER_ID_MINI2 1236		//è¿·ä½ æ¨¡å¼ä¸­çš„å®šæ—¶å™¨IDï¼Œç”¨äºŽæ˜¾ç¤ºé¢‘è°±åˆ†æž
+#define TIMER_ELAPSE_MINI 200	//å®šä¹‰è¿·ä½ æ¨¡å¼ä¸­çš„å®šæ—¶å™¨å“åº”çš„æ—¶é—´é—´éš”ï¼ˆæ¯«ç§’ï¼‰
 #define TIMER_1_SEC 1237
 #define TIMER_DESKTOP_LYRIC 1238
 #define TIMER_DESKTOP_LYRIC_2 1239
@@ -78,30 +78,30 @@ using _tstring = std::string;
 //#define TIMER_ID_SPECTRAL
 //#define TIMER_ID_EXIT 1237
 
-//ÆµÆ×·ÖÎö
-#define FFT_SAMPLE 128			//ÆµÆ×·ÖÎö²ÉÑùµãÊý
-//#define FFT_NUM 128			//ÒªÊ¹ÓÃµÄÆµÆ×µÄµãÊý
-#define SPECTRUM_COL 64			//ÆµÆ×·ÖÎöÖùÐÎµÄÌõÊý£¨±ØÐëÎª2µÄÕûÊý´Î·½ÇÒÐ¡ÓÚ»òµÈÓÚFFT_SAMPLE£©
+//é¢‘è°±åˆ†æž
+#define FFT_SAMPLE 128			//é¢‘è°±åˆ†æžé‡‡æ ·ç‚¹æ•°
+//#define FFT_NUM 128			//è¦ä½¿ç”¨çš„é¢‘è°±çš„ç‚¹æ•°
+#define SPECTRUM_COL 64			//é¢‘è°±åˆ†æžæŸ±å½¢çš„æ¡æ•°ï¼ˆå¿…é¡»ä¸º2çš„æ•´æ•°æ¬¡æ–¹ä¸”å°äºŽæˆ–ç­‰äºŽFFT_SAMPLEï¼‰
 
-#define IDC_SAVE_COMBO_BOX 1990		//¶¨ÒåÌí¼Óµ½¡°Áí´æÎª¡±¶Ô»°¿òÖÐµÄ×éºÏ¿òµÄID
-#define IDC_OPEN_CHECKBOX 1991		//¶¨ÒåÌí¼Óµ½¡°Ìí¼ÓÎÄ¼þ¼Ð¡±¶Ô»°¿òÖÐµÄ¸´Ñ¡¿òµÄID
+#define IDC_SAVE_COMBO_BOX 1990		//å®šä¹‰æ·»åŠ åˆ°â€œå¦å­˜ä¸ºâ€å¯¹è¯æ¡†ä¸­çš„ç»„åˆæ¡†çš„ID
+#define IDC_OPEN_CHECKBOX 1991		//å®šä¹‰æ·»åŠ åˆ°â€œæ·»åŠ æ–‡ä»¶å¤¹â€å¯¹è¯æ¡†ä¸­çš„å¤é€‰æ¡†çš„ID
 
-//Ìí¼Óµ½ÏµÍ³²Ëµ¥ÖÐµÄ¡°ÃÔÄãÄ£Ê½¡±²Ëµ¥ÏîµÄID
+//æ·»åŠ åˆ°ç³»ç»Ÿèœå•ä¸­çš„â€œè¿·ä½ æ¨¡å¼â€èœå•é¡¹çš„ID
 #define IDM_MINIMODE 112
 
-//¾ùºâÆ÷
-#define EQU_CH_NUM 10		//¾ùºâÆ÷Í¨µÀµÄÊýÁ¿
-const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//¾ùºâÆ÷Ô¤Éè
+//å‡è¡¡å™¨
+#define EQU_CH_NUM 10		//å‡è¡¡å™¨é€šé“çš„æ•°é‡
+const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//å‡è¡¡å™¨é¢„è®¾
 {
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },			//ÎÞ
-    { 4, 3, 3, 2, 2, 1, 0, -1, -2, -2 },		//¹Åµä
-    { 3, 2, 0, -1, -2, -2, -1, 0, 2, 3 },		//Á÷ÐÐ
-    { 2, 1, 0, -1, -1, 1, 3, 5, 3 },		//¾ôÊ¿
-    { -2, 0, 2, 4, -1, -1, 0, 0, 2, 3 },		//Ò¡¹ö
-    { 1, 0, 0, 1, 2, 1, -1, -2, -2, -2 },		//ÈáºÍ
-    { 4, 6, 6, -2, -1, 0, 0, 0, 0, 0 },		//ÖØµÍÒô
-    { -5, -5, -3, -2, -2, 0, 0, 0, 0, 0 },		//Ïû³ýµÍÒô
-    { 0, 0, 0, 0, 0, -1, -3, -5, -5, -4 }		//Èõ»¯¸ßÒô
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },			//æ— 
+    { 4, 3, 3, 2, 2, 1, 0, -1, -2, -2 },		//å¤å…¸
+    { 3, 2, 0, -1, -2, -2, -1, 0, 2, 3 },		//æµè¡Œ
+    { 2, 1, 0, -1, -1, 1, 3, 5, 3 },		//çˆµå£«
+    { -2, 0, 2, 4, -1, -1, 0, 0, 2, 3 },		//æ‘‡æ»š
+    { 1, 0, 0, 1, 2, 1, -1, -2, -2, -2 },		//æŸ”å’Œ
+    { 4, 6, 6, -2, -1, 0, 0, 0, 0, 0 },		//é‡ä½ŽéŸ³
+    { -5, -5, -3, -2, -2, 0, 0, 0, 0, 0 },		//æ¶ˆé™¤ä½ŽéŸ³
+    { 0, 0, 0, 0, 0, -1, -3, -5, -5, -4 }		//å¼±åŒ–é«˜éŸ³
 };
 
 #define GRAY(x) RGB(x,x,x)
@@ -109,8 +109,8 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//¾ùºâÆ÷Ô¤Éè
 #define ALBUM_COVER_NAME L"CurrentAlbumCover-MusicPlayer2-jMZB7TMf"
 //#define DEFAULT_ALBUM_NAME L"cover"
 
-//#define BACKGROUND_ALPHA 200	//½çÃæ±³¾°µÄÍ¸Ã÷¶È0~255
-#define ALPHA_CHG(alpha) ((alpha)*255/100)		//½«Í¸Ã÷¶È´Ó0~100Ó³Éäµ½0~255
+//#define BACKGROUND_ALPHA 200	//ç•Œé¢èƒŒæ™¯çš„é€æ˜Žåº¦0~255
+#define ALPHA_CHG(alpha) ((alpha)*255/100)		//å°†é€æ˜Žåº¦ä»Ž0~100æ˜ å°„åˆ°0~255
 
 #define LOCAL_DIR_STR L"%localdir%"
 #define DEFAULT_PLAYLIST_NAME L"default_playlist.playlist"
@@ -119,20 +119,20 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//¾ùºâÆ÷Ô¤Éè
 #define PLAYLIST_EXTENSION L".playlist"
 #define APP_NAME L"MusicPlayer2"
 
-#define WM_OPEN_FILE_COMMAND_LINE (WM_USER+110)		//Í¨¹ýÃüÁîÐÐ´ò¿ªÎÄ¼þÊ±ÏòÒÑÓÐÊµÀý´°¿Ú·¢ËÍµÄÏûÏ¢
+#define WM_OPEN_FILE_COMMAND_LINE (WM_USER+110)		//é€šè¿‡å‘½ä»¤è¡Œæ‰“å¼€æ–‡ä»¶æ—¶å‘å·²æœ‰å®žä¾‹çª—å£å‘é€çš„æ¶ˆæ¯
 #define MY_WM_NOTIFYICON (WM_USER+115)
 #define WM_PLAY_SELECTED_BTN_ENABLE (WM_USER+120)
 #define WM_SET_MENU_STATE (WM_USER+122)
 #define WM_COLOR_SELECTED (WM_USER+123)
 #define WM_CUR_PLAYLIST_RENAMED (WM_USER+124)
-#define WM_INIT_ADD_TO_MENU (WM_USER+127)       //ÖØÐÂ³õÊ¼»¯ÓÒ¼ü²Ëµ¥ÖÐµÄ¡°Ìí¼Óµ½²¥·ÅÁÐ±í¡±×Ó²Ëµ¥
-#define WM_OPTION_SETTINGS (WM_USER+128)       //´ò¿ªÑ¡ÏîÉèÖÃ
-#define WM_RECENT_PLAYED_LIST_CLEARED (WM_USER+130)       //Ö´ÐÐÁË¡°Çå¿Õ×î½ü²¥·ÅÇúÄ¿ÁÐ±í¡±
+#define WM_INIT_ADD_TO_MENU (WM_USER+127)       //é‡æ–°åˆå§‹åŒ–å³é”®èœå•ä¸­çš„â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€å­èœå•
+#define WM_OPTION_SETTINGS (WM_USER+128)       //æ‰“å¼€é€‰é¡¹è®¾ç½®
+#define WM_RECENT_PLAYED_LIST_CLEARED (WM_USER+130)       //æ‰§è¡Œäº†â€œæ¸…ç©ºæœ€è¿‘æ’­æ”¾æ›²ç›®åˆ—è¡¨â€
 
 #define WM_NEXT_USER_MSG (WM_USER+131)
 
 #ifdef _DEBUG
-#define ADD_TO_PLAYLIST_MAX_SIZE 10         //¡°Ìí¼Óµ½²¥·ÅÁÐ±í¡±×Ó²Ëµ¥ÖÐÏîÄ¿µÄ×î´óÊýÁ¿£¨²»ÄÜ³¬¹ý40£©
+#define ADD_TO_PLAYLIST_MAX_SIZE 10         //â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€å­èœå•ä¸­é¡¹ç›®çš„æœ€å¤§æ•°é‡ï¼ˆä¸èƒ½è¶…è¿‡40ï¼‰
 #else
-#define ADD_TO_PLAYLIST_MAX_SIZE 30         //¡°Ìí¼Óµ½²¥·ÅÁÐ±í¡±×Ó²Ëµ¥ÖÐÏîÄ¿µÄ×î´óÊýÁ¿£¨²»ÄÜ³¬¹ý40£©
+#define ADD_TO_PLAYLIST_MAX_SIZE 30         //â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€å­èœå•ä¸­é¡¹ç›®çš„æœ€å¤§æ•°é‡ï¼ˆä¸èƒ½è¶…è¿‡40ï¼‰
 #endif

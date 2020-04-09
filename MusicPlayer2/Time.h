@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class Time
 {
 public:
@@ -20,7 +20,7 @@ public:
 	~Time()
 	{}
 
-	//½«intÀàĞÍµÄÊ±¼ä£¨ºÁÃëÊı£©×ª»»³ÉTime½á¹¹
+	//å°†intç±»å‹çš„æ—¶é—´ï¼ˆæ¯«ç§’æ•°ï¼‰è½¬æ¢æˆTimeç»“æ„
 	void fromInt(int time)
 	{
 		msec = time % 1000;
@@ -28,7 +28,7 @@ public:
 		min = time / 1000 / 60;
 	}
 
-	//½«Time½á¹¹×ª»»³ÉintÀàĞÍ£¨ºÁÃëÊı£©
+	//å°†Timeç»“æ„è½¬æ¢æˆintç±»å‹ï¼ˆæ¯«ç§’æ•°ï¼‰
 	int toInt() const
 	{
 		return msec + sec * 1000 + min * 60000;
@@ -71,13 +71,13 @@ public:
 		else return true;
 	}
 
-	//¼õ·¨ÔËËã·û£¬ÓÃÓÚ¼ÆËãÁ½¸öTime¶ÔÏóµÄÊ±¼ä²î£¬·µ»ØintÀàĞÍ£¬µ¥Î»ÎªºÁÃë
+	//å‡æ³•è¿ç®—ç¬¦ï¼Œç”¨äºè®¡ç®—ä¸¤ä¸ªTimeå¯¹è±¡çš„æ—¶é—´å·®ï¼Œè¿”å›intç±»å‹ï¼Œå•ä½ä¸ºæ¯«ç§’
 	int operator-(const Time& time) const
 	{
 		return (min - time.min) * 60000 + (sec - time.sec) * 1000 + (msec - time.msec);
 	}
 
-	//¼Ó·¨¸³ÖµÔËËã·û£¬ÓÃÓÚÔÚµ±Ç°Ê±¼äÉÏ¼ÓÉÏÒ»¸öintÀàĞÍµÄºÁÃëÊı
+	//åŠ æ³•èµ‹å€¼è¿ç®—ç¬¦ï¼Œç”¨äºåœ¨å½“å‰æ—¶é—´ä¸ŠåŠ ä¸Šä¸€ä¸ªintç±»å‹çš„æ¯«ç§’æ•°
 	Time operator+=(int time)
 	{
 		int added = this->toInt();
@@ -91,7 +91,7 @@ public:
         return operator+=(-time);
     }
 
-	//¼Ó·¨ÔËËã·û£¬ÓÃÓÚÔÚµ±Ç°Ê±¼äÉÏ¼ÓÉÏÒ»¸öintÀàĞÍµÄºÁÃëÊı£¬·µ»ØTime¶ÔÏó
+	//åŠ æ³•è¿ç®—ç¬¦ï¼Œç”¨äºåœ¨å½“å‰æ—¶é—´ä¸ŠåŠ ä¸Šä¸€ä¸ªintç±»å‹çš„æ¯«ç§’æ•°ï¼Œè¿”å›Timeå¯¹è±¡
 	Time operator+(int time) const
 	{
 		int added = this->toInt();
@@ -99,7 +99,7 @@ public:
 		return Time{ added };
 	}
 
-	//½«Ê±¼ä×ª»»³É×Ö·û´®£¨¸ñÊ½£º·Ö:Ãë£©
+	//å°†æ—¶é—´è½¬æ¢æˆå­—ç¬¦ä¸²ï¼ˆæ ¼å¼ï¼šåˆ†:ç§’ï¼‰
 	wstring toString(bool no_zero = true) const
 	{
 		wchar_t buff[16];
@@ -110,7 +110,7 @@ public:
 		return wstring(buff);
 	}
 
-	//½«Ê±¼ä×ª»»³É×Ö·û´®£¨¸ñÊ½£º·Ö:Ãë.ºÁÃë£©
+	//å°†æ—¶é—´è½¬æ¢æˆå­—ç¬¦ä¸²ï¼ˆæ ¼å¼ï¼šåˆ†:ç§’.æ¯«ç§’ï¼‰
 	wstring toString2(bool no_zero = true) const
 	{
 		wchar_t buff[16];
@@ -121,7 +121,7 @@ public:
 		return wstring(buff);
 	}
 
-	//½«Ê±¼ä×ª»»³É×Ö·û´®£¨¸ñÊ½£ºÊ±:·Ö:Ãë£©
+	//å°†æ—¶é—´è½¬æ¢æˆå­—ç¬¦ä¸²ï¼ˆæ ¼å¼ï¼šæ—¶:åˆ†:ç§’ï¼‰
 	wstring toString3(bool no_zero = true) const
 	{
 		int hour, min1;
@@ -135,7 +135,7 @@ public:
 		return wstring(buff);
 	}
 
-	//ÅĞ¶ÏÊ±¼äÊÇ·ñÎª0
+	//åˆ¤æ–­æ—¶é—´æ˜¯å¦ä¸º0
 	bool isZero() const
 	{
 		return (min == 0 && sec == 0 && msec == 0);

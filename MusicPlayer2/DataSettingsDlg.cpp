@@ -1,4 +1,4 @@
-// DataSettingsDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// DataSettingsDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CDataSettingsDlg ¶Ô»°¿ò
+// CDataSettingsDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CDataSettingsDlg, CTabDlg)
 
@@ -42,19 +42,19 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
 END_MESSAGE_MAP()
 
 
-// CDataSettingsDlg ÏûÏ¢´¦Àí³ÌĞò
+// CDataSettingsDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CDataSettingsDlg::OnInitDialog()
 {
 	CTabDlg::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	//SetBackgroundColor(RGB(255, 255, 255));
 
 	m_language_combo.AddString(CCommon::LoadText(IDS_FOLLOWING_SYSTEM));
 	m_language_combo.AddString(_T("English"));
-	m_language_combo.AddString(_T("¼òÌåÖĞÎÄ"));
+	m_language_combo.AddString(_T("ç®€ä½“ä¸­æ–‡"));
 	m_language_combo.SetCurSel(static_cast<int>(m_data.language));
 
 
@@ -77,9 +77,9 @@ BOOL CDataSettingsDlg::OnInitDialog()
     else
         ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->SetCheck(TRUE);
 
-    //ÅĞ¶Ï¸è´ÊÎÄ¼ş¼ĞÊÇ·ñ´æÔÚ
+    //åˆ¤æ–­æ­Œè¯æ–‡ä»¶å¤¹æ˜¯å¦å­˜åœ¨
     bool lyric_path_exist = CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path);
-    if (!lyric_path_exist)		//Èç¹û¸è´ÊÎÄ¼ş²»´æÔÚ£¬Ôò½ûÓÃ¡°±£´æµ½¸è´ÊÎÄ¼ş¼Ğ¡±µ¥Ñ¡°´Å¥£¬²¢Ç¿ÖÆÑ¡ÖĞ¡°±£´æµ½¸èÇúËùÔÚÄ¿Â¼¡±
+    if (!lyric_path_exist)		//å¦‚æœæ­Œè¯æ–‡ä»¶ä¸å­˜åœ¨ï¼Œåˆ™ç¦ç”¨â€œä¿å­˜åˆ°æ­Œè¯æ–‡ä»¶å¤¹â€å•é€‰æŒ‰é’®ï¼Œå¹¶å¼ºåˆ¶é€‰ä¸­â€œä¿å­˜åˆ°æ­Œæ›²æ‰€åœ¨ç›®å½•â€
     {
         ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->EnableWindow(FALSE);
         ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->SetCheck(FALSE);
@@ -90,7 +90,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	m_toolTip.Create(this);
 	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
 	m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), CCommon::LoadText(IDS_AUTO_DOWNLOAD_LYRIC_TIP_INFO));
-	//m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("ĞèÒª¶îÍâµÄÒôÉ«¿â²ÅÄÜ²¥·Å MIDI ÒôÀÖ¡£"));
+	//m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("éœ€è¦é¢å¤–çš„éŸ³è‰²åº“æ‰èƒ½æ’­æ”¾ MIDI éŸ³ä¹ã€‚"));
 	m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), CCommon::LoadText(IDS_MIDI_INNER_LYRIC_TIP_INFO));
 
 	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
@@ -98,14 +98,14 @@ BOOL CDataSettingsDlg::OnInitDialog()
     EnableControl();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CDataSettingsDlg::EnableControl()
 {
     bool enable = !CPlayer::GetInstance().IsMciCore();
-    m_sf2_path_edit.EnableWindow(enable && theApp.m_format_convert_dialog_exit);		//ÕıÔÚ½øĞĞ¸ñÊ½×ª»»Ê±²»ÔÊĞí¸ü¸ÄÒôÉ«¿â
+    m_sf2_path_edit.EnableWindow(enable && theApp.m_format_convert_dialog_exit);		//æ­£åœ¨è¿›è¡Œæ ¼å¼è½¬æ¢æ—¶ä¸å…è®¸æ›´æ”¹éŸ³è‰²åº“
     CWnd* pWnd = GetDlgItem(IDC_BROWSE_BUTTON);
     if(pWnd!=nullptr)
         pWnd->EnableWindow(enable && theApp.m_format_convert_dialog_exit);
@@ -121,21 +121,21 @@ void CDataSettingsDlg::EnableControl()
 
 void CDataSettingsDlg::OnBnClickedId3v2FirstCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.id3v2_first = (((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->GetCheck() != 0);
 }
 
 
 void CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.auto_download_album_cover = (((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->GetCheck() != 0);
 }
 
 
 void CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.auto_download_lyric = (((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->GetCheck() != 0);
     EnableControl();
 }
@@ -143,14 +143,14 @@ void CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck()
 
 void CDataSettingsDlg::OnBnClickedCheckUpdateCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.check_update_when_start = (((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->GetCheck() != 0);
 }
 
 
 BOOL CDataSettingsDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_toolTip.RelayEvent(pMsg);
 
@@ -160,24 +160,24 @@ BOOL CDataSettingsDlg::PreTranslateMessage(MSG* pMsg)
 
 void CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.midi_use_inner_lyric = (((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->GetCheck() != 0);
 }
 
 
 void CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.auto_download_only_tag_full = (((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->GetCheck() != 0);
 }
 
 
 void CDataSettingsDlg::OnEnChangeSf2PathEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CTabDlg::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CTabDlg::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 	if (m_sf2_path_edit.GetModify())
 	{
 		CString str;
@@ -185,18 +185,18 @@ void CDataSettingsDlg::OnEnChangeSf2PathEdit()
 		m_data.sf2_path = str;
 	}
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 }
 
 
 void CDataSettingsDlg::OnOK()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	m_data.minimize_to_notify_icon = (((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->GetCheck() != 0);
     m_data.save_lyric_to_song_folder = (((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->GetCheck() != 0);
 
-	//»ñÈ¡ÓïÑÔµÄÉèÖÃ
+	//è·å–è¯­è¨€çš„è®¾ç½®
 	m_data.language = static_cast<Language>(m_language_combo.GetCurSel());
 	if (m_data.language != theApp.m_general_setting_data.language)
 	{

@@ -1,14 +1,14 @@
-
-// MusicPlayer2.h : PROJECT_NAME Ó¦ÓÃ³ÌĞòµÄÖ÷Í·ÎÄ¼ş
+ï»¿
+// MusicPlayer2.h : PROJECT_NAME åº”ç”¨ç¨‹åºçš„ä¸»å¤´æ–‡ä»¶
 //
 
 #pragma once
 
 #ifndef __AFXWIN_H__
-#error "ÔÚ°üº¬´ËÎÄ¼şÖ®Ç°°üº¬¡°stdafx.h¡±ÒÔÉú³É PCH ÎÄ¼ş"
+#error "åœ¨åŒ…å«æ­¤æ–‡ä»¶ä¹‹å‰åŒ…å«â€œstdafx.hâ€ä»¥ç”Ÿæˆ PCH æ–‡ä»¶"
 #endif
 
-#include "resource.h"		// Ö÷·ûºÅ
+#include "resource.h"		// ä¸»ç¬¦å·
 #include "Player.h"
 #include "AudioCommon.h"
 #include "ColorConvert.h"
@@ -21,7 +21,7 @@
 
 
 // CMusicPlayerApp:
-// ÓĞ¹Ø´ËÀàµÄÊµÏÖ£¬Çë²ÎÔÄ MusicPlayer2.cpp
+// æœ‰å…³æ­¤ç±»çš„å®ç°ï¼Œè¯·å‚é˜… MusicPlayer2.cpp
 //
 
 class CMusicPlayerApp : public CWinApp
@@ -29,63 +29,63 @@ class CMusicPlayerApp : public CWinApp
 public:
     CMusicPlayerApp();
 
-    wstring m_module_dir;		//µ±Ç°³ÌĞòexeÎÄ¼şËùÔÚÄ¿Â¼
-    wstring m_local_dir;		//µ±Ç°Ä¿Â¼£¨debugÄ£Ê½ÏÂÎª.\£¬releaseÄ£Ê½ÏÂÎªexeÎÄ¼şËùÔÚÄ¿Â¼£©
-    wstring m_playlist_dir;     //²¥·ÅÁĞ±íÄ¿Â¼
-    wstring m_config_path;		//ÅäÖÃÎÄ¼şµÄÂ·¾¶
-    wstring m_song_data_path;	//´¢´æËùÓĞ¸èÇúĞÅÏ¢Êı¾İÎÄ¼şµÄÂ·¾¶
-    wstring m_recent_path_dat_path;	//"recent_path.dat"ÎÄ¼şµÄÂ·¾¶
+    wstring m_module_dir;		//å½“å‰ç¨‹åºexeæ–‡ä»¶æ‰€åœ¨ç›®å½•
+    wstring m_local_dir;		//å½“å‰ç›®å½•ï¼ˆdebugæ¨¡å¼ä¸‹ä¸º.\ï¼Œreleaseæ¨¡å¼ä¸‹ä¸ºexeæ–‡ä»¶æ‰€åœ¨ç›®å½•ï¼‰
+    wstring m_playlist_dir;     //æ’­æ”¾åˆ—è¡¨ç›®å½•
+    wstring m_config_path;		//é…ç½®æ–‡ä»¶çš„è·¯å¾„
+    wstring m_song_data_path;	//å‚¨å­˜æ‰€æœ‰æ­Œæ›²ä¿¡æ¯æ•°æ®æ–‡ä»¶çš„è·¯å¾„
+    wstring m_recent_path_dat_path;	//"recent_path.dat"æ–‡ä»¶çš„è·¯å¾„
     wstring m_recent_playlist_data_path;
-    wstring m_desktop_path;		//×ÀÃæµÄÂ·¾¶
-    //wstring m_temp_path;		//ÁÙÊ±ÎÄ¼ş¼ĞµÄÂ·¾¶
+    wstring m_desktop_path;		//æ¡Œé¢çš„è·¯å¾„
+    //wstring m_temp_path;		//ä¸´æ—¶æ–‡ä»¶å¤¹çš„è·¯å¾„
 
-    std::unordered_map<wstring, SongInfo> m_song_data;		//´¢´æËùÓĞ¸èÇúĞÅÏ¢Êı¾İµÄÓ³ÉäÈİÆ÷£¬¼üÊÇÃ¿Ò»¸öÒôÆµÎÄ¼şµÄ¾ø¶ÔÂ·¾¶£¬¶ÔÏóÊÇÃ¿Ò»¸öÒôÆµÎÄ¼şµÄĞÅÏ¢
-    vector<DeviceInfo> m_output_devices;	//²¥·ÅÉè±¸µÄĞÅÏ¢
+    std::unordered_map<wstring, SongInfo> m_song_data;		//å‚¨å­˜æ‰€æœ‰æ­Œæ›²ä¿¡æ¯æ•°æ®çš„æ˜ å°„å®¹å™¨ï¼Œé”®æ˜¯æ¯ä¸€ä¸ªéŸ³é¢‘æ–‡ä»¶çš„ç»å¯¹è·¯å¾„ï¼Œå¯¹è±¡æ˜¯æ¯ä¸€ä¸ªéŸ³é¢‘æ–‡ä»¶çš„ä¿¡æ¯
+    vector<DeviceInfo> m_output_devices;	//æ’­æ”¾è®¾å¤‡çš„ä¿¡æ¯
 
-    //CMediaClassifier m_artist_classifer{ CMediaClassifier::CT_ARTIST, true };     //½«ËùÓĞ¸èÇúĞÅÏ¢°´ÒÕÊõ¼Ò·ÖÀà
-    //CMediaClassifier m_album_classifer{ CMediaClassifier::CT_ALBUM, true };       //½«ËùÓĞ¸èÇúĞÅÏ¢°´³ªÆ¬¼¯·ÖÀà
-    //CMediaClassifier m_genre_classifer{ CMediaClassifier::CT_GENRE, true };       //½«ËùÓĞ¸èÇúĞÅÏ¢°´Á÷ÅÉ·ÖÀà
-    //CMediaClassifier m_year_classifer{ CMediaClassifier::CT_YEAR, true };       //½«ËùÓĞ¸èÇúĞÅÏ¢°´Äê·İ·ÖÀà
+    //CMediaClassifier m_artist_classifer{ CMediaClassifier::CT_ARTIST, true };     //å°†æ‰€æœ‰æ­Œæ›²ä¿¡æ¯æŒ‰è‰ºæœ¯å®¶åˆ†ç±»
+    //CMediaClassifier m_album_classifer{ CMediaClassifier::CT_ALBUM, true };       //å°†æ‰€æœ‰æ­Œæ›²ä¿¡æ¯æŒ‰å”±ç‰‡é›†åˆ†ç±»
+    //CMediaClassifier m_genre_classifer{ CMediaClassifier::CT_GENRE, true };       //å°†æ‰€æœ‰æ­Œæ›²ä¿¡æ¯æŒ‰æµæ´¾åˆ†ç±»
+    //CMediaClassifier m_year_classifer{ CMediaClassifier::CT_YEAR, true };       //å°†æ‰€æœ‰æ­Œæ›²ä¿¡æ¯æŒ‰å¹´ä»½åˆ†ç±»
 
-    LyricSettingData m_lyric_setting_data;			//¡°Ñ¡ÏîÉèÖÃ¡±¶Ô»°¿òÖĞ¡°¸è´ÊÉèÖÃ¡±ÖĞµÄÊı¾İ
-    ApperanceSettingData m_app_setting_data;		//¡°Ñ¡ÏîÉèÖÃ¡±¶Ô»°¿òÖĞ¡°Íâ¹ÛÉèÖÃ¡±ÖĞµÄÊı¾İ
-    GeneralSettingData m_general_setting_data;		//¡°Ñ¡ÏîÉèÖÃ¡±¶Ô»°¿òÖĞ¡°³£¹æÉèÖÃ¡±ÖĞµÄÊı¾İ
-    PlaySettingData m_play_setting_data;			//¡°Ñ¡ÏîÉèÖÃ¡±¶Ô»°¿òÖĞ¡°²¥·ÅÉèÖÃ¡±ÖĞµÄÊı¾İ
-    NonCategorizedSettingData m_nc_setting_data;	//Î´·ÖÀàµÄÉèÖÃÊı¾İ
-    GlobalHotKeySettingData m_hot_key_setting_data;	//¡°È«¾Ö¿ì½İ¼ü¡±ÉèÖÃ
-    MediaLibSettingData m_media_lib_setting_data;  	//¡°Ã½Ìå¿â¡±ÉèÖÃ
+    LyricSettingData m_lyric_setting_data;			//â€œé€‰é¡¹è®¾ç½®â€å¯¹è¯æ¡†ä¸­â€œæ­Œè¯è®¾ç½®â€ä¸­çš„æ•°æ®
+    ApperanceSettingData m_app_setting_data;		//â€œé€‰é¡¹è®¾ç½®â€å¯¹è¯æ¡†ä¸­â€œå¤–è§‚è®¾ç½®â€ä¸­çš„æ•°æ®
+    GeneralSettingData m_general_setting_data;		//â€œé€‰é¡¹è®¾ç½®â€å¯¹è¯æ¡†ä¸­â€œå¸¸è§„è®¾ç½®â€ä¸­çš„æ•°æ®
+    PlaySettingData m_play_setting_data;			//â€œé€‰é¡¹è®¾ç½®â€å¯¹è¯æ¡†ä¸­â€œæ’­æ”¾è®¾ç½®â€ä¸­çš„æ•°æ®
+    NonCategorizedSettingData m_nc_setting_data;	//æœªåˆ†ç±»çš„è®¾ç½®æ•°æ®
+    GlobalHotKeySettingData m_hot_key_setting_data;	//â€œå…¨å±€å¿«æ·é”®â€è®¾ç½®
+    MediaLibSettingData m_media_lib_setting_data;  	//â€œåª’ä½“åº“â€è®¾ç½®
     CHotkeyManager m_hot_key;
 
     UIData m_ui_data;
-    IconSet m_icon_set;			//Í¼±ê×ÊÔ´
-    FontSet m_font_set;			//×ÖÌå×ÊÔ´
-    MenuSet m_menu_set;			//²Ëµ¥×ÊÔ´
+    IconSet m_icon_set;			//å›¾æ ‡èµ„æº
+    FontSet m_font_set;			//å­—ä½“èµ„æº
+    MenuSet m_menu_set;			//èœå•èµ„æº
 
     int m_cmd;
 
-    volatile bool m_lyric_download_dialog_exit{ true };		//ÓÃÓÚÖ¸Ê¾¸è´ÊÏÂÔØ¶Ô»°¿òÒÑ¾­ÍË³ö
-    volatile bool m_batch_download_dialog_exit{ true };		//ÓÃÓÚÖ¸Ê¾¸è´ÊÅúÁ¿ÏÂÔØ¶Ô»°¿òÒÑ¾­ÍË³ö
-    volatile bool m_cover_download_dialog_exit{ true };		//ÓÃÓÚÖ¸Ê¾¸è´ÊÏÂÔØ¶Ô»°¿òÒÑ¾­ÍË³ö
-    volatile bool m_format_convert_dialog_exit{ true };		//ÓÃÓÚÖ¸Ê¾¸ñÊ½¶Ô»°¿òÒÑ¾­ÍË³ö
-    volatile int m_media_num_added{};                       //¸üĞÂÃ½Ìå¿âÊ±ĞÂÔöµÄÒôÆµÎÄ¼şÊıÁ¿
+    volatile bool m_lyric_download_dialog_exit{ true };		//ç”¨äºæŒ‡ç¤ºæ­Œè¯ä¸‹è½½å¯¹è¯æ¡†å·²ç»é€€å‡º
+    volatile bool m_batch_download_dialog_exit{ true };		//ç”¨äºæŒ‡ç¤ºæ­Œè¯æ‰¹é‡ä¸‹è½½å¯¹è¯æ¡†å·²ç»é€€å‡º
+    volatile bool m_cover_download_dialog_exit{ true };		//ç”¨äºæŒ‡ç¤ºæ­Œè¯ä¸‹è½½å¯¹è¯æ¡†å·²ç»é€€å‡º
+    volatile bool m_format_convert_dialog_exit{ true };		//ç”¨äºæŒ‡ç¤ºæ ¼å¼å¯¹è¯æ¡†å·²ç»é€€å‡º
+    volatile int m_media_num_added{};                       //æ›´æ–°åª’ä½“åº“æ—¶æ–°å¢çš„éŸ³é¢‘æ–‡ä»¶æ•°é‡
 
-    void SaveSongData();		//½«ËùÓĞ¸èÇúĞÅÏ¢ÒÔĞòÁĞ»¯µÄ·½Ê½±£´æµ½ÎÄ¼ş
+    void SaveSongData();		//å°†æ‰€æœ‰æ­Œæ›²ä¿¡æ¯ä»¥åºåˆ—åŒ–çš„æ–¹å¼ä¿å­˜åˆ°æ–‡ä»¶
 
     static void CheckUpdate(bool message);
 
     void SaveConfig();
     void LoadConfig();
 
-    void SaveSongInfo(const SongInfo& song_info);       //½«Ò»¸ö¸èÇúĞÅÏ¢±£´æµ½m_song_dataÖĞ
+    void SaveSongInfo(const SongInfo& song_info);       //å°†ä¸€ä¸ªæ­Œæ›²ä¿¡æ¯ä¿å­˜åˆ°m_song_dataä¸­
 
     void LoadIconResource();
     void InitMenuResourse();
 
-    int DPI(int pixel);		//½«Ò»¸öÏñËØÖµ½øĞĞDPI±ä»»
+    int DPI(int pixel);		//å°†ä¸€ä¸ªåƒç´ å€¼è¿›è¡ŒDPIå˜æ¢
     int DPI(double pixel);
-    //½øĞĞDPI±ä»»ºóËÄÉáÎåÈë´¦Àí
-    //round£ºroundÎª0.5Ê±ËÄÉáÎåÈë£¬roundÎª0.4Ê±ÎªÎåÉáÁùÈë
-    int DPIRound(double pixel, double round = 0.5);		//¶Ô½á¹û½øĞĞËÄÉáÎåÈë´¦Àí
+    //è¿›è¡ŒDPIå˜æ¢åå››èˆäº”å…¥å¤„ç†
+    //roundï¼šroundä¸º0.5æ—¶å››èˆäº”å…¥ï¼Œroundä¸º0.4æ—¶ä¸ºäº”èˆå…­å…¥
+    int DPIRound(double pixel, double round = 0.5);		//å¯¹ç»“æœè¿›è¡Œå››èˆäº”å…¥å¤„ç†
     void GetDPIFromWindow(CWnd* pWnd);
 
     int GetDPI()
@@ -99,10 +99,10 @@ public:
     WORD GetCurrentLanguage() const;
     bool IsGlobalMultimediaKeyEnabled() const;
 
-    //»ñÈ¡°ïÖúÎÄ±¾
+    //è·å–å¸®åŠ©æ–‡æœ¬
     CString GetHelpString();
 
-    //»ñÈ¡ÏµÍ³ĞÅÏ¢ÎÄ±¾
+    //è·å–ç³»ç»Ÿä¿¡æ¯æ–‡æœ¬
     CString GetSystemInfoString();
 
     void SetSongDataModified();
@@ -115,11 +115,11 @@ public:
     bool IsMeidaLibUpdating() { return m_media_lib_updating; }
 
 private:
-    void LoadSongData();			//´ÓÎÄ¼şÖĞÒÔĞòÁĞ»¯µÄ·½Ê½¶ÁÈ¡ËùÓĞ¸èÇúĞÅÏ¢
+    void LoadSongData();			//ä»æ–‡ä»¶ä¸­ä»¥åºåˆ—åŒ–çš„æ–¹å¼è¯»å–æ‰€æœ‰æ­Œæ›²ä¿¡æ¯
 
     static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
-    static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//Æô¶¯Ê±¼ì²é¸üĞÂÏß³Ìº¯Êı
-    //static UINT ClassifySongDataThreadFunc(LPVOID lpParam);	//½«¸èÇú·ÖÀàµÄÏß³Ìº¯Êı
+    static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//å¯åŠ¨æ—¶æ£€æŸ¥æ›´æ–°çº¿ç¨‹å‡½æ•°
+    //static UINT ClassifySongDataThreadFunc(LPVOID lpParam);	//å°†æ­Œæ›²åˆ†ç±»çš„çº¿ç¨‹å‡½æ•°
 
 private:
     HHOOK m_multimedia_key_hook = NULL;
@@ -130,11 +130,11 @@ private:
 	ULONG_PTR m_gdiplusToken;
     bool m_media_lib_updating{ false };
 
-// ÖØĞ´
+// é‡å†™
 public:
     virtual BOOL InitInstance();
 
-// ÊµÏÖ
+// å®ç°
 
     DECLARE_MESSAGE_MAP()
     afx_msg void OnHelp();

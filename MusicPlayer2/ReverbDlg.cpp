@@ -1,4 +1,4 @@
-// ReverbDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// ReverbDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CReverbDlg ¶Ô»°¿ò
+// CReverbDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CReverbDlg, CDialogEx)
 
@@ -52,40 +52,40 @@ BEGIN_MESSAGE_MAP(CReverbDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CReverbDlg ÏûÏ¢´¦Àí³ÌĞò
+// CReverbDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CReverbDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
-	//ÉèÖÃ±³¾°É«Îª°×É«
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
+	//è®¾ç½®èƒŒæ™¯è‰²ä¸ºç™½è‰²
 	SetBackgroundColor(RGB(255, 255, 255));
 
-	//³õÊ¼»¯»¬¶¯Ìõ
+	//åˆå§‹åŒ–æ»‘åŠ¨æ¡
 	m_reverb_mix_slider.SetRange(0, 100);
 	m_reverb_mix_slider.SetPos(CPlayer::GetInstance().GetReverbMix());
 	m_reverb_time_slider.SetRange(1, 300);
 	m_reverb_time_slider.SetPos(CPlayer::GetInstance().GetReverbTime());
 
-	//³õÊ¼»¯¾²Ì¬¿Ø¼şµÄÎÄ±¾
+	//åˆå§‹åŒ–é™æ€æ§ä»¶çš„æ–‡æœ¬
 	UpdateStaticText(m_reverb_mix_slider.GetPos(), m_reverb_time_slider.GetPos());
 
-	//³õÊ¼»¯»ìÏì¿ª¹Ø¸´Ñ¡¿ò
+	//åˆå§‹åŒ–æ··å“å¼€å…³å¤é€‰æ¡†
 	m_enable_reverb_chk.SetCheck(CPlayer::GetInstance().GetReverbEnable());
 
-	//³õÊ¼»¯¿Ø¼şµÄÆôÓÃ×´Ì¬
+	//åˆå§‹åŒ–æ§ä»¶çš„å¯ç”¨çŠ¶æ€
 	EnableControls(CPlayer::GetInstance().GetReverbEnable());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CReverbDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	if (pScrollBar->GetDlgCtrlID() == IDC_REVERB_MIX_SLIDER || pScrollBar->GetDlgCtrlID() == IDC_REVERB_TIME_SLIDER)
 	{
 		int mix{ m_reverb_mix_slider.GetPos() };
@@ -102,19 +102,19 @@ HBRUSH CReverbDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
-	// TODO:  ÔÚ´Ë¸ü¸Ä DC µÄÈÎºÎÌØĞÔ
-	if (pWnd == &m_reverb_mix_slider || pWnd == &m_reverb_time_slider)		//ÉèÖÃ»¬¶¯Ìõ¿Ø¼şµÄ±³¾°É«Îª°×É«
+	// TODO:  åœ¨æ­¤æ›´æ”¹ DC çš„ä»»ä½•ç‰¹æ€§
+	if (pWnd == &m_reverb_mix_slider || pWnd == &m_reverb_time_slider)		//è®¾ç½®æ»‘åŠ¨æ¡æ§ä»¶çš„èƒŒæ™¯è‰²ä¸ºç™½è‰²
 	{
 		return (HBRUSH)::GetStockObject(WHITE_BRUSH);
 	}
-	// TODO:  Èç¹ûÄ¬ÈÏµÄ²»ÊÇËùĞè»­±Ê£¬Ôò·µ»ØÁíÒ»¸ö»­±Ê
+	// TODO:  å¦‚æœé»˜è®¤çš„ä¸æ˜¯æ‰€éœ€ç”»ç¬”ï¼Œåˆ™è¿”å›å¦ä¸€ä¸ªç”»ç¬”
 	return hbr;
 }
 
 
 void CReverbDlg::OnBnClickedEnableReverbCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	bool enable = (m_enable_reverb_chk.GetCheck() != 0);
 	CPlayer::GetInstance().EnableReverb(enable);
 	EnableControls(enable);

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class CFilePathHelper
 {
 public:
@@ -8,14 +8,14 @@ public:
 
 	void SetFilePath(const wstring& file_path) { m_file_path = file_path; }
 
-	wstring GetFileExtension(bool upper = false, bool width_dot = false) const;		//»ñÈ¡ÎÄ¼şµÄÀ©Õ¹Ãû(upper:ÊÇ·ñ´óĞ´; width_dot:ÊÇ·ñ°üº¬¡°.¡±)
-	wstring GetFileName() const;							//»ñÈ¡ÎÄ¼şÃû
-	wstring GetFileNameWithoutExtension() const;			//»ñÈ¡ÎÄ¼şÃû£¨²»º¬À©Õ¹Ãû£©
-	wstring GetFolderName() const;							//»ñÈ¡ÎÄ¼ş¼ĞÃû
-	wstring GetDir() const;									//»ñÈ¡Ä¿Â¼
-	wstring GetParentDir() const;							//»ñÈ¡ÉÏ¼¶Ä¿Â¼
-	wstring GetFilePath() const { return m_file_path; }		//»ñÈ¡ÍêÕûÂ·¾¶
-	const wstring& ReplaceFileExtension(const wchar_t* new_extension);		//Ìæ»»ÎÄ¼şµÄÀ©Õ¹Ãû£¬·µ»ØÎÄ¼şÍêÕûÂ·¾¶
+	wstring GetFileExtension(bool upper = false, bool width_dot = false) const;		//è·å–æ–‡ä»¶çš„æ‰©å±•å(upper:æ˜¯å¦å¤§å†™; width_dot:æ˜¯å¦åŒ…å«â€œ.â€)
+	wstring GetFileName() const;							//è·å–æ–‡ä»¶å
+	wstring GetFileNameWithoutExtension() const;			//è·å–æ–‡ä»¶åï¼ˆä¸å«æ‰©å±•åï¼‰
+	wstring GetFolderName() const;							//è·å–æ–‡ä»¶å¤¹å
+	wstring GetDir() const;									//è·å–ç›®å½•
+	wstring GetParentDir() const;							//è·å–ä¸Šçº§ç›®å½•
+	wstring GetFilePath() const { return m_file_path; }		//è·å–å®Œæ•´è·¯å¾„
+	const wstring& ReplaceFileExtension(const wchar_t* new_extension);		//æ›¿æ¢æ–‡ä»¶çš„æ‰©å±•åï¼Œè¿”å›æ–‡ä»¶å®Œæ•´è·¯å¾„
 protected:
 	wstring m_file_path;
 };

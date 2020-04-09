@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "afxwin.h"
 #include "FolderBrowserDlg.h"
 #include "TabDlg.h"
@@ -6,22 +6,22 @@
 #include "DesktopLyric.h"
 #include "BrowseEdit.h"
 
-// CLyricSettingsDlg ¶Ô»°¿ò
+// CLyricSettingsDlg å¯¹è¯æ¡†
 
 class CLyricSettingsDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CLyricSettingsDlg)
 
 public:
-	CLyricSettingsDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CLyricSettingsDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CLyricSettingsDlg();
 
 	bool FontChanged() const { return m_font_changed; }
 
-	LyricSettingData m_data;	//Ñ¡ÏîÉèÖÃµÄÊı¾İ
+	LyricSettingData m_data;	//é€‰é¡¹è®¾ç½®çš„æ•°æ®
     CDesktopLyric* m_pDesktopLyric = nullptr;
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_LYRIC_SETTING_DIALOG };
 #endif
@@ -61,7 +61,7 @@ protected:
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 	virtual BOOL OnInitDialog();
 	void EnableControl();
     void EnableControlForDesktopLyric();

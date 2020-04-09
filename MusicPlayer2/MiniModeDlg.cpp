@@ -1,4 +1,4 @@
-// MiniModeDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// MiniModeDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CMiniModeDlg ¶Ô»°¿ò
+// CMiniModeDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CMiniModeDlg, CDialogEx)
 
@@ -17,7 +17,7 @@ CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd
     m_screen_width = GetSystemMetrics(SM_CXFULLSCREEN);
     m_screen_height = GetSystemMetrics(SM_CYFULLSCREEN) + 23;
 
-    //¸ü¸Ä´°¿ÚµÄÀàÃû
+    //æ›´æ”¹çª—å£çš„ç±»å
     WNDCLASS wc;
     ::GetClassInfo(AfxGetInstanceHandle(), _T("#32770"), &wc);
     wc.lpszClassName = _T("MiniDlg_ByH87M");
@@ -127,7 +127,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CMiniModeDlg ÏûÏ¢´¦Àí³ÌĞò
+// CMiniModeDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 void CMiniModeDlg::UpdatePlayPauseButton()
@@ -162,7 +162,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
-    // TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+    // TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
     m_playlist_ctrl.SetFont(theApp.m_pMainWnd->GetFont());
 
     LoadConfig();
@@ -170,21 +170,21 @@ BOOL CMiniModeDlg::OnInitDialog()
     m_pDC = GetDC();
     m_ui.Init(m_pDC);
 
-    //³õÊ¼»¯Êó±êÌáÊ¾
+    //åˆå§‹åŒ–é¼ æ ‡æç¤º
     m_Mytip.Create(this, TTS_ALWAYSTIP);
     m_Mytip.SetMaxTipWidth(800);
 
     m_ui.SetToolTip(&m_Mytip);
     //UpdateSongTipInfo();
 
-    //³õÊ¼»¯´°¿ÚÎ»ÖÃ
+    //åˆå§‹åŒ–çª—å£ä½ç½®
     if (m_position_x != -1 && m_position_y != -1)
         SetWindowPos(nullptr, m_position_x, m_position_y, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOZORDER);
     else
         SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOMOVE | SWP_NOZORDER);
     CheckWindowPos();
 
-    //³õÊ¼»¯²¥·ÅÁĞ±í¿Ø¼şµÄÎ»ÖÃ
+    //åˆå§‹åŒ–æ’­æ”¾åˆ—è¡¨æ§ä»¶çš„ä½ç½®
     CRect playlist_rect;
     int margin = 0;
     playlist_rect.left = margin;
@@ -194,20 +194,20 @@ BOOL CMiniModeDlg::OnInitDialog()
     m_playlist_ctrl.MoveWindow(playlist_rect);
     m_playlist_ctrl.AdjustColumnWidth();
 
-    //×°ÔØÓÒ¼ü²Ëµ¥
+    //è£…è½½å³é”®èœå•
     m_menu.LoadMenu(IDR_MINI_MODE_MENU);
 
-    //ÉèÖÃ¶¨Ê±Æ÷
-    SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//ÉèÖÃÖ÷¶¨Ê±Æ÷
-    SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//ÉèÖÃÓÃÓÚ½çÃæË¢ĞÂµÄ¶¨Ê±Æ÷
+    //è®¾ç½®å®šæ—¶å™¨
+    SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//è®¾ç½®ä¸»å®šæ—¶å™¨
+    SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//è®¾ç½®ç”¨äºç•Œé¢åˆ·æ–°çš„å®šæ—¶å™¨
 
-    //ÏÔÊ¾²¥·ÅÁĞ±í
+    //æ˜¾ç¤ºæ’­æ”¾åˆ—è¡¨
     ShowPlaylist();
 
     SetDragEnable();
     m_playlist_ctrl.EnableWindow(!CPlayer::GetInstance().m_loading);
 
-    //ÉèÖÃ´°¿Ú²»Í¸Ã÷¶È
+    //è®¾ç½®çª—å£ä¸é€æ˜åº¦
     SetTransparency();
 
     m_show_playlist = false;
@@ -215,13 +215,13 @@ BOOL CMiniModeDlg::OnInitDialog()
     m_first_start = true;
 
     return TRUE;  // return TRUE unless you set the focus to a control
-    // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+    // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CMiniModeDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if(!m_ui.PointInControlArea(point))
         PostMessage(WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(point.x, point.y));
 
@@ -233,13 +233,13 @@ void CMiniModeDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (nIDEvent == TIMER_ID_MINI)
     {
-        //¸üĞÂÊó±êÌáÊ¾
+        //æ›´æ–°é¼ æ ‡æç¤º
         static int index{};
         static wstring song_name{};
-        //Èç¹ûµ±Ç°²¥·ÅµÄ¸èÇú·¢Éú±ä»¯£¬¾Í¸üĞÂÊó±êÌáÊ¾ĞÅÏ¢
+        //å¦‚æœå½“å‰æ’­æ”¾çš„æ­Œæ›²å‘ç”Ÿå˜åŒ–ï¼Œå°±æ›´æ–°é¼ æ ‡æç¤ºä¿¡æ¯
         if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
         {
             UpdateSongTipInfo();
@@ -253,7 +253,7 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
     }
     if (nIDEvent == TIMER_ID_MINI2)
     {
-        if (!IsIconic() && IsWindowVisible())		//´°¿Ú×îĞ¡»¯»òÒş²ØÊ±²»»æÖÆ£¬ÒÔ½µµÍCPUÀûÓÃÂÊ
+        if (!IsIconic() && IsWindowVisible())		//çª—å£æœ€å°åŒ–æˆ–éšè—æ—¶ä¸ç»˜åˆ¶ï¼Œä»¥é™ä½CPUåˆ©ç”¨ç‡
             m_ui.DrawInfo(false);
 
         if (m_first_start)
@@ -280,7 +280,7 @@ void CMiniModeDlg::SetVolume(bool up)
         CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN);
     //ShowVolume(CPlayer::GetInstance().GetVolume());
     KillTimer(11);
-    SetTimer(11, 1500, NULL);		//ÏÔÊ¾ÒôÁ¿ºóÉèÖÃÒ»¸ö1500ºÁÃëµÄ¶¨Ê±Æ÷£¨ÒôÁ¿ÏÔÊ¾±£³Ö1.5Ãë£©
+    SetTimer(11, 1500, NULL);		//æ˜¾ç¤ºéŸ³é‡åè®¾ç½®ä¸€ä¸ª1500æ¯«ç§’çš„å®šæ—¶å™¨ï¼ˆéŸ³é‡æ˜¾ç¤ºä¿æŒ1.5ç§’ï¼‰
     m_ui_data.m_show_volume = true;
 }
 
@@ -291,23 +291,23 @@ void CMiniModeDlg::SetTransparency()
 
 void CMiniModeDlg::SetDragEnable()
 {
-    m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode());
+    m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode() && !theApp.m_media_lib_setting_data.disable_drag_sort);
 }
 
 BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
     if (pMsg->message == WM_KEYDOWN)
     {
         if (pMsg->wParam == VK_ESCAPE)
         {
-            OnOK();		//°´ESC¼ü·µ»ØÖ÷´°¿Ú
+            OnOK();		//æŒ‰ESCé”®è¿”å›ä¸»çª—å£
             return TRUE;
         }
         if (pMsg->wParam == VK_RETURN) return TRUE;
 
-        //°´ÉÏÏÂ·½Ïò¼üµ÷ÕûÒôÁ¿
+        //æŒ‰ä¸Šä¸‹æ–¹å‘é”®è°ƒæ•´éŸ³é‡
         if (pMsg->wParam == VK_UP)
         {
             SetVolume(true);
@@ -319,20 +319,20 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
             return TRUE;
         }
 
-        //°´Ctrl+XÍË³ö
+        //æŒ‰Ctrl+Xé€€å‡º
         if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'X')
         {
             OnCancel();
             return TRUE;
         }
-        //°´Ctrl+M»Øµ½Ö÷´°¿Ú
+        //æŒ‰Ctrl+Må›åˆ°ä¸»çª—å£
         if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'M')
         {
             OnOK();
             return TRUE;
         }
 
-        if (pMsg->wParam == VK_APPS)		//°´²Ëµ¥¼üµ¯³öÖ÷²Ëµ¥
+        if (pMsg->wParam == VK_APPS)		//æŒ‰èœå•é”®å¼¹å‡ºä¸»èœå•
         {
             CRect rect;
             GetWindowRect(rect);
@@ -342,7 +342,7 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 
     }
 
-    //½«´Ë´°¿ÚµÄÆäËû¼üÅÌÏûÏ¢×ª·¢¸øÖ÷´°¿Ú
+    //å°†æ­¤çª—å£çš„å…¶ä»–é”®ç›˜æ¶ˆæ¯è½¬å‘ç»™ä¸»çª—å£
     if (pMsg->message == WM_KEYDOWN)
     {
         ::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, pMsg->wParam, pMsg->lParam);
@@ -366,7 +366,7 @@ void CMiniModeDlg::OnDestroy()
 {
     CDialogEx::OnDestroy();
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
     CRect rect;
     GetWindowRect(rect);
     m_position_x = rect.left;
@@ -382,25 +382,25 @@ void CMiniModeDlg::OnMove(int x, int y)
 {
     CDialogEx::OnMove(x, y);
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
     CheckWindowPos();
 }
 
 
 void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-    //ÉèÖÃµã»÷Êó±êÓÒ¼üµ¯³ö²Ëµ¥
-    CPoint point1;	//¶¨ÒåÒ»¸öÓÃÓÚÈ·¶¨¹â±êÎ»ÖÃµÄÎ»ÖÃ
-    GetCursorPos(&point1);	//»ñÈ¡µ±Ç°¹â±êµÄÎ»ÖÃ£¬ÒÔ±ãÊ¹µÃ²Ëµ¥¿ÉÒÔ¸úËæ¹â±ê
-    if (nFlags == MK_SHIFT)		//°´×¡Shift¼üµã»÷Êó±êÓÒ¼üÊ±£¬µ¯³öÏµÍ³²Ëµ¥
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    //è®¾ç½®ç‚¹å‡»é¼ æ ‡å³é”®å¼¹å‡ºèœå•
+    CPoint point1;	//å®šä¹‰ä¸€ä¸ªç”¨äºç¡®å®šå…‰æ ‡ä½ç½®çš„ä½ç½®
+    GetCursorPos(&point1);	//è·å–å½“å‰å…‰æ ‡çš„ä½ç½®ï¼Œä»¥ä¾¿ä½¿å¾—èœå•å¯ä»¥è·Ÿéšå…‰æ ‡
+    if (nFlags == MK_SHIFT)		//æŒ‰ä½Shifté”®ç‚¹å‡»é¼ æ ‡å³é”®æ—¶ï¼Œå¼¹å‡ºç³»ç»Ÿèœå•
     {
         theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
     }
     else
     {
         CMenu* pContextMenu = m_menu.GetSubMenu(0);
-        pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //ÔÚÖ¸¶¨Î»ÖÃÏÔÊ¾µ¯³ö²Ëµ¥
+        pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //åœ¨æŒ‡å®šä½ç½®æ˜¾ç¤ºå¼¹å‡ºèœå•
     }
 
     CDialogEx::OnRButtonUp(nFlags, point);
@@ -409,8 +409,8 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CMiniModeDlg::OnMiniModeExit()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
-    //Ö´ĞĞÍË³öÃüÁîÊ±ÈÃ¶Ô»°¿ò·µ»ØIDCANCEL£¬Ö÷´°¿Ú¼ì²âµ½Õâ¸ö·µ»ØÖµÊ±¾ÍÍË³ö³ÌĞò¡£
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
+    //æ‰§è¡Œé€€å‡ºå‘½ä»¤æ—¶è®©å¯¹è¯æ¡†è¿”å›IDCANCELï¼Œä¸»çª—å£æ£€æµ‹åˆ°è¿™ä¸ªè¿”å›å€¼æ—¶å°±é€€å‡ºç¨‹åºã€‚
     OnCancel();
 }
 
@@ -419,14 +419,14 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 {
     CDialogEx::OnInitMenu(pMenu);
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 
 
-    //ÉèÖÃ¸´Ñ¡²Ëµ¥ÏîµÄ¹´Ñ¡
+    //è®¾ç½®å¤é€‰èœå•é¡¹çš„å‹¾é€‰
     pMenu->CheckMenuItem(ID_SHOW_PLAY_LIST, MF_BYCOMMAND | (m_show_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_ADD_REMOVE_FROM_FAVOURITE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFavourite() ? MF_CHECKED : MF_UNCHECKED));
 
-    //ÉèÖÃ²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥µÄÄ¬ÈÏ²Ëµ¥Ïî
+    //è®¾ç½®æ’­æ”¾åˆ—è¡¨å³é”®èœå•çš„é»˜è®¤èœå•é¡¹
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
 
     theApp.m_pMainWnd->SendMessage(WM_SET_MENU_STATE, (WPARAM)pMenu);
@@ -435,7 +435,7 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 
 BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (zDelta > 0)
     {
         SetVolume(true);
@@ -451,7 +451,7 @@ BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CMiniModeDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     //if(!m_ui.PointInControlArea(point))
     //	OnOK();
 
@@ -462,7 +462,7 @@ void CMiniModeDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CMiniModeDlg::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     int row = pNMItemActivate->iItem;
     CPlayer::GetInstance().PlayTrack(row);
     //SwitchTrack();
@@ -475,11 +475,11 @@ void CMiniModeDlg::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 void CMiniModeDlg::OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-    m_item_selected = pNMItemActivate->iItem;	//»ñÈ¡Êó±êÑ¡ÖĞµÄÏîÄ¿
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+    m_item_selected = pNMItemActivate->iItem;	//è·å–é¼ æ ‡é€‰ä¸­çš„é¡¹ç›®
     m_playlist_ctrl.GetItemSelected(m_items_selected);
 
-    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0); //»ñÈ¡µÚÒ»¸öµ¯³ö²Ëµ¥
+    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0); //è·å–ç¬¬ä¸€ä¸ªå¼¹å‡ºèœå•
     m_playlist_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     *pResult = 0;
 }
@@ -488,15 +488,15 @@ void CMiniModeDlg::OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult)
 void CMiniModeDlg::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
-    // ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CDialogEx::OnPaint()
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+    // ä¸ä¸ºç»˜å›¾æ¶ˆæ¯è°ƒç”¨ CDialogEx::OnPaint()
     m_ui.DrawInfo();
 }
 
 
 //void CMiniModeDlg::OnStnClickedMiniProgressStatic()
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	//int pos = m_progress_bar.GetPos();
 //	//int song_pos = static_cast<__int64>(pos) * CPlayer::GetInstance().GetSongLength() / 1000;
 //	//CPlayer::GetInstance().SeekTo(song_pos);
@@ -505,7 +505,7 @@ void CMiniModeDlg::OnPaint()
 
 void CMiniModeDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_ui.MouseMove(point);
 
     CDialogEx::OnMouseMove(nFlags, point);
@@ -514,7 +514,7 @@ void CMiniModeDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 void CMiniModeDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_ui.LButtonUp(point);
 
     CDialogEx::OnLButtonUp(nFlags, point);
@@ -523,7 +523,7 @@ void CMiniModeDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CMiniModeDlg::OnShowPlayList()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     if (m_show_playlist)
     {
         SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOMOVE | SWP_NOZORDER);
@@ -541,7 +541,7 @@ void CMiniModeDlg::OnShowPlayList()
 
 void CMiniModeDlg::OnMouseLeave()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_ui.MouseLeave();
 
     CDialogEx::OnMouseLeave();
@@ -550,7 +550,7 @@ void CMiniModeDlg::OnMouseLeave()
 
 BOOL CMiniModeDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     if (m_ui.SetCursor())
         return TRUE;
     else
@@ -560,7 +560,7 @@ BOOL CMiniModeDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 
 void CMiniModeDlg::OnMiniMideMinimize()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     ShowWindow(HIDE_WINDOW);
 }
 
@@ -574,7 +574,7 @@ afx_msg LRESULT CMiniModeDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 
 BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     WORD command = LOWORD(wParam);
     if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
     {

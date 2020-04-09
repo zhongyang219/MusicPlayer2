@@ -1,4 +1,4 @@
-// LyricDownloadDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// LyricDownloadDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -8,7 +8,7 @@
 #include "MessageDlg.h"
 
 
-// CLyricDownloadDlg ¶Ô»°¿ò
+// CLyricDownloadDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CLyricDownloadDlg, CDialog)
 
@@ -41,12 +41,12 @@ bool CLyricDownloadDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 {
 	bool char_connot_convert;
 	string lyric_str = CCommon::UnicodeToStr(m_lyric_str, code_type, &char_connot_convert);
-	if (char_connot_convert)	//µ±ÎÄ¼şÖĞ°üº¬Unicode×Ö·ûÊ±£¬Ñ¯ÎÊÓÃ»§ÊÇ·ñÒªÑ¡ÔñÒ»¸öUnicode±àÂë¸ñÊ½ÔÙ±£´æ
+	if (char_connot_convert)	//å½“æ–‡ä»¶ä¸­åŒ…å«Unicodeå­—ç¬¦æ—¶ï¼Œè¯¢é—®ç”¨æˆ·æ˜¯å¦è¦é€‰æ‹©ä¸€ä¸ªUnicodeç¼–ç æ ¼å¼å†ä¿å­˜
 	{
 		CString info;
-		info.LoadString(IDS_STRING103);		//´Óstring tableÔØÈë×Ö·û´®
+		info.LoadString(IDS_STRING103);		//ä»string tableè½½å…¥å­—ç¬¦ä¸²
 		if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK)
-			return false;		//Èç¹ûÓÃ»§µã»÷ÁËÈ¡Ïû°´Å¥£¬Ôò·µ»Øfalse
+			return false;		//å¦‚æœç”¨æˆ·ç‚¹å‡»äº†å–æ¶ˆæŒ‰é’®ï¼Œåˆ™è¿”å›false
 	}
 
 	ofstream out_put{ path, std::ios::binary };
@@ -116,7 +116,7 @@ BEGIN_MESSAGE_MAP(CLyricDownloadDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CLyricDownloadDlg ÏûÏ¢´¦Àí³ÌĞò
+// CLyricDownloadDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 bool CLyricDownloadDlg::IsItemSelectedValid() const
@@ -128,7 +128,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	LoadConfig();
 
     const auto& song_info{ CPlayer::GetInstance().GetCurrentSongInfo() };
@@ -136,17 +136,17 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	m_artist = CPlayer::GetInstance().GetCurrentSongInfo().artist;
 	m_album = CPlayer::GetInstance().GetCurrentSongInfo().album;
 
-	if (song_info.IsTitleEmpty())		//Èç¹ûÃ»ÓĞ±êÌâĞÅÏ¢£¬¾Í°ÑÎÄ¼şÃûÉèÎª±êÌâ
+	if (song_info.IsTitleEmpty())		//å¦‚æœæ²¡æœ‰æ ‡é¢˜ä¿¡æ¯ï¼Œå°±æŠŠæ–‡ä»¶åè®¾ä¸ºæ ‡é¢˜
 	{
 		m_title = CPlayer::GetInstance().GetFileName();
 		size_t index = m_title.rfind(L'.');
 		m_title = m_title.substr(0, index);
 	}
-	if (song_info.IsArtistEmpty())	//Ã»ÓĞÒÕÊõ¼ÒĞÅÏ¢£¬Çå¿ÕÒÕÊõ¼ÒµÄÎÄ±¾
+	if (song_info.IsArtistEmpty())	//æ²¡æœ‰è‰ºæœ¯å®¶ä¿¡æ¯ï¼Œæ¸…ç©ºè‰ºæœ¯å®¶çš„æ–‡æœ¬
 	{
 		m_artist.clear();
 	}
-	if (song_info.IsAlbumEmpty())	//Ã»ÓĞ³ªÆ¬¼¯ĞÅÏ¢£¬Çå¿Õ³ªÆ¬¼¯µÄÎÄ±¾
+	if (song_info.IsAlbumEmpty())	//æ²¡æœ‰å”±ç‰‡é›†ä¿¡æ¯ï¼Œæ¸…ç©ºå”±ç‰‡é›†çš„æ–‡æœ¬
 	{
 		m_album.clear();
 	}
@@ -159,17 +159,17 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	m_file_path = CPlayer::GetInstance().GetCurrentDir() + m_file_name;
 	if (!song.is_cue)
 	{
-		size_t index = m_file_path.rfind(L'.');		//²éÕÒÎÄ¼şÃû×îºóÒ»¸öµã
-		m_file_path = m_file_path.substr(0, index + 1) + L"lrc";	//½«ÎÄ¼şÃûµÄÀ©Õ¹Ãû¸ÄÎªlrc
+		size_t index = m_file_path.rfind(L'.');		//æŸ¥æ‰¾æ–‡ä»¶åæœ€åä¸€ä¸ªç‚¹
+		m_file_path = m_file_path.substr(0, index + 1) + L"lrc";	//å°†æ–‡ä»¶åçš„æ‰©å±•åæ”¹ä¸ºlrc
 	}
 
 	SetDlgItemText(IDC_TITLE_EDIT1, m_title.c_str());
 	SetDlgItemText(IDC_ARTIST_EDIT1, m_artist.c_str());
 
-	//ÉèÖÃÁĞ±í¿Ø¼şÖ÷ÌâÑÕÉ«
+	//è®¾ç½®åˆ—è¡¨æ§ä»¶ä¸»é¢˜é¢œè‰²
 	//m_down_list_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
 
-	//³õÊ¼»¯ËÑË÷½á¹ûÁĞ±í¿Ø¼ş
+	//åˆå§‹åŒ–æœç´¢ç»“æœåˆ—è¡¨æ§ä»¶
 	CRect rect;
 	m_down_list_ctrl.GetClientRect(rect);
 	int width0, width1, width2, width3;
@@ -179,17 +179,17 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	width3 = rect.Width() - theApp.DPI(20) - 1 - width0 - width1 - width2;
 
     m_down_list_ctrl.SetExtendedStyle(m_down_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_down_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//²åÈëµÚ1ÁĞ
-	m_down_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width1);		//²åÈëµÚ2ÁĞ
-	m_down_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//²åÈëµÚ3ÁĞ
-	m_down_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width3);		//²åÈëµÚ3ÁĞ
+	m_down_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//æ’å…¥ç¬¬1åˆ—
+	m_down_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width1);		//æ’å…¥ç¬¬2åˆ—
+	m_down_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//æ’å…¥ç¬¬3åˆ—
+	m_down_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width3);		//æ’å…¥ç¬¬3åˆ—
 
-	//ÉèÖÃÁĞ±í¿Ø¼şµÄÌáÊ¾×ÜÊÇÖÃ¶¥£¬ÓÃÓÚ½â¾öÈç¹ûµ¯³ö´Ë´°¿ÚµÄ¸¸´°¿Ú¾ßÓĞÖÃ¶¥ÊôĞÔÊ±£¬ÌáÊ¾ĞÅÏ¢ÔÚ´°¿ÚÏÂÃæµÄÎÊÌâ
+	//è®¾ç½®åˆ—è¡¨æ§ä»¶çš„æç¤ºæ€»æ˜¯ç½®é¡¶ï¼Œç”¨äºè§£å†³å¦‚æœå¼¹å‡ºæ­¤çª—å£çš„çˆ¶çª—å£å…·æœ‰ç½®é¡¶å±æ€§æ—¶ï¼Œæç¤ºä¿¡æ¯åœ¨çª—å£ä¸‹é¢çš„é—®é¢˜
 	m_down_list_ctrl.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	//m_tool_tip.Create(this, TTS_ALWAYSTIP);
 
-	//³õÊ¼»¯ÏÂÔØÑ¡ÏîÖĞ¿Ø¼şµÄ×´Ì¬
+	//åˆå§‹åŒ–ä¸‹è½½é€‰é¡¹ä¸­æ§ä»¶çš„çŠ¶æ€
 	m_download_translate_chk.SetCheck(m_download_translate);
 	m_save_code_combo.AddString(_T("ANSI"));
 	m_save_code_combo.AddString(_T("UTF-8"));
@@ -199,9 +199,9 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	else
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->SetCheck(TRUE);
 
-	//ÅĞ¶Ï¸è´ÊÎÄ¼ş¼ĞÊÇ·ñ´æÔÚ
+	//åˆ¤æ–­æ­Œè¯æ–‡ä»¶å¤¹æ˜¯å¦å­˜åœ¨
 	bool lyric_path_exist = CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path);
-	if (!lyric_path_exist)		//Èç¹û¸è´ÊÎÄ¼ş²»´æÔÚ£¬Ôò½ûÓÃ¡°±£´æµ½¸è´ÊÎÄ¼ş¼Ğ¡±µ¥Ñ¡°´Å¥£¬²¢Ç¿ÖÆÑ¡ÖĞ¡°±£´æµ½¸èÇúËùÔÚÄ¿Â¼¡±
+	if (!lyric_path_exist)		//å¦‚æœæ­Œè¯æ–‡ä»¶ä¸å­˜åœ¨ï¼Œåˆ™ç¦ç”¨â€œä¿å­˜åˆ°æ­Œè¯æ–‡ä»¶å¤¹â€å•é€‰æŒ‰é’®ï¼Œå¹¶å¼ºåˆ¶é€‰ä¸­â€œä¿å­˜åˆ°æ­Œæ›²æ‰€åœ¨ç›®å½•â€
 	{
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->EnableWindow(FALSE);
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->SetCheck(FALSE);
@@ -212,26 +212,26 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 		//m_tool_tip.AddTool(GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1), info);
 	}
 
-	//³õÊ¼»¯ÓÒ¼ü²Ëµ¥
+	//åˆå§‹åŒ–å³é”®èœå•
 	m_menu.LoadMenu(IDR_LYRIC_DOWNLOAD_MENU);
 	m_menu.GetSubMenu(0)->SetDefaultItem(ID_LD_LYRIC_DOWNLOAD);
 
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CLyricDownloadDlg::OnBnClickedSearchButton2()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	SetDlgItemText(IDC_STATIC_INFO, CCommon::LoadText(IDS_SEARCHING));
-	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//µã»÷¡°ËÑË÷¡±ºó½ûÓÃ¸Ã°´Å¥
-	wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//ËÑË÷¹Ø¼ü×ÖÎª¡°ÒÕÊõ¼Ò ±êÌâ¡±£¬²¢½«Æä×ª»»³ÉURL±àÂë
+	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//ç‚¹å‡»â€œæœç´¢â€åç¦ç”¨è¯¥æŒ‰é’®
+	wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//æœç´¢å…³é”®å­—ä¸ºâ€œè‰ºæœ¯å®¶ æ ‡é¢˜â€ï¼Œå¹¶å°†å…¶è½¬æ¢æˆURLç¼–ç 
 	CString url;
 	url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), m_search_max_item);
-	//int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//ÏòÍøÒ×ÔÆÒôÀÖµÄ¸èÇúËÑË÷API·¢ËÍhttpµÄPOSTÇëÇó
+	//int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//å‘ç½‘æ˜“äº‘éŸ³ä¹çš„æ­Œæ›²æœç´¢APIå‘é€httpçš„POSTè¯·æ±‚
 	m_search_thread_info.url = url;
 	m_search_thread_info.hwnd = GetSafeHwnd();
 	theApp.m_lyric_download_dialog_exit = false;
@@ -241,12 +241,12 @@ void CLyricDownloadDlg::OnBnClickedSearchButton2()
 
 void CLyricDownloadDlg::OnEnChangeTitleEdit1()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString tmp;
 	GetDlgItemText(IDC_TITLE_EDIT1, tmp);
 	m_title = tmp;
@@ -255,12 +255,12 @@ void CLyricDownloadDlg::OnEnChangeTitleEdit1()
 
 void CLyricDownloadDlg::OnEnChangeArtistEdit1()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialog::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialog::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString tmp;
 	GetDlgItemText(IDC_ARTIST_EDIT1, tmp);
 	m_artist = tmp;
@@ -270,7 +270,7 @@ void CLyricDownloadDlg::OnEnChangeArtistEdit1()
 void CLyricDownloadDlg::OnNMClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_item_selected = pNMItemActivate->iItem;
 	*pResult = 0;
 }
@@ -279,13 +279,13 @@ void CLyricDownloadDlg::OnNMClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult)
 void CLyricDownloadDlg::OnNMRClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_item_selected = pNMItemActivate->iItem;
 
 	if (IsItemSelectedValid())
 	{
-		//µ¯³öÓÒ¼ü²Ëµ¥
-		CMenu* pContextMenu = m_menu.GetSubMenu(0);	//»ñÈ¡µÚÒ»¸öµ¯³ö²Ëµ¥
+		//å¼¹å‡ºå³é”®èœå•
+		CMenu* pContextMenu = m_menu.GetSubMenu(0);	//è·å–ç¬¬ä¸€ä¸ªå¼¹å‡ºèœå•
         m_down_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     }
 
@@ -295,13 +295,13 @@ void CLyricDownloadDlg::OnNMRClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 
 void CLyricDownloadDlg::OnBnClickedDownloadSelected()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if (!IsItemSelectedValid())
 		return;
 
-	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//µã»÷¡°ÏÂÔØÑ¡ÖĞÏî¡±ºó½ûÓÃ¸Ã°´Å¥
-	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//µã»÷¡°ÏÂÔØÑ¡ÖĞÏî¡±ºó½ûÓÃ¸Ã°´Å¥
-	CPlayer::GetInstance().SetRelatedSongID(m_down_list[m_item_selected].id);		//½«Ñ¡ÖĞÏîÄ¿µÄ¸èÇúID¹ØÁªµ½¸èÇú
+	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//ç‚¹å‡»â€œä¸‹è½½é€‰ä¸­é¡¹â€åç¦ç”¨è¯¥æŒ‰é’®
+	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//ç‚¹å‡»â€œä¸‹è½½é€‰ä¸­é¡¹â€åç¦ç”¨è¯¥æŒ‰é’®
+	CPlayer::GetInstance().SetRelatedSongID(m_down_list[m_item_selected].id);		//å°†é€‰ä¸­é¡¹ç›®çš„æ­Œæ›²IDå…³è”åˆ°æ­Œæ›²
 	m_download_thread_info.hwnd = GetSafeHwnd();
 	m_download_thread_info.download_translate = m_download_translate;
 	m_download_thread_info.save_as = false;
@@ -312,12 +312,12 @@ void CLyricDownloadDlg::OnBnClickedDownloadSelected()
 
 void CLyricDownloadDlg::OnBnClickedSelectedSaveAs()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if (!IsItemSelectedValid())
 		return;
 
-	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//µã»÷¡°ÏÂÔØÑ¡ÖĞÏî¡±ºó½ûÓÃ¸Ã°´Å¥
-	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//µã»÷¡°ÏÂÔØÑ¡ÖĞÏî¡±ºó½ûÓÃ¸Ã°´Å¥
+	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//ç‚¹å‡»â€œä¸‹è½½é€‰ä¸­é¡¹â€åç¦ç”¨è¯¥æŒ‰é’®
+	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//ç‚¹å‡»â€œä¸‹è½½é€‰ä¸­é¡¹â€åç¦ç”¨è¯¥æŒ‰é’®
 	m_download_thread_info.hwnd = GetSafeHwnd();
 	m_download_thread_info.download_translate = m_download_translate;
 	m_download_thread_info.save_as = true;
@@ -328,7 +328,7 @@ void CLyricDownloadDlg::OnBnClickedSelectedSaveAs()
 
 void CLyricDownloadDlg::OnBnClickedDownloadTranslateCheck1()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_download_translate = (m_download_translate_chk.GetCheck() != 0);
 }
 
@@ -337,7 +337,7 @@ void CLyricDownloadDlg::OnDestroy()
 {
 	CDialog::OnDestroy();
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	SaveConfig();
 }
 
@@ -346,10 +346,10 @@ UINT CLyricDownloadDlg::LyricSearchThreadFunc(LPVOID lpParam)
 	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	SearchThreadInfo* pInfo = (SearchThreadInfo*)lpParam;
 	wstring result;
-	pInfo->rtn = CInternetCommon::HttpPost(pInfo->url, result);		//ÏòÍøÒ×ÔÆÒôÀÖµÄ¸èÇúËÑË÷API·¢ËÍhttpµÄPOSTÇëÇó
+	pInfo->rtn = CInternetCommon::HttpPost(pInfo->url, result);		//å‘ç½‘æ˜“äº‘éŸ³ä¹çš„æ­Œæ›²æœç´¢APIå‘é€httpçš„POSTè¯·æ±‚
 	if (theApp.m_lyric_download_dialog_exit) return 0;
 	pInfo->result = result;
-	::PostMessage(pInfo->hwnd, WM_SEARCH_COMPLATE, 0, 0);		//ËÑË÷Íê³Éºó·¢ËÍÒ»¸öËÑË÷Íê³ÉµÄÏûÏ¢
+	::PostMessage(pInfo->hwnd, WM_SEARCH_COMPLATE, 0, 0);		//æœç´¢å®Œæˆåå‘é€ä¸€ä¸ªæœç´¢å®Œæˆçš„æ¶ˆæ¯
 
 	return 0;
 }
@@ -359,18 +359,18 @@ UINT CLyricDownloadDlg::LyricDownloadThreadFunc(LPVOID lpParam)
 	CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
 	DownloadThreadInfo* pInfo = (DownloadThreadInfo*)lpParam;
 	wstring result;
-	pInfo->success = CLyricDownloadCommon::DownloadLyric(pInfo->song_id, result, pInfo->download_translate);		//ÏÂÔØ¸è´Ê
+	pInfo->success = CLyricDownloadCommon::DownloadLyric(pInfo->song_id, result, pInfo->download_translate);		//ä¸‹è½½æ­Œè¯
 	if (theApp.m_lyric_download_dialog_exit) return 0;
 	pInfo->result = result;
-	::PostMessage(pInfo->hwnd, WM_DOWNLOAD_COMPLATE, (WPARAM)pInfo->save_as, 0);		//ÏÂÔØÍê³Éºó·¢ËÍÒ»¸öÏÂÔØÍê³ÉÏûÏ¢£¨wParamÓÃÓÚ´«µİÊÇ·ñµ¯³ö¡°Áí´æÎª¡±¶Ô»°¿ò£©
+	::PostMessage(pInfo->hwnd, WM_DOWNLOAD_COMPLATE, (WPARAM)pInfo->save_as, 0);		//ä¸‹è½½å®Œæˆåå‘é€ä¸€ä¸ªä¸‹è½½å®Œæˆæ¶ˆæ¯ï¼ˆwParamç”¨äºä¼ é€’æ˜¯å¦å¼¹å‡ºâ€œå¦å­˜ä¸ºâ€å¯¹è¯æ¡†ï¼‰
 	return 0;
 }
 
 
 afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam)
 {
-	//ÏìÓ¦WM_SEARCH_CONPLATEÏûÏ¢
-	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(TRUE);	//ËÑË÷Íê³ÉÖ®ºóÆôÓÃ¸Ã°´Å¥
+	//å“åº”WM_SEARCH_CONPLATEæ¶ˆæ¯
+	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(TRUE);	//æœç´¢å®Œæˆä¹‹åå¯ç”¨è¯¥æŒ‰é’®
 	m_search_result = m_search_thread_info.result;
     if(m_search_thread_info.rtn != CInternetCommon::SUCCESS)
         SetDlgItemText(IDC_STATIC_INFO, CCommon::LoadText(IDS_SEARCH_RESULT));
@@ -381,19 +381,19 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	case CInternetCommon::OUTTIME: MessageBox(CCommon::LoadText(IDS_SEARCH_TIME_OUT), NULL, MB_ICONWARNING); return 0;
 	default: break;
 	}
-	//DEBUGÄ£Ê½ÏÂ£¬½«²éÕÒ·µ»ØµÄ½á¹û±£´æµ½ÎÄ¼ş
+	//DEBUGæ¨¡å¼ä¸‹ï¼Œå°†æŸ¥æ‰¾è¿”å›çš„ç»“æœä¿å­˜åˆ°æ–‡ä»¶
 #ifdef DEBUG
 	ofstream out_put{ L".\\down.log", std::ios::binary };
 	out_put << CCommon::UnicodeToStr(m_search_result, CodeType::UTF8);
 #endif // DEBUG
 
-	CInternetCommon::DisposeSearchResult(m_down_list, m_search_result);		//´¦Àí·µ»ØµÄ½á¹û
-	ShowDownloadList();			//½«ËÑË÷µÄ½á¹ûÏÔÊ¾ÔÚÁĞ±í¿Ø¼şÖĞ
+	CInternetCommon::DisposeSearchResult(m_down_list, m_search_result);		//å¤„ç†è¿”å›çš„ç»“æœ
+	ShowDownloadList();			//å°†æœç´¢çš„ç»“æœæ˜¾ç¤ºåœ¨åˆ—è¡¨æ§ä»¶ä¸­
 
-	//¼ÆËãËÑË÷½á¹ûÖĞ×î¼ÑÆ¥ÅäÏîÄ¿
+	//è®¡ç®—æœç´¢ç»“æœä¸­æœ€ä½³åŒ¹é…é¡¹ç›®
 	int best_matched;
 	bool id_releated{ false };
-	if (!CPlayer::GetInstance().GetCurrentSongInfo().song_id.empty())		//Èç¹ûµ±Ç°¸èÇúÒÑ¾­ÓĞ¹ØÁªµÄID£¬Ôò¸ù¾İ¸ÃIDÔÚËÑË÷½á¹ûÁĞ±íÖĞ²éÕÒ¶ÔÓ¦µÄÏîÄ¿
+	if (!CPlayer::GetInstance().GetCurrentSongInfo().song_id.empty())		//å¦‚æœå½“å‰æ­Œæ›²å·²ç»æœ‰å…³è”çš„IDï¼Œåˆ™æ ¹æ®è¯¥IDåœ¨æœç´¢ç»“æœåˆ—è¡¨ä¸­æŸ¥æ‰¾å¯¹åº”çš„é¡¹ç›®
 	{
 		for (size_t i{}; i<m_down_list.size(); i++)
 		{
@@ -429,10 +429,10 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		info = CCommon::LoadTextFormat(IDS_SEARCH_BEST_MATCHED, { best_matched + 1 });
 
 	SetDlgItemText(IDC_STATIC_INFO, info);
-	//×Ô¶¯Ñ¡ÖĞÁĞ±íÖĞ×î¼ÑÆ¥ÅäµÄÏîÄ¿
+	//è‡ªåŠ¨é€‰ä¸­åˆ—è¡¨ä¸­æœ€ä½³åŒ¹é…çš„é¡¹ç›®
 	m_down_list_ctrl.SetFocus();
-	m_down_list_ctrl.SetItemState(best_matched, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//Ñ¡ÖĞĞĞ
-	m_down_list_ctrl.EnsureVisible(best_matched, FALSE);		//Ê¹Ñ¡ÖĞĞĞ±£³Ö¿É¼û
+	m_down_list_ctrl.SetItemState(best_matched, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//é€‰ä¸­è¡Œ
+	m_down_list_ctrl.EnsureVisible(best_matched, FALSE);		//ä½¿é€‰ä¸­è¡Œä¿æŒå¯è§
 	m_item_selected = best_matched;
 	return 0;
 }
@@ -440,24 +440,24 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 
 void CLyricDownloadDlg::OnCancel()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	theApp.m_lyric_download_dialog_exit = true;
 	if (m_pSearchThread != nullptr)
-		WaitForSingleObject(m_pSearchThread->m_hThread, 1000);	//µÈ´ıÏß³ÌÍË³ö
+		WaitForSingleObject(m_pSearchThread->m_hThread, 1000);	//ç­‰å¾…çº¿ç¨‹é€€å‡º
 	if (m_pDownThread != nullptr)
-		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//µÈ´ıÏß³ÌÍË³ö
+		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//ç­‰å¾…çº¿ç¨‹é€€å‡º
 	CDialog::OnCancel();
 }
 
 
 void CLyricDownloadDlg::OnOK()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	theApp.m_lyric_download_dialog_exit = true;
 	if (m_pSearchThread != nullptr)
-		WaitForSingleObject(m_pSearchThread->m_hThread, 1000);	//µÈ´ıÏß³ÌÍË³ö
+		WaitForSingleObject(m_pSearchThread->m_hThread, 1000);	//ç­‰å¾…çº¿ç¨‹é€€å‡º
 	if (m_pDownThread != nullptr)
-		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//µÈ´ıÏß³ÌÍË³ö
+		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//ç­‰å¾…çº¿ç¨‹é€€å‡º
 	CDialog::OnOK();
 }
 
@@ -465,8 +465,8 @@ void CLyricDownloadDlg::OnOK()
 afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lParam)
 {
 	m_lyric_str = m_download_thread_info.result;
-	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(TRUE);		//ÏÂÔØÍê³ÉºóÆôÓÃ¸Ã°´Å¥
-	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(TRUE);		//ÏÂÔØÍê³ÉºóÆôÓÃ¸Ã°´Å¥
+	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(TRUE);		//ä¸‹è½½å®Œæˆåå¯ç”¨è¯¥æŒ‰é’®
+	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(TRUE);		//ä¸‹è½½å®Œæˆåå¯ç”¨è¯¥æŒ‰é’®
 	if (!m_download_thread_info.success || m_lyric_str.empty())
 	{
 		MessageBox(CCommon::LoadText(IDS_LYRIC_DOWNLOAD_FAILED, _T("!")), NULL, MB_ICONWARNING);
@@ -480,8 +480,8 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 
 	CLyricDownloadCommon::AddLyricTag(m_lyric_str, m_down_list[m_item_selected].id, m_down_list[m_item_selected].title, m_down_list[m_item_selected].artist, m_down_list[m_item_selected].album);
 
-	//±£´æ¸è´Ê
-	if (wParam == 0)		//wParamÎª0Ê±²»µ¯³ö¡°Áí´æÎª¶Ô»°¿ò¡±
+	//ä¿å­˜æ­Œè¯
+	if (wParam == 0)		//wParamä¸º0æ—¶ä¸å¼¹å‡ºâ€œå¦å­˜ä¸ºå¯¹è¯æ¡†â€
 	{
 		wstring saved_path;
 		if (m_save_to_song_folder)
@@ -498,8 +498,8 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 				return 0;
 			}
 			saved_path = theApp.m_lyric_setting_data.lyric_path + m_file_name;
-			size_t index = saved_path.rfind(L'.');		//²éÕÒÎÄ¼şÃû×îºóÒ»¸öµã
-			saved_path = saved_path.substr(0, index + 1) + L"lrc";	//½«ÎÄ¼şÃûµÄÀ©Õ¹Ãû¸ÄÎªlrc
+			size_t index = saved_path.rfind(L'.');		//æŸ¥æ‰¾æ–‡ä»¶åæœ€åä¸€ä¸ªç‚¹
+			saved_path = saved_path.substr(0, index + 1) + L"lrc";	//å°†æ–‡ä»¶åçš„æ‰©å±•åæ”¹ä¸ºlrc
 
 		}
 		if (CCommon::FileExist(saved_path))
@@ -507,17 +507,17 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			if (MessageBox(CCommon::LoadText(IDS_LYRIC_OVERWRITE_INQUARY), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
 				return 0;
 		}
-		if (!SaveLyric(saved_path.c_str(), m_save_code))	//±£´æ¸è´Ê
+		if (!SaveLyric(saved_path.c_str(), m_save_code))	//ä¿å­˜æ­Œè¯
 			return 0;
 		if (m_download_translate)
 		{
-			CLyrics lyrics{ saved_path };		//´ò¿ª±£´æ¹ıµÄ¸è´Ê
-			lyrics.DeleteRedundantLyric();		//É¾³ı¶àÓàµÄ¸è´Ê
-			lyrics.CombineSameTimeLyric();		//½«¸è´Ê·­ÒëºÍÔ­Ê¼¸è´ÊºÏ²¢³ÉÒ»¾ä
+			CLyrics lyrics{ saved_path };		//æ‰“å¼€ä¿å­˜è¿‡çš„æ­Œè¯
+			lyrics.DeleteRedundantLyric();		//åˆ é™¤å¤šä½™çš„æ­Œè¯
+			lyrics.CombineSameTimeLyric();		//å°†æ­Œè¯ç¿»è¯‘å’ŒåŸå§‹æ­Œè¯åˆå¹¶æˆä¸€å¥
 			lyrics.SaveLyric2();
 		}
 
-		if (m_file_name == CPlayer::GetInstance().GetFileName())		//Èç¹ûÕıÔÚ²¥·ÅµÄ¸èÇú»¹ÊÇµ±Ç°ÏÂÔØ¸è´ÊµÄ¸èÇú£¬²Å¸üĞÂ¸è´ÊÏÔÊ¾
+		if (m_file_name == CPlayer::GetInstance().GetFileName())		//å¦‚æœæ­£åœ¨æ’­æ”¾çš„æ­Œæ›²è¿˜æ˜¯å½“å‰ä¸‹è½½æ­Œè¯çš„æ­Œæ›²ï¼Œæ‰æ›´æ–°æ­Œè¯æ˜¾ç¤º
 			CPlayer::GetInstance().IniLyrics(saved_path);
 		CString info;
 		info = CCommon::LoadTextFormat(IDS_DOWNLOAD_COMPLETE_SAVED, { saved_path });
@@ -525,23 +525,23 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 	}
 	else
 	{
-		//ÉèÖÃ¹ıÂËÆ÷
+		//è®¾ç½®è¿‡æ»¤å™¨
 		CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
-		//¹¹Ôì±£´æÎÄ¼ş¶Ô»°¿ò
+		//æ„é€ ä¿å­˜æ–‡ä»¶å¯¹è¯æ¡†
 		CFileDialog fileDlg(FALSE, _T("lrc"), m_file_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
-		//Îª¡°Áí´æÎª¡±¶Ô»°¿òÌí¼ÓÒ»¸ö×éºÏÑ¡Ôñ¿ò
+		//ä¸ºâ€œå¦å­˜ä¸ºâ€å¯¹è¯æ¡†æ·»åŠ ä¸€ä¸ªç»„åˆé€‰æ‹©æ¡†
 		fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
-		//Îª×éºÏÑ¡Ôñ¿òÌí¼ÓÏîÄ¿
+		//ä¸ºç»„åˆé€‰æ‹©æ¡†æ·»åŠ é¡¹ç›®
 		fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, CCommon::LoadText(IDS_SAVE_AS_ANSI));
 		fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, CCommon::LoadText(IDS_SAVE_AS_UTF8));
-		//Îª×éºÏÑ¡Ôñ¿òÉèÖÃÄ¬ÈÏÑ¡ÖĞµÄÏîÄ¿
+		//ä¸ºç»„åˆé€‰æ‹©æ¡†è®¾ç½®é»˜è®¤é€‰ä¸­çš„é¡¹ç›®
 		fileDlg.SetSelectedControlItem(IDC_SAVE_COMBO_BOX, static_cast<int>(m_save_code));
 
-		//ÏÔÊ¾±£´æÎÄ¼ş¶Ô»°¿ò
+		//æ˜¾ç¤ºä¿å­˜æ–‡ä»¶å¯¹è¯æ¡†
 		if (IDOK == fileDlg.DoModal())
 		{
 			DWORD selected_item;
-			fileDlg.GetSelectedControlItem(IDC_SAVE_COMBO_BOX, selected_item);	//»ñÈ¡¡°±àÂë¸ñÊ½¡±ÖĞÑ¡ÖĞµÄÏîÄ¿
+			fileDlg.GetSelectedControlItem(IDC_SAVE_COMBO_BOX, selected_item);	//è·å–â€œç¼–ç æ ¼å¼â€ä¸­é€‰ä¸­çš„é¡¹ç›®
 			CodeType save_code{};
 			switch (selected_item)
 			{
@@ -550,18 +550,18 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			default: break;
 			}
 			wstring saved_path{ fileDlg.GetPathName().GetString() };
-			if (!SaveLyric(saved_path.c_str(), save_code))	//±£´æ¸è´Ê
+			if (!SaveLyric(saved_path.c_str(), save_code))	//ä¿å­˜æ­Œè¯
 				return 0;
 
 			if (m_download_translate)
 			{
-				CLyrics lyrics{ saved_path };		//´ò¿ª±£´æ¹ıµÄ¸è´Ê
-				lyrics.DeleteRedundantLyric();		//É¾³ı¶àÓàµÄ¸è´Ê
-				lyrics.CombineSameTimeLyric();		//½«¸è´Ê·­ÒëºÍÔ­Ê¼¸è´ÊºÏ²¢³ÉÒ»¾ä
+				CLyrics lyrics{ saved_path };		//æ‰“å¼€ä¿å­˜è¿‡çš„æ­Œè¯
+				lyrics.DeleteRedundantLyric();		//åˆ é™¤å¤šä½™çš„æ­Œè¯
+				lyrics.CombineSameTimeLyric();		//å°†æ­Œè¯ç¿»è¯‘å’ŒåŸå§‹æ­Œè¯åˆå¹¶æˆä¸€å¥
 				lyrics.SaveLyric2();
 			}
 
-			if (m_file_name == CPlayer::GetInstance().GetFileName())		//Èç¹ûÕıÔÚ²¥·ÅµÄ¸èÇú»¹ÊÇµ±Ç°ÏÂÔØ¸è´ÊµÄ¸èÇú£¬²Å¸üĞÂ¸è´ÊÏÔÊ¾
+			if (m_file_name == CPlayer::GetInstance().GetFileName())		//å¦‚æœæ­£åœ¨æ’­æ”¾çš„æ­Œæ›²è¿˜æ˜¯å½“å‰ä¸‹è½½æ­Œè¯çš„æ­Œæ›²ï¼Œæ‰æ›´æ–°æ­Œè¯æ˜¾ç¤º
 				CPlayer::GetInstance().IniLyrics(saved_path);
 		}
 	}
@@ -571,22 +571,22 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 
 void CLyricDownloadDlg::OnBnClickedSaveToSongFolder1()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_save_to_song_folder = true;
 }
 
 
 void CLyricDownloadDlg::OnBnClickedSaveToLyricFolder1()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_save_to_song_folder = false;
 }
 
 
 void CLyricDownloadDlg::OnCbnSelchangeCombo2()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	//»ñÈ¡×éºÏ¿òÖĞÑ¡ÖĞµÄ±àÂë¸ñÊ½
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	//è·å–ç»„åˆæ¡†ä¸­é€‰ä¸­çš„ç¼–ç æ ¼å¼
 	switch (m_save_code_combo.GetCurSel())
 	{
 	case 1: m_save_code = CodeType::UTF8; break;
@@ -597,21 +597,21 @@ void CLyricDownloadDlg::OnCbnSelchangeCombo2()
 
 void CLyricDownloadDlg::OnLdLyricDownload()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	OnBnClickedDownloadSelected();
 }
 
 
 void CLyricDownloadDlg::OnLdLyricSaveas()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	OnBnClickedSelectedSaveAs();
 }
 
 
 void CLyricDownloadDlg::OnLdCopyTitle()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (IsItemSelectedValid())
 	{
 		if(!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].title))
@@ -622,7 +622,7 @@ void CLyricDownloadDlg::OnLdCopyTitle()
 
 void CLyricDownloadDlg::OnLdCopyArtist()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (IsItemSelectedValid())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].artist))
@@ -633,7 +633,7 @@ void CLyricDownloadDlg::OnLdCopyArtist()
 
 void CLyricDownloadDlg::OnLdCopyAlbum()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (IsItemSelectedValid())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].album))
@@ -644,7 +644,7 @@ void CLyricDownloadDlg::OnLdCopyAlbum()
 
 void CLyricDownloadDlg::OnLdCopyId()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (IsItemSelectedValid())
 	{
 		if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].id))
@@ -655,21 +655,21 @@ void CLyricDownloadDlg::OnLdCopyId()
 
 void CLyricDownloadDlg::OnLdViewOnline()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 	if (IsItemSelectedValid())
 	{
-		//»ñÈ¡ÍøÒ×ÔÆÒôÀÖÖĞ¸Ã¸èÇúµÄÔÚÏß½ÓÌıÍøÖ·
+		//è·å–ç½‘æ˜“äº‘éŸ³ä¹ä¸­è¯¥æ­Œæ›²çš„åœ¨çº¿æ¥å¬ç½‘å€
 		wstring song_url{ L"http://music.163.com/#/song?id=" + m_down_list[m_item_selected].id };
-		//´ò¿ª³¬Á´½Ó
+		//æ‰“å¼€è¶…é“¾æ¥
 		ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
 	}
 }
 
-//Ë«»÷ÁĞ±íÏîÄ¿ºóÏÂÔØÑ¡ÖĞÏîÄ¿
+//åŒå‡»åˆ—è¡¨é¡¹ç›®åä¸‹è½½é€‰ä¸­é¡¹ç›®
 void CLyricDownloadDlg::OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_item_selected = pNMItemActivate->iItem;
 	if (IsItemSelectedValid())
 	{
@@ -681,7 +681,7 @@ void CLyricDownloadDlg::OnNMDblclkLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 
 BOOL CLyricDownloadDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	//if (pMsg->message == WM_MOUSEMOVE)
 	//	m_tool_tip.RelayEvent(pMsg);
 
@@ -691,7 +691,7 @@ BOOL CLyricDownloadDlg::PreTranslateMessage(MSG* pMsg)
 
 void CLyricDownloadDlg::OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CPlayer::GetInstance().SetRelatedSongID(wstring());
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
 
@@ -701,18 +701,18 @@ void CLyricDownloadDlg::OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult
 
 void CLyricDownloadDlg::OnLdPreview()
 {
-	// TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
 
-	//ÏÂÔØ¸è´Ê
+	//ä¸‹è½½æ­Œè¯
 	const CInternetCommon::ItemInfo& item{ m_down_list[m_item_selected] };
 	bool success{ false };
 	wstring result;
 	{
 		CWaitCursor wait_cursor;
-		success = CLyricDownloadCommon::DownloadLyric(item.id, result, m_download_translate);		//ÏÂÔØ¸è´Ê
+		success = CLyricDownloadCommon::DownloadLyric(item.id, result, m_download_translate);		//ä¸‹è½½æ­Œè¯
 	}
 
-	//Èç¹û²»³É¹¦µ¯³öÏûÏ¢¶Ô»°¿ò
+	//å¦‚æœä¸æˆåŠŸå¼¹å‡ºæ¶ˆæ¯å¯¹è¯æ¡†
 	if (!success || result.empty())
 	{
 		MessageBox(CCommon::LoadText(IDS_LYRIC_DOWNLOAD_FAILED, _T("!")), NULL, MB_ICONWARNING);
@@ -724,7 +724,7 @@ void CLyricDownloadDlg::OnLdPreview()
 		return;
 	}
 
-	//Ìí¼Ó¸è´Ê±êÇ©
+	//æ·»åŠ æ­Œè¯æ ‡ç­¾
 	CLyricDownloadCommon::AddLyricTag(result, item.id, item.title, item.artist, item.album);
 
 	CLyrics lyrics;
@@ -733,7 +733,7 @@ void CLyricDownloadDlg::OnLdPreview()
 	lyrics.CombineSameTimeLyric();
 	result = lyrics.GetLyricsString2();
 
-	//ÏÔÊ¾Ô¤ÀÀ´°¿Ú
+	//æ˜¾ç¤ºé¢„è§ˆçª—å£
 	CString dlg_title = CCommon::LoadText(IDS_LYRIC_PREVIEW);
 	CMessageDlg dlg;
 	dlg.SetWindowTitle(dlg_title);

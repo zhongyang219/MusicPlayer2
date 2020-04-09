@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MyComboBox.h"
 #include "MusicPlayer2.h"
 
@@ -15,13 +15,13 @@ CMyComboBox::~CMyComboBox()
 
 void CMyComboBox::SetReadOnly(bool read_only)
 {
-	//((CEdit*)GetWindow(GW_CHILD))->SetReadOnly(read_only);		//½«Endit¿Ø¼şÉèÎªÖ»¶Á
+	//((CEdit*)GetWindow(GW_CHILD))->SetReadOnly(read_only);		//å°†Enditæ§ä»¶è®¾ä¸ºåªè¯»
 	m_read_only = read_only;
 }
 
 void CMyComboBox::SetEditReadOnly(bool read_only)
 {
-	((CEdit*)GetWindow(GW_CHILD))->SetReadOnly(read_only);		//½«Endit¿Ø¼şÉèÎªÖ»¶Á
+	((CEdit*)GetWindow(GW_CHILD))->SetReadOnly(read_only);		//å°†Enditæ§ä»¶è®¾ä¸ºåªè¯»
 }
 
 BEGIN_MESSAGE_MAP(CMyComboBox, CComboBox)
@@ -31,20 +31,20 @@ END_MESSAGE_MAP()
 
 BOOL CMyComboBox::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (m_read_only)
 	{
-		if (pMsg->message == WM_MOUSEWHEEL)		//Èç¹ûÖ»¶Á£¬Ôò²»ÏìÓ¦Êó±ê¹öÂÖÏûÏ¢
+		if (pMsg->message == WM_MOUSEWHEEL)		//å¦‚æœåªè¯»ï¼Œåˆ™ä¸å“åº”é¼ æ ‡æ»šè½®æ¶ˆæ¯
 			return TRUE;
 		if (pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_LBUTTONDBLCLK || pMsg->message == WM_MOUSEMOVE || pMsg->message == WM_LBUTTONUP)
 		{
 			CPoint point1 = pMsg->pt;
 			CPoint point;
 			GetCursorPos(&point);
-			//»ñÈ¡¼ıÍ·ÇøÓòµÄÎ»ÖÃ
+			//è·å–ç®­å¤´åŒºåŸŸçš„ä½ç½®
 			GetWindowRect(m_arrow_rect);
 			m_arrow_rect.left = m_arrow_rect.right - theApp.DPI(18);
-			if(m_arrow_rect.PtInRect(point))		//Èç¹ûÊó±êÖ¸ÕëµÄÎ»ÖÃÎ»ÓÚ¼ıÍ·ÇøÓò£¬Ôò²»ÏìÓ¦ÒÔÉÏµÄÊó±êÏûÏ¢
+			if(m_arrow_rect.PtInRect(point))		//å¦‚æœé¼ æ ‡æŒ‡é’ˆçš„ä½ç½®ä½äºç®­å¤´åŒºåŸŸï¼Œåˆ™ä¸å“åº”ä»¥ä¸Šçš„é¼ æ ‡æ¶ˆæ¯
 				return TRUE;
 		}
 	}

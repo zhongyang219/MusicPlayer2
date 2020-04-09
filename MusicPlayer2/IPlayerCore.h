@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 
 struct MidiInfo
 {
     int midi_position;
     int midi_length;
-    int speed;		//ËÙ¶È£¬bpm
-    int tempo;		//Ã¿¸öËÄ·ÖÒô·ûµÄÎ¢ÃëÊı
+    int speed;		//é€Ÿåº¦ï¼Œbpm
+    int tempo;		//æ¯ä¸ªå››åˆ†éŸ³ç¬¦çš„å¾®ç§’æ•°
     float ppqn;
 };
 
@@ -46,13 +46,13 @@ public:
     virtual void Pause() = 0;
     virtual void Stop() = 0;
     virtual void SetVolume(int volume) = 0;
-    virtual void SetSpeed(float speed) = 0;         //ÉèÖÃ²¥·ÅËÙ¶È£¨1ÎªÔ­ËÙ£©
+    virtual void SetSpeed(float speed) = 0;         //è®¾ç½®æ’­æ”¾é€Ÿåº¦ï¼ˆ1ä¸ºåŸé€Ÿï¼‰
 
     virtual int GetCurPosition() = 0;
     virtual int GetSongLength() = 0;
     virtual void SetCurPosition(int position) = 0;
-    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //»ñÈ¡´ò¿ªµÄÒôÆµµÄ³¤¶È¡¢±ÈÌØÂÊºÍ±êÇ©ĞÅÏ¢£¬flagÓÃÓÚÖ¸¶¨»ñÈ¡ÄÄĞ©ĞÅÏ¢
-    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //»ñÈ¡Ö¸¶¨ÒôÆµÎÄ¼şµÄ³¤¶È¡¢±ÈÌØÂÊºÍ±êÇ©ĞÅÏ¢
+    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //è·å–æ‰“å¼€çš„éŸ³é¢‘çš„é•¿åº¦ã€æ¯”ç‰¹ç‡å’Œæ ‡ç­¾ä¿¡æ¯ï¼Œflagç”¨äºæŒ‡å®šè·å–å“ªäº›ä¿¡æ¯
+    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //è·å–æŒ‡å®šéŸ³é¢‘æ–‡ä»¶çš„é•¿åº¦ã€æ¯”ç‰¹ç‡å’Œæ ‡ç­¾ä¿¡æ¯
 
     virtual bool IsMidi() = 0;
     virtual bool IsMidiConnotPlay() = 0;
@@ -61,13 +61,13 @@ public:
     virtual bool MidiNoLyric() = 0;
 
     virtual void ApplyEqualizer(int channel, int gain) = 0;
-    virtual void SetReverb(int mix, int time) = 0;		//ÉèÖÃ»ìÏì£¨mixÎª»ìÏìÇ¿¶È£¬È¡ÖµÎª0~100£¬timeÎª»ìÏìÊ±¼ä£¬È¡ÖµÎª1~300£¬µ¥Î»Îª10ms£©
-    virtual void ClearReverb() = 0;			//¹Ø±Õ»ìÏì
-    virtual void GetFFTData(float fft_data[128]) = 0;       //»ñÈ¡ÆµÆ×·ÖÎöÊı¾İ
+    virtual void SetReverb(int mix, int time) = 0;		//è®¾ç½®æ··å“ï¼ˆmixä¸ºæ··å“å¼ºåº¦ï¼Œå–å€¼ä¸º0~100ï¼Œtimeä¸ºæ··å“æ—¶é—´ï¼Œå–å€¼ä¸º1~300ï¼Œå•ä½ä¸º10msï¼‰
+    virtual void ClearReverb() = 0;			//å…³é—­æ··å“
+    virtual void GetFFTData(float fft_data[128]) = 0;       //è·å–é¢‘è°±åˆ†ææ•°æ®
 
-    virtual int GetErrorCode() = 0;                         //»ñÈ¡´íÎó´úÂë
-    virtual std::wstring GetErrorInfo(int error_code) = 0;  //¸ù¾İ´íÎó´úÂë»ñÈ¡´íÎóĞÅÏ¢
-    virtual std::wstring GetErrorInfo() = 0;  //»ñÈ¡´íÎóĞÅÏ¢
+    virtual int GetErrorCode() = 0;                         //è·å–é”™è¯¯ä»£ç 
+    virtual std::wstring GetErrorInfo(int error_code) = 0;  //æ ¹æ®é”™è¯¯ä»£ç è·å–é”™è¯¯ä¿¡æ¯
+    virtual std::wstring GetErrorInfo() = 0;  //è·å–é”™è¯¯ä¿¡æ¯
 
     virtual PlayerCoreType GetCoreType() = 0;
 };

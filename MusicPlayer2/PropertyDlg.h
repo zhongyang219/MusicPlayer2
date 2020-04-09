@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Time.h"
 #include "Common.h"
 #include "Player.h"
@@ -7,23 +7,23 @@
 #include "MyComboBox.h"
 #include "FilePathHelper.h"
 
-// CPropertyDlg ¶Ô»°¿ò
+// CPropertyDlg å¯¹è¯æ¡†
 
 class CPropertyDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CPropertyDlg)
 
 public:
-	CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent = NULL, bool read_only = false);   // ±ê×¼¹¹Ôìº¯Êı
+	CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent = NULL, bool read_only = false);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CPropertyDlg();
 
-	int m_index{};		//µ±Ç°ÏÔÊ¾ÏîÄ¿µÄÇúÄ¿ĞòºÅ
-	//int m_playing_index{};	//ÕıÔÚ²¥·ÅµÄÇúÄ¿ĞòºÅ
+	int m_index{};		//å½“å‰æ˜¾ç¤ºé¡¹ç›®çš„æ›²ç›®åºå·
+	//int m_playing_index{};	//æ­£åœ¨æ’­æ”¾çš„æ›²ç›®åºå·
 	//wstring m_lyric_name;
 
 	bool GetListRefresh() const { return m_list_refresh; }
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_PROPERTY_DIALOG };
 #endif
@@ -31,14 +31,14 @@ public:
 protected:
 	//const vector<wstring>& m_all_file_name;
 	vector<SongInfo>& m_all_song_info;
-	bool m_write_enable{ false };		//ÊÇ·ñÔÊĞíĞ´Èë±êÇ©
+	bool m_write_enable{ false };		//æ˜¯å¦å…è®¸å†™å…¥æ ‡ç­¾
 	bool m_modified{ false };
 	bool m_genre_modified{ false };
-	bool m_list_refresh{ false };		//ÓÃÓÚÅĞ¶Ï´°¿Ú¹Ø±Õºó²¥·ÅÁĞ±íÊÇ·ñÒªË¢ĞÂ£¬Ö»ÒªÓĞÈÎÒ»Ê×ÇúÄ¿µÄ¡°±êÌâ¡±»ò¡°ÒÕÊõ¼Ò¡±±êÇ©±à¼­¹ı£¬ÔòÖÃÎªtrue
+	bool m_list_refresh{ false };		//ç”¨äºåˆ¤æ–­çª—å£å…³é—­åæ’­æ”¾åˆ—è¡¨æ˜¯å¦è¦åˆ·æ–°ï¼Œåªè¦æœ‰ä»»ä¸€é¦–æ›²ç›®çš„â€œæ ‡é¢˜â€æˆ–â€œè‰ºæœ¯å®¶â€æ ‡ç­¾ç¼–è¾‘è¿‡ï¼Œåˆ™ç½®ä¸ºtrue
     int m_song_num;
     bool m_read_only;
 
-	//¿Ø¼ş±äÁ¿
+	//æ§ä»¶å˜é‡
 	CEditEx m_file_name_edit;
 	CEditEx m_file_path_edit;
 	CEditEx m_file_type_edit;
@@ -60,7 +60,7 @@ protected:
 	void SetEditReadOnly(bool read_only);
 	void SetWreteEnable();
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

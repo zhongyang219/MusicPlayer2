@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CHotkeyManager.h"
 #include "MusicPlayer2.h"
 #include "Common.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "LyricDownloadCommon.h"
 
 
@@ -25,7 +25,7 @@ bool CLyricDownloadCommon::DownloadLyric(const wstring & song_id, wstring & resu
 
 bool CLyricDownloadCommon::DisposeLryic(wstring & lyric_str)
 {
-	size_t index1 = lyric_str.find('[');	//²éÕÒµÚ1¸ö×óÖĞÀ¨ºÅ£¬¼´Îª¸è´Ê¿ªÊ¼µÄÎ»ÖÃ
+	size_t index1 = lyric_str.find('[');	//æŸ¥æ‰¾ç¬¬1ä¸ªå·¦ä¸­æ‹¬å·ï¼Œå³ä¸ºæ­Œè¯å¼€å§‹çš„ä½ç½®
 	if (index1 == string::npos)
 	{
 		return false;
@@ -36,7 +36,7 @@ bool CLyricDownloadCommon::DisposeLryic(wstring & lyric_str)
 
 	for (int i{}; i < static_cast<int>(lyric_str.size() - 1); i++)
 	{
-		//Èç¹û¸è´ÊÖĞº¬ÓĞ×Ö·û´®¡°\r\n¡±»ò¡°\n\n¡±£¬Ôò½«Æä×ª»»³ÉÎªÁ½¸ö×ªÒå×Ö·û\r\n£¬É¾µôÁ½¸ö¶àÓàµÄ×Ö·û
+		//å¦‚æœæ­Œè¯ä¸­å«æœ‰å­—ç¬¦ä¸²â€œ\r\nâ€æˆ–â€œ\n\nâ€ï¼Œåˆ™å°†å…¶è½¬æ¢æˆä¸ºä¸¤ä¸ªè½¬ä¹‰å­—ç¬¦\r\nï¼Œåˆ æ‰ä¸¤ä¸ªå¤šä½™çš„å­—ç¬¦
 		if (i < static_cast<int>(lyric_str.size() - 3))
 		{
 			if ((lyric_str[i] == '\\' && lyric_str[i + 1] == 'r' && lyric_str[i + 2] == '\\' && lyric_str[i + 3] == 'n')
@@ -47,19 +47,19 @@ bool CLyricDownloadCommon::DisposeLryic(wstring & lyric_str)
 				lyric_str.erase(i + 2, 2);
 			}
 		}
-		//Èç¹û¸è´ÊÖĞº¬ÓĞ×Ö·û´®¡°\r¡±£¬Ôò½«Æä×ª»»³ÉÎªÁ½¸ö×ªÒå×Ö·û\r\n
+		//å¦‚æœæ­Œè¯ä¸­å«æœ‰å­—ç¬¦ä¸²â€œ\râ€ï¼Œåˆ™å°†å…¶è½¬æ¢æˆä¸ºä¸¤ä¸ªè½¬ä¹‰å­—ç¬¦\r\n
 		if (lyric_str[i] == '\\' && lyric_str[i + 1] == 'r')
 		{
 			lyric_str[i] = '\r';
 			lyric_str[i + 1] = '\n';
 		}
-		//Èç¹û¸è´ÊÖĞº¬ÓĞ×Ö·û´®¡°\n¡±£¬Ôò½«Æä×ª»»³ÉÎªÁ½¸ö×ªÒå×Ö·û\r\n
-		if (lyric_str[i] == '\\' && lyric_str[i + 1] == 'n')	//½«¸è´ÊÎÄ±¾ÖĞµÄ¡°\n¡±×ª»»³É»Ø³µ·û\r\n
+		//å¦‚æœæ­Œè¯ä¸­å«æœ‰å­—ç¬¦ä¸²â€œ\nâ€ï¼Œåˆ™å°†å…¶è½¬æ¢æˆä¸ºä¸¤ä¸ªè½¬ä¹‰å­—ç¬¦\r\n
+		if (lyric_str[i] == '\\' && lyric_str[i + 1] == 'n')	//å°†æ­Œè¯æ–‡æœ¬ä¸­çš„â€œ\nâ€è½¬æ¢æˆå›è½¦ç¬¦\r\n
 		{
 			lyric_str[i] = '\r';
 			lyric_str[i + 1] = '\n';
 		}
-		//Èç¹û¸è´ÊÖĞº¬ÓĞ×Ö·û´®¡°\"¡±£¬ÔòÉ¾³ı·´Ğ±¸Ü¡°\¡±
+		//å¦‚æœæ­Œè¯ä¸­å«æœ‰å­—ç¬¦ä¸²â€œ\"â€ï¼Œåˆ™åˆ é™¤åæ–œæ â€œ\â€
 		if (lyric_str[i] == '\\' && lyric_str[i + 1] == '\"')
 		{
 			lyric_str.erase(i, 1);

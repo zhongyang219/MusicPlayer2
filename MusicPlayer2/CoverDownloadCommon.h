@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "InternetCommon.h"
 
 class CCoverDownloadCommon
@@ -7,6 +7,6 @@ public:
 	CCoverDownloadCommon();
 	~CCoverDownloadCommon();
 
-	static wstring GetAlbumCoverURL(const wstring& song_id);	//¸ù¾İÒ»Ê×¸èÇúµÄID£¬»ñÈ¡×¨¼­·âÃæµÄÁ´½Ó
+	static wstring GetAlbumCoverURL(const wstring& song_id);	//æ ¹æ®ä¸€é¦–æ­Œæ›²çš„IDï¼Œè·å–ä¸“è¾‘å°é¢çš„é“¾æ¥
 };
 

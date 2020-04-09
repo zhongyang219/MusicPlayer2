@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CUIDrawer.h"
 #include "MusicPlayer2.h"
 
@@ -25,12 +25,12 @@ void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align)
 
 int CUIDrawer::GetLyricTextHeight() const
 {
-    //¼ÆËãÎÄ±¾¸ß¶È
+    //è®¡ç®—æ–‡æœ¬é«˜åº¦
     if(!m_for_cortana_lyric)
         m_pDC->SelectObject(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
     else
         m_pDC->SelectObject(&theApp.m_font_set.cortana.GetFont());
-    return m_pDC->GetTextExtent(L"ÎÄ").cy;	//¸ù¾İµ±Ç°µÄ×ÖÌåÉèÖÃ¼ÆËãÎÄ±¾µÄ¸ß¶È
+    return m_pDC->GetTextExtent(L"æ–‡").cy;	//æ ¹æ®å½“å‰çš„å­—ä½“è®¾ç½®è®¡ç®—æ–‡æœ¬çš„é«˜åº¦
 }
 
 void CUIDrawer::Create(CDC * pDC, CWnd * pMainWnd)
@@ -62,8 +62,8 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
             line_space = static_cast<int>(line_space * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     }
 
-    int lyric_height = GetLyricTextHeight() + line_space;			//ÎÄ±¾¸ß¶È¼ÓÉÏĞĞ¼ä¾à
-    int lyric_height2 = lyric_height * 2 + line_space;		//°üº¬·­ÒëµÄ¸è´Ê¸ß¶È
+    int lyric_height = GetLyricTextHeight() + line_space;			//æ–‡æœ¬é«˜åº¦åŠ ä¸Šè¡Œé—´è·
+    int lyric_height2 = lyric_height * 2 + line_space;		//åŒ…å«ç¿»è¯‘çš„æ­Œè¯é«˜åº¦
 
     SetLyricFont();
     if (CPlayerUIHelper::IsMidiLyric())
@@ -77,12 +77,12 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     }
     else
     {
-        //CRect arect{ lyric_area };		//Ò»ĞĞ¸è´ÊµÄ¾ØĞÎÇøÓò
+        //CRect arect{ lyric_area };		//ä¸€è¡Œæ­Œè¯çš„çŸ©å½¢åŒºåŸŸ
         //arect.bottom = arect.top + lyric_height;
         //vector<CRect> rects(CPlayer::GetInstance().m_Lyrics.GetLyricCount() + 1, arect);
-        //ÎªÃ¿Ò»¾ä¸è´Ê´´½¨Ò»¸ö¾ØĞÎ£¬±£´æÔÚÈİÆ÷Àï
+        //ä¸ºæ¯ä¸€å¥æ­Œè¯åˆ›å»ºä¸€ä¸ªçŸ©å½¢ï¼Œä¿å­˜åœ¨å®¹å™¨é‡Œ
         vector<CRect> rects;
-        int lyric_count = CPlayer::GetInstance().m_Lyrics.GetLyricCount() + 1;		//»ñÈ¡¸è´ÊÊıÁ¿£¨ÓÉÓÚµÚÒ»ĞĞ¸è´ÊĞèÒªÏÔÊ¾±êÌâ£¬ËùÒÔÕâÀïÒª+1£©
+        int lyric_count = CPlayer::GetInstance().m_Lyrics.GetLyricCount() + 1;		//è·å–æ­Œè¯æ•°é‡ï¼ˆç”±äºç¬¬ä¸€è¡Œæ­Œè¯éœ€è¦æ˜¾ç¤ºæ ‡é¢˜ï¼Œæ‰€ä»¥è¿™é‡Œè¦+1ï¼‰
         for (int i{}; i < lyric_count; i++)
         {
             CRect arect{ lyric_area };
@@ -92,19 +92,19 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                 arect.bottom = arect.top + lyric_height;
             rects.push_back(arect);
         }
-        int center_pos = (lyric_area.top + lyric_area.bottom) / 2;		//¸è´ÊÇøÓòµÄÖĞĞÄy×ø±ê
-        Time time{ CPlayer::GetInstance().GetCurrentPosition() };		//µ±Ç°²¥·ÅÊ±¼ä
-        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time) + 1;		//µ±Ç°¸è´ÊµÄĞòºÅ£¨¸è´ÊµÄµÚÒ»¾äGetLyricIndex·µ»ØµÄÊÇ0£¬ÓÉÓÚÏÔÊ¾Ê±µÚÒ»¾ä¸è´ÊÒªÏÔÊ¾±êÌâ£¬ËùÒÔÕâÀïÒª+1£©
-        int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);		//µ±Ç°¸è´Ê½ø¶È£¨·¶Î§Îª0~1000£©
-        int y_progress;			//µ±Ç°¸è´ÊÔÚyÖáÉÏµÄ½ø¶È
+        int center_pos = (lyric_area.top + lyric_area.bottom) / 2;		//æ­Œè¯åŒºåŸŸçš„ä¸­å¿ƒyåæ ‡
+        Time time{ CPlayer::GetInstance().GetCurrentPosition() };		//å½“å‰æ’­æ”¾æ—¶é—´
+        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time) + 1;		//å½“å‰æ­Œè¯çš„åºå·ï¼ˆæ­Œè¯çš„ç¬¬ä¸€å¥GetLyricIndexè¿”å›çš„æ˜¯0ï¼Œç”±äºæ˜¾ç¤ºæ—¶ç¬¬ä¸€å¥æ­Œè¯è¦æ˜¾ç¤ºæ ‡é¢˜ï¼Œæ‰€ä»¥è¿™é‡Œè¦+1ï¼‰
+        int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);		//å½“å‰æ­Œè¯è¿›åº¦ï¼ˆèŒƒå›´ä¸º0~1000ï¼‰
+        int y_progress;			//å½“å‰æ­Œè¯åœ¨yè½´ä¸Šçš„è¿›åº¦
         if (!CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index).translate.empty() && theApp.m_ui_data.show_translate)
             y_progress = progress * lyric_height2 / 1000;
         else
             y_progress = progress * lyric_height / 1000;
-        //int start_pos = center_pos - y_progress - (lyric_index + 1)*lyric_height;		//µÚ1¾ä¸è´ÊµÄÆğÊ¼y×ø±ê
-        //¼ÆËãµÚ1¾ä¸è´ÊµÄÆğÊ¼y×ø±ê
-        //ÓÉÓÚµ±Ç°¸è´ÊĞèÒªÏÔÊ¾ÔÚ¸è´ÊÇøÓòµÄÖĞĞÄÎ»ÖÃ£¬Òò´Ë´ÓÖĞĞÄÎ»ÖÃ¿ªÊ¼£¬¼õÈ¥µ±Ç°¸è´ÊÔÚYÖáÉÏµÄ½ø¶È
-        //ÔÙÒÀ´Î¼õÈ¥Ö®Ç°Ã¿Ò»¾ä¸è´ÊµÄ¸ß¶È£¬¼´µÃµ½ÁËµÚÒ»¾ä¸è´ÊµÄÆğÊ¼Î»ÖÃ
+        //int start_pos = center_pos - y_progress - (lyric_index + 1)*lyric_height;		//ç¬¬1å¥æ­Œè¯çš„èµ·å§‹yåæ ‡
+        //è®¡ç®—ç¬¬1å¥æ­Œè¯çš„èµ·å§‹yåæ ‡
+        //ç”±äºå½“å‰æ­Œè¯éœ€è¦æ˜¾ç¤ºåœ¨æ­Œè¯åŒºåŸŸçš„ä¸­å¿ƒä½ç½®ï¼Œå› æ­¤ä»ä¸­å¿ƒä½ç½®å¼€å§‹ï¼Œå‡å»å½“å‰æ­Œè¯åœ¨Yè½´ä¸Šçš„è¿›åº¦
+        //å†ä¾æ¬¡å‡å»ä¹‹å‰æ¯ä¸€å¥æ­Œè¯çš„é«˜åº¦ï¼Œå³å¾—åˆ°äº†ç¬¬ä¸€å¥æ­Œè¯çš„èµ·å§‹ä½ç½®
         int start_pos;
         start_pos = center_pos - y_progress;
         for (int i{ lyric_index - 1 }; i >= 0; i--)
@@ -115,18 +115,18 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                 start_pos -= lyric_height;
         }
 
-        //ÒÀ´Î»æÖÆÃ¿Ò»¾ä¸è´Ê
+        //ä¾æ¬¡ç»˜åˆ¶æ¯ä¸€å¥æ­Œè¯
         for (size_t i{}; i < rects.size(); i++)
         {
-            //¼ÆËãÃ¿Ò»¾ä¸è´ÊµÄÎ»ÖÃ
+            //è®¡ç®—æ¯ä¸€å¥æ­Œè¯çš„ä½ç½®
             if (i == 0)
                 rects[i].MoveToY(start_pos);
             else
                 rects[i].MoveToY(rects[i - 1].bottom);
-            //»æÖÆ¸è´ÊÎÄ±¾
-            if (!(rects[i] & lyric_area).IsRectEmpty())		//Ö»ÓĞµ±Ò»¾ä¸è´ÊµÄ¾ØĞÎÇøÓòºÍ¸è´ÊÇøÓòµÄ¾ØĞÎÓĞ½»¼¯Ê±£¬²Å»æÖÆ¸è´Ê
+            //ç»˜åˆ¶æ­Œè¯æ–‡æœ¬
+            if (!(rects[i] & lyric_area).IsRectEmpty())		//åªæœ‰å½“ä¸€å¥æ­Œè¯çš„çŸ©å½¢åŒºåŸŸå’Œæ­Œè¯åŒºåŸŸçš„çŸ©å½¢æœ‰äº¤é›†æ—¶ï¼Œæ‰ç»˜åˆ¶æ­Œè¯
             {
-                //ÉèÖÃ¸è´ÊÎÄ±¾ºÍ·­ÒëÎÄ±¾µÄ¾ØĞÎÇøÓò
+                //è®¾ç½®æ­Œè¯æ–‡æœ¬å’Œç¿»è¯‘æ–‡æœ¬çš„çŸ©å½¢åŒºåŸŸ
                 CRect rect_text{ rects[i] };
                 CRect rect_translate;
                 if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_ui_data.show_translate)
@@ -137,44 +137,44 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                     rect_translate.MoveToY(rect_text.bottom + line_space);
                 }
 
-                if (i == lyric_index && progress < 1000)		//»æÖÆÕıÔÚ²¥·ÅµÄ¸è´Ê
+                if (i == lyric_index && progress < 1000)		//ç»˜åˆ¶æ­£åœ¨æ’­æ”¾çš„æ­Œè¯
                 {
                     CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(i);
-                    //ÕâÀïÊµÏÖÎÄ±¾´Ó·Ç¸ßÁÁ»ºÂı±ä»¯µ½¸ßÁÁĞ§¹û
-                    int last_time_span = time - lyric.time;     //µ±Ç°²¥·ÅµÄ¸è´ÊÒÑ³ÖĞøµÄÊ±¼ä
-                    int fade_percent = last_time_span / 8;         //¼ÆËãÑÕÉ«¸ßÁÁ±ä»¯µÄ°Ù·Ö±È£¬³ıÊıÔ½´óÔò³ÖĞøÊ±¼äÔ½³¤£¬10ÔòÎª1Ãë
+                    //è¿™é‡Œå®ç°æ–‡æœ¬ä»éé«˜äº®ç¼“æ…¢å˜åŒ–åˆ°é«˜äº®æ•ˆæœ
+                    int last_time_span = time - lyric.time;     //å½“å‰æ’­æ”¾çš„æ­Œè¯å·²æŒç»­çš„æ—¶é—´
+                    int fade_percent = last_time_span / 8;         //è®¡ç®—é¢œè‰²é«˜äº®å˜åŒ–çš„ç™¾åˆ†æ¯”ï¼Œé™¤æ•°è¶Šå¤§åˆ™æŒç»­æ—¶é—´è¶Šé•¿ï¼Œ10åˆ™ä¸º1ç§’
                     COLORREF text_color = CColorConvert::GetGradientColor(m_colors.color_text_2, m_colors.color_text, fade_percent);
-                    //»æÖÆ¸è´ÊÎÄ±¾
+                    //ç»˜åˆ¶æ­Œè¯æ–‡æœ¬
                     SetLyricFont();
                     if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
                         DrawWindowText(rect_text, lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
                     else
                         DrawWindowText(rect_text, lyric.text.c_str(), text_color, text_color, progress, align, true);
-                    //»æÖÆ·­ÒëÎÄ±¾
+                    //ç»˜åˆ¶ç¿»è¯‘æ–‡æœ¬
                     if (!lyric.translate.empty() && theApp.m_ui_data.show_translate)
                     {
                         SetLyricFontTranslated();
                         DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, text_color, progress, align, true);
                     }
                 }
-                else		//»æÖÆ·ÇÕıÔÚ²¥·ÅµÄ¸è´Ê
+                else		//ç»˜åˆ¶éæ­£åœ¨æ’­æ”¾çš„æ­Œè¯
                 {
                     SetLyricFont();
                     COLORREF text_color;
-                    if (i == lyric_index - 1)      //»æÖÆÉÏÒ»¾ä¸è´Ê£¨ÕâÀïÊµÏÖÉÏÒ»¾ä¸è´ÊÑÕÉ«´Ó¸ßÁÁ»ºÂı±ä»¯µ½·Ç¸ßÁÁĞ§¹û£©
+                    if (i == lyric_index - 1)      //ç»˜åˆ¶ä¸Šä¸€å¥æ­Œè¯ï¼ˆè¿™é‡Œå®ç°ä¸Šä¸€å¥æ­Œè¯é¢œè‰²ä»é«˜äº®ç¼“æ…¢å˜åŒ–åˆ°éé«˜äº®æ•ˆæœï¼‰
                     {
                         CLyrics::Lyric playing_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index);
-                        int last_time_span = time - playing_lyric.time;     //µ±Ç°²¥·ÅµÄ¸è´ÊÒÑ³ÖĞøµÄÊ±¼ä
-                        int fade_percent = last_time_span / 20;         //¼ÆËãÑÕÉ«¸ßÁÁ±ä»¯µÄ°Ù·Ö±È£¬µ±³ÖĞøÊ±¼äÎª2000ºÁÃëÊ±Îª100%£¬¼´ÑÕÉ«»ºÂı±ä»¯µÄÊ±¼äÎª2Ãë
+                        int last_time_span = time - playing_lyric.time;     //å½“å‰æ’­æ”¾çš„æ­Œè¯å·²æŒç»­çš„æ—¶é—´
+                        int fade_percent = last_time_span / 20;         //è®¡ç®—é¢œè‰²é«˜äº®å˜åŒ–çš„ç™¾åˆ†æ¯”ï¼Œå½“æŒç»­æ—¶é—´ä¸º2000æ¯«ç§’æ—¶ä¸º100%ï¼Œå³é¢œè‰²ç¼“æ…¢å˜åŒ–çš„æ—¶é—´ä¸º2ç§’
                         text_color = CColorConvert::GetGradientColor(m_colors.color_text, m_colors.color_text_2, fade_percent);
                     }
                     else
                     {
                         text_color = m_colors.color_text_2;
                     }
-                    //»æÖÆ¸è´ÊÎÄ±¾
+                    //ç»˜åˆ¶æ­Œè¯æ–‡æœ¬
                     DrawWindowText(rect_text, CPlayer::GetInstance().m_Lyrics.GetLyric(i).text.c_str(), text_color, align, true);
-                    //»æÖÆ·­ÒëÎÄ±¾
+                    //ç»˜åˆ¶ç¿»è¯‘æ–‡æœ¬
                     if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_ui_data.show_translate)
                     {
                         SetLyricFontTranslated();
@@ -203,20 +203,20 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
     {
         CRect lyric_rect = rect;
         Time time = CPlayer::GetInstance().GetCurrentPosition();
-        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//»ñÈ¡µ±¸è´Ê
-        if (current_lyric.text.empty())		//Èç¹ûµ±Ç°¸è´ÊÎª¿Õ°×£¬¾ÍÏÔÊ¾ÎªÊ¡ÂÔºÅ
+        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//è·å–å½“æ­Œè¯
+        if (current_lyric.text.empty())		//å¦‚æœå½“å‰æ­Œè¯ä¸ºç©ºç™½ï¼Œå°±æ˜¾ç¤ºä¸ºçœç•¥å·
             current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//»ñÈ¡µ±Ç°¸è´Ê½ø¶È£¨·¶Î§Îª0~1000£©
+        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//è·å–å½“å‰æ­Œè¯è¿›åº¦ï¼ˆèŒƒå›´ä¸º0~1000ï¼‰
 
-        //Ë«ĞĞÏÔÊ¾¸è´Ê
+        //åŒè¡Œæ˜¾ç¤ºæ­Œè¯
         if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_ui_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
             wstring next_lyric_text = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
             if (next_lyric_text.empty())
                 next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-            //ÕâÀïÊµÏÖÎÄ±¾´Ó·Ç¸ßÁÁ»ºÂı±ä»¯µ½¸ßÁÁĞ§¹û
-            int last_time_span = time - current_lyric.time;     //µ±Ç°²¥·ÅµÄ¸è´ÊÒÑ³ÖĞøµÄÊ±¼ä
-            int fade_percent = last_time_span / 8;         //¼ÆËãÑÕÉ«¸ßÁÁ±ä»¯µÄ°Ù·Ö±È£¬³ıÊıÔ½´óÔò³ÖĞøÊ±¼äÔ½³¤£¬10ÔòÎª1Ãë
+            //è¿™é‡Œå®ç°æ–‡æœ¬ä»éé«˜äº®ç¼“æ…¢å˜åŒ–åˆ°é«˜äº®æ•ˆæœ
+            int last_time_span = time - current_lyric.time;     //å½“å‰æ’­æ”¾çš„æ­Œè¯å·²æŒç»­çš„æ—¶é—´
+            int fade_percent = last_time_span / 8;         //è®¡ç®—é¢œè‰²é«˜äº®å˜åŒ–çš„ç™¾åˆ†æ¯”ï¼Œé™¤æ•°è¶Šå¤§åˆ™æŒç»­æ—¶é—´è¶Šé•¿ï¼Œ10åˆ™ä¸º1ç§’
             DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, fade_percent);
         }
         else
@@ -244,7 +244,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
 
 void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center)
 {
-    int cols;		//ÒªÏÔÊ¾µÄÆµÆ×ÖùĞÎµÄÊıÁ¿
+    int cols;		//è¦æ˜¾ç¤ºçš„é¢‘è°±æŸ±å½¢çš„æ•°é‡
     switch (col)
     {
     case CUIDrawer::SC_64:
@@ -263,7 +263,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
         cols = SPECTRUM_COL;
         break;
     }
-    int gap_width{ rect.Width() * (SPECTRUM_COL / cols) / 168 };		//ÆµÆ×ÖùĞÎ¼äÏ¶¿í¶È
+    int gap_width{ rect.Width() * (SPECTRUM_COL / cols) / 168 };		//é¢‘è°±æŸ±å½¢é—´éš™å®½åº¦
     if (theApp.m_ui_data.full_screen)
         gap_width *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
     if (gap_width < 1)
@@ -276,7 +276,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
 void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex /*= false*/, bool low_freq_in_center)
 {
     CRect rc_spectrum_top = rect;
-    if (draw_reflex)     //Èç¹ûÒª»æÖÆµ¹Ó°£¬Ôòµ¹Ó°Õ¼×Ü¸ß¶ÈµÄ1/3
+    if (draw_reflex)     //å¦‚æœè¦ç»˜åˆ¶å€’å½±ï¼Œåˆ™å€’å½±å æ€»é«˜åº¦çš„1/3
         rc_spectrum_top.bottom = rect.top + (rect.Height() * 2 / 3);
 
     CRect rects[SPECTRUM_COL];
@@ -312,12 +312,12 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
         CRect rect_tmp{ rects[i] };
         int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
         int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-        if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//ÆµÆ×¸ß¶È×îÉÙÎª1¸öÏñËØ£¬Èç¹û²¥·Å³ö´í£¬Ò²²»ÏÔÊ¾ÆµÆ×
-        if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//ÆµÆ×¸ß¶È×îÉÙÎª1¸öÏñËØ£¬Èç¹û²¥·Å³ö´í£¬Ò²²»ÏÔÊ¾ÆµÆ×
+        if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//é¢‘è°±é«˜åº¦æœ€å°‘ä¸º1ä¸ªåƒç´ ï¼Œå¦‚æœæ’­æ”¾å‡ºé”™ï¼Œä¹Ÿä¸æ˜¾ç¤ºé¢‘è°±
+        if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//é¢‘è°±é«˜åº¦æœ€å°‘ä¸º1ä¸ªåƒç´ ï¼Œå¦‚æœæ’­æ”¾å‡ºé”™ï¼Œä¹Ÿä¸æ˜¾ç¤ºé¢‘è°±
         rect_tmp.top = rect_tmp.bottom - spetral_height;
         if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
         FillRect(rect_tmp, color, true);
-        //»æÖÆµ¹Ó°
+        //ç»˜åˆ¶å€’å½±
         if (draw_reflex)
         {
             CRect rc_invert = rect_tmp;
@@ -326,12 +326,12 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
             FillAlphaRect(rc_invert, color, 96, true);
         }
 
-        //»æÖÆ¶¥¶Ë
+        //ç»˜åˆ¶é¡¶ç«¯
         CRect rect_peak{ rect_tmp };
         rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
         rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
         FillRect(rect_peak, color, true);
-        ////»æÖÆ¶¥¶Ëµ¹Ó°
+        ////ç»˜åˆ¶é¡¶ç«¯å€’å½±
         //CRect rc_peak_invert = rect_peak;
         //rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
         //FillAlphaRect(rc_peak_invert, color, 96);
@@ -344,17 +344,17 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
     SetLyricFont();
     static bool swap;
     static int last_progress;
-    if (last_progress > progress)		//Èç¹ûµ±Ç°µÄ¸è´Ê½ø¶È±ÈÉÏ´ÎµÄĞ¡£¬ËµÃ÷¸è´ÊÇĞ»»µ½ÁËÏÂÒ»¾ä
+    if (last_progress > progress)		//å¦‚æœå½“å‰çš„æ­Œè¯è¿›åº¦æ¯”ä¸Šæ¬¡çš„å°ï¼Œè¯´æ˜æ­Œè¯åˆ‡æ¢åˆ°äº†ä¸‹ä¸€å¥
     {
         swap = !swap;
     }
     last_progress = progress;
 
 
-    CRect up_rect{ rect }, down_rect{ rect };		//ÉÏ°ë²¿·ÖºÍÏÂ°ë²¿·Ö¸è´ÊµÄ¾ØĞÎÇøÓò
+    CRect up_rect{ rect }, down_rect{ rect };		//ä¸ŠåŠéƒ¨åˆ†å’Œä¸‹åŠéƒ¨åˆ†æ­Œè¯çš„çŸ©å½¢åŒºåŸŸ
     up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
     down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
-    //¸ù¾İÏÂÒ»¾ä¸è´ÊµÄÎÄ±¾¼ÆËãĞèÒªµÄ¿í¶È£¬´Ó¶øÊµÏÖÏÂÒ»ĞĞ¸è´ÊÓÒ¶ÔÆë
+    //æ ¹æ®ä¸‹ä¸€å¥æ­Œè¯çš„æ–‡æœ¬è®¡ç®—éœ€è¦çš„å®½åº¦ï¼Œä»è€Œå®ç°ä¸‹ä¸€è¡Œæ­Œè¯å³å¯¹é½
     //GetDC()->SelectObject(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
     int width;
     if (!swap)

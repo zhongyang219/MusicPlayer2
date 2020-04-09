@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "LyricDownloadCommon.h"
 #include "afxcmn.h"
 #include "Lyric.h"
@@ -6,25 +6,25 @@
 #include "ListCtrlEx.h"
 
 
-// CLyricDownloadDlg ¶Ô»°¿ò
+// CLyricDownloadDlg å¯¹è¯æ¡†
 
 class CLyricDownloadDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CLyricDownloadDlg)
 
 public:
-	CLyricDownloadDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CLyricDownloadDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CLyricDownloadDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_LYRIC_DOWNLOAD_DIALOG };
 #endif
 
-#define WM_SEARCH_COMPLATE (WM_USER+101)		//¸èÇúËÑË÷Íê³ÉÏûÏ¢
-#define WM_DOWNLOAD_COMPLATE (WM_USER+102)		//¸è´ÊÏÂÔØÍê³ÉÏûÏ¢
+#define WM_SEARCH_COMPLATE (WM_USER+101)		//æ­Œæ›²æœç´¢å®Œæˆæ¶ˆæ¯
+#define WM_DOWNLOAD_COMPLATE (WM_USER+102)		//æ­Œè¯ä¸‹è½½å®Œæˆæ¶ˆæ¯
 
-	//ÓÃÓÚÏò¸è´ÊËÑË÷Ïß³Ì´«µİÊı¾İµÄ½á¹¹Ìå
+	//ç”¨äºå‘æ­Œè¯æœç´¢çº¿ç¨‹ä¼ é€’æ•°æ®çš„ç»“æ„ä½“
 	struct SearchThreadInfo
 	{
 		wstring url;
@@ -33,59 +33,59 @@ public:
 		HWND hwnd;
 		//bool exit;
 	};
-	//¸è´ÊËÑË÷Ïß³Ìº¯Êı
+	//æ­Œè¯æœç´¢çº¿ç¨‹å‡½æ•°
 	static UINT LyricSearchThreadFunc(LPVOID lpParam);
 
-	//ÓÃÓÚÏò¸è´ÊÏÂÔØÏß³Ì´«µİÊı¾İµÄ½á¹¹Ìå
+	//ç”¨äºå‘æ­Œè¯ä¸‹è½½çº¿ç¨‹ä¼ é€’æ•°æ®çš„ç»“æ„ä½“
 	struct DownloadThreadInfo
 	{
 		wstring song_id;
 		wstring result;
 		bool success;
 		bool download_translate;
-		bool save_as;		//ÏÂÔØÍê³ÉºóÊÇµ¯³ö¡°Áí´æÎª¡±¶Ô»°¿ò»¹ÊÇÖ±½Ó±£´æ
+		bool save_as;		//ä¸‹è½½å®Œæˆåæ˜¯å¼¹å‡ºâ€œå¦å­˜ä¸ºâ€å¯¹è¯æ¡†è¿˜æ˜¯ç›´æ¥ä¿å­˜
 		HWND hwnd;
 		//bool exit;
 	};
-	//¸è´ÊÏÂÔØÏß³Ìº¯Êı
+	//æ­Œè¯ä¸‹è½½çº¿ç¨‹å‡½æ•°
 	static UINT LyricDownloadThreadFunc(LPVOID lpParam);
 
 	SearchThreadInfo m_search_thread_info;
 	DownloadThreadInfo m_download_thread_info;
 
 protected:
-	wstring m_title;		//Òª²éÕÒ¸è´ÊµÄ¸èÇúµÄ±êÌâ
-	wstring m_artist;		//Òª²éÕÒ¸è´ÊµÄ¸èÇúµÄÒÕÊõ¼Ò
-	wstring m_album;		//Òª²éÕÒ¸è´ÊµÄ¸èÇúµÄ³ªÆ¬¼¯
-	wstring m_file_name;	//Òª²éÕÒ¸è´ÊµÄ¸èÇúµÄÎÄ¼şÃû
-	wstring m_file_path;			//µ±Ç°Òª±£´æµÄ¸è´ÊÎÄ¼şµÄÍêÕûÂ·¾¶
-	wstring m_search_result;	//²éÕÒ½á¹û×Ö·û´®
-	wstring m_lyric_str;	//ÏÂÔØµÄ¸è´Ê
-	vector<CInternetCommon::ItemInfo> m_down_list;	//ËÑË÷½á¹ûµÄÁĞ±í
+	wstring m_title;		//è¦æŸ¥æ‰¾æ­Œè¯çš„æ­Œæ›²çš„æ ‡é¢˜
+	wstring m_artist;		//è¦æŸ¥æ‰¾æ­Œè¯çš„æ­Œæ›²çš„è‰ºæœ¯å®¶
+	wstring m_album;		//è¦æŸ¥æ‰¾æ­Œè¯çš„æ­Œæ›²çš„å”±ç‰‡é›†
+	wstring m_file_name;	//è¦æŸ¥æ‰¾æ­Œè¯çš„æ­Œæ›²çš„æ–‡ä»¶å
+	wstring m_file_path;			//å½“å‰è¦ä¿å­˜çš„æ­Œè¯æ–‡ä»¶çš„å®Œæ•´è·¯å¾„
+	wstring m_search_result;	//æŸ¥æ‰¾ç»“æœå­—ç¬¦ä¸²
+	wstring m_lyric_str;	//ä¸‹è½½çš„æ­Œè¯
+	vector<CInternetCommon::ItemInfo> m_down_list;	//æœç´¢ç»“æœçš„åˆ—è¡¨
 
-	int m_item_selected{ -1 };		//ËÑË÷½á¹ûÁĞ±íÖĞÑ¡ÖĞµÄÏîÄ¿
+	int m_item_selected{ -1 };		//æœç´¢ç»“æœåˆ—è¡¨ä¸­é€‰ä¸­çš„é¡¹ç›®
 	bool m_download_translate{ false };
-	bool m_save_to_song_folder{ true };		//ÊÇ·ñ±£´æµ½¸èÇúËùÔÚÄ¿Â¼
-	CodeType m_save_code{};		//±£´æµÄ±àÂë¸ñÊ½
-	int m_search_max_item{ 30 };		//²éÕÒ¸èÇúÊ±·µ»ØµÄ×î´óÊıÁ¿
+	bool m_save_to_song_folder{ true };		//æ˜¯å¦ä¿å­˜åˆ°æ­Œæ›²æ‰€åœ¨ç›®å½•
+	CodeType m_save_code{};		//ä¿å­˜çš„ç¼–ç æ ¼å¼
+	int m_search_max_item{ 30 };		//æŸ¥æ‰¾æ­Œæ›²æ—¶è¿”å›çš„æœ€å¤§æ•°é‡
 
 	CMenu m_menu;
 	CListCtrlEx m_down_list_ctrl;
 	CButton m_download_translate_chk;
 	CComboBox m_save_code_combo;
-	//CToolTipCtrl m_tool_tip;		//Êó±êÖ¸ÏòÊ±µÄ¹¤¾ßÌáÊ¾
+	//CToolTipCtrl m_tool_tip;		//é¼ æ ‡æŒ‡å‘æ—¶çš„å·¥å…·æç¤º
 	CLinkCtrl m_unassciate_lnk;
 
-	CWinThread* m_pSearchThread;		//ËÑË÷¸è´ÊµÄÏß³Ì
-	CWinThread* m_pDownThread;			//ÏÂÔØ¸è´ÊµÄÏß³Ì
+	CWinThread* m_pSearchThread;		//æœç´¢æ­Œè¯çš„çº¿ç¨‹
+	CWinThread* m_pDownThread;			//ä¸‹è½½æ­Œè¯çš„çº¿ç¨‹
 
-	void ShowDownloadList();		//½«ËÑË÷½á¹ûÏÔÊ¾³öÀ´
-	bool SaveLyric(const wchar_t* path, CodeType code_type);	//±£´æ¸è´Ê
+	void ShowDownloadList();		//å°†æœç´¢ç»“æœæ˜¾ç¤ºå‡ºæ¥
+	bool SaveLyric(const wchar_t* path, CodeType code_type);	//ä¿å­˜æ­Œè¯
 
 	void SaveConfig() const;
 	void LoadConfig();
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 

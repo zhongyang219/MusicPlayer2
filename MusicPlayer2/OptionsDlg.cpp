@@ -1,4 +1,4 @@
-// OptionsDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// OptionsDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// COptionsDlg ¶Ô»°¿ò
+// COptionsDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(COptionsDlg, CDialog)
 
@@ -36,24 +36,24 @@ BEGIN_MESSAGE_MAP(COptionsDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// COptionsDlg ÏûÏ¢´¦Àí³ÌĞò
+// COptionsDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL COptionsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 
-    SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// ÉèÖÃĞ¡Í¼±ê
+    SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// è®¾ç½®å°å›¾æ ‡
 
-    //»ñÈ¡³õÊ¼Ê±´°¿ÚµÄ´óĞ¡
+    //è·å–åˆå§‹æ—¶çª—å£çš„å¤§å°
     CRect rect;
     GetWindowRect(rect);
     m_min_size.cx = rect.Width();
     m_min_size.cy = rect.Height();
 
-	//´´½¨×Ó¶Ô»°¿ò
+	//åˆ›å»ºå­å¯¹è¯æ¡†
 	m_tab1_dlg.Create(IDD_LYRIC_SETTING_DIALOG);
 	m_tab2_dlg.Create(IDD_APPEREANCE_SETTING_DLG);
 	m_tab3_dlg.Create(IDD_DATA_SETTINGS_DIALOG);
@@ -61,7 +61,7 @@ BOOL COptionsDlg::OnInitDialog()
 	m_media_lib_dlg.Create(IDD_MEDIA_LIB_SETTING_DIALOG);
 	m_tab5_dlg.Create(IDD_HOT_KEY_SETTINGS_DIALOG);
 
-	//±£´æ×Ó¶Ô»°¿ò
+	//ä¿å­˜å­å¯¹è¯æ¡†
 	m_tab_vect.push_back(&m_tab1_dlg);
 	m_tab_vect.push_back(&m_tab2_dlg);
 	m_tab_vect.push_back(&m_tab3_dlg);
@@ -69,7 +69,7 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab_vect.push_back(&m_media_lib_dlg);
 	m_tab_vect.push_back(&m_tab5_dlg);
 
-	//»ñÈ¡×Ó¶Ô»°¿òµÄ³õÊ¼¸ß¶È
+	//è·å–å­å¯¹è¯æ¡†çš„åˆå§‹é«˜åº¦
 	for (const auto* pDlg : m_tab_vect)
 	{
 		CRect rect;
@@ -77,7 +77,7 @@ BOOL COptionsDlg::OnInitDialog()
 		m_tab_height.push_back(rect.Height());
 	}
 
-	//Ìí¼Ó¶Ô»°¿ò
+	//æ·»åŠ å¯¹è¯æ¡†
 	m_tab.AddWindow(&m_tab1_dlg, CCommon::LoadText(IDS_LYRIC_SETTINGS));
 	m_tab.AddWindow(&m_tab2_dlg, CCommon::LoadText(IDS_APPEARANCE_SETTINGS));
 	m_tab.AddWindow(&m_tab3_dlg, CCommon::LoadText(IDS_GENERAL_SETTINGS));
@@ -85,7 +85,7 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab.AddWindow(&m_media_lib_dlg, CCommon::LoadText(IDS_MEDIA_LIB));
 	m_tab.AddWindow(&m_tab5_dlg, CCommon::LoadText(IDS_GLOBLE_HOTKEY));
 
-	//ÎªÃ¿¸ö×Ó´°¿ÚÉèÖÃ¹ö¶¯ĞÅÏ¢
+	//ä¸ºæ¯ä¸ªå­çª—å£è®¾ç½®æ»šåŠ¨ä¿¡æ¯
 	for (size_t i = 0; i < m_tab_vect.size(); i++)
 	{
 		m_tab_vect[i]->SetScrollbarInfo(m_tab.m_tab_rect.Height(), m_tab_height[i]);
@@ -96,12 +96,12 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab.SetCurTab(m_tab_selected);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 void COptionsDlg::OnOK()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	m_tab1_dlg.OnOK();
 	m_tab2_dlg.OnOK();
 	m_tab3_dlg.OnOK();
@@ -112,7 +112,7 @@ void COptionsDlg::OnOK()
 
 void COptionsDlg::OnBnClickedApplyButton()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SETTINGS_APPLIED, (WPARAM)this, 0);
 }
 
@@ -121,17 +121,17 @@ void COptionsDlg::OnDestroy()
 {
 	CDialog::OnDestroy();
 
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	m_tab_selected = m_tab.GetCurSel();
 }
 
 
 void COptionsDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-    //ÏŞÖÆ´°¿Ú×îĞ¡´óĞ¡
-    lpMMI->ptMinTrackSize.x = m_min_size.cx;		//ÉèÖÃ×îĞ¡¿í¶È
-    lpMMI->ptMinTrackSize.y = m_min_size.cy;		//ÉèÖÃ×îĞ¡¸ß¶È
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    //é™åˆ¶çª—å£æœ€å°å¤§å°
+    lpMMI->ptMinTrackSize.x = m_min_size.cx;		//è®¾ç½®æœ€å°å®½åº¦
+    lpMMI->ptMinTrackSize.y = m_min_size.cy;		//è®¾ç½®æœ€å°é«˜åº¦
 
     CDialog::OnGetMinMaxInfo(lpMMI);
 }
@@ -142,7 +142,7 @@ void COptionsDlg::OnSize(UINT nType, int cx, int cy)
     CDialog::OnSize(nType, cx, cy);
     if (nType != SIZE_MINIMIZED)
     {
-        //ÎªÃ¿¸ö×Ó´°¿ÚÉèÖÃ¹ö¶¯ĞÅÏ¢
+        //ä¸ºæ¯ä¸ªå­çª—å£è®¾ç½®æ»šåŠ¨ä¿¡æ¯
         for (size_t i = 0; i < m_tab_vect.size(); i++)
         {
             m_tab_vect[i]->ResetScroll();
@@ -151,5 +151,5 @@ void COptionsDlg::OnSize(UINT nType, int cx, int cy)
 
     }
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 }

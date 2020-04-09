@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Common.h"
 #include "resource.h"
 #include "FilePathHelper.h"
@@ -15,9 +15,9 @@ CCommon::~CCommon()
 
 //void CCommon::GetAllFormatFiles(wstring path, vector<wstring>& files, const vector<wstring>& format, size_t max_file)
 //{
-//	//ÎÄ¼ş¾ä±ú 
+//	//æ–‡ä»¶å¥æŸ„ 
 //	int hFile = 0;
-//	//ÎÄ¼şĞÅÏ¢£¨ÓÃUnicode±£´æÊ¹ÓÃ_wfinddata_t£¬¶à×Ö½Ú×Ö·û¼¯Ê¹ÓÃ_finddata_t£©
+//	//æ–‡ä»¶ä¿¡æ¯ï¼ˆç”¨Unicodeä¿å­˜ä½¿ç”¨_wfinddata_tï¼Œå¤šå­—èŠ‚å­—ç¬¦é›†ä½¿ç”¨_finddata_tï¼‰
 //	_wfinddata_t fileinfo;
 //	wstring file_path;
 //	for (auto a_format : format)
@@ -27,12 +27,12 @@ CCommon::~CCommon()
 //			do
 //			{
 //				if (files.size() >= max_file) break;
-//				files.push_back(file_path.assign(fileinfo.name));  //½«ÎÄ¼şÃû±£´æ
+//				files.push_back(file_path.assign(fileinfo.name));  //å°†æ–‡ä»¶åä¿å­˜
 //			} while (_wfindnext(hFile, &fileinfo) == 0);
 //		}
 //		_findclose(hFile);
 //	}
-//	std::sort(files.begin(), files.end());		//¶ÔÈİÆ÷ÀïµÄÎÄ¼ş°´Ãû³ÆÅÅĞò
+//	std::sort(files.begin(), files.end());		//å¯¹å®¹å™¨é‡Œçš„æ–‡ä»¶æŒ‰åç§°æ’åº
 //}
 
 bool CCommon::FileExist(const wstring & file)
@@ -55,10 +55,10 @@ bool CCommon::IsFolder(const wstring& path)
 
 void CCommon::DeleteStringBom(string & str)
 {
-    //È¥µôutf8µÄBOM
+    //å»æ‰utf8çš„BOM
     if (str.size() >= 3 && str.substr(0, 3) == string{ '\xef', '\xbb', '\xbf' })
         str = str.substr(3);
-    //È¥µôutf16µÄBOM
+    //å»æ‰utf16çš„BOM
     if (str.size() >= 2 && str.substr(0, 2) == string{ '\xff', '\xfe' })
         str = str.substr(2);
 }
@@ -66,8 +66,8 @@ void CCommon::DeleteStringBom(string & str)
 //bool CCommon::FileIsMidi(const wstring & file_name)
 //{
 //	wstring type;
-//	type = file_name.substr(file_name.size() - 4, 4);			//»ñÈ¡À©Õ¹Ãû
-//	std::transform(type.begin(), type.end(), type.begin(), tolower);		//½«À©Õ¹Ãû×ª»»³ÉĞ¡Ğ´
+//	type = file_name.substr(file_name.size() - 4, 4);			//è·å–æ‰©å±•å
+//	std::transform(type.begin(), type.end(), type.begin(), tolower);		//å°†æ‰©å±•åè½¬æ¢æˆå°å†™
 //	return (type == L".mid");
 //}
 
@@ -214,7 +214,7 @@ wstring CCommon::TranslateToTranditionalChinese(const wstring & str)
 
 void CCommon::FileNameNormalize(wstring & file_name)
 {
-	//²éÕÒ×Ö·û´®ÖĞµÄÎŞĞ§×Ö·û£¬²¢½«ÆäÌæ»»³É¡®_¡¯
+	//æŸ¥æ‰¾å­—ç¬¦ä¸²ä¸­çš„æ— æ•ˆå­—ç¬¦ï¼Œå¹¶å°†å…¶æ›¿æ¢æˆâ€˜_â€™
 	const wstring invalid_chars{ L"\\\"/:*?<>|\a\b\f\n\r\t\v" };
 	int index{ -1 };
 	while (true)
@@ -250,14 +250,14 @@ wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
 
 	if (code_type == CodeType::AUTO)
 	{
-		//code_typeÎªAUTOÊ±×Ô¶¯ÅĞ¶Ï±àÂëÀàĞÍ
-		//Èç¹ûÇ°ÃæÓĞUTF8µÄBOM£¬Ôò±àÂëÀàĞÍÎªUTF8
+		//code_typeä¸ºAUTOæ—¶è‡ªåŠ¨åˆ¤æ–­ç¼–ç ç±»å‹
+		//å¦‚æœå‰é¢æœ‰UTF8çš„BOMï¼Œåˆ™ç¼–ç ç±»å‹ä¸ºUTF8
 		if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
 			code_type = CodeType::UTF8;
-		//Èç¹ûÇ°ÃæÓĞUTF16µÄBOM£¬Ôò±àÂëÀàĞÍÎªUTF16
+		//å¦‚æœå‰é¢æœ‰UTF16çš„BOMï¼Œåˆ™ç¼–ç ç±»å‹ä¸ºUTF16
 		else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
 			code_type = CodeType::UTF16;
-		//else if (IsUTF8Bytes(str.c_str()))		//Èç¹ûÃ»ÓĞÕÒµ½UTF8ºÍUTF16µÄBOM£¬ÔòÅĞ¶Ï×Ö·û´®ÊÇ·ñÓĞUTF8±àÂëµÄÌØĞÔ
+		//else if (IsUTF8Bytes(str.c_str()))		//å¦‚æœæ²¡æœ‰æ‰¾åˆ°UTF8å’ŒUTF16çš„BOMï¼Œåˆ™åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦æœ‰UTF8ç¼–ç çš„ç‰¹æ€§
 		//	code_type = CodeType::UTF8_NO_BOM;
 		else
 			code_type = CodeType::ANSI;
@@ -277,7 +277,7 @@ wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
 	else if (code_type == CodeType::UTF8 || code_type == CodeType::UTF8_NO_BOM)
 	{
 		string temp;
-		//Èç¹ûÇ°ÃæÓĞBOM£¬ÔòÈ¥µôBOM
+		//å¦‚æœå‰é¢æœ‰BOMï¼Œåˆ™å»æ‰BOM
 		if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
 			temp = str.substr(3);
 		else
@@ -292,7 +292,7 @@ wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
 	else if (code_type == CodeType::UTF16)
 	{
 		string temp;
-		//Èç¹ûÇ°ÃæÓĞBOM£¬ÔòÈ¥µôBOM
+		//å¦‚æœå‰é¢æœ‰BOMï¼Œåˆ™å»æ‰BOM
 		if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
 			temp = str.substr(2);
 		else
@@ -341,7 +341,7 @@ string CCommon::UnicodeToStr(const wstring & wstr, CodeType code_type, bool* cha
 	else if (code_type == CodeType::UTF16)
 	{
 		result.clear();
-		result.push_back(-1);	//ÔÚÇ°Ãæ¼ÓÉÏUTF16µÄBOM
+		result.push_back(-1);	//åœ¨å‰é¢åŠ ä¸ŠUTF16çš„BOM
 		result.push_back(-2);
 		result.append((const char*)wstr.c_str(), (const char*)wstr.c_str() + wstr.size() * 2);
 		result.push_back('\0');
@@ -363,8 +363,8 @@ wstring CCommon::ASCIIToUnicode(const string & ascii)
 
 bool CCommon::IsUTF8Bytes(const char * data)
 {
-	int charByteCounter = 1;  //¼ÆËãµ±Ç°Õı·ÖÎöµÄ×Ö·ûÓ¦»¹ÓĞµÄ×Ö½ÚÊı
-	unsigned char curByte; //µ±Ç°·ÖÎöµÄ×Ö½Ú.
+	int charByteCounter = 1;  //è®¡ç®—å½“å‰æ­£åˆ†æçš„å­—ç¬¦åº”è¿˜æœ‰çš„å­—èŠ‚æ•°
+	unsigned char curByte; //å½“å‰åˆ†æçš„å­—èŠ‚.
 	bool ascii = true;
 	int length = strlen(data);
 	for (int i = 0; i < length; i++)
@@ -375,12 +375,12 @@ bool CCommon::IsUTF8Bytes(const char * data)
 			if (curByte >= 0x80)
 			{
 				ascii = false;
-				//ÅĞ¶Ïµ±Ç°
+				//åˆ¤æ–­å½“å‰
 				while (((curByte <<= 1) & 0x80) != 0)
 				{
 					charByteCounter++;
 				}
-				//±ê¼ÇÎ»Ê×Î»ÈôÎª·Ç0 ÔòÖÁÉÙÒÔ2¸ö1¿ªÊ¼ Èç:110XXXXX...........1111110X 
+				//æ ‡è®°ä½é¦–ä½è‹¥ä¸ºé0 åˆ™è‡³å°‘ä»¥2ä¸ª1å¼€å§‹ å¦‚:110XXXXX...........1111110X 
 				if (charByteCounter == 1 || charByteCounter > 6)
 				{
 					return false;
@@ -389,7 +389,7 @@ bool CCommon::IsUTF8Bytes(const char * data)
 		}
 		else
 		{
-			//ÈôÊÇUTF-8 ´ËÊ±µÚÒ»Î»±ØĞëÎª1
+			//è‹¥æ˜¯UTF-8 æ­¤æ—¶ç¬¬ä¸€ä½å¿…é¡»ä¸º1
 			if ((curByte & 0xC0) != 0x80)
 			{
 				return false;
@@ -397,19 +397,19 @@ bool CCommon::IsUTF8Bytes(const char * data)
 			charByteCounter--;
 		}
 	}
-	if (ascii) return false;		//Èç¹ûÈ«ÊÇASCII×Ö·û£¬·µ»Øfalse
+	if (ascii) return false;		//å¦‚æœå…¨æ˜¯ASCIIå­—ç¬¦ï¼Œè¿”å›false
 	else return true;
 }
 
 CodeType CCommon::JudgeCodeType(const string & str, CodeType default_code)
 {
-	//Èç¹ûÇ°ÃæÓĞUTF8µÄBOM£¬Ôò±àÂëÀàĞÍÎªUTF8
+	//å¦‚æœå‰é¢æœ‰UTF8çš„BOMï¼Œåˆ™ç¼–ç ç±»å‹ä¸ºUTF8
 	if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
 		return CodeType::UTF8;
-	//Èç¹ûÇ°ÃæÓĞUTF16µÄBOM£¬Ôò±àÂëÀàĞÍÎªUTF16
+	//å¦‚æœå‰é¢æœ‰UTF16çš„BOMï¼Œåˆ™ç¼–ç ç±»å‹ä¸ºUTF16
 	else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
 		return CodeType::UTF16;
-	//else if (IsUTF8Bytes(str.c_str()))		//Èç¹ûÃ»ÓĞÕÒµ½UTF8ºÍUTF16µÄBOM£¬ÔòÅĞ¶Ï×Ö·û´®ÊÇ·ñÓĞUTF8±àÂëµÄÌØĞÔ
+	//else if (IsUTF8Bytes(str.c_str()))		//å¦‚æœæ²¡æœ‰æ‰¾åˆ°UTF8å’ŒUTF16çš„BOMï¼Œåˆ™åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦æœ‰UTF8ç¼–ç çš„ç‰¹æ€§
 	//	return CodeType::UTF8_NO_BOM;
 	else
 		return default_code;
@@ -461,9 +461,9 @@ wstring CCommon::GetTemplatePath()
 {
 	wstring result;
 	wchar_t buff[MAX_PATH];
-	GetTempPath(MAX_PATH, buff);		//»ñÈ¡ÁÙÊ±ÎÄ¼ş¼ĞµÄÂ·¾¶
+	GetTempPath(MAX_PATH, buff);		//è·å–ä¸´æ—¶æ–‡ä»¶å¤¹çš„è·¯å¾„
 	result = buff;
-	if (!result.empty() && result.back() != L'\\' && result.back() != L'/')		//È·±£Â·¾¶ºóÃæÓĞĞ±¸Ü
+	if (!result.empty() && result.back() != L'\\' && result.back() != L'/')		//ç¡®ä¿è·¯å¾„åé¢æœ‰æ–œæ 
 		result.push_back(L'\\');
 	return result;
 }
@@ -507,16 +507,16 @@ wstring CCommon::GetSpecialDir(int csidl)
 
 int CCommon::DeleteAFile(HWND hwnd, _tstring file)
 {
-	file.push_back(_T('\0'));	//pFrom±ØĞëÒÔÁ½¸ö\0½áÎ²
-	LPCTSTR strTitle = CCommon::LoadText(IDS_DELETE);	//ÎÄ¼şÉ¾³ı½ø¶È¶Ô»°¿ò±êÌâ
-	SHFILEOPSTRUCT FileOp{};	//¶¨ÒåSHFILEOPSTRUCT½á¹¹¶ÔÏó
+	file.push_back(_T('\0'));	//pFromå¿…é¡»ä»¥ä¸¤ä¸ª\0ç»“å°¾
+	LPCTSTR strTitle = CCommon::LoadText(IDS_DELETE);	//æ–‡ä»¶åˆ é™¤è¿›åº¦å¯¹è¯æ¡†æ ‡é¢˜
+	SHFILEOPSTRUCT FileOp{};	//å®šä¹‰SHFILEOPSTRUCTç»“æ„å¯¹è±¡
 	FileOp.hwnd = hwnd;
-	FileOp.wFunc = FO_DELETE;	//Ö´ĞĞÎÄ¼şÉ¾³ı²Ù×÷;
+	FileOp.wFunc = FO_DELETE;	//æ‰§è¡Œæ–‡ä»¶åˆ é™¤æ“ä½œ;
 	FileOp.pFrom = file.c_str();
-	FileOp.fFlags = FOF_ALLOWUNDO;	//´Ë±êÖ¾Ê¹É¾³ıÎÄ¼ş±¸·İµ½Windows»ØÊÕÕ¾
+	FileOp.fFlags = FOF_ALLOWUNDO;	//æ­¤æ ‡å¿—ä½¿åˆ é™¤æ–‡ä»¶å¤‡ä»½åˆ°Windowså›æ”¶ç«™
 	FileOp.hNameMappings = NULL;
 	FileOp.lpszProgressTitle = strTitle;
-	return SHFileOperation(&FileOp);	//É¾³ıÎÄ¼ş
+	return SHFileOperation(&FileOp);	//åˆ é™¤æ–‡ä»¶
 }
 
 int CCommon::DeleteFiles(HWND hwnd, const vector<_tstring>& files)
@@ -532,8 +532,8 @@ int CCommon::DeleteFiles(HWND hwnd, const vector<_tstring>& files)
 
 int CCommon::CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 {
-	file_from.push_back(_T('\0'));	//pFrom±ØĞëÒÔÁ½¸ö\0½áÎ²
-	file_to.push_back(_T('\0'));	//pTo±ØĞëÒÔÁ½¸ö\0½áÎ²
+	file_from.push_back(_T('\0'));	//pFromå¿…é¡»ä»¥ä¸¤ä¸ª\0ç»“å°¾
+	file_to.push_back(_T('\0'));	//pToå¿…é¡»ä»¥ä¸¤ä¸ª\0ç»“å°¾
 	SHFILEOPSTRUCT FileOp{};
 	FileOp.hwnd = hwnd;
 	FileOp.wFunc = FO_COPY;
@@ -558,8 +558,8 @@ int CCommon::CopyFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_t
 
 int CCommon::MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to)
 {
-	file_from.push_back(_T('\0'));	//pFrom±ØĞëÒÔÁ½¸ö\0½áÎ²
-	file_to.push_back(_T('\0'));	//pTo±ØĞëÒÔÁ½¸ö\0½áÎ²
+	file_from.push_back(_T('\0'));	//pFromå¿…é¡»ä»¥ä¸¤ä¸ª\0ç»“å°¾
+	file_to.push_back(_T('\0'));	//pToå¿…é¡»ä»¥ä¸¤ä¸ª\0ç»“å°¾
 	SHFILEOPSTRUCT FileOp{};
 	FileOp.hwnd = hwnd;
 	FileOp.wFunc = FO_MOVE;
@@ -649,7 +649,7 @@ wstring CCommon::GetStringFromClipboard()
 		{
 			HANDLE hClip;
 			wchar_t *pBuf;
-			hClip = GetClipboardData(CF_UNICODETEXT); //»ñÈ¡¼ôÌù°åÊı¾İ
+			hClip = GetClipboardData(CF_UNICODETEXT); //è·å–å‰ªè´´æ¿æ•°æ®
 			pBuf = (wchar_t*)GlobalLock(hClip);
 			CloseClipboard();
 			return wstring(pBuf);
@@ -674,19 +674,19 @@ wstring CCommon::DisposeCmdLineFiles(const wstring & cmd_line, vector<wstring>& 
 	files.clear();
 	if (cmd_line.empty()) return wstring();
 	wstring path;
-	//ÏÈÕÒ³ö×Ö·û´®ÖĞµÄÎÄ¼ş¼ĞÂ·¾¶£¬´ÓÃüÁîĞĞ²ÎÊı´«µİ¹ıÀ´µÄÎÄ¼ş¿Ï¶¨¶¼ÊÇÍ¬Ò»¸öÎÄ¼ş¼ĞÏÂµÄ
-	if (cmd_line[0] == L'\"')		//Èç¹ûµÚÒ»¸öÎÄ¼şÓÃË«ÒıºÅ°üº¬ÆğÀ´
+	//å…ˆæ‰¾å‡ºå­—ç¬¦ä¸²ä¸­çš„æ–‡ä»¶å¤¹è·¯å¾„ï¼Œä»å‘½ä»¤è¡Œå‚æ•°ä¼ é€’è¿‡æ¥çš„æ–‡ä»¶è‚¯å®šéƒ½æ˜¯åŒä¸€ä¸ªæ–‡ä»¶å¤¹ä¸‹çš„
+	if (cmd_line[0] == L'\"')		//å¦‚æœç¬¬ä¸€ä¸ªæ–‡ä»¶ç”¨åŒå¼•å·åŒ…å«èµ·æ¥
 	{
-		int index1 = cmd_line.find(L'\"', 1);		//²éÕÒºÍµÚ1¸öË«ÒıºÅÆ¥ÅäµÄË«ÒıºÅ
-		int index2 = cmd_line.rfind(L'\\', index1);		//ÍùÇ°²éÕÒ·´Ğ±¸Ü
-		path = cmd_line.substr(1, index2);		//»ñÈ¡ÎÄ¼ş¼ĞÂ·¾¶£¨°üº¬×îºóÒ»¸ö·´Ğ±¸Ü£©
+		int index1 = cmd_line.find(L'\"', 1);		//æŸ¥æ‰¾å’Œç¬¬1ä¸ªåŒå¼•å·åŒ¹é…çš„åŒå¼•å·
+		int index2 = cmd_line.rfind(L'\\', index1);		//å¾€å‰æŸ¥æ‰¾åæ–œæ 
+		path = cmd_line.substr(1, index2);		//è·å–æ–‡ä»¶å¤¹è·¯å¾„ï¼ˆåŒ…å«æœ€åä¸€ä¸ªåæ–œæ ï¼‰
 		files.push_back(cmd_line.substr(1, index1 - 1));
 	}
-	else		//Èç¹ûµÚÒ»¸öÎÄ¼şÃ»ÓĞÓÃË«ÒıºÅ°üº¬ÆğÀ´£¬ÔòËµÃ÷Â·¾¶ÖĞ²»°üº¬¿Õ¸ñ£¬
+	else		//å¦‚æœç¬¬ä¸€ä¸ªæ–‡ä»¶æ²¡æœ‰ç”¨åŒå¼•å·åŒ…å«èµ·æ¥ï¼Œåˆ™è¯´æ˜è·¯å¾„ä¸­ä¸åŒ…å«ç©ºæ ¼ï¼Œ
 	{
-		int index1 = cmd_line.find(L' ');		//²éÕÒºÍµÚ1¿Õ¸ñ
-		int index2 = cmd_line.rfind(L'\\', index1);		//ÍùÇ°²éÕÒ·´Ğ±¸Ü
-		path = cmd_line.substr(0, index2 + 1);		//»ñÈ¡ÎÄ¼ş¼ĞÂ·¾¶£¨°üº¬×îºóÒ»¸ö·´Ğ±¸Ü£©
+		int index1 = cmd_line.find(L' ');		//æŸ¥æ‰¾å’Œç¬¬1ç©ºæ ¼
+		int index2 = cmd_line.rfind(L'\\', index1);		//å¾€å‰æŸ¥æ‰¾åæ–œæ 
+		path = cmd_line.substr(0, index2 + 1);		//è·å–æ–‡ä»¶å¤¹è·¯å¾„ï¼ˆåŒ…å«æœ€åä¸€ä¸ªåæ–œæ ï¼‰
 		files.push_back(cmd_line.substr(0, index1));
 	}
 	int path_size = path.size();
@@ -694,15 +694,15 @@ wstring CCommon::DisposeCmdLineFiles(const wstring & cmd_line, vector<wstring>& 
 	if (IsFolder(files[0]))
 	//if (files[0].size() > 4 && files[0][files[0].size() - 4] != L'.' && files[0][files[0].size() - 5] != L'.')
 	{
-		//Èç¹ûµÚ1¸öÎÄ¼ş²»ÊÇÎÄ¼ş¶øÊÇÎÄ¼ş¼Ğ£¬Ôò·µÖ±½Ó»Ø¸ÃÎÄ¼ş¼ĞµÄÂ·¾¶
+		//å¦‚æœç¬¬1ä¸ªæ–‡ä»¶ä¸æ˜¯æ–‡ä»¶è€Œæ˜¯æ–‡ä»¶å¤¹ï¼Œåˆ™è¿”ç›´æ¥å›è¯¥æ–‡ä»¶å¤¹çš„è·¯å¾„
 		return files[0];
 	}
 	int index{};
 	while (true)
 	{
-		index = cmd_line.find(path, index + path_size);		//´ÓµÚ2¸ö¿ªÊ¼²éÕÒÂ·¾¶³öÏÖµÄÎ»ÖÃ
+		index = cmd_line.find(path, index + path_size);		//ä»ç¬¬2ä¸ªå¼€å§‹æŸ¥æ‰¾è·¯å¾„å‡ºç°çš„ä½ç½®
 		if (index == string::npos) break;
-		if (index > 0 && cmd_line[index - 1] == L'\"')		//Èç¹ûÂ·¾¶Ç°ÃæÒ»¸ö×Ö·ûÊÇË«ÒıºÅ
+		if (index > 0 && cmd_line[index - 1] == L'\"')		//å¦‚æœè·¯å¾„å‰é¢ä¸€ä¸ªå­—ç¬¦æ˜¯åŒå¼•å·
 		{
 			int index1 = cmd_line.find(L'\"', index);
 			files.push_back(cmd_line.substr(index, index1 - index));
@@ -715,10 +715,10 @@ wstring CCommon::DisposeCmdLineFiles(const wstring & cmd_line, vector<wstring>& 
 	}
 	return wstring();
 	//CString out_info;
-	//out_info += _T("ÃüÁîĞĞ²ÎÊı£º");
+	//out_info += _T("å‘½ä»¤è¡Œå‚æ•°ï¼š");
 	//out_info += cmd_line.c_str();
 	//out_info += _T("\r\n");
-	//out_info += _T("Â·¾¶£º");
+	//out_info += _T("è·¯å¾„ï¼š");
 	//out_info += path.c_str();
 	//out_info += _T("\r\n");
 	//CCommon::WriteLog(L".\\command.log", wstring{ out_info });
@@ -753,15 +753,15 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 		return false;
 
 	HRESULT hr;
-	IShellLink     *pLink;  //IShellLink¶ÔÏóÖ¸Õë
-	IPersistFile   *ppf; //IPersisFil¶ÔÏóÖ¸Õë
+	IShellLink     *pLink;  //IShellLinkå¯¹è±¡æŒ‡é’ˆ
+	IPersistFile   *ppf; //IPersisFilå¯¹è±¡æŒ‡é’ˆ
 
-	//´´½¨IShellLink¶ÔÏó
+	//åˆ›å»ºIShellLinkå¯¹è±¡
 	hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&pLink);
 	if (FAILED(hr))
 		return false;
 
-	//´ÓIShellLink¶ÔÏóÖĞ»ñÈ¡IPersistFile½Ó¿Ú
+	//ä»IShellLinkå¯¹è±¡ä¸­è·å–IPersistFileæ¥å£
 	hr = pLink->QueryInterface(IID_IPersistFile, (void**)&ppf);
 	if (FAILED(hr))
 	{
@@ -769,25 +769,25 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 		return false;
 	}
 
-	TCHAR file_path[MAX_PATH];		//µ±Ç°½ø³ÌexeÎÄ¼şÂ·¾¶
+	TCHAR file_path[MAX_PATH];		//å½“å‰è¿›ç¨‹exeæ–‡ä»¶è·¯å¾„
 	GetModuleFileName(NULL, file_path, MAX_PATH);
-	LPCTSTR pFilePath;				//¿ì½İ·½Ê½Ä¿±ê
+	LPCTSTR pFilePath;				//å¿«æ·æ–¹å¼ç›®æ ‡
 
-	//Ä¿±ê
+	//ç›®æ ‡
 	if (lpszFileName == NULL)
 		pFilePath = file_path;
 	else
 		pFilePath = lpszFileName;
 	pLink->SetPath(pFilePath);
 
-	//¹¤×÷Ä¿Â¼
+	//å·¥ä½œç›®å½•
 	if (lpszWorkDir != NULL)
 	{
 		pLink->SetWorkingDirectory(lpszWorkDir);
 	}
 	else
 	{
-		//ÉèÖÃ¹¤×÷Ä¿Â¼Îª¿ì½İ·½Ê½Ä¿±êËùÔÚÎ»ÖÃ
+		//è®¾ç½®å·¥ä½œç›®å½•ä¸ºå¿«æ·æ–¹å¼ç›®æ ‡æ‰€åœ¨ä½ç½®
 		_tstring workDir = pFilePath;
 		int index = workDir.find_last_of(_T("\\/"));
 		if (index != workDir.npos)
@@ -795,38 +795,38 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 		pLink->SetWorkingDirectory(workDir.c_str());
 	}
 
-	//¿ì½İ¼ü
+	//å¿«æ·é”®
 	if (wHotkey != 0)
 		pLink->SetHotkey(wHotkey);
 
-	//±¸×¢
+	//å¤‡æ³¨
 	if (lpszDescription != NULL)
 		pLink->SetDescription(lpszDescription);
 
-	//ÏÔÊ¾·½Ê½
+	//æ˜¾ç¤ºæ–¹å¼
 	pLink->SetShowCmd(iShowCmd);
 
-	//²ÎÊı
+	//å‚æ•°
 	if (lpszArguments != NULL)
 		pLink->SetArguments(lpszArguments);
 
-	//Í¼±ê
+	//å›¾æ ‡
 	if (nIconOffset > 0)
 		pLink->SetIconLocation(pFilePath, nIconOffset);
 
-	//¿ì½İ·½Ê½µÄÂ·¾¶ + Ãû³Æ
+	//å¿«æ·æ–¹å¼çš„è·¯å¾„ + åç§°
 	_tstring shortcutName;
 	shortcutName = lpszLnkFileDir;
 	if(!shortcutName.empty() && shortcutName.back()!=_T('\\') && shortcutName.back() != _T('/'))
 		shortcutName.push_back(_T('\\'));
 
-	if (lpszLnkFileName != NULL) //Ö¸¶¨ÁË¿ì½İ·½Ê½µÄÃû³Æ
+	if (lpszLnkFileName != NULL) //æŒ‡å®šäº†å¿«æ·æ–¹å¼çš„åç§°
 	{
 		shortcutName += lpszLnkFileName;
 	}
 	else
 	{
-		//Ã»ÓĞÖ¸¶¨Ãû³Æ£¬¾Í´ÓÈ¡Ö¸¶¨ÎÄ¼şµÄÎÄ¼şÃû×÷Îª¿ì½İ·½Ê½Ãû³Æ¡£
+		//æ²¡æœ‰æŒ‡å®šåç§°ï¼Œå°±ä»å–æŒ‡å®šæ–‡ä»¶çš„æ–‡ä»¶åä½œä¸ºå¿«æ·æ–¹å¼åç§°ã€‚
 		_tstring fileName = pFilePath;
 
 		int index1, index2;
@@ -844,7 +844,7 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 		shortcutName += fileName;
 	}
 
-	//±£´æ¿ì½İ·½Ê½µ½Ö¸¶¨Ä¿Â¼ÏÂ
+	//ä¿å­˜å¿«æ·æ–¹å¼åˆ°æŒ‡å®šç›®å½•ä¸‹
 	hr = ppf->Save(shortcutName.c_str(), TRUE);
 
 	ppf->Release();
@@ -855,9 +855,9 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 void CCommon::GetFiles(wstring file_name, vector<wstring>& files)
 {
 	files.clear();
-	//ÎÄ¼ş¾ä±ú
+	//æ–‡ä»¶å¥æŸ„
 	intptr_t hFile = 0;
-	//ÎÄ¼şĞÅÏ¢£¨ÓÃUnicode±£´æÊ¹ÓÃ_wfinddata_t£¬¶à×Ö½Ú×Ö·û¼¯Ê¹ÓÃ_finddata_t£©
+	//æ–‡ä»¶ä¿¡æ¯ï¼ˆç”¨Unicodeä¿å­˜ä½¿ç”¨_wfinddata_tï¼Œå¤šå­—èŠ‚å­—ç¬¦é›†ä½¿ç”¨_finddata_tï¼‰
 	_wfinddata_t fileinfo;
 	if ((hFile = _wfindfirst(file_name.c_str(), &fileinfo)) != -1)
 	{
@@ -872,9 +872,9 @@ void CCommon::GetFiles(wstring file_name, vector<wstring>& files)
 void CCommon::GetImageFiles(wstring file_name, vector<wstring>& files)
 {
 	files.clear();
-	//ÎÄ¼ş¾ä±ú
+	//æ–‡ä»¶å¥æŸ„
 	intptr_t hFile = 0;
-	//ÎÄ¼şĞÅÏ¢£¨ÓÃUnicode±£´æÊ¹ÓÃ_wfinddata_t£¬¶à×Ö½Ú×Ö·û¼¯Ê¹ÓÃ_finddata_t£©
+	//æ–‡ä»¶ä¿¡æ¯ï¼ˆç”¨Unicodeä¿å­˜ä½¿ç”¨_wfinddata_tï¼Œå¤šå­—èŠ‚å­—ç¬¦é›†ä½¿ç”¨_finddata_tï¼‰
 	_wfinddata_t fileinfo;
 	if ((hFile = _wfindfirst(file_name.c_str(), &fileinfo)) != -1)
 	{
@@ -891,9 +891,9 @@ bool CCommon::IsFolderMatchKeyWord(wstring dir, const wstring& key_word)
 {
     
 
-    //ÎÄ¼ş¾ä±ú
+    //æ–‡ä»¶å¥æŸ„
     intptr_t hFile = 0;
-    //ÎÄ¼şĞÅÏ¢
+    //æ–‡ä»¶ä¿¡æ¯
     _wfinddata_t fileinfo;
     if (dir.back() != '\\' && dir.back() != '/')
         dir.push_back('\\');
@@ -910,7 +910,7 @@ bool CCommon::IsFolderMatchKeyWord(wstring dir, const wstring& key_word)
             if (file_name == L"." || file_name == L"..")
                 continue;
 
-            if (CCommon::IsFolder(dir + file_name))        //µ±Ç°ÊÇÎÄ¼ş¼Ğ£¬Ôòµİ¹éµ÷ÓÃ
+            if (CCommon::IsFolder(dir + file_name))        //å½“å‰æ˜¯æ–‡ä»¶å¤¹ï¼Œåˆ™é€’å½’è°ƒç”¨
             {
                 if (IsFolderMatchKeyWord(dir + file_name, key_word))
                     return true;
@@ -935,8 +935,8 @@ bool CCommon::FileIsImage(const wstring & file_name)
 	index = file_name.find_last_of(L'.');
 	wstring type;
 	if (index != string::npos)
-		type = file_name.substr(index);			//»ñÈ¡À©Õ¹Ãû
-	std::transform(type.begin(), type.end(), type.begin(), tolower);		//½«À©Õ¹Ãû×ª»»³ÉĞ¡Ğ´
+		type = file_name.substr(index);			//è·å–æ‰©å±•å
+	std::transform(type.begin(), type.end(), type.begin(), tolower);		//å°†æ‰©å±•åè½¬æ¢æˆå°å†™
 	return (type == L".jpg" || type == L".jpeg" || type == L".png" || type == L".gif" || type == L".bmp");
 }
 
@@ -944,12 +944,12 @@ wstring CCommon::GetRandomString(int length)
 {
 	wstring result;
 	SYSTEMTIME current_time;
-	GetLocalTime(&current_time);			//»ñÈ¡µ±Ç°Ê±¼ä
-	srand(current_time.wMilliseconds);		//ÓÃµ±Ç°Ê±¼äµÄºÁÃëÊıÉèÖÃ²úÉúËæ»úÊıµÄÖÖ×Ó
-	int char_type;		//µ±Ç°ÒªÉú³ÉµÄ×Ö·ûÀàĞÍ 0£ºÊı×Ö£»1£ºĞ¡Ğ´×ÖÄ¸£»2£º´óĞ´×ÖÄ¸
+	GetLocalTime(&current_time);			//è·å–å½“å‰æ—¶é—´
+	srand(current_time.wMilliseconds);		//ç”¨å½“å‰æ—¶é—´çš„æ¯«ç§’æ•°è®¾ç½®äº§ç”Ÿéšæœºæ•°çš„ç§å­
+	int char_type;		//å½“å‰è¦ç”Ÿæˆçš„å­—ç¬¦ç±»å‹ 0ï¼šæ•°å­—ï¼›1ï¼šå°å†™å­—æ¯ï¼›2ï¼šå¤§å†™å­—æ¯
 	for (int i{}; i < length; i++)
 	{
-		char_type = rand() % 3;		//Ëæ»úÈ·¶¨ÒªÉú³ÉµÄ×Ö·ûÀàĞÍ
+		char_type = rand() % 3;		//éšæœºç¡®å®šè¦ç”Ÿæˆçš„å­—ç¬¦ç±»å‹
 		wchar_t current_char;
 		switch (char_type)
 		{
@@ -976,11 +976,11 @@ bool CCommon::IsFileNameNumbered(const wstring & file_name, int& number, size_t&
 		return false;
 	size_t size{ file_name.size() };
 	//size_t index;
-	index = file_name.rfind(L'(');		//ÍùÇ°²éÕÒÓÒÀ¨ºÅ
-	if (index == wstring::npos || index == 0)		//×óÀ¨ºÅ²»ÄÜÔÚ×Ö·û´®¿ªÍ·
+	index = file_name.rfind(L'(');		//å¾€å‰æŸ¥æ‰¾å³æ‹¬å·
+	if (index == wstring::npos || index == 0)		//å·¦æ‹¬å·ä¸èƒ½åœ¨å­—ç¬¦ä¸²å¼€å¤´
 		return false;
-	wstring number_str{ file_name.substr(index + 1, size - index - 2) };		//»ñÈ¡Á½¸öÀ¨ºÅÖ®¼äµÄÎÄ±¾
-	if (StrIsNumber(number_str))				//ÅĞ¶ÏÎÄ±¾ÊÇ·ñÊÇÊı×Ö
+	wstring number_str{ file_name.substr(index + 1, size - index - 2) };		//è·å–ä¸¤ä¸ªæ‹¬å·ä¹‹é—´çš„æ–‡æœ¬
+	if (StrIsNumber(number_str))				//åˆ¤æ–­æ–‡æœ¬æ˜¯å¦æ˜¯æ•°å­—
 	{
 		number = _wtoi(number_str.c_str());
 		return true;
@@ -993,8 +993,8 @@ bool CCommon::IsFileNameNumbered(const wstring & file_name, int& number, size_t&
 
 void CCommon::SizeZoom(CSize & size, int side)
 {
-	float width_height_ratio{ static_cast<float>(size.cx) / size.cy };	//³¤¿í±È
-	if (width_height_ratio > 1)		//³¤¿í±È´óÓÚ1£º1
+	float width_height_ratio{ static_cast<float>(size.cx) / size.cy };	//é•¿å®½æ¯”
+	if (width_height_ratio > 1)		//é•¿å®½æ¯”å¤§äº1ï¼š1
 	{
 		size.cx = side;
 		size.cy = static_cast<int>(side / width_height_ratio);
@@ -1168,7 +1168,7 @@ void CCommon::WStringCopy(wchar_t * str_dest, int dest_size, const wchar_t * str
 	int i;
 	for (i = 0; i < dest_size && i < source_size && str_source[i] != L'\0'; i++)
 		str_dest[i] = str_source[i];
-	//È·±£Ä¿±ê×Ö·û´®Ä©Î²ÓĞÒ»¸ö\0
+	//ç¡®ä¿ç›®æ ‡å­—ç¬¦ä¸²æœ«å°¾æœ‰ä¸€ä¸ª\0
 	int copy_cnt = i;
 	if (copy_cnt < dest_size)
 		str_dest[copy_cnt] = L'\0';
@@ -1245,7 +1245,7 @@ double CCommon::DoubleRound(double dVal, int format)
 
 int CCommon::IconSizeNormalize(int size)
 {
-	//²éÕÒ±ê×¼Í¼±ê´óĞ¡ÁĞ±íÖĞºÍÖ¸¶¨´óĞ¡×î½Ó½üµÄÒ»¸ö£¬È»ºó½«Æä·µ»Ø
+	//æŸ¥æ‰¾æ ‡å‡†å›¾æ ‡å¤§å°åˆ—è¡¨ä¸­å’ŒæŒ‡å®šå¤§å°æœ€æ¥è¿‘çš„ä¸€ä¸ªï¼Œç„¶åå°†å…¶è¿”å›
 
 	const vector<int> standard_size{ 16, 20, 24, 32, 48, 64, 128, 256, 512 };
 	int min_diff = MAXINT;
@@ -1268,7 +1268,7 @@ int CCommon::IconSizeNormalize(int size)
 void CCommon::SetWindowOpacity(HWND hWnd, int opacity)
 {
 	SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-	::SetLayeredWindowAttributes(hWnd, 0, opacity * 255 / 100, LWA_ALPHA);  //Í¸Ã÷¶ÈÈ¡Öµ·¶Î§Îª0~255
+	::SetLayeredWindowAttributes(hWnd, 0, opacity * 255 / 100, LWA_ALPHA);  //é€æ˜åº¦å–å€¼èŒƒå›´ä¸º0~255
 }
 
 bool CCommon::StringIsVersion(LPCTSTR str)
@@ -1306,15 +1306,15 @@ bool CCommon::SaveDataToFile(const string& data, const wstring& file_path)
 void CCommon::DoOpenFileDlg(const wstring& filter, vector<wstring>& path_list, CWnd* pParent)
 {
     path_list.clear();
-    //¹¹Ôì´ò¿ªÎÄ¼ş¶Ô»°¿ò
+    //æ„é€ æ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
     CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), pParent);
-    //ÉèÖÃ±£´æÎÄ¼şÃûµÄ×Ö·û»º³åµÄ´óĞ¡Îª128kB£¨Èç¹ûÒÔÆ½¾ùÒ»¸öÎÄ¼şÃû³¤¶ÈÎª32×Ö½Ú¼ÆËã£¬×î¶à¿ÉÒÔ´ò¿ª´óÔ¼4096¸öÎÄ¼ş£©
+    //è®¾ç½®ä¿å­˜æ–‡ä»¶åçš„å­—ç¬¦ç¼“å†²çš„å¤§å°ä¸º128kBï¼ˆå¦‚æœä»¥å¹³å‡ä¸€ä¸ªæ–‡ä»¶åé•¿åº¦ä¸º32å­—èŠ‚è®¡ç®—ï¼Œæœ€å¤šå¯ä»¥æ‰“å¼€å¤§çº¦4096ä¸ªæ–‡ä»¶ï¼‰
     fileDlg.m_ofn.nMaxFile = 128 * 1024;
     LPTSTR ch = new TCHAR[fileDlg.m_ofn.nMaxFile];
     fileDlg.m_ofn.lpstrFile = ch;
-    //¶ÔÄÚ´æ¿éÇåÁã
+    //å¯¹å†…å­˜å—æ¸…é›¶
     ZeroMemory(fileDlg.m_ofn.lpstrFile, sizeof(TCHAR) * fileDlg.m_ofn.nMaxFile);
-    //ÏÔÊ¾´ò¿ªÎÄ¼ş¶Ô»°¿ò
+    //æ˜¾ç¤ºæ‰“å¼€æ–‡ä»¶å¯¹è¯æ¡†
     if (IDOK == fileDlg.DoModal())
     {
         POSITION posFile = fileDlg.GetStartPosition();
@@ -1345,19 +1345,19 @@ void CCommon::FileAutoRename(wstring& file_path)
 {
 	while (CCommon::FileExist(file_path))
 	{
-		//ÅĞ¶ÏÎÄ¼şÃûµÄÄ©Î²ÊÇ·ñ·ûºÏ¡°(Êı×Ö)¡±µÄĞÎÊ½
-		wstring file_name;		//ÎÄ¼şÃû£¨²»º¬À©Õ¹Ãû£©
+		//åˆ¤æ–­æ–‡ä»¶åçš„æœ«å°¾æ˜¯å¦ç¬¦åˆâ€œ(æ•°å­—)â€çš„å½¢å¼
+		wstring file_name;		//æ–‡ä»¶åï¼ˆä¸å«æ‰©å±•åï¼‰
 		CFilePathHelper c_file_path(file_path);
 		file_name = c_file_path.GetFileNameWithoutExtension();
 		wstring ext{ c_file_path.GetFileExtension() };
 		int num;
 		size_t index;
-		bool is_numbered{ CCommon::IsFileNameNumbered(file_name, num, index) };		//ÎÄ¼şÃûµÄÄ©Î²ÊÇ·ñ·ûºÏ¡°(Êı×Ö)¡±µÄĞÎÊ½
-		if (!is_numbered)		//Èç¹ûÎÄ¼şÃûÄ©Î²Ã»ÓĞ¡°(Êı×Ö)¡±£¬ÔòÔÚÄ©Î²Ìí¼Ó¡° (1)¡±
+		bool is_numbered{ CCommon::IsFileNameNumbered(file_name, num, index) };		//æ–‡ä»¶åçš„æœ«å°¾æ˜¯å¦ç¬¦åˆâ€œ(æ•°å­—)â€çš„å½¢å¼
+		if (!is_numbered)		//å¦‚æœæ–‡ä»¶åæœ«å°¾æ²¡æœ‰â€œ(æ•°å­—)â€ï¼Œåˆ™åœ¨æœ«å°¾æ·»åŠ â€œ (1)â€
 		{
 			file_name += L" (1)";
 		}
-		else		//·ñÔò£¬½«Ô­À´µÄÊı×Ö¼Ó1
+		else		//å¦åˆ™ï¼Œå°†åŸæ¥çš„æ•°å­—åŠ 1
 		{
 			file_name = file_name.substr(0, index);
 			CString num_str;

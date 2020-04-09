@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "GaussBlur.h"
 
 
@@ -20,11 +20,11 @@ void CGaussBlur::SetSigma(double sigma)
 	m_r = (int)(m_sigma * 3 + 0.5);
 	if (m_r <= 0) m_r = 1;
 
-	//·ÖÅäÄ£°å
+	//åˆ†é…æ¨¡æ¿
 	LPVOID pOldTempl = m_pTempl;
 	m_pTempl = (double*)realloc(m_pTempl, sizeof(double) * (m_r + 1));
 
-	//·ÖÅäÊ§°Ü£¿
+	//åˆ†é…å¤±è´¥ï¼Ÿ
 	if (m_pTempl == NULL)
 	{
 		if (pOldTempl != NULL)
@@ -33,20 +33,20 @@ void CGaussBlur::SetSigma(double sigma)
 		return;
 	}
 
-	//¼ÆËã p[0] »Ò¶ÈÖµÎª1 µÄÄ£°åÃæ
+	//è®¡ç®— p[0] ç°åº¦å€¼ä¸º1 çš„æ¨¡æ¿é¢
 	double k1 = (double)((-0.5) / (m_sigma * m_sigma));
 	for (i = 0; i <= m_r; i++)
 		m_pTempl[i] = exp(k1 * i * i);
 
-	//¼ÆËãÄ£°å¼ÓÈ¨×ÜºÍ
+	//è®¡ç®—æ¨¡æ¿åŠ æƒæ€»å’Œ
 	double sum = m_pTempl[0];
 	for (i = 1; i <= m_r; i++)
 	{
 		sum += (m_pTempl[i] * 2);
 	}
 
-	//¹éÒ»»¯
-	sum = (double)(1.0 / sum); //È¡µ¹Êı
+	//å½’ä¸€åŒ–
+	sum = (double)(1.0 / sum); //å–å€’æ•°
 	for (i = 0; i <= m_r; i++)
 		m_pTempl[i] *= sum;
 }
@@ -80,7 +80,7 @@ bool CGaussBlur::Filter(LPCVOID pSrc, LPVOID pDest, int width, int height, int b
 	if (pSrc == NULL || pDest == NULL)
 		return false;
 
-	//Ö»ÄÜ´¦Àí 8, 24£¬ 32 bpp
+	//åªèƒ½å¤„ç† 8, 24ï¼Œ 32 bpp
 	if (bpp != 24 && bpp != 8 && bpp != 32)
 		return false;
 
@@ -91,7 +91,7 @@ bool CGaussBlur::Filter(LPCVOID pSrc, LPVOID pDest, int width, int height, int b
 	int stride = (width * bpp + 31) / 32 * 4;
 	int pixelSize = bpp / 8;
 
-	//ÉêÇë»º³åÇø£¬´æ´¢ÖĞ¼ä½á¹û
+	//ç”³è¯·ç¼“å†²åŒºï¼Œå­˜å‚¨ä¸­é—´ç»“æœ
 	LPVOID pTemp = malloc(stride * absHeight);
 	if (pTemp == NULL)
 		return false;
@@ -139,14 +139,14 @@ DWORD CGaussBlur::GaussBlurThreadProc8(LPVOID lpParameters)
 
 	if (pInfo->bHorz)
 	{
-		//Ë®Æ½·½Ïò
+		//æ°´å¹³æ–¹å‘
 		pSubVal = &subCol;
 		pRefVal = &col;
 		MaxVal = pInfo->width - 1;
 	}
 	else
 	{
-		//´¹Ö±·½Ïò
+		//å‚ç›´æ–¹å‘
 		pSubVal = &subRow;
 		pRefVal = &row;
 		MaxVal = pInfo->height - 1;
@@ -168,7 +168,7 @@ DWORD CGaussBlur::GaussBlurThreadProc8(LPVOID lpParameters)
 
 			for (x = -pInfo->r; x <= pInfo->r; x++)
 			{
-				//±ß½ç´¦Àí
+				//è¾¹ç•Œå¤„ç†
 				x1 = (x >= 0) ? x : (-x);
 				*pSubVal = *pRefVal + x;
 				if (*pSubVal < 0) *pSubVal = 0;
@@ -194,14 +194,14 @@ DWORD CGaussBlur::GaussBlurThreadProc24(LPVOID lpParameters)
 
 	if (pInfo->bHorz)
 	{
-		//Ë®Æ½·½Ïò
+		//æ°´å¹³æ–¹å‘
 		pSubVal = &subCol;
 		pRefVal = &col;
 		MaxVal = pInfo->width - 1;
 	}
 	else
 	{
-		//´¹Ö±·½Ïò
+		//å‚ç›´æ–¹å‘
 		pSubVal = &subRow;
 		pRefVal = &row;
 		MaxVal = pInfo->height - 1;
@@ -228,12 +228,12 @@ DWORD CGaussBlur::GaussBlurThreadProc24(LPVOID lpParameters)
 				x1 = (x >= 0) ? x : (-x);
 				*pSubVal = *pRefVal + x;
 
-				//±ß½ç´¦Àí£ºPhotoshop ²ÉÓÃµÄÊÇ·½·¨1¡£
-				//·½·¨1£ºÈ¡±ßÔµÏñËØ£¨Í¼Ïñ±ßÔµÏñËØÏòÄÚ²¿À©É¢£¡£©
+				//è¾¹ç•Œå¤„ç†ï¼šPhotoshop é‡‡ç”¨çš„æ˜¯æ–¹æ³•1ã€‚
+				//æ–¹æ³•1ï¼šå–è¾¹ç¼˜åƒç´ ï¼ˆå›¾åƒè¾¹ç¼˜åƒç´ å‘å†…éƒ¨æ‰©æ•£ï¼ï¼‰
 				if (*pSubVal < 0) *pSubVal = 0;
 				else if (*pSubVal > MaxVal) *pSubVal = MaxVal;
 
-				//·½·¨2£ºÈ¡µ±Ç°ÏñËØ£¨Ê¹µÃÔ½¿¿½üÍ¼Ïñ±ßÔµµÄµØ·½Ô½ÇåÎú£©
+				//æ–¹æ³•2ï¼šå–å½“å‰åƒç´ ï¼ˆä½¿å¾—è¶Šé è¿‘å›¾åƒè¾¹ç¼˜çš„åœ°æ–¹è¶Šæ¸…æ™°ï¼‰
 				/*
 				if(*pSubVal < 0 || *pSubVal > MaxVal)
 				*pSubVal = *pRefVal;

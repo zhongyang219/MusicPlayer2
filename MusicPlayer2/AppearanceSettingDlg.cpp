@@ -1,4 +1,4 @@
-// AppearanceSettingDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// AppearanceSettingDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// CAppearanceSettingDlg ¶Ô»°¿ò
+// CAppearanceSettingDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(CAppearanceSettingDlg, CTabDlg)
 
@@ -56,12 +56,12 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
 void CAppearanceSettingDlg::SetTransparency()
 {
 	::SetWindowLong(m_hMainWnd, GWL_EXSTYLE, GetWindowLong(m_hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-	::SetLayeredWindowAttributes(m_hMainWnd, 0, m_data.window_transparency * 255 / 100, LWA_ALPHA);  //Í¸Ã÷¶ÈÈ¡Öµ·¶Î§Îª0~255
+	::SetLayeredWindowAttributes(m_hMainWnd, 0, m_data.window_transparency * 255 / 100, LWA_ALPHA);  //é€æ˜åº¦å–å€¼èŒƒå›´ä¸º0~255
 }
 
 void CAppearanceSettingDlg::ClickColor()
 {
-	//µã»÷ÁËÔ¤ÖÃÑÕÉ«ÖĞµÄÆäÖĞÒ»¸öÊ±£¬È¡Ïû¡°¸úËæÏµÍ³Ö÷ÌâÉ«¡±¸´Ñ¡°´Å¥µÄÑ¡ÖĞ
+	//ç‚¹å‡»äº†é¢„ç½®é¢œè‰²ä¸­çš„å…¶ä¸­ä¸€ä¸ªæ—¶ï¼Œå–æ¶ˆâ€œè·Ÿéšç³»ç»Ÿä¸»é¢˜è‰²â€å¤é€‰æŒ‰é’®çš„é€‰ä¸­
 	m_color_static.SetFillColor(m_data.theme_color.original_color);
 	m_data.theme_color_follow_system = false;
 	m_follow_system_color_check.SetCheck(FALSE);
@@ -141,14 +141,14 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
 END_MESSAGE_MAP()
 
 
-// CAppearanceSettingDlg ÏûÏ¢´¦Àí³ÌĞò
+// CAppearanceSettingDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 BOOL CAppearanceSettingDlg::OnInitDialog()
 {
 	CTabDlg::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
 	//SetBackgroundColor(RGB(255, 255, 255));
 
 	//SetDlgItemText(IDC_FONT_NAME_EDIT, m_font.c_str());
@@ -167,10 +167,10 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	str.Format(_T("%d%%"), theApp.m_app_setting_data.sprctrum_height);
 	SetDlgItemText(IDC_SPECTRUM_HEIGHT_STATIC, str);
 
-	//½«½¹µãÉèÖÃµ½¡°ÉèÖÃ×ÖÌå¡±°´Å¥ÉÏ
+	//å°†ç„¦ç‚¹è®¾ç½®åˆ°â€œè®¾ç½®å­—ä½“â€æŒ‰é’®ä¸Š
 	//GetDlgItem(IDC_SET_FONT_BUTTON)->SetFocus();
 
-	//Îª¿Ø¼şÉèÖÃSS_NOTIFYÊôĞÔ£¬ÒÔÔÊĞíÏìÓ¦ÏûÏ¢
+	//ä¸ºæ§ä»¶è®¾ç½®SS_NOTIFYå±æ€§ï¼Œä»¥å…è®¸å“åº”æ¶ˆæ¯
 	DWORD dwStyle = m_color_static.GetStyle();
 	::SetWindowLong(m_color_static.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 	::SetWindowLong(m_color_static1.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
@@ -194,16 +194,16 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
 	DrawColor();
 
-	////ÉèÖÃ¡°¸ü¶àÑÕÉ«¡±°´Å¥µÄ¿ÉÓÃ×´Ì¬
+	////è®¾ç½®â€œæ›´å¤šé¢œè‰²â€æŒ‰é’®çš„å¯ç”¨çŠ¶æ€
 	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_data.theme_color_follow_system);
-	//¸ù¾İÊÇ·ñ¸úËæÏµÍ³ÉèÖÃ¸´Ñ¡°´Å¥µÄ³õÊ¼×´Ì¬
+	//æ ¹æ®æ˜¯å¦è·Ÿéšç³»ç»Ÿè®¾ç½®å¤é€‰æŒ‰é’®çš„åˆå§‹çŠ¶æ€
 #ifdef COMPILE_IN_WIN_XP
 	m_follow_system_color_check.EnableWindow(FALSE);
 #else
 	//if (CWinVersionHelper::IsWindows8OrLater())
 	m_follow_system_color_check.SetCheck(m_data.theme_color_follow_system);
 	//else
-	//	m_follow_system_color_check.EnableWindow(FALSE);		//Win8ÒÔÏÂÏµÍ³½ûÓÃ´Ë¸´Ñ¡°´Å¥
+	//	m_follow_system_color_check.EnableWindow(FALSE);		//Win8ä»¥ä¸‹ç³»ç»Ÿç¦ç”¨æ­¤å¤é€‰æŒ‰é’®
 #endif // !COMPILE_IN_WIN_XP
 
 	//
@@ -247,27 +247,27 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	SetControlEnable();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	LOGFONT lf{};             //LOGFONT±äÁ¿
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	LOGFONT lf{};             //LOGFONTå˜é‡
 	theApp.m_font_set.lyric.GetFont().GetLogFont(&lf);
 	CCommon::NormalizeFont(lf);
-	CFontDialog fontDlg(&lf);	//¹¹Ôì×ÖÌå¶Ô»°¿ò£¬³õÊ¼Ñ¡Ôñ×ÖÌåÎªÖ®Ç°×ÖÌå
-	if (IDOK == fontDlg.DoModal())     // ÏÔÊ¾×ÖÌå¶Ô»°¿ò
+	CFontDialog fontDlg(&lf);	//æ„é€ å­—ä½“å¯¹è¯æ¡†ï¼Œåˆå§‹é€‰æ‹©å­—ä½“ä¸ºä¹‹å‰å­—ä½“
+	if (IDOK == fontDlg.DoModal())     // æ˜¾ç¤ºå­—ä½“å¯¹è¯æ¡†
 	{
-		//»ñÈ¡×ÖÌåĞÅÏ¢
+		//è·å–å­—ä½“ä¿¡æ¯
 		m_data.lyric_font.name = fontDlg.GetFaceName();
 		m_data.lyric_font.size = fontDlg.GetSize() / 10;
 		m_data.lyric_font.style.bold = (fontDlg.IsBold() != FALSE);
 		m_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
 		m_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
 		m_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
-		//½«×ÖÌåÒÑ¸ü¸ÄflagÖÃÎªtrue
+		//å°†å­—ä½“å·²æ›´æ”¹flagç½®ä¸ºtrue
 		m_font_changed = true;
 	}
 }
@@ -275,10 +275,10 @@ void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 
 //void CAppearanceSettingDlg::OnNMReleasedcaptureTransparentSlider(NMHDR *pNMHDR, LRESULT *pResult)
 //{
-//	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	m_data.window_transparency = m_transparency_slid.GetPos();
 //	CString str;
-//	str.Format(_T("²»Í¸Ã÷¶È£º%%%d"), m_data.window_transparency);
+//	str.Format(_T("ä¸é€æ˜åº¦ï¼š%%%d"), m_data.window_transparency);
 //	SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 //	*pResult = 0;
 //}
@@ -286,8 +286,8 @@ void CAppearanceSettingDlg::OnBnClickedSetFontButton()
 
 void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/
-	//»¬¶¯Ë®Æ½»¬¶¯ÌõÊ±ÏìÓ¦´Ëº¯Êı
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/
+	//æ»‘åŠ¨æ°´å¹³æ»‘åŠ¨æ¡æ—¶å“åº”æ­¤å‡½æ•°
 	if ((pScrollBar->GetDlgCtrlID() == IDC_TRANSPARENT_SLIDER))
 	{
 		m_data.window_transparency = m_transparency_slid.GetPos();
@@ -295,7 +295,7 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 		str.Format(_T("%d%%"), m_data.window_transparency);
 		SetDlgItemText(IDC_TRANSPARENT_STATIC, str);
 
-		SetTransparency();		//ÊµÊ±ÉèÖÃ´°¿Ú²»Í¸Ã÷¶È
+		SetTransparency();		//å®æ—¶è®¾ç½®çª—å£ä¸é€æ˜åº¦
 	}
 	if ((pScrollBar->GetDlgCtrlID() == IDC_SPECTRUM_HEIGHT_SLIDER))
 	{
@@ -327,17 +327,17 @@ void CAppearanceSettingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScro
 
 void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CColorDialog colorDlg(m_data.theme_color.original_color, 0, this);
 	if (colorDlg.DoModal() == IDOK)
 	{
 		m_data.theme_color.original_color = colorDlg.GetColor();
 		//if (m_data.theme_color.original_color == 0)
-		//	MessageBox(_T("¾¯¸æ£º½«Ö÷ÌâÑÕÉ«ÉèÖÃ³ÉºÚÉ«»áÊ¹²¥·ÅÁĞ±íÖĞÕıÔÚ²¥·ÅµÄÏîÄ¿¿´²»¼û£¡"), NULL, MB_ICONWARNING);
+		//	MessageBox(_T("è­¦å‘Šï¼šå°†ä¸»é¢˜é¢œè‰²è®¾ç½®æˆé»‘è‰²ä¼šä½¿æ’­æ”¾åˆ—è¡¨ä¸­æ­£åœ¨æ’­æ”¾çš„é¡¹ç›®çœ‹ä¸è§ï¼"), NULL, MB_ICONWARNING);
 		//if(m_data.theme_color.original_color == RGB(255,255,255))
 		//	MessageBox(CCommon::LoadText(IDS_WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
 		m_color_static.SetFillColor(m_data.theme_color.original_color);
-		//ÉèÖÃÁË¡°¸ü¶àÑÕÉ«¡±Ö®ºó£¬È¡Ïû¡°¸úËæÏµÍ³Ö÷ÌâÉ«¡±¸´Ñ¡°´Å¥µÄÑ¡ÖĞ
+		//è®¾ç½®äº†â€œæ›´å¤šé¢œè‰²â€ä¹‹åï¼Œå–æ¶ˆâ€œè·Ÿéšç³»ç»Ÿä¸»é¢˜è‰²â€å¤é€‰æŒ‰é’®çš„é€‰ä¸­
 		m_data.theme_color_follow_system = false;
 		m_follow_system_color_check.SetCheck(FALSE);
 	}
@@ -346,7 +346,7 @@ void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
 
 void CAppearanceSettingDlg::OnStnClickedColorStatic2()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.theme_color.original_color = m_color1;
 	ClickColor();
 }
@@ -354,7 +354,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic2()
 
 void CAppearanceSettingDlg::OnStnClickedColorStatic3()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.theme_color.original_color = m_color2;
 	ClickColor();
 }
@@ -362,7 +362,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic3()
 
 void CAppearanceSettingDlg::OnStnClickedColorStatic4()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.theme_color.original_color = m_color3;
 	ClickColor();
 }
@@ -370,7 +370,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic4()
 
 void CAppearanceSettingDlg::OnStnClickedColorStatic5()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.theme_color.original_color = m_color4;
 	ClickColor();
 }
@@ -378,7 +378,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic5()
 
 void CAppearanceSettingDlg::OnStnClickedColorStatic6()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.theme_color.original_color = m_color5;
 	ClickColor();
 }
@@ -386,7 +386,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic6()
 
 void CAppearanceSettingDlg::OnStnClickedColorStatic7()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.theme_color.original_color = m_color6;
 	ClickColor();
 }
@@ -394,7 +394,7 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic7()
 
 BOOL CAppearanceSettingDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_toolTip.RelayEvent(pMsg);
 
@@ -404,7 +404,7 @@ BOOL CAppearanceSettingDlg::PreTranslateMessage(MSG* pMsg)
 
 void CAppearanceSettingDlg::OnBnClickedFollowSystemColorCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.theme_color_follow_system = (m_follow_system_color_check.GetCheck() != 0);
 	//GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_data.theme_color_follow_system);
 }
@@ -412,7 +412,7 @@ void CAppearanceSettingDlg::OnBnClickedFollowSystemColorCheck()
 
 void CAppearanceSettingDlg::OnCancel()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	//CTabDlg::OnCancel();
 }
@@ -420,7 +420,7 @@ void CAppearanceSettingDlg::OnCancel()
 
 void CAppearanceSettingDlg::OnOK()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
 	CString temp;
 	GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
@@ -432,12 +432,12 @@ void CAppearanceSettingDlg::OnOK()
 
 //void CAppearanceSettingDlg::OnEnChangeFontNameEdit()
 //{
-//	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-//	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CTabDlg::OnInitDialog()
-//	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-//	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+//	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+//	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CTabDlg::OnInitDialog()
+//	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+//	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 //
-//	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+//	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 //	CString font_name;
 //	GetDlgItemText(IDC_FONT_NAME_EDIT, font_name);
 //	m_font = font_name;
@@ -447,12 +447,12 @@ void CAppearanceSettingDlg::OnOK()
 
 void CAppearanceSettingDlg::OnEnChangeLineSpaceEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CTabDlg::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CTabDlg::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	//CString font_size;
 	//GetDlgItemText(IDC_FONT_SIZE_EDIT, font_size);
 	//m_data.lyric_line_space = _wtoi(font_size);
@@ -467,18 +467,18 @@ void CAppearanceSettingDlg::OnEnChangeLineSpaceEdit()
 void CAppearanceSettingDlg::OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	if (pNMUpDown->iDelta == 1) // Èç¹û´ËÖµÎª1 , ËµÃ÷µã»÷ÁËSpinµÄÍùÏÂ¼ıÍ· 
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	if (pNMUpDown->iDelta == 1) // å¦‚æœæ­¤å€¼ä¸º1 , è¯´æ˜ç‚¹å‡»äº†Spinçš„å¾€ä¸‹ç®­å¤´ 
 	{
-		//¼õÉÙ¸è´ÊĞĞ¼ä¾àµÄÊıÖµ
+		//å‡å°‘æ­Œè¯è¡Œé—´è·çš„æ•°å€¼
 		UpdateData(TRUE);
 		if (m_data.lyric_line_space > 0)
 			m_data.lyric_line_space--;
 		UpdateData(FALSE);
 	}
-	else if (pNMUpDown->iDelta == -1) // Èç¹û´ËÖµÎª-1 , ËµÃ÷µã»÷ÁËSpinµÄÍùÉÏ¼ıÍ· 
+	else if (pNMUpDown->iDelta == -1) // å¦‚æœæ­¤å€¼ä¸º-1 , è¯´æ˜ç‚¹å‡»äº†Spinçš„å¾€ä¸Šç®­å¤´ 
 	{
-		//Ôö¼Ó¸è´ÊĞĞ¼ä¾àµÄÊıÖµ
+		//å¢åŠ æ­Œè¯è¡Œé—´è·çš„æ•°å€¼
 		UpdateData(TRUE);
 		if (m_data.lyric_line_space < MAX_LINE_SPACE)
 			m_data.lyric_line_space++;
@@ -496,19 +496,19 @@ HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CTabDlg::OnCtlColor(pDC, pWnd, nCtlColor);
 
-	// TODO:  ÔÚ´Ë¸ü¸Ä DC µÄÈÎºÎÌØĞÔ
-	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid || pWnd == &m_gauss_blur_radius_sld)		//ÉèÖÃ»¬¶¯Ìõ¿Ø¼şµÄ±³¾°É«Îª°×É«
+	// TODO:  åœ¨æ­¤æ›´æ”¹ DC çš„ä»»ä½•ç‰¹æ€§
+	if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid || pWnd == &m_gauss_blur_radius_sld)		//è®¾ç½®æ»‘åŠ¨æ¡æ§ä»¶çš„èƒŒæ™¯è‰²ä¸ºç™½è‰²
 	{
 		return (HBRUSH)::GetStockObject(WHITE_BRUSH);
 	}
-	// TODO:  Èç¹ûÄ¬ÈÏµÄ²»ÊÇËùĞè»­±Ê£¬Ôò·µ»ØÁíÒ»¸ö»­±Ê
+	// TODO:  å¦‚æœé»˜è®¤çš„ä¸æ˜¯æ‰€éœ€ç”»ç¬”ï¼Œåˆ™è¿”å›å¦ä¸€ä¸ªç”»ç¬”
 	return hbr;
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.show_album_cover = (m_show_album_cover_chk.GetCheck() != 0);
 	SetControlEnable();
 }
@@ -516,14 +516,14 @@ void CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck()
 
 void CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.album_cover_fit = static_cast<CDrawCommon::StretchMode>(m_album_cover_fit_combo.GetCurSel());
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.album_cover_as_background = (m_album_cover_as_background_chk.GetCheck() != 0);
     SetControlEnable();
 }
@@ -531,7 +531,7 @@ void CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck()
 
 void CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.show_spectrum = (m_show_spectrum_chk.GetCheck() != 0);
 	SetControlEnable();
 }
@@ -539,7 +539,7 @@ void CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck()
 
 void CAppearanceSettingDlg::OnBnClickedUseOutImageCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.use_out_image = (m_use_out_image_chk.GetCheck() != 0);
 	SetControlEnable();
 }
@@ -547,12 +547,12 @@ void CAppearanceSettingDlg::OnBnClickedUseOutImageCheck()
 
 void CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CTabDlg::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CTabDlg::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	//CString temp;
 	//GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
 	//m_data.default_album_name = temp;
@@ -561,7 +561,7 @@ void CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit()
 
 void CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.background_gauss_blur = (m_background_gauss_blur_chk.GetCheck() != 0);
 	SetControlEnable();
 }
@@ -569,28 +569,28 @@ void CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck()
 
 void CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.lyric_background = (m_lyric_background_chk.GetCheck() != 0);
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedDarkModeCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.dark_mode = (m_dark_mode_chk.GetCheck() != 0);
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedUseInnerImageFirstCheck()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	m_data.use_inner_image_first = (m_use_inner_image_first_chk.GetCheck() != 0);
 }
 
 
 void CAppearanceSettingDlg::OnBnClickedEnableBackgroundCheck()
 {
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     m_data.enable_background = (m_enable_background_chk.GetCheck() != 0);
     SetControlEnable();
 }
@@ -598,13 +598,13 @@ void CAppearanceSettingDlg::OnBnClickedEnableBackgroundCheck()
 
 void CAppearanceSettingDlg::OnBnClickedLowFreqInCenterCheck()
 {
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     m_data.spectrum_low_freq_in_center = (m_low_freq_in_center_chk.GetCheck() != 0);
 }
 
 
 void CAppearanceSettingDlg::OnCbnSelchangeAlignmentCombo()
 {
-    // TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
     m_data.lyric_align = static_cast<Alignment>(m_alignment_combo.GetCurSel());
 }

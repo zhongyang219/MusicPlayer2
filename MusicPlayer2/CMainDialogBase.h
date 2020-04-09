@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <afxwin.h>
 class CMainDialogBase :
 	public CDialog
@@ -9,12 +9,12 @@ public:
 	~CMainDialogBase();
 
 protected:
-	void SetFullScreen(bool full_screen);		//ÉèÖÃ´°¿ÚÈ«ÆÁ(À´×Ô:https://www.cnblogs.com/weixinhum/p/3916673.html)
+	void SetFullScreen(bool full_screen);		//è®¾ç½®çª—å£å…¨å±(æ¥è‡ª:https://www.cnblogs.com/weixinhum/p/3916673.html)
 
 private:
 	bool m_bFullScreen{ false };
 	CRect m_rectFullScreen;
-	WINDOWPLACEMENT m_struOldWndpl;//½á¹¹ÖĞ°üº¬ÁËÓĞ¹Ø´°¿ÚÔÚÆÁÄ»ÉÏÎ»ÖÃµÄĞÅÏ¢
+	WINDOWPLACEMENT m_struOldWndpl;//ç»“æ„ä¸­åŒ…å«äº†æœ‰å…³çª—å£åœ¨å±å¹•ä¸Šä½ç½®çš„ä¿¡æ¯
 
 public:
 	DECLARE_MESSAGE_MAP()

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "COSUPlayerHelper.h"
 #include "FilePathHelper.h"
 
@@ -24,7 +24,7 @@ bool COSUPlayerHelper::IsOsuFolder(const std::wstring & strPath)
     CFilePathHelper path_helper(folder_path);
     wstring parent_dir = path_helper.GetParentDir();
 
-    //ÅĞ¶ÏÒ»¸öÎÄ¼şÊÇ·ñÎªosuµÄSongsÄ¿Â¼£ºËüµÄ¸¸¼¶Ä¿Â¼ÓĞosu!.exeÎÄ¼şÇÒÎÄ¼ş¼ĞÊÇSongs
+    //åˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶æ˜¯å¦ä¸ºosuçš„Songsç›®å½•ï¼šå®ƒçš„çˆ¶çº§ç›®å½•æœ‰osu!.exeæ–‡ä»¶ä¸”æ–‡ä»¶å¤¹æ˜¯Songs
     return CCommon::FileExist(parent_dir + L"osu!.exe") && folder_path.substr(folder_path.size() - 6, 5) == L"Songs";
 }
 
@@ -113,7 +113,7 @@ wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
 	    }
 	    //else
 	    //{
-		   // //Èç¹ûÃ»ÓĞjpgÍ¼Æ¬£¬Ôò²éÕÒpngÍ¼Æ¬
+		   // //å¦‚æœæ²¡æœ‰jpgå›¾ç‰‡ï¼Œåˆ™æŸ¥æ‰¾pngå›¾ç‰‡
 		   // vector<wstring> image_list;
 		   // CCommon::GetFiles(dir + L"*.png", image_list);
 		   // if (!image_list.empty())
@@ -122,7 +122,7 @@ wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
 			  //  wstring max_size_file_name;
 			  //  for (const auto& image_file : image_list)
 			  //  {
-				 //   //ÓÉÓÚOSU¸èÇúÄ¿Â¼ÏÂ¿ÉÄÜ»áÓĞºÜ¶àÆ¤·ôËØ²ÄpngÍ¼Æ¬£¬Òò´Ë²éÕÒ×î´óµÄÍ¼Æ¬×÷Îª±³¾°Í¼Æ¬
+				 //   //ç”±äºOSUæ­Œæ›²ç›®å½•ä¸‹å¯èƒ½ä¼šæœ‰å¾ˆå¤šçš®è‚¤ç´ æpngå›¾ç‰‡ï¼Œå› æ­¤æŸ¥æ‰¾æœ€å¤§çš„å›¾ç‰‡ä½œä¸ºèƒŒæ™¯å›¾ç‰‡
 				 //   size_t file_size = CCommon::GetFileSize(dir + image_file);
 				 //   if (max_file_size < file_size)
 				 //   {
@@ -200,7 +200,7 @@ wstring COSUFile::GetAlbumCoverFileName()
     string album_cover_name;
     while (true)
     {
-        //²éÕÒ,"µ½"Ö®¼äµÄ×Ö·û´®
+        //æŸ¥æ‰¾,"åˆ°"ä¹‹é—´çš„å­—ç¬¦ä¸²
         index1 = m_events_seg.find(",\"", index1);
         if (index1 == string::npos)
             return wstring();
@@ -211,7 +211,7 @@ wstring COSUFile::GetAlbumCoverFileName()
         string ext;
         if (index0 != string::npos)
             ext = album_cover_name.substr(index0 + 1);
-        //Èç¹û»ñÈ¡µ½µÄÎÄ¼şÃûÊÇÍ¼Æ¬ÎÄ¼ş£¬Ôò½«Æä·µ»Ø
+        //å¦‚æœè·å–åˆ°çš„æ–‡ä»¶åæ˜¯å›¾ç‰‡æ–‡ä»¶ï¼Œåˆ™å°†å…¶è¿”å›
         if(CCommon::StringCompareNoCase(ext, string("jpg")) || CCommon::StringCompareNoCase(ext, string("png")) || CCommon::StringCompareNoCase(ext, string("jpeg")))
             return CCommon::StrToUnicode(album_cover_name, CodeType::UTF8);
     }

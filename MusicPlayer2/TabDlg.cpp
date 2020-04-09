@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "TabDlg.h"
 #include "MusicPlayer2.h"
 
@@ -17,7 +17,7 @@ CTabDlg::~CTabDlg()
 
 BOOL CTabDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
 	{
 		//if (m_pParent != nullptr)
@@ -39,12 +39,12 @@ BOOL CTabDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
-	//½«´°¿Ú±³¾°ÉèÖÃ³É°×É«
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
+	//å°†çª—å£èƒŒæ™¯è®¾ç½®æˆç™½è‰²
 	SetBackgroundColor(RGB(255, 255, 255));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // Òì³£: OCX ÊôĞÔÒ³Ó¦·µ»Ø FALSE
+				  // å¼‚å¸¸: OCX å±æ€§é¡µåº”è¿”å› FALSE
 }
 
 CWnd* CTabDlg::GetParentWindow()
@@ -59,12 +59,12 @@ CWnd* CTabDlg::GetParentWindow()
 
 void CTabDlg::SetScrollbarInfo(int nPage, int nMax)
 {
-	//³õÊ¼»¯¹ö¶¯Ìõ
+	//åˆå§‹åŒ–æ»šåŠ¨æ¡
 	SCROLLINFO scrollinfo;
 	GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-	scrollinfo.nPage = nPage;    //ÉèÖÃ»¬¿é´óĞ¡
+	scrollinfo.nPage = nPage;    //è®¾ç½®æ»‘å—å¤§å°
 	scrollinfo.nMin = 0;
-	scrollinfo.nMax = nMax;     //ÉèÖÃ¹ö¶¯ÌõµÄ×î´óÎ»ÖÃ
+	scrollinfo.nMax = nMax;     //è®¾ç½®æ»šåŠ¨æ¡çš„æœ€å¤§ä½ç½®
 	if (scrollinfo.nMax < 0)
 		scrollinfo.nMax = 0;
 	scrollinfo.nPos = scrollinfo.nMin;
@@ -88,12 +88,12 @@ void CTabDlg::ScrollWindowSimple(int step)
 	scrollinfo.nPos -= step;
 	if (scrollinfo.nPos < scrollinfo.nMin)
 	{
-		step = scrollinfo.nPos + step - scrollinfo.nMin;		//Èç¹ûÏòÉÏ¹ö¶¯Ò»¸ö¾àÀëºóĞ¡ÓÚ¹ö¶¯ÌõµÄ×îĞ¡Î»ÖÃÁË£¬ÔòĞŞÕıstepµÄÖµ£¬Ê¹´°¿Ú¹ö¶¯µ½×îÉÏ·½
+		step = scrollinfo.nPos + step - scrollinfo.nMin;		//å¦‚æœå‘ä¸Šæ»šåŠ¨ä¸€ä¸ªè·ç¦»åå°äºæ»šåŠ¨æ¡çš„æœ€å°ä½ç½®äº†ï¼Œåˆ™ä¿®æ­£stepçš„å€¼ï¼Œä½¿çª—å£æ»šåŠ¨åˆ°æœ€ä¸Šæ–¹
 		scrollinfo.nPos = scrollinfo.nMin;
 	}
-	if (scrollinfo.nPos + scrollinfo.nPage > scrollinfo.nMax)  //´Ë´¦Ò»¶¨Òª×¢Òâ¼ÓÉÏ»¬¿éµÄ³¤¶È£¬ÔÙ×÷ÅĞ¶Ï
+	if (scrollinfo.nPos + scrollinfo.nPage > scrollinfo.nMax)  //æ­¤å¤„ä¸€å®šè¦æ³¨æ„åŠ ä¸Šæ»‘å—çš„é•¿åº¦ï¼Œå†ä½œåˆ¤æ–­
 	{
-		step -= (scrollinfo.nMax - (scrollinfo.nPos + scrollinfo.nPage));		//Èç¹ûÏòÉÏ¹ö¶¯Ò»¸ö¾àÀëºó´óÓÚ¹ö¶¯ÌõµÄ×î´óÎ»ÖÃÁË£¬ÔòĞŞÕıstepµÄÖµ£¬Ê¹´°¿Ú¹ö¶¯µ½×îÏÂ·½
+		step -= (scrollinfo.nMax - (scrollinfo.nPos + scrollinfo.nPage));		//å¦‚æœå‘ä¸Šæ»šåŠ¨ä¸€ä¸ªè·ç¦»åå¤§äºæ»šåŠ¨æ¡çš„æœ€å¤§ä½ç½®äº†ï¼Œåˆ™ä¿®æ­£stepçš„å€¼ï¼Œä½¿çª—å£æ»šåŠ¨åˆ°æœ€ä¸‹æ–¹
 		if (step > 0)
 			step = 0;
 		scrollinfo.nPos = scrollinfo.nMax;
@@ -111,8 +111,8 @@ END_MESSAGE_MAP()
 
 void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//²Î¿¼×ÊÁÏ£ºhttps://www.cnblogs.com/ranjiewen/p/6013922.html
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+	//å‚è€ƒèµ„æ–™ï¼šhttps://www.cnblogs.com/ranjiewen/p/6013922.html
 
 	SCROLLINFO scrollinfo;
 	GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
@@ -148,7 +148,7 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 BOOL CTabDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	int step = theApp.DPI(16);
 	if (zDelta > 0)
 	{
@@ -165,7 +165,7 @@ BOOL CTabDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CTabDlg::OnOK()
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
 
     CDialogEx::OnOK();
 }

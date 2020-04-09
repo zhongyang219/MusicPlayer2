@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CHotKey.h"
 #include "IniHelper.h"
 

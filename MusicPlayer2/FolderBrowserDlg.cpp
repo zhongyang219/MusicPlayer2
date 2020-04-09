@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "FolderBrowserDlg.h"
 #include "Common.h"
 #include "resource.h"
@@ -16,7 +16,7 @@ CFolderBrowserDlg::~CFolderBrowserDlg()
 
 int CFolderBrowserDlg::DoModal()
 {
-	TCHAR szPath[MAX_PATH];		//´æ·ÅÑ¡ÔñµÄÄ¿Â¼Â·¾¶
+	TCHAR szPath[MAX_PATH];		//å­˜æ”¾é€‰æ‹©çš„ç›®å½•è·¯å¾„
 	CString str;
 
 	BROWSEINFO bi;
@@ -28,7 +28,7 @@ int CFolderBrowserDlg::DoModal()
 	bi.lpfn = NULL;
 	bi.lParam = 0;
 	bi.iImage = 0;
-	//µ¯³öÑ¡ÔñÄ¿Â¼¶Ô»°¿ò
+	//å¼¹å‡ºé€‰æ‹©ç›®å½•å¯¹è¯æ¡†
 	browse:
 	LPITEMIDLIST lp = SHBrowseForFolder(&bi);
 

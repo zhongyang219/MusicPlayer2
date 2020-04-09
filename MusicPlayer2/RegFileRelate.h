@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class CRegFileRelate
 {
 public:
@@ -8,16 +8,16 @@ public:
     void SetModelPath(LPCTSTR model_path);
     void SetAppName(LPCTSTR app_name);
 
-    //Ìí¼ÓÒ»¸öÎÄ¼şÀàĞÍµÄ¹ØÁª
-    //file_ext: Òª¹ØÁªµÄÎÄ¼şÀ©Õ¹Ãû
+    //æ·»åŠ ä¸€ä¸ªæ–‡ä»¶ç±»å‹çš„å…³è”
+    //file_ext: è¦å…³è”çš„æ–‡ä»¶æ‰©å±•å
     bool AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path = nullptr, bool default_icon = false, LPCTSTR description = NULL);
     bool AddFileTypeRelate(LPCTSTR file_ext, int ico_index, bool default_icon = false, LPCTSTR description = NULL);
-    //ÅĞ¶ÏÒ»¸öÎÄ¼şÀàĞÍÊÇ·ñÒÑ¹ØÁª
+    //åˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶ç±»å‹æ˜¯å¦å·²å…³è”
     bool IsFileTypeRelated(LPCTSTR file_ext);
-    //É¾³ıÒ»¸öÎÄ¼şÀàĞÍµÄ¹ØÁª
+    //åˆ é™¤ä¸€ä¸ªæ–‡ä»¶ç±»å‹çš„å…³è”
     bool DeleteFileTypeRelate(LPCTSTR file_ext);
 
-    //»ñÈ¡ËùÓĞÒÑ¹ØÁªµÄÀàĞÍÀ©Õ¹Ãû
+    //è·å–æ‰€æœ‰å·²å…³è”çš„ç±»å‹æ‰©å±•å
     bool GetAllRelatedExtensions(std::vector<wstring>& extensions);
 
 private:

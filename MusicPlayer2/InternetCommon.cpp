@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "InternetCommon.h"
 #include "Resource.h"
 
@@ -53,7 +53,7 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 			{
 				content += data;
 			}
-			result = CCommon::StrToUnicode(string{ (const char*)content.GetString() }, CodeType::UTF8);	//»ñÈ¡ÍøÒ³ÄÚÈİ£¬²¢×ª»»³ÉUnicode±àÂë
+			result = CCommon::StrToUnicode(string{ (const char*)content.GetString() }, CodeType::UTF8);	//è·å–ç½‘é¡µå†…å®¹ï¼Œå¹¶è½¬æ¢æˆUnicodeç¼–ç 
 			sucessed = true;
 		}
 		pfile->Close();
@@ -156,7 +156,7 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 	//while (true)
 	for (int i{}; i < result_count; i++)
 	{
-		//»ñÈ¡¸èÇúµÄID
+		//è·å–æ­Œæ›²çš„ID
 		if (i == 0)
 		{
 			index1 = search_result.find(L"\"songs\":[{\"id\":", index1 + 1);
@@ -172,13 +172,13 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 			item.id = search_result.substr(index1 + 7, index2 - index1 - 7);
 		}
 
-		//»ñÈ¡¸èÇú±êÌâ
+		//è·å–æ­Œæ›²æ ‡é¢˜
 		index2 = search_result.find(L"name", index1);
 		if (index2 == string::npos) continue;
 		index3 = search_result.find(L"\",\"", index2);
 		wstring title = search_result.substr(index2 + 7, index3 - index2 - 7);
-		if (search_result.substr(index3 + 3, 6) == L"picUrl")	//Èç¹ûÕÒµ½µÄ¡°name¡±ºóÃæµÄ×Ö·û´®ÊÇ¡°picUrl¡±£¬ËµÃ÷ÕâÏînameµÄÖµ²»ÊÇ
-		{														//ÁíÒ»Ê×¸èµÄ±êÌâ£¬¶øÊÇÉÏÒ»Ê×¸èµÄÒÕÊõ¼Ò£¬ÉÏÒ»Ê×¸èÓĞ¶à¸öÒÕÊõ¼Ò
+		if (search_result.substr(index3 + 3, 6) == L"picUrl")	//å¦‚æœæ‰¾åˆ°çš„â€œnameâ€åé¢çš„å­—ç¬¦ä¸²æ˜¯â€œpicUrlâ€ï¼Œè¯´æ˜è¿™é¡¹nameçš„å€¼ä¸æ˜¯
+		{														//å¦ä¸€é¦–æ­Œçš„æ ‡é¢˜ï¼Œè€Œæ˜¯ä¸Šä¸€é¦–æ­Œçš„è‰ºæœ¯å®¶ï¼Œä¸Šä¸€é¦–æ­Œæœ‰å¤šä¸ªè‰ºæœ¯å®¶
 			if (!down_list.empty())
 			{
 				down_list.back().artist += L'/';
@@ -191,14 +191,14 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 			item.title = title;
 		}
 
-		//»ñÈ¡¸èÇúµÄÒÕÊõ¼Ò
+		//è·å–æ­Œæ›²çš„è‰ºæœ¯å®¶
 		index2 = search_result.find(L"artists", index1);
 		if (index2 == string::npos) continue;
 		index3 = search_result.find(L"name", index2);
 		index4 = search_result.find(L"\",\"", index3);
 		item.artist = search_result.substr(index3 + 7, index4 - index3 - 7);
 
-		//»ñÈ¡¸èÇúµÄ³ªÆ¬¼¯
+		//è·å–æ­Œæ›²çš„å”±ç‰‡é›†
 		index2 = search_result.find(L"\"album\"", index1);
 		if (index2 == string::npos) continue;
 		index3 = search_result.find(L"name", index2);
@@ -218,16 +218,16 @@ double CInternetCommon::CharacterSimilarDegree(wchar_t ch1, wchar_t ch2)
 		return 1;
 	else if ((ch1 >= 'A' && ch1 <= 'Z' && ch2 == ch1 + 32) || (ch1 >= 'a' && ch1 <= 'z' && ch2 == ch1 - 32))
 		return 0.8;
-	else if ((ch1 == L'1' && ch2 == L'Ò»') || (ch1 == L'Ò»' && ch2 == L'1')
-		|| (ch1 == L'2' && ch2 == L'¶ş') || (ch1 == L'¶ş' && ch2 == L'2')
-		|| (ch1 == L'3' && ch2 == L'Èı') || (ch1 == L'Èı' && ch2 == L'3')
-		|| (ch1 == L'4' && ch2 == L'ËÄ') || (ch1 == L'ËÄ' && ch2 == L'4')
-		|| (ch1 == L'5' && ch2 == L'Îå') || (ch1 == L'Îå' && ch2 == L'5')
-		|| (ch1 == L'6' && ch2 == L'Áù') || (ch1 == L'Áù' && ch2 == L'6')
-		|| (ch1 == L'7' && ch2 == L'Æß') || (ch1 == L'Æß' && ch2 == L'7')
-		|| (ch1 == L'8' && ch2 == L'°Ë') || (ch1 == L'°Ë' && ch2 == L'8')
-		|| (ch1 == L'9' && ch2 == L'¾Å') || (ch1 == L'¾Å' && ch2 == L'9')
-		|| (ch1 == L'0' && ch2 == L'Áã') || (ch1 == L'Áã' && ch2 == L'0')
+	else if ((ch1 == L'1' && ch2 == L'ä¸€') || (ch1 == L'ä¸€' && ch2 == L'1')
+		|| (ch1 == L'2' && ch2 == L'äºŒ') || (ch1 == L'äºŒ' && ch2 == L'2')
+		|| (ch1 == L'3' && ch2 == L'ä¸‰') || (ch1 == L'ä¸‰' && ch2 == L'3')
+		|| (ch1 == L'4' && ch2 == L'å››') || (ch1 == L'å››' && ch2 == L'4')
+		|| (ch1 == L'5' && ch2 == L'äº”') || (ch1 == L'äº”' && ch2 == L'5')
+		|| (ch1 == L'6' && ch2 == L'å…­') || (ch1 == L'å…­' && ch2 == L'6')
+		|| (ch1 == L'7' && ch2 == L'ä¸ƒ') || (ch1 == L'ä¸ƒ' && ch2 == L'7')
+		|| (ch1 == L'8' && ch2 == L'å…«') || (ch1 == L'å…«' && ch2 == L'8')
+		|| (ch1 == L'9' && ch2 == L'ä¹') || (ch1 == L'ä¹' && ch2 == L'9')
+		|| (ch1 == L'0' && ch2 == L'é›¶') || (ch1 == L'é›¶' && ch2 == L'0')
 		)
 		return 0.7;
 	else
@@ -237,10 +237,10 @@ double CInternetCommon::CharacterSimilarDegree(wchar_t ch1, wchar_t ch2)
 double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const wstring & matchString)
 {
 	/*
-	±à¼­¾àÀëËã·¨£¬À´×Ô¡°±à¼­¾àÀë¡ª¡ª°Ù¶È°Ù¿Æ¡±(https://baike.baidu.com/history/±à¼­¾àÀë/8010193/131513486)
-	±ÈÈçÒª¼ÆËãcafeºÍcoffeeµÄ±à¼­¾àÀë¡£cafe¡úcaffe¡úcoffe¡úcoffee
-	ÏÈ´´½¨Ò»¸ö6¡Á8µÄ±í£¨cafe³¤¶ÈÎª4£¬coffee³¤¶ÈÎª6£¬¸÷¼Ó2£©
-	±í1£º
+	ç¼–è¾‘è·ç¦»ç®—æ³•ï¼Œæ¥è‡ªâ€œç¼–è¾‘è·ç¦»â€”â€”ç™¾åº¦ç™¾ç§‘â€(https://baike.baidu.com/history/ç¼–è¾‘è·ç¦»/8010193/131513486)
+	æ¯”å¦‚è¦è®¡ç®—cafeå’Œcoffeeçš„ç¼–è¾‘è·ç¦»ã€‚cafeâ†’caffeâ†’coffeâ†’coffee
+	å…ˆåˆ›å»ºä¸€ä¸ª6Ã—8çš„è¡¨ï¼ˆcafeé•¿åº¦ä¸º4ï¼Œcoffeeé•¿åº¦ä¸º6ï¼Œå„åŠ 2ï¼‰
+	è¡¨1ï¼š
 	|   |   | c | o | f | f | e | e |
 	|   |   |   |   |   |   |   |   |
 	| c |   |   |   |   |   |   |   |
@@ -248,8 +248,8 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 	| f |   |   |   |   |   |   |   |
 	| e |   |   |   |   |   |   |   |
 
-	½Ó×Å£¬ÔÚÈçÏÂÎ»ÖÃÌîÈëÊı×Ö£¨±í2£©£º
-	±í2£º
+	æ¥ç€ï¼Œåœ¨å¦‚ä¸‹ä½ç½®å¡«å…¥æ•°å­—ï¼ˆè¡¨2ï¼‰ï¼š
+	è¡¨2ï¼š
 	|   |   | c | o | f | f | e | e |
 	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 	| c | 1 |   |   |   |   |   |   |
@@ -257,13 +257,13 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 	| f | 3 |   |   |   |   |   |   |
 	| e | 4 |   |   |   |   |   |   |
 
-	´Ó3,3¸ñ¿ªÊ¼£¬¿ªÊ¼¼ÆËã¡£È¡ÒÔÏÂÈı¸öÖµµÄ×îĞ¡Öµ£º
-	Èç¹û×îÉÏ·½µÄ×Ö·ûµÈÓÚ×î×ó·½µÄ×Ö·û£¬ÔòÎª×óÉÏ·½µÄÊı×Ö¡£·ñÔòÎª×óÉÏ·½µÄÊı×Ö+1¡££¨¶ÔÓÚ3,3À´ËµÎª0£©
-	×ó·½Êı×Ö+1£¨¶ÔÓÚ3,3¸ñÀ´ËµÎª2£©
-	ÉÏ·½Êı×Ö+1£¨¶ÔÓÚ3,3¸ñÀ´ËµÎª2£©
+	ä»3,3æ ¼å¼€å§‹ï¼Œå¼€å§‹è®¡ç®—ã€‚å–ä»¥ä¸‹ä¸‰ä¸ªå€¼çš„æœ€å°å€¼ï¼š
+	å¦‚æœæœ€ä¸Šæ–¹çš„å­—ç¬¦ç­‰äºæœ€å·¦æ–¹çš„å­—ç¬¦ï¼Œåˆ™ä¸ºå·¦ä¸Šæ–¹çš„æ•°å­—ã€‚å¦åˆ™ä¸ºå·¦ä¸Šæ–¹çš„æ•°å­—+1ã€‚ï¼ˆå¯¹äº3,3æ¥è¯´ä¸º0ï¼‰
+	å·¦æ–¹æ•°å­—+1ï¼ˆå¯¹äº3,3æ ¼æ¥è¯´ä¸º2ï¼‰
+	ä¸Šæ–¹æ•°å­—+1ï¼ˆå¯¹äº3,3æ ¼æ¥è¯´ä¸º2ï¼‰
 
-	Òò´ËÎª¸ñ3,3Îª0£¨±í3£©
-	±í3£º
+	å› æ­¤ä¸ºæ ¼3,3ä¸º0ï¼ˆè¡¨3ï¼‰
+	è¡¨3ï¼š
 	|   |   | c | o | f | f | e | e |
 	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 	| c | 1 | 0 |   |   |   |   |   |
@@ -271,12 +271,12 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 	| f | 3 |   |   |   |   |   |   |
 	| e | 4 |   |   |   |   |   |   |
 
-	´Ó3,4£¨ÈıĞĞËÄÁĞ£©¸ñ¿ªÊ¼£¬¿ªÊ¼¼ÆËã¡£È¡ÒÔÏÂÈı¸öÖµµÄ×îĞ¡Öµ£º
-	* Èç¹û×îÉÏ·½µÄ×Ö·ûµÈÓÚ×î×ó·½µÄ×Ö·û£¬ÔòÎª×óÉÏ·½µÄÊı×Ö¡£·ñÔòÎª×óÉÏ·½µÄÊı×Ö+1¡££¨¶ÔÓÚ3,4À´ËµÎª2£©
-	* ×ó·½Êı×Ö+1£¨¶ÔÓÚ3,4¸ñÀ´ËµÎª1£©
-	* ÉÏ·½Êı×Ö+1£¨¶ÔÓÚ3,4¸ñÀ´ËµÎª3£©
-	Òò´ËÎª¸ñ3,3Îª0£¨±í4£©
-	±í4£º
+	ä»3,4ï¼ˆä¸‰è¡Œå››åˆ—ï¼‰æ ¼å¼€å§‹ï¼Œå¼€å§‹è®¡ç®—ã€‚å–ä»¥ä¸‹ä¸‰ä¸ªå€¼çš„æœ€å°å€¼ï¼š
+	* å¦‚æœæœ€ä¸Šæ–¹çš„å­—ç¬¦ç­‰äºæœ€å·¦æ–¹çš„å­—ç¬¦ï¼Œåˆ™ä¸ºå·¦ä¸Šæ–¹çš„æ•°å­—ã€‚å¦åˆ™ä¸ºå·¦ä¸Šæ–¹çš„æ•°å­—+1ã€‚ï¼ˆå¯¹äº3,4æ¥è¯´ä¸º2ï¼‰
+	* å·¦æ–¹æ•°å­—+1ï¼ˆå¯¹äº3,4æ ¼æ¥è¯´ä¸º1ï¼‰
+	* ä¸Šæ–¹æ•°å­—+1ï¼ˆå¯¹äº3,4æ ¼æ¥è¯´ä¸º3ï¼‰
+	å› æ­¤ä¸ºæ ¼3,3ä¸º0ï¼ˆè¡¨4ï¼‰
+	è¡¨4ï¼š
 	|   |   | c | o | f | f | e | e |
 	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 	| c | 1 | 0 | 1 |   |   |   |   |
@@ -284,31 +284,31 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 	| f | 3 |   |   |   |   |   |   |
 	| e | 4 |   |   |   |   |   |   |
 
-	Ñ­»·²Ù×÷£¬ÍÆ³öÏÂ±í
+	å¾ªç¯æ“ä½œï¼Œæ¨å‡ºä¸‹è¡¨
 	|   |   | c | o | f | f | e | e |
 	|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 	| c | 1 | 0 | 1 | 2 | 3 | 4 | 5 |
 	| a | 2 | 1 | 1 | 2 | 3 | 4 | 5 |
 	| f | 3 | 2 | 2 | 1 | 2 | 3 | 4 |
 	| e | 4 | 3 | 3 | 2 | 2 | 2 | 3 |
-	È¡ÓÒÏÂ½Ç£¬µÃ±à¼­¾àÀëÎª3¡£
+	å–å³ä¸‹è§’ï¼Œå¾—ç¼–è¾‘è·ç¦»ä¸º3ã€‚
 	*/
 
 	int n = srcString.size();
 	int m = matchString.size();
 	
     const int MAX_LENGTH = 256;
-    if (n <= 0 || n > MAX_LENGTH || m <= 0 || m > MAX_LENGTH || std::abs(n - m) > MAX_LENGTH)      //Èç¹ûÒª±È½ÏµÄ×Ö·û´®¹ı³¤£¬Ôò²»¼ÆËã
+    if (n <= 0 || n > MAX_LENGTH || m <= 0 || m > MAX_LENGTH || std::abs(n - m) > MAX_LENGTH)      //å¦‚æœè¦æ¯”è¾ƒçš„å­—ç¬¦ä¸²è¿‡é•¿ï¼Œåˆ™ä¸è®¡ç®—
         return 0;
 
-	//´´½¨±í
+	//åˆ›å»ºè¡¨
 	vector<vector<double>> d(n + 1, vector<double>(m + 1));
 	double cost; // cost
 
-	//// Step 1£¨Èç¹ûÆäÖĞÒ»¸ö×Ö·û´®³¤¶ÈÎª0£¬ÔòÏàËÆ¶ÈÎª1£©£¿
-	//if (n == 0 || m == 0) return 0.0;	//Èç¹ûÆäÖĞÒ»¸ö×Ö·û´®³¤¶ÈÎª0£¬ÔòÏàËÆ¶ÈÎª0
+	//// Step 1ï¼ˆå¦‚æœå…¶ä¸­ä¸€ä¸ªå­—ç¬¦ä¸²é•¿åº¦ä¸º0ï¼Œåˆ™ç›¸ä¼¼åº¦ä¸º1ï¼‰ï¼Ÿ
+	//if (n == 0 || m == 0) return 0.0;	//å¦‚æœå…¶ä¸­ä¸€ä¸ªå­—ç¬¦ä¸²é•¿åº¦ä¸º0ï¼Œåˆ™ç›¸ä¼¼åº¦ä¸º0
 
-	// Step 2£¬¸ø±íµÄµÚ1ĞĞºÍµÚ1ÁĞÌîÈëÊı×Ö
+	// Step 2ï¼Œç»™è¡¨çš„ç¬¬1è¡Œå’Œç¬¬1åˆ—å¡«å…¥æ•°å­—
 	for (int i = 0; i <= n; d[i][0] = i++);
 	for (int j = 0; j <= m; d[0][j] = j++);
 	// Step 3
@@ -317,14 +317,14 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 		//Step 4
 		for (int j = 1; j <= m; j++)
 		{
-			// Step 5£¬±éÀú±í¸ñÊ£ÏÂµÄ¸ñ×Ó¼ÆËãÃ¿¸ö¸ñ×ÓµÄÖµ
+			// Step 5ï¼Œéå†è¡¨æ ¼å‰©ä¸‹çš„æ ¼å­è®¡ç®—æ¯ä¸ªæ ¼å­çš„å€¼
 			wchar_t ch1 = matchString[j - 1];
 			wchar_t ch2 = srcString[i - 1];
 
-			//±È½Ï×îÉÏ·½µÄ×Ö·ûºÍ×î×ó·½µÄ×Ö·û
+			//æ¯”è¾ƒæœ€ä¸Šæ–¹çš„å­—ç¬¦å’Œæœ€å·¦æ–¹çš„å­—ç¬¦
 			cost = 1 - CharacterSimilarDegree(ch1, ch2);
 
-			// Step 6£¬È¡3¸öÖµÖĞµÄ×îĞ¡Öµ
+			// Step 6ï¼Œå–3ä¸ªå€¼ä¸­çš„æœ€å°å€¼
 			d[i][j] = CCommon::Min3(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
 		}
 	}
@@ -339,20 +339,20 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const wstring & title, const wstring & artist, const wstring & album, const wstring & filename, bool write_log)
 {
 	/*
-	Æ¥Åä¶È¼ÆËã£º
-	Í¨¹ı¼ÆËãÒÔÏÂµÄÆ¥Åä¶È£¬²¢ÉèÖÃÈ¨Öµ£¬½«Ã¿Ò»ÏîµÄÆ¥Åä¶È³ËÒÔÈ¨ÖµÔÙÏà¼Ó£¬µÃµ½µÄÖµ×î´óµÄ¾ÍÊÇ×îÆ¥ÅäµÄÒ»Ïî
-	ÏîÄ¿			 È¨Öµ
-	±êÌâ¡ª¡ª±êÌâ         0.4
-	ÒÕÊõ¼Ò¡ª¡ªÒÕÊõ¼Ò     0.4
-	³ªÆ¬¼¯¡ª¡ª³ªÆ¬¼¯     0.3
-	ÎÄ¼şÃû¡ª¡ª±êÌâ       0.3
-	ÎÄ¼şÃû¡ª¡ªÒÕÊõ¼Ò     0.2
-	ÁĞ±íÖĞµÄÅÅĞò       0.05
+	åŒ¹é…åº¦è®¡ç®—ï¼š
+	é€šè¿‡è®¡ç®—ä»¥ä¸‹çš„åŒ¹é…åº¦ï¼Œå¹¶è®¾ç½®æƒå€¼ï¼Œå°†æ¯ä¸€é¡¹çš„åŒ¹é…åº¦ä¹˜ä»¥æƒå€¼å†ç›¸åŠ ï¼Œå¾—åˆ°çš„å€¼æœ€å¤§çš„å°±æ˜¯æœ€åŒ¹é…çš„ä¸€é¡¹
+	é¡¹ç›®			 æƒå€¼
+	æ ‡é¢˜â€”â€”æ ‡é¢˜         0.4
+	è‰ºæœ¯å®¶â€”â€”è‰ºæœ¯å®¶     0.4
+	å”±ç‰‡é›†â€”â€”å”±ç‰‡é›†     0.3
+	æ–‡ä»¶åâ€”â€”æ ‡é¢˜       0.3
+	æ–‡ä»¶åâ€”â€”è‰ºæœ¯å®¶     0.2
+	åˆ—è¡¨ä¸­çš„æ’åº       0.05
 	*/
 	if (down_list.empty()) return -1;
-	vector<double> weights;		//´¢´æÁĞ±íÖĞÃ¿Ò»ÏîµÄÈ¨Öµ
+	vector<double> weights;		//å‚¨å­˜åˆ—è¡¨ä¸­æ¯ä¸€é¡¹çš„æƒå€¼
 
-								//¼ÆËãÃ¿Ò»ÏîµÄÈ¨Öµ
+								//è®¡ç®—æ¯ä¸€é¡¹çš„æƒå€¼
 	for (size_t i{}; i<down_list.size(); i++)
 	{
 		double weight;
@@ -362,12 +362,12 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 		weight += (StringSimilarDegree_LD(album, down_list[i].album) * 0.3);
 		weight += (StringSimilarDegree_LD(filename, down_list[i].title) * 0.3);
 		weight += (StringSimilarDegree_LD(filename, down_list[i].artist) * 0.3);
-		weight += ((1 - i * 0.02) * 0.05);			//ÁĞ±íÖĞË³ĞòµÄÈ¨Öµ£¬Ò»°ãÀ´Ëµ£¬ÍøÒ×ÔÆÒôÀÖµÄËÑË÷½á¹ûµÄ·µ»Ø½á¹ûÖĞ
-													//ÅÅÔÚÔ½Ç°ÃæµÄ¹ØÁª¶È¾ÍÔ½¸ß£¬ÕâÀïÈ¡µÚÒ»ÏîÎª1£¬Ö®ºóÃ¿Ò»Ïî¼õ0.02£¬×îºóÔÙ³ËÒÔ0.05
+		weight += ((1 - i * 0.02) * 0.05);			//åˆ—è¡¨ä¸­é¡ºåºçš„æƒå€¼ï¼Œä¸€èˆ¬æ¥è¯´ï¼Œç½‘æ˜“äº‘éŸ³ä¹çš„æœç´¢ç»“æœçš„è¿”å›ç»“æœä¸­
+													//æ’åœ¨è¶Šå‰é¢çš„å…³è”åº¦å°±è¶Šé«˜ï¼Œè¿™é‡Œå–ç¬¬ä¸€é¡¹ä¸º1ï¼Œä¹‹åæ¯ä¸€é¡¹å‡0.02ï¼Œæœ€åå†ä¹˜ä»¥0.05
 		weights.push_back(weight);
 	}
 
-	//²éÕÒÈ¨Öµ×î´óµÄÏî
+	//æŸ¥æ‰¾æƒå€¼æœ€å¤§çš„é¡¹
 	double max_weight = weights[0];
 	int max_index{};
 	for (size_t i{ 1 }; i < weights.size(); i++)
@@ -379,7 +379,7 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 		}
 	}
 
-	//Èç¹ûÈ¨Öµ×î´óÏîµÄÈ¨ÖµĞ¡ÓÚ0.3£¬ÔòÅĞ¶¨Ã»ÓĞÆ¥ÅäµÄÏî£¬·µ»Ø-1
+	//å¦‚æœæƒå€¼æœ€å¤§é¡¹çš„æƒå€¼å°äº0.3ï¼Œåˆ™åˆ¤å®šæ²¡æœ‰åŒ¹é…çš„é¡¹ï¼Œè¿”å›-1
 	if (max_weight < 0.3)
 		max_index = -1;
 
@@ -388,32 +388,32 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 	{
 		CString out_info{ _T("\n==============================================================================\n") };
 		CString tmp;
-		out_info += _T("\n¸èÇúĞÅÏ¢£º\n");
-		out_info += _T("ÎÄ¼şÃû£º");
+		out_info += _T("\næ­Œæ›²ä¿¡æ¯ï¼š\n");
+		out_info += _T("æ–‡ä»¶åï¼š");
 		out_info += filename.c_str();
-		out_info += _T("\n±êÌâ£º");
+		out_info += _T("\næ ‡é¢˜ï¼š");
 		out_info += title.c_str();
-		out_info += _T("\nÒÕÊõ¼Ò£º");
+		out_info += _T("\nè‰ºæœ¯å®¶ï¼š");
 		out_info += artist.c_str();
-		out_info += _T("\n³ªÆ¬¼¯£º");
+		out_info += _T("\nå”±ç‰‡é›†ï¼š");
 		out_info += album.c_str();
 
-		out_info += _T("\nËÑË÷½á¹û£º\n");
-		out_info += _T("ĞòºÅ\t¸èÇúID\t±êÌâ\tÒÕÊõ¼Ò\t³ªÆ¬¼¯\n");
+		out_info += _T("\næœç´¢ç»“æœï¼š\n");
+		out_info += _T("åºå·\tæ­Œæ›²ID\tæ ‡é¢˜\tè‰ºæœ¯å®¶\tå”±ç‰‡é›†\n");
 		for (size_t i{}; i<down_list.size(); i++)
 		{
 			tmp.Format(_T("%d\t%s\t%s\t%s\t%s\n"), i + 1, down_list[i].id.c_str(), down_list[i].title.c_str(), down_list[i].artist.c_str(), down_list[i].album.c_str());
 			out_info += tmp;
 		}
 
-		out_info += _T("¸÷ÏîÈ¨Öµ£º\n");
+		out_info += _T("å„é¡¹æƒå€¼ï¼š\n");
 		for (size_t i{}; i < weights.size(); i++)
 		{
 			tmp.Format(_T("%d\t%f\n"), i + 1, weights[i]);
 			out_info += tmp;
 		}
 
-		tmp.Format(_T("×î¼ÑÆ¥ÅäÏî£º%d\n\n"), max_index + 1);
+		tmp.Format(_T("æœ€ä½³åŒ¹é…é¡¹ï¼š%d\n\n"), max_index + 1);
 		out_info += tmp;
 
 		CCommon::WriteLog(L".\\search.log", wstring{ out_info });
@@ -425,29 +425,29 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 
 CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring & title, const wstring & artist, const wstring & album, const wstring & file_name, bool message, DownloadResult* result)
 {
-	//ÉèÖÃËÑË÷¹Ø¼ü×Ö
-	wstring search_result;		//²éÕÒ¸èÇú·µ»ØµÄ½á¹û
-	wstring keyword;		//²éÕÒµÄ¹Ø¼ü×Ö
-	if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() || title.empty())		//Èç¹ûÃ»ÓĞ±êÌâĞÅÏ¢£¬¾Í°ÑÎÄ¼şÃûÉèÎªËÑË÷¹Ø¼ü×Ö
+	//è®¾ç½®æœç´¢å…³é”®å­—
+	wstring search_result;		//æŸ¥æ‰¾æ­Œæ›²è¿”å›çš„ç»“æœ
+	wstring keyword;		//æŸ¥æ‰¾çš„å…³é”®å­—
+	if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString() || title.empty())		//å¦‚æœæ²¡æœ‰æ ‡é¢˜ä¿¡æ¯ï¼Œå°±æŠŠæ–‡ä»¶åè®¾ä¸ºæœç´¢å…³é”®å­—
 	{
 		keyword = file_name;
-		size_t index = keyword.rfind(L'.');		//²éÕÒ×îºóÒ»¸öµã
-		keyword = keyword.substr(0, index);		//È¥µôÀ©Õ¹Ãû
+		size_t index = keyword.rfind(L'.');		//æŸ¥æ‰¾æœ€åä¸€ä¸ªç‚¹
+		keyword = keyword.substr(0, index);		//å»æ‰æ‰©å±•å
 	}
-	else if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString() || artist.empty())	//Èç¹ûÓĞ±êÌâĞÅÏ¢µ«ÊÇÃ»ÓĞÒÕÊõ¼ÒĞÅÏ¢£¬¾Í°Ñ±êÌâÉèÎªËÑË÷¹Ø¼ü×Ö
+	else if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString() || artist.empty())	//å¦‚æœæœ‰æ ‡é¢˜ä¿¡æ¯ä½†æ˜¯æ²¡æœ‰è‰ºæœ¯å®¶ä¿¡æ¯ï¼Œå°±æŠŠæ ‡é¢˜è®¾ä¸ºæœç´¢å…³é”®å­—
 	{
 		keyword = title;
 	}
-	else		//·ñÔò½«¡°ÒÕÊõ¼Ò ±êÌâ¡±ÉèÎªËÑË÷¹Ø¼ü×Ö
+	else		//å¦åˆ™å°†â€œè‰ºæœ¯å®¶ æ ‡é¢˜â€è®¾ä¸ºæœç´¢å…³é”®å­—
 	{
 		keyword = artist + L' ' + title;
 	}
 
-	//ËÑË÷¸èÇú
-	wstring keyword_url = CInternetCommon::URLEncode(keyword);		//½«ËÑË÷¹Ø¼ü×Ö×ª»»³ÉURL±àÂë
+	//æœç´¢æ­Œæ›²
+	wstring keyword_url = CInternetCommon::URLEncode(keyword);		//å°†æœç´¢å…³é”®å­—è½¬æ¢æˆURLç¼–ç 
 	CString url;
 	url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
-	int rtn = CInternetCommon::HttpPost(wstring(url), search_result);		//ÏòÍøÒ×ÔÆÒôÀÖµÄ¸èÇúËÑË÷API·¢ËÍhttpµÄPOSTÇëÇó
+	int rtn = CInternetCommon::HttpPost(wstring(url), search_result);		//å‘ç½‘æ˜“äº‘éŸ³ä¹çš„æ­Œæ›²æœç´¢APIå‘é€httpçš„POSTè¯·æ±‚
 	if (rtn != 0)
 	{
 		if(message)
@@ -458,9 +458,9 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
 		return CInternetCommon::ItemInfo();
 	}
 
-	//´¦Àí·µ»Ø½á¹û
+	//å¤„ç†è¿”å›ç»“æœ
 	vector<CInternetCommon::ItemInfo> down_list;
-	CInternetCommon::DisposeSearchResult(down_list, search_result);		//´¦Àí·µ»ØµÄ²éÕÒ½á¹û£¬²¢½«½á¹û±£´æÔÚdown_listÈİÆ÷Àï
+	CInternetCommon::DisposeSearchResult(down_list, search_result);		//å¤„ç†è¿”å›çš„æŸ¥æ‰¾ç»“æœï¼Œå¹¶å°†ç»“æœä¿å­˜åœ¨down_listå®¹å™¨é‡Œ
 	if (down_list.empty())
 	{
 		if (message)
@@ -470,7 +470,7 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
         return CInternetCommon::ItemInfo();
 	}
 
-	//¼ÆËã×î¼ÑÑ¡ÔñÏî
+	//è®¡ç®—æœ€ä½³é€‰æ‹©é¡¹
 	wstring _title = title;
 	wstring _artist = artist;
 	wstring _album = album;
@@ -489,7 +489,7 @@ CInternetCommon::ItemInfo CInternetCommon::SearchSongAndGetMatched(const wstring
         return CInternetCommon::ItemInfo();
 	}
 
-	//»ñ·µ»Ø×î¼ÑÆ¥ÅäÏî
+	//è·è¿”å›æœ€ä½³åŒ¹é…é¡¹
     if (result != nullptr)
         *result = DR_SUCCESS;
     return down_list[best_matched];

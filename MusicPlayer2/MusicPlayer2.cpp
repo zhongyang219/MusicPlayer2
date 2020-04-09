@@ -1,5 +1,5 @@
-
-// MusicPlayer2.cpp : ¶¨ÒåÓ¦ÓÃ³ÌĞòµÄÀàĞĞÎª¡£
+ï»¿
+// MusicPlayer2.cpp : å®šä¹‰åº”ç”¨ç¨‹åºçš„ç±»è¡Œä¸ºã€‚
 //
 
 #include "stdafx.h"
@@ -24,19 +24,19 @@ BEGIN_MESSAGE_MAP(CMusicPlayerApp, CWinApp)
 END_MESSAGE_MAP()
 
 
-// CMusicPlayerApp ¹¹Ôì
+// CMusicPlayerApp æ„é€ 
 
 CMusicPlayerApp::CMusicPlayerApp()
 {
-    // Ö§³ÖÖØĞÂÆô¶¯¹ÜÀíÆ÷
-    //m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;		//²»ĞèÒªÖ§³ÖÖØĞÂÆô¶¯¹ÜÀíÆ÷
+    // æ”¯æŒé‡æ–°å¯åŠ¨ç®¡ç†å™¨
+    //m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;		//ä¸éœ€è¦æ”¯æŒé‡æ–°å¯åŠ¨ç®¡ç†å™¨
 
-    // TODO: ÔÚ´Ë´¦Ìí¼Ó¹¹Ôì´úÂë£¬
-    // ½«ËùÓĞÖØÒªµÄ³õÊ¼»¯·ÅÖÃÔÚ InitInstance ÖĞ
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ„é€ ä»£ç ï¼Œ
+    // å°†æ‰€æœ‰é‡è¦çš„åˆå§‹åŒ–æ”¾ç½®åœ¨ InitInstance ä¸­
 
     CRASHREPORT::StartCrashReport();
 
-    //³õÊ¼»¯Â·¾¶
+    //åˆå§‹åŒ–è·¯å¾„
     m_module_dir = CCommon::GetExePath();
 #ifdef _DEBUG
     m_local_dir = L".\\";
@@ -53,7 +53,7 @@ CMusicPlayerApp::CMusicPlayerApp()
     m_playlist_dir = m_module_dir + L"playlist\\";
     CCommon::CreateDir(m_playlist_dir);
 
-    //»ñÈ¡µ±Ç°DPI
+    //è·å–å½“å‰DPI
     HDC hDC = ::GetDC(NULL);
     m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
     ::ReleaseDC(NULL, hDC);
@@ -65,56 +65,56 @@ CMusicPlayerApp::CMusicPlayerApp()
 }
 
 
-// Î¨Ò»µÄÒ»¸ö CMusicPlayerApp ¶ÔÏó
+// å”¯ä¸€çš„ä¸€ä¸ª CMusicPlayerApp å¯¹è±¡
 
 CMusicPlayerApp theApp;
 
 
-// CMusicPlayerApp ³õÊ¼»¯
+// CMusicPlayerApp åˆå§‹åŒ–
 
 BOOL CMusicPlayerApp::InitInstance()
 {
-    //Ìæ»»µô¶Ô»°¿ò³ÌĞòµÄÄ¬ÈÏÀàÃû
+    //æ›¿æ¢æ‰å¯¹è¯æ¡†ç¨‹åºçš„é»˜è®¤ç±»å
     WNDCLASS wc;
-    ::GetClassInfo(AfxGetInstanceHandle(), _T("#32770"), &wc);	//MFCÄ¬ÈÏµÄËùÓĞ¶Ô»°¿òµÄÀàÃûÎª#32770
-    wc.lpszClassName = _T("MusicPlayer_l3gwYT");	//½«¶Ô»°¿òµÄÀàÃûĞŞ¸ÄÎªĞÂÀàÃû
+    ::GetClassInfo(AfxGetInstanceHandle(), _T("#32770"), &wc);	//MFCé»˜è®¤çš„æ‰€æœ‰å¯¹è¯æ¡†çš„ç±»åä¸º#32770
+    wc.lpszClassName = _T("MusicPlayer_l3gwYT");	//å°†å¯¹è¯æ¡†çš„ç±»åä¿®æ”¹ä¸ºæ–°ç±»å
     AfxRegisterClass(&wc);
 
     wstring cmd_line{ m_lpCmdLine };
-    //µ±³ÌĞò±»WindowsÖØĞÂÆô¶¯Ê±£¬Ö±½ÓÍË³ö³ÌĞò
+    //å½“ç¨‹åºè¢«Windowsé‡æ–°å¯åŠ¨æ—¶ï¼Œç›´æ¥é€€å‡ºç¨‹åº
     if (cmd_line.find(L"RestartByRestartManager") != wstring::npos)
     {
-        //½«ÃüÁîĞĞ²ÎÊıĞ´ÈëÈÕÖ¾ÎÄ¼ş
+        //å°†å‘½ä»¤è¡Œå‚æ•°å†™å…¥æ—¥å¿—æ–‡ä»¶
         CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
         //swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
         WriteErrorLog(wstring{ info.GetString() });
         return FALSE;
     }
 
-    bool cmd_control = CCommon::GetCmdLineCommand(cmd_line, m_cmd);		//ÃüÁîĞĞ²ÎÊıÊÇ·ñ°üº¬²ÎÊıÃüÁî
-    if (cmd_control)		//Èç¹û´ÓÃüÁîĞĞ²ÎÊı½âÎöµ½ÁËÃüÁî£¬Ôò½«ÃüÁîĞĞ²ÎÊıÇå³ı
+    bool cmd_control = CCommon::GetCmdLineCommand(cmd_line, m_cmd);		//å‘½ä»¤è¡Œå‚æ•°æ˜¯å¦åŒ…å«å‚æ•°å‘½ä»¤
+    if (cmd_control)		//å¦‚æœä»å‘½ä»¤è¡Œå‚æ•°è§£æåˆ°äº†å‘½ä»¤ï¼Œåˆ™å°†å‘½ä»¤è¡Œå‚æ•°æ¸…é™¤
         cmd_line.clear();
 
-    //¼ì²éÊÇ·ñÒÑÓĞÊµÀıÕıÔÚÔËĞĞ£¨DebugÊ±²»¼ì²é£©
+    //æ£€æŸ¥æ˜¯å¦å·²æœ‰å®ä¾‹æ­£åœ¨è¿è¡Œï¼ˆDebugæ—¶ä¸æ£€æŸ¥ï¼‰
 #ifndef _DEBUG
-    HANDLE hMutex = ::CreateMutex(NULL, TRUE, _T("bXS1E7joK0Kh"));		//Ê¹ÓÃÒ»¸öËæ»úµÄ×Ö·û´®´´½¨Ò»¸ö»¥³âÁ¿
+    HANDLE hMutex = ::CreateMutex(NULL, TRUE, _T("bXS1E7joK0Kh"));		//ä½¿ç”¨ä¸€ä¸ªéšæœºçš„å­—ç¬¦ä¸²åˆ›å»ºä¸€ä¸ªäº’æ–¥é‡
     if (hMutex != NULL)
     {
-        if (GetLastError() == ERROR_ALREADY_EXISTS)		//»¥³âÁ¿´´½¨Ê§°Ü£¬ËµÃ÷ÒÑ¾­ÓĞÒ»¸ö³ÌĞòµÄÊµÀıÕıÔÚÔËĞĞ
+        if (GetLastError() == ERROR_ALREADY_EXISTS)		//äº’æ–¥é‡åˆ›å»ºå¤±è´¥ï¼Œè¯´æ˜å·²ç»æœ‰ä¸€ä¸ªç¨‹åºçš„å®ä¾‹æ­£åœ¨è¿è¡Œ
         {
-            //AfxMessageBox(_T("ÒÑ¾­ÓĞÒ»¸ö³ÌĞòÕıÔÚÔËĞĞ¡£"));
-            HWND handle = FindWindow(_T("MusicPlayer_l3gwYT"), NULL);		//¸ù¾İÀàÃû²éÕÒÒÑÔËĞĞÊµÀı´°¿ÚµÄ¾ä±ú
+            //AfxMessageBox(_T("å·²ç»æœ‰ä¸€ä¸ªç¨‹åºæ­£åœ¨è¿è¡Œã€‚"));
+            HWND handle = FindWindow(_T("MusicPlayer_l3gwYT"), NULL);		//æ ¹æ®ç±»åæŸ¥æ‰¾å·²è¿è¡Œå®ä¾‹çª—å£çš„å¥æŸ„
             if (handle != NULL)
             {
                 HWND minidlg_handle = FindWindow(_T("MiniDlg_ByH87M"), NULL);
                 if (!cmd_control || m_cmd == ControlCmd::MINI_MODE)
                 {
-                    if (minidlg_handle == NULL)			//Ã»ÓĞÕÒµ½¡°ÃÔÄãÄ£Ê½¡±´°¿Ú£¬Ôò¼¤»îÖ÷´°¿Ú
+                    if (minidlg_handle == NULL)			//æ²¡æœ‰æ‰¾åˆ°â€œè¿·ä½ æ¨¡å¼â€çª—å£ï¼Œåˆ™æ¿€æ´»ä¸»çª—å£
                     {
-                        ShowWindow(handle, SW_SHOWNORMAL);		//¼¤»î²¢ÏÔÊ¾´°¿Ú
-                        SetForegroundWindow(handle);		//½«´°¿ÚÉèÖÃÎª½¹µã
+                        ShowWindow(handle, SW_SHOWNORMAL);		//æ¿€æ´»å¹¶æ˜¾ç¤ºçª—å£
+                        SetForegroundWindow(handle);		//å°†çª—å£è®¾ç½®ä¸ºç„¦ç‚¹
                     }
-                    else				//ÕÒµ½ÁË¡°ÃÔÄãÄ£Ê½¡±´°¿Ú£¬Ôò¼¤»î¡°ÃÔÄãÄ£Ê½¡±´°¿Ú
+                    else				//æ‰¾åˆ°äº†â€œè¿·ä½ æ¨¡å¼â€çª—å£ï¼Œåˆ™æ¿€æ´»â€œè¿·ä½ æ¨¡å¼â€çª—å£
                     {
                         ShowWindow(minidlg_handle, SW_SHOWNORMAL);
                         SetForegroundWindow(minidlg_handle);
@@ -140,15 +140,15 @@ BOOL CMusicPlayerApp::InitInstance()
                     if (m_cmd & ControlCmd::VOLUME_DOWM)
                         ::SendMessage(handle, WM_COMMAND, ID_VOLUME_DOWN, 0);
                     if (m_cmd & ControlCmd::MINI_MODE)
-                        ::PostMessage(handle, WM_COMMAND, ID_MINI_MODE, 0);     //ÕâÀïÓ¦¸ÃÓÃPostMessage£¬ÒòÎªÏìÓ¦ID_MINI_MODEµÄº¯ÊıÖĞÓĞDoModelº¯Êı£¬Ö»ÓĞµ±Ä£Ì¬¶Ô»°¿ò¹Ø±Õºóº¯Êı²Å»á·µ»Ø
+                        ::PostMessage(handle, WM_COMMAND, ID_MINI_MODE, 0);     //è¿™é‡Œåº”è¯¥ç”¨PostMessageï¼Œå› ä¸ºå“åº”ID_MINI_MODEçš„å‡½æ•°ä¸­æœ‰DoModelå‡½æ•°ï¼Œåªæœ‰å½“æ¨¡æ€å¯¹è¯æ¡†å…³é—­åå‡½æ•°æ‰ä¼šè¿”å›
                 }
 
-                if (!cmd_line.empty())		//Èç¹ûÍ¨¹ıÃüÁîĞĞ´«µİÁË´ò¿ªµÄÎÄ¼şÃû£¬ÇÒÒÑÓĞÒ»¸ö½ø³ÌÔÚÔËĞĞ£¬Ôò½«´ò¿ªÎÄ¼şµÄÃüÁîºÍÃüÁîĞĞ²ÎÊı´«µİ¸ø¸Ã½ø³Ì
+                if (!cmd_line.empty())		//å¦‚æœé€šè¿‡å‘½ä»¤è¡Œä¼ é€’äº†æ‰“å¼€çš„æ–‡ä»¶åï¼Œä¸”å·²æœ‰ä¸€ä¸ªè¿›ç¨‹åœ¨è¿è¡Œï¼Œåˆ™å°†æ‰“å¼€æ–‡ä»¶çš„å‘½ä»¤å’Œå‘½ä»¤è¡Œå‚æ•°ä¼ é€’ç»™è¯¥è¿›ç¨‹
                 {
-                    CCommon::CopyStringToClipboard(cmd_line);		//½«ÃüÁîĞĞ²ÎÊı¸´ÖÆµ½¼ôÌù°å£¬Í¨¹ı¼ôÌù°åÔÚ²»Í¬½ø³Ì¼ä×Ö·û´®
+                    CCommon::CopyStringToClipboard(cmd_line);		//å°†å‘½ä»¤è¡Œå‚æ•°å¤åˆ¶åˆ°å‰ªè´´æ¿ï¼Œé€šè¿‡å‰ªè´´æ¿åœ¨ä¸åŒè¿›ç¨‹é—´å­—ç¬¦ä¸²
                     ::SendMessage(handle, WM_OPEN_FILE_COMMAND_LINE, 0, 0);
                 }
-                return FALSE;		//ÍË³öµ±Ç°³ÌĞò
+                return FALSE;		//é€€å‡ºå½“å‰ç¨‹åº
             }
         }
     }
@@ -159,10 +159,10 @@ BOOL CMusicPlayerApp::InitInstance()
     LoadSongData();
     LoadConfig();
 
-    //³õÊ¼»¯½çÃæÓïÑÔ
+    //åˆå§‹åŒ–ç•Œé¢è¯­è¨€
     CCommon::SetThreadLanguage(m_general_setting_data.language);
 
-    //¼ì²ébass.dllµÄ°æ±¾ÊÇ·ñºÍAPIµÄ°æ±¾Æ¥Åä
+    //æ£€æŸ¥bass.dllçš„ç‰ˆæœ¬æ˜¯å¦å’ŒAPIçš„ç‰ˆæœ¬åŒ¹é…
     WORD dll_version{ HIWORD(BASS_GetVersion()) };
     //WORD dll_version{ 0x203 };
     if (dll_version != BASSVERSION)
@@ -172,24 +172,24 @@ BOOL CMusicPlayerApp::InitInstance()
             return FALSE;
     }
 
-    //Æô¶¯Ê±¼ì²é¸üĞÂ
-#ifndef _DEBUG		//DEBUGÏÂ²»ÔÚÆô¶¯Ê±¼ì²é¸üĞÂ
+    //å¯åŠ¨æ—¶æ£€æŸ¥æ›´æ–°
+#ifndef _DEBUG		//DEBUGä¸‹ä¸åœ¨å¯åŠ¨æ—¶æ£€æŸ¥æ›´æ–°
     if (m_general_setting_data.check_update_when_start)
     {
         AfxBeginThread(CheckUpdateThreadFunc, NULL);
     }
 #endif // !_DEBUG
 
-    //Æô¶¯ºóÌ¨Ïß³Ì½«¸èÇúÊı¾İ·ÖÀà
+    //å¯åŠ¨åå°çº¿ç¨‹å°†æ­Œæ›²æ•°æ®åˆ†ç±»
     //StartClassifySongData();
 
-    // Èç¹ûÒ»¸öÔËĞĞÔÚ Windows XP ÉÏµÄÓ¦ÓÃ³ÌĞòÇåµ¥Ö¸¶¨Òª
-    // Ê¹ÓÃ ComCtl32.dll °æ±¾ 6 »ò¸ü¸ß°æ±¾À´ÆôÓÃ¿ÉÊÓ»¯·½Ê½£¬
-    //ÔòĞèÒª InitCommonControlsEx()¡£  ·ñÔò£¬½«ÎŞ·¨´´½¨´°¿Ú¡£
+    // å¦‚æœä¸€ä¸ªè¿è¡Œåœ¨ Windows XP ä¸Šçš„åº”ç”¨ç¨‹åºæ¸…å•æŒ‡å®šè¦
+    // ä½¿ç”¨ ComCtl32.dll ç‰ˆæœ¬ 6 æˆ–æ›´é«˜ç‰ˆæœ¬æ¥å¯ç”¨å¯è§†åŒ–æ–¹å¼ï¼Œ
+    //åˆ™éœ€è¦ InitCommonControlsEx()ã€‚  å¦åˆ™ï¼Œå°†æ— æ³•åˆ›å»ºçª—å£ã€‚
     INITCOMMONCONTROLSEX InitCtrls;
     InitCtrls.dwSize = sizeof(InitCtrls);
-    // ½«ËüÉèÖÃÎª°üÀ¨ËùÓĞÒªÔÚÓ¦ÓÃ³ÌĞòÖĞÊ¹ÓÃµÄ
-    // ¹«¹²¿Ø¼şÀà¡£
+    // å°†å®ƒè®¾ç½®ä¸ºåŒ…æ‹¬æ‰€æœ‰è¦åœ¨åº”ç”¨ç¨‹åºä¸­ä½¿ç”¨çš„
+    // å…¬å…±æ§ä»¶ç±»ã€‚
     InitCtrls.dwICC = ICC_WIN95_CLASSES;
     InitCommonControlsEx(&InitCtrls);
 
@@ -198,23 +198,23 @@ BOOL CMusicPlayerApp::InitInstance()
 
     AfxEnableControlContainer();
 
-    // ´´½¨ shell ¹ÜÀíÆ÷£¬ÒÔ·À¶Ô»°¿ò°üº¬
-    // ÈÎºÎ shell Ê÷ÊÓÍ¼¿Ø¼ş»ò shell ÁĞ±íÊÓÍ¼¿Ø¼ş¡£
+    // åˆ›å»º shell ç®¡ç†å™¨ï¼Œä»¥é˜²å¯¹è¯æ¡†åŒ…å«
+    // ä»»ä½• shell æ ‘è§†å›¾æ§ä»¶æˆ– shell åˆ—è¡¨è§†å›¾æ§ä»¶ã€‚
     CShellManager *pShellManager = new CShellManager;
 
-    // ¼¤»î¡°Windows Native¡±ÊÓ¾õ¹ÜÀíÆ÷£¬ÒÔ±ãÔÚ MFC ¿Ø¼şÖĞÆôÓÃÖ÷Ìâ
+    // æ¿€æ´»â€œWindows Nativeâ€è§†è§‰ç®¡ç†å™¨ï¼Œä»¥ä¾¿åœ¨ MFC æ§ä»¶ä¸­å¯ç”¨ä¸»é¢˜
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
-    // ±ê×¼³õÊ¼»¯
-    // Èç¹ûÎ´Ê¹ÓÃÕâĞ©¹¦ÄÜ²¢Ï£Íû¼õĞ¡
-    // ×îÖÕ¿ÉÖ´ĞĞÎÄ¼şµÄ´óĞ¡£¬ÔòÓ¦ÒÆ³ıÏÂÁĞ
-    // ²»ĞèÒªµÄÌØ¶¨³õÊ¼»¯Àı³Ì
-    // ¸ü¸ÄÓÃÓÚ´æ´¢ÉèÖÃµÄ×¢²á±íÏî
-    // TODO: Ó¦ÊÊµ±ĞŞ¸Ä¸Ã×Ö·û´®£¬
-    // ÀıÈçĞŞ¸ÄÎª¹«Ë¾»ò×éÖ¯Ãû
-    //SetRegistryKey(_T("Ó¦ÓÃ³ÌĞòÏòµ¼Éú³ÉµÄ±¾µØÓ¦ÓÃ³ÌĞò"));
+    // æ ‡å‡†åˆå§‹åŒ–
+    // å¦‚æœæœªä½¿ç”¨è¿™äº›åŠŸèƒ½å¹¶å¸Œæœ›å‡å°
+    // æœ€ç»ˆå¯æ‰§è¡Œæ–‡ä»¶çš„å¤§å°ï¼Œåˆ™åº”ç§»é™¤ä¸‹åˆ—
+    // ä¸éœ€è¦çš„ç‰¹å®šåˆå§‹åŒ–ä¾‹ç¨‹
+    // æ›´æ”¹ç”¨äºå­˜å‚¨è®¾ç½®çš„æ³¨å†Œè¡¨é¡¹
+    // TODO: åº”é€‚å½“ä¿®æ”¹è¯¥å­—ç¬¦ä¸²ï¼Œ
+    // ä¾‹å¦‚ä¿®æ”¹ä¸ºå…¬å¸æˆ–ç»„ç»‡å
+    //SetRegistryKey(_T("åº”ç”¨ç¨‹åºå‘å¯¼ç”Ÿæˆçš„æœ¬åœ°åº”ç”¨ç¨‹åº"));
 
-    //ÉèÖÃÒ»¸öÈ«¾Ö¹³×ÓÒÔ½Ø»ñ¶àÃ½Ìå°´¼üÏûÏ¢
+    //è®¾ç½®ä¸€ä¸ªå…¨å±€é’©å­ä»¥æˆªè·å¤šåª’ä½“æŒ‰é”®æ¶ˆæ¯
     if(m_hot_key_setting_data.global_multimedia_key_enable)
         m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
 
@@ -222,28 +222,28 @@ BOOL CMusicPlayerApp::InitInstance()
 	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
     CMusicPlayerDlg dlg(cmd_line);
-    //CMusicPlayerDlg dlg(L"\"D:\\ÒôÀÖ\\´¿ÒôÀÖ\\°àµÃÈğ\\05. Chariots Of Fire »ğÕ½³µ.mp3\"");
+    //CMusicPlayerDlg dlg(L"\"D:\\éŸ³ä¹\\çº¯éŸ³ä¹\\ç­å¾—ç‘\\05. Chariots Of Fire ç«æˆ˜è½¦.mp3\"");
     m_pMainWnd = &dlg;
     INT_PTR nResponse = dlg.DoModal();
     if (nResponse == IDOK)
     {
-        // TODO: ÔÚ´Ë·ÅÖÃ´¦ÀíºÎÊ±ÓÃ
-        //  ¡°È·¶¨¡±À´¹Ø±Õ¶Ô»°¿òµÄ´úÂë
+        // TODO: åœ¨æ­¤æ”¾ç½®å¤„ç†ä½•æ—¶ç”¨
+        //  â€œç¡®å®šâ€æ¥å…³é—­å¯¹è¯æ¡†çš„ä»£ç 
     }
     else if (nResponse == IDCANCEL)
     {
-        // TODO: ÔÚ´Ë·ÅÖÃ´¦ÀíºÎÊ±ÓÃ
-        //  ¡°È¡Ïû¡±À´¹Ø±Õ¶Ô»°¿òµÄ´úÂë
+        // TODO: åœ¨æ­¤æ”¾ç½®å¤„ç†ä½•æ—¶ç”¨
+        //  â€œå–æ¶ˆâ€æ¥å…³é—­å¯¹è¯æ¡†çš„ä»£ç 
     }
     else if (nResponse == -1)
     {
-        TRACE(traceAppMsg, 0, "¾¯¸æ: ¶Ô»°¿ò´´½¨Ê§°Ü£¬Ó¦ÓÃ³ÌĞò½«ÒâÍâÖÕÖ¹¡£\n");
-        TRACE(traceAppMsg, 0, "¾¯¸æ: Èç¹ûÄúÔÚ¶Ô»°¿òÉÏÊ¹ÓÃ MFC ¿Ø¼ş£¬ÔòÎŞ·¨ #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS¡£\n");
+        TRACE(traceAppMsg, 0, "è­¦å‘Š: å¯¹è¯æ¡†åˆ›å»ºå¤±è´¥ï¼Œåº”ç”¨ç¨‹åºå°†æ„å¤–ç»ˆæ­¢ã€‚\n");
+        TRACE(traceAppMsg, 0, "è­¦å‘Š: å¦‚æœæ‚¨åœ¨å¯¹è¯æ¡†ä¸Šä½¿ç”¨ MFC æ§ä»¶ï¼Œåˆ™æ— æ³• #define _AFX_NO_MFC_CONTROLS_IN_DIALOGSã€‚\n");
     }
 
     SaveSongData();
 
-    // É¾³ıÉÏÃæ´´½¨µÄ shell ¹ÜÀíÆ÷¡£
+    // åˆ é™¤ä¸Šé¢åˆ›å»ºçš„ shell ç®¡ç†å™¨ã€‚
     if (pShellManager != NULL)
     {
         delete pShellManager;
@@ -256,8 +256,8 @@ BOOL CMusicPlayerApp::InitInstance()
         m_multimedia_key_hook = NULL;
     }
 
-    // ÓÉÓÚ¶Ô»°¿òÒÑ¹Ø±Õ£¬ËùÒÔ½«·µ»Ø FALSE ÒÔ±ãÍË³öÓ¦ÓÃ³ÌĞò£¬
-    //  ¶ø²»ÊÇÆô¶¯Ó¦ÓÃ³ÌĞòµÄÏûÏ¢±Ã¡£
+    // ç”±äºå¯¹è¯æ¡†å·²å…³é—­ï¼Œæ‰€ä»¥å°†è¿”å› FALSE ä»¥ä¾¿é€€å‡ºåº”ç”¨ç¨‹åºï¼Œ
+    //  è€Œä¸æ˜¯å¯åŠ¨åº”ç”¨ç¨‹åºçš„æ¶ˆæ¯æ³µã€‚
     return FALSE;
 }
 
@@ -265,10 +265,10 @@ BOOL CMusicPlayerApp::InitInstance()
 
 void CMusicPlayerApp::OnHelp()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÃüÁî´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤æ·»åŠ å‘½ä»¤å¤„ç†ç¨‹åºä»£ç 
     static bool dialog_exist{ false };
 
-    if(!dialog_exist)		//È·±£¶Ô»°¿òÒÑ¾­´æÔÚÊ±²»ÔÙµ¯³ö
+    if(!dialog_exist)		//ç¡®ä¿å¯¹è¯æ¡†å·²ç»å­˜åœ¨æ—¶ä¸å†å¼¹å‡º
     {
         dialog_exist = true;
         CMessageDlg helpDlg;
@@ -290,22 +290,22 @@ void CMusicPlayerApp::OnHelp()
 
 void CMusicPlayerApp::SaveSongData()
 {
-    // ´ò¿ª»òÕßĞÂ½¨ÎÄ¼ş
+    // æ‰“å¼€æˆ–è€…æ–°å»ºæ–‡ä»¶
     CFile file;
     BOOL bRet = file.Open(m_song_data_path.c_str(),
                           CFile::modeCreate | CFile::modeWrite);
-    if (!bRet)		//´ò¿ªÎÄ¼şÊ§°Ü
+    if (!bRet)		//æ‰“å¼€æ–‡ä»¶å¤±è´¥
     {
         return;
     }
-    // ¹¹ÔìCArchive¶ÔÏó
+    // æ„é€ CArchiveå¯¹è±¡
     CArchive ar(&file, CArchive::store);
-    // Ğ´Êı¾İ
-    ar << CString(_T("2.680"));			//Ğ´ÈëÊı¾İ°æ±¾
-    ar << static_cast<int>(m_song_data.size());		//Ğ´ÈëÓ³ÉäÈİÆ÷µÄ´óĞ¡
+    // å†™æ•°æ®
+    ar << CString(_T("2.680"));			//å†™å…¥æ•°æ®ç‰ˆæœ¬
+    ar << static_cast<int>(m_song_data.size());		//å†™å…¥æ˜ å°„å®¹å™¨çš„å¤§å°
     for (auto& song_data : m_song_data)
     {
-        ar << CString(song_data.first.c_str())		//±£´æÓ³ÉäÈİÆ÷µÄ¼ü£¬¼´¸èÇúµÄ¾ø¶ÔÂ·¾¶
+        ar << CString(song_data.first.c_str())		//ä¿å­˜æ˜ å°„å®¹å™¨çš„é”®ï¼Œå³æ­Œæ›²çš„ç»å¯¹è·¯å¾„
            //<< CString(song_data.second.lyric_file.c_str())
            << song_data.second.lengh.toInt()
            << song_data.second.bitrate
@@ -327,9 +327,9 @@ void CMusicPlayerApp::SaveSongData()
 		   << song_data.second.last_played_time
            ;
     }
-    // ¹Ø±ÕCArchive¶ÔÏó
+    // å…³é—­CArchiveå¯¹è±¡
     ar.Close();
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.Close();
 
     m_song_data_modified = false;
@@ -339,10 +339,10 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 {
     CWaitCursor wait_cursor;
 
-    wstring version;		//³ÌĞò°æ±¾
-    wstring link;			//ÏÂÔØÁ´½Ó
-    wstring contents_zh_cn;	//¸üĞÂÄÚÈİ£¨¼òÌåÖĞÎÄ£©
-    wstring contents_en;	//¸üĞÂÄÚÈİ£¨English£©
+    wstring version;		//ç¨‹åºç‰ˆæœ¬
+    wstring link;			//ä¸‹è½½é“¾æ¥
+    wstring contents_zh_cn;	//æ›´æ–°å†…å®¹ï¼ˆç®€ä½“ä¸­æ–‡ï¼‰
+    wstring contents_en;	//æ›´æ–°å†…å®¹ï¼ˆEnglishï¼‰
     CUpdateHelper update_helper;
     if (!update_helper.CheckForUpdate())
     {
@@ -371,10 +371,10 @@ void CMusicPlayerApp::CheckUpdate(bool message)
         }
         return;
     }
-    if (version > VERSION)		//Èç¹û·şÎñÆ÷ÉÏµÄ°æ±¾´óÓÚ±¾µØ°æ±¾
+    if (version > VERSION)		//å¦‚æœæœåŠ¡å™¨ä¸Šçš„ç‰ˆæœ¬å¤§äºæœ¬åœ°ç‰ˆæœ¬
     {
         CString info;
-        //¸ù¾İÓïÑÔÉèÖÃÑ¡Ôñ¶ÔÓ¦ÓïÑÔ°æ±¾µÄ¸üĞÂÄÚÈİ
+        //æ ¹æ®è¯­è¨€è®¾ç½®é€‰æ‹©å¯¹åº”è¯­è¨€ç‰ˆæœ¬çš„æ›´æ–°å†…å®¹
         int language_code = _ttoi(CCommon::LoadText(IDS_LANGUAGE_CODE));
         wstring contents_lan;
         switch (language_code)
@@ -394,7 +394,7 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 
         if (theApp.m_pMainWnd->MessageBox(info, NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)
         {
-            ShellExecute(NULL, _T("open"), link.c_str(), NULL, NULL, SW_SHOW);		//×ªµ½ÏÂÔØÁ´½Ó
+            ShellExecute(NULL, _T("open"), link.c_str(), NULL, NULL, SW_SHOW);		//è½¬åˆ°ä¸‹è½½é“¾æ¥
         }
     }
     else
@@ -407,7 +407,7 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    CheckUpdate(false);		//¼ì²é¸üĞÂ
+    CheckUpdate(false);		//æ£€æŸ¥æ›´æ–°
     return 0;
 }
 
@@ -504,15 +504,15 @@ void CMusicPlayerApp::LoadIconResource()
 void CMusicPlayerApp::InitMenuResourse()
 {
     m_menu_set.m_main_menu.LoadMenu(IDR_MENU1);
-    m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//×°ÔØ²¥·ÅÁĞ±íÓÒ¼ü²Ëµ¥
+    m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//è£…è½½æ’­æ”¾åˆ—è¡¨å³é”®èœå•
     m_menu_set.m_playlist_toolbar_menu.LoadMenu(IDR_PLAYLIST_TOOLBAR_MENU);
 
-    //½«Ö÷²Ëµ¥Ìí¼Óµ½ÏµÍ³²Ëµ¥ÖĞ
+    //å°†ä¸»èœå•æ·»åŠ åˆ°ç³»ç»Ÿèœå•ä¸­
     CMenu* pSysMenu = m_pMainWnd->GetSystemMenu(FALSE);
     if (pSysMenu != NULL)
     {
         pSysMenu->AppendMenu(MF_SEPARATOR);
-        CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());		//½«Ö÷²Ëµ¥Ìí¼Óµ½ÏµÍ³²Ëµ¥
+        CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());		//å°†ä¸»èœå•æ·»åŠ åˆ°ç³»ç»Ÿèœå•
 
         pSysMenu->AppendMenu(MF_SEPARATOR);
         pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
@@ -521,14 +521,14 @@ void CMusicPlayerApp::InitMenuResourse()
         m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
         pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
 
-        //Ìí¼ÓÒ»¸ö²âÊÔÃüÁî
+        //æ·»åŠ ä¸€ä¸ªæµ‹è¯•å‘½ä»¤
 #ifdef _DEBUG
         pSysMenu->AppendMenu(MF_STRING, ID_TEST, _T("Test Command"));
         pSysMenu->AppendMenu(MF_STRING, ID_TEST_DIALOG, _T("Test Dialog"));
 #endif
     }
 
-    //³õÊ¼»¯°´Shift¼üµ¯³öµÄÓÒ¼ü²Ëµ¥
+    //åˆå§‹åŒ–æŒ‰Shifté”®å¼¹å‡ºçš„å³é”®èœå•
     m_menu_set.m_main_menu_popup.CreatePopupMenu();
     CCommon::AppendMenuOp(m_menu_set.m_main_menu_popup.GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());
     m_menu_set.m_main_menu_popup.AppendMenu(MF_SEPARATOR);
@@ -536,7 +536,7 @@ void CMusicPlayerApp::InitMenuResourse()
     m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
     m_menu_set.m_main_menu_popup.AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
 
-    m_menu_set.m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//×°ÔØ¸è´ÊÓÒ¼ü²Ëµ¥
+    m_menu_set.m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//è£…è½½æ­Œè¯å³é”®èœå•
     m_menu_set.m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
 
     m_menu_set.m_playlist_btn_menu.LoadMenu(IDR_PLAYLIST_BTN_MENU);
@@ -682,13 +682,13 @@ void CMusicPlayerApp::StartUpdateMediaLib()
 
 void CMusicPlayerApp::LoadSongData()
 {
-    // ´ò¿ªÎÄ¼ş
+    // æ‰“å¼€æ–‡ä»¶
     CFile file;
     BOOL bRet = file.Open(m_song_data_path.c_str(), CFile::modeRead);
     if (!bRet) return;
-    // ¹¹ÔìCArchive¶ÔÏó
+    // æ„é€ CArchiveå¯¹è±¡
     CArchive ar(&file, CArchive::load);
-    // ¶ÁÊı¾İ
+    // è¯»æ•°æ®
     int size{};
     SongInfo song_info;
     CString song_path;
@@ -696,14 +696,14 @@ void CMusicPlayerApp::LoadSongData()
     int song_length;
     try
     {
-        //¶ÁÈ¡°æ±¾
+        //è¯»å–ç‰ˆæœ¬
         CString version_str;
         ar >> version_str;
 		if (!CCommon::StringIsVersion(version_str))
 			version_str = _T("0.00");
         if (version_str >= _T("2.664"))
         {
-            ar >> size;		//¶ÁÈ¡Ó³ÉäÈİÆ÷µÄ³¤¶È
+            ar >> size;		//è¯»å–æ˜ å°„å®¹å™¨çš„é•¿åº¦
         }
         else
         {
@@ -746,7 +746,7 @@ void CMusicPlayerApp::LoadSongData()
             ar >> temp;
             song_info.song_id = temp;
 
-            if(version_str >= _T("2.64"))		//°æ±¾ºÅ´óÓÚµÈÓÚ2.64
+            if(version_str >= _T("2.64"))		//ç‰ˆæœ¬å·å¤§äºç­‰äº2.64
             {
                 ar >> song_info.listen_time;
                 ar >> song_info.info_acquired;
@@ -767,7 +767,7 @@ void CMusicPlayerApp::LoadSongData()
 			{
 				ar >> song_info.last_played_time;
 			}
-            m_song_data[wstring{ song_path }] = song_info;		//½«¶ÁÈ¡µ½µÄÒ»Ê×¸èÇúĞÅÏ¢Ìí¼Óµ½Ó³ÉäÈİÆ÷ÖĞ
+            m_song_data[wstring{ song_path }] = song_info;		//å°†è¯»å–åˆ°çš„ä¸€é¦–æ­Œæ›²ä¿¡æ¯æ·»åŠ åˆ°æ˜ å°„å®¹å™¨ä¸­
         }
     }
     catch(CArchiveException* exception)
@@ -776,9 +776,9 @@ void CMusicPlayerApp::LoadSongData()
         info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { m_song_data_path, exception->m_cause });
         WriteErrorLog(wstring{ info });
     }
-    // ¹Ø±Õ¶ÔÏó
+    // å…³é—­å¯¹è±¡
     ar.Close();
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.Close();
 }
 
@@ -789,7 +789,7 @@ LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM 
     //	int a = 0;
     //}
 
-    //½Ø»ñÈ«¾ÖµÄ¶àÃ½Ìå°´¼üÏûÏ¢
+    //æˆªè·å…¨å±€çš„å¤šåª’ä½“æŒ‰é”®æ¶ˆæ¯
     if (wParam == WM_KEYUP)
     {
         KBDLLHOOKSTRUCT* pKBHook = (KBDLLHOOKSTRUCT*)lParam;
@@ -821,8 +821,8 @@ LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM 
 
 int CMusicPlayerApp::ExitInstance()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
-	// Ğ¶ÔØGDI+
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
+	// å¸è½½GDI+
 	Gdiplus::GdiplusShutdown(m_gdiplusToken);
 
 	return CWinApp::ExitInstance();

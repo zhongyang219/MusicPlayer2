@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CMiniModeUI.h"
 #include "PlayListCtrl.h"
 
@@ -33,21 +33,21 @@ bool CMiniModeUI::PointInControlArea(CPoint point) const
 
 void CMiniModeUI::_DrawInfo(bool reset)
 {
-    //»æÖÆ×¨¼­·âÃæ
+    //ç»˜åˆ¶ä¸“è¾‘å°é¢
     int cover_side = m_ui_data.window_height - 2 * m_ui_data.margin;
     CRect cover_rect{CPoint(m_ui_data.margin, m_ui_data.margin), CSize(cover_side, cover_side)};
     if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
     {
         m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
     }
-    else		//×¨¼­·âÃæ²»´æÔÚÊ±ÏÔÊ¾Ä¬ÈÏ×¨¼­·âÃæÍ¼±ê
+    else		//ä¸“è¾‘å°é¢ä¸å­˜åœ¨æ—¶æ˜¾ç¤ºé»˜è®¤ä¸“è¾‘å°é¢å›¾æ ‡
     {
         if (IsDrawBackgroundAlpha())
             m_draw.FillAlphaRect(cover_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
         else
             m_draw.FillRect(cover_rect, m_colors.color_spectrum_back);
 
-        //Ê¹Í¼±êÔÚ¾ØĞÎ¿òÖĞ¾ÓÖĞ
+        //ä½¿å›¾æ ‡åœ¨çŸ©å½¢æ¡†ä¸­å±…ä¸­
         CSize icon_size = theApp.m_icon_set.default_cover_small.GetSize();
         CRect icon_rect;
         icon_rect.left = cover_rect.left + (cover_rect.Width() - icon_size.cx) / 2;
@@ -59,7 +59,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
     }
     m_buttons[BTN_COVER].rect = cover_rect;
 
-    //»æÖÆ²¥·Å¿ØÖÆ°´Å¥
+    //ç»˜åˆ¶æ’­æ”¾æ§åˆ¶æŒ‰é’®
     CRect rc_tmp;
     rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
     rc_tmp.right = rc_tmp.left + theApp.DPI(27);
@@ -76,7 +76,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
     DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next);
 
 
-    //»æÖÆÆµÆ×·ÖÎö
+    //ç»˜åˆ¶é¢‘è°±åˆ†æ
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
     rc_tmp.right = rc_tmp.left + theApp.DPI(30);
 
@@ -86,11 +86,11 @@ void CMiniModeUI::_DrawInfo(bool reset)
     //	m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
     m_draw.SetDrawArea(rc_tmp);
 
-    int width{ rc_tmp.Width() / 9 };	//Ã¿¸öÖùĞÎµÄ¿í¶È
-    int gap{ rc_tmp.Width() / 22 };	//ÖùĞÎµÄ¼ä¸ô
+    int width{ rc_tmp.Width() / 9 };	//æ¯ä¸ªæŸ±å½¢çš„å®½åº¦
+    int gap{ rc_tmp.Width() / 22 };	//æŸ±å½¢çš„é—´éš”
     m_draw.DrawSpectrum(rc_tmp, width - gap, gap, 16, m_colors.color_spectrum, false);
 
-    //»æÖÆ²¥·ÅÊ±¼ä
+    //ç»˜åˆ¶æ’­æ”¾æ—¶é—´
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
     rc_tmp.right = m_ui_data.widnow_width - 3 * theApp.DPI(20) - 4 * m_ui_data.margin;
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(16);
@@ -105,7 +105,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
     m_draw.DrawWindowText(rc_tmp, str, m_colors.color_text, Alignment::CENTER);
     m_draw.SetFont(theApp.m_pMainWnd->GetFont());
 
-    //»æÖÆ½ø¶ÈÌõ
+    //ç»˜åˆ¶è¿›åº¦æ¡
     rc_tmp.MoveToY(rc_tmp.bottom);
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(6);
     CRect progress_rect = rc_tmp;
@@ -126,20 +126,20 @@ void CMiniModeUI::_DrawInfo(bool reset)
     if (progress_rect.right > progress_rect.left)
         m_draw.FillRect(progress_rect, m_colors.color_spectrum);
 
-    //»æÖÆÓÒÉÏ½Ç°´Å¥
+    //ç»˜åˆ¶å³ä¸Šè§’æŒ‰é’®
     rc_tmp.right = m_ui_data.widnow_width - m_ui_data.margin;
     rc_tmp.left = rc_tmp.right - theApp.DPI(20);
     rc_tmp.top = m_ui_data.margin;
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(20);
-    DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("¡Á"));
+    DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("Ã—"));
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("¡õ"));
+    DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("â–¡"));
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("¡Ô"));
+    DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("â‰¡"));
 
-    //»æÖÆÓÒÏÂ½Ç°´Å¥
+    //ç»˜åˆ¶å³ä¸‹è§’æŒ‰é’®
     rc_tmp.MoveToXY(m_ui_data.widnow_width - theApp.DPI(20) - m_ui_data.margin, m_ui_data.margin + theApp.DPI(20));
     DrawUIButton(rc_tmp, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
@@ -148,7 +148,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
     else
         DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.favourite);
 
-    //»æÖÆÏÔÊ¾ÎÄ±¾ĞÅÏ¢
+    //ç»˜åˆ¶æ˜¾ç¤ºæ–‡æœ¬ä¿¡æ¯
     //rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));
     rc_tmp.top = m_ui_data.margin + theApp.DPI(22);
     rc_tmp.right = rc_tmp.left - m_ui_data.margin;
@@ -162,23 +162,23 @@ void CMiniModeUI::_DrawInfo(bool reset)
     else
     {
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//»ñÈ¡µ±¸è´Ê
-        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//»ñÈ¡µ±Ç°¸è´Ê½ø¶È£¨·¶Î§Îª0~1000£©
+        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//è·å–å½“æ­Œè¯
+        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//è·å–å½“å‰æ­Œè¯è¿›åº¦ï¼ˆèŒƒå›´ä¸º0~1000ï¼‰
         bool no_lyric{ false };
-        //Èç¹ûµ±Ç°Ò»¾ä¸è´ÊÎª¿Õ£¬ÇÒ³ÖĞøÁË³¬¹ıÁË20Ãë£¬Ôò²»ÏÔÊ¾¸è´Ê
+        //å¦‚æœå½“å‰ä¸€å¥æ­Œè¯ä¸ºç©ºï¼Œä¸”æŒç»­äº†è¶…è¿‡äº†20ç§’ï¼Œåˆ™ä¸æ˜¾ç¤ºæ­Œè¯
         no_lyric = (current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.toInt() > 20000) || progress >= 1000;
 
-        if (CPlayer::GetInstance().m_Lyrics.IsEmpty() || no_lyric)	//Ã»ÓĞ¸è´ÊÊ±ÏÔÊ¾²¥·ÅµÄÎÄ¼şÃû
+        if (CPlayer::GetInstance().m_Lyrics.IsEmpty() || no_lyric)	//æ²¡æœ‰æ­Œè¯æ—¶æ˜¾ç¤ºæ’­æ”¾çš„æ–‡ä»¶å
         {
-            //ÕıÔÚ²¥·ÅµÄÎÄ¼şÃûÒÔ¹ö¶¯µÄÑùÊ½ÏÔÊ¾¡£Èç¹û²ÎÊıÒªÇóÇ¿ÖÆË¢ĞÂ£¬ÔòÖØÖÃ¹ö¶¯Î»ÖÃ
+            //æ­£åœ¨æ’­æ”¾çš„æ–‡ä»¶åä»¥æ»šåŠ¨çš„æ ·å¼æ˜¾ç¤ºã€‚å¦‚æœå‚æ•°è¦æ±‚å¼ºåˆ¶åˆ·æ–°ï¼Œåˆ™é‡ç½®æ»šåŠ¨ä½ç½®
             static CDrawCommon::ScrollInfo scroll_info;
             m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str(),
                                   m_colors.color_text, theApp.DPI(1), true, scroll_info, reset);
         }
-        else		//ÏÔÊ¾¸è´Ê
+        else		//æ˜¾ç¤ºæ­Œè¯
         {
             COLORREF color2 = (theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text);
-            if (current_lyric.text.empty())		//Èç¹ûµ±Ç°¸è´ÊÎª¿Õ°×£¬¾ÍÏÔÊ¾ÎªÊ¡ÂÔºÅ
+            if (current_lyric.text.empty())		//å¦‚æœå½“å‰æ­Œè¯ä¸ºç©ºç™½ï¼Œå°±æ˜¾ç¤ºä¸ºçœç•¥å·
                 current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
             m_draw.DrawWindowText(rc_tmp, current_lyric.text.c_str(), m_colors.color_text, color2, progress, Alignment::CENTER);
         }
@@ -265,9 +265,9 @@ void CMiniModeUI::UpdatePlayPauseButtonTip()
 
 void CMiniModeUI::PreDrawInfo()
 {
-    //ÉèÖÃÑÕÉ«
+    //è®¾ç½®é¢œè‰²
     m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode);
-    //ÉèÖÃ»æÍ¼ÇøÓò
+    //è®¾ç½®ç»˜å›¾åŒºåŸŸ
     m_draw_rect = CRect(CPoint(0, 0), CSize(m_ui_data.widnow_width, m_ui_data.window_height));
 }
 

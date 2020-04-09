@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CListBoxEnhanced.h"
 #include "MusicPlayer2.h"
 
@@ -21,7 +21,7 @@ void CListBoxEnhanced::AddString(LPCTSTR str)
 
 void CListBoxEnhanced::PreSubclassWindow()
 {
-	// TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+	// TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     SetExtendedStyle(GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_INFOTIP);
 	ModifyStyle(0, LVS_NOCOLUMNHEADER);
 
@@ -47,7 +47,7 @@ END_MESSAGE_MAP()
 void CListBoxEnhanced::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CWnd* pParent{ GetParent() };
 	if (pParent != nullptr)
 		pParent->SendMessage(WM_LISTBOX_SEL_CHANGED, (WPARAM)this, (LPARAM)pNMItemActivate->iItem);
@@ -59,7 +59,7 @@ void CListBoxEnhanced::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 void CListBoxEnhanced::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CWnd* pParent{ GetParent() };
 	if (pParent != nullptr)
 		pParent->SendMessage(WM_LISTBOX_SEL_CHANGED, (WPARAM)this, (LPARAM)pNMItemActivate->iItem);
@@ -72,7 +72,7 @@ void CListBoxEnhanced::OnSize(UINT nType, int cx, int cy)
 {
     CListCtrlEx::OnSize(nType, cx, cy);
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
     SetColumnWidth(0, CalculateColumnWidth());
     ShowScrollBar(SB_HORZ, FALSE);
 }

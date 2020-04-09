@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include <set>
 #include "SongInfo.h"
 
 #define STR_OTHER_CLASSIFY_TYPE L"eRk0Q6ov"
 
-//²»Çø·Ö´óĞ¡Ğ´µÄ×Ö·û´®±È½ÏÆ÷
+//ä¸åŒºåˆ†å¤§å°å†™çš„å­—ç¬¦ä¸²æ¯”è¾ƒå™¨
 class StringComparerNoCase
 {
 public:
@@ -29,7 +29,7 @@ public:
         CT_YEAR
     };
 
-    typedef std::map<std::wstring, std::vector<SongInfo>, StringComparerNoCase> MediaList;      //¶¨Òå±£´æ·ÖÀà½á¹ûµÄmapÈİÆ÷£¬Ê¹ÓÃ²»Çø·Ö´óĞ¡Ğ´µÄ±È½ÏÆ÷£¬ÒÔÊµÏÖ·ÖÀàÊ±²»Çø·Ö´óĞ¡Ğ´
+    typedef std::map<std::wstring, std::vector<SongInfo>, StringComparerNoCase> MediaList;      //å®šä¹‰ä¿å­˜åˆ†ç±»ç»“æœçš„mapå®¹å™¨ï¼Œä½¿ç”¨ä¸åŒºåˆ†å¤§å°å†™çš„æ¯”è¾ƒå™¨ï¼Œä»¥å®ç°åˆ†ç±»æ—¶ä¸åŒºåˆ†å¤§å°å†™
 
 public:
     CMediaClassifier(ClassificationType type, bool hide_only_one_classification = false);
@@ -40,7 +40,7 @@ public:
     void ClassifyMedia();
     static bool IsStringYear(std::wstring str);
     void ClearResult();
-    void RemoveFiles(std::vector<SongInfo> songs);      //´Ó½á¹ûÖĞÉ¾³ıÖ¸¶¨ÎÄ¼ş
+    void RemoveFiles(std::vector<SongInfo> songs);      //ä»ç»“æœä¸­åˆ é™¤æŒ‡å®šæ–‡ä»¶
 	void SetHideOnlyOneClassification(bool hide_only_one_classification);
 
 private:
@@ -48,6 +48,6 @@ private:
 private:
     MediaList m_media_list;
     ClassificationType m_type;
-    bool m_hide_only_one_classification;       //Èç¹ûÎªtrue£¬Ôò°ÑÖ»ÓĞÒ»ÏîµÄÀà±ğ¹éµ½¡°ÆäËû¡±ÀïÃæ
+    bool m_hide_only_one_classification;       //å¦‚æœä¸ºtrueï¼Œåˆ™æŠŠåªæœ‰ä¸€é¡¹çš„ç±»åˆ«å½’åˆ°â€œå…¶ä»–â€é‡Œé¢
 };
 

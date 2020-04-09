@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "AudioCommon.h"
 #include "CueFile.h"
 
@@ -17,8 +17,8 @@ CAudioCommon::~CAudioCommon()
 bool CAudioCommon::FileIsAudio(const wstring & file_name)
 {
     CFilePathHelper file_path(file_name);
-    wstring extension{ file_path.GetFileExtension() };		//»ñÈ¡ÎÄ¼şÀ©Õ¹Ãû
-    for (const auto& ext : m_all_surpported_extensions)		//ÅĞ¶ÏÎÄ¼şÀ©Õ¹ÊÇ·ñÔÚÖ§³ÖµÄÀ©Õ¹ÃûÁĞ±íÀï
+    wstring extension{ file_path.GetFileExtension() };		//è·å–æ–‡ä»¶æ‰©å±•å
+    for (const auto& ext : m_all_surpported_extensions)		//åˆ¤æ–­æ–‡ä»¶æ‰©å±•æ˜¯å¦åœ¨æ”¯æŒçš„æ‰©å±•ååˆ—è¡¨é‡Œ
     {
         if (ext == extension)
             return true;
@@ -29,7 +29,7 @@ bool CAudioCommon::FileIsAudio(const wstring & file_name)
 AudioType CAudioCommon::GetAudioTypeByExtension(const wstring & file_name)
 {
     CFilePathHelper file_path(file_name);
-    wstring type{ file_path.GetFileExtension() };		//»ñÈ¡ÎÄ¼şÀ©Õ¹Ãû
+    wstring type{ file_path.GetFileExtension() };		//è·å–æ–‡ä»¶æ‰©å±•å
     if (type == L"mp3")
         return AU_MP3;
     else if (type == L"wma")
@@ -101,9 +101,9 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 
 void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file)
 {
-    //ÎÄ¼ş¾ä±ú
+    //æ–‡ä»¶å¥æŸ„
     intptr_t hFile = 0;
-    //ÎÄ¼şĞÅÏ¢£¨ÓÃUnicode±£´æÊ¹ÓÃ_wfinddata_t£¬¶à×Ö½Ú×Ö·û¼¯Ê¹ÓÃ_finddata_t£©
+    //æ–‡ä»¶ä¿¡æ¯ï¼ˆç”¨Unicodeä¿å­˜ä½¿ç”¨_wfinddata_tï¼Œå¤šå­—èŠ‚å­—ç¬¦é›†ä½¿ç”¨_finddata_tï¼‰
     _wfinddata_t fileinfo;
     SongInfo song_info;
     if (path.back() != '\\' && path.back() != '/')
@@ -113,7 +113,7 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
         do
         {
             if (files.size() >= max_file) break;
-            if (!CCommon::IsFolder(path + fileinfo.name) && FileIsAudio(wstring(fileinfo.name)))	//Èç¹ûÕÒµ½µÄÎÄ¼şÊÇÒôÆµÎÄ¼ş£¬Ôò±£´æµ½ÈİÆ÷ÖĞ
+            if (!CCommon::IsFolder(path + fileinfo.name) && FileIsAudio(wstring(fileinfo.name)))	//å¦‚æœæ‰¾åˆ°çš„æ–‡ä»¶æ˜¯éŸ³é¢‘æ–‡ä»¶ï¼Œåˆ™ä¿å­˜åˆ°å®¹å™¨ä¸­
             {
                 //song_info.file_name = fileinfo.name;
                 song_info.file_path = path + fileinfo.name;
@@ -127,9 +127,9 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
 
 void CAudioCommon::GetAudioFiles(wstring path, std::vector<std::wstring>& files, size_t max_file, bool include_sub_dir)
 {
-    //ÎÄ¼ş¾ä±ú
+    //æ–‡ä»¶å¥æŸ„
     intptr_t hFile = 0;
-    //ÎÄ¼şĞÅÏ¢
+    //æ–‡ä»¶ä¿¡æ¯
     _wfinddata_t fileinfo;
     if (path.back() != '\\' && path.back() != '/')
         path.push_back('\\');
@@ -143,14 +143,14 @@ void CAudioCommon::GetAudioFiles(wstring path, std::vector<std::wstring>& files,
             if(file_name == L"." || file_name == L"..")
                 continue;
 
-            if (CCommon::IsFolder(path + file_name))        //µ±Ç°ÊÇÎÄ¼ş¼Ğ£¬Ôòµİ¹éµ÷ÓÃ
+            if (CCommon::IsFolder(path + file_name))        //å½“å‰æ˜¯æ–‡ä»¶å¤¹ï¼Œåˆ™é€’å½’è°ƒç”¨
             {
                 if (include_sub_dir)
                     GetAudioFiles(path + file_name, files, max_file, true);
             }
             else
             {
-                if (FileIsAudio(file_name))	//Èç¹ûÕÒµ½µÄÎÄ¼şÊÇÒôÆµÎÄ¼ş£¬Ôò±£´æµ½ÈİÆ÷ÖĞ
+                if (FileIsAudio(file_name))	//å¦‚æœæ‰¾åˆ°çš„æ–‡ä»¶æ˜¯éŸ³é¢‘æ–‡ä»¶ï¼Œåˆ™ä¿å­˜åˆ°å®¹å™¨ä¸­
                     files.push_back(path + file_name);
             }
         } while (_wfindnext(hFile, &fileinfo) == 0);
@@ -160,9 +160,9 @@ void CAudioCommon::GetAudioFiles(wstring path, std::vector<std::wstring>& files,
 
 bool CAudioCommon::IsPathContainsAudioFile(std::wstring path, bool include_sub_dir /*= false*/)
 {
-    //ÎÄ¼ş¾ä±ú
+    //æ–‡ä»¶å¥æŸ„
     intptr_t hFile = 0;
-    //ÎÄ¼şĞÅÏ¢
+    //æ–‡ä»¶ä¿¡æ¯
     _wfinddata_t fileinfo;
     if (path.back() != '\\' && path.back() != '/')
         path.push_back('\\');
@@ -176,7 +176,7 @@ bool CAudioCommon::IsPathContainsAudioFile(std::wstring path, bool include_sub_d
             if (file_name == L"." || file_name == L"..")
                 continue;
 
-            if (CCommon::IsFolder(path + file_name))        //µ±Ç°ÊÇÎÄ¼ş¼Ğ£¬Ôòµİ¹éµ÷ÓÃ
+            if (CCommon::IsFolder(path + file_name))        //å½“å‰æ˜¯æ–‡ä»¶å¤¹ï¼Œåˆ™é€’å½’è°ƒç”¨
             {
                 if (include_sub_dir)
                 {
@@ -186,7 +186,7 @@ bool CAudioCommon::IsPathContainsAudioFile(std::wstring path, bool include_sub_d
             }
             else
             {
-                if (FileIsAudio(file_name))	//Èç¹ûÕÒµ½ÁËÒôÆµÎÄ¼ş£¬·µ»Øtrue
+                if (FileIsAudio(file_name))	//å¦‚æœæ‰¾åˆ°äº†éŸ³é¢‘æ–‡ä»¶ï¼Œè¿”å›true
                     return true;
             }
         } while (_wfindnext(hFile, &fileinfo) == 0);
@@ -197,16 +197,16 @@ bool CAudioCommon::IsPathContainsAudioFile(std::wstring path, bool include_sub_d
 
 void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
 {
-    //ÎÄ¼ş¾ä±ú
+    //æ–‡ä»¶å¥æŸ„
     intptr_t hFile = 0;
-    //ÎÄ¼şĞÅÏ¢£¨ÓÃUnicode±£´æÊ¹ÓÃ_wfinddata_t£¬¶à×Ö½Ú×Ö·û¼¯Ê¹ÓÃ_finddata_t£©
+    //æ–‡ä»¶ä¿¡æ¯ï¼ˆç”¨Unicodeä¿å­˜ä½¿ç”¨_wfinddata_tï¼Œå¤šå­—èŠ‚å­—ç¬¦é›†ä½¿ç”¨_finddata_tï¼‰
     _wfinddata_t fileinfo;
     //wstring file_path;
     if ((hFile = _wfindfirst(path.append(L"\\*.lrc").c_str(), &fileinfo)) != -1)
     {
         do
         {
-            files.push_back(fileinfo.name);  //½«ÎÄ¼şÃû±£´æ
+            files.push_back(fileinfo.name);  //å°†æ–‡ä»¶åä¿å­˜
         }
         while (_wfindnext(hFile, &fileinfo) == 0);
     }
@@ -215,26 +215,26 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
 
 void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
 {
-    vector<SongInfo> cue_tracks;    //´¢´æ½âÎöµ½µÄcueÒô¹ì
+    vector<SongInfo> cue_tracks;    //å‚¨å­˜è§£æåˆ°çš„cueéŸ³è½¨
     for (size_t i = 0; i < files.size(); i++)
     {
-        //ÒÀ´Î¼ì²éÁĞ±íÖĞµÄÃ¿Ê×¸èÇúÊÇ·ñÎªcueÎÄ¼ş
+        //ä¾æ¬¡æ£€æŸ¥åˆ—è¡¨ä¸­çš„æ¯é¦–æ­Œæ›²æ˜¯å¦ä¸ºcueæ–‡ä»¶
         if (GetAudioTypeByExtension(files[i].file_path) == AU_CUE)
         {
             CFilePathHelper file_path{ files[i].file_path };
             wstring cue_dir = file_path.GetDir();
-            files.erase(files.begin() + i);		//´ÓÁĞ±íÖĞÉ¾³ıcueÎÄ¼ş
+            files.erase(files.begin() + i);		//ä»åˆ—è¡¨ä¸­åˆ é™¤cueæ–‡ä»¶
 
-            //½âÎöcueÎÄ¼ş
+            //è§£æcueæ–‡ä»¶
             CCueFile cue_file{ file_path.GetFilePath() };
-            //»ñÈ¡cue¶ÔÓ¦ÒôÆµÎÄ¼ş
+            //è·å–cueå¯¹åº”éŸ³é¢‘æ–‡ä»¶
             wstring audio_file_name = cue_file.GetAudioFileName();
             if(!CCommon::FileExist(cue_dir + audio_file_name))
                 continue;
 
             int bitrate;
             Time total_length;
-            //¼ì²éfilesÁĞ±íÖĞÊÇ·ñ°üº¬cue¶ÔÓ¦µÄÒôÆµÎÄ¼ş
+            //æ£€æŸ¥filesåˆ—è¡¨ä¸­æ˜¯å¦åŒ…å«cueå¯¹åº”çš„éŸ³é¢‘æ–‡ä»¶
             auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
             {
                 return CCommon::StringCompareNoCase(song.file_path, cue_dir + audio_file_name) && !song.is_cue;
@@ -243,9 +243,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             {
                 bitrate = find->bitrate;
                 total_length = find->lengh;
-                if (find - files.begin() < i)       //Èç¹ûÉ¾³ıµÄÎÄ¼şÔÚµ±Ç°ÎÄ¼şµÄÇ°Ãæ£¬ÔòÑ­»·±äÁ¿¼õ1
+                if (find - files.begin() < i)       //å¦‚æœåˆ é™¤çš„æ–‡ä»¶åœ¨å½“å‰æ–‡ä»¶çš„å‰é¢ï¼Œåˆ™å¾ªç¯å˜é‡å‡1
                     i--;
-                files.erase(find);      //ÕÒµ½cue¶ÔÓ¦µÄÒôÆµÎÄ¼şÔò°ÑËüÉ¾³ı
+                files.erase(find);      //æ‰¾åˆ°cueå¯¹åº”çš„éŸ³é¢‘æ–‡ä»¶åˆ™æŠŠå®ƒåˆ é™¤
             }
             else
             {
@@ -265,7 +265,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                 cue_tracks.back().bitrate = bitrate;
             }
 
-            i--;		//½âÎöÍêÒ»¸öcueÎÄ¼şºó£¬ÓÉÓÚ¸ÃcueÎÄ¼şÒÑ¾­±»ÒÆ³ı£¬ËùÒÔ½«Ñ­»·±äÁ¿¼õ1
+            i--;		//è§£æå®Œä¸€ä¸ªcueæ–‡ä»¶åï¼Œç”±äºè¯¥cueæ–‡ä»¶å·²ç»è¢«ç§»é™¤ï¼Œæ‰€ä»¥å°†å¾ªç¯å˜é‡å‡1
         }
 
     }
@@ -285,11 +285,11 @@ wstring CAudioCommon::GenreConvert(wstring genre)
 {
     if(genre.empty())
         return wstring();
-    if (genre[0] == L'(')		//Èç¹ûÇ°ºóÓĞÀ¨ºÅ£¬ÔòÉ¾³ıÀ¨ºÅ
+    if (genre[0] == L'(')		//å¦‚æœå‰åæœ‰æ‹¬å·ï¼Œåˆ™åˆ é™¤æ‹¬å·
         genre = genre.substr(1);
     if (genre.back() == L')')
         genre.pop_back();
-    if (CCommon::StrIsNumber(genre))		//Èç¹ûÁ÷ÅÉĞÅÏ¢ÊÇÊı×Ö£¬Ôò×ª»»Îª±ê×¼Á÷ÅÉĞÅÏ¢
+    if (CCommon::StrIsNumber(genre))		//å¦‚æœæµæ´¾ä¿¡æ¯æ˜¯æ•°å­—ï¼Œåˆ™è½¬æ¢ä¸ºæ ‡å‡†æµæ´¾ä¿¡æ¯
     {
         int n_genre = _wtoi(genre.c_str());
         if(n_genre < 256)

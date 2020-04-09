@@ -1,4 +1,4 @@
-//CCommonÀàÎªÈ«¾Öº¯ÊıµÄ¶¨Òå
+ï»¿//CCommonç±»ä¸ºå…¨å±€å‡½æ•°çš„å®šä¹‰
 #pragma once
 #include "CVariant.h"
 #include <initializer_list>
@@ -11,8 +11,8 @@ enum class Command
 	PAUSE,
 	STOP,
 	PLAY_PAUSE,
-	FF,	//¿ì½ø
-	REW,		//¿ìµ¹
+	FF,	//å¿«è¿›
+	REW,		//å¿«å€’
 	VOLUME_UP,
 	VOLUME_DOWN,
 	SEEK
@@ -41,12 +41,12 @@ enum class CodeType
 	AUTO
 };
 
-//ÓïÑÔ
+//è¯­è¨€
 enum class Language
 {
-	FOLLOWING_SYSTEM,		//¸úËæÏµÍ³
-	ENGLISH,				//Ó¢Óï
-	SIMPLIFIED_CHINESE		//¼òÌåÖĞÎÄ
+	FOLLOWING_SYSTEM,		//è·Ÿéšç³»ç»Ÿ
+	ENGLISH,				//è‹±è¯­
+	SIMPLIFIED_CHINESE		//ç®€ä½“ä¸­æ–‡
 };
 
 class CCommon
@@ -55,269 +55,269 @@ public:
 	CCommon();
 	~CCommon();
 
-	//ÅĞ¶ÏÎÄ¼şÊÇ·ñ´æÔÚ
+	//åˆ¤æ–­æ–‡ä»¶æ˜¯å¦å­˜åœ¨
 	static bool FileExist(const wstring& file);
 
-	//ÅĞ¶ÏÎÄ¼ş¼ĞÊÇ·ñ´æÔÚ
+	//åˆ¤æ–­æ–‡ä»¶å¤¹æ˜¯å¦å­˜åœ¨
 	static bool FolderExist(const wstring& file);
 
-	//ÅĞ¶ÏÊÇ·ñÊÇÎÄ¼ş¼Ğ
+	//åˆ¤æ–­æ˜¯å¦æ˜¯æ–‡ä»¶å¤¹
 	static bool IsFolder(const wstring& path);
 
-	//¹æ·¶»¯×Ö·û´®£¬¼´É¾³ı×Ö·û´®Ç°ÃæºÍºóÃæµÄ¿Õ¸ñ»ò¿ØÖÆ×Ö·û(Ä£°åÀàĞÍÖ»ÄÜÊÇstring»òwstring)
+	//è§„èŒƒåŒ–å­—ç¬¦ä¸²ï¼Œå³åˆ é™¤å­—ç¬¦ä¸²å‰é¢å’Œåé¢çš„ç©ºæ ¼æˆ–æ§åˆ¶å­—ç¬¦(æ¨¡æ¿ç±»å‹åªèƒ½æ˜¯stringæˆ–wstring)
 	template<class T>
 	static bool StringNormalize(T& str);
 
-    //É¾³ı×Ö·û´®Ç°ÃæµÄbom
+    //åˆ é™¤å­—ç¬¦ä¸²å‰é¢çš„bom
     static void DeleteStringBom(string& str);
 
-	//É¾³ı×Ö·û´®Ä©Î²µÄ¿Õ¸ñ
+	//åˆ é™¤å­—ç¬¦ä¸²æœ«å°¾çš„ç©ºæ ¼
 	template<class T>
 	static bool DeleteEndSpace(T& str);
 
-	//×Ô¶¨ÒåµÄ×Ö·û´®¿½±´º¯Êı
+	//è‡ªå®šä¹‰çš„å­—ç¬¦ä¸²æ‹·è´å‡½æ•°
 	static void StringCopy(char* dest, int size, string source);
 
-	//×ª»»×Ö·û´®´óĞ¡Ğ´£¬Èç¹ûupperÎªtrue£¬Ôò×ª»»³É´óĞ´£¬·ñÔò×ª»»³ÉĞ¡Ğ´
+	//è½¬æ¢å­—ç¬¦ä¸²å¤§å°å†™ï¼Œå¦‚æœupperä¸ºtrueï¼Œåˆ™è½¬æ¢æˆå¤§å†™ï¼Œå¦åˆ™è½¬æ¢æˆå°å†™
 	template<class T>
 	static bool StringTransform(T& str, bool upper);
 
-	//×Ö·û´®±È½Ï£¬ºöÂÔ´óĞ¡Ğ´
+	//å­—ç¬¦ä¸²æ¯”è¾ƒï¼Œå¿½ç•¥å¤§å°å†™
 	template<class T>
 	static bool StringCompareNoCase(const T& str1, const T& str2);
 
-	//×Ö·û´®²éÕÒ£¬ºöÂÔ´óĞ¡Ğ´
+	//å­—ç¬¦ä¸²æŸ¥æ‰¾ï¼Œå¿½ç•¥å¤§å°å†™
 	template<class T>
 	static size_t StringFindNoCase(const T& str, const T& find_str);
 
-	//×Ö·û´®²éÕÒ£¬È«´ÊÆ¥Åä
+	//å­—ç¬¦ä¸²æŸ¥æ‰¾ï¼Œå…¨è¯åŒ¹é…
 	template<class T>
 	static size_t StringNatchWholeWord(const T& str, const T& find_str);
 
-	//ÅĞ¶ÏÒ»¸ö×Ö·ûÊÇ·ñÊÇÔÚÈ«´ÊÆ¥ÅäÊ±µÄµ¥´Ê·Ö¸î×Ö·û£¨³ıÁË×ÖÄ¸¡¢Êı×ÖºÍ256ÒÔÉÏµÄUnicode×Ö·ûÍâµÄ×Ö·û£©
+	//åˆ¤æ–­ä¸€ä¸ªå­—ç¬¦æ˜¯å¦æ˜¯åœ¨å…¨è¯åŒ¹é…æ—¶çš„å•è¯åˆ†å‰²å­—ç¬¦ï¼ˆé™¤äº†å­—æ¯ã€æ•°å­—å’Œ256ä»¥ä¸Šçš„Unicodeå­—ç¬¦å¤–çš„å­—ç¬¦ï¼‰
 	static bool IsDivideChar(wchar_t ch);
 
-	//ÅĞ¶ÏÒ»¸ö×Ö·û´®ÊÇ·ñÊÇÊı×Ö
+	//åˆ¤æ–­ä¸€ä¸ªå­—ç¬¦ä¸²æ˜¯å¦æ˜¯æ•°å­—
 	static bool StrIsNumber(const wstring& str);
 
 	static bool CharIsNumber(wchar_t ch);
 
-	//½«Ò»¸ö×Ö·û´®·Ö¸î³ÉÈô¸É¸ö×Ö·û´®
-	//str: Ô­Ê¼×Ö·û´®
-	//div_ch: ÓÃÓÚ·Ö¸îµÄ×Ö·û
-	//result: ½ÓÊÕ·Ö¸îºóµÄ½á¹û
+	//å°†ä¸€ä¸ªå­—ç¬¦ä¸²åˆ†å‰²æˆè‹¥å¹²ä¸ªå­—ç¬¦ä¸²
+	//str: åŸå§‹å­—ç¬¦ä¸²
+	//div_ch: ç”¨äºåˆ†å‰²çš„å­—ç¬¦
+	//result: æ¥æ”¶åˆ†å‰²åçš„ç»“æœ
 	static void StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty = true);
 	static void StringSplit(const wstring& str, const wstring& div_str, vector<wstring>& results, bool skip_empty = true);
 
-	//½«Ò»¸ö×Ö·û´®·Ö¸î³ÉÈô¸É¸ö×Ö·û´®£¬¿ÉÒÔÖ¸¶¨¶à¸ö·Ö¸ô×Ö·û
-	//str: Ô­Ê¼×Ö·û´®
-	//div_ch: ×Ö·û´®ÖĞÈÎÒâÒ»¸ö×Ö·û×÷Îª·Ö¸î×Ö·û
-	//result: ½ÓÊÕ·Ö¸îºóµÄ½á¹û
+	//å°†ä¸€ä¸ªå­—ç¬¦ä¸²åˆ†å‰²æˆè‹¥å¹²ä¸ªå­—ç¬¦ä¸²ï¼Œå¯ä»¥æŒ‡å®šå¤šä¸ªåˆ†éš”å­—ç¬¦
+	//str: åŸå§‹å­—ç¬¦ä¸²
+	//div_ch: å­—ç¬¦ä¸²ä¸­ä»»æ„ä¸€ä¸ªå­—ç¬¦ä½œä¸ºåˆ†å‰²å­—ç¬¦
+	//result: æ¥æ”¶åˆ†å‰²åçš„ç»“æœ
 	static void StringSplitWithMulitChars(const wstring& str, const wchar_t* div_ch, vector<wstring>& results, bool skip_empty = true);
 
-	//½«Èô¸É¸ö×Ö·û´®ºÏ²¢³ÉÒ»¸ö×Ö·û´®
-	//div_ch: ÓÃÓÚ·Ö¸îµÄ×Ö·û
+	//å°†è‹¥å¹²ä¸ªå­—ç¬¦ä¸²åˆå¹¶æˆä¸€ä¸ªå­—ç¬¦ä¸²
+	//div_ch: ç”¨äºåˆ†å‰²çš„å­—ç¬¦
 	static wstring StringMerge(const vector<wstring>& strings, wchar_t div_ch);
 
-	//ÖĞÎÄ·±¼ò×ª»»
+	//ä¸­æ–‡ç¹ç®€è½¬æ¢
 	static wstring TranslateToSimplifiedChinese(const wstring& str);
 	static wstring TranslateToTranditionalChinese(const wstring& str);
 
-	//Ìæ»»Ò»¸öÎÄ¼şÃûÖĞµÄÎŞĞ§×Ö·û
+	//æ›¿æ¢ä¸€ä¸ªæ–‡ä»¶åä¸­çš„æ— æ•ˆå­—ç¬¦
 	static void FileNameNormalize(wstring& file_name);
 
     static bool IsFileNameValid(const wstring& file_name);
 
-	//¼ÆËãÎÄ¼ş´óĞ¡
+	//è®¡ç®—æ–‡ä»¶å¤§å°
 	static size_t GetFileSize(const wstring& file_name);
 
-	//½«stringÀàĞÍµÄ×Ö·û´®×ª»»³ÉUnicode±àÂëµÄwstring×Ö·û´®
+	//å°†stringç±»å‹çš„å­—ç¬¦ä¸²è½¬æ¢æˆUnicodeç¼–ç çš„wstringå­—ç¬¦ä¸²
 	static wstring StrToUnicode(const string& str, CodeType code_type = CodeType::AUTO);
 
-	//½«Unicode±àÂëµÄwstring×Ö·û´®×ª»»³ÉstringÀàĞÍµÄ×Ö·û´®£¬Èç¹ûÓĞ×Ö·ûÎŞ·¨×ª»»£¬½«²ÎÊıchar_cannot_convertÖ¸ÏòµÄbool±äÁ¿ÖÃÎªtrue
+	//å°†Unicodeç¼–ç çš„wstringå­—ç¬¦ä¸²è½¬æ¢æˆstringç±»å‹çš„å­—ç¬¦ä¸²ï¼Œå¦‚æœæœ‰å­—ç¬¦æ— æ³•è½¬æ¢ï¼Œå°†å‚æ•°char_cannot_convertæŒ‡å‘çš„boolå˜é‡ç½®ä¸ºtrue
 	static string UnicodeToStr(const wstring & wstr, CodeType code_type, bool* char_cannot_convert = nullptr);
 
-	//½«Ò»¸öÖ»ÓĞASCIIÂë×é³ÉµÄ×Ö·û´®×ª»»³ÉUnicode
+	//å°†ä¸€ä¸ªåªæœ‰ASCIIç ç»„æˆçš„å­—ç¬¦ä¸²è½¬æ¢æˆUnicode
 	static wstring ASCIIToUnicode(const string& ascii);
 
-	//ÅĞ¶ÏÒ»¸ö×Ö·û´®ÊÇ·ñUTF8±àÂë
+	//åˆ¤æ–­ä¸€ä¸ªå­—ç¬¦ä¸²æ˜¯å¦UTF8ç¼–ç 
 	static bool IsUTF8Bytes(const char* data);
 
-	//ÅĞ¶ÏÒ»¸ö×Ö·û´®µÄ±àÂë¸ñÊ½
+	//åˆ¤æ–­ä¸€ä¸ªå­—ç¬¦ä¸²çš„ç¼–ç æ ¼å¼
 	static CodeType JudgeCodeType(const string& str, CodeType default_code = CodeType::ANSI);
 
     static bool IsURL(const wstring& str);
 
-    //É¾³ıÒ»¸ö×Ö·û´®ÖĞÖ¸¶¨µÄ×Ö·û
+    //åˆ é™¤ä¸€ä¸ªå­—ç¬¦ä¸²ä¸­æŒ‡å®šçš„å­—ç¬¦
     static bool StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replaced);
 
-	//»ñÈ¡µ±Ç°½ø³ÌexeÎÄ¼şµÄÂ·¾¶
+	//è·å–å½“å‰è¿›ç¨‹exeæ–‡ä»¶çš„è·¯å¾„
 	static wstring GetExePath();
 
-	//»ñÈ¡×ÀÃæµÄÂ·¾¶
+	//è·å–æ¡Œé¢çš„è·¯å¾„
 	static wstring GetDesktopPath();
 
-	//»ñÈ¡ÁÙÊ±ÎÄ¼ş¼ĞÂ·¾¶
+	//è·å–ä¸´æ—¶æ–‡ä»¶å¤¹è·¯å¾„
 	static wstring GetTemplatePath();
 
-	//»ñÈ¡ÏµÍ³ÌØÊâÎÄ¼ş¼ĞµÄÎ»ÖÃ
-	//csidl: º¬ÒåÍ¬SHGetSpecialFolderLocationº¯ÊıµÄ²ÎÊı
+	//è·å–ç³»ç»Ÿç‰¹æ®Šæ–‡ä»¶å¤¹çš„ä½ç½®
+	//csidl: å«ä¹‰åŒSHGetSpecialFolderLocationå‡½æ•°çš„å‚æ•°
 	static wstring GetSpecialDir(int csidl);
 
-	////»ñÈ¡Ò»¸öÁĞ±í¿Ø¼ş×î´ó³¤¶ÈÏîÄ¿¿í¶ÈµÄÏñËØÖµ
+	////è·å–ä¸€ä¸ªåˆ—è¡¨æ§ä»¶æœ€å¤§é•¿åº¦é¡¹ç›®å®½åº¦çš„åƒç´ å€¼
 	//static int GetListWidth(CListBox& list);
 
-	//É¾³ıÒ»¸öÎÄ¼ş
+	//åˆ é™¤ä¸€ä¸ªæ–‡ä»¶
 	static int DeleteAFile(HWND hwnd, _tstring file);
-	//É¾³ı¶à¸öÎÄ¼ş
+	//åˆ é™¤å¤šä¸ªæ–‡ä»¶
 	static int DeleteFiles(HWND hwnd, const vector<_tstring>& files);
 
-	//¸´ÖÆÒ»¸öÎÄ¼ş
+	//å¤åˆ¶ä¸€ä¸ªæ–‡ä»¶
 	static int CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to);
-	//¸´ÖÆ¶à¸öÎÄ¼ş
+	//å¤åˆ¶å¤šä¸ªæ–‡ä»¶
 	static int CopyFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
 
-	//ÒÆ¶¯Ò»¸öÎÄ¼ş
-	//file_from£ºÒªÒÆ¶¯µÄÎÄ¼şµÄÂ·¾¶
-	//file_to£ºÒÆ¶¯Ä¿±êµÄÄ¿Â¼µÄÎ»ÖÃ
+	//ç§»åŠ¨ä¸€ä¸ªæ–‡ä»¶
+	//file_fromï¼šè¦ç§»åŠ¨çš„æ–‡ä»¶çš„è·¯å¾„
+	//file_toï¼šç§»åŠ¨ç›®æ ‡çš„ç›®å½•çš„ä½ç½®
 	static int MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to);
 
-	//ÒÆ¶¯¶à¸öÎÄ¼ş
+	//ç§»åŠ¨å¤šä¸ªæ–‡ä»¶
 	static int MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
 
     static bool CreateDir(const _tstring& path);
 
-    //ÎÄ¼ş/ÎÄ¼ş¼ĞÖØÃüÃû
-    //file_path: ÎÄ¼ş»òÎÄ¼ş¼ĞµÄÂ·¾¶
-    //new_file_name: ĞÂµÄÎÄ¼şÃû£¨²»º¬À©Õ¹Ãû£©£¬Èç¹û²Ù×÷¶ÔÏóÎªÎÄ¼ş¼Ğ£¬ÔòÎªĞÂÎÄ¼ş¼ĞÃû
-    //³É¹¦Ôò·µ»ØĞÂÎÄ¼ş/ÎÄ¼ş¼ĞµÄÂ·¾¶£¬·ñÔò·µ»Ø¿Õ×Ö·û´®
+    //æ–‡ä»¶/æ–‡ä»¶å¤¹é‡å‘½å
+    //file_path: æ–‡ä»¶æˆ–æ–‡ä»¶å¤¹çš„è·¯å¾„
+    //new_file_name: æ–°çš„æ–‡ä»¶åï¼ˆä¸å«æ‰©å±•åï¼‰ï¼Œå¦‚æœæ“ä½œå¯¹è±¡ä¸ºæ–‡ä»¶å¤¹ï¼Œåˆ™ä¸ºæ–°æ–‡ä»¶å¤¹å
+    //æˆåŠŸåˆ™è¿”å›æ–°æ–‡ä»¶/æ–‡ä»¶å¤¹çš„è·¯å¾„ï¼Œå¦åˆ™è¿”å›ç©ºå­—ç¬¦ä¸²
     static _tstring FileRename(const _tstring& file_path, const _tstring& new_file_name);
 
-	//½«Ò»¸ö×Ö·û´®±£´æµ½¼ôÌù°å
+	//å°†ä¸€ä¸ªå­—ç¬¦ä¸²ä¿å­˜åˆ°å‰ªè´´æ¿
 	static bool CopyStringToClipboard(const wstring& str);
 
-	//´Ó¼ôÌù°å»ñÈ¡×Ö·û´®
+	//ä»å‰ªè´´æ¿è·å–å­—ç¬¦ä¸²
 	static wstring GetStringFromClipboard();
 
-	//Ğ´ÈëÈÕÖ¾
+	//å†™å…¥æ—¥å¿—
 	static void WriteLog(const wchar_t* path, const wstring& content);
 
-	//½«Í¨¹ıÃüÁîĞĞ²ÎÊı´«µİ¹ıÀ´µÄ¶à¸öÎÄ¼şÂ·¾¶²ğ·Ö£¬²¢±£´æµ½fileÈİÆ÷Àï£¬Èç¹û²ÎÊı´«µİ¹ıÀ´µÄµÚÒ»¸öÎÄ¼ş²»ÊÇÎÄ¼ş¶øÊÇÎÄ¼ş¼Ğ£¬Ôò·µ»ØÎÄ¼ş¼ĞÂ·¾¶£¬·ñÔò£¬·µ»Ø¿Õ×Ö·û´®
+	//å°†é€šè¿‡å‘½ä»¤è¡Œå‚æ•°ä¼ é€’è¿‡æ¥çš„å¤šä¸ªæ–‡ä»¶è·¯å¾„æ‹†åˆ†ï¼Œå¹¶ä¿å­˜åˆ°fileå®¹å™¨é‡Œï¼Œå¦‚æœå‚æ•°ä¼ é€’è¿‡æ¥çš„ç¬¬ä¸€ä¸ªæ–‡ä»¶ä¸æ˜¯æ–‡ä»¶è€Œæ˜¯æ–‡ä»¶å¤¹ï¼Œåˆ™è¿”å›æ–‡ä»¶å¤¹è·¯å¾„ï¼Œå¦åˆ™ï¼Œè¿”å›ç©ºå­—ç¬¦ä¸²
 	static wstring DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files);
 
-	//½âÎöÃüÁîĞĞ²ÎÊıÖĞµÄÃüÁî
+	//è§£æå‘½ä»¤è¡Œå‚æ•°ä¸­çš„å‘½ä»¤
 	static bool GetCmdLineCommand(const wstring& cmd_line, int& command);
 
 	/*
-	º¯Êı¹¦ÄÜ£º¶ÔÖ¸¶¨ÎÄ¼şÔÚÖ¸¶¨µÄÄ¿Â¼ÏÂ´´½¨Æä¿ì½İ·½Ê½
-	º¯Êı²ÎÊı£º
-	lpszLnkFileDir  Ö¸¶¨Ä¿Â¼£¬²»ÄÜÎªNULL¡£
-	lpszFileName    Ö¸¶¨ÎÄ¼ş£¬ÎªNULL±íÊ¾µ±Ç°½ø³ÌµÄEXEÎÄ¼ş¡£
-	lpszLnkFileName ¿ì½İ·½Ê½Ãû³Æ£¬ÎªNULL±íÊ¾EXEÎÄ¼şÃû¡£
-	lpszWorkDir		¿ì½İ·½Ê½¹¤×÷Ä¿Â¼£¬ÎªNULL±íÊ¾¿ì½İ·½Ê½Ä¿±êËùÔÚÎ»ÖÃ
-	wHotkey         Îª0±íÊ¾²»ÉèÖÃ¿ì½İ¼ü
-	pszDescription  ±¸×¢
-	iShowCmd        ÔËĞĞ·½Ê½£¬Ä¬ÈÏÎª³£¹æ´°¿Ú
-	lpszArguments	ÃüÁîĞĞ²ÎÊı
-	nIconOffset		Ê¹ÓÃµÄÍ¼±êÎªÓ¦ÓÃ³ÌĞòÖĞµÚ¼¸¸öÍ¼±ê
+	å‡½æ•°åŠŸèƒ½ï¼šå¯¹æŒ‡å®šæ–‡ä»¶åœ¨æŒ‡å®šçš„ç›®å½•ä¸‹åˆ›å»ºå…¶å¿«æ·æ–¹å¼
+	å‡½æ•°å‚æ•°ï¼š
+	lpszLnkFileDir  æŒ‡å®šç›®å½•ï¼Œä¸èƒ½ä¸ºNULLã€‚
+	lpszFileName    æŒ‡å®šæ–‡ä»¶ï¼Œä¸ºNULLè¡¨ç¤ºå½“å‰è¿›ç¨‹çš„EXEæ–‡ä»¶ã€‚
+	lpszLnkFileName å¿«æ·æ–¹å¼åç§°ï¼Œä¸ºNULLè¡¨ç¤ºEXEæ–‡ä»¶åã€‚
+	lpszWorkDir		å¿«æ·æ–¹å¼å·¥ä½œç›®å½•ï¼Œä¸ºNULLè¡¨ç¤ºå¿«æ·æ–¹å¼ç›®æ ‡æ‰€åœ¨ä½ç½®
+	wHotkey         ä¸º0è¡¨ç¤ºä¸è®¾ç½®å¿«æ·é”®
+	pszDescription  å¤‡æ³¨
+	iShowCmd        è¿è¡Œæ–¹å¼ï¼Œé»˜è®¤ä¸ºå¸¸è§„çª—å£
+	lpszArguments	å‘½ä»¤è¡Œå‚æ•°
+	nIconOffset		ä½¿ç”¨çš„å›¾æ ‡ä¸ºåº”ç”¨ç¨‹åºä¸­ç¬¬å‡ ä¸ªå›¾æ ‡
 	*/
 	static bool CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL, LPCTSTR lpszArguments = NULL, int nIconOffset = 0);
 
-	//²éÕÒÖ¸¶¨ÎÄ¼ş£¬²¢½«ÎÄ¼şÃû±£´æÔÚfilesÈİÆ÷
-	//file_name£ºÀıÈç D:\\Music\\*abc*.mp3£¬Ôò½«²éÕÒD:\MusicÄ¿Â¼ÏÂËùÓĞ°üº¬abcµÄmp3ÎÄ¼ş
+	//æŸ¥æ‰¾æŒ‡å®šæ–‡ä»¶ï¼Œå¹¶å°†æ–‡ä»¶åä¿å­˜åœ¨fileså®¹å™¨
+	//file_nameï¼šä¾‹å¦‚ D:\\Music\\*abc*.mp3ï¼Œåˆ™å°†æŸ¥æ‰¾D:\Musicç›®å½•ä¸‹æ‰€æœ‰åŒ…å«abcçš„mp3æ–‡ä»¶
 	static void GetFiles(wstring file_name, vector<wstring>& files);
 
-	//²éÕÒÖ¸¶¨µÄÍ¼Æ¬ÎÄ¼ş£¬²¢±£´æÔÚfilesÈİÆ÷ÖĞ£¬²ÎÊıº¬ÒåÍ¬GetFilesº¯Êı
+	//æŸ¥æ‰¾æŒ‡å®šçš„å›¾ç‰‡æ–‡ä»¶ï¼Œå¹¶ä¿å­˜åœ¨fileså®¹å™¨ä¸­ï¼Œå‚æ•°å«ä¹‰åŒGetFileså‡½æ•°
 	static void GetImageFiles(wstring file_name, vector<wstring>& files);
 
-    //ÅĞ¶ÏÒ»¸öÎÄ¼ş¼Ğ¼°Æä×ÓÎÄ¼ş¼ĞÊÇ·ñÆ¥ÅäÒ»¸ö¹Ø¼ü×Ö
+    //åˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶å¤¹åŠå…¶å­æ–‡ä»¶å¤¹æ˜¯å¦åŒ¹é…ä¸€ä¸ªå…³é”®å­—
     static bool IsFolderMatchKeyWord(wstring dir, const wstring& key_word);
 
-	//¸ù¾İÎÄ¼şÀ©Õ¹ÃûÅĞ¶ÏÒ»¸öÎÄ¼şÊÇ·ñÎªÍ¼Æ¬ÎÄ¼ş
+	//æ ¹æ®æ–‡ä»¶æ‰©å±•ååˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶æ˜¯å¦ä¸ºå›¾ç‰‡æ–‡ä»¶
 	static bool FileIsImage(const wstring& file_name);
 
-	//»ñÈ¡Ò»¸öËæ»úµÄ×Ö·û´®
+	//è·å–ä¸€ä¸ªéšæœºçš„å­—ç¬¦ä¸²
 	static wstring GetRandomString(int length);
 
-	//ÅĞ¶ÏÒ»¸öÔªËØÊÇ·ñÔÚvectorÖĞ
+	//åˆ¤æ–­ä¸€ä¸ªå…ƒç´ æ˜¯å¦åœ¨vectorä¸­
 	template<class T>
 	static bool IsItemInVector(const vector<T>& items, const T& item);
 
-	//ÅĞ¶ÏÒ»¸öÔªËØÊÇ·ñÔÚvectorÖĞ
-    //ÆäÖĞfuncµÄÔ­ĞÍÊÇ bool func(const T&)
+	//åˆ¤æ–­ä¸€ä¸ªå…ƒç´ æ˜¯å¦åœ¨vectorä¸­
+    //å…¶ä¸­funcçš„åŸå‹æ˜¯ bool func(const T&)
 	template<class T, class Func>
 	static bool IsItemInVector(const vector<T>& items, Func func);
 
-	//ÅĞ¶ÏÎÄ¼şÃûÊÇÄ©Î²ÊÇ·ñ·ûºÏ¡°(Êı×Ö)¡±µÄĞÎÊ½
-	//file_name: ÒªÅĞ¶ÏµÄÎÄ¼şÃû£¬²»°üº¬À©Õ¹Ãû
-	//number: ½ÓÊÕÀ¨ºÅÖĞµÄÊı×Ö
-	//index: ½ÓÊÕ×óÀ¨ºÅÔÚ×Ö·û´®ÖĞµÄË÷Òı
+	//åˆ¤æ–­æ–‡ä»¶åæ˜¯æœ«å°¾æ˜¯å¦ç¬¦åˆâ€œ(æ•°å­—)â€çš„å½¢å¼
+	//file_name: è¦åˆ¤æ–­çš„æ–‡ä»¶åï¼Œä¸åŒ…å«æ‰©å±•å
+	//number: æ¥æ”¶æ‹¬å·ä¸­çš„æ•°å­—
+	//index: æ¥æ”¶å·¦æ‹¬å·åœ¨å­—ç¬¦ä¸²ä¸­çš„ç´¢å¼•
 	static bool IsFileNameNumbered(const wstring& file_name, int& number, size_t& index);
 
-	//É¾³ıÒ»¸ö·ÇÄ£Ì¬¶Ô»°¿ò
+	//åˆ é™¤ä¸€ä¸ªéæ¨¡æ€å¯¹è¯æ¡†
 	template<class T>
 	static void DeleteModelessDialog(T*& dlg);
 
-	//½«Ò»¸öCSize¶ÔÏóÔÚ±£³Ö³¤¿í±ÈµÄÇé¿öÏÂËõ·Å£¬Ê¹Æä³¤±ßµÈside
+	//å°†ä¸€ä¸ªCSizeå¯¹è±¡åœ¨ä¿æŒé•¿å®½æ¯”çš„æƒ…å†µä¸‹ç¼©æ”¾ï¼Œä½¿å…¶é•¿è¾¹ç­‰side
 	static void SizeZoom(CSize& size, int side);
 
 	static COLORREF GetWindowsThemeColor();
 
-	//½«hSrcÖĞµÄËùÓĞ²Ëµ¥ÏîÌí¼Óµ½²Ëµ¥hDstÖĞ£¨À´×Ô https://blog.csdn.net/zgl7903/article/details/71077441£©
+	//å°†hSrcä¸­çš„æ‰€æœ‰èœå•é¡¹æ·»åŠ åˆ°èœå•hDstä¸­ï¼ˆæ¥è‡ª https://blog.csdn.net/zgl7903/article/details/71077441ï¼‰
 	static int AppendMenuOp(HMENU hDst, HMENU hSrc);
 
-	//ÅĞ¶ÏÒ»¸ö²Ëµ¥ÏîÊÇ·ñÔÚ²Ëµ¥ÖĞ£¨²»¼ì²é×Ó²Ëµ¥£©
+	//åˆ¤æ–­ä¸€ä¸ªèœå•é¡¹æ˜¯å¦åœ¨èœå•ä¸­ï¼ˆä¸æ£€æŸ¥å­èœå•ï¼‰
 	static bool IsMenuItemInMenu(CMenu* pMenu, UINT id);
 
-    //»ñÈ¡Ò»¸ö²Ëµ¥ÏîµÄĞòºÅ
+    //è·å–ä¸€ä¸ªèœå•é¡¹çš„åºå·
     static int GetMenuItemPosition(CMenu* pMenu, UINT id);
 
-	//´Ó×ÊÔ´ÎÄ¼şÔØÈë×Ö·û´®¡£ÆäÖĞ£¬front_str¡¢back_strÎªÔØÈë×Ö·û´®Ê±ĞèÒªÔÚÇ°Ãæ»òºóÃæÌí¼ÓµÄ×Ö·û´®
+	//ä»èµ„æºæ–‡ä»¶è½½å…¥å­—ç¬¦ä¸²ã€‚å…¶ä¸­ï¼Œfront_strã€back_strä¸ºè½½å…¥å­—ç¬¦ä¸²æ—¶éœ€è¦åœ¨å‰é¢æˆ–åé¢æ·»åŠ çš„å­—ç¬¦ä¸²
 	static CString LoadText(UINT id, LPCTSTR back_str = nullptr);
 	static CString LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str = nullptr);
 
-	//°²È«µÄ¸ñÊ½»¯×Ö·û´®£¬½«format_strÖĞĞÎÈç<%ĞòºÅ%>µÄ×Ö·û´®Ìæ»»³É³õÊ¼»¯ÁĞ±íparasÖĞµÄÔªËØ£¬ÔªËØÖ§³Öint/double/LPCTSTR/CString¸ñÊ½£¬ĞòºÅ´Ó1¿ªÊ¼
+	//å®‰å…¨çš„æ ¼å¼åŒ–å­—ç¬¦ä¸²ï¼Œå°†format_strä¸­å½¢å¦‚<%åºå·%>çš„å­—ç¬¦ä¸²æ›¿æ¢æˆåˆå§‹åŒ–åˆ—è¡¨parasä¸­çš„å…ƒç´ ï¼Œå…ƒç´ æ”¯æŒint/double/LPCTSTR/CStringæ ¼å¼ï¼Œåºå·ä»1å¼€å§‹
 	static CString StringFormat(LPCTSTR format_str, const std::initializer_list<CVariant>& paras);
 
-	//´Ó×ÊÔ´ÎÄ¼şÖĞÔØÈë×Ö·û´®£¬²¢½«×ÊÔ´×Ö·û´®ÖĞĞÎÈç<%ĞòºÅ%>µÄ×Ö·û´®Ìæ»»³É¿É±ä²ÎÊıÁĞ±íÖĞµÄ²ÎÊı
+	//ä»èµ„æºæ–‡ä»¶ä¸­è½½å…¥å­—ç¬¦ä¸²ï¼Œå¹¶å°†èµ„æºå­—ç¬¦ä¸²ä¸­å½¢å¦‚<%åºå·%>çš„å­—ç¬¦ä¸²æ›¿æ¢æˆå¯å˜å‚æ•°åˆ—è¡¨ä¸­çš„å‚æ•°
 	static CString LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras);
 
-	//ÉèÖÃÏß³ÌÓïÑÔ
+	//è®¾ç½®çº¿ç¨‹è¯­è¨€
 	static void SetThreadLanguage(Language language);
 
-	//°²È«µÄ×Ö·û´®¸´ÖÆº¯Êı
+	//å®‰å…¨çš„å­—ç¬¦ä¸²å¤åˆ¶å‡½æ•°
 	static void WStringCopy(wchar_t* str_dest, int dest_size, const wchar_t* str_source, int source_size = INT_MAX);
 
-	//É¾³ı×ÖÌåÃû³ÆºóÃæµÄBold¡¢LightµÈ×Ö·û´®£¬²¢¸ù¾İÕâĞ©×Ö·û´®ÉèÖÃ×ÖÌå´ÖÏ¸
+	//åˆ é™¤å­—ä½“åç§°åé¢çš„Boldã€Lightç­‰å­—ç¬¦ä¸²ï¼Œå¹¶æ ¹æ®è¿™äº›å­—ç¬¦ä¸²è®¾ç½®å­—ä½“ç²—ç»†
 	static void NormalizeFont(LOGFONT& font);
 
-	//»ñÈ¡²Ëµ¥À¸µÄ¸ß¶È¡£hWnd£º²Ëµ¥À¸ËùÔÚµÄ´°¿Ú¾ä±ú
+	//è·å–èœå•æ çš„é«˜åº¦ã€‚hWndï¼šèœå•æ æ‰€åœ¨çš„çª—å£å¥æŸ„
 	static int GetMenuBarHeight(HWND hWnd);
 
-	//¶ÔÒ»¸ödouble°´Ö¸¶¨Î»ÊıËÄÉáÎåÈë
+	//å¯¹ä¸€ä¸ªdoubleæŒ‰æŒ‡å®šä½æ•°å››èˆäº”å…¥
 	static double DoubleRound(double dVal, int format);
 
-	//½«Ò»¸öÍ¼±êµÄ³ß´ç¸ÄÎª±ê×¼³ß´ç¡£¸ø¶¨Ò»¸öÏñËØÖµ£¬È»ºóÔÚ±ê×¼³ß´çÁĞ±íÖĞ²éÕÒ×îÏà½üµÄ³ß´ç£¬²¢·µ»Ø
+	//å°†ä¸€ä¸ªå›¾æ ‡çš„å°ºå¯¸æ”¹ä¸ºæ ‡å‡†å°ºå¯¸ã€‚ç»™å®šä¸€ä¸ªåƒç´ å€¼ï¼Œç„¶ååœ¨æ ‡å‡†å°ºå¯¸åˆ—è¡¨ä¸­æŸ¥æ‰¾æœ€ç›¸è¿‘çš„å°ºå¯¸ï¼Œå¹¶è¿”å›
 	static int IconSizeNormalize(int size);
 
-	//ÉèÖÃ´°¿Ú²»Í¸Ã÷¶È
+	//è®¾ç½®çª—å£ä¸é€æ˜åº¦
 	static void SetWindowOpacity(HWND hWnd, int opacity);
 
 	static bool StringIsVersion(LPCTSTR str);
 
-    //¶ÁÈ¡ÎÄ¼şÄÚÈİ
+    //è¯»å–æ–‡ä»¶å†…å®¹
     static bool GetFileContent(const wchar_t* file_path, string& contents_buff, bool binary = true, size_t max_size = 0x500000);
 
-	//½«Êı¾İ±£´æµ½ÎÄ¼ş
+	//å°†æ•°æ®ä¿å­˜åˆ°æ–‡ä»¶
 	static bool SaveDataToFile(const string& data, const wstring& file_path);
 
-    //´ò¿ªÒ»¸öÎÄ¼ş¶Ô»°¿ò£¬²¢½«ÓÃ»§Ñ¡ÔñµÄÎÄ¼şÂ·¾¶±£´æµ½path_listÖĞ
+    //æ‰“å¼€ä¸€ä¸ªæ–‡ä»¶å¯¹è¯æ¡†ï¼Œå¹¶å°†ç”¨æˆ·é€‰æ‹©çš„æ–‡ä»¶è·¯å¾„ä¿å­˜åˆ°path_listä¸­
     static void DoOpenFileDlg(const wstring& filter, vector<wstring>& path_list, CWnd* pParent = nullptr);
 
-    //ÎªÒ»¸ö¶Ô»°¿òÉèÖÃ×ÖÌå
+    //ä¸ºä¸€ä¸ªå¯¹è¯æ¡†è®¾ç½®å­—ä½“
     static void SetDialogFont(CWnd* pDlg, CFont* pFont);
 
-	//¶ÔÒ»¸öÎÄ¼şÂ·¾¶×Ô¶¯ÖØÃüÃû£¬Èç¹ûfile_path´æÔÚ£¬ÔòÔÚÆäºóÃæ¼ÓÉÏ¡°(1)¡±£¬Èç¹ûÎÄ¼şÃûºóÃæ´æÔÚ´øÀ¨ºÅµÄÊı×ÖµÄĞÎÊ½£¬ÔòÀ¨ºÅÄÚµÄÊı×Ö¼Ó1
+	//å¯¹ä¸€ä¸ªæ–‡ä»¶è·¯å¾„è‡ªåŠ¨é‡å‘½åï¼Œå¦‚æœfile_pathå­˜åœ¨ï¼Œåˆ™åœ¨å…¶åé¢åŠ ä¸Šâ€œ(1)â€ï¼Œå¦‚æœæ–‡ä»¶ååé¢å­˜åœ¨å¸¦æ‹¬å·çš„æ•°å­—çš„å½¢å¼ï¼Œåˆ™æ‹¬å·å†…çš„æ•°å­—åŠ 1
 	static void FileAutoRename(wstring& file_path);
 
 	template<class T>
@@ -349,17 +349,17 @@ inline bool CCommon::StringNormalize(T & str)
 {
 	if (str.empty()) return false;
 
-	int size = str.size();	//×Ö·û´®µÄ³¤¶È
+	int size = str.size();	//å­—ç¬¦ä¸²çš„é•¿åº¦
 	if (size < 0) return false;
-	int index1 = 0 ;		//×Ö·û´®ÖĞµÚ1¸ö²»ÊÇ¿Õ¸ñ»ò¿ØÖÆ×Ö·ûµÄÎ»ÖÃ
-	int index2 = size - 1;	//×Ö·û´®ÖĞ×îºóÒ»¸ö²»ÊÇ¿Õ¸ñ»ò¿ØÖÆ×Ö·ûµÄÎ»ÖÃ
+	int index1 = 0 ;		//å­—ç¬¦ä¸²ä¸­ç¬¬1ä¸ªä¸æ˜¯ç©ºæ ¼æˆ–æ§åˆ¶å­—ç¬¦çš„ä½ç½®
+	int index2 = size - 1;	//å­—ç¬¦ä¸²ä¸­æœ€åä¸€ä¸ªä¸æ˜¯ç©ºæ ¼æˆ–æ§åˆ¶å­—ç¬¦çš„ä½ç½®
 	while (index1 < size && ((str[index1] >= 0 && str[index1] <=32) || str[index1] == 0xfffdu))
 		index1++;
 	while (index2 >= 0 && ((str[index2] >= 0 && str[index2] <= 32) || str[index2] == 0xfffdu))
 		index2--;
-	if (index1 > index2)	//Èç¹ûindex1 > index2£¬ËµÃ÷×Ö·û´®È«ÊÇ¿Õ¸ñ»ò¿ØÖÆ×Ö·û
+	if (index1 > index2)	//å¦‚æœindex1 > index2ï¼Œè¯´æ˜å­—ç¬¦ä¸²å…¨æ˜¯ç©ºæ ¼æˆ–æ§åˆ¶å­—ç¬¦
 		str.clear();
-	else if (index1 == 0 && index2 == size - 1)	//Èç¹ûindex1ºÍindex2µÄÖµ·Ö±ğÎª0ºÍsize - 1£¬ËµÃ÷×Ö·û´®Ç°ºóÃ»ÓĞ¿Õ¸ñ»ò¿ØÖÆ×Ö·û£¬Ö±½Ó·µ»Ø
+	else if (index1 == 0 && index2 == size - 1)	//å¦‚æœindex1å’Œindex2çš„å€¼åˆ†åˆ«ä¸º0å’Œsize - 1ï¼Œè¯´æ˜å­—ç¬¦ä¸²å‰åæ²¡æœ‰ç©ºæ ¼æˆ–æ§åˆ¶å­—ç¬¦ï¼Œç›´æ¥è¿”å›
 		return true;
 	else
 		str = str.substr(index1, index2 - index1 + 1);
@@ -429,12 +429,12 @@ inline size_t CCommon::StringNatchWholeWord(const T & str, const T & find_str)
 {
 	if (str.empty() || find_str.empty())
 		return -1;
-	//ÏÂÃæ3¾ä´úÂëÓÉÓÚÌ«ÏûºÄÊ±¼äºÍCPU£¬Òò´ËÈ¥µô
+	//ä¸‹é¢3å¥ä»£ç ç”±äºå¤ªæ¶ˆè€—æ—¶é—´å’ŒCPUï¼Œå› æ­¤å»æ‰
 	//T _str{ str }, _find_str{ find_str };
 	//StringTransform(str, false);
 	//StringTransform(find_str, false);
 	int index{ -1 };
-	int find_str_front_pos, find_str_back_pos;		//ÕÒµ½µÄ×Ö·û´®ÔÚÔ­×Ö·û´®ÖĞÇ°ÃæºÍºóÃæÒ»¸ö×Ö·ûµÄÎ»ÖÃ
+	int find_str_front_pos, find_str_back_pos;		//æ‰¾åˆ°çš„å­—ç¬¦ä¸²åœ¨åŸå­—ç¬¦ä¸²ä¸­å‰é¢å’Œåé¢ä¸€ä¸ªå­—ç¬¦çš„ä½ç½®
 	int size = str.size();
 	int find_str_size = find_str.size();
 	while (true)

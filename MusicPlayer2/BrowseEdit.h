@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "ColorConvert.h"
 #include <afxeditbrowsectrl.h>
 
-#define WM_EDIT_BROWSE_CHANGED (WM_USER+126)        //ͨ�����������ťѡ����һ���ļ����ļ��к��ʹ���Ϣ
+#define WM_EDIT_BROWSE_CHANGED (WM_USER+126)        //通过“浏览”按钮选择了一个文件或文件夹后发送此消息
 // CBrowseEdit
 
 class CBrowseEdit : public CMFCEditBrowseCtrl

@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 //#define min3v(v1, v2, v3)   ((v1)>(v2)? ((v2)>(v3)?(v3):(v2)):((v1)>(v3)?(v3):(v2)))
 //#define max3v(v1, v2, v3)   ((v1)<(v2)? ((v2)<(v3)?(v3):(v2)):((v1)<(v3)?(v3):(v1)))
 
 struct ColorTable
 {
-	//Ô­Ê¼µÄÑÕÉ«
+	//åŽŸå§‹çš„é¢œè‰²
 	COLORREF original_color;
-	//±ä»»ÁÁ¶ÈºóµÄÑÕÉ«
+	//å˜æ¢äº®åº¦åŽçš„é¢œè‰²
     COLORREF dark0;
 	COLORREF dark1;
 	COLORREF dark1_5;
@@ -19,7 +19,7 @@ struct ColorTable
     COLORREF light2_5;
 	COLORREF light3;
 	COLORREF light4;
-	//¹Ì¶¨µÄÑÕÉ«
+	//å›ºå®šçš„é¢œè‰²
 	const static COLORREF WHITE{ RGB(255,255,255) };
 	const static COLORREF BLACK{ RGB(0,0,0) };
 };
@@ -53,16 +53,16 @@ public:
 	// Converts HSL to RGB
 	static void HSLtoRGB(const COLOR_HSL *hsl, COLOR_RGB *rgb);
 
-	//¸ù¾ÝColorTableÖÐµÄoriginal_color»ñÈ¡ÆäËûÑÕÉ«
+	//æ ¹æ®ColorTableä¸­çš„original_colorèŽ·å–å…¶ä»–é¢œè‰²
 	static void ConvertColor(ColorTable& color_table);
 
-	//È¥É«£¨½«ÑÕÉ«µÄ±¥ºÍ¶È½µÎª0£©
+	//åŽ»è‰²ï¼ˆå°†é¢œè‰²çš„é¥±å’Œåº¦é™ä¸º0ï¼‰
 	static void Desaturate(COLORREF& color);
 
-	//µ±ÑÕÉ«µÄÁÁ¶ÈµÍÓÚÒ»¸öÖµÊ±½µµÍÆäÁÁ¶È
+	//å½“é¢œè‰²çš„äº®åº¦ä½ŽäºŽä¸€ä¸ªå€¼æ—¶é™ä½Žå…¶äº®åº¦
 	static void ReduceLuminance(COLORREF& color);
 
-    //¼ÆËãÁ½ÖÖÑÕÉ«µÄ½¥±äÑÕÉ«¡£percent´Ó0~100£¬µ±percentÎª0Ê±·µ»Øcolor1£¬100Ê±·µ»Øcolor2£¬ÆäËûÖµ·µ»ØÁ½ÖÖÑÕÉ«µÄÖÐ¼äÑÕÉ«
+    //è®¡ç®—ä¸¤ç§é¢œè‰²çš„æ¸å˜é¢œè‰²ã€‚percentä»Ž0~100ï¼Œå½“percentä¸º0æ—¶è¿”å›žcolor1ï¼Œ100æ—¶è¿”å›žcolor2ï¼Œå…¶ä»–å€¼è¿”å›žä¸¤ç§é¢œè‰²çš„ä¸­é—´é¢œè‰²
     static COLORREF GetGradientColor(COLORREF color1, COLORREF color2, int percent);
 };
 

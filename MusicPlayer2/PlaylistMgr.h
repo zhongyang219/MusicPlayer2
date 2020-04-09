@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 
-//´¢´æÂ·¾¶ĞÅÏ¢
+//å‚¨å­˜è·¯å¾„ä¿¡æ¯
 struct PlaylistInfo
 {
-    wstring path;		    //Â·¾¶
-    int track{};		    //×îºó²¥·Åµ½µÄÇúÄ¿ĞòºÅ
-    int position{};		    //×îºó²¥·Åµ½µÄÎ»ÖÃ
-    int track_num{};		//Â·¾¶ÖĞÒôÆµÎÄ¼şµÄÊıÁ¿
-    int total_time{};		//Â·¾¶ÖĞÒôÆµÎÄ¼şµÄ×ÜÊ±¼ä
+    wstring path;		    //è·¯å¾„
+    int track{};		    //æœ€åæ’­æ”¾åˆ°çš„æ›²ç›®åºå·
+    int position{};		    //æœ€åæ’­æ”¾åˆ°çš„ä½ç½®
+    int track_num{};		//è·¯å¾„ä¸­éŸ³é¢‘æ–‡ä»¶çš„æ•°é‡
+    int total_time{};		//è·¯å¾„ä¸­éŸ³é¢‘æ–‡ä»¶çš„æ€»æ—¶é—´
 };
 
 enum PlaylistType

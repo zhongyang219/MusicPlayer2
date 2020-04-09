@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "BASSEncodeLibrary.h"
 
 
@@ -14,11 +14,11 @@ CBASSEncodeLibrary::~CBASSEncodeLibrary()
 bool CBASSEncodeLibrary::GetFunction()
 {
     bool rtn = true;
-    //»ñÈ¡º¯ÊıÈë¿Ú
+    //è·å–å‡½æ•°å…¥å£
     BASS_Encode_Start = (_BASS_Encode_Start)::GetProcAddress(m_dll_module, "BASS_Encode_Start");
     BASS_Encode_Stop = (_BASS_Encode_Stop)::GetProcAddress(m_dll_module, "BASS_Encode_Stop");
     BASS_Encode_IsActive = (_BASS_Encode_IsActive)::GetProcAddress(m_dll_module, "BASS_Encode_IsActive");
-    //ÅĞ¶ÏÊÇ·ñ³É¹¦
+    //åˆ¤æ–­æ˜¯å¦æˆåŠŸ
     rtn &= (BASS_Encode_Start != NULL);
     rtn &= (BASS_Encode_Stop != NULL);
     rtn &= (BASS_Encode_IsActive != NULL);

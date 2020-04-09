@@ -1,4 +1,4 @@
-//´ËÀàÓÃÓÚ¶¨ÒåÒôÆµĞÅÏ¢Ïà¹ØµÄÈ«¾Öº¯Êı
+ï»¿//æ­¤ç±»ç”¨äºå®šä¹‰éŸ³é¢‘ä¿¡æ¯ç›¸å…³çš„å…¨å±€å‡½æ•°
 #pragma once
 #include "Time.h"
 #include "Common.h"
@@ -7,7 +7,7 @@
 #include "SongInfo.h"
 #include "IPlayerCore.h"
 
-//ÒôÆµÎÄ¼şÀàĞÍ
+//éŸ³é¢‘æ–‡ä»¶ç±»å‹
 enum AudioType
 {
 	AU_MP3,
@@ -21,7 +21,7 @@ enum AudioType
 	AU_OTHER
 };
 
-//ÅÅĞò·½Ê½
+//æ’åºæ–¹å¼
 enum SortMode
 {
 	SM_FILE,
@@ -45,32 +45,32 @@ struct TAG_ID3V1
 	BYTE genre;
 };
 
-//´¢´æÂ·¾¶ĞÅÏ¢
+//å‚¨å­˜è·¯å¾„ä¿¡æ¯
 struct PathInfo
 {
-	wstring path;		//Â·¾¶
-	int track{};			//×îºó²¥·Åµ½µÄÇúÄ¿ºÅ
-	int position{};		//×îºó²¥·Åµ½µÄÎ»ÖÃ
-	SortMode sort_mode{};	//Â·¾¶ÖĞÎÄ¼şµÄÅÅĞò·½Ê½
-	int track_num{};		//Â·¾¶ÖĞÒôÆµÎÄ¼şµÄÊıÁ¿
-	int total_time{};		//Â·¾¶ÖĞÒôÆµÎÄ¼şµÄ×ÜÊ±¼ä
+	wstring path;		//è·¯å¾„
+	int track{};			//æœ€åæ’­æ”¾åˆ°çš„æ›²ç›®å·
+	int position{};		//æœ€åæ’­æ”¾åˆ°çš„ä½ç½®
+	SortMode sort_mode{};	//è·¯å¾„ä¸­æ–‡ä»¶çš„æ’åºæ–¹å¼
+	int track_num{};		//è·¯å¾„ä¸­éŸ³é¢‘æ–‡ä»¶çš„æ•°é‡
+	int total_time{};		//è·¯å¾„ä¸­éŸ³é¢‘æ–‡ä»¶çš„æ€»æ—¶é—´
 
 	//PathInfo(wstring _path, int _track, int _position, SortMode _sort_mode) :
 	//	path{ _path }, track{ _track }, position{ _position }, sort_mode{ _sort_mode }
 	//{}
 };
 
-//Ñ­»·Ä£Ê½
+//å¾ªç¯æ¨¡å¼
 enum RepeatMode
 {
-	RM_PLAY_ORDER,		//Ë³Ğò²¥·Å
-	RM_PLAY_SHUFFLE,	//Ëæ»ú²¥·Å
-	RM_LOOP_PLAYLIST,	//ÁĞ±íÑ­»·
-	RM_LOOP_TRACK		//µ¥ÇúÑ­»·
+	RM_PLAY_ORDER,		//é¡ºåºæ’­æ”¾
+	RM_PLAY_SHUFFLE,	//éšæœºæ’­æ”¾
+	RM_LOOP_PLAYLIST,	//åˆ—è¡¨å¾ªç¯
+	RM_LOOP_TRACK		//å•æ›²å¾ªç¯
 };
 
 #define GENRE_MAX 148
-//Á÷ÅÉÁĞ±í
+//æµæ´¾åˆ—è¡¨
 const wchar_t GENRE_TABLE[GENRE_MAX][24]
 {
 	L"Blues",
@@ -223,12 +223,12 @@ const wchar_t GENRE_TABLE[GENRE_MAX][24]
 	L"Synthpop",
 };
 
-struct SupportedFormat		//Ò»ÖÖÖ§³ÖµÄÒôÆµÎÄ¼ş¸ñÊ½
+struct SupportedFormat		//ä¸€ç§æ”¯æŒçš„éŸ³é¢‘æ–‡ä»¶æ ¼å¼
 {
 	wstring file_name;
-	wstring description;		//ÎÄ¼ş¸ñÊ½µÄÃèÊö
+	wstring description;		//æ–‡ä»¶æ ¼å¼çš„æè¿°
 	wstring extensions_list;
-	vector<wstring> extensions;		//ÎÄ¼ş¸ñÊ½µÄÀ©Õ¹Ãû
+	vector<wstring> extensions;		//æ–‡ä»¶æ ¼å¼çš„æ‰©å±•å
 };
 
 class CAudioCommon
@@ -237,54 +237,54 @@ public:
 	CAudioCommon();
 	~CAudioCommon();
 
-	//ÅĞ¶ÏÎÄ¼şÀàĞÍÊÇ·ñÎªÒôÆµÎÄ¼ş
+	//åˆ¤æ–­æ–‡ä»¶ç±»å‹æ˜¯å¦ä¸ºéŸ³é¢‘æ–‡ä»¶
 	static bool FileIsAudio(const wstring& file_name);
 
-	//¸ù¾İÎÄ¼şÃûÅĞ¶ÏÎÄ¼şµÄÀàĞÍ
+	//æ ¹æ®æ–‡ä»¶ååˆ¤æ–­æ–‡ä»¶çš„ç±»å‹
 	static AudioType GetAudioTypeByExtension(const wstring& file_name);
 
-	//¸ù¾İÒ»¸öÎÄ¼şÀ©Õ¹ÃûÅĞ¶ÏÒôÆµÀàĞÍµÄÃèÊö
+	//æ ¹æ®ä¸€ä¸ªæ–‡ä»¶æ‰©å±•ååˆ¤æ–­éŸ³é¢‘ç±»å‹çš„æè¿°
 	static wstring GetAudioDescriptionByExtension(wstring extension);
 
-	//²éÕÒpathÄ¿Â¼ÏÂµÄËùÓĞÒôÆµÎÄ¼ş£¬²¢½«ÎÄ¼şÃû±£´æµ½filesÈİÆ÷ÖĞ£¬²¢ÏŞ¶¨×î´óÎÄ¼şÊıÎªmax_file
+	//æŸ¥æ‰¾pathç›®å½•ä¸‹çš„æ‰€æœ‰éŸ³é¢‘æ–‡ä»¶ï¼Œå¹¶å°†æ–‡ä»¶åä¿å­˜åˆ°fileså®¹å™¨ä¸­ï¼Œå¹¶é™å®šæœ€å¤§æ–‡ä»¶æ•°ä¸ºmax_file
 	static void GetAudioFiles(wstring path, std::vector<SongInfo>& files, size_t max_file = 20000);
     static void GetAudioFiles(wstring path, std::vector<std::wstring>& files, size_t max_file = 20000, bool include_sub_dir = false);
     
-    //ÅĞ¶ÏÒ»¸öÄ¿Â¼ÏÂÊÇ·ñ°üº¬ÒôÆµÎÄ¼ş
+    //åˆ¤æ–­ä¸€ä¸ªç›®å½•ä¸‹æ˜¯å¦åŒ…å«éŸ³é¢‘æ–‡ä»¶
     static bool IsPathContainsAudioFile(std::wstring path, bool include_sub_dir = false);
 
-	//²éÕÒpathÄ¿Â¼ÏÂµÄËùÓĞ¸è´ÊÎÄ¼ş£¬²¢½«ÎÄ¼şÃû±£´æµ½filesÈİÆ÷ÖĞ
+	//æŸ¥æ‰¾pathç›®å½•ä¸‹çš„æ‰€æœ‰æ­Œè¯æ–‡ä»¶ï¼Œå¹¶å°†æ–‡ä»¶åä¿å­˜åˆ°fileså®¹å™¨ä¸­
 	static void GetLyricFiles(wstring path, vector<wstring>& files);
 
-	//´¦ÀífilesÈİÆ÷ÖĞµÄcueÎÄ¼ş£¬²¢½«Ã¿¶Î·Ö¹ì×÷ÎªÒ»¸öÇúÄ¿Ìí¼Óµ½filesÈİÆ÷ÖĞ
+	//å¤„ç†fileså®¹å™¨ä¸­çš„cueæ–‡ä»¶ï¼Œå¹¶å°†æ¯æ®µåˆ†è½¨ä½œä¸ºä¸€ä¸ªæ›²ç›®æ·»åŠ åˆ°fileså®¹å™¨ä¸­
 	static void GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore);
 
-	//»ñµÃ±ê×¼Á÷ÅÉĞÅÏ¢
+	//è·å¾—æ ‡å‡†æµæ´¾ä¿¡æ¯
 	static wstring GetGenre(BYTE genre);
 
-	//½«±êÇ©ÖĞÊı×Ö±íÊ¾µÄÁ÷ÅÉĞÅÏ¢×ª»»³É±ê×¼Á÷ÅÉĞÅÏ¢
+	//å°†æ ‡ç­¾ä¸­æ•°å­—è¡¨ç¤ºçš„æµæ´¾ä¿¡æ¯è½¬æ¢æˆæ ‡å‡†æµæ´¾ä¿¡æ¯
 	static wstring GenreConvert(wstring genre);
 
-	//É¾³ıÒ»¸ö×Ö·û´®ÖĞ·Ç´òÓ¡×Ö·û¿ªÊ¼µÄºóÃæÈ«²¿×Ö·û
+	//åˆ é™¤ä¸€ä¸ªå­—ç¬¦ä¸²ä¸­éæ‰“å°å­—ç¬¦å¼€å§‹çš„åé¢å…¨éƒ¨å­—ç¬¦
 	static void TagStrNormalize(wstring& str);
 
-	//»ñÈ¡Ò»¸öBASSÍ¨µÀÀàĞÍµÄÃèÊö
+	//è·å–ä¸€ä¸ªBASSé€šé“ç±»å‹çš„æè¿°
 	static wstring GetBASSChannelDescription(DWORD ctype);
 
-	//¸ù¾İBASSÍ¨µÀÀàĞÍ»ñÈ¡ÒôÆµÀàĞÍ
+	//æ ¹æ®BASSé€šé“ç±»å‹è·å–éŸ³é¢‘ç±»å‹
 	static AudioType GetAudioTypeByBassChannel(DWORD ctype);
 
-	//½«Òô¹ìĞòºÅ×ª»»³ÉÊı×Ö
+	//å°†éŸ³è½¨åºå·è½¬æ¢æˆæ•°å­—
 	static CString TrackToString(BYTE track);
 
-	//Çå³ı¸èÇúĞÅÏ¢ÖĞµÄ<>ÄÚµÄÄ¬ÈÏ×Ö·û´®
+	//æ¸…é™¤æ­Œæ›²ä¿¡æ¯ä¸­çš„<>å†…çš„é»˜è®¤å­—ç¬¦ä¸²
 	static void ClearDefaultTagStr(SongInfo& song_info);
 
     static wstring GetFileDlgFilter();
 
 public:
-	static vector<SupportedFormat> m_surpported_format;		//Ö§³ÖµÄÎÄ¼ş¸ñÊ½
-	static vector<wstring> m_all_surpported_extensions;		//È«²¿Ö§³ÖµÄÎÄ¼ş¸ñÊ½À©Õ¹Ãû
+	static vector<SupportedFormat> m_surpported_format;		//æ”¯æŒçš„æ–‡ä»¶æ ¼å¼
+	static vector<wstring> m_all_surpported_extensions;		//å…¨éƒ¨æ”¯æŒçš„æ–‡ä»¶æ ¼å¼æ‰©å±•å
 
 protected:
 

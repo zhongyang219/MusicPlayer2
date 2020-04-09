@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CNotifyIcon.h"
 #include "MusicPlayer2.h"
 
@@ -13,12 +13,12 @@ CNotifyIcon::~CNotifyIcon()
 
 void CNotifyIcon::Init(HICON hIcon)
 {
-	m_ntIcon.cbSize = sizeof(NOTIFYICONDATA);	//¸Ã½á¹¹Ìå±äÁ¿µÄ´óĞ¡
-	m_ntIcon.hIcon = hIcon;						//ÉèÖÃÍ¼±ê
-	m_ntIcon.hWnd = theApp.m_pMainWnd->GetSafeHwnd();				//½ÓÊÕÍĞÅÌÍ¼±êÍ¨ÖªÏûÏ¢µÄ´°¿Ú¾ä±ú
+	m_ntIcon.cbSize = sizeof(NOTIFYICONDATA);	//è¯¥ç»“æ„ä½“å˜é‡çš„å¤§å°
+	m_ntIcon.hIcon = hIcon;						//è®¾ç½®å›¾æ ‡
+	m_ntIcon.hWnd = theApp.m_pMainWnd->GetSafeHwnd();				//æ¥æ”¶æ‰˜ç›˜å›¾æ ‡é€šçŸ¥æ¶ˆæ¯çš„çª—å£å¥æŸ„
 	CCommon::WStringCopy(m_ntIcon.szTip, 128, APP_NAME);
-	m_ntIcon.uCallbackMessage = MY_WM_NOTIFYICON;			//Ó¦ÓÃ³ÌĞò¶¨ÒåµÄÏûÏ¢IDºÅ
-	m_ntIcon.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;		//Í¼±êµÄÊôĞÔ£ºÉèÖÃ³ÉÔ±uCallbackMessage¡¢hIcon¡¢szTipÓĞĞ§
+	m_ntIcon.uCallbackMessage = MY_WM_NOTIFYICON;			//åº”ç”¨ç¨‹åºå®šä¹‰çš„æ¶ˆæ¯IDå·
+	m_ntIcon.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;		//å›¾æ ‡çš„å±æ€§ï¼šè®¾ç½®æˆå‘˜uCallbackMessageã€hIconã€szTipæœ‰æ•ˆ
 
 	m_notify_menu.LoadMenu(IDR_NOTIFY_MENU);
 }
@@ -63,10 +63,10 @@ void CNotifyIcon::OnNotifyIcon(UINT msgId, HWND hMiniMode)
 	{
 		theApp.m_pMainWnd->SetForegroundWindow();
 
-		//ÔÚÍ¨ÖªÇøµã»÷ÓÒ¼üµ¯³öÓÒ¼ü²Ëµ¥
+		//åœ¨é€šçŸ¥åŒºç‚¹å‡»å³é”®å¼¹å‡ºå³é”®èœå•
 		CPoint point;
-		GetCursorPos(&point);	//»ñÈ¡µ±Ç°¹â±êµÄÎ»ÖÃ
-		m_notify_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, theApp.m_pMainWnd); //ÔÚÖ¸¶¨Î»ÖÃÏÔÊ¾µ¯³ö²Ëµ¥
+		GetCursorPos(&point);	//è·å–å½“å‰å…‰æ ‡çš„ä½ç½®
+		m_notify_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, theApp.m_pMainWnd); //åœ¨æŒ‡å®šä½ç½®æ˜¾ç¤ºå¼¹å‡ºèœå•
 	}
 	if (msgId == WM_LBUTTONDBLCLK)
 	{

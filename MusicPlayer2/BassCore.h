@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IPlayerCore.h"
 #include "bass.h"
 #include "BASSMidiLibrary.h"
@@ -65,33 +65,33 @@ public:
 
 public:
     static CBASSMidiLibrary m_bass_midi_lib;
-    static BASS_MIDI_FONT m_sfont;	//MIDIÒôÉ«¿â
+    static BASS_MIDI_FONT m_sfont;	//MIDIéŸ³è‰²åº“
 
 private:
-    //»ñÈ¡MidiÒôÀÖÄÚÇ¶¸è´ÊµÄ»Øµ÷º¯Êı
+    //è·å–MidiéŸ³ä¹å†…åµŒæ­Œè¯çš„å›è°ƒå‡½æ•°
     static void CALLBACK MidiLyricSync(HSYNC handle, DWORD channel, DWORD data, void *user);
     static void CALLBACK MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void *user);
 
     void GetMidiPosition();
-    void SetFXHandle();		//ÉèÖÃÒôĞ§¾ä±ú
-    void RemoveFXHandle();		//ÒÆ³ıÒôĞ§¾ä±ú
+    void SetFXHandle();		//è®¾ç½®éŸ³æ•ˆå¥æŸ„
+    void RemoveFXHandle();		//ç§»é™¤éŸ³æ•ˆå¥æŸ„
 
 private:
-    HSTREAM m_musicStream{};		//µ±Ç°µÄÒôÆµ¾ä±ú
-    wstring m_file_path;            //µ±Ç°ÒôÆµÎÄ¼şµÄÂ·¾¶
-    vector<HPLUGIN> m_plugin_handles;		//²å¼şµÄ¾ä±ú
-    wstring m_sfont_name;		//MIDIÒôÉ«¿âµÄÃû³Æ
+    HSTREAM m_musicStream{};		//å½“å‰çš„éŸ³é¢‘å¥æŸ„
+    wstring m_file_path;            //å½“å‰éŸ³é¢‘æ–‡ä»¶çš„è·¯å¾„
+    vector<HPLUGIN> m_plugin_handles;		//æ’ä»¶çš„å¥æŸ„
+    wstring m_sfont_name;		//MIDIéŸ³è‰²åº“çš„åç§°
     static MidiLyricInfo m_midi_lyric;
-    BASS_CHANNELINFO m_channel_info;	//ÒôÆµÍ¨µÀµÄĞÅÏ¢
+    BASS_CHANNELINFO m_channel_info;	//éŸ³é¢‘é€šé“çš„ä¿¡æ¯
     bool m_is_midi;
     MidiInfo m_midi_info;
 
-    int m_equ_handle[EQU_CH_NUM]{};		//¾ùºâÆ÷Í¨µÀµÄ¾ä±ú
-    int m_reverb_handle{};		//»ìÏìµÄ¾ä±ú
-    const float FREQ_TABLE[EQU_CH_NUM]{ 80, 125, 250, 500, 1000, 1500, 2000, 4000, 8000, 1600 };		//Ã¿¸ö¾ùºâÆ÷Í¨µÀµÄÖĞĞÄÆµÂÊ
+    int m_equ_handle[EQU_CH_NUM]{};		//å‡è¡¡å™¨é€šé“çš„å¥æŸ„
+    int m_reverb_handle{};		//æ··å“çš„å¥æŸ„
+    const float FREQ_TABLE[EQU_CH_NUM]{ 80, 125, 250, 500, 1000, 1500, 2000, 4000, 8000, 1600 };		//æ¯ä¸ªå‡è¡¡å™¨é€šé“çš„ä¸­å¿ƒé¢‘ç‡
 
     int m_volume{60};
-    float m_freq{};           //µ±Ç°²ÉÑùÆµÂÊ£¬ÓÃÓÚµ÷Õû²¥·ÅËÙ¶È
+    float m_freq{};           //å½“å‰é‡‡æ ·é¢‘ç‡ï¼Œç”¨äºè°ƒæ•´æ’­æ”¾é€Ÿåº¦
 
     enum { FADE_TIMER_ID = 1010 };
 };

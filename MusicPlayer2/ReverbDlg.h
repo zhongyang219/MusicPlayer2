@@ -1,19 +1,19 @@
-#pragma once
+ï»¿#pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
 
 
-// CReverbDlg ¶Ô»°¿ò
+// CReverbDlg å¯¹è¯æ¡†
 
 class CReverbDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CReverbDlg)
 
 public:
-	CReverbDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CReverbDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CReverbDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_REVERB_DIALOG };
 #endif
@@ -22,10 +22,10 @@ protected:
 	CSliderCtrl m_reverb_mix_slider;
 	CSliderCtrl m_reverb_time_slider;
 
-	void EnableControls(bool enable);		//ÆôÓÃ»ò½ûÓÃ¿Ø¼ş
-	void UpdateStaticText(int mix, int time);		//¸üĞÂ¾²Ì¬¿Ø¼şÉÏµÄÎÄ±¾
+	void EnableControls(bool enable);		//å¯ç”¨æˆ–ç¦ç”¨æ§ä»¶
+	void UpdateStaticText(int mix, int time);		//æ›´æ–°é™æ€æ§ä»¶ä¸Šçš„æ–‡æœ¬
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	DECLARE_MESSAGE_MAP()
 public:

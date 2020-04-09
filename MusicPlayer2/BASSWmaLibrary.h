@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DllLib.h"
 
 typedef DWORD HWMENCODE;	// WMA encoding handle
@@ -21,7 +21,7 @@ public:
 	CBASSWmaLibrary();
 	~CBASSWmaLibrary();
 
-	//BASS encoder¿âÖÐµÄº¯ÊýÖ¸Õë
+	//BASS encoderåº“ä¸­çš„å‡½æ•°æŒ‡é’ˆ
 	_BASS_WMA_EncodeOpenFile BASS_WMA_EncodeOpenFile;
 	_BASS_WMA_EncodeWrite BASS_WMA_EncodeWrite;
 	_BASS_WMA_EncodeClose BASS_WMA_EncodeClose;

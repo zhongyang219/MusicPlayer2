@@ -1,22 +1,22 @@
-#pragma once
+ï»¿#pragma once
 #include"Common.h"
 #include"Time.h"
 class CLyrics
 {
 public:
-	struct Lyric		//Ò»¾ä¸è´ÊµÄ½á¹¹Ìå
+	struct Lyric		//ä¸€å¥æ­Œè¯çš„ç»“æ„ä½“
 	{
-		Time time;		//¸è´ÊµÄÊ±¼ä±êÇ©
-		wstring text;	//¸è´ÊµÄÎÄ±¾
-		wstring translate;	//¸è´ÊµÄ·­Òë
+		Time time;		//æ­Œè¯çš„æ—¶é—´æ ‡ç­¾
+		wstring text;	//æ­Œè¯çš„æ–‡æœ¬
+		wstring translate;	//æ­Œè¯çš„ç¿»è¯‘
 
-		//ÖØÔØĞ¡ÓÚºÅÔËËã·û£¬ÓÃÓÚ¶Ô¸è´Ê°´Ê±¼ä±êÇ©ÅÅĞò
+		//é‡è½½å°äºå·è¿ç®—ç¬¦ï¼Œç”¨äºå¯¹æ­Œè¯æŒ‰æ—¶é—´æ ‡ç­¾æ’åº
 		bool operator<(const Lyric& lyric) const
 		{
 			return lyric.time > time;
 		}
 
-		//¸ù¾İÒ»¸öÆ«ÒÆÁ¿·µ»ØÊ±¼ä
+		//æ ¹æ®ä¸€ä¸ªåç§»é‡è¿”å›æ—¶é—´
 		Time GetTime(int offset) const
 		{
 			if (offset == 0)
@@ -27,63 +27,63 @@ public:
 	};
 
 private:
-	wstring m_file;		//¸è´ÊÎÄ¼şµÄÎÄ¼şÃû
-	vector<Lyric> m_lyrics;		//´¢´æÃ¿Ò»¾ä¸è´Ê£¨°üº¬Ê±¼ä±êÇ©ºÍÎÄ±¾£©
-	vector<string> m_lyrics_str;	//´¢´æÎ´²ğ·ÖÊ±¼ä±êÇ©µÄÃ¿Ò»¾ä¸è´Ê
-	CodeType m_code_type{ CodeType::ANSI };		//¸è´ÊÎÄ±¾µÄ±àÂëÀàĞÍ
+	wstring m_file;		//æ­Œè¯æ–‡ä»¶çš„æ–‡ä»¶å
+	vector<Lyric> m_lyrics;		//å‚¨å­˜æ¯ä¸€å¥æ­Œè¯ï¼ˆåŒ…å«æ—¶é—´æ ‡ç­¾å’Œæ–‡æœ¬ï¼‰
+	vector<string> m_lyrics_str;	//å‚¨å­˜æœªæ‹†åˆ†æ—¶é—´æ ‡ç­¾çš„æ¯ä¸€å¥æ­Œè¯
+	CodeType m_code_type{ CodeType::ANSI };		//æ­Œè¯æ–‡æœ¬çš„ç¼–ç ç±»å‹
 
-	wstring m_id;		//¸è´ÊÖĞµÄid±êÇ©£¨ÍøÒ×ÔÆÒôÀÖÖĞµÄ¸èÇúid£¬ÎÒ×Ô¼º¼ÓµÄ£¬±ê×¼µÄlrcÎÄ¼şÃ»ÓĞÕâ¸ö±êÇ©£©
-	wstring m_ti;		//¸è´ÊÖĞµÄti±êÇ©
-	wstring m_ar;		//¸è´ÊÖĞµÄar±êÇ©
-	wstring m_al;		//¸è´ÊÖĞµÄal±êÇ©
-	wstring m_by;		//¸è´ÊÖĞµÄby±êÇ©
-	bool m_id_tag{ false };		//¸è´ÊÖĞÊÇ·ñº¬ÓĞid±êÇ©
-	bool m_ti_tag{ false };		//¸è´ÊÖĞÊÇ·ñº¬ÓĞti±êÇ©
-	bool m_ar_tag{ false };		//¸è´ÊÖĞÊÇ·ñº¬ÓĞar±êÇ©
-	bool m_al_tag{ false };		//¸è´ÊÖĞÊÇ·ñº¬ÓĞal±êÇ©
-	bool m_by_tag{ false };		//¸è´ÊÖĞÊÇ·ñº¬ÓĞby±êÇ©
+	wstring m_id;		//æ­Œè¯ä¸­çš„idæ ‡ç­¾ï¼ˆç½‘æ˜“äº‘éŸ³ä¹ä¸­çš„æ­Œæ›²idï¼Œæˆ‘è‡ªå·±åŠ çš„ï¼Œæ ‡å‡†çš„lrcæ–‡ä»¶æ²¡æœ‰è¿™ä¸ªæ ‡ç­¾ï¼‰
+	wstring m_ti;		//æ­Œè¯ä¸­çš„tiæ ‡ç­¾
+	wstring m_ar;		//æ­Œè¯ä¸­çš„aræ ‡ç­¾
+	wstring m_al;		//æ­Œè¯ä¸­çš„alæ ‡ç­¾
+	wstring m_by;		//æ­Œè¯ä¸­çš„byæ ‡ç­¾
+	bool m_id_tag{ false };		//æ­Œè¯ä¸­æ˜¯å¦å«æœ‰idæ ‡ç­¾
+	bool m_ti_tag{ false };		//æ­Œè¯ä¸­æ˜¯å¦å«æœ‰tiæ ‡ç­¾
+	bool m_ar_tag{ false };		//æ­Œè¯ä¸­æ˜¯å¦å«æœ‰aræ ‡ç­¾
+	bool m_al_tag{ false };		//æ­Œè¯ä¸­æ˜¯å¦å«æœ‰alæ ‡ç­¾
+	bool m_by_tag{ false };		//æ­Œè¯ä¸­æ˜¯å¦å«æœ‰byæ ‡ç­¾
 
-	int m_offset{};		//¸è´ÊÆ«ÒÆÁ¿
-	bool m_offset_tag{ false };		//¸è´ÊÊÇ·ñ°üº¬Æ«ÒÆÁ¿±êÇ©
-	int m_offset_tag_index{ -1 };			//Æ«ÒÆÁ¿±êÇ©ÔÚµÚ¼¸ĞĞ£¨´Ó0¿ªÊ¼¼Æ£©
+	int m_offset{};		//æ­Œè¯åç§»é‡
+	bool m_offset_tag{ false };		//æ­Œè¯æ˜¯å¦åŒ…å«åç§»é‡æ ‡ç­¾
+	int m_offset_tag_index{ -1 };			//åç§»é‡æ ‡ç­¾åœ¨ç¬¬å‡ è¡Œï¼ˆä»0å¼€å§‹è®¡ï¼‰
 
-	bool m_modified{ false };		//¸è´ÊÊÇ·ñÒÑ¾­ĞŞ¸Ä
-	bool m_chinese_converted{ false };		//ÊÇ·ñÒÑ¾­Ö´ĞĞÁËÖĞÎÄ·±¼ò×ª»»
-	bool m_translate{ false };		//¸è´ÊÊÇ·ñ°üº¬·­Òë
+	bool m_modified{ false };		//æ­Œè¯æ˜¯å¦å·²ç»ä¿®æ”¹
+	bool m_chinese_converted{ false };		//æ˜¯å¦å·²ç»æ‰§è¡Œäº†ä¸­æ–‡ç¹ç®€è½¬æ¢
+	bool m_translate{ false };		//æ­Œè¯æ˜¯å¦åŒ…å«ç¿»è¯‘
 
-	void DivideLyrics();		//½«¸è´ÊÎÄ¼ş²ğ·Ö³ÉÈô¸É¾ä¸è´Ê£¬²¢±£´æÔÚm_lyrics_strÖĞ
-	void DisposeLyric();		//»ñµÃ¸è´ÊÖĞµÄÊ±¼ä±êÇ©ºÍ¸è´ÊÎÄ±¾£¬²¢½«ÎÄ±¾´ÓstringÀàĞÍ×ª»»³ÉwstringÀàĞÍ£¬±£´æÔÚm_lyricsÖĞ
-	void JudgeCode();		//ÅĞ¶Ï¸è´ÊµÄ±àÂë¸ñÊ½
+	void DivideLyrics();		//å°†æ­Œè¯æ–‡ä»¶æ‹†åˆ†æˆè‹¥å¹²å¥æ­Œè¯ï¼Œå¹¶ä¿å­˜åœ¨m_lyrics_strä¸­
+	void DisposeLyric();		//è·å¾—æ­Œè¯ä¸­çš„æ—¶é—´æ ‡ç­¾å’Œæ­Œè¯æ–‡æœ¬ï¼Œå¹¶å°†æ–‡æœ¬ä»stringç±»å‹è½¬æ¢æˆwstringç±»å‹ï¼Œä¿å­˜åœ¨m_lyricsä¸­
+	void JudgeCode();		//åˆ¤æ–­æ­Œè¯çš„ç¼–ç æ ¼å¼
 
 public:
 	CLyrics(const wstring& file_name);
 	CLyrics() {}
 	void LyricsFromRowString(const wstring& lryic_str);
-	bool IsEmpty() const;		//ÅĞ¶ÏÊÇ·ñÓĞ¸è´Ê
-	Lyric GetLyric(Time time, int offset) const;		//¸ù¾İÊ±¼ä·µ»ØÒ»¾ä¸è´Ê¡£µÚ2¸ö²ÎÊıÈç¹ûÊÇ0£¬Ôò·µ»Øµ±Ç°Ê±¼ä¶ÔÓ¦µÄ¸è´Ê£¬Èç¹ûÊÇ-1Ôò·µ»Øµ±Ç°Ê±¼äµÄÇ°Ò»¾ä¸è´Ê£¬1Ôò·µ»ØºóÒ»¾ä¸è´Ê£¬ÒÔ´ËÀàÍÆ¡£
-	Lyric GetLyric(int index) const;			//¸ù¾İË÷Òı·µ»ØÒ»¾ä¸è´Ê
-	int GetLyricProgress(Time time) const;		//¸ù¾İÊ±¼ä·µ»Ø¸ÃÊ±¼äËù¶ÔÓ¦µÄ¸è´ÊµÄ½ø¶È£¨0~1000£©£¨ÓÃÓÚÊ¹¸è´ÊÒÔ¿¨À­OKÑùÊ½ÏÔÊ¾£©
-	int GetLyricIndex(Time time) const;			//¸ù¾İÊ±¼ä·µ»Ø¸ÃÊ±¼ä¶ÔÓ¦µÄ¸è´ÊĞòºÅ£¨ÓÃÓÚÅĞ¶Ï¸è´ÊÊÇ·ñÓĞ±ä»¯£©
-	CodeType GetCodeType() const;		//»ñµÃ¸è´ÊÎÄ±¾µÄ±àÂëÀàĞÍ
-	wstring GetPathName() const { return m_file; }		//»ñÈ¡¸è´ÊÎÄ¼şµÄÂ·¾¶+ÎÄ¼şÃû
-	wstring GetAllLyricText(bool with_translate = false) const;		//·µ»ØËùÓĞ¸è´Ê£¨½ö°üº¬È«²¿¸è´ÊÎÄ±¾£¬²»º¬±êÊ¶±êÇ©ºÍÊ±¼ä±êÇ©£©¡£with_translate£ºÊÇ·ñ°üº¬·­Òë£¨Èç¹ûÓĞ£©
-	wstring GetLyricsString() const;		//·µ»ØËùÓĞ¸è´ÊµÄ×Ö·û´®£¬Ô­Ê¼ÑùÊ½£¬°üº¬È«²¿±êÇ©
-	wstring GetLyricsString2() const;		//·µ»ØËùÓĞ¸è´ÊµÄ×Ö·û´®£¬ÒÔ±£´æµÄÑùÊ½£¬°üº¬È«²¿±êÇ©£¨½«¸è´ÊÆ«ÒÆ±£´æµ½Ã¿¸öÊ±¼ä±êÇ©ÖĞ£©
+	bool IsEmpty() const;		//åˆ¤æ–­æ˜¯å¦æœ‰æ­Œè¯
+	Lyric GetLyric(Time time, int offset) const;		//æ ¹æ®æ—¶é—´è¿”å›ä¸€å¥æ­Œè¯ã€‚ç¬¬2ä¸ªå‚æ•°å¦‚æœæ˜¯0ï¼Œåˆ™è¿”å›å½“å‰æ—¶é—´å¯¹åº”çš„æ­Œè¯ï¼Œå¦‚æœæ˜¯-1åˆ™è¿”å›å½“å‰æ—¶é—´çš„å‰ä¸€å¥æ­Œè¯ï¼Œ1åˆ™è¿”å›åä¸€å¥æ­Œè¯ï¼Œä»¥æ­¤ç±»æ¨ã€‚
+	Lyric GetLyric(int index) const;			//æ ¹æ®ç´¢å¼•è¿”å›ä¸€å¥æ­Œè¯
+	int GetLyricProgress(Time time) const;		//æ ¹æ®æ—¶é—´è¿”å›è¯¥æ—¶é—´æ‰€å¯¹åº”çš„æ­Œè¯çš„è¿›åº¦ï¼ˆ0~1000ï¼‰ï¼ˆç”¨äºä½¿æ­Œè¯ä»¥å¡æ‹‰OKæ ·å¼æ˜¾ç¤ºï¼‰
+	int GetLyricIndex(Time time) const;			//æ ¹æ®æ—¶é—´è¿”å›è¯¥æ—¶é—´å¯¹åº”çš„æ­Œè¯åºå·ï¼ˆç”¨äºåˆ¤æ–­æ­Œè¯æ˜¯å¦æœ‰å˜åŒ–ï¼‰
+	CodeType GetCodeType() const;		//è·å¾—æ­Œè¯æ–‡æœ¬çš„ç¼–ç ç±»å‹
+	wstring GetPathName() const { return m_file; }		//è·å–æ­Œè¯æ–‡ä»¶çš„è·¯å¾„+æ–‡ä»¶å
+	wstring GetAllLyricText(bool with_translate = false) const;		//è¿”å›æ‰€æœ‰æ­Œè¯ï¼ˆä»…åŒ…å«å…¨éƒ¨æ­Œè¯æ–‡æœ¬ï¼Œä¸å«æ ‡è¯†æ ‡ç­¾å’Œæ—¶é—´æ ‡ç­¾ï¼‰ã€‚with_translateï¼šæ˜¯å¦åŒ…å«ç¿»è¯‘ï¼ˆå¦‚æœæœ‰ï¼‰
+	wstring GetLyricsString() const;		//è¿”å›æ‰€æœ‰æ­Œè¯çš„å­—ç¬¦ä¸²ï¼ŒåŸå§‹æ ·å¼ï¼ŒåŒ…å«å…¨éƒ¨æ ‡ç­¾
+	wstring GetLyricsString2() const;		//è¿”å›æ‰€æœ‰æ­Œè¯çš„å­—ç¬¦ä¸²ï¼Œä»¥ä¿å­˜çš„æ ·å¼ï¼ŒåŒ…å«å…¨éƒ¨æ ‡ç­¾ï¼ˆå°†æ­Œè¯åç§»ä¿å­˜åˆ°æ¯ä¸ªæ—¶é—´æ ‡ç­¾ä¸­ï¼‰
 	bool IsModified() const { return m_modified; }
 	bool IsChineseConverted() const { return m_chinese_converted; }
 	bool IsTranslated() const { return m_translate; }
 	int GetLyricCount() const{ return m_lyrics.size(); }
 
-	void SaveLyric();		//±£´æ¸è´Ê£¨½«¸è´ÊÆ«ÒÆ±£´æÔÚoffset±êÇ©ÖĞ£©
-	void SaveLyric2();		//±£´æ¸è´Ê£¨½«¸è´ÊÆ«ÒÆ±£´æµ½Ã¿¸öÊ±¼ä±êÇ©ÖĞ£©
+	void SaveLyric();		//ä¿å­˜æ­Œè¯ï¼ˆå°†æ­Œè¯åç§»ä¿å­˜åœ¨offsetæ ‡ç­¾ä¸­ï¼‰
+	void SaveLyric2();		//ä¿å­˜æ­Œè¯ï¼ˆå°†æ­Œè¯åç§»ä¿å­˜åˆ°æ¯ä¸ªæ—¶é—´æ ‡ç­¾ä¸­ï¼‰
 
-	void CombineSameTimeLyric();	//Èç¹û¸è´ÊÖĞÓĞÏàÍ¬Ê±¼ä±êÇ©µÄ¸è´Ê£¬Ôò½«ÆäÎÄ±¾ºÏ²¢£¬±£ÁôÒ»¸öÊ±¼ä±êÇ©£¨ÓÃÓÚ´¦ÀíÏÂÔØµ½µÄ´ø·­ÒëµÄ¸è´Ê£©£¨Ê¹ÓÃÊ±±ØĞëÈ·±£¸è´ÊÒÑ¾­°´Ê±¼ä±êÇ©ÅÅĞò£©
-	void DeleteRedundantLyric();	//É¾³ı¸è´ÊÖĞÊ±¼ä±êÇ©³¬¹ı100·ÖÖÓµÄ¸è´Ê£¨Ê¹ÓÃÊ±±ØĞëÈ·±£¸è´ÊÒÑ¾­°´Ê±¼ä±êÇ©ÅÅĞò£©
+	void CombineSameTimeLyric();	//å¦‚æœæ­Œè¯ä¸­æœ‰ç›¸åŒæ—¶é—´æ ‡ç­¾çš„æ­Œè¯ï¼Œåˆ™å°†å…¶æ–‡æœ¬åˆå¹¶ï¼Œä¿ç•™ä¸€ä¸ªæ—¶é—´æ ‡ç­¾ï¼ˆç”¨äºå¤„ç†ä¸‹è½½åˆ°çš„å¸¦ç¿»è¯‘çš„æ­Œè¯ï¼‰ï¼ˆä½¿ç”¨æ—¶å¿…é¡»ç¡®ä¿æ­Œè¯å·²ç»æŒ‰æ—¶é—´æ ‡ç­¾æ’åºï¼‰
+	void DeleteRedundantLyric();	//åˆ é™¤æ­Œè¯ä¸­æ—¶é—´æ ‡ç­¾è¶…è¿‡100åˆ†é’Ÿçš„æ­Œè¯ï¼ˆä½¿ç”¨æ—¶å¿…é¡»ç¡®ä¿æ­Œè¯å·²ç»æŒ‰æ—¶é—´æ ‡ç­¾æ’åºï¼‰
 
-	void AdjustLyric(int offset);	//µ÷Õû¸è´ÊµÄÆ«ÒÆÁ¿
+	void AdjustLyric(int offset);	//è°ƒæ•´æ­Œè¯çš„åç§»é‡
 
-	wstring GetSongId() const { return m_id; }		//»ñÈ¡±£´æÔÚ¸è´ÊÖĞµÄÍøÒ×ÔÆÒôÀÖµÄ¸èÇúID
+	wstring GetSongId() const { return m_id; }		//è·å–ä¿å­˜åœ¨æ­Œè¯ä¸­çš„ç½‘æ˜“äº‘éŸ³ä¹çš„æ­Œæ›²ID
 
-	void ChineseConvertion(bool simplified);		//ÖĞÎÄ·±¼ò×ª»»
+	void ChineseConvertion(bool simplified);		//ä¸­æ–‡ç¹ç®€è½¬æ¢
 };
 

@@ -1,4 +1,4 @@
-// PlayerProgressBar.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// PlayerProgressBar.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -47,39 +47,39 @@ END_MESSAGE_MAP()
 
 
 
-// CPlayerProgressBar ÏûÏ¢´¦Àí³ÌĞò
+// CPlayerProgressBar æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 
 void CPlayerProgressBar::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
-	// ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CStatic::OnPaint()
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+	// ä¸ä¸ºç»˜å›¾æ¶ˆæ¯è°ƒç”¨ CStatic::OnPaint()
     CRect rect;
     GetClientRect(rect);
 
-    //Ë«»º³å»æÍ¼
+    //åŒç¼“å†²ç»˜å›¾
     CDrawDoubleBuffer drawDoubleBuffer(&dc, rect);
     CDrawCommon drawer;
     drawer.Create(drawDoubleBuffer.GetMemDC(), this);
 
-    //¿ªÊ¼»æÍ¼
+    //å¼€å§‹ç»˜å›¾
     int gap_width = rect.Width() / m_bar_count / 4;
     if (gap_width < 1)
         gap_width = 1;
     drawer.FillRect(rect, m_back_color);
     CRect rc_tmp{ rect };
     rc_tmp.DeflateRect(theApp.DPI(1), theApp.DPI(1));
-    //»æÖÆ½ø¶ÈÌõ
-    int bar_width = (rc_tmp.Width() - theApp.DPI(2) * 2) / m_bar_count;     //Ã¿Ò»¸ñµÄ¿í¶È
+    //ç»˜åˆ¶è¿›åº¦æ¡
+    int bar_width = (rc_tmp.Width() - theApp.DPI(2) * 2) / m_bar_count;     //æ¯ä¸€æ ¼çš„å®½åº¦
     if (bar_width < gap_width + 1)
         bar_width = gap_width + 1;
     int progress_width = bar_width * m_bar_count + theApp.DPI(2) * 2;
     rc_tmp.right = rect.left + progress_width;
     drawer.FillRect(rc_tmp, RGB(255, 255, 255));
     drawer.DrawRectOutLine(rc_tmp, m_theme_color.dark1, theApp.DPI(1), false);
-    int bar_cnt = m_progress / (100 / m_bar_count) + 1;        //¸ñ×ÓÊı
+    int bar_cnt = m_progress / (100 / m_bar_count) + 1;        //æ ¼å­æ•°
     int last_bar_percent = m_progress % (100 / m_bar_count);
     CRect rc_bar{ rc_tmp };
     rc_bar.DeflateRect(theApp.DPI(2), theApp.DPI(2));

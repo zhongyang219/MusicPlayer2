@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "PlaylistMgr.h"
 #include "MusicPlayer2.h"
 #include <set>
@@ -25,7 +25,7 @@ void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int 
     for (size_t i{ 0 }; i < m_recent_playlists.size(); i++)
     {
         if (path == m_recent_playlists[i].path)
-            m_recent_playlists.erase(m_recent_playlists.begin() + i);		//Èç¹ûµ±Ç°Â·¾¶ÒÑ¾­ÔÚ×î½üÂ·¾¶ÖĞ£¬¾Í°ÑËü×î½üÂ·¾¶ÖĞÉ¾³ı
+            m_recent_playlists.erase(m_recent_playlists.begin() + i);		//å¦‚æœå½“å‰è·¯å¾„å·²ç»åœ¨æœ€è¿‘è·¯å¾„ä¸­ï¼Œå°±æŠŠå®ƒæœ€è¿‘è·¯å¾„ä¸­åˆ é™¤
     }
     PlaylistInfo playlist_info;
     playlist_info.path = path;
@@ -33,7 +33,7 @@ void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int 
     playlist_info.position = pos;
     playlist_info.track_num = track_num;
     playlist_info.total_time = total_time;
-    m_recent_playlists.push_front(playlist_info);		//µ±Ç°Â·¾¶²åÈëµ½m_recent_playlistsµÄÇ°Ãæ
+    m_recent_playlists.push_front(playlist_info);		//å½“å‰è·¯å¾„æ’å…¥åˆ°m_recent_playlistsçš„å‰é¢
 }
 
 void CPlaylistMgr::AddNewPlaylist(const wstring& path)
@@ -42,7 +42,7 @@ void CPlaylistMgr::AddNewPlaylist(const wstring& path)
     playlist_info.path = path;
     m_recent_playlists.push_back(playlist_info);
     CPlaylistFile playlist;
-    playlist.SaveToFile(path);      //´´½¨¿ÕµÄ²¥·ÅÁĞ±íÎÄ¼ş
+    playlist.SaveToFile(path);      //åˆ›å»ºç©ºçš„æ’­æ”¾åˆ—è¡¨æ–‡ä»¶
 }
 
 bool CPlaylistMgr::DeletePlaylist(const wstring & path)
@@ -104,39 +104,39 @@ void CPlaylistMgr::UpdateCurrentPlaylist(int track, int pos, int track_num, int 
 
 void CPlaylistMgr::SavePlaylistData()
 {
-    // ´ò¿ª»òÕßĞÂ½¨ÎÄ¼ş
+    // æ‰“å¼€æˆ–è€…æ–°å»ºæ–‡ä»¶
     CFile file;
     BOOL bRet = file.Open(theApp.m_recent_playlist_data_path.c_str(),
         CFile::modeCreate | CFile::modeWrite);
-    if (!bRet)		//´ò¿ªÎÄ¼şÊ§°Ü
+    if (!bRet)		//æ‰“å¼€æ–‡ä»¶å¤±è´¥
     {
         return;
     }
-    // ¹¹ÔìCArchive¶ÔÏó
+    // æ„é€ CArchiveå¯¹è±¡
     CArchive ar(&file, CArchive::store);
-    // Ğ´Êı¾İ
-    ar << 3;        //Ğ´ÈëÊı¾İÎÄ¼ş°æ±¾
+    // å†™æ•°æ®
+    ar << 3;        //å†™å…¥æ•°æ®æ–‡ä»¶ç‰ˆæœ¬
 
     ar << static_cast<int>(m_cur_playlist_type);
-    //Ğ´ÈëÄ¬ÈÏ²¥·ÅÁĞ±íĞÅÏ¢
+    //å†™å…¥é»˜è®¤æ’­æ”¾åˆ—è¡¨ä¿¡æ¯
     ar << m_default_playlist.track
         << m_default_playlist.position
         << m_default_playlist.track_num
         << m_default_playlist.total_time;
 
-    //Ğ´Èë¡°ÎÒÏ²»¶¡±²¥·ÅÁĞ±íĞÅÏ¢
+    //å†™å…¥â€œæˆ‘å–œæ¬¢â€æ’­æ”¾åˆ—è¡¨ä¿¡æ¯
     ar << m_favourite_playlist.track
         << m_favourite_playlist.position
         << m_favourite_playlist.track_num
         << m_favourite_playlist.total_time;
 
-    //Ğ´ÈëÁÙÊ±²¥·ÅÁĞ±íĞÅÏ¢
+    //å†™å…¥ä¸´æ—¶æ’­æ”¾åˆ—è¡¨ä¿¡æ¯
     ar << m_temp_playlist.track
         << m_temp_playlist.position
         << m_temp_playlist.track_num
         << m_temp_playlist.total_time;
 
-    ar << static_cast<unsigned int>(m_recent_playlists.size());		//Ğ´Èëm_recent_playlistsµÄ´óĞ¡
+    ar << static_cast<unsigned int>(m_recent_playlists.size());		//å†™å…¥m_recent_playlistsçš„å¤§å°
     for (auto& path_info : m_recent_playlists)
     {
         CFilePathHelper path_helper{ path_info.path };
@@ -146,9 +146,9 @@ void CPlaylistMgr::SavePlaylistData()
             << path_info.track_num
             << path_info.total_time;
     }
-    // ¹Ø±ÕCArchive¶ÔÏó
+    // å…³é—­CArchiveå¯¹è±¡
     ar.Close();
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.Close();
 
 }
@@ -156,18 +156,18 @@ void CPlaylistMgr::SavePlaylistData()
 void CPlaylistMgr::LoadPlaylistData()
 {
     m_recent_playlists.clear();
-    std::vector<PlaylistInfo> playlist_info_vect;       //´ÓÊı¾İ»ñÈ¡µ½µÄ²¥·ÅÁĞ±íĞÅÏ¢
+    std::vector<PlaylistInfo> playlist_info_vect;       //ä»æ•°æ®è·å–åˆ°çš„æ’­æ”¾åˆ—è¡¨ä¿¡æ¯
 
-    // ´ò¿ªÎÄ¼ş
+    // æ‰“å¼€æ–‡ä»¶
     CFile file;
     BOOL bRet = file.Open(theApp.m_recent_playlist_data_path.c_str(), CFile::modeRead);
-    if (!bRet)		//ÎÄ¼ş²»´æÔÚ
+    if (!bRet)		//æ–‡ä»¶ä¸å­˜åœ¨
     {
         return;
     }
-    // ¹¹ÔìCArchive¶ÔÏó
+    // æ„é€ CArchiveå¯¹è±¡
     CArchive ar(&file, CArchive::load);
-    // ¶ÁÊı¾İ
+    // è¯»æ•°æ®
     unsigned int size{};
     CString temp;
     try
@@ -199,7 +199,7 @@ void CPlaylistMgr::LoadPlaylistData()
             ar >> m_temp_playlist.total_time;
         }
 
-        ar >> size;		//¶ÁÈ¡Ó³ÉäÈİÆ÷µÄ³¤¶È
+        ar >> size;		//è¯»å–æ˜ å°„å®¹å™¨çš„é•¿åº¦
         for (unsigned int i{}; i < size; i++)
         {
             PlaylistInfo path_info;
@@ -216,17 +216,17 @@ void CPlaylistMgr::LoadPlaylistData()
     }
     catch (CArchiveException* exception)
     {
-        //²¶»ñĞòÁĞ»¯Ê±³öÏÖµÄÒì³£
+        //æ•è·åºåˆ—åŒ–æ—¶å‡ºç°çš„å¼‚å¸¸
         CString info;
         info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { theApp.m_recent_playlist_data_path, exception->m_cause });
         theApp.WriteErrorLog(wstring{ info });
     }
-    // ¹Ø±Õ¶ÔÏó
+    // å…³é—­å¯¹è±¡
     ar.Close();
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.Close();
 
-    std::set<wstring> files_in_playlist_info;       //±£´æÒÑÌí¼ÓµÄ²¥·ÅÁĞ±íÎÄ¼şÂ·¾¶
+    std::set<wstring> files_in_playlist_info;       //ä¿å­˜å·²æ·»åŠ çš„æ’­æ”¾åˆ—è¡¨æ–‡ä»¶è·¯å¾„
     for (const auto& playlist_info : playlist_info_vect)
     {
         if (CCommon::FileExist(playlist_info.path))
@@ -241,7 +241,7 @@ void CPlaylistMgr::LoadPlaylistData()
         }
     }
 
-    //»ñÈ¡playlistÄ¿Â¼ÏÂµÄ²¥·ÅÁĞ±íÎÄ¼ş
+    //è·å–playlistç›®å½•ä¸‹çš„æ’­æ”¾åˆ—è¡¨æ–‡ä»¶
     vector<wstring> file_list;
     CCommon::GetFiles(theApp.m_playlist_dir + L'*' + PLAYLIST_EXTENSION, file_list);
 

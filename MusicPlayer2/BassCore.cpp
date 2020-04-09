@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "BassCore.h"
 #include "Common.h"
 #include "AudioCommon.h"
@@ -19,7 +19,7 @@ CBassCore::~CBassCore()
 
 void CBassCore::InitCore()
 {
-    //»ñÈ¡µ±Ç°µÄÒôÆµÊä³öÉè±¸
+    //è·å–å½“å‰çš„éŸ³é¢‘è¾“å‡ºè®¾å¤‡
     BASS_DEVICEINFO device_info;
     int rtn;
     int device_index{ 1 };
@@ -53,20 +53,20 @@ void CBassCore::InitCore()
         }
     }
 
-    //³õÊ¼»¯BASEÒôÆµ¿â
+    //åˆå§‹åŒ–BASEéŸ³é¢‘åº“
     BASS_Init(
-        theApp.m_output_devices[theApp.m_play_setting_data.device_selected].index,		//²¥·ÅÉè±¸
-        44100,//Êä³ö²ÉÑùÂÊ44100£¨³£ÓÃÖµ£©
-        BASS_DEVICE_CPSPEAKERS,//ĞÅºÅ£¬BASS_DEVICE_CPSPEAKERS ×¢ÊÍÔ­ÎÄÈçÏÂ£º
+        theApp.m_output_devices[theApp.m_play_setting_data.device_selected].index,		//æ’­æ”¾è®¾å¤‡
+        44100,//è¾“å‡ºé‡‡æ ·ç‡44100ï¼ˆå¸¸ç”¨å€¼ï¼‰
+        BASS_DEVICE_CPSPEAKERS,//ä¿¡å·ï¼ŒBASS_DEVICE_CPSPEAKERS æ³¨é‡ŠåŸæ–‡å¦‚ä¸‹ï¼š
         /* Use the Windows control panel setting to detect the number of speakers.*/
         /* Soundcards generally have their own control panel to set the speaker config,*/
         /* so the Windows control panel setting may not be accurate unless it matches that.*/
         /* This flag has no effect on Vista, as the speakers are already accurately detected.*/
-        theApp.m_pMainWnd->m_hWnd,//³ÌĞò´°¿Ú,0ÓÃÓÚ¿ØÖÆÌ¨³ÌĞò
-        NULL//Àà±êÊ¶·û,0Ê¹ÓÃÄ¬ÈÏÖµ
+        theApp.m_pMainWnd->m_hWnd,//ç¨‹åºçª—å£,0ç”¨äºæ§åˆ¶å°ç¨‹åº
+        NULL//ç±»æ ‡è¯†ç¬¦,0ä½¿ç”¨é»˜è®¤å€¼
     );
 
-    //ÏòÖ§³ÖµÄÎÄ¼şÁĞ±í²åÈëÔ­ÉúÖ§³ÖµÄÎÄ¼ş¸ñÊ½
+    //å‘æ”¯æŒçš„æ–‡ä»¶åˆ—è¡¨æ’å…¥åŸç”Ÿæ”¯æŒçš„æ–‡ä»¶æ ¼å¼
     CAudioCommon::m_surpported_format.clear();
     SupportedFormat format;
     format.description = CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT);
@@ -85,25 +85,25 @@ void CBassCore::InitCore()
     format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif";
     CAudioCommon::m_surpported_format.push_back(format);
     CAudioCommon::m_all_surpported_extensions = format.extensions;
-    //ÔØÈëBASS²å¼ş
+    //è½½å…¥BASSæ’ä»¶
     wstring plugin_dir;
     plugin_dir = theApp.m_local_dir + L"Plugins\\";
     vector<wstring> plugin_files;
-    CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);		//»ñÈ¡PluginsÄ¿Â¼ÏÂËùÓĞµÄdllÎÄ¼şµÄÎÄ¼şÃû
+    CCommon::GetFiles(plugin_dir + L"*.dll", plugin_files);		//è·å–Pluginsç›®å½•ä¸‹æ‰€æœ‰çš„dllæ–‡ä»¶çš„æ–‡ä»¶å
     m_plugin_handles.clear();
     for (const auto& plugin_file : plugin_files)
     {
-        //¼ÓÔØ²å¼ş
+        //åŠ è½½æ’ä»¶
         HPLUGIN handle = BASS_PluginLoad((plugin_dir + plugin_file).c_str(), 0);
         m_plugin_handles.push_back(handle);
-        //»ñÈ¡²å¼şÖ§³ÖµÄÒôÆµÎÄ¼şÀàĞÍ
+        //è·å–æ’ä»¶æ”¯æŒçš„éŸ³é¢‘æ–‡ä»¶ç±»å‹
         const BASS_PLUGININFO* plugin_info = BASS_PluginGetInfo(handle);
         if (plugin_info == nullptr)
             continue;
         format.file_name = plugin_file;
-        format.description = CCommon::ASCIIToUnicode(plugin_info->formats->name);	//²å¼şÖ§³ÖÎÄ¼şÀàĞÍµÄÃèÊö
-        format.extensions_list = CCommon::ASCIIToUnicode(plugin_info->formats->exts);	//²å¼şÖ§³ÖÎÄ¼şÀ©Õ¹ÃûÁĞ±í
-        //½âÎöÀ©Õ¹ÃûÁĞ±íµ½vector
+        format.description = CCommon::ASCIIToUnicode(plugin_info->formats->name);	//æ’ä»¶æ”¯æŒæ–‡ä»¶ç±»å‹çš„æè¿°
+        format.extensions_list = CCommon::ASCIIToUnicode(plugin_info->formats->exts);	//æ’ä»¶æ”¯æŒæ–‡ä»¶æ‰©å±•ååˆ—è¡¨
+        //è§£ææ‰©å±•ååˆ—è¡¨åˆ°vector
         format.extensions.clear();
         size_t index = 0, last_index = 0;
         while (true)
@@ -121,7 +121,7 @@ void CBassCore::InitCore()
         }
         CAudioCommon::m_surpported_format.push_back(format);
 
-        //ÔØÈëMIDIÒôÉ«¿â£¬ÓÃÓÚ²¥·ÅMIDI
+        //è½½å…¥MIDIéŸ³è‰²åº“ï¼Œç”¨äºæ’­æ”¾MIDI
         if (format.description == L"MIDI")
         {
             m_bass_midi_lib.Init(plugin_dir + plugin_file);
@@ -130,7 +130,7 @@ void CBassCore::InitCore()
             if (m_bass_midi_lib.IsSucceed())
             {
                 wstring sf2_path = theApp.m_general_setting_data.sf2_path;
-                if (!CCommon::FileExist(sf2_path))		//Èç¹ûÉèÖÃµÄÒôÉ«¿âÂ·¾¶²»´æÔÚ£¬Ôò´Ó.\Plugins\soundfont\Ä¿Â¼ÏÂ²éÕÒÒôÉ«¿âÎÄ¼ş
+                if (!CCommon::FileExist(sf2_path))		//å¦‚æœè®¾ç½®çš„éŸ³è‰²åº“è·¯å¾„ä¸å­˜åœ¨ï¼Œåˆ™ä».\Plugins\soundfont\ç›®å½•ä¸‹æŸ¥æ‰¾éŸ³è‰²åº“æ–‡ä»¶
                 {
                     vector<wstring> sf2s;
                     CCommon::GetFiles(plugin_dir + L"soundfont\\*.sf2", sf2s);
@@ -149,7 +149,7 @@ void CBassCore::InitCore()
                     }
                     else
                     {
-                        //»ñÈ¡ÒôÉ«¿âĞÅÏ¢
+                        //è·å–éŸ³è‰²åº“ä¿¡æ¯
                         BASS_MIDI_FONTINFO sfount_info;
                         m_bass_midi_lib.BASS_MIDI_FontGetInfo(m_sfont.font, &sfount_info);
                         m_sfont_name = CCommon::StrToUnicode(sfount_info.name);
@@ -165,12 +165,12 @@ void CBassCore::InitCore()
 
 void CBassCore::UnInitCore()
 {
-    BASS_Stop();	//Í£Ö¹Êä³ö
-    BASS_Free();	//ÊÍ·ÅBass×ÊÔ´
+    BASS_Stop();	//åœæ­¢è¾“å‡º
+    BASS_Free();	//é‡Šæ”¾Bassèµ„æº
     if (m_bass_midi_lib.IsSucceed() && m_sfont.font != 0)
         m_bass_midi_lib.BASS_MIDI_FontFree(m_sfont.font);
     m_bass_midi_lib.UnInit();
-    for (const auto& handle : m_plugin_handles)		//ÊÍ·Å²å¼ş¾ä±ú
+    for (const auto& handle : m_plugin_handles)		//é‡Šæ”¾æ’ä»¶å¥æŸ„
     {
         BASS_PluginFree(handle);
     }
@@ -220,7 +220,7 @@ void CBassCore::GetMidiPosition()
 {
     if (m_is_midi)
     {
-        //»ñÈ¡midiÒôÀÖµÄ½ø¶È²¢×ª»»³É½ÚÅÄÊı¡££¨ÆäÖĞ+ (m_midi_info.ppqn / 4)µÄÄ¿µÄÊÇĞŞÕıÏÔÊ¾µÄ½ÚÅÄ²»×¼È·µÄÎÊÌâ£©
+        //è·å–midiéŸ³ä¹çš„è¿›åº¦å¹¶è½¬æ¢æˆèŠ‚æ‹æ•°ã€‚ï¼ˆå…¶ä¸­+ (m_midi_info.ppqn / 4)çš„ç›®çš„æ˜¯ä¿®æ­£æ˜¾ç¤ºçš„èŠ‚æ‹ä¸å‡†ç¡®çš„é—®é¢˜ï¼‰
         m_midi_info.midi_position = static_cast<int>((BASS_ChannelGetPosition(m_musicStream, BASS_POS_MIDI_TICK) + (m_midi_info.ppqn / 4)) / m_midi_info.ppqn);
     }
 
@@ -230,19 +230,19 @@ void CBassCore::SetFXHandle()
 {
     if (m_musicStream == 0) return;
     //if (!m_equ_enable) return;
-    //ÉèÖÃÃ¿¸ö¾ùºâÆ÷Í¨µÀµÄ¾ä±ú
+    //è®¾ç½®æ¯ä¸ªå‡è¡¡å™¨é€šé“çš„å¥æŸ„
     for (int i{}; i < EQU_CH_NUM; i++)
     {
         m_equ_handle[i] = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_PARAMEQ, 1);
     }
-    //ÉèÖÃ»ìÏìµÄ¾ä±ú
+    //è®¾ç½®æ··å“çš„å¥æŸ„
     m_reverb_handle = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_REVERB, 1);
 }
 
 void CBassCore::RemoveFXHandle()
 {
     if (m_musicStream == 0) return;
-    //ÒÆ³ıÃ¿¸ö¾ùºâÆ÷Í¨µÀµÄ¾ä±ú
+    //ç§»é™¤æ¯ä¸ªå‡è¡¡å™¨é€šé“çš„å¥æŸ„
     for (int i{}; i < EQU_CH_NUM; i++)
     {
         if (m_equ_handle[i] != 0)
@@ -251,7 +251,7 @@ void CBassCore::RemoveFXHandle()
             m_equ_handle[i] = 0;
         }
     }
-    //ÒÆ³ı»ìÏìµÄ¾ä±ú
+    //ç§»é™¤æ··å“çš„å¥æŸ„
     if (m_reverb_handle != 0)
     {
         BASS_ChannelRemoveFX(m_musicStream, m_reverb_handle);
@@ -261,10 +261,10 @@ void CBassCore::RemoveFXHandle()
 
 void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, int flag)
 {
-    //»ñÈ¡³¤¶È
+    //è·å–é•¿åº¦
     if (flag&AF_LENGTH)
         song_info.lengh = CBassCore::GetBASSSongLength(hStream);
-    //»ñÈ¡±ÈÌØÂÊ
+    //è·å–æ¯”ç‰¹ç‡
     if(flag&AF_BITRATE)
     {
         float bitrate{};
@@ -275,7 +275,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, Song
     {
         CAudioTag audio_tag(hStream, file_path, song_info);
         audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
-        //»ñÈ¡midiÒôÀÖµÄ±êÌâ
+        //è·å–midiéŸ³ä¹çš„æ ‡é¢˜
         if (CBassCore::m_bass_midi_lib.IsSucceed() && audio_tag.GetAudioType() == AU_MIDI)
         {
             BASS_MIDI_MARK mark;
@@ -315,15 +315,15 @@ void CBassCore::Open(const wchar_t * file_path)
     if (m_bass_midi_lib.IsSucceed() && m_is_midi && m_sfont.font != 0)
         m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
 
-    //Èç¹ûÎÄ¼şÊÇMIDIÒôÀÖ£¬Ôò´ò¿ªÊ±»ñÈ¡MIDIÒôÀÖµÄĞÅÏ¢
+    //å¦‚æœæ–‡ä»¶æ˜¯MIDIéŸ³ä¹ï¼Œåˆ™æ‰“å¼€æ—¶è·å–MIDIéŸ³ä¹çš„ä¿¡æ¯
     if (m_is_midi && m_bass_midi_lib.IsSucceed())
     {
-        //»ñÈ¡MIDIÒôÀÖĞÅÏ¢
+        //è·å–MIDIéŸ³ä¹ä¿¡æ¯
         BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_MIDI_PPQN, &m_midi_info.ppqn); // get PPQN value
         m_midi_info.midi_length = static_cast<int>(BASS_ChannelGetLength(m_musicStream, BASS_POS_MIDI_TICK) / m_midi_info.ppqn);
         m_midi_info.tempo = m_bass_midi_lib.BASS_MIDI_StreamGetEvent(m_musicStream, 0, MIDI_EVENT_TEMPO);
         m_midi_info.speed = 60000000 / m_midi_info.tempo;
-        //»ñÈ¡MIDIÒôÀÖÄÚÇ¶¸è´Ê
+        //è·å–MIDIéŸ³ä¹å†…åµŒæ­Œè¯
         BASS_MIDI_MARK mark;
         m_midi_lyric.midi_lyric.clear();
         if (m_bass_midi_lib.BASS_MIDI_StreamGetMark(m_musicStream, BASS_MIDI_MARK_LYRIC, 0, &mark)) // got lyrics
@@ -347,7 +347,7 @@ void CBassCore::Close()
 
 void CBassCore::Play()
 {
-    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //Èç¹ûÉèÖÃÁË²¥·ÅÊ±ÒôÁ¿µ­Èëµ­³ö
+    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //å¦‚æœè®¾ç½®äº†æ’­æ”¾æ—¶éŸ³é‡æ·¡å…¥æ·¡å‡º
     {
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
         int pos = GetCurPosition();
@@ -355,10 +355,10 @@ void CBassCore::Play()
         if (pos < 0)
             pos = 0;
         SetCurPosition(pos);
-        BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, 0);        //ÏÈ½«ÒôÁ¿ÉèÎª0
+        BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_VOL, 0);        //å…ˆå°†éŸ³é‡è®¾ä¸º0
         BASS_ChannelPlay(m_musicStream, FALSE);
         float volume = static_cast<float>(m_volume) / 100;
-        BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, volume, theApp.m_play_setting_data.fade_time);   //ÒôÁ¿½¥±äµ½Ô­À´µÄÒôÁ¿
+        BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, volume, theApp.m_play_setting_data.fade_time);   //éŸ³é‡æ¸å˜åˆ°åŸæ¥çš„éŸ³é‡
     }
     else
     {
@@ -368,15 +368,15 @@ void CBassCore::Play()
 
 void CBassCore::Pause()
 {
-    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //Èç¹ûÉèÖÃÁË²¥·ÅÊ±ÒôÁ¿µ­Èëµ­³ö
+    if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //å¦‚æœè®¾ç½®äº†æ’­æ”¾æ—¶éŸ³é‡æ·¡å…¥æ·¡å‡º
     {
-        BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);        //ÒôÁ¿½¥±äµ½0
+        BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);        //éŸ³é‡æ¸å˜åˆ°0
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
-        //ÉèÖÃÒ»¸öµ­³öÊ±¼äµÄ¶¨Ê±Æ÷
+        //è®¾ç½®ä¸€ä¸ªæ·¡å‡ºæ—¶é—´çš„å®šæ—¶å™¨
         SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID, theApp.m_play_setting_data.fade_time, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
         {
             KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
-            BASS_ChannelPause(CPlayer::GetInstance().GetPlayerCore()->GetHandle());     //µ±¶¨Ê±Æ÷Æ÷´¥·¢Ê±£¬¼´ÒôÁ¿ÒÑ¾­½¥±äµ½0£¬Ö´ĞĞÔİÍ£²Ù×÷
+            BASS_ChannelPause(CPlayer::GetInstance().GetPlayerCore()->GetHandle());     //å½“å®šæ—¶å™¨å™¨è§¦å‘æ—¶ï¼Œå³éŸ³é‡å·²ç»æ¸å˜åˆ°0ï¼Œæ‰§è¡Œæš‚åœæ“ä½œ
         });
     }
     else
@@ -571,7 +571,7 @@ Time CBassCore::GetBASSSongLength(HSTREAM hStream)
     length_sec = BASS_ChannelBytes2Seconds(hStream, lenght_bytes);
     int song_length_int = static_cast<int>(length_sec * 1000);
     if (song_length_int == -1000) song_length_int = 0;
-    return Time(song_length_int);		//½«³¤¶È×ª»»³ÉTime½á¹¹
+    return Time(song_length_int);		//å°†é•¿åº¦è½¬æ¢æˆTimeç»“æ„
 }
 
 void CBassCore::SetCurrentPosition(HSTREAM hStream, int position)

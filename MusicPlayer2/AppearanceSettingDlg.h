@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
 #include "Common.h"
@@ -6,25 +6,25 @@
 #include "ColorStatic.h"
 #include "TabDlg.h"
 
-// CAppearanceSettingDlg ¶Ô»°¿ò
+// CAppearanceSettingDlg å¯¹è¯æ¡†
 
 class CAppearanceSettingDlg : public CTabDlg
 {
 	DECLARE_DYNAMIC(CAppearanceSettingDlg)
 
 public:
-	HWND m_hMainWnd;		//Ö÷´°¿ÚµÄ¾ä±ú£¬ÓÃÓÚÊµÊ±¸ü¸Ä´°¿Ú²»Í¸Ã÷¶È
+	HWND m_hMainWnd;		//ä¸»çª—å£çš„å¥æŸ„ï¼Œç”¨äºå®æ—¶æ›´æ”¹çª—å£ä¸é€æ˜åº¦
 
 	ApperanceSettingData m_data;
 
-	CAppearanceSettingDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	CAppearanceSettingDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~CAppearanceSettingDlg();
 
 	void DrawColor();
 
-#define MAX_LINE_SPACE 40		//¸è´ÊĞĞ¼ä¾àÉè¶¨µÄ×î´óÖµ
+#define MAX_LINE_SPACE 40		//æ­Œè¯è¡Œé—´è·è®¾å®šçš„æœ€å¤§å€¼
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_APPEREANCE_SETTING_DLG };
 #endif
@@ -40,12 +40,12 @@ protected:
 	CColorStatic m_color_static5;
 	CColorStatic m_color_static6;
 
-	const COLORREF m_color1{ RGB(123,189,255) };		//ÌìÀ¶É«
-	const COLORREF m_color2{ RGB(115,210,45) };			//ÂÌÉ«
-	const COLORREF m_color3{ RGB(255,167,87) };			//³ÈÉ«
-	const COLORREF m_color4{ RGB(33,147,167) };			//ÇàÂÌÉ«
-	const COLORREF m_color5{ RGB(255,162,208) };		//Ç³ºìÉ«
-	const COLORREF m_color6{ RGB(168,152,222) };		//µ­×ÏÉ«
+	const COLORREF m_color1{ RGB(123,189,255) };		//å¤©è“è‰²
+	const COLORREF m_color2{ RGB(115,210,45) };			//ç»¿è‰²
+	const COLORREF m_color3{ RGB(255,167,87) };			//æ©™è‰²
+	const COLORREF m_color4{ RGB(33,147,167) };			//é’ç»¿è‰²
+	const COLORREF m_color5{ RGB(255,162,208) };		//æµ…çº¢è‰²
+	const COLORREF m_color6{ RGB(168,152,222) };		//æ·¡ç´«è‰²
 
 	CToolTipCtrl m_toolTip;
 
@@ -66,12 +66,12 @@ protected:
     CButton m_low_freq_in_center_chk;
     CComboBox m_alignment_combo;
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
 	void SetTransparency();
 	void ClickColor();
-	static int SpectrumHeightChg(int value);		//Ê¹ÓÃ¶ş´Îº¯Êı½«10~300·¶Î§ÄÚµÄÖµÓ³Éäµ½0~100·¶Î§ÄÚ
-	static int SpectrumHeightRChg(int value);		//Ê¹ÓÃ¶ş´Îº¯Êı½«0~100·¶Î§ÄÚµÄÖµÓ³Éäµ½10~300·¶Î§ÄÚ
+	static int SpectrumHeightChg(int value);		//ä½¿ç”¨äºŒæ¬¡å‡½æ•°å°†10~300èŒƒå›´å†…çš„å€¼æ˜ å°„åˆ°0~100èŒƒå›´å†…
+	static int SpectrumHeightRChg(int value);		//ä½¿ç”¨äºŒæ¬¡å‡½æ•°å°†0~100èŒƒå›´å†…çš„å€¼æ˜ å°„åˆ°10~300èŒƒå›´å†…
 
 	void SetControlEnable();
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "AudioCommon.h"
 
 class CAudioTag
@@ -6,26 +6,26 @@ class CAudioTag
 public:
 	CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & song_info);
 
-	//»ñÈ¡ÒôÆµÎÄ¼şµÄ±êÇ©ĞÅÏ¢£¬½á¹û±£´æÔÚ¹¹Ôìº¯Êı´«µİ½øÀ´µÄSongInfo½á¹¹Àï£¬
-	//id3v2_first£ºÊÇ·ñÓÅÏÈ»ñÈ¡ID3V2±êÇ©£¬·ñÔò£¬ÓÅÏÈ»ñÈ¡ID3V1±êÇ©
+	//è·å–éŸ³é¢‘æ–‡ä»¶çš„æ ‡ç­¾ä¿¡æ¯ï¼Œç»“æœä¿å­˜åœ¨æ„é€ å‡½æ•°ä¼ é€’è¿›æ¥çš„SongInfoç»“æ„é‡Œï¼Œ
+	//id3v2_firstï¼šæ˜¯å¦ä¼˜å…ˆè·å–ID3V2æ ‡ç­¾ï¼Œå¦åˆ™ï¼Œä¼˜å…ˆè·å–ID3V1æ ‡ç­¾
 	void GetAudioTag(bool id3v2_first);
 
 	////
 	//void GetAllSongInfo(bool id3v2_first);
 
-	//»ñÈ¡ÒôÆµÎÄ¼şµÄ×¨¼­·âÃæ£¬²¢±£´æµ½ÁÙÊ±Ä¿Â¼
-	//image_type£ºÓÃÀ´½ÓÊÕ·âÃæµÄ¸ñÊ½ 0:jpg, 1:png, 2:gif
-	//file_name: Ö¸¶¨±£´æµÄ×¨¼­·âÃæµÄÎÄ¼şÃû£¬Èç¹ûÎªnullptr£¬ÔòÊ¹ÓÃÄ¬ÈÏµÄÎÄ¼şÃû
-	//·µ»ØÖµ£º×¨¼­·âÃæµÄ±£´æÂ·¾¶
+	//è·å–éŸ³é¢‘æ–‡ä»¶çš„ä¸“è¾‘å°é¢ï¼Œå¹¶ä¿å­˜åˆ°ä¸´æ—¶ç›®å½•
+	//image_typeï¼šç”¨æ¥æ¥æ”¶å°é¢çš„æ ¼å¼ 0:jpg, 1:png, 2:gif
+	//file_name: æŒ‡å®šä¿å­˜çš„ä¸“è¾‘å°é¢çš„æ–‡ä»¶åï¼Œå¦‚æœä¸ºnullptrï¼Œåˆ™ä½¿ç”¨é»˜è®¤çš„æ–‡ä»¶å
+	//è¿”å›å€¼ï¼šä¸“è¾‘å°é¢çš„ä¿å­˜è·¯å¾„
 	wstring GetAlbumCover(int& image_type, wchar_t* file_name = nullptr);
 
-	//»ñÈ¡ÒôÆµµÄÄÚÇ¶¸è´Ê
+	//è·å–éŸ³é¢‘çš„å†…åµŒæ­Œè¯
 	wstring GetAudioLyric();
 
-	//ÏòÒ»¸öMP3ÎÄ¼şĞ´ÈëID3V1±êÇ©
-	//file_path£ºmp3ÎÄ¼şµÄÂ·¾¶
-	//text_cut_off£ºÈç¹ûĞ´ÈëµÄÎÄ±¾³¤¶È³¬¹ıID3V1¿ÉÈİÄÉµÄ³¤¶È£¬Ôò¹ı³¤µÄÎÄ±¾½«»á±»½Ø¶Ï£¬²¢½«text_cut_offÖÃÎªtrue
-	//·µ»ØÖµ£º³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	//å‘ä¸€ä¸ªMP3æ–‡ä»¶å†™å…¥ID3V1æ ‡ç­¾
+	//file_pathï¼šmp3æ–‡ä»¶çš„è·¯å¾„
+	//text_cut_offï¼šå¦‚æœå†™å…¥çš„æ–‡æœ¬é•¿åº¦è¶…è¿‡ID3V1å¯å®¹çº³çš„é•¿åº¦ï¼Œåˆ™è¿‡é•¿çš„æ–‡æœ¬å°†ä¼šè¢«æˆªæ–­ï¼Œå¹¶å°†text_cut_offç½®ä¸ºtrue
+	//è¿”å›å€¼ï¼šæˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	static bool WriteMp3Tag(LPCTSTR file_path, const SongInfo& song_info, bool& text_cut_off);
 
 	AudioType GetAudioType() const { return m_type; }
@@ -46,15 +46,15 @@ private:
 	bool GetApeTag();
 	bool GetFlacTag();
 
-	//»ñÈ¡ID3V2±êÇ©ÇøÓòµÄÄÚÈİ
+	//è·å–ID3V2æ ‡ç­¾åŒºåŸŸçš„å†…å®¹
 	string GetID3V2TagContents();
 
-	//´ÓID3V2±êÇ©ÇøÓòµÄÄÚÈİÖĞÌáÈ¡³öÖ¸¶¨µÄID3±êÇ©
-	//tag_contents£ºÕû¸ö±êÇ©ÇøÓòµÄÄÚÈİ
-	//tag_identify£º±êÇ©µÄ±êÊ¶
+	//ä»ID3V2æ ‡ç­¾åŒºåŸŸçš„å†…å®¹ä¸­æå–å‡ºæŒ‡å®šçš„ID3æ ‡ç­¾
+	//tag_contentsï¼šæ•´ä¸ªæ ‡ç­¾åŒºåŸŸçš„å†…å®¹
+	//tag_identifyï¼šæ ‡ç­¾çš„æ ‡è¯†
 	wstring GetSpecifiedId3V2Tag(const string& tag_contents, const string& tag_identify);
 
-	//»ñÈ¡wma/mp4/ogg¸ñÊ½µÄUTF8¸ñÊ½µÄ±êÇ©ÇøÓò
+	//è·å–wma/mp4/oggæ ¼å¼çš„UTF8æ ¼å¼çš„æ ‡ç­¾åŒºåŸŸ
 	string GetUtf8TagContents(const char* tag_start);
 
 	string GetWmaTagContents();
@@ -62,10 +62,10 @@ private:
 	string GetOggTagContents();
 	string GetApeTagContents();
 
-	//´ÓUTF8±êÇ©ÇøÓòµÄÄÚÈİÖĞÌáÈ¡³öÖ¸¶¨µÄ±êÇ©
+	//ä»UTF8æ ‡ç­¾åŒºåŸŸçš„å†…å®¹ä¸­æå–å‡ºæŒ‡å®šçš„æ ‡ç­¾
 	wstring GetSpecifiedUtf8Tag(const string& tag_contents, const string& tag_identify);
 
-	//»ñÈ¡FLACÒôÆµµÄ±êÇ©ÇøÓòµÄÄÚÈİ
+	//è·å–FLACéŸ³é¢‘çš„æ ‡ç­¾åŒºåŸŸçš„å†…å®¹
 	static void GetFlacTagContents(wstring file_path, string& contents_buff);
 
 	static wstring _GetAlbumCover(const string& tag_content, size_t cover_index, int& image_type, wchar_t* file_name = nullptr);
