@@ -370,6 +370,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"show_tree_tool_tips", theApp.m_media_lib_setting_data.show_tree_tool_tips);
     ini.WriteBool(L"media_lib", L"update_media_lib_when_start_up", theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
     ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
+	ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
 
     ini.Save();
 }
@@ -506,6 +507,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.show_tree_tool_tips = ini.GetBool(L"media_lib", L"show_tree_tool_tips", true);
     theApp.m_media_lib_setting_data.update_media_lib_when_start_up = ini.GetBool(L"media_lib", L"update_media_lib_when_start_up", false);
     theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
+	theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
 }
 
 void CMusicPlayerDlg::SetTransparency()

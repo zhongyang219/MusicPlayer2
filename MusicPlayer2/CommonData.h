@@ -148,6 +148,17 @@ enum DisplayFormat
 	DF_TITLE_ARTIST		//标题 - 艺术家
 };
 
+//最近播放曲目列表显示范围
+enum RecentPlayedRange
+{
+	RPR_ALL,			//显示全部
+	RPR_WEAK,			//最近一个星期
+	RPR_MONTH,			//最近一个月
+	RPR_HALF_YEAR,		//最近半年
+	RPR_YEAR,			//最近一年
+};
+
+
 //选项设置数据
 
 struct DesktopLyricSettingData		//桌面歌词设置
@@ -269,6 +280,7 @@ struct MediaLibSettingData
     bool update_media_lib_when_start_up;    //启动时自动更新媒体库
 	bool disable_drag_sort;				//禁止通过拖放排序
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
+	RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
 };
 
 struct NonCategorizedSettingData

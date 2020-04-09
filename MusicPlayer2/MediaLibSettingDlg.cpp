@@ -43,6 +43,7 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_UPDATE_MEDIA_LIB_CHK, m_update_media_lib_chk);
 	DDX_Control(pDX, IDC_DISABLE_DRAGE_SORT_CHECK, m_disable_drag_sort_chk);
 	DDX_Control(pDX, IDC_PLAYLIST_DISPLAY_MODE_OMBO, m_playlist_display_mode_combo);
+	DDX_Control(pDX, IDC_RECENT_PLAYED_RANGE_OMBO, m_recent_played_range_combo);
 }
 
 
@@ -56,6 +57,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, &CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn)
 	ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
 	ON_CBN_SELCHANGE(IDC_PLAYLIST_DISPLAY_MODE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo)
+	ON_CBN_SELCHANGE(IDC_RECENT_PLAYED_RANGE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo)
 END_MESSAGE_MAP()
 
 
@@ -88,6 +90,12 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
 	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_ARTIST) + _T(" - ") + CCommon::LoadText(IDS_TITLE));
 	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE) + _T(" - ") + CCommon::LoadText(IDS_ARTIST));
 	m_playlist_display_mode_combo.SetCurSel(static_cast<int>(m_data.display_format));
+
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_ALL));
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_WEEK));
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_MONTH));
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_HALF_YEAR));
+	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_ALL));
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -199,4 +207,10 @@ void CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo()
 {
 	// TODO: Add your control notification handler code here
 	m_data.display_format = static_cast<DisplayFormat>(m_playlist_display_mode_combo.GetCurSel());
+}
+
+
+void CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo()
+{
+	// TODO: Add your control notification handler code here
 }
