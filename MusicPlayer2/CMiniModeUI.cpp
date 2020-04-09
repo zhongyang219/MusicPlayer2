@@ -172,7 +172,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
         {
             //正在播放的文件名以滚动的样式显示。如果参数要求强制刷新，则重置滚动位置
             static CDrawCommon::ScrollInfo scroll_info;
-            m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str(),
+            m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str(),
                                   m_colors.color_text, theApp.DPI(1), true, scroll_info, reset);
         }
         else		//显示歌词

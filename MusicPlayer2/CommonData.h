@@ -139,6 +139,15 @@ struct FontSet
 };
 
 
+//播放列表中项目的显示格式
+enum DisplayFormat
+{
+	DF_FILE_NAME,		//文件名
+	DF_TITLE,			//标题
+	DF_ARTIST_TITLE,	//艺术家 - 标题
+	DF_TITLE_ARTIST		//标题 - 艺术家
+};
+
 //选项设置数据
 
 struct DesktopLyricSettingData		//桌面歌词设置
@@ -259,6 +268,7 @@ struct MediaLibSettingData
     bool show_tree_tool_tips;           //树控件显示鼠标提示
     bool update_media_lib_when_start_up;    //启动时自动更新媒体库
 	bool disable_drag_sort;				//禁止通过拖放排序
+	DisplayFormat display_format{};		//播放列表中项目的显示样式
 };
 
 struct NonCategorizedSettingData
@@ -376,15 +386,6 @@ struct IconSet
 };
 
 
-//播放列表中项目的显示格式
-enum DisplayFormat
-{
-    DF_FILE_NAME,		//文件名
-    DF_TITLE,			//标题
-    DF_ARTIST_TITLE,	//艺术家 - 标题
-    DF_TITLE_ARTIST		//标题 - 艺术家
-};
-
 //界面相关的一些选项
 struct UIData
 {
@@ -398,7 +399,6 @@ struct UIData
     int client_width;					//窗口客户区宽度
     int client_height;					//窗口客户区高度
     CImage default_background;			//默认的背景
-    DisplayFormat display_format{};		//播放列表中项目的显示样式
 };
 
 struct MenuSet

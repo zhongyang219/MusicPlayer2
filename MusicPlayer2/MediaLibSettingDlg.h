@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "TabDlg.h"
 #include "CListBoxEnhanced.h"
+#include "afxwin.h"
 
 
 // CMediaLibSettingDlg 对话框
@@ -26,6 +27,7 @@ private:
     CListBoxEnhanced m_dir_list_ctrl;
     CButton m_update_media_lib_chk;
 	CButton m_disable_drag_sort_chk;
+	CComboBox m_playlist_display_mode_combo;
 
     CToolTipCtrl m_toolTip;
     size_t m_data_size;		//数据文件的大小
@@ -47,4 +49,5 @@ public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedClearRecentPlayedListBtn();
 	afx_msg void OnBnClickedDisableDrageSortCheck();
+	afx_msg void OnCbnSelchangePlaylistDisplayModeOmbo();
 };

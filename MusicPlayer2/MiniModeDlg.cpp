@@ -95,7 +95,7 @@ void CMiniModeDlg::UpdateSongTipInfo()
 void CMiniModeDlg::SetTitle()
 {
     CString title;
-    title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str();
+    title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
     if (!title.IsEmpty())
         title += _T(" - ");
     title += APP_NAME;
@@ -137,7 +137,7 @@ void CMiniModeDlg::UpdatePlayPauseButton()
 
 void CMiniModeDlg::ShowPlaylist()
 {
-    m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format);
+    m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format);
     SetPlayListColor();
 }
 

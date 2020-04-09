@@ -24,7 +24,7 @@ CFloatPlaylistDlg::~CFloatPlaylistDlg()
 void CFloatPlaylistDlg::RefreshData()
 {
     //刷新播放列表数据
-    m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format);
+    m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format);
 
     m_path_edit.SetWindowText(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
 }
@@ -287,7 +287,7 @@ void CFloatPlaylistDlg::OnEnChangeSearchEdit()
     m_search_edit.GetWindowText(key_word);
     m_searched = (key_word.GetLength() != 0);
     m_playlist_ctrl.QuickSearch(wstring(key_word));
-    m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+    m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
     SetDragEnable();
 }
 
@@ -298,7 +298,7 @@ void CFloatPlaylistDlg::OnEnChangeSearchEdit()
 //        //清除搜索结果
 //        m_searched = false;
 //        m_search_edit.SetWindowText(_T(""));
-//        m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+//        m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
 //        m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
 //    }
 //}
@@ -412,7 +412,7 @@ afx_msg LRESULT CFloatPlaylistDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM 
         //清除搜索结果
         m_searched = false;
         m_search_edit.SetWindowText(_T(""));
-        m_playlist_ctrl.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+        m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
         m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
     }
     return 0;

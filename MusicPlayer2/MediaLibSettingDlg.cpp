@@ -42,6 +42,7 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DIR_LIST, m_dir_list_ctrl);
 	DDX_Control(pDX, IDC_UPDATE_MEDIA_LIB_CHK, m_update_media_lib_chk);
 	DDX_Control(pDX, IDC_DISABLE_DRAGE_SORT_CHECK, m_disable_drag_sort_chk);
+	DDX_Control(pDX, IDC_PLAYLIST_DISPLAY_MODE_OMBO, m_playlist_display_mode_combo);
 }
 
 
@@ -54,6 +55,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_CLEAN_DATA_FILE_BUTTON, &CMediaLibSettingDlg::OnBnClickedCleanDataFileButton)
 	ON_BN_CLICKED(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, &CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn)
 	ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
+	ON_CBN_SELCHANGE(IDC_PLAYLIST_DISPLAY_MODE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo)
 END_MESSAGE_MAP()
 
 
@@ -80,6 +82,12 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), CCommon::LoadText(IDS_CLEAR_DATA_FILE_TIP_INFO));
     m_toolTip.AddTool(&m_update_media_lib_chk, CCommon::LoadText(IDS_UPDATE_MEDIA_LIB_TIP));
+
+	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_FILE_NAME));
+	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE));
+	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_ARTIST) + _T(" - ") + CCommon::LoadText(IDS_TITLE));
+	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE) + _T(" - ") + CCommon::LoadText(IDS_ARTIST));
+	m_playlist_display_mode_combo.SetCurSel(static_cast<int>(m_data.display_format));
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -184,4 +192,11 @@ void CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck()
 {
 	// TODO: Add your control notification handler code here
 	m_data.disable_drag_sort = (m_disable_drag_sort_chk.GetCheck() != 0);
+}
+
+
+void CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo()
+{
+	// TODO: Add your control notification handler code here
+	m_data.display_format = static_cast<DisplayFormat>(m_playlist_display_mode_combo.GetCurSel());
 }

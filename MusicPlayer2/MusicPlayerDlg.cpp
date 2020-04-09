@@ -264,7 +264,7 @@ void CMusicPlayerDlg::SaveConfig()
 
     ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
     ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
-    ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_ui_data.display_format));
+    ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_media_lib_setting_data.display_format));
     ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.cortana_info_enable);
     ini.WriteBool(L"config", L"cortana_show_lyric", theApp.m_lyric_setting_data.cortana_show_lyric);
     ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
@@ -396,7 +396,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
-    theApp.m_ui_data.display_format = static_cast<DisplayFormat>(ini.GetInt(L"config", L"playlist_display_format", 2));
+    theApp.m_media_lib_setting_data.display_format = static_cast<DisplayFormat>(ini.GetInt(L"config", L"playlist_display_format", 2));
     theApp.m_lyric_setting_data.cortana_show_lyric = ini.GetBool(L"config", L"cortana_show_lyric", true);
     theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
     theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
@@ -621,7 +621,7 @@ void CMusicPlayerDlg::SetAlwaysOnTop()
 
 void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
 {
-    m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format);
+    m_playlist_list.ShowPlaylist(theApp.m_media_lib_setting_data.display_format);
     m_playlist_list.SetCurSel(-1);
     //设置播放列表中突出显示的项目
     SetPlayListColor(highlight_visible);
@@ -906,6 +906,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 	m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
 
 	SetPlaylistDragEnable();
+	ShowPlayList();
 
     SaveConfig();		//将设置写入到ini文件
     theApp.SaveConfig();
@@ -1079,7 +1080,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     }
 
     //设置播放列表菜单中“播放列表显示样式”的单选标记
-    switch (theApp.m_ui_data.display_format)
+    switch (theApp.m_media_lib_setting_data.display_format)
     {
     case DF_FILE_NAME:
         pMenu->CheckMenuRadioItem(ID_DISP_FILE_NAME, ID_DISP_TITLE_ARTIST, ID_DISP_FILE_NAME, MF_BYCOMMAND | MF_CHECKED);
@@ -2754,7 +2755,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnDispFileName()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_ui_data.display_format = DF_FILE_NAME;
+    theApp.m_media_lib_setting_data.display_format = DF_FILE_NAME;
     ShowPlayList();
 }
 
@@ -2762,7 +2763,7 @@ void CMusicPlayerDlg::OnDispFileName()
 void CMusicPlayerDlg::OnDispTitle()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_ui_data.display_format = DF_TITLE;
+    theApp.m_media_lib_setting_data.display_format = DF_TITLE;
     ShowPlayList();
 }
 
@@ -2770,7 +2771,7 @@ void CMusicPlayerDlg::OnDispTitle()
 void CMusicPlayerDlg::OnDispArtistTitle()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_ui_data.display_format = DF_ARTIST_TITLE;
+    theApp.m_media_lib_setting_data.display_format = DF_ARTIST_TITLE;
     ShowPlayList();
 }
 
@@ -2778,7 +2779,7 @@ void CMusicPlayerDlg::OnDispArtistTitle()
 void CMusicPlayerDlg::OnDispTitleArtist()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_ui_data.display_format = DF_TITLE_ARTIST;
+    theApp.m_media_lib_setting_data.display_format = DF_TITLE_ARTIST;
     ShowPlayList();
 }
 
@@ -2793,7 +2794,7 @@ void CMusicPlayerDlg::OnMiniMode()
         return;
 
     //m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);
-    //m_miniModeDlg.SetDisplayFormat(&theApp.m_ui_data.display_format);
+    //m_miniModeDlg.SetDisplayFormat(&theApp.m_media_lib_setting_data.display_format);
     ShowWindow(SW_HIDE);
     if (m_miniModeDlg.DoModal() == IDCANCEL)
     {
@@ -3115,7 +3116,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 {
     CString title;
-    title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_ui_data.display_format).c_str();
+    title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
 
     CString title_suffix;
     if (!title.IsEmpty())
@@ -3400,7 +3401,7 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
     m_searched = (key_word.GetLength() != 0);
     SetPlaylistDragEnable();
     m_playlist_list.QuickSearch(wstring(key_word));
-    m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+    m_playlist_list.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
 }
 
 
@@ -3412,7 +3413,7 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
 //        //清除搜索结果
 //        m_searched = false;
 //        m_search_edit.SetWindowText(_T(""));
-//        m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+//        m_playlist_list.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
 //        m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
 //    }
 //}
@@ -4460,7 +4461,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lP
         //清除搜索结果
         m_searched = false;
         m_search_edit.SetWindowText(_T(""));
-        m_playlist_list.ShowPlaylist(theApp.m_ui_data.display_format, m_searched);
+        m_playlist_list.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
         m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
     }
     return 0;
