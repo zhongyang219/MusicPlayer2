@@ -40,8 +40,7 @@ protected:
     int m_position_x;
     int m_position_y;
 
-    int m_screen_width;
-    int m_screen_height;
+    CRect m_screen_rect;		//屏幕的范围（不包含任务栏）
     bool m_show_playlist{ false };		//是否显示播放列表
 
     int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目

@@ -14,9 +14,6 @@ IMPLEMENT_DYNAMIC(CMiniModeDlg, CDialogEx)
 CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent /*=NULL*/)
     : CDialogEx(IDD_MINI_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }
 {
-    m_screen_width = GetSystemMetrics(SM_CXFULLSCREEN);
-    m_screen_height = GetSystemMetrics(SM_CYFULLSCREEN) + 23;
-
     //更改窗口的类名
     WNDCLASS wc;
     ::GetClassInfo(AfxGetInstanceHandle(), _T("#32770"), &wc);
@@ -53,24 +50,26 @@ void CMiniModeDlg::CheckWindowPos()
 {
     CRect rect;
     GetWindowRect(rect);
-    if (rect.left < 0)
+    if (m_screen_rect.Width() <= rect.Width() || m_screen_rect.Height() <= rect.Height())
+        return;
+    if (rect.left < m_screen_rect.left)
     {
-        rect.MoveToX(0);
+        rect.MoveToX(m_screen_rect.left);
         MoveWindow(rect);
     }
-    if (rect.top < 0)
+    if (rect.top < m_screen_rect.top)
     {
-        rect.MoveToY(0);
+        rect.MoveToY(m_screen_rect.top);
         MoveWindow(rect);
     }
-    if (rect.right > m_screen_width)
+    if (rect.right > m_screen_rect.right)
     {
-        rect.MoveToX(m_screen_width - rect.Width());
+        rect.MoveToX(m_screen_rect.right - rect.Width());
         MoveWindow(rect);
     }
-    if (rect.bottom > m_screen_height)
+    if (rect.bottom > m_screen_rect.bottom)
     {
-        rect.MoveToY(m_screen_height - rect.Height());
+        rect.MoveToY(m_screen_rect.bottom - rect.Height());
         MoveWindow(rect);
     }
 }
@@ -164,6 +163,8 @@ BOOL CMiniModeDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     m_playlist_ctrl.SetFont(theApp.m_pMainWnd->GetFont());
+
+    ::SystemParametersInfo(SPI_GETWORKAREA, 0, &m_screen_rect, 0);   // 获得工作区大小
 
     LoadConfig();
 
