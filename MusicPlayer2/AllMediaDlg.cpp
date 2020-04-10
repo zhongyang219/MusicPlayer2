@@ -45,6 +45,11 @@ void CAllMediaDlg::InitListData()
 {
 	m_list_data.clear();
 
+    //获取当前系统时间
+    SYSTEMTIME sys_time;
+    GetLocalTime(&sys_time);
+    __int64 cur_time = CTime(sys_time).GetTime();
+
 	for (const auto& item : theApp.m_song_data)
 	{
 		CListCtrlEx::RowData row_data;
@@ -55,9 +60,6 @@ void CAllMediaDlg::InitListData()
 				continue;
 
 			//计算曲目上一次播放的时间和当前的时间差
-			SYSTEMTIME sys_time;
-			GetLocalTime(&sys_time);
-			__int64 cur_time = CTime(sys_time).GetTime();
 			__int64 time_span = cur_time - item.second.last_played_time;
 			//如果时间差超过了列表显示的范围，则跳过它
 			switch (theApp.m_media_lib_setting_data.recent_played_range)

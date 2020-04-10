@@ -43,6 +43,8 @@ private:
 
 	virtual void AddToolTips() override;
 
+    virtual bool IsDrawLargeIcon() override { return false; }
+
 private:
 	SMiniModeUIData& m_ui_data;
 	CFont m_font_time;

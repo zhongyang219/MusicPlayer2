@@ -132,6 +132,8 @@ protected:
     int DPI(int pixel);
     int DPI(double pixel);
 
+    virtual bool IsDrawLargeIcon();        //是否绘制大图标
+
 private:
     void SetRepeatModeToolTipText();
     void SetSongInfoToolTipText();

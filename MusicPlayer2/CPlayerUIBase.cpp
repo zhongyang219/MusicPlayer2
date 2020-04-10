@@ -623,7 +623,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     if (rect.Width() >= DPI(190))
     {
         rc_tmp.MoveToX(rc_tmp.right);
-        m_buttons[BTN_MINI].enable = !theApp.m_ui_data.full_screen;
+        //m_buttons[BTN_MINI].enable = !theApp.m_ui_data.full_screen;
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_MINI], theApp.m_icon_set.mini);
     }
     else
@@ -789,13 +789,13 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & ico
 
     rc_tmp = rect;
     //使图标在矩形中居中
-    CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
+    CSize icon_size = icon.GetSize(IsDrawLargeIcon());
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
     rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.bottom = rc_tmp.top + icon_size.cy;
 
-    const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, theApp.m_ui_data.full_screen);
+    const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, IsDrawLargeIcon());
     m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
 
 }
@@ -825,13 +825,13 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
 
     rc_tmp = rect;
     //使图标在矩形中居中
-    CSize icon_size = icon.GetSize(theApp.m_ui_data.full_screen);
+    CSize icon_size = icon.GetSize(IsDrawLargeIcon());
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
     rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.bottom = rc_tmp.top + icon_size.cy;
 
-    const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, theApp.m_ui_data.full_screen);
+    const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, IsDrawLargeIcon());
     m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
 }
 
@@ -1031,6 +1031,11 @@ int CPlayerUIBase::DPI(double pixel)
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     else
         return theApp.DPI(pixel);
+}
+
+bool CPlayerUIBase::IsDrawLargeIcon()
+{
+    return theApp.m_ui_data.full_screen;
 }
 
 bool CPlayerUIBase::IsDrawNarrowMode()
