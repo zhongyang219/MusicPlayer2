@@ -482,12 +482,13 @@ wstring CAudioTag::GetSpecifiedFlacTag(const string& tag_contents, const string&
     CCommon::StringTransform(tag_identify_lower_case, false);
     string find_str = '\0' + tag_identify_lower_case + '=';
     size_t index = tag_contents_lower_case.find(find_str);
-    if (index == string::npos)
+    if (index == string::npos || index < 3)
         return wstring();
 
-    size_t index2 = tag_contents_lower_case.find('\0', index + 1);
+    //FLAC标签标识字符串前面有两个字节的'\0'，再往前两个字节就是当前标签的长度
+    size_t tag_size = tag_contents[index - 2] * 256 + tag_contents[index - 3];
 
-    string tag_str = tag_contents.substr(index + find_str.size(), index2 - index - find_str.size());
+    string tag_str = tag_contents.substr(index + find_str.size(), tag_size - find_str.size() + 1);
     wstring tag_wcs = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
     return tag_wcs;
 }
