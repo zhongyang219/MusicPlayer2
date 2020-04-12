@@ -58,6 +58,8 @@ protected:
 
     bool m_first_start{ true };
 
+    bool m_always_on_top{ true };
+
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -67,6 +69,7 @@ protected:
     void CheckWindowPos();
     void UpdateSongTipInfo();
     void SetTitle();
+    void SetAlwaysOnTop();
 
     DECLARE_MESSAGE_MAP()
 
@@ -99,4 +102,6 @@ public:
 protected:
     afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnMiniModeAlwaysOnTop();
 };

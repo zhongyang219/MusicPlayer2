@@ -36,6 +36,7 @@ void CMiniModeDlg::SaveConfig() const
     CIniHelper ini(theApp.m_config_path);
     ini.WriteInt(L"mini_mode", L"position_x", m_position_x);
     ini.WriteInt(L"mini_mode", L"position_y", m_position_y);
+    ini.WriteBool(L"mini_mode", L"always_on_top", m_always_on_top);
     ini.Save();
 }
 
@@ -44,6 +45,7 @@ void CMiniModeDlg::LoadConfig()
     CIniHelper ini(theApp.m_config_path);
     m_position_x = ini.GetInt(L"mini_mode", L"position_x", -1);
     m_position_y = ini.GetInt(_T("mini_mode"), _T("position_y"), -1);
+    m_always_on_top = ini.GetBool(_T("mini_mode"), _T("always_on_top"), true);
 }
 
 void CMiniModeDlg::CheckWindowPos()
@@ -102,6 +104,14 @@ void CMiniModeDlg::SetTitle()
 }
 
 
+void CMiniModeDlg::SetAlwaysOnTop()
+{
+    if (m_always_on_top)
+        SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);			//设置置顶
+    else
+        SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);		//取消置顶
+}
+
 BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_WM_LBUTTONDOWN()
     ON_WM_TIMER()
@@ -123,6 +133,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_WM_SETCURSOR()
     ON_COMMAND(ID_MINI_MIDE_MINIMIZE, &CMiniModeDlg::OnMiniMideMinimize)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMiniModeDlg::OnListItemDragged)
+    ON_COMMAND(ID_MINI_MODE_ALWAYS_ON_TOP, &CMiniModeDlg::OnMiniModeAlwaysOnTop)
 END_MESSAGE_MAP()
 
 
@@ -184,6 +195,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     else
         SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOMOVE | SWP_NOZORDER);
     CheckWindowPos();
+
+    SetAlwaysOnTop();
 
     //初始化播放列表控件的位置
     CRect playlist_rect;
@@ -426,6 +439,7 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
     //设置复选菜单项的勾选
     pMenu->CheckMenuItem(ID_SHOW_PLAY_LIST, MF_BYCOMMAND | (m_show_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_ADD_REMOVE_FROM_FAVOURITE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFavourite() ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_MINI_MODE_ALWAYS_ON_TOP, MF_BYCOMMAND | (m_always_on_top ? MF_CHECKED : MF_UNCHECKED));
 
     //设置播放列表右键菜单的默认菜单项
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
@@ -583,4 +597,12 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     }
 
     return CDialogEx::OnCommand(wParam, lParam);
+}
+
+
+void CMiniModeDlg::OnMiniModeAlwaysOnTop()
+{
+    // TODO: 在此添加命令处理程序代码
+    m_always_on_top = !m_always_on_top;
+    SetAlwaysOnTop();
 }
