@@ -95,6 +95,7 @@ struct SongInfo
         listen_time = song_info.listen_time;
         song_id = song_info.song_id;
         is_favourite = song_info.is_favourite;
+        info_acquired = song_info.info_acquired;
     }
 
     bool IsTitleEmpty() const
