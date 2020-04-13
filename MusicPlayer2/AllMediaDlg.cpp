@@ -126,7 +126,7 @@ void CAllMediaDlg::InitListData()
 		if (m_type == DT_RECENT_MEDIA)
 			return str_a > str_b;
 		else
-			return str_a < str_b;
+            return CCommon::StringCompareInLocalLanguage(str_a, str_b) < 0;
 	});
 	UpdateListIndex();
 }
@@ -336,9 +336,9 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 				else
 				{
 					if (ascending)
-						return str_a < str_b;
+                        return CCommon::StringCompareInLocalLanguage(str_a, str_b) < 0;
 					else
-						return str_a > str_b;
+						return CCommon::StringCompareInLocalLanguage(str_a, str_b) > 0;
 				}
 			});
 			if (!m_searched)

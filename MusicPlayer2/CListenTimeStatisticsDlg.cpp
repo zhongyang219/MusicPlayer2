@@ -256,11 +256,11 @@ void CListenTimeStatisticsDlg::OnHdnItemclickList1(NMHDR *pNMHDR, LRESULT *pResu
         case COL_INDEX:
             break;
         case COL_TRACK:
-            std::sort(m_data_list.begin(), m_data_list.end(), [](const ListItem& a, const ListItem& b) { if (ascending) return a.name < b.name; else return a.name > b.name; });
+            std::sort(m_data_list.begin(), m_data_list.end(), [](const ListItem& a, const ListItem& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.name, b.name) < 0; else return CCommon::StringCompareInLocalLanguage(a.name, b.name) > 0; });
             ShowData(false);
             break;
         case COL_PATH:
-            std::sort(m_data_list.begin(), m_data_list.end(), [](const ListItem& a, const ListItem& b) { if (ascending) return a.path < b.path; else return a.path > b.path; });
+            std::sort(m_data_list.begin(), m_data_list.end(), [](const ListItem& a, const ListItem& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.path, b.path) < 0; else return CCommon::StringCompareInLocalLanguage(a.path, b.path) > 0; });
             ShowData(false);
             break;
         case COL_TOTAL_TIME:

@@ -1369,3 +1369,14 @@ void CCommon::FileAutoRename(wstring& file_path)
 
 }
 
+int CCommon::StringCompareInLocalLanguage(const wstring& str1, const wstring& str2, bool no_case)
+{
+    int rtn = CompareStringEx(LOCALE_NAME_USER_DEFAULT, (no_case ? NORM_IGNORECASE : 0), str1.c_str(), str1.size(), str2.c_str(), str2.size(), NULL, NULL, 0);
+    if (rtn == CSTR_EQUAL)
+        return 0;
+    else if (rtn == CSTR_GREATER_THAN)
+        return 1;
+    else
+        return -1;
+}
+

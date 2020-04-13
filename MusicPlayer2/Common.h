@@ -342,6 +342,7 @@ public:
 		return max;
 	}
 
+    static int StringCompareInLocalLanguage(const wstring& str1, const wstring& str2, bool no_case = false);
 };
 
 template<class T>

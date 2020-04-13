@@ -10,10 +10,10 @@ class StringComparerNoCase
 public:
     bool operator()(const std::wstring& a, const std::wstring& b) const
     {
-        std::wstring _a{ a }, _b{ b };
-        CCommon::StringTransform(_a, false);
-        CCommon::StringTransform(_b, false);
-        return _a < _b;
+        //std::wstring _a{ a }, _b{ b };
+        //CCommon::StringTransform(_a, false);
+        //CCommon::StringTransform(_b, false);
+        return CCommon::StringCompareInLocalLanguage(a, b, true) < 0;
     }
 };
 
