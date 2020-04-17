@@ -382,7 +382,9 @@ bool CAudioTag::GetFlacTag()
         m_song_info.title = GetSpecifiedFlacTag(tag_content, "Title");
         m_song_info.artist = GetSpecifiedFlacTag(tag_content, "Artist");
         m_song_info.album = GetSpecifiedFlacTag(tag_content, "Album");
-        m_song_info.year = GetSpecifiedFlacTag(tag_content, "Date");
+        m_song_info.year = GetSpecifiedFlacTag(tag_content, "Year");
+        if(m_song_info.year.empty())
+            m_song_info.year = GetSpecifiedFlacTag(tag_content, "Date");
         m_song_info.genre = GetSpecifiedFlacTag(tag_content, "Genre");
         m_song_info.comment = GetSpecifiedFlacTag(tag_content, "Comment");
         if (CCommon::StrIsNumber(m_song_info.genre))
