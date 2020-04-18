@@ -1203,5 +1203,35 @@
     <Image Include="res\donate_wechat.bmp">
       <Filter>资源文件\其他</Filter>
     </Image>
+    <Image Include="res\next_dark.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\next_white.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\pause_dark.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\pause_white.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_dark.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_white.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\previous_dark.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\previous_white.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\stop_dark.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\stop_white.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

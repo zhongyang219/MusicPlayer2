@@ -468,6 +468,14 @@
     <Image Include="res\mini.ico" />
     <Image Include="res\mini_d.ico" />
     <Image Include="res\MusicPlayer2.ico" />
+    <Image Include="res\next_dark.ico" />
+    <Image Include="res\next_white.ico" />
+    <Image Include="res\pause_dark.ico" />
+    <Image Include="res\pause_white.ico" />
+    <Image Include="res\play_dark.ico" />
+    <Image Include="res\play_white.ico" />
+    <Image Include="res\previous_dark.ico" />
+    <Image Include="res\previous_white.ico" />
     <Image Include="res\recent_songs_d.ico" />
     <Image Include="res\Replace.ico" />
     <Image Include="res\ReplaceTag.ico" />
@@ -476,6 +484,8 @@
     <Image Include="res\setting_d.ico" />
     <Image Include="res\skn.ico" />
     <Image Include="res\skn_d.ico" />
+    <Image Include="res\stop_dark.ico" />
+    <Image Include="res\stop_white.ico" />
     <Image Include="res\toolbar1.bmp" />
     <Image Include="res\year_d.ico" />
     <Image Include="res\上一曲.ico" />

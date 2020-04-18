@@ -64,16 +64,16 @@ void CMiniModeUI::_DrawInfo(bool reset)
     rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
     rc_tmp.right = rc_tmp.left + theApp.DPI(27);
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(22);
-    DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous);
+    DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous_new);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
     if(CPlayer::GetInstance().IsPlaying())
-        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause);
+        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause_new);
     else
-        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play);
+        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play_new);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-    DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next);
+    DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next_new);
 
 
     //绘制频谱分析

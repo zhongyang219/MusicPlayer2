@@ -493,12 +493,18 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.pause.Load(IDI_PAUSE, NULL, DPI(16));
     m_icon_set.next.Load(IDI_NEXT1, NULL, DPI(16));
 
-    m_icon_set.stop_l.Load(IDI_STOP, NULL, DPI(20));
-    m_icon_set.previous_l.Load(IDI_PREVIOUS, NULL, DPI(20));
-    m_icon_set.play_l.Load(IDI_PLAY, NULL, DPI(20));
-    m_icon_set.pause_l.Load(IDI_PAUSE, NULL, DPI(20));
-    m_icon_set.next_l.Load(IDI_NEXT1, NULL, DPI(20));
+    //用于主界面的播放控制图标，大小为20像素
+    m_icon_set.play_l.Load(IDI_PLAY_NEW, IDI_PLAY_NEW_D, DPI(20));
+    m_icon_set.pause_l.Load(IDI_PAUSE_NEW, IDI_PAUSE_NEW_D, DPI(20));
+    m_icon_set.previous_l.Load(IDI_PREVIOUS_NEW, IDI_PREVIOUS_NEW_D, DPI(20));
+    m_icon_set.next_l.Load(IDI_NEXT_NEW, IDI_NEXT_NEW_D, DPI(20));
+    m_icon_set.stop_l.Load(IDI_STOP_NEW, IDI_STOP_NEW_D, DPI(20));
 
+    //用于迷你模式的播放控制图标，大小为16像素
+    m_icon_set.play_new.Load(IDI_PLAY_NEW, IDI_PLAY_NEW_D, DPI(16));
+    m_icon_set.pause_new.Load(IDI_PAUSE_NEW, IDI_PAUSE_NEW_D, DPI(16));
+    m_icon_set.previous_new.Load(IDI_PREVIOUS_NEW, IDI_PREVIOUS_NEW_D, DPI(16));
+    m_icon_set.next_new.Load(IDI_NEXT_NEW, IDI_NEXT_NEW_D, DPI(16));
 }
 
 void CMusicPlayerApp::InitMenuResourse()

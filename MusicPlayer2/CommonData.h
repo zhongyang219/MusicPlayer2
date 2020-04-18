@@ -397,6 +397,11 @@ struct IconSet
     IconRes play_l;
     IconRes pause_l;
     IconRes next_l;
+
+    IconRes play_new;
+    IconRes pause_new;
+    IconRes previous_new;
+    IconRes next_new;
 };
 
 
