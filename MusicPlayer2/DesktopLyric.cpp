@@ -306,7 +306,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     {
         DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.stop_l, rcIcon, BTN_STOP);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.stop, rcIcon, BTN_STOP);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
         rcIcon.MoveToX(rcIcon.right);

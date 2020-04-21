@@ -492,6 +492,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));
     m_icon_set.pause.Load(IDI_PAUSE, NULL, DPI(16));
     m_icon_set.next.Load(IDI_NEXT1, NULL, DPI(16));
+    m_icon_set.stop.Load(IDI_STOP, NULL, DPI(16));
 
     //用于主界面的播放控制图标，大小为20像素
     m_icon_set.play_l.Load(IDI_PLAY_NEW, IDI_PLAY_NEW_D, DPI(20));

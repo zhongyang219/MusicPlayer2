@@ -368,6 +368,7 @@ struct IconSet
     IconRes play;
     IconRes pause;
     IconRes next;
+    IconRes stop;
     IconRes info;
     IconRes select_folder;
     IconRes media_lib;
