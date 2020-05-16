@@ -650,9 +650,13 @@ wstring CCommon::GetStringFromClipboard()
 			HANDLE hClip;
 			wchar_t *pBuf;
 			hClip = GetClipboardData(CF_UNICODETEXT); //获取剪贴板数据
+            if (hClip == NULL)
+                return wstring();
 			pBuf = (wchar_t*)GlobalLock(hClip);
+            if (pBuf == nullptr)
+                return wstring();
 			CloseClipboard();
-			return wstring(pBuf);
+            return wstring(pBuf);
 		}
 	}
 	return wstring();

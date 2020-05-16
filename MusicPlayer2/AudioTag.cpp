@@ -586,8 +586,8 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 	{
 		size = contents_buff.size();
 		contents_buff.push_back(file.get());
-		if (size > 1024 * 1024)
-			break;
+		//if (size > 1024 * 1024)
+		//	break;
 		//找到flac音频的起始字节时（二进制13个1,1个0），表示标签信息已经读取完了
 		if (size > 5 && (contents_buff[size - 1] & (BYTE)0xFC) == (BYTE)0xF8 && contents_buff[size - 2] == -1 && contents_buff[size - 3] == 0)
 			break;
