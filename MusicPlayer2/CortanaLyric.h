@@ -19,6 +19,7 @@ public:
     void AlbumCoverEnable(bool enable);
     void SetBeatAmp(int beat_amp);
     void SetUIColors();
+    void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
 
 private:
     struct CortanaUIColors		//界面颜色
@@ -32,7 +33,7 @@ private:
     };
 
 private:
-    void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
+	void SetCortanaBarOpaque(bool opaque);
 
     //在Cortana搜索框上绘制文本
     //str:	要绘制的字符串
@@ -76,7 +77,7 @@ private:
 
     bool m_dark_mode{ true };			//Cortana搜索框是否处于深色模式
 
-    CPoint m_check_dark_point{};			//用于判断Cortana搜索框是否为深色模式的点的位置
+    //CPoint m_check_dark_point{};			//用于判断Cortana搜索框是否为深色模式的点的位置
     //COLORREF m_back_color;
     const COLORREF m_border_color{ GRAY(180) };		//浅色模式时边框的颜色
 

@@ -17,10 +17,7 @@ CCortanaLyric::~CCortanaLyric()
 
 	//退出时恢复Cortana窗口透明
 #ifndef COMPILE_IN_WIN_XP
-	if (m_cortana_opaque)
-	{
-		SetWindowLong(m_hCortanaBar, GWL_EXSTYLE, GetWindowLong(m_hCortanaBar, GWL_EXSTYLE) & ~WS_EX_LAYERED);
-	}
+	SetCortanaBarOpaque(false);
 #endif // !COMPILE_IN_WIN_XP
 
 }
@@ -57,11 +54,10 @@ void CCortanaLyric::Init()
 
 
         //获取用来检查小娜是否为深色模式的采样点的坐标
-        m_check_dark_point.x = cortana_rect.right - 2;
-        m_check_dark_point.y = cortana_rect.top + 2;
+        //m_check_dark_point.x = cortana_rect.right - 2;
+        //m_check_dark_point.y = cortana_rect.top + 2;
 
         CheckDarkMode();
-        SetUIColors();
 
         //设置字体
         LOGFONT lf;
@@ -74,12 +70,10 @@ void CCortanaLyric::Init()
 
         //为Cortana搜索框设置一个透明色，使Cortana搜索框不透明
 #ifndef COMPILE_IN_WIN_XP
-        if(theApp.m_lyric_setting_data.cortana_opaque)
-        {
-            SetWindowLong(m_hCortanaBar, GWL_EXSTYLE, GetWindowLong(m_hCortanaBar, GWL_EXSTYLE) | WS_EX_LAYERED);
-            ::SetLayeredWindowAttributes(m_hCortanaBar, theApp.m_nc_setting_data.cortana_transparent_color, 0, LWA_COLORKEY);
-            m_cortana_opaque = true;
-        }
+        //if(theApp.m_lyric_setting_data.cortana_opaque)
+        //{
+		SetCortanaBarOpaque(true);
+        //}
 #endif // !COMPILE_IN_WIN_XP
 
     }
@@ -173,7 +167,7 @@ void CCortanaLyric::DrawInfo()
         AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
         DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
 
-        if (!m_colors.dark && !theApp.m_lyric_setting_data.cortana_opaque)		//非深色模式下，在搜索顶部绘制边框
+        if (!m_colors.dark /*&& !theApp.m_lyric_setting_data.cortana_opaque*/)		//非深色模式下，在搜索顶部绘制边框
         {
             CRect rect{ m_cortana_rect };
             rect.left += m_cover_width;
@@ -215,6 +209,26 @@ void CCortanaLyric::DrawInfo()
             }
         }
     }
+}
+
+void CCortanaLyric::SetCortanaBarOpaque(bool opaque)
+{
+	if (opaque)
+	{
+		if(!m_cortana_opaque)
+		{
+			//设置不透明
+			SetWindowLong(m_hCortanaBar, GWL_EXSTYLE, GetWindowLong(m_hCortanaBar, GWL_EXSTYLE) | WS_EX_LAYERED);
+			::SetLayeredWindowAttributes(m_hCortanaBar, theApp.m_nc_setting_data.cortana_transparent_color, 0, LWA_COLORKEY);
+		}
+	}
+	else
+	{
+		if(m_cortana_opaque)
+			//恢复不透明
+			SetWindowLong(m_hCortanaBar, GWL_EXSTYLE, GetWindowLong(m_hCortanaBar, GWL_EXSTYLE) & ~WS_EX_LAYERED);
+	}
+	m_cortana_opaque = opaque;
 }
 
 void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
@@ -358,14 +372,18 @@ void CCortanaLyric::CheckDarkMode()
 {
     if (m_enable)
     {
-        HDC hDC = ::GetDC(NULL);
-        COLORREF color;
-        //获取Cortana左上角点的颜色
-        color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
-        int brightness;
-        brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
-        m_dark_mode = (brightness < 220);
-        ::ReleaseDC(NULL, hDC);
+        //HDC hDC = ::GetDC(NULL);
+        //COLORREF color;
+        ////获取Cortana左上角点的颜色
+        //color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
+        //int brightness;
+        //brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
+        //m_dark_mode = (brightness < 220);
+        //::ReleaseDC(NULL, hDC);
+		m_dark_mode = !CWinVersionHelper::IsWindows10LightTheme();
+
+		SetCortanaBarOpaque(!m_dark_mode);
+		SetUIColors();
     }
 }
 

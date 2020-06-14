@@ -30,7 +30,6 @@ CWinVersionHelper::CWinVersionHelper()
 {
 }
 
-
 CWinVersionHelper::~CWinVersionHelper()
 {
 }
@@ -93,4 +92,30 @@ bool CWinVersionHelper::IsWindows10Version1809OrLater()
 	else if (m_version.m_major_version == 10 && m_version.m_minor_version == 0 && m_version.m_build_number >= 17763)
 		return true;
 	else return false;
+}
+
+bool CWinVersionHelper::IsWindows10LightTheme()
+{
+	if (m_version.m_major_version >= 10)
+	{
+		HKEY hKey;
+		DWORD dwThemeData(0);
+		LONG lRes = RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", 0, KEY_READ, &hKey);
+		if (lRes == ERROR_SUCCESS) {
+			GetDWORDRegKeyData(hKey, L"SystemUsesLightTheme", dwThemeData);
+			return (dwThemeData != 0);
+		}
+	}
+	return false;
+}
+
+
+LONG CWinVersionHelper::GetDWORDRegKeyData(HKEY hKey, const wstring& strValueName, DWORD& dwValueData)
+{
+	DWORD dwBufferSize(sizeof(DWORD));
+	DWORD dwResult(0);
+	LONG lError = ::RegQueryValueExW(hKey, strValueName.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&dwResult), &dwBufferSize);
+	if (lError == ERROR_SUCCESS)
+		dwValueData = dwResult;
+	return lError;
 }

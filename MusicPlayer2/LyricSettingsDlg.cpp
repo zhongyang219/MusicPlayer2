@@ -126,6 +126,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_show_spectrum_chk.SetCheck(m_data.cortana_show_spectrum);
     m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
     m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
+	m_search_box_opaque_chk.ShowWindow(SW_HIDE);		//此选项已经没有作用，把它隐藏起来
 
 	m_show_desktop_lyric_chk.SetCheck(m_data.show_desktop_lyric);
 	m_text_color1_static.SetFillColor(m_data.desktop_lyric_data.text_color1);

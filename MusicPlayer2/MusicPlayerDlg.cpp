@@ -1779,9 +1779,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 			}
 		}
 
-        //if (m_timer_count % 10 == 0)
-        //	m_cortana_lyric.CheckDarkMode();
-
         if (CWinVersionHelper::IsWindowsVista())
         {
             if (m_timer_count % 15 == 14)
@@ -1805,6 +1802,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             CPlayer::GetInstance().AddListenTime(1);
         }
 
+		m_cortana_lyric.CheckDarkMode();
     }
 
     else if (nIDEvent == DELAY_TIMER_ID)
