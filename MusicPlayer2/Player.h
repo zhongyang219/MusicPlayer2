@@ -266,6 +266,7 @@ public:
 	wstring GetPlayingState() const;		//获取播放状态的字符串
 	int GetPlayingState2() const { return m_playing; }	//获取正在播放状态（0：已停止，1：已暂停，2：正在播放）
 	const SongInfo& GetCurrentSongInfo() const;
+	SongInfo& GetCurrentSongInfo2();
 	void SetRelatedSongID(wstring song_id);		//为当前歌曲设置关联的网易云音乐歌曲ID
 	void SetRelatedSongID(int index, wstring song_id);		//为第index首歌曲设置关联的网易云音乐歌曲ID
     void SetFavourite(bool favourite);          //为当前歌曲设置“我喜欢”标记

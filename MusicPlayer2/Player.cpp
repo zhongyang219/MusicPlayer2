@@ -1698,6 +1698,13 @@ const SongInfo & CPlayer::GetCurrentSongInfo() const
     else return m_no_use;
 }
 
+SongInfo& CPlayer::GetCurrentSongInfo2()
+{
+	if (m_index >= 0 && m_index < GetSongNum())
+		return m_playlist[m_index];
+	else return m_no_use;
+}
+
 void CPlayer::SetRelatedSongID(wstring song_id)
 {
     if (m_index >= 0 && m_index < GetSongNum())
@@ -2217,9 +2224,10 @@ void CPlayer::SearchAlbumCover()
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile())
     {
         //从文件获取专辑封面
-        CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), m_playlist[m_index]);
+        CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), GetCurrentSongInfo2());
         m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
-        m_album_cover.Load(m_album_cover_path.c_str());
+		if(!m_album_cover_path.empty())
+			m_album_cover.Load(m_album_cover_path.c_str());
     }
     m_inner_cover = !m_album_cover.IsNull();
 
