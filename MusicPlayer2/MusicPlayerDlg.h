@@ -173,7 +173,7 @@ protected:
 
     void _OnOptionSettings(CWnd* pParent);
 
-	void DoLyricsAutoSave();
+	void DoLyricsAutoSave(bool no_inquiry = false);		//保存未修改的歌词，如果no_inquiry为true，则不弹出提示信息
 	void UpdateABRepeatToolTip();
 
     // 生成的消息映射函数
@@ -390,4 +390,5 @@ public:
     afx_msg void OnCreateMiniModeShortCut();
     afx_msg void OnRemoveCurrentFromPlaylist();
     afx_msg void OnDeleteCurrentFromDisk();
+	afx_msg BOOL OnQueryEndSession();
 };

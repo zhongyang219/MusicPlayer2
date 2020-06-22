@@ -237,6 +237,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_CREATE_MINI_MODE_SHORT_CUT, &CMusicPlayerDlg::OnCreateMiniModeShortCut)
     ON_COMMAND(ID_REMOVE_CURRENT_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveCurrentFromPlaylist)
     ON_COMMAND(ID_DELETE_CURRENT_FROM_DISK, &CMusicPlayerDlg::OnDeleteCurrentFromDisk)
+	ON_WM_QUERYENDSESSION()
 END_MESSAGE_MAP()
 
 
@@ -1285,7 +1286,7 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
         theApp.m_hot_key.RegisterAllHotKey();
 }
 
-void CMusicPlayerDlg::DoLyricsAutoSave()
+void CMusicPlayerDlg::DoLyricsAutoSave(bool no_inquiry)
 {
 	bool midi_lyric{ CPlayerUIHelper::IsMidiLyric() };
 	bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
@@ -1299,7 +1300,7 @@ void CMusicPlayerDlg::DoLyricsAutoSave()
 			OnSaveModifiedLyric();
 			break;
 		case LyricSettingData::LS_INQUIRY:
-			if (MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION))
+			if (no_inquiry || MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION))
 			{
 				OnSaveModifiedLyric();
 			}
@@ -4729,4 +4730,30 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
         MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
     }
 
+}
+
+
+BOOL CMusicPlayerDlg::OnQueryEndSession()
+{
+	if (!CMainDialogBase::OnQueryEndSession())
+		return FALSE;
+
+	// TODO:  在此添加专用的查询结束会话代码
+
+	//获取桌面歌词窗口的位置
+	CRect rect;
+	::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rect);
+	m_desktop_lyric_pos = rect.TopLeft();
+	m_desktop_lyric_size = rect.Size();
+
+	//保存修改过的歌词
+	DoLyricsAutoSave(true);
+
+	//退出时保存设置
+	CPlayer::GetInstance().OnExit();
+	SaveConfig();
+	m_findDlg.SaveConfig();
+	theApp.SaveConfig();
+
+	return TRUE;
 }
