@@ -476,23 +476,42 @@ wstring CAudioTag::GetSpecifiedId3V2Tag(const string& tag_contents, const string
 	return tag_info;
 }
 
+
+wstring CAudioTag::FindOneFlacTag(const string& tag_contents, const string& tag_identify, size_t& index)
+{
+	string find_str = '\0' + tag_identify + '=';
+	index = tag_contents.find(find_str, index + 1);
+	if (index == string::npos || index < 3)
+		return wstring();
+
+	//FLAC标签标识字符串前面有两个字节的'\0'，再往前两个字节就是当前标签的长度
+	size_t tag_size = tag_contents[index - 2] * 256 + tag_contents[index - 3];
+
+	string tag_str = tag_contents.substr(index + find_str.size(), tag_size - find_str.size() + 1);
+	wstring tag_wcs = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
+	return tag_wcs;
+}
+
 wstring CAudioTag::GetSpecifiedFlacTag(const string& tag_contents, const string& tag_identify)
 {
     string tag_contents_lower_case{ tag_contents };
     CCommon::StringTransform(tag_contents_lower_case, false);
     string tag_identify_lower_case{ tag_identify };
     CCommon::StringTransform(tag_identify_lower_case, false);
-    string find_str = '\0' + tag_identify_lower_case + '=';
-    size_t index = tag_contents_lower_case.find(find_str);
-    if (index == string::npos || index < 3)
-        return wstring();
-
-    //FLAC标签标识字符串前面有两个字节的'\0'，再往前两个字节就是当前标签的长度
-    size_t tag_size = tag_contents[index - 2] * 256 + tag_contents[index - 3];
-
-    string tag_str = tag_contents.substr(index + find_str.size(), tag_size - find_str.size() + 1);
-    wstring tag_wcs = CCommon::StrToUnicode(tag_str, CodeType::UTF8);
-    return tag_wcs;
+	size_t index{ static_cast<size_t>(-1) };
+	wstring tag_wcs;
+	//Flac标签中可能会有多个相同的标签，这里通过循环找到所有的标签，将它们连接起来，并用分号分隔
+	while (true)
+	{
+		wstring contents = FindOneFlacTag(tag_contents_lower_case, tag_identify_lower_case, index);
+		if (contents.empty())
+			break;
+		tag_wcs += contents;
+		tag_wcs.push_back(L';');
+	}
+	if(!tag_wcs.empty())
+		tag_wcs.pop_back();
+	return tag_wcs;
 }
 
 string CAudioTag::GetUtf8TagContents(const char* tag_start)

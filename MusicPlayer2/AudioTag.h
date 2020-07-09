@@ -54,6 +54,8 @@ private:
 	//tag_identify：标签的标识
 	wstring GetSpecifiedId3V2Tag(const string& tag_contents, const string& tag_identify);
 
+	wstring FindOneFlacTag(const string& tag_contents, const string& tag_identify, size_t& index);
+
     //从FLAC标签区域的内容中提取出指定的FLAC标签
     //tag_contents：整个标签区域的内容
     //tag_identify：标签的标识
