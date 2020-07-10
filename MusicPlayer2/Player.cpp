@@ -55,7 +55,9 @@ void CPlayer::Create()
     else
     {
         PlaylistInfo playlist_info;
-        if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT || m_recent_playlist.m_recent_playlists.empty())
+		if (m_recent_playlist.m_cur_playlist_type == PT_USER && m_recent_playlist.m_recent_playlists.empty())
+			m_recent_playlist.m_cur_playlist_type = PT_DEFAULT;
+        if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT)
             playlist_info = m_recent_playlist.m_default_playlist;
         else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
             playlist_info = m_recent_playlist.m_favourite_playlist;
