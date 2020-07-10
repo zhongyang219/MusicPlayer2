@@ -205,7 +205,7 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
 			if (result.size() >= 12)
 				item.comment = result[11];
 		}
-		if(CCommon::FileExist(item.file_path))
+		if(CCommon::IsPath(item.file_path))
 			m_playlist.push_back(item);
 	}
 }
