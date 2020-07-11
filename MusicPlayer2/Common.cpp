@@ -420,6 +420,31 @@ bool CCommon::IsURL(const wstring& str)
     return (str.substr(0, 7) == L"http://" || str.substr(0, 8) == L"https://" || str.substr(0, 6) == L"ftp://" || str.substr(0, 6) == L"mms://");
 }
 
+bool CCommon::IsPath(const wstring & str)
+{
+	if (str.size() < 2)		//只有1个字符不是一个路径
+		return false;
+
+	bool is_windows_path{ false };
+	if (str.size() >= 3																	//windows 路径至少3个字符
+		&& ((str[0] > L'A' && str[0] < L'Z') || (str[0] > L'a' && str[0] < L'z'))		//第1个字符必须为字母
+		&& str[1] == L':'																//第2个字符必须为冒号
+		&& (str[2] == L'/' || str[2] == L'\\')											//第3个字符必须为斜杠
+		)
+		is_windows_path = true;
+
+	bool is_linux_path{ str[0] == L'/' || str[0] == L'\\' };
+
+	if (!is_windows_path && !is_linux_path)
+		return false;
+
+	const wstring invalid_chars{ L":*?\"<>|" };
+	if (str.find_first_of(invalid_chars, is_windows_path ? 2 : 0) != wstring::npos)
+		return false;
+
+	return true;
+}
+
 bool CCommon::StringCharacterReplace(wstring & str, wchar_t ch, wchar_t ch_replaced)
 {
     bool replaced = false;

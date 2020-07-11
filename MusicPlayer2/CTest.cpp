@@ -96,8 +96,10 @@ void CTest::TestCommon()
     //    ini.GetStringList(L"config", L"test", string_results, vector<wstring>{L"567"});
     //}
 
-    CMusicPlayerCmdHelper helper;
-    helper.UpdateMediaLib();
+    //CMusicPlayerCmdHelper helper;
+    //helper.UpdateMediaLib();
+
+	bool b = CCommon::IsPath(L"C:\\dfg\\:89");
 
     int a = 0;
 }

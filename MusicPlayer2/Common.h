@@ -148,6 +148,9 @@ public:
 
     static bool IsURL(const wstring& str);
 
+	//判断一个字符串是否符合路径的格式（而不是判断路径是否有效）
+	static bool IsPath(const wstring& str);
+
     //删除一个字符串中指定的字符
     static bool StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replaced);
 
