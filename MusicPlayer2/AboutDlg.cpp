@@ -2,6 +2,7 @@
 #include "MusicPlayer2.h"
 #include "AboutDlg.h"
 #include "CDonateDlg.h"
+#include "MessageDlg.h"
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
 {
@@ -18,6 +19,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_GITHUB_SYSLINK, &CAboutDlg::OnNMClickGithubSyslink)
 	ON_NOTIFY(NM_CLICK, IDC_DONATE_SYSLINK, &CAboutDlg::OnNMClickDonateSyslink)
     ON_WM_PAINT()
+    ON_NOTIFY(NM_CLICK, IDC_LICENSE_SYSLINK, &CAboutDlg::OnNMClickLicenseSyslink)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -136,4 +138,16 @@ void CAboutDlg::OnPaint()
     draw.GetDC()->FillSolidRect(m_rc_pic, RGB(161, 200, 255));
     draw.DrawBitmap(IDB_ABOUT_BITMAP, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FIT);
 
+}
+
+
+void CAboutDlg::OnNMClickLicenseSyslink(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CMessageDlg dlg;
+    dlg.SetWindowTitle(CCommon::LoadText(IDS_LICENSE));
+    dlg.SetInfoText(CCommon::LoadText(IDS_LICENSE_EXPLAIN));
+    dlg.SetMessageText(CCommon::GetTextResource(IDR_LICENSE, CodeType::UTF8_NO_BOM));
+    dlg.DoModal();
+    *pResult = 0;
 }

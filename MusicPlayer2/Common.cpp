@@ -1426,3 +1426,25 @@ bool CCommon::GetNumberBit(unsigned short num, int bit)
 	return (num & (1 << bit)) != 0;
 }
 
+CString CCommon::GetTextResource(UINT id, CodeType code_type)
+{
+    CString res_str;
+    HRSRC hRes = FindResource(NULL, MAKEINTRESOURCE(id), _T("TEXT"));
+    if (hRes != NULL)
+    {
+        HGLOBAL hglobal = LoadResource(NULL, hRes);
+        if (hglobal != NULL)
+        {
+            if (code_type == CodeType::UTF16)
+            {
+                res_str = (const wchar_t*)hglobal;
+            }
+            else
+            {
+                res_str = CCommon::StrToUnicode((const char*)hglobal, code_type).c_str();
+            }
+        }
+    }
+    return res_str;
+}
+

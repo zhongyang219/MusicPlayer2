@@ -352,6 +352,10 @@ public:
 
 	//获取一个数字的某个bit位
 	static bool GetNumberBit(unsigned short num, int bit);
+
+    //从资源加载自定义文本资源。id：资源的ID，code_type：文本的编码格式
+    static CString GetTextResource(UINT id, CodeType code_type);
+
 };
 
 template<class T>

@@ -979,6 +979,7 @@
     <None Include="res\drag.cur">
       <Filter>资源文件\Icons</Filter>
     </None>
+    <None Include="..\LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\AddTag.ico">
