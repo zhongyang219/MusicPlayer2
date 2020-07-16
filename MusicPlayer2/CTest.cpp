@@ -99,7 +99,13 @@ void CTest::TestCommon()
     //CMusicPlayerCmdHelper helper;
     //helper.UpdateMediaLib();
 
-	bool b = CCommon::IsPath(L"C:\\dfg\\:89");
+	//bool b = CCommon::IsPath(L"C:\\dfg\\:89");
+
+	WORD value = 0x2f;
+	bool b = CCommon::GetNumberBit(value, 4);
+
+	CCommon::SetNumberBit(value, 4, true);
+	CCommon::SetNumberBit(value, 4, false);
 
     int a = 0;
 }

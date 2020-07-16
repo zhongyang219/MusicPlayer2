@@ -24,12 +24,15 @@ CPlayer::~CPlayer()
 
 void CPlayer::IniPlayerCore()
 {
-    if (theApp.m_play_setting_data.use_mci)
-        m_pCore = new CMciCore();
-    else
-        m_pCore = new CBassCore();
+    if(m_pCore == nullptr)
+    {
+        if (theApp.m_play_setting_data.use_mci)
+            m_pCore = new CMciCore();
+        else
+            m_pCore = new CBassCore();
 
-    m_pCore->InitCore();
+        m_pCore->InitCore();
+    }
 }
 
 void CPlayer::UnInitPlayerCore()
@@ -882,6 +885,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
 void CPlayer::OpenFolder(wstring path, bool play)
 {
     if (m_loading) return;
+    IniPlayerCore();
     if (path.empty() || (path.back() != L'/' && path.back() != L'\\'))		//如果打开的新路径为空或末尾没有斜杠，则在末尾加上一个
         path.append(1, L'\\');
     bool path_exist{ false };
@@ -922,6 +926,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     //打开文件时始终添加到默认播放列表中
 
     if (files.empty()) return;
+    IniPlayerCore();
     if (m_loading) return;
 
     if(m_pCore->GetHandle() != 0)
@@ -978,6 +983,7 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_ind
     //打开文件时始终添加到默认播放列表中
 
     if (files.empty()) return;
+    IniPlayerCore();
     if (m_loading) return;
 
     if (m_pCore->GetHandle() != 0)
@@ -1021,6 +1027,7 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_ind
 void CPlayer::OpenAFile(wstring file, bool play)
 {
     if (file.empty()) return;
+    IniPlayerCore();
     if (m_loading) return;
     MusicControl(Command::CLOSE);
     if (GetSongNum() > 0) EmplaceCurrentPathToRecent();		//先保存当前路径和播放进度到最近路径
@@ -1048,6 +1055,7 @@ void CPlayer::OpenAFile(wstring file, bool play)
 
 void CPlayer::OpenPlaylistFile(const wstring& file_path)
 {
+    IniPlayerCore();
 	CFilePathHelper helper(file_path);
 	if (!CCommon::StringCompareNoCase(helper.GetDir(), theApp.m_playlist_dir))		//如果打开的播放列表文件不是程序默认的播放列表目录，则将其转换为*.playlist格式并复制到默认的播放列表目录
 	{
@@ -2223,7 +2231,9 @@ void CPlayer::SearchAlbumCover()
     //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
-    if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile())
+    SongInfo& cur_song{ theApp.GetSongInfoRef(GetCurrentFilePath()) };
+    bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
+    if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile() && !always_use_external_album_cover)
     {
         //从文件获取专辑封面
         CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), GetCurrentSongInfo2());

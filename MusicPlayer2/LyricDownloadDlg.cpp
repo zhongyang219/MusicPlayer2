@@ -412,12 +412,12 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
     SongInfo& song_info_ori{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
 	if (m_down_list.empty())
     {
-        song_info_ori.no_online_lyric = true;
+        song_info_ori.SetNoOnlineLyric(true);
         info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
     }
 	else if (best_matched == -1)
     {
-        song_info_ori.no_online_lyric = true;
+        song_info_ori.SetNoOnlineLyric(true);
         info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
     }
 	else if(id_releated)

@@ -238,6 +238,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_REMOVE_CURRENT_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveCurrentFromPlaylist)
     ON_COMMAND(ID_DELETE_CURRENT_FROM_DISK, &CMusicPlayerDlg::OnDeleteCurrentFromDisk)
 	ON_WM_QUERYENDSESSION()
+    ON_COMMAND(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, &CMusicPlayerDlg::OnAlwaysUseExternalAlbumCover)
 END_MESSAGE_MAP()
 
 
@@ -1146,14 +1147,22 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_FORMAT_CONVERT, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_FORMAT_CONVERT1, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
 
+    //桌面歌词
     pMenu->CheckMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_DISPLAYED_DOUBLE_LINE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_BACKGROUND_PENETRATE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate ? MF_CHECKED : MF_UNCHECKED));
 
+    //AB重复
 	pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_SET_B_POINT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE ? MF_ENABLED : MF_GRAYED));
 
+    //删除当前歌曲
     pMenu->EnableMenuItem(ID_REMOVE_CURRENT_FROM_PLAYLIST, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
+
+    //专辑封面
+    SongInfo& cur_song{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
+    pMenu->CheckMenuItem(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, (always_use_external_album_cover ? MF_CHECKED : MF_UNCHECKED));
 }
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
@@ -3009,7 +3018,7 @@ void CMusicPlayerDlg::OnDeleteLyric()
     }
 
     SongInfo& song_info{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
-    song_info.no_online_lyric = true;
+    song_info.SetNoOnlineLyric(true);
     theApp.SetSongDataModified();
 }
 
@@ -3201,9 +3210,9 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     }
 
     SongInfo& song_info_ori{ theApp.m_song_data[song.file_path] };
-    bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !CPlayer::GetInstance().AlbumCoverExist() && !CPlayer::GetInstance().GetCurrentSongInfo().is_cue && !song_info_ori.no_online_album_cover };
+    bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !CPlayer::GetInstance().AlbumCoverExist() && !CPlayer::GetInstance().GetCurrentSongInfo().is_cue && !song_info_ori.NoOnlineAlbumCover() };
     bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric };
-    bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && CPlayer::GetInstance().m_Lyrics.IsEmpty() && !midi_lyric && !song_info_ori.no_online_lyric };
+    bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && CPlayer::GetInstance().m_Lyrics.IsEmpty() && !midi_lyric && !song_info_ori.NoOnlineLyric() };
     CInternetCommon::ItemInfo match_item;
     if (download_cover || download_lyric)
     {
@@ -3218,8 +3227,8 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         {
             if(result == DR_DOWNLOAD_ERROR)     //如果搜索歌曲失败，则标记为没有在线歌词和专辑封面
             {
-                song_info_ori.no_online_album_cover = true;
-                song_info_ori.no_online_lyric = true;
+                song_info_ori.SetNoOnlineAlbumCover(true);
+                song_info_ori.SetNoOnlineLyric(true);
                 theApp.SetSongDataModified();
             }
             return 0;
@@ -3231,7 +3240,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song.song_id);
         if (cover_url.empty())
         {
-            song_info_ori.no_online_album_cover = true;
+            song_info_ori.SetNoOnlineAlbumCover(true);
             theApp.SetSongDataModified();
             return 0;
         }
@@ -3268,13 +3277,13 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         wstring lyric_str;
         if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, true))
         {
-            song_info_ori.no_online_lyric = true;
+            song_info_ori.SetNoOnlineLyric(true);
             theApp.SetSongDataModified();
             return 0;
         }
         if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
         {
-            song_info_ori.no_online_lyric = true;
+            song_info_ori.SetNoOnlineLyric(true);
             theApp.SetSongDataModified();
             return 0;
         }
@@ -3483,7 +3492,7 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().DeleteAlbumCover();
     SongInfo& song_info{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
-    song_info.no_online_album_cover = true;
+    song_info.SetNoOnlineAlbumCover(true);
     theApp.SetSongDataModified();
 }
 
@@ -4756,4 +4765,22 @@ BOOL CMusicPlayerDlg::OnQueryEndSession()
 	theApp.SaveConfig();
 
 	return TRUE;
+}
+
+
+void CMusicPlayerDlg::OnAlwaysUseExternalAlbumCover()
+{
+    // TODO: 在此添加命令处理程序代码
+    SongInfo& cur_song{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
+    always_use_external_album_cover = !always_use_external_album_cover;
+    cur_song.SetAlwaysUseExternalAlbumCover(always_use_external_album_cover);
+    CPlayer::GetInstance().SearchAlbumCover();      //重新获取专辑封面
+    CPlayer::GetInstance().AlbumCoverGaussBlur();
+    if(always_use_external_album_cover && !CPlayer::GetInstance().AlbumCoverExist())
+    {
+        //如果专辑封面不存在，则重新下载专辑封面
+        m_pDownloadThread = AfxBeginThread(DownloadLyricAndCoverThreadFunc, this);
+    }
+
 }

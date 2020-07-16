@@ -35,15 +35,28 @@ struct SongInfo
     int track{};		//音轨序号
     int tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
     bool info_acquired{ false };		//如果已经获取到了信息，则为ture
+    bool is_favourite{ false };
     Time start_pos{};		//音频的起始位置，用于cue分轨
     Time end_pos{};
     bool is_cue{ false };		//如果曲目是cue分轨，则为true
     wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     int listen_time{};			//歌曲累计听的时间（单位为秒）
-    bool no_online_lyric{ false };         //如果为true，则不在线下载歌词
-    bool no_online_album_cover{ false };   //如果为true，则不在线下载专辑封面
+    //bool no_online_lyric{ false };         //如果为true，则不在线下载歌词
+    //bool no_online_album_cover{ false };   //如果为true，则不在线下载专辑封面
 
-    bool is_favourite{ false };
+	WORD flags{};		//保存一些标志
+
+	//bit0, 如果为true，则不在线下载歌词
+	bool NoOnlineLyric() const { return CCommon::GetNumberBit(flags, 0); }
+	void SetNoOnlineLyric(bool val) { CCommon::SetNumberBit(flags, 0, val); }
+
+	//bit1, 如果为true，则不在线下载专辑封面
+	bool NoOnlineAlbumCover() const { return CCommon::GetNumberBit(flags, 1); }
+	void SetNoOnlineAlbumCover(bool val) { CCommon::SetNumberBit(flags, 1, val); }
+
+	//bit2, 如果为true，则总是使用外部封面
+    bool AlwaysUseExternalAlbumCover() const { return CCommon::GetNumberBit(flags, 2); }
+    void SetAlwaysUseExternalAlbumCover(bool val) { CCommon::SetNumberBit(flags, 2, val); }
 
 	__int64 last_played_time{};		//上次播放的时间
 

@@ -1409,3 +1409,20 @@ int CCommon::StringCompareInLocalLanguage(const wstring& str1, const wstring& st
         return -1;
 }
 
+void CCommon::SetNumberBit(unsigned short& num, int bit, bool value)
+{
+	if (value)
+	{
+		num |= (1 << bit);
+	}
+	else
+	{
+		num &= ~(1 << bit);
+	}
+}
+
+bool CCommon::GetNumberBit(unsigned short num, int bit)
+{
+	return (num & (1 << bit)) != 0;
+}
+

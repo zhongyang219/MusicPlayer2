@@ -293,7 +293,7 @@ void CMusicPlayerApp::SaveSongData()
     // 打开或者新建文件
     CFile file;
     BOOL bRet = file.Open(m_song_data_path.c_str(),
-                          CFile::modeCreate | CFile::modeWrite);
+        CFile::modeCreate | CFile::modeWrite);
     if (!bRet)		//打开文件失败
     {
         return;
@@ -301,31 +301,33 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.680"));			//写入数据版本
+    ar << CString(_T("2.690"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
         ar << CString(song_data.first.c_str())		//保存映射容器的键，即歌曲的绝对路径
            //<< CString(song_data.second.lyric_file.c_str())
-           << song_data.second.lengh.toInt()
-           << song_data.second.bitrate
-           << CString(song_data.second.title.c_str())
-           << CString(song_data.second.artist.c_str())
-           << CString(song_data.second.album.c_str())
-           << CString(song_data.second.year.c_str())
-           << CString(song_data.second.comment.c_str())
-           << CString(song_data.second.genre.c_str())
-           << song_data.second.genre_idx
-           << song_data.second.track
-           << song_data.second.tag_type
-           << CString(song_data.second.song_id.c_str())
-           << song_data.second.listen_time
-           << song_data.second.info_acquired
-           //<< song_data.second.is_favourite
-           << song_data.second.no_online_album_cover
-           << song_data.second.no_online_lyric
-		   << song_data.second.last_played_time
-           ;
+            << song_data.second.lengh.toInt()
+            << song_data.second.bitrate
+            << CString(song_data.second.title.c_str())
+            << CString(song_data.second.artist.c_str())
+            << CString(song_data.second.album.c_str())
+            << CString(song_data.second.year.c_str())
+            << CString(song_data.second.comment.c_str())
+            << CString(song_data.second.genre.c_str())
+            << song_data.second.genre_idx
+            << song_data.second.track
+            << song_data.second.tag_type
+            << CString(song_data.second.song_id.c_str())
+            << song_data.second.listen_time
+            << song_data.second.info_acquired
+            //<< song_data.second.is_favourite
+
+             //<< song_data.second.no_online_album_cover
+             //<< song_data.second.no_online_lyric
+            << song_data.second.flags
+            << song_data.second.last_played_time
+            ;
     }
     // 关闭CArchive对象
     ar.Close();
@@ -764,10 +766,17 @@ void CMusicPlayerApp::LoadSongData()
                 ar >> song_info.is_favourite;
             }
 
-            if (version_str >= _T("2.663"))
+            if (version_str >= _T("2.663") && version_str < _T("2.690"))
             {
-                ar >> song_info.no_online_album_cover;
-                ar >> song_info.no_online_lyric;
+                bool no_online_album_cover{ song_info.NoOnlineAlbumCover() };
+                bool no_online_lyric{ song_info.NoOnlineLyric() };
+                ar >> no_online_album_cover;
+                ar >> no_online_lyric;
+            }
+
+            if (version_str >= _T("2.690"))
+            {
+                ar >> song_info.flags;
             }
 
 			if (version_str >= _T("2.680"))

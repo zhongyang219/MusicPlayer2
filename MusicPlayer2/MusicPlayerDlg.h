@@ -391,4 +391,5 @@ public:
     afx_msg void OnRemoveCurrentFromPlaylist();
     afx_msg void OnDeleteCurrentFromDisk();
 	afx_msg BOOL OnQueryEndSession();
+    afx_msg void OnAlwaysUseExternalAlbumCover();
 };

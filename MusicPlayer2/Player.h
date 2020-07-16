@@ -289,9 +289,9 @@ public:
 
 	void SortPlaylist(bool change_index = true);	//播放列表按照m_sort_mode排序（当change_index为true时，排序后重新查找正在播放的歌曲）
 
+	void SearchAlbumCover();		//获取专辑封面
 private:
 	void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
-	void SearchAlbumCover();		//获取专辑封面
 	wstring GetCurrentFileName() const;
     bool RemoveSongNotPlay(int index);
     void AfterSongsRemoved(bool play);

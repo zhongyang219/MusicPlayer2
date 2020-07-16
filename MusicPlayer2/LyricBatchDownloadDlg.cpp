@@ -307,7 +307,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		if (down_list.empty())
 		{
 			pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG));
-            song_info_ori.no_online_lyric = true;
+            song_info_ori.SetNoOnlineLyric(true);
 			continue;
 		}
 
@@ -321,7 +321,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		int best_matched = CInternetCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).GetFileName(), true);
 		if (best_matched < 0)
 		{
-            song_info_ori.no_online_lyric = true;
+            song_info_ori.SetNoOnlineLyric(true);
             pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
 			continue;
 		}

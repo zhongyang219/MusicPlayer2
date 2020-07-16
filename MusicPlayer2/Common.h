@@ -346,6 +346,12 @@ public:
 	}
 
     static int StringCompareInLocalLanguage(const wstring& str1, const wstring& str2, bool no_case = false);
+
+	//设置一个数字的某个bit位
+	static void SetNumberBit(unsigned short& num, int bit, bool value);
+
+	//获取一个数字的某个bit位
+	static bool GetNumberBit(unsigned short num, int bit);
 };
 
 template<class T>
