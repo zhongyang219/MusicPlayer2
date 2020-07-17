@@ -157,10 +157,6 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
 
     SetHighlightItem();
 
-    //初始化右键菜单
-    m_menu.LoadMenu(IDR_SELETE_PLAYLIST_POPUP_MENU);
-    m_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PLAYLIST);
-
     return FALSE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -518,7 +514,7 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     SetButtonsEnable();
 
     //弹出右键菜单
-    CMenu* pContextMenu = m_menu.GetSubMenu(0);
+    CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_playlist_menu.GetSubMenu(0);
     m_playlist_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;

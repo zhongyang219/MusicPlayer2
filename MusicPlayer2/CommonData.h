@@ -353,6 +353,7 @@ public:
 
 struct IconSet
 {
+    //界面图标
     IconRes app;
     IconRes default_cover;
     IconRes default_cover_small;
@@ -403,6 +404,21 @@ struct IconSet
     IconRes pause_new;
     IconRes previous_new;
     IconRes next_new;
+
+    //菜单图标（仅16x16）
+    HICON stop_new;
+    HICON save_new;
+    HICON save_as;
+    HICON music;
+    HICON file_relate;
+    HICON online;
+    HICON play_pause;
+    HICON convert;
+    HICON download;
+    HICON download1;
+    HICON help;
+    HICON ff_new;
+    HICON rew_new;
 };
 
 
@@ -432,4 +448,6 @@ struct MenuSet
     CMenu m_playlist_toolbar_menu;
     CMenu m_lyric_default_style;     //桌面歌词预设方案菜单
     CMenu m_media_lib_popup_menu;
+    CMenu m_media_lib_folder_menu;      //媒体库-文件夹的右键菜单
+    CMenu m_media_lib_playlist_menu;      //媒体库-播放列表的右键菜单
 };

@@ -32,7 +32,7 @@ protected:
 
 	CEdit m_path_name;
 	CListCtrlEx m_path_list;
-	CMenu m_menu;
+	//CMenu m_menu;
 	CSearchEditCtrl m_search_edit;
 	//CToolTipCtrl m_Mytip;
 

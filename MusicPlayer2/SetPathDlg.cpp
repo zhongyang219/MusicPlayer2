@@ -246,10 +246,6 @@ BOOL CSetPathDlg::OnInitDialog()
 	//m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	//m_Mytip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-	//初始化右键菜单
-	m_menu.LoadMenu(IDR_SET_PATH_POPUP_MENU);
-	m_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PATH);
-
 	return FALSE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -324,7 +320,7 @@ void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 	SetButtonsEnable(m_path_selected != -1);
 
 	//弹出右键菜单
-	CMenu* pContextMenu = m_menu.GetSubMenu(0);	//获取第一个弹出菜单
+	CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_folder_menu.GetSubMenu(0);	//获取第一个弹出菜单
     m_path_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
 	*pResult = 0;

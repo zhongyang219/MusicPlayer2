@@ -1077,22 +1077,25 @@ int CCommon::AppendMenuOp(HMENU hDst, HMENU hSrc)
 			| MIIM_ID //Retrieves or sets the wID member. 
 			| MIIM_STATE //Retrieves or sets the fState member. 
 			| MIIM_SUBMENU //Retrieves or sets the hSubMenu member. 
-			| MIIM_TYPE //Retrieves or sets the fType and dwTypeData members. 
+            | MIIM_FTYPE //Retrieves or sets the fType and dwTypeData members. 
+            //这里如果不添加MIIM_STRING和MIIM_BITMAP，会导致有图标的菜单项文本不显示
+			| MIIM_STRING
+            | MIIM_BITMAP
 			| 0;
 		mInfo.dwTypeData = szMenuStr;
 		mInfo.cch = _countof(szMenuStr);
 
 		VERIFY(GetMenuItemInfo(hSrc, iSrc, TRUE, &mInfo));
 
-		if (mInfo.hSubMenu)
+        if (mInfo.hSubMenu)
 		{
 			HMENU hSub = CreatePopupMenu();
 			AppendMenuOp(hSub, mInfo.hSubMenu);
 			mInfo.hSubMenu = hSub;
 		}
 
-		InsertMenuItem(hDst, iDst++, TRUE, &mInfo);
-		iCnt++;
+        InsertMenuItem(hDst, iDst++, TRUE, &mInfo);
+        iCnt++;
 	}
 
 	return iCnt;

@@ -8,9 +8,6 @@
     <Filter Include="资源文件\Icons">
       <UniqueIdentifier>{7f3aec29-356a-4ac1-8ad9-15b85ce141f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="资源文件\其他">
-      <UniqueIdentifier>{b15ef7d8-56db-471d-9986-4ca1ba98375a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MusicPlayer2">
       <UniqueIdentifier>{38d2355a-0e65-4056-a1be-4d77d9a255d7}</UniqueIdentifier>
     </Filter>
@@ -293,6 +290,12 @@
     </Filter>
     <Filter Include="对话框类\媒体库对话框\文件夹浏览">
       <UniqueIdentifier>{b109aca1-cfaf-4f5f-9612-96c66b07d09c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="公共的类\WICFactory">
+      <UniqueIdentifier>{cf55aa05-21b8-4cc2-acfd-17327505e681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件\bitmaps">
+      <UniqueIdentifier>{b15ef7d8-56db-471d-9986-4ca1ba98375a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -646,6 +649,9 @@
     <ClInclude Include="FolderExploreDlg.h">
       <Filter>对话框类\媒体库对话框\文件夹浏览</Filter>
     </ClInclude>
+    <ClInclude Include="WCI.h">
+      <Filter>公共的类\WICFactory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -966,6 +972,9 @@
     <ClCompile Include="FolderExploreDlg.cpp">
       <Filter>对话框类\媒体库对话框\文件夹浏览</Filter>
     </ClCompile>
+    <ClCompile Include="WCI.cpp">
+      <Filter>公共的类\WICFactory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
@@ -1088,7 +1097,7 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\toolbar1.bmp">
-      <Filter>资源文件\其他</Filter>
+      <Filter>资源文件\bitmaps</Filter>
     </Image>
     <Image Include="res\播放列表.ico">
       <Filter>资源文件\Icons</Filter>
@@ -1133,7 +1142,7 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\donate.bmp">
-      <Filter>资源文件\其他</Filter>
+      <Filter>资源文件\bitmaps</Filter>
     </Image>
     <Image Include="res\file_icon.ico">
       <Filter>资源文件\Icons</Filter>
@@ -1184,7 +1193,7 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\about.bmp">
-      <Filter>资源文件\其他</Filter>
+      <Filter>资源文件\bitmaps</Filter>
     </Image>
     <Image Include="res\genre_d.ico">
       <Filter>资源文件\Icons</Filter>
@@ -1202,7 +1211,7 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\donate_wechat.bmp">
-      <Filter>资源文件\其他</Filter>
+      <Filter>资源文件\bitmaps</Filter>
     </Image>
     <Image Include="res\next_dark.ico">
       <Filter>资源文件\Icons</Filter>
@@ -1232,6 +1241,48 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\stop_white.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\convert.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\convert_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\download_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\download1_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\ff_new_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\file_relate.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\file_relate_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\help_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\music_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\online_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_pause_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\rew_new_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\save_as_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\save_new.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>

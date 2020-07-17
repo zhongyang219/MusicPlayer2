@@ -29,7 +29,7 @@ public:
 
 private:
     int m_row_selected{};
-    CMenu m_menu;
+    //CMenu m_menu;
     bool m_playlist_modified{ false };
     CSearchEditCtrl m_search_edit;
     vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
