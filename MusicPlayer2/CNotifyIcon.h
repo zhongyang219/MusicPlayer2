@@ -15,6 +15,5 @@ public:
 private:
 	NOTIFYICONDATA m_ntIcon;
 	CString m_tool_tip_str;
-	CMenu m_notify_menu;
 };
 

@@ -6,6 +6,7 @@
 #include "Define.h"
 #include "CPlayerUIHelper.h"
 #include "MusicPlayerDlg.h"
+#include "WCI.h"
 
 CDesktopLyric::CDesktopLyric()
 {
@@ -42,6 +43,22 @@ void CDesktopLyric::Create()
 	CLyricsWindow::Create(theApp.DPI(150));
 
     m_popupMenu.LoadMenu(IDR_DESKTOP_LYRIC_POPUP_MENU);
+
+    //为右键添加图标
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_PAUSE, FALSE, theApp.m_icon_set.play_pause);
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_STOP, FALSE, theApp.m_icon_set.stop_new);
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PREVIOUS, FALSE, theApp.m_icon_set.previous_new.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_NEXT, FALSE, theApp.m_icon_set.next_new.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_ORDER, FALSE, theApp.m_icon_set.play_oder.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_SHUFFLE, FALSE, theApp.m_icon_set.play_shuffle.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, theApp.m_icon_set.loop_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, theApp.m_icon_set.loop_track.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_DISPLAYED_DOUBLE_LINE, FALSE, theApp.m_icon_set.double_line.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_BACKGROUND_PENETRATE, FALSE, theApp.m_icon_set.skin.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOCK_DESKTOP_LRYIC, FALSE, theApp.m_icon_set.lock.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSubMenu(0)->GetSafeHmenu(), 10, TRUE, theApp.m_icon_set.media_lib.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, theApp.m_icon_set.setting.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_CLOSE_DESKTOP_LYRIC, FALSE, theApp.m_icon_set.close.GetIcon(true));
 
     //初始化提示信息
     m_tool_tip.Create(this, TTS_ALWAYSTIP);

@@ -450,4 +450,6 @@ struct MenuSet
     CMenu m_media_lib_popup_menu;
     CMenu m_media_lib_folder_menu;      //媒体库-文件夹的右键菜单
     CMenu m_media_lib_playlist_menu;      //媒体库-播放列表的右键菜单
+    CMenu m_notify_menu;                //通知区图标右键菜单
+
 };

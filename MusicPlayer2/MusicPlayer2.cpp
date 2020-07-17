@@ -531,35 +531,6 @@ void CMusicPlayerApp::InitMenuResourse()
     m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
     m_menu_set.m_playlist_toolbar_menu.LoadMenu(IDR_PLAYLIST_TOOLBAR_MENU);
 
-    //将主菜单添加到系统菜单中
-    CMenu* pSysMenu = m_pMainWnd->GetSystemMenu(FALSE);
-    if (pSysMenu != NULL)
-    {
-        pSysMenu->AppendMenu(MF_SEPARATOR);
-        CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());		//将主菜单添加到系统菜单
-
-        pSysMenu->AppendMenu(MF_SEPARATOR);
-        pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
-
-        CString exitStr;
-        m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
-        pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
-
-        //添加一个测试命令
-#ifdef _DEBUG
-        pSysMenu->AppendMenu(MF_STRING, ID_TEST, _T("Test Command"));
-        pSysMenu->AppendMenu(MF_STRING, ID_TEST_DIALOG, _T("Test Dialog"));
-#endif
-    }
-
-    //初始化按Shift键弹出的右键菜单
-    m_menu_set.m_main_menu_popup.CreatePopupMenu();
-    CCommon::AppendMenuOp(m_menu_set.m_main_menu_popup.GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());
-    m_menu_set.m_main_menu_popup.AppendMenu(MF_SEPARATOR);
-    CString exitStr;
-    m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
-    m_menu_set.m_main_menu_popup.AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
-
     m_menu_set.m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//装载歌词右键菜单
     m_menu_set.m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
 
@@ -572,6 +543,8 @@ void CMusicPlayerApp::InitMenuResourse()
 
     m_menu_set.m_media_lib_playlist_menu.LoadMenu(IDR_SELETE_PLAYLIST_POPUP_MENU);
     m_menu_set.m_media_lib_playlist_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PLAYLIST);
+
+    m_menu_set.m_notify_menu.LoadMenu(IDR_NOTIFY_MENU);
 
     //为菜单添加图标
     //主菜单
@@ -706,6 +679,47 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_DELETE_FROM_DISK, FALSE, m_icon_set.close.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_ITEM_PROPERTY, FALSE, m_icon_set.info.GetIcon(true));
 
+    //通知区图标右键菜单
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_PLAY_PAUSE, FALSE, m_icon_set.play_pause);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_PREVIOUS, FALSE, m_icon_set.previous_new.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_NEXT, FALSE, m_icon_set.next_new.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_PLAY_ORDER, FALSE, m_icon_set.play_oder.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_PLAY_SHUFFLE, FALSE, m_icon_set.play_shuffle.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, m_icon_set.loop_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, m_icon_set.loop_track.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_MINIMODE_RESTORE, FALSE, m_icon_set.mini.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_LOCK_DESKTOP_LRYIC, FALSE, m_icon_set.lock.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, m_icon_set.setting.GetIcon(true));
+
+
+    //初始化按Shift键弹出的右键菜单
+    m_menu_set.m_main_menu_popup.CreatePopupMenu();
+    CCommon::AppendMenuOp(m_menu_set.m_main_menu_popup.GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());
+    m_menu_set.m_main_menu_popup.AppendMenu(MF_SEPARATOR);
+    CString exitStr;
+    m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
+    m_menu_set.m_main_menu_popup.AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
+
+    //将主菜单添加到系统菜单中
+    CMenu* pSysMenu = m_pMainWnd->GetSystemMenu(FALSE);
+    if (pSysMenu != NULL)
+    {
+        pSysMenu->AppendMenu(MF_SEPARATOR);
+        CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());		//将主菜单添加到系统菜单
+
+        pSysMenu->AppendMenu(MF_SEPARATOR);
+        pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
+
+        CString exitStr;
+        m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
+        pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
+
+        //添加一个测试命令
+#ifdef _DEBUG
+        pSysMenu->AppendMenu(MF_STRING, ID_TEST, _T("Test Command"));
+        pSysMenu->AppendMenu(MF_STRING, ID_TEST_DIALOG, _T("Test Dialog"));
+#endif
+    }
 }
 
 int CMusicPlayerApp::DPI(int pixel)
