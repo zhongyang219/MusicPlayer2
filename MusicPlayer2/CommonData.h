@@ -419,6 +419,8 @@ struct IconSet
     HICON help;
     HICON ff_new;
     HICON rew_new;
+    HICON playlist_dock;
+    HICON playlist_float;
 };
 
 

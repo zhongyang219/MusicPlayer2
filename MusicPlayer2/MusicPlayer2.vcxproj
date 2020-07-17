@@ -485,6 +485,8 @@
     <Image Include="res\online_d.ico" />
     <Image Include="res\pause_dark.ico" />
     <Image Include="res\pause_white.ico" />
+    <Image Include="res\playlist_dock_d.ico" />
+    <Image Include="res\playlist_float_d.ico" />
     <Image Include="res\play_dark.ico" />
     <Image Include="res\play_pause_d.ico" />
     <Image Include="res\play_white.ico" />

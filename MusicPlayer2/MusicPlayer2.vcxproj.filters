@@ -1285,5 +1285,11 @@
     <Image Include="res\save_new.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\playlist_dock_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\playlist_float_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>
