@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "BassCore.h"
 #include "COSUPlayerHelper.h"
+#include "WCI.h"
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
 
@@ -195,7 +196,12 @@ BOOL CFormatConvertDlg::OnInitDialog()
 	m_min_size.cx = rect.Width();
 	m_min_size.cy = rect.Height();
 
+    //初始化菜单
 	m_list_popup_menu.LoadMenu(IDR_FORMAT_CONVERT_POPUP_MENU);
+    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_ADD_FILE, FALSE, theApp.m_icon_set.add.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_EDIT_TAG_INFO, FALSE, theApp.m_icon_set.edit.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_DELETE_SELECT, FALSE, theApp.m_icon_set.close.GetIcon(true));
+
 
 	//初始化文件列表
 	m_file_list_ctrl.GetClientRect(rect);

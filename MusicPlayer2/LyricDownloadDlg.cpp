@@ -6,6 +6,7 @@
 #include "LyricDownloadDlg.h"
 #include "afxdialogex.h"
 #include "MessageDlg.h"
+#include "WCI.h"
 
 
 // CLyricDownloadDlg 对话框
@@ -215,6 +216,9 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	//初始化右键菜单
 	m_menu.LoadMenu(IDR_LYRIC_DOWNLOAD_MENU);
 	m_menu.GetSubMenu(0)->SetDefaultItem(ID_LD_LYRIC_DOWNLOAD);
+    CMenuIcon::AddIconToMenuItem(m_menu.GetSafeHmenu(), ID_LD_LYRIC_DOWNLOAD, FALSE, theApp.m_icon_set.download);
+    CMenuIcon::AddIconToMenuItem(m_menu.GetSafeHmenu(), ID_LD_LYRIC_SAVEAS, FALSE, theApp.m_icon_set.save_as);
+    CMenuIcon::AddIconToMenuItem(m_menu.GetSafeHmenu(), ID_LD_VIEW_ONLINE, FALSE, theApp.m_icon_set.online);
 
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
 

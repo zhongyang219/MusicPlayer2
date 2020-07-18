@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "LyricEditDlg.h"
 #include "afxdialogex.h"
+#include "WCI.h"
 
 
 // CLyricEditDlg 对话框
@@ -240,6 +241,37 @@ BOOL CLyricEditDlg::OnInitDialog()
 	//m_min_size.cx = rect.Width();
 	//m_min_size.cy = rect.Height();
 
+    //为菜单添加图标
+    CMenu* pMenu = GetMenu();
+    if (pMenu != nullptr)
+    {
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_OPEN, FALSE, theApp.m_icon_set.music);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_SAVE, FALSE, theApp.m_icon_set.save_new);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_SAVE_AS, FALSE, theApp.m_icon_set.save_as);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), IDCANCEL, FALSE, theApp.m_icon_set.exit);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_INSERT_TAG, FALSE, theApp.m_icon_set.exit);
+
+        HICON icon_add_tag = CDrawCommon::LoadIconResource(IDI_ADD_TAG, theApp.DPI(16), theApp.DPI(16));
+        HICON icon_replace_tag = CDrawCommon::LoadIconResource(IDI_REPLACE_TAG, theApp.DPI(16), theApp.DPI(16));
+        HICON icon_delete_tag = CDrawCommon::LoadIconResource(IDI_DELETE_TAG, theApp.DPI(16), theApp.DPI(16));
+        HICON icon_find = CDrawCommon::LoadIconResource(IDI_FIND, theApp.DPI(16), theApp.DPI(16));
+        HICON icon_replace = CDrawCommon::LoadIconResource(IDI_REPLACE, theApp.DPI(16), theApp.DPI(16));
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_INSERT_TAG, FALSE, icon_add_tag);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_REPLACE_TAG, FALSE, icon_replace_tag);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_DELETE_TAG, FALSE, icon_delete_tag);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_FIND, FALSE, icon_find);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_REPLACE, FALSE, icon_replace);
+        DestroyIcon(icon_add_tag);
+        DestroyIcon(icon_replace_tag);
+        DestroyIcon(icon_delete_tag);
+        DestroyIcon(icon_find);
+        DestroyIcon(icon_replace);
+
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_PLAY_PAUSE, FALSE, theApp.m_icon_set.play_pause);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_REW, FALSE, theApp.m_icon_set.rew_new);
+        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_FF, FALSE, theApp.m_icon_set.ff_new);
+    }
+
 	//初始化工具栏
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE/* | CBRS_TOP*/ | CBRS_ALIGN_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_TOP
 		/*| CBRS_GRIPPER*/ | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
@@ -249,20 +281,23 @@ BOOL CLyricEditDlg::OnInitDialog()
 		return -1;      // fail to create
 	}
 	RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
+    int icon_size = theApp.DPI(20);
+    if (icon_size < 32)
+        icon_size = CCommon::IconSizeNormalize(icon_size);
 	CImageList ImageList;
-	ImageList.Create(theApp.DPI(20), theApp.DPI(20), ILC_COLOR32 | ILC_MASK, 2, 2);
+	ImageList.Create(icon_size, icon_size, ILC_COLOR32 | ILC_MASK, 2, 2);
 
 	//通过ImageList对象加载图标作为工具栏的图标
 	//添加图标
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_ADD_TAG));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REPLACE_TAG));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_DELETE_TAG));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_SAVE));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_PLAY_PAUSE));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REW));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_FF));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_FIND));
-	ImageList.Add(AfxGetApp()->LoadIcon(IDI_REPLACE));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_ADD_TAG, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_REPLACE_TAG, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_DELETE_TAG, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_SAVE, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_PLAY_PAUSE, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_REW, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_FF, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_FIND, icon_size, icon_size));
+	ImageList.Add(CDrawCommon::LoadIconResource(IDI_REPLACE, icon_size, icon_size));
 	m_wndToolBar.GetToolBarCtrl().SetImageList(&ImageList);
 	ImageList.Detach();
 
