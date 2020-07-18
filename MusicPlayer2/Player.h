@@ -276,11 +276,11 @@ public:
 
 	void AddListenTime(int sec);		//为当前歌曲增加累计已播放时间
 
-	bool IsMidi() const { return m_pCore->IsMidi(); }
-	MidiInfo GetMidiInfo() const { return m_pCore->GetMidiInfo(); }
-	wstring GetMidiLyric() const { return m_pCore->GetMidiInnerLyric(); }
-	bool MidiNoLyric() const { return m_pCore->MidiNoLyric(); }
-	wstring GetSoundFontName() const { return m_pCore->GetSoundFontName(); }
+	bool IsMidi() const { return m_pCore == nullptr ? false : m_pCore->IsMidi(); }
+	MidiInfo GetMidiInfo() const { return m_pCore == nullptr ? MidiInfo() : m_pCore->GetMidiInfo(); }
+    wstring GetMidiLyric() const { return m_pCore == nullptr ? wstring() : m_pCore->GetMidiInnerLyric(); }
+    bool MidiNoLyric() const { return m_pCore == nullptr ? true : m_pCore->MidiNoLyric(); }
+	wstring GetSoundFontName() const { return m_pCore == nullptr ? wstring() : m_pCore->GetSoundFontName(); }
 
     int GetChannels();
     int GetFreq();
