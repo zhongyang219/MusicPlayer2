@@ -1173,7 +1173,7 @@ bool CPlayer::IsError() const
     if (m_loading)		//如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0));
+        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0));
 }
 
 std::wstring CPlayer::GetErrorInfo()

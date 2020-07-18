@@ -731,20 +731,42 @@ void CMusicPlayerApp::InitMenuResourse()
     CString exitStr;
     m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
     m_menu_set.m_main_menu_popup.AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
+    //为一级菜单添加图标
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 0, TRUE, m_icon_set.select_folder.GetIcon(true));      //文件
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 1, TRUE, m_icon_set.play_new.GetIcon(true));           //播放控制
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 2, TRUE, m_icon_set.show_playlist.GetIcon(true));      //播放列表
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 3, TRUE, m_icon_set.music);                            //歌词
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 4, TRUE, m_icon_set.playlist_dock);                    //视图
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 5, TRUE, m_icon_set.setting.GetIcon(true));            //工具
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 6, TRUE, m_icon_set.help);                             //帮助
+    int index = m_menu_set.m_main_menu_popup.GetMenuItemCount();
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), index - 1, TRUE, m_icon_set.exit);                     //退出
 
     //将主菜单添加到系统菜单中
     CMenu* pSysMenu = m_pMainWnd->GetSystemMenu(FALSE);
     if (pSysMenu != NULL)
     {
         pSysMenu->AppendMenu(MF_SEPARATOR);
+        index = pSysMenu->GetMenuItemCount();
         CCommon::AppendMenuOp(pSysMenu->GetSafeHmenu(), m_menu_set.m_main_menu.GetSafeHmenu());		//将主菜单添加到系统菜单
+        //为一级菜单添加图标
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 0, TRUE, m_icon_set.select_folder.GetIcon(true));      //文件
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 1, TRUE, m_icon_set.play_new.GetIcon(true));           //播放控制
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 2, TRUE, m_icon_set.show_playlist.GetIcon(true));      //播放列表
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 3, TRUE, m_icon_set.music);                            //歌词
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 4, TRUE, m_icon_set.playlist_dock);                    //视图
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 5, TRUE, m_icon_set.setting.GetIcon(true));            //工具
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 6, TRUE, m_icon_set.help);                             //帮助
 
         pSysMenu->AppendMenu(MF_SEPARATOR);
         pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), IDM_MINIMODE, FALSE, m_icon_set.mini.GetIcon(true));
 
         CString exitStr;
         m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
         pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
+        index = pSysMenu->GetMenuItemCount();
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index - 1, TRUE, m_icon_set.exit);       //由于“文件”子菜单下已经有一个“退出”，命令，因此这里只能通过菜单项的序号指定
 
         //添加一个测试命令
 #ifdef _DEBUG
