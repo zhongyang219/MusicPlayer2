@@ -424,6 +424,7 @@ struct IconSet
     HICON statistics;
     HICON pin;
     HICON exit;
+    HICON album_cover;
 };
 
 
