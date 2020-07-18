@@ -208,8 +208,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     m_playlist_ctrl.MoveWindow(playlist_rect);
     m_playlist_ctrl.AdjustColumnWidth();
 
-    //装载右键菜单
-    m_menu.LoadMenu(IDR_MINI_MODE_MENU);
+    ////装载右键菜单
+    //m_menu.LoadMenu(IDR_MINI_MODE_MENU);
 
     //设置定时器
     SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
@@ -387,7 +387,7 @@ void CMiniModeDlg::OnDestroy()
     m_position_y = rect.top;
     SaveConfig();
     KillTimer(TIMER_ID_MINI);
-    m_menu.DestroyMenu();
+    //m_menu.DestroyMenu();
     ReleaseDC(m_pDC);
 }
 
@@ -413,7 +413,7 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
     }
     else
     {
-        CMenu* pContextMenu = m_menu.GetSubMenu(0);
+        CMenu* pContextMenu = theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0);
         pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
     }
 

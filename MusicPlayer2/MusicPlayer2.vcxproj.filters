@@ -1291,5 +1291,14 @@
     <Image Include="res\playlist_float_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\exit_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\pin_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\statistics_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

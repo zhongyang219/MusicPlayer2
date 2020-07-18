@@ -421,6 +421,9 @@ struct IconSet
     HICON rew_new;
     HICON playlist_dock;
     HICON playlist_float;
+    HICON statistics;
+    HICON pin;
+    HICON exit;
 };
 
 
@@ -453,5 +456,5 @@ struct MenuSet
     CMenu m_media_lib_folder_menu;      //媒体库-文件夹的右键菜单
     CMenu m_media_lib_playlist_menu;      //媒体库-播放列表的右键菜单
     CMenu m_notify_menu;                //通知区图标右键菜单
-
+    CMenu m_mini_mode_menu;             //迷你模式右键菜单
 };

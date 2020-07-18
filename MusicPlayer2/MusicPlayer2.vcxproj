@@ -456,6 +456,7 @@
     <Image Include="res\edit_d.ico" />
     <Image Include="res\eq.ico" />
     <Image Include="res\eq_d.ico" />
+    <Image Include="res\exit_d.ico" />
     <Image Include="res\explorer_folder.ico" />
     <Image Include="res\favourite.ico" />
     <Image Include="res\favourite_d.ico" />
@@ -485,6 +486,7 @@
     <Image Include="res\online_d.ico" />
     <Image Include="res\pause_dark.ico" />
     <Image Include="res\pause_white.ico" />
+    <Image Include="res\pin_d.ico" />
     <Image Include="res\playlist_dock_d.ico" />
     <Image Include="res\playlist_float_d.ico" />
     <Image Include="res\play_dark.ico" />
@@ -503,6 +505,7 @@
     <Image Include="res\setting_d.ico" />
     <Image Include="res\skn.ico" />
     <Image Include="res\skn_d.ico" />
+    <Image Include="res\statistics_d.ico" />
     <Image Include="res\stop_dark.ico" />
     <Image Include="res\stop_white.ico" />
     <Image Include="res\toolbar1.bmp" />

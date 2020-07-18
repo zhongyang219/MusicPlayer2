@@ -510,6 +510,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.previous_new.Load(IDI_PREVIOUS_NEW, IDI_PREVIOUS_NEW_D, DPI(16));
     m_icon_set.next_new.Load(IDI_NEXT_NEW, IDI_NEXT_NEW_D, DPI(16));
 
+    //菜单图标
     m_icon_set.stop_new = CDrawCommon::LoadIconResource(IDI_STOP_NEW_D, DPI(16), DPI(16));
     m_icon_set.save_new = CDrawCommon::LoadIconResource(IDI_SAVE_NEW_D, DPI(16), DPI(16));
     m_icon_set.save_as = CDrawCommon::LoadIconResource(IDI_SAVE_AS_D, DPI(16), DPI(16));
@@ -525,6 +526,9 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.rew_new = CDrawCommon::LoadIconResource(IDI_REW_NEW_D, DPI(16), DPI(16));
     m_icon_set.playlist_dock = CDrawCommon::LoadIconResource(IDI_PLAYLIST_DOCK_D, DPI(16), DPI(16));
     m_icon_set.playlist_float = CDrawCommon::LoadIconResource(IDI_PLAYLIST_FLOAT_D, DPI(16), DPI(16));
+    m_icon_set.statistics = CDrawCommon::LoadIconResource(IDI_STATISTICS_D, DPI(16), DPI(16));
+    m_icon_set.pin = CDrawCommon::LoadIconResource(IDI_PIN_D, DPI(16), DPI(16));
+    m_icon_set.exit = CDrawCommon::LoadIconResource(IDI_EXIT_D, DPI(16), DPI(16));
 }
 
 void CMusicPlayerApp::InitMenuResourse()
@@ -548,11 +552,15 @@ void CMusicPlayerApp::InitMenuResourse()
 
     m_menu_set.m_notify_menu.LoadMenu(IDR_NOTIFY_MENU);
 
+    m_menu_set.m_mini_mode_menu.LoadMenu(IDR_MINI_MODE_MENU);
+
     //为菜单添加图标
     //主菜单
     //文件
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FILE_OPEN, FALSE, m_icon_set.music);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FILE_OPEN_FOLDER, FALSE, m_icon_set.select_folder.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FILE_OPEN_PLAYLIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_MENU_EXIT, FALSE, m_icon_set.exit);
     //播放控制
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_PLAY_PAUSE, FALSE, m_icon_set.play_pause);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_STOP, FALSE, m_icon_set.stop_new);
@@ -586,6 +594,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SHOW_PLAYLIST, FALSE, m_icon_set.playlist_dock);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FLOAT_PLAYLIST, FALSE, m_icon_set.playlist_float);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SHOW_MENU_BAR, FALSE, m_icon_set.menu.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_MINI_MODE, FALSE, m_icon_set.mini.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FULL_SCREEN, FALSE, m_icon_set.full_screen1.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SWITCH_UI, FALSE, m_icon_set.skin.GetIcon(true));
@@ -598,6 +607,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FORMAT_CONVERT1, FALSE, m_icon_set.convert);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_CURRENT_EXPLORE_ONLINE, FALSE, m_icon_set.online);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_RE_INI_BASS, FALSE, m_icon_set.loop_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_LISTEN_STATISTICS, FALSE, m_icon_set.statistics);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_TOOL_FILE_RELATE, FALSE, m_icon_set.file_relate);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, m_icon_set.setting.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_DOWNLOAD_ALBUM_COVER, FALSE, m_icon_set.download);
@@ -694,6 +704,24 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_MINIMODE_RESTORE, FALSE, m_icon_set.mini.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_LOCK_DESKTOP_LRYIC, FALSE, m_icon_set.lock.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, m_icon_set.setting.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_notify_menu.GetSafeHmenu(), ID_MENU_EXIT, FALSE, m_icon_set.exit);
+
+    //迷你模式右键菜单
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_SONG_INFO, FALSE, m_icon_set.info.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_PLAY_ORDER, FALSE, m_icon_set.play_oder.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_PLAY_SHUFFLE, FALSE, m_icon_set.play_shuffle.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, m_icon_set.loop_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, m_icon_set.loop_track.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_DOWNLOAD_LYRIC, FALSE, m_icon_set.download);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_ADD_REMOVE_FROM_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, m_icon_set.media_lib.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_FIND, FALSE, m_icon_set.find_songs.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_EXPLORE_PATH, FALSE, m_icon_set.folder_explore.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_EQUALIZER, FALSE, m_icon_set.eq.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, m_icon_set.setting.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_SHOW_PLAY_LIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MINI_MODE_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MINI_MODE_EXIT, FALSE, m_icon_set.exit);
 
 
     //初始化按Shift键弹出的右键菜单

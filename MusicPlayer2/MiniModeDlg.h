@@ -47,7 +47,7 @@ protected:
     vector<int>& m_items_selected;
 
     CToolTipCtrl m_Mytip;
-    CMenu m_menu;
+    //CMenu m_menu;
 
     CMiniModeUI::SMiniModeUIData m_ui_data;
     CMiniModeUI m_ui{ m_ui_data, this };
