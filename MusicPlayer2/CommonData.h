@@ -425,6 +425,7 @@ struct IconSet
     HICON pin;
     HICON exit;
     HICON album_cover;
+    HICON dark_mode;
 };
 
 

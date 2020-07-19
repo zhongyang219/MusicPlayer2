@@ -1303,5 +1303,8 @@
     <Image Include="res\album_cover.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\dark_mode.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

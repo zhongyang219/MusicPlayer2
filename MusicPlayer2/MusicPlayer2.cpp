@@ -530,6 +530,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.pin = CDrawCommon::LoadIconResource(IDI_PIN_D, DPI(16), DPI(16));
     m_icon_set.exit = CDrawCommon::LoadIconResource(IDI_EXIT_D, DPI(16), DPI(16));
     m_icon_set.album_cover = CDrawCommon::LoadIconResource(IDI_ALBUM_COVER_D, DPI(16), DPI(16));
+    m_icon_set.dark_mode = CDrawCommon::LoadIconResource(IDI_DARK_MODE_D, DPI(16), DPI(16));
 }
 
 void CMusicPlayerApp::InitMenuResourse()
@@ -598,6 +599,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_MINI_MODE, FALSE, m_icon_set.mini.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FULL_SCREEN, FALSE, m_icon_set.full_screen1.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_DARK_MODE, FALSE, m_icon_set.dark_mode);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SWITCH_UI, FALSE, m_icon_set.skin.GetIcon(true));
     //工具
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, m_icon_set.media_lib.GetIcon(true));
