@@ -18,6 +18,7 @@ CTestDlg::CTestDlg(CWnd* pParent /*=nullptr*/)
 
 CTestDlg::~CTestDlg()
 {
+    SAFE_DELETE(m_pImage);
 }
 
 void CTestDlg::DoDataExchange(CDataExchange* pDX)
@@ -31,6 +32,7 @@ void CTestDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CTestDlg, CDialog)
     ON_WM_TIMER()
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -58,6 +60,25 @@ BOOL CTestDlg::OnInitDialog()
     CString szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
     m_browse_edit.EnableFileBrowseButton(_T("SF2"), szFilter);
 
+    //m_image.Load(_T("C:\\Users\\Yang\\OneDrive\\其他图片\\图标素材\\黑色胶片1.png"));
+    //m_pImage = new Gdiplus::Image(L"C:\\Users\\Yang\\OneDrive\\其他图片\\图标素材\\黑色胶片1.png");
+
+    m_pImage = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
+
+    //if (m_image.GetBPP() == 32) //确认该图像包含Alpha通道
+    //{
+    //    for (int i = 0; i < m_image.GetWidth(); i++)
+    //    {
+    //        for (int j = 0; j < m_image.GetHeight(); j++)
+    //        {
+    //            byte *pByte = (byte *)m_image.GetPixelAddress(i, j);
+    //            pByte[0] = pByte[0] * pByte[3] / 255;
+    //            pByte[1] = pByte[1] * pByte[3] / 255;
+    //            pByte[2] = pByte[2] * pByte[3] / 255;
+    //        }
+    //    }
+    //}
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -73,4 +94,28 @@ void CTestDlg::OnTimer(UINT_PTR nIDEvent)
     }
 
     CDialog::OnTimer(nIDEvent);
+}
+
+
+void CTestDlg::OnPaint()
+{
+    CPaintDC dc(this); // device context for painting
+                       // TODO: 在此处添加消息处理程序代码
+                       // 不为绘图消息调用 CDialog::OnPaint()
+
+    const int START_X{ theApp.DPI(16) };
+    const int START_Y{ theApp.DPI(120) };
+
+    CRect img_rect{ CPoint(START_X, START_Y), CSize(theApp.DPI(250), theApp.DPI(150)) };
+    CDrawCommon draw;
+    draw.Create(&dc, this);
+    draw.DrawImage(m_pImage, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FILL);
+    draw.DrawRectOutLine(img_rect, RGB(0, 0, 0), 1, false);
+    //draw.DrawBitmap(m_image, CPoint(START_X, START_Y), CSize(theApp.DPI(200), theApp.DPI(200)), CDrawCommon::StretchMode::FIT);
+
+
+    //m_image.StretchBlt(dc.GetSafeHdc(), START_X, START_Y, theApp.DPI(200), theApp.DPI(200), SRCCOPY);
+    //m_image.Draw(dc.GetSafeHdc(), img_rect, Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+
+    //m_image.AlphaBlend(dc.GetSafeHdc(), START_X, START_Y, theApp.DPI(200), theApp.DPI(200), 0, 0, m_image.GetWidth(), m_image.GetHeight());
 }

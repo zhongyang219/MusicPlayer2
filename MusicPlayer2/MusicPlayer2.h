@@ -60,6 +60,7 @@ public:
     IconSet m_icon_set;			//图标资源
     FontSet m_font_set;			//字体资源
     MenuSet m_menu_set;			//菜单资源
+    ImageSet m_image_set;       //图片资源
 
     int m_cmd;
 

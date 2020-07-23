@@ -134,10 +134,7 @@ void CPlayerUI::_DrawInfo(bool reset)
         }
         else
         {
-            int cover_side = cover_rect.Height() * 3 / 4;
-            int x = cover_rect.left + (cover_rect.Width() - cover_side) / 2;
-            int y = cover_rect.top + (cover_rect.Height() - cover_side) / 2;
-            ::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_icon_set.default_cover.GetIcon(), cover_side, cover_side, 0, NULL, DI_NORMAL);
+            m_draw.DrawImage(theApp.m_image_set.default_cover, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
         }
     }
 

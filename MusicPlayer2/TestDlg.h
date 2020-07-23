@@ -28,10 +28,14 @@ private:
     CPlayerToolBar m_toolbar;
     CPlayerProgressBar m_progress_bar;
 
+    //CImage m_image;
+    Gdiplus::Image* m_pImage;
+
     int m_timer_cnt{};
 
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnTimer(UINT_PTR nIDEvent);
     CBrowseEdit m_browse_edit;
+    afx_msg void OnPaint();
 };

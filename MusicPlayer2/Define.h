@@ -136,3 +136,12 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #else
 #define ADD_TO_PLAYLIST_MAX_SIZE 30         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）
 #endif
+
+#define SAFE_DELETE(p) do \
+{\
+    if(p != nullptr) \
+    { \
+        delete p; \
+        p = nullptr; \
+    } \
+} while (false)

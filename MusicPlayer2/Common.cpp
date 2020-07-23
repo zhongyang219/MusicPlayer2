@@ -1451,3 +1451,29 @@ CString CCommon::GetTextResource(UINT id, CodeType code_type)
     return res_str;
 }
 
+Gdiplus::Image* CCommon::GetPngImageResource(UINT id)
+{
+    HINSTANCE hIns = AfxGetInstanceHandle();
+    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type 
+    if (!hRsrc)
+        return nullptr;
+    // load resource into memory 
+    DWORD len = SizeofResource(hIns, hRsrc);
+    BYTE* lpRsrc = (BYTE*)LoadResource(hIns, hRsrc);
+    if (!lpRsrc)
+        return nullptr;
+    // Allocate global memory on which to create stream 
+    HGLOBAL m_hMem = GlobalAlloc(GMEM_FIXED, len);
+    BYTE* pmem = (BYTE*)GlobalLock(m_hMem);
+    memcpy(pmem, lpRsrc, len);
+    IStream* pstm;
+    CreateStreamOnHGlobal(m_hMem, FALSE, &pstm);
+    // load from stream 
+    Gdiplus::Image* lpImage = Gdiplus::Image::FromStream(pstm);
+    // free/release stuff 
+    GlobalUnlock(m_hMem);
+    pstm->Release();
+    FreeResource(lpRsrc);
+    return lpImage;
+}
+

@@ -540,6 +540,7 @@
     <Image Include="res\随机播放_d.ico" />
     <Image Include="res\顺序播放.ico" />
     <Image Include="res\顺序播放_d.ico" />
+    <Image Include="res\黑色胶片.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

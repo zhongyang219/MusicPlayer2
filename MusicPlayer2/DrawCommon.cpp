@@ -8,6 +8,7 @@ CDrawCommon::CDrawCommon()
 
 CDrawCommon::~CDrawCommon()
 {
+    SAFE_DELETE(m_pGraphics);
 }
 
 void CDrawCommon::Create(CDC * pDC, CWnd * pMainWnd)
@@ -16,6 +17,10 @@ void CDrawCommon::Create(CDC * pDC, CWnd * pMainWnd)
 	m_pMainWnd = pMainWnd;
 	if(m_pMainWnd != nullptr)
 		m_pfont = m_pMainWnd->GetFont();
+    if (pDC != nullptr)
+    {
+        m_pGraphics = new Gdiplus::Graphics(pDC->GetSafeHdc());
+    }
 }
 
 //void CDrawCommon::SetBackColor(COLORREF back_color)
@@ -31,6 +36,8 @@ void CDrawCommon::SetFont(CFont * pfont)
 void CDrawCommon::SetDC(CDC * pDC)
 {
 	m_pDC = pDC;
+    SAFE_DELETE(m_pGraphics);
+    m_pGraphics = new Gdiplus::Graphics(pDC->GetSafeHdc());
 }
 
 void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align, bool no_clip_area, bool multi_line, bool default_right_align)
@@ -314,57 +321,9 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 	// 以下两行避免图片失真
 	m_pDC->SetStretchBltMode(HALFTONE);
 	m_pDC->SetBrushOrg(0, 0);
-	CSize draw_size;
-	if (size.cx == 0 || size.cy == 0)		//如果指定的size为0，则使用位图的实际大小绘制
-	{
-		draw_size = CSize(bm.bmWidth, bm.bmHeight);
-	}
-	else
-	{
-		draw_size = size;
-		if (stretch_mode == StretchMode::FILL)
-		{
-			SetDrawArea(m_pDC, CRect(start_point, draw_size));
-			float w_h_ratio, w_h_ratio_draw;		//图像的宽高比、绘制大小的宽高比
-			w_h_ratio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
-			w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
-			if (w_h_ratio > w_h_ratio_draw)		//如果图像的宽高比大于绘制区域的宽高比，则需要裁剪两边的图像
-			{
-				int image_width;		//按比例缩放后的宽度
-				image_width = bm.bmWidth * draw_size.cy / bm.bmHeight;
-				start_point.x -= ((image_width - draw_size.cx) / 2);
-				draw_size.cx = image_width;
-			}
-			else
-			{
-				int image_height;		//按比例缩放后的高度
-				image_height = bm.bmHeight * draw_size.cx / bm.bmWidth;
-				start_point.y -= ((image_height - draw_size.cy) / 2);
-				draw_size.cy = image_height;
-			}
-		}
-		else if (stretch_mode == StretchMode::FIT)
-		{
-			draw_size = CSize(bm.bmWidth, bm.bmHeight);
-			float w_h_ratio, w_h_ratio_draw;		//图像的宽高比、绘制大小的宽高比
-			w_h_ratio = static_cast<float>(bm.bmWidth) / bm.bmHeight;
-			w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
-			if (w_h_ratio > w_h_ratio_draw)		//如果图像的宽高比大于绘制区域的宽高比
-			{
-				draw_size.cy = draw_size.cy * size.cx / draw_size.cx;
-				draw_size.cx = size.cx;
-				start_point.y += ((size.cy - draw_size.cy) / 2);
-			}
-			else
-			{
-				draw_size.cx = draw_size.cx * size.cy / draw_size.cy;
-				draw_size.cy = size.cy;
-				start_point.x += ((size.cx - draw_size.cx) / 2);
-			}
-		}
-	}
-
-	m_pDC->StretchBlt(start_point.x, start_point.y, draw_size.cx, draw_size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+	//CSize draw_size;
+    ImageDrawAreaConvert(CSize(bm.bmWidth, bm.bmHeight), start_point, size, stretch_mode);
+	m_pDC->StretchBlt(start_point.x, start_point.y, size.cx, size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 	memDC.DeleteDC();
 }
 
@@ -384,6 +343,13 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 		return;
 	DrawBitmap(bitmap, start_point, size, stretch_mode);
 	bitmap.Detach();
+}
+
+void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode)
+{
+    m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode);
+    m_pGraphics->DrawImage(pImage, start_point.x, start_point.y, size.cx, size.cy);
 }
 
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
@@ -518,4 +484,56 @@ bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize siz
 HICON CDrawCommon::LoadIconResource(UINT id, int width, int height)
 {
 	return (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, width, height, 0);
+}
+
+void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode)
+{
+    if (size.cx == 0 || size.cy == 0)		//如果指定的size为0，则使用位图的实际大小绘制
+    {
+        size = CSize(image_size.cx, image_size.cy);
+    }
+    else
+    {
+        if (stretch_mode == StretchMode::FILL)
+        {
+            SetDrawArea(m_pDC, CRect(start_point, size));
+            float w_h_ratio, w_h_ratio_draw;		//图像的宽高比、绘制大小的宽高比
+            w_h_ratio = static_cast<float>(image_size.cx) / image_size.cy;
+            w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
+            if (w_h_ratio > w_h_ratio_draw)		//如果图像的宽高比大于绘制区域的宽高比，则需要裁剪两边的图像
+            {
+                int image_width;		//按比例缩放后的宽度
+                image_width = image_size.cx * size.cy / image_size.cy;
+                start_point.x -= ((image_width - size.cx) / 2);
+                size.cx = image_width;
+            }
+            else
+            {
+                int image_height;		//按比例缩放后的高度
+                image_height = image_size.cy * size.cx / image_size.cx;
+                start_point.y -= ((image_height - size.cy) / 2);
+                size.cy = image_height;
+            }
+        }
+        else if (stretch_mode == StretchMode::FIT)
+        {
+            CSize draw_size = image_size;
+            float w_h_ratio, w_h_ratio_draw;		//图像的宽高比、绘制大小的宽高比
+            w_h_ratio = static_cast<float>(image_size.cx) / image_size.cy;
+            w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
+            if (w_h_ratio > w_h_ratio_draw)		//如果图像的宽高比大于绘制区域的宽高比
+            {
+                draw_size.cy = draw_size.cy * size.cx / draw_size.cx;
+                draw_size.cx = size.cx;
+                start_point.y += ((size.cy - draw_size.cy) / 2);
+            }
+            else
+            {
+                draw_size.cx = draw_size.cx * size.cy / draw_size.cy;
+                draw_size.cy = size.cy;
+                start_point.x += ((size.cx - draw_size.cx) / 2);
+            }
+            size = draw_size;
+        }
+    }
 }

@@ -84,6 +84,8 @@ public:
     void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
     void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode);
     void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
+    //void DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode);
+    void DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode);
 
     void DrawIcon(HICON hIcon, CPoint start_point, CSize size);
 
@@ -101,11 +103,16 @@ public:
 
     static HICON LoadIconResource(UINT id, int width, int height);
 
+private:
+    void ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode);
+
 protected:
     CDC* m_pDC{};		//用于绘图的CDC类的指针
     CWnd* m_pMainWnd{};	//绘图窗口的句柄
     //COLORREF m_backColor{ RGB(255,255,255) };
     CFont* m_pfont{};
+    Gdiplus::Graphics* m_pGraphics{};
+
 };
 
 

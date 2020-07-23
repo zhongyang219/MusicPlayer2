@@ -47,15 +47,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
         else
             m_draw.FillRect(cover_rect, m_colors.color_spectrum_back);
 
-        //使图标在矩形框中居中
-        CSize icon_size = theApp.m_icon_set.default_cover_small.GetSize();
-        CRect icon_rect;
-        icon_rect.left = cover_rect.left + (cover_rect.Width() - icon_size.cx) / 2;
-        icon_rect.right = icon_rect.left + icon_size.cx;
-        icon_rect.top = cover_rect.top + (cover_rect.Height() - icon_size.cy) / 2;
-        icon_rect.bottom = icon_rect.top + icon_size.cy;
-
-        m_draw.DrawIcon(theApp.m_icon_set.default_cover_small.GetIcon(), icon_rect.TopLeft(), icon_rect.Size());
+        m_draw.DrawImage(theApp.m_image_set.default_cover, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
     }
     m_buttons[BTN_COVER].rect = cover_rect;
 

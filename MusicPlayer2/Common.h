@@ -356,6 +356,10 @@ public:
     //从资源加载自定义文本资源。id：资源的ID，code_type：文本的编码格式
     static CString GetTextResource(UINT id, CodeType code_type);
 
+    //从资源加载png图片资源
+    //https://www.cnblogs.com/a-live/p/3222567.html
+    static Gdiplus::Image* GetPngImageResource(UINT id);
+
 };
 
 template<class T>

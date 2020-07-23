@@ -457,8 +457,8 @@ void CMusicPlayerApp::SaveSongInfo(const SongInfo& song_info)
 void CMusicPlayerApp::LoadIconResource()
 {
     m_icon_set.app.Load(IDR_MAINFRAME, NULL, DPI(16));
-    m_icon_set.default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);
-    m_icon_set.default_cover_small.Load(IDI_DEFAULT_COVER, NULL, DPI(32));
+    //m_icon_set.default_cover.Load(IDI_DEFAULT_COVER, NULL, 512);
+    //m_icon_set.default_cover_small.Load(IDI_DEFAULT_COVER, NULL, DPI(32));
     m_icon_set.skin.Load(IDI_SKIN, IDI_SKIN_D, DPI(16));
     m_icon_set.eq.Load(IDI_EQ, IDI_EQ_D, DPI(16));
     m_icon_set.setting.Load(IDI_SETTING, IDI_SETTING_D, DPI(16));
@@ -531,6 +531,9 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.exit = CDrawCommon::LoadIconResource(IDI_EXIT_D, DPI(16), DPI(16));
     m_icon_set.album_cover = CDrawCommon::LoadIconResource(IDI_ALBUM_COVER_D, DPI(16), DPI(16));
     m_icon_set.dark_mode = CDrawCommon::LoadIconResource(IDI_DARK_MODE_D, DPI(16), DPI(16));
+
+    //加载图片资源
+    m_image_set.default_cover = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
 }
 
 void CMusicPlayerApp::InitMenuResourse()

@@ -102,10 +102,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         }
         else
         {
-            CRect rect = cover_rect;
-            int cover_margin = static_cast<int>(cover_rect.Width() * 0.13);
-            rect.DeflateRect(cover_margin, cover_margin);
-            m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
+            m_draw.DrawImage(theApp.m_image_set.default_cover, rc_tmp.TopLeft(), rc_tmp.Size(), CDrawCommon::StretchMode::FIT);
         }
 
         ////绘制播放进度
@@ -271,10 +268,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         }
         else
         {
-            CRect rect = rc_tmp;
-            int cover_margin = static_cast<int>(rc_tmp.Width() * 0.13);
-            rect.DeflateRect(cover_margin, cover_margin);
-            m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
+            m_draw.DrawImage(theApp.m_image_set.default_cover, rc_tmp.TopLeft(), rc_tmp.Size(), CDrawCommon::StretchMode::FIT);
         }
 
         //绘制频谱分析
