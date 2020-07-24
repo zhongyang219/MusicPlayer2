@@ -123,6 +123,8 @@ private:
 	Time m_b_repeat{};		//AB循环中B点的时间
 	ABRepeatMode m_ab_repeat_mode{};
 
+    bool m_file_opend{ false };       //如果打开了一个文件，则为true
+
 private:
 	void IniPlayerCore();			//初始化BASS音频库
 	void UnInitPlayerCore();

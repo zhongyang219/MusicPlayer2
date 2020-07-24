@@ -481,6 +481,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_pCore->Open(GetCurrentFilePath().c_str());
         if (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0)
             m_error_state = ES_FILE_CONNOT_BE_OPEN;
+        m_file_opend = true;
         //获取音频类型
         m_current_file_type = m_pCore->GetAudioType();		//根据通道信息获取当前音频文件的类型
         if (m_current_file_type.empty())		//如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
@@ -1173,7 +1174,7 @@ bool CPlayer::IsError() const
     if (m_loading)		//如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0));
+        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_file_opend && m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0));
 }
 
 std::wstring CPlayer::GetErrorInfo()
