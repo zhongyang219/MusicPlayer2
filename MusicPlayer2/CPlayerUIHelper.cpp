@@ -12,7 +12,7 @@ CPlayerUIHelper::~CPlayerUIHelper()
 {
 }
 
-UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark)
+UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark, bool draw_alpha)
 {
     UIColors colors{};
     //if (theApp.m_app_setting_data.dark_mode)
@@ -29,7 +29,16 @@ UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark)
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
         colors.color_button_back = theApp.m_app_setting_data.theme_color.dark3;
-        colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light2;
+        if (draw_alpha)
+        {
+            colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light2;
+            colors.color_button_hover = theApp.m_app_setting_data.theme_color.light1;
+        }
+        else
+        {
+            colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark0;
+            colors.color_button_hover = theApp.m_app_setting_data.theme_color.dark1;
+        }
     }
     else
     {
@@ -44,7 +53,16 @@ UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark)
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
         colors.color_button_back = theApp.m_app_setting_data.theme_color.light2;
-        colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark1;
+        if (draw_alpha)
+        {
+            colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark0;
+            colors.color_button_hover = theApp.m_app_setting_data.theme_color.light1_5;
+        }
+        else
+        {
+            colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light1_5;
+            colors.color_button_hover = theApp.m_app_setting_data.theme_color.light2_5;
+        }
     }
 
     return colors;

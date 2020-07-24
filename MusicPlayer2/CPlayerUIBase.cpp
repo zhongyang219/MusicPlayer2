@@ -431,7 +431,7 @@ void CPlayerUIBase::ClearBtnRect()
 void CPlayerUIBase::PreDrawInfo()
 {
     //设置颜色
-    m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode);
+    m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode, IsDrawBackgroundAlpha());
 
     //if (m_repeat_mode_tip.IsEmpty())
     SetRepeatModeToolTipText();
@@ -780,7 +780,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & ico
     if(btn.pressed && btn.hover)
         m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
     else if (btn.hover)
-        m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
+        m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_hover, alpha);
 
     //else if (!theApp.m_app_setting_data.dark_mode)
     //	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
@@ -816,7 +816,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
     if (btn.pressed && btn.hover)
         m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
     else if (btn.hover)
-        m_draw.FillAlphaRect(rc_tmp, m_colors.color_text_2, alpha);
+        m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_hover, alpha);
 
     //else if (!theApp.m_app_setting_data.dark_mode)
     //	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
@@ -851,7 +851,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, boo
         }
         else if (btn.hover)
         {
-            m_draw.FillAlphaRect(rect, m_colors.color_text_2, alpha);
+            m_draw.FillAlphaRect(rect, m_colors.color_button_hover, alpha);
         }
         else if (back_color)
         {
