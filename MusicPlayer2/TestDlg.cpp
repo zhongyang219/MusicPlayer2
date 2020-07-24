@@ -79,6 +79,15 @@ BOOL CTestDlg::OnInitDialog()
     //    }
     //}
 
+    bitmap.LoadBitmap(IDB_CORTANA_WHITE);
+
+    CDrawCommon::SaveBitmap(bitmap, L"D:\\Temp\\test_before.bmp");
+
+    CDrawCommon::CopyBitmap(bitmap_copy, bitmap);
+
+    CDrawCommon::SaveBitmap(bitmap_copy, L"D:\\Temp\\test_after.bmp");
+
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -109,8 +118,8 @@ void CTestDlg::OnPaint()
     CRect img_rect{ CPoint(START_X, START_Y), CSize(theApp.DPI(250), theApp.DPI(150)) };
     CDrawCommon draw;
     draw.Create(&dc, this);
-    draw.DrawImage(m_pImage, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FILL);
-    draw.DrawRectOutLine(img_rect, RGB(0, 0, 0), 1, false);
+    //draw.DrawImage(m_pImage, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FILL);
+    //draw.DrawRectOutLine(img_rect, RGB(0, 0, 0), 1, false);
     //draw.DrawBitmap(m_image, CPoint(START_X, START_Y), CSize(theApp.DPI(200), theApp.DPI(200)), CDrawCommon::StretchMode::FIT);
 
 
@@ -118,4 +127,7 @@ void CTestDlg::OnPaint()
     //m_image.Draw(dc.GetSafeHdc(), img_rect, Gdiplus::InterpolationMode::InterpolationModeHighQuality);
 
     //m_image.AlphaBlend(dc.GetSafeHdc(), START_X, START_Y, theApp.DPI(200), theApp.DPI(200), 0, 0, m_image.GetWidth(), m_image.GetHeight());
+
+    draw.DrawBitmap(bitmap_copy, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FIT);
+
 }

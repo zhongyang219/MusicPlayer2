@@ -105,6 +105,14 @@ public:
 
     static HICON LoadIconResource(UINT id, int width, int height);
 
+    //复制一个bitmap (http://wupei.j2megame.org/archives/86) 
+    //(此函数未测试成功，复制的图片为全黑色，原因暂时未知，后面再调查)
+    static HBITMAP CopyBitmap(HBITMAP hSourceHbitmap);
+    static void CopyBitmap(CBitmap& dest, CBitmap& src);
+ 
+    //将一个Bitmap保存到文件
+    static void SaveBitmap(HBITMAP bitmap, LPCTSTR path);
+
 private:
     void ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode);
 

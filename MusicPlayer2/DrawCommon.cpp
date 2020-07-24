@@ -329,7 +329,6 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 
 void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode)
 {
-	CDC memDC;
 	CBitmap bitmap;
 	bitmap.LoadBitmap(bitmap_id);
 	DrawBitmap(bitmap, start_point, size, stretch_mode);
@@ -337,7 +336,6 @@ void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, Str
 
 void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
 {
-	//CDC memDC;
 	CBitmap bitmap;
 	if (!bitmap.Attach(hbitmap))
 		return;
@@ -490,6 +488,61 @@ bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize siz
 HICON CDrawCommon::LoadIconResource(UINT id, int width, int height)
 {
 	return (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, width, height, 0);
+}
+
+HBITMAP CDrawCommon::CopyBitmap(HBITMAP hSourceHbitmap)
+{
+    CDC sourceDC;
+    CDC destDC;
+    sourceDC.CreateCompatibleDC(NULL);
+    destDC.CreateCompatibleDC(NULL);
+    //The bitmap information. 
+    BITMAP bm = { 0 };
+    //Get the bitmap information. 
+    ::GetObject(hSourceHbitmap, sizeof(bm), &bm);
+    // Create a bitmap to hold the result 
+    HBITMAP hbmResult = ::CreateCompatibleBitmap(CClientDC(NULL), bm.bmWidth, bm.bmHeight);
+
+    HBITMAP hbmOldSource = (HBITMAP)::SelectObject(sourceDC.m_hDC, hSourceHbitmap);
+    HBITMAP hbmOldDest = (HBITMAP)::SelectObject(destDC.m_hDC, hbmResult);
+    destDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, &sourceDC, 0, 0, SRCCOPY);
+
+    // Restore DCs 
+    ::SelectObject(sourceDC.m_hDC, hbmOldSource);
+    ::SelectObject(destDC.m_hDC, hbmOldDest);
+    ::DeleteObject(sourceDC.m_hDC);
+    ::DeleteObject(destDC.m_hDC);
+
+    return hbmResult;
+}
+
+void CDrawCommon::CopyBitmap(CBitmap & dest, CBitmap & src)
+{
+    CDC sourceDC;
+    CDC destDC;
+    sourceDC.CreateCompatibleDC(NULL);
+    destDC.CreateCompatibleDC(NULL);
+    //The bitmap information. 
+    BITMAP bm = { 0 };
+    //Get the bitmap information. 
+    ::GetObject(src.GetSafeHandle(), sizeof(bm), &bm);
+
+    dest.DeleteObject();
+    dest.CreateCompatibleBitmap(&destDC, bm.bmWidth, bm.bmHeight);
+
+    sourceDC.SelectObject(&src);
+    destDC.SelectObject(&dest);
+    int rtn = destDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, &sourceDC, 0, 0, SRCCOPY);
+    //destDC.FillSolidRect(5, 5, 5, 5, RGB(78, 176, 255));
+
+}
+
+void CDrawCommon::SaveBitmap(HBITMAP bitmap, LPCTSTR path)
+{
+    CImage img_tmp;
+    img_tmp.Attach(bitmap);
+    img_tmp.Save(path);
+    img_tmp.Detach();
 }
 
 void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode)
