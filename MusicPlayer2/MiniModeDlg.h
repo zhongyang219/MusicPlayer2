@@ -104,4 +104,6 @@ protected:
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnMiniModeAlwaysOnTop();
+protected:
+    afx_msg LRESULT OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam);
 };

@@ -5,6 +5,7 @@
 #include "DrawCommon.h"
 #include "ColorStatic.h"
 #include "TabDlg.h"
+#include "SpinEdit.h"
 
 // CAppearanceSettingDlg 对话框
 
@@ -22,7 +23,9 @@ public:
 
 	void DrawColor();
 
+#define MIM_LINE_SPACE 0		//歌词行间距设定的最小值
 #define MAX_LINE_SPACE 40		//歌词行间距设定的最大值
+
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -65,6 +68,9 @@ protected:
     CButton m_enable_background_chk;
     CButton m_low_freq_in_center_chk;
     CComboBox m_alignment_combo;
+    CButton m_default_cover_hq_chk;
+    CSpinEdit m_lyric_line_space_edit;
+    CSpinEdit m_ui_refresh_interval_edit;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -94,9 +100,6 @@ public:
 	afx_msg void OnBnClickedFollowSystemColorCheck();
 	virtual void OnCancel();
 	virtual void OnOK();
-//	afx_msg void OnEnChangeFontNameEdit();
-	afx_msg void OnEnChangeLineSpaceEdit();
-	afx_msg void OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnBnClickedShowAlbumCoverCheck();
 	afx_msg void OnCbnSelchangeAlbumFitCombo();
@@ -111,4 +114,8 @@ public:
     afx_msg void OnBnClickedEnableBackgroundCheck();
     afx_msg void OnBnClickedLowFreqInCenterCheck();
     afx_msg void OnCbnSelchangeAlignmentCombo();
+    afx_msg void OnBnClickedDefaultAlbumCoverHq();
+    afx_msg void OnBnClickedRestoreDefaultButton();
+    afx_msg void OnEnKillfocusUiIntervalEdit();
+    afx_msg void OnDeltaposSpin(NMHDR *pNMHDR, LRESULT *pResult);
 };

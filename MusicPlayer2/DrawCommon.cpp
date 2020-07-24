@@ -345,6 +345,12 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 	bitmap.Detach();
 }
 
+void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode)
+{
+    ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode);
+    image.Draw(m_pDC->GetSafeHdc(), CRect(start_point, size), Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+}
+
 void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode)
 {
     m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
@@ -355,7 +361,7 @@ void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize si
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
 {
 	if(size.cx==0||size.cy==0)
-		::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, 0, 0, 0, NULL, DI_NORMAL);
+		::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, 0, 0, 0, NULL, DI_NORMAL | DI_DEFAULTSIZE);
 	else
 		::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, size.cx, size.cy, 0, NULL, DI_NORMAL);
 }

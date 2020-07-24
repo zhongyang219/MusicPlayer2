@@ -237,6 +237,9 @@ struct ApperanceSettingData
     int gauss_blur_radius{ 60 };				//高斯模糊半径*10
     bool lyric_background{ true };				//歌词界面背景
     bool dark_mode{ false };					//深色模式
+
+    bool draw_album_high_quality{ false };      //专辑封面图片使用Gdi+高质量绘图
+    int ui_refresh_interval{ 100 };             //界面刷新的时间间隔
 };
 
 struct GeneralSettingData
@@ -355,8 +358,8 @@ struct IconSet
 {
     //界面图标
     IconRes app;
-    //IconRes default_cover;
-    //IconRes default_cover_small;
+    IconRes default_cover;
+    IconRes default_cover_small;
     IconRes skin;
     IconRes eq;
     IconRes setting;

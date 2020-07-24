@@ -13,7 +13,6 @@ IMPLEMENT_DYNAMIC(CAppearanceSettingDlg, CTabDlg)
 
 CAppearanceSettingDlg::CAppearanceSettingDlg(CWnd* pParent /*=NULL*/)
 	: CTabDlg(IDD_APPEREANCE_SETTING_DLG, pParent)
-	/*, m_data.lyric_line_space(0)*/
 {
 
 }
@@ -34,8 +33,6 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_COLOR_STATIC6, m_color_static5);
     DDX_Control(pDX, IDC_COLOR_STATIC7, m_color_static6);
     DDX_Control(pDX, IDC_FOLLOW_SYSTEM_COLOR_CHECK, m_follow_system_color_check);
-    DDX_Text(pDX, IDC_FONT_SIZE_EDIT, m_data.lyric_line_space);
-    DDV_MinMaxInt(pDX, m_data.lyric_line_space, 0, MAX_LINE_SPACE);
     DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
     DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
     DDX_Control(pDX, IDC_ALBUM_FIT_COMBO, m_album_cover_fit_combo);
@@ -51,6 +48,9 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_ENABLE_BACKGROUND_CHECK, m_enable_background_chk);
     DDX_Control(pDX, IDC_LOW_FREQ_IN_CENTER_CHECK, m_low_freq_in_center_chk);
     DDX_Control(pDX, IDC_ALIGNMENT_COMBO, m_alignment_combo);
+    DDX_Control(pDX, IDC_DEFAULT_ALBUM_COVER_HQ, m_default_cover_hq_chk);
+    DDX_Control(pDX, IDC_FONT_SIZE_EDIT, m_lyric_line_space_edit);
+    DDX_Control(pDX, IDC_UI_INTERVAL_EDIT, m_ui_refresh_interval_edit);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -122,8 +122,8 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
 	ON_STN_CLICKED(IDC_COLOR_STATIC7, &CAppearanceSettingDlg::OnStnClickedColorStatic7)
 	ON_BN_CLICKED(IDC_FOLLOW_SYSTEM_COLOR_CHECK, &CAppearanceSettingDlg::OnBnClickedFollowSystemColorCheck)
 	//ON_EN_CHANGE(IDC_FONT_NAME_EDIT, &CAppearanceSettingDlg::OnEnChangeFontNameEdit)
-	ON_EN_CHANGE(IDC_FONT_SIZE_EDIT, &CAppearanceSettingDlg::OnEnChangeLineSpaceEdit)
-	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CAppearanceSettingDlg::OnDeltaposSpin1)
+	//ON_EN_CHANGE(IDC_FONT_SIZE_EDIT, &CAppearanceSettingDlg::OnEnChangeLineSpaceEdit)
+	//ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CAppearanceSettingDlg::OnDeltaposSpin1)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_CHECK, &CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck)
 	ON_CBN_SELCHANGE(IDC_ALBUM_FIT_COMBO, &CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo)
@@ -138,6 +138,10 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_ENABLE_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedEnableBackgroundCheck)
     ON_BN_CLICKED(IDC_LOW_FREQ_IN_CENTER_CHECK, &CAppearanceSettingDlg::OnBnClickedLowFreqInCenterCheck)
     ON_CBN_SELCHANGE(IDC_ALIGNMENT_COMBO, &CAppearanceSettingDlg::OnCbnSelchangeAlignmentCombo)
+    ON_BN_CLICKED(IDC_DEFAULT_ALBUM_COVER_HQ, &CAppearanceSettingDlg::OnBnClickedDefaultAlbumCoverHq)
+    ON_BN_CLICKED(IDC_RESTORE_DEFAULT_BUTTON, &CAppearanceSettingDlg::OnBnClickedRestoreDefaultButton)
+    ON_EN_KILLFOCUS(IDC_UI_INTERVAL_EDIT, &CAppearanceSettingDlg::OnEnKillfocusUiIntervalEdit)
+    ON_NOTIFY(UDN_DELTAPOS, SPIN_ID, &CAppearanceSettingDlg::OnDeltaposSpin)
 END_MESSAGE_MAP()
 
 
@@ -149,12 +153,9 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	CTabDlg::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	//SetBackgroundColor(RGB(255, 255, 255));
 
-	//SetDlgItemText(IDC_FONT_NAME_EDIT, m_font.c_str());
-	//CString font_size_str;
-	//font_size_str.Format(_T("%d"), m_data.lyric_line_space);
-	//SetDlgItemText(IDC_FONT_SIZE_EDIT, font_size_str);
+    m_lyric_line_space_edit.SetRange(MIM_LINE_SPACE, MAX_LINE_SPACE);
+    m_lyric_line_space_edit.SetValue(m_data.lyric_line_space);
 
 	m_transparency_slid.SetRange(20, 100);
 	m_transparency_slid.SetPos(m_data.window_transparency);
@@ -243,6 +244,11 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
     m_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
     m_alignment_combo.SetCurSel(static_cast<int>(m_data.lyric_align));
+
+    m_default_cover_hq_chk.SetCheck(m_data.draw_album_high_quality);
+
+    m_ui_refresh_interval_edit.SetRange(MIN_UI_INTERVAL, MAX_UI_INTERVAL);
+    m_ui_refresh_interval_edit.SetValue(m_data.ui_refresh_interval);
 
 	SetControlEnable();
 
@@ -426,6 +432,10 @@ void CAppearanceSettingDlg::OnOK()
 	GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
 	CCommon::StringSplit(wstring(temp), L',', m_data.default_album_name);
 
+    m_data.lyric_line_space = m_lyric_line_space_edit.GetValue();
+
+    m_data.ui_refresh_interval = m_ui_refresh_interval_edit.GetValue();
+
 	//CTabDlg::OnOK();
 }
 
@@ -443,52 +453,6 @@ void CAppearanceSettingDlg::OnOK()
 //	m_font = font_name;
 //	m_font_changed = true;
 //}
-
-
-void CAppearanceSettingDlg::OnEnChangeLineSpaceEdit()
-{
-	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CTabDlg::OnInitDialog()
-	// 函数并调用 CRichEditCtrl().SetEventMask()，
-	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
-
-	// TODO:  在此添加控件通知处理程序代码
-	//CString font_size;
-	//GetDlgItemText(IDC_FONT_SIZE_EDIT, font_size);
-	//m_data.lyric_line_space = _wtoi(font_size);
-	UpdateData(TRUE);
-	if (m_data.lyric_line_space < 0) m_data.lyric_line_space = 0;
-	if (m_data.lyric_line_space > MAX_LINE_SPACE) m_data.lyric_line_space = MAX_LINE_SPACE;
-	UpdateData(FALSE);
-	m_font_changed = true;
-}
-
-
-void CAppearanceSettingDlg::OnDeltaposSpin1(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	if (pNMUpDown->iDelta == 1) // 如果此值为1 , 说明点击了Spin的往下箭头 
-	{
-		//减少歌词行间距的数值
-		UpdateData(TRUE);
-		if (m_data.lyric_line_space > 0)
-			m_data.lyric_line_space--;
-		UpdateData(FALSE);
-	}
-	else if (pNMUpDown->iDelta == -1) // 如果此值为-1 , 说明点击了Spin的往上箭头 
-	{
-		//增加歌词行间距的数值
-		UpdateData(TRUE);
-		if (m_data.lyric_line_space < MAX_LINE_SPACE)
-			m_data.lyric_line_space++;
-		UpdateData(FALSE);
-	}
-	UpdateData(TRUE);
-	m_font_changed = true;
-
-	*pResult = 0;
-}
 
 
 
@@ -607,4 +571,70 @@ void CAppearanceSettingDlg::OnCbnSelchangeAlignmentCombo()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.lyric_align = static_cast<Alignment>(m_alignment_combo.GetCurSel());
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedDefaultAlbumCoverHq()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.draw_album_high_quality = (m_default_cover_hq_chk.GetCheck() != 0);
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedRestoreDefaultButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_ui_refresh_interval_edit.SetValue(UI_INTERVAL_DEFAULT);
+}
+
+
+void CAppearanceSettingDlg::OnEnKillfocusUiIntervalEdit()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CString str;
+    GetDlgItemText(IDC_UI_INTERVAL_EDIT, str);
+    int value = _ttoi(str.GetString());
+    if (value < MIN_UI_INTERVAL || value > MAX_UI_INTERVAL)
+    {
+        value = UI_INTERVAL_DEFAULT;
+    }
+    m_ui_refresh_interval_edit.SetValue(value);
+
+}
+
+void CAppearanceSettingDlg::OnDeltaposSpin(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    //这里响应微调按钮（spin button）点击上下按钮时的事件，
+    //所有CSpinEdit类中的Spin按钮点击时的响应都在这里，因为这些Spin按钮的ID都是“SPIN_ID”。
+    //通过GetBuddy的返回值判断微调按钮是属于哪个EditBox的。
+
+    CSpinButtonCtrl* pSpin = (CSpinButtonCtrl*)CWnd::FromHandle(pNMHDR->hwndFrom);
+    if (pSpin == nullptr)
+        return;
+    CWnd* pEdit = pSpin->GetBuddy();
+    //设置点击“界面刷新时间间隔”微调按钮时的步长
+    if (pEdit == &m_ui_refresh_interval_edit)       //当用户点击了“界面刷新时间间隔”的微调按钮时
+    {
+        LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+        if (pNMUpDown->iDelta == -1)
+        {
+            // 用户按下了spin控件的向下箭头
+            int value = m_ui_refresh_interval_edit.GetValue();
+            value -= UI_INTERVAL_STEP;
+            value /= UI_INTERVAL_STEP;
+            value *= UI_INTERVAL_STEP;
+            m_ui_refresh_interval_edit.SetValue(value);
+        }
+        else if (pNMUpDown->iDelta == 1)
+        {
+            // 用户按下了spin控件的向上箭头
+            int value = m_ui_refresh_interval_edit.GetValue();
+            value += UI_INTERVAL_STEP;
+            value /= UI_INTERVAL_STEP;
+            value *= UI_INTERVAL_STEP;
+            m_ui_refresh_interval_edit.SetValue(value);
+        }
+        pNMUpDown->iDelta = 0;
+    }
+    *pResult = 0;
 }

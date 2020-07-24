@@ -297,6 +297,9 @@
     <Filter Include="资源文件\bitmaps">
       <UniqueIdentifier>{b15ef7d8-56db-471d-9986-4ca1ba98375a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\SpinEdit">
+      <UniqueIdentifier>{de794f42-e5a8-430a-8756-b5faf4faff9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -652,6 +655,9 @@
     <ClInclude Include="WCI.h">
       <Filter>公共的类\WICFactory</Filter>
     </ClInclude>
+    <ClInclude Include="SpinEdit.h">
+      <Filter>派生的控件类\SpinEdit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -974,6 +980,9 @@
     </ClCompile>
     <ClCompile Include="WCI.cpp">
       <Filter>公共的类\WICFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinEdit.cpp">
+      <Filter>派生的控件类\SpinEdit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1301,13 +1310,13 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\album_cover.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\dark_mode.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\黑色胶片.png">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\bitmaps</Filter>
     </Image>
   </ItemGroup>
 </Project>

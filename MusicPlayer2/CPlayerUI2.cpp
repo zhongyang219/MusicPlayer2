@@ -98,11 +98,24 @@ void CPlayerUI2::_DrawInfo(bool reset)
         m_draw_data.thumbnail_rect = cover_rect;
         if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
         {
-            m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+            if (theApp.m_app_setting_data.draw_album_high_quality)
+                m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+            else
+                m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
         }
         else
         {
-            m_draw.DrawImage(theApp.m_image_set.default_cover, rc_tmp.TopLeft(), rc_tmp.Size(), CDrawCommon::StretchMode::FIT);
+            if (theApp.m_app_setting_data.draw_album_high_quality)
+            {
+                m_draw.DrawImage(theApp.m_image_set.default_cover, rc_tmp.TopLeft(), rc_tmp.Size(), CDrawCommon::StretchMode::FIT);
+            }
+            else
+            {
+                CRect rect = cover_rect;
+                int cover_margin = static_cast<int>(cover_rect.Width() * 0.13);
+                rect.DeflateRect(cover_margin, cover_margin);
+                m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
+            }
         }
 
         ////绘制播放进度
@@ -264,11 +277,24 @@ void CPlayerUI2::_DrawInfo(bool reset)
         m_draw_data.thumbnail_rect = rc_tmp;
         if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
         {
-            m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rc_tmp.TopLeft(), rc_tmp.Size(), theApp.m_app_setting_data.album_cover_fit);
+            if (theApp.m_app_setting_data.draw_album_high_quality)
+                m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), rc_tmp.TopLeft(), rc_tmp.Size(), theApp.m_app_setting_data.album_cover_fit);
+            else
+                m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rc_tmp.TopLeft(), rc_tmp.Size(), theApp.m_app_setting_data.album_cover_fit);
         }
         else
         {
-            m_draw.DrawImage(theApp.m_image_set.default_cover, rc_tmp.TopLeft(), rc_tmp.Size(), CDrawCommon::StretchMode::FIT);
+            if (theApp.m_app_setting_data.draw_album_high_quality)
+            {
+                m_draw.DrawImage(theApp.m_image_set.default_cover, rc_tmp.TopLeft(), rc_tmp.Size(), CDrawCommon::StretchMode::FIT);
+            }
+            else
+            {
+                CRect rect = rc_tmp;
+                int cover_margin = static_cast<int>(rc_tmp.Width() * 0.13);
+                rect.DeflateRect(cover_margin, cover_margin);
+                m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
+            }
         }
 
         //绘制频谱分析

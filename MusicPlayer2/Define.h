@@ -1,6 +1,6 @@
 ﻿#pragma once
 //自定义包含文件
-#include <conio.h >
+//#include <conio.h >
 #include <vector>
 #include <io.h>
 #include <string>
@@ -67,13 +67,18 @@ using _tstring = std::string;
 
 //定时器
 #define TIMER_ID 1234			//定义定时器的ID
-#define TIMER_ELAPSE 80		//定义定时器响应的时间间隔（毫秒）
+//#define TIMER_ELAPSE 80		//定义定时器响应的时间间隔（毫秒）
 #define TIMER_ID_MINI 1235		//迷你模式中的定时器ID
 #define TIMER_ID_MINI2 1236		//迷你模式中的定时器ID，用于显示频谱分析
 #define TIMER_ELAPSE_MINI 200	//定义迷你模式中的定时器响应的时间间隔（毫秒）
 #define TIMER_1_SEC 1237
 #define TIMER_DESKTOP_LYRIC 1238
 #define TIMER_DESKTOP_LYRIC_2 1239
+
+#define UI_INTERVAL_DEFAULT 80   //定义界面刷新时间的默认时间间隔（毫秒）
+#define MIN_UI_INTERVAL 40      //界面刷新时间间隔最小值
+#define MAX_UI_INTERVAL 300     //界面刷新时间间隔最大值
+#define UI_INTERVAL_STEP 10     //调整界面刷新时间间隔的步长
 
 //#define TIMER_ID_SPECTRAL
 //#define TIMER_ID_EXIT 1237
@@ -128,8 +133,9 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_INIT_ADD_TO_MENU (WM_USER+127)       //重新初始化右键菜单中的“添加到播放列表”子菜单
 #define WM_OPTION_SETTINGS (WM_USER+128)       //打开选项设置
 #define WM_RECENT_PLAYED_LIST_CLEARED (WM_USER+130)       //执行了“清空最近播放曲目列表”
+#define WM_TIMER_INTERVAL_CHANGED (WM_USER+131)           //主定时器时间间隔改变
 
-#define WM_NEXT_USER_MSG (WM_USER+131)
+#define WM_NEXT_USER_MSG (WM_USER+132)
 
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

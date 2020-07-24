@@ -134,6 +134,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_COMMAND(ID_MINI_MIDE_MINIMIZE, &CMiniModeDlg::OnMiniMideMinimize)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMiniModeDlg::OnListItemDragged)
     ON_COMMAND(ID_MINI_MODE_ALWAYS_ON_TOP, &CMiniModeDlg::OnMiniModeAlwaysOnTop)
+    ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
 END_MESSAGE_MAP()
 
 
@@ -213,7 +214,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 
     //设置定时器
     SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
-    SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//设置用于界面刷新的定时器
+    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
 
     //显示播放列表
     ShowPlaylist();
@@ -605,4 +606,12 @@ void CMiniModeDlg::OnMiniModeAlwaysOnTop()
     // TODO: 在此添加命令处理程序代码
     m_always_on_top = !m_always_on_top;
     SetAlwaysOnTop();
+}
+
+
+afx_msg LRESULT CMiniModeDlg::OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam)
+{
+    KillTimer(TIMER_ID_MINI2);
+    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
+    return 0;
 }
