@@ -288,7 +288,7 @@ public:
     afx_msg void OnCopyFileTo();
     afx_msg void OnMoveFileTo();
 protected:
-    afx_msg LRESULT OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam);
+    //afx_msg LRESULT OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnFormatConvert();
     afx_msg void OnFormatConvert1();
@@ -392,4 +392,5 @@ public:
     afx_msg void OnDeleteCurrentFromDisk();
 	afx_msg BOOL OnQueryEndSession();
     afx_msg void OnAlwaysUseExternalAlbumCover();
+    afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
 };

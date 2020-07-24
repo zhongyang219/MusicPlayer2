@@ -151,3 +151,6 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
         p = nullptr; \
     } \
 } while (false)
+
+//定义通过WM_COPYDATA消息传输数据的类型
+#define COPY_DATA_OPEN_FILE 1       //打开文件

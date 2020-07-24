@@ -156,7 +156,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DELETE_ALBUM_COVER, &CMusicPlayerDlg::OnDeleteAlbumCover)
     ON_COMMAND(ID_COPY_FILE_TO, &CMusicPlayerDlg::OnCopyFileTo)
     ON_COMMAND(ID_MOVE_FILE_TO, &CMusicPlayerDlg::OnMoveFileTo)
-    ON_MESSAGE(WM_OPEN_FILE_COMMAND_LINE, &CMusicPlayerDlg::OnOpenFileCommandLine)
+    //ON_MESSAGE(WM_OPEN_FILE_COMMAND_LINE, &CMusicPlayerDlg::OnOpenFileCommandLine)
     ON_COMMAND(ID_FORMAT_CONVERT, &CMusicPlayerDlg::OnFormatConvert)
     ON_COMMAND(ID_FORMAT_CONVERT1, &CMusicPlayerDlg::OnFormatConvert1)
     ON_MESSAGE(WM_SETTINGS_APPLIED, &CMusicPlayerDlg::OnSettingsApplied)
@@ -239,7 +239,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DELETE_CURRENT_FROM_DISK, &CMusicPlayerDlg::OnDeleteCurrentFromDisk)
 	ON_WM_QUERYENDSESSION()
     ON_COMMAND(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, &CMusicPlayerDlg::OnAlwaysUseExternalAlbumCover)
-END_MESSAGE_MAP()
+        ON_WM_COPYDATA()
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3612,19 +3613,19 @@ void CMusicPlayerDlg::OnMoveFileTo()
 }
 
 
-afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam)
-{
-    wstring cmd_line = CCommon::GetStringFromClipboard();
-    if (cmd_line.empty())
-        return 0;
-    vector<wstring> files;
-    CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
-    if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
-        CPlayer::GetInstance().OpenPlaylistFile(files[0]);
-    else
-        CPlayer::GetInstance().OpenFiles(files);
-    return 0;
-}
+//afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam)
+//{
+//    wstring cmd_line = CCommon::GetStringFromClipboard();
+//    if (cmd_line.empty())
+//        return 0;
+//    vector<wstring> files;
+//    CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
+//    if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
+//        CPlayer::GetInstance().OpenPlaylistFile(files[0]);
+//    else
+//        CPlayer::GetInstance().OpenFiles(files);
+//    return 0;
+//}
 
 
 void CMusicPlayerDlg::OnFormatConvert()
@@ -4800,4 +4801,28 @@ void CMusicPlayerDlg::OnAlwaysUseExternalAlbumCover()
         m_pDownloadThread = AfxBeginThread(DownloadLyricAndCoverThreadFunc, this);
     }
 
+}
+
+
+BOOL CMusicPlayerDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if (pCopyDataStruct != nullptr)
+    {
+        if (pCopyDataStruct->dwData == COPY_DATA_OPEN_FILE)
+        {
+            wstring cmd_line((const wchar_t*)pCopyDataStruct->lpData, pCopyDataStruct->cbData / sizeof(wchar_t));
+            //MessageBox(cmd_line.c_str());
+            if (cmd_line.empty())
+                return 0;
+            vector<wstring> files;
+            CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
+            if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
+                CPlayer::GetInstance().OpenPlaylistFile(files[0]);
+            else
+                CPlayer::GetInstance().OpenFiles(files);
+        }
+    }
+
+    return CMainDialogBase::OnCopyData(pWnd, pCopyDataStruct);
 }

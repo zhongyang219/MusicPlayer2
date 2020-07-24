@@ -146,8 +146,12 @@ BOOL CMusicPlayerApp::InitInstance()
 
                 if (!cmd_line.empty())		//如果通过命令行传递了打开的文件名，且已有一个进程在运行，则将打开文件的命令和命令行参数传递给该进程
                 {
-                    CCommon::CopyStringToClipboard(cmd_line);		//将命令行参数复制到剪贴板，通过剪贴板在不同进程间字符串
-                    ::SendMessage(handle, WM_OPEN_FILE_COMMAND_LINE, 0, 0);
+                    //通过WM_COPYDATA消息向已有进程传递消息
+                    COPYDATASTRUCT copy_data;
+                    copy_data.dwData = COPY_DATA_OPEN_FILE;
+                    copy_data.cbData = cmd_line.size() * sizeof(wchar_t);
+                    copy_data.lpData = (const PVOID)cmd_line.c_str();
+                    ::SendMessage(handle, WM_COPYDATA, 0, (LPARAM)&copy_data);
                 }
                 return FALSE;		//退出当前程序
             }
