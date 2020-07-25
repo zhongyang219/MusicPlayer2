@@ -451,7 +451,7 @@ void CMusicPlayerDlg::LoadConfig()
     m_desktop_lyric_size.cy = ini.GetInt(L"desktop_lyric", L"height", 0);
 
     theApp.m_app_setting_data.background_gauss_blur = ini.GetBool(L"config", L"background_gauss_blur", true);
-    theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 60);
+    theApp.m_app_setting_data.gauss_blur_radius = ini.GetInt(L"config", L"gauss_blur_radius", 100);
     theApp.m_app_setting_data.lyric_background = ini.GetBool(L"config", L"lyric_background", false);
     theApp.m_app_setting_data.dark_mode = ini.GetBool(L"config", L"dark_mode", false);
     theApp.m_app_setting_data.background_transparency = ini.GetInt(L"config", L"background_transparency", 80);
