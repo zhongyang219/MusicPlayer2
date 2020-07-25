@@ -169,5 +169,7 @@ protected:
 
     bool m_first_draw{ true };
 
+private:
+    CBitmap m_mem_bitmap_static;
 };
 

@@ -12,6 +12,7 @@ CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
 
 CPlayerUIBase::~CPlayerUIBase()
 {
+    m_mem_bitmap_static.DeleteObject();
 }
 
 void CPlayerUIBase::SetToolTip(CToolTipCtrl * pToolTip)
@@ -29,6 +30,47 @@ void CPlayerUIBase::DrawInfo(bool reset)
 {
     PreDrawInfo();
 
+#if 0
+    //双缓冲绘图
+    {
+        //CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
+        CDC memDC;
+        CBitmap memBitmap;
+        CBitmap* pOldBit;
+        memDC.CreateCompatibleDC(NULL);
+        if (m_mem_bitmap_static.GetSafeHandle() == NULL || reset)
+        {
+            memBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
+            pOldBit = memDC.SelectObject(&memBitmap);
+            m_draw.SetDC(&memDC);     //将m_draw中的绘图DC设置为缓冲的DC
+            m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+            //绘制背景
+            DrawBackground();
+            m_mem_bitmap_static.DeleteObject();
+            //bool b = m_mem_bitmap_static.Attach(CDrawCommon::CopyBitmap(memBitmap));
+            CDrawCommon::CopyBitmap(m_mem_bitmap_static, memBitmap);
+            CDrawCommon::SaveBitmap(memBitmap, L"D:\\Temp\\before.bmp");
+            CDrawCommon::SaveBitmap(m_mem_bitmap_static, L"D:\\Temp\\after.bmp");
+        }
+        else
+        {
+            //memBitmap.Attach(CDrawCommon::CopyBitmap(m_mem_bitmap_static));
+            CDrawCommon::CopyBitmap(memBitmap, m_mem_bitmap_static);
+            pOldBit = memDC.SelectObject(&memBitmap);
+            m_draw.SetDC(&memDC);     //将m_draw中的绘图DC设置为缓冲的DC
+            m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+        }
+        //绘制界面中其他信息
+        _DrawInfo(reset);
+        ////绘制背景
+        //DrawBackground();
+        m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &memDC, 0, 0, SRCCOPY);
+        memDC.SelectObject(pOldBit);
+        memBitmap.DeleteObject();
+        memDC.DeleteDC();
+    }
+
+#else
     //双缓冲绘图
     {
         CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
@@ -42,6 +84,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         _DrawInfo(reset);
     }
 
+#endif
 
     if (m_first_draw)
     {

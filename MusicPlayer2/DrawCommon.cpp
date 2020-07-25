@@ -501,11 +501,13 @@ HBITMAP CDrawCommon::CopyBitmap(HBITMAP hSourceHbitmap)
     //Get the bitmap information. 
     ::GetObject(hSourceHbitmap, sizeof(bm), &bm);
     // Create a bitmap to hold the result 
-    HBITMAP hbmResult = ::CreateCompatibleBitmap(CClientDC(NULL), bm.bmWidth, bm.bmHeight);
+    //HBITMAP hbmResult = ::CreateCompatibleBitmap(CClientDC(NULL), bm.bmWidth, bm.bmHeight);
+    HBITMAP hbmResult = ::CreateBitmap(bm.bmWidth, bm.bmHeight, bm.bmPlanes, bm.bmBitsPixel, NULL);
 
     HBITMAP hbmOldSource = (HBITMAP)::SelectObject(sourceDC.m_hDC, hSourceHbitmap);
     HBITMAP hbmOldDest = (HBITMAP)::SelectObject(destDC.m_hDC, hbmResult);
     destDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, &sourceDC, 0, 0, SRCCOPY);
+    destDC.FillSolidRect(5, 5, 5, 5, RGB(78, 176, 255));
 
     // Restore DCs 
     ::SelectObject(sourceDC.m_hDC, hbmOldSource);
@@ -518,6 +520,7 @@ HBITMAP CDrawCommon::CopyBitmap(HBITMAP hSourceHbitmap)
 
 void CDrawCommon::CopyBitmap(CBitmap & dest, CBitmap & src)
 {
+#if 1
     CDC sourceDC;
     CDC destDC;
     sourceDC.CreateCompatibleDC(NULL);
@@ -528,13 +531,28 @@ void CDrawCommon::CopyBitmap(CBitmap & dest, CBitmap & src)
     ::GetObject(src.GetSafeHandle(), sizeof(bm), &bm);
 
     dest.DeleteObject();
-    dest.CreateCompatibleBitmap(&destDC, bm.bmWidth, bm.bmHeight);
+    //dest.CreateCompatibleBitmap(&destDC, bm.bmWidth, bm.bmHeight);
+    //这里如果使用上面一行注释掉的代码（CreateCompatibleBitmap）会导致BitBlt等到的图像为黑色，因为src和dest图像的位深度不一样
+    dest.CreateBitmap(bm.bmWidth, bm.bmHeight, bm.bmPlanes, bm.bmBitsPixel, NULL);
+
+    BITMAP bm_dest{};
+    ::GetObject(dest.GetSafeHandle(), sizeof(bm_dest), &bm_dest);
 
     sourceDC.SelectObject(&src);
     destDC.SelectObject(&dest);
     int rtn = destDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, &sourceDC, 0, 0, SRCCOPY);
-    //destDC.FillSolidRect(5, 5, 5, 5, RGB(78, 176, 255));
+    ::GetObject(dest.GetSafeHandle(), sizeof(bm_dest), &bm_dest);
 
+    destDC.FillSolidRect(5, 5, 5, 5, RGB(78, 176, 255));
+    ::GetObject(dest.GetSafeHandle(), sizeof(bm_dest), &bm_dest);
+#else
+
+    HBITMAP HBM = (HBITMAP)src.m_hObject;
+
+    //HBITMAP HBM=(HBITMAP)hSourceBitmap->Detach();//如果希望清除掉原图资源
+    //hDescBitmap = new CBitmap;
+    dest.Attach(HBM);
+#endif
 }
 
 void CDrawCommon::SaveBitmap(HBITMAP bitmap, LPCTSTR path)
