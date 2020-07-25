@@ -476,10 +476,6 @@ void CPlayerUIBase::PreDrawInfo()
     //设置颜色
     m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode, IsDrawBackgroundAlpha());
 
-    //if (m_repeat_mode_tip.IsEmpty())
-    SetRepeatModeToolTipText();
-    SetSongInfoToolTipText();
-
     //设置绘制的矩形区域
     SetDrawRect();
 }
@@ -1456,5 +1452,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT));
+
+    UpdateRepeatModeToolTip();
 }
 
