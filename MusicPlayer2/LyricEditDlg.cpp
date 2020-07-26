@@ -5,7 +5,7 @@
 #include "MusicPlayer2.h"
 #include "LyricEditDlg.h"
 #include "afxdialogex.h"
-#include "WCI.h"
+#include "WIC.h"
 
 
 // CLyricEditDlg 对话框

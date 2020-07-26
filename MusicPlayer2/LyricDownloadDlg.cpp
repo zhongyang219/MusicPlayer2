@@ -6,7 +6,7 @@
 #include "LyricDownloadDlg.h"
 #include "afxdialogex.h"
 #include "MessageDlg.h"
-#include "WCI.h"
+#include "WIC.h"
 
 
 // CLyricDownloadDlg 对话框

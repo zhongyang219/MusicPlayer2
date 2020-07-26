@@ -652,11 +652,11 @@
     <ClInclude Include="FolderExploreDlg.h">
       <Filter>对话框类\媒体库对话框\文件夹浏览</Filter>
     </ClInclude>
-    <ClInclude Include="WCI.h">
-      <Filter>公共的类\WICFactory</Filter>
-    </ClInclude>
     <ClInclude Include="SpinEdit.h">
       <Filter>派生的控件类\SpinEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="WIC.h">
+      <Filter>公共的类\WICFactory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -978,11 +978,11 @@
     <ClCompile Include="FolderExploreDlg.cpp">
       <Filter>对话框类\媒体库对话框\文件夹浏览</Filter>
     </ClCompile>
-    <ClCompile Include="WCI.cpp">
-      <Filter>公共的类\WICFactory</Filter>
-    </ClCompile>
     <ClCompile Include="SpinEdit.cpp">
       <Filter>派生的控件类\SpinEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="WIC.cpp">
+      <Filter>公共的类\WICFactory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

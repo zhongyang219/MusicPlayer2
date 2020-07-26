@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 #include "BassCore.h"
 #include "COSUPlayerHelper.h"
-#include "WCI.h"
+#include "WIC.h"
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
 

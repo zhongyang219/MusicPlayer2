@@ -10,7 +10,7 @@
 #include <Gdiplus.h>
 #include "UpdateHelper.h"
 #include "MusicPlayerCmdHelper.h"
-#include "WCI.h"
+#include "WIC.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

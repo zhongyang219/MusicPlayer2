@@ -6,7 +6,7 @@
 #include "Define.h"
 #include "CPlayerUIHelper.h"
 #include "MusicPlayerDlg.h"
-#include "WCI.h"
+#include "WIC.h"
 
 CDesktopLyric::CDesktopLyric()
 {

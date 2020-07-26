@@ -220,7 +220,7 @@
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
     <ClInclude Include="SpinEdit.h" />
-    <ClInclude Include="WCI.h" />
+    <ClInclude Include="WIC.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DesktopLyric.h" />
     <ClInclude Include="DllLib.h" />
@@ -338,7 +338,7 @@
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="CueFile.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
-    <ClCompile Include="WCI.cpp" />
+    <ClCompile Include="WIC.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
     <ClCompile Include="DllLib.cpp" />
     <ClCompile Include="FolderExploreDlg.cpp" />
