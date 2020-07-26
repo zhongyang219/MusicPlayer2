@@ -32,4 +32,5 @@ public:
     virtual BOOL OnInitDialog();
     virtual void OnOK();
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
+    afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
 };

@@ -630,6 +630,12 @@ void CMusicPlayerDlg::SetAlwaysOnTop()
         SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);		//取消置顶
 }
 
+bool CMusicPlayerDlg::IsAddCurrentToPlaylist() const
+{
+    return (m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)
+        || m_pCurMenu == theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0));
+}
+
 void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
 {
     m_playlist_list.ShowPlaylist(theApp.m_media_lib_setting_data.display_format);
@@ -1031,19 +1037,20 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
 
     //设置“添加到播放列表”子菜单项的可用状态
+    bool add_to_valid{ IsAddCurrentToPlaylist() ? true : selete_valid };
     bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_DEFAULT };
-    pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(playlist_mode && use_default_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(playlist_mode && use_default_playlist) && add_to_valid ? MF_ENABLED : MF_GRAYED));
     bool use_faourite_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE };
-    pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (!(playlist_mode && use_faourite_playlist) && selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (!(playlist_mode && use_faourite_playlist) && add_to_valid ? MF_ENABLED : MF_GRAYED));
     wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
     for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
     {
         CString menu_string;
         pMenu->GetMenuString(id, menu_string, 0);
-        pMenu->EnableMenuItem(id, MF_BYCOMMAND | (selete_valid && current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+        pMenu->EnableMenuItem(id, MF_BYCOMMAND | (add_to_valid && current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
     }
-    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (add_to_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | (add_to_valid ? MF_ENABLED : MF_GRAYED));
 
     //打开菜单时，如果播放列表中没有歌曲，则禁用主菜单和右键菜单中的“打开文件位置”项目
     if (CPlayer::GetInstance().GetSongNum() == 0)
@@ -1253,6 +1260,8 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
     initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSubMenu(1));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(3));
+    initAddToMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2));
+    initAddToMenu(theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSubMenu(2));
 }
 
 void CMusicPlayerDlg::SetPlaylistDragEnable()
@@ -2349,6 +2358,8 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
     CMainDialogBase::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
+    m_pCurMenu = pMenu;
+
     SetMenuState(pMenu);
 
     CMenu* pSysMenu = GetSystemMenu(FALSE);
@@ -2569,18 +2580,29 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
     auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
     {
-        GetPlaylistItemSelected();
-        for (auto i : m_items_selected)
+        item_list.clear();
+        if(IsAddCurrentToPlaylist())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
         {
-            if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+            item_list.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
+        }
+        else        //否则是添加选中的曲目到播放列表
+        {
+            GetPlaylistItemSelected();
+            for (auto i : m_items_selected)
             {
-                item_list.push_back(CPlayer::GetInstance().GetPlayList()[i]);
+                if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+                {
+                    item_list.push_back(CPlayer::GetInstance().GetPlayList()[i]);
+                }
             }
         }
+
     };
     //响应播放列表右键菜单中的“添加到播放列表”
     CMusicPlayerCmdHelper cmd_helper;
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
+
+    m_pCurMenu = nullptr;
 
     return CMainDialogBase::OnCommand(wParam, lParam);
 }

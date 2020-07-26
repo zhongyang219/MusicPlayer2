@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "MiniModeDlg.h"
 #include "afxdialogex.h"
+#include "MusicPlayerDlg.h"
 
 
 // CMiniModeDlg 对话框
@@ -435,7 +436,9 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
     CDialogEx::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-
+    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pPlayerDlg != nullptr)
+        pPlayerDlg->m_pCurMenu = pMenu;
 
     //设置复选菜单项的勾选
     pMenu->CheckMenuItem(ID_SHOW_PLAY_LIST, MF_BYCOMMAND | (m_show_playlist ? MF_CHECKED : MF_UNCHECKED));
@@ -592,7 +595,8 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
-    if (command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
+    if ((command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
+        || command == ID_ADD_TO_OTHER_PLAYLIST)
     {
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);
     }

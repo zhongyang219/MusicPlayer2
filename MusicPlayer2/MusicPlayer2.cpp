@@ -634,6 +634,9 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_PLAY_SHUFFLE, FALSE, m_icon_set.play_shuffle.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, m_icon_set.loop_playlist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, m_icon_set.loop_track.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 2, TRUE, m_icon_set.add.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, m_icon_set.media_lib.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_FIND, FALSE, m_icon_set.find_songs.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_EXPLORE_PATH, FALSE, m_icon_set.folder_explore.GetIcon(true));
@@ -665,7 +668,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_SAVE_AS_NEW_PLAYLIST, FALSE, m_icon_set.save_new);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_SAVE_CURRENT_PLAYLIST_AS, FALSE, m_icon_set.save_as);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSafeHmenu(), 0, TRUE, m_icon_set.add.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.loop_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
 
     //播放列表右键菜单
@@ -725,6 +728,9 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_PLAY_SHUFFLE, FALSE, m_icon_set.play_shuffle.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, m_icon_set.loop_playlist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, m_icon_set.loop_track.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSafeHmenu(), 2, TRUE, m_icon_set.add.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_DOWNLOAD_LYRIC, FALSE, m_icon_set.download);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_DOWNLOAD_ALBUM_COVER, FALSE, m_icon_set.album_cover);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_ADD_REMOVE_FROM_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));

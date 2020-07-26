@@ -56,6 +56,8 @@ public:
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
+public:
+    CMenu* m_pCurMenu{};       //当前弹出的菜单
 
 // 实现
 protected:
@@ -139,6 +141,8 @@ private:
     void DrawInfo(bool reset = false);		//绘制信息
     void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
     void SetAlwaysOnTop();
+
+    bool IsAddCurrentToPlaylist() const;      //当执行“添加到播放列表时”，是添加正在播放的曲目到播放列表，还是添加选中的曲目到播放列表
 
 public:
     void ShowPlayList(bool highlight_visible = true);

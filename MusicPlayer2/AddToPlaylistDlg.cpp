@@ -30,6 +30,7 @@ void CAddToPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAddToPlaylistDlg, CDialog)
     ON_WM_GETMINMAXINFO()
+    ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CAddToPlaylistDlg::OnNMDblclkList1)
 END_MESSAGE_MAP()
 
 
@@ -80,4 +81,15 @@ void CAddToPlaylistDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
     lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
 
     CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+
+void CAddToPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    m_playlist_selected = m_playlist_list_ctrl.GetItemText(pNMItemActivate->iItem, 0);
+    CDialog::OnOK();
+
+    *pResult = 0;
 }
