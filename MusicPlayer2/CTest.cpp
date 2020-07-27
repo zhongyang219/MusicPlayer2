@@ -26,6 +26,14 @@ void CTest::Test()
     //TestReg();
     //TestMediaLib();
 	//TestAudioTag();
+
+    //Time time(1000, 64, 1024);
+
+    //int a = sizeof(wstring);
+
+    //CString info;
+    //info.Format(_T("sizeof(SongInfo)=%d\nsizeof(Time)=%d"), sizeof(SongInfo), sizeof(Time));
+    //AfxMessageBox(info);
 }
 
 void CTest::TestStringMatch()

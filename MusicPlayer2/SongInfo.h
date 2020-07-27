@@ -23,23 +23,23 @@ struct SongInfo
     //wstring file_name{};	//歌曲的文件名
     wstring file_path{};    //歌曲的路径
     wstring lyric_file{};	//匹配的歌词文件的路径
-    Time lengh{};			//歌曲的长度
-    int bitrate{};		//比特率
     wstring title;		//标题
     wstring artist;		//艺术家
     wstring album;		//唱片集
     wstring year;		//年份
     wstring comment;	//注释
     wstring genre;		//流派
-    BYTE genre_idx{ 255 };		//以字节表示的流派号
+    wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
+    Time lengh{};			//歌曲的长度
+    int bitrate{};		//比特率
     int track{};		//音轨序号
     int tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
+    BYTE genre_idx{ 255 };		//以字节表示的流派号
     bool info_acquired{ false };		//如果已经获取到了信息，则为ture
     bool is_favourite{ false };
+    bool is_cue{ false };		//如果曲目是cue分轨，则为true
     Time start_pos{};		//音频的起始位置，用于cue分轨
     Time end_pos{};
-    bool is_cue{ false };		//如果曲目是cue分轨，则为true
-    wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     int listen_time{};			//歌曲累计听的时间（单位为秒）
     //bool no_online_lyric{ false };         //如果为true，则不在线下载歌词
     //bool no_online_album_cover{ false };   //如果为true，则不在线下载专辑封面

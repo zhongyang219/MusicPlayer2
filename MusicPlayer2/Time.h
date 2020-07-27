@@ -2,14 +2,16 @@
 class Time
 {
 public:
-	int min{};
-	int sec{};
-	int msec{};
+	unsigned int min:16;
+    unsigned int sec:6;
+    unsigned int msec:10;
 
 	Time()
+        : min{}, sec{}, msec{}
 	{}
 
-	Time(int _min, int _sec, int _msec) : min{_min}, sec{_sec}, msec{_msec}
+    Time(int _min, int _sec, int _msec)
+        : min{ static_cast<unsigned int>(_min) }, sec{ static_cast<unsigned int>(_sec) }, msec{ static_cast<unsigned int>(_msec) }
 	{}
 
 	Time(int time)
