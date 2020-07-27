@@ -306,7 +306,7 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.690"));			//写入数据版本
+    ar << CString(_T("2.691"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -970,7 +970,16 @@ void CMusicPlayerApp::LoadSongData()
             //song_info.lyric_file = temp;
             ar >> song_length;
             song_info.lengh.fromInt(song_length);
-            ar >> song_info.bitrate;
+            if (version_str >= _T("2.691"))
+            {
+                ar >> song_info.bitrate;
+            }
+            else
+            {
+                int bitrate;
+                ar >> bitrate;
+                song_info.bitrate = bitrate;
+            }
             ar >> temp;
             song_info.title = temp;
             ar >> temp;
@@ -984,17 +993,32 @@ void CMusicPlayerApp::LoadSongData()
             ar >> temp;
             song_info.genre = temp;
             ar >> song_info.genre_idx;
-			if (version_str >= _T("2.66"))
+            if (version_str >= _T("2.691"))
+            {
+                ar >> song_info.track;
+            }
+			else if (version_str >= _T("2.66"))
 			{
-				ar >> song_info.track;
-			}
+                int track;
+                ar >> track;
+                song_info.track = track;
+            }
 			else
 			{
 				BYTE track;
 				ar >> track;
 				song_info.track = track;
 			}
-            ar >> song_info.tag_type;
+            if (version_str >= _T("2.691"))
+            {
+                ar >> song_info.tag_type;
+            }
+            else
+            {
+                int tag_type;
+                ar >> tag_type;
+                song_info.tag_type = tag_type;
+            }
             ar >> temp;
             song_info.song_id = temp;
 

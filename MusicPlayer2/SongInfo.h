@@ -31,9 +31,9 @@ struct SongInfo
     wstring genre;		//流派
     wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     Time lengh{};			//歌曲的长度
-    int bitrate{};		//比特率
-    int track{};		//音轨序号
-    int tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
+    short bitrate{};		//比特率
+    short track{};		//音轨序号
+    BYTE tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
     BYTE genre_idx{ 255 };		//以字节表示的流派号
     bool info_acquired{ false };		//如果已经获取到了信息，则为ture
     bool is_favourite{ false };
