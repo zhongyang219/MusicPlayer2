@@ -311,5 +311,6 @@ public:
     wstring GetPlaylistPath() const;
     IPlayerCore* GetPlayerCore() { return m_pCore; }
     bool IsMciCore() const;
+    bool IsFileOpened() const { return m_file_opend; }
 };
 

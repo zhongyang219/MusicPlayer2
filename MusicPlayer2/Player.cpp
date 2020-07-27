@@ -2023,7 +2023,7 @@ void CPlayer::SaveCurrentPlaylist()
             current_playlist = m_recent_playlist.m_recent_playlists.front().path;
         CPlaylistFile playlist;
         playlist.FromSongList(m_playlist);
-        playlist.SaveToFile(m_playlist_path);
+        playlist.SaveToFile(current_playlist);
     }
 }
 
