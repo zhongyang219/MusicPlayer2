@@ -20,6 +20,7 @@
 #include "COSUPlayerHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "AddToPlaylistDlg.h"
+#include "WIC.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1253,6 +1254,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
             {
                 pMenu->AppendMenu(MF_SEPARATOR);
                 pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_OTHER_PLAYLIST, CCommon::LoadText(IDS_MORE_PLAYLIST, _T("...")));
+                CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_ADD_TO_OTHER_PLAYLIST, FALSE, theApp.m_icon_set.show_playlist.GetIcon(true));
             }
         }
     };
