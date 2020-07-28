@@ -1681,7 +1681,7 @@ void CPlayer::ClearLyric()
 
 wstring CPlayer::GetTimeString() const
 {
-    wchar_t buff[16];
+    wchar_t buff[64];
     swprintf_s(buff, L"%d:%.2d/%d:%.2d", m_current_position.min, m_current_position.sec, m_song_length.min, m_song_length.sec);
     return wstring(buff);
 }

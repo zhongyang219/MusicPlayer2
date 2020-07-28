@@ -16,11 +16,12 @@ public:
 private:
     void DoAnalysis();
     Time PhaseIndex(size_t pos);
-    string GetCommand(const string& str, size_t pos = 0);
+    wstring GetCommand(const wstring& str, size_t pos = 0);
 
 private:
     std::wstring m_file_path;
-    std::string m_file_content;
+    //std::string m_file_content;
+    std::wstring m_file_content_wcs;
     CodeType m_code_type{ CodeType::AUTO };
     std::wstring m_audio_file_name;
     std::vector<SongInfo> m_result;
