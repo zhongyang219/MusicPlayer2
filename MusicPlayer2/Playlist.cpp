@@ -90,23 +90,40 @@ vector<SongInfo> CPlaylistFile::GetPlaylist() const
     return m_playlist;
 }
 
-void CPlaylistFile::AddFiles(const vector<wstring>& files)
+bool CPlaylistFile::AddFiles(const vector<wstring>& files, bool ignore_exist)
 {
+    bool added{ false };
     for (const auto& file : files)
     {
+        if (ignore_exist && CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) {
+            return song.file_path == file;
+        }))
+        {
+            continue;
+        }
         SongInfo item;
         item.file_path = file;
         m_playlist.push_back(item);
+        added = true;
     }
+    return added;
 }
 
-void CPlaylistFile::AddFiles(const vector<SongInfo>& files)
+bool CPlaylistFile::AddFiles(const vector<SongInfo>& files, bool ignore_exist)
 {
+    bool added{ false };
     for (const auto& file : files)
     {
+        if (ignore_exist && CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) {
+            return song.IsSameSong(file);
+        }))
+        {
+            continue;
+        }
         m_playlist.push_back(file);
+        added = true;
     }
-
+    return added;
 }
 
 void CPlaylistFile::FromSongList(const vector<SongInfo>& song_list)

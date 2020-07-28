@@ -36,14 +36,15 @@ void CMediaLibSettingDlg::ShowDataSizeInfo()
 
 void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CTabDlg::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_CLASSIFY_OTHER_CHECK, m_classify_other_chk);
-	//DDX_Control(pDX, IDC_SHOW_TREE_TOOL_TIPS_CHECK, m_show_tree_tool_tips_chk);
-	DDX_Control(pDX, IDC_DIR_LIST, m_dir_list_ctrl);
-	DDX_Control(pDX, IDC_UPDATE_MEDIA_LIB_CHK, m_update_media_lib_chk);
-	DDX_Control(pDX, IDC_DISABLE_DRAGE_SORT_CHECK, m_disable_drag_sort_chk);
-	DDX_Control(pDX, IDC_PLAYLIST_DISPLAY_MODE_OMBO, m_playlist_display_mode_combo);
-	DDX_Control(pDX, IDC_RECENT_PLAYED_RANGE_OMBO, m_recent_played_range_combo);
+    CTabDlg::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_CLASSIFY_OTHER_CHECK, m_classify_other_chk);
+    //DDX_Control(pDX, IDC_SHOW_TREE_TOOL_TIPS_CHECK, m_show_tree_tool_tips_chk);
+    DDX_Control(pDX, IDC_DIR_LIST, m_dir_list_ctrl);
+    DDX_Control(pDX, IDC_UPDATE_MEDIA_LIB_CHK, m_update_media_lib_chk);
+    DDX_Control(pDX, IDC_DISABLE_DRAGE_SORT_CHECK, m_disable_drag_sort_chk);
+    DDX_Control(pDX, IDC_PLAYLIST_DISPLAY_MODE_OMBO, m_playlist_display_mode_combo);
+    DDX_Control(pDX, IDC_RECENT_PLAYED_RANGE_OMBO, m_recent_played_range_combo);
+    DDX_Control(pDX, IDC_IGNORE_EXIST_CHECK, m_ignore_exist_chk);
 }
 
 
@@ -58,6 +59,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
 	ON_CBN_SELCHANGE(IDC_PLAYLIST_DISPLAY_MODE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo)
 	ON_CBN_SELCHANGE(IDC_RECENT_PLAYED_RANGE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo)
+    ON_BN_CLICKED(IDC_IGNORE_EXIST_CHECK, &CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck)
 END_MESSAGE_MAP()
 
 
@@ -99,6 +101,8 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
 	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_HALF_YEAR));
 	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_YEAR));
     m_recent_played_range_combo.SetCurSel(static_cast<int>(m_data.recent_played_range));
+
+    m_ignore_exist_chk.SetCheck(m_data.ignore_songs_already_in_playlist);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -217,4 +221,11 @@ void CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo()
 {
 	// TODO: Add your control notification handler code here
     m_data.recent_played_range = static_cast<RecentPlayedRange>(m_recent_played_range_combo.GetCurSel());
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.ignore_songs_already_in_playlist = (m_ignore_exist_chk.GetCheck() != 0);
 }

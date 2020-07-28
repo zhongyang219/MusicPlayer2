@@ -285,6 +285,7 @@ struct MediaLibSettingData
     bool update_media_lib_when_start_up;    //启动时自动更新媒体库
 	bool disable_drag_sort;				//禁止通过拖放排序
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
+    bool ignore_songs_already_in_playlist{ true };  //向播放列表中添加曲目时忽略已存在的曲目
 	RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
 };
 

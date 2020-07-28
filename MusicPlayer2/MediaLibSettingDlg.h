@@ -29,6 +29,7 @@ private:
 	CButton m_disable_drag_sort_chk;
 	CComboBox m_playlist_display_mode_combo;
 	CComboBox m_recent_played_range_combo;
+    CButton m_ignore_exist_chk;
 
     CToolTipCtrl m_toolTip;
     size_t m_data_size;		//数据文件的大小
@@ -52,4 +53,5 @@ public:
 	afx_msg void OnBnClickedDisableDrageSortCheck();
 	afx_msg void OnCbnSelchangePlaylistDisplayModeOmbo();
 	afx_msg void OnCbnSelchangeRecentPlayedRangeOmbo();
+    afx_msg void OnBnClickedIgnoreExistCheck();
 };

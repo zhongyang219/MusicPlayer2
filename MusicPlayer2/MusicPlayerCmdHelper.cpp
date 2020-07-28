@@ -96,13 +96,18 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
+        CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        playlist.AddFiles(selected_item_path);
+        if (!playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        {
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+            return false;
+        }
         playlist.SaveToFile(playlist_path);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
 
-		CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
 		if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
 		{
 			pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.SetUpdateFlag();		//设置数据刷新标志
@@ -122,6 +127,8 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
+        CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+
         if (command == ID_ADD_TO_OTHER_PLAYLIST)
         {
             CAddToPlaylistDlg dlg;
@@ -132,8 +139,11 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 {
                     CPlaylistFile playlist;
                     playlist.LoadFromFile(playlist_path);
-                    playlist.AddFiles(selected_item_path);
-                    playlist.SaveToFile(playlist_path);
+                    if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                        playlist.SaveToFile(playlist_path);
+                    else
+                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+
                 }
             }
         }
@@ -142,17 +152,20 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
             CPlaylistFile playlist;
             playlist.LoadFromFile(default_playlist_path);
-            playlist.AddFiles(selected_item_path);
-            playlist.SaveToFile(default_playlist_path);
-
+            if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                playlist.SaveToFile(default_playlist_path);
+            else
+                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
             std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
             CPlaylistFile playlist;
             playlist.LoadFromFile(favourite_playlist_path);
-            playlist.AddFiles(selected_item_path);
-            playlist.SaveToFile(favourite_playlist_path);
+            if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                playlist.SaveToFile(favourite_playlist_path);
+            else
+                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
 
             //添加到“我喜欢”播放列表后，为添加的项目设置favourite标记
             for (const auto& item : selected_item_path)
@@ -185,8 +198,10 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 {
                     CPlaylistFile playlist;
                     playlist.LoadFromFile(playlist_path);
-                    playlist.AddFiles(selected_item_path);
-                    playlist.SaveToFile(playlist_path);
+                    if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                        playlist.SaveToFile(playlist_path);
+                    else
+                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
                 }
                 else
                 {

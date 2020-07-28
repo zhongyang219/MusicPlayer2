@@ -569,6 +569,7 @@
 #define IDS_LAST_THREE_DAYS             479
 #define IDS_LICENSE_EXPLAIN             480
 #define IDS_LICENSE                     481
+#define IDS_FILE_EXIST_IN_PLAYLIST_INFO 482
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -781,6 +782,7 @@
 #define IDC_MIDI_USE_INNER_LYRIC_CHECK  1095
 #define IDC_SOUND_FADE_CHECK            1095
 #define IDC_CHANGE_FREQ_CHECK           1095
+#define IDC_IGNORE_EXIST_CHECK          1095
 #define IDC_BUTTON3                     1096
 #define IDC_START_CONVERT_BUTTON        1096
 #define IDC_BACKGROUND_TRANSPARENCY_STATIC2 1096
