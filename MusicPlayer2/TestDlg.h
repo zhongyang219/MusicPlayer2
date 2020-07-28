@@ -28,7 +28,7 @@ private:
     CPlayerToolBar m_toolbar;
     CPlayerProgressBar m_progress_bar;
 
-    //CImage m_image;
+    CImage m_image;
     Gdiplus::Image* m_pImage;
 
     int m_timer_cnt{};

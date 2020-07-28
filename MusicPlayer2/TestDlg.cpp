@@ -60,10 +60,12 @@ BOOL CTestDlg::OnInitDialog()
     CString szFilter = CCommon::LoadText(IDS_SOUND_FONT_FILTER);
     m_browse_edit.EnableFileBrowseButton(_T("SF2"), szFilter);
 
-    //m_image.Load(_T("C:\\Users\\Yang\\OneDrive\\其他图片\\图标素材\\黑色胶片1.png"));
-    //m_pImage = new Gdiplus::Image(L"C:\\Users\\Yang\\OneDrive\\其他图片\\图标素材\\黑色胶片1.png");
+    m_image.Load(_T("D:\\Temp\\Desktop\\AlbumCover - 曲婉婷 - Love Birds.jpg"));
+    int width = m_image.GetWidth();
+    int height = m_image.GetHeight();
+    m_pImage = new Gdiplus::Image(L"D:\\Temp\\Desktop\\AlbumCover - 曲婉婷 - Love Birds.jpg");
 
-    m_pImage = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
+    //m_pImage = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
 
     //if (m_image.GetBPP() == 32) //确认该图像包含Alpha通道
     //{
@@ -79,13 +81,13 @@ BOOL CTestDlg::OnInitDialog()
     //    }
     //}
 
-    bitmap.LoadBitmap(IDB_CORTANA_WHITE);
+    //bitmap.LoadBitmap(IDB_CORTANA_WHITE);
 
-    CDrawCommon::SaveBitmap(bitmap, L"D:\\Temp\\test_before.bmp");
+    //CDrawCommon::SaveBitmap(bitmap, L"D:\\Temp\\test_before.bmp");
 
-    CDrawCommon::CopyBitmap(bitmap_copy, bitmap);
+    //CDrawCommon::CopyBitmap(bitmap_copy, bitmap);
 
-    CDrawCommon::SaveBitmap(bitmap_copy, L"D:\\Temp\\test_after.bmp");
+    //CDrawCommon::SaveBitmap(bitmap_copy, L"D:\\Temp\\test_after.bmp");
 
 
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -115,10 +117,15 @@ void CTestDlg::OnPaint()
     const int START_X{ theApp.DPI(16) };
     const int START_Y{ theApp.DPI(120) };
 
-    CRect img_rect{ CPoint(START_X, START_Y), CSize(theApp.DPI(250), theApp.DPI(150)) };
+    CRect img_rect{ CPoint(START_X, START_Y), CSize(theApp.DPI(250), theApp.DPI(250)) };
     CDrawCommon draw;
     draw.Create(&dc, this);
-    //draw.DrawImage(m_pImage, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FILL);
+    //draw.DrawImage(m_image, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FIT);
+
+    Gdiplus::Bitmap bm(m_image, NULL);
+    Gdiplus::CachedBitmap cb(&bm, draw.GetGraphics());
+    draw.GetGraphics()->DrawCachedBitmap(&cb, START_X, START_Y);
+
     //draw.DrawRectOutLine(img_rect, RGB(0, 0, 0), 1, false);
     //draw.DrawBitmap(m_image, CPoint(START_X, START_Y), CSize(theApp.DPI(200), theApp.DPI(200)), CDrawCommon::StretchMode::FIT);
 
@@ -128,6 +135,6 @@ void CTestDlg::OnPaint()
 
     //m_image.AlphaBlend(dc.GetSafeHdc(), START_X, START_Y, theApp.DPI(200), theApp.DPI(200), 0, 0, m_image.GetWidth(), m_image.GetHeight());
 
-    draw.DrawBitmap(bitmap_copy, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FIT);
+    //draw.DrawBitmap(bitmap_copy, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FIT);
 
 }

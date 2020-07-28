@@ -44,6 +44,11 @@ public:
         return m_pDC;
     }
 
+    Gdiplus::Graphics* GetGraphics()
+    {
+        return m_pGraphics;
+    }
+
     //在指定的矩形区域内绘制有颜色的文本
     //rect: 文本的矩形区域
     //lpszString: 要绘制的文本
