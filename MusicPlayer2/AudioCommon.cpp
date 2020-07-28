@@ -229,8 +229,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             CCueFile cue_file{ file_path.GetFilePath() };
             //获取cue对应音频文件
             wstring audio_file_name = cue_file.GetAudioFileName();
-            if(!CCommon::FileExist(cue_dir + audio_file_name))
-                continue;
+            //if(!CCommon::FileExist(cue_dir + audio_file_name))
+            //    continue;
 
             int bitrate;
             Time total_length;
