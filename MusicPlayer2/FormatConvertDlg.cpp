@@ -774,11 +774,11 @@ afx_msg LRESULT CFormatConvertDlg::OnConvertProgress(WPARAM wParam, LPARAM lPara
 
     //总体的进度
     int position, length;
+    length = m_file_list.size() * 100;
+    position = wParam * 100 + percent;
 #ifndef COMPILE_IN_WIN_XP
 	if (IsTaskbarListEnable())
 	{
-		length = m_file_list.size() * 100;
-		position = wParam * 100 + percent;
 		m_pTaskbar->SetProgressValue(this->GetSafeHwnd(), position, length);
 	}
 #endif
