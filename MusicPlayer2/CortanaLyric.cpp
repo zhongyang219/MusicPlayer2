@@ -167,12 +167,12 @@ void CCortanaLyric::DrawInfo()
         AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
         DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
 
-        if (!m_colors.dark /*&& !theApp.m_lyric_setting_data.cortana_opaque*/)		//非深色模式下，在搜索顶部绘制边框
-        {
-            CRect rect{ m_cortana_rect };
-            rect.left += m_cover_width;
-            m_draw.DrawRectTopFrame(rect, m_border_color);
-        }
+        //if (!m_colors.dark /*&& !theApp.m_lyric_setting_data.cortana_opaque*/)		//非深色模式下，在搜索顶部绘制边框
+        //{
+        //    CRect rect{ m_cortana_rect };
+        //    rect.left += m_cover_width;
+        //    m_draw.DrawRectTopFrame(rect, m_border_color);
+        //}
         CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
     }
 
