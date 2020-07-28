@@ -99,4 +99,8 @@ public:
 	afx_msg void OnLyricReplaceTag();
 	afx_msg void OnLyricDeleteTag();
 	afx_msg BOOL OnToolTipText(UINT, NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnLryicMergeSameTimeTag();
+    afx_msg void OnLyricSwapTextAndTranslation();
+    afx_msg void OnLyricTimeTagForward();
+    afx_msg void OnLyricTimeTagDelay();
 };

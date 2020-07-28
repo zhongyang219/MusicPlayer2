@@ -187,6 +187,10 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
 	ON_COMMAND(ID_LYRIC_REPLACE_TAG, &CLyricEditDlg::OnLyricReplaceTag)
 	ON_COMMAND(ID_LYRIC_DELETE_TAG, &CLyricEditDlg::OnLyricDeleteTag)
 	ON_NOTIFY_EX(TTN_NEEDTEXT, 0, OnToolTipText)
+    ON_COMMAND(ID_LRYIC_MERGE_SAME_TIME_TAG, &CLyricEditDlg::OnLryicMergeSameTimeTag)
+    ON_COMMAND(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, &CLyricEditDlg::OnLyricSwapTextAndTranslation)
+    ON_COMMAND(ID_LYRIC_TIME_TAG_FORWARD, &CLyricEditDlg::OnLyricTimeTagForward)
+    ON_COMMAND(ID_LYRIC_TIME_TAG_DELAY, &CLyricEditDlg::OnLyricTimeTagDelay)
 END_MESSAGE_MAP()
 
 
@@ -820,4 +824,56 @@ BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR * pNMHDR, LRESULT * pResult)
 	CCommon::WStringCopy(pT->szText, 80, tipInfo.GetString());
 
 	return 0;
+}
+
+
+void CLyricEditDlg::OnLryicMergeSameTimeTag()
+{
+    // TODO: 在此添加命令处理程序代码
+    CLyrics lyrics;
+    lyrics.LyricsFromRowString(m_lyric_string);
+    lyrics.CombineSameTimeLyric();
+    m_lyric_string = lyrics.GetLyricsString2();
+    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_modified = true;
+    UpdateStatusbarInfo();
+}
+
+
+void CLyricEditDlg::OnLyricSwapTextAndTranslation()
+{
+    // TODO: 在此添加命令处理程序代码
+    CLyrics lyrics;
+    lyrics.LyricsFromRowString(m_lyric_string);
+    lyrics.SwapTextAndTranslation();
+    m_lyric_string = lyrics.GetLyricsString2();
+    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_modified = true;
+    UpdateStatusbarInfo();
+}
+
+
+void CLyricEditDlg::OnLyricTimeTagForward()
+{
+    // TODO: 在此添加命令处理程序代码
+    CLyrics lyrics;
+    lyrics.LyricsFromRowString(m_lyric_string);
+    lyrics.TimeTagForward();
+    m_lyric_string = lyrics.GetLyricsString2();
+    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_modified = true;
+    UpdateStatusbarInfo();
+}
+
+
+void CLyricEditDlg::OnLyricTimeTagDelay()
+{
+    // TODO: 在此添加命令处理程序代码
+    CLyrics lyrics;
+    lyrics.LyricsFromRowString(m_lyric_string);
+    lyrics.TimeTagDelay();
+    m_lyric_string = lyrics.GetLyricsString2();
+    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_modified = true;
+    UpdateStatusbarInfo();
 }

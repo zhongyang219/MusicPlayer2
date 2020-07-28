@@ -390,6 +390,11 @@ wstring CLyrics::GetLyricsString2() const
         swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
         lyric_string += time_buff;
         lyric_string += a_lyric.text;
+        if (!a_lyric.translate.empty())
+        {
+            lyric_string += L" / ";
+            lyric_string += a_lyric.translate;
+        }
         lyric_string += L"\r\n";
     }
 
@@ -471,11 +476,12 @@ void CLyrics::CombineSameTimeLyric()
     {
         if (m_lyrics[i].time == m_lyrics[i + 1].time)	//找到相同时间标签的歌词
         {
-            if (!m_lyrics[i].text.empty() && !m_lyrics[i + 1].text.empty())		//只有两句相同时间标签的歌词都有文本时，才需要插入一个斜杠
-            {
-                m_lyrics[i].text += L" / ";
-            }
-            m_lyrics[i].text += m_lyrics[i + 1].text;	//合并两句歌词的文本
+            //if (!m_lyrics[i].text.empty() && !m_lyrics[i + 1].text.empty())		//只有两句相同时间标签的歌词都有文本时，才需要插入一个斜杠
+            //{
+            //    m_lyrics[i].text += L" / ";
+            //}
+            //m_lyrics[i].text += m_lyrics[i + 1].text;	//合并两句歌词的文本
+            m_lyrics[i].translate = m_lyrics[i + 1].text;
             m_lyrics.erase(m_lyrics.begin() + i + 1);	//删除后面一句歌词
         }
     }
@@ -490,6 +496,32 @@ void CLyrics::DeleteRedundantLyric()
             m_lyrics.erase(m_lyrics.begin() + i, m_lyrics.end());		//删除该句歌词及其后面的所有歌词
             break;
         }
+    }
+}
+
+void CLyrics::SwapTextAndTranslation()
+{
+    for (auto& lyric : m_lyrics)
+    {
+        std::swap(lyric.text, lyric.translate);
+    }
+}
+
+void CLyrics::TimeTagForward()
+{
+    //用后一句歌词的时间标签覆盖前面的
+    for (size_t i{}; i < m_lyrics.size() - 1; i++)
+    {
+        m_lyrics[i].time = m_lyrics[i + 1].time;
+    }
+}
+
+void CLyrics::TimeTagDelay()
+{
+    //用前一句歌词的时间标签覆盖后面的
+    for (size_t i{ m_lyrics.size() - 1 }; i > 0; i--)
+    {
+        m_lyrics[i].time = m_lyrics[i - 1].time;
     }
 }
 
