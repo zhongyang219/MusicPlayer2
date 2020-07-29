@@ -153,8 +153,8 @@ BOOL CMusicPlayerApp::InitInstance()
                     copy_data.lpData = (const PVOID)cmd_line.c_str();
                     ::SendMessage(handle, WM_COPYDATA, 0, (LPARAM)&copy_data);
                 }
-                return FALSE;		//退出当前程序
             }
+            return FALSE;		//退出当前程序
         }
     }
 #endif
