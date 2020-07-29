@@ -4836,7 +4836,7 @@ BOOL CMusicPlayerDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     if (pCopyDataStruct != nullptr)
     {
-        if (pCopyDataStruct->dwData == COPY_DATA_OPEN_FILE)
+        if(pCopyDataStruct->dwData == COPY_DATA_OPEN_FILE || pCopyDataStruct->dwData == COPY_DATA_ADD_FILE)
         {
             wstring cmd_line((const wchar_t*)pCopyDataStruct->lpData, pCopyDataStruct->cbData / sizeof(wchar_t));
             //MessageBox(cmd_line.c_str());
@@ -4844,10 +4844,17 @@ BOOL CMusicPlayerDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
                 return 0;
             vector<wstring> files;
             CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
-            if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
-                CPlayer::GetInstance().OpenPlaylistFile(files[0]);
-            else
-                CPlayer::GetInstance().OpenFiles(files);
+            if (pCopyDataStruct->dwData == COPY_DATA_OPEN_FILE)
+            {
+                if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
+                    CPlayer::GetInstance().OpenPlaylistFile(files[0]);
+                else
+                    CPlayer::GetInstance().OpenFiles(files);
+            }
+            else if (pCopyDataStruct->dwData == COPY_DATA_ADD_FILE)
+            {
+                CPlayer::GetInstance().AddFiles(files, true);
+            }
         }
     }
 

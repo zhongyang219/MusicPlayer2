@@ -465,6 +465,9 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 
 void CPlayer::MusicControl(Command command, int volume_step)
 {
+    if (m_pCore == nullptr)
+        return;
+
     if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
     {
         m_error_state = ES_FILE_NOT_EXIST;
@@ -1086,7 +1089,8 @@ void CPlayer::OpenPlaylistFile(const wstring& file_path)
 
 }
 
-void CPlayer::AddFiles(const vector<wstring>& files)
+
+void CPlayer::AddFiles(const vector<wstring>& files, bool ignore_if_exist)
 {
     if (m_playlist.size() == 1 && m_playlist[0].file_path.empty()/* && m_playlist[0].file_name.empty()*/)
         m_playlist.clear();     //删除播放列表中的占位项
@@ -1096,8 +1100,13 @@ void CPlayer::AddFiles(const vector<wstring>& files)
     {
         if(file.empty())
             continue;
-        CFilePathHelper file_path{ file };
+        //CFilePathHelper file_path{ file };
         //song_info.file_name = file_path.GetFileName();
+        if (ignore_if_exist && CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) {
+            return file == song.file_path;
+        }))
+            continue;
+
         song_info.file_path = file;
         if (m_playlist_mode && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
             song_info.is_favourite = true;

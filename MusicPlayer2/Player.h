@@ -199,7 +199,7 @@ public:
 	void OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index = 0, bool play = true);	//打开多个文件并覆盖临时播放列表，play用来设置是否立即播放
 	void OpenAFile(wstring file, bool play = false);	//在文件夹模式下打开一个文件
 	void OpenPlaylistFile(const wstring& file_path);		//打开一个播放列表文件
-    void AddFiles(const vector<wstring>& files);
+    void AddFiles(const vector<wstring>& files, bool ignore_if_exist = false);      //向当前播放列表添加文件
 	void SetRepeatMode();		//更改循环模式
 	void SetRepeatMode(RepeatMode repeat_mode);	//设置循环模式
 	RepeatMode GetRepeatMode() const;

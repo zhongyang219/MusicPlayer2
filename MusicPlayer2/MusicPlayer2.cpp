@@ -104,7 +104,18 @@ BOOL CMusicPlayerApp::InitInstance()
         if (GetLastError() == ERROR_ALREADY_EXISTS)		//互斥量创建失败，说明已经有一个程序的实例正在运行
         {
             //AfxMessageBox(_T("已经有一个程序正在运行。"));
+            bool add_files{ false };
             HWND handle = FindWindow(_T("MusicPlayer_l3gwYT"), NULL);		//根据类名查找已运行实例窗口的句柄
+            if (handle == NULL)
+            {
+                //如果没有找到窗口句柄，则可能程序窗口还未创建，先延时一段时间再查找。
+                //这种情况只可能是在同时打开多个音频文件时启动了多个进程，这些进程几乎是同时启动的，
+                //此时虽然检测到已有另一个程序实例在运行，但是窗口还未创建，
+                //此时将命令行参数的文件添加到现有实例的播放列表中（通过将add_files设置为true来实现）
+                Sleep(500);
+                handle = FindWindow(_T("MusicPlayer_l3gwYT"), NULL);
+                add_files = true;
+            }
             if (handle != NULL)
             {
                 HWND minidlg_handle = FindWindow(_T("MiniDlg_ByH87M"), NULL);
@@ -148,7 +159,7 @@ BOOL CMusicPlayerApp::InitInstance()
                 {
                     //通过WM_COPYDATA消息向已有进程传递消息
                     COPYDATASTRUCT copy_data;
-                    copy_data.dwData = COPY_DATA_OPEN_FILE;
+                    copy_data.dwData = add_files ? COPY_DATA_ADD_FILE : COPY_DATA_OPEN_FILE;
                     copy_data.cbData = cmd_line.size() * sizeof(wchar_t);
                     copy_data.lpData = (const PVOID)cmd_line.c_str();
                     ::SendMessage(handle, WM_COPYDATA, 0, (LPARAM)&copy_data);
