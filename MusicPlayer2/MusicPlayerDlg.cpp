@@ -2345,9 +2345,14 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
                 files.push_back(file_path);
         }
         if(CPlayer::GetInstance().IsPlaylistMode())
-            CPlayer::GetInstance().AddFiles(files);
+        {
+            if (!CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+        }
         else
+        {
             CPlayer::GetInstance().OpenFiles(files, false);
+        }
     }
     //ShowPlayList();
     UpdatePlayPauseButton();
@@ -4112,8 +4117,10 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
     CCommon::DoOpenFileDlg(filter, files, this);
     if(!files.empty())
     {
-        CPlayer::GetInstance().AddFiles(files);
-        CPlayer::GetInstance().SaveCurrentPlaylist();
+        if (CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+            CPlayer::GetInstance().SaveCurrentPlaylist();
+        else
+            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
     }
 }
 
@@ -4271,8 +4278,10 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
 #endif
         std::vector<wstring> file_list;
         CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
-        CPlayer::GetInstance().AddFiles(file_list);
-        CPlayer::GetInstance().SaveCurrentPlaylist();
+        if (CPlayer::GetInstance().AddFiles(file_list, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+            CPlayer::GetInstance().SaveCurrentPlaylist();
+        else
+            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
 
     }
 }
@@ -4409,8 +4418,11 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
-        CPlayer::GetInstance().AddFiles(vecUrl);
-        CPlayer::GetInstance().SaveCurrentPlaylist();
+        if (CPlayer::GetInstance().AddFiles(vecUrl, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+            CPlayer::GetInstance().SaveCurrentPlaylist();
+        else
+            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+
     }
 }
 

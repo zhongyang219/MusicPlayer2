@@ -1090,11 +1090,12 @@ void CPlayer::OpenPlaylistFile(const wstring& file_path)
 }
 
 
-void CPlayer::AddFiles(const vector<wstring>& files, bool ignore_if_exist)
+bool CPlayer::AddFiles(const vector<wstring>& files, bool ignore_if_exist)
 {
     if (m_playlist.size() == 1 && m_playlist[0].file_path.empty()/* && m_playlist[0].file_name.empty()*/)
         m_playlist.clear();     //删除播放列表中的占位项
 
+    bool added{ false };
     SongInfo song_info;
     for (const auto& file : files)
     {
@@ -1111,9 +1112,11 @@ void CPlayer::AddFiles(const vector<wstring>& files, bool ignore_if_exist)
         if (m_playlist_mode && m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
             song_info.is_favourite = true;
         m_playlist.push_back(song_info);
+        added = true;
     }
     SaveCurrentPlaylist();
     IniPlayList(true);
+    return added;
 }
 
 void CPlayer::SetRepeatMode()
