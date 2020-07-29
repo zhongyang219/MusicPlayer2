@@ -60,8 +60,8 @@ protected:
 	bool SaveLyric(const wchar_t* path, CodeType code_type);
 	void UpdateStatusbarInfo();			//更新状态栏信息
 	void StatusBarSetParts(int width);			//设置状态栏各部分的宽度
-
 	void OpenLyric(const wchar_t* path);		//打开一个歌词文件
+    bool SaveInquiry();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

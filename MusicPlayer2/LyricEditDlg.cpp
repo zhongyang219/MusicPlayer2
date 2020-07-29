@@ -155,6 +155,21 @@ void CLyricEditDlg::OpenLyric(const wchar_t * path)
 	m_code_type = lyrics.GetCodeType();
 }
 
+bool CLyricEditDlg::SaveInquiry()
+{
+    if (m_modified)
+    {
+        int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
+        switch (rtn)
+        {
+        case IDYES: SaveLyric(m_lyric_path.c_str(), m_code_type);
+        case IDNO: m_modified = false; break;
+        default: return false;
+        }
+    }
+    return true;
+}
+
 void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -330,6 +345,9 @@ BOOL CLyricEditDlg::OnInitDialog()
 void CLyricEditDlg::OnCancel()
 {
 	// TODO: 在此添加专用代码和/或调用基类
+    if (!SaveInquiry())
+        return;
+
 	DestroyWindow();
 
 	//CDialog::OnCancel();
@@ -467,16 +485,8 @@ BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
 void CLyricEditDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (m_modified)
-	{
-		int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
-		switch (rtn)
-		{
-		case IDYES: SaveLyric(m_lyric_path.c_str(), m_code_type);
-		case IDNO: m_modified = false; break;
-		default: return;
-		}
-	}
+    if (!SaveInquiry())
+        return;
 
 	CDialog::OnClose();
 }
