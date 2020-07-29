@@ -1217,10 +1217,18 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, DPI(3));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
+    double progress_width_double{ progress * progress_rect.Width() };
+    int progress_width{ static_cast<int>(progress_width_double) };
 	CRect played_rect = progress_rect;
-    played_rect.right = played_rect.left + static_cast<int>(progress * progress_rect.Width());
+    played_rect.right = played_rect.left + progress_width;
     if (played_rect.right > played_rect.left)
         m_draw.FillRect(played_rect, m_colors.color_spectrum);
+    //绘制进度条最右侧一像素
+    //进度条最右侧一像素根据当前进度计算出透明度，以使得进度条的变化更加平滑
+    BYTE alpha{ static_cast<BYTE>((progress_width_double - progress_width) * 256) };
+    played_rect.left = played_rect.right;
+    played_rect.right = played_rect.left + 1;
+    m_draw.FillAlphaRect(played_rect, m_colors.color_spectrum, alpha);
 
 	//绘制AB重复的标记
 	auto ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();

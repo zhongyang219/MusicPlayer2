@@ -132,9 +132,17 @@ void CMiniModeUI::_DrawInfo(bool reset)
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, theApp.DPI(2));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
-    progress_rect.right = progress_rect.left + static_cast<int>(progress * progress_rect.Width());
+    double progress_width_double{ progress * progress_rect.Width() };
+    int progress_width{ static_cast<int>(progress_width_double) };
+    progress_rect.right = progress_rect.left + progress_width;
     if (progress_rect.right > progress_rect.left)
         m_draw.FillRect(progress_rect, m_colors.color_spectrum);
+    //绘制进度条最右侧一像素
+    //进度条最右侧一像素根据当前进度计算出透明度，以使得进度条的变化更加平滑
+    BYTE alpha{ static_cast<BYTE>((progress_width_double - progress_width) * 256) };
+    progress_rect.left = progress_rect.right;
+    progress_rect.right = progress_rect.left + 1;
+    m_draw.FillAlphaRect(progress_rect, m_colors.color_spectrum, alpha);
 
     //绘制右上角按钮
     rc_tmp.right = m_ui_data.widnow_width - m_ui_data.margin;
