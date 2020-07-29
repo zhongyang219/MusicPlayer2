@@ -43,8 +43,8 @@ public:
     void DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex = false, bool low_freq_in_center = false);
 
 private:
-    void SetLyricFont();
-    void SetLyricFontTranslated();
+    CFont* SetLyricFont();
+    CFont* SetLyricFontTranslated();
     void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent = 100);
 
 private:

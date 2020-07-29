@@ -65,7 +65,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     int lyric_height = GetLyricTextHeight() + line_space;			//文本高度加上行间距
     int lyric_height2 = lyric_height * 2 + line_space;		//包含翻译的歌词高度
 
-    SetLyricFont();
+    CFont* pOldFont = SetLyricFont();
     if (CPlayerUIHelper::IsMidiLyric())
     {
         wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
@@ -184,11 +184,12 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
             }
         }
     }
+    SetFont(pOldFont);
 }
 
 void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment align)
 {
-    SetLyricFont();
+    CFont* pOldFont = SetLyricFont();
 
     if (CPlayerUIHelper::IsMidiLyric())
     {
@@ -237,9 +238,9 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
             else
                 DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
         }
-
-        SetFont(m_pMainWnd->GetFont());
     }
+
+    SetFont(pOldFont);
 }
 
 void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center)
@@ -341,7 +342,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
 
 void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent)
 {
-    SetLyricFont();
+    CFont* pOldFont = SetLyricFont();
     static bool swap;
     static int last_progress;
     if (last_progress > progress)		//如果当前的歌词进度比上次的小，说明歌词切换到了下一句
@@ -385,20 +386,21 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
         DrawWindowText(up_rect, next_lyric, m_colors.color_text_2);
         DrawWindowText(down_rect, lyric, color1, color2, progress);
     }
+    SetFont(pOldFont);
 }
 
-void CUIDrawer::SetLyricFont()
+CFont* CUIDrawer::SetLyricFont()
 {
     if (!m_for_cortana_lyric)
-        SetFont(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
+        return SetFont(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
     else
-        SetFont(&theApp.m_font_set.cortana.GetFont());
+        return SetFont(&theApp.m_font_set.cortana.GetFont());
 }
 
-void CUIDrawer::SetLyricFontTranslated()
+CFont* CUIDrawer::SetLyricFontTranslated()
 {
     if (!m_for_cortana_lyric)
-        SetFont(&theApp.m_font_set.lyric_translate.GetFont(theApp.m_ui_data.full_screen));
+        return SetFont(&theApp.m_font_set.lyric_translate.GetFont(theApp.m_ui_data.full_screen));
     else
-        SetFont(&theApp.m_font_set.cortana_translate.GetFont());
+        return SetFont(&theApp.m_font_set.cortana_translate.GetFont());
 }

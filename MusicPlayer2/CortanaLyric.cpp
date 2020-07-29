@@ -72,6 +72,7 @@ void CCortanaLyric::Init()
 #ifndef COMPILE_IN_WIN_XP
         //if(theApp.m_lyric_setting_data.cortana_opaque)
         //{
+        m_cortana_opaque = false;
 		SetCortanaBarOpaque(true);
         //}
 #endif // !COMPILE_IN_WIN_XP

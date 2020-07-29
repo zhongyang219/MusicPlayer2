@@ -28,9 +28,11 @@ void CDrawCommon::Create(CDC * pDC, CWnd * pMainWnd)
 //	m_backColor = back_color;
 //}
 
-void CDrawCommon::SetFont(CFont * pfont)
+CFont* CDrawCommon::SetFont(CFont * pfont)
 {
+    CFont* pOldFont = m_pfont;
 	m_pfont = pfont;
+    return pOldFont;
 }
 
 void CDrawCommon::SetDC(CDC * pDC)
