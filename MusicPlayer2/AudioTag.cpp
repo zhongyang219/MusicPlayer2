@@ -229,6 +229,10 @@ bool CAudioTag::GetID3V2Tag()
 {
 	bool success;
 	string tag_content = GetID3V2TagContents();
+#ifdef _DEBUG
+    CFilePathHelper helper(m_file_path);
+    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileNameWithoutExtension() + L".bin");
+#endif
 	if (!tag_content.empty())
 	{
 		const int TAG_NUM{ 7 };
@@ -374,7 +378,8 @@ bool CAudioTag::GetFlacTag()
 	string tag_content;		//整个标签区域的内容
 	GetFlacTagContents(m_file_path, tag_content);
 #ifdef _DEBUG
-    CCommon::SaveDataToFile(tag_content, CFilePathHelper(m_file_path).ReplaceFileExtension(L"bin"));
+    CFilePathHelper helper(m_file_path);
+    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileNameWithoutExtension() + L".bin");
 #endif
 
     if (!tag_content.empty())
