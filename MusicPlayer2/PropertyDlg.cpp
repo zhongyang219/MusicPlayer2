@@ -224,10 +224,10 @@ BOOL CPropertyDlg::OnInitDialog()
     if (m_read_only)
 	{
 		m_save_button.ShowWindow(SW_HIDE);
-		CWnd* pWnd = GetDlgItem(IDC_LYRIC_FILE_STATIC);
-		if(pWnd!=nullptr)
-			pWnd->ShowWindow(SW_HIDE);
-		m_lyric_file_edit.ShowWindow(SW_HIDE);
+		//CWnd* pWnd = GetDlgItem(IDC_LYRIC_FILE_STATIC);
+		//if(pWnd!=nullptr)
+		//	pWnd->ShowWindow(SW_HIDE);
+		//m_lyric_file_edit.ShowWindow(SW_HIDE);
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control

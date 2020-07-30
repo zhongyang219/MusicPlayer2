@@ -112,8 +112,8 @@ public:
 	//bool m_is_ous_folder{ false };	//如果打开的是OUS的Songs目录，则为true
 
 private:
-	vector<wstring> m_current_path_lyrics;	//储存当前路径下的歌词文件的文件名（用于歌词模糊匹配时检索）
-	vector<wstring> m_lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名（用于歌词模糊匹配时检索）
+	//vector<wstring> m_current_path_lyrics;	//储存当前路径下的歌词文件的文件名（用于歌词模糊匹配时检索）
+	//vector<wstring> m_lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名（用于歌词模糊匹配时检索）
 
 	vector<int> m_shuffle_list;			//储存随机播放过的曲目序号
 
@@ -217,7 +217,7 @@ public:
 	void SaveConfig() const;		//保存配置到ini文件
 	void LoadConfig();		//从ini文件读取配置
 
-	void SearchLyrics(/*bool refresh = false*/);		//检索歌词文件(如果如果refresh为true，则不管theApp.m_song_data里是否有当前歌曲的文件路径，都从文件重新检索歌词)
+	void SearchLyrics(bool refresh = false);		//检索歌词文件(如果如果refresh为true，则不管theApp.m_song_data里是否有当前歌曲的文件路径，都从文件重新检索歌词)
 	void IniLyrics();		//初始化歌词
 	void IniLyrics(const wstring& lyric_path);
 

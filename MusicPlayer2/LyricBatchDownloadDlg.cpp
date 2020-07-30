@@ -378,7 +378,7 @@ afx_msg LRESULT CLyricBatchDownloadDlg::OnBatchDownloadComplate(WPARAM wParam, L
 {
 	SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_DOWNLOAD_COMPLETE));
 	//下载完成后重新载入歌词
-	CPlayer::GetInstance().SearchLyrics();
+	CPlayer::GetInstance().SearchLyrics(true);
 	CPlayer::GetInstance().IniLyrics();
 	EnableControls(true);		//启用控件
     m_progress_bar.SetProgress(100);
