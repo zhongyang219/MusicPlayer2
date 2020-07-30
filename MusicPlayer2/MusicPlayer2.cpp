@@ -547,6 +547,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.exit = CDrawCommon::LoadIconResource(IDI_EXIT_D, DPI(16), DPI(16));
     m_icon_set.album_cover = CDrawCommon::LoadIconResource(IDI_ALBUM_COVER_D, DPI(16), DPI(16));
     m_icon_set.dark_mode = CDrawCommon::LoadIconResource(IDI_DARK_MODE_D, DPI(16), DPI(16));
+    m_icon_set.lyric = CDrawCommon::LoadIconResource(IDI_LYRIC_D, DPI(16), DPI(16));
 
     //加载图片资源
     m_image_set.default_cover = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
@@ -607,6 +608,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_LYRIC_FORWARD, FALSE, m_icon_set.lyric_forward.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_LYRIC_DELAY, FALSE, m_icon_set.lyric_delay.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SAVE_MODIFIED_LYRIC, FALSE, m_icon_set.save_new);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_RELATE_LOCAL_LYRIC, FALSE, m_icon_set.lyric);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_DELETE_LYRIC, FALSE, m_icon_set.close.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_BROWSE_LYRIC, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_DOWNLOAD_LYRIC, FALSE, m_icon_set.download);
@@ -665,6 +667,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_LYRIC_FORWARD, FALSE, m_icon_set.lyric_forward.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_LYRIC_DELAY, FALSE, m_icon_set.lyric_delay.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_SAVE_MODIFIED_LYRIC, FALSE, m_icon_set.save_new);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_RELATE_LOCAL_LYRIC, FALSE, m_icon_set.lyric);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_DELETE_LYRIC, FALSE, m_icon_set.close.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_BROWSE_LYRIC, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_DOWNLOAD_LYRIC, FALSE, m_icon_set.download);
@@ -767,7 +770,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 0, TRUE, m_icon_set.select_folder.GetIcon(true));      //文件
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 1, TRUE, m_icon_set.play_new.GetIcon(true));           //播放控制
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 2, TRUE, m_icon_set.show_playlist.GetIcon(true));      //播放列表
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 3, TRUE, m_icon_set.music);                            //歌词
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 3, TRUE, m_icon_set.lyric);                            //歌词
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 4, TRUE, m_icon_set.playlist_dock);                    //视图
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 5, TRUE, m_icon_set.setting.GetIcon(true));            //工具
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), 6, TRUE, m_icon_set.help);                             //帮助

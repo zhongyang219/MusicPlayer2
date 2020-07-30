@@ -318,6 +318,9 @@ void CPlayer::SearchLyrics(bool refresh)
     //检索正在播放的音频文件的歌词
 
     SongInfo& cur_song_info{ theApp.GetSongInfoRef(GetCurrentFilePath()) };
+    if (cur_song_info.lyric_file == NO_LYRIC_STR && !refresh)
+        return;
+
     wstring lyric_path;
     if(refresh || cur_song_info.lyric_file.empty())
     {
@@ -1604,7 +1607,8 @@ void CPlayer::SeekTo(double position)
 void CPlayer::ClearLyric()
 {
     m_Lyrics = CLyrics{};
-    m_playlist[m_index].lyric_file.clear();
+    GetCurrentSongInfo2().lyric_file.clear();
+    theApp.GetSongInfoRef(GetCurrentFilePath()).lyric_file.clear();
 }
 
 wstring CPlayer::GetTimeString() const

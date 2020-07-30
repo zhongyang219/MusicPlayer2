@@ -430,6 +430,7 @@ struct IconSet
     HICON exit;
     HICON album_cover;
     HICON dark_mode;
+    HICON lyric;
 };
 
 

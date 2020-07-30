@@ -300,6 +300,9 @@
     <Filter Include="派生的控件类\SpinEdit">
       <UniqueIdentifier>{de794f42-e5a8-430a-8756-b5faf4faff9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\LyricRelateDlg">
+      <UniqueIdentifier>{41a29ea0-ab44-48ef-986b-333aaf3f7886}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -658,6 +661,9 @@
     <ClInclude Include="WIC.h">
       <Filter>公共的类\WICFactory</Filter>
     </ClInclude>
+    <ClInclude Include="LyricRelateDlg.h">
+      <Filter>对话框类\LyricRelateDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -983,6 +989,9 @@
     </ClCompile>
     <ClCompile Include="WIC.cpp">
       <Filter>公共的类\WICFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="LyricRelateDlg.cpp">
+      <Filter>对话框类\LyricRelateDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1317,6 +1326,9 @@
     </Image>
     <Image Include="res\黑色胶片.png">
       <Filter>资源文件\bitmaps</Filter>
+    </Image>
+    <Image Include="res\lyric_d.ico">
+      <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
 </Project>

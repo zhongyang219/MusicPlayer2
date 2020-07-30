@@ -558,8 +558,11 @@
 #define IDB_PNG1                        469
 #define IDB_DEFAULT_ALBUM_COVER         469
 #define IDS_CREATE_MINI_MODE_SHORTCUT_INFO 470
+#define IDD_LYRIC_RELATE_DIALOG         470
 #define IDS_CREATE_DESKTOP_SHORTCUT_INFO 471
 #define IDS_DELETE_SINGLE_FILE_INQUIRY  472
+#define IDI_ICON10                      472
+#define IDI_LYRIC_D                     472
 #define IDS_ALL                         473
 #define IDS_LAST_WEEK                   474
 #define IDS_LAST_MONTH                  475
@@ -570,6 +573,8 @@
 #define IDS_LICENSE_EXPLAIN             480
 #define IDS_LICENSE                     481
 #define IDS_FILE_EXIST_IN_PLAYLIST_INFO 482
+#define IDS_IS_RELATED                  483
+#define IDS_YES                         484
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -601,6 +606,7 @@
 #define IDC_PLAY_SELECTED               1012
 #define IDC_NEW_PLAYLIST                1012
 #define IDC_SETTINGS_BUTTON             1012
+#define IDC_DONOT_RELATE_BUTTON         1012
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013
@@ -630,6 +636,7 @@
 #define IDC_SHOW_SPECTRUM_IN_CORTANA    1025
 #define IDC_SELECT_ALL_CHECK            1025
 #define IDC_CLASSIFY_OTHER_CHECK        1025
+#define IDC_FUZZY_MATCH_CHECK           1025
 #define IDC_CHECK2                      1026
 #define IDC_KARAOKE_DISP                1026
 #define IDC_FIND_TITLE_CHECK            1026
@@ -760,6 +767,7 @@
 #define IDC_DEFAULT_STYLE               1082
 #define IDC_MEDIA_LIB_SETTINGS_BTN      1082
 #define IDC_RESTORE_DEFAULT_BUTTON      1082
+#define IDC_LOCAL_SEARCH_BUTTON         1082
 #define IDC_TAB1                        1083
 #define IDC_REVERB_MIX_SLIDER           1084
 #define IDC_REVERB_TIME_SLIDER          1085
@@ -789,6 +797,7 @@
 #define IDC_GAUSS_BLUR_RADIUS_STATIC    1096
 #define IDC_RECORD_BUTTON               1096
 #define IDC_KEEP_DISPLAY_CHECK          1096
+#define IDC_BROWSE_BUTTON1              1096
 #define IDC_ALBUM_FIT_COMBO             1097
 #define IDC_PAUSE_RESUME_BUTTON         1097
 #define IDC_LYRIC_DOUBLE_LINE_CHECK2    1097
@@ -878,6 +887,9 @@
 #define IDC_RECENT_PLAYED_RANGE_OMBO    1168
 #define IDC_DEFAULT_ALBUM_COVER_HQ      1168
 #define IDC_UI_INTERVAL_EDIT            1169
+#define IDC_SEARCH_RESULT_LIST          1170
+#define IDC_DELETE_FILE_BUTTON          1171
+#define IDC_LYRIC_NAME_EDIT             1172
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1243,14 +1255,16 @@
 #define ID_LYRIC_TIME_TAG_FORWARD       33177
 #define ID_                             33178
 #define ID_LYRIC_TIME_TAG_DELAY         33179
+#define ID_33180                        33180
+#define ID_RELATE_LOCAL_LYRIC           33181
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        470
-#define _APS_NEXT_COMMAND_VALUE         33180
-#define _APS_NEXT_CONTROL_VALUE         1170
+#define _APS_NEXT_RESOURCE_VALUE        473
+#define _APS_NEXT_COMMAND_VALUE         33182
+#define _APS_NEXT_CONTROL_VALUE         1173
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

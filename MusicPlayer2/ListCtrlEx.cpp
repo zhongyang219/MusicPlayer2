@@ -294,7 +294,7 @@ void CListCtrlEx::PreSubclassWindow()
 	CListCtrl::PreSubclassWindow();
 
     DWORD style = GetExtendedStyle();
-    SetExtendedStyle(style | LVS_EX_DOUBLEBUFFER);      //设置双缓冲绘图
+    SetExtendedStyle(style | LVS_EX_DOUBLEBUFFER | LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP);      //设置扩展样式（双缓冲绘图、整行选中，鼠标提示）
 
 	SetBkColor(m_background_color);
 	//SetHightItem(-1);

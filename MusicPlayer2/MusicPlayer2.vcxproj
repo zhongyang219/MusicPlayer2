@@ -219,6 +219,7 @@
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
+    <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="SpinEdit.h" />
     <ClInclude Include="WIC.h" />
     <ClInclude Include="Define.h" />
@@ -337,6 +338,7 @@
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="CueFile.cpp" />
+    <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
     <ClCompile Include="WIC.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
@@ -475,6 +477,7 @@
     <Image Include="res\heart.ico" />
     <Image Include="res\help_d.ico" />
     <Image Include="res\lock_d.ico" />
+    <Image Include="res\lyric_d.ico" />
     <Image Include="res\lyric_delay.ico" />
     <Image Include="res\lyric_forward.ico" />
     <Image Include="res\media_lib.ico" />

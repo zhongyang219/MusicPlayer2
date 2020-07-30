@@ -37,6 +37,8 @@ CCommon::~CCommon()
 
 bool CCommon::FileExist(const wstring & file)
 {
+    if (file == L"." || file == L"..")
+        return false;
 	_wfinddata_t fileinfo;
 	return (_wfindfirst(file.c_str(), &fileinfo) != -1);
 }
