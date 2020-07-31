@@ -48,7 +48,7 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+    SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), FALSE);		// 设置小图标
 
     //初始化列表
     for (const auto& item : CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists)

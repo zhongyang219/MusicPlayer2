@@ -154,6 +154,8 @@ public:
     //删除一个字符串中指定的字符
     static bool StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replaced);
 
+    static CString DataSizeToString(size_t data_size);
+
 	//获取当前进程exe文件的路径
 	static wstring GetExePath();
 

@@ -225,7 +225,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	CenterWindow();
 
-	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+    SetIcon(theApp.m_icon_set.edit.GetIcon(true), FALSE);
 
 
 	//获取歌词信息

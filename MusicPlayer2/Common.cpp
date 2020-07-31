@@ -461,6 +461,20 @@ bool CCommon::StringCharacterReplace(wstring & str, wchar_t ch, wchar_t ch_repla
     return replaced;
 }
 
+CString CCommon::DataSizeToString(size_t data_size)
+{
+    CString size_info;
+    if (data_size < 1024)
+        size_info.Format(_T("%u B"), data_size);
+    else if (data_size < 1024 * 1024)
+        size_info.Format(_T("%.2f KB"), data_size / 1024.0f);
+    else if (data_size < 1024 * 1024 * 1024)
+        size_info.Format(_T("%.2f MB"), data_size / 1024.0f / 1024.0f);
+    else
+        size_info.Format(_T("%.2f GB"), data_size / 1024.0f / 1024.0f / 1024.0f);
+    return size_info;
+}
+
 wstring CCommon::GetExePath()
 {
 	wchar_t path[MAX_PATH];

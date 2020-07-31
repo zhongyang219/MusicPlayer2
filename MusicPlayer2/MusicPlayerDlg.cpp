@@ -22,6 +22,7 @@
 #include "AddToPlaylistDlg.h"
 #include "WIC.h"
 #include "LyricRelateDlg.h"
+#include "AlbumCoverInfoDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -243,7 +244,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, &CMusicPlayerDlg::OnAlwaysUseExternalAlbumCover)
     ON_WM_COPYDATA()
     ON_COMMAND(ID_RELATE_LOCAL_LYRIC, &CMusicPlayerDlg::OnRelateLocalLyric)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_ALBUM_COVER_INFO, &CMusicPlayerDlg::OnAlbumCoverInfo)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1173,6 +1175,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_ALBUM_COVER_SAVE_AS, MF_BYCOMMAND | (CPlayer::GetInstance().AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | ((!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() && CPlayer::GetInstance().AlbumCoverExist()) ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ALBUM_COVER_INFO, MF_BYCOMMAND | (CPlayer::GetInstance().AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
 
     //正在执行格式转换时禁用“格式转换”菜单项
     pMenu->EnableMenuItem(ID_FORMAT_CONVERT, MF_BYCOMMAND | (theApp.m_format_convert_dialog_exit ? MF_ENABLED : MF_GRAYED));
@@ -4876,5 +4879,13 @@ void CMusicPlayerDlg::OnRelateLocalLyric()
 {
     // TODO: 在此添加命令处理程序代码
     CLyricRelateDlg dlg;
+    dlg.DoModal();
+}
+
+
+void CMusicPlayerDlg::OnAlbumCoverInfo()
+{
+    // TODO: 在此添加命令处理程序代码
+    CAlbumCoverInfoDlg dlg;
     dlg.DoModal();
 }

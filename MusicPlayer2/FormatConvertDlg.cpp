@@ -187,7 +187,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	CenterWindow();
 
-	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+    SetIcon(theApp.m_icon_set.convert, FALSE);
 
 	LoadConfig();
 	LoadEncoderConfig();

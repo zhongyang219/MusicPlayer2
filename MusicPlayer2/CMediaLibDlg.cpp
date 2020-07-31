@@ -72,7 +72,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     ModifyStyle(0, WS_CLIPCHILDREN);
 
-    SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), FALSE);		// 设置小图标
+    SetIcon(theApp.m_icon_set.media_lib.GetIcon(true), FALSE);
 
     //创建子对话框
     m_path_dlg.Create(IDD_SET_PATH_DIALOG);

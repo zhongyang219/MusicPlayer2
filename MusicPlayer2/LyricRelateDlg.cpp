@@ -117,7 +117,7 @@ BOOL CLyricRelateDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);
+    SetIcon(theApp.m_icon_set.lyric, FALSE);
 
     wstring lyric_name{ CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileNameWithoutExtension() };
     SetDlgItemText(IDC_LYRIC_NAME_EDIT, lyric_name.c_str());

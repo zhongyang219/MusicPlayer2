@@ -575,6 +575,12 @@
 #define IDS_FILE_EXIST_IN_PLAYLIST_INFO 482
 #define IDS_IS_RELATED                  483
 #define IDS_YES                         484
+#define IDS_ALBUM_COVER_INFO            485
+#define IDS_INNER_ALBUM_COVER           486
+#define IDS_WIDTH                       487
+#define IDS_HEIGHT                      488
+#define IDS_BPP                         489
+#define IDS_FILE_SIZE                   490
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

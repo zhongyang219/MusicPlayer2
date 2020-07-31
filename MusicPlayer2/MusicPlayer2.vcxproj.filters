@@ -306,6 +306,9 @@
     <Filter Include="对话框类\BaseDialog">
       <UniqueIdentifier>{81418427-f8ce-49dc-bcfc-5dddf81f8459}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\AlbumCoverInfoDlg">
+      <UniqueIdentifier>{92109bff-2233-4c79-afce-77656dc5e247}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -670,6 +673,9 @@
     <ClInclude Include="BaseDialog.h">
       <Filter>对话框类\BaseDialog</Filter>
     </ClInclude>
+    <ClInclude Include="AlbumCoverInfoDlg.h">
+      <Filter>对话框类\AlbumCoverInfoDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1001,6 +1007,9 @@
     </ClCompile>
     <ClCompile Include="BaseDialog.cpp">
       <Filter>对话框类\BaseDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="AlbumCoverInfoDlg.cpp">
+      <Filter>对话框类\AlbumCoverInfoDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

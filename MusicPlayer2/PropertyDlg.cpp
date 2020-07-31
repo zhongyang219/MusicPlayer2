@@ -61,16 +61,7 @@ void CPropertyDlg::ShowInfo()
 	//显示文件大小
 	size_t file_size;
 	file_size = CCommon::GetFileSize(m_all_song_info[m_index].file_path);
-	CString size_info;
-	if (file_size < 1024)
-		size_info.Format(_T("%u B"), file_size);
-	else if (file_size < 1024 * 1024)
-		size_info.Format(_T("%.2f KB"), file_size / 1024.0f);
-	else if (file_size < 1024 * 1024 * 1024)
-		size_info.Format(_T("%.2f MB"), file_size / 1024.0f / 1024.0f);
-	else
-		size_info.Format(_T("%.2f GB"), file_size / 1024.0f / 1024.0f / 1024.0f);
-	m_file_size_edit.SetWindowText(size_info);
+	m_file_size_edit.SetWindowText(CCommon::DataSizeToString(file_size));
 
 	//显示比特率
 	CString info;
