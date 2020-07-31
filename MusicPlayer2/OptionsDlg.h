@@ -7,12 +7,13 @@
 #include "CTabCtrlEx.h"
 #include "CHotKeySettingDlg.h"
 #include "MediaLibSettingDlg.h"
+#include "BaseDialog.h"
 
 // COptionsDlg 对话框
 #define TIMER_ID2 1122
 #define WM_SETTINGS_APPLIED (WM_USER+113)
 
-class COptionsDlg : public CDialog
+class COptionsDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(COptionsDlg)
 
@@ -39,9 +40,9 @@ protected:
 	CTabCtrlEx m_tab;		//选项卡控件
     std::vector<CTabDlg*> m_tab_vect;
     std::vector<int> m_tab_height;
-    CSize m_min_size{};
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual CString GetDialogName() const override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -49,6 +50,5 @@ public:
 	virtual void OnOK();
 	afx_msg void OnBnClickedApplyButton();
 	afx_msg void OnDestroy();
-    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnSize(UINT nType, int cx, int cy);
 };

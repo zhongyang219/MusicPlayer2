@@ -2,12 +2,13 @@
 #include "afxwin.h"
 #include "Time.h"
 #include "EditEx.h"
+#include "BaseDialog.h"
 
 const int WM_FINDREPLACE = ::RegisterWindowMessage(FINDMSGSTRING);	//将FINDMSGSTRING注册为WM_FINDREPLACE消息
 
 // CLyricEditDlg 对话框
 
-class CLyricEditDlg : public CDialog
+class CLyricEditDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CLyricEditDlg)
 
@@ -43,7 +44,6 @@ protected:
 	//CToolTipCtrl m_Mytip;		//鼠标提示
 	CStatusBarCtrl m_status_bar;	//状态栏
 	CToolBar m_wndToolBar;		//工具栏
-	//CSize m_min_size;		//窗口的最小大小
 #define MARGIN theApp.DPI(8)
 #define TOOLBAR_HEIGHT theApp.DPI(29)
 #define STATUSBAR_HEIGHT theApp.DPI(20)
@@ -63,7 +63,8 @@ protected:
 	void OpenLyric(const wchar_t* path);		//打开一个歌词文件
     bool SaveInquiry();
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual CString GetDialogName() const override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -91,7 +92,6 @@ protected:
 	afx_msg LRESULT OnFindReplace(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnFindNext();
-	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLeTranslateToSimplifiedChinese();
 	afx_msg void OnLeTranslateToTranditionalChinese();

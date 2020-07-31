@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include "ListCtrlEx.h"
+#include "BaseDialog.h"
 
 
 // CLyricRelateDlg 对话框
 
-class CLyricRelateDlg : public CDialog
+class CLyricRelateDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CLyricRelateDlg)
 
@@ -26,8 +27,6 @@ private:
     vector<wstring> m_search_result;
     //wstring m_related_lyric;
 
-    CSize m_min_size;
-
 private:
     void ShowSearchResult();                        //刷新列表
     void AddListRow(const wstring& lyric_path);     //向列表添加一行
@@ -36,7 +35,8 @@ private:
     void EnableControls(bool enable);
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual CString GetDialogName() const override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -47,5 +47,4 @@ public:
     afx_msg void OnBnClickedDonotRelateButton();
     virtual void OnOK();
     afx_msg void OnLvnItemchangedSearchResultList(NMHDR *pNMHDR, LRESULT *pResult);
-    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 };

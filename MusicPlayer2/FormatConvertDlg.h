@@ -13,6 +13,7 @@
 #include <map>
 #include "BrowseEdit.h"
 #include "MusicPlayer2.h"
+#include "BaseDialog.h"
 
 //格式转换错误代码
 #define CONVERT_ERROR_FILE_CONNOT_OPEN (-1)			//源文件无法读取
@@ -31,7 +32,7 @@
 
 // CFormatConvertDlg 对话框
 
-class CFormatConvertDlg : public CDialog
+class CFormatConvertDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CFormatConvertDlg)
 
@@ -82,7 +83,6 @@ protected:
 	static CBASSWmaLibrary m_bass_wma_lib;
     static CBassMixLibrary m_bass_mix_lib;
 
-	CSize m_min_size;
 	int m_item_selected;
 
 	//选项数据
@@ -96,7 +96,8 @@ protected:
 
     std::map<wstring, int> m_freq_map;
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual CString GetDialogName() const override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	void LoadConfig();
 	void SaveConfig() const;
@@ -129,7 +130,6 @@ public:
 	virtual void OnOK();
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedEncoderConfigButton();
-	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnBnClickedCopyTagCheck();
 	afx_msg void OnBnClickedCopyAlbumCoverCheck();
 	afx_msg void OnCbnSelchangeTargetFileExistCombo();

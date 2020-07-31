@@ -10,10 +10,10 @@
 
 // CSupportedFormatDlg 对话框
 
-IMPLEMENT_DYNAMIC(CSupportedFormatDlg, CDialog)
+IMPLEMENT_DYNAMIC(CSupportedFormatDlg, CBaseDialog)
 
 CSupportedFormatDlg::CSupportedFormatDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_SUPPORT_FORMAT_DIALOG, pParent)
+	: CBaseDialog(IDD_SUPPORT_FORMAT_DIALOG, pParent)
 {
 
 }
@@ -22,14 +22,19 @@ CSupportedFormatDlg::~CSupportedFormatDlg()
 {
 }
 
+CString CSupportedFormatDlg::GetDialogName() const
+{
+    return _T("SupportedFormatDlg");
+}
+
 void CSupportedFormatDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CBaseDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_FORMAT_LIST, m_format_list);
 }
 
 
-BEGIN_MESSAGE_MAP(CSupportedFormatDlg, CDialog)
+BEGIN_MESSAGE_MAP(CSupportedFormatDlg, CBaseDialog)
 	ON_WM_GETMINMAXINFO()
 END_MESSAGE_MAP()
 
@@ -39,20 +44,15 @@ END_MESSAGE_MAP()
 
 BOOL CSupportedFormatDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CBaseDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
 
-	//获取初始时窗口的大小
-	CRect rect;
-	GetWindowRect(rect);
-	m_min_size.cx = rect.Width();
-	m_min_size.cy = rect.Height();
-
 	//初始化列表
 	//m_format_list.SetColor(theApp.m_app_setting_data.theme_color);
+	CRect rect;
 	m_format_list.GetWindowRect(rect);
 	int width0, width1, width2;
 	width0 = theApp.DPI(100);
@@ -79,14 +79,4 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
-}
-
-void CSupportedFormatDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
-	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
-
-	CDialog::OnGetMinMaxInfo(lpMMI);
 }

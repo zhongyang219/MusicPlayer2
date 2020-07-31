@@ -1257,13 +1257,15 @@
 #define ID_LYRIC_TIME_TAG_DELAY         33179
 #define ID_33180                        33180
 #define ID_RELATE_LOCAL_LYRIC           33181
+#define ID_33182                        33182
+#define ID_ALBUM_COVER_INFO             33183
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        473
-#define _APS_NEXT_COMMAND_VALUE         33182
+#define _APS_NEXT_COMMAND_VALUE         33184
 #define _APS_NEXT_CONTROL_VALUE         1173
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

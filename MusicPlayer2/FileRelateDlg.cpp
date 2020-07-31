@@ -13,10 +13,10 @@
 
 // CFileRelateDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFileRelateDlg, CDialog)
+IMPLEMENT_DYNAMIC(CFileRelateDlg, CBaseDialog)
 
 CFileRelateDlg::CFileRelateDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_FILE_RELATE_DIALOG, pParent)
+	: CBaseDialog(IDD_FILE_RELATE_DIALOG, pParent)
 {
 
 }
@@ -25,9 +25,14 @@ CFileRelateDlg::~CFileRelateDlg()
 {
 }
 
+CString CFileRelateDlg::GetDialogName() const
+{
+    return _T("FileRelateDlg");
+}
+
 void CFileRelateDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST1, m_list_ctrl);
 }
 
@@ -85,7 +90,7 @@ void CFileRelateDlg::RefreshList()
     }
 }
 
-BEGIN_MESSAGE_MAP(CFileRelateDlg, CDialog)
+BEGIN_MESSAGE_MAP(CFileRelateDlg, CBaseDialog)
     ON_BN_CLICKED(IDC_SELECT_ALL_CHECK, &CFileRelateDlg::OnBnClickedSelectAllCheck)
 END_MESSAGE_MAP()
 
@@ -95,7 +100,7 @@ END_MESSAGE_MAP()
 
 BOOL CFileRelateDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
     CRect rect;
@@ -141,7 +146,7 @@ void CFileRelateDlg::OnOK()
         }
     }
 
-    CDialog::OnOK();
+    CBaseDialog::OnOK();
 }
 
 

@@ -9,10 +9,10 @@
 
 // CAddToPlaylistDlg 对话框
 
-IMPLEMENT_DYNAMIC(CAddToPlaylistDlg, CDialog)
+IMPLEMENT_DYNAMIC(CAddToPlaylistDlg, CBaseDialog)
 
 CAddToPlaylistDlg::CAddToPlaylistDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_ADD_TO_PLAYLIST_DIALOG, pParent)
+	: CBaseDialog(IDD_ADD_TO_PLAYLIST_DIALOG, pParent)
 {
 
 }
@@ -21,14 +21,19 @@ CAddToPlaylistDlg::~CAddToPlaylistDlg()
 {
 }
 
+CString CAddToPlaylistDlg::GetDialogName() const
+{
+    return _T("AddToPlaylistDlg");
+}
+
 void CAddToPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST1, m_playlist_list_ctrl);
 }
 
 
-BEGIN_MESSAGE_MAP(CAddToPlaylistDlg, CDialog)
+BEGIN_MESSAGE_MAP(CAddToPlaylistDlg, CBaseDialog)
     ON_WM_GETMINMAXINFO()
     ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CAddToPlaylistDlg::OnNMDblclkList1)
 END_MESSAGE_MAP()
@@ -39,17 +44,11 @@ END_MESSAGE_MAP()
 
 BOOL CAddToPlaylistDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
 
     SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
-
-    //获取初始时窗口的大小
-    CRect rect;
-    GetWindowRect(rect);
-    m_min_size.cx = rect.Width();
-    m_min_size.cy = rect.Height();
 
     //初始化列表
     for (const auto& item : CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists)
@@ -69,18 +68,7 @@ void CAddToPlaylistDlg::OnOK()
     int index = m_playlist_list_ctrl.GetCurSel();
     m_playlist_selected = m_playlist_list_ctrl.GetItemText(index, 0);
 
-    CDialog::OnOK();
-}
-
-
-void CAddToPlaylistDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-    //限制窗口最小大小
-    lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
-    lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
-
-    CDialog::OnGetMinMaxInfo(lpMMI);
+    CBaseDialog::OnOK();
 }
 
 
@@ -89,7 +77,7 @@ void CAddToPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_playlist_selected = m_playlist_list_ctrl.GetItemText(pNMItemActivate->iItem, 0);
-    CDialog::OnOK();
+    CBaseDialog::OnOK();
 
     *pResult = 0;
 }

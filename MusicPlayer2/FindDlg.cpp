@@ -13,10 +13,10 @@
 
 // CFindDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFindDlg, CDialog)
+IMPLEMENT_DYNAMIC(CFindDlg, CBaseDialog)
 
 CFindDlg::CFindDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_FIND_DIALOG, pParent)
+	: CBaseDialog(IDD_FIND_DIALOG, pParent)
 {
 
 }
@@ -25,9 +25,14 @@ CFindDlg::~CFindDlg()
 {
 }
 
+CString CFindDlg::GetDialogName() const
+{
+    return _T("FindDlg");
+}
+
 void CFindDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CBaseDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_FIND_LIST, m_find_result_list);
 	DDX_Control(pDX, IDC_FIND_FILE_CHECK, m_find_file_check);
 	DDX_Control(pDX, IDC_FIND_TITLE_CHECK, m_find_title_check);
@@ -183,7 +188,7 @@ void CFindDlg::GetCurrentSongList(std::vector<SongInfo>& song_list)
     }
 }
 
-BEGIN_MESSAGE_MAP(CFindDlg, CDialog)
+BEGIN_MESSAGE_MAP(CFindDlg, CBaseDialog)
 	ON_EN_CHANGE(IDC_FIND_EDIT, &CFindDlg::OnEnChangeFindEdit)
 	ON_NOTIFY(NM_CLICK, IDC_FIND_LIST, &CFindDlg::OnNMClickFindList)
 	ON_BN_CLICKED(IDC_FIND_BUTTON, &CFindDlg::OnBnClickedFindButton)
@@ -216,7 +221,7 @@ END_MESSAGE_MAP()
 void CFindDlg::OnEnChangeFindEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -337,7 +342,7 @@ void CFindDlg::OnBnClickedFindButton()
 
 BOOL CFindDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CBaseDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 
@@ -380,10 +385,6 @@ BOOL CFindDlg::OnInitDialog()
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_find_result_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-	GetWindowRect(rect);
-	m_min_width = rect.Width();
-	m_min_height = rect.Height();
-
 	//初始化右键菜单
 	//if (m_menu.m_hMenu == NULL)
 	//	m_menu.LoadMenu(IDR_FIND_POPUP_MENU);
@@ -423,7 +424,7 @@ BOOL CFindDlg::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CBaseDialog::PreTranslateMessage(pMsg);
 }
 
 
@@ -470,20 +471,9 @@ void CFindDlg::OnBnClickedFindAllPlaylistRadio()
 }
 
 
-void CFindDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = m_min_width;		//设置最小宽度
-	lpMMI->ptMinTrackSize.y = m_min_height;		//设置最小高度
-
-	CDialog::OnGetMinMaxInfo(lpMMI);
-}
-
-
 void CFindDlg::OnSize(UINT nType, int cx, int cy)
 {
-	CDialog::OnSize(nType, cx, cy);
+	CBaseDialog::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
 	if (m_find_result_list.m_hWnd != NULL&&nType != SIZE_MINIMIZED)
@@ -642,7 +632,7 @@ void CFindDlg::OnOK()
         m_result_in_current_playlist = false;
     }
 
-    CDialog::OnOK();
+    CBaseDialog::OnOK();
 }
 
 
@@ -661,7 +651,7 @@ void CFindDlg::OnAddToNewPalylistAndPlay()
 
 void CFindDlg::OnInitMenu(CMenu* pMenu)
 {
-    CDialog::OnInitMenu(pMenu);
+    CBaseDialog::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
@@ -680,7 +670,7 @@ BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     CMusicPlayerCmdHelper cmd_helper;
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
-    return CDialog::OnCommand(wParam, lParam);
+    return CBaseDialog::OnCommand(wParam, lParam);
 }
 
 

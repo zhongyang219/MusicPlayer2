@@ -17,15 +17,15 @@ CBassMixLibrary CFormatConvertDlg::m_bass_mix_lib;
 
 // CFormatConvertDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFormatConvertDlg, CDialog)
+IMPLEMENT_DYNAMIC(CFormatConvertDlg, CBaseDialog)
 
 CFormatConvertDlg::CFormatConvertDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_FORMAT_CONVERT_DIALOG, pParent)
+	: CBaseDialog(IDD_FORMAT_CONVERT_DIALOG, pParent)
 {
 }
 
 CFormatConvertDlg::CFormatConvertDlg(const vector<SongInfo>& items, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_FORMAT_CONVERT_DIALOG, pParent)
+	: CBaseDialog(IDD_FORMAT_CONVERT_DIALOG, pParent)
 {
 	//获取文件列表
 	for (auto item : items)
@@ -64,9 +64,15 @@ CFormatConvertDlg::~CFormatConvertDlg()
     m_bass_mix_lib.UnInit();
 }
 
+CString CFormatConvertDlg::GetDialogName() const
+{
+    return _T("FormatConvertDlg");
+
+}
+
 void CFormatConvertDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_SONG_LIST1, m_file_list_ctrl);
     DDX_Control(pDX, IDC_OUT_FORMAT_COMBO, m_encode_format_combo);
     DDX_Control(pDX, IDC_PROGRESS_BAR, m_progress_bar);
@@ -142,7 +148,7 @@ void CFormatConvertDlg::SaveEncoderConfig() const
 }
 
 
-BEGIN_MESSAGE_MAP(CFormatConvertDlg, CDialog)
+BEGIN_MESSAGE_MAP(CFormatConvertDlg, CBaseDialog)
 	ON_CBN_SELCHANGE(IDC_OUT_FORMAT_COMBO, &CFormatConvertDlg::OnCbnSelchangeOutFormatCombo)
 	ON_BN_CLICKED(IDC_START_CONVERT_BUTTON, &CFormatConvertDlg::OnBnClickedStartConvertButton)
 	//ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CFormatConvertDlg::OnBnClickedBrowseButton)
@@ -176,7 +182,7 @@ END_MESSAGE_MAP()
 
 BOOL CFormatConvertDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CBaseDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 	CenterWindow();
@@ -190,12 +196,6 @@ BOOL CFormatConvertDlg::OnInitDialog()
     if (!m_bass_mix_lib.IsSucceed())
         m_convert_freq = false;
 
-	//获取初始时窗口的大小
-	CRect rect;
-	GetWindowRect(rect);
-	m_min_size.cx = rect.Width();
-	m_min_size.cy = rect.Height();
-
     //初始化菜单
 	m_list_popup_menu.LoadMenu(IDR_FORMAT_CONVERT_POPUP_MENU);
     CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_ADD_FILE, FALSE, theApp.m_icon_set.add.GetIcon(true));
@@ -204,6 +204,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
 
 
 	//初始化文件列表
+	CRect rect;
 	m_file_list_ctrl.GetClientRect(rect);
 	int width0{ theApp.DPI(40) }, width1, width2{ theApp.DPI(65) };
 	width1 = rect.Width() - width0 - width2 - theApp.DPI(20) - 1;
@@ -822,7 +823,7 @@ void CFormatConvertDlg::OnCancel()
 
 	DestroyWindow();
 
-	//CDialog::OnCancel();
+	//CBaseDialog::OnCancel();
 }
 
 
@@ -833,7 +834,7 @@ void CFormatConvertDlg::OnOK()
 	//if (m_pThread != nullptr)
 	//	WaitForSingleObject(m_pThread->m_hThread, 2000);	//等待线程退出
 
-	CDialog::OnOK();
+	CBaseDialog::OnOK();
 }
 
 
@@ -841,7 +842,7 @@ void CFormatConvertDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	CDialog::OnClose();
+	CBaseDialog::OnClose();
 }
 
 
@@ -879,16 +880,6 @@ void CFormatConvertDlg::OnBnClickedEncoderConfigButton()
 		default:
 			break;
 	}
-}
-
-void CFormatConvertDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
-	lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
-
-	CDialog::OnGetMinMaxInfo(lpMMI);
 }
 
 
@@ -1097,7 +1088,7 @@ BOOL CFormatConvertDlg::PreTranslateMessage(MSG* pMsg)
 			}
 		}
 	}
-	return CDialog::PreTranslateMessage(pMsg);
+	return CBaseDialog::PreTranslateMessage(pMsg);
 }
 
 
@@ -1114,7 +1105,7 @@ void CFormatConvertDlg::OnEditTagInfo()
 
 void CFormatConvertDlg::OnInitMenu(CMenu* pMenu)
 {
-	CDialog::OnInitMenu(pMenu);
+	CBaseDialog::OnInitMenu(pMenu);
 
 	// TODO: 在此处添加消息处理程序代码
 	bool item_selected_valid{ m_item_selected >= 0 && m_item_selected < static_cast<int>(m_file_list.size()) };

@@ -303,6 +303,9 @@
     <Filter Include="对话框类\LyricRelateDlg">
       <UniqueIdentifier>{41a29ea0-ab44-48ef-986b-333aaf3f7886}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\BaseDialog">
+      <UniqueIdentifier>{81418427-f8ce-49dc-bcfc-5dddf81f8459}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -664,6 +667,9 @@
     <ClInclude Include="LyricRelateDlg.h">
       <Filter>对话框类\LyricRelateDlg</Filter>
     </ClInclude>
+    <ClInclude Include="BaseDialog.h">
+      <Filter>对话框类\BaseDialog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -992,6 +998,9 @@
     </ClCompile>
     <ClCompile Include="LyricRelateDlg.cpp">
       <Filter>对话框类\LyricRelateDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseDialog.cpp">
+      <Filter>对话框类\BaseDialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

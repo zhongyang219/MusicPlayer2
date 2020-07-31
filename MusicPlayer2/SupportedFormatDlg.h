@@ -1,9 +1,10 @@
 ﻿#pragma once
 #include "ListCtrlEx.h"
+#include "BaseDialog.h"
 
 // CSupportedFormatDlg 对话框
 
-class CSupportedFormatDlg : public CDialog
+class CSupportedFormatDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CSupportedFormatDlg)
 
@@ -18,13 +19,12 @@ public:
 
 protected:
 	CListCtrlEx m_format_list;
-	CSize m_min_size;		//窗口的最小大小
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual CString GetDialogName() const override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 
 public:
 	virtual BOOL OnInitDialog();
-	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 };

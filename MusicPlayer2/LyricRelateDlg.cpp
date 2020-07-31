@@ -9,10 +9,10 @@
 
 // CLyricRelateDlg 对话框
 
-IMPLEMENT_DYNAMIC(CLyricRelateDlg, CDialog)
+IMPLEMENT_DYNAMIC(CLyricRelateDlg, CBaseDialog)
 
 CLyricRelateDlg::CLyricRelateDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_LYRIC_RELATE_DIALOG, pParent)
+	: CBaseDialog(IDD_LYRIC_RELATE_DIALOG, pParent)
 {
 
 }
@@ -86,15 +86,20 @@ void CLyricRelateDlg::EnableControls(bool enable)
         pWnd->EnableWindow(enable);
 }
 
+CString CLyricRelateDlg::GetDialogName() const
+{
+    return _T("LyricRelateDlg");
+}
+
 void CLyricRelateDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_FUZZY_MATCH_CHECK, m_fuzzy_match_chk);
     DDX_Control(pDX, IDC_SEARCH_RESULT_LIST, m_result_list);
 }
 
 
-BEGIN_MESSAGE_MAP(CLyricRelateDlg, CDialog)
+BEGIN_MESSAGE_MAP(CLyricRelateDlg, CBaseDialog)
     ON_BN_CLICKED(IDC_LOCAL_SEARCH_BUTTON, &CLyricRelateDlg::OnBnClickedLocalSearchButton)
     ON_BN_CLICKED(IDC_BROWSE_BUTTON1, &CLyricRelateDlg::OnBnClickedBrowseButton1)
     ON_BN_CLICKED(IDC_DELETE_FILE_BUTTON, &CLyricRelateDlg::OnBnClickedDeleteFileButton)
@@ -109,16 +114,10 @@ END_MESSAGE_MAP()
 
 BOOL CLyricRelateDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
     SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);
-
-    CRect rect;
-    GetWindowRect(rect);
-    m_min_size.cx = rect.Width();
-    m_min_size.cy = rect.Height();
-
 
     wstring lyric_name{ CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileNameWithoutExtension() };
     SetDlgItemText(IDC_LYRIC_NAME_EDIT, lyric_name.c_str());
@@ -193,7 +192,7 @@ void CLyricRelateDlg::OnOK()
     wstring related_lyric = GetListRow(index_selected);
     CPlayer::GetInstance().IniLyrics(related_lyric);
 
-    CDialog::OnOK();
+    CBaseDialog::OnOK();
 }
 
 
@@ -205,14 +204,4 @@ void CLyricRelateDlg::OnLvnItemchangedSearchResultList(NMHDR *pNMHDR, LRESULT *p
     bool selected_valid = (index >= 0 && index < m_result_list.GetItemCount());
     EnableControls(selected_valid);
     *pResult = 0;
-}
-
-
-void CLyricRelateDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-    lpMMI->ptMinTrackSize.x = m_min_size.cx;
-    lpMMI->ptMinTrackSize.y = m_min_size.cy;
-
-    CDialog::OnGetMinMaxInfo(lpMMI);
 }

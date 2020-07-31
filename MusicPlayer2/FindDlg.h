@@ -4,11 +4,12 @@
 #include "afxwin.h"
 #include "ListCtrlEx.h"
 #include "Common.h"
+#include "BaseDialog.h"
 
 
 // CFindDlg 对话框
 
-class CFindDlg : public CDialog
+class CFindDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CFindDlg)
 
@@ -67,12 +68,10 @@ protected:
 
 	int m_find_option_data{};		//保存查找选项的数据，用每一个bit位表示每个查找选项是否选中
 
-	int m_min_width{};
-	int m_min_height{};
-
 	CString m_selected_string;
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual CString GetDialogName() const override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	void ShowFindResult();
 	void ShowFindInfo();
     bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
@@ -97,7 +96,6 @@ public:
 	afx_msg void OnBnClickedFindAlbumCheck();
 	afx_msg void OnBnClickedFindCurrentPlaylistRadio();
 	afx_msg void OnBnClickedFindAllPlaylistRadio();
-	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnPlayItem();
 	afx_msg void OnExploreTrack();

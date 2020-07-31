@@ -1,9 +1,10 @@
 ﻿#pragma once
+#include "BaseDialog.h"
 
 
 // CFileRelateDlg 对话框
 
-class CFileRelateDlg : public CDialog
+class CFileRelateDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CFileRelateDlg)
 
@@ -17,6 +18,8 @@ public:
 #endif
 
 protected:
+    virtual CString GetDialogName() const override;
+
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void RefreshList();
 

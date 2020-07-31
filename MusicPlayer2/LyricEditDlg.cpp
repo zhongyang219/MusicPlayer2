@@ -10,10 +10,10 @@
 
 // CLyricEditDlg 对话框
 
-IMPLEMENT_DYNAMIC(CLyricEditDlg, CDialog)
+IMPLEMENT_DYNAMIC(CLyricEditDlg, CBaseDialog)
 
 CLyricEditDlg::CLyricEditDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_LYRIC_EDIT_DIALOG, pParent)
+	: CBaseDialog(IDD_LYRIC_EDIT_DIALOG, pParent)
 {
 
 }
@@ -170,14 +170,19 @@ bool CLyricEditDlg::SaveInquiry()
     return true;
 }
 
+CString CLyricEditDlg::GetDialogName() const
+{
+    return _T("LyricEditDlg");
+}
+
 void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CBaseDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT1, m_lyric_edit);
 }
 
 
-BEGIN_MESSAGE_MAP(CLyricEditDlg, CDialog)
+BEGIN_MESSAGE_MAP(CLyricEditDlg, CBaseDialog)
 	//ON_BN_CLICKED(IDC_INSERT_TAG_BUTTON, &CLyricEditDlg::OnBnClickedInsertTagButton)
 	//ON_BN_CLICKED(IDC_REPLACE_TAG_BUTTON, &CLyricEditDlg::OnBnClickedReplaceTagButton)
 	//ON_BN_CLICKED(IDC_DELETE_TAG__BUTTON, &CLyricEditDlg::OnBnClickedDeleteTag)
@@ -214,12 +219,15 @@ END_MESSAGE_MAP()
 
 BOOL CLyricEditDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+    CBaseDialog::SetMinSize(theApp.DPI(300), theApp.DPI(300));
+	CBaseDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 	CenterWindow();
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+
+
 	//获取歌词信息
 	//m_lyric_string = CPlayer::GetInstance().m_Lyrics.GetLyricsString();
 	//m_lyric_path = CPlayer::GetInstance().m_Lyrics.GetPathName();
@@ -350,7 +358,7 @@ void CLyricEditDlg::OnCancel()
 
 	DestroyWindow();
 
-	//CDialog::OnCancel();
+	//CBaseDialog::OnCancel();
 }
 
 
@@ -391,7 +399,7 @@ void CLyricEditDlg::OnCancel()
 void CLyricEditDlg::OnDestroy()
 {
 	// TODO: 在此处添加消息处理程序代码
-	CDialog::OnDestroy();
+	CBaseDialog::OnDestroy();
 	m_dlg_exist = false;
 	if (m_current_song_name == CPlayer::GetInstance().GetFileName() && m_lyric_saved)		//关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
 		CPlayer::GetInstance().IniLyrics(m_original_lyric_path);
@@ -401,7 +409,7 @@ void CLyricEditDlg::OnDestroy()
 void CLyricEditDlg::OnEnChangeEdit1()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -478,7 +486,7 @@ BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
 	//if (pMsg->message == WM_MOUSEMOVE)
 	//	m_Mytip.RelayEvent(pMsg);
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CBaseDialog::PreTranslateMessage(pMsg);
 }
 
 
@@ -488,7 +496,7 @@ void CLyricEditDlg::OnClose()
     if (!SaveInquiry())
         return;
 
-	CDialog::OnClose();
+	CBaseDialog::OnClose();
 }
 
 
@@ -693,21 +701,21 @@ void CLyricEditDlg::OnFindNext()
 	}
 }
 
-
-void CLyricEditDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	//限制窗口最小大小
-	lpMMI->ptMinTrackSize.x = theApp.DPI(300);		//设置最小宽度
-	lpMMI->ptMinTrackSize.y = theApp.DPI(300);		//设置最小高度
-
-	CDialog::OnGetMinMaxInfo(lpMMI);
-}
+//
+//void CLyricEditDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+//{
+//	// TODO: 在此添加消息处理程序代码和/或调用默认值
+//	//限制窗口最小大小
+//	lpMMI->ptMinTrackSize.x = theApp.DPI(300);		//设置最小宽度
+//	lpMMI->ptMinTrackSize.y = theApp.DPI(300);		//设置最小高度
+//
+//	CBaseDialog::OnGetMinMaxInfo(lpMMI);
+//}
 
 
 void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 {
-	CDialog::OnSize(nType, cx, cy);
+	CBaseDialog::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
 	//窗口大小变化时调整状态栏的大小和位置
