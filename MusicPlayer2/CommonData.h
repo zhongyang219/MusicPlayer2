@@ -240,6 +240,8 @@ struct ApperanceSettingData
 
     bool draw_album_high_quality{ false };      //专辑封面图片使用Gdi+高质量绘图
     int ui_refresh_interval{ 100 };             //界面刷新的时间间隔
+
+    int notify_icon_selected{};                 //使用的通知区图标
 };
 
 struct GeneralSettingData
@@ -431,6 +433,9 @@ struct IconSet
     HICON album_cover;
     HICON dark_mode;
     HICON lyric;
+
+    //通知区图标
+    HICON notify_icons[MAX_NOTIFY_ICON];
 };
 
 

@@ -21,6 +21,11 @@ void CNotifyIcon::Init(HICON hIcon)
 	m_ntIcon.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;		//图标的属性：设置成员uCallbackMessage、hIcon、szTip有效
 }
 
+void CNotifyIcon::SetIcon(HICON hIcon)
+{
+    m_ntIcon.hIcon = hIcon;
+}
+
 void CNotifyIcon::AddNotifyIcon()
 {
 	::Shell_NotifyIcon(NIM_ADD, &m_ntIcon);

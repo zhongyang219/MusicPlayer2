@@ -491,6 +491,8 @@
     <Image Include="res\mini.ico" />
     <Image Include="res\mini_d.ico" />
     <Image Include="res\MusicPlayer2.ico" />
+    <Image Include="res\MusicPlayer2_dark.ico" />
+    <Image Include="res\MusicPlayer2_light.ico" />
     <Image Include="res\music_d.ico" />
     <Image Include="res\next_dark.ico" />
     <Image Include="res\next_white.ico" />

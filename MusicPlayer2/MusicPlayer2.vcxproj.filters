@@ -1345,8 +1345,14 @@
     <Image Include="res\黑色胶片.png">
       <Filter>资源文件\bitmaps</Filter>
     </Image>
+    <Image Include="res\MusicPlayer2_light.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\MusicPlayer2_dark.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
     <Image Include="res\lyric_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ public:
 	CNotifyIcon();
 	~CNotifyIcon();
 	void Init(HICON hIcon);
+    void SetIcon(HICON hIcon);
 
 	void AddNotifyIcon();
 	void DeleteNotifyIcon();

@@ -329,6 +329,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"use_inner_image_first", theApp.m_app_setting_data.use_inner_image_first);
     ini.WriteBool(L"config", L"draw_album_high_quality", theApp.m_app_setting_data.draw_album_high_quality);
     ini.WriteInt(L"config", L"ui_refresh_interval", theApp.m_app_setting_data.ui_refresh_interval);
+    ini.WriteInt(L"config", L"notify_icon_selected", theApp.m_app_setting_data.notify_icon_selected);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -467,6 +468,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.ui_refresh_interval = ini.GetInt(L"config", L"ui_refresh_interval", UI_INTERVAL_DEFAULT);
     if (theApp.m_app_setting_data.ui_refresh_interval < MIN_UI_INTERVAL || theApp.m_app_setting_data.ui_refresh_interval > MAX_UI_INTERVAL)
         theApp.m_app_setting_data.ui_refresh_interval = UI_INTERVAL_DEFAULT;
+    theApp.m_app_setting_data.notify_icon_selected = ini.GetInt(L"config", L"notify_icon_selected", 0);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
@@ -1520,7 +1522,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //载入默认背景图片（用于没有专辑封面时显示）
     theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
 
-    m_notify_icon.Init(m_hIcon);
+    if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
+        theApp.m_app_setting_data.notify_icon_selected = 0;
+    m_notify_icon.Init(theApp.m_icon_set.notify_icons[theApp.m_app_setting_data.notify_icon_selected]);
     m_notify_icon.AddNotifyIcon();
 
     //初始化播放列表工具栏

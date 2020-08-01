@@ -564,7 +564,10 @@
 #define IDI_ICON10                      472
 #define IDI_LYRIC_D                     472
 #define IDS_ALL                         473
+#define IDI_APP_DARK                    473
 #define IDS_LAST_WEEK                   474
+#define IDI_ICON12                      474
+#define IDI_APP_LIGHT                   474
 #define IDS_LAST_MONTH                  475
 #define IDS_LAST_HALF_YEAR              476
 #define IDS_LAST_YEAR                   477
@@ -1270,7 +1273,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        473
+#define _APS_NEXT_RESOURCE_VALUE        475
 #define _APS_NEXT_COMMAND_VALUE         33184
 #define _APS_NEXT_CONTROL_VALUE         1173
 #define _APS_NEXT_SYMED_VALUE           101
