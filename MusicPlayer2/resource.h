@@ -569,7 +569,9 @@
 #define IDI_ICON12                      474
 #define IDI_APP_LIGHT                   474
 #define IDS_LAST_MONTH                  475
+#define IDB_NOTIFY_ICON_PREVIEW         475
 #define IDS_LAST_HALF_YEAR              476
+#define IDB_NOTIFY_ICON_PREVIEW_LIGHT   476
 #define IDS_LAST_YEAR                   477
 #define IDS_TODAY                       478
 #define IDS_LAST_THREE_DAYS             479
@@ -584,6 +586,9 @@
 #define IDS_HEIGHT                      488
 #define IDS_BPP                         489
 #define IDS_FILE_SIZE                   490
+#define IDS_DEFAULT_ICON                491
+#define IDS_LIGHT_ICON                  492
+#define IDS_DARK_ICON                   493
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -899,6 +904,9 @@
 #define IDC_SEARCH_RESULT_LIST          1170
 #define IDC_DELETE_FILE_BUTTON          1171
 #define IDC_LYRIC_NAME_EDIT             1172
+#define IDC_PREVIEW_STATIC              1173
+#define IDC_CHECK7                      1174
+#define IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK 1174
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1273,9 +1281,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        475
+#define _APS_NEXT_RESOURCE_VALUE        477
 #define _APS_NEXT_COMMAND_VALUE         33184
-#define _APS_NEXT_CONTROL_VALUE         1173
+#define _APS_NEXT_CONTROL_VALUE         1175
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

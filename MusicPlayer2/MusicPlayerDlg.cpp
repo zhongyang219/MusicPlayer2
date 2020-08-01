@@ -888,6 +888,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                                   };
     bool use_inner_lyric_changed{ theApp.m_lyric_setting_data.use_inner_lyric_first != optionDlg.m_tab1_dlg.m_data.use_inner_lyric_first };
     bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
+    bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != optionDlg.m_tab2_dlg.m_data.notify_icon_selected };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -953,6 +954,15 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         {
             ::SendMessage(m_miniModeDlg.GetSafeHwnd(), WM_TIMER_INTERVAL_CHANGED, 0, 0);
         }
+    }
+
+    if (notify_icon_changed)
+    {
+        if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
+            theApp.m_app_setting_data.notify_icon_selected = 0;
+        m_notify_icon.SetIcon(theApp.m_icon_set.notify_icons[theApp.m_app_setting_data.notify_icon_selected]);
+        m_notify_icon.DeleteNotifyIcon();
+        m_notify_icon.AddNotifyIcon();
     }
 
     SaveConfig();		//将设置写入到ini文件
@@ -1853,7 +1863,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             CPlayer::GetInstance().AddListenTime(1);
         }
 
-		m_cortana_lyric.CheckDarkMode();
+        CWinVersionHelper::CheckWindows10LightTheme();
+		m_cortana_lyric.SetDarkMode(!CWinVersionHelper::IsWindows10LightTheme());
     }
 
     else if (nIDEvent == DELAY_TIMER_ID)

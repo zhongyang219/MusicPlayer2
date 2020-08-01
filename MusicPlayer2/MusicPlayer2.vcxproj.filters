@@ -1354,5 +1354,11 @@
     <Image Include="res\lyric_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\notify_preview.bmp">
+      <Filter>资源文件\bitmaps</Filter>
+    </Image>
+    <Image Include="res\notify_preview_light.bmp">
+      <Filter>资源文件\bitmaps</Filter>
+    </Image>
   </ItemGroup>
 </Project>

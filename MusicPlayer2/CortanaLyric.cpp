@@ -57,7 +57,8 @@ void CCortanaLyric::Init()
         //m_check_dark_point.x = cortana_rect.right - 2;
         //m_check_dark_point.y = cortana_rect.top + 2;
 
-        CheckDarkMode();
+        CWinVersionHelper::CheckWindows10LightTheme();
+        SetDarkMode(!CWinVersionHelper::IsWindows10LightTheme());
 
         //设置字体
         LOGFONT lf;
@@ -369,20 +370,11 @@ void CCortanaLyric::ResetCortanaText()
     }
 }
 
-void CCortanaLyric::CheckDarkMode()
+void CCortanaLyric::SetDarkMode(bool dark_mode)
 {
     if (m_enable)
     {
-        //HDC hDC = ::GetDC(NULL);
-        //COLORREF color;
-        ////获取Cortana左上角点的颜色
-        //color = ::GetPixel(hDC, m_check_dark_point.x, m_check_dark_point.y);
-        //int brightness;
-        //brightness = (GetRValue(color) + GetGValue(color) + GetBValue(color)) / 3;		//R、G、B的平均值
-        //m_dark_mode = (brightness < 220);
-        //::ReleaseDC(NULL, hDC);
-		m_dark_mode = !CWinVersionHelper::IsWindows10LightTheme();
-
+		m_dark_mode = dark_mode;
 		SetCortanaBarOpaque(!m_dark_mode);
 		SetUIColors();
     }

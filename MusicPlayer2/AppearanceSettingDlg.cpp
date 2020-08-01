@@ -51,6 +51,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_DEFAULT_ALBUM_COVER_HQ, m_default_cover_hq_chk);
     DDX_Control(pDX, IDC_FONT_SIZE_EDIT, m_lyric_line_space_edit);
     DDX_Control(pDX, IDC_UI_INTERVAL_EDIT, m_ui_refresh_interval_edit);
+    DDX_Control(pDX, IDC_COMBO1, m_icon_select_combo);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -95,6 +96,21 @@ void CAppearanceSettingDlg::SetControlEnable()
 	m_back_transparency_slid.EnableWindow(m_data.enable_background);
 	m_background_gauss_blur_chk.EnableWindow(m_data.enable_background && m_data.album_cover_as_background);
 	m_gauss_blur_radius_sld.EnableWindow(m_data.enable_background && m_data.album_cover_as_background && m_data.background_gauss_blur);
+}
+
+void CAppearanceSettingDlg::CalculateNotifyIconPreviewRect()
+{
+    CWnd* pStatic = GetDlgItem(IDC_PREVIEW_STATIC);
+    if (pStatic != nullptr)
+    {
+        CRect rc_static;
+        ::GetWindowRect(pStatic->GetSafeHwnd(), rc_static);
+        ScreenToClient(rc_static);
+        m_notify_icon_preview.top = rc_static.bottom + theApp.DPI(4);
+        m_notify_icon_preview.left = rc_static.left;
+        m_notify_icon_preview.right = m_notify_icon_preview.left + PREVIEW_WIDTH;
+        m_notify_icon_preview.bottom = m_notify_icon_preview.top + PREVIEW_HEIGHT;
+    }
 }
 
 void CAppearanceSettingDlg::DrawColor()
@@ -142,6 +158,8 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_RESTORE_DEFAULT_BUTTON, &CAppearanceSettingDlg::OnBnClickedRestoreDefaultButton)
     ON_EN_KILLFOCUS(IDC_UI_INTERVAL_EDIT, &CAppearanceSettingDlg::OnEnKillfocusUiIntervalEdit)
     ON_NOTIFY(UDN_DELTAPOS, SPIN_ID, &CAppearanceSettingDlg::OnDeltaposSpin)
+    ON_CBN_SELCHANGE(IDC_COMBO1, &CAppearanceSettingDlg::OnCbnSelchangeCombo1)
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -249,6 +267,18 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     m_ui_refresh_interval_edit.SetRange(MIN_UI_INTERVAL, MAX_UI_INTERVAL);
     m_ui_refresh_interval_edit.SetValue(m_data.ui_refresh_interval);
+
+    m_icon_select_combo.AddString(CCommon::LoadText(IDS_DEFAULT_ICON));
+    m_icon_select_combo.AddString(CCommon::LoadText(IDS_LIGHT_ICON));
+    m_icon_select_combo.AddString(CCommon::LoadText(IDS_DARK_ICON));
+    m_icon_select_combo.SetCurSel(m_data.notify_icon_selected);
+
+    //设置通知区图标预览区域的位置
+    CalculateNotifyIconPreviewRect();
+
+    //载入预览图
+    m_preview_dark.LoadBitmap(IDB_NOTIFY_ICON_PREVIEW);
+    m_preview_light.LoadBitmap(IDB_NOTIFY_ICON_PREVIEW_LIGHT);
 
 	SetControlEnable();
 
@@ -637,4 +667,34 @@ void CAppearanceSettingDlg::OnDeltaposSpin(NMHDR *pNMHDR, LRESULT *pResult)
         pNMUpDown->iDelta = 0;
     }
     *pResult = 0;
+}
+
+
+void CAppearanceSettingDlg::OnCbnSelchangeCombo1()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.notify_icon_selected = m_icon_select_combo.GetCurSel();
+    InvalidateRect(m_notify_icon_preview, FALSE);
+}
+
+
+void CAppearanceSettingDlg::OnPaint()
+{
+    CPaintDC dc(this); // device context for painting
+                       // TODO: 在此处添加消息处理程序代码
+                       // 不为绘图消息调用 CTabDlg::OnPaint()
+
+    CalculateNotifyIconPreviewRect();
+    CDrawCommon drawer;
+    drawer.Create(&dc, this);
+    CBitmap& bitmap{ m_data.notify_icon_selected == 2 ? m_preview_light : m_preview_dark };
+    //绘制背景
+    drawer.DrawBitmap(bitmap, m_notify_icon_preview.TopLeft(), m_notify_icon_preview.Size(), CDrawCommon::StretchMode::STRETCH);
+    //绘制图标
+    if (m_data.notify_icon_selected >= 0 && m_data.notify_icon_selected < MAX_NOTIFY_ICON)
+    {
+        drawer.DrawIcon(theApp.m_icon_set.notify_icons[m_data.notify_icon_selected],
+            CPoint(m_notify_icon_preview.left + ICON_X, m_notify_icon_preview.top + ICON_Y),
+            CSize(theApp.DPI(16), theApp.DPI(16)));
+    }
 }

@@ -19,7 +19,7 @@ public:
     void AlbumCoverEnable(bool enable);
     void SetBeatAmp(int beat_amp);
     void SetUIColors();
-    void CheckDarkMode();			//检查Cortana搜索框是否为黑色模式
+    void SetDarkMode(bool dark_mode);		//设置搜索框是否为黑色模式
 
 private:
     struct CortanaUIColors		//界面颜色

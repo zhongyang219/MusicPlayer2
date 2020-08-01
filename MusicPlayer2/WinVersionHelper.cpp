@@ -25,6 +25,7 @@ WinVersion::WinVersion()
 
 ///////////////////////////////////////////////////////////////////////////////
 WinVersion CWinVersionHelper::m_version;
+bool CWinVersionHelper::m_windows10_light_theme{ false };
 
 CWinVersionHelper::CWinVersionHelper()
 {
@@ -96,19 +97,24 @@ bool CWinVersionHelper::IsWindows10Version1809OrLater()
 
 bool CWinVersionHelper::IsWindows10LightTheme()
 {
-	if (m_version.m_major_version >= 10)
-	{
-		HKEY hKey;
-		DWORD dwThemeData(0);
-		LONG lRes = RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", 0, KEY_READ, &hKey);
-		if (lRes == ERROR_SUCCESS) {
-			GetDWORDRegKeyData(hKey, L"SystemUsesLightTheme", dwThemeData);
-			return (dwThemeData != 0);
-		}
-	}
-	return false;
+	return m_windows10_light_theme;
 }
 
+
+void CWinVersionHelper::CheckWindows10LightTheme()
+{
+    if (m_version.m_major_version >= 10)
+    {
+        HKEY hKey;
+        DWORD dwThemeData(0);
+        LONG lRes = RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", 0, KEY_READ, &hKey);
+        if (lRes == ERROR_SUCCESS) {
+            GetDWORDRegKeyData(hKey, L"SystemUsesLightTheme", dwThemeData);
+            m_windows10_light_theme = (dwThemeData != 0);
+        }
+    }
+    m_windows10_light_theme = false;
+}
 
 LONG CWinVersionHelper::GetDWORDRegKeyData(HKEY hKey, const wstring& strValueName, DWORD& dwValueData)
 {

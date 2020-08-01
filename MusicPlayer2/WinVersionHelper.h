@@ -29,11 +29,13 @@ public:
 	static int GetBuildNumber() { return m_version.m_build_number; }
 
 	static bool IsWindows10LightTheme();
+    static void CheckWindows10LightTheme();
 
 private:
 	CWinVersionHelper();
 	static LONG GetDWORDRegKeyData(HKEY hKey, const wstring& strValueName, DWORD& dwValueData);
 
 	static WinVersion m_version;
+    static bool m_windows10_light_theme;
 };
 

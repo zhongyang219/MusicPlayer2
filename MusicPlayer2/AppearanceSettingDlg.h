@@ -23,9 +23,14 @@ public:
 
 	void DrawColor();
 
-#define MIM_LINE_SPACE 0		//歌词行间距设定的最小值
-#define MAX_LINE_SPACE 40		//歌词行间距设定的最大值
+    const int MIM_LINE_SPACE = 0;		//歌词行间距设定的最小值
+    const int MAX_LINE_SPACE = 40;		//歌词行间距设定的最大值
 
+    const int PREVIEW_WIDTH = theApp.DPI(200);		//预览图的宽高
+    const int PREVIEW_HEIGHT = theApp.DPI(40);
+
+    const int ICON_X = theApp.DPI(46);		//预览图中图标的位置
+    const int ICON_Y = theApp.DPI(12);
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -71,6 +76,11 @@ protected:
     CButton m_default_cover_hq_chk;
     CSpinEdit m_lyric_line_space_edit;
     CSpinEdit m_ui_refresh_interval_edit;
+    CComboBox m_icon_select_combo;
+
+    CRect m_notify_icon_preview;
+    CBitmap m_preview_dark;
+    CBitmap m_preview_light;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -80,6 +90,7 @@ protected:
 	static int SpectrumHeightRChg(int value);		//使用二次函数将0~100范围内的值映射到10~300范围内
 
 	void SetControlEnable();
+    void CalculateNotifyIconPreviewRect();
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -118,4 +129,6 @@ public:
     afx_msg void OnBnClickedRestoreDefaultButton();
     afx_msg void OnEnKillfocusUiIntervalEdit();
     afx_msg void OnDeltaposSpin(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnCbnSelchangeCombo1();
+    afx_msg void OnPaint();
 };

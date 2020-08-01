@@ -496,6 +496,8 @@
     <Image Include="res\music_d.ico" />
     <Image Include="res\next_dark.ico" />
     <Image Include="res\next_white.ico" />
+    <Image Include="res\notify_preview.bmp" />
+    <Image Include="res\notify_preview_light.bmp" />
     <Image Include="res\online_d.ico" />
     <Image Include="res\pause_dark.ico" />
     <Image Include="res\pause_white.ico" />
