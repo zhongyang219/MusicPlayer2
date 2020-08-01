@@ -88,7 +88,7 @@ public:
 
 	//字符串查找，忽略大小写
 	template<class T>
-	static size_t StringFindNoCase(const T& str, const T& find_str);
+	static size_t StringFindNoCase(const T& str, const T& find_str, size_t index = 0);
 
 	//字符串查找，全词匹配
 	template<class T>
@@ -434,14 +434,14 @@ inline bool CCommon::StringCompareNoCase(const T & str1, const T & str2)
 }
 
 template<class T>
-inline size_t CCommon::StringFindNoCase(const T & str, const T & find_str)
+inline size_t CCommon::StringFindNoCase(const T & str, const T & find_str, size_t index)
 {
 	if (str.empty() || find_str.empty())
 		return -1;
 	T _str{ str }, _find_str{ find_str };
 	StringTransform(_str, false);
 	StringTransform(_find_str, false);
-	return _str.find(_find_str);
+	return _str.find(_find_str, index);
 }
 
 template<class T>

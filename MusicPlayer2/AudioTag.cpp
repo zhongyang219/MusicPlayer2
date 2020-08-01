@@ -485,7 +485,7 @@ wstring CAudioTag::GetSpecifiedId3V2Tag(const string& tag_contents, const string
 wstring CAudioTag::FindOneFlacTag(const string& tag_contents, const string& tag_identify, size_t& index)
 {
 	string find_str = '\0' + tag_identify + '=';
-	index = tag_contents.find(find_str, index + 1);
+    index = CCommon::StringFindNoCase(tag_contents, find_str, index + 1);
 	if (index == string::npos || index < 3)
 		return wstring();
 
@@ -499,16 +499,12 @@ wstring CAudioTag::FindOneFlacTag(const string& tag_contents, const string& tag_
 
 wstring CAudioTag::GetSpecifiedFlacTag(const string& tag_contents, const string& tag_identify)
 {
-    string tag_contents_lower_case{ tag_contents };
-    CCommon::StringTransform(tag_contents_lower_case, false);
-    string tag_identify_lower_case{ tag_identify };
-    CCommon::StringTransform(tag_identify_lower_case, false);
 	size_t index{ static_cast<size_t>(-1) };
 	wstring tag_wcs;
 	//Flac标签中可能会有多个相同的标签，这里通过循环找到所有的标签，将它们连接起来，并用分号分隔
 	while (true)
 	{
-		wstring contents = FindOneFlacTag(tag_contents_lower_case, tag_identify_lower_case, index);
+		wstring contents = FindOneFlacTag(tag_contents, tag_identify, index);
 		if (contents.empty())
 			break;
 		tag_wcs += contents;
