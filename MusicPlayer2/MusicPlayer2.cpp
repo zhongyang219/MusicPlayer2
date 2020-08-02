@@ -317,12 +317,11 @@ void CMusicPlayerApp::SaveSongData()
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.692"));			//写入数据版本
+    ar << CString(_T("2.693"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
         ar << CString(song_data.first.c_str())		//保存映射容器的键，即歌曲的绝对路径
-           //<< CString(song_data.second.lyric_file.c_str())
             << song_data.second.lengh.toInt()
             << song_data.second.bitrate
             << CString(song_data.second.title.c_str())
@@ -988,8 +987,6 @@ void CMusicPlayerApp::LoadSongData()
         for (size_t i{}; i < size; i++)
         {
             ar >> song_path;
-            //ar >> temp;
-            //song_info.lyric_file = temp;
             ar >> song_length;
             song_info.lengh.fromInt(song_length);
             if (version_str >= _T("2.691"))
@@ -1015,15 +1012,9 @@ void CMusicPlayerApp::LoadSongData()
             ar >> temp;
             song_info.genre = temp;
             ar >> song_info.genre_idx;
-            if (version_str >= _T("2.691"))
-            {
-                ar >> song_info.track;
-            }
-			else if (version_str >= _T("2.66"))
+			if (version_str >= _T("2.66"))
 			{
-                int track;
-                ar >> track;
-                song_info.track = track;
+                ar >> song_info.track;
             }
 			else
 			{
@@ -1031,6 +1022,7 @@ void CMusicPlayerApp::LoadSongData()
 				ar >> track;
 				song_info.track = track;
 			}
+
             if (version_str >= _T("2.691"))
             {
                 ar >> song_info.tag_type;

@@ -231,7 +231,8 @@ public:
     wstring GetCurrentFolderOrPlaylistName() const;
     wstring GetCurrentFilePath() const;		//获取正在播放文件的路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号
-	wstring GetFileName() const;
+	wstring GetFileName() const;            //获取正在播放文件的文件名
+    wstring GetDisplayName() const;         //获取正在播放文件的显示名称
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
 	CImage& GetAlbumCover() { return m_album_cover; }

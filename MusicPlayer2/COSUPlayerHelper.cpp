@@ -78,13 +78,14 @@ void COSUPlayerHelper::GetOSUAudioTitleArtist(SongInfo & song_info)
         song_info.album = osu_file.GetAlbum();
 
         wstring id = osu_file.GetBeatampSetId();
+        wstring folder_name = file_path.GetFolderName();
         if (id.empty())
         {
-            wstring folder_name = file_path.GetFolderName();
             size_t index = folder_name.find(L' ');
             id = folder_name.substr(0, index);
         }
         song_info.track = _wtoi(id.c_str());
+        song_info.comment = folder_name;
     }
 }
 

@@ -588,7 +588,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
     if(rc_tmp.Width() >= DPI(4))
     {
         static CDrawCommon::ScrollInfo scroll_info1;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetFileName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetDisplayName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
     }
 }
 

@@ -1312,6 +1312,14 @@ wstring CPlayer::GetFileName() const
     return (GetCurrentFileName().empty() ? CCommon::LoadText(IDS_FILE_NOT_FOUND).GetString() : GetCurrentFileName());
 }
 
+wstring CPlayer::GetDisplayName() const
+{
+    if (IsOsuFile() && !GetCurrentSongInfo().comment.empty())
+        return GetCurrentSongInfo().comment;
+    else
+        return GetFileName();
+}
+
 void CPlayer::DeleteAlbumCover()
 {
     if (!m_inner_cover)
