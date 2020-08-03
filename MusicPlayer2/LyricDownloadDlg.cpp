@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "MessageDlg.h"
 #include "WIC.h"
+#include "PlayListCtrl.h"
 
 
 // CLyricDownloadDlg 对话框
@@ -79,6 +80,19 @@ void CLyricDownloadDlg::LoadConfig()
 	m_search_max_item = ini.GetInt(L"lyric_download", L"search_max_item", 30);
 }
 
+wstring CLyricDownloadDlg::GetSavedDir()
+{
+    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
+        return CPlayer::GetInstance().GetCurrentDir();
+    else
+        return theApp.m_lyric_setting_data.lyric_path;
+}
+
+wstring CLyricDownloadDlg::GetSavedPath()
+{
+    return GetSavedDir() + m_lyric_name + L".lrc";
+}
+
 void CLyricDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -132,40 +146,42 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	LoadConfig();
 
-    const auto& song_info{ CPlayer::GetInstance().GetCurrentSongInfo() };
-	m_title = CPlayer::GetInstance().GetCurrentSongInfo().title;
-	m_artist = CPlayer::GetInstance().GetCurrentSongInfo().artist;
-	m_album = CPlayer::GetInstance().GetCurrentSongInfo().album;
+    m_song = CPlayer::GetInstance().GetCurrentSongInfo();
 
-	if (song_info.IsTitleEmpty())		//如果没有标题信息，就把文件名设为标题
+	if (m_song.IsTitleEmpty())		//如果没有标题信息，就把文件名设为标题
 	{
-		m_title = CPlayer::GetInstance().GetFileName();
-		size_t index = m_title.rfind(L'.');
-		m_title = m_title.substr(0, index);
+        m_song.title = CPlayer::GetInstance().GetFileName();
+		size_t index = m_song.title.rfind(L'.');
+		m_song.title = m_song.title.substr(0, index);
 	}
-	if (song_info.IsArtistEmpty())	//没有艺术家信息，清空艺术家的文本
+	if (m_song.IsArtistEmpty())	//没有艺术家信息，清空艺术家的文本
 	{
-		m_artist.clear();
+		m_song.artist.clear();
 	}
-	if (song_info.IsAlbumEmpty())	//没有唱片集信息，清空唱片集的文本
+	if (m_song.IsAlbumEmpty())	//没有唱片集信息，清空唱片集的文本
 	{
-		m_album.clear();
+		m_song.album.clear();
 	}
 
-	const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
-	if (!song.is_cue)
-		m_file_name = CPlayer::GetInstance().GetFileName();
-	else
-		m_file_name = song.artist + L" - " + song.title + L".lrc";
-	m_file_path = CPlayer::GetInstance().GetCurrentDir() + m_file_name;
-	if (!song.is_cue)
-	{
-		size_t index = m_file_path.rfind(L'.');		//查找文件名最后一个点
-		m_file_path = m_file_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
-	}
+    if (m_song.is_cue || CPlayer::GetInstance().IsOsuFile())
+    {
+        m_lyric_name = CPlayListCtrl::GetDisplayStr(m_song, DF_ARTIST_TITLE);
+    }
+    else
+    {
+        m_lyric_name = CPlayer::GetInstance().GetFileName();
+        m_lyric_name = CFilePathHelper(m_lyric_name).ReplaceFileExtension(nullptr);	//清除文件名的扩展名
+    }
+	//if (!song.is_cue)
+	//else
+	//	m_lyric_name = song.artist + L" - " + song.title + L".lrc";
+	//m_file_path = CPlayer::GetInstance().GetCurrentDir() + m_lyric_name;
+	//if (!song.is_cue)
+	//{
+	//}
 
-	SetDlgItemText(IDC_TITLE_EDIT1, m_title.c_str());
-	SetDlgItemText(IDC_ARTIST_EDIT1, m_artist.c_str());
+	SetDlgItemText(IDC_TITLE_EDIT1, m_song.title.c_str());
+	SetDlgItemText(IDC_ARTIST_EDIT1, m_song.artist.c_str());
 
 	//设置列表控件主题颜色
 	//m_down_list_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
@@ -232,7 +248,7 @@ void CLyricDownloadDlg::OnBnClickedSearchButton2()
 	// TODO: 在此添加控件通知处理程序代码
 	SetDlgItemText(IDC_STATIC_INFO, CCommon::LoadText(IDS_SEARCHING));
 	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
-	wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
+	wstring keyword = CInternetCommon::URLEncode(m_song.artist + L' ' + m_song.title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
 	CString url;
 	url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), m_search_max_item);
 	//int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
@@ -253,7 +269,7 @@ void CLyricDownloadDlg::OnEnChangeTitleEdit1()
 	// TODO:  在此添加控件通知处理程序代码
 	CString tmp;
 	GetDlgItemText(IDC_TITLE_EDIT1, tmp);
-	m_title = tmp;
+	m_song.title = tmp;
 }
 
 
@@ -267,7 +283,7 @@ void CLyricDownloadDlg::OnEnChangeArtistEdit1()
 	// TODO:  在此添加控件通知处理程序代码
 	CString tmp;
 	GetDlgItemText(IDC_ARTIST_EDIT1, tmp);
-	m_artist = tmp;
+	m_song.artist = tmp;
 }
 
 
@@ -410,7 +426,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		}
 	}
 	if(!id_releated)
-		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
+		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, m_lyric_name, true);
 	CString info;
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
     SongInfo& song_info_ori{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
@@ -487,25 +503,14 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 	//保存歌词
 	if (wParam == 0)		//wParam为0时不弹出“另存为对话框”
 	{
-		wstring saved_path;
-		if (m_save_to_song_folder)
-		{
-			saved_path = m_file_path;
-		}
-		else
-		{
-			if (!CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
-			{
-				CString info;
-				info.LoadString(IDS_LYRIC_FOLDER_NOT_EXIST);
-				MessageBox(info, NULL, MB_ICONWARNING | MB_OK);
-				return 0;
-			}
-			saved_path = theApp.m_lyric_setting_data.lyric_path + m_file_name;
-			size_t index = saved_path.rfind(L'.');		//查找文件名最后一个点
-			saved_path = saved_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
-
-		}
+        if (!m_save_to_song_folder && !CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
+        {
+            CString info;
+            info.LoadString(IDS_LYRIC_FOLDER_NOT_EXIST);
+            MessageBox(info, NULL, MB_ICONWARNING | MB_OK);
+            return 0;
+        }
+        wstring saved_path = GetSavedPath();
 		if (CCommon::FileExist(saved_path))
 		{
 			if (MessageBox(CCommon::LoadText(IDS_LYRIC_OVERWRITE_INQUARY), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
@@ -521,7 +526,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			lyrics.SaveLyric2();
 		}
 
-		if (m_file_name == CPlayer::GetInstance().GetFileName())		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
+		if (m_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
 			CPlayer::GetInstance().IniLyrics(saved_path);
 		CString info;
 		info = CCommon::LoadTextFormat(IDS_DOWNLOAD_COMPLETE_SAVED, { saved_path });
@@ -532,7 +537,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		//设置过滤器
 		CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
 		//构造保存文件对话框
-		CFileDialog fileDlg(FALSE, _T("lrc"), m_file_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+		CFileDialog fileDlg(FALSE, _T("lrc"), GetSavedPath().c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 		//为“另存为”对话框添加一个组合选择框
 		fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
 		//为组合选择框添加项目
@@ -565,8 +570,8 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 				lyrics.SaveLyric2();
 			}
 
-			if (m_file_name == CPlayer::GetInstance().GetFileName())		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
-				CPlayer::GetInstance().IniLyrics(saved_path);
+            if (m_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
+                CPlayer::GetInstance().IniLyrics(saved_path);
 		}
 	}
 	return 0;

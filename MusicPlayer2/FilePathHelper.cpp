@@ -84,7 +84,7 @@ const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extensi
 	size_t index, index1;
 	index = m_file_path.rfind('.');
 	index1 = m_file_path.rfind('\\');
-	if (index == wstring::npos || index < index1)		//如果没有找到“.”，或者“.”在反斜杠的左边，则在末尾添加一个“.”
+	if (index == wstring::npos || (index1 != wstring::npos && index < index1))		//如果没有找到“.”，或者“.”在反斜杠的左边，则在末尾添加一个“.”
 	{
 		m_file_path.push_back(L'.');
 	}
@@ -92,6 +92,14 @@ const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extensi
 	{
 		m_file_path.erase(index + 1);
 	}
-	m_file_path.append(new_extension);		//在末尾添加扩展名
+    if (new_extension == nullptr || *new_extension == L'\0')
+    {
+        if (!m_file_path.empty() && m_file_path.back() == L'.')
+            m_file_path.pop_back();
+    }
+    else
+    {
+        m_file_path.append(new_extension);		//在末尾添加扩展名
+    }
 	return m_file_path;
 }

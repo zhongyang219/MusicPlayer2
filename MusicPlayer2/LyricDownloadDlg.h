@@ -54,11 +54,9 @@ public:
 	DownloadThreadInfo m_download_thread_info;
 
 protected:
-	wstring m_title;		//要查找歌词的歌曲的标题
-	wstring m_artist;		//要查找歌词的歌曲的艺术家
-	wstring m_album;		//要查找歌词的歌曲的唱片集
-	wstring m_file_name;	//要查找歌词的歌曲的文件名
-	wstring m_file_path;			//当前要保存的歌词文件的完整路径
+    SongInfo m_song;       //要查找歌词的歌曲
+	wstring m_lyric_name;	        //保存的歌词文件的文件名（不含扩展名）
+	wstring m_lyric_dir;			//当前要保存的歌词文件的目录
 	wstring m_search_result;	//查找结果字符串
 	wstring m_lyric_str;	//下载的歌词
 	vector<CInternetCommon::ItemInfo> m_down_list;	//搜索结果的列表
@@ -84,6 +82,9 @@ protected:
 
 	void SaveConfig() const;
 	void LoadConfig();
+
+    wstring GetSavedDir();
+    wstring GetSavedPath();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
