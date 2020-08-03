@@ -178,6 +178,7 @@ struct DesktopLyricSettingData		//桌面歌词设置
 	bool hide_lyric_window_without_lyric{ false };	//没有歌词时隐藏歌词窗口
 	bool hide_lyric_window_when_paused{ false };	//暂停时隐藏歌词窗口
     bool lyric_background_penetrate{ false };
+    bool show_unlock_when_locked{ true };           //桌面歌词锁定时显示解锁图标
 };
 
 struct LyricSettingData

@@ -301,25 +301,18 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     toolbar_rect.Height = btn_size;
 
     //绘制背景
-    Gdiplus::Color back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light2, 180);
-    Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(back_color);
-    pGraphics->FillRectangle(pBrush, toolbar_rect);
-    delete pBrush;
+    if(!bLocked || theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)
+    {
+        Gdiplus::Color back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light2, 180);
+        Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(back_color);
+        pGraphics->FillRectangle(pBrush, toolbar_rect);
+        delete pBrush;
+    }
 
     CRect rcIcon = CRect(toolbar_rect.X, toolbar_rect.Y, toolbar_rect.GetRight(), toolbar_rect.GetBottom());
     rcIcon.right = rcIcon.left + btn_size;
 
-    if (bLocked)    //如果处理锁定状态，只绘制一个解锁图标
-    {
-        for (auto& btn : m_buttons)
-        {
-            if (btn.first == BTN_LOCK)
-                DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
-            else
-                btn.second = UIButton();
-        }
-    }
-    else
+    if (!bLocked)
     {
         DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
         rcIcon.MoveToX(rcIcon.right);
@@ -352,6 +345,16 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
 		m_buttons[BTN_LYRIC_FORWARD].enable = !lyric_disable;
 		m_buttons[BTN_LYRIC_DELAY].enable = !lyric_disable;
 
+    }
+    else if (theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)    //如果处于锁定状态，只绘制一个解锁图标
+    {
+        for (auto& btn : m_buttons)
+        {
+            if (btn.first == BTN_LOCK)
+                DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+            else
+                btn.second = UIButton();
+        }
     }
     static bool last_locked = !bLocked;
     if (last_locked != bLocked)
@@ -739,7 +742,7 @@ void CDesktopLyric::OnTimer(UINT_PTR nIDEvent)
         m_bMouseInWindowRect = m_rcWindow.PtInRect(point);
 
         bool bLocked = theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
-        if (bLocked)        //处于锁定状态时，如果指针处理“锁定”按钮区域内，则取消鼠标穿透状态，以使得“锁定”按钮可以点击
+        if (bLocked && theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)        //处于锁定状态时，如果指针处于“锁定”按钮区域内，则取消鼠标穿透状态，以使得“锁定”按钮可以点击
         {
             CRect rcLockBtn = m_buttons[BTN_LOCK].rect;
             rcLockBtn.MoveToX(rcLockBtn.left + m_rcWindow.left);

@@ -315,6 +315,7 @@ void CMusicPlayerDlg::SaveConfig()
 	ini.WriteBool(L"desktop_lyric", L"hide_lyric_window_when_paused", theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused);
 	ini.WriteBool(L"desktop_lyric", L"lyric_background_penetrate", theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
 	ini.WriteInt(L"desktop_lyric", L"opacity", theApp.m_lyric_setting_data.desktop_lyric_data.opacity);
+	ini.WriteBool(L"desktop_lyric", L"show_unlock_when_locked", theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked);
 	ini.WriteInt(L"desktop_lyric", L"position_x", m_desktop_lyric_pos.x);
 	ini.WriteInt(L"desktop_lyric", L"position_y", m_desktop_lyric_pos.y);
 	ini.WriteInt(L"desktop_lyric", L"width", m_desktop_lyric_size.cx);
@@ -454,6 +455,7 @@ void CMusicPlayerDlg::LoadConfig()
 	theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused = ini.GetBool(L"desktop_lyric", L"hide_lyric_window_when_paused", false);
 	theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate = ini.GetBool(L"desktop_lyric", L"lyric_background_penetrate", false);
 	theApp.m_lyric_setting_data.desktop_lyric_data.opacity = ini.GetInt(L"desktop_lyric", L"opacity", 100);
+	theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked = ini.GetBool(L"desktop_lyric", L"show_unlock_when_locked", true);
     m_desktop_lyric_pos.x = ini.GetInt(L"desktop_lyric", L"position_x", -1);
     m_desktop_lyric_pos.y = ini.GetInt(L"desktop_lyric", L"position_y", -1);
     m_desktop_lyric_size.cx = ini.GetInt(L"desktop_lyric", L"width", 0);

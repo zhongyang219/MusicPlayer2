@@ -57,6 +57,7 @@ protected:
     CButton m_hide_lyric_paused_chk;
     CButton m_lyric_background_penetrate_chk;
     CComboBox m_alignment_combo;
+    CButton m_show_unlock_when_locked_chk;
 
 	CToolTipCtrl m_tool_tip;
 	bool m_font_changed{ false };
@@ -115,4 +116,5 @@ public:
     afx_msg void OnCbnSelchangeAlignmentCombo();
 	afx_msg void OnCbnSelchangeLyricSaveCombo();
 	afx_msg void OnBnClickedUseInnerLyricCheck();
+    afx_msg void OnBnClickedShowUnlockWhenLocked();
 };
