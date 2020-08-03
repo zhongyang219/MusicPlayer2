@@ -332,6 +332,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"ui_refresh_interval", theApp.m_app_setting_data.ui_refresh_interval);
     ini.WriteInt(L"config", L"notify_icon_selected", theApp.m_app_setting_data.notify_icon_selected);
     ini.WriteBool(L"config", L"notify_icon_auto_adapt", theApp.m_app_setting_data.notify_icon_auto_adapt);
+    ini.WriteBool(L"config", L"button_round_corners", theApp.m_app_setting_data.button_round_corners);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -474,6 +475,7 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_app_setting_data.ui_refresh_interval = UI_INTERVAL_DEFAULT;
     theApp.m_app_setting_data.notify_icon_selected = ini.GetInt(L"config", L"notify_icon_selected", 0);
     theApp.m_app_setting_data.notify_icon_auto_adapt = ini.GetBool(L"config", L"notify_icon_auto_adapt", false);
+    theApp.m_app_setting_data.button_round_corners = ini.GetBool(L"config", L"button_round_corners", false);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);

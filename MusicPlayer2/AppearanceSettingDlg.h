@@ -78,6 +78,7 @@ protected:
     CSpinEdit m_ui_refresh_interval_edit;
     CComboBox m_icon_select_combo;
     CButton m_notify_icon_auto_adapt_chk;
+    CButton m_btn_round_corners_chk;
 
     CRect m_notify_icon_preview;
     CBitmap m_preview_dark;
@@ -133,4 +134,5 @@ public:
     afx_msg void OnCbnSelchangeCombo1();
     afx_msg void OnPaint();
     afx_msg void OnBnClickedNotifyIconAutoAdaptCheck();
+    afx_msg void OnBnClickedBtnRoundCornersCheck();
 };

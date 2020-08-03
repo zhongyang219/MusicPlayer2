@@ -117,14 +117,14 @@ void CTestDlg::OnPaint()
     const int START_X{ theApp.DPI(16) };
     const int START_Y{ theApp.DPI(120) };
 
-    CRect img_rect{ CPoint(START_X, START_Y), CSize(theApp.DPI(250), theApp.DPI(250)) };
+    CRect img_rect{ CPoint(START_X, START_Y), CSize(theApp.DPI(250), theApp.DPI(150)) };
     CDrawCommon draw;
     draw.Create(&dc, this);
     //draw.DrawImage(m_image, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FIT);
 
-    Gdiplus::Bitmap bm(m_image, NULL);
-    Gdiplus::CachedBitmap cb(&bm, draw.GetGraphics());
-    draw.GetGraphics()->DrawCachedBitmap(&cb, START_X, START_Y);
+    //Gdiplus::Bitmap bm(m_image, NULL);
+    //Gdiplus::CachedBitmap cb(&bm, draw.GetGraphics());
+    //draw.GetGraphics()->DrawCachedBitmap(&cb, START_X, START_Y);
 
     //draw.DrawRectOutLine(img_rect, RGB(0, 0, 0), 1, false);
     //draw.DrawBitmap(m_image, CPoint(START_X, START_Y), CSize(theApp.DPI(200), theApp.DPI(200)), CDrawCommon::StretchMode::FIT);
@@ -136,5 +136,7 @@ void CTestDlg::OnPaint()
     //m_image.AlphaBlend(dc.GetSafeHdc(), START_X, START_Y, theApp.DPI(200), theApp.DPI(200), 0, 0, m_image.GetWidth(), m_image.GetHeight());
 
     //draw.DrawBitmap(bitmap_copy, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FIT);
+
+    draw.DrawRoundRect(img_rect, RGB(78, 176, 255), theApp.DPI(4), 190);
 
 }

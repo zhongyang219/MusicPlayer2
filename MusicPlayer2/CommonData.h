@@ -244,6 +244,8 @@ struct ApperanceSettingData
 
     int notify_icon_selected{};                 //使用的通知区图标
     bool notify_icon_auto_adapt{ false }; //通知区图标是否自动适应Win10深浅色模式
+
+    bool button_round_corners{ false };     //按钮是否使用圆角风格
 };
 
 struct GeneralSettingData

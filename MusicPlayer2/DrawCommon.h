@@ -101,7 +101,10 @@ public:
 
     void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
     void DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line);
+    void DrawRectFrame(CRect rect, COLORREF color, int width, BYTE alpha = 255);        //绘制一个矩形边框
 	void DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line);
+
+    void DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha = 255);
 
     CSize GetTextExtent(LPCTSTR str);
 

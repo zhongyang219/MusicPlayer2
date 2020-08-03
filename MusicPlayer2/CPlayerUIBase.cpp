@@ -613,15 +613,20 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     bool draw_background{ IsDrawBackgroundAlpha() };
     //绘制背景
     BYTE alpha;
-    if (theApp.m_app_setting_data.dark_mode)
+    if (!draw_background)
+        alpha = 255;
+    else if (theApp.m_app_setting_data.dark_mode)
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
     else
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 
-    if (draw_background)
+    if (!theApp.m_app_setting_data.button_round_corners)
         m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
     else
-        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+    {
+        m_draw.SetDrawArea(rect);
+        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, theApp.DPI(4), alpha);
+    }
 
     CRect rc_tmp = rect;
 
@@ -811,18 +816,24 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton & btn, const IconRes & ico
     //rc_tmp.DeflateRect(DPI(2), DPI(2));
     m_draw.SetDrawArea(rc_tmp);
 
-    BYTE alpha;
-    if (IsDrawBackgroundAlpha())
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-    else
-        alpha = 255;
-    if(btn.pressed && btn.hover)
-        m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
-    else if (btn.hover)
-        m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_hover, alpha);
-
-    //else if (!theApp.m_app_setting_data.dark_mode)
-    //	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
+    //绘制背景
+    if (btn.pressed || btn.hover)
+    {
+        BYTE alpha;
+        if (IsDrawBackgroundAlpha())
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+        else
+            alpha = 255;
+        COLORREF back_color{};
+        if(btn.pressed)
+            back_color = m_colors.color_button_pressed;
+        else
+            back_color = m_colors.color_button_hover;
+        if (!theApp.m_app_setting_data.button_round_corners)
+            m_draw.FillAlphaRect(rc_tmp, back_color, alpha);
+        else
+            m_draw.DrawRoundRect(rc_tmp, back_color, theApp.DPI(3), alpha);
+    }
 
     btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 
@@ -847,15 +858,23 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton & btn, const IconRes 
     CRect rc_tmp = rect;
     m_draw.SetDrawArea(rc_tmp);
 
-    BYTE alpha;
-    if (IsDrawBackgroundAlpha())
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-    else
-        alpha = 255;
-    if (btn.pressed && btn.hover)
-        m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_pressed, alpha);
-    else if (btn.hover)
-        m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_hover, alpha);
+    if (btn.pressed || btn.hover)
+    {
+        BYTE alpha;
+        if (IsDrawBackgroundAlpha())
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+        else
+            alpha = 255;
+        COLORREF back_color{};
+        if (btn.pressed)
+            back_color = m_colors.color_button_pressed;
+        else
+            back_color = m_colors.color_button_hover;
+        if (!theApp.m_app_setting_data.button_round_corners)
+            m_draw.FillAlphaRect(rc_tmp, back_color, alpha);
+        else
+            m_draw.DrawRoundRect(rc_tmp, back_color, theApp.DPI(4), alpha);
+    }
 
     //else if (!theApp.m_app_setting_data.dark_mode)
     //	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
@@ -878,23 +897,39 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, boo
 {
     if (btn.enable)
     {
+        if (btn.pressed)
+            rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
+
         BYTE alpha;
         if (IsDrawBackgroundAlpha())
             alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
         else
             alpha = 255;
-        if (btn.pressed)
+        if(btn.pressed || btn.hover || back_color)
         {
-            rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
-            m_draw.FillAlphaRect(rect, m_colors.color_button_pressed, alpha);
-        }
-        else if (btn.hover)
-        {
-            m_draw.FillAlphaRect(rect, m_colors.color_button_hover, alpha);
-        }
-        else if (back_color)
-        {
-            m_draw.FillAlphaRect(rect, m_colors.color_button_back, alpha);
+            COLORREF background_color{};
+            if (btn.pressed)
+            {
+                background_color = m_colors.color_button_pressed;
+            }
+            else if (btn.hover)
+            {
+                background_color = m_colors.color_button_hover;
+            }
+            else if (back_color)
+            {
+                background_color = m_colors.color_button_back;
+            }
+
+            if (!theApp.m_app_setting_data.button_round_corners)
+            {
+                m_draw.FillAlphaRect(rect, background_color, alpha);
+            }
+            else
+            {
+                m_draw.SetDrawArea(rect);
+                m_draw.DrawRoundRect(rect, background_color, theApp.DPI(3), alpha);
+            }
         }
         m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
     }

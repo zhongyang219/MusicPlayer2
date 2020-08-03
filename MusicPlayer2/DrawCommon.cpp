@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "DrawCommon.h"
+#include "GdiPlusTool.h"
 
 
 CDrawCommon::CDrawCommon()
@@ -377,13 +378,13 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_
 {
 	if (alpha == 0)
 		return;
+    if (!no_clip_area)
+        SetDrawArea(m_pDC, rect);
 	if (alpha == 255)
 	{
 		FillRect(rect, color, no_clip_area);
 		return;
 	}
-	if (!no_clip_area)
-		SetDrawArea(m_pDC, rect);
 	CDC cdc;
 	if(!cdc.CreateCompatibleDC(m_pDC))
 		return;
@@ -437,6 +438,38 @@ void CDrawCommon::DrawRectOutLine(CRect rect, COLORREF color, int width, bool do
     m_pDC->SelectObject(pOldBrush);       // Restore the old brush
 }
 
+void CDrawCommon::DrawRectFrame(CRect rect, COLORREF color, int width, BYTE alpha /*= 255*/)
+{
+    if (width < 1)
+        width = 1;
+    if (width > min(rect.Width(), rect.Height()) / 2)       //如果边框宽度超过矩形短边的一半，则直接填充两个矩形
+    {
+        FillAlphaRect(rect, color, alpha, true);
+    }
+    else        //通过绘制4个矩形来绘制矩形边框
+    {
+        CRect rect_top{ rect };
+        rect_top.bottom = rect_top.top + width;
+        FillAlphaRect(rect_top, color, alpha, true);
+
+        CRect rect_bottom{ rect };
+        rect_bottom.top = rect_bottom.bottom - width;
+        FillAlphaRect(rect_bottom, color, alpha, true);
+
+        CRect rect_left{ rect };
+        rect_left.right = rect_left.left + width;
+        rect_left.top += width;
+        rect_left.bottom -= width;
+        FillAlphaRect(rect_left, color, alpha, true);
+
+        CRect rect_right{ rect };
+        rect_right.left = rect_right.right - width;
+        rect_right.top += width;
+        rect_right.bottom -= width;
+        FillAlphaRect(rect_right, color, alpha, true);
+    }
+}
+
 void CDrawCommon::DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line)
 {
 	CPen aPen, *pOldPen;
@@ -448,6 +481,33 @@ void CDrawCommon::DrawLine(CPoint point1, CPoint point2, COLORREF color, int wid
 	m_pDC->LineTo(point2);
 	m_pDC->SelectObject(pOldPen);
 	m_pDC->SelectObject(pOldBrush);       // Restore the old brush
+}
+
+void CDrawCommon::DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha /*= 255*/)
+{
+    Gdiplus::Color color_gdip{ CGdiPlusTool::COLORREFToGdiplusColor(color, alpha) };
+
+    rect.right--;
+    rect.bottom--;
+    //生成圆角矩形路径
+    Gdiplus::GraphicsPath round_rect_path;
+
+    int diam{ 2 * radius };
+    round_rect_path.AddArc(rect.left, rect.top, diam, diam, 180, 90); // 左上角圆弧
+    round_rect_path.AddLine(rect.left + radius, rect.top, rect.right - radius, rect.top); // 上边
+
+    round_rect_path.AddArc(rect.right - diam, rect.top, diam, diam, 270, 90); // 右上角圆弧
+    round_rect_path.AddLine(rect.right, rect.top + radius, rect.right, rect.bottom - radius);// 右边
+
+    round_rect_path.AddArc(rect.right - diam, rect.bottom - diam, diam, diam, 0, 90); // 右下角圆弧
+    round_rect_path.AddLine(rect.right - radius, rect.bottom, rect.left + radius, rect.bottom); // 下边
+
+    round_rect_path.AddArc(rect.left, rect.bottom - diam, diam, diam, 90, 90);
+    round_rect_path.AddLine(rect.left, rect.top + radius, rect.left, rect.bottom - radius);
+
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
+    m_pGraphics->FillPath(&Gdiplus::SolidBrush(color_gdip), &round_rect_path);          //填充路径
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
 }
 
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
