@@ -25,11 +25,11 @@ void CLyricRelateDlg::ShowSearchResult()
 {
     m_result_list.DeleteAllItems();
     m_result_list.SetHightItem(-1);
-    //wstring current_lyric_file{ CPlayer::GetInstance().GetCurrentSongInfo().lyric_file };
-    //AddListRow(current_lyric_file);
+    wstring current_lyric_file{ CPlayer::GetInstance().GetCurrentSongInfo().lyric_file };
+    AddListRow(current_lyric_file);
     for (const auto& lyric_file : m_search_result)
     {
-        //if (current_lyric_file != lyric_file)
+        if (current_lyric_file != lyric_file)
             AddListRow(lyric_file);
     }
 }
