@@ -288,8 +288,8 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
                 m_draw.DrawBitmap(cortana_img_id, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
             }
 
-            if(!m_colors.dark)
-                m_draw.DrawRectTopFrame(cover_rect, m_border_color);
+            //if(!m_colors.dark)
+            //    m_draw.DrawRectTopFrame(cover_rect, m_border_color);
         }
         else
         {
@@ -360,11 +360,11 @@ void CCortanaLyric::ResetCortanaText()
             rect.left += m_cover_width;
             m_draw.FillRect(rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
             m_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
-            if (!m_dark_mode)
-            {
-                rect.left -= m_cover_width;
-                m_draw.DrawRectTopFrame(rect, m_border_color);
-            }
+            //if (!m_dark_mode)
+            //{
+            //    rect.left -= m_cover_width;
+            //    m_draw.DrawRectTopFrame(rect, m_border_color);
+            //}
             //m_cortana_wnd->Invalidate();
         }
     }

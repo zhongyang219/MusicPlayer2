@@ -103,6 +103,7 @@ bool CWinVersionHelper::IsWindows10LightTheme()
 
 void CWinVersionHelper::CheckWindows10LightTheme()
 {
+    m_windows10_light_theme = false;
     if (m_version.m_major_version >= 10)
     {
         HKEY hKey;
@@ -113,7 +114,6 @@ void CWinVersionHelper::CheckWindows10LightTheme()
             m_windows10_light_theme = (dwThemeData != 0);
         }
     }
-    m_windows10_light_theme = false;
 }
 
 LONG CWinVersionHelper::GetDWORDRegKeyData(HKEY hKey, const wstring& strValueName, DWORD& dwValueData)
