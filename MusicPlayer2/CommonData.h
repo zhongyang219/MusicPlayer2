@@ -242,6 +242,7 @@ struct ApperanceSettingData
     int ui_refresh_interval{ 100 };             //界面刷新的时间间隔
 
     int notify_icon_selected{};                 //使用的通知区图标
+    bool notify_icon_auto_adapt{ false }; //通知区图标是否自动适应Win10深浅色模式
 };
 
 struct GeneralSettingData

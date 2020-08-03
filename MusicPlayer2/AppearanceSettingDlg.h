@@ -77,6 +77,7 @@ protected:
     CSpinEdit m_lyric_line_space_edit;
     CSpinEdit m_ui_refresh_interval_edit;
     CComboBox m_icon_select_combo;
+    CButton m_notify_icon_auto_adapt_chk;
 
     CRect m_notify_icon_preview;
     CBitmap m_preview_dark;
@@ -131,4 +132,5 @@ public:
     afx_msg void OnDeltaposSpin(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnCbnSelchangeCombo1();
     afx_msg void OnPaint();
+    afx_msg void OnBnClickedNotifyIconAutoAdaptCheck();
 };

@@ -948,6 +948,24 @@ void CMusicPlayerApp::StartUpdateMediaLib()
     }
 }
 
+void CMusicPlayerApp::AutoSelectNotifyIcon()
+{
+    if (CWinVersionHelper::IsWindows10OrLater())
+    {
+        bool light_mode = CWinVersionHelper::IsWindows10LightTheme();
+        if (light_mode)     //浅色模式下，如果图标是白色，则改成黑色
+        {
+            if (m_app_setting_data.notify_icon_selected == 1)
+                m_app_setting_data.notify_icon_selected = 2;
+        }
+        else     //深色模式下，如果图标是黑色，则改成白色
+        {
+            if (m_app_setting_data.notify_icon_selected == 2)
+                m_app_setting_data.notify_icon_selected = 1;
+        }
+    }
+}
+
 //void CMusicPlayerApp::StartClassifySongData()
 //{
 //    AfxBeginThread(ClassifySongDataThreadFunc, NULL);

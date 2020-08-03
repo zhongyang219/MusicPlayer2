@@ -330,6 +330,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"draw_album_high_quality", theApp.m_app_setting_data.draw_album_high_quality);
     ini.WriteInt(L"config", L"ui_refresh_interval", theApp.m_app_setting_data.ui_refresh_interval);
     ini.WriteInt(L"config", L"notify_icon_selected", theApp.m_app_setting_data.notify_icon_selected);
+    ini.WriteBool(L"config", L"notify_icon_auto_adapt", theApp.m_app_setting_data.notify_icon_auto_adapt);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -470,6 +471,7 @@ void CMusicPlayerDlg::LoadConfig()
     if (theApp.m_app_setting_data.ui_refresh_interval < MIN_UI_INTERVAL || theApp.m_app_setting_data.ui_refresh_interval > MAX_UI_INTERVAL)
         theApp.m_app_setting_data.ui_refresh_interval = UI_INTERVAL_DEFAULT;
     theApp.m_app_setting_data.notify_icon_selected = ini.GetInt(L"config", L"notify_icon_selected", 0);
+    theApp.m_app_setting_data.notify_icon_auto_adapt = ini.GetBool(L"config", L"notify_icon_auto_adapt", false);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
@@ -959,6 +961,10 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     if (notify_icon_changed)
     {
+        if (theApp.m_app_setting_data.notify_icon_auto_adapt)
+        {
+            theApp.AutoSelectNotifyIcon();
+        }
         if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
             theApp.m_app_setting_data.notify_icon_selected = 0;
         m_notify_icon.SetIcon(theApp.m_icon_set.notify_icons[theApp.m_app_setting_data.notify_icon_selected]);
@@ -1866,6 +1872,20 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
         CWinVersionHelper::CheckWindows10LightTheme();
 		m_cortana_lyric.SetDarkMode(!CWinVersionHelper::IsWindows10LightTheme());
+
+        //根据当前Win10颜色模式自动切换通知区图标
+        if (theApp.m_app_setting_data.notify_icon_auto_adapt)
+        {
+            int notify_icon_selected = theApp.m_app_setting_data.notify_icon_selected;
+            theApp.AutoSelectNotifyIcon();
+            if (notify_icon_selected != theApp.m_app_setting_data.notify_icon_selected)
+            {
+                m_notify_icon.SetIcon(theApp.m_icon_set.notify_icons[theApp.m_app_setting_data.notify_icon_selected]);
+                m_notify_icon.DeleteNotifyIcon();
+                m_notify_icon.AddNotifyIcon();
+            }
+        }
+
     }
 
     else if (nIDEvent == DELAY_TIMER_ID)

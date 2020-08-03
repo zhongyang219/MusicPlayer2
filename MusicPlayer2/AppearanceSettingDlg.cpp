@@ -52,6 +52,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_FONT_SIZE_EDIT, m_lyric_line_space_edit);
     DDX_Control(pDX, IDC_UI_INTERVAL_EDIT, m_ui_refresh_interval_edit);
     DDX_Control(pDX, IDC_COMBO1, m_icon_select_combo);
+    DDX_Control(pDX, IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, m_notify_icon_auto_adapt_chk);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -160,6 +161,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_NOTIFY(UDN_DELTAPOS, SPIN_ID, &CAppearanceSettingDlg::OnDeltaposSpin)
     ON_CBN_SELCHANGE(IDC_COMBO1, &CAppearanceSettingDlg::OnCbnSelchangeCombo1)
     ON_WM_PAINT()
+    ON_BN_CLICKED(IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, &CAppearanceSettingDlg::OnBnClickedNotifyIconAutoAdaptCheck)
 END_MESSAGE_MAP()
 
 
@@ -272,6 +274,8 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_icon_select_combo.AddString(CCommon::LoadText(IDS_LIGHT_ICON));
     m_icon_select_combo.AddString(CCommon::LoadText(IDS_DARK_ICON));
     m_icon_select_combo.SetCurSel(m_data.notify_icon_selected);
+
+    m_notify_icon_auto_adapt_chk.SetCheck(m_data.notify_icon_auto_adapt);
 
     //设置通知区图标预览区域的位置
     CalculateNotifyIconPreviewRect();
@@ -697,4 +701,11 @@ void CAppearanceSettingDlg::OnPaint()
             CPoint(m_notify_icon_preview.left + ICON_X, m_notify_icon_preview.top + ICON_Y),
             CSize(theApp.DPI(16), theApp.DPI(16)));
     }
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedNotifyIconAutoAdaptCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.notify_icon_auto_adapt = (m_notify_icon_auto_adapt_chk.GetCheck() != 0);
 }

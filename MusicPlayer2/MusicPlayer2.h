@@ -115,6 +115,8 @@ public:
     void StartUpdateMediaLib();
     bool IsMeidaLibUpdating() { return m_media_lib_updating; }
 
+    void AutoSelectNotifyIcon();
+
 private:
     void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
 
