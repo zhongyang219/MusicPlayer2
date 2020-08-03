@@ -646,6 +646,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSubMenu(5)->GetSafeHmenu(), 12, TRUE, m_icon_set.close.GetIcon(true));
     //帮助
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_HELP, FALSE, m_icon_set.help);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_APP_ABOUT, FALSE, m_icon_set.app.GetIcon());
 
     //界面右键菜单
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_SONG_INFO, FALSE, m_icon_set.info.GetIcon(true));
