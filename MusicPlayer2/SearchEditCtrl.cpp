@@ -28,23 +28,31 @@ void CSearchEditCtrl::OnBrowse()
 
 void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot)
 {
+    int text_length = GetWindowTextLength();
     COLORREF back_color;
-    if (bIsButtonPressed)
-        back_color = m_theme_color.light1_5;
-    else if (bIsButtonHot)
-        back_color = m_theme_color.light2_5;
+    if (text_length > 0)
+    {
+        if (bIsButtonPressed)
+            back_color = m_theme_color.light1_5;
+        else if (bIsButtonHot)
+            back_color = m_theme_color.light2_5;
+        else
+            back_color = CColorConvert::m_gray_color.light3;
+    }
     else
-        back_color = CColorConvert::m_gray_color.light3;
+    {
+        back_color = GetSysColor(COLOR_WINDOW);
+    }
     pDC->FillSolidRect(rect, back_color);
 
-    auto& icon = theApp.m_icon_set.close;
+    auto& icon{ text_length > 0 ? theApp.m_icon_set.close : theApp.m_icon_set.find_songs };     //文本框为空时显示搜索图标，否则显示关闭图标
     CSize icon_size = icon.GetSize();
     CPoint icon_top_left;
     icon_top_left.x = rect.left + (rect.Width() - icon_size.cx) / 2;
     icon_top_left.y = rect.top + (rect.Height() - icon_size.cy) / 2;
     CDrawCommon drawer;
     drawer.Create(pDC, this);
-    drawer.DrawIcon(icon.GetIcon(), icon_top_left, icon_size);
+    drawer.DrawIcon(icon.GetIcon(true), icon_top_left, icon_size);
 }
 
 
@@ -86,6 +94,7 @@ void CSearchEditCtrl::UpdateToolTipPosition()
 
 BEGIN_MESSAGE_MAP(CSearchEditCtrl, CMFCEditBrowseCtrl)
     ON_WM_SIZE()
+    ON_CONTROL_REFLECT_EX(EN_CHANGE, &CSearchEditCtrl::OnEnChange)
 END_MESSAGE_MAP()
 
 
@@ -125,4 +134,17 @@ void CSearchEditCtrl::OnSize(UINT nType, int cx, int cy)
 
     // TODO: 在此处添加消息处理程序代码
     UpdateToolTipPosition();
+}
+
+
+BOOL CSearchEditCtrl::OnEnChange()
+{
+    // TODO:  如果该控件是 RICHEDIT 控件，它将不
+    // 发送此通知，除非重写 CMFCEditBrowseCtrl::OnInitDialog()
+    // 函数并调用 CRichEditCtrl().SetEventMask()，
+    // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+    // TODO:  在此添加控件通知处理程序代码
+    OnNcPaint();
+    return FALSE;           //这里返回FALSE表示EN_CHANGE的响应还没有响应完，此消息仍然会被发送到父窗口，否则表示这里已经做完所有的事情，消息不会被发送到父窗口
 }
