@@ -35,7 +35,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
     DDX_Control(pDX, IDC_SHOW_SPECTRUM_IN_CORTANA, m_show_spectrum_chk);
     DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA2, m_show_lyric_in_cortana_chk);
-    DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
+    //DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
     DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
     DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK2, m_desktop_lyric_double_line_chk);
     DDX_Control(pDX, IDC_TEXT_COLOR1_STATIC, m_text_color1_static);
@@ -71,7 +71,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_KEEP_DISPLAY_CHECK, &CLyricSettingsDlg::OnBnClickedKeepDisplayCheck)
 	ON_BN_CLICKED(IDC_SHOW_SPECTRUM_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowSpectrumInCortana)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_IN_CORTANA2, &CLyricSettingsDlg::OnBnClickedShowLyricInCortana2)
-    ON_BN_CLICKED(IDC_SEARCH_BOX_OPAQUE_CHECK, &CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck)
+    //ON_BN_CLICKED(IDC_SEARCH_BOX_OPAQUE_CHECK, &CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck)
 	ON_BN_CLICKED(IDC_SHOW_DESKTOP_LYRIC, &CLyricSettingsDlg::OnBnClickedShowDesktopLyric)
 	ON_BN_CLICKED(IDC_SET_FONT2, &CLyricSettingsDlg::OnBnClickedSetFont2)
 	ON_CBN_SELCHANGE(IDC_TEXT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeTextGradientCombo)
@@ -127,8 +127,8 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_keep_display_chk.SetCheck(m_data.cortana_lyric_keep_display);
 	m_show_spectrum_chk.SetCheck(m_data.cortana_show_spectrum);
     m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
-    m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
-	m_search_box_opaque_chk.ShowWindow(SW_HIDE);		//此选项已经没有作用，把它隐藏起来
+    //m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
+	//m_search_box_opaque_chk.ShowWindow(SW_HIDE);		//此选项已经没有作用，把它隐藏起来
 
 	m_show_desktop_lyric_chk.SetCheck(m_data.show_desktop_lyric);
 	m_text_color1_static.SetFillColor(m_data.desktop_lyric_data.text_color1);
@@ -179,7 +179,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 	m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, CCommon::LoadText(IDS_LYRIC_FUZZY_MATHC_TIP_INFO));
 	m_tool_tip.AddTool(&m_lyric_dir_edit, CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
 	m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
-	m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
+	//m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
 
 	m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -209,7 +209,7 @@ void CLyricSettingsDlg::EnableControl()
 	m_keep_display_chk.EnableWindow(enable);
 	m_show_spectrum_chk.EnableWindow(enable);
 	m_lyric_compatible_mode_chk.EnableWindow(m_data.cortana_info_enable);
-    m_search_box_opaque_chk.EnableWindow(m_data.cortana_info_enable);
+    //m_search_box_opaque_chk.EnableWindow(m_data.cortana_info_enable);
     m_alignment_combo.EnableWindow(enable && m_data.cortana_show_lyric/* && !m_data.cortana_lyric_double_line*/);
 }
 
@@ -381,11 +381,11 @@ void CLyricSettingsDlg::OnBnClickedShowLyricInCortana2()
 }
 
 
-void CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.cortana_opaque = (m_search_box_opaque_chk.GetCheck() != 0);
-}
+//void CLyricSettingsDlg::OnBnClickedSearchBoxOpaqueCheck()
+//{
+//    // TODO: 在此添加控件通知处理程序代码
+//    m_data.cortana_opaque = (m_search_box_opaque_chk.GetCheck() != 0);
+//}
 
 
 void CLyricSettingsDlg::OnBnClickedShowDesktopLyric()

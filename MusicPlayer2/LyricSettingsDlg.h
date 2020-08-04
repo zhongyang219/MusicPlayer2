@@ -42,7 +42,7 @@ protected:
     CBrowseEdit m_lyric_dir_edit;
 	CComboBox m_lyric_save_policy_combo;
 	CButton m_cortana_info_enable_check;
-	CButton m_search_box_opaque_chk;
+	//CButton m_search_box_opaque_chk;
 
 	CButton m_desktop_lyric_double_line_chk;
 	CColorStaticEx m_text_color1_static;
@@ -86,7 +86,7 @@ public:
 	afx_msg void OnBnClickedKeepDisplayCheck();
 	afx_msg void OnBnClickedShowSpectrumInCortana();
     afx_msg void OnBnClickedShowLyricInCortana2();
-    afx_msg void OnBnClickedSearchBoxOpaqueCheck();
+    //afx_msg void OnBnClickedSearchBoxOpaqueCheck();
 	afx_msg void OnBnClickedShowDesktopLyric();
 	afx_msg void OnBnClickedSetFont2();
 	afx_msg void OnCbnSelchangeTextGradientCombo();
