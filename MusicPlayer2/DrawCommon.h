@@ -104,7 +104,7 @@ public:
     void DrawRectFrame(CRect rect, COLORREF color, int width, BYTE alpha = 255);        //绘制一个矩形边框
 	void DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line);
 
-    void DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha = 255);
+    void DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha = 255);       //绘制圆角矩形（使用GDI+）
 
     CSize GetTextExtent(LPCTSTR str);
 

@@ -1137,21 +1137,33 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
 
         if (m_buttons[BTN_VOLUME_UP].pressed && m_buttons[BTN_VOLUME_UP].hover)
             btn_up_back_color = m_colors.color_button_pressed;
-        //else if (m_buttons[BTN_VOLUME_UP].hover)
-        //	btn_up_back_color = m_colors.color_control_bar_back;
+        else if (m_buttons[BTN_VOLUME_UP].hover)
+        	btn_up_back_color = m_colors.color_button_hover;
         else
             btn_up_back_color = m_colors.color_text_2;
 
         if (m_buttons[BTN_VOLUME_DOWN].pressed && m_buttons[BTN_VOLUME_DOWN].hover)
             btn_down_back_color = m_colors.color_button_pressed;
-        //else if (m_buttons[BTN_VOLUME_DOWN].hover)
-        //	btn_down_back_color = m_colors.color_control_bar_back;
+        else if (m_buttons[BTN_VOLUME_DOWN].hover)
+            btn_down_back_color = m_colors.color_button_hover;
         else
             btn_down_back_color = m_colors.color_text_2;
 
-
-        m_draw.FillAlphaRect(volume_up_rect, btn_up_back_color, alpha);
-        m_draw.FillAlphaRect(volume_down_rect, btn_down_back_color, alpha);
+        if (!theApp.m_app_setting_data.button_round_corners)
+        {
+            m_draw.FillAlphaRect(volume_up_rect, btn_up_back_color, alpha);
+            m_draw.FillAlphaRect(volume_down_rect, btn_down_back_color, alpha);
+        }
+        else
+        {
+            CRect rc_buttons{ volume_up_rect | volume_down_rect };
+            m_draw.SetDrawArea(rc_buttons);
+            m_draw.DrawRoundRect(rc_buttons, m_colors.color_text_2, theApp.DPI(3), alpha);
+            if (m_buttons[BTN_VOLUME_UP].pressed || m_buttons[BTN_VOLUME_UP].hover)
+                m_draw.DrawRoundRect(volume_up_rect, btn_up_back_color, theApp.DPI(3), alpha);
+            if (m_buttons[BTN_VOLUME_DOWN].pressed || m_buttons[BTN_VOLUME_DOWN].hover)
+                m_draw.DrawRoundRect(volume_down_rect, btn_down_back_color, theApp.DPI(3), alpha);
+        }
 
         if (m_buttons[BTN_VOLUME_DOWN].pressed)
             volume_down_rect.MoveToXY(volume_down_rect.left + theApp.DPI(1), volume_down_rect.top + theApp.DPI(1));

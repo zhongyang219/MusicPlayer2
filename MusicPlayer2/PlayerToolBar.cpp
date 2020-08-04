@@ -110,7 +110,15 @@ void CPlayerToolBar::OnPaint()
         drawer.Create(drawDoubleBuffer.GetMemDC(), this);
 
         //绘制背景
-        drawer.FillRect(rect, CColorConvert::m_gray_color.light3);
+        if(!theApp.m_app_setting_data.button_round_corners)
+        {
+            drawer.FillRect(rect, CColorConvert::m_gray_color.light3);
+        }
+        else
+        {
+            drawer.FillRect(rect, CONSTVAL::BACKGROUND_COLOR);
+            drawer.DrawRoundRect(rect, CColorConvert::m_gray_color.light3, theApp.DPI(4));
+        }
 
         //绘制图标
         CRect rc_icon = rect;
@@ -138,10 +146,21 @@ void CPlayerToolBar::OnPaint()
             }
 
             iter->rect = rc_icon;
-            if (iter->hover)
-                drawer.FillRect(rc_icon, m_theme_color.light2_5);
-            if (iter->pressed)
-                drawer.FillRect(rc_icon, m_theme_color.light1_5);
+            COLORREF back_color{};
+            if(iter->hover || iter->pressed)
+            {
+                if (iter->pressed)
+                    back_color = m_theme_color.light1_5;
+                else
+                    back_color = m_theme_color.light2_5;
+                if (!theApp.m_app_setting_data.button_round_corners)
+                    drawer.FillRect(rc_icon, back_color);
+                else
+                {
+                    drawer.SetDrawArea(rc_icon);
+                    drawer.DrawRoundRect(rc_icon, back_color, theApp.DPI(3));
+                }
+            }
 
             CRect rc_tmp = rc_icon;
             //使图标在矩形中居中
