@@ -28,9 +28,9 @@ void CSearchEditCtrl::OnBrowse()
 
 void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot)
 {
-    int text_length = GetWindowTextLength();
+    m_draw_clear_btn = (GetWindowTextLength() > 0);
     COLORREF back_color;
-    if (text_length > 0)
+    if (m_draw_clear_btn)
     {
         if (bIsButtonPressed)
             back_color = m_theme_color.light1_5;
@@ -45,7 +45,7 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
     }
     pDC->FillSolidRect(rect, back_color);
 
-    auto& icon{ text_length > 0 ? theApp.m_icon_set.close : theApp.m_icon_set.find_songs };     //文本框为空时显示搜索图标，否则显示关闭图标
+    auto& icon{ m_draw_clear_btn ? theApp.m_icon_set.close : theApp.m_icon_set.find_songs };     //文本框为空时显示搜索图标，否则显示关闭图标
     CSize icon_size = icon.GetSize();
     CPoint icon_top_left;
     icon_top_left.x = rect.left + (rect.Width() - icon_size.cx) / 2;
@@ -53,6 +53,13 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
     CDrawCommon drawer;
     drawer.Create(pDC, this);
     drawer.DrawIcon(icon.GetIcon(true), icon_top_left, icon_size);
+
+    static bool last_draw_clear_btn{ false };
+    if (last_draw_clear_btn != m_draw_clear_btn)
+    {
+        UpdateToolTipPosition();
+        last_draw_clear_btn = m_draw_clear_btn;
+    }
 }
 
 
@@ -84,12 +91,20 @@ void CSearchEditCtrl::UpdateToolTipPosition()
     CRect rc_client;
     GetWindowRect(rc_client);
     rc_client.MoveToXY(0, 0);
-    CRect rc_edit = rc_client;
-    rc_edit.right = rc_client.right - m_nBrowseButtonWidth - theApp.DPI(4);
-    CRect rc_btn = rc_client;
-    rc_btn.left = rc_edit.right + theApp.DPI(2);
-    m_tool_tip.SetToolRect(this, 1, rc_btn);
-    m_tool_tip.SetToolRect(this, 2, rc_edit);
+    if(m_draw_clear_btn)
+    {
+        CRect rc_edit = rc_client;
+        rc_edit.right = rc_client.right - m_nBrowseButtonWidth - theApp.DPI(4);
+        CRect rc_btn = rc_client;
+        rc_btn.left = rc_edit.right + theApp.DPI(2);
+        m_tool_tip.SetToolRect(this, 1, rc_btn);
+        m_tool_tip.SetToolRect(this, 2, rc_edit);
+    }
+    else
+    {
+        m_tool_tip.SetToolRect(this, 1, CRect());
+        m_tool_tip.SetToolRect(this, 2, rc_client);
+    }
 }
 
 BEGIN_MESSAGE_MAP(CSearchEditCtrl, CMFCEditBrowseCtrl)

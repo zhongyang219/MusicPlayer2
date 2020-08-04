@@ -18,13 +18,14 @@ public:
     virtual void OnChangeLayout()override;
 
 protected:
-    void UpdateToolTipPosition();
+    void UpdateToolTipPosition();        //更新鼠标提示的位置
 
 	DECLARE_MESSAGE_MAP()
 
 private:
     ColorTable& m_theme_color;
     CToolTipCtrl m_tool_tip;
+    bool m_draw_clear_btn{};        //如果为true，则显示“清除搜索结果”按钮，否则，显示“搜索”按钮
 
 private:
     virtual void PreSubclassWindow();
