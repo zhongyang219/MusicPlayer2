@@ -13,9 +13,12 @@ CGdiPlusTool::~CGdiPlusTool()
 
 Gdiplus::Color CGdiPlusTool::COLORREFToGdiplusColor(COLORREF color, BYTE alpha /*= 255*/)
 {
-    Gdiplus::Color gdiplusColor;
-    gdiplusColor.SetValue(Gdiplus::Color::MakeARGB(alpha, GetRValue(color), GetGValue(color), GetBValue(color)));
-    return gdiplusColor;
+    return Gdiplus::Color(alpha, GetRValue(color), GetGValue(color), GetBValue(color));
+}
+
+COLORREF CGdiPlusTool::GdiplusColorToCOLORREF(Gdiplus::Color color)
+{
+    return RGB(color.GetR(), color.GetG(), color.GetB());
 }
 
 int CGdiPlusTool::ToGDIPluseFontStyle(const FontStyle& style)
@@ -47,4 +50,14 @@ void CGdiPlusTool::CreateRoundRectPath(Gdiplus::GraphicsPath& path, CRect rect, 
     path.AddArc(rect.left, rect.bottom - diam, diam, diam, 90, 90);
     path.AddLine(rect.left, rect.top + radius, rect.left, rect.bottom - radius);
 
+}
+
+CRect CGdiPlusTool::GdiplusRectToCRect(Gdiplus::Rect rect)
+{
+    return CRect(rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom());
+}
+
+Gdiplus::Rect CGdiPlusTool::CRectToGdiplusRect(CRect rect)
+{
+    return Gdiplus::Rect(rect.left, rect.top, rect.Width(), rect.Height());
 }

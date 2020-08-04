@@ -304,9 +304,18 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     if(!bLocked || theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)
     {
         Gdiplus::Color back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light2, 180);
-        Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(back_color);
-        pGraphics->FillRectangle(pBrush, toolbar_rect);
-        delete pBrush;
+        if (!theApp.m_app_setting_data.button_round_corners)
+        {
+            Gdiplus::Brush* pBrush = new Gdiplus::SolidBrush(back_color);
+            pGraphics->FillRectangle(pBrush, toolbar_rect);
+            delete pBrush;
+        }
+        else
+        {
+            CDrawCommon drawer;
+            drawer.Create(nullptr, pGraphics);
+            drawer.DrawRoundRect(toolbar_rect, back_color, theApp.DPI(4));
+        }
     }
 
     CRect rcIcon = CRect(toolbar_rect.X, toolbar_rect.Y, toolbar_rect.GetRight(), toolbar_rect.GetBottom());
@@ -392,8 +401,17 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
     }
     if (draw_background)
     {
-        Gdiplus::SolidBrush brush(back_color);
-        pGraphics->FillRectangle(&brush, rect.left, rect.top, rect.Width(), rect.Height());
+        if (!theApp.m_app_setting_data.button_round_corners)
+        {
+            Gdiplus::SolidBrush brush(back_color);
+            pGraphics->FillRectangle(&brush, rect.left, rect.top, rect.Width(), rect.Height());
+        }
+        else
+        {
+            CDrawCommon drawer;
+            drawer.Create(nullptr, pGraphics);
+            drawer.DrawRoundRect(CGdiPlusTool::CRectToGdiplusRect(rect), back_color, theApp.DPI(3));
+        }
     }
 
     CRect rc_tmp = rect;

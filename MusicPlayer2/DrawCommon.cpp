@@ -9,7 +9,8 @@ CDrawCommon::CDrawCommon()
 
 CDrawCommon::~CDrawCommon()
 {
-    SAFE_DELETE(m_pGraphics);
+    if (m_auto_destory_graphics)
+        SAFE_DELETE(m_pGraphics);
 }
 
 void CDrawCommon::Create(CDC * pDC, CWnd * pMainWnd)
@@ -21,7 +22,18 @@ void CDrawCommon::Create(CDC * pDC, CWnd * pMainWnd)
     if (pDC != nullptr)
     {
         m_pGraphics = new Gdiplus::Graphics(pDC->GetSafeHdc());
+        m_auto_destory_graphics = true;
     }
+}
+
+void CDrawCommon::Create(CDC * pDC, Gdiplus::Graphics * pGraphics, CWnd * pMainWnd)
+{
+    m_pDC = pDC;
+    m_pMainWnd = pMainWnd;
+    if (m_pMainWnd != nullptr)
+        m_pfont = m_pMainWnd->GetFont();
+    m_pGraphics = pGraphics;
+    m_auto_destory_graphics = false;
 }
 
 //void CDrawCommon::SetBackColor(COLORREF back_color)
@@ -39,8 +51,10 @@ CFont* CDrawCommon::SetFont(CFont * pfont)
 void CDrawCommon::SetDC(CDC * pDC)
 {
 	m_pDC = pDC;
-    SAFE_DELETE(m_pGraphics);
+    if(m_auto_destory_graphics)
+        SAFE_DELETE(m_pGraphics);
     m_pGraphics = new Gdiplus::Graphics(pDC->GetSafeHdc());
+    m_auto_destory_graphics = true;
 }
 
 void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align, bool no_clip_area, bool multi_line, bool default_right_align)
@@ -485,16 +499,20 @@ void CDrawCommon::DrawLine(CPoint point1, CPoint point2, COLORREF color, int wid
 
 void CDrawCommon::DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha /*= 255*/)
 {
-    Gdiplus::Color color_gdip{ CGdiPlusTool::COLORREFToGdiplusColor(color, alpha) };
+    DrawRoundRect(CGdiPlusTool::CRectToGdiplusRect(rect), CGdiPlusTool::COLORREFToGdiplusColor(color, alpha), radius);
+}
 
-    rect.right--;
-    rect.bottom--;
+void CDrawCommon::DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int radius)
+{
+    CRect rc{ CGdiPlusTool::GdiplusRectToCRect(rect) };
+    rc.right--;
+    rc.bottom--;
     //生成圆角矩形路径
     Gdiplus::GraphicsPath round_rect_path;
-    CGdiPlusTool::CreateRoundRectPath(round_rect_path, rect, radius);
+    CGdiPlusTool::CreateRoundRectPath(round_rect_path, rc, radius);
 
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
-    m_pGraphics->FillPath(&Gdiplus::SolidBrush(color_gdip), &round_rect_path);          //填充路径
+    m_pGraphics->FillPath(&Gdiplus::SolidBrush(color), &round_rect_path);          //填充路径
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
 }
 

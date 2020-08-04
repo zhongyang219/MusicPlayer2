@@ -34,6 +34,7 @@ public:
     ~CDrawCommon();
 
     virtual void Create(CDC* pDC, CWnd* pMainWnd = nullptr);
+    void Create(CDC* pDC, Gdiplus::Graphics* pGraphics, CWnd* pMainWnd = nullptr);
     //void SetBackColor(COLORREF back_color);		//设置绘制文本时填充的背景颜色
     //COLORREF GetBackColor() const { return m_backColor; }
     CFont* SetFont(CFont* pfont);		//设置绘制文本的字体（返回原来的字体）
@@ -105,6 +106,7 @@ public:
 	void DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line);
 
     void DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha = 255);       //绘制圆角矩形（使用GDI+）
+    void DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int radius);       //绘制圆角矩形（使用GDI+）
 
     CSize GetTextExtent(LPCTSTR str);
 
@@ -130,7 +132,7 @@ protected:
     //COLORREF m_backColor{ RGB(255,255,255) };
     CFont* m_pfont{};
     Gdiplus::Graphics* m_pGraphics{};
-
+    bool m_auto_destory_graphics{};     //是否自动析构Graphics对象，如果Graphics对象是内部创建的，则为true，如果是从外面传过来的，则为false
 };
 
 
