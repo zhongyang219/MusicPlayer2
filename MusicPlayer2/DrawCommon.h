@@ -86,13 +86,13 @@ public:
     void SetDrawArea(CRect rect);
 
     //绘制一个位图（使用GDI）
-    void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
-    void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode);
-    void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode);
+    void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
+    void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
+    void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
 
     //绘制一个图像（使用GDI+）
-    void DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode);
-    void DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode);
+    void DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
+    void DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
 
     void DrawIcon(HICON hIcon, CPoint start_point, CSize size);
 
@@ -122,7 +122,7 @@ public:
     static void SaveBitmap(HBITMAP bitmap, LPCTSTR path);
 
 private:
-    void ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode);
+    void ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode, bool no_clip_area);
 
 protected:
     CDC* m_pDC{};		//用于绘图的CDC类的指针

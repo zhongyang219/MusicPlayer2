@@ -311,7 +311,7 @@ void CDrawCommon::SetDrawArea(CRect rect)
 	m_pDC->SelectClipRgn(&rgn);
 }
 
-void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
+void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
 	CDC memDC;
 
@@ -325,37 +325,37 @@ void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, S
 	m_pDC->SetStretchBltMode(HALFTONE);
 	m_pDC->SetBrushOrg(0, 0);
 	//CSize draw_size;
-    ImageDrawAreaConvert(CSize(bm.bmWidth, bm.bmHeight), start_point, size, stretch_mode);
+    ImageDrawAreaConvert(CSize(bm.bmWidth, bm.bmHeight), start_point, size, stretch_mode, no_clip_area);
 	m_pDC->StretchBlt(start_point.x, start_point.y, size.cx, size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 	memDC.DeleteDC();
 }
 
-void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode)
+void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
 	CBitmap bitmap;
 	bitmap.LoadBitmap(bitmap_id);
-	DrawBitmap(bitmap, start_point, size, stretch_mode);
+	DrawBitmap(bitmap, start_point, size, stretch_mode, no_clip_area);
 }
 
-void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode)
+void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
 	CBitmap bitmap;
 	if (!bitmap.Attach(hbitmap))
 		return;
-	DrawBitmap(bitmap, start_point, size, stretch_mode);
+	DrawBitmap(bitmap, start_point, size, stretch_mode, no_clip_area);
 	bitmap.Detach();
 }
 
-void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode)
+void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
-    ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode);
+    ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode, no_clip_area);
     image.Draw(m_pDC->GetSafeHdc(), CRect(start_point, size), Gdiplus::InterpolationMode::InterpolationModeHighQuality);
 }
 
-void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode)
+void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
     m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
-    ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode);
+    ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode, no_clip_area);
     m_pGraphics->DrawImage(pImage, start_point.x, start_point.y, size.cx, size.cy);
 }
 
@@ -491,19 +491,7 @@ void CDrawCommon::DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alp
     rect.bottom--;
     //生成圆角矩形路径
     Gdiplus::GraphicsPath round_rect_path;
-
-    int diam{ 2 * radius };
-    round_rect_path.AddArc(rect.left, rect.top, diam, diam, 180, 90); // 左上角圆弧
-    round_rect_path.AddLine(rect.left + radius, rect.top, rect.right - radius, rect.top); // 上边
-
-    round_rect_path.AddArc(rect.right - diam, rect.top, diam, diam, 270, 90); // 右上角圆弧
-    round_rect_path.AddLine(rect.right, rect.top + radius, rect.right, rect.bottom - radius);// 右边
-
-    round_rect_path.AddArc(rect.right - diam, rect.bottom - diam, diam, diam, 0, 90); // 右下角圆弧
-    round_rect_path.AddLine(rect.right - radius, rect.bottom, rect.left + radius, rect.bottom); // 下边
-
-    round_rect_path.AddArc(rect.left, rect.bottom - diam, diam, diam, 90, 90);
-    round_rect_path.AddLine(rect.left, rect.top + radius, rect.left, rect.bottom - radius);
+    CGdiPlusTool::CreateRoundRectPath(round_rect_path, rect, radius);
 
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
     m_pGraphics->FillPath(&Gdiplus::SolidBrush(color_gdip), &round_rect_path);          //填充路径
@@ -625,7 +613,7 @@ void CDrawCommon::SaveBitmap(HBITMAP bitmap, LPCTSTR path)
     img_tmp.Detach();
 }
 
-void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode)
+void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode, bool no_clip_area)
 {
     if (size.cx == 0 || size.cy == 0)		//如果指定的size为0，则使用位图的实际大小绘制
     {
@@ -635,7 +623,8 @@ void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CS
     {
         if (stretch_mode == StretchMode::FILL)
         {
-            SetDrawArea(m_pDC, CRect(start_point, size));
+            if (!no_clip_area)
+                SetDrawArea(m_pDC, CRect(start_point, size));
             float w_h_ratio, w_h_ratio_draw;		//图像的宽高比、绘制大小的宽高比
             w_h_ratio = static_cast<float>(image_size.cx) / image_size.cy;
             w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;

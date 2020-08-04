@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "CPlayerUI2.h"
+//#include "GdiPlusTool.h"
 
 
 CPlayerUI2::CPlayerUI2(UIData& ui_data, CWnd* pMainWnd)
@@ -94,14 +95,24 @@ void CPlayerUI2::_DrawInfo(bool reset)
 
         //绘制专辑封面
         cover_rect.DeflateRect(Margin() / 2, Margin() / 2);
+        bool no_clip_area{ false };
+        //if (theApp.m_app_setting_data.button_round_corners)
+        //{
+        //    no_clip_area = true;
+
+        //    Gdiplus::GraphicsPath round_rect_path;
+        //    CGdiPlusTool::CreateRoundRectPath(round_rect_path, cover_rect, theApp.DPI(4));
+        //    Gdiplus::Region round_rgn(&round_rect_path);
+        //    m_draw.GetGraphics()->SetClip(&round_rgn);
+        //}
         m_buttons[BTN_COVER].rect = DrawAreaToClient(cover_rect, m_draw_rect);
         m_draw_data.thumbnail_rect = cover_rect;
         if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
         {
             if (theApp.m_app_setting_data.draw_album_high_quality)
-                m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+                m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit, no_clip_area);
             else
-                m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+                m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit, no_clip_area);
         }
         else
         {
@@ -117,6 +128,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
                 m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rect.TopLeft(), rect.Size());
             }
         }
+        m_draw.GetGraphics()->ResetClip();
 
         ////绘制播放进度
         //CRect progress_rect = cover_rect;

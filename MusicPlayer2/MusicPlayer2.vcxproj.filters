@@ -309,6 +309,9 @@
     <Filter Include="对话框类\AlbumCoverInfoDlg">
       <UniqueIdentifier>{92109bff-2233-4c79-afce-77656dc5e247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\GdiPlusTool">
+      <UniqueIdentifier>{a6f42418-9eb9-473e-ac6f-ed9d60ac79c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -595,9 +598,6 @@
     <ClInclude Include="ColorStaticEx.h">
       <Filter>派生的控件类\ColorStatic</Filter>
     </ClInclude>
-    <ClInclude Include="GdiPlusTool.h">
-      <Filter>功能逻辑类\桌面歌词</Filter>
-    </ClInclude>
     <ClInclude Include="TestDlg.h">
       <Filter>测试\TestDlg</Filter>
     </ClInclude>
@@ -675,6 +675,9 @@
     </ClInclude>
     <ClInclude Include="AlbumCoverInfoDlg.h">
       <Filter>对话框类\AlbumCoverInfoDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="GdiPlusTool.h">
+      <Filter>公共的类\GdiPlusTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -930,9 +933,6 @@
     <ClCompile Include="ColorStaticEx.cpp">
       <Filter>派生的控件类\ColorStatic</Filter>
     </ClCompile>
-    <ClCompile Include="GdiPlusTool.cpp">
-      <Filter>功能逻辑类\桌面歌词</Filter>
-    </ClCompile>
     <ClCompile Include="TestDlg.cpp">
       <Filter>测试\TestDlg</Filter>
     </ClCompile>
@@ -1010,6 +1010,9 @@
     </ClCompile>
     <ClCompile Include="AlbumCoverInfoDlg.cpp">
       <Filter>对话框类\AlbumCoverInfoDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="GdiPlusTool.cpp">
+      <Filter>公共的类\GdiPlusTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

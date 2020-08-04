@@ -10,5 +10,6 @@ public:
 
     static Gdiplus::Color COLORREFToGdiplusColor(COLORREF color, BYTE alpha = 255);
     static int ToGDIPluseFontStyle(const FontStyle& style);
+    static void CreateRoundRectPath(Gdiplus::GraphicsPath& path, CRect rect, int radius);
 };
 
