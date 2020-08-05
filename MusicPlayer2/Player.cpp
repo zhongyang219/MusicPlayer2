@@ -316,23 +316,30 @@ void CPlayer::IniPlaylistComplate()
 void CPlayer::SearchLyrics(bool refresh)
 {
     //检索正在播放的音频文件的歌词
-
-    SongInfo& cur_song_info{ theApp.GetSongInfoRef(GetCurrentFilePath()) };
-    if (cur_song_info.lyric_file == NO_LYRIC_STR && !refresh)
-        return;
-
-    wstring lyric_path;
-    if(refresh || cur_song_info.lyric_file.empty())
+    if (GetCurrentSongInfo().is_cue)
     {
         CMusicPlayerCmdHelper helper;
-        lyric_path = helper.SearchLyricFile(GetCurrentSongInfo(), theApp.m_lyric_setting_data.lyric_fuzzy_match);
-        cur_song_info.lyric_file = lyric_path;
+        GetCurrentSongInfo2().lyric_file = helper.SearchLyricFile(GetCurrentSongInfo(), theApp.m_lyric_setting_data.lyric_fuzzy_match);
     }
     else
     {
-        lyric_path = cur_song_info.lyric_file;
+        SongInfo& cur_song_info{ theApp.GetSongInfoRef(GetCurrentFilePath()) };
+        if (cur_song_info.lyric_file == NO_LYRIC_STR && !refresh)
+            return;
+
+        wstring lyric_path;
+        if (refresh || cur_song_info.lyric_file.empty())
+        {
+            CMusicPlayerCmdHelper helper;
+            lyric_path = helper.SearchLyricFile(GetCurrentSongInfo(), theApp.m_lyric_setting_data.lyric_fuzzy_match);
+            cur_song_info.lyric_file = lyric_path;
+        }
+        else
+        {
+            lyric_path = cur_song_info.lyric_file;
+        }
+        GetCurrentSongInfo2().lyric_file = lyric_path;
     }
-    GetCurrentSongInfo2().lyric_file = lyric_path;
 }
 
 void CPlayer::IniLyrics()
@@ -536,11 +543,11 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
 bool CPlayer::SongIsOver() const
 {
-    if (GetCurrentSongInfo().is_cue || IsMciCore())
+    if (m_playing == 2 && m_current_position >= m_song_length)
     {
-        return (m_playing == 2 && m_current_position >= m_song_length);
+        return true;
     }
-    else
+    else if (!GetCurrentSongInfo().is_cue)
     {
         bool song_is_over{ false };
         static int last_pos;
@@ -566,6 +573,7 @@ bool CPlayer::SongIsOver() const
         //但是BASS音频库在播放时可能会出现当前播放位置一直无法到达歌曲长度位置的问题，
         //这样函数就会一直返回false。
     }
+    return false;
 }
 
 void CPlayer::GetPlayerCoreSongLength()
