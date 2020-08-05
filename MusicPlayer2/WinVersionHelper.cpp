@@ -113,6 +113,7 @@ void CWinVersionHelper::CheckWindows10LightTheme()
             GetDWORDRegKeyData(hKey, L"SystemUsesLightTheme", dwThemeData);
             m_windows10_light_theme = (dwThemeData != 0);
         }
+        RegCloseKey(hKey);
     }
 }
 
