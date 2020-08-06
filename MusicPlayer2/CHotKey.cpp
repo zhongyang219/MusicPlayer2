@@ -57,7 +57,10 @@ void CHotKey::FromString(const wstring & str)
 	vector<wstring> str_list;
 	CCommon::StringSplit(str, L'+', str_list);
 	if (str_list.empty())
-		return;
+    {
+        Clear();
+        return;
+    }
 
 	if (str_list.back().size() == 1)
 	{
@@ -103,4 +106,12 @@ wstring CHotKey::GetHotkeyName() const
 	str += CHotKeyCtrl::GetKeyName(key, bExtended);
 
 	return str;
+}
+
+void CHotKey::Clear()
+{
+    alt = false;
+    ctrl = false;
+    shift = false;
+    key = 0;
 }

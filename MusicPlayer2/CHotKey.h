@@ -16,5 +16,6 @@ public:
 	wstring ToString() const;
 	void FromString(const wstring& str);
 	wstring GetHotkeyName() const;
+    void Clear();
 };
 
