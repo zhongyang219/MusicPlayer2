@@ -30,7 +30,7 @@ void CHotkeyManager::RegisterAllHotKey()
 		WORD control_key = hot_key.second.Modifiers();
 
 		if (hot_key.second.key == 0 || control_key == 0)
-			return;
+			continue;
 
 		RegisterHotKey(theApp.m_pMainWnd->GetSafeHwnd(), hot_key.first, control_key, hot_key.second.key);
 	}
