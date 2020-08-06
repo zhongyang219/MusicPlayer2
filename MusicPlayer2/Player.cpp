@@ -430,7 +430,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
                     COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
                 theApp.SaveSongInfo(m_playlist[m_index]);
             }
-            else
+            else if (!m_playlist[m_index].is_cue)
             {
                 m_pCore->GetAudioInfo(m_playlist[m_index], AF_LENGTH);
             }
