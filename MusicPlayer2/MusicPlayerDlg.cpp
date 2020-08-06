@@ -714,14 +714,15 @@ void CMusicPlayerDlg::SwitchTrack()
         //m_miniModeDlg.RePaint();
         m_miniModeDlg.Invalidate(FALSE);
     }
-    //切换歌曲时如果当前歌曲的时间没有显示，则显示出来
-    CString song_length_str;
-    int index{ CPlayer::GetInstance().GetIndex() };
-    song_length_str = m_playlist_list.GetItemText(index, 2);
-    if (song_length_str == _T("-:--") && !CPlayer::GetInstance().GetAllSongLength(index).isZero())
-    {
-        m_playlist_list.SetItemText(index, 2, CPlayer::GetInstance().GetAllSongLength(index).toString().c_str());
-    }
+    //由于播放列表使用了LVS_OWNERDATA样式，因此不能使用SetItemText函数为某一项单独设置文本
+    ////切换歌曲时如果当前歌曲的时间没有显示，则显示出来
+    //CString song_length_str;
+    //int index{ CPlayer::GetInstance().GetIndex() };
+    //song_length_str = m_playlist_list.GetItemText(index, 2);
+    //if (song_length_str == _T("-:--") && !CPlayer::GetInstance().GetAllSongLength(index).isZero())
+    //{
+    //    m_playlist_list.SetItemText(index, 2, CPlayer::GetInstance().GetAllSongLength(index).toString().c_str());
+    //}
 
     DrawInfo(true);
 

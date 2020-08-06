@@ -430,6 +430,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
                     COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
                 theApp.SaveSongInfo(m_playlist[m_index]);
             }
+            else
+            {
+                m_pCore->GetAudioInfo(m_playlist[m_index], AF_LENGTH);
+            }
             m_song_length = m_playlist[m_index].lengh;
             //打开时获取专辑封面
             SearchAlbumCover();
@@ -545,7 +549,7 @@ bool CPlayer::SongIsOver() const
 {
     if (GetCurrentSongInfo().is_cue || IsMciCore())
     {
-        return (m_playing == 2 && m_current_position >= m_song_length);
+        return (m_playing == 2 && m_current_position >= m_song_length && m_current_position.toInt() != 0);
     }
     else
     {
