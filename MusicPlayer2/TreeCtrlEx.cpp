@@ -42,7 +42,11 @@ CString CTreeCtrlEx::GetItemPath(HTREEITEM hItem)
         hItem = GetNextItem(hItem, TVGN_PARENT);
         CString strParent = GetItemText(hItem);
         if(!strParent.IsEmpty())
+        {
+            if (strParent[strParent.GetLength() - 1] == L'\\')
+                strParent.Delete(strParent.GetLength() - 1, 1);
             strPath = strParent + _T("\\") + strPath;
+        }
     }
     strPath += _T('\\');
     return strPath;
