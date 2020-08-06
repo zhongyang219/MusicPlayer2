@@ -13,12 +13,15 @@ public:
     void ResetScroll();
     virtual void OnTabEntered() {}      //当标签切换到当前窗口时被调用
     virtual void OnOK();
+	void SetScrollEnable(bool enable) { m_scroll_enable = enable; }
 
 protected:
 	void ScrollWindowSimple(int step);
 
 protected:
 	CWnd* m_pParent;
+	bool m_scroll_enable{ false };
+
 public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);

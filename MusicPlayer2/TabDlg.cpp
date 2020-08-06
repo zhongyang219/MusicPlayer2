@@ -69,16 +69,21 @@ void CTabDlg::SetScrollbarInfo(int nPage, int nMax)
 		scrollinfo.nMax = 0;
 	scrollinfo.nPos = scrollinfo.nMin;
 	SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+
+    m_scroll_enable = true;
 }
 
 void CTabDlg::ResetScroll()
 {
-    SCROLLINFO scrollinfo;
-    GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-    int step = scrollinfo.nPos - scrollinfo.nMin;
-    scrollinfo.nPos = scrollinfo.nMin;
-    SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-    ScrollWindow(0, step);
+	if (m_scroll_enable)
+	{
+		SCROLLINFO scrollinfo;
+		GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+		int step = scrollinfo.nPos - scrollinfo.nMin;
+		scrollinfo.nPos = scrollinfo.nMin;
+		SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+		ScrollWindow(0, step);
+	}
 }
 
 void CTabDlg::ScrollWindowSimple(int step)
@@ -114,33 +119,36 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//参考资料：https://www.cnblogs.com/ranjiewen/p/6013922.html
 
-	SCROLLINFO scrollinfo;
-	GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-	int unit = 1;
-	int step = theApp.DPI(16);
-	switch (nSBCode)
+	if (m_scroll_enable)
 	{
-	case SB_LINEUP:          //Scroll one line up
-		ScrollWindowSimple(unit * step);
-		break;
-	case SB_LINEDOWN:           //Scroll one line down
-		ScrollWindowSimple(-unit * step);
-		break;
-	case SB_PAGEUP:            //Scroll one page up.
-		ScrollWindowSimple(unit * step * 5);
-		break;
-	case SB_PAGEDOWN:        //Scroll one page down        
-		ScrollWindowSimple(-unit * step * 5);
-		break;
-	case SB_ENDSCROLL:      //End scroll     
-		break;
-	case SB_THUMBPOSITION:  //Scroll to the absolute position. The current position is provided in nPos
-		break;
-	case SB_THUMBTRACK:                  //Drag scroll box to specified position. The current position is provided in nPos
-		ScrollWindow(0, (scrollinfo.nPos - nPos)*unit);
-		scrollinfo.nPos = nPos;
-		SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-		break;
+		SCROLLINFO scrollinfo;
+		GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+		int unit = 1;
+		int step = theApp.DPI(16);
+		switch (nSBCode)
+		{
+		case SB_LINEUP:          //Scroll one line up
+			ScrollWindowSimple(unit * step);
+			break;
+		case SB_LINEDOWN:           //Scroll one line down
+			ScrollWindowSimple(-unit * step);
+			break;
+		case SB_PAGEUP:            //Scroll one page up.
+			ScrollWindowSimple(unit * step * 5);
+			break;
+		case SB_PAGEDOWN:        //Scroll one page down        
+			ScrollWindowSimple(-unit * step * 5);
+			break;
+		case SB_ENDSCROLL:      //End scroll     
+			break;
+		case SB_THUMBPOSITION:  //Scroll to the absolute position. The current position is provided in nPos
+			break;
+		case SB_THUMBTRACK:                  //Drag scroll box to specified position. The current position is provided in nPos
+			ScrollWindow(0, (scrollinfo.nPos - nPos)*unit);
+			scrollinfo.nPos = nPos;
+			SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+			break;
+		}
 	}
 	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
@@ -149,14 +157,17 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 BOOL CTabDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	int step = theApp.DPI(64);
-	if (zDelta > 0)
+	if (m_scroll_enable)
 	{
-		ScrollWindowSimple(step);
-	}
-	if (zDelta < 0)
-	{
-		ScrollWindowSimple(-step);
+		int step = theApp.DPI(64);
+		if (zDelta > 0)
+		{
+			ScrollWindowSimple(step);
+		}
+		if (zDelta < 0)
+		{
+			ScrollWindowSimple(-step);
+		}
 	}
 
 	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
