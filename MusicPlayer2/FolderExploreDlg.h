@@ -49,6 +49,7 @@ protected:
     CString m_selected_string;
     bool m_searched{ false };
 	CListCtrlEx::ListData m_list_data;	//右侧列表数据
+    bool m_initialized{ false };
 
 protected:
     void ShowFolderTree();

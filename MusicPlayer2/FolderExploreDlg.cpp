@@ -88,6 +88,7 @@ void CFolderExploreDlg::RefreshData()
 
 void CFolderExploreDlg::ShowFolderTree()
 {
+    m_initialized = true;
     CString search_key_word;
     m_search_edit.GetWindowText(search_key_word);
     m_searched = !search_key_word.IsEmpty();
@@ -193,6 +194,13 @@ bool CFolderExploreDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
 
 void CFolderExploreDlg::OnTabEntered()
 {
+    if (!m_initialized)
+    {
+        CWaitCursor wait_cursor;
+        //注意，在这里向左侧树填充数据可能会比较缓慢，因此放到这里处理，而不在OnInitDialog()中处理，
+        //即只有当标签切换到“文件夹浏览”时才填充数据，以加快“媒体库”对话框的打开速度
+        ShowFolderTree();
+    }
     bool play_enable;
     if (m_left_selected)
         play_enable = CCommon::FolderExist(wstring(m_folder_path_selected));
@@ -300,7 +308,9 @@ BOOL CFolderExploreDlg::OnInitDialog()
         m_folder_explore_tree.ModifyStyle(0, TVS_NOTOOLTIPS);
 
     //填充数据
-    ShowFolderTree();
+    //注意，在这里向左侧树填充数据可能会比较缓慢，因此放到OnTabEntered()函数中处理，
+    //即只有当标签切换到“文件夹浏览”时才填充数据，以加载“媒体库”对话框的打开速度
+    //ShowFolderTree();
 
     ////
     //CImageList image_list1;
