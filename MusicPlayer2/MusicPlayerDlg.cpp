@@ -244,8 +244,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, &CMusicPlayerDlg::OnAlwaysUseExternalAlbumCover)
     ON_WM_COPYDATA()
     ON_COMMAND(ID_RELATE_LOCAL_LYRIC, &CMusicPlayerDlg::OnRelateLocalLyric)
-        ON_COMMAND(ID_ALBUM_COVER_INFO, &CMusicPlayerDlg::OnAlbumCoverInfo)
-        END_MESSAGE_MAP()
+    ON_COMMAND(ID_ALBUM_COVER_INFO, &CMusicPlayerDlg::OnAlbumCoverInfo)
+    ON_COMMAND(ID_UNLINK_LYRIC, &CMusicPlayerDlg::OnUnlinkLyric)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3107,9 +3108,13 @@ void CMusicPlayerDlg::OnLyricBatchDownload()
 void CMusicPlayerDlg::OnDeleteLyric()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().ClearLyric();		//清除歌词
+    if (CCommon::FileExist(CPlayer::GetInstance().m_Lyrics.GetPathName()))
+    {
+        int rtn = CCommon::DeleteAFile(m_hWnd, CPlayer::GetInstance().m_Lyrics.GetPathName());		//删除歌词文件
+        CPlayer::GetInstance().ClearLyric();		//清除歌词关联
+    }
+
     SongInfo& song_info{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
-    song_info.lyric_file = NO_LYRIC_STR;       //将该歌曲设置为不关联歌词
     song_info.SetNoOnlineLyric(true);
     theApp.SetSongDataModified();
 }
@@ -4929,4 +4934,15 @@ void CMusicPlayerDlg::OnAlbumCoverInfo()
     // TODO: 在此添加命令处理程序代码
     CAlbumCoverInfoDlg dlg;
     dlg.DoModal();
+}
+
+
+void CMusicPlayerDlg::OnUnlinkLyric()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().ClearLyric();		//清除歌词
+    SongInfo& song_info{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    song_info.lyric_file = NO_LYRIC_STR;       //将该歌曲设置为不关联歌词
+    song_info.SetNoOnlineLyric(true);
+    theApp.SetSongDataModified();
 }

@@ -399,4 +399,5 @@ public:
     afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
     afx_msg void OnRelateLocalLyric();
     afx_msg void OnAlbumCoverInfo();
+    afx_msg void OnUnlinkLyric();
 };
