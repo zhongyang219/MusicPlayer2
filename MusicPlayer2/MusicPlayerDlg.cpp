@@ -1196,6 +1196,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_RELOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EDIT_LYRIC, MF_BYCOMMAND | (!midi_lyric ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_UNLINK_LYRIC, MF_BYCOMMAND | (!lyric_disable && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
 
     pMenu->EnableMenuItem(ID_ALBUM_COVER_SAVE_AS, MF_BYCOMMAND | (CPlayer::GetInstance().AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() ? MF_ENABLED : MF_GRAYED));
