@@ -126,27 +126,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     cover_rect.DeflateRect(Margin() / 2, Margin() / 2);
     m_buttons[BTN_COVER].rect = DrawAreaToClient(cover_rect, m_draw_rect);
     //绘制专辑封面
-    if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
-    {
-        if (theApp.m_app_setting_data.draw_album_high_quality)
-            m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
-        else
-            m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
-    }
-    else        //绘制没有专辑封面时的黑色胶片
-    {
-        if(theApp.m_app_setting_data.draw_album_high_quality)
-        {
-            m_draw.DrawImage(theApp.m_image_set.default_cover, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
-        }
-        else
-        {
-            int cover_side = cover_rect.Height() * 3 / 4;
-            int x = cover_rect.left + (cover_rect.Width() - cover_side) / 2;
-            int y = cover_rect.top + (cover_rect.Height() - cover_side) / 2;
-            ::DrawIconEx(m_draw.GetDC()->GetSafeHdc(), x, y, theApp.m_icon_set.default_cover.GetIcon(), cover_side, cover_side, 0, NULL, DI_NORMAL);
-        }
-    }
+    DrawAlbumCover(cover_rect);
 
     if (theApp.m_app_setting_data.show_spectrum)
     {

@@ -1473,6 +1473,31 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     }
 }
 
+void CPlayerUIBase::DrawAlbumCover(CRect rect)
+{
+    if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
+    {
+        if (theApp.m_app_setting_data.draw_album_high_quality)
+            m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), rect.TopLeft(), rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+        else
+            m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rect.TopLeft(), rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+    }
+    else
+    {
+        CRect rc_temp = rect;
+        int cover_margin = static_cast<int>(rect.Width() * 0.08);
+        rc_temp.DeflateRect(cover_margin, cover_margin);
+        if (theApp.m_app_setting_data.draw_album_high_quality)
+        {
+            m_draw.DrawImage(theApp.m_image_set.default_cover, rc_temp.TopLeft(), rc_temp.Size(), CDrawCommon::StretchMode::FIT);
+        }
+        else
+        {
+            m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rc_temp.TopLeft(), rc_temp.Size());
+        }
+    }
+}
+
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 //{
 //	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
