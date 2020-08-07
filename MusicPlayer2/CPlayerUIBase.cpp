@@ -1493,7 +1493,10 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
         }
         else
         {
-            m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), rc_temp.TopLeft(), rc_temp.Size());
+            int cover_side = min(rc_temp.Width(), rc_temp.Height());
+            int x = rc_temp.left + (rc_temp.Width() - cover_side) / 2;
+            int y = rc_temp.top + (rc_temp.Height() - cover_side) / 2;
+            m_draw.DrawIcon(theApp.m_icon_set.default_cover.GetIcon(), CPoint(x, y), CSize(cover_side, cover_side));
         }
     }
 }
