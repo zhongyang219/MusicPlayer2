@@ -562,14 +562,14 @@ bool CPlayer::SongIsOver() const
         //检测到这个错误时直接判断歌曲已经播放完了。
             song_is_over = true;
 
-        static int progress_no_change_cnt{};
-        if (m_current_position.toInt() == last_pos)
-            progress_no_change_cnt++;
-        else
-            progress_no_change_cnt = 0;
+        //static int progress_no_change_cnt{};
+        //if (m_current_position.toInt() == last_pos)
+        //    progress_no_change_cnt++;
+        //else
+        //    progress_no_change_cnt = 0;
 
-        if (m_playing == 2 && progress_no_change_cnt > 10)       //如果正在播放而且播放进度连续指定次数都没有变化，也判断歌曲播放完了。
-            song_is_over = true;
+        //if (m_playing == 2 && progress_no_change_cnt > 10)       //如果正在播放而且播放进度连续指定次数都没有变化，也判断歌曲播放完了。
+        //    song_is_over = true;
 
         last_pos = m_current_position.toInt();
         return song_is_over;
