@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "LyricRelateDlg.h"
 #include "MusicPlayerCmdHelper.h"
+#include "PlayListCtrl.h"
 
 
 // CLyricRelateDlg 对话框
@@ -119,7 +120,11 @@ BOOL CLyricRelateDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     SetIcon(theApp.m_icon_set.lyric, FALSE);
 
-    wstring lyric_name{ CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileNameWithoutExtension() };
+    wstring lyric_name;
+    if (!CPlayer::GetInstance().GetCurrentSongInfo().is_cue)
+        lyric_name = CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileNameWithoutExtension();
+    else
+        lyric_name = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DF_ARTIST_TITLE);
     SetDlgItemText(IDC_LYRIC_NAME_EDIT, lyric_name.c_str());
 
     EnableControls(false);
@@ -167,6 +172,11 @@ void CLyricRelateDlg::OnBnClickedDeleteFileButton()
     int index_selected = m_result_list.GetCurSel();
     wstring lyric_file = GetListRow(index_selected);
     CCommon::DeleteAFile(m_hWnd, lyric_file);
+    if (lyric_file == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file)
+    {
+        //如果删除的是正在显示的歌词，则将其清除
+        CPlayer::GetInstance().ClearLyric();
+    }
     SearchLyrics();
     ShowSearchResult();
 }
