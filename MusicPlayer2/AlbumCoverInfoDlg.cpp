@@ -94,20 +94,21 @@ BOOL CAlbumCoverInfoDlg::OnInitDialog()
         m_list_ctrl.SetItemText(1, 1, cover_type.c_str());
     }
 
+    AlbumCoverInfo album_cover_info{ CPlayer::GetInstance().GetAlbumCoverInfo() };
     //宽度
     m_list_ctrl.InsertItem(2, CCommon::LoadText(IDS_WIDTH));
     if(CPlayer::GetInstance().AlbumCoverExist())
-        m_list_ctrl.SetItemText(2, 1, std::to_wstring(CPlayer::GetInstance().GetAlbumCover().GetWidth()).c_str());
+        m_list_ctrl.SetItemText(2, 1, std::to_wstring(album_cover_info.width).c_str());
 
     //高度
     m_list_ctrl.InsertItem(3, CCommon::LoadText(IDS_HEIGHT));
     if (CPlayer::GetInstance().AlbumCoverExist())
-        m_list_ctrl.SetItemText(3, 1, std::to_wstring(CPlayer::GetInstance().GetAlbumCover().GetHeight()).c_str());
+        m_list_ctrl.SetItemText(3, 1, std::to_wstring(album_cover_info.height).c_str());
 
     //每像素位数
     m_list_ctrl.InsertItem(4, CCommon::LoadText(IDS_BPP));
     if (CPlayer::GetInstance().AlbumCoverExist())
-        m_list_ctrl.SetItemText(4, 1, std::to_wstring(CPlayer::GetInstance().GetAlbumCover().GetBPP()).c_str());
+        m_list_ctrl.SetItemText(4, 1, std::to_wstring(album_cover_info.bpp).c_str());
 
     //文件大小
     m_list_ctrl.InsertItem(5, CCommon::LoadText(IDS_FILE_SIZE));
@@ -115,6 +116,13 @@ BOOL CAlbumCoverInfoDlg::OnInitDialog()
     {
         size_t file_size = CCommon::GetFileSize(CPlayer::GetInstance().GetAlbumCoverPath());
         m_list_ctrl.SetItemText(5, 1, CCommon::DataSizeToString(file_size));
+    }
+
+    //已压缩尺寸过大的专辑封面
+    m_list_ctrl.InsertItem(6, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));
+    if (CPlayer::GetInstance().AlbumCoverExist())
+    {
+        m_list_ctrl.SetItemText(6, 1, (album_cover_info.size_exceed ? CCommon::LoadText(IDS_YES) : CCommon::LoadText(IDS_NO)));
     }
 
     return TRUE;  // return TRUE unless you set the focus to a control

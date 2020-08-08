@@ -447,6 +447,7 @@
 #define IDS_CLEAR_LISTEN_TIME_WARNING   408
 #define IDS_PLAYLIST_NAME_EMPTY_WARNING 409
 #define IDS_SEARCH_BOX_OPAQUE_TIP       410
+#define IDS_ALBUM_COVER_COMPRESSED      410
 #define IDS_TOW_COLOR_GRADIENT          411
 #define IDS_THREE_COLOR_GRADIENT        412
 #define IDD_MEDIA_CLASSIFY_DIALOG       412
@@ -592,6 +593,7 @@
 #define IDS_DEFAULT_ICON                491
 #define IDS_LIGHT_ICON                  492
 #define IDS_DARK_ICON                   493
+#define IDS_NO                          495
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

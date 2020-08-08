@@ -34,6 +34,8 @@ void CTest::Test()
     //CString info;
     //info.Format(_T("sizeof(SongInfo)=%d\nsizeof(Time)=%d"), sizeof(SongInfo), sizeof(Time));
     //AfxMessageBox(info);
+
+    //TestImageResize();
 }
 
 void CTest::TestStringMatch()
@@ -151,4 +153,9 @@ void CTest::TestAudioTag()
 	audio_tag.GetAudioTag(true);
 	wstring str_lyric = audio_tag.GetAudioLyric();
 	BASS_StreamFree(hStream);
+}
+
+void CTest::TestImageResize()
+{
+    CDrawCommon::ImageResize(L"D:\\Temp\\test_src.jpg", L"D:\\Temp\\test_dest.png", 512, IT_PNG);
 }

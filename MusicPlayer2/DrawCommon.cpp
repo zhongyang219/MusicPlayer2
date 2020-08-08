@@ -523,34 +523,85 @@ CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 	return m_pDC->GetTextExtent(str);
 }
 
-bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize size)
+//bool CDrawCommon::BitmapStretch(CImage * pImage, CImage * ResultImage, CSize size)
+//{
+//	if (pImage->IsDIBSection())
+//	{
+//		// 取得 pImage 的 DC
+//		CDC* pImageDC1 = CDC::FromHandle(pImage->GetDC()); // Image 因為有自己的 DC, 所以必須使用 FromHandle 取得對應的 DC
+//
+//		CBitmap *bitmap1 = pImageDC1->GetCurrentBitmap();
+//		BITMAP bmpInfo;
+//		bitmap1->GetBitmap(&bmpInfo);
+//
+//		// 建立新的 CImage
+//		//ResultImage->Create(size.cx, size.cy, bmpInfo.bmBitsPixel);
+//		ResultImage->Create(size.cx, size.cy, 24);		//总是将目标图片转换成24位图
+//		CDC* ResultImageDC = CDC::FromHandle(ResultImage->GetDC());
+//
+//		// 當 Destination 比較小的時候, 會根據 Destination DC 上的 Stretch Blt mode 決定是否要保留被刪除點的資訊
+//		ResultImageDC->SetStretchBltMode(HALFTONE); // 使用最高品質的方式
+//		::SetBrushOrgEx(ResultImageDC->m_hDC, 0, 0, NULL); // 調整 Brush 的起點
+//
+//		// 把 pImage 畫到 ResultImage 上面
+//		BOOL rtn = StretchBlt(*ResultImageDC, 0, 0, size.cx, size.cy, *pImageDC1, 0, 0, pImage->GetWidth(), pImage->GetHeight(), SRCCOPY);
+//		// pImage->Draw(*ResultImageDC,0,0,StretchWidth,StretchHeight,0,0,pImage->GetWidth(),pImage->GetHeight());
+//
+//		pImage->ReleaseDC();
+//		ResultImage->ReleaseDC();
+//	}
+//	return true;
+//}
+
+void CDrawCommon::ImageResize(const CImage& img_src, CImage& img_dest, CSize size)
 {
-	if (pImage->IsDIBSection())
-	{
-		// 取得 pImage 的 DC
-		CDC* pImageDC1 = CDC::FromHandle(pImage->GetDC()); // Image 因為有自己的 DC, 所以必須使用 FromHandle 取得對應的 DC
+    img_dest.Destroy();
+    int bpp = img_src.GetBPP();
+    if (bpp < 24)
+        bpp = 24;		//总是将目标图片转换成24位图
+    img_dest.Create(size.cx, size.cy, bpp);
+    //使用GDI+高质量绘图
+    img_src.Draw(img_dest.GetDC(), CRect(CPoint(0, 0), size), Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    img_dest.ReleaseDC();
+}
 
-		CBitmap *bitmap1 = pImageDC1->GetCurrentBitmap();
-		BITMAP bmpInfo;
-		bitmap1->GetBitmap(&bmpInfo);
+void CDrawCommon::ImageResize(const CImage & img_src, const wstring & path_dest, int size, ImageType type)
+{
+    CImage imDest;
 
-		// 建立新的 CImage
-		//ResultImage->Create(size.cx, size.cy, bmpInfo.bmBitsPixel);
-		ResultImage->Create(size.cx, size.cy, 24);		//总是将目标图片转换成24位图
-		CDC* ResultImageDC = CDC::FromHandle(ResultImage->GetDC());
+    //计算输出图片的大小
+    CSize size_src{ img_src.GetWidth(), img_src.GetHeight() };
+    CSize size_dest{ size_src };
+    CCommon::SizeZoom(size_dest, size);
 
-		// 當 Destination 比較小的時候, 會根據 Destination DC 上的 Stretch Blt mode 決定是否要保留被刪除點的資訊
-		ResultImageDC->SetStretchBltMode(HALFTONE); // 使用最高品質的方式
-		::SetBrushOrgEx(ResultImageDC->m_hDC, 0, 0, NULL); // 調整 Brush 的起點
+    ImageResize(img_src, imDest, size_dest);
+    //输出为指定格式
+    const GUID* pType{ &(GUID)GUID_NULL };
+    switch (type)
+    {
+    case IT_JPG:
+        pType = &Gdiplus::ImageFormatJPEG;
+        break;
+    case IT_PNG:
+        pType = &Gdiplus::ImageFormatPNG;
+        break;
+    case IT_GIF:
+        pType = &Gdiplus::ImageFormatGIF;
+        break;
+    default:
+        pType = &Gdiplus::ImageFormatBMP;
+        break;
+    }
 
-		// 把 pImage 畫到 ResultImage 上面
-		BOOL rtn = StretchBlt(*ResultImageDC, 0, 0, size.cx, size.cy, *pImageDC1, 0, 0, pImage->GetWidth(), pImage->GetHeight(), SRCCOPY);
-		// pImage->Draw(*ResultImageDC,0,0,StretchWidth,StretchHeight,0,0,pImage->GetWidth(),pImage->GetHeight());
+    imDest.Save(path_dest.c_str(), *pType);
+}
 
-		pImage->ReleaseDC();
-		ResultImage->ReleaseDC();
-	}
-	return true;
+void CDrawCommon::ImageResize(const wstring & path_src, const wstring & path_dest, int size, ImageType type)
+{
+    CImage imSrc;
+    //读入原始图片
+    imSrc.Load(path_src.c_str());
+    ImageResize(imSrc, path_dest, size, type);
 }
 
 HICON CDrawCommon::LoadIconResource(UINT id, int width, int height)

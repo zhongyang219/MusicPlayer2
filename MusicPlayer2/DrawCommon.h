@@ -8,6 +8,15 @@ enum class Alignment	//对齐方式
     CENTER
 };
 
+enum ImageType
+{
+    IT_JPG,
+    IT_PNG,
+    IT_GIF,
+    IT_BMP
+};
+
+
 class CDrawCommon
 {
 public:
@@ -110,8 +119,15 @@ public:
 
     CSize GetTextExtent(LPCTSTR str);
 
-    //将图片拉伸到指定尺寸(https://blog.csdn.net/sichuanpb/article/details/22986877)
-    static bool BitmapStretch(CImage *pImage, CImage *ResultImage, CSize size);
+    ////将图片拉伸到指定尺寸(https://blog.csdn.net/sichuanpb/article/details/22986877)
+    //static bool BitmapStretch(CImage *pImage, CImage *ResultImage, CSize size);
+
+    //将图片拉伸到指定尺寸
+    static void ImageResize(const CImage& img_src, CImage& img_dest, CSize size);
+
+    //重设图片的大小，不改变图片比例，size为更改后图片长边的大小，单位为像素。type指定输出的文件格式
+    static void ImageResize(const CImage& img_src, const wstring& path_dest, int size, ImageType type);
+    static void ImageResize(const wstring& path_src, const wstring& path_dest, int size, ImageType type);
 
     static HICON LoadIconResource(UINT id, int width, int height);
 

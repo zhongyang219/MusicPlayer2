@@ -341,6 +341,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map);
     ini.WriteBool(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip);
     ini.WriteBool(L"config", L"always_on_top", theApp.m_nc_setting_data.always_on_top);
+    ini.WriteInt(L"config", L"max_album_cover_size", theApp.m_nc_setting_data.max_album_cover_size);
 
     ini.WriteBool(L"other", L"no_sf2_warning", theApp.m_nc_setting_data.no_sf2_warning);
     ini.WriteBool(L"other", L"show_hide_menu_bar_tip", theApp.m_nc_setting_data.show_hide_menu_bar_tip);
@@ -484,6 +485,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.volume_map = ini.GetInt(L"config", L"volume_map", 100);
     theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(L"config", L"show_cover_tip", false);
     theApp.m_nc_setting_data.always_on_top = ini.GetBool(L"config", L"always_on_top", false);
+    theApp.m_nc_setting_data.max_album_cover_size = ini.GetInt(L"config", L"max_album_cover_size", 800);
 
     theApp.m_nc_setting_data.no_sf2_warning = ini.GetBool(L"other", L"no_sf2_warning", true);
     theApp.m_nc_setting_data.show_hide_menu_bar_tip = ini.GetBool(L"other", L"show_hide_menu_bar_tip", true);

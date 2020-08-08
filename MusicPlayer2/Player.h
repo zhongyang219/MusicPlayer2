@@ -18,6 +18,20 @@
 #define WM_MUSIC_STREAM_OPENED (WM_USER+109)		//当音频文件打开时的消息
 #define WM_POST_MUSIC_STREAM_OPENED (WM_USER+129)		//当音频文件打开前的消息
 
+struct AlbumCoverInfo
+{
+    int width{};
+    int height{};
+    int bpp{};
+    bool size_exceed{};
+
+    void GetInfo(const CImage& image)
+    {
+        width = image.GetWidth();
+        height = image.GetHeight();
+        bpp = image.GetBPP();
+    }
+};
 
 class CPlayer
 {
@@ -125,6 +139,8 @@ private:
 
     bool m_file_opend{ false };       //如果打开了一个文件，则为true
 
+    AlbumCoverInfo m_album_cover_info;
+
 private:
 	void IniPlayerCore();			//初始化BASS音频库
 	void UnInitPlayerCore();
@@ -166,6 +182,8 @@ public:
 	bool ContinueABRepeat();	//继续下一句AB重复（将当前重复B点设置为下一句重复A点，处于AB重复状态下才有效）
 	void DoABRepeat();
 	void ResetABRepeat();		//取消AB重复 
+
+    const AlbumCoverInfo& GetAlbumCoverInfo() const { return m_album_cover_info; }
 
 private:
 	CPlayer();
@@ -298,6 +316,7 @@ private:
 	wstring GetCurrentFileName() const;
     bool RemoveSongNotPlay(int index);
     void AfterSongsRemoved(bool play);
+    void AlbumCoverResize();        //如果专辑封面过大，将其缩小后再加载
 
 public:
     void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面

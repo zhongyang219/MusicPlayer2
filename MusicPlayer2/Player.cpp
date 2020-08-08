@@ -2199,7 +2199,10 @@ void CPlayer::SearchAlbumCover()
         CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentFilePath(), GetCurrentSongInfo2());
         m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
 		if(!m_album_cover_path.empty())
-			m_album_cover.Load(m_album_cover_path.c_str());
+        {
+            m_album_cover.Load(m_album_cover_path.c_str());
+            AlbumCoverResize();
+        }
     }
     m_inner_cover = !m_album_cover.IsNull();
 
@@ -2240,8 +2243,7 @@ void CPlayer::AlbumCoverGaussBlur()
         CSize image_size(m_album_cover.GetWidth(), m_album_cover.GetHeight());
         //将图片缩小以减小高斯模糊的计算量
         CCommon::SizeZoom(image_size, 300);		//图片大小按比例缩放，使长边等于300
-        if (!CDrawCommon::BitmapStretch(&m_album_cover, &image_tmp, image_size))		//拉伸图片
-            return;
+        CDrawCommon::ImageResize(m_album_cover, image_tmp, image_size);		//拉伸图片
 #ifdef _DEBUG
         image_tmp.Save(_T("..\\Debug\\image_tmp.bmp"), Gdiplus::ImageFormatBMP);
 #endif // _DEBUG
@@ -2299,6 +2301,27 @@ void CPlayer::AfterSongsRemoved(bool play)
         MusicControl(Command::PLAY);
 }
 
+void CPlayer::AlbumCoverResize()
+{
+    m_album_cover_info.GetInfo(m_album_cover);
+    m_album_cover_info.size_exceed = false;
+    if (!m_album_cover.IsNull() && theApp.m_nc_setting_data.max_album_cover_size > 0)
+    {
+        CSize image_size;
+        image_size.cx = m_album_cover.GetWidth();
+        image_size.cy = m_album_cover.GetHeight();
+        if (max(image_size.cx, image_size.cy) > theApp.m_nc_setting_data.max_album_cover_size)      //如果专辑封面的尺寸大于设定的最大值，则将其缩小
+        {
+            wstring temp_img_path{ CCommon::GetTemplatePath() + ALBUM_COVER_TEMP_NAME };
+            //缩小图片大小并保存到临时目录
+            CDrawCommon::ImageResize(m_album_cover, temp_img_path, theApp.m_nc_setting_data.max_album_cover_size, IT_PNG);
+            m_album_cover.Destroy();
+            m_album_cover.Load(temp_img_path.c_str());
+            m_album_cover_info.size_exceed = true;
+        }
+    }
+}
+
 void CPlayer::SearchOutAlbumCover()
 {
     if (IsOsuFile())
@@ -2314,6 +2337,7 @@ void CPlayer::SearchOutAlbumCover()
     if (!m_album_cover.IsNull())
         m_album_cover.Destroy();
     m_album_cover.Load(m_album_cover_path.c_str());
+    AlbumCoverResize();
 }
 
 wstring CPlayer::GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info)
