@@ -550,8 +550,13 @@ void CMusicPlayerDlg::SetDesptopLyricTransparency()
 
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
-    if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
-        m_pUI->DrawInfo(reset);
+    //主界面的绘图已经移动到UI线程函数UiThreadFunc中处理，这里不再执行绘图的代码
+
+    //if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+    //    m_pUI->DrawInfo(reset);
+
+    if (reset)
+        m_draw_reset = true;
 }
 
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
@@ -1740,6 +1745,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 //MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
             }
             DrawInfo();
+            m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)this);
             SetThumbnailClipArea();
 
             //注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
@@ -2316,6 +2322,11 @@ void CMusicPlayerDlg::OnDestroy()
     //DeleteFile(CPlayer::GetInstance().GetAlbumCoverPath().c_str());
 
     m_notify_icon.DeleteNotifyIcon();
+
+    m_ui_thread_exit = true;
+    if (m_uiThread != nullptr)
+        WaitForSingleObject(m_uiThread->m_hThread, 2000);	//等待线程退出
+
 }
 
 
@@ -3415,6 +3426,23 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         lyrics.SaveLyric2();
 
         CPlayer::GetInstance().IniLyrics(lyric_path.GetFilePath());
+    }
+    return 0;
+}
+
+UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
+{
+    CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
+    while (true)
+    {
+        if(pThis->m_ui_thread_exit)
+            break;
+        if (!pThis->IsIconic() && pThis->IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+        {
+            pThis->m_pUI->DrawInfo(pThis->m_draw_reset);
+            pThis->m_draw_reset = false;
+        }
+        Sleep(theApp.m_app_setting_data.ui_refresh_interval);
     }
     return 0;
 }

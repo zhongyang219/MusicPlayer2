@@ -125,6 +125,11 @@ protected:
     CWinThread* m_pDownloadThread;		//执行自动下载歌词和专辑封面的线程
     static UINT DownloadLyricAndCoverThreadFunc(LPVOID lpParam);	//执行自动下载歌词和专辑封面的线程函数
 
+    CWinThread* m_uiThread;         //主界面绘图的线程
+    static UINT UiThreadFunc(LPVOID lpParam);   //主界面绘图的线程函数
+    bool m_draw_reset{ false };
+    bool m_ui_thread_exit{ false };
+
     int m_play_error_cnt{};		//统计播放出错的次数
 
     CNotifyIcon m_notify_icon;
