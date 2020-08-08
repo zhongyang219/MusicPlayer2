@@ -365,8 +365,10 @@ struct IconSet
 {
     //界面图标
     IconRes app;
-    IconRes default_cover;
-    IconRes default_cover_small;
+    HICON default_cover;
+    HICON default_cover_small;
+    HICON default_cover_not_played;
+    HICON default_cover_small_not_played;
     IconRes skin;
     IconRes eq;
     IconRes setting;
@@ -478,9 +480,11 @@ struct MenuSet
 struct ImageSet
 {
     Gdiplus::Image* default_cover;
+    Gdiplus::Image* default_cover_not_played;
 
     ~ImageSet()
     {
         SAFE_DELETE(default_cover);
+        SAFE_DELETE(default_cover_not_played);
     }
 };

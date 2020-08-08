@@ -573,7 +573,10 @@
 #define IDS_LAST_HALF_YEAR              476
 #define IDB_NOTIFY_ICON_PREVIEW_LIGHT   476
 #define IDS_LAST_YEAR                   477
+#define IDI_DEFAULT_COVER_NOT_PLAYED    477
 #define IDS_TODAY                       478
+#define IDB_PNG2                        478
+#define IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED 478
 #define IDS_LAST_THREE_DAYS             479
 #define IDS_LICENSE_EXPLAIN             480
 #define IDS_LICENSE                     481
@@ -1285,7 +1288,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        477
+#define _APS_NEXT_RESOURCE_VALUE        479
 #define _APS_NEXT_COMMAND_VALUE         33185
 #define _APS_NEXT_CONTROL_VALUE         1176
 #define _APS_NEXT_SYMED_VALUE           101

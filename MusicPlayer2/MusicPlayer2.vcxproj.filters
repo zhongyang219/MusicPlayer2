@@ -1363,5 +1363,11 @@
     <Image Include="res\notify_preview_light.bmp">
       <Filter>资源文件\bitmaps</Filter>
     </Image>
+    <Image Include="res\default_cover_new_not_played.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\黑色胶片_not_played.png">
+      <Filter>资源文件\bitmaps</Filter>
+    </Image>
   </ItemGroup>
 </Project>
