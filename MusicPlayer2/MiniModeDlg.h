@@ -35,6 +35,8 @@ public:
     void SetDragEnable();
     CPlayListCtrl& GetPlaylistCtrl() { return m_playlist_ctrl; }
 
+    void DrawInfo();
+
 protected:
 
     int m_position_x;
@@ -59,6 +61,8 @@ protected:
     bool m_first_start{ true };
 
     bool m_always_on_top{ true };
+
+    bool m_draw_reset{ false };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -105,5 +109,5 @@ protected:
 public:
     afx_msg void OnMiniModeAlwaysOnTop();
 protected:
-    afx_msg LRESULT OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam);
+    //afx_msg LRESULT OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam);
 };

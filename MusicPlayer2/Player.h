@@ -27,9 +27,18 @@ struct AlbumCoverInfo
 
     void GetInfo(const CImage& image)
     {
-        width = image.GetWidth();
-        height = image.GetHeight();
-        bpp = image.GetBPP();
+        if (image.IsNull())
+        {
+            width = 0;
+            height = 0;
+            bpp = 0;
+        }
+        else
+        {
+            width = image.GetWidth();
+            height = image.GetHeight();
+            bpp = image.GetBPP();
+        }
     }
 };
 

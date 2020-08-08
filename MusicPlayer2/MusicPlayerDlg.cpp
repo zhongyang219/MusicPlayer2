@@ -903,7 +903,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                                     || theApp.m_media_lib_setting_data.recent_played_range != optionDlg.m_media_lib_dlg.m_data.recent_played_range
                                   };
     bool use_inner_lyric_changed{ theApp.m_lyric_setting_data.use_inner_lyric_first != optionDlg.m_tab1_dlg.m_data.use_inner_lyric_first };
-    bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
+    //bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
     bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != optionDlg.m_tab2_dlg.m_data.notify_icon_selected };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
@@ -962,15 +962,15 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         OnReloadLyric();
     }
 
-    if (timer_interval_changed)
-    {
-        KillTimer(TIMER_ID);
-        SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);
-        if (m_miniModeDlg.GetSafeHwnd() != NULL)
-        {
-            ::SendMessage(m_miniModeDlg.GetSafeHwnd(), WM_TIMER_INTERVAL_CHANGED, 0, 0);
-        }
-    }
+    //if (timer_interval_changed)
+    //{
+    //    KillTimer(TIMER_ID);
+    //    SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);
+    //    if (m_miniModeDlg.GetSafeHwnd() != NULL)
+    //    {
+    //        ::SendMessage(m_miniModeDlg.GetSafeHwnd(), WM_TIMER_INTERVAL_CHANGED, 0, 0);
+    //    }
+    //}
 
     if (notify_icon_changed)
     {
@@ -1567,7 +1567,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
 
     //设置定时器
-    SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);
+    //SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);
+    SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
     SetTimer(TIMER_1_SEC, 1000, NULL);
 
     return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -3437,11 +3438,17 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
     {
         if(pThis->m_ui_thread_exit)
             break;
+        //绘制主界面
         if (!pThis->IsIconic() && pThis->IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
         {
             pThis->m_pUI->DrawInfo(pThis->m_draw_reset);
             pThis->m_draw_reset = false;
         }
+
+        //绘制迷你模式界面
+        if (IsWindow(pThis->m_miniModeDlg.GetSafeHwnd()))
+            pThis->m_miniModeDlg.DrawInfo();
+
         Sleep(theApp.m_app_setting_data.ui_refresh_interval);
     }
     return 0;

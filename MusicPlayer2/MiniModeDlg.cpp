@@ -135,7 +135,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_COMMAND(ID_MINI_MIDE_MINIMIZE, &CMiniModeDlg::OnMiniMideMinimize)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMiniModeDlg::OnListItemDragged)
     ON_COMMAND(ID_MINI_MODE_ALWAYS_ON_TOP, &CMiniModeDlg::OnMiniModeAlwaysOnTop)
-    ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
+    //ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
 END_MESSAGE_MAP()
 
 
@@ -215,7 +215,7 @@ BOOL CMiniModeDlg::OnInitDialog()
 
     //设置定时器
     SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
-    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
+    SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//设置用于界面刷新的定时器
 
     //显示播放列表
     ShowPlaylist();
@@ -263,15 +263,11 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
             //m_Mytip.UpdateTipText(m_song_tip_info, this);
             index = CPlayer::GetInstance().GetIndex();
             song_name = CPlayer::GetInstance().GetFileName();
-            m_ui.DrawInfo(true);
+            m_draw_reset = true;
         }
-
     }
     if (nIDEvent == TIMER_ID_MINI2)
     {
-        if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
-            m_ui.DrawInfo(false);
-
         if (m_first_start)
         {
             UpdateSongTipInfo();
@@ -308,6 +304,15 @@ void CMiniModeDlg::SetTransparency()
 void CMiniModeDlg::SetDragEnable()
 {
     m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode() && !theApp.m_media_lib_setting_data.disable_drag_sort);
+}
+
+void CMiniModeDlg::DrawInfo()
+{
+    if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+    {
+        m_ui.DrawInfo(m_draw_reset);
+        m_draw_reset = false;
+    }
 }
 
 BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
@@ -509,7 +514,7 @@ void CMiniModeDlg::OnPaint()
     CPaintDC dc(this); // device context for painting
     // TODO: 在此处添加消息处理程序代码
     // 不为绘图消息调用 CDialogEx::OnPaint()
-    m_ui.DrawInfo();
+    //m_ui.DrawInfo();
 }
 
 
@@ -613,9 +618,9 @@ void CMiniModeDlg::OnMiniModeAlwaysOnTop()
 }
 
 
-afx_msg LRESULT CMiniModeDlg::OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam)
-{
-    KillTimer(TIMER_ID_MINI2);
-    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
-    return 0;
-}
+//afx_msg LRESULT CMiniModeDlg::OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam)
+//{
+//    KillTimer(TIMER_ID_MINI2);
+//    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
+//    return 0;
+//}
