@@ -2476,13 +2476,18 @@ void CMusicPlayerDlg::OnLoopTrack()
 BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    if (zDelta > 0)
+    CRect draw_rect{ 0,0,theApp.m_ui_data.draw_area_width, theApp.m_ui_data.draw_area_height };
+    ClientToScreen(draw_rect);
+    if (draw_rect.PtInRect(pt))
     {
-        OnVolumeUp();
-    }
-    if (zDelta < 0)
-    {
-        OnVolumeDown();
+        if (zDelta > 0)
+        {
+            OnVolumeUp();
+        }
+        if (zDelta < 0)
+        {
+            OnVolumeDown();
+        }
     }
 
     return CMainDialogBase::OnMouseWheel(nFlags, zDelta, pt);
