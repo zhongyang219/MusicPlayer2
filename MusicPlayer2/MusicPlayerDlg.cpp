@@ -3441,13 +3441,14 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 
 UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
 {
+    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
     while (true)
     {
         if(pThis->m_ui_thread_exit)
             break;
         //绘制主界面
-        if (!pThis->IsIconic() && pThis->IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+        if (pThis->IsWindowVisible() && !pThis->IsIconic())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
         {
             pThis->m_pUI->DrawInfo(pThis->m_draw_reset);
             if (pThis->m_draw_reset)
@@ -3458,7 +3459,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         }
 
         //更新任务栏缩略图
-        if (pThis->IsTaskbarListEnable())
+        if (pThis->IsTaskbarListEnable() && pThis->m_thumbnail_area_changed)
         {
             if (pThis->m_pTaskbar != nullptr)
             {
