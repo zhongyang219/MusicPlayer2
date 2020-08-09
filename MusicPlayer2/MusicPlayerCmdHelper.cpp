@@ -300,7 +300,10 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const wstring& lyric_name, const ws
         vector<wstring> key_words;
         CCommon::StringSplit(lyric_name, L'-', key_words);
         for (auto& key_word : key_words)
+        {
             CCommon::StringNormalize(key_word);
+            CCommon::FileNameNormalize(key_word);
+        }
 
         //判断一个字符串是否匹配key_words中任意一个关键字
         auto isMatched = [&](const wstring& str, const vector<wstring>& key_words)
@@ -372,11 +375,13 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
 		CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, lyric_path_lyrics);
 
 		wstring matched_lyric;		//匹配的歌词的路径
+        wstring title{ song.title }, artist{ song.artist };
+        CCommon::FileNameNormalize(title);
+        CCommon::FileNameNormalize(artist);
 		//先寻找歌词文件中同时包含歌曲标题和艺术家的歌词文件
 		for (const auto& str : current_path_lyrics)	//在当前目录下寻找
 		{
-			//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
-			if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
+			if (CCommon::StringNatchWholeWord(str, artist) != -1 && CCommon::StringNatchWholeWord(str, title) != -1)
 			{
 				matched_lyric = lyric_path.GetDir() + str;
 				return matched_lyric;
@@ -387,8 +392,7 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
 		{
 			for (const auto& str : lyric_path_lyrics)	//在歌词目录下寻找
 			{
-				//if (str.find(song.artist) != string::npos && str.find(song.title) != string::npos)
-				if (CCommon::StringNatchWholeWord(str, song.artist) != -1 && CCommon::StringNatchWholeWord(str, song.title) != -1)
+				if (CCommon::StringNatchWholeWord(str, artist) != -1 && CCommon::StringNatchWholeWord(str, title) != -1)
 				{
 					matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
 					return matched_lyric;

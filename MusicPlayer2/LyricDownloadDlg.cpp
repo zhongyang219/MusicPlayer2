@@ -166,6 +166,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
     if (m_song.is_cue || CPlayer::GetInstance().IsOsuFile())
     {
         m_lyric_name = CPlayListCtrl::GetDisplayStr(m_song, DF_ARTIST_TITLE);
+        CCommon::FileNameNormalize(m_lyric_name);
     }
     else
     {
