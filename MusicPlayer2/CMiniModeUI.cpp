@@ -293,14 +293,14 @@ void CMiniModeUI::PreDrawInfo()
 
 void CMiniModeUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip->AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
 }
 
 void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
     //if (m_buttons[btn].hover)
     //{
-    m_tool_tip->UpdateTipText(str, m_pMainWnd, btn + 1);
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + 1);
     //}
 }
 

@@ -188,7 +188,7 @@ BOOL CMiniModeDlg::OnInitDialog()
     m_Mytip.Create(this, TTS_ALWAYSTIP);
     m_Mytip.SetMaxTipWidth(800);
 
-    m_ui.SetToolTip(&m_Mytip);
+    //m_ui.SetToolTip(&m_Mytip);
     //UpdateSongTipInfo();
 
     //初始化窗口位置
@@ -377,6 +377,7 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 
         //if (!m_ui.PointInControlArea(point))
         m_Mytip.RelayEvent(pMsg);
+        m_ui.GetToolTipCtrl().RelayEvent(pMsg);
     }
 
     return CDialogEx::PreTranslateMessage(pMsg);

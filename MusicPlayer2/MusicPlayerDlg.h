@@ -32,6 +32,7 @@
 #include "CMediaLibDlg.h"
 #include "DesktopLyric.h"
 #include "SearchEditCtrl.h"
+#include "UIWindow.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -47,6 +48,7 @@ public:
     bool IsTaskbarListEnable() const;
 
     friend class CMusicPlayerCmdHelper;
+    friend class CUIWindow;
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -71,6 +73,7 @@ protected:
     CButton m_set_path_button;
     CSearchEditCtrl m_search_edit;
     //CButton m_clear_search_button;
+    CUIWindow m_ui_static_ctrl{ m_pUI };
 
 #ifndef COMPILE_IN_WIN_XP
     ITaskbarList3* m_pTaskbar { theApp.GetITaskbarList3() };         //用于支持任务栏显示播放进度
@@ -81,9 +84,9 @@ protected:
 
     wstring m_cmdLine;	//命令行参数
 
-    CDC* m_pDC;				//当前窗口的DC
-    CPlayerUI m_ui{ theApp.m_ui_data, this };
-    CPlayerUI2 m_ui2{ theApp.m_ui_data, this };
+    CDC* m_pUiDC;				//当前窗口的DC
+    CPlayerUI m_ui{ theApp.m_ui_data, &m_ui_static_ctrl };
+    CPlayerUI2 m_ui2{ theApp.m_ui_data, &m_ui_static_ctrl };
     IPlayerUI* m_pUI = nullptr;
 
     bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
@@ -129,6 +132,7 @@ protected:
     static UINT UiThreadFunc(LPVOID lpParam);   //主界面绘图的线程函数
     bool m_draw_reset{ false };
     bool m_ui_thread_exit{ false };
+    bool m_thumbnail_area_changed{ false };
 
     int m_play_error_cnt{};		//统计播放出错的次数
 
@@ -145,6 +149,7 @@ private:
     void SetDesptopLyricTransparency();
     void DrawInfo(bool reset = false);		//绘制信息
     void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
+    void SetDrawAreaSize(int cx, int cy);
     void SetAlwaysOnTop();
 
     bool IsAddCurrentToPlaylist() const;      //当执行“添加到播放列表时”，是添加正在播放的曲目到播放列表，还是添加选中的曲目到播放列表

@@ -343,11 +343,11 @@ void CPlayerUI::MouseMove(CPoint point)
 
 }
 
-void CPlayerUI::OnSizeRedraw(int cx, int cy)
-{
-    m_show_volume_adj = false;
-    CPlayerUIBase::OnSizeRedraw(cx, cy);
-}
+//void CPlayerUI::OnSizeRedraw(int cx, int cy)
+//{
+//    m_show_volume_adj = false;
+//    CPlayerUIBase::OnSizeRedraw(cx, cy);
+//}
 
 //CRect CPlayerUI::GetThumbnailClipArea()
 //{
@@ -362,19 +362,19 @@ void CPlayerUI::OnSizeRedraw(int cx, int cy)
 
 void CPlayerUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip->AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1000);
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1000);
 }
 
 void CPlayerUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip->UpdateTipText(str, m_pMainWnd, btn + 1000);
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + 1000);
 }
 
 void CPlayerUI::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)
     {
-        m_tool_tip->SetToolRect(m_pMainWnd, btn.first + 1000, btn.second.rect);
+        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + 1000, btn.second.rect);
     }
 }
 

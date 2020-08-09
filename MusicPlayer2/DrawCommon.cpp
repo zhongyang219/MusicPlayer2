@@ -59,7 +59,9 @@ void CDrawCommon::SetDC(CDC * pDC)
 
 void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align, bool no_clip_area, bool multi_line, bool default_right_align)
 {
-	m_pDC->SetTextColor(color);
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    m_pDC->SetTextColor(color);
 	m_pDC->SetBkMode(TRANSPARENT);
 	if (m_pfont != nullptr)
 		m_pDC->SelectObject(m_pfont);
@@ -98,7 +100,9 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 
 void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align, bool no_clip_area)
 {
-	if (split < 0) split = 0;
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    if (split < 0) split = 0;
 	if (split > 1000) split = 1000;
 	m_pDC->SetBkMode(TRANSPARENT);
 	if (m_pfont != nullptr)
@@ -160,7 +164,9 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 
 void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset)
 {
-	//static int shift_cnt;		//移动的次数
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    //static int shift_cnt;		//移动的次数
 	//static bool shift_dir;		//移动的方向，右移为false，左移为true
 	//static int freez;			//当该变量大于0时，文本不滚动，直到小于等于0为止
 	//static bool dir_changed{ false };	//如果方向发生了变化，则为true
@@ -239,6 +245,8 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 
 void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo & scroll_info, bool reset)
 {
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
     if (scroll_info.last_string.GetLength() != CString(lpszString).GetLength())      //当显示文本长度发生变化时，重置滚动位置
     {
         reset = true;
@@ -320,28 +328,32 @@ void CDrawCommon::SetDrawArea(CDC * pDC, CRect rect)
 
 void CDrawCommon::SetDrawArea(CRect rect)
 {
-	CRgn rgn;
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    CRgn rgn;
 	rgn.CreateRectRgnIndirect(rect);
 	m_pDC->SelectClipRgn(&rgn);
 }
 
 void CDrawCommon::DrawBitmap(CBitmap & bitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
-	CDC memDC;
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    CDC memDC;
 
-	//获取图像实际大小
-	BITMAP bm;
-	GetObject(bitmap, sizeof(BITMAP), &bm);
+    //获取图像实际大小
+    BITMAP bm;
+    GetObject(bitmap, sizeof(BITMAP), &bm);
 
-	memDC.CreateCompatibleDC(m_pDC);
-	memDC.SelectObject(&bitmap);
-	// 以下两行避免图片失真
-	m_pDC->SetStretchBltMode(HALFTONE);
-	m_pDC->SetBrushOrg(0, 0);
-	//CSize draw_size;
+    memDC.CreateCompatibleDC(m_pDC);
+    memDC.SelectObject(&bitmap);
+    // 以下两行避免图片失真
+    m_pDC->SetStretchBltMode(HALFTONE);
+    m_pDC->SetBrushOrg(0, 0);
+    //CSize draw_size;
     ImageDrawAreaConvert(CSize(bm.bmWidth, bm.bmHeight), start_point, size, stretch_mode, no_clip_area);
-	m_pDC->StretchBlt(start_point.x, start_point.y, size.cx, size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-	memDC.DeleteDC();
+    m_pDC->StretchBlt(start_point.x, start_point.y, size.cx, size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+    memDC.DeleteDC();
 }
 
 void CDrawCommon::DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
@@ -362,6 +374,8 @@ void CDrawCommon::DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, St
 
 void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
     ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode, no_clip_area);
     image.Draw(m_pDC->GetSafeHdc(), CRect(start_point, size), Gdiplus::InterpolationMode::InterpolationModeHighQuality);
 }
@@ -375,7 +389,9 @@ void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize si
 
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
 {
-	if(size.cx==0||size.cy==0)
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    if (size.cx == 0 || size.cy == 0)
 		::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, 0, 0, 0, NULL, DI_NORMAL | DI_DEFAULTSIZE);
 	else
 		::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, size.cx, size.cy, 0, NULL, DI_NORMAL);
@@ -383,14 +399,18 @@ void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
 
 void CDrawCommon::FillRect(CRect rect, COLORREF color, bool no_clip_area)
 {
-	if(!no_clip_area)
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    if (!no_clip_area)
 		SetDrawArea(m_pDC, rect);
 	m_pDC->FillSolidRect(rect, color);
 }
 
 void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area)
 {
-	if (alpha == 0)
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    if (alpha == 0)
 		return;
     if (!no_clip_area)
         SetDrawArea(m_pDC, rect);
@@ -428,7 +448,9 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_
 
 void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 {
-	SetDrawArea(m_pDC, rect);
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    SetDrawArea(m_pDC, rect);
 	CPen aPen, *pOldPen;
 	aPen.CreatePen(PS_SOLID, pilex, color);
 	pOldPen = m_pDC->SelectObject(&aPen);
@@ -441,6 +463,8 @@ void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 
 void CDrawCommon::DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line)
 {
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
     CPen aPen, *pOldPen;
     aPen.CreatePen((dot_line ? PS_DOT : PS_SOLID), width, color);
     pOldPen = m_pDC->SelectObject(&aPen);
@@ -486,7 +510,9 @@ void CDrawCommon::DrawRectFrame(CRect rect, COLORREF color, int width, BYTE alph
 
 void CDrawCommon::DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line)
 {
-	CPen aPen, *pOldPen;
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    CPen aPen, *pOldPen;
 	aPen.CreatePen((dot_line ? PS_DOT : PS_SOLID), width, color);
 	pOldPen = m_pDC->SelectObject(&aPen);
 	CBrush* pOldBrush{ dynamic_cast<CBrush*>(m_pDC->SelectStockObject(NULL_BRUSH)) };
@@ -518,7 +544,9 @@ void CDrawCommon::DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int ra
 
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 {
-	if (m_pfont != nullptr)
+    if (m_pDC->GetSafeHdc() == NULL)
+        return CSize();
+    if (m_pfont != nullptr)
 		m_pDC->SelectObject(m_pfont);
 	return m_pDC->GetTextExtent(str);
 }

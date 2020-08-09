@@ -15,15 +15,13 @@ CPlayerUIBase::~CPlayerUIBase()
     m_mem_bitmap_static.DeleteObject();
 }
 
-void CPlayerUIBase::SetToolTip(CToolTipCtrl * pToolTip)
-{
-    m_tool_tip = pToolTip;
-}
-
 void CPlayerUIBase::Init(CDC * pDC)
 {
     m_pDC = pDC;
     m_draw.Create(m_pDC, m_pMainWnd);
+
+    m_tool_tip.Create(m_pMainWnd, TTS_ALWAYSTIP);
+    m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 }
 
 void CPlayerUIBase::DrawInfo(bool reset)
@@ -341,60 +339,6 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
 }
 
-void CPlayerUIBase::OnSizeRedraw(int cx, int cy)
-{
-    CRect redraw_rect;
-    if (!m_ui_data.narrow_mode)	//在普通界面模式下
-    {
-        if (cx < m_ui_data.client_width)	//如果界面宽度变窄了
-        {
-            //重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-            redraw_rect = m_draw_rect;
-            if (m_ui_data.show_playlist)
-            {
-                redraw_rect.left = cx / 2/* - Margin()*/;
-                redraw_rect.right = m_ui_data.client_width / 2 + Margin();
-                m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
-            }
-            //else
-            //{
-            //	redraw_rect.left = cx - Margin();
-            //	redraw_rect.right = cx;
-            //}
-        }
-        //if (cy < m_ui_data.client_height)	//如果界面高度变小了
-        //{
-        //	//重新将绘图区域下方区域的矩形区域填充为对话框背景色
-        //	redraw_rect = m_draw_rect;
-        //	redraw_rect.top = cy - Margin();
-        //	redraw_rect.bottom = cy;
-        //	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
-        //}
-    }
-    else if (m_ui_data.narrow_mode)	//在窄界面模式下
-    {
-        //if (cx < m_ui_data.client_width)		//如果宽度变窄了
-        //{
-        //	//重新将绘图区域右侧区域的矩形区域填充为对话框背景色
-        //	redraw_rect = m_draw_rect;
-        //	redraw_rect.left = cx - Margin();
-        //	redraw_rect.right = cx;
-        //	m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
-        //}
-        //if (cy < m_ui_data.client_height)	//如果界面高度变小了
-        //{
-        //	if (!m_ui_data.show_playlist)
-        //	{
-        //		//重新将绘图区域下方区域的矩形区域填充为对话框背景色
-        //		redraw_rect = m_draw_rect;
-        //		redraw_rect.top = cy - Margin();
-        //		redraw_rect.bottom = cy;
-        //		m_pDC->FillSolidRect(redraw_rect, CONSTVAL::BACKGROUND_COLOR);
-        //	}
-        //}
-    }
-}
-
 CRect CPlayerUIBase::GetThumbnailClipArea()
 {
     //获取菜单栏的高度
@@ -482,25 +426,7 @@ void CPlayerUIBase::PreDrawInfo()
 
 void CPlayerUIBase::SetDrawRect()
 {
-    if (!m_ui_data.show_playlist)
-    {
-        m_draw_rect = CRect(0, 0, m_ui_data.client_width, m_ui_data.client_height);
-        //m_draw_rect.DeflateRect(Margin(), Margin());
-    }
-    else
-    {
-        if (!m_ui_data.narrow_mode)
-        {
-            m_draw_rect = CRect{ /*CPoint{Margin(), Margin()}*/ CPoint(),
-                                                                CPoint{m_ui_data.client_width / 2 /* - Margin()*/, m_ui_data.client_height} };
-        }
-        else
-        {
-            m_draw_rect = CRect{ /*CPoint{ Margin(), Margin() }*/ CPoint(),
-                                                                  CSize{ m_ui_data.client_width /*- 2 * Margin()*/, DrawAreaHeight() - Margin() } };
-        }
-
-    }
+    m_draw_rect = CRect(0, 0, m_ui_data.draw_area_width, m_ui_data.draw_area_height);
 }
 
 void CPlayerUIBase::DrawBackground()

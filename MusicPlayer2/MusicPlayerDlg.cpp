@@ -70,6 +70,7 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
+    DDX_Control(pDX, IDC_UI_STATIC, m_ui_static_ctrl);
 }
 
 BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
@@ -646,6 +647,26 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     m_playlist_toolbar.Invalidate();
 }
 
+void CMusicPlayerDlg::SetDrawAreaSize(int cx, int cy)
+{
+    //调整绘图区域的大小
+    CRect draw_rect;
+    if (!theApp.m_ui_data.show_playlist)
+    {
+        draw_rect = CRect(0, 0, cx, cy);
+    }
+    else
+    {
+        if (!theApp.m_ui_data.narrow_mode)
+            draw_rect = CRect{ CPoint(), CPoint{ cx / 2, cy} };
+        else
+            draw_rect = CRect{ CPoint(), CSize{ cx, m_ui.DrawAreaHeight() - m_ui.Margin() } };
+    }
+    theApp.m_ui_data.draw_area_width = draw_rect.Width();
+    theApp.m_ui_data.draw_area_height = draw_rect.Height();
+    m_ui_static_ctrl.MoveWindow(draw_rect);
+}
+
 void CMusicPlayerDlg::SetAlwaysOnTop()
 {
     if (theApp.m_nc_setting_data.always_on_top)
@@ -837,13 +858,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
-#ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable())
-    {
-        if (m_pTaskbar != nullptr && m_pUI != nullptr)
-            m_pTaskbar->SetThumbnailClip(m_hWnd, m_pUI->GetThumbnailClipArea());
-    }
-#endif
+    m_thumbnail_area_changed = true;
 }
 
 void CMusicPlayerDlg::EnablePlaylist(bool enable)
@@ -1459,10 +1474,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_Mytip.Create(this, TTS_ALWAYSTIP);
     m_Mytip.SetMaxTipWidth(theApp.DPI(400));
     m_Mytip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_OPEN_MEDIA_LIB, _T(" (Ctrl+T)")));
-    //m_Mytip.AddTool(&m_clear_search_button, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
-    //m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
-    m_ui.SetToolTip(&m_Mytip);
-    m_ui2.SetToolTip(&m_Mytip);
 
     SetMenubarVisible();
 
@@ -1538,10 +1549,10 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     }
 
     //初始化绘图的类
-    m_pDC = GetDC();
+    m_pUiDC = m_ui_static_ctrl.GetDC();
     //m_draw.Create(m_pDC, this);
-    m_ui.Init(m_pDC);
-    m_ui2.Init(m_pDC);
+    m_ui.Init(m_pUiDC);
+    m_ui2.Init(m_pUiDC);
     //m_pUI = &m_ui2;
 
     //初始化歌词字体
@@ -1640,18 +1651,16 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
     CMainDialogBase::OnSize(nType, cx, cy);
     if (nType != SIZE_MINIMIZED && m_pUI != nullptr)
     {
-        if (m_pDC != NULL)
-        {
-            DrawInfo(true);
-            if ((cx < m_ui.WidthThreshold()) != theApp.m_ui_data.narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
-            {
-                Invalidate(FALSE);
-                //m_time_static.Invalidate(FALSE);
-            }
-            m_pUI->OnSizeRedraw(cx, cy);
-        }
-        theApp.m_ui_data.client_width = cx;
-        theApp.m_ui_data.client_height = cy;
+        //if (m_pUiDC != NULL)
+        //{
+        //    DrawInfo(true);
+        //    if ((cx < m_ui.WidthThreshold()) != theApp.m_ui_data.narrow_mode)	//如果在窄界面模式和普通模式之间进行了切换，则重绘客户区
+        //    {
+        //        Invalidate(FALSE);
+        //        //m_time_static.Invalidate(FALSE);
+        //    }
+        //    //m_pUI->OnSizeRedraw(cx, cy);
+        //}
         if (m_ui.WidthThreshold() != 0)
         {
             theApp.m_ui_data.narrow_mode = (cx < m_ui.WidthThreshold());
@@ -1662,6 +1671,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         {
             SetPlaylistSize(cx, cy);
         }
+        SetDrawAreaSize(cx, cy);
 
         if (nType != SIZE_MAXIMIZED && !theApp.m_ui_data.full_screen)
         {
@@ -1679,7 +1689,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
                 DrawInfo(true);
         }
         last_type = nType;
-        //m_pUI->UpdateToolTipPosition();
+        m_pUI->UpdateToolTipPosition();
     }
 
     SetThumbnailClipArea();
@@ -1709,8 +1719,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 #endif
             CRect rect;
             GetClientRect(rect);
-            theApp.m_ui_data.client_width = rect.Width();
-            theApp.m_ui_data.client_height = rect.Height();
+            //theApp.m_ui_data.client_width = rect.Width();
+            //theApp.m_ui_data.client_height = rect.Height();
             SetPlaylistSize(rect.Width(), rect.Height());		//调整播放列表的大小和位置
             m_path_static.Invalidate();
             //SetPorgressBarSize(rect.Width(), rect.Height());		//调整进度条在窗口中的大小和位置
@@ -2308,6 +2318,8 @@ void CMusicPlayerDlg::OnDestroy()
     m_ui_thread_exit = true;
     if (m_uiThread != nullptr)
         WaitForSingleObject(m_uiThread->m_hThread, 2000);	//等待线程退出
+
+    m_ui_static_ctrl.ReleaseDC(m_pUiDC);
 
 }
 
@@ -3119,16 +3131,6 @@ void CMusicPlayerDlg::OnDeleteLyric()
 void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
-    {
-        CPoint point1;
-        GetCursorPos(&point1);
-        theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
-    }
-    else
-    {
-        m_pUI->RButtonUp(point);
-    }
 
     CMainDialogBase::OnRButtonUp(nFlags, point);
 }
@@ -3137,7 +3139,6 @@ void CMusicPlayerDlg::OnRButtonUp(UINT nFlags, CPoint point)
 void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    m_pUI->MouseMove(point);
 
     CMainDialogBase::OnMouseMove(nFlags, point);
 }
@@ -3146,8 +3147,6 @@ void CMusicPlayerDlg::OnMouseMove(UINT nFlags, CPoint point)
 void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    if (!m_no_lbtnup)
-        m_pUI->LButtonUp(point);
 
     CMainDialogBase::OnLButtonUp(nFlags, point);
 }
@@ -3156,7 +3155,6 @@ void CMusicPlayerDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CMusicPlayerDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    m_pUI->LButtonDown(point);
 
     CMainDialogBase::OnLButtonDown(nFlags, point);
 }
@@ -3169,7 +3167,7 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     // TODO:  在此更改 DC 的任何特性
 
     // TODO:  如果默认的不是所需画笔，则返回另一个画笔
-    if (pWnd == this /*|| pWnd == &m_path_static*/)
+    if (pWnd == this || pWnd == &m_ui_static_ctrl /*|| pWnd == &m_path_static*/)
     {
         static HBRUSH hBackBrush{};
         if (hBackBrush == NULL)
@@ -3424,8 +3422,24 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         {
             pThis->m_pUI->DrawInfo(pThis->m_draw_reset);
             if (pThis->m_draw_reset)
+            {
                 pThis->m_pUI->UpdateToolTipPosition();
+            }
             pThis->m_draw_reset = false;
+        }
+
+        //更新任务栏缩略图
+        if (pThis->IsTaskbarListEnable())
+        {
+            if (pThis->m_pTaskbar != nullptr)
+            {
+                CRect thumbnail_rect = pThis->m_pUI->GetThumbnailClipArea();
+                if (!thumbnail_rect.IsRectEmpty())
+                {
+                    pThis->m_pTaskbar->SetThumbnailClip(pThis->m_hWnd, thumbnail_rect);
+                    pThis->m_thumbnail_area_changed = false;
+                }
+            }
         }
 
         //绘制迷你模式界面
@@ -3971,8 +3985,10 @@ void CMusicPlayerDlg::OnShowPlaylist()
     m_pUI->ClearInfo();
     theApp.m_ui_data.show_playlist = !theApp.m_ui_data.show_playlist;
 
-    OnSize(SIZE_RESTORED, theApp.m_ui_data.client_width, theApp.m_ui_data.client_height);
     SetPlaylistVisible();
+    CRect rect;
+    GetClientRect(rect);
+    SetDrawAreaSize(rect.Width(), rect.Height());		//调整绘图区域的大小和位置
 
     DrawInfo(true);
 }

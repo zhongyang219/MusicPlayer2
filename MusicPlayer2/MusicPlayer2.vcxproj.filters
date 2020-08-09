@@ -312,6 +312,9 @@
     <Filter Include="公共的类\GdiPlusTool">
       <UniqueIdentifier>{a6f42418-9eb9-473e-ac6f-ed9d60ac79c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UIWindow">
+      <UniqueIdentifier>{80f33a0d-c6c4-4e8f-8337-652a914ae96b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -679,6 +682,9 @@
     <ClInclude Include="GdiPlusTool.h">
       <Filter>公共的类\GdiPlusTool</Filter>
     </ClInclude>
+    <ClInclude Include="UIWindow.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1013,6 +1019,9 @@
     </ClCompile>
     <ClCompile Include="GdiPlusTool.cpp">
       <Filter>公共的类\GdiPlusTool</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindow.cpp">
+      <Filter>UIWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

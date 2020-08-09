@@ -24,7 +24,6 @@ public:
 	virtual void RButtonUp(CPoint point) = 0;
 	virtual void MouseMove(CPoint point) = 0;
 	virtual void LButtonUp(CPoint point) = 0;
-	virtual void OnSizeRedraw(int cx, int cy) = 0;
 
 	virtual CRect GetThumbnailClipArea() = 0;
 
@@ -35,4 +34,6 @@ public:
 
 	virtual bool SetCursor() = 0;
 	virtual void MouseLeave() = 0;
+
+    virtual CToolTipCtrl& GetToolTipCtrl() = 0;
 };

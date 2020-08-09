@@ -11,7 +11,7 @@ public:
 
 	//virtual void RButtonUp(CPoint point) override;
 	virtual void MouseMove(CPoint point) override;
-	virtual void OnSizeRedraw(int cx, int cy) override;
+	//virtual void OnSizeRedraw(int cx, int cy) override;
 
 	//virtual CRect GetThumbnailClipArea() override;
 

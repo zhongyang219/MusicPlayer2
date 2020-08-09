@@ -353,18 +353,18 @@ void CPlayerUI2::_DrawInfo(bool reset)
 
 void CPlayerUI2::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip->AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 2000);
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 2000);
 }
 
 void CPlayerUI2::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip->UpdateTipText(str, m_pMainWnd, btn + 2000);
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + 2000);
 }
 
 void CPlayerUI2::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)
     {
-        m_tool_tip->SetToolRect(m_pMainWnd, btn.first + 2000, btn.second.rect);
+        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + 2000, btn.second.rect);
     }
 }

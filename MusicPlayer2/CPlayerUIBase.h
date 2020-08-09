@@ -25,10 +25,10 @@ public:
     CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd);
     ~CPlayerUIBase();
 
-    void SetToolTip(CToolTipCtrl* pToolTip);
+    virtual CToolTipCtrl& GetToolTipCtrl() override { return m_tool_tip; }
 
 public:
-    virtual void Init(CDC* pDC) override;
+    void Init(CDC* pDC) override;
     virtual void DrawInfo(bool reset = false) override final;
     virtual void ClearInfo() override;
 
@@ -36,7 +36,6 @@ public:
     virtual void RButtonUp(CPoint point) override;
     virtual void MouseMove(CPoint point) override;
     virtual void LButtonUp(CPoint point) override;
-    virtual void OnSizeRedraw(int cx, int cy) override;
 
     virtual CRect GetThumbnailClipArea() override;
     void UpdateRepeatModeToolTip();
@@ -152,7 +151,7 @@ protected:
     DrawData m_draw_data;
 
 
-    CToolTipCtrl* m_tool_tip = nullptr;
+    CToolTipCtrl m_tool_tip;
 
     CString m_repeat_mode_tip;
     CString m_info_tip;

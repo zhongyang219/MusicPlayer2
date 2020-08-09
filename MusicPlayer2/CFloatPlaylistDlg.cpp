@@ -211,6 +211,10 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     SetDragEnable();
     EnableControl(!CPlayer::GetInstance().m_loading);
 
+    CWnd* pWnd = GetDlgItem(IDC_UI_STATIC);
+    if (pWnd != nullptr)
+        pWnd->ShowWindow(SW_HIDE);
+
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
 }
