@@ -313,8 +313,13 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
         CRect rect_tmp{ rects[i] };
         int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
         int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-        if (spetral_height <= 0 || CPlayer::GetInstance().IsError()) spetral_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
-        if (peak_height <= 0 || CPlayer::GetInstance().IsError()) peak_height = 1;		//频谱高度最少为1个像素，如果播放出错，也不显示频谱
+        if (spetral_height < 0 || CPlayer::GetInstance().IsError()) spetral_height = 0;		//如果播放出错，不显示频谱
+        if (peak_height < 0 || CPlayer::GetInstance().IsError()) peak_height = 0;
+
+        int peak_rect_height = max(theApp.DPIRound(1.1), gap_width / 2);        //顶端矩形的高度
+        spetral_height += peak_rect_height;                                     //频谱至少和顶端矩形一样高
+        peak_height += peak_rect_height;
+
         rect_tmp.top = rect_tmp.bottom - spetral_height;
         if (rect_tmp.top < rects[0].top) rect_tmp.top = rects[0].top;
         FillRect(rect_tmp, color, true);
@@ -330,7 +335,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
         //绘制顶端
         CRect rect_peak{ rect_tmp };
         rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
-        rect_peak.top = rect_peak.bottom - max(theApp.DPIRound(1.1), gap_width / 2);
+        rect_peak.top = rect_peak.bottom - peak_rect_height;
         FillRect(rect_peak, color, true);
         ////绘制顶端倒影
         //CRect rc_peak_invert = rect_peak;
