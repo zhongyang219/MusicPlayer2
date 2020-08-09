@@ -1322,6 +1322,20 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     else
         m_draw.FillRect(rect, m_colors.color_control_bar_back);
 
+    //显示帧率
+    if (theApp.m_nc_setting_data.show_debug_info)
+    {
+        CRect rc_fps{ rect };
+        rc_fps.left = rc_fps.right - DPI(36);
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));
+        CString str_info;
+        str_info.Format(_T("%dFPS"), theApp.m_fps);
+        m_draw.DrawWindowText(rc_fps, str_info, m_colors.color_text);
+        m_draw.SetFont(pOldFont);
+
+        rect.right = rc_fps.left;
+    }
+
     rect.DeflateRect(DPI(4), 0);
 
     //显示播放列表载入状态

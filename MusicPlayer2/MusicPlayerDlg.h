@@ -135,6 +135,7 @@ protected:
     bool m_thumbnail_area_changed{ false };
 
     int m_play_error_cnt{};		//统计播放出错的次数
+    int m_fps_cnt{};            //用于统计当前帧率
 
     CNotifyIcon m_notify_icon;
     CPlayerToolBar m_playlist_toolbar;

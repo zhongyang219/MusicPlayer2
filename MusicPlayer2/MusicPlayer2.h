@@ -64,6 +64,8 @@ public:
 
     int m_cmd;
 
+    int m_fps{};
+
     volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
     volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
     volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出

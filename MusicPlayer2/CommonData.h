@@ -313,6 +313,7 @@ struct NonCategorizedSettingData
     bool playlist_btn_for_float_playlist{ false };		//指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
 
     int max_album_cover_size{ 800 };
+    bool show_debug_info{ false };
 };
 
 struct IconRes

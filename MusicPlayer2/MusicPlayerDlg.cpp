@@ -349,6 +349,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"other", L"cortana_opaque", theApp.m_lyric_setting_data.cortana_opaque);
     ini.WriteInt(L"other", L"cortana_transparent_color", theApp.m_nc_setting_data.cortana_transparent_color);
     ini.WriteString(L"other", L"default_osu_img", theApp.m_nc_setting_data.default_osu_img);
+    ini.WriteBool(L"other", L"show_debug_info", theApp.m_nc_setting_data.show_debug_info);
 
     ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
     ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
@@ -493,6 +494,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.cortana_opaque = ini.GetBool(L"other", L"cortana_opaque", false);
     theApp.m_nc_setting_data.cortana_transparent_color = ini.GetInt(L"other", L"cortana_transparent_color", RGB(255, 0, 255));
 	theApp.m_nc_setting_data.default_osu_img = ini.GetString(L"other", L"default_osu_img", L"");
+    theApp.m_nc_setting_data.show_debug_info = ini.GetBool(L"other", L"show_debug_info", true);
 
     theApp.m_general_setting_data.id3v2_first = ini.GetBool(L"general", L"id3v2_first", 1);
     theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(L"general", L"auto_download_lyric", 1);
@@ -1893,6 +1895,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             }
         }
 
+        //每隔一秒保存一次统计的帧率
+        theApp.m_fps = m_fps_cnt;
+        m_fps_cnt = 0;
     }
 
     else if (nIDEvent == DELAY_TIMER_ID)
@@ -3465,6 +3470,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
             pThis->m_desktop_lyric.ShowLyric();
         }
 
+        pThis->m_fps_cnt++;
         Sleep(theApp.m_app_setting_data.ui_refresh_interval);
     }
     return 0;
