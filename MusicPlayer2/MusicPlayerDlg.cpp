@@ -1676,10 +1676,10 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         if (last_type != nType)
         {
             if (m_pUI != nullptr)
-                DrawInfo();
+                DrawInfo(true);
         }
         last_type = nType;
-        m_pUI->UpdateToolTipPosition();
+        //m_pUI->UpdateToolTipPosition();
     }
 
     SetThumbnailClipArea();
@@ -1792,32 +1792,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //UpdateProgress();
 
         //CPlayer::GetInstance().GetPlayerCoreError();
-        if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
-            DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
+        //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
+        //    DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
         CPlayer::GetInstance().CalculateSpectralData();
         if (CPlayer::GetInstance().IsPlaying())
         {
             CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
         }
-
-        //在Cortana搜索框里显示歌词
-        if (theApp.m_lyric_setting_data.cortana_info_enable)
-        {
-            if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
-                m_cortana_lyric.DrawInfo();
-        }
-
-		//显示桌面歌词
-		bool desktop_lyric_visible = theApp.m_lyric_setting_data.show_desktop_lyric;
-		if (CPlayer::GetInstance().m_Lyrics.IsEmpty() && theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric)
-			desktop_lyric_visible = false;
-        if(!CPlayer::GetInstance().IsPlaying() && theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused)
-            desktop_lyric_visible = false;
-		m_desktop_lyric.SetLyricWindowVisible(desktop_lyric_visible);
-		if (theApp.m_lyric_setting_data.show_desktop_lyric)
-		{
-			m_desktop_lyric.ShowLyric();
-		}
 
         //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
         if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum() && CPlayer::GetInstance().IsFileOpened())	//当前曲目播放完毕且没有出现错误时才播放下一曲
@@ -3442,12 +3423,33 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         if (!pThis->IsIconic() && pThis->IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
         {
             pThis->m_pUI->DrawInfo(pThis->m_draw_reset);
+            if (pThis->m_draw_reset)
+                pThis->m_pUI->UpdateToolTipPosition();
             pThis->m_draw_reset = false;
         }
 
         //绘制迷你模式界面
         if (IsWindow(pThis->m_miniModeDlg.GetSafeHwnd()))
             pThis->m_miniModeDlg.DrawInfo();
+
+        //在Cortana搜索框里显示歌词
+        if (theApp.m_lyric_setting_data.cortana_info_enable)
+        {
+            if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
+                pThis->m_cortana_lyric.DrawInfo();
+        }
+
+        //显示桌面歌词
+        bool desktop_lyric_visible = theApp.m_lyric_setting_data.show_desktop_lyric;
+        if (CPlayer::GetInstance().m_Lyrics.IsEmpty() && theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric)
+            desktop_lyric_visible = false;
+        if (!CPlayer::GetInstance().IsPlaying() && theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused)
+            desktop_lyric_visible = false;
+        pThis->m_desktop_lyric.SetLyricWindowVisible(desktop_lyric_visible);
+        if (theApp.m_lyric_setting_data.show_desktop_lyric)
+        {
+            pThis->m_desktop_lyric.ShowLyric();
+        }
 
         Sleep(theApp.m_app_setting_data.ui_refresh_interval);
     }
