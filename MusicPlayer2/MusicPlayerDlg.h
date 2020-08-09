@@ -155,6 +155,8 @@ private:
 
     bool IsAddCurrentToPlaylist() const;      //当执行“添加到播放列表时”，是添加正在播放的曲目到播放列表，还是添加选中的曲目到播放列表
 
+    static int CalculatePlaylistWidth(int client_width);
+
 public:
     void ShowPlayList(bool highlight_visible = true);
 	void SetMenuState(CMenu* pMenu);

@@ -335,6 +335,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"notify_icon_selected", theApp.m_app_setting_data.notify_icon_selected);
     ini.WriteBool(L"config", L"notify_icon_auto_adapt", theApp.m_app_setting_data.notify_icon_auto_adapt);
     ini.WriteBool(L"config", L"button_round_corners", theApp.m_app_setting_data.button_round_corners);
+    ini.WriteInt(L"config", L"playlist_width_percent", theApp.m_app_setting_data.playlist_width_percent);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -480,6 +481,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.notify_icon_selected = ini.GetInt(L"config", L"notify_icon_selected", 0);
     theApp.m_app_setting_data.notify_icon_auto_adapt = ini.GetBool(L"config", L"notify_icon_auto_adapt", false);
     theApp.m_app_setting_data.button_round_corners = ini.GetBool(L"config", L"button_round_corners", false);
+    theApp.m_app_setting_data.playlist_width_percent = ini.GetInt(L"config", L"playlist_width_percent", 50);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
@@ -565,10 +567,12 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
 {
     //设置播放列表大小
+    int playlist_width = CalculatePlaylistWidth(cx);
+    int playlist_x = cx - playlist_width;
     if (!theApp.m_ui_data.narrow_mode)
     {
-        m_playlist_list.MoveWindow(cx / 2 + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + 2 * m_layout.margin,
-                                   cx / 2 - 2 * m_layout.margin, cy - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 3 * m_layout.margin);
+        m_playlist_list.MoveWindow(playlist_x + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + 2 * m_layout.margin,
+                                   playlist_width - 2 * m_layout.margin, cy - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 3 * m_layout.margin);
     }
     else
     {
@@ -591,7 +595,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     //}
     //rect_static.right = rect_static.left + width;
     if (!theApp.m_ui_data.narrow_mode)
-        rect_static.MoveToXY(cx / 2 + m_layout.margin, m_layout.margin);
+        rect_static.MoveToXY(playlist_x + m_layout.margin, m_layout.margin);
     else
         rect_static.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight());
     m_path_static.MoveWindow(rect_static);
@@ -601,8 +605,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     m_path_edit.GetWindowRect(rect_edit);
     if (!theApp.m_ui_data.narrow_mode)
     {
-        rect_edit.right = rect_edit.left + (cx / 2 - 3 * m_layout.margin - rect_static.Width() - m_layout.select_folder_width);
-        rect_edit.MoveToXY(cx / 2 + m_layout.margin + rect_static.Width(), m_layout.margin);
+        rect_edit.right = rect_edit.left + (playlist_width - 3 * m_layout.margin - rect_static.Width() - m_layout.select_folder_width);
+        rect_edit.MoveToXY(playlist_x + m_layout.margin + rect_static.Width(), m_layout.margin);
     }
     else
     {
@@ -624,8 +628,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     m_search_edit.GetWindowRect(rect_search);
     if (!theApp.m_ui_data.narrow_mode)
     {
-        rect_search.right = rect_search.left + (cx / 2 - 2 * m_layout.margin);
-        rect_search.MoveToXY(cx / 2 + m_layout.margin, m_layout.path_edit_height + theApp.DPI(1));
+        rect_search.right = rect_search.left + (playlist_width - 2 * m_layout.margin);
+        rect_search.MoveToXY(playlist_x + m_layout.margin, m_layout.path_edit_height + theApp.DPI(1));
     }
     else
     {
@@ -660,7 +664,7 @@ void CMusicPlayerDlg::SetDrawAreaSize(int cx, int cy)
     else
     {
         if (!theApp.m_ui_data.narrow_mode)
-            draw_rect = CRect{ CPoint(), CPoint{ cx / 2, cy} };
+            draw_rect = CRect{ CPoint(), CPoint{ cx - CalculatePlaylistWidth(cx), cy} };
         else
             draw_rect = CRect{ CPoint(), CSize{ cx, m_ui.DrawAreaHeight() - m_ui.Margin() } };
     }
@@ -681,6 +685,18 @@ bool CMusicPlayerDlg::IsAddCurrentToPlaylist() const
 {
     return (m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)
         || m_pCurMenu == theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0));
+}
+
+int CMusicPlayerDlg::CalculatePlaylistWidth(int client_width)
+{
+    int playlist_width = client_width * theApp.m_app_setting_data.playlist_width_percent / 100;
+    SLayoutData layout_data;
+    int min_width = layout_data.width_threshold / 2;
+    if (playlist_width < min_width)
+        playlist_width = min_width;
+    if (client_width - playlist_width < min_width)
+        playlist_width = client_width - min_width;
+    return playlist_width;
 }
 
 void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)

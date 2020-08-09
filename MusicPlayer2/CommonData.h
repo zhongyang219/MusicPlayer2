@@ -246,6 +246,8 @@ struct ApperanceSettingData
     bool notify_icon_auto_adapt{ false }; //通知区图标是否自动适应Win10深浅色模式
 
     bool button_round_corners{ false };     //按钮是否使用圆角风格
+
+    int playlist_width_percent{ 50 };       //主界面播放列表宽度的百分比
 };
 
 struct GeneralSettingData
