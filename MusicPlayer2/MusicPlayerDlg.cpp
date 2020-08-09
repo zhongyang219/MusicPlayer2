@@ -1260,6 +1260,9 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
 
     theApp.m_ui_data.show_playlist = false;
     SetPlaylistVisible();
+    CRect rect;
+    GetClientRect(rect);
+    SetDrawAreaSize(rect.Width(), rect.Height());		//调整绘图区域的大小和位置
     DrawInfo(true);
 }
 
