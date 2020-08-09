@@ -18,38 +18,43 @@ CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 
 void CAudioTag::GetAudioTag(bool id3v2_first)
 {
-	switch (m_type)
-	{
-	case AU_MP3:
-		if (id3v2_first)
-		{
-			if (!GetID3V2Tag())
-				GetID3V1Tag();
-		}
-		else
-		{
-			if (!GetID3V1Tag())
-				GetID3V2Tag();
-		}
-		break;
-	case AU_WMA:
-		GetWmaTag();
-		break;
-	case AU_OGG:
-		GetOggTag();
-		break;
-	case AU_MP4:
-		GetMp4Tag();
-		break;
-	case AU_APE:
-		GetApeTag();
-		break;
-	case AU_FLAC:
-		GetFlacTag();
-		break;
-	default:
-		break;
-	}
+    //先尝试获取ID3标签
+    bool id3_exist{ false };
+    if (id3v2_first)
+    {
+        if (!(id3_exist = GetID3V2Tag()))
+            id3_exist = GetID3V1Tag();
+    }
+    else
+    {
+        if (!(id3_exist = GetID3V1Tag()))
+            id3_exist = GetID3V2Tag();
+    }
+    //如果id3标签不存在，再根据文件格式获取其他类型的标签
+    if (!id3_exist)
+    {
+        switch (m_type)
+        {
+            //case AU_MP3:
+        case AU_WMA:
+            GetWmaTag();
+            break;
+        case AU_OGG:
+            GetOggTag();
+            break;
+        case AU_MP4:
+            GetMp4Tag();
+            break;
+        case AU_APE:
+            GetApeTag();
+            break;
+        case AU_FLAC:
+            GetFlacTag();
+            break;
+        default:
+            break;
+        }
+    }
 	CAudioCommon::TagStrNormalize(m_song_info.title);
 	CAudioCommon::TagStrNormalize(m_song_info.artist);
 	CAudioCommon::TagStrNormalize(m_song_info.album);

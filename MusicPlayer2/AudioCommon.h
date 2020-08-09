@@ -18,6 +18,7 @@ enum AudioType
 	AU_FLAC,
 	AU_CUE,
 	AU_MIDI,
+    AU_WAV,
 	AU_OTHER
 };
 

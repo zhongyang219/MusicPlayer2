@@ -399,6 +399,11 @@ AudioType CAudioCommon::GetAudioTypeByBassChannel(DWORD ctype)
     case BASS_CTYPE_STREAM_MP3:
         type = AudioType::AU_MP3;
         break;
+    case BASS_CTYPE_STREAM_WAV:
+    case BASS_CTYPE_STREAM_WAV_PCM:
+    case BASS_CTYPE_STREAM_WAV_FLOAT:
+        type = AudioType::AU_WAV;
+        break;
     case 0x10300:
     case 0x10301:
         type = AudioType::AU_WMA;
