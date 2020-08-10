@@ -20,6 +20,8 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_DONATE_SYSLINK, &CAboutDlg::OnNMClickDonateSyslink)
     ON_WM_PAINT()
     ON_NOTIFY(NM_CLICK, IDC_LICENSE_SYSLINK, &CAboutDlg::OnNMClickLicenseSyslink)
+    ON_WM_ERASEBKGND()
+    ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -69,6 +71,9 @@ BOOL CAboutDlg::OnInitDialog()
     m_rc_pic.bottom = rect.top - theApp.DPI(6);
     if (m_rc_pic.Height() <= 0)
         m_rc_pic.bottom = m_rc_pic.top + theApp.DPI(50);
+
+    //载入图片
+    m_about_pic.LoadBitmap(IDB_ABOUT_BITMAP);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -135,8 +140,8 @@ void CAboutDlg::OnPaint()
                        // 不为绘图消息调用 CDialog::OnPaint()
     CDrawCommon draw;
     draw.Create(&dc, this);
-    draw.GetDC()->FillSolidRect(m_rc_pic, RGB(161, 200, 255));
-    draw.DrawBitmap(IDB_ABOUT_BITMAP, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FIT);
+    draw.GetDC()->FillSolidRect(m_rc_pic, RGB(212, 230, 255));
+    draw.DrawBitmap(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FIT);
 
 }
 
@@ -150,4 +155,57 @@ void CAboutDlg::OnNMClickLicenseSyslink(NMHDR *pNMHDR, LRESULT *pResult)
     dlg.SetMessageText(CCommon::GetTextResource(IDR_LICENSE, CodeType::UTF8_NO_BOM));
     dlg.DoModal();
     *pResult = 0;
+}
+
+
+BOOL CAboutDlg::OnEraseBkgnd(CDC* pDC)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+
+    CRect draw_rect;
+    GetClientRect(draw_rect);
+    pDC->FillSolidRect(draw_rect, GetSysColor(COLOR_WINDOW));
+
+    //绘制白色背景
+    int white_height;       //白色区域的高度
+    CRect rc_copyright{};
+    ::GetWindowRect(GetDlgItem(IDC_STATIC_COPYRIGHT)->GetSafeHwnd(), rc_copyright);
+    ScreenToClient(rc_copyright);
+    white_height = rc_copyright.bottom + theApp.DPI(4);
+
+    //绘制“确定”按钮上方的分割线
+    CRect rc_line{ draw_rect };
+    rc_line.top = white_height;
+    rc_line.bottom = white_height + theApp.DPI(1);
+    pDC->FillSolidRect(rc_line, RGB(210, 210, 210));
+
+    //绘制灰色背景
+    CRect rc_gray{ rc_line };
+    rc_gray.top = rc_line.bottom;
+    rc_gray.bottom = draw_rect.bottom;
+    pDC->FillSolidRect(rc_gray, GetSysColor(COLOR_BTNFACE));
+
+    return TRUE;
+    //return CDialog::OnEraseBkgnd(pDC);
+}
+
+
+HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    // TODO:  在此更改 DC 的任何特性
+    UINT ctrl_id = pWnd->GetDlgCtrlID();
+    if (ctrl_id == IDC_STATIC_VERSION || ctrl_id == IDC_STATIC_COPYRIGHT)
+    {
+        static HBRUSH hBackBrush{};
+        if (hBackBrush == NULL)
+            hBackBrush = CreateSolidBrush(GetSysColor(COLOR_WINDOW));
+        pDC->SetBkColor(GetSysColor(COLOR_WINDOW));
+        return hBackBrush;
+    }
+
+
+    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
+    return hbr;
 }
