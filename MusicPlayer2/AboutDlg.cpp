@@ -3,6 +3,7 @@
 #include "AboutDlg.h"
 #include "CDonateDlg.h"
 #include "MessageDlg.h"
+#include "GdiPlusTool.h"
 
 CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
 {
@@ -73,7 +74,7 @@ BOOL CAboutDlg::OnInitDialog()
         m_rc_pic.bottom = m_rc_pic.top + theApp.DPI(50);
 
     //载入图片
-    m_about_pic.LoadBitmap(IDB_ABOUT_BITMAP);
+    m_about_pic.LoadFromResource(AfxGetResourceHandle(), IDB_ABOUT_BITMAP);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -140,9 +141,18 @@ void CAboutDlg::OnPaint()
                        // 不为绘图消息调用 CDialog::OnPaint()
     CDrawCommon draw;
     draw.Create(&dc, this);
+    //填充背景
     draw.GetDC()->FillSolidRect(m_rc_pic, RGB(212, 230, 255));
-    draw.DrawBitmap(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FIT);
 
+    //画背景图
+    CPoint start_point{ m_rc_pic.TopLeft() };
+    CSize size{ m_rc_pic.Size() };
+    draw.ImageDrawAreaConvert(CSize(m_about_pic.GetWidth(), m_about_pic.GetHeight()), start_point, size, CDrawCommon::StretchMode::FIT, true);
+    CRect rc_clip{ start_point, size };
+    rc_clip.DeflateRect(theApp.DPI(2), theApp.DPI(2));
+    draw.GetGraphics()->SetClip(CGdiPlusTool::CRectToGdiplusRect(rc_clip));     //通过设置剪辑区域裁剪掉边缘的几个像素，否则使用GDI+绘图将图像拉伸时边缘会有白边
+    draw.DrawImage(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FIT, true);
+    draw.GetGraphics()->ResetClip();
 }
 
 

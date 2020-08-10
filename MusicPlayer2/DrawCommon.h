@@ -139,7 +139,6 @@ public:
     //将一个Bitmap保存到文件
     static void SaveBitmap(HBITMAP bitmap, LPCTSTR path);
 
-private:
     void ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode, bool no_clip_area);
 
 protected:

@@ -16,7 +16,7 @@ public:
 protected:
 	CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
     CRect m_rc_pic;
-    CBitmap m_about_pic;
+    CImage m_about_pic;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

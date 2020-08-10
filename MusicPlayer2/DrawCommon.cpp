@@ -376,15 +376,29 @@ void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size,
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
+    m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    if (!no_clip_area)
+    {
+        Gdiplus::Rect rect_clip = CGdiPlusTool::CRectToGdiplusRect(CRect(start_point, size));
+        m_pGraphics->SetClip(rect_clip);
+    }
     ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode, no_clip_area);
-    image.Draw(m_pDC->GetSafeHdc(), CRect(start_point, size), Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    Gdiplus::Bitmap bm(image, NULL);
+    m_pGraphics->DrawImage(&bm, start_point.x, start_point.y, size.cx, size.cy);
+    m_pGraphics->ResetClip();
 }
 
 void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
     m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    if (!no_clip_area)
+    {
+        Gdiplus::Rect rect_clip = CGdiPlusTool::CRectToGdiplusRect(CRect(start_point, size));
+        m_pGraphics->SetClip(rect_clip);
+    }
     ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode, no_clip_area);
     m_pGraphics->DrawImage(pImage, start_point.x, start_point.y, size.cx, size.cy);
+    m_pGraphics->ResetClip();
 }
 
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
