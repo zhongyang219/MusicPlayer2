@@ -1286,13 +1286,14 @@
 #define ID_33182                        33182
 #define ID_ALBUM_COVER_INFO             33183
 #define ID_UNLINK_LYRIC                 33184
+#define ID_SHOW_DESKTOP_LYRIC           33185
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        479
-#define _APS_NEXT_COMMAND_VALUE         33185
+#define _APS_NEXT_COMMAND_VALUE         33186
 #define _APS_NEXT_CONTROL_VALUE         1177
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

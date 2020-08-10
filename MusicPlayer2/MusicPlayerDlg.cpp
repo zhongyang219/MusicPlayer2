@@ -247,6 +247,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_RELATE_LOCAL_LYRIC, &CMusicPlayerDlg::OnRelateLocalLyric)
     ON_COMMAND(ID_ALBUM_COVER_INFO, &CMusicPlayerDlg::OnAlbumCoverInfo)
     ON_COMMAND(ID_UNLINK_LYRIC, &CMusicPlayerDlg::OnUnlinkLyric)
+    ON_COMMAND(ID_SHOW_DESKTOP_LYRIC, &CMusicPlayerDlg::OnShowDesktopLyric)
 END_MESSAGE_MAP()
 
 
@@ -1251,6 +1252,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->CheckMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_DISPLAYED_DOUBLE_LINE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_BACKGROUND_PENETRATE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_SHOW_DESKTOP_LYRIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.show_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->EnableMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.show_desktop_lyric ? MF_ENABLED : MF_GRAYED));
 
     //AB重复
 	pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
@@ -5040,4 +5043,11 @@ void CMusicPlayerDlg::OnUnlinkLyric()
     song_info.lyric_file = NO_LYRIC_STR;       //将该歌曲设置为不关联歌词
     song_info.SetNoOnlineLyric(true);
     theApp.SetSongDataModified();
+}
+
+
+void CMusicPlayerDlg::OnShowDesktopLyric()
+{
+    // TODO: 在此添加命令处理程序代码
+    theApp.m_lyric_setting_data.show_desktop_lyric = !theApp.m_lyric_setting_data.show_desktop_lyric;
 }

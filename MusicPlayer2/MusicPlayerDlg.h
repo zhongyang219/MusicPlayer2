@@ -415,4 +415,5 @@ public:
     afx_msg void OnRelateLocalLyric();
     afx_msg void OnAlbumCoverInfo();
     afx_msg void OnUnlinkLyric();
+    afx_msg void OnShowDesktopLyric();
 };
