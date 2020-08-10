@@ -39,8 +39,7 @@ bool CCommon::FileExist(const wstring & file)
 {
     if (file == L"." || file == L"..")
         return false;
-	_wfinddata_t fileinfo;
-	return (_wfindfirst(file.c_str(), &fileinfo) != -1);
+    return (PathFileExists(file.c_str()) != 0);
 }
 
 bool CCommon::FolderExist(const wstring & file)
