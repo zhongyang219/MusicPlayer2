@@ -133,6 +133,7 @@ protected:
     bool m_draw_reset{ false };
     bool m_ui_thread_exit{ false };
     bool m_thumbnail_area_changed{ false };
+    bool m_search_box_force_refresh{ false };
     bool m_is_active_window{ false };     //当前窗口是否为激活窗口
 
     int m_play_error_cnt{};		//统计播放出错的次数

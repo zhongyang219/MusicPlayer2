@@ -1937,6 +1937,7 @@ void CMusicPlayerDlg::OnPlayPause()
     if (!CPlayer::GetInstance().IsPlaying())
         DrawInfo();
     UpdatePlayPauseButton();
+    m_search_box_force_refresh = true;
 }
 
 
@@ -1946,6 +1947,7 @@ void CMusicPlayerDlg::OnStop()
     CPlayer::GetInstance().MusicControl(Command::STOP);
     UpdatePlayPauseButton();
     //ShowTime();
+    m_search_box_force_refresh = true;
 }
 
 
@@ -3482,8 +3484,11 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         //在Cortana搜索框里显示歌词
         if (theApp.m_lyric_setting_data.cortana_info_enable)
         {
-            if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying())
+            if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying() || pThis->m_search_box_force_refresh)
+            {
                 pThis->m_cortana_lyric.DrawInfo();
+                pThis->m_search_box_force_refresh = false;
+            }
         }
 
         //显示桌面歌词

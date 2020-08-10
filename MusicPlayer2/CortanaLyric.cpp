@@ -272,21 +272,28 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
         m_draw.SetDrawArea(cover_rect);
         if (album_cover.IsNull() || !m_show_album_cover)
         {
-            int cortana_img_id{ m_colors.dark ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
-            if (theApp.m_lyric_setting_data.cortana_icon_beat)
-            {
-                m_draw.FillRect(cover_rect, (m_colors.dark ? GRAY(47) : GRAY(240)));
-                CRect rect{ cover_rect };
-                rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
-                int inflate;
-                inflate = m_beat_amp * theApp.DPI(14) / 1000;
-                rect.InflateRect(inflate, inflate);
-                m_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
-            }
-            else
-            {
-                m_draw.DrawBitmap(cortana_img_id, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
-            }
+            //int cortana_img_id{ m_colors.dark ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
+            //if (theApp.m_lyric_setting_data.cortana_icon_beat)
+            //{
+            //    m_draw.FillRect(cover_rect, (m_colors.dark ? GRAY(47) : GRAY(240)));
+            //    CRect rect{ cover_rect };
+            //    rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
+            //    int inflate;
+            //    inflate = m_beat_amp * theApp.DPI(14) / 1000;
+            //    rect.InflateRect(inflate, inflate);
+            //    m_draw.DrawBitmap(cortana_img_id, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
+            //}
+            //else
+            //{
+                //m_draw.DrawBitmap(cortana_img_id, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
+            //}
+            CRect rc_icon{};
+            const int icon_side = theApp.DPI(32);
+            rc_icon.right = rc_icon.bottom = icon_side;
+            rc_icon.MoveToX(cover_rect.left + (cover_rect.Width() - icon_side) / 2);
+            rc_icon.MoveToY(cover_rect.top + (cover_rect.Height() - icon_side) / 2);
+            HICON icon{ CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.default_cover_small : theApp.m_icon_set.default_cover_small_not_played };
+            m_draw.DrawIcon(icon, rc_icon.TopLeft(), rc_icon.Size());
 
             //if(!m_colors.dark)
             //    m_draw.DrawRectTopFrame(cover_rect, m_border_color);
