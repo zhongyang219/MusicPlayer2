@@ -1341,6 +1341,17 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     //显示播放列表载入状态
     if (CPlayer::GetInstance().m_loading)
     {
+        int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
+        //绘制进度右侧的进度百分比
+        CRect rc_percent{ rect };
+        rc_percent.left = rc_percent.right - theApp.DPI(24);
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));
+        CString str_info;
+        str_info.Format(_T("%d%%"), progress_percent);
+        m_draw.DrawWindowText(rc_percent, str_info, m_colors.color_text);
+        m_draw.SetFont(pOldFont);
+
+        rect.right = rc_percent.left - theApp.DPI(4);
         CRect rc_tmp{ rect };
         //绘制进度条（进度条里面包含10格）
         int bar_width = DPI(4);     //每一格的宽度
@@ -1350,7 +1361,6 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         rc_progress.DeflateRect(0, DPI(4));
         m_draw.SetDrawArea(rc_progress);
         m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
-        int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
         int bar_cnt = progress_percent / 10 + 1;        //格子数
         int last_bar_percent = progress_percent % 10;
         CRect rc_bar{ rc_progress };
@@ -1376,7 +1386,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         rc_tmp.left = rect.left;
         static CDrawCommon::ScrollInfo scroll_info0;
         CString info;
-        info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum(), progress_percent });
+        info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum() });
         m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
     }
 	//显示AB重复状态
