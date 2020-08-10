@@ -555,12 +555,12 @@ void CMusicPlayerDlg::SetDesptopLyricTransparency()
 
 void CMusicPlayerDlg::DrawInfo(bool reset)
 {
-    //主界面的绘图已经移动到UI线程函数UiThreadFunc中处理，这里不再执行绘图的代码
+    //主界面的绘图已经移动到线程函数UiThreadFunc中处理，这里不再执行绘图的代码
 
     //if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
     //    m_pUI->DrawInfo(reset);
 
-    if (reset)
+    if (reset)      //如果reset为true，则通过m_draw_reset变量通知线程以重置绘图中的参数
         m_draw_reset = true;
 }
 
@@ -1825,6 +1825,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //CPlayer::GetInstance().GetPlayerCoreError();
         //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
         //    DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
+        m_is_active_window = (GetActiveWindow() == this);
         CPlayer::GetInstance().CalculateSpectralData();
         if (CPlayer::GetInstance().IsPlaying())
         {
@@ -3448,7 +3449,9 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         if(pThis->m_ui_thread_exit)
             break;
         //绘制主界面
-        if (pThis->IsWindowVisible() && !pThis->IsIconic())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+        if (pThis->IsWindowVisible() && !pThis->IsIconic()
+            && ((CPlayer::GetInstance().IsPlaying() || pThis->m_is_active_window || pThis->m_draw_reset || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating())))
+            //窗口最小化、隐藏，以及窗口未激活并且未播放时不刷新界面，以降低CPU利用率
         {
             pThis->m_pUI->DrawInfo(pThis->m_draw_reset);
             if (pThis->m_draw_reset)
@@ -3490,7 +3493,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         if (!CPlayer::GetInstance().IsPlaying() && theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused)
             desktop_lyric_visible = false;
         pThis->m_desktop_lyric.SetLyricWindowVisible(desktop_lyric_visible);
-        if (theApp.m_lyric_setting_data.show_desktop_lyric)
+        if (desktop_lyric_visible)
         {
             pThis->m_desktop_lyric.ShowLyric();
         }
