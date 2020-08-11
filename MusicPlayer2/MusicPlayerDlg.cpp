@@ -562,7 +562,7 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
     //    m_pUI->DrawInfo(reset);
 
     if (reset)      //如果reset为true，则通过m_draw_reset变量通知线程以重置绘图中的参数
-        m_draw_reset = true;
+        m_ui_thread_para.draw_reset = true;
 }
 
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
@@ -877,7 +877,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
-    m_thumbnail_area_changed = true;
+    m_ui_thread_para.thumbnail_area_changed = true;
 }
 
 void CMusicPlayerDlg::EnablePlaylist(bool enable)
@@ -1780,7 +1780,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 //MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
             }
             DrawInfo();
-            m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)this);
+            m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)&m_ui_thread_para);
             SetThumbnailClipArea();
 
             //注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
@@ -1828,7 +1828,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //CPlayer::GetInstance().GetPlayerCoreError();
         //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
         //    DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
-        m_is_active_window = (GetActiveWindow() == this);
+        m_ui_thread_para.is_active_window = (GetActiveWindow() == this);
         CPlayer::GetInstance().CalculateSpectralData();
         if (CPlayer::GetInstance().IsPlaying())
         {
@@ -1940,7 +1940,8 @@ void CMusicPlayerDlg::OnPlayPause()
     if (!CPlayer::GetInstance().IsPlaying())
         DrawInfo();
     UpdatePlayPauseButton();
-    m_search_box_force_refresh = true;
+    m_ui_thread_para.search_box_force_refresh = true;
+    m_ui_thread_para.ui_force_refresh = true;
 }
 
 
@@ -1950,7 +1951,8 @@ void CMusicPlayerDlg::OnStop()
     CPlayer::GetInstance().MusicControl(Command::STOP);
     UpdatePlayPauseButton();
     //ShowTime();
-    m_search_box_force_refresh = true;
+    m_ui_thread_para.search_box_force_refresh = true;
+    m_ui_thread_para.ui_force_refresh = true;
 }
 
 
@@ -2345,7 +2347,7 @@ void CMusicPlayerDlg::OnDestroy()
 
     m_notify_icon.DeleteNotifyIcon();
 
-    m_ui_thread_exit = true;
+    m_ui_thread_para.ui_thread_exit = true;
     if (m_uiThread != nullptr)
         WaitForSingleObject(m_uiThread->m_hThread, 2000);	//等待线程退出
 
@@ -3448,26 +3450,28 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
+    UIThreadPara* pPara = (UIThreadPara*)lpParam;
+    CMusicPlayerDlg* pThis = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     while (true)
     {
-        if(pThis->m_ui_thread_exit)
+        if(pPara->ui_thread_exit)
             break;
         //绘制主界面
         if (pThis->IsWindowVisible() && !pThis->IsIconic()
-            && ((CPlayer::GetInstance().IsPlaying() || pThis->m_is_active_window || pThis->m_draw_reset || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating())))
+            && (CPlayer::GetInstance().IsPlaying() || pPara->is_active_window || pPara->draw_reset || pPara->ui_force_refresh || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating()))
             //窗口最小化、隐藏，以及窗口未激活并且未播放时不刷新界面，以降低CPU利用率
         {
-            pThis->m_pUI->DrawInfo(pThis->m_draw_reset);
-            if (pThis->m_draw_reset)
+            pThis->m_pUI->DrawInfo(pPara->draw_reset);
+            if (pPara->draw_reset)
             {
                 pThis->m_pUI->UpdateToolTipPosition();
             }
-            pThis->m_draw_reset = false;
+            pPara->draw_reset = false;
+            pPara->ui_force_refresh = false;
         }
 
         //更新任务栏缩略图
-        if (pThis->IsTaskbarListEnable() && pThis->m_thumbnail_area_changed)
+        if (pThis->IsTaskbarListEnable() && pPara->thumbnail_area_changed)
         {
             if (pThis->m_pTaskbar != nullptr)
             {
@@ -3475,7 +3479,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
                 if (!thumbnail_rect.IsRectEmpty())
                 {
                     pThis->m_pTaskbar->SetThumbnailClip(pThis->m_hWnd, thumbnail_rect);
-                    pThis->m_thumbnail_area_changed = false;
+                    pPara->thumbnail_area_changed = false;
                 }
             }
         }
@@ -3487,10 +3491,10 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         //在Cortana搜索框里显示歌词
         if (theApp.m_lyric_setting_data.cortana_info_enable)
         {
-            if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying() || pThis->m_search_box_force_refresh)
+            if (theApp.m_lyric_setting_data.cortana_lyric_keep_display || CPlayer::GetInstance().IsPlaying() || pPara->search_box_force_refresh)
             {
                 pThis->m_cortana_lyric.DrawInfo();
-                pThis->m_search_box_force_refresh = false;
+                pPara->search_box_force_refresh = false;
             }
         }
 

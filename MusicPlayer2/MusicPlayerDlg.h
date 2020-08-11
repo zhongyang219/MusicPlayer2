@@ -130,11 +130,17 @@ protected:
 
     CWinThread* m_uiThread;         //主界面绘图的线程
     static UINT UiThreadFunc(LPVOID lpParam);   //主界面绘图的线程函数
-    bool m_draw_reset{ false };
-    bool m_ui_thread_exit{ false };
-    bool m_thumbnail_area_changed{ false };
-    bool m_search_box_force_refresh{ false };
-    bool m_is_active_window{ false };     //当前窗口是否为激活窗口
+
+    struct UIThreadPara
+    {
+        bool draw_reset{ false };               //主界面绘图需要重置
+        bool ui_thread_exit{ false };           //指示线程退出
+        bool thumbnail_area_changed{ false };   //指示任务栏预览区域需要改变
+        bool ui_force_refresh{ false };         //指示主界面强制重绘
+        bool search_box_force_refresh{ false }; //指示搜索框界面强制重绘
+        bool is_active_window{ false };     //指示当前窗口是否为激活窗口
+    };
+    UIThreadPara m_ui_thread_para{};
 
     int m_play_error_cnt{};		//统计播放出错的次数
     int m_fps_cnt{};            //用于统计当前帧率
