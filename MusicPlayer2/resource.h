@@ -593,7 +593,11 @@
 #define IDS_DEFAULT_ICON                491
 #define IDS_LIGHT_ICON                  492
 #define IDS_DARK_ICON                   493
-#define IDS_NO                          495
+#define IDS_NO                          494
+#define IDS_CONVERT_ERROR_FILE_CONNOT_OPEN 495
+#define IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED 496
+#define IDS_CONVERT_ERROR_ENCODE_PARA_ERROR 497
+#define IDS_CONVERT_ERROR_MIDI_NO_SF2   498
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

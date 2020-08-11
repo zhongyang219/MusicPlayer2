@@ -764,13 +764,33 @@ afx_msg LRESULT CFormatConvertDlg::OnConvertProgress(WPARAM wParam, LPARAM lPara
 	if (percent == 0)
 		m_file_list_ctrl.EnsureVisible(wParam, FALSE);		//转换开始时，确保当前列表项可见
 	if(percent < 0)
-		percent_str.Format(CCommon::LoadText(IDS_ERROR, _T(" (%d)")), percent);
+    {
+        //显示错误信息
+        percent_str += CCommon::LoadText(IDS_ERROR);
+        percent_str += L": ";
+        if (percent = CONVERT_ERROR_FILE_CONNOT_OPEN)
+            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_FILE_CONNOT_OPEN);
+        else if (percent = CONVERT_ERROR_ENCODE_CHANNEL_FAILED)
+            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
+        else if (percent = CONVERT_ERROR_ENCODE_PARA_ERROR)
+            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_PARA_ERROR);
+        else if (percent = CONVERT_ERROR_MIDI_NO_SF2)
+            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_MIDI_NO_SF2);
+        else
+            percent_str += std::to_wstring(percent).c_str();
+    }
 	else if(percent == 101)
-		percent_str = CCommon::LoadText(IDS_COMPLEATE);
+    {
+        percent_str = CCommon::LoadText(IDS_COMPLEATE);
+    }
 	else if(percent == 102)
-		percent_str = CCommon::LoadText(IDS_SKIPED1);
+    {
+        percent_str = CCommon::LoadText(IDS_SKIPED1);
+    }
 	else
-		percent_str.Format(_T("%d%%"), (int)lParam);
+    {
+        percent_str.Format(_T("%d%%"), (int)lParam);
+    }
 	m_file_list_ctrl.SetItemText(wParam, 2, percent_str);
 
     //总体的进度
@@ -801,6 +821,7 @@ afx_msg LRESULT CFormatConvertDlg::OnConvertComplete(WPARAM wParam, LPARAM lPara
 	EnableControls(true);
 	m_thread_runing = false;
     m_progress_bar.SetProgress(100);
+    SetProgressInfo(100);
 
 	if (m_open_output_dir)
 	{
