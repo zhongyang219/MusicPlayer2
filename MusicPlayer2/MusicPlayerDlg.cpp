@@ -1829,11 +1829,12 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
         //    DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
         m_ui_thread_para.is_active_window = (GetActiveWindow() == this);
+        //获取频谱分析数据
         CPlayer::GetInstance().CalculateSpectralData();
-        if (CPlayer::GetInstance().IsPlaying())
-        {
-            CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
-        }
+        //if (CPlayer::GetInstance().IsPlaying())
+        //{
+        //    CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
+        //}
 
         //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))	//当前曲目播放完毕且没有出现错误时才播放下一曲
         if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError())) && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum() && CPlayer::GetInstance().IsFileOpened())	//当前曲目播放完毕且没有出现错误时才播放下一曲
@@ -3456,6 +3457,14 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
     {
         if(pPara->ui_thread_exit)
             break;
+
+        //获取当前播放进度
+        //这里将获取当前播放进度的处理放到UI线程中，和UI同步，使得当界面刷新时间间隔设置得比较小时歌词和进度条看起来更加流畅
+        if (CPlayer::GetInstance().IsPlaying())
+        {
+            CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
+        }
+
         //绘制主界面
         if (pThis->IsWindowVisible() && !pThis->IsIconic()
             && (CPlayer::GetInstance().IsPlaying() || pPara->is_active_window || pPara->draw_reset || pPara->ui_force_refresh || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating()))
