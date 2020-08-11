@@ -4651,7 +4651,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnCurPlaylistRenamed(WPARAM wParam, LPARAM lPar
 void CMusicPlayerDlg::OnOnlineHelp()
 {
     // TODO: 在此添加命令处理程序代码
-    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/Introduction.md"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki"), NULL, NULL, SW_SHOW);	//打开超链接
 }
 
 

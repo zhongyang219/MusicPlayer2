@@ -291,7 +291,7 @@ void CMusicPlayerApp::OnHelp()
         helpDlg.SetWindowTitle(CCommon::LoadText(IDS_HELP));
         helpDlg.SetInfoText(CCommon::LoadText(IDS_WELCOM_TO_USE));
 		helpDlg.ShowLinkStatic(true);
-		helpDlg.SetLinkInfo(CCommon::LoadText(IDS_SHOW_ONLINE_HELP_INFO), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/Introduction.md"));
+		helpDlg.SetLinkInfo(CCommon::LoadText(IDS_SHOW_ONLINE_HELP_INFO), _T("https://github.com/zhongyang219/MusicPlayer2/wiki"));
 
         CString info{ GetHelpString() };
         info += _T("\r\n\r\n");
