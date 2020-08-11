@@ -602,8 +602,11 @@ void CDrawCommon::ImageResize(const CImage& img_src, CImage& img_dest, CSize siz
     if (bpp < 24)
         bpp = 24;		//总是将目标图片转换成24位图
     img_dest.Create(size.cx, size.cy, bpp);
+    //使用GDI+更改图片大小时，左侧和上面会有一像素的灰边，因此在这里将其裁剪掉
+    size.cx++;
+    size.cy++;
     //使用GDI+高质量绘图
-    img_src.Draw(img_dest.GetDC(), CRect(CPoint(0, 0), size), Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    img_src.Draw(img_dest.GetDC(), CRect(CPoint(-1, -1), size), Gdiplus::InterpolationMode::InterpolationModeHighQuality);
     img_dest.ReleaseDC();
 }
 
