@@ -202,6 +202,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
     }
     else
     {
+        SetDrawArea(rect);
         CRect lyric_rect = rect;
         Time time = CPlayer::GetInstance().GetCurrentPosition();
         CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//获取当歌词
