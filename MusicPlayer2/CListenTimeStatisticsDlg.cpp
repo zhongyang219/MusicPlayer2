@@ -194,7 +194,9 @@ void CListenTimeStatisticsDlg::OnBnClickedExportButton()
             const int COLUMN = 6;
             for (int j = 0; j < COLUMN; j++)
             {
-                str += m_list_ctrl.GetItemText(i, j);
+                CString item_text{ m_list_ctrl.GetItemText(i, j).GetString() };
+                CCommon::StringCsvNormalize(item_text);
+                str += item_text;
                 if (j == COLUMN - 1)
                     str += _T('\n');
                 else

@@ -64,6 +64,24 @@ void CCommon::DeleteStringBom(string & str)
         str = str.substr(2);
 }
 
+bool CCommon::StringCsvNormalize(CString& str)
+{
+    bool rtn{ false };
+    //如果字符串中有双引号，则将其替换为两个双引号
+    if (str.Replace(L"\"", L"\"\""))
+        rtn = true;
+
+    //如果字符串中包含换行符、双引号和/或逗号，则将其用双引号包裹
+    const LPCTSTR spec_str = L"\r\",/";
+    if (str.FindOneOf(spec_str) >= 0)
+    {
+        str = L'\"' + str;
+        str.AppendChar(L'\"');
+        rtn = true;
+    }
+    return rtn;
+}
+
 //bool CCommon::FileIsMidi(const wstring & file_name)
 //{
 //	wstring type;

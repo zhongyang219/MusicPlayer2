@@ -75,6 +75,9 @@ public:
 	template<class T>
 	static bool DeleteEndSpace(T& str);
 
+    //将字符串转换成符合Csv文件格式规范的字符串
+    static bool StringCsvNormalize(CString& str);
+
 	//自定义的字符串拷贝函数
 	static void StringCopy(char* dest, int size, string source);
 
