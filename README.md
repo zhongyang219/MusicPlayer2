@@ -32,7 +32,7 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 
 # 使用说明
 
-**[点击这里](./Documents/Introduction.md)查看说明文档。**
+**[点击这里](https://github.com/zhongyang219/MusicPlayer2/wiki)查看说明文档。**
 
 # 截图
 
@@ -56,11 +56,5 @@ Cortana搜索框显示歌词：<br>
 **[点击此处查看更新日志](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md)**
 <br>
 
-# 常见问题
 
-**1、主界面中的“显示歌词翻译”按钮不可用**<br>
-<img src="Screenshots/images/image1.JPG" style="zoom:80%;" /><br>
-只有歌词文件中包含翻译时才能显示翻译，下载歌词时勾选“下载歌词翻译”可以下载带翻译的歌词。如图所示：<br>
-
-![](Screenshots/images/image2.jpg)
 

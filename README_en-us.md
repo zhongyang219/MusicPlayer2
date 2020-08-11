@@ -33,7 +33,7 @@ You have the following ways to open and play a song:<br>
 
 # Instructions for use
 
-**[Click here](./ Documents / Introduction.md) to view the documentation (Only Chinese Available).**
+**[Click here](https://github.com/zhongyang219/MusicPlayer2/wiki) to view the documentation (Only Chinese Available).**
 
 # Screen shoots
 
