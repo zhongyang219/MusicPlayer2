@@ -1190,6 +1190,8 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, DPI(3));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
+    if (progress > 1)
+        progress = 1;
     double progress_width_double{ progress * progress_rect.Width() };
     int progress_width{ static_cast<int>(progress_width_double) };
 	CRect played_rect = progress_rect;

@@ -134,6 +134,8 @@ void CMiniModeUI::_DrawInfo(bool reset)
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, theApp.DPI(2));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
+    if (progress > 1)
+        progress = 1;
     double progress_width_double{ progress * progress_rect.Width() };
     int progress_width{ static_cast<int>(progress_width_double) };
     progress_rect.right = progress_rect.left + progress_width;

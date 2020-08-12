@@ -139,6 +139,7 @@ protected:
         bool ui_force_refresh{ false };         //指示主界面强制重绘
         bool search_box_force_refresh{ false }; //指示搜索框界面强制重绘
         bool is_active_window{ false };     //指示当前窗口是否为激活窗口
+        bool is_active_window_maxmize{ false };     //指示激活的窗口是否最大化
     };
     UIThreadPara m_ui_thread_para{};
 

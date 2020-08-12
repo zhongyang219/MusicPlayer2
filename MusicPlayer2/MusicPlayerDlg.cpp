@@ -1828,7 +1828,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //CPlayer::GetInstance().GetPlayerCoreError();
         //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))		//进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
         //    DrawInfo();			//绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
-        m_ui_thread_para.is_active_window = (GetActiveWindow() == this);
+
+        CWnd* pActiveWnd = GetActiveWindow();
+        m_ui_thread_para.is_active_window = (pActiveWnd == this);
+
+        CWnd* pForegroundWnd = GetForegroundWindow();
+        m_ui_thread_para.is_active_window_maxmize = (pForegroundWnd != this && pForegroundWnd != nullptr && pForegroundWnd->IsZoomed());
+
         //获取频谱分析数据
         CPlayer::GetInstance().CalculateSpectralData();
         //if (CPlayer::GetInstance().IsPlaying())
@@ -3470,7 +3476,9 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
 
         //绘制主界面
         if (pThis->IsWindowVisible() && !pThis->IsIconic()
-            && (CPlayer::GetInstance().IsPlaying() || pPara->is_active_window || pPara->draw_reset || pPara->ui_force_refresh || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating()))
+            && (CPlayer::GetInstance().IsPlaying() || pPara->is_active_window || pPara->draw_reset || pPara->ui_force_refresh || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating())
+            && !pPara->is_active_window_maxmize
+            )
             //窗口最小化、隐藏，以及窗口未激活并且未播放时不刷新界面，以降低CPU利用率
         {
             pThis->m_pUI->DrawInfo(pPara->draw_reset);
