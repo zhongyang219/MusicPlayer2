@@ -157,5 +157,5 @@ void CTest::TestAudioTag()
 
 void CTest::TestImageResize()
 {
-    CDrawCommon::ImageResize(L"D:\\Temp\\test_src.jpg", L"D:\\Temp\\test_dest.png", 512, IT_PNG);
+    CDrawCommon::ImageResize(L"D:\\Temp\\83538667_p0.png", L"D:\\Temp\\test_dest.jpg", 512, IT_JPG);
 }

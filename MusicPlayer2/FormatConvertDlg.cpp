@@ -11,6 +11,10 @@
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
 
+#define MAX_ALBUM_COVER_SIZE (128 * 1024)                           //编码器支持的最大专辑封面大小
+#define CONVERT_TEMP_ALBUM_COVER_NAME L"cover_R1hdyFy6CoEK7Gu8"     //临时的专辑封面文件名
+#define COMPRESSED_ALBUM_COVER_PIXEL 512                            //要将专辑封面图片压缩的尺寸
+
 CBASSEncodeLibrary CFormatConvertDlg::m_bass_encode_lib;
 CBASSWmaLibrary CFormatConvertDlg::m_bass_wma_lib;
 CBassMixLibrary CFormatConvertDlg::m_bass_mix_lib;
@@ -476,7 +480,14 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 				else
 					image.Destroy();
 				album_cover_size = CCommon::GetFileSize(album_cover_path);
-				write_album_cover = (!album_cover_path.empty() && album_cover_size > 0 && album_cover_size < 128 * 1024);	//是否要写入专辑封面（专辑封面文件必须小于128KB）
+                if (album_cover_size >= MAX_ALBUM_COVER_SIZE)       //如果专辑封面超过了128KB，则将其压缩并保存到临时目录
+                {
+                    wstring album_cover_temp_path{ CCommon::GetTemplatePath() + CONVERT_TEMP_ALBUM_COVER_NAME };
+                    CDrawCommon::ImageResize(album_cover_path, album_cover_temp_path, COMPRESSED_ALBUM_COVER_PIXEL, IT_JPG);
+                    album_cover_path = album_cover_temp_path;
+                    album_cover_size = CCommon::GetFileSize(album_cover_path);
+                }
+				write_album_cover = (!album_cover_path.empty() && album_cover_size > 0 && album_cover_size < MAX_ALBUM_COVER_SIZE);	//是否要写入专辑封面（专辑封面文件必须小于128KB）
 			}
 
 			//设置lame命令行参数
