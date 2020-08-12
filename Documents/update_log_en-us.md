@@ -1,6 +1,23 @@
-**[简体中文](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md) | English**<br>
+**[简体中文](./update_log.md) | English**<br>
+
 # MusicPlayer2 Update log
+## V2.69 (2020/04/15)
+
+* Add the AB repeat function.
+* Add function to get embedded lyrics.
+* Add the support for APE format tag recognition.
+* Add the function of opening playlist, support m3u / m3u8 format.
+* Fix the issue that when editing lyrics, the time label will be inserted into the end of the file when the cursor is placed at the front of the edited lyrics.
+* Add the function of saving playlist as playlist file.
+* Add the function to start in mini mode (Main Menu-Tools-Create Shortcut-Create Mini Mode Shortcut).
+* Added the "Recently played" tab in the Media Library.
+* Fixed an issue that there might be an extra character at the end when reading FLAC tags.
+* Allow to enter mini mode in full screen mode.
+* Sort the texts in the playlist and media library in the local language.
+* Other bug fixes and improvements in details.
+
 ## V2.68 (2020/01/22)
+
 * Add "Artist", "Album", "Genre" and other ways to organize songs in the media library. Add "All tracks" and "Folder explore" in the media library.
 * Add the media library options.
 * Add the function of automatically scanning audio files in the specified directory at startup.
