@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CUIWindow, CStatic)
 //    ON_WM_RBUTTONDBLCLK()
     ON_WM_MOUSEMOVE()
     ON_WM_RBUTTONUP()
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -95,4 +96,16 @@ void CUIWindow::OnRButtonUp(UINT nFlags, CPoint point)
     }
 
     CStatic::OnRButtonUp(nFlags, point);
+}
+
+
+void CUIWindow::OnPaint()
+{
+    CPaintDC dc(this); // device context for painting
+                       // TODO: 在此处添加消息处理程序代码
+                       // 不为绘图消息调用 CStatic::OnPaint()
+    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    //需要重绘时通知线程强制重绘
+    if (pMainWindow != nullptr)
+        pMainWindow->m_ui_thread_para.ui_force_refresh = true;
 }
