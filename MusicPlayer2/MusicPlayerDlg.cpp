@@ -3458,6 +3458,9 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         if(pPara->ui_thread_exit)
             break;
 
+        //获取频谱顶端的数据
+        CPlayer::GetInstance().CalculateSpectralDataPeak();
+
         //获取当前播放进度
         //这里将获取当前播放进度的处理放到UI线程中，和UI同步，使得当界面刷新时间间隔设置得比较小时歌词和进度条看起来更加流畅
         if (CPlayer::GetInstance().IsPlaying())

@@ -213,6 +213,7 @@ public:
 	void GetPlayerCoreSongLength();			//从BASS音频库获取正在播放文件的长度
 
 	void CalculateSpectralData();		//频谱分析
+    void CalculateSpectralDataPeak();       //计算频谱分析顶端的高度
 	int GetCurrentSecond();		//获取当前播放到的位置的秒数
 	bool IsPlaying() const;			//判断当前是否正在播放
 

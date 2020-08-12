@@ -606,6 +606,8 @@ void CPlayer::SetVolume()
 
 void CPlayer::CalculateSpectralData()
 {
+    memcpy_s(m_last_spectral_data, sizeof(m_last_spectral_data), m_spectral_data, sizeof(m_spectral_data));
+ 
     if (m_pCore->GetHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
     {
         //BASS_ChannelGetData(m_pCore->GetHandle(), m_fft, BASS_DATA_FFT256);
@@ -627,6 +629,11 @@ void CPlayer::CalculateSpectralData()
     {
         memset(m_spectral_data, 0, sizeof(m_spectral_data));
     }
+}
+
+
+void CPlayer::CalculateSpectralDataPeak()
+{
     //计算频谱顶端的高度
     if (m_playing != 1)
     {
@@ -641,14 +648,11 @@ void CPlayer::CalculateSpectralData()
             else
             {
                 fall_count++;
-                m_spectral_peak[i] -= (fall_count * 0.05f);		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
+                m_spectral_peak[i] -= (fall_count * 0.05);		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
             }
         }
     }
-
-    memcpy_s(m_last_spectral_data, sizeof(m_last_spectral_data), m_spectral_data, sizeof(m_spectral_data));
 }
-
 
 int CPlayer::GetCurrentSecond()
 {
