@@ -1067,6 +1067,7 @@ void CMusicPlayerDlg::ThemeColorChanged()
         theApp.m_app_setting_data.theme_color.original_color = color;
         ApplyThemeColor();
     }
+    m_ui_thread_para.ui_force_refresh = true;
 }
 
 void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
