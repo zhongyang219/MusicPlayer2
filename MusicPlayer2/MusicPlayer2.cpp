@@ -125,6 +125,7 @@ BOOL CMusicPlayerApp::InitInstance()
                     {
                         ShowWindow(handle, SW_SHOWNORMAL);		//激活并显示窗口
                         SetForegroundWindow(handle);		//将窗口设置为焦点
+                        ::SendMessage(handle, WM_MAIN_WINDOW_ACTIVATED, 0, 0);
                     }
                     else				//找到了“迷你模式”窗口，则激活“迷你模式”窗口
                     {

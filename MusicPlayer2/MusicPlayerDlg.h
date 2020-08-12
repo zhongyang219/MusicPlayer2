@@ -424,4 +424,6 @@ public:
     afx_msg void OnAlbumCoverInfo();
     afx_msg void OnUnlinkLyric();
     afx_msg void OnShowDesktopLyric();
+protected:
+    afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
 };
