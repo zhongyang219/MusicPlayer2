@@ -360,6 +360,11 @@ void CPlayerUI::MouseMove(CPoint point)
 //	return info_rect;
 //}
 
+int CPlayerUI::GetClassId()
+{
+    return 1000;
+}
+
 void CPlayerUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
     m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1000);

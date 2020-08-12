@@ -27,5 +27,6 @@ protected:
 public:
     afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnPaint();
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 

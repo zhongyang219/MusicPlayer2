@@ -134,6 +134,8 @@ protected:
 
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
 
+    virtual int GetClassId() { return 0; }
+
 private:
     void SetRepeatModeToolTipText();
     void SetSongInfoToolTipText();

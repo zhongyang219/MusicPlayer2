@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "CPlayerUIBase.h"
+#include "MusicPlayerDlg.h"
 
 
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
@@ -87,6 +88,29 @@ void CPlayerUIBase::DrawInfo(bool reset)
     if (m_first_draw)
     {
         AddToolTips();
+    }
+    else
+    {
+        static int last_width{}, last_height{}, last_class_id{};
+        //检测到绘图区域变化或界面进行了切换时
+        if (last_width != m_draw_rect.Width() || last_height != m_draw_rect.Height()
+            || (last_class_id != GetClassId() && GetClassId() != 0))
+        {
+            //更新工具提示的位置
+            UpdateToolTipPosition();
+
+            //更新任务栏缩略图区域
+            CRect thumbnail_rect = GetThumbnailClipArea();
+            CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+            if (pMainWindow != nullptr)
+            {
+                pMainWindow->SetThumbnailClipArea(thumbnail_rect);
+            }
+
+            last_width = m_draw_rect.Width();
+            last_height = m_draw_rect.Height();
+            last_class_id = GetClassId();
+        }
     }
     m_first_draw = false;
 }

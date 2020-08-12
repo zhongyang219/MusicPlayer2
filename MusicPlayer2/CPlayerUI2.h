@@ -15,5 +15,6 @@ public:
 
 private:
 	virtual void _DrawInfo(bool reset = false) override;		//绘制信息
+    virtual int GetClassId() override;
 };
 

@@ -49,6 +49,7 @@ public:
 
     friend class CMusicPlayerCmdHelper;
     friend class CUIWindow;
+    friend class CPlayerUIBase;
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -135,7 +136,6 @@ protected:
     {
         bool draw_reset{ false };               //主界面绘图需要重置
         bool ui_thread_exit{ false };           //指示线程退出
-        bool thumbnail_area_changed{ false };   //指示任务栏预览区域需要改变
         bool ui_force_refresh{ false };         //指示主界面强制重绘
         bool search_box_force_refresh{ false }; //指示搜索框界面强制重绘
         bool is_active_window{ false };     //指示当前窗口是否为激活窗口
@@ -179,6 +179,7 @@ protected:
     void UpdateTaskBarProgress();	//更新任务栏按钮上的进度
     void UpdatePlayPauseButton();		//根据当前播放状态更新“播放/暂停”按钮上的文字和图标
     void SetThumbnailClipArea();		//设置任务栏缩略图的区域
+    void SetThumbnailClipArea(CRect rect);		//设置任务栏缩略图的区域
     void EnablePlaylist(bool enable);		//设置启用或禁用播放列表控件
 
     void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式

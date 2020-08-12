@@ -21,6 +21,7 @@ public:
 
 private:
 	virtual void _DrawInfo(bool reset = false) override;		//绘制信息
+    virtual int GetClassId() override;
 
 	void DrawLyricsArea(CRect lyric_rect);			//普通模式下绘制歌词区域
 	CSize SpectralSize();

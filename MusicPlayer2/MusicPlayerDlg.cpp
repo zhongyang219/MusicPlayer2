@@ -669,8 +669,6 @@ void CMusicPlayerDlg::SetDrawAreaSize(int cx, int cy)
         else
             draw_rect = CRect{ CPoint(), CSize{ cx, m_ui.DrawAreaHeight() - m_ui.Margin() } };
     }
-    theApp.m_ui_data.draw_area_width = draw_rect.Width();
-    theApp.m_ui_data.draw_area_height = draw_rect.Height();
     m_ui_static_ctrl.MoveWindow(draw_rect);
 }
 
@@ -877,7 +875,25 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
-    m_ui_thread_para.thumbnail_area_changed = true;
+    if (IsTaskbarListEnable() && m_pTaskbar != nullptr)
+    {
+        CRect thumbnail_rect = m_pUI->GetThumbnailClipArea();
+        if (!thumbnail_rect.IsRectEmpty())
+        {
+            m_pTaskbar->SetThumbnailClip(m_hWnd, thumbnail_rect);
+        }
+    }
+}
+
+void CMusicPlayerDlg::SetThumbnailClipArea(CRect rect)
+{
+    if (IsTaskbarListEnable() && m_pTaskbar != nullptr)
+    {
+        if (!rect.IsRectEmpty())
+        {
+            m_pTaskbar->SetThumbnailClip(m_hWnd, rect);
+        }
+    }
 }
 
 void CMusicPlayerDlg::EnablePlaylist(bool enable)
@@ -1713,10 +1729,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
                 DrawInfo(true);
         }
         last_type = nType;
-        m_pUI->UpdateToolTipPosition();
     }
-
-    SetThumbnailClipArea();
 
 
     // TODO: 在此处添加消息处理程序代码
@@ -1781,7 +1794,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             }
             DrawInfo();
             m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)&m_ui_thread_para);
-            SetThumbnailClipArea();
 
             //注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
             //CPlayer::GetInstance().MusicControl(Command::OPEN);
@@ -3482,26 +3494,8 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
             //窗口最小化、隐藏，以及窗口未激活并且未播放时不刷新界面，以降低CPU利用率
         {
             pThis->m_pUI->DrawInfo(pPara->draw_reset);
-            if (pPara->draw_reset)
-            {
-                pThis->m_pUI->UpdateToolTipPosition();
-            }
             pPara->draw_reset = false;
             pPara->ui_force_refresh = false;
-        }
-
-        //更新任务栏缩略图
-        if (pThis->IsTaskbarListEnable() && pPara->thumbnail_area_changed)
-        {
-            if (pThis->m_pTaskbar != nullptr)
-            {
-                CRect thumbnail_rect = pThis->m_pUI->GetThumbnailClipArea();
-                if (!thumbnail_rect.IsRectEmpty())
-                {
-                    pThis->m_pTaskbar->SetThumbnailClip(pThis->m_hWnd, thumbnail_rect);
-                    pPara->thumbnail_area_changed = false;
-                }
-            }
         }
 
         //绘制迷你模式界面
@@ -3914,20 +3908,18 @@ void CMusicPlayerDlg::OnSwitchUi()
     {
         m_pUI = &m_ui2;
         m_ui.ClearBtnRect();
-        m_ui.UpdateToolTipPosition();
+        //m_ui.UpdateToolTipPosition();
     }
     else
     {
         m_pUI = &m_ui;
         m_ui2.ClearBtnRect();
-        m_ui2.UpdateToolTipPosition();
+        //m_ui2.UpdateToolTipPosition();
     }
 
     DrawInfo(true);
-    SetThumbnailClipArea();
     m_ui.UpdateRepeatModeToolTip();
     m_ui2.UpdateRepeatModeToolTip();
-    m_pUI->UpdateToolTipPosition();
 }
 
 void CMusicPlayerDlg::OnVolumeUp()
@@ -4084,9 +4076,7 @@ void CMusicPlayerDlg::OnShowMenuBar()
     // TODO: 在此添加命令处理程序代码
     theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
     SetMenubarVisible();
-    SetThumbnailClipArea();
     DrawInfo();
-    m_pUI->UpdateToolTipPosition();
 
     //隐藏菜单栏后弹出提示，告诉用户如何再次显示菜单栏
     if (!theApp.m_ui_data.show_menu_bar)
@@ -4110,9 +4100,7 @@ void CMusicPlayerDlg::OnFullScreen()
     theApp.m_ui_data.full_screen = !theApp.m_ui_data.full_screen;
     SetFullScreen(theApp.m_ui_data.full_screen);
     DrawInfo(true);
-    m_pUI->UpdateToolTipPosition();
     m_pUI->UpdateFullScreenTip();
-    SetThumbnailClipArea();
 }
 
 
@@ -4734,7 +4722,6 @@ void CMusicPlayerDlg::OnAlwaysShowStatusBar()
     // TODO: 在此添加命令处理程序代码
     theApp.m_ui_data.always_show_statusbar = !theApp.m_ui_data.always_show_statusbar;
     DrawInfo(true);
-    m_pUI->UpdateToolTipPosition();
 }
 
 

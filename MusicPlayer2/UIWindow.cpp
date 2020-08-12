@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CUIWindow, CStatic)
     ON_WM_MOUSEMOVE()
     ON_WM_RBUTTONUP()
     ON_WM_PAINT()
+    ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -108,4 +109,20 @@ void CUIWindow::OnPaint()
     //需要重绘时通知线程强制重绘
     if (pMainWindow != nullptr)
         pMainWindow->m_ui_thread_para.ui_force_refresh = true;
+}
+
+
+void CUIWindow::OnSize(UINT nType, int cx, int cy)
+{
+    CStatic::OnSize(nType, cx, cy);
+
+    // TODO: 在此处添加消息处理程序代码
+    theApp.m_ui_data.draw_area_width = cx;
+    theApp.m_ui_data.draw_area_height = cy;
+
+    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pMainWindow != nullptr)
+    {
+        pMainWindow->m_ui_thread_para.ui_force_refresh = true;
+    }
 }

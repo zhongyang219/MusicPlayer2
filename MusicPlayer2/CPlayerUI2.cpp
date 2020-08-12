@@ -350,6 +350,11 @@ void CPlayerUI2::_DrawInfo(bool reset)
     }
 }
 
+int CPlayerUI2::GetClassId()
+{
+    return 2000;
+}
+
 
 void CPlayerUI2::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
