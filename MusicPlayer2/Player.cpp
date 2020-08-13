@@ -1487,6 +1487,7 @@ void CPlayer::ClearPlaylist()
 {
     if (m_loading) return;
     MusicControl(Command::STOP);
+    MusicControl(Command::CLOSE);
     m_playlist.clear();
     //m_song_num = 0;
 }
