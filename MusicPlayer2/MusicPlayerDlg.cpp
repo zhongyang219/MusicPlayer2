@@ -2452,14 +2452,17 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             if (CAudioCommon::FileIsAudio(wstring(file_path)))
                 files.push_back(file_path);
         }
-        if(CPlayer::GetInstance().IsPlaylistMode())
+        if (!files.empty())
         {
-            if (!CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-                MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
-        }
-        else
-        {
-            CPlayer::GetInstance().OpenFiles(files, false);
+            if (CPlayer::GetInstance().IsPlaylistMode())
+            {
+                if (!CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                    MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+            }
+            else
+            {
+                CPlayer::GetInstance().OpenFiles(files, false);
+            }
         }
     }
     //ShowPlayList();

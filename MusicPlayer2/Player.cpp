@@ -1034,6 +1034,8 @@ void CPlayer::OpenPlaylistFile(const wstring& file_path)
 
 bool CPlayer::AddFiles(const vector<wstring>& files, bool ignore_if_exist)
 {
+    if (files.empty())
+        return false;
     if (m_playlist.size() == 1 && m_playlist[0].file_path.empty()/* && m_playlist[0].file_name.empty()*/)
         m_playlist.clear();     //删除播放列表中的占位项
 
