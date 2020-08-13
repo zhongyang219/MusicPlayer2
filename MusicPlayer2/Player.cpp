@@ -1759,10 +1759,12 @@ int CPlayer::GetFreq()
 void CPlayer::ReIniPlayerCore(bool replay)
 {
     int playing = m_playing;
+    int current_position = GetCurrentPosition();
     UnInitPlayerCore();
     IniPlayerCore();
     MusicControl(Command::OPEN);
-    MusicControl(Command::SEEK);
+    SeekTo(current_position);
+    //MusicControl(Command::SEEK);
     if (replay && playing == 2)
     {
         MusicControl(Command::PLAY);

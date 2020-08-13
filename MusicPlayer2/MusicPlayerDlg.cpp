@@ -2246,7 +2246,12 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                 OnRemoveCurrentFromPlaylist();
                 return TRUE;
             }
-}
+            if (pMsg->wParam == 'Q')      //按Ctrl+Q重新初始化播放器
+            {
+                OnReIniBass();
+                return TRUE;
+            }
+        }
         else
         {
             if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P'/* || pMsg->wParam == VK_MEDIA_PLAY_PAUSE*/)		//按空格键/P键播放/暂停
