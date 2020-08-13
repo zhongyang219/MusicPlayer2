@@ -29,7 +29,8 @@ enum SortMode
 	SM_TITLE,
 	SM_ARTIST,
 	SM_ALBUM,
-	SM_TRACK
+	SM_TRACK,
+    SM_TIME     //修改日期
 };
 
 

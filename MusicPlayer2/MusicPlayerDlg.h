@@ -426,4 +426,6 @@ public:
     afx_msg void OnShowDesktopLyric();
 protected:
     afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnSortByModifiedTime();
 };

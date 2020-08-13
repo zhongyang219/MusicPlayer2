@@ -64,6 +64,8 @@ public:
 	//判断是否是文件夹
 	static bool IsFolder(const wstring& path);
 
+    static unsigned __int64 GetFileLastModified(const wstring& file_path);
+
 	//规范化字符串，即删除字符串前面和后面的空格或控制字符(模板类型只能是string或wstring)
 	template<class T>
 	static bool StringNormalize(T& str);

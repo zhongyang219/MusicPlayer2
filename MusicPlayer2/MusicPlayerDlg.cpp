@@ -248,8 +248,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_ALBUM_COVER_INFO, &CMusicPlayerDlg::OnAlbumCoverInfo)
     ON_COMMAND(ID_UNLINK_LYRIC, &CMusicPlayerDlg::OnUnlinkLyric)
     ON_COMMAND(ID_SHOW_DESKTOP_LYRIC, &CMusicPlayerDlg::OnShowDesktopLyric)
-        ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CMusicPlayerDlg::OnMainWindowActivated)
-        END_MESSAGE_MAP()
+    ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CMusicPlayerDlg::OnMainWindowActivated)
+    ON_COMMAND(ID_SORT_BY_MODIFIED_TIME, &CMusicPlayerDlg::OnSortByModifiedTime)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1184,19 +1185,21 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         switch (CPlayer::GetInstance().m_sort_mode)
         {
         case SM_FILE:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_FILE, MF_BYCOMMAND | MF_CHECKED);
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_FILE, MF_BYCOMMAND | MF_CHECKED);
             break;
         case SM_TITLE:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_TITLE, MF_BYCOMMAND | MF_CHECKED);
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_TITLE, MF_BYCOMMAND | MF_CHECKED);
             break;
         case SM_ARTIST:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_ARTIST, MF_BYCOMMAND | MF_CHECKED);
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_ARTIST, MF_BYCOMMAND | MF_CHECKED);
             break;
         case SM_ALBUM:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_ALBUM, MF_BYCOMMAND | MF_CHECKED);
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_ALBUM, MF_BYCOMMAND | MF_CHECKED);
             break;
         case SM_TRACK:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_TRACK, ID_SORT_BY_TRACK, MF_BYCOMMAND | MF_CHECKED);
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_TRACK, MF_BYCOMMAND | MF_CHECKED);
+        case SM_TIME:
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_MODIFIED_TIME, MF_BYCOMMAND | MF_CHECKED);
             break;
         }
     }
@@ -2828,6 +2831,15 @@ void CMusicPlayerDlg::OnSortByTrack()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().m_sort_mode = SM_TRACK;
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByModifiedTime()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().m_sort_mode = SM_TIME;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
 }

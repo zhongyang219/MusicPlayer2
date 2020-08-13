@@ -1797,6 +1797,13 @@ void CPlayer::SortPlaylist(bool change_index)
     case SM_TRACK:
         std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrack);
         break;
+    case SM_TIME:
+        std::sort(m_playlist.begin(), m_playlist.end(), [](const SongInfo& a, const SongInfo& b)
+        {
+            unsigned __int64 file_time_a = CCommon::GetFileLastModified(a.file_path);
+            unsigned __int64 file_time_b = CCommon::GetFileLastModified(b.file_path);
+            return file_time_a < file_time_b;
+        });
     default:
         break;
     }

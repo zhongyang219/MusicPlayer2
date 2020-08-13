@@ -22,7 +22,7 @@ void CTest::Test()
     //TestStringMatch();
     //TestCrash();
     //TestShortCut();
-    //TestCommon();
+    TestCommon();
     //TestOSUFile();
     //TestReg();
     //TestMediaLib();
@@ -113,11 +113,15 @@ void CTest::TestCommon()
 
 	//bool b = CCommon::IsPath(L"C:\\dfg\\:89");
 
-	WORD value = 0x2f;
-	bool b = CCommon::GetNumberBit(value, 4);
+	//WORD value = 0x2f;
+	//bool b = CCommon::GetNumberBit(value, 4);
 
-	CCommon::SetNumberBit(value, 4, true);
-	CCommon::SetNumberBit(value, 4, false);
+	//CCommon::SetNumberBit(value, 4, true);
+	//CCommon::SetNumberBit(value, 4, false);
+
+    unsigned __int64 t = CCommon::GetFileLastModified(L"D:\\Temp\\Introduction.txt");
+    unsigned __int64 t1 = CCommon::GetFileLastModified(L"D:\\Temp\\新建文本文档.jpg");
+    bool b = t > t1;
 
     int a = 0;
 }
