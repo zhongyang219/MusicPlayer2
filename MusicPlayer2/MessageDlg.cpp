@@ -8,6 +8,8 @@
 
 // CMessageDlg 对话框
 
+#define MESSAGE_DLG_ICON_SIZE (theApp.DPI(32))
+
 IMPLEMENT_DYNAMIC(CMessageDlg, CDialog)
 
 CMessageDlg::CMessageDlg(CWnd* pParent /*=NULL*/)
@@ -41,6 +43,23 @@ void CMessageDlg::SetLinkInfo(LPCTSTR text, LPCTSTR url)
 	m_link_url = url;
 }
 
+void CMessageDlg::SetMessageIcon(HICON hIcon)
+{
+    m_icon = hIcon;
+}
+
+void CMessageDlg::SetInfoStaticSize(int cx)
+{
+    if (m_icon != NULL && m_info_static.GetSafeHwnd() != NULL)
+    {
+        CRect rc_info{ m_rc_info };
+        rc_info.left = m_rc_info.left + MESSAGE_DLG_ICON_SIZE + theApp.DPI(8);
+        if (cx > 0)
+            rc_info.right = cx;
+        m_info_static.MoveWindow(rc_info);
+    }
+}
+
 void CMessageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -52,6 +71,8 @@ void CMessageDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMessageDlg, CDialog)
 	ON_WM_GETMINMAXINFO()
 	ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CMessageDlg::OnNMClickSyslink1)
+    ON_WM_PAINT()
+    ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -83,6 +104,20 @@ BOOL CMessageDlg::OnInitDialog()
 		pLinkCtrl->SetWindowText(_T("<a>") + m_link_text + _T("</a>"));
 	}
 
+    //设置图标的位置
+    if (m_icon != NULL)
+    {
+        CRect rc_edit;
+        m_message_edit.GetWindowRect(rc_edit);
+        ScreenToClient(rc_edit);
+        m_icon_pos.x = rc_edit.left;
+        m_icon_pos.y = (rc_edit.top - MESSAGE_DLG_ICON_SIZE) / 2;
+        
+        m_info_static.GetWindowRect(m_rc_info);
+        ScreenToClient(m_rc_info);
+        SetInfoStaticSize(0);
+    }
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -106,4 +141,25 @@ void CMessageDlg::OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult)
 		ShellExecute(NULL, _T("open"), m_link_url, NULL, NULL, SW_SHOW);	//打开超链接
 
 	*pResult = 0;
+}
+
+
+void CMessageDlg::OnPaint()
+{
+    CPaintDC dc(this); // device context for painting
+                       // TODO: 在此处添加消息处理程序代码
+                       // 不为绘图消息调用 CDialog::OnPaint()
+
+    CDrawCommon draw;
+    draw.Create(&dc, this);
+    draw.DrawIcon(m_icon, m_icon_pos, CSize(MESSAGE_DLG_ICON_SIZE, MESSAGE_DLG_ICON_SIZE));
+}
+
+
+void CMessageDlg::OnSize(UINT nType, int cx, int cy)
+{
+    CDialog::OnSize(nType, cx, cy);
+
+    // TODO: 在此处添加消息处理程序代码
+    SetInfoStaticSize(cx);
 }

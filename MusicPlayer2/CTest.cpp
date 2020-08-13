@@ -6,6 +6,7 @@
 #include "MediaLibHelper.h"
 #include "IniHelper.h"
 #include "MusicPlayerCmdHelper.h"
+#include "MessageDlg.h"
 
 CTest::CTest()
 {
@@ -36,6 +37,7 @@ void CTest::Test()
     //AfxMessageBox(info);
 
     //TestImageResize();
+    //TestCrash();
 }
 
 void CTest::TestStringMatch()
@@ -158,4 +160,25 @@ void CTest::TestAudioTag()
 void CTest::TestImageResize()
 {
     CDrawCommon::ImageResize(L"D:\\Temp\\83538667_p0.png", L"D:\\Temp\\test_dest.jpg", 512, IT_JPG);
+}
+
+void CTest::TestCrashDlg()
+{
+    //显示错误信息对话框
+    CMessageDlg dlg;
+    dlg.SetWindowTitle(CCommon::LoadText(IDS_ERROR1));
+    dlg.SetInfoText(CCommon::LoadText(IDS_ERROR_MESSAGE));
+
+    CString info = CCommon::LoadTextFormat(IDS_CRASH_INFO, {});
+    info += _T("\r\n");
+    info += theApp.GetSystemInfoString();
+    dlg.SetMessageText(info);
+
+    //设置图标
+    HICON hIcon;
+    HRESULT hr = LoadIconMetric(NULL, IDI_ERROR, LIM_LARGE, &hIcon);
+    if (SUCCEEDED(hr))
+        dlg.SetMessageIcon(hIcon);
+
+    dlg.DoModal();
 }

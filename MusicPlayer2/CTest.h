@@ -19,5 +19,6 @@ private:
     static void TestMediaLib();
 	static void TestAudioTag();
     static void TestImageResize();
+    static void TestCrashDlg();
 };
 

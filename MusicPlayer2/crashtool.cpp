@@ -61,8 +61,14 @@ public:
 		CString info = CCommon::LoadTextFormat(IDS_CRASH_INFO, { m_dumpFile });
 		info += _T("\r\n");
 		info += theApp.GetSystemInfoString();
-
 		dlg.SetMessageText(info);
+
+        //设置图标
+        HICON hIcon;
+        HRESULT hr = LoadIconMetric(NULL, IDI_ERROR, LIM_LARGE, &hIcon);
+        if (SUCCEEDED(hr))
+            dlg.SetMessageIcon(hIcon);
+
 		dlg.DoModal();
 	}
 

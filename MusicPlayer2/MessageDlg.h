@@ -16,6 +16,7 @@ public:
 	void SetMessageText(LPCTSTR str);
 	void ShowLinkStatic(bool show = true) { m_show_link_ctrl = show; }
 	void SetLinkInfo(LPCTSTR text, LPCTSTR url);
+    void SetMessageIcon(HICON hIcon);
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -34,9 +35,15 @@ protected:
 	CString m_link_text;
 	CString m_link_url;
 
+    HICON m_icon{};
+    CPoint m_icon_pos{};        //图标的位置
+    CRect m_rc_info{};          //错误信息Static控件的初始区域
+
 	bool m_show_link_ctrl{ false };
 
 protected:
+    void SetInfoStaticSize(int cx);     //如果设置了图标，则需要将错误信息Static控件向右移动一些
+
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
@@ -45,4 +52,6 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnPaint();
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 };
