@@ -1,6 +1,12 @@
 ﻿#include "stdafx.h"
 #include "AudioTag.h"
 
+const string jpg_head{ '\xff', '\xd8' };
+const string jpg_tail{ '\xff', '\xd9' };
+const string png_head{ '\x89', '\x50', '\x4e', '\x47' };
+const string png_tail{ '\x49', '\x45', '\x4e', '\x44', '\xae', '\x42', '\x60', '\x82' };
+const string gif_head{ "GIF89a" };
+const string gif_tail{ '\x80', '\x00', '\x00', '\x3b' };
 
 CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 	: m_hStream{ hStream }, m_file_path{ file_path }, m_song_info{ m_song_info }
@@ -70,29 +76,45 @@ void CAudioTag::GetAudioTag(bool id3v2_first)
 
 wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
 {
-	if (m_type != AudioType::AU_FLAC)
-	{
-		const char* id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
-		if (id3v2 == nullptr)
-			return wstring();
-		const char* size;
-		size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
-		const int id3tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
-		string tag_content;
-		tag_content.assign(id3v2, id3tag_size);	//将标签区域的内容保存到一个string对象里
-		size_t cover_index = tag_content.find("APIC");		//查找专辑封面的标识字符串
-		if (cover_index == string::npos)
-			return wstring();
-		return _GetAlbumCover(tag_content, cover_index, image_type, file_name);
+    string image_contents;
+    if (m_type != AudioType::AU_FLAC)
+    {
+        const char* id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
+        if (id3v2 == nullptr)
+            return wstring();
+        const char* size;
+        size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
+        const int id3tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
+        string tag_content;
+        tag_content.assign(id3v2, id3tag_size);	//将标签区域的内容保存到一个string对象里
+        image_contents = FindID3V2AlbumCover(tag_content, image_type);
+    }
+    else
+    {
+        string tag_contents;
+        GetFlacTagContents(m_file_path, tag_contents);
+        image_contents = FindFlacAlbumCover(tag_contents, image_type);
+    }
 
-	}
-	else
-	{
-		string tag_contents;
-		GetFlacTagContents(m_file_path, tag_contents);
-		return _GetAlbumCover(tag_contents, 0, image_type, file_name);
-	}
-	return wstring();
+    //将专辑封面保存到临时目录
+    wstring file_path{ CCommon::GetTemplatePath() };
+    wstring _file_name;
+    if (file_name == nullptr)
+	    _file_name = ALBUM_COVER_NAME;
+    else
+	    _file_name = file_name;
+    if (!image_contents.empty())
+    {
+	    file_path += _file_name;
+	    ofstream out_put{ file_path, std::ios::binary };
+	    out_put << image_contents;
+	    return file_path;
+    }
+    else
+    {
+        image_type = -1;
+        return wstring();
+    }
 }
 
 wstring CAudioTag::GetAudioLyric()
@@ -619,26 +641,15 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 	}
 }
 
-wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index, int & image_type, wchar_t* file_name)
+string CAudioTag::FindFlacAlbumCover(const string & tag_content, int & image_type)
 {
 	//获取图片起始位置
-	size_t type_index = tag_content.find("image", cover_index);
+	size_t type_index = tag_content.find("image");
 	if (type_index == wstring::npos)
-		type_index = cover_index;
-	//string image_type_str = tag_content.substr(type_index, 10);
-	//string image_type_str2 = tag_content.substr(type_index, 9);
+		type_index = 0;
 
-	//根据图片类型设置文件扩展名
 	size_t image_index;		//图片数据的起始位置
 	size_t image_size;		//根据图片结束字节计算出的图片大小
-							//设置图片文件的头和尾
-
-	const string jpg_head{ '\xff', '\xd8' };
-	const string jpg_tail{ '\xff', '\xd9' };
-	const string png_head{ '\x89', '\x50', '\x4e', '\x47' };
-	const string png_tail{ '\x49', '\x45', '\x4e', '\x44', '\xae', '\x42', '\x60', '\x82' };
-	const string gif_head{ "GIF89a" };
-	const string gif_tail{ '\x80', '\x00', '\x00', '\x3b' };
 
 	string image_contents;
 	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
@@ -673,20 +684,45 @@ wstring CAudioTag::_GetAlbumCover(const string & tag_content, size_t cover_index
 		}
 	}
 
-	//将专辑封面保存到临时目录
-	wstring file_path{ CCommon::GetTemplatePath() };
-	wstring _file_name;
-	if (file_name == nullptr)
-		_file_name = ALBUM_COVER_NAME;
-	else
-		_file_name = file_name;
-	if (!image_contents.empty())
-	{
-		file_path += _file_name;
-		ofstream out_put{ file_path, std::ios::binary };
-		out_put << image_contents;
-		return file_path;
-	}
-	image_type = -1;
-	return wstring();
+	return image_contents;
+}
+
+string CAudioTag::FindID3V2AlbumCover(const string & tag_content, int & image_type)
+{
+    size_t cover_index = tag_content.find("APIC");		//查找专辑封面的标识字符串
+    if (cover_index == string::npos)
+        return string();
+    string size_btyes = tag_content.substr(cover_index + 4, 4);     //"APIC"后面4个字节是专辑封面的大小
+    unsigned int cover_size = ((static_cast<unsigned int>(size_btyes[0]) & 0x000000ff) << 24)
+        + ((static_cast<unsigned int>(size_btyes[1]) & 0x000000ff) << 16)
+        + ((static_cast<unsigned int>(size_btyes[2]) & 0x000000ff) << 8)
+        + (static_cast<unsigned int>(size_btyes[3]) & 0x000000ff); //APIC标签的大小
+    string apic_tag_content = tag_content.substr(cover_index + 8, cover_size);
+    size_t image_index{};
+    image_index = apic_tag_content.find(jpg_head);
+    image_type = -1;
+    if (image_index < cover_index + 100)
+    {
+        image_type = 0;
+    }
+    else
+    {
+        image_index = apic_tag_content.find(png_head);
+        if (image_index < cover_index + 100)
+        {
+            image_type = 1;
+        }
+        else
+        {
+            image_index = apic_tag_content.find(gif_head);
+            if (image_index < cover_index + 100)
+            {
+                image_type = 2;
+            }
+        }
+    }
+    if (image_type != -1)
+        return apic_tag_content.substr(image_index);
+    else
+        return string();
 }
