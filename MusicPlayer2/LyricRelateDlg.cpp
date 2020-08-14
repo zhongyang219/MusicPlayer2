@@ -121,10 +121,10 @@ BOOL CLyricRelateDlg::OnInitDialog()
     SetIcon(theApp.m_icon_set.lyric, FALSE);
 
     wstring lyric_name;
-    if (!CPlayer::GetInstance().GetCurrentSongInfo().is_cue)
-        lyric_name = CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileNameWithoutExtension();
-    else
+    if (CPlayer::GetInstance().GetCurrentSongInfo().is_cue || CPlayer::GetInstance().IsOsuFile())
         lyric_name = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DF_ARTIST_TITLE);
+    else
+        lyric_name = CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileNameWithoutExtension();
     SetDlgItemText(IDC_LYRIC_NAME_EDIT, lyric_name.c_str());
 
     EnableControls(false);
