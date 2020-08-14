@@ -579,6 +579,7 @@
 #define IDB_PNG2                        478
 #define IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED 478
 #define IDS_LAST_THREE_DAYS             479
+#define IDR_ACCELERATOR1                479
 #define IDS_LICENSE_EXPLAIN             480
 #define IDS_LICENSE                     481
 #define IDS_FILE_EXIST_IN_PLAYLIST_INFO 482
@@ -1297,7 +1298,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        479
+#define _APS_NEXT_RESOURCE_VALUE        480
 #define _APS_NEXT_COMMAND_VALUE         33187
 #define _APS_NEXT_CONTROL_VALUE         1177
 #define _APS_NEXT_SYMED_VALUE           101

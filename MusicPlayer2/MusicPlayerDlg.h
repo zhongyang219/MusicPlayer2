@@ -82,6 +82,7 @@ protected:
 #endif
 
     CFindDlg m_findDlg;		//查找对话框
+    HACCEL m_hAccel;
 
     wstring m_cmdLine;	//命令行参数
 

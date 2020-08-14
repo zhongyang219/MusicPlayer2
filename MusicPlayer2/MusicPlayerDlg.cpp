@@ -1479,6 +1479,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
         CCommon::SetWindowOpacity(m_hWnd, 0);
     }
 
+    m_hAccel = LoadAccelerators(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_ACCELERATOR1));
+
     //载入图标资源
     theApp.LoadIconResource();
 
@@ -2092,211 +2094,18 @@ void CMusicPlayerDlg::OnExplorePath()
 BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+    if (pMsg->hwnd != m_search_edit.GetSafeHwnd())  //如果焦点在搜索框上，则不响应快捷键
     {
-        //按下Ctrl键时
-        if (GetKeyState(VK_CONTROL) & 0x80)
+        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
         {
-			//按下Ctrl + Shift键时
-			if (GetKeyState(VK_SHIFT) & 0x8000)
-			{
-#ifdef _DEBUG
-				if (pMsg->wParam == 'Z')
-				{
-					CTest::Test();
-					return TRUE;
-				}
-#endif
-				if (pMsg->wParam == 'A')
-				{
-					OnSetAPoint();
-					return TRUE;
-				}
-				if (pMsg->wParam == 'B')
-				{
-					OnSetBPoint();
-					return TRUE;
-				}
-				if (pMsg->wParam == 'N')
-				{
-					OnNextAbRepeat();
-					return TRUE;
-				}
-				if (pMsg->wParam == 'C')
-				{
-					OnResetAbRepeat();
-					return TRUE;
-				}
-                if (pMsg->wParam == VK_DELETE)  //按Ctrl+Shift+Del将正在播放的曲目从磁盘删除
-                {
-                    OnDeleteCurrentFromDisk();
-                    return TRUE;
-                }
-            }
-			
-			if (pMsg->wParam == 'O')		//设置按Ctr+O打开文件
-            {
-                OnFileOpen();
+            //响应Accelerator中设置的快捷键
+            if (m_hAccel && ::TranslateAccelerator(m_hWnd, m_hAccel, pMsg))
                 return TRUE;
-            }
-            if (pMsg->wParam == 'D')		//设置按Ctr+D打开文件夹
-            {
-                OnFileOpenFolder();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'B')		//设置按Ctr+B浏览文件
-            {
-                OnExplorePath();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'N')		//设置按Ctr+N打开曲目信息
-            {
-                OnSongInfo();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'F')		//按Ctr+F键查找文件
-            {
-                OnFind();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'T')		//按Ctr+T键设置路径
-            {
-                OnSetPath();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'I')		//设置按Ctr+I打开设置
-            {
-                OnOptionSettings();
-                return TRUE;
-            }
-            //if (pMsg->wParam == 'X')		//设置按Ctr+X退出
-            //{
-            //	OnMenuExit();
-            //	return TRUE;
-            //}
-            if (pMsg->wParam == 'R')		//设置按Ctr+R执行AB重复
-            {
-                OnAbRepeat();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'M')		//设置按Ctr+M进入迷你模式
-            {
-                OnMiniMode();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_PRIOR)		//设置按Ctr+PgUp歌词提前0.5秒
-            {
-                OnLyricForward();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_NEXT)		//设置按Ctr+PgDn歌词延后0.5秒
-            {
-                OnLyricDelay();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'S')		//设置按Ctr+S保存歌词更改
-            {
-                if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && CPlayer::GetInstance().m_Lyrics.IsModified())
-                    OnSaveModifiedLyric();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'E')		//设置按Ctr+S打开均衡器
-            {
-                OnEqualizer();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'L')		//设置按Ctr+L显示/隐藏播放列表
-            {
-                OnShowPlaylist();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'K')		//设置按Ctr+K显示浮动播放列表
-            {
-                OnFloatPlaylist();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_UP)
-            {
-                OnMovePlaylistItemUp();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_DOWN)
-            {
-                OnMovePlaylistItemDown();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_OEM_PERIOD)
-            {
-                OnSpeedUp();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_OEM_COMMA)
-            {
-                OnSlowDown();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_RETURN)
-            {
-                OnOriginalSpeed();
-                return TRUE;
-            }
-            //if (pMsg->wParam != VK_CONTROL)
-            //{
-            //    return TRUE;
-            //}
-            if (pMsg->wParam == VK_DELETE)      //按Ctrl+Del从播放列表移除正在播放的曲目
-            {
-                OnRemoveCurrentFromPlaylist();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'Q')      //按Ctrl+Q重新初始化播放器
-            {
-                OnReIniBass();
-                return TRUE;
-            }
         }
-        else
+
+        //响应不在Accelerator中的快捷键
+        if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
         {
-            if (pMsg->wParam == VK_SPACE || pMsg->wParam == 'P'/* || pMsg->wParam == VK_MEDIA_PLAY_PAUSE*/)		//按空格键/P键播放/暂停
-            {
-                OnPlayPause();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'S')	//按S键停止
-            {
-                OnStop();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'V')	//按V键上一曲
-            {
-                OnPrevious();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'N')	//按N键下一曲
-            {
-                OnNext();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_LEFT)	//按左方向键下快退5秒
-            {
-                OnRew();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_RIGHT)	//按右方向键下快进5秒
-            {
-                OnFF();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_UP)	//按上方向键下音量加
-            {
-                OnVolumeUp();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_DOWN)	//按下方向键音量减
-            {
-                OnVolumeDown();
-                return TRUE;
-            }
             if (pMsg->wParam == 'M')	//按M键设置循环模式
             {
                 CPlayer::GetInstance().SetRepeatMode();
@@ -2307,11 +2116,6 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             if (pMsg->wParam == 'F')	//按F键快速查找
             {
                 m_search_edit.SetFocus();
-                return TRUE;
-            }
-            if (pMsg->wParam == VK_F11)	//按F11键进入或退出全屏模式
-            {
-                OnFullScreen();
                 return TRUE;
             }
             if (pMsg->wParam == VK_ESCAPE)	//按ESC键退出全屏模式
@@ -2329,6 +2133,12 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                 return TRUE;
             }
         }
+    }
+
+    //如果焦点在搜索框内，按ESC键将焦点重新设置为主窗口
+    if (pMsg->hwnd == m_search_edit.GetSafeHwnd() && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
+    {
+        SetFocus();
     }
 
     if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))		//屏蔽按回车键和ESC键退出
@@ -3152,10 +2962,13 @@ void CMusicPlayerDlg::OnLyricDelay()
 void CMusicPlayerDlg::OnSaveModifiedLyric()
 {
     // TODO: 在此添加命令处理程序代码
-    if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())		//如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
-        CPlayer::GetInstance().m_Lyrics.SaveLyric();
-    else
-        CPlayer::GetInstance().m_Lyrics.SaveLyric2();
+    if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && CPlayer::GetInstance().m_Lyrics.IsModified())
+    {
+        if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())		//如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
+            CPlayer::GetInstance().m_Lyrics.SaveLyric();
+        else
+            CPlayer::GetInstance().m_Lyrics.SaveLyric2();
+    }
 }
 
 
