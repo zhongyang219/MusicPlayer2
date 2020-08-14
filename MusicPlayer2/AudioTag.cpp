@@ -7,6 +7,7 @@ const string png_head{ '\x89', '\x50', '\x4e', '\x47' };
 const string png_tail{ '\x49', '\x45', '\x4e', '\x44', '\xae', '\x42', '\x60', '\x82' };
 const string gif_head{ "GIF89a" };
 const string gif_tail{ '\x80', '\x00', '\x00', '\x3b' };
+const string bmp_head{ "BM" };
 
 CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 	: m_hStream{ hStream }, m_file_path{ file_path }, m_song_info{ m_song_info }
@@ -697,7 +698,7 @@ string CAudioTag::FindID3V2AlbumCover(const string & tag_content, int & image_ty
         + ((static_cast<unsigned int>(size_btyes[1]) & 0x000000ff) << 16)
         + ((static_cast<unsigned int>(size_btyes[2]) & 0x000000ff) << 8)
         + (static_cast<unsigned int>(size_btyes[3]) & 0x000000ff); //APIC标签的大小
-    string apic_tag_content = tag_content.substr(cover_index + 8, cover_size);
+    string apic_tag_content = tag_content.substr(cover_index + 8, cover_size + 2);
     size_t image_index{};
     image_index = apic_tag_content.find(jpg_head);
     image_type = -1;
@@ -718,6 +719,14 @@ string CAudioTag::FindID3V2AlbumCover(const string & tag_content, int & image_ty
             if (image_index < cover_index + 100)
             {
                 image_type = 2;
+            }
+            else
+            {
+                image_index = apic_tag_content.find(bmp_head);
+                if (image_index < cover_index + 100)
+                {
+                    image_type = 3;
+                }
             }
         }
     }

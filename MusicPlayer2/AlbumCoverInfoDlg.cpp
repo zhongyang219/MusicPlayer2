@@ -83,6 +83,9 @@ BOOL CAlbumCoverInfoDlg::OnInitDialog()
             case 2:
                 cover_type = L"gif";
                 break;
+            case 3:
+                cover_type = L"bmp";
+                break;
             default:
                 break;
             }
