@@ -272,7 +272,7 @@ public:
 	int GetAlbumCoverType() const { return m_album_cover_type; }
 	void DeleteAlbumCover();
 	
-	void ReloadPlaylist();		//重新载入播放列表
+	void ReloadPlaylist(bool refresh_info = true);		//重新载入播放列表
 
 	bool RemoveSong(int index);		//从播放列表中删除指定的项目
 	void RemoveSongs(vector<int> indexes);	//从播放列表中删除多个指定的项目
@@ -344,5 +344,7 @@ public:
     IPlayerCore* GetPlayerCore() { return m_pCore; }
     bool IsMciCore() const;
     bool IsFileOpened() const { return m_file_opend; }
+    bool IsContainSubFolder() const { return m_contain_sub_folder; }
+    void SetContainSubFolder(bool contain_sub_folder);
 };
 

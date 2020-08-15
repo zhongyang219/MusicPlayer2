@@ -262,8 +262,7 @@ void CSetPathDlg::OnDestroy()
         //如果正在播放的文件夹是否包含子文件夹的状态被改变了
         if (!m_recent_path.empty() && m_current_folder_contain_sub_folder != m_recent_path[0].contain_sub_folder)
         {
-            PathInfo path_info = m_recent_path[0];
-            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PATH_SELECTED, (WPARAM)&path_info, 0);
+            CPlayer::GetInstance().SetContainSubFolder(m_recent_path[0].contain_sub_folder);
         }
     }
 }

@@ -27,6 +27,9 @@ public:
     // bool showText: 是否在图标右侧显示文本
     void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
 
+    void ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText = false);
+    void ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
+
     void SetIconSize(int size);
     void SetCmdReciveWindow(CWnd* pWnd);        //设置响应工具按钮命令的窗口，如果不设置，则为工具栏的父窗口
 

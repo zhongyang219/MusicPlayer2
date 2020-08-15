@@ -251,7 +251,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CMusicPlayerDlg::OnMainWindowActivated)
     ON_COMMAND(ID_SORT_BY_MODIFIED_TIME, &CMusicPlayerDlg::OnSortByModifiedTime)
     ON_COMMAND(ID_SORT_BY_PATH, &CMusicPlayerDlg::OnSortByPath)
-END_MESSAGE_MAP()
+    ON_COMMAND(ID_CONTAIN_SUB_FOLDER, &CMusicPlayerDlg::OnContainSubFolder)
+ END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -725,6 +726,16 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
 		pStatic->SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
 	}
 
+    //播放列表模式下，播放列表工具栏第一个菜单为“添加”，文件夹模式下为“文件夹”
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    }
+    else
+    {
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, CCommon::LoadText(IDS_FOLDER), CCommon::LoadText(IDS_FOLDER), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
+    }
+
     if (m_miniModeDlg.m_hWnd != NULL)
     {
         m_miniModeDlg.ShowPlaylist();
@@ -1129,6 +1140,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     bool move_enable = playlist_mode && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_DOWN, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
+
+    pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (CPlayer::GetInstance().IsContainSubFolder() ? MF_CHECKED : MF_UNCHECKED));
 
     //设置“添加到播放列表”子菜单项的可用状态
     bool add_to_valid{ IsAddCurrentToPlaylist() ? true : selete_valid };
@@ -4927,4 +4940,11 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainWindowActivated(WPARAM wParam, LPARAM lPa
         SetThumbnailClipArea();		//重新设置任务栏缩略图
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnContainSubFolder()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().SetContainSubFolder(!CPlayer::GetInstance().IsContainSubFolder());
 }

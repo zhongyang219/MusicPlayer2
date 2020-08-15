@@ -1356,7 +1356,7 @@ void CPlayer::DeleteAlbumCover()
     }
 }
 
-void CPlayer::ReloadPlaylist()
+void CPlayer::ReloadPlaylist(bool refresh_info)
 {
     if (m_loading) return;
     MusicControl(Command::CLOSE);
@@ -1364,7 +1364,7 @@ void CPlayer::ReloadPlaylist()
     if(!m_playlist_mode)
     {
         m_playlist.clear();		//清空播放列表
-        IniPlayList(false, true);		//根据新路径重新初始化播放列表
+        IniPlayList(false, refresh_info);		//根据新路径重新初始化播放列表
     }
     else
     {
@@ -1373,7 +1373,7 @@ void CPlayer::ReloadPlaylist()
         playlist.LoadFromFile(m_playlist_path);
         playlist.ToSongList(m_playlist);
 
-        IniPlayList(true, true);
+        IniPlayList(true, refresh_info);
     }
 }
 
@@ -2466,4 +2466,17 @@ wstring CPlayer::GetPlaylistPath() const
 bool CPlayer::IsMciCore() const
 {
     return m_pCore->GetCoreType() == PT_MCI;
+}
+
+void CPlayer::SetContainSubFolder(bool contain_sub_folder)
+{
+    if (m_contain_sub_folder != contain_sub_folder)
+    {
+        m_contain_sub_folder = contain_sub_folder;
+        if (!IsPlaylistMode())
+        {
+            EmplaceCurrentPathToRecent();
+            ReloadPlaylist(false);
+        }
+    }
 }

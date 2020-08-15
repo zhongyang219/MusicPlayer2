@@ -47,6 +47,44 @@ void CPlayerToolBar::AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToo
     m_buttons.push_back(btn);
 }
 
+void CPlayerToolBar::ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText /*= false*/)
+{
+    if (index >= 0 && index < static_cast<int>(m_buttons.size()))
+    {
+        ToolBtn& btn{ m_buttons[index] };
+        btn.pMenu = pMenu;
+        btn.is_cmd = false;
+        btn.icon = icon;
+        if (strText != nullptr)
+            btn.text = strText;
+        btn.show_text = showText;
+        if (strToolTip != nullptr)
+        {
+            btn.tooltip_text = strToolTip;
+            m_tool_tip.UpdateTipText(btn.tooltip_text, this, index + 100);
+        }
+    }
+}
+
+void CPlayerToolBar::ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText /*= false*/)
+{
+    if (index >= 0 && index < static_cast<int>(m_buttons.size()))
+    {
+        ToolBtn& btn{ m_buttons[index] };
+        btn.cmd_id = cmdId;
+        btn.is_cmd = true;
+        btn.icon = icon;
+        if (strText != nullptr)
+            btn.text = strText;
+        btn.show_text = showText;
+        if (strToolTip != nullptr)
+        {
+            btn.tooltip_text = strToolTip;
+            m_tool_tip.UpdateTipText(btn.tooltip_text, this, index + 100);
+        }
+    }
+}
+
 void CPlayerToolBar::SetIconSize(int size)
 {
     m_icon_size = size;

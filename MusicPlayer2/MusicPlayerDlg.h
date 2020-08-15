@@ -430,4 +430,5 @@ protected:
 public:
     afx_msg void OnSortByModifiedTime();
     afx_msg void OnSortByPath();
+    afx_msg void OnContainSubFolder();
 };
