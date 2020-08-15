@@ -94,14 +94,15 @@ void CSetPathDlg::CalculateColumeWidth(vector<int>& width)
 {
 	CRect rect;
 	m_path_list.GetWindowRect(rect);
-	width.resize(6);
+	width.resize(7);
 
-	width[3] = width[4] = rect.Width() / 10;
-	width[5] = rect.Width() / 7;
+    width[3] = rect.Width() / 12;
+	width[4] = width[5] = rect.Width() / 10;
+	width[6] = rect.Width() / 8;
 
 	width[0] = theApp.DPI(40);
 	width[1] = rect.Width() / 4;
-	width[2] = rect.Width() - width[1] - width[3] - width[4] - width[5] - width[0] - theApp.DPI(20) - 1;
+	width[2] = rect.Width() - width[1] - width[3] - width[4] - width[5] - width[6] - width[0] - theApp.DPI(20) - 1;
 }
 
 void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
@@ -110,20 +111,25 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
 	m_path_list.SetItemText(index, 1, path_helper.GetFolderName().c_str());
 	m_path_list.SetItemText(index, 2, path_info.path.c_str());
 
+    if (path_info.contain_sub_folder)
+        m_path_list.SetItemText(index, 3, CCommon::LoadText(IDS_YES));
+    else
+        m_path_list.SetItemText(index, 3, _T(""));
+
 	CString str;
 	str.Format(_T("%d"), path_info.track + 1);
-	m_path_list.SetItemText(index, 3, str);
-
-	str.Format(_T("%d"), path_info.track_num);
 	m_path_list.SetItemText(index, 4, str);
 
+	str.Format(_T("%d"), path_info.track_num);
+	m_path_list.SetItemText(index, 5, str);
+
 	Time total_time{ path_info.total_time };
-	m_path_list.SetItemText(index, 5, total_time.toString3().c_str());
+	m_path_list.SetItemText(index, 6, total_time.toString3().c_str());
 }
 
 bool CSetPathDlg::IsSelectedPlayEnable() const
 {
-	return !m_recent_path.empty() && SelectValid() && (GetSelPath() != CPlayer::GetInstance().GetCurrentDir() || CPlayer::GetInstance().IsPlaylistMode());
+	return !m_recent_path.empty() && SelectValid() && (GetSelPath().path != CPlayer::GetInstance().GetCurrentDir2() || CPlayer::GetInstance().IsPlaylistMode());
 }
 
 void CSetPathDlg::OnTabEntered()
@@ -141,36 +147,12 @@ void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
 }
 
-wstring CSetPathDlg::GetSelPath() const
+PathInfo CSetPathDlg::GetSelPath() const
 {
 	if (SelectValid())
-		return m_recent_path[m_path_selected].path;
+		return m_recent_path[m_path_selected];
 	else
-		return wstring();
-}
-
-int CSetPathDlg::GetTrack() const
-{
-	if (SelectValid())
-		return m_recent_path[m_path_selected].track;
-	else
-		return 0;
-}
-
-int CSetPathDlg::GetPosition() const
-{
-	if (SelectValid())
-		return m_recent_path[m_path_selected].position;
-	else
-		return 0;
-}
-
-SortMode CSetPathDlg::GetSortMode() const
-{
-	if (SelectValid())
-		return m_recent_path[m_path_selected].sort_mode;
-	else
-		return SM_FILE;
+		return PathInfo();
 }
 
 bool CSetPathDlg::SelectValid() const
@@ -197,6 +179,7 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CSetPathDlg::OnEnChangeSearchEdit)
 	//ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CSetPathDlg::OnBnClickedClearButton)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CSetPathDlg::OnSearchEditBtnClicked)
+    ON_COMMAND(ID_CONTAIN_SUB_FOLDER, &CSetPathDlg::OnContainSubFolder)
 END_MESSAGE_MAP()
 
 
@@ -210,7 +193,10 @@ BOOL CSetPathDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 
     if(!CPlayer::GetInstance().IsPlaylistMode())
-        m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir().c_str());
+        m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir2().c_str());
+
+    if (!m_recent_path.empty())
+        m_current_folder_contain_sub_folder = m_recent_path[0].contain_sub_folder;
 
 	//设置列表控件主题颜色
 	//m_path_list.SetColor(theApp.m_app_setting_data.theme_color);
@@ -222,9 +208,10 @@ BOOL CSetPathDlg::OnInitDialog()
 	m_path_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);
 	m_path_list.InsertColumn(1, CCommon::LoadText(IDS_FOLDER), LVCFMT_LEFT, width[1]);
 	m_path_list.InsertColumn(2, CCommon::LoadText(IDS_PATH), LVCFMT_LEFT, width[2]);
-	m_path_list.InsertColumn(3, CCommon::LoadText(IDS_TRACK_PLAYED), LVCFMT_LEFT, width[3]);
-	m_path_list.InsertColumn(4, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[4]);
-	m_path_list.InsertColumn(5, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[5]);
+	m_path_list.InsertColumn(3, CCommon::LoadText(IDS_CONTAIN_SUB_FOLDER), LVCFMT_LEFT, width[3]);
+	m_path_list.InsertColumn(4, CCommon::LoadText(IDS_TRACK_PLAYED), LVCFMT_LEFT, width[4]);
+	m_path_list.InsertColumn(5, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[5]);
+	m_path_list.InsertColumn(6, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[6]);
 
 	ShowPathList();
 	m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
@@ -264,6 +251,21 @@ void CSetPathDlg::OnDestroy()
 
 	// TODO: 在此处添加消息处理程序代码
 	//m_path_selected = m_path_list.GetCurSel();
+    if (m_folder_selected)
+    {
+        PathInfo path_info = GetSelPath();
+        ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PATH_SELECTED, (WPARAM)&path_info, 0);
+        m_folder_selected = false;
+    }
+    else if (!CPlayer::GetInstance().IsPlaylistMode())
+    {
+        //如果正在播放的文件夹是否包含子文件夹的状态被改变了
+        if (!m_recent_path.empty() && m_current_folder_contain_sub_folder != m_recent_path[0].contain_sub_folder)
+        {
+            PathInfo path_info = m_recent_path[0];
+            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PATH_SELECTED, (WPARAM)&path_info, 0);
+        }
+    }
 }
 
 
@@ -317,7 +319,8 @@ void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	m_path_selected = pNMItemActivate->iItem;
-	SetButtonsEnable(m_path_selected != -1);
+    bool enable = IsSelectedPlayEnable();
+    SetButtonsEnable(enable);
 
 	//弹出右键菜单
 	CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_folder_menu.GetSubMenu(0);	//获取第一个弹出菜单
@@ -389,7 +392,11 @@ void CSetPathDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	if (SelectValid())
-		::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(),WM_PATH_SELECTED, (WPARAM)this, 0);
+    {
+        //PathInfo path_info = GetSelPath();
+        //::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PATH_SELECTED, (WPARAM)&path_info, 0);
+        m_folder_selected = true;
+    }
 	CTabDlg::OnOK();
 
     CWnd* pParent = GetParentWindow();
@@ -464,6 +471,11 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
 	pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 	pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    bool contain_sub_folder{false};
+    if (select_valid)
+        contain_sub_folder = m_recent_path[m_path_selected].contain_sub_folder;
+    pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
 }
 
 
@@ -526,4 +538,21 @@ afx_msg LRESULT CSetPathDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam
         ShowPathList();
     }
     return 0;
+}
+
+
+void CSetPathDlg::OnContainSubFolder()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (SelectValid())
+    {
+        m_recent_path[m_path_selected].contain_sub_folder = !m_recent_path[m_path_selected].contain_sub_folder;
+        SetListRowData(m_path_selected, m_recent_path[m_path_selected]);       //刷新当前行
+        //if (m_path_selected == 0)       //如果更改了正在播放的文件夹
+        //{
+        //    PathInfo path_info = m_recent_path[0];
+        //    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PATH_SELECTED, (WPARAM)&path_info, 0);
+        //}
+    }
+
 }

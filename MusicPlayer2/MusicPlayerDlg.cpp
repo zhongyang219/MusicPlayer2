@@ -2052,10 +2052,10 @@ void CMusicPlayerDlg::OnSetPath()
 
 afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
 {
-    CSetPathDlg* pPathDlg = (CSetPathDlg*)wParam;
-    if (pPathDlg != nullptr)
+    PathInfo* pPathInfo = (PathInfo*)wParam;
+    if (pPathInfo != nullptr)
     {
-        CPlayer::GetInstance().SetPath(pPathDlg->GetSelPath(), pPathDlg->GetTrack(), pPathDlg->GetPosition(), pPathDlg->GetSortMode());
+        CPlayer::GetInstance().SetPath(*pPathInfo);
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
         //ShowTime();
@@ -2224,16 +2224,23 @@ void CMusicPlayerDlg::OnFileOpenFolder()
 {
     // TODO: 在此添加命令处理程序代码
 
+    static bool include_sub_dir{ false };
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
     folderPickerDlg.SetInfo(CCommon::LoadText(IDS_OPEN_FOLDER_INFO));
 #else
     CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
     CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
+    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, CCommon::LoadText(IDS_INCLUDE_SUB_DIR), include_sub_dir);     //在打开对话框中添加一个复选框
 #endif
     if (folderPickerDlg.DoModal() == IDOK)
     {
-        CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()));
+#ifndef COMPILE_IN_WIN_XP
+        BOOL checked;
+        folderPickerDlg.GetCheckButtonState(IDC_OPEN_CHECKBOX, checked);
+        include_sub_dir = (checked != FALSE);
+#endif
+        CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir);
         //ShowPlayList();
         UpdatePlayPauseButton();
         //SetPorgressBarSize();

@@ -147,6 +147,7 @@ private:
 	ABRepeatMode m_ab_repeat_mode{};
 
     bool m_file_opend{ false };       //如果打开了一个文件，则为true
+    bool m_contain_sub_folder{ false };     //文件夹模式是否包含子文件夹
 
     AlbumCoverInfo m_album_cover_info;
 
@@ -220,9 +221,9 @@ public:
 	bool PlayTrack(int song_track);		//播放指定序号的歌曲
 
 	void SetVolume();		//用m_volume的值设置音量
-	void SetPath(const wstring& path, int track, int position, SortMode sort_mode);		//设置路径
+	void SetPath(const PathInfo& path_info);		//设置路径
     void SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false);
-	void OpenFolder(wstring path, bool play = false);	//通过“打开文件夹”来设置路径的处理
+	void OpenFolder(wstring path, bool contain_sub_folder = false, bool play = false);	//通过“打开文件夹”来设置路径的处理
 	void OpenFiles(const vector<wstring>& files, bool play = true);	//打开多个文件，play用来设置是否立即播放
 	void OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index = 0, bool play = true);	//打开多个文件并覆盖临时播放列表，play用来设置是否立即播放
 	void OpenAFile(wstring file, bool play = false);	//在文件夹模式下打开一个文件
@@ -255,7 +256,8 @@ public:
 	vector<SongInfo>& GetPlayList() { return m_playlist; }	//获取播放列表的引用
 	Time GetAllSongLength(int track) const;				//获取指定序号的歌曲的长度
 	int GetSongNum() const;			//获取歌曲总数
-    wstring GetCurrentDir() const;   	//获取当前目录
+    wstring GetCurrentDir() const;   	//获取当前播放曲目的目录
+    wstring GetCurrentDir2() const;     //获取当前目录（文件夹模式下获取文件夹的目录，而不是正在播放曲目的目录）
     wstring GetCurrentFolderOrPlaylistName() const;
     wstring GetCurrentFilePath() const;		//获取正在播放文件的路径
 	int GetIndex() const { return m_index; }		//获取当前播放的曲目序号

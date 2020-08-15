@@ -113,7 +113,7 @@ void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
             if (COSUPlayerHelper::IsOsuFolder(m_path))
                 COSUPlayerHelper::GetOSUAudioFiles(m_path, m_playlist);
             else
-                CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM);
+                CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
         }
         //m_index = 0;
         //m_song_num = m_playlist.size();
@@ -766,7 +766,7 @@ void CPlayer::ChangePath(const wstring& path, int track, bool play)
     //IniLyrics();
 }
 
-void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sort_mode)
+void CPlayer::SetPath(const PathInfo& path_info)
 {
     if (m_loading)
         return;
@@ -775,9 +775,10 @@ void CPlayer::SetPath(const wstring& path, int track, int position, SortMode sor
         EmplaceCurrentPlaylistToRecent();
     else
         EmplaceCurrentPathToRecent();
-    m_sort_mode = sort_mode;
-    ChangePath(path, track);
-    m_current_position.fromInt(position);
+    m_sort_mode = path_info.sort_mode;
+    m_contain_sub_folder = path_info.contain_sub_folder;
+    ChangePath(path_info.path, path_info.track);
+    m_current_position.fromInt(path_info.position);
     //MusicControl(Command::SEEK);
     EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
 
@@ -828,7 +829,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     IniPlayList(true, false, play);
 }
 
-void CPlayer::OpenFolder(wstring path, bool play)
+void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
 {
     if (m_loading) return;
     IniPlayerCore();
@@ -838,6 +839,7 @@ void CPlayer::OpenFolder(wstring path, bool play)
     int track;
     int position;
     if (GetSongNum() > 0) EmplaceCurrentPathToRecent();		//如果当前路径有歌曲，就保存当前路径到最近路径
+    m_contain_sub_folder = contain_sub_folder;
     //检查打开的路径是否已经存在于最近路径中
     for (const auto& a_path_info : m_recent_path)
     {
@@ -1288,6 +1290,14 @@ wstring CPlayer::GetCurrentDir() const
     wstring current_file_path = GetCurrentFilePath();
     CFilePathHelper path_helper(current_file_path);
     return path_helper.GetDir();
+}
+
+wstring CPlayer::GetCurrentDir2() const
+{
+    if (m_playlist_mode)
+        return GetCurrentDir();
+    else
+        return m_path;
 }
 
 wstring CPlayer::GetCurrentFolderOrPlaylistName() const
@@ -1851,15 +1861,19 @@ void CPlayer::SaveRecentPath() const
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << m_recent_path.size();		//写入m_recent_path容器的大小
+    const unsigned int version{ 1u };
+    ar << static_cast<unsigned int>(m_recent_path.size());		//写入m_recent_path容器的大小
+    ar << version;     //写入文件的版本
     for (auto& path_info : m_recent_path)
     {
         ar << CString(path_info.path.c_str())
-           << path_info.track
-           << path_info.position
-           << static_cast<int>(path_info.sort_mode)
-           << path_info.track_num
-           << path_info.total_time;
+            << path_info.track
+            << path_info.position
+            << static_cast<int>(path_info.sort_mode)
+            << path_info.track_num
+            << path_info.total_time
+            << static_cast<BYTE>(path_info.contain_sub_folder)
+            ;
     }
     // 关闭CArchive对象
     ar.Close();
@@ -1893,17 +1907,20 @@ void CPlayer::LoadRecentPath()
         m_path = L".\\songs\\";		//默认的路径
         return;
     }
+
     // 构造CArchive对象
     CArchive ar(&file, CArchive::load);
     // 读数据
-    size_t size{};
+    unsigned int size{};
     PathInfo path_info;
     CString temp;
     int sort_mode;
+    unsigned int version{};
     try
     {
         ar >> size;		//读取映射容器的长度
-        for (size_t i{}; i < size; i++)
+        ar >> version;  //读取数据文件的版本
+        for (unsigned int i{}; i < size; i++)
         {
             ar >> temp;
             path_info.path = temp;
@@ -1913,6 +1930,13 @@ void CPlayer::LoadRecentPath()
             path_info.sort_mode = static_cast<SortMode>(sort_mode);
             ar >> path_info.track_num;
             ar >> path_info.total_time;
+            if (version >= 1)
+            {
+                BYTE contain_sub_folder;
+                ar >> contain_sub_folder;
+                path_info.contain_sub_folder = (contain_sub_folder != 0);
+            }
+
             if (path_info.path.empty() || path_info.path.size() < 2) continue;		//如果路径为空或路径太短，就忽略它
             if (path_info.path.back() != L'/' && path_info.path.back() != L'\\')	//如果读取到的路径末尾没有斜杠，则在末尾加上一个
                 path_info.path.push_back(L'\\');
@@ -1942,6 +1966,7 @@ void CPlayer::LoadRecentPath()
 
             m_index = m_recent_path[0].track;
             m_current_position.fromInt(m_recent_path[0].position);
+            m_contain_sub_folder = m_recent_path[0].contain_sub_folder;
         }
         else
         {
@@ -2020,6 +2045,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
     path_info.sort_mode = m_sort_mode;
     path_info.track_num = GetSongNum();
     path_info.total_time = m_total_time;
+    path_info.contain_sub_folder = m_contain_sub_folder;
     if (GetSongNum() > 0)
         m_recent_path.push_front(path_info);		//当前路径插入到m_recent_path的前面
 }

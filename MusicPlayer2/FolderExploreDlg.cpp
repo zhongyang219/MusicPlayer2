@@ -509,7 +509,7 @@ void CFolderExploreDlg::OnOK()
 	if (m_left_selected)        //选中左侧树时，播放选中文件夹
 	{
 		wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
-		CPlayer::GetInstance().OpenFolder(folder_path, true);
+		CPlayer::GetInstance().OpenFolder(folder_path, true, true);
 		CTabDlg::OnOK();
 		CWnd* pParent = GetParentWindow();
 		if (pParent != nullptr)

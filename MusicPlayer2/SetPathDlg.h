@@ -40,6 +40,8 @@ protected:
 
 	vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
 	bool m_searched{ false };				//是否处理搜索状态
+    bool m_folder_selected{ false };
+    bool m_current_folder_contain_sub_folder{ false };      //初始时正在播放的文件夹是否包含子文件夹
 
 protected:
 	void ShowPathList();
@@ -53,10 +55,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	wstring GetSelPath() const;		//获取选择的路径
-	int GetTrack() const;
-	int GetPosition() const;
-	SortMode GetSortMode() const;
+    PathInfo GetSelPath() const;		//获取选择的路径
+	//int GetTrack() const;
+	//int GetPosition() const;
+	//SortMode GetSortMode() const;
 	bool SelectValid() const;		//判断选择是否有效
 
 	virtual BOOL OnInitDialog();
@@ -81,4 +83,6 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnContainSubFolder();
 };

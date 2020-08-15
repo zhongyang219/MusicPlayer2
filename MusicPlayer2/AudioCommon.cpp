@@ -99,7 +99,7 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
         return wstring(extension + CCommon::LoadText(_T(" "), IDS_AUDIO_FILE).GetString());
 }
 
-void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file)
+void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file, bool include_sub_dir)
 {
     //文件句柄
     intptr_t hFile = 0;
@@ -113,7 +113,16 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
         do
         {
             if (files.size() >= max_file) break;
-            if (!CCommon::IsFolder(path + fileinfo.name) && FileIsAudio(wstring(fileinfo.name)))	//如果找到的文件是音频文件，则保存到容器中
+            wstring file_name = fileinfo.name;
+            if (file_name == L"." || file_name == L"..")
+                continue;
+
+            if (CCommon::IsFolder(path + file_name))        //当前是文件夹，则递归调用
+            {
+                if (include_sub_dir)
+                    GetAudioFiles(path + file_name, files, max_file, true);
+            }
+            else if (FileIsAudio(wstring(fileinfo.name)))	//如果找到的文件是音频文件，则保存到容器中
             {
                 //song_info.file_name = fileinfo.name;
                 song_info.file_path = path + fileinfo.name;

@@ -47,7 +47,7 @@ struct TAG_ID3V1
 	BYTE genre;
 };
 
-//储存路径信息
+//文件夹模式下一个文件夹的信息
 struct PathInfo
 {
 	wstring path;		//路径
@@ -56,6 +56,7 @@ struct PathInfo
 	SortMode sort_mode{};	//路径中文件的排序方式
 	int track_num{};		//路径中音频文件的数量
 	int total_time{};		//路径中音频文件的总时间
+    bool contain_sub_folder{};  //是否包含子文件夹
 
 	//PathInfo(wstring _path, int _track, int _position, SortMode _sort_mode) :
 	//	path{ _path }, track{ _track }, position{ _position }, sort_mode{ _sort_mode }
@@ -249,7 +250,7 @@ public:
 	static wstring GetAudioDescriptionByExtension(wstring extension);
 
 	//查找path目录下的所有音频文件，并将文件名保存到files容器中，并限定最大文件数为max_file
-	static void GetAudioFiles(wstring path, std::vector<SongInfo>& files, size_t max_file = 20000);
+	static void GetAudioFiles(wstring path, std::vector<SongInfo>& files, size_t max_file = 20000, bool include_sub_dir = false);
     static void GetAudioFiles(wstring path, std::vector<std::wstring>& files, size_t max_file = 20000, bool include_sub_dir = false);
     
     //判断一个目录下是否包含音频文件

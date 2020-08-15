@@ -599,6 +599,7 @@
 #define IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED 496
 #define IDS_CONVERT_ERROR_ENCODE_PARA_ERROR 497
 #define IDS_CONVERT_ERROR_MIDI_NO_SF2   498
+#define IDS_CONTAIN_SUB_FOLDER          499
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1293,13 +1294,15 @@
 #define ID_UNLINK_LYRIC                 33184
 #define ID_SHOW_DESKTOP_LYRIC           33185
 #define ID_33186                        33186
+#define ID_33187                        33187
+#define ID_CONTAIN_SUB_FOLDER           33188
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        480
-#define _APS_NEXT_COMMAND_VALUE         33187
+#define _APS_NEXT_COMMAND_VALUE         33189
 #define _APS_NEXT_CONTROL_VALUE         1177
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
