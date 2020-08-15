@@ -250,6 +250,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SHOW_DESKTOP_LYRIC, &CMusicPlayerDlg::OnShowDesktopLyric)
     ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CMusicPlayerDlg::OnMainWindowActivated)
     ON_COMMAND(ID_SORT_BY_MODIFIED_TIME, &CMusicPlayerDlg::OnSortByModifiedTime)
+    ON_COMMAND(ID_SORT_BY_PATH, &CMusicPlayerDlg::OnSortByPath)
 END_MESSAGE_MAP()
 
 
@@ -1186,6 +1187,9 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         {
         case SM_FILE:
             pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_FILE, MF_BYCOMMAND | MF_CHECKED);
+            break;
+        case SM_PATH:
+            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_PATH, MF_BYCOMMAND | MF_CHECKED);
             break;
         case SM_TITLE:
             pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_TITLE, MF_BYCOMMAND | MF_CHECKED);
@@ -2657,6 +2661,15 @@ void CMusicPlayerDlg::OnSortByModifiedTime()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().m_sort_mode = SM_TIME;
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByPath()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().m_sort_mode = SM_PATH;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
 }

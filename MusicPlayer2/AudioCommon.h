@@ -26,6 +26,7 @@ enum AudioType
 enum SortMode
 {
 	SM_FILE,
+    SM_PATH,
 	SM_TITLE,
 	SM_ARTIST,
 	SM_ALBUM,

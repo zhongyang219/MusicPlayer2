@@ -1795,6 +1795,9 @@ void CPlayer::SortPlaylist(bool change_index)
     case SM_FILE:
         std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
         break;
+    case SM_PATH:
+        std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPath);
+        break;
     case SM_TITLE:
         std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitle);
         break;

@@ -65,6 +65,11 @@ struct SongInfo
     {
         return CCommon::StringCompareInLocalLanguage(a.GetFileName(), b.GetFileName()) < 0;
     }
+    //根据文件路径的比较函数，用于以文件路径排序
+    static bool ByPath(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) < 0;
+    }
     //根据标题的比较函数，用于以标题排序
     static bool ByTitle(const SongInfo& a, const SongInfo& b)
     {

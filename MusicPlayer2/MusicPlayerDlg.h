@@ -429,4 +429,5 @@ protected:
     afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnSortByModifiedTime();
+    afx_msg void OnSortByPath();
 };
