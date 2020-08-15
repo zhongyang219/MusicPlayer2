@@ -203,7 +203,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				if (song_index < 0 || song_index >= static_cast<int>(m_all_song_info.size()))
 					return;
-                if (CPlayer::GetInstance().IsPlaylistMode())
+                if (CPlayer::GetInstance().IsPlaylistMode() || CPlayer::GetInstance().IsContainSubFolder())
                 {
                     str_tip += CCommon::LoadText(IDS_PATH, _T(": "));
                     str_tip += m_all_song_info[song_index].file_path.c_str();
@@ -272,7 +272,10 @@ void CPlayListCtrl::PreSubclassWindow()
 	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	//初始化播放列表
-	SetExtendedStyle(GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_DOUBLEBUFFER);
+    DWORD style = GetExtendedStyle();
+    style = (style | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_DOUBLEBUFFER);
+    style &= ~LVS_EX_LABELTIP;      //播放列表控件使用自己的鼠标提示，因此不需要LVS_EX_LABELTIP样式
+	SetExtendedStyle(style);
 	vector<int> width;
 	CalculateColumeWidth(width);
 	InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);		//插入第1列
