@@ -3357,7 +3357,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         //绘制主界面
         if (pThis->IsWindowVisible() && !pThis->IsIconic()
             && (CPlayer::GetInstance().IsPlaying() || pPara->is_active_window || pPara->draw_reset || pPara->ui_force_refresh || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating())
-            && !pPara->is_active_window_maxmize
+            && (!pPara->is_active_window_maxmize || theApp.m_nc_setting_data.always_on_top)
             )
             //窗口最小化、隐藏，以及窗口未激活并且未播放时不刷新界面，以降低CPU利用率
         {
