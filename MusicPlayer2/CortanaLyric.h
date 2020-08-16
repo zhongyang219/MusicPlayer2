@@ -46,7 +46,7 @@ private:
     	reset:	如果为true则重置滚动位置
     	scroll_pixel:	文本滚动一次移动的像素值（这个值越大则滚动越快）
     */
-    void DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel);
+    void DrawCortanaText(LPCTSTR str, bool reset, double scroll_pixel);
 
     /* 在Cortana搜索框上绘制动态显示歌词的文本
     参数：
@@ -61,6 +61,8 @@ private:
 
     CRect TextRect() const;
     CRect CoverRect() const;
+
+    double GetScrollTextPixel() const;
 
 private:
     bool m_enable;

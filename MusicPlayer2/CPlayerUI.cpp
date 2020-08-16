@@ -85,7 +85,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     tmp.MoveToX(tmp.left + DPI(52));
     tmp.right = draw_rect.right - EdgeMargin(true) - top_right_icon_size;
     static CDrawCommon::ScrollInfo scroll_info2;
-    m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info2, reset);
+    m_draw.DrawScrollText2(tmp, lable1_content.c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info2, reset);
     //显示艺术家
     tmp.MoveToXY(text_start.x, text_start.y + 2 * text_height);
     tmp.right = tmp.left + DPI(52);
@@ -96,7 +96,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     if (CPlayer::GetInstance().IsMidi())
         m_draw.DrawWindowText(tmp, lable2_content.c_str(), m_colors.color_text);
     else
-        m_draw.DrawScrollText2(tmp, lable2_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info3, reset);
+        m_draw.DrawScrollText2(tmp, lable2_content.c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info3, reset);
     //显示唱片集
     tmp.MoveToXY(text_start.x, text_start.y + 3 * text_height);
     tmp.right = tmp.left + DPI(52);
@@ -104,7 +104,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     tmp.MoveToX(tmp.left + DPI(52));
     tmp.right = draw_rect.right - EdgeMargin(true);
     static CDrawCommon::ScrollInfo scroll_info4;
-    m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info4, reset);
+    m_draw.DrawScrollText2(tmp, lable3_content.c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info4, reset);
     //显示文件格式和比特率
     tmp.MoveToXY(text_start.x, text_start.y + 4 * text_height);
     tmp.right = tmp.left + DPI(52);
@@ -112,7 +112,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     tmp.MoveToX(tmp.left + DPI(52));
     tmp.right = draw_rect.right - EdgeMargin(true);
     static CDrawCommon::ScrollInfo scroll_info5;
-    m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, DPI(1), false, scroll_info5, reset);
+    m_draw.DrawScrollText2(tmp, lable4_content.c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info5, reset);
 
     //显示频谱分析
     CRect spectral_rect{ CPoint{draw_rect.left + EdgeMargin(true), draw_rect.top + EdgeMargin(false)}, SpectralSize() };

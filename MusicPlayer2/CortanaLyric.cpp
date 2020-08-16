@@ -146,13 +146,13 @@ void CCortanaLyric::DrawInfo()
                 //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
                 if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
                 {
-                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, theApp.DPI(2));
+                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, GetScrollTextPixel());
                     index = CPlayer::GetInstance().GetIndex();
                     song_name = CPlayer::GetInstance().GetFileName();
                 }
                 else
                 {
-                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, theApp.DPI(2));
+                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, GetScrollTextPixel());
                 }
             }
         }
@@ -242,7 +242,7 @@ void CCortanaLyric::DrawCortanaTextSimple(LPCTSTR str, Alignment align)
     }
 }
 
-void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, int scroll_pixel)
+void CCortanaLyric::DrawCortanaText(LPCTSTR str, bool reset, double scroll_pixel)
 {
     if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
     {
@@ -332,6 +332,18 @@ CRect CCortanaLyric::CoverRect() const
     CRect cover_rect = m_cortana_rect;
     cover_rect.right = cover_rect.left + m_cover_width;
     return cover_rect;
+}
+
+double CCortanaLyric::GetScrollTextPixel() const
+{
+    //界面刷新频率越高，即界面刷新时间间隔越小，则每次滚动的像素值就要越小
+    double pixel = static_cast<double>(theApp.m_app_setting_data.ui_refresh_interval) *0.025 + 0.2;
+    pixel = static_cast<double>(theApp.GetDPI()) * pixel / 96;
+    if (pixel < 0.1)
+        pixel = 0.1;
+    if (pixel > 0.5 && pixel < 1)
+        pixel = 1;
+    return pixel;
 }
 
 void CCortanaLyric::ResetCortanaText()

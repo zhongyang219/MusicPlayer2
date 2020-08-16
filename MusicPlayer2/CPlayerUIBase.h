@@ -131,6 +131,8 @@ protected:
 
     int DPI(int pixel);
     int DPI(double pixel);
+    double DPIDouble(double pixel);
+    double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
 
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
 

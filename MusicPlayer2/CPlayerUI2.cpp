@@ -68,7 +68,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         rc_tmp.MoveToY(rc_tmp.bottom);
         wstring format_str = GetDisplayFormatString();
         static CDrawCommon::ScrollInfo scroll_info2;
-        m_draw.DrawScrollText(rc_tmp, format_str.c_str(), m_colors.color_text, DPI(1.5), false, scroll_info2, reset);
+        m_draw.DrawScrollText(rc_tmp, format_str.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);
 
         //计算专辑封面的位置
         int bottom_height;		//专辑封面底部到绘图区询问的距离
@@ -169,12 +169,12 @@ void CPlayerUI2::_DrawInfo(bool reset)
         rc_tmp.bottom = rc_tmp.top + text_height2;
         m_draw.SetFont(&theApp.m_font_set.title.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_title;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), m_colors.color_text, DPI(1), true, scroll_info_title, reset);
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_title, reset);
 
         rc_tmp.MoveToY(rc_tmp.bottom);
         m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_artist;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), m_colors.color_text, DPI(1), true, scroll_info_artist, reset);
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_artist, reset);
 
         //绘制控制条
         rc_tmp.MoveToY(rc_spectrum_area.bottom + DPI(4));
@@ -303,12 +303,12 @@ void CPlayerUI2::_DrawInfo(bool reset)
         rc_tmp.bottom = rc_tmp.top + text_height2;
         m_draw.SetFont(&theApp.m_font_set.title.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_title;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), m_colors.color_text, DPI(1), true, scroll_info_title, reset);
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_title, reset);
 
         rc_tmp.MoveToY(rc_tmp.bottom);
         m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_artist;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), m_colors.color_text, DPI(1), true, scroll_info_artist, reset);
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_artist, reset);
 
         //绘制工具条
         rc_tmp.MoveToY(rc_tmp.bottom + DPI(4));

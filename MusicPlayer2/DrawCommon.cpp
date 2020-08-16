@@ -162,7 +162,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 	}
 }
 
-void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset)
+void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, double pixel, bool center, ScrollInfo& scroll_info, bool reset)
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
@@ -243,7 +243,7 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
 	}
 }
 
-void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo & scroll_info, bool reset)
+void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, double pixel, bool center, ScrollInfo & scroll_info, bool reset)
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;

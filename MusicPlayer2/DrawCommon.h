@@ -83,14 +83,14 @@ public:
     //rect: 文本的矩形区域
     //lpszString: 要绘制的文本
     //color: 文本的颜色
-    //pixel: 此函数调用一次滚动的像素值
+    //pixel: 此函数调用一次滚动的像素值，值越小滚动越慢
     //center: 文本是否居中
     //scroll_info: 用来保存一些当前文本滚动的状态信息
     //reset: 如果reset为true，则重置scroll_info，并滚动到初始位置
-    void DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);
+    void DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, double pixel, bool center, ScrollInfo& scroll_info, bool reset = false);
 
     //函数功能和DrawScrollText一样，只是这个函数只会从左到右滚动，不会更换方向
-    void DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, int pixel, bool center, ScrollInfo& scroll_info, bool reset = false);
+    void DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color, double pixel, bool center, ScrollInfo& scroll_info, bool reset = false);
 
     static void SetDrawArea(CDC* pDC, CRect rect);
     void SetDrawArea(CRect rect);

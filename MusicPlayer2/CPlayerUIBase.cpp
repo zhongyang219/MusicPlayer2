@@ -538,7 +538,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
     if(rc_tmp.Width() >= DPI(4))
     {
         static CDrawCommon::ScrollInfo scroll_info1;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetDisplayName().c_str(), m_colors.color_text, DPI(1.5), false, scroll_info1, reset);
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetDisplayName().c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info1, reset);
     }
 }
 
@@ -1057,6 +1057,30 @@ int CPlayerUIBase::DPI(double pixel)
         return theApp.DPI(pixel);
 }
 
+double CPlayerUIBase::DPIDouble(double pixel)
+{
+    double rtn_val = static_cast<double>(theApp.GetDPI()) * pixel / 96;
+    if (m_ui_data.full_screen)
+        rtn_val *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
+    return rtn_val;
+}
+
+double CPlayerUIBase::GetScrollTextPixel(bool slower)
+{
+    //界面刷新频率越高，即界面刷新时间间隔越小，则每次滚动的像素值就要越小
+    double pixel{};
+    if (slower)
+        pixel = static_cast<double>(theApp.m_app_setting_data.ui_refresh_interval) *0.01 + 0.2;
+    else
+        pixel = static_cast<double>(theApp.m_app_setting_data.ui_refresh_interval) *0.0125 + 0.2;
+    pixel = DPIDouble(pixel);
+    if (pixel < 0.1)
+        pixel = 0.1;
+    if (pixel > 0.5 && pixel < 1)
+        pixel = 1;
+    return pixel;
+}
+
 bool CPlayerUIBase::IsDrawLargeIcon()
 {
     return theApp.m_ui_data.full_screen;
@@ -1413,7 +1437,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         static CDrawCommon::ScrollInfo scroll_info0;
         CString info;
         info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum() });
-        m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, DPI(1.5), false, scroll_info0, reset);
+        m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, GetScrollTextPixel(), false, scroll_info0, reset);
     }
 	//显示AB重复状态
 	else if (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE)
@@ -1430,7 +1454,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     {
         CString info = CCommon::LoadTextFormat(IDS_UPDATING_MEDIA_LIB_INFO, { theApp.m_media_num_added });
         static CDrawCommon::ScrollInfo scroll_info2;
-        m_draw.DrawScrollText(rect, info, m_colors.color_text, DPI(1.5), false, scroll_info2, reset);
+        m_draw.DrawScrollText(rect, info, m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);
     }
     else
     {
