@@ -74,51 +74,91 @@ BOOL CMediaLibDlg::OnInitDialog()
 
     SetIcon(theApp.m_icon_set.media_lib.GetIcon(true), FALSE);
 
+    //为每个标签添加图标
+    CImageList ImageList;
+    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
+
     //创建子对话框
+    //文件夹
     m_path_dlg.Create(IDD_SET_PATH_DIALOG);
+    ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
+    m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
+    
+    //播放列表
     m_playlist_dlg.Create(IDD_SELECT_PLAYLIST_DIALOG);
-    m_artist_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
-    m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
-    m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
-    m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
-    m_type_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
-    m_bitrate_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
-	m_all_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
-	m_recent_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
-    m_folder_explore_dlg.Create(IDD_FOLDER_EXPLORE_DIALOG);
+    ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
+    m_tab_ctrl.AddWindow(&m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
+
+    //艺术家
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_ARTIST)
+    {
+        m_artist_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));
+        m_tab_ctrl.AddWindow(&m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
+    }
+    //唱片集
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_ALBUM)
+    {
+        m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
+        m_tab_ctrl.AddWindow(&m_album_dlg, CCommon::LoadText(IDS_ALBUM));
+    }
+    //流派
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_GENRE)
+    {
+        m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));
+        m_tab_ctrl.AddWindow(&m_genre_dlg, CCommon::LoadText(IDS_GENRE));
+    }
+    //年份
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_YEAR)
+    {
+        m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
+        m_tab_ctrl.AddWindow(&m_year_dlg, CCommon::LoadText(IDS_YEAR));
+    }
+    //类型
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_TYPE)
+    {
+        m_type_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        ImageList.Add(theApp.m_icon_set.file_relate);
+        m_tab_ctrl.AddWindow(&m_type_dlg, CCommon::LoadText(IDS_FILE_TYPE));
+    }
+    //比特率
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_BITRATE)
+    {
+        m_bitrate_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        ImageList.Add(theApp.m_icon_set.convert);
+        m_tab_ctrl.AddWindow(&m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
+    }
+    //所有曲目
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_ALL)
+    {
+        m_all_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
+        ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
+        m_tab_ctrl.AddWindow(&m_all_media_dlg, CCommon::LoadText(IDS_ALL_TRACKS));
+    }
+    //最近播放
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_RECENT)
+    {
+        m_recent_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
+        ImageList.Add(theApp.m_icon_set.recent_songs.GetIcon(true));
+        m_tab_ctrl.AddWindow(&m_recent_media_dlg, CCommon::LoadText(IDS_RECENT_PLAYED));
+    }
+    //文件夹浏览
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_FOLDER_EXPLORE)
+    {
+        m_folder_explore_dlg.Create(IDD_FOLDER_EXPLORE_DIALOG);
+        ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));
+        m_tab_ctrl.AddWindow(&m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));
+    }
 
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
     m_tab_ctrl.AdjustTabWindowSize();
 
-    //为每个标签添加图标
-    CImageList ImageList;
-    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));		//文件夹
-    ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));		//播放列表
-    ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));				//艺术家
-    ImageList.Add(theApp.m_icon_set.album.GetIcon(true));				//唱片集
-    ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));				//流派
-    ImageList.Add(theApp.m_icon_set.year.GetIcon(true));				//年份
-    ImageList.Add(theApp.m_icon_set.music);				//类型
-    ImageList.Add(theApp.m_icon_set.convert);				//比特率
-    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));			//所有曲目
-    ImageList.Add(theApp.m_icon_set.recent_songs.GetIcon(true));		//最近播放
-    ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));		//文件夹浏览
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 
-    //添加对话框
-    m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
-    m_tab_ctrl.AddWindow(&m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
-    m_tab_ctrl.AddWindow(&m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
-    m_tab_ctrl.AddWindow(&m_album_dlg, CCommon::LoadText(IDS_ALBUM));
-    m_tab_ctrl.AddWindow(&m_genre_dlg, CCommon::LoadText(IDS_GENRE));
-    m_tab_ctrl.AddWindow(&m_year_dlg, CCommon::LoadText(IDS_YEAR));
-    m_tab_ctrl.AddWindow(&m_type_dlg, CCommon::LoadText(IDS_FILE_TYPE));
-    m_tab_ctrl.AddWindow(&m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
-	m_tab_ctrl.AddWindow(&m_all_media_dlg, CCommon::LoadText(IDS_ALL_TRACKS));
-	m_tab_ctrl.AddWindow(&m_recent_media_dlg, CCommon::LoadText(IDS_RECENT_PLAYED));
-    m_tab_ctrl.AddWindow(&m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));
     m_tab_ctrl.SetCurTab(m_init_tab);
 
     //获取初始时窗口的大小

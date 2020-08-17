@@ -104,6 +104,16 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
 
     m_ignore_exist_chk.SetCheck(m_data.ignore_songs_already_in_playlist);
 
+    CheckDlgButton(IDC_ARTIST_CHECK, m_data.display_item & MLDI_ARTIST);
+    CheckDlgButton(IDC_ALBUM_CHECK, m_data.display_item & MLDI_ALBUM);
+    CheckDlgButton(IDC_GENRE_CHECK, m_data.display_item & MLDI_GENRE);
+    CheckDlgButton(IDC_YEAR_CHECK, m_data.display_item & MLDI_YEAR);
+    CheckDlgButton(IDC_FILE_TYPE_CHECK, m_data.display_item & MLDI_TYPE);
+    CheckDlgButton(IDC_BITRATE_CHECK, m_data.display_item & MLDI_BITRATE);
+    CheckDlgButton(IDC_ALL_CHECK, m_data.display_item & MLDI_ALL);
+    CheckDlgButton(IDC_RECENT_CHECK, m_data.display_item & MLDI_RECENT);
+    CheckDlgButton(IDC_FOLDER_EXPLORE_CHECK, m_data.display_item & MLDI_FOLDER_EXPLORE);
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -228,4 +238,31 @@ void CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.ignore_songs_already_in_playlist = (m_ignore_exist_chk.GetCheck() != 0);
+}
+
+
+void CMediaLibSettingDlg::OnOK()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    m_data.display_item = 0;
+    if (IsDlgButtonChecked(IDC_ARTIST_CHECK))
+        m_data.display_item |= MLDI_ARTIST;
+    if (IsDlgButtonChecked(IDC_ALBUM_CHECK))
+        m_data.display_item |= MLDI_ALBUM;
+    if (IsDlgButtonChecked(IDC_GENRE_CHECK))
+        m_data.display_item |= MLDI_GENRE;
+    if (IsDlgButtonChecked(IDC_YEAR_CHECK))
+        m_data.display_item |= MLDI_YEAR;
+    if (IsDlgButtonChecked(IDC_FILE_TYPE_CHECK))
+        m_data.display_item |= MLDI_TYPE;
+    if (IsDlgButtonChecked(IDC_BITRATE_CHECK))
+        m_data.display_item |= MLDI_BITRATE;
+    if (IsDlgButtonChecked(IDC_ALL_CHECK))
+        m_data.display_item |= MLDI_ALL;
+    if (IsDlgButtonChecked(IDC_RECENT_CHECK))
+        m_data.display_item |= MLDI_RECENT;
+    if (IsDlgButtonChecked(IDC_FOLDER_EXPLORE_CHECK))
+        m_data.display_item |= MLDI_FOLDER_EXPLORE;
+
+    CTabDlg::OnOK();
 }

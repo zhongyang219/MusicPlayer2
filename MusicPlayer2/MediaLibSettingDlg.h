@@ -54,4 +54,5 @@ public:
 	afx_msg void OnCbnSelchangePlaylistDisplayModeOmbo();
 	afx_msg void OnCbnSelchangeRecentPlayedRangeOmbo();
     afx_msg void OnBnClickedIgnoreExistCheck();
+    virtual void OnOK();
 };

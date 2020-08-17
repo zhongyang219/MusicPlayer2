@@ -285,6 +285,19 @@ struct GlobalHotKeySettingData
     bool global_multimedia_key_enable{ true };	//是否在全局范围内启用多媒体键
 };
 
+enum MediaLibDisplayItem
+{
+    MLDI_ARTIST = 1,
+    MLDI_ALBUM = (1 << 1),
+    MLDI_GENRE = (1 << 2),
+    MLDI_YEAR = (1 << 3),
+    MLDI_TYPE = (1 << 4),
+    MLDI_BITRATE = (1 << 5),
+    MLDI_ALL = (1 << 6),
+    MLDI_RECENT = (1 << 7),
+    MLDI_FOLDER_EXPLORE = (1 << 8)
+};
+
 struct MediaLibSettingData
 {
     vector<wstring> media_folders;      //媒体库文件夹浏览中显示的文件夹
@@ -295,6 +308,7 @@ struct MediaLibSettingData
 	DisplayFormat display_format{};		//播放列表中项目的显示样式
     bool ignore_songs_already_in_playlist{ true };  //向播放列表中添加曲目时忽略已存在的曲目
 	RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
+    int display_item{};                 //媒体库显示的项目
 };
 
 struct NonCategorizedSettingData

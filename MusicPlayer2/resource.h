@@ -689,13 +689,19 @@
 #define IDC_FIND_ALBUM_CHECK            1028
 #define IDC_SHOW_LYRIC_IN_CORTANA       1028
 #define IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK 1028
+#define IDC_ARTIST_CHECK                1028
 #define IDC_LYRIC_PATH_EDIT             1029
+#define IDC_BITRATE_CHECK               1029
 #define IDC_EXPLORE_LYRIC_BUTTON        1030
+#define IDC_ALL_CHECK                   1030
 #define IDC_SLIDER1                     1031
 #define IDC_TRANSPARENT_SLIDER          1031
+#define IDC_RECENT_CHECK                1031
 #define IDC_SLIDER2                     1032
+#define IDC_RECENT_CHECK2               1032
 #define IDC_TRANSPARENT_STATIC          1033
 #define IDC_SLIDER3                     1033
+#define IDC_FOLDER_EXPLORE_CHECK        1033
 #define IDC_FILE_NAME_EDIT              1034
 #define IDC_SLIDER4                     1034
 #define IDC_FILE_PATH_EDIT              1035
@@ -924,6 +930,10 @@
 #define IDC_CHECK8                      1175
 #define IDC_BTN_ROUND_CORNERS_CHECK     1175
 #define IDC_UI_STATIC                   1176
+#define IDC_ALBUM_CHECK                 1177
+#define IDC_GENRE_CHECK                 1178
+#define IDC_YEAR_CHECK                  1179
+#define IDC_FILE_TYPE_CHECK             1180
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1305,7 +1315,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        480
 #define _APS_NEXT_COMMAND_VALUE         33189
-#define _APS_NEXT_CONTROL_VALUE         1177
+#define _APS_NEXT_CONTROL_VALUE         1178
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
