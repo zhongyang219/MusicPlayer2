@@ -111,6 +111,28 @@ void CMediaClassifyDlg::ShowClassifyList()
 		m_list_data_left.push_back(std::move(row_data));
     }
 
+    if (m_type == CMediaClassifier::CT_BITRATE)
+    {
+        //如果类型是比特率，则对其进行自定义排序
+        std::sort(m_list_data_left.begin(), m_list_data_left.end(), [](const CListCtrlEx::RowData& a, const CListCtrlEx::RowData& b)
+        {
+            wstring str_a = a.at(0);
+            wstring str_b = b.at(0);
+
+            auto normalize_string = [](wstring& str)
+            {
+                if (!str.empty() && (str[0]<L'0' || str[0] > L'9'))
+                    str = str.substr(1);
+                if (str.size() < 5)
+                    str = wstring(5 - str.size(), L'0') + str;
+            };
+
+            normalize_string(str_a);
+            normalize_string(str_b);
+            return str_a < str_b;
+        });
+    }
+
     //将“其他”分类放到列表的最后面
     auto iter = media_list.find(STR_OTHER_CLASSIFY_TYPE);
     if (iter != media_list.end())
