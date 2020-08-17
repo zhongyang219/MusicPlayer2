@@ -111,14 +111,16 @@ void CMediaLibTabDlg::OnOK()
 	GetSongsSelected(files);
 	if (!files.empty())
 	{
-		if (files.size() == 1)
+        if (files.size() > 1 || CFilePathHelper(files[0]).GetFileExtension() != L"cue")
+        {
+            CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
+        }
+        else
 		{
 			std::vector<wstring> all_song_list;
 			GetCurrentSongList(all_song_list);
 			CPlayer::GetInstance().OpenFilesInTempPlaylist(all_song_list, GetItemSelected());
 		}
-		else
-			CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
 
 		CTabDlg::OnOK();
 		CWnd* pParent = GetParentWindow();
