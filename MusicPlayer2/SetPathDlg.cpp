@@ -32,6 +32,14 @@ void CSetPathDlg::QuickSearch(const wstring & key_word)
 	}
 }
 
+void CSetPathDlg::AdjustColumnWidth()
+{
+    vector<int> width;
+    CalculateColumeWidth(width);
+    for (size_t i{}; i < width.size(); i++)
+        m_path_list.SetColumnWidth(i, width[i]);
+}
+
 void CSetPathDlg::ShowPathList()
 {
 	m_path_list.EnableWindow(TRUE);
@@ -368,13 +376,6 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 	CTabDlg::OnSize(nType, cx, cy);
 
 	// TODO: 在此处添加消息处理程序代码
-	if (nType != SIZE_MINIMIZED && m_path_list.m_hWnd)
-	{
-		vector<int> width;
-		CalculateColumeWidth(width);
-		for (size_t i{}; i < width.size(); i++)
-			m_path_list.SetColumnWidth(i, width[i]);
-	}
 }
 
 

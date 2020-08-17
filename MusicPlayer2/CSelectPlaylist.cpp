@@ -47,6 +47,14 @@ void CSelectPlaylistDlg::SetUpdateFlag()
 	m_update_flag = true;
 }
 
+void CSelectPlaylistDlg::AdjustColumnWidth()
+{
+    vector<int> width;
+    CalculateColumeWidth(width);
+    for (size_t i{}; i < width.size(); i++)
+        m_playlist_ctrl.SetColumnWidth(i, width[i]);
+}
+
 void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);

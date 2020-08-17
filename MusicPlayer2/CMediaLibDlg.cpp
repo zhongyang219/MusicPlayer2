@@ -174,6 +174,10 @@ BOOL CMediaLibDlg::OnInitDialog()
     {
         SetWindowPos(nullptr, 0, 0, m_window_size.cx, m_window_size.cy, SWP_NOMOVE | SWP_NOZORDER);
     }
+
+    m_path_dlg.AdjustColumnWidth();
+    m_playlist_dlg.AdjustColumnWidth();
+
     CenterWindow(GetParent());
 
     return TRUE;  // return TRUE unless you set the focus to a control

@@ -26,6 +26,7 @@ public:
     int GetPosition() const;
     bool IsPlaylistModified() const;
 	void SetUpdateFlag();		//设置需要更新标志，当标签切换到此对话框时，会更新一次数据
+    void AdjustColumnWidth();       //自动调整列表宽度
 
 private:
     int m_row_selected{};
