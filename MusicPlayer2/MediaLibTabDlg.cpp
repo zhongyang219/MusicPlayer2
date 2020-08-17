@@ -111,7 +111,7 @@ void CMediaLibTabDlg::OnOK()
 	GetSongsSelected(files);
 	if (!files.empty())
 	{
-        if (files.size() > 1 || CFilePathHelper(files[0]).GetFileExtension() != L"cue")
+        if (files.size() > 1 || CFilePathHelper(files[0]).GetFileExtension() == L"cue")
         {
             CPlayer::GetInstance().OpenFilesInTempPlaylist(files);
         }
