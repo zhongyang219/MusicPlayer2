@@ -1368,12 +1368,12 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
                 CFilePathHelper playlist_path{ recent_playlist[i].path };
                 pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_MY_FAVOURITE + i + 1, playlist_path.GetFileNameWithoutExtension().c_str());
             }
-            if (recent_playlist.size() > ADD_TO_PLAYLIST_MAX_SIZE)
-            {
+            //if (recent_playlist.size() > ADD_TO_PLAYLIST_MAX_SIZE)
+            //{
                 pMenu->AppendMenu(MF_SEPARATOR);
                 pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_OTHER_PLAYLIST, CCommon::LoadText(IDS_MORE_PLAYLIST, _T("...")));
                 CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_ADD_TO_OTHER_PLAYLIST, FALSE, theApp.m_icon_set.show_playlist.GetIcon(true));
-            }
+            //}
         }
     };
 

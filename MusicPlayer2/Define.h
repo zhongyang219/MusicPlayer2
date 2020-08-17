@@ -144,7 +144,7 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）
 #else
-#define ADD_TO_PLAYLIST_MAX_SIZE 30         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）
+#define ADD_TO_PLAYLIST_MAX_SIZE 20         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）
 #endif
 
 #define MAX_NOTIFY_ICON 3		//可选的通知区图标数量

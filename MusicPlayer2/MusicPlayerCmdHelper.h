@@ -32,6 +32,9 @@ public:
     static int CleanUpSongData();
     static int CleanUpRecentFolders();
 
+protected:
+    bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
+
 private:
     CWnd* GetOwner();
 

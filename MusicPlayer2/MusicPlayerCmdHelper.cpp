@@ -137,11 +137,7 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 wstring playlist_path = theApp.m_playlist_dir + dlg.GetPlaylistSelected().GetString() + PLAYLIST_EXTENSION;
                 if (CCommon::FileExist(playlist_path))
                 {
-                    CPlaylistFile playlist;
-                    playlist.LoadFromFile(playlist_path);
-                    if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-                        playlist.SaveToFile(playlist_path);
-                    else
+                    if (!AddToPlaylist(selected_item_path, playlist_path))
                         pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
 
                 }
@@ -150,21 +146,13 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         else if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
         {
             std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
-            CPlaylistFile playlist;
-            playlist.LoadFromFile(default_playlist_path);
-            if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-                playlist.SaveToFile(default_playlist_path);
-            else
+            if (!AddToPlaylist(selected_item_path, default_playlist_path))
                 pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
             std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
-            CPlaylistFile playlist;
-            playlist.LoadFromFile(favourite_playlist_path);
-            if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-                playlist.SaveToFile(favourite_playlist_path);
-            else
+            if (!AddToPlaylist(selected_item_path, favourite_playlist_path))
                 pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
 
             //添加到“我喜欢”播放列表后，为添加的项目设置favourite标记
@@ -196,11 +184,7 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 wstring playlist_path = theApp.m_playlist_dir + menu_string.GetString() + PLAYLIST_EXTENSION;
                 if (CCommon::FileExist(playlist_path))
                 {
-                    CPlaylistFile playlist;
-                    playlist.LoadFromFile(playlist_path);
-                    if (playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-                        playlist.SaveToFile(playlist_path);
-                    else
+                    if (!AddToPlaylist(selected_item_path, playlist_path))
                         pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
                 }
                 else
@@ -502,6 +486,28 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
         }
     }
     return cleard_cnt;
+}
+
+bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
+{
+    if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())
+    {
+        std::vector<wstring> files;
+        for (const auto& song : songs)
+            files.push_back(song.file_path);
+        return CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
+    }
+    else
+    {
+        CPlaylistFile playlist;
+        playlist.LoadFromFile(playlist_path);
+        if (playlist.AddFiles(songs, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        {
+            playlist.SaveToFile(playlist_path);
+            return true;
+        }
+        return false;
+    }
 }
 
 CWnd* CMusicPlayerCmdHelper::GetOwner()
