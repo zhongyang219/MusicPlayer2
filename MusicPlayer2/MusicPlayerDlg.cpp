@@ -972,6 +972,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool use_inner_lyric_changed{ theApp.m_lyric_setting_data.use_inner_lyric_first != optionDlg.m_tab1_dlg.m_data.use_inner_lyric_first };
     //bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
     bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != optionDlg.m_tab2_dlg.m_data.notify_icon_selected };
+    bool media_lib_display_item_changed{ theApp.m_media_lib_setting_data.display_item != optionDlg.m_media_lib_dlg.m_data.display_item };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -989,18 +990,27 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     }
     if (gauss_blur_changed)
         CPlayer::GetInstance().AlbumCoverGaussBlur();
-	if (media_lib_setting_changed)
-	{
-		if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))
-		{
-			CWaitCursor wait_cursor;
-			m_pMediaLibDlg->m_artist_dlg.RefreshData();
-			m_pMediaLibDlg->m_album_dlg.RefreshData();
-			m_pMediaLibDlg->m_genre_dlg.RefreshData();
-			m_pMediaLibDlg->m_folder_explore_dlg.RefreshData();
+
+    if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))
+    {
+        if (media_lib_display_item_changed)     //如果媒体库显示项目发生发改变，则关闭媒体库对话框然后重新打开
+        {
+            CCommon::DeleteModelessDialog(m_pMediaLibDlg);
+            int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
+            m_pMediaLibDlg = new CMediaLibDlg(cur_tab);
+            m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);
+            m_pMediaLibDlg->ShowWindow(SW_SHOW);
+        }
+        else if (media_lib_setting_changed)
+        {
+            CWaitCursor wait_cursor;
+            m_pMediaLibDlg->m_artist_dlg.RefreshData();
+            m_pMediaLibDlg->m_album_dlg.RefreshData();
+            m_pMediaLibDlg->m_genre_dlg.RefreshData();
+            m_pMediaLibDlg->m_folder_explore_dlg.RefreshData();
             m_pMediaLibDlg->m_recent_media_dlg.RefreshData();
-		}
-	}
+        }
+    }
 
     UpdatePlayPauseButton();
 
