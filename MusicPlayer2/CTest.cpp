@@ -22,7 +22,7 @@ void CTest::Test()
     //TestStringMatch();
     //TestCrash();
     //TestShortCut();
-    TestCommon();
+    //TestCommon();
     //TestOSUFile();
     //TestReg();
     //TestMediaLib();
@@ -146,8 +146,9 @@ void CTest::TestReg()
 
 void CTest::TestMediaLib()
 {
-    CMediaClassifier media_lib(CMediaClassifier::CT_ARTIST);
-
+    CMediaClassifier media_lib(CMediaClassifier::CT_TYPE);
+    media_lib.ClassifyMedia();
+    int a = 0;
 }
 
 void CTest::TestAudioTag()

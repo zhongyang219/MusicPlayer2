@@ -26,7 +26,9 @@ public:
         CT_ARTIST,
         CT_ALBUM,
         CT_GENRE,
-        CT_YEAR
+        CT_YEAR,
+        CT_TYPE,
+        CT_BITRATE
     };
 
     typedef std::map<std::wstring, std::vector<SongInfo>, StringComparerNoCase> MediaList;      //定义保存分类结果的map容器，使用不区分大小写的比较器，以实现分类时不区分大小写

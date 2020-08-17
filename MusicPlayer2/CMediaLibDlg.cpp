@@ -81,6 +81,8 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
     m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+    m_type_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+    m_bitrate_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
 	m_all_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
 	m_recent_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
     m_folder_explore_dlg.Create(IDD_FOLDER_EXPLORE_DIALOG);
@@ -97,6 +99,8 @@ BOOL CMediaLibDlg::OnInitDialog()
     ImageList.Add(theApp.m_icon_set.album.GetIcon(true));				//唱片集
     ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));				//流派
     ImageList.Add(theApp.m_icon_set.year.GetIcon(true));				//年份
+    ImageList.Add(theApp.m_icon_set.music);				//类型
+    ImageList.Add(theApp.m_icon_set.convert);				//比特率
     ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));			//所有曲目
     ImageList.Add(theApp.m_icon_set.recent_songs.GetIcon(true));		//最近播放
     ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));		//文件夹浏览
@@ -110,6 +114,8 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_tab_ctrl.AddWindow(&m_album_dlg, CCommon::LoadText(IDS_ALBUM));
     m_tab_ctrl.AddWindow(&m_genre_dlg, CCommon::LoadText(IDS_GENRE));
     m_tab_ctrl.AddWindow(&m_year_dlg, CCommon::LoadText(IDS_YEAR));
+    m_tab_ctrl.AddWindow(&m_type_dlg, CCommon::LoadText(IDS_FILE_TYPE));
+    m_tab_ctrl.AddWindow(&m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
 	m_tab_ctrl.AddWindow(&m_all_media_dlg, CCommon::LoadText(IDS_ALL_TRACKS));
 	m_tab_ctrl.AddWindow(&m_recent_media_dlg, CCommon::LoadText(IDS_RECENT_PLAYED));
     m_tab_ctrl.AddWindow(&m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));

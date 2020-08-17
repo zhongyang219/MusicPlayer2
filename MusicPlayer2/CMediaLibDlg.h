@@ -27,6 +27,8 @@ public:
     CMediaClassifyDlg m_album_dlg{ CMediaClassifier::CT_ALBUM };
     CMediaClassifyDlg m_genre_dlg{ CMediaClassifier::CT_GENRE };
     CMediaClassifyDlg m_year_dlg{ CMediaClassifier::CT_YEAR };
+    CMediaClassifyDlg m_type_dlg{ CMediaClassifier::CT_TYPE };
+    CMediaClassifyDlg m_bitrate_dlg{ CMediaClassifier::CT_BITRATE };
 	CAllMediaDlg m_all_media_dlg{ CAllMediaDlg::DT_ALL_MEDIA };
 	CAllMediaDlg m_recent_media_dlg{ CAllMediaDlg::DT_RECENT_MEDIA };
     CFolderExploreDlg m_folder_explore_dlg;

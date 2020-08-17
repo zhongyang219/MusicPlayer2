@@ -70,6 +70,36 @@ void CMediaClassifier::ClassifyMedia()
             item_names.push_back(str_year);
         }
         break;
+        case CMediaClassifier::CT_TYPE:
+        {
+            wstring str_type = CFilePathHelper(song_info.first).GetFileExtension();
+            item_names.push_back(str_type);
+        }
+        break;
+        case CMediaClassifier::CT_BITRATE:
+        {
+            wstring str_type;
+            if (song_info.second.bitrate == 0)
+                str_type = L"0";
+            else if (song_info.second.bitrate < 32)
+                str_type = L"<32";
+            else if (song_info.second.bitrate < 64)
+                str_type = L"32+";
+            else if (song_info.second.bitrate < 128)
+                str_type = L"64+";
+            else if (song_info.second.bitrate < 192)
+                str_type = L"128+";
+            else if (song_info.second.bitrate < 300)
+                str_type = L"192+";
+            else if (song_info.second.bitrate < 512)
+                str_type = L"300+";
+            else if (song_info.second.bitrate < 1024)
+                str_type = L"512+";
+            else
+                str_type = L"1024+";
+            item_names.push_back(str_type);
+        }
+        break;
         default:
             break;
         }
@@ -94,7 +124,7 @@ void CMediaClassifier::ClassifyMedia()
     std::vector<SongInfo> other_list;
 
     //查找只有一个项目的分类，将其归到“其他”类里
-    if (m_hide_only_one_classification && m_type != CT_YEAR)
+    if (m_hide_only_one_classification && (m_type == CT_ARTIST || m_type == CT_ALBUM || m_type == CT_GENRE))
     {
         for (auto& iter = m_media_list.begin(); iter != m_media_list.end();)
         {
@@ -120,8 +150,8 @@ void CMediaClassifier::ClassifyMedia()
             std::sort(other_list.begin(), other_list.end(), SongInfo::ByAlbum);
         else if (m_type == CT_GENRE)
             std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.genre < b.genre; });
-        else if (m_type == CT_YEAR)
-            std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.year < b.year; });
+        //else if (m_type == CT_YEAR)
+        //    std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.year < b.year; });
         if(!other_list.empty())
             m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }

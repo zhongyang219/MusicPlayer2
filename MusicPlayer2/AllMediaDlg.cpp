@@ -102,6 +102,7 @@ void CAllMediaDlg::InitListData()
 			track_str = std::to_wstring(item.second.track);
 		row_data[COL_TRACK] = track_str;
 		row_data[COL_GENRE] = item.second.GetGenre();
+		row_data[COL_BITRATE] = std::to_wstring(item.second.bitrate);
 		row_data[COL_YEAR] = item.second.GetYear();
 		row_data[COL_PATH] = item.first;
 		if(item.second.last_played_time != 0)
@@ -283,9 +284,10 @@ BOOL CAllMediaDlg::OnInitDialog()
 	m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
 	m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
 	m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
-	m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_YEAR), LVCFMT_LEFT, theApp.DPI(60));
-	m_song_list_ctrl.InsertColumn(7, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
-	m_song_list_ctrl.InsertColumn(8, CCommon::LoadText(IDS_LAST_PLAYED_TIME), LVCFMT_LEFT, theApp.DPI(140));
+	m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
+	m_song_list_ctrl.InsertColumn(7, CCommon::LoadText(IDS_YEAR), LVCFMT_LEFT, theApp.DPI(60));
+	m_song_list_ctrl.InsertColumn(8, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+	m_song_list_ctrl.InsertColumn(9, CCommon::LoadText(IDS_LAST_PLAYED_TIME), LVCFMT_LEFT, theApp.DPI(140));
 	m_song_list_ctrl.SetCtrlAEnable(true);
 
 	m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);

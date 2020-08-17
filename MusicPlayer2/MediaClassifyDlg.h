@@ -32,6 +32,7 @@ protected:
         COL_ALBUM,
         COL_TRACK,
         COL_GENRE,
+        COL_BITRATE,
         COL_PATH,
     };
 

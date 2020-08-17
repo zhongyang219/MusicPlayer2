@@ -148,6 +148,7 @@ void CMediaClassifyDlg::ShowSongList()
                     track_str = std::to_wstring(item.track);
                 row_data[COL_TRACK] = track_str;
                 row_data[COL_GENRE] = item.GetGenre();
+                row_data[COL_BITRATE] = std::to_wstring(item.bitrate);
                 row_data[COL_PATH] = item.file_path;
 				m_list_data.push_back(std::move(row_data));
             }
@@ -373,6 +374,10 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         title_name = CCommon::LoadText(IDS_GENRE);
     else if (m_type == CMediaClassifier::CT_YEAR)
         title_name = CCommon::LoadText(IDS_YEAR);
+    else if (m_type == CMediaClassifier::CT_TYPE)
+        title_name = CCommon::LoadText(IDS_FILE_TYPE);
+    else if (m_type == CMediaClassifier::CT_BITRATE)
+        title_name = CCommon::LoadText(IDS_BITRATE);
     CRect rc_classify_list;
     m_classify_list_ctrl.GetWindowRect(rc_classify_list);
     std::vector<int> width;
@@ -390,7 +395,8 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
     m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
     m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
 	m_song_list_ctrl.SetCtrlAEnable(true);
 
     if (m_type == CMediaClassifier::CT_ARTIST)
@@ -596,6 +602,10 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
                     break;
                 case CMediaClassifyDlg::COL_GENRE:
                     std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) < 0; else return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) > 0; });
+                    ShowSongList();
+                    break;
+                case CMediaClassifyDlg::COL_BITRATE:
+                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.bitrate < b.bitrate; else return a.bitrate > b.bitrate; });
                     ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_PATH:
