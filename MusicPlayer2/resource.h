@@ -634,6 +634,7 @@
 #define IDC_NEW_PLAYLIST                1012
 #define IDC_SETTINGS_BUTTON             1012
 #define IDC_DONOT_RELATE_BUTTON         1012
+#define IDC_DEFAULT_BUTTON              1012
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013

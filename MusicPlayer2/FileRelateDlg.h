@@ -29,4 +29,5 @@ public:
     virtual BOOL OnInitDialog();
     virtual void OnOK();
     afx_msg void OnBnClickedSelectAllCheck();
+    afx_msg void OnBnClickedDefaultButton();
 };
