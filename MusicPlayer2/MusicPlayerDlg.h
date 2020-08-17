@@ -431,4 +431,6 @@ public:
     afx_msg void OnSortByModifiedTime();
     afx_msg void OnSortByPath();
     afx_msg void OnContainSubFolder();
+protected:
+    afx_msg LRESULT OnGetMusicCurrentPosition(WPARAM wParam, LPARAM lParam);
 };

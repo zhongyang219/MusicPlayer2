@@ -252,7 +252,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SORT_BY_MODIFIED_TIME, &CMusicPlayerDlg::OnSortByModifiedTime)
     ON_COMMAND(ID_SORT_BY_PATH, &CMusicPlayerDlg::OnSortByPath)
     ON_COMMAND(ID_CONTAIN_SUB_FOLDER, &CMusicPlayerDlg::OnContainSubFolder)
- END_MESSAGE_MAP()
+    ON_MESSAGE(WM_GET_MUSIC_CURRENT_POSITION, &CMusicPlayerDlg::OnGetMusicCurrentPosition)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -3351,7 +3352,10 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         //这里将获取当前播放进度的处理放到UI线程中，和UI同步，使得当界面刷新时间间隔设置得比较小时歌词和进度条看起来更加流畅
         if (CPlayer::GetInstance().IsPlaying())
         {
-            CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
+            if (CPlayer::GetInstance().IsMciCore())
+                pThis->SendMessage(WM_GET_MUSIC_CURRENT_POSITION);     //由于MCI无法跨线程操作，因此在这里向主线程发送消息，在主线程中处理
+            else
+                CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
         }
 
         //绘制主界面
@@ -4947,4 +4951,11 @@ void CMusicPlayerDlg::OnContainSubFolder()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetContainSubFolder(!CPlayer::GetInstance().IsContainSubFolder());
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnGetMusicCurrentPosition(WPARAM wParam, LPARAM lParam)
+{
+    CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
+    return 0;
 }

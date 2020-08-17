@@ -137,8 +137,9 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_RECENT_PLAYED_LIST_CLEARED (WM_USER+130)       //执行了“清空最近播放曲目列表”
 //#define WM_TIMER_INTERVAL_CHANGED (WM_USER+131)           //主定时器时间间隔改变
 #define WM_MAIN_WINDOW_ACTIVATED (WM_USER+132)       //主窗口被激活
+#define WM_GET_MUSIC_CURRENT_POSITION (WM_USER+133)     //获取当前音乐播放的进度
 
-#define WM_NEXT_USER_MSG (WM_USER+133)
+#define WM_NEXT_USER_MSG (WM_USER+134)
 
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

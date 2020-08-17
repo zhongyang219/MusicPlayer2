@@ -209,19 +209,27 @@ void CMciCore::GetAudioInfo(SongInfo & song_info, int flag)
 {
     if (m_success)
     {
-        song_info.lengh = GetMciSongLength(song_info.file_path);
+        if (flag&AF_LENGTH)
+            song_info.lengh = GetMciSongLength(song_info.file_path);
+        if (flag&AF_BITRATE)
+            song_info.bitrate = GetMciBitrate(song_info.file_path);
     }
 
 }
 
 void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int flag)
 {
-    if (m_success && (flag&AF_LENGTH))
+    if (m_success && ((flag&AF_LENGTH) || (flag&AF_BITRATE)))
     {
         m_error_code = mciSendStringW((L"open \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
-        wchar_t buff[16];
-        m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
-        song_info.lengh = _wtoi(buff);
+        if (flag&AF_LENGTH)
+        {
+            wchar_t buff[16];
+            m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
+            song_info.lengh = _wtoi(buff);
+        }
+        if (flag&AF_BITRATE)
+            song_info.bitrate = GetMciBitrate(file_path);
         m_error_code = mciSendStringW((L"close \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
     }
 }
@@ -300,7 +308,7 @@ void CMciCore::GetMidiPosition()
 int CMciCore::GetMciSongLength(const std::wstring& file_path)
 {
     wchar_t buff[16];
-    mciSendStringW((L"status \"" + file_path + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
+    m_error_code = mciSendStringW((L"status \"" + file_path + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
     int length = _wtoi(buff);
     if (IsMidi())
     {
@@ -309,4 +317,13 @@ int CMciCore::GetMciSongLength(const std::wstring& file_path)
             length = length * m_midi_info.speed;
     }
     return length;
+}
+
+int CMciCore::GetMciBitrate(const std::wstring & file_path)
+{
+    wchar_t buff[16];
+    m_error_code = mciSendStringW((L"status \"" + file_path + L"\" bytespersec").c_str(), buff, 15, 0);
+    int bitrate = _wtoi(buff);
+    bitrate = bitrate * 8 / 1000;
+    return bitrate;
 }

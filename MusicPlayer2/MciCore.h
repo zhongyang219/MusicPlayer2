@@ -58,6 +58,7 @@ public:
 private:
     void GetMidiPosition();
     int GetMciSongLength(const std::wstring& file_path);
+    int GetMciBitrate(const std::wstring& file_path);
 
     virtual bool GetFunction() override;
 
