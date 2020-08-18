@@ -210,6 +210,7 @@ struct LyricSettingData
     bool cortana_show_spectrum{ false };		//是否在搜索框显示频谱
 	bool cortana_opaque{ false };				//搜索框不透明
     Alignment cortana_lyric_align{ Alignment::CENTER };               //搜索框歌词对齐方式
+    bool show_default_album_icon_in_search_box{ false };      //没有歌词时搜索框显示黑色胶片图标
 
 	bool show_desktop_lyric{ false };			//显示桌面歌词
 	DesktopLyricSettingData desktop_lyric_data;

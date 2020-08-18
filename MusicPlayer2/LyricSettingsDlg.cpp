@@ -29,7 +29,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_SHOW_LYRIC_IN_CORTANA, m_cortana_info_enable_check);
     DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK, m_lyric_double_line_chk);
     DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_IN_CORTANA, m_show_album_cover_in_cortana_check);
-    //DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
+    DDX_Control(pDX, IDC_CORTANA_ICON_DEAT_CHECK, m_cortana_icon_beat_check);
     DDX_Control(pDX, IDC_CORTANA_COLOR_COMBO, m_cortana_color_combo);
     DDX_Control(pDX, IDC_LYRIC_COMPATIBLE_MODE, m_lyric_compatible_mode_chk);
     DDX_Control(pDX, IDC_KEEP_DISPLAY_CHECK, m_keep_display_chk);
@@ -54,6 +54,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LYRIC_SAVE_COMBO, m_lyric_save_policy_combo);
     DDX_Control(pDX, IDC_USE_INNER_LYRIC_CHECK, m_use_inner_lyric_chk);
     DDX_Control(pDX, IDC_SHOW_UNLOCK_WHEN_LOCKED, m_show_unlock_when_locked_chk);
+    DDX_Control(pDX, IDC_SHOW_DEFAULT_ALBUM_ICON_CHK, m_show_default_album_icon_chk);
 }
 
 
@@ -65,7 +66,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_LYRIC_DOUBLE_LINE_CHECK, &CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck)
 	ON_CBN_SELCHANGE(IDC_CORTANA_COLOR_COMBO, &CLyricSettingsDlg::OnCbnSelchangeCortanaColorCombo)
 	ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_IN_CORTANA, &CLyricSettingsDlg::OnBnClickedShowAlbumCoverInCortana)
-	//ON_BN_CLICKED(IDC_CORTANA_ICON_DEAT_CHECK, &CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck)
+	ON_BN_CLICKED(IDC_CORTANA_ICON_DEAT_CHECK, &CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck)
 	ON_BN_CLICKED(IDC_LYRIC_COMPATIBLE_MODE, &CLyricSettingsDlg::OnBnClickedLyricCompatibleMode)
 	ON_BN_CLICKED(IDC_SET_FONT, &CLyricSettingsDlg::OnBnClickedSetFont)
 	ON_BN_CLICKED(IDC_KEEP_DISPLAY_CHECK, &CLyricSettingsDlg::OnBnClickedKeepDisplayCheck)
@@ -98,6 +99,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_CBN_SELCHANGE(IDC_LYRIC_SAVE_COMBO, &CLyricSettingsDlg::OnCbnSelchangeLyricSaveCombo)
 	ON_BN_CLICKED(IDC_USE_INNER_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedUseInnerLyricCheck)
     ON_BN_CLICKED(IDC_SHOW_UNLOCK_WHEN_LOCKED, &CLyricSettingsDlg::OnBnClickedShowUnlockWhenLocked)
+    ON_BN_CLICKED(IDC_SHOW_DEFAULT_ALBUM_ICON_CHK, &CLyricSettingsDlg::OnBnClickedShowDefaultAlbumIconChk)
 END_MESSAGE_MAP()
 
 
@@ -121,14 +123,14 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 
 	m_lyric_double_line_chk.SetCheck(m_data.cortana_lyric_double_line);
 	m_show_album_cover_in_cortana_check.SetCheck(m_data.cortana_show_album_cover);
-	//m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
-	//m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
+    m_cortana_icon_beat_check.SetCheck(m_data.cortana_icon_beat);
 	m_lyric_compatible_mode_chk.SetCheck(m_data.cortana_lyric_compatible_mode);
 	m_keep_display_chk.SetCheck(m_data.cortana_lyric_keep_display);
 	m_show_spectrum_chk.SetCheck(m_data.cortana_show_spectrum);
     m_show_lyric_in_cortana_chk.SetCheck(m_data.cortana_show_lyric);
     //m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
 	//m_search_box_opaque_chk.ShowWindow(SW_HIDE);		//此选项已经没有作用，把它隐藏起来
+    m_show_default_album_icon_chk.SetCheck(m_data.show_default_album_icon_in_search_box);
 
 	m_show_desktop_lyric_chk.SetCheck(m_data.show_desktop_lyric);
 	m_text_color1_static.SetFillColor(m_data.desktop_lyric_data.text_color1);
@@ -204,13 +206,15 @@ void CLyricSettingsDlg::EnableControl()
     m_show_lyric_in_cortana_chk.EnableWindow(enable);
 	m_show_album_cover_in_cortana_check.EnableWindow(enable);
 	m_cortana_color_combo.EnableWindow(enable);
-	//m_cortana_icon_beat_check.EnableWindow(enable);
 	GetDlgItem(IDC_SET_FONT)->EnableWindow(enable);
 	m_keep_display_chk.EnableWindow(enable);
 	m_show_spectrum_chk.EnableWindow(enable);
 	m_lyric_compatible_mode_chk.EnableWindow(m_data.cortana_info_enable);
     //m_search_box_opaque_chk.EnableWindow(m_data.cortana_info_enable);
     m_alignment_combo.EnableWindow(enable && m_data.cortana_show_lyric/* && !m_data.cortana_lyric_double_line*/);
+
+    m_cortana_icon_beat_check.EnableWindow(enable && !m_data.show_default_album_icon_in_search_box);
+    m_show_default_album_icon_chk.EnableWindow(enable);
 }
 
 void CLyricSettingsDlg::EnableControlForDesktopLyric()
@@ -319,15 +323,15 @@ void CLyricSettingsDlg::OnBnClickedShowAlbumCoverInCortana()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_data.cortana_show_album_cover = (m_show_album_cover_in_cortana_check.GetCheck() != 0);
-	//m_cortana_icon_beat_check.EnableWindow(!m_data.cortana_show_album_cover);
+    EnableControl();
 }
 
 
-//void CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	m_data.cortana_icon_beat = (m_cortana_icon_beat_check.GetCheck() != 0);
-//}
+void CLyricSettingsDlg::OnBnClickedCortanaIconDeatCheck()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_data.cortana_icon_beat = (m_cortana_icon_beat_check.GetCheck() != 0);
+}
 
 
 void CLyricSettingsDlg::OnBnClickedLyricCompatibleMode()
@@ -647,4 +651,12 @@ void CLyricSettingsDlg::OnBnClickedShowUnlockWhenLocked()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.desktop_lyric_data.show_unlock_when_locked = (m_show_unlock_when_locked_chk.GetCheck() != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedShowDefaultAlbumIconChk()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.show_default_album_icon_in_search_box = (m_show_default_album_icon_chk.GetCheck() != 0);
+    EnableControl();
 }

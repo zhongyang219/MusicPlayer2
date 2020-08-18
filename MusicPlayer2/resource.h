@@ -886,6 +886,8 @@
 #define IDC_USE_INNER_IMAGE_FIRST_CHECK 1133
 #define IDC_LYRIC_COMPATIBLE_MODE       1134
 #define IDC_UNASSOCIATE_LINK            1135
+#define IDC_SHOW_DEFAULT_ALBUM_ICON_CHK 1135
+#define IDC_LYRIC_COMPATIBLE_MODE2      1135
 #define IDC_DONATE_STATIC               1136
 #define IDC_INPUT_EDIT                  1138
 #define IDC_BASS_RADIO                  1139

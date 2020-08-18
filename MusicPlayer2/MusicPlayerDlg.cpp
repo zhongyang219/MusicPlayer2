@@ -306,6 +306,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"cortana_lyric_keep_display", theApp.m_lyric_setting_data.cortana_lyric_keep_display);
     ini.WriteBool(L"config", L"cortana_show_spectrum", theApp.m_lyric_setting_data.cortana_show_spectrum);
     ini.WriteInt(L"config", L"cortana_lyric_align", static_cast<int>(theApp.m_lyric_setting_data.cortana_lyric_align));
+    ini.WriteBool(L"config", L"show_default_album_icon_in_search_box", theApp.m_lyric_setting_data.show_default_album_icon_in_search_box);
     
 	ini.WriteBool(L"desktop_lyric", L"show_desktop_lyric", theApp.m_lyric_setting_data.show_desktop_lyric);
 	ini.WriteString(L"desktop_lyric", L"font_name", theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.name);
@@ -451,6 +452,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.cortana_lyric_keep_display = ini.GetBool(L"config", L"cortana_lyric_keep_display", false);
     theApp.m_lyric_setting_data.cortana_show_spectrum = ini.GetBool(L"config", L"cortana_show_spectrum", false);
     theApp.m_lyric_setting_data.cortana_lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"cortana_lyric_align", 2));
+    theApp.m_lyric_setting_data.show_default_album_icon_in_search_box = ini.GetBool(L"config", L"show_default_album_icon_in_search_box", false);
 
 	theApp.m_lyric_setting_data.show_desktop_lyric = ini.GetBool(L"desktop_lyric", L"show_desktop_lyric", false);
 	theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.name = ini.GetString(L"desktop_lyric", L"font_name", CCommon::LoadText(IDS_DEFAULT_FONT));
