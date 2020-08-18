@@ -58,6 +58,7 @@ struct PathInfo
 	int track_num{};		//路径中音频文件的数量
 	int total_time{};		//路径中音频文件的总时间
     bool contain_sub_folder{};  //是否包含子文件夹
+    bool descending{};      //是否降序排列
 
 	//PathInfo(wstring _path, int _track, int _position, SortMode _sort_mode) :
 	//	path{ _path }, track{ _track }, position{ _position }, sort_mode{ _sort_mode }

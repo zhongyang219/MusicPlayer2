@@ -887,7 +887,6 @@
 #define IDC_LYRIC_COMPATIBLE_MODE       1134
 #define IDC_UNASSOCIATE_LINK            1135
 #define IDC_SHOW_DEFAULT_ALBUM_ICON_CHK 1135
-#define IDC_LYRIC_COMPATIBLE_MODE2      1135
 #define IDC_DONATE_STATIC               1136
 #define IDC_INPUT_EDIT                  1138
 #define IDC_BASS_RADIO                  1139
@@ -1311,13 +1310,19 @@
 #define ID_33186                        33186
 #define ID_33187                        33187
 #define ID_CONTAIN_SUB_FOLDER           33188
+#define ID_33189                        33189
+#define ID_33190                        33190
+#define ID_ACCENDING_ORDER              33191
+#define ID_DESENDING_ORDER              33192
+#define ID_33193                        33193
+#define ID_INVERT_PLAYLIST              33194
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        480
-#define _APS_NEXT_COMMAND_VALUE         33189
+#define _APS_NEXT_COMMAND_VALUE         33195
 #define _APS_NEXT_CONTROL_VALUE         1178
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

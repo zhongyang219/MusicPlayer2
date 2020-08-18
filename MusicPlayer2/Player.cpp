@@ -776,6 +776,7 @@ void CPlayer::SetPath(const PathInfo& path_info)
     else
         EmplaceCurrentPathToRecent();
     m_sort_mode = path_info.sort_mode;
+    m_descending = path_info.descending;
     m_contain_sub_folder = path_info.contain_sub_folder;
     ChangePath(path_info.path, path_info.track);
     m_current_position.fromInt(path_info.position);
@@ -849,6 +850,7 @@ void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
             track = a_path_info.track;
             position = a_path_info.position;
             m_sort_mode = a_path_info.sort_mode;
+            m_descending = a_path_info.descending;
             break;
         }
     }
@@ -863,6 +865,7 @@ void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     else		//如果打开的路径是新的路径
     {
         m_sort_mode = SM_FILE;
+        m_descending = false;
         ChangePath(path, 0, play);
         EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
         SaveRecentPath();
@@ -990,10 +993,14 @@ void CPlayer::OpenAFile(wstring file, bool play)
 
     //获取打开路径的排序方式
     m_sort_mode = SortMode::SM_FILE;
+    m_descending = false;
     for (const auto& path_info : m_recent_path)
     {
         if (m_path == path_info.path)
+        {
             m_sort_mode = path_info.sort_mode;
+            m_descending = path_info.descending;
+        }
     }
 
     //初始化播放列表
@@ -1788,34 +1795,54 @@ void CPlayer::ReIniPlayerCore(bool replay)
 void CPlayer::SortPlaylist(bool change_index)
 {
     if (m_loading) return;
-    int track_number = m_playlist[m_index].track;
-    wstring current_file_name = GetCurrentFileName();
+    SongInfo current_song = GetCurrentSongInfo();
     switch (m_sort_mode)
     {
     case SM_FILE:
-        std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
+        if(m_descending)
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileNameDecending);
+        else
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
         break;
     case SM_PATH:
-        std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPath);
+        if (m_descending)
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPathDecending);
+        else
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPath);
         break;
     case SM_TITLE:
-        std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitle);
+        if (m_descending)
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitleDecending);
+        else
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitle);
         break;
     case SM_ARTIST:
-        std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtist);
+        if (m_descending)
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtistDecending);
+        else
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtist);
         break;
     case SM_ALBUM:
-        std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbum);
+        if (m_descending)
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbumDecending);
+        else
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbum);
         break;
     case SM_TRACK:
-        std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrack);
+        if (m_descending)
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrackDecending);
+        else
+            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrack);
         break;
     case SM_TIME:
-        std::sort(m_playlist.begin(), m_playlist.end(), [](const SongInfo& a, const SongInfo& b)
+        std::sort(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& a, const SongInfo& b)
         {
             unsigned __int64 file_time_a = CCommon::GetFileLastModified(a.file_path);
             unsigned __int64 file_time_b = CCommon::GetFileLastModified(b.file_path);
-            return file_time_a < file_time_b;
+            if (m_descending)
+                return file_time_a > file_time_b;
+            else
+                return file_time_a < file_time_b;
         });
     default:
         break;
@@ -1824,32 +1851,30 @@ void CPlayer::SortPlaylist(bool change_index)
     if (change_index)
     {
         //播放列表排序后，查找正在播放项目的序号
-        if (!m_playlist[m_index].is_cue)
+        for (int i{}; i < GetSongNum(); i++)
         {
-            for (int i{}; i < GetSongNum(); i++)
+            if (current_song.IsSameSong(m_playlist[i]))
             {
-                if (current_file_name == m_playlist[i].GetFileName())
-                {
-                    m_index = i;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            for (int i{}; i < GetSongNum(); i++)
-            {
-                if (track_number == m_playlist[i].track)
-                {
-                    m_index = i;
-                    break;
-                }
+                m_index = i;
+                break;
             }
         }
     }
     SaveCurrentPlaylist();
 }
 
+
+void CPlayer::InvertPlaylist()
+{
+    if (m_loading) return;
+
+    //播放列表倒序
+    std::reverse(m_playlist.begin(), m_playlist.end());
+    //当前播放曲目更改
+    m_index = m_playlist.size() - m_index - 1;
+
+    SaveCurrentPlaylist();
+}
 
 void CPlayer::SaveRecentPath() const
 {
@@ -1864,7 +1889,7 @@ void CPlayer::SaveRecentPath() const
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    const unsigned int version{ 1u };
+    const unsigned int version{ 2u };
     ar << static_cast<unsigned int>(m_recent_path.size());		//写入m_recent_path容器的大小
     ar << version;     //写入文件的版本
     for (auto& path_info : m_recent_path)
@@ -1873,6 +1898,7 @@ void CPlayer::SaveRecentPath() const
             << path_info.track
             << path_info.position
             << static_cast<int>(path_info.sort_mode)
+            << static_cast<BYTE>(path_info.descending)
             << path_info.track_num
             << path_info.total_time
             << static_cast<BYTE>(path_info.contain_sub_folder)
@@ -1910,6 +1936,10 @@ void CPlayer::LoadRecentPath()
         m_path = L".\\songs\\";		//默认的路径
         return;
     }
+    //为了保持和以前版本的数据兼容，先读取前8个字节，以判断是否是以前版本
+    char buff[8]{};
+    file.Read(buff, 8);
+    file.SeekToBegin();
 
     // 构造CArchive对象
     CArchive ar(&file, CArchive::load);
@@ -1922,7 +1952,10 @@ void CPlayer::LoadRecentPath()
     try
     {
         ar >> size;		//读取映射容器的长度
-        ar >> version;  //读取数据文件的版本
+        if (buff[4] == '\xff' && buff[5] == '\xfe')     //如果第4个字节和第5个字节是FFFE，则说明数据文件是以前版本，此时不读取version
+            version = 0;
+        else
+            ar >> version;  //读取数据文件的版本
         for (unsigned int i{}; i < size; i++)
         {
             ar >> temp;
@@ -1931,6 +1964,12 @@ void CPlayer::LoadRecentPath()
             ar >> path_info.position;
             ar >> sort_mode;
             path_info.sort_mode = static_cast<SortMode>(sort_mode);
+            if (version >= 2)
+            {
+                BYTE descending;
+                ar >> descending;
+                path_info.descending = (descending != 0);
+            }
             ar >> path_info.track_num;
             ar >> path_info.total_time;
             if (version >= 1)
@@ -1970,6 +2009,7 @@ void CPlayer::LoadRecentPath()
             m_index = m_recent_path[0].track;
             m_current_position.fromInt(m_recent_path[0].position);
             m_contain_sub_folder = m_recent_path[0].contain_sub_folder;
+            m_descending = m_recent_path[0].descending;
         }
         else
         {
@@ -2046,6 +2086,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
     path_info.track = m_index;
     path_info.position = m_current_position.toInt();
     path_info.sort_mode = m_sort_mode;
+    path_info.descending = m_descending;
     path_info.track_num = GetSongNum();
     path_info.total_time = m_total_time;
     path_info.contain_sub_folder = m_contain_sub_folder;

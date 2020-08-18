@@ -65,30 +65,54 @@ struct SongInfo
     {
         return CCommon::StringCompareInLocalLanguage(a.GetFileName(), b.GetFileName()) < 0;
     }
+    static bool ByFileNameDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.GetFileName(), b.GetFileName()) > 0;
+    }
     //根据文件路径的比较函数，用于以文件路径排序
     static bool ByPath(const SongInfo& a, const SongInfo& b)
     {
         return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) < 0;
+    }
+    static bool ByPathDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) > 0;
     }
     //根据标题的比较函数，用于以标题排序
     static bool ByTitle(const SongInfo& a, const SongInfo& b)
     {
         return CCommon::StringCompareInLocalLanguage(a.title, b.title) < 0;
     }
+    static bool ByTitleDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.title, b.title) > 0;
+    }
     //根据艺术家的比较函数，用于以艺术家排序
     static bool ByArtist(const SongInfo& a, const SongInfo& b)
     {
         return CCommon::StringCompareInLocalLanguage(a.artist, b.artist) < 0;
+    }
+    static bool ByArtistDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.artist, b.artist) > 0;
     }
     //根据唱片集的比较函数，用于以唱片集排序
     static bool ByAlbum(const SongInfo& a, const SongInfo& b)
     {
         return CCommon::StringCompareInLocalLanguage(a.album, b.album) < 0;
     }
+    static bool ByAlbumDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.album, b.album) > 0;
+    }
     //根据音轨序号的比较函数，用于以音轨序号排序
     static bool ByTrack(const SongInfo& a, const SongInfo& b)
     {
         return a.track < b.track;
+    }
+    static bool ByTrackDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return a.track > b.track;
     }
 
     //从另一个SongInfo对象复制标签信息

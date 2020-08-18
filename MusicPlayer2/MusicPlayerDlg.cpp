@@ -253,6 +253,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SORT_BY_PATH, &CMusicPlayerDlg::OnSortByPath)
     ON_COMMAND(ID_CONTAIN_SUB_FOLDER, &CMusicPlayerDlg::OnContainSubFolder)
     ON_MESSAGE(WM_GET_MUSIC_CURRENT_POSITION, &CMusicPlayerDlg::OnGetMusicCurrentPosition)
+    ON_COMMAND(ID_ACCENDING_ORDER, &CMusicPlayerDlg::OnAccendingOrder)
+    ON_COMMAND(ID_DESENDING_ORDER, &CMusicPlayerDlg::OnDesendingOrder)
+    ON_COMMAND(ID_INVERT_PLAYLIST, &CMusicPlayerDlg::OnInvertPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -1234,6 +1237,10 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
             pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_MODIFIED_TIME, MF_BYCOMMAND | MF_CHECKED);
             break;
         }
+        if (CPlayer::GetInstance().m_descending)
+            pMenu->CheckMenuRadioItem(ID_ACCENDING_ORDER, ID_DESENDING_ORDER, ID_DESENDING_ORDER, MF_BYCOMMAND | MF_CHECKED);
+        else
+            pMenu->CheckMenuRadioItem(ID_ACCENDING_ORDER, ID_DESENDING_ORDER, ID_ACCENDING_ORDER, MF_BYCOMMAND | MF_CHECKED);
     }
     else
     {
@@ -1242,7 +1249,12 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         pMenu->CheckMenuItem(ID_SORT_BY_ARTIST, MF_UNCHECKED);
         pMenu->CheckMenuItem(ID_SORT_BY_ALBUM, MF_UNCHECKED);
         pMenu->CheckMenuItem(ID_SORT_BY_TRACK, MF_UNCHECKED);
+        pMenu->CheckMenuItem(ID_ACCENDING_ORDER, MF_UNCHECKED);
+        pMenu->CheckMenuItem(ID_DESENDING_ORDER, MF_UNCHECKED);
     }
+    pMenu->EnableMenuItem(ID_ACCENDING_ORDER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DESENDING_ORDER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_INVERT_PLAYLIST, MF_BYCOMMAND | (CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
 
     //设置播放列表菜单中“播放列表显示样式”的单选标记
     switch (theApp.m_media_lib_setting_data.display_format)
@@ -4972,4 +4984,42 @@ afx_msg LRESULT CMusicPlayerDlg::OnGetMusicCurrentPosition(WPARAM wParam, LPARAM
 {
     CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnAccendingOrder()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (!CPlayer::GetInstance().IsPlaylistMode())
+    {
+        //文件夹模式下按升序排列
+        CPlayer::GetInstance().m_descending = false;
+        CPlayer::GetInstance().SortPlaylist();
+        ShowPlayList();
+    }
+}
+
+
+void CMusicPlayerDlg::OnDesendingOrder()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (!CPlayer::GetInstance().IsPlaylistMode())
+    {
+        //文件夹模式下降序排列
+        CPlayer::GetInstance().m_descending = true;
+        CPlayer::GetInstance().SortPlaylist();
+        ShowPlayList();
+    }
+}
+
+
+void CMusicPlayerDlg::OnInvertPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    //播放列表模式下将播放列表倒序
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        CPlayer::GetInstance().InvertPlaylist();
+        ShowPlayList();
+    }
 }

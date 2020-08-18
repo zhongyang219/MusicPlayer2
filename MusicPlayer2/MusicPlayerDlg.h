@@ -433,4 +433,8 @@ public:
     afx_msg void OnContainSubFolder();
 protected:
     afx_msg LRESULT OnGetMusicCurrentPosition(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnAccendingOrder();
+    afx_msg void OnDesendingOrder();
+    afx_msg void OnInvertPlaylist();
 };

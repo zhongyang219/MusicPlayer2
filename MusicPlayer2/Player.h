@@ -129,6 +129,7 @@ public:
 	CLyrics m_Lyrics;		//歌词
 
 	SortMode m_sort_mode;		//排序方式
+    bool m_descending{};              //是否降序排列
 
 	bool m_loading{ false };		//如果正在载入播放列表，则为true
 
@@ -321,6 +322,7 @@ public:
 	void ReIniPlayerCore(bool replay = false);		//重新初始化BASS。当replay为true时，如果原来正在播放，则重新初始化后继续播放
 
 	void SortPlaylist(bool change_index = true);	//播放列表按照m_sort_mode排序（当change_index为true时，排序后重新查找正在播放的歌曲）
+    void InvertPlaylist();                          //将整个播放列表倒序
 
 	void SearchAlbumCover();		//获取专辑封面
 private:
