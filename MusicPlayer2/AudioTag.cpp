@@ -77,6 +77,7 @@ void CAudioTag::GetAudioTag(bool id3v2_first)
 
 wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
 {
+    image_type = -1;
     string image_contents;
     if (m_type == AudioType::AU_FLAC)
     {
@@ -99,7 +100,7 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
         else
         {
             if (m_type == AU_MP4)
-                image_contents = ForceGetAlbumCover();
+                image_contents = ForceGetAlbumCover(image_type);
         }
     }
 
@@ -746,7 +747,7 @@ string CAudioTag::FindID3V2AlbumCover(const string & tag_content, int & image_ty
         return string();
 }
 
-string CAudioTag::ForceGetAlbumCover()
+string CAudioTag::ForceGetAlbumCover(int& image_type)
 {
     ifstream file{ m_file_path, std::ios::binary };
     size_t size;
@@ -772,6 +773,7 @@ string CAudioTag::ForceGetAlbumCover()
         {
             size_t image_size = end_index - image_index + jpg_tail.size();
             image_contents = contents_buff.substr(image_index, image_size);
+            image_type = 0;
         }
     }
     return image_contents;
