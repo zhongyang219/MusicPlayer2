@@ -22,6 +22,7 @@
 BEGIN_MESSAGE_MAP(CMusicPlayerApp, CWinApp)
     //ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
     ON_COMMAND(ID_HELP, &CMusicPlayerApp::OnHelp)
+    ON_COMMAND(ID_HELP_UPDATE_LOG, &CMusicPlayerApp::OnHelpUpdateLog)
 END_MESSAGE_MAP()
 
 
@@ -1154,4 +1155,16 @@ int CMusicPlayerApp::ExitInstance()
 	Gdiplus::GdiplusShutdown(m_gdiplusToken);
 
 	return CWinApp::ExitInstance();
+}
+
+
+void CMusicPlayerApp::OnHelpUpdateLog()
+{
+    // TODO: 在此添加命令处理程序代码
+    CString language = CCommon::LoadText(IDS_LANGUAGE_CODE);
+    if (language == _T("2"))
+        ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md"), NULL, NULL, SW_SHOW);
+    else
+        ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md"), NULL, NULL, SW_SHOW);
+
 }

@@ -1326,13 +1326,15 @@
 #define ID_DESENDING_ORDER              33192
 #define ID_33193                        33193
 #define ID_INVERT_PLAYLIST              33194
+#define ID_33195                        33195
+#define ID_HELP_UPDATE_LOG              33196
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        483
-#define _APS_NEXT_COMMAND_VALUE         33195
+#define _APS_NEXT_RESOURCE_VALUE        484
+#define _APS_NEXT_COMMAND_VALUE         33197
 #define _APS_NEXT_CONTROL_VALUE         1183
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

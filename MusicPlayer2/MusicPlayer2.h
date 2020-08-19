@@ -144,6 +144,7 @@ public:
     DECLARE_MESSAGE_MAP()
     afx_msg void OnHelp();
 	virtual int ExitInstance();
+    afx_msg void OnHelpUpdateLog();
 };
 
 extern CMusicPlayerApp theApp;
