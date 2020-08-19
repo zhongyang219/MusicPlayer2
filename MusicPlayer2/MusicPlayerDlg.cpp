@@ -361,6 +361,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"other", L"cortana_transparent_color", theApp.m_nc_setting_data.cortana_transparent_color);
     ini.WriteString(L"other", L"default_osu_img", theApp.m_nc_setting_data.default_osu_img);
     ini.WriteBool(L"other", L"show_debug_info", theApp.m_nc_setting_data.show_debug_info);
+    ini.WriteInt(L"other", L"light_mode_default_transparency", theApp.m_nc_setting_data.light_mode_default_transparency);
+    ini.WriteInt(L"other", L"dark_mode_default_transparency", theApp.m_nc_setting_data.dark_mode_default_transparency);
 
     ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
     ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
@@ -509,6 +511,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.cortana_transparent_color = ini.GetInt(L"other", L"cortana_transparent_color", RGB(255, 0, 255));
 	theApp.m_nc_setting_data.default_osu_img = ini.GetString(L"other", L"default_osu_img", L"");
     theApp.m_nc_setting_data.show_debug_info = ini.GetBool(L"other", L"show_debug_info", true);
+    theApp.m_nc_setting_data.light_mode_default_transparency = ini.GetInt(L"other", L"light_mode_default_transparency", 80);
+    theApp.m_nc_setting_data.dark_mode_default_transparency = ini.GetInt(L"other", L"dark_mode_default_transparency", 40);
 
     theApp.m_general_setting_data.id3v2_first = ini.GetBool(L"general", L"id3v2_first", 1);
     theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(L"general", L"auto_download_lyric", 1);
@@ -4045,9 +4049,9 @@ void CMusicPlayerDlg::OnDarkMode()
     // TODO: 在此添加命令处理程序代码
     theApp.m_app_setting_data.dark_mode = !theApp.m_app_setting_data.dark_mode;
     if (theApp.m_app_setting_data.dark_mode)
-        theApp.m_app_setting_data.background_transparency = 50;
+        theApp.m_app_setting_data.background_transparency = theApp.m_nc_setting_data.dark_mode_default_transparency;
     else
-        theApp.m_app_setting_data.background_transparency = 80;
+        theApp.m_app_setting_data.background_transparency = theApp.m_nc_setting_data.light_mode_default_transparency;
     SaveConfig();
 }
 

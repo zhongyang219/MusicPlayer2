@@ -22,7 +22,7 @@ UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark, 
         colors.color_text_lable = theApp.m_app_setting_data.theme_color.light2;
         colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
         colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.light2;
-        colors.color_back = GRAY(96);
+        colors.color_back = GRAY(64);
         colors.color_lyric_back = theApp.m_app_setting_data.theme_color.dark3;
         colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.dark2;
         colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;

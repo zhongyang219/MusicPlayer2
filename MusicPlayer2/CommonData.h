@@ -331,6 +331,10 @@ struct NonCategorizedSettingData
 
     int max_album_cover_size{ 800 };
     bool show_debug_info{ false };
+
+    int light_mode_default_transparency{ 80 };
+    int dark_mode_default_transparency{ 40 };
+
 };
 
 struct IconRes
