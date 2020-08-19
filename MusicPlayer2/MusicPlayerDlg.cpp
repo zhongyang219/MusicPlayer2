@@ -346,6 +346,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"notify_icon_auto_adapt", theApp.m_app_setting_data.notify_icon_auto_adapt);
     ini.WriteBool(L"config", L"button_round_corners", theApp.m_app_setting_data.button_round_corners);
     ini.WriteInt(L"config", L"playlist_width_percent", theApp.m_app_setting_data.playlist_width_percent);
+    ini.WriteString(L"config", L"default_background", theApp.m_app_setting_data.default_background);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -496,6 +497,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.notify_icon_auto_adapt = ini.GetBool(L"config", L"notify_icon_auto_adapt", false);
     theApp.m_app_setting_data.button_round_corners = ini.GetBool(L"config", L"button_round_corners", false);
     theApp.m_app_setting_data.playlist_width_percent = ini.GetInt(L"config", L"playlist_width_percent", 50);
+    theApp.m_app_setting_data.default_background = ini.GetString(L"config", L"default_background", DEFAULT_BACKGROUND_NAME);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
@@ -982,6 +984,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     //bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
     bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != optionDlg.m_tab2_dlg.m_data.notify_icon_selected };
     bool media_lib_display_item_changed{ theApp.m_media_lib_setting_data.display_item != optionDlg.m_media_lib_dlg.m_data.display_item };
+    bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1070,6 +1073,9 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         m_notify_icon.DeleteNotifyIcon();
         m_notify_icon.AddNotifyIcon();
     }
+
+    if (default_background_changed)
+        LoadDefaultBackground();
 
     SaveConfig();		//将设置写入到ini文件
     theApp.SaveConfig();
@@ -1510,6 +1516,16 @@ void CMusicPlayerDlg::UpdateABRepeatToolTip()
 	m_pUI->UpdateMouseToolTip(CPlayerUIBase::BTN_AB_REPEAT, tooltip_info);
 }
 
+void CMusicPlayerDlg::LoadDefaultBackground()
+{
+    theApp.m_ui_data.default_background.Destroy();
+    theApp.m_ui_data.default_background.Load(theApp.m_app_setting_data.default_background.c_str());
+    if (theApp.m_ui_data.default_background.IsNull())
+        theApp.m_ui_data.default_background.Load((theApp.m_local_dir + DEFAULT_BACKGROUND_NAME).c_str());
+    if (theApp.m_ui_data.default_background.IsNull())
+        theApp.m_ui_data.default_background.LoadFromResource(AfxGetResourceHandle(), IDB_DEFAULT_COVER);
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -1657,7 +1673,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     theApp.m_font_set.lyric_translate.SetFont(translate_font);
 
     //载入默认背景图片（用于没有专辑封面时显示）
-    theApp.m_ui_data.default_background.Load((theApp.m_local_dir + L"default_background.jpg").c_str());
+    LoadDefaultBackground();
 
     if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
         theApp.m_app_setting_data.notify_icon_selected = 0;

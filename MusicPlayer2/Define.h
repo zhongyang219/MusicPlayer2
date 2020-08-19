@@ -125,6 +125,7 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define PLAYLIST_EXTENSION L".playlist"
 #define APP_NAME L"MusicPlayer2"
 #define NO_LYRIC_STR L"NoLyric"
+#define DEFAULT_BACKGROUND_NAME L"default_background.jpg"
 
 #define WM_OPEN_FILE_COMMAND_LINE (WM_USER+110)		//通过命令行打开文件时向已有实例窗口发送的消息
 #define MY_WM_NOTIFYICON (WM_USER+115)

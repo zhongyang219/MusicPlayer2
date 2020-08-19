@@ -248,6 +248,8 @@ struct ApperanceSettingData
 
     bool button_round_corners{ false };     //按钮是否使用圆角风格
 
+    wstring default_background;     //默认的背景图片
+
     int playlist_width_percent{ 50 };       //主界面播放列表宽度的百分比
 };
 

@@ -156,7 +156,7 @@ void CBrowseEdit::OnAfterUpdate()
 {
     CWnd* pParent = GetParent();
     if (pParent != nullptr)
-        pParent->SendMessage(WM_EDIT_BROWSE_CHANGED, 0, 0);
+        pParent->SendMessage(WM_EDIT_BROWSE_CHANGED, 0, LPARAM(this));
 }
 
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)

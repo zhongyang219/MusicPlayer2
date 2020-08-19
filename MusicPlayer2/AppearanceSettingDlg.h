@@ -6,6 +6,7 @@
 #include "ColorStatic.h"
 #include "TabDlg.h"
 #include "SpinEdit.h"
+#include "BrowseEdit.h"
 
 // CAppearanceSettingDlg 对话框
 
@@ -84,6 +85,8 @@ protected:
     CBitmap m_preview_dark;
     CBitmap m_preview_light;
 
+    CBrowseEdit m_default_background_edit;
+
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	void SetTransparency();
@@ -135,4 +138,6 @@ public:
     afx_msg void OnPaint();
     afx_msg void OnBnClickedNotifyIconAutoAdaptCheck();
     afx_msg void OnBnClickedBtnRoundCornersCheck();
+protected:
+    afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 };

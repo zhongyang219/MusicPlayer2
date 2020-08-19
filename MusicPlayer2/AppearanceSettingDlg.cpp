@@ -54,6 +54,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_COMBO1, m_icon_select_combo);
     DDX_Control(pDX, IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, m_notify_icon_auto_adapt_chk);
     DDX_Control(pDX, IDC_BTN_ROUND_CORNERS_CHECK, m_btn_round_corners_chk);
+    DDX_Control(pDX, IDC_DEFAULT_BACKGROUND_PATH_EDIT, m_default_background_edit);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -164,6 +165,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_WM_PAINT()
     ON_BN_CLICKED(IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, &CAppearanceSettingDlg::OnBnClickedNotifyIconAutoAdaptCheck)
     ON_BN_CLICKED(IDC_BTN_ROUND_CORNERS_CHECK, &CAppearanceSettingDlg::OnBnClickedBtnRoundCornersCheck)
+    ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CAppearanceSettingDlg::OnEditBrowseChanged)
 END_MESSAGE_MAP()
 
 
@@ -261,6 +263,10 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 	m_dark_mode_chk.SetCheck(m_data.dark_mode);
 	m_use_inner_image_first_chk.SetCheck(m_data.use_inner_image_first);
     m_low_freq_in_center_chk.SetCheck(m_data.spectrum_low_freq_in_center);
+
+    m_default_background_edit.SetWindowText(m_data.default_background.c_str());
+    CString szFilter = CCommon::LoadText(IDS_IMAGE_FILE_FILTER);
+    m_default_background_edit.EnableFileBrowseButton(NULL, szFilter);
 
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
@@ -718,4 +724,17 @@ void CAppearanceSettingDlg::OnBnClickedBtnRoundCornersCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.button_round_corners = (m_btn_round_corners_chk.GetCheck() != 0);
+}
+
+
+afx_msg LRESULT CAppearanceSettingDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
+{
+    CBrowseEdit* pEdit = (CBrowseEdit*)lParam;
+    if (pEdit == &m_default_background_edit)
+    {
+        CString str;
+        m_default_background_edit.GetWindowText(str);
+        m_data.default_background = str.GetString();
+    }
+    return 0;
 }

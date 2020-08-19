@@ -608,6 +608,7 @@
 #define IDS_FILES_THAT_NOT_EXIST        503
 #define IDS_FILES_NOT_IN_MEDIA_LIB_DIR  504
 #define IDS_FILES_THAT_ERROR            505
+#define IDS_IMAGE_FILE_FILTER           506
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -944,6 +945,7 @@
 #define IDC_GENRE_CHECK                 1178
 #define IDC_YEAR_CHECK                  1179
 #define IDC_FILE_TYPE_CHECK             1180
+#define IDC_DEFAULT_BACKGROUND_PATH_EDIT 1182
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1329,9 +1331,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        482
+#define _APS_NEXT_RESOURCE_VALUE        483
 #define _APS_NEXT_COMMAND_VALUE         33195
-#define _APS_NEXT_CONTROL_VALUE         1182
+#define _APS_NEXT_CONTROL_VALUE         1183
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

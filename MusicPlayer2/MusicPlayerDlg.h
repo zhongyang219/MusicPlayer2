@@ -204,6 +204,8 @@ protected:
 	void DoLyricsAutoSave(bool no_inquiry = false);		//保存未修改的歌词，如果no_inquiry为true，则不弹出提示信息
 	void UpdateABRepeatToolTip();
 
+    void LoadDefaultBackground();
+
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
