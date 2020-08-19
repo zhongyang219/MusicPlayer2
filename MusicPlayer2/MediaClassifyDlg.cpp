@@ -170,7 +170,7 @@ void CMediaClassifyDlg::ShowSongList()
                     track_str = std::to_wstring(item.track);
                 row_data[COL_TRACK] = track_str;
                 row_data[COL_GENRE] = item.GetGenre();
-                row_data[COL_BITRATE] = std::to_wstring(item.bitrate);
+                row_data[COL_BITRATE] = (item.bitrate == 0 ? L"-" : std::to_wstring(item.bitrate));
                 row_data[COL_PATH] = item.file_path;
 				m_list_data.push_back(std::move(row_data));
             }

@@ -80,7 +80,7 @@ void CMediaClassifier::ClassifyMedia()
         {
             wstring str_type;
             if (song_info.second.bitrate == 0)
-                str_type = L"0";
+                str_type = L"-";
             else if (song_info.second.bitrate < 32)
                 str_type = L"<32";
             else if (song_info.second.bitrate < 64)

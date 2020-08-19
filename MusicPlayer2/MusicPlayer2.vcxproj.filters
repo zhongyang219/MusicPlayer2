@@ -685,6 +685,9 @@
     <ClInclude Include="UIWindow.h">
       <Filter>UIWindow</Filter>
     </ClInclude>
+    <ClInclude Include="CleanupRangeDlg.h">
+      <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1022,6 +1025,9 @@
     </ClCompile>
     <ClCompile Include="UIWindow.cpp">
       <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="CleanupRangeDlg.cpp">
+      <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

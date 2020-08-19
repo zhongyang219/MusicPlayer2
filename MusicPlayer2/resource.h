@@ -581,6 +581,8 @@
 #define IDS_LAST_THREE_DAYS             479
 #define IDR_ACCELERATOR1                479
 #define IDS_LICENSE_EXPLAIN             480
+#define IDD_DIALOG5                     480
+#define IDD_CLEAN_UP_RANGE_DIALOG       480
 #define IDS_LICENSE                     481
 #define IDS_FILE_EXIST_IN_PLAYLIST_INFO 482
 #define IDS_IS_RELATED                  483
@@ -602,6 +604,10 @@
 #define IDS_CONTAIN_SUB_FOLDER          499
 #define IDS_TYPE                        500
 #define IDS_FILE_TYPE                   501
+#define IDS_CLEAN_UP_MEDIA_WARNING      502
+#define IDS_FILES_THAT_NOT_EXIST        503
+#define IDS_FILES_NOT_IN_MEDIA_LIB_DIR  504
+#define IDS_FILES_THAT_ERROR            505
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -875,7 +881,9 @@
 #define IDC_CHECK6                      1126
 #define IDC_DARK_MODE_CHECK             1126
 #define IDC_SHOW_DESKTOP_LYRIC          1126
+#define IDC_CLEAN_NOT_EXIST_CHECK       1126
 #define IDC_RECORDE_INPUT_COMBO         1127
+#define IDC_CLEAN_NOT_IN_MEDIA_LIB_DIR_CHECK 1127
 #define IDC_OUTPUT_DEVICE_COMBO         1128
 #define IDC_FORMAT_LIST                 1129
 #define IDC_HOTKEY1                     1130
@@ -1321,9 +1329,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        480
+#define _APS_NEXT_RESOURCE_VALUE        482
 #define _APS_NEXT_COMMAND_VALUE         33195
-#define _APS_NEXT_CONTROL_VALUE         1178
+#define _APS_NEXT_CONTROL_VALUE         1182
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

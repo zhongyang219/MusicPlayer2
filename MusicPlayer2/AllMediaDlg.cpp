@@ -102,7 +102,7 @@ void CAllMediaDlg::InitListData()
 			track_str = std::to_wstring(item.second.track);
 		row_data[COL_TRACK] = track_str;
 		row_data[COL_GENRE] = item.second.GetGenre();
-		row_data[COL_BITRATE] = std::to_wstring(item.second.bitrate);
+		row_data[COL_BITRATE] = (item.second.bitrate == 0 ? L"-" : std::to_wstring(item.second.bitrate));
 		row_data[COL_YEAR] = item.second.GetYear();
 		row_data[COL_PATH] = item.first;
 		if(item.second.last_played_time != 0)

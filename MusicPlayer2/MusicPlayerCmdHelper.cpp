@@ -437,9 +437,12 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
 			IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
 			if(pPlayerCore == nullptr)
 				break;
-			pPlayerCore->GetAudioInfo(file_path.c_str(), song_info);;
-            theApp.m_song_data[file_path] = song_info;
-            theApp.m_media_num_added++;
+			pPlayerCore->GetAudioInfo(file_path.c_str(), song_info);
+            if (!song_info.lengh.isZero() || CFilePathHelper(file_path).GetFileExtension() == L"cue")
+            {
+                theApp.m_song_data[file_path] = song_info;
+                theApp.m_media_num_added++;
+            }
         }
     }
 
@@ -453,13 +456,14 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     return theApp.m_media_num_added;
 }
 
-int CMusicPlayerCmdHelper::CleanUpSongData()
+int CMusicPlayerCmdHelper::CleanUpSongData(std::function<bool(const SongInfo&)> fun_condition)
 {
     int clear_cnt{};		//统计删除的项目的数量
     //遍历映射容器，删除不必要的条目。
     for (auto iter{ theApp.m_song_data.begin() }; iter != theApp.m_song_data.end();)
     {
-        if (!CCommon::FileExist(iter->first))
+        iter->second.file_path = iter->first;
+        if (fun_condition(iter->second))
         {
             iter = theApp.m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目
             clear_cnt++;

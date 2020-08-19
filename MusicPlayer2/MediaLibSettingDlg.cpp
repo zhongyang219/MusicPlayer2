@@ -6,6 +6,7 @@
 #include "MediaLibSettingDlg.h"
 #include "afxdialogex.h"
 #include "MusicPlayerCmdHelper.h"
+#include "CleanupRangeDlg.h"
 
 
 // CMediaLibSettingDlg 对话框
@@ -171,18 +172,49 @@ void CMediaLibSettingDlg::OnBnClickedUpdateMediaLibChk()
 void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CWaitCursor wait_cursor;	//显示等待光标
-    int clear_cnt = CMusicPlayerCmdHelper::CleanUpSongData();
-    theApp.SaveSongData();		//清理后将数据写入文件
 
-    size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
-    int size_reduced = m_data_size - data_size;		//清理后数据文件减少的字节数
-    if (size_reduced < 0) size_reduced = 0;
-    CString info;
-    info = CCommon::LoadTextFormat(IDS_CLEAR_COMPLETE_INFO, { clear_cnt, size_reduced });
-    MessageBox(info, NULL, MB_ICONINFORMATION);
-    m_data_size = data_size;
-    ShowDataSizeInfo();
+    CCleanupRangeDlg dlg;
+    if (dlg.DoModal() == IDOK)
+    {
+        CWaitCursor wait_cursor;	//显示等待光标
+        int clear_cnt{};
+        if (dlg.IsCleanFileNotExist())
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData();
+        }
+        if (dlg.IsCleanFileNotInMediaLibDir())
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+            {
+                for (const auto& dir : m_data.media_folders)
+                {
+                    if (song.file_path.find(dir) == 0)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+        if (dlg.IsCleanFileWrong())
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+            {
+                return (song.lengh.isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
+            });
+        }
+        if(clear_cnt > 0)
+            theApp.SaveSongData();		//清理后将数据写入文件
+
+        size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
+        int size_reduced = m_data_size - data_size;		//清理后数据文件减少的字节数
+        if (size_reduced < 0) size_reduced = 0;
+        CString info;
+        info = CCommon::LoadTextFormat(IDS_CLEAR_COMPLETE_INFO, { clear_cnt, size_reduced });
+        MessageBox(info, NULL, MB_ICONINFORMATION);
+        m_data_size = data_size;
+        ShowDataSizeInfo();
+    }
 }
 
 

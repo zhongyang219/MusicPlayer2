@@ -215,6 +215,7 @@
     <ClInclude Include="CHotKey.h" />
     <ClInclude Include="CHotkeyManager.h" />
     <ClInclude Include="CHotKeySettingDlg.h" />
+    <ClInclude Include="CleanupRangeDlg.h" />
     <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
     <ClInclude Include="CUIDrawer.h" />
@@ -337,6 +338,7 @@
     <ClCompile Include="CHotKey.cpp" />
     <ClCompile Include="CHotkeyManager.cpp" />
     <ClCompile Include="CHotKeySettingDlg.cpp" />
+    <ClCompile Include="CleanupRangeDlg.cpp" />
     <ClCompile Include="CListBoxEnhanced.cpp" />
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />
