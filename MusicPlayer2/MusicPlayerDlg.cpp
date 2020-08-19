@@ -1243,6 +1243,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
             break;
         case SM_TRACK:
             pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_TRACK, MF_BYCOMMAND | MF_CHECKED);
+            break;
         case SM_TIME:
             pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_MODIFIED_TIME, MF_BYCOMMAND | MF_CHECKED);
             break;
