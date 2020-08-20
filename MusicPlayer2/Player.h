@@ -140,6 +140,7 @@ private:
 	//vector<wstring> m_lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名（用于歌词模糊匹配时检索）
 
 	vector<int> m_shuffle_list;			//储存随机播放过的曲目序号
+    int m_shuffle_index{};
 
     bool m_playlist_mode{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
 
@@ -331,6 +332,7 @@ private:
     bool RemoveSongNotPlay(int index);
     void AfterSongsRemoved(bool play);
     void AlbumCoverResize();        //如果专辑封面过大，将其缩小后再加载
+    void InitShuffleList();         //初始化随机播放列表
 
 public:
     void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
