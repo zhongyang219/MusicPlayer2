@@ -407,6 +407,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_error_state = ES_NO_ERROR;
         m_is_osu = COSUPlayerHelper::IsOsuFile(GetCurrentFilePath());
         m_pCore->Open(GetCurrentFilePath().c_str());
+        GetPlayerCoreError(L"Open");
         if (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0)
             m_error_state = ES_FILE_CONNOT_BE_OPEN;
         m_file_opend = true;
@@ -458,13 +459,12 @@ void CPlayer::MusicControl(Command command, int volume_step)
         else
             m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
-        GetPlayerCoreError();
         break;
     case Command::PLAY:
         ConnotPlayWarning();
         m_pCore->Play();
         m_playing = 2;
-        GetPlayerCoreError();
+        GetPlayerCoreError(L"Play");
         break;
     case Command::CLOSE:
         //RemoveFXHandle();
@@ -512,7 +512,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             ConnotPlayWarning();
             m_pCore->Play();
             m_playing = 2;
-            GetPlayerCoreError();
+            GetPlayerCoreError(L"Play");
         }
         break;
     case Command::VOLUME_UP:
@@ -587,6 +587,7 @@ void CPlayer::GetPlayerCoreSongLength()
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
     int current_position_int = m_pCore->GetCurPosition();
+    GetPlayerCoreError(L"GetCurPosition");
     if (!IsPlaylistEmpty() && m_playlist[m_index].is_cue)
     {
         current_position_int -= m_playlist[m_index].start_pos.toInt();
@@ -600,7 +601,7 @@ void CPlayer::SetVolume()
     int volume = m_volume;
     volume = volume * theApp.m_nc_setting_data.volume_map / 100;
     m_pCore->SetVolume(volume);
-    GetPlayerCoreError();
+    GetPlayerCoreError(L"SetVolume");
 }
 
 
@@ -1121,14 +1122,17 @@ void CPlayer::SetOrignalSpeed()
     m_pCore->SetSpeed(m_speed);
 }
 
-bool CPlayer::GetPlayerCoreError()
+bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
 {
     if (m_loading)
         return false;
     int error_code_tmp = m_pCore->GetErrorCode();
     if (error_code_tmp && error_code_tmp != m_error_code)
     {
-        theApp.WriteErrorLog(m_pCore->GetErrorInfo(error_code_tmp));
+        wstring log_info = m_pCore->GetErrorInfo(error_code_tmp);
+        log_info += L" function name: ";
+        log_info += function_name;
+        theApp.WriteErrorLog(log_info);
     }
     m_error_code = error_code_tmp;
     return true;
@@ -1637,7 +1641,7 @@ void CPlayer::SeekTo(int position)
         position += m_playlist[m_index].start_pos.toInt();
     }
     m_pCore->SetCurPosition(position);
-    GetPlayerCoreError();
+    GetPlayerCoreError(L"SetCurPosition");
 }
 
 void CPlayer::SeekTo(double position)
@@ -2143,7 +2147,7 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
 void CPlayer::ApplyEqualizer(int channel, int gain)
 {
     m_pCore->ApplyEqualizer(channel, gain);
-    GetPlayerCoreError();
+    GetPlayerCoreError(L"ApplyEqualizer");
 }
 
 void CPlayer::SetEqualizer(int channel, int gain)
@@ -2197,13 +2201,14 @@ void CPlayer::EnableReverb(bool enable)
         if (m_reverb_time < 1) m_reverb_time = 1;
         if (m_reverb_time > 300) m_reverb_time = 300;
         m_pCore->SetReverb(m_reverb_mix, m_reverb_time);
+        GetPlayerCoreError(L"SetReverb");
     }
     else
     {
         m_pCore->ClearReverb();
+        GetPlayerCoreError(L"ClearReverb");
     }
     m_reverb_enable = enable;
-    GetPlayerCoreError();
 }
 
 

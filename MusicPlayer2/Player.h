@@ -238,7 +238,7 @@ public:
     void SetOrignalSpeed();
     float GetSpeed() { return m_speed; }
 
-	bool GetPlayerCoreError();		//获取BASS音频库的错误
+	bool GetPlayerCoreError(const wchar_t* function_name);		//获取BASS音频库的错误
 	bool IsError() const;				//有错误时返回ture，否则返回false
     std::wstring GetErrorInfo();
 

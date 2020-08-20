@@ -903,6 +903,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
+#ifndef COMPILE_IN_WIN_XP
     if (IsTaskbarListEnable() && m_pTaskbar != nullptr)
     {
         CRect thumbnail_rect = m_pUI->GetThumbnailClipArea();
@@ -911,10 +912,12 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
             m_pTaskbar->SetThumbnailClip(m_hWnd, thumbnail_rect);
         }
     }
+#endif
 }
 
 void CMusicPlayerDlg::SetThumbnailClipArea(CRect rect)
 {
+#ifndef COMPILE_IN_WIN_XP
     if (IsTaskbarListEnable() && m_pTaskbar != nullptr)
     {
         if (!rect.IsRectEmpty())
@@ -922,6 +925,7 @@ void CMusicPlayerDlg::SetThumbnailClipArea(CRect rect)
             m_pTaskbar->SetThumbnailClip(m_hWnd, rect);
         }
     }
+#endif
 }
 
 void CMusicPlayerDlg::EnablePlaylist(bool enable)
@@ -4985,11 +4989,13 @@ void CMusicPlayerDlg::OnShowDesktopLyric()
 
 afx_msg LRESULT CMusicPlayerDlg::OnMainWindowActivated(WPARAM wParam, LPARAM lParam)
 {
+#ifndef COMPILE_IN_WIN_XP
     if (IsTaskbarListEnable())
     {
         m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);	//重新添加任务栏缩略图按钮
         SetThumbnailClipArea();		//重新设置任务栏缩略图
     }
+#endif
     return 0;
 }
 
