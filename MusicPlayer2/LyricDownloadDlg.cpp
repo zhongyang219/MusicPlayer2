@@ -128,6 +128,7 @@ BEGIN_MESSAGE_MAP(CLyricDownloadDlg, CDialog)
 	ON_NOTIFY(NM_DBLCLK, IDC_LYRIC_DOWN_LIST1, &CLyricDownloadDlg::OnNMDblclkLyricDownList1)
 	ON_NOTIFY(NM_CLICK, IDC_UNASSOCIATE_LINK, &CLyricDownloadDlg::OnNMClickUnassociateLink)
 	ON_COMMAND(ID_LD_PREVIEW, &CLyricDownloadDlg::OnLdPreview)
+    ON_COMMAND(ID_LD_RELATE, &CLyricDownloadDlg::OnLdRelate)
 END_MESSAGE_MAP()
 
 
@@ -755,4 +756,14 @@ void CLyricDownloadDlg::OnLdPreview()
 	dlg.SetMessageText(result.c_str());
 
 	dlg.DoModal();
+}
+
+
+void CLyricDownloadDlg::OnLdRelate()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_down_list.size()))
+    {
+        CPlayer::GetInstance().SetRelatedSongID(m_down_list[m_item_selected].id);		//将选中项目的歌曲ID关联到歌曲
+    }
 }

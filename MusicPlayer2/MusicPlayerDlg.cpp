@@ -487,7 +487,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.lyric_background = ini.GetBool(L"config", L"lyric_background", false);
     theApp.m_app_setting_data.dark_mode = ini.GetBool(L"config", L"dark_mode", false);
     theApp.m_app_setting_data.background_transparency = ini.GetInt(L"config", L"background_transparency", 80);
-    theApp.m_app_setting_data.use_out_image = ini.GetBool(L"config", L"use_out_image", 0);
+    theApp.m_app_setting_data.use_out_image = ini.GetBool(L"config", L"use_out_image", true);
     theApp.m_app_setting_data.use_inner_image_first = ini.GetBool(L"config", L"use_inner_image_first", true);
     theApp.m_app_setting_data.draw_album_high_quality = ini.GetBool(L"config", L"draw_album_high_quality", false);
     theApp.m_app_setting_data.ui_refresh_interval = ini.GetInt(L"config", L"ui_refresh_interval", UI_INTERVAL_DEFAULT);

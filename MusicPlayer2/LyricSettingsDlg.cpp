@@ -238,6 +238,7 @@ void CLyricSettingsDlg::EnableControlForDesktopLyric()
     m_lyric_background_penetrate_chk.EnableWindow(desktop_lyric_enable);
     GetDlgItem(IDC_SET_FONT2)->EnableWindow(desktop_lyric_enable);
     GetDlgItem(IDC_DEFAULT_STYLE)->EnableWindow(desktop_lyric_enable);
+    m_show_unlock_when_locked_chk.EnableWindow(desktop_lyric_enable);
 }
 
 
