@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "AudioCommon.h"
 #include "CueFile.h"
+#include "MusicPlayer2.h"
 
 vector<SupportedFormat> CAudioCommon::m_surpported_format;
 vector<wstring> CAudioCommon::m_all_surpported_extensions;
@@ -243,6 +244,17 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
 
             int bitrate;
             Time total_length;
+            //如果还未获取对应音频文件的信息，则在这里获取
+            if (CCommon::FileExist(cue_dir + audio_file_name))
+            {
+                SongInfo& audo_file_info = theApp.GetSongInfoRef2(cue_dir + audio_file_name);
+                if (pPlayerCore != nullptr && !audo_file_info.info_acquired)
+                {
+                    pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info);
+                    bitrate = audo_file_info.bitrate;
+                    total_length = audo_file_info.lengh;
+                }
+            }
             //检查files列表中是否包含cue对应的音频文件
             auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
             {
@@ -250,21 +262,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             });
             if (find != files.end())
             {
-                bitrate = find->bitrate;
-                total_length = find->lengh;
                 if (find - files.begin() < i)       //如果删除的文件在当前文件的前面，则循环变量减1
                     i--;
                 files.erase(find);      //找到cue对应的音频文件则把它删除
-            }
-            else
-            {
-                if (pPlayerCore != nullptr)
-                {
-                    SongInfo song;
-                    pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), song, AF_LENGTH | AF_BITRATE);
-                    bitrate = song.bitrate;
-                    total_length = song.lengh;
-                }
             }
             cue_file.SetTotalLength(total_length);
 

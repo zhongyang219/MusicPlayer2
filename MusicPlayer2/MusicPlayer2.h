@@ -97,7 +97,8 @@ public:
     }
 
     SongInfo GetSongInfo(const wstring& file_path);
-	SongInfo& GetSongInfoRef(const wstring& file_path);
+	SongInfo& GetSongInfoRef(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在不会插入新的记录）
+	SongInfo& GetSongInfoRef2(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在会插入新的记录）
 
     WORD GetCurrentLanguage() const;
     bool IsGlobalMultimediaKeyEnabled() const;

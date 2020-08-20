@@ -872,6 +872,11 @@ SongInfo& CMusicPlayerApp::GetSongInfoRef(const wstring& file_path)
 	}
 }
 
+SongInfo& CMusicPlayerApp::GetSongInfoRef2(const wstring& file_path)
+{
+    return m_song_data[file_path];
+}
+
 WORD CMusicPlayerApp::GetCurrentLanguage() const
 {
     switch (m_general_setting_data.language)
