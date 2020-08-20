@@ -74,7 +74,7 @@ BOOL CAboutDlg::OnInitDialog()
         m_rc_pic.bottom = m_rc_pic.top + theApp.DPI(50);
 
     //载入图片
-    m_about_pic.LoadFromResource(AfxGetResourceHandle(), IDB_ABOUT_BITMAP);
+    m_about_pic.LoadFromResource(AfxGetResourceHandle(), IDB_DEFAULT_COVER);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -146,22 +146,7 @@ void CAboutDlg::OnPaint()
 
     //画背景图
     CSize img_size{ m_about_pic.GetWidth(), m_about_pic.GetHeight() };
-    if (min(img_size.cx, img_size.cy) < min(m_rc_pic.Width(), m_rc_pic.Height()))       //如果图片要被放大，则使用GDI+绘图
-    {
-        CPoint start_point{ m_rc_pic.TopLeft() };
-        CSize size{ m_rc_pic.Size() };
-        draw.ImageDrawAreaConvert(CSize(m_about_pic.GetWidth(), m_about_pic.GetHeight()), start_point, size, CDrawCommon::StretchMode::FIT, true);
-        CRect rc_clip{ start_point, size };
-        rc_clip.DeflateRect(theApp.DPI(2), theApp.DPI(2));
-        draw.GetGraphics()->SetClip(CGdiPlusTool::CRectToGdiplusRect(rc_clip));     //通过设置剪辑区域裁剪掉边缘的几个像素，否则使用GDI+绘图将图像拉伸时边缘会有白边
-        draw.DrawImage(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FIT, true);
-        draw.GetGraphics()->ResetClip();
-    }
-    else        //否则使用GDI绘图
-    {
-        draw.DrawBitmap(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FIT);
-    }
-
+    draw.DrawBitmap(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FILL);
 }
 
 
