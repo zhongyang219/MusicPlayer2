@@ -264,8 +264,8 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const wstring& lyric_name, const ws
 	result.clear();
 	//if (song.GetFileName().size() < 3) return;
 	
-	wstring lyric_path{ cur_dir + lyric_name + L"lrc" };		//得到路径+文件名的字符串
-    wstring lyric_path2{ theApp.m_lyric_setting_data.lyric_path + lyric_name + L"lrc" };
+	wstring lyric_path{ cur_dir + lyric_name + L".lrc" };		//得到路径+文件名的字符串
+    wstring lyric_path2{ theApp.m_lyric_setting_data.lyric_path + lyric_name + L".lrc" };
 	//查找歌词文件名和歌曲文件名完全匹配的歌词
 	if (CCommon::FileExist(lyric_path))
 	{
@@ -320,7 +320,8 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const wstring& lyric_name, const ws
 			if (isMatched(str, key_words))
 			{
 				wstring matched_lyric = cur_dir + str;
-				result.push_back(matched_lyric);
+                if (!CCommon::IsItemInVector(result, matched_lyric))
+                    result.push_back(matched_lyric);
 			}
 		}
 
@@ -329,7 +330,8 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const wstring& lyric_name, const ws
 			if (isMatched(str, key_words))
 			{
 				wstring matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
-				result.push_back(matched_lyric);
+                if (!CCommon::IsItemInVector(result, matched_lyric))
+                    result.push_back(matched_lyric);
 			}
 		}
 }
