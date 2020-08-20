@@ -503,7 +503,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
     else if(CPlayer::GetInstance().IsMidi())
         tag_str = L"midi";
     else if (CPlayer::GetInstance().IsOsuFile())
-        tag_str = L"osu";
+        tag_str = L"osu!";
     int available_width = rect.right - rc_tmp.right;
     if(available_width >= DPI(50) && !tag_str.empty())
     {
