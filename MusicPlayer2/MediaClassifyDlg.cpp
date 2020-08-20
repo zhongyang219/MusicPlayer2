@@ -429,6 +429,12 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_GENRE), TRUE);
     else if (m_type == CMediaClassifier::CT_YEAR)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_YEAR), TRUE);
+    else if (m_type == CMediaClassifier::CT_TYPE)
+        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FILE_TYPE), TRUE);
+    else if (m_type == CMediaClassifier::CT_BITRATE)
+        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_BITRATE), TRUE);
+    else
+        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

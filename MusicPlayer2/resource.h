@@ -608,6 +608,8 @@
 #define IDS_FILES_NOT_IN_MEDIA_LIB_DIR  504
 #define IDS_FILES_THAT_ERROR            505
 #define IDS_IMAGE_FILE_FILTER           506
+#define IDS_SEARCH_FILE_TYPE            507
+#define IDS_SEARCH_BITRATE              508
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
