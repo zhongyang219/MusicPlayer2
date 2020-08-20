@@ -325,7 +325,7 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 				if (b.find(phdr->iItem) != b.end())
 					str_b = b.at(phdr->iItem);
 
-				if (phdr->iItem == COL_TRACK)		//如果是对“音轨号”排序，则需要将字符串转换成数字
+				if (phdr->iItem == COL_TRACK || phdr->iItem == COL_BITRATE)		//如果是对“音轨号”或“比特率”排序，则需要将字符串转换成数字
 				{
 					int index_a, index_b;
 					index_a = _ttoi(str_a.c_str());
