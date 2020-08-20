@@ -563,6 +563,7 @@ string CAudioTag::GetUtf8TagContents(const char* tag_start)
 			break;
 		tag_contents.push_back(tag_start[i]);
 	}
+    tag_contents = '\0' + tag_contents;     //由于每个标签是用'\0'分隔的，在查找标签时会在要查找的标签前面加一个'\0'，因此为了避免标签在文件的最前面导致查找不到的情况，在整个标签区域的最前面添加一个'\0'
 	return tag_contents;
 }
 
