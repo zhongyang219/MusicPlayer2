@@ -684,6 +684,7 @@ bool CPlayer::PlayTrack(int song_track)
         {
             if (song_track == NEXT)
             {
+                song_track = m_shuffle_list[m_shuffle_index];
                 m_shuffle_index++;
                 if (m_shuffle_index >= static_cast<int>(m_shuffle_list.size()))
                 {
@@ -691,15 +692,14 @@ bool CPlayer::PlayTrack(int song_track)
                     InitShuffleList();
                     m_shuffle_index = 0;
                 }
-                song_track = m_shuffle_list[m_shuffle_index];
                 m_is_shuffle_list_played = true;
             }
             else if (song_track == PREVIOUS)
             {
+                song_track = m_shuffle_list[m_shuffle_index];
                 m_shuffle_index--;
                 if (m_shuffle_index < 0)
                     m_shuffle_index = static_cast<int>(m_shuffle_list.size()) - 1;
-                song_track = m_shuffle_list[m_shuffle_index];
                 m_is_shuffle_list_played = true;
             }
             else if (m_is_shuffle_list_played)
