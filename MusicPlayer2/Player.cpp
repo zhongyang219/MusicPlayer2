@@ -309,6 +309,9 @@ void CPlayer::IniPlaylistComplate()
     //初始化随机播放序号列表
     InitShuffleList();
 
+    m_random_list.clear();
+    if (m_repeat_mode == RM_PLAY_RANDOM)
+        m_random_list.push_back(m_index);
 	m_thread_info = ThreadInfo();
 }
 
@@ -674,7 +677,7 @@ bool CPlayer::PlayTrack(int song_track)
         if (song_track == PREVIOUS)		//播放上一曲
             song_track = m_index - 1;
         break;
-    case RM_PLAY_SHUFFLE:		//随机播放
+    case RM_PLAY_SHUFFLE:		//无序播放
         if (m_shuffle_list.size() != m_playlist.size())
             InitShuffleList();
         if (!m_shuffle_list.empty())
@@ -689,6 +692,7 @@ bool CPlayer::PlayTrack(int song_track)
                     m_shuffle_index = 0;
                 }
                 song_track = m_shuffle_list[m_shuffle_index];
+                m_is_shuffle_list_played = true;
             }
             else if (song_track == PREVIOUS)
             {
@@ -696,7 +700,40 @@ bool CPlayer::PlayTrack(int song_track)
                 if (m_shuffle_index < 0)
                     m_shuffle_index = static_cast<int>(m_shuffle_list.size()) - 1;
                 song_track = m_shuffle_list[m_shuffle_index];
+                m_is_shuffle_list_played = true;
             }
+            else if (m_is_shuffle_list_played)
+            {
+                InitShuffleList();      //手动指定播放曲目时重新生成无序列表
+            }
+        }
+        break;
+    case RM_PLAY_RANDOM:		//随机播放
+        if (song_track == NEXT)
+        {
+            SYSTEMTIME current_time;
+            GetLocalTime(&current_time);			//获取当前时间
+            srand(current_time.wMilliseconds);		//用当前时间的毫秒数设置产生随机数的种子
+            song_track = rand() % GetSongNum();
+            m_random_list.push_back(song_track);	//保存随机播放过的曲目
+        }
+        else if (song_track == PREVIOUS)		//回溯上一个随机播放曲目
+        {
+            if (m_random_list.size() >= 2)
+            {
+                if (m_index == m_random_list.back())
+                    m_random_list.pop_back();
+                song_track = m_random_list.back();
+            }
+            else
+            {
+                MusicControl(Command::STOP);	//无法回溯时停止播放
+                return true;
+            }
+        }
+        else if (song_track >= 0 && song_track < GetSongNum() && song_track != m_index)     //手动指定歌曲时
+        {
+        	m_random_list.push_back(song_track);	//保存随机播放过的曲目
         }
         break;
     case RM_LOOP_PLAYLIST:		//列表循环
@@ -1073,7 +1110,7 @@ void CPlayer::SetRepeatMode()
 {
     int repeat_mode{ static_cast<int>(m_repeat_mode) };
     repeat_mode++;
-    if (repeat_mode > 3)
+    if (repeat_mode >= RM_MAX)
         repeat_mode = 0;
     m_repeat_mode = static_cast<RepeatMode>(repeat_mode);
     SaveConfig();
@@ -2412,13 +2449,14 @@ void CPlayer::AlbumCoverResize()
 void CPlayer::InitShuffleList()
 {
     m_shuffle_list.resize(m_playlist.size());
-    //为随机播放列表生成1~n的序号
+    //为无序播放列表生成1~n的序号
     for (size_t i{}; i < m_shuffle_list.size(); i++)
         m_shuffle_list[i] = i;
     //将生成的序号打乱
     if (m_shuffle_list.size() > 1)
         std::random_shuffle(m_shuffle_list.begin(), m_shuffle_list.end());
     m_shuffle_index = 0;
+    m_is_shuffle_list_played = false;
 }
 
 void CPlayer::SearchOutAlbumCover()

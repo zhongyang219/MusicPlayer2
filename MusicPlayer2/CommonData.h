@@ -401,6 +401,7 @@ struct IconSet
     IconRes mini;
     IconRes play_oder;
     IconRes play_shuffle;
+    IconRes play_random;
     IconRes loop_playlist;
     IconRes loop_track;
     IconRes previous;

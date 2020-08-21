@@ -586,7 +586,10 @@
 #define IDS_FILE_EXIST_IN_PLAYLIST_INFO 482
 #define IDS_IS_RELATED                  483
 #define IDS_YES                         484
+#define IDI_PLAY_RANDOM                 484
 #define IDS_ALBUM_COVER_INFO            485
+#define IDI_ICON13                      485
+#define IDI_PLAY_RANDOM_D               485
 #define IDS_INNER_ALBUM_COVER           486
 #define IDS_WIDTH                       487
 #define IDS_HEIGHT                      488
@@ -610,6 +613,7 @@
 #define IDS_IMAGE_FILE_FILTER           506
 #define IDS_SEARCH_FILE_TYPE            507
 #define IDS_SEARCH_BITRATE              508
+#define IDS_PLAY_RANDOM                 509
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -982,9 +986,9 @@
 #define ID_32803                        32803
 #define ID_PLAY_ORDER                   32804
 #define ID_PLAY_SHUFFLE                 32805
-#define ID_LOOP_PLAYLIST                32806
-#define ID_LOOP_TRACK                   32807
-#define ID_32808                        32808
+#define ID_PLAY_RANDOM                  32806
+#define ID_LOOP_PLAYLIST                32807
+#define ID_LOOP_TRACK                   32808
 #define ID_SET_FONT                     32809
 #define ID_STOP_WHEN_ERROR              32810
 #define ID_32811                        32811
@@ -1335,7 +1339,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        484
+#define _APS_NEXT_RESOURCE_VALUE        486
 #define _APS_NEXT_COMMAND_VALUE         33198
 #define _APS_NEXT_CONTROL_VALUE         1183
 #define _APS_NEXT_SYMED_VALUE           101

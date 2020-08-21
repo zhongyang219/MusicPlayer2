@@ -1384,5 +1384,11 @@
     <Image Include="res\黑色胶片_not_played.png">
       <Filter>资源文件\bitmaps</Filter>
     </Image>
+    <Image Include="res\随机播放1.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\随机播放1_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

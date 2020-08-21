@@ -69,9 +69,11 @@ struct PathInfo
 enum RepeatMode
 {
 	RM_PLAY_ORDER,		//顺序播放
-	RM_PLAY_SHUFFLE,	//随机播放
+	RM_PLAY_SHUFFLE,	//无序播放
+    RM_PLAY_RANDOM,     //随机播放
 	RM_LOOP_PLAYLIST,	//列表循环
-	RM_LOOP_TRACK		//单曲循环
+	RM_LOOP_TRACK,		//单曲循环
+    RM_MAX
 };
 
 #define GENRE_MAX 148

@@ -439,4 +439,5 @@ public:
     afx_msg void OnAccendingOrder();
     afx_msg void OnDesendingOrder();
     afx_msg void OnInvertPlaylist();
+    afx_msg void OnPlayRandom();
 };

@@ -256,6 +256,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_ACCENDING_ORDER, &CMusicPlayerDlg::OnAccendingOrder)
     ON_COMMAND(ID_DESENDING_ORDER, &CMusicPlayerDlg::OnDesendingOrder)
     ON_COMMAND(ID_INVERT_PLAYLIST, &CMusicPlayerDlg::OnInvertPlaylist)
+    ON_COMMAND(ID_PLAY_RANDOM, &CMusicPlayerDlg::OnPlayRandom)
 END_MESSAGE_MAP()
 
 
@@ -1126,6 +1127,9 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
         break;
     case RM_PLAY_SHUFFLE:
         pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_SHUFFLE, MF_BYCOMMAND | MF_CHECKED);
+        break;
+    case RM_PLAY_RANDOM:
+        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_RANDOM, MF_BYCOMMAND | MF_CHECKED);
         break;
     case RM_LOOP_PLAYLIST:
         pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_LOOP_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
@@ -2394,7 +2398,16 @@ void CMusicPlayerDlg::OnPlayOrder()
 void CMusicPlayerDlg::OnPlayShuffle()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_SHUFFLE);		//设置随机播放
+    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_SHUFFLE);		//设置无序播放
+    m_ui.UpdateRepeatModeToolTip();
+    m_ui2.UpdateRepeatModeToolTip();
+}
+
+
+void CMusicPlayerDlg::OnPlayRandom()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_RANDOM);		//设置无序播放
     m_ui.UpdateRepeatModeToolTip();
     m_ui2.UpdateRepeatModeToolTip();
 }

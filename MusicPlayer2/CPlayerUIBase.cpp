@@ -597,6 +597,9 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     case RepeatMode::RM_PLAY_SHUFFLE:
         pIcon = &theApp.m_icon_set.play_shuffle;
         break;
+    case RepeatMode::RM_PLAY_RANDOM:
+        pIcon = &theApp.m_icon_set.play_random;
+        break;
     }
     if (pIcon != nullptr)
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
@@ -906,6 +909,9 @@ void CPlayerUIBase::SetRepeatModeToolTipText()
         break;
     case RepeatMode::RM_PLAY_SHUFFLE:
         m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_SHUFFLE);
+        break;
+    case RepeatMode::RM_PLAY_RANDOM:
+        m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_RANDOM);
         break;
     }
 }
