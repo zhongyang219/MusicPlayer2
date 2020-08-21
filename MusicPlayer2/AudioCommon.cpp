@@ -191,13 +191,19 @@ bool CAudioCommon::IsPathContainsAudioFile(std::wstring path, bool include_sub_d
                 if (include_sub_dir)
                 {
                     if (IsPathContainsAudioFile(path + file_name, include_sub_dir))
+                    {
+                        _findclose(hFile);
                         return true;
+                    }
                 }
             }
             else
             {
                 if (FileIsAudio(file_name))	//如果找到了音频文件，返回true
+                {
+                    _findclose(hFile);
                     return true;
+                }
             }
         } while (_wfindnext(hFile, &fileinfo) == 0);
     }

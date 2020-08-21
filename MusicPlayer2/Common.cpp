@@ -963,8 +963,6 @@ void CCommon::GetImageFiles(wstring file_name, vector<wstring>& files)
 
 bool CCommon::IsFolderMatchKeyWord(wstring dir, const wstring& key_word)
 {
-    
-
     //文件句柄
     intptr_t hFile = 0;
     //文件信息
@@ -987,7 +985,10 @@ bool CCommon::IsFolderMatchKeyWord(wstring dir, const wstring& key_word)
             if (CCommon::IsFolder(dir + file_name))        //当前是文件夹，则递归调用
             {
                 if (IsFolderMatchKeyWord(dir + file_name, key_word))
+                {
+                    _findclose(hFile);
                     return true;
+                }
             }
             //else
             //{
@@ -997,7 +998,10 @@ bool CCommon::IsFolderMatchKeyWord(wstring dir, const wstring& key_word)
         } while (_wfindnext(hFile, &fileinfo) == 0);
 
         if (StringFindNoCase(folder_name, key_word) != wstring::npos)
+        {
+            _findclose(hFile);
             return true;
+        }
     }
     _findclose(hFile);
     return false;
