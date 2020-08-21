@@ -242,8 +242,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             //if(!CCommon::FileExist(cue_dir + audio_file_name))
             //    continue;
 
-            int bitrate;
-            Time total_length;
+            int bitrate{};
+            Time total_length{};
             //如果还未获取对应音频文件的信息，则在这里获取
             if (CCommon::FileExist(cue_dir + audio_file_name))
             {
@@ -251,9 +251,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                 if (pPlayerCore != nullptr && !audo_file_info.info_acquired)
                 {
                     pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info);
-                    bitrate = audo_file_info.bitrate;
-                    total_length = audo_file_info.lengh;
                 }
+                bitrate = audo_file_info.bitrate;
+                total_length = audo_file_info.lengh;
             }
             //检查files列表中是否包含cue对应的音频文件
             auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
