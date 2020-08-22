@@ -668,7 +668,7 @@ bool CPlayer::IsPlaying() const
     return m_playing == 2;
 }
 
-bool CPlayer::PlayTrack(int song_track)
+bool CPlayer::PlayTrack(int song_track, bool auto_next)
 {
     switch (m_repeat_mode)
     {
@@ -737,6 +737,14 @@ bool CPlayer::PlayTrack(int song_track)
         	m_random_list.push_back(song_track);	//保存随机播放过的曲目
         }
         break;
+    case RM_LOOP_TRACK:		//单曲循环
+        if (auto_next)
+        {
+            if (song_track == NEXT || song_track == PREVIOUS)
+                song_track = m_index;
+            break;
+        }
+        //这里没有break，如果不是播放完成后自动下一曲，则执行下面列表循环中的代码
     case RM_LOOP_PLAYLIST:		//列表循环
         if (song_track == NEXT)		//播放下一曲
         {
@@ -751,9 +759,6 @@ bool CPlayer::PlayTrack(int song_track)
             if (song_track < 0) song_track = GetSongNum() - 1;
         }
         break;
-    case RM_LOOP_TRACK:		//单曲循环
-        if (song_track == NEXT || song_track == PREVIOUS)
-            song_track = m_index;
     }
 
     bool valid = (song_track >= 0 && song_track < GetSongNum());

@@ -1946,7 +1946,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             else
                 m_play_error_cnt = 0;
             //当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
-            if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT))
+            if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT, true))
             {
                 CPlayer::GetInstance().MusicControl(Command::STOP);		//停止播放
                 //ShowTime();

@@ -222,7 +222,7 @@ public:
 	int GetCurrentSecond();		//获取当前播放到的位置的秒数
 	bool IsPlaying() const;			//判断当前是否正在播放
 
-	bool PlayTrack(int song_track);		//播放指定序号的歌曲
+	bool PlayTrack(int song_track, bool auto_next = false);		//播放指定序号的歌曲，如果是播放结束自动播放下一曲，则auto_next为true
 
 	void SetVolume();		//用m_volume的值设置音量
 	void SetPath(const PathInfo& path_info);		//设置路径
