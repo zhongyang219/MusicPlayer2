@@ -18,6 +18,8 @@ public:
 protected:
 	void ScrollWindowSimple(int step);
 
+    void EnableDlgCtrl(UINT id, bool enable);
+
 protected:
 	CWnd* m_pParent;
 	bool m_scroll_enable{ false };

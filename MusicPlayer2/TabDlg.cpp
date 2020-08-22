@@ -108,6 +108,13 @@ void CTabDlg::ScrollWindowSimple(int step)
 
 }
 
+void CTabDlg::EnableDlgCtrl(UINT id, bool enable)
+{
+    CWnd* pCtrl = GetDlgItem(id);
+    if (pCtrl != nullptr)
+        pCtrl->EnableWindow(enable);
+}
+
 BEGIN_MESSAGE_MAP(CTabDlg, CDialogEx)
 	ON_WM_VSCROLL()
 	ON_WM_MOUSEWHEEL()

@@ -3,6 +3,8 @@
 #include "MusicPlayer2.h"
 #include "CUIDrawer.h"
 
+#define LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR RGB(240, 240, 240)
+#define SEARCH_BOX_DEFAULT_TRANSPARENT_COLOR RGB(255, 0, 255)
 class CCortanaLyric
 {
 public:
@@ -20,6 +22,7 @@ public:
     void SetBeatAmp(int beat_amp);
     void SetUIColors();
     void SetDarkMode(bool dark_mode);		//设置搜索框是否为黑色模式
+    void ApplySearchBoxTransparentChanged();
 
 private:
     struct CortanaUIColors		//界面颜色

@@ -211,6 +211,7 @@ struct LyricSettingData
 	bool cortana_opaque{ false };				//搜索框不透明
     Alignment cortana_lyric_align{ Alignment::CENTER };               //搜索框歌词对齐方式
     bool show_default_album_icon_in_search_box{ false };      //没有歌词时搜索框显示黑色胶片图标
+    COLORREF cortana_transparent_color{};
 
 	bool show_desktop_lyric{ false };			//显示桌面歌词
 	DesktopLyricSettingData desktop_lyric_data;
@@ -324,7 +325,6 @@ struct NonCategorizedSettingData
     bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
     bool show_hide_menu_bar_tip{ true };	//是隐藏菜单栏是否弹出提示信息
     bool always_on_top{ false };	//是否总是置顶
-    COLORREF cortana_transparent_color{};
 	wstring default_osu_img;
 
     bool float_playlist{ false };		//浮动播放列表

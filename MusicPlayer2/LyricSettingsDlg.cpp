@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "LyricSettingsDlg.h"
 #include "afxdialogex.h"
+#include "CortanaLyric.h"
 
 
 // CLyricSettingsDlg 对话框
@@ -100,6 +101,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_USE_INNER_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedUseInnerLyricCheck)
     ON_BN_CLICKED(IDC_SHOW_UNLOCK_WHEN_LOCKED, &CLyricSettingsDlg::OnBnClickedShowUnlockWhenLocked)
     ON_BN_CLICKED(IDC_SHOW_DEFAULT_ALBUM_ICON_CHK, &CLyricSettingsDlg::OnBnClickedShowDefaultAlbumIconChk)
+    ON_BN_CLICKED(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE, &CLyricSettingsDlg::OnBnClickedSearchBoxTransparentInWhiteMode)
 END_MESSAGE_MAP()
 
 
@@ -131,6 +133,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     //m_search_box_opaque_chk.SetCheck(m_data.cortana_opaque);
 	//m_search_box_opaque_chk.ShowWindow(SW_HIDE);		//此选项已经没有作用，把它隐藏起来
     m_show_default_album_icon_chk.SetCheck(m_data.show_default_album_icon_in_search_box);
+    CheckDlgButton(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE, IsSearchBoxTransparentInWhiteTheme());
 
 	m_show_desktop_lyric_chk.SetCheck(m_data.show_desktop_lyric);
 	m_text_color1_static.SetFillColor(m_data.desktop_lyric_data.text_color1);
@@ -215,6 +218,8 @@ void CLyricSettingsDlg::EnableControl()
 
     m_cortana_icon_beat_check.EnableWindow(enable && !m_data.show_default_album_icon_in_search_box);
     m_show_default_album_icon_chk.EnableWindow(enable);
+
+    EnableDlgCtrl(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE, enable);
 }
 
 void CLyricSettingsDlg::EnableControlForDesktopLyric()
@@ -252,6 +257,19 @@ void CLyricSettingsDlg::ApplyDefaultLyricStyle(const LyricStyleDefaultData& styl
     m_highlight_color1_static.SetFillColor(style.highlight_style.color1);
     m_highlight_color2_static.SetFillColor(style.highlight_style.color2);
     m_highlight_gradient_combo.SetCurSel(m_data.desktop_lyric_data.highlight_gradient);
+}
+
+void CLyricSettingsDlg::SetSearchBoxTransparentInWhiteTheme(bool transparent)
+{
+    if (transparent)
+        m_data.cortana_transparent_color = LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR;      //要设置成透明，则将透明色设置成和背景色相同
+    else
+        m_data.cortana_transparent_color = SEARCH_BOX_DEFAULT_TRANSPARENT_COLOR;      //要设置成不透明，则将透明色设置成和背景色不同
+}
+
+bool CLyricSettingsDlg::IsSearchBoxTransparentInWhiteTheme() const
+{
+    return (m_data.cortana_transparent_color == LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR);
 }
 
 void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
@@ -660,4 +678,12 @@ void CLyricSettingsDlg::OnBnClickedShowDefaultAlbumIconChk()
     // TODO: 在此添加控件通知处理程序代码
     m_data.show_default_album_icon_in_search_box = (m_show_default_album_icon_chk.GetCheck() != 0);
     EnableControl();
+}
+
+
+void CLyricSettingsDlg::OnBnClickedSearchBoxTransparentInWhiteMode()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    bool checked = (IsDlgButtonChecked(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE) != 0);
+    SetSearchBoxTransparentInWhiteTheme(checked);
 }

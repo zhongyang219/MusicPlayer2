@@ -360,7 +360,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"other", L"no_sf2_warning", theApp.m_nc_setting_data.no_sf2_warning);
     ini.WriteBool(L"other", L"show_hide_menu_bar_tip", theApp.m_nc_setting_data.show_hide_menu_bar_tip);
     ini.WriteBool(L"other", L"cortana_opaque", theApp.m_lyric_setting_data.cortana_opaque);
-    ini.WriteInt(L"other", L"cortana_transparent_color", theApp.m_nc_setting_data.cortana_transparent_color);
+    ini.WriteInt(L"other", L"cortana_transparent_color", theApp.m_lyric_setting_data.cortana_transparent_color);
     ini.WriteString(L"other", L"default_osu_img", theApp.m_nc_setting_data.default_osu_img);
     ini.WriteBool(L"other", L"show_debug_info", theApp.m_nc_setting_data.show_debug_info);
     ini.WriteInt(L"other", L"light_mode_default_transparency", theApp.m_nc_setting_data.light_mode_default_transparency);
@@ -511,7 +511,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.no_sf2_warning = ini.GetBool(L"other", L"no_sf2_warning", true);
     theApp.m_nc_setting_data.show_hide_menu_bar_tip = ini.GetBool(L"other", L"show_hide_menu_bar_tip", true);
     theApp.m_lyric_setting_data.cortana_opaque = ini.GetBool(L"other", L"cortana_opaque", false);
-    theApp.m_nc_setting_data.cortana_transparent_color = ini.GetInt(L"other", L"cortana_transparent_color", RGB(255, 0, 255));
+    theApp.m_lyric_setting_data.cortana_transparent_color = ini.GetInt(L"other", L"cortana_transparent_color", SEARCH_BOX_DEFAULT_TRANSPARENT_COLOR);
 	theApp.m_nc_setting_data.default_osu_img = ini.GetString(L"other", L"default_osu_img", L"");
     theApp.m_nc_setting_data.show_debug_info = ini.GetBool(L"other", L"show_debug_info", true);
     theApp.m_nc_setting_data.light_mode_default_transparency = ini.GetInt(L"other", L"light_mode_default_transparency", 80);
@@ -990,6 +990,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != optionDlg.m_tab2_dlg.m_data.notify_icon_selected };
     bool media_lib_display_item_changed{ theApp.m_media_lib_setting_data.display_item != optionDlg.m_media_lib_dlg.m_data.display_item };
     bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background };
+    bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1081,6 +1082,9 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     if (default_background_changed)
         LoadDefaultBackground();
+
+    if (search_box_background_transparent_changed)
+        m_cortana_lyric.ApplySearchBoxTransparentChanged();
 
     SaveConfig();		//将设置写入到ini文件
     theApp.SaveConfig();

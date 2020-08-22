@@ -221,7 +221,7 @@ void CCortanaLyric::SetCortanaBarOpaque(bool opaque)
 		{
 			//设置不透明
 			SetWindowLong(m_hCortanaBar, GWL_EXSTYLE, GetWindowLong(m_hCortanaBar, GWL_EXSTYLE) | WS_EX_LAYERED);
-			::SetLayeredWindowAttributes(m_hCortanaBar, theApp.m_nc_setting_data.cortana_transparent_color, 0, LWA_COLORKEY);
+			::SetLayeredWindowAttributes(m_hCortanaBar, theApp.m_lyric_setting_data.cortana_transparent_color, 0, LWA_COLORKEY);
 		}
 	}
 	else
@@ -287,7 +287,7 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
                 int cortana_img_id{ m_colors.dark ? IDB_CORTANA_BLACK : IDB_CORTANA_WHITE };
                 if (theApp.m_lyric_setting_data.cortana_icon_beat)
                 {
-                    m_draw.FillRect(cover_rect, (m_colors.dark ? GRAY(47) : GRAY(240)));
+                    m_draw.FillRect(cover_rect, m_colors.back_color);
                     CRect rect{ cover_rect };
                     rect.DeflateRect(theApp.DPI(4), theApp.DPI(4));
                     int inflate;
@@ -383,7 +383,7 @@ void CCortanaLyric::ResetCortanaText()
             //再绘制Cortana默认文本
             CRect rect{ m_cortana_rect };
             rect.left += m_cover_width;
-            m_draw.FillRect(rect, (m_dark_mode ? GRAY(47) : GRAY(240)));
+            m_draw.FillRect(rect, m_colors.back_color);
             m_draw.DrawWindowText(rect, m_cortana_default_text.c_str(), color);
             //if (!m_dark_mode)
             //{
@@ -402,6 +402,15 @@ void CCortanaLyric::SetDarkMode(bool dark_mode)
 		m_dark_mode = dark_mode;
 		SetCortanaBarOpaque(!m_dark_mode);
 		SetUIColors();
+    }
+}
+
+void CCortanaLyric::ApplySearchBoxTransparentChanged()
+{
+    if (CWinVersionHelper::IsWindows10LightTheme())
+    {
+        m_cortana_opaque = false;
+        SetCortanaBarOpaque(true);
     }
 }
 
@@ -454,7 +463,7 @@ void CCortanaLyric::SetUIColors()
         m_colors.text_color = theApp.m_app_setting_data.theme_color.dark3;
         m_colors.text_color2 = theApp.m_app_setting_data.theme_color.dark1;
         m_colors.info_text_color = theApp.m_app_setting_data.theme_color.dark2;
-        m_colors.back_color = GRAY(240);
+        m_colors.back_color = LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR;
         m_lyric_colors.color_spectrum = theApp.m_app_setting_data.theme_color.dark0;
 
 		m_lyric_colors.color_text = theApp.m_app_setting_data.theme_color.dark3;

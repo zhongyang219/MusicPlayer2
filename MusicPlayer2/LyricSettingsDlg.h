@@ -69,6 +69,9 @@ protected:
     void EnableControlForDesktopLyric();
     void ApplyDefaultLyricStyle(const LyricStyleDefaultData& style);
 
+    void SetSearchBoxTransparentInWhiteTheme(bool transparent);
+    bool IsSearchBoxTransparentInWhiteTheme() const;
+
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedKaraokeDisp();
@@ -119,4 +122,5 @@ public:
 	afx_msg void OnBnClickedUseInnerLyricCheck();
     afx_msg void OnBnClickedShowUnlockWhenLocked();
     afx_msg void OnBnClickedShowDefaultAlbumIconChk();
+    afx_msg void OnBnClickedSearchBoxTransparentInWhiteMode();
 };
