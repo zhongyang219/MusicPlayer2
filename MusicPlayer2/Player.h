@@ -142,7 +142,7 @@ private:
 	vector<int> m_shuffle_list;			//储存乱序播放过的曲目序号
     int m_shuffle_index{};              //乱序播放时当前的索引
     bool m_is_shuffle_list_played{ false };
-    vector<int> m_random_list;          //随机播放模式下的历史记录，用于回溯之前的记录
+    std::list<int> m_random_list;          //随机播放模式下的历史记录，用于回溯之前的记录
 
     bool m_playlist_mode{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
 

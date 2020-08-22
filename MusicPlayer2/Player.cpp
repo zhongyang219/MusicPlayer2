@@ -311,7 +311,8 @@ void CPlayer::IniPlaylistComplate()
 
     m_random_list.clear();
     if (m_repeat_mode == RM_PLAY_RANDOM)
-        m_random_list.push_back(m_index);
+        m_random_list.push_back(m_index);
+
 	m_thread_info = ThreadInfo();
 }
 
@@ -1460,6 +1461,7 @@ bool CPlayer::RemoveSong(int index)
             m_album_cover_blur.Destroy();
             m_Lyrics = CLyrics();
         }
+        m_random_list.clear();
         return true;
     }
     return false;
@@ -1566,6 +1568,7 @@ bool CPlayer::MoveUp(int first, int last)
         std::swap(m_playlist[i - 1], m_playlist[i]);
     }
     SaveCurrentPlaylist();
+    m_random_list.clear();
     return true;
 }
 
@@ -1589,6 +1592,7 @@ bool CPlayer::MoveDown(int first, int last)
         std::swap(m_playlist[i], m_playlist[i - 1]);
     }
     SaveCurrentPlaylist();
+    m_random_list.clear();
     return true;
 }
 
@@ -1661,6 +1665,7 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
     else
         m_index = iter_play - m_playlist.begin();
 
+    m_random_list.clear();
     return dest_index;
 }
 
@@ -1897,6 +1902,7 @@ void CPlayer::SortPlaylist(bool change_index)
             }
         }
     }
+    m_random_list.clear();
     SaveCurrentPlaylist();
 }
 
@@ -1910,6 +1916,7 @@ void CPlayer::InvertPlaylist()
     //当前播放曲目更改
     m_index = m_playlist.size() - m_index - 1;
 
+    m_random_list.clear();
     SaveCurrentPlaylist();
 }
 
@@ -2406,6 +2413,7 @@ bool CPlayer::RemoveSongNotPlay(int index)
                 m_index--;
             }
         }
+        m_random_list.clear();
         return true;
     }
     return false;
