@@ -94,5 +94,7 @@ private:
     float m_freq{};           //当前采样频率，用于调整播放速度
 
     enum { FADE_TIMER_ID = 1010 };
+
+    CCriticalSection m_critical{};
 };
 
