@@ -13,17 +13,21 @@ public:
 	CDataSettingsDlg(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CDataSettingsDlg();
 
+    bool IsAutoRunModified() const;
+
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DATA_SETTINGS_DIALOG };
 #endif
 
 	GeneralSettingData m_data;
+    bool m_auto_run{};
 
 private:
 	CToolTipCtrl m_toolTip;
 	CBrowseEdit m_sf2_path_edit;
 	CComboBox m_language_combo;
+    bool m_auto_run_modified{};
 
     void EnableControl();
 
@@ -45,4 +49,6 @@ public:
 	virtual void OnOK();
 protected:
     afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnBnClickedAutoRunCheck();
 };

@@ -54,6 +54,15 @@ CMusicPlayerApp::CMusicPlayerApp()
     //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
     m_playlist_dir = m_module_dir + L"playlist\\";
     CCommon::CreateDir(m_playlist_dir);
+    wchar_t path[MAX_PATH];
+    GetModuleFileNameW(NULL, path, MAX_PATH);
+    m_module_path_reg = path;
+    if (m_module_path_reg.find(L' ') != std::wstring::npos)
+    {
+        //如果路径中有空格，则在程序路径前后添加双引号
+        m_module_path_reg = L'\"' + m_module_path_reg;
+        m_module_path_reg += L'\"';
+    }
 
     //获取当前DPI
     HDC hDC = ::GetDC(NULL);
@@ -931,6 +940,55 @@ CString CMusicPlayerApp::GetSystemInfoString()
     info += _T("\r\n");
 
     return info;
+}
+
+void CMusicPlayerApp::SetAutoRun(bool auto_run)
+{
+    CRegKey key;
+    //打开注册表项
+    if (key.Open(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run")) != ERROR_SUCCESS)
+    {
+        return;
+    }
+    if (auto_run)		//写入注册表项
+    {
+        if (key.SetStringValue(APP_NAME, m_module_path_reg.c_str()) != ERROR_SUCCESS)
+        {
+            return;
+        }
+    }
+    else		//删除注册表项
+    {
+        //删除前先检查注册表项是否存在，如果不存在，则直接返回
+        wchar_t buff[256];
+        ULONG size{ 256 };
+        if (key.QueryStringValue(APP_NAME, buff, &size) != ERROR_SUCCESS)
+            return;
+        if (key.DeleteValue(APP_NAME) != ERROR_SUCCESS)
+        {
+            return;
+        }
+    }
+}
+
+bool CMusicPlayerApp::GetAutoRun()
+{
+    CRegKey key;
+    if (key.Open(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run")) != ERROR_SUCCESS)
+    {
+        //打开注册表“Software\\Microsoft\\Windows\\CurrentVersion\\Run”失败，则返回false
+        return false;
+    }
+    wchar_t buff[256];
+    ULONG size{ 256 };
+    if (key.QueryStringValue(APP_NAME, buff, &size) == ERROR_SUCCESS)		//如果找到了APP_NAME键
+    {
+        return (m_module_path_reg == buff);	//如果APP_NAME的值是当前程序的路径，就返回true，否则返回false
+    }
+    else
+    {
+        return false;		//没有找到APP_NAME键，返回false
+    }
 }
 
 void CMusicPlayerApp::SetSongDataModified()

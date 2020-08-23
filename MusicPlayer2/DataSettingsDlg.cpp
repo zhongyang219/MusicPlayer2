@@ -21,6 +21,11 @@ CDataSettingsDlg::~CDataSettingsDlg()
 {
 }
 
+bool CDataSettingsDlg::IsAutoRunModified() const
+{
+    return m_auto_run_modified;
+}
+
 void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CTabDlg::DoDataExchange(pDX);
@@ -39,6 +44,7 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, &CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck)
 	ON_EN_CHANGE(IDC_SF2_PATH_EDIT, &CDataSettingsDlg::OnEnChangeSf2PathEdit)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CDataSettingsDlg::OnEditBrowseChanged)
+    ON_BN_CLICKED(IDC_AUTO_RUN_CHECK, &CDataSettingsDlg::OnBnClickedAutoRunCheck)
 END_MESSAGE_MAP()
 
 
@@ -57,6 +63,8 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	m_language_combo.AddString(_T("简体中文"));
 	m_language_combo.SetCurSel(static_cast<int>(m_data.language));
 
+    m_auto_run = theApp.GetAutoRun();
+    CheckDlgButton(IDC_AUTO_RUN_CHECK, m_auto_run);
 
 	((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->SetCheck(m_data.id3v2_first);
 	((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_album_cover);
@@ -213,4 +221,12 @@ afx_msg LRESULT CDataSettingsDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lPar
     m_sf2_path_edit.GetWindowText(str);
     m_data.sf2_path = str;
     return 0;
+}
+
+
+void CDataSettingsDlg::OnBnClickedAutoRunCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_auto_run = (IsDlgButtonChecked(IDC_AUTO_RUN_CHECK) != 0);
+    m_auto_run_modified = true;
 }

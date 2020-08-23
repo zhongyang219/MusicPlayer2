@@ -1086,6 +1086,9 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     if (search_box_background_transparent_changed)
         m_cortana_lyric.ApplySearchBoxTransparentChanged();
 
+    if (optionDlg.m_tab3_dlg.IsAutoRunModified())
+        theApp.SetAutoRun(optionDlg.m_tab3_dlg.m_auto_run);
+
     SaveConfig();		//将设置写入到ini文件
     theApp.SaveConfig();
     CPlayer::GetInstance().SaveConfig();
