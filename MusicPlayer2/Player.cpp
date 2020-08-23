@@ -1395,6 +1395,8 @@ wstring CPlayer::GetFileName() const
 
 wstring CPlayer::GetDisplayName() const
 {
+    if (GetCurrentSongInfo().is_cue && !GetCurrentSongInfo().IsArtistEmpty() && !GetCurrentSongInfo().IsTitleEmpty())
+        return GetCurrentSongInfo().artist + L" - " + GetCurrentSongInfo().title;
     if (IsOsuFile() && !GetCurrentSongInfo().comment.empty())
         return GetCurrentSongInfo().comment;
     else
@@ -1722,16 +1724,20 @@ wstring CPlayer::GetTimeString() const
 
 wstring CPlayer::GetPlayingState() const
 {
+    static CString str_paly_error = CCommon::LoadText(IDS_PLAY_ERROR);
+    static CString str_stoped = CCommon::LoadText(IDS_STOPED);
+    static CString str_paused = CCommon::LoadText(IDS_PAUSED);
+    static CString str_playing = CCommon::LoadText(IDS_NOW_PLAYING);
     if (m_error_code != 0)
-        return CCommon::LoadText(IDS_PLAY_ERROR).GetString();
+        return str_paly_error.GetString();
     switch (m_playing)
     {
     case 0:
-        return CCommon::LoadText(IDS_STOPED).GetString();
+        return str_stoped.GetString();
     case 1:
-        return CCommon::LoadText(IDS_PAUSED).GetString();
+        return str_paused.GetString();
     case 2:
-        return CCommon::LoadText(IDS_NOW_PLAYING).GetString();
+        return str_playing.GetString();
     }
     return wstring();
 }

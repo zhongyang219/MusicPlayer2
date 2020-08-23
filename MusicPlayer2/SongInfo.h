@@ -142,52 +142,62 @@ struct SongInfo
 
     bool IsTitleEmpty() const
     {
-        return title.empty() || title == wstring(CCommon::LoadText(IDS_DEFAULT_TITLE));
+        static wstring default_title = wstring(CCommon::LoadText(IDS_DEFAULT_TITLE));
+        return title.empty() || title == default_title;
     }
 
     bool IsArtistEmpty() const
     {
-        return artist.empty() || artist == wstring(CCommon::LoadText(IDS_DEFAULT_ARTIST));
+        static wstring default_artist = wstring(CCommon::LoadText(IDS_DEFAULT_ARTIST));
+        return artist.empty() || artist == default_artist;
     }
 
     bool IsAlbumEmpty() const
     {
-        return album.empty() || album == wstring(CCommon::LoadText(IDS_DEFAULT_ALBUM));
+        static wstring default_album = wstring(CCommon::LoadText(IDS_DEFAULT_ALBUM));
+        return album.empty() || album == default_album;
     }
 
     bool IsYearEmpty() const
     {
-        return year.empty() || year == wstring(CCommon::LoadText(IDS_DEFAULT_YEAR));
+        static wstring default_year = wstring(CCommon::LoadText(IDS_DEFAULT_YEAR));
+        return year.empty() || year == default_year;
     }
 
     bool IsGenreEmpty() const
     {
-        return genre.empty() || genre == wstring(CCommon::LoadText(IDS_DEFAULT_GENRE));
+        static wstring default_genre = wstring(CCommon::LoadText(IDS_DEFAULT_GENRE));
+        return genre.empty() || genre == default_genre;
     }
 
     wstring GetTitle() const
     {
-        return title.empty() ? wstring(CCommon::LoadText(IDS_DEFAULT_TITLE)) : title;
+        static wstring default_title = wstring(CCommon::LoadText(IDS_DEFAULT_TITLE));
+        return title.empty() ? default_title : title;
     }
 
     wstring GetArtist() const
     {
-        return artist.empty() ? wstring(CCommon::LoadText(IDS_DEFAULT_ARTIST)) : artist;
+        static wstring default_artist = wstring(CCommon::LoadText(IDS_DEFAULT_ARTIST));
+        return artist.empty() ? default_artist : artist;
     }
 
     wstring GetAlbum() const
     {
-        return album.empty() ? wstring(CCommon::LoadText(IDS_DEFAULT_ALBUM)) : album;
+        static wstring default_album = wstring(CCommon::LoadText(IDS_DEFAULT_ALBUM));
+        return album.empty() ? default_album : album;
     }
 
     wstring GetYear() const
     {
-        return year.empty() ? wstring(CCommon::LoadText(IDS_DEFAULT_YEAR)) : year;
+        static wstring default_year = wstring(CCommon::LoadText(IDS_DEFAULT_YEAR));
+        return year.empty() ? default_year : year;
     }
 
     wstring GetGenre() const
     {
-        return genre.empty() ? wstring(CCommon::LoadText(IDS_DEFAULT_GENRE)) : genre;
+        static wstring default_genre = wstring(CCommon::LoadText(IDS_DEFAULT_GENRE));
+        return genre.empty() ? default_genre : genre;
     }
 
     wstring GetFileName() const

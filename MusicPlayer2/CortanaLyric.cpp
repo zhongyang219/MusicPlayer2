@@ -144,15 +144,16 @@ void CCortanaLyric::DrawInfo()
                 static int index{};
                 static wstring song_name{};
                 //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
+                static CString str_now_playing{ CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) };
                 if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
                 {
-                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, GetScrollTextPixel());
+                    DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, GetScrollTextPixel());
                     index = CPlayer::GetInstance().GetIndex();
                     song_name = CPlayer::GetInstance().GetFileName();
                 }
                 else
                 {
-                    DrawCortanaText((CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, GetScrollTextPixel());
+                    DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, GetScrollTextPixel());
                 }
             }
         }
