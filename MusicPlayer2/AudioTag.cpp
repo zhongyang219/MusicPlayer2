@@ -82,7 +82,7 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
     if (m_type == AudioType::AU_FLAC)
     {
         string tag_contents;
-        GetFlacTagContents(m_file_path, tag_contents);
+        GetFlacTagCoverContents(m_file_path, tag_contents);
         image_contents = FindFlacAlbumCover(tag_contents, image_type);
     }
     else
@@ -266,7 +266,7 @@ bool CAudioTag::GetID3V2Tag()
 	string tag_content = GetID3V2TagContents();
 #ifdef _DEBUG
     CFilePathHelper helper(m_file_path);
-    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileNameWithoutExtension() + L".bin");
+    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
 #endif
 	if (!tag_content.empty())
 	{
@@ -337,7 +337,7 @@ bool CAudioTag::GetMp4Tag()
 	string tag_content = GetMp4TagContents();
 #ifdef _DEBUG
     CFilePathHelper helper(m_file_path);
-    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileNameWithoutExtension() + L".bin");
+    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
 #endif
     if (!tag_content.empty())
 	{
@@ -418,7 +418,7 @@ bool CAudioTag::GetFlacTag()
 	GetFlacTagContents(m_file_path, tag_content);
 #ifdef _DEBUG
     CFilePathHelper helper(m_file_path);
-    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileNameWithoutExtension() + L".bin");
+    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
 #endif
 
     if (!tag_content.empty())
@@ -637,8 +637,6 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 {
 	ifstream file{ file_path.c_str(), std::ios::binary };
 	size_t size;
-	if (!CCommon::FileExist(file_path))
-		return;
 	if (file.fail())
 		return;
 	contents_buff.clear();
@@ -649,9 +647,26 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 		//if (size > 1024 * 1024)
 		//	break;
 		//找到flac音频的起始字节时（二进制13个1,1个0），表示标签信息已经读取完了
-		if (size > 5 && (contents_buff[size - 1] & (BYTE)0xFC) == (BYTE)0xF8 && contents_buff[size - 2] == -1 && contents_buff[size - 3] == 0)
+		if (size > 5 && (contents_buff[size - 1] & (BYTE)0xFC) == (BYTE)0xF8 && contents_buff[size - 2] == -1)
 			break;
 	}
+}
+
+void CAudioTag::GetFlacTagCoverContents(wstring file_path, string& contents_buff)
+{
+    ifstream file{ file_path.c_str(), std::ios::binary };
+    size_t size;
+    if (file.fail())
+        return;
+    contents_buff.clear();
+    while (!file.eof())
+    {
+        size = contents_buff.size();
+        contents_buff.push_back(file.get());
+        //找到flac音频的起始字节时（二进制13个1,1个0），表示标签信息已经读取完了
+        if (size > 5 && (contents_buff[size - 1] & (BYTE)0xFC) == (BYTE)0xF8 && contents_buff[size - 2] == -1 && contents_buff[size - 3] == 0 && contents_buff[size - 4] == 0)
+            break;
+    }
 }
 
 string CAudioTag::FindFlacAlbumCover(const string & tag_content, int & image_type)
