@@ -45,6 +45,7 @@ void CBassCore::InitCore()
         device_index++;
     }
 
+    theApp.m_play_setting_data.device_selected = 0;
     for (size_t i{}; i < theApp.m_output_devices.size(); i++)
     {
         if (theApp.m_output_devices[i].name == theApp.m_play_setting_data.output_device)
@@ -471,7 +472,6 @@ void CBassCore::GetAudioInfo(SongInfo & song_info, int flag)
 
 void CBassCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int flag)
 {
-    CriticalSectionSync critical(m_critical);
     HSTREAM hStream;
     hStream = BASS_StreamCreateFile(FALSE, file_path, 0, 0, BASS_SAMPLE_FLOAT);
     GetBASSAudioInfo(hStream, file_path, song_info, flag);
