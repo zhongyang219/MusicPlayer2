@@ -295,6 +295,11 @@ std::wstring CMciCore::GetErrorInfo()
     return buff;
 }
 
+int CMciCore::GetDeviceCount()
+{
+    return 0;
+}
+
 void CMciCore::GetMidiPosition()
 {
     if (IsMidi())

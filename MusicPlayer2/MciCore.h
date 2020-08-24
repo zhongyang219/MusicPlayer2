@@ -54,6 +54,7 @@ public:
     virtual std::wstring GetErrorInfo() override;
 
     virtual PlayerCoreType GetCoreType() override { return PT_MCI; }
+    virtual int GetDeviceCount() override;
 
 private:
     void GetMidiPosition();

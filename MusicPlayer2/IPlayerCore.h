@@ -70,4 +70,6 @@ public:
     virtual std::wstring GetErrorInfo() = 0;  //获取错误信息
 
     virtual PlayerCoreType GetCoreType() = 0;
+
+    virtual int GetDeviceCount() = 0;       //获取播放设备数量
 };

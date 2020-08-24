@@ -565,6 +565,16 @@ std::wstring CBassCore::GetErrorInfo()
     return std::wstring(info);
 }
 
+int CBassCore::GetDeviceCount()
+{
+    BASS_DEVICEINFO info;
+    int count{};
+    for (int i = 0; BASS_GetDeviceInfo(i, &info); i++)
+        if (info.flags&BASS_DEVICE_ENABLED) // device is enabled
+            count++; // count it
+    return count;
+}
+
 int CBassCore::GetBASSCurrentPosition(HSTREAM hStream)
 {
     QWORD pos_bytes;

@@ -440,4 +440,5 @@ public:
     afx_msg void OnDesendingOrder();
     afx_msg void OnInvertPlaylist();
     afx_msg void OnPlayRandom();
+    afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData);
 };

@@ -23,6 +23,7 @@
 #include "WIC.h"
 #include "LyricRelateDlg.h"
 #include "AlbumCoverInfoDlg.h"
+#include <Dbt.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -257,6 +258,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DESENDING_ORDER, &CMusicPlayerDlg::OnDesendingOrder)
     ON_COMMAND(ID_INVERT_PLAYLIST, &CMusicPlayerDlg::OnInvertPlaylist)
     ON_COMMAND(ID_PLAY_RANDOM, &CMusicPlayerDlg::OnPlayRandom)
+    ON_WM_DEVICECHANGE()
 END_MESSAGE_MAP()
 
 
@@ -5069,4 +5071,20 @@ void CMusicPlayerDlg::OnInvertPlaylist()
         CPlayer::GetInstance().InvertPlaylist();
         ShowPlayList();
     }
+}
+
+
+BOOL CMusicPlayerDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
+{
+    if (nEventType == DBT_DEVNODES_CHANGED && CPlayer::GetInstance().GetPlayerCore() != nullptr && CPlayer::GetInstance().GetPlayerCore()->GetCoreType() == PlayerCoreType::PT_BASS)
+    {
+        static int last_device_count{ static_cast<int>(theApp.m_output_devices.size()) };
+        int device_count = CPlayer::GetInstance().GetPlayerCore()->GetDeviceCount();        //枚举播放设备的数量
+        if (last_device_count != device_count)      //如果播放设备数量发生变化，则重新初始化播放内核
+        {
+            CPlayer::GetInstance().ReIniPlayerCore(true);
+            last_device_count = device_count;
+        }
+    }
+    return FALSE;
 }
