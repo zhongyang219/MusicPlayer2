@@ -562,6 +562,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 			wma_bitrate = pthis->m_wma_encode_para.vbr_quality;
 		hEncode = m_bass_wma_lib.BASS_WMA_EncodeOpenFileW(hStream, NULL, BASS_WMA_ENCODE_STANDARD | BASS_WMA_ENCODE_SOURCE, wma_bitrate, out_file_path.c_str());
 		int error = BASS_ErrorGetCode();
+        int error_code{ CONVERT_ERROR_ENCODE_CHANNEL_FAILED };
 		//如果出现了错误，则写入错误日志
 		if (error != 0)
 		{
@@ -569,9 +570,17 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 			log_str = CCommon::LoadTextFormat(IDS_CONVERT_WMA_ERROR, { file_path });
 			switch (error)
 			{
-			case BASS_ERROR_WMA: log_str += CCommon::LoadText(IDS_NO_WMP9_OR_LATER); break;
-			case BASS_ERROR_NOTAVAIL: log_str += CCommon::LoadText(IDS_NO_SUPPORTED_ENCODER_WARNING); break;
-			default: log_str += CCommon::LoadText(IDS_UNKNOW_ERROR); break;
+			case BASS_ERROR_WMA:
+                log_str += CCommon::LoadText(IDS_NO_WMP9_OR_LATER);
+                error_code = CONVERT_ERROR_WMA_NO_WMP9_OR_LATER;
+                break;
+			case BASS_ERROR_NOTAVAIL:
+                log_str += CCommon::LoadText(IDS_NO_SUPPORTED_ENCODER_WARNING);
+                error_code = CONVERT_ERROR_WMA_NO_SUPPORTED_ENCODER;
+                break;
+			default:
+                log_str += CCommon::LoadText(IDS_UNKNOW_ERROR);
+                break;
 			}
 			theApp.WriteErrorLog(wstring(log_str));
 		}
@@ -580,7 +589,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 			BASS_StreamFree(hStream);
             if (hStreamOld != 0)
                 BASS_StreamFree(hStreamOld);
-            ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
+            ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, error_code);
 			return false;
 		}
 		//写入WMA标签
@@ -779,14 +788,26 @@ afx_msg LRESULT CFormatConvertDlg::OnConvertProgress(WPARAM wParam, LPARAM lPara
         //显示错误信息
         percent_str += CCommon::LoadText(IDS_ERROR);
         percent_str += L": ";
-        if (percent = CONVERT_ERROR_FILE_CONNOT_OPEN)
+        if (percent == CONVERT_ERROR_FILE_CONNOT_OPEN)
             percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_FILE_CONNOT_OPEN);
-        else if (percent = CONVERT_ERROR_ENCODE_CHANNEL_FAILED)
+        else if (percent == CONVERT_ERROR_ENCODE_CHANNEL_FAILED)
             percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
-        else if (percent = CONVERT_ERROR_ENCODE_PARA_ERROR)
+        else if (percent == CONVERT_ERROR_ENCODE_PARA_ERROR)
             percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_PARA_ERROR);
-        else if (percent = CONVERT_ERROR_MIDI_NO_SF2)
+        else if (percent == CONVERT_ERROR_MIDI_NO_SF2)
             percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_MIDI_NO_SF2);
+        else if (percent == CONVERT_ERROR_WMA_NO_WMP9_OR_LATER)
+        {
+            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
+            percent_str += _T(": ");
+            percent_str += CCommon::LoadText(IDS_NO_WMP9_OR_LATER);
+        }
+        else if (percent == CONVERT_ERROR_WMA_NO_SUPPORTED_ENCODER)
+        {
+            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
+            percent_str += _T(": ");
+            percent_str += CCommon::LoadText(IDS_NO_SUPPORTED_ENCODER_WARNING);
+        }
         else
             percent_str += std::to_wstring(percent).c_str();
     }

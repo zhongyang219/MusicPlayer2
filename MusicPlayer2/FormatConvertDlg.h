@@ -20,6 +20,8 @@
 #define CONVERT_ERROR_ENCODE_CHANNEL_FAILED (-2)	//编码通道创建失败
 #define CONVERT_ERROR_ENCODE_PARA_ERROR (-3)		//找不到编码器或编码器参数错误
 #define CONVERT_ERROR_MIDI_NO_SF2 (-4)				//没有MIDI音色库
+#define CONVERT_ERROR_WMA_NO_WMP9_OR_LATER (-5)     //没有安装 Windows Media Player 9 或更高版本。
+#define CONVERT_ERROR_WMA_NO_SUPPORTED_ENCODER (-6) //无法找到可支持请求的采样格式和比特率的编解码器。
 
 //单个文件转换进度的消息
 //wParam: 文件在m_file_list列表中的索引
