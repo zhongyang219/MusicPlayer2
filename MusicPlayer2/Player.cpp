@@ -589,6 +589,7 @@ void CPlayer::GetPlayerCoreSongLength()
 
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
+    CriticalSectionSync critical(m_critical);
     int current_position_int = m_pCore->GetCurPosition();
     GetPlayerCoreError(L"GetCurPosition");
     if (!IsPlaylistEmpty() && m_playlist[m_index].is_cue)
@@ -1832,6 +1833,7 @@ int CPlayer::GetFreq()
 
 void CPlayer::ReIniPlayerCore(bool replay)
 {
+    CriticalSectionSync critical(m_critical);
     int playing = m_playing;
     int current_position = GetCurrentPosition();
     UnInitPlayerCore();

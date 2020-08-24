@@ -204,7 +204,8 @@ private:
 
 private:
 	static CPlayer m_instance;		//CPlayer类唯一的对象
-	 
+    CCriticalSection m_critical;
+
 public:
 	static CPlayer& GetInstance();		//获取CPlayer类的唯一的对象
 	~CPlayer();

@@ -7,6 +7,7 @@
 CBASSMidiLibrary CBassCore::m_bass_midi_lib;
 CBassCore::MidiLyricInfo CBassCore::m_midi_lyric;
 BASS_MIDI_FONT CBassCore::m_sfont{};
+CCriticalSection CBassCore::m_critical;
 
 CBassCore::CBassCore()
 {
@@ -430,6 +431,8 @@ void CBassCore::SetSpeed(float speed)
 int CBassCore::GetCurPosition()
 {
     CriticalSectionSync critical(m_critical);
+    if (m_musicStream == 0)
+        return 0;
     QWORD pos_bytes;
     pos_bytes = BASS_ChannelGetPosition(m_musicStream, BASS_POS_BYTE);
     double pos_sec;

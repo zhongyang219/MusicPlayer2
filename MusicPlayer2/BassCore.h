@@ -95,6 +95,6 @@ private:
 
     enum { FADE_TIMER_ID = 1010 };
 
-    CCriticalSection m_critical{};
+    static CCriticalSection m_critical;
 };
 
