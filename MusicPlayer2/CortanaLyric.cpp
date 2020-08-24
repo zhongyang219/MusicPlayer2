@@ -393,6 +393,7 @@ void CCortanaLyric::ResetCortanaText()
             //}
             //m_cortana_wnd->Invalidate();
         }
+        m_enable = false;
     }
 }
 
