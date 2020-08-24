@@ -591,7 +591,7 @@ void CPlayer::GetPlayerCoreCurrentPosition()
 {
     CriticalSectionSync critical(m_critical);
     int current_position_int = m_pCore->GetCurPosition();
-    GetPlayerCoreError(L"GetCurPosition");
+    //GetPlayerCoreError(L"GetCurPosition");
     if (!IsPlaylistEmpty() && m_playlist[m_index].is_cue)
     {
         current_position_int -= m_playlist[m_index].start_pos.toInt();
