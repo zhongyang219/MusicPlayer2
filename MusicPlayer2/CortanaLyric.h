@@ -94,6 +94,8 @@ private:
 
     bool m_cortana_opaque{ false };           //是否设置了搜索框不透明
 
+    static CCriticalSection m_critical;
+
 public:
     //bool m_cortana_disabled;
 };
