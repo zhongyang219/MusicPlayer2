@@ -105,7 +105,7 @@ private:
 
 	float m_fft[FFT_SAMPLE];		//储存频谱分析的数据
 	float m_spectral_data[SPECTRUM_COL]{};	//用于显示的每个频谱柱形的高度
-	float m_last_spectral_data[SPECTRUM_COL]{};	//上一次的频谱数据
+	//float m_last_spectral_data[SPECTRUM_COL]{};	//上一次的频谱数据
 	float m_spectral_peak[SPECTRUM_COL]{};		//频谱顶端的高度
 
 	int m_equalizer_gain[EQU_CH_NUM]{};		//用于保存设置好的每个通道的增益
