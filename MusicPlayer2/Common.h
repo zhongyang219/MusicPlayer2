@@ -367,6 +367,8 @@ public:
     //https://www.cnblogs.com/a-live/p/3222567.html
     static Gdiplus::Image* GetPngImageResource(UINT id);
 
+    static int Random(int min, int max);        //生成一个随机数，范围是大于或等于min，小于max
+
 };
 
 template<class T>

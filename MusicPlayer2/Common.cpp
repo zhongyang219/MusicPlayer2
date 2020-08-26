@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "resource.h"
 #include "FilePathHelper.h"
+#include <random>
+#include <functional>
 
 CCommon::CCommon()
 {
@@ -1528,5 +1530,15 @@ Gdiplus::Image* CCommon::GetPngImageResource(UINT id)
     pstm->Release();
     FreeResource(lpRsrc);
     return lpImage;
+}
+
+int CCommon::Random(int min, int max)
+{
+    std::random_device rd;
+    std::default_random_engine engine{ rd() };
+    std::uniform_int_distribution<> dis{ min, max-1 };
+    auto dice = std::bind(dis, engine);
+    int _rand = dice();
+    return _rand;
 }
 

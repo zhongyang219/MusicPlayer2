@@ -720,10 +720,7 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
     case RM_PLAY_RANDOM:		//随机播放
         if (song_track == NEXT)
         {
-            SYSTEMTIME current_time;
-            GetLocalTime(&current_time);			//获取当前时间
-            srand(current_time.wMilliseconds);		//用当前时间的毫秒数设置产生随机数的种子
-            song_track = rand() % GetSongNum();
+            song_track = CCommon::Random(0, GetSongNum());
             m_random_list.push_back(song_track);	//保存随机播放过的曲目
         }
         else if (song_track == PREVIOUS)		//回溯上一个随机播放曲目
@@ -2506,10 +2503,7 @@ void CPlayer::InitShuffleList()
     {
         std::random_shuffle(m_shuffle_list.begin(), m_shuffle_list.end(), [](int n)
         {
-            SYSTEMTIME current_time;
-            GetLocalTime(&current_time);
-            srand(current_time.wMilliseconds);
-            return rand() % n;
+            return CCommon::Random(0, n);
         });
     }
     m_shuffle_index = 0;
