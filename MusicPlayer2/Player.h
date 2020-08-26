@@ -205,6 +205,7 @@ private:
 private:
 	static CPlayer m_instance;		//CPlayer类唯一的对象
     CCriticalSection m_critical;
+    CCriticalSection m_album_cover_sync;    //用于专辑封面的线程同步对象
 
 public:
 	static CPlayer& GetInstance();		//获取CPlayer类的唯一的对象
@@ -270,9 +271,9 @@ public:
     wstring GetDisplayName() const;         //获取正在播放文件的显示名称
 	wstring GetLyricName() const { return m_Lyrics.GetPathName(); }
 	int GetVolume() const { return m_volume; }
-	CImage& GetAlbumCover() { return m_album_cover; }
-	CImage& GetAlbumCoverBlur() { return m_album_cover_blur; }
-	bool AlbumCoverExist() { return !m_album_cover.IsNull(); }
+    CImage& GetAlbumCover();
+    CImage& GetAlbumCoverBlur();
+    bool AlbumCoverExist();
 	wstring GetAlbumCoverPath() const { return m_album_cover_path; }
 	int GetAlbumCoverType() const { return m_album_cover_type; }
 	void DeleteAlbumCover();

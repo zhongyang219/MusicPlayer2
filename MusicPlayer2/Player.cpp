@@ -1408,6 +1408,24 @@ wstring CPlayer::GetDisplayName() const
         return GetFileName();
 }
 
+CImage& CPlayer::GetAlbumCover()
+{
+    CriticalSectionSync sync(m_album_cover_sync);
+    return m_album_cover;
+}
+
+ATL::CImage& CPlayer::GetAlbumCoverBlur()
+{
+    CriticalSectionSync sync(m_album_cover_sync);
+    return m_album_cover_blur;
+}
+
+bool CPlayer::AlbumCoverExist()
+{
+    CriticalSectionSync sync(m_album_cover_sync);
+    return !m_album_cover.IsNull();
+}
+
 void CPlayer::DeleteAlbumCover()
 {
     if (!m_inner_cover)
@@ -2339,6 +2357,7 @@ void CPlayer::ConnotPlayWarning() const
 
 void CPlayer::SearchAlbumCover()
 {
+    CriticalSectionSync sync(m_album_cover_sync);
     //static wstring last_file_path;
     //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
@@ -2385,6 +2404,7 @@ void CPlayer::AlbumCoverGaussBlur()
 {
     if (!theApp.m_app_setting_data.background_gauss_blur || !theApp.m_app_setting_data.enable_background)
         return;
+    CriticalSectionSync sync(m_album_cover_sync);
     if (m_album_cover.IsNull())
     {
         m_album_cover_blur.Destroy();
