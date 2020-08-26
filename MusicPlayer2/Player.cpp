@@ -653,7 +653,7 @@ void CPlayer::CalculateSpectralDataPeak()
             else if (m_spectral_data[i] < m_spectral_peak[i])
             {
                 fall_count[i]++;
-                float fall_distance = fall_count[i] * (-0.023529*theApp.m_fps + 0.882348);
+                float fall_distance = fall_count[i] * (8.18824/theApp.m_fps - 0.082353);
                 if (fall_distance < 0)
                     fall_distance = 0;
                 m_spectral_peak[i] -= fall_distance;		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
