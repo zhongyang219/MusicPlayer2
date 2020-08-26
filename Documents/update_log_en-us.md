@@ -1,6 +1,42 @@
 **[简体中文](./update_log.md) | English**<br>
 
 # MusicPlayer2 Update log
+## V2.70 (2020/08/26)
+
+* Fixed the problem of getting some FLAC audio tag information and album cover.
+* Update the playback control icon.
+* The application icon is redesigned.
+* Add icons for menu items.
+* Add the option of interface refresh interval in "Option Settings"-"Appearance Settings".
+* Update the phonograph picture when the album cover is not displayed.
+* Add the function of adding the currently playing track to the playlist.
+* Fixed the problem that opening multiple audio files at the same time from the Explorer will start multiple processes to play simultaneously.
+* Fixed the problem that UTF8 format cue files could not be read normally. Added support for UTF16-LE-BOM encoding format cue files.
+* Fixed the problem that the playlist would freeze when loading if there are too many lyric files.
+* Add the function of manually link the local lyrics.
+* Add the function of changing the notification area icon.
+* Add the rounded-corner style for the buttons.
+* Fix the problem of handle leakage.
+* Fixed the problem that in "Option Settings"-"Global Shortcut Keys", a certain shortcut key is set to "None", which causes other shortcut keys to become invalid.
+* Fixed the issue of freezing when opening the "Media Library" dialog box.
+* Fixed the problem that the length and bit rate of the corresponding audio were not obtained when opening a cue file from the media library.
+* If the album cover size is too large, reduce it to solve the problem of UI freezing.
+* Put the process of UI drawing in a background thread to solve the problem of message blocking caused by UI drawing take too much time.
+* Fixed the problem that when downloading cue lyrics, if the artist or title contains characters that cannot be used as the file name, it cannot be downloaded.
+* Fixed the problem that the id3v2 tag in wav format could not be obtained.
+* Fixed the problem that the comma in the field cannot be processed correctly when exporting the csv file in "Play Time Statistics".
+* Add the function of sort by file modification time in the sorting function of the playlist, as well as the functions of sorting in ascending and descending order.
+* Fix the problem that the album cover in bmp format cannot be obtained.
+* Added the function of including subfolders in the folder mode
+* Fix the problem that when adding tracks from the media library to the current playlist, the current playlist is not refreshed.
+* The "File Type" and "Bitrate" tabs are added to the media library (need to be turned on in "Option Settings"-"Media Library").
+* Add the function of changing the default background picture ("Option Settings"-"Appearance Settings").
+* Add "Play shuffle" mode to repeat mode (The original "Play shuffle" was actually "Paly Random").
+* Added the function of auto run when Windows starts.
+* Fixed an issue where playback cannot continue when the playback device changes.
+* Slightly reduced the memory usage of the program.
+* Fix some crash issues.
+
 ## V2.69 (2020/04/15)
 
 * Add the AB repeat function.
