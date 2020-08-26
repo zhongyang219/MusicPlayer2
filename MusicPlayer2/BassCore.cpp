@@ -264,6 +264,7 @@ void CBassCore::RemoveFXHandle()
 
 void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, int flag)
 {
+    CriticalSectionSync critical(m_critical);
     //获取长度
     if (flag&AF_LENGTH)
         song_info.lengh = CBassCore::GetBASSSongLength(hStream);

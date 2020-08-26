@@ -772,6 +772,7 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
     bool valid = (song_track >= 0 && song_track < GetSongNum());
     if (!valid)
         song_track = 0;
+    m_current_position.fromInt(0);      //关闭前将当前播放位置清零
     MusicControl(Command::CLOSE);
     m_index = song_track;
     //m_current_file_name = m_playlist[m_index].file_name;
