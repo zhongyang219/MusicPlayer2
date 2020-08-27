@@ -224,6 +224,7 @@
     <ClInclude Include="CueFile.h" />
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="SpinEdit.h" />
+    <ClInclude Include="TagLabHelper.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="WIC.h" />
     <ClInclude Include="Define.h" />
@@ -347,6 +348,7 @@
     <ClCompile Include="CueFile.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
+    <ClCompile Include="TagLabHelper.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="WIC.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />

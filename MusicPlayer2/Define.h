@@ -31,6 +31,14 @@ using std::map;
 //#pragma comment(lib,"bass.lib")
 //#endif
 
+//引用taglib库
+#ifdef _M_X64
+#pragma comment(lib,"tag_x64.lib")
+#else
+#pragma comment(lib,"tag.lib")
+#endif
+
+
 //如果需要为Windows XP编译，请去掉下面一行代码的注释
 //#define COMPILE_IN_WIN_XP
 

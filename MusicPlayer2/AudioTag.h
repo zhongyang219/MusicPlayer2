@@ -74,12 +74,7 @@ private:
 
 	//获取FLAC音频的标签区域的内容
 	static void GetFlacTagContents(wstring file_path, string& contents_buff);
-	static void GetFlacTagCoverContents(wstring file_path, string& contents_buff);
 
-	static string FindFlacAlbumCover(const string& tag_content, int& image_type);
-	static string FindID3V2AlbumCover(const string& tag_content, int& image_type);
-
-    //在不知道如何解析某种音频格式的专辑封面时强行查找专辑封面
-    string ForceGetAlbumCover(int& image_type);
+    static string FindID3V2AlbumCover(const string& tag_content, int& image_type);
 };
 

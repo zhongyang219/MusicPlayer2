@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "AudioTag.h"
+#include "TagLabHelper.h"
 
 const string jpg_head{ '\xff', '\xd8', '\xff' };
 const string jpg_tail{ '\xff', '\xd9' };
@@ -81,9 +82,7 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
     string image_contents;
     if (m_type == AudioType::AU_FLAC)
     {
-        string tag_contents;
-        GetFlacTagCoverContents(m_file_path, tag_contents);
-        image_contents = FindFlacAlbumCover(tag_contents, image_type);
+        image_contents = CTagLabHelper::GetFlacAlbumCover(m_file_path, image_type);
     }
     else
     {
@@ -100,7 +99,7 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
         else
         {
             if (m_type == AU_MP4)
-                image_contents = ForceGetAlbumCover(image_type);
+                image_contents = CTagLabHelper::GetM4aAlbumCover(m_file_path, image_type);
         }
     }
 
@@ -149,6 +148,10 @@ wstring CAudioTag::GetAudioLyric()
     else if (m_type == AU_FLAC)
     {
         GetFlacTagContents(m_file_path, tag_contents);
+#ifdef _DEBUG
+        CFilePathHelper helper(m_file_path);
+        CCommon::SaveDataToFile(tag_contents, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
+#endif
         if (!tag_contents.empty())
         {
             wstring lyric_str = GetSpecifiedFlacTag(tag_contents, "Lyrics");
@@ -414,44 +417,46 @@ bool CAudioTag::GetApeTag()
 
 bool CAudioTag::GetFlacTag()
 {
-	string tag_content;		//整个标签区域的内容
-	GetFlacTagContents(m_file_path, tag_content);
-#ifdef _DEBUG
-    CFilePathHelper helper(m_file_path);
-    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
-#endif
+//	string tag_content;		//整个标签区域的内容
+//	GetFlacTagContents(m_file_path, tag_content);
+//#ifdef _DEBUG
+//    CFilePathHelper helper(m_file_path);
+//    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
+//#endif
+//
+//    if (!tag_content.empty())
+//    {
+//        m_song_info.title = GetSpecifiedFlacTag(tag_content, "Title");
+//        m_song_info.artist = GetSpecifiedFlacTag(tag_content, "Artist");
+//        m_song_info.album = GetSpecifiedFlacTag(tag_content, "Album");
+//        m_song_info.year = GetSpecifiedFlacTag(tag_content, "Year");
+//        if(m_song_info.year.empty())
+//            m_song_info.year = GetSpecifiedFlacTag(tag_content, "Date");
+//        m_song_info.genre = GetSpecifiedFlacTag(tag_content, "Genre");
+//        m_song_info.comment = GetSpecifiedFlacTag(tag_content, "Comment");
+//        if (CCommon::StrIsNumber(m_song_info.genre))
+//        {
+//            int genre_num = _wtoi(m_song_info.genre.c_str());
+//            m_song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
+//        }
+//        wstring track_str = GetSpecifiedFlacTag(tag_content, "TrackNumber");
+//        if (track_str.empty())
+//            track_str = GetSpecifiedFlacTag(tag_content, "Track");
+//        m_song_info.track = _wtoi(track_str.c_str());
+//
+//        CCommon::StringNormalize(m_song_info.title);
+//        CCommon::StringNormalize(m_song_info.artist);
+//        CCommon::StringNormalize(m_song_info.album);
+//        CCommon::StringNormalize(m_song_info.year);
+//        if (m_song_info.year.size() > 8)
+//            m_song_info.year.clear();
+//        CCommon::StringNormalize(m_song_info.genre);
+//        CCommon::StringNormalize(m_song_info.comment);
+//
+//        return true;
+//    }
 
-    if (!tag_content.empty())
-    {
-        m_song_info.title = GetSpecifiedFlacTag(tag_content, "Title");
-        m_song_info.artist = GetSpecifiedFlacTag(tag_content, "Artist");
-        m_song_info.album = GetSpecifiedFlacTag(tag_content, "Album");
-        m_song_info.year = GetSpecifiedFlacTag(tag_content, "Year");
-        if(m_song_info.year.empty())
-            m_song_info.year = GetSpecifiedFlacTag(tag_content, "Date");
-        m_song_info.genre = GetSpecifiedFlacTag(tag_content, "Genre");
-        m_song_info.comment = GetSpecifiedFlacTag(tag_content, "Comment");
-        if (CCommon::StrIsNumber(m_song_info.genre))
-        {
-            int genre_num = _wtoi(m_song_info.genre.c_str());
-            m_song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
-        }
-        wstring track_str = GetSpecifiedFlacTag(tag_content, "TrackNumber");
-        if (track_str.empty())
-            track_str = GetSpecifiedFlacTag(tag_content, "Track");
-        m_song_info.track = _wtoi(track_str.c_str());
-
-        CCommon::StringNormalize(m_song_info.title);
-        CCommon::StringNormalize(m_song_info.artist);
-        CCommon::StringNormalize(m_song_info.album);
-        CCommon::StringNormalize(m_song_info.year);
-        if (m_song_info.year.size() > 8)
-            m_song_info.year.clear();
-        CCommon::StringNormalize(m_song_info.genre);
-        CCommon::StringNormalize(m_song_info.comment);
-
-        return true;
-    }
+    CTagLabHelper::GetFlacTagInfo(m_song_info);
     return false;
 }
 
@@ -652,68 +657,6 @@ void CAudioTag::GetFlacTagContents(wstring file_path, string & contents_buff)
 	}
 }
 
-void CAudioTag::GetFlacTagCoverContents(wstring file_path, string& contents_buff)
-{
-    ifstream file{ file_path.c_str(), std::ios::binary };
-    size_t size;
-    if (file.fail())
-        return;
-    contents_buff.clear();
-    while (!file.eof())
-    {
-        size = contents_buff.size();
-        contents_buff.push_back(file.get());
-        //找到flac音频的起始字节时（二进制13个1,1个0），表示标签信息已经读取完了
-        if (size > 5 && (contents_buff[size - 1] & (BYTE)0xFC) == (BYTE)0xF8 && contents_buff[size - 2] == -1 && contents_buff[size - 3] == 0 && contents_buff[size - 4] == 0)
-            break;
-    }
-}
-
-string CAudioTag::FindFlacAlbumCover(const string & tag_content, int & image_type)
-{
-	//获取图片起始位置
-	size_t type_index = tag_content.find("image");
-	if (type_index == wstring::npos)
-		type_index = 0;
-
-	size_t image_index;		//图片数据的起始位置
-	size_t image_size;		//根据图片结束字节计算出的图片大小
-
-	string image_contents;
-	//if (image_type_str == "image/jpeg" || image_type_str2 == "image/jpg" || image_type_str2 == "image/peg")
-	image_index = tag_content.find(jpg_head, type_index);
-	if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
-	{
-		image_type = 0;
-		size_t end_index = tag_content.find(jpg_tail, image_index + jpg_head.size());
-		image_size = end_index - image_index + jpg_tail.size();
-		image_contents = tag_content.substr(image_index, image_size);
-	}
-	else		//没有找到jpg文件头则查找png文件头
-	{
-		image_index = tag_content.find(png_head, type_index);
-		if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
-		{
-			image_type = 1;
-			size_t end_index = tag_content.find(png_tail, image_index + png_head.size());
-			image_size = end_index - image_index + png_tail.size();
-			image_contents = tag_content.substr(image_index, image_size);
-		}
-		else		//没有找到png文件头则查找gif文件头
-		{
-			image_index = tag_content.find(gif_head, type_index);
-			if (image_index < type_index + 100)		//在专辑封面开始处的100个字节查找
-			{
-				image_type = 2;
-				size_t end_index = tag_content.find(gif_tail, image_index + gif_head.size());
-				image_size = end_index - image_index + gif_tail.size();
-				image_contents = tag_content.substr(image_index, image_size);
-			}
-		}
-	}
-
-	return image_contents;
-}
 
 string CAudioTag::FindID3V2AlbumCover(const string & tag_content, int & image_type)
 {
@@ -763,68 +706,3 @@ string CAudioTag::FindID3V2AlbumCover(const string & tag_content, int & image_ty
         return string();
 }
 
-string CAudioTag::ForceGetAlbumCover(int& image_type)
-{
-    ifstream file{ m_file_path, std::ios::binary };
-    size_t size;
-    if (file.fail())
-        return string();
-    string contents_buff;
-    //取文件前面 1MB 的内容
-    while (!file.eof())
-    {
-        size = contents_buff.size();
-        contents_buff.push_back(file.get());
-        if (size > 1024 * 1024)
-        	break;
-    }
-
-#ifdef _DEBUG
-    CFilePathHelper helper(m_file_path);
-    CCommon::SaveDataToFile(contents_buff, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L"_cover.bin");
-#endif
-
-    //开始查找专辑封面
-    auto findAlbumCover = [](const string& contents_buff, const string& head, const string& tail, string& image_contents)
-    {
-        size_t image_index = contents_buff.find(head);
-        if (image_index != string::npos)
-        {
-            size_t end_index = contents_buff.find(tail, image_index + head.size());
-            if (end_index != string::npos)
-            {
-                size_t image_size = end_index - image_index + tail.size();
-                image_contents = contents_buff.substr(image_index, image_size);
-            }
-        }
-    };
-
-    string image_contents;
-    findAlbumCover(contents_buff, png_head, png_tail, image_contents);
-    if (!image_contents.empty())
-    {
-        image_type = 1;
-    }
-    else
-    {
-        findAlbumCover(contents_buff, jpg_head, jpg_tail, image_contents);
-        if (!image_contents.empty())
-        {
-            image_type = 0;
-        }
-        else
-        {
-            findAlbumCover(contents_buff, gif_head, gif_tail, image_contents);
-            if (!image_contents.empty())
-            {
-                image_type = 2;
-            }
-            else
-            {
-                image_type = -1;
-            }
-        }
-    }
-
-    return image_contents;
-}
