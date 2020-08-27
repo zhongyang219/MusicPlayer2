@@ -1,6 +1,10 @@
 **[简体中文](./update_log.md) | English**<br>
 
 # MusicPlayer2 Update log
+## V2.70.1 (2020/08/27)
+
+* Fixed the problem of the play random and play shuffle did not work properly when the number of tracks in the playlist is too large.
+
 ## V2.70 (2020/08/26)
 
 * Fixed the problem of getting some FLAC audio tag information and album cover.
