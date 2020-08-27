@@ -779,18 +779,52 @@ string CAudioTag::ForceGetAlbumCover(int& image_type)
         	break;
     }
 
+#ifdef _DEBUG
+    CFilePathHelper helper(m_file_path);
+    CCommon::SaveDataToFile(contents_buff, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L"_cover.bin");
+#endif
+
     //开始查找专辑封面
-    string image_contents;
-    size_t image_index = contents_buff.find(jpg_head);
-    if (image_index != string::npos)
+    auto findAlbumCover = [](const string& contents_buff, const string& head, const string& tail, string& image_contents)
     {
-        size_t end_index = contents_buff.find(jpg_tail, image_index + jpg_head.size());
-        if (end_index != string::npos)
+        size_t image_index = contents_buff.find(head);
+        if (image_index != string::npos)
         {
-            size_t image_size = end_index - image_index + jpg_tail.size();
-            image_contents = contents_buff.substr(image_index, image_size);
+            size_t end_index = contents_buff.find(tail, image_index + head.size());
+            if (end_index != string::npos)
+            {
+                size_t image_size = end_index - image_index + tail.size();
+                image_contents = contents_buff.substr(image_index, image_size);
+            }
+        }
+    };
+
+    string image_contents;
+    findAlbumCover(contents_buff, png_head, png_tail, image_contents);
+    if (!image_contents.empty())
+    {
+        image_type = 1;
+    }
+    else
+    {
+        findAlbumCover(contents_buff, jpg_head, jpg_tail, image_contents);
+        if (!image_contents.empty())
+        {
             image_type = 0;
         }
+        else
+        {
+            findAlbumCover(contents_buff, gif_head, gif_tail, image_contents);
+            if (!image_contents.empty())
+            {
+                image_type = 2;
+            }
+            else
+            {
+                image_type = -1;
+            }
+        }
     }
+
     return image_contents;
 }
