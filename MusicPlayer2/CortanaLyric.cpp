@@ -27,7 +27,7 @@ void CCortanaLyric::Init()
 {
     if (m_enable)
     {
-        CriticalSectionSync critical(m_critical);
+        CSingleLock sync(&m_critical, TRUE);
         HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//任务栏的句柄
         m_hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("TrayDummySearchControl"), NULL);	//Cortana栏的句柄（其中包含3个子窗口）
         m_cortana_hwnd = ::FindWindowEx(m_hCortanaBar, NULL, _T("Button"), NULL);	//Cortana搜索框中类名为“Button”的窗口的句柄
@@ -101,7 +101,7 @@ void CCortanaLyric::DrawInfo()
     if (!m_enable)
         return;
 
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     bool is_midi_lyric = CPlayerUIHelper::IsMidiLyric();
 
     //不使用兼容模式显示歌词，直接在小娜搜索框内绘图
@@ -360,7 +360,7 @@ void CCortanaLyric::ResetCortanaText()
 {
     if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
     {
-        CriticalSectionSync critical(m_critical);
+        CSingleLock sync(&m_critical, TRUE);
         CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);
         if (pWnd != nullptr)
         {
@@ -422,7 +422,7 @@ void CCortanaLyric::ApplySearchBoxTransparentChanged()
 
 void CCortanaLyric::AlbumCoverEnable(bool enable)
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     bool last_enable;
     last_enable = m_show_album_cover;
     m_show_album_cover = enable;

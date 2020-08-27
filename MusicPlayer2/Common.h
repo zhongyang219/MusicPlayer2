@@ -510,21 +510,3 @@ inline void CCommon::DeleteModelessDialog(T*& dlg)
 		dlg = nullptr;
 	}
 }
-
-//使用CCriticalSection类进行线程同步，通过构造函数传递CCriticalSection类对象的引用，构造时锁定，析构时自动解锁，可以避免锁定之后忘记解锁的问题
-struct CriticalSectionSync
-{
-public:
-    CriticalSectionSync(CCriticalSection& cirtical_section)
-        :m_critical_section{ cirtical_section }
-    {
-        m_critical_section.Lock();
-    }
-
-    ~CriticalSectionSync()
-    {
-        m_critical_section.Unlock();
-    }
-private:
-    CCriticalSection& m_critical_section;
-};

@@ -20,7 +20,7 @@ CBassCore::~CBassCore()
 
 void CBassCore::InitCore()
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     //获取当前的音频输出设备
     BASS_DEVICEINFO device_info;
     int rtn;
@@ -167,7 +167,7 @@ void CBassCore::InitCore()
 
 void CBassCore::UnInitCore()
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     BASS_Stop();	//停止输出
     BASS_Free();	//释放Bass资源
     if (m_bass_midi_lib.IsSucceed() && m_sfont.font != 0)
@@ -221,7 +221,7 @@ void CBassCore::MidiEndSync(HSYNC handle, DWORD channel, DWORD data, void * user
 
 void CBassCore::GetMidiPosition()
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     if (m_is_midi)
     {
         //获取midi音乐的进度并转换成节拍数。（其中+ (m_midi_info.ppqn / 4)的目的是修正显示的节拍不准确的问题）
@@ -308,7 +308,7 @@ wstring CBassCore::GetSoundFontName()
 
 void CBassCore::Open(const wchar_t * file_path)
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     m_file_path = file_path;
     if (CCommon::IsURL(m_file_path))
         m_musicStream = BASS_StreamCreateURL(file_path, 0, BASS_SAMPLE_FLOAT, NULL, NULL);
@@ -343,7 +343,7 @@ void CBassCore::Open(const wchar_t * file_path)
 
 void CBassCore::Close()
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     if(KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID))
         BASS_ChannelStop(m_musicStream);
     RemoveFXHandle();
@@ -430,7 +430,7 @@ void CBassCore::SetSpeed(float speed)
 
 int CBassCore::GetCurPosition()
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     if (m_musicStream == 0)
         return 0;
     QWORD pos_bytes;
@@ -446,7 +446,7 @@ int CBassCore::GetCurPosition()
 
 int CBassCore::GetSongLength()
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     QWORD lenght_bytes;
     lenght_bytes = BASS_ChannelGetLength(m_musicStream, BASS_POS_BYTE);
     double length_sec;
@@ -458,7 +458,7 @@ int CBassCore::GetSongLength()
 
 void CBassCore::SetCurPosition(int position)
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     double pos_sec = static_cast<double>(position) / 1000.0;
     QWORD pos_bytes;
     pos_bytes = BASS_ChannelSeconds2Bytes(m_musicStream, pos_sec);
@@ -469,7 +469,7 @@ void CBassCore::SetCurPosition(int position)
 
 void CBassCore::GetAudioInfo(SongInfo & song_info, int flag)
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     GetBASSAudioInfo(m_musicStream, m_file_path.c_str(), song_info, flag);
 }
 

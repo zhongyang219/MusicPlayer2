@@ -589,7 +589,7 @@ void CPlayer::GetPlayerCoreSongLength()
 
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     int current_position_int = m_pCore->GetCurPosition();
     //GetPlayerCoreError(L"GetCurPosition");
     if (!IsPlaylistEmpty() && m_playlist[m_index].is_cue)
@@ -1407,20 +1407,23 @@ wstring CPlayer::GetDisplayName() const
 
 CImage& CPlayer::GetAlbumCover()
 {
-    CriticalSectionSync sync(m_album_cover_sync);
+    CSingleLock sync(&m_album_cover_sync, TRUE);
     return m_album_cover;
 }
 
 ATL::CImage& CPlayer::GetAlbumCoverBlur()
 {
-    CriticalSectionSync sync(m_album_cover_sync);
+    CSingleLock sync(&m_album_cover_sync, TRUE);
     return m_album_cover_blur;
 }
 
 bool CPlayer::AlbumCoverExist()
 {
-    CriticalSectionSync sync(m_album_cover_sync);
-    return !m_album_cover.IsNull();
+    CSingleLock slock(&m_album_cover_sync);
+    if (slock.IsLocked())
+        return false;
+    else
+        return !m_album_cover.IsNull();
 }
 
 void CPlayer::DeleteAlbumCover()
@@ -1852,7 +1855,7 @@ int CPlayer::GetFreq()
 
 void CPlayer::ReIniPlayerCore(bool replay)
 {
-    CriticalSectionSync critical(m_critical);
+    CSingleLock sync(&m_critical, TRUE);
     int playing = m_playing;
     int current_position = GetCurrentPosition();
     UnInitPlayerCore();
@@ -2354,7 +2357,7 @@ void CPlayer::ConnotPlayWarning() const
 
 void CPlayer::SearchAlbumCover()
 {
-    CriticalSectionSync sync(m_album_cover_sync);
+    CSingleLock sync(&m_album_cover_sync, TRUE);
     //static wstring last_file_path;
     //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
@@ -2401,7 +2404,7 @@ void CPlayer::AlbumCoverGaussBlur()
 {
     if (!theApp.m_app_setting_data.background_gauss_blur || !theApp.m_app_setting_data.enable_background)
         return;
-    CriticalSectionSync sync(m_album_cover_sync);
+    CSingleLock sync(&m_album_cover_sync, TRUE);
     if (m_album_cover.IsNull())
     {
         m_album_cover_blur.Destroy();
