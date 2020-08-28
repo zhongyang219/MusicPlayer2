@@ -14,6 +14,7 @@ public:
 
     //读标签信息
     static void GetFlacTagInfo(SongInfo& song_info);
+    static void GetM4aTagInfo(SongInfo& song_info);
 
     //写标签信息
     static bool WriteAudioTag(SongInfo& song_info);
@@ -24,5 +25,6 @@ public:
 private:
     static bool WriteMpegTag(SongInfo& song_info);
     static bool WriteFlacTag(SongInfo& song_info);
+    static bool WriteM4aTag(SongInfo& song_info);
 };
 

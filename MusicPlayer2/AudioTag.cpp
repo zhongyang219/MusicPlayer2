@@ -358,6 +358,7 @@ bool CAudioTag::GetMp4Tag()
 		if(track_str.empty())
 			track_str = GetSpecifiedUtf8Tag(tag_content, "Track");
 		m_song_info.track = _wtoi(track_str.c_str());
+        m_song_info.comment = GetSpecifiedUtf8Tag(tag_content, "Comment");
 
 		return true;
 	}
@@ -383,6 +384,7 @@ bool CAudioTag::GetOggTag()
 		if (track_str.empty())
 			track_str = GetSpecifiedUtf8Tag(tag_content, "Track");
 		m_song_info.track = _wtoi(track_str.c_str());
+        m_song_info.comment = GetSpecifiedUtf8Tag(tag_content, "Comment");
 
 		return true;
 	}
@@ -409,6 +411,7 @@ bool CAudioTag::GetApeTag()
 		if (track_str.empty())
 			track_str = GetSpecifiedUtf8Tag(tag_content, "Track");
 		m_song_info.track = _wtoi(track_str.c_str());
+        m_song_info.comment = GetSpecifiedUtf8Tag(tag_content, "Comment");
 
 		return true;
 	}

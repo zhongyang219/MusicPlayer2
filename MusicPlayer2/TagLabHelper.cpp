@@ -132,6 +132,16 @@ void CTagLabHelper::GetFlacTagInfo(SongInfo& song_info)
     }
 }
 
+void CTagLabHelper::GetM4aTagInfo(SongInfo& song_info)
+{
+    MP4::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
 bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
 {
     wstring ext = CFilePathHelper(song_info.file_path).GetFileExtension();
@@ -139,6 +149,8 @@ bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
         return WriteMpegTag(song_info);
     else if (ext == L"flac")
         return WriteFlacTag(song_info);
+    else if (ext == L"m4a")
+        return WriteM4aTag(song_info);
     return false;
 }
 
@@ -147,9 +159,7 @@ bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
     MPEG::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
-
     bool saved = file.save(MPEG::File::ID3v2);
-
     return saved;
 }
 
@@ -158,9 +168,16 @@ bool CTagLabHelper::WriteFlacTag(SongInfo& song_info)
     FLAC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
-
     bool saved = file.save();
+    return saved;
+}
 
+bool CTagLabHelper::WriteM4aTag(SongInfo & song_info)
+{
+    MP4::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
     return saved;
 }
 
@@ -168,5 +185,5 @@ bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return _ext == L"mp3" || _ext == L"flac";
+    return _ext == L"mp3" || _ext == L"flac" || _ext == L"m4a";
 }
