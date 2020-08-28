@@ -27,19 +27,25 @@ CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 void CAudioTag::GetAudioTag(bool id3v2_first)
 {
     //先尝试获取ID3标签
-    bool id3_exist{ false };
+    bool tag_exist{ false };
     if (id3v2_first)
     {
-        if (!(id3_exist = GetID3V2Tag()))
-            id3_exist = GetID3V1Tag();
+        tag_exist = GetID3V2Tag();
+        if (!tag_exist)
+            tag_exist = GetApeTag();
+        if (!tag_exist)
+            tag_exist = GetID3V1Tag();
     }
     else
     {
-        if (!(id3_exist = GetID3V1Tag()))
-            id3_exist = GetID3V2Tag();
+        tag_exist = GetID3V1Tag();
+        if (!tag_exist)
+            tag_exist = GetID3V2Tag();
+        if (!tag_exist)
+            tag_exist = GetApeTag();
     }
     //如果id3标签不存在，再根据文件格式获取其他类型的标签
-    if (!id3_exist)
+    if (!tag_exist)
     {
         switch (m_type)
         {
@@ -259,7 +265,7 @@ bool CAudioTag::GetID3V1Tag()
 	{
 		success = false;
 	}
-	m_song_info.tag_type = (success ? 1 : 0);
+	m_song_info.tag_type = (success ? T_ID3V1 : T_OTHER_TAG);
 	return success;
 }
 
@@ -307,7 +313,7 @@ bool CAudioTag::GetID3V2Tag()
 	{
 		success = false;
 	}
-	m_song_info.tag_type = (success ? 2 : 0);
+	m_song_info.tag_type = (success ? T_ID3V2 : T_OTHER_TAG);
 	return success;
 }
 
@@ -394,7 +400,11 @@ bool CAudioTag::GetOggTag()
 bool CAudioTag::GetApeTag()
 {
 	string tag_content = GetApeTagContents();
-	//CCommon::SaveDataToFile(tag_content, L"D://Temp//test.bin");
+#ifdef _DEBUG
+    CFilePathHelper helper(m_file_path);
+    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L"_ape_tag.bin");
+#endif
+    bool succeed{};
 	if (!tag_content.empty())
 	{
 		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
@@ -413,9 +423,16 @@ bool CAudioTag::GetApeTag()
 		m_song_info.track = _wtoi(track_str.c_str());
         m_song_info.comment = GetSpecifiedUtf8Tag(tag_content, "Comment");
 
-		return true;
+        bool tag_empty = ((m_song_info.IsTitleEmpty()) && (m_song_info.IsArtistEmpty()) && (m_song_info.IsAlbumEmpty())
+            && m_song_info.track == 0 && m_song_info.IsYearEmpty());
+        succeed = !tag_empty;
 	}
-	return false;
+    else
+    {
+        succeed = false;
+    }
+    m_song_info.tag_type = (succeed ? T_APE : T_OTHER_TAG);
+    return succeed;
 }
 
 bool CAudioTag::GetFlacTag()
@@ -630,7 +647,7 @@ string CAudioTag::GetApeTagContents()
 wstring CAudioTag::GetSpecifiedUtf8Tag(const string& tag_contents, const string& tag_identify)
 {
 	string find_str = '\0' + tag_identify;
-	size_t index = tag_contents.find(find_str);
+	size_t index = CCommon::StringFindNoCase(tag_contents, find_str);
 	if (index == string::npos)
 		return wstring();
 

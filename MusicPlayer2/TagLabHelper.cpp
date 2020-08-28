@@ -198,7 +198,12 @@ bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
     MPEG::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
-    bool saved = file.save(MPEG::File::ID3v2);
+    int tags = MPEG::File::ID3v2;
+    if (file.hasID3v1Tag())
+        tags |= MPEG::File::ID3v1;
+    if (file.hasAPETag())
+        tags |= MPEG::File::APE;
+    bool saved = file.save(tags);
     return saved;
 }
 

@@ -107,6 +107,7 @@ void CPropertyDlg::ShowInfo()
 		case 0: tag_type_str += CCommon::LoadText(IDS_UNKNOW); break;
 		case 1: tag_type_str += _T("ID3v1"); break;
 		case 2: tag_type_str += _T("ID3v2"); break;
+		case 3: tag_type_str += _T("APE"); break;
 		}
 		SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str);
 	}

@@ -4,6 +4,13 @@
 #include "Common.h"
 #include "Resource.h"
 
+enum eTagType
+{
+    T_OTHER_TAG,
+    T_ID3V1,
+    T_ID3V2,
+    T_APE
+};
 
 //一首歌曲的信息
 struct SongInfo
@@ -33,7 +40,7 @@ struct SongInfo
     Time lengh{};			//歌曲的长度
     int track{};		//音轨序号
     short bitrate{};		//比特率
-    BYTE tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2）
+    BYTE tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2；3：APE）
     BYTE genre_idx{ 255 };		//以字节表示的流派号
     bool info_acquired{ false };		//如果已经获取到了信息，则为ture
     bool is_favourite{ false };
