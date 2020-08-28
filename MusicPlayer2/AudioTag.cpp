@@ -90,6 +90,14 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
     {
         image_contents = CTagLabHelper::GetFlacAlbumCover(m_file_path, image_type);
     }
+    else if (m_type == AudioType::AU_MP3)
+    {
+        image_contents = CTagLabHelper::GetMp3AlbumCover(m_file_path, image_type);
+    }
+    else if (m_type == AU_MP4)
+    {
+        image_contents = CTagLabHelper::GetM4aAlbumCover(m_file_path, image_type);
+    }
     else
     {
         const char* id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
@@ -101,11 +109,6 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
             string tag_content;
             tag_content.assign(id3v2, id3tag_size);	//将标签区域的内容保存到一个string对象里
             image_contents = FindID3V2AlbumCover(tag_content, image_type);
-        }
-        else
-        {
-            if (m_type == AU_MP4)
-                image_contents = CTagLabHelper::GetM4aAlbumCover(m_file_path, image_type);
         }
     }
 

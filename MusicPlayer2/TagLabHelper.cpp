@@ -64,6 +64,21 @@ static void FileToByteVector(ByteVector& data, const std::wstring& file_path)
     }
 }
 
+int GetPicType(const wstring& mimeType)
+{
+    int type{ -1 };
+    if (mimeType == L"image/jpeg" || mimeType == L"image/jpg")
+        type = 0;
+    else if (mimeType == L"image/png")
+        type = 1;
+    else if (mimeType == L"image/gif")
+        type = 2;
+    else if (mimeType == L"image/bmp")
+        type = 3;
+    else
+        type = -1;
+    return type;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -130,16 +145,28 @@ string CTagLabHelper::GetFlacAlbumCover(const wstring& file_path, int& type)
             cover_contents.assign(pic_data.data(), pic_data.size());
 
             wstring img_type = pic->mimeType().toCWString();
-            if (img_type == L"image/jpeg" || img_type == L"image/jpg")
-                type = 0;
-            else if (img_type == L"image/png")
-                type = 1;
-            else if (img_type == L"image/gif")
-                type = 2;
-            else if (img_type == L"image/bmp")
-                type = 3;
-            else
-                type = -1;
+            type = GetPicType(img_type);
+        }
+    }
+    return cover_contents;
+}
+
+string CTagLabHelper::GetMp3AlbumCover(const wstring & file_path, int & type)
+{
+    string cover_contents;
+    MPEG::File file(file_path.c_str());
+    auto pic_frame_list = file.ID3v2Tag()->frameListMap()["APIC"];
+    if (!pic_frame_list.isEmpty())
+    {
+        ID3v2::AttachedPictureFrame *frame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(pic_frame_list.front());
+        if (frame != nullptr)
+        {
+            auto pic_data = frame->picture();
+            //获取专辑封面
+            cover_contents.assign(pic_data.data(), pic_data.size());
+            frame->type();
+            wstring img_type = frame->mimeType().toCWString();
+            type = GetPicType(img_type);
         }
     }
     return cover_contents;
