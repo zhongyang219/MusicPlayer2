@@ -7,6 +7,8 @@
 #include "taglib/mpegfile.h"
 #include "Common.h"
 #include "FilePathHelper.h"
+#include "taglib/attachedpictureframe.h"
+#include "taglib/id3v2tag.h"
 
 using namespace TagLib;
 
@@ -45,6 +47,27 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag)
     song_info.track = tag->track();
     song_info.comment = TagStringToWstring(tag->comment());
 }
+
+//将文件内容读取到ByteVector
+static void FileToByteVector(ByteVector& data, const std::wstring& file_path)
+{
+    std::ifstream file{ file_path, std::ios::binary | std::ios::in };
+    if (file.fail())
+        return;
+    data.clear();
+    char buff[512]{};
+    while (file.read(buff, 512))        //一次读取512个字节
+    {
+        int readedBytes = file.gcount();
+        for (int i{}; i < readedBytes; i++)
+            data.append(buff[i]);
+    }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
 CTagLabHelper::CTagLabHelper()
 {
@@ -152,6 +175,22 @@ bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
     else if (ext == L"m4a")
         return WriteM4aTag(song_info);
     return false;
+}
+
+bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path)
+{
+    //读取图片文件
+    ByteVector pic_data;
+    FileToByteVector(pic_data, album_cover_path);
+    //向音频文件写入图片文件
+    MPEG::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+    ID3v2::AttachedPictureFrame* pic_frame = new ID3v2::AttachedPictureFrame();
+    pic_frame->setPicture(pic_data);
+    file.ID3v2Tag(true)->addFrame(pic_frame);
+    bool saved = file.save(MPEG::File::ID3v2);
+    return saved;
 }
 
 bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)

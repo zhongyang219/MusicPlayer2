@@ -19,6 +19,9 @@ public:
     //写标签信息
     static bool WriteAudioTag(SongInfo& song_info);
 
+    //写专辑封面
+    static bool WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path);
+
     //根据一个文件扩展名判断此格式是否已支持写入标签
     static bool IsFileTypeTagWriteSupport(const wstring& ext);
 

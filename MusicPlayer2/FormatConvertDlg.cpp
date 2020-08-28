@@ -8,6 +8,7 @@
 #include "BassCore.h"
 #include "COSUPlayerHelper.h"
 #include "WIC.h"
+#include "TagLabHelper.h"
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
 
@@ -463,33 +464,6 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 		{
 		case EncodeFormat::MP3:
 		{
-			//获取源文件的专辑封面
-			int album_cover_size{};
-			bool write_album_cover{};
-			wstring album_cover_path;
-			if (pthis->m_write_album_cover)
-			{
-				SongInfo song_info_tmp;
-				CAudioTag audio_tag(hStream, file_path, song_info_tmp);
-				int cover_type;
-				album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
-				CImage image;
-				image.Load(album_cover_path.c_str());
-				if (image.IsNull())		//如果没有内嵌的专辑封面，则获取外部封面
-					album_cover_path = CPlayer::GetRelatedAlbumCover(file_path, song_info);
-				else
-					image.Destroy();
-				album_cover_size = CCommon::GetFileSize(album_cover_path);
-                if (album_cover_size >= MAX_ALBUM_COVER_SIZE)       //如果专辑封面超过了128KB，则将其压缩并保存到临时目录
-                {
-                    wstring album_cover_temp_path{ CCommon::GetTemplatePath() + CONVERT_TEMP_ALBUM_COVER_NAME };
-                    CDrawCommon::ImageResize(album_cover_path, album_cover_temp_path, COMPRESSED_ALBUM_COVER_PIXEL, IT_JPG);
-                    album_cover_path = album_cover_temp_path;
-                    album_cover_size = CCommon::GetFileSize(album_cover_path);
-                }
-				write_album_cover = (!album_cover_path.empty() && album_cover_size > 0 && album_cover_size < MAX_ALBUM_COVER_SIZE);	//是否要写入专辑封面（专辑封面文件必须小于128KB）
-			}
-
 			//设置lame命令行参数
 			cmdline = pthis->m_encode_dir;
 			cmdline += L"lame.exe ";
@@ -502,12 +476,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 					CAudioCommon::TrackToString(song_info.track).GetString(), song_info.genre.c_str());
 				cmdline += str;
 			}
-			if (write_album_cover)
-			{
-				str.Format(_T(" --ti \"%s\""), album_cover_path.c_str());
-				cmdline += str;
-			}
-			if(pthis->m_write_tag || write_album_cover)
+			if(pthis->m_write_tag)
 				cmdline += L" --add-id3v2";
 			cmdline += L" - \"";
 			cmdline += out_file_path_temp;
@@ -660,6 +629,25 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 		CFilePathHelper out_file_path_helper{ out_file_path };
 		CCommon::MoveAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_temp, out_file_path_helper.GetDir());
 		CCommon::FileRename(out_file_path_helper.GetDir() + CONVERTING_TEMP_FILE_NAME, out_file_path_helper.GetFileName());
+
+        //向转换的mp3文件添加专辑封面
+        if (pthis->m_write_album_cover)
+        {
+	        SongInfo song_info_tmp;
+	        CAudioTag audio_tag(hStream, file_path, song_info_tmp);
+	        int cover_type;
+	        wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
+	        CImage image;
+	        image.Load(album_cover_path.c_str());
+	        if (image.IsNull())		//如果没有内嵌的专辑封面，则获取外部封面
+		        album_cover_path = CPlayer::GetRelatedAlbumCover(file_path, song_info);
+	        else
+		        image.Destroy();
+            if (!album_cover_path.empty())
+            {
+                CTagLabHelper::WriteMp3AlbumCover(out_file_path, album_cover_path);
+            }
+        }
     }
     return true;
 }

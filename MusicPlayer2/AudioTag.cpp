@@ -484,9 +484,13 @@ wstring CAudioTag::GetSpecifiedId3V2Tag(const string& tag_contents, const string
 	wstring tag_info;
 	size_t tag_index;
 	tag_index = tag_contents.find(tag_identify);	//查找一个标签标识字符串
-	if (tag_contents == "TPE1" && tag_index == string::npos)	//如果在查找艺术家时找不到TPE1标签，尝试查找TPE2标签
+	if (tag_identify == "TPE1" && tag_index == string::npos)	//如果在查找艺术家时找不到TPE1标签，尝试查找TPE2标签
 	{
 		tag_index = tag_contents.find("TPE2");
+	}
+	if (tag_identify == "TYER" && tag_index == string::npos)	//如果在查找年份时找不到TYER标签，尝试查找TDRC标签
+	{
+		tag_index = tag_contents.find("TDRC");
 	}
 	if (tag_index != string::npos && tag_index < tag_contents.size() - 8)
 	{
