@@ -139,7 +139,7 @@ void CPropertyDlg::SetWreteEnable()
 {
 	//目前暂时只支持MP3的ID3V1标签写入
 	CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
-	m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && file_path.GetFileExtension() == L"mp3"/* && m_all_song_info[m_index].tag_type != 2*/);
+	m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CTagLabHelper::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/);
     m_write_enable &= !m_read_only;
     SetEditReadOnly(!m_write_enable);
 	m_save_button.EnableWindow(m_write_enable && m_modified);
@@ -406,7 +406,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
     song_info.file_path = m_all_song_info[m_index].file_path;
     song_info.Normalize();
 	//if (!CAudioTag::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off))
-    if (!CTagLabHelper::WriteMpegTag(song_info))
+    if (!CTagLabHelper::WriteAudioTag(song_info))
 	{
 		MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
 	}

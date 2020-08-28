@@ -6,6 +6,7 @@
 #include "taglib/flacpicture.h"
 #include "taglib/mpegfile.h"
 #include "Common.h"
+#include "FilePathHelper.h"
 
 using namespace TagLib;
 
@@ -22,6 +23,28 @@ static wstring TagStringToWstring(const String& str)
     return result;
 }
 
+
+static void SongInfoToTag(const SongInfo& song_info, Tag* tag)
+{
+    tag->setTitle(song_info.title);
+    tag->setArtist(song_info.artist);
+    tag->setAlbum(song_info.album);
+    tag->setGenre(song_info.genre);
+    tag->setTrack(song_info.track);
+    tag->setComment(song_info.comment);
+    tag->setYear(_wtoi(song_info.year.c_str()));
+}
+
+static void TagToSongInfo(SongInfo& song_info, Tag* tag)
+{
+    song_info.title = TagStringToWstring(tag->title());
+    song_info.artist = TagStringToWstring(tag->artist());
+    song_info.album = TagStringToWstring(tag->album());
+    song_info.genre = TagStringToWstring(tag->genre());
+    song_info.year = std::to_wstring(tag->year());
+    song_info.track = tag->track();
+    song_info.comment = TagStringToWstring(tag->comment());
+}
 
 CTagLabHelper::CTagLabHelper()
 {
@@ -105,29 +128,45 @@ void CTagLabHelper::GetFlacTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        song_info.title = TagStringToWstring(tag->title());
-        song_info.artist = TagStringToWstring(tag->artist());
-        song_info.album = TagStringToWstring(tag->album());
-        song_info.genre = TagStringToWstring(tag->genre());
-        song_info.year = std::to_wstring(tag->year());
-        song_info.track = tag->track();
-        song_info.comment = TagStringToWstring(tag->comment());
+        TagToSongInfo(song_info, tag);
     }
+}
+
+bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
+{
+    wstring ext = CFilePathHelper(song_info.file_path).GetFileExtension();
+    if (ext == L"mp3")
+        return WriteMpegTag(song_info);
+    else if (ext == L"flac")
+        return WriteFlacTag(song_info);
+    return false;
 }
 
 bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
 {
     MPEG::File file(song_info.file_path.c_str());
     auto tag = file.tag();
-    tag->setTitle(song_info.title);
-    tag->setArtist(song_info.artist);
-    tag->setAlbum(song_info.album);
-    tag->setGenre(song_info.genre);
-    tag->setTrack(song_info.track);
-    tag->setComment(song_info.comment);
-    tag->setYear(_wtoi(song_info.year.c_str()));
+    SongInfoToTag(song_info, tag);
 
     bool saved = file.save(MPEG::File::ID3v2);
 
     return saved;
+}
+
+bool CTagLabHelper::WriteFlacTag(SongInfo& song_info)
+{
+    FLAC::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+
+    bool saved = file.save();
+
+    return saved;
+}
+
+bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
+{
+    wstring _ext = ext;
+    CCommon::StringTransform(_ext, false);
+    return _ext == L"mp3" || _ext == L"flac";
 }
