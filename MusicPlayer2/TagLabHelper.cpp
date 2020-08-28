@@ -4,8 +4,24 @@
 #include "taglib/mp4coverart.h"
 #include "taglib/flacfile.h"
 #include "taglib/flacpicture.h"
+#include "taglib/mpegfile.h"
+#include "Common.h"
 
 using namespace TagLib;
+
+//将taglib中的字符串转换成wstring类型。
+//由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
+//这里将Latin编码的字符串按本地代码页处理
+static wstring TagStringToWstring(const String& str)
+{
+    wstring result;
+    if (str.isLatin1())
+        result = CCommon::StrToUnicode(str.to8Bit(), CodeType::ANSI);
+    else
+        result = str.toWString();
+    return result;
+}
+
 
 CTagLabHelper::CTagLabHelper()
 {
@@ -89,12 +105,29 @@ void CTagLabHelper::GetFlacTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        song_info.title = tag->title().toCWString();
-        song_info.artist = tag->artist().toCWString();
-        song_info.album = tag->album().toCWString();
-        song_info.genre = tag->genre().toCWString();
+        song_info.title = TagStringToWstring(tag->title());
+        song_info.artist = TagStringToWstring(tag->artist());
+        song_info.album = TagStringToWstring(tag->album());
+        song_info.genre = TagStringToWstring(tag->genre());
         song_info.year = std::to_wstring(tag->year());
         song_info.track = tag->track();
-        song_info.comment = tag->comment().toCWString();
+        song_info.comment = TagStringToWstring(tag->comment());
     }
+}
+
+bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
+{
+    MPEG::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    tag->setTitle(song_info.title);
+    tag->setArtist(song_info.artist);
+    tag->setAlbum(song_info.album);
+    tag->setGenre(song_info.genre);
+    tag->setTrack(song_info.track);
+    tag->setComment(song_info.comment);
+    tag->setYear(_wtoi(song_info.year.c_str()));
+
+    bool saved = file.save(MPEG::File::ID3v2);
+
+    return saved;
 }
