@@ -398,10 +398,13 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 		song_info.genre_idx = static_cast<BYTE>(m_genre_combo.GetCurSel());
 	else
 		song_info.genre_idx = m_all_song_info[m_index].genre_idx;		//如果流派没有修改，则将原来的流派号写回文件中
+    m_genre_combo.GetWindowText(str_temp);
+    song_info.genre = str_temp;
 	m_comment_edit.GetWindowText(str_temp);
 	song_info.comment = str_temp;
 
     song_info.file_path = m_all_song_info[m_index].file_path;
+    song_info.Normalize();
 	//if (!CAudioTag::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off))
     if (!CTagLabHelper::WriteMpegTag(song_info))
 	{

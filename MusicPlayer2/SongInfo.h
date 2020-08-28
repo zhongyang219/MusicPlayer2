@@ -220,5 +220,19 @@ struct SongInfo
         else
             return file_path == song.file_path && track == song.track;
     }
+
+    void Normalize()
+    {
+        if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
+            title.clear();
+        if (artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())
+            artist.clear();
+        if (album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
+            album.clear();
+        if (year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+            year.clear();
+        if (genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
+            genre.clear();
+    }
 };
 
