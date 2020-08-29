@@ -26,7 +26,7 @@ CAudioTag::CAudioTag(HSTREAM hStream, SongInfo & song_info)
 		m_type = CAudioCommon::GetAudioTypeByExtension(m_song_info.file_path);
 }
 
-void CAudioTag::GetAudioTag(bool id3v2_first)
+void CAudioTag::GetAudioTag()
 {
         switch (m_type)
         {
@@ -49,7 +49,7 @@ void CAudioTag::GetAudioTag(bool id3v2_first)
             GetFlacTag();
             break;
         default:
-            GetTagDefault(id3v2_first);
+            GetTagDefault();
             break;
         }
 	CAudioCommon::TagStrNormalize(m_song_info.title);
@@ -466,25 +466,14 @@ bool CAudioTag::GetFlacTag()
     return true;
 }
 
-bool CAudioTag::GetTagDefault(bool id3v2_first)
+bool CAudioTag::GetTagDefault()
 {
     bool tag_exist{ false };
-    if (id3v2_first)
-    {
-        tag_exist = GetID3V2Tag();
-        if (!tag_exist)
-            tag_exist = GetApeTag();
-        if (!tag_exist)
-            tag_exist = GetID3V1Tag();
-    }
-    else
-    {
+    tag_exist = GetID3V2Tag();
+    if (!tag_exist)
+        tag_exist = GetApeTag();
+    if (!tag_exist)
         tag_exist = GetID3V1Tag();
-        if (!tag_exist)
-            tag_exist = GetID3V2Tag();
-        if (!tag_exist)
-            tag_exist = GetApeTag();
-    }
     return tag_exist;
 }
 

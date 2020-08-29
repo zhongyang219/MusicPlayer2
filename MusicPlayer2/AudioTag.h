@@ -7,8 +7,7 @@ public:
 	CAudioTag(HSTREAM hStream, SongInfo & song_info);
 
 	//获取音频文件的标签信息，结果保存在构造函数传递进来的SongInfo结构里，
-	//id3v2_first：是否优先获取ID3V2标签，否则，优先获取ID3V1标签
-	void GetAudioTag(bool id3v2_first);
+	void GetAudioTag();
 
 	////
 	//void GetAllSongInfo(bool id3v2_first);
@@ -46,7 +45,7 @@ private:
 	bool GetApeTag();
 	bool GetFlacTag();
 
-    bool GetTagDefault(bool id3v2_first);
+    bool GetTagDefault();
 
 	//获取ID3V2标签区域的内容
 	string GetID3V2TagContents();

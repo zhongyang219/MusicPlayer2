@@ -277,7 +277,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
     if(flag&AF_TAG_INFO)
     {
         CAudioTag audio_tag(hStream, song_info);
-        audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
+        audio_tag.GetAudioTag();
         //获取midi音乐的标题
         if (CBassCore::m_bass_midi_lib.IsSucceed() && audio_tag.GetAudioType() == AU_MIDI)
         {

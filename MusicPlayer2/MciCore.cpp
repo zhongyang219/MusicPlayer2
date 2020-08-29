@@ -216,7 +216,7 @@ void CMciCore::GetAudioInfo(SongInfo & song_info, int flag)
         if (flag&AF_TAG_INFO)
         {
             CAudioTag audio_tag(NULL, song_info);
-            audio_tag.GetAudioTag(true);
+            audio_tag.GetAudioTag();
         }
     }
 
@@ -238,7 +238,7 @@ void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int
         if (flag&AF_TAG_INFO)
         {
             CAudioTag audio_tag(NULL, song_info);
-            audio_tag.GetAudioTag(true);
+            audio_tag.GetAudioTag();
         }
 
         m_error_code = mciSendStringW((L"close \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);

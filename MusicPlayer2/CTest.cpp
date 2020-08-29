@@ -159,7 +159,7 @@ void CTest::TestAudioTag()
 	SongInfo song_info;
     song_info.file_path = file_path;
 	CAudioTag audio_tag(hStream, song_info);
-	audio_tag.GetAudioTag(true);
+	audio_tag.GetAudioTag();
 	wstring str_lyric = audio_tag.GetAudioLyric();
 	BASS_StreamFree(hStream);
 }

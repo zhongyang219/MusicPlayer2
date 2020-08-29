@@ -393,7 +393,7 @@ bool CPropertyTabDlg::SaveModified()
 		hStream = BASS_StreamCreateFile(FALSE, song_info.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		//CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
 		CAudioTag audio_tag(hStream, m_all_song_info[m_index]);
-		audio_tag.GetAudioTag(true);
+		audio_tag.GetAudioTag();
 		BASS_StreamFree(hStream);
 		theApp.m_song_data[m_all_song_info[m_index].file_path].CopyAudioTag(m_all_song_info[m_index]);
 		theApp.SetSongDataModified();

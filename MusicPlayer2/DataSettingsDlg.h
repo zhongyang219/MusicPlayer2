@@ -37,7 +37,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	afx_msg void OnBnClickedId3v2FirstCheck();
+	//afx_msg void OnBnClickedId3v2FirstCheck();
 	afx_msg void OnBnClickedCoverAutoDownloadCheck();
 	afx_msg void OnBnClickedLyricAutoDownloadCheck();
 	afx_msg void OnBnClickedCheckUpdateCheck();
