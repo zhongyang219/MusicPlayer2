@@ -594,8 +594,7 @@ void CFindDlg::OnItemProperty()
         return;
     std::vector<SongInfo> songs;
     GetCurrentSongList(songs);
-    CPropertyDlg propertyDlg(songs, this, true);
-    propertyDlg.m_index = m_item_selected;
+    CPropertyDlg propertyDlg(songs, m_item_selected, false);
     propertyDlg.DoModal();
 }
 

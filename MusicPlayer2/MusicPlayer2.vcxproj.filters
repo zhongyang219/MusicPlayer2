@@ -346,9 +346,6 @@
     <ClInclude Include="MiniModeDlg.h">
       <Filter>对话框类\MiniModeDlg</Filter>
     </ClInclude>
-    <ClInclude Include="PropertyDlg.h">
-      <Filter>对话框类\PropertyDlg</Filter>
-    </ClInclude>
     <ClInclude Include="SoundEffectDlg.h">
       <Filter>对话框类\Sound Effect Dialog</Filter>
     </ClInclude>
@@ -691,6 +688,15 @@
     <ClInclude Include="TagLabHelper.h">
       <Filter>公共的类\AudioTag</Filter>
     </ClInclude>
+    <ClInclude Include="PropertyTabDlg.h">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyDlg.h">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyAlbumCoverDlg.h">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -704,9 +710,6 @@
     </ClCompile>
     <ClCompile Include="MiniModeDlg.cpp">
       <Filter>对话框类\MiniModeDlg</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertyDlg.cpp">
-      <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
     <ClCompile Include="SoundEffectDlg.cpp">
       <Filter>对话框类\Sound Effect Dialog</Filter>
@@ -1034,6 +1037,15 @@
     </ClCompile>
     <ClCompile Include="TagLabHelper.cpp">
       <Filter>公共的类\AudioTag</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyTabDlg.cpp">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyDlg.cpp">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyAlbumCoverDlg.cpp">
+      <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

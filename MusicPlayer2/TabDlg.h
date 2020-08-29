@@ -19,6 +19,7 @@ protected:
 	void ScrollWindowSimple(int step);
 
     void EnableDlgCtrl(UINT id, bool enable);
+    void ShowDlgCtrl(UINT id, bool show);
 
 protected:
 	CWnd* m_pParent;

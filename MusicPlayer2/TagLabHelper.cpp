@@ -206,16 +206,34 @@ bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
 
 bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path)
 {
-    //读取图片文件
-    ByteVector pic_data;
-    FileToByteVector(pic_data, album_cover_path);
-    //向音频文件写入图片文件
     MPEG::File file(file_path.c_str());
     if (!file.isValid())
         return false;
-    ID3v2::AttachedPictureFrame* pic_frame = new ID3v2::AttachedPictureFrame();
-    pic_frame->setPicture(pic_data);
-    file.ID3v2Tag(true)->addFrame(pic_frame);
+
+    //先删除专辑封面
+    {
+        auto id3v2tag = file.ID3v2Tag();
+        if (id3v2tag != nullptr)
+        {
+            auto pic_frame_list = id3v2tag->frameListMap()["APIC"];
+            if (!pic_frame_list.isEmpty())
+            {
+                for (auto frame : pic_frame_list)
+                    id3v2tag->removeFrame(frame);
+            }
+        }
+    }
+    if (!album_cover_path.empty())
+    {
+        //读取图片文件
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+        //向音频文件写入图片文件
+        ID3v2::AttachedPictureFrame* pic_frame = new ID3v2::AttachedPictureFrame();
+        pic_frame->setPicture(pic_data);
+        auto id3v2tag = file.ID3v2Tag(true);
+        id3v2tag->addFrame(pic_frame);
+    }
     bool saved = file.save(MPEG::File::ID3v2);
     return saved;
 }
@@ -257,4 +275,18 @@ bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     return _ext == L"mp3" || _ext == L"flac" || _ext == L"m4a";
+}
+
+bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
+{
+    wstring _ext = ext;
+    CCommon::StringTransform(_ext, false);
+    return _ext == L"mp3";
+}
+
+bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
+{
+    wstring ext = CFilePathHelper(file_path).GetFileExtension();
+    if (ext == L"mp3")
+        return WriteMp3AlbumCover(file_path, album_cover_path);
 }

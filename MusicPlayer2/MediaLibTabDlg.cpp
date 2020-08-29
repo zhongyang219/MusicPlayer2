@@ -263,8 +263,7 @@ void CMediaLibTabDlg::OnItemProperty()
 		return;
 	std::vector<SongInfo> songs;
 	GetCurrentSongList(songs);
-	CPropertyDlg propertyDlg(songs, this, true);
-	propertyDlg.m_index = GetItemSelected();
+    CPropertyDlg propertyDlg(songs, GetItemSelected(), false);
 	propertyDlg.DoModal();
 }
 

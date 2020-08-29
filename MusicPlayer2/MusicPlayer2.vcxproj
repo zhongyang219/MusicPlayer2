@@ -223,6 +223,8 @@
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
     <ClInclude Include="LyricRelateDlg.h" />
+    <ClInclude Include="PropertyAlbumCoverDlg.h" />
+    <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="SpinEdit.h" />
     <ClInclude Include="TagLabHelper.h" />
     <ClInclude Include="UIWindow.h" />
@@ -310,7 +312,7 @@
     <ClInclude Include="OptionsDlg.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="LyricSettingsDlg.h" />
-    <ClInclude Include="PropertyDlg.h" />
+    <ClInclude Include="PropertyTabDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ReverbDlg.h" />
     <ClInclude Include="SetPathDlg.h" />
@@ -347,6 +349,8 @@
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="CueFile.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
+    <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
+    <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
     <ClCompile Include="TagLabHelper.cpp" />
     <ClCompile Include="UIWindow.cpp" />
@@ -429,7 +433,7 @@
     <ClCompile Include="OptionsDlg.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="LyricSettingsDlg.cpp" />
-    <ClCompile Include="PropertyDlg.cpp" />
+    <ClCompile Include="PropertyTabDlg.cpp" />
     <ClCompile Include="ReverbDlg.cpp" />
     <ClCompile Include="SetPathDlg.cpp" />
     <ClCompile Include="SoundEffectDlg.cpp" />

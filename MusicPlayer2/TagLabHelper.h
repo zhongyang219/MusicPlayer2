@@ -26,6 +26,12 @@ public:
     //根据一个文件扩展名判断此格式是否已支持写入标签
     static bool IsFileTypeTagWriteSupport(const wstring& ext);
 
+    //根据一个文件扩展名判断此格式是否已支持写入标签
+    static bool IsFileTypeCoverWriteSupport(const wstring& ext);
+
+    //写入一个专辑封面，数据文件类型自动判断
+    static bool WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path);
+
 private:
     static bool WriteMpegTag(SongInfo& song_info);
     static bool WriteFlacTag(SongInfo& song_info);

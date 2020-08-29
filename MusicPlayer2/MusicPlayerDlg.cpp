@@ -259,7 +259,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_INVERT_PLAYLIST, &CMusicPlayerDlg::OnInvertPlaylist)
     ON_COMMAND(ID_PLAY_RANDOM, &CMusicPlayerDlg::OnPlayRandom)
     ON_WM_DEVICECHANGE()
-END_MESSAGE_MAP()
+        ON_MESSAGE(WM_CURRENT_FILE_ALBUM_COVER_CHANGED, &CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -2559,8 +2560,7 @@ void CMusicPlayerDlg::OnPlayItem()
 void CMusicPlayerDlg::OnItemProperty()
 {
     // TODO: 在此添加命令处理程序代码
-    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
-    propertyDlg.m_index = m_item_selected;
+    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList(), m_item_selected, false);
     propertyDlg.DoModal();
     if (propertyDlg.GetListRefresh())
         ShowPlayList();
@@ -2992,8 +2992,7 @@ void CMusicPlayerDlg::OnReloadLyric()
 void CMusicPlayerDlg::OnSongInfo()
 {
     // TODO: 在此添加命令处理程序代码
-    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList());
-    propertyDlg.m_index = CPlayer::GetInstance().GetIndex();
+    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList(), CPlayer::GetInstance().GetIndex(), false);
     propertyDlg.DoModal();
     if (propertyDlg.GetListRefresh())
         ShowPlayList();
@@ -4986,8 +4985,12 @@ void CMusicPlayerDlg::OnRelateLocalLyric()
 void CMusicPlayerDlg::OnAlbumCoverInfo()
 {
     // TODO: 在此添加命令处理程序代码
-    CAlbumCoverInfoDlg dlg;
-    dlg.DoModal();
+    //CAlbumCoverInfoDlg dlg;
+    //dlg.DoModal();
+    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList(), CPlayer::GetInstance().GetIndex(), false, 1);
+    propertyDlg.DoModal();
+    if (propertyDlg.GetListRefresh())
+        ShowPlayList();
 }
 
 
@@ -5087,4 +5090,11 @@ BOOL CMusicPlayerDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
         }
     }
     return FALSE;
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam)
+{
+
+    return 0;
 }

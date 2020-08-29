@@ -591,8 +591,10 @@
 #define IDI_ICON13                      485
 #define IDI_PLAY_RANDOM_D               485
 #define IDS_INNER_ALBUM_COVER           486
+#define IDD_PROPERTY_PARENT_DIALOG      486
 #define IDS_WIDTH                       487
 #define IDS_HEIGHT                      488
+#define IDD_PROPERTY_ALBUM_COVER_DIALOG 488
 #define IDS_BPP                         489
 #define IDS_FILE_SIZE                   490
 #define IDS_DEFAULT_ICON                491
@@ -614,6 +616,7 @@
 #define IDS_SEARCH_FILE_TYPE            507
 #define IDS_SEARCH_BITRATE              508
 #define IDS_PLAY_RANDOM                 509
+#define IDS_FILE_PROPERTY               510
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -647,6 +650,7 @@
 #define IDC_SETTINGS_BUTTON             1012
 #define IDC_DONOT_RELATE_BUTTON         1012
 #define IDC_DEFAULT_BUTTON              1012
+#define IDC_SAVE_ALBUM_COVER_BUTTON     1012
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013
@@ -815,6 +819,7 @@
 #define IDC_RESTORE_DEFAULT_BUTTON      1082
 #define IDC_LOCAL_SEARCH_BUTTON         1082
 #define IDC_TAB1                        1083
+#define IDC_BROWSE_BUTTON2              1083
 #define IDC_REVERB_MIX_SLIDER           1084
 #define IDC_REVERB_TIME_SLIDER          1085
 #define IDC_REVERB_MIX_STATIC           1086
@@ -1342,7 +1347,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        486
+#define _APS_NEXT_RESOURCE_VALUE        490
 #define _APS_NEXT_COMMAND_VALUE         33198
 #define _APS_NEXT_CONTROL_VALUE         1183
 #define _APS_NEXT_SYMED_VALUE           101

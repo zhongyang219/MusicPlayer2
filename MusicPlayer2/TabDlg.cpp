@@ -115,6 +115,13 @@ void CTabDlg::EnableDlgCtrl(UINT id, bool enable)
         pCtrl->EnableWindow(enable);
 }
 
+void CTabDlg::ShowDlgCtrl(UINT id, bool show)
+{
+    CWnd* pCtrl = GetDlgItem(id);
+    if (pCtrl != nullptr)
+        pCtrl->ShowWindow(show);
+}
+
 BEGIN_MESSAGE_MAP(CTabDlg, CDialogEx)
 	ON_WM_VSCROLL()
 	ON_WM_MOUSEWHEEL()
