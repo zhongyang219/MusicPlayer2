@@ -46,6 +46,8 @@ private:
 	bool GetApeTag();
 	bool GetFlacTag();
 
+    bool GetTagDefault(bool id3v2_first);
+
 	//获取ID3V2标签区域的内容
 	string GetID3V2TagContents();
 

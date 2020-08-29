@@ -102,13 +102,20 @@ void CPropertyTabDlg::ShowInfo()
 	if (file_type == _T("mp3"))
 	{
 		CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
-		switch (m_all_song_info[m_index].tag_type)
-		{
-		case 0: tag_type_str += CCommon::LoadText(IDS_UNKNOW); break;
-		case 1: tag_type_str += _T("ID3v1"); break;
-		case 2: tag_type_str += _T("ID3v2"); break;
-		case 3: tag_type_str += _T("APE"); break;
-		}
+        auto tag_type = m_all_song_info[m_index].tag_type;
+        if (tag_type == 0)
+        {
+            tag_type_str += CCommon::LoadText(IDS_UNKNOW);
+        }
+        else
+        {
+            if (tag_type & T_ID3V1)
+                tag_type_str += _T("ID3v1 ");
+            if (tag_type & T_ID3V2)
+                tag_type_str += _T("ID3v2 ");
+            if (tag_type & T_APE)
+                tag_type_str += _T("APE ");
+        }
 		SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str);
 	}
 	else

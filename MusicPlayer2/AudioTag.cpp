@@ -26,30 +26,11 @@ CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 
 void CAudioTag::GetAudioTag(bool id3v2_first)
 {
-    //先尝试获取ID3标签
-    bool tag_exist{ false };
-    if (id3v2_first)
-    {
-        tag_exist = GetID3V2Tag();
-        if (!tag_exist)
-            tag_exist = GetApeTag();
-        if (!tag_exist)
-            tag_exist = GetID3V1Tag();
-    }
-    else
-    {
-        tag_exist = GetID3V1Tag();
-        if (!tag_exist)
-            tag_exist = GetID3V2Tag();
-        if (!tag_exist)
-            tag_exist = GetApeTag();
-    }
-    //如果id3标签不存在，再根据文件格式获取其他类型的标签
-    if (!tag_exist)
-    {
         switch (m_type)
         {
-            //case AU_MP3:
+        case AU_MP3:
+            CTagLabHelper::GetMpegTagInfo(m_song_info);
+            break;
         case AU_WMA:
             GetWmaTag();
             break;
@@ -66,9 +47,9 @@ void CAudioTag::GetAudioTag(bool id3v2_first)
             GetFlacTag();
             break;
         default:
+            GetTagDefault(id3v2_first);
             break;
         }
-    }
 	CAudioCommon::TagStrNormalize(m_song_info.title);
 	CAudioCommon::TagStrNormalize(m_song_info.artist);
 	CAudioCommon::TagStrNormalize(m_song_info.album);
@@ -480,7 +461,29 @@ bool CAudioTag::GetFlacTag()
 //    }
 
     CTagLabHelper::GetFlacTagInfo(m_song_info);
-    return false;
+    return true;
+}
+
+bool CAudioTag::GetTagDefault(bool id3v2_first)
+{
+    bool tag_exist{ false };
+    if (id3v2_first)
+    {
+        tag_exist = GetID3V2Tag();
+        if (!tag_exist)
+            tag_exist = GetApeTag();
+        if (!tag_exist)
+            tag_exist = GetID3V1Tag();
+    }
+    else
+    {
+        tag_exist = GetID3V1Tag();
+        if (!tag_exist)
+            tag_exist = GetID3V2Tag();
+        if (!tag_exist)
+            tag_exist = GetApeTag();
+    }
+    return tag_exist;
 }
 
 

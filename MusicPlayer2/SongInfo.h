@@ -6,10 +6,10 @@
 
 enum eTagType
 {
-    T_OTHER_TAG,
-    T_ID3V1,
-    T_ID3V2,
-    T_APE
+    T_OTHER_TAG = 0,
+    T_ID3V1 = 1,
+    T_ID3V2 = 1 << 1,
+    T_APE = 1 << 2
 };
 
 //一首歌曲的信息

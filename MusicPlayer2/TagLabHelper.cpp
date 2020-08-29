@@ -192,6 +192,23 @@ void CTagLabHelper::GetM4aTagInfo(SongInfo& song_info)
     }
 }
 
+void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
+{
+    MPEG::File file(song_info.file_path.c_str());
+    if (file.hasID3v1Tag())
+        song_info.tag_type |= T_ID3V1;
+    if (file.hasID3v2Tag())
+        song_info.tag_type |= T_ID3V2;
+    if (file.hasAPETag())
+        song_info.tag_type |= T_APE;
+
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
 bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
 {
     wstring ext = CFilePathHelper(song_info.file_path).GetFileExtension();
