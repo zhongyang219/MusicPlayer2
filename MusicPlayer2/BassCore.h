@@ -62,7 +62,7 @@ public:
     static Time GetBASSSongLength(HSTREAM hStream);
     static void SetCurrentPosition(HSTREAM hStream, int position);
 
-    static void GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO);
+    static void GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO);
 
 public:
     static CBASSMidiLibrary m_bass_midi_lib;

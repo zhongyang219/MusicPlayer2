@@ -10,9 +10,11 @@ const string gif_head{ "GIF89a" };
 const string gif_tail{ '\x80', '\x00', '\x00', '\x3b' };
 const string bmp_head{ "BM" };
 
-CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
-	: m_hStream{ hStream }, m_file_path{ file_path }, m_song_info{ m_song_info }
+CAudioTag::CAudioTag(HSTREAM hStream, SongInfo & song_info)
+	: m_hStream{ hStream }, m_song_info{ song_info }
 {
+    ASSERT(!m_song_info.file_path.empty());
+
 	//获取通道信息
 	BASS_CHANNELINFO channel_info;
 	BASS_ChannelGetInfo(m_hStream, &channel_info);
@@ -21,7 +23,7 @@ CAudioTag::CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & m_song_info)
 
 	//如果获取不到文件类型，这里根据扩展名再判断
 	if (m_type == AudioType::AU_OTHER)
-		m_type = CAudioCommon::GetAudioTypeByExtension(m_file_path);
+		m_type = CAudioCommon::GetAudioTypeByExtension(m_song_info.file_path);
 }
 
 void CAudioTag::GetAudioTag(bool id3v2_first)
@@ -69,15 +71,15 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
     string image_contents;
     if (m_type == AudioType::AU_FLAC)
     {
-        image_contents = CTagLabHelper::GetFlacAlbumCover(m_file_path, image_type);
+        image_contents = CTagLabHelper::GetFlacAlbumCover(m_song_info.file_path, image_type);
     }
     else if (m_type == AudioType::AU_MP3)
     {
-        image_contents = CTagLabHelper::GetMp3AlbumCover(m_file_path, image_type);
+        image_contents = CTagLabHelper::GetMp3AlbumCover(m_song_info.file_path, image_type);
     }
     else if (m_type == AU_MP4)
     {
-        image_contents = CTagLabHelper::GetM4aAlbumCover(m_file_path, image_type);
+        image_contents = CTagLabHelper::GetM4aAlbumCover(m_song_info.file_path, image_type);
     }
     else
     {
@@ -137,9 +139,9 @@ wstring CAudioTag::GetAudioLyric()
 	}
     else if (m_type == AU_FLAC)
     {
-        GetFlacTagContents(m_file_path, tag_contents);
+        GetFlacTagContents(m_song_info.file_path, tag_contents);
 #ifdef _DEBUG
-        CFilePathHelper helper(m_file_path);
+        CFilePathHelper helper(m_song_info.file_path);
         CCommon::SaveDataToFile(tag_contents, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
 #endif
         if (!tag_contents.empty())
@@ -258,7 +260,7 @@ bool CAudioTag::GetID3V2Tag()
 	bool success;
 	string tag_content = GetID3V2TagContents();
 #ifdef _DEBUG
-    CFilePathHelper helper(m_file_path);
+    CFilePathHelper helper(m_song_info.file_path);
     CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
 #endif
 	if (!tag_content.empty())
@@ -329,7 +331,7 @@ bool CAudioTag::GetMp4Tag()
 {
 	string tag_content = GetMp4TagContents();
 #ifdef _DEBUG
-    CFilePathHelper helper(m_file_path);
+    CFilePathHelper helper(m_song_info.file_path);
     CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
 #endif
     if (!tag_content.empty())
@@ -385,7 +387,7 @@ bool CAudioTag::GetApeTag()
 {
 	string tag_content = GetApeTagContents();
 #ifdef _DEBUG
-    CFilePathHelper helper(m_file_path);
+    CFilePathHelper helper(m_song_info.file_path);
     CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L"_ape_tag.bin");
 #endif
     bool succeed{};
@@ -422,9 +424,9 @@ bool CAudioTag::GetApeTag()
 bool CAudioTag::GetFlacTag()
 {
 //	string tag_content;		//整个标签区域的内容
-//	GetFlacTagContents(m_file_path, tag_content);
+//	GetFlacTagContents(m_song_info.file_path, tag_content);
 //#ifdef _DEBUG
-//    CFilePathHelper helper(m_file_path);
+//    CFilePathHelper helper(m_song_info.file_path);
 //    CCommon::SaveDataToFile(tag_content, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
 //#endif
 //

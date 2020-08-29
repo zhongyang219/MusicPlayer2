@@ -262,7 +262,7 @@ void CBassCore::RemoveFXHandle()
     }
 }
 
-void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, SongInfo & song_info, int flag)
+void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag)
 {
     //获取长度
     if (flag&AF_LENGTH)
@@ -276,7 +276,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, const wchar_t* file_path, Song
     }
     if(flag&AF_TAG_INFO)
     {
-        CAudioTag audio_tag(hStream, file_path, song_info);
+        CAudioTag audio_tag(hStream, song_info);
         audio_tag.GetAudioTag(theApp.m_general_setting_data.id3v2_first);
         //获取midi音乐的标题
         if (CBassCore::m_bass_midi_lib.IsSucceed() && audio_tag.GetAudioType() == AU_MIDI)
@@ -470,14 +470,14 @@ void CBassCore::SetCurPosition(int position)
 void CBassCore::GetAudioInfo(SongInfo & song_info, int flag)
 {
     CSingleLock sync(&m_critical, TRUE);
-    GetBASSAudioInfo(m_musicStream, m_file_path.c_str(), song_info, flag);
+    GetBASSAudioInfo(m_musicStream, song_info, flag);
 }
 
 void CBassCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int flag)
 {
     HSTREAM hStream;
     hStream = BASS_StreamCreateFile(FALSE, file_path, 0, 0, BASS_SAMPLE_FLOAT);
-    GetBASSAudioInfo(hStream, file_path, song_info, flag);
+    GetBASSAudioInfo(hStream, song_info, flag);
     BASS_StreamFree(hStream);
 }
 

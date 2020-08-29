@@ -436,6 +436,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
         if (iter == theApp.m_song_data.end())       //如果还没有获取到该歌曲的信息，则在这里获取
         {
             SongInfo song_info;
+            song_info.file_path = file_path;
 			IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
 			if(pPlayerCore == nullptr)
 				break;

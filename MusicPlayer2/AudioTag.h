@@ -4,7 +4,7 @@
 class CAudioTag
 {
 public:
-	CAudioTag(HSTREAM hStream, wstring file_path, SongInfo & song_info);
+	CAudioTag(HSTREAM hStream, SongInfo & song_info);
 
 	//获取音频文件的标签信息，结果保存在构造函数传递进来的SongInfo结构里，
 	//id3v2_first：是否优先获取ID3V2标签，否则，优先获取ID3V1标签
@@ -34,7 +34,7 @@ public:
 
 private:
 	HSTREAM m_hStream;
-	wstring m_file_path;
+	//wstring m_file_path;
 	SongInfo& m_song_info;
 	AudioType m_type;
 

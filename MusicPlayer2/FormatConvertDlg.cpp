@@ -634,7 +634,9 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         if (pthis->m_write_album_cover)
         {
 	        SongInfo song_info_tmp;
-	        CAudioTag audio_tag(hStream, file_path, song_info_tmp);
+            song_info_tmp.file_path = file_path;
+            hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+	        CAudioTag audio_tag(hStream, song_info_tmp);
 	        int cover_type;
 	        wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
 	        CImage image;
@@ -647,6 +649,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
             {
                 CTagLabHelper::WriteMp3AlbumCover(out_file_path, album_cover_path);
             }
+            BASS_StreamFree(hStream);
         }
     }
     return true;
@@ -1013,11 +1016,14 @@ void CFormatConvertDlg::OnAddFile()
 				if (CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype) != AU_MIDI)
 				{
                     bool is_osu = COSUPlayerHelper::IsOsuFile(item.file_path);
-                    CBassCore::GetBASSAudioInfo(hStream, item.file_path.c_str(), item, !is_osu);
                     if (is_osu)
                     {
                         item.file_path = item.file_path;
                         COSUPlayerHelper::GetOSUAudioTitleArtist(item);
+                    }
+                    else
+                    {
+                        CBassCore::GetBASSAudioInfo(hStream, item);
                     }
 					//CPlayer::AcquireSongInfo(hStream, item.file_path, item);
 				}
