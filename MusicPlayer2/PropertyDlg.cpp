@@ -110,26 +110,22 @@ BOOL CPropertyDlg::OnInitDialog()
 void CPropertyDlg::OnBnClickedSaveToFileButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CWnd* cur_tab = m_tab_ctrl.GetCurrentTab();
-    if (cur_tab == &m_property_dlg)
-        m_property_dlg.SaveModified();
-    else if (cur_tab == &m_album_cover_dlg)
-        m_album_cover_dlg.SaveModified();
+    IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
+    if (cur_tab != nullptr)
+    {
+        if (!cur_tab->SaveModified())
+            MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+    }
 }
 
 
 void CPropertyDlg::OnBnClickedPreviousButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CWnd* cur_tab = m_tab_ctrl.GetCurrentTab();
-    if (cur_tab == &m_property_dlg)
+    IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
+    if (cur_tab != nullptr)
     {
-        m_property_dlg.PagePrevious();
-        ShowPageNum();
-    }
-    if (cur_tab == &m_album_cover_dlg)
-    {
-        m_album_cover_dlg.PagePrevious();
+        cur_tab->PagePrevious();
         ShowPageNum();
     }
 }
@@ -138,15 +134,10 @@ void CPropertyDlg::OnBnClickedPreviousButton()
 void CPropertyDlg::OnBnClickedNextButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CWnd* cur_tag = m_tab_ctrl.GetCurrentTab();
-    if (cur_tag == &m_property_dlg)
+    IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
+    if (cur_tab != nullptr)
     {
-        m_property_dlg.PageNext();
-        ShowPageNum();
-    }
-    if (cur_tag == &m_album_cover_dlg)
-    {
-        m_album_cover_dlg.PageNext();
+        cur_tab->PageNext();
         ShowPageNum();
     }
 }

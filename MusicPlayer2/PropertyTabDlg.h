@@ -7,10 +7,11 @@
 #include "MyComboBox.h"
 #include "FilePathHelper.h"
 #include "TabDlg.h"
+#include "IPropertyTabDlg.h"
 
 // CPropertyTabDlg 对话框
 
-class CPropertyTabDlg : public CTabDlg
+class CPropertyTabDlg : public CTabDlg, public IPropertyTabDlg
 {
 	DECLARE_DYNAMIC(CPropertyTabDlg)
 
@@ -67,8 +68,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	void PagePrevious();
-	void PageNext();
+    virtual void PagePrevious() override;
+    virtual void PageNext() override;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnEnChangeTitelEdit();
 	afx_msg void OnEnChangeArtistEdit();
@@ -77,7 +78,7 @@ public:
 	afx_msg void OnEnChangeYearEdit();
 	afx_msg void OnEnChangeCommentEdit();
 	//afx_msg void OnCbnEditchangeGenreCombo();
-	void SaveModified();
+	virtual bool SaveModified() override;
 	afx_msg void OnCbnSelchangeGenreCombo();
 	//afx_msg void OnBnClickedButton3();
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);

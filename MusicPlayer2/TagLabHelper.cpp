@@ -12,6 +12,8 @@
 
 using namespace TagLib;
 
+#define STR_MP4_COVER_TAG "covr"
+
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
 //这里将Latin编码的字符串按本地代码页处理
@@ -54,14 +56,26 @@ static void FileToByteVector(ByteVector& data, const std::wstring& file_path)
     std::ifstream file{ file_path, std::ios::binary | std::ios::in };
     if (file.fail())
         return;
+
+    //获取文件长度
+    file.seekg(0, file.end);
+    size_t length = file.tellg();
+    file.seekg(0, file.beg);
+
     data.clear();
-    char buff[512]{};
-    while (file.read(buff, 512))        //一次读取512个字节
-    {
-        int readedBytes = file.gcount();
-        for (int i{}; i < readedBytes; i++)
-            data.append(buff[i]);
-    }
+    data.resize(static_cast<unsigned int>(length));
+
+    file.read(data.data(), length);
+
+    file.close();
+
+    //char buff[512]{};
+    //while (file.read(buff, 512))        //一次读取512个字节
+    //{
+    //    int readedBytes = file.gcount();
+    //    for (int i{}; i < readedBytes; i++)
+    //        data.append(buff[i]);
+    //}
 }
 
 int GetPicType(const wstring& mimeType)
@@ -99,7 +113,7 @@ string CTagLabHelper::GetM4aAlbumCover(const wstring& file_path, int& type)
     auto tag = file.tag();
     if(tag != nullptr)
     {
-        auto cover_item = tag->item("covr").toCoverArtList();
+        auto cover_item = tag->item(STR_MP4_COVER_TAG).toCoverArtList();
         if (!cover_item.isEmpty())
         {
             const auto& pic_data = cover_item.front().data();
@@ -221,13 +235,14 @@ bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
     return false;
 }
 
-bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path)
+bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
 {
     MPEG::File file(file_path.c_str());
     if (!file.isValid())
         return false;
 
     //先删除专辑封面
+    if (remove_exist)
     {
         auto id3v2tag = file.ID3v2Tag();
         if (id3v2tag != nullptr)
@@ -248,10 +263,82 @@ bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& 
         //向音频文件写入图片文件
         ID3v2::AttachedPictureFrame* pic_frame = new ID3v2::AttachedPictureFrame();
         pic_frame->setPicture(pic_data);
+        pic_frame->setType(ID3v2::AttachedPictureFrame::FrontCover);
+        wstring ext = CFilePathHelper(album_cover_path).GetFileExtension();
+        pic_frame->setMimeType(L"image/" + ext);
         auto id3v2tag = file.ID3v2Tag(true);
         id3v2tag->addFrame(pic_frame);
     }
     bool saved = file.save(MPEG::File::ID3v2);
+    return saved;
+}
+
+bool CTagLabHelper::WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
+{
+    FLAC::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    //先删除专辑封面
+    if (remove_exist)
+    {
+        file.removePictures();
+    }
+
+    if (!album_cover_path.empty())
+    {
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+        FLAC::Picture *newpic = new FLAC::Picture();
+        newpic->setType(FLAC::Picture::FrontCover);
+        newpic->setData(pic_data);
+        wstring ext = CFilePathHelper(album_cover_path).GetFileExtension();
+        newpic->setMimeType(L"image/" + ext);
+        file.addPicture(newpic);
+    }
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLabHelper::WriteM4aAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    MP4::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.tag();
+    if (tag == nullptr)
+        return false;
+
+    if (remove_exist)
+    {
+        if (tag->contains(STR_MP4_COVER_TAG))
+        {
+            tag->removeItem(STR_MP4_COVER_TAG);
+        }
+    }
+
+    if (!album_cover_path.empty())
+    {
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+        MP4::CoverArt::Format format = MP4::CoverArt::Format::Unknown;
+        wstring ext = CFilePathHelper(album_cover_path).GetFileExtension();
+        if (ext == L"jpg" || ext == L"jpeg")
+            format = MP4::CoverArt::Format::JPEG;
+        else if (ext == L"png")
+            format = MP4::CoverArt::Format::PNG;
+        else if (ext == L"gif")
+            format = MP4::CoverArt::Format::GIF;
+        else if (ext == L"bmp")
+            format = MP4::CoverArt::Format::BMP;
+        MP4::CoverArt cover_item(format, pic_data);
+
+        auto cover_item_list = tag->item(STR_MP4_COVER_TAG).toCoverArtList();
+        cover_item_list.append(cover_item);
+        tag->setItem(STR_MP4_COVER_TAG, cover_item_list);
+    }
+    bool saved = file.save();
     return saved;
 }
 
@@ -298,7 +385,7 @@ bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return _ext == L"mp3";
+    return _ext == L"mp3" || _ext == L"flac" || _ext == L"m4a";
 }
 
 bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
@@ -306,4 +393,8 @@ bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& alb
     wstring ext = CFilePathHelper(file_path).GetFileExtension();
     if (ext == L"mp3")
         return WriteMp3AlbumCover(file_path, album_cover_path);
+    else if (ext == L"flac")
+        return WriteFlacAlbumCover(file_path, album_cover_path);
+    else if (ext == L"m4a")
+        return WriteM4aAlbumCover(file_path, album_cover_path);
 }

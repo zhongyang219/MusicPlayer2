@@ -22,7 +22,9 @@ public:
     static bool WriteAudioTag(SongInfo& song_info);
 
     //写专辑封面
-    static bool WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path);
+    static bool WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
+    static bool WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
+    static bool WriteM4aAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
 
     //根据一个文件扩展名判断此格式是否已支持写入标签
     static bool IsFileTypeTagWriteSupport(const wstring& ext);

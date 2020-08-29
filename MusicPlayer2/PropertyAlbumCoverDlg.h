@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include "TabDlg.h"
 #include "ListCtrlEx.h"
+#include "IPropertyTabDlg.h"
 
 
 // CPropertyAlbumCoverDlg 对话框
 
-class CPropertyAlbumCoverDlg : public CTabDlg
+class CPropertyAlbumCoverDlg : public CTabDlg, public IPropertyTabDlg
 {
 	DECLARE_DYNAMIC(CPropertyAlbumCoverDlg)
 
@@ -13,9 +14,9 @@ public:
 	CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CPropertyAlbumCoverDlg();
 
-    void PagePrevious();
-    void PageNext();
-    void SaveModified();
+    virtual void PagePrevious() override;
+    virtual void PageNext() override;
+    virtual bool SaveModified() override;
     void AdjustColumnWidth();
 
 // 对话框数据

@@ -47,10 +47,11 @@ void CPropertyAlbumCoverDlg::PageNext()
     ShowInfo();
 }
 
-void CPropertyAlbumCoverDlg::SaveModified()
+bool CPropertyAlbumCoverDlg::SaveModified()
 {
     int current_position{};
     bool is_playing{};
+    //如果当前修改的是正在播放的文件，则先关闭，保存后再打开
     if (IsCurrentSong())
     {
         current_position = CPlayer::GetInstance().GetCurrentPosition();
@@ -58,17 +59,18 @@ void CPropertyAlbumCoverDlg::SaveModified()
         CPlayer::GetInstance().MusicControl(Command::CLOSE);
     }
 
+    bool saved{};
     if (m_cover_deleted)
     {
-        CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, wstring());
+        saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, wstring());
     }
     if (m_cover_changed)
     {
-        CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
+        saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
     }
     else if (IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON) && !CPlayer::GetInstance().IsInnerCover() && CPlayer::GetInstance().AlbumCoverExist())
     {
-        CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, CPlayer::GetInstance().GetAlbumCoverPath());
+        saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, CPlayer::GetInstance().GetAlbumCoverPath());
     }
 
     if (IsCurrentSong())
@@ -78,6 +80,7 @@ void CPropertyAlbumCoverDlg::SaveModified()
         if (is_playing)
             CPlayer::GetInstance().MusicControl(Command::PLAY);
     }
+    return saved;
 }
 
 void CPropertyAlbumCoverDlg::AdjustColumnWidth()
@@ -425,5 +428,4 @@ void CPropertyAlbumCoverDlg::OnBnClickedBrowseButton()
         m_cover_changed = true;
         ShowInfo();
     }
-
 }

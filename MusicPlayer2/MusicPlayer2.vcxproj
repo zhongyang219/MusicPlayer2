@@ -222,6 +222,7 @@
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
+    <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />

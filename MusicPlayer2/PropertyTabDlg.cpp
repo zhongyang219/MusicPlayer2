@@ -358,9 +358,9 @@ void CPropertyTabDlg::OnEnChangeCommentEdit()
 //}
 
 
-void CPropertyTabDlg::SaveModified()
+bool CPropertyTabDlg::SaveModified()
 {
-	if (!m_write_enable) return;
+	if (!m_write_enable) return false;
 	CWaitCursor wait_cursor;
 	SongInfo song_info;
 	CString str_temp;
@@ -385,12 +385,8 @@ void CPropertyTabDlg::SaveModified()
 
     song_info.file_path = m_all_song_info[m_index].file_path;
     song_info.Normalize();
-	//if (!CAudioTag::WriteMp3Tag(file_path.c_str(), song_info, text_cut_off))
-    if (!CTagLabHelper::WriteAudioTag(song_info))
-	{
-		MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
-	}
-	else
+    bool saved = CTagLabHelper::WriteAudioTag(song_info);
+    if (saved)
 	{
 		//重新从文件读取该歌曲的标签
 		HSTREAM hStream;
@@ -405,6 +401,7 @@ void CPropertyTabDlg::SaveModified()
 		m_modified = false;
         SetSaveBtnEnable();
     }
+    return saved;
 }
 
 
