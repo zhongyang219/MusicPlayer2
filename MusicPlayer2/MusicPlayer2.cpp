@@ -592,8 +592,8 @@ void CMusicPlayerApp::InitMenuResourse()
     m_menu_set.m_media_lib_playlist_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PLAYLIST);
 
     m_menu_set.m_notify_menu.LoadMenu(IDR_NOTIFY_MENU);
-
     m_menu_set.m_mini_mode_menu.LoadMenu(IDR_MINI_MODE_MENU);
+    m_menu_set.m_property_cover_menu.LoadMenu(IDR_PROPERTY_COVER_MENU);
 
     //为菜单添加图标
     //主菜单
@@ -783,6 +783,11 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_SHOW_PLAY_LIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MINI_MODE_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MINI_MODE_EXIT, FALSE, m_icon_set.exit);
+
+    //属性——专辑封面右键菜单
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_property_cover_menu.GetSafeHmenu(), ID_COVER_BROWSE, FALSE, m_icon_set.folder_explore.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_property_cover_menu.GetSafeHmenu(), ID_COVER_DELETE, FALSE, m_icon_set.close.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_property_cover_menu.GetSafeHmenu(), ID_COVER_SAVE_AS, FALSE, m_icon_set.save_as);
 
 
     //初始化按Shift键弹出的右键菜单

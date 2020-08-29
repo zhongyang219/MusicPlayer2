@@ -313,6 +313,10 @@ BEGIN_MESSAGE_MAP(CPropertyAlbumCoverDlg, CTabDlg)
     ON_BN_CLICKED(IDC_SAVE_ALBUM_COVER_BUTTON, &CPropertyAlbumCoverDlg::OnBnClickedSaveAlbumCoverButton)
     ON_BN_CLICKED(IDC_DELETE_BUTTON, &CPropertyAlbumCoverDlg::OnBnClickedDeleteButton)
     ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CPropertyAlbumCoverDlg::OnBnClickedBrowseButton)
+    ON_WM_RBUTTONUP()
+    ON_COMMAND(ID_COVER_BROWSE, &CPropertyAlbumCoverDlg::OnCoverBrowse)
+    ON_COMMAND(ID_COVER_DELETE, &CPropertyAlbumCoverDlg::OnCoverDelete)
+    ON_COMMAND(ID_COVER_SAVE_AS, &CPropertyAlbumCoverDlg::OnCoverSaveAs)
 END_MESSAGE_MAP()
 
 
@@ -428,4 +432,64 @@ void CPropertyAlbumCoverDlg::OnBnClickedBrowseButton()
         m_cover_changed = true;
         ShowInfo();
     }
+}
+
+
+void CPropertyAlbumCoverDlg::OnRButtonUp(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    CPoint point1;
+    GetCursorPos(&point1);
+    CMenu* pMenu = theApp.m_menu_set.m_property_cover_menu.GetSubMenu(0);
+    if (pMenu != NULL)
+        pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+
+    CTabDlg::OnRButtonUp(nFlags, point);
+}
+
+
+void CPropertyAlbumCoverDlg::OnCoverBrowse()
+{
+    // TODO: 在此添加命令处理程序代码
+    OnBnClickedBrowseButton();
+}
+
+
+void CPropertyAlbumCoverDlg::OnCoverDelete()
+{
+    // TODO: 在此添加命令处理程序代码
+    OnBnClickedDeleteButton();
+}
+
+
+void CPropertyAlbumCoverDlg::OnCoverSaveAs()
+{
+    // TODO: 在此添加命令处理程序代码
+        //设置过滤器
+    CString szFilter = CCommon::LoadText(IDS_ALL_FILES, _T("(*.*)|*.*||"));
+    //设置另存为时的默认文件名
+    CString file_name;
+    CString extension = m_list_ctrl.GetItemText(RI_FORMAT, 1);
+    file_name.Format(_T("AlbumCover - %s - %s.%s"), CurrentSong().artist.c_str(), CurrentSong().album.c_str(), extension);
+    wstring file_name_wcs{ file_name };
+    CCommon::FileNameNormalize(file_name_wcs);		//替换掉文件名中的无效字符
+    //构造保存文件对话框
+    CFileDialog fileDlg(FALSE, NULL, file_name_wcs.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+    //显示保存文件对话框
+    if (IDOK == fileDlg.DoModal())
+    {
+        CString dest_file = fileDlg.GetPathName();
+        CString src_file;
+
+        if (m_cover_changed)
+            src_file = m_out_img_path.c_str();
+        else if (IsCurrentSong())
+            src_file = CPlayer::GetInstance().GetAlbumCoverPath().c_str();
+        else
+            src_file = (CCommon::GetTemplatePath() + PROPERTY_COVER_IMG_FILE_NAME).c_str();
+
+        ::CopyFile(src_file, dest_file, FALSE);
+        SetFileAttributes(dest_file, FILE_ATTRIBUTE_NORMAL);		//取消文件的隐藏属性
+    }
+
 }

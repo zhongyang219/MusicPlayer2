@@ -597,6 +597,8 @@
 #define IDD_PROPERTY_ALBUM_COVER_DIALOG 488
 #define IDS_BPP                         489
 #define IDS_FILE_SIZE                   490
+#define IDR_MENU3                       490
+#define IDR_PROPERTY_COVER_MENU         490
 #define IDS_DEFAULT_ICON                491
 #define IDS_LIGHT_ICON                  492
 #define IDS_DARK_ICON                   493
@@ -1342,13 +1344,17 @@
 #define ID_33195                        33195
 #define ID_HELP_UPDATE_LOG              33196
 #define ID_LD_RELATE                    33197
+#define ID_COVER_BROWSE                 33198
+#define ID_COVER_DELETE                 33199
+#define ID_1_33200                      33200
+#define ID_COVER_SAVE_AS                33201
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        490
-#define _APS_NEXT_COMMAND_VALUE         33198
+#define _APS_NEXT_RESOURCE_VALUE        491
+#define _APS_NEXT_COMMAND_VALUE         33202
 #define _APS_NEXT_CONTROL_VALUE         1183
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

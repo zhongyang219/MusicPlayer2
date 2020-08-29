@@ -389,4 +389,6 @@ bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& alb
         return WriteFlacAlbumCover(file_path, album_cover_path);
     else if (ext == L"m4a")
         return WriteM4aAlbumCover(file_path, album_cover_path);
+    else
+        return false;
 }

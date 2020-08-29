@@ -73,4 +73,8 @@ public:
     afx_msg void OnBnClickedSaveAlbumCoverButton();
     afx_msg void OnBnClickedDeleteButton();
     afx_msg void OnBnClickedBrowseButton();
+    afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnCoverBrowse();
+    afx_msg void OnCoverDelete();
+    afx_msg void OnCoverSaveAs();
 };
