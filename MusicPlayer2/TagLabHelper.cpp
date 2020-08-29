@@ -45,7 +45,8 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag)
     song_info.artist = TagStringToWstring(tag->artist());
     song_info.album = TagStringToWstring(tag->album());
     song_info.genre = TagStringToWstring(tag->genre());
-    song_info.year = std::to_wstring(tag->year());
+    unsigned int year = tag->year();
+    song_info.year = (year == 0 ? L"" : std::to_wstring(year));
     song_info.track = tag->track();
     song_info.comment = TagStringToWstring(tag->comment());
 }
