@@ -1365,14 +1365,18 @@ bool CCommon::GetFileContent(const wchar_t * file_path, string & contents_buff, 
     std::ifstream file{ file_path, (binary ? std::ios::binary : std::ios::in) };
     if (file.fail())
         return false;
-    contents_buff.clear();
-    while (!file.eof())
-    {
-        contents_buff.push_back(file.get());
-        if (contents_buff.size() > max_size)
-            break;
-    }
-    contents_buff.pop_back();
+    //获取文件长度
+    file.seekg(0, file.end);
+    size_t length = file.tellg();
+    file.seekg(0, file.beg);
+
+    char* buff = new char[length];
+    file.read(buff, length);
+    file.close();
+
+    contents_buff.assign(buff, length);
+    delete[] buff;
+
     return true;
 }
 

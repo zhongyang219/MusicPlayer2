@@ -68,14 +68,6 @@ static void FileToByteVector(ByteVector& data, const std::wstring& file_path)
     file.read(data.data(), length);
 
     file.close();
-
-    //char buff[512]{};
-    //while (file.read(buff, 512))        //一次读取512个字节
-    //{
-    //    int readedBytes = file.gcount();
-    //    for (int i{}; i < readedBytes; i++)
-    //        data.append(buff[i]);
-    //}
 }
 
 int GetPicType(const wstring& mimeType)
