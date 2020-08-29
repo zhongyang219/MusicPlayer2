@@ -77,4 +77,5 @@ public:
     afx_msg void OnCoverBrowse();
     afx_msg void OnCoverDelete();
     afx_msg void OnCoverSaveAs();
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };

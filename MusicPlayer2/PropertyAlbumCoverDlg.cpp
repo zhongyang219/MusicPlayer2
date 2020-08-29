@@ -327,6 +327,7 @@ BEGIN_MESSAGE_MAP(CPropertyAlbumCoverDlg, CTabDlg)
     ON_COMMAND(ID_COVER_BROWSE, &CPropertyAlbumCoverDlg::OnCoverBrowse)
     ON_COMMAND(ID_COVER_DELETE, &CPropertyAlbumCoverDlg::OnCoverDelete)
     ON_COMMAND(ID_COVER_SAVE_AS, &CPropertyAlbumCoverDlg::OnCoverSaveAs)
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -501,5 +502,17 @@ void CPropertyAlbumCoverDlg::OnCoverSaveAs()
         ::CopyFile(src_file, dest_file, FALSE);
         SetFileAttributes(dest_file, FILE_ATTRIBUTE_NORMAL);		//取消文件的隐藏属性
     }
+
+}
+
+
+void CPropertyAlbumCoverDlg::OnInitMenu(CMenu* pMenu)
+{
+    CTabDlg::OnInitMenu(pMenu);
+
+    // TODO: 在此处添加消息处理程序代码
+    pMenu->EnableMenuItem(ID_COVER_BROWSE, MF_BYCOMMAND | (m_write_enable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_COVER_DELETE, MF_BYCOMMAND | (m_write_enable && (!IsCurrentSong() || CPlayer::GetInstance().IsInnerCover()) && HasAlbumCover() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_COVER_SAVE_AS, MF_BYCOMMAND | (HasAlbumCover() ? MF_ENABLED : MF_GRAYED));
 
 }
