@@ -68,9 +68,19 @@ bool CPropertyAlbumCoverDlg::SaveModified()
     {
         saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
     }
-    else if (IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON) && !CPlayer::GetInstance().IsInnerCover() && CPlayer::GetInstance().AlbumCoverExist())
+    else if (IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON) && IsCurrentSong() && !CPlayer::GetInstance().IsInnerCover() && CPlayer::GetInstance().AlbumCoverExist())
     {
-        saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, CPlayer::GetInstance().GetAlbumCoverPath());
+        bool rtn = CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, CPlayer::GetInstance().GetAlbumCoverPath());
+        if (rtn)        //将外部专辑封面嵌入到音频文件后，如果图片的文件名和音频文件的文件名相同，则删除此外部专辑封面图片，因此这个图片已经没有作用了
+        {
+            wstring album_cover_file_name = CFilePathHelper(CPlayer::GetInstance().GetAlbumCoverPath()).GetFileNameWithoutExtension();
+            wstring file_name = CFilePathHelper(CurrentSong().file_path).GetFileNameWithoutExtension();
+            if (file_name == album_cover_file_name)
+            {
+                CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), CPlayer::GetInstance().GetAlbumCoverPath().c_str());
+            }
+        }
+        saved |= rtn;
     }
 
     if (IsCurrentSong())
