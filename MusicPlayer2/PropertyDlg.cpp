@@ -11,10 +11,10 @@
 
 IMPLEMENT_DYNAMIC(CPropertyDlg, CBaseDialog)
 
-CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, int index, bool read_only, int tab_index, CWnd* pParent /*=nullptr*/)
+CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, int index, bool read_only, int tab_index, bool show_out_album_cover, CWnd* pParent /*=nullptr*/)
     : CBaseDialog(IDD_PROPERTY_PARENT_DIALOG, pParent), m_read_only{ read_only }, m_index{ index }, m_song_num{ static_cast<int>(all_song_info.size()) }, m_tab_index{ tab_index },
     m_property_dlg(all_song_info, m_index, this, read_only),
-    m_album_cover_dlg(all_song_info, m_index, read_only, this)
+    m_album_cover_dlg(all_song_info, m_index, show_out_album_cover, read_only, this)
 {
 
 }

@@ -12,7 +12,7 @@ class CPropertyDlg : public CBaseDialog
 	DECLARE_DYNAMIC(CPropertyDlg)
 
 public:
-	CPropertyDlg(vector<SongInfo>& all_song_info, int index, bool read_only, int tab_index = 0, CWnd* pParent = nullptr);   // 标准构造函数
+	CPropertyDlg(vector<SongInfo>& all_song_info, int index, bool read_only, int tab_index = 0, bool show_out_album_cover = false, CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CPropertyDlg();
 
     bool GetListRefresh() const;

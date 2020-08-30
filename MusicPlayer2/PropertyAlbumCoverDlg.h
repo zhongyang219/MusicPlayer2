@@ -11,7 +11,7 @@ class CPropertyAlbumCoverDlg : public CTabDlg, public IPropertyTabDlg
 	DECLARE_DYNAMIC(CPropertyAlbumCoverDlg)
 
 public:
-	CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
+	CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool show_out_album_cover = false, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CPropertyAlbumCoverDlg();
 
     virtual void PagePrevious() override;
@@ -43,12 +43,15 @@ protected:
     int& m_index;		//当前显示项目的曲目序号
     vector<SongInfo>& m_all_song_info;
     bool m_read_only{};
+    bool m_show_out_album_cover{};
+
     bool m_write_enable{};
     bool m_modified{ false };
     bool m_cover_changed{};     //是否手动浏览了一张图片作为专辑封面
     bool m_cover_deleted{};     //是否删除了专辑封面
 
-    CImage m_cover_img;
+    CImage m_cover_img;         //内嵌专辑封面
+    CImage m_cover_out_img;     //外部专辑封面
     wstring m_out_img_path;     //外部专辑图片的路径
 
 protected:
@@ -56,6 +59,8 @@ protected:
     const SongInfo& CurrentSong();
     CImage& GetCoverImage();
     bool IsCurrentSong();
+    bool IsShowOutAlbumCover();
+    bool IsDeleteEnable();
     bool HasAlbumCover();
     void SetWreteEnable();
     void EnableControls();
@@ -78,4 +83,5 @@ public:
     afx_msg void OnCoverDelete();
     afx_msg void OnCoverSaveAs();
     afx_msg void OnInitMenu(CMenu* pMenu);
+    afx_msg void OnBnClickedShowOutAlbumCoverChk();
 };

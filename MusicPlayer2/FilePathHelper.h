@@ -16,6 +16,7 @@ public:
 	wstring GetParentDir() const;							//获取上级目录
 	wstring GetFilePath() const { return m_file_path; }		//获取完整路径
 	const wstring& ReplaceFileExtension(const wchar_t* new_extension);		//替换文件的扩展名，返回文件完整路径
+    wstring GetFilePathWithoutExtension() const;            //获取文件路径（不含扩展名）
 protected:
 	wstring m_file_path;
 };

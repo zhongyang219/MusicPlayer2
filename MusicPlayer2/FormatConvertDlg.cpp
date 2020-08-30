@@ -9,6 +9,7 @@
 #include "COSUPlayerHelper.h"
 #include "WIC.h"
 #include "TagLabHelper.h"
+#include "MusicPlayerCmdHelper.h"
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
 
@@ -642,7 +643,10 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 	        CImage image;
 	        image.Load(album_cover_path.c_str());
 	        if (image.IsNull())		//如果没有内嵌的专辑封面，则获取外部封面
-		        album_cover_path = CPlayer::GetRelatedAlbumCover(file_path, song_info);
+            {
+                CMusicPlayerCmdHelper helper;
+                album_cover_path = helper.SearchAlbumCover(song_info);
+            }
 	        else
 		        image.Destroy();
             if (!album_cover_path.empty())

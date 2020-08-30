@@ -658,6 +658,7 @@
 #define IDC_SET_FONT2                   1013
 #define IDC_PLAY_SELECTED2              1013
 #define IDC_CLEAR_RECENT_PLAYED_LIST_BTN 1013
+#define IDC_SHOW_OUT_ALBUM_COVER_CHK    1013
 #define IDC_VOLUME_DOWN                 1014
 #define IDC_PLAYLIST_LIST               1015
 #define IDC_FIND_EDIT                   1016

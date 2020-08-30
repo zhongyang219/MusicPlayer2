@@ -416,6 +416,53 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
 	return wstring();
 }
 
+std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo & song)
+{
+    wstring album_cover_path;
+    if (COSUPlayerHelper::IsOsuFile(song.file_path))
+    {
+        album_cover_path = COSUPlayerHelper::GetAlbumCover(song.file_path);
+        if (album_cover_path.empty())
+            album_cover_path = theApp.m_nc_setting_data.default_osu_img;
+    }
+    else
+    {
+        vector<wstring> files;
+        wstring file_name;
+        //查找文件和歌曲名一致的图片文件
+        CFilePathHelper c_file_path(song.file_path);
+        //file_name = m_path + c_file_name.GetFileNameWithoutExtension() + L".*";
+        c_file_path.ReplaceFileExtension(L"*");
+        wstring dir{ c_file_path.GetDir() };
+        CCommon::GetImageFiles(c_file_path.GetFilePath(), files);
+        if (files.empty() && !song.album.empty())
+        {
+            //没有找到和歌曲名一致的图片文件，则查找文件名为“唱片集”的文件
+            wstring album_name{ song.album };
+            CCommon::FileNameNormalize(album_name);
+            file_name = dir + album_name + L".*";
+            CCommon::GetImageFiles(file_name, files);
+        }
+        //没有找到唱片集为文件名的文件，查找文件名为设置的专辑封面名的文件
+        if (theApp.m_app_setting_data.use_out_image)
+        {
+            for (const auto& album_name : theApp.m_app_setting_data.default_album_name)
+            {
+                if (!files.empty())
+                    break;
+                if (!album_name.empty())
+                {
+                    file_name = dir + album_name + L".*";
+                    CCommon::GetImageFiles(file_name, files);
+                }
+            }
+        }
+        if (!files.empty())
+            album_cover_path = dir + files[0];
+    }
+    return album_cover_path;
+}
+
 int CMusicPlayerCmdHelper::UpdateMediaLib()
 {
     if (CPlayer::GetInstance().IsMciCore())

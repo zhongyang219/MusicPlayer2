@@ -4987,7 +4987,7 @@ void CMusicPlayerDlg::OnAlbumCoverInfo()
     // TODO: 在此添加命令处理程序代码
     //CAlbumCoverInfoDlg dlg;
     //dlg.DoModal();
-    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList(), CPlayer::GetInstance().GetIndex(), false, 1);
+    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList(), CPlayer::GetInstance().GetIndex(), false, 1, !CPlayer::GetInstance().IsInnerCover());
     propertyDlg.DoModal();
     if (propertyDlg.GetListRefresh())
         ShowPlayList();

@@ -2520,78 +2520,12 @@ void CPlayer::InitShuffleList()
 
 void CPlayer::SearchOutAlbumCover()
 {
-    if (IsOsuFile())
-    {
-        m_album_cover_path = COSUPlayerHelper::GetAlbumCover(GetCurrentFilePath());
-        if (m_album_cover_path.empty())
-            m_album_cover_path = theApp.m_nc_setting_data.default_osu_img;
-    }
-    else
-    {
-        m_album_cover_path = GetRelatedAlbumCover(GetCurrentFilePath(), GetCurrentSongInfo());
-    }
+    CMusicPlayerCmdHelper helper;
+    m_album_cover_path = helper.SearchAlbumCover(GetCurrentSongInfo());
     if (!m_album_cover.IsNull())
         m_album_cover.Destroy();
     m_album_cover.Load(m_album_cover_path.c_str());
     AlbumCoverResize();
-}
-
-wstring CPlayer::GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info)
-{
-    vector<wstring> files;
-    wstring file_name;
-    //查找文件和歌曲名一致的图片文件
-    CFilePathHelper c_file_path(file_path);
-    //file_name = m_path + c_file_name.GetFileNameWithoutExtension() + L".*";
-    c_file_path.ReplaceFileExtension(L"*");
-    wstring dir{ c_file_path.GetDir() };
-    CCommon::GetImageFiles(c_file_path.GetFilePath(), files);
-    if (files.empty() && !song_info.album.empty())
-    {
-        //没有找到和歌曲名一致的图片文件，则查找文件名为“唱片集”的文件
-        wstring album_name{ song_info.album };
-        CCommon::FileNameNormalize(album_name);
-        file_name = dir + album_name + L".*";
-        CCommon::GetImageFiles(file_name, files);
-    }
-    //if (files.empty() && !theApp.m_app_setting_data.default_album_name.empty())
-    //{
-    //	//没有找到唱片集为文件名的文件，查找文件名为DEFAULT_ALBUM_NAME的文件
-    //	file_name = m_path + theApp.m_app_setting_data.default_album_name + L".*";
-    //	CCommon::GetImageFiles(file_name, files);
-    //}
-    //没有找到唱片集为文件名的文件，查找文件名为设置的专辑封面名的文件
-    if (theApp.m_app_setting_data.use_out_image)
-    {
-        for (const auto& album_name : theApp.m_app_setting_data.default_album_name)
-        {
-            if (!files.empty())
-                break;
-            if (!album_name.empty())
-            {
-                file_name = dir + album_name + L".*";
-                CCommon::GetImageFiles(file_name, files);
-            }
-        }
-    }
-    //if (files.empty())
-    //{
-    //	//没有找到文件名为DEFAULT_ALBUM_NAME的文件，查找名为“Folder的文件”
-    //	file_name = m_path + L"Folder" + L".*";
-    //	CCommon::GetImageFiles(file_name, files);
-    //}
-    if (!files.empty())
-    {
-        //m_album_cover_path = m_path + files[0];
-        //if (!m_album_cover.IsNull())
-        //	m_album_cover.Destroy();
-        //m_album_cover.Load(m_album_cover_path.c_str());
-        return wstring(dir + files[0]);
-    }
-    else
-    {
-        return wstring();
-    }
 }
 
 bool CPlayer::IsOsuFile() const

@@ -341,7 +341,6 @@ private:
 public:
     void SearchOutAlbumCover();		//查找匹配的外部专辑封面，并加载专辑封面
 	void AlbumCoverGaussBlur();		//专辑封面高斯模糊
-	static wstring GetRelatedAlbumCover(const wstring& file_path, const SongInfo& song_info);		//获取关联的外部专辑封面图片，返回文件路径
 	wstring GetCurrentFileType() { return m_current_file_type; }
     bool IsOsuFile() const;
     bool IsPlaylistMode() const { return m_playlist_mode; }

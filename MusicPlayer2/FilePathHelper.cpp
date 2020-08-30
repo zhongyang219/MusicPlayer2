@@ -103,3 +103,10 @@ const wstring& CFilePathHelper::ReplaceFileExtension(const wchar_t * new_extensi
     }
 	return m_file_path;
 }
+
+wstring CFilePathHelper::GetFilePathWithoutExtension() const
+{
+    size_t index;
+    index = m_file_path.rfind('.');
+    return m_file_path.substr(0, index);
+}
