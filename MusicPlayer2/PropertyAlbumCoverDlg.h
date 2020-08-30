@@ -46,7 +46,6 @@ protected:
     bool m_show_out_album_cover{};
 
     bool m_write_enable{};
-    bool m_modified{ false };
     bool m_cover_changed{};     //是否手动浏览了一张图片作为专辑封面
     bool m_cover_deleted{};     //是否删除了专辑封面
 
@@ -56,11 +55,11 @@ protected:
 
 protected:
     void ShowInfo();
-    const SongInfo& CurrentSong();
-    CImage& GetCoverImage();
-    bool IsCurrentSong();
-    bool IsShowOutAlbumCover();
-    bool IsDeleteEnable();
+    const SongInfo& CurrentSong();      //当前查看的歌曲信息
+    CImage& GetCoverImage();            //当前显示的专辑封面图片
+    bool IsCurrentSong();               //当前查看的歌曲是否为正在播放的歌曲
+    bool IsShowOutAlbumCover();         //显示的专辑封面图片是否为外部图片
+    bool IsDeleteEnable();              //删除功能是否可用
     bool HasAlbumCover();
     void SetWreteEnable();
     void EnableControls();

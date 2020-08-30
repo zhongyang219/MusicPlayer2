@@ -28,7 +28,6 @@ CPropertyAlbumCoverDlg::~CPropertyAlbumCoverDlg()
 
 void CPropertyAlbumCoverDlg::PagePrevious()
 {
-    m_modified = false;
     m_cover_changed = false;
     m_cover_deleted = false;
     m_index--;
@@ -40,7 +39,6 @@ void CPropertyAlbumCoverDlg::PagePrevious()
 
 void CPropertyAlbumCoverDlg::PageNext()
 {
-    m_modified = false;
     m_cover_changed = false;
     m_cover_deleted = false;
     m_index++;
@@ -51,48 +49,52 @@ void CPropertyAlbumCoverDlg::PageNext()
 
 bool CPropertyAlbumCoverDlg::SaveModified()
 {
-    int current_position{};
-    bool is_playing{};
-    //如果当前修改的是正在播放的文件，则先关闭，保存后再打开
-    if (IsCurrentSong())
+    if (m_cover_deleted || m_cover_changed || IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON))
     {
-        current_position = CPlayer::GetInstance().GetCurrentPosition();
-        is_playing = CPlayer::GetInstance().IsPlaying();
-        CPlayer::GetInstance().MusicControl(Command::CLOSE);
-    }
-
-    bool saved{};
-    if (m_cover_deleted)
-    {
-        saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, wstring());
-    }
-    if (m_cover_changed)
-    {
-        saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
-    }
-    else if (IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON))
-    {
-        bool rtn = CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
-        if (rtn)        //将外部专辑封面嵌入到音频文件后，如果图片的文件名和音频文件的文件名相同，则删除此外部专辑封面图片，因此这个图片已经没有作用了
+        int current_position{};
+        bool is_playing{};
+        //如果当前修改的是正在播放的文件，则先关闭，保存后再打开
+        if (IsCurrentSong())
         {
-            wstring album_cover_file_name = CFilePathHelper(m_out_img_path).GetFilePathWithoutExtension();
-            wstring file_name = CFilePathHelper(CurrentSong().file_path).GetFilePathWithoutExtension();
-            if (file_name == album_cover_file_name)
-            {
-                CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path);
-            }
+            current_position = CPlayer::GetInstance().GetCurrentPosition();
+            is_playing = CPlayer::GetInstance().IsPlaying();
+            CPlayer::GetInstance().MusicControl(Command::CLOSE);
         }
-        saved |= rtn;
-    }
 
-    if (IsCurrentSong())
-    {
-        CPlayer::GetInstance().MusicControl(Command::OPEN);
-        CPlayer::GetInstance().SeekTo(current_position);
-        if (is_playing)
-            CPlayer::GetInstance().MusicControl(Command::PLAY);
+        bool saved{};
+        if (m_cover_deleted)
+        {
+            saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, wstring());
+        }
+        if (m_cover_changed)
+        {
+            saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
+        }
+        else if (IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON))
+        {
+            bool rtn = CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
+            if (rtn)        //将外部专辑封面嵌入到音频文件后，如果图片的文件名和音频文件的文件名相同，则删除此外部专辑封面图片，因此这个图片已经没有作用了
+            {
+                wstring album_cover_file_name = CFilePathHelper(m_out_img_path).GetFilePathWithoutExtension();
+                wstring file_name = CFilePathHelper(CurrentSong().file_path).GetFilePathWithoutExtension();
+                if (file_name == album_cover_file_name)
+                {
+                    CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path);
+                }
+            }
+            saved |= rtn;
+        }
+
+        if (IsCurrentSong())
+        {
+            CPlayer::GetInstance().MusicControl(Command::OPEN);
+            CPlayer::GetInstance().SeekTo(current_position);
+            if (is_playing)
+                CPlayer::GetInstance().MusicControl(Command::PLAY);
+        }
+        return saved;
     }
-    return saved;
+    return true;
 }
 
 void CPropertyAlbumCoverDlg::AdjustColumnWidth()
@@ -107,7 +109,6 @@ void CPropertyAlbumCoverDlg::AdjustColumnWidth()
 
 void CPropertyAlbumCoverDlg::ShowInfo()
 {
-    //载入封面图片
     m_cover_img.Destroy();
     m_cover_out_img.Destroy();
     int cover_type{};
@@ -310,7 +311,7 @@ void CPropertyAlbumCoverDlg::EnableControls()
 
 void CPropertyAlbumCoverDlg::SetSaveBtnEnable()
 {
-    bool enable = m_write_enable && (m_modified || m_cover_changed || m_cover_deleted);
+    bool enable = m_write_enable && (IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON) || m_cover_changed || m_cover_deleted);
     CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
         pParent->SendMessage(WM_PROPERTY_DIALOG_MODIFIED, enable);
@@ -394,6 +395,7 @@ void CPropertyAlbumCoverDlg::OnPaint()
                        // TODO: 在此处添加消息处理程序代码
                        // 不为绘图消息调用 CTabDlg::OnPaint()
 
+    //计算专辑封面的绘图区域
     CRect rect;
     GetClientRect(rect);
 
@@ -410,11 +412,10 @@ void CPropertyAlbumCoverDlg::OnPaint()
     if (!rect_tmp.IsRectEmpty())
         rect.bottom = rect_tmp.top - theApp.DPI(8);
 
-    if (HasAlbumCover())
+    if (HasAlbumCover())        //有专辑封面时绘制专辑封面
     {
-
         CImage& img{ GetCoverImage() };
-        if (img.GetWidth() < rect.Width() && img.GetHeight() < rect.Height())
+        if (img.GetWidth() < rect.Width() && img.GetHeight() < rect.Height())       //如果专辑封面图片大小小于绘图区域，则将绘图区域改为图片大小
         {
             CRect rect_img;
             rect_img.left = rect.left + (rect.Width() - img.GetWidth()) / 2;
@@ -427,19 +428,16 @@ void CPropertyAlbumCoverDlg::OnPaint()
         draw.Create(&dc);
         draw.DrawImage(img, rect.TopLeft(), rect.Size(), CDrawCommon::StretchMode::FIT);
     }
-    else
+    else        //否则以灰色填充
     {
         dc.FillSolidRect(rect, RGB(210, 210, 210));
     }
-
-    int a = 0;
 }
 
 
 void CPropertyAlbumCoverDlg::OnBnClickedSaveAlbumCoverButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    m_modified = true;
     SetSaveBtnEnable();
 }
 
