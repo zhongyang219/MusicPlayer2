@@ -276,7 +276,7 @@ bool CPropertyAlbumCoverDlg::IsCurrentSong()
 
 bool CPropertyAlbumCoverDlg::IsShowOutAlbumCover()
 {
-    return m_show_out_album_cover || m_cover_changed;
+    return m_show_out_album_cover || m_cover_changed || COSUPlayerHelper::IsOsuFile(CurrentSong().file_path);
 }
 
 bool CPropertyAlbumCoverDlg::IsDeleteEnable()
@@ -307,6 +307,7 @@ void CPropertyAlbumCoverDlg::EnableControls()
     EnableDlgCtrl(IDC_DELETE_BUTTON, IsDeleteEnable());
     EnableDlgCtrl(IDC_SAVE_ALBUM_COVER_BUTTON, m_write_enable && IsShowOutAlbumCover() && !m_cover_out_img.IsNull());
     //ShowDlgCtrl(IDC_SAVE_ALBUM_COVER_BUTTON, IsCurrentSong());
+    EnableDlgCtrl(IDC_SHOW_OUT_ALBUM_COVER_CHK, !COSUPlayerHelper::IsOsuFile(CurrentSong().file_path));
 }
 
 void CPropertyAlbumCoverDlg::SetSaveBtnEnable()
