@@ -497,7 +497,7 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
 
 bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
-    if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())
+    if (CPlayer::GetInstance().IsPlaylistMode() && playlist_path == CPlayer::GetInstance().GetPlaylistPath())
     {
         std::vector<wstring> files;
         for (const auto& song : songs)
