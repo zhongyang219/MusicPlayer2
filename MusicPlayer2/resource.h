@@ -600,6 +600,8 @@
 #define IDR_MENU3                       490
 #define IDR_PROPERTY_COVER_MENU         490
 #define IDS_DEFAULT_ICON                491
+#define IDI_ICON11                      491
+#define IDI_OK_D                        491
 #define IDS_LIGHT_ICON                  492
 #define IDS_DARK_ICON                   493
 #define IDS_NO                          494
@@ -1354,7 +1356,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        491
+#define _APS_NEXT_RESOURCE_VALUE        492
 #define _APS_NEXT_COMMAND_VALUE         33202
 #define _APS_NEXT_CONTROL_VALUE         1183
 #define _APS_NEXT_SYMED_VALUE           101

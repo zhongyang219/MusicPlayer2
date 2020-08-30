@@ -27,6 +27,8 @@ protected:
     CPropertyTabDlg m_property_dlg;
     CPropertyAlbumCoverDlg m_album_cover_dlg;
     CButton m_save_btn;
+    CButton m_previous_btn;
+    CButton m_next_btn;
 
     int m_index{};		//当前显示项目的曲目序号
     bool m_read_only{};

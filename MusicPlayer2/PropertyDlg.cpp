@@ -47,6 +47,8 @@ void CPropertyDlg::DoDataExchange(CDataExchange* pDX)
     CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_TAB1, m_tab_ctrl);
     DDX_Control(pDX, IDC_SAVE_TO_FILE_BUTTON, m_save_btn);
+    DDX_Control(pDX, IDC_PREVIOUS_BUTTON, m_previous_btn);
+    DDX_Control(pDX, IDC_NEXT_BUTTON, m_next_btn);
 }
 
 
@@ -69,6 +71,9 @@ BOOL CPropertyDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
 
     SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
+
+    m_previous_btn.SetIcon(theApp.m_icon_set.lyric_delay.GetIcon(true));
+    m_next_btn.SetIcon(theApp.m_icon_set.lyric_forward.GetIcon(true));
 
     //创建子对话框
     m_property_dlg.Create(IDD_PROPERTY_DIALOG);

@@ -50,6 +50,13 @@ void CBaseDialog::SaveConfig() const
     }
 }
 
+void CBaseDialog::SetButtonIcon(UINT id, HICON icon)
+{
+    CButton* close_btn = (CButton*)(GetDlgItem(id));
+    if (close_btn != nullptr)
+        close_btn->SetIcon(icon);
+}
+
 void CBaseDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -89,6 +96,10 @@ BOOL CBaseDialog::OnInitDialog()
 	{
 		SetWindowPos(nullptr, 0, 0, m_window_size.cx, m_window_size.cy, SWP_NOZORDER | SWP_NOMOVE);
 	}
+
+    //为按钮添加图标
+    SetButtonIcon(IDCANCEL, theApp.m_icon_set.close.GetIcon(true));
+    SetButtonIcon(IDOK, theApp.m_icon_set.ok);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE

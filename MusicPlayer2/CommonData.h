@@ -467,6 +467,8 @@ struct IconSet
     HICON dark_mode;
     HICON lyric;
 
+    HICON ok;
+
     //通知区图标
     HICON notify_icons[MAX_NOTIFY_ICON];
 };

@@ -177,6 +177,8 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 
+    m_set_path_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
+
     RefreshData();
     RefreshState();
 

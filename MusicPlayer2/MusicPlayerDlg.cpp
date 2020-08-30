@@ -1607,7 +1607,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     SetMenubarVisible();
 
-
+    m_set_path_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
     //CoInitialize(0);	//初始化COM组件，用于支持任务栏显示进度和缩略图按钮
