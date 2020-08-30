@@ -421,10 +421,9 @@ void CBassCore::SetVolume(int vol)
 void CBassCore::SetSpeed(float speed)
 {
     float freq;
-    if (std::fabs(m_freq) < 1e-3 || std::fabs(speed - 1) < 1e-3 || speed < MIN_PLAY_SPEED || speed > MAX_PLAY_SPEED)
-        freq = 0;
-    else
-        freq = m_freq * speed;
+    if (std::fabs(speed) < 0.01 || std::fabs(speed - 1) < 0.01 || speed < MIN_PLAY_SPEED || speed > MAX_PLAY_SPEED)
+        speed = 0;
+    freq = m_freq * speed;
     BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_FREQ, freq);
 }
 

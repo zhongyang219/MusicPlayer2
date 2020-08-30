@@ -452,7 +452,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_song_length = GetCurrentSongInfo().lengh;
         }
         SetVolume();
-        if (std::fabs(m_speed - 1) > 1e-3)
+        if (std::fabs(m_speed - 1) > 0.01)
             m_pCore->SetSpeed(m_speed);
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
         //SetFXHandle();
@@ -1144,9 +1144,11 @@ void CPlayer::SpeedUp()
 {
     if (m_speed < MAX_PLAY_SPEED)
     {
-        m_speed += (m_speed*0.0594631);     //加速一次频率变为原来的(2的1/12次方=1.0594631)倍，即使单调提高一个半音，减速时同理
+        m_speed *= 1.0594631;     //加速一次频率变为原来的(2的1/12次方=1.0594631)倍，即使单调提高一个半音，减速时同理
         if (m_speed > MAX_PLAY_SPEED)
             m_speed = MAX_PLAY_SPEED;
+        if (std::fabs(m_speed - 1) < 0.01)
+            m_speed = 1;
         m_pCore->SetSpeed(m_speed);
     }
 }
@@ -1155,9 +1157,11 @@ void CPlayer::SlowDown()
 {
     if (m_speed > MIN_PLAY_SPEED)
     {
-        m_speed -= (m_speed*0.0594631);
+        m_speed /= 1.0594631;
         if (m_speed < MIN_PLAY_SPEED)
             m_speed = MIN_PLAY_SPEED;
+        if (std::fabs(m_speed - 1) < 0.01)
+            m_speed = 1;
         m_pCore->SetSpeed(m_speed);
     }
 }
