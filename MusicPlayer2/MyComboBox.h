@@ -9,6 +9,7 @@ public:
 
 	void SetReadOnly(bool read_only = true);
 	void SetEditReadOnly(bool read_only = true);
+    CEdit* GetEditCtrl();
 
 protected:
 	bool m_read_only{ false };

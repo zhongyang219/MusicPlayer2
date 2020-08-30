@@ -198,6 +198,7 @@ BEGIN_MESSAGE_MAP(CPropertyTabDlg, CTabDlg)
 	ON_CBN_SELCHANGE(IDC_GENRE_COMBO, &CPropertyTabDlg::OnCbnSelchangeGenreCombo)
 	//ON_BN_CLICKED(IDC_BUTTON3, &CPropertyTabDlg::OnBnClickedButton3)
     ON_WM_MOUSEWHEEL()
+    ON_CBN_EDITCHANGE(IDC_GENRE_COMBO, &CPropertyTabDlg::OnCbnEditchangeGenreCombo)
 END_MESSAGE_MAP()
 
 
@@ -221,7 +222,7 @@ BOOL CPropertyTabDlg::OnInitDialog()
 	CRect rect;
 	m_genre_combo.SetMinVisibleItems(15);		//设置下拉列表的高度
 
-	m_genre_combo.SetEditReadOnly();
+	//m_genre_combo.SetEditReadOnly();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -436,4 +437,14 @@ BOOL CPropertyTabDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
     //return CTabDlg::OnMouseWheel(nFlags, zDelta, pt);
     return TRUE;
+}
+
+
+void CPropertyTabDlg::OnCbnEditchangeGenreCombo()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CEdit* pEdit = m_genre_combo.GetEditCtrl();
+    if (pEdit!=nullptr)
+        m_modified = (pEdit->GetModify() != 0);
+    SetSaveBtnEnable();
 }

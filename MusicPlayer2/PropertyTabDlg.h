@@ -82,4 +82,5 @@ public:
 	afx_msg void OnCbnSelchangeGenreCombo();
 	//afx_msg void OnBnClickedButton3();
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+    afx_msg void OnCbnEditchangeGenreCombo();
 };

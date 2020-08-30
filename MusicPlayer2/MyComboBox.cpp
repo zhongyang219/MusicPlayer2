@@ -15,13 +15,22 @@ CMyComboBox::~CMyComboBox()
 
 void CMyComboBox::SetReadOnly(bool read_only)
 {
-	//((CEdit*)GetWindow(GW_CHILD))->SetReadOnly(read_only);		//将Endit控件设为只读
-	m_read_only = read_only;
+    CEdit* pEdit = GetEditCtrl();
+    if (pEdit != nullptr)
+        pEdit->SetReadOnly(read_only);		//将Endit控件设为只读
+    m_read_only = read_only;
 }
 
 void CMyComboBox::SetEditReadOnly(bool read_only)
 {
-	((CEdit*)GetWindow(GW_CHILD))->SetReadOnly(read_only);		//将Endit控件设为只读
+    CEdit* pEdit = GetEditCtrl();
+    if (pEdit != nullptr)
+        pEdit->SetReadOnly(read_only);		//将Endit控件设为只读
+}
+
+CEdit* CMyComboBox::GetEditCtrl()
+{
+    return (CEdit*)GetWindow(GW_CHILD);
 }
 
 BEGIN_MESSAGE_MAP(CMyComboBox, CComboBox)
