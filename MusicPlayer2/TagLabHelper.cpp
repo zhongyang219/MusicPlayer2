@@ -188,6 +188,10 @@ string CTagLabHelper::GetMp3AlbumCover(const wstring & file_path, int & type)
 void CTagLabHelper::GetFlacTagInfo(SongInfo& song_info)
 {
     FLAC::File file(song_info.file_path.c_str());
+    if (file.hasID3v1Tag())
+        song_info.tag_type |= T_ID3V1;
+    if (file.hasID3v2Tag())
+        song_info.tag_type |= T_ID3V2;
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -198,6 +202,8 @@ void CTagLabHelper::GetFlacTagInfo(SongInfo& song_info)
 void CTagLabHelper::GetM4aTagInfo(SongInfo& song_info)
 {
     MP4::File file(song_info.file_path.c_str());
+    if (file.hasMP4Tag())
+        song_info.tag_type |= T_MP4;
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -225,6 +231,10 @@ void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
 void CTagLabHelper::GetWavTagInfo(SongInfo& song_info)
 {
     RIFF::WAV::File file(song_info.file_path.c_str());
+    if (file.hasID3v2Tag())
+        song_info.tag_type |= T_ID3V2;
+    if (file.hasInfoTag())
+        song_info.tag_type |= T_RIFF;
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -245,6 +255,10 @@ void CTagLabHelper::GetOggTagInfo(SongInfo& song_info)
 void CTagLabHelper::GetMpcTagInfo(SongInfo& song_info)
 {
     MPC::File file(song_info.file_path.c_str());
+    if (file.hasAPETag())
+        song_info.tag_type |= T_APE;
+    if (file.hasID3v1Tag())
+        song_info.tag_type != T_ID3V1;
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -265,6 +279,10 @@ void CTagLabHelper::GetOpusTagInfo(SongInfo& song_info)
 void CTagLabHelper::GetWavPackTagInfo(SongInfo& song_info)
 {
     WavPack::File file(song_info.file_path.c_str());
+    if (file.hasAPETag())
+        song_info.tag_type |= T_APE;
+    if (file.hasID3v1Tag())
+        song_info.tag_type != T_ID3V1;
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -275,6 +293,10 @@ void CTagLabHelper::GetWavPackTagInfo(SongInfo& song_info)
 void CTagLabHelper::GetTtaTagInfo(SongInfo& song_info)
 {
     TrueAudio::File file(song_info.file_path.c_str());
+    if (file.hasID3v1Tag())
+        song_info.tag_type |= T_ID3V1;
+    if (file.hasID3v2Tag())
+        song_info.tag_type |= T_ID3V2;
     auto tag = file.tag();
     if (tag != nullptr)
     {

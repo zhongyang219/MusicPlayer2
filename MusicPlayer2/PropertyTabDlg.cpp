@@ -158,29 +158,33 @@ void CPropertyTabDlg::ShowInfo()
 	    m_comment_edit.SetWindowText(m_all_song_info[m_index].comment.c_str());
 
 	    //显示标签类型
-	    if (file_type == _T("mp3"))
-	    {
-		    CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
-            auto tag_type = m_all_song_info[m_index].tag_type;
-            if (tag_type == 0)
-            {
-                tag_type_str += CCommon::LoadText(IDS_UNKNOW);
-            }
-            else
-            {
-                if (tag_type & T_ID3V1)
-                    tag_type_str += _T("ID3v1 ");
-                if (tag_type & T_ID3V2)
-                    tag_type_str += _T("ID3v2 ");
-                if (tag_type & T_APE)
-                    tag_type_str += _T("APE ");
-            }
-		    SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str);
+        auto tag_type = m_all_song_info[m_index].tag_type;
+        if (tag_type != 0)
+        {
+            CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
+            //if (tag_type == 0)
+            //{
+            //    tag_type_str += CCommon::LoadText(IDS_OTHER);
+            //}
+            //else
+            //{
+            if (tag_type & T_ID3V1)
+                tag_type_str += _T("ID3v1 ");
+            if (tag_type & T_ID3V2)
+                tag_type_str += _T("ID3v2 ");
+            if (tag_type & T_APE)
+                tag_type_str += _T("APE ");
+            if (tag_type & T_RIFF)
+                tag_type_str += _T("RIFF ");
+            if (tag_type & T_MP4)
+                tag_type_str += _T("MP4 ");
+            //}
+            SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str);
 	    }
-	    else
-	    {
-		    SetDlgItemText(IDC_TAG_TYPE_STATIC, _T(""));
-	    }
+        else
+        {
+            SetDlgItemText(IDC_TAG_TYPE_STATIC, _T(""));
+        }
     }
 }
 

@@ -9,7 +9,9 @@ enum eTagType
     T_OTHER_TAG = 0,
     T_ID3V1 = 1,
     T_ID3V2 = 1 << 1,
-    T_APE = 1 << 2
+    T_APE = 1 << 2,
+    T_RIFF = 1 << 3,
+    T_MP4 = 1 << 4,
 };
 
 //一首歌曲的信息
