@@ -85,7 +85,8 @@ void CBassCore::InitCore()
     format.extensions.push_back(L"mp2");
     format.extensions.push_back(L"mp1");
     format.extensions.push_back(L"aif");
-    format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif";
+    format.extensions.push_back(L"aiff");
+    format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif;*.aiff";
     CAudioCommon::m_surpported_format.push_back(format);
     CAudioCommon::m_all_surpported_extensions = format.extensions;
     //载入BASS插件

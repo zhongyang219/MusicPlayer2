@@ -15,6 +15,7 @@ enum AudioType
 	AU_OGG,
 	AU_MP4,
 	AU_APE,
+    AU_AIFF,
 	AU_FLAC,
 	AU_CUE,
 	AU_MIDI,

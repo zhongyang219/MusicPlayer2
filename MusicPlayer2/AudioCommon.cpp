@@ -433,6 +433,9 @@ AudioType CAudioCommon::GetAudioTypeByBassChannel(DWORD ctype)
     case 0x10301:
         type = AudioType::AU_WMA;
         break;
+    case BASS_CTYPE_STREAM_AIFF:
+        type = AudioType::AU_AIFF;
+        break;
     case BASS_CTYPE_STREAM_OGG:
         type = AudioType::AU_OGG;
         break;

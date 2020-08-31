@@ -16,6 +16,7 @@
 #include "taglib/wavpackfile.h"
 #include "taglib/vorbisfile.h"
 #include "taglib/trueaudiofile.h"
+#include "taglib/aifffile.h"
 
 using namespace TagLib;
 
@@ -274,7 +275,7 @@ void CTagLabHelper::GetMpcTagInfo(SongInfo& song_info)
     if (file.hasAPETag())
         song_info.tag_type |= T_APE;
     if (file.hasID3v1Tag())
-        song_info.tag_type != T_ID3V1;
+        song_info.tag_type |= T_ID3V1;
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -298,7 +299,7 @@ void CTagLabHelper::GetWavPackTagInfo(SongInfo& song_info)
     if (file.hasAPETag())
         song_info.tag_type |= T_APE;
     if (file.hasID3v1Tag())
-        song_info.tag_type != T_ID3V1;
+        song_info.tag_type |= T_ID3V1;
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -311,6 +312,18 @@ void CTagLabHelper::GetTtaTagInfo(SongInfo& song_info)
     TrueAudio::File file(song_info.file_path.c_str());
     if (file.hasID3v1Tag())
         song_info.tag_type |= T_ID3V1;
+    if (file.hasID3v2Tag())
+        song_info.tag_type |= T_ID3V2;
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetAiffTagInfo(SongInfo& song_info)
+{
+    RIFF::AIFF::File file(song_info.file_path.c_str());
     if (file.hasID3v2Tag())
         song_info.tag_type |= T_ID3V2;
     auto tag = file.tag();
@@ -335,6 +348,14 @@ bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
         return WriteWavTag(song_info);
     else if (ext == L"ape")
         return WriteApeTag(song_info);
+    else if (ext == L"wv")
+        return WriteWavPackTag(song_info);
+    else if (IsAiffFile(ext))
+        return WriteAiffTag(song_info);
+    else if (ext == L"opus")
+        return WriteOpusTag(song_info);
+    else if (ext == L"tta")
+        return WriteTtaTag(song_info);
     return false;
 }
 
@@ -504,6 +525,42 @@ bool CTagLabHelper::WriteApeTag(SongInfo& song_info)
     return saved;
 }
 
+bool CTagLabHelper::WriteOpusTag(SongInfo & song_info)
+{
+    Ogg::Opus::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLabHelper::WriteWavPackTag(SongInfo& song_info)
+{
+    WavPack::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLabHelper::WriteTtaTag(SongInfo& song_info)
+{
+    TrueAudio::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLabHelper::WriteAiffTag(SongInfo & song_info)
+{
+    RIFF::AIFF::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
 bool CTagLabHelper::IsMpegFile(const wstring& ext)
 {
     return ext == L"mp3" || ext == L"mp2" || ext == L"mp1";
@@ -524,11 +581,17 @@ bool CTagLabHelper::IsOggFile(const wstring& ext)
     return ext == L"ogg" || ext == L"oga";
 }
 
+bool CTagLabHelper::IsAiffFile(const wstring& ext)
+{
+    return ext == L"aif" || ext == L"aiff";
+}
+
 bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a" || _ext == L"wav" || IsOggFile(_ext) || _ext == L"ape";
+    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a" || _ext == L"wav" || IsOggFile(_ext) || _ext == L"ape"
+        || _ext == L"wv" || IsAiffFile(_ext) || _ext == L"opus" || _ext == L"tta";
 }
 
 bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)

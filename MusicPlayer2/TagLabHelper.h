@@ -24,6 +24,7 @@ public:
     static void GetOpusTagInfo(SongInfo& song_info);
     static void GetWavPackTagInfo(SongInfo& song_info);
     static void GetTtaTagInfo(SongInfo& song_info);
+    static void GetAiffTagInfo(SongInfo& song_info);
 
     //–¥±Í«©–≈œ¢
     static bool WriteAudioTag(SongInfo& song_info);
@@ -49,11 +50,16 @@ private:
     static bool WriteWavTag(SongInfo& song_info);
     static bool WriteOggTag(SongInfo& song_info);
     static bool WriteApeTag(SongInfo& song_info);
+    static bool WriteOpusTag(SongInfo& song_info);
+    static bool WriteWavPackTag(SongInfo& song_info);
+    static bool WriteTtaTag(SongInfo& song_info);
+    static bool WriteAiffTag(SongInfo& song_info);
 
     static bool IsMpegFile(const wstring& ext);
     static bool IsFlacFile(const wstring& ext);
     static bool IsMpcFile(const wstring& ext);
     static bool IsOggFile(const wstring& ext);
+    static bool IsAiffFile(const wstring& ext);
 
 };
 

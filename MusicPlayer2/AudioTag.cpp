@@ -54,6 +54,9 @@ void CAudioTag::GetAudioTag()
         case AU_WAV:
             CTagLabHelper::GetWavTagInfo(m_song_info);
             break;
+        case AU_AIFF:
+            CTagLabHelper::GetAiffTagInfo(m_song_info);
+            break;
         case AU_MPC:
             CTagLabHelper::GetMpcTagInfo(m_song_info);
             break;
