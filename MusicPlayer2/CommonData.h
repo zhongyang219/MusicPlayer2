@@ -337,6 +337,7 @@ struct NonCategorizedSettingData
     int light_mode_default_transparency{ 80 };
     int dark_mode_default_transparency{ 40 };
 
+    vector<wstring> default_file_type;
 };
 
 struct IconRes

@@ -73,20 +73,17 @@ void CBassCore::InitCore()
     CAudioCommon::m_surpported_format.clear();
     SupportedFormat format;
     format.description = CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT);
-    format.extensions.push_back(L"mp3");
-    format.extensions.push_back(L"wma");
-    format.extensions.push_back(L"wav");
-    format.extensions.push_back(L"flac");
-    format.extensions.push_back(L"ogg");
-    format.extensions.push_back(L"oga");
-    format.extensions.push_back(L"m4a");
-    format.extensions.push_back(L"mp4");
-    format.extensions.push_back(L"cue");
-    format.extensions.push_back(L"mp2");
-    format.extensions.push_back(L"mp1");
-    format.extensions.push_back(L"aif");
-    format.extensions.push_back(L"aiff");
-    format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif;*.aiff";
+    format.extensions.insert(format.extensions.end(), theApp.m_nc_setting_data.default_file_type.begin(), theApp.m_nc_setting_data.default_file_type.end());
+    for (const auto& f : theApp.m_nc_setting_data.default_file_type)
+    {
+        format.extensions_list += L"*.";
+        format.extensions_list += f;
+        format.extensions_list += L';';
+    }
+    if (!format.extensions_list.empty())
+        format.extensions_list.pop_back();
+
+    //format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif;*.aiff";
     CAudioCommon::m_surpported_format.push_back(format);
     CAudioCommon::m_all_surpported_extensions = format.extensions;
     //载入BASS插件

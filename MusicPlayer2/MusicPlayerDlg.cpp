@@ -259,8 +259,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_INVERT_PLAYLIST, &CMusicPlayerDlg::OnInvertPlaylist)
     ON_COMMAND(ID_PLAY_RANDOM, &CMusicPlayerDlg::OnPlayRandom)
     ON_WM_DEVICECHANGE()
-        ON_MESSAGE(WM_CURRENT_FILE_ALBUM_COVER_CHANGED, &CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged)
-        END_MESSAGE_MAP()
+    ON_MESSAGE(WM_CURRENT_FILE_ALBUM_COVER_CHANGED, &CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged)
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -368,6 +368,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"other", L"show_debug_info", theApp.m_nc_setting_data.show_debug_info);
     ini.WriteInt(L"other", L"light_mode_default_transparency", theApp.m_nc_setting_data.light_mode_default_transparency);
     ini.WriteInt(L"other", L"dark_mode_default_transparency", theApp.m_nc_setting_data.dark_mode_default_transparency);
+
+    ini.WriteStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type);
 
     ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
     ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
@@ -519,6 +521,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.show_debug_info = ini.GetBool(L"other", L"show_debug_info", true);
     theApp.m_nc_setting_data.light_mode_default_transparency = ini.GetInt(L"other", L"light_mode_default_transparency", 80);
     theApp.m_nc_setting_data.dark_mode_default_transparency = ini.GetInt(L"other", L"dark_mode_default_transparency", 40);
+
+    ini.GetStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type, vector<wstring>{L"mp3", L"wma", L"wav", L"flac", L"ogg", L"oga", L"m4a", L"mp4", L"cue", L"mp2", L"mp1", L"aif", L"aiff"});
 
     theApp.m_general_setting_data.id3v2_first = ini.GetBool(L"general", L"id3v2_first", 1);
     theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(L"general", L"auto_download_lyric", 1);
