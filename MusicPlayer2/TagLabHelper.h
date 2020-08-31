@@ -17,6 +17,7 @@ public:
     static void GetFlacTagInfo(SongInfo& song_info);
     static void GetM4aTagInfo(SongInfo& song_info);
     static void GetMpegTagInfo(SongInfo& song_info);
+    static void GetApeTagInfo(SongInfo& song_info);
     static void GetWavTagInfo(SongInfo& song_info);
     static void GetOggTagInfo(SongInfo& song_info);
     static void GetMpcTagInfo(SongInfo& song_info);
@@ -47,6 +48,7 @@ private:
     static bool WriteM4aTag(SongInfo& song_info);
     static bool WriteWavTag(SongInfo& song_info);
     static bool WriteOggTag(SongInfo& song_info);
+    static bool WriteApeTag(SongInfo& song_info);
 
     static bool IsMpegFile(const wstring& ext);
     static bool IsFlacFile(const wstring& ext);

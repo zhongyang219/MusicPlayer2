@@ -9,6 +9,7 @@
 #include "FilePathHelper.h"
 #include "taglib/attachedpictureframe.h"
 #include "taglib/id3v2tag.h"
+#include "taglib/apefile.h"
 #include "taglib/wavfile.h"
 #include "taglib/mpcfile.h"
 #include "taglib/opusfile.h"
@@ -228,6 +229,21 @@ void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
     }
 }
 
+void CTagLabHelper::GetApeTagInfo(SongInfo& song_info)
+{
+    APE::File file(song_info.file_path.c_str());
+    if (file.hasID3v1Tag())
+        song_info.tag_type |= T_ID3V1;
+    if (file.hasAPETag())
+        song_info.tag_type |= T_APE;
+
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
 void CTagLabHelper::GetWavTagInfo(SongInfo& song_info)
 {
     RIFF::WAV::File file(song_info.file_path.c_str());
@@ -317,6 +333,8 @@ bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
         return WriteOggTag(song_info);
     else if (ext == L"wav")
         return WriteWavTag(song_info);
+    else if (ext == L"ape")
+        return WriteApeTag(song_info);
     return false;
 }
 
@@ -477,6 +495,15 @@ bool CTagLabHelper::WriteOggTag(SongInfo & song_info)
     return saved;
 }
 
+bool CTagLabHelper::WriteApeTag(SongInfo& song_info)
+{
+    APE::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
 bool CTagLabHelper::IsMpegFile(const wstring& ext)
 {
     return ext == L"mp3" || ext == L"mp2" || ext == L"mp1";
@@ -501,7 +528,7 @@ bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a" || _ext == L"wav" || IsOggFile(_ext);
+    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a" || _ext == L"wav" || IsOggFile(_ext) || _ext == L"ape";
 }
 
 bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)

@@ -41,10 +41,12 @@ void CAudioTag::GetAudioTag()
             CTagLabHelper::GetOggTagInfo(m_song_info);
             break;
         case AU_MP4:
-            GetMp4Tag();
+            //GetMp4Tag();
+            CTagLabHelper::GetM4aTagInfo(m_song_info);
             break;
         case AU_APE:
-            GetApeTag();
+            //GetApeTag();
+            CTagLabHelper::GetApeTagInfo(m_song_info);
             break;
         case AU_FLAC:
             CTagLabHelper::GetFlacTagInfo(m_song_info);
