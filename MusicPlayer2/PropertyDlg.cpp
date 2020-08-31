@@ -140,8 +140,17 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
     IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
     if (cur_tab != nullptr)
     {
-        if (!cur_tab->SaveModified())
-            MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+        int saved_num = cur_tab->SaveModified();
+        if (m_batch_edit)
+        {
+            CString info = CCommon::LoadTextFormat(IDS_TAG_BATCH_EDIT_INFO, { saved_num });
+            MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+        }
+        else
+        {
+            if (saved_num == 0)
+                MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+        }
     }
 }
 

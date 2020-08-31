@@ -23,6 +23,7 @@ public:
     wstring GetMultiComment();
 
     bool IsMultiWritable();
+    bool IsMultiCoverWritable();
 
 private:
     //获取m_song_info中一个字段的值，如果该字段全部相同，则返回该值，如果有一个不同，则返回“多个数值”

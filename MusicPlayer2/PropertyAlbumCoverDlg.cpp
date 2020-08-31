@@ -8,6 +8,7 @@
 #include "TagLabHelper.h"
 #include "DrawCommon.h"
 #include "MusicPlayerCmdHelper.h"
+#include "PropertyDlgHelper.h"
 
 #define PROPERTY_COVER_IMG_FILE_NAME L"PropertyCoverImg_U6V19HODcJ2p11FM"
 
@@ -60,47 +61,45 @@ int CPropertyAlbumCoverDlg::SaveModified()
         int current_position{};
         bool is_playing{};
         //如果当前修改的是正在播放的文件，则先关闭，保存后再打开
+        bool reopen{};
         if (IsCurrentSong())
         {
             current_position = CPlayer::GetInstance().GetCurrentPosition();
             is_playing = CPlayer::GetInstance().IsPlaying();
             CPlayer::GetInstance().MusicControl(Command::CLOSE);
+            reopen = true;
         }
 
-        bool saved{};
-        if (m_cover_deleted)
-        {
-            saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, wstring());
-        }
+        int saved_count{};
         if (m_cover_changed)
         {
-            saved |= CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
+            //保存手动浏览的专辑封面
+            saved_count += SaveAlbumCover(m_out_img_path);
+        }
+        else if (m_cover_deleted)
+        {
+            //删除内嵌专辑封面
+            saved_count += SaveAlbumCover(wstring());
         }
         else if (IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON))
         {
-            bool rtn = CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, m_out_img_path);
-            if (rtn)        //将外部专辑封面嵌入到音频文件后，如果图片的文件名和音频文件的文件名相同，则删除此外部专辑封面图片，因此这个图片已经没有作用了
-            {
-                wstring album_cover_file_name = CFilePathHelper(m_out_img_path).GetFilePathWithoutExtension();
-                wstring file_name = CFilePathHelper(CurrentSong().file_path).GetFilePathWithoutExtension();
-                if (file_name == album_cover_file_name)
-                {
-                    CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path);
-                }
-            }
-            saved |= rtn;
+            //将关联的外部专辑封面嵌入到音频文件
+            if (m_batch_edit)
+                saved_count += SaveEnbedLinkedCoverForBatchEdit();
+            else
+                saved_count += SaveAlbumCover(m_out_img_path, true);
         }
 
-        if (IsCurrentSong())
+        if (reopen)
         {
             CPlayer::GetInstance().MusicControl(Command::OPEN);
             CPlayer::GetInstance().SeekTo(current_position);
             if (is_playing)
                 CPlayer::GetInstance().MusicControl(Command::PLAY);
         }
-        return saved;
+        return saved_count;
     }
-    return true;
+    return 1;
 }
 
 void CPropertyAlbumCoverDlg::AdjustColumnWidth()
@@ -121,7 +120,7 @@ void CPropertyAlbumCoverDlg::ShowInfo()
     size_t cover_size{};
 
     //载入内嵌专辑封面
-    if(!IsShowOutAlbumCover())
+    if(!IsShowOutAlbumCover() && !m_batch_edit)
     {
         wstring file_path = CurrentSong().file_path;
         wstring file_ext = CFilePathHelper(file_path).GetFileExtension();
@@ -155,7 +154,7 @@ void CPropertyAlbumCoverDlg::ShowInfo()
             m_cover_out_img.Load(m_out_img_path.c_str());
             cover_size = CCommon::GetFileSize(m_out_img_path);
         }
-        else
+        else if (!m_batch_edit)
         {
             CMusicPlayerCmdHelper helper;
             m_out_img_path = helper.SearchAlbumCover(CurrentSong());
@@ -225,7 +224,7 @@ void CPropertyAlbumCoverDlg::ShowInfo()
         }
 
         //已压缩尺寸过大的专辑封面
-        if (IsCurrentSong() && !m_cover_changed)
+        if (!m_cover_changed && !m_batch_edit && IsCurrentSong())
         {
             m_list_ctrl.SetItemText(RI_COMPRESSED, 0, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));
             m_list_ctrl.SetItemText(RI_COMPRESSED, 1, (CPlayer::GetInstance().GetAlbumCoverInfo().size_exceed ? CCommon::LoadText(IDS_YES) : CCommon::LoadText(IDS_NO)));
@@ -254,7 +253,7 @@ void CPropertyAlbumCoverDlg::ShowInfo()
 
 const SongInfo& CPropertyAlbumCoverDlg::CurrentSong()
 {
-    if (m_index >= 0 && m_index < static_cast<int>(m_all_song_info.size()))
+    if (m_index >= 0 && m_index < static_cast<int>(m_all_song_info.size()) && !m_batch_edit)
     {
         return m_all_song_info[m_index];
     }
@@ -275,22 +274,41 @@ CImage& CPropertyAlbumCoverDlg::GetCoverImage()
 
 bool CPropertyAlbumCoverDlg::IsCurrentSong()
 {
-    const SongInfo song{ CurrentSong() };
-    bool is_current_song{ song.file_path == CPlayer::GetInstance().GetCurrentFilePath() };
-    return is_current_song;
+    if (m_batch_edit)
+    {
+        for (const auto& song : m_all_song_info)
+        {
+            if (song.file_path == CPlayer::GetInstance().GetCurrentFilePath())
+                return true;
+        }
+        return false;
+    }
+    else
+    {
+        const SongInfo song{ CurrentSong() };
+        bool is_current_song{ song.file_path == CPlayer::GetInstance().GetCurrentFilePath() };
+        return is_current_song;
+    }
 }
 
 bool CPropertyAlbumCoverDlg::IsShowOutAlbumCover()
 {
-    return m_show_out_album_cover || m_cover_changed || COSUPlayerHelper::IsOsuFile(CurrentSong().file_path);
+    return m_show_out_album_cover || m_cover_changed || COSUPlayerHelper::IsOsuFile(CurrentSong().file_path) || m_batch_edit;
 }
 
 bool CPropertyAlbumCoverDlg::IsDeleteEnable()
 {
-    if (IsShowOutAlbumCover())
-        return (CCommon::FileExist(m_out_img_path) && !COSUPlayerHelper::IsOsuFile(CurrentSong().file_path));
+    if (m_batch_edit)
+    {
+        return m_write_enable;
+    }
     else
-        return m_write_enable && HasAlbumCover();
+    {
+        if (IsShowOutAlbumCover())
+            return (CCommon::FileExist(m_out_img_path) && !COSUPlayerHelper::IsOsuFile(CurrentSong().file_path));
+        else
+            return m_write_enable && HasAlbumCover();
+    }
 }
 
 bool CPropertyAlbumCoverDlg::HasAlbumCover()
@@ -300,8 +318,16 @@ bool CPropertyAlbumCoverDlg::HasAlbumCover()
 
 void CPropertyAlbumCoverDlg::SetWreteEnable()
 {
-    CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
-    m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CTagLabHelper::IsFileTypeCoverWriteSupport(file_path.GetFileExtension()));
+    if (m_batch_edit)
+    {
+        CPropertyDlgHelper helper(m_all_song_info);
+        m_write_enable = helper.IsMultiCoverWritable();
+    }
+    else
+    {
+        CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
+        m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CTagLabHelper::IsFileTypeCoverWriteSupport(file_path.GetFileExtension()));
+    }
     EnableControls();
     SetSaveBtnEnable();
 }
@@ -311,9 +337,15 @@ void CPropertyAlbumCoverDlg::EnableControls()
 
     EnableDlgCtrl(IDC_BROWSE_BUTTON, m_write_enable);
     EnableDlgCtrl(IDC_DELETE_BUTTON, IsDeleteEnable());
-    EnableDlgCtrl(IDC_SAVE_ALBUM_COVER_BUTTON, m_write_enable && IsShowOutAlbumCover() && !m_cover_out_img.IsNull());
-    //ShowDlgCtrl(IDC_SAVE_ALBUM_COVER_BUTTON, IsCurrentSong());
-    EnableDlgCtrl(IDC_SHOW_OUT_ALBUM_COVER_CHK, !COSUPlayerHelper::IsOsuFile(CurrentSong().file_path));
+    if (m_batch_edit)
+    {
+        EnableDlgCtrl(IDC_SAVE_ALBUM_COVER_BUTTON, m_write_enable);
+    }
+    else
+    {
+        EnableDlgCtrl(IDC_SAVE_ALBUM_COVER_BUTTON, m_write_enable && IsShowOutAlbumCover() && !m_cover_out_img.IsNull());
+    }
+    EnableDlgCtrl(IDC_SHOW_OUT_ALBUM_COVER_CHK, (!m_batch_edit && !COSUPlayerHelper::IsOsuFile(CurrentSong().file_path)));
 }
 
 void CPropertyAlbumCoverDlg::SetSaveBtnEnable()
@@ -322,6 +354,63 @@ void CPropertyAlbumCoverDlg::SetSaveBtnEnable()
     CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
         pParent->SendMessage(WM_PROPERTY_DIALOG_MODIFIED, enable);
+}
+
+int CPropertyAlbumCoverDlg::SaveAlbumCover(const wstring & album_cover_path, bool delete_file)
+{
+    if (m_batch_edit)
+    {
+        int saved_count{};
+        for (const auto& song : m_all_song_info)
+        {
+            if (CTagLabHelper::WriteAlbumCover(song.file_path, album_cover_path))
+            {
+                saved_count++;
+                if (delete_file)
+                {
+                    DeleteLinkedPic(song.file_path, album_cover_path);
+                }
+            }
+        }
+        return saved_count;
+    }
+    else
+    {
+        bool rtn = CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, album_cover_path);
+        if (rtn && delete_file)
+        {
+            DeleteLinkedPic(CurrentSong().file_path, album_cover_path);
+        }
+        return rtn;
+    }
+}
+
+int CPropertyAlbumCoverDlg::SaveEnbedLinkedCoverForBatchEdit()
+{
+    int saved_count{};
+    for (const auto& song : m_all_song_info)
+    {
+        CMusicPlayerCmdHelper helper;
+        wstring album_cover_path = helper.SearchAlbumCover(song);
+        if (!album_cover_path.empty() && CTagLabHelper::WriteAlbumCover(song.file_path, album_cover_path))
+        {
+            saved_count++;
+            DeleteLinkedPic(song.file_path, album_cover_path);
+        }
+    }
+    return saved_count;
+
+}
+
+void CPropertyAlbumCoverDlg::DeleteLinkedPic(const wstring& file_path, const wstring& album_cover_path)
+{
+    //将外部专辑封面嵌入到音频文件后，如果图片的文件名和音频文件的文件名相同，则删除此外部专辑封面图片，因此这个图片已经没有作用了
+    wstring album_cover_file_name = CFilePathHelper(album_cover_path).GetFilePathWithoutExtension();
+    wstring file_name = CFilePathHelper(file_path).GetFilePathWithoutExtension();
+    if (file_name == album_cover_file_name)
+    {
+        CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), album_cover_path);
+    }
 }
 
 void CPropertyAlbumCoverDlg::OnTabEntered()
@@ -452,7 +541,7 @@ void CPropertyAlbumCoverDlg::OnBnClickedSaveAlbumCoverButton()
 void CPropertyAlbumCoverDlg::OnBnClickedDeleteButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    if (IsShowOutAlbumCover())
+    if (IsShowOutAlbumCover() && !m_batch_edit)
     {
         CString str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { m_out_img_path });
         if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)

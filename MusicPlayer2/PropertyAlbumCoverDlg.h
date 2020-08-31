@@ -68,6 +68,11 @@ protected:
     void EnableControls();
     void SetSaveBtnEnable();        //设置父窗口中的“保存到文件”按钮的可用或禁用状态
 
+    //写入专辑封面，如果delete_file为true则写入后删除图片文件。返回写入文件的个数
+    int SaveAlbumCover(const wstring& album_cover_path, bool delete_file = false);
+    int SaveEnbedLinkedCoverForBatchEdit();             //批量编辑模式下将关联的专辑封面嵌入到音频文件
+
+    void DeleteLinkedPic(const wstring& file_path, const wstring& album_cover_path);
 
     virtual void OnTabEntered() override;      //当标签切换到当前窗口时被调用
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

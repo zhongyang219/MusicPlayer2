@@ -623,6 +623,7 @@
 #define IDS_FILE_PROPERTY               510
 #define IDS_PROPERTY_TITLE_INFO         511
 #define IDS_MULTI_VALUE                 512
+#define IDS_TAG_BATCH_EDIT_INFO         513
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

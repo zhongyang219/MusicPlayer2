@@ -140,6 +140,18 @@ bool CPropertyDlgHelper::IsMultiWritable()
     return writable_str != L"false";
 }
 
+bool CPropertyDlgHelper::IsMultiCoverWritable()
+{
+    wstring writable_str = GetMultiValue([](const SongInfo& song)
+    {
+        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && CTagLabHelper::IsFileTypeCoverWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()))
+            return L"true";
+        else
+            return L"false";
+    });
+    return writable_str != L"false";
+}
+
 wstring CPropertyDlgHelper::GetMultiValue(std::function<wstring(const SongInfo&)> fun_get_value)
 {
     if (!m_song_info.empty())
