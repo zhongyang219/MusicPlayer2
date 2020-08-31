@@ -13,7 +13,7 @@ struct SLayoutData
     const int info_height = theApp.DPI(216);					//窄界面模式时显示信息区域的高度
     const int path_edit_height = theApp.DPI(32);				//前路径Edit控件区域的高度
     const int search_edit_height = theApp.DPI(26);				//歌曲搜索框Edit控件区域的高度
-    const int select_folder_width = theApp.DPI(90);	//“选择文件夹”按钮的宽度
+    //const int select_folder_width = theApp.DPI(90);	//“选择文件夹”按钮的宽度
     const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };	//频谱分析区域的大小
     const int toolbar_height = theApp.DPI(24);                  //播放列表工具栏的高度
 };

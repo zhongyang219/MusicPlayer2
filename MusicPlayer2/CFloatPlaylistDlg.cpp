@@ -38,10 +38,20 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
     rect_static.MoveToXY(m_layout.margin, m_layout.margin);
     m_path_static.MoveWindow(rect_static);
 
+    //计算“媒体库”按钮的宽度
+    CDrawCommon draw;
+    CDC* pDC = GetDC();
+    draw.Create(pDC, this);
+    CString media_lib_btn_str;
+    m_set_path_button.GetWindowText(media_lib_btn_str);
+    int media_lib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
+    media_lib_btn_width += theApp.DPI(20);
+    ReleaseDC(pDC);
+
     //设置“选择文件夹”的大小和位置
     CRect rect_select_folder{ rect_static };
     rect_select_folder.right = cx - m_layout.margin;
-    rect_select_folder.left = rect_select_folder.right - m_layout.select_folder_width;
+    rect_select_folder.left = rect_select_folder.right - media_lib_btn_width;
     m_set_path_button.MoveWindow(rect_select_folder);
 
     //设置“当前路径”edit控件大小和位置

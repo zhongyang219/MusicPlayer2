@@ -623,17 +623,25 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
         rect_static.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight());
     m_path_static.MoveWindow(rect_static);
 
+    //计算“媒体库”按钮的宽度
+    CDrawCommon draw;
+    draw.Create(m_pUiDC, this);
+    CString media_lib_btn_str;
+    m_set_path_button.GetWindowText(media_lib_btn_str);
+    int media_lib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
+    media_lib_btn_width += theApp.DPI(20);
+
     //设置“当前路径”edit控件大小
     CRect rect_edit;
     m_path_edit.GetWindowRect(rect_edit);
     if (!theApp.m_ui_data.narrow_mode)
     {
-        rect_edit.right = rect_edit.left + (playlist_width - 3 * m_layout.margin - rect_static.Width() - m_layout.select_folder_width);
+        rect_edit.right = rect_edit.left + (playlist_width - 3 * m_layout.margin - rect_static.Width() - media_lib_btn_width);
         rect_edit.MoveToXY(playlist_x + m_layout.margin + rect_static.Width(), m_layout.margin);
     }
     else
     {
-        rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_layout.select_folder_width);
+        rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - media_lib_btn_width);
         rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), m_ui.DrawAreaHeight());
     }
     m_path_edit.MoveWindow(rect_edit);
