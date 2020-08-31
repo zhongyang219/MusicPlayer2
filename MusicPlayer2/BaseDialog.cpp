@@ -57,6 +57,13 @@ void CBaseDialog::SetButtonIcon(UINT id, HICON icon)
         close_btn->SetIcon(icon);
 }
 
+void CBaseDialog::ShowDlgCtrl(UINT id, bool show)
+{
+    CWnd* pCtrl = GetDlgItem(id);
+    if (pCtrl != nullptr)
+        pCtrl->ShowWindow(show);
+}
+
 void CBaseDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);

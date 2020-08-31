@@ -700,6 +700,9 @@
     <ClInclude Include="IPropertyTabDlg.h">
       <Filter>对话框类\PropertyDlg</Filter>
     </ClInclude>
+    <ClInclude Include="PropertyDlgHelper.h">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1048,6 +1051,9 @@
       <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
     <ClCompile Include="PropertyAlbumCoverDlg.cpp">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyDlgHelper.cpp">
       <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
   </ItemGroup>

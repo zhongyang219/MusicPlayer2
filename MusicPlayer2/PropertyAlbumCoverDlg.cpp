@@ -17,7 +17,13 @@ IMPLEMENT_DYNAMIC(CPropertyAlbumCoverDlg, CTabDlg)
 
 CPropertyAlbumCoverDlg::CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool show_out_album_cover, bool read_only /*= false*/, CWnd* pParent /*=nullptr*/)
     : CTabDlg(IDD_PROPERTY_ALBUM_COVER_DIALOG, pParent), m_all_song_info{ all_song_info }, m_index{ index },
-    m_show_out_album_cover{ show_out_album_cover }, m_read_only{ read_only }
+    m_show_out_album_cover{ show_out_album_cover }, m_read_only{ read_only }, m_batch_edit{ false }
+{
+
+}
+
+CPropertyAlbumCoverDlg::CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, CWnd* pParent /*= nullptr*/)
+    : CTabDlg(IDD_PROPERTY_ALBUM_COVER_DIALOG, pParent), m_all_song_info{ all_song_info }, m_index{ m_no_use }, m_batch_edit{ true }
 {
 
 }
@@ -47,7 +53,7 @@ void CPropertyAlbumCoverDlg::PageNext()
     ShowInfo();
 }
 
-bool CPropertyAlbumCoverDlg::SaveModified()
+int CPropertyAlbumCoverDlg::SaveModified()
 {
     if (m_cover_deleted || m_cover_changed || IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON))
     {

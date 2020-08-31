@@ -226,6 +226,7 @@
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />
+    <ClInclude Include="PropertyDlgHelper.h" />
     <ClInclude Include="SpinEdit.h" />
     <ClInclude Include="TagLabHelper.h" />
     <ClInclude Include="UIWindow.h" />
@@ -352,6 +353,7 @@
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />
+    <ClCompile Include="PropertyDlgHelper.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
     <ClCompile Include="TagLabHelper.cpp" />
     <ClCompile Include="UIWindow.cpp" />

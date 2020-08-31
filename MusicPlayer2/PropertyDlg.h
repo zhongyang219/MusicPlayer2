@@ -13,6 +13,7 @@ class CPropertyDlg : public CBaseDialog
 
 public:
 	CPropertyDlg(vector<SongInfo>& all_song_info, int index, bool read_only, int tab_index = 0, bool show_out_album_cover = false, CWnd* pParent = nullptr);   // 标准构造函数
+	CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent = nullptr);   // 批量编辑
 	virtual ~CPropertyDlg();
 
     bool GetListRefresh() const;
@@ -34,6 +35,7 @@ protected:
     bool m_read_only{};
     int m_song_num;
     int m_tab_index{};
+    const int m_batch_edit;
 
 protected:
     void ShowPageNum();

@@ -12,11 +12,12 @@ class CPropertyAlbumCoverDlg : public CTabDlg, public IPropertyTabDlg
 
 public:
 	CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool show_out_album_cover = false, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
+	CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, CWnd* pParent = nullptr);   //批量编辑
 	virtual ~CPropertyAlbumCoverDlg();
 
     virtual void PagePrevious() override;
     virtual void PageNext() override;
-    virtual bool SaveModified() override;
+    virtual int SaveModified() override;
     void AdjustColumnWidth();
 
 // 对话框数据
@@ -44,6 +45,8 @@ protected:
     vector<SongInfo>& m_all_song_info;
     bool m_read_only{};
     bool m_show_out_album_cover{};
+    const bool m_batch_edit;
+    int m_no_use{};
 
     bool m_write_enable{};
     bool m_cover_changed{};     //是否手动浏览了一张图片作为专辑封面

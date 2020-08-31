@@ -17,6 +17,7 @@ class CPropertyTabDlg : public CTabDlg, public IPropertyTabDlg
 
 public:
 	CPropertyTabDlg(vector<SongInfo>& all_song_info, int& index, CWnd* pParent = NULL, bool read_only = false);   // 标准构造函数
+	CPropertyTabDlg(vector<SongInfo>& song_info, CWnd* pParent = NULL);   // 批量编辑
 	virtual ~CPropertyTabDlg();
 
 	//int m_playing_index{};	//正在播放的曲目序号
@@ -37,8 +38,11 @@ protected:
 	bool m_modified{ false };
 	bool m_genre_modified{ false };
 	bool m_list_refresh{ false };		//用于判断窗口关闭后播放列表是否要刷新，只要有任一首曲目的“标题”或“艺术家”标签编辑过，则置为true
-    int m_song_num;
-    bool m_read_only;
+    int m_song_num{};
+    bool m_read_only{};
+
+    const bool m_batch_edit;
+    int m_no_use{};
 
 	//控件变量
 	CEditEx m_file_name_edit;
@@ -78,7 +82,7 @@ public:
 	afx_msg void OnEnChangeYearEdit();
 	afx_msg void OnEnChangeCommentEdit();
 	//afx_msg void OnCbnEditchangeGenreCombo();
-	virtual bool SaveModified() override;
+	virtual int SaveModified() override;
 	afx_msg void OnCbnSelchangeGenreCombo();
 	//afx_msg void OnBnClickedButton3();
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);

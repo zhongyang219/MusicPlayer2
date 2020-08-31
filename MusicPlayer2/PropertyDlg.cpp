@@ -14,7 +14,17 @@ IMPLEMENT_DYNAMIC(CPropertyDlg, CBaseDialog)
 CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, int index, bool read_only, int tab_index, bool show_out_album_cover, CWnd* pParent /*=nullptr*/)
     : CBaseDialog(IDD_PROPERTY_PARENT_DIALOG, pParent), m_read_only{ read_only }, m_index{ index }, m_song_num{ static_cast<int>(all_song_info.size()) }, m_tab_index{ tab_index },
     m_property_dlg(all_song_info, m_index, this, read_only),
-    m_album_cover_dlg(all_song_info, m_index, show_out_album_cover, read_only, this)
+    m_album_cover_dlg(all_song_info, m_index, show_out_album_cover, read_only, this),
+    m_batch_edit{ false }
+{
+
+}
+
+CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent /*= nullptr*/)
+    : CBaseDialog(IDD_PROPERTY_PARENT_DIALOG, pParent), m_song_num{ static_cast<int>(all_song_info.size()) },
+    m_property_dlg(all_song_info, this),
+    m_album_cover_dlg(all_song_info, this),
+    m_batch_edit{ true }
 {
 
 }
@@ -107,6 +117,18 @@ BOOL CPropertyDlg::OnInitDialog()
             pBtn->ShowWindow(SW_HIDE);
     }
 
+    if (m_batch_edit)
+    {
+        ShowDlgCtrl(IDC_PREVIOUS_BUTTON, false);
+        ShowDlgCtrl(IDC_NEXT_BUTTON, false);
+        ShowDlgCtrl(IDC_ITEM_STATIC, false);
+
+        CString str_title;
+        GetWindowText(str_title);
+        str_title += CCommon::LoadTextFormat(IDS_PROPERTY_TITLE_INFO, { m_song_num });
+        SetWindowText(str_title);
+    }
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -127,11 +149,14 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
 void CPropertyDlg::OnBnClickedPreviousButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
-    if (cur_tab != nullptr)
+    if (!m_batch_edit)
     {
-        cur_tab->PagePrevious();
-        ShowPageNum();
+        IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
+        if (cur_tab != nullptr)
+        {
+            cur_tab->PagePrevious();
+            ShowPageNum();
+        }
     }
 }
 
@@ -139,11 +164,14 @@ void CPropertyDlg::OnBnClickedPreviousButton()
 void CPropertyDlg::OnBnClickedNextButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
-    if (cur_tab != nullptr)
+    if (!m_batch_edit)
     {
-        cur_tab->PageNext();
-        ShowPageNum();
+        IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
+        if (cur_tab != nullptr)
+        {
+            cur_tab->PageNext();
+            ShowPageNum();
+        }
     }
 }
 

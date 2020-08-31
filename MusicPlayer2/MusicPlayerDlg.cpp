@@ -2568,10 +2568,25 @@ void CMusicPlayerDlg::OnPlayItem()
 void CMusicPlayerDlg::OnItemProperty()
 {
     // TODO: 在此添加命令处理程序代码
-    CPropertyDlg propertyDlg(CPlayer::GetInstance().GetPlayList(), m_item_selected, false);
-    propertyDlg.DoModal();
-    if (propertyDlg.GetListRefresh())
+    CPropertyDlg* pDlg;
+    vector<SongInfo> items_selected;
+    if (m_items_selected.size() > 1)        //批量编辑
+    {
+        for(int index : m_items_selected)
+        {
+            if (index>=0 && index< CPlayer::GetInstance().GetSongNum())
+                items_selected.push_back(CPlayer::GetInstance().GetPlayList()[index]);
+        }
+        pDlg = new CPropertyDlg(items_selected);
+    }
+    else
+    {
+        pDlg = new CPropertyDlg(CPlayer::GetInstance().GetPlayList(), m_item_selected, false);
+    }
+    pDlg->DoModal();
+    if (pDlg->GetListRefresh())
         ShowPlayList();
+    SAFE_DELETE(pDlg);
 }
 
 

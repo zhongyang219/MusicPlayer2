@@ -7,16 +7,53 @@
 #include "afxdialogex.h"
 #include "COSUPlayerHelper.h"
 #include "TagLabHelper.h"
+#include "PropertyDlgHelper.h"
 
 
 // CPropertyTabDlg 对话框
 
+static void CopyMultiTagInfo(const wstring& str_src, wstring& str_dest)
+{
+    static wstring str_multi_value = CCommon::LoadText(IDS_MULTI_VALUE).GetString();
+    if (str_src != str_multi_value)
+        str_dest = str_src;
+}
+
+//更改标签信息后更新
+static void UpdateSongInfo(SongInfo song)
+{
+    vector<SongInfo>& cur_playlist{ CPlayer::GetInstance().GetPlayList() };
+    auto iter = std::find_if(cur_playlist.begin(), cur_playlist.end(), [&](const SongInfo& song_info)
+    {
+        return song_info.file_path == song.file_path;
+    });
+    if (iter != cur_playlist.end())
+    {
+        //重新从文件读取该歌曲的标签
+        HSTREAM hStream;
+        hStream = BASS_StreamCreateFile(FALSE, iter->file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+        //CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
+        CAudioTag audio_tag(hStream, *iter);
+        audio_tag.GetAudioTag();
+        BASS_StreamFree(hStream);
+        theApp.GetSongInfoRef(iter->file_path).CopyAudioTag(*iter);
+        theApp.SetSongDataModified();
+    }
+}
+
 IMPLEMENT_DYNAMIC(CPropertyTabDlg, CTabDlg)
 
 CPropertyTabDlg::CPropertyTabDlg(vector<SongInfo>& all_song_info, int& index, CWnd* pParent /*=NULL*/, bool read_only)
-    : CTabDlg(IDD_PROPERTY_DIALOG, pParent), m_all_song_info{ all_song_info }, m_index{ index }, m_read_only{ read_only }
+    : CTabDlg(IDD_PROPERTY_DIALOG, pParent), m_all_song_info{ all_song_info }, m_index{ index }, m_read_only{ read_only },
+    m_batch_edit{ false }
 {
-    m_song_num = all_song_info.size();
+    m_song_num = static_cast<int>(all_song_info.size());
+}
+
+CPropertyTabDlg::CPropertyTabDlg(vector<SongInfo>& song_info, CWnd* pParent /*= NULL*/)
+    : CTabDlg(IDD_PROPERTY_DIALOG, pParent), m_all_song_info{ song_info }, m_index{ m_no_use }, m_batch_edit{ true }
+{
+    m_song_num = static_cast<int>(song_info.size());
 }
 
 CPropertyTabDlg::~CPropertyTabDlg()
@@ -25,103 +62,126 @@ CPropertyTabDlg::~CPropertyTabDlg()
 
 void CPropertyTabDlg::ShowInfo()
 {
-	//显示文件名
-	m_file_name_edit.SetWindowText(m_all_song_info[m_index].GetFileName().c_str());
+    if (m_batch_edit)
+    {
+        CPropertyDlgHelper helper(m_all_song_info);
+        m_file_name_edit.SetWindowText(helper.GetMultiFileName().c_str());
+        m_file_path_edit.SetWindowText(helper.GetMultiFilePath().c_str());
+        m_file_type_edit.SetWindowText(helper.GetMultiType().c_str());
+        m_song_length_edit.SetWindowText(helper.GetMultiLength().c_str());
+        m_file_size_edit.SetWindowText(helper.GetMultiSize().c_str());
+        m_bit_rate_edit.SetWindowText(helper.GetMultiBitrate().c_str());
+        m_lyric_file_edit.SetWindowText(_T(""));
+        m_title_edit.SetWindowText(helper.GetMultiTitle().c_str());
+        m_artist_edit.SetWindowText(helper.GetMultiArtist().c_str());
+        m_album_edit.SetWindowText(helper.GetMultiAlbum().c_str());
+        m_year_edit.SetWindowText(helper.GetMultiYear().c_str());
+        m_track_edit.SetWindowText(helper.GetMultiTrack().c_str());
+        m_genre_combo.SetWindowText(helper.GetMultiGenre().c_str());
+        m_comment_edit.SetWindowText(helper.GetMultiComment().c_str());
+        SetDlgItemText(IDC_TAG_TYPE_STATIC, _T(""));
 
-	//显示文件路径
-	m_file_path_edit.SetWindowText((m_all_song_info[m_index].file_path).c_str());
+    }
+    else
+    {
+	    //显示文件名
+	    m_file_name_edit.SetWindowText(m_all_song_info[m_index].GetFileName().c_str());
 
-	//显示文件类型
-	wstring file_type;
-	CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
-	file_type = file_path.GetFileExtension();
-	//if (file_type == _T("mp3"))
-	//	m_file_type_edit.SetWindowText(_T("MP3音频文件"));
-	//else if (file_type == _T("wma"))
-	//	m_file_type_edit.SetWindowText(_T("Windows Media 音频文件"));
-	//else if (file_type == _T("wav"))
-	//	m_file_type_edit.SetWindowText(_T("WAV音频文件"));
-	//else if (file_type == _T("mid"))
-	//	m_file_type_edit.SetWindowText(_T("MIDI序列"));
-	//else if (file_type == _T("ogg"))
-	//	m_file_type_edit.SetWindowText(_T("OGG音频文件"));
-	//else if (file_type == _T("m4a"))
-	//	m_file_type_edit.SetWindowText(_T("MPEG-4 音频文件"));
-	//else
-	//	m_file_type_edit.SetWindowText((file_type + _T("文件")).c_str());
-	m_file_type_edit.SetWindowText((CAudioCommon::GetAudioDescriptionByExtension(file_type)).c_str());
+	    //显示文件路径
+	    m_file_path_edit.SetWindowText((m_all_song_info[m_index].file_path).c_str());
 
-	//显示文件长度
-	wstring song_length;
-	if (m_all_song_info[m_index].lengh.isZero())
-		song_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);
-	else
-		song_length = m_all_song_info[m_index].lengh.toString2();
-	m_song_length_edit.SetWindowText(song_length.c_str());
+	    //显示文件类型
+	    wstring file_type;
+	    CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
+	    file_type = file_path.GetFileExtension();
+	    //if (file_type == _T("mp3"))
+	    //	m_file_type_edit.SetWindowText(_T("MP3音频文件"));
+	    //else if (file_type == _T("wma"))
+	    //	m_file_type_edit.SetWindowText(_T("Windows Media 音频文件"));
+	    //else if (file_type == _T("wav"))
+	    //	m_file_type_edit.SetWindowText(_T("WAV音频文件"));
+	    //else if (file_type == _T("mid"))
+	    //	m_file_type_edit.SetWindowText(_T("MIDI序列"));
+	    //else if (file_type == _T("ogg"))
+	    //	m_file_type_edit.SetWindowText(_T("OGG音频文件"));
+	    //else if (file_type == _T("m4a"))
+	    //	m_file_type_edit.SetWindowText(_T("MPEG-4 音频文件"));
+	    //else
+	    //	m_file_type_edit.SetWindowText((file_type + _T("文件")).c_str());
+	    m_file_type_edit.SetWindowText((CAudioCommon::GetAudioDescriptionByExtension(file_type)).c_str());
 
-	//显示文件大小
-	size_t file_size;
-	file_size = CCommon::GetFileSize(m_all_song_info[m_index].file_path);
-	m_file_size_edit.SetWindowText(CCommon::DataSizeToString(file_size));
+	    //显示文件长度
+	    wstring song_length;
+	    if (m_all_song_info[m_index].lengh.isZero())
+		    song_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);
+	    else
+		    song_length = m_all_song_info[m_index].lengh.toString2();
+	    m_song_length_edit.SetWindowText(song_length.c_str());
 
-	//显示比特率
-	CString info;
-	if (file_size == 0 || m_all_song_info[m_index].bitrate == 0)		//文件大小为0、文件长度为0或文件为midi音乐时不显示比特率
-	{
-		info = _T("-");
-	}
-	else
-	{
-		info.Format(_T("%d Kbps"), m_all_song_info[m_index].bitrate);
-	}
-	m_bit_rate_edit.SetWindowText(info);
+	    //显示文件大小
+	    size_t file_size;
+	    file_size = CCommon::GetFileSize(m_all_song_info[m_index].file_path);
+	    m_file_size_edit.SetWindowText(CCommon::DataSizeToString(file_size));
 
-	//显示歌词路径
-	if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
-		m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_INNER_LYRIC));
-	else if(!m_all_song_info[m_index].lyric_file.empty())
-		m_lyric_file_edit.SetWindowText(m_all_song_info[m_index].lyric_file.c_str());
-	else
-		m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
+	    //显示比特率
+	    CString info;
+	    if (file_size == 0 || m_all_song_info[m_index].bitrate == 0)		//文件大小为0、文件长度为0或文件为midi音乐时不显示比特率
+	    {
+		    info = _T("-");
+	    }
+	    else
+	    {
+		    info.Format(_T("%d Kbps"), m_all_song_info[m_index].bitrate);
+	    }
+	    m_bit_rate_edit.SetWindowText(info);
 
-	//显示音频信息
-	//CString info;
-	m_title_edit.SetWindowText(m_all_song_info[m_index].GetTitle().c_str());
-	m_artist_edit.SetWindowText(m_all_song_info[m_index].GetArtist().c_str());
-	m_album_edit.SetWindowText(m_all_song_info[m_index].GetAlbum().c_str());
-	m_year_edit.SetWindowText(m_all_song_info[m_index].GetYear().c_str());
-	if (m_all_song_info[m_index].track != 0)
-		info.Format(_T("%d"), m_all_song_info[m_index].track);
-	else
-		info = _T("");
-	m_track_edit.SetWindowText(info);
-	m_genre_combo.SetWindowText(m_all_song_info[m_index].GetGenre().c_str());
-	m_comment_edit.SetWindowText(m_all_song_info[m_index].comment.c_str());
+	    //显示歌词路径
+	    if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
+		    m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_INNER_LYRIC));
+	    else if(!m_all_song_info[m_index].lyric_file.empty())
+		    m_lyric_file_edit.SetWindowText(m_all_song_info[m_index].lyric_file.c_str());
+	    else
+		    m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
 
-	//显示标签类型
-	if (file_type == _T("mp3"))
-	{
-		CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
-        auto tag_type = m_all_song_info[m_index].tag_type;
-        if (tag_type == 0)
-        {
-            tag_type_str += CCommon::LoadText(IDS_UNKNOW);
-        }
-        else
-        {
-            if (tag_type & T_ID3V1)
-                tag_type_str += _T("ID3v1 ");
-            if (tag_type & T_ID3V2)
-                tag_type_str += _T("ID3v2 ");
-            if (tag_type & T_APE)
-                tag_type_str += _T("APE ");
-        }
-		SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str);
-	}
-	else
-	{
-		SetDlgItemText(IDC_TAG_TYPE_STATIC, _T(""));
-	}
+	    //显示音频信息
+	    //CString info;
+	    m_title_edit.SetWindowText(m_all_song_info[m_index].GetTitle().c_str());
+	    m_artist_edit.SetWindowText(m_all_song_info[m_index].GetArtist().c_str());
+	    m_album_edit.SetWindowText(m_all_song_info[m_index].GetAlbum().c_str());
+	    m_year_edit.SetWindowText(m_all_song_info[m_index].GetYear().c_str());
+	    if (m_all_song_info[m_index].track != 0)
+		    info.Format(_T("%d"), m_all_song_info[m_index].track);
+	    else
+		    info = _T("");
+	    m_track_edit.SetWindowText(info);
+	    m_genre_combo.SetWindowText(m_all_song_info[m_index].GetGenre().c_str());
+	    m_comment_edit.SetWindowText(m_all_song_info[m_index].comment.c_str());
+
+	    //显示标签类型
+	    if (file_type == _T("mp3"))
+	    {
+		    CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
+            auto tag_type = m_all_song_info[m_index].tag_type;
+            if (tag_type == 0)
+            {
+                tag_type_str += CCommon::LoadText(IDS_UNKNOW);
+            }
+            else
+            {
+                if (tag_type & T_ID3V1)
+                    tag_type_str += _T("ID3v1 ");
+                if (tag_type & T_ID3V2)
+                    tag_type_str += _T("ID3v2 ");
+                if (tag_type & T_APE)
+                    tag_type_str += _T("APE ");
+            }
+		    SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str);
+	    }
+	    else
+	    {
+		    SetDlgItemText(IDC_TAG_TYPE_STATIC, _T(""));
+	    }
+    }
 }
 
 void CPropertyTabDlg::SetEditReadOnly(bool read_only)
@@ -139,8 +199,16 @@ void CPropertyTabDlg::SetEditReadOnly(bool read_only)
 
 void CPropertyTabDlg::SetWreteEnable()
 {
-	CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
-	m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CTagLabHelper::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/);
+    if (m_batch_edit)
+    {
+        CPropertyDlgHelper helper(m_all_song_info);
+        m_write_enable = helper.IsMultiWritable();
+    }
+    else
+    {
+	    CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
+	    m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CTagLabHelper::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/);
+    }
     m_write_enable &= !m_read_only;
     SetEditReadOnly(!m_write_enable);
     SetSaveBtnEnable();
@@ -359,7 +427,7 @@ void CPropertyTabDlg::OnEnChangeCommentEdit()
 //}
 
 
-bool CPropertyTabDlg::SaveModified()
+int CPropertyTabDlg::SaveModified()
 {
 	if (!m_write_enable) return false;
 	CWaitCursor wait_cursor;
@@ -371,8 +439,9 @@ bool CPropertyTabDlg::SaveModified()
 	song_info.artist = str_temp;
 	m_album_edit.GetWindowText(str_temp);
 	song_info.album = str_temp;
-	m_track_edit.GetWindowText(str_temp);
-	song_info.track = static_cast<BYTE>(_wtoi(str_temp));
+    CString str_track;
+	m_track_edit.GetWindowText(str_track);
+	song_info.track = static_cast<BYTE>(_wtoi(str_track));
 	m_year_edit.GetWindowText(str_temp);
 	song_info.year = str_temp;
 	if (m_genre_modified)
@@ -384,25 +453,58 @@ bool CPropertyTabDlg::SaveModified()
 	m_comment_edit.GetWindowText(str_temp);
 	song_info.comment = str_temp;
 
-    song_info.file_path = m_all_song_info[m_index].file_path;
     song_info.Normalize();
-    bool saved = CTagLabHelper::WriteAudioTag(song_info);
-    if (saved)
-	{
-		//重新从文件读取该歌曲的标签
-		HSTREAM hStream;
-		hStream = BASS_StreamCreateFile(FALSE, song_info.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-		//CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
-		CAudioTag audio_tag(hStream, m_all_song_info[m_index]);
-		audio_tag.GetAudioTag();
-		BASS_StreamFree(hStream);
-		theApp.m_song_data[m_all_song_info[m_index].file_path].CopyAudioTag(m_all_song_info[m_index]);
-		theApp.SetSongDataModified();
 
-		m_modified = false;
-        SetSaveBtnEnable();
+    if (m_batch_edit)
+    {
+        int saved_count{};
+        for (int i{}; i < m_song_num; i++)
+        {
+            SongInfo cur_song = m_all_song_info[i];
+            CopyMultiTagInfo(song_info.title, cur_song.title);
+            CopyMultiTagInfo(song_info.artist, cur_song.artist);
+            CopyMultiTagInfo(song_info.album, cur_song.album);
+            CopyMultiTagInfo(song_info.year, cur_song.year);
+            CopyMultiTagInfo(song_info.genre, cur_song.genre);
+            CopyMultiTagInfo(song_info.comment, cur_song.comment);
+            if (str_track != CCommon::LoadText(IDS_MULTI_VALUE))
+            {
+                cur_song.track = static_cast<BYTE>(_wtoi(str_track));
+            }
+            if (CTagLabHelper::WriteAudioTag(cur_song))
+            {
+                UpdateSongInfo(cur_song);
+                saved_count++;
+            }
+        }
+        if (saved_count > 0)
+        {
+            m_modified = false;
+            SetSaveBtnEnable();
+        }
+        return saved_count;
     }
-    return saved;
+    else
+    {
+        song_info.file_path = m_all_song_info[m_index].file_path;
+        bool saved = CTagLabHelper::WriteAudioTag(song_info);
+        if (saved)
+	    {
+		    //重新从文件读取该歌曲的标签
+		    HSTREAM hStream;
+		    hStream = BASS_StreamCreateFile(FALSE, song_info.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+		    //CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
+		    CAudioTag audio_tag(hStream, m_all_song_info[m_index]);
+		    audio_tag.GetAudioTag();
+		    BASS_StreamFree(hStream);
+		    theApp.m_song_data[m_all_song_info[m_index].file_path].CopyAudioTag(m_all_song_info[m_index]);
+		    theApp.SetSongDataModified();
+
+		    m_modified = false;
+            SetSaveBtnEnable();
+        }
+        return saved;
+    }
 }
 
 
