@@ -132,6 +132,8 @@ void CPropertyAlbumCoverDlg::ShowInfo()
             img_data = CTagLabHelper::GetFlacAlbumCover(file_path, cover_type);
         else if (file_ext == L"m4a")
             img_data = CTagLabHelper::GetM4aAlbumCover(file_path, cover_type);
+        else if (file_ext == L"wma" || file_ext == L"asf")
+            img_data = CTagLabHelper::GetAsfAlbumCover(file_path, cover_type);
         cover_size = img_data.size();
 
         //将封面保存到临时目录

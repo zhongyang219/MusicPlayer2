@@ -12,6 +12,7 @@ enum AudioType
 {
 	AU_MP3,
 	AU_WMA,
+    AU_ASF,
 	AU_OGG,
 	AU_MP4,
 	AU_APE,

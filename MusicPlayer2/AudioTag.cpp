@@ -33,8 +33,9 @@ void CAudioTag::GetAudioTag()
         case AU_MP3:
             CTagLabHelper::GetMpegTagInfo(m_song_info);
             break;
-        case AU_WMA:
-            GetWmaTag();
+        case AU_WMA: case AU_ASF:
+            //GetWmaTag();
+            CTagLabHelper::GetAsfTagInfo(m_song_info);
             break;
         case AU_OGG:
             //GetOggTag();
@@ -101,6 +102,10 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
     else if (m_type == AU_MP4)
     {
         image_contents = CTagLabHelper::GetM4aAlbumCover(m_song_info.file_path, image_type);
+    }
+    else if (m_type == AU_WMA || m_type == AU_ASF)
+    {
+        image_contents = CTagLabHelper::GetAsfAlbumCover(m_song_info.file_path, image_type);
     }
     else
     {

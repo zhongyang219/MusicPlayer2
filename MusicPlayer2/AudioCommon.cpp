@@ -35,6 +35,8 @@ AudioType CAudioCommon::GetAudioTypeByExtension(const wstring & file_name)
         return AU_MP3;
     else if (type == L"wma")
         return AU_WMA;
+    else if (type == L"asf")
+        return AU_ASF;
     else if (type == L"ogg" || type == L"oga")
         return AU_OGG;
     else if (type == L"m4a")

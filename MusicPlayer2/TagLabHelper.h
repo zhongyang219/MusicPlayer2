@@ -12,11 +12,13 @@ public:
     static string GetM4aAlbumCover(const wstring& file_path, int& type);
     static string GetFlacAlbumCover(const wstring& file_path, int& type);
     static string GetMp3AlbumCover(const wstring& file_path, int& type);
+    static string GetAsfAlbumCover(const wstring& file_path, int& type);
 
     //∂¡±Í«©–≈œ¢
     static void GetFlacTagInfo(SongInfo& song_info);
     static void GetM4aTagInfo(SongInfo& song_info);
     static void GetMpegTagInfo(SongInfo& song_info);
+    static void GetAsfTagInfo(SongInfo& song_info);
     static void GetApeTagInfo(SongInfo& song_info);
     static void GetWavTagInfo(SongInfo& song_info);
     static void GetOggTagInfo(SongInfo& song_info);
@@ -54,12 +56,14 @@ private:
     static bool WriteWavPackTag(SongInfo& song_info);
     static bool WriteTtaTag(SongInfo& song_info);
     static bool WriteAiffTag(SongInfo& song_info);
+    static bool WriteAsfTag(SongInfo& song_info);
 
     static bool IsMpegFile(const wstring& ext);
     static bool IsFlacFile(const wstring& ext);
     static bool IsMpcFile(const wstring& ext);
     static bool IsOggFile(const wstring& ext);
     static bool IsAiffFile(const wstring& ext);
+    static bool IsAsfFile(const wstring& ext);
 
 };
 

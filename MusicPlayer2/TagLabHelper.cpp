@@ -17,6 +17,7 @@
 #include "taglib/vorbisfile.h"
 #include "taglib/trueaudiofile.h"
 #include "taglib/aifffile.h"
+#include "taglib/asffile.h"
 
 using namespace TagLib;
 
@@ -179,8 +180,27 @@ string CTagLabHelper::GetMp3AlbumCover(const wstring & file_path, int & type)
             auto pic_data = frame->picture();
             //获取专辑封面
             cover_contents.assign(pic_data.data(), pic_data.size());
-            frame->type();
             wstring img_type = frame->mimeType().toCWString();
+            type = GetPicType(img_type);
+        }
+    }
+    return cover_contents;
+}
+
+string CTagLabHelper::GetAsfAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    ASF::File file(file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        ASF::AttributeList attr = tag->attribute("WM/Picture");
+        if (!attr.isEmpty())
+        {
+            ASF::Picture picture = attr.front().toPicture();
+            auto pic_data = picture.picture();
+            cover_contents.assign(pic_data.data(), pic_data.size());
+            wstring img_type = picture.mimeType().toCWString();
             type = GetPicType(img_type);
         }
     }
@@ -223,6 +243,16 @@ void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
     if (file.hasAPETag())
         song_info.tag_type |= T_APE;
 
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetAsfTagInfo(SongInfo& song_info)
+{
+    ASF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     if (tag != nullptr)
     {
@@ -356,6 +386,8 @@ bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
         return WriteOpusTag(song_info);
     else if (ext == L"tta")
         return WriteTtaTag(song_info);
+    else if (IsAsfFile(ext))
+        return WriteAsfTag(song_info);
     return false;
 }
 
@@ -561,6 +593,15 @@ bool CTagLabHelper::WriteAiffTag(SongInfo & song_info)
     return saved;
 }
 
+bool CTagLabHelper::WriteAsfTag(SongInfo & song_info)
+{
+    ASF::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
 bool CTagLabHelper::IsMpegFile(const wstring& ext)
 {
     return ext == L"mp3" || ext == L"mp2" || ext == L"mp1";
@@ -586,12 +627,17 @@ bool CTagLabHelper::IsAiffFile(const wstring& ext)
     return ext == L"aif" || ext == L"aiff";
 }
 
+bool CTagLabHelper::IsAsfFile(const wstring& ext)
+{
+    return ext == L"wma" || ext == L"asf";
+}
+
 bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a" || _ext == L"wav" || IsOggFile(_ext) || _ext == L"ape"
-        || _ext == L"wv" || IsAiffFile(_ext) || _ext == L"opus" || _ext == L"tta";
+        || _ext == L"wv" || IsAiffFile(_ext) || _ext == L"opus" || _ext == L"tta" || IsAsfFile(_ext);
 }
 
 bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
