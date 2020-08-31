@@ -19,6 +19,12 @@ enum AudioType
 	AU_CUE,
 	AU_MIDI,
     AU_WAV,
+    AU_MPC,
+    AU_DSD,
+    AU_OPUS,
+    AU_WV,
+    AU_SPX,
+    AU_TTA,
 	AU_OTHER
 };
 

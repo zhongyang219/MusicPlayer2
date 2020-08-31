@@ -9,6 +9,12 @@
 #include "FilePathHelper.h"
 #include "taglib/attachedpictureframe.h"
 #include "taglib/id3v2tag.h"
+#include "taglib/wavfile.h"
+#include "taglib/mpcfile.h"
+#include "taglib/opusfile.h"
+#include "taglib/wavpackfile.h"
+#include "taglib/vorbisfile.h"
+#include "taglib/trueaudiofile.h"
 
 using namespace TagLib;
 
@@ -216,15 +222,79 @@ void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
     }
 }
 
+void CTagLabHelper::GetWavTagInfo(SongInfo& song_info)
+{
+    RIFF::WAV::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetOggTagInfo(SongInfo& song_info)
+{
+    Vorbis::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetMpcTagInfo(SongInfo& song_info)
+{
+    MPC::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetOpusTagInfo(SongInfo& song_info)
+{
+    Ogg::Opus::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetWavPackTagInfo(SongInfo& song_info)
+{
+    WavPack::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetTtaTagInfo(SongInfo& song_info)
+{
+    TrueAudio::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
 bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
 {
     wstring ext = CFilePathHelper(song_info.file_path).GetFileExtension();
     if (IsMpegFile(ext))
         return WriteMpegTag(song_info);
-    else if (ext == L"flac")
+    else if (IsFlacFile(ext))
         return WriteFlacTag(song_info);
     else if (ext == L"m4a")
         return WriteM4aTag(song_info);
+    else if (IsOggFile(ext))
+        return WriteOggTag(song_info);
+    else if (ext == L"wav")
+        return WriteWavTag(song_info);
     return false;
 }
 
@@ -367,23 +437,56 @@ bool CTagLabHelper::WriteM4aTag(SongInfo & song_info)
     return saved;
 }
 
+bool CTagLabHelper::WriteWavTag(SongInfo & song_info)
+{
+    RIFF::WAV::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLabHelper::WriteOggTag(SongInfo & song_info)
+{
+    Vorbis::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
 bool CTagLabHelper::IsMpegFile(const wstring& ext)
 {
     return ext == L"mp3" || ext == L"mp2" || ext == L"mp1";
+}
+
+bool CTagLabHelper::IsFlacFile(const wstring& ext)
+{
+    return ext == L"flac" || ext == L"fla";
+}
+
+bool CTagLabHelper::IsMpcFile(const wstring & ext)
+{
+    return ext == L"mpc" || ext == L"mp+" || ext == L"mpp";
+}
+
+bool CTagLabHelper::IsOggFile(const wstring& ext)
+{
+    return ext == L"ogg" || ext == L"oga";
 }
 
 bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return IsMpegFile(_ext) || _ext == L"flac" || _ext == L"m4a";
+    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a" || _ext == L"wav" || IsOggFile(_ext);
 }
 
 bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return IsMpegFile(_ext) || _ext == L"flac" || _ext == L"m4a";
+    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a";
 }
 
 bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
@@ -391,7 +494,7 @@ bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& alb
     wstring ext = CFilePathHelper(file_path).GetFileExtension();
     if (IsMpegFile(ext))
         return WriteMp3AlbumCover(file_path, album_cover_path);
-    else if (ext == L"flac")
+    else if (IsFlacFile(ext))
         return WriteFlacAlbumCover(file_path, album_cover_path);
     else if (ext == L"m4a")
         return WriteM4aAlbumCover(file_path, album_cover_path);

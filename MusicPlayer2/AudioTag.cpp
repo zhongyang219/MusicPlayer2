@@ -37,7 +37,8 @@ void CAudioTag::GetAudioTag()
             GetWmaTag();
             break;
         case AU_OGG:
-            GetOggTag();
+            //GetOggTag();
+            CTagLabHelper::GetOggTagInfo(m_song_info);
             break;
         case AU_MP4:
             GetMp4Tag();
@@ -46,7 +47,22 @@ void CAudioTag::GetAudioTag()
             GetApeTag();
             break;
         case AU_FLAC:
-            GetFlacTag();
+            CTagLabHelper::GetFlacTagInfo(m_song_info);
+            break;
+        case AU_WAV:
+            CTagLabHelper::GetWavTagInfo(m_song_info);
+            break;
+        case AU_MPC:
+            CTagLabHelper::GetMpcTagInfo(m_song_info);
+            break;
+        case AU_OPUS:
+            CTagLabHelper::GetOpusTagInfo(m_song_info);
+            break;
+        case AU_WV:
+            CTagLabHelper::GetWavPackTagInfo(m_song_info);
+            break;
+        case AU_TTA:
+            CTagLabHelper::GetTtaTagInfo(m_song_info);
             break;
         default:
             GetTagDefault();
@@ -462,7 +478,6 @@ bool CAudioTag::GetFlacTag()
 //        return true;
 //    }
 
-    CTagLabHelper::GetFlacTagInfo(m_song_info);
     return true;
 }
 

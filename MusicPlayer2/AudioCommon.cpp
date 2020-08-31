@@ -399,6 +399,16 @@ wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)
         return L"MP4";
     case 0x10700:
         return L"APE";
+    case 0x10a00:
+        return L"MPC";
+    case 0x11700:
+        return L"DSD";
+    case 0x11200:
+        return L"OPUS";
+    case 0x10c00:
+        return L"SPX";
+    case 0x10f00:
+        return L"TTA";
     default:
         return wstring();
     }
@@ -438,6 +448,24 @@ AudioType CAudioCommon::GetAudioTypeByBassChannel(DWORD ctype)
         break;
     case 0x10700:
         type = AudioType::AU_APE;
+        break;
+    case 0x10a00:
+        type = AudioType::AU_MPC;
+        break;
+    case 0x11700:
+        type = AudioType::AU_DSD;
+        break;
+    case 0x11200:
+        type = AudioType::AU_OPUS;
+        break;
+    case 0x10500:
+        type = AudioType::AU_WV;
+        break;
+    case 0x10c00:
+        type = AudioType::AU_SPX;
+        break;
+    case 0x10f00:
+        type = AudioType::AU_TTA;
         break;
     default:
         type = AudioType::AU_OTHER;
