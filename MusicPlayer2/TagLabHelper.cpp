@@ -219,7 +219,7 @@ void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
 bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
 {
     wstring ext = CFilePathHelper(song_info.file_path).GetFileExtension();
-    if (ext == L"mp3")
+    if (IsMpegFile(ext))
         return WriteMpegTag(song_info);
     else if (ext == L"flac")
         return WriteFlacTag(song_info);
@@ -367,24 +367,29 @@ bool CTagLabHelper::WriteM4aTag(SongInfo & song_info)
     return saved;
 }
 
+bool CTagLabHelper::IsMpegFile(const wstring& ext)
+{
+    return ext == L"mp3" || ext == L"mp2" || ext == L"mp1";
+}
+
 bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return _ext == L"mp3" || _ext == L"flac" || _ext == L"m4a";
+    return IsMpegFile(_ext) || _ext == L"flac" || _ext == L"m4a";
 }
 
 bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return _ext == L"mp3" || _ext == L"flac" || _ext == L"m4a";
+    return IsMpegFile(_ext) || _ext == L"flac" || _ext == L"m4a";
 }
 
 bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
 {
     wstring ext = CFilePathHelper(file_path).GetFileExtension();
-    if (ext == L"mp3")
+    if (IsMpegFile(ext))
         return WriteMp3AlbumCover(file_path, album_cover_path);
     else if (ext == L"flac")
         return WriteFlacAlbumCover(file_path, album_cover_path);

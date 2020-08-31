@@ -39,5 +39,8 @@ private:
     static bool WriteMpegTag(SongInfo& song_info);
     static bool WriteFlacTag(SongInfo& song_info);
     static bool WriteM4aTag(SongInfo& song_info);
+
+    static bool IsMpegFile(const wstring& ext);
+
 };
 
