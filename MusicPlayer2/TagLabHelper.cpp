@@ -107,6 +107,55 @@ int GetPicType(const wstring& mimeType)
     return type;
 }
 
+static void GetId3v2AlbumCover(ID3v2::Tag* id3v2, string& cover_contents, int& type)
+{
+    if (id3v2 != nullptr)
+    {
+        auto pic_frame_list = id3v2->frameListMap()["APIC"];
+        if (!pic_frame_list.isEmpty())
+        {
+            ID3v2::AttachedPictureFrame *frame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(pic_frame_list.front());
+            if (frame != nullptr)
+            {
+                auto pic_data = frame->picture();
+                //获取专辑封面
+                cover_contents.assign(pic_data.data(), pic_data.size());
+                wstring img_type = frame->mimeType().toCWString();
+                type = GetPicType(img_type);
+            }
+        }
+    }
+}
+
+static void DeleteId3v2AlbumCover(ID3v2::Tag* id3v2tag)
+{
+    if (id3v2tag != nullptr)
+    {
+        auto pic_frame_list = id3v2tag->frameListMap()["APIC"];
+        if (!pic_frame_list.isEmpty())
+        {
+            for (auto frame : pic_frame_list)
+                id3v2tag->removeFrame(frame);
+        }
+    }
+}
+
+static void WriteId3v2AlbumCover(ID3v2::Tag* id3v2tag, const wstring& album_cover_path)
+{
+    if (id3v2tag != nullptr)
+    {
+        //读取图片文件
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+        //向音频文件写入图片文件
+        ID3v2::AttachedPictureFrame* pic_frame = new ID3v2::AttachedPictureFrame();
+        pic_frame->setPicture(pic_data);
+        pic_frame->setType(ID3v2::AttachedPictureFrame::FrontCover);
+        wstring ext = CFilePathHelper(album_cover_path).GetFileExtension();
+        pic_frame->setMimeType(L"image/" + ext);
+        id3v2tag->addFrame(pic_frame);
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
@@ -182,19 +231,8 @@ string CTagLabHelper::GetMp3AlbumCover(const wstring & file_path, int & type)
 {
     string cover_contents;
     MPEG::File file(file_path.c_str());
-    auto pic_frame_list = file.ID3v2Tag()->frameListMap()["APIC"];
-    if (!pic_frame_list.isEmpty())
-    {
-        ID3v2::AttachedPictureFrame *frame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(pic_frame_list.front());
-        if (frame != nullptr)
-        {
-            auto pic_data = frame->picture();
-            //获取专辑封面
-            cover_contents.assign(pic_data.data(), pic_data.size());
-            wstring img_type = frame->mimeType().toCWString();
-            type = GetPicType(img_type);
-        }
-    }
+    auto id3v2 = file.ID3v2Tag();
+    GetId3v2AlbumCover(id3v2, cover_contents, type);
     return cover_contents;
 }
 
@@ -215,6 +253,15 @@ string CTagLabHelper::GetAsfAlbumCover(const wstring& file_path, int& type)
             type = GetPicType(img_type);
         }
     }
+    return cover_contents;
+}
+
+string CTagLabHelper::GetWavAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    RIFF::WAV::File file(file_path.c_str());
+    auto id3v2 = file.ID3v2Tag();
+    GetId3v2AlbumCover(id3v2, cover_contents, type);
     return cover_contents;
 }
 
@@ -479,29 +526,12 @@ bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& 
     if (remove_exist)
     {
         auto id3v2tag = file.ID3v2Tag();
-        if (id3v2tag != nullptr)
-        {
-            auto pic_frame_list = id3v2tag->frameListMap()["APIC"];
-            if (!pic_frame_list.isEmpty())
-            {
-                for (auto frame : pic_frame_list)
-                    id3v2tag->removeFrame(frame);
-            }
-        }
+        DeleteId3v2AlbumCover(id3v2tag);
     }
     if (!album_cover_path.empty())
     {
-        //读取图片文件
-        ByteVector pic_data;
-        FileToByteVector(pic_data, album_cover_path);
-        //向音频文件写入图片文件
-        ID3v2::AttachedPictureFrame* pic_frame = new ID3v2::AttachedPictureFrame();
-        pic_frame->setPicture(pic_data);
-        pic_frame->setType(ID3v2::AttachedPictureFrame::FrontCover);
-        wstring ext = CFilePathHelper(album_cover_path).GetFileExtension();
-        pic_frame->setMimeType(L"image/" + ext);
         auto id3v2tag = file.ID3v2Tag(true);
-        id3v2tag->addFrame(pic_frame);
+        WriteId3v2AlbumCover(id3v2tag, album_cover_path);
     }
     bool saved = file.save(MPEG::File::ID3v2);
     return saved;
@@ -605,6 +635,26 @@ bool CTagLabHelper::WriteAsfAlbumCover(const wstring& file_path, const wstring& 
         picture.setType(ASF::Picture::FrontCover);
         picture.setPicture(pic_data);
         tag->setAttribute(STR_ASF_COVER_TAG, picture);
+    }
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLabHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    RIFF::WAV::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    //先删除专辑封面
+    auto id3v2tag = file.ID3v2Tag();
+    if (remove_exist)
+    {
+        DeleteId3v2AlbumCover(id3v2tag);
+    }
+    if (!album_cover_path.empty())
+    {
+        WriteId3v2AlbumCover(id3v2tag, album_cover_path);
     }
     bool saved = file.save();
     return saved;
@@ -728,7 +778,7 @@ bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF;
+    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV;
 }
 
 bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
@@ -751,6 +801,7 @@ bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& alb
     case AU_FLAC:
         return WriteFlacAlbumCover(file_path, album_cover_path);
     case AU_WAV:
+        return WriteWavAlbumCover(file_path, album_cover_path);
         break;
     case AU_MPC:
         break;

@@ -13,6 +13,7 @@ public:
     static string GetFlacAlbumCover(const wstring& file_path, int& type);
     static string GetMp3AlbumCover(const wstring& file_path, int& type);
     static string GetAsfAlbumCover(const wstring& file_path, int& type);
+    static string GetWavAlbumCover(const wstring& file_path, int& type);
 
     //读标签信息
     static void GetFlacTagInfo(SongInfo& song_info);
@@ -42,6 +43,7 @@ public:
     static bool WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteM4aAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteAsfAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
+    static bool WriteWavAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
 
     //根据一个文件扩展名判断此格式是否已支持写入标签
     static bool IsFileTypeTagWriteSupport(const wstring& ext);

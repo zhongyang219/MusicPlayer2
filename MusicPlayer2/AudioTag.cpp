@@ -90,6 +90,10 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name)
     {
         image_contents = CTagLabHelper::GetAsfAlbumCover(m_song_info.file_path, image_type);
     }
+    else if (m_type == AU_WAV)
+    {
+        image_contents = CTagLabHelper::GetWavAlbumCover(m_song_info.file_path, image_type);
+    }
 
     //将专辑封面保存到临时目录
     wstring file_path{ CCommon::GetTemplatePath() };
