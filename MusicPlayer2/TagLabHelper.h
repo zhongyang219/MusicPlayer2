@@ -44,6 +44,7 @@ public:
     static bool WriteAsfAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteWavAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteTtaAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
+    static bool WriteApeAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
 
     //–¥±Í«©–≈œ¢
     static bool WriteMpegTag(SongInfo& song_info);

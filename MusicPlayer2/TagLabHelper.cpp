@@ -282,32 +282,35 @@ string CTagLabHelper::GetApeAlbumCover(const wstring& file_path, int& type)
 {
     string cover_contents;
     APE::File file(file_path.c_str());
-    auto tag = file.APETag(true);
-    auto item_list_map = tag->itemListMap();
-    auto pic_item = item_list_map[STR_APE_COVER_TAG];
-    auto pic_data = pic_item.binaryData();
-    if (!pic_data.isEmpty())
+    auto tag = file.APETag();
+    if (tag!=nullptr)
     {
-        cover_contents.assign(pic_data.data(), pic_data.size());
-
-        size_t index{};
-        index = cover_contents.find('\0');
-        std::string pic_desc;
-        if (index != std::string::npos)
+        auto item_list_map = tag->itemListMap();
+        auto pic_item = item_list_map[STR_APE_COVER_TAG];
+        auto pic_data = pic_item.binaryData();
+        if (!pic_data.isEmpty())
         {
-            pic_desc = cover_contents.substr(0, index + 1);
-            cover_contents = cover_contents.substr(index + 1);
-        }
+            cover_contents.assign(pic_data.data(), pic_data.size());
 
-        if (!pic_desc.empty())
-        {
-            std::string img_type;
-            index = cover_contents.rfind('.');
-            if (index != std::string::npos && index < cover_contents.size() - 1)
+            size_t index{};
+            index = cover_contents.find('\0');
+            std::string pic_desc;
+            if (index != std::string::npos)
             {
-                img_type = cover_contents.substr(index + 1);
-                img_type = "image/" + img_type;
-                type = GetPicType(CCommon::ASCIIToUnicode(img_type));
+                pic_desc = cover_contents.substr(0, index);
+                cover_contents = cover_contents.substr(index + 1);
+            }
+
+            if (!pic_desc.empty())
+            {
+                std::string img_type;
+                index = pic_desc.rfind('.');
+                if (index != std::string::npos && index < pic_desc.size() - 1)
+                {
+                    img_type = pic_desc.substr(index + 1);
+                    img_type = "image/" + img_type;
+                    type = GetPicType(CCommon::ASCIIToUnicode(img_type));
+                }
             }
         }
     }
@@ -674,6 +677,39 @@ bool CTagLabHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& 
 bool CTagLabHelper::WriteTtaAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
 {
     return false;
+}
+
+bool CTagLabHelper::WriteApeAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    APE::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.APETag(true);
+    auto item_list_map = tag->itemListMap();
+    if (remove_exist)
+    {
+        item_list_map.erase(STR_APE_COVER_TAG);
+    }
+
+    if (!album_cover_path.empty())
+    {
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+
+        ByteVector pic_item_data;
+        pic_item_data = "Cover Art (Front).";
+        wstring file_type = CFilePathHelper(album_cover_path).GetFileExtension();
+        for (wchar_t ch : file_type)
+            pic_item_data.append(static_cast<char>(ch));
+        pic_item_data.append('\0');
+        pic_item_data.append(pic_data);
+
+        APE::Item pic_item(STR_APE_COVER_TAG, pic_item_data, true);
+        tag->setItem(STR_APE_COVER_TAG, pic_item);
+    }
+    bool saved = file.save();
+    return saved;
 }
 
 bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
