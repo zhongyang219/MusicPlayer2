@@ -122,30 +122,12 @@ void CPropertyAlbumCoverDlg::ShowInfo()
     //载入内嵌专辑封面
     if(!IsShowOutAlbumCover() && !m_batch_edit)
     {
-        wstring file_path = CurrentSong().file_path;
-        wstring file_ext = CFilePathHelper(file_path).GetFileExtension();
-        //获取专辑封面
-        string img_data;
-        if (file_ext == L"mp3")
-            img_data = CTagLabHelper::GetMp3AlbumCover(file_path, cover_type);
-        else if (file_ext == L"flac")
-            img_data = CTagLabHelper::GetFlacAlbumCover(file_path, cover_type);
-        else if (file_ext == L"m4a")
-            img_data = CTagLabHelper::GetM4aAlbumCover(file_path, cover_type);
-        else if (file_ext == L"wma" || file_ext == L"asf")
-            img_data = CTagLabHelper::GetAsfAlbumCover(file_path, cover_type);
-        cover_size = img_data.size();
+        CAudioTag audio_tag(CurrentSong().file_path);
+        wstring cover_img_path = audio_tag.GetAlbumCover(cover_type, PROPERTY_COVER_IMG_FILE_NAME, &cover_size);
 
-        //将封面保存到临时目录
-        if (!img_data.empty())
-        {
-            wstring cover_img_path = CCommon::GetTemplatePath() + PROPERTY_COVER_IMG_FILE_NAME;
-            ofstream out_put{ cover_img_path, std::ios::binary };
-            out_put << img_data;
-            out_put.close();
-            //载入图片
+        //载入图片
+        if (cover_size > 0)
             m_cover_img.Load(cover_img_path.c_str());
-        }
     }
 
     //载入外部专辑封面
@@ -328,7 +310,7 @@ void CPropertyAlbumCoverDlg::SetWreteEnable()
     else
     {
         CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
-        m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CTagLabHelper::IsFileTypeCoverWriteSupport(file_path.GetFileExtension()));
+        m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CAudioTag::IsFileTypeCoverWriteSupport(file_path.GetFileExtension()));
     }
     EnableControls();
     SetSaveBtnEnable();
@@ -365,7 +347,8 @@ int CPropertyAlbumCoverDlg::SaveAlbumCover(const wstring & album_cover_path, boo
         int saved_count{};
         for (const auto& song : m_all_song_info)
         {
-            if (CTagLabHelper::WriteAlbumCover(song.file_path, album_cover_path))
+            CAudioTag audio_tag(song.file_path);
+            if (audio_tag.WriteAlbumCover(album_cover_path))
             {
                 saved_count++;
                 if (delete_file)
@@ -378,7 +361,8 @@ int CPropertyAlbumCoverDlg::SaveAlbumCover(const wstring & album_cover_path, boo
     }
     else
     {
-        bool rtn = CTagLabHelper::WriteAlbumCover(CurrentSong().file_path, album_cover_path);
+        CAudioTag audio_tag(CurrentSong().file_path);
+        bool rtn = audio_tag.WriteAlbumCover(album_cover_path);
         if (rtn && delete_file)
         {
             DeleteLinkedPic(CurrentSong().file_path, album_cover_path);
@@ -394,7 +378,8 @@ int CPropertyAlbumCoverDlg::SaveEnbedLinkedCoverForBatchEdit()
     {
         CMusicPlayerCmdHelper helper;
         wstring album_cover_path = helper.SearchAlbumCover(song);
-        if (!album_cover_path.empty() && CTagLabHelper::WriteAlbumCover(song.file_path, album_cover_path))
+        CAudioTag audio_tag(song.file_path);
+        if (!album_cover_path.empty() && audio_tag.WriteAlbumCover(album_cover_path))
         {
             saved_count++;
             DeleteLinkedPic(song.file_path, album_cover_path);

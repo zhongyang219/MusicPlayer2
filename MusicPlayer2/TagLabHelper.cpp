@@ -20,6 +20,7 @@
 #include "taglib/asffile.h"
 #include "taglib/tpropertymap.h"
 #include "AudioCommon.h"
+#include "taglib/apetag.h"
 
 
 using namespace TagLib;
@@ -27,6 +28,7 @@ using namespace TagLib;
 #define STR_MP4_COVER_TAG "covr"
 #define STR_MP4_LYRICS_TAG "----:com.apple.iTunes:Lyrics"
 #define STR_ASF_COVER_TAG "WM/Picture"
+#define STR_APE_COVER_TAG "COVER ART (FRONT)"
 
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
@@ -157,6 +159,8 @@ static void WriteId3v2AlbumCover(ID3v2::Tag* id3v2tag, const wstring& album_cove
     }
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -262,6 +266,51 @@ string CTagLabHelper::GetWavAlbumCover(const wstring& file_path, int& type)
     RIFF::WAV::File file(file_path.c_str());
     auto id3v2 = file.ID3v2Tag();
     GetId3v2AlbumCover(id3v2, cover_contents, type);
+    return cover_contents;
+}
+
+string CTagLabHelper::GetTtaAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    TrueAudio::File file(file_path.c_str());
+    auto id3v2 = file.ID3v2Tag();
+    GetId3v2AlbumCover(id3v2, cover_contents, type);
+    return cover_contents;
+}
+
+string CTagLabHelper::GetApeAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    APE::File file(file_path.c_str());
+    auto tag = file.APETag(true);
+    auto item_list_map = tag->itemListMap();
+    auto pic_item = item_list_map[STR_APE_COVER_TAG];
+    auto pic_data = pic_item.binaryData();
+    if (!pic_data.isEmpty())
+    {
+        cover_contents.assign(pic_data.data(), pic_data.size());
+
+        size_t index{};
+        index = cover_contents.find('\0');
+        std::string pic_desc;
+        if (index != std::string::npos)
+        {
+            pic_desc = cover_contents.substr(0, index + 1);
+            cover_contents = cover_contents.substr(index + 1);
+        }
+
+        if (!pic_desc.empty())
+        {
+            std::string img_type;
+            index = cover_contents.rfind('.');
+            if (index != std::string::npos && index < cover_contents.size() - 1)
+            {
+                img_type = cover_contents.substr(index + 1);
+                img_type = "image/" + img_type;
+                type = GetPicType(CCommon::ASCIIToUnicode(img_type));
+            }
+        }
+    }
     return cover_contents;
 }
 
@@ -477,44 +526,6 @@ wstring CTagLabHelper::GetAsfLyric(const wstring& file_path)
     return lyrics;
 }
 
-bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
-{
-    AudioType type = CAudioCommon::GetAudioTypeByFileName(song_info.file_path);
-    switch (type)
-    {
-    case AU_MP3:
-        return WriteMpegTag(song_info);
-    case AU_WMA_ASF:
-        return WriteAsfTag(song_info);
-    case AU_OGG:
-        return WriteOggTag(song_info);
-    case AU_MP4:
-        return WriteM4aTag(song_info);
-    case AU_APE:
-        return WriteApeTag(song_info);
-    case AU_AIFF:
-        return WriteAiffTag(song_info);
-    case AU_FLAC:
-        return WriteFlacTag(song_info);
-    case AU_WAV:
-        return WriteWavTag(song_info);
-    case AU_MPC:
-        break;
-    case AU_DSD:
-        break;
-    case AU_OPUS:
-        return WriteOpusTag(song_info);
-    case AU_WV:
-        return WriteWavPackTag(song_info);
-    case AU_SPX:
-        break;
-    case AU_TTA:
-        return WriteTtaTag(song_info);
-    default:
-        break;
-    }
-    return false;
-}
 
 bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
 {
@@ -660,6 +671,11 @@ bool CTagLabHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& 
     return saved;
 }
 
+bool CTagLabHelper::WriteTtaAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    return false;
+}
+
 bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
 {
     MPEG::File file(song_info.file_path.c_str());
@@ -762,61 +778,4 @@ bool CTagLabHelper::WriteAsfTag(SongInfo & song_info)
     SongInfoToTag(song_info, tag);
     bool saved = file.save();
     return saved;
-}
-
-bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
-{
-    wstring _ext = ext;
-    CCommon::StringTransform(_ext, false);
-    AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WAV || type == AU_OGG || type == AU_APE
-        || type == AU_WV || type == AU_AIFF || type == AU_OPUS || type == AU_TTA || type == AU_WMA_ASF;
-}
-
-bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
-{
-    wstring _ext = ext;
-    CCommon::StringTransform(_ext, false);
-    AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV;
-}
-
-bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
-{
-    AudioType type = CAudioCommon::GetAudioTypeByFileName(file_path);
-    switch (type)
-    {
-    case AU_MP3:
-        return WriteMp3AlbumCover(file_path, album_cover_path);
-    case AU_WMA_ASF:
-        return WriteAsfAlbumCover(file_path, album_cover_path);
-    case AU_OGG:
-        break;
-    case AU_MP4:
-        return WriteM4aAlbumCover(file_path, album_cover_path);
-    case AU_APE:
-        break;
-    case AU_AIFF:
-        break;
-    case AU_FLAC:
-        return WriteFlacAlbumCover(file_path, album_cover_path);
-    case AU_WAV:
-        return WriteWavAlbumCover(file_path, album_cover_path);
-        break;
-    case AU_MPC:
-        break;
-    case AU_DSD:
-        break;
-    case AU_OPUS:
-        break;
-    case AU_WV:
-        break;
-    case AU_SPX:
-        break;
-    case AU_TTA:
-        break;
-    default:
-        break;
-    }
-    return false;
 }

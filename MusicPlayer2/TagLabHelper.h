@@ -14,6 +14,8 @@ public:
     static string GetMp3AlbumCover(const wstring& file_path, int& type);
     static string GetAsfAlbumCover(const wstring& file_path, int& type);
     static string GetWavAlbumCover(const wstring& file_path, int& type);
+    static string GetTtaAlbumCover(const wstring& file_path, int& type);
+    static string GetApeAlbumCover(const wstring& file_path, int& type);
 
     //读标签信息
     static void GetFlacTagInfo(SongInfo& song_info);
@@ -35,26 +37,15 @@ public:
     static wstring GetFlacLyric(const wstring& file_path);
     static wstring GetAsfLyric(const wstring& file_path);
 
-    //写标签信息
-    static bool WriteAudioTag(SongInfo& song_info);
-
     //写专辑封面
     static bool WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteM4aAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteAsfAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteWavAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
+    static bool WriteTtaAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
 
-    //根据一个文件扩展名判断此格式是否已支持写入标签
-    static bool IsFileTypeTagWriteSupport(const wstring& ext);
-
-    //根据一个文件扩展名判断此格式是否已支持写入标签
-    static bool IsFileTypeCoverWriteSupport(const wstring& ext);
-
-    //写入一个专辑封面，数据文件类型自动判断
-    static bool WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path);
-
-private:
+    //写标签信息
     static bool WriteMpegTag(SongInfo& song_info);
     static bool WriteFlacTag(SongInfo& song_info);
     static bool WriteM4aTag(SongInfo& song_info);
@@ -66,6 +57,5 @@ private:
     static bool WriteTtaTag(SongInfo& song_info);
     static bool WriteAiffTag(SongInfo& song_info);
     static bool WriteAsfTag(SongInfo& song_info);
-
 };
 

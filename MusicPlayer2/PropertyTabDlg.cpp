@@ -6,7 +6,6 @@
 #include "PropertyTabDlg.h"
 #include "afxdialogex.h"
 #include "COSUPlayerHelper.h"
-#include "TagLabHelper.h"
 #include "PropertyDlgHelper.h"
 
 
@@ -211,7 +210,7 @@ void CPropertyTabDlg::SetWreteEnable()
     else
     {
 	    CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
-	    m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CTagLabHelper::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/);
+	    m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CAudioTag::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/);
     }
     m_write_enable &= !m_read_only;
     SetEditReadOnly(!m_write_enable);
@@ -475,7 +474,8 @@ int CPropertyTabDlg::SaveModified()
             {
                 cur_song.track = static_cast<BYTE>(_wtoi(str_track));
             }
-            if (CTagLabHelper::WriteAudioTag(cur_song))
+            CAudioTag audio_tag(cur_song);
+            if (audio_tag.WriteAudioTag())
             {
                 UpdateSongInfo(cur_song);
                 saved_count++;
@@ -491,7 +491,8 @@ int CPropertyTabDlg::SaveModified()
     else
     {
         song_info.file_path = m_all_song_info[m_index].file_path;
-        bool saved = CTagLabHelper::WriteAudioTag(song_info);
+        CAudioTag audio_tag(song_info);
+        bool saved = audio_tag.WriteAudioTag();
         if (saved)
 	    {
 		    //重新从文件读取该歌曲的标签

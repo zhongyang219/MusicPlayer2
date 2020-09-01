@@ -3,7 +3,7 @@
 #include "AudioCommon.h"
 #include "FilePathHelper.h"
 #include "COSUPlayerHelper.h"
-#include "TagLabHelper.h"
+#include "AudioTag.h"
 
 CPropertyDlgHelper::CPropertyDlgHelper(const vector<SongInfo>& songs)
     : m_song_info{ songs }
@@ -132,7 +132,7 @@ bool CPropertyDlgHelper::IsMultiWritable()
 {
     wstring writable_str = GetMultiValue([](const SongInfo& song)
     {
-        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && CTagLabHelper::IsFileTypeTagWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()))
+        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && CAudioTag::IsFileTypeTagWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()))
             return L"true";
         else
             return L"false";
@@ -144,7 +144,7 @@ bool CPropertyDlgHelper::IsMultiCoverWritable()
 {
     wstring writable_str = GetMultiValue([](const SongInfo& song)
     {
-        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && CTagLabHelper::IsFileTypeCoverWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()))
+        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && CAudioTag::IsFileTypeCoverWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()))
             return L"true";
         else
             return L"false";
