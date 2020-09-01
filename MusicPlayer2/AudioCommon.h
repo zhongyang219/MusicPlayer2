@@ -11,8 +11,7 @@
 enum AudioType
 {
 	AU_MP3,
-	AU_WMA,
-    AU_ASF,
+    AU_WMA_ASF,
 	AU_OGG,
 	AU_MP4,
 	AU_APE,
@@ -256,7 +255,8 @@ public:
 	static bool FileIsAudio(const wstring& file_name);
 
 	//根据文件名判断文件的类型
-	static AudioType GetAudioTypeByExtension(const wstring& file_name);
+	static AudioType GetAudioTypeByFileExtension(const wstring& ext);
+	static AudioType GetAudioTypeByFileName(const wstring& file_name);
 
 	//根据一个文件扩展名判断音频类型的描述
 	static wstring GetAudioDescriptionByExtension(wstring extension);

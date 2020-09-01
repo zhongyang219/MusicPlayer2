@@ -19,6 +19,7 @@
 #include "taglib/aifffile.h"
 #include "taglib/asffile.h"
 #include "taglib/tpropertymap.h"
+#include "AudioCommon.h"
 
 
 using namespace TagLib;
@@ -57,6 +58,12 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag)
     song_info.artist = TagStringToWstring(tag->artist());
     song_info.album = TagStringToWstring(tag->album());
     song_info.genre = TagStringToWstring(tag->genre());
+    if (CCommon::StrIsNumber(song_info.genre))
+    {
+        int genre_num = _wtoi(song_info.genre.c_str());
+        song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
+    }
+
     unsigned int year = tag->year();
     song_info.year = (year == 0 ? L"" : std::to_wstring(year));
     song_info.track = tag->track();
@@ -424,29 +431,40 @@ wstring CTagLabHelper::GetAsfLyric(const wstring& file_path)
 
 bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)
 {
-    wstring ext = CFilePathHelper(song_info.file_path).GetFileExtension();
-    if (IsMpegFile(ext))
+    AudioType type = CAudioCommon::GetAudioTypeByFileName(song_info.file_path);
+    switch (type)
+    {
+    case AU_MP3:
         return WriteMpegTag(song_info);
-    else if (IsFlacFile(ext))
-        return WriteFlacTag(song_info);
-    else if (ext == L"m4a")
-        return WriteM4aTag(song_info);
-    else if (IsOggFile(ext))
-        return WriteOggTag(song_info);
-    else if (ext == L"wav")
-        return WriteWavTag(song_info);
-    else if (ext == L"ape")
-        return WriteApeTag(song_info);
-    else if (ext == L"wv")
-        return WriteWavPackTag(song_info);
-    else if (IsAiffFile(ext))
-        return WriteAiffTag(song_info);
-    else if (ext == L"opus")
-        return WriteOpusTag(song_info);
-    else if (ext == L"tta")
-        return WriteTtaTag(song_info);
-    else if (IsAsfFile(ext))
+    case AU_WMA_ASF:
         return WriteAsfTag(song_info);
+    case AU_OGG:
+        return WriteOggTag(song_info);
+    case AU_MP4:
+        return WriteM4aTag(song_info);
+    case AU_APE:
+        return WriteApeTag(song_info);
+    case AU_AIFF:
+        return WriteAiffTag(song_info);
+    case AU_FLAC:
+        return WriteFlacTag(song_info);
+    case AU_WAV:
+        return WriteWavTag(song_info);
+    case AU_MPC:
+        break;
+    case AU_DSD:
+        break;
+    case AU_OPUS:
+        return WriteOpusTag(song_info);
+    case AU_WV:
+        return WriteWavPackTag(song_info);
+    case AU_SPX:
+        break;
+    case AU_TTA:
+        return WriteTtaTag(song_info);
+    default:
+        break;
+    }
     return false;
 }
 
@@ -661,60 +679,58 @@ bool CTagLabHelper::WriteAsfTag(SongInfo & song_info)
     return saved;
 }
 
-bool CTagLabHelper::IsMpegFile(const wstring& ext)
-{
-    return ext == L"mp3" || ext == L"mp2" || ext == L"mp1";
-}
-
-bool CTagLabHelper::IsFlacFile(const wstring& ext)
-{
-    return ext == L"flac" || ext == L"fla";
-}
-
-bool CTagLabHelper::IsMpcFile(const wstring & ext)
-{
-    return ext == L"mpc" || ext == L"mp+" || ext == L"mpp";
-}
-
-bool CTagLabHelper::IsOggFile(const wstring& ext)
-{
-    return ext == L"ogg" || ext == L"oga";
-}
-
-bool CTagLabHelper::IsAiffFile(const wstring& ext)
-{
-    return ext == L"aif" || ext == L"aiff";
-}
-
-bool CTagLabHelper::IsAsfFile(const wstring& ext)
-{
-    return ext == L"wma" || ext == L"asf";
-}
-
 bool CTagLabHelper::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a" || _ext == L"wav" || IsOggFile(_ext) || _ext == L"ape"
-        || _ext == L"wv" || IsAiffFile(_ext) || _ext == L"opus" || _ext == L"tta" || IsAsfFile(_ext);
+    AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
+    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WAV || type == AU_OGG || type == AU_APE
+        || type == AU_WV || type == AU_AIFF || type == AU_OPUS || type == AU_TTA || type == AU_WMA_ASF;
 }
 
 bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
-    return IsMpegFile(_ext) || IsFlacFile(_ext) || _ext == L"m4a";
+    AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
+    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4;
 }
 
 bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
 {
-    wstring ext = CFilePathHelper(file_path).GetFileExtension();
-    if (IsMpegFile(ext))
+    AudioType type = CAudioCommon::GetAudioTypeByFileName(file_path);
+    switch (type)
+    {
+    case AU_MP3:
         return WriteMp3AlbumCover(file_path, album_cover_path);
-    else if (IsFlacFile(ext))
-        return WriteFlacAlbumCover(file_path, album_cover_path);
-    else if (ext == L"m4a")
+    case AU_WMA_ASF:
+        break;
+    case AU_OGG:
+        break;
+    case AU_MP4:
         return WriteM4aAlbumCover(file_path, album_cover_path);
-    else
-        return false;
+    case AU_APE:
+        break;
+    case AU_AIFF:
+        break;
+    case AU_FLAC:
+        return WriteFlacAlbumCover(file_path, album_cover_path);
+    case AU_WAV:
+        break;
+    case AU_MPC:
+        break;
+    case AU_DSD:
+        break;
+    case AU_OPUS:
+        break;
+    case AU_WV:
+        break;
+    case AU_SPX:
+        break;
+    case AU_TTA:
+        break;
+    default:
+        break;
+    }
+    return false;
 }

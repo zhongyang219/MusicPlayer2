@@ -354,7 +354,7 @@ void CPlayer::IniLyrics()
 	{
 		SongInfo song;
         song.file_path = GetCurrentFilePath();
-		CAudioTag audio_tag(m_pCore->GetHandle(), song);
+		CAudioTag audio_tag(song, m_pCore->GetHandle());
 		lyric_str = audio_tag.GetAudioLyric();
 		inner_lyrics.LyricsFromRowString(lyric_str);
 	}
@@ -2372,7 +2372,7 @@ void CPlayer::SearchAlbumCover()
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile() && !always_use_external_album_cover)
     {
         //从文件获取专辑封面
-        CAudioTag audio_tag(m_pCore->GetHandle(), GetCurrentSongInfo2());
+        CAudioTag audio_tag(GetCurrentSongInfo2(), m_pCore->GetHandle());
         m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
 		if(!m_album_cover_path.empty())
         {

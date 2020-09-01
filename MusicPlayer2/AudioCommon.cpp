@@ -27,32 +27,49 @@ bool CAudioCommon::FileIsAudio(const wstring & file_name)
     return false;
 }
 
-AudioType CAudioCommon::GetAudioTypeByExtension(const wstring & file_name)
+AudioType CAudioCommon::GetAudioTypeByFileExtension(const wstring& type)
 {
-    CFilePathHelper file_path(file_name);
-    wstring type{ file_path.GetFileExtension() };		//获取文件扩展名
-    if (type == L"mp3")
+    if (type == L"mp3" || type == L"mp2" || type == L"mp1")
         return AU_MP3;
-    else if (type == L"wma")
-        return AU_WMA;
-    else if (type == L"asf")
-        return AU_ASF;
+    else if (type == L"wma" || type == L"asf")
+        return AU_WMA_ASF;
     else if (type == L"ogg" || type == L"oga")
         return AU_OGG;
-    else if (type == L"m4a")
-        return AU_MP4;
-    else if (type == L"mp4")
+    else if (type == L"m4a" || type == L"mp4")
         return AU_MP4;
     else if (type == L"flac" || type == L"fla")
         return AU_FLAC;
     else if (type == L"cue")
         return AU_CUE;
-    else if (type == L"ape")
+    else if (type == L"ape" || type == L"mac")
         return AU_APE;
     else if (type == L"mid" || type == L"midi" || type == L"rmi" || type == L"kar")
         return AU_MIDI;
+    else if (type == L"aif" || type == L"aiff")
+        return AU_AIFF;
+    else if (type == L"wav")
+        return AU_WAV;
+    else if (type == L"mpc" || type == L"mp+" || type == L"mpp")
+        return AU_MPC;
+    else if (type == L"dff" || type == L"dsf")
+        return AU_DSD;
+    else if (type == L"opus")
+        return AU_OPUS;
+    else if (type == L"wv")
+        return AU_WV;
+    else if (type == L"spx")
+        return AU_SPX;
+    else if (type == L"tta")
+        return AU_TTA;
     else
         return AU_OTHER;
+}
+
+AudioType CAudioCommon::GetAudioTypeByFileName(const wstring & file_name)
+{
+    CFilePathHelper file_path(file_name);
+    wstring type{ file_path.GetFileExtension() };		//获取文件扩展名
+    return GetAudioTypeByFileExtension(type);
 }
 
 wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
@@ -237,7 +254,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
     for (size_t i = 0; i < files.size(); i++)
     {
         //依次检查列表中的每首歌曲是否为cue文件
-        if (GetAudioTypeByExtension(files[i].file_path) == AU_CUE)
+        if (GetAudioTypeByFileName(files[i].file_path) == AU_CUE)
         {
             CFilePathHelper file_path{ files[i].file_path };
             wstring cue_dir = file_path.GetDir();
@@ -433,7 +450,7 @@ AudioType CAudioCommon::GetAudioTypeByBassChannel(DWORD ctype)
         break;
     case 0x10300:
     case 0x10301:
-        type = AudioType::AU_WMA;
+        type = AudioType::AU_WMA_ASF;
         break;
     case BASS_CTYPE_STREAM_AIFF:
         type = AudioType::AU_AIFF;

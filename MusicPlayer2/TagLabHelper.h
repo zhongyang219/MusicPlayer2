@@ -64,12 +64,5 @@ private:
     static bool WriteAiffTag(SongInfo& song_info);
     static bool WriteAsfTag(SongInfo& song_info);
 
-    static bool IsMpegFile(const wstring& ext);
-    static bool IsFlacFile(const wstring& ext);
-    static bool IsMpcFile(const wstring& ext);
-    static bool IsOggFile(const wstring& ext);
-    static bool IsAiffFile(const wstring& ext);
-    static bool IsAsfFile(const wstring& ext);
-
 };
 

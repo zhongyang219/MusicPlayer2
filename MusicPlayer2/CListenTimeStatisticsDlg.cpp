@@ -64,7 +64,7 @@ void CListenTimeStatisticsDlg::ShowData(bool size_changed)
 CListenTimeStatisticsDlg::ListItem CListenTimeStatisticsDlg::SongInfoToListItem(const SongInfo& song)
 {
     ListItem list_item;
-    if (song.IsTitleEmpty() || CAudioCommon::GetAudioTypeByExtension(song.file_path) == AU_MIDI)
+    if (song.IsTitleEmpty() || CAudioCommon::GetAudioTypeByFileName(song.file_path) == AU_MIDI)
     {
         list_item.name = song.GetFileName().c_str();
     }

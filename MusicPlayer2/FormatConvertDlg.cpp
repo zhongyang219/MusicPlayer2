@@ -37,7 +37,7 @@ CFormatConvertDlg::CFormatConvertDlg(const vector<SongInfo>& items, CWnd* pParen
 	for (auto item : items)
 	{
 		CAudioCommon::ClearDefaultTagStr(item);
-		if (CAudioCommon::GetAudioTypeByExtension(item.file_path) == AU_MIDI)
+		if (CAudioCommon::GetAudioTypeByFileName(item.file_path) == AU_MIDI)
 		{
 			//如果文件是 MIDI 音乐，则把SF2音色库信息添加到注释信息
 			CString comment;
@@ -637,7 +637,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 	        SongInfo song_info_tmp;
             song_info_tmp.file_path = file_path;
             hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-	        CAudioTag audio_tag(hStream, song_info_tmp);
+	        CAudioTag audio_tag(song_info_tmp, hStream);
 	        int cover_type;
 	        wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
 	        CImage image;

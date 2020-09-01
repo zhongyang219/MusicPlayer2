@@ -23,7 +23,7 @@ CPlayListCtrl::~CPlayListCtrl()
 
 wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat display_format)
 {
-	AudioType type{ CAudioCommon::GetAudioTypeByExtension(song_info.file_path) };
+	AudioType type{ CAudioCommon::GetAudioTypeByFileName(song_info.file_path) };
 	if (type == AU_MIDI)		//MIDI只显示文件名
 	{
 		display_format = DF_FILE_NAME;

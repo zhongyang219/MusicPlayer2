@@ -33,7 +33,7 @@ static void UpdateSongInfo(SongInfo song)
         HSTREAM hStream;
         hStream = BASS_StreamCreateFile(FALSE, iter->file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
         //CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
-        CAudioTag audio_tag(hStream, *iter);
+        CAudioTag audio_tag(*iter, hStream);
         audio_tag.GetAudioTag();
         BASS_StreamFree(hStream);
         theApp.GetSongInfoRef(iter->file_path).CopyAudioTag(*iter);
@@ -498,7 +498,7 @@ int CPropertyTabDlg::SaveModified()
 		    HSTREAM hStream;
 		    hStream = BASS_StreamCreateFile(FALSE, song_info.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		    //CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
-		    CAudioTag audio_tag(hStream, m_all_song_info[m_index]);
+		    CAudioTag audio_tag(m_all_song_info[m_index], hStream);
 		    audio_tag.GetAudioTag();
 		    BASS_StreamFree(hStream);
 		    theApp.m_song_data[m_all_song_info[m_index].file_path].CopyAudioTag(m_all_song_info[m_index]);

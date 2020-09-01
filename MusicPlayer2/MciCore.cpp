@@ -215,7 +215,7 @@ void CMciCore::GetAudioInfo(SongInfo & song_info, int flag)
             song_info.bitrate = GetMciBitrate(song_info.file_path);
         if (flag&AF_TAG_INFO)
         {
-            CAudioTag audio_tag(NULL, song_info);
+            CAudioTag audio_tag(song_info);
             audio_tag.GetAudioTag();
         }
     }
@@ -237,7 +237,7 @@ void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int
             song_info.bitrate = GetMciBitrate(file_path);
         if (flag&AF_TAG_INFO)
         {
-            CAudioTag audio_tag(NULL, song_info);
+            CAudioTag audio_tag(song_info);
             audio_tag.GetAudioTag();
         }
 
