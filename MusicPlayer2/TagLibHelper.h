@@ -30,6 +30,7 @@ public:
     static void GetWavPackTagInfo(SongInfo& song_info);
     static void GetTtaTagInfo(SongInfo& song_info);
     static void GetAiffTagInfo(SongInfo& song_info);
+    static void GetSpxTagInfo(SongInfo& song_info);
 
     static void GetAnyFileTagInfo(SongInfo& song_info);
 
@@ -61,5 +62,6 @@ public:
     static bool WriteTtaTag(SongInfo& song_info);
     static bool WriteAiffTag(SongInfo& song_info);
     static bool WriteAsfTag(SongInfo& song_info);
+    static bool WriteSpxTag(SongInfo& song_info);
 };
 

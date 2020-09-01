@@ -22,6 +22,7 @@
 #include "AudioCommon.h"
 #include "taglib/apetag.h"
 #include "taglib/fileref.h"
+#include "taglib/speexfile.h"
 
 
 using namespace TagLib;
@@ -486,6 +487,16 @@ void CTagLibHelper::GetAiffTagInfo(SongInfo& song_info)
     }
 }
 
+void CTagLibHelper::GetSpxTagInfo(SongInfo& song_info)
+{
+    Ogg::Speex::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
 void CTagLibHelper::GetAnyFileTagInfo(SongInfo & song_info)
 {
     FileRef file(song_info.file_path.c_str());
@@ -841,6 +852,15 @@ bool CTagLibHelper::WriteAiffTag(SongInfo & song_info)
 bool CTagLibHelper::WriteAsfTag(SongInfo & song_info)
 {
     ASF::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLibHelper::WriteSpxTag(SongInfo& song_info)
+{
+    Ogg::Speex::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
     bool saved = file.save();
