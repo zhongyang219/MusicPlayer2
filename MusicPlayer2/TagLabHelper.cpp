@@ -709,10 +709,9 @@ bool CTagLabHelper::WriteApeAlbumCover(const wstring& file_path, const wstring& 
         return false;
 
     auto tag = file.APETag(true);
-    auto item_list_map = tag->itemListMap();
     if (remove_exist)
     {
-        item_list_map.erase(STR_APE_COVER_TAG);
+        tag->removeItem(STR_APE_COVER_TAG);
     }
 
     if (!album_cover_path.empty())
