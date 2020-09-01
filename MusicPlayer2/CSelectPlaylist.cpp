@@ -140,7 +140,13 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     CTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-        //初始化播放列表控件
+
+    CButton* new_btn = (CButton*)(GetDlgItem(IDC_NEW_PLAYLIST));
+    if (new_btn != nullptr)
+        new_btn->SetIcon(theApp.m_icon_set.add.GetIcon(true));
+
+
+    //初始化播放列表控件
     vector<int> width;
     CalculateColumeWidth(width);
     m_playlist_ctrl.SetExtendedStyle(m_playlist_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);

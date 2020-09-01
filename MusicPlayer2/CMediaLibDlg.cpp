@@ -74,6 +74,16 @@ BOOL CMediaLibDlg::OnInitDialog()
 
     SetIcon(theApp.m_icon_set.media_lib.GetIcon(true), FALSE);
 
+    CButton* close_btn = (CButton*)(GetDlgItem(IDCANCEL));
+    if (close_btn != nullptr)
+        close_btn->SetIcon(theApp.m_icon_set.close.GetIcon(true));
+    CButton* play_btn = (CButton*)(GetDlgItem(IDC_PLAY_SELECTED));
+    if (play_btn != nullptr)
+        play_btn->SetIcon(theApp.m_icon_set.play_new.GetIcon(true));
+    CButton* setting_btn = (CButton*)(GetDlgItem(IDC_MEDIA_LIB_SETTINGS_BTN));
+    if (setting_btn != nullptr)
+        setting_btn->SetIcon(theApp.m_icon_set.setting.GetIcon(true));
+
     //为每个标签添加图标
     CImageList ImageList;
     ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
