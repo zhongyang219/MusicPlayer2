@@ -21,6 +21,7 @@
 #include "taglib/tpropertymap.h"
 #include "AudioCommon.h"
 #include "taglib/apetag.h"
+#include "taglib/fileref.h"
 
 
 using namespace TagLib;
@@ -478,6 +479,16 @@ void CTagLabHelper::GetAiffTagInfo(SongInfo& song_info)
     RIFF::AIFF::File file(song_info.file_path.c_str());
     if (file.hasID3v2Tag())
         song_info.tag_type |= T_ID3V2;
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        TagToSongInfo(song_info, tag);
+    }
+}
+
+void CTagLabHelper::GetAnyFileTagInfo(SongInfo & song_info)
+{
+    FileRef file(song_info.file_path.c_str());
     auto tag = file.tag();
     if (tag != nullptr)
     {

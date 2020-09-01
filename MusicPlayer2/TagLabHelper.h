@@ -31,6 +31,8 @@ public:
     static void GetTtaTagInfo(SongInfo& song_info);
     static void GetAiffTagInfo(SongInfo& song_info);
 
+    static void GetAnyFileTagInfo(SongInfo& song_info);
+
     //∂¡»°∏Ë¥ 
     static wstring GetMpegLyric(const wstring& file_path);
     static wstring GetM4aLyric(const wstring& file_path);
