@@ -61,14 +61,7 @@ int CPropertyAlbumCoverDlg::SaveModified()
         int current_position{};
         bool is_playing{};
         //如果当前修改的是正在播放的文件，则先关闭，保存后再打开
-        bool reopen{};
-        if (IsCurrentSong())
-        {
-            current_position = CPlayer::GetInstance().GetCurrentPosition();
-            is_playing = CPlayer::GetInstance().IsPlaying();
-            CPlayer::GetInstance().MusicControl(Command::CLOSE);
-            reopen = true;
-        }
+        CPlayer::ReOpen reopen(IsCurrentSong());
 
         int saved_count{};
         if (m_cover_changed)
@@ -90,13 +83,6 @@ int CPropertyAlbumCoverDlg::SaveModified()
                 saved_count += SaveAlbumCover(m_out_img_path, true);
         }
 
-        if (reopen)
-        {
-            CPlayer::GetInstance().MusicControl(Command::OPEN);
-            CPlayer::GetInstance().SeekTo(current_position);
-            if (is_playing)
-                CPlayer::GetInstance().MusicControl(Command::PLAY);
-        }
         return saved_count;
     }
     return 1;

@@ -474,6 +474,7 @@ int CPropertyTabDlg::SaveModified()
             {
                 cur_song.track = static_cast<BYTE>(_wtoi(str_track));
             }
+            CPlayer::ReOpen reopen(cur_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));       //如果保存的是正在播放的曲目，则保存前需要关闭，保存后重新打开
             CAudioTag audio_tag(cur_song);
             if (audio_tag.WriteAudioTag())
             {
@@ -491,6 +492,7 @@ int CPropertyTabDlg::SaveModified()
     else
     {
         song_info.file_path = m_all_song_info[m_index].file_path;
+        CPlayer::ReOpen reopen(song_info.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));       //如果保存的是正在播放的曲目，则保存前需要关闭，保存后重新打开
         CAudioTag audio_tag(song_info);
         bool saved = audio_tag.WriteAudioTag();
         if (saved)

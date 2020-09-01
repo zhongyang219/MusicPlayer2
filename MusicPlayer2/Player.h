@@ -353,5 +353,42 @@ public:
     bool IsFileOpened() const { return m_file_opend; }
     bool IsContainSubFolder() const { return m_contain_sub_folder; }
     void SetContainSubFolder(bool contain_sub_folder);
+
+
+public:
+    //用于在执行某些操作时，播放器需要关闭当前播放的歌曲，操作完成后再次打开
+    //当reopen为true时，在构造函数中关闭，析构时再次打开
+    struct ReOpen
+    {
+    public:
+        ReOpen(bool reopen)
+            : m_reopen{ reopen }
+        {
+            if (reopen)
+            {
+                current_position = m_instance.GetCurrentPosition();
+                is_playing = m_instance.IsPlaying();
+                current_song = m_instance.GetCurrentSongInfo();
+                m_instance.MusicControl(Command::CLOSE);
+            }
+        }
+
+        ~ReOpen()
+        {
+            if (m_reopen && current_song.IsSameSong(m_instance.GetCurrentSongInfo()))
+            {
+                m_instance.MusicControl(Command::OPEN);
+                m_instance.SeekTo(current_position);
+                if (is_playing)
+                    m_instance.MusicControl(Command::PLAY);
+            }
+        }
+    private:
+        int current_position{};
+        SongInfo current_song;
+        bool is_playing{};
+        bool m_reopen{};
+    };
 };
+
 
