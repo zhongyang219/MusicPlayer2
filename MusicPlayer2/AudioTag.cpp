@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "AudioTag.h"
-#include "TagLabHelper.h"
+#include "TagLibHelper.h"
 
 CAudioTag::CAudioTag(SongInfo & song_info, HSTREAM hStream)
     :m_song_info{ song_info }, m_hStream{ hStream }
@@ -35,40 +35,40 @@ void CAudioTag::GetAudioTag()
     switch (m_type)
     {
     case AU_MP3:
-        CTagLabHelper::GetMpegTagInfo(m_song_info);
+        CTagLibHelper::GetMpegTagInfo(m_song_info);
         break;
     case AU_WMA_ASF:
-        CTagLabHelper::GetAsfTagInfo(m_song_info);
+        CTagLibHelper::GetAsfTagInfo(m_song_info);
         break;
     case AU_OGG:
-        CTagLabHelper::GetOggTagInfo(m_song_info);
+        CTagLibHelper::GetOggTagInfo(m_song_info);
         break;
     case AU_MP4:
-        CTagLabHelper::GetM4aTagInfo(m_song_info);
+        CTagLibHelper::GetM4aTagInfo(m_song_info);
         break;
     case AU_APE:
-        CTagLabHelper::GetApeTagInfo(m_song_info);
+        CTagLibHelper::GetApeTagInfo(m_song_info);
         break;
     case AU_FLAC:
-        CTagLabHelper::GetFlacTagInfo(m_song_info);
+        CTagLibHelper::GetFlacTagInfo(m_song_info);
         break;
     case AU_WAV:
-        CTagLabHelper::GetWavTagInfo(m_song_info);
+        CTagLibHelper::GetWavTagInfo(m_song_info);
         break;
     case AU_AIFF:
-        CTagLabHelper::GetAiffTagInfo(m_song_info);
+        CTagLibHelper::GetAiffTagInfo(m_song_info);
         break;
     case AU_MPC:
-        CTagLabHelper::GetMpcTagInfo(m_song_info);
+        CTagLibHelper::GetMpcTagInfo(m_song_info);
         break;
     case AU_OPUS:
-        CTagLabHelper::GetOpusTagInfo(m_song_info);
+        CTagLibHelper::GetOpusTagInfo(m_song_info);
         break;
     case AU_WV:
-        CTagLabHelper::GetWavPackTagInfo(m_song_info);
+        CTagLibHelper::GetWavPackTagInfo(m_song_info);
         break;
     case AU_TTA:
-        CTagLabHelper::GetTtaTagInfo(m_song_info);
+        CTagLibHelper::GetTtaTagInfo(m_song_info);
         break;
     default:
         GetTagDefault();
@@ -85,25 +85,25 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* f
     switch (m_type)
     {
     case AU_MP3:
-        image_contents = CTagLabHelper::GetMp3AlbumCover(m_song_info.file_path, image_type);
+        image_contents = CTagLibHelper::GetMp3AlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_WMA_ASF:
-        image_contents = CTagLabHelper::GetAsfAlbumCover(m_song_info.file_path, image_type);
+        image_contents = CTagLibHelper::GetAsfAlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_MP4:
-        image_contents = CTagLabHelper::GetM4aAlbumCover(m_song_info.file_path, image_type);
+        image_contents = CTagLibHelper::GetM4aAlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_APE:
-        image_contents = CTagLabHelper::GetApeAlbumCover(m_song_info.file_path, image_type);
+        image_contents = CTagLibHelper::GetApeAlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_FLAC:
-        image_contents = CTagLabHelper::GetFlacAlbumCover(m_song_info.file_path, image_type);
+        image_contents = CTagLibHelper::GetFlacAlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_WAV:
-        image_contents = CTagLabHelper::GetWavAlbumCover(m_song_info.file_path, image_type);
+        image_contents = CTagLibHelper::GetWavAlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_TTA:
-        image_contents = CTagLabHelper::GetTtaAlbumCover(m_song_info.file_path, image_type);
+        image_contents = CTagLibHelper::GetTtaAlbumCover(m_song_info.file_path, image_type);
         break;
     default:
         image_contents = GetAlbumCoverDefault(image_type);
@@ -139,19 +139,19 @@ wstring CAudioTag::GetAudioLyric()
 	string tag_contents;
 	if (m_type == AU_MP3)
 	{
-        return CTagLabHelper::GetMpegLyric(m_song_info.file_path);
+        return CTagLibHelper::GetMpegLyric(m_song_info.file_path);
 	}
     else if (m_type == AU_WMA_ASF)
     {
-        return CTagLabHelper::GetAsfLyric(m_song_info.file_path);
+        return CTagLibHelper::GetAsfLyric(m_song_info.file_path);
     }
 	else if(m_type == AU_MP4)
 	{
-        return CTagLabHelper::GetM4aLyric(m_song_info.file_path);
+        return CTagLibHelper::GetM4aLyric(m_song_info.file_path);
 	}
     else if (m_type == AU_FLAC)
     {
-        return CTagLabHelper::GetFlacLyric(m_song_info.file_path);
+        return CTagLibHelper::GetFlacLyric(m_song_info.file_path);
     }
 
 	return wstring();
@@ -163,33 +163,33 @@ bool CAudioTag::WriteAudioTag()
     switch (type)
     {
     case AU_MP3:
-        return CTagLabHelper::WriteMpegTag(m_song_info);
+        return CTagLibHelper::WriteMpegTag(m_song_info);
     case AU_WMA_ASF:
-        return CTagLabHelper::WriteAsfTag(m_song_info);
+        return CTagLibHelper::WriteAsfTag(m_song_info);
     case AU_OGG:
-        return CTagLabHelper::WriteOggTag(m_song_info);
+        return CTagLibHelper::WriteOggTag(m_song_info);
     case AU_MP4:
-        return CTagLabHelper::WriteM4aTag(m_song_info);
+        return CTagLibHelper::WriteM4aTag(m_song_info);
     case AU_APE:
-        return CTagLabHelper::WriteApeTag(m_song_info);
+        return CTagLibHelper::WriteApeTag(m_song_info);
     case AU_AIFF:
-        return CTagLabHelper::WriteAiffTag(m_song_info);
+        return CTagLibHelper::WriteAiffTag(m_song_info);
     case AU_FLAC:
-        return CTagLabHelper::WriteFlacTag(m_song_info);
+        return CTagLibHelper::WriteFlacTag(m_song_info);
     case AU_WAV:
-        return CTagLabHelper::WriteWavTag(m_song_info);
+        return CTagLibHelper::WriteWavTag(m_song_info);
     case AU_MPC:
-        return CTagLabHelper::WriteMpcTag(m_song_info);
+        return CTagLibHelper::WriteMpcTag(m_song_info);
     case AU_DSD:
         break;
     case AU_OPUS:
-        return CTagLabHelper::WriteOpusTag(m_song_info);
+        return CTagLibHelper::WriteOpusTag(m_song_info);
     case AU_WV:
-        return CTagLabHelper::WriteWavPackTag(m_song_info);
+        return CTagLibHelper::WriteWavPackTag(m_song_info);
     case AU_SPX:
         break;
     case AU_TTA:
-        return CTagLabHelper::WriteTtaTag(m_song_info);
+        return CTagLibHelper::WriteTtaTag(m_song_info);
     default:
         break;
     }
@@ -202,21 +202,21 @@ bool CAudioTag::WriteAlbumCover(const wstring & album_cover_path)
     switch (type)
     {
     case AU_MP3:
-        return CTagLabHelper::WriteMp3AlbumCover(m_song_info.file_path, album_cover_path);
+        return CTagLibHelper::WriteMp3AlbumCover(m_song_info.file_path, album_cover_path);
     case AU_WMA_ASF:
-        return CTagLabHelper::WriteAsfAlbumCover(m_song_info.file_path, album_cover_path);
+        return CTagLibHelper::WriteAsfAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_OGG:
         break;
     case AU_MP4:
-        return CTagLabHelper::WriteM4aAlbumCover(m_song_info.file_path, album_cover_path);
+        return CTagLibHelper::WriteM4aAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_APE:
-        return CTagLabHelper::WriteApeAlbumCover(m_song_info.file_path, album_cover_path);
+        return CTagLibHelper::WriteApeAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_AIFF:
         break;
     case AU_FLAC:
-        return CTagLabHelper::WriteFlacAlbumCover(m_song_info.file_path, album_cover_path);
+        return CTagLibHelper::WriteFlacAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_WAV:
-        return CTagLabHelper::WriteWavAlbumCover(m_song_info.file_path, album_cover_path);
+        return CTagLibHelper::WriteWavAlbumCover(m_song_info.file_path, album_cover_path);
         break;
     case AU_MPC:
         break;

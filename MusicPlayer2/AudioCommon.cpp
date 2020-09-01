@@ -95,6 +95,8 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
         return L"MPEG Audio Layer 3";
     else if (extension == L"wma")
         return L"Windows Media Audio";
+    else if (extension == L"asf")
+        return L"Advanced Streaming Format";
     else if (extension == L"wav")
         return wstring(CCommon::LoadText(_T("WAV "), IDS_AUDIO_FILE));
     else if (extension == L"ogg" || extension == L"oga")
@@ -105,7 +107,7 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
         return wstring(L"Monkey's Audio (APE)");
     else if (extension == L"aac")
         return wstring(L"Advanced Audio Coding (AAC)");
-    else if (extension == L"aif")
+    else if (extension == L"aif" || extension == L"aiff")
         return wstring(L"Audio Interchange File");
     else if (extension == L"cda")
         return wstring(CCommon::LoadText(_T("CD "), IDS_AUDIO_FILE, _T(" (CDA)")));

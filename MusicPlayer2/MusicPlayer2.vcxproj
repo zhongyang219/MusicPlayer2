@@ -228,7 +228,7 @@
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="PropertyDlgHelper.h" />
     <ClInclude Include="SpinEdit.h" />
-    <ClInclude Include="TagLabHelper.h" />
+    <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="WIC.h" />
     <ClInclude Include="Define.h" />
@@ -355,7 +355,7 @@
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="PropertyDlgHelper.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
-    <ClCompile Include="TagLabHelper.cpp" />
+    <ClCompile Include="TagLibHelper.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="WIC.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />

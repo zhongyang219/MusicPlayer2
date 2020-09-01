@@ -685,9 +685,6 @@
     <ClInclude Include="CleanupRangeDlg.h">
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClInclude>
-    <ClInclude Include="TagLabHelper.h">
-      <Filter>公共的类\AudioTag</Filter>
-    </ClInclude>
     <ClInclude Include="PropertyTabDlg.h">
       <Filter>对话框类\PropertyDlg</Filter>
     </ClInclude>
@@ -702,6 +699,9 @@
     </ClInclude>
     <ClInclude Include="PropertyDlgHelper.h">
       <Filter>对话框类\PropertyDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="TagLibHelper.h">
+      <Filter>公共的类\AudioTag</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1041,9 +1041,6 @@
     <ClCompile Include="CleanupRangeDlg.cpp">
       <Filter>对话框类\选项设置对话框\MediaLibSettingDlg</Filter>
     </ClCompile>
-    <ClCompile Include="TagLabHelper.cpp">
-      <Filter>公共的类\AudioTag</Filter>
-    </ClCompile>
     <ClCompile Include="PropertyTabDlg.cpp">
       <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
@@ -1055,6 +1052,9 @@
     </ClCompile>
     <ClCompile Include="PropertyDlgHelper.cpp">
       <Filter>对话框类\PropertyDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="TagLibHelper.cpp">
+      <Filter>公共的类\AudioTag</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

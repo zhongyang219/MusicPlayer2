@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "TagLabHelper.h"
+#include "TagLibHelper.h"
 #include "taglib/mp4file.h"
 #include "taglib/mp4coverart.h"
 #include "taglib/flacfile.h"
@@ -207,15 +207,15 @@ static void GetApeTagAlbumCover(APE::Tag* tag, string& cover_contents, int& type
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-CTagLabHelper::CTagLabHelper()
+CTagLibHelper::CTagLibHelper()
 {
 }
 
-CTagLabHelper::~CTagLabHelper()
+CTagLibHelper::~CTagLibHelper()
 {
 }
 
-string CTagLabHelper::GetM4aAlbumCover(const wstring& file_path, int& type)
+string CTagLibHelper::GetM4aAlbumCover(const wstring& file_path, int& type)
 {
     string cover_contents;
     MP4::File file(file_path.c_str());
@@ -253,7 +253,7 @@ string CTagLabHelper::GetM4aAlbumCover(const wstring& file_path, int& type)
     return cover_contents;
 }
 
-string CTagLabHelper::GetFlacAlbumCover(const wstring& file_path, int& type)
+string CTagLibHelper::GetFlacAlbumCover(const wstring& file_path, int& type)
 {
     string cover_contents;
     FLAC::File file(file_path.c_str());
@@ -274,7 +274,7 @@ string CTagLabHelper::GetFlacAlbumCover(const wstring& file_path, int& type)
     return cover_contents;
 }
 
-string CTagLabHelper::GetMp3AlbumCover(const wstring & file_path, int & type)
+string CTagLibHelper::GetMp3AlbumCover(const wstring & file_path, int & type)
 {
     string cover_contents;
     MPEG::File file(file_path.c_str());
@@ -283,7 +283,7 @@ string CTagLabHelper::GetMp3AlbumCover(const wstring & file_path, int & type)
     return cover_contents;
 }
 
-string CTagLabHelper::GetAsfAlbumCover(const wstring& file_path, int& type)
+string CTagLibHelper::GetAsfAlbumCover(const wstring& file_path, int& type)
 {
     string cover_contents;
     ASF::File file(file_path.c_str());
@@ -303,7 +303,7 @@ string CTagLabHelper::GetAsfAlbumCover(const wstring& file_path, int& type)
     return cover_contents;
 }
 
-string CTagLabHelper::GetWavAlbumCover(const wstring& file_path, int& type)
+string CTagLibHelper::GetWavAlbumCover(const wstring& file_path, int& type)
 {
     string cover_contents;
     RIFF::WAV::File file(file_path.c_str());
@@ -312,7 +312,7 @@ string CTagLabHelper::GetWavAlbumCover(const wstring& file_path, int& type)
     return cover_contents;
 }
 
-string CTagLabHelper::GetTtaAlbumCover(const wstring& file_path, int& type)
+string CTagLibHelper::GetTtaAlbumCover(const wstring& file_path, int& type)
 {
     string cover_contents;
     TrueAudio::File file(file_path.c_str());
@@ -321,7 +321,7 @@ string CTagLabHelper::GetTtaAlbumCover(const wstring& file_path, int& type)
     return cover_contents;
 }
 
-string CTagLabHelper::GetApeAlbumCover(const wstring& file_path, int& type)
+string CTagLibHelper::GetApeAlbumCover(const wstring& file_path, int& type)
 {
     string cover_contents;
     APE::File file(file_path.c_str());
@@ -330,7 +330,7 @@ string CTagLabHelper::GetApeAlbumCover(const wstring& file_path, int& type)
     return cover_contents;
 }
 
-void CTagLabHelper::GetFlacTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetFlacTagInfo(SongInfo& song_info)
 {
     FLAC::File file(song_info.file_path.c_str());
     if (file.hasID3v1Tag())
@@ -344,7 +344,7 @@ void CTagLabHelper::GetFlacTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetM4aTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetM4aTagInfo(SongInfo& song_info)
 {
     MP4::File file(song_info.file_path.c_str());
     if (file.hasMP4Tag())
@@ -356,7 +356,7 @@ void CTagLabHelper::GetM4aTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetMpegTagInfo(SongInfo& song_info)
 {
     MPEG::File file(song_info.file_path.c_str());
     if (file.hasID3v1Tag())
@@ -373,7 +373,7 @@ void CTagLabHelper::GetMpegTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetAsfTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetAsfTagInfo(SongInfo& song_info)
 {
     ASF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -383,7 +383,7 @@ void CTagLabHelper::GetAsfTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetApeTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetApeTagInfo(SongInfo& song_info)
 {
     APE::File file(song_info.file_path.c_str());
     if (file.hasID3v1Tag())
@@ -398,7 +398,7 @@ void CTagLabHelper::GetApeTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetWavTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetWavTagInfo(SongInfo& song_info)
 {
     RIFF::WAV::File file(song_info.file_path.c_str());
     if (file.hasID3v2Tag())
@@ -412,7 +412,7 @@ void CTagLabHelper::GetWavTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetOggTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetOggTagInfo(SongInfo& song_info)
 {
     Vorbis::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -422,7 +422,7 @@ void CTagLabHelper::GetOggTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetMpcTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetMpcTagInfo(SongInfo& song_info)
 {
     MPC::File file(song_info.file_path.c_str());
     if (file.hasAPETag())
@@ -436,7 +436,7 @@ void CTagLabHelper::GetMpcTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetOpusTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetOpusTagInfo(SongInfo& song_info)
 {
     Ogg::Opus::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -446,7 +446,7 @@ void CTagLabHelper::GetOpusTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetWavPackTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetWavPackTagInfo(SongInfo& song_info)
 {
     WavPack::File file(song_info.file_path.c_str());
     if (file.hasAPETag())
@@ -460,7 +460,7 @@ void CTagLabHelper::GetWavPackTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetTtaTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetTtaTagInfo(SongInfo& song_info)
 {
     TrueAudio::File file(song_info.file_path.c_str());
     if (file.hasID3v1Tag())
@@ -474,7 +474,7 @@ void CTagLabHelper::GetTtaTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetAiffTagInfo(SongInfo& song_info)
+void CTagLibHelper::GetAiffTagInfo(SongInfo& song_info)
 {
     RIFF::AIFF::File file(song_info.file_path.c_str());
     if (file.hasID3v2Tag())
@@ -486,7 +486,7 @@ void CTagLabHelper::GetAiffTagInfo(SongInfo& song_info)
     }
 }
 
-void CTagLabHelper::GetAnyFileTagInfo(SongInfo & song_info)
+void CTagLibHelper::GetAnyFileTagInfo(SongInfo & song_info)
 {
     FileRef file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -496,7 +496,7 @@ void CTagLabHelper::GetAnyFileTagInfo(SongInfo & song_info)
     }
 }
 
-wstring CTagLabHelper::GetMpegLyric(const wstring& file_path)
+wstring CTagLibHelper::GetMpegLyric(const wstring& file_path)
 {
     wstring lyrics;
     MPEG::File file(file_path.c_str());
@@ -511,7 +511,7 @@ wstring CTagLabHelper::GetMpegLyric(const wstring& file_path)
     return lyrics;
 }
 
-wstring CTagLabHelper::GetM4aLyric(const wstring& file_path)
+wstring CTagLibHelper::GetM4aLyric(const wstring& file_path)
 {
     wstring lyrics;
     MP4::File file(file_path.c_str());
@@ -526,7 +526,7 @@ wstring CTagLabHelper::GetM4aLyric(const wstring& file_path)
     return lyrics;
 }
 
-wstring CTagLabHelper::GetFlacLyric(const wstring& file_path)
+wstring CTagLibHelper::GetFlacLyric(const wstring& file_path)
 {
     wstring lyrics;
     FLAC::File file(file_path.c_str());
@@ -539,7 +539,7 @@ wstring CTagLabHelper::GetFlacLyric(const wstring& file_path)
     return lyrics;
 }
 
-wstring CTagLabHelper::GetAsfLyric(const wstring& file_path)
+wstring CTagLibHelper::GetAsfLyric(const wstring& file_path)
 {
     wstring lyrics;
     ASF::File file(file_path.c_str());
@@ -553,7 +553,7 @@ wstring CTagLabHelper::GetAsfLyric(const wstring& file_path)
 }
 
 
-bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
+bool CTagLibHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
 {
     MPEG::File file(file_path.c_str());
     if (!file.isValid())
@@ -574,7 +574,7 @@ bool CTagLabHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& 
     return saved;
 }
 
-bool CTagLabHelper::WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
+bool CTagLibHelper::WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
 {
     FLAC::File file(file_path.c_str());
     if (!file.isValid())
@@ -601,7 +601,7 @@ bool CTagLabHelper::WriteFlacAlbumCover(const wstring& file_path, const wstring&
     return saved;
 }
 
-bool CTagLabHelper::WriteM4aAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+bool CTagLibHelper::WriteM4aAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
 {
     MP4::File file(file_path.c_str());
     if (!file.isValid())
@@ -643,7 +643,7 @@ bool CTagLabHelper::WriteM4aAlbumCover(const wstring& file_path, const wstring& 
     return saved;
 }
 
-bool CTagLabHelper::WriteAsfAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+bool CTagLibHelper::WriteAsfAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
 {
     ASF::File file(file_path.c_str());
     if (!file.isValid())
@@ -677,7 +677,7 @@ bool CTagLabHelper::WriteAsfAlbumCover(const wstring& file_path, const wstring& 
     return saved;
 }
 
-bool CTagLabHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+bool CTagLibHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
 {
     RIFF::WAV::File file(file_path.c_str());
     if (!file.isValid())
@@ -697,12 +697,12 @@ bool CTagLabHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& 
     return saved;
 }
 
-bool CTagLabHelper::WriteTtaAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+bool CTagLibHelper::WriteTtaAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
 {
     return false;
 }
 
-bool CTagLabHelper::WriteApeAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+bool CTagLibHelper::WriteApeAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
 {
     APE::File file(file_path.c_str());
     if (!file.isValid())
@@ -734,7 +734,7 @@ bool CTagLabHelper::WriteApeAlbumCover(const wstring& file_path, const wstring& 
     return saved;
 }
 
-bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
+bool CTagLibHelper::WriteMpegTag(SongInfo & song_info)
 {
     MPEG::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -748,7 +748,7 @@ bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteFlacTag(SongInfo& song_info)
+bool CTagLibHelper::WriteFlacTag(SongInfo& song_info)
 {
     FLAC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -757,7 +757,7 @@ bool CTagLabHelper::WriteFlacTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteM4aTag(SongInfo & song_info)
+bool CTagLibHelper::WriteM4aTag(SongInfo & song_info)
 {
     MP4::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -766,7 +766,7 @@ bool CTagLabHelper::WriteM4aTag(SongInfo & song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteWavTag(SongInfo & song_info)
+bool CTagLibHelper::WriteWavTag(SongInfo & song_info)
 {
     RIFF::WAV::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -775,7 +775,7 @@ bool CTagLabHelper::WriteWavTag(SongInfo & song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteOggTag(SongInfo & song_info)
+bool CTagLibHelper::WriteOggTag(SongInfo & song_info)
 {
     Vorbis::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -784,7 +784,7 @@ bool CTagLabHelper::WriteOggTag(SongInfo & song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteApeTag(SongInfo& song_info)
+bool CTagLibHelper::WriteApeTag(SongInfo& song_info)
 {
     APE::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -793,7 +793,7 @@ bool CTagLabHelper::WriteApeTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteMpcTag(SongInfo& song_info)
+bool CTagLibHelper::WriteMpcTag(SongInfo& song_info)
 {
     MPC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -802,7 +802,7 @@ bool CTagLabHelper::WriteMpcTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteOpusTag(SongInfo & song_info)
+bool CTagLibHelper::WriteOpusTag(SongInfo & song_info)
 {
     Ogg::Opus::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -811,7 +811,7 @@ bool CTagLabHelper::WriteOpusTag(SongInfo & song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteWavPackTag(SongInfo& song_info)
+bool CTagLibHelper::WriteWavPackTag(SongInfo& song_info)
 {
     WavPack::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -820,7 +820,7 @@ bool CTagLabHelper::WriteWavPackTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteTtaTag(SongInfo& song_info)
+bool CTagLibHelper::WriteTtaTag(SongInfo& song_info)
 {
     TrueAudio::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -829,7 +829,7 @@ bool CTagLabHelper::WriteTtaTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteAiffTag(SongInfo & song_info)
+bool CTagLibHelper::WriteAiffTag(SongInfo & song_info)
 {
     RIFF::AIFF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -838,7 +838,7 @@ bool CTagLabHelper::WriteAiffTag(SongInfo & song_info)
     return saved;
 }
 
-bool CTagLabHelper::WriteAsfTag(SongInfo & song_info)
+bool CTagLibHelper::WriteAsfTag(SongInfo & song_info)
 {
     ASF::File file(song_info.file_path.c_str());
     auto tag = file.tag();

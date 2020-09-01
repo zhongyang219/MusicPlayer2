@@ -5,7 +5,6 @@
 #include "MusicPlayer2.h"
 #include "PropertyAlbumCoverDlg.h"
 #include "COSUPlayerHelper.h"
-#include "TagLabHelper.h"
 #include "DrawCommon.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlgHelper.h"

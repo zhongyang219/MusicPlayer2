@@ -8,7 +8,7 @@
 #include "BassCore.h"
 #include "COSUPlayerHelper.h"
 #include "WIC.h"
-#include "TagLabHelper.h"
+#include "TagLibHelper.h"
 #include "MusicPlayerCmdHelper.h"
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
@@ -651,7 +651,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 		        image.Destroy();
             if (!album_cover_path.empty())
             {
-                CTagLabHelper::WriteMp3AlbumCover(out_file_path, album_cover_path);
+                CTagLibHelper::WriteMp3AlbumCover(out_file_path, album_cover_path);
             }
             BASS_StreamFree(hStream);
         }

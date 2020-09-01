@@ -2,11 +2,11 @@
 #include "SongInfo.h"
 
 //
-class CTagLabHelper
+class CTagLibHelper
 {
 public:
-    CTagLabHelper();
-    ~CTagLabHelper();
+    CTagLibHelper();
+    ~CTagLibHelper();
 
     //¶Á×¨¼­·âÃæ
     static string GetM4aAlbumCover(const wstring& file_path, int& type);
