@@ -28,6 +28,12 @@ public:
     static void GetTtaTagInfo(SongInfo& song_info);
     static void GetAiffTagInfo(SongInfo& song_info);
 
+    //读取歌词
+    static wstring GetMpegLyric(const wstring& file_path);
+    static wstring GetM4aLyric(const wstring& file_path);
+    static wstring GetFlacLyric(const wstring& file_path);
+    static wstring GetAsfLyric(const wstring& file_path);
+
     //写标签信息
     static bool WriteAudioTag(SongInfo& song_info);
 

@@ -18,10 +18,13 @@
 #include "taglib/trueaudiofile.h"
 #include "taglib/aifffile.h"
 #include "taglib/asffile.h"
+#include "taglib/tpropertymap.h"
+
 
 using namespace TagLib;
 
 #define STR_MP4_COVER_TAG "covr"
+#define STR_MP4_LYRICS_TAG "----:com.apple.iTunes:Lyrics"
 
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
@@ -361,6 +364,62 @@ void CTagLabHelper::GetAiffTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag);
     }
+}
+
+wstring CTagLabHelper::GetMpegLyric(const wstring& file_path)
+{
+    wstring lyrics;
+    MPEG::File file(file_path.c_str());
+    auto id3v2 = file.ID3v2Tag();
+    if (id3v2 != nullptr)
+    {
+        auto frame_list_map = id3v2->frameListMap();
+        auto lyric_frame = frame_list_map["USLT"];
+        if (!lyric_frame.isEmpty())
+            lyrics = lyric_frame.front()->toString().toWString();
+    }
+    return lyrics;
+}
+
+wstring CTagLabHelper::GetM4aLyric(const wstring& file_path)
+{
+    wstring lyrics;
+    MP4::File file(file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        auto item_map = file.tag()->itemMap();
+        auto lyric_item = item_map[STR_MP4_LYRICS_TAG].toStringList();;
+        if (!lyric_item.isEmpty())
+            lyrics = lyric_item.front().toWString();
+    }
+    return lyrics;
+}
+
+wstring CTagLabHelper::GetFlacLyric(const wstring& file_path)
+{
+    wstring lyrics;
+    FLAC::File file(file_path.c_str());
+    auto properties = file.properties();
+    auto lyric_item = properties["LYRICS"];
+    if (!lyric_item.isEmpty())
+    {
+        lyrics = lyric_item.front().toWString();
+    }
+    return lyrics;
+}
+
+wstring CTagLabHelper::GetAsfLyric(const wstring& file_path)
+{
+    wstring lyrics;
+    ASF::File file(file_path.c_str());
+    auto properties = file.properties();
+    auto lyric_item = properties["LYRICS"];
+    if (!lyric_item.isEmpty())
+    {
+        lyrics = lyric_item.front().toWString();
+    }
+    return lyrics;
 }
 
 bool CTagLabHelper::WriteAudioTag(SongInfo& song_info)

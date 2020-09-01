@@ -147,34 +147,41 @@ wstring CAudioTag::GetAudioLyric()
 	string tag_contents;
 	if (m_type == AU_MP3)
 	{
-		tag_contents = GetID3V2TagContents();
-		if (!tag_contents.empty())
-		{
-			wstring lyric_str = GetSpecifiedId3V2Tag(tag_contents, "USLT");
-			return lyric_str;
-		}
+		//tag_contents = GetID3V2TagContents();
+		//if (!tag_contents.empty())
+		//{
+		//	wstring lyric_str = GetSpecifiedId3V2Tag(tag_contents, "USLT");
+		//	return lyric_str;
+		//}
+        return CTagLabHelper::GetMpegLyric(m_song_info.file_path);
 	}
+    else if (m_type == AU_WMA || m_type == AU_ASF)
+    {
+        return CTagLabHelper::GetAsfLyric(m_song_info.file_path);
+    }
 	else if(m_type == AU_MP4)
 	{
-		tag_contents = GetMp4TagContents();
-		if (!tag_contents.empty())
-		{
-			wstring lyric_str = GetSpecifiedUtf8Tag(tag_contents, "Lyrics");
-			return lyric_str;
-		}
+		//tag_contents = GetMp4TagContents();
+		//if (!tag_contents.empty())
+		//{
+		//	wstring lyric_str = GetSpecifiedUtf8Tag(tag_contents, "Lyrics");
+		//	return lyric_str;
+		//}
+        return CTagLabHelper::GetM4aLyric(m_song_info.file_path);
 	}
     else if (m_type == AU_FLAC)
     {
-        GetFlacTagContents(m_song_info.file_path, tag_contents);
-#ifdef _DEBUG
-        CFilePathHelper helper(m_song_info.file_path);
-        CCommon::SaveDataToFile(tag_contents, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
-#endif
-        if (!tag_contents.empty())
-        {
-            wstring lyric_str = GetSpecifiedFlacTag(tag_contents, "Lyrics");
-            return lyric_str;
-        }
+//        GetFlacTagContents(m_song_info.file_path, tag_contents);
+//#ifdef _DEBUG
+//        CFilePathHelper helper(m_song_info.file_path);
+//        CCommon::SaveDataToFile(tag_contents, L"D:\\Temp\\audio_tags\\" + helper.GetFileName() + L".bin");
+//#endif
+//        if (!tag_contents.empty())
+//        {
+//            wstring lyric_str = GetSpecifiedFlacTag(tag_contents, "Lyrics");
+//            return lyric_str;
+//        }
+        return CTagLabHelper::GetFlacLyric(m_song_info.file_path);
     }
 
 	return wstring();
