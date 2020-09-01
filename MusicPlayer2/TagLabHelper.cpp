@@ -26,6 +26,7 @@ using namespace TagLib;
 
 #define STR_MP4_COVER_TAG "covr"
 #define STR_MP4_LYRICS_TAG "----:com.apple.iTunes:Lyrics"
+#define STR_ASF_COVER_TAG "WM/Picture"
 
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
@@ -575,6 +576,40 @@ bool CTagLabHelper::WriteM4aAlbumCover(const wstring& file_path, const wstring& 
     return saved;
 }
 
+bool CTagLabHelper::WriteAsfAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    ASF::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.tag();
+    if (tag == nullptr)
+        return false;
+
+    if (remove_exist)
+    {
+        if (tag->contains(STR_ASF_COVER_TAG))
+        {
+            tag->removeItem(STR_ASF_COVER_TAG);
+        }
+    }
+
+    if (!album_cover_path.empty())
+    {
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+
+        ASF::Picture picture;
+        wstring str_mine_type = L"image/" + CFilePathHelper(album_cover_path).GetFileExtension();
+        picture.setMimeType(str_mine_type);
+        picture.setType(ASF::Picture::FrontCover);
+        picture.setPicture(pic_data);
+        tag->setAttribute(STR_ASF_COVER_TAG, picture);
+    }
+    bool saved = file.save();
+    return saved;
+}
+
 bool CTagLabHelper::WriteMpegTag(SongInfo & song_info)
 {
     MPEG::File file(song_info.file_path.c_str());
@@ -693,7 +728,7 @@ bool CTagLabHelper::IsFileTypeCoverWriteSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4;
+    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF;
 }
 
 bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& album_cover_path)
@@ -704,7 +739,7 @@ bool CTagLabHelper::WriteAlbumCover(const wstring& file_path, const wstring& alb
     case AU_MP3:
         return WriteMp3AlbumCover(file_path, album_cover_path);
     case AU_WMA_ASF:
-        break;
+        return WriteAsfAlbumCover(file_path, album_cover_path);
     case AU_OGG:
         break;
     case AU_MP4:
