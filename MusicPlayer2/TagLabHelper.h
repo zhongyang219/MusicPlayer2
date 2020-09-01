@@ -53,6 +53,7 @@ public:
     static bool WriteWavTag(SongInfo& song_info);
     static bool WriteOggTag(SongInfo& song_info);
     static bool WriteApeTag(SongInfo& song_info);
+    static bool WriteMpcTag(SongInfo& song_info);
     static bool WriteOpusTag(SongInfo& song_info);
     static bool WriteWavPackTag(SongInfo& song_info);
     static bool WriteTtaTag(SongInfo& song_info);

@@ -191,7 +191,7 @@ bool CAudioTag::WriteAudioTag()
     case AU_WAV:
         return CTagLabHelper::WriteWavTag(m_song_info);
     case AU_MPC:
-        break;
+        return CTagLabHelper::WriteMpcTag(m_song_info);
     case AU_DSD:
         break;
     case AU_OPUS:
@@ -254,7 +254,7 @@ bool CAudioTag::IsFileTypeTagWriteSupport(const wstring& ext)
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
     return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WAV || type == AU_OGG || type == AU_APE
-        || type == AU_WV || type == AU_AIFF || type == AU_OPUS || type == AU_TTA || type == AU_WMA_ASF;
+        || type == AU_WV || type == AU_AIFF || type == AU_OPUS || type == AU_TTA || type == AU_WMA_ASF || type == AU_MPC;
 }
 
 bool CAudioTag::IsFileTypeCoverWriteSupport(const wstring& ext)

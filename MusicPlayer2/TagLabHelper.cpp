@@ -46,31 +46,37 @@ static wstring TagStringToWstring(const String& str)
 
 static void SongInfoToTag(const SongInfo& song_info, Tag* tag)
 {
-    tag->setTitle(song_info.title);
-    tag->setArtist(song_info.artist);
-    tag->setAlbum(song_info.album);
-    tag->setGenre(song_info.genre);
-    tag->setTrack(song_info.track);
-    tag->setComment(song_info.comment);
-    tag->setYear(_wtoi(song_info.year.c_str()));
+    if (tag != nullptr)
+    {
+        tag->setTitle(song_info.title);
+        tag->setArtist(song_info.artist);
+        tag->setAlbum(song_info.album);
+        tag->setGenre(song_info.genre);
+        tag->setTrack(song_info.track);
+        tag->setComment(song_info.comment);
+        tag->setYear(_wtoi(song_info.year.c_str()));
+    }
 }
 
 static void TagToSongInfo(SongInfo& song_info, Tag* tag)
 {
-    song_info.title = TagStringToWstring(tag->title());
-    song_info.artist = TagStringToWstring(tag->artist());
-    song_info.album = TagStringToWstring(tag->album());
-    song_info.genre = TagStringToWstring(tag->genre());
-    if (CCommon::StrIsNumber(song_info.genre))
+    if (tag != nullptr)
     {
-        int genre_num = _wtoi(song_info.genre.c_str());
-        song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
-    }
+        song_info.title = TagStringToWstring(tag->title());
+        song_info.artist = TagStringToWstring(tag->artist());
+        song_info.album = TagStringToWstring(tag->album());
+        song_info.genre = TagStringToWstring(tag->genre());
+        if (CCommon::StrIsNumber(song_info.genre))
+        {
+            int genre_num = _wtoi(song_info.genre.c_str());
+            song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
+        }
 
-    unsigned int year = tag->year();
-    song_info.year = (year == 0 ? L"" : std::to_wstring(year));
-    song_info.track = tag->track();
-    song_info.comment = TagStringToWstring(tag->comment());
+        unsigned int year = tag->year();
+        song_info.year = (year == 0 ? L"" : std::to_wstring(year));
+        song_info.track = tag->track();
+        song_info.comment = TagStringToWstring(tag->comment());
+    }
 }
 
 //将文件内容读取到ByteVector
@@ -159,6 +165,42 @@ static void WriteId3v2AlbumCover(ID3v2::Tag* id3v2tag, const wstring& album_cove
     }
 }
 
+
+static void GetApeTagAlbumCover(APE::Tag* tag, string& cover_contents, int& type)
+{
+    if (tag != nullptr)
+    {
+        auto item_list_map = tag->itemListMap();
+        auto pic_item = item_list_map[STR_APE_COVER_TAG];
+        auto pic_data = pic_item.binaryData();
+        if (!pic_data.isEmpty())
+        {
+            cover_contents.assign(pic_data.data(), pic_data.size());
+
+            size_t index{};
+            index = cover_contents.find('\0');
+            std::string pic_desc;
+            if (index != std::string::npos)
+            {
+                pic_desc = cover_contents.substr(0, index);
+                cover_contents = cover_contents.substr(index + 1);
+            }
+
+            if (!pic_desc.empty())
+            {
+                std::string img_type;
+                index = pic_desc.rfind('.');
+                if (index != std::string::npos && index < pic_desc.size() - 1)
+                {
+                    img_type = pic_desc.substr(index + 1);
+                    img_type = "image/" + img_type;
+                    type = GetPicType(CCommon::ASCIIToUnicode(img_type));
+                }
+            }
+        }
+    }
+
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -283,37 +325,7 @@ string CTagLabHelper::GetApeAlbumCover(const wstring& file_path, int& type)
     string cover_contents;
     APE::File file(file_path.c_str());
     auto tag = file.APETag();
-    if (tag!=nullptr)
-    {
-        auto item_list_map = tag->itemListMap();
-        auto pic_item = item_list_map[STR_APE_COVER_TAG];
-        auto pic_data = pic_item.binaryData();
-        if (!pic_data.isEmpty())
-        {
-            cover_contents.assign(pic_data.data(), pic_data.size());
-
-            size_t index{};
-            index = cover_contents.find('\0');
-            std::string pic_desc;
-            if (index != std::string::npos)
-            {
-                pic_desc = cover_contents.substr(0, index);
-                cover_contents = cover_contents.substr(index + 1);
-            }
-
-            if (!pic_desc.empty())
-            {
-                std::string img_type;
-                index = pic_desc.rfind('.');
-                if (index != std::string::npos && index < pic_desc.size() - 1)
-                {
-                    img_type = pic_desc.substr(index + 1);
-                    img_type = "image/" + img_type;
-                    type = GetPicType(CCommon::ASCIIToUnicode(img_type));
-                }
-            }
-        }
-    }
+    GetApeTagAlbumCover(tag, cover_contents, type);
     return cover_contents;
 }
 
@@ -765,6 +777,15 @@ bool CTagLabHelper::WriteOggTag(SongInfo & song_info)
 bool CTagLabHelper::WriteApeTag(SongInfo& song_info)
 {
     APE::File file(song_info.file_path.c_str());
+    auto tag = file.tag();
+    SongInfoToTag(song_info, tag);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLabHelper::WriteMpcTag(SongInfo& song_info)
+{
+    MPC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
     bool saved = file.save();
