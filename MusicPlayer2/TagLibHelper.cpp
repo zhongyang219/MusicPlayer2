@@ -32,19 +32,6 @@ using namespace TagLib;
 #define STR_ASF_COVER_TAG "WM/Picture"
 #define STR_APE_COVER_TAG "COVER ART (FRONT)"
 
-//将taglib中的字符串转换成wstring类型。
-//由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
-//这里将Latin编码的字符串按本地代码页处理
-static wstring TagStringToWstring(const String& str)
-{
-    wstring result;
-    if (str.isLatin1())
-        result = CCommon::StrToUnicode(str.to8Bit(), CodeType::ANSI);
-    else
-        result = str.toWString();
-    return result;
-}
-
 
 static void SongInfoToTag(const SongInfo& song_info, Tag* tag)
 {
@@ -64,10 +51,10 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag)
 {
     if (tag != nullptr)
     {
-        song_info.title = TagStringToWstring(tag->title());
-        song_info.artist = TagStringToWstring(tag->artist());
-        song_info.album = TagStringToWstring(tag->album());
-        song_info.genre = TagStringToWstring(tag->genre());
+        song_info.title = tag->title().toWString();
+        song_info.artist = tag->artist().toWString();
+        song_info.album = tag->album().toWString();
+        song_info.genre = tag->genre().toWString();
         if (CCommon::StrIsNumber(song_info.genre))
         {
             int genre_num = _wtoi(song_info.genre.c_str());
@@ -77,7 +64,7 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag)
         unsigned int year = tag->year();
         song_info.year = (year == 0 ? L"" : std::to_wstring(year));
         song_info.track = tag->track();
-        song_info.comment = TagStringToWstring(tag->comment());
+        song_info.comment = tag->comment().toWString();
     }
 }
 
