@@ -634,6 +634,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     CString media_lib_btn_str;
     m_set_path_button.GetWindowText(media_lib_btn_str);
     int media_lib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
+    if (media_lib_btn_width < theApp.DPI(70))
+        media_lib_btn_width = theApp.DPI(70);
     media_lib_btn_width += theApp.DPI(20);
 
     //设置“当前路径”edit控件大小
