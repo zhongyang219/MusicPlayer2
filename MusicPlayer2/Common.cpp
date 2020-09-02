@@ -139,6 +139,8 @@ bool CCommon::IsDivideChar(wchar_t ch)
 
 bool CCommon::StrIsNumber(const wstring & str)
 {
+    if (str.empty())
+        return false;
 	for (const auto& ch : str)
 	{
 		if (ch < L'0' || ch > L'9')

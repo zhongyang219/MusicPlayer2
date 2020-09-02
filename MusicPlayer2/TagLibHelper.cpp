@@ -47,6 +47,20 @@ static void SongInfoToTag(const SongInfo& song_info, Tag* tag)
     }
 }
 
+static bool IsStringNumber(wstring str, int num)
+{
+    if (!str.empty() && str.front() == L'(')
+        str = str.substr(1);
+    if (!str.empty() && str.back() == L')')
+        str.pop_back();
+    if (CCommon::StrIsNumber(str))
+    {
+        num = _wtoi(str.c_str());
+        return true;
+    }
+    return false;
+}
+
 static void TagToSongInfo(SongInfo& song_info, Tag* tag)
 {
     if (tag != nullptr)
@@ -55,10 +69,10 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag)
         song_info.artist = tag->artist().toWString();
         song_info.album = tag->album().toWString();
         song_info.genre = tag->genre().toWString();
-        if (CCommon::StrIsNumber(song_info.genre))
+        int genre_num{};
+        if (IsStringNumber(song_info.genre, genre_num))
         {
-            int genre_num = _wtoi(song_info.genre.c_str());
-            song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num - 1));
+            song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num));
         }
 
         unsigned int year = tag->year();
