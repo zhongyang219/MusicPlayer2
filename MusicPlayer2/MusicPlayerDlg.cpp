@@ -1563,8 +1563,12 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     // 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
     //  执行此操作
+
+    //载入图标资源
+    theApp.LoadIconResource();
+
     SetIcon(m_hIcon, TRUE);			// 设置大图标
-    SetIcon(m_hIcon, FALSE);		// 设置小图标
+    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);		// 设置小图标
 
     // TODO: 在此添加额外的初始化代码
 
@@ -1575,9 +1579,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     }
 
     m_hAccel = LoadAccelerators(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_ACCELERATOR1));
-
-    //载入图标资源
-    theApp.LoadIconResource();
 
     //初始化字体
     theApp.m_font_set.Init();
