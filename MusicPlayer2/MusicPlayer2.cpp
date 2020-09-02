@@ -11,6 +11,7 @@
 #include "UpdateHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "WIC.h"
+#include "SongDataManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -317,51 +318,7 @@ void CMusicPlayerApp::OnHelp()
 
 void CMusicPlayerApp::SaveSongData()
 {
-    // 打开或者新建文件
-    CFile file;
-    BOOL bRet = file.Open(m_song_data_path.c_str(),
-        CFile::modeCreate | CFile::modeWrite);
-    if (!bRet)		//打开文件失败
-    {
-        return;
-    }
-    // 构造CArchive对象
-    CArchive ar(&file, CArchive::store);
-    // 写数据
-    ar << CString(_T("2.693"));			//写入数据版本
-    ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
-    for (auto& song_data : m_song_data)
-    {
-        ar << CString(song_data.first.c_str())		//保存映射容器的键，即歌曲的绝对路径
-            << song_data.second.lengh.toInt()
-            << song_data.second.bitrate
-            << CString(song_data.second.title.c_str())
-            << CString(song_data.second.artist.c_str())
-            << CString(song_data.second.album.c_str())
-            << CString(song_data.second.year.c_str())
-            << CString(song_data.second.comment.c_str())
-            << CString(song_data.second.genre.c_str())
-            << song_data.second.genre_idx
-            << song_data.second.track
-            << song_data.second.tag_type
-            << CString(song_data.second.song_id.c_str())
-            << song_data.second.listen_time
-            << song_data.second.info_acquired
-            //<< song_data.second.is_favourite
-
-             //<< song_data.second.no_online_album_cover
-             //<< song_data.second.no_online_lyric
-            << song_data.second.flags
-            << song_data.second.last_played_time
-            << CString(song_data.second.lyric_file.c_str())
-            ;
-    }
-    // 关闭CArchive对象
-    ar.Close();
-    // 关闭文件
-    file.Close();
-
-    m_song_data_modified = false;
+    CSongDataManager::GetInstance().SaveSongData(m_song_data_path);
 }
 
 void CMusicPlayerApp::CheckUpdate(bool message)
@@ -464,20 +421,6 @@ void CMusicPlayerApp::LoadConfig()
     m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
     m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
     m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", false);
-}
-
-void CMusicPlayerApp::SaveSongInfo(const SongInfo& song_info)
-{
-    if (song_info.file_path.empty())
-        return;
-    SongInfo& song = m_song_data[song_info.file_path];
-    song.CopyAudioTag(song_info);
-    song.lengh = song_info.lengh;
-    song.bitrate = song_info.bitrate;
-    song.song_id = song_info.song_id;
-    //song.is_favourite = song_info.is_favourite;
-
-    SetSongDataModified();
 }
 
 void CMusicPlayerApp::LoadIconResource()
@@ -869,35 +812,6 @@ void CMusicPlayerApp::GetDPIFromWindow(CWnd * pWnd)
     m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 }
 
-SongInfo CMusicPlayerApp::GetSongInfo(const wstring& file_path)
-{
-    SongInfo song;
-    auto iter = m_song_data.find(file_path);
-    if (iter != m_song_data.end())
-        song = iter->second;
-    song.file_path = file_path;
-    return song;
-}
-
-SongInfo& CMusicPlayerApp::GetSongInfoRef(const wstring& file_path)
-{
-	auto iter = m_song_data.find(file_path);
-	if (iter != m_song_data.end())
-	{
-		return iter->second;
-	}
-	else
-	{
-		static SongInfo song;
-		return song;
-	}
-}
-
-SongInfo& CMusicPlayerApp::GetSongInfoRef2(const wstring& file_path)
-{
-    return m_song_data[file_path];
-}
-
 WORD CMusicPlayerApp::GetCurrentLanguage() const
 {
     switch (m_general_setting_data.language)
@@ -998,16 +912,6 @@ bool CMusicPlayerApp::GetAutoRun()
     }
 }
 
-void CMusicPlayerApp::SetSongDataModified()
-{
-    m_song_data_modified = true;
-}
-
-bool CMusicPlayerApp::IsSongDataModified() const
-{
-    return m_song_data_modified;
-}
-
 void CMusicPlayerApp::WriteErrorLog(const wstring & log_str)
 {
     CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
@@ -1054,135 +958,7 @@ void CMusicPlayerApp::AutoSelectNotifyIcon()
 
 void CMusicPlayerApp::LoadSongData()
 {
-    // 打开文件
-    CFile file;
-    BOOL bRet = file.Open(m_song_data_path.c_str(), CFile::modeRead);
-    if (!bRet) return;
-    // 构造CArchive对象
-    CArchive ar(&file, CArchive::load);
-    // 读数据
-    int size{};
-    SongInfo song_info;
-    CString song_path;
-    CString temp;
-    int song_length;
-    try
-    {
-        //读取版本
-        CString version_str;
-        ar >> version_str;
-		if (!CCommon::StringIsVersion(version_str))
-			version_str = _T("0.00");
-        if (version_str >= _T("2.664"))
-        {
-            ar >> size;		//读取映射容器的长度
-        }
-        else
-        {
-            size_t size_1;
-            ar >> size_1;
-            size = static_cast<int>(size_1);
-        }
-        for (size_t i{}; i < size; i++)
-        {
-            ar >> song_path;
-            ar >> song_length;
-            song_info.lengh.fromInt(song_length);
-            if (version_str >= _T("2.691"))
-            {
-                ar >> song_info.bitrate;
-            }
-            else
-            {
-                int bitrate;
-                ar >> bitrate;
-                song_info.bitrate = bitrate;
-            }
-            ar >> temp;
-            song_info.title = temp;
-            ar >> temp;
-            song_info.artist = temp;
-            ar >> temp;
-            song_info.album = temp;
-            ar >> temp;
-            song_info.year = temp;
-            ar >> temp;
-            song_info.comment = temp;
-            ar >> temp;
-            song_info.genre = temp;
-            ar >> song_info.genre_idx;
-			if (version_str >= _T("2.66"))
-			{
-                ar >> song_info.track;
-            }
-			else
-			{
-				BYTE track;
-				ar >> track;
-				song_info.track = track;
-			}
-
-            if (version_str >= _T("2.691"))
-            {
-                ar >> song_info.tag_type;
-            }
-            else
-            {
-                int tag_type;
-                ar >> tag_type;
-                song_info.tag_type = tag_type;
-            }
-            ar >> temp;
-            song_info.song_id = temp;
-
-            if(version_str >= _T("2.64"))		//版本号大于等于2.64
-            {
-                ar >> song_info.listen_time;
-                ar >> song_info.info_acquired;
-            }
-
-            if (version_str == _T("2.661"))
-            {
-                ar >> song_info.is_favourite;
-            }
-
-            if (version_str >= _T("2.663") && version_str < _T("2.690"))
-            {
-                bool no_online_album_cover{ song_info.NoOnlineAlbumCover() };
-                bool no_online_lyric{ song_info.NoOnlineLyric() };
-                ar >> no_online_album_cover;
-                ar >> no_online_lyric;
-            }
-
-            if (version_str >= _T("2.690"))
-            {
-                ar >> song_info.flags;
-            }
-
-			if (version_str >= _T("2.680"))
-			{
-				ar >> song_info.last_played_time;
-			}
-
-            if (version_str >= _T("2.692"))
-            {
-                ar >> temp;
-                song_info.lyric_file = temp;
-            }
-
-            m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
-        }
-    }
-    catch(CArchiveException* exception)
-    {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { m_song_data_path, exception->m_cause });
-        WriteErrorLog(wstring{ info });
-    }
-    // 关闭对象
-    ar.Close();
-    // 关闭文件
-    file.Close();
+    CSongDataManager::GetInstance().LoadSongData(m_song_data_path);
 }
 
 LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam)

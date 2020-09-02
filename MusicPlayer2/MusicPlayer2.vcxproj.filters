@@ -318,6 +318,9 @@
     <Filter Include="公共的类\AudioTag\Old">
       <UniqueIdentifier>{b6ef88a2-0908-43db-b083-a4cf3b989d58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\SongDataManager">
+      <UniqueIdentifier>{ff657a96-e62b-41c3-a5be-3435f3693904}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -709,6 +712,9 @@
     <ClInclude Include="AudioTagOld.h">
       <Filter>公共的类\AudioTag\Old</Filter>
     </ClInclude>
+    <ClInclude Include="SongDataManager.h">
+      <Filter>功能逻辑类\SongDataManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1064,6 +1070,9 @@
     </ClCompile>
     <ClCompile Include="AudioTagOld.cpp">
       <Filter>公共的类\AudioTag\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="SongDataManager.cpp">
+      <Filter>功能逻辑类\SongDataManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

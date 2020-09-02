@@ -10,6 +10,7 @@
 #include "WIC.h"
 #include "TagLibHelper.h"
 #include "MusicPlayerCmdHelper.h"
+#include "SongDataManager.h"
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
 
@@ -1010,7 +1011,7 @@ void CFormatConvertDlg::OnAddFile()
 		{
 			SongInfo item;
 			CString file_path = fileDlg.GetNextPathName(posFile);
-			item = theApp.GetSongInfo(wstring(file_path));
+			item = CSongDataManager::GetInstance().GetSongInfo(wstring(file_path));
 			if (!item.info_acquired)	//如果歌曲没有获取过信息，则重新获取
 			{
 				HSTREAM hStream;

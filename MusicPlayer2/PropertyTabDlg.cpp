@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "COSUPlayerHelper.h"
 #include "PropertyDlgHelper.h"
+#include "SongDataManager.h"
 
 
 // CPropertyTabDlg 对话框
@@ -35,8 +36,8 @@ static void UpdateSongInfo(SongInfo song)
         CAudioTag audio_tag(*iter, hStream);
         audio_tag.GetAudioTag();
         BASS_StreamFree(hStream);
-        theApp.GetSongInfoRef(iter->file_path).CopyAudioTag(*iter);
-        theApp.SetSongDataModified();
+        CSongDataManager::GetInstance().GetSongInfoRef(iter->file_path).CopyAudioTag(*iter);
+        CSongDataManager::GetInstance().SetSongDataModified();
     }
 }
 
@@ -504,8 +505,8 @@ int CPropertyTabDlg::SaveModified()
 		    CAudioTag audio_tag(m_all_song_info[m_index], hStream);
 		    audio_tag.GetAudioTag();
 		    BASS_StreamFree(hStream);
-		    theApp.m_song_data[m_all_song_info[m_index].file_path].CopyAudioTag(m_all_song_info[m_index]);
-		    theApp.SetSongDataModified();
+            CSongDataManager::GetInstance().GetSongInfoRef2(m_all_song_info[m_index].file_path).CopyAudioTag(m_all_song_info[m_index]);
+            CSongDataManager::GetInstance().SetSongDataModified();
 
 		    m_modified = false;
             SetSaveBtnEnable();

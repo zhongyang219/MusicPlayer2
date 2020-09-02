@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "LyricBatchDownloadDlg.h"
 #include "afxdialogex.h"
+#include "SongDataManager.h"
 
 
 // CLyricBatchDownloadDlg 对话框
@@ -301,7 +302,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 		}
 
 		//处理返回结果
-        SongInfo& song_info_ori{ theApp.m_song_data[pInfo->playlist->at(i).file_path] };
+        SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(pInfo->playlist->at(i).file_path) };
 		vector<CInternetCommon::ItemInfo> down_list;
 		CInternetCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
 		if (down_list.empty())

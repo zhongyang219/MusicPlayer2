@@ -2,6 +2,7 @@
 #include "AudioCommon.h"
 #include "CueFile.h"
 #include "MusicPlayer2.h"
+#include "SongDataManager.h"
 
 vector<SupportedFormat> CAudioCommon::m_surpported_format;
 vector<wstring> CAudioCommon::m_all_surpported_extensions;
@@ -276,7 +277,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             //如果还未获取对应音频文件的信息，则在这里获取
             if (CCommon::FileExist(cue_dir + audio_file_name))
             {
-                SongInfo& audo_file_info = theApp.GetSongInfoRef2(cue_dir + audio_file_name);
+                SongInfo& audo_file_info = CSongDataManager::GetInstance().GetSongInfoRef2(cue_dir + audio_file_name);
                 if (pPlayerCore != nullptr && !audo_file_info.info_acquired)
                 {
                     pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info);

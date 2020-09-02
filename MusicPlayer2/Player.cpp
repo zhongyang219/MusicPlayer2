@@ -6,6 +6,7 @@
 #include "BassCore.h"
 #include "MciCore.h"
 #include "MusicPlayerCmdHelper.h"
+#include "SongDataManager.h"
 
 CPlayer CPlayer::m_instance;
 
@@ -179,10 +180,9 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             //wstring file_name{ GetInstance().m_playlist[i].file_name };
             if(GetInstance().m_playlist[i].file_path.empty())
                 continue;
-            auto iter = theApp.m_song_data.find(GetInstance().m_playlist[i].file_path);
-            if (iter != theApp.m_song_data.end())		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
+            if (CSongDataManager::GetInstance().IsItemExist(GetInstance().m_playlist[i].file_path))		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
             {
-                GetInstance().m_playlist[i].CopySongInfo(iter->second);
+                GetInstance().m_playlist[i].CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(GetInstance().m_playlist[i].file_path));
                 //GetInstance().m_playlist[i] = iter->second;
                 //GetInstance().m_playlist[i].file_name = file_name;
                 //GetInstance().m_playlist[i].file_path = iter->first;
@@ -199,7 +199,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         {
             COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
         }
-        theApp.SaveSongInfo(GetInstance().m_playlist[i]);
+        CSongDataManager::GetInstance().SaveSongInfo(GetInstance().m_playlist[i]);
         //song_data_modified = true;
         count++;
     }
@@ -326,7 +326,7 @@ void CPlayer::SearchLyrics(bool refresh)
     }
     else
     {
-        SongInfo& cur_song_info{ theApp.GetSongInfoRef(GetCurrentFilePath()) };
+        SongInfo& cur_song_info{ CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()) };
         if (cur_song_info.lyric_file == NO_LYRIC_STR && !refresh)
             return;
 
@@ -388,7 +388,7 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 {
     m_Lyrics = CLyrics{ lyric_path };
     GetCurrentSongInfo2().lyric_file = lyric_path;
-    theApp.GetSongInfoRef(GetCurrentFilePath()).lyric_file = lyric_path;
+    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()).lyric_file = lyric_path;
 }
 
 
@@ -433,7 +433,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
                 m_pCore->GetAudioInfo(m_playlist[m_index], flag);
                 if (IsOsuFile())
                     COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
-                theApp.SaveSongInfo(m_playlist[m_index]);
+                CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
             }
             else if (!m_playlist[m_index].is_cue)
             {
@@ -1740,7 +1740,7 @@ void CPlayer::ClearLyric()
 {
     m_Lyrics = CLyrics{};
     GetCurrentSongInfo2().lyric_file.clear();
-    theApp.GetSongInfoRef(GetCurrentFilePath()).lyric_file.clear();
+    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()).lyric_file.clear();
 }
 
 wstring CPlayer::GetTimeString() const
@@ -1792,7 +1792,7 @@ void CPlayer::SetRelatedSongID(wstring song_id)
         if(!m_playlist[m_index].is_cue)
         {
             //theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
-            theApp.SaveSongInfo(m_playlist[m_index]);
+            CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
         }
     }
 }
@@ -1804,7 +1804,7 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
         m_playlist[index].song_id = song_id;
         if (!m_playlist[index].is_cue)
         {
-            theApp.SaveSongInfo(m_playlist[m_index]);
+            CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
         }
     }
 }
@@ -1839,11 +1839,11 @@ void CPlayer::AddListenTime(int sec)
 {
     if (m_index >= 0 && m_index < GetSongNum())
     {
-        m_playlist[m_index].listen_time += sec;
+        //m_playlist[m_index].listen_time += sec;
         if (!m_playlist[m_index].is_cue)
         {
-            theApp.m_song_data[m_playlist[m_index].file_path].listen_time = m_playlist[m_index].listen_time;
-            theApp.SetSongDataModified();
+            CSongDataManager::GetInstance().GetSongInfoRef(m_playlist[m_index].file_path).listen_time += sec;
+            CSongDataManager::GetInstance().SetSongDataModified();
         }
     }
 }
@@ -2367,7 +2367,7 @@ void CPlayer::SearchAlbumCover()
     //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
-    SongInfo& cur_song{ theApp.GetSongInfoRef(GetCurrentFilePath()) };
+    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()) };
     bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile() && !always_use_external_album_cover)
     {

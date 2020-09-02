@@ -24,6 +24,7 @@
 #include "LyricRelateDlg.h"
 #include "AlbumCoverInfoDlg.h"
 #include <Dbt.h>
+#include "SongDataManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1369,7 +1370,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_REMOVE_CURRENT_FROM_PLAYLIST, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
 
     //专辑封面
-    SongInfo& cur_song{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
     bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
     pMenu->CheckMenuItem(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, (always_use_external_album_cover ? MF_CHECKED : MF_UNCHECKED));
 }
@@ -2011,7 +2012,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         {
             //CPlayer::GetInstance().EmplaceCurrentPathToRecent();
             //CPlayer::GetInstance().SaveRecentPath();
-            if(theApp.IsSongDataModified())				//在歌曲信息被修改过的情况下，每隔一定的时间保存一次
+            if(CSongDataManager::GetInstance().IsSongDataModified())				//在歌曲信息被修改过的情况下，每隔一定的时间保存一次
                 theApp.SaveSongData();
         }
     }
@@ -3147,9 +3148,9 @@ void CMusicPlayerDlg::OnDeleteLyric()
         CPlayer::GetInstance().ClearLyric();		//清除歌词关联
     }
 
-    SongInfo& song_info{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
     song_info.SetNoOnlineLyric(true);
-    theApp.SetSongDataModified();
+    CSongDataManager::GetInstance().SetSongDataModified();
 }
 
 
@@ -3325,7 +3326,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             return 0;
     }
 
-    SongInfo& song_info_ori{ theApp.m_song_data[song.file_path] };
+    SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(song.file_path) };
     bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !CPlayer::GetInstance().AlbumCoverExist() && !CPlayer::GetInstance().GetCurrentSongInfo().is_cue && !song_info_ori.NoOnlineAlbumCover() };
     bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric };
     bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && CPlayer::GetInstance().m_Lyrics.IsEmpty() && !midi_lyric && !song_info_ori.NoOnlineLyric() };
@@ -3345,7 +3346,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             {
                 song_info_ori.SetNoOnlineAlbumCover(true);
                 song_info_ori.SetNoOnlineLyric(true);
-                theApp.SetSongDataModified();
+                CSongDataManager::GetInstance().SetSongDataModified();
             }
             return 0;
         }
@@ -3357,7 +3358,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         if (cover_url.empty())
         {
             song_info_ori.SetNoOnlineAlbumCover(true);
-            theApp.SetSongDataModified();
+            CSongDataManager::GetInstance().SetSongDataModified();
             return 0;
         }
 
@@ -3394,13 +3395,13 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, true))
         {
             song_info_ori.SetNoOnlineLyric(true);
-            theApp.SetSongDataModified();
+            CSongDataManager::GetInstance().SetSongDataModified();
             return 0;
         }
         if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
         {
             song_info_ori.SetNoOnlineLyric(true);
-            theApp.SetSongDataModified();
+            CSongDataManager::GetInstance().SetSongDataModified();
             return 0;
         }
         CLyricDownloadCommon::AddLyricTag(lyric_str, match_item.id, match_item.title, match_item.artist, match_item.album);
@@ -3657,7 +3658,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lPara
 	GetLocalTime(&sys_time);
 	CTime cur_time(sys_time);
 	auto cur_time_int = cur_time.GetTime();
-	theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()).last_played_time = cur_time_int;
+    CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()).last_played_time = cur_time_int;
 
     return 0;
 }
@@ -3674,9 +3675,9 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().DeleteAlbumCover();
-    SongInfo& song_info{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
+    SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef2(CPlayer::GetInstance().GetCurrentFilePath()) };
     song_info.SetNoOnlineAlbumCover(true);
-    theApp.SetSongDataModified();
+    CSongDataManager::GetInstance().SetSongDataModified();
 }
 
 
@@ -4956,7 +4957,7 @@ BOOL CMusicPlayerDlg::OnQueryEndSession()
 void CMusicPlayerDlg::OnAlwaysUseExternalAlbumCover()
 {
     // TODO: 在此添加命令处理程序代码
-    SongInfo& cur_song{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
     bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
     always_use_external_album_cover = !always_use_external_album_cover;
     cur_song.SetAlwaysUseExternalAlbumCover(always_use_external_album_cover);
@@ -5026,10 +5027,10 @@ void CMusicPlayerDlg::OnUnlinkLyric()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().ClearLyric();		//清除歌词
-    SongInfo& song_info{ theApp.GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
     song_info.lyric_file = NO_LYRIC_STR;       //将该歌曲设置为不关联歌词
     song_info.SetNoOnlineLyric(true);
-    theApp.SetSongDataModified();
+    CSongDataManager::GetInstance().SetSongDataModified();
 }
 
 

@@ -10,6 +10,7 @@
 #include "PropertyDlg.h"
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
+#include "SongDataManager.h"
 
 
 // CFolderExploreDlg 对话框
@@ -48,19 +49,8 @@ void CFolderExploreDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
     GetSongsSelected(file_list);
     for (const auto& file : file_list)
     {
-        SongInfo song;
-        auto iter = theApp.m_song_data.find(file);
-        if (iter != theApp.m_song_data.end())
-        {
-            song = iter->second;
-            song.file_path = file;
-            song_list.push_back(song);
-        }
-        else
-        {
-            song.file_path = file;
-            song_list.push_back(song);
-        }
+        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
+        song_list.push_back(song);
     }
 }
 
@@ -69,13 +59,7 @@ void CFolderExploreDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) con
     for (int index = 0; index < m_song_list_ctrl.GetItemCount(); index++)
     {
         std::wstring file = m_song_list_ctrl.GetItemText(index, COL_PATH);
-        SongInfo song;
-        auto iter = theApp.m_song_data.find(file);
-        if (iter != theApp.m_song_data.end())
-        {
-            song = iter->second;
-        }
-        song.file_path = file;
+        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
         song_list.push_back(song);
 
     }
@@ -126,13 +110,7 @@ void CFolderExploreDlg::ShowSongList()
     std::vector<SongInfo> song_list;
     for (const auto& file : files)
     {
-        SongInfo song;
-        auto iter = theApp.m_song_data.find(file);
-        if(iter != theApp.m_song_data.end())
-        {
-            song = iter->second;
-        }
-        song.file_path = file;
+        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
         song_list.push_back(song);
     }
 
@@ -221,8 +199,7 @@ UINT CFolderExploreDlg::ViewOnlineThreadFunc(LPVOID lpParam)
         wstring file_path = pThis->m_song_list_ctrl.GetItemText(pThis->m_right_selected_item, COL_PATH).GetString();
         if (CCommon::FileExist(file_path))
         {
-            SongInfo song{ theApp.m_song_data[file_path] };
-            song.file_path = file_path;
+            SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file_path);
             CMusicPlayerCmdHelper cmd_helper(pThis);
             cmd_helper.VeiwOnline(song);
         }

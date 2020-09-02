@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "MusicPlayerCmdHelper.h"
 #include "CleanupRangeDlg.h"
+#include "SongDataManager.h"
 
 
 // CMediaLibSettingDlg 对话框
@@ -235,12 +236,8 @@ void CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn()
 	//清除歌曲的上次播放时间
 	if(MessageBox(CCommon::LoadText(IDS_CLEAR_RECENT_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
 	{
-		for (auto& item : theApp.m_song_data)
-		{
-			item.second.last_played_time = 0;
-		}
-		theApp.SetSongDataModified();
-		::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_PLAYED_LIST_CLEARED, 0, 0);
+        CSongDataManager::GetInstance().ClearLastPlayedTime();
+        ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_PLAYED_LIST_CLEARED, 0, 0);
 	}
 }
 

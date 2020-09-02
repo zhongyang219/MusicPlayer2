@@ -9,6 +9,7 @@
 #include "PropertyDlg.h"
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
+#include "SongDataManager.h"
 
 
 // CFindDlg 对话框
@@ -90,7 +91,7 @@ UINT CFindDlg::ViewOnlineThreadFunc(LPVOID lpParam)
         wstring file_path = pThis->m_find_result_list.GetItemText(pThis->m_item_selected, COL_PATH).GetString();
         if (CCommon::FileExist(file_path))
         {
-            SongInfo song{ theApp.m_song_data[file_path] };
+            SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(file_path) };
             song.file_path = file_path;
             CMusicPlayerCmdHelper cmd_helper(pThis);
             cmd_helper.VeiwOnline(song);
@@ -161,13 +162,7 @@ void CFindDlg::GetSongsSelected(vector<SongInfo>& songs) const
     GetSongsSelected(files);
     for (const auto& file : files)
     {
-        SongInfo song;
-        auto iter = theApp.m_song_data.find(file);
-        if (iter != theApp.m_song_data.end())
-        {
-            song = iter->second;
-        }
-        song.file_path = file;
+        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
         songs.push_back(song);
     }
 }
@@ -177,13 +172,7 @@ void CFindDlg::GetCurrentSongList(std::vector<SongInfo>& song_list)
     for (int index = 0; index < m_find_result_list.GetItemCount(); index++)
     {
         std::wstring file = m_find_result_list.GetItemText(index, COL_PATH);
-        SongInfo song;
-        auto iter = theApp.m_song_data.find(file);
-        if (iter != theApp.m_song_data.end())
-        {
-            song = iter->second;
-        }
-        song.file_path = file;
+        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
         song_list.push_back(song);
     }
 }
@@ -295,7 +284,7 @@ void CFindDlg::OnBnClickedFindButton()
 			wstring a_result;
 			int index;
 			bool find_flag;
-			for (const auto& item : theApp.m_song_data)
+			for (const auto& item : CSongDataManager::GetInstance().GetSongData())
 			{
 				find_flag = false;
 				if (m_find_file && !find_flag)

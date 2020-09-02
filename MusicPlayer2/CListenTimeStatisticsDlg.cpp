@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CListenTimeStatisticsDlg.h"
 #include "afxdialogex.h"
+#include "SongDataManager.h"
 
 
 // CListenTimeStatisticsDlg 对话框
@@ -121,7 +122,7 @@ BOOL CListenTimeStatisticsDlg::OnInitDialog()
 
     //获取数据
     //从所有歌曲信息中查找累计听的时间超过指定时间的曲目添加到vector
-    for (const auto& data : theApp.m_song_data)
+    for (const auto& data : CSongDataManager::GetInstance().GetSongData())
     {
         SongInfo song{ data.second };
         if (song.listen_time >= 20 && song.lengh > 0)
@@ -227,10 +228,7 @@ void CListenTimeStatisticsDlg::OnBnClickedClearButton()
     // TODO: 在此添加控件通知处理程序代码
     if (MessageBox(CCommon::LoadText(IDS_CLEAR_LISTEN_TIME_WARNING), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
     {
-        for (auto& data : theApp.m_song_data)
-        {
-            data.second.listen_time = 0;
-        }
+        CSongDataManager::GetInstance().ClearPlayTime();
         m_list_ctrl.DeleteAllItems();
     }
 }

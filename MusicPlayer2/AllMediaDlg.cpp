@@ -6,6 +6,7 @@
 #include "AllMediaDlg.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
+#include "SongDataManager.h"
 
 
 // CAllMediaDlg 对话框
@@ -50,7 +51,7 @@ void CAllMediaDlg::InitListData()
     GetLocalTime(&sys_time);
     __int64 cur_time = CTime(sys_time).GetTime();
 
-	for (const auto& item : theApp.m_song_data)
+	for (const auto& item : CSongDataManager::GetInstance().GetSongData())
 	{
 		CListCtrlEx::RowData row_data;
 

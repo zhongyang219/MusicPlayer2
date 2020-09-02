@@ -143,7 +143,7 @@ struct SongInfo
         CopyAudioTag(song_info);
         lengh = song_info.lengh;
         bitrate = song_info.bitrate;
-        listen_time = song_info.listen_time;
+        //listen_time = song_info.listen_time;
         song_id = song_info.song_id;
         is_favourite = song_info.is_favourite;
         info_acquired = song_info.info_acquired;

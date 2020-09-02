@@ -2,6 +2,7 @@
 #include "MediaLibHelper.h"
 #include "MusicPlayer2.h"
 #include <set>
+#include "SongDataManager.h"
 
 CMediaClassifier::CMediaClassifier(ClassificationType type, bool hide_only_one_classification)
     : m_type(type), m_hide_only_one_classification(hide_only_one_classification)
@@ -26,7 +27,7 @@ CMediaClassifier::MediaList& CMediaClassifier::GetMeidaList()
 void CMediaClassifier::ClassifyMedia()
 {
     m_media_list.clear();
-    for (const auto& song_info : theApp.m_song_data)
+    for (const auto& song_info : CSongDataManager::GetInstance().GetSongData())
     {
         if(song_info.first.empty())
             continue;

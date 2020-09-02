@@ -3,6 +3,7 @@
 #include "MusicPlayer2.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
+#include "SongDataManager.h"
 
 
 IMPLEMENT_DYNAMIC(CMediaLibTabDlg, CTabDlg)
@@ -38,7 +39,7 @@ void CMediaLibTabDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
 	std::vector<wstring> file_list;
 	GetSongsSelected(file_list);
 	for (const auto& file : file_list)
-		song_list.push_back(theApp.GetSongInfo(file));
+		song_list.push_back(CSongDataManager::GetInstance().GetSongInfo(file));
 }
 
 void CMediaLibTabDlg::GetSongsSelected(std::vector<wstring>& song_list) const
@@ -59,7 +60,7 @@ void CMediaLibTabDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) const
 	std::vector<wstring> file_list;
 	GetCurrentSongList(file_list);
 	for (const auto& file : file_list)
-		song_list.push_back(theApp.GetSongInfo(file));
+		song_list.push_back(CSongDataManager::GetInstance().GetSongInfo(file));
 }
 
 
@@ -95,7 +96,7 @@ UINT CMediaLibTabDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 		wstring file_path = pThis->GetSongListCtrl().GetItemText(pThis->GetItemSelected(), pThis->GetPathColIndex()).GetString();
 		if (CCommon::FileExist(file_path))
 		{
-			SongInfo song{ theApp.GetSongInfo(file_path) };
+			SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(file_path) };
 			CMusicPlayerCmdHelper cmd_helper(pThis);
 			cmd_helper.VeiwOnline(song);
 		}

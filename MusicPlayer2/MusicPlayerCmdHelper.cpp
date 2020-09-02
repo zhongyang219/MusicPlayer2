@@ -9,6 +9,7 @@
 #include "AddToPlaylistDlg.h"
 #include "AudioCommon.h"
 #include "COSUPlayerHelper.h"
+#include "SongDataManager.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -29,7 +30,7 @@ void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
         song.song_id = song_id;
         if (!song.is_cue)
         {
-            theApp.SaveSongInfo(song);
+            CSongDataManager::GetInstance().SaveSongInfo(song);
         }
     }
 
@@ -227,11 +228,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
         //如果文件删除成功，则从歌曲数据中删除
         for (const auto& file : delected_files)
         {
-            auto iter = theApp.m_song_data.find(file);
-            if (iter != theApp.m_song_data.end())
-            {
-                theApp.m_song_data.erase(iter);
-            }
+            CSongDataManager::GetInstance().RemoveItem(file);
         }
         //文件删除后同时删除和文件同名的图片文件和歌词文件
         for (auto& file : delected_files)
@@ -479,8 +476,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& file_path : all_media_files)
     {
-        auto iter = theApp.m_song_data.find(file_path);
-        if (iter == theApp.m_song_data.end())       //如果还没有获取到该歌曲的信息，则在这里获取
+        if (!CSongDataManager::GetInstance().IsItemExist(file_path))       //如果还没有获取到该歌曲的信息，则在这里获取
         {
             SongInfo song_info;
             song_info.file_path = file_path;
@@ -490,7 +486,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
 			pPlayerCore->GetAudioInfo(file_path.c_str(), song_info);
             if (!song_info.lengh.isZero() || CFilePathHelper(file_path).GetFileExtension() == L"cue")
             {
-                theApp.m_song_data[file_path] = song_info;
+                CSongDataManager::GetInstance().AddItem(file_path, song_info);
                 theApp.m_media_num_added++;
             }
         }
@@ -502,28 +498,13 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     //}
 
     if(theApp.m_media_num_added > 0)
-        theApp.SetSongDataModified();
+        CSongDataManager::GetInstance().SetSongDataModified();
     return theApp.m_media_num_added;
 }
 
 int CMusicPlayerCmdHelper::CleanUpSongData(std::function<bool(const SongInfo&)> fun_condition)
 {
-    int clear_cnt{};		//统计删除的项目的数量
-    //遍历映射容器，删除不必要的条目。
-    for (auto iter{ theApp.m_song_data.begin() }; iter != theApp.m_song_data.end();)
-    {
-        iter->second.file_path = iter->first;
-        if (fun_condition(iter->second))
-        {
-            iter = theApp.m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目
-            clear_cnt++;
-        }
-        else
-        {
-            iter++;
-        }
-    }
-    return clear_cnt;
+    return CSongDataManager::GetInstance().RemoveItemIf(fun_condition);
 }
 
 int CMusicPlayerCmdHelper::CleanUpRecentFolders()

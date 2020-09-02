@@ -40,7 +40,6 @@ public:
     wstring m_module_path_reg;  //程序exe文件的路径
     //wstring m_temp_path;		//临时文件夹的路径
 
-    std::unordered_map<wstring, SongInfo> m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
     vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
     //CMediaClassifier m_artist_classifer{ CMediaClassifier::CT_ARTIST, true };     //将所有歌曲信息按艺术家分类
@@ -80,7 +79,6 @@ public:
     void SaveConfig();
     void LoadConfig();
 
-    void SaveSongInfo(const SongInfo& song_info);       //将一个歌曲信息保存到m_song_data中
 
     void LoadIconResource();
     void InitMenuResourse();
@@ -97,10 +95,6 @@ public:
         return m_dpi;
     }
 
-    SongInfo GetSongInfo(const wstring& file_path);
-	SongInfo& GetSongInfoRef(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在不会插入新的记录）
-	SongInfo& GetSongInfoRef2(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在会插入新的记录）
-
     WORD GetCurrentLanguage() const;
     bool IsGlobalMultimediaKeyEnabled() const;
 
@@ -113,8 +107,6 @@ public:
     void SetAutoRun(bool auto_run);
     bool GetAutoRun();
 
-    void SetSongDataModified();
-    bool IsSongDataModified() const;
 
     void WriteErrorLog(const wstring& log_str);
 
@@ -125,11 +117,10 @@ public:
     void AutoSelectNotifyIcon();
 
 private:
-    void LoadSongData();			//从文件中以序列化的方式读取所有歌曲信息
+    void LoadSongData();
 
     static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
     static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
-    //static UINT ClassifySongDataThreadFunc(LPVOID lpParam);	//将歌曲分类的线程函数
 
 private:
     HHOOK m_multimedia_key_hook = NULL;

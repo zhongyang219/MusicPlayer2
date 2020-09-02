@@ -8,6 +8,7 @@
 #include "MessageDlg.h"
 #include "WIC.h"
 #include "PlayListCtrl.h"
+#include "SongDataManager.h"
 
 
 // CLyricDownloadDlg 对话框
@@ -431,7 +432,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, m_lyric_name, true);
 	CString info;
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
-    SongInfo& song_info_ori{ theApp.m_song_data[CPlayer::GetInstance().GetCurrentFilePath()] };
+    SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(CPlayer::GetInstance().GetCurrentFilePath()) };
 	if (m_down_list.empty())
     {
         song_info_ori.SetNoOnlineLyric(true);
