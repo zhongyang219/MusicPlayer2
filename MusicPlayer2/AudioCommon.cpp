@@ -37,6 +37,8 @@ AudioType CAudioCommon::GetAudioTypeByFileExtension(const wstring& type)
         return AU_OGG;
     else if (type == L"m4a" || type == L"mp4")
         return AU_MP4;
+    else if (type == L"aac")
+        return AU_AAC;
     else if (type == L"flac" || type == L"fla")
         return AU_FLAC;
     else if (type == L"cue")
@@ -462,6 +464,9 @@ AudioType CAudioCommon::GetAudioTypeByBassChannel(DWORD ctype)
         break;
     case 0x10b01:
         type = AudioType::AU_MP4;
+        break;
+    case 0x10b00:
+        type = AudioType::AU_AAC;
         break;
     case 0x10900:
     case 0x10901:

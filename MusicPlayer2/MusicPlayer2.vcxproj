@@ -202,6 +202,7 @@
     <ClInclude Include="AppearanceSettingDlg.h" />
     <ClInclude Include="AudioCommon.h" />
     <ClInclude Include="AudioTag.h" />
+    <ClInclude Include="AudioTagOld.h" />
     <ClInclude Include="BaseDialog.h" />
     <ClInclude Include="bass.h" />
     <ClInclude Include="BassCore.h" />
@@ -331,6 +332,7 @@
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
     <ClCompile Include="AudioTag.cpp" />
+    <ClCompile Include="AudioTagOld.cpp" />
     <ClCompile Include="BaseDialog.cpp" />
     <ClCompile Include="BassCore.cpp" />
     <ClCompile Include="BASSEncodeLibrary.cpp" />

@@ -36,20 +36,6 @@ public:
     static bool IsFileTypeCoverWriteSupport(const wstring& ext);
 
 private:
-    bool GetTagDefault();       //通过BASS获取标签起始位置手动解析标签
-    string GetAlbumCoverDefault(int& image_type);     //通过BASS获取id3v2标签的位置手动解析专辑封面
-
-    bool GetID3V2Tag();
-    string GetID3V2TagContents();
-    wstring GetSpecifiedId3V2Tag(const string& tag_contents, const string& tag_identify);
-    bool GetID3V1Tag();
-    bool GetApeTag();
-    string GetApeTagContents();
-    wstring GetSpecifiedUtf8Tag(const string& tag_contents, const string& tag_identify);
-    string GetUtf8TagContents(const char* tag_start);
-    string FindID3V2AlbumCover(const string & tag_content, int & image_type);
-
-private:
 	SongInfo& m_song_info;
     HSTREAM m_hStream{};
 	AudioType m_type;

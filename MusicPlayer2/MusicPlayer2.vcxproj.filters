@@ -315,6 +315,9 @@
     <Filter Include="UIWindow">
       <UniqueIdentifier>{80f33a0d-c6c4-4e8f-8337-652a914ae96b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\AudioTag\Old">
+      <UniqueIdentifier>{b6ef88a2-0908-43db-b083-a4cf3b989d58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -703,6 +706,9 @@
     <ClInclude Include="TagLibHelper.h">
       <Filter>公共的类\AudioTag</Filter>
     </ClInclude>
+    <ClInclude Include="AudioTagOld.h">
+      <Filter>公共的类\AudioTag\Old</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1055,6 +1061,9 @@
     </ClCompile>
     <ClCompile Include="TagLibHelper.cpp">
       <Filter>公共的类\AudioTag</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioTagOld.cpp">
+      <Filter>公共的类\AudioTag\Old</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
