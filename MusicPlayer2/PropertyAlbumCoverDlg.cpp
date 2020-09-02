@@ -57,6 +57,7 @@ int CPropertyAlbumCoverDlg::SaveModified()
 {
     if (m_cover_deleted || m_cover_changed || IsDlgButtonChecked(IDC_SAVE_ALBUM_COVER_BUTTON))
     {
+        CWaitCursor wait_cursor;
         int current_position{};
         bool is_playing{};
         //如果当前修改的是正在播放的文件，则先关闭，保存后再打开

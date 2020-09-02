@@ -204,6 +204,46 @@ static void GetApeTagAlbumCover(APE::Tag* tag, string& cover_contents, int& type
 
 }
 
+static void WriteXiphCommentAlbumCover(Ogg::XiphComment * tag, const wstring &album_cover_path, bool remove_exist)
+{
+    //先删除专辑封面
+    if (remove_exist)
+    {
+        tag->removeAllPictures();
+    }
+
+    if (!album_cover_path.empty())
+    {
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+        FLAC::Picture *newpic = new FLAC::Picture();
+        newpic->setType(FLAC::Picture::FrontCover);
+        newpic->setData(pic_data);
+        wstring ext = CFilePathHelper(album_cover_path).GetFileExtension();
+        newpic->setMimeType(L"image/" + ext);
+        tag->addPicture(newpic);
+    }
+}
+
+
+void GetXiphCommentAlbumCover(Ogg::XiphComment * tag, string &cover_contents, int& type)
+{
+    const auto& cover_list = tag->pictureList();
+    if (!cover_list.isEmpty())
+    {
+        auto pic = cover_list.front();
+        if (pic != nullptr)
+        {
+            const auto& pic_data = pic->data();
+            //获取专辑封面
+            cover_contents.assign(pic_data.data(), pic_data.size());
+
+            wstring img_type = pic->mimeType().toCWString();
+            type = GetPicType(img_type);
+        }
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +368,43 @@ string CTagLibHelper::GetApeAlbumCover(const wstring& file_path, int& type)
     APE::File file(file_path.c_str());
     auto tag = file.APETag();
     GetApeTagAlbumCover(tag, cover_contents, type);
+    return cover_contents;
+}
+
+
+string CTagLibHelper::GetOggAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    Ogg::Vorbis::File file(file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        GetXiphCommentAlbumCover(tag, cover_contents, type);
+    }
+    return cover_contents;
+}
+
+string CTagLibHelper::GetOpusAlbumCover(const wstring & file_path, int & type)
+{
+    string cover_contents;
+    Ogg::Opus::File file(file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        GetXiphCommentAlbumCover(tag, cover_contents, type);
+    }
+    return cover_contents;
+}
+
+string CTagLibHelper::GetSpxAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    Ogg::Speex::File file(file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        GetXiphCommentAlbumCover(tag, cover_contents, type);
+    }
     return cover_contents;
 }
 
@@ -743,6 +820,54 @@ bool CTagLibHelper::WriteApeAlbumCover(const wstring& file_path, const wstring& 
     }
     bool saved = file.save();
     return saved;
+}
+
+bool CTagLibHelper::WriteOggAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    Ogg::Vorbis::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        WriteXiphCommentAlbumCover(tag, album_cover_path, remove_exist);
+        bool saved = file.save();
+        return saved;
+    }
+    return false;
+}
+
+bool CTagLibHelper::WriteOpusAlbumCover(const wstring & file_path, const wstring & album_cover_path, bool remove_exist)
+{
+    Ogg::Opus::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        WriteXiphCommentAlbumCover(tag, album_cover_path, remove_exist);
+        bool saved = file.save();
+        return saved;
+    }
+    return false;
+}
+
+bool CTagLibHelper::WriteSpxAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    Ogg::Speex::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        WriteXiphCommentAlbumCover(tag, album_cover_path, remove_exist);
+        bool saved = file.save();
+        return saved;
+    }
+    return false;
 }
 
 bool CTagLibHelper::WriteMpegTag(SongInfo & song_info)

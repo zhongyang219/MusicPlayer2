@@ -115,11 +115,20 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* f
     case AU_FLAC:
         image_contents = CTagLibHelper::GetFlacAlbumCover(m_song_info.file_path, image_type);
         break;
+    case AU_OGG:
+        image_contents = CTagLibHelper::GetOggAlbumCover(m_song_info.file_path, image_type);
+        break;
     case AU_WAV:
         image_contents = CTagLibHelper::GetWavAlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_TTA:
         image_contents = CTagLibHelper::GetTtaAlbumCover(m_song_info.file_path, image_type);
+        break;
+    case AU_OPUS:
+        image_contents = CTagLibHelper::GetOpusAlbumCover(m_song_info.file_path, image_type);
+        break;
+    case AU_SPX:
+        image_contents = CTagLibHelper::GetSpxAlbumCover(m_song_info.file_path, image_type);
         break;
     case AU_CUE:
         break;
@@ -230,7 +239,7 @@ bool CAudioTag::WriteAlbumCover(const wstring & album_cover_path)
     case AU_WMA_ASF:
         return CTagLibHelper::WriteAsfAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_OGG:
-        break;
+        return CTagLibHelper::WriteOggAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_MP4:
         return CTagLibHelper::WriteM4aAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_APE:
@@ -247,11 +256,11 @@ bool CAudioTag::WriteAlbumCover(const wstring & album_cover_path)
     case AU_DSD:
         break;
     case AU_OPUS:
-        break;
+        return CTagLibHelper::WriteOpusAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_WV:
         break;
     case AU_SPX:
-        break;
+        return CTagLibHelper::WriteSpxAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_TTA:
         break;
     default:
@@ -275,6 +284,7 @@ bool CAudioTag::IsFileTypeCoverWriteSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV || type == AU_APE;
+    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV || type == AU_APE
+        || type == AU_OGG || type == AU_OPUS || type == AU_SPX;
 }
 
