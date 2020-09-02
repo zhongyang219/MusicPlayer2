@@ -519,7 +519,7 @@ void CPropertyAlbumCoverDlg::OnBnClickedDeleteButton()
         CString str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { m_out_img_path });
         if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
         {
-            if (!CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path))
+            if (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path) != 0)
                 MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
         }
     }
