@@ -20,9 +20,16 @@ CAudioTag::CAudioTag(SongInfo & song_info, HSTREAM hStream)
 		m_type = CAudioCommon::GetAudioTypeByFileName(m_song_info.file_path);
 }
 
+CAudioTag::CAudioTag(SongInfo & song_info, AudioType type)
+    :m_song_info{ song_info }, m_type{ type }
+{
+    ASSERT(!m_song_info.file_path.empty());
+}
+
 CAudioTag::CAudioTag(const wstring & file_path)
     : m_song_info{ m_no_use }
 {
+    ASSERT(!file_path.empty());
     m_no_use.file_path = file_path;
     m_type = CAudioCommon::GetAudioTypeByFileName(m_song_info.file_path);
 }

@@ -22,6 +22,20 @@ CBASSEncodeLibrary CFormatConvertDlg::m_bass_encode_lib;
 CBASSWmaLibrary CFormatConvertDlg::m_bass_wma_lib;
 CBassMixLibrary CFormatConvertDlg::m_bass_mix_lib;
 
+
+
+static wstring GetCueDisplayFileName(const wstring& title, const wstring& artist)
+{
+    wstring str;
+    if (!artist.empty() && !title.empty())
+        str = artist + L" - " + title;
+    else
+        str = artist + title;
+    return str;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 // CFormatConvertDlg 对话框
 
 IMPLEMENT_DYNAMIC(CFormatConvertDlg, CBaseDialog)
@@ -312,7 +326,7 @@ void CFormatConvertDlg::ShowFileList()
 		}
 		else
 		{
-			m_file_list_ctrl.SetItemText(i, 1, (m_file_list[i].artist + L" - " + m_file_list[i].title).c_str());
+			m_file_list_ctrl.SetItemText(i, 1, GetCueDisplayFileName(m_file_list[i].title, m_file_list[i].artist).c_str());
 		}
 	}
 }
@@ -348,7 +362,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     }
 	else
     {
-        wstring cue_file_name = song_info.artist + L" - " + song_info.title;		//如果转换的文件是cue音轨，则输出文件名为“艺术家 - 标题”
+        wstring cue_file_name = GetCueDisplayFileName(song_info.title, song_info.artist);		//如果转换的文件是cue音轨，则输出文件名为“艺术家 - 标题”
         CCommon::FileNameNormalize(cue_file_name);
         c_file_path.SetFilePath(cue_file_name);
     }
@@ -637,8 +651,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         {
 	        SongInfo song_info_tmp;
             song_info_tmp.file_path = file_path;
-            hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-	        CAudioTag audio_tag(song_info_tmp, hStream);
+	        CAudioTag audio_tag(song_info_tmp, AudioType::AU_MP3);
 	        int cover_type;
 	        wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
 	        CImage image;
@@ -654,7 +667,6 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
             {
                 CTagLibHelper::WriteMp3AlbumCover(out_file_path, album_cover_path);
             }
-            BASS_StreamFree(hStream);
         }
     }
     return true;

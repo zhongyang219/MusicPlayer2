@@ -5,6 +5,7 @@ class CAudioTag
 {
 public:
 	CAudioTag(SongInfo & song_info, HSTREAM hStream = 0);       //获取的标签信息保存在song_info中，hStream用来判断音频类型，非必须
+	CAudioTag(SongInfo & song_info, AudioType type);
 	CAudioTag(const wstring& file_path);
     ~CAudioTag();
 
