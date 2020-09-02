@@ -408,6 +408,16 @@ string CTagLibHelper::GetSpxAlbumCover(const wstring& file_path, int& type)
     return cover_contents;
 }
 
+string CTagLibHelper::GetAiffAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    RIFF::AIFF::File file(file_path.c_str());
+    auto id3v2 = file.tag();
+    GetId3v2AlbumCover(id3v2, cover_contents, type);
+    return cover_contents;
+
+}
+
 void CTagLibHelper::GetFlacTagInfo(SongInfo& song_info)
 {
     FLAC::File file(song_info.file_path.c_str());
@@ -868,6 +878,26 @@ bool CTagLibHelper::WriteSpxAlbumCover(const wstring& file_path, const wstring& 
         return saved;
     }
     return false;
+}
+
+bool CTagLibHelper::WriteAiffAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    RIFF::AIFF::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    //ÏÈÉ¾³ý×¨¼­·âÃæ
+    auto id3v2tag = file.tag();
+    if (remove_exist)
+    {
+        DeleteId3v2AlbumCover(id3v2tag);
+    }
+    if (!album_cover_path.empty())
+    {
+        WriteId3v2AlbumCover(id3v2tag, album_cover_path);
+    }
+    bool saved = file.save();
+    return saved;
 }
 
 bool CTagLibHelper::WriteMpegTag(SongInfo & song_info)

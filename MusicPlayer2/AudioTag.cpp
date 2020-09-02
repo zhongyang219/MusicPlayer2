@@ -130,6 +130,9 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* f
     case AU_SPX:
         image_contents = CTagLibHelper::GetSpxAlbumCover(m_song_info.file_path, image_type);
         break;
+    case AU_AIFF:
+        image_contents = CTagLibHelper::GetAiffAlbumCover(m_song_info.file_path, image_type);
+        break;
     case AU_CUE:
         break;
     case AU_MIDI:
@@ -245,7 +248,7 @@ bool CAudioTag::WriteAlbumCover(const wstring & album_cover_path)
     case AU_APE:
         return CTagLibHelper::WriteApeAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_AIFF:
-        break;
+        return CTagLibHelper::WriteAiffAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_FLAC:
         return CTagLibHelper::WriteFlacAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_WAV:
@@ -285,6 +288,6 @@ bool CAudioTag::IsFileTypeCoverWriteSupport(const wstring& ext)
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
     return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV || type == AU_APE
-        || type == AU_OGG || type == AU_OPUS || type == AU_SPX;
+        || type == AU_OGG || type == AU_OPUS || type == AU_SPX || type == AU_AIFF;
 }
 
