@@ -20,6 +20,8 @@ public:
     static string GetOpusAlbumCover(const wstring& file_path, int& type);
     static string GetSpxAlbumCover(const wstring& file_path, int& type);
     static string GetAiffAlbumCover(const wstring& file_path, int& type);
+    static string GetMpcAlbumCover(const wstring& file_path, int& type);
+    static string GetWavePackAlbumCover(const wstring& file_path, int& type);
 
     //读标签信息
     static void GetFlacTagInfo(SongInfo& song_info);
@@ -56,6 +58,8 @@ public:
     static bool WriteOpusAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteSpxAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteAiffAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
+    static bool WriteMpcAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
+    static bool WriteWavePackAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
 
     //写标签信息
     static bool WriteMpegTag(SongInfo& song_info);

@@ -140,6 +140,12 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* f
     case AU_AIFF:
         image_contents = CTagLibHelper::GetAiffAlbumCover(m_song_info.file_path, image_type);
         break;
+    case AU_MPC:
+        image_contents = CTagLibHelper::GetMpcAlbumCover(m_song_info.file_path, image_type);
+        break;
+    case AU_WV:
+        image_contents = CTagLibHelper::GetWavePackAlbumCover(m_song_info.file_path, image_type);
+        break;
     case AU_CUE:
         break;
     case AU_MIDI:
@@ -260,19 +266,18 @@ bool CAudioTag::WriteAlbumCover(const wstring & album_cover_path)
         return CTagLibHelper::WriteFlacAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_WAV:
         return CTagLibHelper::WriteWavAlbumCover(m_song_info.file_path, album_cover_path);
-        break;
     case AU_MPC:
-        break;
+        return CTagLibHelper::WriteMpcAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_DSD:
         break;
     case AU_OPUS:
         return CTagLibHelper::WriteOpusAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_WV:
-        break;
+        return CTagLibHelper::WriteWavePackAlbumCover(m_song_info.file_path, album_cover_path);;
     case AU_SPX:
         return CTagLibHelper::WriteSpxAlbumCover(m_song_info.file_path, album_cover_path);
     case AU_TTA:
-        break;
+        return CTagLibHelper::WriteTtaAlbumCover(m_song_info.file_path, album_cover_path);
     default:
         break;
     }
@@ -295,6 +300,7 @@ bool CAudioTag::IsFileTypeCoverWriteSupport(const wstring& ext)
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
     return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV || type == AU_APE
-        || type == AU_OGG || type == AU_OPUS || type == AU_SPX || type == AU_AIFF;
+        || type == AU_OGG || type == AU_OPUS || type == AU_SPX || type == AU_AIFF || type == AU_MPC || type == AU_WV
+        || type == AU_TTA;
 }
 

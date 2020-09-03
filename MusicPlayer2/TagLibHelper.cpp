@@ -202,7 +202,31 @@ static void GetApeTagAlbumCover(APE::Tag* tag, string& cover_contents, int& type
             }
         }
     }
+}
 
+static void WriteApeTagAlbumCover(APE::Tag* tag, const wstring &album_cover_path, bool remove_exist)
+{
+    if (remove_exist)
+    {
+        tag->removeItem(STR_APE_COVER_TAG);
+    }
+
+    if (!album_cover_path.empty())
+    {
+        ByteVector pic_data;
+        FileToByteVector(pic_data, album_cover_path);
+
+        ByteVector pic_item_data;
+        pic_item_data = "Cover Art (Front).";
+        wstring file_type = CFilePathHelper(album_cover_path).GetFileExtension();
+        for (wchar_t ch : file_type)
+            pic_item_data.append(static_cast<char>(ch));
+        pic_item_data.append('\0');
+        pic_item_data.append(pic_data);
+
+        APE::Item pic_item(STR_APE_COVER_TAG, pic_item_data, true);
+        tag->setItem(STR_APE_COVER_TAG, pic_item);
+    }
 }
 
 static void WriteXiphCommentAlbumCover(Ogg::XiphComment * tag, const wstring &album_cover_path, bool remove_exist)
@@ -417,6 +441,24 @@ string CTagLibHelper::GetAiffAlbumCover(const wstring& file_path, int& type)
     GetId3v2AlbumCover(id3v2, cover_contents, type);
     return cover_contents;
 
+}
+
+string CTagLibHelper::GetMpcAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    MPC::File file(file_path.c_str());
+    auto ape_tag = file.APETag();
+    GetApeTagAlbumCover(ape_tag, cover_contents, type);
+    return cover_contents;
+}
+
+string CTagLibHelper::GetWavePackAlbumCover(const wstring& file_path, int& type)
+{
+    string cover_contents;
+    WavPack::File file(file_path.c_str());
+    auto ape_tag = file.APETag();
+    GetApeTagAlbumCover(ape_tag, cover_contents, type);
+    return cover_contents;
 }
 
 void CTagLibHelper::GetFlacTagInfo(SongInfo& song_info)
@@ -798,6 +840,22 @@ bool CTagLibHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& 
 
 bool CTagLibHelper::WriteTtaAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
 {
+    TrueAudio::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    if (remove_exist)
+    {
+        auto id3v2tag = file.ID3v2Tag();
+        DeleteId3v2AlbumCover(id3v2tag);
+    }
+    if (!album_cover_path.empty())
+    {
+        auto id3v2tag = file.ID3v2Tag(true);
+        WriteId3v2AlbumCover(id3v2tag, album_cover_path);
+    }
+    bool saved = file.save();
+    return saved;
     return false;
 }
 
@@ -808,27 +866,7 @@ bool CTagLibHelper::WriteApeAlbumCover(const wstring& file_path, const wstring& 
         return false;
 
     auto tag = file.APETag(true);
-    if (remove_exist)
-    {
-        tag->removeItem(STR_APE_COVER_TAG);
-    }
-
-    if (!album_cover_path.empty())
-    {
-        ByteVector pic_data;
-        FileToByteVector(pic_data, album_cover_path);
-
-        ByteVector pic_item_data;
-        pic_item_data = "Cover Art (Front).";
-        wstring file_type = CFilePathHelper(album_cover_path).GetFileExtension();
-        for (wchar_t ch : file_type)
-            pic_item_data.append(static_cast<char>(ch));
-        pic_item_data.append('\0');
-        pic_item_data.append(pic_data);
-
-        APE::Item pic_item(STR_APE_COVER_TAG, pic_item_data, true);
-        tag->setItem(STR_APE_COVER_TAG, pic_item);
-    }
+    WriteApeTagAlbumCover(tag, album_cover_path, remove_exist);
     bool saved = file.save();
     return saved;
 }
@@ -897,6 +935,30 @@ bool CTagLibHelper::WriteAiffAlbumCover(const wstring& file_path, const wstring&
     {
         WriteId3v2AlbumCover(id3v2tag, album_cover_path);
     }
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLibHelper::WriteMpcAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    MPC::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.APETag(true);
+    WriteApeTagAlbumCover(tag, album_cover_path, remove_exist);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLibHelper::WriteWavePackAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist /*= true*/)
+{
+    WavPack::File file(file_path.c_str());
+    if (!file.isValid())
+        return false;
+
+    auto tag = file.APETag(true);
+    WriteApeTagAlbumCover(tag, album_cover_path, remove_exist);
     bool saved = file.save();
     return saved;
 }
