@@ -86,7 +86,7 @@ HBRUSH CMyComboBox::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
         DWORD style = pEdit->GetStyle();
         bool is_read_only = ((style & ES_READONLY) != 0);
         if ((pEdit->GetModify() || m_modified) && !is_read_only)
-            pDC->SetTextColor(RGB(0, 102, 204));        //如果文本已修改，则显示为蓝色
+            pDC->SetTextColor(theApp.m_app_setting_data.theme_color.dark1);        //如果文本已修改，则显示为主题色
     }
 
     // TODO:  如果默认的不是所需画笔，则返回另一个画笔
