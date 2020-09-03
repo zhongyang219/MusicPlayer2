@@ -205,6 +205,15 @@ void CInternetCommon::DisposeSearchResult(vector<ItemInfo>& down_list, const wst
 		index4 = search_result.find(L"\",\"", index3);
 		item.album = search_result.substr(index3 + 7, index4 - index3 - 7);
 
+        //获取时长
+        index2 = search_result.find(L"\"duration\"", index1);
+        if (index2 != string::npos)
+        {
+            index3 = search_result.find(L',', index2);
+            wstring str_duration = search_result.substr(index2 + 11, index3 - index2 - 11);
+            item.duration = _wtoi(str_duration.c_str());
+        }
+
 		DeleteStrSlash(item.title);
 		DeleteStrSlash(item.artist);
 		DeleteStrSlash(item.album);
@@ -348,6 +357,7 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 	文件名——标题       0.3
 	文件名——艺术家     0.2
 	列表中的排序       0.05
+    时长              0.6
 	*/
 	if (down_list.empty()) return -1;
 	vector<double> weights;		//储存列表中每一项的权值
@@ -362,6 +372,7 @@ int CInternetCommon::SelectMatchedItem(const vector<ItemInfo>& down_list, const 
 		weight += (StringSimilarDegree_LD(album, down_list[i].album) * 0.3);
 		weight += (StringSimilarDegree_LD(filename, down_list[i].title) * 0.3);
 		weight += (StringSimilarDegree_LD(filename, down_list[i].artist) * 0.3);
+
 		weight += ((1 - i * 0.02) * 0.05);			//列表中顺序的权值，一般来说，网易云音乐的搜索结果的返回结果中
 													//排在越前面的关联度就越高，这里取第一项为1，之后每一项减0.02，最后再乘以0.05
 		weights.push_back(weight);
