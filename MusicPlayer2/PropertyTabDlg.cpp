@@ -587,7 +587,7 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
         m_title_edit.SetWindowText(pItem->title.c_str());
         m_artist_edit.SetWindowText(pItem->artist.c_str());
         m_album_edit.SetWindowText(pItem->album.c_str());
-        CString comment{ _T("网易云音乐ID: ") };
+        CString comment{ _T("id:") };
         comment += pItem->id.c_str();
         m_comment_edit.SetWindowText(comment);
         m_modified = true;
