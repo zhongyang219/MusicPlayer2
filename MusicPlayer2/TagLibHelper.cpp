@@ -32,6 +32,18 @@ using namespace TagLib;
 #define STR_ASF_COVER_TAG "WM/Picture"
 #define STR_APE_COVER_TAG "COVER ART (FRONT)"
 
+//将taglib中的字符串转换成wstring类型。
+//由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
+//这里将Latin编码的字符串按本地代码页处理
+static wstring TagStringToWstring(const String& str, bool to_local)
+{
+    wstring result;
+    if (to_local && str.isLatin1())
+        result = CCommon::StrToUnicode(str.to8Bit(), CodeType::ANSI);
+    else
+        result = str.toWString();
+    return result;
+}
 
 static void SongInfoToTag(const SongInfo& song_info, Tag* tag)
 {
@@ -61,14 +73,14 @@ static bool IsStringNumber(wstring str, int num)
     return false;
 }
 
-static void TagToSongInfo(SongInfo& song_info, Tag* tag)
+static void TagToSongInfo(SongInfo& song_info, Tag* tag, bool to_local)
 {
     if (tag != nullptr)
     {
-        song_info.title = tag->title().toWString();
-        song_info.artist = tag->artist().toWString();
-        song_info.album = tag->album().toWString();
-        song_info.genre = tag->genre().toWString();
+        song_info.title = TagStringToWstring(tag->title(), to_local);
+        song_info.artist = TagStringToWstring(tag->artist(), to_local);
+        song_info.album = TagStringToWstring(tag->album(), to_local);
+        song_info.genre = TagStringToWstring(tag->genre(), to_local);
         int genre_num{};
         if (IsStringNumber(song_info.genre, genre_num))
         {
@@ -78,7 +90,7 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag)
         unsigned int year = tag->year();
         song_info.year = (year == 0 ? L"" : std::to_wstring(year));
         song_info.track = tag->track();
-        song_info.comment = tag->comment().toWString();
+        song_info.comment = TagStringToWstring(tag->comment(), to_local);
     }
 }
 
@@ -471,7 +483,7 @@ void CTagLibHelper::GetFlacTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, file.hasID3v1Tag());
     }
 }
 
@@ -483,7 +495,7 @@ void CTagLibHelper::GetM4aTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
@@ -500,7 +512,7 @@ void CTagLibHelper::GetMpegTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, file.hasID3v1Tag());
     }
 }
 
@@ -510,7 +522,7 @@ void CTagLibHelper::GetAsfTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
@@ -525,7 +537,7 @@ void CTagLibHelper::GetApeTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, file.hasID3v1Tag());
     }
 }
 
@@ -539,7 +551,7 @@ void CTagLibHelper::GetWavTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
@@ -549,7 +561,7 @@ void CTagLibHelper::GetOggTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
@@ -563,7 +575,7 @@ void CTagLibHelper::GetMpcTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, file.hasID3v1Tag());
     }
 }
 
@@ -573,7 +585,7 @@ void CTagLibHelper::GetOpusTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
@@ -587,7 +599,7 @@ void CTagLibHelper::GetWavPackTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, file.hasID3v1Tag());
     }
 }
 
@@ -601,7 +613,7 @@ void CTagLibHelper::GetTtaTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, file.hasID3v1Tag());
     }
 }
 
@@ -613,7 +625,7 @@ void CTagLibHelper::GetAiffTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
@@ -623,7 +635,7 @@ void CTagLibHelper::GetSpxTagInfo(SongInfo& song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
@@ -633,7 +645,7 @@ void CTagLibHelper::GetAnyFileTagInfo(SongInfo & song_info)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        TagToSongInfo(song_info, tag);
+        TagToSongInfo(song_info, tag, false);
     }
 }
 
