@@ -92,4 +92,6 @@ public:
     afx_msg void OnBnClickedGetTagOnlineButton();
 protected:
     afx_msg LRESULT OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnBnClickedGetTagFromLyricButton();
 };

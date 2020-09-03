@@ -26,6 +26,13 @@ void CEditEx::ResetModified()
     Invalidate(FALSE);
 }
 
+CString CEditEx::GetText() const
+{
+    CString str;
+    GetWindowText(str);
+    return str;
+}
+
 BEGIN_MESSAGE_MAP(CEditEx, CEdit)
     ON_WM_CTLCOLOR_REFLECT()
 END_MESSAGE_MAP()

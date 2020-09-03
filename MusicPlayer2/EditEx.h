@@ -13,6 +13,7 @@ public:
 	virtual ~CEditEx();
 
     void ResetModified();
+    CString GetText() const;
 
 protected:
 	DECLARE_MESSAGE_MAP()

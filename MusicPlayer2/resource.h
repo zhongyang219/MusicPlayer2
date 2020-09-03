@@ -860,6 +860,7 @@
 #define IDC_RECORD_BUTTON               1096
 #define IDC_KEEP_DISPLAY_CHECK          1096
 #define IDC_BROWSE_BUTTON1              1096
+#define IDC_GET_TAG_FROM_LYRIC_BUTTON   1096
 #define IDC_ALBUM_FIT_COMBO             1097
 #define IDC_PAUSE_RESUME_BUTTON         1097
 #define IDC_LYRIC_DOUBLE_LINE_CHECK2    1097

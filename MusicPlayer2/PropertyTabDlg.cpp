@@ -221,6 +221,10 @@ void CPropertyTabDlg::SetWreteEnable()
 		m_year_edit.SetLimitText(4);
 	else
 		m_year_edit.SetLimitText(-1);
+
+    CWnd* pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
+    if (pBtn != nullptr)
+        pBtn->EnableWindow(!m_all_song_info[m_index].lyric_file.empty());
 }
 
 
@@ -285,6 +289,7 @@ BEGIN_MESSAGE_MAP(CPropertyTabDlg, CTabDlg)
     ON_CBN_EDITCHANGE(IDC_GENRE_COMBO, &CPropertyTabDlg::OnCbnEditchangeGenreCombo)
     ON_BN_CLICKED(IDC_GET_TAG_ONLINE_BUTTON, &CPropertyTabDlg::OnBnClickedGetTagOnlineButton)
     ON_MESSAGE(WM_PORPERTY_ONLINE_INFO_ACQUIRED, &CPropertyTabDlg::OnPorpertyOnlineInfoAcquired)
+    ON_BN_CLICKED(IDC_GET_TAG_FROM_LYRIC_BUTTON, &CPropertyTabDlg::OnBnClickedGetTagFromLyricButton)
 END_MESSAGE_MAP()
 
 
@@ -313,6 +318,10 @@ BOOL CPropertyTabDlg::OnInitDialog()
     if (m_batch_edit)
     {
         CWnd* pBtn = GetDlgItem(IDC_GET_TAG_ONLINE_BUTTON);
+        if (pBtn != nullptr)
+            pBtn->ShowWindow(SW_HIDE);
+
+        pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
         if (pBtn != nullptr)
             pBtn->ShowWindow(SW_HIDE);
     }
@@ -597,15 +606,81 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
     CInternetCommon::ItemInfo* pItem = (CInternetCommon::ItemInfo*)wParam;
     if (pItem != nullptr)
     {
-        m_title_edit.SetWindowText(pItem->title.c_str());
-        m_artist_edit.SetWindowText(pItem->artist.c_str());
-        m_album_edit.SetWindowText(pItem->album.c_str());
+        if (m_title_edit.GetText() != pItem->title.c_str())
+        {
+            m_title_edit.SetWindowText(pItem->title.c_str());
+            m_title_edit.SetModify();
+        }
+        if (m_artist_edit.GetText() != pItem->artist.c_str())
+        {
+            m_artist_edit.SetWindowText(pItem->artist.c_str());
+            m_artist_edit.SetModify();
+        }
+        if (m_album_edit.GetText() != pItem->album.c_str())
+        {
+            m_album_edit.SetWindowText(pItem->album.c_str());
+            m_album_edit.SetModify();
+        }
         CString comment{ _T("id:") };
         comment += pItem->id.c_str();
-        m_comment_edit.SetWindowText(comment);
+        if (m_comment_edit.GetText()!= comment)
+        {
+            m_comment_edit.SetWindowText(comment);
+            m_comment_edit.SetModify();
+        }
+
         m_modified = true;
         m_list_refresh = m_modified;
         SetSaveBtnEnable();
     }
     return 0;
+}
+
+
+void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    const SongInfo& song{ m_all_song_info[m_index] };
+    if (!song.lyric_file.empty())
+    {
+        CLyrics lyrics{ song.lyric_file };
+        wstring title = lyrics.GetTitle();
+        wstring artist = lyrics.GetAritst();
+        wstring album = lyrics.GetAlbum();
+        if (!title.empty() || !artist.empty() || !album.empty())
+        {
+            if (!title.empty() && m_title_edit.GetText() != title.c_str())
+            {
+                m_title_edit.SetWindowText(title.c_str());
+                m_title_edit.SetModify();
+            }
+
+            if (!artist.empty() && m_artist_edit.GetText() != artist.c_str())
+            {
+                m_artist_edit.SetWindowText(artist.c_str());
+                m_artist_edit.SetModify();
+            }
+
+            if (!album.empty() && m_album_edit.GetText() != album.c_str())
+            {
+                m_album_edit.SetWindowText(album.c_str());
+                m_album_edit.SetModify();
+            }
+
+            if (!lyrics.GetSongId().empty())
+            {
+                CString comment{ _T("id:") };
+                comment += lyrics.GetSongId().c_str();
+                if (m_comment_edit.GetText() != comment)
+                {
+                    m_comment_edit.SetWindowText(comment);
+                    m_comment_edit.SetModify();
+                }
+            }
+
+            m_modified = true;
+            m_list_refresh = m_modified;
+            SetSaveBtnEnable();
+        }
+    }
 }

@@ -85,6 +85,9 @@ public:
 
 	void AdjustLyric(int offset);	//调整歌词的偏移量
 
+    wstring GetTitle() const { return m_ti; }
+    wstring GetAritst() const { return m_ar; }
+    wstring GetAlbum() const { return m_al; }
 	wstring GetSongId() const { return m_id; }		//获取保存在歌词中的网易云音乐的歌曲ID
 
 	void ChineseConvertion(bool simplified);		//中文繁简转换
