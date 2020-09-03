@@ -20,7 +20,14 @@ CEditEx::~CEditEx()
 }
 
 
+void CEditEx::ResetModified()
+{
+    SetModify(FALSE);
+    Invalidate(FALSE);
+}
+
 BEGIN_MESSAGE_MAP(CEditEx, CEdit)
+    ON_WM_CTLCOLOR_REFLECT()
 END_MESSAGE_MAP()
 
 
@@ -40,4 +47,19 @@ BOOL CEditEx::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 	return CEdit::PreTranslateMessage(pMsg);
+}
+
+
+HBRUSH CEditEx::CtlColor(CDC* pDC, UINT nCtlColor)
+{
+    // TODO:  在此更改 DC 的任何特性
+
+    DWORD style = GetStyle();
+    bool is_read_only = ((style & ES_READONLY) != 0);
+    if (GetModify() && !is_read_only)
+        pDC->SetTextColor(RGB(0, 102, 204));        //如果文本已修改，则显示为蓝色
+
+    // TODO:  如果不应调用父级的处理程序，则返回非 null 画笔
+    static HBRUSH hBackBrush{ CreateSolidBrush(GetSysColor(COLOR_WINDOW)) };
+    return (is_read_only ? NULL : hBackBrush);
 }

@@ -232,6 +232,17 @@ void CPropertyTabDlg::SetSaveBtnEnable()
         pParent->SendMessage(WM_PROPERTY_DIALOG_MODIFIED, enable);
 }
 
+void CPropertyTabDlg::ResetEditModified()
+{
+    m_title_edit.ResetModified();
+    m_artist_edit.ResetModified();
+    m_album_edit.ResetModified();
+    m_track_edit.ResetModified();
+    m_year_edit.ResetModified();
+    m_comment_edit.ResetModified();
+    m_genre_combo.ResetModified();
+}
+
 void CPropertyTabDlg::OnTabEntered()
 {
     SetWreteEnable();
@@ -497,6 +508,7 @@ int CPropertyTabDlg::SaveModified()
         {
             m_modified = false;
             SetSaveBtnEnable();
+            ResetEditModified();
         }
         return saved_count;
     }
@@ -520,6 +532,7 @@ int CPropertyTabDlg::SaveModified()
 
 		    m_modified = false;
             SetSaveBtnEnable();
+            ResetEditModified();
         }
         return saved;
     }

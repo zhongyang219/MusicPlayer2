@@ -65,6 +65,8 @@ protected:
 	void SetEditReadOnly(bool read_only);
 	void SetWreteEnable();
     void SetSaveBtnEnable();
+    void ResetEditModified();
+
     virtual void OnTabEntered() override;      //当标签切换到当前窗口时被调用
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

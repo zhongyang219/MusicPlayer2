@@ -12,9 +12,13 @@ public:
 	CEditEx();
 	virtual ~CEditEx();
 
+    void ResetModified();
+
 protected:
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+public:
+    afx_msg HBRUSH CtlColor(CDC* /*pDC*/, UINT /*nCtlColor*/);
 };
 
 

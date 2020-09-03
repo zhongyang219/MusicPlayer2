@@ -33,7 +33,20 @@ CEdit* CMyComboBox::GetEditCtrl()
     return (CEdit*)GetWindow(GW_CHILD);
 }
 
+void CMyComboBox::ResetModified()
+{
+    m_modified = false;
+
+    CEdit* pEdit = GetEditCtrl();
+    if (pEdit != nullptr)
+        pEdit->SetModify(FALSE);
+
+    Invalidate(FALSE);
+}
+
 BEGIN_MESSAGE_MAP(CMyComboBox, CComboBox)
+    ON_WM_CTLCOLOR()
+    ON_CONTROL_REFLECT_EX(CBN_SELCHANGE, &CMyComboBox::OnCbnSelchange)
 END_MESSAGE_MAP()
 
 
@@ -59,4 +72,31 @@ BOOL CMyComboBox::PreTranslateMessage(MSG* pMsg)
 	}
 
 	return CComboBox::PreTranslateMessage(pMsg);
+}
+
+
+HBRUSH CMyComboBox::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    HBRUSH hbr = CComboBox::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    // TODO:  在此更改 DC 的任何特性
+    CEdit* pEdit = GetEditCtrl();
+    if (pEdit != nullptr)
+    {
+        DWORD style = pEdit->GetStyle();
+        bool is_read_only = ((style & ES_READONLY) != 0);
+        if ((pEdit->GetModify() || m_modified) && !is_read_only)
+            pDC->SetTextColor(RGB(0, 102, 204));        //如果文本已修改，则显示为蓝色
+    }
+
+    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
+    return hbr;
+}
+
+
+BOOL CMyComboBox::OnCbnSelchange()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_modified = true;
+    return FALSE;
 }
