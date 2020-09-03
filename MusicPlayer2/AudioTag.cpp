@@ -40,6 +40,7 @@ CAudioTag::~CAudioTag()
 
 void CAudioTag::GetAudioTag()
 {
+    m_song_info.tag_type = 0;
     switch (m_type)
     {
     case AU_MP3:

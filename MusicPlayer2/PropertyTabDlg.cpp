@@ -591,6 +591,7 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
         comment += pItem->id.c_str();
         m_comment_edit.SetWindowText(comment);
         m_modified = true;
+        m_list_refresh = m_modified;
         SetSaveBtnEnable();
     }
     return 0;

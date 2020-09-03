@@ -50,7 +50,7 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
 
 	//获取要保存的专辑封面的文件路径
 	CFilePathHelper cover_file_path;
-	if (match_item.album == CPlayer::GetInstance().GetCurrentSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
+	if (match_item.album == pThis->GetSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
 	{
 		wstring album_name{ match_item.album };
 		CCommon::FileNameNormalize(album_name);
@@ -58,7 +58,7 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
 	}
 	else				//否则以歌曲文件名为文件名保存
 	{
-		cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentSongInfo().file_path);
+		cover_file_path.SetFilePath(pThis->GetSongInfo().file_path);
 	}
 	CFilePathHelper url_path(cover_url);
 	cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
@@ -127,7 +127,7 @@ BOOL CCoverDownloadDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-    const auto& song_info{ CPlayer::GetInstance().GetCurrentSongInfo() };
+    const auto& song_info{ GetSongInfo() };
     m_title = GetSongInfo().title;
 	m_artist = GetSongInfo().artist;
 	m_album = GetSongInfo().album;
@@ -208,11 +208,11 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	//计算搜索结果中最佳匹配项目
 	int best_matched;
 	bool id_releated{ false };
-	if (!CPlayer::GetInstance().GetCurrentSongInfo().song_id.empty())		//如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+	if (!GetSongInfo().song_id.empty())		//如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
 	{
 		for (size_t i{}; i<m_down_list.size(); i++)
 		{
-			if (CPlayer::GetInstance().GetCurrentSongInfo().song_id == m_down_list[i].id)
+			if (GetSongInfo().song_id == m_down_list[i].id)
 			{
 				id_releated = true;
 				best_matched = i;
