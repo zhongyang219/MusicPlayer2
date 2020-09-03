@@ -78,6 +78,11 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
 	return 0;
 }
 
+SongInfo CCoverDownloadDlg::GetSongInfo() const
+{
+    return CPlayer::GetInstance().GetCurrentSongInfo();
+}
+
 void CCoverDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -123,13 +128,13 @@ BOOL CCoverDownloadDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
     const auto& song_info{ CPlayer::GetInstance().GetCurrentSongInfo() };
-    m_title = CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].title;
-	m_artist = CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].artist;
-	m_album = CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].album;
+    m_title = GetSongInfo().title;
+	m_artist = GetSongInfo().artist;
+	m_album = GetSongInfo().album;
 
 	if (song_info.IsTitleEmpty())		//如果没有标题信息，就把文件名设为标题
 	{
-		m_title = CPlayer::GetInstance().GetFileName();
+		m_title = GetSongInfo().GetFileName();
 		size_t index = m_title.rfind(L'.');
 		m_title = m_title.substr(0, index);
 	}
@@ -141,7 +146,7 @@ BOOL CCoverDownloadDlg::OnInitDialog()
 	{
 		m_album.clear();
 	}
-	m_file_name = CPlayer::GetInstance().GetFileName();
+	m_file_name = GetSongInfo().GetFileName();
 
 	SetDlgItemText(IDC_TITLE_EDIT, m_title.c_str());
 	SetDlgItemText(IDC_ARTIST_EDIT, m_artist.c_str());

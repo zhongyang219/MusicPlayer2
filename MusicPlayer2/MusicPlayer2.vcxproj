@@ -223,6 +223,7 @@
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
+    <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
@@ -353,6 +354,7 @@
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="CueFile.cpp" />
+    <ClCompile Include="GetTagOnlineDlg.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />

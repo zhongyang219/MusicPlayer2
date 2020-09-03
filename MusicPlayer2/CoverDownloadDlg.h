@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CoverDownloadCommon.h"
 #include "ListCtrlEx.h"
+#include "SongInfo.h"
 
 // CCoverDownloadDlg 对话框
 
@@ -45,6 +46,8 @@ protected:
 	CWinThread* m_pSearchThread;		//搜索歌词的线程
 	CWinThread* m_pDownThread;			//下载歌词的线程
 
+    virtual SongInfo GetSongInfo() const;
+
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	void ShowDownloadList();		//将搜索结果显示出来
 
@@ -55,7 +58,7 @@ public:
 protected:
 	afx_msg LRESULT OnSearchComplate(WPARAM wParam, LPARAM lParam);
 public:
-	afx_msg void OnBnClickedDownloadSelected();
+	afx_msg virtual void OnBnClickedDownloadSelected();
 	afx_msg void OnNMClickCoverDownList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMDblclkCoverDownList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickCoverDownList(NMHDR *pNMHDR, LRESULT *pResult);

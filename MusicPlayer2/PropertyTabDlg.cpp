@@ -8,6 +8,7 @@
 #include "COSUPlayerHelper.h"
 #include "PropertyDlgHelper.h"
 #include "SongDataManager.h"
+#include "GetTagOnlineDlg.h"
 
 
 // CPropertyTabDlg 对话框
@@ -271,6 +272,8 @@ BEGIN_MESSAGE_MAP(CPropertyTabDlg, CTabDlg)
 	//ON_BN_CLICKED(IDC_BUTTON3, &CPropertyTabDlg::OnBnClickedButton3)
     ON_WM_MOUSEWHEEL()
     ON_CBN_EDITCHANGE(IDC_GENRE_COMBO, &CPropertyTabDlg::OnCbnEditchangeGenreCombo)
+    ON_BN_CLICKED(IDC_GET_TAG_ONLINE_BUTTON, &CPropertyTabDlg::OnBnClickedGetTagOnlineButton)
+    ON_MESSAGE(WM_PORPERTY_ONLINE_INFO_ACQUIRED, &CPropertyTabDlg::OnPorpertyOnlineInfoAcquired)
 END_MESSAGE_MAP()
 
 
@@ -295,6 +298,13 @@ BOOL CPropertyTabDlg::OnInitDialog()
 	m_genre_combo.SetMinVisibleItems(15);		//设置下拉列表的高度
 
 	//m_genre_combo.SetEditReadOnly();
+
+    if (m_batch_edit)
+    {
+        CWnd* pBtn = GetDlgItem(IDC_GET_TAG_ONLINE_BUTTON);
+        if (pBtn != nullptr)
+            pBtn->ShowWindow(SW_HIDE);
+    }
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -557,4 +567,28 @@ void CPropertyTabDlg::OnCbnEditchangeGenreCombo()
     if (pEdit!=nullptr)
         m_modified = (pEdit->GetModify() != 0);
     SetSaveBtnEnable();
+}
+
+
+void CPropertyTabDlg::OnBnClickedGetTagOnlineButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+
+    CGetTagOnlineDlg dlg(m_all_song_info[m_index], this);
+    dlg.DoModal();
+}
+
+
+afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPARAM lParam)
+{
+    CInternetCommon::ItemInfo* pItem = (CInternetCommon::ItemInfo*)wParam;
+    if (pItem != nullptr)
+    {
+        m_title_edit.SetWindowText(pItem->title.c_str());
+        m_artist_edit.SetWindowText(pItem->artist.c_str());
+        m_album_edit.SetWindowText(pItem->album.c_str());
+        m_modified = true;
+        SetSaveBtnEnable();
+    }
+    return 0;
 }

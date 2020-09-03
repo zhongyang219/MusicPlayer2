@@ -321,6 +321,9 @@
     <Filter Include="功能逻辑类\SongDataManager">
       <UniqueIdentifier>{ff657a96-e62b-41c3-a5be-3435f3693904}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\PropertyDlg\GetTagOnline">
+      <UniqueIdentifier>{82073554-8212-45d0-88a5-574a06218222}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -715,6 +718,9 @@
     <ClInclude Include="SongDataManager.h">
       <Filter>功能逻辑类\SongDataManager</Filter>
     </ClInclude>
+    <ClInclude Include="GetTagOnlineDlg.h">
+      <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1073,6 +1079,9 @@
     </ClCompile>
     <ClCompile Include="SongDataManager.cpp">
       <Filter>功能逻辑类\SongDataManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GetTagOnlineDlg.cpp">
+      <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

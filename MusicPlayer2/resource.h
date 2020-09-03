@@ -624,6 +624,8 @@
 #define IDS_PROPERTY_TITLE_INFO         511
 #define IDS_MULTI_VALUE                 512
 #define IDS_TAG_BATCH_EDIT_INFO         513
+#define IDS_GET_TAG_ONLINE_TITLE        514
+#define IDS_GET_THIS                    515
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -658,6 +660,7 @@
 #define IDC_DONOT_RELATE_BUTTON         1012
 #define IDC_DEFAULT_BUTTON              1012
 #define IDC_SAVE_ALBUM_COVER_BUTTON     1012
+#define IDC_GET_TAG_ONLINE_BUTTON       1012
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013

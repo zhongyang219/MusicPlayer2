@@ -87,4 +87,7 @@ public:
 	//afx_msg void OnBnClickedButton3();
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
     afx_msg void OnCbnEditchangeGenreCombo();
+    afx_msg void OnBnClickedGetTagOnlineButton();
+protected:
+    afx_msg LRESULT OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPARAM lParam);
 };

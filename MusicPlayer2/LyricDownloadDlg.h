@@ -4,6 +4,7 @@
 #include "Lyric.h"
 #include "afxwin.h"
 #include "ListCtrlEx.h"
+#include "SongInfo.h"
 
 
 // CLyricDownloadDlg 对话框
