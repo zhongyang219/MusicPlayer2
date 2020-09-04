@@ -44,7 +44,6 @@ void CPlayerUI2::_DrawInfo(bool reset)
         if (right_lyric)
             info_rect.right = info_rect.left + info_rect.Width() / 2;
 
-        wchar_t buff[64];
         CRect rc_tmp;
 
         //全屏模式时在右上角绘制时间

@@ -55,7 +55,7 @@ static void SongInfoToTag(const SongInfo& song_info, Tag* tag)
         tag->setGenre(song_info.genre);
         tag->setTrack(song_info.track);
         tag->setComment(song_info.comment);
-        tag->setYear(_wtoi(song_info.year.c_str()));
+        tag->setYear(song_info.year);
     }
 }
 
@@ -87,8 +87,7 @@ static void TagToSongInfo(SongInfo& song_info, Tag* tag, bool to_local)
             song_info.genre = CAudioCommon::GetGenre(static_cast<BYTE>(genre_num));
         }
 
-        unsigned int year = tag->year();
-        song_info.year = (year == 0 ? L"" : std::to_wstring(year));
+        song_info.year = tag->year();
         song_info.track = tag->track();
         song_info.comment = TagStringToWstring(tag->comment(), to_local);
     }

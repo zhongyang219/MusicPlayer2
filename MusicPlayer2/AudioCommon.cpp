@@ -526,8 +526,8 @@ void CAudioCommon::ClearDefaultTagStr(SongInfo & song_info)
         song_info.artist.clear();
     if (song_info.album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
         song_info.album.clear();
-    if (song_info.year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
-        song_info.year.clear();
+    //if (song_info.year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+    //    song_info.year.clear();
     if (song_info.genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
         song_info.genre.clear();
 }

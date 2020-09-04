@@ -35,12 +35,13 @@ struct SongInfo
     wstring title;		//标题
     wstring artist;		//艺术家
     wstring album;		//唱片集
-    wstring year;		//年份
+    //wstring year;		//年份
     wstring comment;	//注释
     wstring genre;		//流派
     wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     Time lengh{};			//歌曲的长度
     int track{};		//音轨序号
+    unsigned short year;
     short bitrate{};		//比特率
     BYTE tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2；3：APE）
     BYTE genre_idx{ 255 };		//以字节表示的流派号
@@ -169,8 +170,9 @@ struct SongInfo
 
     bool IsYearEmpty() const
     {
-        static wstring default_year = wstring(CCommon::LoadText(IDS_DEFAULT_YEAR));
-        return year.empty() || year == default_year;
+        //static wstring default_year = wstring(CCommon::LoadText(IDS_DEFAULT_YEAR));
+        //return year.empty() || year == default_year;
+        return year == 0;
     }
 
     bool IsGenreEmpty() const
@@ -200,7 +202,10 @@ struct SongInfo
     wstring GetYear() const
     {
         static wstring default_year = wstring(CCommon::LoadText(IDS_DEFAULT_YEAR));
-        return year.empty() ? default_year : year;
+        if (year == 0)
+            return default_year;
+        else
+            return std::to_wstring(year);
     }
 
     wstring GetGenre() const
@@ -238,10 +243,23 @@ struct SongInfo
             artist.clear();
         if (album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
             album.clear();
-        if (year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
-            year.clear();
+        //if (year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+        //    year.clear();
         if (genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
             genre.clear();
+    }
+
+    void SetYear(const wchar_t* str_year)
+    {
+        year = static_cast<unsigned short>(_wtoi(str_year));
+    }
+
+    wstring get_year() const
+    {
+        if (year == 0)
+            return wstring();
+        else
+            return std::to_wstring(year);
     }
 };
 

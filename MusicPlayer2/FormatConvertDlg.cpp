@@ -488,7 +488,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 			if (pthis->m_write_tag)
 			{
 				str.Format(_T(" --tt \"%s\" --ta \"%s\" --tl \"%s\" --ty \"%s\" --tc \"%s\" --tn \"%s\" --tg \"%s\""),
-					song_info.title.c_str(), song_info.artist.c_str(), song_info.album.c_str(), song_info.year.c_str(), song_info.comment.c_str(),
+					song_info.title.c_str(), song_info.artist.c_str(), song_info.album.c_str(), song_info.get_year().c_str(), song_info.comment.c_str(),
 					CAudioCommon::TrackToString(song_info.track).GetString(), song_info.genre.c_str());
 				cmdline += str;
 			}
@@ -583,7 +583,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"Title", song_info.title.c_str());
 			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"Author", song_info.artist.c_str());
 			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/AlbumTitle", song_info.album.c_str());
-			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/Year", song_info.year.c_str());
+			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/Year", song_info.get_year().c_str());
 			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/TrackNumber", CAudioCommon::TrackToString(song_info.track).GetString());
 			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/Genre", song_info.genre.c_str());
 			m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"Description", song_info.comment.c_str());

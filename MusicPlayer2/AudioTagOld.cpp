@@ -66,8 +66,8 @@ bool CAudioTagOld::WriteMp3Tag(LPCTSTR file_path, const SongInfo & song_info, bo
 		artist = CCommon::UnicodeToStr(song_info.artist, CodeType::ANSI);
 	if (song_info.album != CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
 		album = CCommon::UnicodeToStr(song_info.album, CodeType::ANSI);
-	if (song_info.year != CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
-		year = CCommon::UnicodeToStr(song_info.year, CodeType::ANSI);
+	//if (song_info.year != CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+	year = CCommon::UnicodeToStr(song_info.get_year(), CodeType::ANSI);
 	comment = CCommon::UnicodeToStr(song_info.comment, CodeType::ANSI);
 	TAG_ID3V1 id3{};
 	CCommon::StringCopy(id3.id, 3, "TAG");
@@ -131,7 +131,7 @@ bool CAudioTagOld::GetID3V1Tag()
 		temp = string(id3->year, 4);
 		CCommon::DeleteEndSpace(temp);
 		if (!temp.empty() && temp.front() != L'\0')
-			m_song_info.year = CCommon::StrToUnicode(temp, CodeType::AUTO);
+			m_song_info.year = atoi(temp.c_str());
 
 		temp = string(id3->comment, 28);
 		CCommon::DeleteEndSpace(temp);
@@ -178,7 +178,7 @@ bool CAudioTagOld::GetID3V2Tag()
 				case 0: m_song_info.title = tag_info; break;
 				case 1: m_song_info.artist = tag_info; break;
 				case 2: m_song_info.album = tag_info; break;
-				case 3: m_song_info.year = tag_info; break;
+				case 3: m_song_info.SetYear(tag_info.c_str()); break;
 				case 4: m_song_info.comment = tag_info; break;
 				case 5: m_song_info.genre = CAudioCommon::GenreConvert(tag_info); break;
 				case 6: m_song_info.track = _wtoi(tag_info.c_str()); break;
@@ -210,7 +210,7 @@ bool CAudioTagOld::GetWmaTag()
 		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
 		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Author");
 		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "WM/AlbumTitle");
-		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "WM/Year");
+		m_song_info.SetYear(GetSpecifiedUtf8Tag(tag_content, "WM/Year").c_str());
 		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "WM/Genre");
 		if (CCommon::StrIsNumber(m_song_info.genre))
 		{
@@ -238,7 +238,7 @@ bool CAudioTagOld::GetMp4Tag()
 		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
 		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Artist");
 		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "Album");
-		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "Date");
+		m_song_info.SetYear(GetSpecifiedUtf8Tag(tag_content, "Date").c_str());
 		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "Genre");
 		if (CCommon::StrIsNumber(m_song_info.genre))
 		{
@@ -264,7 +264,7 @@ bool CAudioTagOld::GetOggTag()
 		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
 		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Artist");
 		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "Album");
-		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "Date");
+		m_song_info.SetYear(GetSpecifiedUtf8Tag(tag_content, "Date").c_str());
 		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "Genre");
 		if (CCommon::StrIsNumber(m_song_info.genre))
 		{
@@ -295,7 +295,7 @@ bool CAudioTagOld::GetApeTag()
 		m_song_info.title = GetSpecifiedUtf8Tag(tag_content, "Title");
 		m_song_info.artist = GetSpecifiedUtf8Tag(tag_content, "Artist");
 		m_song_info.album = GetSpecifiedUtf8Tag(tag_content, "Album");
-		m_song_info.year = GetSpecifiedUtf8Tag(tag_content, "Year");
+		m_song_info.SetYear(GetSpecifiedUtf8Tag(tag_content, "Year").c_str());
 		m_song_info.genre = GetSpecifiedUtf8Tag(tag_content, "Genre");
 		if (CCommon::StrIsNumber(m_song_info.genre))
 		{
@@ -334,9 +334,9 @@ bool CAudioTagOld::GetFlacTag()
         m_song_info.title = GetSpecifiedFlacTag(tag_content, "Title");
         m_song_info.artist = GetSpecifiedFlacTag(tag_content, "Artist");
         m_song_info.album = GetSpecifiedFlacTag(tag_content, "Album");
-        m_song_info.year = GetSpecifiedFlacTag(tag_content, "Year");
-        if(m_song_info.year.empty())
-            m_song_info.year = GetSpecifiedFlacTag(tag_content, "Date");
+        m_song_info.SetYear(GetSpecifiedFlacTag(tag_content, "Year").c_str());
+        if(m_song_info.IsYearEmpty())
+            m_song_info.SetYear(GetSpecifiedFlacTag(tag_content, "Date").c_str());
         m_song_info.genre = GetSpecifiedFlacTag(tag_content, "Genre");
         m_song_info.comment = GetSpecifiedFlacTag(tag_content, "Comment");
         if (CCommon::StrIsNumber(m_song_info.genre))
@@ -352,9 +352,9 @@ bool CAudioTagOld::GetFlacTag()
         CCommon::StringNormalize(m_song_info.title);
         CCommon::StringNormalize(m_song_info.artist);
         CCommon::StringNormalize(m_song_info.album);
-        CCommon::StringNormalize(m_song_info.year);
-        if (m_song_info.year.size() > 8)
-            m_song_info.year.clear();
+        //CCommon::StringNormalize(m_song_info.year);
+        //if (m_song_info.year.size() > 8)
+        //    m_song_info.year.clear();
         CCommon::StringNormalize(m_song_info.genre);
         CCommon::StringNormalize(m_song_info.comment);
 

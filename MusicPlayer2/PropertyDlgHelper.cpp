@@ -225,7 +225,7 @@ void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstr
                 else if (item.second == FORMULAR_TRACK)
                     song_info.track = _wtoi(result.c_str());
                 else if (item.second == FORMULAR_YEAR)
-                    song_info.year = result;
+                    song_info.SetYear(result.c_str());
                 else if (item.second == FORMULAR_GENRE)
                     song_info.genre = result;
             }

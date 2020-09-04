@@ -40,7 +40,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << CString(song_data.second.title.c_str())
             << CString(song_data.second.artist.c_str())
             << CString(song_data.second.album.c_str())
-            << CString(song_data.second.year.c_str())
+            << CString(song_data.second.get_year().c_str())
             << CString(song_data.second.comment.c_str())
             << CString(song_data.second.genre.c_str())
             << song_data.second.genre_idx
@@ -119,7 +119,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
             ar >> temp;
             song_info.album = temp;
             ar >> temp;
-            song_info.year = temp;
+            song_info.SetYear(temp);
             ar >> temp;
             song_info.comment = temp;
             ar >> temp;

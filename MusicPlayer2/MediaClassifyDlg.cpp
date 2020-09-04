@@ -231,7 +231,7 @@ bool CMediaClassifyDlg::IsItemMatchKeyWord(const SongInfo& song, const wstring& 
     else if (m_type == CMediaClassifier::CT_GENRE)
         return IsItemMatchKeyWord(song.genre, key_word);
     else if (m_type == CMediaClassifier::CT_YEAR)
-        return IsItemMatchKeyWord(song.year, key_word);
+        return IsItemMatchKeyWord(song.get_year(), key_word);
     return false;
 }
 

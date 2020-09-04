@@ -63,7 +63,7 @@ void CMediaClassifier::ClassifyMedia()
             break;
         case CMediaClassifier::CT_YEAR:
         {
-            wstring str_year = song_info.second.year;
+            wstring str_year = song_info.second.get_year();
             if (str_year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
                 str_year.clear();
             if (str_year.size() > 4)

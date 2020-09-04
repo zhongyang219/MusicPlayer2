@@ -486,8 +486,9 @@ int CPropertyTabDlg::SaveModified()
     CString str_track;
 	m_track_edit.GetWindowText(str_track);
 	song_info.track = static_cast<BYTE>(_wtoi(str_track));
-	m_year_edit.GetWindowText(str_temp);
-	song_info.year = str_temp;
+    CString str_year;
+    m_year_edit.GetWindowText(str_year);
+	song_info.SetYear(str_year);
 	if (m_genre_modified)
 		song_info.genre_idx = static_cast<BYTE>(m_genre_combo.GetCurSel());
 	else
@@ -508,7 +509,10 @@ int CPropertyTabDlg::SaveModified()
             CopyMultiTagInfo(song_info.title, cur_song.title);
             CopyMultiTagInfo(song_info.artist, cur_song.artist);
             CopyMultiTagInfo(song_info.album, cur_song.album);
-            CopyMultiTagInfo(song_info.year, cur_song.year);
+            if (str_year != CCommon::LoadText(IDS_MULTI_VALUE))
+            {
+                cur_song.SetYear(str_year);
+            }
             CopyMultiTagInfo(song_info.genre, cur_song.genre);
             CopyMultiTagInfo(song_info.comment, cur_song.comment);
             if (str_track != CCommon::LoadText(IDS_MULTI_VALUE))
@@ -710,9 +714,9 @@ void CPropertyTabDlg::ModifyTagInfo(const SongInfo& song)
         m_genre_combo.SetWindowText(song.genre.c_str());
         m_genre_combo.SetModify();
     }
-    if (!song.year.empty() && m_year_edit.GetText() != song.year.c_str())
+    if (!song.IsYearEmpty() && m_year_edit.GetText() != std::to_wstring(song.year).c_str())
     {
-        m_year_edit.SetWindowText(song.year.c_str());
+        m_year_edit.SetWindowText(std::to_wstring(song.year).c_str());
         m_year_edit.SetModify();
     }
     if (!song.comment.empty() && m_comment_edit.GetText() != song.comment.c_str())

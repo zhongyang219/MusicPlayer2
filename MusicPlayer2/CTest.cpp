@@ -41,6 +41,9 @@ void CTest::Test()
     //TestCrash();
     //TestTagParse();
     //TestStringSplit();
+
+    int size = sizeof(SongInfo);
+    MessageBox(theApp.m_pMainWnd->GetSafeHwnd(), std::to_wstring(size).c_str(), NULL, MB_OK);
 }
 
 void CTest::TestStringMatch()

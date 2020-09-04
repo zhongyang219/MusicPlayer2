@@ -63,7 +63,7 @@ void CCueFile::DoAnalysis()
     SongInfo song_info{};
     song_info.album = GetCommand(L"TITLE");
     song_info.genre = GetCommand(L"REM GENRE");
-    song_info.year = GetCommand(L"REM DATE");
+    song_info.SetYear(GetCommand(L"REM DATE").c_str());
     song_info.comment = GetCommand(L"REM COMMENT");
     //song_info.file_name = m_audio_file_name;
     song_info.file_path = cue_file_path.GetDir() + m_audio_file_name;

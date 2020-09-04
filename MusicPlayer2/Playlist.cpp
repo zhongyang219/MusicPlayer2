@@ -62,7 +62,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
                 buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s", item.is_cue, item.start_pos.toInt(), item.end_pos.toInt(),
                     DeleteInvalidCh(item.title).c_str(), DeleteInvalidCh(item.artist).c_str(), DeleteInvalidCh(item.album).c_str(),
                     item.track, item.bitrate,
-                    DeleteInvalidCh(item.genre).c_str(), DeleteInvalidCh(item.year).c_str(), DeleteInvalidCh(item.comment).c_str());
+                    DeleteInvalidCh(item.genre).c_str(), DeleteInvalidCh(item.get_year()).c_str(), DeleteInvalidCh(item.comment).c_str());
                 stream << CCommon::UnicodeToStr(buff.GetString(), CodeType::UTF8_NO_BOM);
             }
             stream << std::endl;
@@ -218,7 +218,7 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
 			if (result.size() >= 10)
 				item.genre = result[9];
 			if (result.size() >= 11)
-				item.year = result[10];
+				item.SetYear(result[10].c_str());
 			if (result.size() >= 12)
 				item.comment = result[11];
 		}
