@@ -120,6 +120,12 @@ public:
 	//result: 接收分割后的结果
 	static void StringSplitWithMulitChars(const wstring& str, const wchar_t* div_ch, vector<wstring>& results, bool skip_empty = true);
 
+    //使用指定的分割符分割字符串，将按每个分割符中的顺序分割字符串，每个分割符只用一次
+    //str: 原始字符串
+    //separators: 指定的分割符，
+    //result: 接收分割后的结果
+    static void StringSplitWithSeparators(const wstring& str, const vector<wstring>& separators, vector<wstring>& results, bool skip_empty = true);
+
 	//将若干个字符串合并成一个字符串
 	//div_ch: 用于分割的字符
 	static wstring StringMerge(const vector<wstring>& strings, wchar_t div_ch);
@@ -158,6 +164,8 @@ public:
 
     //删除一个字符串中指定的字符
     static bool StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replaced);
+
+    static void StringReplace(wstring& str, const wstring& str_old, const wstring& str_new);
 
     static CString DataSizeToString(size_t data_size);
 

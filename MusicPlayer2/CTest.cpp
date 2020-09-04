@@ -7,6 +7,7 @@
 #include "IniHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "MessageDlg.h"
+#include "PropertyDlgHelper.h"
 
 CTest::CTest()
 {
@@ -38,6 +39,8 @@ void CTest::Test()
 
     //TestImageResize();
     //TestCrash();
+    //TestTagParse();
+    //TestStringSplit();
 }
 
 void CTest::TestStringMatch()
@@ -188,4 +191,19 @@ void CTest::TestCrashDlg()
         dlg.SetMessageIcon(hIcon);
 
     dlg.DoModal();
+}
+
+void CTest::TestTagParse()
+{
+    SongInfo song;
+    CPropertyDlgHelper::GetTagFromFileName(L"666-744FFFF23", FORMULAR_YEAR L"-" FORMULAR_ARTIST L"FFFF" FORMULAR_TITLE, song);
+
+    int a = 0;
+}
+
+void CTest::TestStringSplit()
+{
+    vector<wstring> result;
+    CCommon::StringSplitWithSeparators(L"1-223&**34@@#YYF%%%%^SD", vector<wstring>{L"-", L"&**", L"@@#", L"%%%%^"}, result);
+    int a = 0;
 }

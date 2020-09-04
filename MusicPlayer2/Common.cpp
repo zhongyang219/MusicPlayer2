@@ -208,6 +208,44 @@ void CCommon::StringSplitWithMulitChars(const wstring& str, const wchar_t* div_c
     }
 }
 
+void CCommon::StringSplitWithSeparators(const wstring& str, const vector<wstring>& separators, vector<wstring>& results, bool skip_empty /*= true*/)
+{
+    results.clear();
+    size_t split_index = 0;
+    size_t last_split_index = 0;
+
+    wstring split_str;
+    size_t i{};
+    for (; i < separators.size(); i++)
+    {
+        if (i == 0)
+            split_index = str.find(separators[i]);
+        else
+            split_index = str.find(separators[i], split_index + separators[i - 1].size());
+
+        if (split_index == wstring::npos)
+            break;
+
+        if (i == 0)
+            split_str = str.substr(0, split_index);
+        else
+            split_str = str.substr(last_split_index + separators[i - 1].size(), split_index - last_split_index - separators[i - 1].size());
+        if (!split_str.empty() || !skip_empty)
+            results.push_back(split_str);
+
+        last_split_index = split_index;
+    }
+
+    if (i - 1 >= 0 && i - 1 < separators.size())
+    {
+        size_t index = last_split_index + separators[i - 1].size();
+        if (index < str.size())
+            split_str = str.substr(last_split_index + separators[i - 1].size());
+        if (!split_str.empty() || !skip_empty)
+            results.push_back(split_str);
+    }
+}
+
 wstring CCommon::StringMerge(const vector<wstring>& strings, wchar_t div_ch)
 {
 	wstring result;
@@ -492,6 +530,13 @@ bool CCommon::StringCharacterReplace(wstring & str, wchar_t ch, wchar_t ch_repla
         }
     }
     return replaced;
+}
+
+void CCommon::StringReplace(wstring& str, const wstring& str_old, const wstring& str_new)
+{
+    CString _str{ str.c_str() };
+    _str.Replace(str_old.c_str(), str_new.c_str());
+    str = _str.GetString();
 }
 
 CString CCommon::DataSizeToString(size_t data_size)

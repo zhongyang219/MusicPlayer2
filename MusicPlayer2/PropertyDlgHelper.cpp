@@ -170,3 +170,59 @@ wstring CPropertyDlgHelper::GetMultiValue(std::function<wstring(const SongInfo&)
         return wstring();
     }
 }
+
+void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstring& formular, SongInfo& song_info)
+{
+    std::map<size_t, wstring> identifiers;    //保存标识符，int为标识符在formualr中的索引
+
+    //查找每个标识符的位置，并保存在identifers中
+    const vector<wstring> FORMULARS{ FORMULAR_TITLE, FORMULAR_ARTIST, FORMULAR_ALBUM, FORMULAR_TRACK, FORMULAR_YEAR, FORMULAR_GENRE };
+    for (const auto& f : FORMULARS)
+    {
+        size_t index = formular.find(f);
+        if (index != wstring::npos)
+        {
+            identifiers[index] = f;
+        }
+    }
+
+    wstring str_format = formular;
+
+    const wchar_t* SPLITER = L"|";
+
+    //将标识符全部替换成|
+    for (const auto& item : identifiers)
+    {
+        CCommon::StringReplace(str_format, item.second.c_str(), SPLITER);
+    }
+    //取得分割符
+    vector<wstring> seprators;
+    CCommon::StringSplit(str_format, SPLITER, seprators);
+
+    //用分割符分割文件名
+    vector<wstring> results;
+    CCommon::StringSplitWithSeparators(file_name, seprators, results);
+
+    //获取分割结果
+    size_t index{};
+    for (const auto& item : identifiers)
+    {
+        if (index < results.size())
+        {
+            wstring result = results[index];
+            if (item.second == FORMULAR_TITLE)
+                song_info.title = result;
+            else if (item.second == FORMULAR_ARTIST)
+                song_info.artist = result;
+            else if (item.second == FORMULAR_ALBUM)
+                song_info.album = result;
+            else if (item.second == FORMULAR_TRACK)
+                song_info.track = _wtoi(result.c_str());
+            else if (item.second == FORMULAR_YEAR)
+                song_info.year = result;
+            else if (item.second == FORMULAR_GENRE)
+                song_info.genre = result;
+        }
+        index++;
+    }
+}

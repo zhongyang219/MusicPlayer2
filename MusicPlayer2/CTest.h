@@ -20,5 +20,7 @@ private:
 	static void TestAudioTag();
     static void TestImageResize();
     static void TestCrashDlg();
+    static void TestTagParse();
+    static void TestStringSplit();
 };
 

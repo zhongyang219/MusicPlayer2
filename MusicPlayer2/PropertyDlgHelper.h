@@ -1,6 +1,14 @@
 #pragma once
 #include "SongInfo.h"
 #include <functional>
+
+#define FORMULAR_TITLE  L"<%title%>"
+#define FORMULAR_ARTIST L"<%artist%>"
+#define FORMULAR_ALBUM  L"<%album%>"
+#define FORMULAR_TRACK  L"<%track%>"
+#define FORMULAR_YEAR   L"<%year%>"
+#define FORMULAR_GENRE  L"<%genre%>"
+
 class CPropertyDlgHelper
 {
 public:
@@ -31,5 +39,13 @@ private:
 
 private:
     const vector<SongInfo>& m_song_info;
+
+public:
+
+    //从文件名猜测标签
+    //file_name: 文件名（不含扩展名）
+    //formular: 猜测的方案，比如“<%artist%> - <%title%>”
+    //song_info: 接收猜测结果
+    static void GetTagFromFileName(const wstring& file_name, const wstring& formular, SongInfo& song_info);
 };
 
