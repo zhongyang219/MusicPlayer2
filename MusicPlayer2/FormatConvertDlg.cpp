@@ -567,7 +567,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
                 log_str += CCommon::LoadText(IDS_UNKNOW_ERROR);
                 break;
 			}
-			theApp.WriteErrorLog(wstring(log_str));
+			theApp.WriteLog(wstring(log_str));
 		}
 		if (hEncode == 0)
 		{

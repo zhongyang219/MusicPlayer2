@@ -51,7 +51,7 @@ public:
 	{
 		//写入错误日志
 		CString log_info = CCommon::LoadTextFormat(IDS_CRASH_ERROR_LOG_INFO, { m_dumpFile });
-		theApp.WriteErrorLog(wstring(log_info));
+		theApp.WriteLog(wstring(log_info));
 
 		//显示错误信息对话框
 		CMessageDlg dlg;

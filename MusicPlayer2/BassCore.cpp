@@ -145,7 +145,7 @@ void CBassCore::InitCore()
                     {
                         CString info;
                         info = CCommon::LoadTextFormat(IDS_SOUND_FONT_LOAD_FAILED, { sf2_path });
-                        theApp.WriteErrorLog(info.GetString());
+                        theApp.WriteLog(info.GetString());
                         m_sfont_name = CCommon::LoadText(_T("<"), IDS_LOAD_FAILED, _T(">"));
                     }
                     else

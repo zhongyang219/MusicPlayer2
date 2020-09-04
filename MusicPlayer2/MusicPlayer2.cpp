@@ -71,7 +71,7 @@ CMusicPlayerApp::CMusicPlayerApp()
     ::ReleaseDC(NULL, hDC);
     if (m_dpi == 0)
     {
-        WriteErrorLog(L"Get system DPI failed!");
+        WriteLog(L"Get system DPI failed!");
         m_dpi = 96;
     }
 }
@@ -99,7 +99,7 @@ BOOL CMusicPlayerApp::InitInstance()
         //将命令行参数写入日志文件
         CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
         //swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
-        WriteErrorLog(wstring{ info.GetString() });
+        WriteLog(wstring{ info.GetString() });
         return FALSE;
     }
 
@@ -912,9 +912,12 @@ bool CMusicPlayerApp::GetAutoRun()
     }
 }
 
-void CMusicPlayerApp::WriteErrorLog(const wstring & log_str)
+void CMusicPlayerApp::WriteLog(const wstring & log_str, int log_type)
 {
-    CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
+    if (((log_type & NonCategorizedSettingData::LT_ERROR) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_ERROR) != 0))
+        CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
+    if (((log_type & NonCategorizedSettingData::LT_NORMAL) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_NORMAL) != 0))
+        CCommon::WriteLog((m_module_dir + L"debug.log").c_str(), log_str);
 }
 
 void CMusicPlayerApp::StartUpdateMediaLib()

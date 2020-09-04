@@ -108,7 +108,7 @@ public:
     bool GetAutoRun();
 
 
-    void WriteErrorLog(const wstring& log_str);
+    void WriteLog(const wstring& log_str, int log_type = NonCategorizedSettingData::LT_ERROR);
 
     //void StartClassifySongData();
     void StartUpdateMediaLib();

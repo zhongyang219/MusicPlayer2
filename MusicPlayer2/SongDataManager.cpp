@@ -191,7 +191,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
     {
         CString info;
         info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { path, exception->m_cause });
-        theApp.WriteErrorLog(wstring{ info });
+        theApp.WriteLog(wstring{ info });
     }
     // πÿ±’∂‘œÛ
     ar.Close();

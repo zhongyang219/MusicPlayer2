@@ -219,7 +219,7 @@ void CPlaylistMgr::LoadPlaylistData()
         //捕获序列化时出现的异常
         CString info;
         info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { theApp.m_recent_playlist_data_path, exception->m_cause });
-        theApp.WriteErrorLog(wstring{ info });
+        theApp.WriteLog(wstring{ info });
     }
     // 关闭对象
     ar.Close();

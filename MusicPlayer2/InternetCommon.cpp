@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "InternetCommon.h"
 #include "Resource.h"
+#include "MusicPlayer2.h"
 
 
 CInternetCommon::CInternetCommon()
@@ -37,6 +38,10 @@ wstring CInternetCommon::URLEncode(const wstring & wstr)
 
 bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 {
+    wstring log_info;
+    log_info = L"http get: " + str_url;
+    theApp.WriteLog(log_info, NonCategorizedSettingData::LT_NORMAL);
+
 	bool sucessed{ false };
 	CInternetSession session{};
 	CHttpFile* pfile{};
@@ -62,6 +67,10 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 	}
 	catch (CInternetException* e)
 	{
+        wstring log_info = L"http get " + str_url + L"error. Error code: ";
+        log_info += std::to_wstring(e->m_dwError);
+        theApp.WriteLog(log_info, NonCategorizedSettingData::LT_ERROR);
+
 		if (pfile != nullptr)
 		{
 			pfile->Close();
@@ -77,6 +86,10 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 
 int CInternetCommon::HttpPost(const wstring & str_url, wstring & result)
 {
+    wstring log_info;
+    log_info = L"http post: " + str_url;
+    theApp.WriteLog(log_info, NonCategorizedSettingData::LT_NORMAL);
+
 	CInternetSession session;
 	CHttpConnection* pConnection{};
 	CHttpFile* pFile{};
@@ -127,6 +140,10 @@ int CInternetCommon::HttpPost(const wstring & str_url, wstring & result)
 		e->Delete();
 		//DWORD dwError = GetLastError();
 		//PRINT_LOG("dwError = %d", dwError, 0);
+
+        wstring log_info = L"http post " + str_url + L"error. Error code: ";
+        log_info += std::to_wstring(dwErrorCode);
+        theApp.WriteLog(log_info, NonCategorizedSettingData::LT_ERROR);
 
 		if (ERROR_INTERNET_TIMEOUT == dwErrorCode)
 			return OUTTIME;

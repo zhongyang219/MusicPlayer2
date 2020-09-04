@@ -11,7 +11,7 @@ CMciCore::CMciCore()
     if (!IsSucceed())
     {
         CString strInfo = CCommon::LoadText(IDS_MCI_INIT_FAILED);
-        theApp.WriteErrorLog(wstring(strInfo));
+        theApp.WriteLog(wstring(strInfo));
     }
 }
 

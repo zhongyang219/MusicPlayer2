@@ -369,6 +369,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"other", L"show_debug_info", theApp.m_nc_setting_data.show_debug_info);
     ini.WriteInt(L"other", L"light_mode_default_transparency", theApp.m_nc_setting_data.light_mode_default_transparency);
     ini.WriteInt(L"other", L"dark_mode_default_transparency", theApp.m_nc_setting_data.dark_mode_default_transparency);
+    ini.WriteInt(L"other", L"debug_log", theApp.m_nc_setting_data.debug_log);
 
     ini.WriteStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type);
 
@@ -522,6 +523,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.show_debug_info = ini.GetBool(L"other", L"show_debug_info", true);
     theApp.m_nc_setting_data.light_mode_default_transparency = ini.GetInt(L"other", L"light_mode_default_transparency", 80);
     theApp.m_nc_setting_data.dark_mode_default_transparency = ini.GetInt(L"other", L"dark_mode_default_transparency", 40);
+    theApp.m_nc_setting_data.debug_log = ini.GetInt(L"other", L"debug_log", NonCategorizedSettingData::LT_ERROR);
 
     ini.GetStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type, vector<wstring>{L"mp3", L"wma", L"wav", L"flac", L"ogg", L"oga", L"m4a", L"mp4", L"cue", L"mp2", L"mp1", L"aif", L"aiff", L"asf"});
 
@@ -1879,7 +1881,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 ////将命令行参数写入日志文件
                 //wchar_t buff[256];
                 //swprintf_s(buff, L"程序已被Windows的RestartManager重启，重启参数：%s", m_cmdLine.c_str());
-                //theApp.WriteErrorLog(wstring{ buff });
+                //theApp.WriteLog(wstring{ buff });
             }
             else		//从命令行参数获取要打开的文件
             {

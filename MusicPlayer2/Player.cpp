@@ -1182,7 +1182,7 @@ bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
         wstring log_info = m_pCore->GetErrorInfo(error_code_tmp);
         log_info += L" function name: ";
         log_info += function_name;
-        theApp.WriteErrorLog(log_info);
+        theApp.WriteLog(log_info);
     }
     m_error_code = error_code_tmp;
     return true;
@@ -2078,7 +2078,7 @@ void CPlayer::LoadRecentPath()
         //捕获序列化时出现的异常
         CString info;
         info = CCommon::LoadTextFormat(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG, { exception->m_cause });
-        theApp.WriteErrorLog(wstring{ info });
+        theApp.WriteLog(wstring{ info });
     }
     // 关闭对象
     ar.Close();

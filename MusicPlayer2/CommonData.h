@@ -338,6 +338,15 @@ struct NonCategorizedSettingData
     int dark_mode_default_transparency{ 40 };
 
     vector<wstring> default_file_type;
+
+    enum eLogType
+    {
+        LT_NONE = 0,
+        LT_NORMAL = 1,
+        LT_ERROR = 2
+    };
+
+    int debug_log{ 0 };     //是否写入日志信息
 };
 
 struct IconRes
