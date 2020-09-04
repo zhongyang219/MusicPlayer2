@@ -41,7 +41,7 @@ struct SongInfo
     wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     Time lengh{};			//歌曲的长度
     int track{};		//音轨序号
-    unsigned short year;
+    unsigned short year{};
     short bitrate{};		//比特率
     BYTE tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2；3：APE）
     BYTE genre_idx{ 255 };		//以字节表示的流派号

@@ -714,9 +714,9 @@ void CPropertyTabDlg::ModifyTagInfo(const SongInfo& song)
         m_genre_combo.SetWindowText(song.genre.c_str());
         m_genre_combo.SetModify();
     }
-    if (!song.IsYearEmpty() && m_year_edit.GetText() != std::to_wstring(song.year).c_str())
+    if (!song.IsYearEmpty() && m_year_edit.GetText() != song.GetYear().c_str())
     {
-        m_year_edit.SetWindowText(std::to_wstring(song.year).c_str());
+        m_year_edit.SetWindowText(song.get_year().c_str());
         m_year_edit.SetModify();
     }
     if (!song.comment.empty() && m_comment_edit.GetText() != song.comment.c_str())
