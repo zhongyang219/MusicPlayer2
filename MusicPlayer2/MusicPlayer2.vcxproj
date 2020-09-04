@@ -231,6 +231,7 @@
     <ClInclude Include="PropertyDlgHelper.h" />
     <ClInclude Include="SongDataManager.h" />
     <ClInclude Include="SpinEdit.h" />
+    <ClInclude Include="TagFromFileNameDlg.h" />
     <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="WIC.h" />
@@ -361,6 +362,7 @@
     <ClCompile Include="PropertyDlgHelper.cpp" />
     <ClCompile Include="SongDataManager.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
+    <ClCompile Include="TagFromFileNameDlg.cpp" />
     <ClCompile Include="TagLibHelper.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="WIC.cpp" />

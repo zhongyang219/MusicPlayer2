@@ -10,6 +10,7 @@
 #include "SongDataManager.h"
 #include "GetTagOnlineDlg.h"
 #include "MusicPlayerCmdHelper.h"
+#include "TagFromFileNameDlg.h"
 
 
 // CPropertyTabDlg 对话框
@@ -294,6 +295,7 @@ BEGIN_MESSAGE_MAP(CPropertyTabDlg, CTabDlg)
     ON_BN_CLICKED(IDC_GET_TAG_ONLINE_BUTTON, &CPropertyTabDlg::OnBnClickedGetTagOnlineButton)
     ON_MESSAGE(WM_PORPERTY_ONLINE_INFO_ACQUIRED, &CPropertyTabDlg::OnPorpertyOnlineInfoAcquired)
     ON_BN_CLICKED(IDC_GET_TAG_FROM_LYRIC_BUTTON, &CPropertyTabDlg::OnBnClickedGetTagFromLyricButton)
+    ON_BN_CLICKED(IDC_GET_TAG_FROM_FILE_NAME_BUTTON, &CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton)
 END_MESSAGE_MAP()
 
 
@@ -326,6 +328,10 @@ BOOL CPropertyTabDlg::OnInitDialog()
             pBtn->ShowWindow(SW_HIDE);
 
         pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
+        if (pBtn != nullptr)
+            pBtn->ShowWindow(SW_HIDE);
+
+        pBtn = GetDlgItem(IDC_GET_TAG_FROM_FILE_NAME_BUTTON);
         if (pBtn != nullptr)
             pBtn->ShowWindow(SW_HIDE);
     }
@@ -610,32 +616,15 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
     CInternetCommon::ItemInfo* pItem = (CInternetCommon::ItemInfo*)wParam;
     if (pItem != nullptr)
     {
-        if (m_title_edit.GetText() != pItem->title.c_str())
-        {
-            m_title_edit.SetWindowText(pItem->title.c_str());
-            m_title_edit.SetModify();
-        }
-        if (m_artist_edit.GetText() != pItem->artist.c_str())
-        {
-            m_artist_edit.SetWindowText(pItem->artist.c_str());
-            m_artist_edit.SetModify();
-        }
-        if (m_album_edit.GetText() != pItem->album.c_str())
-        {
-            m_album_edit.SetWindowText(pItem->album.c_str());
-            m_album_edit.SetModify();
-        }
+        SongInfo song;
+        song.title = pItem->title;
+        song.artist = pItem->artist;
+        song.album = pItem->album;
         CString comment{ _T("id:") };
         comment += pItem->id.c_str();
-        if (m_comment_edit.GetText()!= comment)
-        {
-            m_comment_edit.SetWindowText(comment);
-            m_comment_edit.SetModify();
-        }
+        song.comment = comment;
 
-        m_modified = true;
-        m_list_refresh = m_modified;
-        SetSaveBtnEnable();
+        ModifyTagInfo(song);
     }
     return 0;
 }
@@ -663,47 +652,77 @@ void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
     if (!song.lyric_file.empty())
     {
         CLyrics lyrics{ song.lyric_file };
-        wstring title = lyrics.GetTitle();
-        wstring artist = lyrics.GetAritst();
-        wstring album = lyrics.GetAlbum();
-        if (!title.empty() || !artist.empty() || !album.empty())
+        SongInfo song;
+        song.title = lyrics.GetTitle();
+        song.artist = lyrics.GetAritst();
+        song.album = lyrics.GetAlbum();
+        if (!song.title.empty() || !song.artist.empty() || !song.album.empty())
         {
-            if (!title.empty() && m_title_edit.GetText() != title.c_str())
-            {
-                m_title_edit.SetWindowText(title.c_str());
-                m_title_edit.SetModify();
-            }
-
-            if (!artist.empty() && m_artist_edit.GetText() != artist.c_str())
-            {
-                m_artist_edit.SetWindowText(artist.c_str());
-                m_artist_edit.SetModify();
-            }
-
-            if (!album.empty() && m_album_edit.GetText() != album.c_str())
-            {
-                m_album_edit.SetWindowText(album.c_str());
-                m_album_edit.SetModify();
-            }
-
-            if (!lyrics.GetSongId().empty())
-            {
-                CString comment{ _T("id:") };
-                comment += lyrics.GetSongId().c_str();
-                if (m_comment_edit.GetText() != comment)
-                {
-                    m_comment_edit.SetWindowText(comment);
-                    m_comment_edit.SetModify();
-                }
-            }
-
-            m_modified = true;
-            m_list_refresh = m_modified;
-            SetSaveBtnEnable();
+            ModifyTagInfo(song);
         }
     }
     else
     {
         MessageBox(CCommon::LoadText(IDS_NO_LYRICS_FOUND_INFO), NULL, MB_ICONWARNING | MB_OK);
     }
+}
+
+
+void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CTagFromFileNameDlg dlg;
+    if (dlg.DoModal() == IDOK)
+    {
+        wstring str_formular = dlg.GetFormularSelected();
+        SongInfo song;
+        wstring file_name = CFilePathHelper(m_all_song_info[m_index].file_path).GetFileNameWithoutExtension();
+        CPropertyDlgHelper::GetTagFromFileName(file_name, str_formular, song);
+        ModifyTagInfo(song);
+    }
+}
+
+
+void CPropertyTabDlg::ModifyTagInfo(const SongInfo& song)
+{
+    if (!song.title.empty() && m_title_edit.GetText() != song.title.c_str())
+    {
+        m_title_edit.SetWindowText(song.title.c_str());
+        m_title_edit.SetModify();
+    }
+    if (!song.artist.empty() && m_artist_edit.GetText() != song.artist.c_str())
+    {
+        m_artist_edit.SetWindowText(song.artist.c_str());
+        m_artist_edit.SetModify();
+    }
+    if (!song.album.empty() && m_album_edit.GetText() != song.album.c_str())
+    {
+        m_album_edit.SetWindowText(song.album.c_str());
+        m_album_edit.SetModify();
+    }
+    if (song.track != 0 && m_track_edit.GetText() != std::to_wstring(song.track).c_str())
+    {
+        m_track_edit.SetWindowText(std::to_wstring(song.track).c_str());
+        m_track_edit.SetModify();
+    }
+    if (!song.genre.empty() && m_genre_combo.GetText() != song.genre.c_str())
+    {
+        m_genre_combo.SetWindowText(song.genre.c_str());
+        m_genre_combo.SetModify();
+    }
+    if (!song.year.empty() && m_year_edit.GetText() != song.year.c_str())
+    {
+        m_year_edit.SetWindowText(song.year.c_str());
+        m_year_edit.SetModify();
+    }
+    if (!song.comment.empty() && m_comment_edit.GetText() != song.comment.c_str())
+    {
+        m_comment_edit.SetWindowText(song.comment.c_str());
+        m_comment_edit.SetModify();
+    }
+
+    m_modified = true;
+    m_list_refresh = m_modified;
+    SetSaveBtnEnable();
+
 }

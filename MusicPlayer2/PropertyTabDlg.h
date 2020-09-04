@@ -67,6 +67,8 @@ protected:
     void SetSaveBtnEnable();
     void ResetEditModified();
 
+    void ModifyTagInfo(const SongInfo& song);
+
     virtual void OnTabEntered() override;      //当标签切换到当前窗口时被调用
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -94,4 +96,5 @@ protected:
     afx_msg LRESULT OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnBnClickedGetTagFromLyricButton();
+    afx_msg void OnBnClickedGetTagFromFileNameButton();
 };

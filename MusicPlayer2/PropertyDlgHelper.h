@@ -2,12 +2,12 @@
 #include "SongInfo.h"
 #include <functional>
 
-#define FORMULAR_TITLE  L"<%title%>"
-#define FORMULAR_ARTIST L"<%artist%>"
-#define FORMULAR_ALBUM  L"<%album%>"
-#define FORMULAR_TRACK  L"<%track%>"
-#define FORMULAR_YEAR   L"<%year%>"
-#define FORMULAR_GENRE  L"<%genre%>"
+#define FORMULAR_TITLE  L"%(Title)"
+#define FORMULAR_ARTIST L"%(Artist)"
+#define FORMULAR_ALBUM  L"%(Album)"
+#define FORMULAR_TRACK  L"%(Track)"
+#define FORMULAR_YEAR   L"%(Year)"
+#define FORMULAR_GENRE  L"%(Genre)"
 
 class CPropertyDlgHelper
 {

@@ -10,7 +10,9 @@ public:
 	void SetReadOnly(bool read_only = true);
 	void SetEditReadOnly(bool read_only = true);
     CEdit* GetEditCtrl();
+    CString GetText();
     void ResetModified();
+    void SetModify();
 
 protected:
 	bool m_read_only{ false };

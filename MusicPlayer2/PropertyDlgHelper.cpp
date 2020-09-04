@@ -197,32 +197,39 @@ void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstr
     }
     //取得分割符
     vector<wstring> seprators;
-    CCommon::StringSplit(str_format, SPLITER, seprators);
+    CCommon::StringSplit(str_format, SPLITER, seprators, true, false);
 
     //用分割符分割文件名
     vector<wstring> results;
     CCommon::StringSplitWithSeparators(file_name, seprators, results);
 
     //获取分割结果
-    size_t index{};
-    for (const auto& item : identifiers)
+    if (results.empty())
     {
-        if (index < results.size())
+        song_info.title = file_name;
+    }
+    else
+    {
+        size_t index{};
+        for (const auto& item : identifiers)
         {
-            wstring result = results[index];
-            if (item.second == FORMULAR_TITLE)
-                song_info.title = result;
-            else if (item.second == FORMULAR_ARTIST)
-                song_info.artist = result;
-            else if (item.second == FORMULAR_ALBUM)
-                song_info.album = result;
-            else if (item.second == FORMULAR_TRACK)
-                song_info.track = _wtoi(result.c_str());
-            else if (item.second == FORMULAR_YEAR)
-                song_info.year = result;
-            else if (item.second == FORMULAR_GENRE)
-                song_info.genre = result;
+            if (index < results.size())
+            {
+                wstring result = results[index];
+                if (item.second == FORMULAR_TITLE)
+                    song_info.title = result;
+                else if (item.second == FORMULAR_ARTIST)
+                    song_info.artist = result;
+                else if (item.second == FORMULAR_ALBUM)
+                    song_info.album = result;
+                else if (item.second == FORMULAR_TRACK)
+                    song_info.track = _wtoi(result.c_str());
+                else if (item.second == FORMULAR_YEAR)
+                    song_info.year = result;
+                else if (item.second == FORMULAR_GENRE)
+                    song_info.genre = result;
+            }
+            index++;
         }
-        index++;
     }
 }

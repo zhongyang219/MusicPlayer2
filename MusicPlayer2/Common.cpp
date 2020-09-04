@@ -154,7 +154,7 @@ bool CCommon::CharIsNumber(wchar_t ch)
 	return (ch >= L'0' && ch <= L'9');
 }
 
-void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& results, bool skip_empty)
+void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)
 {
 	results.clear();
 	size_t split_index = -1 ;
@@ -163,7 +163,8 @@ void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& 
 	{
 		split_index = str.find(div_ch, split_index + 1);
 		wstring split_str = str.substr(last_split_index + 1, split_index - last_split_index - 1);
-		StringNormalize(split_str);
+        if (trim)
+            StringNormalize(split_str);
 		if(!split_str.empty() || !skip_empty)
 			results.push_back(split_str);
 		if (split_index == wstring::npos)
@@ -172,7 +173,7 @@ void CCommon::StringSplit(const wstring & str, wchar_t div_ch, vector<wstring>& 
 	}
 }
 
-void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wstring>& results, bool skip_empty /*= true*/)
+void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wstring>& results, bool skip_empty /*= true*/, bool trim)
 {
     results.clear();
     size_t split_index = 0 - div_str.size();
@@ -181,7 +182,8 @@ void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wst
     {
         split_index = str.find(div_str, split_index + div_str.size());
         wstring split_str = str.substr(last_split_index + div_str.size(), split_index - last_split_index - div_str.size());
-        StringNormalize(split_str);
+        if (trim)
+            StringNormalize(split_str);
         if (!split_str.empty() || !skip_empty)
             results.push_back(split_str);
         if (split_index == wstring::npos)

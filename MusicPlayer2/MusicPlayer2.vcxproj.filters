@@ -324,6 +324,9 @@
     <Filter Include="对话框类\PropertyDlg\GetTagOnline">
       <UniqueIdentifier>{82073554-8212-45d0-88a5-574a06218222}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\PropertyDlg\TagFromFileName">
+      <UniqueIdentifier>{05e96306-45ad-47a7-90de-b6ecbdc11cad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -721,6 +724,9 @@
     <ClInclude Include="GetTagOnlineDlg.h">
       <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
     </ClInclude>
+    <ClInclude Include="TagFromFileNameDlg.h">
+      <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1082,6 +1088,9 @@
     </ClCompile>
     <ClCompile Include="GetTagOnlineDlg.cpp">
       <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
+    </ClCompile>
+    <ClCompile Include="TagFromFileNameDlg.cpp">
+      <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

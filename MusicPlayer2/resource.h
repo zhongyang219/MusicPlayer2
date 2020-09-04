@@ -603,7 +603,9 @@
 #define IDI_ICON11                      491
 #define IDI_OK_D                        491
 #define IDS_LIGHT_ICON                  492
+#define IDR_CONTROL_MENU                492
 #define IDS_DARK_ICON                   493
+#define IDD_TAG_FROM_FILE_NAME_DIALOG   493
 #define IDS_NO                          494
 #define IDS_CONVERT_ERROR_FILE_CONNOT_OPEN 495
 #define IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED 496
@@ -662,16 +664,22 @@
 #define IDC_DEFAULT_BUTTON              1012
 #define IDC_SAVE_ALBUM_COVER_BUTTON     1012
 #define IDC_GET_TAG_ONLINE_BUTTON       1012
+#define IDC_TITLE_BUTTON                1012
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013
 #define IDC_PLAY_SELECTED2              1013
 #define IDC_CLEAR_RECENT_PLAYED_LIST_BTN 1013
 #define IDC_SHOW_OUT_ALBUM_COVER_CHK    1013
+#define IDC_ARTIST_BUTTON               1013
 #define IDC_VOLUME_DOWN                 1014
+#define IDC_ALBUM_BUTTON                1014
 #define IDC_PLAYLIST_LIST               1015
+#define IDC_TRACK_BUTTON                1015
 #define IDC_FIND_EDIT                   1016
+#define IDC_YEAR_BUTTON                 1016
 #define IDC_FIND_LIST                   1017
+#define IDC_GENRE_BUTTON                1017
 #define IDC_FIND_RESULT_STATIC          1018
 #define IDC_PATH_EDIT                   1019
 #define IDC_FIND_INFO_STATIC            1019
@@ -819,6 +827,7 @@
 #define IDC_SAVE_TO_LYRIC_FOLDER        1078
 #define IDC_FIND_ALL_PLAYLIST_RADIO     1078
 #define IDC_MCI_RADIO                   1078
+#define IDC_COPY_RADIO                  1078
 #define IDC_COMBO2                      1079
 #define IDC_SAVE_TO_SONG_FOLDER1        1080
 #define IDC_SAVE_TO_LYRIC_FOLDER1       1081
@@ -830,6 +839,7 @@
 #define IDC_MEDIA_LIB_SETTINGS_BTN      1082
 #define IDC_RESTORE_DEFAULT_BUTTON      1082
 #define IDC_LOCAL_SEARCH_BUTTON         1082
+#define IDC_GET_TAG_FROM_FILE_NAME_BUTTON 1082
 #define IDC_TAB1                        1083
 #define IDC_BROWSE_BUTTON2              1083
 #define IDC_REVERB_MIX_SLIDER           1084
@@ -972,6 +982,7 @@
 #define IDC_YEAR_CHECK                  1179
 #define IDC_FILE_TYPE_CHECK             1180
 #define IDC_DEFAULT_BACKGROUND_PATH_EDIT 1182
+#define IDC_INSERT_RADIO                1183
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1359,14 +1370,15 @@
 #define ID_COVER_DELETE                 33199
 #define ID_1_33200                      33200
 #define ID_COVER_SAVE_AS                33201
+#define ID_LISTCTRL_33202               33202
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        492
-#define _APS_NEXT_COMMAND_VALUE         33202
-#define _APS_NEXT_CONTROL_VALUE         1183
+#define _APS_NEXT_RESOURCE_VALUE        495
+#define _APS_NEXT_COMMAND_VALUE         33203
+#define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

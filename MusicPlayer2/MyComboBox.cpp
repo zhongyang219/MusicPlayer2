@@ -33,6 +33,13 @@ CEdit* CMyComboBox::GetEditCtrl()
     return (CEdit*)GetWindow(GW_CHILD);
 }
 
+CString CMyComboBox::GetText()
+{
+    CString str;
+    GetWindowText(str);
+    return str;
+}
+
 void CMyComboBox::ResetModified()
 {
     m_modified = false;
@@ -40,6 +47,17 @@ void CMyComboBox::ResetModified()
     CEdit* pEdit = GetEditCtrl();
     if (pEdit != nullptr)
         pEdit->SetModify(FALSE);
+
+    Invalidate(FALSE);
+}
+
+void CMyComboBox::SetModify()
+{
+    m_modified = true;
+
+    CEdit* pEdit = GetEditCtrl();
+    if (pEdit != nullptr)
+        pEdit->SetModify(TRUE);
 
     Invalidate(FALSE);
 }
