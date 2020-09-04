@@ -9,6 +9,7 @@
 #include "PropertyDlgHelper.h"
 #include "SongDataManager.h"
 #include "GetTagOnlineDlg.h"
+#include "MusicPlayerCmdHelper.h"
 
 
 // CPropertyTabDlg 对话框
@@ -224,7 +225,10 @@ void CPropertyTabDlg::SetWreteEnable()
 
     CWnd* pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
     if (pBtn != nullptr)
-        pBtn->EnableWindow(!m_all_song_info[m_index].lyric_file.empty());
+        pBtn->EnableWindow(m_write_enable/* && !m_all_song_info[m_index].lyric_file.empty()*/);
+    pBtn = GetDlgItem(IDC_GET_TAG_ONLINE_BUTTON);
+    if (pBtn != nullptr)
+        pBtn->EnableWindow(m_write_enable);
 }
 
 
@@ -640,7 +644,22 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
 void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    const SongInfo& song{ m_all_song_info[m_index] };
+    SongInfo& song{ m_all_song_info[m_index] };
+
+    //从歌词获取标签信息前，如果还未获取过歌词，从在这里获取一次歌词
+    if (!song.is_cue && song.lyric_file.empty())
+    {
+        CMusicPlayerCmdHelper helper;
+        wstring lyric_path = helper.SearchLyricFile(song, theApp.m_lyric_setting_data.lyric_fuzzy_match);
+        song.lyric_file = lyric_path;
+        if (!lyric_path.empty())
+        {
+            //获取到歌词后同时更新song data
+            CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).lyric_file = lyric_path;
+            m_lyric_file_edit.SetWindowText(lyric_path.c_str());
+        }
+    }
+
     if (!song.lyric_file.empty())
     {
         CLyrics lyrics{ song.lyric_file };
@@ -682,5 +701,9 @@ void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
             m_list_refresh = m_modified;
             SetSaveBtnEnable();
         }
+    }
+    else
+    {
+        MessageBox(CCommon::LoadText(IDS_NO_LYRICS_FOUND_INFO), NULL, MB_ICONWARNING | MB_OK);
     }
 }
