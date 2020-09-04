@@ -6,10 +6,11 @@
 #include "LyricDownloadDlg.h"
 #include "ListCtrlEx.h"
 #include "PlayerProgressBar.h"
+#include "BaseDialog.h"
 
 // CLyricBatchDownloadDlg 对话框
 
-class CLyricBatchDownloadDlg : public CDialog
+class CLyricBatchDownloadDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CLyricBatchDownloadDlg)
 
@@ -64,7 +65,9 @@ protected:
 
 	CWinThread* m_pThread{};		//下载歌词的线程
 
-	void SaveConfig() const;
+    virtual CString GetDialogName() const override;
+    
+    void SaveConfig() const;
 	void LoadConfig();
 
 	void EnableControls(bool enable);		//启用或禁用控件

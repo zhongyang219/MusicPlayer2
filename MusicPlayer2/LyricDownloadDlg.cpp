@@ -13,10 +13,10 @@
 
 // CLyricDownloadDlg 对话框
 
-IMPLEMENT_DYNAMIC(CLyricDownloadDlg, CDialog)
+IMPLEMENT_DYNAMIC(CLyricDownloadDlg, CBaseDialog)
 
 CLyricDownloadDlg::CLyricDownloadDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_LYRIC_DOWNLOAD_DIALOG, pParent)
+	: CBaseDialog(IDD_LYRIC_DOWNLOAD_DIALOG, pParent)
 {
 
 }
@@ -94,9 +94,14 @@ wstring CLyricDownloadDlg::GetSavedPath()
     return GetSavedDir() + m_lyric_name + L".lrc";
 }
 
+CString CLyricDownloadDlg::GetDialogName() const
+{
+    return _T("LyricDownloadDlg");
+}
+
 void CLyricDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CBaseDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LYRIC_DOWN_LIST1, m_down_list_ctrl);
 	DDX_Control(pDX, IDC_DOWNLOAD_TRANSLATE_CHECK1, m_download_translate_chk);
 	DDX_Control(pDX, IDC_COMBO2, m_save_code_combo);
@@ -104,7 +109,7 @@ void CLyricDownloadDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CLyricDownloadDlg, CDialog)
+BEGIN_MESSAGE_MAP(CLyricDownloadDlg, CBaseDialog)
 	ON_BN_CLICKED(IDC_SEARCH_BUTTON2, &CLyricDownloadDlg::OnBnClickedSearchButton2)
 	ON_EN_CHANGE(IDC_TITLE_EDIT1, &CLyricDownloadDlg::OnEnChangeTitleEdit1)
 	ON_EN_CHANGE(IDC_ARTIST_EDIT1, &CLyricDownloadDlg::OnEnChangeArtistEdit1)
@@ -143,10 +148,12 @@ bool CLyricDownloadDlg::IsItemSelectedValid() const
 
 BOOL CLyricDownloadDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CBaseDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
 	LoadConfig();
+
+    SetIcon(theApp.m_icon_set.download, FALSE);
 
     m_song = CPlayer::GetInstance().GetCurrentSongInfo();
 
@@ -265,7 +272,7 @@ void CLyricDownloadDlg::OnBnClickedSearchButton2()
 void CLyricDownloadDlg::OnEnChangeTitleEdit1()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -279,7 +286,7 @@ void CLyricDownloadDlg::OnEnChangeTitleEdit1()
 void CLyricDownloadDlg::OnEnChangeArtistEdit1()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -358,7 +365,7 @@ void CLyricDownloadDlg::OnBnClickedDownloadTranslateCheck1()
 
 void CLyricDownloadDlg::OnDestroy()
 {
-	CDialog::OnDestroy();
+	CBaseDialog::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
 	SaveConfig();
@@ -469,7 +476,7 @@ void CLyricDownloadDlg::OnCancel()
 		WaitForSingleObject(m_pSearchThread->m_hThread, 1000);	//等待线程退出
 	if (m_pDownThread != nullptr)
 		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//等待线程退出
-	CDialog::OnCancel();
+	CBaseDialog::OnCancel();
 }
 
 
@@ -481,7 +488,7 @@ void CLyricDownloadDlg::OnOK()
 		WaitForSingleObject(m_pSearchThread->m_hThread, 1000);	//等待线程退出
 	if (m_pDownThread != nullptr)
 		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//等待线程退出
-	CDialog::OnOK();
+	CBaseDialog::OnOK();
 }
 
 
@@ -697,7 +704,7 @@ BOOL CLyricDownloadDlg::PreTranslateMessage(MSG* pMsg)
 	//if (pMsg->message == WM_MOUSEMOVE)
 	//	m_tool_tip.RelayEvent(pMsg);
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CBaseDialog::PreTranslateMessage(pMsg);
 }
 
 

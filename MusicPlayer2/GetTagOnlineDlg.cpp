@@ -2,6 +2,7 @@
 #include "GetTagOnlineDlg.h"
 #include "Resource.h"
 #include "Player.h"
+#include "MusicPlayer2.h"
 
 CGetTagOnlineDlg::CGetTagOnlineDlg(const SongInfo& song, CWnd * pParent)
     : CCoverDownloadDlg(pParent), m_song_info(song)
@@ -10,6 +11,11 @@ CGetTagOnlineDlg::CGetTagOnlineDlg(const SongInfo& song, CWnd * pParent)
 
 CGetTagOnlineDlg::~CGetTagOnlineDlg()
 {
+}
+
+CString CGetTagOnlineDlg::GetDialogName() const
+{
+    return _T("GetTagOnlineDlg");
 }
 
 void CGetTagOnlineDlg::OnBnClickedDownloadSelected()
@@ -38,6 +44,8 @@ BOOL CGetTagOnlineDlg::OnInitDialog()
     CCoverDownloadDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+    SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
+    
     SetWindowText(CCommon::LoadText(IDS_GET_TAG_ONLINE_TITLE));
 
     CWnd* pGetInfoBtn = GetDlgItem(IDC_DOWNLOAD_SELECTED);

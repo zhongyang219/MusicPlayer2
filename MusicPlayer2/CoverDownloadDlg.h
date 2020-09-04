@@ -2,10 +2,11 @@
 #include "CoverDownloadCommon.h"
 #include "ListCtrlEx.h"
 #include "SongInfo.h"
+#include "BaseDialog.h"
 
 // CCoverDownloadDlg 对话框
 
-class CCoverDownloadDlg : public CDialog
+class CCoverDownloadDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CCoverDownloadDlg)
 
@@ -47,6 +48,7 @@ protected:
 	CWinThread* m_pDownThread;			//下载歌词的线程
 
     virtual SongInfo GetSongInfo() const;
+    virtual CString GetDialogName() const override;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	void ShowDownloadList();		//将搜索结果显示出来

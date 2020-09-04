@@ -9,10 +9,10 @@
 
 // CCoverDownloadDlg 对话框
 
-IMPLEMENT_DYNAMIC(CCoverDownloadDlg, CDialog)
+IMPLEMENT_DYNAMIC(CCoverDownloadDlg, CBaseDialog)
 
 CCoverDownloadDlg::CCoverDownloadDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_COVER_DOWNLOAD_DIALOG, pParent)
+	: CBaseDialog(IDD_COVER_DOWNLOAD_DIALOG, pParent)
 {
 
 }
@@ -83,9 +83,14 @@ SongInfo CCoverDownloadDlg::GetSongInfo() const
     return CPlayer::GetInstance().GetCurrentSongInfo();
 }
 
+CString CCoverDownloadDlg::GetDialogName() const
+{
+    return _T("CoverDownloadDlg");
+}
+
 void CCoverDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CBaseDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COVER_DOWN_LIST, m_down_list_ctrl);
 	DDX_Control(pDX, IDC_UNASSOCIATE_LINK, m_unassciate_lnk);
 }
@@ -105,7 +110,7 @@ void CCoverDownloadDlg::ShowDownloadList()
 }
 
 
-BEGIN_MESSAGE_MAP(CCoverDownloadDlg, CDialog)
+BEGIN_MESSAGE_MAP(CCoverDownloadDlg, CBaseDialog)
 	ON_BN_CLICKED(IDC_SEARCH_BUTTON, &CCoverDownloadDlg::OnBnClickedSearchButton)
 	ON_MESSAGE(WM_SEARCH_COMPLATE, &CCoverDownloadDlg::OnSearchComplate)
 	ON_BN_CLICKED(IDC_DOWNLOAD_SELECTED, &CCoverDownloadDlg::OnBnClickedDownloadSelected)
@@ -124,9 +129,11 @@ END_MESSAGE_MAP()
 
 BOOL CCoverDownloadDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CBaseDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+    SetIcon(theApp.m_icon_set.album_cover, FALSE);
+
     const auto& song_info{ GetSongInfo() };
     m_title = GetSongInfo().title;
 	m_artist = GetSongInfo().artist;
@@ -295,7 +302,7 @@ void CCoverDownloadDlg::OnOK()
 	if (m_pDownThread != nullptr)
 		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//等待线程退出
 
-	CDialog::OnOK();
+	CBaseDialog::OnOK();
 }
 
 
@@ -308,7 +315,7 @@ void CCoverDownloadDlg::OnCancel()
 	if (m_pDownThread != nullptr)
 		WaitForSingleObject(m_pDownThread->m_hThread, 1000);	//等待线程退出
 
-	CDialog::OnCancel();
+	CBaseDialog::OnCancel();
 }
 
 
@@ -326,7 +333,7 @@ afx_msg LRESULT CCoverDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 void CCoverDownloadDlg::OnEnChangeTitleEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -340,7 +347,7 @@ void CCoverDownloadDlg::OnEnChangeTitleEdit()
 void CCoverDownloadDlg::OnEnChangeArtistEdit()
 {
 	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
 	// 函数并调用 CRichEditCtrl().SetEventMask()，
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 

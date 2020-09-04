@@ -10,16 +10,21 @@
 
 // CLyricBatchDownloadDlg 对话框
 
-IMPLEMENT_DYNAMIC(CLyricBatchDownloadDlg, CDialog)
+IMPLEMENT_DYNAMIC(CLyricBatchDownloadDlg, CBaseDialog)
 
 CLyricBatchDownloadDlg::CLyricBatchDownloadDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_LYRIC_BATCH_DOWN_DIALOG, pParent)
+	: CBaseDialog(IDD_LYRIC_BATCH_DOWN_DIALOG, pParent)
 {
 
 }
 
 CLyricBatchDownloadDlg::~CLyricBatchDownloadDlg()
 {
+}
+
+CString CLyricBatchDownloadDlg::GetDialogName() const
+{
+    return _T("LyricBatchDownloadDlg");
 }
 
 void CLyricBatchDownloadDlg::SaveConfig() const
@@ -64,7 +69,7 @@ bool CLyricBatchDownloadDlg::SaveLyric(const wchar_t * path, const wstring& lyri
 
 void CLyricBatchDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_SKIP_EXIST_CHECK, m_skip_exist_check);
     DDX_Control(pDX, IDC_COMBO1, m_save_code_combo);
     DDX_Control(pDX, IDC_SONG_LIST1, m_song_list_ctrl);
@@ -74,7 +79,7 @@ void CLyricBatchDownloadDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CLyricBatchDownloadDlg, CDialog)
+BEGIN_MESSAGE_MAP(CLyricBatchDownloadDlg, CBaseDialog)
 	ON_BN_CLICKED(IDC_START_DOWNLOAD, &CLyricBatchDownloadDlg::OnBnClickedStartDownload)
 	ON_BN_CLICKED(IDC_SKIP_EXIST_CHECK, &CLyricBatchDownloadDlg::OnBnClickedSkipExistCheck)
 	ON_WM_DESTROY()
@@ -92,10 +97,12 @@ END_MESSAGE_MAP()
 
 BOOL CLyricBatchDownloadDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CBaseDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	CenterWindow();
+    SetIcon(theApp.m_icon_set.download1, FALSE);
+    
+    CenterWindow();
 
 	LoadConfig();
 
@@ -198,7 +205,7 @@ void CLyricBatchDownloadDlg::OnBnClickedSkipExistCheck()
 
 void CLyricBatchDownloadDlg::OnDestroy()
 {
-	CDialog::OnDestroy();
+	CBaseDialog::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
 	SaveConfig();
@@ -391,7 +398,7 @@ void CLyricBatchDownloadDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
-	CDialog::OnClose();
+	CBaseDialog::OnClose();
 }
 
 
@@ -412,7 +419,7 @@ void CLyricBatchDownloadDlg::OnCancel()
 
 	}
 	DestroyWindow();
-	//CDialog::OnCancel();
+	//CBaseDialog::OnCancel();
 }
 
 
@@ -424,7 +431,7 @@ void CLyricBatchDownloadDlg::OnOK()
 	if (m_pThread != nullptr)
 		WaitForSingleObject(m_pThread->m_hThread, 2000);	//等待线程退出
 
-	CDialog::OnOK();
+	CBaseDialog::OnOK();
 }
 
 

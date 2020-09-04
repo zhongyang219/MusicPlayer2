@@ -5,11 +5,12 @@
 #include "afxwin.h"
 #include "ListCtrlEx.h"
 #include "SongInfo.h"
+#include "BaseDialog.h"
 
 
 // CLyricDownloadDlg 对话框
 
-class CLyricDownloadDlg : public CDialog
+class CLyricDownloadDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CLyricDownloadDlg)
 
@@ -86,6 +87,8 @@ protected:
 
     wstring GetSavedDir();
     wstring GetSavedPath();
+
+    virtual CString GetDialogName() const override;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

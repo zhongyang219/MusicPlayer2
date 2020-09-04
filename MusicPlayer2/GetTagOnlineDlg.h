@@ -13,6 +13,7 @@ private:
     const SongInfo& m_song_info;
 
 private:
+    virtual CString GetDialogName() const override;
     virtual void OnBnClickedDownloadSelected() override;
     virtual SongInfo GetSongInfo() const override;
 
