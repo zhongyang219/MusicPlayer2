@@ -67,11 +67,11 @@ protected:
     void SetSaveBtnEnable();
     void ResetEditModified();
 
-    void ModifyTagInfo(const SongInfo& song);
-
     virtual void OnTabEntered() override;      //当标签切换到当前窗口时被调用
-
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+
+    void ModifyTagInfo(const SongInfo& song);
+    bool GetTagFromLyrics(SongInfo& song, SongInfo& result);
 
 	DECLARE_MESSAGE_MAP()
 public:

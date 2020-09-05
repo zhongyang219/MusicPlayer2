@@ -19,7 +19,7 @@ wstring CPropertyDlgHelper::GetMultiFileName()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.GetFileName();
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiFilePath()
@@ -27,7 +27,7 @@ wstring CPropertyDlgHelper::GetMultiFilePath()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.file_path;
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiType()
@@ -36,7 +36,7 @@ wstring CPropertyDlgHelper::GetMultiType()
     {
         wstring extension = CFilePathHelper(song.file_path).GetFileExtension();
         return CAudioCommon::GetAudioDescriptionByExtension(extension);
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiLength()
@@ -44,7 +44,7 @@ wstring CPropertyDlgHelper::GetMultiLength()
     wstring multi_length = GetMultiValue([](const SongInfo& song)
     {
         return song.lengh.toString2();
-    });
+    }, m_song_info);
     if (multi_length == L"-:--")
         multi_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);
     return multi_length;
@@ -56,7 +56,7 @@ wstring CPropertyDlgHelper::GetMultiSize()
     {
         size_t file_size = CCommon::GetFileSize(song.file_path);
         return wstring(CCommon::DataSizeToString(file_size).GetString());
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiBitrate()
@@ -69,7 +69,7 @@ wstring CPropertyDlgHelper::GetMultiBitrate()
         else
             info.Format(_T("%d Kbps"), song.bitrate);
         return wstring(info.GetString());
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiTitle()
@@ -77,7 +77,7 @@ wstring CPropertyDlgHelper::GetMultiTitle()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.GetTitle();
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiArtist()
@@ -85,7 +85,7 @@ wstring CPropertyDlgHelper::GetMultiArtist()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.GetArtist();
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiAlbum()
@@ -93,7 +93,7 @@ wstring CPropertyDlgHelper::GetMultiAlbum()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.GetAlbum();
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiTrack()
@@ -101,7 +101,7 @@ wstring CPropertyDlgHelper::GetMultiTrack()
     return GetMultiValue([](const SongInfo& song)
     {
         return std::to_wstring(song.track);
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiYear()
@@ -109,7 +109,7 @@ wstring CPropertyDlgHelper::GetMultiYear()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.GetYear();
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiGenre()
@@ -117,7 +117,7 @@ wstring CPropertyDlgHelper::GetMultiGenre()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.GetGenre();
-    });
+    }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiComment()
@@ -125,7 +125,7 @@ wstring CPropertyDlgHelper::GetMultiComment()
     return GetMultiValue([](const SongInfo& song)
     {
         return song.comment;
-    });
+    }, m_song_info);
 }
 
 bool CPropertyDlgHelper::IsMultiWritable()
@@ -136,7 +136,7 @@ bool CPropertyDlgHelper::IsMultiWritable()
             return L"true";
         else
             return L"false";
-    });
+    }, m_song_info);
     return writable_str != L"false";
 }
 
@@ -148,19 +148,75 @@ bool CPropertyDlgHelper::IsMultiCoverWritable()
             return L"true";
         else
             return L"false";
-    });
+    }, m_song_info);
     return writable_str != L"false";
 }
 
-wstring CPropertyDlgHelper::GetMultiValue(std::function<wstring(const SongInfo&)> fun_get_value)
+bool CPropertyDlgHelper::IsTitleModified(const vector<SongInfo>& list_ori)
 {
-    if (!m_song_info.empty())
+    return IsValueModified([](const SongInfo& song)
     {
-        wstring value = fun_get_value(m_song_info.front());     //第一首歌曲的值
-        int num = static_cast<int>(m_song_info.size());
+        return song.GetTitle();
+    }, list_ori);
+}
+
+bool CPropertyDlgHelper::IsArtistModified(const vector<SongInfo>& list_ori)
+{
+    return IsValueModified([](const SongInfo& song)
+    {
+        return song.GetArtist();
+    }, list_ori);
+}
+
+bool CPropertyDlgHelper::IsAlbumModified(const vector<SongInfo>& list_ori)
+{
+    return IsValueModified([](const SongInfo& song)
+    {
+        return song.GetAlbum();
+    }, list_ori);
+}
+
+bool CPropertyDlgHelper::IsTrackModified(const vector<SongInfo>& list_ori)
+{
+    return IsValueModified([](const SongInfo& song)
+    {
+        return std::to_wstring(song.track);
+    }, list_ori);
+}
+
+bool CPropertyDlgHelper::IsYearModified(const vector<SongInfo>& list_ori)
+{
+    return IsValueModified([](const SongInfo& song)
+    {
+        return song.GetYear();
+    }, list_ori);
+}
+
+bool CPropertyDlgHelper::IsGenreModified(const vector<SongInfo>& list_ori)
+{
+    return IsValueModified([](const SongInfo& song)
+    {
+        return song.GetGenre();
+    }, list_ori);
+}
+
+bool CPropertyDlgHelper::IsCommentModified(const vector<SongInfo>& list_ori)
+{
+    return IsValueModified([](const SongInfo& song)
+    {
+        return song.comment;
+    }, list_ori);
+}
+
+wstring CPropertyDlgHelper::GetMultiValue(std::function<wstring(const SongInfo&)> fun_get_value, const vector<SongInfo>& song_list)
+{
+    if (!song_list.empty())
+    {
+        wstring value = fun_get_value(song_list.front());     //第一首歌曲的值
+        int num = static_cast<int>(song_list.size());
         for (int i{ 1 }; i < num; i++)
         {
-            if (value != fun_get_value(m_song_info[i]))         //有一首歌曲的值不同，则返回“多个数值”
+            if (value != fun_get_value(song_list[i]))         //有一首歌曲的值不同，则返回“多个数值”
                 return wstring(CCommon::LoadText(IDS_MULTI_VALUE).GetString());
         }
         return value;       //全部相同，则返回第一个值
@@ -169,6 +225,18 @@ wstring CPropertyDlgHelper::GetMultiValue(std::function<wstring(const SongInfo&)
     {
         return wstring();
     }
+}
+
+bool CPropertyDlgHelper::IsValueModified(std::function<wstring(const SongInfo&)> fun_get_value, const vector<SongInfo>& list_ori)
+{
+    for (size_t i{}; i < m_song_info.size() && i < list_ori.size(); i++)
+    {
+        wstring value_ori = fun_get_value(list_ori[i]);
+        wstring value_new = fun_get_value(m_song_info[i]);
+        if (value_new != value_ori)
+            return true;
+    }
+    return false;
 }
 
 void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstring& formular, SongInfo& song_info)

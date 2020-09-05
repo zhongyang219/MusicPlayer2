@@ -327,13 +327,13 @@ BOOL CPropertyTabDlg::OnInitDialog()
         if (pBtn != nullptr)
             pBtn->ShowWindow(SW_HIDE);
 
-        pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
-        if (pBtn != nullptr)
-            pBtn->ShowWindow(SW_HIDE);
+        //pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
+        //if (pBtn != nullptr)
+        //    pBtn->ShowWindow(SW_HIDE);
 
-        pBtn = GetDlgItem(IDC_GET_TAG_FROM_FILE_NAME_BUTTON);
-        if (pBtn != nullptr)
-            pBtn->ShowWindow(SW_HIDE);
+        //pBtn = GetDlgItem(IDC_GET_TAG_FROM_FILE_NAME_BUTTON);
+        //if (pBtn != nullptr)
+        //    pBtn->ShowWindow(SW_HIDE);
     }
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -637,8 +637,153 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
 void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    SongInfo& song{ m_all_song_info[m_index] };
+    if (!m_batch_edit)
+    {
+        SongInfo& song{ m_all_song_info[m_index] };
 
+        SongInfo result;
+        if (GetTagFromLyrics(song, result))
+            ModifyTagInfo(result);
+        else
+            MessageBox(CCommon::LoadText(IDS_NO_LYRICS_FOUND_INFO), NULL, MB_ICONWARNING | MB_OK);
+    }
+    else
+    {
+        int count{};
+        vector<SongInfo> list_ori = m_all_song_info;    //保存修改前的曲目列表
+        for (auto& song : m_all_song_info)
+        {
+            SongInfo result;
+            if (GetTagFromLyrics(song, song))
+            {
+                count++;
+            }
+            if (count > 0)
+            {
+                ShowInfo();
+                m_modified = true;
+                m_list_refresh = m_modified;
+                SetSaveBtnEnable();
+
+                //判断哪些字段有修改
+                CPropertyDlgHelper helper(m_all_song_info);
+                if (helper.IsTitleModified(list_ori))
+                    m_title_edit.SetModify();
+                if (helper.IsArtistModified(list_ori))
+                    m_artist_edit.SetModify();
+                if (helper.IsAlbumModified(list_ori))
+                    m_album_edit.SetModify();
+            }
+        }
+    }
+}
+
+
+void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CTagFromFileNameDlg dlg;
+    if (dlg.DoModal() == IDOK)
+    {
+        wstring str_formular = dlg.GetFormularSelected();
+        if (!m_batch_edit)
+        {
+            SongInfo song;
+            wstring file_name = CFilePathHelper(m_all_song_info[m_index].file_path).GetFileNameWithoutExtension();
+            CPropertyDlgHelper::GetTagFromFileName(file_name, str_formular, song);
+            ModifyTagInfo(song);
+        }
+        else
+        {
+            vector<SongInfo> list_ori = m_all_song_info;    //保存修改前的曲目列表
+            for (auto& song : m_all_song_info)
+            {
+                wstring file_name = CFilePathHelper(song.file_path).GetFileNameWithoutExtension();
+                CPropertyDlgHelper::GetTagFromFileName(file_name, str_formular, song);
+            }
+            ShowInfo();
+            m_modified = true;
+            m_list_refresh = m_modified;
+            SetSaveBtnEnable();
+
+            //判断哪些字段有修改
+            CPropertyDlgHelper helper(m_all_song_info);
+            if (helper.IsTitleModified(list_ori))
+                m_title_edit.SetModify();
+            if (helper.IsArtistModified(list_ori))
+                m_artist_edit.SetModify();
+            if (helper.IsAlbumModified(list_ori))
+                m_album_edit.SetModify();
+            if (helper.IsTrackModified(list_ori))
+                m_track_edit.SetModify();
+            if (helper.IsGenreModified(list_ori))
+                m_genre_combo.SetModify();
+            if (helper.IsYearModified(list_ori))
+                m_year_edit.SetModify();
+            if (helper.IsCommentModified(list_ori))
+                m_comment_edit.SetModify();
+        }
+    }
+}
+
+
+void CPropertyTabDlg::ModifyTagInfo(const SongInfo& song)
+{
+    bool modified{ false };
+    if (!song.title.empty() && m_title_edit.GetText() != song.title.c_str())
+    {
+        m_title_edit.SetWindowText(song.title.c_str());
+        m_title_edit.SetModify();
+        modified = true;
+    }
+    if (!song.artist.empty() && m_artist_edit.GetText() != song.artist.c_str())
+    {
+        m_artist_edit.SetWindowText(song.artist.c_str());
+        m_artist_edit.SetModify();
+        modified = true;
+    }
+    if (!song.album.empty() && m_album_edit.GetText() != song.album.c_str())
+    {
+        m_album_edit.SetWindowText(song.album.c_str());
+        m_album_edit.SetModify();
+        modified = true;
+    }
+    if (song.track != 0 && m_track_edit.GetText() != std::to_wstring(song.track).c_str())
+    {
+        m_track_edit.SetWindowText(std::to_wstring(song.track).c_str());
+        m_track_edit.SetModify();
+        modified = true;
+    }
+    if (!song.genre.empty() && m_genre_combo.GetText() != song.genre.c_str())
+    {
+        m_genre_combo.SetWindowText(song.genre.c_str());
+        m_genre_combo.SetModify();
+        modified = true;
+    }
+    if (!song.IsYearEmpty() && m_year_edit.GetText() != song.GetYear().c_str())
+    {
+        m_year_edit.SetWindowText(song.get_year().c_str());
+        m_year_edit.SetModify();
+        modified = true;
+    }
+    if (!song.comment.empty() && m_comment_edit.GetText() != song.comment.c_str())
+    {
+        m_comment_edit.SetWindowText(song.comment.c_str());
+        m_comment_edit.SetModify();
+        modified = true;
+    }
+
+    if (modified)
+    {
+        m_modified = true;
+        m_list_refresh = m_modified;
+        SetSaveBtnEnable();
+    }
+
+}
+
+bool CPropertyTabDlg::GetTagFromLyrics(SongInfo& song, SongInfo& result)
+{
     //从歌词获取标签信息前，如果还未获取过歌词，从在这里获取一次歌词
     if (!song.is_cue && song.lyric_file.empty())
     {
@@ -656,77 +801,16 @@ void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
     if (!song.lyric_file.empty())
     {
         CLyrics lyrics{ song.lyric_file };
-        SongInfo song;
-        song.title = lyrics.GetTitle();
-        song.artist = lyrics.GetAritst();
-        song.album = lyrics.GetAlbum();
-        if (!song.title.empty() || !song.artist.empty() || !song.album.empty())
+        if (!lyrics.GetTitle().empty() && !lyrics.GetAritst().empty() && !lyrics.GetAlbum().empty())
         {
-            ModifyTagInfo(song);
+            if (!lyrics.GetTitle().empty())
+                result.title = lyrics.GetTitle();
+            if (!lyrics.GetAritst().empty())
+                result.artist = lyrics.GetAritst();
+            if (!lyrics.GetAlbum().empty())
+                result.album = lyrics.GetAlbum();
+            return true;
         }
     }
-    else
-    {
-        MessageBox(CCommon::LoadText(IDS_NO_LYRICS_FOUND_INFO), NULL, MB_ICONWARNING | MB_OK);
-    }
-}
-
-
-void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    CTagFromFileNameDlg dlg;
-    if (dlg.DoModal() == IDOK)
-    {
-        wstring str_formular = dlg.GetFormularSelected();
-        SongInfo song;
-        wstring file_name = CFilePathHelper(m_all_song_info[m_index].file_path).GetFileNameWithoutExtension();
-        CPropertyDlgHelper::GetTagFromFileName(file_name, str_formular, song);
-        ModifyTagInfo(song);
-    }
-}
-
-
-void CPropertyTabDlg::ModifyTagInfo(const SongInfo& song)
-{
-    if (!song.title.empty() && m_title_edit.GetText() != song.title.c_str())
-    {
-        m_title_edit.SetWindowText(song.title.c_str());
-        m_title_edit.SetModify();
-    }
-    if (!song.artist.empty() && m_artist_edit.GetText() != song.artist.c_str())
-    {
-        m_artist_edit.SetWindowText(song.artist.c_str());
-        m_artist_edit.SetModify();
-    }
-    if (!song.album.empty() && m_album_edit.GetText() != song.album.c_str())
-    {
-        m_album_edit.SetWindowText(song.album.c_str());
-        m_album_edit.SetModify();
-    }
-    if (song.track != 0 && m_track_edit.GetText() != std::to_wstring(song.track).c_str())
-    {
-        m_track_edit.SetWindowText(std::to_wstring(song.track).c_str());
-        m_track_edit.SetModify();
-    }
-    if (!song.genre.empty() && m_genre_combo.GetText() != song.genre.c_str())
-    {
-        m_genre_combo.SetWindowText(song.genre.c_str());
-        m_genre_combo.SetModify();
-    }
-    if (!song.IsYearEmpty() && m_year_edit.GetText() != song.GetYear().c_str())
-    {
-        m_year_edit.SetWindowText(song.get_year().c_str());
-        m_year_edit.SetModify();
-    }
-    if (!song.comment.empty() && m_comment_edit.GetText() != song.comment.c_str())
-    {
-        m_comment_edit.SetWindowText(song.comment.c_str());
-        m_comment_edit.SetModify();
-    }
-
-    m_modified = true;
-    m_list_refresh = m_modified;
-    SetSaveBtnEnable();
-
+    return false;
 }
