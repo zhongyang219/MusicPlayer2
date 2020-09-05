@@ -22,6 +22,8 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
+    void InitComboList();
+
     void InsertTag(const wchar_t* tag);
 
     void SetInsertWhenClicked(bool insert);

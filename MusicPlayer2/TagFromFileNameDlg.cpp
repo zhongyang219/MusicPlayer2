@@ -44,6 +44,16 @@ void CTagFromFileNameDlg::LoadConfig()
     ini.GetStringList(L"tag_edit", L"default_formular", m_default_formular, default_formular);
 }
 
+void CTagFromFileNameDlg::InitComboList()
+{
+    m_format_combo.ResetContent();
+    for (const auto& formular : m_default_formular)
+    {
+        m_format_combo.AddString(formular.c_str());
+    }
+    m_format_combo.AddString(CCommon::LoadText(IDS_CLEAR_HISTORY));
+}
+
 void CTagFromFileNameDlg::InsertTag(const wchar_t* tag)
 {
     CString str;
@@ -127,10 +137,7 @@ BOOL CTagFromFileNameDlg::OnInitDialog()
     SetDlgItemText(IDC_YEAR_BUTTON, FORMULAR_YEAR);
     SetDlgItemText(IDC_COMMENT_BUTTON, FORMULAR_COMMENT);
 
-    for (const auto& formular : m_default_formular)
-    {
-        m_format_combo.AddString(formular.c_str());
-    }
+    InitComboList();
     if (!m_default_formular.empty())
         m_format_combo.SetWindowText(m_default_formular.front().c_str());
 
@@ -208,9 +215,22 @@ void CTagFromFileNameDlg::OnDestroy()
 void CTagFromFileNameDlg::OnCbnSelchangeCombo1()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CString str;
-    m_format_combo.GetWindowText(str);
-    InsertFormular(str.GetString());
+    int cur_sel = m_format_combo.GetCurSel();
+    if (cur_sel == m_format_combo.GetCount() - 1)
+    {
+        if (MessageBox(CCommon::LoadText(IDS_CLEAR_HISTORY_INFO), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
+        {
+            m_default_formular = default_formular;
+            InitComboList();
+        }
+        m_format_combo.SetCurSel(0);
+    }
+    else
+    {
+        CString str;
+        m_format_combo.GetWindowText(str);
+        InsertFormular(str.GetString());
+    }
 }
 
 

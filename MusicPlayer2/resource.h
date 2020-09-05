@@ -629,6 +629,8 @@
 #define IDS_GET_TAG_ONLINE_TITLE        514
 #define IDS_GET_THIS                    515
 #define IDS_NO_LYRICS_FOUND_INFO        516
+#define IDS_CLEAR_HISTORY               517
+#define IDS_CLEAR_HISTORY_INFO          518
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
