@@ -637,6 +637,7 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
 void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
 {
     // TODO: 在此添加控件通知处理程序代码
+    CWaitCursor wait_cursor;
     if (!m_batch_edit)
     {
         SongInfo& song{ m_all_song_info[m_index] };
@@ -685,6 +686,7 @@ void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
     CTagFromFileNameDlg dlg;
     if (dlg.DoModal() == IDOK)
     {
+        CWaitCursor wait_cursor;
         wstring str_formular = dlg.GetFormularSelected();
         if (!m_batch_edit)
         {

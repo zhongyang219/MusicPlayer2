@@ -1881,6 +1881,7 @@ void CPlayer::ReIniPlayerCore(bool replay)
 void CPlayer::SortPlaylist(bool change_index)
 {
     if (m_loading) return;
+    CWaitCursor wait_cursor;
     SongInfo current_song = GetCurrentSongInfo();
     switch (m_sort_mode)
     {
