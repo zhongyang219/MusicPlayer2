@@ -244,7 +244,7 @@ void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstr
     std::map<size_t, wstring> identifiers;    //保存标识符，int为标识符在formualr中的索引
 
     //查找每个标识符的位置，并保存在identifers中
-    const vector<wstring> FORMULARS{ FORMULAR_TITLE, FORMULAR_ARTIST, FORMULAR_ALBUM, FORMULAR_TRACK, FORMULAR_YEAR, FORMULAR_GENRE };
+    const vector<wstring> FORMULARS{ FORMULAR_TITLE, FORMULAR_ARTIST, FORMULAR_ALBUM, FORMULAR_TRACK, FORMULAR_YEAR, FORMULAR_GENRE, FORMULAR_COMMENT };
     for (const auto& f : FORMULARS)
     {
         size_t index = formular.find(f);
@@ -296,6 +296,8 @@ void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstr
                     song_info.SetYear(result.c_str());
                 else if (item.second == FORMULAR_GENRE)
                     song_info.genre = result;
+                else if (item.second == FORMULAR_COMMENT)
+                    song_info.comment = result;
             }
             index++;
         }

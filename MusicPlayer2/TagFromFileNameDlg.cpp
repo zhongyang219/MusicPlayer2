@@ -103,6 +103,7 @@ BEGIN_MESSAGE_MAP(CTagFromFileNameDlg, CDialog)
     ON_BN_CLICKED(IDC_GENRE_BUTTON, &CTagFromFileNameDlg::OnBnClickedGenreButton)
     ON_WM_DESTROY()
     ON_CBN_SELCHANGE(IDC_COMBO1, &CTagFromFileNameDlg::OnCbnSelchangeCombo1)
+    ON_BN_CLICKED(IDC_COMMENT_BUTTON, &CTagFromFileNameDlg::OnBnClickedCommentButton)
 END_MESSAGE_MAP()
 
 
@@ -124,6 +125,7 @@ BOOL CTagFromFileNameDlg::OnInitDialog()
     SetDlgItemText(IDC_TRACK_BUTTON, FORMULAR_TRACK);
     SetDlgItemText(IDC_GENRE_BUTTON, FORMULAR_GENRE);
     SetDlgItemText(IDC_YEAR_BUTTON, FORMULAR_YEAR);
+    SetDlgItemText(IDC_COMMENT_BUTTON, FORMULAR_COMMENT);
 
     for (const auto& formular : m_default_formular)
     {
@@ -220,4 +222,13 @@ void CTagFromFileNameDlg::OnOK()
     InsertFormular(str.GetString());
 
     CDialog::OnOK();
+}
+
+
+void CTagFromFileNameDlg::OnBnClickedCommentButton()
+{
+    if (IsInsertWhenClicked())
+        InsertTag(FORMULAR_COMMENT);
+    else
+        CCommon::CopyStringToClipboard(FORMULAR_COMMENT);
 }

@@ -8,6 +8,7 @@
 #define FORMULAR_TRACK  L"%(Track)"
 #define FORMULAR_YEAR   L"%(Year)"
 #define FORMULAR_GENRE  L"%(Genre)"
+#define FORMULAR_COMMENT  L"%(Comment)"
 
 class CPropertyDlgHelper
 {

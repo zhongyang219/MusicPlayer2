@@ -681,6 +681,7 @@
 #define IDC_FIND_LIST                   1017
 #define IDC_GENRE_BUTTON                1017
 #define IDC_FIND_RESULT_STATIC          1018
+#define IDC_COMMENT_BUTTON              1018
 #define IDC_PATH_EDIT                   1019
 #define IDC_FIND_INFO_STATIC            1019
 #define IDC_PATH_STATIC                 1020

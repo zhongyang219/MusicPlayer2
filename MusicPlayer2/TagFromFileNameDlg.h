@@ -49,4 +49,5 @@ public:
     afx_msg void OnDestroy();
     afx_msg void OnCbnSelchangeCombo1();
     virtual void OnOK();
+    afx_msg void OnBnClickedCommentButton();
 };
