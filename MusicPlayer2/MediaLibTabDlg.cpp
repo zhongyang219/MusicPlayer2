@@ -260,12 +260,25 @@ void CMediaLibTabDlg::OnDeleteFromDisk()
 void CMediaLibTabDlg::OnItemProperty()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (GetItemSelected() < 0)
-		return;
-	std::vector<SongInfo> songs;
-	GetCurrentSongList(songs);
-    CPropertyDlg propertyDlg(songs, GetItemSelected(), false);
-	propertyDlg.DoModal();
+    if (GetItemSelected() < 0)
+        return;
+    CPropertyDlg* pDlg;
+    std::vector<SongInfo> songs_selected;
+    std::vector<SongInfo> songs;
+    if (GetItemsSelected().size() > 1)        //批量编辑
+    {
+        GetSongsSelected(songs_selected);
+        pDlg = new CPropertyDlg(songs_selected);
+    }
+    else
+    {
+        GetCurrentSongList(songs);
+        pDlg = new CPropertyDlg(songs, GetItemSelected(), false);
+    }
+    pDlg->DoModal();
+    if (pDlg->GetModified())
+        RefreshSongList();
+    SAFE_DELETE(pDlg);
 }
 
 

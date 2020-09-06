@@ -10,6 +10,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "AddToPlaylistDlg.h"
+#include "SongDataManager.h"
 
 
 // CMediaClassifyDlg 对话框
@@ -89,6 +90,11 @@ void CMediaClassifyDlg::RefreshData()
 	}
 }
 
+void CMediaClassifyDlg::RefreshSongList()
+{
+    ShowSongList();
+}
+
 void CMediaClassifyDlg::ShowClassifyList()
 {
     CWaitCursor wait_cursor;
@@ -161,17 +167,18 @@ void CMediaClassifyDlg::ShowSongList()
         {
             for (const auto& item : iter->second)
             {
+                const SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.file_path) };
                 CListCtrlEx::RowData row_data;
-                row_data[COL_TITLE] = item.GetTitle();
-                row_data[COL_ARTIST] = item.GetArtist();
-                row_data[COL_ALBUM] = item.GetAlbum();
+                row_data[COL_TITLE] = song.GetTitle();
+                row_data[COL_ARTIST] = song.GetArtist();
+                row_data[COL_ALBUM] = song.GetAlbum();
                 std::wstring track_str;
-                if (item.track != 0)
-                    track_str = std::to_wstring(item.track);
+                if (song.track != 0)
+                    track_str = std::to_wstring(song.track);
                 row_data[COL_TRACK] = track_str;
-                row_data[COL_GENRE] = item.GetGenre();
-                row_data[COL_BITRATE] = (item.bitrate == 0 ? L"-" : std::to_wstring(item.bitrate));
-                row_data[COL_PATH] = item.file_path;
+                row_data[COL_GENRE] = song.GetGenre();
+                row_data[COL_BITRATE] = (song.bitrate == 0 ? L"-" : std::to_wstring(song.bitrate));
+                row_data[COL_PATH] = song.file_path;
 				m_list_data.push_back(std::move(row_data));
             }
         }

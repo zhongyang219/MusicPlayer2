@@ -70,6 +70,11 @@ void CFolderExploreDlg::RefreshData()
 	ShowFolderTree();
 }
 
+void CFolderExploreDlg::RefreshSongList()
+{
+    ShowSongList();
+}
+
 void CFolderExploreDlg::ShowFolderTree()
 {
     m_initialized = true;

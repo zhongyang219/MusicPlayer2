@@ -62,8 +62,10 @@ protected:
 	DialogType m_type{};
 
 protected:
-	virtual void OnTabEntered() override;
+    virtual void RefreshSongList() override;        //刷新选中行的信息
+    virtual void OnTabEntered() override;
 	void InitListData();
+    void SetRowData(CListCtrlEx::RowData& row_data, const SongInfo& song);
 	void UpdateListIndex();
 	void ShowSongList();
 	void QuickSearch(const wstring& key_word);		//根据关键字执行快速查找，将结果保存在m_list_data_searched中

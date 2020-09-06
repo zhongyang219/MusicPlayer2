@@ -17,6 +17,7 @@ public:
 	virtual ~CPropertyDlg();
 
     bool GetListRefresh() const;
+    bool GetModified() const;
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -36,6 +37,7 @@ protected:
     int m_song_num;
     int m_tab_index{};
     const int m_batch_edit;
+    bool m_modified{};      //如果点击过“保存到文件”，则为true
 
 protected:
     void ShowPageNum();

@@ -60,6 +60,7 @@ protected:
     bool m_initialized{ false };
 
 protected:
+    virtual void RefreshSongList() override;
     void ShowClassifyList();
     void ShowSongList();
     CString GetClassifyListSelectedString(int index) const;

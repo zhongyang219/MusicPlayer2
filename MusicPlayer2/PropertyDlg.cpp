@@ -38,6 +38,11 @@ bool CPropertyDlg::GetListRefresh() const
     return m_property_dlg.GetListRefresh();
 }
 
+bool CPropertyDlg::GetModified() const
+{
+    return m_modified;
+}
+
 void CPropertyDlg::ShowPageNum()
 {
     //显示页数
@@ -141,6 +146,7 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
     if (cur_tab != nullptr)
     {
         int saved_num = cur_tab->SaveModified();
+        m_modified = true;
         if (m_batch_edit)
         {
             CString info = CCommon::LoadTextFormat(IDS_TAG_BATCH_EDIT_INFO, { saved_num });

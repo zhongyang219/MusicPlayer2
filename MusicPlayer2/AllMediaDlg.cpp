@@ -30,6 +30,20 @@ void CAllMediaDlg::RefreshData()
 	m_initialized = true;
 }
 
+void CAllMediaDlg::RefreshSongList()
+{
+    for (int index : m_selected_items)
+    {
+        if (index >= 0 && index < static_cast<int>(m_list_data.size()))
+        {
+            wstring path = m_list_data[index][COL_PATH];
+            SongInfo song = CSongDataManager::GetInstance().GetSongInfo(path);
+            SetRowData(m_list_data[index], song);
+        }
+    }
+    ShowSongList();
+}
+
 void CAllMediaDlg::OnTabEntered()
 {
 	SetButtonsEnable(m_song_list_ctrl.GetCurSel() >= 0);
@@ -95,25 +109,9 @@ void CAllMediaDlg::InitListData()
 		}
 
 		//row_data[COL_INDEX] = std::to_wstring(index);
-		row_data[COL_TITLE] = item.second.GetTitle();
-		row_data[COL_ARTIST] = item.second.GetArtist();
-		row_data[COL_ALBUM] = item.second.GetAlbum();
-		std::wstring track_str;
-		if (item.second.track != 0)
-			track_str = std::to_wstring(item.second.track);
-		row_data[COL_TRACK] = track_str;
-		row_data[COL_GENRE] = item.second.GetGenre();
-		row_data[COL_BITRATE] = (item.second.bitrate == 0 ? L"-" : std::to_wstring(item.second.bitrate));
-		row_data[COL_YEAR] = item.second.GetYear();
-		row_data[COL_PATH] = item.first;
-		if(item.second.last_played_time != 0)
-		{
-			CTime played_time(item.second.last_played_time);
-			wchar_t buff[64];
-			swprintf_s(buff, L"%d/%.2d/%.2d %.2d:%.2d:%.2d", played_time.GetYear(), played_time.GetMonth(), played_time.GetDay(),
-				played_time.GetHour(), played_time.GetMinute(), played_time.GetSecond());
-			row_data[COL_LAST_PLAYED_TIME] = buff;
-		}
+        SongInfo song = item.second;
+        song.file_path = item.first;
+        SetRowData(row_data, song);
 		m_list_data.push_back(std::move(row_data));
 	}
 	std::sort(m_list_data.begin(), m_list_data.end(), [&](const CListCtrlEx::RowData& a, const CListCtrlEx::RowData& b)
@@ -131,6 +129,29 @@ void CAllMediaDlg::InitListData()
             return CCommon::StringCompareInLocalLanguage(str_a, str_b) < 0;
 	});
 	UpdateListIndex();
+}
+
+void CAllMediaDlg::SetRowData(CListCtrlEx::RowData& row_data, const SongInfo& song)
+{
+    row_data[COL_TITLE] = song.GetTitle();
+    row_data[COL_ARTIST] = song.GetArtist();
+    row_data[COL_ALBUM] = song.GetAlbum();
+    std::wstring track_str;
+    if (song.track != 0)
+        track_str = std::to_wstring(song.track);
+    row_data[COL_TRACK] = track_str;
+    row_data[COL_GENRE] = song.GetGenre();
+    row_data[COL_BITRATE] = (song.bitrate == 0 ? L"-" : std::to_wstring(song.bitrate));
+    row_data[COL_YEAR] = song.GetYear();
+    row_data[COL_PATH] = song.file_path;
+    if (song.last_played_time != 0)
+    {
+        CTime played_time(song.last_played_time);
+        wchar_t buff[64];
+        swprintf_s(buff, L"%d/%.2d/%.2d %.2d:%.2d:%.2d", played_time.GetYear(), played_time.GetMonth(), played_time.GetDay(),
+            played_time.GetHour(), played_time.GetMinute(), played_time.GetSecond());
+        row_data[COL_LAST_PLAYED_TIME] = buff;
+    }
 }
 
 void CAllMediaDlg::UpdateListIndex()

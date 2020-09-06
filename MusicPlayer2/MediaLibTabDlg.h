@@ -17,6 +17,8 @@ public:
 	virtual void GetCurrentSongList(std::vector<wstring>& song_list) const;
 	virtual void GetCurrentSongList(std::vector<SongInfo>& song_list) const;
 
+    virtual void RefreshSongList() = 0;
+
 protected:
 	virtual const CListCtrlEx& GetSongListCtrl() const = 0;
 	virtual int GetItemSelected() const = 0;

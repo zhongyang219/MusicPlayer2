@@ -52,6 +52,7 @@ protected:
     bool m_initialized{ false };
 
 protected:
+    virtual void RefreshSongList() override;
     void ShowFolderTree();
     void ShowSongList();
     void FolderTreeClicked(HTREEITEM hItem);
