@@ -224,12 +224,9 @@ void CPropertyTabDlg::SetWreteEnable()
 	else
 		m_year_edit.SetLimitText(-1);
 
-    CWnd* pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
-    if (pBtn != nullptr)
-        pBtn->EnableWindow(m_write_enable/* && !m_all_song_info[m_index].lyric_file.empty()*/);
-    pBtn = GetDlgItem(IDC_GET_TAG_ONLINE_BUTTON);
-    if (pBtn != nullptr)
-        pBtn->EnableWindow(m_write_enable);
+    EnableDlgCtrl(IDC_GET_TAG_FROM_LYRIC_BUTTON, m_write_enable);
+    EnableDlgCtrl(IDC_GET_TAG_ONLINE_BUTTON, m_write_enable);
+    EnableDlgCtrl(IDC_GET_TAG_FROM_FILE_NAME_BUTTON, m_write_enable);
 }
 
 
@@ -321,20 +318,9 @@ BOOL CPropertyTabDlg::OnInitDialog()
 
 	//m_genre_combo.SetEditReadOnly();
 
-    if (m_batch_edit)
-    {
-        CWnd* pBtn = GetDlgItem(IDC_GET_TAG_ONLINE_BUTTON);
-        if (pBtn != nullptr)
-            pBtn->ShowWindow(SW_HIDE);
-
-        //pBtn = GetDlgItem(IDC_GET_TAG_FROM_LYRIC_BUTTON);
-        //if (pBtn != nullptr)
-        //    pBtn->ShowWindow(SW_HIDE);
-
-        //pBtn = GetDlgItem(IDC_GET_TAG_FROM_FILE_NAME_BUTTON);
-        //if (pBtn != nullptr)
-        //    pBtn->ShowWindow(SW_HIDE);
-    }
+    ShowDlgCtrl(IDC_GET_TAG_ONLINE_BUTTON, !m_batch_edit && !m_read_only);
+    ShowDlgCtrl(IDC_GET_TAG_FROM_LYRIC_BUTTON, !m_read_only);
+    ShowDlgCtrl(IDC_GET_TAG_FROM_FILE_NAME_BUTTON, !m_read_only);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE

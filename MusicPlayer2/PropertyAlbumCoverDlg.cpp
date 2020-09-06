@@ -298,6 +298,7 @@ void CPropertyAlbumCoverDlg::SetWreteEnable()
         CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
         m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CAudioTag::IsFileTypeCoverWriteSupport(file_path.GetFileExtension()));
     }
+    m_write_enable &= !m_read_only;
     EnableControls();
     SetSaveBtnEnable();
 }
