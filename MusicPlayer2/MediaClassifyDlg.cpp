@@ -57,14 +57,20 @@ void CMediaClassifyDlg::GetSongsSelected(std::vector<wstring>& song_list) const
     }
     else
     {
-        auto iter = media_list.find(wstring(m_classify_selected));
-        if (iter != media_list.end())
+        //auto iter = media_list.find(wstring(m_classify_selected));
+        //if (iter != media_list.end())
+        //{
+        //    for (int index : m_right_selected_items)
+        //    {
+        //        if (index >= 0 && index < iter->second.size())
+        //            song_list.push_back(iter->second[index].file_path);
+        //    }
+        //}
+        
+        for (int index : m_right_selected_items)
         {
-            for (int index : m_right_selected_items)
-            {
-                if (index >= 0 && index < iter->second.size())
-                    song_list.push_back(iter->second[index].file_path);
-            }
+            wstring file_path = m_song_list_ctrl.GetItemText(index, COL_PATH).GetString();
+            song_list.push_back(file_path);
         }
     }
 }
