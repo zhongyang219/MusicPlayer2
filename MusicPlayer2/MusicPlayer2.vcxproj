@@ -533,6 +533,7 @@
     <Image Include="res\previous_dark.ico" />
     <Image Include="res\previous_white.ico" />
     <Image Include="res\recent_songs_d.ico" />
+    <Image Include="res\rename_d.ico" />
     <Image Include="res\Replace.ico" />
     <Image Include="res\ReplaceTag.ico" />
     <Image Include="res\rew_new_d.ico" />

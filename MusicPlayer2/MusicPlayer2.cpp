@@ -504,6 +504,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.album_cover = CDrawCommon::LoadIconResource(IDI_ALBUM_COVER_D, DPI(16), DPI(16));
     m_icon_set.dark_mode = CDrawCommon::LoadIconResource(IDI_DARK_MODE_D, DPI(16), DPI(16));
     m_icon_set.lyric = CDrawCommon::LoadIconResource(IDI_LYRIC_D, DPI(16), DPI(16));
+    m_icon_set.rename = CDrawCommon::LoadIconResource(IDI_RENAME_D, DPI(16), DPI(16));
 
     m_icon_set.ok = CDrawCommon::LoadIconResource(IDI_OK_D, DPI(16), DPI(16));
 
@@ -663,6 +664,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 10, TRUE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_RENAME, FALSE, m_icon_set.rename);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_EXPLORE_TRACK, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_ITEM_PROPERTY, FALSE, m_icon_set.info.GetIcon(true));
 

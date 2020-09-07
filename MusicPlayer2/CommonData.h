@@ -476,6 +476,7 @@ struct IconSet
     HICON album_cover;
     HICON dark_mode;
     HICON lyric;
+    HICON rename;
 
     HICON ok;
 
