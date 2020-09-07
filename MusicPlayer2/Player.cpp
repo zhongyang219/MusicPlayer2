@@ -175,6 +175,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             continue;
         }
 
+        CSongDataManager::GetInstance().UpdateFileModifiedTime(GetInstance().m_playlist[i].file_path, pInfo->refresh_info);
         if (!pInfo->refresh_info)
         {
             //wstring file_name{ GetInstance().m_playlist[i].file_name };
@@ -1924,8 +1925,8 @@ void CPlayer::SortPlaylist(bool change_index)
     case SM_TIME:
         std::sort(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& a, const SongInfo& b)
         {
-            unsigned __int64 file_time_a = CCommon::GetFileLastModified(a.file_path);
-            unsigned __int64 file_time_b = CCommon::GetFileLastModified(b.file_path);
+            unsigned __int64 file_time_a = a.modified_time;
+            unsigned __int64 file_time_b = b.modified_time;
             if (m_descending)
                 return file_time_a > file_time_b;
             else

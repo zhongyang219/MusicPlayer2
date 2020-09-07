@@ -30,6 +30,8 @@ public:
     void ClearPlayTime();       //清除播放时间统计数据
     void ClearLastPlayedTime();     //清除上次播放时间
 
+    void UpdateFileModifiedTime(const wstring& file_path, bool update = false);      //更新歌曲的最后修改时间，如果update为false，则如果已获取最后时间就不更新，如果update为true，则总是更新
+
 private:
     CSongDataManager();
 

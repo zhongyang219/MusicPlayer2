@@ -26,11 +26,12 @@ struct SongInfo
     wstring genre;		//流派
     unsigned __int64 song_id{};			//歌曲对应的网易云音乐中的歌曲ID
     __int64 last_played_time{};		//上次播放的时间
-    Time lengh{};			//歌曲的长度
+    unsigned __int64 modified_time{};        //修改时间
     int track{};		//音轨序号
+    int listen_time{};			//歌曲累计听的时间（单位为秒）
+    Time lengh{};			//歌曲的长度
     Time start_pos{};		//音频的起始位置，用于cue分轨
     Time end_pos{};
-    int listen_time{};			//歌曲累计听的时间（单位为秒）
     unsigned short year{};		//年份
     short bitrate{};		//比特率
 	WORD flags{};		//保存一些标志
@@ -132,6 +133,7 @@ struct SongInfo
         song_id = song_info.song_id;
         is_favourite = song_info.is_favourite;
         info_acquired = song_info.info_acquired;
+        modified_time = song_info.modified_time;
     }
 
     bool IsTitleEmpty() const

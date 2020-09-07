@@ -30,7 +30,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.693"));			//写入数据版本
+    ar << CString(_T("2.700"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -56,6 +56,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << song_data.second.flags
             << song_data.second.last_played_time
             << CString(song_data.second.lyric_file.c_str())
+            << song_data.second.modified_time
             ;
     }
     // 关闭CArchive对象
@@ -85,8 +86,8 @@ void CSongDataManager::LoadSongData(std::wstring path)
         //读取版本
         CString version_str;
         ar >> version_str;
-        if (!CCommon::StringIsVersion(version_str))
-            version_str = _T("0.00");
+        //if (!CCommon::StringIsVersion(version_str))
+        //    version_str = _T("0.00");
         if (version_str >= _T("2.664"))
         {
             ar >> size;		//读取映射容器的长度
@@ -97,7 +98,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
             ar >> size_1;
             size = static_cast<int>(size_1);
         }
-        for (size_t i{}; i < size; i++)
+        for (int i{}; i < size; i++)
         {
             ar >> song_path;
             ar >> song_length;
@@ -182,6 +183,11 @@ void CSongDataManager::LoadSongData(std::wstring path)
             {
                 ar >> temp;
                 song_info.lyric_file = temp;
+            }
+
+            if (version_str >= _T("2.670"))
+            {
+                ar >> song_info.modified_time;
             }
 
             m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
@@ -315,4 +321,17 @@ void CSongDataManager::ClearLastPlayedTime()
         item.second.last_played_time = 0;
     }
     SetSongDataModified();
+}
+
+void CSongDataManager::UpdateFileModifiedTime(const wstring& file_path, bool update /*= false*/)
+{
+    auto iter = m_song_data.find(file_path);
+    if (iter != m_song_data.end())
+    {
+        if (iter->second.modified_time == 0 || update)
+        {
+            iter->second.modified_time = CCommon::GetFileLastModified(file_path);
+            SetSongDataModified();
+        }
+    }
 }
