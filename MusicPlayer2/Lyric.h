@@ -70,6 +70,7 @@ public:
 	wstring GetLyricsString() const;		//返回所有歌词的字符串，原始样式，包含全部标签
 	wstring GetLyricsString2() const;		//返回所有歌词的字符串，以保存的样式，包含全部标签（将歌词偏移保存到每个时间标签中）
 	bool IsModified() const { return m_modified; }
+    void SetModified(bool modified) { m_modified = modified; }
 	bool IsChineseConverted() const { return m_chinese_converted; }
 	bool IsTranslated() const { return m_translate; }
 	int GetLyricCount() const{ return m_lyrics.size(); }

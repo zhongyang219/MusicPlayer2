@@ -62,6 +62,7 @@ protected:
 	void StatusBarSetParts(int width);			//设置状态栏各部分的宽度
 	void OpenLyric(const wchar_t* path);		//打开一个歌词文件
     bool SaveInquiry();
+    void SetLyricPathEditText();
 
     virtual CString GetDialogName() const override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

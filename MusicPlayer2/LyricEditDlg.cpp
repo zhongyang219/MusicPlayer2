@@ -85,9 +85,24 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 
 bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 {
+
 	if (path[0] == L'\0')		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
 	{
-		const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+        const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+        bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
+        //写入内嵌歌词
+        if (lyric_write_support)
+        {
+            bool saved{};
+            SongInfo song_info{ song };
+            CAudioTag audio_tag(song_info);
+            saved = audio_tag.WriteAudioLyric(m_lyric_string);
+            m_modified = false;
+            m_lyric_saved = true;
+            UpdateStatusbarInfo();
+            return saved;
+        }
+
 		if (!song.is_cue)
 		{
 			m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetFileName();
@@ -100,8 +115,8 @@ bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 		}
 		m_lyric_path += L".lrc";
 		m_original_lyric_path = m_lyric_path;
-		SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
-		path = m_lyric_path.c_str();
+        SetLyricPathEditText();
+		//path = m_lyric_path.c_str();
 	}
 	bool char_connot_convert;
 	string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
@@ -168,6 +183,14 @@ bool CLyricEditDlg::SaveInquiry()
         }
     }
     return true;
+}
+
+void CLyricEditDlg::SetLyricPathEditText()
+{
+    if (m_lyric_path.empty())
+        SetDlgItemText(IDC_LYRIC_PATH_EDIT2, CCommon::LoadText(IDS_INNER_LYRIC));
+    else
+        SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
 }
 
 CString CLyricEditDlg::GetDialogName() const
@@ -250,7 +273,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_lyric_edit.SetFont(&m_font);
 
 	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
-	SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
+    SetLyricPathEditText();
 
 	////初始化提示信息
 	//m_Mytip.Create(this, TTS_ALWAYSTIP);

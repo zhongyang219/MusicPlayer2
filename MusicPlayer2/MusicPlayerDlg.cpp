@@ -3128,10 +3128,23 @@ void CMusicPlayerDlg::OnSaveModifiedLyric()
     // TODO: 在此添加命令处理程序代码
     if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && CPlayer::GetInstance().m_Lyrics.IsModified())
     {
-        if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())		//如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
-            CPlayer::GetInstance().m_Lyrics.SaveLyric();
+        if (CPlayer::GetInstance().IsInnerLyric())      //保存内嵌歌词
+        {
+            wstring lyric_contents = CPlayer::GetInstance().m_Lyrics.GetLyricsString2();
+            if (!lyric_contents.empty())
+            {
+                CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
+                audio_tag.WriteAudioLyric(lyric_contents);
+                CPlayer::GetInstance().m_Lyrics.SetModified(false);
+            }
+        }
         else
-            CPlayer::GetInstance().m_Lyrics.SaveLyric2();
+        {
+            if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())		//如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
+                CPlayer::GetInstance().m_Lyrics.SaveLyric();
+            else
+                CPlayer::GetInstance().m_Lyrics.SaveLyric2();
+        }
     }
 }
 
