@@ -201,7 +201,9 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
         {
             clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
             {
-                return (song.lengh.isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
+                bool length_is_zero = (song.lengh.isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
+                bool path_invalid = (!CCommon::IsPath(song.file_path) || song.file_path.back() == L'/' || song.file_path.back() == L'\\');
+                return length_is_zero || path_invalid;
             });
         }
         if(clear_cnt > 0)
