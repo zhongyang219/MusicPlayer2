@@ -375,7 +375,7 @@ public:
 
         ~ReOpen()
         {
-            if (m_reopen && current_song.IsSameSong(m_instance.GetCurrentSongInfo()))
+            if (m_reopen/* && current_song.IsSameSong(m_instance.GetCurrentSongInfo())*/)
             {
                 m_instance.MusicControl(Command::OPEN);
                 m_instance.SeekTo(current_position);

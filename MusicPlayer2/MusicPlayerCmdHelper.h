@@ -36,6 +36,8 @@ public:
     static int CleanUpSongData(std::function<bool(const SongInfo&)> fun_condition = [&](const SongInfo& song) { return !CCommon::FileExist(song.file_path); });
     static int CleanUpRecentFolders();
 
+    static bool Rename(SongInfo& song, const wstring& new_name);
+
 protected:
     bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 

@@ -306,3 +306,17 @@ void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstr
         }
     }
 }
+
+wstring CPropertyDlgHelper::FileNameFromTag(const wstring& formular, const SongInfo& song_info)
+{
+    wstring result = formular;
+    CCommon::StringReplace(result, FORMULAR_TITLE, song_info.GetTitle());
+    CCommon::StringReplace(result, FORMULAR_ARTIST, song_info.GetArtist());
+    CCommon::StringReplace(result, FORMULAR_ALBUM, song_info.GetAlbum());
+    CCommon::StringReplace(result, FORMULAR_TRACK, std::to_wstring(song_info.track));
+    CCommon::StringReplace(result, FORMULAR_GENRE, song_info.GetGenre());
+    CCommon::StringReplace(result, FORMULAR_YEAR, song_info.GetYear());
+    CCommon::StringReplace(result, FORMULAR_COMMENT, song_info.comment);
+    CCommon::FileNameNormalize(result);
+    return result;
+}

@@ -24,6 +24,11 @@ CTagFromFileNameDlg::~CTagFromFileNameDlg()
 {
 }
 
+void CTagFromFileNameDlg::SetDialogTitle(LPCTSTR str_title)
+{
+    m_dlg_title = str_title;
+}
+
 wstring CTagFromFileNameDlg::GetFormularSelected() const
 {
     return m_formular_selected;
@@ -126,6 +131,11 @@ BOOL CTagFromFileNameDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     LoadConfig();
+
+    if (!m_dlg_title.IsEmpty())
+    {
+        SetWindowText(m_dlg_title);
+    }
 
     SetInsertWhenClicked(m_insert_when_clicked);
 

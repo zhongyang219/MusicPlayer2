@@ -523,6 +523,17 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
     return cleard_cnt;
 }
 
+bool CMusicPlayerCmdHelper::Rename(SongInfo & song, const wstring & new_name)
+{
+    CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
+    wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
+    if (new_file_path.empty())
+        return false;
+    CSongDataManager::GetInstance().ChangeFilePath(song.file_path, new_file_path);
+    song.file_path = new_file_path;
+    return true;
+}
+
 bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
     if (CPlayer::GetInstance().IsPlaylistMode() && playlist_path == CPlayer::GetInstance().GetPlaylistPath())

@@ -11,6 +11,7 @@ public:
 	CTagFromFileNameDlg(CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CTagFromFileNameDlg();
 
+    void SetDialogTitle(LPCTSTR str_title);
     wstring GetFormularSelected() const;
 
 // 对话框数据
@@ -37,6 +38,8 @@ protected:
     bool m_insert_when_clicked{};
     vector<wstring> m_default_formular;
     wstring m_formular_selected;
+
+    CString m_dlg_title;
 
 	DECLARE_MESSAGE_MAP()
 public:

@@ -443,4 +443,6 @@ public:
     afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData);
 protected:
     afx_msg LRESULT OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnRename();
 };

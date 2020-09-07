@@ -59,5 +59,7 @@ public:
     //formular: 猜测的方案，比如“<%artist%> - <%title%>”
     //song_info: 接收猜测结果
     static void GetTagFromFileName(const wstring& file_name, const wstring& formular, SongInfo& song_info);
+
+    static wstring FileNameFromTag(const wstring& formular, const SongInfo& song_info);
 };
 

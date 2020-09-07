@@ -631,6 +631,8 @@
 #define IDS_NO_LYRICS_FOUND_INFO        516
 #define IDS_CLEAR_HISTORY               517
 #define IDS_CLEAR_HISTORY_INFO          518
+#define IDS_RENAME                      519
+#define IDS_RENAME_INFO                 520
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1374,13 +1376,15 @@
 #define ID_1_33200                      33200
 #define ID_COVER_SAVE_AS                33201
 #define ID_LISTCTRL_33202               33202
+#define ID_33203                        33203
+#define ID_RENAME                       33204
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        495
-#define _APS_NEXT_COMMAND_VALUE         33203
+#define _APS_NEXT_COMMAND_VALUE         33205
 #define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

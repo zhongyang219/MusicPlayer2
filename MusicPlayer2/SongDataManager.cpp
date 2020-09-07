@@ -335,3 +335,15 @@ void CSongDataManager::UpdateFileModifiedTime(const wstring& file_path, bool upd
         }
     }
 }
+
+void CSongDataManager::ChangeFilePath(const wstring& file_path, const wstring& new_path)
+{
+    auto iter = m_song_data.find(file_path);
+    if (iter != m_song_data.end())
+    {
+        SongInfo song = iter->second;
+        if (!song.file_path.empty())
+            song.file_path = new_path;
+        m_song_data[new_path] = song;
+    }
+}

@@ -25,6 +25,8 @@
 #include "AlbumCoverInfoDlg.h"
 #include <Dbt.h>
 #include "SongDataManager.h"
+#include "TagFromFileNameDlg.h"
+#include "PropertyDlgHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -261,6 +263,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAY_RANDOM, &CMusicPlayerDlg::OnPlayRandom)
     ON_WM_DEVICECHANGE()
     ON_MESSAGE(WM_CURRENT_FILE_ALBUM_COVER_CHANGED, &CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged)
+    ON_COMMAND(ID_RENAME, &CMusicPlayerDlg::OnRename)
 END_MESSAGE_MAP()
 
 
@@ -5142,4 +5145,30 @@ afx_msg LRESULT CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged(WPARAM wParam, L
 {
 
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnRename()
+{
+    // TODO: 在此添加命令处理程序代码
+    CTagFromFileNameDlg dlg;
+    dlg.SetDialogTitle(CCommon::LoadText(IDS_RENAME));
+    if (dlg.DoModal() == IDOK)
+    {
+        int count{};
+        for (int index : m_items_selected)
+        {
+            if (index >= 0 && index < CPlayer::GetInstance().GetSongNum())
+            {
+                SongInfo& song{ CPlayer::GetInstance().GetPlayList()[index] };
+                wstring new_name = CPropertyDlgHelper::FileNameFromTag(dlg.GetFormularSelected(), song);
+                CMusicPlayerCmdHelper helper;
+                if (helper.Rename(song, new_name))
+                    count++;
+            }
+        }
+        CString info;
+        info = CCommon::LoadTextFormat(IDS_RENAME_INFO, { m_items_selected.size(), count, static_cast<int>(m_items_selected.size()) - count });
+        MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+    }
 }

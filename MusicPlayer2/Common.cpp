@@ -296,9 +296,18 @@ void CCommon::FileNameNormalize(wstring & file_name)
 	{
 		index = file_name.find_first_of(invalid_chars, index + 1);
 		if (index == wstring::npos)
-			return;
+        {
+            return;
+        }
 		else
-			file_name[index] = L'_';
+        {
+            if (file_name[index] == L'<')
+                file_name[index] = L'(';
+            else if (file_name[index] == L'>')
+                file_name[index] = L')';
+            else
+                file_name[index] = L'_';
+        }
 	}
 }
 
