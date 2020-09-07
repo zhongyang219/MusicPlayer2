@@ -145,12 +145,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
     //bool song_data_modified{ false };       //theApp.m_song_data是否有修改
     //获取播放列表中每一首歌曲的信息
-    //最多只获取MAX_NUM_LENGTH首歌的长度，超过MAX_NUM_LENGTH数量的歌曲的长度在打开时获得。防止文件夹中音频文件过多导致等待时间过长
     int song_num = GetInstance().m_playlist.size();
-    int song_count = min(song_num, MAX_NUM_LENGTH);
-    for (int i{}, count{}; count < song_count && i < song_num; i++)
+    for (int i{}; i < song_num; i++)
     {
-        pInfo->process_percent = i * 100 / song_count + 1;
+        pInfo->process_percent = i * 100 / song_num + 1;
 
         //获取cue音轨的信息
         if(GetInstance().m_playlist[i].is_cue)
@@ -202,7 +200,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         }
         CSongDataManager::GetInstance().SaveSongInfo(GetInstance().m_playlist[i]);
         //song_data_modified = true;
-        count++;
     }
     GetInstance().m_loading = false;
     //GetInstance().IniPlaylistComplate();

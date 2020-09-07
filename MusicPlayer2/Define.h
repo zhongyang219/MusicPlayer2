@@ -61,8 +61,8 @@ using _tstring = std::string;
 #define NEXT (-999)		//定义“下一曲”常量
 #define PREVIOUS (-998)		//定义“上一曲”常量
 
-#define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
-#define MAX_SONG_NUM 9999		//播放列表中文件数量的最大值
+//#define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
+#define MAX_SONG_NUM 99999		//播放列表中文件数量的最大值
 
 #define VERSION L"2.70.1"	//程序版本
 #define COMPILE_DATE L"2020/08/27"  //最后编译日期
