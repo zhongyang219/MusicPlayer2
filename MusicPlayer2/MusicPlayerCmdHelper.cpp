@@ -23,21 +23,21 @@ CMusicPlayerCmdHelper::~CMusicPlayerCmdHelper()
 void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
 {
     //查找歌曲并获取最佳匹配项的歌曲ID
-    if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
+    if (song.song_id == 0)		//如果没有获取过ID，则获取一次ID
     {
         wstring song_id;
         song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
-        song.song_id = song_id;
+        song.SetSongId(song_id);
         if (!song.is_cue)
         {
             CSongDataManager::GetInstance().SaveSongInfo(song);
         }
     }
 
-    if (song.song_id.empty())
+    if (song.song_id == 0)
         return;
     //获取网易云音乐中该歌曲的在线接听网址
-    wstring song_url{ L"http://music.163.com/#/song?id=" + song.song_id };
+    wstring song_url{ L"http://music.163.com/#/song?id=" + song.GetSongId() };
 
     //打开超链接
     ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);

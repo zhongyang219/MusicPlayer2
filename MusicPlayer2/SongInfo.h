@@ -17,44 +17,29 @@ enum eTagType
 //一首歌曲的信息
 struct SongInfo
 {
-    //SongInfo(bool ini = true)
-    //{
-    //    if (ini)
-    //    {
-    //        title = CCommon::LoadText(IDS_DEFAULT_TITLE);
-    //        artist = CCommon::LoadText(IDS_DEFAULT_ARTIST);
-    //        album = CCommon::LoadText(IDS_DEFAULT_ALBUM);
-    //        year = CCommon::LoadText(IDS_DEFAULT_YEAR);
-    //        genre = CCommon::LoadText(IDS_DEFAULT_GENRE);
-    //    }
-    //}
-
-    //wstring file_name{};	//歌曲的文件名
     wstring file_path{};    //歌曲的路径
     wstring lyric_file{};	//匹配的歌词文件的路径
     wstring title;		//标题
     wstring artist;		//艺术家
     wstring album;		//唱片集
-    //wstring year;		//年份
     wstring comment;	//注释
     wstring genre;		//流派
-    wstring song_id{};			//歌曲对应的网易云音乐中的歌曲ID
+    unsigned __int64 song_id{};			//歌曲对应的网易云音乐中的歌曲ID
+    __int64 last_played_time{};		//上次播放的时间
     Time lengh{};			//歌曲的长度
     int track{};		//音轨序号
-    unsigned short year{};
+    Time start_pos{};		//音频的起始位置，用于cue分轨
+    Time end_pos{};
+    int listen_time{};			//歌曲累计听的时间（单位为秒）
+    unsigned short year{};		//年份
     short bitrate{};		//比特率
+	WORD flags{};		//保存一些标志
     BYTE tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2；3：APE）
     BYTE genre_idx{ 255 };		//以字节表示的流派号
     bool info_acquired{ false };		//如果已经获取到了信息，则为ture
     bool is_favourite{ false };
     bool is_cue{ false };		//如果曲目是cue分轨，则为true
-    Time start_pos{};		//音频的起始位置，用于cue分轨
-    Time end_pos{};
-    int listen_time{};			//歌曲累计听的时间（单位为秒）
-    //bool no_online_lyric{ false };         //如果为true，则不在线下载歌词
-    //bool no_online_album_cover{ false };   //如果为true，则不在线下载专辑封面
 
-	WORD flags{};		//保存一些标志
 
 	//bit0, 如果为true，则不在线下载歌词
 	bool NoOnlineLyric() const { return CCommon::GetNumberBit(flags, 0); }
@@ -68,7 +53,6 @@ struct SongInfo
     bool AlwaysUseExternalAlbumCover() const { return CCommon::GetNumberBit(flags, 2); }
     void SetAlwaysUseExternalAlbumCover(bool val) { CCommon::SetNumberBit(flags, 2, val); }
 
-	__int64 last_played_time{};		//上次播放的时间
 
     //根据文件名的比较函数，用于以文件名排序
     static bool ByFileName(const SongInfo& a, const SongInfo& b)
@@ -260,6 +244,16 @@ struct SongInfo
             return wstring();
         else
             return std::to_wstring(year);
+    }
+
+    void SetSongId(const wstring& id)
+    {
+        song_id = _wtoi64(id.c_str());
+    }
+
+    wstring GetSongId() const
+    {
+        return std::to_wstring(song_id);
     }
 };
 

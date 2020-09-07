@@ -349,7 +349,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 			continue;
 		}
 
-        song_info_ori.song_id = down_list[best_matched].id;
+        song_info_ori.SetSongId(down_list[best_matched].id);
 
 		//在歌词前面添加标签
 		CLyricDownloadCommon::AddLyricTag(lyric_str, down_list[best_matched].id, down_list[best_matched].title, down_list[best_matched].artist, down_list[best_matched].album);

@@ -46,7 +46,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << song_data.second.genre_idx
             << song_data.second.track
             << song_data.second.tag_type
-            << CString(song_data.second.song_id.c_str())
+            << CString(song_data.second.GetSongId().c_str())
             << song_data.second.listen_time
             << song_data.second.info_acquired
             //<< song_data.second.is_favourite
@@ -147,7 +147,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 song_info.tag_type = tag_type;
             }
             ar >> temp;
-            song_info.song_id = temp;
+            song_info.SetSongId(temp.GetString());
 
             if (version_str >= _T("2.64"))		//版本号大于等于2.64
             {

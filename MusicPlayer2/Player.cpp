@@ -1788,7 +1788,7 @@ void CPlayer::SetRelatedSongID(wstring song_id)
 {
     if (m_index >= 0 && m_index < GetSongNum())
     {
-        m_playlist[m_index].song_id = song_id;
+        m_playlist[m_index].SetSongId(song_id);
         if(!m_playlist[m_index].is_cue)
         {
             //theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
@@ -1801,7 +1801,7 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
 {
     if (index >= 0 && index < GetSongNum())
     {
-        m_playlist[index].song_id = song_id;
+        m_playlist[index].SetSongId(song_id);
         if (!m_playlist[index].is_cue)
         {
             CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);

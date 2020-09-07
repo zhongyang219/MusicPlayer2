@@ -3338,13 +3338,13 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     if (download_cover || download_lyric)
     {
 		DownloadResult result{};
-        if (song.song_id.empty())		//如果没有获取过ID，则获取一次ID
+        if (song.song_id == 0)		//如果没有获取过ID，则获取一次ID
         {
             //搜索歌曲并获取最佳匹配的项目
             match_item = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName(), false, &result);
             CPlayer::GetInstance().SetRelatedSongID(match_item.id);
         }
-        if (song.song_id.empty())
+        if (song.song_id == 0)
         {
             if(result == DR_DOWNLOAD_ERROR)     //如果搜索歌曲失败，则标记为没有在线歌词和专辑封面
             {
@@ -3358,7 +3358,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     //自动下载专辑封面
     if (download_cover && !CPlayer::GetInstance().IsOsuFile())
     {
-        wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song.song_id);
+        wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song.GetSongId());
         if (cover_url.empty())
         {
             song_info_ori.SetNoOnlineAlbumCover(true);
@@ -3396,7 +3396,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     {
         //下载歌词
         wstring lyric_str;
-        if (!CLyricDownloadCommon::DownloadLyric(song.song_id, lyric_str, true))
+        if (!CLyricDownloadCommon::DownloadLyric(song.GetSongId(), lyric_str, true))
         {
             song_info_ori.SetNoOnlineLyric(true);
             CSongDataManager::GetInstance().SetSongDataModified();

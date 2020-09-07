@@ -423,11 +423,11 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	//计算搜索结果中最佳匹配项目
 	int best_matched;
 	bool id_releated{ false };
-	if (!CPlayer::GetInstance().GetCurrentSongInfo().song_id.empty())		//如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+	if (!CPlayer::GetInstance().GetCurrentSongInfo().song_id == 0)		//如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
 	{
 		for (size_t i{}; i<m_down_list.size(); i++)
 		{
-			if (CPlayer::GetInstance().GetCurrentSongInfo().song_id == m_down_list[i].id)
+			if (CPlayer::GetInstance().GetCurrentSongInfo().GetSongId() == m_down_list[i].id)
 			{
 				id_releated = true;
 				best_matched = i;
