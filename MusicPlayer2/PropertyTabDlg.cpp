@@ -781,16 +781,13 @@ bool CPropertyTabDlg::GetTagFromLyrics(SongInfo& song, SongInfo& result)
     if (!song.lyric_file.empty())
     {
         CLyrics lyrics{ song.lyric_file };
-        if (!lyrics.GetTitle().empty() && !lyrics.GetAritst().empty() && !lyrics.GetAlbum().empty())
-        {
-            if (!lyrics.GetTitle().empty())
-                result.title = lyrics.GetTitle();
-            if (!lyrics.GetAritst().empty())
-                result.artist = lyrics.GetAritst();
-            if (!lyrics.GetAlbum().empty())
-                result.album = lyrics.GetAlbum();
-            return true;
-        }
+        if (!lyrics.GetTitle().empty())
+            result.title = lyrics.GetTitle();
+        if (!lyrics.GetAritst().empty())
+            result.artist = lyrics.GetAritst();
+        if (!lyrics.GetAlbum().empty())
+            result.album = lyrics.GetAlbum();
+        return true;
     }
     return false;
 }
