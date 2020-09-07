@@ -46,6 +46,9 @@ public:
     static wstring GetFlacLyric(const wstring& file_path);
     static wstring GetAsfLyric(const wstring& file_path);
 
+    //Ð´Èë¸è´Ê
+    static bool WriteMpegLyric(const wstring& file_path, const wstring& lyric_contents);
+
     //Ð´×¨¼­·âÃæ
     static bool WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);

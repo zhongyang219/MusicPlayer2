@@ -23,6 +23,7 @@
 #include "taglib/apetag.h"
 #include "taglib/fileref.h"
 #include "taglib/speexfile.h"
+#include "taglib/unsynchronizedlyricsframe.h"
 
 
 using namespace TagLib;
@@ -705,6 +706,36 @@ wstring CTagLibHelper::GetAsfLyric(const wstring& file_path)
 }
 
 
+bool CTagLibHelper::WriteMpegLyric(const wstring& file_path, const wstring& lyric_contents)
+{
+    wstring lyrics;
+    MPEG::File file(file_path.c_str());
+    auto id3v2 = file.ID3v2Tag();
+    if (id3v2 != nullptr)
+    {
+        //ÏÈÉ¾³ý¸è´ÊÖ¡
+        auto lyric_frame_list = id3v2->frameListMap()["USLT"];
+        if (!lyric_frame_list.isEmpty())
+        {
+            for (auto frame : lyric_frame_list)
+                id3v2->removeFrame(frame);
+        }
+
+        if (!lyric_contents.empty())
+        {
+            //Ð´Èë¸è´ÊÖ¡
+            ID3v2::UnsynchronizedLyricsFrame* lyric_frame = new ID3v2::UnsynchronizedLyricsFrame();
+            lyric_frame->setText(lyric_contents.c_str());
+            id3v2->addFrame(lyric_frame);
+        }
+    }
+    int tags = MPEG::File::ID3v2;
+    if (file.hasAPETag())
+        tags |= MPEG::File::APE;
+    bool saved = file.save(tags);
+    return saved;
+}
+
 bool CTagLibHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
 {
     MPEG::File file(file_path.c_str());
@@ -722,7 +753,10 @@ bool CTagLibHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& 
         auto id3v2tag = file.ID3v2Tag(true);
         WriteId3v2AlbumCover(id3v2tag, album_cover_path);
     }
-    bool saved = file.save(MPEG::File::ID3v2);
+    int tags = MPEG::File::ID3v2;
+    if (file.hasAPETag())
+        tags |= MPEG::File::APE;
+    bool saved = file.save(tags);
     return saved;
 }
 

@@ -1380,13 +1380,18 @@
 #define ID_LISTCTRL_33202               33202
 #define ID_33203                        33203
 #define ID_RENAME                       33204
+#define ID_33205                        33205
+#define ID_33206                        33206
+#define ID_33207                        33207
+#define ID_EMBED_LYRIC_TO_AUDIO_FILE    33208
+#define ID_DELETE_LYRIC_FROM_AUDIO_FILE 33209
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        496
-#define _APS_NEXT_COMMAND_VALUE         33205
+#define _APS_NEXT_COMMAND_VALUE         33210
 #define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

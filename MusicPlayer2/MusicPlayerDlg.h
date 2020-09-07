@@ -445,4 +445,6 @@ protected:
     afx_msg LRESULT OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnRename();
+    afx_msg void OnEmbedLyricToAudioFile();
+    afx_msg void OnDeleteLyricFromAudioFile();
 };

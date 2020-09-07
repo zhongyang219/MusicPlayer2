@@ -264,6 +264,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_WM_DEVICECHANGE()
     ON_MESSAGE(WM_CURRENT_FILE_ALBUM_COVER_CHANGED, &CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged)
     ON_COMMAND(ID_RENAME, &CMusicPlayerDlg::OnRename)
+    ON_COMMAND(ID_EMBED_LYRIC_TO_AUDIO_FILE, &CMusicPlayerDlg::OnEmbedLyricToAudioFile)
+    ON_COMMAND(ID_DELETE_LYRIC_FROM_AUDIO_FILE, &CMusicPlayerDlg::OnDeleteLyricFromAudioFile)
 END_MESSAGE_MAP()
 
 
@@ -1353,6 +1355,14 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_UNLINK_LYRIC, MF_BYCOMMAND | (!lyric_disable && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
 
+    //内嵌歌词
+    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
+    bool lyric_write_enable = (lyric_write_support && !CPlayer::GetInstance().m_Lyrics.IsEmpty() && !CPlayer::GetInstance().IsInnerLyric());
+    bool lyric_delete_enable = (lyric_write_support && !CPlayer::GetInstance().m_Lyrics.IsEmpty());
+    pMenu->EnableMenuItem(ID_EMBED_LYRIC_TO_AUDIO_FILE, MF_BYCOMMAND | (lyric_write_enable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_LYRIC_FROM_AUDIO_FILE, MF_BYCOMMAND | (lyric_delete_enable ? MF_ENABLED : MF_GRAYED));
+
+    //专辑封面
     pMenu->EnableMenuItem(ID_ALBUM_COVER_SAVE_AS, MF_BYCOMMAND | (CPlayer::GetInstance().AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | ((!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() && CPlayer::GetInstance().AlbumCoverExist()) ? MF_ENABLED : MF_GRAYED));
@@ -5171,4 +5181,28 @@ void CMusicPlayerDlg::OnRename()
         info = CCommon::LoadTextFormat(IDS_RENAME_INFO, { m_items_selected.size(), count, static_cast<int>(m_items_selected.size()) - count });
         MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
     }
+}
+
+
+void CMusicPlayerDlg::OnEmbedLyricToAudioFile()
+{
+    // TODO: 在此添加命令处理程序代码
+    wstring lyric_contents = CPlayer::GetInstance().m_Lyrics.GetLyricsString2();
+    if (!lyric_contents.empty())
+    {
+        CPlayer::ReOpen reopen(true);
+        CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
+        audio_tag.WriteAudioLyric(lyric_contents);
+        //CPlayer::GetInstance().IniLyrics();
+    }
+}
+
+
+void CMusicPlayerDlg::OnDeleteLyricFromAudioFile()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::ReOpen reopen(true);
+    CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
+    audio_tag.WriteAudioLyric(wstring());
+    //CPlayer::GetInstance().IniLyrics();
 }

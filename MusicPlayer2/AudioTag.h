@@ -22,6 +22,8 @@ public:
 	//获取音频的内嵌歌词
 	wstring GetAudioLyric();
 
+    bool WriteAudioLyric(const wstring& lyric_contents);
+
 	AudioType GetAudioType() const { return m_type; }
 
     //写入一个标签信息
@@ -35,6 +37,8 @@ public:
 
     //根据一个文件扩展名判断此格式是否已支持写入标签
     static bool IsFileTypeCoverWriteSupport(const wstring& ext);
+
+    static bool IsFileTypeLyricWriteSupport(const wstring& ext);
 
 private:
 	SongInfo& m_song_info;
