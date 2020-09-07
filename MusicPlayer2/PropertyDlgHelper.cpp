@@ -100,7 +100,10 @@ wstring CPropertyDlgHelper::GetMultiTrack()
 {
     return GetMultiValue([](const SongInfo& song)
     {
-        return std::to_wstring(song.track);
+        if (song.track == 0)
+            return wstring();
+        else
+            return std::to_wstring(song.track);
     }, m_song_info);
 }
 
