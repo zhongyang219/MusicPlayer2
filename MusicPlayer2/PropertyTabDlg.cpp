@@ -25,23 +25,15 @@ static void CopyMultiTagInfo(const wstring& str_src, wstring& str_dest)
 //更改标签信息后更新
 static void UpdateSongInfo(SongInfo song)
 {
-    //vector<SongInfo>& cur_playlist{ CPlayer::GetInstance().GetPlayList() };
-    //auto iter = std::find_if(cur_playlist.begin(), cur_playlist.end(), [&](const SongInfo& song_info)
-    //{
-    //    return song_info.file_path == song.file_path;
-    //});
-    //if (iter != cur_playlist.end())
-    //{
-    //重新从文件读取该歌曲的标签
-    HSTREAM hStream;
-    hStream = BASS_StreamCreateFile(FALSE, song.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-    //CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
-    CAudioTag audio_tag(song, hStream);
-    audio_tag.GetAudioTag();
-    BASS_StreamFree(hStream);
+    ////重新从文件读取该歌曲的标签
+    //HSTREAM hStream;
+    //hStream = BASS_StreamCreateFile(FALSE, song.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+    ////CAudioCommon::GetAudioTags(hStream, AudioType::AU_MP3, CPlayer::GetInstance().GetCurrentDir(), m_all_song_info[m_index]);
+    //CAudioTag audio_tag(song, hStream);
+    //audio_tag.GetAudioTag();
+    //BASS_StreamFree(hStream);
     CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).CopyAudioTag(song);
     CSongDataManager::GetInstance().SetSongDataModified();
-    //}
 }
 
 IMPLEMENT_DYNAMIC(CPropertyTabDlg, CTabDlg)
@@ -491,7 +483,7 @@ int CPropertyTabDlg::SaveModified()
         int saved_count{};
         for (int i{}; i < m_song_num; i++)
         {
-            SongInfo cur_song = m_all_song_info[i];
+            SongInfo& cur_song = m_all_song_info[i];
             CopyMultiTagInfo(song_info.title, cur_song.title);
             CopyMultiTagInfo(song_info.artist, cur_song.artist);
             CopyMultiTagInfo(song_info.album, cur_song.album);

@@ -2594,6 +2594,18 @@ void CMusicPlayerDlg::OnItemProperty()
         pDlg = new CPropertyDlg(CPlayer::GetInstance().GetPlayList(), m_item_selected, false);
     }
     pDlg->DoModal();
+    
+    if (m_items_selected.size() > 1 && pDlg->GetModified())        //批量修改时更新已修改的曲目信息
+    {
+        for (int index : m_items_selected)
+        {
+            if (index >= 0 && index < CPlayer::GetInstance().GetSongNum())
+            {
+                const SongInfo song = CSongDataManager::GetInstance().GetSongInfo(CPlayer::GetInstance().GetPlayList()[index].file_path);
+                CPlayer::GetInstance().GetPlayList()[index].CopySongInfo(song);
+            }
+        }
+    }
     if (pDlg->GetListRefresh())
         ShowPlayList();
     SAFE_DELETE(pDlg);
