@@ -45,12 +45,14 @@ public:
     static wstring GetM4aLyric(const wstring& file_path);
     static wstring GetFlacLyric(const wstring& file_path);
     static wstring GetAsfLyric(const wstring& file_path);
+    static wstring GetWavLyric(const wstring& file_path);
 
     //Ð´Èë¸è´Ê
     static bool WriteMpegLyric(const wstring& file_path, const wstring& lyric_contents);
     static bool WriteFlacLyric(const wstring& file_path, const wstring& lyric_contents);
     static bool WriteM4aLyric(const wstring& file_path, const wstring& lyric_contents);
     static bool WriteAsfLyric(const wstring& file_path, const wstring& lyric_contents);
+    static bool WriteWavLyric(const wstring& file_path, const wstring& lyric_contents);
 
     //Ð´×¨¼­·âÃæ
     static bool WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);

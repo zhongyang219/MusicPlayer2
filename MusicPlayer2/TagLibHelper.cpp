@@ -284,6 +284,44 @@ void GetXiphCommentAlbumCover(Ogg::XiphComment * tag, string &cover_contents, in
     }
 }
 
+wstring GetId3v2Lyric(ID3v2::Tag* id3v2)
+{
+    wstring lyrics;
+    if (id3v2 != nullptr)
+    {
+        auto frame_list_map = id3v2->frameListMap();
+        auto lyric_frame = frame_list_map[STR_ID3V2_LYRIC_TAG];
+        if (!lyric_frame.isEmpty())
+            lyrics = lyric_frame.front()->toString().toWString();
+    }
+    return lyrics;
+}
+
+
+void WriteId3v2Lyric(ID3v2::Tag * id3v2, const wstring &lyric_contents)
+{
+    if (id3v2 != nullptr)
+    {
+        //ÏÈÉ¾³ý¸è´ÊÖ¡
+        auto lyric_frame_list = id3v2->frameListMap()[STR_ID3V2_LYRIC_TAG];
+        if (!lyric_frame_list.isEmpty())
+        {
+            for (auto frame : lyric_frame_list)
+                id3v2->removeFrame(frame);
+        }
+
+        if (!lyric_contents.empty())
+        {
+            //Ð´Èë¸è´ÊÖ¡
+            ID3v2::UnsynchronizedLyricsFrame* lyric_frame = new ID3v2::UnsynchronizedLyricsFrame();
+            lyric_frame->setText(lyric_contents.c_str());
+            id3v2->addFrame(lyric_frame);
+        }
+    }
+}
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
@@ -654,17 +692,9 @@ void CTagLibHelper::GetAnyFileTagInfo(SongInfo & song_info)
 
 wstring CTagLibHelper::GetMpegLyric(const wstring& file_path)
 {
-    wstring lyrics;
     MPEG::File file(file_path.c_str());
     auto id3v2 = file.ID3v2Tag();
-    if (id3v2 != nullptr)
-    {
-        auto frame_list_map = id3v2->frameListMap();
-        auto lyric_frame = frame_list_map[STR_ID3V2_LYRIC_TAG];
-        if (!lyric_frame.isEmpty())
-            lyrics = lyric_frame.front()->toString().toWString();
-    }
-    return lyrics;
+    return GetId3v2Lyric(id3v2);
 }
 
 wstring CTagLibHelper::GetM4aLyric(const wstring& file_path)
@@ -709,29 +739,20 @@ wstring CTagLibHelper::GetAsfLyric(const wstring& file_path)
 }
 
 
+wstring CTagLibHelper::GetWavLyric(const wstring& file_path)
+{
+    RIFF::WAV::File file(file_path.c_str());
+    auto id3v2 = file.ID3v2Tag();
+    return GetId3v2Lyric(id3v2);
+
+}
+
 bool CTagLibHelper::WriteMpegLyric(const wstring& file_path, const wstring& lyric_contents)
 {
     wstring lyrics;
     MPEG::File file(file_path.c_str());
     auto id3v2 = file.ID3v2Tag();
-    if (id3v2 != nullptr)
-    {
-        //ÏÈÉ¾³ý¸è´ÊÖ¡
-        auto lyric_frame_list = id3v2->frameListMap()[STR_ID3V2_LYRIC_TAG];
-        if (!lyric_frame_list.isEmpty())
-        {
-            for (auto frame : lyric_frame_list)
-                id3v2->removeFrame(frame);
-        }
-
-        if (!lyric_contents.empty())
-        {
-            //Ð´Èë¸è´ÊÖ¡
-            ID3v2::UnsynchronizedLyricsFrame* lyric_frame = new ID3v2::UnsynchronizedLyricsFrame();
-            lyric_frame->setText(lyric_contents.c_str());
-            id3v2->addFrame(lyric_frame);
-        }
-    }
+    WriteId3v2Lyric(id3v2, lyric_contents);
     int tags = MPEG::File::ID3v2;
     if (file.hasAPETag())
         tags |= MPEG::File::APE;
@@ -796,6 +817,16 @@ bool CTagLibHelper::WriteAsfLyric(const wstring& file_path, const wstring& lyric
         properties[STR_ASF_LYRIC_TAG] = lyric_item;
     }
     file.setProperties(properties);
+    bool saved = file.save();
+    return saved;
+}
+
+bool CTagLibHelper::WriteWavLyric(const wstring& file_path, const wstring& lyric_contents)
+{
+    wstring lyrics;
+    RIFF::WAV::File file(file_path.c_str());
+    auto id3v2 = file.ID3v2Tag();
+    WriteId3v2Lyric(id3v2, lyric_contents);
     bool saved = file.save();
     return saved;
 }

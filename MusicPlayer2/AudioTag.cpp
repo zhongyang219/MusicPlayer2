@@ -190,21 +190,20 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* f
 
 wstring CAudioTag::GetAudioLyric()
 {
-	if (m_type == AU_MP3)
-	{
+    switch (m_type)
+    {
+    case AU_MP3:
         return CTagLibHelper::GetMpegLyric(m_song_info.file_path);
-	}
-    else if (m_type == AU_WMA_ASF)
-    {
+    case AU_WMA_ASF:
         return CTagLibHelper::GetAsfLyric(m_song_info.file_path);
-    }
-	else if(m_type == AU_MP4)
-	{
+    case AU_MP4:
         return CTagLibHelper::GetM4aLyric(m_song_info.file_path);
-	}
-    else if (m_type == AU_FLAC)
-    {
+    case AU_FLAC:
         return CTagLibHelper::GetFlacLyric(m_song_info.file_path);
+    case AU_WAV:
+        return CTagLibHelper::GetWavLyric(m_song_info.file_path);
+    default:
+        break;
     }
 
 	return wstring();
@@ -222,6 +221,8 @@ bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
         return CTagLibHelper::WriteM4aLyric(m_song_info.file_path, lyric_contents);
     case AU_WMA_ASF:
         return CTagLibHelper::WriteAsfLyric(m_song_info.file_path, lyric_contents);
+    case AU_WAV:
+        return CTagLibHelper::WriteWavLyric(m_song_info.file_path, lyric_contents);
     default:
         break;
     }
@@ -331,6 +332,6 @@ bool CAudioTag::IsFileTypeLyricWriteSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF;
+    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV;
 }
 
