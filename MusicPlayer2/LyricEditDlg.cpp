@@ -427,7 +427,16 @@ void CLyricEditDlg::OnDestroy()
 	CBaseDialog::OnDestroy();
 	m_dlg_exist = false;
 	if (m_current_song_name == CPlayer::GetInstance().GetFileName() && m_lyric_saved)		//关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
-		CPlayer::GetInstance().IniLyrics(m_original_lyric_path);
+    {
+        if (CPlayer::GetInstance().IsInnerLyric())
+        {
+            CPlayer::GetInstance().IniLyrics();
+        }
+        else
+        {
+            CPlayer::GetInstance().IniLyrics(m_original_lyric_path);
+        }
+    }
 }
 
 
