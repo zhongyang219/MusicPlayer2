@@ -354,7 +354,7 @@ void CBassCore::Play()
     {
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
         int pos = GetCurPosition();
-        pos -= theApp.m_play_setting_data.fade_time;
+        pos -= (theApp.m_play_setting_data.fade_time / 2);
         if (pos < 0)
             pos = 0;
         SetCurPosition(pos);
