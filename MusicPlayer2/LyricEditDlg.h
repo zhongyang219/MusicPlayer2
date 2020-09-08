@@ -58,7 +58,7 @@ protected:
 	bool m_find_flag{ false };
 
 	void OpreateTag(TagOpreation operation);
-	bool SaveLyric(const wchar_t* path, CodeType code_type);
+	bool SaveLyric(wstring path, CodeType code_type);
 	void UpdateStatusbarInfo();			//更新状态栏信息
 	void StatusBarSetParts(int width);			//设置状态栏各部分的宽度
 	void OpenLyric(const wchar_t* path);		//打开一个歌词文件

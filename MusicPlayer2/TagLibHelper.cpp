@@ -757,6 +757,29 @@ bool CTagLibHelper::WriteFlacLyric(const wstring& file_path, const wstring& lyri
     return saved;
 }
 
+bool CTagLibHelper::WriteM4aLyric(const wstring& file_path, const wstring& lyric_contents)
+{
+    MP4::File file(file_path.c_str());
+    auto tag = file.tag();
+    if (tag != nullptr)
+    {
+        if (lyric_contents.empty())
+        {
+            tag->removeItem(STR_MP4_LYRICS_TAG);
+        }
+        else
+        {
+            StringList lyric_list;
+            lyric_list.append(lyric_contents);
+            MP4::Item lyrics_item(lyric_list);
+            tag->setItem(STR_MP4_LYRICS_TAG, lyrics_item);
+        }
+        bool saved = file.save();
+        return saved;
+    }
+    return false;
+}
+
 bool CTagLibHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)
 {
     MPEG::File file(file_path.c_str());

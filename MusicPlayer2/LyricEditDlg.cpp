@@ -83,10 +83,9 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 	UpdateStatusbarInfo();
 }
 
-bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
+bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
 {
-
-	if (path[0] == L'\0')		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
+	if (path.empty())		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
 	{
         const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
         bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
@@ -116,7 +115,7 @@ bool CLyricEditDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 		m_lyric_path += L".lrc";
 		m_original_lyric_path = m_lyric_path;
         SetLyricPathEditText();
-		//path = m_lyric_path.c_str();
+		path = m_lyric_path;
 	}
 	bool char_connot_convert;
 	string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
