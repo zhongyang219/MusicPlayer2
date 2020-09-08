@@ -99,7 +99,11 @@ private:
 	//int m_song_num{ 0 };	//播放列表中的歌曲总数
 	int m_error_code{ 0 };	//储存错误代码
     ErrorState m_error_state{};
-	int m_playing{ 0 };		//正在播放标志（0：已停止，1：已暂停，2：正在播放）
+
+    //正在播放标志（0：已停止，1：已暂停，2：正在播放）。
+    //注意此标志和IPlayerCore::GetPlayingState()返回值略有不同，比如在按下暂停键时，声音不会立刻停止，而是会有一个淡入淡出的效果，
+    //在声音还未完全停止时，IPlayerCore::GetPlayingState()将返回PS_PLAYING，但是这个值已经是PS_PAUSED了。
+	PlayingState m_playing{};		
 	RepeatMode m_repeat_mode;		//循环模式（0：顺序播放，1：随机播放，2：列表循环，3：单曲循环）
 	int m_volume{ 100 };		//音量（百分比）
     float m_speed{ 1 };     //播放速度

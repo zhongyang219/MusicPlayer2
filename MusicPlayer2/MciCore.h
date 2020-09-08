@@ -43,6 +43,7 @@ public:
     virtual std::wstring GetMidiInnerLyric() override;
     virtual MidiInfo GetMidiInfo() override;
     virtual bool MidiNoLyric() override;
+    virtual PlayingState GetPlayingState() override;
 
     virtual void ApplyEqualizer(int channel, int gain) override;
     virtual void SetReverb(int mix, int time) override;
@@ -65,7 +66,7 @@ private:
 
 private:
     std::wstring m_file_path;
-    bool m_playing{ false };
+    PlayingState m_playing{};
     std::wstring m_file_type;
     MidiInfo m_midi_info;
 

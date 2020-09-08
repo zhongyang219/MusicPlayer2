@@ -39,6 +39,7 @@ public:
     virtual std::wstring GetMidiInnerLyric() override;
     virtual MidiInfo GetMidiInfo() override;
     virtual bool MidiNoLyric() override;
+    virtual PlayingState GetPlayingState() override;
 
     struct MidiLyricInfo 
     {

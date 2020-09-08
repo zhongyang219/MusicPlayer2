@@ -114,7 +114,7 @@ void CMciCore::Close()
     if (m_success)
     {
         m_error_code = mciSendStringW((L"close \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
-        m_playing = false;
+        m_playing = PS_STOPED;
     }
 }
 
@@ -123,7 +123,7 @@ void CMciCore::Play()
     if (m_success)
     {
         m_error_code = mciSendStringW((L"play \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
-        m_playing = true;
+        m_playing = PS_PLAYING;
     }
 }
 
@@ -132,7 +132,7 @@ void CMciCore::Pause()
     if (m_success)
     {
         m_error_code = mciSendStringW((L"pause \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
-        m_playing = false;
+        m_playing = PS_PAUSED;
     }
 }
 
@@ -141,7 +141,7 @@ void CMciCore::Stop()
     if (m_success)
     {
         m_error_code = mciSendStringW((L"stop \"" + m_file_path + L"\"").c_str(), NULL, 0, 0);
-        m_playing = false;
+        m_playing = PS_STOPED;
         SetCurPosition(0);
     }
 }
@@ -268,6 +268,11 @@ MidiInfo CMciCore::GetMidiInfo()
 bool CMciCore::MidiNoLyric()
 {
     return true;
+}
+
+PlayingState CMciCore::GetPlayingState()
+{
+    return m_playing;
 }
 
 void CMciCore::ApplyEqualizer(int channel, int gain)

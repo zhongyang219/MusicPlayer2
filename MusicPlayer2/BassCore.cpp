@@ -503,6 +503,17 @@ bool CBassCore::MidiNoLyric()
     return m_midi_lyric.midi_no_lyric;
 }
 
+PlayingState CBassCore::GetPlayingState()
+{
+    DWORD state = BASS_ChannelIsActive(m_musicStream);
+    if (state == BASS_ACTIVE_PLAYING)
+        return PS_PLAYING;
+    else if (state == BASS_ACTIVE_PAUSED)
+        return PS_PAUSED;
+    else
+        return PS_STOPED;
+}
+
 void CBassCore::ApplyEqualizer(int channel, int gain)
 {
     if (channel < 0 || channel >= EQU_CH_NUM) return;

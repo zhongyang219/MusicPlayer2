@@ -465,18 +465,18 @@ void CPlayer::MusicControl(Command command, int volume_step)
     case Command::PLAY:
         ConnotPlayWarning();
         m_pCore->Play();
-        m_playing = 2;
+        m_playing = PS_PLAYING;
         GetPlayerCoreError(L"Play");
         break;
     case Command::CLOSE:
         //RemoveFXHandle();
         m_pCore->Close();
-        m_playing = 0;
+        m_playing = PS_STOPED;
         SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_AFTER_MUSIC_STREAM_CLOSED, 0, 0);
         break;
     case Command::PAUSE:
         m_pCore->Pause();
-        m_playing = 1;
+        m_playing = PS_PAUSED;
         break;
     case Command::STOP:
         if (GetCurrentSongInfo().is_cue && GetCurrentSongInfo().start_pos > 0)
@@ -488,7 +488,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         {
             m_pCore->Stop();
         }
-        m_playing = 0;
+        m_playing = PS_STOPED;
         m_current_position = Time();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
         break;
@@ -505,16 +505,16 @@ void CPlayer::MusicControl(Command command, int volume_step)
         SeekTo(m_current_position.toInt());
         break;
     case Command::PLAY_PAUSE:
-        if (m_playing == 2)
+        if (m_playing == PS_PLAYING)
         {
             m_pCore->Pause();
-            m_playing = 1;
+            m_playing = PS_PAUSED;
         }
         else
         {
             ConnotPlayWarning();
             m_pCore->Play();
-            m_playing = 2;
+            m_playing = PS_PLAYING;
             GetPlayerCoreError(L"Play");
         }
         break;
@@ -552,13 +552,13 @@ bool CPlayer::SongIsOver() const
 {
     if (GetCurrentSongInfo().is_cue || IsMciCore())
     {
-        return (m_playing == 2 && m_current_position >= m_song_length && m_current_position.toInt() != 0);
+        return (m_playing == PS_PLAYING && m_current_position >= m_song_length && m_current_position.toInt() != 0);
     }
     else
     {
         bool song_is_over{ false };
         static int last_pos;
-        if ((m_playing == 2 && m_current_position.toInt() == last_pos && m_current_position.toInt() != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
+        if ((m_playing == PS_PLAYING && m_current_position.toInt() == last_pos && m_current_position.toInt() != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
             && m_current_position.toInt() > m_song_length.toInt() - 1000)		//且播放进度到了最后1秒
             || m_error_code == BASS_ERROR_ENDED)	//或者出现BASS_ERROR_ENDED错误，则判断当前歌曲播放完了
         //有时候会出现识别的歌曲长度超过实际歌曲长度的问题，这样会导致歌曲播放进度超过实际歌曲结尾时会出现BASS_ERROR_ENDED错误，
@@ -640,7 +640,7 @@ void CPlayer::CalculateSpectralData()
 void CPlayer::CalculateSpectralDataPeak()
 {
     //计算频谱顶端的高度
-    if (m_playing != 1)
+    if (m_pCore != nullptr && m_pCore->GetPlayingState() != PS_PAUSED)
     {
         static int fall_count[SPECTRUM_COL];
         for (int i{}; i < SPECTRUM_COL; i++)
@@ -1759,11 +1759,11 @@ wstring CPlayer::GetPlayingState() const
         return str_paly_error.GetString();
     switch (m_playing)
     {
-    case 0:
+    case PS_STOPED:
         return str_stoped.GetString();
-    case 1:
+    case PS_PAUSED:
         return str_paused.GetString();
-    case 2:
+    case PS_PLAYING:
         return str_playing.GetString();
     }
     return wstring();
@@ -1867,13 +1867,13 @@ void CPlayer::ReIniPlayerCore(bool replay)
     MusicControl(Command::OPEN);
     SeekTo(current_position);
     //MusicControl(Command::SEEK);
-    if (replay && playing == 2)
+    if (replay && playing == PS_PLAYING)
     {
         MusicControl(Command::PLAY);
     }
     else
     {
-        m_playing = 0;
+        m_playing = PS_STOPED;
     }
 }
 
