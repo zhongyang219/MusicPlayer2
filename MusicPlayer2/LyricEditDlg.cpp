@@ -168,6 +168,7 @@ void CLyricEditDlg::OpenLyric(const wchar_t * path)
 	CLyrics lyrics{ m_lyric_path };					//打开文件
 	m_lyric_string = lyrics.GetLyricsString();
 	m_code_type = lyrics.GetCodeType();
+    m_inner_lyric = false;
 }
 
 bool CLyricEditDlg::SaveInquiry()
@@ -187,7 +188,7 @@ bool CLyricEditDlg::SaveInquiry()
 
 void CLyricEditDlg::SetLyricPathEditText()
 {
-    if (m_lyric_path.empty())
+    if (m_inner_lyric)
         SetDlgItemText(IDC_LYRIC_PATH_EDIT2, CCommon::LoadText(IDS_INNER_LYRIC));
     else
         SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
@@ -259,10 +260,12 @@ BOOL CLyricEditDlg::OnInitDialog()
 		CLyrics lyrics = CPlayer::GetInstance().m_Lyrics;
 		m_lyric_string = lyrics.GetLyricsString();
 		m_code_type = lyrics.GetCodeType();
+        m_inner_lyric = true;
 	}
 	else
 	{
 		OpenLyric(CPlayer::GetInstance().m_Lyrics.GetPathName().c_str());
+        m_inner_lyric = false;
 	}
 	m_original_lyric_path = m_lyric_path;
 	//m_code_type = CPlayer::GetInstance().m_Lyrics.GetCodeType();
@@ -570,7 +573,10 @@ void CLyricEditDlg::OnLyricSaveAs()
 {
 	// TODO: 在此添加命令处理程序代码
 	//构造保存文件对话框
-	CFileDialog fileDlg(FALSE, _T("txt"), m_lyric_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_LYRIC_FILE_FILTER), this);
+    CString default_path = m_lyric_path.c_str();
+    if (m_inner_lyric)
+        default_path = CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).ReplaceFileExtension(L"lrc").c_str();
+	CFileDialog fileDlg(FALSE, _T("txt"), default_path, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_LYRIC_FILE_FILTER), this);
 	//为“另存为”对话框添加一个组合选择框
 	fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
 	//为组合选择框添加项目

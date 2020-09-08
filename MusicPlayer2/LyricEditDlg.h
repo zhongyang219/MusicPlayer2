@@ -40,6 +40,7 @@ protected:
 	wstring m_current_song_name;	//正在播放的歌曲名
 	bool m_modified{ false };	//如果歌词已更改，则为true
 	bool m_lyric_saved{ false };	//如果执行过保存操作，则为true
+    bool m_inner_lyric{ false };
 
 	//CToolTipCtrl m_Mytip;		//鼠标提示
 	CStatusBarCtrl m_status_bar;	//状态栏
