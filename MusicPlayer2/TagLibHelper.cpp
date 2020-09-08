@@ -32,6 +32,8 @@ using namespace TagLib;
 #define STR_MP4_LYRICS_TAG "----:com.apple.iTunes:Lyrics"
 #define STR_ASF_COVER_TAG "WM/Picture"
 #define STR_APE_COVER_TAG "COVER ART (FRONT)"
+#define STR_ID3V2_LYRIC_TAG "USLT"
+#define STR_FLAC_LYRIC_TAG "LYRICS"
 
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
@@ -657,7 +659,7 @@ wstring CTagLibHelper::GetMpegLyric(const wstring& file_path)
     if (id3v2 != nullptr)
     {
         auto frame_list_map = id3v2->frameListMap();
-        auto lyric_frame = frame_list_map["USLT"];
+        auto lyric_frame = frame_list_map[STR_ID3V2_LYRIC_TAG];
         if (!lyric_frame.isEmpty())
             lyrics = lyric_frame.front()->toString().toWString();
     }
@@ -684,7 +686,7 @@ wstring CTagLibHelper::GetFlacLyric(const wstring& file_path)
     wstring lyrics;
     FLAC::File file(file_path.c_str());
     auto properties = file.properties();
-    auto lyric_item = properties["LYRICS"];
+    auto lyric_item = properties[STR_FLAC_LYRIC_TAG];
     if (!lyric_item.isEmpty())
     {
         lyrics = lyric_item.front().toWString();
@@ -714,7 +716,7 @@ bool CTagLibHelper::WriteMpegLyric(const wstring& file_path, const wstring& lyri
     if (id3v2 != nullptr)
     {
         //先删除歌词帧
-        auto lyric_frame_list = id3v2->frameListMap()["USLT"];
+        auto lyric_frame_list = id3v2->frameListMap()[STR_ID3V2_LYRIC_TAG];
         if (!lyric_frame_list.isEmpty())
         {
             for (auto frame : lyric_frame_list)
@@ -733,6 +735,25 @@ bool CTagLibHelper::WriteMpegLyric(const wstring& file_path, const wstring& lyri
     if (file.hasAPETag())
         tags |= MPEG::File::APE;
     bool saved = file.save(tags);
+    return saved;
+}
+
+bool CTagLibHelper::WriteFlacLyric(const wstring& file_path, const wstring& lyric_contents)
+{
+    FLAC::File file(file_path.c_str());
+    auto properties = file.properties();
+    if (lyric_contents.empty())
+    {
+        properties.erase(STR_FLAC_LYRIC_TAG);
+    }
+    else
+    {
+        StringList lyric_item;
+        lyric_item.append(lyric_contents);
+        properties[STR_FLAC_LYRIC_TAG] = lyric_item;
+    }
+    file.setProperties(properties);
+    bool saved = file.save();
     return saved;
 }
 

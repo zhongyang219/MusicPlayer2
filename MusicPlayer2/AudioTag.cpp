@@ -216,6 +216,8 @@ bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
     {
     case AU_MP3:
         return CTagLibHelper::WriteMpegLyric(m_song_info.file_path, lyric_contents);
+    case AU_FLAC:
+        return CTagLibHelper::WriteFlacLyric(m_song_info.file_path, lyric_contents);
     default:
         break;
     }
@@ -325,6 +327,6 @@ bool CAudioTag::IsFileTypeLyricWriteSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3;
+    return type == AU_MP3 || type == AU_FLAC;
 }
 
