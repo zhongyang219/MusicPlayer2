@@ -85,53 +85,73 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 
 bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
 {
-	if (path.empty())		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
-	{
-        const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
-        bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
+    const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
+    if (m_inner_lyric && lyric_write_support)
+    {
         //写入内嵌歌词
-        if (lyric_write_support && m_inner_lyric)
+        bool saved{};
+        SongInfo song_info{ song };
+        CAudioTag audio_tag(song_info);
+        CPlayer::ReOpen reopen(true);
+        saved = audio_tag.WriteAudioLyric(m_lyric_string);
+        if (saved)
         {
-            bool saved{};
-            SongInfo song_info{ song };
-            CAudioTag audio_tag(song_info);
-            CPlayer::ReOpen reopen(true);
-            saved = audio_tag.WriteAudioLyric(m_lyric_string);
             m_modified = false;
             m_lyric_saved = true;
             UpdateStatusbarInfo();
-            return saved;
         }
+        else
+        {
+            MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_FAILED), NULL, MB_ICONWARNING | MB_OK);
+        }
+        return saved;
+    }
+    else
+    {
+        //写入歌词文件
+	    if (path.empty())		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
+	    {
 
-		if (!song.is_cue)
-		{
-			m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetFileName();
-			int index = m_lyric_path.rfind(L'.');
-			m_lyric_path = m_lyric_path.substr(0, index);
-		}
-		else
-		{
-			m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + song.artist + L" - " + song.title;
-		}
-		m_lyric_path += L".lrc";
-		m_original_lyric_path = m_lyric_path;
-        SetLyricPathEditText();
-		path = m_lyric_path;
-	}
-	bool char_connot_convert;
-	string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
-	if (char_connot_convert)	//当文件中包含Unicode字符时，询问用户是否要选择一个Unicode编码格式再保存
-	{
-		CString info;
-		info.LoadString(IDS_STRING103);		//从string table载入字符串
-		if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK) return false;		//如果用户点击了取消按钮，则返回false
-	}
-	ofstream out_put{ path, std::ios::binary };
-	out_put << lyric_str;
-	m_modified = false;
-	m_lyric_saved = true;
-	UpdateStatusbarInfo();
-	return true;
+		    if (!song.is_cue)
+		    {
+			    m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetFileName();
+			    int index = m_lyric_path.rfind(L'.');
+			    m_lyric_path = m_lyric_path.substr(0, index);
+		    }
+		    else
+		    {
+			    m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + song.artist + L" - " + song.title;
+		    }
+		    m_lyric_path += L".lrc";
+		    m_original_lyric_path = m_lyric_path;
+            SetLyricPathEditText();
+		    path = m_lyric_path;
+	    }
+	    bool char_connot_convert;
+	    string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
+	    if (char_connot_convert)	//当文件中包含Unicode字符时，询问用户是否要选择一个Unicode编码格式再保存
+	    {
+		    CString info;
+		    info.LoadString(IDS_STRING103);		//从string table载入字符串
+		    if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK) return false;		//如果用户点击了取消按钮，则返回false
+	    }
+	    ofstream out_put{ path, std::ios::binary };
+        bool failed = out_put.fail();
+	    out_put << lyric_str;
+        out_put.close();
+        if (!failed)
+        {
+            m_modified = false;
+            m_lyric_saved = true;
+            UpdateStatusbarInfo();
+        }
+        else
+        {
+            MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_FAILED), NULL, MB_ICONWARNING | MB_OK);
+        }
+        return !failed;
+    }
 }
 
 void CLyricEditDlg::UpdateStatusbarInfo()
@@ -175,10 +195,10 @@ bool CLyricEditDlg::SaveInquiry()
 {
     if (m_modified)
     {
-        int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
+        int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
         switch (rtn)
         {
-        case IDYES: SaveLyric(m_lyric_path.c_str(), m_code_type);
+        case IDYES: if (!SaveLyric(m_lyric_path.c_str(), m_code_type)) return false;
         case IDNO: m_modified = false; break;
         default: return false;
         }
@@ -547,12 +567,18 @@ void CLyricEditDlg::OnLyricOpen()
 	// TODO: 在此添加命令处理程序代码
 	if (m_modified)
 	{
-		int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONWARNING);
+		int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		switch (rtn)
 		{
-		case IDYES: SaveLyric(m_lyric_path.c_str(), m_code_type); m_modified = false; break;
-		case IDNO: break;
-		default: return;
+		case IDYES:
+            if (!SaveLyric(m_lyric_path.c_str(), m_code_type))
+                return;
+            m_modified = false;
+            break;
+		case IDNO:
+            break;
+		default:
+            return;
 		}
 	}
 
