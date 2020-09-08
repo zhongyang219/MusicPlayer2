@@ -37,7 +37,7 @@ protected:
 	bool m_write_enable{ false };		//是否允许写入标签
 	bool m_modified{ false };
 	bool m_genre_modified{ false };
-	bool m_list_refresh{ false };		//用于判断窗口关闭后播放列表是否要刷新，只要有任一首曲目的“标题”或“艺术家”标签编辑过，则置为true
+	bool m_list_refresh{ false };		//用于判断窗口关闭后播放列表是否要刷新
     int m_song_num{};
     bool m_read_only{};
 

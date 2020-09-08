@@ -102,7 +102,8 @@ void CAudioTag::GetAudioTag()
     CCommon::StringNormalize(m_song_info.artist);
     CCommon::StringNormalize(m_song_info.album);
     CCommon::StringNormalize(m_song_info.genre);
-    CCommon::StringNormalize(m_song_info.comment);	m_song_info.info_acquired = true;
+    CCommon::StringNormalize(m_song_info.comment);
+	m_song_info.info_acquired = true;
 }
 
 

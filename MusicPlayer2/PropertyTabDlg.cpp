@@ -371,7 +371,6 @@ void CPropertyTabDlg::OnEnChangeTitelEdit()
 
 	// TODO:  在此添加控件通知处理程序代码
 	m_modified = (m_title_edit.GetModify() != 0);
-	m_list_refresh = m_modified;
     SetSaveBtnEnable();
 }
 
@@ -385,7 +384,6 @@ void CPropertyTabDlg::OnEnChangeArtistEdit()
 
 	// TODO:  在此添加控件通知处理程序代码
 	m_modified = (m_artist_edit.GetModify() != 0);
-	m_list_refresh = m_modified;
     SetSaveBtnEnable();
 }
 
@@ -534,6 +532,7 @@ int CPropertyTabDlg::SaveModified()
 		    m_modified = false;
             SetSaveBtnEnable();
             ResetEditModified();
+            m_list_refresh = true;
         }
         return saved;
     }
@@ -641,7 +640,6 @@ void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
             {
                 ShowInfo();
                 m_modified = true;
-                m_list_refresh = m_modified;
                 SetSaveBtnEnable();
 
                 //判断哪些字段有修改
@@ -683,7 +681,6 @@ void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
             }
             ShowInfo();
             m_modified = true;
-            m_list_refresh = m_modified;
             SetSaveBtnEnable();
 
             //判断哪些字段有修改
@@ -756,7 +753,6 @@ void CPropertyTabDlg::ModifyTagInfo(const SongInfo& song)
     if (modified)
     {
         m_modified = true;
-        m_list_refresh = m_modified;
         SetSaveBtnEnable();
     }
 
