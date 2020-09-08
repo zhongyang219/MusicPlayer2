@@ -447,4 +447,6 @@ public:
     afx_msg void OnRename();
     afx_msg void OnEmbedLyricToAudioFile();
     afx_msg void OnDeleteLyricFromAudioFile();
+protected:
+    afx_msg LRESULT OnAfterMusicStreamClosed(WPARAM wParam, LPARAM lParam);
 };

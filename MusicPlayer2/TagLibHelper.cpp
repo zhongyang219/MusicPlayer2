@@ -34,6 +34,7 @@ using namespace TagLib;
 #define STR_APE_COVER_TAG "COVER ART (FRONT)"
 #define STR_ID3V2_LYRIC_TAG "USLT"
 #define STR_FLAC_LYRIC_TAG "LYRICS"
+#define STR_ASF_LYRIC_TAG "LYRICS"
 
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
@@ -699,7 +700,7 @@ wstring CTagLibHelper::GetAsfLyric(const wstring& file_path)
     wstring lyrics;
     ASF::File file(file_path.c_str());
     auto properties = file.properties();
-    auto lyric_item = properties["LYRICS"];
+    auto lyric_item = properties[STR_ASF_LYRIC_TAG];
     if (!lyric_item.isEmpty())
     {
         lyrics = lyric_item.front().toWString();
@@ -778,6 +779,25 @@ bool CTagLibHelper::WriteM4aLyric(const wstring& file_path, const wstring& lyric
         return saved;
     }
     return false;
+}
+
+bool CTagLibHelper::WriteAsfLyric(const wstring& file_path, const wstring& lyric_contents)
+{
+    ASF::File file(file_path.c_str());
+    auto properties = file.properties();
+    if (lyric_contents.empty())
+    {
+        properties.erase(STR_ASF_LYRIC_TAG);
+    }
+    else
+    {
+        StringList lyric_item;
+        lyric_item.append(lyric_contents);
+        properties[STR_ASF_LYRIC_TAG] = lyric_item;
+    }
+    file.setProperties(properties);
+    bool saved = file.save();
+    return saved;
 }
 
 bool CTagLibHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist)

@@ -472,6 +472,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         //RemoveFXHandle();
         m_pCore->Close();
         m_playing = 0;
+        SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_AFTER_MUSIC_STREAM_CLOSED, 0, 0);
         break;
     case Command::PAUSE:
         m_pCore->Pause();

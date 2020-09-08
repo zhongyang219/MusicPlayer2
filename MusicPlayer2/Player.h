@@ -17,6 +17,7 @@
 #define WM_CONNOT_PLAY_WARNING (WM_USER+108)		//无法播放文件时弹出警告提示框的消息
 #define WM_MUSIC_STREAM_OPENED (WM_USER+109)		//当音频文件打开时的消息
 #define WM_POST_MUSIC_STREAM_OPENED (WM_USER+129)		//当音频文件打开前的消息
+#define WM_AFTER_MUSIC_STREAM_CLOSED (WM_USER+137)		//当音频文件关闭后的消息
 
 struct AlbumCoverInfo
 {

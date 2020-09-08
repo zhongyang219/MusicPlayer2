@@ -90,11 +90,12 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
         const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
         bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
         //写入内嵌歌词
-        if (lyric_write_support)
+        if (lyric_write_support && m_inner_lyric)
         {
             bool saved{};
             SongInfo song_info{ song };
             CAudioTag audio_tag(song_info);
+            CPlayer::ReOpen reopen(true);
             saved = audio_tag.WriteAudioLyric(m_lyric_string);
             m_modified = false;
             m_lyric_saved = true;

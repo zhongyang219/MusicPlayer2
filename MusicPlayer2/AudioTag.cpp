@@ -220,6 +220,8 @@ bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
         return CTagLibHelper::WriteFlacLyric(m_song_info.file_path, lyric_contents);
     case AU_MP4:
         return CTagLibHelper::WriteM4aLyric(m_song_info.file_path, lyric_contents);
+    case AU_WMA_ASF:
+        return CTagLibHelper::WriteAsfLyric(m_song_info.file_path, lyric_contents);
     default:
         break;
     }
@@ -329,6 +331,6 @@ bool CAudioTag::IsFileTypeLyricWriteSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4;
+    return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF;
 }
 

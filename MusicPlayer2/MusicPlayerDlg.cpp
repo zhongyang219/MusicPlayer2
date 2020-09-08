@@ -266,6 +266,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_RENAME, &CMusicPlayerDlg::OnRename)
     ON_COMMAND(ID_EMBED_LYRIC_TO_AUDIO_FILE, &CMusicPlayerDlg::OnEmbedLyricToAudioFile)
     ON_COMMAND(ID_DELETE_LYRIC_FROM_AUDIO_FILE, &CMusicPlayerDlg::OnDeleteLyricFromAudioFile)
+    ON_MESSAGE(WM_AFTER_MUSIC_STREAM_CLOSED, &CMusicPlayerDlg::OnAfterMusicStreamClosed)
 END_MESSAGE_MAP()
 
 
@@ -3676,9 +3677,6 @@ void CMusicPlayerDlg::OnDownloadAlbumCover()
 
 afx_msg LRESULT CMusicPlayerDlg::OnPostMusicStreamOpened(WPARAM wParam, LPARAM lParam)
 {
-	//保存修改过的歌词
-	DoLyricsAutoSave();
-
 	CPlayer::GetInstance().ResetABRepeat();
 	UpdateABRepeatToolTip();
 
@@ -5218,4 +5216,12 @@ void CMusicPlayerDlg::OnDeleteLyricFromAudioFile()
     CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
     audio_tag.WriteAudioLyric(wstring());
     //CPlayer::GetInstance().IniLyrics();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnAfterMusicStreamClosed(WPARAM wParam, LPARAM lParam)
+{
+    //保存修改过的歌词
+    DoLyricsAutoSave();
+    return 0;
 }
