@@ -250,6 +250,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 
     SetIcon(theApp.m_icon_set.edit.GetIcon(true), FALSE);
 
+    m_lyric_edit.SetColorWhenModified(false);
 
 	//获取歌词信息
 	//m_lyric_string = CPlayer::GetInstance().m_Lyrics.GetLyricsString();

@@ -14,6 +14,10 @@ public:
 
     void ResetModified();
     CString GetText() const;
+    void SetColorWhenModified(bool val);    //是否要在有修改时将文本颜色改为主题色
+
+protected:
+    bool m_show_color_when_modified{ true };
 
 protected:
 	DECLARE_MESSAGE_MAP()
