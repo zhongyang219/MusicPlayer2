@@ -178,7 +178,8 @@ void CAllMediaDlg::QuickSearch(const wstring& key_word)
 	m_list_data_searched.clear();
 	for (const auto& item : m_list_data)
 	{
-		for (int i{ COL_INDEX + 1 }; i < COL_PATH; i++)
+        const vector<int> search_col{ COL_TITLE, COL_ARTIST, COL_ALBUM, COL_GENRE, COL_PATH };
+		for (int i : search_col)
 		{
 			if (CCommon::StringFindNoCase(item.at(i), key_word) != wstring::npos)
 			{
