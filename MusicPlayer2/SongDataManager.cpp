@@ -185,7 +185,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 song_info.lyric_file = temp;
             }
 
-            if (version_str >= _T("2.670"))
+            if (version_str >= _T("2.700"))
             {
                 ar >> song_info.modified_time;
             }
