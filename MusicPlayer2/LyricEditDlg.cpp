@@ -270,6 +270,7 @@ BOOL CLyricEditDlg::OnInitDialog()
 	CenterWindow();
 
     SetIcon(theApp.m_icon_set.edit.GetIcon(true), FALSE);
+    SetIcon(AfxGetApp()->LoadIcon(IDI_EDIT_D), TRUE);
 
     m_lyric_edit.SetColorWhenModified(false);
 

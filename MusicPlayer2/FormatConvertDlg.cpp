@@ -209,6 +209,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
 	CenterWindow();
 
     SetIcon(theApp.m_icon_set.convert, FALSE);
+    SetIcon(AfxGetApp()->LoadIcon(IDI_CONVERT_D), true);
 
 	LoadConfig();
 	LoadEncoderConfig();

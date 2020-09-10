@@ -73,6 +73,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     ModifyStyle(0, WS_CLIPCHILDREN);
 
     SetIcon(theApp.m_icon_set.media_lib.GetIcon(true), FALSE);
+    SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), TRUE);
 
     CButton* close_btn = (CButton*)(GetDlgItem(IDCANCEL));
     if (close_btn != nullptr)

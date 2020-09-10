@@ -101,6 +101,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
     SetIcon(theApp.m_icon_set.download1, FALSE);
+    SetIcon(AfxGetApp()->LoadIcon(IDI_DOWNLOAD1_D), FALSE);
     
     CenterWindow();
 

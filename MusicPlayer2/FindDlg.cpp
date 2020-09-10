@@ -336,6 +336,7 @@ BOOL CFindDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 
     SetIcon(theApp.m_icon_set.find_songs.GetIcon(true), FALSE);
+    SetIcon(AfxGetApp()->LoadIcon(IDI_FIND_SONGS_D), TRUE);
 
 	//设置查找选项复选按钮的状态
 	m_find_file_check.SetCheck(m_find_file);
