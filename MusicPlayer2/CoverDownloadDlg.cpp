@@ -54,14 +54,15 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
 	{
 		wstring album_name{ match_item.album };
 		CCommon::FileNameNormalize(album_name);
-		cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name);
+        CFilePathHelper url_path(cover_url);
+		cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name + url_path.GetFileExtension(false, true));
 	}
 	else				//否则以歌曲文件名为文件名保存
 	{
 		cover_file_path.SetFilePath(pThis->GetSongInfo().file_path);
+        CFilePathHelper url_path(cover_url);
+        cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
 	}
-	CFilePathHelper url_path(cover_url);
-	cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
 
 	//下面专辑封面
 	if (CCommon::FileExist(cover_file_path.GetFilePath()))
