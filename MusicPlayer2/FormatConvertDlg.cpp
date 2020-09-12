@@ -305,6 +305,7 @@ void CFormatConvertDlg::EnableControls(bool enable)
 	GetDlgItem(IDC_ADD_NUMBER_CHECK)->EnableWindow(enable);
 	GetDlgItem(IDC_CHANGE_FREQ_CHECK)->EnableWindow(enable);
     m_freq_comb.EnableWindow(enable && m_convert_freq);
+	GetDlgItem(IDC_OUT_DIR_EDIT)->EnableWindow(enable);
 }
 
 void CFormatConvertDlg::SetEncodeConfigBtnState()
@@ -645,6 +646,8 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     {
 		CFilePathHelper out_file_path_helper{ out_file_path };
 		CCommon::MoveAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_temp, out_file_path_helper.GetDir());
+        if (CCommon::FileExist(out_file_path_helper.GetFilePath()))
+            CCommon::DeleteAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_helper.GetFilePath());
 		CCommon::FileRename(out_file_path_helper.GetDir() + CONVERTING_TEMP_FILE_NAME, out_file_path_helper.GetFileName());
 
         //向转换的mp3文件添加专辑封面

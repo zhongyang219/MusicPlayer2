@@ -47,7 +47,10 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
 
     CRect rc_text = rc_draw;
     rc_text.left += theApp.DPI(20);
-    drawer.DrawWindowText(rc_text, m_btn_str, CColorConvert::m_gray_color.dark4, Alignment::CENTER, true);
+    COLORREF text_color = CColorConvert::m_gray_color.dark4;
+    if (!IsWindowEnabled())
+        text_color = CColorConvert::m_gray_color.dark1;
+    drawer.DrawWindowText(rc_text, m_btn_str, text_color, Alignment::CENTER, true);
 }
 
 
