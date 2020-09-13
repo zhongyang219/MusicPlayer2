@@ -131,10 +131,17 @@ BOOL CLyricRelateDlg::OnInitDialog()
     EnableControls(false);
 
     //初始化列表控件
-    m_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, theApp.DPI(40));
-    m_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, theApp.DPI(160));
-    m_result_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(200));
-    m_result_list.InsertColumn(3, CCommon::LoadText(IDS_IS_RELATED), LVCFMT_LEFT, theApp.DPI(60));
+    CRect rect;
+    m_result_list.GetWindowRect(rect);
+    int width[4]{};
+    width[0] = theApp.DPI(40);
+    width[1] = rect.Width() * 3 / 10;
+    width[2] = rect.Width() * 2 / 5;
+    width[3] = rect.Width() - width[0] - width[1] - width[2] - theApp.DPI(20) - 1;
+    m_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);
+    m_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width[1]);
+    m_result_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, width[2]);
+    m_result_list.InsertColumn(3, CCommon::LoadText(IDS_IS_RELATED), LVCFMT_LEFT, width[3]);
 
     SearchLyrics();
     ShowSearchResult();
