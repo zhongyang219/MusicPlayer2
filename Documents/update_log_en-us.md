@@ -1,6 +1,19 @@
 **[简体中文](./update_log.md) | English**<br>
 
 # MusicPlayer2 Update log
+## V2.71 (2020/09/13)
+
+* Use the taglib library to obtain audio tags and album cover. Add the tags and album cover acquisition of more than a dozen audio formats.
+* Add the function to write audio tags and album cover.
+* Add the function of batch editing of tags in the audio properties.
+* Add the functions of "Get tags from file name", "Get tags from lyrics" and "Get tags online" in the audio properties.
+* Add the "Album Cover" tab to the audio properties.
+* Fixed the problem that the playlist was disordered in folder mode when adding songs to the playlist that was just opened.
+* Add read and write functions for embedded lyrics.
+* Add the file rename function.
+* Fixed the problem that the temporary file cannot be renamed when the existing target file is selected to overwrite the existing target file in the format conversion.
+* Improvements in other details.
+
 ## V2.70.1 (2020/08/27)
 
 * Fixed the problem of the play random and play shuffle did not work properly when the number of tracks in the playlist is too large.
