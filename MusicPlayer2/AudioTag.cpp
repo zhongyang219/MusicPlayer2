@@ -82,9 +82,13 @@ void CAudioTag::GetAudioTag()
     case AudioType::AU_SPX:
         CTagLibHelper::GetSpxTagInfo(m_song_info);
         break;
-    //case AudioType::AU_AAC:
-    //    CTagLibHelper::GetAnyFileTagInfo(m_song_info);
-    //    break;
+    case AudioType::AU_AAC:
+        //CTagLibHelper::GetAnyFileTagInfo(m_song_info);
+    {
+        CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
+        audio_tag_old.GetTagDefault();
+    }
+        break;
     case AU_CUE:
         break;
     case AU_MIDI:
@@ -92,10 +96,6 @@ void CAudioTag::GetAudioTag()
     case AU_OTHER:
         break;
     default:
-    {
-        CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
-        audio_tag_old.GetTagDefault();
-    }
         break;
     }
     CCommon::StringNormalize(m_song_info.title);
