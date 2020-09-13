@@ -8,12 +8,11 @@ Alternate link: Download from [Baidu Netdisk](https://pan.baidu.com/s/1i5QNwFF)<
 * Lyrics display
 * Mini mode
 * Lyrics karaoke style display
-* Show lyrics in Cortana search box
+* Show lyrics in the taskbar search box
 * Desktop lyrics display
 * Lyrics online download
 * lyrics editing
-* Song tag recognition
-* Song tag editing (currently only ID3V1 is supported)
+* Song tag recognition and editing
 * Spectrum analysis
 * Album cover display
 * Auto match download lyrics and album cover
@@ -23,6 +22,7 @@ Alternate link: Download from [Baidu Netdisk](https://pan.baidu.com/s/1i5QNwFF)<
 * Support for cue format
 * Background Gaussian Blur
 * Format conversion
+* Media library function
 # Operating Instructions
 You have the following ways to open and play a song:<br>
 1. Select the "Open File" item on the File menu;<br>
