@@ -37,6 +37,7 @@ void CLyricDownloadDlg::ShowDownloadList()
 		m_down_list_ctrl.SetItemText(i, 1, m_down_list[i].title.c_str());
 		m_down_list_ctrl.SetItemText(i, 2, m_down_list[i].artist.c_str());
 		m_down_list_ctrl.SetItemText(i, 3, m_down_list[i].album.c_str());
+		m_down_list_ctrl.SetItemText(i, 4, Time(m_down_list[i].duration).toString().c_str());
 	}
 }
 
@@ -199,17 +200,19 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	//初始化搜索结果列表控件
 	CRect rect;
 	m_down_list_ctrl.GetClientRect(rect);
-	int width0, width1, width2, width3;
+	int width0, width1, width2, width3, width4;
 	width0 = rect.Width() / 10;
 	width1 = rect.Width() * 3 / 10;
 	width2 = rect.Width() * 2 / 10;
-	width3 = rect.Width() - theApp.DPI(20) - 1 - width0 - width1 - width2;
+    width4 = rect.Width() / 10;
+	width3 = rect.Width() - theApp.DPI(20) - 1 - width0 - width1 - width2 - width4;
 
     m_down_list_ctrl.SetExtendedStyle(m_down_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_down_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第1列
-	m_down_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width1);		//插入第2列
-	m_down_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//插入第3列
-	m_down_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width3);		//插入第3列
+	m_down_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);
+	m_down_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width1);
+	m_down_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);
+	m_down_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width3);
+	m_down_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width4);
 
 	//设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
 	m_down_list_ctrl.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
