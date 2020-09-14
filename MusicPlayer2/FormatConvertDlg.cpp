@@ -642,6 +642,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     if (hStreamOld != 0)
         BASS_StreamFree(hStreamOld);
 
+    //转换完成后
     if (pthis->m_encode_format == EncodeFormat::MP3)
     {
 		CFilePathHelper out_file_path_helper{ out_file_path };
@@ -655,7 +656,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         {
 	        SongInfo song_info_tmp;
             song_info_tmp.file_path = file_path;
-	        CAudioTag audio_tag(song_info_tmp, AudioType::AU_MP3);
+	        CAudioTag audio_tag(song_info_tmp);
 	        int cover_type;
 	        wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
 	        CImage image;
@@ -673,6 +674,38 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
             }
         }
     }
+
+    else if (pthis->m_encode_format == EncodeFormat::WAV)
+    {
+        SongInfo song_info_tmp{ song_info };
+        song_info_tmp.file_path = out_file_path;
+        if (pthis->m_write_tag)
+        {
+            CTagLibHelper::WriteWavTag(song_info_tmp);
+        }
+        if (pthis->m_write_album_cover)
+        {
+            SongInfo song_info_tmp;
+            song_info_tmp.file_path = file_path;
+            CAudioTag audio_tag(song_info_tmp);
+            int cover_type;
+            wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
+            CImage image;
+            image.Load(album_cover_path.c_str());
+            if (image.IsNull())		//如果没有内嵌的专辑封面，则获取外部封面
+            {
+                CMusicPlayerCmdHelper helper;
+                album_cover_path = helper.SearchAlbumCover(song_info);
+            }
+            else
+                image.Destroy();
+            if (!album_cover_path.empty())
+            {
+                CTagLibHelper::WriteWavAlbumCover(out_file_path, album_cover_path);
+            }
+        }
+    }
+
     return true;
 }
 
