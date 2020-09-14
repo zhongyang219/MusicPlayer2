@@ -227,7 +227,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
 
 	//初始化文件列表
 	CRect rect;
-	m_file_list_ctrl.GetClientRect(rect);
+	m_file_list_ctrl.GetWindowRect(rect);
 	int width0{ theApp.DPI(40) }, width1, width2{ theApp.DPI(65) };
 	width1 = rect.Width() - width0 - width2 - theApp.DPI(20) - 1;
 	//插入列

@@ -134,7 +134,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
 	//初始化歌曲列表控件
 	//设置各列的宽度
 	CRect rect;
-	m_song_list_ctrl.GetClientRect(rect);
+	m_song_list_ctrl.GetWindowRect(rect);
 	int width0, width1, width2, width3, width4;
 	width0 = rect.Width() / 10;
 	width1 = rect.Width() * 2 / 10;

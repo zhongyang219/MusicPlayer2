@@ -164,7 +164,7 @@ BOOL CCoverDownloadDlg::OnInitDialog()
 
 	//初始化搜索结果列表控件
 	CRect rect;
-	m_down_list_ctrl.GetClientRect(rect);
+	m_down_list_ctrl.GetWindowRect(rect);
 	int width0, width1, width2, width3;
 	width0 = rect.Width() / 10;
 	width1 = rect.Width() * 3 / 10;
