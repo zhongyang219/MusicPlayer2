@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CUIWindow, CStatic)
     ON_WM_RBUTTONUP()
     ON_WM_PAINT()
     ON_WM_SIZE()
+    ON_WM_MOUSELEAVE()
 END_MESSAGE_MAP()
 
 
@@ -125,4 +126,13 @@ void CUIWindow::OnSize(UINT nType, int cx, int cy)
     {
         pMainWindow->m_ui_thread_para.ui_force_refresh = true;
     }
+}
+
+
+void CUIWindow::OnMouseLeave()
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    m_pUI->MouseLeave();
+
+    CStatic::OnMouseLeave();
 }

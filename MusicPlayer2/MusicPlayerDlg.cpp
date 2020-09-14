@@ -4078,7 +4078,6 @@ BOOL CMusicPlayerDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 void CMusicPlayerDlg::OnMouseLeave()
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    m_pUI->MouseLeave();
 
     CMainDialogBase::OnMouseLeave();
 }
