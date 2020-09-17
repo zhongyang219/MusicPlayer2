@@ -560,6 +560,8 @@
     <Image Include="res\列表循环_d.ico" />
     <Image Include="res\单曲循环.ico" />
     <Image Include="res\单曲循环_d.ico" />
+    <Image Include="res\单曲播放.ico" />
+    <Image Include="res\单曲播放_d.ico" />
     <Image Include="res\快进.ico" />
     <Image Include="res\快退.ico" />
     <Image Include="res\播放.ico" />

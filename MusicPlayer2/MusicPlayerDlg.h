@@ -449,4 +449,6 @@ public:
     afx_msg void OnDeleteLyricFromAudioFile();
 protected:
     afx_msg LRESULT OnAfterMusicStreamClosed(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnPlayTrack();
 };

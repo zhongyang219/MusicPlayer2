@@ -749,20 +749,22 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
                 song_track = m_index;
             break;
         }
-        //这里没有break，如果不是播放完成后自动下一曲，则执行下面列表循环中的代码
+        LoopPlaylist(song_track);   //如果不是播放完成后自动下一曲，则执行列表循环中的代码
+        break;
     case RM_LOOP_PLAYLIST:		//列表循环
-        if (song_track == NEXT)		//播放下一曲
+        LoopPlaylist(song_track);
+        break;
+
+    case RM_PLAY_TRACK:
+        if (auto_next)
         {
-            song_track = m_index + 1;
-            if (song_track >= GetSongNum()) song_track = 0;
-            if (song_track < 0) song_track = GetSongNum() - 1;
+            if (song_track == NEXT || song_track == PREVIOUS)
+            {
+                MusicControl(Command::STOP);
+                return false;
+            }
         }
-        if (song_track == PREVIOUS)		//播放上一曲
-        {
-            song_track = m_index - 1;
-            if (song_track >= GetSongNum()) song_track = 0;
-            if (song_track < 0) song_track = GetSongNum() - 1;
-        }
+        LoopPlaylist(song_track);   //如果不是播放完成后自动下一曲，则执行列表循环中的代码
         break;
     }
 
@@ -792,6 +794,22 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
         SaveRecentPath();
     }
     return valid;
+}
+
+void CPlayer::LoopPlaylist(int& song_track)
+{
+    if (song_track == NEXT)		//播放下一曲
+    {
+        song_track = m_index + 1;
+        if (song_track >= GetSongNum()) song_track = 0;
+        if (song_track < 0) song_track = GetSongNum() - 1;
+    }
+    if (song_track == PREVIOUS)		//播放上一曲
+    {
+        song_track = m_index - 1;
+        if (song_track >= GetSongNum()) song_track = 0;
+        if (song_track < 0) song_track = GetSongNum() - 1;
+    }
 }
 
 void CPlayer::ChangePath(const wstring& path, int track, bool play)

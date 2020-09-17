@@ -267,6 +267,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_EMBED_LYRIC_TO_AUDIO_FILE, &CMusicPlayerDlg::OnEmbedLyricToAudioFile)
     ON_COMMAND(ID_DELETE_LYRIC_FROM_AUDIO_FILE, &CMusicPlayerDlg::OnDeleteLyricFromAudioFile)
     ON_MESSAGE(WM_AFTER_MUSIC_STREAM_CLOSED, &CMusicPlayerDlg::OnAfterMusicStreamClosed)
+    ON_COMMAND(ID_PLAY_TRACK, &CMusicPlayerDlg::OnPlayTrack)
 END_MESSAGE_MAP()
 
 
@@ -1156,19 +1157,22 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     switch (repeat_mode)
     {
     case RM_PLAY_ORDER:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_ORDER, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_PLAY_TRACK, ID_PLAY_ORDER, MF_BYCOMMAND | MF_CHECKED);
         break;
     case RM_PLAY_SHUFFLE:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_SHUFFLE, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_PLAY_TRACK, ID_PLAY_SHUFFLE, MF_BYCOMMAND | MF_CHECKED);
         break;
     case RM_PLAY_RANDOM:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_PLAY_RANDOM, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_PLAY_TRACK, ID_PLAY_RANDOM, MF_BYCOMMAND | MF_CHECKED);
         break;
     case RM_LOOP_PLAYLIST:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_LOOP_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_PLAY_TRACK, ID_LOOP_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
         break;
     case RM_LOOP_TRACK:
-        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_LOOP_TRACK, ID_LOOP_TRACK, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_PLAY_TRACK, ID_LOOP_TRACK, MF_BYCOMMAND | MF_CHECKED);
+        break;
+    case RM_PLAY_TRACK:
+        pMenu->CheckMenuRadioItem(ID_PLAY_ORDER, ID_PLAY_TRACK, ID_PLAY_TRACK, MF_BYCOMMAND | MF_CHECKED);
         break;
     default:
         break;
@@ -2450,6 +2454,15 @@ void CMusicPlayerDlg::OnPlayRandom()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetRepeatMode(RM_PLAY_RANDOM);		//设置无序播放
+    m_ui.UpdateRepeatModeToolTip();
+    m_ui2.UpdateRepeatModeToolTip();
+}
+
+
+void CMusicPlayerDlg::OnPlayTrack()
+{
+    // TODO: 在此添加命令处理程序代码
+    CPlayer::GetInstance().SetRepeatMode(RM_PLAY_TRACK);		//设置单曲播放
     m_ui.UpdateRepeatModeToolTip();
     m_ui2.UpdateRepeatModeToolTip();
 }

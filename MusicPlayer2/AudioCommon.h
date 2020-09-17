@@ -81,6 +81,7 @@ enum RepeatMode
     RM_PLAY_RANDOM,     //随机播放
 	RM_LOOP_PLAYLIST,	//列表循环
 	RM_LOOP_TRACK,		//单曲循环
+    RM_PLAY_TRACK,      //单曲播放
     RM_MAX
 };
 

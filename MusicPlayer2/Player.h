@@ -230,7 +230,10 @@ public:
 	bool IsPlaying() const;			//判断当前是否正在播放
 
 	bool PlayTrack(int song_track, bool auto_next = false);		//播放指定序号的歌曲，如果是播放结束自动播放下一曲，则auto_next为true
+private:
+    void LoopPlaylist(int& song_track);
 
+public:
 	void SetVolume();		//用m_volume的值设置音量
 	void SetPath(const PathInfo& path_info);		//设置路径
     void SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false);

@@ -54,6 +54,7 @@ void CDesktopLyric::Create()
     CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_RANDOM, FALSE, theApp.m_icon_set.play_random.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, theApp.m_icon_set.loop_playlist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, theApp.m_icon_set.loop_track.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_TRACK, FALSE, theApp.m_icon_set.play_track.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_DISPLAYED_DOUBLE_LINE, FALSE, theApp.m_icon_set.double_line.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_BACKGROUND_PENETRATE, FALSE, theApp.m_icon_set.skin.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOCK_DESKTOP_LRYIC, FALSE, theApp.m_icon_set.lock.GetIcon(true));

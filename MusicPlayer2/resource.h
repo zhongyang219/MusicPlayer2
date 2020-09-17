@@ -613,7 +613,9 @@
 #define IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED 496
 #define IDS_CONVERT_ERROR_ENCODE_PARA_ERROR 497
 #define IDS_CONVERT_ERROR_MIDI_NO_SF2   498
+#define IDI_PLAY_TRACK                  498
 #define IDS_CONTAIN_SUB_FOLDER          499
+#define IDI_PLAY_TRACK_D                499
 #define IDS_TYPE                        500
 #define IDS_FILE_TYPE                   501
 #define IDS_CLEAN_UP_MEDIA_WARNING      502
@@ -635,6 +637,7 @@
 #define IDS_CLEAR_HISTORY_INFO          518
 #define IDS_RENAME                      519
 #define IDS_RENAME_INFO                 520
+#define IDS_PLAY_TRACK                  521
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1008,7 +1011,7 @@
 #define ID_32786                        32786
 #define ID_REW                          32787
 #define ID_FF                           32788
-#define ID_PLAY_TRACK                   32789
+#define ID_32789                        32789
 #define ID_32790                        32790
 #define ID_32791                        32791
 #define ID_32792                        32792
@@ -1028,9 +1031,9 @@
 #define ID_PLAY_RANDOM                  32806
 #define ID_LOOP_PLAYLIST                32807
 #define ID_LOOP_TRACK                   32808
-#define ID_SET_FONT                     32809
-#define ID_STOP_WHEN_ERROR              32810
-#define ID_32811                        32811
+#define ID_PLAY_TRACK                   32809
+#define ID_SET_FONT                     32810
+#define ID_STOP_WHEN_ERROR              32811
 #define ID_32812                        32812
 #define ID_32813                        32813
 #define ID_32814                        32814
@@ -1390,7 +1393,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        498
+#define _APS_NEXT_RESOURCE_VALUE        500
 #define _APS_NEXT_COMMAND_VALUE         33210
 #define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
