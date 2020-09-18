@@ -727,9 +727,16 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
 
     //显示音量
+    CString vol_str;
+    vol_str.Format(_T(": %d%%"), CPlayer::GetInstance().GetVolume());
+    vol_str = CCommon::LoadText(IDS_VOLUME) + vol_str;
+    int width = m_draw.GetTextExtent(vol_str).cx;
+    if (width <= 0 || width > DPI(72))
+        width = DPI(72);
+    
     rc_tmp.right = rc_tmp.left;
-    rc_tmp.left = rc_tmp.right - DPI(72);
-    DrawVolumeButton(rc_tmp);
+    rc_tmp.left = rc_tmp.right - width - Margin();
+    DrawVolumeButton(rc_tmp, vol_str);
 }
 
 CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
@@ -1514,16 +1521,20 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
     }
 }
 
-void CPlayerUIBase::DrawVolumeButton(CRect rect)
+void CPlayerUIBase::DrawVolumeButton(CRect rect, LPCTSTR str)
 {
-    wchar_t buff[64];
-    swprintf_s(buff, CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
+    if (str == nullptr)
+    {
+        wchar_t buff[64];
+        swprintf_s(buff, CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
+        str = buff;
+    }
     if (m_buttons[BTN_VOLUME].pressed)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
     if (m_buttons[BTN_VOLUME].hover)		//鼠标指向音量区域时，以另外一种颜色显示
-        m_draw.DrawWindowText(rect, buff, m_colors.color_text_heighlight);
+        m_draw.DrawWindowText(rect, str, m_colors.color_text_heighlight);
     else
-        m_draw.DrawWindowText(rect, buff, m_colors.color_text);
+        m_draw.DrawWindowText(rect, str, m_colors.color_text);
     //设置音量调整按钮的位置
     m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rect, m_draw_rect);
     m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));

@@ -109,7 +109,7 @@ protected:
     void DrawCurrentTime();				//在右上角绘制当前系统时间
     void DrawStatusBar(CRect rect, bool reset = false);
     void DrawAlbumCover(CRect rect);
-    void DrawVolumeButton(CRect rect);
+    void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr);
     void DrawABRepeatButton(CRect rect);
 
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);

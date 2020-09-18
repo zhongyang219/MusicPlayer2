@@ -62,44 +62,74 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         m_colors.color_text, GetScrollTextPixel(), true, scroll_info, reset);
 
     //绘制循环模式按钮
-    rc_tmp.left = rc_tmp.right;
-    rc_tmp.right = rc_tmp.left + rc_tmp.Height();
-    IconRes* pIcon = nullptr;
-    switch (CPlayer::GetInstance().GetRepeatMode())
+    if (m_draw_rect.Width() > DPI(330))
     {
-    case RepeatMode::RM_PLAY_ORDER:
-        pIcon = &theApp.m_icon_set.play_oder;
-        break;
-    case RepeatMode::RM_LOOP_PLAYLIST:
-        pIcon = &theApp.m_icon_set.loop_playlist;
-        break;
-    case RepeatMode::RM_LOOP_TRACK:
-        pIcon = &theApp.m_icon_set.loop_track;
-        break;
-    case RepeatMode::RM_PLAY_SHUFFLE:
-        pIcon = &theApp.m_icon_set.play_shuffle;
-        break;
-    case RepeatMode::RM_PLAY_RANDOM:
-        pIcon = &theApp.m_icon_set.play_random;
-        break;
-    case RepeatMode::RM_PLAY_TRACK:
-        pIcon = &theApp.m_icon_set.play_track;
-        break;
+        rc_tmp.left = rc_tmp.right;
+        rc_tmp.right = rc_tmp.left + rc_tmp.Height();
+        IconRes* pIcon = nullptr;
+        switch (CPlayer::GetInstance().GetRepeatMode())
+        {
+        case RepeatMode::RM_PLAY_ORDER:
+            pIcon = &theApp.m_icon_set.play_oder;
+            break;
+        case RepeatMode::RM_LOOP_PLAYLIST:
+            pIcon = &theApp.m_icon_set.loop_playlist;
+            break;
+        case RepeatMode::RM_LOOP_TRACK:
+            pIcon = &theApp.m_icon_set.loop_track;
+            break;
+        case RepeatMode::RM_PLAY_SHUFFLE:
+            pIcon = &theApp.m_icon_set.play_shuffle;
+            break;
+        case RepeatMode::RM_PLAY_RANDOM:
+            pIcon = &theApp.m_icon_set.play_random;
+            break;
+        case RepeatMode::RM_PLAY_TRACK:
+            pIcon = &theApp.m_icon_set.play_track;
+            break;
+        }
+        if (pIcon != nullptr)
+            DrawControlBarBtn(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
     }
-    if (pIcon != nullptr)
-        DrawControlBarBtn(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
+    else
+    {
+        m_buttons[BTN_REPETEMODE].rect = CRect();
+        rc_tmp.left = rc_tmp.right - rc_tmp.Height();
+    }
+
+    //绘制设置按钮
+    if (m_draw_rect.Width() > DPI(430))
+    {
+        rc_tmp.MoveToX(rc_tmp.right);
+        DrawControlBarBtn(rc_tmp, m_buttons[BTN_SETTING], theApp.m_icon_set.setting);
+    }
+    else
+    {
+        m_buttons[BTN_SETTING].rect = CRect();
+    }
 
     //绘制更换界面按钮
-    rc_tmp.MoveToX(rc_tmp.right);
-    DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
+    if (m_draw_rect.Width() > DPI(360))
+    {
+        rc_tmp.MoveToX(rc_tmp.right);
+        DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
+    }
+    else
+    {
+        m_buttons[BTN_SKIN].rect = CRect();
+    }
 
     //绘制AB重复按钮
-    if (m_draw_rect.Width() > DPI(360))
+    if (m_draw_rect.Width() > DPI(384))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect rc_btn = rc_tmp;
         rc_btn.DeflateRect(DPI(2), DPI(2));
         DrawABRepeatButton(rc_btn);
+    }
+    else
+    {
+        m_buttons[BTN_AB_REPEAT].rect = CRect();
     }
 
     //绘制上一曲按钮
@@ -115,26 +145,33 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     rc_tmp.MoveToX(rc_tmp.right);
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next_new);
 
-    //绘制音量
     int progress_bar_left = rc_tmp.right;
-    int right_max = rc_tool_bar.right;
-    if (m_draw_rect.Width() > DPI(450))
-    {
-        rc_tmp = rc_tool_bar;
-        rc_tmp.left = rc_tmp.right - DPI(72);
-        DrawVolumeButton(rc_tmp);
-        right_max = rc_tmp.left;
-    }
 
     //绘制显示播放列表按钮
-    rc_tmp.right = rc_tmp.left + rc_tmp.Height();
-    rc_tmp.MoveToX(right_max - rc_tmp.Width());
+    rc_tmp = rc_tool_bar;
+    rc_tmp.left = rc_tmp.right - rc_tool_bar.Height();
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
+
+    //绘制音量
+    if (m_draw_rect.Width() > DPI(500))
+    {
+        CString vol_str;
+        vol_str.Format(_T(": %d%%"), CPlayer::GetInstance().GetVolume());
+        vol_str = CCommon::LoadText(IDS_VOLUME) + vol_str;
+        int width = m_draw.GetTextExtent(vol_str).cx;
+        if (width <= 0 || width > DPI(72))
+            width = DPI(72);
+
+        rc_tmp.right = rc_tmp.left;
+        rc_tmp.left = rc_tmp.right - width;
+
+        DrawVolumeButton(rc_tmp, vol_str);
+    }
 
     //绘制进度条
     CRect rc_progress_bar = rc_tool_bar;
     rc_progress_bar.left = progress_bar_left;
-    rc_progress_bar.right = rc_tmp.left;
+    rc_progress_bar.right = rc_tmp.left - Margin();
     DrawProgressBar(rc_progress_bar);
 
     //绘制音量调整按钮
