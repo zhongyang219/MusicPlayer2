@@ -1621,12 +1621,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     theApp.LoadIconResource();
 
 #ifdef _DEBUG
-    SetIcon(theApp.m_icon_set.app_debug.GetIcon(false, true), TRUE);			// 设置大图标
-    SetIcon(theApp.m_icon_set.app_debug.GetIcon(false, false), FALSE);		// 设置小图标
+    SetIcon(theApp.m_icon_set.app.GetIcon(false, true), TRUE);			// 设置大图标
 #else
     SetIcon(m_hIcon, TRUE);			// 设置大图标
-    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);		// 设置小图标
 #endif
+    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);		// 设置小图标
 
     // TODO: 在此添加额外的初始化代码
 

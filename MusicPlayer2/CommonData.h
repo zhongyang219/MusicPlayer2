@@ -401,7 +401,6 @@ struct IconSet
 {
     //界面图标
     IconRes app;
-    IconRes app_debug;
     HICON default_cover;
     HICON default_cover_small;
     HICON default_cover_not_played;
