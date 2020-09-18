@@ -268,6 +268,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DELETE_LYRIC_FROM_AUDIO_FILE, &CMusicPlayerDlg::OnDeleteLyricFromAudioFile)
     ON_MESSAGE(WM_AFTER_MUSIC_STREAM_CLOSED, &CMusicPlayerDlg::OnAfterMusicStreamClosed)
     ON_COMMAND(ID_PLAY_TRACK, &CMusicPlayerDlg::OnPlayTrack)
+    ON_COMMAND(ID_SWITCH_UI_1, &CMusicPlayerDlg::OnSwitchUi1)
+    ON_COMMAND(ID_SWITCH_UI_2, &CMusicPlayerDlg::OnSwitchUi2)
+    ON_COMMAND(ID_SWITCH_UI_LYRICS_FULL_SCREEN, &CMusicPlayerDlg::OnSwitchUiLyricsFullScreen)
 END_MESSAGE_MAP()
 
 
@@ -397,13 +400,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
-
-    int ui_selected;
-    if (m_pUI == &m_ui)
-        ui_selected = 0;
-    else
-        ui_selected = 1;
-    ini.WriteInt(L"config", L"UI_selected", ui_selected);
+    ini.WriteInt(L"config", L"UI_selected", GetUiSelected());
 
     //保存热键设置
     ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_setting_data.hot_key_enable);
@@ -557,10 +554,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
 
     int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
-    if (ui_selected == 0)
-        m_pUI = &m_ui;
-    else
-        m_pUI = &m_ui2;
+    SelectUi(ui_selected);
 
     //载入热键设置
     theApp.m_hot_key_setting_data.hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
@@ -637,27 +631,17 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
         rect_static.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight());
     m_path_static.MoveWindow(rect_static);
 
-    //计算“媒体库”按钮的宽度
-    CDrawCommon draw;
-    draw.Create(m_pUiDC, this);
-    CString media_lib_btn_str;
-    m_set_path_button.GetWindowText(media_lib_btn_str);
-    int media_lib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
-    if (media_lib_btn_width < theApp.DPI(70))
-        media_lib_btn_width = theApp.DPI(70);
-    media_lib_btn_width += theApp.DPI(20);
-
     //设置“当前路径”edit控件大小
     CRect rect_edit;
     m_path_edit.GetWindowRect(rect_edit);
     if (!theApp.m_ui_data.narrow_mode)
     {
-        rect_edit.right = rect_edit.left + (playlist_width - 3 * m_layout.margin - rect_static.Width() - media_lib_btn_width);
+        rect_edit.right = rect_edit.left + (playlist_width - 3 * m_layout.margin - rect_static.Width() - m_medialib_btn_width);
         rect_edit.MoveToXY(playlist_x + m_layout.margin + rect_static.Width(), m_layout.margin);
     }
     else
     {
-        rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - media_lib_btn_width);
+        rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_medialib_btn_width);
         rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), m_ui.DrawAreaHeight());
     }
     m_path_edit.MoveWindow(rect_edit);
@@ -1266,6 +1250,22 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
 
     pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
 
+    int ui_selected = GetUiSelected();
+    switch (ui_selected)
+    {
+    case 0:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_LYRICS_FULL_SCREEN, ID_SWITCH_UI_1, MF_BYCOMMAND | MF_CHECKED);
+        break;
+    case 1:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_LYRICS_FULL_SCREEN, ID_SWITCH_UI_2, MF_BYCOMMAND | MF_CHECKED);
+        break;
+    case 2:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_LYRICS_FULL_SCREEN, ID_SWITCH_UI_LYRICS_FULL_SCREEN, MF_BYCOMMAND | MF_CHECKED);
+        break;
+    default:
+        break;
+    }
+
     //设置播放列表菜单中排序方式的单选标记
     if(!CPlayer::GetInstance().IsPlaylistMode())
     {
@@ -1580,6 +1580,33 @@ void CMusicPlayerDlg::LoadDefaultBackground()
         theApp.m_ui_data.default_background.LoadFromResource(AfxGetResourceHandle(), IDB_DEFAULT_COVER);
 }
 
+void CMusicPlayerDlg::SelectUi(int ui_selected)
+{
+    if (ui_selected == 1)
+        m_pUI = &m_ui2;
+    else if (ui_selected == 2)
+        m_pUI = &m_ui3;
+    else
+        m_pUI = &m_ui;
+}
+
+int CMusicPlayerDlg::GetUiSelected() const
+{
+    int ui_selected{};
+    if (m_pUI == &m_ui)
+        ui_selected = 0;
+    else if (m_pUI == &m_ui2)
+        ui_selected = 1;
+    else if (m_pUI == &m_ui3)
+        ui_selected = 2;
+    return ui_selected;
+}
+
+CPlayerUIBase * CMusicPlayerDlg::GetCurrentUi()
+{
+    return dynamic_cast<CPlayerUIBase*>(m_pUI);
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -1635,6 +1662,18 @@ BOOL CMusicPlayerDlg::OnInitDialog()
         //MoveWindow(rect);
         SetWindowPos(nullptr, 0, 0, m_window_width, m_window_height, SWP_NOZORDER | SWP_NOMOVE);
     }
+
+    //计算“媒体库”按钮的大小
+    CDrawCommon draw;
+    CDC* pDC = GetDC();
+    draw.Create(pDC, this);
+    CString media_lib_btn_str;
+    m_set_path_button.GetWindowText(media_lib_btn_str);
+    m_medialib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
+    if (m_medialib_btn_width < theApp.DPI(66))
+        m_medialib_btn_width = theApp.DPI(66);
+    m_medialib_btn_width += theApp.DPI(20);
+    ReleaseDC(pDC);
 
     //初始化提示信息
     m_Mytip.Create(this, TTS_ALWAYSTIP);
@@ -1719,7 +1758,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //m_draw.Create(m_pDC, this);
     m_ui.Init(m_pUiDC);
     m_ui2.Init(m_pUiDC);
-    //m_pUI = &m_ui2;
+    m_ui3.Init(m_pUiDC);
 
     //初始化歌词字体
     theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
@@ -3930,22 +3969,31 @@ void CMusicPlayerDlg::OnSwitchUi()
 {
     // TODO: 在此添加命令处理程序代码
 
-    if (m_pUI == &m_ui)
-    {
-        m_pUI = &m_ui2;
-        m_ui.ClearBtnRect();
-        //m_ui.UpdateToolTipPosition();
-    }
-    else
-    {
-        m_pUI = &m_ui;
-        m_ui2.ClearBtnRect();
-        //m_ui2.UpdateToolTipPosition();
-    }
+    //if (m_pUI == &m_ui)
+    //{
+    //    m_pUI = &m_ui2;
+    //    m_ui.ClearBtnRect();
+    //    //m_ui.UpdateToolTipPosition();
+    //}
+    //else
+    //{
+    //    m_pUI = &m_ui;
+    //    m_ui2.ClearBtnRect();
+    //    //m_ui2.UpdateToolTipPosition();
+    //}
+
+    int ui_selected = GetUiSelected();
+    ui_selected++;
+    if (ui_selected >= UI_MAX)
+        ui_selected = 0;
+    SelectUi(ui_selected);
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
 
     DrawInfo(true);
-    m_ui.UpdateRepeatModeToolTip();
-    m_ui2.UpdateRepeatModeToolTip();
+    if (pCurUi != nullptr)
+        pCurUi->UpdateRepeatModeToolTip();
 }
 
 void CMusicPlayerDlg::OnVolumeUp()
@@ -5236,4 +5284,33 @@ afx_msg LRESULT CMusicPlayerDlg::OnAfterMusicStreamClosed(WPARAM wParam, LPARAM 
     //保存修改过的歌词
     DoLyricsAutoSave();
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnSwitchUi1()
+{
+    // TODO: 在此添加命令处理程序代码
+    SelectUi(0);
+    m_ui.ClearBtnRect();
+    DrawInfo(true);
+    m_ui.UpdateRepeatModeToolTip();
+}
+
+
+void CMusicPlayerDlg::OnSwitchUi2()
+{
+    // TODO: 在此添加命令处理程序代码
+    SelectUi(1);
+    m_ui2.ClearBtnRect();
+    DrawInfo(true);
+    m_ui2.UpdateRepeatModeToolTip();
+}
+
+
+void CMusicPlayerDlg::OnSwitchUiLyricsFullScreen()
+{
+    // TODO: 在此添加命令处理程序代码
+    SelectUi(2);
+    m_ui3.ClearBtnRect();
+    DrawInfo(true);
 }

@@ -727,6 +727,9 @@
     <ClInclude Include="TagFromFileNameDlg.h">
       <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerUILyricsFullScreen.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1091,6 +1094,9 @@
     </ClCompile>
     <ClCompile Include="TagFromFileNameDlg.cpp">
       <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUILyricsFullScreen.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

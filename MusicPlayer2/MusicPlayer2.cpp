@@ -430,6 +430,8 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.default_cover_small = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, DPI(32), DPI(32));
     m_icon_set.default_cover_not_played = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER_NOT_PLAYED, 512, 512);
     m_icon_set.default_cover_small_not_played = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER_NOT_PLAYED, DPI(32), DPI(32));
+    m_icon_set.default_cover_toolbar.Load(IDI_DEFAULT_COVER, IDI_DEFAULT_COVER, DPI(16));
+    m_icon_set.default_cover_toolbar_not_played.Load(IDI_DEFAULT_COVER_NOT_PLAYED, IDI_DEFAULT_COVER_NOT_PLAYED, DPI(16));
     m_icon_set.skin.Load(IDI_SKIN, IDI_SKIN_D, DPI(16));
     m_icon_set.eq.Load(IDI_EQ, IDI_EQ_D, DPI(16));
     m_icon_set.setting.Load(IDI_SETTING, IDI_SETTING_D, DPI(16));

@@ -1388,13 +1388,18 @@
 #define ID_33207                        33207
 #define ID_EMBED_LYRIC_TO_AUDIO_FILE    33208
 #define ID_DELETE_LYRIC_FROM_AUDIO_FILE 33209
+#define ID_33210                        33210
+#define ID_33211                        33211
+#define ID_SWITCH_UI_1                  33212
+#define ID_SWITCH_UI_2                  33213
+#define ID_SWITCH_UI_LYRICS_FULL_SCREEN 33214
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        500
-#define _APS_NEXT_COMMAND_VALUE         33210
+#define _APS_NEXT_COMMAND_VALUE         33215
 #define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -5,6 +5,7 @@
 #include "CUIDrawer.h"
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)		//显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
+#define UI_MAX 3
 
 struct SLayoutData
 {
@@ -104,20 +105,23 @@ protected:
     void DrawControlBar(CRect rect);
     void DrawProgressBar(CRect rect);
     void DrawTranslateButton(CRect rect);
-    int DrawTopRightIcons();			//绘制右上角的图标。返回总宽度
+    int DrawTopRightIcons(bool always_show_full_screen = false);			//绘制右上角的图标。返回总宽度
     void DrawCurrentTime();				//在右上角绘制当前系统时间
     void DrawStatusBar(CRect rect, bool reset = false);
     void DrawAlbumCover(CRect rect);
+    void DrawVolumeButton(CRect rect);
+    void DrawABRepeatButton(CRect rect);
 
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);
+    void DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon);
 
-    virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str) = 0;		//为一个按钮添加鼠标提示
-    virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) = 0;
+    virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str);		//为一个按钮添加鼠标提示
+    virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
 	virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override { UpdateMouseToolTip(static_cast<BtnKey>(btn), str); }
 
-    virtual void UpdateToolTipPosition() = 0;
+    virtual void UpdateToolTipPosition() override;
 
     virtual void AddToolTips();			//为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 
@@ -136,13 +140,12 @@ protected:
 
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
 
-    virtual int GetClassId() { return 0; }
+    virtual int GetClassId() { return 1; }
 
 private:
     void SetRepeatModeToolTipText();
     void SetSongInfoToolTipText();
     void SetCoverToolTipText();
-    void DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawPlayTag(CRect rect, LPCTSTR str_text);
 
 protected:

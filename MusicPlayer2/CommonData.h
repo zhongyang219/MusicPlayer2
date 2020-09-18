@@ -405,6 +405,8 @@ struct IconSet
     HICON default_cover_small;
     HICON default_cover_not_played;
     HICON default_cover_small_not_played;
+    IconRes default_cover_toolbar;
+    IconRes default_cover_toolbar_not_played;
     IconRes skin;
     IconRes eq;
     IconRes setting;

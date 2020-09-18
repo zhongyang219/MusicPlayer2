@@ -33,6 +33,7 @@
 #include "DesktopLyric.h"
 #include "SearchEditCtrl.h"
 #include "UIWindow.h"
+#include "PlayerUILyricsFullScreen.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -89,6 +90,7 @@ protected:
     CDC* m_pUiDC;				//当前窗口的DC
     CPlayerUI m_ui{ theApp.m_ui_data, &m_ui_static_ctrl };
     CPlayerUI2 m_ui2{ theApp.m_ui_data, &m_ui_static_ctrl };
+    CPlayerUILyricsFullScreen m_ui3{ theApp.m_ui_data, &m_ui_static_ctrl };
     IPlayerUI* m_pUI = nullptr;
 
     bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
@@ -97,6 +99,7 @@ protected:
     int m_window_height;	//窗口的高度
     CPoint m_desktop_lyric_pos{ -1, -1 };     //桌面歌词窗口的位置
     CSize m_desktop_lyric_size{ 0, 0 };
+    int m_medialib_btn_width{ theApp.DPI(70) };
 
     SLayoutData m_layout;		//窗口布局的固定数据
 
@@ -205,6 +208,10 @@ protected:
 	void UpdateABRepeatToolTip();
 
     void LoadDefaultBackground();
+
+    void SelectUi(int ui_selected);
+    int GetUiSelected() const;
+    CPlayerUIBase* GetCurrentUi();
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
@@ -451,4 +458,7 @@ protected:
     afx_msg LRESULT OnAfterMusicStreamClosed(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnPlayTrack();
+    afx_msg void OnSwitchUi1();
+    afx_msg void OnSwitchUi2();
+    afx_msg void OnSwitchUiLyricsFullScreen();
 };

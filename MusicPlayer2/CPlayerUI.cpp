@@ -365,21 +365,3 @@ int CPlayerUI::GetClassId()
     return 1000;
 }
 
-void CPlayerUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
-{
-    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + 1000);
-}
-
-void CPlayerUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
-{
-    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + 1000);
-}
-
-void CPlayerUI::UpdateToolTipPosition()
-{
-    for (const auto& btn : m_buttons)
-    {
-        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + 1000, btn.second.rect);
-    }
-}
-

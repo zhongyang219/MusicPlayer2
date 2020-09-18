@@ -164,6 +164,14 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 		return;
 	}
 
+    if (m_buttons[BTN_SKIN].rect.PtInRect(point))
+    {
+        CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(10);
+        if (pMenu != nullptr)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return;
+    }
+
     for (auto& btn : m_buttons)
     {
         //按钮上点击右键不弹出菜单
@@ -657,19 +665,10 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 	if (rect.Width() >= DPI(262))
 	{
 		rc_tmp.MoveToX(rc_tmp.right);
-		CRect rc_btn = rc_tmp;
-		rc_btn.DeflateRect(DPI(2), DPI(2));
-		CString info;
-		CPlayer::ABRepeatMode ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
-		if(ab_repeat_mode == CPlayer::AM_A_SELECTED)
-			info = _T("A-");
-		else
-			info = _T("A-B");
-		CFont* pOldFont = m_draw.GetFont();
-		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
-		DrawTextButton(rc_btn, m_buttons[BTN_AB_REPEAT], info, ab_repeat_mode != CPlayer::AM_NONE);
-		m_draw.SetFont(pOldFont);
-	}
+        CRect rc_btn = rc_tmp;
+        rc_btn.DeflateRect(DPI(2), DPI(2));
+        DrawABRepeatButton(rc_tmp);
+    }
 	else
 	{
 		m_buttons[BTN_AB_REPEAT].rect = CRect();
@@ -728,27 +727,9 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
 
     //显示音量
-    wchar_t buff[64];
     rc_tmp.right = rc_tmp.left;
     rc_tmp.left = rc_tmp.right - DPI(72);
-    swprintf_s(buff, CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
-    CRect rc_vol{ rc_tmp };
-    if (m_buttons[BTN_VOLUME].pressed)
-        rc_vol.MoveToXY(rc_vol.left + theApp.DPI(1), rc_vol.top + theApp.DPI(1));
-    if (m_buttons[BTN_VOLUME].hover)		//鼠标指向音量区域时，以另外一种颜色显示
-        m_draw.DrawWindowText(rc_vol, buff, m_colors.color_text_heighlight);
-    else
-        m_draw.DrawWindowText(rc_vol, buff, m_colors.color_text);
-    //设置音量调整按钮的位置
-    m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
-    m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
-    m_buttons[BTN_VOLUME].rect.right -= DPI(12);
-    m_buttons[BTN_VOLUME_DOWN].rect = m_buttons[BTN_VOLUME].rect;
-    m_buttons[BTN_VOLUME_DOWN].rect.bottom += DPI(4);
-    m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
-    m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + m_buttons[BTN_VOLUME].rect.Width() / 2;
-    m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
-    m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
+    DrawVolumeButton(rc_tmp);
 }
 
 CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
@@ -894,6 +875,24 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton & btn, LPCTSTR text, boo
         m_draw.DrawWindowText(rect, text, GRAY(200), Alignment::CENTER);
     }
     btn.rect = DrawAreaToClient(rect, m_draw_rect);
+}
+
+void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetClassId());
+}
+
+void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetClassId());
+}
+
+void CPlayerUIBase::UpdateToolTipPosition()
+{
+    for (const auto& btn : m_buttons)
+    {
+        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetClassId(), btn.second.rect);
+    }
 }
 
 void CPlayerUIBase::SetRepeatModeToolTipText()
@@ -1309,12 +1308,12 @@ void CPlayerUIBase::DrawTranslateButton(CRect rect)
     DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), m_ui_data.show_translate);
 }
 
-int CPlayerUIBase::DrawTopRightIcons()
+int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
 {
     int total_width = 0;
     const int icon_size = DPI(28);
     //绘制“全屏”图标
-    if (!m_ui_data.show_playlist || m_draw_rect.Width() > m_layout.width_threshold || m_ui_data.full_screen)
+    if (always_show_full_screen && (!m_ui_data.show_playlist || m_draw_rect.Width() > m_layout.width_threshold || m_ui_data.full_screen))
     {
         total_width = icon_size;
 
@@ -1515,6 +1514,42 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
     }
 }
 
+void CPlayerUIBase::DrawVolumeButton(CRect rect)
+{
+    wchar_t buff[64];
+    swprintf_s(buff, CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
+    if (m_buttons[BTN_VOLUME].pressed)
+        rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
+    if (m_buttons[BTN_VOLUME].hover)		//鼠标指向音量区域时，以另外一种颜色显示
+        m_draw.DrawWindowText(rect, buff, m_colors.color_text_heighlight);
+    else
+        m_draw.DrawWindowText(rect, buff, m_colors.color_text);
+    //设置音量调整按钮的位置
+    m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rect, m_draw_rect);
+    m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
+    m_buttons[BTN_VOLUME].rect.right -= DPI(12);
+    m_buttons[BTN_VOLUME_DOWN].rect = m_buttons[BTN_VOLUME].rect;
+    m_buttons[BTN_VOLUME_DOWN].rect.bottom += DPI(4);
+    m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
+    m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + m_buttons[BTN_VOLUME].rect.Width() / 2;
+    m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
+    m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
+}
+
+void CPlayerUIBase::DrawABRepeatButton(CRect rect)
+{
+    CString info;
+    CPlayer::ABRepeatMode ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
+    if (ab_repeat_mode == CPlayer::AM_A_SELECTED)
+        info = _T("A-");
+    else
+        info = _T("A-B");
+    CFont* pOldFont = m_draw.GetFont();
+    m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
+    DrawTextButton(rect, m_buttons[BTN_AB_REPEAT], info, ab_repeat_mode != CPlayer::AM_NONE);
+    m_draw.SetFont(pOldFont);
+}
+
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 //{
 //	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
@@ -1530,7 +1565,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
     AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
     AddMouseToolTip(BTN_VOLUME, CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME));
-    AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI));
+    AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, _T(" (Ctrl+U)")));
     AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, _T(" (Ctrl+E)")));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, _T(" (Ctrl+I)")));
     AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl+M)")));
@@ -1548,7 +1583,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
-    AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT));
+    AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, _T(" (Ctrl+R)")));
 
     UpdateRepeatModeToolTip();
 }
