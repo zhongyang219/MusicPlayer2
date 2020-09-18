@@ -36,6 +36,7 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     //»æÖÆ×¨¼­·âÃæ
     CRect rc_album = rc_tool_bar;
     rc_album.right = rc_album.left + rc_tool_bar.Height();
+    m_draw.SetDrawArea(rc_album);
     if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
     {
         m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rc_album.TopLeft(), rc_album.Size(), theApp.m_app_setting_data.album_cover_fit);
