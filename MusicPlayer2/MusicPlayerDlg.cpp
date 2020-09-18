@@ -271,6 +271,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SWITCH_UI_1, &CMusicPlayerDlg::OnSwitchUi1)
     ON_COMMAND(ID_SWITCH_UI_2, &CMusicPlayerDlg::OnSwitchUi2)
     ON_COMMAND(ID_SWITCH_UI_LYRICS_FULL_SCREEN, &CMusicPlayerDlg::OnSwitchUiLyricsFullScreen)
+    ON_COMMAND(ID_SHOW_LYRIC_TRANSLATE, &CMusicPlayerDlg::OnShowLyricTranslate)
 END_MESSAGE_MAP()
 
 
@@ -1086,7 +1087,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         }
         if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
             theApp.m_app_setting_data.notify_icon_selected = 0;
-        m_notify_icon.SetIcon(theApp.m_icon_set.notify_icons[theApp.m_app_setting_data.notify_icon_selected]);
+        m_notify_icon.SetIcon(theApp.GetNotifyIncon(theApp.m_app_setting_data.notify_icon_selected));
         m_notify_icon.DeleteNotifyIcon();
         m_notify_icon.AddNotifyIcon();
     }
@@ -1360,6 +1361,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_UNLINK_LYRIC, MF_BYCOMMAND | (!lyric_disable && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
 
+    pMenu->CheckMenuItem(ID_SHOW_LYRIC_TRANSLATE, MF_BYCOMMAND | (theApp.m_ui_data.show_translate ? MF_CHECKED : MF_UNCHECKED));
+
     //内嵌歌词
     bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
     bool lyric_write_enable = (lyric_write_support && !CPlayer::GetInstance().m_Lyrics.IsEmpty() && !CPlayer::GetInstance().IsInnerLyric());
@@ -1617,8 +1620,13 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //载入图标资源
     theApp.LoadIconResource();
 
+#ifdef _DEBUG
+    SetIcon(theApp.m_icon_set.app_debug.GetIcon(false, true), TRUE);			// 设置大图标
+    SetIcon(theApp.m_icon_set.app_debug.GetIcon(false, false), FALSE);		// 设置小图标
+#else
     SetIcon(m_hIcon, TRUE);			// 设置大图标
     SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);		// 设置小图标
+#endif
 
     // TODO: 在此添加额外的初始化代码
 
@@ -1771,7 +1779,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
         theApp.m_app_setting_data.notify_icon_selected = 0;
-    m_notify_icon.Init(theApp.m_icon_set.notify_icons[theApp.m_app_setting_data.notify_icon_selected]);
+    m_notify_icon.Init(theApp.GetNotifyIncon(theApp.m_app_setting_data.notify_icon_selected));
     m_notify_icon.AddNotifyIcon();
 
     //初始化播放列表工具栏
@@ -2096,7 +2104,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             theApp.AutoSelectNotifyIcon();
             if (notify_icon_selected != theApp.m_app_setting_data.notify_icon_selected)
             {
-                m_notify_icon.SetIcon(theApp.m_icon_set.notify_icons[theApp.m_app_setting_data.notify_icon_selected]);
+                m_notify_icon.SetIcon(theApp.GetNotifyIncon(theApp.m_app_setting_data.notify_icon_selected));
                 m_notify_icon.DeleteNotifyIcon();
                 m_notify_icon.AddNotifyIcon();
             }
@@ -5313,4 +5321,11 @@ void CMusicPlayerDlg::OnSwitchUiLyricsFullScreen()
     SelectUi(2);
     m_ui3.ClearBtnRect();
     DrawInfo(true);
+}
+
+
+void CMusicPlayerDlg::OnShowLyricTranslate()
+{
+    // TODO: 在此添加命令处理程序代码
+    theApp.m_ui_data.show_translate = !theApp.m_ui_data.show_translate;
 }

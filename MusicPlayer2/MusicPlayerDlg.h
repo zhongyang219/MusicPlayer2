@@ -461,4 +461,5 @@ public:
     afx_msg void OnSwitchUi1();
     afx_msg void OnSwitchUi2();
     afx_msg void OnSwitchUiLyricsFullScreen();
+    afx_msg void OnShowLyricTranslate();
 };

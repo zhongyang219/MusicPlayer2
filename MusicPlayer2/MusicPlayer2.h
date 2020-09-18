@@ -115,6 +115,7 @@ public:
     bool IsMeidaLibUpdating() { return m_media_lib_updating; }
 
     void AutoSelectNotifyIcon();
+    HICON GetNotifyIncon(int index);
 
 private:
     void LoadSongData();

@@ -706,7 +706,7 @@ void CAppearanceSettingDlg::OnPaint()
     //绘制图标
     if (m_data.notify_icon_selected >= 0 && m_data.notify_icon_selected < MAX_NOTIFY_ICON)
     {
-        drawer.DrawIcon(theApp.m_icon_set.notify_icons[m_data.notify_icon_selected],
+        drawer.DrawIcon(theApp.GetNotifyIncon(m_data.notify_icon_selected),
             CPoint(m_notify_icon_preview.left + ICON_X, m_notify_icon_preview.top + ICON_Y),
             CSize(theApp.DPI(16), theApp.DPI(16)));
     }

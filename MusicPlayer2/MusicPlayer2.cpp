@@ -426,6 +426,7 @@ void CMusicPlayerApp::LoadConfig()
 void CMusicPlayerApp::LoadIconResource()
 {
     m_icon_set.app.Load(IDR_MAINFRAME, NULL, DPI(16));
+    m_icon_set.app_debug.Load(IDI_APP_DEBUG, NULL, DPI(16));
     m_icon_set.default_cover = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, 512, 512);
     m_icon_set.default_cover_small = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, DPI(32), DPI(32));
     m_icon_set.default_cover_not_played = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER_NOT_PLAYED, 512, 512);
@@ -961,6 +962,20 @@ void CMusicPlayerApp::AutoSelectNotifyIcon()
                 m_app_setting_data.notify_icon_selected = 1;
         }
     }
+}
+
+HICON CMusicPlayerApp::GetNotifyIncon(int index)
+{
+    if (index < 0 || index >= MAX_NOTIFY_ICON)
+        index = 0;
+#ifdef _DEBUG
+    if (index == 0)
+        return m_icon_set.app_debug.GetIcon();
+    else
+        return m_icon_set.notify_icons[index];
+#else
+    return m_icon_set.notify_icons[index];
+#endif
 }
 
 //void CMusicPlayerApp::StartClassifySongData()
