@@ -667,7 +667,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 		rc_tmp.MoveToX(rc_tmp.right);
         CRect rc_btn = rc_tmp;
         rc_btn.DeflateRect(DPI(2), DPI(2));
-        DrawABRepeatButton(rc_tmp);
+        DrawABRepeatButton(rc_btn);
     }
 	else
 	{
