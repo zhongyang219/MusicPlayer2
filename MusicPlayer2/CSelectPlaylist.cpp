@@ -6,20 +6,27 @@
 #include "CSelectPlaylist.h"
 #include "afxdialogex.h"
 #include "InputDlg.h"
+#include "Playlist.h"
+#include "SongDataManager.h"
 
 
 // CSelectPlaylist 对话框
 
-IMPLEMENT_DYNAMIC(CSelectPlaylistDlg, CTabDlg)
+IMPLEMENT_DYNAMIC(CSelectPlaylistDlg, CMediaLibTabDlg)
 
 CSelectPlaylistDlg::CSelectPlaylistDlg(CWnd* pParent /*=nullptr*/)
-	: CTabDlg(IDD_SELECT_PLAYLIST_DIALOG, pParent)
+	: CMediaLibTabDlg(IDD_SELECT_PLAYLIST_DIALOG, pParent)
 {
 
 }
 
 CSelectPlaylistDlg::~CSelectPlaylistDlg()
 {
+}
+
+void CSelectPlaylistDlg::RefreshSongList()
+{
+    throw std::logic_error("The method or operation is not implemented.");
 }
 
 wstring CSelectPlaylistDlg::GetSelPlaylistPath() const
@@ -55,11 +62,17 @@ void CSelectPlaylistDlg::AdjustColumnWidth()
         m_playlist_ctrl.SetColumnWidth(i, width[i]);
 }
 
+bool CSelectPlaylistDlg::IsLeftSelected() const
+{
+    return m_left_selected;
+}
+
 void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CTabDlg::DoDataExchange(pDX);
+    CMediaLibTabDlg::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST1, m_playlist_ctrl);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
+    DDX_Control(pDX, IDC_SONG_LIST, m_song_list_ctrl);
 }
 
 
@@ -116,7 +129,93 @@ void CSelectPlaylistDlg::OnTabEntered()
 		ShowPathList();
 }
 
-BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
+void CSelectPlaylistDlg::ShowSongList()
+{
+    m_list_data.clear();
+    if (m_row_selected >= 0 && m_row_selected < m_playlist_ctrl.GetItemCount())
+    {
+        wstring playlist_path = GetSelPlaylistPath();
+        CPlaylistFile playlist_file;
+        playlist_file.LoadFromFile(playlist_path);
+        for (SongInfo song : playlist_file.GetPlaylist())
+        {
+            if (!song.info_acquired)
+            {
+                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
+            }
+            CListCtrlEx::RowData row_data;
+            row_data[COL_TITLE] = song.GetTitle();
+            row_data[COL_ARTIST] = song.GetArtist();
+            row_data[COL_ALBUM] = song.GetAlbum();
+            std::wstring track_str;
+            if (song.track != 0)
+                track_str = std::to_wstring(song.track);
+            row_data[COL_TRACK] = track_str;
+            row_data[COL_GENRE] = song.GetGenre();
+            row_data[COL_BITRATE] = (song.bitrate == 0 ? L"-" : std::to_wstring(song.bitrate));
+            row_data[COL_PATH] = song.file_path;
+            m_list_data.push_back(std::move(row_data));
+
+        }
+    }
+    m_song_list_ctrl.SetListData(&m_list_data);
+}
+
+void CSelectPlaylistDlg::LeftListClicked(int index)
+{
+    m_left_selected = true;
+    if (!m_searched)
+    {
+        m_row_selected = index;
+    }
+    else
+    {
+        CString str;
+        str = m_playlist_ctrl.GetItemText(index, 0);
+        m_row_selected = _ttoi(str) - 1;
+    }
+    SetButtonsEnable();
+    ShowSongList();
+}
+
+void CSelectPlaylistDlg::SongListClicked(int index)
+{
+    m_left_selected = false;
+    m_right_selected_item = index;
+    m_song_list_ctrl.GetItemSelected(m_right_selected_items);
+}
+
+const CListCtrlEx& CSelectPlaylistDlg::GetSongListCtrl() const
+{
+    return m_song_list_ctrl;
+}
+
+int CSelectPlaylistDlg::GetItemSelected() const
+{
+    return m_right_selected_item;
+}
+
+const vector<int>& CSelectPlaylistDlg::GetItemsSelected() const
+{
+    return m_right_selected_items;
+}
+
+void CSelectPlaylistDlg::AfterDeleteFromDisk(const std::vector<SongInfo>& files)
+{
+    ShowSongList();
+}
+
+int CSelectPlaylistDlg::GetPathColIndex() const
+{
+    return COL_PATH;
+}
+
+wstring CSelectPlaylistDlg::GetSelectedString() const
+{
+    return wstring(m_selected_string);
+}
+
+BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSelectPlaylistDlg::OnNMDblclkList1)
     ON_BN_CLICKED(IDC_NEW_PLAYLIST, &CSelectPlaylistDlg::OnBnClickedNewPlaylist)
     ON_COMMAND(ID_PLAY_PLAYLIST, &CSelectPlaylistDlg::OnPlayPlaylist)
@@ -129,6 +228,9 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CTabDlg)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CSelectPlaylistDlg::OnEnChangeSearchEdit)
     //ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CSelectPlaylistDlg::OnBnClickedClearButton)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CSelectPlaylistDlg::OnSearchEditBtnClicked)
+    ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CSelectPlaylistDlg::OnNMClickSongList)
+    ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CSelectPlaylistDlg::OnNMRClickSongList)
+    ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CSelectPlaylistDlg::OnNMDblclkSongList)
 END_MESSAGE_MAP()
 
 
@@ -137,7 +239,7 @@ END_MESSAGE_MAP()
 
 BOOL CSelectPlaylistDlg::OnInitDialog()
 {
-    CTabDlg::OnInitDialog();
+    CMediaLibTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
 
@@ -164,6 +266,17 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     ////设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
     //m_playlist_ctrl.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     //m_Mytip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+    //初始化右侧列表
+    m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
+    m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+    m_song_list_ctrl.SetCtrlAEnable(true);
 
     ShowPathList();
     m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
@@ -359,7 +472,12 @@ void CSelectPlaylistDlg::OnOK()
 
     if(SelectedCanPlay())
     {
-        ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, 0);
+        int index = -1;
+        if (!m_left_selected)
+        {
+            index = m_right_selected_item;
+        }
+        ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, (LPARAM)index);
 
         CTabDlg::OnOK();
 
@@ -407,7 +525,7 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
 void CSelectPlaylistDlg::OnPlayPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, 0);
+    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -1);
 }
 
 
@@ -481,7 +599,7 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
         if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())      //如果删除的是正在播放的播放列表，则播放默认播放列表
         {
-            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, TRUE);
+            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -2);
         }
         CPlayer::GetInstance().GetRecentPlaylist().DeletePlaylist(playlist_path);
         CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
@@ -495,17 +613,7 @@ void CSelectPlaylistDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    if (!m_searched)
-    {
-        m_row_selected = pNMItemActivate->iItem;
-    }
-    else
-    {
-        CString str;
-        str = m_playlist_ctrl.GetItemText(pNMItemActivate->iItem, 0);
-        m_row_selected = _ttoi(str) - 1;
-    }
-    SetButtonsEnable();
+    LeftListClicked(pNMItemActivate->iItem);
 
     *pResult = 0;
 }
@@ -515,17 +623,8 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    if (!m_searched)
-    {
-        m_row_selected = pNMItemActivate->iItem;
-    }
-    else
-    {
-        CString str;
-        str = m_playlist_ctrl.GetItemText(pNMItemActivate->iItem, 0);
-        m_row_selected = _ttoi(str) - 1;
-    }
-    SetButtonsEnable();
+    LeftListClicked(pNMItemActivate->iItem);
+    m_selected_string = m_playlist_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
 
     //弹出右键菜单
     CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_playlist_menu.GetSubMenu(0);
@@ -537,7 +636,7 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
 {
-    CTabDlg::OnInitMenu(pMenu);
+    CMediaLibTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
     bool is_not_default_playlist{ m_row_selected > 1 && m_row_selected < CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size() + SPEC_PLAYLIST_NUM };
@@ -558,7 +657,7 @@ void CSelectPlaylistDlg::OnNewPlaylist()
 void CSelectPlaylistDlg::OnEnChangeSearchEdit()
 {
     // TODO:  如果该控件是 RICHEDIT 控件，它将不
-    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
+    // 发送此通知，除非重写 CMediaLibTabDlg::OnInitDialog()
     // 函数并调用 CRichEditCtrl().SetEventMask()，
     // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -601,7 +700,7 @@ BOOL CSelectPlaylistDlg::PreTranslateMessage(MSG* pMsg)
     //if (pMsg->message == WM_MOUSEMOVE)
     //    m_Mytip.RelayEvent(pMsg);
 
-    return CTabDlg::PreTranslateMessage(pMsg);
+    return CMediaLibTabDlg::PreTranslateMessage(pMsg);
 }
 
 
@@ -616,4 +715,54 @@ afx_msg LRESULT CSelectPlaylistDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM
         SetHighlightItem();
     }
     return 0;
+}
+
+
+void CSelectPlaylistDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    SongListClicked(pNMItemActivate->iItem);
+    *pResult = 0;
+}
+
+
+void CSelectPlaylistDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    SongListClicked(pNMItemActivate->iItem);
+    m_selected_string = m_song_list_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
+
+    if (!m_right_selected_items.empty())
+    {
+        //弹出右键菜单
+        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != nullptr)
+        {
+            m_song_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
+        }
+    }
+
+    *pResult = 0;
+}
+
+
+void CSelectPlaylistDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+
+    if (m_right_selected_item >= 0 && m_right_selected_item < m_song_list_ctrl.GetItemCount())
+        OnOK();
+    *pResult = 0;
+}
+
+
+void CSelectPlaylistDlg::OnCancel()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+
+    CTabDlg::OnCancel();
 }

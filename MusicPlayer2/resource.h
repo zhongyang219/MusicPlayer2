@@ -649,6 +649,7 @@
 #define IDC_OUTPUT_DEVICE_INFO_LIST     1002
 #define IDC_HOT_KEY_LIST                1002
 #define IDC_STATIC_VERSION              1003
+#define IDC_LIST3                       1003
 #define IDC_DELETE_PATH_BUTTON          1004
 #define IDC_TRACK_EDIT                  1009
 #define IDC_PLAY_TRACK_BUTTON           1010

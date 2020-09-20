@@ -4316,16 +4316,20 @@ LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam)
 {
     CSelectPlaylistDlg* pPathDlg = (CSelectPlaylistDlg*)wParam;
+    int index = (int)lParam;
     if (pPathDlg != nullptr)
     {
-        if(lParam == TRUE)      //当lParam为1时，播放默认的播放列表
+        if(index == -2)      //当lParam为-2时，播放默认的播放列表
         {
             auto default_playlist = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
             CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
         }
         else
         {
-            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), pPathDlg->GetTrack(), pPathDlg->GetPosition());
+            int track{ pPathDlg->GetTrack() };
+            if (index >= 0)
+                track = index;
+            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track, pPathDlg->GetPosition(), false, !pPathDlg->IsLeftSelected());
         }
         UpdatePlayPauseButton();
         //SetPorgressBarSize();

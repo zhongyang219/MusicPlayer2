@@ -473,6 +473,8 @@ void CBassCore::GetAudioInfo(SongInfo & song_info, int flag)
 void CBassCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int flag)
 {
     HSTREAM hStream;
+    if (song_info.file_path.empty())
+        song_info.file_path = file_path;
     hStream = BASS_StreamCreateFile(FALSE, file_path, 0, 0, BASS_SAMPLE_FLOAT);
     GetBASSAudioInfo(hStream, song_info, flag);
     BASS_StreamFree(hStream);

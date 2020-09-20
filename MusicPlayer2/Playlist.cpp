@@ -85,7 +85,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
     }
 }
 
-vector<SongInfo> CPlaylistFile::GetPlaylist() const
+const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
 {
     return m_playlist;
 }
@@ -206,7 +206,10 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
 				item.end_pos.fromInt(_wtoi(result[3].c_str()));
 			item.lengh = item.end_pos - item.start_pos;
 			if (result.size() >= 5)
-				item.title = result[4];
+            {
+                item.title = result[4];
+                item.info_acquired = true;
+            }
 			if (result.size() >= 6)
 				item.artist = result[5];
 			if (result.size() >= 7)

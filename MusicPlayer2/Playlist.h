@@ -14,7 +14,7 @@ public:
     ~CPlaylistFile();
     void LoadFromFile(const wstring& file_path);
     void SaveToFile(const wstring& file_path, Type type = PL_PLAYLIST) const;
-    vector<SongInfo> GetPlaylist() const;
+    const vector<SongInfo>& GetPlaylist() const;
     bool AddFiles(const vector<wstring>& files, bool ignore_exist = false);
     bool AddFiles(const vector<SongInfo>& files, bool ignore_exist = false);
     void FromSongList(const vector<SongInfo>& song_list);
