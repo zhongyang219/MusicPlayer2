@@ -2275,8 +2275,9 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
             if (pMsg->wParam == 'M')	//按M键设置循环模式
             {
                 CPlayer::GetInstance().SetRepeatMode();
-                m_ui.UpdateRepeatModeToolTip();
-                m_ui2.UpdateRepeatModeToolTip();
+                CPlayerUIBase* pUI = GetCurrentUi();
+                if (pUI != nullptr)
+                    pUI->UpdateRepeatModeToolTip();
                 return TRUE;
             }
             if (pMsg->wParam == 'F')	//按F键快速查找
@@ -2483,8 +2484,9 @@ void CMusicPlayerDlg::OnPlayOrder()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetRepeatMode(RM_PLAY_ORDER);		//设置顺序播放
-    m_ui.UpdateRepeatModeToolTip();
-    m_ui2.UpdateRepeatModeToolTip();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
@@ -2492,8 +2494,9 @@ void CMusicPlayerDlg::OnPlayShuffle()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetRepeatMode(RM_PLAY_SHUFFLE);		//设置无序播放
-    m_ui.UpdateRepeatModeToolTip();
-    m_ui2.UpdateRepeatModeToolTip();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
@@ -2501,8 +2504,9 @@ void CMusicPlayerDlg::OnPlayRandom()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetRepeatMode(RM_PLAY_RANDOM);		//设置无序播放
-    m_ui.UpdateRepeatModeToolTip();
-    m_ui2.UpdateRepeatModeToolTip();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
@@ -2510,8 +2514,9 @@ void CMusicPlayerDlg::OnPlayTrack()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetRepeatMode(RM_PLAY_TRACK);		//设置单曲播放
-    m_ui.UpdateRepeatModeToolTip();
-    m_ui2.UpdateRepeatModeToolTip();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
@@ -2519,8 +2524,9 @@ void CMusicPlayerDlg::OnLoopPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetRepeatMode(RM_LOOP_PLAYLIST);		//设置列表循环
-    m_ui.UpdateRepeatModeToolTip();
-    m_ui2.UpdateRepeatModeToolTip();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
@@ -2528,8 +2534,9 @@ void CMusicPlayerDlg::OnLoopTrack()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().SetRepeatMode(RM_LOOP_TRACK);		//设置单曲循环
-    m_ui.UpdateRepeatModeToolTip();
-    m_ui2.UpdateRepeatModeToolTip();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
