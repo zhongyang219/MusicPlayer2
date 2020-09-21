@@ -1362,6 +1362,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     pMenu->EnableMenuItem(ID_UNLINK_LYRIC, MF_BYCOMMAND | (!lyric_disable && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
 
     pMenu->CheckMenuItem(ID_SHOW_LYRIC_TRANSLATE, MF_BYCOMMAND | (theApp.m_ui_data.show_translate ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->EnableMenuItem(ID_SHOW_LYRIC_TRANSLATE, MF_BYCOMMAND | (CPlayer::GetInstance().m_Lyrics.IsTranslated() ? MF_ENABLED : MF_GRAYED));
 
     //内嵌歌词
     bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
