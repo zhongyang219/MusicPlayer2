@@ -1521,7 +1521,7 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
     }
 }
 
-void CPlayerUIBase::DrawVolumeButton(CRect rect, LPCTSTR str)
+void CPlayerUIBase::DrawVolumeButton(CRect rect, LPCTSTR str, bool adj_btn_top)
 {
     if (str == nullptr)
     {
@@ -1538,11 +1538,17 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, LPCTSTR str)
     //设置音量调整按钮的位置
     m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rect, m_draw_rect);
     m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
-    m_buttons[BTN_VOLUME].rect.right -= DPI(12);
     m_buttons[BTN_VOLUME_DOWN].rect = m_buttons[BTN_VOLUME].rect;
     m_buttons[BTN_VOLUME_DOWN].rect.bottom += DPI(4);
-    m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
-    m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + m_buttons[BTN_VOLUME].rect.Width() / 2;
+    if (adj_btn_top)
+    {
+        m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.top - m_buttons[BTN_VOLUME_DOWN].rect.Height());
+    }
+    else
+    {
+        m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
+    }
+    m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + DPI(27);      //设置单个音量调整按钮的宽度
     m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
     m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
 }

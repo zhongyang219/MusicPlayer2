@@ -37,7 +37,8 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     CRect rc_album = rc_tool_bar;
     rc_album.right = rc_album.left + rc_tool_bar.Height();
     m_draw.SetDrawArea(rc_album);
-    if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
+    bool draw_album_cover{ theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist() };
+    if (draw_album_cover)
     {
         m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rc_album.TopLeft(), rc_album.Size(), theApp.m_app_setting_data.album_cover_fit);
     }
@@ -55,11 +56,12 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     if (info_width > DPI(200))
         info_width = DPI(200);
     CRect rc_tmp = rc_tool_bar;
-    rc_tmp.left = rc_album.right + DPI(2);
+    int song_info_margin{ draw_album_cover ? DPI(4) : 0 };
+    rc_tmp.left = rc_album.right + song_info_margin;
     rc_tmp.right = rc_tmp.left + info_width;
     static CDrawCommon::ScrollInfo scroll_info;
     m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DisplayFormat::DF_ARTIST_TITLE).c_str(),
-        m_colors.color_text, GetScrollTextPixel(), true, scroll_info, reset);
+        m_colors.color_text, GetScrollTextPixel(), false, scroll_info, reset);
 
     //绘制循环模式按钮
     if (m_draw_rect.Width() > DPI(330))
@@ -165,7 +167,7 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         rc_tmp.right = rc_tmp.left;
         rc_tmp.left = rc_tmp.right - width;
 
-        DrawVolumeButton(rc_tmp, vol_str);
+        DrawVolumeButton(rc_tmp, vol_str, true);
     }
 
     //绘制进度条

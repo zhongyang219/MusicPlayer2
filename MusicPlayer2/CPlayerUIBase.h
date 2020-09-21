@@ -109,7 +109,7 @@ protected:
     void DrawCurrentTime();				//在右上角绘制当前系统时间
     void DrawStatusBar(CRect rect, bool reset = false);
     void DrawAlbumCover(CRect rect);
-    void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr);
+    void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr, bool adj_btn_top = false);     //str：要显示的文本（音量：xx%），如果为nullptr，则会自动设置；adj_btn_top：点击后弹出的音量调整按钮是否在上方
     void DrawABRepeatButton(CRect rect);
 
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
