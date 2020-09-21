@@ -132,7 +132,7 @@ void CSelectPlaylistDlg::OnTabEntered()
 void CSelectPlaylistDlg::ShowSongList()
 {
     m_list_data.clear();
-    if (m_row_selected >= 0 && m_row_selected < m_playlist_ctrl.GetItemCount())
+    if (m_row_selected >= 0)
     {
         wstring playlist_path = GetSelPlaylistPath();
         CPlaylistFile playlist_file;
