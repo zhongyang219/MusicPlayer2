@@ -26,7 +26,7 @@ CSelectPlaylistDlg::~CSelectPlaylistDlg()
 
 void CSelectPlaylistDlg::RefreshSongList()
 {
-    throw std::logic_error("The method or operation is not implemented.");
+    ShowSongList();
 }
 
 wstring CSelectPlaylistDlg::GetSelPlaylistPath() const
@@ -131,13 +131,15 @@ void CSelectPlaylistDlg::OnTabEntered()
 
 void CSelectPlaylistDlg::ShowSongList()
 {
+    CWaitCursor wait_cursor;
     m_list_data.clear();
     if (m_row_selected >= 0)
     {
         wstring playlist_path = GetSelPlaylistPath();
         CPlaylistFile playlist_file;
         playlist_file.LoadFromFile(playlist_path);
-        for (SongInfo song : playlist_file.GetPlaylist())
+        m_cur_song_list = std::move(playlist_file.GetPlaylist());
+        for (SongInfo& song : m_cur_song_list)
         {
             if (!song.info_acquired)
             {
@@ -213,6 +215,21 @@ int CSelectPlaylistDlg::GetPathColIndex() const
 wstring CSelectPlaylistDlg::GetSelectedString() const
 {
     return wstring(m_selected_string);
+}
+
+void CSelectPlaylistDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
+{
+    for (int index : GetItemsSelected())
+    {
+        if (index < 0 || index >= static_cast<int>(m_cur_song_list.size()))
+            continue;
+        song_list.push_back(m_cur_song_list[index]);
+    }
+}
+
+void CSelectPlaylistDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) const
+{
+    song_list = m_cur_song_list;
 }
 
 BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)

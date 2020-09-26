@@ -66,6 +66,7 @@ private:
     CListCtrlEx m_playlist_ctrl;
     CListCtrlEx m_song_list_ctrl;
     CListCtrlEx::ListData m_list_data;	//右侧列表数据
+    vector<SongInfo> m_cur_song_list;   //选中播放列表的数据
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -83,6 +84,9 @@ protected:
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
     virtual int GetPathColIndex() const override;
     virtual wstring GetSelectedString() const override;
+
+    virtual void GetSongsSelected(std::vector<SongInfo>& song_list) const override;
+    virtual void GetCurrentSongList(std::vector<SongInfo>& song_list) const override;
 
 	DECLARE_MESSAGE_MAP()
 
