@@ -8,6 +8,7 @@
 #include "InputDlg.h"
 #include "Playlist.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 // CSelectPlaylist 对话框
@@ -661,6 +662,9 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
 
+    bool is_delete_enable{ !m_left_selected && m_right_selected_item >= 0 && m_right_selected_item < static_cast<int>(m_cur_song_list.size())
+        && !m_cur_song_list[m_right_selected_item].is_cue && !COSUPlayerHelper::IsOsuFile(m_cur_song_list[m_right_selected_item].file_path) };
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (is_delete_enable ? MF_ENABLED : MF_GRAYED));
 }
 
 
