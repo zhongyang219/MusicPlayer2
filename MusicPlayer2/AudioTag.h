@@ -32,6 +32,9 @@ public:
     //写入一个专辑封面
     bool WriteAlbumCover(const wstring& album_cover_path);
 
+    //获取音频内嵌cue
+    wstring GetAudioCue();
+
     //根据一个文件扩展名判断此格式是否已支持写入标签
     static bool IsFileTypeTagWriteSupport(const wstring& ext);
 

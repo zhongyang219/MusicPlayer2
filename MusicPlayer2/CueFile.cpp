@@ -30,8 +30,18 @@ CCueFile::CCueFile(const std::wstring& file_path)
 }
 
 
+CCueFile::CCueFile()
+{
+}
+
 CCueFile::~CCueFile()
 {
+}
+
+void CCueFile::LoadContentsDirect(const std::wstring& cue_contets)
+{
+    m_file_content_wcs = cue_contets;
+    DoAnalysis();
 }
 
 void CCueFile::SetTotalLength(Time length)

@@ -35,6 +35,7 @@ using namespace TagLib;
 #define STR_ID3V2_LYRIC_TAG "USLT"
 #define STR_FLAC_LYRIC_TAG "LYRICS"
 #define STR_ASF_LYRIC_TAG "LYRICS"
+#define STR_APE_CUE_TAG "CUESHEET"
 
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
@@ -1223,4 +1224,15 @@ bool CTagLibHelper::WriteSpxTag(SongInfo& song_info)
     SongInfoToTag(song_info, tag);
     bool saved = file.save();
     return saved;
+}
+
+wstring CTagLibHelper::GetApeCue(const wstring& file_path)
+{
+    wstring cue_contents;
+    APE::File file(file_path.c_str());
+    auto tag = file.APETag();
+    auto item_list_map = tag->itemListMap();
+    auto cue_item = item_list_map[STR_APE_CUE_TAG];
+    cue_contents = cue_item.toString().toWString();
+    return cue_contents;
 }

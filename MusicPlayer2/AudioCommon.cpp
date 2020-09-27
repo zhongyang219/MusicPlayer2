@@ -309,6 +309,46 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
 
     }
     files.insert(files.end(), cue_tracks.begin(), cue_tracks.end());
+
+    GetInnerCueTracks(files, pPlayerCore);
+}
+
+void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
+{
+    for (auto iter = files.begin(); iter != files.end(); ++iter)
+    {
+        if (iter->is_cue)        //跳过已解析的cue音轨
+            continue;
+        CAudioTag audio_tag(*iter);
+        wstring cue_contents = audio_tag.GetAudioCue();
+
+        //解析cue音轨
+        if (!cue_contents.empty())
+        {
+            int bitrate{ iter->bitrate };
+            Time total_length{ iter->lengh };
+
+            CCueFile cue_file;
+            cue_file.LoadContentsDirect(cue_contents);
+            cue_file.SetTotalLength(total_length);
+            vector<SongInfo> cue_tracks;    //储存解析到的cue音轨
+            for (const auto& track : cue_file.GetAnalysisResult())
+            {
+                cue_tracks.push_back(track);
+                cue_tracks.back().bitrate = bitrate;
+                cue_tracks.back().file_path = iter->file_path;
+            }
+
+            //从列表中删除原始音频文件
+            iter = files.erase(iter);
+
+            //将解析到的cue音轨插入到列表
+            iter = files.insert(iter, cue_tracks.begin(), cue_tracks.end());
+            iter += cue_tracks.size();
+            if (iter == files.end())
+                break;
+        }
+    }
 }
 
 

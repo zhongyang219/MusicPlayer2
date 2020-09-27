@@ -304,6 +304,7 @@ public:
 	static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名
 
 protected:
-
+    //获取音频文件的内嵌cue文件，并将每段分轨作为一个曲目添加到files容器中
+    static void GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore);
 };
 

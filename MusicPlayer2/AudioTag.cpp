@@ -307,6 +307,18 @@ bool CAudioTag::WriteAlbumCover(const wstring & album_cover_path)
     return false;
 }
 
+wstring CAudioTag::GetAudioCue()
+{
+    switch (m_type)
+    {
+    case AU_APE:
+        return CTagLibHelper::GetApeCue(m_song_info.file_path);
+    default:
+        break;
+    }
+    return wstring();
+}
+
 bool CAudioTag::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;

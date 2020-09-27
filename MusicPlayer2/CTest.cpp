@@ -8,6 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "MessageDlg.h"
 #include "PropertyDlgHelper.h"
+#include "TagLibHelper.h"
 
 CTest::CTest()
 {
@@ -42,8 +43,8 @@ void CTest::Test()
     //TestTagParse();
     //TestStringSplit();
 
-    int size = sizeof(SongInfo);
-    MessageBox(theApp.m_pMainWnd->GetSafeHwnd(), std::to_wstring(size).c_str(), NULL, MB_OK);
+    //int size = sizeof(SongInfo);
+    //MessageBox(theApp.m_pMainWnd->GetSafeHwnd(), std::to_wstring(size).c_str(), NULL, MB_OK);
 }
 
 void CTest::TestStringMatch()
@@ -160,14 +161,17 @@ void CTest::TestMediaLib()
 
 void CTest::TestAudioTag()
 {
-	wstring file_path = L"D:\\Temp\\test.mp3";
-	HSTREAM hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-	SongInfo song_info;
-    song_info.file_path = file_path;
-	CAudioTag audio_tag(song_info, hStream);
-	audio_tag.GetAudioTag();
-	wstring str_lyric = audio_tag.GetAudioLyric();
-	BASS_StreamFree(hStream);
+	//wstring file_path = L"D:\\Temp\\test.mp3";
+	//HSTREAM hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+	//SongInfo song_info;
+ //   song_info.file_path = file_path;
+	//CAudioTag audio_tag(song_info, hStream);
+	//audio_tag.GetAudioTag();
+	//wstring str_lyric = audio_tag.GetAudioLyric();
+	//BASS_StreamFree(hStream);
+
+    wstring result = CTagLibHelper::GetApeCue(L"D:\\Temp\\内嵌cue测试\\Various - 世界名曲鉴赏 珍藏版.ape");
+    int a = 0;
 }
 
 void CTest::TestImageResize()

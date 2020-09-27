@@ -83,5 +83,8 @@ public:
     static bool WriteAiffTag(SongInfo& song_info);
     static bool WriteAsfTag(SongInfo& song_info);
     static bool WriteSpxTag(SongInfo& song_info);
+
+    //¶ÁÈ¡ÄÚÇ¶cue
+    static wstring GetApeCue(const wstring& file_path);
 };
 
