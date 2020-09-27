@@ -134,12 +134,14 @@ void CSelectPlaylistDlg::ShowSongList()
 {
     CWaitCursor wait_cursor;
     m_list_data.clear();
+    m_song_list_ctrl.SetHightItem(-1);
     if (m_row_selected >= 0)
     {
         wstring playlist_path = GetSelPlaylistPath();
         CPlaylistFile playlist_file;
         playlist_file.LoadFromFile(playlist_path);
         m_cur_song_list = std::move(playlist_file.GetPlaylist());
+        int index{};
         for (SongInfo& song : m_cur_song_list)
         {
             if (!song.info_acquired)
@@ -147,6 +149,7 @@ void CSelectPlaylistDlg::ShowSongList()
                 song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
             }
             CListCtrlEx::RowData row_data;
+            row_data[COL_INDEX] = std::to_wstring(index + 1);
             row_data[COL_TITLE] = song.GetTitle();
             row_data[COL_ARTIST] = song.GetArtist();
             row_data[COL_ALBUM] = song.GetAlbum();
@@ -159,6 +162,10 @@ void CSelectPlaylistDlg::ShowSongList()
             row_data[COL_PATH] = song.file_path;
             m_list_data.push_back(std::move(row_data));
 
+            if (CPlayer::GetInstance().IsPlaylistMode() && song.file_path == CPlayer::GetInstance().GetCurrentFilePath() && GetSelectedPlaylist().path == CPlayer::GetInstance().GetPlaylistPath())
+                m_song_list_ctrl.SetHightItem(index);
+
+            index++;
         }
     }
     m_song_list_ctrl.SetListData(&m_list_data);
@@ -287,13 +294,14 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
 
     //初始化右侧列表
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
-    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
-    m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+    m_song_list_ctrl.InsertColumn(COL_INDEX, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, theApp.DPI(40));
+    m_song_list_ctrl.InsertColumn(COL_TITLE, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(COL_ARTIST, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(COL_ALBUM, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(COL_TRACK, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(COL_GENRE, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(COL_BITRATE, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(COL_PATH, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
     m_song_list_ctrl.SetCtrlAEnable(true);
 
     ShowPathList();

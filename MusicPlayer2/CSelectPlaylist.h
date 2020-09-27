@@ -54,13 +54,15 @@ private:
 
     enum SongColumeIndex
     {
-        COL_TITLE = 0,
+        COL_INDEX,
+        COL_TITLE,
         COL_ARTIST,
         COL_ALBUM,
         COL_TRACK,
         COL_GENRE,
         COL_BITRATE,
         COL_PATH,
+        COL_MAX
     };
 
     CListCtrlEx m_playlist_ctrl;
