@@ -170,7 +170,14 @@ void CTest::TestAudioTag()
 	//wstring str_lyric = audio_tag.GetAudioLyric();
 	//BASS_StreamFree(hStream);
 
-    wstring result = CTagLibHelper::GetApeCue(L"D:\\Temp\\内嵌cue测试\\Various - 世界名曲鉴赏 珍藏版.ape");
+    //wstring result = CTagLibHelper::GetApeCue(L"D:\\Temp\\内嵌cue测试\\Various - 世界名曲鉴赏 珍藏版.ape");
+
+    std::map<wstring, wstring> propertyis;
+    SongInfo song_info;
+    song_info.file_path = L"D:\\Temp\\TRACK.04.wav";
+    CAudioTag audio_tag(song_info);
+    audio_tag.GetAudioTagPropertyMap(propertyis);
+
     int a = 0;
 }
 

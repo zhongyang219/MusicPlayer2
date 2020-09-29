@@ -107,6 +107,62 @@ void CAudioTag::GetAudioTag()
 }
 
 
+void CAudioTag::GetAudioTagPropertyMap(std::map<wstring, wstring>& property_map)
+{
+    switch (m_type)
+    {
+    case AU_MP3:
+        CTagLibHelper::GetMpegPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_WMA_ASF:
+        CTagLibHelper::GetAsfPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_OGG:
+        CTagLibHelper::GetOggPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_MP4:
+        CTagLibHelper::GetM4aPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_APE:
+        CTagLibHelper::GetApePropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_FLAC:
+        CTagLibHelper::GetFlacPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_WAV:
+        CTagLibHelper::GetWavPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_AIFF:
+        CTagLibHelper::GetAiffPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_MPC:
+        CTagLibHelper::GetMpcPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_OPUS:
+        CTagLibHelper::GetOpusPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_WV:
+        CTagLibHelper::GetWavPackPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AU_TTA:
+        CTagLibHelper::GetTtaPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AudioType::AU_SPX:
+        CTagLibHelper::GetSpxPropertyMap(m_song_info.file_path, property_map);
+        break;
+    case AudioType::AU_AAC:
+        break;
+    case AU_CUE:
+        break;
+    case AU_MIDI:
+        break;
+    case AU_OTHER:
+        break;
+    default:
+        break;
+    }
+}
+
 wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* file_size)
 {
     image_type = -1;

@@ -40,6 +40,23 @@ public:
 
     static void GetAnyFileTagInfo(SongInfo& song_info);
 
+    //读取所有标签属性
+    static void GetFlacPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetM4aPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetMpegPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetAsfPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetApePropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetWavPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetOggPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetMpcPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetOpusPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetWavPackPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetTtaPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetAiffPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+    static void GetSpxPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+
+    static void GetAnyFilePropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
+
     //读取歌词
     static wstring GetMpegLyric(const wstring& file_path);
     static wstring GetM4aLyric(const wstring& file_path);

@@ -519,6 +519,7 @@ struct MenuSet
     CMenu m_notify_menu;                //通知区图标右键菜单
     CMenu m_mini_mode_menu;             //迷你模式右键菜单
     CMenu m_property_cover_menu;        //属性——专辑封面中的右键菜单
+    CMenu m_property_menu;
 };
 
 struct ImageSet

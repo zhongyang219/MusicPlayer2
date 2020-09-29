@@ -547,6 +547,7 @@ void CMusicPlayerApp::InitMenuResourse()
     m_menu_set.m_notify_menu.LoadMenu(IDR_NOTIFY_MENU);
     m_menu_set.m_mini_mode_menu.LoadMenu(IDR_MINI_MODE_MENU);
     m_menu_set.m_property_cover_menu.LoadMenu(IDR_PROPERTY_COVER_MENU);
+    m_menu_set.m_property_menu.LoadMenu(IDR_PROPERTY_MENU);
 
     //为菜单添加图标
     //主菜单

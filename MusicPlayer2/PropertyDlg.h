@@ -3,6 +3,7 @@
 #include "CTabCtrlEx.h"
 #include "BaseDialog.h"
 #include "PropertyAlbumCoverDlg.h"
+#include "PropertyAdvancedDlg.h"
 
 
 // CPropertyDlg 对话框
@@ -28,6 +29,7 @@ protected:
     CTabCtrlEx m_tab_ctrl;
     CPropertyTabDlg m_property_dlg;
     CPropertyAlbumCoverDlg m_album_cover_dlg;
+    CPropertyAdvancedDlg m_advanced_dlg;
     CButton m_save_btn;
     CButton m_previous_btn;
     CButton m_next_btn;

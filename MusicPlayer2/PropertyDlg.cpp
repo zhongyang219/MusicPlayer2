@@ -15,6 +15,7 @@ CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, int index, bool read
     : CBaseDialog(IDD_PROPERTY_PARENT_DIALOG, pParent), m_read_only{ read_only }, m_index{ index }, m_song_num{ static_cast<int>(all_song_info.size()) }, m_tab_index{ tab_index },
     m_property_dlg(all_song_info, m_index, this, read_only),
     m_album_cover_dlg(all_song_info, m_index, show_out_album_cover, read_only, this),
+    m_advanced_dlg(all_song_info, m_index),
     m_batch_edit{ false }
 {
 
@@ -24,6 +25,7 @@ CPropertyDlg::CPropertyDlg(vector<SongInfo>& all_song_info, CWnd* pParent /*= nu
     : CBaseDialog(IDD_PROPERTY_PARENT_DIALOG, pParent), m_song_num{ static_cast<int>(all_song_info.size()) },
     m_property_dlg(all_song_info, this),
     m_album_cover_dlg(all_song_info, this),
+    m_advanced_dlg(all_song_info),
     m_batch_edit{ true }
 {
 
@@ -93,16 +95,19 @@ BOOL CPropertyDlg::OnInitDialog()
     //创建子对话框
     m_property_dlg.Create(IDD_PROPERTY_DIALOG);
     m_album_cover_dlg.Create(IDD_PROPERTY_ALBUM_COVER_DIALOG);
+    m_advanced_dlg.Create(IDD_PROPERTY_ADVANCED_DIALOG);
 
     //添加对话框
     m_tab_ctrl.AddWindow(&m_property_dlg, CCommon::LoadText(IDS_FILE_PROPERTY));
     m_tab_ctrl.AddWindow(&m_album_cover_dlg, CCommon::LoadText(IDS_ALBUM_COVER));
+    m_tab_ctrl.AddWindow(&m_advanced_dlg, CCommon::LoadText(IDS_ADVANCED_PROPERTY));
 
     //为每个标签添加图标
     CImageList ImageList;
     ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
     ImageList.Add(theApp.m_icon_set.file_relate);
     ImageList.Add(theApp.m_icon_set.album_cover);
+    ImageList.Add(theApp.m_icon_set.lyric);
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 
@@ -110,6 +115,7 @@ BOOL CPropertyDlg::OnInitDialog()
     m_tab_ctrl.AdjustTabWindowSize();
 
     m_album_cover_dlg.AdjustColumnWidth();
+    m_advanced_dlg.AdjustColumnWidth();
 
     m_tab_ctrl.SetCurTab(m_tab_index);
 

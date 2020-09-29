@@ -12,6 +12,8 @@ public:
 	//获取音频文件的标签信息，结果保存在构造函数传递进来的SongInfo结构里，
 	void GetAudioTag();
 
+    void GetAudioTagPropertyMap(std::map<wstring, wstring>& property_map);
+
 	//获取音频文件的专辑封面，并保存到临时目录
 	//image_type：用来接收封面的格式 0:jpg, 1:png, 2:gif
 	//file_name: 指定保存的专辑封面的文件名，如果为nullptr，则使用默认的文件名

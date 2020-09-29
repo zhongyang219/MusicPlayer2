@@ -730,6 +730,9 @@
     <ClInclude Include="PlayerUILyricsFullScreen.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="PropertyAdvancedDlg.h">
+      <Filter>对话框类\PropertyDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1097,6 +1100,9 @@
     </ClCompile>
     <ClCompile Include="PlayerUILyricsFullScreen.cpp">
       <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyAdvancedDlg.cpp">
+      <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

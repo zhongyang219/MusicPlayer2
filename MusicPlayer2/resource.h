@@ -620,8 +620,10 @@
 #define IDI_ICON15                      500
 #define IDI_APP_DEBUG                   500
 #define IDS_FILE_TYPE                   501
+#define IDD_PROPERTY_ADVANCED_DIALOG    501
 #define IDS_CLEAN_UP_MEDIA_WARNING      502
 #define IDS_FILES_THAT_NOT_EXIST        503
+#define IDR_PROPERTY_MENU               503
 #define IDS_FILES_NOT_IN_MEDIA_LIB_DIR  504
 #define IDS_FILES_THAT_ERROR            505
 #define IDS_IMAGE_FILE_FILTER           506
@@ -640,6 +642,7 @@
 #define IDS_RENAME                      519
 #define IDS_RENAME_INFO                 520
 #define IDS_PLAY_TRACK                  521
+#define IDS_ADVANCED_PROPERTY           522
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1397,13 +1400,14 @@
 #define ID_SWITCH_UI_2                  33213
 #define ID_SWITCH_UI_LYRICS_FULL_SCREEN 33214
 #define ID_SHOW_LYRIC_TRANSLATE         33215
+#define ID_1_33216                      33216
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        501
-#define _APS_NEXT_COMMAND_VALUE         33216
+#define _APS_NEXT_RESOURCE_VALUE        504
+#define _APS_NEXT_COMMAND_VALUE         33217
 #define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
