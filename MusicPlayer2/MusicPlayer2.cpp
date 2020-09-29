@@ -512,6 +512,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.dark_mode = CDrawCommon::LoadIconResource(IDI_DARK_MODE_D, DPI(16), DPI(16));
     m_icon_set.lyric = CDrawCommon::LoadIconResource(IDI_LYRIC_D, DPI(16), DPI(16));
     m_icon_set.rename = CDrawCommon::LoadIconResource(IDI_RENAME_D, DPI(16), DPI(16));
+    m_icon_set.tag = CDrawCommon::LoadIconResource(IDI_TAG, DPI(16), DPI(16));
 
     m_icon_set.ok = CDrawCommon::LoadIconResource(IDI_OK_D, DPI(16), DPI(16));
 

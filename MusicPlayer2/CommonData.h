@@ -480,6 +480,7 @@ struct IconSet
     HICON dark_mode;
     HICON lyric;
     HICON rename;
+    HICON tag;
 
     HICON ok;
 

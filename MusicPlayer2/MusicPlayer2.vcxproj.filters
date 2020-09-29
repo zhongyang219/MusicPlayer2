@@ -1471,14 +1471,17 @@
     <Image Include="res\rename_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\单曲播放.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\单曲播放_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\MusicPlayer2_debug.ico">
       <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\tag.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\单曲播放.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\单曲播放_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

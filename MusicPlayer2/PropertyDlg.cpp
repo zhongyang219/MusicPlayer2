@@ -107,7 +107,7 @@ BOOL CPropertyDlg::OnInitDialog()
     ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
     ImageList.Add(theApp.m_icon_set.file_relate);
     ImageList.Add(theApp.m_icon_set.album_cover);
-    ImageList.Add(theApp.m_icon_set.lyric);
+    ImageList.Add(theApp.m_icon_set.tag);
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 

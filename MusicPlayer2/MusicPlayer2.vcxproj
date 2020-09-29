@@ -552,6 +552,7 @@
     <Image Include="res\statistics_d.ico" />
     <Image Include="res\stop_dark.ico" />
     <Image Include="res\stop_white.ico" />
+    <Image Include="res\tag.ico" />
     <Image Include="res\toolbar1.bmp" />
     <Image Include="res\year_d.ico" />
     <Image Include="res\上一曲.ico" />

@@ -625,6 +625,8 @@
 #define IDS_FILES_THAT_NOT_EXIST        503
 #define IDR_PROPERTY_MENU               503
 #define IDS_FILES_NOT_IN_MEDIA_LIB_DIR  504
+#define IDI_ICON16                      504
+#define IDI_TAG                         504
 #define IDS_FILES_THAT_ERROR            505
 #define IDS_IMAGE_FILE_FILTER           506
 #define IDS_SEARCH_FILE_TYPE            507
@@ -1406,7 +1408,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        504
+#define _APS_NEXT_RESOURCE_VALUE        505
 #define _APS_NEXT_COMMAND_VALUE         33217
 #define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
