@@ -1403,13 +1403,15 @@
 #define ID_SWITCH_UI_LYRICS_FULL_SCREEN 33214
 #define ID_SHOW_LYRIC_TRANSLATE         33215
 #define ID_1_33216                      33216
+#define ID_1_33217                      33217
+#define ID_COPY_ALL_TEXT                33218
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        505
-#define _APS_NEXT_COMMAND_VALUE         33217
+#define _APS_NEXT_COMMAND_VALUE         33219
 #define _APS_NEXT_CONTROL_VALUE         1184
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

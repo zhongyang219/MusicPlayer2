@@ -188,6 +188,27 @@ void CListCtrlEx::SetListData(const ListData & list_data)
 	}
 }
 
+wstring CListCtrlEx::GetAllText(const wchar_t* sperator /*= L"\t"*/)
+{
+    wstring str_result;
+    int item_count = GetItemCount();
+    int col_count{};
+    auto pHeader = GetHeaderCtrl();
+    if (pHeader != nullptr)
+        col_count = pHeader->GetItemCount();
+    for (int i = 0; i < item_count; i++)
+    {
+        for (int j = 0; j < col_count; j++)
+        {
+            str_result += GetItemText(i, j).GetString();
+            if (j < col_count - 1)
+                str_result += sperator;
+        }
+        str_result += L"\r\n";
+    }
+    return str_result;
+}
+
 BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
 	ON_WM_LBUTTONDOWN()

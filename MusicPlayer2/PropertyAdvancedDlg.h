@@ -29,6 +29,7 @@ protected:
 
     CListCtrlEx m_list_ctrl;
     wstring m_selected_string;
+    int m_item_selected{ -1 };
 
 protected:
     virtual int SaveModified() override;
@@ -47,4 +48,6 @@ public:
     virtual BOOL OnInitDialog();
     afx_msg void OnCopyText();
     afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnInitMenu(CMenu* pMenu);
+    afx_msg void OnCopyAllText();
 };

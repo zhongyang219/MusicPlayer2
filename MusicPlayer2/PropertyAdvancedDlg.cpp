@@ -82,19 +82,22 @@ void CPropertyAdvancedDlg::ShowInfo()
 {
     EnableWindow(!m_batch_edit);
     m_list_ctrl.DeleteAllItems();
-    if (!m_batch_edit)
+    if (!m_batch_edit)      //批量编辑（多选）模式下不支持显示高级标签信息
     {
         SongInfo cur_song = CurrentSong();
-        CAudioTag audio_tag(cur_song);
-        std::map<wstring, wstring> property_map;
-        audio_tag.GetAudioTagPropertyMap(property_map);
-
-        int index{};
-        for (const auto& prop : property_map)
+        if (!cur_song.is_cue)
         {
-            m_list_ctrl.InsertItem(index, prop.first.c_str());
-            m_list_ctrl.SetItemText(index, 1, prop.second.c_str());
-            index++;
+            CAudioTag audio_tag(cur_song);
+            std::map<wstring, wstring> property_map;
+            audio_tag.GetAudioTagPropertyMap(property_map);
+
+            int index{};
+            for (const auto& prop : property_map)
+            {
+                m_list_ctrl.InsertItem(index, prop.first.c_str());
+                m_list_ctrl.SetItemText(index, 1, prop.second.c_str());
+                index++;
+            }
         }
     }
 }
@@ -109,6 +112,8 @@ void CPropertyAdvancedDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CPropertyAdvancedDlg, CTabDlg)
     ON_COMMAND(ID_COPY_TEXT, &CPropertyAdvancedDlg::OnCopyText)
     ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CPropertyAdvancedDlg::OnNMRClickList1)
+    ON_WM_INITMENU()
+    ON_COMMAND(ID_COPY_ALL_TEXT, &CPropertyAdvancedDlg::OnCopyAllText)
 END_MESSAGE_MAP()
 
 
@@ -146,6 +151,7 @@ void CPropertyAdvancedDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_selected_string = m_list_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
+    m_item_selected = pNMItemActivate->iItem;
 
     //弹出右键菜单
     CMenu* pMenu = theApp.m_menu_set.m_property_menu.GetSubMenu(0);
@@ -156,4 +162,21 @@ void CPropertyAdvancedDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     }
 
     *pResult = 0;
+}
+
+
+void CPropertyAdvancedDlg::OnInitMenu(CMenu* pMenu)
+{
+    CTabDlg::OnInitMenu(pMenu);
+
+    // TODO: 在此处添加消息处理程序代码
+    bool select_valid{ m_item_selected >= 0 && m_item_selected < m_list_ctrl.GetItemCount() };
+    pMenu->EnableMenuItem(ID_COPY_TEXT, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+}
+
+
+void CPropertyAdvancedDlg::OnCopyAllText()
+{
+    // TODO: 在此添加命令处理程序代码
+    CCommon::CopyStringToClipboard(m_list_ctrl.GetAllText());
 }

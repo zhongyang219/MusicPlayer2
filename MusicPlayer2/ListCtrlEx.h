@@ -42,6 +42,8 @@ public:
 
 	void SetCtrlAEnable(bool enable) { m_enable_ctrl_a = enable; }		//是否允许Ctrl + A全选
 
+    wstring GetAllText(const wchar_t* sperator = L"\t");
+
 protected:
 	const ColorTable& m_theme_color;
 	COLORREF m_background_color{ GRAY(255) };	//列表控件的背景色
