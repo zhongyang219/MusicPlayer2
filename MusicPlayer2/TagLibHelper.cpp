@@ -9,6 +9,7 @@
 #include "FilePathHelper.h"
 #include "taglib/attachedpictureframe.h"
 #include "taglib/id3v2tag.h"
+#include "taglib/id3v1tag.h"
 #include "taglib/apefile.h"
 #include "taglib/wavfile.h"
 #include "taglib/mpcfile.h"
@@ -325,7 +326,6 @@ void WriteId3v2Lyric(ID3v2::Tag * id3v2, const wstring &lyric_contents)
 template<class T>
 void GetTagPropertyMap(T* tag, std::map<wstring, wstring>& property_map)
 {
-    property_map.clear();
     if (tag != nullptr)
     {
         auto properties = tag->properties();
@@ -333,7 +333,11 @@ void GetTagPropertyMap(T* tag, std::map<wstring, wstring>& property_map)
         {
             wstring key = prop.first.toWString();
             wstring value = TagStringToWstring(prop.second.toString(L";"), true);
-            property_map[key] = value;
+            auto iter = property_map.find(key);
+            if (iter == property_map.end())
+                property_map[key] = value;
+            else if (iter->second.empty())
+                iter->second = value;
         }
     }
 }
@@ -710,8 +714,12 @@ void CTagLibHelper::GetAnyFileTagInfo(SongInfo & song_info)
 void CTagLibHelper::GetFlacPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
 {
     FLAC::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    if (file.hasXiphComment())
+        GetTagPropertyMap(file.xiphComment(), property_map);
+    if (file.hasID3v2Tag())
+        GetTagPropertyMap(file.ID3v2Tag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
 }
 
 void CTagLibHelper::GetM4aPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
@@ -724,8 +732,12 @@ void CTagLibHelper::GetM4aPropertyMap(const wstring & file_path, std::map<wstrin
 void CTagLibHelper::GetMpegPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
 {
     MPEG::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    if (file.hasID3v2Tag())
+        GetTagPropertyMap(file.ID3v2Tag(), property_map);
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
 }
 
 void CTagLibHelper::GetAsfPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
@@ -738,8 +750,10 @@ void CTagLibHelper::GetAsfPropertyMap(const wstring & file_path, std::map<wstrin
 void CTagLibHelper::GetApePropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
 {
     APE::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
 }
 
 void CTagLibHelper::GetWavPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
@@ -759,8 +773,10 @@ void CTagLibHelper::GetOggPropertyMap(const wstring & file_path, std::map<wstrin
 void CTagLibHelper::GetMpcPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
 {
     MPC::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
 }
 
 void CTagLibHelper::GetOpusPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
@@ -773,15 +789,19 @@ void CTagLibHelper::GetOpusPropertyMap(const wstring & file_path, std::map<wstri
 void CTagLibHelper::GetWavPackPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
 {
     WavPack::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
 }
 
 void CTagLibHelper::GetTtaPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)
 {
     TrueAudio::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    if (file.hasID3v2Tag())
+        GetTagPropertyMap(file.ID3v2Tag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
 }
 
 void CTagLibHelper::GetAiffPropertyMap(const wstring & file_path, std::map<wstring, wstring>& property_map)

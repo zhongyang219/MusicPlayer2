@@ -31,7 +31,7 @@ void CPropertyAdvancedDlg::AdjustColumnWidth()
 {
     CRect rect;
     m_list_ctrl.GetWindowRect(rect);
-    int width0 = theApp.DPI(120);
+    int width0 = theApp.DPI(160);
     int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
     m_list_ctrl.SetColumnWidth(0, width0);
     m_list_ctrl.SetColumnWidth(1, width1);
