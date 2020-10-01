@@ -2768,9 +2768,8 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     };
     //响应播放列表右键菜单中的“添加到播放列表”
     CMusicPlayerCmdHelper cmd_helper;
-    cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
-
-    m_pCurMenu = nullptr;
+    if (cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command))
+        m_pCurMenu = nullptr;
 
     return CMainDialogBase::OnCommand(wParam, lParam);
 }
@@ -4480,17 +4479,25 @@ void CMusicPlayerDlg::OnAddToNewPlaylist()
     // TODO: 在此添加命令处理程序代码
     auto getSongList = [&](std::vector<SongInfo>& song_list)
     {
-        for (auto i : m_items_selected)
+        if (IsAddCurrentToPlaylist())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
         {
-            if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+            song_list.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
+        }
+        else        //否则是添加选中的曲目到播放列表
+        {
+            for (auto i : m_items_selected)
             {
-                song_list.push_back(CPlayer::GetInstance().GetPlayList()[i]);
+                if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+                {
+                    song_list.push_back(CPlayer::GetInstance().GetPlayList()[i]);
+                }
             }
         }
     };
     CMusicPlayerCmdHelper cmd_helper(this);
     std::wstring playlist_path;
-    cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    if (cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path))
+        m_pCurMenu = nullptr;
 }
 
 

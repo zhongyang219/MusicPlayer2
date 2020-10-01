@@ -119,7 +119,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
     return false;
 }
 
-void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vector<SongInfo>&)> get_song_list, DWORD command)
+bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vector<SongInfo>&)> get_song_list, DWORD command)
 {
     //响应播放列表右键菜单中的“添加到播放列表”
     if ((command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE) || command == ID_ADD_TO_OTHER_PLAYLIST)
@@ -194,8 +194,9 @@ void CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 }
             }
         }
+        return true;
     }
-
+    return false;
 }
 
 bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& files)
