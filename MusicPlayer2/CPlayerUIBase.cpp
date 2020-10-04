@@ -1230,20 +1230,25 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
 void CPlayerUIBase::DrawProgressBar(CRect rect)
 {
     //绘制播放时间
+    bool draw_progress_time{ rect.Width() > DPI(110) };
     CRect rc_time = rect;
-    wstring strTime = CPlayer::GetInstance().GetTimeString();
+    if (draw_progress_time)
+    {
+        wstring strTime = CPlayer::GetInstance().GetTimeString();
 
-    m_draw.SetFont(&theApp.m_font_set.time.GetFont(m_ui_data.full_screen));
-    CSize strSize = m_draw.GetTextExtent(strTime.c_str());
-    rc_time.left = rc_time.right - strSize.cx;
-    //rc_time.InflateRect(0, DPI(2));
-    rc_time.top -= DPI(1);
-    m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
+        m_draw.SetFont(&theApp.m_font_set.time.GetFont(m_ui_data.full_screen));
+        CSize strSize = m_draw.GetTextExtent(strTime.c_str());
+        rc_time.left = rc_time.right - strSize.cx;
+        //rc_time.InflateRect(0, DPI(2));
+        rc_time.top -= DPI(1);
+        m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
+    }
 
     //绘制进度条
     const int progress_height = DPI(4);
     CRect progress_rect = rect;
-    progress_rect.right = rc_time.left - Margin();
+    if (draw_progress_time)
+        progress_rect.right = rc_time.left - Margin();
     progress_rect.top = rect.top + (rect.Height() - progress_height) / 2;
     progress_rect.bottom = progress_rect.top + progress_height;
 

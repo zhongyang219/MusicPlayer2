@@ -111,15 +111,15 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     }
 
     //绘制更换界面按钮
-    if (m_draw_rect.Width() > DPI(360))
-    {
+    //if (m_draw_rect.Width() > DPI(360))
+    //{
         rc_tmp.MoveToX(rc_tmp.right);
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
-    }
-    else
-    {
-        m_buttons[BTN_SKIN].rect = CRect();
-    }
+    //}
+    //else
+    //{
+    //    m_buttons[BTN_SKIN].rect = CRect();
+    //}
 
     //绘制AB重复按钮
     if (m_draw_rect.Width() > DPI(384))
