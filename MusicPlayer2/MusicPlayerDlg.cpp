@@ -554,7 +554,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
 
-    int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
+    int ui_selected = ini.GetInt(L"config", L"UI_selected", UI_UI2);
     SelectUi(ui_selected);
 
     //载入热键设置
@@ -1586,9 +1586,9 @@ void CMusicPlayerDlg::LoadDefaultBackground()
 
 void CMusicPlayerDlg::SelectUi(int ui_selected)
 {
-    if (ui_selected == 1)
+    if (ui_selected == UI_UI2)
         m_pUI = &m_ui2;
-    else if (ui_selected == 2)
+    else if (ui_selected == UI_LYRIC_FULL_SCREEN)
         m_pUI = &m_ui3;
     else
         m_pUI = &m_ui;
@@ -1598,11 +1598,11 @@ int CMusicPlayerDlg::GetUiSelected() const
 {
     int ui_selected{};
     if (m_pUI == &m_ui)
-        ui_selected = 0;
+        ui_selected = UI_UI1;
     else if (m_pUI == &m_ui2)
-        ui_selected = 1;
+        ui_selected = UI_UI2;
     else if (m_pUI == &m_ui3)
-        ui_selected = 2;
+        ui_selected = UI_LYRIC_FULL_SCREEN;
     return ui_selected;
 }
 

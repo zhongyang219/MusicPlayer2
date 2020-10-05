@@ -20,6 +20,14 @@ struct SLayoutData
 };
 
 
+enum eUIIdentify
+{
+    UI_UI1,
+    UI_UI2,
+    UI_LYRIC_FULL_SCREEN
+};
+
+
 class CPlayerUIBase : public IPlayerUI
 {
 public:
