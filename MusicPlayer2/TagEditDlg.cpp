@@ -62,11 +62,11 @@ BOOL CTagEditDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 
 	//初始化流派列表
-	for (int i{}; i < GENRE_MAX; i++)
-	{
-		m_genre_combo.AddString(GENRE_TABLE[i]);
-	}
-	CRect rect;
+    CAudioCommon::EmulateGenre([&](const wstring& genre_str)
+    {
+        m_genre_combo.AddString(genre_str.c_str());
+    }, true);
+    CRect rect;
 	m_genre_combo.SetMinVisibleItems(15);		//设置下拉列表的高度
 
 	ShowInfo();

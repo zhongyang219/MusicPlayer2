@@ -301,10 +301,10 @@ BOOL CPropertyTabDlg::OnInitDialog()
 	m_list_refresh = false;
 
 	//初始化流派列表
-	for (int i{}; i < GENRE_MAX; i++)
-	{
-		m_genre_combo.AddString(GENRE_TABLE[i]);
-	}
+    CAudioCommon::EmulateGenre([&](const wstring& genre_str)
+    {
+        m_genre_combo.AddString(genre_str.c_str());
+    }, true);
 	CRect rect;
 	m_genre_combo.SetMinVisibleItems(15);		//设置下拉列表的高度
 
@@ -465,12 +465,12 @@ int CPropertyTabDlg::SaveModified()
     CString str_year;
     m_year_edit.GetWindowText(str_year);
 	song_info.SetYear(str_year);
-	if (m_genre_modified)
-		song_info.genre_idx = static_cast<BYTE>(m_genre_combo.GetCurSel());
-	else
-		song_info.genre_idx = m_all_song_info[m_index].genre_idx;		//如果流派没有修改，则将原来的流派号写回文件中
     m_genre_combo.GetWindowText(str_temp);
     song_info.genre = str_temp;
+	if (m_genre_modified)
+		song_info.genre_idx = CAudioCommon::GenreIndex(song_info.genre);
+	else
+		song_info.genre_idx = m_all_song_info[m_index].genre_idx;		//如果流派没有修改，则将原来的流派号写回文件中
 	m_comment_edit.GetWindowText(str_temp);
 	song_info.comment = str_temp;
 

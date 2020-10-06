@@ -3,6 +3,8 @@
 #include "CueFile.h"
 #include "MusicPlayer2.h"
 #include "SongDataManager.h"
+#include "taglib/id3v1genres.h"
+
 
 vector<SupportedFormat> CAudioCommon::m_surpported_format;
 vector<wstring> CAudioCommon::m_all_surpported_extensions;
@@ -354,10 +356,41 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
 
 wstring CAudioCommon::GetGenre(BYTE genre)
 {
-    if (genre < GENRE_MAX)
-        return GENRE_TABLE[genre];
+    //if (genre < GENRE_MAX)
+    //    return GENRE_TABLE[genre];
+    //else
+    //    return wstring();
+    return TagLib::ID3v1::genre(genre).toWString();
+}
+
+void CAudioCommon::EmulateGenre(std::function<void(const wstring&)> fun, bool sort)
+{
+    if (sort)
+    {
+        auto genre_map = TagLib::ID3v1::genreMap();
+        for (const auto& item : genre_map)
+        {
+            wstring genre_str = item.first.toWString();
+            fun(genre_str);
+        }
+    }
     else
-        return wstring();
+    {
+        wstring genre_str{};
+        for (int i{}; i < 256; i++)
+        {
+            genre_str = GetGenre(i);
+            if (genre_str.empty())
+                break;
+            fun(genre_str);
+        }
+
+    }
+}
+
+int CAudioCommon::GenreIndex(const wstring& genre)
+{
+    return TagLib::ID3v1::genreIndex(genre);
 }
 
 wstring CAudioCommon::GenreConvert(wstring genre)
