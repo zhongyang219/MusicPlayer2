@@ -366,8 +366,13 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			//用背景色填充单元格，以去掉每行前面的空白
 			CRect rect = nmcd.rc;
 			CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
-			pDC->FillSolidRect(rect, lplvdr->clrTextBk);
-		}
+            COLORREF left_color{};
+            if (nmcd.dwItemSpec == m_highlight_item)
+                left_color = m_theme_color.dark1;
+            else
+                left_color = lplvdr->clrTextBk;
+            pDC->FillSolidRect(rect, left_color);
+        }
 		else		//当控件被禁用时，显示文本设为灰色
 		{
 			lplvdr->clrText = GRAY(140);
