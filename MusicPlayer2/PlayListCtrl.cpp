@@ -304,6 +304,7 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		if (IsWindowEnabled())
 		{
 			this_item_select = false;
+            int highlight_item{ m_highlight_item };
 			if (m_searched && m_search_result.size() == 0)		//如果播放列表处于搜索状态且没有搜索结果
 			{
 				if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)	//不允许选中行
@@ -313,21 +314,20 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			}
 			else
 			{
-				int hightlight_item;
 				if (!m_searched || m_search_result.size() == m_all_song_info.size())	//当播放列表不处理搜索状态，或搜索结果数量等于播放列表中曲目数量时
 				{
-					hightlight_item = m_highlight_item;
+					highlight_item = m_highlight_item;
 				}
 				else		//如果播放列表处于搜索状态，则高亮项目应该为搜索结果的索引
 				{
 					auto iter = std::find(m_search_result.begin(), m_search_result.end(), m_highlight_item);
 					if (iter == m_search_result.end())
-						hightlight_item = -1;
+						highlight_item = -1;
 					else
-						hightlight_item = iter - m_search_result.begin();
+						highlight_item = iter - m_search_result.begin();
 				}
 				//当选中行又是高亮行时设置颜色
-				if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == hightlight_item)
+				if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == highlight_item)
 				{
 					this_item_select = true;
 					//SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
@@ -343,7 +343,7 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 					lplvdr->clrTextBk = m_theme_color.light2;
 				}
 				//设置高亮行的颜色
-				else if (nmcd.dwItemSpec == hightlight_item)
+				else if (nmcd.dwItemSpec == highlight_item)
 				{
 					lplvdr->clrText = m_theme_color.dark2;
 					//lplvdr->clrText = 0;
@@ -367,7 +367,7 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			CRect rect = nmcd.rc;
 			CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
             COLORREF left_color{};
-            if (nmcd.dwItemSpec == m_highlight_item)
+            if (nmcd.dwItemSpec == highlight_item)
                 left_color = m_theme_color.dark1;
             else
                 left_color = lplvdr->clrTextBk;
