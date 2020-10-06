@@ -1325,7 +1325,7 @@ int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
     int total_width = 0;
     const int icon_size = DPI(28);
     //绘制“全屏”图标
-    if (always_show_full_screen && (!m_ui_data.show_playlist || m_draw_rect.Width() > m_layout.width_threshold || m_ui_data.full_screen))
+    if (always_show_full_screen || (!m_ui_data.show_playlist || m_draw_rect.Width() > m_layout.width_threshold || m_ui_data.full_screen))
     {
         total_width = icon_size;
 
