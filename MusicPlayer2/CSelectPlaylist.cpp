@@ -162,7 +162,7 @@ void CSelectPlaylistDlg::ShowSongList()
             row_data[COL_PATH] = song.file_path;
             m_list_data.push_back(std::move(row_data));
 
-            if (CPlayer::GetInstance().IsPlaylistMode() && song.file_path == CPlayer::GetInstance().GetCurrentFilePath() && GetSelectedPlaylist().path == CPlayer::GetInstance().GetPlaylistPath())
+            if (CPlayer::GetInstance().IsPlaylistMode() && song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && GetSelectedPlaylist().path == CPlayer::GetInstance().GetPlaylistPath())
                 m_song_list_ctrl.SetHightItem(index);
 
             index++;
