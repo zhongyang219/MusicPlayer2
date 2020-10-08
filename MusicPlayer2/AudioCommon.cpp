@@ -274,6 +274,21 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             //if(!CCommon::FileExist(cue_dir + audio_file_name))
             //    continue;
 
+            bool file_name_get_falid = audio_file_name.empty();
+            if (file_name_get_falid)        //如果无法从cue文件中获取关联音频文件的文件名，则查找cue文件相同目录下和cue文件同名的音频文件
+            {
+                vector<wstring> files;
+                CCommon::GetFiles(cue_dir + file_path.GetFileNameWithoutExtension() + L".*", files,
+                    [](const wstring& file_name)
+                {
+                    CFilePathHelper file_path(file_name);
+                    wstring extension{ file_path.GetFileExtension() };		//获取文件扩展名
+                    return extension != L"cue" && FileIsAudio(file_name);
+                });
+                if (!files.empty())
+                    audio_file_name = files.front();
+            }
+
             int bitrate{};
             Time total_length{};
             //如果还未获取对应音频文件的信息，则在这里获取
@@ -304,6 +319,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             {
                 cue_tracks.push_back(track);
                 cue_tracks.back().bitrate = bitrate;
+                if (file_name_get_falid && !audio_file_name.empty())
+                    cue_tracks.back().file_path = cue_dir + audio_file_name;
             }
 
             i--;		//解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1

@@ -2,6 +2,7 @@
 #pragma once
 #include "CVariant.h"
 #include <initializer_list>
+#include <functional>
 
 enum class Command
 {
@@ -243,7 +244,8 @@ public:
 
 	//查找指定文件，并将文件名保存在files容器
 	//file_name：例如 D:\\Music\\*abc*.mp3，则将查找D:\Music目录下所有包含abc的mp3文件
-	static void GetFiles(wstring file_name, vector<wstring>& files);
+    //fun_is_valid: 一个函数对象，用于判断找到的文件是否要添加到files中，参数为文件名。默认全部返回true
+    static void GetFiles(wstring file_name, vector<wstring>& files, std::function<bool(const wstring&)> fun_is_valid = [](const wstring& file_path) { return true; });
 
 	//查找指定的图片文件，并保存在files容器中，参数含义同GetFiles函数
 	static void GetImageFiles(wstring file_name, vector<wstring>& files);

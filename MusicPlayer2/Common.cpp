@@ -986,7 +986,7 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
 	return SUCCEEDED(hr);
 }
 
-void CCommon::GetFiles(wstring file_name, vector<wstring>& files)
+void CCommon::GetFiles(wstring file_name, vector<wstring>& files, std::function<bool(const wstring&)> fun_is_valid)
 {
 	files.clear();
 	//文件句柄
@@ -997,7 +997,8 @@ void CCommon::GetFiles(wstring file_name, vector<wstring>& files)
 	{
 		do
 		{
-			files.push_back(fileinfo.name);
+            if (fun_is_valid(fileinfo.name))
+			    files.push_back(fileinfo.name);
 		} while (_wfindnext(hFile, &fileinfo) == 0);
 	}
 	_findclose(hFile);
