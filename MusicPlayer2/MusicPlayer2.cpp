@@ -689,6 +689,8 @@ void CMusicPlayerApp::InitMenuResourse()
     //媒体库-播放列表的右键菜单
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_PLAY_PLAYLIST, FALSE, m_icon_set.play_new.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_DELETE_PLAYLIST, FALSE, m_icon_set.close.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_RENAME_PLAYLIST, FALSE, m_icon_set.rename);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_NEW_PLAYLIST, FALSE, m_icon_set.add.GetIcon(true));
 
     //媒体库右键菜单
     //左侧菜单
