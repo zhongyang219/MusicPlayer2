@@ -1605,3 +1605,17 @@ int CCommon::Random(int min, int max)
     return _rand;
 }
 
+CString CCommon::GetDesktopBackgroundPath()
+{
+    CString path;
+    CRegKey key;
+    if (key.Open(HKEY_CURRENT_USER, _T("Control Panel\\Desktop\\")) == ERROR_SUCCESS)
+    {
+        TCHAR buff[MAX_PATH]{};
+        ULONG size{ MAX_PATH };
+        key.QueryStringValue(_T("WallPaper"), buff, &size);
+        path = buff;
+    }
+    return path;
+}
+

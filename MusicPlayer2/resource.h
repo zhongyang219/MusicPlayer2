@@ -1001,6 +1001,7 @@
 #define IDC_FILE_TYPE_CHECK             1180
 #define IDC_DEFAULT_BACKGROUND_PATH_EDIT 1182
 #define IDC_INSERT_RADIO                1183
+#define IDC_USE_DESKTOP_BACKGROUND_CHECK 1184
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1412,7 +1413,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        505
 #define _APS_NEXT_COMMAND_VALUE         33219
-#define _APS_NEXT_CONTROL_VALUE         1184
+#define _APS_NEXT_CONTROL_VALUE         1185
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

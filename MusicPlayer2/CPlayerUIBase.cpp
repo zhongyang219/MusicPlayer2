@@ -476,6 +476,7 @@ void CPlayerUIBase::DrawBackground()
         }
         else
         {
+            CSingleLock sync(&m_ui_data.default_background_sync, TRUE);
             //MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
             m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
         }

@@ -99,6 +99,9 @@ void CAppearanceSettingDlg::SetControlEnable()
 	m_back_transparency_slid.EnableWindow(m_data.enable_background);
 	m_background_gauss_blur_chk.EnableWindow(m_data.enable_background && m_data.album_cover_as_background);
 	m_gauss_blur_radius_sld.EnableWindow(m_data.enable_background && m_data.album_cover_as_background && m_data.background_gauss_blur);
+
+    m_default_background_edit.EnableWindow(m_data.enable_background && !m_data.use_desktop_background);
+    EnableDlgCtrl(IDC_USE_DESKTOP_BACKGROUND_CHECK, m_data.enable_background);
 }
 
 void CAppearanceSettingDlg::CalculateNotifyIconPreviewRect()
@@ -166,6 +169,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, &CAppearanceSettingDlg::OnBnClickedNotifyIconAutoAdaptCheck)
     ON_BN_CLICKED(IDC_BTN_ROUND_CORNERS_CHECK, &CAppearanceSettingDlg::OnBnClickedBtnRoundCornersCheck)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CAppearanceSettingDlg::OnEditBrowseChanged)
+    ON_BN_CLICKED(IDC_USE_DESKTOP_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedUseDesktopBackgroundCheck)
 END_MESSAGE_MAP()
 
 
@@ -267,6 +271,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_default_background_edit.SetWindowText(m_data.default_background.c_str());
     CString szFilter = CCommon::LoadText(IDS_IMAGE_FILE_FILTER);
     m_default_background_edit.EnableFileBrowseButton(NULL, szFilter);
+    CheckDlgButton(IDC_USE_DESKTOP_BACKGROUND_CHECK, m_data.use_desktop_background);
 
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
@@ -737,4 +742,12 @@ afx_msg LRESULT CAppearanceSettingDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM
         m_data.default_background = str.GetString();
     }
     return 0;
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedUseDesktopBackgroundCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.use_desktop_background = (IsDlgButtonChecked(IDC_USE_DESKTOP_BACKGROUND_CHECK) != 0);
+    SetControlEnable();
 }

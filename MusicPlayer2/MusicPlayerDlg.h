@@ -154,7 +154,8 @@ protected:
     CPlayerToolBar m_playlist_toolbar;
 
     bool m_no_lbtnup{ false };      //当它为true时，不响应WM_LBUTTONUP消息
-    enum { DELAY_TIMER_ID = 1200 };
+    bool m_ignore_color_change{ false };    //当它为true时，不响应颜色变化，防止短时间内重复收到主题颜色变化的消息
+    enum { DELAY_TIMER_ID = 1200, INGORE_COLOR_CHANGE_TIMER_ID = 1201 };
 
 private:
     void SaveConfig();		//保存设置到ini文件

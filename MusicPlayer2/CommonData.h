@@ -252,6 +252,8 @@ struct ApperanceSettingData
     wstring default_background;     //默认的背景图片
 
     int playlist_width_percent{ 50 };       //主界面播放列表宽度的百分比
+
+    bool use_desktop_background{ false };   //使用桌面壁纸作为背景
 };
 
 struct GeneralSettingData
@@ -502,7 +504,9 @@ struct UIData
     int draw_area_width;                //绘图区的宽度
     int draw_area_height;               //绘图区的高度
     CImage default_background;			//默认的背景
+    CCriticalSection default_background_sync;
 };
+
 
 struct MenuSet
 {

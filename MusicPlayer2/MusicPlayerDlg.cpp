@@ -363,6 +363,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"button_round_corners", theApp.m_app_setting_data.button_round_corners);
     ini.WriteInt(L"config", L"playlist_width_percent", theApp.m_app_setting_data.playlist_width_percent);
     ini.WriteString(L"config", L"default_background", theApp.m_app_setting_data.default_background);
+    ini.WriteBool(L"config", L"use_desktop_background", theApp.m_app_setting_data.use_desktop_background);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -511,6 +512,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.button_round_corners = ini.GetBool(L"config", L"button_round_corners", false);
     theApp.m_app_setting_data.playlist_width_percent = ini.GetInt(L"config", L"playlist_width_percent", 50);
     theApp.m_app_setting_data.default_background = ini.GetString(L"config", L"default_background", DEFAULT_BACKGROUND_NAME);
+    theApp.m_app_setting_data.use_desktop_background = ini.GetBool(L"config", L"use_desktop_background", false);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
@@ -1001,7 +1003,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     //bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
     bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != optionDlg.m_tab2_dlg.m_data.notify_icon_selected };
     bool media_lib_display_item_changed{ theApp.m_media_lib_setting_data.display_item != optionDlg.m_media_lib_dlg.m_data.display_item };
-    bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background };
+    bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background
+                                     || theApp.m_app_setting_data.use_desktop_background != optionDlg.m_tab2_dlg.m_data.use_desktop_background };
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
@@ -1576,8 +1579,14 @@ void CMusicPlayerDlg::UpdateABRepeatToolTip()
 
 void CMusicPlayerDlg::LoadDefaultBackground()
 {
+    CSingleLock sync(&theApp.m_ui_data.default_background_sync, TRUE);
     theApp.m_ui_data.default_background.Destroy();
-    theApp.m_ui_data.default_background.Load(theApp.m_app_setting_data.default_background.c_str());
+    CString background_img;
+    if (theApp.m_app_setting_data.use_desktop_background)
+        background_img = CCommon::GetDesktopBackgroundPath();
+    else
+        background_img = theApp.m_app_setting_data.default_background.c_str();
+    theApp.m_ui_data.default_background.Load(background_img);
     if (theApp.m_ui_data.default_background.IsNull())
         theApp.m_ui_data.default_background.Load((theApp.m_local_dir + DEFAULT_BACKGROUND_NAME).c_str());
     if (theApp.m_ui_data.default_background.IsNull())
@@ -2119,6 +2128,12 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
     {
         KillTimer(DELAY_TIMER_ID);
         m_no_lbtnup = false;
+    }
+
+    else if (nIDEvent == INGORE_COLOR_CHANGE_TIMER_ID)
+    {
+        KillTimer(INGORE_COLOR_CHANGE_TIMER_ID);
+        m_ignore_color_change = false;
     }
 
     CMainDialogBase::OnTimer(nIDEvent);
@@ -3964,8 +3979,20 @@ void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL
     // _WIN32_WINNT 符号必须 >= 0x0600。
     // TODO: 在此添加消息处理程序代码和/或调用默认值
 
-    //响应主题颜色改变消息
-    ThemeColorChanged();
+    if (!m_ignore_color_change)
+    {
+        //响应主题颜色改变消息
+        ThemeColorChanged();
+
+        //如果设置了使用桌面背景为背景，则重新载入背景图片
+        if (theApp.m_app_setting_data.use_desktop_background)
+            LoadDefaultBackground();
+
+        //响应此消息后设置定时器，两秒内不再响应此消息
+        m_ignore_color_change = true;
+        SetTimer(INGORE_COLOR_CHANGE_TIMER_ID, 2000, NULL);
+    }
+
 
     CMainDialogBase::OnColorizationColorChanged(dwColorizationColor, bOpacity);
 }

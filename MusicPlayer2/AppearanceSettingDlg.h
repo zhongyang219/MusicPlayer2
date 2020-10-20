@@ -140,4 +140,6 @@ public:
     afx_msg void OnBnClickedBtnRoundCornersCheck();
 protected:
     afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnBnClickedUseDesktopBackgroundCheck();
 };
