@@ -135,7 +135,6 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	if (m_scroll_enable)
 	{
-        static int last_pos{};
 		SCROLLINFO scrollinfo;
 		GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 		int unit = 1;
@@ -160,18 +159,14 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			break;
 		case SB_THUMBTRACK:                  //Drag scroll box to specified position. The current position is provided in nPos
         {
-            int y_amount = (last_pos - nPos)*unit;
-            if (y_amount != 0)
-            {
-                int a = 0;
-            }
+            int y_amount = (m_last_pos - nPos)*unit;
             ScrollWindow(0, y_amount);
             scrollinfo.nPos = nPos;
             SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
         }
 			break;
 		}
-        last_pos = scrollinfo.nPos;
+        m_last_pos = scrollinfo.nPos;
 	}
 	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
@@ -191,7 +186,10 @@ BOOL CTabDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		{
 			ScrollWindowSimple(-step);
 		}
-	}
+        SCROLLINFO scrollinfo;
+        GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+        m_last_pos = scrollinfo.nPos;
+    }
 
 	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }

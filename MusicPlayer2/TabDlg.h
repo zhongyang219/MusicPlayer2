@@ -24,6 +24,7 @@ protected:
 protected:
 	CWnd* m_pParent;
 	bool m_scroll_enable{ false };
+    int m_last_pos{};
 
 public:
 	DECLARE_MESSAGE_MAP()
