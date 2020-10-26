@@ -49,12 +49,12 @@ protected:
 	CColorStatic m_color_static5;
 	CColorStatic m_color_static6;
 
-	const COLORREF m_color1{ RGB(123,189,255) };		//天蓝色
+	const COLORREF m_color1{ RGB(134,186,249) };		//天蓝色
 	const COLORREF m_color2{ RGB(115,210,45) };			//绿色
-	const COLORREF m_color3{ RGB(255,167,87) };			//橙色
+	const COLORREF m_color3{ RGB(255,164,16) };			//橙色
 	const COLORREF m_color4{ RGB(33,147,167) };			//青绿色
-	const COLORREF m_color5{ RGB(255,162,208) };		//浅红色
-	const COLORREF m_color6{ RGB(168,152,222) };		//淡紫色
+	const COLORREF m_color5{ RGB(249,153,197) };		//浅红色
+	const COLORREF m_color6{ RGB(162,161,216) };		//淡紫色
 
 	CToolTipCtrl m_toolTip;
 
