@@ -852,10 +852,13 @@ wstring CTagLibHelper::GetFlacLyric(const wstring& file_path)
     wstring lyrics;
     FLAC::File file(file_path.c_str());
     auto properties = file.properties();
-    auto lyric_item = properties[STR_FLAC_LYRIC_TAG];
-    if (!lyric_item.isEmpty())
+    if (file.isValid())
     {
-        lyrics = lyric_item.front().toWString();
+        auto lyric_item = properties[STR_FLAC_LYRIC_TAG];
+        if (!lyric_item.isEmpty())
+        {
+            lyrics = lyric_item.front().toWString();
+        }
     }
     return lyrics;
 }
@@ -864,11 +867,14 @@ wstring CTagLibHelper::GetAsfLyric(const wstring& file_path)
 {
     wstring lyrics;
     ASF::File file(file_path.c_str());
-    auto properties = file.properties();
-    auto lyric_item = properties[STR_ASF_LYRIC_TAG];
-    if (!lyric_item.isEmpty())
+    if (file.isValid())
     {
-        lyrics = lyric_item.front().toWString();
+        auto properties = file.properties();
+        auto lyric_item = properties[STR_ASF_LYRIC_TAG];
+        if (!lyric_item.isEmpty())
+        {
+            lyrics = lyric_item.front().toWString();
+        }
     }
     return lyrics;
 }
@@ -898,20 +904,24 @@ bool CTagLibHelper::WriteMpegLyric(const wstring& file_path, const wstring& lyri
 bool CTagLibHelper::WriteFlacLyric(const wstring& file_path, const wstring& lyric_contents)
 {
     FLAC::File file(file_path.c_str());
-    auto properties = file.properties();
-    if (lyric_contents.empty())
+    if (file.isValid())
     {
-        properties.erase(STR_FLAC_LYRIC_TAG);
+        auto properties = file.properties();
+        if (lyric_contents.empty())
+        {
+            properties.erase(STR_FLAC_LYRIC_TAG);
+        }
+        else
+        {
+            StringList lyric_item;
+            lyric_item.append(lyric_contents);
+            properties[STR_FLAC_LYRIC_TAG] = lyric_item;
+        }
+        file.setProperties(properties);
+        bool saved = file.save();
+        return saved;
     }
-    else
-    {
-        StringList lyric_item;
-        lyric_item.append(lyric_contents);
-        properties[STR_FLAC_LYRIC_TAG] = lyric_item;
-    }
-    file.setProperties(properties);
-    bool saved = file.save();
-    return saved;
+    return false;
 }
 
 bool CTagLibHelper::WriteM4aLyric(const wstring& file_path, const wstring& lyric_contents)
@@ -940,20 +950,24 @@ bool CTagLibHelper::WriteM4aLyric(const wstring& file_path, const wstring& lyric
 bool CTagLibHelper::WriteAsfLyric(const wstring& file_path, const wstring& lyric_contents)
 {
     ASF::File file(file_path.c_str());
-    auto properties = file.properties();
-    if (lyric_contents.empty())
+    if (file.isValid())
     {
-        properties.erase(STR_ASF_LYRIC_TAG);
+        auto properties = file.properties();
+        if (lyric_contents.empty())
+        {
+            properties.erase(STR_ASF_LYRIC_TAG);
+        }
+        else
+        {
+            StringList lyric_item;
+            lyric_item.append(lyric_contents);
+            properties[STR_ASF_LYRIC_TAG] = lyric_item;
+        }
+        file.setProperties(properties);
+        bool saved = file.save();
+        return saved;
     }
-    else
-    {
-        StringList lyric_item;
-        lyric_item.append(lyric_contents);
-        properties[STR_ASF_LYRIC_TAG] = lyric_item;
-    }
-    file.setProperties(properties);
-    bool saved = file.save();
-    return saved;
+    return false;
 }
 
 bool CTagLibHelper::WriteWavLyric(const wstring& file_path, const wstring& lyric_contents)
@@ -1365,8 +1379,11 @@ wstring CTagLibHelper::GetApeCue(const wstring& file_path)
     wstring cue_contents;
     APE::File file(file_path.c_str());
     auto tag = file.APETag();
-    auto item_list_map = tag->itemListMap();
-    auto cue_item = item_list_map[STR_APE_CUE_TAG];
-    cue_contents = cue_item.toString().toWString();
+    if (tag != nullptr)
+    {
+        auto item_list_map = tag->itemListMap();
+        auto cue_item = item_list_map[STR_APE_CUE_TAG];
+        cue_contents = cue_item.toString().toWString();
+    }
     return cue_contents;
 }
