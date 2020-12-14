@@ -5301,6 +5301,14 @@ void CMusicPlayerDlg::OnRename()
                     count++;
             }
         }
+
+        if (count > 0)
+        {
+            //重命名成功，刷新播放列表
+            ShowPlayList(false);
+            CPlayer::GetInstance().SaveCurrentPlaylist();
+        }
+
         CString info;
         info = CCommon::LoadTextFormat(IDS_RENAME_INFO, { m_items_selected.size(), count, static_cast<int>(m_items_selected.size()) - count });
         MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
