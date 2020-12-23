@@ -87,6 +87,9 @@ bool CTagFromFileNameDlg::IsInsertWhenClicked() const
 
 void CTagFromFileNameDlg::InsertFormular(const wstring& str_formular)
 {
+    if (!CPropertyDlgHelper::IsStringContainsFormular(str_formular))
+        return;
+
     //向m_default_formular中插入一项
     auto iter = std::find(m_default_formular.begin(), m_default_formular.end(), str_formular);
     if (iter == m_default_formular.begin())     //如果要插入的就在第一项，则直接返回

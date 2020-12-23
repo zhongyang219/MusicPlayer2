@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 #include <functional>
 
@@ -43,10 +43,10 @@ public:
     bool IsCommentModified(const vector<SongInfo>& list_ori);
 
 private:
-    //»ñÈ¡m_song_infoÖĞÒ»¸ö×Ö¶ÎµÄÖµ£¬Èç¹û¸Ã×Ö¶ÎÈ«²¿ÏàÍ¬£¬Ôò·µ»Ø¸ÃÖµ£¬Èç¹ûÓĞÒ»¸ö²»Í¬£¬Ôò·µ»Ø¡°¶à¸öÊıÖµ¡±
+    //è·å–m_song_infoä¸­ä¸€ä¸ªå­—æ®µçš„å€¼ï¼Œå¦‚æœè¯¥å­—æ®µå…¨éƒ¨ç›¸åŒï¼Œåˆ™è¿”å›è¯¥å€¼ï¼Œå¦‚æœæœ‰ä¸€ä¸ªä¸åŒï¼Œåˆ™è¿”å›â€œå¤šä¸ªæ•°å€¼â€
     static wstring GetMultiValue(std::function<wstring(const SongInfo&)> fun_get_value, const vector<SongInfo>& song_list);
 
-    //ÅĞ¶Ïm_song_infoÖĞµÄÒ»¸ö×Ö¶ÎºÍlist_oriÊÇ·ñÓĞ²»Í¬£¬Èç¹ûÓĞÔò·µ»Øtrue
+    //åˆ¤æ–­m_song_infoä¸­çš„ä¸€ä¸ªå­—æ®µå’Œlist_oriæ˜¯å¦æœ‰ä¸åŒï¼Œå¦‚æœæœ‰åˆ™è¿”å›true
     bool IsValueModified(std::function<wstring(const SongInfo&)> fun_get_value, const vector<SongInfo>& list_ori);
 
 private:
@@ -54,12 +54,14 @@ private:
 
 public:
 
-    //´ÓÎÄ¼şÃû²Â²â±êÇ©
-    //file_name: ÎÄ¼şÃû£¨²»º¬À©Õ¹Ãû£©
-    //formular: ²Â²âµÄ·½°¸£¬±ÈÈç¡°<%artist%> - <%title%>¡±
-    //song_info: ½ÓÊÕ²Â²â½á¹û
+    //ä»æ–‡ä»¶åçŒœæµ‹æ ‡ç­¾
+    //file_name: æ–‡ä»¶åï¼ˆä¸å«æ‰©å±•åï¼‰
+    //formular: çŒœæµ‹çš„æ–¹æ¡ˆï¼Œæ¯”å¦‚â€œ<%artist%> - <%title%>â€
+    //song_info: æ¥æ”¶çŒœæµ‹ç»“æœ
     static void GetTagFromFileName(const wstring& file_name, const wstring& formular, SongInfo& song_info);
 
     static wstring FileNameFromTag(const wstring& formular, const SongInfo& song_info);
+
+    static bool IsStringContainsFormular(const wstring& str);
 };
 

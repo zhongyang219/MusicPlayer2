@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "PropertyDlgHelper.h"
 #include "AudioCommon.h"
 #include "FilePathHelper.h"
@@ -215,14 +215,14 @@ wstring CPropertyDlgHelper::GetMultiValue(std::function<wstring(const SongInfo&)
 {
     if (!song_list.empty())
     {
-        wstring value = fun_get_value(song_list.front());     //µÚÒ»Ê×¸èÇúµÄÖµ
+        wstring value = fun_get_value(song_list.front());     //ç¬¬ä¸€é¦–æ­Œæ›²çš„å€¼
         int num = static_cast<int>(song_list.size());
         for (int i{ 1 }; i < num; i++)
         {
-            if (value != fun_get_value(song_list[i]))         //ÓĞÒ»Ê×¸èÇúµÄÖµ²»Í¬£¬Ôò·µ»Ø¡°¶à¸öÊıÖµ¡±
+            if (value != fun_get_value(song_list[i]))         //æœ‰ä¸€é¦–æ­Œæ›²çš„å€¼ä¸åŒï¼Œåˆ™è¿”å›â€œå¤šä¸ªæ•°å€¼â€
                 return wstring(CCommon::LoadText(IDS_MULTI_VALUE).GetString());
         }
-        return value;       //È«²¿ÏàÍ¬£¬Ôò·µ»ØµÚÒ»¸öÖµ
+        return value;       //å…¨éƒ¨ç›¸åŒï¼Œåˆ™è¿”å›ç¬¬ä¸€ä¸ªå€¼
     }
     else
     {
@@ -244,9 +244,9 @@ bool CPropertyDlgHelper::IsValueModified(std::function<wstring(const SongInfo&)>
 
 void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstring& formular, SongInfo& song_info)
 {
-    std::map<size_t, wstring> identifiers;    //±£´æ±êÊ¶·û£¬intÎª±êÊ¶·ûÔÚformualrÖĞµÄË÷Òı
+    std::map<size_t, wstring> identifiers;    //ä¿å­˜æ ‡è¯†ç¬¦ï¼Œintä¸ºæ ‡è¯†ç¬¦åœ¨formualrä¸­çš„ç´¢å¼•
 
-    //²éÕÒÃ¿¸ö±êÊ¶·ûµÄÎ»ÖÃ£¬²¢±£´æÔÚidentifersÖĞ
+    //æŸ¥æ‰¾æ¯ä¸ªæ ‡è¯†ç¬¦çš„ä½ç½®ï¼Œå¹¶ä¿å­˜åœ¨identifersä¸­
     const vector<wstring> FORMULARS{ FORMULAR_TITLE, FORMULAR_ARTIST, FORMULAR_ALBUM, FORMULAR_TRACK, FORMULAR_YEAR, FORMULAR_GENRE, FORMULAR_COMMENT };
     for (const auto& f : FORMULARS)
     {
@@ -261,20 +261,20 @@ void CPropertyDlgHelper::GetTagFromFileName(const wstring& file_name, const wstr
 
     const wchar_t* SPLITER = L"|";
 
-    //½«±êÊ¶·ûÈ«²¿Ìæ»»³É|
+    //å°†æ ‡è¯†ç¬¦å…¨éƒ¨æ›¿æ¢æˆ|
     for (const auto& item : identifiers)
     {
         CCommon::StringReplace(str_format, item.second.c_str(), SPLITER);
     }
-    //È¡µÃ·Ö¸î·û
+    //å–å¾—åˆ†å‰²ç¬¦
     vector<wstring> seprators;
     CCommon::StringSplit(str_format, SPLITER, seprators, true, false);
 
-    //ÓÃ·Ö¸î·û·Ö¸îÎÄ¼şÃû
+    //ç”¨åˆ†å‰²ç¬¦åˆ†å‰²æ–‡ä»¶å
     vector<wstring> results;
     CCommon::StringSplitWithSeparators(file_name, seprators, results);
 
-    //»ñÈ¡·Ö¸î½á¹û
+    //è·å–åˆ†å‰²ç»“æœ
     if (results.empty())
     {
         song_info.title = file_name;
@@ -319,4 +319,15 @@ wstring CPropertyDlgHelper::FileNameFromTag(const wstring& formular, const SongI
     CCommon::StringReplace(result, FORMULAR_COMMENT, song_info.comment);
     CCommon::FileNameNormalize(result);
     return result;
+}
+
+bool CPropertyDlgHelper::IsStringContainsFormular(const wstring & str)
+{
+    std::vector<wstring> formular_list{ FORMULAR_TITLE, FORMULAR_ARTIST, FORMULAR_ALBUM, FORMULAR_TRACK, FORMULAR_GENRE, FORMULAR_YEAR, FORMULAR_COMMENT };
+    for (const auto& formular : formular_list)
+    {
+        if (str.find(formular) != wstring::npos)
+            return true;
+    }
+    return false;
 }
