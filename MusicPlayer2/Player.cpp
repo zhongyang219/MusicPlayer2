@@ -499,10 +499,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
         SeekTo(m_current_position.toInt());
         break;
     case Command::REW:		//快退
+    {
         GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
-        m_current_position -= 5000;		//每次快退5000毫秒
-        if (m_current_position < 0) m_current_position = 0;		//防止快退到负的位置
-        SeekTo(m_current_position.toInt());
+        int current_position = m_current_position.toInt();
+        current_position -= 5000;		//每次快退5000毫秒
+        if (current_position < 0) current_position = 0;		//防止快退到负的位置
+        SeekTo(current_position);
+    }
         break;
     case Command::PLAY_PAUSE:
         if (m_playing == PS_PLAYING)
