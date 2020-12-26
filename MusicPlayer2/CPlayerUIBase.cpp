@@ -492,11 +492,18 @@ void CPlayerUIBase::DrawBackground()
 void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 {
     //绘制播放状态
-    CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
     CRect rc_tmp{ rect };
-    //m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
-    rc_tmp.right = rc_tmp.left + m_draw.GetTextExtent(play_state_str).cx + DPI(4);
-    m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
+    if (!theApp.m_ui_data.always_show_statusbar)
+    {
+        CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
+        //m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
+        rc_tmp.right = rc_tmp.left + m_draw.GetTextExtent(play_state_str).cx + DPI(4);
+        m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
+    }
+    else     //如果总是显示状态栏，由于状态栏中已经有播放状态了，因此这里不显示播放状态
+    {
+        rc_tmp.right = rc_tmp.left;
+    }
 
     //绘制歌曲序号
     rc_tmp.MoveToX(rc_tmp.right);
