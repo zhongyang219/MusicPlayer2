@@ -504,18 +504,21 @@ bool CCommon::IsURL(const wstring& str)
     return (str.substr(0, 7) == L"http://" || str.substr(0, 8) == L"https://" || str.substr(0, 6) == L"ftp://" || str.substr(0, 6) == L"mms://");
 }
 
+bool CCommon::IsWindowsPath(const wstring& str)
+{
+    return (str.size() >= 3																	//windows 路径至少3个字符
+        && ((str[0] > L'A' && str[0] < L'Z') || (str[0] > L'a' && str[0] < L'z'))		//第1个字符必须为字母
+        && str[1] == L':'																//第2个字符必须为冒号
+        && (str[2] == L'/' || str[2] == L'\\')											//第3个字符必须为斜杠
+        );
+}
+
 bool CCommon::IsPath(const wstring & str)
 {
 	if (str.size() < 2)		//只有1个字符不是一个路径
 		return false;
 
-	bool is_windows_path{ false };
-	if (str.size() >= 3																	//windows 路径至少3个字符
-		&& ((str[0] > L'A' && str[0] < L'Z') || (str[0] > L'a' && str[0] < L'z'))		//第1个字符必须为字母
-		&& str[1] == L':'																//第2个字符必须为冒号
-		&& (str[2] == L'/' || str[2] == L'\\')											//第3个字符必须为斜杠
-		)
-		is_windows_path = true;
+	bool is_windows_path{ IsWindowsPath(str) };
 
 	bool is_linux_path{ str[0] == L'/' || str[0] == L'\\' };
 
@@ -751,6 +754,28 @@ _tstring CCommon::FileRename(const _tstring& file_path, const _tstring& new_file
         pEx->Delete();
     }
     return new_file_path;
+}
+
+_tstring CCommon::RelativePathToAbsolutePath(const _tstring & relative_path, const _tstring & cur_dir)
+{
+    //
+    _tstring result = relative_path;
+    _tstring dir = cur_dir;
+    if (dir.empty() || dir.back() != _T('\\') || dir.back() != _T('/'))
+        dir.push_back(_T('\\'));
+    if ((result.size() > 0 && (result.front() == _T('.') || result.front() == _T('\\') || result.front() == _T('/'))))        //如果是相对路径
+    {
+        if (result.front() == _T('.') && (result.size() == 1 || result[1] != _T('.')))  //如果路径前面是一个点而不是两个点，则把点去掉
+            result = result.substr(1);
+        if (result.size() > 0 && (result.front() == _T('\\') || result.front() == _T('/')))
+            result = result.substr(1);
+        result = dir + result;
+    }
+    else if (!IsWindowsPath(result))
+    {
+        result = dir + result;
+    }
+    return result;
 }
 
 bool CCommon::CopyStringToClipboard(const wstring & str)

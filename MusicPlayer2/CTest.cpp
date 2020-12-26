@@ -130,7 +130,12 @@ void CTest::TestCommon()
     //unsigned __int64 t1 = CCommon::GetFileLastModified(L"D:\\Temp\\新建文本文档.jpg");
     //bool b = t > t1;
 
-    int r = CCommon::Random(0, 3);
+    //int r = CCommon::Random(0, 3);
+
+    //wstring dir = L"D:";
+    //wstring path = L"C:\\r\\1.txt";
+    //wstring result = CCommon::RelativePathToAbsolutePath(path, dir);
+
     int a = 0;
 }
 

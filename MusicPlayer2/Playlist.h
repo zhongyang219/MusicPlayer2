@@ -33,5 +33,6 @@ private:
 
 private:
     vector<SongInfo> m_playlist;
+    wstring m_path;
 };
 

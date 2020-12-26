@@ -1087,16 +1087,16 @@ void CPlayer::OpenPlaylistFile(const wstring& file_path)
 		CCommon::FileAutoRename(new_path);
 
 		wstring file_extension = helper.GetFileExtension(false, true);
-		if (file_extension == PLAYLIST_EXTENSION)		//播放列表文件是*.playlist格式，则直接复制到默认播放列表目录
-		{
-			CCommon::CopyAFile(AfxGetMainWnd()->GetSafeHwnd(), file_path, new_path);
-		}
-		else	//否则将其转换成*.playlist格式
-		{
-			CPlaylistFile playlist;
-			playlist.LoadFromFile(file_path);
-			playlist.SaveToFile(new_path);
-		}
+		//if (file_extension == PLAYLIST_EXTENSION)		//播放列表文件是*.playlist格式，则直接复制到默认播放列表目录
+		//{
+		//	CCommon::CopyAFile(AfxGetMainWnd()->GetSafeHwnd(), file_path, new_path);
+		//}
+		//else	//否则将其转换成*.playlist格式
+		//{
+		CPlaylistFile playlist;
+		playlist.LoadFromFile(file_path);
+		playlist.SaveToFile(new_path);
+		//}
 		SetPlaylist(new_path, 0, 0);
 	}
 	else		//如果打开的播放文件就在默认播放列表目录下，则直接打开

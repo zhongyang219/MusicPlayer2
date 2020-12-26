@@ -3,6 +3,7 @@
 #include "CVariant.h"
 #include <initializer_list>
 #include <functional>
+#include <gdiplus.h>
 
 enum class Command
 {
@@ -160,6 +161,9 @@ public:
 
     static bool IsURL(const wstring& str);
 
+    //判断一个字符串是否符合Windows路径的格式
+    static bool IsWindowsPath(const wstring& str);
+
 	//判断一个字符串是否符合路径的格式（而不是判断路径是否有效）
 	static bool IsPath(const wstring& str);
 
@@ -211,6 +215,12 @@ public:
     //new_file_name: 新的文件名（不含扩展名），如果操作对象为文件夹，则为新文件夹名
     //成功则返回新文件/文件夹的路径，否则返回空字符串
     static _tstring FileRename(const _tstring& file_path, const _tstring& new_file_name);
+
+    //将相对路径转换成绝对路径
+    //会自动判断路径是否为相对路径，如果不是则直接返回原路径
+    //relative_path：要转换的路径
+    //cur_dir：当前目录
+    static _tstring RelativePathToAbsolutePath(const _tstring& relative_path, const _tstring& cur_dir);
 
 	//将一个字符串保存到剪贴板
 	static bool CopyStringToClipboard(const wstring& str);

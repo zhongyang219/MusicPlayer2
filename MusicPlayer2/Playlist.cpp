@@ -30,6 +30,7 @@ wstring DeleteInvalidCh(const wstring& str)
 
 void CPlaylistFile::LoadFromFile(const wstring & file_path)
 {
+    m_path = file_path;
     ifstream stream{ file_path };
     if (stream.fail())
         return;
@@ -193,6 +194,9 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
 		wstring current_line_wcs = CCommon::StrToUnicode(current_line, utf8 ? CodeType::UTF8 : CodeType::ANSI);
 		size_t index = current_line_wcs.find(L'|');
 		item.file_path = current_line_wcs.substr(0, index);
+
+        //如果是相对路径，则转换成绝对路径
+        item.file_path = CCommon::RelativePathToAbsolutePath(item.file_path, CFilePathHelper(m_path).GetDir());
 
 		if (index < current_line_wcs.size() - 1)
 		{
