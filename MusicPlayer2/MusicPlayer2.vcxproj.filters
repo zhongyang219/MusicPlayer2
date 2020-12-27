@@ -727,11 +727,11 @@
     <ClInclude Include="TagFromFileNameDlg.h">
       <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerUILyricsFullScreen.h">
-      <Filter>PlayerUI</Filter>
-    </ClInclude>
     <ClInclude Include="PropertyAdvancedDlg.h">
       <Filter>对话框类\PropertyDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerUI3.h">
+      <Filter>PlayerUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1098,11 +1098,11 @@
     <ClCompile Include="TagFromFileNameDlg.cpp">
       <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerUILyricsFullScreen.cpp">
-      <Filter>PlayerUI</Filter>
-    </ClCompile>
     <ClCompile Include="PropertyAdvancedDlg.cpp">
       <Filter>对话框类\PropertyDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerUI3.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -33,7 +33,7 @@
 #include "DesktopLyric.h"
 #include "SearchEditCtrl.h"
 #include "UIWindow.h"
-#include "PlayerUILyricsFullScreen.h"
+#include "CPlayerUI3.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -90,7 +90,7 @@ protected:
     CDC* m_pUiDC;				//当前窗口的DC
     CPlayerUI m_ui{ theApp.m_ui_data, &m_ui_static_ctrl };
     CPlayerUI2 m_ui2{ theApp.m_ui_data, &m_ui_static_ctrl };
-    CPlayerUILyricsFullScreen m_ui3{ theApp.m_ui_data, &m_ui_static_ctrl };
+    CPlayerUI3 m_ui3{ theApp.m_ui_data, &m_ui_static_ctrl };
     IPlayerUI* m_pUI = nullptr;
 
     bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase

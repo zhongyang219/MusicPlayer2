@@ -226,7 +226,7 @@
     <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LyricRelateDlg.h" />
-    <ClInclude Include="PlayerUILyricsFullScreen.h" />
+    <ClInclude Include="CPlayerUI3.h" />
     <ClInclude Include="PropertyAdvancedDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />
@@ -359,7 +359,7 @@
     <ClCompile Include="CueFile.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
-    <ClCompile Include="PlayerUILyricsFullScreen.cpp" />
+    <ClCompile Include="CPlayerUI3.cpp" />
     <ClCompile Include="PropertyAdvancedDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />

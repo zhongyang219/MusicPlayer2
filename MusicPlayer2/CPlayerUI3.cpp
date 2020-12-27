@@ -1,24 +1,24 @@
-#include "stdafx.h"
-#include "PlayerUILyricsFullScreen.h"
+ï»¿#include "stdafx.h"
+#include "CPlayerUI3.h"
 #include "PlayListCtrl.h"
 
 
-CPlayerUILyricsFullScreen::CPlayerUILyricsFullScreen(UIData& ui_data, CWnd* pMainWnd)
+CPlayerUI3::CPlayerUI3(UIData& ui_data, CWnd* pMainWnd)
     : CPlayerUIBase(ui_data, pMainWnd)
 {
 }
 
-CPlayerUILyricsFullScreen::~CPlayerUILyricsFullScreen()
+CPlayerUI3::~CPlayerUI3()
 {
 }
 
-void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
+void CPlayerUI3::_DrawInfo(bool reset /*= false*/)
 {
     m_draw_data.thumbnail_rect = m_draw_rect;
     CRect draw_rect = m_draw_rect;
     draw_rect.MoveToXY(0, 0);
 
-    //»æÖÆ×´Ì¬Ìõ
+    //ç»˜åˆ¶çŠ¶æ€æ¡
     bool draw_status_bar = CPlayerUIHelper::IsDrawStatusBar();
     if (draw_status_bar)
     {
@@ -28,12 +28,12 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         DrawStatusBar(rc_status_bar, reset);
     }
 
-    //»æÖÆ¹¤¾ßÀ¸
+    //ç»˜åˆ¶å·¥å…·æ 
     CRect rc_tool_bar = draw_rect;
     rc_tool_bar.top = rc_tool_bar.bottom - DPI(24) - 2 * Margin();
     rc_tool_bar.DeflateRect(Margin(), Margin());
 
-    //»æÖÆ×¨¼­·âÃæ
+    //ç»˜åˆ¶ä¸“è¾‘å°é¢
     CRect rc_album = rc_tool_bar;
     rc_album.right = rc_album.left + rc_tool_bar.Height();
     m_draw.SetDrawArea(rc_album);
@@ -51,7 +51,7 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         m_draw.DrawIcon(icon.GetIcon(false, IsDrawLargeIcon()), CPoint(x, y), CSize(ICON_SIDE, ICON_SIDE));
     }
 
-    //»æÖÆ¸èÇúĞÅÏ¢
+    //ç»˜åˆ¶æ­Œæ›²ä¿¡æ¯
     int info_width = rc_tool_bar.Width() / 5;
     if (info_width > DPI(200))
         info_width = DPI(200);
@@ -63,7 +63,7 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DisplayFormat::DF_ARTIST_TITLE).c_str(),
         m_colors.color_text, GetScrollTextPixel(), false, scroll_info, reset);
 
-    //»æÖÆÑ­»·Ä£Ê½°´Å¥
+    //ç»˜åˆ¶å¾ªç¯æ¨¡å¼æŒ‰é’®
     if (m_draw_rect.Width() > DPI(330))
     {
         rc_tmp.left = rc_tmp.right;
@@ -99,7 +99,7 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         rc_tmp.left = rc_tmp.right - rc_tmp.Height();
     }
 
-    //»æÖÆÉèÖÃ°´Å¥
+    //ç»˜åˆ¶è®¾ç½®æŒ‰é’®
     if (m_draw_rect.Width() > DPI(430))
     {
         rc_tmp.MoveToX(rc_tmp.right);
@@ -110,7 +110,7 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         m_buttons[BTN_SETTING].rect = CRect();
     }
 
-    //»æÖÆ¸ü»»½çÃæ°´Å¥
+    //ç»˜åˆ¶æ›´æ¢ç•Œé¢æŒ‰é’®
     //if (m_draw_rect.Width() > DPI(360))
     //{
         rc_tmp.MoveToX(rc_tmp.right);
@@ -121,7 +121,7 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     //    m_buttons[BTN_SKIN].rect = CRect();
     //}
 
-    //»æÖÆABÖØ¸´°´Å¥
+    //ç»˜åˆ¶ABé‡å¤æŒ‰é’®
     if (m_draw_rect.Width() > DPI(384))
     {
         rc_tmp.MoveToX(rc_tmp.right);
@@ -134,27 +134,27 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         m_buttons[BTN_AB_REPEAT].rect = CRect();
     }
 
-    //»æÖÆÉÏÒ»Çú°´Å¥
+    //ç»˜åˆ¶ä¸Šä¸€æ›²æŒ‰é’®
     rc_tmp.MoveToX(rc_tmp.right);
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous_new);
 
-    //»æÖÆ²¥·Å/ÔİÍ£°´Å¥
+    //ç»˜åˆ¶æ’­æ”¾/æš‚åœæŒ‰é’®
     rc_tmp.MoveToX(rc_tmp.right);
     const IconRes& icon_res{ CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause_new : theApp.m_icon_set.play_new };
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_PLAY_PAUSE], icon_res);
 
-    //»æÖÆÏÂÒ»Çú°´Å¥
+    //ç»˜åˆ¶ä¸‹ä¸€æ›²æŒ‰é’®
     rc_tmp.MoveToX(rc_tmp.right);
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next_new);
 
     int progress_bar_left = rc_tmp.right;
 
-    //»æÖÆÏÔÊ¾²¥·ÅÁĞ±í°´Å¥
+    //ç»˜åˆ¶æ˜¾ç¤ºæ’­æ”¾åˆ—è¡¨æŒ‰é’®
     rc_tmp = rc_tool_bar;
     rc_tmp.left = rc_tmp.right - rc_tool_bar.Height();
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
 
-    //»æÖÆÒôÁ¿
+    //ç»˜åˆ¶éŸ³é‡
     if (m_draw_rect.Width() > DPI(500))
     {
         CString vol_str;
@@ -170,17 +170,17 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
         DrawVolumeButton(rc_tmp, vol_str, true);
     }
 
-    //»æÖÆ½ø¶ÈÌõ
+    //ç»˜åˆ¶è¿›åº¦æ¡
     CRect rc_progress_bar = rc_tool_bar;
     rc_progress_bar.left = progress_bar_left;
     rc_progress_bar.right = rc_tmp.left - Margin();
     DrawProgressBar(rc_progress_bar);
 
-    //»æÖÆÒôÁ¿µ÷Õû°´Å¥
+    //ç»˜åˆ¶éŸ³é‡è°ƒæ•´æŒ‰é’®
     if (m_draw_rect.Width() > DPI(500))
         DrawVolumnAdjBtn();
 
-    //»æÖÆ¸è´Ê
+    //ç»˜åˆ¶æ­Œè¯
     CRect rc_lyric = m_draw_rect;
     rc_lyric.bottom = rc_tool_bar.top;
     rc_lyric.DeflateRect(Margin(), Margin());
@@ -195,18 +195,18 @@ void CPlayerUILyricsFullScreen::_DrawInfo(bool reset /*= false*/)
     rc_lyric.DeflateRect(Margin(), Margin());
     m_draw.DrawLryicCommon(rc_lyric, theApp.m_app_setting_data.lyric_align);
 
-    //È«ÆÁÄ£Ê½Ê±ÔÚÓÒÉÏ½Ç»æÖÆÊ±¼ä
+    //å…¨å±æ¨¡å¼æ—¶åœ¨å³ä¸Šè§’ç»˜åˆ¶æ—¶é—´
     if (m_ui_data.full_screen)
     {
         DrawCurrentTime();
     }
 
-    //»æÖÆÓÒÉÏ½ÇÍ¼±ê
+    //ç»˜åˆ¶å³ä¸Šè§’å›¾æ ‡
     DrawTopRightIcons(true);
 
 }
 
-int CPlayerUILyricsFullScreen::GetClassId()
+int CPlayerUI3::GetClassId()
 {
     return 3000;
 }
