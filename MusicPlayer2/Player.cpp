@@ -1907,42 +1907,42 @@ void CPlayer::SortPlaylist(bool change_index)
     {
     case SM_FILE:
         if(m_descending)
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileNameDecending);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileNameDecending);
         else
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
         break;
     case SM_PATH:
         if (m_descending)
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPathDecending);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPathDecending);
         else
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPath);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPath);
         break;
     case SM_TITLE:
         if (m_descending)
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitleDecending);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitleDecending);
         else
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitle);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitle);
         break;
     case SM_ARTIST:
         if (m_descending)
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtistDecending);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtistDecending);
         else
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtist);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtist);
         break;
     case SM_ALBUM:
         if (m_descending)
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbumDecending);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbumDecending);
         else
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbum);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbum);
         break;
     case SM_TRACK:
         if (m_descending)
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrackDecending);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrackDecending);
         else
-            std::sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrack);
+            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrack);
         break;
     case SM_TIME:
-        std::sort(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& a, const SongInfo& b)
+        std::stable_sort(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& a, const SongInfo& b)
         {
             unsigned __int64 file_time_a = a.modified_time;
             unsigned __int64 file_time_b = b.modified_time;
