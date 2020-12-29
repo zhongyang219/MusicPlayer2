@@ -33,6 +33,9 @@ public:
 	CAllMediaDlg m_recent_media_dlg{ CAllMediaDlg::DT_RECENT_MEDIA };
     CFolderExploreDlg m_folder_explore_dlg;
 
+    void SetCurTab(int tab);
+    bool NavigateToItem(const wstring& item);       //跳转到对应项目，例如当前显示的是艺术家标签，则跳转到对应艺术家
+
 protected:
     void SaveConfig() const;
     void LoadConfig();

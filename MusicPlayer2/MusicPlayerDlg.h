@@ -463,4 +463,6 @@ public:
     afx_msg void OnSwitchUi2();
     afx_msg void OnSwitchUiLyricsFullScreen();
     afx_msg void OnShowLyricTranslate();
+    afx_msg void OnViewArtist();
+    afx_msg void OnViewAlbum();
 };

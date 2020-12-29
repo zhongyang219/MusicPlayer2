@@ -535,6 +535,31 @@ bool CMusicPlayerCmdHelper::Rename(SongInfo & song, const wstring & new_name)
     return true;
 }
 
+void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/)
+{
+    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pPlayerDlg == nullptr)
+        return;
+
+    if (pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->m_hWnd))      //如果媒体库对话框已经存在，则将其激活
+    {
+        pPlayerDlg->m_pMediaLibDlg->ShowWindow(SW_SHOWNORMAL);
+        pPlayerDlg->m_pMediaLibDlg->SetForegroundWindow();
+        if (cur_tab >= 0)
+            pPlayerDlg->m_pMediaLibDlg->SetCurTab(cur_tab);
+    }
+    else
+    {
+        CCommon::DeleteModelessDialog(pPlayerDlg->m_pMediaLibDlg);
+        int tab_index = cur_tab;
+        if (tab_index < 0)
+            tab_index = CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0;
+        pPlayerDlg->m_pMediaLibDlg = new CMediaLibDlg(tab_index);
+        pPlayerDlg->m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);
+        pPlayerDlg->m_pMediaLibDlg->ShowWindow(SW_SHOW);
+    }
+}
+
 bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
     if (CPlayer::GetInstance().IsPlaylistMode() && playlist_path == CPlayer::GetInstance().GetPlaylistPath())

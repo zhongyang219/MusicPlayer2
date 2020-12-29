@@ -95,19 +95,22 @@ BOOL CPropertyDlg::OnInitDialog()
     //创建子对话框
     m_property_dlg.Create(IDD_PROPERTY_DIALOG);
     m_album_cover_dlg.Create(IDD_PROPERTY_ALBUM_COVER_DIALOG);
-    m_advanced_dlg.Create(IDD_PROPERTY_ADVANCED_DIALOG);
+    if (!m_batch_edit)      //批量编辑时不添加“高级标签信息”标签
+        m_advanced_dlg.Create(IDD_PROPERTY_ADVANCED_DIALOG);
 
     //添加对话框
     m_tab_ctrl.AddWindow(&m_property_dlg, CCommon::LoadText(IDS_FILE_PROPERTY));
     m_tab_ctrl.AddWindow(&m_album_cover_dlg, CCommon::LoadText(IDS_ALBUM_COVER));
-    m_tab_ctrl.AddWindow(&m_advanced_dlg, CCommon::LoadText(IDS_ADVANCED_PROPERTY));
+    if (!m_batch_edit)
+        m_tab_ctrl.AddWindow(&m_advanced_dlg, CCommon::LoadText(IDS_ADVANCED_PROPERTY));
 
     //为每个标签添加图标
     CImageList ImageList;
     ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
     ImageList.Add(theApp.m_icon_set.file_relate);
     ImageList.Add(theApp.m_icon_set.album_cover);
-    ImageList.Add(theApp.m_icon_set.tag);
+    if (!m_batch_edit)
+        ImageList.Add(theApp.m_icon_set.tag);
     m_tab_ctrl.SetImageList(&ImageList);
     ImageList.Detach();
 
@@ -115,7 +118,8 @@ BOOL CPropertyDlg::OnInitDialog()
     m_tab_ctrl.AdjustTabWindowSize();
 
     m_album_cover_dlg.AdjustColumnWidth();
-    m_advanced_dlg.AdjustColumnWidth();
+    if (!m_batch_edit)
+        m_advanced_dlg.AdjustColumnWidth();
 
     m_tab_ctrl.SetCurTab(m_tab_index);
 

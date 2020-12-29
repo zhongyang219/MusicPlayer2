@@ -38,6 +38,18 @@ public:
 
     static bool Rename(SongInfo& song, const wstring& new_name);
 
+    enum eMediaLibTab
+    {
+        ML_FOLDER = 0,
+        ML_PLAYLIST = 1,
+        ML_ARTIST = 2,
+        ML_ALBUM = 3
+    };
+
+    //显示媒体库对话框
+    //cur_tab：打开对话框后要切换的标签
+    void ShowMediaLib(int cur_tab = -1);
+
 protected:
     bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 

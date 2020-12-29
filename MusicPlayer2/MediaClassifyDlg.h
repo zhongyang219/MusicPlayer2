@@ -23,6 +23,7 @@ public:
 public:
 	virtual void GetSongsSelected(std::vector<wstring>& song_list) const override;
 	void RefreshData();
+    bool SetLeftListSel(const wstring& item);
 
 protected:
     enum SongColumeIndex

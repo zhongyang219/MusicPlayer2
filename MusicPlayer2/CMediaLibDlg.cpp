@@ -21,6 +21,21 @@ CMediaLibDlg::~CMediaLibDlg()
     SaveConfig();
 }
 
+void CMediaLibDlg::SetCurTab(int tab)
+{
+    m_tab_ctrl.SetCurTab(tab);
+}
+
+bool CMediaLibDlg::NavigateToItem(const wstring& item)
+{
+    CMediaClassifyDlg* pCurTab = dynamic_cast<CMediaClassifyDlg*>(m_tab_ctrl.GetCurrentTab());
+    if (pCurTab != nullptr)
+    {
+        return pCurTab->SetLeftListSel(item);
+    }
+    return false;
+}
+
 void CMediaLibDlg::SaveConfig() const
 {
     CIniHelper ini{ theApp.m_config_path };

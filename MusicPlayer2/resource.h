@@ -645,6 +645,8 @@
 #define IDS_RENAME_INFO                 520
 #define IDS_PLAY_TRACK                  521
 #define IDS_ADVANCED_PROPERTY           522
+#define IDS_CONNOT_FIND_ARTIST_WARNING  523
+#define IDS_CONNOT_FIND_ALBUM_WARNING   524
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1406,13 +1408,16 @@
 #define ID_1_33216                      33216
 #define ID_1_33217                      33217
 #define ID_COPY_ALL_TEXT                33218
+#define ID_VIEW_ARTIST                  33219
+#define ID_33220                        33220
+#define ID_VIEW_ALBUM                   33221
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        505
-#define _APS_NEXT_COMMAND_VALUE         33219
+#define _APS_NEXT_COMMAND_VALUE         33222
 #define _APS_NEXT_CONTROL_VALUE         1185
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

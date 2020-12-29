@@ -96,6 +96,23 @@ void CMediaClassifyDlg::RefreshData()
 	}
 }
 
+bool CMediaClassifyDlg::SetLeftListSel(const wstring & item)
+{
+    int list_size = static_cast<int>(m_list_data_left.size());
+    for (int i = 0; i < list_size; i++)
+    {
+        
+        wstring name = m_list_data_left[i][0];
+        if (CCommon::StringCompareNoCase(name, item))
+        {
+            m_classify_list_ctrl.SetCurSel(i);
+            ClassifyListClicked(i);
+            return true;
+        }
+    }
+    return false;
+}
+
 void CMediaClassifyDlg::RefreshSongList()
 {
     ShowSongList();

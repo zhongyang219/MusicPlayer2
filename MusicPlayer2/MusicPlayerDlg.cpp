@@ -272,6 +272,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SWITCH_UI_2, &CMusicPlayerDlg::OnSwitchUi2)
     ON_COMMAND(ID_SWITCH_UI_LYRICS_FULL_SCREEN, &CMusicPlayerDlg::OnSwitchUiLyricsFullScreen)
     ON_COMMAND(ID_SHOW_LYRIC_TRANSLATE, &CMusicPlayerDlg::OnShowLyricTranslate)
+    ON_COMMAND(ID_VIEW_ARTIST, &CMusicPlayerDlg::OnViewArtist)
+    ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
 END_MESSAGE_MAP()
 
 
@@ -2215,20 +2217,8 @@ void CMusicPlayerDlg::OnSetPath()
     //    //IniPlaylistPopupMenu();
     //}
 
-    if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))      //如果媒体库对话框已经存在，则将其激活
-    {
-        m_pMediaLibDlg->ShowWindow(SW_SHOWNORMAL);
-        m_pMediaLibDlg->SetForegroundWindow();
-    }
-    else
-    {
-        CCommon::DeleteModelessDialog(m_pMediaLibDlg);
-        int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
-        m_pMediaLibDlg = new CMediaLibDlg(cur_tab);
-        m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);
-        m_pMediaLibDlg->ShowWindow(SW_SHOW);
-    }
-
+    CMusicPlayerCmdHelper helper;
+    helper.ShowMediaLib();
 }
 
 
@@ -5382,4 +5372,30 @@ void CMusicPlayerDlg::OnShowLyricTranslate()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_ui_data.show_translate = !theApp.m_ui_data.show_translate;
+}
+
+
+void CMusicPlayerDlg::OnViewArtist()
+{
+    // TODO: 在此添加命令处理程序代码
+    CMusicPlayerCmdHelper helper;
+    wstring artist = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
+    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST);
+    if (!m_pMediaLibDlg->NavigateToItem(artist))
+    {
+        MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ARTIST_WARNING, { artist }), NULL, MB_OK | MB_ICONWARNING);
+    }
+}
+
+
+void CMusicPlayerDlg::OnViewAlbum()
+{
+    // TODO: 在此添加命令处理程序代码
+    CMusicPlayerCmdHelper helper;
+    wstring album = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ALBUM);
+    if (!m_pMediaLibDlg->NavigateToItem(album))
+    {
+        MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ALBUM_WARNING, { album }), NULL, MB_OK | MB_ICONWARNING);
+    }
 }
