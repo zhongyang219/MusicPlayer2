@@ -372,6 +372,8 @@ public:
 		return max;
 	}
 
+    //以当前语言比较两个字符串
+    //返回值：0：相同；-1：小于；1：大于
     static int StringCompareInLocalLanguage(const wstring& str1, const wstring& str2, bool no_case = false);
 
 	//设置一个数字的某个bit位
