@@ -117,6 +117,8 @@ public:
     void AutoSelectNotifyIcon();
     HICON GetNotifyIncon(int index);
 
+    bool IsScintillaLoaded() const;
+
 private:
     void LoadSongData();
 
@@ -131,6 +133,8 @@ private:
 
 	ULONG_PTR m_gdiplusToken;
     bool m_media_lib_updating{ false };
+
+    HMODULE m_hScintillaModule{};
 
 // 重写
 public:

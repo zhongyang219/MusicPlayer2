@@ -3227,6 +3227,11 @@ void CMusicPlayerDlg::OnEditLyric()
     // TODO: 在此添加命令处理程序代码
     //ShellExecute(NULL, _T("open"), CPlayer::GetInstance().m_Lyrics.GetPathName().c_str(), NULL, NULL, SW_SHOWNORMAL);
     CCommon::DeleteModelessDialog(m_pLyricEdit);
+    if (!theApp.IsScintillaLoaded())
+    {
+        MessageBox(CCommon::LoadText(IDS_SCI_NOT_LOADED_ERROR_INFO), NULL, MB_ICONERROR | MB_OK);
+        return;
+    }
     m_pLyricEdit = new CLyricEditDlg;
     m_pLyricEdit->Create(IDD_LYRIC_EDIT_DIALOG);
     m_pLyricEdit->ShowWindow(SW_SHOW);

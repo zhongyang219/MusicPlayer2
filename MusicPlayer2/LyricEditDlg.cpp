@@ -26,7 +26,7 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 {
 	int start, end;			//光标选中的起始的结束位置
 	int tag_index;		//要操作的时间标签的位置
-	m_lyric_edit.GetSel(start, end);
+	m_view->GetSel(start, end);
 	tag_index = m_lyric_string.rfind(L"\r\n", start - 1);	//从光标位置向前查找\r\n的位置
 	if (tag_index == string::npos || start == 0)
 		tag_index = 0;									//如果没有找到，则插入点的位置是最前面
@@ -73,12 +73,12 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 		next_index += 2;
 	}
 
-	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_view->SetText(m_lyric_string);
 	if (operation != TagOpreation::DELETE_)
-		m_lyric_edit.SetSel(next_index, next_index);
+        m_view->SetSel(next_index, next_index, m_lyric_string);
 	else
-		m_lyric_edit.SetSel(tag_index, tag_index);
-	m_lyric_edit.SetFocus();
+        m_view->SetSel(tag_index, tag_index, m_lyric_string);
+    m_view->SetFocus();
 	m_modified = true;
 	UpdateStatusbarInfo();
 }
@@ -214,6 +214,22 @@ void CLyricEditDlg::SetLyricPathEditText()
         SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
 }
 
+CRect CLyricEditDlg::CalculateEditCtrlRect()
+{
+    CRect edit_rect;
+    GetClientRect(edit_rect);
+
+    CRect path_edit_rect;
+    GetDlgItem(IDC_LYRIC_PATH_EDIT2)->GetWindowRect(path_edit_rect);
+    ScreenToClient(path_edit_rect);
+
+    edit_rect.top = path_edit_rect.bottom + theApp.DPI(4);
+    //edit_rect.left += MARGIN;
+    edit_rect.right -= MARGIN;
+    edit_rect.bottom -= (STATUSBAR_HEIGHT + MARGIN);
+    return edit_rect;
+}
+
 CString CLyricEditDlg::GetDialogName() const
 {
     return _T("LyricEditDlg");
@@ -222,7 +238,6 @@ CString CLyricEditDlg::GetDialogName() const
 void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CBaseDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT1, m_lyric_edit);
 }
 
 
@@ -233,7 +248,6 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CBaseDialog)
 	//ON_BN_CLICKED(IDC_SAVE_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedSaveLyricButton)
 	//ON_BN_CLICKED(IDC_SAVE_AS_BUTTON5, &CLyricEditDlg::OnBnClickedSaveAsButton5)
 	ON_WM_DESTROY()
-	ON_EN_CHANGE(IDC_EDIT1, &CLyricEditDlg::OnEnChangeEdit1)
 	ON_WM_CLOSE()
 	//ON_BN_CLICKED(IDC_OPEN_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedOpenLyricButton)
 	ON_COMMAND(ID_LYRIC_OPEN, &CLyricEditDlg::OnLyricOpen)
@@ -272,7 +286,10 @@ BOOL CLyricEditDlg::OnInitDialog()
     SetIcon(theApp.m_icon_set.edit.GetIcon(true), FALSE);
     SetIcon(AfxGetApp()->LoadIcon(IDI_EDIT_D), TRUE);
 
-    m_lyric_edit.SetColorWhenModified(false);
+    m_view = (CScintillaEditView*)RUNTIME_CLASS(CScintillaEditView)->CreateObject();
+    m_view->Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL, CalculateEditCtrlRect(), this, 3000);
+    m_view->OnInitialUpdate();
+    m_view->ShowWindow(SW_SHOW);
 
 	//获取歌词信息
 	//m_lyric_string = CPlayer::GetInstance().m_Lyrics.GetLyricsString();
@@ -294,10 +311,12 @@ BOOL CLyricEditDlg::OnInitDialog()
 	m_current_song_name = CPlayer::GetInstance().GetFileName();
 
 	//初始化编辑区字体
-	m_font.CreatePointFont(100, CCommon::LoadText(IDS_DEFAULT_FONT));
-	m_lyric_edit.SetFont(&m_font);
+    m_view->SetFontFace(CCommon::LoadText(IDS_DEFAULT_FONT));
+    m_view->SetFontSize(10);
 
-	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_view->SetText(m_lyric_string);
+    m_view->EmptyUndoBuffer();
+
     SetLyricPathEditText();
 
 	////初始化提示信息
@@ -463,20 +482,20 @@ void CLyricEditDlg::OnDestroy()
 }
 
 
-void CLyricEditDlg::OnEnChangeEdit1()
-{
-	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
-	// 函数并调用 CRichEditCtrl().SetEventMask()，
-	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
-
-	// TODO:  在此添加控件通知处理程序代码
-	CString lyric_str;
-	m_lyric_edit.GetWindowText(lyric_str);
-	m_lyric_string = lyric_str;
-	m_modified = true;
-	UpdateStatusbarInfo();
-}
+//void CLyricEditDlg::OnEnChangeEdit1()
+//{
+//	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+//	// 发送此通知，除非重写 CBaseDialog::OnInitDialog()
+//	// 函数并调用 CRichEditCtrl().SetEventMask()，
+//	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+//
+//	// TODO:  在此添加控件通知处理程序代码
+//	CString lyric_str;
+//	m_lyric_edit.GetWindowText(lyric_str);
+//	m_lyric_string = lyric_str;
+//	m_modified = true;
+//	UpdateStatusbarInfo();
+//}
 
 
 BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
@@ -593,8 +612,9 @@ void CLyricEditDlg::OnLyricOpen()
 		//m_lyric_path = fileDlg.GetPathName();	//获取打开的文件路径
 		OpenLyric(fileDlg.GetPathName());
 		SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
-		m_lyric_edit.SetWindowText(m_lyric_string.c_str());
-	}
+        m_view->SetText(m_lyric_string);
+        m_view->EmptyUndoBuffer();
+    }
 }
 
 
@@ -699,11 +719,11 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 			if (m_find_flag)
 			{
 				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//替换找到的字符串
-				m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+				m_view->SetText(m_lyric_string);
 				m_modified = true;
 				UpdateStatusbarInfo();
 				OnFindNext();
-				m_lyric_edit.SetSel(m_find_index, m_find_index + m_replace_str.size());	//选中替换的字符串
+                m_view->SetSel(m_find_index, m_find_index + m_replace_str.size(), m_lyric_string);	//选中替换的字符串
 				SetActiveWindow();		//将编辑器窗口设置活动窗口
 			}
 			else
@@ -725,7 +745,7 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//替换找到的字符串
 				replace_count++;
 			}
-			m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+			m_view->SetText(m_lyric_string);
 			m_modified = true;
 			UpdateStatusbarInfo();
 			if (replace_count != 0)
@@ -760,9 +780,9 @@ void CLyricEditDlg::OnFindNext()
 	}
 	else
 	{
-		m_lyric_edit.SetSel(m_find_index, m_find_index + m_find_str.size());		//选中找到的字符串
+        m_view->SetSel(m_find_index, m_find_index + m_find_str.size(), m_lyric_string);		//选中找到的字符串
 		SetActiveWindow();		//将编辑器窗口设为活动窗口
-		m_lyric_edit.SetFocus();
+        m_view->SetFocus();
 		m_find_flag = true;
 	}
 }
@@ -808,13 +828,9 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 			plyric_path_wnd->MoveWindow(rect);
 		}
 
-		if (m_lyric_edit.m_hWnd != NULL)
+		if (m_view->GetSafeHwnd() != NULL)
 		{
-			m_lyric_edit.GetWindowRect(rect);
-			ScreenToClient(&rect);
-			rect.right = cx - MARGIN;
-			rect.bottom = cy - STATUSBAR_HEIGHT - MARGIN;
-			m_lyric_edit.MoveWindow(rect);
+            m_view->MoveWindow(CalculateEditCtrlRect());
 		}
 
 		if (m_wndToolBar.m_hWnd != NULL)
@@ -833,7 +849,7 @@ void CLyricEditDlg::OnLeTranslateToSimplifiedChinese()
 {
 	// TODO: 在此添加命令处理程序代码
 	m_lyric_string = CCommon::TranslateToSimplifiedChinese(m_lyric_string);
-	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+	m_view->SetText(m_lyric_string);
 	m_modified = true;
 	UpdateStatusbarInfo();
 }
@@ -843,7 +859,7 @@ void CLyricEditDlg::OnLeTranslateToTranditionalChinese()
 {
 	// TODO: 在此添加命令处理程序代码
 	m_lyric_string = CCommon::TranslateToTranditionalChinese(m_lyric_string);
-	m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+	m_view->SetText(m_lyric_string);
 	m_modified = true;
 	UpdateStatusbarInfo();
 }
@@ -918,7 +934,7 @@ void CLyricEditDlg::OnLryicMergeSameTimeTag()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.CombineSameTimeLyric();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_view->SetText(m_lyric_string);
     m_modified = true;
     UpdateStatusbarInfo();
 }
@@ -931,7 +947,7 @@ void CLyricEditDlg::OnLyricSwapTextAndTranslation()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.SwapTextAndTranslation();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_view->SetText(m_lyric_string);
     m_modified = true;
     UpdateStatusbarInfo();
 }
@@ -944,7 +960,7 @@ void CLyricEditDlg::OnLyricTimeTagForward()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.TimeTagForward();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_view->SetText(m_lyric_string);
     m_modified = true;
     UpdateStatusbarInfo();
 }
@@ -957,7 +973,30 @@ void CLyricEditDlg::OnLyricTimeTagDelay()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.TimeTagDelay();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_lyric_edit.SetWindowText(m_lyric_string.c_str());
+    m_view->SetText(m_lyric_string);
     m_modified = true;
     UpdateStatusbarInfo();
+}
+
+
+BOOL CLyricEditDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    SCNotification *notification = reinterpret_cast<SCNotification *>(lParam);
+    if (notification->nmhdr.hwndFrom == m_view->GetSafeHwnd())
+    {
+        //响应编辑器文本变化
+        if (notification->nmhdr.code == SCN_MODIFIED && m_view->IsEditChangeNotificationEnable())
+        {
+            UINT marsk = (SC_MOD_DELETETEXT | SC_MOD_INSERTTEXT | SC_PERFORMED_UNDO | SC_PERFORMED_REDO);
+            if ((notification->modificationType & marsk) != 0)
+            {
+                m_view->GetText(m_lyric_string);
+                m_modified = true;
+                UpdateStatusbarInfo();
+            }
+        }
+    }
+
+    return CBaseDialog::OnNotify(wParam, lParam, pResult);
 }

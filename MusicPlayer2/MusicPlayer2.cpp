@@ -249,6 +249,8 @@ BOOL CMusicPlayerApp::InitInstance()
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
+    m_hScintillaModule = LoadLibrary(_T("SciLexer.dll"));
+
     CMusicPlayerDlg dlg(cmd_line);
     //CMusicPlayerDlg dlg(L"\"D:\\音乐\\纯音乐\\班得瑞\\05. Chariots Of Fire 火战车.mp3\"");
     m_pMainWnd = &dlg;
@@ -980,6 +982,11 @@ HICON CMusicPlayerApp::GetNotifyIncon(int index)
     if (index < 0 || index >= MAX_NOTIFY_ICON)
         index = 0;
     return m_icon_set.notify_icons[index];
+}
+
+bool CMusicPlayerApp::IsScintillaLoaded() const
+{
+    return m_hScintillaModule != NULL;
 }
 
 //void CMusicPlayerApp::StartClassifySongData()

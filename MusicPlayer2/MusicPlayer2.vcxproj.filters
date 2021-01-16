@@ -327,6 +327,9 @@
     <Filter Include="对话框类\PropertyDlg\TagFromFileName">
       <UniqueIdentifier>{05e96306-45ad-47a7-90de-b6ecbdc11cad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\ScintillaEditView">
+      <UniqueIdentifier>{43bd891c-070b-43ea-8666-f78300c390b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -733,6 +736,9 @@
     <ClInclude Include="CPlayerUI3.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="ScintillaEditView.h">
+      <Filter>公共的类\ScintillaEditView</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1103,6 +1109,9 @@
     </ClCompile>
     <ClCompile Include="CPlayerUI3.cpp">
       <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ScintillaEditView.cpp">
+      <Filter>公共的类\ScintillaEditView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

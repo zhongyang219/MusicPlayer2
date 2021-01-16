@@ -3,6 +3,7 @@
 #include "Time.h"
 #include "EditEx.h"
 #include "BaseDialog.h"
+#include "ScintillaEditView.h"
 
 const int WM_FINDREPLACE = ::RegisterWindowMessage(FINDMSGSTRING);	//将FINDMSGSTRING注册为WM_FINDREPLACE消息
 
@@ -32,7 +33,6 @@ public:
 #endif
 
 protected:
-	CFont m_font;			//歌词编辑界面字体
 	wstring m_lyric_string;		//歌词字符串
 	wstring m_lyric_path;		//歌词路径
 	wstring m_original_lyric_path;	//原来的歌词（当前播放歌曲对应的歌词）的路径
@@ -49,6 +49,8 @@ protected:
 #define TOOLBAR_HEIGHT theApp.DPI(29)
 #define STATUSBAR_HEIGHT theApp.DPI(20)
 
+    CScintillaEditView* m_view{};
+
 	CFindReplaceDialog* m_pFindDlg{};   //查找对话框
 	CFindReplaceDialog* m_pReplaceDlg{};    //替换对话框
 	wstring m_find_str;		//查找的字符串
@@ -64,6 +66,7 @@ protected:
 	void OpenLyric(const wchar_t* path);		//打开一个歌词文件
     bool SaveInquiry();
     void SetLyricPathEditText();
+    CRect CalculateEditCtrlRect();
 
     virtual CString GetDialogName() const override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -72,8 +75,6 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	virtual void OnCancel();
-protected:
-	CEditEx m_lyric_edit;
 public:
 	//afx_msg void OnBnClickedInsertTagButton();
 	//afx_msg void OnBnClickedReplaceTagButton();
@@ -81,7 +82,6 @@ public:
 	//afx_msg void OnBnClickedSaveLyricButton();
 //	afx_msg void OnBnClickedSaveAsButton5();
 	afx_msg void OnDestroy();
-	afx_msg void OnEnChangeEdit1();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnClose();
 //	afx_msg void OnBnClickedOpenLyricButton();
@@ -105,4 +105,5 @@ public:
     afx_msg void OnLyricSwapTextAndTranslation();
     afx_msg void OnLyricTimeTagForward();
     afx_msg void OnLyricTimeTagDelay();
+    virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 };
