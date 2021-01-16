@@ -85,20 +85,46 @@ struct SongInfo
     //根据艺术家的比较函数，用于以艺术家排序
     static bool ByArtist(const SongInfo& a, const SongInfo& b)
     {
-        return CCommon::StringCompareInLocalLanguage(a.artist, b.artist) < 0;
+        int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
+        int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
+        if (compare_artist != 0)
+            return compare_artist < 0;
+        else if (compare_album != 0)
+            return compare_album < 0;
+        else return a.track < b.track;
     }
     static bool ByArtistDecending(const SongInfo& a, const SongInfo& b)
     {
-        return CCommon::StringCompareInLocalLanguage(a.artist, b.artist) > 0;
+        int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
+        int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
+        if (compare_artist != 0)
+            return compare_artist > 0;
+        else if (compare_album != 0)
+            return compare_album > 0;
+        else return a.track > b.track;
     }
     //根据唱片集的比较函数，用于以唱片集排序
     static bool ByAlbum(const SongInfo& a, const SongInfo& b)
     {
-        return CCommon::StringCompareInLocalLanguage(a.album, b.album) < 0;
+        int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
+        int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
+        if (compare_album != 0)
+            return compare_album < 0;
+        else if (a.track != b.track)        //唱片集相同的情况下比较音轨号
+            return a.track < b.track;
+        else                                //音轨号仍然相同，比较艺术家
+            return compare_artist < 0;
     }
     static bool ByAlbumDecending(const SongInfo& a, const SongInfo& b)
     {
-        return CCommon::StringCompareInLocalLanguage(a.album, b.album) > 0;
+        int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
+        int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
+        if (compare_album != 0)
+            return compare_album > 0;
+        else if (a.track != b.track)        //唱片集相同的情况下比较音轨号
+            return a.track > b.track;
+        else                                //音轨号仍然相同，比较艺术家
+            return compare_artist > 0;
     }
     //根据音轨序号的比较函数，用于以音轨序号排序
     static bool ByTrack(const SongInfo& a, const SongInfo& b)
