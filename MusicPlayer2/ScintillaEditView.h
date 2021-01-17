@@ -111,6 +111,8 @@ public:
 
     void SetContextMenu(CMenu* pMenu, CWnd* pMenuOwner);
 
+    void SetLexerLyric();       //设置LRC语法解析
+
 private:
 
 private:

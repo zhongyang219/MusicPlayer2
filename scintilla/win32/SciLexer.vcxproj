@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\lexers\LexLyric.cxx" />
     <ClCompile Include="..\lexers\LexNull.cxx" />
     <ClCompile Include="..\lexlib\Accessor.cxx" />
     <ClCompile Include="..\lexlib\CharacterCategory.cxx" />

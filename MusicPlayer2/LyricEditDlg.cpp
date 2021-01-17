@@ -317,6 +317,8 @@ BOOL CLyricEditDlg::OnInitDialog()
     m_view->SetText(m_lyric_string);
     m_view->EmptyUndoBuffer();
 
+    m_view->SetLexerLyric();
+
     SetLyricPathEditText();
 
 	////初始化提示信息

@@ -420,6 +420,20 @@ void CScintillaEditView::SetContextMenu(CMenu* pMenu, CWnd* pMenuOwner)
 
 }
 
+void CScintillaEditView::SetLexerLyric()
+{
+    //设置LRC歌词的语法解析
+    SetLexerNormalText();
+    SetLexer(SCLEX_LYRIC);
+    SetKeywords(0, "ar ti al by id");
+    SetSyntaxColor(SCE_LYRIC_TIMETAG, RGB(0, 128, 128));
+    SetSyntaxColor(SCE_LYRIC_TIME_TAG_KEYWORD, RGB(0, 128, 128));
+    SetSyntaxFontStyle(SCE_LYRIC_TIME_TAG_KEYWORD, true, false);
+    SetSyntaxColor(SCE_LYRIC_SEPARATOR, RGB(199, 109, 59));
+    //SetSyntaxColor(SCE_LYRIC_TEXT, RGB(4, 27, 107));
+    SetSyntaxColor(SCE_LYRIC_TRANSLATION, RGB(90, 44, 148));
+}
+
 // CScintillaEditView 消息处理程序
 
 
