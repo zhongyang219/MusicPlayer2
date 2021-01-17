@@ -425,18 +425,21 @@ void CScintillaEditView::SetContextMenu(CMenu* pMenu, CWnd* pMenuOwner)
 
 }
 
-void CScintillaEditView::SetLexerLyric()
+void CScintillaEditView::SetLexerLyric(ColorTable theme_color)
 {
     //设置LRC歌词的语法解析
     SetLexerNormalText();
     SetLexer(SCLEX_LYRIC);
     SetKeywords(0, "ar ti al by id");
-    SetSyntaxColor(SCE_LYRIC_TIMETAG, RGB(0, 128, 128));
-    SetSyntaxColor(SCE_LYRIC_TIME_TAG_KEYWORD, RGB(0, 128, 128));
+    SetSyntaxColor(SCE_LYRIC_TIMETAG, theme_color.dark2);
+    SetSyntaxColor(SCE_LYRIC_TIME_TAG_KEYWORD, theme_color.dark2);
     SetSyntaxFontStyle(SCE_LYRIC_TIME_TAG_KEYWORD, true, false);
-    SetSyntaxColor(SCE_LYRIC_SEPARATOR, RGB(199, 109, 59));
-    //SetSyntaxColor(SCE_LYRIC_TEXT, RGB(4, 27, 107));
-    SetSyntaxColor(SCE_LYRIC_TRANSLATION, RGB(90, 44, 148));
+    SetSyntaxColor(SCE_LYRIC_SEPARATOR, theme_color.light1);
+    SetSyntaxColor(SCE_LYRIC_TRANSLATION, theme_color.dark3);
+
+    //设置当前行背景色
+    SendMessage(SCI_SETCARETLINEVISIBLE, TRUE);
+    SendMessage(SCI_SETCARETLINEBACK, theme_color.light3);
 }
 
 // CScintillaEditView 消息处理程序

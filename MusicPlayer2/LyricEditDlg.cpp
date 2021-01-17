@@ -320,7 +320,7 @@ BOOL CLyricEditDlg::OnInitDialog()
     m_view->SetText(m_lyric_string);
     m_view->EmptyUndoBuffer();
 
-    m_view->SetLexerLyric();
+    m_view->SetLexerLyric(theApp.m_app_setting_data.theme_color);
 
     SetLyricPathEditText();
 

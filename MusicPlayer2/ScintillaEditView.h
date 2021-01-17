@@ -2,6 +2,7 @@
 
 #include "../scintilla/include/SciLexer.h"
 #include "../scintilla/include/Scintilla.h"
+#include "ColorConvert.h"
 
 // CScintillaEditView 视图
 
@@ -111,7 +112,7 @@ public:
 
     void SetContextMenu(CMenu* pMenu, CWnd* pMenuOwner);
 
-    void SetLexerLyric();       //设置LRC语法解析
+    void SetLexerLyric(ColorTable theme_color);       //设置LRC语法解析
 
 private:
 
