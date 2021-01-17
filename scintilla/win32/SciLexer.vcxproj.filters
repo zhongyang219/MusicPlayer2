@@ -109,6 +109,35 @@
     <ClCompile Include="..\lexers\LexLyric.cxx">
       <Filter>Lexer</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
+    <ClCompile Include="..\src\*.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\*.h" />
@@ -258,13 +287,71 @@
     <ClInclude Include="..\src\*.h" />
     <ClInclude Include="..\win32\*.h" />
     <ClInclude Include="..\win32\*.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\win32\ScintRes.rc" />
+    <ClInclude Include="..\include\*.h" />
+    <ClInclude Include="..\include\*.h" />
+    <ClInclude Include="..\include\*.h" />
+    <ClInclude Include="..\include\*.h" />
+    <ClInclude Include="..\include\*.h" />
+    <ClInclude Include="..\include\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\src\*.h" />
+    <ClInclude Include="..\win32\*.h" />
+    <ClInclude Include="..\win32\PlatWin.h" />
+    <ClInclude Include="..\win32\resource.h" />
+    <ClInclude Include="..\win32\ScintillaWin.h" />
+    <ClInclude Include="..\win32\*.h" />
+    <ClInclude Include="..\win32\*.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Lexer">
       <UniqueIdentifier>{78806d18-356a-4b75-b620-8a3d829cc528}</UniqueIdentifier>
     </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{e125d7b6-de61-4528-a1f6-e6cdac60f3f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{dbb82a97-2e2e-4c3e-9511-a94c9017d8e1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\win32\ScintRes.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

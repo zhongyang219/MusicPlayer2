@@ -59,11 +59,52 @@
 #include "ScintillaBase.h"
 
 #include "ExternalLexer.h"
+#include "../win32/resource.h"
 
 #undef max
 #undef min
 
 using namespace Scintilla;
+
+static std::wstring LoadStringRes(UINT id, const wchar_t* back_str = nullptr)
+{
+    wchar_t buf[256];
+    HMODULE hModule = GetModuleHandle(_T("SciLexer.dll"));
+    LoadStringW(hModule, id, buf, 256);
+    std::wstring result = buf;
+    if (result.empty())
+    {
+        switch (id)
+        {
+        case IDS_UNDO:
+            result = L"Undo";
+            break;
+        case IDS_REDO:
+            result = L"Rndo";
+            break;
+        case IDS_CUT:
+            result = L"Cut";
+            break;
+        case IDS_COPY:
+            result = L"Copy";
+            break;
+        case IDS_PASTE:
+            result = L"Paste";
+            break;
+        case IDS_DELETE:
+            result = L"Clear";
+            break;
+        case IDS_SELECT_ALL:
+            result = L"Select All";
+            break;
+        default:
+            break;
+        }
+    }
+    if (back_str != nullptr)
+        result += back_str;
+    return result;
+}
 
 ScintillaBase::ScintillaBase() {
 	displayPopupMenu = SC_POPUP_ALL;
@@ -517,15 +558,15 @@ void ScintillaBase::ContextMenu(Point pt) {
 	if (displayPopupMenu) {
 		const bool writable = !WndProc(SCI_GETREADONLY, 0, 0);
 		popup.CreatePopUp();
-		AddToPopUp(_T("撤销\tCtrl+Z"), idcmdUndo, writable && pdoc->CanUndo());
-		AddToPopUp(_T("重做\tCtrl+Y"), idcmdRedo, writable && pdoc->CanRedo());
+		AddToPopUp(LoadStringRes(IDS_UNDO, _T("\tCtrl+Z")).c_str(), idcmdUndo, writable && pdoc->CanUndo());
+		AddToPopUp(LoadStringRes(IDS_REDO, _T("\tCtrl+Y")).c_str(), idcmdRedo, writable && pdoc->CanRedo());
 		AddToPopUp(_T(""));
-		AddToPopUp(_T("剪切\tCtrl+X"), idcmdCut, writable && !sel.Empty());
-		AddToPopUp(_T("复制\tCtrl+C"), idcmdCopy, !sel.Empty());
-		AddToPopUp(_T("粘贴\tCtrl+V"), idcmdPaste, writable && WndProc(SCI_CANPASTE, 0, 0));
-		AddToPopUp(_T("删除"), idcmdDelete, writable && !sel.Empty());
+		AddToPopUp(LoadStringRes(IDS_CUT, _T("\tCtrl+X")).c_str(), idcmdCut, writable && !sel.Empty());
+        AddToPopUp(LoadStringRes(IDS_COPY, _T("\tCtrl+C")).c_str(), idcmdCopy, !sel.Empty());
+		AddToPopUp(LoadStringRes(IDS_PASTE, _T("\tCtrl+V")).c_str(), idcmdPaste, writable && WndProc(SCI_CANPASTE, 0, 0));
+		AddToPopUp(LoadStringRes(IDS_DELETE).c_str(), idcmdDelete, writable && !sel.Empty());
 		AddToPopUp(_T(""));
-		AddToPopUp(_T("全选\tCtrl+A"), idcmdSelectAll);
+		AddToPopUp(LoadStringRes(IDS_SELECT_ALL, _T("\tCtrl+A")).c_str(), idcmdSelectAll);
 		popup.Show(pt, wMain);
 	}
 }
