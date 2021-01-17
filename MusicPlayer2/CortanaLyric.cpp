@@ -358,7 +358,7 @@ double CCortanaLyric::GetScrollTextPixel() const
 
 void CCortanaLyric::ResetCortanaText()
 {
-    if (m_enable && m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
+    if (m_cortana_hwnd != NULL && m_cortana_wnd != nullptr)
     {
         CSingleLock sync(&m_critical, TRUE);
         CWnd* pWnd = CWnd::FromHandle(m_hCortanaStatic);
@@ -397,7 +397,6 @@ void CCortanaLyric::ResetCortanaText()
             //}
             //m_cortana_wnd->Invalidate();
         }
-        m_enable = false;
     }
 }
 
