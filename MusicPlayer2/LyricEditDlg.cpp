@@ -73,7 +73,10 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 		next_index += 2;
 	}
 
-    m_view->SetText(m_lyric_string);
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetText(m_lyric_string);
+    }
 	if (operation != TagOpreation::DELETE_)
         m_view->SetSel(next_index, next_index, m_lyric_string);
 	else
@@ -225,8 +228,8 @@ CRect CLyricEditDlg::CalculateEditCtrlRect()
 
     edit_rect.top = path_edit_rect.bottom + theApp.DPI(4);
     //edit_rect.left += MARGIN;
-    edit_rect.right -= MARGIN;
-    edit_rect.bottom -= (STATUSBAR_HEIGHT + MARGIN);
+    //edit_rect.right -= MARGIN;
+    edit_rect.bottom -= (STATUSBAR_HEIGHT + theApp.DPI(4));
     return edit_rect;
 }
 
@@ -414,7 +417,8 @@ BOOL CLyricEditDlg::OnInitDialog()
 
 	m_dlg_exist = true;
 
-	return TRUE;  // return TRUE unless you set the focus to a control
+    m_view->SetFocus();
+	return FALSE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
@@ -721,8 +725,11 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 			if (m_find_flag)
 			{
 				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//替换找到的字符串
-				m_view->SetText(m_lyric_string);
-				m_modified = true;
+                {
+                    CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+                    m_view->SetText(m_lyric_string);
+                }
+                m_modified = true;
 				UpdateStatusbarInfo();
 				OnFindNext();
                 m_view->SetSel(m_find_index, m_find_index + m_replace_str.size(), m_lyric_string);	//选中替换的字符串
@@ -747,8 +754,11 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
 				m_lyric_string.replace(m_find_index, m_find_str.size(), m_replace_str.c_str(), m_replace_str.size());	//替换找到的字符串
 				replace_count++;
 			}
-			m_view->SetText(m_lyric_string);
-			m_modified = true;
+            {
+                CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+                m_view->SetText(m_lyric_string);
+            }
+            m_modified = true;
 			UpdateStatusbarInfo();
 			if (replace_count != 0)
 			{
@@ -851,8 +861,11 @@ void CLyricEditDlg::OnLeTranslateToSimplifiedChinese()
 {
 	// TODO: 在此添加命令处理程序代码
 	m_lyric_string = CCommon::TranslateToSimplifiedChinese(m_lyric_string);
-	m_view->SetText(m_lyric_string);
-	m_modified = true;
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetText(m_lyric_string);
+    }
+    m_modified = true;
 	UpdateStatusbarInfo();
 }
 
@@ -861,8 +874,11 @@ void CLyricEditDlg::OnLeTranslateToTranditionalChinese()
 {
 	// TODO: 在此添加命令处理程序代码
 	m_lyric_string = CCommon::TranslateToTranditionalChinese(m_lyric_string);
-	m_view->SetText(m_lyric_string);
-	m_modified = true;
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetText(m_lyric_string);
+    }
+    m_modified = true;
 	UpdateStatusbarInfo();
 }
 
@@ -936,7 +952,10 @@ void CLyricEditDlg::OnLryicMergeSameTimeTag()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.CombineSameTimeLyric();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_view->SetText(m_lyric_string);
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetText(m_lyric_string);
+    }
     m_modified = true;
     UpdateStatusbarInfo();
 }
@@ -949,7 +968,10 @@ void CLyricEditDlg::OnLyricSwapTextAndTranslation()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.SwapTextAndTranslation();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_view->SetText(m_lyric_string);
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetText(m_lyric_string);
+    }
     m_modified = true;
     UpdateStatusbarInfo();
 }
@@ -962,7 +984,10 @@ void CLyricEditDlg::OnLyricTimeTagForward()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.TimeTagForward();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_view->SetText(m_lyric_string);
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetText(m_lyric_string);
+    }
     m_modified = true;
     UpdateStatusbarInfo();
 }
@@ -975,7 +1000,10 @@ void CLyricEditDlg::OnLyricTimeTagDelay()
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.TimeTagDelay();
     m_lyric_string = lyrics.GetLyricsString2();
-    m_view->SetText(m_lyric_string);
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetText(m_lyric_string);
+    }
     m_modified = true;
     UpdateStatusbarInfo();
 }

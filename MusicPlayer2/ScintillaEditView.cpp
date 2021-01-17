@@ -132,6 +132,11 @@ void CScintillaEditView::SetSel(int start, int end, const wstring& edit_str)
 {
     int byte_start = CharactorPosToBytePos(start, edit_str.c_str(), edit_str.size());
     int byte_end = CharactorPosToBytePos(end, edit_str.c_str(), edit_str.size());
+    int length = SendMessage(SCI_GETLENGTH);
+    if (start >= static_cast<int>(edit_str.size()))
+        byte_start = length;
+    if (end >= static_cast<int>(edit_str.size()))
+        byte_end = length;
     SendMessage(SCI_SETSEL, byte_start, byte_end);
 }
 
