@@ -99,9 +99,9 @@ void CMediaClassifyDlg::RefreshData()
 bool CMediaClassifyDlg::SetLeftListSel(const wstring & item)
 {
     int list_size = static_cast<int>(m_list_data_left.size());
+    //遍历左侧列表，寻找匹配匹配的项目
     for (int i = 0; i < list_size; i++)
     {
-        
         wstring name = m_list_data_left[i][0];
         if (CCommon::StringCompareNoCase(name, item))
         {
@@ -109,6 +109,44 @@ bool CMediaClassifyDlg::SetLeftListSel(const wstring & item)
             ClassifyListClicked(i);
             return true;
         }
+    }
+    //如果在媒体库中设置了“将只有一项的分类归到其他类中”，则要寻找的项目可能在“其他”类中
+    int other_index{ -1 };              //项目在“其他”类中的索引
+    //在“其他”类中寻找
+    auto iter = m_classifer.GetMeidaList().find(STR_OTHER_CLASSIFY_TYPE);
+    if (iter != m_classifer.GetMeidaList().end())
+    {
+        int i = 0;
+        for (const auto& song : iter->second)
+        {
+            if (m_type == CMediaClassifier::CT_ARTIST)
+            {
+                vector<wstring> artist_list;
+                song.GetArtistList(artist_list);
+                if (CCommon::IsItemInVector(artist_list, item))
+                {
+                    other_index = i;
+                    break;
+                }
+            }
+            else if (m_type == CMediaClassifier::CT_ALBUM)
+            {
+                if (item == song.GetAlbum())
+                {
+                    other_index = i;
+                    break;
+                }
+            }
+            i++;
+        }
+    }
+
+    if (other_index >= 0)
+    {
+        m_classify_list_ctrl.SetCurSel(m_classify_list_ctrl.GetItemCount() - 1);        //在左侧列表中选中“其他”类
+        ClassifyListClicked(m_classify_list_ctrl.GetItemCount() - 1);
+        m_song_list_ctrl.SetCurSel(other_index);
+        return true;
     }
     return false;
 }

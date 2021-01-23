@@ -27,6 +27,7 @@
 #include "SongDataManager.h"
 #include "TagFromFileNameDlg.h"
 #include "PropertyDlgHelper.h"
+#include "SelectItemDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -5386,7 +5387,28 @@ void CMusicPlayerDlg::OnViewArtist()
 {
     // TODO: 在此添加命令处理程序代码
     CMusicPlayerCmdHelper helper;
-    wstring artist = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
+    vector<wstring> artist_list;
+    CPlayer::GetInstance().GetCurrentSongInfo().GetArtistList(artist_list);     //获取艺术家（可能有多个）
+    wstring artist;
+    if (artist_list.empty())
+    {
+        return;
+    }
+    else if (artist_list.size() == 1)
+    {
+        artist = artist_list.front();
+    }
+    else
+    {
+        //如果有多个艺术家，弹出“选择艺术家”对话框
+        CSelectItemDlg dlg(artist_list);
+        dlg.SetTitle(CCommon::LoadText(IDS_SELECT_ARTIST));
+        dlg.SetDlgIcon(theApp.m_icon_set.artist.GetIcon());
+        if (dlg.DoModal() == IDOK)
+            artist = dlg.GetSelectedItem();
+        else
+            return;
+    }
     helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST);
     if (!m_pMediaLibDlg->NavigateToItem(artist))
     {

@@ -41,12 +41,13 @@ void CListCtrlEx::GetItemSelected(vector<int>& item_selected) const
 
 int CListCtrlEx::GetCurSel() const
 {
-	vector<int> item_selected;
-	GetItemSelected(item_selected);
-	if (!item_selected.empty())
-		return item_selected[0];
-	else
-		return -1;
+	//vector<int> item_selected;
+	//GetItemSelected(item_selected);
+	//if (!item_selected.empty())
+	//	return item_selected[0];
+	//else
+	//	return -1;
+    return GetSelectionMark();
 }
 
 void CListCtrlEx::SetCurSel(int select)

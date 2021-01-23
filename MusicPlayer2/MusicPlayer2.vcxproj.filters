@@ -330,6 +330,9 @@
     <Filter Include="公共的类\ScintillaEditView">
       <UniqueIdentifier>{43bd891c-070b-43ea-8666-f78300c390b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\SelectItemDlg">
+      <UniqueIdentifier>{beb65fcf-7504-452f-9251-416aee0d7410}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -739,6 +742,9 @@
     <ClInclude Include="ScintillaEditView.h">
       <Filter>公共的类\ScintillaEditView</Filter>
     </ClInclude>
+    <ClInclude Include="SelectItemDlg.h">
+      <Filter>对话框类\SelectItemDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1112,6 +1118,9 @@
     </ClCompile>
     <ClCompile Include="ScintillaEditView.cpp">
       <Filter>公共的类\ScintillaEditView</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectItemDlg.cpp">
+      <Filter>对话框类\SelectItemDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

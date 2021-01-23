@@ -628,6 +628,7 @@
 #define IDI_ICON16                      504
 #define IDI_TAG                         504
 #define IDS_FILES_THAT_ERROR            505
+#define IDD_SELECT_ITEM_DIALOG          505
 #define IDS_IMAGE_FILE_FILTER           506
 #define IDS_SEARCH_FILE_TYPE            507
 #define IDS_SEARCH_BITRATE              508
@@ -648,6 +649,7 @@
 #define IDS_CONNOT_FIND_ARTIST_WARNING  523
 #define IDS_CONNOT_FIND_ALBUM_WARNING   524
 #define IDS_SCI_NOT_LOADED_ERROR_INFO   525
+#define IDS_SELECT_ARTIST               526
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1417,7 +1419,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        505
+#define _APS_NEXT_RESOURCE_VALUE        507
 #define _APS_NEXT_COMMAND_VALUE         33222
 #define _APS_NEXT_CONTROL_VALUE         1185
 #define _APS_NEXT_SYMED_VALUE           101

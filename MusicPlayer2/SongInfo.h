@@ -205,6 +205,12 @@ struct SongInfo
         return artist.empty() ? default_artist : artist;
     }
 
+    //获取艺术家列表（可能存在多个艺术家）
+    void GetArtistList(vector<wstring>& artist_list) const
+    {
+        CCommon::StringSplitWithMulitChars(artist, L"/;&、", artist_list, true);
+    }
+
     wstring GetAlbum() const
     {
         static wstring default_album = wstring(CCommon::LoadText(IDS_DEFAULT_ALBUM));
