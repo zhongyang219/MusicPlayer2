@@ -431,11 +431,11 @@ void CScintillaEditView::SetLexerLyric(ColorTable theme_color)
     SetLexerNormalText();
     SetLexer(SCLEX_LYRIC);
     SetKeywords(0, "ar ti al by id");
-    SetSyntaxColor(SCE_LYRIC_TIMETAG, theme_color.dark2);
-    SetSyntaxColor(SCE_LYRIC_TIME_TAG_KEYWORD, theme_color.dark2);
+    SetSyntaxColor(SCE_LYRIC_TIMETAG, theme_color.dark1_5);
+    SetSyntaxColor(SCE_LYRIC_TIME_TAG_KEYWORD, theme_color.dark1_5);
     SetSyntaxFontStyle(SCE_LYRIC_TIME_TAG_KEYWORD, true, false);
     SetSyntaxColor(SCE_LYRIC_SEPARATOR, theme_color.light1);
-    SetSyntaxColor(SCE_LYRIC_TRANSLATION, theme_color.dark3);
+    SetSyntaxColor(SCE_LYRIC_TRANSLATION, theme_color.dark2_5);
 
     //设置当前行背景色
     SendMessage(SCI_SETCARETLINEVISIBLE, TRUE);
@@ -479,6 +479,9 @@ void CScintillaEditView::OnInitialUpdate()
     // TODO: 在此添加专用代码和/或调用基类
     SendMessage(SCI_SETCODEPAGE, SC_CP_UTF8);       //总是使用Unicode
     SendMessage(SCI_SETMARGINTYPEN, SCINTILLA_MARGIN_LINENUMBER, SC_MARGIN_NUMBER);
+
+    SendMessage(SCI_SETSCROLLWIDTH, 100);
+    SendMessage(SCI_SETSCROLLWIDTHTRACKING, TRUE);
 }
 
 
