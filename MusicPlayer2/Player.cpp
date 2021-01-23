@@ -395,10 +395,13 @@ void CPlayer::MusicControl(Command command, int volume_step)
     if (m_pCore == nullptr)
         return;
 
-    if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
+    if (command != Command::VOLUME_UP && command != Command::VOLUME_DOWN)
     {
-        m_error_state = ES_FILE_NOT_EXIST;
-        return;
+        if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
+        {
+            m_error_state = ES_FILE_NOT_EXIST;
+            return;
+        }
     }
 
     switch (command)
