@@ -471,9 +471,10 @@ void CSelectPlaylistDlg::SetButtonsEnable()
 bool CSelectPlaylistDlg::SelectedCanPlay() const
 {
     return SelectValid() && 
-        (!CPlayer::GetInstance().IsPlaylistMode() ||
-        GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath() ||
-        GetSelectedPlaylist().track != m_right_selected_item
+        (
+            !CPlayer::GetInstance().IsPlaylistMode() ||
+            GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath() ||
+            (m_right_selected_item >= 0 && GetSelectedPlaylist().track != m_right_selected_item)
         );
 }
 
