@@ -4349,7 +4349,7 @@ LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam)
 {
     CSelectPlaylistDlg* pPathDlg = (CSelectPlaylistDlg*)wParam;
-    int index = (int)lParam;
+    int index = (int)lParam;        //媒体库播放列表界面右侧列表选中的曲目
     if (pPathDlg != nullptr)
     {
         if(index == -2)      //当lParam为-2时，播放默认的播放列表
@@ -4359,10 +4359,22 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
         }
         else
         {
-            int track{ pPathDlg->GetTrack() };
-            if (index >= 0)
-                track = index;
-            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track, pPathDlg->GetPosition(), false, !pPathDlg->IsLeftSelected());
+            int track{ pPathDlg->GetTrack() };      //该播放列表上次播放的曲目
+            int track_played{};
+            int position{ pPathDlg->GetPosition() };
+            if (index < 0)          //如果右侧列表没有选中曲目，则播放的曲目为上次播放的曲目
+            {
+                track_played = track;
+            }
+            else        //否则，播放的曲目为右侧列表选中的曲目
+            {
+                track_played = index;
+                if (index != track)     //如果右侧列表选中的曲目不是上次播放的曲目，则忽略上次播放的位置，从头开始播放
+                {
+                    position = 0;
+                }
+            }
+            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, false, !pPathDlg->IsLeftSelected());
         }
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
