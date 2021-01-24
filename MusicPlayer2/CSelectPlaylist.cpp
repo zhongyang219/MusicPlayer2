@@ -193,6 +193,7 @@ void CSelectPlaylistDlg::SongListClicked(int index)
     m_left_selected = false;
     m_right_selected_item = index;
     m_song_list_ctrl.GetItemSelected(m_right_selected_items);
+    SetButtonsEnable();
 }
 
 const CListCtrlEx& CSelectPlaylistDlg::GetSongListCtrl() const
@@ -469,7 +470,11 @@ void CSelectPlaylistDlg::SetButtonsEnable()
 
 bool CSelectPlaylistDlg::SelectedCanPlay() const
 {
-    return SelectValid() && (!CPlayer::GetInstance().IsPlaylistMode() || GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath());
+    return SelectValid() && 
+        (!CPlayer::GetInstance().IsPlaylistMode() ||
+        GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath() ||
+        GetSelectedPlaylist().track != m_right_selected_item
+        );
 }
 
 void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
