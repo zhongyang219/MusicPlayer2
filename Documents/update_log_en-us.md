@@ -1,6 +1,28 @@
 **[简体中文](./update_log.md) | English**<br>
 
 # MusicPlayer2 Update log
+## V2.72 (2021/01/24)
+
+* Add a new interface layout.
+* Add the display of tracks in the playlist in "Media Library"-"Playlist" interface.
+* Add the "Length" column to the list in the "Lyric download" dialog box.
+* Add the support of the embedded cue tracks.
+* Add the "Advanced tag info" tab in the "Property" dialog box.
+* Add the function to use the desktop background as the background.
+* Add the support for relative paths in playlist files.
+* Add the function to jump to the current song artist and album in the media library in the right-click menu.
+* Added support for TAK format audio (32-bit version only).
+* The "Edit Lyrics" editor changed to use Scintilla. Add the colors for the lyric editor.
+* Fixed the problem that the album cover cannot be copied to the target file when the format is converted to mp3 and wav.
+* Fixed the problem that there is no icon in "Repead Mode"-"Play Random" in the desktop lyrics right-click menu.
+* Fixed the problem that the sub-dialog in the "Option Setting" dialog cannot be scrolled using the touch screen when using a touch screen device.
+* Fixed the problem that "file already exists" is prompted when adding a currently playing track to a new playlist.
+* Fixed the problem that if the position of the child window in the "Option Setting" dialog is scrolled by the mouse wheel, the position of the child window is incorrect when the scroll bar is clicked.
+* Fixed the problem that the playlist does not refresh after renaming.
+* Fixed the problem that the position of the progress bar would be incorrect when the rewind command was executed when the playback progress was less than 5 seconds.
+* Fixed the problem that the taskbar search box information cannot be displayed after the list of tracks is played in repead mode of "Play in order", and fixed the problem that the taskbar search box information cannot be displayed when this function is turned on after turned off.
+* Fixed the problem that the volume cannot be changed when the playlist is empty.
+
 ## V2.71 (2020/09/13)
 
 * Use the taglib library to obtain audio tags and album cover. Add the tags and album cover acquisition of more than a dozen audio formats.
