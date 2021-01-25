@@ -939,8 +939,10 @@ void CMusicPlayerApp::WriteLog(const wstring & log_str, int log_type)
 {
     if (((log_type & NonCategorizedSettingData::LT_ERROR) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_ERROR) != 0))
         CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
+#ifdef _DEBUG
     if (((log_type & NonCategorizedSettingData::LT_NORMAL) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_NORMAL) != 0))
         CCommon::WriteLog((m_module_dir + L"debug.log").c_str(), log_str);
+#endif
 }
 
 void CMusicPlayerApp::StartUpdateMediaLib()
