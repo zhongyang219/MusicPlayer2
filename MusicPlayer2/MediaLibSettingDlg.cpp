@@ -116,6 +116,10 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_RECENT_CHECK, m_data.display_item & MLDI_RECENT);
     CheckDlgButton(IDC_FOLDER_EXPLORE_CHECK, m_data.display_item & MLDI_FOLDER_EXPLORE);
 
+    //设置控件不响应鼠标滚轮消息
+    m_playlist_display_mode_combo.SetMouseWheelEnable(false);
+    m_recent_played_range_combo.SetMouseWheelEnable(false);
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }

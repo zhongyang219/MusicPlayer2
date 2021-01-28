@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "ListCtrlEx.h"
 #include "TabDlg.h"
+#include "MyComboBox.h"
 
 // CPlaySettingsDlg 对话框
 
@@ -25,7 +26,7 @@ protected:
 	CButton m_show_taskbar_progress_check;
 	CButton m_show_play_state_icon_chk;
     CButton m_sound_fade_chk;
-    CComboBox m_output_device_combo;
+    CMyComboBox m_output_device_combo;
 	CListCtrlEx m_device_info_list;
     CButton m_bass_radio;
     CButton m_mci_radio;

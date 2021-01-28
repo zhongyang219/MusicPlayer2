@@ -2,6 +2,7 @@
 #include "TabDlg.h"
 #include "CListBoxEnhanced.h"
 #include "afxwin.h"
+#include "MyComboBox.h"
 
 
 // CMediaLibSettingDlg 对话框
@@ -27,8 +28,8 @@ private:
     CListBoxEnhanced m_dir_list_ctrl;
     CButton m_update_media_lib_chk;
 	CButton m_disable_drag_sort_chk;
-	CComboBox m_playlist_display_mode_combo;
-	CComboBox m_recent_played_range_combo;
+	CMyComboBox m_playlist_display_mode_combo;
+	CMyComboBox m_recent_played_range_combo;
     CButton m_ignore_exist_chk;
 
     CToolTipCtrl m_toolTip;

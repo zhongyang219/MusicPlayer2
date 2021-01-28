@@ -13,11 +13,13 @@ public:
     CString GetText();
     void ResetModified();
     void SetModify();
+    void SetMouseWheelEnable(bool enable);  //设置是否允许响应鼠标滚轮
 
 protected:
 	bool m_read_only{ false };
 	CRect m_arrow_rect;		//下拉箭头的矩形区域
     bool m_modified{};
+    bool m_mouse_wheel_enable{ true };
 
 public:
 	DECLARE_MESSAGE_MAP()

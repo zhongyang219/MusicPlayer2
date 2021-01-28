@@ -2,6 +2,7 @@
 #include"Common.h"
 #include "TabDlg.h"
 #include "BrowseEdit.h"
+#include "MyComboBox.h"
 
 // CDataSettingsDlg 对话框
 
@@ -26,7 +27,7 @@ public:
 private:
 	CToolTipCtrl m_toolTip;
 	CBrowseEdit m_sf2_path_edit;
-	CComboBox m_language_combo;
+	CMyComboBox m_language_combo;
     bool m_auto_run_modified{};
 
     void EnableControl();

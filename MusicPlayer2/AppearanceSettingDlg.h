@@ -7,6 +7,8 @@
 #include "TabDlg.h"
 #include "SpinEdit.h"
 #include "BrowseEdit.h"
+#include "SliderCtrlEx.h"
+#include "MyComboBox.h"
 
 // CAppearanceSettingDlg 对话框
 
@@ -40,7 +42,7 @@ public:
 
 protected:
 	bool m_font_changed{ false };
-	CSliderCtrl m_transparency_slid;
+	CSliderCtrlEx m_transparency_slid;
 	CColorStatic m_color_static;
 	CColorStatic m_color_static1;
 	CColorStatic m_color_static2;
@@ -59,25 +61,25 @@ protected:
 	CToolTipCtrl m_toolTip;
 
 	CButton m_follow_system_color_check;
-	CSliderCtrl m_spectrum_height_slid;
+	CSliderCtrlEx m_spectrum_height_slid;
 	CButton m_show_album_cover_chk;
-	CComboBox m_album_cover_fit_combo;
+	CMyComboBox m_album_cover_fit_combo;
 	CButton m_album_cover_as_background_chk;
 	CButton m_show_spectrum_chk;
-	CSliderCtrl m_back_transparency_slid;
+	CSliderCtrlEx m_back_transparency_slid;
 	CButton m_use_out_image_chk;
 	CButton m_background_gauss_blur_chk;
-	CSliderCtrl m_gauss_blur_radius_sld;
+	CSliderCtrlEx m_gauss_blur_radius_sld;
 	CButton m_lyric_background_chk;
 	CButton m_dark_mode_chk;
 	CButton m_use_inner_image_first_chk;
     CButton m_enable_background_chk;
     CButton m_low_freq_in_center_chk;
-    CComboBox m_alignment_combo;
+    CMyComboBox m_alignment_combo;
     CButton m_default_cover_hq_chk;
     CSpinEdit m_lyric_line_space_edit;
     CSpinEdit m_ui_refresh_interval_edit;
-    CComboBox m_icon_select_combo;
+    CMyComboBox m_icon_select_combo;
     CButton m_notify_icon_auto_adapt_chk;
     CButton m_btn_round_corners_chk;
 

@@ -300,6 +300,17 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
 	SetControlEnable();
 
+    //设置控件不响应鼠标滚轮消息
+    m_spectrum_height_slid.SetMouseWheelEnable(false);
+    m_transparency_slid.SetMouseWheelEnable(false);
+    m_album_cover_fit_combo.SetMouseWheelEnable(false);
+    m_back_transparency_slid.SetMouseWheelEnable(false);
+    m_gauss_blur_radius_sld.SetMouseWheelEnable(false);
+    m_alignment_combo.SetMouseWheelEnable(false);
+    m_lyric_line_space_edit.SetMouseWheelEnable(false);
+    m_ui_refresh_interval_edit.SetMouseWheelEnable(false);
+    m_icon_select_combo.SetMouseWheelEnable(false);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }

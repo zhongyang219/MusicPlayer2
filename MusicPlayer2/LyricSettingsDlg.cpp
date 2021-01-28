@@ -198,6 +198,14 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
     m_alignment_combo.SetCurSel(static_cast<int>(m_data.cortana_lyric_align));
 
+    //设置控件不响应鼠标滚轮消息
+    m_cortana_color_combo.SetMouseWheelEnable(false);
+    m_lyric_save_policy_combo.SetMouseWheelEnable(false);
+    m_text_gradient_combo.SetMouseWheelEnable(false);
+    m_highlight_gradient_combo.SetMouseWheelEnable(false);
+    m_alignment_combo.SetMouseWheelEnable(false);
+    m_desktop_lyric_opacity_sld.SetMouseWheelEnable(false);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }

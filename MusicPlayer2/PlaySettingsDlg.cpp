@@ -165,6 +165,9 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     EnableControl();
 
+    //设置控件不响应鼠标滚轮消息
+    m_output_device_combo.SetMouseWheelEnable(false);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }

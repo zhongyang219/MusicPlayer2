@@ -237,6 +237,7 @@
     <ClInclude Include="PropertyDlgHelper.h" />
     <ClInclude Include="ScintillaEditView.h" />
     <ClInclude Include="SelectItemDlg.h" />
+    <ClInclude Include="SliderCtrlEx.h" />
     <ClInclude Include="SongDataManager.h" />
     <ClInclude Include="SpinEdit.h" />
     <ClInclude Include="TagFromFileNameDlg.h" />
@@ -372,6 +373,7 @@
     <ClCompile Include="PropertyDlgHelper.cpp" />
     <ClCompile Include="ScintillaEditView.cpp" />
     <ClCompile Include="SelectItemDlg.cpp" />
+    <ClCompile Include="SliderCtrlEx.cpp" />
     <ClCompile Include="SongDataManager.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
     <ClCompile Include="TagFromFileNameDlg.cpp" />

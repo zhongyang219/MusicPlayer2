@@ -5,6 +5,8 @@
 #include "ColorStaticEx.h"
 #include "DesktopLyric.h"
 #include "BrowseEdit.h"
+#include "MyComboBox.h"
+#include "SliderCtrlEx.h"
 
 // CLyricSettingsDlg 对话框
 
@@ -33,30 +35,30 @@ protected:
 	CButton m_lyric_double_line_chk;
 	CButton m_show_album_cover_in_cortana_check;
 	CButton m_cortana_icon_beat_check;
-	CComboBox m_cortana_color_combo;
+	CMyComboBox m_cortana_color_combo;
 	CButton m_lyric_compatible_mode_chk;
 	CButton m_keep_display_chk;
 	CButton m_show_spectrum_chk;
     CButton m_show_lyric_in_cortana_chk;
 	CButton m_show_desktop_lyric_chk;
     CBrowseEdit m_lyric_dir_edit;
-	CComboBox m_lyric_save_policy_combo;
+	CMyComboBox m_lyric_save_policy_combo;
 	CButton m_cortana_info_enable_check;
 	//CButton m_search_box_opaque_chk;
 
 	CButton m_desktop_lyric_double_line_chk;
 	CColorStaticEx m_text_color1_static;
 	CColorStaticEx m_text_color2_static;
-	CComboBox m_text_gradient_combo;
+	CMyComboBox m_text_gradient_combo;
 	CColorStaticEx m_highlight_color1_static;
 	CColorStaticEx m_highlight_color2_static;
-	CComboBox m_highlight_gradient_combo;
-	CSliderCtrl m_desktop_lyric_opacity_sld;
+	CMyComboBox m_highlight_gradient_combo;
+    CSliderCtrlEx m_desktop_lyric_opacity_sld;
 	CButton m_lock_desktop_lyric_chk;
     CButton m_hide_lyric_without_lyric_chk;
     CButton m_hide_lyric_paused_chk;
     CButton m_lyric_background_penetrate_chk;
-    CComboBox m_alignment_combo;
+    CMyComboBox m_alignment_combo;
     CButton m_show_unlock_when_locked_chk;
     CButton m_show_default_album_icon_chk;
 

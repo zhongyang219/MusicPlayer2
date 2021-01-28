@@ -62,6 +62,11 @@ void CMyComboBox::SetModify()
     Invalidate(FALSE);
 }
 
+void CMyComboBox::SetMouseWheelEnable(bool enable)
+{
+    m_mouse_wheel_enable = enable;
+}
+
 BEGIN_MESSAGE_MAP(CMyComboBox, CComboBox)
     ON_WM_CTLCOLOR()
     ON_CONTROL_REFLECT_EX(CBN_SELCHANGE, &CMyComboBox::OnCbnSelchange)
@@ -88,6 +93,15 @@ BOOL CMyComboBox::PreTranslateMessage(MSG* pMsg)
 				return TRUE;
 		}
 	}
+
+    //如果m_mouse_wheel_enable为false，则不响应鼠标滚轮消息
+    if (pMsg->message == WM_MOUSEWHEEL && !m_mouse_wheel_enable)
+    {
+        //将鼠标滚轮消息发送给父窗口
+        CWnd* pParent = GetParent();
+        pParent->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, pMsg->lParam);
+        return true;
+    }
 
 	return CComboBox::PreTranslateMessage(pMsg);
 }
