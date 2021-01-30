@@ -53,17 +53,18 @@ int CListCtrlEx::GetCurSel() const
 void CListCtrlEx::SetCurSel(int select)
 {
 	int size = GetItemCount();
-	if (select >= 0 && select < size)
-	{
-		SetItemState(select, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//选中行
-		EnsureVisible(select, FALSE);		//使选中行保持可见
-	}
-	else
-	{
-		//取消所有行的选中
-		for(int i{}; i<size; i++)
-			SetItemState(i, 0, LVIS_SELECTED);
-	}
+    for (int i{}; i < size; i++)
+    {
+        if (i == select)
+        {
+            SetItemState(select, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//选中行
+		    EnsureVisible(select, FALSE);		//使选中行保持可见
+        }
+        else
+        {
+            SetItemState(i, 0, LVIS_SELECTED);      //取消选中其他行
+        }
+    }
 }
 
 void CListCtrlEx::SetCurSel(int first, int last)
