@@ -1367,6 +1367,11 @@ void CCommon::NormalizeFont(LOGFONT & font)
 		font.lfWeight = 350;
 		style_acquired = true;
 	}
+    else if (style == L"ExtraLight")
+    {
+        font.lfWeight = FW_EXTRALIGHT;
+        style_acquired = true;
+    }
 	else if (style == L"Semibold")
 	{
 		font.lfWeight = FW_SEMIBOLD;
@@ -1377,11 +1382,21 @@ void CCommon::NormalizeFont(LOGFONT & font)
 		font.lfWeight = FW_BOLD;
 		style_acquired = true;
 	}
-	else if (style == L"Black")
+    else if (style == L"ExtraBold")
+    {
+        font.lfWeight = FW_EXTRABOLD;
+        style_acquired = true;
+    }
+	else if (style == L"Black" || style == L"Heavy")
 	{
 		font.lfWeight = FW_BLACK;
 		style_acquired = true;
 	}
+    else if (style == L"Normal" || style == L"Regular")
+    {
+        font.lfWeight = FW_NORMAL;
+        style_acquired = true;
+    }
 
 	if (style_acquired)
 	{
