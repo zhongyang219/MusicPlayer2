@@ -47,8 +47,9 @@ public:
     };
 
     //显示媒体库对话框
-    //cur_tab：打开对话框后要切换的标签
-    void ShowMediaLib(int cur_tab = -1);
+    //cur_tab: 打开对话框后要切换的标签
+    //tab_force_show: 要强制显示的标签，使用int中的各个bit表示要显示的标签，每个bit参见枚举 MediaLibDisplayItem 的声明
+    void ShowMediaLib(int cur_tab = -1, int tab_force_show = 0);
 
 protected:
     bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);

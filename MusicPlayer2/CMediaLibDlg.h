@@ -34,6 +34,11 @@ public:
     CFolderExploreDlg m_folder_explore_dlg;
 
     void SetCurTab(int tab);
+
+    //设置要强制显示出来的对话框（即使媒体库设置中为显示此标签）
+    //tabs: 要显示出来的标签，它不是标签的序号，而是多个bit的组合，用于表示多个标签，每个bit的含义为MediaLibDisplayItem枚举的常量
+    void SetTabForceShow(int tabs) { m_tab_show_force = tabs; }
+
     bool NavigateToItem(const wstring& item);       //跳转到对应项目，例如当前显示的是艺术家标签，则跳转到对应艺术家
 
 protected:
@@ -49,6 +54,7 @@ private:
     CSize m_min_size{};
     int m_init_tab{};
     CSize m_window_size{};
+    int m_tab_show_force{};     //要强制显示出来的标签
 
 public:
     virtual BOOL OnInitDialog();

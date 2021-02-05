@@ -116,14 +116,14 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_tab_ctrl.AddWindow(&m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
 
     //艺术家
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_ARTIST)
+    if ((theApp.m_media_lib_setting_data.display_item & MLDI_ARTIST) || (m_tab_show_force & MLDI_ARTIST))
     {
         m_artist_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));
         m_tab_ctrl.AddWindow(&m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
     }
     //唱片集
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_ALBUM)
+    if ((theApp.m_media_lib_setting_data.display_item & MLDI_ALBUM) || (m_tab_show_force & MLDI_ALBUM))
     {
         m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.album.GetIcon(true));

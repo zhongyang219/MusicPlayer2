@@ -535,26 +535,41 @@ bool CMusicPlayerCmdHelper::Rename(SongInfo & song, const wstring & new_name)
     return true;
 }
 
-void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/)
+void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_show)
 {
     CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     if (pPlayerDlg == nullptr)
         return;
 
-    if (pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->m_hWnd))      //如果媒体库对话框已经存在，则将其激活
+    bool dlg_exist = (pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->m_hWnd));   //媒体库对话框是否已经存在
+    bool tab_not_show = (~theApp.m_media_lib_setting_data.display_item & tab_force_show);       //如果有要强制显示的标签但是媒体库设置中此标签不显示
+    
+    //计算实际的tab序号（参数cur_tab为媒体库中标签的序号，但是如果有标签不显示，则此序号将不正确，因此这里需要根据实际显示的标签计算出真正的tab序号）
+    int shown_tab = theApp.m_media_lib_setting_data.display_item | tab_force_show;  //实际要显示的标签
+    int tab_num = cur_tab - 2;             //除去“文件夹”和“播放列表”两个标签（因为这两个标签总是显示，无法隐藏）
+    for (int i = 0; i < tab_num; i++)      //遍历cur_tab及前面的所有标签，检查是否有未显示出来的标签
     {
+        int tab_mask = 1 << i;
+        if ((shown_tab & tab_mask) == 0)  //如果有未显示出来的标签，则当前标签序号减1
+            cur_tab--;
+    }
+
+    if (dlg_exist && !tab_not_show)
+    {
+        pPlayerDlg->m_pMediaLibDlg->SetTabForceShow(tab_force_show);
         pPlayerDlg->m_pMediaLibDlg->ShowWindow(SW_SHOWNORMAL);
         pPlayerDlg->m_pMediaLibDlg->SetForegroundWindow();
         if (cur_tab >= 0)
             pPlayerDlg->m_pMediaLibDlg->SetCurTab(cur_tab);
     }
-    else
+    else    //如果对话框不存在，或有需要强制显示但是媒体库库中设置不显示的的标签，则需要重新打开媒体库对话框
     {
         CCommon::DeleteModelessDialog(pPlayerDlg->m_pMediaLibDlg);
         int tab_index = cur_tab;
         if (tab_index < 0)
             tab_index = CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0;
         pPlayerDlg->m_pMediaLibDlg = new CMediaLibDlg(tab_index);
+        pPlayerDlg->m_pMediaLibDlg->SetTabForceShow(tab_force_show);
         pPlayerDlg->m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);
         pPlayerDlg->m_pMediaLibDlg->ShowWindow(SW_SHOW);
     }

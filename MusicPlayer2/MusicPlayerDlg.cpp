@@ -5421,7 +5421,7 @@ void CMusicPlayerDlg::OnViewArtist()
         else
             return;
     }
-    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST);
+    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST, MLDI_ARTIST);
     if (!m_pMediaLibDlg->NavigateToItem(artist))
     {
         MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ARTIST_WARNING, { artist }), NULL, MB_OK | MB_ICONWARNING);
@@ -5434,7 +5434,7 @@ void CMusicPlayerDlg::OnViewAlbum()
     // TODO: 在此添加命令处理程序代码
     CMusicPlayerCmdHelper helper;
     wstring album = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
-    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ALBUM);
+    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ALBUM, MLDI_ALBUM);
     if (!m_pMediaLibDlg->NavigateToItem(album))
     {
         MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ALBUM_WARNING, { album }), NULL, MB_OK | MB_ICONWARNING);
