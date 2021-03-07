@@ -25,6 +25,8 @@ public:
 
 	void AdjustColumnWidth();
 
+    virtual bool SetRowHeight(int height) override;
+
 protected:
 
 	CToolTipCtrl m_toolTip;		//文本提示类

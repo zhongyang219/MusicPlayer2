@@ -139,6 +139,25 @@ void CPlayListCtrl::AdjustColumnWidth()
 }
 
 
+bool CPlayListCtrl::SetRowHeight(int height)
+{
+    //这里重写了基类CListCtrlEx的函数，函数的实现和基类基本一样，只是imgList.Create函数的第一个参数不一样，用于设置列表左侧的空白宽度
+    if (height > 0 && height <= 512)
+    {
+        CImageList imgList;		//为ClistCtrl设置一个图像列表，以设置行高
+        int blank_width = theApp.DPI(6) - 4;
+        if (blank_width < 1)
+            blank_width = 1;
+        BOOL rtn = imgList.Create(blank_width, height, ILC_COLOR, 1, 1);      //创建指定宽度的空白图标，以设置列表左侧的空白
+        if (rtn != FALSE)
+        {
+            SetImageList(&imgList, LVSIL_SMALL);
+            return true;
+        }
+    }
+    return false;
+}
+
 BEGIN_MESSAGE_MAP(CPlayListCtrl, CListCtrlEx)
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, CPlayListCtrl::OnNMCustomdraw)
 	ON_WM_MOUSEMOVE()
@@ -367,11 +386,18 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 			CRect rect = nmcd.rc;
 			CDC* pDC = CDC::FromHandle(nmcd.hdc);		//获取绘图DC
             COLORREF left_color{};
-            if (nmcd.dwItemSpec == highlight_item)
-                left_color = m_theme_color.dark1;
-            else
-                left_color = lplvdr->clrTextBk;
+            left_color = lplvdr->clrTextBk;
             pDC->FillSolidRect(rect, left_color);
+            //如果是高亮（正在播放）行，则在左侧绘制一个表示高亮的矩形
+            if (nmcd.dwItemSpec == highlight_item)
+            {
+                CRect highlight_rect = rect;
+                highlight_rect.right = highlight_rect.left + theApp.DPI(4);
+                int hight = rect.Height() * 7 / 10;
+                highlight_rect.top += (rect.Height() - hight) / 2;
+                highlight_rect.bottom = highlight_rect.top + hight;
+                pDC->FillSolidRect(highlight_rect, m_theme_color.dark1);
+            }
         }
 		else		//当控件被禁用时，显示文本设为灰色
 		{
