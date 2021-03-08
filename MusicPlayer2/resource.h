@@ -650,6 +650,7 @@
 #define IDS_CONNOT_FIND_ALBUM_WARNING   524
 #define IDS_SCI_NOT_LOADED_ERROR_INFO   525
 #define IDS_SELECT_ARTIST               526
+#define IDS_LOCATE_TO_CURRENT           527
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1412,7 +1413,7 @@
 #define ID_1_33217                      33217
 #define ID_COPY_ALL_TEXT                33218
 #define ID_VIEW_ARTIST                  33219
-#define ID_33220                        33220
+#define ID_LOCATE_TO_CURRENT            33220
 #define ID_VIEW_ALBUM                   33221
 
 // Next default values for new objects

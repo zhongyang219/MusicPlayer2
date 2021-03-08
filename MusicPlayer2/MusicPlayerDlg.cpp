@@ -275,6 +275,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SHOW_LYRIC_TRANSLATE, &CMusicPlayerDlg::OnShowLyricTranslate)
     ON_COMMAND(ID_VIEW_ARTIST, &CMusicPlayerDlg::OnViewArtist)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
+    ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
 END_MESSAGE_MAP()
 
 
@@ -1804,6 +1805,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.play_oder, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.album, nullptr, CCommon::LoadText(IDS_LOCATE_TO_CURRENT), ID_LOCATE_TO_CURRENT);
 
     //设置定时器
     //SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);
@@ -5439,4 +5441,11 @@ void CMusicPlayerDlg::OnViewAlbum()
     {
         MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ALBUM_WARNING, { album }), NULL, MB_OK | MB_ICONWARNING);
     }
+}
+
+
+void CMusicPlayerDlg::OnLocateToCurrent()
+{
+    // TODO: 在此添加命令处理程序代码
+    m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 }

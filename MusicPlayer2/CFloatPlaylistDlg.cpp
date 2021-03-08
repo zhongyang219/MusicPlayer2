@@ -175,6 +175,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_MESSAGE(WM_INITMENU, &CFloatPlaylistDlg::OnInitmenu)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CFloatPlaylistDlg::OnListItemDragged)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFloatPlaylistDlg::OnSearchEditBtnClicked)
+    ON_COMMAND(ID_LOCATE_TO_CURRENT, &CFloatPlaylistDlg::OnLocateToCurrent)
 END_MESSAGE_MAP()
 
 
@@ -221,6 +222,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.play_oder, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.album, nullptr, CCommon::LoadText(IDS_LOCATE_TO_CURRENT), ID_LOCATE_TO_CURRENT);
 
     SetDragEnable();
     EnableControl(!CPlayer::GetInstance().m_loading);
@@ -434,4 +436,11 @@ afx_msg LRESULT CFloatPlaylistDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM 
         m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
     }
     return 0;
+}
+
+
+void CFloatPlaylistDlg::OnLocateToCurrent()
+{
+    // TODO: 在此添加命令处理程序代码
+    m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 }

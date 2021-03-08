@@ -465,4 +465,5 @@ public:
     afx_msg void OnShowLyricTranslate();
     afx_msg void OnViewArtist();
     afx_msg void OnViewAlbum();
+    afx_msg void OnLocateToCurrent();
 };
