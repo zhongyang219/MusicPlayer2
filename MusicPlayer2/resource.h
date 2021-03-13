@@ -631,6 +631,8 @@
 #define IDD_SELECT_ITEM_DIALOG          505
 #define IDS_IMAGE_FILE_FILTER           506
 #define IDS_SEARCH_FILE_TYPE            507
+#define IDI_ICON17                      507
+#define IDI_LOCATE_D                    507
 #define IDS_SEARCH_BITRATE              508
 #define IDS_PLAY_RANDOM                 509
 #define IDS_FILE_PROPERTY               510
@@ -1420,7 +1422,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        507
+#define _APS_NEXT_RESOURCE_VALUE        508
 #define _APS_NEXT_COMMAND_VALUE         33222
 #define _APS_NEXT_CONTROL_VALUE         1185
 #define _APS_NEXT_SYMED_VALUE           101

@@ -516,6 +516,7 @@
     <Image Include="res\genre_d.ico" />
     <Image Include="res\heart.ico" />
     <Image Include="res\help_d.ico" />
+    <Image Include="res\locate.ico" />
     <Image Include="res\lock_d.ico" />
     <Image Include="res\lyric_d.ico" />
     <Image Include="res\lyric_delay.ico" />

@@ -1805,7 +1805,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.play_oder, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.album, nullptr, CCommon::LoadText(IDS_LOCATE_TO_CURRENT), ID_LOCATE_TO_CURRENT);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, CCommon::LoadText(IDS_LOCATE_TO_CURRENT), ID_LOCATE_TO_CURRENT);
 
     //设置定时器
     //SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);

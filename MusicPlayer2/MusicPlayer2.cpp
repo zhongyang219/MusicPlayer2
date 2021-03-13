@@ -517,6 +517,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.tag = CDrawCommon::LoadIconResource(IDI_TAG, DPI(16), DPI(16));
 
     m_icon_set.ok = CDrawCommon::LoadIconResource(IDI_OK_D, DPI(16), DPI(16));
+    m_icon_set.locate.Load(IDI_LOCATE_D, NULL, DPI(16));
 
     //加载通知区图标
     m_icon_set.notify_icons[0] = m_icon_set.app.GetIcon();      //应用图标直接使用前面加载过的

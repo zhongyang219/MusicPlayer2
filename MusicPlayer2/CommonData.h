@@ -485,6 +485,7 @@ struct IconSet
     HICON tag;
 
     HICON ok;
+    IconRes locate;
 
     //通知区图标
     HICON notify_icons[MAX_NOTIFY_ICON];
