@@ -1410,9 +1410,9 @@
 #define ID_SWITCH_UI_1                  33212
 #define ID_SWITCH_UI_2                  33213
 #define ID_SWITCH_UI_LYRICS_FULL_SCREEN 33214
-#define ID_SHOW_LYRIC_TRANSLATE         33215
+#define ID_SWITCH_UI_4                  33215
 #define ID_1_33216                      33216
-#define ID_1_33217                      33217
+#define ID_SHOW_LYRIC_TRANSLATE         33217
 #define ID_COPY_ALL_TEXT                33218
 #define ID_VIEW_ARTIST                  33219
 #define ID_LOCATE_TO_CURRENT            33220

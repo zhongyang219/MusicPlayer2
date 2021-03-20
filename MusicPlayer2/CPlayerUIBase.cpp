@@ -598,28 +598,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
     //绘制循环模式
     rc_tmp.right = rect.left + rect.Height();
-    IconRes* pIcon = nullptr;
-    switch (CPlayer::GetInstance().GetRepeatMode())
-    {
-    case RepeatMode::RM_PLAY_ORDER:
-        pIcon = &theApp.m_icon_set.play_oder;
-        break;
-    case RepeatMode::RM_LOOP_PLAYLIST:
-        pIcon = &theApp.m_icon_set.loop_playlist;
-        break;
-    case RepeatMode::RM_LOOP_TRACK:
-        pIcon = &theApp.m_icon_set.loop_track;
-        break;
-    case RepeatMode::RM_PLAY_SHUFFLE:
-        pIcon = &theApp.m_icon_set.play_shuffle;
-        break;
-    case RepeatMode::RM_PLAY_RANDOM:
-        pIcon = &theApp.m_icon_set.play_random;
-        break;
-    case RepeatMode::RM_PLAY_TRACK:
-        pIcon = &theApp.m_icon_set.play_track;
-        break;
-    }
+    IconRes* pIcon = GetRepeatModeIcon();
     if (pIcon != nullptr)
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_REPETEMODE], *pIcon);
 
@@ -1259,21 +1238,25 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
         progress_rect.right = rc_time.left - Margin();
     progress_rect.top = rect.top + (rect.Height() - progress_height) / 2;
     progress_rect.bottom = progress_rect.top + progress_height;
+    DrawProgess(progress_rect);
+}
 
+void CPlayerUIBase::DrawProgess(CRect rect)
+{
     if (IsDrawBackgroundAlpha())
-        m_draw.FillAlphaRect(progress_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
+        m_draw.FillAlphaRect(rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
     else
-        m_draw.FillRect(progress_rect, m_colors.color_spectrum_back);
+        m_draw.FillRect(rect, m_colors.color_spectrum_back);
 
-    m_buttons[BTN_PROGRESS].rect = DrawAreaToClient(progress_rect, m_draw_rect);
+    m_buttons[BTN_PROGRESS].rect = DrawAreaToClient(rect, m_draw_rect);
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, DPI(3));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
     if (progress > 1)
         progress = 1;
-    double progress_width_double{ progress * progress_rect.Width() };
+    double progress_width_double{ progress * rect.Width() };
     int progress_width{ static_cast<int>(progress_width_double) };
-	CRect played_rect = progress_rect;
+    CRect played_rect = rect;
     played_rect.right = played_rect.left + progress_width;
     if (played_rect.right > played_rect.left)
         m_draw.FillRect(played_rect, m_colors.color_spectrum);
@@ -1284,42 +1267,42 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     played_rect.right = played_rect.left + 1;
     m_draw.FillAlphaRect(played_rect, m_colors.color_spectrum, alpha);
 
-	//绘制AB重复的标记
-	auto ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
-	if(ab_repeat_mode == CPlayer::AM_A_SELECTED || ab_repeat_mode == CPlayer::AM_AB_REPEAT)
-	{
-		CFont* pOldFont = m_draw.GetFont();
-		//设置字体
-		m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
+    //绘制AB重复的标记
+    auto ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
+    if (ab_repeat_mode == CPlayer::AM_A_SELECTED || ab_repeat_mode == CPlayer::AM_AB_REPEAT)
+    {
+        CFont* pOldFont = m_draw.GetFont();
+        //设置字体
+        m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
 
-		double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
-		double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
-		CRect rect_draw = rect;
-		rect_draw.bottom += DPI(12);
-		m_draw.SetDrawArea(rect_draw);
-		CPoint point1, point2;
-		//绘制A点标记
-		point1.x = point2.x = progress_rect.left + static_cast<int>(a_point_progres * progress_rect.Width());
-		point1.y = progress_rect.top - DPI(2);
-		point2.y = progress_rect.bottom+ DPI(2);
-		m_draw.DrawLine(point1, point2, m_colors.color_text, DPI(1), false);
-		CRect rect_text;
-		rect_text.top = point2.y;
-		rect_text.left = point1.x - DPI(8);
-		rect_text.right = point1.x + DPI(8);
-		rect_text.bottom = rect_text.top + DPI(12);
-		m_draw.DrawWindowText(rect_text, _T("A"), m_colors.color_text, Alignment::CENTER, true);
-		//绘制B点标记
-		if(ab_repeat_mode == CPlayer::AM_AB_REPEAT)
-		{
-			point1.x = point2.x = progress_rect.left + static_cast<int>(b_point_progres * progress_rect.Width());
-			m_draw.DrawLine(point1, point2, m_colors.color_text, DPI(1), false);
-			rect_text.MoveToX(point1.x - DPI(8));
-			m_draw.DrawWindowText(rect_text, _T("B"), m_colors.color_text, Alignment::CENTER, true);
-		}
-		//恢复字体
-		m_draw.SetFont(pOldFont);
-	}
+        double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
+        double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
+        CRect rect_draw = rect;
+        rect_draw.bottom += DPI(12);
+        m_draw.SetDrawArea(rect_draw);
+        CPoint point1, point2;
+        //绘制A点标记
+        point1.x = point2.x = rect.left + static_cast<int>(a_point_progres * rect.Width());
+        point1.y = rect.top - DPI(2);
+        point2.y = rect.bottom + DPI(2);
+        m_draw.DrawLine(point1, point2, m_colors.color_text, DPI(1), false);
+        CRect rect_text;
+        rect_text.top = point2.y;
+        rect_text.left = point1.x - DPI(8);
+        rect_text.right = point1.x + DPI(8);
+        rect_text.bottom = rect_text.top + DPI(12);
+        m_draw.DrawWindowText(rect_text, _T("A"), m_colors.color_text, Alignment::CENTER, true);
+        //绘制B点标记
+        if (ab_repeat_mode == CPlayer::AM_AB_REPEAT)
+        {
+            point1.x = point2.x = rect.left + static_cast<int>(b_point_progres * rect.Width());
+            m_draw.DrawLine(point1, point2, m_colors.color_text, DPI(1), false);
+            rect_text.MoveToX(point1.x - DPI(8));
+            m_draw.DrawWindowText(rect_text, _T("B"), m_colors.color_text, Alignment::CENTER, true);
+        }
+        //恢复字体
+        m_draw.SetFont(pOldFont);
+    }
 }
 
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
@@ -1578,6 +1561,33 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
     m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
     DrawTextButton(rect, m_buttons[BTN_AB_REPEAT], info, ab_repeat_mode != CPlayer::AM_NONE);
     m_draw.SetFont(pOldFont);
+}
+
+IconRes* CPlayerUIBase::GetRepeatModeIcon()
+{
+    IconRes* pIcon = nullptr;
+    switch (CPlayer::GetInstance().GetRepeatMode())
+    {
+    case RepeatMode::RM_PLAY_ORDER:
+        pIcon = &theApp.m_icon_set.play_oder;
+        break;
+    case RepeatMode::RM_LOOP_PLAYLIST:
+        pIcon = &theApp.m_icon_set.loop_playlist;
+        break;
+    case RepeatMode::RM_LOOP_TRACK:
+        pIcon = &theApp.m_icon_set.loop_track;
+        break;
+    case RepeatMode::RM_PLAY_SHUFFLE:
+        pIcon = &theApp.m_icon_set.play_shuffle;
+        break;
+    case RepeatMode::RM_PLAY_RANDOM:
+        pIcon = &theApp.m_icon_set.play_random;
+        break;
+    case RepeatMode::RM_PLAY_TRACK:
+        pIcon = &theApp.m_icon_set.play_track;
+        break;
+    }
+    return pIcon;
 }
 
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)

@@ -5,7 +5,6 @@
 #include "CUIDrawer.h"
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)		//显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
-#define UI_MAX 3
 
 struct SLayoutData
 {
@@ -24,7 +23,9 @@ enum eUIIdentify
 {
     UI_UI1,
     UI_UI2,
-    UI_LYRIC_FULL_SCREEN
+    UI_LYRIC_FULL_SCREEN,
+    UI_UI4,
+    UI_MAX
 };
 
 
@@ -83,7 +84,7 @@ public:
         BTN_PLAY_PAUSE,			//播放/暂停
         BTN_NEXT,				//下一曲
         BTN_SHOW_PLAYLIST,		//显示/隐藏播放列表
-        BTN_SELECT_FOLDER,		//选择文件夹
+        BTN_SELECT_FOLDER,		//媒体库
         BTN_PROGRESS,			//进度条
         BTN_COVER,				//专辑封面
         BTN_FULL_SCREEN,		//全屏显示按钮
@@ -111,7 +112,8 @@ protected:
     void DrawToolBar(CRect rect, bool draw_translate_button);
     void DrawVolumnAdjBtn();
     void DrawControlBar(CRect rect);
-    void DrawProgressBar(CRect rect);
+    void DrawProgressBar(CRect rect);               //绘制进度条（包含时间）
+    void DrawProgess(CRect rect);                   //绘制进度条
     void DrawTranslateButton(CRect rect);
     int DrawTopRightIcons(bool always_show_full_screen = false);			//绘制右上角的图标。返回总宽度
     void DrawCurrentTime();				//在右上角绘制当前系统时间
@@ -120,6 +122,7 @@ protected:
     void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr, bool adj_btn_top = false);     //str：要显示的文本（音量：xx%），如果为nullptr，则会自动设置；adj_btn_top：点击后弹出的音量调整按钮是否在上方
     void DrawABRepeatButton(CRect rect);
 
+    IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);

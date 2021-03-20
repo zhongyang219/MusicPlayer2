@@ -34,6 +34,7 @@
 #include "SearchEditCtrl.h"
 #include "UIWindow.h"
 #include "CPlayerUI3.h"
+#include "CPlayerUI4.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -91,6 +92,7 @@ protected:
     CPlayerUI m_ui{ theApp.m_ui_data, &m_ui_static_ctrl };
     CPlayerUI2 m_ui2{ theApp.m_ui_data, &m_ui_static_ctrl };
     CPlayerUI3 m_ui3{ theApp.m_ui_data, &m_ui_static_ctrl };
+    CPlayerUI4 m_ui4{ theApp.m_ui_data, &m_ui_static_ctrl };
     IPlayerUI* m_pUI = nullptr;
 
     bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
@@ -462,6 +464,7 @@ public:
     afx_msg void OnSwitchUi1();
     afx_msg void OnSwitchUi2();
     afx_msg void OnSwitchUiLyricsFullScreen();
+    afx_msg void OnSwitchUi4();
     afx_msg void OnShowLyricTranslate();
     afx_msg void OnViewArtist();
     afx_msg void OnViewAlbum();

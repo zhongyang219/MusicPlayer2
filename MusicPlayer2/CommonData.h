@@ -130,11 +130,14 @@ struct FontSet
     UIFont cortana;				//搜索框字体
     UIFont cortana_translate;	//搜索框翻译字体
 
+    UIFont ui4_title;
+
     void Init()
     {
         normal.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
         time.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
         title.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
+        ui4_title.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
     }
 };
 

@@ -272,6 +272,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SWITCH_UI_1, &CMusicPlayerDlg::OnSwitchUi1)
     ON_COMMAND(ID_SWITCH_UI_2, &CMusicPlayerDlg::OnSwitchUi2)
     ON_COMMAND(ID_SWITCH_UI_LYRICS_FULL_SCREEN, &CMusicPlayerDlg::OnSwitchUiLyricsFullScreen)
+    ON_COMMAND(ID_SWITCH_UI_4, &CMusicPlayerDlg::OnSwitchUi4)
     ON_COMMAND(ID_SHOW_LYRIC_TRANSLATE, &CMusicPlayerDlg::OnShowLyricTranslate)
     ON_COMMAND(ID_VIEW_ARTIST, &CMusicPlayerDlg::OnViewArtist)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
@@ -1264,14 +1265,17 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     int ui_selected = GetUiSelected();
     switch (ui_selected)
     {
-    case 0:
-        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_LYRICS_FULL_SCREEN, ID_SWITCH_UI_1, MF_BYCOMMAND | MF_CHECKED);
+    case UI_UI1:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_1, MF_BYCOMMAND | MF_CHECKED);
         break;
-    case 1:
-        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_LYRICS_FULL_SCREEN, ID_SWITCH_UI_2, MF_BYCOMMAND | MF_CHECKED);
+    case UI_UI2:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_2, MF_BYCOMMAND | MF_CHECKED);
         break;
-    case 2:
-        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_LYRICS_FULL_SCREEN, ID_SWITCH_UI_LYRICS_FULL_SCREEN, MF_BYCOMMAND | MF_CHECKED);
+    case UI_LYRIC_FULL_SCREEN:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_LYRICS_FULL_SCREEN, MF_BYCOMMAND | MF_CHECKED);
+        break;
+    case UI_UI4:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_4, MF_BYCOMMAND | MF_CHECKED);
         break;
     default:
         break;
@@ -1606,6 +1610,8 @@ void CMusicPlayerDlg::SelectUi(int ui_selected)
         m_pUI = &m_ui2;
     else if (ui_selected == UI_LYRIC_FULL_SCREEN)
         m_pUI = &m_ui3;
+    else if (ui_selected == UI_UI4)
+        m_pUI = &m_ui4;
     else
         m_pUI = &m_ui;
 }
@@ -1619,6 +1625,8 @@ int CMusicPlayerDlg::GetUiSelected() const
         ui_selected = UI_UI2;
     else if (m_pUI == &m_ui3)
         ui_selected = UI_LYRIC_FULL_SCREEN;
+    else if (m_pUI == &m_ui4)
+        ui_selected = UI_UI4;
     return ui_selected;
 }
 
@@ -1783,6 +1791,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_ui.Init(m_pUiDC);
     m_ui2.Init(m_pUiDC);
     m_ui3.Init(m_pUiDC);
+    m_ui4.Init(m_pUiDC);
 
     //初始化歌词字体
     theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
@@ -5364,7 +5373,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnAfterMusicStreamClosed(WPARAM wParam, LPARAM 
 void CMusicPlayerDlg::OnSwitchUi1()
 {
     // TODO: 在此添加命令处理程序代码
-    SelectUi(0);
+    SelectUi(UI_UI1);
     m_ui.ClearBtnRect();
     DrawInfo(true);
     m_ui.UpdateRepeatModeToolTip();
@@ -5374,7 +5383,7 @@ void CMusicPlayerDlg::OnSwitchUi1()
 void CMusicPlayerDlg::OnSwitchUi2()
 {
     // TODO: 在此添加命令处理程序代码
-    SelectUi(1);
+    SelectUi(UI_UI2);
     m_ui2.ClearBtnRect();
     DrawInfo(true);
     m_ui2.UpdateRepeatModeToolTip();
@@ -5384,8 +5393,15 @@ void CMusicPlayerDlg::OnSwitchUi2()
 void CMusicPlayerDlg::OnSwitchUiLyricsFullScreen()
 {
     // TODO: 在此添加命令处理程序代码
-    SelectUi(2);
+    SelectUi(UI_LYRIC_FULL_SCREEN);
     m_ui3.ClearBtnRect();
+    DrawInfo(true);
+}
+
+void CMusicPlayerDlg::OnSwitchUi4()
+{
+    SelectUi(UI_UI4);
+    m_ui4.ClearBtnRect();
     DrawInfo(true);
 }
 
