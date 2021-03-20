@@ -45,6 +45,7 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
     if (rect_cover.bottom > rect_cover.top)
     {
         m_draw_data.thumbnail_rect = rect_cover;
+        m_draw.SetDrawArea(rect_cover);
         DrawAlbumCover(rect_cover);
         cover_height = rect_cover.Height();
 
@@ -89,6 +90,7 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
         m_draw.DrawScrollText(rect_title, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title, reset);
         m_draw.SetFont(pOldFont);
     }
+    m_draw.SetDrawArea(m_draw_rect);
 
     //绘制进度条
     CRect progress_rect{ rect_cover };
