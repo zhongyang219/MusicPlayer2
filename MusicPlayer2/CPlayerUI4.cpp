@@ -171,11 +171,17 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
         }
         rect_lyric.DeflateRect(DPI(4), DPI(4));
         m_draw.DrawLryicCommon(rect_lyric, theApp.m_app_setting_data.lyric_align);
+        m_draw_data.lyric_rect = rect_lyric;        //保存歌词区域
     }
 
     //绘制右上角图标
     DrawTopRightIcons(true);
 
+    //全屏模式时在右上角绘制时间
+    if (m_ui_data.full_screen)
+    {
+        DrawCurrentTime();
+    }
 }
 
 int CPlayerUI4::GetClassId()
