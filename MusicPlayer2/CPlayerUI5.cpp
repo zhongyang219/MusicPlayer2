@@ -56,6 +56,10 @@ void CPlayerUI5::_DrawInfo(bool reset)
     rect_info.top = lyric_bottum - DPI(4);
     rect_info.bottom = rect_info.top + DPI(74);
 
+    //设置任务预览窗口区域
+    m_draw_data.thumbnail_rect = rect_info;
+    m_draw_data.thumbnail_rect.bottom = draw_rect.bottom;
+
     //绘制专辑封面
     CRect rect_cover = rect_info;
     rect_cover.right = rect_cover.left + rect_info.Height();
@@ -135,13 +139,16 @@ void CPlayerUI5::_DrawInfo(bool reset)
     DrawUIButton(btnRectChg(rect_btn), m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
     
     //绘制频谱分析
-    const int spectrum_max_width = DPI(280);
-    CRect rect_spectrum{ draw_rect };
-    rect_spectrum.top = rect_spectrum.bottom - DPI(32);
-    rect_spectrum.left += DPI(24);
-    rect_spectrum.right = rect_spectrum.left + spectrum_max_width;
-    m_draw.SetDrawArea(rect_spectrum);
-    m_draw.DrawSpectrum(rect_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
+    if (theApp.m_app_setting_data.show_spectrum)
+    {
+        const int spectrum_max_width = DPI(280);
+        CRect rect_spectrum{ draw_rect };
+        rect_spectrum.top = rect_spectrum.bottom - DPI(32);
+        rect_spectrum.left += DPI(24);
+        rect_spectrum.right = rect_spectrum.left + spectrum_max_width;
+        m_draw.SetDrawArea(rect_spectrum);
+        m_draw.DrawSpectrum(rect_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
+    }
 
     //绘制右上角图标
     DrawTopRightIcons(true);

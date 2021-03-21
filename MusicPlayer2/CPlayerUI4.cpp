@@ -148,16 +148,19 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
     DrawUIButton(btnRectChg(rect_btn), m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
 
     //绘制频谱分析
-    const int spectrum_max_width = DPI(280);
-    CRect rect_spectrum{ draw_rect };
-    rect_spectrum.top = rect_spectrum.bottom - DPI(32);
-    if (rect_spectrum.Width() > spectrum_max_width)
+    if (theApp.m_app_setting_data.show_spectrum)
     {
-        rect_spectrum.left += (rect_spectrum.Width() - spectrum_max_width) / 2;
-        rect_spectrum.right = rect_spectrum.left + spectrum_max_width;
+        const int spectrum_max_width = DPI(280);
+        CRect rect_spectrum{ draw_rect };
+        rect_spectrum.top = rect_spectrum.bottom - DPI(32);
+        if (rect_spectrum.Width() > spectrum_max_width)
+        {
+            rect_spectrum.left += (rect_spectrum.Width() - spectrum_max_width) / 2;
+            rect_spectrum.right = rect_spectrum.left + spectrum_max_width;
+        }
+        m_draw.SetDrawArea(rect_spectrum);
+        m_draw.DrawSpectrum(rect_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
     }
-    m_draw.SetDrawArea(rect_spectrum);
-    m_draw.DrawSpectrum(rect_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
 
     //绘制歌词
     if (right_lyric)
