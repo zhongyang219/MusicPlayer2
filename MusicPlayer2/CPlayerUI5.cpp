@@ -70,9 +70,14 @@ void CPlayerUI5::_DrawInfo(bool reset)
     //绘制标题
     CRect rect_title{ rect_info };
     rect_title.bottom -= DPI(24);
+    wstring str_title;
+    if (CPlayer::GetInstance().GetCurrentSongInfo().IsTitleEmpty())             //如果标题为空，则显示文件名
+        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetFileName();
+    else
+        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
     CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.ui4_title.GetFont(theApp.m_ui_data.full_screen));
     static CDrawCommon::ScrollInfo scroll_info_title;
-    m_draw.DrawScrollText(rect_title, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info_title, reset);
+    m_draw.DrawScrollText(rect_title, str_title.c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info_title, reset);
     m_draw.SetFont(pOldFont);
     //绘制艺术家
     CRect rect_artist{ rect_info };
@@ -133,12 +138,8 @@ void CPlayerUI5::_DrawInfo(bool reset)
     const int spectrum_max_width = DPI(280);
     CRect rect_spectrum{ draw_rect };
     rect_spectrum.top = rect_spectrum.bottom - DPI(32);
-    const int spectrum_left_space = DPI(24);
-    if (rect_spectrum.Width() > (spectrum_max_width + spectrum_left_space))
-    {
-        rect_spectrum.left += spectrum_left_space;
-        rect_spectrum.right = rect_spectrum.left + spectrum_max_width;
-    }
+    rect_spectrum.left += DPI(24);
+    rect_spectrum.right = rect_spectrum.left + spectrum_max_width;
     m_draw.SetDrawArea(rect_spectrum);
     m_draw.DrawSpectrum(rect_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
 

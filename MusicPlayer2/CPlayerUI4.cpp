@@ -85,9 +85,14 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
         //绘制歌曲标题
         CRect rect_title{ rect_info };
         rect_title.top = rect_artist.bottom;
+        wstring str_title;
+        if (CPlayer::GetInstance().GetCurrentSongInfo().IsTitleEmpty())             //如果标题为空，则显示文件名
+            str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetFileName();
+        else
+            str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
         CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.ui4_title.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_title;
-        m_draw.DrawScrollText(rect_title, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title, reset);
+        m_draw.DrawScrollText(rect_title, str_title.c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title, reset);
         m_draw.SetFont(pOldFont);
     }
     m_draw.SetDrawArea(m_draw_rect);
