@@ -28,6 +28,11 @@
 #include "TagFromFileNameDlg.h"
 #include "PropertyDlgHelper.h"
 #include "SelectItemDlg.h"
+#include "CPlayerUI.h"
+#include "CPlayerUI2.h"
+#include "CPlayerUI3.h"
+#include "CPlayerUI4.h"
+#include "CPlayerUI5.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -49,6 +54,7 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     m_ui_map[UI_UI2] = std::make_shared<CPlayerUI2>(theApp.m_ui_data, &m_ui_static_ctrl);
     m_ui_map[UI_UI3] = std::make_shared<CPlayerUI3>(theApp.m_ui_data, &m_ui_static_ctrl);
     m_ui_map[UI_UI4] = std::make_shared<CPlayerUI4>(theApp.m_ui_data, &m_ui_static_ctrl);
+    m_ui_map[UI_UI5] = std::make_shared<CPlayerUI5>(theApp.m_ui_data, &m_ui_static_ctrl);
 }
 
 CMusicPlayerDlg::~CMusicPlayerDlg()
@@ -279,6 +285,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SWITCH_UI_2, &CMusicPlayerDlg::OnSwitchUi2)
     ON_COMMAND(ID_SWITCH_UI_LYRICS_FULL_SCREEN, &CMusicPlayerDlg::OnSwitchUiLyricsFullScreen)
     ON_COMMAND(ID_SWITCH_UI_4, &CMusicPlayerDlg::OnSwitchUi4)
+    ON_COMMAND(ID_SWITCH_UI_5, &CMusicPlayerDlg::OnSwitchUi5)
     ON_COMMAND(ID_SHOW_LYRIC_TRANSLATE, &CMusicPlayerDlg::OnShowLyricTranslate)
     ON_COMMAND(ID_VIEW_ARTIST, &CMusicPlayerDlg::OnViewArtist)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
@@ -1278,16 +1285,19 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     switch (ui_selected)
     {
     case UI_UI1:
-        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_1, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_5, ID_SWITCH_UI_1, MF_BYCOMMAND | MF_CHECKED);
         break;
     case UI_UI2:
-        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_2, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_5, ID_SWITCH_UI_2, MF_BYCOMMAND | MF_CHECKED);
         break;
     case UI_UI3:
-        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_LYRICS_FULL_SCREEN, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_5, ID_SWITCH_UI_LYRICS_FULL_SCREEN, MF_BYCOMMAND | MF_CHECKED);
         break;
     case UI_UI4:
-        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_4, MF_BYCOMMAND | MF_CHECKED);
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_5, ID_SWITCH_UI_4, MF_BYCOMMAND | MF_CHECKED);
+        break;
+    case UI_UI5:
+        pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_5, ID_SWITCH_UI_5, MF_BYCOMMAND | MF_CHECKED);
         break;
     default:
         break;
@@ -5406,6 +5416,13 @@ void CMusicPlayerDlg::OnSwitchUi4()
 {
     SelectUi(UI_UI4);
     m_ui_map[UI_UI4]->ClearBtnRect();
+    DrawInfo(true);
+}
+
+void CMusicPlayerDlg::OnSwitchUi5()
+{
+    SelectUi(UI_UI5);
+    m_ui_map[UI_UI5]->ClearBtnRect();
     DrawInfo(true);
 }
 

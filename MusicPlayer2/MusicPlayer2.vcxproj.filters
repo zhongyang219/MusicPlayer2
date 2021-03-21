@@ -754,6 +754,9 @@
     <ClInclude Include="CPlayerUI4.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerUI5.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1133,6 +1136,9 @@
     </ClCompile>
     <ClCompile Include="SliderCtrlEx.cpp" />
     <ClCompile Include="CPlayerUI4.cpp">
+      <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerUI5.cpp">
       <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>

@@ -124,13 +124,13 @@ struct FontSet
     UIFont normal;				//普通的字体
     UIFont time;				//显示播放时间
     UIFont title;				//界面2的歌曲标题
+    UIFont ui4_title;           //界面4的歌曲标题
 
     UIFont lyric;				//歌词字体
     UIFont lyric_translate;		//歌词翻译的字体
     UIFont cortana;				//搜索框字体
     UIFont cortana_translate;	//搜索框翻译字体
 
-    UIFont ui4_title;
 
     void Init()
     {

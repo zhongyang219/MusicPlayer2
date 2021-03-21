@@ -25,6 +25,7 @@ enum eUIIdentify
     UI_UI2,
     UI_UI3,
     UI_UI4,
+    UI_UI5,
     UI_MAX
 };
 

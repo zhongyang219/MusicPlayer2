@@ -1406,24 +1406,23 @@
 #define ID_EMBED_LYRIC_TO_AUDIO_FILE    33208
 #define ID_DELETE_LYRIC_FROM_AUDIO_FILE 33209
 #define ID_33210                        33210
-#define ID_33211                        33211
-#define ID_SWITCH_UI_1                  33212
-#define ID_SWITCH_UI_2                  33213
-#define ID_SWITCH_UI_LYRICS_FULL_SCREEN 33214
-#define ID_SWITCH_UI_4                  33215
-#define ID_1_33216                      33216
-#define ID_SHOW_LYRIC_TRANSLATE         33217
-#define ID_COPY_ALL_TEXT                33218
-#define ID_VIEW_ARTIST                  33219
-#define ID_LOCATE_TO_CURRENT            33220
-#define ID_VIEW_ALBUM                   33221
+#define ID_SWITCH_UI_1                  33211
+#define ID_SWITCH_UI_2                  33212
+#define ID_SWITCH_UI_LYRICS_FULL_SCREEN 33213
+#define ID_SWITCH_UI_4                  33214
+#define ID_SWITCH_UI_5                  33215
+#define ID_SHOW_LYRIC_TRANSLATE         33320
+#define ID_COPY_ALL_TEXT                33321
+#define ID_VIEW_ARTIST                  33322
+#define ID_LOCATE_TO_CURRENT            33323
+#define ID_VIEW_ALBUM                   33324
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        508
-#define _APS_NEXT_COMMAND_VALUE         33222
+#define _APS_NEXT_COMMAND_VALUE         33325
 #define _APS_NEXT_CONTROL_VALUE         1185
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

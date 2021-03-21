@@ -23,8 +23,6 @@
 #include "CoverDownloadDlg.h"
 #include "FormatConvertDlg.h"
 #include "RecorderDlg.h"
-#include "CPlayerUI.h"
-#include "CPlayerUI2.h"
 #include "CNotifyIcon.h"
 #include "StaticEx.h"
 #include "CMainDialogBase.h"
@@ -33,8 +31,6 @@
 #include "DesktopLyric.h"
 #include "SearchEditCtrl.h"
 #include "UIWindow.h"
-#include "CPlayerUI3.h"
-#include "CPlayerUI4.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -462,6 +458,7 @@ public:
     afx_msg void OnSwitchUi2();
     afx_msg void OnSwitchUiLyricsFullScreen();
     afx_msg void OnSwitchUi4();
+    afx_msg void OnSwitchUi5();
     afx_msg void OnShowLyricTranslate();
     afx_msg void OnViewArtist();
     afx_msg void OnViewAlbum();

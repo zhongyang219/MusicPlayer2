@@ -101,6 +101,7 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
     //绘制控制按钮
     CRect rect_control_bar = draw_rect;
     rect_control_bar.top = progress_rect.bottom;
+    rect_control_bar.bottom -= DPI(8);
     const int btn_size = DPI(36);
     const int btn_gap{ m_ui_data.full_screen ? DPI(6) : 0 };
     const int btn_num = 7;
