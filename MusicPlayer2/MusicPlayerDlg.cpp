@@ -43,6 +43,12 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{cmdLine}, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
 {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+    //初始化UI
+    m_ui_map[UI_UI1] = std::make_shared<CPlayerUI>(theApp.m_ui_data, &m_ui_static_ctrl);
+    m_ui_map[UI_UI2] = std::make_shared<CPlayerUI2>(theApp.m_ui_data, &m_ui_static_ctrl);
+    m_ui_map[UI_UI3] = std::make_shared<CPlayerUI3>(theApp.m_ui_data, &m_ui_static_ctrl);
+    m_ui_map[UI_UI4] = std::make_shared<CPlayerUI4>(theApp.m_ui_data, &m_ui_static_ctrl);
 }
 
 CMusicPlayerDlg::~CMusicPlayerDlg()
@@ -608,6 +614,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     //设置播放列表大小
     int playlist_width = CalculatePlaylistWidth(cx);
     int playlist_x = cx - playlist_width;
+    CPlayerUIBase* pUiBase = dynamic_cast<CPlayerUIBase*>(m_pUI);
     if (!theApp.m_ui_data.narrow_mode)
     {
         m_playlist_list.MoveWindow(playlist_x + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + 2 * m_layout.margin,
@@ -615,8 +622,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     }
     else
     {
-        m_playlist_list.MoveWindow(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + m_layout.margin,
-                                   cx - 2 * m_layout.margin, cy - m_ui.DrawAreaHeight() - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 2 * m_layout.margin);
+        m_playlist_list.MoveWindow(m_layout.margin, pUiBase->DrawAreaHeight() + m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + m_layout.margin,
+                                   cx - 2 * m_layout.margin, cy - pUiBase->DrawAreaHeight() - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 2 * m_layout.margin);
     }
     m_playlist_list.AdjustColumnWidth();
 
@@ -636,7 +643,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     if (!theApp.m_ui_data.narrow_mode)
         rect_static.MoveToXY(playlist_x + m_layout.margin, m_layout.margin);
     else
-        rect_static.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight());
+        rect_static.MoveToXY(m_layout.margin, pUiBase->DrawAreaHeight());
     m_path_static.MoveWindow(rect_static);
 
     //设置“当前路径”edit控件大小
@@ -650,7 +657,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     else
     {
         rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_medialib_btn_width);
-        rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), m_ui.DrawAreaHeight());
+        rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), pUiBase->DrawAreaHeight());
     }
     m_path_edit.MoveWindow(rect_edit);
 
@@ -673,7 +680,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     else
     {
         rect_search.right = rect_search.left + (cx - 2 * m_layout.margin);
-        rect_search.MoveToXY(m_layout.margin, m_ui.DrawAreaHeight() + m_layout.path_edit_height - theApp.DPI(3));
+        rect_search.MoveToXY(m_layout.margin, pUiBase->DrawAreaHeight() + m_layout.path_edit_height - theApp.DPI(3));
     }
     m_search_edit.MoveWindow(rect_search);
     ////设置清除搜索按钮的大小和位置
@@ -703,9 +710,14 @@ void CMusicPlayerDlg::SetDrawAreaSize(int cx, int cy)
     else
     {
         if (!theApp.m_ui_data.narrow_mode)
+        {
             draw_rect = CRect{ CPoint(), CPoint{ cx - CalculatePlaylistWidth(cx), cy} };
+        }
         else
-            draw_rect = CRect{ CPoint(), CSize{ cx, m_ui.DrawAreaHeight() - m_ui.Margin() } };
+        {
+            CPlayerUIBase* pUiBase = dynamic_cast<CPlayerUIBase*>(m_pUI);
+            draw_rect = CRect{ CPoint(), CSize{ cx, pUiBase->DrawAreaHeight() - pUiBase->Margin() } };
+        }
     }
     m_ui_static_ctrl.MoveWindow(draw_rect);
 }
@@ -820,8 +832,8 @@ void CMusicPlayerDlg::SwitchTrack()
 
     DrawInfo(true);
 
-    m_ui.UpdateSongInfoToolTip();
-    m_ui2.UpdateSongInfoToolTip();
+    m_ui_map[UI_UI1]->UpdateSongInfoToolTip();
+    m_ui_map[UI_UI2]->UpdateSongInfoToolTip();
 }
 
 void CMusicPlayerDlg::SetPlaylistVisible()
@@ -1271,7 +1283,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu * pMenu)
     case UI_UI2:
         pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_2, MF_BYCOMMAND | MF_CHECKED);
         break;
-    case UI_LYRIC_FULL_SCREEN:
+    case UI_UI3:
         pMenu->CheckMenuRadioItem(ID_SWITCH_UI_1, ID_SWITCH_UI_4, ID_SWITCH_UI_LYRICS_FULL_SCREEN, MF_BYCOMMAND | MF_CHECKED);
         break;
     case UI_UI4:
@@ -1606,28 +1618,19 @@ void CMusicPlayerDlg::LoadDefaultBackground()
 
 void CMusicPlayerDlg::SelectUi(int ui_selected)
 {
-    if (ui_selected == UI_UI2)
-        m_pUI = &m_ui2;
-    else if (ui_selected == UI_LYRIC_FULL_SCREEN)
-        m_pUI = &m_ui3;
-    else if (ui_selected == UI_UI4)
-        m_pUI = &m_ui4;
-    else
-        m_pUI = &m_ui;
+    if (ui_selected < 0 || ui_selected >= UI_MAX)
+        ui_selected = 0;
+    m_pUI = m_ui_map[static_cast<eUIIdentify>(ui_selected)].get();
 }
 
 int CMusicPlayerDlg::GetUiSelected() const
 {
-    int ui_selected{};
-    if (m_pUI == &m_ui)
-        ui_selected = UI_UI1;
-    else if (m_pUI == &m_ui2)
-        ui_selected = UI_UI2;
-    else if (m_pUI == &m_ui3)
-        ui_selected = UI_LYRIC_FULL_SCREEN;
-    else if (m_pUI == &m_ui4)
-        ui_selected = UI_UI4;
-    return ui_selected;
+    for (auto iter = m_ui_map.begin(); iter != m_ui_map.end(); ++iter)
+    {
+        if (m_pUI == iter->second.get())
+            return iter->first;
+    }
+    return 0;
 }
 
 CPlayerUIBase * CMusicPlayerDlg::GetCurrentUi()
@@ -1788,10 +1791,10 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //初始化绘图的类
     m_pUiDC = m_ui_static_ctrl.GetDC();
     //m_draw.Create(m_pDC, this);
-    m_ui.Init(m_pUiDC);
-    m_ui2.Init(m_pUiDC);
-    m_ui3.Init(m_pUiDC);
-    m_ui4.Init(m_pUiDC);
+    for (auto iter = m_ui_map.begin(); iter != m_ui_map.end(); ++iter)
+    {
+        iter->second->Init(m_pUiDC);
+    }
 
     //初始化歌词字体
     theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
@@ -1900,9 +1903,10 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         //    }
         //    //m_pUI->OnSizeRedraw(cx, cy);
         //}
-        if (m_ui.WidthThreshold() != 0)
+        CPlayerUIBase* pUiBase = dynamic_cast<CPlayerUIBase*>(m_pUI);
+        if (pUiBase->WidthThreshold() != 0)
         {
-            theApp.m_ui_data.narrow_mode = (cx < m_ui.WidthThreshold());
+            theApp.m_ui_data.narrow_mode = (cx < pUiBase->WidthThreshold());
             //if (!theApp.m_ui_data.show_playlist)
             //	theApp.m_ui_data.narrow_mode = false;
         }
@@ -3352,8 +3356,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     UpdatePlayPauseButton();
     //ShowTime();
 
-    m_ui.UpdateSongInfoToolTip();
-    m_ui2.UpdateSongInfoToolTip();
+    m_ui_map[UI_UI1]->UpdateSongInfoToolTip();
+    m_ui_map[UI_UI2]->UpdateSongInfoToolTip();
 
     EnablePlaylist(true);
     theApp.DoWaitCursor(-1);
@@ -3975,8 +3979,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPA
 
     if(theApp.m_nc_setting_data.show_cover_tip)
     {
-        m_ui.UpdateSongInfoToolTip();
-        m_ui2.UpdateSongInfoToolTip();
+        m_ui_map[UI_UI1]->UpdateSongInfoToolTip();
+        m_ui_map[UI_UI2]->UpdateSongInfoToolTip();
     }
 
     return 0;
@@ -5374,9 +5378,9 @@ void CMusicPlayerDlg::OnSwitchUi1()
 {
     // TODO: 在此添加命令处理程序代码
     SelectUi(UI_UI1);
-    m_ui.ClearBtnRect();
+    m_ui_map[UI_UI1]->ClearBtnRect();
     DrawInfo(true);
-    m_ui.UpdateRepeatModeToolTip();
+    m_ui_map[UI_UI1]->UpdateRepeatModeToolTip();
 }
 
 
@@ -5384,24 +5388,24 @@ void CMusicPlayerDlg::OnSwitchUi2()
 {
     // TODO: 在此添加命令处理程序代码
     SelectUi(UI_UI2);
-    m_ui2.ClearBtnRect();
+    m_ui_map[UI_UI2]->ClearBtnRect();
     DrawInfo(true);
-    m_ui2.UpdateRepeatModeToolTip();
+    m_ui_map[UI_UI2]->UpdateRepeatModeToolTip();
 }
 
 
 void CMusicPlayerDlg::OnSwitchUiLyricsFullScreen()
 {
     // TODO: 在此添加命令处理程序代码
-    SelectUi(UI_LYRIC_FULL_SCREEN);
-    m_ui3.ClearBtnRect();
+    SelectUi(UI_UI3);
+    m_ui_map[UI_UI3]->ClearBtnRect();
     DrawInfo(true);
 }
 
 void CMusicPlayerDlg::OnSwitchUi4()
 {
     SelectUi(UI_UI4);
-    m_ui4.ClearBtnRect();
+    m_ui_map[UI_UI4]->ClearBtnRect();
     DrawInfo(true);
 }
 

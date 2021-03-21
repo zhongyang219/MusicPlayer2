@@ -14,7 +14,7 @@ public:
 
 public:
 	IPlayerUI(){}
-	~IPlayerUI(){}
+	virtual ~IPlayerUI(){}
 
 	virtual void Init(CDC* pDC) = 0;
 	virtual void DrawInfo(bool reset = false) = 0;

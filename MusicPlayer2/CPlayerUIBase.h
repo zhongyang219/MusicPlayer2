@@ -18,12 +18,12 @@ struct SLayoutData
     const int toolbar_height = theApp.DPI(24);                  //播放列表工具栏的高度
 };
 
-
+//每个界面的标识
 enum eUIIdentify
 {
     UI_UI1,
     UI_UI2,
-    UI_LYRIC_FULL_SCREEN,
+    UI_UI3,
     UI_UI4,
     UI_MAX
 };
