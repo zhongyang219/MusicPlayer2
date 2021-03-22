@@ -46,12 +46,22 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
     {
         m_draw_data.thumbnail_rect = rect_cover;
         m_draw.SetDrawArea(rect_cover);
-        DrawAlbumCover(rect_cover);
+        const int info_height{ DPI(60) };   //歌曲信息区域的高度
+        if (IsDrawBackgroundAlpha())
+        {
+            DrawAlbumCover(rect_cover);
+        }
+        else        //如果不绘制透明背景，则将专辑封面显示在歌曲信息区域的上方
+        {
+            CRect rect_temp{ rect_cover };
+            rect_temp.bottom -= info_height;
+            DrawAlbumCover(rect_temp);
+        }
         cover_height = rect_cover.Height();
 
-        //绘制播放信息
+        //绘制信息信息
         CRect rect_info{ rect_cover };
-        rect_info.top = rect_info.bottom - DPI(60);
+        rect_info.top = rect_info.bottom - info_height;
         if (rect_info.top < draw_rect.top)
             rect_info.top = draw_rect.top;
 
