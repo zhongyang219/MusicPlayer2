@@ -85,8 +85,8 @@ protected:
     wstring m_cmdLine;	//命令行参数
 
     CDC* m_pUiDC;				//当前窗口的DC
-    std::map<eUIIdentify, std::shared_ptr<CPlayerUIBase>> m_ui_map;
-    IPlayerUI* m_pUI = nullptr;
+    std::vector<std::shared_ptr<CPlayerUIBase>> m_ui_list;      //保存每个界面类的指针
+    IPlayerUI* m_pUI = nullptr; //指向当前显示的界面类
 
     bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
 
@@ -97,8 +97,6 @@ protected:
     int m_medialib_btn_width{ theApp.DPI(70) };
 
     SLayoutData m_layout;		//窗口布局的固定数据
-
-
 
     bool m_searched;		//播放列表是否处于搜索状态
 
@@ -195,6 +193,7 @@ protected:
 
     void GetPlaylistItemSelected();
     void IniPlaylistPopupMenu();        //初始化所有右键菜单中的“添加到播放列表”子菜单
+    void InitUiMenu();                  //初始化所有“切换界面”子菜单
 
     void SetPlaylistDragEnable();       //设置播放列表是事允许拖动排序
 
@@ -454,11 +453,6 @@ protected:
     afx_msg LRESULT OnAfterMusicStreamClosed(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnPlayTrack();
-    afx_msg void OnSwitchUi1();
-    afx_msg void OnSwitchUi2();
-    afx_msg void OnSwitchUiLyricsFullScreen();
-    afx_msg void OnSwitchUi4();
-    afx_msg void OnSwitchUi5();
     afx_msg void OnShowLyricTranslate();
     afx_msg void OnViewArtist();
     afx_msg void OnViewAlbum();

@@ -517,7 +517,7 @@ struct MenuSet
     CMenu m_main_menu;				//菜单栏上的菜单
     CMenu m_list_popup_menu;		//播放列表右键菜单
     CMenu m_main_menu_popup;		//按住Shift键时弹出的右键菜单
-    CMenu m_popup_menu;			//歌词右键菜单
+    CMenu m_popup_menu;			    //歌词右键菜单
     CMenu m_main_popup_menu;
     CMenu m_playlist_btn_menu;		//播放列表按钮上的右键菜单
     CMenu m_playlist_toolbar_menu;

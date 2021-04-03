@@ -653,6 +653,7 @@
 #define IDS_SCI_NOT_LOADED_ERROR_INFO   525
 #define IDS_SELECT_ARTIST               526
 #define IDS_LOCATE_TO_CURRENT           527
+#define IDS_UI                          528
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1237,7 +1238,7 @@
 #define ID_32996                        32996
 #define ID_RECORDER                     32997
 #define ID_SUPPORTED_FORMAT             32998
-#define ID_SWITCH_UI                    32999
+#define ID_32999                        32999
 #define ID_VOLUME_UP                    33000
 #define ID_VOLUME_DOWN                  33001
 #define ID_SHOW_PLAY_LIST               33002
@@ -1405,12 +1406,7 @@
 #define ID_33207                        33207
 #define ID_EMBED_LYRIC_TO_AUDIO_FILE    33208
 #define ID_DELETE_LYRIC_FROM_AUDIO_FILE 33209
-#define ID_33210                        33210
-#define ID_SWITCH_UI_1                  33211
-#define ID_SWITCH_UI_2                  33212
-#define ID_SWITCH_UI_LYRICS_FULL_SCREEN 33213
-#define ID_SWITCH_UI_4                  33214
-#define ID_SWITCH_UI_5                  33215
+#define ID_SWITCH_UI                    33210
 #define ID_SHOW_LYRIC_TRANSLATE         33320
 #define ID_COPY_ALL_TEXT                33321
 #define ID_VIEW_ARTIST                  33322

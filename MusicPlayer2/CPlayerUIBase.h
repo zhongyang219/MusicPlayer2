@@ -18,17 +18,6 @@ struct SLayoutData
     const int toolbar_height = theApp.DPI(24);                  //播放列表工具栏的高度
 };
 
-//每个界面的标识
-enum eUIIdentify
-{
-    UI_UI1,
-    UI_UI2,
-    UI_UI3,
-    UI_UI4,
-    UI_UI5,
-    UI_MAX
-};
-
 
 class CPlayerUIBase : public IPlayerUI
 {
