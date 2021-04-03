@@ -1509,11 +1509,16 @@ void CMusicPlayerDlg::InitUiMenu()
 
             for (size_t i{}; i < m_ui_list.size() && i < SELECT_UI_MAX_SIZE; i++)
             {
-                CString str_name;
-                if (i + 1 <= 9)
-                    str_name.Format(_T("%s %d\tCtrl+%d"), CCommon::LoadText(IDS_UI).GetString(), i + 1, i + 1);
-                else
-                    str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_UI).GetString(), i + 1);
+                CString str_name = m_ui_list[i]->GetUIName();   //获取界面的名称
+                if (str_name.IsEmpty())
+                    str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_UI).GetString(), i + 1); //如果名称为空（没有指定名称），则使用“界面 +数字”的默认名称
+
+                if (i + 1 <= 9)     //如果界面的序号在9以内，为其分配Ctrl+数字的快捷键
+                {
+                    CString str_short_key;
+                    str_short_key.Format(_T("\tCtrl+%d"), i + 1);
+                    str_name += str_short_key;
+                }
                 pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_SWITCH_UI + i + 1, str_name);
             }
         }

@@ -53,6 +53,9 @@ public:
     int WidthThreshold() const;
     int DrawAreaHeight() const;		//窄界面模式下显示播放列表时绘图区的高度
 
+    //获取界面的名称
+    virtual CString GetUIName() { return CString(); }
+
 public:
     enum BtnKey		//标识按钮的类型
     {
