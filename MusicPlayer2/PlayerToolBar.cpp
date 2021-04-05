@@ -63,6 +63,7 @@ void CPlayerToolBar::ModifyToolButton(int index, IconRes icon, LPCTSTR strText, 
             btn.tooltip_text = strToolTip;
             m_tool_tip.UpdateTipText(btn.tooltip_text, this, index + 100);
         }
+        m_btn_updated = true;
     }
 }
 
@@ -82,6 +83,7 @@ void CPlayerToolBar::ModifyToolButton(int index, IconRes icon, LPCTSTR strText, 
             btn.tooltip_text = strToolTip;
             m_tool_tip.UpdateTipText(btn.tooltip_text, this, index + 100);
         }
+        m_btn_updated = true;
     }
 }
 
@@ -102,6 +104,14 @@ void CPlayerToolBar::AddToolTips()
     {
         if(!m_buttons[i].tooltip_text.IsEmpty())
             m_tool_tip.AddTool(this, m_buttons[i].tooltip_text, m_buttons[i].rect, i + 100);
+    }
+}
+
+void CPlayerToolBar::UpdateToolTipsPosition()
+{
+    for (size_t i = 0; i < m_buttons.size(); i++)
+    {
+        m_tool_tip.SetToolRect(this,i + 100, m_buttons[i].rect);
     }
 }
 
@@ -238,6 +248,12 @@ void CPlayerToolBar::OnPaint()
     {
         AddToolTips();              //在第一次绘制完成之后添加鼠标提示，因为在绘制之前无法确定按钮矩形区域
         m_first_draw = false;
+    }
+
+    if (m_btn_updated && !m_buttons.empty())        //如果更新过按钮，则在绘制后更新一次鼠标提示的位置
+    {
+        UpdateToolTipsPosition();
+        m_btn_updated = false;
     }
 }
 

@@ -50,6 +50,7 @@ protected:
     };
 
     void AddToolTips();
+    void UpdateToolTipsPosition();  //更新鼠标提示的位置
     CWnd* GetCmdReciveWindow();
 
 protected:
@@ -59,6 +60,7 @@ protected:
     int m_icon_size = 20;
     int m_cur_btn_id = 100;
     bool m_first_draw = true;
+    bool m_btn_updated = false;
     bool m_menu_poped_up = false;
     CWnd* m_pCmdReciveWnd = nullptr;
 
