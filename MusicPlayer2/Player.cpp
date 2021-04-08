@@ -329,7 +329,7 @@ void CPlayer::SearchLyrics(bool refresh)
             return;
 
         wstring lyric_path;
-        if (refresh || cur_song_info.lyric_file.empty())
+        if (refresh || cur_song_info.lyric_file.empty() || !CCommon::FileExist(cur_song_info.lyric_file))
         {
             CMusicPlayerCmdHelper helper;
             lyric_path = helper.SearchLyricFile(GetCurrentSongInfo(), theApp.m_lyric_setting_data.lyric_fuzzy_match);
