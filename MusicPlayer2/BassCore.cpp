@@ -307,6 +307,10 @@ wstring CBassCore::GetSoundFontName()
 void CBassCore::Open(const wchar_t * file_path)
 {
     CSingleLock sync(&m_critical, TRUE);
+
+    if (m_musicStream != 0)     //打开前如果音频句柄没有关闭，先将其关闭，确保同时只能打开一个音频文件
+        Close();
+
     m_file_path = file_path;
     if (CCommon::IsURL(m_file_path))
         m_musicStream = BASS_StreamCreateURL(file_path, 0, BASS_SAMPLE_FLOAT, NULL, NULL);
@@ -346,6 +350,7 @@ void CBassCore::Close()
         BASS_ChannelStop(m_musicStream);
     RemoveFXHandle();
     BASS_StreamFree(m_musicStream);
+    m_musicStream = 0;
 }
 
 void CBassCore::Play()
