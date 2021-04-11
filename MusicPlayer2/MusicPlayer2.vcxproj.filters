@@ -1523,5 +1523,8 @@
     <Image Include="res\MusicPlayer2_debug.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\star.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

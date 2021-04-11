@@ -47,7 +47,7 @@ void CTest::Test()
     //int size = sizeof(SongInfo);
     //MessageBox(theApp.m_pMainWnd->GetSafeHwnd(), std::to_wstring(size).c_str(), NULL, MB_OK);
 
-    //TestRating();
+    TestRating();
 }
 
 void CTest::TestStringMatch()
@@ -232,7 +232,7 @@ void CTest::TestStringSplit()
 
 void CTest::TestRating()
 {
-    //int rate = CTagLibHelper::GetMepgRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path);
-    CTagLibHelper::WriteMpegRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path, 2);
+    int rate = CTagLibHelper::GetMepgRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path);
+    //CTagLibHelper::WriteMpegRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path, 2);
     int a = 0;
 }

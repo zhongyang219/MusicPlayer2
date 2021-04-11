@@ -147,9 +147,9 @@ BOOL CMusicPlayerApp::InitInstance()
 
                 if (cmd_control)
                 {
-                    if(m_cmd & ControlCmd::PLAY_PAUSE)
+                    if (m_cmd & ControlCmd::PLAY_PAUSE)
                         ::SendMessage(handle, WM_COMMAND, ID_PLAY_PAUSE, 0);
-                    if(m_cmd & ControlCmd::_PREVIOUS)
+                    if (m_cmd & ControlCmd::_PREVIOUS)
                         ::SendMessage(handle, WM_COMMAND, ID_PREVIOUS, 0);
                     if (m_cmd & ControlCmd::_NEXT)
                         ::SendMessage(handle, WM_COMMAND, ID_NEXT, 0);
@@ -228,7 +228,7 @@ BOOL CMusicPlayerApp::InitInstance()
 
     // 创建 shell 管理器，以防对话框包含
     // 任何 shell 树视图控件或 shell 列表视图控件。
-    CShellManager *pShellManager = new CShellManager;
+    CShellManager* pShellManager = new CShellManager;
 
     // 激活“Windows Native”视觉管理器，以便在 MFC 控件中启用主题
     CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
@@ -243,11 +243,11 @@ BOOL CMusicPlayerApp::InitInstance()
     //SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
     //设置一个全局钩子以截获多媒体按键消息
-    if(m_hot_key_setting_data.global_multimedia_key_enable)
+    if (m_hot_key_setting_data.global_multimedia_key_enable)
         m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
 
-	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
     m_hScintillaModule = LoadLibrary(_T("SciLexer.dll"));
 
@@ -298,14 +298,14 @@ void CMusicPlayerApp::OnHelp()
     // TODO: 在此添加命令处理程序代码
     static bool dialog_exist{ false };
 
-    if(!dialog_exist)		//确保对话框已经存在时不再弹出
+    if (!dialog_exist)		//确保对话框已经存在时不再弹出
     {
         dialog_exist = true;
         CMessageDlg helpDlg;
         helpDlg.SetWindowTitle(CCommon::LoadText(IDS_HELP));
         helpDlg.SetInfoText(CCommon::LoadText(IDS_WELCOM_TO_USE));
-		helpDlg.ShowLinkStatic(true);
-		helpDlg.SetLinkInfo(CCommon::LoadText(IDS_SHOW_ONLINE_HELP_INFO), _T("https://github.com/zhongyang219/MusicPlayer2/wiki"));
+        helpDlg.ShowLinkStatic(true);
+        helpDlg.SetLinkInfo(CCommon::LoadText(IDS_SHOW_ONLINE_HELP_INFO), _T("https://github.com/zhongyang219/MusicPlayer2/wiki"));
 
         CString info{ GetHelpString() };
         info += _T("\r\n\r\n");
@@ -468,9 +468,9 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.genre.Load(IDI_GENRE_D, NULL, DPI(16));
     m_icon_set.year.Load(IDI_YEAR_D, NULL, DPI(16));
     m_icon_set.folder_explore.Load(IDI_FOLDER_EXPLORE_D, NULL, DPI(16));
-	m_icon_set.lyric_forward.Load(IDI_LYRIC_FORWARD_D, NULL, DPI(16));
-	m_icon_set.lyric_delay.Load(IDI_LYRIC_DELAY_D, NULL, DPI(16));
-	m_icon_set.recent_songs.Load(IDI_RECENT_SONG_D, NULL, DPI(16));
+    m_icon_set.lyric_forward.Load(IDI_LYRIC_FORWARD_D, NULL, DPI(16));
+    m_icon_set.lyric_delay.Load(IDI_LYRIC_DELAY_D, NULL, DPI(16));
+    m_icon_set.recent_songs.Load(IDI_RECENT_SONG_D, NULL, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));
@@ -515,6 +515,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.lyric = CDrawCommon::LoadIconResource(IDI_LYRIC_D, DPI(16), DPI(16));
     m_icon_set.rename = CDrawCommon::LoadIconResource(IDI_RENAME_D, DPI(16), DPI(16));
     m_icon_set.tag = CDrawCommon::LoadIconResource(IDI_TAG, DPI(16), DPI(16));
+    m_icon_set.star = CDrawCommon::LoadIconResource(IDI_STAR, DPI(16), DPI(16));
 
     m_icon_set.ok = CDrawCommon::LoadIconResource(IDI_OK_D, DPI(16), DPI(16));
     m_icon_set.locate.Load(IDI_LOCATE_D, NULL, DPI(16));
@@ -678,9 +679,10 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_PLAY_ITEM, FALSE, m_icon_set.play_new.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_EXPLORE_ONLINE, FALSE, m_icon_set.online);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_FORMAT_CONVERT, FALSE, m_icon_set.convert);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 4, TRUE, m_icon_set.star);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_RELOAD_PLAYLIST, FALSE, m_icon_set.loop_playlist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_REMOVE_FROM_PLAYLIST, FALSE, m_icon_set.close.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 10, TRUE, m_icon_set.add.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 11, TRUE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_RENAME, FALSE, m_icon_set.rename);
@@ -830,7 +832,7 @@ int CMusicPlayerApp::DPIRound(double pixel, double round)
     return static_cast<int>(rtn);
 }
 
-void CMusicPlayerApp::GetDPIFromWindow(CWnd * pWnd)
+void CMusicPlayerApp::GetDPIFromWindow(CWnd* pWnd)
 {
     CWindowDC dc(pWnd);
     HDC hDC = dc.GetSafeHdc();
@@ -878,7 +880,7 @@ CString CMusicPlayerApp::GetSystemInfoString()
 
     CString strTmp;
     strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), CWinVersionHelper::GetMajorVersion(),
-                  CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
+        CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
     info += strTmp;
 
     strTmp.Format(_T("DPI: %d"), GetDPI());
@@ -937,7 +939,7 @@ bool CMusicPlayerApp::GetAutoRun()
     }
 }
 
-void CMusicPlayerApp::WriteLog(const wstring & log_str, int log_type)
+void CMusicPlayerApp::WriteLog(const wstring& log_str, int log_type)
 {
     if (((log_type & NonCategorizedSettingData::LT_ERROR) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_ERROR) != 0))
         CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
@@ -949,17 +951,17 @@ void CMusicPlayerApp::WriteLog(const wstring & log_str, int log_type)
 
 void CMusicPlayerApp::StartUpdateMediaLib()
 {
-    if(!m_media_lib_updating)
+    if (!m_media_lib_updating)
     {
         m_media_lib_updating = true;
         AfxBeginThread([](LPVOID lpParam)->UINT
-        {
-            CMusicPlayerCmdHelper::CleanUpSongData();
-            CMusicPlayerCmdHelper::CleanUpRecentFolders();
-            CMusicPlayerCmdHelper::UpdateMediaLib();
-            theApp.m_media_lib_updating = false;
-            return 0;
-        }, NULL);
+            {
+                CMusicPlayerCmdHelper::CleanUpSongData();
+                CMusicPlayerCmdHelper::CleanUpRecentFolders();
+                CMusicPlayerCmdHelper::UpdateMediaLib();
+                theApp.m_media_lib_updating = false;
+                return 0;
+            }, NULL);
     }
 }
 
@@ -1005,12 +1007,12 @@ void CMusicPlayerApp::LoadSongData()
 
 LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-//	if (wParam == HSHELL_APPCOMMAND)
-    //{
-    //	int a = 0;
-    //}
+    //	if (wParam == HSHELL_APPCOMMAND)
+        //{
+        //	int a = 0;
+        //}
 
-    //截获全局的多媒体按键消息
+        //截获全局的多媒体按键消息
     if (wParam == WM_KEYUP)
     {
         KBDLLHOOKSTRUCT* pKBHook = (KBDLLHOOKSTRUCT*)lParam;
@@ -1042,11 +1044,11 @@ LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM 
 
 int CMusicPlayerApp::ExitInstance()
 {
-	// TODO: 在此添加专用代码和/或调用基类
-	// 卸载GDI+
-	Gdiplus::GdiplusShutdown(m_gdiplusToken);
+    // TODO: 在此添加专用代码和/或调用基类
+    // 卸载GDI+
+    Gdiplus::GdiplusShutdown(m_gdiplusToken);
 
-	return CWinApp::ExitInstance();
+    return CWinApp::ExitInstance();
 }
 
 

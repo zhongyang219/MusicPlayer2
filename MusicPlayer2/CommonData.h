@@ -145,22 +145,22 @@ struct FontSet
 //播放列表中项目的显示格式
 enum DisplayFormat
 {
-	DF_FILE_NAME,		//文件名
-	DF_TITLE,			//标题
-	DF_ARTIST_TITLE,	//艺术家 - 标题
-	DF_TITLE_ARTIST		//标题 - 艺术家
+    DF_FILE_NAME,		//文件名
+    DF_TITLE,			//标题
+    DF_ARTIST_TITLE,	//艺术家 - 标题
+    DF_TITLE_ARTIST		//标题 - 艺术家
 };
 
 //最近播放曲目列表显示范围
 enum RecentPlayedRange
 {
-	RPR_ALL,			//显示全部
+    RPR_ALL,			//显示全部
     RPR_TODAY,          //今天
     RPR_THREE_DAYS,     //最近三天
-	RPR_WEAK,			//最近一个星期
-	RPR_MONTH,			//最近一个月
-	RPR_HALF_YEAR,		//最近半年
-	RPR_YEAR,			//最近一年
+    RPR_WEAK,			//最近一个星期
+    RPR_MONTH,			//最近一个月
+    RPR_HALF_YEAR,		//最近半年
+    RPR_YEAR,			//最近一年
 };
 
 
@@ -168,18 +168,18 @@ enum RecentPlayedRange
 
 struct DesktopLyricSettingData		//桌面歌词设置
 {
-	bool lyric_double_line{ false };
-	FontInfo lyric_font;
-	COLORREF text_color1{};
-	COLORREF text_color2{};
-	int text_gradient{};
-	COLORREF highlight_color1{};
-	COLORREF highlight_color2{};
-	int highlight_gradient{};
-	int opacity{ 100 };
-	bool lock_desktop_lyric{ false };
-	bool hide_lyric_window_without_lyric{ false };	//没有歌词时隐藏歌词窗口
-	bool hide_lyric_window_when_paused{ false };	//暂停时隐藏歌词窗口
+    bool lyric_double_line{ false };
+    FontInfo lyric_font;
+    COLORREF text_color1{};
+    COLORREF text_color2{};
+    int text_gradient{};
+    COLORREF highlight_color1{};
+    COLORREF highlight_color2{};
+    int highlight_gradient{};
+    int opacity{ 100 };
+    bool lock_desktop_lyric{ false };
+    bool hide_lyric_window_without_lyric{ false };	//没有歌词时隐藏歌词窗口
+    bool hide_lyric_window_when_paused{ false };	//暂停时隐藏歌词窗口
     bool lyric_background_penetrate{ false };
     bool show_unlock_when_locked{ true };           //桌面歌词锁定时显示解锁图标
 };
@@ -190,16 +190,16 @@ struct LyricSettingData
     bool lyric_fuzzy_match{ true };				//歌词模糊匹配
     bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
     wstring lyric_path;							//歌词文件夹的路径
-	bool use_inner_lyric_first{};				//优先使用内嵌歌词
+    bool use_inner_lyric_first{};				//优先使用内嵌歌词
 
-	enum LyricSavePolicy		//歌词保存策略
-	{
-		LS_DO_NOT_SAVE,			//不保存（手动保存）
-		LS_AUTO_SAVE,			//自动保存
-		LS_INQUIRY				//询问
-	};
+    enum LyricSavePolicy		//歌词保存策略
+    {
+        LS_DO_NOT_SAVE,			//不保存（手动保存）
+        LS_AUTO_SAVE,			//自动保存
+        LS_INQUIRY				//询问
+    };
 
-	LyricSavePolicy lyric_save_policy{};		//歌词自动保存策略
+    LyricSavePolicy lyric_save_policy{};		//歌词自动保存策略
 
     bool cortana_info_enable{};				    //是否允许在Cortana的搜索框中显示信息
     bool cortana_show_lyric{ true };            //是否在Cortana搜索框中显示歌词
@@ -211,13 +211,13 @@ struct LyricSettingData
     FontInfo cortana_font;						//搜索框字体
     bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
     bool cortana_show_spectrum{ false };		//是否在搜索框显示频谱
-	bool cortana_opaque{ false };				//搜索框不透明
+    bool cortana_opaque{ false };				//搜索框不透明
     Alignment cortana_lyric_align{ Alignment::CENTER };               //搜索框歌词对齐方式
     bool show_default_album_icon_in_search_box{ false };      //没有歌词时搜索框显示黑色胶片图标
     COLORREF cortana_transparent_color{};
 
-	bool show_desktop_lyric{ false };			//显示桌面歌词
-	DesktopLyricSettingData desktop_lyric_data;
+    bool show_desktop_lyric{ false };			//显示桌面歌词
+    DesktopLyricSettingData desktop_lyric_data;
 };
 
 struct ApperanceSettingData
@@ -313,10 +313,10 @@ struct MediaLibSettingData
     bool hide_only_one_classification;  //媒体库中将只有一项的分类归到其他类中
     bool show_tree_tool_tips;           //树控件显示鼠标提示
     bool update_media_lib_when_start_up;    //启动时自动更新媒体库
-	bool disable_drag_sort;				//禁止通过拖放排序
-	DisplayFormat display_format{};		//播放列表中项目的显示样式
+    bool disable_drag_sort;				//禁止通过拖放排序
+    DisplayFormat display_format{};		//播放列表中项目的显示样式
     bool ignore_songs_already_in_playlist{ true };  //向播放列表中添加曲目时忽略已存在的曲目
-	RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
+    RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
     int display_item{};                 //媒体库显示的项目
 };
 
@@ -330,10 +330,10 @@ struct NonCategorizedSettingData
     bool no_sf2_warning{ true };	//是否在没有MIDI音色库时弹出提示信息
     bool show_hide_menu_bar_tip{ true };	//是隐藏菜单栏是否弹出提示信息
     bool always_on_top{ false };	//是否总是置顶
-	wstring default_osu_img;
+    wstring default_osu_img;
 
     bool float_playlist{ false };		//浮动播放列表
-    CSize playlist_size{320, 530};		//浮动播放列表的大小
+    CSize playlist_size{ 320, 530 };		//浮动播放列表的大小
     bool playlist_btn_for_float_playlist{ false };		//指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
 
     int max_album_cover_size{ 800 };
@@ -367,7 +367,7 @@ private:
 public:
     const HICON& GetIcon(bool dark = false, bool large = false) const
     {
-        if(large)
+        if (large)
             return (dark && hIconDarkLarge != NULL ? hIconDarkLarge : hIconLarge);
         else
             return (dark && hIconDark != NULL ? hIconDark : hIcon);
@@ -377,7 +377,7 @@ public:
     {
         int size_large = static_cast<int>(size * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
 
-        if(size < 32)
+        if (size < 32)
             size = CCommon::IconSizeNormalize(size);
         if (size_large < 32)
             size_large = CCommon::IconSizeNormalize(size_large);
@@ -447,9 +447,9 @@ struct IconSet
     IconRes genre;
     IconRes year;
     IconRes folder_explore;
-	IconRes lyric_forward;
-	IconRes lyric_delay;
-	IconRes recent_songs;
+    IconRes lyric_forward;
+    IconRes lyric_delay;
+    IconRes recent_songs;
 
     IconRes stop_l;
     IconRes previous_l;
@@ -486,6 +486,7 @@ struct IconSet
     HICON lyric;
     HICON rename;
     HICON tag;
+    HICON star;
 
     HICON ok;
     IconRes locate;

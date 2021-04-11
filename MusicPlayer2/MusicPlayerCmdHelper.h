@@ -22,12 +22,15 @@ public:
     //从磁盘删除歌曲
     bool DeleteSongsFromDisk(const std::vector<SongInfo>& files);
 
-	//查找匹配的歌词文件
+    //查找匹配的歌词文件
     void SearchLyricFiles(const wstring& lyric_name, const wstring& cur_dir, std::vector<std::wstring>& result, bool fuzzy_match);
-	std::wstring SearchLyricFile(const SongInfo& song, bool fuzzy_match);
+    std::wstring SearchLyricFile(const SongInfo& song, bool fuzzy_match);
 
     //查找匹配的外部专辑封面
     std::wstring SearchAlbumCover(const SongInfo& song);
+
+    //歌曲分级
+    void OnRating(const wstring& file_path, DWORD command);
 
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）
     static int UpdateMediaLib();
@@ -60,4 +63,3 @@ private:
 private:
     CWnd* m_pOwner{};
 };
-

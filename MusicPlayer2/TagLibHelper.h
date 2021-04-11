@@ -106,6 +106,7 @@ public:
 
     //读取分级信息。返回1~5为分级，返回0表示未分级
     static int GetMepgRating(const wstring& file_path);
+    static int GetFlacRating(const wstring& file_path);
 
     //写入分级信息
     static bool WriteMpegRating(const wstring& file_path, int rate);

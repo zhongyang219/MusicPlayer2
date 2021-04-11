@@ -109,10 +109,10 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         playlist.SaveToFile(playlist_path);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
 
-		if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
-		{
-			pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.SetUpdateFlag();		//设置数据刷新标志
-		}
+        if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
+        {
+            pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.SetUpdateFlag();		//设置数据刷新标志
+        }
 
         return true;
     }
@@ -161,9 +161,9 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             {
                 auto& cur_playlist{ CPlayer::GetInstance().GetPlayList() };
                 auto iter = std::find_if(cur_playlist.begin(), cur_playlist.end(), [&](const SongInfo& song)
-                {
-                    return item.IsSameSong(song);
-                });
+                    {
+                        return item.IsSameSong(song);
+                    });
                 if (iter != cur_playlist.end())
                     iter->is_favourite = true;
             }
@@ -201,9 +201,9 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
 
 bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& files)
 {
-	CString info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { files.size() });
-	if (GetOwner()->MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
-		return false;
+    CString info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { files.size() });
+    if (GetOwner()->MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
+        return false;
 
     vector<wstring> delected_files;
     for (const auto& song : files)
@@ -259,162 +259,162 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
 
 void CMusicPlayerCmdHelper::SearchLyricFiles(const wstring& lyric_name, const wstring& cur_dir, std::vector<std::wstring>& result, bool fuzzy_match)
 {
-	result.clear();
-	//if (song.GetFileName().size() < 3) return;
-	
-	wstring lyric_path{ cur_dir + lyric_name + L".lrc" };		//得到路径+文件名的字符串
+    result.clear();
+    //if (song.GetFileName().size() < 3) return;
+
+    wstring lyric_path{ cur_dir + lyric_name + L".lrc" };		//得到路径+文件名的字符串
     wstring lyric_path2{ theApp.m_lyric_setting_data.lyric_path + lyric_name + L".lrc" };
-	//查找歌词文件名和歌曲文件名完全匹配的歌词
-	if (CCommon::FileExist(lyric_path))
-	{
-		result.push_back(lyric_path);
-	}
-	if (CCommon::FileExist(lyric_path2))
-	{
-		result.push_back(lyric_path2);
-	}
-		vector<wstring> current_path_lyrics;	//储存当前路径下的歌词文件的文件名
-		vector<wstring> lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名
-		CAudioCommon::GetLyricFiles(cur_dir, current_path_lyrics);
-		CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, lyric_path_lyrics);
+    //查找歌词文件名和歌曲文件名完全匹配的歌词
+    if (CCommon::FileExist(lyric_path))
+    {
+        result.push_back(lyric_path);
+    }
+    if (CCommon::FileExist(lyric_path2))
+    {
+        result.push_back(lyric_path2);
+    }
+    vector<wstring> current_path_lyrics;	//储存当前路径下的歌词文件的文件名
+    vector<wstring> lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名
+    CAudioCommon::GetLyricFiles(cur_dir, current_path_lyrics);
+    CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, lyric_path_lyrics);
 
-        //将查找的歌词名称拆分成若干个子字符串
-        vector<wstring> key_words;
-        CCommon::StringSplit(lyric_name, L'-', key_words);
-        for (auto& key_word : key_words)
+    //将查找的歌词名称拆分成若干个子字符串
+    vector<wstring> key_words;
+    CCommon::StringSplit(lyric_name, L'-', key_words);
+    for (auto& key_word : key_words)
+    {
+        CCommon::StringNormalize(key_word);
+        CCommon::FileNameNormalize(key_word);
+    }
+
+    //判断一个字符串是否匹配key_words中任意一个关键字
+    auto isMatched = [&](const wstring& str, const vector<wstring>& key_words)
+    {
+        if (fuzzy_match)
         {
-            CCommon::StringNormalize(key_word);
-            CCommon::FileNameNormalize(key_word);
+            //如果是部分匹配，则只需要有一个关键字匹配，就返回true
+            for (const auto& key_word : key_words)
+            {
+                if (CCommon::StringNatchWholeWord(str, key_word) != -1)
+                    return true;
+            }
+            return false;
         }
-
-        //判断一个字符串是否匹配key_words中任意一个关键字
-        auto isMatched = [&](const wstring& str, const vector<wstring>& key_words)
+        else
         {
-            if(fuzzy_match)
+            //否则，需要所有关键字都匹配才返回true
+            for (const auto& key_word : key_words)
             {
-                //如果是部分匹配，则只需要有一个关键字匹配，就返回true
-                for (const auto& key_word : key_words)
-                {
-                    if (CCommon::StringNatchWholeWord(str, key_word) != -1)
-                        return true;
-                }
-                return false;
+                if (CCommon::StringNatchWholeWord(str, key_word) == -1)
+                    return false;
             }
-            else
-            {
-                //否则，需要所有关键字都匹配才返回true
-                for (const auto& key_word : key_words)
-                {
-                    if (CCommon::StringNatchWholeWord(str, key_word) == -1)
-                        return false;
-                }
-                return true;
-            }
-        };
+            return true;
+        }
+    };
 
-		//寻找歌词文件中同时包含歌曲标题的歌词文件
-		for (const auto& str : current_path_lyrics)	//在当前目录下寻找
-		{
-			if (isMatched(str, key_words))
-			{
-				wstring matched_lyric = cur_dir + str;
-                if (!CCommon::IsItemInVector(result, matched_lyric))
-                    result.push_back(matched_lyric);
-			}
-		}
+    //寻找歌词文件中同时包含歌曲标题的歌词文件
+    for (const auto& str : current_path_lyrics)	//在当前目录下寻找
+    {
+        if (isMatched(str, key_words))
+        {
+            wstring matched_lyric = cur_dir + str;
+            if (!CCommon::IsItemInVector(result, matched_lyric))
+                result.push_back(matched_lyric);
+        }
+    }
 
-		for (const auto& str : lyric_path_lyrics)	//在歌词目录下寻找
-		{
-			if (isMatched(str, key_words))
-			{
-				wstring matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
-                if (!CCommon::IsItemInVector(result, matched_lyric))
-                    result.push_back(matched_lyric);
-			}
-		}
+    for (const auto& str : lyric_path_lyrics)	//在歌词目录下寻找
+    {
+        if (isMatched(str, key_words))
+        {
+            wstring matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
+            if (!CCommon::IsItemInVector(result, matched_lyric))
+                result.push_back(matched_lyric);
+        }
+    }
 }
 
 std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool fuzzy_match)
 {
-	if (song.GetFileName().size() < 3) return wstring();
+    if (song.GetFileName().size() < 3) return wstring();
 
-	CFilePathHelper lyric_path{ song.file_path };		//得到路径+文件名的字符串
-	lyric_path.ReplaceFileExtension(L"lrc");		//将文件扩展替换成lrc
-	CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.GetFileName() };
-	lyric_path2.ReplaceFileExtension(L"lrc");
-	//查找歌词文件名和歌曲文件名完全匹配的歌词
-	if (CCommon::FileExist(lyric_path.GetFilePath()))
-	{
-		return lyric_path.GetFilePath();
-	}
-	else if (CCommon::FileExist(lyric_path2.GetFilePath()))		//当前目录下没有对应的歌词文件时，就在theApp.m_lyric_setting_data.m_lyric_path目录下寻找歌词文件
-	{
-		return lyric_path2.GetFilePath();
-	}
-	else if (fuzzy_match)
-	{
-		vector<wstring> current_path_lyrics;	//储存当前路径下的歌词文件的文件名
-		vector<wstring> lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名
-		CAudioCommon::GetLyricFiles(lyric_path.GetDir(), current_path_lyrics);
-		CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, lyric_path_lyrics);
+    CFilePathHelper lyric_path{ song.file_path };		//得到路径+文件名的字符串
+    lyric_path.ReplaceFileExtension(L"lrc");		//将文件扩展替换成lrc
+    CFilePathHelper lyric_path2{ theApp.m_lyric_setting_data.lyric_path + song.GetFileName() };
+    lyric_path2.ReplaceFileExtension(L"lrc");
+    //查找歌词文件名和歌曲文件名完全匹配的歌词
+    if (CCommon::FileExist(lyric_path.GetFilePath()))
+    {
+        return lyric_path.GetFilePath();
+    }
+    else if (CCommon::FileExist(lyric_path2.GetFilePath()))		//当前目录下没有对应的歌词文件时，就在theApp.m_lyric_setting_data.m_lyric_path目录下寻找歌词文件
+    {
+        return lyric_path2.GetFilePath();
+    }
+    else if (fuzzy_match)
+    {
+        vector<wstring> current_path_lyrics;	//储存当前路径下的歌词文件的文件名
+        vector<wstring> lyric_path_lyrics;		//储存歌词文件夹下的歌词文件的文件名
+        CAudioCommon::GetLyricFiles(lyric_path.GetDir(), current_path_lyrics);
+        CAudioCommon::GetLyricFiles(theApp.m_lyric_setting_data.lyric_path, lyric_path_lyrics);
 
-		wstring matched_lyric;		//匹配的歌词的路径
+        wstring matched_lyric;		//匹配的歌词的路径
         wstring title{ song.title }, artist{ song.artist };
         CCommon::FileNameNormalize(title);
         CCommon::FileNameNormalize(artist);
-		//先寻找歌词文件中同时包含歌曲标题和艺术家的歌词文件
-		for (const auto& str : current_path_lyrics)	//在当前目录下寻找
-		{
-			if (CCommon::StringNatchWholeWord(str, artist) != -1 && CCommon::StringNatchWholeWord(str, title) != -1)
-			{
-				matched_lyric = lyric_path.GetDir() + str;
-				return matched_lyric;
-			}
-		}
+        //先寻找歌词文件中同时包含歌曲标题和艺术家的歌词文件
+        for (const auto& str : current_path_lyrics)	//在当前目录下寻找
+        {
+            if (CCommon::StringNatchWholeWord(str, artist) != -1 && CCommon::StringNatchWholeWord(str, title) != -1)
+            {
+                matched_lyric = lyric_path.GetDir() + str;
+                return matched_lyric;
+            }
+        }
 
-		if (matched_lyric.empty())		//如果当前目录下没找到
-		{
-			for (const auto& str : lyric_path_lyrics)	//在歌词目录下寻找
-			{
-				if (CCommon::StringNatchWholeWord(str, artist) != -1 && CCommon::StringNatchWholeWord(str, title) != -1)
-				{
-					matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
-					return matched_lyric;
-				}
-			}
-		}
+        if (matched_lyric.empty())		//如果当前目录下没找到
+        {
+            for (const auto& str : lyric_path_lyrics)	//在歌词目录下寻找
+            {
+                if (CCommon::StringNatchWholeWord(str, artist) != -1 && CCommon::StringNatchWholeWord(str, title) != -1)
+                {
+                    matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
+                    return matched_lyric;
+                }
+            }
+        }
 
-		//没有找到的话就寻找歌词文件中只包含歌曲标题的歌词文件
-		if (matched_lyric.empty())
-		{
-			for (const auto& str : current_path_lyrics)	//在当前目录下寻找
-			{
-				//if (str.find(song.title) != string::npos)
-				if (CCommon::StringNatchWholeWord(str, song.title) != -1)
-				{
-					matched_lyric = lyric_path.GetDir() + str;
-					return matched_lyric;
-				}
-			}
-		}
+        //没有找到的话就寻找歌词文件中只包含歌曲标题的歌词文件
+        if (matched_lyric.empty())
+        {
+            for (const auto& str : current_path_lyrics)	//在当前目录下寻找
+            {
+                //if (str.find(song.title) != string::npos)
+                if (CCommon::StringNatchWholeWord(str, song.title) != -1)
+                {
+                    matched_lyric = lyric_path.GetDir() + str;
+                    return matched_lyric;
+                }
+            }
+        }
 
-		if (matched_lyric.empty())
-		{
-			for (const auto& str : lyric_path_lyrics)	//在歌词目录下寻找
-			{
-				//if (str.find(song.title) != string::npos)
-				if (CCommon::StringNatchWholeWord(str, song.title) != -1)
-				{
-					matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
-					return matched_lyric;
-				}
-			}
-		}
-	}
-	return wstring();
+        if (matched_lyric.empty())
+        {
+            for (const auto& str : lyric_path_lyrics)	//在歌词目录下寻找
+            {
+                //if (str.find(song.title) != string::npos)
+                if (CCommon::StringNatchWholeWord(str, song.title) != -1)
+                {
+                    matched_lyric = theApp.m_lyric_setting_data.lyric_path + str;
+                    return matched_lyric;
+                }
+            }
+        }
+    }
+    return wstring();
 }
 
-std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo & song)
+std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
 {
     wstring album_cover_path;
     if (COSUPlayerHelper::IsOsuFile(song.file_path))
@@ -461,6 +461,20 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo & song)
     return album_cover_path;
 }
 
+void CMusicPlayerCmdHelper::OnRating(const wstring& file_path, DWORD command)
+{
+    if (command - ID_RATING_1 <= 5)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
+    {
+        int rating = command - ID_RATING_1 + 1;
+        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file_path);
+        song.rating = static_cast<BYTE>(rating);
+        CAudioTag audio_tag(song);
+        audio_tag.WriteAudioRating();
+        CSongDataManager::GetInstance().AddItem(file_path, song);
+        CSongDataManager::GetInstance().SetSongDataModified();
+    }
+}
+
 int CMusicPlayerCmdHelper::UpdateMediaLib()
 {
     if (CPlayer::GetInstance().IsMciCore())
@@ -481,12 +495,14 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
         {
             SongInfo song_info;
             song_info.file_path = file_path;
-			IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
-			if(pPlayerCore == nullptr)
-				break;
-			pPlayerCore->GetAudioInfo(file_path.c_str(), song_info);
+            IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
+            if (pPlayerCore == nullptr)
+                break;
+            pPlayerCore->GetAudioInfo(file_path.c_str(), song_info);
             if (!song_info.lengh.isZero() || CFilePathHelper(file_path).GetFileExtension() == L"cue")
             {
+                CAudioTag audio_tag(song_info);
+                audio_tag.GetAudioRating();
                 CSongDataManager::GetInstance().AddItem(file_path, song_info);
                 theApp.m_media_num_added++;
             }
@@ -498,7 +514,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     //    theApp.m_song_data[item.first] = item.second;
     //}
 
-    if(theApp.m_media_num_added > 0)
+    if (theApp.m_media_num_added > 0)
         CSongDataManager::GetInstance().SetSongDataModified();
     return theApp.m_media_num_added;
 }
@@ -524,7 +540,7 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
     return cleard_cnt;
 }
 
-bool CMusicPlayerCmdHelper::Rename(SongInfo & song, const wstring & new_name)
+bool CMusicPlayerCmdHelper::Rename(SongInfo& song, const wstring& new_name)
 {
     CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
     wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
@@ -543,7 +559,7 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
 
     bool dlg_exist = (pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->m_hWnd));   //媒体库对话框是否已经存在
     bool tab_not_show = (~theApp.m_media_lib_setting_data.display_item & tab_force_show);       //如果有要强制显示的标签但是媒体库设置中此标签不显示
-    
+
     //计算实际的tab序号（参数cur_tab为媒体库中标签的序号，但是如果有标签不显示，则此序号将不正确，因此这里需要根据实际显示的标签计算出真正的tab序号）
     int shown_tab = theApp.m_media_lib_setting_data.display_item | tab_force_show;  //实际要显示的标签
     int tab_num = cur_tab - 2;             //除去“文件夹”和“播放列表”两个标签（因为这两个标签总是显示，无法隐藏）

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "SongDataManager.h"
 #include "MusicPlayer2.h"
 
@@ -12,29 +12,29 @@ CSongDataManager::~CSongDataManager()
 {
 }
 
-CSongDataManager & CSongDataManager::GetInstance()
+CSongDataManager& CSongDataManager::GetInstance()
 {
     return m_instance;
 }
 
 void CSongDataManager::SaveSongData(std::wstring path)
 {
-    // ´ò¿ª»òÕßĞÂ½¨ÎÄ¼ş
+    // æ‰“å¼€æˆ–è€…æ–°å»ºæ–‡ä»¶
     CFile file;
     BOOL bRet = file.Open(path.c_str(),
         CFile::modeCreate | CFile::modeWrite);
-    if (!bRet)		//´ò¿ªÎÄ¼şÊ§°Ü
+    if (!bRet)		//æ‰“å¼€æ–‡ä»¶å¤±è´¥
     {
         return;
     }
-    // ¹¹ÔìCArchive¶ÔÏó
+    // æ„é€ CArchiveå¯¹è±¡
     CArchive ar(&file, CArchive::store);
-    // Ğ´Êı¾İ
-    ar << CString(_T("2.700"));			//Ğ´ÈëÊı¾İ°æ±¾
-    ar << static_cast<int>(m_song_data.size());		//Ğ´ÈëÓ³ÉäÈİÆ÷µÄ´óĞ¡
+    // å†™æ•°æ®
+    ar << CString(_T("2.720"));			//å†™å…¥æ•°æ®ç‰ˆæœ¬
+    ar << static_cast<int>(m_song_data.size());		//å†™å…¥æ˜ å°„å®¹å™¨çš„å¤§å°
     for (auto& song_data : m_song_data)
     {
-        ar << CString(song_data.first.c_str())		//±£´æÓ³ÉäÈİÆ÷µÄ¼ü£¬¼´¸èÇúµÄ¾ø¶ÔÂ·¾¶
+        ar << CString(song_data.first.c_str())		//ä¿å­˜æ˜ å°„å®¹å™¨çš„é”®ï¼Œå³æ­Œæ›²çš„ç»å¯¹è·¯å¾„
             << song_data.second.lengh.toInt()
             << song_data.second.bitrate
             << CString(song_data.second.title.c_str())
@@ -57,11 +57,12 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << song_data.second.last_played_time
             << CString(song_data.second.lyric_file.c_str())
             << song_data.second.modified_time
+            << song_data.second.rating
             ;
     }
-    // ¹Ø±ÕCArchive¶ÔÏó
+    // å…³é—­CArchiveå¯¹è±¡
     ar.Close();
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.Close();
 
     m_song_data_modified = false;
@@ -69,13 +70,13 @@ void CSongDataManager::SaveSongData(std::wstring path)
 
 void CSongDataManager::LoadSongData(std::wstring path)
 {
-    // ´ò¿ªÎÄ¼ş
+    // æ‰“å¼€æ–‡ä»¶
     CFile file;
     BOOL bRet = file.Open(path.c_str(), CFile::modeRead);
     if (!bRet) return;
-    // ¹¹ÔìCArchive¶ÔÏó
+    // æ„é€ CArchiveå¯¹è±¡
     CArchive ar(&file, CArchive::load);
-    // ¶ÁÊı¾İ
+    // è¯»æ•°æ®
     int size{};
     SongInfo song_info;
     CString song_path;
@@ -83,14 +84,13 @@ void CSongDataManager::LoadSongData(std::wstring path)
     int song_length;
     try
     {
-        //¶ÁÈ¡°æ±¾
-        CString version_str;
-        ar >> version_str;
-        //if (!CCommon::StringIsVersion(version_str))
-        //    version_str = _T("0.00");
-        if (version_str >= _T("2.664"))
+        //è¯»å–ç‰ˆæœ¬
+        ar >> m_data_version;
+        //if (!CCommon::StringIsVersion(m_data_version))
+        //    m_data_version = _T("0.00");
+        if (m_data_version >= _T("2.664"))
         {
-            ar >> size;		//¶ÁÈ¡Ó³ÉäÈİÆ÷µÄ³¤¶È
+            ar >> size;		//è¯»å–æ˜ å°„å®¹å™¨çš„é•¿åº¦
         }
         else
         {
@@ -103,7 +103,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
             ar >> song_path;
             ar >> song_length;
             song_info.lengh.fromInt(song_length);
-            if (version_str >= _T("2.691"))
+            if (m_data_version >= _T("2.691"))
             {
                 ar >> song_info.bitrate;
             }
@@ -126,7 +126,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
             ar >> temp;
             song_info.genre = temp;
             ar >> song_info.genre_idx;
-            if (version_str >= _T("2.66"))
+            if (m_data_version >= _T("2.66"))
             {
                 ar >> song_info.track;
             }
@@ -137,7 +137,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 song_info.track = track;
             }
 
-            if (version_str >= _T("2.691"))
+            if (m_data_version >= _T("2.691"))
             {
                 ar >> song_info.tag_type;
             }
@@ -150,18 +150,18 @@ void CSongDataManager::LoadSongData(std::wstring path)
             ar >> temp;
             song_info.SetSongId(temp.GetString());
 
-            if (version_str >= _T("2.64"))		//°æ±¾ºÅ´óÓÚµÈÓÚ2.64
+            if (m_data_version >= _T("2.64"))		//ç‰ˆæœ¬å·å¤§äºç­‰äº2.64
             {
                 ar >> song_info.listen_time;
                 ar >> song_info.info_acquired;
             }
 
-            if (version_str == _T("2.661"))
+            if (m_data_version == _T("2.661"))
             {
                 ar >> song_info.is_favourite;
             }
 
-            if (version_str >= _T("2.663") && version_str < _T("2.690"))
+            if (m_data_version >= _T("2.663") && m_data_version < _T("2.690"))
             {
                 bool no_online_album_cover{ song_info.NoOnlineAlbumCover() };
                 bool no_online_lyric{ song_info.NoOnlineLyric() };
@@ -169,28 +169,33 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> no_online_lyric;
             }
 
-            if (version_str >= _T("2.690"))
+            if (m_data_version >= _T("2.690"))
             {
                 ar >> song_info.flags;
             }
 
-            if (version_str >= _T("2.680"))
+            if (m_data_version >= _T("2.680"))
             {
                 ar >> song_info.last_played_time;
             }
 
-            if (version_str >= _T("2.692"))
+            if (m_data_version >= _T("2.692"))
             {
                 ar >> temp;
                 song_info.lyric_file = temp;
             }
 
-            if (version_str >= _T("2.700"))
+            if (m_data_version >= _T("2.700"))
             {
                 ar >> song_info.modified_time;
             }
 
-            m_song_data[wstring{ song_path }] = song_info;		//½«¶ÁÈ¡µ½µÄÒ»Ê×¸èÇúĞÅÏ¢Ìí¼Óµ½Ó³ÉäÈİÆ÷ÖĞ
+            if (m_data_version >= _T("2.720"))
+            {
+                ar >> song_info.rating;
+            }
+
+            m_song_data[wstring{ song_path }] = song_info;		//å°†è¯»å–åˆ°çš„ä¸€é¦–æ­Œæ›²ä¿¡æ¯æ·»åŠ åˆ°æ˜ å°„å®¹å™¨ä¸­
         }
     }
     catch (CArchiveException* exception)
@@ -199,9 +204,9 @@ void CSongDataManager::LoadSongData(std::wstring path)
         info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { path, exception->m_cause });
         theApp.WriteLog(wstring{ info });
     }
-    // ¹Ø±Õ¶ÔÏó
+    // å…³é—­å¯¹è±¡
     ar.Close();
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.Close();
 }
 
@@ -215,7 +220,12 @@ bool CSongDataManager::IsSongDataModified() const
     return m_song_data_modified;
 }
 
-void CSongDataManager::SaveSongInfo(const SongInfo & song_info)
+CString CSongDataManager::GetDataVersion() const
+{
+    return m_data_version;
+}
+
+void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
 {
     if (song_info.file_path.empty())
         return;
@@ -229,7 +239,7 @@ void CSongDataManager::SaveSongInfo(const SongInfo & song_info)
     SetSongDataModified();
 }
 
-SongInfo CSongDataManager::GetSongInfo(const wstring & file_path)
+SongInfo CSongDataManager::GetSongInfo(const wstring& file_path)
 {
     SongInfo song;
     auto iter = m_song_data.find(file_path);
@@ -239,7 +249,7 @@ SongInfo CSongDataManager::GetSongInfo(const wstring & file_path)
     return song;
 }
 
-SongInfo & CSongDataManager::GetSongInfoRef(const wstring & file_path)
+SongInfo& CSongDataManager::GetSongInfoRef(const wstring& file_path)
 {
     auto iter = m_song_data.find(file_path);
     if (iter != m_song_data.end())
@@ -253,12 +263,12 @@ SongInfo & CSongDataManager::GetSongInfoRef(const wstring & file_path)
     }
 }
 
-SongInfo & CSongDataManager::GetSongInfoRef2(const wstring & file_path)
+SongInfo& CSongDataManager::GetSongInfoRef2(const wstring& file_path)
 {
     return m_song_data[file_path];
 }
 
-const CSongDataManager::SongDataMap & CSongDataManager::GetSongData()
+const CSongDataManager::SongDataMap& CSongDataManager::GetSongData()
 {
     return m_song_data;
 }
@@ -274,7 +284,7 @@ void CSongDataManager::AddItem(const wstring& file_path, SongInfo song)
     m_song_data[file_path] = song;
 }
 
-bool CSongDataManager::RemoveItem(const wstring & file_path)
+bool CSongDataManager::RemoveItem(const wstring& file_path)
 {
     auto iter = m_song_data.find(file_path);
     if (iter != m_song_data.end())
@@ -287,14 +297,14 @@ bool CSongDataManager::RemoveItem(const wstring & file_path)
 
 int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition)
 {
-    int clear_cnt{};		//Í³¼ÆÉ¾³ıµÄÏîÄ¿µÄÊıÁ¿
-    //±éÀúÓ³ÉäÈİÆ÷£¬É¾³ı²»±ØÒªµÄÌõÄ¿¡£
+    int clear_cnt{};		//ç»Ÿè®¡åˆ é™¤çš„é¡¹ç›®çš„æ•°é‡
+    //éå†æ˜ å°„å®¹å™¨ï¼Œåˆ é™¤ä¸å¿…è¦çš„æ¡ç›®ã€‚
     for (auto iter{ m_song_data.begin() }; iter != m_song_data.end();)
     {
         iter->second.file_path = iter->first;
         if (fun_condition(iter->second))
         {
-            iter = m_song_data.erase(iter);		//É¾³ıÌõÄ¿Ö®ºó½«µü´úÆ÷Ö¸Ïò±»É¾³ıÌõÄ¿µÄÇ°Ò»¸öÌõÄ¿
+            iter = m_song_data.erase(iter);		//åˆ é™¤æ¡ç›®ä¹‹åå°†è¿­ä»£å™¨æŒ‡å‘è¢«åˆ é™¤æ¡ç›®çš„å‰ä¸€ä¸ªæ¡ç›®
             clear_cnt++;
         }
         else

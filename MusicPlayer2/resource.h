@@ -634,6 +634,8 @@
 #define IDI_ICON17                      507
 #define IDI_LOCATE_D                    507
 #define IDS_SEARCH_BITRATE              508
+#define IDI_ICON18                      508
+#define IDI_STAR                        508
 #define IDS_PLAY_RANDOM                 509
 #define IDS_FILE_PROPERTY               510
 #define IDS_PROPERTY_TITLE_INFO         511
@@ -1412,13 +1414,26 @@
 #define ID_VIEW_ARTIST                  33322
 #define ID_LOCATE_TO_CURRENT            33323
 #define ID_VIEW_ALBUM                   33324
+#define ID_33325                        33325
+#define ID_33326                        33326
+#define ID_33327                        33327
+#define ID_33328                        33328
+#define ID_33329                        33329
+#define ID_33330                        33330
+#define ID_33331                        33331
+#define ID_RATING_1                     33332
+#define ID_RATING_2                     33333
+#define ID_RATING_3                     33334
+#define ID_RATING_4                     33335
+#define ID_RATING_5                     33336
+#define ID_RATING_NONE                  33337
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        508
-#define _APS_NEXT_COMMAND_VALUE         33325
+#define _APS_NEXT_RESOURCE_VALUE        509
+#define _APS_NEXT_COMMAND_VALUE         33338
 #define _APS_NEXT_CONTROL_VALUE         1185
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

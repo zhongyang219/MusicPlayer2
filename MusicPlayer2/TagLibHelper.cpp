@@ -32,14 +32,18 @@
 using namespace TagLib;
 
 #define STR_MP4_COVER_TAG "covr"
-#define STR_MP4_LYRICS_TAG "----:com.apple.iTunes:Lyrics"
 #define STR_ASF_COVER_TAG "WM/Picture"
 #define STR_APE_COVER_TAG "COVER ART (FRONT)"
+
+#define STR_MP4_LYRICS_TAG "----:com.apple.iTunes:Lyrics"
 #define STR_ID3V2_LYRIC_TAG "USLT"
-#define STR_ID3V2_RATEING_TAG "POPM"
 #define STR_FLAC_LYRIC_TAG "LYRICS"
 #define STR_ASF_LYRIC_TAG "LYRICS"
+
 #define STR_APE_CUE_TAG "CUESHEET"
+
+#define STR_ID3V2_RATEING_TAG "POPM"
+#define STR_FLAC_RATING_TAG "RATING"
 
 //将taglib中的字符串转换成wstring类型。
 //由于taglib将所有非unicode编码全部作为Latin编码处理，因此无法正确处理本地代码页
@@ -427,10 +431,13 @@ static void WriteId3v2Rating(ID3v2::Tag* id3v2, int rate)
                 id3v2->removeFrame(frame);
         }
 
-        ID3v2::PopularimeterFrame* rate_frame = new ID3v2::PopularimeterFrame();
-        int rate_raw = GenerateAudioRating(rate);
-        rate_frame->setRating(rate_raw);
-        id3v2->addFrame(rate_frame);
+        if (rate >= 1 && rate <= 5)
+        {
+            ID3v2::PopularimeterFrame* rate_frame = new ID3v2::PopularimeterFrame();
+            int rate_raw = GenerateAudioRating(rate);
+            rate_frame->setRating(rate_raw);
+            id3v2->addFrame(rate_frame);
+        }
     }
 }
 
@@ -1485,6 +1492,23 @@ int CTagLibHelper::GetMepgRating(const wstring& file_path)
     MPEG::File file(file_path.c_str());
     auto id3v2 = file.ID3v2Tag();
     return GetId3v2Rating(id3v2);
+}
+
+int CTagLibHelper::GetFlacRating(const wstring& file_path)
+{
+    FLAC::File file(file_path.c_str());
+    auto properties = file.properties();
+    if (file.isValid())
+    {
+        auto rating_item = properties[STR_FLAC_RATING_TAG];
+        if (!rating_item.isEmpty())
+        {
+            int rating = _wtoi(rating_item.front().toWString().c_str());
+            return rating;
+        }
+    }
+    return 0;
+
 }
 
 bool CTagLibHelper::WriteMpegRating(const wstring& file_path, int rate)

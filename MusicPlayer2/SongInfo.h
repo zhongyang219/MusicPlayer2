@@ -18,39 +18,39 @@ enum eTagType
 struct SongInfo
 {
     wstring file_path{};    //歌曲的路径
-    wstring lyric_file{};	//匹配的歌词文件的路径
-    wstring title;		//标题
-    wstring artist;		//艺术家
-    wstring album;		//唱片集
-    wstring comment;	//注释
-    wstring genre;		//流派
-    unsigned __int64 song_id{};			//歌曲对应的网易云音乐中的歌曲ID
-    __int64 last_played_time{};		//上次播放的时间
+    wstring lyric_file{};   //匹配的歌词文件的路径
+    wstring title;      //标题
+    wstring artist;     //艺术家
+    wstring album;      //唱片集
+    wstring comment;    //注释
+    wstring genre;      //流派
+    unsigned __int64 song_id{};         //歌曲对应的网易云音乐中的歌曲ID
+    __int64 last_played_time{};     //上次播放的时间
     unsigned __int64 modified_time{};        //修改时间
-    int track{};		//音轨序号
-    int listen_time{};			//歌曲累计听的时间（单位为秒）
-    Time lengh{};			//歌曲的长度
-    Time start_pos{};		//音频的起始位置，用于cue分轨
+    int track{};        //音轨序号
+    int listen_time{};          //歌曲累计听的时间（单位为秒）
+    Time lengh{};           //歌曲的长度
+    Time start_pos{};       //音频的起始位置，用于cue分轨
     Time end_pos{};
-    unsigned short year{};		//年份
-    short bitrate{};		//比特率
-	WORD flags{};		//保存一些标志
-    BYTE tag_type{};		//标签的类型（0：其他；1：ID3v1；2：ID3v2；3：APE）
-    BYTE genre_idx{ 255 };		//以字节表示的流派号
-    bool info_acquired{ false };		//如果已经获取到了信息，则为ture
+    unsigned short year{};      //年份
+    short bitrate{};        //比特率
+    WORD flags{};       //保存一些标志
+    BYTE tag_type{};        //标签的类型（0：其他；1：ID3v1；2：ID3v2；3：APE）
+    BYTE genre_idx{ 255 };      //以字节表示的流派号
+    bool info_acquired{ false };        //如果已经获取到了信息，则为ture
     bool is_favourite{ false };
-    bool is_cue{ false };		//如果曲目是cue分轨，则为true
+    bool is_cue{ false };       //如果曲目是cue分轨，则为true
+    BYTE rating{ 255 };          //歌曲分级
 
+    //bit0, 如果为true，则不在线下载歌词
+    bool NoOnlineLyric() const { return CCommon::GetNumberBit(flags, 0); }
+    void SetNoOnlineLyric(bool val) { CCommon::SetNumberBit(flags, 0, val); }
 
-	//bit0, 如果为true，则不在线下载歌词
-	bool NoOnlineLyric() const { return CCommon::GetNumberBit(flags, 0); }
-	void SetNoOnlineLyric(bool val) { CCommon::SetNumberBit(flags, 0, val); }
+    //bit1, 如果为true，则不在线下载专辑封面
+    bool NoOnlineAlbumCover() const { return CCommon::GetNumberBit(flags, 1); }
+    void SetNoOnlineAlbumCover(bool val) { CCommon::SetNumberBit(flags, 1, val); }
 
-	//bit1, 如果为true，则不在线下载专辑封面
-	bool NoOnlineAlbumCover() const { return CCommon::GetNumberBit(flags, 1); }
-	void SetNoOnlineAlbumCover(bool val) { CCommon::SetNumberBit(flags, 1, val); }
-
-	//bit2, 如果为true，则总是使用外部封面
+    //bit2, 如果为true，则总是使用外部封面
     bool AlwaysUseExternalAlbumCover() const { return CCommon::GetNumberBit(flags, 2); }
     void SetAlwaysUseExternalAlbumCover(bool val) { CCommon::SetNumberBit(flags, 2, val); }
 
@@ -290,4 +290,3 @@ struct SongInfo
         return std::to_wstring(song_id);
     }
 };
-

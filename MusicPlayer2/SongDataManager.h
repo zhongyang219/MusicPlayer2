@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 #include <functional>
 class CSongDataManager
@@ -9,28 +9,30 @@ public:
     using SongDataMap = std::unordered_map<wstring, SongInfo>;
 
     static CSongDataManager& GetInstance();
-    void SaveSongData(std::wstring path);		//½«ËùÓĞ¸èÇúĞÅÏ¢ÒÔĞòÁĞ»¯µÄ·½Ê½±£´æµ½ÎÄ¼ş
-    void LoadSongData(std::wstring path);			//´ÓÎÄ¼şÖĞÒÔĞòÁĞ»¯µÄ·½Ê½¶ÁÈ¡ËùÓĞ¸èÇúĞÅÏ¢
+    void SaveSongData(std::wstring path);		//å°†æ‰€æœ‰æ­Œæ›²ä¿¡æ¯ä»¥åºåˆ—åŒ–çš„æ–¹å¼ä¿å­˜åˆ°æ–‡ä»¶
+    void LoadSongData(std::wstring path);			//ä»æ–‡ä»¶ä¸­ä»¥åºåˆ—åŒ–çš„æ–¹å¼è¯»å–æ‰€æœ‰æ­Œæ›²ä¿¡æ¯
 
     void SetSongDataModified();
     bool IsSongDataModified() const;
 
-    void SaveSongInfo(const SongInfo& song_info);       //½«Ò»¸ö¸èÇúĞÅÏ¢±£´æµ½m_song_dataÖĞ
+    CString GetDataVersion() const;
+
+    void SaveSongInfo(const SongInfo& song_info);       //å°†ä¸€ä¸ªæ­Œæ›²ä¿¡æ¯ä¿å­˜åˆ°m_song_dataä¸­
 
     SongInfo GetSongInfo(const wstring& file_path);
-    SongInfo& GetSongInfoRef(const wstring& file_path);     //»ñÈ¡Ò»¸ö¸èÇúĞÅÏ¢µÄÒıÓÃ£¨Èç¹û²»´æÔÚ²»»á²åÈëĞÂµÄ¼ÇÂ¼£©
-    SongInfo& GetSongInfoRef2(const wstring& file_path);     //»ñÈ¡Ò»¸ö¸èÇúĞÅÏ¢µÄÒıÓÃ£¨Èç¹û²»´æÔÚ»á²åÈëĞÂµÄ¼ÇÂ¼£©
+    SongInfo& GetSongInfoRef(const wstring& file_path);     //è·å–ä¸€ä¸ªæ­Œæ›²ä¿¡æ¯çš„å¼•ç”¨ï¼ˆå¦‚æœä¸å­˜åœ¨ä¸ä¼šæ’å…¥æ–°çš„è®°å½•ï¼‰
+    SongInfo& GetSongInfoRef2(const wstring& file_path);     //è·å–ä¸€ä¸ªæ­Œæ›²ä¿¡æ¯çš„å¼•ç”¨ï¼ˆå¦‚æœä¸å­˜åœ¨ä¼šæ’å…¥æ–°çš„è®°å½•ï¼‰
 
     const SongDataMap& GetSongData();
     bool IsItemExist(const wstring& file_path) const;
     void AddItem(const wstring& file_path, SongInfo song);
     bool RemoveItem(const wstring& file_path);
-    int RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition);       //É¾³ı·ûºÏÌõ¼şµÄÏîÄ¿£¬·µ»ØÒÑÉ¾³ı¸öÊı
+    int RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition);       //åˆ é™¤ç¬¦åˆæ¡ä»¶çš„é¡¹ç›®ï¼Œè¿”å›å·²åˆ é™¤ä¸ªæ•°
 
-    void ClearPlayTime();       //Çå³ı²¥·ÅÊ±¼äÍ³¼ÆÊı¾İ
-    void ClearLastPlayedTime();     //Çå³ıÉÏ´Î²¥·ÅÊ±¼ä
+    void ClearPlayTime();       //æ¸…é™¤æ’­æ”¾æ—¶é—´ç»Ÿè®¡æ•°æ®
+    void ClearLastPlayedTime();     //æ¸…é™¤ä¸Šæ¬¡æ’­æ”¾æ—¶é—´
 
-    void UpdateFileModifiedTime(const wstring& file_path, bool update = false);      //¸üĞÂ¸èÇúµÄ×îºóĞŞ¸ÄÊ±¼ä£¬Èç¹ûupdateÎªfalse£¬ÔòÈç¹ûÒÑ»ñÈ¡×îºóÊ±¼ä¾Í²»¸üĞÂ£¬Èç¹ûupdateÎªtrue£¬Ôò×ÜÊÇ¸üĞÂ
+    void UpdateFileModifiedTime(const wstring& file_path, bool update = false);      //æ›´æ–°æ­Œæ›²çš„æœ€åä¿®æ”¹æ—¶é—´ï¼Œå¦‚æœupdateä¸ºfalseï¼Œåˆ™å¦‚æœå·²è·å–æœ€åæ—¶é—´å°±ä¸æ›´æ–°ï¼Œå¦‚æœupdateä¸ºtrueï¼Œåˆ™æ€»æ˜¯æ›´æ–°
     void ChangeFilePath(const wstring& file_path, const wstring& new_path);
 
 private:
@@ -38,8 +40,8 @@ private:
 
     static CSongDataManager m_instance;
 
-private: 
-    SongDataMap m_song_data;		//´¢´æËùÓĞ¸èÇúĞÅÏ¢Êı¾İµÄÓ³ÉäÈİÆ÷£¬¼üÊÇÃ¿Ò»¸öÒôÆµÎÄ¼şµÄ¾ø¶ÔÂ·¾¶£¬¶ÔÏóÊÇÃ¿Ò»¸öÒôÆµÎÄ¼şµÄĞÅÏ¢
+private:
+    SongDataMap m_song_data;		//å‚¨å­˜æ‰€æœ‰æ­Œæ›²ä¿¡æ¯æ•°æ®çš„æ˜ å°„å®¹å™¨ï¼Œé”®æ˜¯æ¯ä¸€ä¸ªéŸ³é¢‘æ–‡ä»¶çš„ç»å¯¹è·¯å¾„ï¼Œå¯¹è±¡æ˜¯æ¯ä¸€ä¸ªéŸ³é¢‘æ–‡ä»¶çš„ä¿¡æ¯
     bool m_song_data_modified{};
+    CString m_data_version;
 };
-

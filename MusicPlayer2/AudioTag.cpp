@@ -3,7 +3,7 @@
 #include "TagLibHelper.h"
 #include "AudioTagOld.h"
 
-CAudioTag::CAudioTag(SongInfo & song_info, HSTREAM hStream)
+CAudioTag::CAudioTag(SongInfo& song_info, HSTREAM hStream)
     :m_song_info{ song_info }, m_hStream{ hStream }
 {
     ASSERT(!m_song_info.file_path.empty());
@@ -13,20 +13,20 @@ CAudioTag::CAudioTag(SongInfo & song_info, HSTREAM hStream)
     if (hStream != 0)
         BASS_ChannelGetInfo(hStream, &channel_info);
     //根据通道信息判断音频文件的类型
-	m_type = CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype);
+    m_type = CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype);
 
-	//如果获取不到文件类型，这里根据扩展名再判断
-	if (m_type == AudioType::AU_OTHER)
-		m_type = CAudioCommon::GetAudioTypeByFileName(m_song_info.file_path);
+    //如果获取不到文件类型，这里根据扩展名再判断
+    if (m_type == AudioType::AU_OTHER)
+        m_type = CAudioCommon::GetAudioTypeByFileName(m_song_info.file_path);
 }
 
-CAudioTag::CAudioTag(SongInfo & song_info, AudioType type)
+CAudioTag::CAudioTag(SongInfo& song_info, AudioType type)
     :m_song_info{ song_info }, m_type{ type }
 {
     ASSERT(!m_song_info.file_path.empty());
 }
 
-CAudioTag::CAudioTag(const wstring & file_path)
+CAudioTag::CAudioTag(const wstring& file_path)
     : m_song_info{ m_no_use }
 {
     ASSERT(!file_path.empty());
@@ -88,7 +88,7 @@ void CAudioTag::GetAudioTag()
         CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
         audio_tag_old.GetTagDefault();
     }
-        break;
+    break;
     case AU_CUE:
         break;
     case AU_MIDI:
@@ -103,7 +103,7 @@ void CAudioTag::GetAudioTag()
     CCommon::StringNormalize(m_song_info.album);
     CCommon::StringNormalize(m_song_info.genre);
     CCommon::StringNormalize(m_song_info.comment);
-	m_song_info.info_acquired = true;
+    m_song_info.info_acquired = true;
 }
 
 
@@ -163,7 +163,7 @@ void CAudioTag::GetAudioTagPropertyMap(std::map<wstring, wstring>& property_map)
     }
 }
 
-wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* file_size)
+wstring CAudioTag::GetAlbumCover(int& image_type, wchar_t* file_name, size_t* file_size)
 {
     image_type = -1;
     string image_contents;
@@ -217,7 +217,7 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* f
         CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
         image_contents = audio_tag_old.GetAlbumCoverDefault(image_type);
     }
-        break;
+    break;
     }
 
     if (file_size != nullptr)
@@ -227,15 +227,15 @@ wstring CAudioTag::GetAlbumCover(int & image_type, wchar_t* file_name, size_t* f
     wstring file_path{ CCommon::GetTemplatePath() };
     wstring _file_name;
     if (file_name == nullptr)
-	    _file_name = ALBUM_COVER_NAME;
+        _file_name = ALBUM_COVER_NAME;
     else
-	    _file_name = file_name;
+        _file_name = file_name;
     if (!image_contents.empty())
     {
-	    file_path += _file_name;
-	    ofstream out_put{ file_path, std::ios::binary };
-	    out_put << image_contents;
-	    return file_path;
+        file_path += _file_name;
+        ofstream out_put{ file_path, std::ios::binary };
+        out_put << image_contents;
+        return file_path;
     }
     else
     {
@@ -262,7 +262,7 @@ wstring CAudioTag::GetAudioLyric()
         break;
     }
 
-	return wstring();
+    return wstring();
 }
 
 bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
@@ -325,7 +325,7 @@ bool CAudioTag::WriteAudioTag()
     return false;
 }
 
-bool CAudioTag::WriteAlbumCover(const wstring & album_cover_path)
+bool CAudioTag::WriteAlbumCover(const wstring& album_cover_path)
 {
     switch (m_type)
     {
@@ -375,6 +375,28 @@ wstring CAudioTag::GetAudioCue()
     return wstring();
 }
 
+void CAudioTag::GetAudioRating()
+{
+    switch (m_type)
+    {
+    case AU_MP3:
+        m_song_info.rating = static_cast<BYTE>(CTagLibHelper::GetMepgRating(m_song_info.file_path));
+    default:
+        break;
+    }
+}
+
+void CAudioTag::WriteAudioRating()
+{
+    switch (m_type)
+    {
+    case AU_MP3:
+        CTagLibHelper::WriteMpegRating(m_song_info.file_path, m_song_info.rating);
+    default:
+        break;
+    }
+}
+
 bool CAudioTag::IsFileTypeTagWriteSupport(const wstring& ext)
 {
     wstring _ext = ext;
@@ -403,3 +425,10 @@ bool CAudioTag::IsFileTypeLyricWriteSupport(const wstring& ext)
     return type == AU_MP3 || type == AU_FLAC || type == AU_MP4 || type == AU_WMA_ASF || type == AU_WAV;
 }
 
+bool CAudioTag::IsFileRatingSupport(const wstring& ext)
+{
+    wstring _ext = ext;
+    CCommon::StringTransform(_ext, false);
+    AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
+    return type == AU_MP3;
+}

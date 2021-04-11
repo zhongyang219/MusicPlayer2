@@ -564,6 +564,7 @@
     <Image Include="res\setting_d.ico" />
     <Image Include="res\skn.ico" />
     <Image Include="res\skn_d.ico" />
+    <Image Include="res\star.ico" />
     <Image Include="res\statistics_d.ico" />
     <Image Include="res\stop_dark.ico" />
     <Image Include="res\stop_white.ico" />
