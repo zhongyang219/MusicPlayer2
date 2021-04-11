@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 
 //
@@ -8,7 +8,7 @@ public:
     CTagLibHelper();
     ~CTagLibHelper();
 
-    //¶Á×¨¼­·âÃæ
+    //è¯»ä¸“è¾‘å°é¢
     static string GetM4aAlbumCover(const wstring& file_path, int& type);
     static string GetFlacAlbumCover(const wstring& file_path, int& type);
     static string GetMp3AlbumCover(const wstring& file_path, int& type);
@@ -23,7 +23,7 @@ public:
     static string GetMpcAlbumCover(const wstring& file_path, int& type);
     static string GetWavePackAlbumCover(const wstring& file_path, int& type);
 
-    //¶Á±êÇ©ĞÅÏ¢
+    //è¯»æ ‡ç­¾ä¿¡æ¯
     static void GetFlacTagInfo(SongInfo& song_info);
     static void GetM4aTagInfo(SongInfo& song_info);
     static void GetMpegTagInfo(SongInfo& song_info);
@@ -40,7 +40,7 @@ public:
 
     static void GetAnyFileTagInfo(SongInfo& song_info);
 
-    //¶ÁÈ¡ËùÓĞ±êÇ©ÊôĞÔ
+    //è¯»å–æ‰€æœ‰æ ‡ç­¾å±æ€§
     static void GetFlacPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
     static void GetM4aPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
     static void GetMpegPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
@@ -57,21 +57,21 @@ public:
 
     static void GetAnyFilePropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
 
-    //¶ÁÈ¡¸è´Ê
+    //è¯»å–æ­Œè¯
     static wstring GetMpegLyric(const wstring& file_path);
     static wstring GetM4aLyric(const wstring& file_path);
     static wstring GetFlacLyric(const wstring& file_path);
     static wstring GetAsfLyric(const wstring& file_path);
     static wstring GetWavLyric(const wstring& file_path);
 
-    //Ğ´Èë¸è´Ê
+    //å†™å…¥æ­Œè¯
     static bool WriteMpegLyric(const wstring& file_path, const wstring& lyric_contents);
     static bool WriteFlacLyric(const wstring& file_path, const wstring& lyric_contents);
     static bool WriteM4aLyric(const wstring& file_path, const wstring& lyric_contents);
     static bool WriteAsfLyric(const wstring& file_path, const wstring& lyric_contents);
     static bool WriteWavLyric(const wstring& file_path, const wstring& lyric_contents);
 
-    //Ğ´×¨¼­·âÃæ
+    //å†™ä¸“è¾‘å°é¢
     static bool WriteMp3AlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteFlacAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteM4aAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
@@ -86,7 +86,7 @@ public:
     static bool WriteMpcAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
     static bool WriteWavePackAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
 
-    //Ğ´±êÇ©ĞÅÏ¢
+    //å†™æ ‡ç­¾ä¿¡æ¯
     static bool WriteMpegTag(SongInfo& song_info);
     static bool WriteFlacTag(SongInfo& song_info);
     static bool WriteM4aTag(SongInfo& song_info);
@@ -101,7 +101,12 @@ public:
     static bool WriteAsfTag(SongInfo& song_info);
     static bool WriteSpxTag(SongInfo& song_info);
 
-    //¶ÁÈ¡ÄÚÇ¶cue
+    //è¯»å–å†…åµŒcue
     static wstring GetApeCue(const wstring& file_path);
-};
 
+    //è¯»å–åˆ†çº§ä¿¡æ¯ã€‚è¿”å›1~5ä¸ºåˆ†çº§ï¼Œè¿”å›0è¡¨ç¤ºæœªåˆ†çº§
+    static int GetMepgRating(const wstring& file_path);
+
+    //å†™å…¥åˆ†çº§ä¿¡æ¯
+    static bool WriteMpegRating(const wstring& file_path, int rate);
+};

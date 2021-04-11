@@ -9,6 +9,7 @@
 #include "MessageDlg.h"
 #include "PropertyDlgHelper.h"
 #include "TagLibHelper.h"
+#include "Player.h"
 
 CTest::CTest()
 {
@@ -28,7 +29,7 @@ void CTest::Test()
     //TestOSUFile();
     //TestReg();
     //TestMediaLib();
-	//TestAudioTag();
+    //TestAudioTag();
 
     //Time time(1000, 64, 1024);
 
@@ -45,6 +46,8 @@ void CTest::Test()
 
     //int size = sizeof(SongInfo);
     //MessageBox(theApp.m_pMainWnd->GetSafeHwnd(), std::to_wstring(size).c_str(), NULL, MB_OK);
+
+    //TestRating();
 }
 
 void CTest::TestStringMatch()
@@ -70,15 +73,15 @@ void CTest::TestCrash()
 void CTest::TestShortCut()
 {
     int rtn = CCommon::CreateFileShortcut(L"D:\\Temp",
-                                          L"D:\\Program Files\\MusicPlayer2\\MusicPlayer2.exe",
-                                          NULL,
-                                          L"D:\\Program Files\\MusicPlayer2",
-                                          0,
-                                          NULL,
-                                          1,
-                                          L"-play_pause",
-                                          2
-                                         );
+        L"D:\\Program Files\\MusicPlayer2\\MusicPlayer2.exe",
+        NULL,
+        L"D:\\Program Files\\MusicPlayer2",
+        0,
+        NULL,
+        1,
+        L"-play_pause",
+        2
+    );
     int a = 0;
 }
 
@@ -118,13 +121,13 @@ void CTest::TestCommon()
     //CMusicPlayerCmdHelper helper;
     //helper.UpdateMediaLib();
 
-	//bool b = CCommon::IsPath(L"C:\\dfg\\:89");
+    //bool b = CCommon::IsPath(L"C:\\dfg\\:89");
 
-	//WORD value = 0x2f;
-	//bool b = CCommon::GetNumberBit(value, 4);
+    //WORD value = 0x2f;
+    //bool b = CCommon::GetNumberBit(value, 4);
 
-	//CCommon::SetNumberBit(value, 4, true);
-	//CCommon::SetNumberBit(value, 4, false);
+    //CCommon::SetNumberBit(value, 4, true);
+    //CCommon::SetNumberBit(value, 4, false);
 
     //unsigned __int64 t = CCommon::GetFileLastModified(L"D:\\Temp\\Introduction.txt");
     //unsigned __int64 t1 = CCommon::GetFileLastModified(L"D:\\Temp\\新建文本文档.jpg");
@@ -166,14 +169,14 @@ void CTest::TestMediaLib()
 
 void CTest::TestAudioTag()
 {
-	//wstring file_path = L"D:\\Temp\\test.mp3";
-	//HSTREAM hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-	//SongInfo song_info;
+    //wstring file_path = L"D:\\Temp\\test.mp3";
+    //HSTREAM hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+    //SongInfo song_info;
  //   song_info.file_path = file_path;
-	//CAudioTag audio_tag(song_info, hStream);
-	//audio_tag.GetAudioTag();
-	//wstring str_lyric = audio_tag.GetAudioLyric();
-	//BASS_StreamFree(hStream);
+    //CAudioTag audio_tag(song_info, hStream);
+    //audio_tag.GetAudioTag();
+    //wstring str_lyric = audio_tag.GetAudioLyric();
+    //BASS_StreamFree(hStream);
 
     //wstring result = CTagLibHelper::GetApeCue(L"D:\\Temp\\内嵌cue测试\\Various - 世界名曲鉴赏 珍藏版.ape");
 
@@ -224,5 +227,12 @@ void CTest::TestStringSplit()
 {
     vector<wstring> result;
     CCommon::StringSplitWithSeparators(L"1-223&**34@@#YYF%%%%^SD", vector<wstring>{L"-", L"&**", L"@@#", L"%%%%^"}, result);
+    int a = 0;
+}
+
+void CTest::TestRating()
+{
+    //int rate = CTagLibHelper::GetMepgRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path);
+    CTagLibHelper::WriteMpegRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path, 2);
     int a = 0;
 }

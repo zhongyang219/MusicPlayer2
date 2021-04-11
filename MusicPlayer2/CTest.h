@@ -22,5 +22,6 @@ private:
     static void TestCrashDlg();
     static void TestTagParse();
     static void TestStringSplit();
+    static void TestRating();
 };
 
