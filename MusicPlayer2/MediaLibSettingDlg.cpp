@@ -15,7 +15,7 @@
 IMPLEMENT_DYNAMIC(CMediaLibSettingDlg, CTabDlg)
 
 CMediaLibSettingDlg::CMediaLibSettingDlg(CWnd* pParent /*=nullptr*/)
-	: CTabDlg(IDD_MEDIA_LIB_SETTING_DIALOG, pParent)
+    : CTabDlg(IDD_MEDIA_LIB_SETTING_DIALOG, pParent)
 {
 
 }
@@ -57,10 +57,10 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_DELETE_BUTTON, &CMediaLibSettingDlg::OnBnClickedDeleteButton)
     ON_BN_CLICKED(IDC_UPDATE_MEDIA_LIB_CHK, &CMediaLibSettingDlg::OnBnClickedUpdateMediaLibChk)
     ON_BN_CLICKED(IDC_CLEAN_DATA_FILE_BUTTON, &CMediaLibSettingDlg::OnBnClickedCleanDataFileButton)
-	ON_BN_CLICKED(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, &CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn)
-	ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
-	ON_CBN_SELCHANGE(IDC_PLAYLIST_DISPLAY_MODE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo)
-	ON_CBN_SELCHANGE(IDC_RECENT_PLAYED_RANGE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo)
+    ON_BN_CLICKED(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, &CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn)
+    ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
+    ON_CBN_SELCHANGE(IDC_PLAYLIST_DISPLAY_MODE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo)
+    ON_CBN_SELCHANGE(IDC_RECENT_PLAYED_RANGE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo)
     ON_BN_CLICKED(IDC_IGNORE_EXIST_CHECK, &CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck)
 END_MESSAGE_MAP()
 
@@ -79,7 +79,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_classify_other_chk.SetCheck(m_data.hide_only_one_classification);
     //m_show_tree_tool_tips_chk.SetCheck(m_data.show_tree_tool_tips);
     m_update_media_lib_chk.SetCheck(m_data.update_media_lib_when_start_up);
-	m_disable_drag_sort_chk.SetCheck(m_data.disable_drag_sort);
+    m_disable_drag_sort_chk.SetCheck(m_data.disable_drag_sort);
 
     for (const auto& str : m_data.media_folders)
         m_dir_list_ctrl.AddString(str.c_str());
@@ -89,19 +89,19 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), CCommon::LoadText(IDS_CLEAR_DATA_FILE_TIP_INFO));
     m_toolTip.AddTool(&m_update_media_lib_chk, CCommon::LoadText(IDS_UPDATE_MEDIA_LIB_TIP));
 
-	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_FILE_NAME));
-	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE));
-	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_ARTIST) + _T(" - ") + CCommon::LoadText(IDS_TITLE));
-	m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE) + _T(" - ") + CCommon::LoadText(IDS_ARTIST));
-	m_playlist_display_mode_combo.SetCurSel(static_cast<int>(m_data.display_format));
+    m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_FILE_NAME));
+    m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE));
+    m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_ARTIST) + _T(" - ") + CCommon::LoadText(IDS_TITLE));
+    m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE) + _T(" - ") + CCommon::LoadText(IDS_ARTIST));
+    m_playlist_display_mode_combo.SetCurSel(static_cast<int>(m_data.display_format));
 
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_ALL));
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_TODAY));
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_THREE_DAYS));
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_WEEK));
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_MONTH));
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_HALF_YEAR));
-	m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_YEAR));
+    m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_ALL));
+    m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_TODAY));
+    m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_THREE_DAYS));
+    m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_WEEK));
+    m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_MONTH));
+    m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_HALF_YEAR));
+    m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_YEAR));
     m_recent_played_range_combo.SetCurSel(static_cast<int>(m_data.recent_played_range));
 
     m_ignore_exist_chk.SetCheck(m_data.ignore_songs_already_in_playlist);
@@ -112,6 +112,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_YEAR_CHECK, m_data.display_item & MLDI_YEAR);
     CheckDlgButton(IDC_FILE_TYPE_CHECK, m_data.display_item & MLDI_TYPE);
     CheckDlgButton(IDC_BITRATE_CHECK, m_data.display_item & MLDI_BITRATE);
+    CheckDlgButton(IDC_RATING_CHECK, m_data.display_item & MLDI_RATING);
     CheckDlgButton(IDC_ALL_CHECK, m_data.display_item & MLDI_ALL);
     CheckDlgButton(IDC_RECENT_CHECK, m_data.display_item & MLDI_RECENT);
     CheckDlgButton(IDC_FOLDER_EXPLORE_CHECK, m_data.display_item & MLDI_FOLDER_EXPLORE);
@@ -159,7 +160,7 @@ void CMediaLibSettingDlg::OnBnClickedDeleteButton()
 {
     // TODO: 在此添加控件通知处理程序代码
     int index = m_dir_list_ctrl.GetCurSel();
-    if(index >= 0 && index < m_data.media_folders.size())
+    if (index >= 0 && index < m_data.media_folders.size())
     {
         m_data.media_folders.erase(m_data.media_folders.begin() + index);
         m_dir_list_ctrl.DeleteItem(index);
@@ -190,27 +191,27 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
         if (dlg.IsCleanFileNotInMediaLibDir())
         {
             clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
-            {
-                for (const auto& dir : m_data.media_folders)
                 {
-                    if (song.file_path.find(dir) == 0)
+                    for (const auto& dir : m_data.media_folders)
                     {
-                        return false;
+                        if (song.file_path.find(dir) == 0)
+                        {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            });
+                    return true;
+                });
         }
         if (dlg.IsCleanFileWrong())
         {
             clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
-            {
-                bool length_is_zero = (song.lengh.isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
-                bool path_invalid = (!CCommon::IsPath(song.file_path) || song.file_path.back() == L'/' || song.file_path.back() == L'\\');
-                return length_is_zero || path_invalid;
-            });
+                {
+                    bool length_is_zero = (song.lengh.isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
+                    bool path_invalid = (!CCommon::IsPath(song.file_path) || song.file_path.back() == L'/' || song.file_path.back() == L'\\');
+                    return length_is_zero || path_invalid;
+                });
         }
-        if(clear_cnt > 0)
+        if (clear_cnt > 0)
             theApp.SaveSongData();		//清理后将数据写入文件
 
         size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
@@ -237,34 +238,34 @@ BOOL CMediaLibSettingDlg::PreTranslateMessage(MSG* pMsg)
 
 void CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn()
 {
-	// TODO: 在此添加控件通知处理程序代码
+    // TODO: 在此添加控件通知处理程序代码
 
-	//清除歌曲的上次播放时间
-	if(MessageBox(CCommon::LoadText(IDS_CLEAR_RECENT_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
-	{
+    //清除歌曲的上次播放时间
+    if (MessageBox(CCommon::LoadText(IDS_CLEAR_RECENT_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+    {
         CSongDataManager::GetInstance().ClearLastPlayedTime();
         ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_PLAYED_LIST_CLEARED, 0, 0);
-	}
+    }
 }
 
 
 void CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck()
 {
-	// TODO: Add your control notification handler code here
-	m_data.disable_drag_sort = (m_disable_drag_sort_chk.GetCheck() != 0);
+    // TODO: Add your control notification handler code here
+    m_data.disable_drag_sort = (m_disable_drag_sort_chk.GetCheck() != 0);
 }
 
 
 void CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo()
 {
-	// TODO: Add your control notification handler code here
-	m_data.display_format = static_cast<DisplayFormat>(m_playlist_display_mode_combo.GetCurSel());
+    // TODO: Add your control notification handler code here
+    m_data.display_format = static_cast<DisplayFormat>(m_playlist_display_mode_combo.GetCurSel());
 }
 
 
 void CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo()
 {
-	// TODO: Add your control notification handler code here
+    // TODO: Add your control notification handler code here
     m_data.recent_played_range = static_cast<RecentPlayedRange>(m_recent_played_range_combo.GetCurSel());
 }
 
@@ -292,6 +293,8 @@ void CMediaLibSettingDlg::OnOK()
         m_data.display_item |= MLDI_TYPE;
     if (IsDlgButtonChecked(IDC_BITRATE_CHECK))
         m_data.display_item |= MLDI_BITRATE;
+    if (IsDlgButtonChecked(IDC_RATING_CHECK))
+        m_data.display_item |= MLDI_RATING;
     if (IsDlgButtonChecked(IDC_ALL_CHECK))
         m_data.display_item |= MLDI_ALL;
     if (IsDlgButtonChecked(IDC_RECENT_CHECK))

@@ -9,15 +9,15 @@
 
 class CMediaLibDlg : public CDialog
 {
-	DECLARE_DYNAMIC(CMediaLibDlg)
+    DECLARE_DYNAMIC(CMediaLibDlg)
 
 public:
-	CMediaLibDlg(int cur_tab = 0, CWnd* pParent = nullptr);   // 标准构造函数
-	virtual ~CMediaLibDlg();
+    CMediaLibDlg(int cur_tab = 0, CWnd* pParent = nullptr);   // 标准构造函数
+    virtual ~CMediaLibDlg();
 
-// 对话框数据
+    // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_MEDIA_LIB_DIALOG };
+    enum { IDD = IDD_MEDIA_LIB_DIALOG };
 #endif
 
 public:
@@ -29,8 +29,9 @@ public:
     CMediaClassifyDlg m_year_dlg{ CMediaClassifier::CT_YEAR };
     CMediaClassifyDlg m_type_dlg{ CMediaClassifier::CT_TYPE };
     CMediaClassifyDlg m_bitrate_dlg{ CMediaClassifier::CT_BITRATE };
-	CAllMediaDlg m_all_media_dlg{ CAllMediaDlg::DT_ALL_MEDIA };
-	CAllMediaDlg m_recent_media_dlg{ CAllMediaDlg::DT_RECENT_MEDIA };
+    CMediaClassifyDlg m_rating_dlg{ CMediaClassifier::CT_RATING };
+    CAllMediaDlg m_all_media_dlg{ CAllMediaDlg::DT_ALL_MEDIA };
+    CAllMediaDlg m_recent_media_dlg{ CAllMediaDlg::DT_RECENT_MEDIA };
     CFolderExploreDlg m_folder_explore_dlg;
 
     void SetCurTab(int tab);
@@ -45,9 +46,9 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 private:
     CTabCtrlEx m_tab_ctrl;

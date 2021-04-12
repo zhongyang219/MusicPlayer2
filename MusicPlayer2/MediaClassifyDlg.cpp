@@ -18,7 +18,7 @@
 IMPLEMENT_DYNAMIC(CMediaClassifyDlg, CMediaLibTabDlg)
 
 CMediaClassifyDlg::CMediaClassifyDlg(CMediaClassifier::ClassificationType type, CWnd* pParent /*=nullptr*/)
-	: CMediaLibTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type),
+    : CMediaLibTabDlg(IDD_MEDIA_CLASSIFY_DIALOG, pParent), m_type(type),
     m_classifer(type, theApp.m_media_lib_setting_data.hide_only_one_classification)
 {
     if (m_type == CMediaClassifier::CT_ARTIST)
@@ -66,7 +66,7 @@ void CMediaClassifyDlg::GetSongsSelected(std::vector<wstring>& song_list) const
         //            song_list.push_back(iter->second[index].file_path);
         //    }
         //}
-        
+
         for (int index : m_right_selected_items)
         {
             wstring file_path = m_song_list_ctrl.GetItemText(index, COL_PATH).GetString();
@@ -88,15 +88,15 @@ void CMediaClassifyDlg::GetSongsSelected(std::vector<wstring>& song_list) const
 
 void CMediaClassifyDlg::RefreshData()
 {
-	m_classifer.SetHideOnlyOneClassification(theApp.m_media_lib_setting_data.hide_only_one_classification);
-	if(m_initialized)
-	{
-		m_classifer.ClassifyMedia();
-		ShowClassifyList();
-	}
+    m_classifer.SetHideOnlyOneClassification(theApp.m_media_lib_setting_data.hide_only_one_classification);
+    if (m_initialized)
+    {
+        m_classifer.ClassifyMedia();
+        ShowClassifyList();
+    }
 }
 
-bool CMediaClassifyDlg::SetLeftListSel(const wstring & item)
+bool CMediaClassifyDlg::SetLeftListSel(const wstring& item)
 {
     int list_size = static_cast<int>(m_list_data_left.size());
     //遍历左侧列表，寻找匹配匹配的项目
@@ -160,10 +160,10 @@ void CMediaClassifyDlg::ShowClassifyList()
 {
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
-	m_list_data_left.clear();
-	for(const auto& item : media_list)
+    m_list_data_left.clear();
+    for (const auto& item : media_list)
     {
-        if(item.first == STR_OTHER_CLASSIFY_TYPE)       //跳过“其他”分类
+        if (item.first == STR_OTHER_CLASSIFY_TYPE)       //跳过“其他”分类
             continue;
 
         wstring item_name = item.first;
@@ -175,29 +175,29 @@ void CMediaClassifyDlg::ShowClassifyList()
         CListCtrlEx::RowData row_data;
         row_data[0] = item_name;
         row_data[1] = std::to_wstring(item.second.size());
-		m_list_data_left.push_back(std::move(row_data));
+        m_list_data_left.push_back(std::move(row_data));
     }
 
     if (m_type == CMediaClassifier::CT_BITRATE)
     {
         //如果类型是比特率，则对其进行自定义排序
         std::sort(m_list_data_left.begin(), m_list_data_left.end(), [](const CListCtrlEx::RowData& a, const CListCtrlEx::RowData& b)
-        {
-            wstring str_a = a.at(0);
-            wstring str_b = b.at(0);
-
-            auto normalize_string = [](wstring& str)
             {
-                if (!str.empty() && (str[0]<L'0' || str[0] > L'9'))
-                    str = str.substr(1);
-                if (str.size() < 5)
-                    str = wstring(5 - str.size(), L'0') + str;
-            };
+                wstring str_a = a.at(0);
+                wstring str_b = b.at(0);
 
-            normalize_string(str_a);
-            normalize_string(str_b);
-            return str_a < str_b;
-        });
+                auto normalize_string = [](wstring& str)
+                {
+                    if (!str.empty() && (str[0] < L'0' || str[0] > L'9'))
+                        str = str.substr(1);
+                    if (str.size() < 5)
+                        str = wstring(5 - str.size(), L'0') + str;
+                };
+
+                normalize_string(str_a);
+                normalize_string(str_b);
+                return str_a < str_b;
+            });
     }
 
     //将“其他”分类放到列表的最后面
@@ -208,7 +208,7 @@ void CMediaClassifyDlg::ShowClassifyList()
         CListCtrlEx::RowData row_data;
         row_data[0] = wstring(item_name);
         row_data[1] = std::to_wstring(iter->second.size());
-		m_list_data_left.push_back(std::move(row_data));
+        m_list_data_left.push_back(std::move(row_data));
     }
     m_classify_list_ctrl.SetListData(&m_list_data_left);
 }
@@ -218,7 +218,7 @@ void CMediaClassifyDlg::ShowSongList()
     CWaitCursor wait_cursor;
     auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
 
-	m_list_data.clear();
+    m_list_data.clear();
     for (int index : m_left_selected_items)
     {
         CString str_selected = GetClassifyListSelectedString(index);
@@ -240,7 +240,7 @@ void CMediaClassifyDlg::ShowSongList()
                 row_data[COL_GENRE] = song.GetGenre();
                 row_data[COL_BITRATE] = (song.bitrate == 0 ? L"-" : std::to_wstring(song.bitrate));
                 row_data[COL_PATH] = song.file_path;
-				m_list_data.push_back(std::move(row_data));
+                m_list_data.push_back(std::move(row_data));
             }
         }
     }
@@ -294,7 +294,7 @@ bool CMediaClassifyDlg::IsItemMatchKeyWord(const SongInfo& song, const wstring& 
 {
     if (m_type == CMediaClassifier::CT_ARTIST)
         return IsItemMatchKeyWord(song.artist, key_word);
-    else if(m_type == CMediaClassifier::CT_ALBUM)
+    else if (m_type == CMediaClassifier::CT_ALBUM)
         return IsItemMatchKeyWord(song.album, key_word);
     else if (m_type == CMediaClassifier::CT_GENRE)
         return IsItemMatchKeyWord(song.genre, key_word);
@@ -353,8 +353,8 @@ void CMediaClassifyDlg::OnTabEntered()
     SetButtonsEnable();
     if (!m_initialized)
     {
-		CWaitCursor wait_cursor;
-		m_classifer.ClassifyMedia();
+        CWaitCursor wait_cursor;
+        m_classifer.ClassifyMedia();
         ShowClassifyList();
         m_initialized = true;
     }
@@ -364,12 +364,12 @@ bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
 {
     std::wstring default_name;
     //如果选中了左侧列表，则添加到新建播放列表时名称自动填上选中项的名称
-    if(m_classify_selected != STR_OTHER_CLASSIFY_TYPE)
+    if (m_classify_selected != STR_OTHER_CLASSIFY_TYPE)
         default_name = m_classify_selected;
 
     auto getSongList = [&](std::vector<SongInfo>& song_list)
     {
-		CMediaLibTabDlg::GetSongsSelected(song_list);
+        CMediaLibTabDlg::GetSongsSelected(song_list);
     };
     CMusicPlayerCmdHelper cmd_helper(this);
     return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);
@@ -385,36 +385,36 @@ void CMediaClassifyDlg::CalculateClassifyListColumeWidth(std::vector<int>& width
     width[0] = rect.Width() - width[1] - theApp.DPI(20) - 1;
 }
 
-const CListCtrlEx & CMediaClassifyDlg::GetSongListCtrl() const
+const CListCtrlEx& CMediaClassifyDlg::GetSongListCtrl() const
 {
-	return m_song_list_ctrl;
+    return m_song_list_ctrl;
 }
 
 int CMediaClassifyDlg::GetItemSelected() const
 {
-	return m_right_selected_item;
+    return m_right_selected_item;
 }
 
 const vector<int>& CMediaClassifyDlg::GetItemsSelected() const
 {
-	return m_right_selected_items;
+    return m_right_selected_items;
 }
 
 void CMediaClassifyDlg::AfterDeleteFromDisk(const std::vector<SongInfo>& files)
 {
-	//删除成功，则刷新列表
-	m_classifer.RemoveFiles(files);
-	ShowSongList();
+    //删除成功，则刷新列表
+    m_classifer.RemoveFiles(files);
+    ShowSongList();
 }
 
 int CMediaClassifyDlg::GetPathColIndex() const
 {
-	return COL_PATH;
+    return COL_PATH;
 }
 
 wstring CMediaClassifyDlg::GetSelectedString() const
 {
-	return wstring(m_selected_string);
+    return wstring(m_selected_string);
 }
 
 void CMediaClassifyDlg::DoDataExchange(CDataExchange* pDX)
@@ -468,6 +468,8 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         title_name = CCommon::LoadText(IDS_FILE_TYPE);
     else if (m_type == CMediaClassifier::CT_BITRATE)
         title_name = CCommon::LoadText(IDS_BITRATE);
+    else if (m_type == CMediaClassifier::CT_RATING)
+        title_name = CCommon::LoadText(IDS_RATING);
     CRect rc_classify_list;
     m_classify_list_ctrl.GetWindowRect(rc_classify_list);
     std::vector<int> width;
@@ -487,11 +489,11 @@ BOOL CMediaClassifyDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
     m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
     m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
-	m_song_list_ctrl.SetCtrlAEnable(true);
+    m_song_list_ctrl.SetCtrlAEnable(true);
 
     if (m_type == CMediaClassifier::CT_ARTIST)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ARTIST), TRUE);
-    else if(m_type == CMediaClassifier::CT_ALBUM)
+    else if (m_type == CMediaClassifier::CT_ALBUM)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ALBUM), TRUE);
     else if (m_type == CMediaClassifier::CT_GENRE)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_GENRE), TRUE);
@@ -501,6 +503,8 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FILE_TYPE), TRUE);
     else if (m_type == CMediaClassifier::CT_BITRATE)
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_BITRATE), TRUE);
+    else if (m_type == CMediaClassifier::CT_RATING)
+        m_search_edit.EnableWindow(FALSE);
     else
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
@@ -509,7 +513,7 @@ BOOL CMediaClassifyDlg::OnInitDialog()
 }
 
 
-void CMediaClassifyDlg::OnNMClickClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
+void CMediaClassifyDlg::OnNMClickClassifyList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -518,7 +522,7 @@ void CMediaClassifyDlg::OnNMClickClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
+void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -573,7 +577,7 @@ afx_msg LRESULT CMediaClassifyDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM 
 }
 
 
-void CMediaClassifyDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+void CMediaClassifyDlg::OnNMClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -582,7 +586,7 @@ void CMediaClassifyDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CMediaClassifyDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+void CMediaClassifyDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -599,7 +603,7 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
             m_song_list_ctrl.ShowPopupMenu(pMenu, pNMItemActivate->iItem, this);
         }
     }
-    
+
     *pResult = 0;
 }
 
@@ -637,7 +641,7 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 
 
 
-void CMediaClassifyDlg::OnNMDblclkClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
+void CMediaClassifyDlg::OnNMDblclkClassifyList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -646,7 +650,7 @@ void CMediaClassifyDlg::OnNMDblclkClassifyList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CMediaClassifyDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
+void CMediaClassifyDlg::OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -655,12 +659,12 @@ void CMediaClassifyDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMHEADER phdr = reinterpret_cast<LPNMHEADER>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
 
-    if(phdr->hdr.hwndFrom == m_song_list_ctrl.GetHeaderCtrl()->GetSafeHwnd())
+    if (phdr->hdr.hwndFrom == m_song_list_ctrl.GetHeaderCtrl()->GetSafeHwnd())
     {
         static bool ascending = false;
         ascending = !ascending;

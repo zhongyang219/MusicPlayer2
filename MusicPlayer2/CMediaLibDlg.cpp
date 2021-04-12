@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(CMediaLibDlg, CDialog)
 
 CMediaLibDlg::CMediaLibDlg(int cur_tab, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_MEDIA_LIB_DIALOG, pParent), m_init_tab(cur_tab)
+    : CDialog(IDD_MEDIA_LIB_DIALOG, pParent), m_init_tab(cur_tab)
 {
 }
 
@@ -109,7 +109,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_path_dlg.Create(IDD_SET_PATH_DIALOG);
     ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
     m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
-    
+
     //播放列表
     m_playlist_dlg.Create(IDD_SELECT_PLAYLIST_DIALOG);
     ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
@@ -156,6 +156,13 @@ BOOL CMediaLibDlg::OnInitDialog()
         m_bitrate_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.convert);
         m_tab_ctrl.AddWindow(&m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
+    }
+    //分级
+    if (theApp.m_media_lib_setting_data.display_item & MLDI_RATING)
+    {
+        m_rating_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        ImageList.Add(theApp.m_icon_set.star);
+        m_tab_ctrl.AddWindow(&m_rating_dlg, CCommon::LoadText(IDS_RATING));
     }
     //所有曲目
     if (theApp.m_media_lib_setting_data.display_item & MLDI_ALL)

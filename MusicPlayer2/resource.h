@@ -656,6 +656,8 @@
 #define IDS_SELECT_ARTIST               526
 #define IDS_LOCATE_TO_CURRENT           527
 #define IDS_UI                          528
+#define IDS_RATING                      529
+#define IDS_UNRATED                     530
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -765,6 +767,8 @@
 #define IDC_RECENT_CHECK                1031
 #define IDC_SLIDER2                     1032
 #define IDC_RECENT_CHECK2               1032
+#define IDC_BITRATE_CHECK2              1032
+#define IDC_RATING_CHECK                1032
 #define IDC_TRANSPARENT_STATIC          1033
 #define IDC_SLIDER3                     1033
 #define IDC_FOLDER_EXPLORE_CHECK        1033

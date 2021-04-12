@@ -304,7 +304,8 @@ enum MediaLibDisplayItem
     MLDI_BITRATE = (1 << 5),
     MLDI_ALL = (1 << 6),
     MLDI_RECENT = (1 << 7),
-    MLDI_FOLDER_EXPLORE = (1 << 8)
+    MLDI_FOLDER_EXPLORE = (1 << 8),
+    MLDI_RATING = (1 << 9)
 };
 
 struct MediaLibSettingData

@@ -29,7 +29,7 @@ void CMediaClassifier::ClassifyMedia()
     m_media_list.clear();
     for (const auto& song_info : CSongDataManager::GetInstance().GetSongData())
     {
-        if(song_info.first.empty())
+        if (song_info.first.empty())
             continue;
 
         std::vector<std::wstring> item_names;
@@ -39,7 +39,7 @@ void CMediaClassifier::ClassifyMedia()
             song_info.second.GetArtistList(item_names);      //有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
             for (auto& item_name : item_names)
                 CCommon::StringNormalize(item_name);
-            if (item_names.empty() || (item_names.size()==1 && item_names[0] == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
+            if (item_names.empty() || (item_names.size() == 1 && item_names[0] == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
             {
                 item_names.clear();
                 item_names.push_back(std::wstring());
@@ -60,7 +60,7 @@ void CMediaClassifier::ClassifyMedia()
                 str_genre.clear();
             item_names.push_back(str_genre);
         }
-            break;
+        break;
         case CMediaClassifier::CT_YEAR:
         {
             wstring str_year = song_info.second.get_year();
@@ -101,11 +101,21 @@ void CMediaClassifier::ClassifyMedia()
             item_names.push_back(str_type);
         }
         break;
+        case CT_RATING:
+        {
+            wstring str_type;
+            if (song_info.second.rating >= 1 && song_info.second.rating <= 5)
+                str_type = std::to_wstring(song_info.second.rating);
+            else
+                str_type = CCommon::LoadText(IDS_UNRATED).GetString();
+            item_names.push_back(str_type);
+            break;
+        }
         default:
             break;
         }
 
-        for(const auto& item_name : item_names)
+        for (const auto& item_name : item_names)
         {
             auto iter = m_media_list.find(item_name);
             if (iter != m_media_list.end())
@@ -134,11 +144,11 @@ void CMediaClassifier::ClassifyMedia()
                 //确保其他类列表里的项目不会重复
                 if (!CCommon::IsItemInVector(other_list, [&](const SongInfo& item) {
                     return item.file_path == iter->second[0].file_path;
-                }))
+                    }))
                 {
                     other_list.push_back(iter->second[0]);
                 }
-                iter = m_media_list.erase(iter);
+                    iter = m_media_list.erase(iter);
             }
             else
             {
@@ -153,7 +163,7 @@ void CMediaClassifier::ClassifyMedia()
             std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.genre < b.genre; });
         //else if (m_type == CT_YEAR)
         //    std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.year < b.year; });
-        if(!other_list.empty())
+        if (!other_list.empty())
             m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }
 
@@ -194,7 +204,7 @@ bool CMediaClassifier::IsStringYear(std::wstring str)
         return false;
     str.resize(4);
 
-    for (size_t i = 0; i< 4; i++)
+    for (size_t i = 0; i < 4; i++)
     {
         if (str[i] < L'0' || str[i] > L'9')
             return false;
@@ -228,5 +238,5 @@ void CMediaClassifier::RemoveFiles(std::vector<SongInfo> songs)
 
 void CMediaClassifier::SetHideOnlyOneClassification(bool hide_only_one_classification)
 {
-	m_hide_only_one_classification = hide_only_one_classification;
+    m_hide_only_one_classification = hide_only_one_classification;
 }

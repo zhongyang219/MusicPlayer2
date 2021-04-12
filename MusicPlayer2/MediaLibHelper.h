@@ -28,7 +28,8 @@ public:
         CT_GENRE,
         CT_YEAR,
         CT_TYPE,
-        CT_BITRATE
+        CT_BITRATE,
+        CT_RATING
     };
 
     typedef std::map<std::wstring, std::vector<SongInfo>, StringComparerNoCase> MediaList;      //定义保存分类结果的map容器，使用不区分大小写的比较器，以实现分类时不区分大小写
@@ -43,7 +44,7 @@ public:
     static bool IsStringYear(std::wstring str);
     void ClearResult();
     void RemoveFiles(std::vector<SongInfo> songs);      //从结果中删除指定文件
-	void SetHideOnlyOneClassification(bool hide_only_one_classification);
+    void SetHideOnlyOneClassification(bool hide_only_one_classification);
 
 private:
 
@@ -52,4 +53,3 @@ private:
     ClassificationType m_type;
     bool m_hide_only_one_classification;       //如果为true，则把只有一项的类别归到“其他”里面
 };
-
