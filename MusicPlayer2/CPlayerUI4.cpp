@@ -76,9 +76,9 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
         //}
         //else
         //{
-            text_color = ColorTable::WHITE;
-            back_color = GRAY(64);
-            alpha = 108;
+        text_color = ColorTable::WHITE;
+        back_color = GRAY(64);
+        alpha = 108;
         //}
 
         if (IsDrawBackgroundAlpha())
@@ -189,7 +189,7 @@ void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
                 m_draw.FillRect(rect_lyric, m_colors.color_lyric_back);
         }
         rect_lyric.DeflateRect(DPI(4), DPI(4));
-        m_draw.DrawLryicCommon(rect_lyric, theApp.m_app_setting_data.lyric_align);
+        m_draw.DrawLryicCommon(rect_lyric, theApp.m_lyric_setting_data.lyric_align);
         m_draw_data.lyric_rect = rect_lyric;        //保存歌词区域
     }
 

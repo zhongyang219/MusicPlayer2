@@ -47,7 +47,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         CRect rc_tmp;
 
         //全屏模式时在右上角绘制时间
-        if(m_ui_data.full_screen)
+        if (m_ui_data.full_screen)
         {
             DrawCurrentTime();
         }
@@ -225,7 +225,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
                     m_draw.FillRect(background_rect, m_colors.color_lyric_back);
             }
 
-            m_draw.DrawLryicCommon(rc_tmp, theApp.m_app_setting_data.lyric_align);
+            m_draw.DrawLryicCommon(rc_tmp, theApp.m_lyric_setting_data.lyric_align);
         }
 
         //绘制音量调整按钮
@@ -328,7 +328,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         }
         m_draw_data.lyric_rect = rc_tmp;
         rc_tmp.DeflateRect(Margin(), m_layout.margin);
-        m_draw.DrawLryicCommon(rc_tmp, theApp.m_app_setting_data.lyric_align);
+        m_draw.DrawLryicCommon(rc_tmp, theApp.m_lyric_setting_data.lyric_align);
 
         //绘制音量调整按钮
         DrawVolumnAdjBtn();
@@ -353,4 +353,3 @@ int CPlayerUI2::GetClassId()
 {
     return 2000;
 }
-

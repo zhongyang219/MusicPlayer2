@@ -26,14 +26,14 @@ void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align)
 int CUIDrawer::GetLyricTextHeight() const
 {
     //计算文本高度
-    if(!m_for_cortana_lyric)
+    if (!m_for_cortana_lyric)
         m_pDC->SelectObject(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
     else
         m_pDC->SelectObject(&theApp.m_font_set.cortana.GetFont());
     return m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
 }
 
-void CUIDrawer::Create(CDC * pDC, CWnd * pMainWnd)
+void CUIDrawer::Create(CDC* pDC, CWnd* pMainWnd)
 {
     CDrawCommon::Create(pDC, pMainWnd);
 }
@@ -57,7 +57,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     }
     else
     {
-        line_space = theApp.m_app_setting_data.lyric_line_space;
+        line_space = theApp.m_lyric_setting_data.lyric_line_space;
         if (theApp.m_ui_data.full_screen)
             line_space = static_cast<int>(line_space * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     }

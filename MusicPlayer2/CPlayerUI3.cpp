@@ -113,8 +113,8 @@ void CPlayerUI3::_DrawInfo(bool reset /*= false*/)
     //绘制更换界面按钮
     //if (m_draw_rect.Width() > DPI(360))
     //{
-        rc_tmp.MoveToX(rc_tmp.right);
-        DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
+    rc_tmp.MoveToX(rc_tmp.right);
+    DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
     //}
     //else
     //{
@@ -193,7 +193,7 @@ void CPlayerUI3::_DrawInfo(bool reset /*= false*/)
             m_draw.FillRect(rc_lyric, m_colors.color_lyric_back);
     }
     rc_lyric.DeflateRect(Margin(), Margin());
-    m_draw.DrawLryicCommon(rc_lyric, theApp.m_app_setting_data.lyric_align);
+    m_draw.DrawLryicCommon(rc_lyric, theApp.m_lyric_setting_data.lyric_align);
 
     //全屏模式时在右上角绘制时间
     if (m_ui_data.full_screen)

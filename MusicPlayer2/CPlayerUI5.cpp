@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "CPlayerUI5.h"
 
-CPlayerUI5::CPlayerUI5(UIData & ui_data, CWnd * pMainWnd)
+CPlayerUI5::CPlayerUI5(UIData& ui_data, CWnd* pMainWnd)
     : CPlayerUIBase(ui_data, pMainWnd)
 {
 }
@@ -48,7 +48,7 @@ void CPlayerUI5::_DrawInfo(bool reset)
         }
         m_draw_data.lyric_rect = rect_lyric;        //保存歌词区域
         rect_lyric.DeflateRect(DPI(4), DPI(4));
-        m_draw.DrawLryicCommon(rect_lyric, theApp.m_app_setting_data.lyric_align);
+        m_draw.DrawLryicCommon(rect_lyric, theApp.m_lyric_setting_data.lyric_align);
     }
 
     //绘制专辑封面和歌曲信息
@@ -137,7 +137,7 @@ void CPlayerUI5::_DrawInfo(bool reset)
     //绘制媒体库按钮
     rect_btn.MoveToX(rect_btn.left - btn_size);
     DrawUIButton(btnRectChg(rect_btn), m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
-    
+
     //绘制频谱分析
     if (theApp.m_app_setting_data.show_spectrum)
     {

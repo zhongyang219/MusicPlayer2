@@ -65,7 +65,7 @@ void CPlayerUI::_DrawInfo(bool reset)
         //swprintf_s(buff, L"%d bpm", midi_info.speed);
         //lable3_content = buff;
 
-        lable3_str = CCommon::LoadText(IDS_SOUND_FONT, _T(": ")) ;
+        lable3_str = CCommon::LoadText(IDS_SOUND_FONT, _T(": "));
         lable3_content = CPlayer::GetInstance().GetSoundFontName();
     }
     else
@@ -168,7 +168,7 @@ void CPlayerUI::_DrawInfo(bool reset)
                 m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
         }
 
-        m_draw.DrawLryicCommon(lyric_rect, theApp.m_app_setting_data.lyric_align);
+        m_draw.DrawLryicCommon(lyric_rect, theApp.m_lyric_setting_data.lyric_align);
     }
     else
     {
@@ -259,7 +259,7 @@ void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
     //CDrawCommon::SetDrawArea(pDC, lyric_area);
 
     //绘制歌词文本
-    m_draw.DrawLryicCommon(lyric_area, theApp.m_app_setting_data.lyric_align);
+    m_draw.DrawLryicCommon(lyric_area, theApp.m_lyric_setting_data.lyric_align);
 }
 
 CSize CPlayerUI::SpectralSize()
@@ -364,4 +364,3 @@ int CPlayerUI::GetClassId()
 {
     return 1000;
 }
-

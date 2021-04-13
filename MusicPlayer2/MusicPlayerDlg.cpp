@@ -316,11 +316,11 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.cortana_info_enable);
     ini.WriteBool(L"config", L"cortana_show_lyric", theApp.m_lyric_setting_data.cortana_show_lyric);
     ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
-    ini.WriteString(L"config", L"font", theApp.m_app_setting_data.lyric_font.name);
-    ini.WriteInt(L"config", L"font_size", theApp.m_app_setting_data.lyric_font.size);
-    ini.WriteInt(L"config", L"font_style", theApp.m_app_setting_data.lyric_font.style.ToInt());
-    ini.WriteInt(L"config", L"lyric_line_space", theApp.m_app_setting_data.lyric_line_space);
-    ini.WriteInt(L"config", L"lyric_align", static_cast<int>(theApp.m_app_setting_data.lyric_align));
+    ini.WriteString(L"config", L"font", theApp.m_lyric_setting_data.lyric_font.name);
+    ini.WriteInt(L"config", L"font_size", theApp.m_lyric_setting_data.lyric_font.size);
+    ini.WriteInt(L"config", L"font_style", theApp.m_lyric_setting_data.lyric_font.style.ToInt());
+    ini.WriteInt(L"config", L"lyric_line_space", theApp.m_lyric_setting_data.lyric_line_space);
+    ini.WriteInt(L"config", L"lyric_align", static_cast<int>(theApp.m_lyric_setting_data.lyric_align));
     ini.WriteInt(L"config", L"spectrum_height", theApp.m_app_setting_data.sprctrum_height);
     ini.WriteBool(L"config", L"cortana_lyric_double_line", theApp.m_lyric_setting_data.cortana_lyric_double_line);
     ini.WriteBool(L"config", L"show_spectrum", theApp.m_app_setting_data.show_spectrum);
@@ -463,11 +463,11 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.cortana_show_lyric = ini.GetBool(L"config", L"cortana_show_lyric", true);
     theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
     theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
-    theApp.m_app_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
-    theApp.m_app_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
-    theApp.m_app_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
-    theApp.m_app_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 4);
-    theApp.m_app_setting_data.lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"lyric_align", 2));
+    theApp.m_lyric_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
+    theApp.m_lyric_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
+    theApp.m_lyric_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
+    theApp.m_lyric_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 4);
+    theApp.m_lyric_setting_data.lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"lyric_align", 2));
     theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 80);
     theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(L"config", L"cortana_lyric_double_line", true);
     theApp.m_app_setting_data.show_spectrum = ini.GetBool(L"config", L"show_spectrum", 1);
@@ -1071,14 +1071,14 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     ThemeColorChanged();
     ApplyThemeColor();
 
-    if (optionDlg.m_tab2_dlg.FontChanged())
+    if (optionDlg.m_tab1_dlg.FontChanged())
     {
-        theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
-        FontInfo translate_font = theApp.m_app_setting_data.lyric_font;
+        theApp.m_font_set.lyric.SetFont(theApp.m_lyric_setting_data.lyric_font);
+        FontInfo translate_font = theApp.m_lyric_setting_data.lyric_font;
         translate_font.size--;
         theApp.m_font_set.lyric_translate.SetFont(translate_font);
     }
-    if (optionDlg.m_tab1_dlg.FontChanged())
+    if (optionDlg.m_tab1_dlg.SearchBoxFontChanged())
     {
         CCortanaLyric::InitFont();
     }
@@ -1855,8 +1855,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     InitUiMenu();
 
     //初始化歌词字体
-    theApp.m_font_set.lyric.SetFont(theApp.m_app_setting_data.lyric_font);
-    FontInfo translate_font = theApp.m_app_setting_data.lyric_font;
+    theApp.m_font_set.lyric.SetFont(theApp.m_lyric_setting_data.lyric_font);
+    FontInfo translate_font = theApp.m_lyric_setting_data.lyric_font;
     translate_font.size--;
     theApp.m_font_set.lyric_translate.SetFont(translate_font);
 

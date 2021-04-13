@@ -201,6 +201,10 @@ struct LyricSettingData
 
     LyricSavePolicy lyric_save_policy{};		//歌词自动保存策略
 
+    FontInfo lyric_font;						//歌词字体
+    int lyric_line_space{ 2 };					//歌词的行间距
+    Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
+
     bool cortana_info_enable{};				    //是否允许在Cortana的搜索框中显示信息
     bool cortana_show_lyric{ true };            //是否在Cortana搜索框中显示歌词
     bool cortana_lyric_double_line{ true };		//是否在Cortana搜索中以双行显示歌词
@@ -222,9 +226,6 @@ struct LyricSettingData
 
 struct ApperanceSettingData
 {
-    FontInfo lyric_font;						//歌词字体
-    int lyric_line_space{ 2 };					//歌词的行间距
-    Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
     int window_transparency{ 100 };				//窗口透明度
     ColorTable theme_color;						//主题颜色
     bool theme_color_follow_system{ true };		//主题颜色跟随系统（仅Win8以上支持）

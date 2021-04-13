@@ -675,7 +675,6 @@
 #define IDC_LIST_NEXT                   1012
 #define IDC_BUTTON1                     1012
 #define IDC_FIND_BUTTON                 1012
-#define IDC_SET_FONT_BUTTON             1012
 #define IDC_PREVIOUS_BUTTON             1012
 #define IDC_INSERT_TAG_BUTTON           1012
 #define IDC_CLEAN_DATA_FILE_BUTTON      1012
@@ -704,6 +703,7 @@
 #define IDC_ARTIST_BUTTON               1013
 #define IDC_VOLUME_DOWN                 1014
 #define IDC_ALBUM_BUTTON                1014
+#define IDC_SET_FONT_BUTTON             1014
 #define IDC_PLAYLIST_LIST               1015
 #define IDC_TRACK_BUTTON                1015
 #define IDC_FIND_EDIT                   1016
@@ -762,6 +762,7 @@
 #define IDC_BITRATE_CHECK               1029
 #define IDC_EXPLORE_LYRIC_BUTTON        1030
 #define IDC_ALL_CHECK                   1030
+#define IDC_FONT_SIZE_EDIT2             1030
 #define IDC_SLIDER1                     1031
 #define IDC_TRANSPARENT_SLIDER          1031
 #define IDC_RECENT_CHECK                1031
@@ -997,6 +998,7 @@
 #define IDC_LYRIC_SAVE_COMBO            1164
 #define IDC_USE_INNER_LYRIC_CHECK       1165
 #define IDC_LYRIC_FILE_STATIC           1166
+#define IDC_ALIGNMENT_COMBO2            1166
 #define IDC_PLAYLIST_DISPLAY_MODE_OMBO  1167
 #define IDC_RECENT_PLAYED_RANGE_OMBO    1168
 #define IDC_DEFAULT_ALBUM_COVER_HQ      1168
