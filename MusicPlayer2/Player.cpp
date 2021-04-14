@@ -1811,6 +1811,56 @@ SongInfo& CPlayer::GetCurrentSongInfo2()
     else return m_no_use;
 }
 
+SongInfo CPlayer::GetNextTrack() const
+{
+    switch (m_repeat_mode)
+    {
+    case RM_PLAY_ORDER:
+    {
+        int index = m_index + 1;
+        if (index >= GetSongNum() || index < 0)
+            return SongInfo();
+        return m_playlist[index];
+    }
+
+    case RM_PLAY_SHUFFLE:
+    {
+        int shuffle_index = m_is_shuffle_list_played ? m_shuffle_index + 1 : m_shuffle_index;
+        if (shuffle_index >= static_cast<int>(m_shuffle_list.size()) || shuffle_index < 0)      //如果shuffle_index大于m_shuffle_list的大小，说明列表中的曲目已经无序播放完一遍，此时无序列表要重新生成，因此下一首曲目是不确定的
+        {
+            return SongInfo();
+        }
+        else
+        {
+            int index = m_shuffle_list[shuffle_index];
+            if (index >= GetSongNum() || index < 0)
+                index = 0;
+            return m_playlist[index];
+        }
+    }
+
+    case RM_PLAY_RANDOM:
+        return SongInfo();
+
+    case RM_LOOP_PLAYLIST:
+    {
+        int index = m_index + 1;
+        if (index >= GetSongNum() || index < 0)
+            index = 0;
+        return m_playlist[index];
+    }
+
+    case RM_LOOP_TRACK:
+        return GetCurrentSongInfo();
+
+    case RM_PLAY_TRACK:
+        return SongInfo();
+
+    default:
+        return SongInfo();
+    }
+}
+
 void CPlayer::SetRelatedSongID(wstring song_id)
 {
     if (m_index >= 0 && m_index < GetSongNum())

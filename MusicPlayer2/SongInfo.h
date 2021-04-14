@@ -289,4 +289,9 @@ struct SongInfo
     {
         return std::to_wstring(song_id);
     }
+
+    bool IsEmpty() const
+    {
+        return file_path.empty() && title.empty() && artist.empty() && album.empty() && comment.empty() && genre.empty() && year == 0 && lengh.isZero();
+    }
 };

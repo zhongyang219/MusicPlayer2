@@ -378,6 +378,9 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteString(L"config", L"default_background", theApp.m_app_setting_data.default_background);
     ini.WriteBool(L"config", L"use_desktop_background", theApp.m_app_setting_data.use_desktop_background);
 
+    ini.WriteBool(L"config", L"show_fps", theApp.m_app_setting_data.show_fps);
+    ini.WriteBool(L"config", L"show_next_track", theApp.m_app_setting_data.show_next_track);
+
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
     ini.WriteInt(L"config", L"cortana_back_color", theApp.m_lyric_setting_data.cortana_color);
@@ -526,6 +529,9 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.playlist_width_percent = ini.GetInt(L"config", L"playlist_width_percent", 50);
     theApp.m_app_setting_data.default_background = ini.GetString(L"config", L"default_background", DEFAULT_BACKGROUND_NAME);
     theApp.m_app_setting_data.use_desktop_background = ini.GetBool(L"config", L"use_desktop_background", false);
+
+    theApp.m_app_setting_data.show_fps = ini.GetBool(L"config", L"show_fps", true);
+    theApp.m_app_setting_data.show_next_track = ini.GetBool(L"config", L"show_next_track", true);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);

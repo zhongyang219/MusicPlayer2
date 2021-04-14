@@ -166,6 +166,8 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_BTN_ROUND_CORNERS_CHECK, &CAppearanceSettingDlg::OnBnClickedBtnRoundCornersCheck)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CAppearanceSettingDlg::OnEditBrowseChanged)
     ON_BN_CLICKED(IDC_USE_DESKTOP_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedUseDesktopBackgroundCheck)
+    ON_BN_CLICKED(IDC_SHOW_NEXT_CHECK, &CAppearanceSettingDlg::OnBnClickedShowNextCheck)
+    ON_BN_CLICKED(IDC_SHOW_FPS_CHECK, &CAppearanceSettingDlg::OnBnClickedShowFpsCheck)
 END_MESSAGE_MAP()
 
 
@@ -275,6 +277,9 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     m_notify_icon_auto_adapt_chk.SetCheck(m_data.notify_icon_auto_adapt);
     m_btn_round_corners_chk.SetCheck(m_data.button_round_corners);
+
+    CheckDlgButton(IDC_SHOW_NEXT_CHECK, m_data.show_next_track);
+    CheckDlgButton(IDC_SHOW_FPS_CHECK, m_data.show_fps);
 
     //设置通知区图标预览区域的位置
     CalculateNotifyIconPreviewRect();
@@ -713,4 +718,18 @@ void CAppearanceSettingDlg::OnBnClickedUseDesktopBackgroundCheck()
     // TODO: 在此添加控件通知处理程序代码
     m_data.use_desktop_background = (IsDlgButtonChecked(IDC_USE_DESKTOP_BACKGROUND_CHECK) != 0);
     SetControlEnable();
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedShowNextCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.show_next_track = (IsDlgButtonChecked(IDC_SHOW_NEXT_CHECK) != 0);
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedShowFpsCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.show_fps = (IsDlgButtonChecked(IDC_SHOW_FPS_CHECK) != 0);
 }

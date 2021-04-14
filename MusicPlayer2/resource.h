@@ -658,6 +658,8 @@
 #define IDS_UI                          528
 #define IDS_RATING                      529
 #define IDS_UNRATED                     530
+#define IDS_RANDOM_TRACK                531
+#define IDS_NEXT_TRACK                  532
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -758,8 +760,11 @@
 #define IDC_SHOW_LYRIC_IN_CORTANA       1028
 #define IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK 1028
 #define IDC_ARTIST_CHECK                1028
+#define IDC_SHOW_NEXT_CHECK             1028
 #define IDC_LYRIC_PATH_EDIT             1029
 #define IDC_BITRATE_CHECK               1029
+#define IDC_SHOW_NEXT_CHECK2            1029
+#define IDC_SHOW_FPS_CHECK              1029
 #define IDC_EXPLORE_LYRIC_BUTTON        1030
 #define IDC_ALL_CHECK                   1030
 #define IDC_FONT_SIZE_EDIT2             1030
