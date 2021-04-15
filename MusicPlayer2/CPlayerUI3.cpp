@@ -44,12 +44,16 @@ void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
     int info_width = rc_tool_bar.Width() / 5;
     if (info_width > DPI(200))
         info_width = DPI(200);
+    wstring str_song_info = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DisplayFormat::DF_ARTIST_TITLE);
+    int text_width = m_draw.GetTextExtent(str_song_info.c_str()).cx + DPI(4);
+    if (info_width > text_width)
+        info_width = text_width;
     CRect rc_tmp = rc_tool_bar;
     int song_info_margin{ draw_album_cover ? DPI(4) : 0 };
     rc_tmp.left = rc_album.right + song_info_margin;
     rc_tmp.right = rc_tmp.left + info_width;
     static CDrawCommon::ScrollInfo scroll_info;
-    m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DisplayFormat::DF_ARTIST_TITLE).c_str(),
+    m_draw.DrawScrollText(rc_tmp, str_song_info.c_str(),
         m_colors.color_text, GetScrollTextPixel(), false, scroll_info, reset);
 
     //绘制循环模式按钮
