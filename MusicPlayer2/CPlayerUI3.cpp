@@ -12,21 +12,10 @@ CPlayerUI3::~CPlayerUI3()
 {
 }
 
-void CPlayerUI3::_DrawInfo(bool reset /*= false*/)
+void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 {
-    m_draw_data.thumbnail_rect = m_draw_rect;
-    CRect draw_rect = m_draw_rect;
+    m_draw_data.thumbnail_rect = draw_rect;
     draw_rect.MoveToXY(0, 0);
-
-    //绘制状态条
-    bool draw_status_bar = CPlayerUIHelper::IsDrawStatusBar();
-    if (draw_status_bar)
-    {
-        CRect rc_status_bar = draw_rect;
-        draw_rect.bottom -= DPI(20);
-        rc_status_bar.top = draw_rect.bottom;
-        DrawStatusBar(rc_status_bar, reset);
-    }
 
     //绘制工具栏
     CRect rc_tool_bar = draw_rect;

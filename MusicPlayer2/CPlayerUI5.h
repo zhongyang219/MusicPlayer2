@@ -8,7 +8,6 @@ public:
     ~CPlayerUI5();
 
 protected:
-    virtual void _DrawInfo(bool reset = false) override;
+    virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
     virtual int GetClassId() override;
 };
-

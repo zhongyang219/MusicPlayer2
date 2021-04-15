@@ -10,19 +10,8 @@ CPlayerUI5::~CPlayerUI5()
 {
 }
 
-void CPlayerUI5::_DrawInfo(bool reset)
+void CPlayerUI5::_DrawInfo(CRect draw_rect, bool reset)
 {
-    CRect draw_rect = m_draw_rect;
-
-    //绘制状态条
-    if (CPlayerUIHelper::IsDrawStatusBar())
-    {
-        CRect rc_status_bar = m_draw_rect;
-        draw_rect.bottom -= DPI(20);
-        rc_status_bar.top = draw_rect.bottom;
-        DrawStatusBar(rc_status_bar, reset);
-    }
-
     if (m_ui_data.full_screen)
     {
         draw_rect.DeflateRect(EdgeMargin(true), EdgeMargin(false));

@@ -16,20 +16,9 @@ CPlayerUI2::~CPlayerUI2()
 {
 }
 
-void CPlayerUI2::_DrawInfo(bool reset)
+void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
 {
-    CRect draw_rect = m_draw_rect;
     draw_rect.MoveToXY(0, 0);
-
-    //绘制状态条
-    bool draw_status_bar = CPlayerUIHelper::IsDrawStatusBar();
-    if (draw_status_bar)
-    {
-        CRect rc_status_bar = draw_rect;
-        draw_rect.bottom -= DPI(20);
-        rc_status_bar.top = draw_rect.bottom;
-        DrawStatusBar(rc_status_bar, reset);
-    }
 
     if (!IsDrawNarrowMode())
     {
@@ -37,7 +26,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         CRect info_rect{ draw_rect };
 
         //留出空间来显示播放控制条
-        if (draw_rect.Width() - 2 * EdgeMargin(true) < m_progress_on_top_threshold)		//如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
+        if (draw_rect.Width() - 2 * EdgeMargin(true) < m_progress_on_top_threshold)     //如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
             info_rect.bottom -= (EdgeMargin(false) + DPI(50));
         else
             info_rect.bottom -= (EdgeMargin(false) + DPI(36));
@@ -70,7 +59,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         m_draw.DrawScrollText(rc_tmp, format_str.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);
 
         //计算专辑封面的位置
-        int bottom_height;		//专辑封面底部到绘图区询问的距离
+        int bottom_height;      //专辑封面底部到绘图区询问的距离
         if (!right_lyric)
             bottom_height = static_cast<int>(info_rect.Height() * 0.41);
         else
@@ -116,7 +105,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
         //double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
         //progress_rect.right = progress_rect.left + static_cast<int>(progress * cover_rect.Width());
         //if(progress_rect.right>progress_rect.left)
-        //	m_draw.FillRect(progress_rect, m_colors.color_spectrum);
+        //  m_draw.FillRect(progress_rect, m_colors.color_spectrum);
 
         int text_height2 = DPI(22);
 
@@ -272,8 +261,8 @@ void CPlayerUI2::_DrawInfo(bool reset)
         if (theApp.m_app_setting_data.show_spectrum)
         {
             rc_tmp.top = rc_tmp.top + rc_tmp.Height() / 2;
-            const int ROWS = 32;		//要显示的频谱柱形的数量
-            int gap_width{ rc_tmp.Width() / 84 };		//频谱柱形间隙宽度
+            const int ROWS = 32;        //要显示的频谱柱形的数量
+            int gap_width{ rc_tmp.Width() / 84 };       //频谱柱形间隙宽度
             int width = (rc_tmp.Width() - (ROWS - 2) * gap_width) / (ROWS - 2);
             COLORREF color;
             if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
@@ -288,7 +277,7 @@ void CPlayerUI2::_DrawInfo(bool reset)
 
 
         //绘制播放状态
-        int text_height{ DPI(18) };		//文本的高度
+        int text_height{ DPI(18) };     //文本的高度
         rc_tmp.MoveToX(cover_side + EdgeMargin(true) + Margin());
         rc_tmp.MoveToY(EdgeMargin(false));
         rc_tmp.right = info_rect.right - EdgeMargin(true) - top_right_icon_size;
@@ -339,13 +328,6 @@ void CPlayerUI2::_DrawInfo(bool reset)
         rc_tmp.right = draw_rect.right - EdgeMargin(true);
         rc_tmp.bottom = draw_rect.bottom - EdgeMargin(false);
         DrawControlBar(rc_tmp);
-    }
-
-    static bool last_draw_status_bar{ false };
-    if (draw_status_bar != last_draw_status_bar)
-    {
-        last_draw_status_bar = draw_status_bar;
-        UpdateToolTipPosition();
     }
 }
 

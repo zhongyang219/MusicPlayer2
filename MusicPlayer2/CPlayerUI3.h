@@ -8,7 +8,6 @@ public:
     ~CPlayerUI3();
 
 private:
-    virtual void _DrawInfo(bool reset = false) override;		//绘制信息
+    virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;       //绘制信息
     virtual int GetClassId() override;
 };
-

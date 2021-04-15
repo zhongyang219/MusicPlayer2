@@ -73,14 +73,34 @@ void CPlayerUIBase::DrawInfo(bool reset)
     //双缓冲绘图
     {
         CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
-        m_draw.SetDC(drawDoubleBuffer.GetMemDC());	//将m_draw中的绘图DC设置为缓冲的DC
+        m_draw.SetDC(drawDoubleBuffer.GetMemDC());  //将m_draw中的绘图DC设置为缓冲的DC
         m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
 
         //绘制背景
         DrawBackground();
 
+        //绘制状态栏
+        CRect draw_rect = m_draw_rect;
+        bool draw_status_bar = IsDrawStatusBar();
+        if (draw_status_bar)
+        {
+            CRect rc_status_bar = draw_rect;
+            draw_rect.bottom -= DPI(20);
+            rc_status_bar.top = draw_rect.bottom;
+            DrawStatusBar(rc_status_bar, reset);
+        }
+
         //绘制界面中其他信息
-        _DrawInfo(reset);
+        _DrawInfo(draw_rect, reset);
+
+        //如果切换了显示/隐藏状态栏，则需要更新鼠标提示的位置
+        static bool last_draw_status_bar{ false };
+        if (draw_status_bar != last_draw_status_bar)
+        {
+            last_draw_status_bar = draw_status_bar;
+            UpdateToolTipPosition();
+        }
+
     }
 
 #endif
@@ -138,9 +158,9 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
         m_show_volume_adj = false;
 
-    CPoint point1;		//定义一个用于确定光标位置的位置
-    GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-    if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))		//如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
+    CPoint point1;      //定义一个用于确定光标位置的位置
+    GetCursorPos(&point1);  //获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
+    if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))     //如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
     {
         CMenu* pMenu = theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
         if (pMenu != NULL)
@@ -179,7 +199,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
             return;
     }
 
-    if (!m_draw_data.lyric_rect.PtInRect(point))	//如果在歌词区域点击了鼠标右键
+    if (!m_draw_data.lyric_rect.PtInRect(point))    //如果在歌词区域点击了鼠标右键
     {
         theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     }
@@ -209,7 +229,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
         song_pos_time.fromInt(static_cast<int>(song_pos));
         CString str;
         static int last_sec{};
-        if (last_sec != song_pos_time.sec)		//只有鼠标指向位置对应的秒数变化了才更新鼠标提示
+        if (last_sec != song_pos_time.sec)      //只有鼠标指向位置对应的秒数变化了才更新鼠标提示
         {
             str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
             UpdateMouseToolTip(BTN_PROGRESS, str);
@@ -227,9 +247,9 @@ void CPlayerUIBase::MouseMove(CPoint point)
 
 void CPlayerUIBase::LButtonUp(CPoint point)
 {
-    if (!m_show_volume_adj)		//如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
+    if (!m_show_volume_adj)     //如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
         m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
-    else		//如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
+    else        //如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
         m_show_volume_adj = (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point));
 
     for (auto& btn : m_buttons)
@@ -477,7 +497,7 @@ void CPlayerUIBase::DrawBackground()
         else
         {
             CSingleLock sync(&m_ui_data.default_background_sync, TRUE);
-            //MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE));	//给缓冲DC的绘图区域填充对话框的背景颜色
+            //MemDC.FillSolidRect(0, 0, m_draw_rect.Width(), m_draw_rect.Height(), GetSysColor(COLOR_BTNFACE)); //给缓冲DC的绘图区域填充对话框的背景颜色
             m_draw.DrawBitmap(m_ui_data.default_background, CPoint(0, 0), m_draw_rect.Size(), CDrawCommon::StretchMode::FILL);
         }
     }
@@ -698,9 +718,9 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
         {
             ////progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
             //if (CPlayer::GetInstance().GetMidiInfo().tempo == 0)
-            //	progress = 0;
+            //  progress = 0;
             //else
-            //	progress = (time.toInt() * 1000 / CPlayer::GetInstance().GetMidiInfo().tempo % 4 + 1) * 250;
+            //  progress = (time.toInt() * 1000 / CPlayer::GetInstance().GetMidiInfo().tempo % 4 + 1) * 250;
             progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 4 + 1) * 250;
         }
         else
@@ -808,7 +828,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton& btn, const IconRes& 
     }
 
     //else if (!theApp.m_app_setting_data.dark_mode)
-    //	m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
+    //  m_draw.FillAlphaRect(rc_tmp, m_colors.color_button_back, alpha);
 
     btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 
@@ -1020,6 +1040,11 @@ int CPlayerUIBase::DrawAreaHeight() const
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
     return theApp.m_app_setting_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
+}
+
+bool CPlayerUIBase::IsDrawStatusBar() const
+{
+    return CPlayerUIHelper::IsDrawStatusBar();
 }
 
 wstring CPlayerUIBase::GetDisplayFormatString()
@@ -1273,7 +1298,7 @@ void CPlayerUIBase::DrawProgess(CRect rect)
     {
         CFont* pOldFont = m_draw.GetFont();
         //设置字体
-        m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
+        m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
 
         double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
         double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
@@ -1560,7 +1585,7 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, LPCTSTR str, bool adj_btn_top)
     }
     if (m_buttons[BTN_VOLUME].pressed)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
-    if (m_buttons[BTN_VOLUME].hover)		//鼠标指向音量区域时，以另外一种颜色显示
+    if (m_buttons[BTN_VOLUME].hover)        //鼠标指向音量区域时，以另外一种颜色显示
         m_draw.DrawWindowText(rect, str, m_colors.color_text_heighlight);
     else
         m_draw.DrawWindowText(rect, str, m_colors.color_text);
@@ -1591,7 +1616,7 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
     else
         info = _T("A-B");
     CFont* pOldFont = m_draw.GetFont();
-    m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));		//AB重复使用小一号字体，即播放时间的字体
+    m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
     DrawTextButton(rect, m_buttons[BTN_AB_REPEAT], info, ab_repeat_mode != CPlayer::AM_NONE);
     m_draw.SetFont(pOldFont);
 }
@@ -1625,12 +1650,12 @@ IconRes* CPlayerUIBase::GetRepeatModeIcon()
 
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 //{
-//	m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
+//  m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
 //}
 //
 //void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 //{
-//	m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1);
+//  m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1);
 //}
 
 void CPlayerUIBase::AddToolTips()

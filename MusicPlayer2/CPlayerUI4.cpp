@@ -10,19 +10,9 @@ CPlayerUI4::~CPlayerUI4()
 {
 }
 
-void CPlayerUI4::_DrawInfo(bool reset /*= false*/)
+void CPlayerUI4::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 {
-    CRect draw_rect = m_draw_rect;
     bool right_lyric = (!m_ui_data.narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > DPI(600);        //是否在界面右侧显示歌词
-
-    //绘制状态条
-    if (CPlayerUIHelper::IsDrawStatusBar())
-    {
-        CRect rc_status_bar = m_draw_rect;
-        draw_rect.bottom -= DPI(20);
-        rc_status_bar.top = draw_rect.bottom;
-        DrawStatusBar(rc_status_bar, reset);
-    }
 
     if (m_ui_data.full_screen)
     {

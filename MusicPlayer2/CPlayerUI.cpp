@@ -12,23 +12,12 @@ CPlayerUI::~CPlayerUI()
 {
 }
 
-void CPlayerUI::_DrawInfo(bool reset)
+void CPlayerUI::_DrawInfo(CRect draw_rect, bool reset)
 {
-    CRect draw_rect{ m_draw_rect };
     draw_rect.MoveToXY(0, 0);
 
-    //绘制状态条
-    bool draw_status_bar = CPlayerUIHelper::IsDrawStatusBar();
-    if (draw_status_bar)
-    {
-        CRect rc_status_bar = draw_rect;
-        draw_rect.bottom -= DPI(20);
-        rc_status_bar.top = draw_rect.bottom;
-        DrawStatusBar(rc_status_bar, reset);
-    }
-
-    CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(true), draw_rect.top + EdgeMargin(false) };		//文本的起始坐标
-    int text_height{ DPI(18) };		//文本的高度
+    CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(true), draw_rect.top + EdgeMargin(false) };       //文本的起始坐标
+    int text_height{ DPI(18) };     //文本的高度
 
     //全屏模式时在右上角绘制时间
     if (m_ui_data.full_screen)
@@ -130,8 +119,8 @@ void CPlayerUI::_DrawInfo(bool reset)
 
     if (theApp.m_app_setting_data.show_spectrum)
     {
-        const int ROWS = 32;		//要显示的频谱柱形的数量
-        int gap_width{ theApp.DPIRound(1, 0.4) };		//频谱柱形间隙宽度
+        const int ROWS = 32;        //要显示的频谱柱形的数量
+        int gap_width{ theApp.DPIRound(1, 0.4) };       //频谱柱形间隙宽度
         int width = (spectral_rect.Width() - (ROWS - 2) * gap_width) / (ROWS - 2);
         COLORREF color;
         if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
@@ -153,7 +142,7 @@ void CPlayerUI::_DrawInfo(bool reset)
     {
         lyric_rect = other_info_rect;
         lyric_rect.MoveToY(other_info_rect.bottom + Margin());
-        if (lyric_rect.Width() >= m_progress_on_top_threshold)		//如果界面宽度足够大导致进度条不显示在按钮上方而是右侧，则歌词区域可以有更大的高度
+        if (lyric_rect.Width() >= m_progress_on_top_threshold)      //如果界面宽度足够大导致进度条不显示在按钮上方而是右侧，则歌词区域可以有更大的高度
             lyric_rect.bottom += DPI(16);
 
         if (draw_rect.bottom - lyric_rect.bottom < DPI(40))
@@ -176,7 +165,7 @@ void CPlayerUI::_DrawInfo(bool reset)
         //{
 
         int control_bar_height;
-        if (draw_rect.Width() - 2 * EdgeMargin(true) < m_progress_on_top_threshold)		//如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
+        if (draw_rect.Width() - 2 * EdgeMargin(true) < m_progress_on_top_threshold)     //如果控制条的宽度小于一定值，则增加其高度，以便将进度条显示在按钮上方
             control_bar_height = DPI(50);
         else
             control_bar_height = DPI(36);
@@ -214,13 +203,6 @@ void CPlayerUI::_DrawInfo(bool reset)
 
     //绘制音量调按钮，因为必须在上层，所以必须在最后绘制
     DrawVolumnAdjBtn();
-
-    static bool last_draw_status_bar{ false };
-    if (draw_status_bar != last_draw_status_bar)
-    {
-        last_draw_status_bar = draw_status_bar;
-        UpdateToolTipPosition();
-    }
 }
 
 void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
@@ -275,22 +257,22 @@ CSize CPlayerUI::SpectralSize()
 
 //void CPlayerUI::RButtonUp(CPoint point)
 //{
-//	CPlayerUIBase::RButtonUp(point);
+//  CPlayerUIBase::RButtonUp(point);
 //
-//	if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
-//		return;
+//  if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))
+//      return;
 //
-//	CPoint point1;		//定义一个用于确定光标位置的位置
-//	GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
+//  CPoint point1;      //定义一个用于确定光标位置的位置
+//  GetCursorPos(&point1);  //获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
 //
-//	if (!m_draw_data.lyric_rect.PtInRect(point))
-//	{
-//		m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
-//	}
-//	else
-//	{
-//		m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
-//	}
+//  if (!m_draw_data.lyric_rect.PtInRect(point))
+//  {
+//      m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
+//  }
+//  else
+//  {
+//      m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
+//  }
 //
 //}
 
@@ -301,44 +283,44 @@ void CPlayerUI::MouseMove(CPoint point)
     ////显示专辑封面的提示
     //if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover)
     //{
-    //	CRect cover_rect{ m_draw_data.cover_rect };
-    //	cover_rect.MoveToXY(m_draw_rect.left + m_draw_data.cover_rect.left, m_draw_rect.top + m_draw_data.cover_rect.top);
-    //	bool show_cover_tip{ cover_rect.PtInRect(point) != FALSE };
-    //	static bool last_show_cover_tip{ false };
-    //	if (!last_show_cover_tip && show_cover_tip)
-    //	{
-    //		CString info;
-    //		if (CPlayer::GetInstance().AlbumCoverExist())
-    //		{
-    //			info = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
-    //			//CFilePathHelper cover_path(CPlayer::GetInstance().GetAlbumCoverPath());
-    //			//if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
-    //			if (CPlayer::GetInstance().IsInnerCover())
-    //			{
-    //				info += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
-    //				switch (CPlayer::GetInstance().GetAlbumCoverType())
-    //				{
-    //				case 0: info += _T("jpg"); break;
-    //				case 1: info += _T("png"); break;
-    //				case 2: info += _T("gif"); break;
-    //				}
-    //			}
-    //			else
-    //			{
-    //				info += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
-    //				info += CPlayer::GetInstance().GetAlbumCoverPath().c_str();
-    //			}
-    //		}
-    //		m_tool_tip->AddTool(m_pMainWnd, info);
-    //		m_tool_tip->SetMaxTipWidth(DPI(400));
-    //		m_tool_tip->Pop();
-    //	}
-    //	if (last_show_cover_tip && !show_cover_tip)
-    //	{
-    //		m_tool_tip->AddTool(m_pMainWnd, _T(""));
-    //		m_tool_tip->Pop();
-    //	}
-    //	last_show_cover_tip = show_cover_tip;
+    //  CRect cover_rect{ m_draw_data.cover_rect };
+    //  cover_rect.MoveToXY(m_draw_rect.left + m_draw_data.cover_rect.left, m_draw_rect.top + m_draw_data.cover_rect.top);
+    //  bool show_cover_tip{ cover_rect.PtInRect(point) != FALSE };
+    //  static bool last_show_cover_tip{ false };
+    //  if (!last_show_cover_tip && show_cover_tip)
+    //  {
+    //      CString info;
+    //      if (CPlayer::GetInstance().AlbumCoverExist())
+    //      {
+    //          info = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
+    //          //CFilePathHelper cover_path(CPlayer::GetInstance().GetAlbumCoverPath());
+    //          //if (cover_path.GetFileNameWithoutExtension() == ALBUM_COVER_NAME)
+    //          if (CPlayer::GetInstance().IsInnerCover())
+    //          {
+    //              info += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
+    //              switch (CPlayer::GetInstance().GetAlbumCoverType())
+    //              {
+    //              case 0: info += _T("jpg"); break;
+    //              case 1: info += _T("png"); break;
+    //              case 2: info += _T("gif"); break;
+    //              }
+    //          }
+    //          else
+    //          {
+    //              info += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
+    //              info += CPlayer::GetInstance().GetAlbumCoverPath().c_str();
+    //          }
+    //      }
+    //      m_tool_tip->AddTool(m_pMainWnd, info);
+    //      m_tool_tip->SetMaxTipWidth(DPI(400));
+    //      m_tool_tip->Pop();
+    //  }
+    //  if (last_show_cover_tip && !show_cover_tip)
+    //  {
+    //      m_tool_tip->AddTool(m_pMainWnd, _T(""));
+    //      m_tool_tip->Pop();
+    //  }
+    //  last_show_cover_tip = show_cover_tip;
     //}
 
 }
@@ -351,13 +333,13 @@ void CPlayerUI::MouseMove(CPoint point)
 
 //CRect CPlayerUI::GetThumbnailClipArea()
 //{
-//	//CRect info_rect;
-//	//if (!IsDrawNarrowMode())
-//	//	info_rect = CRect{ CPoint{ Margin(), Margin() + DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * Margin(), m_layout.info_height2 - 3 * Margin() } };
-//	//else
-//	//	info_rect = CRect{ CPoint{ Margin(), DPI(20) }, CSize{ m_ui_data.client_width - 2 * Margin(), m_layout.info_height - 2 * Margin() } };
+//  //CRect info_rect;
+//  //if (!IsDrawNarrowMode())
+//  //  info_rect = CRect{ CPoint{ Margin(), Margin() + DPI(20) }, CSize{ m_ui_data.client_width / 2 - 2 * Margin(), m_layout.info_height2 - 3 * Margin() } };
+//  //else
+//  //  info_rect = CRect{ CPoint{ Margin(), DPI(20) }, CSize{ m_ui_data.client_width - 2 * Margin(), m_layout.info_height - 2 * Margin() } };
 //
-//	return info_rect;
+//  return info_rect;
 //}
 
 int CPlayerUI::GetClassId()

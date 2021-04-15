@@ -14,7 +14,7 @@ CMiniModeUI::~CMiniModeUI()
 {
 }
 
-void CMiniModeUI::Init(CDC * pDC)
+void CMiniModeUI::Init(CDC* pDC)
 {
     CPlayerUIBase::Init(pDC);
     m_first_draw = true;
@@ -25,17 +25,17 @@ bool CMiniModeUI::PointInControlArea(CPoint point) const
     bool point_in_control = false;
     for (const auto& btn : m_buttons)
     {
-        if(btn.first != BTN_COVER)
+        if (btn.first != BTN_COVER)
             point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
     }
     return point_in_control;
 }
 
-void CMiniModeUI::_DrawInfo(bool reset)
+void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
 {
     //绘制专辑封面
     int cover_side = m_ui_data.window_height - 2 * m_ui_data.margin;
-    CRect cover_rect{CPoint(m_ui_data.margin, m_ui_data.margin), CSize(cover_side, cover_side)};
+    CRect cover_rect{ CPoint(m_ui_data.margin, m_ui_data.margin), CSize(cover_side, cover_side) };
     if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
     {
         if (theApp.m_app_setting_data.draw_album_high_quality)
@@ -43,7 +43,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
         else
             m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), cover_rect.TopLeft(), cover_rect.Size(), theApp.m_app_setting_data.album_cover_fit);
     }
-    else		//专辑封面不存在时显示默认专辑封面图标
+    else        //专辑封面不存在时显示默认专辑封面图标
     {
         if (IsDrawBackgroundAlpha())
             m_draw.FillAlphaRect(cover_rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
@@ -79,7 +79,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
     DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous_new);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-    if(CPlayer::GetInstance().IsPlaying())
+    if (CPlayer::GetInstance().IsPlaying())
         DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause_new);
     else
         DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play_new);
@@ -93,13 +93,13 @@ void CMiniModeUI::_DrawInfo(bool reset)
     rc_tmp.right = rc_tmp.left + theApp.DPI(30);
 
     //if (IsDrawBackgroundAlpha())
-    //	m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
+    //  m_draw.FillAlphaRect(rc_tmp, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
     //else
-    //	m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
+    //  m_draw.FillRect(rc_tmp, m_colors.color_spectrum_back);
     m_draw.SetDrawArea(rc_tmp);
 
-    int width{ rc_tmp.Width() / 9 };	//每个柱形的宽度
-    int gap{ rc_tmp.Width() / 22 };	//柱形的间隔
+    int width{ rc_tmp.Width() / 9 };    //每个柱形的宽度
+    int gap{ rc_tmp.Width() / 22 }; //柱形的间隔
     m_draw.DrawSpectrum(rc_tmp, width - gap, gap, 16, m_colors.color_spectrum, false);
 
     //绘制播放时间
@@ -165,7 +165,7 @@ void CMiniModeUI::_DrawInfo(bool reset)
     rc_tmp.MoveToXY(m_ui_data.widnow_width - theApp.DPI(20) - m_ui_data.margin, m_ui_data.margin + theApp.DPI(20));
     DrawUIButton(rc_tmp, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    if(CPlayer::GetInstance().IsFavourite())
+    if (CPlayer::GetInstance().IsFavourite())
         DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.heart);
     else
         DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.favourite);
@@ -184,23 +184,23 @@ void CMiniModeUI::_DrawInfo(bool reset)
     else
     {
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//获取当歌词
-        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//获取当前歌词进度（范围为0~1000）
+        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };  //获取当歌词
+        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };     //获取当前歌词进度（范围为0~1000）
         bool no_lyric{ false };
         //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
         no_lyric = (current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time.toInt() > 20000) || progress >= 1000;
 
-        if (CPlayer::GetInstance().m_Lyrics.IsEmpty() || no_lyric)	//没有歌词时显示播放的文件名
+        if (CPlayer::GetInstance().m_Lyrics.IsEmpty() || no_lyric)  //没有歌词时显示播放的文件名
         {
             //正在播放的文件名以滚动的样式显示。如果参数要求强制刷新，则重置滚动位置
             static CDrawCommon::ScrollInfo scroll_info;
             m_draw.DrawScrollText(rc_tmp, CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str(),
-                                  m_colors.color_text, GetScrollTextPixel(true), true, scroll_info, reset);
+                m_colors.color_text, GetScrollTextPixel(true), true, scroll_info, reset);
         }
-        else		//显示歌词
+        else        //显示歌词
         {
             COLORREF color2 = (theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text);
-            if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
+            if (current_lyric.text.empty())     //如果当前歌词为空白，就显示为省略号
                 current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
             m_draw.DrawWindowText(rc_tmp, current_lyric.text.c_str(), m_colors.color_text, color2, progress, Alignment::CENTER);
         }
