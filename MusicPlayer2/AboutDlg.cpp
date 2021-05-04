@@ -92,7 +92,7 @@ void CAboutDlg::OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//点击了“检查更新”
-	theApp.CheckUpdate(true);
+	theApp.CheckUpdateInThread(true);
 	*pResult = 0;
 }
 

@@ -74,7 +74,8 @@ public:
 
     void SaveSongData();		//将所有歌曲信息以序列化的方式保存到文件
 
-    static void CheckUpdate(bool message);
+    void CheckUpdate(bool message);
+    void CheckUpdateInThread(bool message); //在后台线程中检查更新
 
     void SaveConfig();
     void LoadConfig();
@@ -112,7 +113,8 @@ public:
 
     //void StartClassifySongData();
     void StartUpdateMediaLib();
-    bool IsMeidaLibUpdating() { return m_media_lib_updating; }
+    bool IsMeidaLibUpdating() const { return m_media_lib_updating; }
+    bool IsCheckingForUpdate() const { return m_checking_update; }      //是否正在检查更新
 
     void AutoSelectNotifyIcon();
     HICON GetNotifyIncon(int index);
@@ -133,6 +135,7 @@ private:
 
 	ULONG_PTR m_gdiplusToken;
     bool m_media_lib_updating{ false };
+    bool m_checking_update{ false };        //是否正在检查更新
 
     HMODULE m_hScintillaModule{};
 

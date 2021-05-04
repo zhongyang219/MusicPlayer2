@@ -325,6 +325,9 @@ void CMusicPlayerApp::SaveSongData()
 
 void CMusicPlayerApp::CheckUpdate(bool message)
 {
+    if (m_checking_update)      //如果还在检查更新，则直接返回
+        return;
+    CFlagLocker update_locker(m_checking_update);
     CWaitCursor wait_cursor;
 
     wstring version;		//程序版本
@@ -392,10 +395,15 @@ void CMusicPlayerApp::CheckUpdate(bool message)
     }
 }
 
+void CMusicPlayerApp::CheckUpdateInThread(bool message)
+{
+    AfxBeginThread(CheckUpdateThreadFunc, (LPVOID)message);
+}
+
 UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    CheckUpdate(false);		//检查更新
+    theApp.CheckUpdate(lpParam);		//检查更新
     return 0;
 }
 
