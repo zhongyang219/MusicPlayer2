@@ -757,6 +757,9 @@
     <ClInclude Include="CPlayerUI5.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="SpectralDataHelper.h">
+      <Filter>功能逻辑类\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1140,6 +1143,9 @@
     </ClCompile>
     <ClCompile Include="CPlayerUI5.cpp">
       <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralDataHelper.cpp">
+      <Filter>功能逻辑类\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

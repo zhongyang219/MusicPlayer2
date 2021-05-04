@@ -10,6 +10,7 @@
 #include "PlaylistMgr.h"
 #include "IPlayerCore.h"
 #include "BassCore.h"
+#include "SpectralDataHelper.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//播放列表加载完成消息
@@ -112,6 +113,7 @@ private:
     float m_spectral_data[SPECTRUM_COL]{};	//用于显示的每个频谱柱形的高度
     //float m_last_spectral_data[SPECTRUM_COL]{};	//上一次的频谱数据
     float m_spectral_peak[SPECTRUM_COL]{};		//频谱顶端的高度
+    CSpectralDataHelper m_spectrum_data_helper;
 
     int m_equalizer_gain[EQU_CH_NUM]{};		//用于保存设置好的每个通道的增益
     bool m_equ_enable{ false };		//指示是否允许均衡器
@@ -200,7 +202,7 @@ public:
     bool SetBRepeatPoint();		//设置当前播放位置为重复B点
     bool ContinueABRepeat();	//继续下一句AB重复（将当前重复B点设置为下一句重复A点，处于AB重复状态下才有效）
     void DoABRepeat();
-    void ResetABRepeat();		//取消AB重复 
+    void ResetABRepeat();		//取消AB重复
 
     const AlbumCoverInfo& GetAlbumCoverInfo() const { return m_album_cover_info; }
 

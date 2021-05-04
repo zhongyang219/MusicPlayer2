@@ -626,20 +626,11 @@ void CPlayer::CalculateSpectralData()
 
 	if (m_pCore->GetHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
 	{
-		//BASS_ChannelGetData(m_pCore->GetHandle(), m_fft, BASS_DATA_FFT256);
 		m_pCore->GetFFTData(m_fft);
-		memset(m_spectral_data, 0, sizeof(m_spectral_data));
-		for (int i{}; i < FFT_SAMPLE; i++)
-		{
-			m_spectral_data[i / (FFT_SAMPLE / SPECTRUM_COL)] += m_fft[i];
-		}
-
-		for (int i{}; i < SPECTRUM_COL; i++)
-		{
-			m_spectral_data[i] /= (FFT_SAMPLE / SPECTRUM_COL);
-			m_spectral_data[i] = std::sqrtf(m_spectral_data[i]);		//对每个频谱柱形的值取平方根，以减少不同频率频谱值的差异
-			m_spectral_data[i] *= 60;			//调整这里的乘数可以调整频谱分析柱形图整体的高度
-		}
+		if (theApp.m_app_setting_data.use_old_style_specturm)
+			CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data);
+		else
+			m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data);
 	}
 	else
 	{

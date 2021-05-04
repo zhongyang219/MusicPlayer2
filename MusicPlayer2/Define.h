@@ -92,7 +92,7 @@ using _tstring = std::string;
 //#define TIMER_ID_EXIT 1237
 
 //频谱分析
-#define FFT_SAMPLE 128			//频谱分析采样点数
+#define FFT_SAMPLE 256			//频谱分析采样点数
 //#define FFT_NUM 128			//要使用的频谱的点数
 #define SPECTRUM_COL 64			//频谱分析柱形的条数（必须为2的整数次方且小于或等于FFT_SAMPLE）
 

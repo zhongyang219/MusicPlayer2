@@ -556,9 +556,9 @@ void CBassCore::ClearReverb()
     BASS_FXSetParameters(m_reverb_handle, &parareverb);
 }
 
-void CBassCore::GetFFTData(float fft_data[128])
+void CBassCore::GetFFTData(float fft_data[FFT_SAMPLE])
 {
-    BASS_ChannelGetData(m_musicStream, fft_data, BASS_DATA_FFT256);
+    BASS_ChannelGetData(m_musicStream, fft_data, BASS_DATA_FFT512);
 }
 
 int CBassCore::GetErrorCode()
