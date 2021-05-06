@@ -2,6 +2,23 @@
 #include "CueFile.h"
 #include "FilePathHelper.h"
 
+#include "./c4/c4context.h"
+
+#ifndef _M_X64
+#ifdef _DEBUG
+#pragma comment(lib, "./c4/x86/MD/c4.lib")
+#else
+#pragma comment(lib, "./c4/x86/MT/c4.lib")
+#endif
+#else
+#ifdef _DEBUG
+#pragma comment(lib, "./c4/x64/MD/c4.lib")
+#else
+#pragma comment(lib, "./c4/x64/MT/c4.lib")
+#endif
+#endif
+
+using namespace std;
 
 CCueFile::CCueFile(const std::wstring& file_path)
     : m_file_path(file_path)
@@ -17,14 +34,30 @@ CCueFile::CCueFile(const std::wstring& file_path)
         file_content.push_back(ch);
         if (file_content.size() > 102400) break;	//限制cue文件最大为100KB
     }
-    if (file_content.size() >= 3 && file_content[0] == '\xef' && file_content[1] == '\xbb' && file_content[2] == '\xbf')
-        m_code_type = CodeType::UTF8;
-    else if (file_content.size() >= 2 && file_content[0] == '\xff' && file_content[1] == '\xfe')
-        m_code_type = CodeType::UTF16;
-    else if (CCommon::IsUTF8Bytes(file_content.c_str()))
-        m_code_type = CodeType::UTF8_NO_BOM;
+    // if (file_content.size() >= 3 && file_content[0] == '\xef' && file_content[1] == '\xbb' && file_content[2] == '\xbf')
+    //     m_code_type = CodeType::UTF8;
+    // else if (file_content.size() >= 2 && file_content[0] == '\xff' && file_content[1] == '\xfe')
+    //     m_code_type = CodeType::UTF16;
+    // else if (CCommon::IsUTF8Bytes(file_content.c_str()))
+    //     m_code_type = CodeType::UTF8_NO_BOM;
 
-    m_file_content_wcs = CCommon::StrToUnicode(file_content, m_code_type);
+    // m_file_content_wcs = CCommon::StrToUnicode(file_content, m_code_type);
+
+    // 这里应该有一个下拉菜单设置“cue自动编码识别” 可选不启用/日语（Shift-JIS）优先/韩语（EUC-KR）优先
+    wstring charmap = L"charmap-anisong.xml";
+    CC4Context context(charmap, L"./charmaps/");
+    if (!context.init())
+        return;
+    int rawLength = file_content.size();
+    char *rawStringBuffer = new char[rawLength+1];
+    memset((void*)rawStringBuffer, 0, rawLength+1);
+    memcpy(rawStringBuffer,file_content.c_str(),rawLength);
+    const CC4Encode* const_encode = context.getEncode(L"UTF-16");
+    const_encode = context.getMostPossibleEncode(rawStringBuffer);
+    wstring &result = const_encode->wconvertText(rawStringBuffer, rawLength);
+    delete [] rawStringBuffer;
+    m_file_content_wcs = result;
+    context.finalize();
 
     DoAnalysis();
 }

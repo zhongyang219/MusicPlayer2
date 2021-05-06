@@ -760,6 +760,9 @@
     <ClInclude Include="SpectralDataHelper.h">
       <Filter>功能逻辑类\Player</Filter>
     </ClInclude>
+    <ClInclude Include="c4\c4context.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">

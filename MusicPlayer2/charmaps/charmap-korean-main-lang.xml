@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<charmaps>
+    <charmap>
+        <name>Shift-JIS</name>
+        <description>Shift-JIS to Unicode.</description>
+        <useinautocheck>true</useinautocheck>
+        <path>charmaps/jis2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
+        <readingpolicy begin="0x00" end="0x7F" readnext="false" />
+        <readingpolicy begin="0x80" end="0xA0" readnext="true" />
+        <readingpolicy begin="0xA1" end="0xDF" readnext="false" />
+        <readingpolicy begin="0xE0" end="0xFF" readnext="true" />
+        <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
+        <segment begin="0x0080" end="0x00A0" reference="0xFFFD" type="undefine" />
+        <segment begin="0x00A1" end="0x00DF" reference="buffer" offset="0" type="JIS-X-0201" />
+        <segment begin="0x00E0" end="0x813F" reference="0xFFFD" type="undefine" />
+        <segment begin="0x8140" end="0xFFFF" reference="buffer" offset="63" type="JIS-X-0208" />
+    </charmap>
+    <charmap>
+        <name>EUC-KR(Korean)</name>
+        <version>Microsoft CP949</version>
+        <description>EUC-KR to Unicode.</description>
+        <useinautocheck>true</useinautocheck>
+        <path>charmaps/kr2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
+        <readingpolicy begin="0x00" end="0x7F" readnext="false" />
+        <readingpolicy begin="0x80" end="0xFF" readnext="true" />
+        <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
+        <segment begin="0x0080" end="0x813F" reference="0xFFFD" type="undefine" />
+        <segment begin="0x8140" end="0xFFFF" reference="buffer" offset="0" type="CP949-multiple-char" />
+    </charmap>
+    <charmap>
+        <name>GBK</name>
+        <version>Microsoft CP936(mozilla enhance)</version>
+        <useinautocheck>true</useinautocheck>
+        <path>charmaps/gb2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
+        <readingpolicy begin="0x00" end="0x80" readnext="false" />
+        <readingpolicy begin="0x81" end="0xFF" readnext="true" />
+        <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
+        <segment begin="0x0080" end="0x0080" reference="buffer" offset="0" type="euro-sign" />
+        <segment begin="0x0081" end="0x813F" reference="0xFFFD" type="undefine" />
+        <segment begin="0x8140" end="0xFFFF" reference="buffer" offset="1" type="gbk-multiple-char" />
+    </charmap>
+    <charmap>
+        <name>BIG5</name>
+        <useinautocheck>true</useinautocheck>
+        <path>charmaps/b2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
+        <readingpolicy begin="0x00" end="0x7F" readnext="false" />
+        <readingpolicy begin="0x80" end="0xFF" readnext="true" />
+        <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
+        <segment begin="0x0080" end="0x813F" reference="0xFFFD" type="undefine" />
+        <segment begin="0x8140" end="0xFFFF" reference="buffer" offset="0" type="big5-multiple-char" />
+    </charmap>
+    <charmap>
+        <name>Latin(CP1252)</name>
+        <version>Microsoft CP1252</version>
+        <description>Latin to Unicode.</description>
+        <useinautocheck>false</useinautocheck>
+        <path>charmaps/latin2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
+        <readingpolicy begin="0x00" end="0x7F" readnext="false" />
+        <readingpolicy begin="0x80" end="0xFF" readnext="false" />
+        <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
+        <segment begin="0x0080" end="0x00FF" reference="buffer" offset="0" type="CP1252" />
+        <segment begin="0x0100" end="0xFFFF" reference="0xFFFD" type="undefine" />
+    </charmap>
+    <charmap>
+        <name>Cyrillic(CP1251)</name>
+        <version>Microsoft CP1251</version>
+        <description>Cyrillic to Unicode.</description>
+        <useinautocheck>false</useinautocheck>
+        <path>charmaps/cyrillic2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
+        <readingpolicy begin="0x00" end="0x7F" readnext="false" />
+        <readingpolicy begin="0x80" end="0xFF" readnext="false" />
+        <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
+        <segment begin="0x0080" end="0x00FF" reference="buffer" offset="0" type="CP1251" />
+        <segment begin="0x0100" end="0xFFFF" reference="0xFFFD" type="undefine" />
+    </charmap>
+</charmaps>

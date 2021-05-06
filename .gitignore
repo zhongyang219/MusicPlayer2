@@ -289,3 +289,8 @@ __pycache__/
 *.diagsession
 *.ini
 *.sf2
+
+*.sublime*
+
+!*/c4/x86
+!*/c4/x64
