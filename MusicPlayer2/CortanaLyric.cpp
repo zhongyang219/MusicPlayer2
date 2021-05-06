@@ -163,11 +163,12 @@ void CCortanaLyric::DrawInfo()
 
         //计算频谱，根据频谱幅值使Cortana图标显示动态效果
         float spectrum_avr{};		//取前面N个频段频谱值的平均值
-        const int N = 8;
-        for (int i{}; i < N; i++)
+        const int IMIN = FFT_SAMPLE / 20;
+        const int IMAX = FFT_SAMPLE / 3;
+        for (int i{ IMIN }; i < IMAX; i++)
             spectrum_avr += CPlayer::GetInstance().GetFFTData()[i];
-        spectrum_avr /= N;
-        int spetraum = static_cast<int>(spectrum_avr * 4000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
+        spectrum_avr /= (IMAX - IMIN);
+        int spetraum = static_cast<int>(spectrum_avr * 22000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
         SetBeatAmp(spetraum);
         //显示专辑封面，如果没有专辑封面，则显示Cortana图标
         AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
@@ -450,7 +451,7 @@ void CCortanaLyric::SetUIColors()
         m_colors.dark = m_dark_mode;
 
 	m_lyric_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, m_colors.dark);
-	
+
 	if (m_colors.dark)
     {
         m_colors.text_color = theApp.m_app_setting_data.theme_color.light3;
