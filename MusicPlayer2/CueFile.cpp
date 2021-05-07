@@ -58,79 +58,96 @@ const std::vector<SongInfo>& CCueFile::GetAnalysisResult() const
     return m_result;
 }
 
-std::wstring CCueFile::GetAudioFileName() const
-{
-    return m_audio_file_name;
-}
+// std::wstring CCueFile::GetAudioFileName() const
+// {
+//     return m_audio_file_name;
+// }
 
 void CCueFile::DoAnalysis()
 {
     CFilePathHelper cue_file_path{ m_file_path };
 
-    //获取关联音频文件的文件名
-    m_audio_file_name = GetCommand(L"FILE");
+    // 获取关联音频文件的文件名
+    // m_audio_file_name = GetCommand(L"FILE");
 
     SongInfo song_info{};
+    // 获取一次标签作为默认值，可以取得FILE之前的标签
     song_info.album = GetCommand(L"TITLE");
     song_info.genre = GetCommand(L"REM GENRE");
     song_info.SetYear(GetCommand(L"REM DATE").c_str());
     song_info.comment = GetCommand(L"REM COMMENT");
-    //song_info.file_name = m_audio_file_name;
-    song_info.file_path = cue_file_path.GetDir() + m_audio_file_name;
+    // song_info.file_name = m_audio_file_name;
     song_info.is_cue = true;
     song_info.info_acquired = true;
 
+    size_t index_file{};
     size_t index_track{};
     size_t index_title{};
     size_t index_artist{};
+    index_file = m_file_content_wcs.find(L"FILE ", index_file);
     while (true)
     {
-        //查找曲目序号
-        index_track = m_file_content_wcs.find(L"TRACK ", index_track + 6);
-        if (index_track == wstring::npos)
+        index_track = index_file;   // 恢复内层break时index_track的值，使其正常查找第一个TRACK
+        // 获取此FILE标签对应path
+        song_info.file_path = cue_file_path.GetDir() + GetCommand(L"FILE ", index_file);
+        size_t next_file_index = m_file_content_wcs.find(L"FILE ", index_file + 6);
+        while (true)
+        {
+            // 查找曲目序号
+            index_track = m_file_content_wcs.find(L"TRACK ", index_track + 6);
+            // 限制TRACK在此FILE范围
+            if (index_track >= next_file_index)
+                break;
+            wstring track_str = m_file_content_wcs.substr(index_track + 6, 3);
+            song_info.track = _wtoi(track_str.c_str());
+            size_t next_track_index = m_file_content_wcs.find(L"TRACK ", index_track + 6);
+            // 查找曲目标题
+            size_t index2, index3;
+            index_title = m_file_content_wcs.find(L"TITLE ", index_track + 6);
+            if (index_title < next_track_index)
+            {
+                index2 = m_file_content_wcs.find(L'\"', index_title);
+                index3 = m_file_content_wcs.find(L'\"', index2 + 1);
+                song_info.title = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
+            }
+
+            // 查找曲目艺术家
+            index_artist = m_file_content_wcs.find(L"PERFORMER ", index_track + 6);
+            if (index_artist < next_track_index)
+            {
+                index2 = m_file_content_wcs.find(L'\"', index_artist);
+                index3 = m_file_content_wcs.find(L'\"', index2 + 1);
+                song_info.artist = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
+            }
+
+            // 查找曲目位置
+            Time time_index00, time_index01;
+            size_t index00_pos{}, index01_pos{};
+            index00_pos = m_file_content_wcs.find(L"INDEX 00", index_track + 6);
+            index01_pos = m_file_content_wcs.find(L"INDEX 01", index_track + 6);
+            time_index00 = PhaseIndex(index00_pos);
+            time_index01 = PhaseIndex(index01_pos);
+
+            song_info.start_pos = time_index01;
+
+            // 每个FILE的第一个TRACK不能执行这个来补充上个TRACK的信息，上个TRACK的结束时间应当从文件获取
+            if (!m_result.empty() && m_file_content_wcs.find(L"TRACK ", index_file + 6) != index_track)
+            {
+                if(!time_index00.isZero())
+                    m_result.back().end_pos = time_index00;
+                else
+                    m_result.back().end_pos = time_index01;
+                if(!m_result.back().end_pos.isZero())
+                    m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
+            }
+
+            m_result.push_back(song_info);
+        }
+        // 如果没有下一个FILE标签则退出
+        if (next_file_index == wstring::npos)
             break;
-        wstring track_str = m_file_content_wcs.substr(index_track + 6, 3);
-        song_info.track = _wtoi(track_str.c_str());
-        size_t next_track_index = m_file_content_wcs.find(L"TRACK ", index_track + 6);
-        //查找曲目标题
-        size_t index2, index3;
-        index_title = m_file_content_wcs.find(L"TITLE ", index_track + 6);
-        if (index_title < next_track_index)
-        {
-            index2 = m_file_content_wcs.find(L'\"', index_title);
-            index3 = m_file_content_wcs.find(L'\"', index2 + 1);
-            song_info.title = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
-        }
-
-        //查找曲目艺术家
-        index_artist = m_file_content_wcs.find(L"PERFORMER ", index_track + 6);
-        if (index_artist < next_track_index)
-        {
-            index2 = m_file_content_wcs.find(L'\"', index_artist);
-            index3 = m_file_content_wcs.find(L'\"', index2 + 1);
-            song_info.artist = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
-        }
-
-        //查找曲目位置
-        Time time_index00, time_index01;
-        size_t index00_pos{}, index01_pos{};
-        index00_pos = m_file_content_wcs.find(L"INDEX 00", index_track + 6);
-        index01_pos = m_file_content_wcs.find(L"INDEX 01", index_track + 6);
-        time_index00 = PhaseIndex(index00_pos);
-        time_index01 = PhaseIndex(index01_pos);
-
-        song_info.start_pos = time_index01;
-        if (!m_result.empty())
-        {
-			if(!time_index00.isZero())
-				m_result.back().end_pos = time_index00;
-			else
-				m_result.back().end_pos = time_index01;
-			if(!m_result.back().end_pos.isZero())
-				m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
-        }
-
-        m_result.push_back(song_info);
+        else
+            index_file = next_file_index;
     }
 
 }
@@ -163,7 +180,7 @@ wstring CCueFile::GetCommand(const wstring& str, size_t pos)
         return wstring();
 
     wstring command;
-    size_t index1 = m_file_content_wcs.find(str);
+    size_t index1 = m_file_content_wcs.find(str, pos);
     if (index1 == wstring::npos)
         return wstring();
     size_t index2 = m_file_content_wcs.find(L'\"', index1 + str.size());
