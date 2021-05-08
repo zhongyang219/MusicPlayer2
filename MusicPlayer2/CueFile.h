@@ -25,7 +25,6 @@ private:
     //std::string m_file_content;
     std::wstring m_file_content_wcs;
     CodeType m_code_type{ CodeType::AUTO };
-    // std::wstring m_audio_file_name;
     std::vector<SongInfo> m_result;
 };
 

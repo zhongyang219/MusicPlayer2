@@ -58,17 +58,9 @@ const std::vector<SongInfo>& CCueFile::GetAnalysisResult() const
     return m_result;
 }
 
-// std::wstring CCueFile::GetAudioFileName() const
-// {
-//     return m_audio_file_name;
-// }
-
 void CCueFile::DoAnalysis()
 {
     CFilePathHelper cue_file_path{ m_file_path };
-
-    // 获取关联音频文件的文件名
-    // m_audio_file_name = GetCommand(L"FILE");
 
     SongInfo song_info{};
     // 获取一次标签作为默认值，可以取得FILE之前的标签
@@ -76,7 +68,7 @@ void CCueFile::DoAnalysis()
     song_info.genre = GetCommand(L"REM GENRE");
     song_info.SetYear(GetCommand(L"REM DATE").c_str());
     song_info.comment = GetCommand(L"REM COMMENT");
-    // song_info.file_name = m_audio_file_name;
+    song_info.artist = GetCommand(L"PERFORMER ");
     song_info.is_cue = true;
     song_info.info_acquired = true;
 
