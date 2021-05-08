@@ -278,7 +278,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             // 遍历cue音轨分析对应音频文件，为了处理一个cue对应多个音频的情况有必要遍历
             for (int j = 0; j < temp.size(); ++j)
             {
-                CFilePathHelper audio_file_path{ temp[j].file_path };
+                CFilePathHelper audio_file_path{ temp[j].file_path };                       // 用于检查与查找音频文件
                 // audio_file_path正确时连续同一文件不再二次操作
                 if (audio_file_path.GetFileName() != audio_file_name || audio_file_path.GetFileName().empty())
                 {
@@ -298,17 +298,19 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                                 return extension != L"cue" && FileIsAudio(file_name);
                             });
                         // 如果没有找到则尝试与cue同名音频文件
+                        if (files.empty())
+                            audio_file_path.SetFilePath(file_path.GetFilePath());           // 将file_path复制给audio_file_path以免改变file_path
                         while (files.empty())
                         {
-                            CCommon::GetFiles(cue_dir + file_path.GetFileNameWithoutExtension() + L".*", files,
+                            CCommon::GetFiles(cue_dir + audio_file_path.GetFileNameWithoutExtension() + L".*", files,
                                 [](const wstring& file_name)
                                 {
                                     CFilePathHelper file_path(file_name);
                                     wstring extension{ file_path.GetFileExtension() };		// 获取文件扩展名
                                     return extension != L"cue" && FileIsAudio(file_name);
                                 });
-                            if (file_path.GetFileExtension() != std::wstring())             // 逐个移除扩展名
-                                file_path.SetFilePath(file_path.GetFilePathWithoutExtension());
+                            if (audio_file_path.GetFileExtension() != std::wstring())       // 逐个移除扩展名
+                                audio_file_path.SetFilePath(audio_file_path.GetFilePathWithoutExtension());
                             else
                                 break;
                         }
