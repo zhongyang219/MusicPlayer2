@@ -271,15 +271,15 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             CCueFile cue_file{ file_path.GetFilePath() };
 
             wstring audio_file_name;                    // 临时存储音频文件名
+            int bitrate{};                              // 比特率
+            Time audio_file_length{};                   // 音频文件长度
             bool audio_file_name_change = true;         // 音频文件未匹配，当audio_file_name被错误检查改变，temp[j].file_path不再准确时设为true
             const std::vector<SongInfo>& temp = cue_file.GetAnalysisResult();
             // 遍历cue音轨分析对应音频文件，为了处理一个cue对应多个音频的情况有必要遍历
             for (int j = 0; j < temp.size(); ++j)
             {
                 CFilePathHelper audio_file_path{ temp[j].file_path };
-                int bitrate{};
-                Time audio_file_length{};
-                // 连续同一文件不再二次操作
+                // audio_file_path正确时连续同一文件不再二次操作
                 if (audio_file_path.GetFileName() != audio_file_name || audio_file_path.GetFileName().empty())
                 {
                     audio_file_name = audio_file_path.GetFileName();
@@ -297,15 +297,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                                 wstring extension{ file_path.GetFileExtension() };		    // 获取文件扩展名
                                 return extension != L"cue" && FileIsAudio(file_name);
                             });
-                        if (!files.empty())                                                 // 找到了满足要求的文件
+                        // 如果没有找到则尝试与cue同名音频文件
+                        while (files.empty())
                         {
-                            audio_file_name = files.front();
-                            audio_file_name_change = true;
-                        }
-                        else
-                        {
-                            // 如果没有找到则尝试与cue同名音频文件
-                            files.clear();
                             CCommon::GetFiles(cue_dir + file_path.GetFileNameWithoutExtension() + L".*", files,
                                 [](const wstring& file_name)
                                 {
@@ -313,11 +307,15 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                                     wstring extension{ file_path.GetFileExtension() };		// 获取文件扩展名
                                     return extension != L"cue" && FileIsAudio(file_name);
                                 });
-                            if (!files.empty())                                             // 找到了满足要求的文件
-                            {
-                                audio_file_name = files.front();
-                                audio_file_name_change = true;
-                            }
+                            if (file_path.GetFileExtension() != std::wstring())             // 逐个移除扩展名
+                                file_path.SetFilePath(file_path.GetFilePathWithoutExtension());
+                            else
+                                break;
+                        }
+                        if (!files.empty())                                             // 找到了满足要求的文件
+                        {
+                            audio_file_name = files.front();
+                            audio_file_name_change = true;
                         }
                     }
                     // 音频不存在处理完成但仍然不能保证成功
