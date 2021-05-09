@@ -235,6 +235,7 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
     song.bitrate = song_info.bitrate;
     song.song_id = song_info.song_id;
     //song.is_favourite = song_info.is_favourite;
+    song.rating = song_info.rating;
 
     SetSongDataModified();
 }

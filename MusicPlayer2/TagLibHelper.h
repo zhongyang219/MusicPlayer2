@@ -87,19 +87,19 @@ public:
     static bool WriteWavePackAlbumCover(const wstring& file_path, const wstring& album_cover_path, bool remove_exist = true);
 
     //写标签信息
-    static bool WriteMpegTag(SongInfo& song_info);
-    static bool WriteFlacTag(SongInfo& song_info);
-    static bool WriteM4aTag(SongInfo& song_info);
-    static bool WriteWavTag(SongInfo& song_info);
-    static bool WriteOggTag(SongInfo& song_info);
-    static bool WriteApeTag(SongInfo& song_info);
-    static bool WriteMpcTag(SongInfo& song_info);
-    static bool WriteOpusTag(SongInfo& song_info);
-    static bool WriteWavPackTag(SongInfo& song_info);
-    static bool WriteTtaTag(SongInfo& song_info);
-    static bool WriteAiffTag(SongInfo& song_info);
-    static bool WriteAsfTag(SongInfo& song_info);
-    static bool WriteSpxTag(SongInfo& song_info);
+    static bool WriteMpegTag(const SongInfo& song_info);
+    static bool WriteFlacTag(const SongInfo& song_info);
+    static bool WriteM4aTag(const SongInfo& song_info);
+    static bool WriteWavTag(const SongInfo& song_info);
+    static bool WriteOggTag(const SongInfo& song_info);
+    static bool WriteApeTag(const SongInfo& song_info);
+    static bool WriteMpcTag(const SongInfo& song_info);
+    static bool WriteOpusTag(const SongInfo& song_info);
+    static bool WriteWavPackTag(const SongInfo& song_info);
+    static bool WriteTtaTag(const SongInfo& song_info);
+    static bool WriteAiffTag(const SongInfo& song_info);
+    static bool WriteAsfTag(const SongInfo& song_info);
+    static bool WriteSpxTag(const SongInfo& song_info);
 
     //读取内嵌cue
     static wstring GetApeCue(const wstring& file_path);

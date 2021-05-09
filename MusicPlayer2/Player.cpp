@@ -200,9 +200,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 		}
 		CSongDataManager::GetInstance().SaveSongInfo(GetInstance().m_playlist[i]);
 		//获取分级信息
-		SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef(file_path);
+		SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
 		CAudioTag audio_tag(song_info);
 		audio_tag.GetAudioRating();
+		CSongDataManager::GetInstance().SaveSongInfo(song_info);
 		CSongDataManager::GetInstance().SetSongDataModified();
 	}
 	GetInstance().m_loading = false;

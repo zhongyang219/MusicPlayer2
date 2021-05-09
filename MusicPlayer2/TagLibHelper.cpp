@@ -1351,7 +1351,7 @@ bool CTagLibHelper::WriteWavePackAlbumCover(const wstring& file_path, const wstr
     return saved;
 }
 
-bool CTagLibHelper::WriteMpegTag(SongInfo& song_info)
+bool CTagLibHelper::WriteMpegTag(const SongInfo& song_info)
 {
     MPEG::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1365,7 +1365,7 @@ bool CTagLibHelper::WriteMpegTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteFlacTag(SongInfo& song_info)
+bool CTagLibHelper::WriteFlacTag(const SongInfo& song_info)
 {
     FLAC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1374,7 +1374,7 @@ bool CTagLibHelper::WriteFlacTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteM4aTag(SongInfo& song_info)
+bool CTagLibHelper::WriteM4aTag(const SongInfo& song_info)
 {
     MP4::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1383,7 +1383,7 @@ bool CTagLibHelper::WriteM4aTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteWavTag(SongInfo& song_info)
+bool CTagLibHelper::WriteWavTag(const SongInfo& song_info)
 {
     RIFF::WAV::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1392,7 +1392,7 @@ bool CTagLibHelper::WriteWavTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteOggTag(SongInfo& song_info)
+bool CTagLibHelper::WriteOggTag(const SongInfo& song_info)
 {
     Vorbis::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1401,7 +1401,7 @@ bool CTagLibHelper::WriteOggTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteApeTag(SongInfo& song_info)
+bool CTagLibHelper::WriteApeTag(const SongInfo& song_info)
 {
     APE::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1410,7 +1410,7 @@ bool CTagLibHelper::WriteApeTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteMpcTag(SongInfo& song_info)
+bool CTagLibHelper::WriteMpcTag(const SongInfo& song_info)
 {
     MPC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1419,7 +1419,7 @@ bool CTagLibHelper::WriteMpcTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteOpusTag(SongInfo& song_info)
+bool CTagLibHelper::WriteOpusTag(const SongInfo& song_info)
 {
     Ogg::Opus::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1428,7 +1428,7 @@ bool CTagLibHelper::WriteOpusTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteWavPackTag(SongInfo& song_info)
+bool CTagLibHelper::WriteWavPackTag(const SongInfo& song_info)
 {
     WavPack::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1437,7 +1437,7 @@ bool CTagLibHelper::WriteWavPackTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteTtaTag(SongInfo& song_info)
+bool CTagLibHelper::WriteTtaTag(const SongInfo& song_info)
 {
     TrueAudio::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1446,7 +1446,7 @@ bool CTagLibHelper::WriteTtaTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteAiffTag(SongInfo& song_info)
+bool CTagLibHelper::WriteAiffTag(const SongInfo& song_info)
 {
     RIFF::AIFF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1455,7 +1455,7 @@ bool CTagLibHelper::WriteAiffTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteAsfTag(SongInfo& song_info)
+bool CTagLibHelper::WriteAsfTag(const SongInfo& song_info)
 {
     ASF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
@@ -1464,7 +1464,7 @@ bool CTagLibHelper::WriteAsfTag(SongInfo& song_info)
     return saved;
 }
 
-bool CTagLibHelper::WriteSpxTag(SongInfo& song_info)
+bool CTagLibHelper::WriteSpxTag(const SongInfo& song_info)
 {
     Ogg::Speex::File file(song_info.file_path.c_str());
     auto tag = file.tag();
