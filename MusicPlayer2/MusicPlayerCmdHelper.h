@@ -33,7 +33,8 @@ public:
     void OnRating(const wstring& file_path, DWORD command);
 
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）
-    static int UpdateMediaLib();
+    //refresh: 如果为true，则会自动更新所有最近修改时间比上次获取时新的文件的信息
+    static int UpdateMediaLib(bool refresh = false);
 
     //清理数据，函数对象fun_condition用来判断文件是否要被清理，如果是则返回true
     static int CleanUpSongData(std::function<bool(const SongInfo&)> fun_condition = [&](const SongInfo& song) { return !CCommon::FileExist(song.file_path); });
@@ -56,6 +57,9 @@ public:
 
 protected:
     bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
+
+    //判断一个音频文件的最后修改时间是否比上次获取到的最后修改时间新
+    static bool IsSongNewer(const std::wstring& file_path);
 
 private:
     CWnd* GetOwner();

@@ -475,7 +475,7 @@ void CMusicPlayerCmdHelper::OnRating(const wstring& file_path, DWORD command)
     }
 }
 
-int CMusicPlayerCmdHelper::UpdateMediaLib()
+int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
 {
     if (CPlayer::GetInstance().IsMciCore())
         return 0;
@@ -491,7 +491,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& file_path : all_media_files)
     {
-        if (!CSongDataManager::GetInstance().IsItemExist(file_path))       //如果还没有获取到该歌曲的信息，则在这里获取
+        if (!CSongDataManager::GetInstance().IsItemExist(file_path) || (refresh && IsSongNewer(file_path)))       //如果还没有获取到该歌曲的信息，或者文件的最后修改时间比上次获取到的新，则在这里获取
         {
             SongInfo song_info;
             song_info.file_path = file_path;
@@ -611,6 +611,16 @@ bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
         }
         return false;
     }
+}
+
+bool CMusicPlayerCmdHelper::IsSongNewer(const std::wstring& file_path)
+{
+    if (!CCommon::FileExist(file_path))
+        return false;
+
+    auto song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
+    unsigned __int64 last_modified = CCommon::GetFileLastModified(file_path);
+    return last_modified > static_cast<unsigned __int64>(song_info.last_played_time);
 }
 
 CWnd* CMusicPlayerCmdHelper::GetOwner()

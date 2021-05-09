@@ -957,7 +957,7 @@ void CMusicPlayerApp::WriteLog(const wstring& log_str, int log_type)
 #endif
 }
 
-void CMusicPlayerApp::StartUpdateMediaLib()
+void CMusicPlayerApp::StartUpdateMediaLib(bool refresh)
 {
     if (!m_media_lib_updating)
     {
@@ -966,10 +966,10 @@ void CMusicPlayerApp::StartUpdateMediaLib()
             {
                 CMusicPlayerCmdHelper::CleanUpSongData();
                 CMusicPlayerCmdHelper::CleanUpRecentFolders();
-                CMusicPlayerCmdHelper::UpdateMediaLib();
+                CMusicPlayerCmdHelper::UpdateMediaLib(lpParam);
                 theApp.m_media_lib_updating = false;
                 return 0;
-            }, NULL);
+            }, (LPVOID)refresh);
     }
 }
 

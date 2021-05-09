@@ -58,4 +58,5 @@ public:
     afx_msg void OnBnClickedIgnoreExistCheck();
     virtual void OnOK();
     afx_msg void OnCbnSelchangeId3v2TypeCombo();
+    afx_msg void OnBnClickedRefreshMediaLibButton();
 };

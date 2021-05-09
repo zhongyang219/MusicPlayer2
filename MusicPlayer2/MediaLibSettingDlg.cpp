@@ -64,6 +64,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_CBN_SELCHANGE(IDC_RECENT_PLAYED_RANGE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo)
     ON_BN_CLICKED(IDC_IGNORE_EXIST_CHECK, &CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck)
     ON_CBN_SELCHANGE(IDC_ID3V2_TYPE_COMBO, &CMediaLibSettingDlg::OnCbnSelchangeId3v2TypeCombo)
+    ON_BN_CLICKED(IDC_REFRESH_MEDIA_LIB_BUTTON, &CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton)
 END_MESSAGE_MAP()
 
 
@@ -123,6 +124,11 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_id3v2_type_combo.AddString(L"ID3v2.4");
     int cur_index = m_data.write_id3_v2_3 ? 0 : 1;
     m_id3v2_type_combo.SetCurSel(cur_index);
+
+    CButton* setting_btn = (CButton*)(GetDlgItem(IDC_REFRESH_MEDIA_LIB_BUTTON));
+    if (setting_btn != nullptr)
+        setting_btn->SetIcon(theApp.m_icon_set.loop_playlist.GetIcon(true));
+
 
     //设置控件不响应鼠标滚轮消息
     m_playlist_display_mode_combo.SetMouseWheelEnable(false);
@@ -319,4 +325,18 @@ void CMediaLibSettingDlg::OnCbnSelchangeId3v2TypeCombo()
     // TODO: 在此添加控件通知处理程序代码
     int cur_index = m_id3v2_type_combo.GetCurSel();
     m_data.write_id3_v2_3 = (cur_index == 0);
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    if (theApp.IsMeidaLibUpdating())
+    {
+        MessageBox(CCommon::LoadText(IDS_MEDIA_LIB_UPDATING_INFO), nullptr, MB_ICONINFORMATION | MB_OK);
+    }
+    else
+    {
+        theApp.StartUpdateMediaLib(true);
+    }
 }

@@ -660,6 +660,7 @@
 #define IDS_UNRATED                     530
 #define IDS_RANDOM_TRACK                531
 #define IDS_NEXT_TRACK                  532
+#define IDS_MEDIA_LIB_UPDATING_INFO     533
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -879,6 +880,7 @@
 #define IDC_RESTORE_DEFAULT_BUTTON      1082
 #define IDC_LOCAL_SEARCH_BUTTON         1082
 #define IDC_GET_TAG_FROM_FILE_NAME_BUTTON 1082
+#define IDC_REFRESH_MEDIA_LIB_BUTTON    1082
 #define IDC_TAB1                        1083
 #define IDC_BROWSE_BUTTON2              1083
 #define IDC_REVERB_MIX_SLIDER           1084
