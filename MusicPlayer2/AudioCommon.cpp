@@ -269,57 +269,95 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
 
             //解析cue文件
             CCueFile cue_file{ file_path.GetFilePath() };
-            //获取cue对应音频文件
-            wstring audio_file_name = cue_file.GetAudioFileName();
-            //if(!CCommon::FileExist(cue_dir + audio_file_name))
-            //    continue;
 
-            bool file_name_get_falid = audio_file_name.empty();
-            if (file_name_get_falid)        //如果无法从cue文件中获取关联音频文件的文件名，则查找cue文件相同目录下和cue文件同名的音频文件
+            wstring audio_file_name;                    // 临时存储音频文件名
+            int bitrate{};                              // 比特率
+            Time audio_file_length{};                   // 音频文件长度
+            bool audio_file_name_change = true;         // 音频文件未匹配，当audio_file_name被错误检查改变，temp[j].file_path不再准确时设为true
+            const std::vector<SongInfo>& temp = cue_file.GetAnalysisResult();
+            // 遍历cue音轨分析对应音频文件，为了处理一个cue对应多个音频的情况有必要遍历
+            for (int j = 0; j < temp.size(); ++j)
             {
-                vector<wstring> files;
-                CCommon::GetFiles(cue_dir + file_path.GetFileNameWithoutExtension() + L".*", files,
-                    [](const wstring& file_name)
+                CFilePathHelper audio_file_path{ temp[j].file_path };                       // 用于检查与查找音频文件
+                // audio_file_path正确时连续同一文件不再二次操作
+                if (audio_file_path.GetFileName() != audio_file_name || audio_file_path.GetFileName().empty())
                 {
-                    CFilePathHelper file_path(file_name);
-                    wstring extension{ file_path.GetFileExtension() };		//获取文件扩展名
-                    return extension != L"cue" && FileIsAudio(file_name);
-                });
-                if (!files.empty())
-                    audio_file_name = files.front();
-            }
+                    audio_file_name = audio_file_path.GetFileName();
+                    audio_file_name_change = false;     // 由于audio_file_name与temp中的音频路径恢复同步所有设为false
+                    // 如果指定音频文件不存在
+                    if (!CCommon::FileExist(audio_file_path.GetFilePath()))
+                    {
+                        // 开始尝试更正cue中FILE标签的文件名
+                        // 先尝试寻找不同扩展名的音频文件
+                        vector<wstring> files;
+                        CCommon::GetFiles(cue_dir + audio_file_path.GetFileNameWithoutExtension() + L".*", files,
+                            [](const wstring& file_name)
+                            {
+                                CFilePathHelper file_path(file_name);
+                                wstring extension{ file_path.GetFileExtension() };		    // 获取文件扩展名
+                                return extension != L"cue" && FileIsAudio(file_name);
+                            });
+                        // 如果没有找到则尝试与cue同名音频文件
+                        if (files.empty())
+                            audio_file_path.SetFilePath(file_path.GetFilePath());           // 将file_path复制给audio_file_path以免改变file_path
+                        while (files.empty())
+                        {
+                            CCommon::GetFiles(cue_dir + audio_file_path.GetFileNameWithoutExtension() + L".*", files,
+                                [](const wstring& file_name)
+                                {
+                                    CFilePathHelper file_path(file_name);
+                                    wstring extension{ file_path.GetFileExtension() };		// 获取文件扩展名
+                                    return extension != L"cue" && FileIsAudio(file_name);
+                                });
+                            if (audio_file_path.GetFileExtension() != std::wstring())       // 逐个移除扩展名
+                                audio_file_path.SetFilePath(audio_file_path.GetFilePathWithoutExtension());
+                            else
+                                break;
+                        }
+                        if (!files.empty())                                             // 找到了满足要求的文件
+                        {
+                            audio_file_name = files.front();
+                            audio_file_name_change = true;
+                        }
+                    }
+                    // 音频不存在处理完成但仍然不能保证成功
 
-            int bitrate{};
-            Time total_length{};
-            //如果还未获取对应音频文件的信息，则在这里获取
-            if (CCommon::FileExist(cue_dir + audio_file_name))
-            {
-                SongInfo& audo_file_info = CSongDataManager::GetInstance().GetSongInfoRef2(cue_dir + audio_file_name);
-                if (pPlayerCore != nullptr && !audo_file_info.info_acquired)
-                {
-                    pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info);
-                }
-                bitrate = audo_file_info.bitrate;
-                total_length = audo_file_info.lengh;
-            }
-            //检查files列表中是否包含cue对应的音频文件
-            auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
-            {
-                return CCommon::StringCompareNoCase(song.file_path, cue_dir + audio_file_name) && !song.is_cue;
-            });
-            if (find != files.end())
-            {
-                if (find - files.begin() < i)       //如果删除的文件在当前文件的前面，则循环变量减1
-                    i--;
-                files.erase(find);      //找到cue对应的音频文件则把它删除
-            }
-            cue_file.SetTotalLength(total_length);
+                    // 开始取得音频文件信息
+                    // 如果还未获取对应音频文件的信息，则在这里获取
+                    if (CCommon::FileExist(cue_dir + audio_file_name))
+                    {
+                        SongInfo& audo_file_info = CSongDataManager::GetInstance().GetSongInfoRef2(cue_dir + audio_file_name);
+                        if (pPlayerCore != nullptr && !audo_file_info.info_acquired)
+                        {
+                            pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info);
+                        }
+                        bitrate = audo_file_info.bitrate;
+                        audio_file_length = audo_file_info.lengh;
+                    }
 
-            for (const auto& track : cue_file.GetAnalysisResult())
-            {
-                cue_tracks.push_back(track);
+                    // 检查files列表中是否包含cue对应的音频文件
+                    auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
+                        {
+                            return CCommon::StringCompareNoCase(song.file_path, cue_dir + audio_file_name) && !song.is_cue;
+                        });
+                    if (find != files.end())
+                    {
+                        if (find - files.begin() < i)       // 如果删除的文件在当前文件的前面，则循环变量减1
+                            i--;
+                        files.erase(find);                  // 找到cue对应的音频文件则把它删除
+                    }
+                }   // 以上部分仅在新FILE标签或音频文件异常时执行以加快循环检查TRACK的速度
+                // 将temp[j]存入cue_tracks并做最后处理
+                cue_tracks.push_back(temp[j]);
                 cue_tracks.back().bitrate = bitrate;
-                if (file_name_get_falid && !audio_file_name.empty())
+                // 依据end_pos是否为0判断这个轨道是否应当按照音频文件补充结束时间与时长
+                if (cue_tracks.back().end_pos == 0)
+                {
+                    cue_tracks.back().end_pos = audio_file_length;
+                    cue_tracks.back().lengh = Time(audio_file_length - cue_tracks.back().start_pos);
+                }
+                // 若cue_tracks.back().file_path中的信息已失效则更新
+                if (audio_file_name_change && !audio_file_name.empty())
                     cue_tracks.back().file_path = cue_dir + audio_file_name;
             }
 
