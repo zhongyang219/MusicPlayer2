@@ -33,6 +33,7 @@
 #include "CPlayerUI3.h"
 #include "CPlayerUI4.h"
 #include "CPlayerUI5.h"
+#include "TagLibHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -437,6 +438,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
     ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
+    ini.WriteBool(L"media_lib", L"write_id3_v2_3", theApp.m_media_lib_setting_data.write_id3_v2_3);
 
     ini.Save();
 }
@@ -596,6 +598,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
     theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
+    theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);
+    CTagLibHelper::SetWriteId3V2_3(theApp.m_media_lib_setting_data.write_id3_v2_3);
 }
 
 void CMusicPlayerDlg::SetTransparency()
@@ -1043,6 +1047,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     theApp.m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
     theApp.m_hot_key_setting_data = optionDlg.m_tab5_dlg.m_data;
     theApp.m_media_lib_setting_data = optionDlg.m_media_lib_dlg.m_data;
+
+    CTagLibHelper::SetWriteId3V2_3(theApp.m_media_lib_setting_data.write_id3_v2_3);
 
     if (reload_sf2 || output_device_changed || player_core_changed)
     {

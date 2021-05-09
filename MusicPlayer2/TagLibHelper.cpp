@@ -445,6 +445,7 @@ static void WriteId3v2Rating(ID3v2::Tag* id3v2, int rate)
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
+bool CTagLibHelper::m_write_id3v2_3{ false };
 
 CTagLibHelper::CTagLibHelper()
 {
@@ -452,6 +453,11 @@ CTagLibHelper::CTagLibHelper()
 
 CTagLibHelper::~CTagLibHelper()
 {
+}
+
+void CTagLibHelper::SetWriteId3V2_3(bool write_id3v2_3)
+{
+    m_write_id3v2_3 = write_id3v2_3;
 }
 
 string CTagLibHelper::GetM4aAlbumCover(const wstring& file_path, int& type)
@@ -996,7 +1002,7 @@ bool CTagLibHelper::WriteMpegLyric(const wstring& file_path, const wstring& lyri
     int tags = MPEG::File::ID3v2;
     if (file.hasAPETag())
         tags |= MPEG::File::APE;
-    bool saved = file.save(tags);
+    bool saved = file.save(tags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
 
@@ -1075,7 +1081,7 @@ bool CTagLibHelper::WriteWavLyric(const wstring& file_path, const wstring& lyric
     RIFF::WAV::File file(file_path.c_str());
     auto id3v2 = file.ID3v2Tag();
     WriteId3v2Lyric(id3v2, lyric_contents);
-    bool saved = file.save();
+    bool saved = file.save(RIFF::WAV::File::TagTypes::AllTags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
 
@@ -1099,7 +1105,7 @@ bool CTagLibHelper::WriteMp3AlbumCover(const wstring& file_path, const wstring& 
     int tags = MPEG::File::ID3v2;
     if (file.hasAPETag())
         tags |= MPEG::File::APE;
-    bool saved = file.save(tags);
+    bool saved = file.save(tags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
 
@@ -1222,7 +1228,7 @@ bool CTagLibHelper::WriteWavAlbumCover(const wstring& file_path, const wstring& 
     {
         WriteId3v2AlbumCover(id3v2tag, album_cover_path);
     }
-    bool saved = file.save();
+    bool saved = file.save(RIFF::WAV::File::AllTags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
 
@@ -1323,7 +1329,7 @@ bool CTagLibHelper::WriteAiffAlbumCover(const wstring& file_path, const wstring&
     {
         WriteId3v2AlbumCover(id3v2tag, album_cover_path);
     }
-    bool saved = file.save();
+    bool saved = file.save(GetWriteId3v2Version());
     return saved;
 }
 
@@ -1361,7 +1367,7 @@ bool CTagLibHelper::WriteMpegTag(const SongInfo& song_info)
     //    tags |= MPEG::File::ID3v1;
     if (file.hasAPETag())
         tags |= MPEG::File::APE;
-    bool saved = file.save(tags);
+    bool saved = file.save(tags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
 
@@ -1388,7 +1394,7 @@ bool CTagLibHelper::WriteWavTag(const SongInfo& song_info)
     RIFF::WAV::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
-    bool saved = file.save();
+    bool saved = file.save(RIFF::WAV::File::AllTags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
 
@@ -1451,7 +1457,7 @@ bool CTagLibHelper::WriteAiffTag(const SongInfo& song_info)
     RIFF::AIFF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
-    bool saved = file.save();
+    bool saved = file.save(GetWriteId3v2Version());
     return saved;
 }
 
@@ -1519,6 +1525,11 @@ bool CTagLibHelper::WriteMpegRating(const wstring& file_path, int rate)
     int tags = MPEG::File::ID3v2;
     if (file.hasAPETag())
         tags |= MPEG::File::APE;
-    bool saved = file.save(tags);
+    bool saved = file.save(tags, File::StripOthers, GetWriteId3v2Version());
     return saved;
+}
+
+TagLib::ID3v2::Version CTagLibHelper::GetWriteId3v2Version()
+{
+    return (m_write_id3v2_3 ? ID3v2::Version::v3 : ID3v2::Version::v4);
 }

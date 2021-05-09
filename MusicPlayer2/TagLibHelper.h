@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "SongInfo.h"
+#include "taglib/id3v2tag.h"
 
 //
 class CTagLibHelper
@@ -7,6 +8,8 @@ class CTagLibHelper
 public:
     CTagLibHelper();
     ~CTagLibHelper();
+
+    static void SetWriteId3V2_3(bool write_id3v2_3);    //设置是否写入ID3V2.3，否则写入ID2V2.4
 
     //读专辑封面
     static string GetM4aAlbumCover(const wstring& file_path, int& type);
@@ -110,4 +113,11 @@ public:
 
     //写入分级信息
     static bool WriteMpegRating(const wstring& file_path, int rate);
+
+private:
+    //获取要写入的ID3V2版本
+    static TagLib::ID3v2::Version GetWriteId3v2Version();
+
+private:
+    static bool m_write_id3v2_3;   //写入ID3V2标签时是否使用2.3版本，否则使用2.4
 };

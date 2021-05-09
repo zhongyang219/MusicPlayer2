@@ -324,6 +324,7 @@ struct MediaLibSettingData
     bool ignore_songs_already_in_playlist{ true };  //向播放列表中添加曲目时忽略已存在的曲目
     RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
     int display_item{};                 //媒体库显示的项目
+    bool write_id3_v2_3{ false };       //写入的ID3V2版本是否为2.3，否则为2.4
 };
 
 struct NonCategorizedSettingData

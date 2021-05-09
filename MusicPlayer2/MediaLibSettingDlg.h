@@ -31,6 +31,7 @@ private:
 	CMyComboBox m_playlist_display_mode_combo;
 	CMyComboBox m_recent_played_range_combo;
     CButton m_ignore_exist_chk;
+    CMyComboBox m_id3v2_type_combo;
 
     CToolTipCtrl m_toolTip;
     size_t m_data_size;		//数据文件的大小
@@ -56,4 +57,5 @@ public:
 	afx_msg void OnCbnSelchangeRecentPlayedRangeOmbo();
     afx_msg void OnBnClickedIgnoreExistCheck();
     virtual void OnOK();
+    afx_msg void OnCbnSelchangeId3v2TypeCombo();
 };
