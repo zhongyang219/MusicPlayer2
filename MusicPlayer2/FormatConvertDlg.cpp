@@ -487,15 +487,15 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 			cmdline += L"lame.exe ";
 			cmdline += pthis->m_mp3_encode_para.cmd_para;
 			CString str;
-			if (pthis->m_write_tag)
-			{
-				str.Format(_T(" --tt \"%s\" --ta \"%s\" --tl \"%s\" --ty \"%s\" --tc \"%s\" --tn \"%s\" --tg \"%s\""),
-					song_info.title.c_str(), song_info.artist.c_str(), song_info.album.c_str(), song_info.get_year().c_str(), song_info.comment.c_str(),
-					CAudioCommon::TrackToString(song_info.track).GetString(), song_info.genre.c_str());
-				cmdline += str;
-			}
-			if(pthis->m_write_tag)
-				cmdline += L" --add-id3v2";
+			//if (pthis->m_write_tag)
+			//{
+			//	str.Format(_T(" --tt \"%s\" --ta \"%s\" --tl \"%s\" --ty \"%s\" --tc \"%s\" --tn \"%s\" --tg \"%s\""),
+			//		song_info.title.c_str(), song_info.artist.c_str(), song_info.album.c_str(), song_info.get_year().c_str(), song_info.comment.c_str(),
+			//		CAudioCommon::TrackToString(song_info.track).GetString(), song_info.genre.c_str());
+			//	cmdline += str;
+			//}
+			//if(pthis->m_write_tag)
+			//	cmdline += L" --add-id3v2";
 			cmdline += L" - \"";
 			cmdline += out_file_path_temp;
 			cmdline.push_back(L'\"');
@@ -650,6 +650,14 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         if (CCommon::FileExist(out_file_path_helper.GetFilePath()))
             CCommon::DeleteAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_helper.GetFilePath());
 		CCommon::FileRename(out_file_path_helper.GetDir() + CONVERTING_TEMP_FILE_NAME, out_file_path_helper.GetFileName());
+
+		//向mp3文件添加标签信息
+		if (pthis->m_write_tag)
+		{
+			SongInfo song_info_tmp{ song_info };
+            song_info_tmp.file_path = out_file_path;
+            CTagLibHelper::WriteMpegTag(song_info_tmp);
+		}
 
         //向转换的mp3文件添加专辑封面
         if (pthis->m_write_album_cover)
