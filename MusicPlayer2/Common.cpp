@@ -758,10 +758,12 @@ _tstring CCommon::FileRename(const _tstring& file_path, const _tstring& new_file
 
 _tstring CCommon::RelativePathToAbsolutePath(const _tstring & relative_path, const _tstring & cur_dir)
 {
-    //
+    // relative_path如果是绝对路径那么返回此绝对路径
+	// 否则将relative_path视为相对路径并试着与cur_dir正确拼接
     _tstring result = relative_path;
     _tstring dir = cur_dir;
-    if (dir.empty() || dir.back() != _T('\\') || dir.back() != _T('/'))
+	// 如果dir不为空那么确保dir结尾有路径分隔符
+    if (!dir.empty() && (dir.back() != _T('\\') || dir.back() != _T('/')))
         dir.push_back(_T('\\'));
     if ((result.size() > 0 && (result.front() == _T('.') || result.front() == _T('\\') || result.front() == _T('/'))))        //如果是相对路径
     {
