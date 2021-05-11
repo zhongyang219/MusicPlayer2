@@ -21,18 +21,19 @@ public:
 
 	AudioType GetAudioType() const { return m_type; }
 
+    bool GetID3V1Tag();
+    bool GetID3V2Tag();
+    bool GetWmaTag();
+    bool GetMp4Tag();
+    bool GetOggTag();
+    bool GetApeTag();
+    bool GetFlacTag();
+
 private:
 	HSTREAM m_hStream;
 	SongInfo& m_song_info;
 	AudioType m_type;
 
-	bool GetID3V1Tag();
-	bool GetID3V2Tag();
-	bool GetWmaTag();
-	bool GetMp4Tag();
-	bool GetOggTag();
-	bool GetApeTag();
-	bool GetFlacTag();
 
 	//获取ID3V2标签区域的内容
 	string GetID3V2TagContents();
@@ -65,4 +66,3 @@ private:
 
     static string FindID3V2AlbumCover(const string& tag_content, int& image_type);
 };
-
