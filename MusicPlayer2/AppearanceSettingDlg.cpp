@@ -460,7 +460,8 @@ void CAppearanceSettingDlg::OnOK()
     for (auto& album_name : m_data.default_album_name)
     {
         // 虽然开头的.\\不是后续识别必须的但是如果发现缺少还是加上
-        if (album_name.find(L'\\') != wstring::npos && album_name.front() != L'\\')    // 这是一个非简写的相对路径
+        // 这是一个非简写的相对路径，绝对路径此处不做处理
+        if (album_name.find(L'\\') != wstring::npos && album_name.front() != L'\\' && !CCommon::IsWindowsPath(album_name))
         {
             // 确保相对路径以".\\"开头
             if (album_name.at(0) == L'.' && album_name.at(1) == L'\\')

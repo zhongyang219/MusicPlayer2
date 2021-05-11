@@ -450,20 +450,15 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
             {
                 if (!album_name.empty())
                 {
-                    file_name = dir + album_name + L".*";
+                    file_name = CCommon::RelativePathToAbsolutePath(album_name + L".*", dir);
                     CCommon::GetImageFiles(file_name, files);
                 }
                 if (!files.empty())
                 {
                     // 处理album_name可能含有相对路径的情况，files[0]仅有文件名
                     // 由于album_name中文件名部分可能含有通配符所以不能只替换后缀，需要替换整个文件名
-                    // 如果album_name是简写则处理不变，若是相对路径则拼接整理交给RelativePathToAbsolutePath进行
-                    size_t index;
-                    index = album_name.rfind('\\');
-                    if (index == wstring::npos)
-                        album_cover_path = dir + files[0];
-                    else
-                        album_cover_path = CCommon::RelativePathToAbsolutePath(album_name.substr(0, index + 1) + files[0], dir);
+                    size_t index = file_name.rfind('\\');
+                    album_cover_path = file_name.substr(0, index + 1) + files[0];
                     break;
                 }
             }
