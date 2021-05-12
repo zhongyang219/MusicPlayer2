@@ -119,6 +119,7 @@ void CPlayerUI::_DrawInfo(CRect draw_rect, bool reset)
 
     if (theApp.m_app_setting_data.show_spectrum)
     {
+        m_draw.SetDrawArea(cover_rect);
         const int ROWS = 32;        //要显示的频谱柱形的数量
         int gap_width{ theApp.DPIRound(1, 0.4) };       //频谱柱形间隙宽度
         int width = (spectral_rect.Width() - (ROWS - 2) * gap_width) / (ROWS - 2);
