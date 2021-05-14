@@ -4,6 +4,7 @@
 #include "FilePathHelper.h"
 #include <random>
 #include <functional>
+// #include <pathcch.h>
 
 CCommon::CCommon()
 {
@@ -758,22 +759,19 @@ _tstring CCommon::FileRename(const _tstring& file_path, const _tstring& new_file
 
 _tstring CCommon::RelativePathToAbsolutePath(const _tstring & relative_path, const _tstring & cur_dir)
 {
-    //
+    // relative_path如果是盘符开头的绝对路径那么返回此绝对路径
+    // 否则将relative_path视为相对路径或斜杠开头的绝对路径并与cur_dir拼接
     _tstring result = relative_path;
     _tstring dir = cur_dir;
-    if (dir.empty() || dir.back() != _T('\\') || dir.back() != _T('/'))
-        dir.push_back(_T('\\'));
-    if ((result.size() > 0 && (result.front() == _T('.') || result.front() == _T('\\') || result.front() == _T('/'))))        //如果是相对路径
+    if (!IsWindowsPath(result) && !dir.empty())
     {
-        if (result.front() == _T('.') && (result.size() == 1 || result[1] != _T('.')))  //如果路径前面是一个点而不是两个点，则把点去掉
-            result = result.substr(1);
-        if (result.size() > 0 && (result.front() == _T('\\') || result.front() == _T('/')))
-            result = result.substr(1);
-        result = dir + result;
-    }
-    else if (!IsWindowsPath(result))
-    {
-        result = dir + result;
+        // https://docs.microsoft.com/en-us/windows/win32/api/shlwapi/
+        // PathCombine拼接简化两个合法路径，当result为斜杠开头的绝对路径时将其只与dir的盘符拼接
+        // PathCchCombine 是处理了缓冲区溢出的安全版本，Windows 8开始支持，位于pathcch.h
+        TCHAR lpBuffer[MAX_PATH]{};
+        PathCombine(lpBuffer, dir.c_str(), result.c_str());
+        // PathCchCombine(lpBuffer, MAX_PATH, dir.c_str(), result.c_str());
+        result = lpBuffer;
     }
     return result;
 }

@@ -441,22 +441,28 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
             file_name = dir + album_name + L".*";
             CCommon::GetImageFiles(file_name, files);
         }
-        //没有找到唱片集为文件名的文件，查找文件名为设置的专辑封面名的文件
-        if (theApp.m_app_setting_data.use_out_image)
+        if (!files.empty())
+            album_cover_path = dir + files[0];
+        // 没有找到唱片集为文件名的文件，查找文件名为设置的专辑封面名的文件
+        else if (theApp.m_app_setting_data.use_out_image)
         {
             for (const auto& album_name : theApp.m_app_setting_data.default_album_name)
             {
-                if (!files.empty())
-                    break;
                 if (!album_name.empty())
                 {
-                    file_name = dir + album_name + L".*";
+                    file_name = CCommon::RelativePathToAbsolutePath(album_name + L".*", dir);
                     CCommon::GetImageFiles(file_name, files);
+                }
+                if (!files.empty())
+                {
+                    // 处理album_name可能含有相对路径的情况，files[0]仅有文件名
+                    // 由于album_name中文件名部分可能含有通配符所以不能只替换后缀，需要替换整个文件名
+                    size_t index = file_name.rfind('\\');
+                    album_cover_path = file_name.substr(0, index + 1) + files[0];
+                    break;
                 }
             }
         }
-        if (!files.empty())
-            album_cover_path = dir + files[0];
     }
     return album_cover_path;
 }

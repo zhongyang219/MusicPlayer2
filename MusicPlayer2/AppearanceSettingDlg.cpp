@@ -455,8 +455,20 @@ void CAppearanceSettingDlg::OnOK()
 
     CString temp;
     GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
+    temp.Replace(L'/', L'\\');
     CCommon::StringSplit(wstring(temp), L',', m_data.default_album_name);
-
+    for (auto& album_name : m_data.default_album_name)
+    {
+        // 虽然开头的.\\不是后续识别必须的但是如果发现缺少还是加上
+        // 这是一个非简写的相对路径，绝对路径此处不做处理
+        if (album_name.find(L'\\') != wstring::npos && album_name.front() != L'\\' && !CCommon::IsWindowsPath(album_name))
+        {
+            // 确保相对路径以".\\"开头
+            if (album_name.at(0) == L'.' && album_name.at(1) == L'\\')
+                continue;
+            album_name = L".\\" + album_name;
+        }
+    }
     m_data.ui_refresh_interval = m_ui_refresh_interval_edit.GetValue();
 
     //CTabDlg::OnOK();
