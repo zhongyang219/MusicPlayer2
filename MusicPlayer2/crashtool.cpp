@@ -65,7 +65,7 @@ public:
 
         //设置图标
         HICON hIcon;
-        HRESULT hr = LoadIconMetric(NULL, IDI_ERROR, LIM_LARGE, &hIcon);
+        HRESULT hr = LoadIconWithScaleDown(NULL, IDI_ERROR, theApp.DPI(32), theApp.DPI(32), &hIcon);
         if (SUCCEEDED(hr))
             dlg.SetMessageIcon(hIcon);
 
