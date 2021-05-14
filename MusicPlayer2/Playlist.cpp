@@ -181,6 +181,9 @@ bool CPlaylistFile::IsPlaylistExt(wstring ext)
 
 void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool utf8)
 {
+    if (str_current_line.substr(0, 7) == "#EXTM3U" || str_current_line.substr(0, 7) == "#EXTINF")
+        return;
+
 	string current_line = str_current_line;
 	CCommon::DeleteStringBom(current_line);
 	if (!current_line.empty() && current_line.front() == '\"')
