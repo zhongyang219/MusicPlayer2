@@ -867,7 +867,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
 
 void CMusicPlayerDlg::SetMenubarVisible()
 {
-    if (theApp.m_ui_data.show_menu_bar)
+    if (theApp.m_ui_data.show_menu_bar && theApp.m_ui_data.show_window_frame)
     {
         SetMenu(&theApp.m_menu_set.m_main_menu);
     }
@@ -1320,7 +1320,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->CheckMenuItem(ID_ALWAYS_ON_TOP, MF_BYCOMMAND | (theApp.m_nc_setting_data.always_on_top ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_ALWAYS_SHOW_STATUS_BAR, MF_BYCOMMAND | (theApp.m_ui_data.always_show_statusbar ? MF_CHECKED : MF_UNCHECKED));
 
-    pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));        //全屏时禁止显示/关闭菜单栏
+    pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen || !theApp.m_ui_data.show_window_frame ? MF_GRAYED : MF_ENABLED));        //全屏或不使用系统标准标题栏时禁止显示/关闭菜单栏
     pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //迷你模式下禁用全屏模式
     //pMenu->EnableMenuItem(ID_MINI_MODE, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));            //全屏时禁止进入迷你模式
 
@@ -5563,4 +5563,5 @@ void CMusicPlayerDlg::OnUseStandardTitleBar()
 
     theApp.m_ui_data.show_window_frame = !theApp.m_ui_data.show_window_frame;
     ShowTitlebar(theApp.m_ui_data.show_window_frame);
+    SetMenubarVisible();
 }
