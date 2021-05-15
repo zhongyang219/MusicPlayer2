@@ -263,13 +263,14 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
     for (auto& btn : m_buttons)
     {
+        bool pressed = btn.second.pressed;
         //if (btn.second.rect.PtInRect(point) != FALSE)
         //{
         //btn.second.hover = false;
         btn.second.pressed = false;
         //}
 
-        if (btn.second.rect.PtInRect(point) && btn.second.enable)
+        if (pressed && btn.second.rect.PtInRect(point) && btn.second.enable)
         {
             switch (btn.first)
             {
@@ -283,6 +284,11 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                     theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
                 else
                     theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
+                return;
+
+            case BTN_MINIMIZE:
+                m_buttons[BTN_MINIMIZE].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MINIMIZE);
                 return;
 
             case BTN_REPETEMODE:
