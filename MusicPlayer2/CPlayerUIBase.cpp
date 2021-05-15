@@ -172,6 +172,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))     //如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
     {
         CMenu* pMenu = theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
+        ASSERT(pMenu != nullptr);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
         return;
@@ -180,6 +181,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     if (m_buttons[BTN_SHOW_PLAYLIST].rect.PtInRect(point))
     {
         CMenu* pMenu = theApp.m_menu_set.m_playlist_btn_menu.GetSubMenu(0);
+        ASSERT(pMenu != nullptr);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
         return;
@@ -188,6 +190,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     if (m_buttons[BTN_AB_REPEAT].rect.PtInRect(point))
     {
         CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(1)->GetSubMenu(13);
+        ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
         return;
@@ -195,7 +198,8 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 
     if (m_buttons[BTN_SKIN].rect.PtInRect(point))
     {
-        CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(10);
+        CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11);
+        ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
         return;
