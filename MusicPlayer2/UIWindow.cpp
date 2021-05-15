@@ -51,7 +51,7 @@ void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
         SLayoutData lyout;
         point1.y = lyout.titlabar_height;
         ClientToScreen(&point1);
-        pMainWindow->GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     }
     else
     {
@@ -80,6 +80,12 @@ void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
 void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
+    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    auto pUi = pMainWindow->GetCurrentUi();
+    if (pUi->PointInAppIconArea(point))
+    {
+        pMainWindow->SendMessage(WM_CLOSE);
+    }
 
     CStatic::OnLButtonDblClk(nFlags, point);
 }
@@ -111,7 +117,7 @@ void CUIWindow::OnRButtonUp(UINT nFlags, CPoint point)
     {
         CPoint point1;
         GetCursorPos(&point1);
-        pMainWindow->GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     }
     else if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
     {
