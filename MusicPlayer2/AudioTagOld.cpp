@@ -427,7 +427,7 @@ wstring CAudioTagOld::GetSpecifiedId3V2Tag(const string& tag_contents, const str
 		if (tag_index + 11 >= tag_contents.size())
 			return wstring();
 		//判断标签的编码格式
-		CodeType default_code, code_type;
+		CodeType default_code;
 		switch (tag_contents[tag_index + 10])
 		{
 		case 1: case 2:
@@ -452,8 +452,7 @@ wstring CAudioTagOld::GetSpecifiedId3V2Tag(const string& tag_contents, const str
 		{
 			tag_info_str = tag_contents.substr(tag_index + 11, tag_size - 1);
 		}
-		code_type = CCommon::JudgeCodeType(tag_info_str, default_code);
-		tag_info = CCommon::StrToUnicode(tag_info_str, code_type);
+		tag_info = CCommon::StrToUnicode(tag_info_str, default_code);
 	}
 	return tag_info;
 }

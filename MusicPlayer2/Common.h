@@ -147,7 +147,7 @@ public:
 	static size_t GetFileSize(const wstring& file_name);
 
 	//将string类型的字符串转换成Unicode编码的wstring字符串
-	static wstring StrToUnicode(const string& str, CodeType code_type = CodeType::AUTO);
+	static wstring StrToUnicode(const string& str, CodeType code_type = CodeType::AUTO, bool auto_utf8 = true);
 
 	//将UTF16BE转换为UTF16LE
 	static inline void convertBEtoLE(wchar_t* bigEndianBuffer, unsigned int length)

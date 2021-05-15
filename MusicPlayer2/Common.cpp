@@ -329,8 +329,11 @@ size_t CCommon::GetFileSize(const wstring & file_name)
 	return m - l;
 }
 
-wstring CCommon::StrToUnicode(const string& str, CodeType code_type)
+wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_utf8)
 {
+	// 仅当预先已知编码为当前系统ANSI，UTF8，UTF8_NO_BOM，UTF16LE，UTF16BE时使用对应选项
+	// 其他情况应当使用CodeType::AUTO，没有外部判断的必要
+	// 如果发生AUTO将过短的ASIC误判为UTF8，将auto_utf8置false恢复AUTO旧行为将没有BOM的字串全部视为ASIC
 	if (str.empty()) return wstring();
 	// code_type为AUTO时从这里开始
 	if (code_type == CodeType::AUTO)	// 先根据BOM判断编码类型
@@ -344,6 +347,9 @@ wstring CCommon::StrToUnicode(const string& str, CodeType code_type)
 		// 如果前面有UTF16BE的BOM，则编码类型为UTF16BE
 		else if (str.size() >= 2 && str[0] == -2 && str[1] == -1)
 			code_type = CodeType::UTF16BE;
+		// AUTO时是否将符合UTF8格式的str作为UTF8_NO_BOM处理
+		else if (auto_utf8 ? IsUTF8Bytes(str.c_str()) : 0)
+			code_type = CodeType::UTF8_NO_BOM;
 	}
 	bool result_ready = false;
 	int size;
