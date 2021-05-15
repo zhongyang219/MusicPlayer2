@@ -39,8 +39,7 @@ enum class CodeType
 	ANSI,
 	UTF8,
 	UTF8_NO_BOM,
-	UTF16 = 3,
-	UTF16LE = 3,
+	UTF16LE,
 	UTF16BE,
 	AUTO
 };

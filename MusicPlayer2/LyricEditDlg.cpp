@@ -174,7 +174,8 @@ void CLyricEditDlg::UpdateStatusbarInfo()
 	case CodeType::ANSI: str += _T("ANSI"); break;
 	case CodeType::UTF8: str += _T("UTF8"); break;
 	case CodeType::UTF8_NO_BOM: str += CCommon::LoadText(IDS_UTF8_NO_BOM); break;
-	case CodeType::UTF16: str += _T("UTF16"); break;
+	case CodeType::UTF16LE: str += _T("UTF16LE"); break;
+	case CodeType::UTF16BE: str += _T("UTF16BE"); break;
 	}
 	m_status_bar.SetText(str, 2, 0);
 }

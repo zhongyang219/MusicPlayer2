@@ -332,8 +332,8 @@ size_t CCommon::GetFileSize(const wstring & file_name)
 wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_utf8)
 {
 	// 仅当预先已知编码为当前系统ANSI，UTF8，UTF8_NO_BOM，UTF16LE，UTF16BE时使用对应选项
-	// 其他情况应当使用CodeType::AUTO，没有外部判断的必要
-	// 如果发生AUTO将过短的ASIC误判为UTF8，将auto_utf8置false恢复AUTO旧行为将没有BOM的字串全部视为ASIC
+	// 其他情况应当使用默认值CodeType::AUTO，没有外部判断的必要
+	// 如果发生AUTO将过短的ANSI误判为UTF8，将auto_utf8置false恢复AUTO旧行为将没有BOM的字串全部视为ANSI
 	if (str.empty()) return wstring();
 	// code_type为AUTO时从这里开始
 	if (code_type == CodeType::AUTO)	// 先根据BOM判断编码类型
@@ -448,10 +448,10 @@ string CCommon::UnicodeToStr(const wstring & wstr, CodeType code_type, bool* cha
 		result.append(str);
 		delete[] str;
 	}
-	else if (code_type == CodeType::UTF16)
+	else if (code_type == CodeType::UTF16LE)
 	{
 		result.clear();
-		result.push_back(-1);	//在前面加上UTF16的BOM
+		result.push_back(-1);	//在前面加上UTF16LE的BOM
 		result.push_back(-2);
 		result.append((const char*)wstr.c_str(), (const char*)wstr.c_str() + wstr.size() * 2);
 		result.push_back('\0');
@@ -516,9 +516,9 @@ CodeType CCommon::JudgeCodeType(const string & str, CodeType default_code)
 	//如果前面有UTF8的BOM，则编码类型为UTF8
 	if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
 		return CodeType::UTF8;
-	//如果前面有UTF16的BOM，则编码类型为UTF16
+	//如果前面有UTF16LE的BOM，则编码类型为UTF16LE
 	else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
-		return CodeType::UTF16;
+		return CodeType::UTF16LE;
 	//else if (IsUTF8Bytes(str.c_str()))		//如果没有找到UTF8和UTF16的BOM，则判断字符串是否有UTF8编码的特性
 	//	return CodeType::UTF8_NO_BOM;
 	else
@@ -1619,7 +1619,7 @@ CString CCommon::GetTextResource(UINT id, CodeType code_type)
         HGLOBAL hglobal = LoadResource(NULL, hRes);
         if (hglobal != NULL)
         {
-            if (code_type == CodeType::UTF16)
+            if (code_type == CodeType::UTF16LE)
             {
                 res_str = (const wchar_t*)hglobal;
             }

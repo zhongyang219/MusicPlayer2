@@ -431,7 +431,7 @@ wstring CAudioTagOld::GetSpecifiedId3V2Tag(const string& tag_contents, const str
 		switch (tag_contents[tag_index + 10])
 		{
 		case 1: case 2:
-			default_code = CodeType::UTF16;
+			default_code = CodeType::UTF16LE;
 			break;
 		case 3:
 			default_code = CodeType::UTF8;
@@ -443,7 +443,7 @@ wstring CAudioTagOld::GetSpecifiedId3V2Tag(const string& tag_contents, const str
 		string tag_info_str;
 		if (tag_identify == "COMM" || tag_identify == "USLT")
 		{
-			if (default_code == CodeType::UTF16)
+			if (default_code == CodeType::UTF16LE)
 				tag_info_str = tag_contents.substr(tag_index + 18, tag_size - 8);
 			else
 				tag_info_str = tag_contents.substr(tag_index + 15, tag_size - 5);
