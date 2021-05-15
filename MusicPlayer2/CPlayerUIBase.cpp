@@ -1106,7 +1106,7 @@ bool CPlayerUIBase::PointInControlArea(CPoint point) const
 
 bool CPlayerUIBase::PointInTitlebarArea(CPoint point) const
 {
-    if (m_ui_data.show_window_frame)
+    if (m_ui_data.show_window_frame || m_ui_data.full_screen)
         return false;
 
     CRect rect_titlebar = m_draw_rect;
@@ -1116,7 +1116,7 @@ bool CPlayerUIBase::PointInTitlebarArea(CPoint point) const
 
 bool CPlayerUIBase::PointInAppIconArea(CPoint point) const
 {
-    if (m_ui_data.show_window_frame)
+    if (m_ui_data.show_window_frame || m_ui_data.full_screen)
         return false;
 
     CRect rect_app_icon{};

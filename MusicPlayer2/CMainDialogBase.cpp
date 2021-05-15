@@ -26,9 +26,8 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 
 		//当前菜单栏的高度减去一行菜单栏的高度
 		int height_comp = 0;
-		if(theApp.m_ui_data.show_menu_bar)
-			height_comp = CCommon::GetMenuBarHeight(m_hWnd) - theApp.DPIRound(19);
-
+		if(theApp.m_pMainWnd->GetMenu() != nullptr)
+			height_comp += CCommon::GetMenuBarHeight(m_hWnd) - theApp.DPIRound(19);
 
 		//用m_struOldWndpl得到当前窗口的显示状态和窗体位置，以供退出全屏后使用
 		GetWindowPlacement(&m_struOldWndpl);
