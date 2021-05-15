@@ -10,6 +10,7 @@ public:
 
 protected:
 	void SetFullScreen(bool full_screen);		//设置窗口全屏(来自:https://www.cnblogs.com/weixinhum/p/3916673.html)
+	void ShowTitlebar(bool show);				//是否显示标题栏
 
 private:
 	bool m_bFullScreen{ false };
@@ -20,4 +21,3 @@ public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 };
-

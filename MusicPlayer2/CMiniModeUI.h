@@ -24,8 +24,6 @@ public:
 
     virtual void Init(CDC* pDC) override;
 
-    bool PointInControlArea(CPoint point) const;        //判断一个点的位置是否在控件区域
-
     virtual void RButtonUp(CPoint point) override;
     virtual void LButtonUp(CPoint point) override;
 
@@ -45,9 +43,9 @@ private:
 
     virtual bool IsDrawLargeIcon() override { return false; }
     virtual bool IsDrawStatusBar() const override { return false; }
+    virtual bool IsDrawTitleBar() const override { return false; }
 
 private:
     SMiniModeUIData& m_ui_data;
     CFont m_font_time;
-
 };

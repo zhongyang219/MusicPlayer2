@@ -286,6 +286,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_VIEW_ARTIST, &CMusicPlayerDlg::OnViewArtist)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
+    ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
 END_MESSAGE_MAP()
 
 
@@ -302,6 +303,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_translate", theApp.m_ui_data.show_translate);
     ini.WriteBool(L"config", L"show_playlist", theApp.m_ui_data.show_playlist);
     ini.WriteBool(L"config", L"show_menu_bar", theApp.m_ui_data.show_menu_bar);
+    ini.WriteBool(L"config", L"show_window_frame", theApp.m_ui_data.show_window_frame);
     ini.WriteBool(L"config", L"always_show_statusbar", theApp.m_ui_data.always_show_statusbar);
     ini.WriteBool(L"config", L"float_playlist", theApp.m_nc_setting_data.float_playlist);
     ini.WriteInt(L"config", L"float_playlist_width", theApp.m_nc_setting_data.playlist_size.cx);
@@ -454,6 +456,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_ui_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
     theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", true);
     theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", true);
+    theApp.m_ui_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", true);
     theApp.m_ui_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
@@ -1310,6 +1313,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 
     //设置“视图”菜单下的复选标记
     pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_USE_STANDARD_TITLE_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_window_frame ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_DARK_MODE, MF_BYCOMMAND | (theApp.m_app_setting_data.dark_mode ? MF_CHECKED : MF_UNCHECKED));
@@ -1570,10 +1574,10 @@ void CMusicPlayerDlg::InitUiMenu()
         }
     };
 
-    initUiMenu(theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(10));
+    initUiMenu(theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11));
     initUiMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(19));
     initUiMenu(theApp.m_menu_set.m_popup_menu.GetSubMenu(0)->GetSubMenu(22));
-    initUiMenu(theApp.m_menu_set.m_main_menu_popup.GetSubMenu(4)->GetSubMenu(10));
+    initUiMenu(theApp.m_menu_set.m_main_menu_popup.GetSubMenu(4)->GetSubMenu(11));
 }
 
 void CMusicPlayerDlg::SetPlaylistDragEnable()
@@ -1768,6 +1772,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
         //MoveWindow(rect);
         SetWindowPos(nullptr, 0, 0, m_window_width, m_window_height, SWP_NOZORDER | SWP_NOMOVE);
     }
+
+    ShowTitlebar(theApp.m_ui_data.show_window_frame);
 
     //计算“媒体库”按钮的大小
     CDrawCommon draw;
@@ -2003,6 +2009,8 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         {
             if (m_pUI != nullptr)
                 DrawInfo(true);
+            if (pUiBase != nullptr)
+                pUiBase->UpdateTitlebarBtnToolTip();
         }
         last_type = nType;
     }
@@ -5537,4 +5545,15 @@ void CMusicPlayerDlg::OnLocateToCurrent()
 {
     // TODO: 在此添加命令处理程序代码
     m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+}
+
+
+void CMusicPlayerDlg::OnUseStandardTitleBar()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_miniModeDlg.m_hWnd != NULL)   //迷你模式下不允许响应
+        return;
+
+    theApp.m_ui_data.show_window_frame = !theApp.m_ui_data.show_window_frame;
+    ShowTitlebar(theApp.m_ui_data.show_window_frame);
 }

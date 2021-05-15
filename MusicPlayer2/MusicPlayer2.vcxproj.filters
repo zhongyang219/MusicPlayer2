@@ -17,9 +17,6 @@
     <Filter Include="PlayerUI">
       <UniqueIdentifier>{7ecb1bd3-1c4b-442e-80f8-25aefb244432}</UniqueIdentifier>
     </Filter>
-    <Filter Include="stdafx">
-      <UniqueIdentifier>{31edd60e-adb8-4131-88d9-e72e22bddf9b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="对话框类">
       <UniqueIdentifier>{9b54a66d-1d41-47b7-8595-5ec19e7c123d}</UniqueIdentifier>
     </Filter>
@@ -335,6 +332,9 @@
     </Filter>
     <Filter Include="派生的控件类\CSliderCtrlEx">
       <UniqueIdentifier>{78135dff-6314-498c-8709-88751407abde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stdafx">
+      <UniqueIdentifier>{31edd60e-adb8-4131-88d9-e72e22bddf9b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1529,8 +1529,29 @@
     <Image Include="res\MusicPlayer2_debug.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\close.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\maximize.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\maximize_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\minimize.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\minimize_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\restore.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\restore_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
     <Image Include="res\star.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -16,6 +16,7 @@ struct SLayoutData
     //const int select_folder_width = theApp.DPI(90);   //“选择文件夹”按钮的宽度
     const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };   //频谱分析区域的大小
     const int toolbar_height = theApp.DPI(24);                  //播放列表工具栏的高度
+    const int titlabar_height = theApp.DPI(28);                 //标题栏的高度
 };
 
 
@@ -42,6 +43,7 @@ public:
     void UpdateSongInfoToolTip();
     void UpdatePlayPauseButtonTip() override;
     virtual void UpdateFullScreenTip() override;
+    void UpdateTitlebarBtnToolTip();       //更新标题栏上的最大化/还原按钮的鼠标提示
 
     virtual bool SetCursor() override;
     virtual void MouseLeave() override;
@@ -52,6 +54,10 @@ public:
     int EdgeMargin(bool x = true) const;
     int WidthThreshold() const;
     int DrawAreaHeight() const;     //窄界面模式下显示播放列表时绘图区的高度
+
+    bool PointInControlArea(CPoint point) const;        //判断一个点的位置是否在控件区域
+    bool PointInTitlebarArea(CPoint point) const;
+    bool PointInAppIconArea(CPoint point) const;
 
     //获取界面的名称
     virtual CString GetUIName() { return CString(); }
@@ -68,6 +74,7 @@ public:
         BTN_EQ,                 //音效设定按钮
         BTN_SETTING,            //设置按钮
         BTN_MINI,               //迷你模式按钮
+        BTN_MINI1,              //菜单栏上的迷你模式按钮
         BTN_INFO,               //曲目信息按钮
         BTN_FIND,               //查找歌曲按钮
         BTN_LRYIC,              //桌面歌词按钮
@@ -85,6 +92,9 @@ public:
         BTN_FAVOURITE,          //“我喜欢”按钮
         BTN_CLOSE,              //关闭按钮（迷你模式）
         BTN_RETURN,             //返回按钮（迷你模式）
+        BTN_MINIMIZE,           //最小化按钮
+        BTN_MAXIMIZE,           //最大化按钮
+        BTN_APP_CLOSE,          //关闭按钮
 
     };
 
@@ -110,7 +120,6 @@ protected:
     void DrawTranslateButton(CRect rect);
     int DrawTopRightIcons(bool always_show_full_screen = false);            //绘制右上角的图标。返回总宽度
     void DrawCurrentTime();             //在右上角绘制当前系统时间
-    void DrawStatusBar(CRect rect, bool reset = false);
     void DrawAlbumCover(CRect rect);
     void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr, bool adj_btn_top = false);     //str：要显示的文本（音量：xx%），如果为nullptr，则会自动设置；adj_btn_top：点击后弹出的音量调整按钮是否在上方
     void DrawABRepeatButton(CRect rect);
@@ -135,6 +144,7 @@ protected:
     bool IsDrawNarrowMode();            //是否使用窄界面模式绘图
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
     virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
+    virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
 
     wstring GetDisplayFormatString();       //获取显示格式的字符串
 
@@ -152,6 +162,9 @@ private:
     void SetSongInfoToolTipText();
     void SetCoverToolTipText();
     void DrawPlayTag(CRect rect, LPCTSTR str_text);
+
+    void DrawStatusBar(CRect rect, bool reset = false);
+    void DrawTitleBar(CRect rect);
 
 protected:
     CWnd* m_pMainWnd = nullptr;

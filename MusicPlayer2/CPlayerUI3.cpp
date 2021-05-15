@@ -15,7 +15,6 @@ CPlayerUI3::~CPlayerUI3()
 void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 {
     m_draw_data.thumbnail_rect = draw_rect;
-    draw_rect.MoveToXY(0, 0);
 
     //绘制工具栏
     CRect rc_tool_bar = draw_rect;
@@ -174,7 +173,7 @@ void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
         DrawVolumnAdjBtn();
 
     //绘制歌词
-    CRect rc_lyric = m_draw_rect;
+    CRect rc_lyric = draw_rect;
     rc_lyric.bottom = rc_tool_bar.top;
     rc_lyric.DeflateRect(Margin(), Margin());
     m_draw_data.lyric_rect = rc_lyric;

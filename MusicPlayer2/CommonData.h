@@ -469,6 +469,11 @@ struct IconSet
     IconRes previous_new;
     IconRes next_new;
 
+    IconRes app_close;
+    IconRes maximize;
+    IconRes minimize;
+    IconRes restore;
+
     //菜单图标（仅16x16）
     HICON stop_new;
     HICON save_new;
@@ -510,6 +515,7 @@ struct UIData
     bool narrow_mode;					//窄界面模式
     bool show_playlist{ true };
     bool show_menu_bar{ true };
+    bool show_window_frame{ true };     //显示标准窗口边框
     bool full_screen{ false };
     bool always_show_statusbar{ false };    //总是显示状态栏
 

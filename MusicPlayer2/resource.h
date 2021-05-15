@@ -661,6 +661,17 @@
 #define IDS_RANDOM_TRACK                531
 #define IDS_NEXT_TRACK                  532
 #define IDS_MEDIA_LIB_UPDATING_INFO     533
+#define IDS_MINIMIZE                    534
+#define IDI_CLOSE                       534
+#define IDS_MAXIMIZE                    535
+#define IDI_MINIMIZE                    535
+#define IDS_RESTORE                     536
+#define IDI_MINIMIZE_D                  536
+#define IDI_MAXIMIZE                    537
+#define IDI_MAXIMIZE_D                  538
+#define IDI_RESTORE                     539
+#define IDI_ICON19                      540
+#define IDI_RESTORE_D                   540
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1441,13 +1452,15 @@
 #define ID_RATING_4                     33335
 #define ID_RATING_5                     33336
 #define ID_RATING_NONE                  33337
+#define ID_33338                        33338
+#define ID_USE_STANDARD_TITLE_BAR       33339
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        509
-#define _APS_NEXT_COMMAND_VALUE         33338
+#define _APS_NEXT_RESOURCE_VALUE        541
+#define _APS_NEXT_COMMAND_VALUE         33340
 #define _APS_NEXT_CONTROL_VALUE         1186
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

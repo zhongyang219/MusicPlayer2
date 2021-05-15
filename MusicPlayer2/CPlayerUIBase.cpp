@@ -90,6 +90,15 @@ void CPlayerUIBase::DrawInfo(bool reset)
             DrawStatusBar(rc_status_bar, reset);
         }
 
+        //如果不显示Windows标准标题栏，则绘制标题栏
+        if (IsDrawTitleBar())
+        {
+            CRect rc_title_bar = draw_rect;
+            rc_title_bar.bottom = rc_title_bar.top + m_layout.titlabar_height;
+            draw_rect.top = rc_title_bar.bottom;
+            DrawTitleBar(rc_title_bar);
+        }
+
         //绘制界面中其他信息
         _DrawInfo(draw_rect, reset);
 
@@ -264,6 +273,18 @@ void CPlayerUIBase::LButtonUp(CPoint point)
         {
             switch (btn.first)
             {
+            case BTN_APP_CLOSE:
+                theApp.m_pMainWnd->SendMessage(WM_CLOSE);
+                return;
+
+            case BTN_MAXIMIZE:
+                m_buttons[BTN_MAXIMIZE].hover = false;
+                if (theApp.m_pMainWnd->IsZoomed())
+                    theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
+                else
+                    theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
+                return;
+
             case BTN_REPETEMODE:
                 CPlayer::GetInstance().SetRepeatMode();
                 UpdateRepeatModeToolTip();
@@ -293,6 +314,11 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
             case BTN_MINI:
                 m_buttons[BTN_MINI].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
+                return;
+
+            case BTN_MINI1:
+                m_buttons[BTN_MINI1].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
                 return;
 
@@ -438,6 +464,14 @@ void CPlayerUIBase::UpdateFullScreenTip()
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
     else
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+}
+
+void CPlayerUIBase::UpdateTitlebarBtnToolTip()
+{
+    if (theApp.m_pMainWnd->IsZoomed())
+        UpdateMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_RESTORE));
+    else
+        UpdateMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
 }
 
 bool CPlayerUIBase::SetCursor()
@@ -767,19 +801,32 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
     //rc_tmp.DeflateRect(DPI(2), DPI(2));
     m_draw.SetDrawArea(rc_tmp);
 
+    //绘制的是否为关闭按钮（关闭按钮需要特别处理）
+    bool is_close_btn = (&btn == &m_buttons[BTN_APP_CLOSE]);
+
     //绘制背景
     if (btn.pressed || btn.hover)
     {
         BYTE alpha;
-        if (IsDrawBackgroundAlpha())
+        if (!is_close_btn && IsDrawBackgroundAlpha())
             alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
         else
             alpha = 255;
         COLORREF back_color{};
-        if (btn.pressed)
-            back_color = m_colors.color_button_pressed;
+        if (is_close_btn)
+        {
+            if (btn.pressed)
+                back_color = RGB(173, 17, 29);
+            else
+                back_color = RGB(232, 17, 35);
+        }
         else
-            back_color = m_colors.color_button_hover;
+        {
+            if (btn.pressed)
+                back_color = m_colors.color_button_pressed;
+            else
+                back_color = m_colors.color_button_hover;
+        }
         if (!theApp.m_app_setting_data.button_round_corners)
             m_draw.FillAlphaRect(rc_tmp, back_color, alpha);
         else
@@ -796,7 +843,8 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
     rc_tmp.right = rc_tmp.left + icon_size.cx;
     rc_tmp.bottom = rc_tmp.top + icon_size.cy;
 
-    const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, IsDrawLargeIcon());
+    bool is_light_icon = (theApp.m_app_setting_data.dark_mode || (is_close_btn && (btn.pressed || btn.hover)));
+    const HICON& hIcon = icon.GetIcon(!is_light_icon, IsDrawLargeIcon());
     m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
 
 }
@@ -1033,8 +1081,41 @@ int CPlayerUIBase::DrawAreaHeight() const
     int info_height = m_layout.info_height;
     if (m_ui_data.full_screen)
         info_height = static_cast<int>(info_height * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR) + 2 * EdgeMargin();
+    else if (!m_ui_data.show_window_frame)
+        info_height += m_layout.titlabar_height;
 
     return info_height;
+}
+
+bool CPlayerUIBase::PointInControlArea(CPoint point) const
+{
+    bool point_in_control = false;
+    for (const auto& btn : m_buttons)
+    {
+        if (btn.first != BTN_COVER)
+            point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
+    }
+    return point_in_control;
+}
+
+bool CPlayerUIBase::PointInTitlebarArea(CPoint point) const
+{
+    if (m_ui_data.show_window_frame)
+        return false;
+
+    CRect rect_titlebar = m_draw_rect;
+    rect_titlebar.bottom = rect_titlebar.top + m_layout.titlabar_height;
+    return (rect_titlebar.PtInRect(point) != FALSE);
+}
+
+bool CPlayerUIBase::PointInAppIconArea(CPoint point) const
+{
+    if (m_ui_data.show_window_frame)
+        return false;
+
+    CRect rect_app_icon{};
+    rect_app_icon.right = rect_app_icon.bottom = m_layout.titlabar_height;
+    return (rect_app_icon.PtInRect(point) != FALSE);
 }
 
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
@@ -1045,6 +1126,11 @@ bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 bool CPlayerUIBase::IsDrawStatusBar() const
 {
     return CPlayerUIHelper::IsDrawStatusBar();
+}
+
+bool CPlayerUIBase::IsDrawTitleBar() const
+{
+    return !m_ui_data.show_window_frame && !m_ui_data.full_screen;
 }
 
 wstring CPlayerUIBase::GetDisplayFormatString()
@@ -1338,6 +1424,9 @@ void CPlayerUIBase::DrawTranslateButton(CRect rect)
 
 int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
 {
+    if (!m_ui_data.show_window_frame && !m_ui_data.full_screen)
+        return 0;
+
     int total_width = 0;
     const int icon_size = DPI(28);
     //绘制“全屏”图标
@@ -1545,6 +1634,66 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     }
 }
 
+void CPlayerUIBase::DrawTitleBar(CRect rect)
+{
+    //填充标题栏背景
+    bool draw_background{ IsDrawBackgroundAlpha() };
+    //绘制背景
+    BYTE alpha;
+    if (theApp.m_app_setting_data.dark_mode)
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+    else
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+
+    if (draw_background)
+        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+    else
+        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+
+    //绘制应用图标
+    auto app_icon = theApp.m_icon_set.app;
+    CRect rect_temp = rect;
+    rect_temp.right = rect_temp.left + m_layout.titlabar_height;
+    //使图标在矩形中居中
+    CSize icon_size = app_icon.GetSize();
+    CRect rc_icon{ rect_temp };
+    rc_icon.left = rect_temp.left + (rect_temp.Width() - icon_size.cx) / 2;
+    rc_icon.top = rect_temp.top + (rect_temp.Height() - icon_size.cy) / 2;
+    rc_icon.right = rc_icon.left + icon_size.cx;
+    rc_icon.bottom = rc_icon.top + icon_size.cy;
+    m_draw.DrawIcon(app_icon.GetIcon(), rc_icon.TopLeft(), icon_size);
+
+    //绘制右侧图标
+    rect_temp = rect;
+    rect_temp.left = rect_temp.right - theApp.DPI(30);
+    //关闭图标
+    DrawUIButton(rect_temp, m_buttons[BTN_APP_CLOSE], theApp.m_icon_set.app_close);
+    //最大化/还原图标
+    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+    auto max_icon = (theApp.m_pMainWnd->IsZoomed() ? theApp.m_icon_set.restore : theApp.m_icon_set.maximize);
+    DrawUIButton(rect_temp, m_buttons[BTN_MAXIMIZE], max_icon);
+    //最小化图标
+    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+    DrawUIButton(rect_temp, m_buttons[BTN_MINIMIZE], theApp.m_icon_set.minimize);
+    //全屏模式图标
+    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+    DrawUIButton(rect_temp, m_buttons[BTN_FULL_SCREEN], theApp.m_icon_set.full_screen1);
+    //迷你模式图标
+    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+    DrawUIButton(rect_temp, m_buttons[BTN_MINI1], theApp.m_icon_set.mini);
+    //主菜单图标
+    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+    DrawUIButton(rect_temp, m_buttons[BTN_MENU], theApp.m_icon_set.menu);
+
+    //绘制标题栏文本
+    rect_temp.right = rect_temp.left;
+    rect_temp.left = m_layout.titlabar_height;
+    CMusicPlayerDlg* pMainWnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CString title;
+    pMainWnd->GetWindowText(title);
+    m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
+}
+
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
 {
     if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
@@ -1667,6 +1816,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, _T(" (Ctrl+E)")));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, _T(" (Ctrl+I)")));
     AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl+M)")));
+    AddMouseToolTip(BTN_MINI1, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl+M)")));
     AddMouseToolTip(BTN_INFO, m_info_tip);
     AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
     AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
@@ -1682,6 +1832,9 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, _T(" (Ctrl+R)")));
+    AddMouseToolTip(BTN_APP_CLOSE, CCommon::LoadText(IDS_CLOSE));
+    AddMouseToolTip(BTN_MINIMIZE, CCommon::LoadText(IDS_MINIMIZE));
+    AddMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
 
     UpdateRepeatModeToolTip();
 }

@@ -14,7 +14,7 @@ CPlayerUI::~CPlayerUI()
 
 void CPlayerUI::_DrawInfo(CRect draw_rect, bool reset)
 {
-    draw_rect.MoveToXY(0, 0);
+    //draw_rect.MoveToXY(0, 0);
 
     CPoint text_start{ draw_rect.left + SpectralSize().cx + Margin() + EdgeMargin(true), draw_rect.top + EdgeMargin(false) };       //文本的起始坐标
     int text_height{ DPI(18) };     //文本的高度

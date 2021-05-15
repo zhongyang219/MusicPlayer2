@@ -20,17 +20,6 @@ void CMiniModeUI::Init(CDC* pDC)
     m_first_draw = true;
 }
 
-bool CMiniModeUI::PointInControlArea(CPoint point) const
-{
-    bool point_in_control = false;
-    for (const auto& btn : m_buttons)
-    {
-        if (btn.first != BTN_COVER)
-            point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
-    }
-    return point_in_control;
-}
-
 void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
 {
     //绘制专辑封面

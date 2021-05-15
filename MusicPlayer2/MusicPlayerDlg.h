@@ -457,4 +457,5 @@ public:
     afx_msg void OnViewArtist();
     afx_msg void OnViewAlbum();
     afx_msg void OnLocateToCurrent();
+    afx_msg void OnUseStandardTitleBar();
 };

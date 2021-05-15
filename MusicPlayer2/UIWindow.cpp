@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "UIWindow.h"
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
@@ -6,7 +6,7 @@
 
 void CUIWindow::PreSubclassWindow()
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     DWORD dwStyle = GetStyle();
     ::SetWindowLong(GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
@@ -16,7 +16,7 @@ void CUIWindow::PreSubclassWindow()
 
 BOOL CUIWindow::PreTranslateMessage(MSG* pMsg)
 {
-    // TODO: ÔÚ´ËÌí¼Ó×¨ÓÃ´úÂëºÍ/»òµ÷ÓÃ»ùÀà
+    // TODO: åœ¨æ­¤æ·»åŠ ä¸“ç”¨ä»£ç å’Œ/æˆ–è°ƒç”¨åŸºç±»
     if (pMsg->message == WM_MOUSEMOVE)
     {
         m_pUI->GetToolTipCtrl().RelayEvent(pMsg);
@@ -39,19 +39,38 @@ END_MESSAGE_MAP()
 
 void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
     CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    if (pMainWindow != nullptr && !pMainWindow->m_no_lbtnup)
-        m_pUI->LButtonUp(point);
+    auto pUi = pMainWindow->GetCurrentUi();
 
-    CStatic::OnLButtonUp(nFlags, point);
+    //å¦‚æœç‚¹å‡»äº†åº”ç”¨å›¾æ ‡ï¼Œåˆ™å¼¹å‡ºç³»ç»Ÿèœå•
+    if (pUi->PointInAppIconArea(point))
+    {
+        CPoint point1{};
+        SLayoutData lyout;
+        point1.y = lyout.titlabar_height;
+        ClientToScreen(&point1);
+        pMainWindow->GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+    }
+    else
+    {
+        if (pMainWindow != nullptr && !pMainWindow->m_no_lbtnup)
+            m_pUI->LButtonUp(point);
+
+        CStatic::OnLButtonUp(nFlags, point);
+    }
 }
 
 
 void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    auto pUi = pMainWindow->GetCurrentUi();
+    if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point) && !pUi->PointInAppIconArea(point))        //å¦‚æœé¼ æ ‡æŒ‰ä¸‹çš„åœ°æ–¹æ˜¯ç»˜åˆ¶çš„æ ‡é¢˜æ åŒºåŸŸï¼Œå¹¶ä¸”ä¸æ˜¯æŒ‰é’®ï¼Œåˆ™æ‹–åŠ¨çª—å£
+        pMainWindow->PostMessage(WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(point.x, point.y));
+
     m_pUI->LButtonDown(point);
 
     CStatic::OnLButtonDown(nFlags, point);
@@ -60,7 +79,7 @@ void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 
     CStatic::OnLButtonDblClk(nFlags, point);
 }
@@ -68,7 +87,7 @@ void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 //void CUIWindow::OnRButtonDblClk(UINT nFlags, CPoint point)
 //{
-//    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+//    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 //
 //    CStatic::OnRButtonDblClk(nFlags, point);
 //}
@@ -76,7 +95,7 @@ void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_pUI->MouseMove(point);
 
     CStatic::OnMouseMove(nFlags, point);
@@ -85,8 +104,16 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
 
 void CUIWindow::OnRButtonUp(UINT nFlags, CPoint point)
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-    if (nFlags == MK_SHIFT)		//°´×¡Shift¼üµã»÷Êó±êÓÒ¼üÊ±£¬µ¯³öÏµÍ³²Ëµ¥
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
+    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    auto pUi = pMainWindow->GetCurrentUi();
+    if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point))        //å¦‚æœé¼ æ ‡æŒ‰ä¸‹çš„åœ°æ–¹æ˜¯ç»˜åˆ¶çš„æ ‡é¢˜æ åŒºåŸŸï¼Œå¹¶ä¸”ä¸æ˜¯æŒ‰é’®ï¼Œåˆ™å¼¹å‡ºç³»ç»Ÿèœå•
+    {
+        CPoint point1;
+        GetCursorPos(&point1);
+        pMainWindow->GetSystemMenu(FALSE)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+    }
+    else if (nFlags == MK_SHIFT)		//æŒ‰ä½Shifté”®ç‚¹å‡»é¼ æ ‡å³é”®æ—¶ï¼Œå¼¹å‡ºç³»ç»Ÿèœå•
     {
         CPoint point1;
         GetCursorPos(&point1);
@@ -104,10 +131,10 @@ void CUIWindow::OnRButtonUp(UINT nFlags, CPoint point)
 void CUIWindow::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
-                       // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
-                       // ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CStatic::OnPaint()
+                       // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
+                       // ä¸ä¸ºç»˜å›¾æ¶ˆæ¯è°ƒç”¨ CStatic::OnPaint()
     CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    //ĞèÒªÖØ»æÊ±Í¨ÖªÏß³ÌÇ¿ÖÆÖØ»æ
+    //éœ€è¦é‡ç»˜æ—¶é€šçŸ¥çº¿ç¨‹å¼ºåˆ¶é‡ç»˜
     if (pMainWindow != nullptr)
         pMainWindow->m_ui_thread_para.ui_force_refresh = true;
 }
@@ -117,7 +144,7 @@ void CUIWindow::OnSize(UINT nType, int cx, int cy)
 {
     CStatic::OnSize(nType, cx, cy);
 
-    // TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+    // TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
     theApp.m_ui_data.draw_area_width = cx;
     theApp.m_ui_data.draw_area_height = cy;
 
@@ -131,7 +158,7 @@ void CUIWindow::OnSize(UINT nType, int cx, int cy)
 
 void CUIWindow::OnMouseLeave()
 {
-    // TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+    // TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
     m_pUI->MouseLeave();
 
     CStatic::OnMouseLeave();

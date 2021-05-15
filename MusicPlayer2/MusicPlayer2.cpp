@@ -499,6 +499,11 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.previous_new.Load(IDI_PREVIOUS_NEW, IDI_PREVIOUS_NEW_D, DPI(16));
     m_icon_set.next_new.Load(IDI_NEXT_NEW, IDI_NEXT_NEW_D, DPI(16));
 
+    m_icon_set.app_close.Load(IDI_CLOSE, IDI_CLOSE_D, DPI(16));
+    m_icon_set.maximize.Load(IDI_MAXIMIZE, IDI_MAXIMIZE_D, DPI(16));
+    m_icon_set.minimize.Load(IDI_MINIMIZE, IDI_MINIMIZE_D, DPI(16));
+    m_icon_set.restore.Load(IDI_RESTORE, IDI_RESTORE_D, DPI(16));
+
     //菜单图标
     m_icon_set.stop_new = CDrawCommon::LoadIconResource(IDI_STOP_NEW_D, DPI(16), DPI(16));
     m_icon_set.save_new = CDrawCommon::LoadIconResource(IDI_SAVE_NEW_D, DPI(16), DPI(16));

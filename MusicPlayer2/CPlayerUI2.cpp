@@ -18,7 +18,8 @@ CPlayerUI2::~CPlayerUI2()
 
 void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
 {
-    draw_rect.MoveToXY(0, 0);
+    //draw_rect.MoveToXY(0, 0);
+    CPoint start_point = draw_rect.TopLeft();
 
     if (!IsDrawNarrowMode())
     {
@@ -46,13 +47,13 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
 
         //绘制播放状态
         int text_height{ DPI(18) };
-        rc_tmp.MoveToXY(EdgeMargin(true), EdgeMargin(false));
+        rc_tmp.MoveToXY(start_point.x + EdgeMargin(true), start_point.y + EdgeMargin(false));
         rc_tmp.right = draw_rect.right - EdgeMargin(true) - top_right_icon_size;
         rc_tmp.bottom = rc_tmp.top + text_height;
         DrawSongInfo(rc_tmp, reset);
 
         //绘制曲目格式
-        rc_tmp.MoveToX(EdgeMargin(true));
+        rc_tmp.MoveToX(start_point.x + EdgeMargin(true));
         rc_tmp.MoveToY(rc_tmp.bottom);
         wstring format_str = GetDisplayFormatString();
         static CDrawCommon::ScrollInfo scroll_info2;
@@ -65,7 +66,7 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         else
             bottom_height = static_cast<int>(info_rect.Height() * 0.35);
 
-        CRect cover_frame_rect{ CPoint(EdgeMargin(true), text_height * 2 + (EdgeMargin(false) - Margin())), CSize(info_rect.Width() - 2 * EdgeMargin(true), info_rect.Height() - text_height * 2 - bottom_height - (EdgeMargin(false) - Margin())) };
+        CRect cover_frame_rect{ CPoint(start_point.x + EdgeMargin(true), start_point.y + text_height * 2 + (EdgeMargin(false) - Margin())), CSize(info_rect.Width() - 2 * EdgeMargin(true), info_rect.Height() - text_height * 2 - bottom_height - (EdgeMargin(false) - Margin())) };
         int cover_side = min(cover_frame_rect.Width(), cover_frame_rect.Height());
         CPoint start_point;
         start_point.x = cover_frame_rect.left + (cover_frame_rect.Width() - cover_side) / 2;
@@ -279,7 +280,7 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         //绘制播放状态
         int text_height{ DPI(18) };     //文本的高度
         rc_tmp.MoveToX(cover_side + EdgeMargin(true) + Margin());
-        rc_tmp.MoveToY(EdgeMargin(false));
+        rc_tmp.MoveToY(start_point.y + EdgeMargin(false));
         rc_tmp.right = info_rect.right - EdgeMargin(true) - top_right_icon_size;
         rc_tmp.bottom = rc_tmp.top + text_height;
         DrawSongInfo(rc_tmp, reset);
@@ -305,7 +306,7 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         DrawToolBar(rc_tmp, true);
 
         rc_tmp.MoveToY(rc_tmp.bottom + Margin());
-        rc_tmp.bottom = cover_side + EdgeMargin(false);
+        rc_tmp.bottom = start_point.y + cover_side + EdgeMargin(false);
 
         //绘制歌词
         if (theApp.m_app_setting_data.lyric_background)
@@ -323,7 +324,7 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         DrawVolumnAdjBtn();
 
         //绘播放制控制条
-        rc_tmp.top = cover_side + EdgeMargin(false) + Margin();
+        rc_tmp.top = start_point.y + cover_side + EdgeMargin(false) + Margin();
         rc_tmp.left = EdgeMargin(true);
         rc_tmp.right = draw_rect.right - EdgeMargin(true);
         rc_tmp.bottom = draw_rect.bottom - EdgeMargin(false);

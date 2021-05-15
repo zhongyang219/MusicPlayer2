@@ -490,6 +490,7 @@
     <Image Include="res\album_cover.ico" />
     <Image Include="res\album_d.ico" />
     <Image Include="res\artist_d.ico" />
+    <Image Include="res\close.ico" />
     <Image Include="res\close_d.ico" />
     <Image Include="res\convert.ico" />
     <Image Include="res\convert_d.ico" />
@@ -527,11 +528,15 @@
     <Image Include="res\lyric_d.ico" />
     <Image Include="res\lyric_delay.ico" />
     <Image Include="res\lyric_forward.ico" />
+    <Image Include="res\maximize.ico" />
+    <Image Include="res\maximize_d.ico" />
     <Image Include="res\media_lib.ico" />
     <Image Include="res\media_lib_d.ico" />
     <Image Include="res\menu.ico" />
     <Image Include="res\menu_d.ico" />
     <Image Include="res\mini.ico" />
+    <Image Include="res\minimize.ico" />
+    <Image Include="res\minimize_d.ico" />
     <Image Include="res\mini_d.ico" />
     <Image Include="res\MusicPlayer2.ico" />
     <Image Include="res\MusicPlayer2_dark.ico" />
@@ -558,6 +563,8 @@
     <Image Include="res\rename_d.ico" />
     <Image Include="res\Replace.ico" />
     <Image Include="res\ReplaceTag.ico" />
+    <Image Include="res\restore.ico" />
+    <Image Include="res\restore_d.ico" />
     <Image Include="res\rew_new_d.ico" />
     <Image Include="res\Save.ico" />
     <Image Include="res\save_as_d.ico" />
