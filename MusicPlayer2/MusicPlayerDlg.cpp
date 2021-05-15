@@ -2686,6 +2686,13 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
     lpMMI->ptMinTrackSize.x = theApp.DPI(340);      //设置最小宽度
     lpMMI->ptMinTrackSize.y = theApp.DPI(360);      //设置最小高度
 
+    if (!theApp.m_ui_data.show_window_frame)
+    {
+        CRect rect_screed;
+        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rect_screed, 0);   // 获得工作区大小
+        lpMMI->ptMaxSize.y = rect_screed.Height() + theApp.DPI(12) + 2;
+    }
+
     CMainDialogBase::OnGetMinMaxInfo(lpMMI);
 }
 
