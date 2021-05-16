@@ -5564,4 +5564,7 @@ void CMusicPlayerDlg::OnUseStandardTitleBar()
     theApp.m_ui_data.show_window_frame = !theApp.m_ui_data.show_window_frame;
     ShowTitlebar(theApp.m_ui_data.show_window_frame);
     SetMenubarVisible();
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
 }
