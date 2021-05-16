@@ -499,7 +499,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     {
         if (!CSongDataManager::GetInstance().IsItemExist(file_path) || (refresh && IsSongNewer(file_path)))       //如果还没有获取到该歌曲的信息，或者文件的最后修改时间比上次获取到的新，则在这里获取
         {
-            SongInfo song_info;
+            SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
             song_info.file_path = file_path;
             IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
             if (pPlayerCore == nullptr)
@@ -624,9 +624,11 @@ bool CMusicPlayerCmdHelper::IsSongNewer(const std::wstring& file_path)
     if (!CCommon::FileExist(file_path))
         return false;
 
-    auto song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
+    SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef(file_path);
     unsigned __int64 last_modified = CCommon::GetFileLastModified(file_path);
-    return last_modified > static_cast<unsigned __int64>(song_info.last_played_time);
+    bool is_newer = (last_modified > song_info.modified_time);
+    song_info.modified_time = last_modified;
+    return is_newer;
 }
 
 CWnd* CMusicPlayerCmdHelper::GetOwner()
