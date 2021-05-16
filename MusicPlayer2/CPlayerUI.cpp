@@ -173,7 +173,7 @@ void CPlayerUI::_DrawInfo(CRect draw_rect, bool reset)
 
         lyric_rect = draw_rect;
         lyric_rect.MoveToY(other_info_rect.bottom + Margin() + control_bar_height);
-        lyric_rect.bottom = draw_rect.Height()/* - Margin()*/;
+        lyric_rect.bottom = draw_rect.bottom;
         DrawLyricsArea(lyric_rect);
         //}
     }
