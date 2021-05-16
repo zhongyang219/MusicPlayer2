@@ -18,20 +18,8 @@ CSimpleXML::CSimpleXML(const wstring & xml_path)
 	xml_str.pop_back();
 	if (!xml_str.empty() && xml_str.back() != L'\n')		//确保文件末尾有回车符
 		xml_str.push_back(L'\n');
-	//判断文件是否是utf8编码
-	bool is_utf8;
-	if (xml_str.size() >= 3 && xml_str[0] == -17 && xml_str[1] == -69 && xml_str[2] == -65)
-	{
-		//如果有UTF8的BOM，则删除BOM
-		is_utf8 = true;
-		xml_str = xml_str.substr(3);
-	}
-	else
-	{
-		is_utf8 = false;
-	}
 	//转换成Unicode
-	m_xml_content = CCommon::StrToUnicode(xml_str.c_str(), (is_utf8 ? CodeType::UTF8_NO_BOM : CodeType::ANSI));
+	m_xml_content = CCommon::StrToUnicode(xml_str.c_str());
 }
 
 CSimpleXML::CSimpleXML()

@@ -329,37 +329,34 @@ size_t CCommon::GetFileSize(const wstring & file_name)
 	return m - l;
 }
 
-wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
+wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_utf8)
 {
+	// 当使用ANSI，UTF8，UTF8_NO_BOM，UTF16LE，UTF16BE时不检测直接转换
+	// 使用默认值CodeType::AUTO时先检测BOM，如果没有BOM则按ANSI转换
+	// 将auto_utf8置true使AUTO检测没有BOM的字串是否为UTF8序列，如果符合则按UTF8_NO_BOM转换
+	// auto_utf8有可能将过短的ANSI误认为是UTF8导致乱码
 	if (str.empty()) return wstring();
-
-	if (code_type == CodeType::AUTO)
+	// code_type为AUTO时从这里开始
+	if (code_type == CodeType::AUTO)	// 先根据BOM判断编码类型
 	{
-		//code_type为AUTO时自动判断编码类型
-		//如果前面有UTF8的BOM，则编码类型为UTF8
+		// 如果前面有UTF8的BOM，则编码类型为UTF8
 		if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
 			code_type = CodeType::UTF8;
-		//如果前面有UTF16的BOM，则编码类型为UTF16
+		// 如果前面有UTF16LE的BOM，则编码类型为UTF16LE
 		else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
-			code_type = CodeType::UTF16;
-		//else if (IsUTF8Bytes(str.c_str()))		//如果没有找到UTF8和UTF16的BOM，则判断字符串是否有UTF8编码的特性
-		//	code_type = CodeType::UTF8_NO_BOM;
-		else
-			code_type = CodeType::ANSI;
+			code_type = CodeType::UTF16LE;
+		// 如果前面有UTF16BE的BOM，则编码类型为UTF16BE
+		else if (str.size() >= 2 && str[0] == -2 && str[1] == -1)
+			code_type = CodeType::UTF16BE;
+		// AUTO时是否将符合UTF8格式的str作为UTF8_NO_BOM处理
+		else if (auto_utf8 && IsUTF8Bytes(str.c_str()))
+			code_type = CodeType::UTF8_NO_BOM;
 	}
-
-	wstring result;
+	bool result_ready = false;
 	int size;
-	if (code_type == CodeType::ANSI)
-	{
-		size = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
-		if (size <= 0) return wstring();
-		wchar_t* str_unicode = new wchar_t[size + 1];
-		MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, str_unicode, size);
-		result.assign(str_unicode);
-		delete[] str_unicode;
-	}
-	else if (code_type == CodeType::UTF8 || code_type == CodeType::UTF8_NO_BOM)
+	wstring result;
+	// 如果编码类型此时已经可以确定并转换好不必回落到ANSI则置位result_ready
+	if (code_type == CodeType::UTF8 || code_type == CodeType::UTF8_NO_BOM)
 	{
 		string temp;
 		//如果前面有BOM，则去掉BOM
@@ -373,8 +370,9 @@ wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
 		MultiByteToWideChar(CP_UTF8, 0, temp.c_str(), -1, str_unicode, size);
 		result.assign(str_unicode);
 		delete[] str_unicode;
+		result_ready = true;
 	}
-	else if (code_type == CodeType::UTF16)
+	else if (code_type == CodeType::UTF16LE)
 	{
 		string temp;
 		//如果前面有BOM，则去掉BOM
@@ -386,6 +384,34 @@ wstring CCommon::StrToUnicode(const string & str, CodeType code_type)
 			temp.pop_back();
 		temp.push_back('\0');
 		result = (const wchar_t*)temp.c_str();
+		result_ready = true;
+	}
+	else if (code_type == CodeType::UTF16BE)
+	{
+		string temp;
+		//如果前面有BOM，则去掉BOM
+		if (str.size() >= 2 && str[0] == -2 && str[1] == -1)
+			temp = str.substr(2);
+		else
+			temp = str;
+		if (temp.size() % 2 == 1)
+			temp.pop_back();
+		temp.push_back('\0');
+		wchar_t* p = (wchar_t*)temp.c_str();
+		convertBEtoLE(p, temp.size() >> 1);
+		result = p;
+		result_ready = true;
+	}
+
+	// 如果以上均未执行那么按系统ANSI编码处理
+	if (!result_ready)
+	{
+		size = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
+		if (size <= 0) return wstring();
+		wchar_t* str_unicode = new wchar_t[size + 1];
+		MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, str_unicode, size);
+		result.assign(str_unicode);
+		delete[] str_unicode;
 	}
 	return result;
 }
@@ -423,10 +449,10 @@ string CCommon::UnicodeToStr(const wstring & wstr, CodeType code_type, bool* cha
 		result.append(str);
 		delete[] str;
 	}
-	else if (code_type == CodeType::UTF16)
+	else if (code_type == CodeType::UTF16LE)
 	{
 		result.clear();
-		result.push_back(-1);	//在前面加上UTF16的BOM
+		result.push_back(-1);	//在前面加上UTF16LE的BOM
 		result.push_back(-2);
 		result.append((const char*)wstr.c_str(), (const char*)wstr.c_str() + wstr.size() * 2);
 		result.push_back('\0');
@@ -491,9 +517,9 @@ CodeType CCommon::JudgeCodeType(const string & str, CodeType default_code)
 	//如果前面有UTF8的BOM，则编码类型为UTF8
 	if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
 		return CodeType::UTF8;
-	//如果前面有UTF16的BOM，则编码类型为UTF16
+	//如果前面有UTF16LE的BOM，则编码类型为UTF16LE
 	else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
-		return CodeType::UTF16;
+		return CodeType::UTF16LE;
 	//else if (IsUTF8Bytes(str.c_str()))		//如果没有找到UTF8和UTF16的BOM，则判断字符串是否有UTF8编码的特性
 	//	return CodeType::UTF8_NO_BOM;
 	else
@@ -1594,7 +1620,7 @@ CString CCommon::GetTextResource(UINT id, CodeType code_type)
         HGLOBAL hglobal = LoadResource(NULL, hRes);
         if (hglobal != NULL)
         {
-            if (code_type == CodeType::UTF16)
+            if (code_type == CodeType::UTF16LE)
             {
                 res_str = (const wchar_t*)hglobal;
             }

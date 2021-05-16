@@ -17,14 +17,8 @@ CCueFile::CCueFile(const std::wstring& file_path)
         file_content.push_back(ch);
         if (file_content.size() > 102400) break;	//限制cue文件最大为100KB
     }
-    if (file_content.size() >= 3 && file_content[0] == '\xef' && file_content[1] == '\xbb' && file_content[2] == '\xbf')
-        m_code_type = CodeType::UTF8;
-    else if (file_content.size() >= 2 && file_content[0] == '\xff' && file_content[1] == '\xfe')
-        m_code_type = CodeType::UTF16;
-    else if (CCommon::IsUTF8Bytes(file_content.c_str()))
-        m_code_type = CodeType::UTF8_NO_BOM;
-
-    m_file_content_wcs = CCommon::StrToUnicode(file_content, m_code_type);
+    // cue文件较长可以自动检测是否符合UTF8编码
+    m_file_content_wcs = CCommon::StrToUnicode(file_content, m_code_type, true);
 
     DoAnalysis();
 }
