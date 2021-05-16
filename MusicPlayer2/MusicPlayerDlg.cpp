@@ -1020,9 +1020,9 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 {
     //获取选项设置对话框中的设置数据
 
-    m_cortana_lyric.SetEnable(optionDlg.m_tab1_dlg.m_data.cortana_info_enable);
     if (theApp.m_lyric_setting_data.cortana_info_enable == true && optionDlg.m_tab1_dlg.m_data.cortana_info_enable == false)    //如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
         m_cortana_lyric.ResetCortanaText();
+    m_cortana_lyric.SetEnable(optionDlg.m_tab1_dlg.m_data.cortana_info_enable);
 
     bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
     bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != optionDlg.m_tab2_dlg.m_data.background_gauss_blur
@@ -2465,6 +2465,7 @@ void CMusicPlayerDlg::OnDestroy()
 
     //退出时恢复Cortana的默认文本
     m_cortana_lyric.ResetCortanaText();
+    m_cortana_lyric.SetEnable(false);
 
     ////退出时删除专辑封面临时文件
     //DeleteFile(CPlayer::GetInstance().GetAlbumCoverPath().c_str());
