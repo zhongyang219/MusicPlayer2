@@ -66,6 +66,10 @@ void CCueFile::DoAnalysis()
     song_info.is_cue = true;
     song_info.info_acquired = true;
 
+    CCommon::StringNormalize(song_info.album);
+    CCommon::StringNormalize(song_info.genre);
+    CCommon::StringNormalize(song_info.comment);
+
     size_t index_file{};
     size_t index_track{};
     size_t index_title{};
@@ -126,6 +130,9 @@ void CCueFile::DoAnalysis()
                 if(!m_result.back().end_pos.isZero())
                     m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
             }
+
+            CCommon::StringNormalize(song_info.title);
+            CCommon::StringNormalize(song_info.artist);
 
             m_result.push_back(song_info);
         }
