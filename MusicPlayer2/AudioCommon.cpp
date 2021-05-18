@@ -356,6 +356,12 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                     cue_tracks.back().end_pos = audio_file_length;
                     cue_tracks.back().lengh = Time(audio_file_length - cue_tracks.back().start_pos);
                 }
+                // 若时长获取失败则需要将此FILE所有TRACK标记为无效文件，将时长清零
+                if (audio_file_length.isZero())
+                {
+                    cue_tracks.back().lengh = audio_file_length;
+                    cue_tracks.back().end_pos = cue_tracks.back().start_pos;    // 由于时长本身退出不保存，所以将差值同时清零
+                }
                 // 若cue_tracks.back().file_path中的信息已失效则更新
                 if (audio_file_name_change && !audio_file_name.empty())
                     cue_tracks.back().file_path = cue_dir + audio_file_name;
