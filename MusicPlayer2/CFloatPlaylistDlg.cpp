@@ -217,7 +217,15 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 
     //初始化播放列表工具栏
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    //播放列表模式下，播放列表工具栏第一个菜单为“添加”，文件夹模式下为“文件夹”
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    }
+    else
+    {
+        m_playlist_toolbar.AddToolButton(theApp.m_icon_set.select_folder, CCommon::LoadText(IDS_FOLDER), CCommon::LoadText(IDS_FOLDER), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
+    }
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.play_oder, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
