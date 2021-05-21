@@ -533,10 +533,10 @@ bool CCommon::IsURL(const wstring& str)
 
 bool CCommon::IsWindowsPath(const wstring& str)
 {
-    return (str.size() >= 3																	//windows 路径至少3个字符
-        && ((str[0] > L'A' && str[0] < L'Z') || (str[0] > L'a' && str[0] < L'z'))		//第1个字符必须为字母
-        && str[1] == L':'																//第2个字符必须为冒号
-        && (str[2] == L'/' || str[2] == L'\\')											//第3个字符必须为斜杠
+    return (str.size() >= 3                                                             // windows 路径至少3个字符
+        && ((str[0] >= L'A' && str[0] <= L'Z') || (str[0] >= L'a' && str[0] <= L'z'))   // 第1个字符必须为字母
+        && str[1] == L':'                                                               // 第2个字符必须为冒号
+        && (str[2] == L'/' || str[2] == L'\\')                                          // 第3个字符必须为斜杠
         );
 }
 
