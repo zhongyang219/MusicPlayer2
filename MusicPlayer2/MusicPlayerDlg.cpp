@@ -1207,7 +1207,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     //弹出右键菜单时，如果没有选中播放列表中的项目，则禁用右键菜单中“播放”、“从列表中删除”、“属性”、“从磁盘删除”项目。
     bool selete_valid = m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum();
     bool playlist_mode{ CPlayer::GetInstance().IsPlaylistMode() };
-    bool can_delete = false;     //选中的曲目是否全是cue音轨或osu音乐，如果是，则不允许“从磁盘删除”、“移动文件到”命令
+    bool can_delete = false;     //选中的曲目是否全是cue音轨或osu音乐，如果是，则不允许“从磁盘删除”、“移动文件到”、“重命名”命令
     bool can_copy = false;       //选中的曲目是否全是cue音轨，如果是，则不允许“复制文件到”命令
     int rating{};
     bool rating_enable = false;     //分级是否可用
@@ -1242,7 +1242,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && playlist_mode ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RENAME, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RENAME, MF_BYCOMMAND | (can_delete ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (selete_valid && can_delete ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | (selete_valid && can_copy ? MF_ENABLED : MF_GRAYED));
@@ -5437,15 +5437,23 @@ void CMusicPlayerDlg::OnRename()
     if (dlg.DoModal() == IDOK)
     {
         int count{};
+        int ignore_count{};
         for (int index : m_items_selected)
         {
             if (index >= 0 && index < CPlayer::GetInstance().GetSongNum())
             {
                 SongInfo& song{ CPlayer::GetInstance().GetPlayList()[index] };
-                wstring new_name = CPropertyDlgHelper::FileNameFromTag(dlg.GetFormularSelected(), song);
-                CMusicPlayerCmdHelper helper;
-                if (helper.Rename(song, new_name))
-                    count++;
+                if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path))
+                {
+                    wstring new_name = CPropertyDlgHelper::FileNameFromTag(dlg.GetFormularSelected(), song);
+                    CMusicPlayerCmdHelper helper;
+                    if (helper.Rename(song, new_name))
+                        count++;
+                }
+                else
+                {
+                    ignore_count++;
+                }
             }
         }
 
@@ -5457,7 +5465,7 @@ void CMusicPlayerDlg::OnRename()
         }
 
         CString info;
-        info = CCommon::LoadTextFormat(IDS_RENAME_INFO, { m_items_selected.size(), count, static_cast<int>(m_items_selected.size()) - count });
+        info = CCommon::LoadTextFormat(IDS_RENAME_INFO, { m_items_selected.size(), count, ignore_count, static_cast<int>(m_items_selected.size()) - count - ignore_count });
         MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
