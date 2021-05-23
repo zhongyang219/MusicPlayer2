@@ -2722,9 +2722,14 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
     if (!theApp.m_ui_data.show_window_frame)
     {
-        CRect rect_screed;
-        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rect_screed, 0);   // 获得工作区大小
-        lpMMI->ptMaxSize.y = rect_screed.Height() + theApp.DPI(12) + 2;
+        // 获取主窗口所在监视器句柄，如果窗口不在任何监视器则返回主监视器句柄
+        HMONITOR hMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTOPRIMARY);
+        // 获取监视器信息
+        MONITORINFO lpmi;
+        lpmi.cbSize = sizeof(lpmi);
+        GetMonitorInfo(hMonitor, &lpmi);
+        lpMMI->ptMaxSize.x = lpmi.rcWork.right  - lpmi.rcWork.left + theApp.DPI(12) + 2;
+        lpMMI->ptMaxSize.y = lpmi.rcWork.bottom - lpmi.rcWork.top  + theApp.DPI(12) + 2;
     }
 
     CMainDialogBase::OnGetMinMaxInfo(lpMMI);
