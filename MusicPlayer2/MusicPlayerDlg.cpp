@@ -2125,11 +2125,44 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))        //进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
         //    DrawInfo();           //绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
 
+        // 判断主窗口是否具有焦点
         CWnd* pActiveWnd = GetActiveWindow();
         m_ui_thread_para.is_active_window = (pActiveWnd == this);
 
+        // 判断主窗口是否被前端窗口完全覆盖
         CWnd* pForegroundWnd = GetForegroundWindow();
-        m_ui_thread_para.is_active_window_maxmize = (pForegroundWnd != this && pForegroundWnd != nullptr && pForegroundWnd->IsZoomed());
+        if (pForegroundWnd != this && pForegroundWnd != nullptr)        // 如果主窗口为前端窗口或没有成功获取前端窗口
+        {
+            CRect rectWholeDlg, rectWholeForegroundDlg;
+            GetWindowRect(&rectWholeDlg);                               // 得到当前窗体的总的相对于屏幕的坐标
+            pForegroundWnd->GetWindowRect(&rectWholeForegroundDlg);     // 得到前端窗体的总的相对于屏幕的坐标
+            if (   rectWholeForegroundDlg.left   <= rectWholeDlg.left
+                && rectWholeForegroundDlg.top    <= rectWholeDlg.top
+                && rectWholeForegroundDlg.right  >= rectWholeDlg.right
+                && rectWholeForegroundDlg.bottom >= rectWholeDlg.bottom
+                )                           // 判断前端窗口是否完全覆盖主窗口
+            {
+                BYTE pbAlpha;
+                pForegroundWnd->GetLayeredWindowAttributes(NULL, &pbAlpha, NULL);
+                if (pbAlpha == 255 || 1)    // 如果是半透明窗口则不会被完全覆盖(这里不够正常，暂且禁用，有的窗口完全不透明但是获取的透明度不是255)
+                {
+                    m_ui_thread_para.is_completely_covered = true;
+                }
+                else
+                {
+                    m_ui_thread_para.is_completely_covered = false;
+                }
+            }
+            else
+            {
+                m_ui_thread_para.is_completely_covered = false;
+            }
+        }    
+        else
+        {
+            m_ui_thread_para.is_completely_covered = false;
+        }
+
 
         //获取频谱分析数据
         CPlayer::GetInstance().CalculateSpectralData();
@@ -3700,6 +3733,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     UIThreadPara* pPara = (UIThreadPara*)lpParam;
     CMusicPlayerDlg* pThis = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    int fresh_cnt{ };
     while (true)
     {
         if (pPara->ui_thread_exit)
@@ -3721,10 +3755,15 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         //绘制主界面
         if (pThis->IsWindowVisible() && !pThis->IsIconic()
             && (CPlayer::GetInstance().IsPlaying() || pPara->is_active_window || pPara->draw_reset || pPara->ui_force_refresh || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating())
-            && (!pPara->is_active_window_maxmize || theApp.m_nc_setting_data.always_on_top)
+            && (!pPara->is_completely_covered || theApp.m_nc_setting_data.always_on_top)
             )
             //窗口最小化、隐藏，以及窗口未激活并且未播放时不刷新界面，以降低CPU利用率
         {
+            fresh_cnt = 2;
+        }
+        if (fresh_cnt)
+        {
+            fresh_cnt--;
             pThis->m_pUI->DrawInfo(pPara->draw_reset);
             pPara->draw_reset = false;
             pPara->ui_force_refresh = false;

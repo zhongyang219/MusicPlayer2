@@ -135,8 +135,8 @@ protected:
         bool ui_thread_exit{ false };           //指示线程退出
         bool ui_force_refresh{ false };         //指示主界面强制重绘
         bool search_box_force_refresh{ false }; //指示搜索框界面强制重绘
-        bool is_active_window{ false };     //指示当前窗口是否为激活窗口
-        bool is_active_window_maxmize{ false };     //指示激活的窗口是否最大化
+        bool is_active_window{ false };         //指示当前窗口是否为激活窗口
+        bool is_completely_covered{ false };    //指示当前激活的窗口是否完全覆盖主界面
     };
     UIThreadPara m_ui_thread_para{};
 
