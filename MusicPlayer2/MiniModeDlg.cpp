@@ -32,6 +32,20 @@ void CMiniModeDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LIST2, m_playlist_ctrl);
 }
 
+void CMiniModeDlg::GetScreenInfo()
+{
+    m_screen_rects.clear();
+    Monitors monitors;
+    for (auto& a : monitors.monitorinfos)
+    {
+        m_screen_rects.push_back(a.rcMonitor);
+        m_screen_rect.left   = min(m_screen_rect.left  , a.rcMonitor.left  );
+        m_screen_rect.top    = min(m_screen_rect.top   , a.rcMonitor.top   );
+        m_screen_rect.right  = max(m_screen_rect.right , a.rcMonitor.right );
+        m_screen_rect.bottom = max(m_screen_rect.bottom, a.rcMonitor.bottom);
+    }
+}
+
 void CMiniModeDlg::SaveConfig() const
 {
     CIniHelper ini(theApp.m_config_path);
@@ -177,7 +191,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     m_playlist_ctrl.SetFont(theApp.m_pMainWnd->GetFont());
 
-    ::SystemParametersInfo(SPI_GETWORKAREA, 0, &m_screen_rect, 0);   // 获得工作区大小
+    // 获取屏幕信息
+    GetScreenInfo();
 
     LoadConfig();
 

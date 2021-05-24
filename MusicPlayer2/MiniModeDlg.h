@@ -42,7 +42,31 @@ protected:
     int m_position_x;
     int m_position_y;
 
-    CRect m_screen_rect;		//屏幕的范围（不包含任务栏）
+    CRect m_screen_rect;                // 虚拟屏幕范围
+    vector<CRect> m_screen_rects;		// 屏幕的范围（不包含任务栏）
+
+    // https://www.jianshu.com/p/9d4b68cdbd99
+    struct Monitors
+    {
+        std::vector<MONITORINFO> monitorinfos;
+
+        static BOOL CALLBACK MonitorEnum(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData)
+        {
+            MONITORINFO iMonitor;
+            iMonitor.cbSize = sizeof(MONITORINFO);
+            GetMonitorInfo(hMon, &iMonitor);
+
+            Monitors* pThis = reinterpret_cast<Monitors*>(pData);
+            pThis->monitorinfos.push_back(iMonitor);
+            return TRUE;
+        }
+
+        Monitors()
+        {
+            EnumDisplayMonitors(0, 0, MonitorEnum, (LPARAM)this);
+        }
+    };
+
     bool m_show_playlist{ false };		//是否显示播放列表
 
     int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目
@@ -66,6 +90,8 @@ protected:
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+
+    void GetScreenInfo();
 
     void SaveConfig() const;
     void LoadConfig();
