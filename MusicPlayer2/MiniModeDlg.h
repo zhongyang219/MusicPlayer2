@@ -96,7 +96,7 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
-    void CheckWindowPos();
+    void CheckWindowPos(bool auto_move = false);
     void UpdateSongTipInfo();
     void SetTitle();
     void SetAlwaysOnTop();

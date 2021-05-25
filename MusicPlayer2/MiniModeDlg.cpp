@@ -64,10 +64,11 @@ void CMiniModeDlg::LoadConfig()
     m_always_on_top = ini.GetBool(_T("mini_mode"), _T("always_on_top"), true);
 }
 
-void CMiniModeDlg::CheckWindowPos()
+void CMiniModeDlg::CheckWindowPos(bool auto_move)
 {
     CRect rect;
     GetWindowRect(rect);
+    // 确保窗口位于虚拟屏幕区域内
     if (m_screen_rect.Width() <= rect.Width() || m_screen_rect.Height() <= rect.Height())
         return;
     if (rect.left < m_screen_rect.left)
@@ -90,6 +91,49 @@ void CMiniModeDlg::CheckWindowPos()
         rect.MoveToY(m_screen_rect.bottom - rect.Height());
         MoveWindow(rect);
     }
+    if (!auto_move || m_screen_rects.size() <= 1)
+        return;
+    // 确保窗口完整在一个监视器内并且可见
+    // 判断移动距离并向所需移动距离较小的方向移动
+    LONG mov_x = 0, mov_y = 0, mov_xy = 0;          // mov_x，mov_y记录移动目标坐标，xy记录移动距离
+    for (auto& a : m_screen_rects)
+    {
+        LONG x = rect.left, y = rect.top, xy = 0;
+        if (rect.left < a.left)                 // 需要向右移动
+        {
+            xy += a.left - rect.left;
+            x = a.left;
+        }
+        else if (rect.right > a.right)          // 需要向左移动
+        {
+            xy += rect.right - a.right;
+            x = a.right - rect.Width();
+        }
+        if (rect.top < a.top)                   // 需要向下移动
+        {
+            xy += a.top - rect.top;
+            y = a.top;
+        }
+        else if (rect.bottom > a.bottom)        // 需要向上移动
+        {
+            xy += rect.bottom - a.bottom;
+            y = a.bottom - rect.Height();
+        }
+        if (xy == 0)                          // mini窗口已在一个监视器内
+        {
+            return;
+        }
+        else if (xy < mov_xy || mov_xy == 0)
+        {
+            mov_xy = xy;
+            mov_x = x;
+            mov_y = y;
+        }
+    }
+    rect.MoveToX(mov_x);
+    rect.MoveToY(mov_y);
+    MoveWindow(rect);
+    return;
 }
 
 void CMiniModeDlg::UpdateSongTipInfo()
@@ -213,7 +257,7 @@ BOOL CMiniModeDlg::OnInitDialog()
         SetWindowPos(nullptr, m_position_x, m_position_y, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOZORDER);
     else
         SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOMOVE | SWP_NOZORDER);
-    CheckWindowPos();
+    CheckWindowPos(true);
 
     SetAlwaysOnTop();
 
@@ -569,13 +613,13 @@ void CMiniModeDlg::OnShowPlayList()
     if (m_show_playlist)
     {
         SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOMOVE | SWP_NOZORDER);
-        CheckWindowPos();
+        CheckWindowPos(true);
         m_show_playlist = false;
     }
     else
     {
         SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height2, SWP_NOMOVE | SWP_NOZORDER);
-        CheckWindowPos();
+        CheckWindowPos(true);
         m_show_playlist = true;
     }
 }
@@ -647,6 +691,6 @@ void CMiniModeDlg::OnMiniModeAlwaysOnTop()
 afx_msg LRESULT CMiniModeDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
 {
     GetScreenInfo();
-    CheckWindowPos();
+    CheckWindowPos(true);
     return 0;
 }
