@@ -34,6 +34,7 @@ void CMiniModeDlg::DoDataExchange(CDataExchange* pDX)
 
 void CMiniModeDlg::GetScreenInfo()
 {
+    m_screen_rect.SetRectEmpty();
     m_screen_rects.clear();
     Monitors monitors;
     for (auto& a : monitors.monitorinfos)
@@ -150,6 +151,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMiniModeDlg::OnListItemDragged)
     ON_COMMAND(ID_MINI_MODE_ALWAYS_ON_TOP, &CMiniModeDlg::OnMiniModeAlwaysOnTop)
     //ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
+    ON_MESSAGE(WM_DISPLAYCHANGE, &CMiniModeDlg::OnDisplaychange)
 END_MESSAGE_MAP()
 
 
@@ -640,3 +642,11 @@ void CMiniModeDlg::OnMiniModeAlwaysOnTop()
 //    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
 //    return 0;
 //}
+
+
+afx_msg LRESULT CMiniModeDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
+{
+    GetScreenInfo();
+    CheckWindowPos();
+    return 0;
+}

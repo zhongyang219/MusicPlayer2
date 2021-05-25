@@ -43,7 +43,7 @@ protected:
     int m_position_y;
 
     CRect m_screen_rect;                // 虚拟屏幕范围
-    vector<CRect> m_screen_rects;		// 屏幕的范围（不包含任务栏）
+    vector<CRect> m_screen_rects;       // 屏幕的范围
 
     // https://www.jianshu.com/p/9d4b68cdbd99
     struct Monitors
@@ -136,4 +136,5 @@ public:
     afx_msg void OnMiniModeAlwaysOnTop();
 protected:
     //afx_msg LRESULT OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
 };
