@@ -458,4 +458,6 @@ public:
     afx_msg void OnViewAlbum();
     afx_msg void OnLocateToCurrent();
     afx_msg void OnUseStandardTitleBar();
+protected:
+    afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
 };

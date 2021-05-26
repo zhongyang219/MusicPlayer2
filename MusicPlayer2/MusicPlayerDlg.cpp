@@ -287,6 +287,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
     ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
+    ON_MESSAGE(WM_DISPLAYCHANGE, &CMusicPlayerDlg::OnDisplaychange)
 END_MESSAGE_MAP()
 
 
@@ -5612,4 +5613,15 @@ void CMusicPlayerDlg::OnUseStandardTitleBar()
     auto pCurUi = GetCurrentUi();
     if (pCurUi != nullptr)
         pCurUi->ClearBtnRect();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
+{
+    // 显示器状态改变时退出全屏，防止窗口被移动后以旧尺寸全屏显示在主显示器上
+    if (theApp.m_ui_data.full_screen)
+    {
+        OnFullScreen();
+    }
+    return 0;
 }
