@@ -2131,6 +2131,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         m_ui_thread_para.is_active_window = (pActiveWnd == this);
 
         // 判断主窗口是否被前端窗口完全覆盖
+        bool is_covered{ false };
         CWnd* pForegroundWnd = GetForegroundWindow();
         if (pForegroundWnd != this && pForegroundWnd != nullptr)        // 如果主窗口为前端窗口或没有成功获取前端窗口
         {
@@ -2143,26 +2144,14 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 && rectWholeForegroundDlg.bottom >= rectWholeDlg.bottom
                 )                           // 判断前端窗口是否完全覆盖主窗口
             {
-                BYTE pbAlpha;
-                pForegroundWnd->GetLayeredWindowAttributes(NULL, &pbAlpha, NULL);
-                if (pbAlpha == 255 || 1)    // 如果是半透明窗口则不会被完全覆盖(这里不够正常，暂且禁用，有的窗口完全不透明但是获取的透明度不是255)
-                {
-                    m_ui_thread_para.is_completely_covered = true;
-                }
-                else
-                {
-                    m_ui_thread_para.is_completely_covered = false;
-                }
+                BYTE pbAlpha{};
+                DWORD pdwFlags{};
+                pForegroundWnd->GetLayeredWindowAttributes(NULL, &pbAlpha, &pdwFlags);
+                // 指定颜色进行透明的窗口视为透明，按Alpha进行透明的窗口当透明度不为255时视为透明，透明窗口不会覆盖主窗口
+                is_covered = !(pdwFlags == 1 || ( pdwFlags == 2 && pbAlpha != 255));
             }
-            else
-            {
-                m_ui_thread_para.is_completely_covered = false;
-            }
-        }    
-        else
-        {
-            m_ui_thread_para.is_completely_covered = false;
         }
+        m_ui_thread_para.is_completely_covered = is_covered;
 
 
         //获取频谱分析数据
