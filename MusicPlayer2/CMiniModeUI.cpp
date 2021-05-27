@@ -304,10 +304,6 @@ void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 
 void CMiniModeUI::UpdateToolTipPosition()
 {
-    for (const auto& btn : m_buttons)
-    {
-        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetClassId(), btn.second.rect);
-    }
 }
 
 void CMiniModeUI::AddToolTips()

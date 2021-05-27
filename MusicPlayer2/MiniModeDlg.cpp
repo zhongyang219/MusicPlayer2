@@ -85,39 +85,29 @@ POINT CMiniModeDlg::CheckWindowPos(CRect rect, bool exact)
     else
     {
         // 确保窗口完整在一个监视器内并且可见，判断移动距离并向所需移动距离较小的方向移动
-        LONG mov_xy = 0;          // mov_x，mov_y记录移动目标坐标，xy记录移动距离
+        LONG mov_xy = 0;          // 记录移动距离
         for (auto& a : m_screen_rects)
         {
-            LONG xy = 0;
+            LONG x = 0, y = 0;
             if (rect.left < a.left)                 // 需要向右移动
-            {
-                xy += a.left - rect.left;
-                mov.x = a.left - rect.left;
-            }
+                x = a.left - rect.left;
             else if (rect.right > a.right)          // 需要向左移动
-            {
-                xy += rect.right - a.right;
-                mov.x = a.right - rect.right;
-            }
+                x = a.right - rect.right;
             if (rect.top < a.top)                   // 需要向下移动
-            {
-                xy += a.top - rect.top;
-                mov.y = a.top - rect.top;
-            }
+                y = a.top - rect.top;
             else if (rect.bottom > a.bottom)        // 需要向上移动
-            {
-                xy += rect.bottom - a.bottom;
-                mov.y = a.bottom - rect.bottom;
-            }
-            if (xy == 0)                          // mini窗口已在一个监视器内
+                y = a.bottom - rect.bottom;
+            if (x == 0 && y == 0)           // mini窗口已在一个监视器内
             {
                 mov.x = 0;
                 mov.y = 0;
-                return mov;
+                break;
             }
-            else if (xy < mov_xy || mov_xy == 0)
+            else if (abs(x) + abs(y) < mov_xy || mov_xy == 0)
             {
-                mov_xy = xy;
+                mov.x = x;
+                mov.y = y;
+                mov_xy = abs(x) + abs(y);
             }
         }
     }
@@ -304,16 +294,14 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
         //更新鼠标提示
         static int index{};
         static wstring song_name{};
-        static bool is_top{};
         //如果当前播放的歌曲发生变化，就更新鼠标提示信息
-        if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName() || m_ui_data.m_show_playlist_top != is_top)
+        if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
         {
             UpdateSongTipInfo();
             SetTitle();
             //m_Mytip.UpdateTipText(m_song_tip_info, this);
             index = CPlayer::GetInstance().GetIndex();
             song_name = CPlayer::GetInstance().GetFileName();
-            is_top = m_ui_data.m_show_playlist_top;
             m_draw_reset = true;
         }
     }
@@ -446,8 +434,6 @@ void CMiniModeDlg::OnDestroy()
     m_position_y = rect.top;
     if (m_ui_data.m_show_playlist_top && m_show_playlist)
         m_position_y = m_position_y + m_ui_data.window_height2 - m_ui_data.window_height;
-    m_show_playlist = false;
-    m_ui_data.m_show_playlist_top = false;
     SaveConfig();
     KillTimer(TIMER_ID_MINI);
     //m_menu.DestroyMenu();
