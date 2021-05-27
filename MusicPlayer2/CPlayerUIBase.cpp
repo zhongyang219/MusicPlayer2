@@ -802,7 +802,7 @@ CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
     return rect;
 }
 
-void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
+void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon, POINT offset)
 {
     if (btn.pressed && btn.enable)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
@@ -843,7 +843,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
             m_draw.DrawRoundRect(rc_tmp, back_color, theApp.DPI(3), alpha);
     }
 
-    btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
+    btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect) + offset;
 
     rc_tmp = rect;
     //使图标在矩形中居中
@@ -902,7 +902,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton& btn, const IconRes& 
     m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
 }
 
-void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color)
+void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color, POINT offset)
 {
     if (btn.enable)
     {
@@ -946,7 +946,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
     {
         m_draw.DrawWindowText(rect, text, GRAY(200), Alignment::CENTER);
     }
-    btn.rect = DrawAreaToClient(rect, m_draw_rect);
+    btn.rect = DrawAreaToClient(rect, m_draw_rect) + offset;
 }
 
 void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
