@@ -304,6 +304,12 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
             song_name = CPlayer::GetInstance().GetFileName();
             m_draw_reset = true;
         }
+        static bool is_playlist_top{};
+        if (m_ui_data.m_show_playlist_top != is_playlist_top)
+        {
+            m_ui.UpdateTipPos();
+            is_playlist_top = m_ui_data.m_show_playlist_top;
+        }
     }
     if (nIDEvent == TIMER_ID_MINI2)
     {

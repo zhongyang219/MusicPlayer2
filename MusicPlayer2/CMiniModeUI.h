@@ -32,6 +32,7 @@ public:
 
     void UpdateSongInfoTip(LPCTSTR str_tip);
     void UpdatePlayPauseButtonTip();
+    void UpdateTipPos();
 
 private:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;

@@ -278,6 +278,11 @@ void CMiniModeUI::UpdatePlayPauseButtonTip()
         UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
 }
 
+void CMiniModeUI::UpdateTipPos()
+{
+    UpdateToolTipPosition();
+}
+
 void CMiniModeUI::PreDrawInfo()
 {
     //设置颜色
@@ -304,6 +309,10 @@ void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 
 void CMiniModeUI::UpdateToolTipPosition()
 {
+    for (const auto& btn : m_buttons)
+    {
+        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + 1, btn.second.rect);
+    }
 }
 
 void CMiniModeUI::AddToolTips()
