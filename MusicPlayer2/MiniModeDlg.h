@@ -67,6 +67,7 @@ protected:
     };
 
     bool m_show_playlist{ false };		//是否显示播放列表
+    LONG m_playlist_y_offset{};         //播放列表收起时窗口需要进行的y坐标偏移量
 
     int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目
     vector<int>& m_items_selected;
