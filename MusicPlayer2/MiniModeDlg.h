@@ -113,7 +113,7 @@ protected:
 
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnDestroy();
-    afx_msg void OnMove(int x, int y);
+    //afx_msg void OnMove(int x, int y);
     afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMiniModeExit();
     afx_msg void OnInitMenu(CMenu* pMenu);
@@ -138,4 +138,6 @@ public:
 protected:
     //afx_msg LRESULT OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnExitSizeMove();
 };

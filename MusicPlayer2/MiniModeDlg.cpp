@@ -161,7 +161,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_WM_LBUTTONDOWN()
     ON_WM_TIMER()
     ON_WM_DESTROY()
-    ON_WM_MOVE()
+    //ON_WM_MOVE()
     ON_WM_RBUTTONUP()
     ON_COMMAND(ID_MINI_MODE_EXIT, &CMiniModeDlg::OnMiniModeExit)
     ON_WM_INITMENU()
@@ -181,6 +181,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_COMMAND(ID_MINI_MODE_ALWAYS_ON_TOP, &CMiniModeDlg::OnMiniModeAlwaysOnTop)
     //ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
     ON_MESSAGE(WM_DISPLAYCHANGE, &CMiniModeDlg::OnDisplaychange)
+    ON_WM_EXITSIZEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -455,13 +456,13 @@ void CMiniModeDlg::OnDestroy()
 }
 
 
-void CMiniModeDlg::OnMove(int x, int y)
-{
-    CDialogEx::OnMove(x, y);
-
-    // TODO: 在此处添加消息处理程序代码
-    MoveWindowPos();
-}
+//void CMiniModeDlg::OnMove(int x, int y)
+//{
+//    CDialogEx::OnMove(x, y);
+//
+//    // TODO: 在此处添加消息处理程序代码
+//    MoveWindowPos();
+//}
 
 
 void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
@@ -712,4 +713,13 @@ afx_msg LRESULT CMiniModeDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
     GetScreenInfo();
     MoveWindowPos(true);
     return 0;
+}
+
+
+void CMiniModeDlg::OnExitSizeMove()
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    MoveWindowPos(true);
+
+    CDialogEx::OnExitSizeMove();
 }
