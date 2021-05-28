@@ -42,7 +42,6 @@ protected:
     int m_position_x;
     int m_position_y;
 
-    CRect m_screen_rect;                // 虚拟屏幕范围
     vector<CRect> m_screen_rects;       // 屏幕的范围
 
     // https://www.jianshu.com/p/9d4b68cdbd99
@@ -96,8 +95,8 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
-    POINT CheckWindowPos(CRect rect, bool exact);
-    void MoveWindowPos(bool exact = false);
+    POINT CheckWindowPos(CRect rect);
+    void MoveWindowPos();
     void UpdateSongTipInfo();
     void SetTitle();
     void SetAlwaysOnTop();

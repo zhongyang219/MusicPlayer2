@@ -34,16 +34,11 @@ void CMiniModeDlg::DoDataExchange(CDataExchange* pDX)
 
 void CMiniModeDlg::GetScreenInfo()
 {
-    m_screen_rect.SetRectEmpty();
     m_screen_rects.clear();
     Monitors monitors;
     for (auto& a : monitors.monitorinfos)
     {
         m_screen_rects.push_back(a.rcWork);
-        m_screen_rect.left   = min(m_screen_rect.left  , a.rcWork.left  );
-        m_screen_rect.top    = min(m_screen_rect.top   , a.rcWork.top   );
-        m_screen_rect.right  = max(m_screen_rect.right , a.rcWork.right );
-        m_screen_rect.bottom = max(m_screen_rect.bottom, a.rcWork.bottom);
     }
 }
 
@@ -64,25 +59,10 @@ void CMiniModeDlg::LoadConfig()
     m_always_on_top = ini.GetBool(_T("mini_mode"), _T("always_on_top"), true);
 }
 
-POINT CMiniModeDlg::CheckWindowPos(CRect rect, bool exact)
+POINT CMiniModeDlg::CheckWindowPos(CRect rect)
 {
     POINT mov{};    // 所需偏移量
-    // 判断是否需要进行按窗口检查
-    if (!exact || m_screen_rects.size() <= 1)
-    {
-        // 确保窗口位于虚拟屏幕区域内
-        if (m_screen_rect.Width() <= rect.Width() || m_screen_rect.Height() <= rect.Height())   // 未获取屏幕信息时退出
-            return mov;
-        if (rect.left < m_screen_rect.left)
-            mov.x = m_screen_rect.left - rect.left;
-        else if (rect.right > m_screen_rect.right)
-            mov.x = m_screen_rect.right - rect.right;
-        if (rect.top < m_screen_rect.top)
-            mov.y = m_screen_rect.top - rect.top;
-        else if (rect.bottom > m_screen_rect.bottom)
-            mov.y = m_screen_rect.bottom - rect.bottom;
-    }
-    else
+    if (m_screen_rects.size() != 0)
     {
         // 确保窗口完整在一个监视器内并且可见，判断移动距离并向所需移动距离较小的方向移动
         LONG mov_xy = 0;          // 记录移动距离
@@ -114,11 +94,11 @@ POINT CMiniModeDlg::CheckWindowPos(CRect rect, bool exact)
     return mov;
 }
 
-void CMiniModeDlg::MoveWindowPos(bool exact)
+void CMiniModeDlg::MoveWindowPos()
 {
     CRect rect;
     GetWindowRect(rect);
-    MoveWindow(rect + CheckWindowPos(rect, exact));
+    MoveWindow(rect + CheckWindowPos(rect));
 }
 
 void CMiniModeDlg::UpdateSongTipInfo()
@@ -243,7 +223,7 @@ BOOL CMiniModeDlg::OnInitDialog()
         SetWindowPos(nullptr, m_position_x, m_position_y, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOZORDER);
     else
         SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOMOVE | SWP_NOZORDER);
-    MoveWindowPos(true);
+    MoveWindowPos();
 
     SetAlwaysOnTop();
 
@@ -628,7 +608,7 @@ void CMiniModeDlg::OnShowPlayList()
     else
     {
         // 计算检查空间是否足够，若空间不足触发y轴移动则改为向上展开
-        if (CheckWindowPos(playlist_rect + rect.TopLeft(), true).y != 0)
+        if (CheckWindowPos(playlist_rect + rect.TopLeft()).y != 0)
         {
             m_ui_data.m_show_playlist_top = true;
             playlist_rect.top = margin;
@@ -641,7 +621,7 @@ void CMiniModeDlg::OnShowPlayList()
         m_show_playlist = true;
     }
     // 检查窗口可见性
-    MoveWindowPos(true);
+    MoveWindowPos();
 }
 
 
@@ -711,7 +691,7 @@ void CMiniModeDlg::OnMiniModeAlwaysOnTop()
 afx_msg LRESULT CMiniModeDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
 {
     GetScreenInfo();
-    MoveWindowPos(true);
+    MoveWindowPos();
     return 0;
 }
 
@@ -719,7 +699,7 @@ afx_msg LRESULT CMiniModeDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
 void CMiniModeDlg::OnExitSizeMove()
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    MoveWindowPos(true);
+    MoveWindowPos();
 
     CDialogEx::OnExitSizeMove();
 }
