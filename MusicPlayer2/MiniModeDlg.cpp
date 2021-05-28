@@ -39,11 +39,11 @@ void CMiniModeDlg::GetScreenInfo()
     Monitors monitors;
     for (auto& a : monitors.monitorinfos)
     {
-        m_screen_rects.push_back(a.rcMonitor);
-        m_screen_rect.left   = min(m_screen_rect.left  , a.rcMonitor.left  );
-        m_screen_rect.top    = min(m_screen_rect.top   , a.rcMonitor.top   );
-        m_screen_rect.right  = max(m_screen_rect.right , a.rcMonitor.right );
-        m_screen_rect.bottom = max(m_screen_rect.bottom, a.rcMonitor.bottom);
+        m_screen_rects.push_back(a.rcWork);
+        m_screen_rect.left   = min(m_screen_rect.left  , a.rcWork.left  );
+        m_screen_rect.top    = min(m_screen_rect.top   , a.rcWork.top   );
+        m_screen_rect.right  = max(m_screen_rect.right , a.rcWork.right );
+        m_screen_rect.bottom = max(m_screen_rect.bottom, a.rcWork.bottom);
     }
 }
 
@@ -246,6 +246,16 @@ BOOL CMiniModeDlg::OnInitDialog()
 
     SetAlwaysOnTop();
 
+    //初始化播放列表控件的位置
+    CRect playlist_rect;
+    int margin = 0;
+    playlist_rect.left = margin;
+    playlist_rect.right = m_ui_data.widnow_width - margin;
+    playlist_rect.top = m_ui_data.window_height + margin;
+    playlist_rect.bottom = m_ui_data.window_height2 - margin;
+    m_playlist_ctrl.MoveWindow(playlist_rect);
+    m_playlist_ctrl.AdjustColumnWidth();
+
     ////装载右键菜单
     //m_menu.LoadMenu(IDR_MINI_MODE_MENU);
 
@@ -253,12 +263,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
     SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//设置用于界面刷新的定时器
 
-    m_show_playlist = false;
-    m_ui_data.m_show_playlist_top = false;
-
-    // 初始化播放列表
+    //显示播放列表
     ShowPlaylist();
-    m_playlist_ctrl.AdjustColumnWidth();
 
     SetDragEnable();
     m_playlist_ctrl.EnableWindow(!CPlayer::GetInstance().m_loading);
@@ -266,6 +272,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     //设置窗口不透明度
     SetTransparency();
 
+    m_show_playlist = false;
+    m_ui_data.m_show_playlist_top = false;
     m_ui_data.m_show_volume = false;
     m_first_start = true;
 
@@ -607,30 +615,30 @@ void CMiniModeDlg::OnShowPlayList()
     if (m_show_playlist)
     {
         if (m_ui_data.m_show_playlist_top)
+        {
+            m_ui_data.m_show_playlist_top = false;
+            m_playlist_ctrl.MoveWindow(playlist_rect);
             SetWindowPos(nullptr, rect.left, rect.top + m_ui_data.window_height2 - m_ui_data.window_height, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOZORDER);
+        }
         else
             SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOMOVE | SWP_NOZORDER);
         m_show_playlist = false;
-        m_ui_data.m_show_playlist_top = false;
     }
     else
     {
         // 计算检查空间是否足够，若空间不足触发y轴移动则改为向上展开
         if (CheckWindowPos(playlist_rect + rect.TopLeft(), true).y != 0)
         {
+            m_ui_data.m_show_playlist_top = true;
             playlist_rect.top = margin;
             playlist_rect.bottom = m_ui_data.window_height2 - m_ui_data.window_height - margin;
+            m_playlist_ctrl.MoveWindow(playlist_rect);
             SetWindowPos(nullptr, rect.left, rect.top + m_ui_data.window_height - m_ui_data.window_height2, m_ui_data.widnow_width, m_ui_data.window_height2, SWP_NOZORDER);
-            m_ui_data.m_show_playlist_top = true;
         }
         else
-        {
             SetWindowPos(nullptr, 0, 0, m_ui_data.widnow_width, m_ui_data.window_height2, SWP_NOMOVE | SWP_NOZORDER);
-            m_ui_data.m_show_playlist_top = false;
-        }
         m_show_playlist = true;
     }
-    m_playlist_ctrl.MoveWindow(playlist_rect);
     // 检查窗口可见性
     MoveWindowPos(true);
 }
