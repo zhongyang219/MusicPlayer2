@@ -22,10 +22,6 @@ void CMiniModeUI::Init(CDC* pDC)
 
 void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
 {
-    // 按钮区域坐标偏移量
-    POINT offset{};
-    if (m_ui_data.m_show_playlist_top)
-        offset.y = (m_ui_data.window_height2 - m_ui_data.window_height);
     //绘制专辑封面
     int cover_side = m_ui_data.window_height - 2 * m_ui_data.margin;
     CRect cover_rect{ CPoint(m_ui_data.margin, m_ui_data.margin), CSize(cover_side, cover_side) };
@@ -62,23 +58,23 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
             m_draw.DrawIcon(icon, icon_rect.TopLeft(), icon_rect.Size());
         }
     }
-    m_buttons[BTN_COVER].rect = cover_rect + offset;
+    m_buttons[BTN_COVER].rect = cover_rect;
 
     //绘制播放控制按钮
     CRect rc_tmp;
     rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
     rc_tmp.right = rc_tmp.left + theApp.DPI(27);
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(22);
-    DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous_new, offset);
+    DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous_new);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
     if (CPlayer::GetInstance().IsPlaying())
-        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause_new, offset);
+        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause_new);
     else
-        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play_new, offset);
+        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play_new);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-    DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next_new, offset);
+    DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next_new);
 
 
     //绘制频谱分析
@@ -123,7 +119,7 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     else
         m_draw.FillRect(progress_rect, m_colors.color_spectrum_back);
 
-    m_buttons[BTN_PROGRESS].rect = progress_rect + offset;
+    m_buttons[BTN_PROGRESS].rect = progress_rect;
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, theApp.DPI(2));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
@@ -146,22 +142,22 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     rc_tmp.left = rc_tmp.right - theApp.DPI(20);
     rc_tmp.top = m_ui_data.margin;
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(20);
-    DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"), false, offset);
+    DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"));
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("□"), false, offset);
+    DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("□"));
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("≡"), false, offset);
+    DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("≡"));
 
     //绘制右下角按钮
     rc_tmp.MoveToXY(m_ui_data.widnow_width - theApp.DPI(20) - m_ui_data.margin, m_ui_data.margin + theApp.DPI(20));
-    DrawUIButton(rc_tmp, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib, offset);
+    DrawUIButton(rc_tmp, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
     if (CPlayer::GetInstance().IsFavourite())
-        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.heart, offset);
+        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.heart);
     else
-        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.favourite, offset);
+        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.favourite);
 
     //绘制显示文本信息
     //rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));
@@ -278,20 +274,12 @@ void CMiniModeUI::UpdatePlayPauseButtonTip()
         UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
 }
 
-void CMiniModeUI::UpdateTipPos()
-{
-    UpdateToolTipPosition();
-}
-
 void CMiniModeUI::PreDrawInfo()
 {
     //设置颜色
     m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode);
     //设置绘图区域
-    if (m_ui_data.m_show_playlist_top)
-        m_draw_rect = CRect(CPoint(0, m_ui_data.window_height2 - m_ui_data.window_height), CSize(m_ui_data.widnow_width, m_ui_data.window_height));
-    else
-        m_draw_rect = CRect(CPoint(0, 0), CSize(m_ui_data.widnow_width, m_ui_data.window_height));
+    m_draw_rect = CRect(CPoint(0, 0), CSize(m_ui_data.widnow_width, m_ui_data.window_height));
 }
 
 void CMiniModeUI::AddMouseToolTip(BtnKey btn, LPCTSTR str)
@@ -309,10 +297,6 @@ void CMiniModeUI::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 
 void CMiniModeUI::UpdateToolTipPosition()
 {
-    for (const auto& btn : m_buttons)
-    {
-        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + 1, btn.second.rect);
-    }
 }
 
 void CMiniModeUI::AddToolTips()

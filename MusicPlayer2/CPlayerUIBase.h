@@ -125,9 +125,9 @@ protected:
     void DrawABRepeatButton(CRect rect);
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
-    void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon, POINT offset = {});
+    void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
-    void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false, POINT offset = {});
+    void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);
     void DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon);
 
     virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str);      //为一个按钮添加鼠标提示

@@ -16,7 +16,6 @@ public:
         int window_height2 = theApp.DPI(336);
         int margin = theApp.DPI(3);
         bool m_show_volume{ false };        // 用于指示是否在显示时间的控件显示音量，当滚动鼠标滚轮时的1.5秒内，此变量的值为true
-        bool m_show_playlist_top{ false };  // 指示是否在上方显示播放列表
     };
 
 public:
@@ -32,7 +31,6 @@ public:
 
     void UpdateSongInfoTip(LPCTSTR str_tip);
     void UpdatePlayPauseButtonTip();
-    void UpdateTipPos();
 
 private:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;

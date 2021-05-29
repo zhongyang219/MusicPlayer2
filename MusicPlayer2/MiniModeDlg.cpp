@@ -254,7 +254,6 @@ BOOL CMiniModeDlg::OnInitDialog()
     SetTransparency();
 
     m_show_playlist = false;
-    m_ui_data.m_show_playlist_top = false;
     m_ui_data.m_show_volume = false;
     m_first_start = true;
 
@@ -292,12 +291,6 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
             index = CPlayer::GetInstance().GetIndex();
             song_name = CPlayer::GetInstance().GetFileName();
             m_draw_reset = true;
-        }
-        static bool is_playlist_top{};
-        if (m_ui_data.m_show_playlist_top != is_playlist_top)
-        {
-            m_ui.UpdateTipPos();
-            is_playlist_top = m_ui_data.m_show_playlist_top;
         }
     }
     if (nIDEvent == TIMER_ID_MINI2)
@@ -586,41 +579,20 @@ void CMiniModeDlg::OnShowPlayList()
     // TODO: 在此添加命令处理程序代码
     CRect rect{};
     GetWindowRect(rect);
-    CRect playlist_rect;
-    int margin = 0;
-    playlist_rect.left = margin;
-    playlist_rect.right = m_ui_data.widnow_width - margin;
-    playlist_rect.top = m_ui_data.window_height + margin;
-    playlist_rect.bottom = m_ui_data.window_height2 - margin;
     if (m_show_playlist)
     {
-        m_playlist_ctrl.MoveWindow(playlist_rect);
         SetWindowPos(nullptr, rect.left, rect.top + m_playlist_y_offset, m_ui_data.widnow_width, m_ui_data.window_height, SWP_NOZORDER);
         m_playlist_y_offset = 0;
-        m_ui_data.m_show_playlist_top = false;
         m_show_playlist = false;
     }
     else
     {
-        POINT tmp{ CheckWindowPos(playlist_rect + rect.TopLeft()) };    // 向下展开播放列表所需偏移量
+        rect.bottom = rect.top + m_ui_data.window_height2;
+        POINT tmp{ CheckWindowPos(rect) };    // 向下展开播放列表所需偏移量
         ASSERT(tmp.x == 0); // 此函数不处理横向偏移，需要由OnExitSizeMove及MoveWindowPos保证横向在屏幕内
-        // 计算检查空间是否足够
-        if (tmp.y != 0 && false)  // 下方空间不足时是否向上展开播放列表
-        {
-            // 向上展开播放列表并记录窗口还原偏移量
-            m_ui_data.m_show_playlist_top = true;
-            m_playlist_y_offset = m_ui_data.window_height2 - m_ui_data.window_height;
-            playlist_rect.top = margin;
-            playlist_rect.bottom = m_ui_data.window_height2 - m_ui_data.window_height - margin;
-            m_playlist_ctrl.MoveWindow(playlist_rect);
-            SetWindowPos(nullptr, rect.left, rect.top + m_ui_data.window_height - m_ui_data.window_height2, m_ui_data.widnow_width, m_ui_data.window_height2, SWP_NOZORDER);
-        }
-        else
-        {
-            // 向下展开播放列表并记录窗口还原偏移量，自行拖动窗口时偏移量会清零
-            m_playlist_y_offset = -tmp.y;
-            SetWindowPos(nullptr, rect.left, rect.top + tmp.y, m_ui_data.widnow_width, m_ui_data.window_height2, SWP_NOZORDER);
-        }
+        // 向下展开播放列表并记录窗口还原偏移量，自行拖动窗口时偏移量会清零
+        m_playlist_y_offset = -tmp.y;
+        SetWindowPos(nullptr, rect.left, rect.top + tmp.y, m_ui_data.widnow_width, m_ui_data.window_height2, SWP_NOZORDER);
         m_show_playlist = true;
     }
 }
@@ -701,8 +673,7 @@ void CMiniModeDlg::OnExitSizeMove()
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     MoveWindowPos();
-    if (!m_ui_data.m_show_playlist_top)
-        m_playlist_y_offset = 0;
+    m_playlist_y_offset = 0;
 
     CDialogEx::OnExitSizeMove();
 }
