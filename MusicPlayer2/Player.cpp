@@ -306,6 +306,7 @@ void CPlayer::IniPlaylistComplate()
 	//if(!sort)		//如果文件是通过命令行参数打开的，则sort会为false，此时打开后直接播放
 	//    MusicControl(Command::PLAY);
 
+	SaveCurrentPlaylist();
 	EmplaceCurrentPathToRecent();
 	EmplaceCurrentPlaylistToRecent();
 	SetTitle();
