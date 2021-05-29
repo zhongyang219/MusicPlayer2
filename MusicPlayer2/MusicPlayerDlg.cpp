@@ -2142,6 +2142,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 && rectWholeForegroundDlg.top    <= rectWholeDlg.top
                 && rectWholeForegroundDlg.right  >= rectWholeDlg.right
                 && rectWholeForegroundDlg.bottom >= rectWholeDlg.bottom
+                && pForegroundWnd->IsZoomed()
                 )                           // 判断前端窗口是否完全覆盖主窗口
             {
                 BYTE pbAlpha{};
