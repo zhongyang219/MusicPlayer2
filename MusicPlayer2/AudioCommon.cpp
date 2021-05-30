@@ -255,9 +255,9 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
     _findclose(hFile);
 }
 
-void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
+void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index)
 {
-    vector<SongInfo> cue_tracks;    //储存解析到的cue音轨
+    int index_song{ index };                        // 索引位置
     for (size_t i = 0; i < files.size(); i++)
     {
         //依次检查列表中的每首歌曲是否为cue文件
@@ -265,7 +265,6 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
         {
             CFilePathHelper file_path{ files[i].file_path };
             wstring cue_dir = file_path.GetDir();
-            files.erase(files.begin() + i);		//从列表中删除cue文件
 
             //解析cue文件
             CCueFile cue_file{ file_path.GetFilePath() };
@@ -274,8 +273,10 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             int bitrate{};                              // 比特率
             Time audio_file_length{};                   // 音频文件长度
             bool audio_file_name_change = true;         // 音频文件未匹配，当audio_file_name被错误检查改变，temp[j].file_path不再准确时设为true
-            const std::vector<SongInfo>& temp = cue_file.GetAnalysisResult();
-            // 遍历cue音轨分析对应音频文件，为了处理一个cue对应多个音频的情况有必要遍历
+            const std::vector<SongInfo>& temp = cue_file.GetAnalysisResult();               // cue文件的文本解析结果
+            vector<SongInfo> cue_tracks;                // 储存解析到的cue音轨
+
+            // 遍历temp分析对应音频文件修正信息，修正后最终结果放入cue_tracks，并移除files内的原始音频文件
             for (int j = 0; j < temp.size(); ++j)
             {
                 CFilePathHelper audio_file_path{ temp[j].file_path };                       // 用于检查与查找音频文件
@@ -283,7 +284,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                 if (audio_file_path.GetFileName() != audio_file_name || audio_file_path.GetFileName().empty())
                 {
                     audio_file_name = audio_file_path.GetFileName();
-                    audio_file_name_change = false;     // 由于audio_file_name与temp中的音频路径恢复同步所有设为false
+                    audio_file_name_change = false;     // 由于audio_file_name与temp中的音频路径恢复同步所以设为false
                     // 如果指定音频文件不存在
                     if (!CCommon::FileExist(audio_file_path.GetFilePath()))
                     {
@@ -335,7 +336,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         audio_file_length = audo_file_info.lengh;
                     }
 
-                    // 检查files列表中是否包含cue对应的音频文件
+                    // 检查files列表中是否包含cue对应的音频文件，移除cue对应原始音频，与处理好的cue条目无关
                     auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
                         {
                             return CCommon::StringCompareNoCase(song.file_path, cue_dir + audio_file_name) && !song.is_cue;
@@ -345,8 +346,14 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         if (find - files.begin() < i)       // 如果删除的文件在当前文件的前面，则循环变量减1
                             i--;
                         files.erase(find);                  // 找到cue对应的音频文件则把它删除
+
+                        if (files.begin() + index_song < find)              // 移除文件在index_song之前则index_song自减1保持与files的对齐
+                            index_song--;
+                        else if (files.begin() + index_song == find)        // 移除文件就是index_song则让index_song指向此音频所属cue文件
+                            index_song = i;
                     }
                 }   // 以上部分仅在新FILE标签或音频文件异常时执行以加快循环检查TRACK的速度
+
                 // 将temp[j]存入cue_tracks并做最后处理
                 cue_tracks.push_back(temp[j]);
                 cue_tracks.back().bitrate = bitrate;
@@ -367,16 +374,58 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                     cue_tracks.back().file_path = cue_dir + audio_file_name;
             }
 
-            i--;		//解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
+            /* 此时files[i]为需要移除的cue，解析结果在cue_tracks                 */
+            /* 接下来根据是否忽略已存在文件使用cue_tracks原位代换cue             */
+            /* 可能的情况：cue_tracks全部插入files/部分插入/全部已存在不做更改   */
+            /* 不过可以肯定完成后cue_tracks的全部条目files内都会存在             */
+
+            files.erase(files.begin() + i);		        //从列表中删除cue文件
+
+            // 为true表示此次添加不接受重复曲目
+            bool ignore{ theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist };
+            // 指示此次需要为index_song同步files[i]位置曲目数量的增减
+            bool before_index{ i < index_song };
+            // 指示此次cue_tracks为索引指定cue，需要index_song跟踪其第一轨位置
+            bool is_index{ i == index_song };
+
+            for (const auto& cue_track : cue_tracks)
+            {
+                if (ignore)
+                {
+                    // 查找当前cue_track是否已存在于files
+                    auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
+                        {
+                            return CCommon::StringCompareNoCase(song.file_path, cue_track.file_path) && song.track == cue_track.track;
+                        });
+                    if (find == files.end())
+                    {
+                        // files中不存在当前曲目，将cue_track插入files
+                        files.emplace(files.begin() + i++, cue_track);
+                        if (before_index)
+                            index_song++;
+                    }
+                    else if (is_index)      // 如果此cue的第一轨已存在于files中则将索引调整到其位置
+                        index_song = find - files.begin();
+                }
+                else
+                {
+                    // 不检查重复直接添加，此时index_song位置一定正确指向第一轨无需处理
+                    files.emplace(files.begin() + i++, cue_track);
+                    if (before_index)
+                        index_song++;
+                }
+                is_index = false;           // 仅对cue_tracks[0]修改index_song
+            }
+            i--;		                    // 解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
+            if (before_index)
+                index_song--;
         }
-
     }
-    files.insert(files.end(), cue_tracks.begin(), cue_tracks.end());
-
-    GetInnerCueTracks(files, pPlayerCore);
+    GetInnerCueTracks(files, pPlayerCore, index_song);
+    index = index_song;
 }
 
-void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore)
+void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index)
 {
     for (auto iter = files.begin(); iter != files.end(); ++iter)
     {
@@ -408,6 +457,11 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
             //将解析到的cue音轨插入到列表
             iter = files.insert(iter, cue_tracks.begin(), cue_tracks.end());
             iter += cue_tracks.size();
+
+            // 如果内嵌cue展开发生在index之前则调整index使其指向不变
+            if (iter - files.begin() < index)
+                index += cue_tracks.size() - 1;
+
             if (iter == files.end())
                 break;
         }
