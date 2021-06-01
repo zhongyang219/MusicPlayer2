@@ -419,8 +419,8 @@ void CMiniModeDlg::OnDestroy()
     CRect rect;
     GetWindowRect(rect);
     m_position_x = rect.left;
-    m_position_y = rect.top;
-    m_position_y = m_position_y + m_playlist_y_offset;
+    m_position_y = rect.top + m_playlist_y_offset;
+    m_playlist_y_offset = 0;
     SaveConfig();
     KillTimer(TIMER_ID_MINI);
     //m_menu.DestroyMenu();
