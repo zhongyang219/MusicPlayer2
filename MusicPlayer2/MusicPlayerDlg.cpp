@@ -868,7 +868,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
 
 void CMusicPlayerDlg::SetMenubarVisible()
 {
-    if (theApp.m_ui_data.show_menu_bar && theApp.m_ui_data.show_window_frame)
+    if (theApp.m_ui_data.show_menu_bar && theApp.m_ui_data.show_window_frame && !theApp.m_ui_data.full_screen)
     {
         SetMenu(&theApp.m_menu_set.m_main_menu);
     }
@@ -1921,6 +1921,15 @@ void CMusicPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
     }
     else
     {
+        // 不显示系统标题栏时最大化需要手动关闭大小边框，还原时恢复
+        if (!theApp.m_ui_data.show_window_frame)
+        {
+            if (nID == SC_MAXIMIZE)
+                ShowSizebox(false);
+            else if (nID == SC_RESTORE)
+                ShowSizebox(true);
+        }
+
         CMainDialogBase::OnSysCommand(nID, lParam);
     }
 
@@ -2711,6 +2720,8 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
     lpMMI->ptMinTrackSize.x = theApp.DPI(340);      //设置最小宽度
     lpMMI->ptMinTrackSize.y = theApp.DPI(360);      //设置最小高度
 
+    // 不显示系统标题栏时需要手动将最大化尺寸从全屏调整为工作区，显示系统标题栏时默认即为工作区
+    // 如果不显示系统标题栏要求程序拦截最大化消息在最大化前取消显示大小边框
     if (!theApp.m_ui_data.show_window_frame)
     {
         // 获取主窗口所在监视器句柄，如果窗口不在任何监视器则返回主监视器句柄
@@ -2719,8 +2730,8 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
         MONITORINFO lpmi;
         lpmi.cbSize = sizeof(lpmi);
         GetMonitorInfo(hMonitor, &lpmi);
-        lpMMI->ptMaxSize.x = lpmi.rcWork.right  - lpmi.rcWork.left + theApp.DPI(12) + 2;
-        lpMMI->ptMaxSize.y = lpmi.rcWork.bottom - lpmi.rcWork.top  + theApp.DPI(12) + 2;
+        lpMMI->ptMaxSize.x = lpmi.rcWork.right  - lpmi.rcWork.left;
+        lpMMI->ptMaxSize.y = lpmi.rcWork.bottom - lpmi.rcWork.top ;
     }
 
     CMainDialogBase::OnGetMinMaxInfo(lpMMI);
@@ -4381,7 +4392,19 @@ void CMusicPlayerDlg::OnFullScreen()
     if (m_miniModeDlg.m_hWnd != NULL)   //迷你模式下不允许响应全屏显示
         return;
 
+    // 记录进入全屏时是否最大化，若是否显示大小边框成为全局变量可改用其他实现方式
+    static bool is_zoomed{};
+    if (!theApp.m_ui_data.full_screen)
+        is_zoomed = IsZoomed();
+
     theApp.m_ui_data.full_screen = !theApp.m_ui_data.full_screen;
+
+    // 全屏时不显示标题栏、菜单栏与大小边框
+    ShowTitlebar(!theApp.m_ui_data.full_screen && theApp.m_ui_data.show_window_frame);
+    SetMenubarVisible();
+    if (!is_zoomed)          // 最大化时进入全屏以及之后的退出全屏不改动大小边框的状态
+        ShowSizebox(!theApp.m_ui_data.full_screen);
+
     SetFullScreen(theApp.m_ui_data.full_screen);
     DrawInfo(true);
     m_pUI->UpdateFullScreenTip();
@@ -5594,7 +5617,7 @@ void CMusicPlayerDlg::OnLocateToCurrent()
 void CMusicPlayerDlg::OnUseStandardTitleBar()
 {
     // TODO: 在此添加命令处理程序代码
-    if (m_miniModeDlg.m_hWnd != NULL)   //迷你模式下不允许响应
+    if (m_miniModeDlg.m_hWnd != NULL || theApp.m_ui_data.full_screen)   // 迷你模式及全屏下不允许响应
         return;
 
     theApp.m_ui_data.show_window_frame = !theApp.m_ui_data.show_window_frame;
