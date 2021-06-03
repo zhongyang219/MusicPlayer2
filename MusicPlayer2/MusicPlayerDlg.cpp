@@ -288,6 +288,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
     ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
     ON_MESSAGE(WM_DISPLAYCHANGE, &CMusicPlayerDlg::OnDisplaychange)
+    ON_WM_WINDOWPOSCHANGING()
 END_MESSAGE_MAP()
 
 
@@ -2719,22 +2720,6 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
     //限制窗口最小大小
     lpMMI->ptMinTrackSize.x = theApp.DPI(340);      //设置最小宽度
     lpMMI->ptMinTrackSize.y = theApp.DPI(360);      //设置最小高度
-
-    // 不显示系统标题栏时需要手动将最大化尺寸从全屏调整为工作区，显示系统标题栏时默认即为工作区
-    // 如果不显示系统标题栏要求程序拦截最大化消息在最大化前取消显示大小边框
-    if (!theApp.m_ui_data.show_window_frame)
-    {
-        // 获取主窗口所在监视器句柄，如果窗口不在任何监视器则返回主监视器句柄
-        HMONITOR hMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTOPRIMARY);
-        // 获取监视器信息
-        MONITORINFO lpmi;
-        lpmi.cbSize = sizeof(lpmi);
-        GetMonitorInfo(hMonitor, &lpmi);
-        lpMMI->ptMaxPosition.x = lpmi.rcWork.left;
-        lpMMI->ptMaxPosition.y = lpmi.rcWork.top;
-        lpMMI->ptMaxSize.x = lpmi.rcWork.right  - lpmi.rcWork.left;
-        lpMMI->ptMaxSize.y = lpmi.rcWork.bottom - lpmi.rcWork.top ;
-    }
 
     CMainDialogBase::OnGetMinMaxInfo(lpMMI);
 }
@@ -5619,9 +5604,18 @@ void CMusicPlayerDlg::OnLocateToCurrent()
 void CMusicPlayerDlg::OnUseStandardTitleBar()
 {
     // TODO: 在此添加命令处理程序代码
-    if (m_miniModeDlg.m_hWnd != NULL || theApp.m_ui_data.full_screen)   // 迷你模式及全屏下不允许响应
+    if (m_miniModeDlg.m_hWnd != NULL)   // 迷你模式下不允许响应
         return;
 
+    // 有可能同时处于最大化与全屏状态，更改标题栏状态前逐个退出
+    if (theApp.m_ui_data.full_screen)   // 如果全屏则退出全屏
+    {
+        OnFullScreen();
+    }
+    if (IsZoomed())                     // 如果是窗口处于最大化下则还原窗口
+    {
+        SendMessage(WM_SYSCOMMAND, SC_RESTORE);
+    }
     theApp.m_ui_data.show_window_frame = !theApp.m_ui_data.show_window_frame;
     ShowTitlebar(theApp.m_ui_data.show_window_frame);
     SetMenubarVisible();
@@ -5639,4 +5633,26 @@ afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
         OnFullScreen();
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnWindowPosChanging(WINDOWPOS* lpwndpos)
+{
+    // 不显示标题栏时将最大化尺寸设置为工作区大小
+    if (!theApp.m_ui_data.show_window_frame && !theApp.m_ui_data.full_screen && IsZoomed())
+    {
+        // 获取主窗口所在监视器句柄，如果窗口不在任何监视器则返回主监视器句柄
+        HMONITOR hMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTOPRIMARY);
+        // 获取监视器信息
+        MONITORINFO lpmi;
+        lpmi.cbSize = sizeof(lpmi);
+        GetMonitorInfo(hMonitor, &lpmi);
+        lpwndpos->x = lpmi.rcWork.left;
+        lpwndpos->y = lpmi.rcWork.top;
+        lpwndpos->cx = lpmi.rcWork.right - lpmi.rcWork.left;
+        lpwndpos->cy = lpmi.rcWork.bottom - lpmi.rcWork.top;
+    }
+    CMainDialogBase::OnWindowPosChanging(lpwndpos);
+
+    // TODO: 在此处添加消息处理程序代码
 }

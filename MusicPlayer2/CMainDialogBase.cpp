@@ -31,12 +31,14 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 		// 用m_struOldWndpl得到当前窗口的显示状态和窗体位置，以供退出全屏后使用
 		GetWindowPlacement(&m_struOldWndpl);
 
+		CRect monitor{ lpmi.rcMonitor };
+		POINT offset{ lpmi.rcWork.left - lpmi.rcMonitor.left, lpmi.rcWork.top - lpmi.rcMonitor.top };
 		// 设置窗口对象参数，为全屏做好准备并进入全屏状态
 		WINDOWPLACEMENT struWndpl;
 		struWndpl.length = sizeof(WINDOWPLACEMENT);
 		struWndpl.flags = 0;
 		struWndpl.showCmd = SW_SHOWNORMAL;
-		struWndpl.rcNormalPosition = lpmi.rcMonitor;
+		struWndpl.rcNormalPosition = monitor - offset;
 		SetWindowPlacement(&struWndpl);//该函数设置指定窗口的显示状态和显示大小位置等，是我们该程序最为重要的函数
 	}
 	else
