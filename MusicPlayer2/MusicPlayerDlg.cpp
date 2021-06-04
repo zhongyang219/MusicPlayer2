@@ -289,6 +289,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
     ON_MESSAGE(WM_DISPLAYCHANGE, &CMusicPlayerDlg::OnDisplaychange)
     ON_WM_WINDOWPOSCHANGING()
+    ON_WM_WINDOWPOSCHANGED()
 END_MESSAGE_MAP()
 
 
@@ -1922,15 +1923,6 @@ void CMusicPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
     }
     else
     {
-        // 不显示系统标题栏时最大化需要手动关闭大小边框，还原时恢复
-        if (!theApp.m_ui_data.show_window_frame)
-        {
-            if (nID == SC_MAXIMIZE)
-                ShowSizebox(false);
-            else if (nID == SC_RESTORE)
-                ShowSizebox(true);
-        }
-
         CMainDialogBase::OnSysCommand(nID, lParam);
     }
 
@@ -5638,8 +5630,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
 
 void CMusicPlayerDlg::OnWindowPosChanging(WINDOWPOS* lpwndpos)
 {
-    // 不显示标题栏时将最大化尺寸设置为工作区大小
-    if (!theApp.m_ui_data.show_window_frame && !theApp.m_ui_data.full_screen && IsZoomed())
+    // 最大化时更改为rcWork，全屏时更改为rcMonitor
+    if (IsZoomed() || theApp.m_ui_data.full_screen)
     {
         // 获取主窗口所在监视器句柄，如果窗口不在任何监视器则返回主监视器句柄
         HMONITOR hMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTOPRIMARY);
@@ -5647,12 +5639,40 @@ void CMusicPlayerDlg::OnWindowPosChanging(WINDOWPOS* lpwndpos)
         MONITORINFO lpmi;
         lpmi.cbSize = sizeof(lpmi);
         GetMonitorInfo(hMonitor, &lpmi);
-        lpwndpos->x = lpmi.rcWork.left;
-        lpwndpos->y = lpmi.rcWork.top;
-        lpwndpos->cx = lpmi.rcWork.right - lpmi.rcWork.left;
-        lpwndpos->cy = lpmi.rcWork.bottom - lpmi.rcWork.top;
+        if (theApp.m_ui_data.full_screen)
+        {
+            lpwndpos->x = lpmi.rcMonitor.left;
+            lpwndpos->y = lpmi.rcMonitor.top;
+            lpwndpos->cx = lpmi.rcMonitor.right - lpmi.rcMonitor.left;
+            lpwndpos->cy = lpmi.rcMonitor.bottom - lpmi.rcMonitor.top;
+        }
+        else
+        {
+            lpwndpos->x = lpmi.rcWork.left;
+            lpwndpos->y = lpmi.rcWork.top;
+            lpwndpos->cx = lpmi.rcWork.right - lpmi.rcWork.left;
+            lpwndpos->cy = lpmi.rcWork.bottom - lpmi.rcWork.top;
+        }
     }
     CMainDialogBase::OnWindowPosChanging(lpwndpos);
 
     // TODO: 在此处添加消息处理程序代码
+}
+
+
+void CMusicPlayerDlg::OnWindowPosChanged(WINDOWPOS* lpwndpos)
+{
+    CMainDialogBase::OnWindowPosChanged(lpwndpos);
+
+    // TODO: 在此处添加消息处理程序代码
+
+    // 需要去掉大小边框的情况
+    if ((IsZoomed() && !theApp.m_ui_data.show_window_frame) || theApp.m_ui_data.full_screen)
+    {
+        ShowSizebox(false);
+    }
+    else
+    {
+        ShowSizebox(true);
+    }
 }

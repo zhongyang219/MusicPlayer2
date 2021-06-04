@@ -462,4 +462,5 @@ protected:
     afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnWindowPosChanging(WINDOWPOS* lpwndpos);
+    afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 };
