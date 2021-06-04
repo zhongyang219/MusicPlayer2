@@ -86,6 +86,13 @@ void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
     {
         pMainWindow->SendMessage(WM_CLOSE);
     }
+    if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point))
+    {
+        if(pMainWindow->IsZoomed())
+            pMainWindow->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
+        else
+            pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
+    }
 
     CStatic::OnLButtonDblClk(nFlags, point);
 }
