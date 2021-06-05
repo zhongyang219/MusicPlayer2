@@ -431,7 +431,7 @@ CRect CPlayerUIBase::GetThumbnailClipArea()
 {
     //获取菜单栏的高度
     int menu_bar_height = 0;
-    if (m_ui_data.show_menu_bar)
+    if (m_ui_data.show_menu_bar && m_ui_data.show_window_frame)
     {
         menu_bar_height = CCommon::GetMenuBarHeight(theApp.m_pMainWnd->GetSafeHwnd());
         if (menu_bar_height == 0)
