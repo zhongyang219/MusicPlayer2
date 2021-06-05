@@ -71,8 +71,8 @@ void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
     auto pUi = pMainWindow->GetCurrentUi();
     if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point) && !pUi->PointInAppIconArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则拖动窗口
     {
-        if(pMainWindow->IsZoomed())     // 最大化窗口需要先退出最大化再拖动，点击不做反应仅记录，如果鼠标移动再处理
-            m_bTitlebarLButtonDown = true, m_ptLButtonDown = point;
+        if(pMainWindow->IsZoomed())     // 最大化窗口需要先退出最大化再拖动，按下不做反应仅记录，如果鼠标移动再处理
+            m_bTitlebarLButtonDown = true, GetCursorPos(&m_ptLButtonDown);
         else
             pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);
     }
@@ -121,17 +121,20 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
     {
         m_bTitlebarLButtonDown = false;
         CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+        // 以下处理为屏幕坐标
         CRect rect_max;
-        pMainWindow->GetWindowRect(rect_max);
+        pMainWindow->GetWindowRect(rect_max);                   // 获取最大化窗口位置信息
         pMainWindow->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
         CRect rect;
-        pMainWindow->GetWindowRect(rect);
-        CPoint offset{ m_ptLButtonDown };
-        if (theApp.m_ui_data.show_playlist)
+        pMainWindow->GetWindowRect(rect);                       // 获取还原后窗口位置信息
+
+        CPoint offset{ m_ptLButtonDown - rect_max.TopLeft() };  // 最大化时从窗口原点指向点击位置的向量
+        if (theApp.m_ui_data.show_playlist)                     // 将此向量映射为窗口大小还原后的对应向量（忽略边框大小）
             offset.x *= (float)(rect.Width() / 2 - theApp.DPI(30) * 6) / (rect_max.Width() / 2 - theApp.DPI(30) * 6);
         else
             offset.x *= (float)(rect.Width() - theApp.DPI(30) * 6) / (rect_max.Width() - theApp.DPI(30) * 6);
-        pMainWindow->MoveWindow(rect - rect.TopLeft() + m_ptLButtonDown - offset);
+        offset = m_ptLButtonDown - rect.TopLeft() - offset;     // 计算所需偏移量
+        pMainWindow->MoveWindow(rect + offset);
         pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);
     }
 
