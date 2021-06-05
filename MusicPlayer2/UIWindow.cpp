@@ -40,6 +40,7 @@ END_MESSAGE_MAP()
 void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
+    m_bTitlebarLButtonDown = false; // 此次仅为点击不是拖动
 
     CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     auto pUi = pMainWindow->GetCurrentUi();
@@ -69,7 +70,12 @@ void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
     CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     auto pUi = pMainWindow->GetCurrentUi();
     if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point) && !pUi->PointInAppIconArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则拖动窗口
-        pMainWindow->PostMessage(WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(point.x, point.y));
+    {
+        if(pMainWindow->IsZoomed())     // 最大化窗口需要先退出最大化再拖动，点击不做反应仅记录，如果鼠标移动再处理
+            m_bTitlebarLButtonDown = true, m_ptLButtonDown = point;
+        else
+            pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);
+    }
 
     m_pUI->LButtonDown(point);
 
@@ -109,6 +115,26 @@ void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
+
+    // 此处处理最大化窗口的自绘标题栏拖动，需要先设置窗口尺寸退出最大化，移动窗口到适当位置之后进入拖动
+    if (m_bTitlebarLButtonDown)
+    {
+        m_bTitlebarLButtonDown = false;
+        CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+        CRect rect_max;
+        pMainWindow->GetWindowRect(rect_max);
+        pMainWindow->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
+        CRect rect;
+        pMainWindow->GetWindowRect(rect);
+        CPoint offset{ m_ptLButtonDown };
+        if (theApp.m_ui_data.show_playlist)
+            offset.x *= (float)(rect.Width() / 2 - theApp.DPI(30) * 6) / (rect_max.Width() / 2 - theApp.DPI(30) * 6);
+        else
+            offset.x *= (float)(rect.Width() - theApp.DPI(30) * 6) / (rect_max.Width() - theApp.DPI(30) * 6);
+        pMainWindow->MoveWindow(rect - rect.TopLeft() + m_ptLButtonDown - offset);
+        pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);
+    }
+
     m_pUI->MouseMove(point);
 
     CStatic::OnMouseMove(nFlags, point);

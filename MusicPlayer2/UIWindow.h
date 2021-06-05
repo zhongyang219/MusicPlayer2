@@ -14,6 +14,8 @@ public:
 
 protected:
     IPlayerUI*& m_pUI;
+    bool m_bTitlebarLButtonDown{};
+    CPoint m_ptLButtonDown{};
 
     virtual void PreSubclassWindow();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
