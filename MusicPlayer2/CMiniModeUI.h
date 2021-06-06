@@ -15,7 +15,7 @@ public:
         int window_height = theApp.DPI(44);
         int window_height2 = theApp.DPI(336);
         int margin = theApp.DPI(3);
-        bool m_show_volume{ false };    //用于指示是否在显示时间的控件显示音量，当滚动鼠标滚轮时的1.5秒内，此变量的值为true
+        bool m_show_volume{ false };        // 用于指示是否在显示时间的控件显示音量，当滚动鼠标滚轮时的1.5秒内，此变量的值为true
     };
 
 public:

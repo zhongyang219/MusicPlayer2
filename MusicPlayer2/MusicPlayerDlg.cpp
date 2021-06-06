@@ -287,6 +287,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
     ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
+    ON_MESSAGE(WM_DISPLAYCHANGE, &CMusicPlayerDlg::OnDisplaychange)
 END_MESSAGE_MAP()
 
 
@@ -2125,11 +2126,34 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))        //进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
         //    DrawInfo();           //绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
 
+        // 判断主窗口是否具有焦点
         CWnd* pActiveWnd = GetActiveWindow();
         m_ui_thread_para.is_active_window = (pActiveWnd == this);
 
+        // 判断主窗口是否被前端窗口完全覆盖
+        bool is_covered{ false };
         CWnd* pForegroundWnd = GetForegroundWindow();
-        m_ui_thread_para.is_active_window_maxmize = (pForegroundWnd != this && pForegroundWnd != nullptr && pForegroundWnd->IsZoomed());
+        if (pForegroundWnd != this && pForegroundWnd != nullptr)        // 如果主窗口为前端窗口或没有成功获取前端窗口
+        {
+            CRect rectWholeDlg, rectWholeForegroundDlg;
+            GetWindowRect(&rectWholeDlg);                               // 得到当前窗体的总的相对于屏幕的坐标
+            pForegroundWnd->GetWindowRect(&rectWholeForegroundDlg);     // 得到前端窗体的总的相对于屏幕的坐标
+            if (   rectWholeForegroundDlg.left   <= rectWholeDlg.left
+                && rectWholeForegroundDlg.top    <= rectWholeDlg.top
+                && rectWholeForegroundDlg.right  >= rectWholeDlg.right
+                && rectWholeForegroundDlg.bottom >= rectWholeDlg.bottom
+                && pForegroundWnd->IsZoomed()
+                )                           // 判断前端窗口是否完全覆盖主窗口
+            {
+                BYTE pbAlpha{};
+                DWORD pdwFlags{};
+                pForegroundWnd->GetLayeredWindowAttributes(NULL, &pbAlpha, &pdwFlags);
+                // 指定颜色进行透明的窗口视为透明，按Alpha进行透明的窗口当透明度不为255时视为透明，透明窗口不会覆盖主窗口
+                is_covered = !(pdwFlags == 1 || ( pdwFlags == 2 && pbAlpha != 255));
+            }
+        }
+        m_ui_thread_para.is_completely_covered = is_covered;
+
 
         //获取频谱分析数据
         CPlayer::GetInstance().CalculateSpectralData();
@@ -2689,9 +2713,14 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
     if (!theApp.m_ui_data.show_window_frame)
     {
-        CRect rect_screed;
-        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rect_screed, 0);   // 获得工作区大小
-        lpMMI->ptMaxSize.y = rect_screed.Height() + theApp.DPI(12) + 2;
+        // 获取主窗口所在监视器句柄，如果窗口不在任何监视器则返回主监视器句柄
+        HMONITOR hMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTOPRIMARY);
+        // 获取监视器信息
+        MONITORINFO lpmi;
+        lpmi.cbSize = sizeof(lpmi);
+        GetMonitorInfo(hMonitor, &lpmi);
+        lpMMI->ptMaxSize.x = lpmi.rcWork.right  - lpmi.rcWork.left + theApp.DPI(12) + 2;
+        lpMMI->ptMaxSize.y = lpmi.rcWork.bottom - lpmi.rcWork.top  + theApp.DPI(12) + 2;
     }
 
     CMainDialogBase::OnGetMinMaxInfo(lpMMI);
@@ -3700,6 +3729,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     UIThreadPara* pPara = (UIThreadPara*)lpParam;
     CMusicPlayerDlg* pThis = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    int fresh_cnt{ };
     while (true)
     {
         if (pPara->ui_thread_exit)
@@ -3721,10 +3751,15 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
         //绘制主界面
         if (pThis->IsWindowVisible() && !pThis->IsIconic()
             && (CPlayer::GetInstance().IsPlaying() || pPara->is_active_window || pPara->draw_reset || pPara->ui_force_refresh || CPlayer::GetInstance().m_loading || theApp.IsMeidaLibUpdating())
-            && (!pPara->is_active_window_maxmize || theApp.m_nc_setting_data.always_on_top)
+            && (!pPara->is_completely_covered || theApp.m_nc_setting_data.always_on_top)
             )
             //窗口最小化、隐藏，以及窗口未激活并且未播放时不刷新界面，以降低CPU利用率
         {
+            fresh_cnt = 2;
+        }
+        if (fresh_cnt)
+        {
+            fresh_cnt--;
             pThis->m_pUI->DrawInfo(pPara->draw_reset);
             pPara->draw_reset = false;
             pPara->ui_force_refresh = false;
@@ -5576,4 +5611,15 @@ void CMusicPlayerDlg::OnUseStandardTitleBar()
     auto pCurUi = GetCurrentUi();
     if (pCurUi != nullptr)
         pCurUi->ClearBtnRect();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
+{
+    // 显示器状态改变时退出全屏，防止窗口被移动后以旧尺寸全屏显示在主显示器上
+    if (theApp.m_ui_data.full_screen)
+    {
+        OnFullScreen();
+    }
+    return 0;
 }
