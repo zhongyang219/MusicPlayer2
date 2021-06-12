@@ -804,6 +804,8 @@ CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
 
 void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
 {
+    btn.rect = DrawAreaToClient(rect, m_draw_rect);
+
     if (btn.pressed && btn.enable)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
 
@@ -842,8 +844,6 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
         else
             m_draw.DrawRoundRect(rc_tmp, back_color, theApp.DPI(3), alpha);
     }
-
-    btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 
     rc_tmp = rect;
     //使图标在矩形中居中
