@@ -217,7 +217,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
-	CAudioCommon::GetCueTracks(m_playlist, m_pCore);
+	CAudioCommon::GetCueTracks(m_playlist, m_pCore, m_index_tmp);
 	//m_song_num = m_playlist.size();
 	m_index = m_index_tmp;
 	if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
@@ -306,6 +306,7 @@ void CPlayer::IniPlaylistComplate()
 	//if(!sort)		//如果文件是通过命令行参数打开的，则sort会为false，此时打开后直接播放
 	//    MusicControl(Command::PLAY);
 
+	SaveCurrentPlaylist();
 	EmplaceCurrentPathToRecent();
 	EmplaceCurrentPlaylistToRecent();
 	SetTitle();
