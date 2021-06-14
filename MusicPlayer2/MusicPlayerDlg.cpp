@@ -1237,6 +1237,10 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 
         rating_enable = CAudioTag::IsFileRatingSupport(CFilePathHelper(rating_file_path).GetFileExtension());
     }
+    else if (selete_valid)      //多选的情况下，分级命令始终可用
+    {
+        rating_enable = true;
+    }
 
     for (auto index : m_items_selected)
     {
@@ -2962,10 +2966,13 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     //响应播放列表右键菜单中的分级
     else
     {
-        if (m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum())
+        for (int i : m_items_selected)
         {
-            wstring select_file_path = CPlayer::GetInstance().GetPlayList()[m_item_selected].file_path;
-            cmd_helper.OnRating(select_file_path, command);
+            if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+            {
+                wstring select_file_path = CPlayer::GetInstance().GetPlayList()[i].file_path;
+                cmd_helper.OnRating(select_file_path, command);
+            }
         }
     }
 
