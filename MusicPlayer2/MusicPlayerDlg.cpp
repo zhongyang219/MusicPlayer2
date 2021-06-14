@@ -27,7 +27,6 @@
 #include "SongDataManager.h"
 #include "TagFromFileNameDlg.h"
 #include "PropertyDlgHelper.h"
-#include "SelectItemDlg.h"
 #include "CPlayerUI.h"
 #include "CPlayerUI2.h"
 #include "CPlayerUI3.h"
@@ -288,6 +287,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
     ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
     ON_MESSAGE(WM_DISPLAYCHANGE, &CMusicPlayerDlg::OnDisplaychange)
+    ON_COMMAND(ID_PLAYLIST_VIEW_ARTIST, &CMusicPlayerDlg::OnPlaylistViewArtist)
+    ON_COMMAND(ID_PLAYLIST_VIEW_ALBUM, &CMusicPlayerDlg::OnPlaylistViewAlbum)
 END_MESSAGE_MAP()
 
 
@@ -1212,6 +1213,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     bool can_copy = false;       //选中的曲目是否全是cue音轨，如果是，则不允许“复制文件到”命令
     int rating{};
     bool rating_enable = false;     //分级是否可用
+    bool single_selected = selete_valid && m_items_selected.size() < 2;     //只选中了一个
     if (selete_valid)
     {
         wstring selected_file_path = CPlayer::GetInstance().GetPlayList()[m_item_selected].file_path;
@@ -1248,6 +1250,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_COPY_FILE_TO, MF_BYCOMMAND | (selete_valid && can_copy ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_MOVE_FILE_TO, MF_BYCOMMAND | (selete_valid && can_delete ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_VIEW_ARTIST, MF_BYCOMMAND | (single_selected ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_VIEW_ALBUM, MF_BYCOMMAND | (single_selected ? MF_ENABLED : MF_GRAYED));
 
     pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FILE, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_ADD_FOLDER, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
@@ -5552,33 +5556,7 @@ void CMusicPlayerDlg::OnViewArtist()
 {
     // TODO: 在此添加命令处理程序代码
     CMusicPlayerCmdHelper helper;
-    vector<wstring> artist_list;
-    CPlayer::GetInstance().GetCurrentSongInfo().GetArtistList(artist_list);     //获取艺术家（可能有多个）
-    wstring artist;
-    if (artist_list.empty())
-    {
-        return;
-    }
-    else if (artist_list.size() == 1)
-    {
-        artist = artist_list.front();
-    }
-    else
-    {
-        //如果有多个艺术家，弹出“选择艺术家”对话框
-        CSelectItemDlg dlg(artist_list);
-        dlg.SetTitle(CCommon::LoadText(IDS_SELECT_ARTIST));
-        dlg.SetDlgIcon(theApp.m_icon_set.artist.GetIcon());
-        if (dlg.DoModal() == IDOK)
-            artist = dlg.GetSelectedItem();
-        else
-            return;
-    }
-    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST, MLDI_ARTIST);
-    if (!m_pMediaLibDlg->NavigateToItem(artist))
-    {
-        MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ARTIST_WARNING, { artist }), NULL, MB_OK | MB_ICONWARNING);
-    }
+    helper.OnViewArtist(CPlayer::GetInstance().GetCurrentSongInfo());
 }
 
 
@@ -5586,12 +5564,7 @@ void CMusicPlayerDlg::OnViewAlbum()
 {
     // TODO: 在此添加命令处理程序代码
     CMusicPlayerCmdHelper helper;
-    wstring album = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
-    helper.ShowMediaLib(CMusicPlayerCmdHelper::ML_ALBUM, MLDI_ALBUM);
-    if (!m_pMediaLibDlg->NavigateToItem(album))
-    {
-        MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ALBUM_WARNING, { album }), NULL, MB_OK | MB_ICONWARNING);
-    }
+    helper.OnViewAlbum(CPlayer::GetInstance().GetCurrentSongInfo());
 }
 
 
@@ -5625,4 +5598,26 @@ afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
         OnFullScreen();
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnPlaylistViewArtist()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum())
+    {
+        CMusicPlayerCmdHelper helper;
+        helper.OnViewArtist(CPlayer::GetInstance().GetPlayList()[m_item_selected]);
+    }
+}
+
+
+void CMusicPlayerDlg::OnPlaylistViewAlbum()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum())
+    {
+        CMusicPlayerCmdHelper helper;
+        helper.OnViewAlbum(CPlayer::GetInstance().GetPlayList()[m_item_selected]);
+    }
 }

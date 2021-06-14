@@ -55,6 +55,12 @@ public:
     //tab_force_show: 要强制显示的标签，使用int中的各个bit表示要显示的标签，每个bit参见枚举 MediaLibDisplayItem 的声明
     void ShowMediaLib(int cur_tab = -1, int tab_force_show = 0);
 
+    //查看艺术家
+    void OnViewArtist(const SongInfo& song_info);
+
+    //查看唱片集
+    void OnViewAlbum(const SongInfo& song_info);
+
 protected:
     bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 

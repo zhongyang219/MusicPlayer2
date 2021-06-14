@@ -701,6 +701,8 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_RENAME, FALSE, m_icon_set.rename);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_EXPLORE_TRACK, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_ITEM_PROPERTY, FALSE, m_icon_set.info.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_PLAYLIST_VIEW_ARTIST, FALSE, m_icon_set.artist.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_PLAYLIST_VIEW_ALBUM, FALSE, m_icon_set.album.GetIcon(true));
 
     //媒体库-文件夹的右键菜单
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_folder_menu.GetSafeHmenu(), ID_PLAY_PATH, FALSE, m_icon_set.play_new.GetIcon(true));

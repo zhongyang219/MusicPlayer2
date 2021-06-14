@@ -460,4 +460,7 @@ public:
     afx_msg void OnUseStandardTitleBar();
 protected:
     afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnPlaylistViewArtist();
+    afx_msg void OnPlaylistViewAlbum();
 };
