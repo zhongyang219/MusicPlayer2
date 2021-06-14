@@ -2719,8 +2719,11 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
         MONITORINFO lpmi;
         lpmi.cbSize = sizeof(lpmi);
         GetMonitorInfo(hMonitor, &lpmi);
-        lpMMI->ptMaxSize.x = lpmi.rcWork.right  - lpmi.rcWork.left + theApp.DPI(12) + 2;
-        lpMMI->ptMaxSize.y = lpmi.rcWork.bottom - lpmi.rcWork.top  + theApp.DPI(12) + 2;
+        if (lpmi.dwFlags == MONITORINFOF_PRIMARY)
+        {
+            lpMMI->ptMaxSize.x = lpmi.rcWork.right - lpmi.rcWork.left + theApp.DPI(12) + 2;
+            lpMMI->ptMaxSize.y = lpmi.rcWork.bottom - lpmi.rcWork.top + theApp.DPI(12) + 2;
+        }
     }
 
     CMainDialogBase::OnGetMinMaxInfo(lpMMI);
