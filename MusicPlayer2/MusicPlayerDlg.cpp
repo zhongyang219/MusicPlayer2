@@ -749,7 +749,7 @@ void CMusicPlayerDlg::SetAlwaysOnTop()
         SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);       //取消置顶
 }
 
-bool CMusicPlayerDlg::IsAddCurrentToPlaylist() const
+bool CMusicPlayerDlg::IsMainWindowPopupMenu() const
 {
     return (m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)
         || m_pCurMenu == theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0));
@@ -1214,20 +1214,28 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     int rating{};
     bool rating_enable = false;     //分级是否可用
     bool single_selected = selete_valid && m_items_selected.size() < 2;     //只选中了一个
-    if (selete_valid)
+    wstring rating_file_path;
+    if (IsMainWindowPopupMenu())
     {
-        wstring selected_file_path = CPlayer::GetInstance().GetPlayList()[m_item_selected].file_path;
-        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(selected_file_path);
+        rating_file_path = CPlayer::GetInstance().GetCurrentFilePath();
+    }
+    else if (selete_valid)
+    {
+        rating_file_path = CPlayer::GetInstance().GetPlayList()[m_item_selected].file_path;
+    }
+    if (IsMainWindowPopupMenu() || single_selected)
+    {
+        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(rating_file_path);
         if (song_info.rating > 5)      //分级大于5，说明没有获取过分级，在这里重新获取
         {
             CAudioTag audio_tag(song_info);
             audio_tag.GetAudioRating();
-            CSongDataManager::GetInstance().AddItem(selected_file_path, song_info);
+            CSongDataManager::GetInstance().AddItem(rating_file_path, song_info);
             CSongDataManager::GetInstance().SetSongDataModified();
         }
         rating = song_info.rating;
 
-        rating_enable = CAudioTag::IsFileRatingSupport(CFilePathHelper(selected_file_path).GetFileExtension());
+        rating_enable = CAudioTag::IsFileRatingSupport(CFilePathHelper(rating_file_path).GetFileExtension());
     }
 
     for (auto index : m_items_selected)
@@ -1281,7 +1289,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (CPlayer::GetInstance().IsContainSubFolder() ? MF_CHECKED : MF_UNCHECKED));
 
     //设置“添加到播放列表”子菜单项的可用状态
-    bool add_to_valid{ IsAddCurrentToPlaylist() ? true : selete_valid };
+    bool add_to_valid{ IsMainWindowPopupMenu() ? true : selete_valid };
     bool use_default_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_DEFAULT };
     pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(playlist_mode && use_default_playlist) && add_to_valid ? MF_ENABLED : MF_GRAYED));
     bool use_faourite_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE };
@@ -1580,7 +1588,7 @@ void CMusicPlayerDlg::InitUiMenu()
     };
 
     initUiMenu(theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11));
-    initUiMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(19));
+    initUiMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(20));
     initUiMenu(theApp.m_menu_set.m_popup_menu.GetSubMenu(0)->GetSubMenu(22));
     initUiMenu(theApp.m_menu_set.m_main_menu_popup.GetSubMenu(4)->GetSubMenu(11));
 }
@@ -2924,7 +2932,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
     {
         item_list.clear();
-        if (IsAddCurrentToPlaylist())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
+        if (IsMainWindowPopupMenu())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
         {
             item_list.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
         }
@@ -2946,10 +2954,19 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     if (cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command))
         m_pCurMenu = nullptr;
 
-    if (m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum())
+    //响应主窗口右键菜单中的分级
+    if (IsMainWindowPopupMenu())
     {
-        wstring select_file_path = CPlayer::GetInstance().GetPlayList()[m_item_selected].file_path;
-        cmd_helper.OnRating(select_file_path, command);
+        cmd_helper.OnRating(CPlayer::GetInstance().GetCurrentFilePath(), command);
+    }
+    //响应播放列表右键菜单中的分级
+    else
+    {
+        if (m_item_selected >= 0 && m_item_selected < CPlayer::GetInstance().GetSongNum())
+        {
+            wstring select_file_path = CPlayer::GetInstance().GetPlayList()[m_item_selected].file_path;
+            cmd_helper.OnRating(select_file_path, command);
+        }
     }
 
     return CMainDialogBase::OnCommand(wParam, lParam);
@@ -4695,7 +4712,7 @@ void CMusicPlayerDlg::OnAddToNewPlaylist()
     // TODO: 在此添加命令处理程序代码
     auto getSongList = [&](std::vector<SongInfo>& song_list)
     {
-        if (IsAddCurrentToPlaylist())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
+        if (IsMainWindowPopupMenu())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
         {
             song_list.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
         }

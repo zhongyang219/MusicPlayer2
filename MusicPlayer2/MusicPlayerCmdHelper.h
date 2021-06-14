@@ -29,7 +29,7 @@ public:
     //查找匹配的外部专辑封面
     std::wstring SearchAlbumCover(const SongInfo& song);
 
-    //歌曲分级
+    //响应歌曲分级命令
     void OnRating(const wstring& file_path, DWORD command);
 
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）

@@ -160,7 +160,7 @@ private:
     void SetDrawAreaSize(int cx, int cy);
     void SetAlwaysOnTop();
 
-    bool IsAddCurrentToPlaylist() const;      //当执行“添加到播放列表时”，是添加正在播放的曲目到播放列表，还是添加选中的曲目到播放列表
+    bool IsMainWindowPopupMenu() const;      //当前弹出的右键是主窗口右键菜单还是播放列表右键菜单
 
     static int CalculatePlaylistWidth(int client_width);
 
