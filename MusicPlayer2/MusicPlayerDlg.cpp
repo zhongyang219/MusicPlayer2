@@ -418,6 +418,7 @@ void CMusicPlayerDlg::SaveConfig()
 
     ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
     ini.WriteBool(L"config", L"auto_play_when_start", theApp.m_play_setting_data.auto_play_when_start);
+    ini.WriteBool(L"config", L"continue_when_switch_playlist", theApp.m_play_setting_data.continue_when_switch_playlist);
     ini.WriteBool(L"config", L"show_taskbar_progress", theApp.m_play_setting_data.show_taskbar_progress);
     ini.WriteBool(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon);
     ini.WriteBool(L"config", L"fade_effect", theApp.m_play_setting_data.fade_effect);
@@ -573,6 +574,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     theApp.m_play_setting_data.stop_when_error = ini.GetBool(L"config", L"stop_when_error", true);
     theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(L"config", L"auto_play_when_start", false);
+    theApp.m_play_setting_data.continue_when_switch_playlist = ini.GetBool(L"config", L"continue_when_switch_playlist", false);
     theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(L"config", L"show_taskbar_progress", true);
     theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(L"config", L"show_playstate_icon", true);
     theApp.m_play_setting_data.fade_effect = ini.GetBool(L"config", L"fade_effect", true);
@@ -4564,12 +4566,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
             int track{ pPathDlg->GetTrack() };      //该播放列表上次播放的曲目
             int track_played{};
             int position{ pPathDlg->GetPosition() };
-            bool continue_play{};
+            bool continue_play{ !pPathDlg->IsLeftSelected() };
             if (index < 0)          //如果右侧列表没有选中曲目，则播放的曲目为上次播放的曲目
             {
                 track_played = track;
                 // 若当前播放歌曲存在于将要开启的播放列表则放弃上次播放的曲目继续播放当前歌曲
-                if (true)
+                if (theApp.m_play_setting_data.continue_when_switch_playlist)
                 {
                     SongInfo Last = CPlayer::GetInstance().GetCurrentSongInfo();
                     CPlaylistFile playlist;
@@ -4591,7 +4593,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
                     position = 0;
                 }
             }
-            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, false, !pPathDlg->IsLeftSelected() || continue_play);
+            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, false, continue_play);
         }
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
