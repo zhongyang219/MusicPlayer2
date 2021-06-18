@@ -4773,7 +4773,14 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         include_sub_dir = (checked != FALSE);
 #endif
         std::vector<wstring> file_list;
-        CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
+        if (COSUPlayerHelper::IsOsuFolder(wstring(folderPickerDlg.GetPathName())) && !include_sub_dir)
+        {   // 此次添加的是osu!的Songs文件夹
+            COSUPlayerHelper::GetOSUAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list);
+        }
+        else
+        {
+            CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
+        }
         if (CPlayer::GetInstance().AddFiles(file_list, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
             CPlayer::GetInstance().SaveCurrentPlaylist();
         else
