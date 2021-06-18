@@ -152,6 +152,21 @@ bool CPlaylistFile::IsFileInPlaylist(const SongInfo& file)
     return iter != m_playlist.end();
 }
 
+int CPlaylistFile::GetFileIndexInPlaylist(const SongInfo& file)
+{
+    auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&file](const SongInfo& item)
+    {
+        if (file.is_cue)
+            return file.file_path == item.file_path && file.track == item.track;
+        else
+            return file.file_path == item.file_path;
+    });
+    if (iter != m_playlist.end())
+        return iter - m_playlist.begin();
+    else
+        return -1;
+}
+
 void CPlaylistFile::RemoveFile(const wstring& file)
 {
     auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&file](const SongInfo& item)

@@ -4564,9 +4564,24 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
             int track{ pPathDlg->GetTrack() };      //该播放列表上次播放的曲目
             int track_played{};
             int position{ pPathDlg->GetPosition() };
+            bool continue_play{};
             if (index < 0)          //如果右侧列表没有选中曲目，则播放的曲目为上次播放的曲目
             {
                 track_played = track;
+                // 若当前播放歌曲存在于将要开启的播放列表则放弃上次播放的曲目继续播放当前歌曲
+                if (true)
+                {
+                    SongInfo Last = CPlayer::GetInstance().GetCurrentSongInfo();
+                    CPlaylistFile playlist;
+                    playlist.LoadFromFile(pPathDlg->GetSelPlaylistPath());
+                    int tmp = playlist.GetFileIndexInPlaylist(Last);
+                    if (tmp != -1)
+                    {
+                        track_played = tmp;
+                        position = CPlayer::GetInstance().GetCurrentPosition();
+                        continue_play = CPlayer::GetInstance().IsPlaying();
+                    }
+                }
             }
             else        //否则，播放的曲目为右侧列表选中的曲目
             {
@@ -4576,7 +4591,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
                     position = 0;
                 }
             }
-            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, false, !pPathDlg->IsLeftSelected());
+            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, false, !pPathDlg->IsLeftSelected() || continue_play);
         }
         UpdatePlayPauseButton();
         //SetPorgressBarSize();

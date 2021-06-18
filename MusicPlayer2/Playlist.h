@@ -20,6 +20,7 @@ public:
     void FromSongList(const vector<SongInfo>& song_list);
     void ToSongList(vector<SongInfo>& song_list);
     bool IsFileInPlaylist(const SongInfo& file);
+    int GetFileIndexInPlaylist(const SongInfo& file);
     void RemoveFile(const wstring& file);
 
 	static bool IsPlaylistFile(const wstring& file_path);
