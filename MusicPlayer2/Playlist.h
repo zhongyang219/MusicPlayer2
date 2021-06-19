@@ -21,7 +21,7 @@ public:
     void ToSongList(vector<SongInfo>& song_list);
     bool IsFileInPlaylist(const SongInfo& file);
     int GetFileIndexInPlaylist(const SongInfo& file);
-    void RemoveFile(const wstring& file);
+    void RemoveFile(const SongInfo& file);
 
 	static bool IsPlaylistFile(const wstring& file_path);
     static bool IsPlaylistExt(wstring ext);
