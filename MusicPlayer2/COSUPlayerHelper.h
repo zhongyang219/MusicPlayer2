@@ -8,7 +8,8 @@ public:
 
     static bool IsOsuFolder(const std::wstring& strPath);
     static bool IsOsuFile(const std::wstring& strPath);
-    static void GetOSUAudioFiles(wstring path, vector<SongInfo>& files);
+    static void GetOSUAudioFiles(wstring path, vector<SongInfo>& song_list);
+    static void GetOSUAudioFiles(wstring path, vector<wstring>& files);
     static void GetOSUAudioTitleArtist(SongInfo& song_info);
     static wstring GetAlbumCover(wstring file_path);
 
