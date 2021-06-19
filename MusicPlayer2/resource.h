@@ -773,6 +773,7 @@
 #define IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK 1028
 #define IDC_ARTIST_CHECK                1028
 #define IDC_SHOW_NEXT_CHECK             1028
+#define IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK 1028
 #define IDC_LYRIC_PATH_EDIT             1029
 #define IDC_BITRATE_CHECK               1029
 #define IDC_SHOW_NEXT_CHECK2            1029
