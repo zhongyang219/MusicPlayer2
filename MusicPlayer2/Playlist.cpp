@@ -159,13 +159,16 @@ int CPlaylistFile::GetFileIndexInPlaylist(const SongInfo& file)
 
 void CPlaylistFile::RemoveFile(const SongInfo& file)
 {
-    auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&file](const SongInfo& item)
+    while (true)
     {
-        return file.IsSameSong(item);
-    });
-    if (iter != m_playlist.end())
-    {
-        m_playlist.erase(iter);
+        auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&file](const SongInfo& item)
+        {
+            return file.IsSameSong(item);
+        });
+        if (iter != m_playlist.end())
+            m_playlist.erase(iter);
+        else
+            break;
     }
 }
 
