@@ -123,6 +123,7 @@ protected:
     void DrawAlbumCover(CRect rect);
     void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr, bool adj_btn_top = false);     //str：要显示的文本（音量：xx%），如果为nullptr，则会自动设置；adj_btn_top：点击后弹出的音量调整按钮是否在上方
     void DrawABRepeatButton(CRect rect);
+    void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
@@ -138,6 +139,8 @@ protected:
 
     virtual void AddToolTips();         //为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 
+    //当绘图区域的原点不是窗口的原点的时候需要使用这两个函数在绘图区域坐标和窗口坐标中转换
+    //现在这两个函数已弃用
     static CRect DrawAreaToClient(CRect rect, CRect draw_area);
     static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 

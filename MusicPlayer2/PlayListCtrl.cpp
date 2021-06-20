@@ -302,7 +302,7 @@ void CPlayListCtrl::PreSubclassWindow()
 	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width[2]);		//插入第3列
 	EnableTip();
 	SetCtrlAEnable(true);
-	
+
 	SetRowHeight(theApp.DPI(24));
 
 }
@@ -314,7 +314,7 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMLVCUSTOMDRAW lplvdr = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
 	NMCUSTOMDRAW& nmcd = lplvdr->nmcd;
 	static bool this_item_select = false;
-	switch (lplvdr->nmcd.dwDrawStage)	//判断状态   
+	switch (lplvdr->nmcd.dwDrawStage)	//判断状态
 	{
 	case CDDS_PREPAINT:
 		*pResult = CDRF_NOTIFYITEMDRAW;
@@ -389,7 +389,8 @@ void CPlayListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
             left_color = lplvdr->clrTextBk;
             pDC->FillSolidRect(rect, left_color);
             //如果是高亮（正在播放）行，则在左侧绘制一个表示高亮的矩形
-            if (nmcd.dwItemSpec == highlight_item)
+			bool is_search_result_empty = (m_searched && m_search_result.empty());
+            if (nmcd.dwItemSpec == highlight_item && !is_search_result_empty)
             {
                 CRect highlight_rect = rect;
                 highlight_rect.right = highlight_rect.left + theApp.DPI(4);

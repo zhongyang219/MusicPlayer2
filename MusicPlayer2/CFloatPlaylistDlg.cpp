@@ -415,7 +415,35 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
                 return TRUE;
             }
+            if (pMsg->wParam == 'K')
+            {
+                OnClose();
+                OnCancel();
+                return TRUE;
+            }
         }
+        if (pMsg->wParam == 'F')        //按F键快速查找
+        {
+            m_search_edit.SetFocus();
+            return TRUE;
+        }
+        if (pMsg->wParam == VK_ESCAPE || pMsg->wParam == VK_RETURN)  //按ESC/回车退出
+        {
+            OnClose();
+            OnCancel();
+            return TRUE;
+        }
+    }
+
+    //如果焦点在搜索框内，按ESC键将焦点重新设置为主窗口
+    if (pMsg->hwnd == m_search_edit.GetSafeHwnd() && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
+    {
+        SetFocus();
+    }
+
+    if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))        //屏蔽按回车键和ESC键退出
+    {
+        return TRUE;
     }
     return CDialog::PreTranslateMessage(pMsg);
 }

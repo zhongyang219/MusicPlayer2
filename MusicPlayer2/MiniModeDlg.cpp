@@ -108,13 +108,13 @@ void CMiniModeDlg::UpdateSongTipInfo()
     song_tip_info += CPlayer::GetInstance().GetFileName().c_str();
     song_tip_info += _T("\r\n");
     song_tip_info += CCommon::LoadText(IDS_TITLE, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].title.c_str();
+    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetTitle().c_str();
     song_tip_info += _T("\r\n");
     song_tip_info += CCommon::LoadText(IDS_ARTIST, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].artist.c_str();
+    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetArtist().c_str();
     song_tip_info += _T("\r\n");
     song_tip_info += CCommon::LoadText(IDS_ALBUM, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].album.c_str();
+    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetAlbum().c_str();
     m_ui.UpdateSongInfoTip(song_tip_info);
 }
 

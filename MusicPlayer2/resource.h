@@ -773,6 +773,7 @@
 #define IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK 1028
 #define IDC_ARTIST_CHECK                1028
 #define IDC_SHOW_NEXT_CHECK             1028
+#define IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK 1028
 #define IDC_LYRIC_PATH_EDIT             1029
 #define IDC_BITRATE_CHECK               1029
 #define IDC_SHOW_NEXT_CHECK2            1029
@@ -1454,13 +1455,15 @@
 #define ID_RATING_NONE                  33337
 #define ID_33338                        33338
 #define ID_USE_STANDARD_TITLE_BAR       33339
+#define ID_PLAYLIST_VIEW_ARTIST         33340
+#define ID_PLAYLIST_VIEW_ALBUM          33341
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        541
-#define _APS_NEXT_COMMAND_VALUE         33340
+#define _APS_NEXT_COMMAND_VALUE         33342
 #define _APS_NEXT_CONTROL_VALUE         1186
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -177,15 +177,16 @@ void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
     rc_lyric.bottom = rc_tool_bar.top;
     rc_lyric.DeflateRect(Margin(), Margin());
     m_draw_data.lyric_rect = rc_lyric;
-    if (theApp.m_app_setting_data.lyric_background)
-    {
-        if (IsDrawBackgroundAlpha())
-            m_draw.FillAlphaRect(rc_lyric, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-        else
-            m_draw.FillRect(rc_lyric, m_colors.color_lyric_back);
-    }
-    rc_lyric.DeflateRect(Margin(), Margin());
-    m_draw.DrawLryicCommon(rc_lyric, theApp.m_lyric_setting_data.lyric_align);
+    //if (theApp.m_app_setting_data.lyric_background)
+    //{
+    //    if (IsDrawBackgroundAlpha())
+    //        m_draw.FillAlphaRect(rc_lyric, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
+    //    else
+    //        m_draw.FillRect(rc_lyric, m_colors.color_lyric_back);
+    //}
+    //rc_lyric.DeflateRect(Margin(), Margin());
+    //m_draw.DrawLryicCommon(rc_lyric, theApp.m_lyric_setting_data.lyric_align);
+    DrawLyrics(rc_lyric);
 
     //全屏模式时在右上角绘制时间
     if (m_ui_data.full_screen)
