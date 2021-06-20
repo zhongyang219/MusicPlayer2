@@ -207,15 +207,7 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         rc_tmp.DeflateRect(lyric_margin, lyric_margin);
         if (rc_tmp.bottom > rc_tmp.top + m_draw.GetLyricTextHeight() / 2)
         {
-            if (theApp.m_app_setting_data.lyric_background)
-            {
-                if (IsDrawBackgroundAlpha())
-                    m_draw.FillAlphaRect(background_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-                else
-                    m_draw.FillRect(background_rect, m_colors.color_lyric_back);
-            }
-
-            m_draw.DrawLryicCommon(rc_tmp, theApp.m_lyric_setting_data.lyric_align);
+            DrawLyrics(background_rect, lyric_margin);
         }
 
         //绘制音量调整按钮
@@ -309,16 +301,18 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         rc_tmp.bottom = start_point.y + cover_side + EdgeMargin(false);
 
         //绘制歌词
-        if (theApp.m_app_setting_data.lyric_background)
-        {
-            if (IsDrawBackgroundAlpha())
-                m_draw.FillAlphaRect(rc_tmp, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-            else
-                m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
-        }
+        //if (theApp.m_app_setting_data.lyric_background)
+        //{
+        //    if (IsDrawBackgroundAlpha())
+        //        m_draw.FillAlphaRect(rc_tmp, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
+        //    else
+        //        m_draw.FillRect(rc_tmp, m_colors.color_lyric_back);
+        //}
+        //m_draw_data.lyric_rect = rc_tmp;
+        //rc_tmp.DeflateRect(Margin(), m_layout.margin);
+        //m_draw.DrawLryicCommon(rc_tmp, theApp.m_lyric_setting_data.lyric_align);
         m_draw_data.lyric_rect = rc_tmp;
-        rc_tmp.DeflateRect(Margin(), m_layout.margin);
-        m_draw.DrawLryicCommon(rc_tmp, theApp.m_lyric_setting_data.lyric_align);
+        DrawLyrics(rc_tmp);
 
         //绘制音量调整按钮
         DrawVolumnAdjBtn();

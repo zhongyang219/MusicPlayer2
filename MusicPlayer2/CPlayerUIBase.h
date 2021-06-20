@@ -123,6 +123,7 @@ protected:
     void DrawAlbumCover(CRect rect);
     void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr, bool adj_btn_top = false);     //str：要显示的文本（音量：xx%），如果为nullptr，则会自动设置；adj_btn_top：点击后弹出的音量调整按钮是否在上方
     void DrawABRepeatButton(CRect rect);
+    void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);

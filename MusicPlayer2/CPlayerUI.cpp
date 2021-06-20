@@ -149,16 +149,8 @@ void CPlayerUI::_DrawInfo(CRect draw_rect, bool reset)
         if (draw_rect.bottom - lyric_rect.bottom < DPI(40))
             lyric_rect.bottom = draw_rect.bottom - DPI(40);
 
-        //绘制背景
-        if (theApp.m_app_setting_data.lyric_background)
-        {
-            if (IsDrawBackgroundAlpha())
-                m_draw.FillAlphaRect(lyric_rect, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-            else
-                m_draw.FillRect(lyric_rect, m_colors.color_lyric_back);
-        }
-
-        m_draw.DrawLryicCommon(lyric_rect, theApp.m_lyric_setting_data.lyric_align);
+        //绘制歌词
+        DrawLyrics(lyric_rect, 0);
     }
     else
     {
@@ -224,25 +216,13 @@ void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
     translate_rect.left = translate_rect.right - translate_rect.Height();
     DrawTranslateButton(translate_rect);
 
-    //填充歌词区域背景色
+    //绘制歌词
     CRect lyric_area = lyric_rect;
     lyric_area.DeflateRect(Margin() + EdgeMargin(true), 0);
     lyric_area.top += 2 * Margin();
     lyric_area.bottom -= (Margin() + EdgeMargin(false));
     lyric_area.top += DPI(20);
-    if (theApp.m_app_setting_data.lyric_background)
-    {
-        if (draw_background)
-            m_draw.FillAlphaRect(lyric_area, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-        else
-            m_draw.FillRect(lyric_area, m_colors.color_lyric_back);
-    }
-    //设置歌词文字区域
-    lyric_area.DeflateRect(2 * Margin(), 2 * Margin());
-    //CDrawCommon::SetDrawArea(pDC, lyric_area);
-
-    //绘制歌词文本
-    m_draw.DrawLryicCommon(lyric_area, theApp.m_lyric_setting_data.lyric_align);
+    DrawLyrics(lyric_area, 2 * Margin());
 }
 
 CSize CPlayerUI::SpectralSize()
