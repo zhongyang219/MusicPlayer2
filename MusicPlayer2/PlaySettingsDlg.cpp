@@ -31,6 +31,7 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_AUTO_PLAY_WHEN_START_CHECK, m_auto_play_when_start_chk);
     DDX_Control(pDX, IDC_SHOW_PLAY_STATE_ICON_CHECK, m_show_play_state_icon_chk);
     DDX_Control(pDX, IDC_SOUND_FADE_CHECK, m_sound_fade_chk);
+    DDX_Control(pDX, IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, m_continue_when_switch_playlist_check);
     DDX_Control(pDX, IDC_BASS_RADIO, m_bass_radio);
     DDX_Control(pDX, IDC_MCI_RADIO, m_mci_radio);
 }
@@ -103,6 +104,7 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_AUTO_PLAY_WHEN_START_CHECK, &CPlaySettingsDlg::OnBnClickedAutoPlayWhenStartCheck)
 	ON_BN_CLICKED(IDC_SHOW_PLAY_STATE_ICON_CHECK, &CPlaySettingsDlg::OnBnClickedShowPlayStateIconCheck)
     ON_BN_CLICKED(IDC_SOUND_FADE_CHECK, &CPlaySettingsDlg::OnBnClickedSoundFadeCheck)
+    ON_BN_CLICKED(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, &CPlaySettingsDlg::OnBnClickedContinueWhenSwitchPlaylistCheck)
     ON_BN_CLICKED(IDC_BASS_RADIO, &CPlaySettingsDlg::OnBnClickedBassRadio)
     ON_BN_CLICKED(IDC_MCI_RADIO, &CPlaySettingsDlg::OnBnClickedMciRadio)
 END_MESSAGE_MAP()
@@ -125,6 +127,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	//初始化各控件的状态
 	m_stop_when_error_check.SetCheck(m_data.stop_when_error);
 	m_auto_play_when_start_chk.SetCheck(m_data.auto_play_when_start);
+    m_continue_when_switch_playlist_check.SetCheck(m_data.continue_when_switch_playlist);
 	m_show_taskbar_progress_check.SetCheck(m_data.show_taskbar_progress);
 	m_show_play_state_icon_chk.SetCheck(m_data.show_playstate_icon);
     m_sound_fade_chk.SetCheck(m_data.fade_effect);
@@ -213,6 +216,13 @@ void CPlaySettingsDlg::OnBnClickedSoundFadeCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.fade_effect = (m_sound_fade_chk.GetCheck() != 0);
+}
+
+
+void CPlaySettingsDlg::OnBnClickedContinueWhenSwitchPlaylistCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.continue_when_switch_playlist = (m_continue_when_switch_playlist_check.GetCheck() != 0);
 }
 
 

@@ -26,6 +26,7 @@ protected:
 	CButton m_show_taskbar_progress_check;
 	CButton m_show_play_state_icon_chk;
     CButton m_sound_fade_chk;
+    CButton m_continue_when_switch_playlist_check;
     CMyComboBox m_output_device_combo;
 	CListCtrlEx m_device_info_list;
     CButton m_bass_radio;
@@ -47,6 +48,7 @@ public:
 	afx_msg void OnBnClickedAutoPlayWhenStartCheck();
 	afx_msg void OnBnClickedShowPlayStateIconCheck();
     afx_msg void OnBnClickedSoundFadeCheck();
+    afx_msg void OnBnClickedContinueWhenSwitchPlaylistCheck();
     afx_msg void OnBnClickedBassRadio();
     afx_msg void OnBnClickedMciRadio();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
