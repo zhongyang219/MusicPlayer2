@@ -1505,21 +1505,26 @@ void CMusicPlayerDlg::HideFloatPlaylist()
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
 }
 
-void CMusicPlayerDlg::GetPlaylistItemSelected()
+void CMusicPlayerDlg::GetPlaylistItemSelected(int cur_index)
 {
     if (!m_searched)
     {
-        m_item_selected = m_playlist_list.GetCurSel();  //获取鼠标选中的项目
+        m_item_selected = cur_index;  //获取鼠标选中的项目
         m_playlist_list.GetItemSelected(m_items_selected);      //获取多个选中的项目
     }
     else
     {
         CString str;
-        str = m_playlist_list.GetItemText(m_playlist_list.GetCurSel(), 0);
+        str = m_playlist_list.GetItemText(cur_index, 0);
         m_item_selected = _ttoi(str) - 1;
         m_playlist_list.GetItemSelectedSearched(m_items_selected);
     }
 
+}
+
+void CMusicPlayerDlg::GetPlaylistItemSelected()
+{
+    GetPlaylistItemSelected(m_playlist_list.GetCurSel());
 }
 
 void CMusicPlayerDlg::IniPlaylistPopupMenu()
@@ -4713,7 +4718,7 @@ void CMusicPlayerDlg::OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    GetPlaylistItemSelected();
+    GetPlaylistItemSelected(pNMItemActivate->iItem);
     *pResult = 0;
 }
 
