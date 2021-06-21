@@ -10,6 +10,7 @@
 #include "AudioCommon.h"
 #include "COSUPlayerHelper.h"
 #include "SongDataManager.h"
+#include "SelectItemDlg.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -594,6 +595,49 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
         pPlayerDlg->m_pMediaLibDlg->SetTabForceShow(tab_force_show);
         pPlayerDlg->m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);
         pPlayerDlg->m_pMediaLibDlg->ShowWindow(SW_SHOW);
+    }
+}
+
+void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
+{
+    vector<wstring> artist_list;
+    song_info.GetArtistList(artist_list);     //获取艺术家（可能有多个）
+    wstring artist;
+    if (artist_list.empty())
+    {
+        return;
+    }
+    else if (artist_list.size() == 1)
+    {
+        artist = artist_list.front();
+    }
+    else
+    {
+        //如果有多个艺术家，弹出“选择艺术家”对话框
+        CSelectItemDlg dlg(artist_list);
+        dlg.SetTitle(CCommon::LoadText(IDS_SELECT_ARTIST));
+        dlg.SetDlgIcon(theApp.m_icon_set.artist.GetIcon());
+        if (dlg.DoModal() == IDOK)
+            artist = dlg.GetSelectedItem();
+        else
+            return;
+    }
+    ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST, MLDI_ARTIST);
+    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(artist))
+    {
+        pPlayerDlg->MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ARTIST_WARNING, { artist }), NULL, MB_OK | MB_ICONWARNING);
+    }
+}
+
+void CMusicPlayerCmdHelper::OnViewAlbum(const SongInfo& song_info)
+{
+    wstring album = song_info.GetAlbum();
+    ShowMediaLib(CMusicPlayerCmdHelper::ML_ALBUM, MLDI_ALBUM);
+    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(album))
+    {
+        pPlayerDlg->MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ALBUM_WARNING, { album }), NULL, MB_OK | MB_ICONWARNING);
     }
 }
 

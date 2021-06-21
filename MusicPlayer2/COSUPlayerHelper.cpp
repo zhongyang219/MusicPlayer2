@@ -37,7 +37,19 @@ bool COSUPlayerHelper::IsOsuFile(const std::wstring& strPath)
     return IsOsuFolder(path_helper.GetParentDir());
 }
 
-void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<SongInfo>& files)
+void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<SongInfo>& song_list)
+{
+    vector<wstring> files;
+    GetOSUAudioFiles(path, files);
+    for (const auto& file : files)
+    {
+        SongInfo song_info;
+        song_info.file_path = file;
+        song_list.push_back(song_info);
+    }
+}
+
+void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<wstring>& files)
 {
     if (path.back() != L'\\' && path.back() != L'/')
         path.push_back(L'\\');
@@ -54,10 +66,8 @@ void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<SongInfo>& files)
         if(!osu_list.empty())
         {
             COSUFile osu_file{ (path + folder_name + L"\\" + osu_list.front()).c_str() };
-            SongInfo song_info;
             wstring file_name = osu_file.GetAudioFile();
-            song_info.file_path = path + folder_name + L"\\" + file_name;
-            //song_info.is_osu_file = true;
+            wstring song_info = path + folder_name + L"\\" + file_name;
             files.push_back(song_info);
         }
     }

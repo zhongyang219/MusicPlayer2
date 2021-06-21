@@ -136,8 +136,8 @@ protected:
         bool ui_thread_exit{ false };           //指示线程退出
         bool ui_force_refresh{ false };         //指示主界面强制重绘
         bool search_box_force_refresh{ false }; //指示搜索框界面强制重绘
-        bool is_active_window{ false };     //指示当前窗口是否为激活窗口
-        bool is_active_window_maxmize{ false };     //指示激活的窗口是否最大化
+        bool is_active_window{ false };         //指示当前窗口是否为激活窗口
+        bool is_completely_covered{ false };    //指示当前激活的窗口是否完全覆盖主界面
     };
     UIThreadPara m_ui_thread_para{};
 
@@ -163,7 +163,7 @@ private:
     void SetDrawAreaSize(int cx, int cy);
     void SetAlwaysOnTop();
 
-    bool IsAddCurrentToPlaylist() const;      //当执行“添加到播放列表时”，是添加正在播放的曲目到播放列表，还是添加选中的曲目到播放列表
+    bool IsMainWindowPopupMenu() const;      //当前弹出的右键是主窗口右键菜单还是播放列表右键菜单
 
     static int CalculatePlaylistWidth(int client_width);
 
@@ -194,6 +194,7 @@ protected:
     void ShowFloatPlaylist();
     void HideFloatPlaylist();
 
+    void GetPlaylistItemSelected(int cur_index);
     void GetPlaylistItemSelected();
     void IniPlaylistPopupMenu();        //初始化所有右键菜单中的“添加到播放列表”子菜单
     void InitUiMenu();                  //初始化所有“切换界面”子菜单
@@ -462,4 +463,8 @@ public:
     afx_msg void OnUseStandardTitleBar();
 protected:
     afx_msg LRESULT OnDefaultMultimediaDeviceChanged(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnPlaylistViewArtist();
+    afx_msg void OnPlaylistViewAlbum();
 };

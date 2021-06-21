@@ -283,6 +283,7 @@ struct PlaySettingData
 {
     bool stop_when_error{ true };				//出现错误时停止播放
     bool auto_play_when_start{ false };			//程序启动时自动播放
+    bool continue_when_switch_playlist{ false };//若当前播放歌曲存在于切换到的播放列表则保持播放状态不变
     bool show_taskbar_progress{ false };		//在任务栏按钮上显示播放进度
     bool show_playstate_icon{ true };			//在任务栏按钮上显示播放状态的角标
     wstring output_device;						//播放设备的名称

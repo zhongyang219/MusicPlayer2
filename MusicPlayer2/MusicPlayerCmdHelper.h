@@ -29,7 +29,7 @@ public:
     //查找匹配的外部专辑封面
     std::wstring SearchAlbumCover(const SongInfo& song);
 
-    //歌曲分级
+    //响应歌曲分级命令
     void OnRating(const wstring& file_path, DWORD command);
 
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）
@@ -54,6 +54,12 @@ public:
     //cur_tab: 打开对话框后要切换的标签
     //tab_force_show: 要强制显示的标签，使用int中的各个bit表示要显示的标签，每个bit参见枚举 MediaLibDisplayItem 的声明
     void ShowMediaLib(int cur_tab = -1, int tab_force_show = 0);
+
+    //查看艺术家
+    void OnViewArtist(const SongInfo& song_info);
+
+    //查看唱片集
+    void OnViewAlbum(const SongInfo& song_info);
 
 protected:
     bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
