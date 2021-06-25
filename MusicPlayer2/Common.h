@@ -229,6 +229,9 @@ public:
     //成功则返回新文件/文件夹的路径，否则返回空字符串
     static _tstring FileRename(const _tstring& file_path, const _tstring& new_file_name);
 
+    //设置文件只读属性，若只读属性改变返回true
+    static bool SetFileReadOnly(const wstring& file_path, bool read_only);
+
     //将相对路径转换成绝对路径
     //会自动判断路径是否为相对路径，如果不是则直接返回原路径
     //relative_path：要转换的路径

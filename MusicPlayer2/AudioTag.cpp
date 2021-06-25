@@ -271,6 +271,7 @@ wstring CAudioTag::GetAudioLyric()
 
 bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
 {
+    CCommon::SetFileReadOnly(m_song_info.file_path, false);
     switch (m_type)
     {
     case AU_MP3:
@@ -292,6 +293,7 @@ bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
 bool CAudioTag::WriteAudioTag()
 {
     //AudioType type = CAudioCommon::GetAudioTypeByFileName(m_song_info.file_path);
+    CCommon::SetFileReadOnly(m_song_info.file_path, false);
     switch (m_type)
     {
     case AU_MP3:
@@ -331,6 +333,7 @@ bool CAudioTag::WriteAudioTag()
 
 bool CAudioTag::WriteAlbumCover(const wstring& album_cover_path)
 {
+    CCommon::SetFileReadOnly(m_song_info.file_path, false);
     switch (m_type)
     {
     case AU_MP3:
@@ -392,6 +395,7 @@ void CAudioTag::GetAudioRating()
 
 void CAudioTag::WriteAudioRating()
 {
+    CCommon::SetFileReadOnly(m_song_info.file_path, false);
     switch (m_type)
     {
     case AU_MP3:

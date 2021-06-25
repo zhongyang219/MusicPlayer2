@@ -783,6 +783,14 @@ _tstring CCommon::FileRename(const _tstring& file_path, const _tstring& new_file
     return new_file_path;
 }
 
+bool CCommon::SetFileReadOnly(const wstring& file_path, bool read_only)
+{
+    DWORD dwFileAttributes{ GetFileAttributesW(file_path.c_str()) };
+    if (read_only == (dwFileAttributes & FILE_ATTRIBUTE_READONLY))
+        return false;
+    return SetFileAttributesW(file_path.c_str(), dwFileAttributes ^ FILE_ATTRIBUTE_READONLY);
+}
+
 _tstring CCommon::RelativePathToAbsolutePath(const _tstring & relative_path, const _tstring & cur_dir)
 {
     // relative_path如果是盘符开头的绝对路径那么返回此绝对路径

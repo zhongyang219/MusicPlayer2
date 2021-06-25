@@ -24,6 +24,7 @@ public:
     //获取音频的内嵌歌词
     wstring GetAudioLyric();
 
+    //写入内嵌歌词
     bool WriteAudioLyric(const wstring& lyric_contents);
 
     AudioType GetAudioType() const { return m_type; }
