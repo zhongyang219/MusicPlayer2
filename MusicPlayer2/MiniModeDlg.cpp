@@ -516,11 +516,11 @@ void CMiniModeDlg::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    int row = pNMItemActivate->iItem;
-    CPlayer::GetInstance().PlayTrack(row);
-    //SwitchTrack();
-    SetPlayListColor();
-    //RePaint();
+    if (pNMItemActivate->iItem < 0)
+        return;
+    m_item_selected = pNMItemActivate->iItem;
+    theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_ITEM);
+
     *pResult = 0;
 }
 
