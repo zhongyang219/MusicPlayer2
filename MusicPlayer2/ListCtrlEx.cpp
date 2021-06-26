@@ -356,7 +356,10 @@ BOOL CListCtrlEx::PreTranslateMessage(MSG* pMsg)
 		if ((GetKeyState(VK_CONTROL) & 0x80) && (pMsg->wParam == 'A'))
 		{
             CWnd* pParent{ GetParent() };
-            pParent->SendMessage(WM_COMMAND, ID_PLAYLIST_SELECT_ALL);
+            if (pParent != nullptr)
+            {
+                pParent->SendMessage(WM_COMMAND, ID_PLAYLIST_SELECT_ALL);
+            }
 			return TRUE;
 		}
 	}
