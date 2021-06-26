@@ -35,6 +35,8 @@ public:
     void SetDragEnable();
     CPlayListCtrl& GetPlaylistCtrl() { return m_playlist_ctrl; }
 
+    void GetPlaylistItemSelected();
+
     void DrawInfo();
 
 protected:

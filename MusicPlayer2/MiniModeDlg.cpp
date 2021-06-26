@@ -333,6 +333,12 @@ void CMiniModeDlg::SetDragEnable()
     m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode() && !theApp.m_media_lib_setting_data.disable_drag_sort);
 }
 
+void CMiniModeDlg::GetPlaylistItemSelected()
+{
+    m_item_selected = m_playlist_ctrl.GetCurSel();          // 获取鼠标选中的项目
+    m_playlist_ctrl.GetItemSelected(m_items_selected);      // 获取多个选中的项目
+}
+
 void CMiniModeDlg::DrawInfo()
 {
     if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
@@ -635,6 +641,13 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
+
+    if (command == ID_PLAYLIST_SELECT_ALL)             // 处理播放列表ctrl+A触发的全选命令
+    {
+        m_playlist_ctrl.SelectAll();
+        GetPlaylistItemSelected();
+        return true;
+    }
     if ((command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
         || command == ID_ADD_TO_OTHER_PLAYLIST)
     {
