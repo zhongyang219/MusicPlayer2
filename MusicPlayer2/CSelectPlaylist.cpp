@@ -800,4 +800,8 @@ void CSelectPlaylistDlg::OnCancel()
     // TODO: 在此添加专用代码和/或调用基类
 
     CTabDlg::OnCancel();
+
+    CWnd* pParent = GetParentWindow();
+    if (pParent != nullptr)
+        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
 }
