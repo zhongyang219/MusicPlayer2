@@ -309,8 +309,6 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
-    SetHighlightItem();
-
     return FALSE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
@@ -321,8 +319,8 @@ void CSelectPlaylistDlg::CalculateColumeWidth(vector<int>& width)
     m_playlist_ctrl.GetWindowRect(rect);
     width.resize(5);
 
-    width[2] = width[3] = rect.Width() / 10;
-    width[4] = rect.Width() / 7;
+    width[2] = width[3] = rect.Width() / 8;
+    width[4] = rect.Width() / 6;
 
     width[0] = theApp.DPI(40);
     width[1] = rect.Width() - width[2] - width[3] - width[4] - width[0] - theApp.DPI(20) - 1;
@@ -407,6 +405,8 @@ void CSelectPlaylistDlg::ShowPathList()
             SetListRowData(i, recent_playlists[m_search_result[i]]);
         }
     }
+    ShowSongList();
+    SetHighlightItem();
 	m_update_flag = false;
 }
 
@@ -445,7 +445,10 @@ bool CSelectPlaylistDlg::SelectValid() const
     if (m_row_selected == 0 || m_row_selected == 1)
         return true;
     int index = m_row_selected - SPEC_PLAYLIST_NUM;
-    return (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) + 1);
+    int playlist_size{ static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) };
+    // 对一般播放列表返回true，对临时播放列表仅当列表不为空时返回true
+    return ((index >= 0 && index < playlist_size) ||
+        (index == playlist_size && CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.track_num > 0));
 }
 
 PlaylistInfo CSelectPlaylistDlg::GetSelectedPlaylist() const
@@ -625,8 +628,9 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
 void CSelectPlaylistDlg::OnDeletePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    int index = m_row_selected - SPEC_PLAYLIST_NUM;
-    if (index >= 0 && index < static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()))
+    int index{ m_row_selected - SPEC_PLAYLIST_NUM };
+    int playlist_size{ static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) };
+    if (index >= 0 && index < playlist_size)
     {
         wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
         if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())      //如果删除的是正在播放的播放列表，则播放默认播放列表
@@ -634,6 +638,18 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
             ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -2);
         }
         CPlayer::GetInstance().GetRecentPlaylist().DeletePlaylist(playlist_path);
+        CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
+        ShowPathList();
+        m_playlist_modified = true;
+    }
+    else if (index == playlist_size)           // 删除的是临时播放列表
+    {
+        if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_TEMP)
+        {
+            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -2);
+        }
+        CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.track_num = 0;
+        wstring playlist_path{ CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.path };
         CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
         ShowPathList();
         m_playlist_modified = true;
@@ -671,9 +687,11 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     CMediaLibTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-    bool is_not_default_playlist{ m_row_selected > 1 && m_row_selected < CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size() + SPEC_PLAYLIST_NUM };
+    auto playlist_size{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size() + SPEC_PLAYLIST_NUM };
+    bool is_not_default_playlist{ m_row_selected > 1 && m_row_selected < playlist_size };
+    bool is_tmp_playlist{ m_row_selected == playlist_size };
     pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist || is_tmp_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
 
     bool is_delete_enable{ !m_left_selected && m_right_selected_item >= 0 && m_right_selected_item < static_cast<int>(m_cur_song_list.size())
@@ -702,7 +720,6 @@ void CSelectPlaylistDlg::OnEnChangeSearchEdit()
     m_searched = (key_word.GetLength() != 0);
     QuickSearch(wstring(key_word));
     ShowPathList();
-    SetHighlightItem();
 }
 
 
@@ -747,7 +764,6 @@ afx_msg LRESULT CSelectPlaylistDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM
         m_searched = false;
         m_search_edit.SetWindowText(_T(""));
         ShowPathList();
-        SetHighlightItem();
     }
     return 0;
 }
