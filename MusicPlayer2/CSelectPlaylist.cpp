@@ -90,19 +90,19 @@ void CSelectPlaylistDlg::QuickSearch(const wstring& key_words)
     }
 }
 
-void CSelectPlaylistDlg::SetHighlightItem()
+int CSelectPlaylistDlg::GetPlayingItem()
 {
+    //正在播放的项目
+    int playing_item{ -1 };
     if (CPlayer::GetInstance().IsPlaylistMode() && !m_searched)
     {
-        //正在播放的项目
-        int highlight_item;
         if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_DEFAULT)
         {
-            highlight_item = 0;
+            playing_item = 0;
         }
         else if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_FAVOURITE)
         {
-            highlight_item = 1;
+            playing_item = 1;
         }
         else
         {
@@ -112,14 +112,10 @@ void CSelectPlaylistDlg::SetHighlightItem()
             {
                 return current_playlist == playlist_info.path;
             });
-            highlight_item = iter - recent_playlist.begin() + SPEC_PLAYLIST_NUM;
+            playing_item = iter - recent_playlist.begin() + SPEC_PLAYLIST_NUM;
         }
-        m_playlist_ctrl.SetHightItem(highlight_item);
     }
-    else
-    {
-        m_playlist_ctrl.SetHightItem(-1);
-    }
+    return playing_item;
 }
 
 void CSelectPlaylistDlg::OnTabEntered()
@@ -308,6 +304,7 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(COL_PATH, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
     m_song_list_ctrl.SetCtrlAEnable(true);
 
+    m_row_selected = GetPlayingItem(); // 初始化时选中正在播放的播放列表
     ShowPathList();
     m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
@@ -408,8 +405,8 @@ void CSelectPlaylistDlg::ShowPathList()
             SetListRowData(i, recent_playlists[m_search_result[i]]);
         }
     }
+    m_playlist_ctrl.SetHightItem(GetPlayingItem());
     ShowSongList();
-    SetHighlightItem();
 	m_update_flag = false;
 }
 

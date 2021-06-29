@@ -34,7 +34,7 @@ public:
     bool IsLeftSelected() const;
 
 private:
-    int m_row_selected{};
+    int m_row_selected{ -1 };
     //CMenu m_menu;
     bool m_playlist_modified{ false };
     CSearchEditCtrl m_search_edit;
@@ -73,7 +73,7 @@ private:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
-    void SetHighlightItem();
+    int GetPlayingItem();
     virtual void OnTabEntered() override;
     void ShowSongList();
 
