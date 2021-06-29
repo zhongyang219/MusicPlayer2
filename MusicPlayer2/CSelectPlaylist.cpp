@@ -120,7 +120,8 @@ int CSelectPlaylistDlg::GetPlayingItem()
 
 void CSelectPlaylistDlg::OnTabEntered()
 {
-    m_row_selected = m_playlist_ctrl.GetCurSel();
+    if(m_playlist_ctrl.GetCurSel() != -1)
+        m_row_selected = m_playlist_ctrl.GetCurSel();
     SetButtonsEnable();
 	if (m_update_flag)
 		ShowPathList();
