@@ -642,9 +642,8 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
 
-    if (command == ID_PLAYLIST_SELECT_ALL)             // 处理播放列表ctrl+A触发的全选命令
+    if (command == ID_PLAYLIST_SELECT_CHANGE)       // 更新播放列表选中项
     {
-        m_playlist_ctrl.SelectAll();
         GetPlaylistItemSelected();
         return true;
     }

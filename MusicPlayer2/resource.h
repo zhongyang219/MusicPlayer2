@@ -1457,13 +1457,14 @@
 #define ID_USE_STANDARD_TITLE_BAR       33339
 #define ID_PLAYLIST_VIEW_ARTIST         33340
 #define ID_PLAYLIST_VIEW_ALBUM          33341
+#define ID_PLAYLIST_SELECT_CHANGE       33342
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        541
-#define _APS_NEXT_COMMAND_VALUE         33342
+#define _APS_NEXT_COMMAND_VALUE         33343
 #define _APS_NEXT_CONTROL_VALUE         1186
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

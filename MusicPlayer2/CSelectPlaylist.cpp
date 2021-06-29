@@ -184,6 +184,9 @@ void CSelectPlaylistDlg::LeftListClicked(int index)
         str = m_playlist_ctrl.GetItemText(index, 0);
         m_row_selected = _ttoi(str) - 1;
     }
+    m_right_selected_item = -1;         // 点击左侧列表时清空右侧列表选中项
+    m_right_selected_items.clear();
+    m_song_list_ctrl.SelectNone();
     SetButtonsEnable();
     ShowSongList();
 }
@@ -445,10 +448,10 @@ bool CSelectPlaylistDlg::SelectValid() const
     if (m_row_selected == 0 || m_row_selected == 1)
         return true;
     int index = m_row_selected - SPEC_PLAYLIST_NUM;
-    int playlist_size{ static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) };
+    int playlists_size{ static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) };
     // 对一般播放列表返回true，对临时播放列表仅当列表不为空时返回true
-    return ((index >= 0 && index < playlist_size) ||
-        (index == playlist_size && CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.track_num > 0));
+    return ((index >= 0 && index < playlists_size) ||
+        (index == playlists_size && CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.track_num > 0));
 }
 
 PlaylistInfo CSelectPlaylistDlg::GetSelectedPlaylist() const
@@ -629,8 +632,8 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     int index{ m_row_selected - SPEC_PLAYLIST_NUM };
-    int playlist_size{ static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) };
-    if (index >= 0 && index < playlist_size)
+    int playlists_size{ static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) };
+    if (index >= 0 && index < playlists_size)
     {
         wstring playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists[index].path;
         if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())      //如果删除的是正在播放的播放列表，则播放默认播放列表
@@ -642,7 +645,7 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         ShowPathList();
         m_playlist_modified = true;
     }
-    else if (index == playlist_size)           // 删除的是临时播放列表
+    else if (index == playlists_size)           // 删除的是临时播放列表
     {
         if (CPlayer::GetInstance().GetRecentPlaylist().m_cur_playlist_type == PT_TEMP)
         {
@@ -687,9 +690,9 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     CMediaLibTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-    auto playlist_size{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size() + SPEC_PLAYLIST_NUM };
-    bool is_not_default_playlist{ m_row_selected > 1 && m_row_selected < playlist_size };
-    bool is_tmp_playlist{ m_row_selected == playlist_size };
+    int playlists_size{ static_cast<int>(CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists.size()) + SPEC_PLAYLIST_NUM };
+    bool is_not_default_playlist{ m_row_selected > 1 && m_row_selected < playlists_size };
+    bool is_tmp_playlist{ m_row_selected == playlists_size };
     pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist || is_tmp_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));

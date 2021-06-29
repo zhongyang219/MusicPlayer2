@@ -143,6 +143,9 @@ void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)
         m_folder_path_selected = folder_path_selected;
         ShowSongList();
     }
+    m_right_selected_item = -1;         // 点击左侧列表时清空右侧列表选中项
+    m_right_selected_items.clear();
+    m_song_list_ctrl.SelectNone();
     SetButtonsEnable(CCommon::FolderExist(wstring(folder_path_selected)));
 }
 

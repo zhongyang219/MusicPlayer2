@@ -277,6 +277,9 @@ void CMediaClassifyDlg::ClassifyListClicked(int index)
         last_selected_index = index;
         last_selected_count = m_left_selected_items.size();
     }
+    m_right_selected_item = -1;           // 点击左侧列表时清空右侧列表选中项
+    m_right_selected_items.clear();
+    m_song_list_ctrl.SelectNone();
 
     SetButtonsEnable(/*(index >= 0 && index < m_classify_list_ctrl.GetItemCount()) ||*/ !m_left_selected_items.empty());
 
