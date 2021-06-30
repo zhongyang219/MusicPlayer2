@@ -108,10 +108,26 @@ wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
     wstring album_cover_file_name;
     std::vector<wstring> osu_list;
     CCommon::GetFiles(dir + L"*.osu", osu_list);
-    if (!osu_list.empty())
+    std::sort(osu_list.begin(), osu_list.end());       // 不存在BeatampId标签时使用此次排序后第一个osu文件的封面
+    int beatmap_id{};
+    for (wstring osu_item : osu_list)
     {
-        COSUFile osu_file{ (dir + osu_list.front()).c_str() };
-        album_cover_file_name = osu_file.GetAlbumCoverFileName();
+        COSUFile osu_file{ (dir + osu_item).c_str() };
+        wstring id_s{ osu_file.GetBeatampId() };
+        if (!id_s.empty())
+        {
+            int id_i{ std::stoi(id_s) };
+            if (beatmap_id == 0 || beatmap_id > id_i)  // 取得beatmap_id最小的osu文件对应封面
+            {
+                beatmap_id = id_i;
+                album_cover_file_name = osu_file.GetAlbumCoverFileName();
+            }
+        }
+        else  // 如果出现id_s为空说明osu文件版本较旧，获取osu_list[0]的封面后退出循环
+        {
+            album_cover_file_name = osu_file.GetAlbumCoverFileName();
+            break;
+        }
     }
 
     if (!CCommon::FileExist(dir + album_cover_file_name))
@@ -198,6 +214,11 @@ wstring COSUFile::GetTitle()
 wstring COSUFile::GetAlbum()
 {
     return GetTagItem("Source:", m_metadata_seg);
+}
+
+wstring COSUFile::GetBeatampId()
+{
+    return GetTagItem("BeatmapID:", m_metadata_seg);
 }
 
 wstring COSUFile::GetBeatampSetId()
