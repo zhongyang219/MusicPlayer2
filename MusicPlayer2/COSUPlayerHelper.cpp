@@ -110,7 +110,7 @@ wstring COSUPlayerHelper::GetAlbumCover(wstring file_path)
     CCommon::GetFiles(dir + L"*.osu", osu_list);
     std::sort(osu_list.begin(), osu_list.end());       // 不存在BeatampId标签时使用此次排序后第一个osu文件的封面
     int beatmap_id{};
-    for (wstring osu_item : osu_list)
+    for (const wstring& osu_item : osu_list)
     {
         COSUFile osu_file{ (dir + osu_item).c_str() };
         wstring id_s{ osu_file.GetBeatampId() };
