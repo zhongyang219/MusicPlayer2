@@ -31,6 +31,7 @@
 #include "DesktopLyric.h"
 #include "SearchEditCtrl.h"
 #include "UIWindow.h"
+#include "CDevicesManager.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -149,6 +150,8 @@ protected:
     bool m_no_lbtnup{ false };      //当它为true时，不响应WM_LBUTTONUP消息
     bool m_ignore_color_change{ false };    //当它为true时，不响应颜色变化，防止短时间内重复收到主题颜色变化的消息
     enum { DELAY_TIMER_ID = 1200, INGORE_COLOR_CHANGE_TIMER_ID = 1201 };
+
+    CDevicesManager* devicesManager;
 
 private:
     void SaveConfig();		//保存设置到ini文件
@@ -443,7 +446,6 @@ public:
     afx_msg void OnDesendingOrder();
     afx_msg void OnInvertPlaylist();
     afx_msg void OnPlayRandom();
-    afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData);
 protected:
     afx_msg LRESULT OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam);
 public:
@@ -460,6 +462,7 @@ public:
     afx_msg void OnLocateToCurrent();
     afx_msg void OnUseStandardTitleBar();
 protected:
+    afx_msg LRESULT OnDefaultMultimediaDeviceChanged(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnPlaylistViewArtist();

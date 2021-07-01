@@ -23,7 +23,6 @@
 #include "WIC.h"
 #include "LyricRelateDlg.h"
 #include "AlbumCoverInfoDlg.h"
-#include <Dbt.h>
 #include "SongDataManager.h"
 #include "TagFromFileNameDlg.h"
 #include "PropertyDlgHelper.h"
@@ -274,7 +273,6 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DESENDING_ORDER, &CMusicPlayerDlg::OnDesendingOrder)
     ON_COMMAND(ID_INVERT_PLAYLIST, &CMusicPlayerDlg::OnInvertPlaylist)
     ON_COMMAND(ID_PLAY_RANDOM, &CMusicPlayerDlg::OnPlayRandom)
-    ON_WM_DEVICECHANGE()
     ON_MESSAGE(WM_CURRENT_FILE_ALBUM_COVER_CHANGED, &CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged)
     ON_COMMAND(ID_RENAME, &CMusicPlayerDlg::OnRename)
     ON_COMMAND(ID_EMBED_LYRIC_TO_AUDIO_FILE, &CMusicPlayerDlg::OnEmbedLyricToAudioFile)
@@ -286,6 +284,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
     ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
+    ON_MESSAGE(WM_DEFAULT_MULTIMEDIA_DEVICE_CHANGED, &CMusicPlayerDlg::OnDefaultMultimediaDeviceChanged)
     ON_MESSAGE(WM_DISPLAYCHANGE, &CMusicPlayerDlg::OnDisplaychange)
     ON_COMMAND(ID_PLAYLIST_VIEW_ARTIST, &CMusicPlayerDlg::OnPlaylistViewArtist)
     ON_COMMAND(ID_PLAYLIST_VIEW_ALBUM, &CMusicPlayerDlg::OnPlaylistViewAlbum)
@@ -1848,6 +1847,10 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
 
+    //注册接收音频设备变化通知回调的IMMNotificationClient接口
+    devicesManager = new CDevicesManager;
+    devicesManager->InitializeDeviceEnumerator();
+
     //注册全局热键
     if (theApp.m_hot_key_setting_data.hot_key_enable)
         theApp.m_hot_key.RegisterAllHotKey();
@@ -2509,6 +2512,10 @@ void CMusicPlayerDlg::OnDestroy()
     theApp.SaveConfig();
     //解除全局热键
     theApp.m_hot_key.UnRegisterAllHotKey();
+
+    //取消注册接收音频设备变化通知回调的IMMNotificationClient接口
+    devicesManager->ReleaseDeviceEnumerator();
+    delete devicesManager;
 
     //退出时恢复Cortana的默认文本
     m_cortana_lyric.ResetCortanaText();
@@ -5501,22 +5508,6 @@ void CMusicPlayerDlg::OnInvertPlaylist()
 }
 
 
-BOOL CMusicPlayerDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData)
-{
-    if (nEventType == DBT_DEVNODES_CHANGED && CPlayer::GetInstance().GetPlayerCore() != nullptr && CPlayer::GetInstance().GetPlayerCore()->GetCoreType() == PlayerCoreType::PT_BASS)
-    {
-        static int last_device_count{ static_cast<int>(theApp.m_output_devices.size()) };
-        int device_count = CPlayer::GetInstance().GetPlayerCore()->GetDeviceCount();        //枚举播放设备的数量
-        if (last_device_count != device_count)      //如果播放设备数量发生变化，则重新初始化播放内核
-        {
-            CPlayer::GetInstance().ReIniPlayerCore(true);
-            last_device_count = device_count;
-        }
-    }
-    return FALSE;
-}
-
-
 afx_msg LRESULT CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam)
 {
 
@@ -5640,6 +5631,16 @@ void CMusicPlayerDlg::OnUseStandardTitleBar()
     auto pCurUi = GetCurrentUi();
     if (pCurUi != nullptr)
         pCurUi->ClearBtnRect();
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnDefaultMultimediaDeviceChanged(WPARAM wParam, LPARAM lParam)
+{
+    if (CPlayer::GetInstance().GetPlayerCore() != nullptr && CPlayer::GetInstance().GetPlayerCore()->GetCoreType() == PlayerCoreType::PT_BASS)
+    {
+        CPlayer::GetInstance().ReIniPlayerCore(true);       // 重新初始化播放内核
+    }
+    return 0;
 }
 
 

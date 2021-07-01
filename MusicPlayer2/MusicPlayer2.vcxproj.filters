@@ -336,6 +336,9 @@
     <Filter Include="stdafx">
       <UniqueIdentifier>{31edd60e-adb8-4131-88d9-e72e22bddf9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\DeviceManger">
+      <UniqueIdentifier>{2468fc67-fa0b-48da-82c4-63b43c838760}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -760,6 +763,12 @@
     <ClInclude Include="SpectralDataHelper.h">
       <Filter>功能逻辑类\Player</Filter>
     </ClInclude>
+    <ClInclude Include="CMMNotificationClient.h">
+      <Filter>功能逻辑类\DeviceManger</Filter>
+    </ClInclude>
+    <ClInclude Include="CDevicesManager.h">
+      <Filter>功能逻辑类\DeviceManger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1146,6 +1155,12 @@
     </ClCompile>
     <ClCompile Include="SpectralDataHelper.cpp">
       <Filter>功能逻辑类\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CMMNotificationClient.cpp">
+      <Filter>功能逻辑类\DeviceManger</Filter>
+    </ClCompile>
+    <ClCompile Include="CDevicesManager.cpp">
+      <Filter>功能逻辑类\DeviceManger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
