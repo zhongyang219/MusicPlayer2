@@ -25,7 +25,8 @@ public:
 
 public:
 	void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
-    void AdjustColumnWidth();       //自动调整列表宽度
+    void AdjustColumnWidth();                       //自动调整列表宽度
+    void RefreshTabData();                          //刷新标签页数据
 
 protected:
 	deque<PathInfo>& m_recent_path;		//最近打开过的路径

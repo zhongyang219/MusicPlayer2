@@ -27,6 +27,7 @@ CSelectPlaylistDlg::~CSelectPlaylistDlg()
 
 void CSelectPlaylistDlg::RefreshSongList()
 {
+    ShowPathList();     // 对播放列表列表刷新特别处理，刷新左侧列表
     ShowSongList();
 }
 
@@ -48,11 +49,6 @@ int CSelectPlaylistDlg::GetPosition() const
 bool CSelectPlaylistDlg::IsPlaylistModified() const
 {
     return m_playlist_modified;
-}
-
-void CSelectPlaylistDlg::SetUpdateFlag()
-{
-	m_update_flag = true;
 }
 
 void CSelectPlaylistDlg::AdjustColumnWidth()
@@ -123,8 +119,6 @@ void CSelectPlaylistDlg::OnTabEntered()
     if(m_playlist_ctrl.GetCurSel() != -1)
         m_row_selected = m_playlist_ctrl.GetCurSel();
     SetButtonsEnable();
-	if (m_update_flag)
-		ShowPathList();
 }
 
 void CSelectPlaylistDlg::ShowSongList()
@@ -307,6 +301,7 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
 
     m_row_selected = GetPlayingItem(); // 初始化时选中正在播放的播放列表
     ShowPathList();
+    ShowSongList();
     m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
@@ -407,8 +402,6 @@ void CSelectPlaylistDlg::ShowPathList()
         }
     }
     m_playlist_ctrl.SetHightItem(GetPlayingItem());
-    ShowSongList();
-	m_update_flag = false;
 }
 
 void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_info)

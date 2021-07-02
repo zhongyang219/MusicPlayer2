@@ -2548,6 +2548,7 @@ void CMusicPlayerDlg::OnFileOpen()
         CPlayer::GetInstance().OpenFiles(files);
         UpdatePlayPauseButton();
         DrawInfo(true);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(1);
         m_play_error_cnt = 0;
     }
 }
@@ -2578,6 +2579,7 @@ void CMusicPlayerDlg::OnFileOpenFolder()
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
         DrawInfo(true);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(0);
         m_play_error_cnt = 0;
     }
 }
@@ -2597,10 +2599,12 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
     {
         //file_path_wcs.push_back(L'\\');
         CPlayer::GetInstance().OpenFolder(file_path_wcs);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(0);
     }
     else if (CPlaylistFile::IsPlaylistFile(file_path_wcs))
     {
         CPlayer::GetInstance().OpenPlaylistFile(file_path_wcs);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(1);
     }
     else
     {
@@ -2620,6 +2624,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             else
             {
                 CPlayer::GetInstance().OpenFiles(files, false);
+                CMusicPlayerCmdHelper::RefreshMediaTabData(1);
             }
         }
     }
@@ -2798,6 +2803,7 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().ReloadPlaylist();
+    CMusicPlayerCmdHelper::RefreshMediaTabData(1);
     //ShowPlayList();
     //UpdatePlayPauseButton();
     //ShowTime();
