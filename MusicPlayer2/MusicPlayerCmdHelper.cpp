@@ -110,10 +110,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         playlist.SaveToFile(playlist_path);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
 
-        if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
-        {
-            pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.RefreshSongList();   // 刷新播放列表列表
-        }
+        RefreshMediaTabData(1);
 
         return true;
     }
