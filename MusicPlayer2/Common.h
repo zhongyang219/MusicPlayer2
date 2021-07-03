@@ -169,8 +169,8 @@ public:
 	//判断一个字符串是否UTF8编码
 	static bool IsUTF8Bytes(const char* data);
 
-	//判断一个字符串的编码格式
-	static CodeType JudgeCodeType(const string& str, CodeType default_code = CodeType::ANSI);
+	//判断一个字符串的编码格式。auto_utf8：是否自动猜测UTF8编码
+	static CodeType JudgeCodeType(const string& str, CodeType default_code = CodeType::ANSI, bool auto_utf8 = false);
 
     static bool IsURL(const wstring& str);
 

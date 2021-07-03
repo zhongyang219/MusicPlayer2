@@ -29,7 +29,7 @@ public:
 private:
 	wstring m_file;		//歌词文件的文件名
 	vector<Lyric> m_lyrics;		//储存每一句歌词（包含时间标签和文本）
-	vector<string> m_lyrics_str;	//储存未拆分时间标签的每一句歌词
+	vector<wstring> m_lyrics_str;	//储存未拆分时间标签的每一句歌词
 	CodeType m_code_type{ CodeType::ANSI };		//歌词文本的编码类型
 
 	wstring m_id;		//歌词中的id标签（网易云音乐中的歌曲id，我自己加的，标准的lrc文件没有这个标签）
@@ -53,7 +53,7 @@ private:
 
 	void DivideLyrics();		//将歌词文件拆分成若干句歌词，并保存在m_lyrics_str中
 	void DisposeLyric();		//获得歌词中的时间标签和歌词文本，并将文本从string类型转换成wstring类型，保存在m_lyrics中
-	void JudgeCode();		//判断歌词的编码格式
+	//void JudgeCode();		//判断歌词的编码格式
 
 public:
 	CLyrics(const wstring& file_name);
@@ -93,4 +93,3 @@ public:
 
 	void ChineseConvertion(bool simplified);		//中文繁简转换
 };
-
