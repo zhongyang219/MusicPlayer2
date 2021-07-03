@@ -390,6 +390,7 @@ public:
     afx_msg void OnCloseDesktopLyric();
     afx_msg void OnLyricDisplayedDoubleLine();
     afx_msg void OnLyricBackgroundPenetrate();
+    afx_msg void OnPlaylistSelectChange();
     afx_msg void OnPlaylistSelectAll();
     afx_msg void OnPlaylistSelectNone();
     afx_msg void OnPlaylistSelectRevert();
