@@ -138,23 +138,12 @@ void CLyrics::DisposeLyric()
         if (index == string::npos) continue;
         temp = m_lyrics_str[i].substr(index + 1, m_lyrics_str[i].size() - index - 1);
         CCommon::StringNormalize(temp);		//删除歌词文本前后的空格或特殊字符
-        //保存获取到的歌词文本
-        lyric.text = temp;
-        size_t index1;
-        index1 = lyric.text.find(L" / ");
-        if (index1 != wstring::npos)		//如果找到了‘ / ’，说明该句歌词包含翻译
-        {
-            lyric.translate = lyric.text.substr(index1 + 3);
-            lyric.text = lyric.text.substr(0, index1);
-            //CCommon::StringNormalize(lyric.text);
-            //CCommon::StringNormalize(lyric.translate);
-            if(!lyric.translate.empty())
-                m_translate = true;
-        }
-        else
-        {
-            lyric.translate.clear();
-        }
+        //解析歌词文本
+        ParseLyricText(temp, lyric.text, lyric.translate);
+        //如果有一句歌词包含翻译，则认为歌词包含翻译
+        if (!lyric.translate.empty())
+            m_translate = true;
+
 
         //if (lyric.text.empty())		//如果时间标签后没有文本，显示为“……”
         //	lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
@@ -205,6 +194,40 @@ void CLyrics::DisposeLyric()
         }
     }
 }
+
+//解析使用括号包含的歌词翻译
+static bool ParseLyricTextWithBracket(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate, wchar_t bracket_left, wchar_t bracket_right)
+{
+    int index1 = lyric_text_ori.find(bracket_left);     //左括号的位置
+    int index2 = lyric_text_ori.find(bracket_right);    //右括号的位置
+    if (index1 == wstring::npos || index2 == wstring::npos || index1 >= lyric_text_ori.size() - 1 || index1 >= index2)       //确保左括号在右括号的左边
+        return false;
+    lyric_translate = lyric_text_ori.substr(index1 + 1, index2 - index1 - 1);   //取括号之间的文本作为翻译
+    lyric_text = lyric_text_ori.substr(0, index1) + lyric_text_ori.substr(index2 + 1);  //其余部分作为歌词原文
+    return true;
+}
+
+void CLyrics::ParseLyricText(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate)
+{
+    size_t index1 = lyric_text_ori.find(L" / ");
+    if (index1 != wstring::npos)		//如果找到了‘ / ’，说明该句歌词包含翻译
+    {
+        lyric_translate = lyric_text_ori.substr(index1 + 3);
+        lyric_text = lyric_text_ori.substr(0, index1);
+    }
+    //按带括号的翻译格式解析，如果都失败，则认为没有翻译
+    else if (!ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'【', L'】')//【】
+        && !ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'〖', L'〗')//〖〗
+        && !ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'「', L'」')//「」
+        && !ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'『', L'』')//『』
+        )
+    {
+        lyric_text = lyric_text_ori;
+        lyric_translate.clear();
+    }
+
+}
+
 
 //void CLyrics::JudgeCode()
 //{
