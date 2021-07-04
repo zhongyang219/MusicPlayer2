@@ -385,20 +385,22 @@ void CAudioTag::GetAudioRating()
     {
     case AU_MP3:
         m_song_info.rating = static_cast<BYTE>(CTagLibHelper::GetMepgRating(m_song_info.file_path));
+        break;
     default:
         break;
     }
 }
 
-void CAudioTag::WriteAudioRating()
+bool CAudioTag::WriteAudioRating()
 {
     switch (m_type)
     {
     case AU_MP3:
-        CTagLibHelper::WriteMpegRating(m_song_info.file_path, m_song_info.rating);
+        return CTagLibHelper::WriteMpegRating(m_song_info.file_path, m_song_info.rating);
     default:
         break;
     }
+    return false;
 }
 
 bool CAudioTag::IsFileTypeTagWriteSupport(const wstring& ext)

@@ -30,7 +30,7 @@ public:
     std::wstring SearchAlbumCover(const SongInfo& song);
 
     //响应歌曲分级命令
-    void OnRating(const wstring& file_path, DWORD command);
+    bool OnRating(const wstring& file_path, DWORD command);
 
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）
     //refresh: 如果为true，则会自动更新所有最近修改时间比上次获取时新的文件的信息

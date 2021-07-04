@@ -2973,9 +2973,11 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         m_pCurMenu = nullptr;
 
     //响应主窗口右键菜单中的分级
+    bool rating_failed{ false };
     if (IsMainWindowPopupMenu())
     {
-        cmd_helper.OnRating(CPlayer::GetInstance().GetCurrentFilePath(), command);
+        if (!cmd_helper.OnRating(CPlayer::GetInstance().GetCurrentFilePath(), command))
+            rating_failed = true;
     }
     //响应播放列表右键菜单中的分级
     else
@@ -2985,9 +2987,14 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
             {
                 wstring select_file_path = CPlayer::GetInstance().GetPlayList()[i].file_path;
-                cmd_helper.OnRating(select_file_path, command);
+                if (!cmd_helper.OnRating(select_file_path, command))
+                    rating_failed = true;
             }
         }
+    }
+    if (rating_failed)
+    {
+        MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
     }
 
     return CMainDialogBase::OnCommand(wParam, lParam);
