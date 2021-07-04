@@ -135,8 +135,7 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
 	    string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
 	    if (char_connot_convert)	//当文件中包含Unicode字符时，询问用户是否要选择一个Unicode编码格式再保存
 	    {
-		    CString info;
-		    info.LoadString(IDS_STRING103);		//从string table载入字符串
+            CString info{ CCommon::LoadText(IDS_STRING103) };                                   //从string table载入字符串
 		    if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK) return false;		//如果用户点击了取消按钮，则返回false
 	    }
 	    ofstream out_put{ path, std::ios::binary };
