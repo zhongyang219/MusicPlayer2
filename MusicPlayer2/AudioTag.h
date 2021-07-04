@@ -41,7 +41,7 @@ public:
     void GetAudioRating();
 
     //写入歌曲分级，将构造函数传递进来的SongInfo结构中的分级保存到文件
-    void WriteAudioRating();
+    bool WriteAudioRating();
 
     //根据一个文件扩展名判断此格式是否已支持写入标签
     static bool IsFileTypeTagWriteSupport(const wstring& ext);

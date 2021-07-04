@@ -215,6 +215,7 @@
     <ClInclude Include="BassMixLibrary.h" />
     <ClInclude Include="BASSWmaLibrary.h" />
     <ClInclude Include="BrowseEdit.h" />
+    <ClInclude Include="CDevicesManager.h" />
     <ClInclude Include="CDonateDlg.h" />
     <ClInclude Include="CFloatPlaylistDlg.h" />
     <ClInclude Include="CHotKey.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="CleanupRangeDlg.h" />
     <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
+    <ClInclude Include="CMMNotificationClient.h" />
     <ClInclude Include="CPlayerUI4.h" />
     <ClInclude Include="CPlayerUI5.h" />
     <ClInclude Include="CUIDrawer.h" />
@@ -355,6 +357,7 @@
     <ClCompile Include="BassMixLibrary.cpp" />
     <ClCompile Include="BASSWmaLibrary.cpp" />
     <ClCompile Include="BrowseEdit.cpp" />
+    <ClCompile Include="CDevicesManager.cpp" />
     <ClCompile Include="CDonateDlg.cpp" />
     <ClCompile Include="CFloatPlaylistDlg.cpp" />
     <ClCompile Include="CHotKey.cpp" />
@@ -363,6 +366,7 @@
     <ClCompile Include="CleanupRangeDlg.cpp" />
     <ClCompile Include="CListBoxEnhanced.cpp" />
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
+    <ClCompile Include="CMMNotificationClient.cpp" />
     <ClCompile Include="CPlayerUI4.cpp" />
     <ClCompile Include="CPlayerUI5.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />

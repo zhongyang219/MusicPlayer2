@@ -27,6 +27,7 @@ public:
     wstring GetArtist();
     wstring GetTitle();
     wstring GetAlbum();
+    wstring GetBeatampId();
     wstring GetBeatampSetId();
     wstring GetAlbumCoverFileName();
 

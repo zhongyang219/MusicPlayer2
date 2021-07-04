@@ -2215,18 +2215,18 @@ void CPlayer::SaveCurrentPlaylist()
 {
 	if (m_playlist_mode)
 	{
-		wstring current_playlist;
-		if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT || m_recent_playlist.m_recent_playlists.empty())
-			current_playlist = m_recent_playlist.m_default_playlist.path;
-		else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
-			current_playlist = m_recent_playlist.m_favourite_playlist.path;
-		else if (m_recent_playlist.m_cur_playlist_type == PT_TEMP)
-			current_playlist = m_recent_playlist.m_temp_playlist.path;
-		else
-			current_playlist = m_recent_playlist.m_recent_playlists.front().path;
+		//wstring current_playlist;
+		//if (m_recent_playlist.m_cur_playlist_type == PT_DEFAULT || m_recent_playlist.m_recent_playlists.empty())
+		//	current_playlist = m_recent_playlist.m_default_playlist.path;
+		//else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
+		//	current_playlist = m_recent_playlist.m_favourite_playlist.path;
+		//else if (m_recent_playlist.m_cur_playlist_type == PT_TEMP)
+		//	current_playlist = m_recent_playlist.m_temp_playlist.path;
+		//else
+		//	current_playlist = m_recent_playlist.m_recent_playlists.front().path;
 		CPlaylistFile playlist;
 		playlist.FromSongList(m_playlist);
-		playlist.SaveToFile(current_playlist);
+		playlist.SaveToFile(m_playlist_path);
 	}
 }
 

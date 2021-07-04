@@ -18,7 +18,7 @@ CCommon::~CCommon()
 
 //void CCommon::GetAllFormatFiles(wstring path, vector<wstring>& files, const vector<wstring>& format, size_t max_file)
 //{
-//	//文件句柄 
+//	//文件句柄
 //	int hFile = 0;
 //	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
 //	_wfinddata_t fileinfo;
@@ -339,18 +339,7 @@ wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_u
 	// code_type为AUTO时从这里开始
 	if (code_type == CodeType::AUTO)	// 先根据BOM判断编码类型
 	{
-		// 如果前面有UTF8的BOM，则编码类型为UTF8
-		if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
-			code_type = CodeType::UTF8;
-		// 如果前面有UTF16LE的BOM，则编码类型为UTF16LE
-		else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
-			code_type = CodeType::UTF16LE;
-		// 如果前面有UTF16BE的BOM，则编码类型为UTF16BE
-		else if (str.size() >= 2 && str[0] == -2 && str[1] == -1)
-			code_type = CodeType::UTF16BE;
-		// AUTO时是否将符合UTF8格式的str作为UTF8_NO_BOM处理
-		else if (auto_utf8 && IsUTF8Bytes(str.c_str()))
-			code_type = CodeType::UTF8_NO_BOM;
+		code_type = JudgeCodeType(str, CodeType::ANSI, auto_utf8);
 	}
 	bool result_ready = false;
 	int size;
@@ -398,7 +387,7 @@ wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_u
 			temp.pop_back();
 		temp.push_back('\0');
 		wchar_t* p = (wchar_t*)temp.c_str();
-		convertBEtoLE(p, temp.size() >> 1);
+		convertBE_LE(p, temp.size() >> 1);
 		result = p;
 		result_ready = true;
 	}
@@ -457,6 +446,17 @@ string CCommon::UnicodeToStr(const wstring & wstr, CodeType code_type, bool* cha
 		result.append((const char*)wstr.c_str(), (const char*)wstr.c_str() + wstr.size() * 2);
 		result.push_back('\0');
 	}
+	else if (code_type == CodeType::UTF16BE)
+	{
+		result.clear();
+		result.push_back(-2);	//在前面加上UTF16BE的BOM
+		result.push_back(-1);
+		wchar_t* p = (wchar_t*)wstr.c_str();
+		convertBE_LE(p, wstr.size());
+		wstring temp{ p };
+		result.append((const char*)temp.c_str(), (const char*)temp.c_str() + temp.size() * 2);
+		result.push_back('\0');
+	}
 	if (char_cannot_convert != nullptr)
 		*char_cannot_convert = (UsedDefaultChar != FALSE);
 	return result;
@@ -491,7 +491,7 @@ bool CCommon::IsUTF8Bytes(const char * data)
 				{
 					charByteCounter++;
 				}
-				//标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X 
+				//标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X
 				if (charByteCounter == 1 || charByteCounter > 6)
 				{
 					return false;
@@ -512,18 +512,25 @@ bool CCommon::IsUTF8Bytes(const char * data)
 	else return true;
 }
 
-CodeType CCommon::JudgeCodeType(const string & str, CodeType default_code)
+CodeType CCommon::JudgeCodeType(const string & str, CodeType default_code, bool auto_utf8)
 {
-	//如果前面有UTF8的BOM，则编码类型为UTF8
-	if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
-		return CodeType::UTF8;
-	//如果前面有UTF16LE的BOM，则编码类型为UTF16LE
-	else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
-		return CodeType::UTF16LE;
-	//else if (IsUTF8Bytes(str.c_str()))		//如果没有找到UTF8和UTF16的BOM，则判断字符串是否有UTF8编码的特性
-	//	return CodeType::UTF8_NO_BOM;
-	else
-		return default_code;
+	CodeType code_type{ default_code };
+	if (!str.empty())
+	{
+		// 如果前面有UTF8的BOM，则编码类型为UTF8
+		if (str.size() >= 3 && str[0] == -17 && str[1] == -69 && str[2] == -65)
+			code_type = CodeType::UTF8;
+		// 如果前面有UTF16LE的BOM，则编码类型为UTF16LE
+		else if (str.size() >= 2 && str[0] == -1 && str[1] == -2)
+			code_type = CodeType::UTF16LE;
+		// 如果前面有UTF16BE的BOM，则编码类型为UTF16BE
+		else if (str.size() >= 2 && str[0] == -2 && str[1] == -1)
+			code_type = CodeType::UTF16BE;
+		// AUTO时是否将符合UTF8格式的str作为UTF8_NO_BOM处理
+		else if (auto_utf8 && IsUTF8Bytes(str.c_str()))
+			code_type = CodeType::UTF8_NO_BOM;
+	}
+	return code_type;
 }
 
 bool CCommon::IsURL(const wstring& str)
@@ -1231,12 +1238,12 @@ int CCommon::AppendMenuOp(HMENU hDst, HMENU hSrc)
 		MENUITEMINFO mInfo = { 0 };
 		mInfo.cbSize = sizeof(mInfo);
 		mInfo.fMask = 0
-			| MIIM_CHECKMARKS //Retrieves or sets the hbmpChecked and hbmpUnchecked members. 
-			| MIIM_DATA //Retrieves or sets the dwItemData member. 
-			| MIIM_ID //Retrieves or sets the wID member. 
-			| MIIM_STATE //Retrieves or sets the fState member. 
-			| MIIM_SUBMENU //Retrieves or sets the hSubMenu member. 
-            | MIIM_FTYPE //Retrieves or sets the fType and dwTypeData members. 
+			| MIIM_CHECKMARKS //Retrieves or sets the hbmpChecked and hbmpUnchecked members.
+			| MIIM_DATA //Retrieves or sets the dwItemData member.
+			| MIIM_ID //Retrieves or sets the wID member.
+			| MIIM_STATE //Retrieves or sets the fState member.
+			| MIIM_SUBMENU //Retrieves or sets the hSubMenu member.
+            | MIIM_FTYPE //Retrieves or sets the fType and dwTypeData members.
             //这里如果不添加MIIM_STRING和MIIM_BITMAP，会导致有图标的菜单项文本不显示
 			| MIIM_STRING
             | MIIM_BITMAP
@@ -1636,23 +1643,23 @@ CString CCommon::GetTextResource(UINT id, CodeType code_type)
 Gdiplus::Image* CCommon::GetPngImageResource(UINT id)
 {
     HINSTANCE hIns = AfxGetInstanceHandle();
-    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type 
+    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type
     if (!hRsrc)
         return nullptr;
-    // load resource into memory 
+    // load resource into memory
     DWORD len = SizeofResource(hIns, hRsrc);
     BYTE* lpRsrc = (BYTE*)LoadResource(hIns, hRsrc);
     if (!lpRsrc)
         return nullptr;
-    // Allocate global memory on which to create stream 
+    // Allocate global memory on which to create stream
     HGLOBAL m_hMem = GlobalAlloc(GMEM_FIXED, len);
     BYTE* pmem = (BYTE*)GlobalLock(m_hMem);
     memcpy(pmem, lpRsrc, len);
     IStream* pstm;
     CreateStreamOnHGlobal(m_hMem, FALSE, &pstm);
-    // load from stream 
+    // load from stream
     Gdiplus::Image* lpImage = Gdiplus::Image::FromStream(pstm);
-    // free/release stuff 
+    // free/release stuff
     GlobalUnlock(m_hMem);
     pstm->Release();
     FreeResource(lpRsrc);
@@ -1682,4 +1689,3 @@ CString CCommon::GetDesktopBackgroundPath()
     }
     return path;
 }
-

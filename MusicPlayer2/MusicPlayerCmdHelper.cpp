@@ -468,7 +468,7 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
     return album_cover_path;
 }
 
-void CMusicPlayerCmdHelper::OnRating(const wstring& file_path, DWORD command)
+bool CMusicPlayerCmdHelper::OnRating(const wstring& file_path, DWORD command)
 {
     if (command - ID_RATING_1 <= 5)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
     {
@@ -476,10 +476,15 @@ void CMusicPlayerCmdHelper::OnRating(const wstring& file_path, DWORD command)
         SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file_path);
         song.rating = static_cast<BYTE>(rating);
         CAudioTag audio_tag(song);
-        audio_tag.WriteAudioRating();
-        CSongDataManager::GetInstance().AddItem(file_path, song);
-        CSongDataManager::GetInstance().SetSongDataModified();
+        bool succeed{ audio_tag.WriteAudioRating() };
+        if (succeed)
+        {
+            CSongDataManager::GetInstance().AddItem(file_path, song);
+            CSongDataManager::GetInstance().SetSongDataModified();
+        }
+        return succeed;
     }
+    return true;
 }
 
 int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
