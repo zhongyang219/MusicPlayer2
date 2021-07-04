@@ -435,67 +435,42 @@ wstring CLyrics::GetLyricsString2() const
 void CLyrics::SaveLyric()
 {
     if (m_lyrics.size() == 0) return;	//没有歌词时直接返回
-    ofstream out_put{ m_file };
-    //如果歌词编码是UTF8，先在前面输出BOM
-    if (m_code_type == CodeType::UTF8)
-    {
-        char buff[4];
-        buff[0] = -17;
-        buff[1] = -69;
-        buff[2] = -65;
-        buff[3] = 0;
-        out_put << buff;
-    }
+
+    // 保存歌词到文件，偏移量保存在offset标签
+    wstring temp{};
     for (int i{ 0 }; i < static_cast<int>(m_lyrics_str.size()); i++)
     {
         if (m_offset_tag_index == i)	//如果i是偏移标签的位置，则在这时输出偏移标签
         {
-            out_put << "[offset:" << m_offset << ']' << std::endl;
+            temp += L"[offset:" + std::to_wstring(m_offset) + L"]\r\n";
             if (!m_offset_tag)			//如果本来没有偏移标签，则这时是插入一行偏移标签，之后还要输出当前歌词
-                out_put << CCommon::UnicodeToStr(m_lyrics_str[i], m_code_type) << std::endl;
+                temp += m_lyrics_str[i] + L"\r\n";
         }
         else
         {
-            out_put << CCommon::UnicodeToStr(m_lyrics_str[i], m_code_type) << std::endl;
+            temp += m_lyrics_str[i] + L"\r\n";
         }
     }
+    bool char_connot_convert;
+    string lyric_str = CCommon::UnicodeToStr(temp, m_code_type, &char_connot_convert);
+    ASSERT(!char_connot_convert);
+    ofstream out_put{ m_file, std::ios::binary };
+    out_put << lyric_str;
+    out_put.close();
+
     m_modified = false;
 }
 
 void CLyrics::SaveLyric2()
 {
     if (m_lyrics.size() == 0) return;	//没有歌词时直接返回
-    ofstream out_put{ m_file };
-    //如果歌词编码是UTF8，先在前面输出BOM
-    if (m_code_type == CodeType::UTF8)
-    {
-        char buff[4];
-        buff[0] = -17;
-        buff[1] = -69;
-        buff[2] = -65;
-        buff[3] = 0;
-        out_put << buff;
-    }
-    //输出标识标签
-    CodeType text_code_type{ m_code_type };
-    if (text_code_type == CodeType::UTF8)
-        text_code_type = CodeType::UTF8_NO_BOM;
-    if(m_id_tag) out_put << "[id:" << CCommon::UnicodeToStr(m_id, text_code_type) << "]" << std::endl;
-    if(m_ti_tag) out_put << "[ti:" << CCommon::UnicodeToStr(m_ti, text_code_type) << "]" << std::endl;
-    if (m_ar_tag) out_put << "[ar:" << CCommon::UnicodeToStr(m_ar, text_code_type) << "]" << std::endl;
-    if (m_al_tag) out_put << "[al:" << CCommon::UnicodeToStr(m_al, text_code_type) << "]" << std::endl;
-    if (m_by_tag) out_put << "[by:" << CCommon::UnicodeToStr(m_by, text_code_type) << "]" << std::endl;
-    if (m_offset_tag) out_put << "[offset:0]" << std::endl;		//由于偏移量被保存到时间标签中，所以offset标签中的偏移量为0
-    char time_buff[16];
-    for (auto a_lyric : m_lyrics)
-    {
-        Time a_time{ a_lyric.GetTime(m_offset) };
-        sprintf_s(time_buff, "[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-        out_put << time_buff << CCommon::UnicodeToStr(a_lyric.text, text_code_type);
-        if (!a_lyric.translate.empty())
-            out_put << " / " << CCommon::UnicodeToStr(a_lyric.translate, text_code_type);
-        out_put << std::endl;
-    }
+
+    // 保存歌词到文件，将偏移量存入每个时间标签
+    bool char_connot_convert;
+    string lyric_str = CCommon::UnicodeToStr(GetLyricsString2(), m_code_type, &char_connot_convert);
+    ASSERT(!char_connot_convert);
+    ofstream out_put{ m_file, std::ios::binary };
+    out_put << lyric_str;
     out_put.close();
     m_modified = false;
     m_chinese_converted = false;

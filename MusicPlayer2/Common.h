@@ -148,8 +148,8 @@ public:
 	//将string类型的字符串转换成Unicode编码的wstring字符串
 	static wstring StrToUnicode(const string& str, CodeType code_type = CodeType::AUTO, bool auto_utf8 = false);
 
-	//将UTF16BE转换为UTF16LE
-	static inline void convertBEtoLE(wchar_t* bigEndianBuffer, unsigned int length)
+	//进行UTF16的BE、LE之间的转换
+	static inline void convertBE_LE(wchar_t* bigEndianBuffer, unsigned int length)
 	{
 		for (unsigned int i = 0; i < length; ++i)
 		{
@@ -161,6 +161,10 @@ public:
 	}
 
 	//将Unicode编码的wstring字符串转换成string类型的字符串，如果有字符无法转换，将参数char_cannot_convert指向的bool变量置为true
+	//当有可能转换带有BOM的类型时需注意
+	//UTF8若自行处理BOM可使用UTF8_NO_BOM分段处理否则请一次转换
+	//UTF16LE请一次转换，或不使用此方法并自行处理BOM
+	//UTF16BE请一次转换，特别的，自行处理需注意大小端问题
 	static string UnicodeToStr(const wstring & wstr, CodeType code_type, bool* char_cannot_convert = nullptr);
 
 	//将一个只有ASCII码组成的字符串转换成Unicode

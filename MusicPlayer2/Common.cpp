@@ -387,7 +387,7 @@ wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_u
 			temp.pop_back();
 		temp.push_back('\0');
 		wchar_t* p = (wchar_t*)temp.c_str();
-		convertBEtoLE(p, temp.size() >> 1);
+		convertBE_LE(p, temp.size() >> 1);
 		result = p;
 		result_ready = true;
 	}
@@ -444,6 +444,17 @@ string CCommon::UnicodeToStr(const wstring & wstr, CodeType code_type, bool* cha
 		result.push_back(-1);	//在前面加上UTF16LE的BOM
 		result.push_back(-2);
 		result.append((const char*)wstr.c_str(), (const char*)wstr.c_str() + wstr.size() * 2);
+		result.push_back('\0');
+	}
+	else if (code_type == CodeType::UTF16BE)
+	{
+		result.clear();
+		result.push_back(-2);	//在前面加上UTF16BE的BOM
+		result.push_back(-1);
+		wchar_t* p = (wchar_t*)wstr.c_str();
+		convertBE_LE(p, wstr.size());
+		wstring temp{ p };
+		result.append((const char*)temp.c_str(), (const char*)temp.c_str() + temp.size() * 2);
 		result.push_back('\0');
 	}
 	if (char_cannot_convert != nullptr)
