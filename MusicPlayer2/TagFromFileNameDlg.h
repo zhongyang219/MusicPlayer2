@@ -55,4 +55,5 @@ public:
     afx_msg void OnCbnSelchangeCombo1();
     virtual void OnOK();
     afx_msg void OnBnClickedCommentButton();
+    afx_msg void OnBnClickedOriginalButton();
 };

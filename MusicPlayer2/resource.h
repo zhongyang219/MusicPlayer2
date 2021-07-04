@@ -728,6 +728,7 @@
 #define IDC_COMMENT_BUTTON              1018
 #define IDC_PATH_EDIT                   1019
 #define IDC_FIND_INFO_STATIC            1019
+#define IDC_ORIGINAL_BUTTON             1019
 #define IDC_PATH_STATIC                 1020
 #define IDC_OPTIONS_TAB                 1024
 #define IDC_CHECK1                      1025

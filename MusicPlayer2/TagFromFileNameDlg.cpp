@@ -122,6 +122,7 @@ BEGIN_MESSAGE_MAP(CTagFromFileNameDlg, CDialog)
     ON_WM_DESTROY()
     ON_CBN_SELCHANGE(IDC_COMBO1, &CTagFromFileNameDlg::OnCbnSelchangeCombo1)
     ON_BN_CLICKED(IDC_COMMENT_BUTTON, &CTagFromFileNameDlg::OnBnClickedCommentButton)
+    ON_BN_CLICKED(IDC_ORIGINAL_BUTTON, &CTagFromFileNameDlg::OnBnClickedOriginalButton)
 END_MESSAGE_MAP()
 
 
@@ -149,6 +150,7 @@ BOOL CTagFromFileNameDlg::OnInitDialog()
     SetDlgItemText(IDC_GENRE_BUTTON, FORMULAR_GENRE);
     SetDlgItemText(IDC_YEAR_BUTTON, FORMULAR_YEAR);
     SetDlgItemText(IDC_COMMENT_BUTTON, FORMULAR_COMMENT);
+    SetDlgItemText(IDC_ORIGINAL_BUTTON, FORMULAR_ORIGINAL);
 
     InitComboList();
     if (!m_default_formular.empty())
@@ -264,4 +266,13 @@ void CTagFromFileNameDlg::OnBnClickedCommentButton()
         InsertTag(FORMULAR_COMMENT);
     else
         CCommon::CopyStringToClipboard(FORMULAR_COMMENT);
+}
+
+
+void CTagFromFileNameDlg::OnBnClickedOriginalButton()
+{
+    if (IsInsertWhenClicked())
+        InsertTag(FORMULAR_ORIGINAL);
+    else
+        CCommon::CopyStringToClipboard(FORMULAR_ORIGINAL);
 }
