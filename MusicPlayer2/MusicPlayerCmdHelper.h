@@ -56,7 +56,7 @@ public:
     void ShowMediaLib(int cur_tab = -1, int tab_force_show = 0);
 
     //刷新媒体库指定标签页，0刷新文件夹，1刷新播放列表
-    static void RefreshMediaTabData(int tab_index);
+    static void RefreshMediaTabData(enum eMediaLibTab tab);
 
     //查看艺术家
     void OnViewArtist(const SongInfo& song_info);

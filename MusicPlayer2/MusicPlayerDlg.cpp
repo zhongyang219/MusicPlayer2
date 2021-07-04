@@ -2549,7 +2549,8 @@ void CMusicPlayerDlg::OnFileOpen()
         CPlayer::GetInstance().OpenFiles(files);
         UpdatePlayPauseButton();
         DrawInfo(true);
-        CMusicPlayerCmdHelper::RefreshMediaTabData(1);
+        // 打开文件时刷新媒体库播放列表标签
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
         m_play_error_cnt = 0;
     }
 }
@@ -2580,7 +2581,8 @@ void CMusicPlayerDlg::OnFileOpenFolder()
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
         DrawInfo(true);
-        CMusicPlayerCmdHelper::RefreshMediaTabData(0);
+        // 打开文件夹时刷新
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
         m_play_error_cnt = 0;
     }
 }
@@ -2600,12 +2602,12 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
     {
         //file_path_wcs.push_back(L'\\');
         CPlayer::GetInstance().OpenFolder(file_path_wcs);
-        CMusicPlayerCmdHelper::RefreshMediaTabData(0);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
     }
     else if (CPlaylistFile::IsPlaylistFile(file_path_wcs))
     {
         CPlayer::GetInstance().OpenPlaylistFile(file_path_wcs);
-        CMusicPlayerCmdHelper::RefreshMediaTabData(1);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
     }
     else
     {
@@ -2625,7 +2627,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             else
             {
                 CPlayer::GetInstance().OpenFiles(files, false);
-                CMusicPlayerCmdHelper::RefreshMediaTabData(1);
+                CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
             }
         }
     }
@@ -2804,7 +2806,7 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().ReloadPlaylist();
-    CMusicPlayerCmdHelper::RefreshMediaTabData(1);
+    CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
     //ShowPlayList();
     //UpdatePlayPauseButton();
     //ShowTime();

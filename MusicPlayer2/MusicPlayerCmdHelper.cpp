@@ -110,7 +110,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         playlist.SaveToFile(playlist_path);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
 
-        RefreshMediaTabData(1);
+        RefreshMediaTabData(ML_PLAYLIST);
 
         return true;
     }
@@ -595,14 +595,14 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
     }
 }
 
-void CMusicPlayerCmdHelper::RefreshMediaTabData(int tab_index)
+void CMusicPlayerCmdHelper::RefreshMediaTabData(enum eMediaLibTab tab_index)
 {
     CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
     {
-        if (tab_index == 0)
+        if (tab_index == ML_FOLDER)
             pPlayerDlg->m_pMediaLibDlg->m_path_dlg.RefreshTabData();         // 刷新媒体库文件夹列表
-        else if(tab_index == 1)
+        else if(tab_index == ML_PLAYLIST)
             pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.RefreshSongList();    // 刷新媒体库播放列表列表
     }
 }
