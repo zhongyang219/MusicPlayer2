@@ -1529,6 +1529,21 @@ bool CTagLibHelper::WriteMpegRating(const wstring& file_path, int rate)
     return saved;
 }
 
+bool CTagLibHelper::WriteFlacRating(const wstring& file_path, int rate)
+{
+    FLAC::File file(file_path.c_str());
+    if (file.isValid())
+    {
+        auto properties = file.properties();
+        properties[STR_FLAC_RATING_TAG].clear();
+        properties[STR_FLAC_RATING_TAG].append(std::to_wstring(rate).c_str());
+        file.setProperties(properties);
+        bool saved = file.save();
+        return saved;
+    }
+    return false;
+}
+
 TagLib::ID3v2::Version CTagLibHelper::GetWriteId3v2Version()
 {
     return (m_write_id3v2_3 ? ID3v2::Version::v3 : ID3v2::Version::v4);

@@ -113,6 +113,7 @@ public:
 
     //写入分级信息
     static bool WriteMpegRating(const wstring& file_path, int rate);
+    static bool WriteFlacRating(const wstring& file_path, int rate);
 
 private:
     //获取要写入的ID3V2版本
