@@ -110,10 +110,12 @@ public:
     //读取分级信息。返回1~5为分级，返回0表示未分级
     static int GetMepgRating(const wstring& file_path);
     static int GetFlacRating(const wstring& file_path);
+    static int GetWmaRating(const wstring& file_path);
 
     //写入分级信息
     static bool WriteMpegRating(const wstring& file_path, int rate);
     static bool WriteFlacRating(const wstring& file_path, int rate);
+    static bool WriteWmaRating(const wstring& file_path, int rate);
 
 private:
     //获取要写入的ID3V2版本

@@ -389,6 +389,9 @@ void CAudioTag::GetAudioRating()
     case AU_FLAC:
         m_song_info.rating = static_cast<BYTE>(CTagLibHelper::GetFlacRating(m_song_info.file_path));
         break;
+    case AU_WMA_ASF:
+        m_song_info.rating = static_cast<BYTE>(CTagLibHelper::GetWmaRating(m_song_info.file_path));
+        break;
     default:
         break;
     }
@@ -402,6 +405,8 @@ bool CAudioTag::WriteAudioRating()
         return CTagLibHelper::WriteMpegRating(m_song_info.file_path, m_song_info.rating);
     case AU_FLAC:
         return CTagLibHelper::WriteFlacRating(m_song_info.file_path, m_song_info.rating);
+    case AU_WMA_ASF:
+        return CTagLibHelper::WriteWmaRating(m_song_info.file_path, m_song_info.rating);
     default:
         break;
     }
@@ -441,5 +446,5 @@ bool CAudioTag::IsFileRatingSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC;
+    return type == AU_MP3 || type == AU_FLAC/* || type == AU_WMA_ASF*/;
 }
