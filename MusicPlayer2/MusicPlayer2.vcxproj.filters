@@ -339,6 +339,9 @@
     <Filter Include="功能逻辑类\DeviceManger">
       <UniqueIdentifier>{2468fc67-fa0b-48da-82c4-63b43c838760}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\SliderCtrlEx">
+      <UniqueIdentifier>{d50e6550-db2c-450d-90f7-81e1b4a15f92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -751,9 +754,6 @@
     <ClInclude Include="SelectItemDlg.h">
       <Filter>对话框类\SelectItemDlg</Filter>
     </ClInclude>
-    <ClInclude Include="SliderCtrlEx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CPlayerUI4.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
@@ -768,6 +768,9 @@
     </ClInclude>
     <ClInclude Include="CDevicesManager.h">
       <Filter>功能逻辑类\DeviceManger</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderCtrlEx.h">
+      <Filter>派生的控件类\SliderCtrlEx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1146,7 +1149,6 @@
     <ClCompile Include="SelectItemDlg.cpp">
       <Filter>对话框类\SelectItemDlg</Filter>
     </ClCompile>
-    <ClCompile Include="SliderCtrlEx.cpp" />
     <ClCompile Include="CPlayerUI4.cpp">
       <Filter>PlayerUI</Filter>
     </ClCompile>
@@ -1161,6 +1163,9 @@
     </ClCompile>
     <ClCompile Include="CDevicesManager.cpp">
       <Filter>功能逻辑类\DeviceManger</Filter>
+    </ClCompile>
+    <ClCompile Include="SliderCtrlEx.cpp">
+      <Filter>派生的控件类\SliderCtrlEx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
