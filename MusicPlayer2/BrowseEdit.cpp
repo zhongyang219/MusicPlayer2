@@ -5,6 +5,7 @@
 #include "BrowseEdit.h"
 #include "MusicPlayer2.h"
 #include "DrawCommon.h"
+#include "TagFromFileNameDlg.h"
 
 // CBrowseEdit
 
@@ -38,7 +39,7 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
         back_color = CColorConvert::m_gray_color.light3;
     drawer.GetDC()->FillSolidRect(rc_draw, back_color);
 
-    auto& icon = theApp.m_icon_set.select_folder;
+    auto& icon = (m_Mode != BrowseMode_Default) ? theApp.m_icon_set.select_folder : theApp.m_icon_set.edit;
     CSize icon_size = icon.GetSize();
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + theApp.DPI(4);
@@ -62,6 +63,7 @@ void CBrowseEdit::OnChangeLayout()
     int btn_width;
     CDrawCommon drawer;
     drawer.Create(m_pDC, this);
+    m_btn_str = (m_Mode != BrowseMode_Default) ? CCommon::LoadText(IDS_BROWSE, _T("...")) : CCommon::LoadText(IDS_EDIT, _T("..."));
     btn_width = drawer.GetTextExtent(m_btn_str).cx + theApp.DPI(28);
     m_nBrowseButtonWidth = max(btn_width, m_sizeImage.cx + 8);
 
@@ -107,7 +109,7 @@ void CBrowseEdit::OnBrowse()
             }
         }
     }
-        break;
+    break;
 
     case BrowseMode_File:
     {
@@ -150,6 +152,28 @@ void CBrowseEdit::OnBrowse()
         }
     }
     break;
+
+    case BrowseMode_Default:
+    {
+        CString strFile;
+        GetWindowText(strFile);
+
+        CTagFromFileNameDlg dlg;
+        dlg.SetDialogTitle(CCommon::LoadText(IDS_SET_FILENAME_FORM));
+
+        if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())
+        {
+            SetWindowText(dlg.GetFormularSelected().c_str());
+            SetModify(TRUE);
+            OnAfterUpdate();
+        }
+
+        if (GetParent() != NULL)
+        {
+            GetParent()->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+        }
+    }
+    break;
     }
 
     SetFocus();
@@ -172,7 +196,6 @@ END_MESSAGE_MAP()
 void CBrowseEdit::PreSubclassWindow()
 {
     // TODO: 在此添加专用代码和/或调用基类
-    m_btn_str = CCommon::LoadText(IDS_BROWSE, _T("..."));
     m_pDC = GetDC();
 
     CMFCEditBrowseCtrl::PreSubclassWindow();

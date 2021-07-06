@@ -668,6 +668,7 @@
 #define IDS_RESTORE                     536
 #define IDI_MINIMIZE_D                  536
 #define IDI_MAXIMIZE                    537
+#define IDS_SET_FILENAME_FORM           537
 #define IDI_MAXIMIZE_D                  538
 #define IDI_RESTORE                     539
 #define IDI_ICON19                      540
@@ -947,6 +948,7 @@
 #define IDC_OUT_FORMAT_COMBO            1110
 #define IDC_OUT_DIR_EDIT                1111
 #define IDC_CBR_RADIO                   1112
+#define IDC_OUT_NAME_EDIT               1112
 #define IDC_ABR_RADIO                   1113
 #define IDC_CBR_RADIO2                  1113
 #define IDC_VBR_RADIO                   1114

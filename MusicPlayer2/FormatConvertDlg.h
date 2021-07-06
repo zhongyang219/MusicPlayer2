@@ -63,13 +63,15 @@ protected:
     CMenu m_list_popup_menu;
     CComboBox m_freq_comb;
     CBrowseEdit m_out_dir_edit;
+    CBrowseEdit m_out_name_edit;
 
 //#ifndef COMPILE_IN_WIN_XP
 	ITaskbarList3* m_pTaskbar{ theApp.GetITaskbarList3() };          //用于支持任务栏显示播放进度
 //#endif
 
-	vector<SongInfo> m_file_list;		//要转换格式的文件列表
-	wstring m_out_dir;		//输出目录
+    vector<SongInfo> m_file_list;   // 要转换格式的文件列表
+    wstring m_out_dir;              // 输出目录
+    wstring m_out_name;             // 输出文件名格式字符串
 	EncodeFormat m_encode_format{ EncodeFormat::MP3 };
 	CWinThread* m_pThread{};		//格式转换的线程
 	wstring m_encode_dir;
