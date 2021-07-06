@@ -333,6 +333,12 @@ void CMiniModeDlg::SetDragEnable()
     m_playlist_ctrl.SetDragEnable(CPlayer::GetInstance().IsPlaylistMode() && !theApp.m_media_lib_setting_data.disable_drag_sort);
 }
 
+void CMiniModeDlg::GetPlaylistItemSelected()
+{
+    m_item_selected = m_playlist_ctrl.GetCurSel();          // 获取鼠标选中的项目
+    m_playlist_ctrl.GetItemSelected(m_items_selected);      // 获取多个选中的项目
+}
+
 void CMiniModeDlg::DrawInfo()
 {
     if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
@@ -516,11 +522,11 @@ void CMiniModeDlg::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    int row = pNMItemActivate->iItem;
-    CPlayer::GetInstance().PlayTrack(row);
-    //SwitchTrack();
-    SetPlayListColor();
-    //RePaint();
+    if (pNMItemActivate->iItem < 0)
+        return;
+    m_item_selected = pNMItemActivate->iItem;
+    theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_ITEM);
+
     *pResult = 0;
 }
 
@@ -635,6 +641,12 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
+
+    if (command == ID_PLAYLIST_SELECT_CHANGE)       // 更新播放列表选中项
+    {
+        GetPlaylistItemSelected();
+        return true;
+    }
     if ((command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE)
         || command == ID_ADD_TO_OTHER_PLAYLIST)
     {

@@ -229,6 +229,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_CLOSE_DESKTOP_LYRIC, &CMusicPlayerDlg::OnCloseDesktopLyric)
     ON_COMMAND(ID_LYRIC_DISPLAYED_DOUBLE_LINE, &CMusicPlayerDlg::OnLyricDisplayedDoubleLine)
     ON_COMMAND(ID_LYRIC_BACKGROUND_PENETRATE, &CMusicPlayerDlg::OnLyricBackgroundPenetrate)
+    ON_COMMAND(ID_PLAYLIST_SELECT_CHANGE, &CMusicPlayerDlg::OnPlaylistSelectChange)
     ON_COMMAND(ID_PLAYLIST_SELECT_ALL, &CMusicPlayerDlg::OnPlaylistSelectAll)
     ON_COMMAND(ID_PLAYLIST_SELECT_NONE, &CMusicPlayerDlg::OnPlaylistSelectNone)
     ON_COMMAND(ID_PLAYLIST_SELECT_REVERT, &CMusicPlayerDlg::OnPlaylistSelectRevert)
@@ -2557,6 +2558,8 @@ void CMusicPlayerDlg::OnFileOpen()
         CPlayer::GetInstance().OpenFiles(files);
         UpdatePlayPauseButton();
         DrawInfo(true);
+        // 打开文件时刷新媒体库播放列表标签
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
         m_play_error_cnt = 0;
     }
 }
@@ -2587,6 +2590,8 @@ void CMusicPlayerDlg::OnFileOpenFolder()
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
         DrawInfo(true);
+        // 打开文件夹时刷新
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
         m_play_error_cnt = 0;
     }
 }
@@ -2606,10 +2611,12 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
     {
         //file_path_wcs.push_back(L'\\');
         CPlayer::GetInstance().OpenFolder(file_path_wcs);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
     }
     else if (CPlaylistFile::IsPlaylistFile(file_path_wcs))
     {
         CPlayer::GetInstance().OpenPlaylistFile(file_path_wcs);
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
     }
     else
     {
@@ -2629,6 +2636,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             else
             {
                 CPlayer::GetInstance().OpenFiles(files, false);
+                CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
             }
         }
     }
@@ -2792,6 +2800,7 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().ReloadPlaylist();
+    CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
     //ShowPlayList();
     //UpdatePlayPauseButton();
     //ShowTime();
@@ -5007,6 +5016,13 @@ void CMusicPlayerDlg::OnLyricBackgroundPenetrate()
     // TODO: 在此添加命令处理程序代码
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate = !theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate;
     m_desktop_lyric.SetLyricBackgroundPenetrate(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
+}
+
+
+void CMusicPlayerDlg::OnPlaylistSelectChange()
+{
+    // TODO: 在此添加命令处理程序代码
+    GetPlaylistItemSelected();
 }
 
 

@@ -40,6 +40,12 @@ void CSetPathDlg::AdjustColumnWidth()
         m_path_list.SetColumnWidth(i, width[i]);
 }
 
+void CSetPathDlg::RefreshTabData()
+{
+    ShowPathList();
+    SetButtonsEnable(IsSelectedPlayEnable());
+}
+
 void CSetPathDlg::ShowPathList()
 {
 	m_path_list.EnableWindow(TRUE);

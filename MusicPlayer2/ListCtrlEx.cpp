@@ -350,12 +350,17 @@ BOOL CListCtrlEx::PreTranslateMessage(MSG* pMsg)
 	//if (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)		//屏蔽列表控件的键盘消息，防止每次按下一个键时列表选中行会出现讨厌的、难看的虚线框
 	//	return TRUE;
 
-	//按Ctrl+A全选
+    // 按Ctrl+A全选，向父窗口发送选中项更新消息
 	if(m_enable_ctrl_a)
 	{
 		if ((GetKeyState(VK_CONTROL) & 0x80) && (pMsg->wParam == 'A'))
 		{
-			SelectAll();
+            SelectAll();
+            CWnd* pParent{ GetParent() };
+            if (pParent != nullptr)
+            {
+                pParent->SendMessage(WM_COMMAND, ID_PLAYLIST_SELECT_CHANGE);
+            }
 			return TRUE;
 		}
 	}

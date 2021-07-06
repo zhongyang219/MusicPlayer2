@@ -55,6 +55,9 @@ public:
     //tab_force_show: 要强制显示的标签，使用int中的各个bit表示要显示的标签，每个bit参见枚举 MediaLibDisplayItem 的声明
     void ShowMediaLib(int cur_tab = -1, int tab_force_show = 0);
 
+    //刷新媒体库指定标签页，0刷新文件夹，1刷新播放列表
+    static void RefreshMediaTabData(enum eMediaLibTab tab);
+
     //查看艺术家
     void OnViewArtist(const SongInfo& song_info);
 

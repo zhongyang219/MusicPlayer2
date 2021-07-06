@@ -29,19 +29,17 @@ public:
     int GetTrack() const;
     int GetPosition() const;
     bool IsPlaylistModified() const;
-	void SetUpdateFlag();		//设置需要更新标志，当标签切换到此对话框时，会更新一次数据
     void AdjustColumnWidth();       //自动调整列表宽度
     bool IsLeftSelected() const;
 
 private:
-    int m_row_selected{};
+    int m_row_selected{ -1 };
     //CMenu m_menu;
     bool m_playlist_modified{ false };
     CSearchEditCtrl m_search_edit;
     vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
     bool m_searched{ false };				//是否处理搜索状态
     //CToolTipCtrl m_Mytip;
-	bool m_update_flag{ false };
     bool m_left_selected{};                   //最后一次选中的是左侧还是右侧
     int m_right_selected_item{ -1 };
     std::vector<int> m_right_selected_items;   //右侧列表选中的项目的序号
@@ -73,7 +71,7 @@ private:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
-    void SetHighlightItem();
+    int GetPlayingItem();
     virtual void OnTabEntered() override;
     void ShowSongList();
 
