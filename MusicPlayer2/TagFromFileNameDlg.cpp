@@ -29,6 +29,11 @@ void CTagFromFileNameDlg::SetDialogTitle(LPCTSTR str_title)
     m_dlg_title = str_title;
 }
 
+void CTagFromFileNameDlg::SetInitInsertFormular(const wstring& str_formular)
+{
+    m_init_insert_formular = str_formular;
+}
+
 wstring CTagFromFileNameDlg::GetFormularSelected() const
 {
     return m_formular_selected;
@@ -139,6 +144,11 @@ BOOL CTagFromFileNameDlg::OnInitDialog()
     if (!m_dlg_title.IsEmpty())
     {
         SetWindowText(m_dlg_title);
+    }
+
+    if (!m_init_insert_formular.empty())
+    {
+        InsertFormular(m_init_insert_formular);
     }
 
     SetInsertWhenClicked(m_insert_when_clicked);

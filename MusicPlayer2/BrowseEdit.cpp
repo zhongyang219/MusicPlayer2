@@ -159,6 +159,7 @@ void CBrowseEdit::OnBrowse()
         GetWindowText(strFile);
 
         CTagFromFileNameDlg dlg;
+        dlg.SetInitInsertFormular(strFile.GetString());
         dlg.SetDialogTitle(CCommon::LoadText(IDS_SET_FILENAME_FORM));
 
         if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())

@@ -325,7 +325,7 @@ wstring CPropertyDlgHelper::FileNameFromTag(const wstring& formular, const SongI
 
 bool CPropertyDlgHelper::IsStringContainsFormular(const wstring & str)
 {
-    std::vector<wstring> formular_list{ FORMULAR_TITLE, FORMULAR_ARTIST, FORMULAR_ALBUM, FORMULAR_TRACK, FORMULAR_GENRE, FORMULAR_YEAR, FORMULAR_COMMENT };
+    std::vector<wstring> formular_list{ FORMULAR_TITLE, FORMULAR_ARTIST, FORMULAR_ALBUM, FORMULAR_TRACK, FORMULAR_GENRE, FORMULAR_YEAR, FORMULAR_COMMENT, FORMULAR_ORIGINAL };
     for (const auto& formular : formular_list)
     {
         if (str.find(formular) != wstring::npos)
