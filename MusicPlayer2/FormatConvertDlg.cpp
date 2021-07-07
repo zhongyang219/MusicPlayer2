@@ -1274,11 +1274,18 @@ void CFormatConvertDlg::OnCbnSelchangeFreqCombo()
 
 afx_msg LRESULT CFormatConvertDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
 {
-	CString str;
-	GetDlgItemText(IDC_OUT_DIR_EDIT, str);
-	m_out_dir = str.GetString();
-	GetDlgItemText(IDC_OUT_NAME_EDIT, str);
-	m_out_name = str.GetString();
+    CBrowseEdit* pEdit = (CBrowseEdit*)lParam;
+    CString str;
+    if (pEdit == &m_out_dir_edit)
+    {
+        GetDlgItemText(IDC_OUT_DIR_EDIT, str);
+        m_out_dir = str.GetString();
+    }
+    if (pEdit == &m_out_name_edit)
+    {
+        GetDlgItemText(IDC_OUT_NAME_EDIT, str);
+        m_out_name = str.GetString();
+    }
     return 0;
 }
 
