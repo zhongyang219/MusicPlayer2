@@ -215,12 +215,7 @@ void CLyrics::ParseLyricText(const wstring& lyric_text_ori, wstring& lyric_text,
         lyric_translate = lyric_text_ori.substr(index1 + 3);
         lyric_text = lyric_text_ori.substr(0, index1);
     }
-    //按带括号的翻译格式解析，如果都失败，则认为没有翻译
-    else if (!ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'【', L'】')//【】
-        && !ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'〖', L'〗')//〖〗
-        && !ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'「', L'」')//「」
-        && !ParseLyricTextWithBracket(lyric_text_ori, lyric_text, lyric_translate, L'『', L'』')//『』
-        )
+    else
     {
         lyric_text = lyric_text_ori;
         lyric_translate.clear();
@@ -528,6 +523,30 @@ void CLyrics::TimeTagDelay()
     for (size_t i{ m_lyrics.size() - 1 }; i > 0; i--)
     {
         m_lyrics[i].time = m_lyrics[i - 1].time;
+    }
+}
+
+void CLyrics::ExtractTranslationFromBrackets()
+{
+    // 若对已有翻译的歌词使用则放弃原翻译
+    m_translate = false;
+    for (Lyric lyric : m_lyrics)
+    {
+        wstring temp = lyric.text;
+        //按带括号的翻译格式解析
+        if (   ParseLyricTextWithBracket(temp, lyric.text, lyric.translate, L'【', L'】')//【】
+            || ParseLyricTextWithBracket(temp, lyric.text, lyric.translate, L'〖', L'〗')//〖〗
+            || ParseLyricTextWithBracket(temp, lyric.text, lyric.translate, L'「', L'」')//「」
+            || ParseLyricTextWithBracket(temp, lyric.text, lyric.translate, L'『', L'』')//『』
+            )
+        {
+            m_translate = true;
+        }
+        else
+        {
+            lyric.text = temp;
+            lyric.translate.clear();
+        }
     }
 }
 
