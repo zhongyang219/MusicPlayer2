@@ -89,6 +89,8 @@ public:
     void SwapTextAndTranslation();      //交换歌词文本和翻译
     void TimeTagForward();          //时间标签提前一句
     void TimeTagDelay();            //时间标签延后一句
+	// 从歌词原文的括号中提取翻译，丢弃原有翻译
+	void ExtractTranslationFromBrackets();
 
 	void AdjustLyric(int offset);	//调整歌词的偏移量
 
