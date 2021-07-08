@@ -54,11 +54,11 @@ wstring CHotKey::ToString() const
 
 void CHotKey::FromString(const wstring & str)
 {
+    Clear();
 	vector<wstring> str_list;
 	CCommon::StringSplit(str, L'+', str_list);
 	if (str_list.empty())
     {
-        Clear();
         return;
     }
 
