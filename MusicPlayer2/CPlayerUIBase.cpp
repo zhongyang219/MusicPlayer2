@@ -1788,7 +1788,6 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
     //填充歌词区域背景
     if (theApp.m_app_setting_data.lyric_background)
     {
-        //m_draw.DrawRoundRect()
         BYTE alpha = 255;
         if (IsDrawBackgroundAlpha())
             alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5;

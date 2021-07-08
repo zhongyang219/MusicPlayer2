@@ -166,22 +166,15 @@ void CPlayerUI4::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
     if (right_lyric)
     {
         CRect rect_lyric{ draw_rect };
-        //rect_lyric.left = draw_rect.right + Margin();
-        //rect_lyric.right = m_draw_rect.right - EdgeMargin(true);
         rect_lyric.MoveToX(rect_lyric.right);
         rect_lyric.DeflateRect(DPI(4), DPI(4));
         m_draw.SetDrawArea(rect_lyric);
-        //if (theApp.m_app_setting_data.lyric_background)
-        //{
-        //    if (IsDrawBackgroundAlpha())
-        //        m_draw.FillAlphaRect(rect_lyric, m_colors.color_lyric_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 3 / 5);
-        //    else
-        //        m_draw.FillRect(rect_lyric, m_colors.color_lyric_back);
-        //}
-        //rect_lyric.DeflateRect(DPI(4), DPI(4));
-        //m_draw.DrawLryicCommon(rect_lyric, theApp.m_lyric_setting_data.lyric_align);
         m_draw_data.lyric_rect = rect_lyric;        //保存歌词区域
         DrawLyrics(rect_lyric);
+    }
+    else
+    {
+        m_draw_data.lyric_rect.SetRectEmpty();
     }
 
     //绘制右上角图标
