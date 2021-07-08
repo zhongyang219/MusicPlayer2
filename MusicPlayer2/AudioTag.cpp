@@ -446,5 +446,5 @@ bool CAudioTag::IsFileRatingSupport(const wstring& ext)
     wstring _ext = ext;
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
-    return type == AU_MP3 || type == AU_FLAC/* || type == AU_WMA_ASF*/;
+    return type == AU_MP3 || type == AU_FLAC || type == AU_WMA_ASF;
 }
