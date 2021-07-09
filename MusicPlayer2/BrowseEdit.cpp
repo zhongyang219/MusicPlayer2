@@ -39,7 +39,7 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
         back_color = CColorConvert::m_gray_color.light3;
     drawer.GetDC()->FillSolidRect(rc_draw, back_color);
 
-    auto& icon = (m_Mode != BrowseMode_Default) ? theApp.m_icon_set.select_folder : theApp.m_icon_set.edit;
+    auto& icon = GetIcon();
     CSize icon_size = icon.GetSize();
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + theApp.DPI(4);
@@ -90,6 +90,7 @@ void CBrowseEdit::OnBrowse()
 
     switch (m_Mode)
     {
+    //浏览文件夹
     case BrowseMode_Folder:
     {
         CString strFolder;
@@ -111,6 +112,7 @@ void CBrowseEdit::OnBrowse()
     }
     break;
 
+    //浏览文件
     case BrowseMode_File:
     {
         CString strFile;
@@ -153,25 +155,41 @@ void CBrowseEdit::OnBrowse()
     }
     break;
 
+    //自定义浏览模式
     case BrowseMode_Default:
     {
-        CString strFile;
-        GetWindowText(strFile);
-
-        CTagFromFileNameDlg dlg;
-        dlg.SetInitInsertFormular(strFile.GetString());
-        dlg.SetDialogTitle(CCommon::LoadText(IDS_SET_FILENAME_FORM));
-
-        if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())
+        switch (m_browse_mode)
         {
-            SetWindowText(dlg.GetFormularSelected().c_str());
-            SetModify(TRUE);
-            OnAfterUpdate();
+        case CBrowseEdit::EditBrowseMode::RENAME:
+        {
+            CString strFile;
+            GetWindowText(strFile);
+
+            CTagFromFileNameDlg dlg;
+            dlg.SetInitInsertFormular(strFile.GetString());
+            dlg.SetDialogTitle(CCommon::LoadText(IDS_SET_FILENAME_FORM));
+
+            if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())
+            {
+                SetWindowText(dlg.GetFormularSelected().c_str());
+                SetModify(TRUE);
+                OnAfterUpdate();
+            }
+
+            if (GetParent() != NULL)
+            {
+                GetParent()->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+            }
         }
-
-        if (GetParent() != NULL)
+            break;
+        case CBrowseEdit::EditBrowseMode::LIST:
         {
-            GetParent()->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+
+        }
+            break;
+        default:
+            break;
+
         }
     }
     break;
@@ -185,6 +203,27 @@ void CBrowseEdit::OnAfterUpdate()
     CWnd* pParent = GetParent();
     if (pParent != nullptr)
         pParent->SendMessage(WM_EDIT_BROWSE_CHANGED, 0, LPARAM(this));
+}
+
+void CBrowseEdit::SetEditBrowseMode(EditBrowseMode browse_mode)
+{
+    EnableBrowseButton(TRUE);       //将基类的编辑模式改成BrowseMode_Default
+    m_browse_mode = browse_mode;
+}
+
+IconRes& CBrowseEdit::GetIcon()
+{
+    if (m_Mode == BrowseMode_Default)
+    {
+        //if (m_browse_mode == EditBrowseMode::RENAME)
+            return theApp.m_icon_set.edit;
+        //else
+        //    return theApp.
+    }
+    else
+    {
+        return theApp.m_icon_set.select_folder;
+    }
 }
 
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)

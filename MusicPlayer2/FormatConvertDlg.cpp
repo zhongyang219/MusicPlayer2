@@ -273,7 +273,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
     ((CButton*)GetDlgItem(IDC_CHANGE_FREQ_CHECK))->SetCheck(m_convert_freq);
 
     m_out_name_edit.SetWindowText(m_out_name.c_str());
-    m_out_name_edit.EnableBrowseButton(true);
+	m_out_name_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::RENAME);
 
 	if (!m_out_dir.empty() && m_out_dir.back() != L'\\')
 		m_out_dir.push_back(L'\\');
