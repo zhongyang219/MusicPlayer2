@@ -343,14 +343,17 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         });
                     if (find != files.end())
                     {
-                        if (find - files.begin() < i)       // 如果删除的文件在当前文件的前面，则循环变量减1
+                        int index_find = find - files.begin();
+                        if (index_find < i)       // 如果删除的文件在当前文件的前面，则循环变量减1
                             i--;
 
-                        if (files.begin() + index_song < find)              // 移除文件在index_song之前则index_song自减1保持与files的对齐
+                        //if (files.begin() + index_song < find)              // 移除文件在index_song之前则index_song自减1保持与files的对齐
+                        if (index_song < index_find)
                             index_song--;
-                        else if (files.begin() + index_song == find)        // 移除文件就是index_song则让index_song指向此音频所属cue文件
+                        //else if (files.begin() + index_song == find)        // 移除文件就是index_song则让index_song指向此音频所属cue文件
+                        else if (index_song == index_find)
                             index_song = i;
-                        //迭代器被删除后，该迭代器将不能再被使用，因此这里在设置完index_song的值后再删除迭代器
+
                         files.erase(find);                  // 找到cue对应的音频文件则把它删除
                    }
                 }   // 以上部分仅在新FILE标签或音频文件异常时执行以加快循环检查TRACK的速度
