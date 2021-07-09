@@ -82,6 +82,7 @@ protected:
     CBitmap m_preview_light;
 
     CBrowseEdit m_default_background_edit;
+    CBrowseEdit m_album_cover_name_edit;
 
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

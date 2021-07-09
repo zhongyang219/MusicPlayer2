@@ -6,6 +6,7 @@
 #include "MusicPlayer2.h"
 #include "DrawCommon.h"
 #include "TagFromFileNameDlg.h"
+#include "EditStringListDlg.h"
 
 // CBrowseEdit
 
@@ -63,8 +64,21 @@ void CBrowseEdit::OnChangeLayout()
     int btn_width;
     CDrawCommon drawer;
     drawer.Create(m_pDC, this);
-    m_btn_str = (m_Mode != BrowseMode_Default) ? CCommon::LoadText(IDS_BROWSE, _T("...")) : CCommon::LoadText(IDS_EDIT, _T("..."));
-    btn_width = drawer.GetTextExtent(m_btn_str).cx + theApp.DPI(28);
+    if (m_Mode == BrowseMode_Default)
+    {
+        if (m_browse_mode == EditBrowseMode::RENAME)
+            m_btn_str = CCommon::LoadText(IDS_EDIT, _T("..."));
+        else
+            m_btn_str = _T("");
+    }
+    else
+    {
+        m_btn_str = CCommon::LoadText(IDS_BROWSE, _T("..."));
+    }
+    if (m_btn_str.IsEmpty())
+        btn_width = theApp.DPI(24);
+    else
+        btn_width = drawer.GetTextExtent(m_btn_str).cx + theApp.DPI(28);
     m_nBrowseButtonWidth = max(btn_width, m_sizeImage.cx + 8);
 
     SetWindowPos(NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER | SWP_NOMOVE);
@@ -184,7 +198,18 @@ void CBrowseEdit::OnBrowse()
             break;
         case CBrowseEdit::EditBrowseMode::LIST:
         {
+            //列表模式下，将编辑框的文本以逗号分隔后以列表的形式编辑
+            CString strFile;
+            GetWindowText(strFile);
+            vector<wstring> items;
+            CCommon::StringSplit(wstring(strFile), L',', items);
 
+            CEditStringListDlg dlg(items);
+            if (dlg.DoModal() == IDOK)
+            {
+                strFile = CCommon::StringMerge(items, L',').c_str();
+            }
+            SetWindowText(strFile);
         }
             break;
         default:
@@ -207,8 +232,8 @@ void CBrowseEdit::OnAfterUpdate()
 
 void CBrowseEdit::SetEditBrowseMode(EditBrowseMode browse_mode)
 {
-    EnableBrowseButton(TRUE);       //将基类的编辑模式改成BrowseMode_Default
     m_browse_mode = browse_mode;
+    EnableBrowseButton(TRUE);       //将基类的编辑模式改成BrowseMode_Default
 }
 
 IconRes& CBrowseEdit::GetIcon()

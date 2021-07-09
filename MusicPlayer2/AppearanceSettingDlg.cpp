@@ -53,6 +53,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, m_notify_icon_auto_adapt_chk);
     DDX_Control(pDX, IDC_BTN_ROUND_CORNERS_CHECK, m_btn_round_corners_chk);
     DDX_Control(pDX, IDC_DEFAULT_BACKGROUND_PATH_EDIT, m_default_background_edit);
+    DDX_Control(pDX, IDC_DEFAULT_COVER_NAME_EDIT, m_album_cover_name_edit);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -91,7 +92,7 @@ int CAppearanceSettingDlg::SpectrumHeightRChg(int value)
 void CAppearanceSettingDlg::SetControlEnable()
 {
     m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
-    GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT)->EnableWindow(m_data.use_out_image);
+    m_album_cover_name_edit.EnableWindow(m_data.use_out_image);
     m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
     m_album_cover_as_background_chk.EnableWindow(m_data.enable_background);
     m_back_transparency_slid.EnableWindow(m_data.enable_background);
@@ -235,9 +236,10 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.album_cover_fit));
     m_toolTip.AddTool(&m_album_cover_fit_combo, CCommon::LoadText(IDS_COVER_FIT_TIP_INFO));
     m_toolTip.AddTool(&m_use_out_image_chk, CCommon::LoadText(IDS_USE_OUT_IMAGE_TIP_INFO));
-    m_toolTip.AddTool(GetDlgItem(IDC_DEFAULT_COVER_NAME_EDIT), CCommon::LoadText(IDS_DEFAULT_COVER_NAME_TIP_INFO));
+    m_toolTip.AddTool(&m_album_cover_name_edit, CCommon::LoadText(IDS_DEFAULT_COVER_NAME_TIP_INFO));
 
     SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());
+    m_album_cover_name_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::LIST);
 
     m_enable_background_chk.SetCheck(m_data.enable_background);
     m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);

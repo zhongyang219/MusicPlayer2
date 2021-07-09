@@ -342,6 +342,9 @@
     <Filter Include="派生的控件类\SliderCtrlEx">
       <UniqueIdentifier>{d50e6550-db2c-450d-90f7-81e1b4a15f92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\EditStringListDlg">
+      <UniqueIdentifier>{3db917ae-2514-43e2-b7fb-bc610997c8c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -772,6 +775,9 @@
     <ClInclude Include="SliderCtrlEx.h">
       <Filter>派生的控件类\SliderCtrlEx</Filter>
     </ClInclude>
+    <ClInclude Include="EditStringListDlg.h">
+      <Filter>对话框类\EditStringListDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1166,6 +1172,9 @@
     </ClCompile>
     <ClCompile Include="SliderCtrlEx.cpp">
       <Filter>派生的控件类\SliderCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="EditStringListDlg.cpp">
+      <Filter>对话框类\EditStringListDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
