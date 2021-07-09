@@ -12,6 +12,7 @@ public:
 	virtual ~CTagFromFileNameDlg();
 
     void SetDialogTitle(LPCTSTR str_title);
+    void SetInitInsertFormular(const wstring& str_formular);
     wstring GetFormularSelected() const;
 
 // 对话框数据
@@ -40,6 +41,7 @@ protected:
     wstring m_formular_selected;
 
     CString m_dlg_title;
+    wstring m_init_insert_formular;
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -55,4 +57,5 @@ public:
     afx_msg void OnCbnSelchangeCombo1();
     virtual void OnOK();
     afx_msg void OnBnClickedCommentButton();
+    afx_msg void OnBnClickedOriginalButton();
 };

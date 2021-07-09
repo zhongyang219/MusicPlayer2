@@ -11,6 +11,7 @@
 #include "TagLibHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
+#include "PropertyDlgHelper.h"
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
 
@@ -99,6 +100,7 @@ void CFormatConvertDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_PROGRESS_BAR, m_progress_bar);
     DDX_Control(pDX, IDC_FREQ_COMBO, m_freq_comb);
     DDX_Control(pDX, IDC_OUT_DIR_EDIT, m_out_dir_edit);
+    DDX_Control(pDX, IDC_OUT_NAME_EDIT, m_out_name_edit);
 }
 
 void CFormatConvertDlg::LoadConfig()
@@ -114,6 +116,7 @@ void CFormatConvertDlg::LoadConfig()
 	{
 		m_out_dir = CCommon::GetSpecialDir(CSIDL_MYDOCUMENTS);
 	}
+    m_out_name = ini.GetString(L"format_convert", L"out_name_formular", FORMULAR_ORIGINAL);
     m_convert_freq = ini.GetBool(L"format_convert", L"convert_freq", false);
     m_freq_sel = ini.GetString(L"format_convert", L"freq_sel", L"");
 	m_open_output_dir = ini.GetBool(L"format_convert", L"open_output_dir", false);
@@ -128,6 +131,7 @@ void CFormatConvertDlg::SaveConfig() const
 	ini.WriteInt(L"format_convert", L"file_exist_action", m_file_exist_action);
 	ini.WriteBool(L"format_convert", L"add_file_serial_num", m_add_file_serial_num);
 	ini.WriteString(L"format_convert", L"out_dir", m_out_dir);
+    ini.WriteString(L"format_convert", L"out_name_formular", m_out_name);
     ini.WriteBool(L"format_convert", L"convert_freq", m_convert_freq);
     ini.WriteString(L"format_convert", L"freq_sel", m_freq_sel);
 	ini.WriteBool(L"format_convert", L"open_output_dir", m_open_output_dir);
@@ -268,6 +272,9 @@ BOOL CFormatConvertDlg::OnInitDialog()
     m_freq_comb.EnableWindow(m_convert_freq);
     ((CButton*)GetDlgItem(IDC_CHANGE_FREQ_CHECK))->SetCheck(m_convert_freq);
 
+    m_out_name_edit.SetWindowText(m_out_name.c_str());
+    m_out_name_edit.EnableBrowseButton(true);
+
 	if (!m_out_dir.empty() && m_out_dir.back() != L'\\')
 		m_out_dir.push_back(L'\\');
     m_out_dir_edit.SetWindowText(m_out_dir.c_str());
@@ -306,6 +313,7 @@ void CFormatConvertDlg::EnableControls(bool enable)
 	GetDlgItem(IDC_CHANGE_FREQ_CHECK)->EnableWindow(enable);
     m_freq_comb.EnableWindow(enable && m_convert_freq);
 	GetDlgItem(IDC_OUT_DIR_EDIT)->EnableWindow(enable);
+    GetDlgItem(IDC_OUT_NAME_EDIT)->EnableWindow(enable);
 }
 
 void CFormatConvertDlg::SetEncodeConfigBtnState()
@@ -357,35 +365,11 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 	//设置输出文件路径
 	SongInfo& song_info{ pthis->m_file_list[file_index] };
 	const wstring& file_path{ pthis->m_file_list[file_index].file_path };
-	CFilePathHelper c_file_path;
-	if (!song_info.is_cue)
-    {
-        c_file_path.SetFilePath(file_path);		//如果转换的文件不是cue音轨，则输出文件名为源文件名
-    }
-	else
-    {
-        wstring cue_file_name = GetCueDisplayFileName(song_info.title, song_info.artist);		//如果转换的文件是cue音轨，则输出文件名为“艺术家 - 标题”
-        CCommon::FileNameNormalize(cue_file_name);
-        c_file_path.SetFilePath(cue_file_name);
-    }
-	switch (pthis->m_encode_format)
-	{
-	case EncodeFormat::WAV:
-		c_file_path.ReplaceFileExtension(L"wav");
-		break;
-	case EncodeFormat::MP3:
-		c_file_path.ReplaceFileExtension(L"mp3");
-		break;
-	case EncodeFormat::WMA:
-		c_file_path.ReplaceFileExtension(L"wma");
-		break;
-	case EncodeFormat::OGG:
-		c_file_path.ReplaceFileExtension(L"ogg");
-		break;
-	}
 
-	wstring out_file_path{ pthis->m_out_dir };
-	//为目标文件添加序号
+    // 输出文件路径
+    wstring out_file_path{ pthis->m_out_dir };
+
+    // 为目标文件添加序号
 	if (pthis->m_add_file_serial_num)
 	{
 		CString index_str;
@@ -397,7 +381,27 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 			index_str.Format(_T("%3d."), file_index + 1);
 		out_file_path += index_str;
 	}
-	out_file_path += c_file_path.GetFileName();
+
+    // 按照格式字符串生成输出文件名
+    out_file_path += CPropertyDlgHelper::FileNameFromTag(pthis->m_out_name, song_info);
+
+    // 按照输出格式添加后缀
+    switch (pthis->m_encode_format)
+    {
+    case EncodeFormat::WAV:
+        out_file_path += L".wav";
+        break;
+    case EncodeFormat::MP3:
+        out_file_path += L".mp3";
+        break;
+    case EncodeFormat::WMA:
+        out_file_path += L".wma";
+        break;
+    case EncodeFormat::OGG:
+        out_file_path += L".ogg";
+        break;
+    }
+
 	//判断目标文件是否存在
 	if (pthis->m_file_exist_action == 0)		//如果设置了“目标文件存在时自动重命名”，自动在文件名后面添加形如“ (数字)”的编号
 	{
@@ -416,7 +420,8 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 
 	//创建解码通道
 	const int BUFF_SIZE{ 20000 };
-	char buff[BUFF_SIZE];
+    // char buff[BUFF_SIZE];
+    std::unique_ptr<char[]> buff(new char[BUFF_SIZE]);
 	HSTREAM hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_STREAM_DECODE/* | BASS_SAMPLE_FLOAT*/);
 	if (hStream == 0)
 	{
@@ -602,7 +607,8 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
                 BASS_StreamFree(hStreamOld);
             return false;
 		}
-		BASS_ChannelGetData(hStream, buff, BUFF_SIZE);
+        // BASS_ChannelGetData(hStream, buff, BUFF_SIZE);
+        BASS_ChannelGetData(hStream, buff.get(), BUFF_SIZE);
 		//if (m_bass_encode_lib.BASS_Encode_IsActive(hStream) == 0)
 		//{
 		//	m_bass_encode_lib.BASS_Encode_Stop(hEncode);
@@ -1268,9 +1274,18 @@ void CFormatConvertDlg::OnCbnSelchangeFreqCombo()
 
 afx_msg LRESULT CFormatConvertDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
 {
+    CBrowseEdit* pEdit = (CBrowseEdit*)lParam;
     CString str;
-    GetDlgItemText(IDC_OUT_DIR_EDIT, str);
-    m_out_dir = str.GetString();
+    if (pEdit == &m_out_dir_edit)
+    {
+        GetDlgItemText(IDC_OUT_DIR_EDIT, str);
+        m_out_dir = str.GetString();
+    }
+    if (pEdit == &m_out_name_edit)
+    {
+        GetDlgItemText(IDC_OUT_NAME_EDIT, str);
+        m_out_name = str.GetString();
+    }
     return 0;
 }
 
