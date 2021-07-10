@@ -66,19 +66,28 @@ void CBrowseEdit::OnChangeLayout()
     drawer.Create(m_pDC, this);
     if (m_Mode == BrowseMode_Default)
     {
-        if (m_browse_mode == EditBrowseMode::RENAME)
-            m_btn_str = CCommon::LoadText(IDS_EDIT, _T("..."));
-        else
-            m_btn_str = _T("");
+        //if (m_browse_mode == EditBrowseMode::RENAME)
+        m_btn_str = CCommon::LoadText(IDS_EDIT, _T("..."));
+        //else
+        //    m_btn_str = _T("");
     }
     else
     {
         m_btn_str = CCommon::LoadText(IDS_BROWSE, _T("..."));
     }
-    if (m_btn_str.IsEmpty())
+
+    //如果编辑框的宽度小于一定值，则不显示按钮后面的文本
+    CRect rect_client;
+    GetClientRect(rect_client);
+    if (rect_client.Width() < theApp.DPI(120))
+    {
+        m_btn_str = _T("");
         btn_width = theApp.DPI(24);
+    }
     else
+    {
         btn_width = drawer.GetTextExtent(m_btn_str).cx + theApp.DPI(28);
+    }
     m_nBrowseButtonWidth = max(btn_width, m_sizeImage.cx + 8);
 
     SetWindowPos(NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER | SWP_NOMOVE);
