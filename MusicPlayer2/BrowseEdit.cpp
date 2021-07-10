@@ -190,7 +190,7 @@ void CBrowseEdit::OnBrowse()
 
             CTagFromFileNameDlg dlg;
             dlg.SetInitInsertFormular(strFile.GetString());
-            dlg.SetDialogTitle(CCommon::LoadText(IDS_SET_FILENAME_FORM));
+            dlg.SetDialogTitle(m_poopup_dlg_title.IsEmpty() ? CCommon::LoadText(IDS_SET_FILENAME_FORM) : m_poopup_dlg_title);
 
             if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())
             {
@@ -214,6 +214,7 @@ void CBrowseEdit::OnBrowse()
             CCommon::StringSplit(wstring(strFile), L',', items);
 
             CEditStringListDlg dlg(items);
+            dlg.SetTitle(m_poopup_dlg_title);
             if (dlg.DoModal() == IDOK)
             {
                 strFile = CCommon::StringMerge(items, L',').c_str();
@@ -243,6 +244,11 @@ void CBrowseEdit::SetEditBrowseMode(EditBrowseMode browse_mode)
 {
     m_browse_mode = browse_mode;
     EnableBrowseButton(TRUE);       //将基类的编辑模式改成BrowseMode_Default
+}
+
+void CBrowseEdit::SetPopupDlgTitle(const CString& popup_dlg_title)
+{
+    m_poopup_dlg_title = popup_dlg_title;
 }
 
 IconRes& CBrowseEdit::GetIcon()

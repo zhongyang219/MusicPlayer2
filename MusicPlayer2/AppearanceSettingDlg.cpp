@@ -240,6 +240,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());
     m_album_cover_name_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::LIST);
+    m_album_cover_name_edit.SetPopupDlgTitle(CCommon::LoadText(IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME));
 
     m_enable_background_chk.SetCheck(m_data.enable_background);
     m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);

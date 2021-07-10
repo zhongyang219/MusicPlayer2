@@ -670,6 +670,7 @@
 #define IDI_MAXIMIZE                    537
 #define IDS_SET_FILENAME_FORM           537
 #define IDI_MAXIMIZE_D                  538
+#define IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME 538
 #define IDI_RESTORE                     539
 #define IDI_ICON19                      540
 #define IDI_RESTORE_D                   540

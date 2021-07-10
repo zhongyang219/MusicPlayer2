@@ -49,9 +49,10 @@ CString CEditStringListDlg::GetDialogName() const
 void CEditStringListDlg::Edit(int row)
 {
     CString last_row_text = m_list_ctrl.GetItemText(m_list_ctrl.GetItemCount() - 1, 0);
-    if (row < 0 && !last_row_text.IsEmpty())    //如果编辑的行超出了范围，且最后一行不为空，则直接添加一个新行
+    if (row < 0)    //如果编辑的行超出了范围
     {
-        m_list_ctrl.AddString(_T(""));
+        if (!last_row_text.IsEmpty())       //最后一行不为空，则直接添加一个新行
+            m_list_ctrl.AddString(_T(""));
         row = m_list_ctrl.GetItemCount() - 1;
     }
     m_list_ctrl.EnsureVisible(row, FALSE);				//编辑一行时确保该行可见
