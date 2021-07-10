@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_IGNORE_EXIST_CHECK, &CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck)
     ON_CBN_SELCHANGE(IDC_ID3V2_TYPE_COMBO, &CMediaLibSettingDlg::OnCbnSelchangeId3v2TypeCombo)
     ON_BN_CLICKED(IDC_REFRESH_MEDIA_LIB_BUTTON, &CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton)
+    ON_BN_CLICKED(IDC_DISABLE_DELETE_FROM_DISK_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck)
 END_MESSAGE_MAP()
 
 
@@ -83,6 +84,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     //m_show_tree_tool_tips_chk.SetCheck(m_data.show_tree_tool_tips);
     m_update_media_lib_chk.SetCheck(m_data.update_media_lib_when_start_up);
     m_disable_drag_sort_chk.SetCheck(m_data.disable_drag_sort);
+    CheckDlgButton(IDC_DISABLE_DELETE_FROM_DISK_CHECK, m_data.disable_delete_from_disk);
 
     for (const auto& str : m_data.media_folders)
         m_dir_list_ctrl.AddString(str.c_str());
@@ -339,4 +341,11 @@ void CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton()
     {
         theApp.StartUpdateMediaLib(true);
     }
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.disable_delete_from_disk = (IsDlgButtonChecked(IDC_DISABLE_DELETE_FROM_DISK_CHECK) != 0);
 }

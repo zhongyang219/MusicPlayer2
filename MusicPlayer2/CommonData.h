@@ -318,6 +318,7 @@ struct MediaLibSettingData
 {
     vector<wstring> media_folders;      //媒体库文件夹浏览中显示的文件夹
     bool hide_only_one_classification;  //媒体库中将只有一项的分类归到其他类中
+    bool disable_delete_from_disk;      //禁用从磁盘删除
     bool show_tree_tool_tips;           //树控件显示鼠标提示
     bool update_media_lib_when_start_up;    //启动时自动更新媒体库
     bool disable_drag_sort;				//禁止通过拖放排序

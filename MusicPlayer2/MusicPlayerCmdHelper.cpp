@@ -199,6 +199,9 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
 
 bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& files)
 {
+    if (theApp.m_media_lib_setting_data.disable_delete_from_disk)
+        return false;
+
     CString info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { files.size() });
     if (GetOwner()->MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
         return false;
