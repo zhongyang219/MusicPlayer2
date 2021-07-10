@@ -66,6 +66,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_CBN_SELCHANGE(IDC_ID3V2_TYPE_COMBO, &CMediaLibSettingDlg::OnCbnSelchangeId3v2TypeCombo)
     ON_BN_CLICKED(IDC_REFRESH_MEDIA_LIB_BUTTON, &CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton)
     ON_BN_CLICKED(IDC_DISABLE_DELETE_FROM_DISK_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck)
+    ON_BN_CLICKED(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, &CMediaLibSettingDlg::OnBnClickedShowPlaylistTooltipCheck)
 END_MESSAGE_MAP()
 
 
@@ -110,6 +111,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_recent_played_range_combo.SetCurSel(static_cast<int>(m_data.recent_played_range));
 
     m_ignore_exist_chk.SetCheck(m_data.ignore_songs_already_in_playlist);
+    CheckDlgButton(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, m_data.show_playlist_tooltip);
 
     CheckDlgButton(IDC_ARTIST_CHECK, m_data.display_item & MLDI_ARTIST);
     CheckDlgButton(IDC_ALBUM_CHECK, m_data.display_item & MLDI_ALBUM);
@@ -348,4 +350,11 @@ void CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.disable_delete_from_disk = (IsDlgButtonChecked(IDC_DISABLE_DELETE_FROM_DISK_CHECK) != 0);
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedShowPlaylistTooltipCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.show_playlist_tooltip = (IsDlgButtonChecked(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK) != 0);
 }

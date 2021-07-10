@@ -444,6 +444,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"update_media_lib_when_start_up", theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
     ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
     ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
+    ini.WriteBool(L"media_lib", L"show_playlist_tooltip", theApp.m_media_lib_setting_data.show_playlist_tooltip);
     ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
     ini.WriteBool(L"media_lib", L"write_id3_v2_3", theApp.m_media_lib_setting_data.write_id3_v2_3);
@@ -607,6 +608,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.update_media_lib_when_start_up = ini.GetBool(L"media_lib", L"update_media_lib_when_start_up", true);
     theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
     theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
+    theApp.m_media_lib_setting_data.show_playlist_tooltip = ini.GetBool(L"media_lib", L"show_playlist_tooltip", true);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
     theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
     theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);
@@ -1050,6 +1052,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background
                                      || theApp.m_app_setting_data.use_desktop_background != optionDlg.m_tab2_dlg.m_data.use_desktop_background };
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
+    bool show_playlist_tooltip_changed{ theApp.m_media_lib_setting_data.show_playlist_tooltip != optionDlg.m_media_lib_dlg.m_data.show_playlist_tooltip };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1149,6 +1152,15 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     if (optionDlg.m_tab3_dlg.IsAutoRunModified())
         theApp.SetAutoRun(optionDlg.m_tab3_dlg.m_auto_run);
+
+    if (show_playlist_tooltip_changed)
+    {
+        m_playlist_list.EnableTip(theApp.m_media_lib_setting_data.show_playlist_tooltip);
+        if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
+            m_pFloatPlaylistDlg->GetListCtrl().EnableTip(theApp.m_media_lib_setting_data.show_playlist_tooltip);
+        if (m_miniModeDlg.GetSafeHwnd() != NULL)
+            m_miniModeDlg.GetPlaylistCtrl().EnableTip(theApp.m_media_lib_setting_data.show_playlist_tooltip);
+    }
 
     SaveConfig();       //将设置写入到ini文件
     theApp.SaveConfig();

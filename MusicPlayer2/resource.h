@@ -1033,6 +1033,7 @@
 #define IDC_PREVIEW_STATIC              1173
 #define IDC_CHECK7                      1174
 #define IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK 1174
+#define IDC_SHOW_PLAYLIST_TOOLTIP_CHECK 1174
 #define IDC_CHECK8                      1175
 #define IDC_BTN_ROUND_CORNERS_CHECK     1175
 #define IDC_UI_STATIC                   1176
