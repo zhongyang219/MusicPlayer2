@@ -53,7 +53,7 @@ bool CUpdateHelper::CheckForUpdate()
     //使用Gitee更新源
     else
     {
-        if (!CInternetCommon::GetURL(L"https://gitee.com/zhongyang219/MusicPlayer2/raw/master/version_utf8.info", version_info))     //获取版本信息
+        if (!CInternetCommon::GetURL(L"https://gitee.com/zhongyang219/MusicPlayer2/raw/master/version.info", version_info))     //获取版本信息
             return false;
     }
 
