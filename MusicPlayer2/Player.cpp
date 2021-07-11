@@ -217,9 +217,13 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
-	CAudioCommon::GetCueTracks(m_playlist, m_pCore, m_index_tmp);
 	//m_song_num = m_playlist.size();
 	m_index = m_index_tmp;
+    CAudioCommon::GetCueTracks(m_playlist, m_pCore, m_index_tmp);
+	// 如果是播放列表模式则m_index_tmp可能在cue解析后变化，需更新(文件夹模式下m_index_tmp会得到错误结果)
+	if (m_playlist_mode)
+		m_index = m_index_tmp;
+
 	if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 	//统计列表总时长
 	m_total_time = 0;
