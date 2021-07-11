@@ -577,6 +577,12 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
     theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(L"general", L"midi_use_inner_lyric", 0);
     theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
+    bool is_chinese_language{};     //当前语言是否为简体中文
+    if (theApp.m_general_setting_data.language == Language::FOLLOWING_SYSTEM)
+        is_chinese_language = CCommon::LoadText(IDS_LANGUAGE_CODE) == _T("2");
+    else
+        is_chinese_language = (theApp.m_general_setting_data.language == Language::SIMPLIFIED_CHINESE);
+    theApp.m_general_setting_data.update_source = ini.GetInt(L"general", L"update_source", is_chinese_language ? 1 : 0);   //如果当前语言为简体，则默认更新源为Gitee，否则为GitHub
 
     theApp.m_play_setting_data.stop_when_error = ini.GetBool(L"config", L"stop_when_error", true);
     theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(L"config", L"auto_play_when_start", false);

@@ -52,4 +52,6 @@ protected:
     afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnBnClickedAutoRunCheck();
+    afx_msg void OnBnClickedGithubRadio();
+    afx_msg void OnBnClickedGiteeRadio();
 };

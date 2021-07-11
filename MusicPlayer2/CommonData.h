@@ -273,6 +273,7 @@ struct GeneralSettingData
     bool auto_download_only_tag_full{ true };	//仅在歌曲信息完整时自动下载
     bool save_lyric_to_song_folder{ true };     //将歌词文件保存在歌曲文件夹
     bool check_update_when_start{ true };		//是否在程序启动时检查更新
+    int update_source{};                        //更新源。0: GitHub; 1: Gitee
     wstring sf2_path;							//MIDI音色库路径
     bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
     bool minimize_to_notify_icon{ false };		//是否最小到通知区图标

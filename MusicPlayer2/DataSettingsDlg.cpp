@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "DataSettingsDlg.h"
 #include "afxdialogex.h"
+#include "UpdateHelper.h"
 
 
 // CDataSettingsDlg 对话框
@@ -45,6 +46,8 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
 	ON_EN_CHANGE(IDC_SF2_PATH_EDIT, &CDataSettingsDlg::OnEnChangeSf2PathEdit)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CDataSettingsDlg::OnEditBrowseChanged)
     ON_BN_CLICKED(IDC_AUTO_RUN_CHECK, &CDataSettingsDlg::OnBnClickedAutoRunCheck)
+    ON_BN_CLICKED(IDC_GITHUB_RADIO, &CDataSettingsDlg::OnBnClickedGithubRadio)
+    ON_BN_CLICKED(IDC_GITEE_RADIO, &CDataSettingsDlg::OnBnClickedGiteeRadio)
 END_MESSAGE_MAP()
 
 
@@ -65,6 +68,10 @@ BOOL CDataSettingsDlg::OnInitDialog()
 
     m_auto_run = theApp.GetAutoRun();
     CheckDlgButton(IDC_AUTO_RUN_CHECK, m_auto_run);
+    if (m_data.update_source == static_cast<int>(CUpdateHelper::UpdateSource::GitHubSource))
+        CheckDlgButton(IDC_GITHUB_RADIO, TRUE);
+    else
+        CheckDlgButton(IDC_GITEE_RADIO, TRUE);
 
 	//((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->SetCheck(m_data.id3v2_first);
 	((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_album_cover);
@@ -232,4 +239,18 @@ void CDataSettingsDlg::OnBnClickedAutoRunCheck()
     // TODO: 在此添加控件通知处理程序代码
     m_auto_run = (IsDlgButtonChecked(IDC_AUTO_RUN_CHECK) != 0);
     m_auto_run_modified = true;
+}
+
+
+void CDataSettingsDlg::OnBnClickedGithubRadio()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.update_source = static_cast<int>(CUpdateHelper::UpdateSource::GitHubSource);
+}
+
+
+void CDataSettingsDlg::OnBnClickedGiteeRadio()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.update_source = static_cast<int>(CUpdateHelper::UpdateSource::GiteeSource);
 }

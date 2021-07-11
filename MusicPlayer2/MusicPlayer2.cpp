@@ -335,6 +335,7 @@ void CMusicPlayerApp::CheckUpdate(bool message)
     wstring contents_zh_cn;	//更新内容（简体中文）
     wstring contents_en;	//更新内容（English）
     CUpdateHelper update_helper;
+    update_helper.SetUpdateSource(static_cast<CUpdateHelper::UpdateSource>(m_general_setting_data.update_source));
     if (!update_helper.CheckForUpdate())
     {
         if (message)
