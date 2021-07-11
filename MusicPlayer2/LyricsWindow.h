@@ -6,7 +6,7 @@
 // 作者:邓学彬(泪闯天涯)
 // ========================================================
 // 接口说明
-// Create				创建歌词窗口 
+// Create				创建歌词窗口
 // UpdateLyrics			更新歌词(歌词文本,高亮进度百分比)
 // Draw					重画歌词窗口
 // SetLyricsColor		设置歌词颜色
@@ -26,6 +26,7 @@
 
 #include <gdiplus.h>
 #pragma comment(lib,"GdiPlus.lib")
+#include "DrawCommon.h"
 
 //歌词渐变模式
 enum LyricsGradientMode
@@ -44,8 +45,9 @@ class CLyricsWindow : public CWnd
 public:
 	CLyricsWindow();
 	virtual ~CLyricsWindow();
+
 public:
-	//创建窗口 
+	//创建窗口
 	BOOL Create(int nHeight = -1);
 	BOOL Create(LPCTSTR lpszClassName);
 	BOOL Create(LPCTSTR lpszClassName,int nWidth,int nHeight);
@@ -81,6 +83,8 @@ public:
     //获取当前歌词文本
     const CString& GetLyricStr() const;
     void SetLyricChangeFlag(bool bFlag);
+	//设置对齐方式
+	void SetAlignment(Alignment alignment);
 private:
 	//绘制高亮歌词
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
@@ -115,7 +119,7 @@ private:
 	Gdiplus::Color m_HighlightColor2;//高亮歌词颜色,ARGB颜色
 	LyricsGradientMode m_HighlightGradientMode;//高亮歌词渐变模式
 	Gdiplus::Pen*m_pHighlightPen;//高亮歌词边框画笔
-	Gdiplus::Brush* m_pShadowBrush;//阴影画刷,GDIPlus画刷 
+	Gdiplus::Brush* m_pShadowBrush;//阴影画刷,GDIPlus画刷
 	int m_nShadowOffset;//阴影偏移
 	Gdiplus::Font* m_pFont;//GDIPlus字体
 	int m_FontStyle;
@@ -133,10 +137,9 @@ protected:
     CSize m_frameSize{};
     CRect m_rcWindow;
     int m_toobar_height = 0;
+	Alignment m_alignment{ Alignment::CENTER };	//对齐方式
 
 protected:
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 
 };
-
-

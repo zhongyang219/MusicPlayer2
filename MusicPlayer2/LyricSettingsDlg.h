@@ -66,6 +66,7 @@ protected:
     CMyComboBox m_alignment_combo;
     CButton m_show_unlock_when_locked_chk;
     CButton m_show_default_album_icon_chk;
+    CMyComboBox m_desktop_lyric_alignment_combo;
 
     CSpinEdit m_lyric_line_space_edit;
     CMyComboBox m_lyric_alignment_combo;
@@ -136,4 +137,5 @@ public:
     afx_msg void OnBnClickedSearchBoxTransparentInWhiteMode();
     afx_msg void OnBnClickedSetFontButton();
     afx_msg void OnCbnSelchangeAlignmentCombo2();
+    afx_msg void OnCbnSelchangeDesktopLyricAlignmentCombo();
 };

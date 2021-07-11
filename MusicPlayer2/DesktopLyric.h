@@ -125,4 +125,3 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnInitMenu(CMenu* pMenu);
 };
-

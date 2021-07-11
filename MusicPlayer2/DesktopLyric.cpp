@@ -100,6 +100,7 @@ void CDesktopLyric::ShowLyric()
 
         SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         SetShowTranslate(theApp.m_ui_data.show_translate);
+        SetAlignment(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align);
         if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
             CLyrics::Lyric next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1);
