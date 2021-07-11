@@ -226,6 +226,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_desktop_lyric_opacity_sld.SetMouseWheelEnable(false);
     m_lyric_alignment_combo.SetMouseWheelEnable(false);
     m_lyric_line_space_edit.SetMouseWheelEnable(false);
+    m_desktop_lyric_alignment_combo.SetMouseWheelEnable(false);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
