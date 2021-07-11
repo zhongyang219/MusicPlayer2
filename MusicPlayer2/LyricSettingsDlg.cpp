@@ -208,8 +208,8 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
     m_cortana_color_combo.AddString(CCommon::LoadText(IDS_FOLLOWING_SYSTEM));
-    m_cortana_color_combo.AddString(CCommon::LoadText(IDS_BLACK));
-    m_cortana_color_combo.AddString(CCommon::LoadText(IDS_WHITE));
+    m_cortana_color_combo.AddString(CCommon::LoadText(IDS_DARK));
+    m_cortana_color_combo.AddString(CCommon::LoadText(IDS_LIGHT));
     m_cortana_color_combo.SetCurSel(m_data.cortana_color);
 
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));

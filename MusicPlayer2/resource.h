@@ -672,8 +672,10 @@
 #define IDI_MAXIMIZE_D                  538
 #define IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME 538
 #define IDI_RESTORE                     539
+#define IDS_DARK                        539
 #define IDI_ICON19                      540
 #define IDI_RESTORE_D                   540
+#define IDS_LIGHT                       540
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1048,7 +1050,6 @@
 #define IDC_USE_DESKTOP_BACKGROUND_CHECK 1184
 #define IDC_ID3V2_TYPE_COMBO            1185
 #define IDC_GITHUB_RADIO                1186
-#define IDC_GITHUB_RADIO2               1187
 #define IDC_GITEE_RADIO                 1187
 #define ID_32771                        32771
 #define ID_32772                        32772
@@ -1474,7 +1475,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        541
+#define _APS_NEXT_RESOURCE_VALUE        540
 #define _APS_NEXT_COMMAND_VALUE         33343
 #define _APS_NEXT_CONTROL_VALUE         1187
 #define _APS_NEXT_SYMED_VALUE           101
