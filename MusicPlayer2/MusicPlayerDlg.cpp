@@ -5604,13 +5604,23 @@ void CMusicPlayerDlg::OnRename()
 void CMusicPlayerDlg::OnEmbedLyricToAudioFile()
 {
     // TODO: 在此添加命令处理程序代码
-    wstring lyric_contents = CPlayer::GetInstance().m_Lyrics.GetLyricsString2();
-    if (!lyric_contents.empty())
+    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
+    bool lyric_write_enable = (lyric_write_support && !CPlayer::GetInstance().m_Lyrics.IsEmpty() && !CPlayer::GetInstance().IsInnerLyric());
+    if (lyric_write_enable)
     {
-        CPlayer::ReOpen reopen(true);
-        CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
-        audio_tag.WriteAudioLyric(lyric_contents);
-        //CPlayer::GetInstance().IniLyrics();
+        wstring lyric_contents = CPlayer::GetInstance().m_Lyrics.GetLyricsString2();
+        bool failed{ false };
+        if (!lyric_contents.empty())
+        {
+            CPlayer::ReOpen reopen(true);
+            CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
+            failed = !audio_tag.WriteAudioLyric(lyric_contents);
+            //CPlayer::GetInstance().IniLyrics();
+        }
+        if (failed)
+        {
+            MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+        }
     }
 }
 
@@ -5618,10 +5628,20 @@ void CMusicPlayerDlg::OnEmbedLyricToAudioFile()
 void CMusicPlayerDlg::OnDeleteLyricFromAudioFile()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::ReOpen reopen(true);
-    CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
-    audio_tag.WriteAudioLyric(wstring());
-    //CPlayer::GetInstance().IniLyrics();
+    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
+    bool lyric_delete_enable = (lyric_write_support && !CPlayer::GetInstance().m_Lyrics.IsEmpty());
+    bool failed{ false };
+    if (lyric_delete_enable)
+    {
+        CPlayer::ReOpen reopen(true);
+        CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
+        failed = !audio_tag.WriteAudioLyric(wstring());
+        //CPlayer::GetInstance().IniLyrics();
+    }
+    if (failed)
+    {
+        MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+    }
 }
 
 
