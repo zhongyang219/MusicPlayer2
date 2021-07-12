@@ -356,6 +356,88 @@ int CLyrics::GetLyricIndex(Time time) const
     return m_lyrics.size() - 1;
 }
 
+CLyrics::Lyric CLyrics::GetLyricIgnoreSpace(Time time, int offset) const
+{
+    int index{ GetLyricIndex(time) };
+
+    // 对齐到非空白歌词
+    if (index >= 0)
+    {
+        for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
+        {
+            if (!m_lyrics[i].text.empty())
+            {
+                index = i;
+                    break;
+            }
+        }
+    }
+    // 应用偏移量
+    if (offset > 0)
+    {
+        int j{};
+        while (j++ < offset)    // offset>0 时循环 offset 次
+        {
+            if (++index >= static_cast<int>(m_lyrics.size()))
+            {
+                break;
+            }
+            for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
+            {
+                if (!m_lyrics[i].text.empty())
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+    }
+    if (offset < 0)
+    {
+        int j{};
+        while (j-- > offset)    // offset < 0 时循环 -offset 次
+        {
+            if (--index < 0)
+            {
+                break;
+            }
+            for (int i{ index }; i >= 0; --i)
+            {
+                if (!m_lyrics[i].text.empty())
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (index < -1 || index >= static_cast<int>(m_lyrics.size()))
+    {
+        return Lyric{};
+    }
+    else if (index == -1)
+    {
+        Lyric ti{};
+        ti.text = m_ti;
+        return ti;		//时间在第一个时间标签前面，返回ti标签的值
+    }
+    else
+    {
+        return m_lyrics[index];
+    }
+}
+
+int CLyrics::GetLyricIndexIgnoreSpace(Time time) const
+{
+    for (int index{ GetLyricIndex(time) }; index < static_cast<int>(m_lyrics.size()); ++index)
+    {
+        if (!m_lyrics[index].text.empty())
+            return index;
+    }
+    return m_lyrics.size() - 1;
+}
+
 CodeType CLyrics::GetCodeType() const
 {
     return m_code_type;

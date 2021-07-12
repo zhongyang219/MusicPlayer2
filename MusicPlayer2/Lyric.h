@@ -83,6 +83,11 @@ public:
     // 根据时间返回该时间对应的歌词序号（用于判断歌词是否有变化）
     int GetLyricIndex(Time time) const;
 
+    // 根据时间返回一句歌词。第2个参数如果是0，则返回当前时间对应的歌词，如果是-1则返回当前时间的前一句歌词，1则返回后一句歌词，以此类推。
+    Lyric GetLyricIgnoreSpace(Time time, int offset) const;
+    // 根据时间返回该时间对应的歌词序号（用于判断歌词是否有变化）
+    int GetLyricIndexIgnoreSpace(Time time) const;
+
     // 获得歌词文本的编码类型
     CodeType GetCodeType() const;
     // 获取歌词文件的路径+文件名
