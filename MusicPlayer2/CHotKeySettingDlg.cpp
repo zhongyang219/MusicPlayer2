@@ -104,6 +104,7 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 	m_key_list.InsertItem(6, CCommon::LoadText(IDS_VOLUME_UP));
 	m_key_list.InsertItem(7, CCommon::LoadText(IDS_VOLUME_DOWN));
 	m_key_list.InsertItem(8, CCommon::LoadText(IDS_EXIT));
+	m_key_list.InsertItem(9, CCommon::LoadText(IDS_SHOW_HIDE_PLAYER));
 
 	ShowKeyList();
 

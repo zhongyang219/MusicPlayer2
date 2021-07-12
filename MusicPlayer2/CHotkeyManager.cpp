@@ -83,6 +83,9 @@ void CHotkeyManager::LoadFromIni(const CIniHelper & ini)
 
 	hot_key.FromString(ini.GetString(L"hot_key", L"exit", L""));
 	SetHotKey(HK_EXIT, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"show_hide_player", L""));
+	SetHotKey(HK_SHOW_HIDE_PLAYER, hot_key);
 }
 
 void CHotkeyManager::SaveToTni(CIniHelper & ini)
@@ -114,4 +117,7 @@ void CHotkeyManager::SaveToTni(CIniHelper & ini)
 
 	str = GetHotKey(HK_EXIT).ToString();
 	ini.WriteString(L"hot_key", L"exit", str);
+
+    str = GetHotKey(HK_SHOW_HIDE_PLAYER).ToString();
+    ini.WriteString(L"hot_key", L"show_hide_player", str);
 }

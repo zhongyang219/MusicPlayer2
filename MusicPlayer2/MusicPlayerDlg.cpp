@@ -3053,6 +3053,13 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
         break;
     case HK_EXIT:
         OnMenuExit();
+    case HK_SHOW_HIDE_PLAYER:
+    {
+        if (IsWindowVisible())
+            ShowWindow(SW_HIDE);
+        else
+            ShowWindow(SW_SHOW);
+    }
         break;
     }
 

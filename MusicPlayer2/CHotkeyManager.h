@@ -13,6 +13,7 @@ enum eHotKeyId
 	HK_VOLUME_UP,
 	HK_VOLUME_DOWN,
 	HK_EXIT,
+    HK_SHOW_HIDE_PLAYER,
 	HK_MAX
 };
 
@@ -37,4 +38,3 @@ public:
 private:
 	HotKeyMap m_hotkey_group;
 };
-
