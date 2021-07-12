@@ -85,6 +85,8 @@ public:
     void SetLyricChangeFlag(bool bFlag);
 	//设置对齐方式
 	void SetAlignment(Alignment alignment);
+    //设置歌词卡拉OK样式显示
+    void SetLyricKaraokeDisplay(bool karaoke_disp);
 private:
 	//绘制高亮歌词
 	void DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect);
@@ -138,6 +140,7 @@ protected:
     CRect m_rcWindow;
     int m_toobar_height = 0;
 	Alignment m_alignment{ Alignment::CENTER };	//对齐方式
+    bool m_lyric_karaoke_disp = true;   //歌词卡拉OK样式显示
 
 protected:
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

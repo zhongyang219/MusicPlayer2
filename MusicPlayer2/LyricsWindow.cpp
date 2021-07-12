@@ -341,7 +341,7 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
         }
 	}
 
-	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true);
+	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, m_lyric_karaoke_disp);
 	if (bDrawTranslate)
 		DrawLyricText(pGraphics, m_strTranslate, transRect, false, true);
 }
@@ -557,6 +557,11 @@ void CLyricsWindow::SetLyricChangeFlag(bool bFlag)
 void CLyricsWindow::SetAlignment(Alignment alignment)
 {
 	m_alignment = alignment;
+}
+
+void CLyricsWindow::SetLyricKaraokeDisplay(bool karaoke_disp)
+{
+    m_lyric_karaoke_disp = karaoke_disp;
 }
 
 void CLyricsWindow::OnLButtonDown(UINT nFlags, CPoint point)
