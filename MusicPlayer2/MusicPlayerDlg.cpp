@@ -3056,9 +3056,17 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
     case HK_SHOW_HIDE_PLAYER:
     {
         if (IsWindowVisible())
+        {
             ShowWindow(SW_HIDE);
+        }
         else
-            ShowWindow(SW_SHOW);
+        {
+            if (IsIconic())
+                ShowWindow(SW_RESTORE);
+            else
+                ShowWindow(SW_SHOW);
+            SetForegroundWindow();
+        }
     }
         break;
     }
