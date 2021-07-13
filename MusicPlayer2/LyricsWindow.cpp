@@ -297,6 +297,7 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	Gdiplus::RectF layoutRect(0,0,0,0);
 	Gdiplus::RectF boundingBox;
 	pGraphics->MeasureString (m_lpszLyrics, -1, m_pFont,layoutRect, m_pTextFormat,&boundingBox, 0, 0);
+    boundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
 	//计算歌词画出的位置
 	Gdiplus::RectF dstRect;		//文字的矩形
 	Gdiplus::RectF transRect;	//翻译文本的矩形
@@ -320,7 +321,8 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	{
 		Gdiplus::RectF transBoundingBox;
 		pGraphics->MeasureString(m_strTranslate, -1, m_pFont, layoutRect, m_pTextFormat, &transBoundingBox, 0, 0);
-		Gdiplus::REAL translateHeight = transBoundingBox.Height * TRANSLATE_FONT_SIZE_FACTOR;
+        transBoundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
+        Gdiplus::REAL translateHeight = transBoundingBox.Height * TRANSLATE_FONT_SIZE_FACTOR;
 		Gdiplus::REAL translateWidth = transBoundingBox.Width * TRANSLATE_FONT_SIZE_FACTOR;
 		Gdiplus::REAL gapHeight = boundingBox.Height * 0.2f;	//歌词和翻译之间的间隙
 		Gdiplus::REAL height = boundingBox.Height + gapHeight + translateHeight;
