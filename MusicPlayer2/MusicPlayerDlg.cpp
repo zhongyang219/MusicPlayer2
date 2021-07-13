@@ -366,6 +366,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"desktop_lyric", L"opacity", theApp.m_lyric_setting_data.desktop_lyric_data.opacity);
     ini.WriteBool(L"desktop_lyric", L"show_unlock_when_locked", theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked);
     ini.WriteInt(L"desktop_lyric", L"lyric_align", static_cast<int>(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align));
+    ini.WriteBool(L"desktop_lyric", L"display_void_line", theApp.m_lyric_setting_data.desktop_lyric_data.display_void_line);
     ini.WriteInt(L"desktop_lyric", L"position_x", m_desktop_lyric_pos.x);
     ini.WriteInt(L"desktop_lyric", L"position_y", m_desktop_lyric_pos.y);
     ini.WriteInt(L"desktop_lyric", L"width", m_desktop_lyric_size.cx);
@@ -523,6 +524,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.desktop_lyric_data.opacity = ini.GetInt(L"desktop_lyric", L"opacity", 100);
     theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked = ini.GetBool(L"desktop_lyric", L"show_unlock_when_locked", true);
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align = static_cast<Alignment>(ini.GetInt(L"desktop_lyric", L"lyric_align", static_cast<int>(Alignment::CENTER)));
+    theApp.m_lyric_setting_data.desktop_lyric_data.display_void_line = ini.GetBool(L"desktop_lyric", L"display_void_line", true);
     m_desktop_lyric_pos.x = ini.GetInt(L"desktop_lyric", L"position_x", -1);
     m_desktop_lyric_pos.y = ini.GetInt(L"desktop_lyric", L"position_y", -1);
     m_desktop_lyric_size.cx = ini.GetInt(L"desktop_lyric", L"width", 0);

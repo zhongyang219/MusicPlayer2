@@ -356,7 +356,7 @@ int CLyrics::GetLyricIndex(Time time) const
     return m_lyrics.size() - 1;
 }
 
-CLyrics::Lyric CLyrics::GetLyricIgnoreSpace(Time time, int offset) const
+CLyrics::Lyric CLyrics::GetLyricIgnoreVoid(Time time, int offset) const
 {
     int index{ GetLyricIndex(time) };
 
@@ -428,7 +428,7 @@ CLyrics::Lyric CLyrics::GetLyricIgnoreSpace(Time time, int offset) const
     }
 }
 
-int CLyrics::GetLyricIndexIgnoreSpace(Time time) const
+int CLyrics::GetLyricIndexIgnoreVoid(Time time) const
 {
     for (int index{ GetLyricIndex(time) }; index < static_cast<int>(m_lyrics.size()); ++index)
     {
