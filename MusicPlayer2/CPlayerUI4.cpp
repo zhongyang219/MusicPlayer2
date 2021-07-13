@@ -90,7 +90,7 @@ void CPlayerUI4::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
             str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetFileName();
         else
             str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
-        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.ui4_title.GetFont(theApp.m_ui_data.full_screen));
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.font12.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_title;
         m_draw.DrawScrollText(rect_title, str_title.c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title, reset);
         m_draw.SetFont(pOldFont);

@@ -156,12 +156,12 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         rc_tmp.MoveToXY(EdgeMargin(true), info_rect.bottom - bottom_height);
         rc_tmp.right = info_rect.right - EdgeMargin(true);
         rc_tmp.bottom = rc_tmp.top + text_height2;
-        m_draw.SetFont(&theApp.m_font_set.title.GetFont(theApp.m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.font10.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_title;
         m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_title, reset);
 
         rc_tmp.MoveToY(rc_tmp.bottom);
-        m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.font9.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_artist;
         m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_artist, reset);
 
@@ -282,12 +282,12 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         rc_tmp.MoveToXY(cover_side + EdgeMargin(true) + Margin(), rc_tmp.bottom + DPI(4));
         rc_tmp.right = info_rect.right - EdgeMargin(true) - top_right_icon_size;
         rc_tmp.bottom = rc_tmp.top + text_height2;
-        m_draw.SetFont(&theApp.m_font_set.title.GetFont(theApp.m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.font10.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_title;
         m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetTitle().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_title, reset);
 
         rc_tmp.MoveToY(rc_tmp.bottom);
-        m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.font9.GetFont(theApp.m_ui_data.full_screen));
         static CDrawCommon::ScrollInfo scroll_info_artist;
         m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), m_colors.color_text, GetScrollTextPixel(true), true, scroll_info_artist, reset);
 

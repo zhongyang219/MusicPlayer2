@@ -121,10 +121,10 @@ public:
 
 struct FontSet
 {
-    UIFont normal;				//普通的字体
-    UIFont time;				//显示播放时间
-    UIFont title;				//界面2的歌曲标题
-    UIFont ui4_title;           //界面4的歌曲标题
+    UIFont font9;				//普通的字体
+    UIFont font8;				//显示播放时间
+    UIFont font10;				//界面2的歌曲标题
+    UIFont font12;           //界面4的歌曲标题
 
     UIFont lyric;				//歌词字体
     UIFont lyric_translate;		//歌词翻译的字体
@@ -134,10 +134,10 @@ struct FontSet
 
     void Init()
     {
-        normal.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
-        time.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
-        title.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
-        ui4_title.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font9.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font8.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font10.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font12.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
     }
 };
 

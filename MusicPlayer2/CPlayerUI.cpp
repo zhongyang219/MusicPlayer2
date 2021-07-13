@@ -30,7 +30,7 @@ void CPlayerUI::_DrawInfo(CRect draw_rect, bool reset)
     int top_right_icon_size = DrawTopRightIcons();
 
     //显示歌曲信息
-    m_draw.SetFont(&theApp.m_font_set.normal.GetFont(m_ui_data.full_screen));
+    m_draw.SetFont(&theApp.m_font_set.font9.GetFont(m_ui_data.full_screen));
     //m_draw.SetBackColor(color_back);
     CRect tmp{ text_start, CSize{1, text_height} };
     tmp.right = draw_rect.right - EdgeMargin(true) - top_right_icon_size;
@@ -207,7 +207,7 @@ void CPlayerUI::DrawLyricsArea(CRect lyric_rect)
     tmp = lyric_rect;
     tmp.left += (Margin() + EdgeMargin(true));
     tmp.bottom = tmp.top + DPI(28);
-    m_draw.SetFont(&theApp.m_font_set.normal.GetFont(m_ui_data.full_screen));
+    m_draw.SetFont(&theApp.m_font_set.font9.GetFont(m_ui_data.full_screen));
     m_draw.DrawWindowText(tmp, CCommon::LoadText(IDS_LYRIC_SHOW, _T(": ")), m_colors.color_text);
     //显示翻译按钮
     CRect translate_rect{ tmp };
