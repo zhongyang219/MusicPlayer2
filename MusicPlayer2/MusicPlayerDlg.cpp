@@ -1238,7 +1238,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     bool can_delete = false;     //选中的曲目是否全是cue音轨或osu音乐，如果是，则不允许“从磁盘删除”、“移动文件到”、“重命名”命令
     bool can_copy = false;       //选中的曲目是否全是cue音轨，如果是，则不允许“复制文件到”命令
     int rating{};
-    bool rating_enable = false;     //分级是否可用
+    //bool rating_enable = false;     //分级是否可用
     bool single_selected = selete_valid && m_items_selected.size() < 2;     //只选中了一个
     wstring rating_file_path;
     if (IsMainWindowPopupMenu())
@@ -1252,7 +1252,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     if (IsMainWindowPopupMenu() || single_selected)
     {
         SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(rating_file_path);
-        if (song_info.rating > 5)      //分级大于5，说明没有获取过分级，在这里重新获取
+        if (song_info.rating > 5 && CAudioTag::IsFileRatingSupport(CFilePathHelper(rating_file_path).GetFileExtension()))      //分级大于5，说明没有获取过分级，在这里重新获取
         {
             CAudioTag audio_tag(song_info);
             audio_tag.GetAudioRating();
@@ -1261,12 +1261,12 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
         }
         rating = song_info.rating;
 
-        rating_enable = CAudioTag::IsFileRatingSupport(CFilePathHelper(rating_file_path).GetFileExtension());
+        //rating_enable = CAudioTag::IsFileRatingSupport(CFilePathHelper(rating_file_path).GetFileExtension());
     }
-    else if (selete_valid)      //多选的情况下，分级命令始终可用
-    {
-        rating_enable = true;
-    }
+    //else if (selete_valid)      //多选的情况下，分级命令始终可用
+    //{
+    //    rating_enable = true;
+    //}
 
     for (auto index : m_items_selected)
     {
@@ -1305,12 +1305,12 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
         pMenu->CheckMenuRadioItem(ID_RATING_1, ID_RATING_NONE, ID_RATING_NONE, MF_BYCOMMAND | MF_CHECKED);
 
     //设置分级菜单的启用/禁用状态
-    pMenu->EnableMenuItem(ID_RATING_1, MF_BYCOMMAND | (rating_enable ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_2, MF_BYCOMMAND | (rating_enable ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_3, MF_BYCOMMAND | (rating_enable ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_4, MF_BYCOMMAND | (rating_enable ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_5, MF_BYCOMMAND | (rating_enable ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_NONE, MF_BYCOMMAND | (rating_enable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_1, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_2, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_3, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_4, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_5, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_NONE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
 
     bool move_enable = playlist_mode && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
