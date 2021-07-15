@@ -1060,7 +1060,6 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background
                                      || theApp.m_app_setting_data.use_desktop_background != optionDlg.m_tab2_dlg.m_data.use_desktop_background };
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
-    bool show_playlist_tooltip_changed{ theApp.m_media_lib_setting_data.show_playlist_tooltip != optionDlg.m_media_lib_dlg.m_data.show_playlist_tooltip };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1160,15 +1159,6 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     if (optionDlg.m_tab3_dlg.IsAutoRunModified())
         theApp.SetAutoRun(optionDlg.m_tab3_dlg.m_auto_run);
-
-    if (show_playlist_tooltip_changed)
-    {
-        m_playlist_list.EnableTip(theApp.m_media_lib_setting_data.show_playlist_tooltip);
-        if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
-            m_pFloatPlaylistDlg->GetListCtrl().EnableTip(theApp.m_media_lib_setting_data.show_playlist_tooltip);
-        if (m_miniModeDlg.GetSafeHwnd() != NULL)
-            m_miniModeDlg.GetPlaylistCtrl().EnableTip(theApp.m_media_lib_setting_data.show_playlist_tooltip);
-    }
 
     SaveConfig();       //将设置写入到ini文件
     theApp.SaveConfig();
