@@ -339,7 +339,7 @@ wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_u
 	// code_type为AUTO时从这里开始
 	if (code_type == CodeType::AUTO)	// 先根据BOM判断编码类型
 	{
-		code_type = JudgeCodeType(str, CodeType::ANSI, auto_utf8);
+		code_type = JudgeCodeType(str, code_type, auto_utf8);
 	}
 	bool result_ready = false;
 	int size;
