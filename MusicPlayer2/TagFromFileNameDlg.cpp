@@ -39,6 +39,11 @@ wstring CTagFromFileNameDlg::GetFormularSelected() const
     return m_formular_selected;
 }
 
+void CTagFromFileNameDlg::HideOriginalBtn(bool hide)
+{
+    m_hide_original_btn = hide;
+}
+
 void CTagFromFileNameDlg::SaveConfig() const
 {
     CIniHelper ini(theApp.m_config_path);
@@ -59,6 +64,13 @@ void CTagFromFileNameDlg::InitComboList()
     m_format_combo.ResetContent();
     for (const auto& formular : m_default_formular)
     {
+        //如果隐藏了“原文件名”按钮，则不在下拉列表中添加含有“原文件名”的项
+        if (m_hide_original_btn)
+        {
+            if (formular.find(FORMULAR_ORIGINAL) != std::wstring::npos)
+                continue;
+        }
+
         m_format_combo.AddString(formular.c_str());
     }
     m_format_combo.AddString(CCommon::LoadText(IDS_CLEAR_HISTORY));
@@ -165,6 +177,12 @@ BOOL CTagFromFileNameDlg::OnInitDialog()
     InitComboList();
     if (!m_default_formular.empty())
         m_format_combo.SetWindowText(m_default_formular.front().c_str());
+
+    if (m_hide_original_btn)
+    {
+        GetDlgItem(IDC_ORIGINAL_STATIC)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_ORIGINAL_BUTTON)->ShowWindow(SW_HIDE);
+    }
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

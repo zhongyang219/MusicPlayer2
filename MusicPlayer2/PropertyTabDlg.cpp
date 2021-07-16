@@ -663,6 +663,7 @@ void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
 {
     // TODO: 在此添加控件通知处理程序代码
     CTagFromFileNameDlg dlg;
+    dlg.HideOriginalBtn(true);
     if (dlg.DoModal() == IDOK)
     {
         CWaitCursor wait_cursor;
