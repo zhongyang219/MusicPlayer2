@@ -93,10 +93,27 @@ void CDesktopLyric::ShowLyric()
 	else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())
 	{
 		Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);
 		int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
 		CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
-		if (lyric.text.empty())
-			lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+        if (lyric.text.empty())
+        {
+            if (theApp.m_lyric_setting_data.desktop_lyric_data.display_void_line)
+            {
+                lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+            }
+            else
+            {
+                lyric = CPlayer::GetInstance().m_Lyrics.GetLyricIgnoreVoid(time, 0);
+                if (lyric.text.empty())
+                    lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+                else
+                {
+                    progress = 0;  // 通过忽略空白得到的歌词还没到显示的时间，清0进度
+                    lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndexIgnoreVoid(time);
+                }
+            }
+        }
 
         SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         SetShowTranslate(theApp.m_ui_data.show_translate);
@@ -104,13 +121,16 @@ void CDesktopLyric::ShowLyric()
         SetLyricKaraokeDisplay(theApp.m_lyric_setting_data.lyric_karaoke_disp);
         if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
-            CLyrics::Lyric next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1);
+            CLyrics::Lyric next_lyric;
+            if (theApp.m_lyric_setting_data.desktop_lyric_data.display_void_line)
+                next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1);
+            else
+                next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyricIgnoreVoid(time, 1);
             if (next_lyric.text.empty())
                 next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
             SetNextLyric(next_lyric.text.c_str());
         }
 
-        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);
         static int last_lyric_index = -1;
 
 		if (lyric_index != last_lyric_index)
