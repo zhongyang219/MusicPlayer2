@@ -13,7 +13,7 @@ IMPLEMENT_DYNAMIC(CPlayListCtrl, CListCtrlEx)
 //通过构造函数参数传递列表中所有文件的信息的引用
 CPlayListCtrl::CPlayListCtrl(const vector<SongInfo>& all_song_info) :m_all_song_info{ all_song_info }
 {
-	m_toolTip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
+	m_toolTip.CreateEx(this, TTS_ALWAYSTIP | TTS_NOPREFIX, WS_EX_TRANSPARENT);
 }
 
 CPlayListCtrl::~CPlayListCtrl()
