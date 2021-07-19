@@ -358,8 +358,26 @@ int CLyrics::GetLyricIndex(Time time) const
 
 CLyrics::Lyric CLyrics::GetLyricIgnoreVoid(Time time, int offset) const
 {
-    int index{ GetLyricIndex(time) };
+    int index{ GetLyricIndexIgnoreVoid(time, offset) };
+    if (index < -1 || index >= static_cast<int>(m_lyrics.size()))
+    {
+        return Lyric{};
+    }
+    else if (index == -1)
+    {
+        Lyric ti{};
+        ti.text = m_ti;
+        return ti;      //时间在第一个时间标签前面，返回ti标签的值
+    }
+    else
+    {
+        return m_lyrics[index];
+    }
+}
 
+int CLyrics::GetLyricIndexIgnoreVoid(Time time, int offset) const
+{
+    int index{ GetLyricIndex(time) };
     // 对齐到非空白歌词
     if (index >= 0)
     {
@@ -368,20 +386,17 @@ CLyrics::Lyric CLyrics::GetLyricIgnoreVoid(Time time, int offset) const
             if (!m_lyrics[i].text.empty())
             {
                 index = i;
-                    break;
+                break;
             }
         }
     }
     // 应用偏移量
+    int j{};
     if (offset > 0)
     {
-        int j{};
         while (j++ < offset)    // offset>0 时循环 offset 次
         {
-            if (++index >= static_cast<int>(m_lyrics.size()))
-            {
-                break;
-            }
+            if (++index >= static_cast<int>(m_lyrics.size())) break;
             for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
             {
                 if (!m_lyrics[i].text.empty())
@@ -394,13 +409,9 @@ CLyrics::Lyric CLyrics::GetLyricIgnoreVoid(Time time, int offset) const
     }
     if (offset < 0)
     {
-        int j{};
         while (j-- > offset)    // offset < 0 时循环 -offset 次
         {
-            if (--index < 0)
-            {
-                break;
-            }
+            if (--index < 0) break;
             for (int i{ index }; i >= 0; --i)
             {
                 if (!m_lyrics[i].text.empty())
@@ -411,31 +422,23 @@ CLyrics::Lyric CLyrics::GetLyricIgnoreVoid(Time time, int offset) const
             }
         }
     }
-
-    if (index < -1 || index >= static_cast<int>(m_lyrics.size()))
-    {
-        return Lyric{};
-    }
-    else if (index == -1)
-    {
-        Lyric ti{};
-        ti.text = m_ti;
-        return ti;		//时间在第一个时间标签前面，返回ti标签的值
-    }
-    else
-    {
-        return m_lyrics[index];
-    }
+    return index;
 }
 
-int CLyrics::GetLyricIndexIgnoreVoid(Time time) const
+Time CLyrics::GetBlankTimeBeforeLyric(Time time, int offset) const
 {
-    for (int index{ GetLyricIndex(time) }; index < static_cast<int>(m_lyrics.size()); ++index)
+    int index{ GetLyricIndexIgnoreVoid(time, offset) };
+    if (index < 0 || index >= static_cast<int>(m_lyrics.size()))
+        return Time();
+    Time tmp{ m_lyrics[index].time };
+    for (int i{ index - 1 }; i >= 0; --i)
     {
-        if (!m_lyrics[index].text.empty())
-            return index;
+        if (m_lyrics[i].text.empty())
+            tmp = m_lyrics[i].time;
+        else
+            break;
     }
-    return m_lyrics.size() - 1;
+    return m_lyrics[index].time - tmp;
 }
 
 CodeType CLyrics::GetCodeType() const

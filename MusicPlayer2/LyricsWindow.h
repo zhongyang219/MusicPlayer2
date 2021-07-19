@@ -52,6 +52,8 @@ public:
 	BOOL Create(LPCTSTR lpszClassName);
 	BOOL Create(LPCTSTR lpszClassName,int nWidth,int nHeight);
 public:
+    //更新歌词(进度符号,歌词文本,高亮进度百分比,是否为进度符号高亮)
+    void UpdateLyrics(LPCTSTR lpszBeforeLyrics, LPCTSTR lpszLyrics, int nHighlight, bool bBeforeLyrics);
 	//更新歌词(歌词文本,高亮进度百分比)
 	void UpdateLyrics(LPCTSTR lpszLyrics,int nHighlight);
 	//更新高亮进度(高亮进度百分比)
@@ -111,8 +113,10 @@ private:
 	HDC m_hCacheDC;//缓存DC
 	int m_nWidth;
 	int m_nHeight;
+    CString m_lpszBeforeLyrics;//进度符号,Unicode格式
 	CString m_lpszLyrics;//Unicode格式的歌词
 	int m_nHighlight;//高亮歌词的百分比 0--1000
+    bool m_bBeforeLyrics;//高亮进度描述歌词前符号
 	Gdiplus::Color m_TextColor1;//普通歌词颜色,ARGB颜色
 	Gdiplus::Color m_TextColor2;//普通歌词颜色,ARGB颜色
 	LyricsGradientMode m_TextGradientMode;//普通歌词渐变模式

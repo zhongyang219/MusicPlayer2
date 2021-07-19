@@ -86,7 +86,9 @@ public:
     // 根据时间返回一句歌词。第2个参数如果是0，则返回当前时间对应的歌词，如果是-1则返回当前时间的前一句歌词，1则返回后一句歌词，以此类推。
     Lyric GetLyricIgnoreVoid(Time time, int offset) const;
     // 根据时间返回该时间对应的歌词序号（用于判断歌词是否有变化）
-    int GetLyricIndexIgnoreVoid(Time time) const;
+    int GetLyricIndexIgnoreVoid(Time time, int offset) const;
+    // 获取指定歌词之前的空白时长
+    Time CLyrics::GetBlankTimeBeforeLyric(Time time, int offset) const;
 
     // 获得歌词文本的编码类型
     CodeType GetCodeType() const;

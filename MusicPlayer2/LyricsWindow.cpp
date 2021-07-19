@@ -143,9 +143,19 @@ BOOL CLyricsWindow::RegisterWndClass(LPCTSTR lpszClassName)
 }
 
 
+//更新歌词(进度符号,歌词文本,高亮进度百分比,是否为进度符号高亮)
+void CLyricsWindow::UpdateLyrics(LPCTSTR lpszBeforeLyrics, LPCTSTR lpszLyrics, int nHighlight, bool bBeforeLyrics)
+{
+    m_lpszBeforeLyrics = lpszBeforeLyrics;
+    m_bBeforeLyrics = bBeforeLyrics;
+    m_lpszLyrics = lpszLyrics;
+    UpdateLyrics(nHighlight);
+}
 //更新歌词(歌词文本,高亮进度百分比)
 void CLyricsWindow::UpdateLyrics(LPCTSTR lpszLyrics,int nHighlight)
 {
+    m_lpszBeforeLyrics.Empty();
+    m_bBeforeLyrics = false;
     m_lpszLyrics = lpszLyrics;
     UpdateLyrics(nHighlight);
 }
@@ -296,7 +306,23 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	//先取出文字宽度和高度
 	Gdiplus::RectF layoutRect(0,0,0,0);
 	Gdiplus::RectF boundingBox;
-	pGraphics->MeasureString (m_lpszLyrics, -1, m_pFont,layoutRect, m_pTextFormat,&boundingBox, 0, 0);
+    if (!m_lpszBeforeLyrics.IsEmpty())
+    {
+        pGraphics->MeasureString(m_lpszBeforeLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+        auto bef_width{ boundingBox.Width };
+        pGraphics->MeasureString(L" ", -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+        auto sp_width{ boundingBox.Width };
+        m_lpszLyrics = m_lpszBeforeLyrics + L" " + m_lpszLyrics;
+        pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+        if(m_bBeforeLyrics)
+            m_nHighlight = m_nHighlight * bef_width / boundingBox.Width;
+        else
+            m_nHighlight = ((bef_width + sp_width) * 1000 + m_nHighlight * (boundingBox.Width - bef_width - sp_width)) / boundingBox.Width;
+    }
+	else
+	{
+		pGraphics->MeasureString (m_lpszLyrics, -1, m_pFont,layoutRect, m_pTextFormat,&boundingBox, 0, 0);
+	}
 	//计算歌词画出的位置
 	Gdiplus::RectF dstRect;		//文字的矩形
 	Gdiplus::RectF transRect;	//翻译文本的矩形
@@ -355,7 +381,23 @@ void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
     //先取出文字宽度和高度
     Gdiplus::RectF layoutRect(0, 0, 0, 0);
     Gdiplus::RectF boundingBox;
-    pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+    if (!m_lpszBeforeLyrics.IsEmpty())
+    {
+        pGraphics->MeasureString(m_lpszBeforeLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+        auto bef_width{ boundingBox.Width };
+        pGraphics->MeasureString(L" ", -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+        auto sp_width{ boundingBox.Width };
+        m_lpszLyrics = m_lpszBeforeLyrics + L" " + m_lpszLyrics;
+        pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+        if (m_bBeforeLyrics)
+            m_nHighlight = m_nHighlight * bef_width / boundingBox.Width;
+        else
+            m_nHighlight = ((bef_width + sp_width) * 1000 + m_nHighlight * (boundingBox.Width - bef_width - sp_width)) / boundingBox.Width;
+    }
+    else
+    {
+        pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+    }
     Gdiplus::RectF nextBoundingBox;
     pGraphics->MeasureString(m_strNextLyric, -1, m_pFont, layoutRect, m_pTextFormat, &nextBoundingBox, 0, 0);
     //计算歌词画出的位置
