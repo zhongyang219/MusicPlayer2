@@ -96,7 +96,7 @@ void CDesktopLyric::ShowLyric()
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
         CLyrics::Lyric lyric = now_lyrics.GetLyric(time, 0);
         bool is_lyric_empty{ lyric.text.empty() };
-        bool is_updated{ false };
+        int lyric_mode{};
         int lyric_index = now_lyrics.GetLyricIndex(time);
         int progress = now_lyrics.GetLyricProgress(time);
         if (theApp.m_lyric_setting_data.desktop_lyric_data.display_void_line)  // 设置为独立显示空行
@@ -119,22 +119,15 @@ void CDesktopLyric::ShowLyric()
                     if (blanktimeok)
                     {
                         // progress = now_lyrics.GetLyricProgressIgnoreBlank(time); // 获取合并空白行后的进度
-                        UpdateLyrics(L"♪♪♪", lyric.text.c_str(), progress, true);
-                        is_updated = true;
+                        lyric_mode = 1;
                     }
                     else
                         progress = 0;
                 }
                 else if (blanktimeok)                                          // 当前time对应非空歌词但是上行歌词为空
-                {
-                    UpdateLyrics(L"♪♪♪", lyric.text.c_str(), progress, false);
-                    is_updated = true;
-                }
+                    lyric_mode = 2;
             }
         }
-        if (!is_updated)
-            UpdateLyrics(lyric.text.c_str(), progress);
-        UpdateLyricTranslate(lyric.translate.c_str());
 
         SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         SetShowTranslate(theApp.m_ui_data.show_translate);
@@ -171,6 +164,14 @@ void CDesktopLyric::ShowLyric()
 		{
             SetLyricChangeFlag(false);
 		}
+        UpdateLyricTranslate(lyric.translate.c_str());
+        // UpdateLyrics需要放在最后防止双行歌词闪烁
+        if (lyric_mode == 1)
+            UpdateLyrics(L"♪♪♪", lyric.text.c_str(), progress, true);
+        else if (lyric_mode == 2)
+            UpdateLyrics(L"♪♪♪", lyric.text.c_str(), progress, false);
+        else
+            UpdateLyrics(lyric.text.c_str(), progress);
 	}
 	else
 	{
