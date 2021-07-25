@@ -106,19 +106,19 @@ void CDesktopLyric::ShowLyric()
         }
         else
         {
+            lyric_index = now_lyrics.GetLyricIndexIgnoreBlank(lyric_index, 0); // 使用忽略空白行后的索引
             if (is_lyric_empty)                                                // 如果当前time对应歌词为空则试着忽略空白获取歌词
-                lyric = now_lyrics.GetLyricIgnoreVoid(time, 0);
+                lyric = now_lyrics.GetLyricIgnoreBlank(lyric_index);
             if (lyric.text.empty())                                            // 如果忽略空白仍然不能取得歌词说明时间已超过末尾的歌词
                 lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
             else
             {
-                lyric_index = now_lyrics.GetLyricIndexIgnoreVoid(time, 0);     // 使用忽略空白行后的索引
-                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(time, 0) > 1000 }; // 判断空白时长是否有必要显示符号
+                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(lyric_index) > 800 };   // 判断空白时长是否有必要显示符号
                 if (is_lyric_empty)                                            // 当前time处在空白行中并且正在提前显示下一行歌词
                 {
                     if (blanktimeok)
                     {
-                        // progress = now_lyrics.GetLyricProgressIgnoreBlank(time); // 获取合并空白行后的进度
+                        progress = now_lyrics.GetBlankLyricProgress(lyric_index, time);      // 获取合并空白行后的进度
                         lyric_mode = 1;
                     }
                     else
@@ -144,10 +144,11 @@ void CDesktopLyric::ShowLyric()
             }
             else
             {
-                next_lyric = now_lyrics.GetLyricIgnoreVoid(time, 1);
+                int next_lyric_index{ now_lyrics.GetLyricIndexIgnoreBlank(lyric_index, 1) };
+                next_lyric = now_lyrics.GetLyricIgnoreBlank(next_lyric_index);
                 if (next_lyric.text.empty())
                     next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-                else if (now_lyrics.GetLyric(time, 1).text.empty() && now_lyrics.GetBlankTimeBeforeLyric(time, 1) > 1000)
+                else if (now_lyrics.GetBlankTimeBeforeLyric(next_lyric_index) > 800)
                     next_lyric.text = L"♪♪♪ " + next_lyric.text;
             }
             SetNextLyric(next_lyric.text.c_str());
