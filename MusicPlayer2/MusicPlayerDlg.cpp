@@ -4476,6 +4476,12 @@ void CMusicPlayerDlg::OnFullScreen()
         ShowSizebox(!theApp.m_ui_data.full_screen);
 
     SetFullScreen(theApp.m_ui_data.full_screen);
+
+    // 清空按钮区域，防止全屏时自绘标题栏按钮区域仍能响应
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
+
     DrawInfo(true);
     m_pUI->UpdateFullScreenTip();
 }
