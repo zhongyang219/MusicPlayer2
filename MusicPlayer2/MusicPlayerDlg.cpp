@@ -3043,13 +3043,18 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
         break;
     case HK_EXIT:
         OnMenuExit();
+        break;
     case HK_SHOW_HIDE_PLAYER:
     {
-        if (IsWindowVisible())
+        if (m_miniModeDlg.m_hWnd != NULL)             // 如果是mini模式则返回标准窗口
+        {
+            ::SendMessageW(m_miniModeDlg.m_hWnd, WM_COMMAND, IDOK, 0);
+        }
+        else if (GetActiveWindow() == this)           // 如果窗口拥有焦点则隐藏
         {
             ShowWindow(SW_HIDE);
         }
-        else
+        else                                          // 进行窗口恢复并取得焦点
         {
             if (IsIconic())
                 ShowWindow(SW_RESTORE);
