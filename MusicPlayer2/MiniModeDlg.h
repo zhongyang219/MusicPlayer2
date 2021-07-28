@@ -98,7 +98,6 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
-    POINT CheckWindowPos(CRect rect);
     void MoveWindowPos();
     void UpdateSongTipInfo();
     void SetTitle();

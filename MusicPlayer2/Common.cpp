@@ -1689,3 +1689,35 @@ CString CCommon::GetDesktopBackgroundPath()
     }
     return path;
 }
+
+POINT CCommon::CheckWindowPos(CRect& check_rect, vector<CRect>& screen_rects)
+{
+    POINT mov{};                                                        // 所需偏移量
+    // 确保窗口在一个监视器内并且可见，判断移动距离并向所需移动距离较小的方向移动
+    LONG mov_xy = 0;                                                    // 记录移动距离
+    for (auto& a : screen_rects)
+    {
+        LONG x = 0, y = 0;
+        if (check_rect.left < a.left || check_rect.Width() > a.Width()) // 需要向右移动
+            x = a.left - check_rect.left;
+        else if (check_rect.right > a.right)                            // 需要向左移动
+            x = a.right - check_rect.right;
+        if (check_rect.top < a.top || check_rect.Height() > a.Height()) // 需要向下移动
+            y = a.top - check_rect.top;
+        else if (check_rect.bottom > a.bottom)                          // 需要向上移动
+            y = a.bottom - check_rect.bottom;
+        if (x == 0 && y == 0)                                           // 窗口已在一个监视器内
+        {
+            mov.x = 0;
+            mov.y = 0;
+            break;
+        }
+        else if (abs(x) + abs(y) < mov_xy || mov_xy == 0)
+        {
+            mov.x = x;
+            mov.y = y;
+            mov_xy = abs(x) + abs(y);
+        }
+    }
+    return mov;
+}

@@ -1751,6 +1751,24 @@ CPlayerUIBase* CMusicPlayerDlg::GetCurrentUi()
     return dynamic_cast<CPlayerUIBase*>(m_pUI);
 }
 
+void CMusicPlayerDlg::GetScreenInfo()
+{
+    m_screen_rects.clear();
+    Monitors monitors;
+    for (auto& a : monitors.monitorinfos)
+    {
+        m_screen_rects.push_back(a.rcWork); // 单屏幕时为工作区(不含任务栏)，多屏幕时实际获取的rcWork与rcMoniror一致均为监视器
+    }
+}
+
+void CMusicPlayerDlg::MoveDesktopLyricWindowPos()
+{
+    CRect rcLyric;
+    ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rcLyric);
+    rcLyric += CCommon::CheckWindowPos(rcLyric, m_screen_rects);
+    ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, rcLyric.left, rcLyric.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -1769,6 +1787,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);        // 设置小图标
 
     // TODO: 在此添加额外的初始化代码
+
+    // 获取窗口信息
+    GetScreenInfo();
 
     //如果以迷你模式启动，则先隐藏主窗口
     if (theApp.m_cmd & ControlCmd::MINI_MODE)
@@ -1882,30 +1903,15 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //初始化桌面歌词
     m_desktop_lyric.Create();
     m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
-    if (m_desktop_lyric_pos.x != -1 && m_desktop_lyric_pos.y != -1)
+    if (m_desktop_lyric_size.cx > 0 && m_desktop_lyric_size.cy > 0) // 尺寸大于0视为桌面歌词位置信息已存在，由于多显示器允许负坐标使 pos == -1 不再可靠
     {
-        CRect rcLyric;
-        ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rcLyric);
-        CRect rcWork;
-        SystemParametersInfo(SPI_GETWORKAREA, NULL, rcWork, NULL);
-        if (m_desktop_lyric_pos.x < rcWork.left - rcLyric.Width() / 2)
-            m_desktop_lyric_pos.x = rcWork.left - rcLyric.Width() / 2;
-        if (m_desktop_lyric_pos.x > rcWork.right - rcLyric.Width() / 2)
-            m_desktop_lyric_pos.x = rcWork.right - rcLyric.Width() / 2;
-        if (m_desktop_lyric_pos.y < rcWork.top - rcLyric.Height() / 2)
-            m_desktop_lyric_pos.y = rcWork.top - rcLyric.Height() / 2;
-        if (m_desktop_lyric_pos.y > rcWork.bottom - rcLyric.Height() / 2)
-            m_desktop_lyric_pos.y = rcWork.bottom - rcLyric.Height() / 2;
-        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-    }
-    if (m_desktop_lyric_size.cx > 0 && m_desktop_lyric_size.cy > 0)
-    {
-        if (m_desktop_lyric_size.cx < theApp.DPI(400))
+        if (m_desktop_lyric_size.cx < theApp.DPI(400))              // 桌面歌词位置设置存在时进行最小尺寸检查
             m_desktop_lyric_size.cx = theApp.DPI(400);
         if (m_desktop_lyric_size.cy < theApp.DPI(100))
             m_desktop_lyric_size.cy = theApp.DPI(100);
-        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, 0, 0, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOMOVE | SWP_NOZORDER);
+        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOZORDER);
     }
+    MoveDesktopLyricWindowPos();                                    // 移动桌面歌词窗口到可见位置
 
     //初始化绘图的类
     m_pUiDC = m_ui_static_ctrl.GetDC();
@@ -5741,6 +5747,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnDefaultMultimediaDeviceChanged(WPARAM wParam,
 
 afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
 {
+    // 更新监视器信息
+    GetScreenInfo();
+    // 移动桌面歌词窗口位置
+    MoveDesktopLyricWindowPos();
     // 显示器状态改变时退出全屏，防止窗口被移动后以旧尺寸全屏显示在主显示器上
     if (theApp.m_ui_data.full_screen)
     {

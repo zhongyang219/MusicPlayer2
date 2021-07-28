@@ -410,6 +410,9 @@ public:
 
     static CString GetDesktopBackgroundPath();  //获取桌面壁纸的路径
 
+    //返回使窗口显示在一个监视器内所需移动距离最小的偏移量 (当check_rect在某方向上大于screen_rects时向左或向上对齐)
+    static POINT CheckWindowPos(CRect& check_rect, vector<CRect>& screen_rects);
+
 };
 
 template<class T>
