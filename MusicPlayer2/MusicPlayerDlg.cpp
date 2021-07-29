@@ -1753,11 +1753,11 @@ CPlayerUIBase* CMusicPlayerDlg::GetCurrentUi()
 
 void CMusicPlayerDlg::GetScreenInfo()
 {
-    m_screen_rects.clear();
+    theApp.m_screen_rects.clear();
     Monitors monitors;
     for (auto& a : monitors.monitorinfos)
     {
-        m_screen_rects.push_back(a.rcWork); // 单屏幕时为工作区(不含任务栏)，多屏幕时实际获取的rcWork与rcMoniror一致均为监视器
+        theApp.m_screen_rects.push_back(a.rcWork); // 获取各显示器工作区
     }
 }
 
@@ -1765,7 +1765,7 @@ void CMusicPlayerDlg::MoveDesktopLyricWindowPos()
 {
     CRect rcLyric;
     ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rcLyric);
-    rcLyric += CCommon::CheckWindowPos(rcLyric, m_screen_rects);
+    rcLyric += CCommon::CalculateWindowMoveOffset(rcLyric, theApp.m_screen_rects);
     ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, rcLyric.left, rcLyric.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
@@ -5747,10 +5747,17 @@ afx_msg LRESULT CMusicPlayerDlg::OnDefaultMultimediaDeviceChanged(WPARAM wParam,
 
 afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
 {
-    // 更新监视器信息
+    // 由主窗口更新显示器信息，子窗口OnDisplaychange时的位置调整应在全部此进行
+    // 子窗口自身的OnDisplaychange先于主窗口无法使用更新后的m_screen_rects
     GetScreenInfo();
     // 移动桌面歌词窗口位置
     MoveDesktopLyricWindowPos();
+    // 若此时为mini模式则移动mini窗口位置
+    if (m_miniModeDlg.m_hWnd != NULL)
+    {
+        m_miniModeDlg.MoveWindowPos();
+    }
+
     // 显示器状态改变时退出全屏，防止窗口被移动后以旧尺寸全屏显示在主显示器上
     if (theApp.m_ui_data.full_screen)
     {

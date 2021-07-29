@@ -153,8 +153,6 @@ protected:
 
     CDevicesManager* devicesManager;
 
-    vector<CRect> m_screen_rects;       // 屏幕的范围
-
     // 来自https://www.jianshu.com/p/9d4b68cdbd99
     struct Monitors
     {
