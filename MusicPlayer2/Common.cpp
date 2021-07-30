@@ -1698,14 +1698,14 @@ POINT CCommon::CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& scree
     for (auto& a : screen_rects)
     {
         LONG x = 0, y = 0;
-        if (check_rect.right > a.right)                                 // 需要向左移动
-            x = a.right - check_rect.right;
-        if (check_rect.left < a.left)                                   // 需要向右移动(当check_rect水平方向大于a时左对齐)
+        if (check_rect.left < a.left || check_rect.Width() > a.Width()) // 需要向右移动
             x = a.left - check_rect.left;
-        if (check_rect.bottom > a.bottom)                               // 需要向上移动
-            y = a.bottom - check_rect.bottom;
-        if (check_rect.top < a.top)                                     // 需要向下移动(当check_rect垂直方向大于a时上对齐)
+        else if (check_rect.right > a.right)                            // 需要向左移动
+            x = a.right - check_rect.right;
+        if (check_rect.top < a.top || check_rect.Height() > a.Height()) // 需要向下移动
             y = a.top - check_rect.top;
+        else if (check_rect.bottom > a.bottom)                          // 需要向上移动
+            y = a.bottom - check_rect.bottom;
         if (x == 0 && y == 0)                                           // 窗口已在一个监视器内
         {
             mov.x = 0;
