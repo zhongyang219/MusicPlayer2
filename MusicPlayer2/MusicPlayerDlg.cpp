@@ -2549,7 +2549,33 @@ void CMusicPlayerDlg::OnDestroy()
 
     m_ui_thread_para.ui_thread_exit = true;
     if (m_uiThread != nullptr)
-        WaitForSingleObject(m_uiThread->m_hThread, 2000);   //等待线程退出
+    {
+        DWORD dwRet;
+        MSG msg;
+        while (true)
+        {
+            dwRet = MsgWaitForMultipleObjects(1, &(m_uiThread->m_hThread), FALSE, 2000, QS_ALLINPUT); //等待时间和消息，不阻塞消息
+            if (dwRet == WAIT_OBJECT_0 + 1)                      // 消息到达队列，需要对消息进行重判断防止意外退出或卡死
+            {
+                while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) // 获取队列消息 PM_REMOVE -PeekMessage处理后，消息从队列里除掉。
+                {
+                    if (msg.message == WM_QUIT || msg.message == WM_CLOSE)
+                        break;
+                    TranslateMessage(&msg);                      // 将虚拟键消息转换为字符消息
+                    DispatchMessage(&msg);                       // 发一个消息给窗口程序
+                }
+            }
+            else if (dwRet >= WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + 1) // 等待完成正常退出
+            {
+                break;
+            }
+            else                                                 // 错误退出
+            {
+                DWORD dErrCode = GetLastError();
+                break;
+            }
+        }
+    }
 
     m_ui_static_ctrl.ReleaseDC(m_pUiDC);
 
