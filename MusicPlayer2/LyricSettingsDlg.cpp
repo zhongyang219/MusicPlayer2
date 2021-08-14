@@ -108,6 +108,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_SET_FONT_BUTTON, &CLyricSettingsDlg::OnBnClickedSetFontButton)
     ON_CBN_SELCHANGE(IDC_ALIGNMENT_COMBO2, &CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo2)
     ON_CBN_SELCHANGE(IDC_DESKTOP_LYRIC_ALIGNMENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeDesktopLyricAlignmentCombo)
+    ON_BN_CLICKED(IDC_SHOW_LYRIC_TRANSLATE_CHECK, &CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck)
 END_MESSAGE_MAP()
 
 
@@ -128,6 +129,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_AUTO_SAVE));
     m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_INQUIRY));
     m_lyric_save_policy_combo.SetCurSel(static_cast<int>(m_data.lyric_save_policy));
+    CheckDlgButton(IDC_SHOW_LYRIC_TRANSLATE_CHECK, m_data.show_translate);
 
     m_lyric_line_space_edit.SetRange(MIM_LINE_SPACE, MAX_LINE_SPACE);
     m_lyric_line_space_edit.SetValue(m_data.lyric_line_space);
@@ -754,4 +756,11 @@ void CLyricSettingsDlg::OnCbnSelchangeDesktopLyricAlignmentCombo()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.desktop_lyric_data.lyric_align = static_cast<Alignment>(m_desktop_lyric_alignment_combo.GetCurSel());
+}
+
+
+void CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.show_translate = (IsDlgButtonChecked(IDC_SHOW_LYRIC_TRANSLATE_CHECK) != 0);
 }

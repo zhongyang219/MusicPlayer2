@@ -86,7 +86,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         for (int i{}; i < lyric_count; i++)
         {
             CRect arect{ lyric_area };
-            if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_ui_data.show_translate)
+            if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_lyric_setting_data.show_translate)
                 arect.bottom = arect.top + lyric_height2;
             else
                 arect.bottom = arect.top + lyric_height;
@@ -97,7 +97,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time) + 1;		//当前歌词的序号（歌词的第一句GetLyricIndex返回的是0，由于显示时第一句歌词要显示标题，所以这里要+1）
         int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);		//当前歌词进度（范围为0~1000）
         int y_progress;			//当前歌词在y轴上的进度
-        if (!CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index).translate.empty() && theApp.m_ui_data.show_translate)
+        if (!CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index).translate.empty() && theApp.m_lyric_setting_data.show_translate)
             y_progress = progress * lyric_height2 / 1000;
         else
             y_progress = progress * lyric_height / 1000;
@@ -109,7 +109,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         start_pos = center_pos - y_progress;
         for (int i{ lyric_index - 1 }; i >= 0; i--)
         {
-            if (theApp.m_ui_data.show_translate && !CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty())
+            if (theApp.m_lyric_setting_data.show_translate && !CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty())
                 start_pos -= lyric_height2;
             else
                 start_pos -= lyric_height;
@@ -129,7 +129,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                 //设置歌词文本和翻译文本的矩形区域
                 CRect rect_text{ rects[i] };
                 CRect rect_translate;
-                if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_ui_data.show_translate)
+                if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_lyric_setting_data.show_translate)
                 {
                     rect_text.MoveToY(rect_text.top + line_space);
                     rect_text.bottom = rect_text.top + GetLyricTextHeight();
@@ -151,7 +151,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                     else
                         DrawWindowText(rect_text, lyric.text.c_str(), text_color, text_color, progress, align, true);
                     //绘制翻译文本
-                    if (!lyric.translate.empty() && theApp.m_ui_data.show_translate)
+                    if (!lyric.translate.empty() && theApp.m_lyric_setting_data.show_translate)
                     {
                         SetLyricFontTranslated();
                         DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, text_color, progress, align, true);
@@ -175,7 +175,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                     //绘制歌词文本
                     DrawWindowText(rect_text, CPlayer::GetInstance().m_Lyrics.GetLyric(i).text.c_str(), text_color, align, true);
                     //绘制翻译文本
-                    if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_ui_data.show_translate)
+                    if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_lyric_setting_data.show_translate)
                     {
                         SetLyricFontTranslated();
                         DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, align, true);
@@ -211,7 +211,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//获取当前歌词进度（范围为0~1000）
 
         //双行显示歌词
-        if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_ui_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
+        if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
             wstring next_lyric_text = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
             if (next_lyric_text.empty())
@@ -223,7 +223,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         }
         else
         {
-            if (theApp.m_ui_data.show_translate && !current_lyric.translate.empty() && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
+            if (theApp.m_lyric_setting_data.show_translate && !current_lyric.translate.empty() && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
             {
                 lyric_rect.bottom = lyric_rect.top + rect.Height() / 2;
                 CRect translate_rect = lyric_rect;

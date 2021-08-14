@@ -304,7 +304,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 break;
 
             case BTN_TRANSLATE:
-                m_ui_data.show_translate = !m_ui_data.show_translate;
+                theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
                 return;
 
             case BTN_SKIN:
@@ -1429,7 +1429,7 @@ void CPlayerUIBase::DrawProgess(CRect rect)
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
 {
     m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated();
-    DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), m_ui_data.show_translate);
+    DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), theApp.m_lyric_setting_data.show_translate);
 }
 
 int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)

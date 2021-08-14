@@ -99,7 +99,7 @@ void CDesktopLyric::ShowLyric()
 			lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
 
         SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
-        SetShowTranslate(theApp.m_ui_data.show_translate);
+        SetShowTranslate(theApp.m_lyric_setting_data.show_translate);
         SetAlignment(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align);
         SetLyricKaraokeDisplay(theApp.m_lyric_setting_data.lyric_karaoke_disp);
         if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)

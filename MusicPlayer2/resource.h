@@ -809,6 +809,7 @@
 #define IDC_CORTANA_OPAQUE              1035
 #define IDC_SEARCH_BOX_OPAQUE_CHECK     1035
 #define IDC_DISABLE_DRAGE_SORT_CHECK    1035
+#define IDC_SHOW_LYRIC_TRANSLATE_CHECK  1035
 #define IDC_FILE_TYPE_EDIT              1036
 #define IDC_SLIDER6                     1036
 #define IDC_EDIT4                       1037

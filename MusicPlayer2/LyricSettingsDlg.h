@@ -138,4 +138,5 @@ public:
     afx_msg void OnBnClickedSetFontButton();
     afx_msg void OnCbnSelchangeAlignmentCombo2();
     afx_msg void OnCbnSelchangeDesktopLyricAlignmentCombo();
+    afx_msg void OnBnClickedShowLyricTranslateCheck();
 };

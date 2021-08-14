@@ -304,7 +304,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"window_hight", m_window_height);
     ini.WriteInt(L"config", L"transparency", theApp.m_app_setting_data.window_transparency);
     ini.WriteBool(L"config", L"narrow_mode", theApp.m_ui_data.narrow_mode);
-    ini.WriteBool(L"config", L"show_translate", theApp.m_ui_data.show_translate);
+    ini.WriteBool(L"config", L"show_translate", theApp.m_lyric_setting_data.show_translate);
     ini.WriteBool(L"config", L"show_playlist", theApp.m_ui_data.show_playlist);
     ini.WriteBool(L"config", L"show_menu_bar", theApp.m_ui_data.show_menu_bar);
     ini.WriteBool(L"config", L"show_window_frame", theApp.m_ui_data.show_window_frame);
@@ -461,7 +461,7 @@ void CMusicPlayerDlg::LoadConfig()
     m_window_height = ini.GetInt(L"config", L"window_hight", theApp.DPI(565));
     theApp.m_app_setting_data.window_transparency = ini.GetInt(L"config", L"transparency", 100);
     theApp.m_ui_data.narrow_mode = ini.GetBool(L"config", L"narrow_mode", false);
-    theApp.m_ui_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
+    theApp.m_lyric_setting_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
     theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", true);
     theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", true);
     theApp.m_ui_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", true);
@@ -1456,7 +1456,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_DOWNLOAD_LYRIC, MF_BYCOMMAND | (!midi_lyric && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_UNLINK_LYRIC, MF_BYCOMMAND | (!lyric_disable && !CPlayer::GetInstance().IsInnerLyric() ? MF_ENABLED : MF_GRAYED));
 
-    pMenu->CheckMenuItem(ID_SHOW_LYRIC_TRANSLATE, MF_BYCOMMAND | (theApp.m_ui_data.show_translate ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_SHOW_LYRIC_TRANSLATE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.show_translate ? MF_CHECKED : MF_UNCHECKED));
     pMenu->EnableMenuItem(ID_SHOW_LYRIC_TRANSLATE, MF_BYCOMMAND | (CPlayer::GetInstance().m_Lyrics.IsTranslated() ? MF_ENABLED : MF_GRAYED));
 
     //内嵌歌词
@@ -3389,7 +3389,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
     {
         CLyrics::Lyric lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0) };
         lyric_str = lyric.text;
-        if (theApp.m_ui_data.show_translate && !lyric.translate.empty())
+        if (theApp.m_lyric_setting_data.show_translate && !lyric.translate.empty())
         {
             lyric_str += L"\r\n";
             lyric_str += lyric.translate;
@@ -3405,7 +3405,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
 void CMusicPlayerDlg::OnCopyAllLyric()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CCommon::CopyStringToClipboard(CPlayer::GetInstance().m_Lyrics.GetAllLyricText(theApp.m_ui_data.show_translate)))
+    if (CCommon::CopyStringToClipboard(CPlayer::GetInstance().m_Lyrics.GetAllLyricText(theApp.m_lyric_setting_data.show_translate)))
         MessageBox(CCommon::LoadText(IDS_ALL_LRYIC_COPIED), NULL, MB_ICONINFORMATION);
     else
         MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
@@ -5680,7 +5680,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnAfterMusicStreamClosed(WPARAM wParam, LPARAM 
 void CMusicPlayerDlg::OnShowLyricTranslate()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_ui_data.show_translate = !theApp.m_ui_data.show_translate;
+    theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
 }
 
 
