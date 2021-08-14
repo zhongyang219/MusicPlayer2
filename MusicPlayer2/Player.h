@@ -286,7 +286,7 @@ public:
     bool AlbumCoverExist();
     wstring GetAlbumCoverPath() const { return m_album_cover_path; }
     int GetAlbumCoverType() const { return m_album_cover_type; }
-    void DeleteAlbumCover();
+    bool DeleteAlbumCover();
 
     void ReloadPlaylist(bool refresh_info = true);		//重新载入播放列表
 

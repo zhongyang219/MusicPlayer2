@@ -4043,10 +4043,23 @@ void CMusicPlayerDlg::OnCurrentExploreOnline()
 void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().DeleteAlbumCover();
-    SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef2(CPlayer::GetInstance().GetCurrentFilePath()) };
-    song_info.SetNoOnlineAlbumCover(true);
-    CSongDataManager::GetInstance().SetSongDataModified();
+    if (!CPlayer::GetInstance().IsInnerCover())
+    {
+        CString str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { CPlayer::GetInstance().GetAlbumCoverPath() });
+        if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+        {
+            if (CPlayer::GetInstance().DeleteAlbumCover())
+            {
+                SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef2(CPlayer::GetInstance().GetCurrentFilePath()) };
+                song_info.SetNoOnlineAlbumCover(true);
+                CSongDataManager::GetInstance().SetSongDataModified();
+            }
+            else
+            {
+                MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
+            }
+        }
+    }
 }
 
 
