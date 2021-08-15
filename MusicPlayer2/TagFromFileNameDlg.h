@@ -25,7 +25,8 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
-    void InitComboList();
+    //初始化列表下拉列表，返回列表中添加的第一个项目
+    wstring InitComboList();
 
     void InsertTag(const wchar_t* tag);
 
