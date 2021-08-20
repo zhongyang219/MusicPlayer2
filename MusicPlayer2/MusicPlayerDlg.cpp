@@ -1751,6 +1751,24 @@ CPlayerUIBase* CMusicPlayerDlg::GetCurrentUi()
     return dynamic_cast<CPlayerUIBase*>(m_pUI);
 }
 
+void CMusicPlayerDlg::GetScreenInfo()
+{
+    theApp.m_screen_rects.clear();
+    Monitors monitors;
+    for (auto& a : monitors.monitorinfos)
+    {
+        theApp.m_screen_rects.push_back(a.rcWork); // 获取各显示器工作区
+    }
+}
+
+void CMusicPlayerDlg::MoveDesktopLyricWindowPos()
+{
+    CRect rcLyric;
+    ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rcLyric);
+    rcLyric += CCommon::CalculateWindowMoveOffset(rcLyric, theApp.m_screen_rects);
+    ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, rcLyric.left, rcLyric.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -1769,6 +1787,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);        // 设置小图标
 
     // TODO: 在此添加额外的初始化代码
+
+    // 获取窗口信息
+    GetScreenInfo();
 
     //如果以迷你模式启动，则先隐藏主窗口
     if (theApp.m_cmd & ControlCmd::MINI_MODE)
@@ -1882,30 +1903,15 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //初始化桌面歌词
     m_desktop_lyric.Create();
     m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
-    if (m_desktop_lyric_pos.x != -1 && m_desktop_lyric_pos.y != -1)
+    if (m_desktop_lyric_size.cx > 0 && m_desktop_lyric_size.cy > 0) // 尺寸大于0视为桌面歌词位置信息已存在，由于多显示器允许负坐标使 pos == -1 不再可靠
     {
-        CRect rcLyric;
-        ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rcLyric);
-        CRect rcWork;
-        SystemParametersInfo(SPI_GETWORKAREA, NULL, rcWork, NULL);
-        if (m_desktop_lyric_pos.x < rcWork.left - rcLyric.Width() / 2)
-            m_desktop_lyric_pos.x = rcWork.left - rcLyric.Width() / 2;
-        if (m_desktop_lyric_pos.x > rcWork.right - rcLyric.Width() / 2)
-            m_desktop_lyric_pos.x = rcWork.right - rcLyric.Width() / 2;
-        if (m_desktop_lyric_pos.y < rcWork.top - rcLyric.Height() / 2)
-            m_desktop_lyric_pos.y = rcWork.top - rcLyric.Height() / 2;
-        if (m_desktop_lyric_pos.y > rcWork.bottom - rcLyric.Height() / 2)
-            m_desktop_lyric_pos.y = rcWork.bottom - rcLyric.Height() / 2;
-        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-    }
-    if (m_desktop_lyric_size.cx > 0 && m_desktop_lyric_size.cy > 0)
-    {
-        if (m_desktop_lyric_size.cx < theApp.DPI(400))
+        if (m_desktop_lyric_size.cx < theApp.DPI(400))              // 桌面歌词位置设置存在时进行最小尺寸检查
             m_desktop_lyric_size.cx = theApp.DPI(400);
         if (m_desktop_lyric_size.cy < theApp.DPI(100))
             m_desktop_lyric_size.cy = theApp.DPI(100);
-        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, 0, 0, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOMOVE | SWP_NOZORDER);
+        ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, m_desktop_lyric_pos.x, m_desktop_lyric_pos.y, m_desktop_lyric_size.cx, m_desktop_lyric_size.cy, SWP_NOZORDER);
     }
+    MoveDesktopLyricWindowPos();                                    // 移动桌面歌词窗口到可见位置
 
     //初始化绘图的类
     m_pUiDC = m_ui_static_ctrl.GetDC();
@@ -2543,7 +2549,33 @@ void CMusicPlayerDlg::OnDestroy()
 
     m_ui_thread_para.ui_thread_exit = true;
     if (m_uiThread != nullptr)
-        WaitForSingleObject(m_uiThread->m_hThread, 2000);   //等待线程退出
+    {
+        DWORD dwRet;
+        MSG msg;
+        while (true)
+        {
+            dwRet = MsgWaitForMultipleObjects(1, &(m_uiThread->m_hThread), FALSE, 2000, QS_ALLINPUT); //等待时间和消息，不阻塞消息
+            if (dwRet == WAIT_OBJECT_0 + 1)                      // 消息到达队列，需要对消息进行重判断防止意外退出或卡死
+            {
+                while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) // 获取队列消息 PM_REMOVE -PeekMessage处理后，消息从队列里除掉。
+                {
+                    if (msg.message == WM_QUIT || msg.message == WM_CLOSE)
+                        break;
+                    TranslateMessage(&msg);                      // 将虚拟键消息转换为字符消息
+                    DispatchMessage(&msg);                       // 发一个消息给窗口程序
+                }
+            }
+            else if (dwRet >= WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + 1) // 等待完成正常退出
+            {
+                break;
+            }
+            else                                                 // 错误退出
+            {
+                DWORD dErrCode = GetLastError();
+                break;
+            }
+        }
+    }
 
     m_ui_static_ctrl.ReleaseDC(m_pUiDC);
 
@@ -3043,13 +3075,18 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
         break;
     case HK_EXIT:
         OnMenuExit();
+        break;
     case HK_SHOW_HIDE_PLAYER:
     {
-        if (IsWindowVisible())
+        if (m_miniModeDlg.m_hWnd != NULL)             // 如果是mini模式则返回标准窗口
+        {
+            ::SendMessageW(m_miniModeDlg.m_hWnd, WM_COMMAND, IDOK, 0);
+        }
+        else if (GetActiveWindow() == this)           // 如果窗口拥有焦点则隐藏
         {
             ShowWindow(SW_HIDE);
         }
-        else
+        else                                          // 进行窗口恢复并取得焦点
         {
             if (IsIconic())
                 ShowWindow(SW_RESTORE);
@@ -4489,6 +4526,12 @@ void CMusicPlayerDlg::OnFullScreen()
         ShowSizebox(!theApp.m_ui_data.full_screen);
 
     SetFullScreen(theApp.m_ui_data.full_screen);
+
+    // 清空按钮区域，防止全屏时自绘标题栏按钮区域仍能响应
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
+
     DrawInfo(true);
     m_pUI->UpdateFullScreenTip();
 }
@@ -5743,6 +5786,17 @@ afx_msg LRESULT CMusicPlayerDlg::OnDefaultMultimediaDeviceChanged(WPARAM wParam,
 
 afx_msg LRESULT CMusicPlayerDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
 {
+    // 由主窗口更新显示器信息，子窗口OnDisplaychange时的位置调整应在全部此进行
+    // 子窗口自身的OnDisplaychange先于主窗口无法使用更新后的m_screen_rects
+    GetScreenInfo();
+    // 移动桌面歌词窗口位置
+    MoveDesktopLyricWindowPos();
+    // 若此时为mini模式则移动mini窗口位置
+    if (m_miniModeDlg.m_hWnd != NULL)
+    {
+        m_miniModeDlg.MoveWindowPos();
+    }
+
     // 显示器状态改变时退出全屏，防止窗口被移动后以旧尺寸全屏显示在主显示器上
     if (theApp.m_ui_data.full_screen)
     {

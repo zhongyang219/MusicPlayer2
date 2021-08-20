@@ -32,16 +32,6 @@ void CMiniModeDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LIST2, m_playlist_ctrl);
 }
 
-void CMiniModeDlg::GetScreenInfo()
-{
-    m_screen_rects.clear();
-    Monitors monitors;
-    for (auto& a : monitors.monitorinfos)
-    {
-        m_screen_rects.push_back(a.rcWork);
-    }
-}
-
 void CMiniModeDlg::SaveConfig() const
 {
     CIniHelper ini(theApp.m_config_path);
@@ -57,48 +47,6 @@ void CMiniModeDlg::LoadConfig()
     m_position_x = ini.GetInt(L"mini_mode", L"position_x", -1);
     m_position_y = ini.GetInt(_T("mini_mode"), _T("position_y"), -1);
     m_always_on_top = ini.GetBool(_T("mini_mode"), _T("always_on_top"), true);
-}
-
-POINT CMiniModeDlg::CheckWindowPos(CRect rect)
-{
-    POINT mov{};    // 所需偏移量
-    if (m_screen_rects.size() != 0)
-    {
-        // 确保窗口完整在一个监视器内并且可见，判断移动距离并向所需移动距离较小的方向移动
-        LONG mov_xy = 0;          // 记录移动距离
-        for (auto& a : m_screen_rects)
-        {
-            LONG x = 0, y = 0;
-            if (rect.left < a.left)                 // 需要向右移动
-                x = a.left - rect.left;
-            else if (rect.right > a.right)          // 需要向左移动
-                x = a.right - rect.right;
-            if (rect.top < a.top)                   // 需要向下移动
-                y = a.top - rect.top;
-            else if (rect.bottom > a.bottom)        // 需要向上移动
-                y = a.bottom - rect.bottom;
-            if (x == 0 && y == 0)           // mini窗口已在一个监视器内
-            {
-                mov.x = 0;
-                mov.y = 0;
-                break;
-            }
-            else if (abs(x) + abs(y) < mov_xy || mov_xy == 0)
-            {
-                mov.x = x;
-                mov.y = y;
-                mov_xy = abs(x) + abs(y);
-            }
-        }
-    }
-    return mov;
-}
-
-void CMiniModeDlg::MoveWindowPos()
-{
-    CRect rect;
-    GetWindowRect(rect);
-    MoveWindow(rect + CheckWindowPos(rect));
 }
 
 void CMiniModeDlg::UpdateSongTipInfo()
@@ -160,7 +108,6 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CMiniModeDlg::OnListItemDragged)
     ON_COMMAND(ID_MINI_MODE_ALWAYS_ON_TOP, &CMiniModeDlg::OnMiniModeAlwaysOnTop)
     //ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
-    ON_MESSAGE(WM_DISPLAYCHANGE, &CMiniModeDlg::OnDisplaychange)
     ON_WM_EXITSIZEMOVE()
 END_MESSAGE_MAP()
 
@@ -196,15 +143,19 @@ void CMiniModeDlg::SetPlayListColor()
 //	m_ui_data.pDisplayFormat = pDisplayFormat;
 //}
 //
+void CMiniModeDlg::MoveWindowPos()
+{
+    CRect rect;
+    GetWindowRect(rect);
+    MoveWindow(rect + CCommon::CalculateWindowMoveOffset(rect, theApp.m_screen_rects));
+}
+
 BOOL CMiniModeDlg::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
     m_playlist_ctrl.SetFont(theApp.m_pMainWnd->GetFont());
-
-    // 获取屏幕信息
-    GetScreenInfo();
 
     LoadConfig();
 
@@ -594,7 +545,7 @@ void CMiniModeDlg::OnShowPlayList()
     else
     {
         rect.bottom = rect.top + m_ui_data.window_height2;
-        POINT tmp{ CheckWindowPos(rect) };    // 向下展开播放列表所需偏移量
+        POINT tmp{ CCommon::CalculateWindowMoveOffset(rect, theApp.m_screen_rects) };    // 向下展开播放列表所需偏移量
         ASSERT(tmp.x == 0); // 此函数不处理横向偏移，需要由OnExitSizeMove及MoveWindowPos保证横向在屏幕内
         // 向下展开播放列表并记录窗口还原偏移量，自行拖动窗口时偏移量会清零
         m_playlist_y_offset = -tmp.y;
@@ -671,14 +622,6 @@ void CMiniModeDlg::OnMiniModeAlwaysOnTop()
 //    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
 //    return 0;
 //}
-
-
-afx_msg LRESULT CMiniModeDlg::OnDisplaychange(WPARAM wParam, LPARAM lParam)
-{
-    GetScreenInfo();
-    MoveWindowPos();
-    return 0;
-}
 
 
 void CMiniModeDlg::OnExitSizeMove()

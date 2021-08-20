@@ -42,6 +42,8 @@ public:
 
     vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
+    vector<CRect> m_screen_rects;                   // 屏幕的范围
+
     //CMediaClassifier m_artist_classifer{ CMediaClassifier::CT_ARTIST, true };     //将所有歌曲信息按艺术家分类
     //CMediaClassifier m_album_classifer{ CMediaClassifier::CT_ALBUM, true };       //将所有歌曲信息按唱片集分类
     //CMediaClassifier m_genre_classifer{ CMediaClassifier::CT_GENRE, true };       //将所有歌曲信息按流派分类
