@@ -64,8 +64,8 @@ using _tstring = std::string;
 //#define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
 #define MAX_SONG_NUM 99999		//播放列表中文件数量的最大值
 
-#define VERSION L"2.72"	//程序版本
-#define COMPILE_DATE L"2021/01/24"  //最后编译日期
+#define VERSION L"2.73"	//程序版本
+#define COMPILE_DATE L"2021/08/21"  //最后编译日期
 
 //任务栏图按钮
 #define IDT_PLAY_PAUSE 1321		//任务栏缩略图“播放/暂停”按钮的ID
