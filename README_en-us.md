@@ -39,51 +39,55 @@ You have the following ways to open and play a song:<br>
 
 # Screen shoots
 
-Main window (UI2, light mode)：
+Main window (UI2, light mode)▼
 
 <img src="Screenshots/Main_window.png" style="zoom:80%;" />
 
-Main window (UI2, dark mode):
+Main window (UI2, light mode, show playlist)▼
+
+<img src="C:\Projects\GitHub Porject\MusicPlayer2\images\main_window_with_playlist.png" style="zoom:80%;" />
+
+Main window (UI2, dark mode)▼
 
 <img src="Screenshots/Main_window2.png" style="zoom:80%;" />
 
-Main window (UI1):
+Main window (UI1)▼
 
 <img src="Screenshots/main_window_ui1.png" style="zoom:80%;" />
 
-Main window (UI2):
+Main window (UI2)▼
 
 <img src="Screenshots/main_window_ui2.png" style="zoom:80%;" />
 
-Main window (UI3):
+Main window (UI3)▼
 
 <img src="Screenshots/main_window_ui3.png" style="zoom:80%;" />
 
-Main window (UI4):
+Main window (UI4)▼
 
 <img src="Screenshots/main_window_ui4.png" style="zoom:80%;" />
 
-Main window (UI5):
+Main window (UI5)▼
 
 <img src="Screenshots/main_window_ui5.png" style="zoom:80%;" />
 
-Mini mode:
+Mini mode▼
 
 <img src="Screenshots/Mini_mode.png" style="zoom:80%;" />
 
-Show lyrics in Cortana search box
+Show lyrics in Cortana search box▼
 
 <img src="Screenshots/Cortana_lyric.png" style="zoom:80%;" />
 
-Desktop lyrics
+Desktop lyrics▼
 
 <img src="Screenshots/desktop_lyric.jpg" style="zoom:80%;" />
 
-Option settings - Appearance Settings
+Option settings - Appearance Settings▼
 
 <img src="Screenshots/en_us/options.png" style="zoom:80%;" />
 
-Option settings - General Settings
+Option settings - General Settings▼
 
 <img src="Screenshots/en_us/options2.png" style="zoom:80%;" />
 
