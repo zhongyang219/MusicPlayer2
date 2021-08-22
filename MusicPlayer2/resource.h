@@ -676,6 +676,8 @@
 #define IDI_ICON19                      540
 #define IDI_RESTORE_D                   540
 #define IDS_LIGHT                       540
+#define IDR_TEXT2                       540
+#define IDR_COMPILE_TIME                540
 #define IDS_SHOW_HIDE_PLAYER            541
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
@@ -1478,7 +1480,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        540
+#define _APS_NEXT_RESOURCE_VALUE        541
 #define _APS_NEXT_COMMAND_VALUE         33343
 #define _APS_NEXT_CONTROL_VALUE         1188
 #define _APS_NEXT_SYMED_VALUE           101

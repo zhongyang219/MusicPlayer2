@@ -413,6 +413,9 @@ public:
     //返回使窗口显示在一个监视器内所需移动距离最小的偏移量 (当check_rect在某方向上大于screen_rects时向左或向上对齐)
     static POINT CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& screen_rects);
 
+    //从资源文件读取上次编译时间
+    static CString GetLastCompileTime();
+
 };
 
 template<class T>

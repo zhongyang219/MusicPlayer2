@@ -1721,3 +1721,11 @@ POINT CCommon::CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& scree
     }
     return mov;
 }
+
+CString CCommon::GetLastCompileTime()
+{
+    CString compile_time = GetTextResource(IDR_COMPILE_TIME, CodeType::ANSI);
+    compile_time.Replace(_T("\r\n"), _T(""));
+    compile_time.Delete(compile_time.GetLength() - 1, 1);
+    return compile_time;
+}
