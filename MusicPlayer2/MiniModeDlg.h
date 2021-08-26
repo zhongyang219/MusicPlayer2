@@ -29,6 +29,8 @@ public:
     //void SetDefaultBackGround(CImage* pImage);
     //void SetDisplayFormat(DisplayFormat* pDisplayFormat);
 
+    void MoveWindowPos();
+
     void SetVolume(bool up);	//
     void SetTransparency();
 
@@ -43,30 +45,6 @@ protected:
 
     int m_position_x;
     int m_position_y;
-
-    vector<CRect> m_screen_rects;       // 屏幕的范围
-
-    // https://www.jianshu.com/p/9d4b68cdbd99
-    struct Monitors
-    {
-        std::vector<MONITORINFO> monitorinfos;
-
-        static BOOL CALLBACK MonitorEnum(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData)
-        {
-            MONITORINFO iMonitor;
-            iMonitor.cbSize = sizeof(MONITORINFO);
-            GetMonitorInfo(hMon, &iMonitor);
-
-            Monitors* pThis = reinterpret_cast<Monitors*>(pData);
-            pThis->monitorinfos.push_back(iMonitor);
-            return TRUE;
-        }
-
-        Monitors()
-        {
-            EnumDisplayMonitors(0, 0, MonitorEnum, (LPARAM)this);
-        }
-    };
 
     bool m_show_playlist{ false };		//是否显示播放列表
     LONG m_playlist_y_offset{};         //播放列表收起时窗口需要进行的y坐标偏移量
@@ -93,13 +71,9 @@ protected:
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-    void GetScreenInfo();
-
     void SaveConfig() const;
     void LoadConfig();
 
-    POINT CheckWindowPos(CRect rect);
-    void MoveWindowPos();
     void UpdateSongTipInfo();
     void SetTitle();
     void SetAlwaysOnTop();
@@ -139,7 +113,6 @@ public:
     afx_msg void OnMiniModeAlwaysOnTop();
 protected:
     //afx_msg LRESULT OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnExitSizeMove();
 };

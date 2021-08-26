@@ -13,7 +13,7 @@ IMPLEMENT_DYNAMIC(CPlayListCtrl, CListCtrlEx)
 //通过构造函数参数传递列表中所有文件的信息的引用
 CPlayListCtrl::CPlayListCtrl(const vector<SongInfo>& all_song_info) :m_all_song_info{ all_song_info }
 {
-	m_toolTip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
+	m_toolTip.CreateEx(this, TTS_ALWAYSTIP | TTS_NOPREFIX, WS_EX_TRANSPARENT);
 }
 
 CPlayListCtrl::~CPlayListCtrl()
@@ -184,7 +184,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//如果开启文本提示
-	if (m_bEnableTips)
+	if (theApp.m_media_lib_setting_data.show_playlist_tooltip)
 	{
 		CString str_tip;
 		LVHITTESTINFO lvhti;
@@ -305,7 +305,6 @@ void CPlayListCtrl::PreSubclassWindow()
 	InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);		//插入第1列
 	InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, width[1]);		//插入第2列
 	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width[2]);		//插入第3列
-	EnableTip(theApp.m_media_lib_setting_data.show_playlist_tooltip);
 	SetCtrlAEnable(true);
 
 	SetRowHeight(theApp.DPI(24));

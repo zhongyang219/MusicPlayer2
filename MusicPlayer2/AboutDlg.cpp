@@ -51,10 +51,9 @@ BOOL CAboutDlg::OnInitDialog()
 	//设置最后编译日期
 	CString temp_str;
 	GetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
-	temp_str.Replace(_T("<compile_date>"), COMPILE_DATE);
-	CString year{ COMPILE_DATE };
-	year = year.Left(4);
-	temp_str.Replace(_T("<year>"), year);
+    CString compile_time = CCommon::GetLastCompileTime();
+	temp_str.Replace(_T("<compile_date>"), compile_time);
+	temp_str.Replace(_T("<year>"), COPY_RIGHT_YEAR);
 	SetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
 
 	m_tool_tip.Create(this);

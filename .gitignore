@@ -289,3 +289,4 @@ __pycache__/
 *.diagsession
 *.ini
 *.sf2
+/MusicPlayer2/compile_time.txt

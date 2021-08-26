@@ -14,6 +14,7 @@ public:
     void SetDialogTitle(LPCTSTR str_title);
     void SetInitInsertFormular(const wstring& str_formular);
     wstring GetFormularSelected() const;
+    void HideOriginalBtn(bool hide);        //设置隐藏“Original”按钮
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -24,7 +25,8 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
-    void InitComboList();
+    //初始化列表下拉列表，返回列表中添加的第一个项目
+    wstring InitComboList();
 
     void InsertTag(const wchar_t* tag);
 
@@ -42,6 +44,7 @@ protected:
 
     CString m_dlg_title;
     wstring m_init_insert_formular;
+    bool m_hide_original_btn{ false };      //是否隐藏“Original”按钮
 
 	DECLARE_MESSAGE_MAP()
 public:

@@ -153,6 +153,28 @@ protected:
 
     CDevicesManager* devicesManager;
 
+    // 来自https://www.jianshu.com/p/9d4b68cdbd99
+    struct Monitors
+    {
+        std::vector<MONITORINFO> monitorinfos;
+
+        static BOOL CALLBACK MonitorEnum(HMONITOR hMon, HDC hdc, LPRECT lprcMonitor, LPARAM pData)
+        {
+            MONITORINFO iMonitor;
+            iMonitor.cbSize = sizeof(MONITORINFO);
+            GetMonitorInfo(hMon, &iMonitor);
+
+            Monitors* pThis = reinterpret_cast<Monitors*>(pData);
+            pThis->monitorinfos.push_back(iMonitor);
+            return TRUE;
+        }
+
+        Monitors()
+        {
+            EnumDisplayMonitors(0, 0, MonitorEnum, (LPARAM)this);
+        }
+    };
+
 private:
     void SaveConfig();		//保存设置到ini文件
     void LoadConfig();		//从ini文件读取设置
@@ -211,6 +233,9 @@ protected:
     void SelectUi(int ui_selected);
     int GetUiSelected() const;
     CPlayerUIBase* GetCurrentUi();
+
+    void GetScreenInfo();
+    void MoveDesktopLyricWindowPos();
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();

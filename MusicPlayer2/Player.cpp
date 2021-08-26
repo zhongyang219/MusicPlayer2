@@ -1456,13 +1456,17 @@ bool CPlayer::AlbumCoverExist()
 		return !m_album_cover.IsNull();
 }
 
-void CPlayer::DeleteAlbumCover()
+bool CPlayer::DeleteAlbumCover()
 {
+    bool result{ true };
 	if (!m_inner_cover)
 	{
-		if (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_album_cover_path.c_str()) == 0)
-			m_album_cover.Destroy();
+        if (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_album_cover_path.c_str()) == 0)
+            m_album_cover.Destroy();
+        else
+            result = false;
 	}
+    return result;
 }
 
 void CPlayer::ReloadPlaylist(bool refresh_info)

@@ -16,8 +16,6 @@ public:
 	CPlayListCtrl(const vector<SongInfo>& all_song_info);
 	virtual ~CPlayListCtrl();
 
-	void EnableTip(bool enable = true) { m_bEnableTips = enable; }		//设置是否开启提示
-
 	static wstring GetDisplayStr(const SongInfo& song_info, DisplayFormat display_format);		//根据display_format指定的显示格式，返回一首曲目显示的字符串
 	void ShowPlaylist(DisplayFormat display_format, bool search_result = false);		//显示播放列表
 	void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找，查找文件名、歌曲标题、艺术家和唱片集，将找到的曲目的序号保存在m_search_result中
@@ -32,7 +30,6 @@ protected:
 	CToolTipCtrl m_toolTip;		//文本提示类
 	int m_nItem;				//存放行号
 	//int m_nSubItem;			//存放列号
-	bool m_bEnableTips{ false };	//是否开启文本提示
 
 	const vector<SongInfo>& m_all_song_info;		//储存播放列表中所有歌曲的信息
 	vector<int> m_search_result;					//储存快速搜索结果的歌曲序号
@@ -49,5 +46,3 @@ protected:
 	virtual void PreSubclassWindow();
 	afx_msg void OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult);
 };
-
-

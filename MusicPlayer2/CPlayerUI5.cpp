@@ -20,9 +20,9 @@ void CPlayerUI5::_DrawInfo(CRect draw_rect, bool reset)
     //绘制歌词
     CRect rect_lyric{ draw_rect };
     if (IsDrawNarrowMode())
-        rect_lyric.bottom -= DPI(142);
+        rect_lyric.bottom -= DPI(154);
     else
-        rect_lyric.bottom -= DPI(158);
+        rect_lyric.bottom -= DPI(182);
     int lyric_bottum = rect_lyric.bottom;
     if (rect_lyric.bottom > rect_lyric.top)
     {
@@ -35,7 +35,7 @@ void CPlayerUI5::_DrawInfo(CRect draw_rect, bool reset)
     //绘制专辑封面和歌曲信息
     CRect rect_info{ draw_rect };
     rect_info.top = lyric_bottum - DPI(4);
-    rect_info.bottom = rect_info.top + DPI(74);
+    rect_info.bottom = rect_info.top + DPI(98);
 
     //设置任务预览窗口区域
     m_draw_data.thumbnail_rect = rect_info;
@@ -54,21 +54,24 @@ void CPlayerUI5::_DrawInfo(CRect draw_rect, bool reset)
     rect_info.DeflateRect(DPI(8), DPI(12));
     //绘制标题
     CRect rect_title{ rect_info };
-    rect_title.bottom -= DPI(24);
+    rect_title.DeflateRect(0, DPI(8));
+    rect_title.bottom -= DPI(36);
     wstring str_title;
     if (CPlayer::GetInstance().GetCurrentSongInfo().IsTitleEmpty())             //如果标题为空，则显示文件名
         str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetFileName();
     else
         str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
-    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.ui4_title.GetFont(theApp.m_ui_data.full_screen));
+    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.font12.GetFont(theApp.m_ui_data.full_screen));
     static CDrawCommon::ScrollInfo scroll_info_title;
     m_draw.DrawScrollText(rect_title, str_title.c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info_title, reset);
     m_draw.SetFont(pOldFont);
     //绘制艺术家
     CRect rect_artist{ rect_info };
     rect_artist.top = rect_title.bottom;
+    pOldFont = m_draw.SetFont(&theApp.m_font_set.font10.GetFont(theApp.m_ui_data.full_screen));
     static CDrawCommon::ScrollInfo scroll_info_artist;
     m_draw.DrawScrollText(rect_artist, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), m_colors.color_text, GetScrollTextPixel(true), false, scroll_info_artist, reset);
+    m_draw.SetFont(pOldFont);
 
     //绘制进度条
     CRect rect_progressbar{ draw_rect };

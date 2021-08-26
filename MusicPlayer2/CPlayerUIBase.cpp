@@ -74,7 +74,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
     {
         CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
         m_draw.SetDC(drawDoubleBuffer.GetMemDC());  //将m_draw中的绘图DC设置为缓冲的DC
-        m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.font9.GetFont(theApp.m_ui_data.full_screen));
 
         //绘制背景
         DrawBackground();
@@ -304,7 +304,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 break;
 
             case BTN_TRANSLATE:
-                m_ui_data.show_translate = !m_ui_data.show_translate;
+                theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
                 return;
 
             case BTN_SKIN:
@@ -1344,7 +1344,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     {
         wstring strTime = CPlayer::GetInstance().GetTimeString();
 
-        m_draw.SetFont(&theApp.m_font_set.time.GetFont(m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
         CSize strSize = m_draw.GetTextExtent(strTime.c_str());
         rc_time.left = rc_time.right - strSize.cx;
         //rc_time.InflateRect(0, DPI(2));
@@ -1394,7 +1394,7 @@ void CPlayerUIBase::DrawProgess(CRect rect)
     {
         CFont* pOldFont = m_draw.GetFont();
         //设置字体
-        m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+        m_draw.SetFont(&theApp.m_font_set.font8.GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
 
         double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
         double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
@@ -1429,7 +1429,7 @@ void CPlayerUIBase::DrawProgess(CRect rect)
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
 {
     m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated();
-    DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), m_ui_data.show_translate);
+    DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), theApp.m_lyric_setting_data.show_translate);
 }
 
 int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
@@ -1490,9 +1490,9 @@ void CPlayerUIBase::DrawCurrentTime()
     rc_tmp.right = m_draw_rect.right - theApp.DPI(4);
     rc_tmp.bottom = rc_tmp.top + size.cy;
     rc_tmp.left = rc_tmp.right - size.cx;
-    m_draw.SetFont(&theApp.m_font_set.time.GetFont(m_ui_data.full_screen));
+    m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
     m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
-    m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
+    m_draw.SetFont(&theApp.m_font_set.font9.GetFont(theApp.m_ui_data.full_screen));
 }
 
 void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
@@ -1515,7 +1515,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     {
         CRect rc_fps{ rect };
         rc_fps.left = rc_fps.right - DPI(36);
-        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.font8.GetFont(theApp.m_ui_data.full_screen));
         CString str_info;
         str_info.Format(_T("%dFPS"), theApp.m_fps);
         m_draw.DrawWindowText(rc_fps, str_info, m_colors.color_text);
@@ -1533,7 +1533,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         //绘制进度右侧的进度百分比
         CRect rc_percent{ rect };
         rc_percent.left = rc_percent.right - theApp.DPI(24);
-        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.font8.GetFont(theApp.m_ui_data.full_screen));
         CString str_info;
         str_info.Format(_T("%d%%"), progress_percent);
         m_draw.DrawWindowText(rc_percent, str_info, m_colors.color_text);
@@ -1698,10 +1698,11 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     //绘制标题栏文本
     rect_temp.right = rect_temp.left;
     rect_temp.left = m_layout.titlabar_height;
-    CMusicPlayerDlg* pMainWnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     CString title;
-    pMainWnd->GetWindowText(title);
-    m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
+    theApp.m_pMainWnd->GetWindowText(title);
+    static CDrawCommon::ScrollInfo scroll_info{};
+    m_draw.DrawScrollText(rect_temp, title.GetString(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info);
+    //m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
 }
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
@@ -1775,7 +1776,7 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
     else
         info = _T("A-B");
     CFont* pOldFont = m_draw.GetFont();
-    m_draw.SetFont(&theApp.m_font_set.time.GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+    m_draw.SetFont(&theApp.m_font_set.font8.GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
     DrawTextButton(rect, m_buttons[BTN_AB_REPEAT], info, ab_repeat_mode != CPlayer::AM_NONE);
     m_draw.SetFont(pOldFont);
 }

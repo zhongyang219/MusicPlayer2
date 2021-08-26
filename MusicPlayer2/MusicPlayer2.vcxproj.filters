@@ -350,6 +350,7 @@
     <Text Include="ReadMe.txt" />
     <Text Include="Help.txt" />
     <Text Include="Help_en_us.txt" />
+    <Text Include="compile_time.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

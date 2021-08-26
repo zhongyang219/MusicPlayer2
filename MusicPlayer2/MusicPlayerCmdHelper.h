@@ -30,6 +30,8 @@ public:
     std::wstring SearchAlbumCover(const SongInfo& song);
 
     //响应歌曲分级命令
+    //（分级数据会写入到音频文件和song_data.dat文件中。如果文件写入失败，则返回false，否则返回true。
+    //但是如果此文件格式不支持将分级，则只会写入到song_data.dat文件中，函数仍然返回true）
     bool OnRating(const wstring& file_path, DWORD command);
 
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）

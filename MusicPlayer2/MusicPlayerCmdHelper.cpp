@@ -477,11 +477,13 @@ bool CMusicPlayerCmdHelper::OnRating(const wstring& file_path, DWORD command)
         song.rating = static_cast<BYTE>(rating);
         CAudioTag audio_tag(song);
         bool succeed{ audio_tag.WriteAudioRating() };
-        if (succeed)
-        {
-            CSongDataManager::GetInstance().AddItem(file_path, song);
-            CSongDataManager::GetInstance().SetSongDataModified();
-        }
+        if (!CAudioTag::IsFileRatingSupport(CFilePathHelper(file_path).GetFileExtension()))
+            succeed = true;     //如果文件格式不支持写入分级，也返回true
+        //if (succeed)
+        //{
+        CSongDataManager::GetInstance().AddItem(file_path, song);
+        CSongDataManager::GetInstance().SetSongDataModified();
+        //}
         return succeed;
     }
     return true;

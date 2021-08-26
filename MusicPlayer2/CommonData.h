@@ -121,10 +121,10 @@ public:
 
 struct FontSet
 {
-    UIFont normal;				//普通的字体
-    UIFont time;				//显示播放时间
-    UIFont title;				//界面2的歌曲标题
-    UIFont ui4_title;           //界面4的歌曲标题
+    UIFont font9;				//普通的字体
+    UIFont font8;				//显示播放时间
+    UIFont font10;				//界面2的歌曲标题
+    UIFont font12;           //界面4的歌曲标题
 
     UIFont lyric;				//歌词字体
     UIFont lyric_translate;		//歌词翻译的字体
@@ -134,10 +134,10 @@ struct FontSet
 
     void Init()
     {
-        normal.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
-        time.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
-        title.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
-        ui4_title.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font9.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font8.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font10.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font12.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
     }
 };
 
@@ -193,6 +193,7 @@ struct LyricSettingData
     bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
     wstring lyric_path;							//歌词文件夹的路径
     bool use_inner_lyric_first{};				//优先使用内嵌歌词
+    bool show_translate{ true };		        //歌词是否显示翻译
 
     enum LyricSavePolicy		//歌词保存策略
     {
@@ -517,7 +518,6 @@ struct IconSet
 //界面相关的一些选项
 struct UIData
 {
-    bool show_translate{ true };		//歌词是否显示翻译
     bool narrow_mode;					//窄界面模式
     bool show_playlist{ true };
     bool show_menu_bar{ true };

@@ -676,6 +676,8 @@
 #define IDI_ICON19                      540
 #define IDI_RESTORE_D                   540
 #define IDS_LIGHT                       540
+#define IDR_TEXT2                       540
+#define IDR_COMPILE_TIME                540
 #define IDS_SHOW_HIDE_PLAYER            541
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
@@ -809,6 +811,7 @@
 #define IDC_CORTANA_OPAQUE              1035
 #define IDC_SEARCH_BOX_OPAQUE_CHECK     1035
 #define IDC_DISABLE_DRAGE_SORT_CHECK    1035
+#define IDC_SHOW_LYRIC_TRANSLATE_CHECK  1035
 #define IDC_FILE_TYPE_EDIT              1036
 #define IDC_SLIDER6                     1036
 #define IDC_EDIT4                       1037
@@ -1052,6 +1055,7 @@
 #define IDC_ID3V2_TYPE_COMBO            1185
 #define IDC_GITHUB_RADIO                1186
 #define IDC_GITEE_RADIO                 1187
+#define IDC_ORIGINAL_STATIC             1187
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1476,9 +1480,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        540
+#define _APS_NEXT_RESOURCE_VALUE        541
 #define _APS_NEXT_COMMAND_VALUE         33343
-#define _APS_NEXT_CONTROL_VALUE         1187
+#define _APS_NEXT_CONTROL_VALUE         1188
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

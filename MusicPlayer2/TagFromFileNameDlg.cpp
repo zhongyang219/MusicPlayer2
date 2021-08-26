@@ -39,6 +39,11 @@ wstring CTagFromFileNameDlg::GetFormularSelected() const
     return m_formular_selected;
 }
 
+void CTagFromFileNameDlg::HideOriginalBtn(bool hide)
+{
+    m_hide_original_btn = hide;
+}
+
 void CTagFromFileNameDlg::SaveConfig() const
 {
     CIniHelper ini(theApp.m_config_path);
@@ -54,14 +59,24 @@ void CTagFromFileNameDlg::LoadConfig()
     ini.GetStringList(L"tag_edit", L"default_formular", m_default_formular, default_formular);
 }
 
-void CTagFromFileNameDlg::InitComboList()
+wstring CTagFromFileNameDlg::InitComboList()
 {
+    wstring first_item;
     m_format_combo.ResetContent();
     for (const auto& formular : m_default_formular)
     {
+        //如果隐藏了“原文件名”按钮，则不在下拉列表中添加含有“原文件名”的项
+        if (m_hide_original_btn)
+        {
+            if (formular.find(FORMULAR_ORIGINAL) != std::wstring::npos)
+                continue;
+        }
+        if (first_item.empty())
+            first_item = formular;
         m_format_combo.AddString(formular.c_str());
     }
     m_format_combo.AddString(CCommon::LoadText(IDS_CLEAR_HISTORY));
+    return first_item;
 }
 
 void CTagFromFileNameDlg::InsertTag(const wchar_t* tag)
@@ -162,9 +177,15 @@ BOOL CTagFromFileNameDlg::OnInitDialog()
     SetDlgItemText(IDC_COMMENT_BUTTON, FORMULAR_COMMENT);
     SetDlgItemText(IDC_ORIGINAL_BUTTON, FORMULAR_ORIGINAL);
 
-    InitComboList();
-    if (!m_default_formular.empty())
-        m_format_combo.SetWindowText(m_default_formular.front().c_str());
+    wstring first_item = InitComboList();
+    if (!first_item.empty())
+        m_format_combo.SetWindowText(first_item.c_str());
+
+    if (m_hide_original_btn)
+    {
+        GetDlgItem(IDC_ORIGINAL_STATIC)->ShowWindow(SW_HIDE);
+        GetDlgItem(IDC_ORIGINAL_BUTTON)->ShowWindow(SW_HIDE);
+    }
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
