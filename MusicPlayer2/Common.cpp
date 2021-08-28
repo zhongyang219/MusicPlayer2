@@ -773,9 +773,9 @@ _tstring CCommon::FileRename(const _tstring& file_path, const _tstring& new_file
     dir = file_path.substr(0, index + 1);
 
     _tstring extension;
-    index = file_path.rfind(_T('.'));
-    if (index != _tstring::npos && index < file_path.size() - 1)
-        extension = file_path.substr(index);
+    size_t index_ext = file_path.rfind(_T('.'));
+    if (index_ext < file_path.size() - 1 && index_ext > index)
+        extension = file_path.substr(index_ext);
 
     _tstring new_file_path = dir + new_file_name + extension;
     try
