@@ -1698,10 +1698,8 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     //绘制标题栏文本
     rect_temp.right = rect_temp.left;
     rect_temp.left = m_layout.titlabar_height;
-    CString title;
-    theApp.m_pMainWnd->GetWindowText(title);
     static CDrawCommon::ScrollInfo scroll_info{};
-    m_draw.DrawScrollText(rect_temp, title.GetString(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info);
+    m_draw.DrawScrollText(rect_temp, theApp.m_window_title.GetString(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info);
     //m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
 }
 

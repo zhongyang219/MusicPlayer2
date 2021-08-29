@@ -68,6 +68,8 @@ public:
 
     int m_fps{};
 
+    CString m_window_title;        //窗口的标题
+
     volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
     volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
     volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
