@@ -495,4 +495,6 @@ public:
     afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
     afx_msg void OnPlaylistViewArtist();
     afx_msg void OnPlaylistViewAlbum();
+protected:
+    afx_msg LRESULT OnVolumeChanged(WPARAM wParam, LPARAM lParam);
 };

@@ -150,8 +150,9 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_PROPERTY_DIALOG_MODIFIED (WM_USER+134)       //属性对话框中进行了编辑
 #define WM_CURRENT_FILE_ALBUM_COVER_CHANGED (WM_USER+135)
 #define WM_PORPERTY_ONLINE_INFO_ACQUIRED (WM_USER+136)
+#define WM_VOLUME_CHANGED (WM_USER+139)             //音量变化时发送的消息
 
-#define WM_NEXT_USER_MSG (WM_USER+139)
+#define WM_NEXT_USER_MSG (WM_USER+140)
 
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

@@ -291,6 +291,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_WM_WINDOWPOSCHANGED()
     ON_COMMAND(ID_PLAYLIST_VIEW_ARTIST, &CMusicPlayerDlg::OnPlaylistViewArtist)
     ON_COMMAND(ID_PLAYLIST_VIEW_ALBUM, &CMusicPlayerDlg::OnPlaylistViewAlbum)
+    ON_MESSAGE(WM_VOLUME_CHANGED, &CMusicPlayerDlg::OnVolumeChanged)
 END_MESSAGE_MAP()
 
 
@@ -5850,4 +5851,14 @@ void CMusicPlayerDlg::OnPlaylistViewAlbum()
         CMusicPlayerCmdHelper helper;
         helper.OnViewAlbum(CPlayer::GetInstance().GetPlayList()[m_item_selected]);
     }
+}
+
+LRESULT CMusicPlayerDlg::OnVolumeChanged(WPARAM wParam, LPARAM lParam)
+{
+    auto* cur_ui = GetCurrentUi();
+    if (cur_ui != nullptr)
+    {
+        cur_ui->UpdateVolumeToolTip();
+    }
+    return 0;
 }

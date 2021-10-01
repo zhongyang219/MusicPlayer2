@@ -623,6 +623,7 @@ void CPlayer::SetVolume()
 	volume = volume * theApp.m_nc_setting_data.volume_map / 100;
 	m_pCore->SetVolume(volume);
 	GetPlayerCoreError(L"SetVolume");
+    SendMessage(theApp.m_pMainWnd->m_hWnd, WM_VOLUME_CHANGED, 0, 0);
 }
 
 

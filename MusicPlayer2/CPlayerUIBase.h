@@ -44,6 +44,7 @@ public:
     void UpdatePlayPauseButtonTip() override;
     virtual void UpdateFullScreenTip() override;
     void UpdateTitlebarBtnToolTip();       //更新标题栏上的最大化/还原按钮的鼠标提示
+    virtual void UpdateVolumeToolTip();
 
     virtual bool SetCursor() override;
     virtual void MouseLeave() override;
@@ -150,6 +151,7 @@ protected:
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
 
     wstring GetDisplayFormatString();       //获取显示格式的字符串
+    CString GetVolumeTooltipString();       //获取音量鼠标提示字符串
 
     int DPI(int pixel);
     int DPI(double pixel);

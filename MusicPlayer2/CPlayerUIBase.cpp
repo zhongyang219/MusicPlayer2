@@ -952,6 +952,11 @@ void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
     m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetClassId());
 }
 
+void CPlayerUIBase::UpdateVolumeToolTip()
+{
+    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetClassId());
+}
+
 void CPlayerUIBase::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)
@@ -1158,6 +1163,13 @@ wstring CPlayerUIBase::GetDisplayFormatString()
         swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.GetString());
     return buff;
 
+}
+
+CString CPlayerUIBase::GetVolumeTooltipString()
+{
+    CString tooltip;
+    tooltip.Format(_T("%s: %d%%\r\n%s"), CCommon::LoadText(IDS_VOLUME).GetString(), CPlayer::GetInstance().GetVolume(), CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME).GetString());
+    return tooltip;
 }
 
 int CPlayerUIBase::DPI(int pixel)
@@ -1906,7 +1918,7 @@ void CPlayerUIBase::AddToolTips()
 {
     AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
     AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
-    AddMouseToolTip(BTN_VOLUME, CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME));
+    AddMouseToolTip(BTN_VOLUME, GetVolumeTooltipString());
     AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, _T(" (Ctrl+U)")));
     AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, _T(" (Ctrl+E)")));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, _T(" (Ctrl+I)")));
