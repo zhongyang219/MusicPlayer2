@@ -679,7 +679,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     DrawControlBarBtn(rc_tmp, m_buttons[BTN_SKIN], theApp.m_icon_set.skin);
 
     //绘制迷你模式按钮
-    if (rect.Width() >= DPI(190))
+    if (rect.Width() >= DPI(174))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         //m_buttons[BTN_MINI].enable = !theApp.m_ui_data.full_screen;
@@ -691,7 +691,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     }
 
     //绘制曲目信息按钮
-    if (rect.Width() >= DPI(214))
+    if (rect.Width() >= DPI(198))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_INFO], theApp.m_icon_set.info);
@@ -702,7 +702,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     }
 
     //绘制查找按钮
-    if (rect.Width() >= DPI(238))
+    if (rect.Width() >= DPI(222))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_FIND], theApp.m_icon_set.find_songs);
@@ -713,7 +713,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     }
 
     //绘制AB重复按钮
-    if (rect.Width() >= DPI(262))
+    if (rect.Width() >= DPI(246))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect rc_btn = rc_tmp;
@@ -726,7 +726,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     }
 
     //绘制翻译按钮
-    if (draw_translate_button && rect.Width() >= DPI(286))
+    if (draw_translate_button && rect.Width() >= DPI(270))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;
@@ -739,7 +739,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     }
 
     //绘制桌面歌词按钮
-    if (rect.Width() >= DPI(310))
+    if (rect.Width() >= DPI(294))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;
@@ -754,7 +754,7 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     rc_tmp.left = rc_tmp.right = rect.right;
 
     //显示<<<<
-    if (rect.Width() >= DPI(361))
+    if (rect.Width() >= DPI(344))
     {
         int progress;
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
@@ -778,16 +778,9 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 
 
     //显示音量
-    CString vol_str;
-    vol_str.Format(_T(": %d%%"), CPlayer::GetInstance().GetVolume());
-    vol_str = CCommon::LoadText(IDS_VOLUME) + vol_str;
-    int width = m_draw.GetTextExtent(vol_str).cx;
-    if (width <= 0 || width > DPI(72))
-        width = DPI(72);
-
     rc_tmp.right = rc_tmp.left;
-    rc_tmp.left = rc_tmp.right - width - Margin();
-    DrawVolumeButton(rc_tmp, vol_str);
+    rc_tmp.left = rc_tmp.right - DPI(56) - Margin();
+    DrawVolumeButton(rc_tmp);
 }
 
 CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
@@ -1733,22 +1726,73 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
     }
 }
 
-void CPlayerUIBase::DrawVolumeButton(CRect rect, LPCTSTR str, bool adj_btn_top)
+void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_text)
 {
-    if (str == nullptr)
-    {
-        wchar_t buff[64];
-        swprintf_s(buff, CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
-        str = buff;
-    }
-    if (m_buttons[BTN_VOLUME].pressed)
+    auto& btn{ m_buttons[BTN_VOLUME] };
+    if (btn.pressed)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
-    if (m_buttons[BTN_VOLUME].hover)        //鼠标指向音量区域时，以另外一种颜色显示
-        m_draw.DrawWindowText(rect, str, m_colors.color_text_heighlight);
+
+    m_draw.SetDrawArea(rect);
+    //绘制背景
+    //if (btn.pressed || btn.hover)
+    //{
+    //    CRect rect_back{ rect };
+    //    rect_back.DeflateRect(DPI(2), DPI(2));
+    //    BYTE alpha;
+    //    if (IsDrawBackgroundAlpha())
+    //        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    //    else
+    //        alpha = 255;
+    //    COLORREF back_color{};
+    //        if (btn.pressed)
+    //            back_color = m_colors.color_button_pressed;
+    //        else
+    //            back_color = m_colors.color_button_hover;
+    //    if (!theApp.m_app_setting_data.button_round_corners)
+    //        m_draw.FillAlphaRect(rect_back, back_color, alpha);
+    //    else
+    //        m_draw.DrawRoundRect(rect_back, back_color, theApp.DPI(3), alpha);
+    //}
+
+    //绘制图标
+    CRect rect_icon{ rect };
+    rect_icon.right = rect_icon.left + rect_icon.Height();
+    //使图标在矩形中居中
+    CRect rc_tmp = rect_icon;
+    IconRes* icon{};
+    if (CPlayer::GetInstance().GetVolume() >= 66)
+        icon = &theApp.m_icon_set.volume3;
+    else if (CPlayer::GetInstance().GetVolume() >= 33)
+        icon = &theApp.m_icon_set.volume2;
     else
-        m_draw.DrawWindowText(rect, str, m_colors.color_text);
+        icon = &theApp.m_icon_set.volume1;
+    CSize icon_size = icon->GetSize(IsDrawLargeIcon());
+    rc_tmp.left = rect_icon.left + (rect_icon.Width() - icon_size.cx) / 2;
+    rc_tmp.top = rect_icon.top + (rect_icon.Height() - icon_size.cy) / 2;
+    rc_tmp.right = rc_tmp.left + icon_size.cx;
+    rc_tmp.bottom = rc_tmp.top + icon_size.cy;
+
+    bool is_light_icon = (theApp.m_app_setting_data.dark_mode);
+    const HICON& hIcon = icon->GetIcon(!is_light_icon, IsDrawLargeIcon());
+    m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
+
+
+    //绘制文本
+    if (show_text && rect_icon.right < rect.right)
+    {
+        CRect rect_text{ rect };
+        rect_text.left = rect_icon.right;
+        wchar_t buff[64];
+        swprintf_s(buff, _T("%d%%"), CPlayer::GetInstance().GetVolume());
+        if (m_buttons[BTN_VOLUME].hover)        //鼠标指向音量区域时，以另外一种颜色显示
+            m_draw.DrawWindowText(rect_text, buff, m_colors.color_text_heighlight);
+        else
+            m_draw.DrawWindowText(rect_text, buff, m_colors.color_text);
+    }
     //设置音量调整按钮的位置
-    m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rect, m_draw_rect);
+    rc_tmp = rect;
+    rc_tmp.bottom = rc_tmp.top + DPI(24);
+    m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
     m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
     m_buttons[BTN_VOLUME_DOWN].rect = m_buttons[BTN_VOLUME].rect;
     m_buttons[BTN_VOLUME_DOWN].rect.bottom += DPI(4);
@@ -1763,6 +1807,18 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, LPCTSTR str, bool adj_btn_top)
     m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + DPI(27);      //设置单个音量调整按钮的宽度
     m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
     m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
+
+    //如果不显示音量文本且显示了音量调整按钮，则在按钮旁边显示音量
+    if (m_show_volume_adj && !show_text)
+    {
+        CRect rect_text{ m_buttons[BTN_VOLUME_UP].rect };
+        wchar_t buff[64];
+        swprintf_s(buff, _T("%d%%"), CPlayer::GetInstance().GetVolume());
+        int width{ m_draw.GetTextExtent(buff).cx };
+        rect_text.left = rect_text.right + DPI(2);
+        rect_text.right = rect_text.left + width;
+        m_draw.DrawWindowText(rect_text, buff, m_colors.color_text);
+    }
 }
 
 void CPlayerUIBase::DrawABRepeatButton(CRect rect)

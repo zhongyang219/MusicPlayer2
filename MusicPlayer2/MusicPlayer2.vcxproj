@@ -598,6 +598,12 @@
     <Image Include="res\stop_white.ico" />
     <Image Include="res\tag.ico" />
     <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\volume1.ico" />
+    <Image Include="res\volume1_d.ico" />
+    <Image Include="res\volume2.ico" />
+    <Image Include="res\volume2_d.ico" />
+    <Image Include="res\volume3.ico" />
+    <Image Include="res\volume3_d.ico" />
     <Image Include="res\year_d.ico" />
     <Image Include="res\上一曲.ico" />
     <Image Include="res\下一曲.ico" />

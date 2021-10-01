@@ -679,6 +679,13 @@
 #define IDR_TEXT2                       540
 #define IDR_COMPILE_TIME                540
 #define IDS_SHOW_HIDE_PLAYER            541
+#define IDI_VOLUME3_D                   541
+#define IDI_VOLUME2_D                   542
+#define IDI_VOLUME1_D                   543
+#define IDI_VOLUME3                     544
+#define IDI_VOLUME2                     545
+#define IDI_ICON21                      546
+#define IDI_VOLUME1                     546
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1480,7 +1487,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        541
+#define _APS_NEXT_RESOURCE_VALUE        547
 #define _APS_NEXT_COMMAND_VALUE         33343
 #define _APS_NEXT_CONTROL_VALUE         1188
 #define _APS_NEXT_SYMED_VALUE           101

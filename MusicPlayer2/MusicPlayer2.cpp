@@ -480,6 +480,9 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.lyric_forward.Load(IDI_LYRIC_FORWARD_D, NULL, DPI(16));
     m_icon_set.lyric_delay.Load(IDI_LYRIC_DELAY_D, NULL, DPI(16));
     m_icon_set.recent_songs.Load(IDI_RECENT_SONG_D, NULL, DPI(16));
+    m_icon_set.volume1.Load(IDI_VOLUME1, IDI_VOLUME1_D, DPI(16));
+    m_icon_set.volume2.Load(IDI_VOLUME2, IDI_VOLUME2_D, DPI(16));
+    m_icon_set.volume3.Load(IDI_VOLUME3, IDI_VOLUME3_D, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));

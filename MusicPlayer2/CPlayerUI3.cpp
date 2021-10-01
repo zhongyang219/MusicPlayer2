@@ -149,17 +149,10 @@ void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
     //绘制音量
     if (m_draw_rect.Width() > DPI(500))
     {
-        CString vol_str;
-        vol_str.Format(_T(": %d%%"), CPlayer::GetInstance().GetVolume());
-        vol_str = CCommon::LoadText(IDS_VOLUME) + vol_str;
-        int width = m_draw.GetTextExtent(vol_str).cx;
-        if (width <= 0 || width > DPI(72))
-            width = DPI(72);
-
         rc_tmp.right = rc_tmp.left;
-        rc_tmp.left = rc_tmp.right - width;
+        rc_tmp.left = rc_tmp.right - DPI(56);
 
-        DrawVolumeButton(rc_tmp, vol_str, true);
+        DrawVolumeButton(rc_tmp, true);
     }
 
     //绘制进度条

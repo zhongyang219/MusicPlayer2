@@ -121,7 +121,7 @@ protected:
     int DrawTopRightIcons(bool always_show_full_screen = false);            //绘制右上角的图标。返回总宽度
     void DrawCurrentTime();             //在右上角绘制当前系统时间
     void DrawAlbumCover(CRect rect);
-    void DrawVolumeButton(CRect rect, LPCTSTR str = nullptr, bool adj_btn_top = false);     //str：要显示的文本（音量：xx%），如果为nullptr，则会自动设置；adj_btn_top：点击后弹出的音量调整按钮是否在上方
+    void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
 

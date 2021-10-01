@@ -114,6 +114,12 @@ void CPlayerUI5::_DrawInfo(CRect draw_rect, bool reset)
     //绘制红心按钮
     rect_btn.MoveToX(rect_btn.right + btn_gap);
     DrawUIButton(btnRectChg(rect_btn), m_buttons[BTN_FAVOURITE], (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite));
+    //绘制音量按钮
+    rect_btn.MoveToX(rect_btn.right + btn_gap);
+    DrawVolumeButton(btnRectChg(rect_btn), false, false);
+
+    //绘制音量调整按钮
+    DrawVolumnAdjBtn();
 
     //绘制播放列表按钮
     rect_btn.MoveToX(rect_control_bar.right - btn_size);
