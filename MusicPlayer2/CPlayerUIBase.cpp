@@ -1168,7 +1168,10 @@ wstring CPlayerUIBase::GetDisplayFormatString()
 CString CPlayerUIBase::GetVolumeTooltipString()
 {
     CString tooltip;
-    tooltip.Format(_T("%s: %d%%\r\n%s"), CCommon::LoadText(IDS_VOLUME).GetString(), CPlayer::GetInstance().GetVolume(), CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME).GetString());
+    if (CPlayer::GetInstance().GetVolume() <= 0)
+        tooltip.Format(_T("%s: %s\r\n%s"), CCommon::LoadText(IDS_VOLUME).GetString(), CCommon::LoadText(IDS_MUTE).GetString(), CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME).GetString());
+    else
+        tooltip.Format(_T("%s: %d%%\r\n%s"), CCommon::LoadText(IDS_VOLUME).GetString(), CPlayer::GetInstance().GetVolume(), CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME).GetString());
     return tooltip;
 }
 
@@ -1796,12 +1799,15 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     {
         CRect rect_text{ rect };
         rect_text.left = rect_icon.right;
-        wchar_t buff[64];
-        swprintf_s(buff, _T("%d%%"), CPlayer::GetInstance().GetVolume());
-        if (m_buttons[BTN_VOLUME].hover)        //鼠标指向音量区域时，以另外一种颜色显示
-            m_draw.DrawWindowText(rect_text, buff, m_colors.color_text_heighlight);
+        CString str;
+        if (CPlayer::GetInstance().GetVolume() <= 0)
+            str = CCommon::LoadText(IDS_MUTE).GetString();
         else
-            m_draw.DrawWindowText(rect_text, buff, m_colors.color_text);
+            str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
+        if (m_buttons[BTN_VOLUME].hover)        //鼠标指向音量区域时，以另外一种颜色显示
+            m_draw.DrawWindowText(rect_text, str, m_colors.color_text_heighlight);
+        else
+            m_draw.DrawWindowText(rect_text, str, m_colors.color_text);
     }
     //设置音量调整按钮的位置
     rc_tmp = rect;
