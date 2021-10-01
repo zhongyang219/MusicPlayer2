@@ -483,6 +483,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.volume1.Load(IDI_VOLUME1, IDI_VOLUME1_D, DPI(16));
     m_icon_set.volume2.Load(IDI_VOLUME2, IDI_VOLUME2_D, DPI(16));
     m_icon_set.volume3.Load(IDI_VOLUME3, IDI_VOLUME3_D, DPI(16));
+    m_icon_set.volume0.Load(IDI_VOLUME0, IDI_VOLUME0_D, DPI(16));
 
     m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
     m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));

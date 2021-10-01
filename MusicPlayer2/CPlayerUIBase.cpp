@@ -1772,7 +1772,9 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     //使图标在矩形中居中
     CRect rc_tmp = rect_icon;
     IconRes* icon{};
-    if (CPlayer::GetInstance().GetVolume() >= 66)
+    if (CPlayer::GetInstance().GetVolume() <= 0)
+        icon = &theApp.m_icon_set.volume0;
+    else if (CPlayer::GetInstance().GetVolume() >= 66)
         icon = &theApp.m_icon_set.volume3;
     else if (CPlayer::GetInstance().GetVolume() >= 33)
         icon = &theApp.m_icon_set.volume2;

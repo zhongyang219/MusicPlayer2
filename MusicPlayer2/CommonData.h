@@ -466,6 +466,7 @@ struct IconSet
     IconRes volume1;
     IconRes volume2;
     IconRes volume3;
+    IconRes volume0;
 
     IconRes stop_l;
     IconRes previous_l;

@@ -1583,23 +1583,29 @@
     <Image Include="res\star.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\volume3_d.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\volume0.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\volume2_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\volume1_d.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\volume3.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\volume2.ico">
-      <Filter>资源文件</Filter>
+    <Image Include="res\volume0_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\volume1.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\volume1_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\volume2.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\volume2_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\volume3.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\volume3_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

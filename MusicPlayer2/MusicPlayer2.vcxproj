@@ -598,6 +598,8 @@
     <Image Include="res\stop_white.ico" />
     <Image Include="res\tag.ico" />
     <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\volume0.ico" />
+    <Image Include="res\volume0_d.ico" />
     <Image Include="res\volume1.ico" />
     <Image Include="res\volume1_d.ico" />
     <Image Include="res\volume2.ico" />
