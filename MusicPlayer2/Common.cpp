@@ -256,7 +256,8 @@ wstring CCommon::StringMerge(const vector<wstring>& strings, wchar_t div_ch)
 	{
 		result.append(str).push_back(div_ch);
 	}
-	result.pop_back();
+    if (!strings.empty())
+	    result.pop_back();
 	return result;
 }
 

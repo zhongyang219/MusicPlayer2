@@ -78,6 +78,6 @@ public:
 protected:
     afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 };
-
-

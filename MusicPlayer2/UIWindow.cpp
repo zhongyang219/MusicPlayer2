@@ -100,7 +100,7 @@ void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
             pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
     }
 
-    CStatic::OnLButtonDblClk(nFlags, point);
+    //CStatic::OnLButtonDblClk(nFlags, point);
 }
 
 

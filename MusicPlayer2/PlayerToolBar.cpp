@@ -136,6 +136,7 @@ BEGIN_MESSAGE_MAP(CPlayerToolBar, CStatic)
     ON_WM_MOUSELEAVE()
     ON_WM_MOUSEHOVER()
     ON_MESSAGE(WM_INITMENU, &CPlayerToolBar::OnInitmenu)
+    ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 
@@ -392,4 +393,12 @@ BOOL CPlayerToolBar::OnCommand(WPARAM wParam, LPARAM lParam)
     GetCmdReciveWindow()->SendMessage(WM_COMMAND, wParam, lParam);        //转发WM_COMMAND消息
 
     return CStatic::OnCommand(wParam, lParam);
+}
+
+
+void CPlayerToolBar::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+
+    //CStatic::OnLButtonDblClk(nFlags, point);
 }
