@@ -2959,6 +2959,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             m_ui_list[ui_index]->ClearBtnRect();
             DrawInfo(true);
             m_ui_list[ui_index]->UpdateRepeatModeToolTip();
+            m_ui_list[ui_index]->UpdateVolumeToolTip();
         }
     }
 
@@ -4311,7 +4312,10 @@ void CMusicPlayerDlg::OnSwitchUi()
 
     DrawInfo(true);
     if (pCurUi != nullptr)
+    {
         pCurUi->UpdateRepeatModeToolTip();
+        pCurUi->UpdateVolumeToolTip();
+    }
 }
 
 void CMusicPlayerDlg::OnVolumeUp()

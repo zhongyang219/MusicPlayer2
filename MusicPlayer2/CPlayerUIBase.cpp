@@ -1832,12 +1832,15 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     if (m_show_volume_adj && !show_text)
     {
         CRect rect_text{ m_buttons[BTN_VOLUME_UP].rect };
-        wchar_t buff[64];
-        swprintf_s(buff, _T("%d%%"), CPlayer::GetInstance().GetVolume());
-        int width{ m_draw.GetTextExtent(buff).cx };
+        CString str;
+        if (CPlayer::GetInstance().GetVolume() <= 0)
+            str = CCommon::LoadText(IDS_MUTE);
+        else
+            str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
+        int width{ m_draw.GetTextExtent(str).cx };
         rect_text.left = rect_text.right + DPI(2);
         rect_text.right = rect_text.left + width;
-        m_draw.DrawWindowText(rect_text, buff, m_colors.color_text);
+        m_draw.DrawWindowText(rect_text, str, m_colors.color_text);
     }
 }
 
