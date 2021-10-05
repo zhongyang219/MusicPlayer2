@@ -29,6 +29,7 @@ struct SongInfo
     unsigned __int64 modified_time{};        //修改时间
     int track{};        //音轨序号
     int listen_time{};          //歌曲累计听的时间（单位为秒）
+    int freq{};         //采样频率
     Time lengh{};           //歌曲的长度
     Time start_pos{};       //音频的起始位置，用于cue分轨
     Time end_pos{};
@@ -40,20 +41,21 @@ struct SongInfo
     bool info_acquired{ false };        //如果已经获取到了信息，则为ture
     bool is_favourite{ false };
     bool is_cue{ false };       //如果曲目是cue分轨，则为true
-    BYTE rating{ 255 };          //歌曲分级
+    BYTE rating{ 255 };         //歌曲分级
+    BYTE bits{};                //位深度
+    BYTE channels{};            //声道数
 
-    //bit0, 如果为true，则不在线下载歌词
-    bool NoOnlineLyric() const { return CCommon::GetNumberBit(flags, 0); }
-    void SetNoOnlineLyric(bool val) { CCommon::SetNumberBit(flags, 0, val); }
+    //定义一组获取和设置一个标志位的方法。
+    //func_name：方法的名称（获取标志位的方法名称为func_name，设置标志位的方法名称为Set+func_name）
+    //flag_bit：标志位在flags的第几个bit
+#define DECLARE_SONG_INFO_FLAGS(func_name, flag_bit) \
+    bool func_name() const { return CCommon::GetNumberBit(flags, flag_bit);} \
+    void Set##func_name(bool val) { CCommon::SetNumberBit(flags, flag_bit, val); }
 
-    //bit1, 如果为true，则不在线下载专辑封面
-    bool NoOnlineAlbumCover() const { return CCommon::GetNumberBit(flags, 1); }
-    void SetNoOnlineAlbumCover(bool val) { CCommon::SetNumberBit(flags, 1, val); }
-
-    //bit2, 如果为true，则总是使用外部封面
-    bool AlwaysUseExternalAlbumCover() const { return CCommon::GetNumberBit(flags, 2); }
-    void SetAlwaysUseExternalAlbumCover(bool val) { CCommon::SetNumberBit(flags, 2, val); }
-
+    DECLARE_SONG_INFO_FLAGS(NoOnlineLyric, 0)    //bit0, 如果为true，则不在线下载歌词
+    DECLARE_SONG_INFO_FLAGS(NoOnlineAlbumCover, 1)   //bit1, 如果为true，则不在线下载专辑封面
+    DECLARE_SONG_INFO_FLAGS(AlwaysUseExternalAlbumCover, 2)    //bit2, 如果为true，则总是使用外部封面
+    DECLARE_SONG_INFO_FLAGS(ChannelInfoAcquired, 3);            //采样率、位深度、声道数信息是否已获取
 
     //根据文件名的比较函数，用于以文件名排序
     static bool ByFileName(const SongInfo& a, const SongInfo& b)
@@ -160,6 +162,9 @@ struct SongInfo
         is_favourite = song_info.is_favourite;
         info_acquired = song_info.info_acquired;
         modified_time = song_info.modified_time;
+        freq = song_info.freq;
+        channels = song_info.channels;
+        bits = song_info.bits;
     }
 
     bool IsTitleEmpty() const

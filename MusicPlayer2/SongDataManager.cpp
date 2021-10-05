@@ -30,7 +30,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.720"));			//写入数据版本
+    ar << CString(_T("2.730"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -58,6 +58,9 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << CString(song_data.second.lyric_file.c_str())
             << song_data.second.modified_time
             << song_data.second.rating
+            << song_data.second.freq
+            << song_data.second.bits
+            << song_data.second.channels
             ;
     }
     // 关闭CArchive对象
@@ -195,6 +198,13 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.rating;
             }
 
+            if (m_data_version >= _T("2.730"))
+            {
+                ar >> song_info.freq;
+                ar >> song_info.bits;
+                ar >> song_info.channels;
+            }
+
             m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
         }
     }
@@ -236,11 +246,14 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
     song.song_id = song_info.song_id;
     //song.is_favourite = song_info.is_favourite;
     song.rating = song_info.rating;
+    song.freq = song_info.freq;
+    song.channels = song_info.channels;
+    song.bits = song_info.bits;
 
     SetSongDataModified();
 }
 
-SongInfo CSongDataManager::GetSongInfo(const wstring& file_path)
+SongInfo CSongDataManager::GetSongInfo(const wstring& file_path) const
 {
     SongInfo song;
     auto iter = m_song_data.find(file_path);

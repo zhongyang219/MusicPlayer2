@@ -148,20 +148,30 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 	int song_num = GetInstance().m_playlist.size();
 	for (int i{}; i < song_num; i++)
 	{
+        SongInfo& song{ GetInstance().m_playlist[i] };
+ 		wstring file_path{ song.file_path };
+       SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo(song.file_path) };
 		pInfo->process_percent = i * 100 / song_num + 1;
 
 		//获取cue音轨的信息
-		if (GetInstance().m_playlist[i].is_cue)
+		if (song.is_cue)
 		{
 			if (pInfo->refresh_info)
 			{
 				auto& song{ GetInstance().m_playlist[i] };
 				static SongInfo last_song;
-				if (last_song.file_path != song.file_path)
-					GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, AF_BITRATE);  //获取比特率，如果上次获取到的是同一个文件中的音轨，则不再从文件获取比特率
-				else
-					song.bitrate = last_song.bitrate;
-				last_song = song;
+                if (last_song.file_path != song.file_path)
+                {
+                    GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, AF_BITRATE | AF_CHANNEL_INFO);  //获取比特率，如果上次获取到的是同一个文件中的音轨，则不再从文件获取比特率
+                }
+                else
+                {
+                    song.bitrate = last_song.bitrate;
+                    song.freq = last_song.freq;
+                    song.channels = last_song.channels;
+                    song.bits = last_song.channels;
+                }
+                last_song = song;
 				if (song.end_pos == 0)   //如果没有获取到cue音轨的结束时间，则将整轨的长度作为结束时间
 				{
 					GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, AF_BITRATE | AF_LENGTH);
@@ -173,34 +183,33 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 			continue;
 		}
 
-		CSongDataManager::GetInstance().UpdateFileModifiedTime(GetInstance().m_playlist[i].file_path, pInfo->refresh_info);
-		if (!pInfo->refresh_info)
+		CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);
+        if (!pInfo->refresh_info)
 		{
-			//wstring file_name{ GetInstance().m_playlist[i].file_name };
-			if (GetInstance().m_playlist[i].file_path.empty())
+			//wstring file_name{ song.file_name };
+			if (song.file_path.empty())
 				continue;
-			if (CSongDataManager::GetInstance().IsItemExist(GetInstance().m_playlist[i].file_path))		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
+			if (song_info.ChannelInfoAcquired() && CSongDataManager::GetInstance().IsItemExist(song.file_path))		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
 			{
-				GetInstance().m_playlist[i].CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(GetInstance().m_playlist[i].file_path));
-				//GetInstance().m_playlist[i] = iter->second;
-				//GetInstance().m_playlist[i].file_name = file_name;
-				//GetInstance().m_playlist[i].file_path = iter->first;
+                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
+				//song = iter->second;
+				//song.file_name = file_name;
+				//song.file_path = iter->first;
 				continue;
 			}
 		}
-		wstring file_path{ GetInstance().m_playlist[i].file_path };
 		bool is_osu_file{ COSUPlayerHelper::IsOsuFile(file_path) };
-		int flag = AF_LENGTH | AF_BITRATE;
-		if (!is_osu_file)
+		int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
+		if (!is_osu_file && !CSongDataManager::GetInstance().IsItemExist(song.file_path))
 			flag |= AF_TAG_INFO;
-		GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), GetInstance().m_playlist[i], flag);
+		GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), song, flag);
 		if (is_osu_file)
 		{
-			COSUPlayerHelper::GetOSUAudioTitleArtist(GetInstance().m_playlist[i]);
+			COSUPlayerHelper::GetOSUAudioTitleArtist(song);
 		}
-		CSongDataManager::GetInstance().SaveSongInfo(GetInstance().m_playlist[i]);
+        CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).SetChannelInfoAcquired(true);
+		CSongDataManager::GetInstance().SaveSongInfo(song);
 		//获取分级信息
-		SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
 		CAudioTag audio_tag(song_info);
 		audio_tag.GetAudioRating();
 		CSongDataManager::GetInstance().SaveSongInfo(song_info);

@@ -19,7 +19,7 @@ public:
 
     void SaveSongInfo(const SongInfo& song_info);       //将一个歌曲信息保存到m_song_data中
 
-    SongInfo GetSongInfo(const wstring& file_path);
+    SongInfo GetSongInfo(const wstring& file_path) const;
     SongInfo& GetSongInfoRef(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在不会插入新的记录）
     SongInfo& GetSongInfoRef2(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在会插入新的记录）
 

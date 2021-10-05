@@ -14,7 +14,10 @@ enum AudioInfoFlag
 {
     AF_LENGTH = 1,
     AF_BITRATE = 2,
-    AF_TAG_INFO = 4
+    AF_TAG_INFO = 4,
+    AF_CHANNEL_INFO = 8,
+
+    AF_ALL = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO
 };
 
 enum PlayerCoreType

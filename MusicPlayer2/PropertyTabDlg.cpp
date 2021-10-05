@@ -130,6 +130,31 @@ void CPropertyTabDlg::ShowInfo()
         }
         m_bit_rate_edit.SetWindowText(info);
 
+        //显示采样频率
+        CString freq;
+        freq.Format(_T("%.1fkHz"), m_all_song_info[m_index].freq / 1000.0f);
+        SetDlgItemText(IDC_SAMPLE_FREQ, freq);
+
+        ////显示位深度
+        //CString bits;
+        //bits.Format(_T("%dBit"), m_all_song_info[m_index].bits);
+        //SetDlgItemText(IDC_BITS_DIPTH, bits);
+
+        //显示位声道数
+        int chans{ m_all_song_info[m_index].channels };
+        CString chans_str;
+        if (chans == 1)
+            chans_str = CCommon::LoadText(IDS_MONO);
+        else if (chans == 2)
+            chans_str = CCommon::LoadText(IDS_STEREO);
+        else if (chans == 6)
+            chans_str = CCommon::LoadText(_T("5.1 "), IDS_CHANNEL);
+        else if (chans == 8)
+            chans_str = CCommon::LoadText(_T("7.1 "), IDS_CHANNEL);
+        else if (chans > 2)
+            chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), chans);
+        SetDlgItemText(IDC_CHANNELS, chans_str);
+
         //显示歌词路径
         if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
             m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_INNER_LYRIC));

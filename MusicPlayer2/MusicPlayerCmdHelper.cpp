@@ -505,20 +505,26 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& file_path : all_media_files)
     {
-        if (!CSongDataManager::GetInstance().IsItemExist(file_path) || (refresh && IsSongNewer(file_path)))       //如果还没有获取到该歌曲的信息，或者文件的最后修改时间比上次获取到的新，则在这里获取
+        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
+        bool get_song_info{ !CSongDataManager::GetInstance().IsItemExist(file_path) || (refresh && IsSongNewer(file_path)) };
+        if (get_song_info || !song_info.ChannelInfoAcquired())       //如果还没有获取到该歌曲的信息，或者文件的最后修改时间比上次获取到的新，则在这里获取
         {
-            SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
+            int audio_info_flags{ AF_ALL };
+            if (!get_song_info)
+                audio_info_flags = AF_CHANNEL_INFO;
             song_info.file_path = file_path;
             IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
-            if (pPlayerCore == nullptr)
-                break;
-            pPlayerCore->GetAudioInfo(file_path.c_str(), song_info);
-            if (!song_info.lengh.isZero() || CFilePathHelper(file_path).GetFileExtension() == L"cue")
+            if (pPlayerCore != nullptr)
             {
-                CAudioTag audio_tag(song_info);
-                audio_tag.GetAudioRating();
-                CSongDataManager::GetInstance().AddItem(file_path, song_info);
-                theApp.m_media_num_added++;
+                pPlayerCore->GetAudioInfo(file_path.c_str(), song_info, audio_info_flags);
+                song_info.SetChannelInfoAcquired(true);
+                if (!song_info.lengh.isZero() || CFilePathHelper(file_path).GetFileExtension() == L"cue")
+                {
+                    CAudioTag audio_tag(song_info);
+                    audio_tag.GetAudioRating();
+                    CSongDataManager::GetInstance().AddItem(file_path, song_info);
+                    theApp.m_media_num_added++;
+                }
             }
         }
     }

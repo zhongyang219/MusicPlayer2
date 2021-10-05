@@ -75,4 +75,3 @@ private:
     _mciSendStringW mciSendStringW;
     _mciGetErrorStringW mciGetErrorStringW;
 };
-

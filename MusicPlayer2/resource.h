@@ -844,6 +844,7 @@
 #define IDC_COLOR_STATIC2               1042
 #define IDC_COLOR_STATIC1               1042
 #define IDC_ITEM_STATIC                 1042
+#define IDC_SAMPLE_FREQ                 1042
 #define IDC_COLOR_STATIC3               1043
 #define IDC_ALBUM_EDIT                  1043
 #define IDC_COLOR_STATIC4               1044
@@ -854,8 +855,11 @@
 #define IDC_TAG_TYPE_STATIC             1045
 #define IDC_COLOR_STATIC6               1046
 #define IDC_DEBUG_INFO_STATIC           1046
+#define IDC_BITS_DIPTH                  1046
 #define IDC_COLOR_STATIC7               1047
 #define IDC_LYRIC_STATIC                1047
+#define IDC_SAMPLE_FREQ2                1047
+#define IDC_CHANNELS                    1047
 #define IDC_TIME_STATIC1                1048
 #define IDC_PROGRESS_STATIC1            1049
 #define IDC_YEAR_EDIT                   1050
