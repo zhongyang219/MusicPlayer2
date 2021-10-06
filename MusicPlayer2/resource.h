@@ -685,6 +685,7 @@
 #define IDI_VOLUME1_D                   543
 #define IDS_UNDEFINED                   543
 #define IDI_VOLUME3                     544
+#define IDS_DELETE_INNER_ALBUM_COVER_INQUERY 544
 #define IDI_VOLUME2                     545
 #define IDI_ICON21                      546
 #define IDI_VOLUME1                     546

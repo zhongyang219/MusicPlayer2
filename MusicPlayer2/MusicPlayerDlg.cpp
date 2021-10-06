@@ -1470,7 +1470,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     //专辑封面
     pMenu->EnableMenuItem(ID_ALBUM_COVER_SAVE_AS, MF_BYCOMMAND | (CPlayer::GetInstance().AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DOWNLOAD_ALBUM_COVER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | ((!CPlayer::GetInstance().IsOsuFile() && !CPlayer::GetInstance().IsInnerCover() && CPlayer::GetInstance().AlbumCoverExist()) ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_ALBUM_COVER, MF_BYCOMMAND | ((!CPlayer::GetInstance().IsOsuFile() /*&& !CPlayer::GetInstance().IsInnerCover()*/ && CPlayer::GetInstance().AlbumCoverExist()) ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ALBUM_COVER_INFO, MF_BYCOMMAND | (CPlayer::GetInstance().AlbumCoverExist() ? MF_ENABLED : MF_GRAYED));
 
     //正在执行格式转换时禁用“格式转换”菜单项
@@ -4057,21 +4057,22 @@ void CMusicPlayerDlg::OnCurrentExploreOnline()
 void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
     // TODO: 在此添加命令处理程序代码
-    if (!CPlayer::GetInstance().IsInnerCover())
+    CString str_info;
+    if (CPlayer::GetInstance().IsInnerCover())
+        str_info = CCommon::LoadText(IDS_DELETE_INNER_ALBUM_COVER_INQUERY);
+    else
+        str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { CPlayer::GetInstance().GetAlbumCoverPath() });
+    if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
-        CString str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { CPlayer::GetInstance().GetAlbumCoverPath() });
-        if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+        if (CPlayer::GetInstance().DeleteAlbumCover())
         {
-            if (CPlayer::GetInstance().DeleteAlbumCover())
-            {
-                SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef2(CPlayer::GetInstance().GetCurrentFilePath()) };
-                song_info.SetNoOnlineAlbumCover(true);
-                CSongDataManager::GetInstance().SetSongDataModified();
-            }
-            else
-            {
-                MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
-            }
+            SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef2(CPlayer::GetInstance().GetCurrentFilePath()) };
+            song_info.SetNoOnlineAlbumCover(true);
+            CSongDataManager::GetInstance().SetSongDataModified();
+        }
+        else
+        {
+            MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
         }
     }
 }
