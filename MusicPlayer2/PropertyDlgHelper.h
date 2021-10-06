@@ -23,6 +23,9 @@ public:
     wstring GetMultiLength();
     wstring GetMultiSize();
     wstring GetMultiBitrate();
+    wstring GetMultiChannels();
+    wstring GetMultiFreq();
+    wstring GetMultiBits();
 
     wstring GetMultiTitle();
     wstring GetMultiArtist();
@@ -65,4 +68,3 @@ public:
 
     static bool IsStringContainsFormular(const wstring& str);
 };
-

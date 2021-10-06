@@ -4,6 +4,7 @@
 #include "FilePathHelper.h"
 #include "COSUPlayerHelper.h"
 #include "AudioTag.h"
+#include "SongInfoHelper.h"
 
 CPropertyDlgHelper::CPropertyDlgHelper(const vector<SongInfo>& songs)
     : m_song_info{ songs }
@@ -63,13 +64,32 @@ wstring CPropertyDlgHelper::GetMultiBitrate()
 {
     return GetMultiValue([](const SongInfo& song)
     {
-        CString info;
-        if (song.bitrate == 0)
-            info = _T("-");
-        else
-            info.Format(_T("%d Kbps"), song.bitrate);
-        return wstring(info.GetString());
+        return wstring(CSongInfoHelper::GetBitrateString(song).GetString());
     }, m_song_info);
+}
+
+wstring CPropertyDlgHelper::GetMultiChannels()
+{
+    return GetMultiValue([](const SongInfo& song)
+        {
+            return wstring(CSongInfoHelper::GetChannelsString(song).GetString());
+        }, m_song_info);
+}
+
+wstring CPropertyDlgHelper::GetMultiFreq()
+{
+    return GetMultiValue([](const SongInfo& song)
+        {
+            return wstring(CSongInfoHelper::GetFreqString(song).GetString());
+        }, m_song_info);
+}
+
+wstring CPropertyDlgHelper::GetMultiBits()
+{
+    return GetMultiValue([](const SongInfo& song)
+        {
+            return wstring(CSongInfoHelper::GetBitsString(song).GetString());
+        }, m_song_info);
 }
 
 wstring CPropertyDlgHelper::GetMultiTitle()

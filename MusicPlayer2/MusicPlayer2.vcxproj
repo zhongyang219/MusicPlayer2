@@ -257,6 +257,7 @@
     <ClInclude Include="SelectItemDlg.h" />
     <ClInclude Include="SliderCtrlEx.h" />
     <ClInclude Include="SongDataManager.h" />
+    <ClInclude Include="SongInfoHelper.h" />
     <ClInclude Include="SpectralDataHelper.h" />
     <ClInclude Include="SpinEdit.h" />
     <ClInclude Include="TagFromFileNameDlg.h" />
@@ -399,6 +400,7 @@
     <ClCompile Include="SelectItemDlg.cpp" />
     <ClCompile Include="SliderCtrlEx.cpp" />
     <ClCompile Include="SongDataManager.cpp" />
+    <ClCompile Include="SongInfoHelper.cpp" />
     <ClCompile Include="SpectralDataHelper.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
     <ClCompile Include="TagFromFileNameDlg.cpp" />

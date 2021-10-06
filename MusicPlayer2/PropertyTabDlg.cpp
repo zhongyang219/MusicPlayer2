@@ -11,7 +11,7 @@
 #include "GetTagOnlineDlg.h"
 #include "MusicPlayerCmdHelper.h"
 #include "TagFromFileNameDlg.h"
-
+#include "SongInfoHelper.h"
 
 // CPropertyTabDlg 对话框
 
@@ -66,6 +66,9 @@ void CPropertyTabDlg::ShowInfo()
         m_song_length_edit.SetWindowText(helper.GetMultiLength().c_str());
         m_file_size_edit.SetWindowText(helper.GetMultiSize().c_str());
         m_bit_rate_edit.SetWindowText(helper.GetMultiBitrate().c_str());
+        SetDlgItemText(IDC_SAMPLE_FREQ, helper.GetMultiFreq().c_str());
+        SetDlgItemText(IDC_BITS_DIPTH, helper.GetMultiBits().c_str());
+        SetDlgItemText(IDC_CHANNELS, helper.GetMultiChannels().c_str());
         m_lyric_file_edit.SetWindowText(_T(""));
         m_title_edit.SetWindowText(helper.GetMultiTitle().c_str());
         m_artist_edit.SetWindowText(helper.GetMultiArtist().c_str());
@@ -75,7 +78,6 @@ void CPropertyTabDlg::ShowInfo()
         m_genre_combo.SetWindowText(helper.GetMultiGenre().c_str());
         m_comment_edit.SetWindowText(helper.GetMultiComment().c_str());
         SetDlgItemText(IDC_TAG_TYPE_STATIC, _T(""));
-
     }
     else
     {
@@ -119,44 +121,16 @@ void CPropertyTabDlg::ShowInfo()
         m_file_size_edit.SetWindowText(CCommon::DataSizeToString(file_size));
 
         //显示比特率
-        CString info;
-        if (file_size == 0 || m_all_song_info[m_index].bitrate == 0)        //文件大小为0、文件长度为0或文件为midi音乐时不显示比特率
-        {
-            info = _T("-");
-        }
-        else
-        {
-            info.Format(_T("%d kbps"), m_all_song_info[m_index].bitrate);
-        }
-        m_bit_rate_edit.SetWindowText(info);
+        m_bit_rate_edit.SetWindowText(CSongInfoHelper::GetBitrateString(m_all_song_info[m_index]));
 
         //显示采样频率
-        CString freq;
-        freq.Format(_T("%.1f kHz"), m_all_song_info[m_index].freq / 1000.0f);
-        SetDlgItemText(IDC_SAMPLE_FREQ, freq);
+        SetDlgItemText(IDC_SAMPLE_FREQ, CSongInfoHelper::GetFreqString(m_all_song_info[m_index]));
 
         //显示位深度
-        CString bits;
-        if (m_all_song_info[m_index].bits == 0)
-            bits = CCommon::LoadText(IDS_UNDEFINED);
-        else
-            bits.Format(_T("%d Bit"), m_all_song_info[m_index].bits);
-        SetDlgItemText(IDC_BITS_DIPTH, bits);
+        SetDlgItemText(IDC_BITS_DIPTH, CSongInfoHelper::GetBitsString(m_all_song_info[m_index]));
 
         //显示位声道数
-        int chans{ m_all_song_info[m_index].channels };
-        CString chans_str;
-        if (chans == 1)
-            chans_str = CCommon::LoadText(IDS_MONO);
-        else if (chans == 2)
-            chans_str = CCommon::LoadText(IDS_STEREO);
-        else if (chans == 6)
-            chans_str = CCommon::LoadText(_T("5.1 "), IDS_CHANNEL);
-        else if (chans == 8)
-            chans_str = CCommon::LoadText(_T("7.1 "), IDS_CHANNEL);
-        else if (chans > 2)
-            chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), chans);
-        SetDlgItemText(IDC_CHANNELS, chans_str);
+        SetDlgItemText(IDC_CHANNELS, CSongInfoHelper::GetChannelsString(m_all_song_info[m_index]));
 
         //显示歌词路径
         if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
@@ -172,6 +146,7 @@ void CPropertyTabDlg::ShowInfo()
         m_artist_edit.SetWindowText(m_all_song_info[m_index].GetArtist().c_str());
         m_album_edit.SetWindowText(m_all_song_info[m_index].GetAlbum().c_str());
         m_year_edit.SetWindowText(m_all_song_info[m_index].GetYear().c_str());
+        CString info;
         if (m_all_song_info[m_index].track != 0)
             info.Format(_T("%d"), m_all_song_info[m_index].track);
         else

@@ -345,6 +345,9 @@
     <Filter Include="对话框类\EditStringListDlg">
       <UniqueIdentifier>{3db917ae-2514-43e2-b7fb-bc610997c8c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\SongInfoHelper">
+      <UniqueIdentifier>{d090c8bc-5b8c-4c53-8a6d-ead72fa6bf10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -779,6 +782,9 @@
     <ClInclude Include="EditStringListDlg.h">
       <Filter>对话框类\EditStringListDlg</Filter>
     </ClInclude>
+    <ClInclude Include="SongInfoHelper.h">
+      <Filter>公共的类\SongInfoHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1176,6 +1182,9 @@
     </ClCompile>
     <ClCompile Include="EditStringListDlg.cpp">
       <Filter>对话框类\EditStringListDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="SongInfoHelper.cpp">
+      <Filter>公共的类\SongInfoHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
