@@ -683,6 +683,7 @@
 #define IDI_VOLUME2_D                   542
 #define IDS_MUTE                        542
 #define IDI_VOLUME1_D                   543
+#define IDS_UNDEFINED                   543
 #define IDI_VOLUME3                     544
 #define IDI_VOLUME2                     545
 #define IDI_ICON21                      546

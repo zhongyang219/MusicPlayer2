@@ -138,7 +138,7 @@ void CPropertyTabDlg::ShowInfo()
         //显示位深度
         CString bits;
         if (m_all_song_info[m_index].bits == 0)
-            bits = CCommon::LoadText(IDS_UNKNOW);
+            bits = CCommon::LoadText(IDS_UNDEFINED);
         else
             bits.Format(_T("%dBit"), m_all_song_info[m_index].bits);
         SetDlgItemText(IDC_BITS_DIPTH, bits);
