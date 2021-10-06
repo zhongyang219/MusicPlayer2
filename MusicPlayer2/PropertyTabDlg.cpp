@@ -135,10 +135,13 @@ void CPropertyTabDlg::ShowInfo()
         freq.Format(_T("%.1fkHz"), m_all_song_info[m_index].freq / 1000.0f);
         SetDlgItemText(IDC_SAMPLE_FREQ, freq);
 
-        ////显示位深度
-        //CString bits;
-        //bits.Format(_T("%dBit"), m_all_song_info[m_index].bits);
-        //SetDlgItemText(IDC_BITS_DIPTH, bits);
+        //显示位深度
+        CString bits;
+        if (m_all_song_info[m_index].bits == 0)
+            bits = CCommon::LoadText(IDS_UNKNOW);
+        else
+            bits.Format(_T("%dBit"), m_all_song_info[m_index].bits);
+        SetDlgItemText(IDC_BITS_DIPTH, bits);
 
         //显示位声道数
         int chans{ m_all_song_info[m_index].channels };

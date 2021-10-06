@@ -150,7 +150,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 	{
         SongInfo& song{ GetInstance().m_playlist[i] };
  		wstring file_path{ song.file_path };
-       SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo(song.file_path) };
+        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo(song.file_path) };
 		pInfo->process_percent = i * 100 / song_num + 1;
 
 		//获取cue音轨的信息
