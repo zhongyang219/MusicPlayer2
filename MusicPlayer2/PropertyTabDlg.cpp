@@ -126,7 +126,7 @@ void CPropertyTabDlg::ShowInfo()
         }
         else
         {
-            info.Format(_T("%d Kbps"), m_all_song_info[m_index].bitrate);
+            info.Format(_T("%d kbps"), m_all_song_info[m_index].bitrate);
         }
         m_bit_rate_edit.SetWindowText(info);
 
