@@ -132,7 +132,7 @@ void CPropertyTabDlg::ShowInfo()
 
         //显示采样频率
         CString freq;
-        freq.Format(_T("%.1fkHz"), m_all_song_info[m_index].freq / 1000.0f);
+        freq.Format(_T("%.1f kHz"), m_all_song_info[m_index].freq / 1000.0f);
         SetDlgItemText(IDC_SAMPLE_FREQ, freq);
 
         //显示位深度
@@ -140,7 +140,7 @@ void CPropertyTabDlg::ShowInfo()
         if (m_all_song_info[m_index].bits == 0)
             bits = CCommon::LoadText(IDS_UNDEFINED);
         else
-            bits.Format(_T("%dBit"), m_all_song_info[m_index].bits);
+            bits.Format(_T("%d Bit"), m_all_song_info[m_index].bits);
         SetDlgItemText(IDC_BITS_DIPTH, bits);
 
         //显示位声道数
