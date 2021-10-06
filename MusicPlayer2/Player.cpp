@@ -208,11 +208,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 			COSUPlayerHelper::GetOSUAudioTitleArtist(song);
 		}
         CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).SetChannelInfoAcquired(true);
-		CSongDataManager::GetInstance().SaveSongInfo(song);
 		//获取分级信息
-		CAudioTag audio_tag(song_info);
+		CAudioTag audio_tag(song);
 		audio_tag.GetAudioRating();
-		CSongDataManager::GetInstance().SaveSongInfo(song_info);
+		CSongDataManager::GetInstance().SaveSongInfo(song);
 		CSongDataManager::GetInstance().SetSongDataModified();
 	}
 	GetInstance().m_loading = false;
