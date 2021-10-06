@@ -149,7 +149,9 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 	for (int i{}; i < song_num; i++)
 	{
         SongInfo& song{ GetInstance().m_playlist[i] };
- 		wstring file_path{ song.file_path };
+        if (song.file_path.empty())
+            continue;
+        wstring file_path{ song.file_path };
         SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo(song.file_path) };
 		pInfo->process_percent = i * 100 / song_num + 1;
 
@@ -184,35 +186,33 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 		}
 
 		CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);
-        if (!pInfo->refresh_info)
-		{
-			//wstring file_name{ song.file_name };
-			if (song.file_path.empty())
-				continue;
-			if (song_info.ChannelInfoAcquired() && CSongDataManager::GetInstance().IsItemExist(song.file_path))		//如果歌曲信息容器中已经包含该歌曲，则不需要再获取歌曲信息
-			{
-                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
-				//song = iter->second;
-				//song.file_name = file_name;
-				//song.file_path = iter->first;
-				continue;
-			}
-		}
-		bool is_osu_file{ COSUPlayerHelper::IsOsuFile(file_path) };
-		int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
-		if (!is_osu_file && !CSongDataManager::GetInstance().IsItemExist(song.file_path))
-			flag |= AF_TAG_INFO;
-		GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), song, flag);
-		if (is_osu_file)
-		{
-			COSUPlayerHelper::GetOSUAudioTitleArtist(song);
-		}
-        CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).SetChannelInfoAcquired(true);
-		//获取分级信息
-		CAudioTag audio_tag(song);
-		audio_tag.GetAudioRating();
-		CSongDataManager::GetInstance().SaveSongInfo(song);
-		CSongDataManager::GetInstance().SetSongDataModified();
+
+        //如果要求强制刷新或没有获取过歌曲信息，则在这里获取
+        if (pInfo->refresh_info || !song_info.ChannelInfoAcquired() || !CSongDataManager::GetInstance().IsItemExist(song.file_path))
+        {
+            bool is_osu_file{ COSUPlayerHelper::IsOsuFile(file_path) };
+            int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
+            if (!is_osu_file && !CSongDataManager::GetInstance().IsItemExist(song.file_path))
+                flag |= AF_TAG_INFO;
+            if (pInfo->refresh_info)
+                flag = AF_ALL;
+            GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), song, flag);
+            if (is_osu_file)
+            {
+                COSUPlayerHelper::GetOSUAudioTitleArtist(song);
+            }
+            CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).SetChannelInfoAcquired(true);
+            //获取分级信息
+            CAudioTag audio_tag(song);
+            audio_tag.GetAudioRating();
+            CSongDataManager::GetInstance().SaveSongInfo(song);
+            CSongDataManager::GetInstance().SetSongDataModified();
+        }
+        //否则直接从CSongDataManager获取歌曲信息
+        else
+        {
+            song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
+        }
 	}
 	GetInstance().m_loading = false;
 	//GetInstance().IniPlaylistComplate();
