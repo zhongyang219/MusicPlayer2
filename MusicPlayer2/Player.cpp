@@ -187,6 +187,9 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 		CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);
 
+        //从CSongDataManager获取歌曲信息
+        song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
+
         //如果要求强制刷新或没有获取过歌曲信息，则在这里获取
         if (pInfo->refresh_info || !song_info.ChannelInfoAcquired() || !CSongDataManager::GetInstance().IsItemExist(song.file_path))
         {
@@ -207,11 +210,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             audio_tag.GetAudioRating();
             CSongDataManager::GetInstance().SaveSongInfo(song);
             CSongDataManager::GetInstance().SetSongDataModified();
-        }
-        //否则直接从CSongDataManager获取歌曲信息
-        else
-        {
-            song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
         }
 	}
 	GetInstance().m_loading = false;
