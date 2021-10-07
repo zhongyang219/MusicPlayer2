@@ -2,6 +2,7 @@
 #include "Playlist.h"
 #include "Common.h"
 #include "FilePathHelper.h"
+#include "SongDataManager.h"
 
 const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L".m3u8" };
 
@@ -241,6 +242,16 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
 				item.comment = result[11];
 		}
 		if(CCommon::IsPath(item.file_path))
-			m_playlist.push_back(item);
+        {
+            if (item.is_cue)
+            {
+                //获取位深度、采样频率、声道数
+                SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.file_path) };
+                item.bits = song.bits;
+                item.freq = song.freq;
+                item.channels = song.channels;
+            }
+            m_playlist.push_back(item);
+        }
 	}
 }

@@ -7,6 +7,7 @@
 #include "MciCore.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
+#include "SongInfoHelper.h"
 
 CPlayer CPlayer::m_instance;
 
@@ -168,10 +169,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
                 }
                 else
                 {
-                    song.bitrate = last_song.bitrate;
-                    song.freq = last_song.freq;
-                    song.channels = last_song.channels;
-                    song.bits = last_song.channels;
+                    CSongInfoHelper::SetSongChannelInfo(song, CSongInfoHelper::GetSongChannelInfo(last_song));
                 }
                 last_song = song;
 				if (song.end_pos == 0)   //如果没有获取到cue音轨的结束时间，则将整轨的长度作为结束时间

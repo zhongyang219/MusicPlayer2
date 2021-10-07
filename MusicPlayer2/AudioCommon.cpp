@@ -4,7 +4,7 @@
 #include "MusicPlayer2.h"
 #include "SongDataManager.h"
 #include "taglib/id3v1genres.h"
-
+#include "SongInfoHelper.h"
 
 vector<SupportedFormat> CAudioCommon::m_surpported_format;
 vector<wstring> CAudioCommon::m_all_surpported_extensions;
@@ -270,7 +270,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             CCueFile cue_file{ file_path.GetFilePath() };
 
             wstring audio_file_name;                    // 临时存储音频文件名
-            int bitrate{};                              // 比特率
+            CSongInfoHelper::ChannelInfo channel_info;  //比特率、采样频率、位深度、通道数
             Time audio_file_length{};                   // 音频文件长度
             bool audio_file_name_change = true;         // 音频文件未匹配，当audio_file_name被错误检查改变，temp[j].file_path不再准确时设为true
             const std::vector<SongInfo>& temp = cue_file.GetAnalysisResult();               // cue文件的文本解析结果
@@ -332,7 +332,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         {
                             pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info);
                         }
-                        bitrate = audo_file_info.bitrate;
+                        channel_info = CSongInfoHelper::GetSongChannelInfo(audo_file_info);
                         audio_file_length = audo_file_info.lengh;
                     }
 
@@ -360,7 +360,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
 
                 // 将temp[j]存入cue_tracks并做最后处理
                 cue_tracks.push_back(temp[j]);
-                cue_tracks.back().bitrate = bitrate;
+                CSongInfoHelper::SetSongChannelInfo(cue_tracks.back(), channel_info);
                 // 依据end_pos是否为0判断这个轨道是否应当按照音频文件补充结束时间与时长
                 if (cue_tracks.back().end_pos == 0)
                 {
@@ -441,7 +441,7 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
         //解析cue音轨
         if (!cue_contents.empty())
         {
-            int bitrate{ iter->bitrate };
+            CSongInfoHelper::ChannelInfo channel_info{ CSongInfoHelper::GetSongChannelInfo(*iter) };
             Time total_length{ iter->lengh };
 
             CCueFile cue_file;
@@ -451,7 +451,7 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
             for (const auto& track : cue_file.GetAnalysisResult())
             {
                 cue_tracks.push_back(track);
-                cue_tracks.back().bitrate = bitrate;
+                CSongInfoHelper::SetSongChannelInfo(cue_tracks.back(), channel_info);
                 cue_tracks.back().file_path = iter->file_path;
             }
 
