@@ -107,80 +107,83 @@ void CCortanaLyric::DrawInfo()
     //不使用兼容模式显示歌词，直接在小娜搜索框内绘图
     if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
     {
-        m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
-        //双缓冲绘图
-        CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_cortana_rect);
-        //使用m_draw绘图
-        m_draw.SetDC(drawDoubleBuffer.GetMemDC());
-        m_draw.FillRect(m_cortana_rect, m_colors.back_color);
-
-        if(theApp.m_lyric_setting_data.cortana_show_spectrum)
-            DrawSpectrum();
-
-        if (is_midi_lyric)
+        if (m_pDC != nullptr)
         {
-            wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
-            DrawCortanaTextSimple(current_lyric.c_str(), Alignment::LEFT);
-        }
-        else
-        {
-			Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-			int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
-			CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
-            bool no_lyric{ false };
-            //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
-            no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time.toInt() > 20000) || progress >= 1000;
+            m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
+            //双缓冲绘图
+            CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_cortana_rect);
+            //使用m_draw绘图
+            m_draw.SetDC(drawDoubleBuffer.GetMemDC());
+            m_draw.FillRect(m_cortana_rect, m_colors.back_color);
 
-            if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric && theApp.m_lyric_setting_data.cortana_show_lyric)		//有歌词时显示歌词
+            if(theApp.m_lyric_setting_data.cortana_show_spectrum)
+                DrawSpectrum();
+
+            if (is_midi_lyric)
             {
-				if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
-				{
-					m_draw.DrawLyricTextMultiLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_align);
-				}
-				else
-				{
-					m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
-				}
+                wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
+                DrawCortanaTextSimple(current_lyric.c_str(), Alignment::LEFT);
             }
-            else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
+            else
             {
-                static int index{};
-                static wstring song_name{};
-                //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
-                static CString str_now_playing{ CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) };
-                if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
+			    Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+			    int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
+			    CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
+                bool no_lyric{ false };
+                //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
+                no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time.toInt() > 20000) || progress >= 1000;
+
+                if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric && theApp.m_lyric_setting_data.cortana_show_lyric)		//有歌词时显示歌词
                 {
-                    DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, GetScrollTextPixel());
-                    index = CPlayer::GetInstance().GetIndex();
-                    song_name = CPlayer::GetInstance().GetFileName();
+				    if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
+				    {
+					    m_draw.DrawLyricTextMultiLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_align);
+				    }
+				    else
+				    {
+					    m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
+				    }
                 }
-                else
+                else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
                 {
-                    DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, GetScrollTextPixel());
+                    static int index{};
+                    static wstring song_name{};
+                    //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
+                    static CString str_now_playing{ CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) };
+                    if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
+                    {
+                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, GetScrollTextPixel());
+                        index = CPlayer::GetInstance().GetIndex();
+                        song_name = CPlayer::GetInstance().GetFileName();
+                    }
+                    else
+                    {
+                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, GetScrollTextPixel());
+                    }
                 }
             }
+
+            //计算频谱，根据频谱幅值使Cortana图标显示动态效果
+            float spectrum_avr{};		//取前面N个频段频谱值的平均值
+            const int IMIN = FFT_SAMPLE / 20;
+            const int IMAX = FFT_SAMPLE / 3;
+            for (int i{ IMIN }; i < IMAX; i++)
+                spectrum_avr += CPlayer::GetInstance().GetFFTData()[i];
+            spectrum_avr /= (IMAX - IMIN);
+            int spetraum = static_cast<int>(spectrum_avr * 22000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
+            SetBeatAmp(spetraum);
+            //显示专辑封面，如果没有专辑封面，则显示Cortana图标
+            AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
+            DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
+
+            //if (!m_colors.dark /*&& !theApp.m_lyric_setting_data.cortana_opaque*/)		//非深色模式下，在搜索顶部绘制边框
+            //{
+            //    CRect rect{ m_cortana_rect };
+            //    rect.left += m_cover_width;
+            //    m_draw.DrawRectTopFrame(rect, m_border_color);
+            //}
+            CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
         }
-
-        //计算频谱，根据频谱幅值使Cortana图标显示动态效果
-        float spectrum_avr{};		//取前面N个频段频谱值的平均值
-        const int IMIN = FFT_SAMPLE / 20;
-        const int IMAX = FFT_SAMPLE / 3;
-        for (int i{ IMIN }; i < IMAX; i++)
-            spectrum_avr += CPlayer::GetInstance().GetFFTData()[i];
-        spectrum_avr /= (IMAX - IMIN);
-        int spetraum = static_cast<int>(spectrum_avr * 22000);		//调整乘号后面的数值可以调整Cortana图标跳动时缩放的大小
-        SetBeatAmp(spetraum);
-        //显示专辑封面，如果没有专辑封面，则显示Cortana图标
-        AlbumCoverEnable(theApp.m_lyric_setting_data.cortana_show_album_cover/* && CPlayer::GetInstance().AlbumCoverExist()*/);
-        DrawAlbumCover(CPlayer::GetInstance().GetAlbumCover());
-
-        //if (!m_colors.dark /*&& !theApp.m_lyric_setting_data.cortana_opaque*/)		//非深色模式下，在搜索顶部绘制边框
-        //{
-        //    CRect rect{ m_cortana_rect };
-        //    rect.left += m_cover_width;
-        //    m_draw.DrawRectTopFrame(rect, m_border_color);
-        //}
-        CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
     }
 
     //使用兼容模式显示歌词，给小娜搜索框设置文本
@@ -374,7 +377,7 @@ void CCortanaLyric::ResetCortanaText()
             }
         }
 
-        if (!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
+        if (!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode && m_pDC != nullptr)
         {
             m_draw.SetFont(&m_default_font);
             COLORREF color;		//Cortana默认文本的颜色
@@ -426,7 +429,7 @@ void CCortanaLyric::AlbumCoverEnable(bool enable)
     bool last_enable;
     last_enable = m_show_album_cover;
     m_show_album_cover = enable;
-    if (last_enable && !enable)
+    if (last_enable && !enable && m_pDC != nullptr)
     {
         CRect cover_rect = CoverRect();
         CDrawCommon::SetDrawArea(m_pDC, cover_rect);
