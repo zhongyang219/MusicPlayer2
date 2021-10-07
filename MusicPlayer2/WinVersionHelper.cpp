@@ -35,6 +35,23 @@ CWinVersionHelper::~CWinVersionHelper()
 {
 }
 
+bool CWinVersionHelper::IsWindows11OrLater()
+{
+    if (m_version.m_major_version > 10)
+        return true;
+    else if (m_version.m_major_version == 10 && m_version.m_minor_version > 0)
+        return true;
+    else if (m_version.m_major_version == 10 && m_version.m_minor_version == 0 && m_version.m_build_number >= 21996)
+        return true;
+    else return false;
+
+}
+
+bool CWinVersionHelper::IsWindows10()
+{
+    return IsWindows10OrLater() && !IsWindows11OrLater();
+}
+
 bool CWinVersionHelper::IsWindows10FallCreatorOrLater()
 {
 	if (m_version.m_major_version > 10)

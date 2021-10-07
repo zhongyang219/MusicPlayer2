@@ -479,7 +479,10 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
     theApp.m_media_lib_setting_data.display_format = static_cast<DisplayFormat>(ini.GetInt(L"config", L"playlist_display_format", 2));
     theApp.m_lyric_setting_data.cortana_show_lyric = ini.GetBool(L"config", L"cortana_show_lyric", true);
-    theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
+    if (CWinVersionHelper::IsWindows11OrLater())        //Windows11没有搜索框，禁用搜索框显示播放信息
+        theApp.m_lyric_setting_data.cortana_info_enable = false;
+    else
+        theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
     theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
     theApp.m_lyric_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
     theApp.m_lyric_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
@@ -542,7 +545,7 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_app_setting_data.ui_refresh_interval = UI_INTERVAL_DEFAULT;
     theApp.m_app_setting_data.notify_icon_selected = ini.GetInt(L"config", L"notify_icon_selected", 0);
     theApp.m_app_setting_data.notify_icon_auto_adapt = ini.GetBool(L"config", L"notify_icon_auto_adapt", false);
-    theApp.m_app_setting_data.button_round_corners = ini.GetBool(L"config", L"button_round_corners", false);
+    theApp.m_app_setting_data.button_round_corners = ini.GetBool(L"config", L"button_round_corners", !CWinVersionHelper::IsWindows8Or8point1() && !CWinVersionHelper::IsWindows10());  //Win8/8.1/10默认使用直角风格，其他默认使用圆角风格
     theApp.m_app_setting_data.playlist_width_percent = ini.GetInt(L"config", L"playlist_width_percent", 50);
     theApp.m_app_setting_data.default_background = ini.GetString(L"config", L"default_background", DEFAULT_BACKGROUND_NAME);
     theApp.m_app_setting_data.use_desktop_background = ini.GetBool(L"config", L"use_desktop_background", false);

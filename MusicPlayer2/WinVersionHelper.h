@@ -15,7 +15,9 @@ class CWinVersionHelper
 public:
 	~CWinVersionHelper();
 
-	static bool IsWindows10FallCreatorOrLater();		//判断当前Windows版本是否为Win10秋季创意者更新或更新的版本
+    static bool IsWindows11OrLater();			//判断当前Windows版本是否为Win11或更新的版本
+    static bool IsWindows10();                  //判断Windows版本是否为Windows10
+    static bool IsWindows10FallCreatorOrLater();		//判断当前Windows版本是否为Win10秋季创意者更新或更新的版本
 	static bool IsWindowsVista();
 	static bool IsWindows7();					//判断Windows版本是否为Windows7
 	static bool IsWindows7OrLater();
@@ -38,4 +40,3 @@ private:
 	static WinVersion m_version;
     static bool m_windows10_light_theme;
 };
-

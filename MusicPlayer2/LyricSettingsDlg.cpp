@@ -184,13 +184,13 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     str.Format(_T("%d%%"), m_data.desktop_lyric_data.opacity);
     SetDlgItemText(IDC_LYRIC_OPACITY_STATIC, str);
 
-    if (CWinVersionHelper::IsWindows10OrLater())
+    if (CWinVersionHelper::IsWindows10())    //搜索框显示播放信息只有Windows10可用
     {
         m_cortana_info_enable_check.SetCheck(m_data.cortana_info_enable);
     }
     else
     {
-        m_cortana_info_enable_check.EnableWindow(FALSE);		//Win10以下系统禁用此复选按钮
+        m_cortana_info_enable_check.EnableWindow(FALSE);		//Win10以下或Win11系统禁用此复选按钮
         m_data.cortana_info_enable = false;
     }
 
