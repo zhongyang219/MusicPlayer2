@@ -348,6 +348,9 @@
     <Filter Include="公共的类\SongInfoHelper">
       <UniqueIdentifier>{d090c8bc-5b8c-4c53-8a6d-ead72fa6bf10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\媒体库对话框\MediaLibStatisticsDlg">
+      <UniqueIdentifier>{f6a899f1-4a37-421e-aea8-b27fb389c415}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -785,6 +788,9 @@
     <ClInclude Include="SongInfoHelper.h">
       <Filter>公共的类\SongInfoHelper</Filter>
     </ClInclude>
+    <ClInclude Include="MediaLibStatisticsDlg.h">
+      <Filter>对话框类\媒体库对话框\MediaLibStatisticsDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1185,6 +1191,9 @@
     </ClCompile>
     <ClCompile Include="SongInfoHelper.cpp">
       <Filter>公共的类\SongInfoHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaLibStatisticsDlg.cpp">
+      <Filter>对话框类\媒体库对话框\MediaLibStatisticsDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

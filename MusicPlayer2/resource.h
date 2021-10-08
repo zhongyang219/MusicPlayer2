@@ -687,9 +687,12 @@
 #define IDI_VOLUME3                     544
 #define IDS_DELETE_INNER_ALBUM_COVER_INQUERY 544
 #define IDI_VOLUME2                     545
+#define IDS_TOTAL_TRACKS                545
 #define IDI_ICON21                      546
 #define IDI_VOLUME1                     546
+#define IDS_TRACKS_PLAYED               546
 #define IDI_VOLUME0                     547
+#define IDS_MEDIALIB_STATISTICS         547
 #define IDI_ICON22                      548
 #define IDI_VOLUME0_D                   548
 #define IDC_STATIC_PATH                 1001
@@ -951,6 +954,7 @@
 #define IDC_KEEP_DISPLAY_CHECK          1096
 #define IDC_BROWSE_BUTTON1              1096
 #define IDC_GET_TAG_FROM_LYRIC_BUTTON   1096
+#define IDC_STATISTICS_INFO_BUTTON      1096
 #define IDC_ALBUM_FIT_COMBO             1097
 #define IDC_PAUSE_RESUME_BUTTON         1097
 #define IDC_LYRIC_DOUBLE_LINE_CHECK2    1097
@@ -1497,7 +1501,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        549
+#define _APS_NEXT_RESOURCE_VALUE        551
 #define _APS_NEXT_COMMAND_VALUE         33343
 #define _APS_NEXT_CONTROL_VALUE         1188
 #define _APS_NEXT_SYMED_VALUE           101

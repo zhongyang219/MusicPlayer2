@@ -5,7 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CMediaLibDlg.h"
 #include "afxdialogex.h"
-
+#include "MediaLibStatisticsDlg.h"
 
 // CMediaLibDlg 对话框
 
@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CMediaLibDlg, CDialog)
     ON_WM_ERASEBKGND()
     ON_BN_CLICKED(IDC_MEDIA_LIB_SETTINGS_BTN, &CMediaLibDlg::OnBnClickedMediaLibSettingsBtn)
     ON_WM_SIZE()
+    ON_BN_CLICKED(IDC_STATISTICS_INFO_BUTTON, &CMediaLibDlg::OnBnClickedStatisticsInfoButton)
 END_MESSAGE_MAP()
 
 
@@ -99,6 +100,9 @@ BOOL CMediaLibDlg::OnInitDialog()
     CButton* setting_btn = (CButton*)(GetDlgItem(IDC_MEDIA_LIB_SETTINGS_BTN));
     if (setting_btn != nullptr)
         setting_btn->SetIcon(theApp.m_icon_set.setting.GetIcon(true));
+    CButton* statistics_btn = (CButton*)(GetDlgItem(IDC_STATISTICS_INFO_BUTTON));
+    if (statistics_btn != nullptr)
+        statistics_btn->SetIcon(theApp.m_icon_set.info.GetIcon(true));
 
     //为每个标签添加图标
     CImageList ImageList;
@@ -301,4 +305,12 @@ void CMediaLibDlg::OnSize(UINT nType, int cx, int cy)
         GetWindowRect(&rect);
         m_window_size = rect.Size();
     }
+}
+
+
+void CMediaLibDlg::OnBnClickedStatisticsInfoButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CMediaLibStatisticsDlg dlg;
+    dlg.DoModal();
 }

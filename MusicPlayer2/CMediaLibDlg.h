@@ -69,4 +69,5 @@ public:
     virtual void OnOK();
     afx_msg void OnBnClickedMediaLibSettingsBtn();
     afx_msg void OnSize(UINT nType, int cx, int cy);
+    afx_msg void OnBnClickedStatisticsInfoButton();
 };
