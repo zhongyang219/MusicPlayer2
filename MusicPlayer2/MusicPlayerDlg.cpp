@@ -292,6 +292,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_VIEW_ARTIST, &CMusicPlayerDlg::OnPlaylistViewArtist)
     ON_COMMAND(ID_PLAYLIST_VIEW_ALBUM, &CMusicPlayerDlg::OnPlaylistViewAlbum)
     ON_MESSAGE(WM_VOLUME_CHANGED, &CMusicPlayerDlg::OnVolumeChanged)
+    ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
 END_MESSAGE_MAP()
 
 
@@ -5869,4 +5870,12 @@ LRESULT CMusicPlayerDlg::OnVolumeChanged(WPARAM wParam, LPARAM lParam)
         cur_ui->UpdateVolumeToolTip();
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnPlaylistOptions()
+{
+    // TODO: 在此添加命令处理程序代码
+    m_tab_selected = 4;
+    _OnOptionSettings(this);
 }

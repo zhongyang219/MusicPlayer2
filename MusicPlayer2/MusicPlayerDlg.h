@@ -497,4 +497,6 @@ public:
     afx_msg void OnPlaylistViewAlbum();
 protected:
     afx_msg LRESULT OnVolumeChanged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnPlaylistOptions();
 };
