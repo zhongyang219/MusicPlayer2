@@ -4,6 +4,8 @@
 #include "BASSMidiLibrary.h"
 #include "Time.h"
 
+#define PLAYING_STATE_DEFAULT_VALUE 99
+
 class CBassCore :
     public IPlayerCore
 {
@@ -27,6 +29,7 @@ public:
     virtual void Stop() override;
     virtual void SetVolume(int volume) override;
     virtual void SetSpeed(float speed) override;
+    virtual bool SongIsOver() override;
 
     virtual int GetCurPosition() override;
     virtual int GetSongLength() override;
@@ -87,6 +90,8 @@ private:
     BASS_CHANNELINFO m_channel_info;	//音频通道的信息
     bool m_is_midi;
     MidiInfo m_midi_info;
+    int m_error_code{};
+    int m_last_playing_state{ PLAYING_STATE_DEFAULT_VALUE };     //保存上一次的播放状态（BASS_ChannelIsActive的返回值）
 
     int m_equ_handle[EQU_CH_NUM]{};		//均衡器通道的句柄
     int m_reverb_handle{};		//混响的句柄

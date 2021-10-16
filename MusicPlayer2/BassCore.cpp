@@ -317,6 +317,7 @@ void CBassCore::Open(const wchar_t * file_path)
 {
     CSingleLock sync(&m_critical, TRUE);
 
+    m_last_playing_state = PLAYING_STATE_DEFAULT_VALUE;
     if (m_musicStream != 0)     //打开前如果音频句柄没有关闭，先将其关闭，确保同时只能打开一个音频文件
         Close();
 
@@ -439,6 +440,15 @@ void CBassCore::SetSpeed(float speed)
     BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_FREQ, freq);
 }
 
+bool CBassCore::SongIsOver()
+{
+    DWORD state = BASS_ChannelIsActive(m_musicStream);
+    bool is_over{ (m_last_playing_state == BASS_ACTIVE_PLAYING && state == BASS_ACTIVE_STOPPED)
+        || m_error_code == BASS_ERROR_ENDED };
+    m_last_playing_state = state;
+    return is_over;
+}
+
 int CBassCore::GetCurPosition()
 {
     CSingleLock sync(&m_critical, TRUE);
@@ -463,7 +473,7 @@ int CBassCore::GetSongLength()
     double length_sec;
     length_sec = BASS_ChannelBytes2Seconds(m_musicStream, lenght_bytes);
     int song_length = static_cast<int>(length_sec * 1000);
-    if (song_length == -1000) song_length = 0;
+    if (song_length <= -1000) song_length = 0;
     return song_length;
 }
 
@@ -572,7 +582,8 @@ void CBassCore::GetFFTData(float fft_data[FFT_SAMPLE])
 
 int CBassCore::GetErrorCode()
 {
-    return BASS_ErrorGetCode();
+    m_error_code = BASS_ErrorGetCode();
+    return m_error_code;
 }
 
 std::wstring CBassCore::GetErrorInfo(int error_code)
@@ -615,7 +626,7 @@ Time CBassCore::GetBASSSongLength(HSTREAM hStream)
     double length_sec;
     length_sec = BASS_ChannelBytes2Seconds(hStream, lenght_bytes);
     int song_length_int = static_cast<int>(length_sec * 1000);
-    if (song_length_int == -1000) song_length_int = 0;
+    if (song_length_int <= -1000) song_length_int = 0;
     return Time(song_length_int);		//将长度转换成Time结构
 }
 

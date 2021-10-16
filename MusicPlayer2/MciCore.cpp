@@ -160,6 +160,11 @@ void CMciCore::SetSpeed(float speed)
 {
 }
 
+bool CMciCore::SongIsOver()
+{
+    return false;
+}
+
 int CMciCore::GetCurPosition()
 {
     if (m_success)
