@@ -577,31 +577,31 @@ bool CPlayer::SongIsOver() const
 	}
 	else
 	{
-        return m_pCore->SongIsOver();
+        //return m_pCore->SongIsOver();
 
-        //bool song_is_over{ false };
-        //static int last_pos;
-        //if ((m_playing == PS_PLAYING && m_current_position.toInt() == last_pos && m_current_position.toInt() != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
-        //    && m_current_position.toInt() > m_song_length.toInt() - 1000)		//且播放进度到了最后1秒
-        //    || m_error_code == BASS_ERROR_ENDED)	//或者出现BASS_ERROR_ENDED错误，则判断当前歌曲播放完了
-        ////有时候会出现识别的歌曲长度超过实际歌曲长度的问题，这样会导致歌曲播放进度超过实际歌曲结尾时会出现BASS_ERROR_ENDED错误，
-        ////检测到这个错误时直接判断歌曲已经播放完了。
+        bool song_is_over{ false };
+        static int last_pos;
+        if ((m_playing == PS_PLAYING && m_current_position.toInt() == last_pos && m_current_position.toInt() != 0	//如果正在播放且当前播放的位置没有发生变化且当前播放位置不为0，
+            && m_current_position.toInt() > m_song_length.toInt() - 1000)		//且播放进度到了最后1秒
+            || m_error_code == BASS_ERROR_ENDED)	//或者出现BASS_ERROR_ENDED错误，则判断当前歌曲播放完了
+        //有时候会出现识别的歌曲长度超过实际歌曲长度的问题，这样会导致歌曲播放进度超过实际歌曲结尾时会出现BASS_ERROR_ENDED错误，
+        //检测到这个错误时直接判断歌曲已经播放完了。
+            song_is_over = true;
+
+        //static int progress_no_change_cnt{};
+        //if (m_current_position.toInt() == last_pos)
+        //    progress_no_change_cnt++;
+        //else
+        //    progress_no_change_cnt = 0;
+
+        //if (m_playing == 2 && progress_no_change_cnt > 10)       //如果正在播放而且播放进度连续指定次数都没有变化，也判断歌曲播放完了。
         //    song_is_over = true;
 
-        ////static int progress_no_change_cnt{};
-        ////if (m_current_position.toInt() == last_pos)
-        ////    progress_no_change_cnt++;
-        ////else
-        ////    progress_no_change_cnt = 0;
-
-        ////if (m_playing == 2 && progress_no_change_cnt > 10)       //如果正在播放而且播放进度连续指定次数都没有变化，也判断歌曲播放完了。
-        ////    song_is_over = true;
-
-        //last_pos = m_current_position.toInt();
-        //return song_is_over;
-        ////这里本来直接使用return current_position_int>=m_song_length_int来判断歌曲播放完了，
-        ////但是BASS音频库在播放时可能会出现当前播放位置一直无法到达歌曲长度位置的问题，
-        ////这样函数就会一直返回false。
+        last_pos = m_current_position.toInt();
+        return song_is_over;
+        //这里本来直接使用return current_position_int>=m_song_length_int来判断歌曲播放完了，
+        //但是BASS音频库在播放时可能会出现当前播放位置一直无法到达歌曲长度位置的问题，
+        //这样函数就会一直返回false。
     }
 }
 
