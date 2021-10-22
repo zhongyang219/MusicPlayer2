@@ -365,6 +365,7 @@ void CBassCore::Close()
 
 void CBassCore::Play()
 {
+    m_playing_state = PS_PLAYING;
     if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //如果设置了播放时音量淡入淡出
     {
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
@@ -386,6 +387,7 @@ void CBassCore::Play()
 
 void CBassCore::Pause()
 {
+    m_playing_state = PS_PAUSED;
     if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0)     //如果设置了播放时音量淡入淡出
     {
         BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);        //音量渐变到0
@@ -405,6 +407,7 @@ void CBassCore::Pause()
 
 void CBassCore::Stop()
 {
+    m_playing_state = PS_STOPED;
     DWORD playing_state = BASS_ChannelIsActive(m_musicStream);
     if (theApp.m_play_setting_data.fade_effect && theApp.m_play_setting_data.fade_time > 0 && playing_state == BASS_ACTIVE_PLAYING)
     {
@@ -446,7 +449,7 @@ bool CBassCore::SongIsOver()
     bool is_over{ (m_last_playing_state == BASS_ACTIVE_PLAYING && state == BASS_ACTIVE_STOPPED)
         || m_error_code == BASS_ERROR_ENDED };
     m_last_playing_state = state;
-    return is_over;
+    return is_over && m_playing_state == PS_PLAYING && m_musicStream != 0;
 }
 
 int CBassCore::GetCurPosition()
