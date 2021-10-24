@@ -74,6 +74,7 @@ void CPlayer::Create()
 		SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
 	}
 	SetTitle();		//用当前正在播放的歌曲名作为窗口标题
+	m_controls.Init();
 }
 
 void CPlayer::Create(const vector<wstring>& files)
@@ -83,6 +84,7 @@ void CPlayer::Create(const vector<wstring>& files)
 	LoadRecentPath();
 	LoadRecentPlaylist();
 	OpenFiles(files);
+	m_controls.Init();
 }
 
 void CPlayer::Create(const wstring& path)
@@ -93,6 +95,7 @@ void CPlayer::Create(const wstring& path)
 	LoadRecentPlaylist();
 	OpenFolder(path);
 	SetTitle();		//用当前正在播放的歌曲名作为窗口标题
+	m_controls.Init();
 }
 
 void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
@@ -103,6 +106,7 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
 	LoadRecentPlaylist();
 	OpenPlaylistFile(playlist_path);
 	SetTitle();
+	m_controls.Init();
 }
 
 void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
@@ -422,6 +426,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 	{
 	case Command::OPEN:
 		m_file_opend = false;
+		if (m_controls.updater) m_controls.updater->ClearAll();  // Clear all metadata.
 		SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_POST_MUSIC_STREAM_OPENED, 0, 0);
 		m_error_code = 0;
 		m_error_state = ES_NO_ERROR;
@@ -479,22 +484,27 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		else
 			m_pCore->ClearReverb();
 		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
+		UpdateControls(Command::PLAY);
+		UpdateControlsMetadata(GetCurrentSongInfo());
 		break;
 	case Command::PLAY:
 		ConnotPlayWarning();
 		m_pCore->Play();
 		m_playing = PS_PLAYING;
 		GetPlayerCoreError(L"Play");
+		UpdateControls(Command::PLAY);
 		break;
 	case Command::CLOSE:
 		//RemoveFXHandle();
 		m_pCore->Close();
 		m_playing = PS_STOPED;
 		SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_AFTER_MUSIC_STREAM_CLOSED, 0, 0);
+		UpdateControls(Command::STOP);
 		break;
 	case Command::PAUSE:
 		m_pCore->Pause();
 		m_playing = PS_PAUSED;
+		UpdateControls(Command::PAUSE);
 		break;
 	case Command::STOP:
 		if (GetCurrentSongInfo().is_cue && GetCurrentSongInfo().start_pos > 0)
@@ -509,6 +519,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		m_playing = PS_STOPED;
 		m_current_position = Time();
 		memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
+		UpdateControls(Command::STOP);
 		break;
 	case Command::FF:		//快进
 		GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
@@ -530,6 +541,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 		{
 			m_pCore->Pause();
 			m_playing = PS_PAUSED;
+			UpdateControls(Command::PAUSE);
 		}
 		else
 		{
@@ -537,6 +549,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 			m_pCore->Play();
 			m_playing = PS_PLAYING;
 			GetPlayerCoreError(L"Play");
+			UpdateControls(Command::PLAY);
 		}
 		break;
 	case Command::VOLUME_UP:
@@ -2473,6 +2486,7 @@ void CPlayer::SearchAlbumCover()
 		{
 			m_album_cover.Load(m_album_cover_path.c_str());
 			AlbumCoverResize();
+			m_controls.loadThumbnail(m_album_cover_path);
 		}
 	}
 	m_inner_cover = !m_album_cover.IsNull();
@@ -2621,6 +2635,7 @@ void CPlayer::SearchOutAlbumCover()
 		m_album_cover.Destroy();
 	m_album_cover.Load(m_album_cover_path.c_str());
 	AlbumCoverResize();
+	m_controls.loadThumbnail(m_album_cover_path);
 }
 
 bool CPlayer::IsOsuFile() const
@@ -2658,5 +2673,33 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
 			EmplaceCurrentPathToRecent();
 			ReloadPlaylist(false);
 		}
+	}
+}
+
+void CPlayer::UpdateControls(Command cmd) {
+	if (m_controls.controls) {
+		switch (cmd) {
+		case Command::PLAY:
+			m_controls.controls->put_PlaybackStatus(MediaPlaybackStatus_Playing);
+			break;
+		case Command::PAUSE:
+			m_controls.controls->put_PlaybackStatus(MediaPlaybackStatus_Paused);
+			break;
+		case Command::STOP:
+			m_controls.controls->put_PlaybackStatus(MediaPlaybackStatus_Stopped);
+			break;
+		default:
+			ASSERT(FALSE);
+			break;
+		}
+	}
+}
+
+void CPlayer::UpdateControlsMetadata(SongInfo info) {
+	if (m_controls.updater && m_controls.music) {
+		m_controls.updater->put_Type(MediaPlaybackType_Music);
+		m_controls.UpdateTitle(info.title);
+		m_controls.UpdateArtist(info.artist);
+		m_controls.updater->Update();
 	}
 }

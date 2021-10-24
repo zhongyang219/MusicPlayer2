@@ -250,6 +250,7 @@
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="CPlayerUI3.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
+    <ClInclude Include="MediaTransControls.h" />
     <ClInclude Include="PropertyAdvancedDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />
@@ -394,6 +395,7 @@
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="CPlayerUI3.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
+    <ClCompile Include="MediaTransControls.cpp" />
     <ClCompile Include="PropertyAdvancedDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />

@@ -23,6 +23,7 @@ public:
 	static bool IsWindows7OrLater();
 	static bool IsWindows8Or8point1();			//判断Windows版本是否为Windows8或Windows8.1
 	static bool IsWindows8OrLater();
+	static bool IsWindows81OrLater();
 	static bool IsWindows10OrLater();
 	static bool IsWindows10Version1809OrLater();
 

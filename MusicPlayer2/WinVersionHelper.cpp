@@ -96,6 +96,12 @@ bool CWinVersionHelper::IsWindows8OrLater()
 	else return false;
 }
 
+bool CWinVersionHelper::IsWindows81OrLater() {
+	if (m_version.m_major_version > 6) return true;
+	else if (m_version.m_major_version == 6 && m_version.m_minor_version > 2) return true;
+	return false;
+}
+
 bool CWinVersionHelper::IsWindows10OrLater()
 {
 	return (m_version.m_major_version >= 10);
