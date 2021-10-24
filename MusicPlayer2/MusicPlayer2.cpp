@@ -1035,7 +1035,7 @@ LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM 
         //}
 
         //截获全局的多媒体按键消息
-    if (wParam == WM_KEYUP)
+    if (wParam == WM_KEYUP && !CPlayer::GetInstance().m_controls.IsActive())
     {
         KBDLLHOOKSTRUCT* pKBHook = (KBDLLHOOKSTRUCT*)lParam;
         switch (pKBHook->vkCode)

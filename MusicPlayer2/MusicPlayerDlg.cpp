@@ -4414,7 +4414,7 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
     // 符号 _WIN32_WINNT 和 WINVER 必须 >= 0x0500。
 
     //响应多媒体键
-    if (!theApp.IsGlobalMultimediaKeyEnabled()) //如果没有设置响应全局的多媒体按键消息，则在当前窗口内响应多媒体按键消息
+    if (!theApp.IsGlobalMultimediaKeyEnabled() && !CPlayer::GetInstance().m_controls.IsActive()) //如果没有设置响应全局的多媒体按键消息，则在当前窗口内响应多媒体按键消息
     {
         switch (nCmd)
         {
