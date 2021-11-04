@@ -91,6 +91,7 @@ BOOL CPropertyDlg::OnInitDialog()
 
     m_previous_btn.SetIcon(theApp.m_icon_set.lyric_delay.GetIcon(true));
     m_next_btn.SetIcon(theApp.m_icon_set.lyric_forward.GetIcon(true));
+    SetButtonIcon(IDC_SAVE_TO_FILE_BUTTON, theApp.m_icon_set.save_new);
 
     //创建子对话框
     m_property_dlg.Create(IDD_PROPERTY_DIALOG);
