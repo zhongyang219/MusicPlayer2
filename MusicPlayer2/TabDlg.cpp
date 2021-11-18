@@ -115,6 +115,13 @@ void CTabDlg::EnableDlgCtrl(UINT id, bool enable)
         pCtrl->EnableWindow(enable);
 }
 
+void CTabDlg::SetButtonIcon(UINT id, HICON icon)
+{
+    CButton* btn = (CButton*)(GetDlgItem(id));
+    if (btn != nullptr)
+        btn->SetIcon(icon);
+}
+
 void CTabDlg::ShowDlgCtrl(UINT id, bool show)
 {
     CWnd* pCtrl = GetDlgItem(id);

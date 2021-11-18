@@ -19,6 +19,7 @@ protected:
 	void ScrollWindowSimple(int step);
 
     void EnableDlgCtrl(UINT id, bool enable);
+    void SetButtonIcon(UINT id, HICON icon);
     void ShowDlgCtrl(UINT id, bool show);
 
 protected:
@@ -31,4 +32,3 @@ public:
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
-

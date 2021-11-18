@@ -422,6 +422,8 @@ BOOL CPropertyAlbumCoverDlg::OnInitDialog()
     CTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+    SetButtonIcon(IDC_BROWSE_BUTTON, theApp.m_icon_set.folder_explore.GetIcon(true));
+    SetButtonIcon(IDC_DELETE_BUTTON, theApp.m_icon_set.close.GetIcon(true));
 
     //初始化列表
     //初始化列表
