@@ -499,4 +499,5 @@ protected:
     afx_msg LRESULT OnVolumeChanged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnPlaylistOptions();
+    afx_msg void OnMove(int x, int y);
 };

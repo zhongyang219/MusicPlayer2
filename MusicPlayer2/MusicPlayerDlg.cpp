@@ -293,7 +293,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_VIEW_ALBUM, &CMusicPlayerDlg::OnPlaylistViewAlbum)
     ON_MESSAGE(WM_VOLUME_CHANGED, &CMusicPlayerDlg::OnVolumeChanged)
     ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
-END_MESSAGE_MAP()
+        ON_WM_MOVE()
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -4624,13 +4625,13 @@ void CMusicPlayerDlg::OnFloatedPlaylist()
 
 LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 {
-    CRect rect;
-    if (m_pFloatPlaylistDlg != nullptr)
-    {
-        ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
-        if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
-            m_float_playlist_pos = rect.TopLeft();
-    }
+    //CRect rect;
+    //if (m_pFloatPlaylistDlg != nullptr)
+    //{
+    //    ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
+    //    if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
+    //        m_float_playlist_pos = rect.TopLeft();
+    //}
 
     return 0;
 }
@@ -5880,4 +5881,21 @@ void CMusicPlayerDlg::OnPlaylistOptions()
     // TODO: 在此添加命令处理程序代码
     m_tab_selected = 4;
     _OnOptionSettings(this);
+}
+
+
+void CMusicPlayerDlg::OnMove(int x, int y)
+{
+    CMainDialogBase::OnMove(x, y);
+
+    //移动主窗口时同步移动浮动播放列表的位置
+    CRect rect;
+    GetWindowRect(rect);
+    m_float_playlist_pos.x = rect.right;
+    m_float_playlist_pos.y = rect.top;
+    if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
+    {
+        if (m_pFloatPlaylistDlg != nullptr && IsWindow(m_pFloatPlaylistDlg->GetSafeHwnd()))
+            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    }
 }
