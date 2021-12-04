@@ -613,10 +613,13 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_DOWNLOAD_LYRIC, FALSE, m_icon_set.download);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_LYRIC_BATCH_DOWNLOAD, FALSE, m_icon_set.download1);
     //视图
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SHOW_PLAYLIST, FALSE, m_icon_set.playlist_dock);
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FLOAT_PLAYLIST, FALSE, m_icon_set.playlist_float);
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SHOW_MENU_BAR, FALSE, m_icon_set.menu.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
+    if (!CWinVersionHelper::IsWindows11OrLater())
+    {
+        CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SHOW_PLAYLIST, FALSE, m_icon_set.playlist_dock);
+        CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FLOAT_PLAYLIST, FALSE, m_icon_set.playlist_float);
+        CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SHOW_MENU_BAR, FALSE, m_icon_set.menu.GetIcon(true));
+        CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
+    }
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_MINI_MODE, FALSE, m_icon_set.mini.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FULL_SCREEN, FALSE, m_icon_set.full_screen1.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_DARK_MODE, FALSE, m_icon_set.dark_mode);
@@ -774,8 +777,11 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_EXPLORE_PATH, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_EQUALIZER, FALSE, m_icon_set.eq.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, m_icon_set.setting.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_SHOW_PLAY_LIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MINI_MODE_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
+    if (!CWinVersionHelper::IsWindows11OrLater())
+    {
+        CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_SHOW_PLAY_LIST, FALSE, m_icon_set.show_playlist.GetIcon(true));
+        CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MINI_MODE_ALWAYS_ON_TOP, FALSE, m_icon_set.pin);
+    }
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MINI_MODE_EXIT, FALSE, m_icon_set.exit);
 
     //属性——专辑封面右键菜单
