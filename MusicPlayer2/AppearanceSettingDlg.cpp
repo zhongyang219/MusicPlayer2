@@ -501,7 +501,10 @@ HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     // TODO:  在此更改 DC 的任何特性
     if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid || pWnd == &m_gauss_blur_radius_sld)		//设置滑动条控件的背景色为白色
     {
-        return (HBRUSH)::GetStockObject(WHITE_BRUSH);
+        static HBRUSH brush{};
+        if (brush == NULL)
+            brush = CreateSolidBrush(m_background_color);
+        return brush;
     }
     // TODO:  如果默认的不是所需画笔，则返回另一个画笔
     return hbr;

@@ -26,6 +26,7 @@ protected:
 	CWnd* m_pParent;
 	bool m_scroll_enable{ false };
     int m_last_pos{};
+    COLORREF m_background_color{};
 
 public:
 	DECLARE_MESSAGE_MAP()
