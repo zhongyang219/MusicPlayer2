@@ -35,7 +35,6 @@ void CRecentFolderAndPlaylist::Init(const deque<PathInfo>& recent_folder, const 
         });
     //向主窗口发送通知
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED, 0, 0);
-    int a = 0;
 }
 
 const std::vector<CRecentFolderAndPlaylist::Item>& CRecentFolderAndPlaylist::GetItemList() const

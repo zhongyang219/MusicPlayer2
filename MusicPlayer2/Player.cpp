@@ -2726,7 +2726,7 @@ void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)
     {
         //如果专辑封面图片文件已隐藏，先将文件复制到Temp目录，再取消隐藏属性
         wstring temp_img_path{ CCommon::GetTemplatePath() + ALBUM_COVER_TEMP_NAME2 };
-        CCommon::CopyAFile(theApp.m_pMainWnd->GetSafeHwnd(), file_path, temp_img_path);
+        CopyFile(file_path.c_str(), temp_img_path.c_str(), FALSE);
         CCommon::SetFileHidden(temp_img_path, false);
         m_controls.loadThumbnail(temp_img_path);
     }
