@@ -367,6 +367,13 @@ public:
     void SetContainSubFolder(bool contain_sub_folder);
 
 
+    MediaTransControls m_controls;
+    void UpdateControls(Command cmd);
+    void UpdateControlsMetadata(SongInfo info);
+
+private:
+    void MediaTransControlsLoadThumbnail(std::wstring& file_path);
+
 public:
     //用于在执行某些操作时，播放器需要关闭当前播放的歌曲，操作完成后再次打开
     //当reopen为true时，在构造函数中关闭，析构时再次打开
@@ -401,8 +408,4 @@ public:
         bool is_playing{};
         bool m_reopen{};
     };
-
-    MediaTransControls m_controls;
-    void UpdateControls(Command cmd);
-    void UpdateControlsMetadata(SongInfo info);
 };

@@ -121,6 +121,7 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 
 #define ALBUM_COVER_NAME L"CurrentAlbumCover-MusicPlayer2-jMZB7TMf"
 #define ALBUM_COVER_TEMP_NAME L"TempAlbumCover-MusicPlayer2-nKWfQeJo"
+#define ALBUM_COVER_TEMP_NAME2 L"TempAlbumCover-MusicPlayer2-ogNdd65B"
 //#define DEFAULT_ALBUM_NAME L"cover"
 
 //#define BACKGROUND_ALPHA 200	//界面背景的透明度0~255

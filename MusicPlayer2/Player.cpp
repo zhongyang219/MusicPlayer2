@@ -2490,7 +2490,7 @@ void CPlayer::SearchAlbumCover()
         {
             m_album_cover.Load(m_album_cover_path.c_str());
             AlbumCoverResize();
-            m_controls.loadThumbnail(m_album_cover_path);
+            MediaTransControlsLoadThumbnail(m_album_cover_path);
         }
     }
     m_inner_cover = !m_album_cover.IsNull();
@@ -2639,7 +2639,7 @@ void CPlayer::SearchOutAlbumCover()
         m_album_cover.Destroy();
     m_album_cover.Load(m_album_cover_path.c_str());
     AlbumCoverResize();
-    m_controls.loadThumbnail(m_album_cover_path);
+    MediaTransControlsLoadThumbnail(m_album_cover_path);
 }
 
 bool CPlayer::IsOsuFile() const
@@ -2705,5 +2705,22 @@ void CPlayer::UpdateControlsMetadata(SongInfo info) {
         m_controls.UpdateTitle(info.title);
         m_controls.UpdateArtist(info.artist);
         m_controls.updater->Update();
+    }
+}
+
+void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)
+{
+    if (CCommon::IsFileHidden(file_path))
+    {
+        //如果专辑封面图片文件已隐藏，先将文件复制到Temp目录，再取消隐藏属性
+        wstring temp_img_path{ CCommon::GetTemplatePath() + ALBUM_COVER_TEMP_NAME2 };
+        CCommon::CopyAFile(theApp.m_pMainWnd->GetSafeHwnd(), file_path, temp_img_path);
+        CCommon::SetFileHidden(temp_img_path, false);
+        m_controls.loadThumbnail(temp_img_path);
+    }
+    else
+    {
+        //专辑封面图片文件未隐藏
+        m_controls.loadThumbnail(file_path);
     }
 }
