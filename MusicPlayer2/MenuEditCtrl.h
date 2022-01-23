@@ -3,7 +3,6 @@
 
 
 // CMenuEditCtrl
-#define WM_MENU_EDIT_BTN_CLICKED (WM_USER+141)
 
 class CMenuEditCtrl : public CMFCEditBrowseCtrl
 {

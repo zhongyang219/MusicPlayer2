@@ -21,6 +21,7 @@ CMenuEditCtrl::~CMenuEditCtrl()
 
 void CMenuEditCtrl::OnBrowse()
 {
+    PostMessage(WM_KILLFOCUS, 0, 0);
     CWnd* pParent = GetParent();
     if (m_menu.m_hMenu != 0)
     {
