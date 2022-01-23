@@ -1747,3 +1747,11 @@ CString CCommon::GetLastCompileTime()
     compile_time.Delete(compile_time.GetLength() - 1, 1);
     return compile_time;
 }
+
+unsigned __int64 CCommon::GetCurTimeElapse()
+{
+    SYSTEMTIME sys_time;
+    GetLocalTime(&sys_time);
+    CTime cur_time(sys_time);
+    return cur_time.GetTime();
+}

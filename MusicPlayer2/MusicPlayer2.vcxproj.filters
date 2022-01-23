@@ -354,6 +354,12 @@
     <Filter Include="公共的类\MediaTransControls">
       <UniqueIdentifier>{19366437-de30-4f2b-ac9e-b7593280367d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\RecentFolderAndPlaylist">
+      <UniqueIdentifier>{dc707968-ea88-4d72-bba2-1ea31a6b632c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="派生的控件类\MenuEditCtrl">
+      <UniqueIdentifier>{66efee77-7ef4-4f48-84b0-9824bd3864fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -797,6 +803,12 @@
     <ClInclude Include="MediaTransControls.h">
       <Filter>公共的类\MediaTransControls</Filter>
     </ClInclude>
+    <ClInclude Include="MenuEditCtrl.h">
+      <Filter>派生的控件类\MenuEditCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="RecentFolderAndPlaylist.h">
+      <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1203,6 +1215,12 @@
     </ClCompile>
     <ClCompile Include="MediaTransControls.cpp">
       <Filter>公共的类\MediaTransControls</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuEditCtrl.cpp">
+      <Filter>派生的控件类\MenuEditCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="RecentFolderAndPlaylist.cpp">
+      <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1633,6 +1651,9 @@
     </Image>
     <Image Include="res\volume3_d.ico">
       <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\expand.ico">
+      <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
 </Project>

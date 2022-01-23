@@ -8,6 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
+#include "RecentFolderAndPlaylist.h"
 
 CPlayer CPlayer::m_instance;
 
@@ -2089,7 +2090,7 @@ void CPlayer::SaveRecentPath() const
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    const unsigned int version{ 2u };
+    const unsigned int version{ 3u };
     ar << static_cast<unsigned int>(m_recent_path.size());		//写入m_recent_path容器的大小
     ar << version;     //写入文件的版本
     for (auto& path_info : m_recent_path)
@@ -2102,6 +2103,7 @@ void CPlayer::SaveRecentPath() const
             << path_info.track_num
             << path_info.total_time
             << static_cast<BYTE>(path_info.contain_sub_folder)
+            << path_info.last_played_time
             ;
     }
     // 关闭CArchive对象
@@ -2178,6 +2180,8 @@ void CPlayer::LoadRecentPath()
                 ar >> contain_sub_folder;
                 path_info.contain_sub_folder = (contain_sub_folder != 0);
             }
+            if (version >= 3)
+                ar >> path_info.last_played_time;
 
             if (path_info.path.empty() || path_info.path.size() < 2) continue;		//如果路径为空或路径太短，就忽略它
             if (path_info.path.back() != L'/' && path_info.path.back() != L'\\')	//如果读取到的路径末尾没有斜杠，则在末尾加上一个
@@ -2291,7 +2295,11 @@ void CPlayer::EmplaceCurrentPathToRecent()
     path_info.total_time = m_total_time;
     path_info.contain_sub_folder = m_contain_sub_folder;
     if (GetSongNum() > 0)
+    {
+        path_info.last_played_time = CCommon::GetCurTimeElapse();
         m_recent_path.push_front(path_info);		//当前路径插入到m_recent_path的前面
+        CRecentFolderAndPlaylist::Instance().Init(m_recent_path, m_recent_playlist);
+    }
 }
 
 
@@ -2309,6 +2317,7 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
         m_recent_playlist.m_default_playlist.track = m_index;
         m_recent_playlist.m_default_playlist.track_num = song_num;
         m_recent_playlist.m_default_playlist.total_time = m_total_time;
+        m_recent_playlist.m_default_playlist.last_played_time = CCommon::GetCurTimeElapse();
     }
     else if (m_recent_playlist.m_cur_playlist_type == PT_FAVOURITE)
     {
@@ -2316,6 +2325,7 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
         m_recent_playlist.m_favourite_playlist.track = m_index;
         m_recent_playlist.m_favourite_playlist.track_num = song_num;
         m_recent_playlist.m_favourite_playlist.total_time = m_total_time;
+        m_recent_playlist.m_favourite_playlist.last_played_time = CCommon::GetCurTimeElapse();
     }
     else if (m_recent_playlist.m_cur_playlist_type == PT_TEMP)
     {
@@ -2323,11 +2333,13 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
         m_recent_playlist.m_temp_playlist.track = m_index;
         m_recent_playlist.m_temp_playlist.track_num = song_num;
         m_recent_playlist.m_temp_playlist.total_time = m_total_time;
+        m_recent_playlist.m_temp_playlist.last_played_time = CCommon::GetCurTimeElapse();
     }
     else
     {
-        m_recent_playlist.EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), song_num, m_total_time);
+        m_recent_playlist.EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), song_num, m_total_time, CCommon::GetCurTimeElapse());
     }
+    CRecentFolderAndPlaylist::Instance().Init(m_recent_path, m_recent_playlist);
 }
 
 //void CPlayer::SetFXHandle()

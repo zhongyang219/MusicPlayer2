@@ -422,6 +422,7 @@ public:
     //从资源文件读取上次编译时间
     static CString GetLastCompileTime();
 
+    static unsigned __int64 GetCurTimeElapse();
 };
 
 template<class T>

@@ -152,14 +152,17 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_CURRENT_FILE_ALBUM_COVER_CHANGED (WM_USER+135)
 #define WM_PORPERTY_ONLINE_INFO_ACQUIRED (WM_USER+136)
 #define WM_VOLUME_CHANGED (WM_USER+139)             //音量变化时发送的消息
+#define WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED (WM_USER+140)  //最近打开的文件夹或播放列表发生了改变
 
-#define WM_NEXT_USER_MSG (WM_USER+140)
+#define WM_NEXT_USER_MSG (WM_USER+142)
 
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）
 #else
 #define ADD_TO_PLAYLIST_MAX_SIZE 20         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）
 #endif
+
+#define RECENT_FOLDER_PLAYLIST_MAX_SIZE 20  //文件夹/播放列表右侧按钮菜单中的最大值
 
 #define SELECT_UI_MAX_SIZE 100      //“切换界面”中支持的最大界面数量
 

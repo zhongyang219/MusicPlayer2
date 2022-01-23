@@ -695,6 +695,8 @@
 #define IDS_MEDIALIB_STATISTICS         547
 #define IDI_ICON22                      548
 #define IDI_VOLUME0_D                   548
+#define IDI_ICON20                      551
+#define IDI_EXPAND_D                    551
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1497,13 +1499,15 @@
 #define ID_PLAYLIST_VIEW_ALBUM          33341
 #define ID_PLAYLIST_SELECT_CHANGE       33342
 #define ID_PLAYLIST_OPTIONS             33343
+#define ID_RECENT_FOLDER_PLAYLIST_MENU_START 33344
+#define ID_RECENT_FOLDER_PLAYLIST_MENU_END 33384
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        551
-#define _APS_NEXT_COMMAND_VALUE         33344
+#define _APS_NEXT_RESOURCE_VALUE        552
+#define _APS_NEXT_COMMAND_VALUE         33385
 #define _APS_NEXT_CONTROL_VALUE         1188
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

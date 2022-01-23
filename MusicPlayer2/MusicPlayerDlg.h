@@ -32,6 +32,7 @@
 #include "SearchEditCtrl.h"
 #include "UIWindow.h"
 #include "CDevicesManager.h"
+#include "MenuEditCtrl.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -39,7 +40,7 @@
 class CMusicPlayerDlg : public CMainDialogBase
 {
 
-// 构造
+    // 构造
 public:
     CMusicPlayerDlg(wstring cmdLine = wstring(), CWnd* pParent = NULL);	// 标准构造函数
     ~CMusicPlayerDlg();
@@ -50,7 +51,7 @@ public:
     friend class CUIWindow;
     friend class CPlayerUIBase;
 
-// 对话框数据
+    // 对话框数据
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_MUSICPLAYER2_DIALOG };
 #endif
@@ -69,15 +70,15 @@ protected:
     CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
     //用于支持鼠标指向列表中的项目时显示歌曲信息)
     CStaticEx m_path_static;
-    CEdit m_path_edit;
+    CMenuEditCtrl m_path_edit;
     CButton m_set_path_button;
     CSearchEditCtrl m_search_edit;
     //CButton m_clear_search_button;
     CUIWindow m_ui_static_ctrl{ m_pUI };
 
 #ifndef COMPILE_IN_WIN_XP
-    ITaskbarList3* m_pTaskbar { theApp.GetITaskbarList3() };         //用于支持任务栏显示播放进度
-    THUMBBUTTON m_thumbButton[3] {};
+    ITaskbarList3* m_pTaskbar{ theApp.GetITaskbarList3() };         //用于支持任务栏显示播放进度
+    THUMBBUTTON m_thumbButton[3]{};
 #endif
 
     CFindDlg m_findDlg;		//查找对话框
@@ -111,7 +112,7 @@ protected:
     CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected };		//迷你模式对话框
 
     CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
-	CDesktopLyric m_desktop_lyric;		//桌面歌词
+    CDesktopLyric m_desktop_lyric;		//桌面歌词
 
     CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
     CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
@@ -191,7 +192,7 @@ private:
 
 public:
     void ShowPlayList(bool highlight_visible = true);
-	void SetMenuState(CMenu* pMenu);
+    void SetMenuState(CMenu* pMenu);
 
 protected:
     void SetPlayListColor(bool highlight_visible = true);
@@ -225,8 +226,8 @@ protected:
 
     void _OnOptionSettings(CWnd* pParent);
 
-	void DoLyricsAutoSave(bool no_inquiry = false);		//保存未修改的歌词，如果no_inquiry为true，则不弹出提示信息
-	void UpdateABRepeatToolTip();
+    void DoLyricsAutoSave(bool no_inquiry = false);		//保存未修改的歌词，如果no_inquiry为true，则不弹出提示信息
+    void UpdateABRepeatToolTip();
 
     void LoadDefaultBackground();
 
@@ -270,11 +271,11 @@ protected:
     //afx_msg void OnBnClickedVolumeUp();
     //afx_msg void OnBnClickedVolumeDown();
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
-    afx_msg void OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     //afx_msg void OnRefreshPlaylist();
     afx_msg void OnOptionSettings();
     afx_msg void OnReloadPlaylist();
-    afx_msg void OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnPlayItem();
     afx_msg void OnItemProperty();
     //afx_msg void OnRemoveFromPlaylist();
@@ -303,7 +304,7 @@ public:
     afx_msg void OnBnClickedPrevious();
     afx_msg void OnBnClickedPlayPause();
     afx_msg void OnBnClickedNext();
-//	afx_msg void OnMove(int x, int y);
+    //	afx_msg void OnMove(int x, int y);
     afx_msg void OnReloadLyric();
     afx_msg void OnSongInfo();
     afx_msg void OnCopyCurrentLyric();
@@ -341,7 +342,7 @@ public:
     //afx_msg void OnBnClickedClearSearchButton();
     afx_msg void OnDownloadAlbumCover();
 protected:
-	afx_msg LRESULT OnPostMusicStreamOpened(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnPostMusicStreamOpened(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnMusicStreamOpened(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnCurrentExploreOnline();
@@ -390,7 +391,7 @@ public:
     afx_msg void OnDockedPlaylist();
     afx_msg void OnFloatedPlaylist();
     afx_msg LRESULT OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam);
-//    afx_msg void OnFileOpenPalylist();
+    //    afx_msg void OnFileOpenPalylist();
 protected:
     afx_msg LRESULT OnPlaylistSelected(WPARAM wParam, LPARAM lParam);
 public:
@@ -399,7 +400,7 @@ public:
     afx_msg void OnEmptyPlaylist();
     afx_msg void OnMovePlaylistItemUp();
     afx_msg void OnMovePlaylistItemDown();
-    afx_msg void OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnRemoveSameSongs();
     afx_msg void OnAddToNewPlaylist();
     afx_msg void OnToolFileRelate();
@@ -435,24 +436,24 @@ protected:
     afx_msg LRESULT OnMsgOptionSettings(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnAlwaysShowStatusBar();
-	afx_msg void OnShowMainWindow();
+    afx_msg void OnShowMainWindow();
 protected:
-	afx_msg LRESULT OnRecentPlayedListCleared(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnRecentPlayedListCleared(WPARAM wParam, LPARAM lParam);
 public:
-	afx_msg void OnAbRepeat();
-	afx_msg void OnSetAPoint();
-	afx_msg void OnSetBPoint();
-	afx_msg void OnResetAbRepeat();
-	afx_msg void OnNextAbRepeat();
-	afx_msg void OnSaveCurrentPlaylistAs();
-	afx_msg void OnFileOpenPlaylist();
+    afx_msg void OnAbRepeat();
+    afx_msg void OnSetAPoint();
+    afx_msg void OnSetBPoint();
+    afx_msg void OnResetAbRepeat();
+    afx_msg void OnNextAbRepeat();
+    afx_msg void OnSaveCurrentPlaylistAs();
+    afx_msg void OnFileOpenPlaylist();
     //afx_msg void OnExportCurrentPlaylist();
     afx_msg void OnSaveAsNewPlaylist();
     afx_msg void OnCreateDesktopShortcut();
     afx_msg void OnCreateMiniModeShortCut();
     afx_msg void OnRemoveCurrentFromPlaylist();
     afx_msg void OnDeleteCurrentFromDisk();
-	afx_msg BOOL OnQueryEndSession();
+    afx_msg BOOL OnQueryEndSession();
     afx_msg void OnAlwaysUseExternalAlbumCover();
     afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
     afx_msg void OnRelateLocalLyric();
@@ -500,4 +501,6 @@ protected:
 public:
     afx_msg void OnPlaylistOptions();
     afx_msg void OnMove(int x, int y);
+protected:
+    afx_msg LRESULT OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam);
 };

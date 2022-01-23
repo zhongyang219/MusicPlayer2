@@ -251,10 +251,12 @@
     <ClInclude Include="CPlayerUI3.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
+    <ClInclude Include="MenuEditCtrl.h" />
     <ClInclude Include="PropertyAdvancedDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="PropertyDlgHelper.h" />
+    <ClInclude Include="RecentFolderAndPlaylist.h" />
     <ClInclude Include="ScintillaEditView.h" />
     <ClInclude Include="SelectItemDlg.h" />
     <ClInclude Include="SliderCtrlEx.h" />
@@ -396,10 +398,12 @@
     <ClCompile Include="CPlayerUI3.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
+    <ClCompile Include="MenuEditCtrl.cpp" />
     <ClCompile Include="PropertyAdvancedDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="PropertyDlgHelper.cpp" />
+    <ClCompile Include="RecentFolderAndPlaylist.cpp" />
     <ClCompile Include="ScintillaEditView.cpp" />
     <ClCompile Include="SelectItemDlg.cpp" />
     <ClCompile Include="SliderCtrlEx.cpp" />
@@ -535,6 +539,7 @@
     <Image Include="res\eq.ico" />
     <Image Include="res\eq_d.ico" />
     <Image Include="res\exit_d.ico" />
+    <Image Include="res\expand.ico" />
     <Image Include="res\explorer_folder.ico" />
     <Image Include="res\favourite.ico" />
     <Image Include="res\favourite_d.ico" />

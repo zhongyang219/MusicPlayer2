@@ -32,6 +32,7 @@
 #include "CPlayerUI4.h"
 #include "CPlayerUI5.h"
 #include "TagLibHelper.h"
+#include "RecentFolderAndPlaylist.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -294,6 +295,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_VOLUME_CHANGED, &CMusicPlayerDlg::OnVolumeChanged)
     ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
     ON_WM_MOVE()
+    ON_MESSAGE(WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged)
 END_MESSAGE_MAP()
 
 
@@ -2967,6 +2969,40 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             DrawInfo(true);
             m_ui_list[ui_index]->UpdateRepeatModeToolTip();
             m_ui_list[ui_index]->UpdateVolumeToolTip();
+        }
+    }
+
+    //响应文件夹/播放列表快捷菜单中的项目
+    if (command >= ID_RECENT_FOLDER_PLAYLIST_MENU_START && command <= ID_RECENT_FOLDER_PLAYLIST_MENU_END)
+    {
+        int index = command - ID_RECENT_FOLDER_PLAYLIST_MENU_START;
+        if (index >= 0 && index < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
+        {
+            auto& item = CRecentFolderAndPlaylist::Instance().GetItemList()[index];
+            if (item.is_playlist)
+            {
+                if (item.playlist_info != nullptr)
+                {
+                    CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position, false, false);
+                    UpdatePlayPauseButton();
+                    DrawInfo(true);
+                    CPlayer::GetInstance().SaveRecentPath();
+                    IniPlaylistPopupMenu();
+                    m_play_error_cnt = 0;
+                }
+
+            }
+            else
+            {
+                if (item.folder_info != nullptr)
+                {
+                    CPlayer::GetInstance().SetPath(*item.folder_info);
+                    UpdatePlayPauseButton();
+                    DrawInfo(true);
+                    CPlayer::GetInstance().SaveRecentPath();
+                    m_play_error_cnt = 0;
+                }
+            }
         }
     }
 
@@ -5898,4 +5934,29 @@ void CMusicPlayerDlg::OnMove(int x, int y)
         if (m_pFloatPlaylistDlg != nullptr && IsWindow(m_pFloatPlaylistDlg->GetSafeHwnd()))
             m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     }
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam)
+{
+    //初始化点击文件夹/播放列表右侧按钮弹出的菜单
+    m_path_edit.GetMenu().DestroyMenu();
+    m_path_edit.GetMenu().CreatePopupMenu();
+    int item_count{};
+    for (int i{}; i < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()) && i < RECENT_FOLDER_PLAYLIST_MAX_SIZE; i++)
+    {
+        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
+        if (item.LastPlayedTime() == 0)
+            continue;
+        wstring item_name{ item.GetName() };
+        m_path_edit.GetMenu().AppendMenu(MF_STRING | MF_ENABLED, ID_RECENT_FOLDER_PLAYLIST_MENU_START + i, item_name.c_str());
+        item_count++;
+    }
+    //设置菜单图标
+    for (int i{}; i < item_count; i++)
+    {
+        bool is_playlist{ CRecentFolderAndPlaylist::Instance().GetItemList()[i].is_playlist };
+        CMenuIcon::AddIconToMenuItem(m_path_edit.GetMenu().GetSafeHmenu(), i, TRUE, is_playlist ? theApp.m_icon_set.show_playlist.GetIcon(true) : theApp.m_icon_set.select_folder.GetIcon(true));
+    }
+    return 0;
 }
