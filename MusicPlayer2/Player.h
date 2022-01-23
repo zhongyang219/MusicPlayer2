@@ -11,6 +11,7 @@
 #include "IPlayerCore.h"
 #include "BassCore.h"
 #include "SpectralDataHelper.h"
+#include "MediaTransControls.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)			//播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)		//播放列表加载完成消息
@@ -400,4 +401,8 @@ public:
         bool is_playing{};
         bool m_reopen{};
     };
+
+    MediaTransControls m_controls;
+    void UpdateControls(Command cmd);
+    void UpdateControlsMetadata(SongInfo info);
 };

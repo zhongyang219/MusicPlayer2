@@ -351,6 +351,9 @@
     <Filter Include="对话框类\媒体库对话框\MediaLibStatisticsDlg">
       <UniqueIdentifier>{f6a899f1-4a37-421e-aea8-b27fb389c415}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\MediaTransControls">
+      <UniqueIdentifier>{19366437-de30-4f2b-ac9e-b7593280367d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -791,6 +794,9 @@
     <ClInclude Include="MediaLibStatisticsDlg.h">
       <Filter>对话框类\媒体库对话框\MediaLibStatisticsDlg</Filter>
     </ClInclude>
+    <ClInclude Include="MediaTransControls.h">
+      <Filter>公共的类\MediaTransControls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1194,6 +1200,9 @@
     </ClCompile>
     <ClCompile Include="MediaLibStatisticsDlg.cpp">
       <Filter>对话框类\媒体库对话框\MediaLibStatisticsDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaTransControls.cpp">
+      <Filter>公共的类\MediaTransControls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
