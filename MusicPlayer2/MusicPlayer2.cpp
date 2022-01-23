@@ -363,7 +363,7 @@ void CMusicPlayerApp::CheckUpdate(bool message)
         }
         return;
     }
-    if (version > VERSION)		//如果服务器上的版本大于本地版本
+    if (version > APP_VERSION)		//如果服务器上的版本大于本地版本
     {
         CString info;
         //根据语言设置选择对应语言版本的更新内容
@@ -420,6 +420,7 @@ UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
 void CMusicPlayerApp::SaveConfig()
 {
     CIniHelper ini(m_config_path);
+    ini.WriteString(L"app", L"version", APP_VERSION);
     ini.WriteBool(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start);
     ini.WriteInt(_T("general"), _T("language"), static_cast<int>(m_general_setting_data.language));
     ini.WriteBool(L"hot_key", L"global_multimedia_key_enable", m_hot_key_setting_data.global_multimedia_key_enable);
@@ -429,9 +430,12 @@ void CMusicPlayerApp::SaveConfig()
 void CMusicPlayerApp::LoadConfig()
 {
     CIniHelper ini(m_config_path);
+    wstring config_version = ini.GetString(L"app", L"version", L"");
     m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
     m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
     m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", true);
+    if (config_version <= L"2.73" && CString(APP_VERSION) > L"2.73")
+        m_hot_key_setting_data.global_multimedia_key_enable = true;     //从2.73升级到2.74版本时global_multimedia_key_enable强制改为true
 }
 
 void CMusicPlayerApp::LoadIconResource()

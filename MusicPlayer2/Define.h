@@ -64,7 +64,7 @@ using _tstring = std::string;
 //#define MAX_NUM_LENGTH 5000		//定义获取音频文件信息数量的最大值
 #define MAX_SONG_NUM 99999		//播放列表中文件数量的最大值
 
-#define VERSION L"2.73"	//程序版本
+#define APP_VERSION L"2.73"	//程序版本
 #define COPY_RIGHT_YEAR L"2021"
 
 //任务栏图按钮
