@@ -293,8 +293,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_VIEW_ALBUM, &CMusicPlayerDlg::OnPlaylistViewAlbum)
     ON_MESSAGE(WM_VOLUME_CHANGED, &CMusicPlayerDlg::OnVolumeChanged)
     ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
-        ON_WM_MOVE()
-        END_MESSAGE_MAP()
+    ON_WM_MOVE()
+END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -2191,9 +2191,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             CRect rectWholeDlg, rectWholeForegroundDlg;
             GetWindowRect(&rectWholeDlg);                               // 得到当前窗体的总的相对于屏幕的坐标
             pForegroundWnd->GetWindowRect(&rectWholeForegroundDlg);     // 得到前端窗体的总的相对于屏幕的坐标
-            if (   rectWholeForegroundDlg.left   <= rectWholeDlg.left
-                && rectWholeForegroundDlg.top    <= rectWholeDlg.top
-                && rectWholeForegroundDlg.right  >= rectWholeDlg.right
+            if (rectWholeForegroundDlg.left <= rectWholeDlg.left
+                && rectWholeForegroundDlg.top <= rectWholeDlg.top
+                && rectWholeForegroundDlg.right >= rectWholeDlg.right
                 && rectWholeForegroundDlg.bottom >= rectWholeDlg.bottom
                 && pForegroundWnd->IsZoomed()
                 )                           // 判断前端窗口是否完全覆盖主窗口
@@ -2202,7 +2202,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 DWORD pdwFlags{};
                 pForegroundWnd->GetLayeredWindowAttributes(NULL, &pbAlpha, &pdwFlags);
                 // 指定颜色进行透明的窗口视为透明，按Alpha进行透明的窗口当透明度不为255时视为透明，透明窗口不会覆盖主窗口
-                is_covered = !(pdwFlags == 1 || ( pdwFlags == 2 && pbAlpha != 255));
+                is_covered = !(pdwFlags == 1 || (pdwFlags == 2 && pbAlpha != 255));
             }
         }
         m_ui_thread_para.is_completely_covered = is_covered;
@@ -3078,7 +3078,7 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
             SetForegroundWindow();
         }
     }
-        break;
+    break;
     }
 
     CMainDialogBase::OnHotKey(nHotKeyId, nKey1, nKey2);
@@ -4414,27 +4414,27 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
     // 该功能要求使用 Windows 2000 或更高版本。
     // 符号 _WIN32_WINNT 和 WINVER 必须 >= 0x0500。
 
-    //响应多媒体键
-    if (!theApp.IsGlobalMultimediaKeyEnabled() && !CPlayer::GetInstance().m_controls.IsActive()) //如果没有设置响应全局的多媒体按键消息，则在当前窗口内响应多媒体按键消息
-    {
-        switch (nCmd)
-        {
-        case APPCOMMAND_MEDIA_PLAY_PAUSE:
-            OnPlayPause();
-            break;
-        case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-            OnPrevious();
-            break;
-        case APPCOMMAND_MEDIA_NEXTTRACK:
-            OnNext();
-            break;
-        case APPCOMMAND_MEDIA_STOP:
-            OnStop();
-            break;
-        default:
-            break;
-        }
-    }
+    ////响应多媒体键
+    //if (!theApp.IsGlobalMultimediaKeyEnabled() && !CPlayer::GetInstance().m_controls.IsActive()) //如果没有设置响应全局的多媒体按键消息，则在当前窗口内响应多媒体按键消息
+    //{
+    //    switch (nCmd)
+    //    {
+    //    case APPCOMMAND_MEDIA_PLAY_PAUSE:
+    //        OnPlayPause();
+    //        break;
+    //    case APPCOMMAND_MEDIA_PREVIOUSTRACK:
+    //        OnPrevious();
+    //        break;
+    //    case APPCOMMAND_MEDIA_NEXTTRACK:
+    //        OnNext();
+    //        break;
+    //    case APPCOMMAND_MEDIA_STOP:
+    //        OnStop();
+    //        break;
+    //    default:
+    //        break;
+    //    }
+    //}
 
     CMainDialogBase::OnAppCommand(pWnd, nCmd, nDevice, nKey);
 }

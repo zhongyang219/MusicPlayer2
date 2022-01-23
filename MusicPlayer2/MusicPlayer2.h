@@ -101,7 +101,7 @@ public:
     }
 
     WORD GetCurrentLanguage() const;
-    bool IsGlobalMultimediaKeyEnabled() const;
+    //bool IsGlobalMultimediaKeyEnabled() const;
 
     //获取帮助文本
     CString GetHelpString();
@@ -131,30 +131,30 @@ public:
 private:
     void LoadSongData();
 
-    static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
+    //static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
     static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
 
 private:
-    HHOOK m_multimedia_key_hook = NULL;
+    //HHOOK m_multimedia_key_hook = NULL;
 
     int m_dpi{};
     bool m_song_data_modified{ false };
 
-	ULONG_PTR m_gdiplusToken;
+    ULONG_PTR m_gdiplusToken;
     bool m_media_lib_updating{ false };
     bool m_checking_update{ false };        //是否正在检查更新
 
     HMODULE m_hScintillaModule{};
 
-// 重写
+    // 重写
 public:
     virtual BOOL InitInstance();
 
-// 实现
+    // 实现
 
     DECLARE_MESSAGE_MAP()
     afx_msg void OnHelp();
-	virtual int ExitInstance();
+    virtual int ExitInstance();
     afx_msg void OnHelpUpdateLog();
 };
 
