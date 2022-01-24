@@ -494,6 +494,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_playing = PS_PLAYING;
         GetPlayerCoreError(L"Play");
         m_controls.UpdateControls(Command::PLAY);
+        MediaTransControlsLoadThumbnailDefaultImage();
         break;
     case Command::CLOSE:
         //RemoveFXHandle();
@@ -506,6 +507,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_pCore->Pause();
         m_playing = PS_PAUSED;
         m_controls.UpdateControls(Command::PAUSE);
+        MediaTransControlsLoadThumbnailDefaultImage();
         break;
     case Command::STOP:
         if (GetCurrentSongInfo().is_cue && GetCurrentSongInfo().start_pos > 0)
@@ -521,6 +523,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_current_position = Time();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
         m_controls.UpdateControls(Command::STOP);
+        MediaTransControlsLoadThumbnailDefaultImage();
         break;
     case Command::FF:		//快进
         GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
@@ -552,6 +555,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             GetPlayerCoreError(L"Play");
             m_controls.UpdateControls(Command::PLAY);
         }
+        MediaTransControlsLoadThumbnailDefaultImage();
         break;
     case Command::VOLUME_UP:
         if (m_volume < 100)
@@ -2694,17 +2698,35 @@ void CPlayer::UpdateControlsMetadata(SongInfo info) {
 
 void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)
 {
-    if (CCommon::IsFileHidden(file_path))
+    if (CCommon::FileExist(file_path))
     {
-        //如果专辑封面图片文件已隐藏，先将文件复制到Temp目录，再取消隐藏属性
-        wstring temp_img_path{ CCommon::GetTemplatePath() + ALBUM_COVER_TEMP_NAME2 };
-        CopyFile(file_path.c_str(), temp_img_path.c_str(), FALSE);
-        CCommon::SetFileHidden(temp_img_path, false);
-        m_controls.loadThumbnail(temp_img_path);
+        if (CCommon::IsFileHidden(file_path))
+        {
+            //如果专辑封面图片文件已隐藏，先将文件复制到Temp目录，再取消隐藏属性
+            wstring temp_img_path{ CCommon::GetTemplatePath() + ALBUM_COVER_TEMP_NAME2 };
+            CopyFile(file_path.c_str(), temp_img_path.c_str(), FALSE);
+            CCommon::SetFileHidden(temp_img_path, false);
+            m_controls.loadThumbnail(temp_img_path);
+        }
+        else
+        {
+            //专辑封面图片文件未隐藏
+            m_controls.loadThumbnail(file_path);
+        }
     }
     else
     {
-        //专辑封面图片文件未隐藏
-        m_controls.loadThumbnail(file_path);
+        MediaTransControlsLoadThumbnailDefaultImage();
+    }
+}
+
+void CPlayer::MediaTransControlsLoadThumbnailDefaultImage()
+{
+    if (m_album_cover.IsNull())
+    {
+        if (IsPlaying())
+            m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_data.data(), theApp.m_image_set.default_cover_data.size());
+        else
+            m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_not_played_data.data(), theApp.m_image_set.default_cover_not_played_data.size());
     }
 }

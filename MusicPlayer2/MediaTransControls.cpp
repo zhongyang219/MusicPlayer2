@@ -145,7 +145,7 @@ void MediaTransControls::loadThumbnail(wstring fn) {
     updater->Update();
 }
 
-void MediaTransControls::loadThumbnail(BYTE* content, size_t size) {
+void MediaTransControls::loadThumbnail(const BYTE* content, size_t size) {
     if (!content || !size || !updater) return;
     ComPtr<Streams::IRandomAccessStream> s;
     HRESULT ret;
@@ -292,7 +292,7 @@ void MediaTransControls::loadThumbnail(wstring fn)
 {
 }
 
-void MediaTransControls::loadThumbnail(BYTE* content, size_t size)
+void MediaTransControls::loadThumbnail(const BYTE* content, size_t size)
 {
 }
 void MediaTransControls::loadThumbnailFromUrl(wstring url)

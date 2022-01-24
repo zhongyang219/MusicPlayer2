@@ -372,6 +372,7 @@ public:
 
 private:
     void MediaTransControlsLoadThumbnail(std::wstring& file_path);
+    void MediaTransControlsLoadThumbnailDefaultImage();
 
 public:
     //用于在执行某些操作时，播放器需要关闭当前播放的歌曲，操作完成后再次打开

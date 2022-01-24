@@ -29,7 +29,7 @@ public:
     */
     bool Init();
     void loadThumbnail(wstring fn);
-    void loadThumbnail(BYTE* content, size_t size);
+    void loadThumbnail(const BYTE* content, size_t size);
     void loadThumbnailFromUrl(wstring url);
     bool IsActive();
     void ClearAll();
@@ -55,7 +55,7 @@ public:
     MediaTransControls();
     bool Init();
     void loadThumbnail(wstring fn);
-    void loadThumbnail(BYTE* content, size_t size);
+    void loadThumbnail(const BYTE* content, size_t size);
     void loadThumbnailFromUrl(wstring url);
     bool IsActive();
     void ClearAll();

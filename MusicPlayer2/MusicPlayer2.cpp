@@ -607,6 +607,9 @@ void CMusicPlayerApp::LoadIconResource()
     //加载图片资源
     m_image_set.default_cover = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
     m_image_set.default_cover_not_played = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED);
+
+    m_image_set.default_cover_data = CCommon::GetPngImageResourceData(IDB_DEFAULT_ALBUM_COVER);
+    m_image_set.default_cover_not_played_data = CCommon::GetPngImageResourceData(IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED);
 }
 
 void CMusicPlayerApp::InitMenuResourse()

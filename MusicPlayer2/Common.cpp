@@ -1704,6 +1704,23 @@ Gdiplus::Image* CCommon::GetPngImageResource(UINT id)
     return lpImage;
 }
 
+
+string CCommon::GetPngImageResourceData(UINT id)
+{
+    HINSTANCE hIns = AfxGetInstanceHandle();
+    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type
+    if (!hRsrc)
+        return nullptr;
+    // load resource into memory
+    DWORD len = SizeofResource(hIns, hRsrc);
+    BYTE* lpRsrc = (BYTE*)LoadResource(hIns, hRsrc);
+    if (!lpRsrc)
+        return nullptr;
+    string data((const char*)lpRsrc, len);
+    FreeResource(lpRsrc);
+    return data;
+}
+
 int CCommon::Random(int min, int max)
 {
     std::random_device rd;

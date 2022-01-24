@@ -560,6 +560,8 @@ struct ImageSet
 {
     Gdiplus::Image* default_cover;
     Gdiplus::Image* default_cover_not_played;
+    string default_cover_data;
+    string default_cover_not_played_data;
 
     ~ImageSet()
     {
