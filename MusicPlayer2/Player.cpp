@@ -431,9 +431,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
     {
     case Command::OPEN:
         m_file_opend = false;
-#ifndef DISABLE_MEDIA_TRANS_CONTROLS
-        if (m_controls.updater) m_controls.updater->ClearAll();  // Clear all metadata.
-#endif // !DISABLE_MEDIA_TRANS_CONTROLS
+        m_controls.ClearAll();  // Clear all metadata.
         SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_POST_MUSIC_STREAM_OPENED, 0, 0);
         m_error_code = 0;
         m_error_state = ES_NO_ERROR;
@@ -491,7 +489,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         else
             m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
-        UpdateControls(Command::PLAY);
+        m_controls.UpdateControls(Command::PLAY);
         UpdateControlsMetadata(GetCurrentSongInfo());
         break;
     case Command::PLAY:
@@ -499,19 +497,19 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_pCore->Play();
         m_playing = PS_PLAYING;
         GetPlayerCoreError(L"Play");
-        UpdateControls(Command::PLAY);
+        m_controls.UpdateControls(Command::PLAY);
         break;
     case Command::CLOSE:
         //RemoveFXHandle();
         m_pCore->Close();
         m_playing = PS_STOPED;
         SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_AFTER_MUSIC_STREAM_CLOSED, 0, 0);
-        UpdateControls(Command::STOP);
+        m_controls.UpdateControls(Command::STOP);
         break;
     case Command::PAUSE:
         m_pCore->Pause();
         m_playing = PS_PAUSED;
-        UpdateControls(Command::PAUSE);
+        m_controls.UpdateControls(Command::PAUSE);
         break;
     case Command::STOP:
         if (GetCurrentSongInfo().is_cue && GetCurrentSongInfo().start_pos > 0)
@@ -526,7 +524,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_playing = PS_STOPED;
         m_current_position = Time();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
-        UpdateControls(Command::STOP);
+        m_controls.UpdateControls(Command::STOP);
         break;
     case Command::FF:		//快进
         GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
@@ -548,7 +546,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         {
             m_pCore->Pause();
             m_playing = PS_PAUSED;
-            UpdateControls(Command::PAUSE);
+            m_controls.UpdateControls(Command::PAUSE);
         }
         else
         {
@@ -556,7 +554,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_pCore->Play();
             m_playing = PS_PLAYING;
             GetPlayerCoreError(L"Play");
-            UpdateControls(Command::PLAY);
+            m_controls.UpdateControls(Command::PLAY);
         }
         break;
     case Command::VOLUME_UP:
@@ -2694,36 +2692,8 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
     }
 }
 
-void CPlayer::UpdateControls(Command cmd) {
-#ifndef DISABLE_MEDIA_TRANS_CONTROLS
-    if (m_controls.controls) {
-        switch (cmd) {
-        case Command::PLAY:
-            m_controls.controls->put_PlaybackStatus(MediaPlaybackStatus_Playing);
-            break;
-        case Command::PAUSE:
-            m_controls.controls->put_PlaybackStatus(MediaPlaybackStatus_Paused);
-            break;
-        case Command::STOP:
-            m_controls.controls->put_PlaybackStatus(MediaPlaybackStatus_Stopped);
-            break;
-        default:
-            ASSERT(FALSE);
-            break;
-        }
-    }
-#endif
-}
-
 void CPlayer::UpdateControlsMetadata(SongInfo info) {
-#ifndef DISABLE_MEDIA_TRANS_CONTROLS
-    if (m_controls.updater && m_controls.music) {
-        m_controls.updater->put_Type(MediaPlaybackType_Music);
-        m_controls.UpdateTitle(info.title);
-        m_controls.UpdateArtist(info.artist);
-        m_controls.updater->Update();
-    }
-#endif
+    m_controls.UpdateControlsMetadata(info.GetTitle(), info.GetArtist());
 }
 
 void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)

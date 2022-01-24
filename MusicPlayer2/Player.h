@@ -368,7 +368,6 @@ public:
 
 
     MediaTransControls m_controls;
-    void UpdateControls(Command cmd);
     void UpdateControlsMetadata(SongInfo info);
 
 private:

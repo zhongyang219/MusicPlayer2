@@ -44,7 +44,7 @@ using std::map;
 
 //如果要禁用MediaTransControls，请去掉下面一行代码的注释以启用DISABLE_MEDIA_TRANS_CONTROLS宏
 //如果在Win7下编译时提示找不到api-ms-win-*.dll，可以尝试启用DISABLE_MEDIA_TRANS_CONTROLS宏
-#define DISABLE_MEDIA_TRANS_CONTROLS
+//#define DISABLE_MEDIA_TRANS_CONTROLS
 
 #ifndef COMPILE_IN_WIN_XP
 //用于获取系统主题颜色

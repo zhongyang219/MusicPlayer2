@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "Common.h"
+
 #ifndef DISABLE_MEDIA_TRANS_CONTROLS
 #include <sdkddkver.h>
 #include <atlbase.h>
@@ -26,17 +28,20 @@ public:
      * @return true if initalized
     */
     bool Init();
-    CComPtr<ISystemMediaTransportControls> controls;
-    CComPtr<ISystemMediaTransportControlsDisplayUpdater> updater;
-    CComPtr<IMusicDisplayProperties> music;
     void loadThumbnail(wstring fn);
     void loadThumbnail(BYTE* content, size_t size);
     void loadThumbnailFromUrl(wstring url);
     bool IsActive();
+    void ClearAll();
+    void UpdateControls(Command cmd);
+    void UpdateControlsMetadata(const wstring& title, const wstring& artist);
+protected:
+    CComPtr<ISystemMediaTransportControls> controls;
+    CComPtr<ISystemMediaTransportControlsDisplayUpdater> updater;
+    CComPtr<IMusicDisplayProperties> music;
+    EventRegistrationToken m_EventRegistrationToken;
     void UpdateTitle(wstring title);
     void UpdateArtist(wstring artist);
-protected:
-    EventRegistrationToken m_EventRegistrationToken;
     void OnButtonPressed(SystemMediaTransportControlsButton button);
     bool IsURL(wstring s);
     bool m_initailzed = false;
@@ -53,8 +58,9 @@ public:
     void loadThumbnail(BYTE* content, size_t size);
     void loadThumbnailFromUrl(wstring url);
     bool IsActive();
-    void UpdateTitle(wstring title);
-    void UpdateArtist(wstring artist);
+    void ClearAll();
+    void UpdateControls(Command cmd);
+    void UpdateControlsMetadata(const wstring& title, const wstring& artist);
 };
 
 #endif
