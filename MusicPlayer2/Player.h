@@ -88,7 +88,6 @@ private:
     wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
     wstring m_current_file_type;
     deque<PathInfo> m_recent_path;		//最近打开过的路径
-    CPlaylistMgr m_recent_playlist;
 
     Time m_song_length;		//正在播放的文件的长度
     Time m_current_position;		//当前播放到的位置
@@ -312,7 +311,7 @@ public:
     const float* GetSpectralPeakData() const { return m_spectral_peak; }
     const float* GetFFTData() const { return m_fft; }			//返回频谱分析的原始数据
     deque<PathInfo>& GetRecentPath() { return m_recent_path; }	//返回最近播放路径列表的引用
-    CPlaylistMgr& GetRecentPlaylist() { return m_recent_playlist; }
+    CPlaylistMgr& GetRecentPlaylist() { return CPlaylistMgr::Instance(); }
     wstring GetPlayingState() const;		//获取播放状态的字符串
     int GetPlayingState2() const { return m_playing; }	//获取正在播放状态（0：已停止，1：已暂停，2：正在播放）
     const SongInfo& GetCurrentSongInfo() const;

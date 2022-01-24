@@ -4,17 +4,27 @@
 #include <set>
 #include "Playlist.h"
 
+CPlaylistMgr CPlaylistMgr::m_instance;
 
 CPlaylistMgr::CPlaylistMgr()
 {
-    m_default_playlist.path = theApp.m_playlist_dir + DEFAULT_PLAYLIST_NAME;
-    m_favourite_playlist.path = theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME;
-    m_temp_playlist.path = theApp.m_playlist_dir + TEMP_PLAYLIST_NAME;
 }
 
 
 CPlaylistMgr::~CPlaylistMgr()
 {
+}
+
+CPlaylistMgr& CPlaylistMgr::Instance()
+{
+    return m_instance;
+}
+
+void CPlaylistMgr::Init()
+{
+    m_default_playlist.path = theApp.m_playlist_dir + DEFAULT_PLAYLIST_NAME;
+    m_favourite_playlist.path = theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME;
+    m_temp_playlist.path = theApp.m_playlist_dir + TEMP_PLAYLIST_NAME;
 }
 
 void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time)

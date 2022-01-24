@@ -12,6 +12,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "WIC.h"
 #include "SongDataManager.h"
+#include "PlaylistMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -99,7 +100,7 @@ BOOL CMusicPlayerApp::InitInstance()
     //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
     m_playlist_dir = m_config_dir + L"playlist\\";
     CCommon::CreateDir(m_playlist_dir);
-
+    CPlaylistMgr::Instance().Init();
 
     wstring cmd_line{ m_lpCmdLine };
     //当程序被Windows重新启动时，直接退出程序

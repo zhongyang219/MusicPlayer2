@@ -22,8 +22,10 @@ struct PlaylistInfo
 class CPlaylistMgr
 {
 public:
-    CPlaylistMgr();
     ~CPlaylistMgr();
+    static CPlaylistMgr& Instance();
+
+    void Init();
 
     void EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time);
     void AddNewPlaylist(const wstring& path);
@@ -35,7 +37,13 @@ public:
 
     PlaylistInfo FindPlaylistInfo(const wstring& str);
 
+private:
+    CPlaylistMgr();
+
+    static CPlaylistMgr m_instance;     //CPlaylistMgr类唯一的对象
+
 public:
+
     PlaylistInfo m_default_playlist;
     PlaylistInfo m_favourite_playlist;
     PlaylistInfo m_temp_playlist;
