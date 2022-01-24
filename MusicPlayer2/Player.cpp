@@ -75,8 +75,7 @@ void CPlayer::Create()
         SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
     }
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
-    if (theApp.m_hot_key_setting_data.global_multimedia_key_enable)
-        m_controls.Init();
+    m_controls.Init();
 }
 
 void CPlayer::Create(const vector<wstring>& files)
@@ -86,8 +85,7 @@ void CPlayer::Create(const vector<wstring>& files)
     LoadRecentPath();
     LoadRecentPlaylist();
     OpenFiles(files);
-    if (theApp.m_hot_key_setting_data.global_multimedia_key_enable)
-        m_controls.Init();
+    m_controls.Init();
 }
 
 void CPlayer::Create(const wstring& path)
@@ -98,8 +96,7 @@ void CPlayer::Create(const wstring& path)
     LoadRecentPlaylist();
     OpenFolder(path);
     SetTitle();		//用当前正在播放的歌曲名作为窗口标题
-    if (theApp.m_hot_key_setting_data.global_multimedia_key_enable)
-        m_controls.Init();
+    m_controls.Init();
 }
 
 void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
@@ -110,8 +107,7 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
     LoadRecentPlaylist();
     OpenPlaylistFile(playlist_path);
     SetTitle();
-    if (theApp.m_hot_key_setting_data.global_multimedia_key_enable)
-        m_controls.Init();
+    m_controls.Init();
 }
 
 void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
