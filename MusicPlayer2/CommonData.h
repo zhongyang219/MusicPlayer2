@@ -280,6 +280,7 @@ struct GeneralSettingData
     bool minimize_to_notify_icon{ false };		//是否最小到通知区图标
 
     Language language;
+    bool portable_mode{ false };                //如果为true，则程序所有数据都保存到exe所在目录下，否则保存到Appdata\Romaing目录下
 };
 
 struct PlaySettingData

@@ -695,6 +695,7 @@
 #define IDS_MEDIALIB_STATISTICS         547
 #define IDI_ICON22                      548
 #define IDI_VOLUME0_D                   548
+#define IDS_CFG_DIR_CHANGED_INFO        548
 #define IDI_ICON20                      551
 #define IDI_EXPAND_D                    551
 #define IDC_STATIC_PATH                 1001
@@ -733,6 +734,7 @@
 #define IDC_SAVE_ALBUM_COVER_BUTTON     1012
 #define IDC_GET_TAG_ONLINE_BUTTON       1012
 #define IDC_TITLE_BUTTON                1012
+#define IDC_OPEN_CONFIG_PATH_BUTTON     1012
 #define IDC_VOLUME_UP                   1013
 #define IDC_NEXT_BUTTON                 1013
 #define IDC_SET_FONT2                   1013
@@ -1079,6 +1081,8 @@
 #define IDC_GITHUB_RADIO                1186
 #define IDC_GITEE_RADIO                 1187
 #define IDC_ORIGINAL_STATIC             1187
+#define IDC_SAVE_TO_APPDATA_RADIO       1188
+#define IDC_SAVE_TO_PROGRAM_DIR_RADIO   1189
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1508,7 +1512,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        552
 #define _APS_NEXT_COMMAND_VALUE         33385
-#define _APS_NEXT_CONTROL_VALUE         1188
+#define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -39,32 +39,6 @@ CMusicPlayerApp::CMusicPlayerApp()
 
     CRASHREPORT::StartCrashReport();
 
-    //初始化路径
-    m_module_dir = CCommon::GetExePath();
-#ifdef _DEBUG
-    m_local_dir = L".\\";
-#else
-    m_local_dir = m_module_dir;
-#endif // _DEBUG
-
-    m_config_path = m_module_dir + L"config.ini";
-    m_song_data_path = m_module_dir + L"song_data.dat";
-    m_recent_path_dat_path = m_module_dir + L"recent_path.dat";
-    m_recent_playlist_data_path = m_module_dir + L"playlist\\recent_playlist.dat";
-    m_desktop_path = CCommon::GetDesktopPath();
-    //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
-    m_playlist_dir = m_module_dir + L"playlist\\";
-    CCommon::CreateDir(m_playlist_dir);
-    wchar_t path[MAX_PATH];
-    GetModuleFileNameW(NULL, path, MAX_PATH);
-    m_module_path_reg = path;
-    if (m_module_path_reg.find(L' ') != std::wstring::npos)
-    {
-        //如果路径中有空格，则在程序路径前后添加双引号
-        m_module_path_reg = L'\"' + m_module_path_reg;
-        m_module_path_reg += L'\"';
-    }
-
     //获取当前DPI
     HDC hDC = ::GetDC(NULL);
     m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
@@ -91,6 +65,41 @@ BOOL CMusicPlayerApp::InitInstance()
     ::GetClassInfo(AfxGetInstanceHandle(), _T("#32770"), &wc);	//MFC默认的所有对话框的类名为#32770
     wc.lpszClassName = _T("MusicPlayer_l3gwYT");	//将对话框的类名修改为新类名
     AfxRegisterClass(&wc);
+
+    //初始化路径
+    wchar_t path[MAX_PATH];
+    GetModuleFileNameW(NULL, path, MAX_PATH);
+    m_module_path_reg = path;
+    if (m_module_path_reg.find(L' ') != std::wstring::npos)
+    {
+        //如果路径中有空格，则在程序路径前后添加双引号
+        m_module_path_reg = L'\"' + m_module_path_reg;
+        m_module_path_reg += L'\"';
+    }
+    m_module_dir = CCommon::GetExePath();
+    m_appdata_dir = CCommon::GetAppDataConfigDir();
+
+    LoadGlobalConfig();
+
+#ifdef _DEBUG
+    m_local_dir = L".\\";
+#else
+    m_local_dir = m_module_dir;
+#endif // _DEBUG
+    if (m_general_setting_data.portable_mode)
+        m_config_dir = m_module_dir;
+    else
+        m_config_dir = m_appdata_dir;
+
+    m_config_path = m_config_dir + L"config.ini";
+    m_song_data_path = m_config_dir + L"song_data.dat";
+    m_recent_path_dat_path = m_config_dir + L"recent_path.dat";
+    m_recent_playlist_data_path = m_config_dir + L"playlist\\recent_playlist.dat";
+    m_desktop_path = CCommon::GetDesktopPath();
+    //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
+    m_playlist_dir = m_config_dir + L"playlist\\";
+    CCommon::CreateDir(m_playlist_dir);
+
 
     wstring cmd_line{ m_lpCmdLine };
     //当程序被Windows重新启动时，直接退出程序
@@ -240,7 +249,7 @@ BOOL CMusicPlayerApp::InitInstance()
     // 更改用于存储设置的注册表项
     // TODO: 应适当修改该字符串，
     // 例如修改为公司或组织名
-    //SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
+    //SetRegistryKey(_T("Apps By ZhongYang"));
 
     //设置一个全局钩子以截获多媒体按键消息
     if (m_hot_key_setting_data.global_multimedia_key_enable && !CWinVersionHelper::IsWindows81OrLater())
@@ -272,6 +281,7 @@ BOOL CMusicPlayerApp::InitInstance()
     }
 
     SaveSongData();
+    SaveGlobalConfig();
 
     // 删除上面创建的 shell 管理器。
     if (pShellManager != NULL)
@@ -399,6 +409,52 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 void CMusicPlayerApp::CheckUpdateInThread(bool message)
 {
     AfxBeginThread(CheckUpdateThreadFunc, (LPVOID)message);
+}
+
+void CMusicPlayerApp::LoadGlobalConfig()
+{
+    bool portable_mode_default{ false };
+    wstring global_cfg_path{ m_module_dir + L"global_cfg.ini" };
+    if (!CCommon::FileExist(global_cfg_path.c_str()))       //如果global_cfg.ini不存在，则根据AppData/Roaming/MusicPlayer2目录下是否存在config.ini来判断配置文件的保存位置
+    {
+        portable_mode_default = !CCommon::FileExist((m_appdata_dir + L"config.ini").c_str());
+    }
+
+    CIniHelper ini{ global_cfg_path };
+    m_general_setting_data.portable_mode = ini.GetBool(L"config", L"portable_mode", portable_mode_default);
+
+    //执行一次保存操作，以检查当前目录是否有写入权限
+    m_module_dir_writable = ini.Save();
+
+    if (m_module_dir.find(CCommon::GetTemplatePath()) != wstring::npos)      //如果当前路径是在Temp目录下，则强制将数据保存到Appdata
+    {
+        m_module_dir_writable = false;
+    }
+
+    if (!m_module_dir_writable)              //如果当前目录没有写入权限，则设置配置保存到AppData目录
+    {
+        m_general_setting_data.portable_mode = false;
+    }
+}
+
+void CMusicPlayerApp::SaveGlobalConfig()
+{
+    CIniHelper ini{ m_module_dir + L"global_cfg.ini" };
+    ini.WriteBool(L"config", L"portable_mode", m_general_setting_data.portable_mode);
+
+    //检查是否保存成功
+    if (!ini.Save())
+    {
+        //if (m_cannot_save_global_config_warning)
+        //{
+        //    CString info;
+        //    info.LoadString(IDS_CONNOT_SAVE_CONFIG_WARNING);
+        //    info.Replace(_T("<%file_path%>"), m_module_dir.c_str());
+        //    AfxMessageBox(info, MB_ICONWARNING);
+        //}
+        //m_cannot_save_global_config_warning = false;
+        //return;
+    }
 }
 
 UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
@@ -975,10 +1031,10 @@ bool CMusicPlayerApp::GetAutoRun()
 void CMusicPlayerApp::WriteLog(const wstring& log_str, int log_type)
 {
     if (((log_type & NonCategorizedSettingData::LT_ERROR) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_ERROR) != 0))
-        CCommon::WriteLog((m_module_dir + L"error.log").c_str(), log_str);
+        CCommon::WriteLog((m_config_dir + L"error.log").c_str(), log_str);
 #ifdef _DEBUG
     if (((log_type & NonCategorizedSettingData::LT_NORMAL) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_NORMAL) != 0))
-        CCommon::WriteLog((m_module_dir + L"debug.log").c_str(), log_str);
+        CCommon::WriteLog((m_config_dir + L"debug.log").c_str(), log_str);
 #endif
 }
 

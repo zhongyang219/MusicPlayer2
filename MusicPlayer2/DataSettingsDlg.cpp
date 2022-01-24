@@ -48,6 +48,7 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_AUTO_RUN_CHECK, &CDataSettingsDlg::OnBnClickedAutoRunCheck)
     ON_BN_CLICKED(IDC_GITHUB_RADIO, &CDataSettingsDlg::OnBnClickedGithubRadio)
     ON_BN_CLICKED(IDC_GITEE_RADIO, &CDataSettingsDlg::OnBnClickedGiteeRadio)
+    ON_BN_CLICKED(IDC_OPEN_CONFIG_PATH_BUTTON, &CDataSettingsDlg::OnBnClickedOpenConfigPathButton)
 END_MESSAGE_MAP()
 
 
@@ -72,6 +73,10 @@ BOOL CDataSettingsDlg::OnInitDialog()
         CheckDlgButton(IDC_GITHUB_RADIO, TRUE);
     else
         CheckDlgButton(IDC_GITEE_RADIO, TRUE);
+
+    CheckDlgButton(IDC_SAVE_TO_APPDATA_RADIO, !m_data.portable_mode);
+    CheckDlgButton(IDC_SAVE_TO_PROGRAM_DIR_RADIO, m_data.portable_mode);
+    EnableDlgCtrl(IDC_SAVE_TO_PROGRAM_DIR_RADIO, theApp.m_module_dir_writable);
 
 	//((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->SetCheck(m_data.id3v2_first);
 	((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_album_cover);
@@ -107,6 +112,8 @@ BOOL CDataSettingsDlg::OnInitDialog()
 	m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), CCommon::LoadText(IDS_AUTO_DOWNLOAD_LYRIC_TIP_INFO));
 	//m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
 	m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), CCommon::LoadText(IDS_MIDI_INNER_LYRIC_TIP_INFO));
+    m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_APPDATA_RADIO), theApp.m_appdata_dir.c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_PROGRAM_DIR_RADIO), theApp.m_module_dir.c_str());
 
 	m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -221,6 +228,13 @@ void CDataSettingsDlg::OnOK()
 		MessageBox(CCommon::LoadText(IDS_LANGUAGE_CHANGE_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 	}
 
+    //获取数据文件保存位置的设置
+    m_data.portable_mode = (IsDlgButtonChecked(IDC_SAVE_TO_PROGRAM_DIR_RADIO) != 0);
+    if (m_data.portable_mode != theApp.m_general_setting_data.portable_mode)
+    {
+        MessageBox(CCommon::LoadText(IDS_CFG_DIR_CHANGED_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+
 	CTabDlg::OnOK();
 }
 
@@ -253,4 +267,11 @@ void CDataSettingsDlg::OnBnClickedGiteeRadio()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.update_source = static_cast<int>(CUpdateHelper::UpdateSource::GiteeSource);
+}
+
+
+void CDataSettingsDlg::OnBnClickedOpenConfigPathButton()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    ShellExecute(NULL, _T("explore"), theApp.m_config_dir.c_str(), NULL, NULL, SW_SHOWNORMAL);
 }

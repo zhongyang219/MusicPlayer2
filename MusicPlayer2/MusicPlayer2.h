@@ -30,6 +30,8 @@ public:
     CMusicPlayerApp();
 
     wstring m_module_dir;		//当前程序exe文件所在目录
+    wstring m_appdata_dir;
+    wstring m_config_dir;
     wstring m_local_dir;		//当前目录（debug模式下为.\，release模式下为exe文件所在目录）
     wstring m_playlist_dir;     //播放列表目录
     wstring m_config_path;		//配置文件的路径
@@ -76,11 +78,15 @@ public:
     volatile bool m_format_convert_dialog_exit{ true };		//用于指示格式对话框已经退出
     volatile int m_media_num_added{};                       //更新媒体库时新增的音频文件数量
 
+    bool m_module_dir_writable{ true };         //指示程序所在目录是否可写
+
     void SaveSongData();		//将所有歌曲信息以序列化的方式保存到文件
 
     void CheckUpdate(bool message);
     void CheckUpdateInThread(bool message); //在后台线程中检查更新
 
+    void LoadGlobalConfig();
+    void SaveGlobalConfig();
     void SaveConfig();
     void LoadConfig();
 

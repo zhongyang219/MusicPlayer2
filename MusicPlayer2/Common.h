@@ -206,6 +206,9 @@ public:
     //获取临时文件夹路径
     static wstring GetTemplatePath();
 
+    //获取Appdata/Local/MusicPlayer2的目录，如果不存在，则会自动创建
+    static wstring GetAppDataConfigDir();
+
     //获取系统特殊文件夹的位置
     //csidl: 含义同SHGetSpecialFolderLocation函数的参数
     static wstring GetSpecialDir(int csidl);

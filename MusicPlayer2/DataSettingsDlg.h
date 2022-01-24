@@ -54,4 +54,5 @@ public:
     afx_msg void OnBnClickedAutoRunCheck();
     afx_msg void OnBnClickedGithubRadio();
     afx_msg void OnBnClickedGiteeRadio();
+    afx_msg void OnBnClickedOpenConfigPathButton();
 };

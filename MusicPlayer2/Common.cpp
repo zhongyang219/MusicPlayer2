@@ -652,6 +652,26 @@ wstring CCommon::GetTemplatePath()
     return result;
 }
 
+
+wstring CCommon::GetAppDataConfigDir()
+{
+    LPITEMIDLIST ppidl;
+    TCHAR pszAppDataPath[MAX_PATH];
+    if (SHGetSpecialFolderLocation(NULL, CSIDL_APPDATA, &ppidl) == S_OK)
+    {
+        SHGetPathFromIDList(ppidl, pszAppDataPath);
+        CoTaskMemFree(ppidl);
+    }
+    wstring app_data_path{ pszAppDataPath };        //获取到C:/User/用户名/AppData/Roaming路径
+    CreateDirectory(app_data_path.c_str(), NULL);       //如果Roaming不存在，则创建它
+    app_data_path += L'\\';
+    app_data_path += APP_NAME;
+    app_data_path += L'\\';
+    CreateDirectory(app_data_path.c_str(), NULL);       //如果C:/User/用户名/AppData/Roaming/MusicPlayer2不存在，则创建它
+
+    return app_data_path;
+}
+
 wstring CCommon::GetSpecialDir(int csidl)
 {
     LPITEMIDLIST ppidl;
