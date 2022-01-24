@@ -5958,8 +5958,20 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, 
     //设置菜单图标
     for (int i{}; i < item_count; i++)
     {
-        bool is_playlist{ CRecentFolderAndPlaylist::Instance().GetItemList()[i].is_playlist };
-        CMenuIcon::AddIconToMenuItem(m_path_edit.GetMenu().GetSafeHmenu(), i, TRUE, is_playlist ? theApp.m_icon_set.show_playlist.GetIcon(true) : theApp.m_icon_set.select_folder.GetIcon(true));
+        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
+        HICON icon{};
+        if (item.is_playlist)
+        {
+            if (item.playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path)
+                icon = theApp.m_icon_set.favourite.GetIcon(true);
+            else
+                icon = theApp.m_icon_set.show_playlist.GetIcon(true);
+        }
+        else
+        {
+            icon = theApp.m_icon_set.select_folder.GetIcon(true);
+        }
+        CMenuIcon::AddIconToMenuItem(m_path_edit.GetMenu().GetSafeHmenu(), i, TRUE, icon);
     }
     return 0;
 }
