@@ -2692,8 +2692,9 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
     }
 }
 
-void CPlayer::UpdateControlsMetadata(SongInfo info) {
-    m_controls.UpdateControlsMetadata(info.GetTitle(), info.GetArtist());
+void CPlayer::UpdateControlsMetadata(SongInfo info)
+{
+    m_controls.UpdateControlsMetadata(info.IsTitleEmpty() ? info.GetFileName() : info.GetTitle(), info.GetArtist());
 }
 
 void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)
