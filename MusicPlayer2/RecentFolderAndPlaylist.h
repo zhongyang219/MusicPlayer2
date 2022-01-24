@@ -17,6 +17,7 @@ public:
         Item(const PlaylistInfo* _playlist_info);
         unsigned __int64 LastPlayedTime() const;
         std::wstring GetName() const;
+        bool IsItemCurrentPlaying() const;      //判断是否为当前播放的文件夹/播放列表
     };
 
     void Init(const deque<PathInfo>& recent_folder, const CPlaylistMgr& recent_playlist);

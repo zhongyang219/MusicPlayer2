@@ -2979,28 +2979,31 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         if (index >= 0 && index < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
         {
             auto& item = CRecentFolderAndPlaylist::Instance().GetItemList()[index];
-            if (item.is_playlist)
+            if (!item.IsItemCurrentPlaying())
             {
-                if (item.playlist_info != nullptr)
+                if (item.is_playlist)
                 {
-                    CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position, false, false);
-                    UpdatePlayPauseButton();
-                    DrawInfo(true);
-                    CPlayer::GetInstance().SaveRecentPath();
-                    IniPlaylistPopupMenu();
-                    m_play_error_cnt = 0;
-                }
+                    if (item.playlist_info != nullptr)
+                    {
+                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position, false, false);
+                        UpdatePlayPauseButton();
+                        DrawInfo(true);
+                        CPlayer::GetInstance().SaveRecentPath();
+                        IniPlaylistPopupMenu();
+                        m_play_error_cnt = 0;
+                    }
 
-            }
-            else
-            {
-                if (item.folder_info != nullptr)
+                }
+                else
                 {
-                    CPlayer::GetInstance().SetPath(*item.folder_info);
-                    UpdatePlayPauseButton();
-                    DrawInfo(true);
-                    CPlayer::GetInstance().SaveRecentPath();
-                    m_play_error_cnt = 0;
+                    if (item.folder_info != nullptr)
+                    {
+                        CPlayer::GetInstance().SetPath(*item.folder_info);
+                        UpdatePlayPauseButton();
+                        DrawInfo(true);
+                        CPlayer::GetInstance().SaveRecentPath();
+                        m_play_error_cnt = 0;
+                    }
                 }
             }
         }

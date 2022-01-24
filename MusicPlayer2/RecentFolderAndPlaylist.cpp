@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "RecentFolderAndPlaylist.h"
 #include "FilePathHelper.h"
+#include "Player.h"
 
 CRecentFolderAndPlaylist CRecentFolderAndPlaylist::m_instance;
 
@@ -102,4 +103,16 @@ std::wstring CRecentFolderAndPlaylist::Item::GetName() const
         }
     }
     return wstring();
+}
+
+bool CRecentFolderAndPlaylist::Item::IsItemCurrentPlaying() const
+{
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        return is_playlist && playlist_info != nullptr && playlist_info->path == CPlayer::GetInstance().GetPlaylistPath();
+    }
+    else
+    {
+        return !is_playlist && folder_info != nullptr && folder_info->path == CPlayer::GetInstance().GetCurrentDir2();
+    }
 }
