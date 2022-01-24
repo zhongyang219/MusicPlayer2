@@ -431,7 +431,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
     {
     case Command::OPEN:
         m_file_opend = false;
+#ifndef DISABLE_MEDIA_TRANS_CONTROLS
         if (m_controls.updater) m_controls.updater->ClearAll();  // Clear all metadata.
+#endif // !DISABLE_MEDIA_TRANS_CONTROLS
         SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_POST_MUSIC_STREAM_OPENED, 0, 0);
         m_error_code = 0;
         m_error_state = ES_NO_ERROR;
@@ -2693,6 +2695,7 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
 }
 
 void CPlayer::UpdateControls(Command cmd) {
+#ifndef DISABLE_MEDIA_TRANS_CONTROLS
     if (m_controls.controls) {
         switch (cmd) {
         case Command::PLAY:
@@ -2709,15 +2712,18 @@ void CPlayer::UpdateControls(Command cmd) {
             break;
         }
     }
+#endif
 }
 
 void CPlayer::UpdateControlsMetadata(SongInfo info) {
+#ifndef DISABLE_MEDIA_TRANS_CONTROLS
     if (m_controls.updater && m_controls.music) {
         m_controls.updater->put_Type(MediaPlaybackType_Music);
         m_controls.UpdateTitle(info.title);
         m_controls.UpdateArtist(info.artist);
         m_controls.updater->Update();
     }
+#endif
 }
 
 void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)

@@ -131,11 +131,11 @@ public:
 private:
     void LoadSongData();
 
-    //static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
     static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
 
 private:
-    //HHOOK m_multimedia_key_hook = NULL;
+    HHOOK m_multimedia_key_hook = NULL;
 
     int m_dpi{};
     bool m_song_data_modified{ false };

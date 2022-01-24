@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "Player.h"
+
+#ifndef DISABLE_MEDIA_TRANS_CONTROLS
+
 #include "MediaTransControls.h"
 #include "shcore.h"
 #include "WinVersionHelper.h"
@@ -236,3 +239,44 @@ bool MediaTransControls::IsURL(wstring s) {
 	auto i = s.find(L"://");
 	return i != std::wstring::npos && i > 1;
 }
+
+#else
+
+MediaTransControls::MediaTransControls()
+{
+
+}
+
+bool MediaTransControls::Init()
+{
+    return false;
+}
+
+void MediaTransControls::loadThumbnail(wstring fn)
+{
+
+}
+
+void MediaTransControls::loadThumbnail(BYTE* content, size_t size)
+{
+
+}
+void MediaTransControls::loadThumbnailFromUrl(wstring url)
+{
+
+}
+bool MediaTransControls::IsActive()
+{
+    return false;
+}
+void MediaTransControls::UpdateTitle(wstring title)
+{
+
+}
+void MediaTransControls::UpdateArtist(wstring artist)
+{
+
+}
+
+
+#endif

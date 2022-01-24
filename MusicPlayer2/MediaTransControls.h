@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+#ifndef DISABLE_MEDIA_TRANS_CONTROLS
 #include <sdkddkver.h>
 #include <atlbase.h>
 #include <windows.media.h>
@@ -39,3 +41,20 @@ protected:
     bool IsURL(wstring s);
     bool m_initailzed = false;
 };
+
+#else
+
+class MediaTransControls
+{
+public:
+    MediaTransControls();
+    bool Init();
+    void loadThumbnail(wstring fn);
+    void loadThumbnail(BYTE* content, size_t size);
+    void loadThumbnailFromUrl(wstring url);
+    bool IsActive();
+    void UpdateTitle(wstring title);
+    void UpdateArtist(wstring artist);
+};
+
+#endif

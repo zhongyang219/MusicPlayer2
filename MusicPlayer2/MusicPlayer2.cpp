@@ -242,9 +242,9 @@ BOOL CMusicPlayerApp::InitInstance()
     // 例如修改为公司或组织名
     //SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-    ////设置一个全局钩子以截获多媒体按键消息
-    //if (m_hot_key_setting_data.global_multimedia_key_enable)
-    //    m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
+    //设置一个全局钩子以截获多媒体按键消息
+    if (m_hot_key_setting_data.global_multimedia_key_enable && !CWinVersionHelper::IsWindows81OrLater())
+        m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
 
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
@@ -433,8 +433,8 @@ void CMusicPlayerApp::LoadConfig()
     wstring config_version = ini.GetString(L"app", L"version", L"");
     m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
     m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
-    m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", true);
-    if (config_version <= L"2.73" && CString(APP_VERSION) > L"2.73")
+    m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", CWinVersionHelper::IsWindows81OrLater());
+    if (CWinVersionHelper::IsWindows81OrLater() && config_version <= L"2.73" && CString(APP_VERSION) > L"2.73")
         m_hot_key_setting_data.global_multimedia_key_enable = true;     //从2.73升级到2.74版本时global_multimedia_key_enable强制改为true
 }
 
@@ -1038,40 +1038,40 @@ void CMusicPlayerApp::LoadSongData()
     CSongDataManager::GetInstance().LoadSongData(m_song_data_path);
 }
 
-//LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam)
-//{
-//    //	if (wParam == HSHELL_APPCOMMAND)
-//        //{
-//        //	int a = 0;
-//        //}
-//
-//        //截获全局的多媒体按键消息
-//    if (wParam == WM_KEYUP && !CPlayer::GetInstance().m_controls.IsActive())
-//    {
-//        KBDLLHOOKSTRUCT* pKBHook = (KBDLLHOOKSTRUCT*)lParam;
-//        switch (pKBHook->vkCode)
-//        {
-//        case VK_MEDIA_PLAY_PAUSE:
-//            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_PAUSE, 0);
-//            return TRUE;
-//        case VK_MEDIA_PREV_TRACK:
-//            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PREVIOUS, 0);
-//            return TRUE;
-//        case VK_MEDIA_NEXT_TRACK:
-//            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_NEXT, 0);
-//            return TRUE;
-//        case VK_MEDIA_STOP:
-//            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_STOP, 0);
-//            return TRUE;
-//        default:
-//            break;
-//        }
-//    }
-//
-//    CallNextHookEx(theApp.m_multimedia_key_hook, nCode, wParam, lParam);
-//
-//    return LRESULT();
-//}
+LRESULT CMusicPlayerApp::MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    //	if (wParam == HSHELL_APPCOMMAND)
+        //{
+        //	int a = 0;
+        //}
+
+        //截获全局的多媒体按键消息
+    if (wParam == WM_KEYUP && !CPlayer::GetInstance().m_controls.IsActive())
+    {
+        KBDLLHOOKSTRUCT* pKBHook = (KBDLLHOOKSTRUCT*)lParam;
+        switch (pKBHook->vkCode)
+        {
+        case VK_MEDIA_PLAY_PAUSE:
+            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_PAUSE, 0);
+            return TRUE;
+        case VK_MEDIA_PREV_TRACK:
+            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PREVIOUS, 0);
+            return TRUE;
+        case VK_MEDIA_NEXT_TRACK:
+            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_NEXT, 0);
+            return TRUE;
+        case VK_MEDIA_STOP:
+            SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_STOP, 0);
+            return TRUE;
+        default:
+            break;
+        }
+    }
+
+    CallNextHookEx(theApp.m_multimedia_key_hook, nCode, wParam, lParam);
+
+    return LRESULT();
+}
 
 
 
