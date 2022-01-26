@@ -8,6 +8,8 @@ CLyrics::CLyrics(const wstring& file_name) : m_file{ file_name }
     DisposeLyric();
     std::stable_sort(m_lyrics.begin(), m_lyrics.end());		//将歌词按时间标签排序（使用stable_sort，确保相同的元素相对位置保持不变，用于处理带翻译的歌词时确保翻译在原文的后面）
     CombineSameTimeLyric();
+    // 将int时间转换为Time并应用偏移量
+    apply_offset();
 }
 
 void CLyrics::LyricsFromRowString(const wstring & lyric_str)
@@ -24,6 +26,8 @@ void CLyrics::LyricsFromRowString(const wstring & lyric_str)
     DisposeLyric();
     std::stable_sort(m_lyrics.begin(), m_lyrics.end());
     CombineSameTimeLyric();
+    // 将int时间转换为Time并应用偏移量
+    apply_offset();
 }
 
 void CLyrics::DivideLyrics()
@@ -43,6 +47,18 @@ void CLyrics::DivideLyrics()
     {
         CCommon::StringNormalize(str);
         m_lyrics_str.push_back(str);
+    }
+}
+
+void CLyrics::apply_offset()
+{
+    int last{};
+    for (int i{}; i < m_lyrics.size(); ++i)
+    {
+        // 应用偏移量同时避免出现重叠，重叠的时间标签会被歌词翻译合并误处理
+        last = max(last, m_lyrics[i].time_int + m_offset);
+        m_lyrics[i].time.fromInt(last);
+        last += 10;
     }
 }
 
@@ -165,13 +181,14 @@ void CLyrics::DisposeLyric()
             }
 
             int index1, index2, index3;		//歌词标签中冒号、圆点和右中括号的位置
+            Time t{};
             index1 = m_lyrics_str[i].find_first_of(L':', index);		//查找从左中括号开始第1个冒号的位置
             index2 = m_lyrics_str[i].find_first_of(L".:", index1 + 1);	//查找从第1个冒号开始第1个圆点或冒号的位置（秒钟和毫秒数应该用圆点分隔，这里也兼容用冒号分隔的歌词）
             index3 = m_lyrics_str[i].find(L']', index);		//查找右中括号的位置
             temp = m_lyrics_str[i].substr(index + 1, index1 - index - 1);		//获取时间标签的分钟数
-            lyric.time.min = _wtoi(temp.c_str());
+            t.min = _wtoi(temp.c_str());
             temp = m_lyrics_str[i].substr(index1 + 1, index2 - index1 - 1);		//获取时间标签的秒钟数
-            lyric.time.sec = _wtoi(temp.c_str());
+            t.sec = _wtoi(temp.c_str());
             temp = m_lyrics_str[i].substr(index2 + 1, index3 - index2 - 1);		//获取时间标签的毫秒数
             int char_cnt = temp.size();				//毫秒数的位数
             if (char_cnt > 0 && temp[0] == L'-')		//如果毫秒数的前面有负号，则位数减1
@@ -179,17 +196,18 @@ void CLyrics::DisposeLyric()
             switch (char_cnt)
             {
             case 0:
-                lyric.time.msec = 0;
+                t.msec = 0;
             case 1:
-                lyric.time.msec = _wtoi(temp.c_str()) * 100;
+                t.msec = _wtoi(temp.c_str()) * 100;
                 break;
             case 2:
-                lyric.time.msec = _wtoi(temp.c_str()) * 10;
+                t.msec = _wtoi(temp.c_str()) * 10;
                 break;
             default:
-                lyric.time.msec = _wtoi(temp.c_str()) % 1000;
+                t.msec = _wtoi(temp.c_str()) % 1000;
                 break;
             }
+            lyric.time_int = t.toInt();
             m_lyrics.push_back(lyric);
         }
     }
@@ -266,7 +284,7 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, int offset) const
 {
     for (int i{ 0 }; i < static_cast<int>(m_lyrics.size()); i++)
     {
-        if (m_lyrics[i].GetTime(m_offset) > time)		//如果找到第一个时间标签比要显示的时间大，则该时间标签的前一句歌词即为当前歌词
+        if (m_lyrics[i].time > time)        // 如果找到第一个时间标签比要显示的时间大，则该时间标签的前一句歌词即为当前歌词
         {
             if (i + offset - 1 < -1)
             {
@@ -321,17 +339,17 @@ int CLyrics::GetLyricProgress(Time time) const
     int progress{};
     for (size_t i{ 0 }; i < m_lyrics.size(); i++)
     {
-        if (m_lyrics[i].GetTime(m_offset) > time)
+        if (m_lyrics[i].time > time)
         {
             if (i == 0)
             {
                 lyric_current_time = time.toInt();
-                lyric_last_time = m_lyrics[i].GetTime(m_offset).toInt();
+                lyric_last_time = m_lyrics[i].time.toInt();
             }
             else
             {
-                lyric_last_time = m_lyrics[i].GetTime(m_offset) - m_lyrics[i - 1].GetTime(m_offset);
-                lyric_current_time = time - m_lyrics[i - 1].GetTime(m_offset);
+                lyric_last_time = m_lyrics[i].time - m_lyrics[i - 1].time;
+                lyric_current_time = time - m_lyrics[i - 1].time;
             }
             if (lyric_last_time == 0) lyric_last_time = 1;
             progress = lyric_current_time * 1000 / lyric_last_time;
@@ -339,7 +357,7 @@ int CLyrics::GetLyricProgress(Time time) const
         }
     }
     //如果最后一句歌词之后已经没有时间标签，该句歌词默认显示20秒
-    lyric_current_time = time - m_lyrics[m_lyrics.size() - 1].GetTime(m_offset);
+    lyric_current_time = time - m_lyrics[m_lyrics.size() - 1].time;
     lyric_last_time = 20000;
     progress = lyric_current_time * 1000 / lyric_last_time;
     if (progress > 1000) progress = 1000;
@@ -350,7 +368,7 @@ int CLyrics::GetLyricIndex(Time time) const
 {
     for (int i{ 0 }; i < static_cast<int>(m_lyrics.size()); i++)
     {
-        if (m_lyrics[i].GetTime(m_offset) > time)
+        if (m_lyrics[i].time > time)
             return i - 1;
     }
     return m_lyrics.size() - 1;
@@ -412,7 +430,7 @@ wstring CLyrics::GetLyricsString2() const
     wchar_t time_buff[16];
     for (auto a_lyric : m_lyrics)
     {
-        Time a_time{ a_lyric.GetTime(m_offset) };
+        Time a_time{ a_lyric.time };
         swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
         lyric_string += time_buff;
         lyric_string += a_lyric.text;
@@ -475,7 +493,7 @@ void CLyrics::CombineSameTimeLyric()
 {
     for (int i{}; i < static_cast<int>(m_lyrics.size() - 1); i++)
     {
-        if (m_lyrics[i].time == m_lyrics[i + 1].time)	//找到相同时间标签的歌词
+        if (m_lyrics[i].time_int == m_lyrics[i + 1].time_int)   // 找到相同时间标签的歌词
         {
             //if (!m_lyrics[i].text.empty() && !m_lyrics[i + 1].text.empty())		//只有两句相同时间标签的歌词都有文本时，才需要插入一个斜杠
             //{
@@ -555,6 +573,7 @@ void CLyrics::AdjustLyric(int offset)
     if (m_lyrics.size() == 0) return;	//没有歌词时直接返回
     m_offset += offset;
     m_modified = true;
+    apply_offset();
 }
 
 void CLyrics::ChineseConvertion(bool simplified)
