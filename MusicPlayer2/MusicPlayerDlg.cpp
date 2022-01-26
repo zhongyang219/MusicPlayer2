@@ -33,6 +33,7 @@
 #include "CPlayerUI5.h"
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
+#include "UserUi.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,6 +56,7 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     m_ui_list.push_back(std::make_shared<CPlayerUI3>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI4>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI5>(theApp.m_ui_data, &m_ui_static_ctrl));
+    m_ui_list.push_back(std::make_shared<CUserUi>(theApp.m_ui_data, &m_ui_static_ctrl, L"", 6));
 }
 
 CMusicPlayerDlg::~CMusicPlayerDlg()

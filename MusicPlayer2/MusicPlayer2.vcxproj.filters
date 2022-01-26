@@ -809,6 +809,12 @@
     <ClInclude Include="RecentFolderAndPlaylist.h">
       <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
     </ClInclude>
+    <ClInclude Include="UserUi.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1221,6 +1227,12 @@
     </ClCompile>
     <ClCompile Include="RecentFolderAndPlaylist.cpp">
       <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
+    </ClCompile>
+    <ClCompile Include="UserUi.cpp">
+      <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

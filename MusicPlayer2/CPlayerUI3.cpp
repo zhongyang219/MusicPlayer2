@@ -185,5 +185,5 @@ void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 
 int CPlayerUI3::GetClassId()
 {
-    return 3000;
+    return 3;
 }

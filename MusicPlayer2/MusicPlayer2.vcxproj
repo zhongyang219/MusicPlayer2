@@ -266,7 +266,9 @@
     <ClInclude Include="SpinEdit.h" />
     <ClInclude Include="TagFromFileNameDlg.h" />
     <ClInclude Include="TagLibHelper.h" />
+    <ClInclude Include="UIElement.h" />
     <ClInclude Include="UIWindow.h" />
+    <ClInclude Include="UserUi.h" />
     <ClInclude Include="WIC.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DesktopLyric.h" />
@@ -413,7 +415,9 @@
     <ClCompile Include="SpinEdit.cpp" />
     <ClCompile Include="TagFromFileNameDlg.cpp" />
     <ClCompile Include="TagLibHelper.cpp" />
+    <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIWindow.cpp" />
+    <ClCompile Include="UserUi.cpp" />
     <ClCompile Include="WIC.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
     <ClCompile Include="DllLib.cpp" />

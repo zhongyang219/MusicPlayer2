@@ -371,12 +371,12 @@ struct NonCategorizedSettingData
 struct IconRes
 {
 private:
-    HICON hIcon;
-    HICON hIconDark;
-    HICON hIconLarge;
-    HICON hIconDarkLarge;
-    CSize iconSize;
-    CSize iconSizeLarge;
+    HICON hIcon{};
+    HICON hIconDark{};
+    HICON hIconLarge{};
+    HICON hIconDarkLarge{};
+    CSize iconSize{};
+    CSize iconSizeLarge{};
 
 public:
     const HICON& GetIcon(bool dark = false, bool large = false) const
