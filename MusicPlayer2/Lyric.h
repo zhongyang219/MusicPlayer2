@@ -58,8 +58,6 @@ private:
     void apply_offset();
     // 获得歌词中的时间标签和歌词文本，并将文本从string类型转换成wstring类型，保存在m_lyrics中
     void DisposeLyric();
-    // 判断歌词的编码格式
-    // void JudgeCode();
 
     // 解析一行歌词文本
     // lyric_text_ori：待解析的歌词文本
