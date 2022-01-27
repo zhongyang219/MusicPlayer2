@@ -344,6 +344,100 @@ int CLyrics::GetLyricIndex(Time time) const
     return m_lyrics.size() - 1;
 }
 
+int CLyrics::GetLyricIndexIgnoreBlank(int index, int offset) const
+{
+    // 对齐到非空白歌词
+    if (index >= 0)
+    {
+        for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
+        {
+            if (!m_lyrics[i].text.empty())
+            {
+                index = i;
+                break;
+            }
+        }
+    }
+    // 应用偏移量
+    int j{};
+    if (offset > 0)
+    {
+        while (j++ < offset)    // offset>0 时循环 offset 次
+        {
+            if (++index >= static_cast<int>(m_lyrics.size())) break;
+            for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
+            {
+                if (!m_lyrics[i].text.empty())
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+    }
+    if (offset < 0)
+    {
+        while (j-- > offset)    // offset < 0 时循环 -offset 次
+        {
+            if (--index < 0) break;
+            for (int i{ index }; i >= 0; --i)
+            {
+                if (!m_lyrics[i].text.empty())
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+    }
+    return index;
+}
+
+CLyrics::Lyric CLyrics::GetLyricIgnoreBlank(int index) const
+{
+    if (index < -1 || index >= static_cast<int>(m_lyrics.size()))
+    {
+        return Lyric{};
+    }
+    else if (index == -1)
+    {
+        Lyric ti{};
+        ti.text = m_ti;
+        return ti;      //时间在第一个时间标签前面，返回ti标签的值
+    }
+    else
+    {
+        return m_lyrics[index];
+    }
+}
+
+Time CLyrics::GetBlankTimeBeforeLyric(int index) const
+{
+    if (index < 1 || index >= static_cast<int>(m_lyrics.size()))
+        return Time();
+    Time tmp{ m_lyrics[index].time };
+    for (int i{ index - 1 }; i >= 0; --i)
+    {
+        if (m_lyrics[i].text.empty())
+            tmp = m_lyrics[i].time;
+        else
+            break;
+    }
+    return m_lyrics[index].time - tmp;
+}
+
+int CLyrics::GetBlankLyricProgress(int index, Time time) const
+{
+    int lyric_blank_time{ GetBlankTimeBeforeLyric(index).toInt() };		                            // time时间所在的歌词持续的时间
+    int lyric_current_time{ time.toInt() - m_lyrics[index].time.toInt() + lyric_blank_time };		// 当前歌词在time时间时已经持续的时间
+    int progress{};
+    if (lyric_blank_time <= 0 || lyric_current_time <= 0) return 0;
+    progress = lyric_current_time * 1000 / lyric_blank_time;
+    if (progress <= 0) return 0;
+    if (progress >= 1000) return 1000;
+    return progress;
+}
+
 CodeType CLyrics::GetCodeType() const
 {
     return m_code_type;

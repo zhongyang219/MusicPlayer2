@@ -84,6 +84,16 @@ public:
     // 根据时间返回该时间对应的歌词序号（用于判断歌词是否有变化）
     int GetLyricIndex(Time time) const;
 
+    // 根据索引与偏移量返回该时间对应的歌词索引
+    int GetLyricIndexIgnoreBlank(int index, int offset) const;
+    // 根据索引返回一句歌词(index为-1时返回标题,其他无效索引返回空歌词)
+    Lyric GetLyricIgnoreBlank(int index) const;
+    // 获取指定歌词之前的空白时长(index无效时返回0)
+    Time CLyrics::GetBlankTimeBeforeLyric(int index) const;
+    // 返回该time所对应的空白进度（0~1000）仅当time位于空行中且之后仍有歌词时可用。
+    // (合并空行，要求index为time之后第一句非空歌词，time位于index之前紧邻的空白中)
+    int GetBlankLyricProgress(int index, Time time) const;
+
     // 获得歌词文本的编码类型
     CodeType GetCodeType() const;
     // 获取歌词文件的路径+文件名
