@@ -341,6 +341,7 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
     default:
         break;
     }
+
     switch (font_size)
     {
     case 8: ui->m_draw.SetFont(&theApp.m_font_set.font8.GetFont(ui->m_ui_data.full_screen)); break;
@@ -350,19 +351,28 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
     case 12: ui->m_draw.SetFont(&theApp.m_font_set.font12.GetFont(ui->m_ui_data.full_screen)); break;
     default: ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(ui->m_ui_data.full_screen)); break;
     }
-    switch (style)
+
+    int text_extent{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx };  //文本的实际宽度
+    if (rect.Width() >= text_extent)    //如果绘图区域的宽度大于文本的实际宽度，则文本不需要滚动显示
     {
-    case UiElement::Text::Static:
         ui->m_draw.DrawWindowText(rect, draw_text.c_str(), ui->m_colors.color_text, align);
-        break;
-    case UiElement::Text::Scroll:
-        ui->m_draw.DrawScrollText(rect, draw_text.c_str(), ui->m_colors.color_text, ui->GetScrollTextPixel(), false, scroll_info, false);
-        break;
-    case UiElement::Text::Scroll2:
-        ui->m_draw.DrawScrollText2(rect, draw_text.c_str(), ui->m_colors.color_text, ui->GetScrollTextPixel(), false, scroll_info, false);
-        break;
-    default:
-        break;
+    }
+    else
+    {
+        switch (style)
+        {
+        case UiElement::Text::Static:
+            ui->m_draw.DrawWindowText(rect, draw_text.c_str(), ui->m_colors.color_text, align);
+            break;
+        case UiElement::Text::Scroll:
+            ui->m_draw.DrawScrollText(rect, draw_text.c_str(), ui->m_colors.color_text, ui->GetScrollTextPixel(), false, scroll_info, false);
+            break;
+        case UiElement::Text::Scroll2:
+            ui->m_draw.DrawScrollText2(rect, draw_text.c_str(), ui->m_colors.color_text, ui->GetScrollTextPixel(), false, scroll_info, false);
+            break;
+        default:
+            break;
+        }
     }
     ui->ResetDrawArea();
 }
@@ -393,7 +403,7 @@ void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)
 void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->m_draw.DrawSpectrum(rect, CUIDrawer::SC_64, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center);
+    ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center);
     ui->ResetDrawArea();
 }
 
@@ -435,7 +445,7 @@ void UiElement::Lyrics::Draw(CPlayerUIBase* ui)
 void UiElement::Volume::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->DrawVolumeButton(rect, false, show_text);
+    ui->DrawVolumeButton(rect, adj_btn_on_top, show_text);
     ui->ResetDrawArea();
 }
 

@@ -115,6 +115,7 @@ namespace UiElement
     {
     public:
         bool draw_reflex{};     //是否绘制倒影
+        CUIDrawer::SpectrumCol type{ CUIDrawer::SC_64 };     //频谱分析的类型
         virtual void Draw(CPlayerUIBase* ui) override;
     };
 
@@ -153,6 +154,7 @@ namespace UiElement
     {
     public:
         bool show_text{ true };     //是否在音量图标旁边显示文本
+        bool adj_btn_on_top{ false };   //音量调节按钮是否显示在音量图标的上方
         virtual void Draw(CPlayerUIBase* ui) override;
     };
 

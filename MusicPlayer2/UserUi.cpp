@@ -190,6 +190,15 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             {
                 std::string str_draw_reflex = CTinyXml2Helper::ElementAttribute(xml_node, "draw_reflex");
                 spectrum->draw_reflex = (str_draw_reflex == "1");
+                std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
+                if (str_type == "64col")
+                    spectrum->type = CUIDrawer::SC_64;
+                else if (str_type == "32col")
+                    spectrum->type = CUIDrawer::SC_32;
+                else if (str_type == "16col")
+                    spectrum->type = CUIDrawer::SC_16;
+                else if (str_type == "8col")
+                    spectrum->type = CUIDrawer::SC_8;
             }
         }
         //工具条
@@ -220,6 +229,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             {
                 std::string str_show_text = CTinyXml2Helper::ElementAttribute(xml_node, "show_text");
                 volume->show_text = (str_show_text == "1");
+                std::string str_adj_btn_on_top = CTinyXml2Helper::ElementAttribute(xml_node, "adj_btn_on_top");
+                volume->adj_btn_on_top = (str_adj_btn_on_top == "1");
             }
         }
 

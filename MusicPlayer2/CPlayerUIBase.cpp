@@ -533,7 +533,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
             return (big_icon ? theApp.m_icon_set.play_l : theApp.m_icon_set.play_new);
     case CPlayerUIBase::BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
     case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
-    case CPlayerUIBase::BTN_SELECT_FOLDER: return theApp.m_icon_set.select_folder;
+    case CPlayerUIBase::BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
     case CPlayerUIBase::BTN_FULL_SCREEN: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
     case CPlayerUIBase::BTN_MENU: return theApp.m_icon_set.menu;
     case CPlayerUIBase::BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
