@@ -403,7 +403,7 @@ CLyrics::Lyric CLyrics::GetLyricIgnoreBlank(int index) const
     {
         Lyric ti{};
         ti.text = m_ti;
-        return ti;      //时间在第一个时间标签前面，返回ti标签的值
+        return ti;      // 时间在第一个时间标签前面，返回ti标签的值
     }
     else
     {
