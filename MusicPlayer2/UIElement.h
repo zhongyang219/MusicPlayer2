@@ -15,7 +15,7 @@ namespace UiElement
             int value{ 0 };                //如果is_percentate为true，则值为百分比，否则为实际值
             Value(bool _is_vertical);
             void FromString(const std::string str);
-            int GetValue(CRect parent_rect) const;
+            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;
             bool IsValid() const;
         };
         Value margin_left{ false };
@@ -53,7 +53,7 @@ namespace UiElement
             Horizontal,
         };
         Type type;
-        void CalculateChildrenRect();
+        void CalculateChildrenRect(CPlayerUIBase* ui);
     };
 
     //颜色填充的矩形

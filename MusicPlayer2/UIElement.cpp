@@ -21,11 +21,11 @@ void UiElement::Element::Value::FromString(const std::string str)
     else
     {
         is_percentage = false;
-        value = theApp.DPI(atoi(str.c_str()));
+        value = atoi(str.c_str());
     }
 }
 
-int UiElement::Element::Value::GetValue(CRect parent_rect) const
+int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) const
 {
     if (is_percentage)
     {
@@ -36,7 +36,7 @@ int UiElement::Element::Value::GetValue(CRect parent_rect) const
     }
     else
     {
-        return value;
+        return ui->DPI(value);
     }
 }
 
@@ -96,37 +96,37 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
     Layout* layout = dynamic_cast<Layout*>(pParent);
     if (layout != nullptr)
     {
-        layout->CalculateChildrenRect();
+        layout->CalculateChildrenRect(ui);
     }
     //父元素不是布局元素
     else
     {
         rect = rect_parent;
         if (x.IsValid())
-            rect.left = x.GetValue(rect_parent);
+            rect.left = x.GetValue(rect_parent, ui);
         if (y.IsValid())
-            rect.top = y.GetValue(rect_parent);
+            rect.top = y.GetValue(rect_parent, ui);
 
         if (margin_left.IsValid())
-            rect.left = rect_parent.left + margin_left.GetValue(rect_parent);
+            rect.left = rect_parent.left + margin_left.GetValue(rect_parent, ui);
         if (margin_top.IsValid())
-            rect.top = rect_parent.top + margin_top.GetValue(rect_parent);
+            rect.top = rect_parent.top + margin_top.GetValue(rect_parent, ui);
         if (margin_right.IsValid())
-            rect.right = rect_parent.right - margin_right.GetValue(rect_parent);
+            rect.right = rect_parent.right - margin_right.GetValue(rect_parent, ui);
         if (margin_bottom.IsValid())
-            rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent);
+            rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent, ui);
 
         if (width.IsValid())
-            rect.right = rect.left + width.GetValue(rect_parent);
+            rect.right = rect.left + width.GetValue(rect_parent, ui);
         if (height.IsValid())
-            rect.bottom = rect.top + height.GetValue(rect_parent);
+            rect.bottom = rect.top + height.GetValue(rect_parent, ui);
     }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-void UiElement::Layout::CalculateChildrenRect()
+void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
 {
     //水平布局
     if (type == Horizontal)
@@ -139,13 +139,13 @@ void UiElement::Layout::CalculateChildrenRect()
         {
             if (child->width.IsValid())
             {
-                total_size += child->width.GetValue(GetRect());
+                total_size += child->width.GetValue(GetRect(), ui);
                 item_fixed_size_num++;
             }
             if (child->margin_left.IsValid())
-                total_size += child->margin_left.GetValue(GetRect());
+                total_size += child->margin_left.GetValue(GetRect(), ui);
             if (child->margin_right.IsValid())
-                total_size += child->margin_right.GetValue(GetRect());
+                total_size += child->margin_right.GetValue(GetRect(), ui);
         }
         if (childLst.size() - item_fixed_size_num == 0)
             item_default_size = 0;
@@ -160,24 +160,24 @@ void UiElement::Layout::CalculateChildrenRect()
             CRect child_rect{};
             if (child->height.IsValid())
             {
-                int child_height = child->height.GetValue(GetRect());
-                int max_height = GetRect().Height() - child->margin_top.GetValue(GetRect()) - child->margin_bottom.GetValue(GetRect());
+                int child_height = child->height.GetValue(GetRect(), ui);
+                int max_height = GetRect().Height() - child->margin_top.GetValue(GetRect(), ui) - child->margin_bottom.GetValue(GetRect(), ui);
                 if (child_height > max_height)
                     child_height = max_height;
                 child_rect.top = GetRect().top + (GetRect().Height() - child_height) / 2;
-                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect());
+                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect(), ui);
             }
             else
             {
-                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect());
-                child_rect.bottom = GetRect().bottom - child->margin_bottom.GetValue(GetRect());
+                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui);
+                child_rect.bottom = GetRect().bottom - child->margin_bottom.GetValue(GetRect(), ui);
             }
             if (i == 0)
-                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect());
+                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui);
             else
-                child_rect.left = childLst[i - 1]->GetRect().right + childLst[i - 1]->margin_right.GetValue(GetRect()) + child->margin_left.GetValue(GetRect());
+                child_rect.left = childLst[i - 1]->GetRect().right + childLst[i - 1]->margin_right.GetValue(GetRect(), ui) + child->margin_left.GetValue(GetRect(), ui);
             if (child->width.IsValid())
-                child_rect.right = child_rect.left + child->width.GetValue(GetRect());
+                child_rect.right = child_rect.left + child->width.GetValue(GetRect(), ui);
             else
                 child_rect.right = child_rect.left + item_default_size;
             child->SetRect(child_rect);
@@ -194,13 +194,13 @@ void UiElement::Layout::CalculateChildrenRect()
         {
             if (child->height.IsValid())
             {
-                total_size += child->height.GetValue(GetRect());
+                total_size += child->height.GetValue(GetRect(), ui);
                 item_fixed_size_num++;
             }
             if (child->margin_top.IsValid())
-                total_size += child->margin_top.GetValue(GetRect());
+                total_size += child->margin_top.GetValue(GetRect(), ui);
             if (child->margin_bottom.IsValid())
-                total_size += child->margin_bottom.GetValue(GetRect());
+                total_size += child->margin_bottom.GetValue(GetRect(), ui);
         }
         if (childLst.size() - item_fixed_size_num == 0)
             item_default_size = 0;
@@ -215,24 +215,24 @@ void UiElement::Layout::CalculateChildrenRect()
             CRect child_rect{};
             if (child->width.IsValid())
             {
-                int child_width = child->width.GetValue(GetRect());
-                int max_width = GetRect().Width() - child->margin_left.GetValue(GetRect()) - child->margin_right.GetValue(GetRect());
+                int child_width = child->width.GetValue(GetRect(), ui);
+                int max_width = GetRect().Width() - child->margin_left.GetValue(GetRect(), ui) - child->margin_right.GetValue(GetRect(), ui);
                 if (child_width > max_width)
                     child_width = max_width;
                 child_rect.left = GetRect().left + (GetRect().Width() - child_width) / 2;
-                child_rect.right = child_rect.left + child->width.GetValue(GetRect());
+                child_rect.right = child_rect.left + child->width.GetValue(GetRect(), ui);
             }
             else
             {
-                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect());
-                child_rect.right = GetRect().right - child->margin_right.GetValue(GetRect());
+                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui);
+                child_rect.right = GetRect().right - child->margin_right.GetValue(GetRect(), ui);
             }
             if (i == 0)
-                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect());
+                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui);
             else
-                child_rect.top = childLst[i - 1]->GetRect().bottom + childLst[i - 1]->margin_bottom.GetValue(GetRect()) + child->margin_top.GetValue(GetRect());
+                child_rect.top = childLst[i - 1]->GetRect().bottom + childLst[i - 1]->margin_bottom.GetValue(GetRect(), ui) + child->margin_top.GetValue(GetRect(), ui);
             if (child->height.IsValid())
-                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect());
+                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect(), ui);
             else
                 child_rect.bottom = child_rect.top + item_default_size;
             child->SetRect(child_rect);
