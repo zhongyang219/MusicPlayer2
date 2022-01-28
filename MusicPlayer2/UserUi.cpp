@@ -46,6 +46,10 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
     }
     if (draw_element != nullptr)
     {
+        if (m_ui_data.full_screen)  //全屏模式下，最外侧的边距需要加宽
+        {
+            draw_rect.DeflateRect(EdgeMargin(true), EdgeMargin(false));
+        }
         draw_element->SetRect(draw_rect);
         draw_element->Draw(this);
         //绘制音量调整按钮

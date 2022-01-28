@@ -79,7 +79,7 @@ CRect UiElement::Element::ParentRect(CPlayerUIBase* ui) const
 
 void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
 {
-    if (pParent == nullptr)     //根点的矩形不需要计算
+    if (pParent == nullptr)     //根节点的矩形不需要计算
         return;
 
     //父元素的矩形区域
