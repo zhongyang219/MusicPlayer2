@@ -15,7 +15,7 @@ namespace UiElement
             int value{ 0 };                //如果is_percentate为true，则值为百分比，否则为实际值
             Value(bool _is_vertical);
             void FromString(const std::string str);
-            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;
+            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;   //获取实际显示的数值
             bool IsValid() const;
         };
         Value margin_left{ false };
@@ -34,13 +34,12 @@ namespace UiElement
         virtual void Draw(CPlayerUIBase* ui);   //绘制此元素
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
-        bool HasSiblings() const;                   //是否存在兄弟节点
 
     protected:
         CRect ParentRect(CPlayerUIBase* ui) const;
         void CalculateRect(CPlayerUIBase* ui);           //计算此元素在界面中的矩形区域
 
-        CRect rect;
+        CRect rect;     //用于保存计算得到的元素的矩形区域
     };
 
     //布局
@@ -53,7 +52,7 @@ namespace UiElement
             Horizontal,
         };
         Type type;
-        void CalculateChildrenRect(CPlayerUIBase* ui);
+        void CalculateChildrenRect(CPlayerUIBase* ui);      //计算布局中所有子元素的位置
     };
 
     //颜色填充的矩形

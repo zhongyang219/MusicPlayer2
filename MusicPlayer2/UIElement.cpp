@@ -27,14 +27,14 @@ void UiElement::Element::Value::FromString(const std::string str)
 
 int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) const
 {
-    if (is_percentage)
+    if (is_percentage)      //如果是百分比，根据父元素的大小计算
     {
         if (is_vertical)
             return parent_rect.Height() * value / 100;
         else
             return parent_rect.Width() * value / 100;
     }
-    else
+    else    //不是百分比，进行根据当前DPI对数值放大
     {
         return ui->DPI(value);
     }
@@ -62,14 +62,6 @@ CRect UiElement::Element::GetRect() const
 void UiElement::Element::SetRect(CRect _rect)
 {
     rect = _rect;
-}
-
-bool UiElement::Element::HasSiblings() const
-{
-    if (pParent == nullptr)
-        return false;
-    else
-        return pParent->childLst.size() > 1;
 }
 
 CRect UiElement::Element::ParentRect(CPlayerUIBase* ui) const
@@ -153,6 +145,12 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             item_default_size = (GetRect().Width() - total_size) / (childLst.size() - item_fixed_size_num);
         if (item_default_size < 0)
             item_default_size = 0;
+        int left_space{};
+        //如果每个元素都有固定的宽度，则让这些元素在布局中居中
+        if (childLst.size() == item_fixed_size_num)
+        {
+            left_space = (GetRect().Width() - total_size) / 2;
+        }
         //计算每个子元素的矩形区域
         for (size_t i{}; i < childLst.size(); i++)
         {
@@ -173,7 +171,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 child_rect.bottom = GetRect().bottom - child->margin_bottom.GetValue(GetRect(), ui);
             }
             if (i == 0)
-                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui);
+                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui) + left_space;
             else
                 child_rect.left = childLst[i - 1]->GetRect().right + childLst[i - 1]->margin_right.GetValue(GetRect(), ui) + child->margin_left.GetValue(GetRect(), ui);
             if (child->width.IsValid())
@@ -208,6 +206,12 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             item_default_size = (GetRect().Height() - total_size) / (childLst.size() - item_fixed_size_num);
         if (item_default_size < 0)
             item_default_size = 0;
+        int top_space{};
+        //如果每个元素都有固定的宽度，则让这些元素在布局中居中
+        if (childLst.size() == item_fixed_size_num)
+        {
+            top_space = (GetRect().Height() - total_size) / 2;
+        }
         //计算每个子元素的矩形区域
         for (size_t i{}; i < childLst.size(); i++)
         {
@@ -228,7 +232,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 child_rect.right = GetRect().right - child->margin_right.GetValue(GetRect(), ui);
             }
             if (i == 0)
-                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui);
+                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui) + top_space;
             else
                 child_rect.top = childLst[i - 1]->GetRect().bottom + childLst[i - 1]->margin_bottom.GetValue(GetRect(), ui) + child->margin_top.GetValue(GetRect(), ui);
             if (child->height.IsValid())
@@ -411,9 +415,13 @@ void UiElement::ProgressBar::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
     if (show_play_time)
+    {
         ui->DrawProgressBar(rect);
+    }
     else
+    {
         ui->DrawProgess(rect);
+    }
     ui->ResetDrawArea();
 }
 

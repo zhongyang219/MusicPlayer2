@@ -1410,17 +1410,19 @@ void CPlayerUIBase::DrawProgressBar(CRect rect)
     }
 
     //绘制进度条
-    const int progress_height = DPI(4);
     CRect progress_rect = rect;
     if (draw_progress_time)
         progress_rect.right = rc_time.left - Margin();
-    progress_rect.top = rect.top + (rect.Height() - progress_height) / 2;
-    progress_rect.bottom = progress_rect.top + progress_height;
     DrawProgess(progress_rect);
 }
 
 void CPlayerUIBase::DrawProgess(CRect rect)
 {
+    //进度条的高度
+    int progress_height = min(DPI(4), rect.Height());
+    rect.top = rect.top + (rect.Height() - progress_height) / 2;
+    rect.bottom = rect.top + progress_height;
+
     if (IsDrawBackgroundAlpha())
         m_draw.FillAlphaRect(rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
     else
