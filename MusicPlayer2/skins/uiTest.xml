@@ -1,0 +1,56 @@
+<root name="测试界面">
+	<ui type="narrow">
+		<verticalLayout margin="4">
+			<trackInfo height="24"/>
+			<albumCover square="1" margin="20" />
+			<text type="title" height="24" alignment="2" font_size="10"/>
+			<text type="artist" height="24" alignment="2"/>
+			<spectrum height="48" width="280" draw_reflex="1"/>
+			<horizontalLayout magin="4" height="40">
+				<button key="repeatMode" width="20" height="20" margin="2"/>
+				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="1" margin="2"/>
+				<progressBar show_play_time="1"/>
+			</horizontalLayout>
+			<horizontalLayout height="24">
+				<text type="format" height="24"/>
+				<volume show_text="1" width="56" height="20" margin-left="4"/>
+				<button key="favorite" width="20" height="20" margin="2"/>
+				<button key="mediaLib" width="20" height="20" margin="2"/>
+				<button key="showPlaylist" width="20" height="20" margin="2"/>
+			</horizontalLayout>	
+		</verticalLayout>
+	</ui>
+	<ui type="big">
+		<verticalLayout margin="4">
+			<horizontalLayout>
+				<verticalLayout>
+					<trackInfo height="24"/>
+					<albumCover square="1" margin="20" />
+					<text type="title" height="24" alignment="2" font_size="10"/>
+					<text type="artist" height="24" alignment="2"/>
+					<spectrum height="48" width="280" draw_reflex="1"/>
+				</verticalLayout>
+				<lyrics margin="4"/>
+			</horizontalLayout>
+			<horizontalLayout magin="4" height="40">
+				<button key="repeatMode" width="20" height="20" margin="2"/>
+				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="1" margin="2"/>
+				<progressBar show_play_time="1"/>
+			</horizontalLayout>
+			<horizontalLayout height="24">
+				<text type="format" height="24"/>
+				<volume show_text="1" width="56" height="20" margin-left="4"/>
+				<button key="favorite" width="20" height="20" margin="2"/>
+				<button key="mediaLib" width="20" height="20" margin="2"/>
+				<button key="showPlaylist" width="20" height="20" margin="2"/>
+			</horizontalLayout>
+			
+		</verticalLayout>
+	</ui>
+	<ui type="small">
+	</ui>
+</root>

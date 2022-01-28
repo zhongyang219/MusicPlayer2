@@ -525,13 +525,13 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case CPlayerUIBase::BTN_INFO: return theApp.m_icon_set.info;
     case CPlayerUIBase::BTN_FIND: return theApp.m_icon_set.find_songs;
     case CPlayerUIBase::BTN_STOP: return (big_icon ? theApp.m_icon_set.stop_l : theApp.m_icon_set.stop);
-    case CPlayerUIBase::BTN_PREVIOUS: return (big_icon ? theApp.m_icon_set.previous_l : theApp.m_icon_set.previous);
+    case CPlayerUIBase::BTN_PREVIOUS: return (big_icon ? theApp.m_icon_set.previous_l : theApp.m_icon_set.previous_new);
     case CPlayerUIBase::BTN_PLAY_PAUSE:
         if (CPlayer::GetInstance().IsPlaying())
-            return (big_icon ? theApp.m_icon_set.pause_l : theApp.m_icon_set.pause);
+            return (big_icon ? theApp.m_icon_set.pause_l : theApp.m_icon_set.pause_new);
         else
-            return (big_icon ? theApp.m_icon_set.play_l : theApp.m_icon_set.play);
-    case CPlayerUIBase::BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next);
+            return (big_icon ? theApp.m_icon_set.play_l : theApp.m_icon_set.play_new);
+    case CPlayerUIBase::BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
     case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
     case CPlayerUIBase::BTN_SELECT_FOLDER: return theApp.m_icon_set.select_folder;
     case CPlayerUIBase::BTN_FULL_SCREEN: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);

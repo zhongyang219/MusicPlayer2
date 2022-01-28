@@ -1548,6 +1548,24 @@ bool CCommon::GetFileContent(const wchar_t* file_path, string& contents_buff, bo
     return true;
 }
 
+const char* CCommon::GetFileContent(const wchar_t* file_path, size_t& length)
+{
+    std::ifstream file{ file_path, std::ios::binary };
+    length = 0;
+    if (file.fail())
+        return nullptr;
+    //获取文件长度
+    file.seekg(0, file.end);
+    length = file.tellg();
+    file.seekg(0, file.beg);
+
+    char* buff = new char[length];
+    file.read(buff, length);
+    file.close();
+
+    return buff;
+}
+
 bool CCommon::SaveDataToFile(const string& data, const wstring& file_path)
 {
     ofstream out_put{ file_path, std::ios::binary };

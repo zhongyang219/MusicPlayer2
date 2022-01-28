@@ -15,8 +15,14 @@ public:
 
 private:
     int m_id;
+    std::wstring m_xml_path;
+    std::shared_ptr<UiElement::Element> m_root_default;
+    std::shared_ptr<UiElement::Element> m_root_ui_big;
+    std::shared_ptr<UiElement::Element> m_root_ui_narrow;
+    std::shared_ptr<UiElement::Element> m_root_ui_small;
+    std::wstring m_ui_name;
 
 protected:
     virtual int GetClassId() override;
-
+    void LoadUi();      //从xml文件载入界面
 };

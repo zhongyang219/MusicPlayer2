@@ -3,23 +3,25 @@
 #include "MusicPlayer2.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 UiElement::Element::Value::Value(bool _is_vertical)
     : is_vertical(_is_vertical)
 {
 }
 
-void UiElement::Element::Value::FromString(const std::wstring str)
+void UiElement::Element::Value::FromString(const std::string str)
 {
-    size_t index = str.find(L'%');
+    size_t index = str.find('%');
     if (index != std::wstring::npos)   //如果包含百分号
     {
         is_percentage = true;
-        value = _wtoi(str.substr(0, index).c_str());
+        value = atoi(str.substr(0, index).c_str());
     }
     else
     {
         is_percentage = false;
-        value = _wtoi(str.c_str());
+        value = theApp.DPI(atoi(str.c_str()));
     }
 }
 
@@ -40,10 +42,10 @@ int UiElement::Element::Value::GetValue(CRect parent_rect) const
 
 bool UiElement::Element::Value::IsValid() const
 {
-    return value > 0;
+    return value != 0;
 }
 
-void UiElement::Element::Draw(CPlayerUIBase* ui) const
+void UiElement::Element::Draw(CPlayerUIBase* ui)
 {
     for (const auto& item : childLst)
     {
@@ -52,20 +54,54 @@ void UiElement::Element::Draw(CPlayerUIBase* ui) const
     }
 }
 
-CRect UiElement::Element::GetRect(CPlayerUIBase* ui) const
+CRect UiElement::Element::GetRect() const
 {
+    return rect;
+}
+
+void UiElement::Element::SetRect(CRect _rect)
+{
+    rect = _rect;
+}
+
+bool UiElement::Element::HasSiblings() const
+{
+    if (pParent == nullptr)
+        return false;
+    else
+        return pParent->childLst.size() > 1;
+}
+
+CRect UiElement::Element::ParentRect(CPlayerUIBase* ui) const
+{
+    if (pParent == nullptr)
+    {
+        return rect;
+    }
+    else
+    {
+        pParent->CalculateRect(ui);
+        return pParent->GetRect();
+    }
+}
+
+void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
+{
+    if (pParent == nullptr)     //根点的矩形不需要计算
+        return;
+
     //父元素的矩形区域
     const CRect rect_parent{ ParentRect(ui) };
-    CRect rect;
     //判断父元素是否为布局元素
     Layout* layout = dynamic_cast<Layout*>(pParent);
     if (layout != nullptr)
     {
-        //TODO:
+        layout->CalculateChildrenRect();
     }
     //父元素不是布局元素
     else
     {
+        rect = rect_parent;
         if (x.IsValid())
             rect.left = x.GetValue(rect_parent);
         if (y.IsValid())
@@ -85,35 +121,136 @@ CRect UiElement::Element::GetRect(CPlayerUIBase* ui) const
         if (height.IsValid())
             rect.bottom = rect.top + height.GetValue(rect_parent);
     }
-    return rect;
 }
 
-bool UiElement::Element::HasSiblings() const
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+void UiElement::Layout::CalculateChildrenRect()
 {
-    if (pParent == nullptr)
-        return false;
+    //水平布局
+    if (type == Horizontal)
+    {
+        //计算未指定元素的默认宽度
+        int item_default_size{};        //未指定宽度的元素的默认宽度
+        int total_size{};          //所有已指定元素的宽度，再加上已确定的边距
+        int item_fixed_size_num{};      //有固定宽度的元素的个数
+        for (const auto& child : childLst)
+        {
+            if (child->width.IsValid())
+            {
+                total_size += child->width.GetValue(GetRect());
+                item_fixed_size_num++;
+            }
+            if (child->margin_left.IsValid())
+                total_size += child->margin_left.GetValue(GetRect());
+            if (child->margin_right.IsValid())
+                total_size += child->margin_right.GetValue(GetRect());
+        }
+        if (childLst.size() - item_fixed_size_num == 0)
+            item_default_size = 0;
+        else
+            item_default_size = (GetRect().Width() - total_size) / (childLst.size() - item_fixed_size_num);
+        if (item_default_size < 0)
+            item_default_size = 0;
+        //计算每个子元素的矩形区域
+        for (size_t i{}; i < childLst.size(); i++)
+        {
+            auto& child{ childLst[i] };
+            CRect child_rect{};
+            if (child->height.IsValid())
+            {
+                int child_height = child->height.GetValue(GetRect());
+                int max_height = GetRect().Height() - child->margin_top.GetValue(GetRect()) - child->margin_bottom.GetValue(GetRect());
+                if (child_height > max_height)
+                    child_height = max_height;
+                child_rect.top = GetRect().top + (GetRect().Height() - child_height) / 2;
+                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect());
+            }
+            else
+            {
+                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect());
+                child_rect.bottom = GetRect().bottom - child->margin_bottom.GetValue(GetRect());
+            }
+            if (i == 0)
+                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect());
+            else
+                child_rect.left = childLst[i - 1]->GetRect().right + childLst[i - 1]->margin_right.GetValue(GetRect()) + child->margin_left.GetValue(GetRect());
+            if (child->width.IsValid())
+                child_rect.right = child_rect.left + child->width.GetValue(GetRect());
+            else
+                child_rect.right = child_rect.left + item_default_size;
+            child->SetRect(child_rect);
+        }
+    }
+    //垂直布局
     else
-        return pParent->childLst.size() > 1;
+    {
+        //计算未指定元素的默认宽度
+        int item_default_size{};        //未指定宽度的元素的默认宽度
+        int total_size{};          //所有已指定元素的宽度，再加上已确定的边距
+        int item_fixed_size_num{};      //有固定宽度的元素的个数
+        for (const auto& child : childLst)
+        {
+            if (child->height.IsValid())
+            {
+                total_size += child->height.GetValue(GetRect());
+                item_fixed_size_num++;
+            }
+            if (child->margin_top.IsValid())
+                total_size += child->margin_top.GetValue(GetRect());
+            if (child->margin_bottom.IsValid())
+                total_size += child->margin_bottom.GetValue(GetRect());
+        }
+        if (childLst.size() - item_fixed_size_num == 0)
+            item_default_size = 0;
+        else
+            item_default_size = (GetRect().Height() - total_size) / (childLst.size() - item_fixed_size_num);
+        if (item_default_size < 0)
+            item_default_size = 0;
+        //计算每个子元素的矩形区域
+        for (size_t i{}; i < childLst.size(); i++)
+        {
+            auto& child{ childLst[i] };
+            CRect child_rect{};
+            if (child->width.IsValid())
+            {
+                int child_width = child->width.GetValue(GetRect());
+                int max_width = GetRect().Width() - child->margin_left.GetValue(GetRect()) - child->margin_right.GetValue(GetRect());
+                if (child_width > max_width)
+                    child_width = max_width;
+                child_rect.left = GetRect().left + (GetRect().Width() - child_width) / 2;
+                child_rect.right = child_rect.left + child->width.GetValue(GetRect());
+            }
+            else
+            {
+                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect());
+                child_rect.right = GetRect().right - child->margin_right.GetValue(GetRect());
+            }
+            if (i == 0)
+                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect());
+            else
+                child_rect.top = childLst[i - 1]->GetRect().bottom + childLst[i - 1]->margin_bottom.GetValue(GetRect()) + child->margin_top.GetValue(GetRect());
+            if (child->height.IsValid())
+                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect());
+            else
+                child_rect.bottom = child_rect.top + item_default_size;
+            child->SetRect(child_rect);
+        }
+    }
 }
 
-CRect UiElement::Element::ParentRect(CPlayerUIBase* ui) const
-{
-    if (pParent == nullptr)
-        return ui->m_draw_rect;
-    else
-        return pParent->GetRect(ui);
-}
 
-void UiElement::Rectangle::Draw(CPlayerUIBase* ui) const
+void UiElement::Rectangle::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     ui->DrawRectangle(rect);
     ui->ResetDrawArea();
 }
 
-void UiElement::Button::Draw(CPlayerUIBase* ui) const
+void UiElement::Button::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     IconRes& icon{ ui->GetBtnIcon(key, big_icon) };
     switch (key)
     {
@@ -132,53 +269,53 @@ void UiElement::Button::Draw(CPlayerUIBase* ui) const
     ui->ResetDrawArea();
 }
 
-void UiElement::Button::FromString(const std::wstring& key_type)
+void UiElement::Button::FromString(const std::string& key_type)
 {
-    if (key_type == L"menu")
+    if (key_type == "menu")
         key = CPlayerUIBase::BTN_MENU;
-    else if (key_type == L"miniMode")
+    else if (key_type == "miniMode")
         key = CPlayerUIBase::BTN_MINI;
-    else if (key_type == L"fullScreen")
+    else if (key_type == "fullScreen")
         key = CPlayerUIBase::BTN_FULL_SCREEN;
-    else if (key_type == L"repeatMode")
+    else if (key_type == "repeatMode")
         key = CPlayerUIBase::BTN_REPETEMODE;
-    else if (key_type == L"settings")
+    else if (key_type == "settings")
         key = CPlayerUIBase::BTN_SETTING;
-    else if (key_type == L"equalizer")
+    else if (key_type == "equalizer")
         key = CPlayerUIBase::BTN_EQ;
-    else if (key_type == L"skin")
+    else if (key_type == "skin")
         key = CPlayerUIBase::BTN_SKIN;
-    else if (key_type == L"info")
+    else if (key_type == "info")
         key = CPlayerUIBase::BTN_INFO;
-    else if (key_type == L"abRepeat")
+    else if (key_type == "abRepeat")
         key = CPlayerUIBase::BTN_AB_REPEAT;
-    else if (key_type == L"desktopLyric")
+    else if (key_type == "desktopLyric")
         key = CPlayerUIBase::BTN_LRYIC;
-    else if (key_type == L"lyricTranslate")
+    else if (key_type == "lyricTranslate")
         key = CPlayerUIBase::BTN_TRANSLATE;
-    else if (key_type == L"stop")
+    else if (key_type == "stop")
         key = CPlayerUIBase::BTN_STOP;
-    else if (key_type == L"previous")
+    else if (key_type == "previous")
         key = CPlayerUIBase::BTN_PREVIOUS;
-    else if (key_type == L"next")
+    else if (key_type == "next")
         key = CPlayerUIBase::BTN_NEXT;
-    else if (key_type == L"next")
+    else if (key_type == "next")
         key = CPlayerUIBase::BTN_NEXT;
-    else if (key_type == L"playPause")
+    else if (key_type == "playPause")
         key = CPlayerUIBase::BTN_PLAY_PAUSE;
-    else if (key_type == L"favorite")
+    else if (key_type == "favorite")
         key = CPlayerUIBase::BTN_FAVOURITE;
-    else if (key_type == L"mediaLib")
+    else if (key_type == "mediaLib")
         key = CPlayerUIBase::BTN_SELECT_FOLDER;
-    else if (key_type == L"showPlaylist")
+    else if (key_type == "showPlaylist")
         key = CPlayerUIBase::BTN_SHOW_PLAYLIST;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
 
-void UiElement::Text::Draw(CPlayerUIBase* ui) const
+void UiElement::Text::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     std::wstring draw_text;
     switch (type)
     {
@@ -200,10 +337,19 @@ void UiElement::Text::Draw(CPlayerUIBase* ui) const
     default:
         break;
     }
+    switch (font_size)
+    {
+    case 8: ui->m_draw.SetFont(&theApp.m_font_set.font8.GetFont(ui->m_ui_data.full_screen)); break;
+    case 9: ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(ui->m_ui_data.full_screen)); break;
+    case 10: ui->m_draw.SetFont(&theApp.m_font_set.font10.GetFont(ui->m_ui_data.full_screen)); break;
+    case 11: ui->m_draw.SetFont(&theApp.m_font_set.font11.GetFont(ui->m_ui_data.full_screen)); break;
+    case 12: ui->m_draw.SetFont(&theApp.m_font_set.font12.GetFont(ui->m_ui_data.full_screen)); break;
+    default: ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(ui->m_ui_data.full_screen)); break;
+    }
     switch (style)
     {
     case UiElement::Text::Static:
-        ui->m_draw.DrawWindowText(rect, draw_text.c_str(), ui->m_colors.color_text);
+        ui->m_draw.DrawWindowText(rect, draw_text.c_str(), ui->m_colors.color_text, align);
         break;
     case UiElement::Text::Scroll:
         ui->m_draw.DrawScrollText(rect, draw_text.c_str(), ui->m_colors.color_text, ui->GetScrollTextPixel(), false, scroll_info, false);
@@ -217,37 +363,53 @@ void UiElement::Text::Draw(CPlayerUIBase* ui) const
     ui->ResetDrawArea();
 }
 
-void UiElement::AlbumCover::Draw(CPlayerUIBase* ui) const
+void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
-    ui->DrawAlbumCover(rect);
+    CalculateRect(ui);
+    CRect cover_rect{ rect };
+    //如果强制专辑封面为正方形，则在这里计算新的矩形区域
+    if (square)
+    {
+        int side{ min(rect.Width(), rect.Height()) };
+        if (rect.Width() > rect.Height())
+        {
+            cover_rect.left = rect.left + (rect.Width() - side) / 2;
+            cover_rect.right = cover_rect.left + side;
+        }
+        else if (rect.Width() < rect.Height())
+        {
+            cover_rect.top = rect.top + (rect.Height() - side) / 2;
+            cover_rect.bottom = cover_rect.top + side;
+        }
+    }
+    ui->DrawAlbumCover(cover_rect);
     ui->ResetDrawArea();
 }
 
-void UiElement::Spectrum::Draw(CPlayerUIBase* ui) const
+void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     ui->m_draw.DrawSpectrum(rect, CUIDrawer::SC_64, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center);
     ui->ResetDrawArea();
 }
 
-void UiElement::TrackInfo::Draw(CPlayerUIBase* ui) const
+void UiElement::TrackInfo::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     ui->DrawSongInfo(rect);
     ui->ResetDrawArea();
 }
 
-void UiElement::Toolbar::Draw(CPlayerUIBase* ui) const
+void UiElement::Toolbar::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     ui->DrawToolBar(rect, show_translate_btn);
     ui->ResetDrawArea();
 }
 
-void UiElement::ProgressBar::Draw(CPlayerUIBase* ui) const
+void UiElement::ProgressBar::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     if (show_play_time)
         ui->DrawProgressBar(rect);
     else
@@ -255,23 +417,23 @@ void UiElement::ProgressBar::Draw(CPlayerUIBase* ui) const
     ui->ResetDrawArea();
 }
 
-void UiElement::Lyrics::Draw(CPlayerUIBase* ui) const
+void UiElement::Lyrics::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     ui->DrawLyrics(rect);
     ui->ResetDrawArea();
 }
 
-void UiElement::Volume::Draw(CPlayerUIBase* ui) const
+void UiElement::Volume::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     ui->DrawVolumeButton(rect, false, show_text);
     ui->ResetDrawArea();
 }
 
-void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui) const
+void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui)
 {
-    CRect rect{ GetRect(ui) };
+    CalculateRect(ui);
     ui->DrawBeatIndicator(rect);
     ui->ResetDrawArea();
 }
@@ -279,33 +441,45 @@ void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui) const
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
-std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::wstring& name)
+std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name)
 {
     UiElement::Element* element{};
-    if (name == L"layout")
-        element = new UiElement::Layout();
-    else if (name == L"rectangle")
+    if (name == "verticalLayout")
+    {
+        UiElement::Layout* layout = new UiElement::Layout();
+        layout->type = UiElement::Layout::Vertical;
+        element = layout;
+    }
+    else if (name == "horizontalLayout")
+    {
+        UiElement::Layout* layout = new UiElement::Layout();
+        layout->type = UiElement::Layout::Horizontal;
+        element = layout;
+    }
+    else if (name == "rectangle")
         element = new UiElement::Rectangle();
-    else if (name == L"button")
+    else if (name == "button")
         element = new UiElement::Button();
-    else if (name == L"text")
+    else if (name == "text")
         element = new UiElement::Text();
-    else if (name == L"albumCover")
+    else if (name == "albumCover")
         element = new UiElement::AlbumCover();
-    else if (name == L"spectrum")
+    else if (name == "spectrum")
         element = new UiElement::Spectrum();
-    else if (name == L"trackInfo")
+    else if (name == "trackInfo")
         element = new UiElement::TrackInfo();
-    else if (name == L"toolbar")
+    else if (name == "toolbar")
         element = new UiElement::Toolbar();
-    else if (name == L"progressBar")
+    else if (name == "progressBar")
         element = new UiElement::ProgressBar();
-    else if (name == L"lyrics")
+    else if (name == "lyrics")
         element = new UiElement::Lyrics();
-    else if (name == L"volume")
+    else if (name == "volume")
         element = new UiElement::Volume();
-    else if (name == L"beatIndicator")
+    else if (name == "beatIndicator")
         element = new UiElement::BeatIndicator();
+    else if (name == "ui" || name == "root")
+        element = new UiElement::Element();
 
     return std::shared_ptr<UiElement::Element>(element);
 }

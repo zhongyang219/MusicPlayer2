@@ -124,6 +124,7 @@ struct FontSet
     UIFont font9;				//普通的字体
     UIFont font8;				//显示播放时间
     UIFont font10;				//界面2的歌曲标题
+    UIFont font11;
     UIFont font12;           //界面4的歌曲标题
 
     UIFont lyric;				//歌词字体
@@ -137,6 +138,7 @@ struct FontSet
         font9.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
         font8.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
         font10.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font11.SetFont(11, CCommon::LoadText(IDS_DEFAULT_FONT));
         font12.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
     }
 };
