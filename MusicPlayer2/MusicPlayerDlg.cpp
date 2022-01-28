@@ -56,7 +56,16 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     m_ui_list.push_back(std::make_shared<CPlayerUI3>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI4>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI5>(theApp.m_ui_data, &m_ui_static_ctrl));
-    m_ui_list.push_back(std::make_shared<CUserUi>(theApp.m_ui_data, &m_ui_static_ctrl, theApp.m_local_dir + L"skins\\uiTest.xml", 6));
+    //加载skins目录下的用户自定义界面
+    std::vector<std::wstring> skin_files;
+    CCommon::GetFiles(theApp.m_local_dir + L"skins\\*.xml", skin_files);
+    int index{ static_cast<int>(m_ui_list.size()) + 1 };
+    for (const auto& file_name : skin_files)
+    {
+        std::wstring file_path = theApp.m_local_dir + L"skins\\" + file_name;
+        m_ui_list.push_back(std::make_shared<CUserUi>(theApp.m_ui_data, &m_ui_static_ctrl, file_path, index));
+        index++;
+    }
 }
 
 CMusicPlayerDlg::~CMusicPlayerDlg()

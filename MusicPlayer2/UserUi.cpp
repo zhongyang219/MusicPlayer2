@@ -51,6 +51,14 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
         //绘制音量调整按钮
         DrawVolumnAdjBtn();
     }
+    //绘制右上角图标
+    DrawTopRightIcons(true);
+
+    //全屏模式时在右上角绘制时间
+    if (m_ui_data.full_screen)
+    {
+        DrawCurrentTime();
+    }
 }
 
 CString CUserUi::GetUIName()
@@ -63,6 +71,7 @@ int CUserUi::GetClassId()
     return m_id;
 }
 
+//从一个xml节点创建UiElement::Element元素及其所有子元素的对象
 static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node)
 {
     CElementFactory factory;
