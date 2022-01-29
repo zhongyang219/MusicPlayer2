@@ -13,28 +13,28 @@
         </xs:union>
     </xs:simpleType>
     <xs:attributeGroup name="sharedattr"><!--定义属性组 sharedattr-->
-        <xs:attribute name="x" type="xs:int">
+        <xs:attribute name="x" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
                     x和y属性用于设置元素左上角的位置。如果元素的父元素是verticalLayout或horizontalLayout，则x和y属性无效。x和y属性用于设置元素基于整个界面的绝对位置，与父元素的位置无关。如果要设置元素基于其父元素的相对位置，请使用margin,margin-left,margin-top属性。
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="y" type="xs:int">
+        <xs:attribute name="y" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
                     x和y属性用于设置元素左上角的位置。如果元素的父元素是verticalLayout或horizontalLayout，则x和y属性无效。x和y属性用于设置元素基于整个界面的绝对位置，与父元素的位置无关。如果要设置元素基于其父元素的相对位置，请使用margin,margin-left,margin-top属性。
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="width" type="xs:positiveInteger">
+        <xs:attribute name="width" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
                     width和height属性用于设置元素的宽度和高度。如果需要为元素设置固定的宽度或高度，请使用此属性。如果需要使元素的宽度或高度能够自动适应，则不要使用此属性指定元素的宽度或高度。
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="height" type="xs:positiveInteger">
+        <xs:attribute name="height" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
                     width和height属性用于设置元素的宽度和高度。如果需要为元素设置固定的宽度或高度，请使用此属性。如果需要使元素的宽度或高度能够自动适应，则不要使用此属性指定元素的宽度或高度。
