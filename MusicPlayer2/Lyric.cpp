@@ -413,8 +413,12 @@ wstring CLyrics::GetLyricsString2() const
     for (auto a_lyric : m_lyrics)
     {
         Time a_time{ a_lyric.GetTime(m_offset) };
-        swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-        lyric_string += time_buff;
+        if (!a_time.negative) {
+            swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
+            lyric_string += time_buff;
+        } else {
+            lyric_string += L"[00:00.00]";
+        }
         lyric_string += a_lyric.text;
         if (!a_lyric.translate.empty())
         {
