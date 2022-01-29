@@ -1,0 +1,88 @@
+<root name="测试界面">
+	<ui type="big">
+		<verticalLayout margin="4">
+			<trackInfo height="24"/>
+			<horizontalLayout>
+				<verticalLayout>
+					<albumCover square="true" margin="20" />
+					<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
+					<text type="artist" style="scroll" height="24" alignment="center"/>
+					<spectrum height="48" width="280" draw_reflex="true"/>
+				</verticalLayout>
+				<lyrics margin="4"/>
+			</horizontalLayout>
+			<horizontalLayout magin="4" height="40">
+				<button key="repeatMode" width="22" height="22" margin="2"/>
+				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+				<progressBar show_play_time="true"/>
+			</horizontalLayout>
+			<horizontalLayout height="24">
+				<text type="format" style="scroll" height="24"/>
+				<volume show_text="true" adj_btn_on_top="true" width="56" height="22" margin-left="4"/>
+				<button key="favorite" width="22" height="22" margin="2"/>
+				<button key="mediaLib" width="22" height="22" margin="2"/>
+				<button key="showPlaylist" width="22" height="22" margin="2"/>
+			</horizontalLayout>
+		</verticalLayout>
+	</ui>
+	<ui type="narrow">
+		<verticalLayout margin="4">
+			<trackInfo height="24"/>
+			<albumCover square="true" margin="20">
+				<verticalLayout>
+					<placeHolder/>
+					<rectangle height="56" no_corner_radius="true">
+						<verticalLayout margin="4">
+							<text type="title" height="24" font_size="10"/>
+							<text type="artist" height="24"/>
+						</verticalLayout>
+					</rectangle>
+				</verticalLayout>
+			</albumCover>
+			<spectrum height="48" width="280" draw_reflex="true"/>
+			<horizontalLayout magin="4" height="40">
+				<button key="repeatMode" width="22" height="22" margin="2"/>
+				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+				<progressBar show_play_time="true"/>
+			</horizontalLayout>
+			<horizontalLayout height="24">
+				<text type="format" style="scroll" height="24"/>
+				<volume show_text="true" adj_btn_on_top="true" width="56" height="22" margin-left="4"/>
+				<button key="favorite" width="22" height="22" margin="2"/>
+				<button key="mediaLib" width="22" height="22" margin="2"/>
+				<button key="showPlaylist" width="22" height="22" margin="2"/>
+			</horizontalLayout>	
+		</verticalLayout>
+	</ui>
+	<ui type="small">
+    <verticalLayout margin="4">
+      <trackInfo height="20"/>
+      <horizontalLayout magin="4">
+        <albumCover square="true" margin="4" width="100"/>
+        <verticalLayout margin="4">
+          <text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
+          <text type="artist" style="scroll" height="24" alignment="center"/>
+          <spectrum draw_reflex="true" height="38" margin="4"/>
+        </verticalLayout>
+      </horizontalLayout>
+      <horizontalLayout magin="4" height="40">
+        <button key="repeatMode" width="22" height="22" margin="2"/>
+        <button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
+        <button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
+        <button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+        <progressBar show_play_time="true"/>
+      </horizontalLayout>
+      <horizontalLayout height="24">
+        <text type="format" style="scroll" height="24"/>
+        <volume show_text="true" adj_btn_on_top="true" width="56" height="22" margin-left="4"/>
+        <button key="favorite" width="22" height="22" margin="2"/>
+        <button key="mediaLib" width="22" height="22" margin="2"/>
+        <button key="showPlaylist" width="22" height="22" margin="2"/>
+      </horizontalLayout>
+    </verticalLayout>
+  </ui>
+</root>

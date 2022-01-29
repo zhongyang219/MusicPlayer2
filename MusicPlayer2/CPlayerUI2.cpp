@@ -328,5 +328,5 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
 
 int CPlayerUI2::GetClassId()
 {
-    return 2000;
+    return 2;
 }

@@ -6,6 +6,22 @@
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)      //显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
 
+namespace UiElement
+{
+    class Element;
+    class Rectangle;
+    class Button;
+    class Text;
+    class AlbumCover;
+    class Spectrum;
+    class TrackInfo;
+    class Toolbar;
+    class ProgressBar;
+    class Lyrics;
+    class Volume;
+    class BeatIndicator;
+}
+
 struct SLayoutData
 {
     const int margin = theApp.DPI(4);                           //边缘的余量
@@ -27,6 +43,19 @@ public:
     ~CPlayerUIBase();
 
     virtual CToolTipCtrl& GetToolTipCtrl() override { return m_tool_tip; }
+
+    friend class UiElement::Element;
+    friend class UiElement::Rectangle;
+    friend class UiElement::Button;
+    friend class UiElement::Text;
+    friend class UiElement::AlbumCover;
+    friend class UiElement::Spectrum;
+    friend class UiElement::TrackInfo;
+    friend class UiElement::Toolbar;
+    friend class UiElement::ProgressBar;
+    friend class UiElement::Lyrics;
+    friend class UiElement::Volume;
+    friend class UiElement::BeatIndicator;
 
 public:
     void Init(CDC* pDC) override;
@@ -96,8 +125,12 @@ public:
         BTN_MINIMIZE,           //最小化按钮
         BTN_MAXIMIZE,           //最大化按钮
         BTN_APP_CLOSE,          //关闭按钮
-
+        BTN_INVALID,            //无效的按钮
     };
+
+    //根据按钮的类型获取对应的图标
+    //big_icon: 某些按钮提供了不同的尺寸，如果为false，则图标大小为16x16，否则为20x20
+    IconRes GetBtnIcon(BtnKey key, bool big_icon = false);
 
 protected:
     struct DrawData
@@ -113,7 +146,9 @@ protected:
     void SetDrawRect();
     void DrawBackground();
     void DrawSongInfo(CRect rect, bool reset = false);
+    void DrawRectangle(const CRect& rect, bool no_corner_radius = false);       //绘制矩形。如果no_corner_radius为true，则总是绘制直角矩形，忽略“使用圆角风格按钮”的设置
     void DrawToolBar(CRect rect, bool draw_translate_button);
+    void DrawBeatIndicator(CRect rect);
     void DrawVolumnAdjBtn();
     void DrawControlBar(CRect rect);
     void DrawProgressBar(CRect rect);               //绘制进度条（包含时间）
@@ -127,10 +162,13 @@ protected:
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
+    IconRes* GetVolumeIcon();           //获取当前音量的图标
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);
     void DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon);
+
+    void ResetDrawArea();
 
     virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str);      //为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);

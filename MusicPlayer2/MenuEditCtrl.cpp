@@ -22,13 +22,12 @@ CMenuEditCtrl::~CMenuEditCtrl()
 void CMenuEditCtrl::OnBrowse()
 {
     PostMessage(WM_KILLFOCUS, 0, 0);
-    CWnd* pParent = GetParent();
-    if (m_menu.m_hMenu != 0)
+    if (theApp.m_menu_set.m_recent_folder_playlist_menu.m_hMenu != 0)
     {
         CRect rect;
         GetWindowRect(rect);
         //ClientToScreen(rect);
-        m_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, pParent);
+        theApp.m_menu_set.m_recent_folder_playlist_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, AfxGetMainWnd());
     }
 }
 
@@ -74,11 +73,6 @@ void CMenuEditCtrl::OnChangeLayout()
         m_rectBtn.SetRectEmpty();
     }
 
-}
-
-CMenu& CMenuEditCtrl::GetMenu()
-{
-    return m_menu;
 }
 
 BEGIN_MESSAGE_MAP(CMenuEditCtrl, CMFCEditBrowseCtrl)

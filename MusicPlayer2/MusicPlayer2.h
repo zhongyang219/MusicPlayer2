@@ -162,6 +162,7 @@ public:
     afx_msg void OnHelp();
     virtual int ExitInstance();
     afx_msg void OnHelpUpdateLog();
+    afx_msg void OnHelpCustomUi();
 };
 
 extern CMusicPlayerApp theApp;

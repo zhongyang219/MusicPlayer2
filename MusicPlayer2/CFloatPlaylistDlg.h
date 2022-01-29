@@ -4,6 +4,7 @@
 #include "CPlayerUIBase.h"
 #include "PlayerToolBar.h"
 #include "SearchEditCtrl.h"
+#include "MenuEditCtrl.h"
 
 #define WM_FLOAT_PLAYLIST_CLOSED (WM_USER+118)
 
@@ -27,7 +28,7 @@ public:
     void RefreshState(bool highlight_visible = true);		//刷新播放列表的状态
     CPlayListCtrl& GetListCtrl();
     CStaticEx& GetPathStatic();
-    CEdit& GetPathEdit();
+    CMenuEditCtrl& GetPathEdit();
     void GetPlaylistItemSelected();
     void SetDragEnable();
     void EnableControl(bool enable);
@@ -35,7 +36,7 @@ public:
 private:
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
     CStaticEx m_path_static;
-    CEdit m_path_edit;
+    CMenuEditCtrl m_path_edit;
     CButton m_set_path_button;
     CSearchEditCtrl m_search_edit;
     //CButton m_clear_search_button;

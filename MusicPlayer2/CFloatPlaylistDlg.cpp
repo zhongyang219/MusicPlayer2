@@ -67,7 +67,9 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
     m_set_path_button.MoveWindow(rect_select_folder);
 
     //设置“当前路径”edit控件大小和位置
-    CRect rect_edit{ rect_select_folder };
+    CRect rect_edit;
+    m_path_edit.GetWindowRect(rect_edit);
+    rect_edit.MoveToY(rect_select_folder.top + (rect_select_folder.Height() - rect_edit.Height()) / 2);
     rect_edit.left = rect_static.right + m_layout.margin;
     rect_edit.right = rect_select_folder.left - m_layout.margin;
     m_path_edit.MoveWindow(rect_edit);
@@ -116,7 +118,7 @@ CStaticEx & CFloatPlaylistDlg::GetPathStatic()
     return m_path_static;
 }
 
-CEdit & CFloatPlaylistDlg::GetPathEdit()
+CMenuEditCtrl& CFloatPlaylistDlg::GetPathEdit()
 {
     return m_path_edit;
 }
