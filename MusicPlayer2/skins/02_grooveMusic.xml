@@ -7,6 +7,7 @@
 					<button key="find" width="48" height="48"/>
 					<button key="equalizer" width="48" height="48"/>
 					<button key="info" width="48" height="48"/>
+					<button key="mediaLib" width="48" height="48"/>
 					<placeHolder/>
 					<button key="settings" width="48" height="48"/>
 				</verticalLayout>
@@ -17,9 +18,10 @@
 							<verticalLayout margin="8">
 								<text type="title" style="scroll" height="38" font_size="12"/>
 								<text type="artist" style="scroll" height="24" font_size="10"/>
+								<text type="album" style="scroll" height="24" font_size="10"/>
 								<placeHolder/>
 								<horizontalLayout margin-bottom="8">
-									<spectrum width="280" height="38" draw_reflex="false"/>
+									<spectrum width="280" draw_reflex="false"/>
 									<placeHolder/>
 								</horizontalLayout>
 								<text type="format" style="scroll" height="24"/>
@@ -48,8 +50,7 @@
 					</verticalLayout>
 					<horizontalLayout margin-right="4">
 						<placeHolder/>
-						<volume show_text="false" width="26" height="26" margin="2"/>
-						<button key="mediaLib" width="26" height="26" margin="2"/>
+						<volume show_text="true" width="56" height="26" margin="2"/>
 						<button key="showPlaylist" width="26" height="26" margin="2"/>
 					</horizontalLayout>
 				</horizontalLayout>
@@ -66,6 +67,7 @@
 					<button key="find" width="48" height="48"/>
 					<button key="equalizer" width="48" height="48"/>
 					<button key="info" width="48" height="48"/>
+					<button key="mediaLib" width="48" height="48"/>
 					<placeHolder/>
 					<button key="settings" width="48" height="48"/>
 				</verticalLayout>
@@ -76,9 +78,10 @@
 							<verticalLayout margin="8">
 								<text type="title" style="scroll" height="38" font_size="12"/>
 								<text type="artist" style="scroll" height="24" font_size="10"/>
+								<text type="album" style="scroll" height="24" font_size="10"/>
 								<placeHolder/>
 								<horizontalLayout margin-bottom="8">
-									<spectrum width="280" height="38" draw_reflex="false"/>
+									<spectrum width="280" draw_reflex="false"/>
 									<placeHolder/>
 								</horizontalLayout>
 								<text type="format" style="scroll" height="24"/>
@@ -97,7 +100,6 @@
 						<button key="playPause" width="40" height="40" bigIcon="true" margin="2"/>
 						<button key="next" width="40" height="40" bigIcon="true" margin="2"/>
 						<volume show_text="false" width="26" height="26" margin="2"/>
-						<button key="mediaLib" width="26" height="26" margin="2"/>
 						<button key="showPlaylist" width="26" height="26" margin="2"/>
 					</horizontalLayout>
 					<progressBar show_play_time="true"/>
@@ -114,6 +116,7 @@
 					<verticalLayout margin="4">
 						<text type="title" style="scroll" height="24" font_size="11"/>
 						<text type="artist" style="scroll" height="24" font_size="10"/>
+						<text type="album" style="scroll" height="24" font_size="10"/>
 						<text type="format" style="scroll" height="22"/>
 					</verticalLayout>
 			</horizontalLayout>

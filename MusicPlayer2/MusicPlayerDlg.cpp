@@ -887,8 +887,10 @@ void CMusicPlayerDlg::SwitchTrack()
 
     DrawInfo(true);
 
-    m_ui_list[0]->UpdateSongInfoToolTip();
-    m_ui_list[1]->UpdateSongInfoToolTip();
+    for (auto& ui : m_ui_list)
+    {
+        ui->UpdateSongInfoToolTip();
+    }
 }
 
 void CMusicPlayerDlg::SetPlaylistVisible()
@@ -3655,8 +3657,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     UpdatePlayPauseButton();
     //ShowTime();
 
-    m_ui_list[0]->UpdateSongInfoToolTip();
-    m_ui_list[1]->UpdateSongInfoToolTip();
+    for (auto& ui : m_ui_list)
+    {
+        ui->UpdateSongInfoToolTip();
+    }
 
     EnablePlaylist(true);
     theApp.DoWaitCursor(-1);
@@ -4302,8 +4306,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPA
 
     if (theApp.m_nc_setting_data.show_cover_tip)
     {
-        m_ui_list[0]->UpdateSongInfoToolTip();
-        m_ui_list[1]->UpdateSongInfoToolTip();
+        for (auto& ui : m_ui_list)
+        {
+            ui->UpdateSongInfoToolTip();
+        }
     }
 
     return 0;
