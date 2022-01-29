@@ -178,6 +178,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                     text->type = UiElement::Text::Artist;
                 else if (str_type == "album")
                     text->type = UiElement::Text::Album;
+                else if (str_type == "artist_title")
+                    text->type = UiElement::Text::ArtistTitle;
                 else if (str_type == "format")
                     text->type = UiElement::Text::Format;
                 //font_size

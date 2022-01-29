@@ -294,7 +294,7 @@ void UiElement::Button::Draw(CPlayerUIBase* ui)
 void UiElement::Button::FromString(const std::string& key_type)
 {
     if (key_type == "menu")
-        key = CPlayerUIBase::BTN_MENU;
+        key = CPlayerUIBase::BTN_MENU1;
     else if (key_type == "miniMode")
         key = CPlayerUIBase::BTN_MINI;
     else if (key_type == "fullScreen")
@@ -309,6 +309,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_SKIN;
     else if (key_type == "info")
         key = CPlayerUIBase::BTN_INFO;
+    else if (key_type == "find")
+        key = CPlayerUIBase::BTN_FIND;
     else if (key_type == "abRepeat")
         key = CPlayerUIBase::BTN_AB_REPEAT;
     else if (key_type == "desktopLyric")
@@ -352,6 +354,9 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
         break;
     case UiElement::Text::Album:
         draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+        break;
+    case UiElement::Text::ArtistTitle:
+        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
         break;
     case UiElement::Text::Format:
         draw_text = ui->GetDisplayFormatString();

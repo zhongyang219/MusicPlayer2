@@ -2,6 +2,7 @@
 #include "CPlayerUIBase.h"
 #include "MusicPlayerDlg.h"
 
+int CPlayerUIBase::m_playlist_offset{};
 
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
@@ -419,6 +420,12 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
             }
 
+            case BTN_MENU1:
+            {
+                CPoint point(m_buttons[BTN_MENU1].rect.left, m_buttons[BTN_MENU1].rect.bottom);
+                theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+            }
+
             default:
                 break;
             }
@@ -535,7 +542,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
     case CPlayerUIBase::BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
     case CPlayerUIBase::BTN_FULL_SCREEN: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
-    case CPlayerUIBase::BTN_MENU: return theApp.m_icon_set.menu;
+    case CPlayerUIBase::BTN_MENU: case CPlayerUIBase::BTN_MENU1: return theApp.m_icon_set.menu;
     case CPlayerUIBase::BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
     case CPlayerUIBase::BTN_MINIMIZE: return theApp.m_icon_set.minimize;
     case CPlayerUIBase::BTN_MAXIMIZE: return theApp.m_icon_set.maximize;
@@ -1931,6 +1938,35 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
     m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
 }
 
+void CPlayerUIBase::DrawPlaylist(CRect rect)
+{
+    m_draw.SetDrawArea(rect);
+    m_draw_data.playlist_rect = rect;
+    const int item_height = DPI(24);
+    for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
+    {
+        //计算每一行的矩形区域
+        int start_y = -m_playlist_offset + i * item_height;
+        CRect rect_item{ rect };
+        rect_item.top = start_y;
+        rect_item.bottom = rect_item.top + item_height;
+
+        if (!(rect_item & rect).IsRectEmpty())
+        {
+            if (i % 2 == 0)
+            {
+                //偶数行绘制一个背景
+                DrawRectangle(rect_item & rect);
+            }
+            //绘制曲目序号
+            CRect rect_num{ rect_item };
+            rect_num.right = rect_num.left + DPI(40);
+            m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text);
+            //绘制曲目名称
+        }
+    }
+}
+
 IconRes* CPlayerUIBase::GetRepeatModeIcon()
 {
     IconRes* pIcon = nullptr;
@@ -2004,6 +2040,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_COVER, m_cover_tip);
     AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
+    AddMouseToolTip(BTN_MENU1, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, _T(" (Ctrl+R)")));

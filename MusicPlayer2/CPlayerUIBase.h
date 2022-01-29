@@ -119,6 +119,7 @@ public:
         BTN_COVER,              //专辑封面
         BTN_FULL_SCREEN,        //全屏显示按钮
         BTN_MENU,               //主菜单按钮
+        BTN_MENU1,              //主菜单按钮
         BTN_FAVOURITE,          //“我喜欢”按钮
         BTN_CLOSE,              //关闭按钮（迷你模式）
         BTN_RETURN,             //返回按钮（迷你模式）
@@ -138,6 +139,7 @@ protected:
         //CRect cover_rect;
         CRect lyric_rect;
         CRect thumbnail_rect;
+        CRect playlist_rect;
     };
 
 protected:
@@ -160,6 +162,7 @@ protected:
     void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
+    void DrawPlaylist(CRect rect);                  //绘制播放列表
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
     IconRes* GetVolumeIcon();           //获取当前音量的图标
@@ -236,6 +239,7 @@ protected:
     const int m_progress_on_top_threshold = theApp.DPI(350);        //当控制条的宽度小于此值，将进度条显示在播放控制按钮的上方
 
     bool m_first_draw{ true };
+    static int m_playlist_offset;
 
 private:
     CBitmap m_mem_bitmap_static;
