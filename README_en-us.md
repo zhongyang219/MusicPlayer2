@@ -59,7 +59,7 @@ Main window (UI2, light mode)▼
 
 Main window (UI2, light mode, show playlist)▼
 
-`<img src="C:\Projects\GitHub Porject\MusicPlayer2\images\main_window_with_playlist.png" style="zoom:80%;" />`
+<img src="Screenshots/main_window_with_playlist.png" style="zoom:80%;" />
 
 Main window (UI2, dark mode)▼
 
