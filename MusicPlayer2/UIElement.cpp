@@ -454,6 +454,7 @@ void UiElement::Lyrics::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->DrawLyrics(rect);
     ui->ResetDrawArea();
+    ui->m_draw_data.lyric_rect = rect;
     Element::Draw(ui);
 }
 

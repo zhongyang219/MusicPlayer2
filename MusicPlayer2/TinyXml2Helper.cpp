@@ -67,6 +67,6 @@ const char* CTinyXml2Helper::ElementText(tinyxml2::XMLElement* ele)
 bool CTinyXml2Helper::StringToBool(const char* str)
 {
     string str_text{ str };
-    return (!str_text.empty() && str_text != "0");
+    return (!str_text.empty() && (str_text == "true" || str_text == "1"));
 }
 

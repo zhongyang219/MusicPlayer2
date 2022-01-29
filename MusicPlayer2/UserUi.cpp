@@ -63,6 +63,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
     {
         DrawCurrentTime();
     }
+    m_draw_data.thumbnail_rect = draw_rect;
 }
 
 CString CUserUi::GetUIName()
@@ -130,7 +131,7 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                 std::string str_key = CTinyXml2Helper::ElementAttribute(xml_node, "key");   //按钮的类型
                 button->FromString(str_key);
                 std::string str_big_icon = CTinyXml2Helper::ElementAttribute(xml_node, "bigIcon");
-                button->big_icon = (str_big_icon == "1");
+                button->big_icon = CTinyXml2Helper::StringToBool(str_big_icon.c_str());
             }
         }
         //文本
@@ -144,7 +145,12 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                 text->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
                 //alignment
                 std::string str_alignment = CTinyXml2Helper::ElementAttribute(xml_node, "alignment");
-                text->align = static_cast<Alignment>(atoi(str_alignment.c_str()));
+                if (str_alignment == "left")
+                    text->align = Alignment::LEFT;
+                else if (str_alignment == "right")
+                    text->align = Alignment::RIGHT;
+                else if (str_alignment == "center")
+                    text->align = Alignment::CENTER;
                 //style
                 std::string str_style = CTinyXml2Helper::ElementAttribute(xml_node, "style");
                 if (str_style == "static")
@@ -183,7 +189,7 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             if (album_cover != nullptr)
             {
                 std::string str_square = CTinyXml2Helper::ElementAttribute(xml_node, "square");
-                album_cover->square = (str_square == "1");
+                album_cover->square = CTinyXml2Helper::StringToBool(str_square.c_str());
             }
         }
         //频谱分析
@@ -193,7 +199,7 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             if (spectrum != nullptr)
             {
                 std::string str_draw_reflex = CTinyXml2Helper::ElementAttribute(xml_node, "draw_reflex");
-                spectrum->draw_reflex = (str_draw_reflex == "1");
+                spectrum->draw_reflex = CTinyXml2Helper::StringToBool(str_draw_reflex.c_str());
                 std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
                 if (str_type == "64col")
                     spectrum->type = CUIDrawer::SC_64;
@@ -212,7 +218,7 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             if (toolbar != nullptr)
             {
                 std::string str_show_translate_btn = CTinyXml2Helper::ElementAttribute(xml_node, "show_translate_btn");
-                toolbar->show_translate_btn = (str_show_translate_btn == "1");
+                toolbar->show_translate_btn = CTinyXml2Helper::StringToBool(str_show_translate_btn.c_str());
             }
         }
         //进度条
@@ -222,7 +228,7 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             if (progress_bar != nullptr)
             {
                 std::string str_show_play_time = CTinyXml2Helper::ElementAttribute(xml_node, "show_play_time");
-                progress_bar->show_play_time = (str_show_play_time == "1");
+                progress_bar->show_play_time = CTinyXml2Helper::StringToBool(str_show_play_time.c_str());
             }
         }
         //音量
@@ -232,9 +238,9 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             if (volume != nullptr)
             {
                 std::string str_show_text = CTinyXml2Helper::ElementAttribute(xml_node, "show_text");
-                volume->show_text = (str_show_text == "1");
+                volume->show_text = CTinyXml2Helper::StringToBool(str_show_text.c_str());
                 std::string str_adj_btn_on_top = CTinyXml2Helper::ElementAttribute(xml_node, "adj_btn_on_top");
-                volume->adj_btn_on_top = (str_adj_btn_on_top == "1");
+                volume->adj_btn_on_top = CTinyXml2Helper::StringToBool(str_adj_btn_on_top.c_str());
             }
         }
 
