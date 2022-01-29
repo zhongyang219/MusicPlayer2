@@ -1,4 +1,4 @@
-<root name="测试界面">
+<root name="测试界面" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin https://github.com/zhongyang219/MusicPlayer2/raw/master/Documents/skin.xsd">
 	<ui type="big">
 		<verticalLayout margin="4">
 			<trackInfo height="24"/>
@@ -19,7 +19,7 @@
 				</verticalLayout>
 				<lyrics margin="4"/>
 			</horizontalLayout>
-			<horizontalLayout magin="4" height="40">
+			<horizontalLayout margin="4" height="40">
 				<button key="repeatMode" width="22" height="22" margin="2"/>
 				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
@@ -50,7 +50,7 @@
 				</verticalLayout>
 			</albumCover>
 			<spectrum height="48" width="280" draw_reflex="true"/>
-			<horizontalLayout magin="4" height="40">
+			<horizontalLayout margin="4" height="40">
 				<button key="repeatMode" width="22" height="22" margin="2"/>
 				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
@@ -69,7 +69,7 @@
 	<ui type="small">
     <verticalLayout margin="4">
       <trackInfo height="20"/>
-      <horizontalLayout magin="4">
+      <horizontalLayout margin="4">
         <albumCover square="true" margin="4" width="100"/>
         <verticalLayout margin="4">
           <text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
@@ -77,7 +77,7 @@
           <spectrum draw_reflex="true" height="38" margin="4"/>
         </verticalLayout>
       </horizontalLayout>
-      <horizontalLayout magin="4" height="40">
+      <horizontalLayout margin="4" height="40">
         <button key="repeatMode" width="22" height="22" margin="2"/>
         <button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
         <button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
