@@ -3,7 +3,7 @@
 		<verticalLayout margin="4">
 			<horizontalLayout>
 				<verticalLayout>
-					<albumCover square="1" margin-left="40" margin-top="40"
+					<albumCover square="true" margin-left="40" margin-top="40"
 						margin-right="40"  margin-bottom="8"/>
 					<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
 					<text type="artist" style="scroll" height="24" alignment="center"/>
@@ -11,11 +11,11 @@
 				<lyrics margin="4"/>
 			</horizontalLayout>
 			<horizontalLayout magin="4" height="40">
-				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="next" width="32" height="32" bigIcon="1" margin="2"/>
-				<progressBar show_play_time="0"/>
-				<volume show_text="0" width="20" height="20" margin="2"/>
+				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+				<progressBar show_play_time="false"/>
+				<volume show_text="false" width="20" height="20" margin="2"/>
 				<button key="favorite" width="20" height="20" margin="2"/>
 				<button key="repeatMode" width="20" height="20" margin="2"/>
 			</horizontalLayout>
@@ -23,16 +23,22 @@
 	</ui>
 	<ui type="narrow">
 		<verticalLayout margin="4">
-			<albumCover square="1" margin-left="40" margin-top="40"
-				margin-right="40"  margin-bottom="8"/>
+			<albumCover square="true" margin-left="40" margin-top="40" margin-right="40"  margin-bottom="8">
+				<verticalLayout>
+					<placeHolder/>
+					<rectangle height="20%" no_corner_radius="true">
+						<lyrics margin="4"/>
+					</rectangle>
+				</verticalLayout>
+			</albumCover>
 			<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
 			<text type="artist" style="scroll" height="24" alignment="center"/>
 			<horizontalLayout magin="4" height="40">
-				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="next" width="32" height="32" bigIcon="1" margin="2"/>
-				<progressBar show_play_time="0"/>
-				<volume show_text="0" width="20" height="20" margin="2"/>
+				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+				<progressBar show_play_time="false"/>
+				<volume show_text="false" width="20" height="20" margin="2"/>
 				<button key="favorite" width="20" height="20" margin="2"/>
 				<button key="repeatMode" width="20" height="20" margin="2"/>
 			</horizontalLayout>
@@ -41,17 +47,17 @@
 	<ui type="small">
 		<verticalLayout margin="4">
 			<horizontalLayout magin="4">
-				<albumCover square="1" margin="4" width="100"/>
+				<albumCover square="true" margin="4" width="100"/>
 				<verticalLayout margin="4">
 					<text type="title" style="scroll" height="24" alignment="2" font_size="10"/>
 					<text type="artist" style="scroll" height="24" alignment="2"/>
 				</verticalLayout>
 			</horizontalLayout>
 			<horizontalLayout magin="4" height="40">
-				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="next" width="32" height="32" bigIcon="1" margin="2"/>
-				<progressBar show_play_time="0"/>
+				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+				<progressBar show_play_time="false"/>
 				<button key="favorite" width="20" height="20" margin="2"/>
 				<button key="repeatMode" width="20" height="20" margin="2"/>
 			</horizontalLayout>

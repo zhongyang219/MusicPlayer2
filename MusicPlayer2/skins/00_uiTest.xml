@@ -4,9 +4,17 @@
 			<trackInfo height="24"/>
 			<horizontalLayout>
 				<verticalLayout>
-					<albumCover square="true" margin="20" />
-					<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
-					<text type="artist" style="scroll" height="24" alignment="center"/>
+					<albumCover square="true" margin="20">
+						<verticalLayout>
+							<placeHolder/>
+							<rectangle height="20%" no_corner_radius="true">
+								<verticalLayout margin="4">
+									<text type="title" style="scroll" height="24" font_size="10"/>
+									<text type="artist" style="scroll" height="24"/>
+								</verticalLayout>
+							</rectangle>
+						</verticalLayout>
+					</albumCover>
 					<spectrum height="48" width="280" draw_reflex="true"/>
 				</verticalLayout>
 				<lyrics margin="4"/>
@@ -35,8 +43,8 @@
 					<placeHolder/>
 					<rectangle height="56" no_corner_radius="true">
 						<verticalLayout margin="4">
-							<text type="title" height="24" font_size="10"/>
-							<text type="artist" height="24"/>
+							<text type="title" style="scroll" height="24" font_size="10"/>
+							<text type="artist" style="scroll" height="24"/>
 						</verticalLayout>
 					</rectangle>
 				</verticalLayout>
