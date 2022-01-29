@@ -1,27 +1,4 @@
 <root name="测试界面">
-	<ui type="narrow">
-		<verticalLayout margin="4">
-			<trackInfo height="24"/>
-			<albumCover square="1" margin="20" />
-			<text type="title" style="scroll" height="24" alignment="2" font_size="10"/>
-			<text type="artist" style="scroll" height="24" alignment="2"/>
-			<spectrum height="48" width="280" draw_reflex="1"/>
-			<horizontalLayout magin="4" height="40">
-				<button key="repeatMode" width="22" height="22" margin="2"/>
-				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>
-				<button key="next" width="32" height="32" bigIcon="1" margin="2"/>
-				<progressBar show_play_time="1"/>
-			</horizontalLayout>
-			<horizontalLayout height="24">
-				<text type="format" style="scroll" height="24"/>
-				<volume show_text="1" adj_btn_on_top="1" width="56" height="22" margin-left="4"/>
-				<button key="favorite" width="22" height="22" margin="2"/>
-				<button key="mediaLib" width="22" height="22" margin="2"/>
-				<button key="showPlaylist" width="22" height="22" margin="2"/>
-			</horizontalLayout>	
-		</verticalLayout>
-	</ui>
 	<ui type="big">
 		<verticalLayout margin="4">
 			<trackInfo height="24"/>
@@ -48,6 +25,33 @@
 				<button key="mediaLib" width="22" height="22" margin="2"/>
 				<button key="showPlaylist" width="22" height="22" margin="2"/>
 			</horizontalLayout>
+		</verticalLayout>
+	</ui>
+	<ui type="narrow">
+		<verticalLayout margin="4">
+			<trackInfo height="24"/>
+			<albumCover square="1" margin="20">
+				<verticalLayout margin="4">
+					<placeHolder/>
+					<text type="title" height="24" font_size="10"/>
+					<text type="artist" height="24"/>
+				</verticalLayout>
+			</albumCover>
+			<spectrum height="48" width="280" draw_reflex="1"/>
+			<horizontalLayout magin="4" height="40">
+				<button key="repeatMode" width="22" height="22" margin="2"/>
+				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
+				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>
+				<button key="next" width="32" height="32" bigIcon="1" margin="2"/>
+				<progressBar show_play_time="1"/>
+			</horizontalLayout>
+			<horizontalLayout height="24">
+				<text type="format" style="scroll" height="24"/>
+				<volume show_text="1" adj_btn_on_top="1" width="56" height="22" margin-left="4"/>
+				<button key="favorite" width="22" height="22" margin="2"/>
+				<button key="mediaLib" width="22" height="22" margin="2"/>
+				<button key="showPlaylist" width="22" height="22" margin="2"/>
+			</horizontalLayout>	
 		</verticalLayout>
 	</ui>
 	<ui type="small">

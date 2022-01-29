@@ -37,7 +37,7 @@ namespace UiElement
 
     protected:
         CRect ParentRect(CPlayerUIBase* ui) const;
-        void CalculateRect(CPlayerUIBase* ui);           //计算此元素在界面中的矩形区域
+        virtual void CalculateRect(CPlayerUIBase* ui);           //计算此元素在界面中的矩形区域
 
         CRect rect;     //用于保存计算得到的元素的矩形区域
     };
@@ -108,6 +108,7 @@ namespace UiElement
     public:
         bool square{};
         virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void CalculateRect(CPlayerUIBase* ui) override;
     };
 
     //频谱分析

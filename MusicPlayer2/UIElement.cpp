@@ -250,6 +250,7 @@ void UiElement::Rectangle::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->DrawRectangle(rect);
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::Button::Draw(CPlayerUIBase* ui)
@@ -271,6 +272,7 @@ void UiElement::Button::Draw(CPlayerUIBase* ui)
         break;
     }
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::Button::FromString(const std::string& key_type)
@@ -375,11 +377,20 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
         }
     }
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
+    ui->DrawAlbumCover(rect);
+    ui->ResetDrawArea();
+    Element::Draw(ui);
+}
+
+void UiElement::AlbumCover::CalculateRect(CPlayerUIBase* ui)
+{
+    Element::CalculateRect(ui);
     CRect cover_rect{ rect };
     //如果强制专辑封面为正方形，则在这里计算新的矩形区域
     if (square)
@@ -395,9 +406,8 @@ void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)
             cover_rect.top = rect.top + (rect.Height() - side) / 2;
             cover_rect.bottom = cover_rect.top + side;
         }
+        rect = cover_rect;
     }
-    ui->DrawAlbumCover(cover_rect);
-    ui->ResetDrawArea();
 }
 
 void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
@@ -405,6 +415,7 @@ void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center);
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::TrackInfo::Draw(CPlayerUIBase* ui)
@@ -412,6 +423,7 @@ void UiElement::TrackInfo::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->DrawSongInfo(rect);
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::Toolbar::Draw(CPlayerUIBase* ui)
@@ -419,6 +431,7 @@ void UiElement::Toolbar::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->DrawToolBar(rect, show_translate_btn);
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::ProgressBar::Draw(CPlayerUIBase* ui)
@@ -433,6 +446,7 @@ void UiElement::ProgressBar::Draw(CPlayerUIBase* ui)
         ui->DrawProgess(rect);
     }
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::Lyrics::Draw(CPlayerUIBase* ui)
@@ -440,6 +454,7 @@ void UiElement::Lyrics::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->DrawLyrics(rect);
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::Volume::Draw(CPlayerUIBase* ui)
@@ -447,6 +462,7 @@ void UiElement::Volume::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->DrawVolumeButton(rect, adj_btn_on_top, show_text);
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui)
@@ -454,6 +470,7 @@ void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     ui->DrawBeatIndicator(rect);
     ui->ResetDrawArea();
+    Element::Draw(ui);
 }
 
 
@@ -496,7 +513,7 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = new UiElement::Volume();
     else if (name == "beatIndicator")
         element = new UiElement::BeatIndicator();
-    else if (name == "ui" || name == "root")
+    else if (name == "ui" || name == "root" || name == "placeHolder")
         element = new UiElement::Element();
 
     return std::shared_ptr<UiElement::Element>(element);
