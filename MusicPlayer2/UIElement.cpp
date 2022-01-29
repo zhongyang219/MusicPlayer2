@@ -23,6 +23,7 @@ void UiElement::Element::Value::FromString(const std::string str)
         is_percentage = false;
         value = atoi(str.c_str());
     }
+    valid = true;
 }
 
 int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) const
@@ -42,7 +43,7 @@ int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) co
 
 bool UiElement::Element::Value::IsValid() const
 {
-    return value != 0;
+    return valid;
 }
 
 void UiElement::Element::Draw(CPlayerUIBase* ui)
@@ -62,6 +63,20 @@ CRect UiElement::Element::GetRect() const
 void UiElement::Element::SetRect(CRect _rect)
 {
     rect = _rect;
+}
+
+UiElement::Element* UiElement::Element::RootElement()
+{
+    if (pParent == nullptr)
+        return this;
+    Element* ele{ this };
+    while (ele != nullptr)
+    {
+        Element* parent = ele->pParent;
+        if (parent == nullptr)
+            return ele;
+        ele = ele->pParent;
+    }
 }
 
 CRect UiElement::Element::ParentRect(CPlayerUIBase* ui) const
@@ -84,6 +99,7 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
 
     //父元素的矩形区域
     const CRect rect_parent{ ParentRect(ui) };
+    const CRect rect_root{ RootElement()->GetRect() };
     //判断父元素是否为布局元素
     Layout* layout = dynamic_cast<Layout*>(pParent);
     if (layout != nullptr)
@@ -95,9 +111,9 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
     {
         rect = rect_parent;
         if (x.IsValid())
-            rect.left = x.GetValue(rect_parent, ui);
+            rect.left = x.GetValue(rect_parent, ui) + rect_root.left;
         if (y.IsValid())
-            rect.top = y.GetValue(rect_parent, ui);
+            rect.top = y.GetValue(rect_parent, ui) + rect_root.top;
 
         if (margin_left.IsValid())
             rect.left = rect_parent.left + margin_left.GetValue(rect_parent, ui);
