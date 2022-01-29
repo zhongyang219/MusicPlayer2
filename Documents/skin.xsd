@@ -216,6 +216,11 @@
                             <xs:documentation>曲目信息</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="find">
+                        <xs:annotation>
+                            <xs:documentation>查找</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                     <xs:enumeration value="abRepeat">
                         <xs:annotation>
                             <xs:documentation>AB重复</xs:documentation>
@@ -357,6 +362,11 @@
                     <xs:enumeration value="album">
                         <xs:annotation>
                             <xs:documentation>显示歌曲唱片集</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="artist_title">
+                        <xs:annotation>
+                            <xs:documentation>显示为“艺术家 - 标题”</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
                     <xs:enumeration value="format">
