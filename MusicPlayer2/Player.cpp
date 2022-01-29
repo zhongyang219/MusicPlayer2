@@ -845,7 +845,7 @@ void CPlayer::LoopPlaylist(int& song_track)
     }
 }
 
-void CPlayer::ChangePath(const wstring& path, int track, bool play)
+void CPlayer::ChangePath(const wstring& path, int track, int position, bool play)
 {
     if (m_loading) return;
     MusicControl(Command::CLOSE);
@@ -856,7 +856,7 @@ void CPlayer::ChangePath(const wstring& path, int track, bool play)
     m_index = track;
     //初始化播放列表
     IniPlayList(false, false, play);		//根据新路径重新初始化播放列表
-    m_current_position = { 0, 0, 0 };
+    m_current_position.fromInt(position);
     SaveConfig();
     SetTitle();
     //MusicControl(Command::OPEN);
@@ -875,8 +875,7 @@ void CPlayer::SetPath(const PathInfo& path_info)
     m_sort_mode = path_info.sort_mode;
     m_descending = path_info.descending;
     m_contain_sub_folder = path_info.contain_sub_folder;
-    ChangePath(path_info.path, path_info.track);
-    m_current_position.fromInt(path_info.position);
+    ChangePath(path_info.path, path_info.track, path_info.position);
     //MusicControl(Command::SEEK);
     EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
 
@@ -953,8 +952,7 @@ void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     }
     if (path_exist)			//如果打开的路径已经存在于最近路径中
     {
-        ChangePath(path, track, play);
-        m_current_position.fromInt(position);
+        ChangePath(path, track, position, play);
         MusicControl(Command::SEEK);
         EmplaceCurrentPathToRecent();		//保存打开的路径到最近路径
         SaveRecentPath();
@@ -963,7 +961,7 @@ void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     {
         m_sort_mode = SM_FILE;
         m_descending = false;
-        ChangePath(path, 0, play);
+        ChangePath(path, 0, 0, play);
         EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
         SaveRecentPath();
     }
