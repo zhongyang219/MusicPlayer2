@@ -31,10 +31,14 @@
 		<verticalLayout margin="4">
 			<trackInfo height="24"/>
 			<albumCover square="true" margin="20">
-				<verticalLayout margin="4">
+				<verticalLayout>
 					<placeHolder/>
-					<text type="title" height="24" font_size="10"/>
-					<text type="artist" height="24"/>
+					<rectangle height="56" no_corner_radius="true">
+						<verticalLayout margin="4">
+							<text type="title" height="24" font_size="10"/>
+							<text type="artist" height="24"/>
+						</verticalLayout>
+					</rectangle>
 				</verticalLayout>
 			</albumCover>
 			<spectrum height="48" width="280" draw_reflex="true"/>

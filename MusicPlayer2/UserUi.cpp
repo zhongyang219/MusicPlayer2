@@ -134,6 +134,15 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                 button->big_icon = CTinyXml2Helper::StringToBool(str_big_icon.c_str());
             }
         }
+        else if (item_name == "rectangle")
+        {
+            UiElement::Rectangle* rectangle = dynamic_cast<UiElement::Rectangle*>(ui_element.get());
+            if (rectangle != nullptr)
+            {
+                std::string str_no_corner_radius = CTinyXml2Helper::ElementAttribute(xml_node, "no_corner_radius");
+                rectangle->no_corner_radius = CTinyXml2Helper::StringToBool(str_no_corner_radius.c_str());
+            }
+        }
         //文本
         else if (item_name == "text")
         {

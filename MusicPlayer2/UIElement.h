@@ -59,6 +59,7 @@ namespace UiElement
     class Rectangle : public Element
     {
     public:
+        bool no_corner_radius{};
         virtual void Draw(CPlayerUIBase* ui) override;
     };
 

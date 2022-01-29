@@ -677,7 +677,7 @@ void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
     m_draw.DrawWindowText(rect, str_text, m_colors.color_text, Alignment::CENTER);
 }
 
-void CPlayerUIBase::DrawRectangle(const CRect& rect)
+void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius)
 {
     bool draw_background{ IsDrawBackgroundAlpha() };
     //绘制背景
@@ -689,12 +689,12 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect)
     else
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 
-    if (!theApp.m_app_setting_data.button_round_corners)
+    if (!theApp.m_app_setting_data.button_round_corners || no_corner_radius)
         m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
     else
     {
         m_draw.SetDrawArea(rect);
-        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, theApp.DPI(4), alpha);
+        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, DPI(4), alpha);
     }
 }
 

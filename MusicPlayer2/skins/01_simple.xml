@@ -5,8 +5,8 @@
 				<verticalLayout>
 					<albumCover square="1" margin-left="40" margin-top="40"
 						margin-right="40"  margin-bottom="8"/>
-					<text type="title" style="scroll" height="24" alignment="2" font_size="10"/>
-					<text type="artist" style="scroll" height="24" alignment="2"/>
+					<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
+					<text type="artist" style="scroll" height="24" alignment="center"/>
 				</verticalLayout>
 				<lyrics margin="4"/>
 			</horizontalLayout>
@@ -25,8 +25,8 @@
 		<verticalLayout margin="4">
 			<albumCover square="1" margin-left="40" margin-top="40"
 				margin-right="40"  margin-bottom="8"/>
-			<text type="title" style="scroll" height="24" alignment="2" font_size="10"/>
-			<text type="artist" style="scroll" height="24" alignment="2"/>
+			<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
+			<text type="artist" style="scroll" height="24" alignment="center"/>
 			<horizontalLayout magin="4" height="40">
 				<button key="previous" width="32" height="32" bigIcon="1" margin="2"/>
 				<button key="playPause" width="32" height="32" bigIcon="1" margin="2"/>

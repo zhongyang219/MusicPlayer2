@@ -248,7 +248,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
 void UiElement::Rectangle::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->DrawRectangle(rect);
+    ui->DrawRectangle(rect, no_corner_radius);
     ui->ResetDrawArea();
     Element::Draw(ui);
 }

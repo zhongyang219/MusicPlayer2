@@ -146,7 +146,7 @@ protected:
     void SetDrawRect();
     void DrawBackground();
     void DrawSongInfo(CRect rect, bool reset = false);
-    void DrawRectangle(const CRect& rect);
+    void DrawRectangle(const CRect& rect, bool no_corner_radius = false);       //绘制矩形。如果no_corner_radius为true，则总是绘制直角矩形，忽略“使用圆角风格按钮”的设置
     void DrawToolBar(CRect rect, bool draw_translate_button);
     void DrawBeatIndicator(CRect rect);
     void DrawVolumnAdjBtn();
