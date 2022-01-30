@@ -1,4 +1,4 @@
-<root name="Groove音乐风格">
+<root name="Groove音乐风格" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin https://github.com/zhongyang219/MusicPlayer2/raw/master/Documents/skin.xsd">
 	<ui>
 		<verticalLayout>
 			<horizontalLayout>
