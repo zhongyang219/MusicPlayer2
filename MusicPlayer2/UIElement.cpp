@@ -280,6 +280,7 @@ void UiElement::Button::Draw(CPlayerUIBase* ui)
         break;
     case CPlayerUIBase::BTN_LRYIC:
         ui->DrawTextButton(rect, ui->m_buttons[key], CCommon::LoadText(IDS_LRC), theApp.m_lyric_setting_data.show_desktop_lyric);
+        break;
     case CPlayerUIBase::BTN_AB_REPEAT:
         ui->DrawABRepeatButton(rect);
         break;
