@@ -67,16 +67,12 @@ void UiElement::Element::SetRect(CRect _rect)
 
 UiElement::Element* UiElement::Element::RootElement()
 {
-    if (pParent == nullptr)
-        return this;
     Element* ele{ this };
-    while (ele != nullptr)
+    while (ele != nullptr && ele->pParent != nullptr)
     {
-        Element* parent = ele->pParent;
-        if (parent == nullptr)
-            return ele;
         ele = ele->pParent;
     }
+    return ele;
 }
 
 CRect UiElement::Element::ParentRect(CPlayerUIBase* ui) const
