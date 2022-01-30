@@ -407,10 +407,14 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 m_buttons[BTN_FIND].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
                 return;
-                break;
 
             case BTN_FULL_SCREEN:
                 m_buttons[BTN_FULL_SCREEN].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
+                return;
+
+            case BTN_FULL_SCREEN1:
+                m_buttons[BTN_FULL_SCREEN1].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
                 return;
 
@@ -418,12 +422,14 @@ void CPlayerUIBase::LButtonUp(CPoint point)
             {
                 CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+                return;
             }
 
             case BTN_MENU1:
             {
                 CPoint point(m_buttons[BTN_MENU1].rect.left, m_buttons[BTN_MENU1].rect.bottom);
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+                return;
             }
 
             default:
@@ -478,9 +484,15 @@ void CPlayerUIBase::UpdatePlayPauseButtonTip()
 void CPlayerUIBase::UpdateFullScreenTip()
 {
     if (m_ui_data.full_screen)
+    {
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
+        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
+    }
     else
+    {
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+    }
 }
 
 void CPlayerUIBase::UpdateTitlebarBtnToolTip()
@@ -541,7 +553,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case CPlayerUIBase::BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
     case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
     case CPlayerUIBase::BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
-    case CPlayerUIBase::BTN_FULL_SCREEN: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
+    case CPlayerUIBase::BTN_FULL_SCREEN: case CPlayerUIBase::BTN_FULL_SCREEN1: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
     case CPlayerUIBase::BTN_MENU: case CPlayerUIBase::BTN_MENU1: return theApp.m_icon_set.menu;
     case CPlayerUIBase::BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
     case CPlayerUIBase::BTN_MINIMIZE: return theApp.m_icon_set.minimize;
@@ -2039,6 +2051,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
     AddMouseToolTip(BTN_COVER, m_cover_tip);
     AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+    AddMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_MENU1, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));

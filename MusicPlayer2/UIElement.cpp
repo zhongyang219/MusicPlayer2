@@ -295,7 +295,7 @@ void UiElement::Button::FromString(const std::string& key_type)
     else if (key_type == "miniMode")
         key = CPlayerUIBase::BTN_MINI;
     else if (key_type == "fullScreen")
-        key = CPlayerUIBase::BTN_FULL_SCREEN;
+        key = CPlayerUIBase::BTN_FULL_SCREEN1;
     else if (key_type == "repeatMode")
         key = CPlayerUIBase::BTN_REPETEMODE;
     else if (key_type == "settings")

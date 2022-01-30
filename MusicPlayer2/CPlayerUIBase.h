@@ -118,6 +118,7 @@ public:
         BTN_PROGRESS,           //进度条
         BTN_COVER,              //专辑封面
         BTN_FULL_SCREEN,        //全屏显示按钮
+        BTN_FULL_SCREEN1,       //全屏显示按钮
         BTN_MENU,               //主菜单按钮
         BTN_MENU1,              //主菜单按钮
         BTN_FAVOURITE,          //“我喜欢”按钮
