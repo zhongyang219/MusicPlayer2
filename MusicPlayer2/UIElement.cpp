@@ -362,14 +362,15 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
         break;
     }
 
+    CFont* old_font{};  //原先的字体
     switch (font_size)
     {
-    case 8: ui->m_draw.SetFont(&theApp.m_font_set.font8.GetFont(ui->m_ui_data.full_screen)); break;
-    case 9: ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(ui->m_ui_data.full_screen)); break;
-    case 10: ui->m_draw.SetFont(&theApp.m_font_set.font10.GetFont(ui->m_ui_data.full_screen)); break;
-    case 11: ui->m_draw.SetFont(&theApp.m_font_set.font11.GetFont(ui->m_ui_data.full_screen)); break;
-    case 12: ui->m_draw.SetFont(&theApp.m_font_set.font12.GetFont(ui->m_ui_data.full_screen)); break;
-    default: ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(ui->m_ui_data.full_screen)); break;
+    case 8: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font8.GetFont(ui->m_ui_data.full_screen)); break;
+    case 9: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(ui->m_ui_data.full_screen)); break;
+    case 10: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font10.GetFont(ui->m_ui_data.full_screen)); break;
+    case 11: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font11.GetFont(ui->m_ui_data.full_screen)); break;
+    case 12: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font12.GetFont(ui->m_ui_data.full_screen)); break;
+    default: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(ui->m_ui_data.full_screen)); break;
     }
 
     int text_extent{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx };  //文本的实际宽度
@@ -394,6 +395,10 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
             break;
         }
     }
+    //恢复原来的字体
+    if (old_font != nullptr)
+        ui->m_draw.SetFont(old_font);
+
     ui->ResetDrawArea();
     Element::Draw(ui);
 }
