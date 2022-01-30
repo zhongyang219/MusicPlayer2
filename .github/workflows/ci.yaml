@@ -34,7 +34,7 @@ jobs:
       - name: 打包其他文件
         run: |
           cd x64/Release
-          7z a -mx9 '../../MusicPlayer2.x64.other.7z' '-ax!*.exe' '-ax!*.dll' './*'
+          7z a -mx9 '../../MusicPlayer2.x64.other.7z' '-x!*.exe' '-x!*.dll' './*'
       - name: 上传文件
         uses: actions/upload-artifact@v2
         with:
@@ -76,7 +76,7 @@ jobs:
       - name: 打包其他文件
         run: |
           cd Release
-          7z a -mx9 '../MusicPlayer2.x86.other.7z' '-ax!*.exe' '-ax!*.dll' './*'
+          7z a -mx9 '../MusicPlayer2.x86.other.7z' '-x!*.exe' '-x!*.dll' './*'
       - name: 上传文件
         uses: actions/upload-artifact@v2
         with:
