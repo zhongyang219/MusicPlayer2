@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" elementFormDefault="qualified">
+    <xs:simpleType name="number_or_percent"><!--定义值类型 number_or_percent-->
+        <xs:union><!--值必须符合下列类型种的某一种-->
+            <xs:simpleType>
+                <xs:restriction base="xs:int"></xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[0-9]*%"></xs:pattern><!--匹配百分数-->
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+    <xs:attributeGroup name="sharedattr"><!--定义属性组 sharedattr-->
+        <xs:attribute name="x" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>
+                    x和y属性用于设置元素左上角的位置。如果元素的父元素是verticalLayout或horizontalLayout，则x和y属性无效。x和y属性用于设置元素基于整个界面的绝对位置，与父元素的位置无关。如果要设置元素基于其父元素的相对位置，请使用margin,margin-left,margin-top属性。
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>
+                    x和y属性用于设置元素左上角的位置。如果元素的父元素是verticalLayout或horizontalLayout，则x和y属性无效。x和y属性用于设置元素基于整个界面的绝对位置，与父元素的位置无关。如果要设置元素基于其父元素的相对位置，请使用margin,margin-left,margin-top属性。
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>
+                    width和height属性用于设置元素的宽度和高度。如果需要为元素设置固定的宽度或高度，请使用此属性。如果需要使元素的宽度或高度能够自动适应，则不要使用此属性指定元素的宽度或高度。
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>
+                    width和height属性用于设置元素的宽度和高度。如果需要为元素设置固定的宽度或高度，请使用此属性。如果需要使元素的宽度或高度能够自动适应，则不要使用此属性指定元素的宽度或高度。
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="margin" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的四个方向的边距。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="margin-left" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的左边距。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="margin-right" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的右边距。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="margin-top" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的上边距。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="margin-bottom" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的下边距。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:attributeGroup>
+    <xs:group name="elements">
+        <xs:sequence><!--sequence 和 choice 配合使用，使得元素可以以任意顺序出现任意次数-->
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="verticalLayout" type="verticalLayoutType"></xs:element>
+                <xs:element name="horizontalLayout" type="horizontalLayoutType"></xs:element>
+                <xs:element name="rectangle" type="rectangleType"></xs:element>
+                <xs:element name="button" type="buttonType"></xs:element>
+                <xs:element name="text" type="textType"></xs:element>
+                <xs:element name="albumCover" type="albumCoverType"></xs:element>
+                <xs:element name="spectrum" type="spectrumType"></xs:element>
+                <xs:element name="trackInfo" type="trackInfoType"></xs:element>
+                <xs:element name="toolbar" type="toolbarType"></xs:element>
+                <xs:element name="progressBar" type="progressBarType"></xs:element>
+                <xs:element name="lyrics" type="lyricsType"></xs:element>
+                <xs:element name="volume" type="volumeType"></xs:element>
+                <xs:element name="beatIndicator" type="beatIndicatorType"></xs:element>
+                <xs:element name="placeHolder" type="placeHolderType"></xs:element>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+    <xs:element name="root"><!--定义root元素信息-->
+        <xs:annotation>
+            <xs:documentation>根节点</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence><!--所有元素必须按顺序出现-->
+                <!--定义名称为ui的元素，种类为uitype，应该出现1-无限大次-->
+                <xs:element name="ui" type="uitype" minOccurs="1" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>
+                            界面。一个xml文件可以包含多个界面，分别为不同大小时切换。
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string"><!--root元素可以有name属性-->
+                <xs:annotation>
+                    <xs:documentation>
+                        此界面的名称，会显示到”切换界面“子菜单中。如果未定义此属性，则会使用默认的名称“界面+序号”。
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attributeGroup ref="sharedattr"></xs:attributeGroup><!--引用属性组 sharedattr-->
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="uitype"><!--定义元素种类 uitype-->
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="type"><!--定义type属性-->
+            <xs:annotation>
+                <xs:documentation>界面类型。</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string"><!--type属性必须是以下值-->
+                    <xs:enumeration value="big">
+                        <xs:annotation>
+                            <xs:documentation>界面宽度和高度大于一定值时的界面。</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="narrow">
+                        <xs:annotation>
+                            <xs:documentation>界面宽度小于一定值时的界面。</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="small">
+                        <xs:annotation>
+                            <xs:documentation>界面宽度和高度都小于一定值时的界面。</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup><!--引用属性组 sharedattr-->
+    </xs:complexType>
+    <xs:complexType name="verticalLayoutType">
+        <xs:annotation>
+            <xs:documentation>垂直布局元素。让界面元素依次摆放到界面中，且不会发生重叠的现象。</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="horizontalLayoutType">
+        <xs:annotation>
+            <xs:documentation>水平布局元素。让界面元素依次摆放到界面中，且不会发生重叠的现象。</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="rectangleType">
+        <xs:annotation>
+            <xs:documentation>一个半透明的矩形。</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="no_corner_radius" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>如果为true，则矩形总是为直角；如果为false，则在“选项”——“外观设置”中勾选“使用圆角风格按钮”时，矩形显示为圆角矩形。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="buttonType">
+        <xs:annotation>
+            <xs:documentation>按钮</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="key" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    按钮的类型。不支持在一个界面中放置两个以上相同的按钮，否则会导致只有其中一个按钮有效。
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="menu">
+                        <xs:annotation>
+                            <xs:documentation>菜单</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="miniMode">
+                        <xs:annotation>
+                            <xs:documentation>迷你模式</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="fullScreen">
+                        <xs:annotation>
+                            <xs:documentation>全屏模式</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="repeatMode">
+                        <xs:annotation>
+                            <xs:documentation>循环模式</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="settings">
+                        <xs:annotation>
+                            <xs:documentation>设置</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="equalizer">
+                        <xs:annotation>
+                            <xs:documentation>均衡器</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="skin">
+                        <xs:annotation>
+                            <xs:documentation>切换界面</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="info">
+                        <xs:annotation>
+                            <xs:documentation>曲目信息</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="find">
+                        <xs:annotation>
+                            <xs:documentation>查找</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="abRepeat">
+                        <xs:annotation>
+                            <xs:documentation>AB重复</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="desktopLyric">
+                        <xs:annotation>
+                            <xs:documentation>显示桌面歌词</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="lyricTranslate">
+                        <xs:annotation>
+                            <xs:documentation>显示歌词翻译</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="stop">
+                        <xs:annotation>
+                            <xs:documentation>停止</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="previous">
+                        <xs:annotation>
+                            <xs:documentation>上一曲</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="next">
+                        <xs:annotation>
+                            <xs:documentation>下一曲</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="playPause">
+                        <xs:annotation>
+                            <xs:documentation>播放/暂停</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="favorite">
+                        <xs:annotation>
+                            <xs:documentation>添加到“我喜欢的音乐”</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="mediaLib">
+                        <xs:annotation>
+                            <xs:documentation>媒体库</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="showPlaylist">
+                        <xs:annotation>
+                            <xs:documentation>显示/隐藏播放列表</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="bigIcon" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>如果为false，则图标尺寸为16x16；如果为true，则图标尺寸为20x20</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="textType">
+        <xs:annotation>
+            <xs:documentation>文本</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="text" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>显示的文本。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="alignment" default="left">
+            <xs:annotation>
+                <xs:documentation>对齐方式。</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="left">
+                        <xs:annotation>
+                            <xs:documentation>左对齐</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="right">
+                        <xs:annotation>
+                            <xs:documentation>右对齐</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="center">
+                        <xs:annotation>
+                            <xs:documentation>居中</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="style" default="static">
+            <xs:annotation>
+                <xs:documentation>文本的样式。</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="static">
+                        <xs:annotation>
+                            <xs:documentation>静止的文本</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="scroll">
+                        <xs:annotation>
+                            <xs:documentation>滚动的文本</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="scroll2">
+                        <xs:annotation>
+                            <xs:documentation>另一种滚动的文本（只朝一个方向滚动）</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="type" default="userDefine">
+            <xs:annotation>
+                <xs:documentation>文本的类型。</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="userDefine">
+                        <xs:annotation>
+                            <xs:documentation>显示的文本由text属性的值决定</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="title">
+                        <xs:annotation>
+                            <xs:documentation>显示歌曲标题</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="artist">
+                        <xs:annotation>
+                            <xs:documentation>显示歌曲艺术家</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="album">
+                        <xs:annotation>
+                            <xs:documentation>显示歌曲唱片集</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="artist_title">
+                        <xs:annotation>
+                            <xs:documentation>显示为“艺术家 - 标题”</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="format">
+                        <xs:annotation>
+                            <xs:documentation>显示歌曲格式</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="font_size" default="9">
+            <xs:annotation>
+                <xs:documentation>字体大小，仅支持8~12。默认大小为9。</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int"><!--只允许8-12的整数-->
+                    <xs:minInclusive value="8"></xs:minInclusive>
+                    <xs:maxInclusive value="12"></xs:maxInclusive>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="albumCoverType">
+        <xs:annotation>
+            <xs:documentation>专辑封面</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="square" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>如果为true，则总是使用正方形的专辑封面。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="spectrumType">
+        <xs:annotation>
+            <xs:documentation>频谱分析</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="draw_reflex" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>是否绘制倒影。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" default="64col">
+            <xs:annotation>
+                <xs:documentation>频谱分析的类型（柱形数量）</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="64col"></xs:enumeration>
+                    <xs:enumeration value="32col"></xs:enumeration>
+                    <xs:enumeration value="16col"></xs:enumeration>
+                    <xs:enumeration value="8col"></xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="trackInfoType">
+        <xs:annotation>
+            <xs:documentation>曲目信息（包含播放状态、文件名、歌曲标识、速度）</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="toolbarType">
+        <xs:annotation>
+            <xs:documentation>工具条</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="show_translate_btn" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>是否在工具栏上显示“显示歌词翻译”按钮。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="progressBarType">
+        <xs:annotation>
+            <xs:documentation>进度条</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="show_play_time" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>是否在进度条右边显示播放时间。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="lyricsType">
+        <xs:annotation>
+            <xs:documentation>
+                显示歌词的区域。歌词的显示会自动根据歌词区域的大小切换单行、双行、多行显示模式。在此区域点击鼠标右键会弹出歌词右键菜单。
+            </xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="volumeType">
+        <xs:annotation>
+            <xs:documentation>音量按钮，点击后会弹出音量调节按钮</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attribute name="show_text" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>是否在音量图标旁边显示文本。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="adj_btn_on_top" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>
+                    点击音量图标后出现的音量调节按钮是否显示在音量图标的上方。默认显示在音量图标的下方。
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="beatIndicatorType">
+        <xs:annotation>
+            <xs:documentation>一个由&lt;&lt;&lt;&lt;组成的节拍指示。它仅在播放Midi音乐时才会指示正确的节拍。</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="placeHolderType">
+        <xs:annotation>
+            <xs:documentation>placeHolder元素是一个占位符，它不显示任何东西。</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+</xs:schema>
