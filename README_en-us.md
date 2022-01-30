@@ -1,4 +1,4 @@
-**[简体中文](https://github.com/zhongyang219/MusicPlayer2/blob/master/README.md) | English**`<br>`
+**[简体中文](https://github.com/zhongyang219/MusicPlayer2/blob/master/README.md) | English**
 
 # MusicPlayer2 Introduction
 
@@ -39,13 +39,13 @@ scoop install extras/musicplayer2
 
 # Operating Instructions
 
-You have the following ways to open and play a song:`<br>`
+You have the following ways to open and play a song:
 
-1. Select the "Open File" item on the File menu;`<br>`
-2. Select the "Open folder" item on the File menu;`<br>`
-3. Click the "Select Folder" button or select the "Select Folder" item on the "Tools" menu, select a recently played folder in the popped up dialog, or click the "Open new folder" button to play a new folder;`<br>`
-4. Drag and drop the file or folder directly into the main window of the program;`<br>`
-5. Drag and drop the file or folder directly onto the program's icon or its shortcut icon.`<br>`
+1. Select the "Open File" item on the File menu;
+2. Select the "Open folder" item on the File menu;
+3. Click the "Select Folder" button or select the "Select Folder" item on the "Tools" menu, select a recently played folder in the popped up dialog, or click the "Open new folder" button to play a new folder;
+4. Drag and drop the file or folder directly into the main window of the program;
+5. Drag and drop the file or folder directly onto the program's icon or its shortcut icon.
 
 # Instructions for use
 
@@ -108,3 +108,4 @@ Option settings - General Settings▼
 # Update log
 
 **[Click here to view the update log.](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md)**
+

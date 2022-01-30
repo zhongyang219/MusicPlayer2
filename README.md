@@ -1,4 +1,4 @@
-**简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/README_en-us.md)** `<br>`
+**简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/README_en-us.md)**
 
 # MusicPlayer2 简介
 
@@ -100,4 +100,3 @@ Cortana搜索框显示歌词▼
 # 更新日志
 
 **[点击此处查看更新日志](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md)**
-`<br>`
