@@ -96,6 +96,7 @@ namespace UiElement
             Title,      //歌曲标题
             Artist,     //歌曲艺术家
             Album,      //歌曲唱片集
+            ArtistTitle,    //艺术家 - 标题
             Format      //歌曲格式
         };
         Type type;
