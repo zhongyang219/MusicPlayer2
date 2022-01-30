@@ -170,6 +170,7 @@
         <xs:annotation>
             <xs:documentation>按钮</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attribute name="key">
             <xs:annotation>
                 <xs:documentation>按钮的类型</xs:documentation>
@@ -285,6 +286,7 @@
         <xs:annotation>
             <xs:documentation>文本</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attribute name="text" type="xs:string">
             <xs:annotation>
                 <xs:documentation>显示的文本。</xs:documentation>
@@ -406,6 +408,7 @@
         <xs:annotation>
             <xs:documentation>频谱分析</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attribute name="draw_reflex" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>是否绘制倒影。</xs:documentation>
@@ -430,12 +433,14 @@
         <xs:annotation>
             <xs:documentation>曲目信息（包含播放状态、文件名、歌曲标识、速度）</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="toolbarType">
         <xs:annotation>
             <xs:documentation>工具条</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attribute name="show_translate_btn" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>是否在工具栏上显示“显示歌词翻译”按钮。</xs:documentation>
@@ -447,6 +452,7 @@
         <xs:annotation>
             <xs:documentation>进度条</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attribute name="show_play_time" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>是否在进度条右边显示播放时间。</xs:documentation>
@@ -460,12 +466,14 @@
                 显示歌词的区域。歌词的显示会自动根据歌词区域的大小切换单行、双行、多行显示模式。在此区域点击鼠标右键会弹出歌词右键菜单。
             </xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="volumeType">
         <xs:annotation>
             <xs:documentation>音量按钮，点击后会弹出音量调节按钮</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attribute name="show_text" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>是否在音量图标旁边显示文本。</xs:documentation>
@@ -484,6 +492,7 @@
         <xs:annotation>
             <xs:documentation>一个由&lt;&lt;&lt;&lt;组成的节拍指示。它仅在播放Midi音乐时才会指示正确的节拍。</xs:documentation>
         </xs:annotation>
+        <xs:group ref="elements"></xs:group>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="placeHolderType">
