@@ -171,9 +171,11 @@
             <xs:documentation>按钮</xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
-        <xs:attribute name="key">
+        <xs:attribute name="key" use="required">
             <xs:annotation>
-                <xs:documentation>按钮的类型</xs:documentation>
+                <xs:documentation>
+                    按钮的类型。不支持在一个界面中放置两个以上相同的按钮，否则会导致只有其中一个按钮有效。
+                </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -275,7 +277,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="bigIcon" type="xs:boolean">
+        <xs:attribute name="bigIcon" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>如果为false，则图标尺寸为16x16；如果为true，则图标尺寸为20x20</xs:documentation>
             </xs:annotation>
@@ -292,7 +294,7 @@
                 <xs:documentation>显示的文本。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="alignment">
+        <xs:attribute name="alignment" default="left">
             <xs:annotation>
                 <xs:documentation>对齐方式。</xs:documentation>
             </xs:annotation>
@@ -316,7 +318,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="style">
+        <xs:attribute name="style" default="static">
             <xs:annotation>
                 <xs:documentation>文本的样式。</xs:documentation>
             </xs:annotation>
@@ -340,7 +342,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="type">
+        <xs:attribute name="type" default="userDefine">
             <xs:annotation>
                 <xs:documentation>文本的类型。</xs:documentation>
             </xs:annotation>
@@ -379,7 +381,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="font_size">
+        <xs:attribute name="font_size" default="9">
             <xs:annotation>
                 <xs:documentation>字体大小，仅支持8~12。默认大小为9。</xs:documentation>
             </xs:annotation>
@@ -397,7 +399,7 @@
             <xs:documentation>专辑封面</xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
-        <xs:attribute name="square" type="xs:boolean">
+        <xs:attribute name="square" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>如果为true，则总是使用正方形的专辑封面。</xs:documentation>
             </xs:annotation>
@@ -409,12 +411,12 @@
             <xs:documentation>频谱分析</xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
-        <xs:attribute name="draw_reflex" type="xs:boolean">
+        <xs:attribute name="draw_reflex" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>是否绘制倒影。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="type">
+        <xs:attribute name="type" default="64col">
             <xs:annotation>
                 <xs:documentation>频谱分析的类型（柱形数量）</xs:documentation>
             </xs:annotation>
@@ -441,7 +443,7 @@
             <xs:documentation>工具条</xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
-        <xs:attribute name="show_translate_btn" type="xs:boolean">
+        <xs:attribute name="show_translate_btn" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>是否在工具栏上显示“显示歌词翻译”按钮。</xs:documentation>
             </xs:annotation>
@@ -453,7 +455,7 @@
             <xs:documentation>进度条</xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
-        <xs:attribute name="show_play_time" type="xs:boolean">
+        <xs:attribute name="show_play_time" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>是否在进度条右边显示播放时间。</xs:documentation>
             </xs:annotation>
@@ -474,12 +476,12 @@
             <xs:documentation>音量按钮，点击后会弹出音量调节按钮</xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
-        <xs:attribute name="show_text" type="xs:boolean">
+        <xs:attribute name="show_text" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>是否在音量图标旁边显示文本。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="adj_btn_on_top" type="xs:boolean">
+        <xs:attribute name="adj_btn_on_top" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>
                     点击音量图标后出现的音量调节按钮是否显示在音量图标的上方。默认显示在音量图标的下方。
