@@ -1,4 +1,4 @@
-<root name="简洁UI" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin https://github.com/zhongyang219/MusicPlayer2/raw/master/Documents/skin.xsd">
+<root name="简洁UI" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd">
 	<ui type="big">
 		<verticalLayout margin="4">
 			<horizontalLayout>
@@ -10,7 +10,7 @@
 				</verticalLayout>
 				<lyrics margin="4"/>
 			</horizontalLayout>
-			<horizontalLayout magin="4" height="40">
+			<horizontalLayout margin="4" height="40">
 				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
@@ -33,7 +33,7 @@
 			</albumCover>
 			<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
 			<text type="artist" style="scroll" height="24" alignment="center"/>
-			<horizontalLayout magin="4" height="40">
+			<horizontalLayout margin="4" height="40">
 				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
@@ -46,14 +46,14 @@
 	</ui>
 	<ui type="small">
 		<verticalLayout margin="4">
-			<horizontalLayout magin="4">
+			<horizontalLayout margin="4">
 				<albumCover square="true" margin="4" width="100"/>
 				<verticalLayout margin="4">
 					<text type="title" style="scroll" height="24" alignment="2" font_size="10"/>
 					<text type="artist" style="scroll" height="24" alignment="2"/>
 				</verticalLayout>
 			</horizontalLayout>
-			<horizontalLayout magin="4" height="40">
+			<horizontalLayout margin="4" height="40">
 				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
 				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>

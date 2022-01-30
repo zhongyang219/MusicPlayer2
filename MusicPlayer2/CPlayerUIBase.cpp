@@ -1411,27 +1411,44 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
     }
 }
 
-void CPlayerUIBase::DrawProgressBar(CRect rect)
+void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
 {
     //绘制播放时间
     bool draw_progress_time{ rect.Width() > DPI(110) };
-    CRect rc_time = rect;
+    CRect progress_rect{ rect };
     if (draw_progress_time)
     {
-        wstring strTime = CPlayer::GetInstance().GetTimeString();
+        CFont* old_font = m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
+        if (play_time_both_side)
+        {
+            CRect rc_time_left{ rect } , rc_time_right{ rect };
+            std::wstring str_cur_time = Time(CPlayer::GetInstance().GetCurrentPosition()).toString(false);
+            std::wstring str_song_length = Time(CPlayer::GetInstance().GetSongLength()).toString(false);
+            int left_width = m_draw.GetTextExtent(str_cur_time.c_str()).cx;
+            int right_width = m_draw.GetTextExtent(str_song_length.c_str()).cx;
+            rc_time_left.right = rc_time_left.left + left_width;
+            rc_time_right.left = rc_time_right.right - right_width;
+            m_draw.DrawWindowText(rc_time_left, str_cur_time.c_str(), m_colors.color_text);
+            m_draw.DrawWindowText(rc_time_right, str_song_length.c_str(), m_colors.color_text);
+            progress_rect.left += (left_width + Margin());
+            progress_rect.right -= (right_width + Margin());
+        }
+        else
+        {
+            CRect rc_time = rect;
+            wstring strTime = CPlayer::GetInstance().GetTimeString();
 
-        m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
-        CSize strSize = m_draw.GetTextExtent(strTime.c_str());
-        rc_time.left = rc_time.right - strSize.cx;
-        //rc_time.InflateRect(0, DPI(2));
-        rc_time.top -= DPI(1);
-        m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
+            CSize strSize = m_draw.GetTextExtent(strTime.c_str());
+            rc_time.left = rc_time.right - strSize.cx;
+            //rc_time.InflateRect(0, DPI(2));
+            rc_time.top -= DPI(1);
+            m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
+            progress_rect.right = rc_time.left - Margin();
+        }
+        m_draw.SetFont(old_font);
     }
 
     //绘制进度条
-    CRect progress_rect = rect;
-    if (draw_progress_time)
-        progress_rect.right = rc_time.left - Margin();
     DrawProgess(progress_rect);
 }
 

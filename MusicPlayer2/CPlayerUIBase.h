@@ -154,7 +154,7 @@ protected:
     void DrawBeatIndicator(CRect rect);
     void DrawVolumnAdjBtn();
     void DrawControlBar(CRect rect);
-    void DrawProgressBar(CRect rect);               //绘制进度条（包含时间）
+    void DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧
     void DrawProgess(CRect rect);                   //绘制进度条
     void DrawTranslateButton(CRect rect);
     int DrawTopRightIcons(bool always_show_full_screen = false);            //绘制右上角的图标。返回总宽度

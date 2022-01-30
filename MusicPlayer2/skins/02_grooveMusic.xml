@@ -1,4 +1,4 @@
-<root name="Groove音乐风格" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin https://github.com/zhongyang219/MusicPlayer2/raw/master/Documents/skin.xsd">
+<root name="Groove音乐风格" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd">
 	<ui>
 		<verticalLayout>
 			<horizontalLayout>
@@ -46,7 +46,7 @@
 							<button key="next" width="40" height="40" bigIcon="true" margin="2"/>
 							<button key="favorite" width="26" height="26" margin="2"/>
 						</horizontalLayout>
-						<progressBar show_play_time="true"/>
+						<progressBar show_play_time="true" play_time_both_side="true"/>
 					</verticalLayout>
 					<horizontalLayout margin-right="4">
 						<placeHolder/>

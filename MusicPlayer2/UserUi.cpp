@@ -240,6 +240,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             {
                 std::string str_show_play_time = CTinyXml2Helper::ElementAttribute(xml_node, "show_play_time");
                 progress_bar->show_play_time = CTinyXml2Helper::StringToBool(str_show_play_time.c_str());
+                std::string str_play_time_both_side = CTinyXml2Helper::ElementAttribute(xml_node, "play_time_both_side");
+                progress_bar->play_time_both_side = CTinyXml2Helper::StringToBool(str_play_time_both_side.c_str());
             }
         }
         //音量

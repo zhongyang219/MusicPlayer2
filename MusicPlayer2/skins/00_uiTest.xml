@@ -1,4 +1,4 @@
-<root name="测试界面" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin https://github.com/zhongyang219/MusicPlayer2/raw/master/Documents/skin.xsd">
+<root name="测试界面" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd">
 	<ui type="big">
 		<verticalLayout margin="4">
 			<trackInfo height="24"/>

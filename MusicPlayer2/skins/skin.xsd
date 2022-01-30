@@ -460,6 +460,11 @@
                 <xs:documentation>是否在进度条右边显示播放时间。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="play_time_both_side" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>播放时间是否显示在进度条的两侧。仅当show_play_time为true时有效。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="lyricsType">

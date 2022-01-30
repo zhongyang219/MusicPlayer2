@@ -462,7 +462,7 @@ void UiElement::ProgressBar::Draw(CPlayerUIBase* ui)
     CalculateRect(ui);
     if (show_play_time)
     {
-        ui->DrawProgressBar(rect);
+        ui->DrawProgressBar(rect, play_time_both_side);
     }
     else
     {
