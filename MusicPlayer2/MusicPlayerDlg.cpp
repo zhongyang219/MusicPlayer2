@@ -1617,6 +1617,7 @@ void CMusicPlayerDlg::InitUiMenu()
 
             pMenu->AppendMenu(MF_SEPARATOR);
 
+            bool user_ui_separator_added{};
             for (size_t i{}; i < m_ui_list.size() && i < SELECT_UI_MAX_SIZE; i++)
             {
                 CString str_name = m_ui_list[i]->GetUIName();   //获取界面的名称
@@ -1628,6 +1629,15 @@ void CMusicPlayerDlg::InitUiMenu()
                     CString str_short_key;
                     str_short_key.Format(_T("\tCtrl+%d"), i + 1);
                     str_name += str_short_key;
+                }
+                if (!user_ui_separator_added)
+                {
+                    CUserUi* user_ui = dynamic_cast<CUserUi*>(m_ui_list[i].get());
+                    if (user_ui != nullptr)     //在用户界面前面添加一个分隔符
+                    {
+                        pMenu->AppendMenu(MF_SEPARATOR);
+                        user_ui_separator_added = true;
+                    }
                 }
                 pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_SWITCH_UI + i + 1, str_name);
             }
