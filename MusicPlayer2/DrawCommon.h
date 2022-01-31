@@ -79,6 +79,16 @@ public:
     //no_clip_area: 如果为true，则不在输出文字时限制绘图区域
     void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align = Alignment::LEFT, bool no_clip_area = false);
 
+    // 在指定的矩形区域内绘制分割颜色的带有进度符号的歌词文本
+    // rect: 文本的矩形区域
+    // lpszBeforeString: 进度符号
+    // lpszString: 要绘制的文本
+    // color1: 分割位置左边的文本颜色
+    // color2: 分割位置右边的文本颜色
+    // split: 颜色分割位置，取值为0~1000（用于歌词动态显示）
+    // isBefore: 颜色分割位置在描述进度符号还是描述歌词
+    // center: 文本是否居中
+    // no_clip_area: 如果为true，则不在输出文字时限制绘图区域
     void DrawWindowTextForLyric(CRect rect, LPCTSTR lpszBeforeString, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, bool isBefore, Alignment align = Alignment::LEFT, bool no_clip_area = false);
 
 
