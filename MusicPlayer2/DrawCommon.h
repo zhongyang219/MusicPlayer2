@@ -79,6 +79,9 @@ public:
     //no_clip_area: 如果为true，则不在输出文字时限制绘图区域
     void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align = Alignment::LEFT, bool no_clip_area = false);
 
+    void DrawWindowTextForLyric(CRect rect, LPCTSTR lpszBeforeString, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, bool isBefore, Alignment align = Alignment::LEFT, bool no_clip_area = false);
+
+
     //在控件上绘制滚动的文本（当长度不够时），pixel指定此函数调用一次移动的像素值，如果reset为true，则滚动到初始位置
     //rect: 文本的矩形区域
     //lpszString: 要绘制的文本
