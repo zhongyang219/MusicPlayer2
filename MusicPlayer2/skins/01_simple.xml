@@ -10,14 +10,14 @@
 				</verticalLayout>
 				<lyrics margin="4"/>
 			</horizontalLayout>
-			<horizontalLayout margin="4" height="40">
-				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
-				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
-				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+			<horizontalLayout margin="4" height="42">
+				<button key="previous" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
 				<progressBar show_play_time="false"/>
-				<volume show_text="false" width="20" height="20" margin="2"/>
-				<button key="favorite" width="20" height="20" margin="2"/>
-				<button key="repeatMode" width="20" height="20" margin="2"/>
+				<volume show_text="false" width="24" height="24" margin="2"/>
+				<button key="favorite" width="24" height="24" margin="2"/>
+				<button key="repeatMode" width="24" height="24" margin="2"/>
 			</horizontalLayout>
 		</verticalLayout>
 	</ui>
@@ -33,14 +33,14 @@
 			</albumCover>
 			<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
 			<text type="artist" style="scroll" height="24" alignment="center"/>
-			<horizontalLayout margin="4" height="40">
-				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
-				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
-				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+			<horizontalLayout margin="4" height="42">
+				<button key="previous" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
 				<progressBar show_play_time="false"/>
-				<volume show_text="false" width="20" height="20" margin="2"/>
-				<button key="favorite" width="20" height="20" margin="2"/>
-				<button key="repeatMode" width="20" height="20" margin="2"/>
+				<volume show_text="false" width="24" height="24" margin="2"/>
+				<button key="favorite" width="24" height="24" margin="2"/>
+				<button key="repeatMode" width="24" height="24" margin="2"/>
 			</horizontalLayout>
 		</verticalLayout>
 	</ui>
@@ -53,13 +53,13 @@
 					<text type="artist" style="scroll" height="24" alignment="2"/>
 				</verticalLayout>
 			</horizontalLayout>
-			<horizontalLayout margin="4" height="40">
-				<button key="previous" width="32" height="32" bigIcon="true" margin="2"/>
-				<button key="playPause" width="32" height="32" bigIcon="true" margin="2"/>
-				<button key="next" width="32" height="32" bigIcon="true" margin="2"/>
+			<horizontalLayout margin="4" height="42">
+				<button key="previous" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
 				<progressBar show_play_time="false"/>
-				<button key="favorite" width="20" height="20" margin="2"/>
-				<button key="repeatMode" width="20" height="20" margin="2"/>
+				<button key="favorite" width="22" height="22" margin="2"/>
+				<button key="repeatMode" width="22" height="22" margin="2"/>
 			</horizontalLayout>
 		</verticalLayout>
 	</ui>
