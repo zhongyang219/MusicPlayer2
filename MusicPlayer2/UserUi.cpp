@@ -211,6 +211,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             {
                 std::string str_draw_reflex = CTinyXml2Helper::ElementAttribute(xml_node, "draw_reflex");
                 spectrum->draw_reflex = CTinyXml2Helper::StringToBool(str_draw_reflex.c_str());
+                std::string str_fixed_width = CTinyXml2Helper::ElementAttribute(xml_node, "fixed_width");
+                spectrum->fixed_width = CTinyXml2Helper::StringToBool(str_fixed_width.c_str());
                 std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
                 if (str_type == "64col")
                     spectrum->type = CUIDrawer::SC_64;

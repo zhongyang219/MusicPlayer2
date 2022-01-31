@@ -436,7 +436,7 @@ void UiElement::AlbumCover::CalculateRect(CPlayerUIBase* ui)
 void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center);
+    ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center, fixed_width);
     ui->ResetDrawArea();
     Element::Draw(ui);
 }
