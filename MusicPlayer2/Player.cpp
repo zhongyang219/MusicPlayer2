@@ -5,6 +5,7 @@
 #include "Playlist.h"
 #include "BassCore.h"
 #include "MciCore.h"
+#include "FfmpegCore.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
@@ -32,6 +33,8 @@ void CPlayer::IniPlayerCore()
     {
         if (theApp.m_play_setting_data.use_mci)
             m_pCore = new CMciCore();
+        else if (theApp.m_play_setting_data.use_ffmpeg)
+            m_pCore = new CFfmpegCore();
         else
             m_pCore = new CBassCore();
 
@@ -2677,6 +2680,10 @@ wstring CPlayer::GetPlaylistPath() const
 bool CPlayer::IsMciCore() const
 {
     return m_pCore->GetCoreType() == PT_MCI;
+}
+
+bool CPlayer::IsFfmpegCore() const {
+    return m_pCore->GetCoreType() == PT_FFMPEG;
 }
 
 void CPlayer::SetContainSubFolder(bool contain_sub_folder)

@@ -1,0 +1,3 @@
+[submodule "ffmpeg_core/utils"]
+	path = ffmpeg_core/utils
+	url = https://github.com/lifegpc/c-utils

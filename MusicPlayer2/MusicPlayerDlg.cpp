@@ -444,6 +444,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
+    ini.WriteBool(L"config", L"use_ffmpeg", theApp.m_play_setting_data.use_ffmpeg);
     ini.WriteInt(L"config", L"UI_selected", GetUiSelected());
 
     //保存热键设置
@@ -616,6 +617,7 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_play_setting_data.fade_time = 2000;
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
+    theApp.m_play_setting_data.use_ffmpeg = ini.GetBool(L"config", L"use_ffmpeg", false);
 
     int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
     SelectUi(ui_selected);
@@ -3713,6 +3715,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 
     if (CPlayer::GetInstance().IsMciCore())
         title_suffix += _T(" (MCI)");
+    else if (CPlayer::GetInstance().IsFfmpegCore())
+        title_suffix += _T(" (FFMPEG)");
 
 #ifdef _DEBUG
     title_suffix += _T(' ');

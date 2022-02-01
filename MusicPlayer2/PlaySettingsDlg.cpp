@@ -34,6 +34,7 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, m_continue_when_switch_playlist_check);
     DDX_Control(pDX, IDC_BASS_RADIO, m_bass_radio);
     DDX_Control(pDX, IDC_MCI_RADIO, m_mci_radio);
+    DDX_Control(pDX, IDC_FFMPEG_RADIO, m_ffmpeg_radio);
 }
 
 void CPlaySettingsDlg::ShowDeviceInfo()
@@ -107,6 +108,7 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, &CPlaySettingsDlg::OnBnClickedContinueWhenSwitchPlaylistCheck)
     ON_BN_CLICKED(IDC_BASS_RADIO, &CPlaySettingsDlg::OnBnClickedBassRadio)
     ON_BN_CLICKED(IDC_MCI_RADIO, &CPlaySettingsDlg::OnBnClickedMciRadio)
+    ON_BN_CLICKED(IDC_FFMPEG_RADIO, &CPlaySettingsDlg::OnBnClickedFfmpegRadio)
 END_MESSAGE_MAP()
 
 
@@ -142,6 +144,8 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     if (m_data.use_mci)
         m_mci_radio.SetCheck(TRUE);
+    else if (m_data.use_ffmpeg)
+        m_ffmpeg_radio.SetCheck(TRUE);
     else
         m_bass_radio.SetCheck(TRUE);
 
@@ -230,6 +234,7 @@ void CPlaySettingsDlg::OnBnClickedBassRadio()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.use_mci = false;
+    m_data.use_ffmpeg = false;
 }
 
 
@@ -237,6 +242,13 @@ void CPlaySettingsDlg::OnBnClickedMciRadio()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.use_mci = true;
+    m_data.use_ffmpeg = false;
+}
+
+
+void CPlaySettingsDlg::OnBnClickedFfmpegRadio() {
+    m_data.use_mci = false;
+    m_data.use_ffmpeg = true;
 }
 
 

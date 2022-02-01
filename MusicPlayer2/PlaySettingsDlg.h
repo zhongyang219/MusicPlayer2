@@ -31,6 +31,7 @@ protected:
 	CListCtrlEx m_device_info_list;
     CButton m_bass_radio;
     CButton m_mci_radio;
+    CButton m_ffmpeg_radio;
     CToolTipCtrl m_toolTip;
 
 protected:
@@ -51,5 +52,6 @@ public:
     afx_msg void OnBnClickedContinueWhenSwitchPlaylistCheck();
     afx_msg void OnBnClickedBassRadio();
     afx_msg void OnBnClickedMciRadio();
+    afx_msg void OnBnClickedFfmpegRadio();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

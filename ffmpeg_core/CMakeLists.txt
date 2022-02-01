@@ -1,0 +1,43 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(MusicPlayer2_ffmpeg_core)
+
+if (MSVC)
+    add_compile_options(/utf-8)  # 让编译器使用UTF-8编码
+endif()
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package(AVFORMAT 58 REQUIRED)
+find_package(AVCODEC 58 REQUIRED)
+find_package(AVUTIL 56 REQUIRED)
+# find_package(AVFILTER 7)
+find_package(SWRESAMPLE 4 REQUIRED)
+find_package(SDL2 REQUIRED)
+
+set(ENABLE_ICONV OFF CACHE BOOL "Libiconv is not needed.")
+add_subdirectory(utils)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/utils")
+
+set(CORE_FILES
+ffmpeg_core.h
+src/core.h
+src/core.cpp
+src/decode.h
+src/decode.c
+src/open.h
+src/open.c
+"src/output.h"
+"src/output.c"
+src/loop.h
+src/loop.c
+)
+
+add_library(ffmpeg_core SHARED "${CORE_FILES}")
+target_compile_definitions(ffmpeg_core PRIVATE BUILD_FFMPEG_CORE)
+target_link_libraries(ffmpeg_core AVFORMAT::AVFORMAT)
+target_link_libraries(ffmpeg_core AVCODEC::AVCODEC)
+target_link_libraries(ffmpeg_core AVUTIL::AVUTIL)
+target_link_libraries(ffmpeg_core SWRESAMPLE::SWRESAMPLE)
+target_link_libraries(ffmpeg_core SDL2::Core)
+target_link_libraries(ffmpeg_core SDL2::Main)
+target_link_libraries(ffmpeg_core utils)
