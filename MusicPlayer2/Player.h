@@ -168,7 +168,7 @@ private:
     void IniPlayList(bool playlist_mode = false, bool refresh_info = false, bool play = false);	//初始化播放列表(如果参数playlist_mode为true，则为播放列表模式，否则从指定目录下搜索文件；
                                                                         //如果refresh_info为true，则不管theApp.m_song_data里是否有当前歌曲的信息，都从文件重新获取信息)
 
-    void ChangePath(const wstring& path, int track = 0, int position = 0, bool play = false);		//改变当前路径
+    void ChangePath(const wstring& path, int track = 0, bool play = false);		//改变当前路径
 
     void ApplyEqualizer(int channel, int gain);		//应用一个均衡器通道的增益
 
