@@ -33,6 +33,7 @@ src/loop.c
 )
 
 add_library(ffmpeg_core SHARED "${CORE_FILES}")
+set_target_properties(ffmpeg_core PROPERTIES PREFIX "")
 target_compile_definitions(ffmpeg_core PRIVATE BUILD_FFMPEG_CORE)
 target_link_libraries(ffmpeg_core AVFORMAT::AVFORMAT)
 target_link_libraries(ffmpeg_core AVCODEC::AVCODEC)

@@ -13,8 +13,10 @@ extern "C" {
 #include "SDL2/SDL.h"
 #include <Windows.h>
 
+#ifndef __cplusplus
 #ifndef min
-#define min(x, y) (((x) < (y)) ? (x) : (y))
+#define min(x,y) (((x) < (y)) ? (x) : (y))
+#endif
 #endif
 
 typedef struct MusicHandle {

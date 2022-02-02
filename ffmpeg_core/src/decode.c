@@ -101,7 +101,7 @@ int convert_samples_and_add_to_fifo(MusicHandle* handle, AVFrame* frame, char* w
         goto end;
     }
     re = 0;
-    if ((converted_samples = swr_convert(handle->swrac, converted_input_samples, frames, (const uint8_t*)frame->extended_data, frame->nb_samples)) < 0) {
+    if ((converted_samples = swr_convert(handle->swrac, converted_input_samples, frames, (const uint8_t**)frame->extended_data, frame->nb_samples)) < 0) {
         re = converted_samples;
         goto end;
     }
