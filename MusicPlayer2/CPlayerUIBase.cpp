@@ -2,6 +2,7 @@
 #include "CPlayerUIBase.h"
 #include "MusicPlayerDlg.h"
 
+int CPlayerUIBase::m_playlist_offset{};
 
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
@@ -406,10 +407,14 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 m_buttons[BTN_FIND].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
                 return;
-                break;
 
             case BTN_FULL_SCREEN:
                 m_buttons[BTN_FULL_SCREEN].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
+                return;
+
+            case BTN_FULL_SCREEN1:
+                m_buttons[BTN_FULL_SCREEN1].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
                 return;
 
@@ -417,6 +422,14 @@ void CPlayerUIBase::LButtonUp(CPoint point)
             {
                 CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+                return;
+            }
+
+            case BTN_MENU1:
+            {
+                CPoint point(m_buttons[BTN_MENU1].rect.left, m_buttons[BTN_MENU1].rect.bottom);
+                theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+                return;
             }
 
             default:
@@ -471,9 +484,15 @@ void CPlayerUIBase::UpdatePlayPauseButtonTip()
 void CPlayerUIBase::UpdateFullScreenTip()
 {
     if (m_ui_data.full_screen)
+    {
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
+        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
+    }
     else
+    {
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+    }
 }
 
 void CPlayerUIBase::UpdateTitlebarBtnToolTip()
@@ -509,6 +528,40 @@ void CPlayerUIBase::ClearBtnRect()
     {
         btn.second.rect = CRect();
     }
+}
+
+IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
+{
+    switch (key)
+    {
+    case CPlayerUIBase::BTN_REPETEMODE: return *GetRepeatModeIcon();
+    case CPlayerUIBase::BTN_VOLUME: return *GetVolumeIcon();
+    case CPlayerUIBase::BTN_SKIN: return theApp.m_icon_set.skin;
+    case CPlayerUIBase::BTN_EQ: return theApp.m_icon_set.eq;
+    case CPlayerUIBase::BTN_SETTING: return theApp.m_icon_set.setting;
+    case CPlayerUIBase::BTN_MINI: return theApp.m_icon_set.mini;
+    case CPlayerUIBase::BTN_MINI1: return theApp.m_icon_set.mini;
+    case CPlayerUIBase::BTN_INFO: return theApp.m_icon_set.info;
+    case CPlayerUIBase::BTN_FIND: return theApp.m_icon_set.find_songs;
+    case CPlayerUIBase::BTN_STOP: return (big_icon ? theApp.m_icon_set.stop_l : theApp.m_icon_set.stop);
+    case CPlayerUIBase::BTN_PREVIOUS: return (big_icon ? theApp.m_icon_set.previous_l : theApp.m_icon_set.previous_new);
+    case CPlayerUIBase::BTN_PLAY_PAUSE:
+        if (CPlayer::GetInstance().IsPlaying())
+            return (big_icon ? theApp.m_icon_set.pause_l : theApp.m_icon_set.pause_new);
+        else
+            return (big_icon ? theApp.m_icon_set.play_l : theApp.m_icon_set.play_new);
+    case CPlayerUIBase::BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
+    case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
+    case CPlayerUIBase::BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
+    case CPlayerUIBase::BTN_FULL_SCREEN: case CPlayerUIBase::BTN_FULL_SCREEN1: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
+    case CPlayerUIBase::BTN_MENU: case CPlayerUIBase::BTN_MENU1: return theApp.m_icon_set.menu;
+    case CPlayerUIBase::BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
+    case CPlayerUIBase::BTN_MINIMIZE: return theApp.m_icon_set.minimize;
+    case CPlayerUIBase::BTN_MAXIMIZE: return theApp.m_icon_set.maximize;
+    case CPlayerUIBase::BTN_APP_CLOSE: return theApp.m_icon_set.close;
+    default: break;
+    }
+    return IconRes();
 }
 
 void CPlayerUIBase::PreDrawInfo()
@@ -628,6 +681,11 @@ void CPlayerUIBase::DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& 
     DrawUIButton(rect, btn, icon);
 }
 
+void CPlayerUIBase::ResetDrawArea()
+{
+    m_draw.SetDrawArea(m_draw_rect);
+}
+
 void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
 {
     m_draw.SetDrawArea(rect);
@@ -638,7 +696,7 @@ void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
     m_draw.DrawWindowText(rect, str_text, m_colors.color_text, Alignment::CENTER);
 }
 
-void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
+void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius)
 {
     bool draw_background{ IsDrawBackgroundAlpha() };
     //绘制背景
@@ -650,13 +708,18 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     else
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 
-    if (!theApp.m_app_setting_data.button_round_corners)
+    if (!theApp.m_app_setting_data.button_round_corners || no_corner_radius)
         m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
     else
     {
         m_draw.SetDrawArea(rect);
-        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, theApp.DPI(4), alpha);
+        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, DPI(4), alpha);
     }
+}
+
+void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
+{
+    DrawRectangle(rect);
 
     CRect rc_tmp = rect;
 
@@ -756,24 +819,9 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     //显示<<<<
     if (rect.Width() >= DPI(344))
     {
-        int progress;
-        Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        if (CPlayer::GetInstance().IsMidi())
-        {
-            ////progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
-            //if (CPlayer::GetInstance().GetMidiInfo().tempo == 0)
-            //  progress = 0;
-            //else
-            //  progress = (time.toInt() * 1000 / CPlayer::GetInstance().GetMidiInfo().tempo % 4 + 1) * 250;
-            progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 4 + 1) * 250;
-        }
-        else
-        {
-            progress = (time.sec % 4 * 1000 + time.msec) / 4;
-        }
         rc_tmp.right = rc_tmp.left;
         rc_tmp.left = rc_tmp.right - DPI(44);
-        m_draw.DrawWindowText(rc_tmp, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress);
+        DrawBeatIndicator(rc_tmp);
     }
 
 
@@ -781,6 +829,26 @@ void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
     rc_tmp.right = rc_tmp.left;
     rc_tmp.left = rc_tmp.right - DPI(56) - Margin();
     DrawVolumeButton(rc_tmp);
+}
+
+void CPlayerUIBase::DrawBeatIndicator(CRect rect)
+{
+    int progress;
+    Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+    if (CPlayer::GetInstance().IsMidi())
+    {
+        ////progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
+        //if (CPlayer::GetInstance().GetMidiInfo().tempo == 0)
+        //  progress = 0;
+        //else
+        //  progress = (time.toInt() * 1000 / CPlayer::GetInstance().GetMidiInfo().tempo % 4 + 1) * 250;
+        progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 4 + 1) * 250;
+    }
+    else
+    {
+        progress = (time.sec % 4 * 1000 + time.msec) / 4;
+    }
+    m_draw.DrawWindowText(rect, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress);
 }
 
 CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
@@ -944,24 +1012,24 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
 
 void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetClassId());
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetClassId() * 100);
 }
 
 void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetClassId());
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetClassId() * 100);
 }
 
 void CPlayerUIBase::UpdateVolumeToolTip()
 {
-    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetClassId());
+    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetClassId() * 100);
 }
 
 void CPlayerUIBase::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)
     {
-        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetClassId(), btn.second.rect);
+        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetClassId() * 100, btn.second.rect);
     }
 }
 
@@ -1343,35 +1411,54 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
     }
 }
 
-void CPlayerUIBase::DrawProgressBar(CRect rect)
+void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
 {
     //绘制播放时间
     bool draw_progress_time{ rect.Width() > DPI(110) };
-    CRect rc_time = rect;
+    CRect progress_rect{ rect };
     if (draw_progress_time)
     {
-        wstring strTime = CPlayer::GetInstance().GetTimeString();
+        CFont* old_font = m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
+        if (play_time_both_side)
+        {
+            CRect rc_time_left{ rect } , rc_time_right{ rect };
+            std::wstring str_cur_time = Time(CPlayer::GetInstance().GetCurrentPosition()).toString(false);
+            std::wstring str_song_length = Time(CPlayer::GetInstance().GetSongLength()).toString(false);
+            int left_width = m_draw.GetTextExtent(str_cur_time.c_str()).cx;
+            int right_width = m_draw.GetTextExtent(str_song_length.c_str()).cx;
+            rc_time_left.right = rc_time_left.left + left_width;
+            rc_time_right.left = rc_time_right.right - right_width;
+            m_draw.DrawWindowText(rc_time_left, str_cur_time.c_str(), m_colors.color_text);
+            m_draw.DrawWindowText(rc_time_right, str_song_length.c_str(), m_colors.color_text);
+            progress_rect.left += (left_width + Margin());
+            progress_rect.right -= (right_width + Margin());
+        }
+        else
+        {
+            CRect rc_time = rect;
+            wstring strTime = CPlayer::GetInstance().GetTimeString();
 
-        m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
-        CSize strSize = m_draw.GetTextExtent(strTime.c_str());
-        rc_time.left = rc_time.right - strSize.cx;
-        //rc_time.InflateRect(0, DPI(2));
-        rc_time.top -= DPI(1);
-        m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
+            CSize strSize = m_draw.GetTextExtent(strTime.c_str());
+            rc_time.left = rc_time.right - strSize.cx;
+            //rc_time.InflateRect(0, DPI(2));
+            rc_time.top -= DPI(1);
+            m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
+            progress_rect.right = rc_time.left - Margin();
+        }
+        m_draw.SetFont(old_font);
     }
 
     //绘制进度条
-    const int progress_height = DPI(4);
-    CRect progress_rect = rect;
-    if (draw_progress_time)
-        progress_rect.right = rc_time.left - Margin();
-    progress_rect.top = rect.top + (rect.Height() - progress_height) / 2;
-    progress_rect.bottom = progress_rect.top + progress_height;
     DrawProgess(progress_rect);
 }
 
 void CPlayerUIBase::DrawProgess(CRect rect)
 {
+    //进度条的高度
+    int progress_height = min(DPI(4), rect.Height());
+    rect.top = rect.top + (rect.Height() - progress_height) / 2;
+    rect.bottom = rect.top + progress_height;
+
     if (IsDrawBackgroundAlpha())
         m_draw.FillAlphaRect(rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
     else
@@ -1774,15 +1861,7 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     rect_icon.right = rect_icon.left + rect_icon.Height();
     //使图标在矩形中居中
     CRect rc_tmp = rect_icon;
-    IconRes* icon{};
-    if (CPlayer::GetInstance().GetVolume() <= 0)
-        icon = &theApp.m_icon_set.volume0;
-    else if (CPlayer::GetInstance().GetVolume() >= 66)
-        icon = &theApp.m_icon_set.volume3;
-    else if (CPlayer::GetInstance().GetVolume() >= 33)
-        icon = &theApp.m_icon_set.volume2;
-    else
-        icon = &theApp.m_icon_set.volume1;
+    IconRes* icon{ GetVolumeIcon() };
     CSize icon_size = icon->GetSize(IsDrawLargeIcon());
     rc_tmp.left = rect_icon.left + (rect_icon.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect_icon.top + (rect_icon.Height() - icon_size.cy) / 2;
@@ -1888,6 +1967,35 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
     m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
 }
 
+void CPlayerUIBase::DrawPlaylist(CRect rect)
+{
+    m_draw.SetDrawArea(rect);
+    m_draw_data.playlist_rect = rect;
+    const int item_height = DPI(24);
+    for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
+    {
+        //计算每一行的矩形区域
+        int start_y = -m_playlist_offset + i * item_height;
+        CRect rect_item{ rect };
+        rect_item.top = start_y;
+        rect_item.bottom = rect_item.top + item_height;
+
+        if (!(rect_item & rect).IsRectEmpty())
+        {
+            if (i % 2 == 0)
+            {
+                //偶数行绘制一个背景
+                DrawRectangle(rect_item & rect);
+            }
+            //绘制曲目序号
+            CRect rect_num{ rect_item };
+            rect_num.right = rect_num.left + DPI(40);
+            m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text);
+            //绘制曲目名称
+        }
+    }
+}
+
 IconRes* CPlayerUIBase::GetRepeatModeIcon()
 {
     IconRes* pIcon = nullptr;
@@ -1913,6 +2021,20 @@ IconRes* CPlayerUIBase::GetRepeatModeIcon()
         break;
     }
     return pIcon;
+}
+
+IconRes* CPlayerUIBase::GetVolumeIcon()
+{
+    IconRes* icon{};
+    if (CPlayer::GetInstance().GetVolume() <= 0)
+        icon = &theApp.m_icon_set.volume0;
+    else if (CPlayer::GetInstance().GetVolume() >= 66)
+        icon = &theApp.m_icon_set.volume3;
+    else if (CPlayer::GetInstance().GetVolume() >= 33)
+        icon = &theApp.m_icon_set.volume2;
+    else
+        icon = &theApp.m_icon_set.volume1;
+    return icon;
 }
 
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
@@ -1946,7 +2068,9 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
     AddMouseToolTip(BTN_COVER, m_cover_tip);
     AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+    AddMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
+    AddMouseToolTip(BTN_MENU1, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, _T(" (Ctrl+R)")));

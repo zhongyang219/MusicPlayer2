@@ -189,5 +189,5 @@ void CPlayerUI4::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 
 int CPlayerUI4::GetClassId()
 {
-    return 4000;
+    return 4;
 }

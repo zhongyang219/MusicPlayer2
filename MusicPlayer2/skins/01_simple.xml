@@ -1,0 +1,77 @@
+<root name="简洁UI" xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd">
+	<ui type="big">
+		<verticalLayout margin="4">
+			<horizontalLayout>
+					<albumCover square="true" margin="40"/>
+        <verticalLayout margin="4">
+          <text type="title" style="scroll" margin-top="8%" height="28" font_size="12"/>
+          <text type="artist" style="scroll" height="24" font_size="10"/>
+          <text type="album" style="scroll" height="24" font_size="10"/>
+				  <lyrics margin-top="8"/>
+          <horizontalLayout height="28">
+            <placeHolder/>
+				    <button key="desktopLyric" width="24" height="24" margin="2"/>
+				    <button key="lyricTranslate" width="24" height="24" margin="2"/>
+          </horizontalLayout>
+        </verticalLayout>
+			</horizontalLayout>
+			<horizontalLayout margin="4" height="42">
+				<button key="previous" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
+				<progressBar show_play_time="false" margin-left="4" margin-right="4"/>
+				<button key="favorite" width="24" height="24" margin="2"/>
+				<button key="repeatMode" width="24" height="24" margin="2"/>
+				<volume show_text="false" width="24" height="24" margin="2"/>
+				<button key="showPlaylist" width="24" height="24" margin="2"/>
+			</horizontalLayout>
+		</verticalLayout>
+	</ui>
+	<ui type="narrow">
+		<verticalLayout margin="4">
+			<albumCover square="true" margin-left="40" margin-top="40" margin-right="40"  margin-bottom="8">
+				<verticalLayout>
+					<placeHolder/>
+					<rectangle height="20%" no_corner_radius="true">
+						<lyrics margin="4"/>
+					</rectangle>
+				</verticalLayout>
+			</albumCover>
+			<text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
+			<text type="artist" style="scroll" height="24" alignment="center"/>
+      <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8" margin-top="16" height="22"/>
+			<horizontalLayout margin="4" height="36">
+				<button key="previous" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
+        <placeHolder/>
+				<button key="favorite" width="24" height="24" margin="2"/>
+				<button key="repeatMode" width="24" height="24" margin="2"/>
+				<volume show_text="false" width="24" height="24" margin="2"/>
+				<button key="showPlaylist" width="24" height="24" margin="2"/>
+			</horizontalLayout>
+		</verticalLayout>
+	</ui>
+	<ui type="small">
+		<verticalLayout>
+			<horizontalLayout margin="4" height="100">
+				<albumCover square="true" margin="4" width="100"/>
+				<verticalLayout margin="4">
+					<text type="title" style="scroll" height="24" font_size="12"/>
+					<text type="artist" style="scroll" height="24" font_size="10"/>
+					<text type="album" style="scroll" height="24" font_size="10"/>
+				</verticalLayout>
+			</horizontalLayout>
+			<lyrics/>
+      <horizontalLayout margin="4" height="40">
+				<button key="previous" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
+				<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
+        <progressBar show_play_time="false" margin-left="4" margin-right="4"/>
+        <button key="favorite" width="24" height="24" margin="2"/>
+				<button key="repeatMode" width="24" height="24" margin="2"/>
+        <button key="showPlaylist" width="24" height="24" margin="2"/>
+      </horizontalLayout>
+		</verticalLayout>
+	</ui>
+</root>

@@ -25,6 +25,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerApp, CWinApp)
     //ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
     ON_COMMAND(ID_HELP, &CMusicPlayerApp::OnHelp)
     ON_COMMAND(ID_HELP_UPDATE_LOG, &CMusicPlayerApp::OnHelpUpdateLog)
+    ON_COMMAND(ID_HELP_CUSTOM_UI, &CMusicPlayerApp::OnHelpCustomUi)
 END_MESSAGE_MAP()
 
 
@@ -1154,4 +1155,10 @@ void CMusicPlayerApp::OnHelpUpdateLog()
     else
         ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md"), NULL, NULL, SW_SHOW);
 
+}
+
+
+void CMusicPlayerApp::OnHelpCustomUi()
+{
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E7%95%8C%E9%9D%A2"), NULL, NULL, SW_SHOW);
 }

@@ -360,6 +360,9 @@
     <Filter Include="派生的控件类\MenuEditCtrl">
       <UniqueIdentifier>{66efee77-7ef4-4f48-84b0-9824bd3864fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\tinyxml2">
+      <UniqueIdentifier>{bfba0398-39b7-4eb5-97b5-6b1fa8e31ad7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -809,6 +812,18 @@
     <ClInclude Include="RecentFolderAndPlaylist.h">
       <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
     </ClInclude>
+    <ClInclude Include="UserUi.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2\tinyxml2.h">
+      <Filter>公共的类\tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyXml2Helper.h">
+      <Filter>公共的类\tinyxml2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1221,6 +1236,18 @@
     </ClCompile>
     <ClCompile Include="RecentFolderAndPlaylist.cpp">
       <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
+    </ClCompile>
+    <ClCompile Include="UserUi.cpp">
+      <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2\tinyxml2.cpp">
+      <Filter>公共的类\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXml2Helper.cpp">
+      <Filter>公共的类\tinyxml2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

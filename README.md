@@ -1,4 +1,4 @@
-**简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/README_en-us.md)**<br>
+**简体中文 | [English](https://github.com/zhongyang219/MusicPlayer2/blob/master/README_en-us.md)**
 
 # MusicPlayer2 简介
 
@@ -8,7 +8,13 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 
 请[点击此处](https://github.com/zhongyang219/MusicPlayer2/releases)下载MusicPlayer2的最新版本。
 
-备用链接：[百度网盘下载](https://pan.baidu.com/s/1i5QNwFF)
+国内备用下载链接：[百度网盘下载](https://pan.baidu.com/s/1i5QNwFF)
+
+若使用 [Scoop](https://github.com/ScoopInstaller/Scoop) 作为包管理的用户，目前 MusicPlayer2 的安装包已加入 Scoop 官方 [Extras](https://github.com/ScoopInstaller/Extras) 仓库进行维护，可通过以下 Powershell 命令进行安装：
+
+```pwsh
+scoop install extras/musicplayer2
+```
 
 # 主要特性
 
@@ -94,7 +100,3 @@ Cortana搜索框显示歌词▼
 # 更新日志
 
 **[点击此处查看更新日志](https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md)**
-<br>
-
-
-

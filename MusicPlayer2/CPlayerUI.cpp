@@ -325,5 +325,5 @@ void CPlayerUI::MouseMove(CPoint point)
 
 int CPlayerUI::GetClassId()
 {
-    return 1000;
+    return 1;
 }

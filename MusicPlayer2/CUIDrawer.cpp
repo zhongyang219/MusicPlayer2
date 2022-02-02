@@ -297,7 +297,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
     SetFont(pOldFont);
 }
 
-void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center)
+void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center, bool fixed_width)
 {
     int cols;		//要显示的频谱柱形的数量
     switch (col)
@@ -318,13 +318,25 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
         cols = SPECTRUM_COL;
         break;
     }
-    int gap_width{ rect.Width() * (SPECTRUM_COL / cols) / 168 };		//频谱柱形间隙宽度
-    if (theApp.m_ui_data.full_screen)
+    int max_width{ rect.Width() };
+    if (fixed_width)
+    {
+        if (col == SC_64)
+        {
+            max_width = DPI(280);
+        }
+    }
+    int gap_width{ max_width * (SPECTRUM_COL / cols) / 168 };		//频谱柱形间隙宽度
+    if (theApp.m_ui_data.full_screen && !m_for_cortana_lyric)
         gap_width *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
+    int width = (max_width - (cols - 1) * gap_width) / (cols - 1);
     if (gap_width < 1)
         gap_width = 1;
-    int width = (rect.Width() - (cols - 1) * gap_width) / (cols - 1);
+    if (width < 1)
+        width = 1;
 
+    if (fixed_width)
+        SetDrawArea(rect);
     DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex, low_freq_in_center);
 }
 
@@ -397,6 +409,14 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
         //FillAlphaRect(rc_peak_invert, color, 96);
     }
 
+}
+
+int CUIDrawer::DPI(int pixel)
+{
+    if (theApp.m_ui_data.full_screen && !m_for_cortana_lyric)
+        return static_cast<int>(theApp.DPI(pixel * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR));
+    else
+        return theApp.DPI(pixel);
 }
 
 void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR beforelyric, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int index, int lyric_mode, int fade_percent)
