@@ -92,11 +92,46 @@ void CDesktopLyric::ShowLyric()
 	}
 	else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())
 	{
-		Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-		int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time);
-		CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
-		if (lyric.text.empty())
-			lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+        const bool old_mode{ false };
+        const wstring mark{ L"♪♪♪" };
+        const int ignore_time{ 800 };
+
+        auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
+        Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+        CLyrics::Lyric lyric = now_lyrics.GetLyric(time, 0);
+        bool is_lyric_empty{ lyric.text.empty() };
+        int lyric_mode{};       // 0:默认状态 1:有进度符号且正在显示进度符号 2:有进度符号且正在显示歌词
+        int lyric_index = now_lyrics.GetLyricIndex(time);
+        int progress = now_lyrics.GetLyricProgress(time);
+        if (old_mode)  // 设置为独立显示空行
+        {
+            if (is_lyric_empty)
+                lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+        }
+        else
+        {
+            lyric_index = now_lyrics.GetLyricIndexIgnoreBlank(lyric_index, 0); // 使用忽略空白行后的索引
+            if (is_lyric_empty)                                                // 如果当前time对应歌词为空则试着忽略空白获取歌词
+                lyric = now_lyrics.GetLyricIgnoreBlank(lyric_index);
+            if (lyric.text.empty())                                            // 如果忽略空白仍然不能取得歌词说明时间已超过末尾的歌词
+                lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+            else
+            {
+                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(lyric_index) > ignore_time };   // 判断空白时长是否有必要显示符号
+                if (is_lyric_empty)                                            // 当前time处在空白行中并且正在提前显示下一行歌词
+                {
+                    if (blanktimeok)
+                    {
+                        progress = now_lyrics.GetBlankLyricProgress(lyric_index, time);      // 获取合并空白行后的进度
+                        lyric_mode = 1;
+                    }
+                    else
+                        progress = 0;
+                }
+                else if (blanktimeok)                                          // 当前time对应非空歌词但是上行歌词为空
+                    lyric_mode = 2;
+            }
+        }
 
         SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         SetShowTranslate(theApp.m_lyric_setting_data.show_translate);
@@ -104,13 +139,25 @@ void CDesktopLyric::ShowLyric()
         SetLyricKaraokeDisplay(theApp.m_lyric_setting_data.lyric_karaoke_disp);
         if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
-            CLyrics::Lyric next_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1);
-            if (next_lyric.text.empty())
-                next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+            CLyrics::Lyric next_lyric;
+            if (old_mode)
+            {
+                next_lyric = now_lyrics.GetLyric(time, 1);
+                if (next_lyric.text.empty())
+                    next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+            }
+            else
+            {
+                int next_lyric_index{ now_lyrics.GetLyricIndexIgnoreBlank(lyric_index, 1) };
+                next_lyric = now_lyrics.GetLyricIgnoreBlank(next_lyric_index);
+                if (next_lyric.text.empty())
+                    next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+                else if (now_lyrics.GetBlankTimeBeforeLyric(next_lyric_index) > ignore_time)
+                    next_lyric.text = mark + L" " + next_lyric.text;
+            }
             SetNextLyric(next_lyric.text.c_str());
         }
 
-        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);
         static int last_lyric_index = -1;
 
 		if (lyric_index != last_lyric_index)
@@ -123,7 +170,13 @@ void CDesktopLyric::ShowLyric()
             SetLyricChangeFlag(false);
 		}
         UpdateLyricTranslate(lyric.translate.c_str());
-        UpdateLyrics(lyric.text.c_str(), progress);
+        // UpdateLyrics需要放在最后防止双行歌词闪烁
+        if (lyric_mode == 1)
+            UpdateLyrics(mark.c_str(), lyric.text.c_str(), progress, true);
+        else if (lyric_mode == 2)
+            UpdateLyrics(mark.c_str(), lyric.text.c_str(), progress, false);
+        else
+            UpdateLyrics(lyric.text.c_str(), progress);
 	}
 	else
 	{

@@ -48,7 +48,7 @@ public:
 private:
     CFont* SetLyricFont();
     CFont* SetLyricFontTranslated();
-    void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent = 100);
+    void DrawLyricDoubleLine(CRect rect, LPCTSTR beforelyric, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int index, int lyric_mode, int fade_percent = 100);
 
 private:
     UIColors& m_colors;
