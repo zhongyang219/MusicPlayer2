@@ -1,6 +1,7 @@
 #ifndef _MUSICPLAYER2_CORE_H
 #define _MUSICPLAYER2_CORE_H
 #if __cplusplus
+#include <string>
 extern "C" {
 #endif
 #include "../ffmpeg_core.h"
@@ -69,7 +70,12 @@ unsigned char is_seek : 1;
 unsigned char set_new_pts : 1;
 unsigned char is_playing : 1;
 } MusicHandle;
+typedef struct MusicInfoHandle {
+AVFormatContext* fmt;
+AVStream* is;
+} MusicInfoHandle;
 #if __cplusplus
 }
+std::wstring get_metadata_str(AVDictionary* dict, const char* key, int flags);
 #endif
 #endif

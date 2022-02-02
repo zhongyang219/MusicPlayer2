@@ -2,11 +2,14 @@
 
 #include <malloc.h>
 #include <string.h>
+#include "cpp2c.h"
 #include "wchar_util.h"
 #include "open.h"
 #include "output.h"
 #include "loop.h"
 #include "decode.h"
+
+#define CODEPAGE_SIZE 3
 
 void free_music_handle(MusicHandle* handle) {
     if (!handle) return;
@@ -30,6 +33,12 @@ void free_music_handle(MusicHandle* handle) {
     if (handle->sdl_initialized) {
         SDL_QuitSubSystem(SDL_INIT_AUDIO);
     }
+    free(handle);
+}
+
+void free_music_info_handle(MusicInfoHandle* handle) {
+    if (!handle) return;
+    if (handle->fmt) avformat_close_input(&handle->fmt);
     free(handle);
 }
 
@@ -78,6 +87,34 @@ end:
     return re;
 }
 
+int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle) {
+    if (!url || !handle) return FFMPEG_CORE_ERR_NULLPTR;
+    std::string u;
+    // 将文件名转为UTF-8，ffmpeg API处理的都是UTF-8文件名
+    if (!wchar_util::wstr_to_str(u, url, CP_UTF8)) {
+        return FFMPEG_CORE_ERR_INVAILD_NAME;
+    }
+    // 设置ffmpeg日志级别为Error
+    av_log_set_level(AV_LOG_ERROR);
+    MusicInfoHandle* h = (MusicInfoHandle*)malloc(sizeof(MusicInfoHandle));
+    int re = FFMPEG_CORE_ERR_OK;
+    if (!h) {
+        return FFMPEG_CORE_ERR_OOM;
+    }
+    memset(h, 0, sizeof(MusicInfoHandle));
+    if ((re = open_input2(h, u.c_str()))) {
+        goto end;
+    }
+    if ((re = find_audio_stream2(h))) {
+        goto end;
+    }
+    *handle = h;
+    return FFMPEG_CORE_ERR_OK;
+end:
+    free_music_info_handle(h);
+    return re;
+}
+
 int ffmpeg_core_play(MusicHandle* handle) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
     SDL_PauseAudioDevice(handle->device_id, 0);
@@ -109,14 +146,29 @@ int64_t ffmpeg_core_get_song_length(MusicHandle* handle) {
     return handle->fmt->duration;
 }
 
+int64_t ffmpeg_core_info_get_song_length(MusicInfoHandle* handle) {
+    if (!handle || !handle->fmt) return -1;
+    return handle->fmt->duration;
+}
+
 int ffmpeg_core_get_channels(MusicHandle* handle) {
     if (!handle || !handle->decoder) return -1;
     return handle->decoder->channels;
 }
 
+int ffmpeg_core_info_get_channels(MusicInfoHandle* handle) {
+    if (!handle || !handle->is) return -1;
+    return handle->is->codecpar->channels;
+}
+
 int ffmpeg_core_get_freq(MusicHandle* handle) {
     if (!handle || !handle->decoder) return -1;
     return handle->decoder->sample_rate;
+}
+
+int ffmpeg_core_info_get_freq(MusicInfoHandle* handle) {
+    if (!handle || !handle->is) return -1;
+    return handle->is->codecpar->sample_rate;
 }
 
 int ffmpeg_core_seek(MusicHandle* handle, int64_t time) {
@@ -147,7 +199,77 @@ int ffmpeg_core_get_bits(MusicHandle* handle) {
     return handle->decoder->bits_per_coded_sample;
 }
 
+int ffmpeg_core_info_get_bits(MusicInfoHandle* handle) {
+    if (!handle || !handle->is) return -1;
+    return handle->is->codecpar->bits_per_coded_sample;
+}
+
 int64_t ffmpeg_core_get_bitrate(MusicHandle* handle) {
     if (!handle || !handle->decoder) return -1;
     return handle->decoder->bit_rate;
+}
+
+int64_t ffmpeg_core_info_get_bitrate(MusicInfoHandle* handle) {
+    if (!handle || !handle->is) return -1;
+    return handle->is->codecpar->bit_rate;
+}
+
+std::wstring get_metadata_str(AVDictionary* dict, const char* key, int flags) {
+    auto re = av_dict_get(dict, key, nullptr, flags);
+    if (!re || !re->value) return L"";
+    std::string value(re->value);
+    std::wstring result;
+    unsigned int cps[CODEPAGE_SIZE] = { CP_UTF8, CP_ACP, CP_OEMCP };
+    for (size_t i = 0; i < CODEPAGE_SIZE; i++) {
+        if (wchar_util::str_to_wstr(result, value, cps[i])) {
+            return result;
+        }
+    }
+    return L"";
+}
+
+wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key) {
+    if (!handle | !key) return nullptr;
+    if (handle->fmt->metadata) {
+        auto re = get_metadata_str(handle->fmt->metadata, key, 0);
+        if (!re.empty()) {
+            wchar_t* r = nullptr;
+            if (cpp2c::string2char(re, r)) {
+                return r;
+            }
+        }
+    }
+    if (handle->is->metadata) {
+        auto re = get_metadata_str(handle->is->metadata, key, 0);
+        if (!re.empty()) {
+            wchar_t* r = nullptr;
+            if (cpp2c::string2char(re, r)) {
+                return r;
+            }
+        }
+    }
+    return nullptr;
+}
+
+wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key) {
+    if (!handle || !key) return nullptr;
+    if (handle->fmt->metadata) {
+        auto re = get_metadata_str(handle->fmt->metadata, key, 0);
+        if (!re.empty()) {
+            wchar_t* r = nullptr;
+            if (cpp2c::string2char(re, r)) {
+                return r;
+            }
+        }
+    }
+    if (handle->is->metadata) {
+        auto re = get_metadata_str(handle->is->metadata, key, 0);
+        if (!re.empty()) {
+            wchar_t* r = nullptr;
+            if (cpp2c::string2char(re, r)) {
+                return r;
+            }
+        }
+    }
+    return nullptr;
 }

@@ -7,6 +7,8 @@ extern "C" {
 /// 打开文件
 int open_input(MusicHandle* handle, const char* url);
 int find_audio_stream(MusicHandle* handle);
+int open_input2(MusicInfoHandle* handle, const char* url);
+int find_audio_stream2(MusicInfoHandle* handle);
 #if __cplusplus
 }
 #endif

@@ -68,7 +68,11 @@ std::wstring CFfmpegCore::GetSoundFontName() {
 }
 
 void CFfmpegCore::Open(const wchar_t* file_path) {
+    if (handle) {
+        Close();
+    }
     if (ffmpeg_core_open) {
+        if (file_path) recent_file = file_path;
         int re = ffmpeg_core_open(file_path, &handle);
         if (re) {
             err = re;
@@ -84,6 +88,9 @@ void CFfmpegCore::Close() {
 }
 
 void CFfmpegCore::Play() {
+    if (!handle && !recent_file.empty()) {
+        Open(recent_file.c_str());
+    }
     if (ffmpeg_core_play && handle) {
         ffmpeg_core_play(handle);
     }
@@ -96,7 +103,7 @@ void CFfmpegCore::Pause() {
 }
 
 void CFfmpegCore::Stop() {
-    // 忽略Stop
+    Close();
 }
 
 void CFfmpegCore::SetVolume(int volume) {
@@ -140,9 +147,43 @@ void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
         song_info.bits = ffmpeg_core_get_bits(handle);
         song_info.channels = ffmpeg_core_get_channels(handle);
     }
+    if (flag & AF_BITRATE) {
+        song_info.bitrate = ffmpeg_core_get_bitrate(handle) / 1000;
+    }
+    if (flag & AF_TAG_INFO) {
+        song_info.title = GetTitle();
+        song_info.artist = GetArtist();
+        song_info.album = GetAlbum();
+        song_info.comment = GetComment();
+        song_info.genre = GetGenre();
+        song_info.year = GetYear();
+        song_info.track = GetTrackNum();
+    }
 }
 
 void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag) {
+    MusicInfoHandle* h = nullptr;
+    int re = ffmpeg_core_info_open(file_path, &h);
+    if (re || !h) return;
+    if (flag & AF_LENGTH) song_info.lengh = ffmpeg_core_info_get_song_length(h) / 1000;
+    if (flag & AF_CHANNEL_INFO) {
+        song_info.freq = ffmpeg_core_info_get_freq(h);
+        song_info.bits = ffmpeg_core_info_get_bits(h);
+        song_info.channels = ffmpeg_core_info_get_channels(h);
+    }
+    if (flag & AF_BITRATE) {
+        song_info.bitrate = ffmpeg_core_info_get_bitrate(h) / 1000;
+    }
+    if (flag & AF_TAG_INFO) {
+        song_info.title = GetTitle(h);
+        song_info.artist = GetArtist(h);
+        song_info.album = GetAlbum(h);
+        song_info.comment = GetComment(h);
+        song_info.genre = GetGenre(h);
+        song_info.year = GetYear(h);
+        song_info.track = GetTrackNum(h);
+    }
+    free_music_info_handle(h);
 }
 
 bool CFfmpegCore::IsMidi() {
@@ -207,29 +248,111 @@ bool CFfmpegCore::GetFunction() {
     bool rtn = true;
     //获取函数入口
     free_music_handle = (_free_music_handle)::GetProcAddress(m_dll_module, "free_music_handle");
+    free_music_info_handle = (_free_music_info_handle)::GetProcAddress(m_dll_module, "free_music_info_handle");
     ffmpeg_core_open = (_ffmpeg_core_open)::GetProcAddress(m_dll_module, "ffmpeg_core_open");
+    ffmpeg_core_info_open = (_ffmpeg_core_info_open)::GetProcAddress(m_dll_module, "ffmpeg_core_info_open");
     ffmpeg_core_play = (_ffmpeg_core_play)::GetProcAddress(m_dll_module, "ffmpeg_core_play");
     ffmpeg_core_pause = (_ffmpeg_core_pause)::GetProcAddress(m_dll_module, "ffmpeg_core_pause");
     ffmpeg_core_seek = (_ffmpeg_core_seek)::GetProcAddress(m_dll_module, "ffmpeg_core_seek");
     ffmpeg_core_get_cur_position = (_ffmpeg_core_get_cur_position)::GetProcAddress(m_dll_module, "ffmpeg_core_get_cur_position");
     ffmpeg_core_song_is_over = (_ffmpeg_core_song_is_over)::GetProcAddress(m_dll_module, "ffmpeg_core_song_is_over");
     ffmpeg_core_get_song_length = (_ffmpeg_core_get_song_length)::GetProcAddress(m_dll_module, "ffmpeg_core_get_song_length");
+    ffmpeg_core_info_get_song_length = (_ffmpeg_core_info_get_song_length)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_song_length");
     ffmpeg_core_get_channels = (_ffmpeg_core_get_channels)::GetProcAddress(m_dll_module, "ffmpeg_core_get_channels");
+    ffmpeg_core_info_get_channels = (_ffmpeg_core_info_get_channels)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_channels");
     ffmpeg_core_get_freq = (_ffmpeg_core_get_freq)::GetProcAddress(m_dll_module, "ffmpeg_core_get_freq");
+    ffmpeg_core_info_get_freq = (_ffmpeg_core_info_get_freq)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_freq");
     ffmpeg_core_is_playing = (_ffmpeg_core_is_playing)::GetProcAddress(m_dll_module, "ffmpeg_core_is_playing");
     ffmpeg_core_get_bits = (_ffmpeg_core_get_bits)::GetProcAddress(m_dll_module, "ffmpeg_core_get_bits");
+    ffmpeg_core_info_get_bits = (_ffmpeg_core_info_get_bits)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_bits");
+    ffmpeg_core_get_bitrate = (_ffmpeg_core_get_bitrate)::GetProcAddress(m_dll_module, "ffmpeg_core_get_bitrate");
+    ffmpeg_core_info_get_bitrate = (_ffmpeg_core_info_get_bitrate)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_bitrate");
+    ffmpeg_core_get_metadata = (_ffmpeg_core_get_metadata)::GetProcAddress(m_dll_module, "ffmpeg_core_get_metadata");
+    ffmpeg_core_info_get_metadata = (_ffmpeg_core_info_get_metadata)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_metadata");
     //判断是否成功
     rtn &= (free_music_handle != NULL);
+    rtn &= (free_music_info_handle != NULL);
     rtn &= (ffmpeg_core_open != NULL);
+    rtn &= (ffmpeg_core_info_open != NULL);
     rtn &= (ffmpeg_core_play != NULL);
     rtn &= (ffmpeg_core_pause != NULL);
     rtn &= (ffmpeg_core_seek != NULL);
     rtn &= (ffmpeg_core_get_cur_position != NULL);
     rtn &= (ffmpeg_core_song_is_over != NULL);
     rtn &= (ffmpeg_core_get_song_length != NULL);
+    rtn &= (ffmpeg_core_info_get_song_length != NULL);
     rtn &= (ffmpeg_core_get_channels != NULL);
+    rtn &= (ffmpeg_core_info_get_channels != NULL);
     rtn &= (ffmpeg_core_get_freq != NULL);
+    rtn &= (ffmpeg_core_info_get_freq != NULL);
     rtn &= (ffmpeg_core_is_playing != NULL);
     rtn &= (ffmpeg_core_get_bits != NULL);
+    rtn &= (ffmpeg_core_info_get_bits != NULL);
+    rtn &= (ffmpeg_core_get_bitrate != NULL);
+    rtn &= (ffmpeg_core_info_get_bitrate != NULL);
+    rtn &= (ffmpeg_core_get_metadata != NULL);
+    rtn &= (ffmpeg_core_info_get_metadata != NULL);
     return rtn;
+}
+
+std::wstring CFfmpegCore::GetMetadata(std::string key, MusicInfoHandle* h) {
+    if (h) {
+        auto r = ffmpeg_core_info_get_metadata(h, key.c_str());
+        if (!r) return L"";
+        std::wstring re(r);
+        free(r);
+        return re;
+    }
+    if (!handle) return L"";
+    auto r = ffmpeg_core_get_metadata(handle, key.c_str());
+    if (!r) return L"";
+    std::wstring re(r);
+    free(r);
+    return re;
+}
+
+std::wstring CFfmpegCore::GetTitle(MusicInfoHandle* h) {
+    return GetMetadata("title", h);
+}
+
+std::wstring CFfmpegCore::GetArtist(MusicInfoHandle* h) {
+    return GetMetadata("artist", h);
+}
+
+std::wstring CFfmpegCore::GetAlbum(MusicInfoHandle* h) {
+    return GetMetadata("album", h);
+}
+
+std::wstring CFfmpegCore::GetComment(MusicInfoHandle* h) {
+    auto re = GetMetadata("comment", h);
+    if (!re.empty()) return re;
+    return GetMetadata("description", h);
+}
+
+std::wstring CFfmpegCore::GetGenre(MusicInfoHandle* h) {
+    return GetMetadata("genre", h);
+}
+
+std::wstring CFfmpegCore::GetDate(MusicInfoHandle* h) {
+    return GetMetadata("date", h);
+}
+
+unsigned short CFfmpegCore::GetYear(MusicInfoHandle* h) {
+    auto r = GetDate(h);
+    if (r.empty()) return 0;
+    unsigned short year = 0;
+    if (swscanf_s(r.c_str(), L"%hu", &year) == 1) return year;
+    return 0;
+}
+
+std::wstring CFfmpegCore::GetTrack(MusicInfoHandle* h) {
+    return GetMetadata("track", h);
+}
+
+int CFfmpegCore::GetTrackNum(MusicInfoHandle* h) {
+    auto r = GetTrack(h);
+    if (r.empty()) return 0;
+    int track;
+    if (swscanf_s(r.c_str(), L"%i", &track) == 1) return track;
+    return 0;
 }

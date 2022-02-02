@@ -11,6 +11,7 @@ extern "C" {
 #define FFMPEG_CORE_API __declspec(dllimport)
 #endif
 typedef struct MusicHandle MusicHandle;
+typedef struct MusicInfoHandle MusicInfoHandle;
 // 负数即为来自ffmpeg的错误
 
 #define FFMPEG_CORE_ERR_OK 0
@@ -23,8 +24,11 @@ typedef struct MusicHandle MusicHandle;
 #define FFMPEG_CORE_ERR_FAILED_CREATE_THREAD 7
 #define FFMPEG_CORE_ERR_FAILED_CREATE_MUTEX 8
 #define FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED 9
+#define FFMPEG_CORE_ERR_NO_AUDIO 10
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
+FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle);
+FFMPEG_CORE_API int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle);
 FFMPEG_CORE_API int ffmpeg_core_play(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_pause(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_seek(MusicHandle* handle, int64_t time);
@@ -46,18 +50,21 @@ FFMPEG_CORE_API int ffmpeg_core_song_is_over(MusicHandle* handle);
  * @return 如果Handle为NULL，返回-1，反之返回以AV_TIME_BASE为基准的时间（1相当于1/1000000s)
 */
 FFMPEG_CORE_API int64_t ffmpeg_core_get_song_length(MusicHandle* handle);
+FFMPEG_CORE_API int64_t ffmpeg_core_info_get_song_length(MusicInfoHandle* handle);
 /**
  * @brief 返回音频文件声道数（SDL可能会改如果音频设备不支持）
  * @param handle Handle
  * @return 如果Handle为NULL，返回-1，反之返回声道数
 */
 FFMPEG_CORE_API int ffmpeg_core_get_channels(MusicHandle* handle);
+FFMPEG_CORE_API int ffmpeg_core_info_get_channels(MusicInfoHandle* handle);
 /**
  * @brief 返回音频文件采样频率（SDL可能会修改）
  * @param handle Handle
  * @return 如果Handle为NULL，返回-1，反之返回采样频率
 */
 FFMPEG_CORE_API int ffmpeg_core_get_freq(MusicHandle* handle);
+FFMPEG_CORE_API int ffmpeg_core_info_get_freq(MusicInfoHandle* handle);
 /**
  * @brief 返回当前状态
  * @param handle Handle
@@ -70,12 +77,22 @@ FFMPEG_CORE_API int ffmpeg_core_is_playing(MusicHandle* handle);
  * @return 如果Handle为NULL，返回-1
 */
 FFMPEG_CORE_API int ffmpeg_core_get_bits(MusicHandle* handle);
+FFMPEG_CORE_API int ffmpeg_core_info_get_bits(MusicInfoHandle* handle);
 /**
  * @brief 返回比特率
  * @param handle Handle
  * @return 如果Handle为NULL，返回-1
 */
 FFMPEG_CORE_API int64_t ffmpeg_core_get_bitrate(MusicHandle* handle);
+FFMPEG_CORE_API int64_t ffmpeg_core_info_get_bitrate(MusicInfoHandle* handle);
+/**
+ * @brief 获取元数据 
+ * @param handle Handle
+ * @param key 元数据Key
+ * @return 结果，需要手动调用free释放内存
+*/
+FFMPEG_CORE_API wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key);
+FFMPEG_CORE_API wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key);
 #ifdef __cplusplus
 }
 #endif
