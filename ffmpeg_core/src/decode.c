@@ -13,6 +13,10 @@ int open_decoder(MusicHandle* handle) {
     if ((re = avcodec_parameters_to_context(handle->decoder, handle->is->codecpar)) < 0) {
         return re;
     }
+    if (handle->decoder->channel_layout == 0) {
+        // 如果未设置，设置为默认值
+        handle->decoder->channel_layout = av_get_default_channel_layout(handle->decoder->channels);
+    }
     // 打开解码器
     if ((re = avcodec_open2(handle->decoder, handle->codec, NULL)) < 0) {
         return re;

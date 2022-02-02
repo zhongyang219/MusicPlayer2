@@ -26,7 +26,7 @@ int seek_to_pos(MusicHandle* handle) {
         if (handle->seek_pos < handle->end_pts) {
             flags |= AVSEEK_FLAG_BACKWARD;
         }
-        if ((re = av_seek_frame(handle->fmt, handle->is->index, av_rescale_q_rnd(handle->seek_pos + handle->first_pts, AV_TIME_BASE_Q, handle->is->time_base, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX), flags)) < 0) {
+        if ((re = av_seek_frame(handle->fmt, -1, handle->seek_pos + handle->first_pts, flags)) < 0) {
             ReleaseMutex(handle->mutex);
             goto end;
         }

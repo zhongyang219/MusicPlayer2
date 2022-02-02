@@ -9,6 +9,7 @@ int open_input(MusicHandle* handle, const char* url) {
     if ((re = avformat_find_stream_info(handle->fmt, NULL)) < 0) {
         return re;
     }
+    // handle->fmt->flags |= AVFMT_FLAG_FAST_SEEK;  // 允许快速定位
     return FFMPEG_CORE_ERR_OK;
 }
 
