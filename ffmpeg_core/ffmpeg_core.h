@@ -75,7 +75,7 @@ FFMPEG_CORE_API int ffmpeg_core_get_bits(MusicHandle* handle);
  * @param handle Handle
  * @return 如果Handle为NULL，返回-1
 */
-FFMPEG_CORE_API int ffmpeg_core_get_bitrate(MusicHandle* handle);
+FFMPEG_CORE_API int64_t ffmpeg_core_get_bitrate(MusicHandle* handle);
 #ifdef __cplusplus
 }
 #endif

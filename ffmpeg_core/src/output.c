@@ -22,7 +22,7 @@ int init_output(MusicHandle* handle) {
         return FFMPEG_CORE_ERR_SDL;
     }
     enum AVSampleFormat target_format = convert_to_sdl_supported_format(handle->decoder->sample_fmt);
-    handle->swrac = swr_alloc_set_opts(NULL, handle->decoder->channel_layout, target_format, handle->sdl_spec.freq, handle->decoder->channel_layout, handle->decoder->sample_fmt, handle->decoder->sample_rate, 0, NULL);
+    handle->swrac = swr_alloc_set_opts(NULL, get_sdl_channel_layout(handle->decoder->channels), target_format, handle->sdl_spec.freq, handle->decoder->channel_layout, handle->decoder->sample_fmt, handle->decoder->sample_rate, 0, NULL);
     if (!handle->swrac) {
         return FFMPEG_CORE_ERR_OOM;
     }
@@ -101,4 +101,25 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
         }
     }
     ReleaseMutex(handle->mutex);
+}
+
+uint64_t get_sdl_channel_layout(int channels) {
+    switch (channels) {
+        case 2:
+            return av_get_channel_layout("FL+FR");
+        case 3:
+            return av_get_channel_layout("FL+FR+LFE");
+        case 4:
+            return av_get_channel_layout("FL+FR+BL+BR");
+        case 5:
+            return av_get_channel_layout("FL+FR+FC+BL+BR");
+        case 6:
+            return av_get_channel_layout("FL+FR+FC+LFE+SL+SR");
+        case 7:
+            return av_get_channel_layout("FL+FR+FC+LFE+BC+SL+SR");
+        case 8:
+            return av_get_channel_layout("FL+FR+FC+LFE+BL+BR+SL+SR");
+        default:
+            return av_get_default_channel_layout(channels);
+    }
 }

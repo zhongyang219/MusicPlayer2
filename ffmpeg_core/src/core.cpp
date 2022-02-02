@@ -147,7 +147,7 @@ int ffmpeg_core_get_bits(MusicHandle* handle) {
     return handle->decoder->bits_per_coded_sample;
 }
 
-int ffmpeg_core_get_bitrate(MusicHandle* handle) {
+int64_t ffmpeg_core_get_bitrate(MusicHandle* handle) {
     if (!handle || !handle->decoder) return -1;
     return handle->decoder->bit_rate;
 }
