@@ -450,8 +450,8 @@ void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
     {
         ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center, fixed_width);
         ui->ResetDrawArea();
+        Element::Draw(ui);
     }
-    Element::Draw(ui);
 }
 
 int UiElement::Spectrum::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
