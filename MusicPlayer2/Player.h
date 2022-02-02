@@ -86,6 +86,8 @@ private:
     wstring m_path;		            //文件夹模式下，当前播放文件的目录
     wstring m_playlist_path;        //当前播放列表文件的路径
     wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
+    SongInfo m_current_song_tmp;        // 切换文件夹模式时临时存储歌曲信息以保持播放
+    int m_current_song_position_tmp;    // 切换文件夹模式时临时存储歌曲进度以保持播放
     wstring m_current_file_type;
     deque<PathInfo> m_recent_path;		//最近打开过的路径
 
