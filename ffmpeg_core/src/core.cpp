@@ -8,6 +8,7 @@
 #include "output.h"
 #include "loop.h"
 #include "decode.h"
+#include "filter.h"
 
 #define CODEPAGE_SIZE 3
 
@@ -26,12 +27,19 @@ void free_music_handle(MusicHandle* handle) {
             }
         }
     }
+    if (handle->graph) {
+        avfilter_graph_free(&handle->graph);
+    }
+    c_linked_list_clear(&handle->filters, nullptr);
     if (handle->buffer) av_audio_fifo_free(handle->buffer);
     if (handle->swrac) swr_free(&handle->swrac);
     if (handle->decoder) avcodec_free_context(&handle->decoder);
     if (handle->fmt) avformat_close_input(&handle->fmt);
     if (handle->sdl_initialized) {
         SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    }
+    if (handle->s && handle->settings_is_alloc) {
+        free_ffmpeg_core_settings(handle->s);
     }
     free(handle);
 }
@@ -42,21 +50,44 @@ void free_music_info_handle(MusicInfoHandle* handle) {
     free(handle);
 }
 
-int ffmpeg_core_open(const wchar_t* url, MusicHandle** h) {
+void free_ffmpeg_core_settings(FfmpegCoreSettings* s) {
+    if (!s) return;
+    free(s);
+}
+
+int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle) {
+    return ffmpeg_core_open2(url, handle, nullptr);
+}
+
+int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s) {
     if (!url || !h) return FFMPEG_CORE_ERR_NULLPTR;
     std::string u;
     // 将文件名转为UTF-8，ffmpeg API处理的都是UTF-8文件名
     if (!wchar_util::wstr_to_str(u, url, CP_UTF8)) {
         return FFMPEG_CORE_ERR_INVAILD_NAME;
     }
+#if NDEBUG
     // 设置ffmpeg日志级别为Error
     av_log_set_level(AV_LOG_ERROR);
+#else
+    av_log_set_level(AV_LOG_VERBOSE);
+#endif
     MusicHandle* handle = (MusicHandle*)malloc(sizeof(MusicHandle));
     int re = FFMPEG_CORE_ERR_OK;
     if (!handle) {
         return FFMPEG_CORE_ERR_OOM;
     }
     memset(handle, 0, sizeof(MusicHandle));
+    if (s) {
+        handle->s = s;
+    } else {
+        handle->settings_is_alloc = 1;
+        handle->s = ffmpeg_core_init_settings();
+        if (!handle->s) {
+            re = FFMPEG_CORE_ERR_OOM;
+            goto end;
+        }
+    }
     handle->first_pts = INT64_MIN;
     if ((re = open_input(handle, u.c_str()))) {
         goto end;
@@ -68,6 +99,9 @@ int ffmpeg_core_open(const wchar_t* url, MusicHandle** h) {
         goto end;
     }
     if ((re = init_output(handle))) {
+        goto end;
+    }
+    if ((re = init_filters(handle))) {
         goto end;
     }
     handle->mutex = CreateMutexW(nullptr, FALSE, nullptr);
@@ -94,8 +128,12 @@ int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle) {
     if (!wchar_util::wstr_to_str(u, url, CP_UTF8)) {
         return FFMPEG_CORE_ERR_INVAILD_NAME;
     }
+#if NDEBUG
     // 设置ffmpeg日志级别为Error
     av_log_set_level(AV_LOG_ERROR);
+#else
+    av_log_set_level(AV_LOG_VERBOSE);
+#endif
     MusicInfoHandle* h = (MusicInfoHandle*)malloc(sizeof(MusicInfoHandle));
     int re = FFMPEG_CORE_ERR_OK;
     if (!h) {
@@ -272,4 +310,41 @@ wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key)
         }
     }
     return nullptr;
+}
+
+FfmpegCoreSettings* ffmpeg_core_init_settings() {
+    FfmpegCoreSettings* s = (FfmpegCoreSettings*)malloc(sizeof(FfmpegCoreSettings));
+    if (!s) return nullptr;
+    memset(s, 0, sizeof(FfmpegCoreSettings));
+    s->speed = 1.0;
+    s->volume = 100;
+    return s;
+}
+
+int ffmpeg_core_settings_set_volume(FfmpegCoreSettings* s, int volume) {
+    if (!s) return 0;
+    if (volume >= 0 && volume <= 100) {
+        s->volume = volume;
+        return 1;
+    }
+    return 0;
+}
+
+int ffmpeg_core_set_volume(MusicHandle* handle, int volume) {
+    if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
+    int r = ffmpeg_core_settings_set_volume(handle->s, volume);
+    if (!r) return FFMPEG_CORE_ERR_FAILED_SET_VOLUME;
+    DWORD re = WaitForSingleObject(handle->mutex, INFINITE);
+    if (re == WAIT_OBJECT_0) {
+        handle->need_reinit_filters = 1;
+    } else {
+        return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+    }
+    handle->have_err = 0;
+    ReleaseMutex(handle->mutex);
+    while (1) {
+        if (!handle->is_seek) break;
+        Sleep(10);
+    }
+    return handle->have_err ? handle->err : FFMPEG_CORE_ERR_OK;
 }

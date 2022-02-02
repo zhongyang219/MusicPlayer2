@@ -9,10 +9,15 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavutil/avutil.h"
 #include "libavutil/audio_fifo.h"
+#include "libavutil/opt.h"
 #include "libavutil/rational.h"
+#include "libavfilter/avfilter.h"
+#include "libavfilter/buffersink.h"
+#include "libavfilter/buffersrc.h"
 #include "libswresample/swresample.h"
 #include "SDL2/SDL.h"
 #include <Windows.h>
+#include "c_linked_list.h"
 
 #ifndef __cplusplus
 #ifndef min
@@ -56,6 +61,18 @@ int64_t end_pts;
 /// 第一个sample的pts
 int64_t first_pts;
 int64_t seek_pos;
+/// 设置
+FfmpegCoreSettings* s;
+/// 用于设置filter
+AVFilterGraph* graph;
+/// filter 输入口
+AVFilterContext* filter_inp;
+/// filter 输出口
+AVFilterContext* filter_out;
+/// filter 链
+c_linked_list* filters;
+/// 输出时的声道布局
+uint64_t output_channel_layout;
 /// SDL是否被初始化
 unsigned char sdl_initialized : 1;
 /// 让事件处理线程退出标志位
@@ -69,11 +86,21 @@ unsigned char is_seek : 1;
 /// 是否需要设置新的缓冲区时间
 unsigned char set_new_pts : 1;
 unsigned char is_playing : 1;
+/// 设置是内部分配
+unsigned char settings_is_alloc : 1;
+/// 需要设置新的filters链
+unsigned char need_reinit_filters : 1;
 } MusicHandle;
 typedef struct MusicInfoHandle {
 AVFormatContext* fmt;
 AVStream* is;
 } MusicInfoHandle;
+typedef struct FfmpegCoreSettings {
+/// 音量
+int volume;
+/// 速度
+float speed;
+} FfmpegCoreSettings;
 #if __cplusplus
 }
 std::wstring get_metadata_str(AVDictionary* dict, const char* key, int flags);

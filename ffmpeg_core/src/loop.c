@@ -1,6 +1,7 @@
 #include "loop.h"
 
 #include "decode.h"
+#include "filter.h"
 
 int seek_to_pos(MusicHandle* handle) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
@@ -60,6 +61,16 @@ DWORD WINAPI event_loop(LPVOID handle) {
                 h->err = re;
             }
             doing = 1;
+            goto end;
+        }
+        if (h->need_reinit_filters) {
+            int re = reinit_filters(h);
+            if (re) {
+                h->have_err = 1;
+                h->err = re;
+            }
+            doing = 1;
+            h->need_reinit_filters = 0;
             goto end;
         }
         if (!h->is_eof) {

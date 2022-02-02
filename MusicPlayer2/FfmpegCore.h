@@ -4,13 +4,17 @@
 
 typedef struct MusicHandle MusicHandle;
 typedef struct MusicInfoHandle MusicInfoHandle;
+typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 typedef void(*_free_music_handle)(MusicHandle*);
 typedef void(*_free_music_info_handle)(MusicInfoHandle*);
+typedef void(*_free_ffmpeg_core_settings)(FfmpegCoreSettings*);
 typedef int(*_ffmpeg_core_open)(const wchar_t*, MusicHandle**);
+typedef int(*_ffmpeg_core_open2)(const wchar_t*, MusicHandle**, FfmpegCoreSettings*);
 typedef int(*_ffmpeg_core_info_open)(const wchar_t*, MusicInfoHandle**);
 typedef int(*_ffmpeg_core_play)(MusicHandle*);
 typedef int(*_ffmpeg_core_pause)(MusicHandle*);
 typedef int(*_ffmpeg_core_seek)(MusicHandle*, int64_t);
+typedef int(*_ffmpeg_core_set_volume)(MusicHandle*, int);
 typedef int64_t(*_ffmpeg_core_get_cur_position)(MusicHandle*);
 typedef int(*_ffmpeg_core_song_is_over)(MusicHandle*);
 typedef int64_t(*_ffmpeg_core_get_song_length)(MusicHandle*);
@@ -26,6 +30,8 @@ typedef int64_t(*_ffmpeg_core_get_bitrate)(MusicHandle*);
 typedef int64_t(*_ffmpeg_core_info_get_bitrate)(MusicInfoHandle*);
 typedef wchar_t*(*_ffmpeg_core_get_metadata)(MusicHandle*, const char* key);
 typedef wchar_t*(*_ffmpeg_core_info_get_metadata)(MusicInfoHandle*, const char* key);
+typedef FfmpegCoreSettings*(*_ffmpeg_core_init_settings)();
+typedef int(*_ffmpeg_core_settings_set_volume)(FfmpegCoreSettings*, int volume);
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
 public:
@@ -80,11 +86,14 @@ private:
     virtual bool GetFunction() override;
     _free_music_handle free_music_handle = nullptr;
     _free_music_info_handle free_music_info_handle = nullptr;
+    _free_ffmpeg_core_settings free_ffmpeg_core_settings = nullptr;
     _ffmpeg_core_open ffmpeg_core_open = nullptr;
+    _ffmpeg_core_open2 ffmpeg_core_open2 = nullptr;
     _ffmpeg_core_info_open ffmpeg_core_info_open = nullptr;
     _ffmpeg_core_play ffmpeg_core_play = nullptr;
     _ffmpeg_core_pause ffmpeg_core_pause = nullptr;
     _ffmpeg_core_seek ffmpeg_core_seek = nullptr;
+    _ffmpeg_core_set_volume ffmpeg_core_set_volume = nullptr;
     _ffmpeg_core_get_cur_position ffmpeg_core_get_cur_position = nullptr;
     _ffmpeg_core_song_is_over ffmpeg_core_song_is_over = nullptr;
     _ffmpeg_core_get_song_length ffmpeg_core_get_song_length = nullptr;
@@ -100,7 +109,10 @@ private:
     _ffmpeg_core_info_get_bitrate ffmpeg_core_info_get_bitrate = nullptr;
     _ffmpeg_core_get_metadata ffmpeg_core_get_metadata = nullptr;
     _ffmpeg_core_info_get_metadata ffmpeg_core_info_get_metadata = nullptr;
+    _ffmpeg_core_init_settings ffmpeg_core_init_settings = nullptr;
+    _ffmpeg_core_settings_set_volume ffmpeg_core_settings_set_volume = nullptr;
     MusicHandle* handle;
+    FfmpegCoreSettings* settings;
     std::wstring recent_file;
     int err;
 };

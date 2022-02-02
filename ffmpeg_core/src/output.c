@@ -22,7 +22,8 @@ int init_output(MusicHandle* handle) {
         return FFMPEG_CORE_ERR_SDL;
     }
     enum AVSampleFormat target_format = convert_to_sdl_supported_format(handle->decoder->sample_fmt);
-    handle->swrac = swr_alloc_set_opts(NULL, get_sdl_channel_layout(handle->decoder->channels), target_format, handle->sdl_spec.freq, handle->decoder->channel_layout, handle->decoder->sample_fmt, handle->decoder->sample_rate, 0, NULL);
+    handle->output_channel_layout = get_sdl_channel_layout(handle->decoder->channels);
+    handle->swrac = swr_alloc_set_opts(NULL, handle->output_channel_layout, target_format, handle->sdl_spec.freq, handle->decoder->channel_layout, handle->decoder->sample_fmt, handle->decoder->sample_rate, 0, NULL);
     if (!handle->swrac) {
         return FFMPEG_CORE_ERR_OOM;
     }
@@ -78,14 +79,14 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
     DWORD re = WaitForSingleObject(handle->mutex, 10);
     if (re != WAIT_OBJECT_0) {
         // 无法获取Mutex所有权，填充空白数据
-        memset(stream, 0, sizeof(len));
+        memset(stream, 0, len);
         return;
     }
     int samples_need = len / handle->target_format_pbytes / handle->sdl_spec.channels;
     if (av_audio_fifo_size(handle->buffer) == 0) {
         // 缓冲区没有数据，填充空白数据
-        memset(stream, 0, sizeof(len));
-    } else {
+        memset(stream, 0, len);
+    } else if (!handle->graph) {
         int writed = av_audio_fifo_read(handle->buffer, (void**)&stream, samples_need);
         if (writed > 0) {
             // 增大缓冲区开始时间
@@ -94,11 +95,61 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
         }
         if (writed < 0) {
             // 读取发生错误，填充空白数据
-            memset(stream, 0, sizeof(len));
+            memset(stream, 0, len);
         } else if (writed < samples_need) {
             // 不足的区域用空白数据填充
             memset(stream + (size_t)writed * handle->target_format_pbytes, 0, (((size_t)samples_need - writed) * handle->target_format_pbytes));
         }
+    } else {
+        AVFrame* in = av_frame_alloc(), * out = av_frame_alloc();
+        int writed = 0;
+        int samples_need_in = 0;
+        if (!in || !out) {
+            memset(stream, 0, len);
+            goto end;
+        }
+        samples_need_in = samples_need * handle->s->speed;
+        in->channels = handle->decoder->channels;
+        in->channel_layout = handle->output_channel_layout;
+        in->format = handle->target_format;
+        in->sample_rate = handle->sdl_spec.freq;
+        in->nb_samples = samples_need_in;
+        if (av_frame_get_buffer(in, 0) < 0) {
+            memset(stream, 0, len);
+            goto end;
+        }
+        // 从缓冲区读取数据
+        writed = av_audio_fifo_read(handle->buffer, (void**)in->data, samples_need_in);
+        if (writed > 0) {
+            // 增大缓冲区开始时间
+            AVRational base = { 1, handle->sdl_spec.freq };
+            handle->pts += av_rescale_q_rnd(writed, base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
+        }
+        if (writed < 0) {
+            memset(stream, 0, len);
+            goto end;
+        }
+        in->nb_samples = writed;
+        // 喂给 filters 数据
+        if (av_buffersrc_add_frame(handle->filter_inp, in) < 0) {
+            memset(stream, 0, len);
+            goto end;
+        }
+        // 从 filters 拿回数据
+        if (av_buffersink_get_frame(handle->filter_out, out) < 0) {
+            memset(stream, 0, len);
+            goto end;
+        }
+        if (out->nb_samples >= samples_need) {
+            memcpy(stream, out->data[0], len);
+        } else {
+            size_t le = (size_t)out->nb_samples * handle->target_format_pbytes * handle->sdl_spec.channels;
+            memcpy(stream, out->data[0], le);
+            memset(stream, 0, len - le);
+        }
+end:
+        if (in) av_frame_free(&in);
+        if (out) av_frame_free(&out);
     }
     ReleaseMutex(handle->mutex);
 }

@@ -12,6 +12,7 @@ extern "C" {
 #endif
 typedef struct MusicHandle MusicHandle;
 typedef struct MusicInfoHandle MusicInfoHandle;
+typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 // 负数即为来自ffmpeg的错误
 
 #define FFMPEG_CORE_ERR_OK 0
@@ -25,13 +26,17 @@ typedef struct MusicInfoHandle MusicInfoHandle;
 #define FFMPEG_CORE_ERR_FAILED_CREATE_MUTEX 8
 #define FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED 9
 #define FFMPEG_CORE_ERR_NO_AUDIO 10
+#define FFMPEG_CORE_ERR_FAILED_SET_VOLUME 11
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
+FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
 FFMPEG_CORE_API int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle);
+FFMPEG_CORE_API int ffmpeg_core_open2(const wchar_t* url, MusicHandle** handle, FfmpegCoreSettings* s);
 FFMPEG_CORE_API int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle);
 FFMPEG_CORE_API int ffmpeg_core_play(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_pause(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_seek(MusicHandle* handle, int64_t time);
+FFMPEG_CORE_API int ffmpeg_core_set_volume(MusicHandle* handle, int volume);
 /**
  * @brief 获取当前播放位置
  * @param handle Handle
@@ -93,6 +98,8 @@ FFMPEG_CORE_API int64_t ffmpeg_core_info_get_bitrate(MusicInfoHandle* handle);
 */
 FFMPEG_CORE_API wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key);
 FFMPEG_CORE_API wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key);
+FFMPEG_CORE_API FfmpegCoreSettings* ffmpeg_core_init_settings();
+FFMPEG_CORE_API int ffmpeg_core_settings_set_volume(FfmpegCoreSettings* s, int volume);
 #ifdef __cplusplus
 }
 #endif

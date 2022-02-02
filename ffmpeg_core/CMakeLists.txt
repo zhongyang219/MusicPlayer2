@@ -10,7 +10,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(AVFORMAT 58 REQUIRED)
 find_package(AVCODEC 58 REQUIRED)
 find_package(AVUTIL 56 REQUIRED)
-# find_package(AVFILTER 7)
+find_package(AVFILTER 7)
 find_package(SWRESAMPLE 4 REQUIRED)
 find_package(SDL2 REQUIRED)
 
@@ -30,6 +30,10 @@ src/open.c
 "src/output.c"
 src/loop.h
 src/loop.c
+"src/filter.h"
+"src/filter.c"
+src/volume.h
+src/volume.c
 )
 
 add_library(ffmpeg_core SHARED "${CORE_FILES}")
@@ -38,6 +42,7 @@ target_compile_definitions(ffmpeg_core PRIVATE BUILD_FFMPEG_CORE)
 target_link_libraries(ffmpeg_core AVFORMAT::AVFORMAT)
 target_link_libraries(ffmpeg_core AVCODEC::AVCODEC)
 target_link_libraries(ffmpeg_core AVUTIL::AVUTIL)
+target_link_libraries(ffmpeg_core AVFILTER::AVFILTER)
 target_link_libraries(ffmpeg_core SWRESAMPLE::SWRESAMPLE)
 target_link_libraries(ffmpeg_core SDL2::Core)
 target_link_libraries(ffmpeg_core SDL2::Main)

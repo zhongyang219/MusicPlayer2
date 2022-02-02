@@ -14,6 +14,9 @@ CFfmpegCore::CFfmpegCore() {
 }
 
 CFfmpegCore::~CFfmpegCore() {
+    if (settings) {
+        free_ffmpeg_core_settings(settings);
+    }
     if (handle) {
         Close();
     }
@@ -37,6 +40,7 @@ void CFfmpegCore::InitCore() {
         format.extensions_list = L"*.mp3;*.wma;*.wav;*.m4a;*.flac;*.ape;*.mp4;*.mkv;*.m2ts";
         CAudioCommon::m_surpported_format.push_back(format);
         CAudioCommon::m_all_surpported_extensions = format.extensions;
+        settings = ffmpeg_core_init_settings();
     }
 }
 
@@ -73,7 +77,8 @@ void CFfmpegCore::Open(const wchar_t* file_path) {
     }
     if (ffmpeg_core_open) {
         if (file_path) recent_file = file_path;
-        int re = ffmpeg_core_open(file_path, &handle);
+        if (!settings) settings = ffmpeg_core_init_settings();
+        int re = ffmpeg_core_open2(file_path, &handle, settings);
         if (re) {
             err = re;
         }
@@ -107,6 +112,14 @@ void CFfmpegCore::Stop() {
 }
 
 void CFfmpegCore::SetVolume(int volume) {
+    if (handle) {
+        int re = ffmpeg_core_set_volume(handle, volume);
+        if (re) {
+            err = re;
+        }
+    } else {
+        ffmpeg_core_settings_set_volume(settings, volume);
+    }
 }
 
 void CFfmpegCore::SetSpeed(float speed) {
@@ -249,11 +262,14 @@ bool CFfmpegCore::GetFunction() {
     //获取函数入口
     free_music_handle = (_free_music_handle)::GetProcAddress(m_dll_module, "free_music_handle");
     free_music_info_handle = (_free_music_info_handle)::GetProcAddress(m_dll_module, "free_music_info_handle");
+    free_ffmpeg_core_settings = (_free_ffmpeg_core_settings)::GetProcAddress(m_dll_module, "free_ffmpeg_core_settings");
     ffmpeg_core_open = (_ffmpeg_core_open)::GetProcAddress(m_dll_module, "ffmpeg_core_open");
+    ffmpeg_core_open2 = (_ffmpeg_core_open2)::GetProcAddress(m_dll_module, "ffmpeg_core_open2");
     ffmpeg_core_info_open = (_ffmpeg_core_info_open)::GetProcAddress(m_dll_module, "ffmpeg_core_info_open");
     ffmpeg_core_play = (_ffmpeg_core_play)::GetProcAddress(m_dll_module, "ffmpeg_core_play");
     ffmpeg_core_pause = (_ffmpeg_core_pause)::GetProcAddress(m_dll_module, "ffmpeg_core_pause");
     ffmpeg_core_seek = (_ffmpeg_core_seek)::GetProcAddress(m_dll_module, "ffmpeg_core_seek");
+    ffmpeg_core_set_volume = (_ffmpeg_core_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_set_volume");
     ffmpeg_core_get_cur_position = (_ffmpeg_core_get_cur_position)::GetProcAddress(m_dll_module, "ffmpeg_core_get_cur_position");
     ffmpeg_core_song_is_over = (_ffmpeg_core_song_is_over)::GetProcAddress(m_dll_module, "ffmpeg_core_song_is_over");
     ffmpeg_core_get_song_length = (_ffmpeg_core_get_song_length)::GetProcAddress(m_dll_module, "ffmpeg_core_get_song_length");
@@ -269,14 +285,19 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_info_get_bitrate = (_ffmpeg_core_info_get_bitrate)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_bitrate");
     ffmpeg_core_get_metadata = (_ffmpeg_core_get_metadata)::GetProcAddress(m_dll_module, "ffmpeg_core_get_metadata");
     ffmpeg_core_info_get_metadata = (_ffmpeg_core_info_get_metadata)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_metadata");
+    ffmpeg_core_init_settings = (_ffmpeg_core_init_settings)::GetProcAddress(m_dll_module, "ffmpeg_core_init_settings");
+    ffmpeg_core_settings_set_volume = (_ffmpeg_core_settings_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_volume");
     //判断是否成功
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
+    rtn &= (free_ffmpeg_core_settings != NULL);
     rtn &= (ffmpeg_core_open != NULL);
+    rtn &= (ffmpeg_core_open2 != NULL);
     rtn &= (ffmpeg_core_info_open != NULL);
     rtn &= (ffmpeg_core_play != NULL);
     rtn &= (ffmpeg_core_pause != NULL);
     rtn &= (ffmpeg_core_seek != NULL);
+    rtn &= (ffmpeg_core_set_volume != NULL);
     rtn &= (ffmpeg_core_get_cur_position != NULL);
     rtn &= (ffmpeg_core_song_is_over != NULL);
     rtn &= (ffmpeg_core_get_song_length != NULL);
@@ -292,6 +313,8 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_info_get_bitrate != NULL);
     rtn &= (ffmpeg_core_get_metadata != NULL);
     rtn &= (ffmpeg_core_info_get_metadata != NULL);
+    rtn &= (ffmpeg_core_init_settings != NULL);
+    rtn &= (ffmpeg_core_settings_set_volume != NULL);
     return rtn;
 }
 
