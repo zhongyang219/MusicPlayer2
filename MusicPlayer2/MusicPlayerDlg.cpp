@@ -3009,7 +3009,24 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                 {
                     if (item.playlist_info != nullptr)
                     {
-                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position, false, false);
+                        int track{ item.playlist_info->track };
+                        int position{ item.playlist_info->position };
+                        bool continue_play{ false };
+                        // 实现切换到播放列表时的同曲目继续播放
+                        if (theApp.m_play_setting_data.continue_when_switch_playlist)
+                        {
+                            SongInfo Last = CPlayer::GetInstance().GetCurrentSongInfo();
+                            CPlaylistFile playlist;
+                            playlist.LoadFromFile(item.playlist_info->path);
+                            int tmp = playlist.GetFileIndexInPlaylist(Last);
+                            if (tmp != -1)
+                            {
+                                track = tmp;
+                                position = CPlayer::GetInstance().GetCurrentPosition();
+                                continue_play = CPlayer::GetInstance().IsPlaying();
+                            }
+                        }
+                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, track, position, false, continue_play);
                         UpdatePlayPauseButton();
                         DrawInfo(true);
                         CPlayer::GetInstance().SaveRecentPath();
