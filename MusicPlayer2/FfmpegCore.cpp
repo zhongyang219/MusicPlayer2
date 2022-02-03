@@ -125,6 +125,14 @@ void CFfmpegCore::SetVolume(int volume) {
 }
 
 void CFfmpegCore::SetSpeed(float speed) {
+    if (handle) {
+        int re = ffmpeg_core_set_speed(handle, speed);
+        if (re) {
+            err = re;
+        }
+    } else {
+        ffmpeg_core_settings_set_speed(settings, speed);
+    }
 }
 
 bool CFfmpegCore::SongIsOver() {
@@ -274,6 +282,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_pause = (_ffmpeg_core_pause)::GetProcAddress(m_dll_module, "ffmpeg_core_pause");
     ffmpeg_core_seek = (_ffmpeg_core_seek)::GetProcAddress(m_dll_module, "ffmpeg_core_seek");
     ffmpeg_core_set_volume = (_ffmpeg_core_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_set_volume");
+    ffmpeg_core_set_speed = (_ffmpeg_core_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_set_speed");
     ffmpeg_core_get_cur_position = (_ffmpeg_core_get_cur_position)::GetProcAddress(m_dll_module, "ffmpeg_core_get_cur_position");
     ffmpeg_core_song_is_over = (_ffmpeg_core_song_is_over)::GetProcAddress(m_dll_module, "ffmpeg_core_song_is_over");
     ffmpeg_core_get_song_length = (_ffmpeg_core_get_song_length)::GetProcAddress(m_dll_module, "ffmpeg_core_get_song_length");
@@ -291,6 +300,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_info_get_metadata = (_ffmpeg_core_info_get_metadata)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_metadata");
     ffmpeg_core_init_settings = (_ffmpeg_core_init_settings)::GetProcAddress(m_dll_module, "ffmpeg_core_init_settings");
     ffmpeg_core_settings_set_volume = (_ffmpeg_core_settings_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_volume");
+    ffmpeg_core_settings_set_speed = (_ffmpeg_core_settings_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_speed");
     //≈–∂œ «∑Ò≥…π¶
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
@@ -304,6 +314,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_pause != NULL);
     rtn &= (ffmpeg_core_seek != NULL);
     rtn &= (ffmpeg_core_set_volume != NULL);
+    rtn &= (ffmpeg_core_set_speed != NULL);
     rtn &= (ffmpeg_core_get_cur_position != NULL);
     rtn &= (ffmpeg_core_song_is_over != NULL);
     rtn &= (ffmpeg_core_get_song_length != NULL);
@@ -321,6 +332,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_info_get_metadata != NULL);
     rtn &= (ffmpeg_core_init_settings != NULL);
     rtn &= (ffmpeg_core_settings_set_volume != NULL);
+    rtn &= (ffmpeg_core_settings_set_speed != NULL);
     return rtn;
 }
 

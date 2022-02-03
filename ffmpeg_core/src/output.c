@@ -1,5 +1,7 @@
 #include "output.h"
 
+#include "speed.h"
+
 int init_output(MusicHandle* handle) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
     if (!handle->sdl_initialized) {
@@ -108,7 +110,7 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
             memset(stream, 0, len);
             goto end;
         }
-        samples_need_in = samples_need * handle->s->speed;
+        samples_need_in = samples_need * get_speed(handle->s->speed) / 1000;
         in->channels = handle->decoder->channels;
         in->channel_layout = handle->output_channel_layout;
         in->format = handle->target_format;

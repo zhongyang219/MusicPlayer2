@@ -19,6 +19,7 @@ typedef int(*_ffmpeg_core_play)(MusicHandle*);
 typedef int(*_ffmpeg_core_pause)(MusicHandle*);
 typedef int(*_ffmpeg_core_seek)(MusicHandle*, int64_t);
 typedef int(*_ffmpeg_core_set_volume)(MusicHandle*, int);
+typedef int(*_ffmpeg_core_set_speed)(MusicHandle*, float);
 typedef int64_t(*_ffmpeg_core_get_cur_position)(MusicHandle*);
 typedef int(*_ffmpeg_core_song_is_over)(MusicHandle*);
 typedef int64_t(*_ffmpeg_core_get_song_length)(MusicHandle*);
@@ -36,6 +37,7 @@ typedef wchar_t*(*_ffmpeg_core_get_metadata)(MusicHandle*, const char* key);
 typedef wchar_t*(*_ffmpeg_core_info_get_metadata)(MusicInfoHandle*, const char* key);
 typedef FfmpegCoreSettings*(*_ffmpeg_core_init_settings)();
 typedef int(*_ffmpeg_core_settings_set_volume)(FfmpegCoreSettings*, int volume);
+typedef int(*_ffmpeg_core_settings_set_speed)(FfmpegCoreSettings*, float);
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
 public:
@@ -101,6 +103,7 @@ private:
     _ffmpeg_core_pause ffmpeg_core_pause = nullptr;
     _ffmpeg_core_seek ffmpeg_core_seek = nullptr;
     _ffmpeg_core_set_volume ffmpeg_core_set_volume = nullptr;
+    _ffmpeg_core_set_speed ffmpeg_core_set_speed = nullptr;
     _ffmpeg_core_get_cur_position ffmpeg_core_get_cur_position = nullptr;
     _ffmpeg_core_song_is_over ffmpeg_core_song_is_over = nullptr;
     _ffmpeg_core_get_song_length ffmpeg_core_get_song_length = nullptr;
@@ -118,6 +121,7 @@ private:
     _ffmpeg_core_info_get_metadata ffmpeg_core_info_get_metadata = nullptr;
     _ffmpeg_core_init_settings ffmpeg_core_init_settings = nullptr;
     _ffmpeg_core_settings_set_volume ffmpeg_core_settings_set_volume = nullptr;
+    _ffmpeg_core_settings_set_speed ffmpeg_core_settings_set_speed = nullptr;
     MusicHandle* handle;
     FfmpegCoreSettings* settings = nullptr;
     std::wstring recent_file;

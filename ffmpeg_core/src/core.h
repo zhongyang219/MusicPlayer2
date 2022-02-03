@@ -23,6 +23,9 @@ extern "C" {
 #ifndef min
 #define min(x,y) (((x) < (y)) ? (x) : (y))
 #endif
+#ifndef max
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
 #endif
 
 typedef struct MusicHandle {

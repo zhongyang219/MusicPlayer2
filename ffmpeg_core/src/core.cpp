@@ -9,6 +9,7 @@
 #include "loop.h"
 #include "decode.h"
 #include "filter.h"
+#include "speed.h"
 
 #define CODEPAGE_SIZE 3
 
@@ -320,6 +321,23 @@ wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key)
     return nullptr;
 }
 
+int send_reinit_filters(MusicHandle* handle) {
+    if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
+    DWORD re = WaitForSingleObject(handle->mutex, INFINITE);
+    if (re == WAIT_OBJECT_0) {
+        handle->need_reinit_filters = 1;
+    } else {
+        return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+    }
+    handle->have_err = 0;
+    ReleaseMutex(handle->mutex);
+    while (1) {
+        if (!handle->is_seek) break;
+        Sleep(10);
+    }
+    return handle->have_err ? handle->err : FFMPEG_CORE_ERR_OK;
+}
+
 FfmpegCoreSettings* ffmpeg_core_init_settings() {
     FfmpegCoreSettings* s = (FfmpegCoreSettings*)malloc(sizeof(FfmpegCoreSettings));
     if (!s) return nullptr;
@@ -342,17 +360,22 @@ int ffmpeg_core_set_volume(MusicHandle* handle, int volume) {
     if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
     int r = ffmpeg_core_settings_set_volume(handle->s, volume);
     if (!r) return FFMPEG_CORE_ERR_FAILED_SET_VOLUME;
-    DWORD re = WaitForSingleObject(handle->mutex, INFINITE);
-    if (re == WAIT_OBJECT_0) {
-        handle->need_reinit_filters = 1;
-    } else {
-        return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+    return send_reinit_filters(handle);
+}
+
+int ffmpeg_core_settings_set_speed(FfmpegCoreSettings* s, float speed) {
+    if (!s) return 0;
+    int sp = get_speed(speed);
+    if (sp >= 63 && sp <= 16000) {
+        s->speed = sp / 1000.0;
+        return 1;
     }
-    handle->have_err = 0;
-    ReleaseMutex(handle->mutex);
-    while (1) {
-        if (!handle->is_seek) break;
-        Sleep(10);
-    }
-    return handle->have_err ? handle->err : FFMPEG_CORE_ERR_OK;
+    return 0;
+}
+
+int ffmpeg_core_set_speed(MusicHandle* handle, float speed) {
+    if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
+    int r = ffmpeg_core_settings_set_speed(handle->s, speed);
+    if (!r) return FFMPEG_CORE_ERR_FAILED_SET_SPEED;
+    return send_reinit_filters(handle);
 }

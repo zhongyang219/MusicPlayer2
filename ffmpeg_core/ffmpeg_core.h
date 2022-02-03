@@ -28,6 +28,7 @@ typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 #define FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED 9
 #define FFMPEG_CORE_ERR_NO_AUDIO 10
 #define FFMPEG_CORE_ERR_FAILED_SET_VOLUME 11
+#define FFMPEG_CORE_ERR_FAILED_SET_SPEED 12
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
@@ -42,6 +43,7 @@ FFMPEG_CORE_API int ffmpeg_core_play(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_pause(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_seek(MusicHandle* handle, int64_t time);
 FFMPEG_CORE_API int ffmpeg_core_set_volume(MusicHandle* handle, int volume);
+FFMPEG_CORE_API int ffmpeg_core_set_speed(MusicHandle* handle, float speed);
 /**
  * @brief 获取当前播放位置
  * @param handle Handle
@@ -105,6 +107,7 @@ FFMPEG_CORE_API wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const cha
 FFMPEG_CORE_API wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key);
 FFMPEG_CORE_API FfmpegCoreSettings* ffmpeg_core_init_settings();
 FFMPEG_CORE_API int ffmpeg_core_settings_set_volume(FfmpegCoreSettings* s, int volume);
+FFMPEG_CORE_API int ffmpeg_core_settings_set_speed(FfmpegCoreSettings* s, float speed);
 #ifdef __cplusplus
 }
 #endif

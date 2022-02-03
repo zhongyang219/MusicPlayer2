@@ -2,6 +2,7 @@
 
 #include "output.h"
 #include "volume.h"
+#include "speed.h"
 
 int need_filters(FfmpegCoreSettings* s) {
     if (!s) return 0;
@@ -11,6 +12,9 @@ int need_filters(FfmpegCoreSettings* s) {
     if (s->volume != 100 && avfilter_get_by_name("volume")) {
         return 1;
     }
+    if (get_speed(s->speed) != 1000 && avfilter_get_by_name("atempo")) {
+        return 1;
+    }
     return 0;
 }
 
@@ -18,12 +22,22 @@ int init_filters(MusicHandle* handle) {
     if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
     if (!need_filters(handle->s)) return FFMPEG_CORE_ERR_OK;
     int re = FFMPEG_CORE_ERR_OK;
+    int speed = get_speed(handle->s->speed);
     if ((re = create_src_and_sink(&handle->graph, &handle->filter_inp, &handle->filter_out, handle))) {
         return re;
     }
     if (handle->s->volume != 100 && avfilter_get_by_name("volume")) {
         if ((re = create_volume_filter(0, handle->graph, handle->filter_inp, &handle->filters, handle->s->volume, handle->target_format))) {
             return re;
+        }
+    }
+    if (speed != 1000 && avfilter_get_by_name("atempo")) {
+        int index = 0;
+        while (speed != 1000) {
+            if ((re = create_speed_filter(index, handle->graph, handle->filter_inp, &handle->filters, &speed))) {
+                return re;
+            }
+            index++;
         }
     }
     if (c_linked_list_count(handle->filters) == 0) {
@@ -63,12 +77,22 @@ int reinit_filters(MusicHandle* handle) {
     AVFilterGraph* graph = NULL;
     AVFilterContext* inc = NULL, * outc = NULL;
     c_linked_list* list = NULL;
+    int speed = get_speed(handle->s->speed);
     if ((re = create_src_and_sink(&graph, &inc, &outc, handle)) < 0) {
         goto end;
     }
     if (handle->s->volume != 100 && avfilter_get_by_name("volume")) {
-        if ((re = create_volume_filter(0, graph, inc, &list, handle->s->volume, handle->target_format)) < 0) {
+        if ((re = create_volume_filter(0, graph, inc, &list, handle->s->volume, handle->target_format))) {
             goto end;
+        }
+    }
+    if (speed != 1000 && avfilter_get_by_name("atempo")) {
+        int index = 0;
+        while (speed != 1000) {
+            if ((re = create_speed_filter(index, graph, inc, &list, &speed))) {
+                goto end;
+            }
+            index++;
         }
     }
     if (c_linked_list_count(list) == 0) {

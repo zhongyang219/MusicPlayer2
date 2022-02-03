@@ -34,6 +34,8 @@ src/loop.c
 "src/filter.c"
 src/volume.h
 src/volume.c
+src/speed.h
+src/speed.c
 )
 
 add_library(ffmpeg_core SHARED "${CORE_FILES}")
@@ -47,3 +49,7 @@ target_link_libraries(ffmpeg_core SWRESAMPLE::SWRESAMPLE)
 target_link_libraries(ffmpeg_core SDL2::Core)
 target_link_libraries(ffmpeg_core SDL2::Main)
 target_link_libraries(ffmpeg_core utils)
+
+if (NOT MSVC)
+    target_link_libraries(ffmpeg_core m)
+endif()

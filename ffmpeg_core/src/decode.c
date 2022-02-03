@@ -56,10 +56,10 @@ int decode_audio(MusicHandle* handle, char* writed) {
         if (re >= 0) {
             if (handle->first_pts == INT64_MIN) {
                 handle->first_pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
-                printf("first_pts: %s\n", av_ts2timestr(handle->first_pts, &AV_TIME_BASE_Q));
+                av_log(NULL, AV_LOG_VERBOSE, "first_pts: %s\n", av_ts2timestr(handle->first_pts, &AV_TIME_BASE_Q));
             }
             if (handle->set_new_pts) {
-                printf("pts: %s\n", av_ts2timestr(frame->pts, &handle->is->time_base));
+                av_log(NULL, AV_LOG_VERBOSE, "pts: %s\n", av_ts2timestr(frame->pts, &handle->is->time_base));
                 handle->pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX) - handle->first_pts;
                 handle->end_pts = handle->pts;
                 handle->set_new_pts = 0;
