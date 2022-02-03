@@ -207,7 +207,6 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
 
         const bool old_mode{ !theApp.m_lyric_setting_data.lyric_karaoke_disp };
         const wstring mark{ L"♪♪♪" };
-        const int ignore_time{ 800 };
 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
@@ -231,7 +230,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
                 current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
             else
             {
-                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(lyric_index) > ignore_time };   // 判断空白时长是否有必要显示符号
+                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(lyric_index) > LYRIC_BLANK_IGNORE_TIME };   // 判断空白时长是否有必要显示符号
                 if (is_lyric_empty)                                            // 当前time处在空白行中并且正在提前显示下一行歌词
                 {
                     if (blanktimeok)
@@ -263,7 +262,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
                 next_lyric_text = now_lyrics.GetLyricIgnoreBlank(next_lyric_index).text;
                 if (next_lyric_text.empty())
                     next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-                else if (now_lyrics.GetBlankTimeBeforeLyric(next_lyric_index) > ignore_time)
+                else if (now_lyrics.GetBlankTimeBeforeLyric(next_lyric_index) > LYRIC_BLANK_IGNORE_TIME)
                     next_lyric_text = mark + L" " + next_lyric_text;
             }
             //这里实现文本从非高亮缓慢变化到高亮效果

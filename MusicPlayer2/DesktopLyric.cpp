@@ -94,7 +94,6 @@ void CDesktopLyric::ShowLyric()
 	{
         const bool old_mode{ false };
         const wstring mark{ L"♪♪♪" };
-        const int ignore_time{ 800 };
 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
@@ -117,7 +116,7 @@ void CDesktopLyric::ShowLyric()
                 lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
             else
             {
-                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(lyric_index) > ignore_time };   // 判断空白时长是否有必要显示符号
+                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(lyric_index) > LYRIC_BLANK_IGNORE_TIME };   // 判断空白时长是否有必要显示符号
                 if (is_lyric_empty)                                            // 当前time处在空白行中并且正在提前显示下一行歌词
                 {
                     if (blanktimeok)
@@ -152,7 +151,7 @@ void CDesktopLyric::ShowLyric()
                 next_lyric = now_lyrics.GetLyricIgnoreBlank(next_lyric_index);
                 if (next_lyric.text.empty())
                     next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
-                else if (now_lyrics.GetBlankTimeBeforeLyric(next_lyric_index) > ignore_time)
+                else if (now_lyrics.GetBlankTimeBeforeLyric(next_lyric_index) > LYRIC_BLANK_IGNORE_TIME)
                     next_lyric.text = mark + L" " + next_lyric.text;
             }
             SetNextLyric(next_lyric.text.c_str());
