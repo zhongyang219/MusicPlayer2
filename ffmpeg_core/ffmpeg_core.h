@@ -5,6 +5,7 @@ extern "C" {
 #endif
 #include <stdint.h>
 #include <wchar.h>
+#include <stdarg.h>
 #if BUILD_FFMPEG_CORE
 #define FFMPEG_CORE_API __declspec(dllexport)
 #else
@@ -30,6 +31,10 @@ typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
+/// 即 av_log_format_line2
+FFMPEG_CORE_API int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
+/// 即 av_log_set_callback
+FFMPEG_CORE_API void ffmpeg_core_log_set_callback(void(*callback)(void*, int, const char*, va_list));
 FFMPEG_CORE_API int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle);
 FFMPEG_CORE_API int ffmpeg_core_open2(const wchar_t* url, MusicHandle** handle, FfmpegCoreSettings* s);
 FFMPEG_CORE_API int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle);

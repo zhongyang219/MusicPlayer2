@@ -55,6 +55,14 @@ void free_ffmpeg_core_settings(FfmpegCoreSettings* s) {
     free(s);
 }
 
+int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix) {
+    return av_log_format_line2(ptr, level, fmt, vl, line, line_size, print_prefix);
+}
+
+void ffmpeg_core_log_set_callback(void(*callback)(void*, int, const char*, va_list)) {
+    av_log_set_callback(callback);
+}
+
 int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle) {
     return ffmpeg_core_open2(url, handle, nullptr);
 }

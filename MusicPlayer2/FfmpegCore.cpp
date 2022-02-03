@@ -2,6 +2,7 @@
 #include "FfmpegCore.h"
 
 #include "AudioCommon.h"
+#include "Common.h"
 #include "MusicPlayer2.h"
 
 
@@ -41,6 +42,7 @@ void CFfmpegCore::InitCore() {
         CAudioCommon::m_surpported_format.push_back(format);
         CAudioCommon::m_all_surpported_extensions = format.extensions;
         settings = ffmpeg_core_init_settings();
+        ffmpeg_core_log_set_callback(LogCallback);
     }
 }
 
@@ -263,6 +265,8 @@ bool CFfmpegCore::GetFunction() {
     free_music_handle = (_free_music_handle)::GetProcAddress(m_dll_module, "free_music_handle");
     free_music_info_handle = (_free_music_info_handle)::GetProcAddress(m_dll_module, "free_music_info_handle");
     free_ffmpeg_core_settings = (_free_ffmpeg_core_settings)::GetProcAddress(m_dll_module, "free_ffmpeg_core_settings");
+    ffmpeg_core_log_format_line = (_ffmpeg_core_log_format_line)::GetProcAddress(m_dll_module, "ffmpeg_core_log_format_line");
+    ffmpeg_core_log_set_callback = (_ffmpeg_core_log_set_callback)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_callback");
     ffmpeg_core_open = (_ffmpeg_core_open)::GetProcAddress(m_dll_module, "ffmpeg_core_open");
     ffmpeg_core_open2 = (_ffmpeg_core_open2)::GetProcAddress(m_dll_module, "ffmpeg_core_open2");
     ffmpeg_core_info_open = (_ffmpeg_core_info_open)::GetProcAddress(m_dll_module, "ffmpeg_core_info_open");
@@ -291,6 +295,8 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
     rtn &= (free_ffmpeg_core_settings != NULL);
+    rtn &= (ffmpeg_core_log_format_line != NULL);
+    rtn &= (ffmpeg_core_log_set_callback != NULL);
     rtn &= (ffmpeg_core_open != NULL);
     rtn &= (ffmpeg_core_open2 != NULL);
     rtn &= (ffmpeg_core_info_open != NULL);
@@ -378,4 +384,21 @@ int CFfmpegCore::GetTrackNum(MusicInfoHandle* h) {
     int track;
     if (swscanf_s(r.c_str(), L"%i", &track) == 1) return track;
     return 0;
+}
+
+void CFfmpegCore::LogCallback(void* ptr, int level, const char* fmt, va_list vl) {
+    if (level > AV_LOG_VERBOSE) return;
+    auto re = LoadLibraryW(L"ffmpeg_core.dll");
+    if (!re) return;
+    auto ffmpeg_core_log_format_line = (_ffmpeg_core_log_format_line)::GetProcAddress(re, "ffmpeg_core_log_format_line");
+    char buf[1024];
+    if (ffmpeg_core_log_format_line) {
+        int print = 1;
+        int re = ffmpeg_core_log_format_line(ptr, level, fmt, vl, buf, sizeof(buf), &print);
+        if (re > 0) {
+            std::wstring s = CCommon::StrToUnicode(std::string(buf, re), CodeType::UTF8);
+            OutputDebugStringW(s.c_str());
+        }
+    }
+    FreeLibrary(re);
 }

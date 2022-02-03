@@ -2,12 +2,16 @@
 #include "IPlayerCore.h"
 #include "DllLib.h"
 
+#define AV_LOG_ERROR 16
+#define AV_LOG_VERBOSE 40
 typedef struct MusicHandle MusicHandle;
 typedef struct MusicInfoHandle MusicInfoHandle;
 typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 typedef void(*_free_music_handle)(MusicHandle*);
 typedef void(*_free_music_info_handle)(MusicInfoHandle*);
 typedef void(*_free_ffmpeg_core_settings)(FfmpegCoreSettings*);
+typedef int(*_ffmpeg_core_log_format_line)(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
+typedef void(*_ffmpeg_core_log_set_callback)(void(*callback)(void*, int, const char*, va_list));
 typedef int(*_ffmpeg_core_open)(const wchar_t*, MusicHandle**);
 typedef int(*_ffmpeg_core_open2)(const wchar_t*, MusicHandle**, FfmpegCoreSettings*);
 typedef int(*_ffmpeg_core_info_open)(const wchar_t*, MusicInfoHandle**);
@@ -84,9 +88,12 @@ public:
 private:
     std::wstring GetMetadata(std::string key, MusicInfoHandle* h = nullptr);
     virtual bool GetFunction() override;
+    static void LogCallback(void*, int, const char*, va_list);
     _free_music_handle free_music_handle = nullptr;
     _free_music_info_handle free_music_info_handle = nullptr;
     _free_ffmpeg_core_settings free_ffmpeg_core_settings = nullptr;
+    _ffmpeg_core_log_format_line ffmpeg_core_log_format_line = nullptr;
+    _ffmpeg_core_log_set_callback ffmpeg_core_log_set_callback = nullptr;
     _ffmpeg_core_open ffmpeg_core_open = nullptr;
     _ffmpeg_core_open2 ffmpeg_core_open2 = nullptr;
     _ffmpeg_core_info_open ffmpeg_core_info_open = nullptr;
@@ -112,7 +119,7 @@ private:
     _ffmpeg_core_init_settings ffmpeg_core_init_settings = nullptr;
     _ffmpeg_core_settings_set_volume ffmpeg_core_settings_set_volume = nullptr;
     MusicHandle* handle;
-    FfmpegCoreSettings* settings;
+    FfmpegCoreSettings* settings = nullptr;
     std::wstring recent_file;
     int err;
 };
