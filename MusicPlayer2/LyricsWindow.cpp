@@ -427,7 +427,7 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 {
 	if(m_nHighlight<=0)return;
 	Gdiplus::Region* pRegion=NULL;
-	if(m_nHighlight<1000){
+	if(m_nHighlight<1000 && m_lyric_karaoke_disp){
 		Gdiplus::RectF CliptRect(dstRect);
 		CliptRect.Width=CliptRect.Width * m_nHighlight / 1000;
 		pRegion=new Gdiplus::Region(CliptRect);
