@@ -4,25 +4,25 @@ name: CI
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build-x64:
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
       - name: Check Out
         uses: actions/checkout@v2
       # 所有版本链接：https://docs.microsoft.com/en-us/visualstudio/releases/2022/release-history
-      - name: 下载 vs_enterprise.exe
-        run: Invoke-WebRequest "https://aka.ms/vs/17/release/vs_enterprise.exe" -OutFile vs_enterprise.exe
+      #- name: 下载 vs_enterprise.exe
+      #  run: Invoke-WebRequest "https://aka.ms/vs/17/release/vs_enterprise.exe" -OutFile vs_enterprise.exe
       # 组件列表：https://docs.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-enterprise?view=vs-2022
       # 命令行选项：https://docs.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
-      - name: 安装需要的组件
-        run: |
-          Start-Process -Wait vs_enterprise.exe -ArgumentList "--quiet", "--force", "--norestart", `
-          "--add", "Microsoft.VisualStudio.Component.VC.CoreIde", `
-          "--add", "Microsoft.VisualStudio.Component.IntelliCode", `
-          "--add", "Microsoft.VisualStudio.Component.Windows10SDK", `
-          "--add", "Microsoft.Component.VC.Runtime.UCRTSDK", `
-          "--add", "Microsoft.VisualStudio.Component.VC.ATL", `
-          "--add", "Microsoft.VisualStudio.Component.VC.ATLMFC", `
-          "--add", "Microsoft.VisualStudio.Component.VC.14.29.16.11.MFC"
+      #- name: 安装需要的组件
+      #  run: |
+      #    Start-Process -Wait vs_enterprise.exe -ArgumentList "--quiet", "--force", "--norestart", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.CoreIde", `
+      #    "--add", "Microsoft.VisualStudio.Component.IntelliCode", `
+      #    "--add", "Microsoft.VisualStudio.Component.Windows10SDK", `
+      #    "--add", "Microsoft.Component.VC.Runtime.UCRTSDK", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATL", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATLMFC", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.14.29.16.11.MFC"
       - name: 设置 msbuild
         uses: microsoft/setup-msbuild@v1.1
       - name: 编译
@@ -46,25 +46,25 @@ jobs:
           name: MusicPlayer2.x64.other
           path: MusicPlayer2.x64.other.7z
   build-x86:
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
       - name: Check Out
         uses: actions/checkout@v2
       # 所有版本链接：https://docs.microsoft.com/en-us/visualstudio/releases/2022/release-history
-      - name: 下载 vs_enterprise.exe
-        run: Invoke-WebRequest "https://aka.ms/vs/17/release/vs_enterprise.exe" -OutFile vs_enterprise.exe
+      #- name: 下载 vs_enterprise.exe
+      #  run: Invoke-WebRequest "https://aka.ms/vs/17/release/vs_enterprise.exe" -OutFile vs_enterprise.exe
       # 组件列表：https://docs.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-enterprise?view=vs-2022
       # 命令行选项：https://docs.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
-      - name: 安装需要的组件
-        run: |
-          Start-Process -Wait vs_enterprise.exe -ArgumentList "--quiet", "--force", "--norestart", `
-          "--add", "Microsoft.VisualStudio.Component.VC.CoreIde", `
-          "--add", "Microsoft.VisualStudio.Component.IntelliCode", `
-          "--add", "Microsoft.VisualStudio.Component.Windows10SDK", `
-          "--add", "Microsoft.Component.VC.Runtime.UCRTSDK", `
-          "--add", "Microsoft.VisualStudio.Component.VC.ATL", `
-          "--add", "Microsoft.VisualStudio.Component.VC.ATLMFC", `
-          "--add", "Microsoft.VisualStudio.Component.VC.14.29.16.11.MFC"
+      #- name: 安装需要的组件
+      #  run: |
+      #    Start-Process -Wait vs_enterprise.exe -ArgumentList "--quiet", "--force", "--norestart", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.CoreIde", `
+      #    "--add", "Microsoft.VisualStudio.Component.IntelliCode", `
+      #    "--add", "Microsoft.VisualStudio.Component.Windows10SDK", `
+      #    "--add", "Microsoft.Component.VC.Runtime.UCRTSDK", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATL", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATLMFC", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.14.29.16.11.MFC"
       - name: 设置 msbuild
         uses: microsoft/setup-msbuild@v1.1
       - name: 编译
