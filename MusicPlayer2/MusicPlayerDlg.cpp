@@ -1318,12 +1318,13 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
         pMenu->CheckMenuRadioItem(ID_RATING_1, ID_RATING_NONE, ID_RATING_NONE, MF_BYCOMMAND | MF_CHECKED);
 
     //设置分级菜单的启用/禁用状态
-    pMenu->EnableMenuItem(ID_RATING_1, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_2, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_3, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_4, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_5, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_NONE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    bool rating_menu_emable{ IsMainWindowPopupMenu() || selete_valid };
+    pMenu->EnableMenuItem(ID_RATING_1, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_2, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_3, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_4, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_5, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_NONE, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
 
     bool move_enable = playlist_mode && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
