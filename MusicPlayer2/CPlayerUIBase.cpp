@@ -1300,8 +1300,50 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
 {
     if (m_show_volume_adj)
     {
-        CRect volume_down_rect = ClientAreaToDraw(m_buttons[BTN_VOLUME_DOWN].rect, m_draw_rect);
-        CRect volume_up_rect = ClientAreaToDraw(m_buttons[BTN_VOLUME_UP].rect, m_draw_rect);
+        CRect& volume_down_rect = m_buttons[BTN_VOLUME_DOWN].rect;
+        CRect& volume_up_rect = m_buttons[BTN_VOLUME_UP].rect;
+
+        //判断音量调整按钮是否会超出界面之外，如果是，则将其移动至界面内
+        int x_offset{}, y_offset{};     //移动的x和y偏移量
+        CRect rect_text;                //音量文本的区域
+        CString volume_str{};
+        if (!m_show_volume_text)
+        {
+            //如果不显示音量文本，则在音量调整按钮旁边显示音量。在这里计算文本的位置
+            rect_text = m_buttons[BTN_VOLUME_UP].rect;
+            if (CPlayer::GetInstance().GetVolume() <= 0)
+                volume_str = CCommon::LoadText(IDS_MUTE);
+            else
+                volume_str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
+            int width{ m_draw.GetTextExtent(volume_str).cx };
+            rect_text.left = rect_text.right + DPI(2);
+            rect_text.right = rect_text.left + width;
+
+            if (rect_text.right > m_draw_rect.right)
+                x_offset = m_draw_rect.right - rect_text.right;
+            if (rect_text.bottom > m_draw_rect.bottom)
+                y_offset = m_draw_rect.bottom - rect_text.bottom;
+        }
+        else
+        {
+            if (volume_up_rect.right > m_draw_rect.right)
+                x_offset = m_draw_rect.right - volume_up_rect.right;
+            if (volume_up_rect.bottom > m_draw_rect.bottom)
+                y_offset = m_draw_rect.bottom - volume_up_rect.bottom;
+        }
+
+        if (x_offset != 0)
+        {
+            volume_up_rect.MoveToX(volume_up_rect.left + x_offset);
+            volume_down_rect.MoveToX(volume_down_rect.left + x_offset);
+            rect_text.MoveToX(rect_text.left + x_offset);
+        }
+        if (y_offset != 0)
+        {
+            volume_up_rect.MoveToY(volume_up_rect.top + y_offset);
+            volume_down_rect.MoveToY(volume_down_rect.top + y_offset);
+            rect_text.MoveToY(rect_text.top + y_offset);
+        }
 
         BYTE alpha;
         if (IsDrawBackgroundAlpha())
@@ -1348,6 +1390,12 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
 
         m_draw.DrawWindowText(volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
         m_draw.DrawWindowText(volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
+
+        //如果不显示音量文本且显示了音量调整按钮，则在按钮旁边显示音量
+        if (!m_show_volume_text)
+        {
+            m_draw.DrawWindowText(rect_text, volume_str, m_colors.color_text);
+        }
     }
 }
 
@@ -1830,6 +1878,8 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
 
 void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_text)
 {
+    m_show_volume_text = show_text;
+
     auto& btn{ m_buttons[BTN_VOLUME] };
     if (btn.pressed)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
@@ -1906,21 +1956,6 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + DPI(27);      //设置单个音量调整按钮的宽度
     m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
     m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
-
-    //如果不显示音量文本且显示了音量调整按钮，则在按钮旁边显示音量
-    if (m_show_volume_adj && !show_text)
-    {
-        CRect rect_text{ m_buttons[BTN_VOLUME_UP].rect };
-        CString str;
-        if (CPlayer::GetInstance().GetVolume() <= 0)
-            str = CCommon::LoadText(IDS_MUTE);
-        else
-            str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
-        int width{ m_draw.GetTextExtent(str).cx };
-        rect_text.left = rect_text.right + DPI(2);
-        rect_text.right = rect_text.left + width;
-        m_draw.DrawWindowText(rect_text, str, m_colors.color_text);
-    }
 }
 
 void CPlayerUIBase::DrawABRepeatButton(CRect rect)

@@ -234,6 +234,7 @@ protected:
     //UI 数据
     CRect m_draw_rect;                      //绘图区域
     bool m_show_volume_adj{ false };        //显示音量调整按钮
+    bool m_show_volume_text{};        //是否显示音量文本
 
     std::map<BtnKey, UIButton> m_buttons;
 
