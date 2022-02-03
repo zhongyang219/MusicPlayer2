@@ -432,6 +432,19 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 return;
             }
 
+            case BTN_ADD_TO_PLAYLIST:
+            {
+                CPoint point1;
+                GetCursorPos(&point1);
+                CMenu* add_to_menu = theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2);
+                ASSERT(add_to_menu != nullptr);
+                if (add_to_menu != nullptr)
+                {
+                    add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+                }
+                return;
+            }
+
             default:
                 break;
             }
@@ -534,31 +547,32 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
 {
     switch (key)
     {
-    case CPlayerUIBase::BTN_REPETEMODE: return *GetRepeatModeIcon();
-    case CPlayerUIBase::BTN_VOLUME: return *GetVolumeIcon();
-    case CPlayerUIBase::BTN_SKIN: return theApp.m_icon_set.skin;
-    case CPlayerUIBase::BTN_EQ: return theApp.m_icon_set.eq;
-    case CPlayerUIBase::BTN_SETTING: return theApp.m_icon_set.setting;
-    case CPlayerUIBase::BTN_MINI: return theApp.m_icon_set.mini;
-    case CPlayerUIBase::BTN_MINI1: return theApp.m_icon_set.mini;
-    case CPlayerUIBase::BTN_INFO: return theApp.m_icon_set.info;
-    case CPlayerUIBase::BTN_FIND: return theApp.m_icon_set.find_songs;
-    case CPlayerUIBase::BTN_STOP: return (big_icon ? theApp.m_icon_set.stop_l : theApp.m_icon_set.stop);
-    case CPlayerUIBase::BTN_PREVIOUS: return (big_icon ? theApp.m_icon_set.previous_l : theApp.m_icon_set.previous_new);
-    case CPlayerUIBase::BTN_PLAY_PAUSE:
+    case BTN_REPETEMODE: return *GetRepeatModeIcon();
+    case BTN_VOLUME: return *GetVolumeIcon();
+    case BTN_SKIN: return theApp.m_icon_set.skin;
+    case BTN_EQ: return theApp.m_icon_set.eq;
+    case BTN_SETTING: return theApp.m_icon_set.setting;
+    case BTN_MINI: return theApp.m_icon_set.mini;
+    case BTN_MINI1: return theApp.m_icon_set.mini;
+    case BTN_INFO: return theApp.m_icon_set.info;
+    case BTN_FIND: return theApp.m_icon_set.find_songs;
+    case BTN_STOP: return (big_icon ? theApp.m_icon_set.stop_l : theApp.m_icon_set.stop);
+    case BTN_PREVIOUS: return (big_icon ? theApp.m_icon_set.previous_l : theApp.m_icon_set.previous_new);
+    case BTN_PLAY_PAUSE:
         if (CPlayer::GetInstance().IsPlaying())
             return (big_icon ? theApp.m_icon_set.pause_l : theApp.m_icon_set.pause_new);
         else
             return (big_icon ? theApp.m_icon_set.play_l : theApp.m_icon_set.play_new);
-    case CPlayerUIBase::BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
-    case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
-    case CPlayerUIBase::BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
-    case CPlayerUIBase::BTN_FULL_SCREEN: case CPlayerUIBase::BTN_FULL_SCREEN1: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
-    case CPlayerUIBase::BTN_MENU: case CPlayerUIBase::BTN_MENU1: return theApp.m_icon_set.menu;
-    case CPlayerUIBase::BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
-    case CPlayerUIBase::BTN_MINIMIZE: return theApp.m_icon_set.minimize;
-    case CPlayerUIBase::BTN_MAXIMIZE: return theApp.m_icon_set.maximize;
-    case CPlayerUIBase::BTN_APP_CLOSE: return theApp.m_icon_set.close;
+    case BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
+    case BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
+    case BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
+    case BTN_FULL_SCREEN: case BTN_FULL_SCREEN1: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
+    case BTN_MENU: case BTN_MENU1: return theApp.m_icon_set.menu;
+    case BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
+    case BTN_MINIMIZE: return theApp.m_icon_set.minimize;
+    case BTN_MAXIMIZE: return theApp.m_icon_set.maximize;
+    case BTN_APP_CLOSE: return theApp.m_icon_set.close;
+    case BTN_ADD_TO_PLAYLIST: return theApp.m_icon_set.add;
     default: break;
     }
     return IconRes();
@@ -2112,6 +2126,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_APP_CLOSE, CCommon::LoadText(IDS_CLOSE));
     AddMouseToolTip(BTN_MINIMIZE, CCommon::LoadText(IDS_MINIMIZE));
     AddMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
+    AddMouseToolTip(BTN_ADD_TO_PLAYLIST, CCommon::LoadText(IDS_ADD_TO_PLAYLIST));
 
     UpdateRepeatModeToolTip();
 }

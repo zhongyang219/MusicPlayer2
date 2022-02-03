@@ -696,8 +696,11 @@
 #define IDI_ICON22                      548
 #define IDI_VOLUME0_D                   548
 #define IDS_CFG_DIR_CHANGED_INFO        548
+#define IDS_ADD_TO_PLAYLIST             549
 #define IDI_ICON20                      551
 #define IDI_EXPAND_D                    551
+#define IDI_ICON23                      552
+#define IDI_ADD                         552
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1512,7 +1515,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        552
+#define _APS_NEXT_RESOURCE_VALUE        553
 #define _APS_NEXT_COMMAND_VALUE         33387
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101

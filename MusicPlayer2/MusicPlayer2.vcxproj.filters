@@ -1682,5 +1682,8 @@
     <Image Include="res\expand.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\add.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

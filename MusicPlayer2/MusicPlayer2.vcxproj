@@ -527,6 +527,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\about.bmp" />
+    <Image Include="res\add.ico" />
     <Image Include="res\AddTag.ico" />
     <Image Include="res\add_d.ico" />
     <Image Include="res\album_cover.ico" />

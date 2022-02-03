@@ -24,6 +24,7 @@
           <horizontalLayout>
 					  <button key="favorite" width="24" height="24" margin="2"/>
 					  <button key="info" width="24" height="24" margin="2"/>
+					  <button key="addToPlaylist" width="24" height="24" margin="2"/>
             <placeHolder/>
           </horizontalLayout>
 				  <verticalLayout margin="4" width="55%">

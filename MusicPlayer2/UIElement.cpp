@@ -340,6 +340,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_SELECT_FOLDER;
     else if (key_type == "showPlaylist")
         key = CPlayerUIBase::BTN_SHOW_PLAYLIST;
+    else if (key_type == "addToPlaylist")
+        key = CPlayerUIBase::BTN_ADD_TO_PLAYLIST;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }

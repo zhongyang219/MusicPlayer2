@@ -787,6 +787,7 @@ void CMusicPlayerDlg::SetAlwaysOnTop()
 bool CMusicPlayerDlg::IsMainWindowPopupMenu() const
 {
     return (m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)
+        || m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2)
         || m_pCurMenu == theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0));
 }
 

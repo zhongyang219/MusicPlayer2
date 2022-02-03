@@ -274,6 +274,11 @@
                             <xs:documentation>显示/隐藏播放列表</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="addToPlaylist">
+                        <xs:annotation>
+                            <xs:documentation>添加到播放列表</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
