@@ -789,6 +789,7 @@ void CMusicPlayerDlg::SetAlwaysOnTop()
 bool CMusicPlayerDlg::IsMainWindowPopupMenu() const
 {
     return (m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)
+        || m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2)
         || m_pCurMenu == theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0));
 }
 
@@ -1319,12 +1320,13 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
         pMenu->CheckMenuRadioItem(ID_RATING_1, ID_RATING_NONE, ID_RATING_NONE, MF_BYCOMMAND | MF_CHECKED);
 
     //设置分级菜单的启用/禁用状态
-    pMenu->EnableMenuItem(ID_RATING_1, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_2, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_3, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_4, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_5, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_RATING_NONE, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    bool rating_menu_emable{ IsMainWindowPopupMenu() || selete_valid };
+    pMenu->EnableMenuItem(ID_RATING_1, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_2, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_3, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_4, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_5, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RATING_NONE, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
 
     bool move_enable = playlist_mode && !m_searched && selete_valid;
     pMenu->EnableMenuItem(ID_MOVE_PLAYLIST_ITEM_UP, MF_BYCOMMAND | (move_enable ? MF_ENABLED : MF_GRAYED));
@@ -3011,7 +3013,24 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                 {
                     if (item.playlist_info != nullptr)
                     {
-                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position, false, false);
+                        int track{ item.playlist_info->track };
+                        int position{ item.playlist_info->position };
+                        bool continue_play{ false };
+                        // 实现切换到播放列表时的同曲目继续播放
+                        if (theApp.m_play_setting_data.continue_when_switch_playlist)
+                        {
+                            SongInfo Last = CPlayer::GetInstance().GetCurrentSongInfo();
+                            CPlaylistFile playlist;
+                            playlist.LoadFromFile(item.playlist_info->path);
+                            int tmp = playlist.GetFileIndexInPlaylist(Last);
+                            if (tmp != -1)
+                            {
+                                track = tmp;
+                                position = CPlayer::GetInstance().GetCurrentPosition();
+                                continue_play = CPlayer::GetInstance().IsPlaying();
+                            }
+                        }
+                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, track, position, false, continue_play);
                         UpdatePlayPauseButton();
                         DrawInfo(true);
                         CPlayer::GetInstance().SaveRecentPath();

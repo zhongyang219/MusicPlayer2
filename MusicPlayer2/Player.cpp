@@ -127,7 +127,7 @@ void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
         }
         //m_index = 0;
         //m_song_num = m_playlist.size();
-        m_index_tmp = m_index;		//保存歌曲序号
+        m_index_tmp = m_index;		//保存歌曲序号，cue未解析情况下当前的m_index有可能超过当前歌曲数目，临时存储待cue解析后恢复
         if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 
         //m_song_length = { 0, 0, 0 };
@@ -232,16 +232,16 @@ void CPlayer::IniPlaylistComplate()
     //m_song_num = m_playlist.size();
     m_index = m_index_tmp;
     CAudioCommon::GetCueTracks(m_playlist, m_pCore, m_index_tmp);
-    // 如果是播放列表模式则m_index_tmp可能在cue解析后变化，需更新(文件夹模式下m_index_tmp会得到错误结果)
+    // 如果是播放列表模式则m_index_tmp可能在cue解析后变化，需重新更新(文件夹模式下m_index_tmp会被处理为错误结果)
     if (m_playlist_mode)
         m_index = m_index_tmp;
 
     if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
     //统计列表总时长
     m_total_time = 0;
-    for (const auto& somg : m_playlist)
+    for (const auto& song : m_playlist)
     {
-        m_total_time += somg.lengh.toInt();
+        m_total_time += song.lengh.toInt();
     }
 
     //检查列表中的曲目是否在“我喜欢”播放列表中
@@ -292,6 +292,29 @@ void CPlayer::IniPlaylistComplate()
                     }
                 }
                 m_current_file_name_tmp.clear();
+                MusicControl(Command::OPEN);
+                MusicControl(Command::SEEK);
+                if (m_thread_info.play)
+                    MusicControl(Command::PLAY);
+            }
+            else if (!m_current_song_tmp.IsEmpty())     // 切换到文件夹模式时m_current_song_tmp不为空则查找播放此歌曲，同时定位到m_current_song_position_tmp
+            {
+                //重新载入播放列表后，查找正在播放项目的序号
+                MusicControl(Command::CLOSE);
+                if (sorted || m_thread_info.find_current_track)
+                {
+                    for (int i{}; i < GetSongNum(); i++)
+                    {
+                        if (m_current_song_tmp.IsSameSong(m_playlist[i]))
+                        {
+                            m_index = i;
+                            break;
+                        }
+                    }
+                }
+                m_current_position.fromInt(m_current_song_position_tmp);
+                m_current_song_tmp = SongInfo();
+                m_current_song_position_tmp = 0;
                 MusicControl(Command::OPEN);
                 MusicControl(Command::SEEK);
                 if (m_thread_info.play)
@@ -881,12 +904,43 @@ void CPlayer::SetPath(const PathInfo& path_info)
         EmplaceCurrentPlaylistToRecent();
     else
         EmplaceCurrentPathToRecent();
+
+    // 实现切换到文件夹模式时的同曲目播放保持
+    // 由于文件夹模式无法预先得知当前歌曲在新文件夹中的track所以目前只想到更改文件夹时不改变当前播放
+    bool play{ false };
+    if (theApp.m_play_setting_data.continue_when_switch_playlist)
+    {
+        SongInfo now_song{ GetCurrentSongInfo() };
+        CFilePathHelper now_song_path{ now_song.file_path };
+        now_song_path.SetFilePath(now_song_path.GetDir());
+        bool contain_sub_folder{ path_info.contain_sub_folder || COSUPlayerHelper::IsOsuFolder(path_info.path) };
+        // 判断当前播放歌曲是否在目标路径下
+        do
+        {
+            if (now_song_path.GetFilePath() == path_info.path)
+            {
+                // 当前播放歌曲在将要切换到的路径中
+                // 记录播放信息，在void CPlayer::IniPlaylistComplate()中进行恢复
+                // m_current_song_tmp优先级高，存在时覆盖下面的track参数
+                m_current_song_position_tmp = GetCurrentPosition();
+                m_current_song_tmp = now_song;
+                play = (m_playing == PlayingState::PS_PLAYING);
+                break;
+            }
+            else if (now_song_path.GetFilePath().empty())
+            {
+                break;
+            }
+            now_song_path.SetFilePath(now_song_path.GetParentDir());
+        } while (contain_sub_folder);
+    }
+
     m_sort_mode = path_info.sort_mode;
     m_descending = path_info.descending;
     m_contain_sub_folder = path_info.contain_sub_folder;
-    ChangePath(path_info.path, path_info.track);
+    ChangePath(path_info.path, path_info.track, play);
     m_current_position.fromInt(path_info.position);
-    //MusicControl(Command::SEEK);
+    // MusicControl(Command::SEEK);
     EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
 
 }

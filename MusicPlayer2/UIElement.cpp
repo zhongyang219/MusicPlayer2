@@ -55,6 +55,16 @@ void UiElement::Element::Draw(CPlayerUIBase* ui)
     }
 }
 
+int UiElement::Element::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
+{
+    return width.GetValue(parent_rect, ui);
+}
+
+int UiElement::Element::GetHeight(CRect parent_rect, CPlayerUIBase* ui) const
+{
+    return height.GetValue(parent_rect, ui);
+}
+
 CRect UiElement::Element::GetRect() const
 {
     return rect;
@@ -143,7 +153,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         {
             if (child->width.IsValid())
             {
-                total_size += child->width.GetValue(GetRect(), ui);
+                total_size += child->GetWidth(GetRect(), ui);
                 item_fixed_size_num++;
             }
             if (child->margin_left.IsValid())
@@ -170,12 +180,12 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             CRect child_rect{};
             if (child->height.IsValid())
             {
-                int child_height = child->height.GetValue(GetRect(), ui);
+                int child_height = child->GetHeight(GetRect(), ui);
                 int max_height = GetRect().Height() - child->margin_top.GetValue(GetRect(), ui) - child->margin_bottom.GetValue(GetRect(), ui);
                 if (child_height > max_height)
                     child_height = max_height;
                 child_rect.top = GetRect().top + (GetRect().Height() - child_height) / 2;
-                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect(), ui);
+                child_rect.bottom = child_rect.top + child->GetHeight(GetRect(), ui);
             }
             else
             {
@@ -187,7 +197,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             else
                 child_rect.left = childLst[i - 1]->GetRect().right + childLst[i - 1]->margin_right.GetValue(GetRect(), ui) + child->margin_left.GetValue(GetRect(), ui);
             if (child->width.IsValid())
-                child_rect.right = child_rect.left + child->width.GetValue(GetRect(), ui);
+                child_rect.right = child_rect.left + child->GetWidth(GetRect(), ui);
             else
                 child_rect.right = child_rect.left + item_default_size;
             child->SetRect(child_rect);
@@ -204,7 +214,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         {
             if (child->height.IsValid())
             {
-                total_size += child->height.GetValue(GetRect(), ui);
+                total_size += child->GetHeight(GetRect(), ui);
                 item_fixed_size_num++;
             }
             if (child->margin_top.IsValid())
@@ -231,12 +241,12 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             CRect child_rect{};
             if (child->width.IsValid())
             {
-                int child_width = child->width.GetValue(GetRect(), ui);
+                int child_width = child->GetWidth(GetRect(), ui);
                 int max_width = GetRect().Width() - child->margin_left.GetValue(GetRect(), ui) - child->margin_right.GetValue(GetRect(), ui);
                 if (child_width > max_width)
                     child_width = max_width;
                 child_rect.left = GetRect().left + (GetRect().Width() - child_width) / 2;
-                child_rect.right = child_rect.left + child->width.GetValue(GetRect(), ui);
+                child_rect.right = child_rect.left + child->GetWidth(GetRect(), ui);
             }
             else
             {
@@ -248,7 +258,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             else
                 child_rect.top = childLst[i - 1]->GetRect().bottom + childLst[i - 1]->margin_bottom.GetValue(GetRect(), ui) + child->margin_top.GetValue(GetRect(), ui);
             if (child->height.IsValid())
-                child_rect.bottom = child_rect.top + child->height.GetValue(GetRect(), ui);
+                child_rect.bottom = child_rect.top + child->GetHeight(GetRect(), ui);
             else
                 child_rect.bottom = child_rect.top + item_default_size;
             child->SetRect(child_rect);
@@ -330,6 +340,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_SELECT_FOLDER;
     else if (key_type == "showPlaylist")
         key = CPlayerUIBase::BTN_SHOW_PLAYLIST;
+    else if (key_type == "addToPlaylist")
+        key = CPlayerUIBase::BTN_ADD_TO_PLAYLIST;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
@@ -436,9 +448,28 @@ void UiElement::AlbumCover::CalculateRect(CPlayerUIBase* ui)
 void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center);
-    ui->ResetDrawArea();
-    Element::Draw(ui);
+    if (theApp.m_app_setting_data.show_spectrum)
+    {
+        ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center, fixed_width);
+        ui->ResetDrawArea();
+        Element::Draw(ui);
+    }
+}
+
+int UiElement::Spectrum::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
+{
+    if (theApp.m_app_setting_data.show_spectrum)
+        return Element::GetWidth(parent_rect, ui);
+    else
+        return 0;
+}
+
+int UiElement::Spectrum::GetHeight(CRect parent_rect, CPlayerUIBase* ui) const
+{
+    if (theApp.m_app_setting_data.show_spectrum)
+        return Element::GetHeight(parent_rect, ui);
+    else
+        return 0;
 }
 
 void UiElement::TrackInfo::Draw(CPlayerUIBase* ui)

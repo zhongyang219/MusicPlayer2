@@ -1,9 +1,9 @@
 ﻿#include "stdafx.h"
+#include "MediaTransControls.h"
 
 #ifndef DISABLE_MEDIA_TRANS_CONTROLS
 
 #include "Resource.h"
-#include "MediaTransControls.h"
 #include "shcore.h"
 #include "WinVersionHelper.h"
 

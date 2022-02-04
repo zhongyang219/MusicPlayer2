@@ -32,7 +32,8 @@ public:
     //rect：频谱的矩形区域
     //col：频谱的柱形的数量
     //draw_reflex：是否绘制倒影
-    void DrawSpectrum(CRect rect, SpectrumCol col = SC_64, bool draw_reflex = false, bool low_freq_in_center = false);
+    //fixed_width：每个柱形是否使用相同的宽度
+    void DrawSpectrum(CRect rect, SpectrumCol col = SC_64, bool draw_reflex = false, bool low_freq_in_center = false, bool fixed_width = false);
     
     //绘制频谱分析
     //col_width：每一个柱形的宽度
@@ -42,10 +43,12 @@ public:
     //draw_reflex：是否绘制倒影
     void DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex = false, bool low_freq_in_center = false);
 
+    int DPI(int pixel);
+
 private:
     CFont* SetLyricFont();
     CFont* SetLyricFontTranslated();
-    void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent = 100);
+    void DrawLyricDoubleLine(CRect rect, LPCTSTR beforelyric, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int index, int lyric_mode, int fade_percent = 100);
 
 private:
     UIColors& m_colors;

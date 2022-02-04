@@ -204,25 +204,75 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
     {
         SetDrawArea(rect);
         CRect lyric_rect = rect;
-        Time time = CPlayer::GetInstance().GetCurrentPosition();
-        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };	//获取当歌词
-        if (current_lyric.text.empty())		//如果当前歌词为空白，就显示为省略号
-            current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time) };		//获取当前歌词进度（范围为0~1000）
+
+        const bool old_mode{ !theApp.m_lyric_setting_data.lyric_karaoke_disp };
+        const wstring mark{ L"♪♪♪" };
+
+        auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
+        Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+        CLyrics::Lyric current_lyric = now_lyrics.GetLyric(time, 0);
+        bool is_lyric_empty{ current_lyric.text.empty() };
+        int lyric_mode{};       // 0:默认状态 1:有进度符号且正在显示进度符号 2:有进度符号且正在显示歌词
+        int lyric_index = now_lyrics.GetLyricIndex(time);
+        int progress = now_lyrics.GetLyricProgress(time);
+
+        if (old_mode)  // 设置为独立显示空行
+        {
+            if (is_lyric_empty)
+                current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+        }
+        else
+        {
+            lyric_index = now_lyrics.GetLyricIndexIgnoreBlank(lyric_index, 0); // 使用忽略空白行后的索引
+            if (is_lyric_empty)                                                // 如果当前time对应歌词为空则试着忽略空白获取歌词
+                current_lyric = now_lyrics.GetLyricIgnoreBlank(lyric_index);
+            if (current_lyric.text.empty())                                            // 如果忽略空白仍然不能取得歌词说明时间已超过末尾的歌词
+                current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+            else
+            {
+                bool blanktimeok{ now_lyrics.GetBlankTimeBeforeLyric(lyric_index) > LYRIC_BLANK_IGNORE_TIME };   // 判断空白时长是否有必要显示符号
+                if (is_lyric_empty)                                            // 当前time处在空白行中并且正在提前显示下一行歌词
+                {
+                    if (blanktimeok)
+                    {
+                        progress = now_lyrics.GetBlankLyricProgress(lyric_index, time);      // 获取合并空白行后的进度
+                        lyric_mode = 1;
+                    }
+                    else
+                        progress = 0;
+                }
+                else if (blanktimeok)                                          // 当前time对应非空歌词但是上行歌词为空
+                    lyric_mode = 2;
+            }
+        }
 
         //双行显示歌词
         if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
-            wstring next_lyric_text = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 1).text;
-            if (next_lyric_text.empty())
-                next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+            wstring next_lyric_text;
+            if (old_mode)
+            {
+                next_lyric_text = now_lyrics.GetLyric(time, 1).text;
+                if (next_lyric_text.empty())
+                    next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+            }
+            else
+            {
+                int next_lyric_index{ now_lyrics.GetLyricIndexIgnoreBlank(lyric_index, 1) };
+                next_lyric_text = now_lyrics.GetLyricIgnoreBlank(next_lyric_index).text;
+                if (next_lyric_text.empty())
+                    next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+                else if (now_lyrics.GetBlankTimeBeforeLyric(next_lyric_index) > LYRIC_BLANK_IGNORE_TIME)
+                    next_lyric_text = mark + L" " + next_lyric_text;
+            }
             //这里实现文本从非高亮缓慢变化到高亮效果
             int last_time_span = time - current_lyric.time;     //当前播放的歌词已持续的时间
             int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
-            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, fade_percent);
+            DrawLyricDoubleLine(lyric_rect, mark.c_str(), current_lyric.text.c_str(), next_lyric_text.c_str(), progress, lyric_index, lyric_mode, fade_percent);
         }
         else
         {
+            // 单行歌词在这里显示翻译，同时更新歌词区域为单行有翻译时的位置
             if (theApp.m_lyric_setting_data.show_translate && !current_lyric.translate.empty() && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
             {
                 lyric_rect.bottom = lyric_rect.top + rect.Height() / 2;
@@ -232,19 +282,21 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
                 SetLyricFontTranslated();
                 DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
             }
-
+            // 绘制单行歌词
             SetLyricFont();
-            if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
+            if (lyric_mode == 1)
+                DrawWindowTextForLyric(lyric_rect, mark.c_str(), current_lyric.text.c_str(), m_colors.color_text, theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text, progress, true, align, true);
+            else if (lyric_mode == 2)
+                DrawWindowTextForLyric(lyric_rect, mark.c_str(), current_lyric.text.c_str(), m_colors.color_text, theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text, progress, false, align, true);
             else
-                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
+                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text, progress, align, true);
         }
     }
 
     SetFont(pOldFont);
 }
 
-void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center)
+void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center, bool fixed_width)
 {
     int cols;		//要显示的频谱柱形的数量
     switch (col)
@@ -265,13 +317,25 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
         cols = SPECTRUM_COL;
         break;
     }
-    int gap_width{ rect.Width() * (SPECTRUM_COL / cols) / 168 };		//频谱柱形间隙宽度
-    if (theApp.m_ui_data.full_screen)
+    int max_width{ rect.Width() };
+    if (fixed_width)
+    {
+        if (col == SC_64)
+        {
+            max_width = DPI(280);
+        }
+    }
+    int gap_width{ max_width * (SPECTRUM_COL / cols) / 168 };		//频谱柱形间隙宽度
+    if (theApp.m_ui_data.full_screen && !m_for_cortana_lyric)
         gap_width *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
+    int width = (max_width - (cols - 1) * gap_width) / (cols - 1);
     if (gap_width < 1)
         gap_width = 1;
-    int width = (rect.Width() - (cols - 1) * gap_width) / (cols - 1);
+    if (width < 1)
+        width = 1;
 
+    if (fixed_width)
+        SetDrawArea(rect);
     DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex, low_freq_in_center);
 }
 
@@ -346,26 +410,40 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
 
 }
 
-void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int fade_percent)
+int CUIDrawer::DPI(int pixel)
+{
+    if (theApp.m_ui_data.full_screen && !m_for_cortana_lyric)
+        return static_cast<int>(theApp.DPI(pixel * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR));
+    else
+        return theApp.DPI(pixel);
+}
+
+void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR beforelyric, LPCTSTR lyric, LPCTSTR next_lyric, int progress, int index, int lyric_mode, int fade_percent)
 {
     CFont* pOldFont = SetLyricFont();
     static bool swap;
-    static int last_progress;
-    if (last_progress > progress)		//如果当前的歌词进度比上次的小，说明歌词切换到了下一句
+    static int last_index;
+    if (last_index != index)		//如果歌词索引改变，说明歌词切换到了下一句
     {
         swap = !swap;
     }
-    last_progress = progress;
-
+    last_index = index;
 
     CRect up_rect{ rect }, down_rect{ rect };		//上半部分和下半部分歌词的矩形区域
     up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
     down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
+
     //根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
     //GetDC()->SelectObject(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
     int width;
     if (!swap)
         width = GetTextExtent(next_lyric).cx;
+    else if (lyric_mode != 0)
+    {
+        wstring mark_lyric;
+        mark_lyric.append(beforelyric).append(L" ").append(lyric);
+        width = GetTextExtent(mark_lyric.c_str()).cx;
+    }
     else
         width = GetTextExtent(lyric).cx;
     if (width < rect.Width())
@@ -382,16 +460,17 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
         color1 = color2 = CColorConvert::GetGradientColor(m_colors.color_text_2, m_colors.color_text, fade_percent);
     }
 
-    if (!swap)
-    {
-        DrawWindowText(up_rect, lyric, color1, color2, progress);
-        DrawWindowText(down_rect, next_lyric, m_colors.color_text_2);
-    }
+    // 绘制当前歌词
+    if (lyric_mode == 1)
+        DrawWindowTextForLyric(swap ? down_rect : up_rect, beforelyric, lyric, color1, color2, progress, true);
+    else if (lyric_mode == 2)
+        DrawWindowTextForLyric(swap ? down_rect : up_rect, beforelyric, lyric, color1, color2, progress, false);
     else
-    {
-        DrawWindowText(up_rect, next_lyric, m_colors.color_text_2);
-        DrawWindowText(down_rect, lyric, color1, color2, progress);
-    }
+        DrawWindowText(swap ? down_rect : up_rect, lyric, color1, color2, progress);
+    //DrawWindowText(swap ? down_rect : up_rect, lyric, color1, color2, progress);
+    
+    // 绘制下一句歌词
+    DrawWindowText(swap ? up_rect : down_rect, next_lyric, m_colors.color_text_2);
     SetFont(pOldFont);
 }
 

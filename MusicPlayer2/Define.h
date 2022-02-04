@@ -91,6 +91,7 @@ using _tstring = std::string;
 #define MIN_UI_INTERVAL 10      //界面刷新时间间隔最小值
 #define MAX_UI_INTERVAL 300     //界面刷新时间间隔最大值
 #define UI_INTERVAL_STEP 10     //调整界面刷新时间间隔的步长
+#define LYRIC_BLANK_IGNORE_TIME 3000           //歌词双行显示、桌面歌词中忽略空白歌词的时间
 
 //#define TIMER_ID_SPECTRAL
 //#define TIMER_ID_EXIT 1237

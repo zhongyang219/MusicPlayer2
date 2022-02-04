@@ -19,11 +19,7 @@
 								<text type="title" style="scroll" height="38" font_size="12"/>
 								<text type="artist" style="scroll" height="24" font_size="10"/>
 								<text type="album" style="scroll" height="24" font_size="10"/>
-								<placeHolder/>
-								<horizontalLayout margin-bottom="8">
-									<spectrum width="280" draw_reflex="false"/>
-									<placeHolder/>
-								</horizontalLayout>
+								<spectrum draw_reflex="true" fixed_width="true" margin-top="8"/>
 								<text type="format" style="scroll" height="24"/>
 							</verticalLayout>
 						</horizontalLayout>
@@ -38,7 +34,7 @@
 						<text type="title" style="scroll" height="24" font_size="10"/>
 						<text type="artist" style="scroll" height="24"/>
 					</verticalLayout>
-					<verticalLayout>
+					<verticalLayout width="36%">
 						<horizontalLayout height="60">
 							<button key="repeatMode" width="26" height="26" margin="2"/>
 							<button key="previous" width="40" height="40" bigIcon="true" margin="2"/>
@@ -79,11 +75,7 @@
 								<text type="title" style="scroll" height="38" font_size="12"/>
 								<text type="artist" style="scroll" height="24" font_size="10"/>
 								<text type="album" style="scroll" height="24" font_size="10"/>
-								<placeHolder/>
-								<horizontalLayout margin-bottom="8">
-									<spectrum width="280" draw_reflex="false"/>
-									<placeHolder/>
-								</horizontalLayout>
+								<spectrum draw_reflex="true" fixed_width="true" margin-top="8"/>
 								<text type="format" style="scroll" height="24"/>
 							</verticalLayout>
 						</horizontalLayout>
@@ -102,7 +94,7 @@
 						<volume show_text="false" width="26" height="26" margin="2"/>
 						<button key="showPlaylist" width="26" height="26" margin="2"/>
 					</horizontalLayout>
-					<progressBar show_play_time="true"/>
+					<progressBar show_play_time="true" play_time_both_side="true" margin-left="4" margin-right="4"/>
 				</verticalLayout>
 			</rectangle>
 		</verticalLayout>
@@ -112,13 +104,13 @@
 	<ui type="small">
 		<verticalLayout>
 			<horizontalLayout>
-				<albumCover width="112"/>
-					<verticalLayout margin="4">
-						<text type="title" style="scroll" height="24" font_size="11"/>
-						<text type="artist" style="scroll" height="24" font_size="10"/>
-						<text type="album" style="scroll" height="24" font_size="10"/>
-						<text type="format" style="scroll" height="22"/>
-					</verticalLayout>
+				<albumCover width="120" square="true" margin="4"/>
+				<verticalLayout margin="4">
+					<text type="title" style="scroll" height="24" font_size="11"/>
+					<text type="artist" style="scroll" height="24" font_size="10"/>
+					<text type="album" style="scroll" height="24" font_size="10"/>
+					<text type="format" style="scroll" height="22"/>
+				</verticalLayout>
 			</horizontalLayout>
 			<rectangle height="88" no_corner_radius="true">
 				<verticalLayout margin="4">
@@ -132,7 +124,7 @@
 						<button key="mediaLib" width="26" height="26" margin="2"/>
 						<button key="showPlaylist" width="26" height="26" margin="2"/>
 					</horizontalLayout>
-					<progressBar show_play_time="true"/>
+					<progressBar show_play_time="true" play_time_both_side="true" margin-left="4" margin-right="4"/>
 				</verticalLayout>
 			</rectangle>
 		</verticalLayout>

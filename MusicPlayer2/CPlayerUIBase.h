@@ -127,6 +127,7 @@ public:
         BTN_MINIMIZE,           //最小化按钮
         BTN_MAXIMIZE,           //最大化按钮
         BTN_APP_CLOSE,          //关闭按钮
+        BTN_ADD_TO_PLAYLIST,    //添加到播放列表按钮
         BTN_INVALID,            //无效的按钮
     };
 
@@ -234,6 +235,7 @@ protected:
     //UI 数据
     CRect m_draw_rect;                      //绘图区域
     bool m_show_volume_adj{ false };        //显示音量调整按钮
+    bool m_show_volume_text{};        //是否显示音量文本
 
     std::map<BtnKey, UIButton> m_buttons;
 

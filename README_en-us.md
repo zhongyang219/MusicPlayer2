@@ -10,6 +10,10 @@ Please [click here](https://github.com/zhongyang219/MusicPlayer2/releases)to dow
 
 Alternate link: Download from [Baidu Netdisk](https://pan.baidu.com/s/1i5QNwFF)
 
+MusicPlayer2 relies on the Microsoft Visual C++ runtime environment. If the program prompts "Cannot find MSVC*.dll" when the program starts, please click the link below to download and install the Microsoft Visual C++ runtime environment.
+
+[Latest supported Visual C++ Redistributable downloads | Microsoft Docs](https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+
 If you are using [Scoop](https://github.com/ScoopInstaller/Scoop) as a package manager, the MusicPlayer2 installation package is now added to the Scoop official [Extras](https://github.com/ScoopInstaller) repository for maintenance. You can install MusicPlayer2 with the following Powershell command:
 
 ```pwsh

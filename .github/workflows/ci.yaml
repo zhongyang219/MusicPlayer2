@@ -1,0 +1,89 @@
+name: CI
+# Controls when the action will run. 
+# Events list: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build-x64:
+    runs-on: windows-2019
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v2
+      # 所有版本链接：https://docs.microsoft.com/en-us/visualstudio/releases/2022/release-history
+      #- name: 下载 vs_enterprise.exe
+      #  run: Invoke-WebRequest "https://aka.ms/vs/17/release/vs_enterprise.exe" -OutFile vs_enterprise.exe
+      # 组件列表：https://docs.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-enterprise?view=vs-2022
+      # 命令行选项：https://docs.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
+      #- name: 安装需要的组件
+      #  run: |
+      #    Start-Process -Wait vs_enterprise.exe -ArgumentList "--quiet", "--force", "--norestart", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.CoreIde", `
+      #    "--add", "Microsoft.VisualStudio.Component.IntelliCode", `
+      #    "--add", "Microsoft.VisualStudio.Component.Windows10SDK", `
+      #    "--add", "Microsoft.Component.VC.Runtime.UCRTSDK", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATL", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATLMFC", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.14.29.16.11.MFC"
+      - name: 设置 msbuild
+        uses: microsoft/setup-msbuild@v1.1
+      - name: 编译
+        run: msbuild -t:Build '-p:Configuration=Release;platform=x64' -m:4
+      - name: 打包可执行文件
+        run: |
+          cd x64/Release
+          7z a -mx9 '../../MusicPlayer2.x64.7z' '*.exe' '*.dll'
+      - name: 打包其他文件
+        run: |
+          cd x64/Release
+          7z a -mx9 '../../MusicPlayer2.x64.other.7z' '-x!*.exe' '-x!*.dll' './*'
+      - name: 上传文件
+        uses: actions/upload-artifact@v2
+        with:
+          name: MusicPlayer2.x64
+          path: MusicPlayer2.x64.7z
+      - name: 上传文件
+        uses: actions/upload-artifact@v2
+        with:
+          name: MusicPlayer2.x64.other
+          path: MusicPlayer2.x64.other.7z
+  build-x86:
+    runs-on: windows-2019
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v2
+      # 所有版本链接：https://docs.microsoft.com/en-us/visualstudio/releases/2022/release-history
+      #- name: 下载 vs_enterprise.exe
+      #  run: Invoke-WebRequest "https://aka.ms/vs/17/release/vs_enterprise.exe" -OutFile vs_enterprise.exe
+      # 组件列表：https://docs.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-enterprise?view=vs-2022
+      # 命令行选项：https://docs.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022
+      #- name: 安装需要的组件
+      #  run: |
+      #    Start-Process -Wait vs_enterprise.exe -ArgumentList "--quiet", "--force", "--norestart", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.CoreIde", `
+      #    "--add", "Microsoft.VisualStudio.Component.IntelliCode", `
+      #    "--add", "Microsoft.VisualStudio.Component.Windows10SDK", `
+      #    "--add", "Microsoft.Component.VC.Runtime.UCRTSDK", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATL", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.ATLMFC", `
+      #    "--add", "Microsoft.VisualStudio.Component.VC.14.29.16.11.MFC"
+      - name: 设置 msbuild
+        uses: microsoft/setup-msbuild@v1.1
+      - name: 编译
+        run: msbuild -t:Build '-p:Configuration=Release;platform=x86' -m:4
+      - name: 打包可执行文件
+        run: |
+          cd Release
+          7z a -mx9 '../MusicPlayer2.x86.7z' '*.exe' '*.dll'
+      - name: 打包其他文件
+        run: |
+          cd Release
+          7z a -mx9 '../MusicPlayer2.x86.other.7z' '-x!*.exe' '-x!*.dll' './*'
+      - name: 上传文件
+        uses: actions/upload-artifact@v2
+        with:
+          name: MusicPlayer2.x86
+          path: MusicPlayer2.x86.7z
+      - name: 上传文件
+        uses: actions/upload-artifact@v2
+        with:
+          name: MusicPlayer2.x86.other
+          path: MusicPlayer2.x86.other.7z

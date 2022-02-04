@@ -34,6 +34,8 @@ namespace UiElement
         std::string name;
 
         virtual void Draw(CPlayerUIBase* ui);   //绘制此元素
+        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
+        virtual int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         Element* RootElement();       //获取根节点
@@ -58,7 +60,7 @@ namespace UiElement
         void CalculateChildrenRect(CPlayerUIBase* ui);      //计算布局中所有子元素的位置
     };
 
-    //颜色填充的矩形
+    //半透明的矩形
     class Rectangle : public Element
     {
     public:
@@ -81,7 +83,7 @@ namespace UiElement
     {
     public:
         std::wstring text;
-        Alignment align;    //对齐方式
+        Alignment align{};    //对齐方式
         enum Style       //文本的样式
         {
             Static,     //静止的文本
@@ -121,8 +123,11 @@ namespace UiElement
     {
     public:
         bool draw_reflex{};     //是否绘制倒影
+        bool fixed_width{};     //每个柱形是否使用相同的宽度
         CUIDrawer::SpectrumCol type{ CUIDrawer::SC_64 };     //频谱分析的类型
         virtual void Draw(CPlayerUIBase* ui) override;
+        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
+        virtual int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const override;
     };
 
     //曲目信息（包含播放状态、文件名、歌曲标识、速度）

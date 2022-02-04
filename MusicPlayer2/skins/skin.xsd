@@ -274,6 +274,11 @@
                             <xs:documentation>显示/隐藏播放列表</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="addToPlaylist">
+                        <xs:annotation>
+                            <xs:documentation>添加到播放列表</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -414,6 +419,11 @@
         <xs:attribute name="draw_reflex" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>是否绘制倒影。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="fixed_width" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>每个柱形是否使用相同的宽度。如果为ture，则频谱分析的宽度将始终保持不变。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="type" default="64col">
