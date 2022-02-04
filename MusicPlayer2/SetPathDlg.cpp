@@ -6,6 +6,7 @@
 #include "SetPathDlg.h"
 #include "afxdialogex.h"
 #include "MusicPlayerCmdHelper.h"
+#include "RecentFolderAndPlaylist.h"
 
 
 // CSetPathDlg 对话框
@@ -443,6 +444,7 @@ void CSetPathDlg::OnDeletePath()
 	{
 		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//删除选中的路径
 		ShowPathList();		//重新显示路径列表
+        CRecentFolderAndPlaylist::Instance().Init();
 	}
 }
 
