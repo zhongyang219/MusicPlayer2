@@ -268,6 +268,7 @@ IconRes& CBrowseEdit::GetIcon()
 
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)
     ON_WM_DESTROY()
+    ON_WM_NCLBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -288,4 +289,14 @@ void CBrowseEdit::OnDestroy()
 
     // TODO: 在此处添加消息处理程序代码
     ReleaseDC(m_pDC);
+}
+
+
+void CBrowseEdit::OnNcLButtonDown(UINT nHitTest, CPoint point)
+{
+    if (HTCAPTION == nHitTest)
+    {
+        return;
+    }
+    CMFCEditBrowseCtrl::OnNcLButtonDown(nHitTest, point);
 }

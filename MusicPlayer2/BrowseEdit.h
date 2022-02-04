@@ -44,4 +44,5 @@ private:
     virtual void PreSubclassWindow();
 public:
     afx_msg void OnDestroy();
+    afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
 };

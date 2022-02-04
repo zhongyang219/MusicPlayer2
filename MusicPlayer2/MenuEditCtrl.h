@@ -21,4 +21,6 @@ protected:
 
 private:
     ColorTable& m_theme_color;
+public:
+    afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
 };

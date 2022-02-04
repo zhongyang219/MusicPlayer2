@@ -76,4 +76,16 @@ void CMenuEditCtrl::OnChangeLayout()
 }
 
 BEGIN_MESSAGE_MAP(CMenuEditCtrl, CMFCEditBrowseCtrl)
+    ON_WM_NCLBUTTONDOWN()
 END_MESSAGE_MAP()
+
+
+
+void CMenuEditCtrl::OnNcLButtonDown(UINT nHitTest, CPoint point)
+{
+    if (HTCAPTION == nHitTest)
+    {
+        return;
+    }
+    CMFCEditBrowseCtrl::OnNcLButtonDown(nHitTest, point);
+}
