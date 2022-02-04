@@ -665,6 +665,12 @@ void CPlayer::CalculateSpectralData()
             CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data);
         else
             m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data);
+    } else if (m_pCore->GetCoreType() == PT_FFMPEG) {
+        m_pCore->GetFFTData(m_fft);
+        if (theApp.m_app_setting_data.use_old_style_specturm)
+            CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data);
+        else
+            m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data);
     }
     else
     {

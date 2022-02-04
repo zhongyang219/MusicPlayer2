@@ -36,6 +36,8 @@ src/volume.h
 src/volume.c
 src/speed.h
 src/speed.c
+src/fft_data.h
+src/fft_data.c
 )
 
 add_library(ffmpeg_core SHARED "${CORE_FILES}")

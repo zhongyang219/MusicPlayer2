@@ -28,6 +28,8 @@ extern "C" {
 #endif
 #endif
 
+#define FFT_SAMPLE 1024
+
 typedef struct MusicHandle {
 /// Demux 用
 AVFormatContext* fmt;

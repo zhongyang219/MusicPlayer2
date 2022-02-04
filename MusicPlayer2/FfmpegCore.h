@@ -35,6 +35,7 @@ typedef int64_t(*_ffmpeg_core_get_bitrate)(MusicHandle*);
 typedef int64_t(*_ffmpeg_core_info_get_bitrate)(MusicInfoHandle*);
 typedef wchar_t*(*_ffmpeg_core_get_metadata)(MusicHandle*, const char* key);
 typedef wchar_t*(*_ffmpeg_core_info_get_metadata)(MusicInfoHandle*, const char* key);
+typedef int(*_ffmpeg_core_get_fft_data)(MusicHandle*, float*, int);
 typedef FfmpegCoreSettings*(*_ffmpeg_core_init_settings)();
 typedef int(*_ffmpeg_core_settings_set_volume)(FfmpegCoreSettings*, int volume);
 typedef int(*_ffmpeg_core_settings_set_speed)(FfmpegCoreSettings*, float);
@@ -119,6 +120,7 @@ private:
     _ffmpeg_core_info_get_bitrate ffmpeg_core_info_get_bitrate = nullptr;
     _ffmpeg_core_get_metadata ffmpeg_core_get_metadata = nullptr;
     _ffmpeg_core_info_get_metadata ffmpeg_core_info_get_metadata = nullptr;
+    _ffmpeg_core_get_fft_data ffmpeg_core_get_fft_data = nullptr;
     _ffmpeg_core_init_settings ffmpeg_core_init_settings = nullptr;
     _ffmpeg_core_settings_set_volume ffmpeg_core_settings_set_volume = nullptr;
     _ffmpeg_core_settings_set_speed ffmpeg_core_settings_set_speed = nullptr;

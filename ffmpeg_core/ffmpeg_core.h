@@ -29,6 +29,7 @@ typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 #define FFMPEG_CORE_ERR_NO_AUDIO 10
 #define FFMPEG_CORE_ERR_FAILED_SET_VOLUME 11
 #define FFMPEG_CORE_ERR_FAILED_SET_SPEED 12
+#define FFMPEG_CORE_ERR_TOO_BIG_FFT_DATA_LEN 13
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
@@ -105,6 +106,7 @@ FFMPEG_CORE_API int64_t ffmpeg_core_info_get_bitrate(MusicInfoHandle* handle);
 */
 FFMPEG_CORE_API wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key);
 FFMPEG_CORE_API wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key);
+FFMPEG_CORE_API int ffmpeg_core_get_fft_data(MusicHandle* handle, float* fft_data, int len);
 FFMPEG_CORE_API FfmpegCoreSettings* ffmpeg_core_init_settings();
 FFMPEG_CORE_API int ffmpeg_core_settings_set_volume(FfmpegCoreSettings* s, int volume);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_speed(FfmpegCoreSettings* s, float speed);

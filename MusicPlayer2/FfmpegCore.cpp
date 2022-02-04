@@ -5,6 +5,7 @@
 #include "Common.h"
 #include "MusicPlayer2.h"
 
+#define ft2ts(t) (((size_t)t.dwHighDateTime << 32) | (size_t)t.dwLowDateTime)
 
 CFfmpegCore::CFfmpegCore() {
     handle = nullptr;
@@ -245,6 +246,12 @@ void CFfmpegCore::ClearReverb() {
 }
 
 void CFfmpegCore::GetFFTData(float fft_data[FFT_SAMPLE]) {
+    if (handle) {
+        memset(fft_data, 0, FFT_SAMPLE);
+        ffmpeg_core_get_fft_data(handle, fft_data, FFT_SAMPLE);
+    } else {
+        memset(fft_data, 0, FFT_SAMPLE);
+    }
 }
 
 int CFfmpegCore::GetErrorCode() {
@@ -298,6 +305,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_info_get_bitrate = (_ffmpeg_core_info_get_bitrate)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_bitrate");
     ffmpeg_core_get_metadata = (_ffmpeg_core_get_metadata)::GetProcAddress(m_dll_module, "ffmpeg_core_get_metadata");
     ffmpeg_core_info_get_metadata = (_ffmpeg_core_info_get_metadata)::GetProcAddress(m_dll_module, "ffmpeg_core_info_get_metadata");
+    ffmpeg_core_get_fft_data = (_ffmpeg_core_get_fft_data)::GetProcAddress(m_dll_module, "ffmpeg_core_get_fft_data");
     ffmpeg_core_init_settings = (_ffmpeg_core_init_settings)::GetProcAddress(m_dll_module, "ffmpeg_core_init_settings");
     ffmpeg_core_settings_set_volume = (_ffmpeg_core_settings_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_volume");
     ffmpeg_core_settings_set_speed = (_ffmpeg_core_settings_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_speed");
@@ -330,6 +338,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_info_get_bitrate != NULL);
     rtn &= (ffmpeg_core_get_metadata != NULL);
     rtn &= (ffmpeg_core_info_get_metadata != NULL);
+    rtn &= (ffmpeg_core_get_fft_data != NULL);
     rtn &= (ffmpeg_core_init_settings != NULL);
     rtn &= (ffmpeg_core_settings_set_volume != NULL);
     rtn &= (ffmpeg_core_settings_set_speed != NULL);
