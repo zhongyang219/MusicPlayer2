@@ -15,11 +15,11 @@ CUserUi::~CUserUi()
 
 void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
 {
-    bool ui_big = (!m_ui_data.narrow_mode && !m_ui_data.show_playlist) || draw_rect.Width() > DPI(600);
     std::shared_ptr<UiElement::Element> draw_element{};
     //根据不同的窗口大小选择不同的界面元素的根节点绘图
+    auto ui_size = GetUiSize();
     //<ui type="small">
-    if (IsDrawNarrowMode())
+    if (ui_size == CPlayerUIBase::UiSize::SMALL)
     {
         if (m_root_ui_small != nullptr)
             draw_element = m_root_ui_small;
@@ -29,7 +29,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
             draw_element = m_root_default;
     }
     //<ui type="big">
-    else if (ui_big)
+    else if (ui_size == CPlayerUIBase::UiSize::BIG)
     {
         if (m_root_ui_big != nullptr)
             draw_element = m_root_ui_big;

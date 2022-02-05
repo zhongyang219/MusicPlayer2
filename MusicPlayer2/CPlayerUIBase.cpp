@@ -121,6 +121,13 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
     else
     {
+        //检测到界面布局发生了变化时
+        static UiSize last_ui_size{};
+        if (last_ui_size != GetUiSize())
+        {
+            ClearBtnRect();
+            last_ui_size = GetUiSize();
+        }
         static int last_width{}, last_height{}, last_class_id{};
         //检测到绘图区域变化或界面进行了切换时
         if (last_width != m_draw_rect.Width() || last_height != m_draw_rect.Height()
@@ -541,6 +548,18 @@ void CPlayerUIBase::ClearBtnRect()
     {
         btn.second.rect = CRect();
     }
+}
+
+CPlayerUIBase::UiSize CPlayerUIBase::GetUiSize() const
+{
+    bool ui_big = (!m_ui_data.narrow_mode && !m_ui_data.show_playlist) || m_draw_rect.Width() > DPI(600);
+    if (IsDrawNarrowMode())
+        return UiSize::SMALL;
+    else if (ui_big)
+        return UiSize::BIG;
+    else
+        return UiSize::NARROW;
+
 }
 
 IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
@@ -1257,7 +1276,7 @@ CString CPlayerUIBase::GetVolumeTooltipString()
     return tooltip;
 }
 
-int CPlayerUIBase::DPI(int pixel)
+int CPlayerUIBase::DPI(int pixel) const
 {
     if (m_ui_data.full_screen)
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
@@ -1265,7 +1284,7 @@ int CPlayerUIBase::DPI(int pixel)
         return theApp.DPI(pixel);
 }
 
-int CPlayerUIBase::DPI(double pixel)
+int CPlayerUIBase::DPI(double pixel) const
 {
     if (m_ui_data.full_screen)
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
@@ -1302,7 +1321,7 @@ bool CPlayerUIBase::IsDrawLargeIcon()
     return theApp.m_ui_data.full_screen;
 }
 
-bool CPlayerUIBase::IsDrawNarrowMode()
+bool CPlayerUIBase::IsDrawNarrowMode() const
 {
     if (!m_ui_data.show_playlist)
         return false;
