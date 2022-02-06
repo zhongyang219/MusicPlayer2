@@ -505,8 +505,8 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& file_path : all_media_files)
     {
-        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
         bool get_song_info{ !CSongDataManager::GetInstance().IsItemExist(file_path) || (refresh && IsSongNewer(file_path)) };
+        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
         if (get_song_info || !song_info.ChannelInfoAcquired())       //如果还没有获取到该歌曲的信息，或者文件的最后修改时间比上次获取到的新，则在这里获取
         {
             int audio_info_flags{ AF_ALL };
