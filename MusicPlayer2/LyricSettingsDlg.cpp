@@ -109,6 +109,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_CBN_SELCHANGE(IDC_ALIGNMENT_COMBO2, &CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo2)
     ON_CBN_SELCHANGE(IDC_DESKTOP_LYRIC_ALIGNMENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeDesktopLyricAlignmentCombo)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_TRANSLATE_CHECK, &CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck)
+    ON_BN_CLICKED(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, &CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck)
 END_MESSAGE_MAP()
 
 
@@ -130,6 +131,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_INQUIRY));
     m_lyric_save_policy_combo.SetCurSel(static_cast<int>(m_data.lyric_save_policy));
     CheckDlgButton(IDC_SHOW_LYRIC_TRANSLATE_CHECK, m_data.show_translate);
+    CheckDlgButton(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.donot_show_blank_lines);
 
     m_lyric_line_space_edit.SetRange(MIM_LINE_SPACE, MAX_LINE_SPACE);
     m_lyric_line_space_edit.SetValue(m_data.lyric_line_space);
@@ -206,6 +208,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_tool_tip.AddTool(&m_lyric_dir_edit, CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
     m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
     //m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
+    m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_HIDE_BLANK_LINE_CHECK), CCommon::LoadText(IDS_LYRICS_HIDE_BLANK_LINES_TIP));
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -252,6 +255,7 @@ void CLyricSettingsDlg::EnableControl()
     m_show_default_album_icon_chk.EnableWindow(enable);
 
     EnableDlgCtrl(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE, enable);
+    EnableDlgCtrl(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.lyric_karaoke_disp);
 }
 
 void CLyricSettingsDlg::EnableControlForDesktopLyric()
@@ -308,6 +312,7 @@ void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.lyric_karaoke_disp = (m_karaoke_disp_check.GetCheck() != 0);
+    EnableControl();
 }
 
 
@@ -766,4 +771,10 @@ void CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.show_translate = (IsDlgButtonChecked(IDC_SHOW_LYRIC_TRANSLATE_CHECK) != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck()
+{
+    m_data.donot_show_blank_lines = (IsDlgButtonChecked(IDC_LYRIC_HIDE_BLANK_LINE_CHECK) != 0);
 }

@@ -332,6 +332,7 @@ void CMusicPlayerDlg::SaveConfig()
 
     ini.WriteInt(L"config", L"lyric_save_policy", static_cast<int>(theApp.m_lyric_setting_data.lyric_save_policy));
     ini.WriteBool(L"config", L"use_inner_lyric_first", theApp.m_lyric_setting_data.use_inner_lyric_first);
+    ini.WriteBool(L"config", L"donot_show_blank_lines", theApp.m_lyric_setting_data.donot_show_blank_lines);
 
     ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
     ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -489,6 +490,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     theApp.m_lyric_setting_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(ini.GetInt(L"config", L"lyric_save_policy", 2));
     theApp.m_lyric_setting_data.use_inner_lyric_first = ini.GetBool(L"config", L"use_inner_lyric_first", true);
+    theApp.m_lyric_setting_data.donot_show_blank_lines = ini.GetBool(L"config", L"donot_show_blank_lines", true);
 
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);

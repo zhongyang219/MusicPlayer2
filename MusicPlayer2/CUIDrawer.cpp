@@ -205,7 +205,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         SetDrawArea(rect);
         CRect lyric_rect = rect;
 
-        const bool old_mode{ !theApp.m_lyric_setting_data.lyric_karaoke_disp };
+        const bool old_mode{ !theApp.m_lyric_setting_data.lyric_karaoke_disp || !theApp.m_lyric_setting_data.donot_show_blank_lines };
         const wstring mark{ L"♪♪♪" };
 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
@@ -468,7 +468,7 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR beforelyric, LPCTSTR lyr
     else
         DrawWindowText(swap ? down_rect : up_rect, lyric, color1, color2, progress);
     //DrawWindowText(swap ? down_rect : up_rect, lyric, color1, color2, progress);
-    
+
     // 绘制下一句歌词
     DrawWindowText(swap ? up_rect : down_rect, next_lyric, m_colors.color_text_2);
     SetFont(pOldFont);

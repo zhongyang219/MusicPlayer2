@@ -697,6 +697,7 @@
 #define IDI_VOLUME0_D                   548
 #define IDS_CFG_DIR_CHANGED_INFO        548
 #define IDS_ADD_TO_PLAYLIST             549
+#define IDS_LYRICS_HIDE_BLANK_LINES_TIP 550
 #define IDI_ICON20                      551
 #define IDI_EXPAND_D                    551
 #define IDI_ICON23                      552
@@ -1070,6 +1071,7 @@
 #define IDC_CHECK7                      1174
 #define IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK 1174
 #define IDC_SHOW_PLAYLIST_TOOLTIP_CHECK 1174
+#define IDC_LYRIC_HIDE_BLANK_LINE_CHECK 1174
 #define IDC_CHECK8                      1175
 #define IDC_BTN_ROUND_CORNERS_CHECK     1175
 #define IDC_UI_STATIC                   1176
