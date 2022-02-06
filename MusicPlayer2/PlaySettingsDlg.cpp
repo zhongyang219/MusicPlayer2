@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "PlaySettingsDlg.h"
 #include "afxdialogex.h"
+#include "FfmpegCore.h"
 
 
 // CPlaySettingsDlg 对话框
@@ -35,6 +36,7 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_BASS_RADIO, m_bass_radio);
     DDX_Control(pDX, IDC_MCI_RADIO, m_mci_radio);
     DDX_Control(pDX, IDC_FFMPEG_RADIO, m_ffmpeg_radio);
+    DDX_Control(pDX, IDC_FFMPEG_CACHE_LENGTH, m_ffmpeg_cache_length);
 }
 
 void CPlaySettingsDlg::ShowDeviceInfo()
@@ -172,8 +174,12 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     EnableControl();
 
+    m_ffmpeg_cache_length.SetRange(1, 60);
+    m_ffmpeg_cache_length.SetValue(theApp.m_play_setting_data.ffmpeg_core_cache_length);
+
     //设置控件不响应鼠标滚轮消息
     m_output_device_combo.SetMouseWheelEnable(false);
+    m_ffmpeg_cache_length.SetMouseWheelEnable(false);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -259,4 +265,12 @@ BOOL CPlaySettingsDlg::PreTranslateMessage(MSG* pMsg)
         m_toolTip.RelayEvent(pMsg);
 
     return CTabDlg::PreTranslateMessage(pMsg);
+}
+
+void CPlaySettingsDlg::OnOK() {
+    m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
+    if (CPlayer::GetInstance().IsFfmpegCore()) {
+        auto core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
+        core->UpdateSettings(&m_data);
+    }
 }

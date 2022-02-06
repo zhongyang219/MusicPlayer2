@@ -44,6 +44,7 @@ void CFfmpegCore::InitCore() {
         CAudioCommon::m_all_surpported_extensions = format.extensions;
         settings = ffmpeg_core_init_settings();
         ffmpeg_core_log_set_callback(LogCallback);
+        UpdateSettings();
     }
 }
 
@@ -309,6 +310,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_init_settings = (_ffmpeg_core_init_settings)::GetProcAddress(m_dll_module, "ffmpeg_core_init_settings");
     ffmpeg_core_settings_set_volume = (_ffmpeg_core_settings_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_volume");
     ffmpeg_core_settings_set_speed = (_ffmpeg_core_settings_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_speed");
+    ffmpeg_core_settings_set_cache_length = (_ffmpeg_core_settings_set_cache_length)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_cache_length");
     //ÅÐ¶ÏÊÇ·ñ³É¹¦
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
@@ -342,6 +344,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_init_settings != NULL);
     rtn &= (ffmpeg_core_settings_set_volume != NULL);
     rtn &= (ffmpeg_core_settings_set_speed != NULL);
+    rtn &= (ffmpeg_core_settings_set_cache_length != NULL);
     return rtn;
 }
 
@@ -422,4 +425,18 @@ void CFfmpegCore::LogCallback(void* ptr, int level, const char* fmt, va_list vl)
         }
     }
     FreeLibrary(re);
+}
+
+void CFfmpegCore::UpdateSettings(PlaySettingData* s) {
+    if (s) {
+        SetCacheLength(s->ffmpeg_core_cache_length);
+    } else {
+        SetCacheLength(theApp.m_play_setting_data.ffmpeg_core_cache_length);
+    }
+}
+
+void CFfmpegCore::SetCacheLength(int cache_length) {
+    if (settings) {
+        ffmpeg_core_settings_set_cache_length(settings, cache_length);
+    }
 }

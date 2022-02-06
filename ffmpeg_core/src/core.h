@@ -105,6 +105,8 @@ typedef struct FfmpegCoreSettings {
 int volume;
 /// 速度
 float speed;
+/// 缓存长度（单位s）
+int cache_length;
 } FfmpegCoreSettings;
 #if __cplusplus
 }

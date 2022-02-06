@@ -1087,6 +1087,7 @@
 #define IDC_SAVE_TO_APPDATA_RADIO       1188
 #define IDC_SAVE_TO_PROGRAM_DIR_RADIO   1189
 #define IDC_FFMPEG_RADIO                1190
+#define IDC_FFMPEG_CACHE_LENGTH         1191
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773

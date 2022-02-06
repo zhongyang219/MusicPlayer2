@@ -300,6 +300,8 @@ struct PlaySettingData
     bool use_mci{ false };              //是否使用MCI内核
     /// 是否使用ffmpeg内核
     bool use_ffmpeg{ false };
+    /// ffmpeg内核缓存时长（单位：s）
+    int ffmpeg_core_cache_length { 15 };
 };
 
 struct GlobalHotKeySettingData

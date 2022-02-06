@@ -344,6 +344,7 @@ FfmpegCoreSettings* ffmpeg_core_init_settings() {
     memset(s, 0, sizeof(FfmpegCoreSettings));
     s->speed = 1.0;
     s->volume = 100;
+    s->cache_length = 15;
     return s;
 }
 
@@ -378,4 +379,10 @@ int ffmpeg_core_set_speed(MusicHandle* handle, float speed) {
     int r = ffmpeg_core_settings_set_speed(handle->s, speed);
     if (!r) return FFMPEG_CORE_ERR_FAILED_SET_SPEED;
     return send_reinit_filters(handle);
+}
+
+int ffmpeg_core_settings_set_cache_length(FfmpegCoreSettings* s, int length) {
+    if (!s) return 0;
+    if (length >= 1 && length <= 60) s->cache_length = length;
+    return 1;
 }

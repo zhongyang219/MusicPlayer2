@@ -110,6 +110,7 @@ FFMPEG_CORE_API int ffmpeg_core_get_fft_data(MusicHandle* handle, float* fft_dat
 FFMPEG_CORE_API FfmpegCoreSettings* ffmpeg_core_init_settings();
 FFMPEG_CORE_API int ffmpeg_core_settings_set_volume(FfmpegCoreSettings* s, int volume);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_speed(FfmpegCoreSettings* s, float speed);
+FFMPEG_CORE_API int ffmpeg_core_settings_set_cache_length(FfmpegCoreSettings* s, int length);
 #ifdef __cplusplus
 }
 #endif

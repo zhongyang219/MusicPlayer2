@@ -50,7 +50,7 @@ DWORD WINAPI event_loop(LPVOID handle) {
     char doing = 0;
     /// 是否往缓冲区加了数据
     char writed = 0;
-    int buffered_size = h->sdl_spec.freq * 15;
+    int buffered_size = h->sdl_spec.freq * h->s->cache_length;
     while (1) {
         doing = 0;
         if (h->stoping) break;
@@ -74,6 +74,7 @@ DWORD WINAPI event_loop(LPVOID handle) {
             goto end;
         }
         if (!h->is_eof) {
+            buffered_size = h->sdl_spec.freq * h->s->cache_length;
             if (av_audio_fifo_size(h->buffer) < buffered_size) {
                 int re = decode_audio(handle, &writed);
                 if (re) {

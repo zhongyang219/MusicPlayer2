@@ -1,6 +1,7 @@
 #pragma once
 #include "IPlayerCore.h"
 #include "DllLib.h"
+#include "CommonData.h"
 
 #define AV_LOG_ERROR 16
 #define AV_LOG_VERBOSE 40
@@ -39,6 +40,7 @@ typedef int(*_ffmpeg_core_get_fft_data)(MusicHandle*, float*, int);
 typedef FfmpegCoreSettings*(*_ffmpeg_core_init_settings)();
 typedef int(*_ffmpeg_core_settings_set_volume)(FfmpegCoreSettings*, int volume);
 typedef int(*_ffmpeg_core_settings_set_speed)(FfmpegCoreSettings*, float);
+typedef int(*_ffmpeg_core_settings_set_cache_length)(FfmpegCoreSettings*, int);
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
 public:
@@ -88,6 +90,8 @@ public:
     unsigned short GetYear(MusicInfoHandle* h = nullptr);
     std::wstring GetTrack(MusicInfoHandle* h = nullptr);
     int GetTrackNum(MusicInfoHandle* h = nullptr);
+    void UpdateSettings(PlaySettingData* s = nullptr);
+    void SetCacheLength(int cache_length = 15);
 private:
     std::wstring GetMetadata(std::string key, MusicInfoHandle* h = nullptr);
     virtual bool GetFunction() override;
@@ -124,6 +128,7 @@ private:
     _ffmpeg_core_init_settings ffmpeg_core_init_settings = nullptr;
     _ffmpeg_core_settings_set_volume ffmpeg_core_settings_set_volume = nullptr;
     _ffmpeg_core_settings_set_speed ffmpeg_core_settings_set_speed = nullptr;
+    _ffmpeg_core_settings_set_cache_length ffmpeg_core_settings_set_cache_length = nullptr;
     MusicHandle* handle;
     FfmpegCoreSettings* settings = nullptr;
     std::wstring recent_file;
