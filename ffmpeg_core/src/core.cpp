@@ -243,22 +243,26 @@ int ffmpeg_core_is_playing(MusicHandle* handle) {
 
 int ffmpeg_core_get_bits(MusicHandle* handle) {
     if (!handle || !handle->decoder) return -1;
-    return handle->decoder->bits_per_coded_sample;
+    return handle->decoder->bits_per_raw_sample;
 }
 
 int ffmpeg_core_info_get_bits(MusicInfoHandle* handle) {
     if (!handle || !handle->is) return -1;
-    return handle->is->codecpar->bits_per_coded_sample;
+    return handle->is->codecpar->bits_per_raw_sample;
 }
 
 int64_t ffmpeg_core_get_bitrate(MusicHandle* handle) {
     if (!handle || !handle->decoder) return -1;
-    return handle->decoder->bit_rate;
+    if (handle->decoder->bit_rate) return handle->decoder->bit_rate;
+    if (handle->fmt->bit_rate > 0) return handle->fmt->bit_rate;
+    return 0;
 }
 
 int64_t ffmpeg_core_info_get_bitrate(MusicInfoHandle* handle) {
     if (!handle || !handle->is) return -1;
-    return handle->is->codecpar->bit_rate;
+    if (handle->is->codecpar->bit_rate > 0) return handle->is->codecpar->bit_rate;
+    if (handle->fmt->bit_rate > 0) return handle->fmt->bit_rate;
+    return 0;
 }
 
 std::wstring get_metadata_str(AVDictionary* dict, const char* key, int flags) {
