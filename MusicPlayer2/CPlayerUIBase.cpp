@@ -121,13 +121,6 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
     else
     {
-        //检测到界面布局发生了变化时
-        static UiSize last_ui_size{};
-        if (last_ui_size != GetUiSize())
-        {
-            ClearBtnRect();
-            last_ui_size = GetUiSize();
-        }
         static int last_width{}, last_height{}, last_class_id{};
         //检测到绘图区域变化或界面进行了切换时
         if (last_width != m_draw_rect.Width() || last_height != m_draw_rect.Height()
@@ -604,6 +597,14 @@ void CPlayerUIBase::PreDrawInfo()
 
     //设置绘制的矩形区域
     SetDrawRect();
+
+    //检测到界面布局发生了变化时
+    static UiSize last_ui_size{};
+    if (last_ui_size != GetUiSize())
+    {
+        ClearBtnRect();
+        last_ui_size = GetUiSize();
+    }
 }
 
 void CPlayerUIBase::SetDrawRect()
