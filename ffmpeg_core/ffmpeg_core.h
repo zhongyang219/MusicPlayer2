@@ -45,6 +45,19 @@ FFMPEG_CORE_API int ffmpeg_core_pause(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_seek(MusicHandle* handle, int64_t time);
 FFMPEG_CORE_API int ffmpeg_core_set_volume(MusicHandle* handle, int volume);
 FFMPEG_CORE_API int ffmpeg_core_set_speed(MusicHandle* handle, float speed);
+FFMPEG_CORE_API int ffmpeg_core_get_error(MusicHandle* handle);
+/**
+ * @brief 返回错误代码对应的错误消息
+ * @param err 错误代码
+ * @return 错误消息，需要调用free释放内存
+*/
+FFMPEG_CORE_API wchar_t* ffmpeg_core_get_err_msg(int err);
+/**
+ * @brief 返回错误代码对应的错误消息
+ * @param err 错误代码（仅处理>=0的错误）
+ * @return 错误消息
+*/
+FFMPEG_CORE_API const wchar_t* ffmpeg_core_get_err_msg2(int err);
 /**
  * @brief 获取当前播放位置
  * @param handle Handle

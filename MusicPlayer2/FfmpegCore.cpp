@@ -93,6 +93,7 @@ void CFfmpegCore::Close() {
     if (free_music_handle && handle) {
         free_music_handle(handle);
         handle = nullptr;
+        err = 0;
     }
 }
 
@@ -256,15 +257,23 @@ void CFfmpegCore::GetFFTData(float fft_data[FFT_SAMPLE]) {
 }
 
 int CFfmpegCore::GetErrorCode() {
-    return err;
+    if (err) return err;
+    if (handle) return ffmpeg_core_get_error(handle);
+    return 0;
 }
 
 std::wstring CFfmpegCore::GetErrorInfo(int error_code) {
+    auto tmp = ffmpeg_core_get_err_msg(error_code);
+    if (tmp) {
+        std::wstring re(tmp);
+        free(tmp);
+        return re;
+    }
     return L"";
 }
 
 std::wstring CFfmpegCore::GetErrorInfo() {
-    return L"";
+    return GetErrorInfo(GetErrorCode());
 }
 
 PlayerCoreType CFfmpegCore::GetCoreType() {
@@ -291,6 +300,9 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_seek = (_ffmpeg_core_seek)::GetProcAddress(m_dll_module, "ffmpeg_core_seek");
     ffmpeg_core_set_volume = (_ffmpeg_core_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_set_volume");
     ffmpeg_core_set_speed = (_ffmpeg_core_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_set_speed");
+    ffmpeg_core_get_error = (_ffmpeg_core_get_error)::GetProcAddress(m_dll_module, "ffmpeg_core_get_error");
+    ffmpeg_core_get_err_msg = (_ffmpeg_core_get_err_msg)::GetProcAddress(m_dll_module, "ffmpeg_core_get_err_msg");
+    ffmpeg_core_get_err_msg2 = (_ffmpeg_core_get_err_msg2)::GetProcAddress(m_dll_module, "ffmpeg_core_get_err_msg2");
     ffmpeg_core_get_cur_position = (_ffmpeg_core_get_cur_position)::GetProcAddress(m_dll_module, "ffmpeg_core_get_cur_position");
     ffmpeg_core_song_is_over = (_ffmpeg_core_song_is_over)::GetProcAddress(m_dll_module, "ffmpeg_core_song_is_over");
     ffmpeg_core_get_song_length = (_ffmpeg_core_get_song_length)::GetProcAddress(m_dll_module, "ffmpeg_core_get_song_length");
@@ -325,6 +337,9 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_seek != NULL);
     rtn &= (ffmpeg_core_set_volume != NULL);
     rtn &= (ffmpeg_core_set_speed != NULL);
+    rtn &= (ffmpeg_core_get_error != NULL);
+    rtn &= (ffmpeg_core_get_err_msg != NULL);
+    rtn &= (ffmpeg_core_get_err_msg2 != NULL);
     rtn &= (ffmpeg_core_get_cur_position != NULL);
     rtn &= (ffmpeg_core_song_is_over != NULL);
     rtn &= (ffmpeg_core_get_song_length != NULL);
@@ -422,6 +437,12 @@ void CFfmpegCore::LogCallback(void* ptr, int level, const char* fmt, va_list vl)
         if (re > 0) {
             std::wstring s = CCommon::StrToUnicode(std::string(buf, re), CodeType::UTF8);
             OutputDebugStringW(s.c_str());
+            if (level <= AV_LOG_ERROR) {
+                if (s.back() == '\n') {
+                    s.pop_back();
+                }
+                theApp.WriteLog(s);
+            }
         }
     }
     FreeLibrary(re);

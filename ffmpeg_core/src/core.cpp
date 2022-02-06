@@ -390,3 +390,75 @@ int ffmpeg_core_settings_set_cache_length(FfmpegCoreSettings* s, int length) {
     if (length >= 1 && length <= 60) s->cache_length = length;
     return 1;
 }
+
+int ffmpeg_core_get_error(MusicHandle* handle) {
+    if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
+    return handle->err;
+}
+
+const wchar_t* ffmpeg_core_get_err_msg2(int err) {
+    if (err < 0) return L"An error occured in ffmpeg.";
+    switch (err) {
+        case FFMPEG_CORE_ERR_OK:
+            return L"No error occured.";
+        case FFMPEG_CORE_ERR_NULLPTR:
+            return L"Got an unexpected null pointer.";
+        case FFMPEG_CORE_ERR_INVAILD_NAME:
+            return L"URI contains invalid chars.";
+        case FFMPEG_CORE_ERR_OOM:
+            return L"Out of memory.";
+        case FFMPEG_CORE_ERR_NO_AUDIO_OR_DECODER:
+            return L"No audio tracks in file or decoder is not available.";
+        case FFMPEG_CORE_ERR_UNKNOWN_SAMPLE_FMT:
+            return L"The format of audio sample is not available.";
+        case FFMPEG_CORE_ERR_SDL:
+            return L"An error occured in SDL.";
+        case FFMPEG_CORE_ERR_FAILED_CREATE_THREAD:
+            return L"Failed to create new thread.";
+        case FFMPEG_CORE_ERR_FAILED_CREATE_MUTEX:
+            return L"Failed to creare new mutex.";
+        case FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED:
+            return L"Failed to wait mutex.";
+        case FFMPEG_CORE_ERR_NO_AUDIO:
+            return L"No audio tracks in file.";
+        case FFMPEG_CORE_ERR_FAILED_SET_VOLUME:
+            return L"Failed to set volume.";
+        case FFMPEG_CORE_ERR_FAILED_SET_SPEED:
+            return L"Failed to set speed.";
+        case FFMPEG_CORE_ERR_TOO_BIG_FFT_DATA_LEN:
+            return L"FFT data's length is too big.";
+        default:
+            return L"Unknown error.";
+    }
+}
+
+wchar_t* ffmpeg_core_get_err_msg(int err) {
+    if (err < 0) {
+        char msg[AV_ERROR_MAX_STRING_SIZE];
+        std::wstring wmsg;
+        av_make_error_string(msg, AV_ERROR_MAX_STRING_SIZE, err);
+        if (wchar_util::str_to_wstr(wmsg, msg, CP_UTF8)) {
+            wchar_t* tmp = nullptr;
+            if (cpp2c::string2char(wmsg, tmp)) {
+                return tmp;
+            }
+        }
+    } else if (err == FFMPEG_CORE_ERR_SDL) {
+        char msg[128];
+        std::wstring wmsg;
+        SDL_GetErrorMsg(msg, 128);
+        if (wchar_util::str_to_wstr(wmsg, msg, CP_UTF8)) {
+            wchar_t* tmp = nullptr;
+            if (cpp2c::string2char(wmsg, tmp)) {
+                return tmp;
+            }
+        }
+    } else {
+        std::wstring wmsg = ffmpeg_core_get_err_msg2(err);
+        wchar_t* tmp = nullptr;
+        if (cpp2c::string2char(wmsg, tmp)) {
+            return tmp;
+        }
+    }
+    return nullptr;
+}
