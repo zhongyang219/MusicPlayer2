@@ -208,6 +208,7 @@ protected:
     int DPI(double pixel) const;
     double DPIDouble(double pixel);
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
+    int CalculateRoundRectRadius(CRect rect);        //计算绘制圆角矩形的半径
 
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
 

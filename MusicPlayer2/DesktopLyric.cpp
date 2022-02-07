@@ -467,7 +467,7 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
         {
             CDrawCommon drawer;
             drawer.Create(nullptr, pGraphics);
-            drawer.DrawRoundRect(CGdiPlusTool::CRectToGdiplusRect(rect), back_color, theApp.DPI(3));
+            drawer.DrawRoundRect(CGdiPlusTool::CRectToGdiplusRect(rect), back_color, theApp.DPI(4));
         }
     }
 
