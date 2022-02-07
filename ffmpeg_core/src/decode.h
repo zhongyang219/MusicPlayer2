@@ -5,6 +5,7 @@ extern "C" {
 #endif
 #include "core.h"
 int open_decoder(MusicHandle* handle);
+int reopen_decoder(MusicHandle* handle);
 /**
  * @brief 解码
  * @param handle Handle

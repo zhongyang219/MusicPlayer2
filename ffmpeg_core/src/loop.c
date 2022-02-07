@@ -24,6 +24,14 @@ int seek_to_pos(MusicHandle* handle) {
     } else {
         // 不在缓冲区，调用av_seek_frame并清空缓冲区
         int flags = 0;
+        // 修复flac文件解码完之后，继续调用解码器会导致报错的BUG
+        if (handle->is_eof && handle->is->codecpar->codec_id == AV_CODEC_ID_FLAC) {
+            av_log(NULL, AV_LOG_VERBOSE, "Try to reopen decoder \"%s\".\n", handle->codec->name ? handle->codec->name : "(null)");
+            if ((re = reopen_decoder(handle))) {
+                ReleaseMutex(handle->mutex);
+                goto end;
+            }
+        }
         if (handle->seek_pos < handle->end_pts) {
             flags |= AVSEEK_FLAG_BACKWARD;
         }
