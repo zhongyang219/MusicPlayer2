@@ -84,6 +84,7 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
     MusicHandle* handle = (MusicHandle*)malloc(sizeof(MusicHandle));
     int re = FFMPEG_CORE_ERR_OK;
     if (!handle) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to allocate MusicHandle.\n");
         return FFMPEG_CORE_ERR_OOM;
     }
     memset(handle, 0, sizeof(MusicHandle));
@@ -93,6 +94,7 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
         handle->settings_is_alloc = 1;
         handle->s = ffmpeg_core_init_settings();
         if (!handle->s) {
+            av_log(NULL, AV_LOG_FATAL, "Failed to allocate settings struct.\n");
             re = FFMPEG_CORE_ERR_OOM;
             goto end;
         }
@@ -101,7 +103,11 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
     if ((re = open_input(handle, u.c_str()))) {
         goto end;
     }
+#ifndef NDEBUG
+    av_dump_format(handle->fmt, 0, u.c_str(), 0);
+#endif
     if ((re = find_audio_stream(handle))) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to find suitable audio stream.\n");
         goto end;
     }
     if ((re = open_decoder(handle))) {

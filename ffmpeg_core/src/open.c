@@ -4,9 +4,11 @@ int open_input(MusicHandle* handle, const char* url) {
     if (!handle || !url) return FFMPEG_CORE_ERR_NULLPTR;
     int re = 0;
     if ((re = avformat_open_input(&handle->fmt, url, NULL, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to open \"%s\": %s (%i)\n", url, av_err2str(re), re);
         return re;
     }
     if ((re = avformat_find_stream_info(handle->fmt, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to find streams in \"%s\": %s (%i)\n", url, av_err2str(re), re);
         return re;
     }
     // handle->fmt->flags |= AVFMT_FLAG_FAST_SEEK;  // 允许快速定位
@@ -17,9 +19,11 @@ int open_input2(MusicInfoHandle* handle, const char* url) {
     if (!handle || !url) return FFMPEG_CORE_ERR_NULLPTR;
     int re = 0;
     if ((re = avformat_open_input(&handle->fmt, url, NULL, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to open \"%s\": %s (%i)\n", url, av_err2str(re), re);
         return re;
     }
     if ((re = avformat_find_stream_info(handle->fmt, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to find streams in \"%s\": %s (%i)\n", url, av_err2str(re), re);
         return re;
     }
     return FFMPEG_CORE_ERR_OK;

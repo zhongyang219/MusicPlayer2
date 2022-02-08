@@ -29,18 +29,22 @@ int create_volume_filter(int index, AVFilterGraph* graph, AVFilterContext* src, 
     int re = 0;
     AVFilterContext* context = NULL;
     if ((re = avfilter_graph_create_filter(&context, vol, name, args, NULL, graph)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to create volume filter \"%s\": %s (%i)\n", name, av_err2str(re), re);
         return re;
     }
     if (!c_linked_list_append(list, (void*)context)) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to append filter \"%s\" to list.\n", context->name);
         return FFMPEG_CORE_ERR_OOM;
     }
     if (c_linked_list_count(*list) > 1) {
         AVFilterContext* last = c_linked_list_tail(*list)->prev->d;
         if ((re = avfilter_link(last, 0, context, 0)) < 0) {
+            av_log(NULL, AV_LOG_FATAL, "Failed to link %s:%i -> %s:%i: %s (%i)\n", last->name, 0, context->name, 0, av_err2str(re), re);
             return re;
         }
     } else {
         if ((re = avfilter_link(src, 0, context, 0)) < 0) {
+            av_log(NULL, AV_LOG_FATAL, "Failed to link %s:%i -> %s:%i: %s (%i)\n", src->name, 0, context->name, 0, av_err2str(re), re);
             return re;
         }
     }

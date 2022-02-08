@@ -1,5 +1,6 @@
 #include "loop.h"
 
+#include <inttypes.h>
 #include "decode.h"
 #include "filter.h"
 
@@ -16,6 +17,7 @@ int seek_to_pos(MusicHandle* handle) {
         // 已经在缓冲区，直接从缓冲区移除不需要的数据
         int64_t samples = min(av_rescale_q_rnd(handle->seek_pos - handle->pts, AV_TIME_BASE_Q, base, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX), av_audio_fifo_size(handle->buffer));
         if ((re = av_audio_fifo_drain(handle->buffer, samples)) < 0) {
+            av_log(NULL, AV_LOG_FATAL, "Failed to drain %" PRIi64 " samples in buffer: %s (%i)\n", samples, av_err2str(re), re);
             ReleaseMutex(handle->mutex);
             goto end;
         }
@@ -36,6 +38,7 @@ int seek_to_pos(MusicHandle* handle) {
             flags |= AVSEEK_FLAG_BACKWARD;
         }
         if ((re = av_seek_frame(handle->fmt, -1, handle->seek_pos + handle->first_pts, flags)) < 0) {
+            av_log(NULL, AV_LOG_FATAL, "Failed to seek frame %" PRIi64 ": %s (%i)\n", handle->seek_pos + handle->first_pts, av_err2str(re), re);
             ReleaseMutex(handle->mutex);
             goto end;
         }

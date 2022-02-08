@@ -49,9 +49,11 @@ int init_filters(MusicHandle* handle) {
     }
     AVFilterContext* last = c_linked_list_tail(handle->filters)->d;
     if ((re = avfilter_link(last, 0, handle->filter_out, 0)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to link %s:%i -> %s:%i: %s (%i)\n", last->name, 0, handle->filter_out->name, 0, av_err2str(re), re);
         return re;
     }
     if ((re = avfilter_graph_config(handle->graph, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to check config of filters: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     return FFMPEG_CORE_ERR_OK;
@@ -114,9 +116,11 @@ int reinit_filters(MusicHandle* handle) {
     }
     AVFilterContext* last = c_linked_list_tail(list)->d;
     if ((re = avfilter_link(last, 0, outc, 0)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to link %s:%i -> %s:%i: %s (%i)\n", last->name, 0, outc->name, 0, av_err2str(re), re);
         goto end;
     }
     if ((re = avfilter_graph_config(graph, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to check config of filters: %s (%i)\n", av_err2str(re), re);
         goto end;
     }
     DWORD r = WaitForSingleObject(handle->mutex, INFINITE);
@@ -149,6 +153,7 @@ int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterCo
     if (!graph || !src || !sink) return FFMPEG_CORE_ERR_NULLPTR;
     const AVFilter* buffersink = avfilter_get_by_name("abuffersink"), * buffer = avfilter_get_by_name("abuffer");
     if (!(*graph = avfilter_graph_alloc())) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to allocate filter graph.\n");
         return FFMPEG_CORE_ERR_OOM;
     }
     int re = 0;
@@ -159,9 +164,11 @@ int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterCo
     av_get_channel_layout_string(channel_layout, sizeof(channel_layout), handle->decoder->channels, layout);
     snprintf(args, sizeof(args), "time_base=%d/%d:sample_rate=%d:sample_fmt=%s:channel_layout=%s:channels=%d", handle->is->time_base.num, handle->is->time_base.den, handle->sdl_spec.freq, av_get_sample_fmt_name(handle->target_format), channel_layout, handle->decoder->channels);
     if ((re = avfilter_graph_create_filter(src, buffer, "in", args, NULL, *graph)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to create input filter: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     if ((re = avfilter_graph_create_filter(sink, buffersink, "out", NULL, NULL, *graph)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to create output filter: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     // 输出设置
@@ -169,18 +176,22 @@ int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterCo
     // 具体类型参考 ffmpeg 源代码 libavfilter/buffersink.c 里的 abuffersink_options
     enum AVSampleFormat sample_fmts[2] = { handle->target_format , AV_SAMPLE_FMT_NONE };
     if ((re = av_opt_set_int_list(*sink, "sample_fmts", sample_fmts, AV_SAMPLE_FMT_NONE, AV_OPT_SEARCH_CHILDREN)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to set sample_fmts to output filter: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     int sample_rates[2] = { handle->sdl_spec.freq , 0 };
     if ((re = av_opt_set_int_list(*sink, "sample_rates", sample_rates, 0, AV_OPT_SEARCH_CHILDREN)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to set sample_rates to output filter: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     int64_t channel_layouts[2] = { layout , 0 };
     if ((re = av_opt_set_int_list(*sink, "channel_layouts", channel_layouts, 0, AV_OPT_SEARCH_CHILDREN)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to set channel_layouts to output filter: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     int channel_counts[2] = { handle->decoder->channels, 0 };
     if ((re = av_opt_set_int_list(*sink, "channel_counts", channel_counts, 0, AV_OPT_SEARCH_CHILDREN)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to set channel_counts to output filter: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     return FFMPEG_CORE_ERR_OK;

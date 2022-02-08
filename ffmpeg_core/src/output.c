@@ -12,6 +12,8 @@ int init_output(MusicHandle* handle) {
     sdl_spec.freq = handle->decoder->sample_rate;
     sdl_spec.format = convert_to_sdl_format(handle->decoder->sample_fmt);
     if (!sdl_spec.format) {
+        const char* tmp = av_get_sample_fmt_name(handle->decoder->sample_fmt);
+        av_log(NULL, AV_LOG_FATAL, "Unknown sample format: %s (%i)\n", tmp ? tmp : "", handle->decoder->sample_fmt);
         return FFMPEG_CORE_ERR_UNKNOWN_SAMPLE_FMT;
     }
     sdl_spec.channels = handle->decoder->channels;
@@ -21,12 +23,14 @@ int init_output(MusicHandle* handle) {
     memcpy(&handle->sdl_spec, &sdl_spec, sizeof(SDL_AudioSpec));
     handle->device_id = SDL_OpenAudioDevice(NULL, 0, &sdl_spec, &handle->sdl_spec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
     if (!handle->device_id) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to open audio device \"%s\": %s\n", "default", SDL_GetError());
         return FFMPEG_CORE_ERR_SDL;
     }
     enum AVSampleFormat target_format = convert_to_sdl_supported_format(handle->decoder->sample_fmt);
     handle->output_channel_layout = get_sdl_channel_layout(handle->decoder->channels);
     handle->swrac = swr_alloc_set_opts(NULL, handle->output_channel_layout, target_format, handle->sdl_spec.freq, handle->decoder->channel_layout, handle->decoder->sample_fmt, handle->decoder->sample_rate, 0, NULL);
     if (!handle->swrac) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to allocate resample context.\n");
         return FFMPEG_CORE_ERR_OOM;
     }
     int re = 0;
@@ -34,6 +38,7 @@ int init_output(MusicHandle* handle) {
         return re;
     }
     if (!(handle->buffer = av_audio_fifo_alloc(target_format, handle->decoder->channels, 1))) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to allocate buffer.\n");
         return FFMPEG_CORE_ERR_OOM;
     }
     handle->target_format = target_format;

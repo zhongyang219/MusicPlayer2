@@ -11,6 +11,7 @@ int open_decoder(MusicHandle* handle) {
     int re = 0;
     // 从输入流复制参数
     if ((re = avcodec_parameters_to_context(handle->decoder, handle->is->codecpar)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to copy parameters from input stream: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     if (handle->decoder->channel_layout == 0) {
@@ -19,6 +20,7 @@ int open_decoder(MusicHandle* handle) {
     }
     // 打开解码器
     if ((re = avcodec_open2(handle->decoder, handle->codec, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to open decoder \"%s\": %s (%i)\n", handle->codec->name, av_err2str(re), re);
         return re;
     }
     return FFMPEG_CORE_ERR_OK;
@@ -34,6 +36,7 @@ int reopen_decoder(MusicHandle* handle) {
     int re = 0;
     // 从输入流复制参数
     if ((re = avcodec_parameters_to_context(handle->decoder, handle->is->codecpar)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to copy parameters from input stream: %s (%i)\n", av_err2str(re), re);
         return re;
     }
     if (handle->decoder->channel_layout == 0) {
@@ -42,6 +45,7 @@ int reopen_decoder(MusicHandle* handle) {
     }
     // 打开解码器
     if ((re = avcodec_open2(handle->decoder, handle->codec, NULL)) < 0) {
+        av_log(NULL, AV_LOG_FATAL, "Failed to open decoder \"%s\": %s (%i)\n", handle->codec->name, av_err2str(re), re);
         return re;
     }
     return FFMPEG_CORE_ERR_OK;
