@@ -84,6 +84,8 @@ protected:
     void SetSearchBoxTransparentInWhiteTheme(bool transparent);
     bool IsSearchBoxTransparentInWhiteTheme() const;
 
+    static CString GetFontInfoString(const FontInfo& font_info);
+
     DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedKaraokeDisp();

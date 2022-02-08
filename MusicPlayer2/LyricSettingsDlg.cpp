@@ -209,6 +209,9 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
     //m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
     m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_HIDE_BLANK_LINE_CHECK), CCommon::LoadText(IDS_LYRICS_HIDE_BLANK_LINES_TIP));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), GetFontInfoString(m_data.lyric_font));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), GetFontInfoString(m_data.desktop_lyric_data.lyric_font));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), GetFontInfoString(m_data.cortana_font));
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -306,6 +309,26 @@ void CLyricSettingsDlg::SetSearchBoxTransparentInWhiteTheme(bool transparent)
 bool CLyricSettingsDlg::IsSearchBoxTransparentInWhiteTheme() const
 {
     return (m_data.cortana_transparent_color == LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR);
+}
+
+CString CLyricSettingsDlg::GetFontInfoString(const FontInfo& font_info)
+{
+    CString str;
+    str.Format(_T("%s, %dpt"), font_info.name.c_str(), font_info.size);
+
+    CString font_style;
+    if (font_info.style.bold)
+        font_style += CCommon::LoadText(IDS_BOLD);
+    if (font_info.style.italic)
+        font_style += CCommon::LoadText(_T(" "), IDS_ITALIC);
+
+    if (!font_style.IsEmpty())
+    {
+        str += _T(", ");
+        str += font_style;
+    }
+
+    return str;
 }
 
 void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
@@ -417,6 +440,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
         m_data.cortana_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.cortana_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         m_search_box_font_changed = true;
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.cortana_font), GetDlgItem(IDC_SET_FONT));
     }
 }
 
@@ -476,6 +500,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont2()
         m_data.desktop_lyric_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.desktop_lyric_data.lyric_font), GetDlgItem(IDC_SET_FONT2));
     }
 }
 
@@ -749,6 +774,7 @@ void CLyricSettingsDlg::OnBnClickedSetFontButton()
         m_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         //将字体已更改flag置为true
         m_font_changed = true;
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.lyric_font), GetDlgItem(IDC_SET_FONT_BUTTON));
     }
 }
 
