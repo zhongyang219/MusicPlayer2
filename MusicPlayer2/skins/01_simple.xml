@@ -2,7 +2,7 @@
 	<ui type="big">
 		<verticalLayout margin="4">
 			<horizontalLayout>
-        <verticalLayout margin="42" margin-bottom="16">
+        <verticalLayout margin="42" ma margin-bottom="16">
 					<albumCover square="true"/>
           <horizontalLayout height="32" margin-top="8">
             <button key="favorite" width="24" height="24" margin="4"/>
