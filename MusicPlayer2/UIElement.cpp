@@ -103,18 +103,19 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
     if (pParent == nullptr)     //根节点的矩形不需要计算
         return;
 
-    //父元素的矩形区域
-    const CRect rect_parent{ ParentRect(ui) };
-    const CRect rect_root{ RootElement()->GetRect() };
     //判断父元素是否为布局元素
     Layout* layout = dynamic_cast<Layout*>(pParent);
     if (layout != nullptr)
     {
-        layout->CalculateChildrenRect(ui);
+        //如果父元素为布局元素，则由布局元素计算子元素的矩形区域
+        return;
     }
     //父元素不是布局元素
     else
     {
+        //父元素的矩形区域
+        const CRect rect_parent{ ParentRect(ui) };
+        const CRect rect_root{ RootElement()->GetRect() };
         rect = rect_parent;
         if (x.IsValid())
             rect.left = x.GetValue(rect_parent, ui) + rect_root.left;
@@ -266,6 +267,13 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
     }
 }
 
+
+void UiElement::Layout::Draw(CPlayerUIBase* ui)
+{
+    CalculateRect(ui);
+    CalculateChildrenRect(ui);
+    Element::Draw(ui);
+}
 
 void UiElement::Rectangle::Draw(CPlayerUIBase* ui)
 {
