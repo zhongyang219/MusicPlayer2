@@ -121,7 +121,6 @@
 						<button key="playPause" width="40" height="40" bigIcon="true" margin="2"/>
 						<button key="next" width="40" height="40" bigIcon="true" margin="2"/>
 						<volume show_text="false" width="26" height="26" margin="2"/>
-						<button key="mediaLib" width="26" height="26" margin="2"/>
 						<button key="showPlaylist" width="26" height="26" margin="2"/>
 					</horizontalLayout>
 					<progressBar show_play_time="true" play_time_both_side="true" margin-left="4" margin-right="4"/>
