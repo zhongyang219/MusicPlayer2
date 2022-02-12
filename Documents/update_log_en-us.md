@@ -1,6 +1,49 @@
 **[简体中文](./update_log.md) | English**<br>
 
 # MusicPlayer2 Update log
+## V2.74 (2022/02/12)
+
+* Added the function of customizing the UI through the xml file (please refer to the main menu "Help" - "Customize UI").
+
+* Added 3 new UI layout.
+* Added support for System Media Transport Controls, which integrates playback controls into the system and supports the use of multimedia keys or Bluetooth devices to control music playback.
+* Added the function to quickly switch folders/playlists through the drop-down menu of the "Folder/Playlist" text box.
+* Added settings for the save location of configuration and data files.
+* Added the volume icon.
+* Added the display of sampling frequency, number of channels and bit depth in song properties.
+* Added the function to delete the embedded album by "Delete Album Cover" in the context menu.
+* Fixed a crash when "Allow play information displayed in the taskbar search box" is enabled under Windows 11.
+* Added some icons to some dialogs.
+* The floating playlist moves with the main window.
+* Fixed an issue where song info would sometimes be refetched on every launch.
+* Added theo ption "Do not display blank lines in single-line and double-line display mode" in "Options" - "Lyric Settings".
+
+## V2.73 (2021/08/22)
+
+* Added two new UI layout.
+
+* Added the function of song rating.
+* Added the function of manually refreshing the media library in the media library settings.
+* Added the function of using self-drawn title bar (remove the check of "Main Menu-View-Use System Standard Title Bar").
+* Added support for multi-monitor in mini mode.
+* Absolute path is supported for external album cover in option settings.
+* Added support for lyric files encoded in UTF16 format.
+* Added the analysis of the original text and translation of the lyrics with the same time tag.
+* Added the function of customizing the output file name in the conversion format.
+* Added the setting to display or hide the playlist tool tip in the option settings.
+* Added desktop lyrics alignment settings.
+* The display of the desktop lyrics follow the settings of the lyrics karaoke style.
+* Added "show/hide" player shortcut keys in global shortcut key settings.
+* Added the option of "disable delete from disk" in the option settings.
+* Added the function of automatically switching the playback device when the playback device changes.
+* Added the setting of writing version of ID3v2.
+* Fixed the problem that when using the mouse wheel to scroll the page in the option settings, the controls on the page will respond to the mouse wheel message.
+* Fixed the problem that some Unicode characters in the written label information will become question marks after being converted to mp3 format in the conversion format.
+* Fixed the problem that the global shortcut key settings may be wrong when loading from the configuration file.
+* Fixed the problem that the last character of the desktop lyrics cannot be displayed when using certain fonts.
+* Fixed an issue where the current playlist may be saved to the wrong file when switching playlists.
+* Improvements in other details.
+
 ## V2.72 (2021/01/24)
 
 * Add a new interface layout.
