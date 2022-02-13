@@ -2361,7 +2361,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
     {
         path_info.last_played_time = CCommon::GetCurTimeElapse();
         m_recent_path.push_front(path_info);		//当前路径插入到m_recent_path的前面
-        CRecentFolderAndPlaylist::Instance().Init(m_recent_path, CPlaylistMgr::Instance());
+        CRecentFolderAndPlaylist::Instance().Init();
     }
 }
 
@@ -2402,7 +2402,7 @@ void CPlayer::EmplaceCurrentPlaylistToRecent()
     {
         CPlaylistMgr::Instance().EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), song_num, m_total_time, CCommon::GetCurTimeElapse());
     }
-    CRecentFolderAndPlaylist::Instance().Init(m_recent_path, CPlaylistMgr::Instance());
+    CRecentFolderAndPlaylist::Instance().Init();
 }
 
 //void CPlayer::SetFXHandle()

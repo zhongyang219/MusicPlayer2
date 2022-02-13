@@ -33,6 +33,7 @@ public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg BOOL OnEnChange();
+    afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
 };
 
 

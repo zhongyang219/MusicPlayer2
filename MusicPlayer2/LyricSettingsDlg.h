@@ -84,6 +84,8 @@ protected:
     void SetSearchBoxTransparentInWhiteTheme(bool transparent);
     bool IsSearchBoxTransparentInWhiteTheme() const;
 
+    static CString GetFontInfoString(const FontInfo& font_info);
+
     DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedKaraokeDisp();
@@ -139,4 +141,5 @@ public:
     afx_msg void OnCbnSelchangeAlignmentCombo2();
     afx_msg void OnCbnSelchangeDesktopLyricAlignmentCombo();
     afx_msg void OnBnClickedShowLyricTranslateCheck();
+    afx_msg void OnBnClickedLyricHideBlankLineCheck();
 };

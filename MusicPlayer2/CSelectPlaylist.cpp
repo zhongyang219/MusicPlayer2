@@ -9,7 +9,7 @@
 #include "Playlist.h"
 #include "SongDataManager.h"
 #include "COSUPlayerHelper.h"
-
+#include "RecentFolderAndPlaylist.h"
 
 // CSelectPlaylist 对话框
 
@@ -648,6 +648,8 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         ShowPathList();
         m_playlist_modified = true;
     }
+    if (m_playlist_modified)
+        CRecentFolderAndPlaylist::Instance().Init();
 }
 
 

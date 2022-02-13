@@ -15,8 +15,10 @@ CRecentFolderAndPlaylist& CRecentFolderAndPlaylist::Instance()
     return m_instance;
 }
 
-void CRecentFolderAndPlaylist::Init(const deque<PathInfo>& recent_folder, const CPlaylistMgr& recent_playlist)
+void CRecentFolderAndPlaylist::Init()
 {
+    const deque<PathInfo>& recent_folder{ CPlayer::GetInstance().GetRecentPath() };
+    const CPlaylistMgr& recent_playlist{ CPlaylistMgr::Instance() };
     m_list.clear();
     //添加最近播放播放列表
     m_list.emplace_back(&recent_playlist.m_default_playlist);

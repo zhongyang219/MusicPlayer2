@@ -543,6 +543,18 @@ void CPlayerUIBase::ClearBtnRect()
     }
 }
 
+CPlayerUIBase::UiSize CPlayerUIBase::GetUiSize() const
+{
+    bool ui_big = (!m_ui_data.narrow_mode && !m_ui_data.show_playlist) || m_draw_rect.Width() > DPI(600);
+    if (IsDrawNarrowMode())
+        return UiSize::SMALL;
+    else if (ui_big)
+        return UiSize::BIG;
+    else
+        return UiSize::NARROW;
+
+}
+
 IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
 {
     switch (key)
@@ -585,6 +597,14 @@ void CPlayerUIBase::PreDrawInfo()
 
     //设置绘制的矩形区域
     SetDrawRect();
+
+    //检测到界面布局发生了变化时
+    static UiSize last_ui_size{};
+    if (last_ui_size != GetUiSize())
+    {
+        ClearBtnRect();
+        last_ui_size = GetUiSize();
+    }
 }
 
 void CPlayerUIBase::SetDrawRect()
@@ -727,7 +747,7 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius)
     else
     {
         m_draw.SetDrawArea(rect);
-        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, DPI(4), alpha);
+        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, CalculateRoundRectRadius(rect), alpha);
     }
 }
 
@@ -917,7 +937,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
         if (!theApp.m_app_setting_data.button_round_corners)
             m_draw.FillAlphaRect(rc_tmp, back_color, alpha);
         else
-            m_draw.DrawRoundRect(rc_tmp, back_color, theApp.DPI(3), alpha);
+            m_draw.DrawRoundRect(rc_tmp, back_color, CalculateRoundRectRadius(rect), alpha);
     }
 
     rc_tmp = rect;
@@ -957,7 +977,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton& btn, const IconRes& 
         if (!theApp.m_app_setting_data.button_round_corners)
             m_draw.FillAlphaRect(rc_tmp, back_color, alpha);
         else
-            m_draw.DrawRoundRect(rc_tmp, back_color, theApp.DPI(4), alpha);
+            m_draw.DrawRoundRect(rc_tmp, back_color, CalculateRoundRectRadius(rect), alpha);
     }
 
     //else if (!theApp.m_app_setting_data.dark_mode)
@@ -1012,7 +1032,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
             else
             {
                 m_draw.SetDrawArea(rect);
-                m_draw.DrawRoundRect(rect, background_color, theApp.DPI(3), alpha);
+                m_draw.DrawRoundRect(rect, background_color, CalculateRoundRectRadius(rect), alpha);
             }
         }
         m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
@@ -1257,7 +1277,7 @@ CString CPlayerUIBase::GetVolumeTooltipString()
     return tooltip;
 }
 
-int CPlayerUIBase::DPI(int pixel)
+int CPlayerUIBase::DPI(int pixel) const
 {
     if (m_ui_data.full_screen)
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
@@ -1265,7 +1285,7 @@ int CPlayerUIBase::DPI(int pixel)
         return theApp.DPI(pixel);
 }
 
-int CPlayerUIBase::DPI(double pixel)
+int CPlayerUIBase::DPI(double pixel) const
 {
     if (m_ui_data.full_screen)
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
@@ -1297,12 +1317,22 @@ double CPlayerUIBase::GetScrollTextPixel(bool slower)
     return pixel;
 }
 
+int CPlayerUIBase::CalculateRoundRectRadius(CRect rect)
+{
+    int radius{ min(rect.Width(), rect.Height()) / 6 };
+    if (radius < DPI(3))
+        radius = DPI(3);
+    if (radius > DPI(8))
+        radius = DPI(8);
+    return radius;
+}
+
 bool CPlayerUIBase::IsDrawLargeIcon()
 {
     return theApp.m_ui_data.full_screen;
 }
 
-bool CPlayerUIBase::IsDrawNarrowMode()
+bool CPlayerUIBase::IsDrawNarrowMode() const
 {
     if (!m_ui_data.show_playlist)
         return false;
@@ -1390,11 +1420,11 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
         {
             CRect rc_buttons{ volume_up_rect | volume_down_rect };
             m_draw.SetDrawArea(rc_buttons);
-            m_draw.DrawRoundRect(rc_buttons, m_colors.color_text_2, theApp.DPI(3), alpha);
+            m_draw.DrawRoundRect(rc_buttons, m_colors.color_text_2, CalculateRoundRectRadius(rc_buttons), alpha);
             if (m_buttons[BTN_VOLUME_UP].pressed || m_buttons[BTN_VOLUME_UP].hover)
-                m_draw.DrawRoundRect(volume_up_rect, btn_up_back_color, theApp.DPI(3), alpha);
+                m_draw.DrawRoundRect(volume_up_rect, btn_up_back_color, CalculateRoundRectRadius(volume_up_rect), alpha);
             if (m_buttons[BTN_VOLUME_DOWN].pressed || m_buttons[BTN_VOLUME_DOWN].hover)
-                m_draw.DrawRoundRect(volume_down_rect, btn_down_back_color, theApp.DPI(3), alpha);
+                m_draw.DrawRoundRect(volume_down_rect, btn_down_back_color, CalculateRoundRectRadius(volume_down_rect), alpha);
         }
 
         if (m_buttons[BTN_VOLUME_DOWN].pressed)
@@ -1483,7 +1513,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
         CFont* old_font = m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
         if (play_time_both_side)
         {
-            CRect rc_time_left{ rect } , rc_time_right{ rect };
+            CRect rc_time_left{ rect }, rc_time_right{ rect };
             std::wstring str_cur_time = Time(CPlayer::GetInstance().GetCurrentPosition()).toString(false);
             std::wstring str_song_length = Time(CPlayer::GetInstance().GetSongLength()).toString(false);
             int left_width = m_draw.GetTextExtent(str_cur_time.c_str()).cx;
@@ -2000,7 +2030,7 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
         if (theApp.m_app_setting_data.button_round_corners)
         {
             m_draw.SetDrawArea(rect);
-            m_draw.DrawRoundRect(rect, m_colors.color_lyric_back, DPI(4), alpha);
+            m_draw.DrawRoundRect(rect, m_colors.color_lyric_back, CalculateRoundRectRadius(rect), alpha);
         }
         else
         {

@@ -109,6 +109,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_CBN_SELCHANGE(IDC_ALIGNMENT_COMBO2, &CLyricSettingsDlg::OnCbnSelchangeAlignmentCombo2)
     ON_CBN_SELCHANGE(IDC_DESKTOP_LYRIC_ALIGNMENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeDesktopLyricAlignmentCombo)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_TRANSLATE_CHECK, &CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck)
+    ON_BN_CLICKED(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, &CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck)
 END_MESSAGE_MAP()
 
 
@@ -130,6 +131,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_INQUIRY));
     m_lyric_save_policy_combo.SetCurSel(static_cast<int>(m_data.lyric_save_policy));
     CheckDlgButton(IDC_SHOW_LYRIC_TRANSLATE_CHECK, m_data.show_translate);
+    CheckDlgButton(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.donot_show_blank_lines);
 
     m_lyric_line_space_edit.SetRange(MIM_LINE_SPACE, MAX_LINE_SPACE);
     m_lyric_line_space_edit.SetValue(m_data.lyric_line_space);
@@ -206,6 +208,10 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_tool_tip.AddTool(&m_lyric_dir_edit, CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
     m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
     //m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
+    m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_HIDE_BLANK_LINE_CHECK), CCommon::LoadText(IDS_LYRICS_HIDE_BLANK_LINES_TIP));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), GetFontInfoString(m_data.lyric_font));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), GetFontInfoString(m_data.desktop_lyric_data.lyric_font));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), GetFontInfoString(m_data.cortana_font));
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -252,6 +258,7 @@ void CLyricSettingsDlg::EnableControl()
     m_show_default_album_icon_chk.EnableWindow(enable);
 
     EnableDlgCtrl(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE, enable);
+    EnableDlgCtrl(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.lyric_karaoke_disp);
 }
 
 void CLyricSettingsDlg::EnableControlForDesktopLyric()
@@ -304,10 +311,31 @@ bool CLyricSettingsDlg::IsSearchBoxTransparentInWhiteTheme() const
     return (m_data.cortana_transparent_color == LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR);
 }
 
+CString CLyricSettingsDlg::GetFontInfoString(const FontInfo& font_info)
+{
+    CString str;
+    str.Format(_T("%s, %dpt"), font_info.name.c_str(), font_info.size);
+
+    CString font_style;
+    if (font_info.style.bold)
+        font_style += CCommon::LoadText(IDS_BOLD);
+    if (font_info.style.italic)
+        font_style += CCommon::LoadText(_T(" "), IDS_ITALIC);
+
+    if (!font_style.IsEmpty())
+    {
+        str += _T(", ");
+        str += font_style;
+    }
+
+    return str;
+}
+
 void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.lyric_karaoke_disp = (m_karaoke_disp_check.GetCheck() != 0);
+    EnableControl();
 }
 
 
@@ -412,6 +440,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
         m_data.cortana_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.cortana_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         m_search_box_font_changed = true;
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.cortana_font), GetDlgItem(IDC_SET_FONT));
     }
 }
 
@@ -471,6 +500,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont2()
         m_data.desktop_lyric_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.desktop_lyric_data.lyric_font), GetDlgItem(IDC_SET_FONT2));
     }
 }
 
@@ -744,6 +774,7 @@ void CLyricSettingsDlg::OnBnClickedSetFontButton()
         m_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         //将字体已更改flag置为true
         m_font_changed = true;
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.lyric_font), GetDlgItem(IDC_SET_FONT_BUTTON));
     }
 }
 
@@ -766,4 +797,10 @@ void CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.show_translate = (IsDlgButtonChecked(IDC_SHOW_LYRIC_TRANSLATE_CHECK) != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck()
+{
+    m_data.donot_show_blank_lines = (IsDlgButtonChecked(IDC_LYRIC_HIDE_BLANK_LINE_CHECK) != 0);
 }

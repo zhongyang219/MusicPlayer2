@@ -110,6 +110,7 @@ void CSearchEditCtrl::UpdateToolTipPosition()
 BEGIN_MESSAGE_MAP(CSearchEditCtrl, CMFCEditBrowseCtrl)
     ON_WM_SIZE()
     ON_CONTROL_REFLECT_EX(EN_CHANGE, &CSearchEditCtrl::OnEnChange)
+    ON_WM_NCLBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -162,4 +163,14 @@ BOOL CSearchEditCtrl::OnEnChange()
     // TODO:  在此添加控件通知处理程序代码
     OnNcPaint();
     return FALSE;           //这里返回FALSE表示EN_CHANGE的响应还没有响应完，此消息仍然会被发送到父窗口，否则表示这里已经做完所有的事情，消息不会被发送到父窗口
+}
+
+
+void CSearchEditCtrl::OnNcLButtonDown(UINT nHitTest, CPoint point)
+{
+    if (HTCAPTION == nHitTest)
+    {
+        return;
+    }
+    CMFCEditBrowseCtrl::OnNcLButtonDown(nHitTest, point);
 }

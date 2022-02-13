@@ -20,7 +20,7 @@ public:
         bool IsItemCurrentPlaying() const;      //判断是否为当前播放的文件夹/播放列表
     };
 
-    void Init(const deque<PathInfo>& recent_folder, const CPlaylistMgr& recent_playlist);
+    void Init();
     const std::vector<Item>& GetItemList() const;
 
 private:

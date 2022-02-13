@@ -27,20 +27,20 @@ BEGIN_MESSAGE_MAP(CDesktopLyric, CLyricsWindow)
     ON_WM_SIZING()
     ON_WM_RBUTTONUP()
     ON_WM_GETMINMAXINFO()
-//    ON_MESSAGE(WM_INITMENU, &CDesktopLyric::OnInitmenu)
+    //    ON_MESSAGE(WM_INITMENU, &CDesktopLyric::OnInitmenu)
     ON_WM_TIMER()
 
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1, &CDesktopLyric::OnLyricDefaultStyle1)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CDesktopLyric::OnLyricDefaultStyle2)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CDesktopLyric::OnLyricDefaultStyle3)
-	ON_WM_LBUTTONDBLCLK()
-	ON_WM_MOUSEWHEEL()
-	ON_WM_INITMENU()
+    ON_WM_LBUTTONDBLCLK()
+    ON_WM_MOUSEWHEEL()
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 void CDesktopLyric::Create()
 {
-	CLyricsWindow::Create(theApp.DPI(150));
+    CLyricsWindow::Create(theApp.DPI(150));
 
     m_popupMenu.LoadMenu(IDR_DESKTOP_LYRIC_POPUP_MENU);
 
@@ -73,26 +73,31 @@ void CDesktopLyric::Create()
 
 void CDesktopLyric::ShowLyric()
 {
-	if (!IsWindowVisible())
-		return;
+    if (!IsWindowVisible())
+        return;
 
-	if (CPlayerUIHelper::IsMidiLyric())
-	{
-		wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
-		if (current_lyric != GetLyricStr().GetString())
-		{
-			UpdateLyrics(current_lyric.c_str(), 0);
-		}
-		else
-		{
-			UpdateLyrics(0);
-		}
-		UpdateLyricTranslate(_T(""));
-		SetNextLyric(_T(""));
-	}
-	else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())
-	{
-        const bool old_mode{ false };
+    SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+    SetShowTranslate(theApp.m_lyric_setting_data.show_translate);
+    SetAlignment(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align);
+    SetLyricKaraokeDisplay(theApp.m_lyric_setting_data.lyric_karaoke_disp);
+
+    if (CPlayerUIHelper::IsMidiLyric())
+    {
+        wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
+        if (current_lyric != GetLyricStr().GetString())
+        {
+            UpdateLyrics(current_lyric.c_str(), 0);
+        }
+        else
+        {
+            UpdateLyrics(0);
+        }
+        UpdateLyricTranslate(_T(""));
+        SetNextLyric(_T(""));
+    }
+    else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())
+    {
+        const bool old_mode{ !m_lyric_karaoke_disp || !theApp.m_lyric_setting_data.donot_show_blank_lines };
         const wstring mark{ L"♪♪♪" };
 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
@@ -132,11 +137,7 @@ void CDesktopLyric::ShowLyric()
             }
         }
 
-        SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
-        SetShowTranslate(theApp.m_lyric_setting_data.show_translate);
-        SetAlignment(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align);
-        SetLyricKaraokeDisplay(theApp.m_lyric_setting_data.lyric_karaoke_disp);
-        if(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
+        if (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
             CLyrics::Lyric next_lyric;
             if (old_mode)
@@ -159,15 +160,15 @@ void CDesktopLyric::ShowLyric()
 
         static int last_lyric_index = -1;
 
-		if (lyric_index != last_lyric_index)
-		{
+        if (lyric_index != last_lyric_index)
+        {
             SetLyricChangeFlag(true);
             last_lyric_index = lyric_index;
-		}
-		else
-		{
+        }
+        else
+        {
             SetLyricChangeFlag(false);
-		}
+        }
         UpdateLyricTranslate(lyric.translate.c_str());
         // UpdateLyrics需要放在最后防止双行歌词闪烁
         if (lyric_mode == 1)
@@ -176,38 +177,38 @@ void CDesktopLyric::ShowLyric()
             UpdateLyrics(mark.c_str(), lyric.text.c_str(), progress, false);
         else
             UpdateLyrics(lyric.text.c_str(), progress);
-	}
-	else
-	{
-		const SongInfo& cur_song_info = CPlayer::GetInstance().GetCurrentSongInfo();
-		std::wstring display_text = CPlayListCtrl::GetDisplayStr(cur_song_info, DF_ARTIST_TITLE);
-		if (display_text != GetLyricStr().GetString())
-		{
-			UpdateLyrics(display_text.c_str(), 0);
-		}
-		else
-		{
-			UpdateLyrics(0);
-		}
+    }
+    else
+    {
+        const SongInfo& cur_song_info = CPlayer::GetInstance().GetCurrentSongInfo();
+        std::wstring display_text = CPlayListCtrl::GetDisplayStr(cur_song_info, DF_ARTIST_TITLE);
+        if (display_text != GetLyricStr().GetString())
+        {
+            UpdateLyrics(display_text.c_str(), 0);
+        }
+        else
+        {
+            UpdateLyrics(0);
+        }
         UpdateLyricTranslate(_T(""));
         SetNextLyric(_T(""));
-	}
+    }
 
 }
 
 void CDesktopLyric::ClearLyric()
 {
-	UpdateLyricTranslate(_T(""));
-	UpdateLyrics(_T(""), 0);
+    UpdateLyricTranslate(_T(""));
+    UpdateLyrics(_T(""), 0);
     SetNextLyric(_T(""));
 }
 
 void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 {
-	SetLyricsFont(data.lyric_font.name.c_str(), theApp.DPI(data.lyric_font.size), CGdiPlusTool::ToGDIPluseFontStyle(data.lyric_font.style));
-	SetLyricsColor(CGdiPlusTool::COLORREFToGdiplusColor(data.text_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
-	SetHighlightColor(CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
-	//SetLyricWindowLock(data.lock_desktop_lyric);
+    SetLyricsFont(data.lyric_font.name.c_str(), theApp.DPI(data.lyric_font.size), CGdiPlusTool::ToGDIPluseFontStyle(data.lyric_font.style));
+    SetLyricsColor(CGdiPlusTool::COLORREFToGdiplusColor(data.text_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
+    SetHighlightColor(CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
+    //SetLyricWindowLock(data.lock_desktop_lyric);
     //SetLyricBackgroundPenetrate(data.lyric_background_penetrate);
     m_bLocked = data.lock_desktop_lyric;
     m_lyricBackgroundPenetrate = data.lyric_background_penetrate;
@@ -216,7 +217,7 @@ void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 
 void CDesktopLyric::SetLyricWindowVisible(bool visible)
 {
-	ShowWindow(visible);
+    ShowWindow(visible);
 }
 
 void CDesktopLyric::SetLyricWindowLock(bool locked)
@@ -296,7 +297,7 @@ void CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(const DesktopLyricSe
 
 }
 
-void CDesktopLyric::LoadDefaultStyle(CIniHelper & ini)
+void CDesktopLyric::LoadDefaultStyle(CIniHelper& ini)
 {
     m_default_style[0].normal_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color1", RGB(37, 152, 10));
     m_default_style[0].normal_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color2", RGB(129, 249, 0));
@@ -320,7 +321,7 @@ void CDesktopLyric::LoadDefaultStyle(CIniHelper & ini)
     m_default_style[2].highlight_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default3_highlight_gradient_mode", 2);
 }
 
-void CDesktopLyric::SaveDefaultStyle(CIniHelper & ini) const
+void CDesktopLyric::SaveDefaultStyle(CIniHelper& ini) const
 {
     ini.WriteInt(L"desktop_lyric_default_style", L"default1_text_color1", m_default_style[0].normal_style.color1);
     ini.WriteInt(L"desktop_lyric_default_style", L"default1_text_color2", m_default_style[0].normal_style.color2);
@@ -357,7 +358,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     toolbar_rect.Height = btn_size;
 
     //绘制背景
-    if(!bLocked || theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)
+    if (!bLocked || theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)
     {
         Gdiplus::Color back_color = CGdiPlusTool::COLORREFToGdiplusColor(theApp.m_app_setting_data.theme_color.light2, 180);
         if (!theApp.m_app_setting_data.button_round_corners)
@@ -391,12 +392,12 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
-		rcIcon.MoveToX(rcIcon.right);
+        rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
         rcIcon.MoveToX(rcIcon.right);
-		DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
-		rcIcon.MoveToX(rcIcon.right);
-		DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
+        rcIcon.MoveToX(rcIcon.right);
+        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         rcIcon.MoveToX(rcIcon.right);
@@ -406,9 +407,9 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
 
-		bool lyric_disable{ CPlayer::GetInstance().m_Lyrics.IsEmpty() || CPlayerUIHelper::IsMidiLyric() };
-		m_buttons[BTN_LYRIC_FORWARD].enable = !lyric_disable;
-		m_buttons[BTN_LYRIC_DELAY].enable = !lyric_disable;
+        bool lyric_disable{ CPlayer::GetInstance().m_Lyrics.IsEmpty() || CPlayerUIHelper::IsMidiLyric() };
+        m_buttons[BTN_LYRIC_FORWARD].enable = !lyric_disable;
+        m_buttons[BTN_LYRIC_DELAY].enable = !lyric_disable;
 
     }
     else if (theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)    //如果处于锁定状态，只绘制一个解锁图标
@@ -466,7 +467,7 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
         {
             CDrawCommon drawer;
             drawer.Create(nullptr, pGraphics);
-            drawer.DrawRoundRect(CGdiPlusTool::CRectToGdiplusRect(rect), back_color, theApp.DPI(3));
+            drawer.DrawRoundRect(CGdiPlusTool::CRectToGdiplusRect(rect), back_color, theApp.DPI(4));
         }
     }
 
@@ -498,7 +499,7 @@ void CDesktopLyric::AddToolTips()
     AddMouseToolTip(BTN_DEFAULT_STYLE, CCommon::LoadText(IDS_DEFAULT_STYLE));
     AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
     AddMouseToolTip(BTN_BACKGROUND_PENETRATE, CCommon::LoadText(IDS_LYRIC_BACKGROUND_PENETRATE));
-    if(theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
+    if (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
         AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_ULOCK_DESKTOP_LYRIC));
     else
         AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC));
@@ -644,8 +645,8 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
                 return;
 
             case BTN_LYRIC_DELAY:
-				theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_DELAY, 0);
-				return;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LYRIC_DELAY, 0);
+                return;
 
             case BTN_DEFAULT_STYLE:
             {
@@ -696,8 +697,8 @@ void CDesktopLyric::OnMouseMove(UINT nFlags, CPoint point)
     point1.y += m_frameSize.cy;
     for (auto& btn : m_buttons)
     {
-		if (btn.second.enable)
-			btn.second.hover = (btn.second.rect.PtInRect(point1) != FALSE);
+        if (btn.second.enable)
+            btn.second.hover = (btn.second.rect.PtInRect(point1) != FALSE);
     }
 
     TRACKMOUSEEVENT tme;
@@ -872,36 +873,36 @@ void CDesktopLyric::OnLyricDefaultStyle3()
 
 void CDesktopLyric::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_SHOW_MAIN_WINDOW);
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_SHOW_MAIN_WINDOW);
 
-	CLyricsWindow::OnLButtonDblClk(nFlags, point);
+    CLyricsWindow::OnLButtonDblClk(nFlags, point);
 }
 
 
 BOOL CDesktopLyric::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (zDelta > 0)
-	{
-		AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_UP);
-	}
-	if (zDelta < 0)
-	{
-		AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_DOWN);
-	}
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    if (zDelta > 0)
+    {
+        AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_UP);
+    }
+    if (zDelta < 0)
+    {
+        AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_DOWN);
+    }
 
-	return CLyricsWindow::OnMouseWheel(nFlags, zDelta, pt);
+    return CLyricsWindow::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 
 void CDesktopLyric::OnInitMenu(CMenu* pMenu)
 {
-	CLyricsWindow::OnInitMenu(pMenu);
+    CLyricsWindow::OnInitMenu(pMenu);
 
-	// TODO: 在此处添加消息处理程序代码
-	CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(AfxGetMainWnd());
-	if(pPlayerDlg != nullptr)
-		pPlayerDlg->SetMenuState(pMenu);
-	pMenu->SetDefaultItem(ID_SHOW_MAIN_WINDOW);
+    // TODO: 在此处添加消息处理程序代码
+    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(AfxGetMainWnd());
+    if (pPlayerDlg != nullptr)
+        pPlayerDlg->SetMenuState(pMenu);
+    pMenu->SetDefaultItem(ID_SHOW_MAIN_WINDOW);
 }

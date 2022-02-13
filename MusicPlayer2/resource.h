@@ -697,10 +697,13 @@
 #define IDI_VOLUME0_D                   548
 #define IDS_CFG_DIR_CHANGED_INFO        548
 #define IDS_ADD_TO_PLAYLIST             549
+#define IDS_LYRICS_HIDE_BLANK_LINES_TIP 550
 #define IDI_ICON20                      551
 #define IDI_EXPAND_D                    551
+#define IDS_BOLD                        551
 #define IDI_ICON23                      552
 #define IDI_ADD                         552
+#define IDS_ITALIC                      552
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1070,6 +1073,7 @@
 #define IDC_CHECK7                      1174
 #define IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK 1174
 #define IDC_SHOW_PLAYLIST_TOOLTIP_CHECK 1174
+#define IDC_LYRIC_HIDE_BLANK_LINE_CHECK 1174
 #define IDC_CHECK8                      1175
 #define IDC_BTN_ROUND_CORNERS_CHECK     1175
 #define IDC_UI_STATIC                   1176
@@ -1517,7 +1521,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        553
+#define _APS_NEXT_RESOURCE_VALUE        552
 #define _APS_NEXT_COMMAND_VALUE         33387
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101

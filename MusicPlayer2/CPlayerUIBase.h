@@ -35,7 +35,6 @@ struct SLayoutData
     const int titlabar_height = theApp.DPI(28);                 //标题栏的高度
 };
 
-
 class CPlayerUIBase : public IPlayerUI
 {
 public:
@@ -91,6 +90,15 @@ public:
 
     //获取界面的名称
     virtual CString GetUIName() { return CString(); }
+
+    enum class UiSize
+    {
+        BIG,
+        NARROW,
+        SMALL
+    };
+
+    UiSize GetUiSize() const;
 
 public:
     enum BtnKey     //标识按钮的类型
@@ -188,7 +196,7 @@ protected:
     static CRect DrawAreaToClient(CRect rect, CRect draw_area);
     static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
-    bool IsDrawNarrowMode();            //是否使用窄界面模式绘图
+    bool IsDrawNarrowMode() const;            //是否使用窄界面模式绘图
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
     virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
@@ -196,10 +204,11 @@ protected:
     wstring GetDisplayFormatString();       //获取显示格式的字符串
     CString GetVolumeTooltipString();       //获取音量鼠标提示字符串
 
-    int DPI(int pixel);
-    int DPI(double pixel);
+    int DPI(int pixel) const;
+    int DPI(double pixel) const;
     double DPIDouble(double pixel);
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
+    int CalculateRoundRectRadius(CRect rect);        //计算绘制圆角矩形的半径
 
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
 

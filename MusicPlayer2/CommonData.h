@@ -195,6 +195,7 @@ struct LyricSettingData
     wstring lyric_path;							//歌词文件夹的路径
     bool use_inner_lyric_first{};				//优先使用内嵌歌词
     bool show_translate{ true };		        //歌词是否显示翻译
+    bool donot_show_blank_lines{};              //单行和双行显示模式下不显示空白行
 
     enum LyricSavePolicy		//歌词保存策略
     {

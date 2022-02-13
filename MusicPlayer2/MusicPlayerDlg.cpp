@@ -332,6 +332,7 @@ void CMusicPlayerDlg::SaveConfig()
 
     ini.WriteInt(L"config", L"lyric_save_policy", static_cast<int>(theApp.m_lyric_setting_data.lyric_save_policy));
     ini.WriteBool(L"config", L"use_inner_lyric_first", theApp.m_lyric_setting_data.use_inner_lyric_first);
+    ini.WriteBool(L"config", L"donot_show_blank_lines", theApp.m_lyric_setting_data.donot_show_blank_lines);
 
     ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
     ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
@@ -491,6 +492,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     theApp.m_lyric_setting_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(ini.GetInt(L"config", L"lyric_save_policy", 2));
     theApp.m_lyric_setting_data.use_inner_lyric_first = ini.GetBool(L"config", L"use_inner_lyric_first", true);
+    theApp.m_lyric_setting_data.donot_show_blank_lines = ini.GetBool(L"config", L"donot_show_blank_lines", true);
 
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
@@ -5996,35 +5998,65 @@ void CMusicPlayerDlg::OnMove(int x, int y)
 afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam)
 {
     //初始化点击文件夹/播放列表右侧按钮弹出的菜单
-    theApp.m_menu_set.m_recent_folder_playlist_menu.DestroyMenu();
-    theApp.m_menu_set.m_recent_folder_playlist_menu.CreatePopupMenu();
-    int item_count{};
-    for (int i{}; i < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()) && i < RECENT_FOLDER_PLAYLIST_MAX_SIZE; i++)
+    //检查菜单项目是否有改变
+    bool menu_changed{ false };
+    int menu_size{};
+    if (::IsMenu(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu()))
+        menu_size = theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuItemCount();
+    else
+        menu_changed = true;
+    for (int i{}; i < menu_size; i++)
     {
-        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
-        if (item.LastPlayedTime() == 0)
-            continue;
-        wstring item_name{ item.GetName() };
-        theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_RECENT_FOLDER_PLAYLIST_MENU_START + i, item_name.c_str());
-        item_count++;
+        CString str_menu_name;
+        theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuString(i, str_menu_name, MF_BYPOSITION);
+        if (i < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
+        {
+            if (str_menu_name != CRecentFolderAndPlaylist::Instance().GetItemList()[i].GetName().c_str())
+                menu_changed = true;
+        }
     }
-    //设置菜单图标
-    for (int i{}; i < item_count; i++)
+    if (menu_changed)
     {
-        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
-        HICON icon{};
-        if (item.is_playlist)
+        //销毁菜单前先销毁菜单中的位图对象
+        for (int i{}; i < menu_size; i++)
         {
-            if (item.playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path)
-                icon = theApp.m_icon_set.favourite.GetIcon(true);
+            MENUITEMINFO mii{};
+            mii.cbSize = sizeof(MENUITEMINFO);
+            mii.fMask = MIIM_BITMAP;
+            theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuItemInfo(i, &mii, TRUE);
+            if (mii.hbmpItem != nullptr)
+                DeleteObject(mii.hbmpItem);
+        }
+        theApp.m_menu_set.m_recent_folder_playlist_menu.DestroyMenu();
+        theApp.m_menu_set.m_recent_folder_playlist_menu.CreatePopupMenu();
+        int item_count{};
+        for (int i{}; i < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()) && i < RECENT_FOLDER_PLAYLIST_MAX_SIZE; i++)
+        {
+            const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
+            if (item.LastPlayedTime() == 0)
+                break;
+            wstring item_name{ item.GetName() };
+            theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_RECENT_FOLDER_PLAYLIST_MENU_START + i, item_name.c_str());
+            item_count++;
+        }
+        //设置菜单图标
+        for (int i{}; i < item_count; i++)
+        {
+            const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
+            HICON icon{};
+            if (item.is_playlist)
+            {
+                if (item.playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path)
+                    icon = theApp.m_icon_set.favourite.GetIcon(true);
+                else
+                    icon = theApp.m_icon_set.show_playlist.GetIcon(true);
+            }
             else
-                icon = theApp.m_icon_set.show_playlist.GetIcon(true);
+            {
+                icon = theApp.m_icon_set.select_folder.GetIcon(true);
+            }
+            CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), i, TRUE, icon);
         }
-        else
-        {
-            icon = theApp.m_icon_set.select_folder.GetIcon(true);
-        }
-        CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), i, TRUE, icon);
     }
     return 0;
 }

@@ -58,6 +58,7 @@ namespace UiElement
         };
         Type type;
         void CalculateChildrenRect(CPlayerUIBase* ui);      //计算布局中所有子元素的位置
+        virtual void Draw(CPlayerUIBase* ui) override;
     };
 
     //半透明的矩形
@@ -102,7 +103,7 @@ namespace UiElement
             Format      //歌曲格式
         };
         Type type;
-        int font_size{9};
+        int font_size{ 9 };
 
         virtual void Draw(CPlayerUIBase* ui) override;
     private:
