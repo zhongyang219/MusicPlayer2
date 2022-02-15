@@ -88,7 +88,7 @@ int ffmpeg_core_get_fft_data(MusicHandle* handle, float* fft_data, int len) {
             memset(fft_data, 0, sizeof(float) * len);
             goto end;
         }
-        if ((r = swr_convert(swr, f2->data, f2->nb_samples, f->data, f->nb_samples)) < 0) {
+        if ((r = swr_convert(swr, f2->data, f2->nb_samples, (const uint8_t**)f->data, f->nb_samples)) < 0) {
             memset(fft_data, 0, sizeof(float) * len);
             goto end;
         }
