@@ -7,6 +7,7 @@ extern "C" {
 #include "../ffmpeg_core.h"
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
+#include "libavdevice/avdevice.h"
 #include "libavutil/avutil.h"
 #include "libavutil/audio_fifo.h"
 #include "libavutil/opt.h"
@@ -30,6 +31,16 @@ extern "C" {
 
 #define FFT_SAMPLE 1024
 
+typedef struct CDAData {
+/// version of the CD format. In May 2006, always equal to 1.
+uint16_t cd_format_version;
+/// number of the range. The first track has the number 1.
+uint16_t no;
+/// range offset, in number of frames.
+uint32_t range_offset;
+/// duration of the track, total number of frames
+uint32_t duration;
+} CDAData;
 typedef struct MusicHandle {
 /// Demux 用
 AVFormatContext* fmt;
@@ -66,6 +77,10 @@ int64_t end_pts;
 /// 第一个sample的pts
 int64_t first_pts;
 int64_t seek_pos;
+/// 要播放的部分的开始时间（相对于first_pts的偏移量）
+int64_t part_start_pts;
+/// 要播放的部分的结束时间（相对于first_pts的偏移量）
+int64_t part_end_pts;
 /// 设置
 FfmpegCoreSettings* s;
 /// 用于设置filter
@@ -76,6 +91,8 @@ AVFilterContext* filter_inp;
 AVFilterContext* filter_out;
 /// filter 链
 c_linked_list* filters;
+/// CDA 文件信息
+CDAData* cda;
 /// 输出时的声道布局
 uint64_t output_channel_layout;
 /// SDL是否被初始化
@@ -95,10 +112,15 @@ unsigned char is_playing : 1;
 unsigned char settings_is_alloc : 1;
 /// 需要设置新的filters链
 unsigned char need_reinit_filters : 1;
+/// 是否正在播放CDA文件
+unsigned char is_cda : 1;
+/// 是否仅播放一部分内容
+unsigned char only_part: 1;
 } MusicHandle;
 typedef struct MusicInfoHandle {
 AVFormatContext* fmt;
 AVStream* is;
+CDAData* cda;
 } MusicInfoHandle;
 typedef struct FfmpegCoreSettings {
 /// 音量

@@ -10,8 +10,14 @@
 #include "decode.h"
 #include "filter.h"
 #include "speed.h"
+#include "cda.h"
+#include "fileop.h"
 
 #define CODEPAGE_SIZE 3
+
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
 
 void free_music_handle(MusicHandle* handle) {
     if (!handle) return;
@@ -42,12 +48,14 @@ void free_music_handle(MusicHandle* handle) {
     if (handle->s && handle->settings_is_alloc) {
         free_ffmpeg_core_settings(handle->s);
     }
+    if (handle->cda) free(handle->cda);
     free(handle);
 }
 
 void free_music_info_handle(MusicInfoHandle* handle) {
     if (!handle) return;
     if (handle->fmt) avformat_close_input(&handle->fmt);
+    if (handle->cda) free(handle->cda);
     free(handle);
 }
 
@@ -100,8 +108,20 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
         }
     }
     handle->first_pts = INT64_MIN;
-    if ((re = open_input(handle, u.c_str()))) {
-        goto end;
+    handle->part_end_pts = INT64_MAX;
+    handle->is_cda = is_cda_file(u.c_str());
+    if (handle->is_cda) {
+        if ((re = read_cda_file(handle, u.c_str()))) {
+            goto end;
+        }
+        u = fileop::dirname(u);
+        if ((re = open_cd_device(handle, u.c_str()))) {
+            goto end;
+        }
+    } else {
+        if ((re = open_input(handle, u.c_str()))) {
+            goto end;
+        }
     }
 #ifndef NDEBUG
     av_dump_format(handle->fmt, 0, u.c_str(), 0);
@@ -151,12 +171,24 @@ int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle) {
 #endif
     MusicInfoHandle* h = (MusicInfoHandle*)malloc(sizeof(MusicInfoHandle));
     int re = FFMPEG_CORE_ERR_OK;
+    int is_cda = 0;
     if (!h) {
         return FFMPEG_CORE_ERR_OOM;
     }
     memset(h, 0, sizeof(MusicInfoHandle));
-    if ((re = open_input2(h, u.c_str()))) {
-        goto end;
+    is_cda = is_cda_file(u.c_str());
+    if (is_cda) {
+        if ((re = read_cda_file2(h, u.c_str()))) {
+            goto end;
+        }
+        u = fileop::dirname(u);
+        if ((re = open_cd_device2(h, u.c_str()))) {
+            goto end;
+        }
+    } else {
+        if ((re = open_input2(h, u.c_str()))) {
+            goto end;
+        }
     }
     if ((re = find_audio_stream2(h))) {
         goto end;
@@ -184,6 +216,7 @@ int ffmpeg_core_pause(MusicHandle* handle) {
 
 int64_t ffmpeg_core_get_cur_position(MusicHandle* handle) {
     if (!handle) return -1;
+    if (handle->only_part) return handle->pts - handle->part_start_pts;
     // 忽略 SDL 可能长达 0.01s 的 buffer
     return handle->pts;
 }
@@ -196,11 +229,15 @@ int ffmpeg_core_song_is_over(MusicHandle* handle) {
 
 int64_t ffmpeg_core_get_song_length(MusicHandle* handle) {
     if (!handle || !handle->fmt) return -1;
+    if (handle->only_part) {
+        return min(handle->part_end_pts - handle->part_start_pts, handle->fmt->duration - handle->part_start_pts);
+    }
     return handle->fmt->duration;
 }
 
 int64_t ffmpeg_core_info_get_song_length(MusicInfoHandle* handle) {
     if (!handle || !handle->fmt) return -1;
+    if (handle->cda) return get_cda_duration(handle->cda);
     return handle->fmt->duration;
 }
 
@@ -230,6 +267,9 @@ int ffmpeg_core_seek(MusicHandle* handle, int64_t time) {
     if (re == WAIT_OBJECT_0) {
         handle->is_seek = 1;
         handle->seek_pos = time;
+        if (handle->only_part) {
+            handle->seek_pos += handle->part_start_pts;
+        }
     } else {
         return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
     }
@@ -433,6 +473,14 @@ const wchar_t* ffmpeg_core_get_err_msg2(int err) {
             return L"Failed to set speed.";
         case FFMPEG_CORE_ERR_TOO_BIG_FFT_DATA_LEN:
             return L"FFT data's length is too big.";
+        case FFMPEG_CORE_ERR_FAILED_OPEN_FILE:
+            return L"Failed to open file.";
+        case FFMPEG_CORE_ERR_FAILED_READ_FILE:
+            return L"Failed to read file.";
+        case FFMPEG_CORE_ERR_INVALID_CDA_FILE:
+            return L"Invalid CDA file.";
+        case FFMPEG_CORE_ERR_NO_LIBCDIO:
+            return L"libcdio not found.";
         default:
             return L"Unknown error.";
     }

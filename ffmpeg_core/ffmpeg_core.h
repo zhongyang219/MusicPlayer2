@@ -30,6 +30,10 @@ typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 #define FFMPEG_CORE_ERR_FAILED_SET_VOLUME 11
 #define FFMPEG_CORE_ERR_FAILED_SET_SPEED 12
 #define FFMPEG_CORE_ERR_TOO_BIG_FFT_DATA_LEN 13
+#define FFMPEG_CORE_ERR_FAILED_OPEN_FILE 14
+#define FFMPEG_CORE_ERR_FAILED_READ_FILE 15
+#define FFMPEG_CORE_ERR_INVALID_CDA_FILE 16
+#define FFMPEG_CORE_ERR_NO_LIBCDIO 17
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);

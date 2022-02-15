@@ -84,12 +84,23 @@ int decode_audio(MusicHandle* handle, char* writed) {
             if (handle->first_pts == INT64_MIN) {
                 handle->first_pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
                 av_log(NULL, AV_LOG_VERBOSE, "first_pts: %s\n", av_ts2timestr(handle->first_pts, &AV_TIME_BASE_Q));
+                if (handle->only_part) {
+                    // 定位到开始位置
+                    if (handle->part_start_pts > 0) {
+                        handle->is_seek = 1;
+                        handle->seek_pos = handle->part_start_pts;
+                    }
+                }
             }
             if (handle->set_new_pts) {
                 av_log(NULL, AV_LOG_VERBOSE, "pts: %s\n", av_ts2timestr(frame->pts, &handle->is->time_base));
                 handle->pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX) - handle->first_pts;
                 handle->end_pts = handle->pts;
                 handle->set_new_pts = 0;
+            }
+            if (handle->only_part && (frame->pts - handle->first_pts) >= handle->part_end_pts) {
+                handle->is_eof = 1;
+                goto end;
             }
             re = convert_samples_and_add_to_fifo(handle, frame, writed);
             goto end;
@@ -113,8 +124,16 @@ int convert_samples_and_add_to_fifo(MusicHandle* handle, AVFrame* frame, char* w
     uint8_t** converted_input_samples = NULL;
     int re = FFMPEG_CORE_ERR_OK;
     AVRational base = { 1, handle->decoder->sample_rate }, target = { 1, handle->sdl_spec.freq };
+    int samples = frame->nb_samples;
+    if (handle->only_part) {
+        int tmp = av_rescale_q_rnd(handle->part_end_pts - handle->end_pts + handle->first_pts, AV_TIME_BASE_Q, base, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
+        if (samples >= tmp) {
+            samples = tmp;
+            handle->is_eof = 1;
+        }
+    }
     /// 输出的样本数
-    int64_t frames = av_rescale_q_rnd(frame->nb_samples, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX);
+    int64_t frames = av_rescale_q_rnd(samples, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX);
     /// 实际输出样本数
     int converted_samples = 0;
     DWORD res = 0;
@@ -128,7 +147,7 @@ int convert_samples_and_add_to_fifo(MusicHandle* handle, AVFrame* frame, char* w
         goto end;
     }
     re = 0;
-    if ((converted_samples = swr_convert(handle->swrac, converted_input_samples, frames, (const uint8_t**)frame->extended_data, frame->nb_samples)) < 0) {
+    if ((converted_samples = swr_convert(handle->swrac, converted_input_samples, frames, (const uint8_t**)frame->extended_data, samples)) < 0) {
         re = converted_samples;
         goto end;
     }

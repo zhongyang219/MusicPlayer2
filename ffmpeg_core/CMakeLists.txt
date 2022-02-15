@@ -9,8 +9,9 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(AVFORMAT 58 REQUIRED)
 find_package(AVCODEC 58 REQUIRED)
+find_package(AVDEVICE 58 REQUIRED)
 find_package(AVUTIL 56 REQUIRED)
-find_package(AVFILTER 7)
+find_package(AVFILTER 7 REQUIRED)
 find_package(SWRESAMPLE 4 REQUIRED)
 find_package(SDL2 REQUIRED)
 
@@ -38,6 +39,8 @@ src/speed.h
 src/speed.c
 src/fft_data.h
 src/fft_data.c
+src/cda.h
+src/cda.c
 )
 
 add_library(ffmpeg_core SHARED "${CORE_FILES}")
@@ -45,6 +48,7 @@ set_target_properties(ffmpeg_core PROPERTIES PREFIX "")
 target_compile_definitions(ffmpeg_core PRIVATE BUILD_FFMPEG_CORE)
 target_link_libraries(ffmpeg_core AVFORMAT::AVFORMAT)
 target_link_libraries(ffmpeg_core AVCODEC::AVCODEC)
+target_link_libraries(ffmpeg_core AVDEVICE::AVDEVICE)
 target_link_libraries(ffmpeg_core AVUTIL::AVUTIL)
 target_link_libraries(ffmpeg_core AVFILTER::AVFILTER)
 target_link_libraries(ffmpeg_core SWRESAMPLE::SWRESAMPLE)
