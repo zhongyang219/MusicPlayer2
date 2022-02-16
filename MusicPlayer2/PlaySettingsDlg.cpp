@@ -37,6 +37,8 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_MCI_RADIO, m_mci_radio);
     DDX_Control(pDX, IDC_FFMPEG_RADIO, m_ffmpeg_radio);
     DDX_Control(pDX, IDC_FFMPEG_CACHE_LENGTH, m_ffmpeg_cache_length);
+    DDX_Control(pDX, IDC_FFMPEG_MAX_RETRY_COUNT, m_ffmpeg_max_retry_count);
+    DDX_Control(pDX, IDC_FFMPEG_URL_RETRY_INTERVAL, m_ffmpeg_url_retry_interval);
 }
 
 void CPlaySettingsDlg::ShowDeviceInfo()
@@ -176,10 +178,16 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     m_ffmpeg_cache_length.SetRange(1, 60);
     m_ffmpeg_cache_length.SetValue(theApp.m_play_setting_data.ffmpeg_core_cache_length);
+    m_ffmpeg_max_retry_count.SetRange(-1, SHORT_MAX);
+    m_ffmpeg_max_retry_count.SetValue(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
+    m_ffmpeg_url_retry_interval.SetRange(1, 120);
+    m_ffmpeg_url_retry_interval.SetValue(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
 
     //设置控件不响应鼠标滚轮消息
     m_output_device_combo.SetMouseWheelEnable(false);
     m_ffmpeg_cache_length.SetMouseWheelEnable(false);
+    m_ffmpeg_max_retry_count.SetMouseWheelEnable(false);
+    m_ffmpeg_url_retry_interval.SetMouseWheelEnable(false);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -269,6 +277,8 @@ BOOL CPlaySettingsDlg::PreTranslateMessage(MSG* pMsg)
 
 void CPlaySettingsDlg::OnOK() {
     m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
+    m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
+    m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
     if (CPlayer::GetInstance().IsFfmpegCore()) {
         auto core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
         core->UpdateSettings(&m_data);

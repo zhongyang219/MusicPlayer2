@@ -343,6 +343,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_settings_set_speed = (_ffmpeg_core_settings_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_speed");
     ffmpeg_core_settings_set_cache_length = (_ffmpeg_core_settings_set_cache_length)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_cache_length");
     ffmpeg_core_settings_set_max_retry_count = (_ffmpeg_core_settings_set_max_retry_count)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_max_retry_count");
+    ffmpeg_core_settings_set_url_retry_interval = (_ffmpeg_core_settings_set_url_retry_interval)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_url_retry_interval");
     //ÅÐ¶ÏÊÇ·ñ³É¹¦
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
@@ -382,6 +383,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_settings_set_speed != NULL);
     rtn &= (ffmpeg_core_settings_set_cache_length != NULL);
     rtn &= (ffmpeg_core_settings_set_max_retry_count != NULL);
+    rtn &= (ffmpeg_core_settings_set_url_retry_interval != NULL);
     return rtn;
 }
 
@@ -480,13 +482,29 @@ void CFfmpegCore::LogCallback(void* ptr, int level, const char* fmt, va_list vl)
 void CFfmpegCore::UpdateSettings(PlaySettingData* s) {
     if (s) {
         SetCacheLength(s->ffmpeg_core_cache_length);
+        SetMaxRetryCount(s->ffmpeg_core_max_retry_count);
+        SetUrlRetryInterval(s->ffmpeg_core_url_retry_interval);
     } else {
         SetCacheLength(theApp.m_play_setting_data.ffmpeg_core_cache_length);
+        SetMaxRetryCount(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
+        SetUrlRetryInterval(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
     }
 }
 
 void CFfmpegCore::SetCacheLength(int cache_length) {
     if (settings) {
         ffmpeg_core_settings_set_cache_length(settings, cache_length);
+    }
+}
+
+void CFfmpegCore::SetMaxRetryCount(int max_retry_count) {
+    if (settings) {
+        ffmpeg_core_settings_set_max_retry_count(settings, max_retry_count);
+    }
+}
+
+void CFfmpegCore::SetUrlRetryInterval(int url_retry_interval) {
+    if (settings) {
+        ffmpeg_core_settings_set_url_retry_interval(settings, url_retry_interval);
     }
 }

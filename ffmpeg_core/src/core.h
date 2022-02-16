@@ -108,7 +108,7 @@ int64_t last_pkt_pts;
 unsigned char sdl_initialized : 1;
 /// 让事件处理线程退出标志位
 unsigned char stoping : 1;
-/// 是否已读到文件尾部
+/// 是否已读到文件尾部/读取位置达到要播放的部分的结束时间
 unsigned char is_eof : 1;
 /// 是否有错误
 unsigned char have_err : 1;
@@ -144,6 +144,8 @@ float speed;
 int cache_length;
 /// 最大重试次数
 int max_retry_count;
+/// 非本地文件重试间隔时间（单位s）
+int url_retry_interval;
 } FfmpegCoreSettings;
 #if __cplusplus
 }

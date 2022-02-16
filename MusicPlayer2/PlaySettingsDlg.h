@@ -34,6 +34,8 @@ protected:
     CButton m_mci_radio;
     CButton m_ffmpeg_radio;
     CSpinEdit m_ffmpeg_cache_length;
+    CSpinEdit m_ffmpeg_max_retry_count;
+    CSpinEdit m_ffmpeg_url_retry_interval;
     CToolTipCtrl m_toolTip;
 
 protected:

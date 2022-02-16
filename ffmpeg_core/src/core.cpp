@@ -419,7 +419,8 @@ FfmpegCoreSettings* ffmpeg_core_init_settings() {
     s->speed = 1.0;
     s->volume = 100;
     s->cache_length = 15;
-    s->max_retry_count = 10;
+    s->max_retry_count = 3;
+    s->url_retry_interval = 5;
     return s;
 }
 
@@ -548,6 +549,15 @@ int ffmpeg_core_settings_set_max_retry_count(FfmpegCoreSettings* s, int max_retr
     if (!s) return 0;
     if (max_retry_count >= -1) {
         s->max_retry_count = max_retry_count;
+        return 1;
+    }
+    return 0;
+}
+
+int ffmpeg_core_settings_set_url_retry_interval(FfmpegCoreSettings* s, int url_retry_interval) {
+    if (!s) return 0;
+    if (url_retry_interval >= 1 && url_retry_interval <= 120) {
+        s->url_retry_interval = url_retry_interval;
         return 1;
     }
     return 0;

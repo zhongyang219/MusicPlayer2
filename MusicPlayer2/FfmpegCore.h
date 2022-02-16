@@ -48,6 +48,7 @@ typedef int(*_ffmpeg_core_settings_set_volume)(FfmpegCoreSettings*, int volume);
 typedef int(*_ffmpeg_core_settings_set_speed)(FfmpegCoreSettings*, float);
 typedef int(*_ffmpeg_core_settings_set_cache_length)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_max_retry_count)(FfmpegCoreSettings*, int);
+typedef int(*_ffmpeg_core_settings_set_url_retry_interval)(FfmpegCoreSettings*, int);
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
 public:
@@ -99,6 +100,8 @@ public:
     int GetTrackNum(MusicInfoHandle* h = nullptr);
     void UpdateSettings(PlaySettingData* s = nullptr);
     void SetCacheLength(int cache_length = 15);
+    void SetMaxRetryCount(int max_retry_count = 3);
+    void SetUrlRetryInterval(int url_retry_interval = 5);
 private:
     std::wstring GetMetadata(std::string key, MusicInfoHandle* h = nullptr);
     virtual bool GetFunction() override;
@@ -141,6 +144,7 @@ private:
     _ffmpeg_core_settings_set_speed ffmpeg_core_settings_set_speed = nullptr;
     _ffmpeg_core_settings_set_cache_length ffmpeg_core_settings_set_cache_length = nullptr;
     _ffmpeg_core_settings_set_max_retry_count ffmpeg_core_settings_set_max_retry_count = nullptr;
+    _ffmpeg_core_settings_set_url_retry_interval ffmpeg_core_settings_set_url_retry_interval = nullptr;
     MusicHandle* handle;
     FfmpegCoreSettings* settings = nullptr;
     std::wstring recent_file;
