@@ -12,6 +12,7 @@
 #include "speed.h"
 #include "cda.h"
 #include "fileop.h"
+#include "file.h"
 
 #define CODEPAGE_SIZE 3
 
@@ -49,6 +50,8 @@ void free_music_handle(MusicHandle* handle) {
         free_ffmpeg_core_settings(handle->s);
     }
     if (handle->cda) free(handle->cda);
+    if (handle->url) free(handle->url);
+    if (handle->parsed_url) free_url_parse_result(handle->parsed_url);
     free(handle);
 }
 
@@ -70,6 +73,10 @@ int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list v
 
 void ffmpeg_core_log_set_callback(void(*callback)(void*, int, const char*, va_list)) {
     av_log_set_callback(callback);
+}
+
+void ffmpeg_core_log_set_flags(int arg) {
+    av_log_set_flags(arg);
 }
 
 int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle) {
@@ -126,6 +133,16 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
 #ifndef NDEBUG
     av_dump_format(handle->fmt, 0, u.c_str(), 0);
 #endif
+    if (!cpp2c::string2char(u, handle->url)) {
+        re = FFMPEG_CORE_ERR_OOM;
+        goto end;
+    }
+    handle->parsed_url = urlparse(handle->url, nullptr, 1);
+    if (!handle->parsed_url) {
+        re = FFMEPG_CORE_ERR_FAILED_PARSE_URL;
+        goto end;
+    }
+    handle->is_file = is_file(handle->parsed_url);
     if ((re = find_audio_stream(handle))) {
         av_log(NULL, AV_LOG_FATAL, "Failed to find suitable audio stream.\n");
         goto end;
@@ -273,6 +290,10 @@ int ffmpeg_core_seek(MusicHandle* handle, int64_t time) {
     } else {
         return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
     }
+    if (handle->is_reopen) {
+        ReleaseMutex(handle->mutex);
+        return FFMPEG_CORE_ERR_OK;
+    }
     handle->have_err = 0;
     ReleaseMutex(handle->mutex);
     while (1) {
@@ -379,10 +400,13 @@ int send_reinit_filters(MusicHandle* handle) {
     } else {
         return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
     }
+    if (handle->is_reopen) {
+        ReleaseMutex(handle->mutex);
+        return FFMPEG_CORE_ERR_OK;
+    }
     handle->have_err = 0;
     ReleaseMutex(handle->mutex);
-    while (1) {
-        if (!handle->is_seek) break;
+    while (handle->need_reinit_filters) {
         Sleep(10);
     }
     return handle->have_err ? handle->err : FFMPEG_CORE_ERR_OK;
@@ -395,6 +419,7 @@ FfmpegCoreSettings* ffmpeg_core_init_settings() {
     s->speed = 1.0;
     s->volume = 100;
     s->cache_length = 15;
+    s->max_retry_count = 10;
     return s;
 }
 
@@ -439,7 +464,7 @@ int ffmpeg_core_settings_set_cache_length(FfmpegCoreSettings* s, int length) {
 
 int ffmpeg_core_get_error(MusicHandle* handle) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
-    return handle->err;
+    return handle->have_err ? handle->err : 0;
 }
 
 const wchar_t* ffmpeg_core_get_err_msg2(int err) {
@@ -481,6 +506,8 @@ const wchar_t* ffmpeg_core_get_err_msg2(int err) {
             return L"Invalid CDA file.";
         case FFMPEG_CORE_ERR_NO_LIBCDIO:
             return L"libcdio not found.";
+        case FFMEPG_CORE_ERR_FAILED_PARSE_URL:
+            return L"Failed to parse url.";
         default:
             return L"Unknown error.";
     }
@@ -515,4 +542,13 @@ wchar_t* ffmpeg_core_get_err_msg(int err) {
         }
     }
     return nullptr;
+}
+
+int ffmpeg_core_settings_set_max_retry_count(FfmpegCoreSettings* s, int max_retry_count) {
+    if (!s) return 0;
+    if (max_retry_count >= -1) {
+        s->max_retry_count = max_retry_count;
+        return 1;
+    }
+    return 0;
 }

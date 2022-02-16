@@ -74,6 +74,7 @@ int decode_audio(MusicHandle* handle, char* writed) {
             av_packet_unref(&pkt);
             continue;
         }
+        handle->last_pkt_pts = av_rescale_q_rnd(pkt.pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
         if ((re = avcodec_send_packet(handle->decoder, &pkt)) < 0) {
             av_packet_unref(&pkt);
             goto end;
@@ -98,6 +99,7 @@ int decode_audio(MusicHandle* handle, char* writed) {
                 handle->end_pts = handle->pts;
                 handle->set_new_pts = 0;
             }
+            // 整段数据在结束位置之后，跳过
             if (handle->only_part && (frame->pts - handle->first_pts) >= handle->part_end_pts) {
                 handle->is_eof = 1;
                 goto end;

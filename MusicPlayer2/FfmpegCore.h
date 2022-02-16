@@ -5,6 +5,8 @@
 
 #define AV_LOG_ERROR 16
 #define AV_LOG_VERBOSE 40
+#define AV_LOG_SKIP_REPEATED 1
+#define AV_LOG_PRINT_LEVEL 2
 typedef struct MusicHandle MusicHandle;
 typedef struct MusicInfoHandle MusicInfoHandle;
 typedef struct FfmpegCoreSettings FfmpegCoreSettings;
@@ -13,6 +15,7 @@ typedef void(*_free_music_info_handle)(MusicInfoHandle*);
 typedef void(*_free_ffmpeg_core_settings)(FfmpegCoreSettings*);
 typedef int(*_ffmpeg_core_log_format_line)(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
 typedef void(*_ffmpeg_core_log_set_callback)(void(*callback)(void*, int, const char*, va_list));
+typedef void(*_ffmpeg_core_log_set_flags)(int);
 typedef int(*_ffmpeg_core_open)(const wchar_t*, MusicHandle**);
 typedef int(*_ffmpeg_core_open2)(const wchar_t*, MusicHandle**, FfmpegCoreSettings*);
 typedef int(*_ffmpeg_core_info_open)(const wchar_t*, MusicInfoHandle**);
@@ -44,6 +47,7 @@ typedef FfmpegCoreSettings*(*_ffmpeg_core_init_settings)();
 typedef int(*_ffmpeg_core_settings_set_volume)(FfmpegCoreSettings*, int volume);
 typedef int(*_ffmpeg_core_settings_set_speed)(FfmpegCoreSettings*, float);
 typedef int(*_ffmpeg_core_settings_set_cache_length)(FfmpegCoreSettings*, int);
+typedef int(*_ffmpeg_core_settings_set_max_retry_count)(FfmpegCoreSettings*, int);
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
 public:
@@ -104,6 +108,7 @@ private:
     _free_ffmpeg_core_settings free_ffmpeg_core_settings = nullptr;
     _ffmpeg_core_log_format_line ffmpeg_core_log_format_line = nullptr;
     _ffmpeg_core_log_set_callback ffmpeg_core_log_set_callback = nullptr;
+    _ffmpeg_core_log_set_flags ffmpeg_core_log_set_flags = nullptr;
     _ffmpeg_core_open ffmpeg_core_open = nullptr;
     _ffmpeg_core_open2 ffmpeg_core_open2 = nullptr;
     _ffmpeg_core_info_open ffmpeg_core_info_open = nullptr;
@@ -135,6 +140,7 @@ private:
     _ffmpeg_core_settings_set_volume ffmpeg_core_settings_set_volume = nullptr;
     _ffmpeg_core_settings_set_speed ffmpeg_core_settings_set_speed = nullptr;
     _ffmpeg_core_settings_set_cache_length ffmpeg_core_settings_set_cache_length = nullptr;
+    _ffmpeg_core_settings_set_max_retry_count ffmpeg_core_settings_set_max_retry_count = nullptr;
     MusicHandle* handle;
     FfmpegCoreSettings* settings = nullptr;
     std::wstring recent_file;

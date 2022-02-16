@@ -34,6 +34,7 @@ typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 #define FFMPEG_CORE_ERR_FAILED_READ_FILE 15
 #define FFMPEG_CORE_ERR_INVALID_CDA_FILE 16
 #define FFMPEG_CORE_ERR_NO_LIBCDIO 17
+#define FFMEPG_CORE_ERR_FAILED_PARSE_URL 18
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
@@ -41,6 +42,8 @@ FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
 FFMPEG_CORE_API int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
 /// 即 av_log_set_callback
 FFMPEG_CORE_API void ffmpeg_core_log_set_callback(void(*callback)(void*, int, const char*, va_list));
+/// 即 av_log_set_flags
+FFMPEG_CORE_API void ffmpeg_core_log_set_flags(int arg);
 FFMPEG_CORE_API int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle);
 FFMPEG_CORE_API int ffmpeg_core_open2(const wchar_t* url, MusicHandle** handle, FfmpegCoreSettings* s);
 FFMPEG_CORE_API int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle);
@@ -128,6 +131,7 @@ FFMPEG_CORE_API FfmpegCoreSettings* ffmpeg_core_init_settings();
 FFMPEG_CORE_API int ffmpeg_core_settings_set_volume(FfmpegCoreSettings* s, int volume);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_speed(FfmpegCoreSettings* s, float speed);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_cache_length(FfmpegCoreSettings* s, int length);
+FFMPEG_CORE_API int ffmpeg_core_settings_set_max_retry_count(FfmpegCoreSettings* s, int max_retry_count);
 #ifdef __cplusplus
 }
 #endif

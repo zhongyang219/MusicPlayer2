@@ -41,6 +41,8 @@ src/fft_data.h
 src/fft_data.c
 src/cda.h
 src/cda.c
+src/file.h
+src/file.cpp
 )
 
 add_library(ffmpeg_core SHARED "${CORE_FILES}")

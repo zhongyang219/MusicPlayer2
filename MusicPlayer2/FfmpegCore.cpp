@@ -7,6 +7,8 @@
 
 #define ft2ts(t) (((size_t)t.dwHighDateTime << 32) | (size_t)t.dwLowDateTime)
 
+static std::wstring last_ffmpeg_core_error_cache;
+
 CFfmpegCore::CFfmpegCore() {
     handle = nullptr;
     err = 0;
@@ -42,14 +44,17 @@ void CFfmpegCore::InitCore() {
         format.extensions.push_back(L"mp1");
         format.extensions.push_back(L"opus");
         format.extensions.push_back(L"ape");
+        format.extensions.push_back(L"aif");
+        format.extensions.push_back(L"aiff");
         format.extensions.push_back(L"cda");
         format.extensions.push_back(L"mp4");
         format.extensions.push_back(L"mkv");
         format.extensions.push_back(L"m2ts");
-        format.extensions_list = L"*.mp3;*.wma;*.wav;*.m4a;*.ogg;*.oga;*.flac;*.ape;*.mp2;*.mp1;*.opus;*.ape;*.cda;*.mp4;*.mkv;*.m2ts";
+        format.extensions_list = L"*.mp3;*.wma;*.wav;*.m4a;*.ogg;*.oga;*.flac;*.ape;*.mp2;*.mp1;*.opus;*.ape;*.cda;*.aif;*.aiff;*.mp4;*.mkv;*.m2ts";
         CAudioCommon::m_surpported_format.push_back(format);
         CAudioCommon::m_all_surpported_extensions = format.extensions;
         settings = ffmpeg_core_init_settings();
+        ffmpeg_core_log_set_flags(AV_LOG_SKIP_REPEATED | AV_LOG_PRINT_LEVEL);
         ffmpeg_core_log_set_callback(LogCallback);
         UpdateSettings();
     }
@@ -264,12 +269,18 @@ void CFfmpegCore::GetFFTData(float fft_data[FFT_SAMPLE]) {
 }
 
 int CFfmpegCore::GetErrorCode() {
-    if (err) return err;
-    if (handle) return ffmpeg_core_get_error(handle);
+    if (err) {
+        int tmp = err;
+        err = 0;
+        return tmp;
+    }
+    // 不返回下层的错误，以免当下层重新打开文件时，即使这里返回0，上层依旧认为有错误
+    // if (handle) return ffmpeg_core_get_error(handle);
     return 0;
 }
 
 std::wstring CFfmpegCore::GetErrorInfo(int error_code) {
+    if (error_code == 0) return L"";
     auto tmp = ffmpeg_core_get_err_msg(error_code);
     if (tmp) {
         std::wstring re(tmp);
@@ -299,6 +310,7 @@ bool CFfmpegCore::GetFunction() {
     free_ffmpeg_core_settings = (_free_ffmpeg_core_settings)::GetProcAddress(m_dll_module, "free_ffmpeg_core_settings");
     ffmpeg_core_log_format_line = (_ffmpeg_core_log_format_line)::GetProcAddress(m_dll_module, "ffmpeg_core_log_format_line");
     ffmpeg_core_log_set_callback = (_ffmpeg_core_log_set_callback)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_callback");
+    ffmpeg_core_log_set_flags = (_ffmpeg_core_log_set_flags)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_flags");
     ffmpeg_core_open = (_ffmpeg_core_open)::GetProcAddress(m_dll_module, "ffmpeg_core_open");
     ffmpeg_core_open2 = (_ffmpeg_core_open2)::GetProcAddress(m_dll_module, "ffmpeg_core_open2");
     ffmpeg_core_info_open = (_ffmpeg_core_info_open)::GetProcAddress(m_dll_module, "ffmpeg_core_info_open");
@@ -330,12 +342,14 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_settings_set_volume = (_ffmpeg_core_settings_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_volume");
     ffmpeg_core_settings_set_speed = (_ffmpeg_core_settings_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_speed");
     ffmpeg_core_settings_set_cache_length = (_ffmpeg_core_settings_set_cache_length)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_cache_length");
+    ffmpeg_core_settings_set_max_retry_count = (_ffmpeg_core_settings_set_max_retry_count)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_max_retry_count");
     //判断是否成功
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
     rtn &= (free_ffmpeg_core_settings != NULL);
     rtn &= (ffmpeg_core_log_format_line != NULL);
     rtn &= (ffmpeg_core_log_set_callback != NULL);
+    rtn &= (ffmpeg_core_log_set_flags != NULL);
     rtn &= (ffmpeg_core_open != NULL);
     rtn &= (ffmpeg_core_open2 != NULL);
     rtn &= (ffmpeg_core_info_open != NULL);
@@ -367,6 +381,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_settings_set_volume != NULL);
     rtn &= (ffmpeg_core_settings_set_speed != NULL);
     rtn &= (ffmpeg_core_settings_set_cache_length != NULL);
+    rtn &= (ffmpeg_core_settings_set_max_retry_count != NULL);
     return rtn;
 }
 
@@ -440,15 +455,22 @@ void CFfmpegCore::LogCallback(void* ptr, int level, const char* fmt, va_list vl)
     char buf[1024];
     if (ffmpeg_core_log_format_line) {
         int print = 1;
-        int re = ffmpeg_core_log_format_line(ptr, level, fmt, vl, buf, sizeof(buf), &print);
-        if (re > 0) {
-            std::wstring s = CCommon::StrToUnicode(std::string(buf, re), CodeType::UTF8);
+        int r = ffmpeg_core_log_format_line(ptr, level, fmt, vl, buf, sizeof(buf), &print);
+        if (r > 0) {
+            std::wstring s = CCommon::StrToUnicode(std::string(buf, r), CodeType::UTF8);
+            if (s.find(L"Last message repeated") != -1) {
+                FreeLibrary(re);
+                return;
+            }
             OutputDebugStringW(s.c_str());
             if (level <= AV_LOG_ERROR) {
                 if (s.back() == '\n') {
                     s.pop_back();
                 }
-                theApp.WriteLog(s);
+                if (last_ffmpeg_core_error_cache.empty() || last_ffmpeg_core_error_cache != s) {
+                    last_ffmpeg_core_error_cache = s;
+                    theApp.WriteLog(s);
+                }
             }
         }
     }

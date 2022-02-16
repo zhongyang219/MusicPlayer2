@@ -161,8 +161,8 @@ int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterCo
     char channel_layout[512];
     // 输入的设置：描述见 ffmpeg -h filter=abuffer
     uint64_t layout = handle->output_channel_layout;
-    av_get_channel_layout_string(channel_layout, sizeof(channel_layout), handle->decoder->channels, layout);
-    snprintf(args, sizeof(args), "time_base=%d/%d:sample_rate=%d:sample_fmt=%s:channel_layout=%s:channels=%d", handle->is->time_base.num, handle->is->time_base.den, handle->sdl_spec.freq, av_get_sample_fmt_name(handle->target_format), channel_layout, handle->decoder->channels);
+    av_get_channel_layout_string(channel_layout, sizeof(channel_layout), handle->sdl_spec.channels, layout);
+    snprintf(args, sizeof(args), "time_base=%d/%d:sample_rate=%d:sample_fmt=%s:channel_layout=%s:channels=%d", handle->is->time_base.num, handle->is->time_base.den, handle->sdl_spec.freq, av_get_sample_fmt_name(handle->target_format), channel_layout, handle->sdl_spec.channels);
     if ((re = avfilter_graph_create_filter(src, buffer, "in", args, NULL, *graph)) < 0) {
         av_log(NULL, AV_LOG_FATAL, "Failed to create input filter: %s (%i)\n", av_err2str(re), re);
         return re;
@@ -189,7 +189,7 @@ int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterCo
         av_log(NULL, AV_LOG_FATAL, "Failed to set channel_layouts to output filter: %s (%i)\n", av_err2str(re), re);
         return re;
     }
-    int channel_counts[2] = { handle->decoder->channels, 0 };
+    int channel_counts[2] = { handle->sdl_spec.channels, 0 };
     if ((re = av_opt_set_int_list(*sink, "channel_counts", channel_counts, 0, AV_OPT_SEARCH_CHILDREN)) < 0) {
         av_log(NULL, AV_LOG_FATAL, "Failed to set channel_counts to output filter: %s (%i)\n", av_err2str(re), re);
         return re;

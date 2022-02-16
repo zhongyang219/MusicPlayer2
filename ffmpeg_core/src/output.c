@@ -116,7 +116,7 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
             goto end;
         }
         samples_need_in = samples_need * get_speed(handle->s->speed) / 1000;
-        in->channels = handle->decoder->channels;
+        in->channels = handle->sdl_spec.channels;
         in->channel_layout = handle->output_channel_layout;
         in->format = handle->target_format;
         in->sample_rate = handle->sdl_spec.freq;

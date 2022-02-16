@@ -1,8 +1,12 @@
 #include "loop.h"
 
 #include <inttypes.h>
+#include "libavutil/timestamp.h"
 #include "decode.h"
 #include "filter.h"
+#include "file.h"
+#include "cda.h"
+#include "open.h"
 
 int seek_to_pos(MusicHandle* handle) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
@@ -53,6 +57,78 @@ end:
     return re;
 }
 
+int reopen_file(MusicHandle* handle) {
+    if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
+    int re = FFMPEG_CORE_ERR_OK;
+    if (handle->is_file) {
+        int doing = 0;
+        while (1) {
+            doing = 0;
+            if (handle->stoping) return FFMPEG_CORE_ERR_OK;
+            if (basic_event_handle(handle)) {
+                doing = 1;
+            }
+            if (is_file_exists(handle)) break;
+            if (!doing) Sleep(10);
+        }
+    }
+    if (handle->fmt) avformat_close_input(&handle->fmt);
+    if (handle->decoder) avcodec_free_context(&handle->decoder);
+    if (handle->is_cda) {
+        if ((re = open_cd_device(handle, handle->url))) {
+            return re;
+        }
+    } else {
+        if ((re = open_input(handle, handle->url))) {
+            return re;
+        }
+    }
+    if ((re = find_audio_stream(handle))) {
+        return re;
+    }
+    if ((re = open_decoder(handle))) {
+        return re;
+    }
+    av_log(NULL, AV_LOG_VERBOSE, "The target pts: %s\n", av_ts2timestr(handle->last_pkt_pts, &AV_TIME_BASE_Q));
+    if ((re = av_seek_frame(handle->fmt, -1, handle->last_pkt_pts, AVSEEK_FLAG_ANY)) < 0) {
+        return re;
+    }
+    AVPacket pkt;
+    while (1) {
+        int64_t tmppts = 0;
+        if ((re = av_read_frame(handle->fmt, &pkt)) < 0) {
+            return re;
+        }
+        if (pkt.stream_index != handle->is->index) {
+            av_packet_unref(&pkt);
+            continue;
+        }
+        tmppts = av_rescale_q_rnd(pkt.pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
+        if (tmppts < handle->last_pkt_pts) {
+            continue;
+        }
+        break;
+    }
+    av_log(NULL, AV_LOG_VERBOSE, "The packet pts after seek: %s\n", av_ts2timestr(pkt.pts, &handle->is->time_base));
+    av_packet_unref(&pkt);
+    handle->is_reopen = 0;
+    return FFMPEG_CORE_ERR_OK;
+}
+
+int basic_event_handle(MusicHandle* h) {
+    if (!h) return 0;
+    if (h->need_reinit_filters) {
+        int re = reinit_filters(h);
+        if (re) {
+            h->have_err = 1;
+            h->err = re;
+        }
+        h->need_reinit_filters = 0;
+        return 1;
+    }
+    return 0;
+}
+
 DWORD WINAPI event_loop(LPVOID handle) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
     MusicHandle* h = (MusicHandle*)handle;
@@ -65,6 +141,29 @@ DWORD WINAPI event_loop(LPVOID handle) {
     while (1) {
         doing = 0;
         if (h->stoping) break;
+        if (basic_event_handle(h)) {
+            doing = 1;
+            goto end;
+        }
+        if (h->is_reopen) {
+            /// 禁用了重试或重试次数达上限
+            if (!h->s->max_retry_count || (h->s->max_retry_count > 0 && h->retry_count < h->s->max_retry_count)) {
+                goto end;
+            }
+            h->retry_count += 1;
+            av_log(NULL, AV_LOG_VERBOSE, "Try to reopen file \"%s\" %i times.\n", h->url, h->retry_count);
+            int re = reopen_file(h);
+            if (re) {
+                av_log(NULL, AV_LOG_VERBOSE, "Reopen failed: %i.\n", re);
+                h->err = re;
+            } else {
+                h->have_err = 0;
+                h->err = 0;
+                h->retry_count = 0;
+            }
+            doing = 1;
+            goto end;
+        }
         if (h->is_seek && h->first_pts != INT64_MIN) {
             int re = seek_to_pos(h);
             if (re) {
@@ -74,16 +173,6 @@ DWORD WINAPI event_loop(LPVOID handle) {
             doing = 1;
             goto end;
         }
-        if (h->need_reinit_filters) {
-            int re = reinit_filters(h);
-            if (re) {
-                h->have_err = 1;
-                h->err = re;
-            }
-            doing = 1;
-            h->need_reinit_filters = 0;
-            goto end;
-        }
         if (!h->is_eof) {
             buffered_size = h->sdl_spec.freq * h->s->cache_length;
             if (av_audio_fifo_size(h->buffer) < buffered_size) {
@@ -91,6 +180,20 @@ DWORD WINAPI event_loop(LPVOID handle) {
                 if (re) {
                     h->have_err = 1;
                     h->err = re;
+                    av_log(NULL, AV_LOG_VERBOSE, "Try to reopen file \"%s\".\n", h->url);
+                    h->is_reopen = 1;
+                    if (h->s->max_retry_count) {
+                        h->retry_count += 1;
+                        re = reopen_file(h);
+                        if (re) {
+                            av_log(NULL, AV_LOG_VERBOSE, "Reopen failed: %i.\n", re);
+                            h->err = re;
+                        } else {
+                            h->have_err = 0;
+                            h->err = 0;
+                            h->retry_count = 0;
+                        }
+                    }
                 }
                 doing = 1;
             }

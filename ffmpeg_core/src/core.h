@@ -19,6 +19,7 @@ extern "C" {
 #include "SDL2/SDL.h"
 #include <Windows.h>
 #include "c_linked_list.h"
+#include "urlparse.h"
 
 #ifndef __cplusplus
 #ifndef min
@@ -95,6 +96,14 @@ c_linked_list* filters;
 CDAData* cda;
 /// 输出时的声道布局
 uint64_t output_channel_layout;
+/// 播放地址
+char* url;
+/// 解析后的播放地址
+UrlParseResult* parsed_url;
+/// 当前重新打开次数
+int retry_count;
+/// 最近一个包的时间
+int64_t last_pkt_pts;
 /// SDL是否被初始化
 unsigned char sdl_initialized : 1;
 /// 让事件处理线程退出标志位
@@ -115,7 +124,11 @@ unsigned char need_reinit_filters : 1;
 /// 是否正在播放CDA文件
 unsigned char is_cda : 1;
 /// 是否仅播放一部分内容
-unsigned char only_part: 1;
+unsigned char only_part : 1;
+/// 是否为本地文件
+unsigned char is_file : 1;
+/// 是否正在重新打开文件
+unsigned char is_reopen : 1;
 } MusicHandle;
 typedef struct MusicInfoHandle {
 AVFormatContext* fmt;
@@ -129,6 +142,8 @@ int volume;
 float speed;
 /// 缓存长度（单位s）
 int cache_length;
+/// 最大重试次数
+int max_retry_count;
 } FfmpegCoreSettings;
 #if __cplusplus
 }
