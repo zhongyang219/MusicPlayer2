@@ -267,7 +267,7 @@ int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterCo
 
 int add_data_to_filters_buffer(MusicHandle* handle) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
-    DWORD re = WaitForSingleObject(handle->mutex, 10);
+    DWORD re = WaitForSingleObject(handle->mutex2, INFINITE);
     int r = FFMPEG_CORE_ERR_OK;
     AVFrame* in = NULL, * out = NULL;
     int samples_need = 1000;
@@ -280,18 +280,19 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
     AVRational base = { 1000, 1000 }, target = { 1, 1 };
     if (re == WAIT_TIMEOUT) return FFMPEG_CORE_ERR_OK;
     else if (re != WAIT_OBJECT_0) return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+    re = WaitForSingleObject(handle->mutex, 10);
+    if (re == WAIT_TIMEOUT) {
+        ReleaseMutex(handle->mutex2);
+        return FFMPEG_CORE_ERR_OK;
+    } else if (re != WAIT_OBJECT_0) {
+        ReleaseMutex(handle->mutex2);
+        return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+    }
     have_mutex = 1;
     if (!handle->graph || handle->is_easy_filters) {
         ReleaseMutex(handle->mutex);
+        ReleaseMutex(handle->mutex2);
         return FFMPEG_CORE_ERR_OK;
-    }
-    re = WaitForSingleObject(handle->mutex2, INFINITE);
-    if (re == WAIT_TIMEOUT) {
-        ReleaseMutex(handle->mutex);
-        return FFMPEG_CORE_ERR_OK;
-    } else if (re != WAIT_OBJECT_0) {
-        ReleaseMutex(handle->mutex);
-        return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
     }
     buffer_size = av_audio_fifo_size(handle->filters_buffer);
     if (buffer_size > handle->sdl_spec.freq) {
