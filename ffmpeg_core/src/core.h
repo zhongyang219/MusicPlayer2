@@ -77,6 +77,8 @@ SDL_AudioDeviceID device_id;
 int err;
 /// Mutex对象，作为线程锁（用于保护缓冲区和时间）
 HANDLE mutex;
+/// 用来确保filter graph对象可用
+HANDLE mutex2;
 /// 缓冲区开始时间
 int64_t pts;
 /// 缓冲区结束时间

@@ -180,6 +180,11 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
         re = FFMPEG_CORE_ERR_FAILED_CREATE_MUTEX;
         goto end;
     }
+    handle->mutex2 = CreateMutexW(nullptr, FALSE, nullptr);
+    if (!handle->mutex2) {
+        re = FFMPEG_CORE_ERR_FAILED_CREATE_MUTEX;
+        goto end;
+    }
     handle->thread = CreateThread(nullptr, 0, event_loop, handle, 0, &handle->thread_id);
     if (!handle->thread) {
         re = FFMPEG_CORE_ERR_FAILED_CREATE_THREAD;

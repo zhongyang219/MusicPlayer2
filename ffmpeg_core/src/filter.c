@@ -73,6 +73,11 @@ int reinit_filters(MusicHandle* handle) {
         if (re != WAIT_OBJECT_0) {
             return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
         }
+        re = WaitForSingleObject(handle->mutex2, INFINITE);
+        if (re != WAIT_OBJECT_0) {
+            ReleaseMutex(handle->mutex);
+            return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+        }
         avfilter_graph_free(&handle->graph);
         handle->graph = NULL;
         handle->filter_inp = NULL;
@@ -81,6 +86,7 @@ int reinit_filters(MusicHandle* handle) {
         av_audio_fifo_reset(handle->filters_buffer);
         handle->filters_buffer_offset = 0;
         ReleaseMutex(handle->mutex);
+        ReleaseMutex(handle->mutex2);
         return FFMPEG_CORE_ERR_OK;
     }
     int re = FFMPEG_CORE_ERR_OK;
@@ -114,6 +120,12 @@ int reinit_filters(MusicHandle* handle) {
                 re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
                 goto end;
             }
+            r = WaitForSingleObject(handle->mutex2, INFINITE);
+            if (r != WAIT_OBJECT_0) {
+                ReleaseMutex(handle->mutex);
+                re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+                goto end;
+            }
             avfilter_graph_free(&handle->graph);
             handle->graph = NULL;
             handle->filter_inp = NULL;
@@ -122,6 +134,7 @@ int reinit_filters(MusicHandle* handle) {
             av_audio_fifo_reset(handle->filters_buffer);
             handle->filters_buffer_offset = 0;
             ReleaseMutex(handle->mutex);
+            ReleaseMutex(handle->mutex2);
         }
         re = FFMPEG_CORE_ERR_OK;
         goto end;
@@ -137,6 +150,12 @@ int reinit_filters(MusicHandle* handle) {
     }
     DWORD r = WaitForSingleObject(handle->mutex, INFINITE);
     if (r != WAIT_OBJECT_0) {
+        re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+        goto end;
+    }
+    r = WaitForSingleObject(handle->mutex2, INFINITE);
+    if (r != WAIT_OBJECT_0) {
+        ReleaseMutex(handle->mutex);
         re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
         goto end;
     }
@@ -158,6 +177,7 @@ int reinit_filters(MusicHandle* handle) {
         handle->is_wait_filters = 1;
     }
     ReleaseMutex(handle->mutex);
+    ReleaseMutex(handle->mutex2);
     return FFMPEG_CORE_ERR_OK;
 end:
     if (graph) {
@@ -226,12 +246,22 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
     int input_samples_offset = 0;
     int buffer_size = 0;
     int writed = 0;
+    unsigned char have_mutex = 0;
     AVRational base = { 1000, 1000 }, target = { 1, 1 };
     if (re == WAIT_TIMEOUT) return FFMPEG_CORE_ERR_OK;
     else if (re != WAIT_OBJECT_0) return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+    have_mutex = 1;
     if (!handle->graph || handle->is_easy_filters) {
         ReleaseMutex(handle->mutex);
         return FFMPEG_CORE_ERR_OK;
+    }
+    re = WaitForSingleObject(handle->mutex2, INFINITE);
+    if (re == WAIT_TIMEOUT) {
+        ReleaseMutex(handle->mutex);
+        return FFMPEG_CORE_ERR_OK;
+    } else if (re != WAIT_OBJECT_0) {
+        ReleaseMutex(handle->mutex);
+        return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
     }
     buffer_size = av_audio_fifo_size(handle->filters_buffer);
     if (buffer_size > handle->sdl_spec.freq) {
@@ -242,6 +272,8 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
     input_samples_offset = handle->filters_buffer_offset;
     samples_need_in = av_rescale_q_rnd(samples_need, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX);
     if (av_audio_fifo_size(handle->buffer) <= input_samples_offset) {
+        ReleaseMutex(handle->mutex);
+        have_mutex = 0;
         if (handle->is_eof) {
             if ((r = av_buffersrc_add_frame(handle->filter_inp, NULL)) < 0) {
                 goto end;
@@ -278,6 +310,8 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
     }
     handle->filters_buffer_offset += writed;
     in->nb_samples = writed;
+    ReleaseMutex(handle->mutex);
+    have_mutex = 0;
     if ((r = av_buffersrc_add_frame(handle->filter_inp, in)) < 0) {
         goto end;
     }
@@ -286,6 +320,12 @@ outp:
         if (r == AVERROR(EAGAIN)) r = FFMPEG_CORE_ERR_OK;
         goto end;
     }
+    re = WaitForSingleObject(handle->mutex, INFINITE);
+    if (re != WAIT_OBJECT_0) {
+        r = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+        goto end;
+    }
+    have_mutex = 1;
     if ((r = av_audio_fifo_write(handle->filters_buffer, (void*)out->data, out->nb_samples)) < 0) {
         goto end;
     }
@@ -293,7 +333,8 @@ outp:
 end:
     if (in) av_frame_free(&in);
     if (out) av_frame_free(&out);
-    ReleaseMutex(handle->mutex);
+    if (have_mutex) ReleaseMutex(handle->mutex);
+    ReleaseMutex(handle->mutex2);
     return r;
 }
 
