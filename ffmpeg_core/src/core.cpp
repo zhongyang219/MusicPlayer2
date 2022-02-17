@@ -35,11 +35,24 @@ void free_music_handle(MusicHandle* handle) {
             }
         }
     }
+    if (handle->filter_thread) {
+        DWORD status;
+        while (GetExitCodeThread(handle->filter_thread, &status)) {
+            if (status == STILL_ACTIVE) {
+                status = 0;
+                handle->stoping = 1;
+                Sleep(10);
+            } else {
+                break;
+            }
+        }
+    }
     if (handle->graph) {
         avfilter_graph_free(&handle->graph);
     }
     c_linked_list_clear(&handle->filters, nullptr);
     if (handle->buffer) av_audio_fifo_free(handle->buffer);
+    if (handle->filters_buffer) av_audio_fifo_free(handle->filters_buffer);
     if (handle->swrac) swr_free(&handle->swrac);
     if (handle->decoder) avcodec_free_context(&handle->decoder);
     if (handle->fmt) avformat_close_input(&handle->fmt);
@@ -156,6 +169,12 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
     if ((re = init_filters(handle))) {
         goto end;
     }
+    handle->filters_buffer = av_audio_fifo_alloc(handle->target_format, handle->sdl_spec.channels, 1);
+    if (!handle->filters_buffer) {
+        re = FFMPEG_CORE_ERR_OOM;
+        av_log(NULL, AV_LOG_FATAL, "Failed to allocate buffer for filters.\n");
+        goto end;
+    }
     handle->mutex = CreateMutexW(nullptr, FALSE, nullptr);
     if (!handle->mutex) {
         re = FFMPEG_CORE_ERR_FAILED_CREATE_MUTEX;
@@ -163,6 +182,11 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
     }
     handle->thread = CreateThread(nullptr, 0, event_loop, handle, 0, &handle->thread_id);
     if (!handle->thread) {
+        re = FFMPEG_CORE_ERR_FAILED_CREATE_THREAD;
+        goto end;
+    }
+    handle->filter_thread = CreateThread(nullptr, 0, filter_loop, handle, 0, &handle->filter_thread_id);
+    if (!handle->filter_thread) {
         re = FFMPEG_CORE_ERR_FAILED_CREATE_THREAD;
         goto end;
     }

@@ -59,8 +59,14 @@ SDL_AudioSpec sdl_spec;
 HANDLE thread;
 /// 事件处理线程线程ID
 DWORD thread_id;
+/// 维护filters处理后缓冲区线程
+HANDLE filter_thread;
+/// 维护filters处理后缓冲区线程线程ID
+DWORD filter_thread_id;
 /// 音频缓冲区
 AVAudioFifo* buffer;
+/// 经过filters处理后的缓冲区
+AVAudioFifo* filters_buffer;
 /// 输出格式
 enum AVSampleFormat target_format;
 /// 每样本的字节数
@@ -129,6 +135,10 @@ unsigned char only_part : 1;
 unsigned char is_file : 1;
 /// 是否正在重新打开文件
 unsigned char is_reopen : 1;
+/// 是否是简单的filters链
+unsigned char is_easy_filters : 1;
+/// 刚初始化完复杂的filters，等待filters填充数据
+unsigned char is_wait_filters : 1;
 } MusicHandle;
 typedef struct MusicInfoHandle {
 AVFormatContext* fmt;

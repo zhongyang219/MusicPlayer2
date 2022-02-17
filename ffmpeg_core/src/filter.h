@@ -16,6 +16,9 @@ int reinit_filters(MusicHandle* handle);
  * @return 
 */
 int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterContext** sink, MusicHandle* handle);
+/// 往filters_buffer塞数据
+int add_data_to_filters_buffer(MusicHandle* handle);
+void reset_filters_buffer(MusicHandle* handle);
 #if __cplusplus
 }
 #endif

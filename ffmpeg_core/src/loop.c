@@ -53,6 +53,7 @@ int seek_to_pos(MusicHandle* handle) {
         handle->set_new_pts = 1;
         handle->is_eof = 0;
     }
+    reset_filters_buffer(handle);
     ReleaseMutex(handle->mutex);
 end:
     handle->is_seek = 0;
@@ -139,6 +140,7 @@ int basic_event_handle(MusicHandle* h) {
         if (re) {
             h->have_err = 1;
             h->err = re;
+            av_log(NULL, AV_LOG_WARNING, "%s %i: Error when calling reinit_filters: %s (%i).\n", __FILE__, __LINE__, av_err2str(re), re);
         }
         h->need_reinit_filters = 0;
         return 1;
@@ -186,6 +188,7 @@ DWORD WINAPI event_loop(LPVOID handle) {
             if (re) {
                 h->have_err = 1;
                 h->err = re;
+                av_log(NULL, AV_LOG_WARNING, "%s %i: Error when calling seek_to_pos: %i.\n", __FILE__, __LINE__, re);
             }
             doing = 1;
             goto end;
@@ -222,6 +225,29 @@ DWORD WINAPI event_loop(LPVOID handle) {
             }
         }
 end:
+        if (!doing) {
+            Sleep(10);
+        }
+    }
+    return FFMPEG_CORE_ERR_OK;
+}
+
+DWORD WINAPI filter_loop(LPVOID handle) {
+    if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
+    MusicHandle* h = (MusicHandle*)handle;
+    char doing = 0;
+    while (1) {
+        doing = 0;
+        if (h->stoping) break;
+        if (h->graph && !h->is_easy_filters) {
+            int re = add_data_to_filters_buffer(h);
+            if (re) {
+                h->have_err = 1;
+                h->err = re;
+                av_log(NULL, AV_LOG_WARNING, "%s %i: Error when calling add_data_to_filters_buffer: %s (%i).\n", __FILE__, __LINE__, av_err2str(re), re);
+            }
+            doing = 1;
+        }
         if (!doing) {
             Sleep(10);
         }

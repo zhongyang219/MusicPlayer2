@@ -22,6 +22,7 @@ int init_filters(MusicHandle* handle) {
     if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
     if (!need_filters(handle->s)) return FFMPEG_CORE_ERR_OK;
     int re = FFMPEG_CORE_ERR_OK;
+    int is_easy_filters = 1;
     int speed = get_speed(handle->s->speed);
     if ((re = create_src_and_sink(&handle->graph, &handle->filter_inp, &handle->filter_out, handle))) {
         return re;
@@ -39,6 +40,7 @@ int init_filters(MusicHandle* handle) {
             }
             index++;
         }
+        is_easy_filters = 0;
     }
     if (c_linked_list_count(handle->filters) == 0) {
         avfilter_graph_free(&handle->graph);
@@ -56,6 +58,10 @@ int init_filters(MusicHandle* handle) {
         av_log(NULL, AV_LOG_FATAL, "Failed to check config of filters: %s (%i)\n", av_err2str(re), re);
         return re;
     }
+    handle->is_easy_filters = is_easy_filters;
+    if (!handle->is_easy_filters) {
+        handle->is_wait_filters = 1;
+    }
     return FFMPEG_CORE_ERR_OK;
 }
 
@@ -72,6 +78,7 @@ int reinit_filters(MusicHandle* handle) {
         handle->filter_inp = NULL;
         handle->filter_out = NULL;
         c_linked_list_clear(&handle->filters, NULL);
+        av_audio_fifo_reset(handle->filters_buffer);
         ReleaseMutex(handle->mutex);
         return FFMPEG_CORE_ERR_OK;
     }
@@ -79,6 +86,7 @@ int reinit_filters(MusicHandle* handle) {
     AVFilterGraph* graph = NULL;
     AVFilterContext* inc = NULL, * outc = NULL;
     c_linked_list* list = NULL;
+    int is_easy_filters = 1;
     int speed = get_speed(handle->s->speed);
     if ((re = create_src_and_sink(&graph, &inc, &outc, handle)) < 0) {
         goto end;
@@ -96,6 +104,7 @@ int reinit_filters(MusicHandle* handle) {
             }
             index++;
         }
+        is_easy_filters = 0;
     }
     if (c_linked_list_count(list) == 0) {
         if (handle->graph) {
@@ -109,6 +118,7 @@ int reinit_filters(MusicHandle* handle) {
             handle->filter_inp = NULL;
             handle->filter_out = NULL;
             c_linked_list_clear(&handle->filters, NULL);
+            av_audio_fifo_reset(handle->filters_buffer);
             ReleaseMutex(handle->mutex);
         }
         re = FFMPEG_CORE_ERR_OK;
@@ -133,12 +143,17 @@ int reinit_filters(MusicHandle* handle) {
         handle->graph = NULL;
         handle->filter_inp = NULL;
         handle->filter_out = NULL;
+        av_audio_fifo_reset(handle->filters_buffer);
         c_linked_list_clear(&handle->filters, NULL);
     }
     handle->graph = graph;
     handle->filter_inp = inc;
     handle->filter_out = outc;
     handle->filters = list;
+    handle->is_easy_filters = is_easy_filters;
+    if (!handle->is_easy_filters) {
+        handle->is_wait_filters = 1;
+    }
     ReleaseMutex(handle->mutex);
     return FFMPEG_CORE_ERR_OK;
 end:
@@ -195,4 +210,81 @@ int create_src_and_sink(AVFilterGraph** graph, AVFilterContext** src, AVFilterCo
         return re;
     }
     return FFMPEG_CORE_ERR_OK;
+}
+
+int add_data_to_filters_buffer(MusicHandle* handle) {
+    if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
+    DWORD re = WaitForSingleObject(handle->mutex, 10);
+    int r = FFMPEG_CORE_ERR_OK;
+    AVFrame* in = NULL, * out = NULL;
+    int samples_need = 1000;
+    int samples_need_in = 0;
+    /// 音频缓冲区buffer要peek的起始位置
+    int input_samples_offset = 0;
+    int buffer_size = 0;
+    int writed = 0;
+    AVRational base = { 1000, 1000 }, target = { 1, 1 };
+    if (re == WAIT_TIMEOUT) return FFMPEG_CORE_ERR_OK;
+    else if (re != WAIT_OBJECT_0) return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
+    if (!handle->graph || handle->is_easy_filters) {
+        ReleaseMutex(handle->mutex);
+        return FFMPEG_CORE_ERR_OK;
+    }
+    buffer_size = av_audio_fifo_size(handle->filters_buffer);
+    if (buffer_size > handle->sdl_spec.freq) {
+        r = FFMPEG_CORE_ERR_OK;
+        goto end;
+    }
+    base.num = get_speed(handle->s->speed);
+    input_samples_offset = av_rescale_q_rnd(buffer_size, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX);
+    samples_need_in = av_rescale_q_rnd((int64_t)samples_need + buffer_size, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX) - input_samples_offset;
+    if (av_audio_fifo_size(handle->buffer) <= input_samples_offset) {
+        r = FFMPEG_CORE_ERR_OK;
+        goto end;
+    }
+    in = av_frame_alloc();
+    out = av_frame_alloc();
+    if (!in || !out) {
+        r = FFMPEG_CORE_ERR_OOM;
+        goto end;
+    }
+    in->channels = handle->sdl_spec.channels;
+    in->channel_layout = handle->output_channel_layout;
+    in->format = handle->target_format;
+    in->sample_rate = handle->sdl_spec.freq;
+    in->nb_samples = samples_need_in;
+    if ((r = av_frame_get_buffer(in, 0)) < 0) {
+        goto end;
+    }
+    writed = av_audio_fifo_peek_at(handle->buffer, (void**)in->data, samples_need_in, input_samples_offset);
+    if (writed < 0) {
+        if (writed != AVERROR(EINVAL)) r = writed;
+        else r = FFMPEG_CORE_ERR_OK;
+        goto end;
+    }
+    in->nb_samples = writed;
+    if ((r = av_buffersrc_add_frame(handle->filter_inp, in)) < 0) {
+        goto end;
+    }
+    if ((r = av_buffersink_get_frame(handle->filter_out, out)) < 0) {
+        if (r == AVERROR(EAGAIN)) r = FFMPEG_CORE_ERR_OK;
+        goto end;
+    }
+    if ((r = av_audio_fifo_write(handle->filters_buffer, (void*)out->data, out->nb_samples)) < 0) {
+        goto end;
+    }
+    r = FFMPEG_CORE_ERR_OK;
+end:
+    if (in) av_frame_free(&in);
+    if (out) av_frame_free(&out);
+    ReleaseMutex(handle->mutex);
+    return r;
+}
+
+void reset_filters_buffer(MusicHandle* handle) {
+    if (!handle) return;
+    av_audio_fifo_reset(handle->filters_buffer);
+    if (!handle->is_easy_filters) {
+        handle->is_wait_filters = 1;
+    }
 }

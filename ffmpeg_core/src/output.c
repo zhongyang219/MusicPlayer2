@@ -90,6 +90,7 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
         return;
     }
     int samples_need = len / handle->target_format_pbytes / handle->sdl_spec.channels;
+    int buffer_size = handle->sdl_spec.freq / 5;
     if (av_audio_fifo_size(handle->buffer) == 0) {
         // 缓冲区没有数据，填充空白数据
         memset(stream, 0, len);
@@ -107,7 +108,7 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
             // 不足的区域用空白数据填充
             memset(stream + (size_t)writed * handle->target_format_pbytes, 0, (((size_t)samples_need - writed) * handle->target_format_pbytes));
         }
-    } else {
+    } else if (handle->is_easy_filters) {
         AVFrame* in = av_frame_alloc(), * out = av_frame_alloc();
         int writed = 0;
         int samples_need_in = 0;
@@ -157,6 +158,25 @@ void SDL_callback(void* userdata, uint8_t* stream, int len) {
 end:
         if (in) av_frame_free(&in);
         if (out) av_frame_free(&out);
+    } else if (!handle->is_wait_filters || av_audio_fifo_size(handle->filters_buffer) > buffer_size) {
+        handle->is_wait_filters = 0;
+        int writed = av_audio_fifo_read(handle->filters_buffer, (void**)&stream, samples_need);
+        if (writed > 0) {
+            // 增大缓冲区开始时间
+            AVRational base = { 1, handle->sdl_spec.freq }, base2 = { get_speed(handle->s->speed), 1000 }, tar = { 1, 1 };
+            int samples_in = av_rescale_q_rnd(writed, base2, tar, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
+            handle->pts += av_rescale_q_rnd(samples_in, base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
+            av_audio_fifo_drain(handle->buffer, samples_in);
+        }
+        if (writed < 0) {
+            // 读取发生错误，填充空白数据
+            memset(stream, 0, len);
+        } else if (writed < samples_need) {
+            // 不足的区域用空白数据填充
+            memset(stream + (size_t)writed * handle->target_format_pbytes, 0, (((size_t)samples_need - writed) * handle->target_format_pbytes));
+        }
+    } else {
+        memset(stream, 0, len);
     }
     ReleaseMutex(handle->mutex);
 }
