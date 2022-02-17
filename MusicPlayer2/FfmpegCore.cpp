@@ -18,13 +18,7 @@ CFfmpegCore::CFfmpegCore() {
 }
 
 CFfmpegCore::~CFfmpegCore() {
-    if (settings) {
-        free_ffmpeg_core_settings(settings);
-    }
-    if (handle) {
-        Close();
-    }
-    CDllLib::UnInit();
+    if (handle || settings) UnInitCore();
 }
 
 void CFfmpegCore::InitCore() {
@@ -61,6 +55,14 @@ void CFfmpegCore::InitCore() {
 }
 
 void CFfmpegCore::UnInitCore() {
+    if (settings) {
+        free_ffmpeg_core_settings(settings);
+        settings = nullptr;
+    }
+    if (handle) {
+        Close();
+    }
+    CDllLib::UnInit();
 }
 
 unsigned int CFfmpegCore::GetHandle() {
@@ -492,16 +494,10 @@ void CFfmpegCore::LogCallback(void* ptr, int level, const char* fmt, va_list vl)
     FreeLibrary(re);
 }
 
-void CFfmpegCore::UpdateSettings(PlaySettingData* s) {
-    if (s) {
-        SetCacheLength(s->ffmpeg_core_cache_length);
-        SetMaxRetryCount(s->ffmpeg_core_max_retry_count);
-        SetUrlRetryInterval(s->ffmpeg_core_url_retry_interval);
-    } else {
-        SetCacheLength(theApp.m_play_setting_data.ffmpeg_core_cache_length);
-        SetMaxRetryCount(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
-        SetUrlRetryInterval(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
-    }
+void CFfmpegCore::UpdateSettings() {
+    SetCacheLength(theApp.m_play_setting_data.ffmpeg_core_cache_length);
+    SetMaxRetryCount(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
+    SetUrlRetryInterval(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
 }
 
 void CFfmpegCore::SetCacheLength(int cache_length) {

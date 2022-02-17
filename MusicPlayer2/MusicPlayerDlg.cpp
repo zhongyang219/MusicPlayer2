@@ -34,6 +34,7 @@
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include "UserUi.h"
+#include "FfmpegCore.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1081,7 +1082,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                              || theApp.m_app_setting_data.album_cover_as_background != optionDlg.m_tab2_dlg.m_data.album_cover_as_background
                              || theApp.m_app_setting_data.enable_background != optionDlg.m_tab2_dlg.m_data.enable_background };
     bool output_device_changed{ theApp.m_play_setting_data.device_selected != optionDlg.m_tab4_dlg.m_data.device_selected };
-    bool player_core_changed{ theApp.m_play_setting_data.use_mci != optionDlg.m_tab4_dlg.m_data.use_mci };
+    bool player_core_changed{ theApp.m_play_setting_data.use_mci != optionDlg.m_tab4_dlg.m_data.use_mci || theApp.m_play_setting_data.use_ffmpeg != optionDlg.m_tab4_dlg.m_data.use_ffmpeg };
     bool media_lib_setting_changed{ theApp.m_media_lib_setting_data.hide_only_one_classification != optionDlg.m_media_lib_dlg.m_data.hide_only_one_classification
                                     || theApp.m_media_lib_setting_data.media_folders != optionDlg.m_media_lib_dlg.m_data.media_folders
                                     || theApp.m_media_lib_setting_data.recent_played_range != optionDlg.m_media_lib_dlg.m_data.recent_played_range
@@ -1196,6 +1197,10 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     SaveConfig();       //将设置写入到ini文件
     theApp.SaveConfig();
     CPlayer::GetInstance().SaveConfig();
+    if (CPlayer::GetInstance().IsFfmpegCore()) {
+        CFfmpegCore* core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
+        core->UpdateSettings();
+    }
     DrawInfo(true);
 }
 

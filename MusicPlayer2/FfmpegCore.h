@@ -1,7 +1,6 @@
 #pragma once
 #include "IPlayerCore.h"
 #include "DllLib.h"
-#include "CommonData.h"
 
 #define AV_LOG_ERROR 16
 #define AV_LOG_VERBOSE 40
@@ -100,7 +99,7 @@ public:
     unsigned short GetYear(MusicInfoHandle* h = nullptr);
     std::wstring GetTrack(MusicInfoHandle* h = nullptr);
     int GetTrackNum(MusicInfoHandle* h = nullptr);
-    void UpdateSettings(PlaySettingData* s = nullptr);
+    void UpdateSettings();
     void SetCacheLength(int cache_length = 15);
     void SetMaxRetryCount(int max_retry_count = 3);
     void SetUrlRetryInterval(int url_retry_interval = 5);

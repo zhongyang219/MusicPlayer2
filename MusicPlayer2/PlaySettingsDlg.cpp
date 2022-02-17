@@ -5,7 +5,6 @@
 #include "MusicPlayer2.h"
 #include "PlaySettingsDlg.h"
 #include "afxdialogex.h"
-#include "FfmpegCore.h"
 
 
 // CPlaySettingsDlg 对话框
@@ -279,8 +278,4 @@ void CPlaySettingsDlg::OnOK() {
     m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
     m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
     m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
-    if (CPlayer::GetInstance().IsFfmpegCore()) {
-        auto core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
-        core->UpdateSettings(&m_data);
-    }
 }

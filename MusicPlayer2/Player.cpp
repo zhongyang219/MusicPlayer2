@@ -2739,7 +2739,7 @@ wstring CPlayer::GetPlaylistPath() const
 
 bool CPlayer::IsMciCore() const
 {
-    return m_pCore->GetCoreType() == PT_MCI;
+    return m_pCore ? m_pCore->GetCoreType() == PT_MCI : false;
 }
 
 bool CPlayer::IsFfmpegCore() const {
