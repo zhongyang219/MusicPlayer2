@@ -111,7 +111,7 @@ int retry_count;
 /// 最近一个包的时间
 int64_t last_pkt_pts;
 /// 当去filters链从buffer读入的数据量（仅复杂的filters链）
-int64_t filters_buffer_offset;
+int filters_buffer_offset;
 /// SDL是否被初始化
 unsigned char sdl_initialized : 1;
 /// 让事件处理线程退出标志位

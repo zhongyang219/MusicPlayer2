@@ -242,6 +242,17 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
     input_samples_offset = handle->filters_buffer_offset;
     samples_need_in = av_rescale_q_rnd(samples_need, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX);
     if (av_audio_fifo_size(handle->buffer) <= input_samples_offset) {
+        if (handle->is_eof) {
+            if ((r = av_buffersrc_add_frame(handle->filter_inp, NULL)) < 0) {
+                goto end;
+            }
+            out = av_frame_alloc();
+            if (!out) {
+                r = FFMPEG_CORE_ERR_OOM;
+                goto end;
+            }
+            goto outp;
+        }
         r = FFMPEG_CORE_ERR_OK;
         goto end;
     }
@@ -255,14 +266,14 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
     in->channel_layout = handle->output_channel_layout;
     in->format = handle->target_format;
     in->sample_rate = handle->sdl_spec.freq;
+    samples_need_in = min(samples_need_in, av_audio_fifo_size(handle->buffer) - input_samples_offset);
     in->nb_samples = samples_need_in;
     if ((r = av_frame_get_buffer(in, 0)) < 0) {
         goto end;
     }
     writed = av_audio_fifo_peek_at(handle->buffer, (void**)in->data, samples_need_in, input_samples_offset);
     if (writed < 0) {
-        if (writed != AVERROR(EINVAL)) r = writed;
-        else r = FFMPEG_CORE_ERR_OK;
+        r = writed;
         goto end;
     }
     handle->filters_buffer_offset += writed;
@@ -270,6 +281,7 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
     if ((r = av_buffersrc_add_frame(handle->filter_inp, in)) < 0) {
         goto end;
     }
+outp:
     if ((r = av_buffersink_get_frame(handle->filter_out, out)) < 0) {
         if (r == AVERROR(EAGAIN)) r = FFMPEG_CORE_ERR_OK;
         goto end;
