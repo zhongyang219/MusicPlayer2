@@ -165,6 +165,7 @@ end:
             // 增大缓冲区开始时间
             AVRational base = { 1, handle->sdl_spec.freq }, base2 = { get_speed(handle->s->speed), 1000 }, tar = { 1, 1 };
             int samples_in = av_rescale_q_rnd(writed, base2, tar, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
+            handle->filters_buffer_offset -= samples_in;
             handle->pts += av_rescale_q_rnd(samples_in, base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
             av_audio_fifo_drain(handle->buffer, samples_in);
         }

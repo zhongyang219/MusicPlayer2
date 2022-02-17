@@ -79,6 +79,7 @@ int reinit_filters(MusicHandle* handle) {
         handle->filter_out = NULL;
         c_linked_list_clear(&handle->filters, NULL);
         av_audio_fifo_reset(handle->filters_buffer);
+        handle->filters_buffer_offset = 0;
         ReleaseMutex(handle->mutex);
         return FFMPEG_CORE_ERR_OK;
     }
@@ -119,6 +120,7 @@ int reinit_filters(MusicHandle* handle) {
             handle->filter_out = NULL;
             c_linked_list_clear(&handle->filters, NULL);
             av_audio_fifo_reset(handle->filters_buffer);
+            handle->filters_buffer_offset = 0;
             ReleaseMutex(handle->mutex);
         }
         re = FFMPEG_CORE_ERR_OK;
@@ -144,6 +146,7 @@ int reinit_filters(MusicHandle* handle) {
         handle->filter_inp = NULL;
         handle->filter_out = NULL;
         av_audio_fifo_reset(handle->filters_buffer);
+        handle->filters_buffer_offset = 0;
         c_linked_list_clear(&handle->filters, NULL);
     }
     handle->graph = graph;
@@ -236,8 +239,8 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
         goto end;
     }
     base.num = get_speed(handle->s->speed);
-    input_samples_offset = av_rescale_q_rnd(buffer_size, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX);
-    samples_need_in = av_rescale_q_rnd((int64_t)samples_need + buffer_size, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX) - input_samples_offset;
+    input_samples_offset = handle->filters_buffer_offset;
+    samples_need_in = av_rescale_q_rnd(samples_need, base, target, AV_ROUND_UP | AV_ROUND_PASS_MINMAX);
     if (av_audio_fifo_size(handle->buffer) <= input_samples_offset) {
         r = FFMPEG_CORE_ERR_OK;
         goto end;
@@ -262,6 +265,7 @@ int add_data_to_filters_buffer(MusicHandle* handle) {
         else r = FFMPEG_CORE_ERR_OK;
         goto end;
     }
+    handle->filters_buffer_offset += writed;
     in->nb_samples = writed;
     if ((r = av_buffersrc_add_frame(handle->filter_inp, in)) < 0) {
         goto end;
@@ -284,6 +288,7 @@ end:
 void reset_filters_buffer(MusicHandle* handle) {
     if (!handle) return;
     av_audio_fifo_reset(handle->filters_buffer);
+    handle->filters_buffer_offset = 0;
     if (!handle->is_easy_filters) {
         handle->is_wait_filters = 1;
     }
