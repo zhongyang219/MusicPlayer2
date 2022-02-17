@@ -86,13 +86,13 @@ int reinit_filters(MusicHandle* handle) {
     if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
     if (!need_filters(handle->s)) {
         if (!handle->graph) return FFMPEG_CORE_ERR_OK;
-        DWORD re = WaitForSingleObject(handle->mutex, INFINITE);
+        DWORD re = WaitForSingleObject(handle->mutex2, INFINITE);
         if (re != WAIT_OBJECT_0) {
             return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
         }
-        re = WaitForSingleObject(handle->mutex2, INFINITE);
+        re = WaitForSingleObject(handle->mutex, INFINITE);
         if (re != WAIT_OBJECT_0) {
-            ReleaseMutex(handle->mutex);
+            ReleaseMutex(handle->mutex2);
             return FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
         }
         avfilter_graph_free(&handle->graph);
@@ -145,14 +145,14 @@ int reinit_filters(MusicHandle* handle) {
     }
     if (c_linked_list_count(list) == 0) {
         if (handle->graph) {
-            DWORD r = WaitForSingleObject(handle->mutex, INFINITE);
+            DWORD r = WaitForSingleObject(handle->mutex2, INFINITE);
             if (r != WAIT_OBJECT_0) {
                 re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
                 goto end;
             }
-            r = WaitForSingleObject(handle->mutex2, INFINITE);
+            r = WaitForSingleObject(handle->mutex, INFINITE);
             if (r != WAIT_OBJECT_0) {
-                ReleaseMutex(handle->mutex);
+                ReleaseMutex(handle->mutex2);
                 re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
                 goto end;
             }
@@ -178,14 +178,14 @@ int reinit_filters(MusicHandle* handle) {
         av_log(NULL, AV_LOG_FATAL, "Failed to check config of filters: %s (%i)\n", av_err2str(re), re);
         goto end;
     }
-    DWORD r = WaitForSingleObject(handle->mutex, INFINITE);
+    DWORD r = WaitForSingleObject(handle->mutex2, INFINITE);
     if (r != WAIT_OBJECT_0) {
         re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
         goto end;
     }
-    r = WaitForSingleObject(handle->mutex2, INFINITE);
+    r = WaitForSingleObject(handle->mutex, INFINITE);
     if (r != WAIT_OBJECT_0) {
-        ReleaseMutex(handle->mutex);
+        ReleaseMutex(handle->mutex2);
         re = FFMPEG_CORE_ERR_WAIT_MUTEX_FAILED;
         goto end;
     }
