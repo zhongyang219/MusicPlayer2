@@ -251,6 +251,15 @@ PlayingState CFfmpegCore::GetPlayingState() {
 }
 
 void CFfmpegCore::ApplyEqualizer(int channel, int gain) {
+    channel = GetEqChannelFreq(channel);
+    if (handle) {
+        int re = ffmpeg_core_set_equalizer_channel(handle, channel, gain);
+        if (re) {
+            err = re;
+        }
+    } else {
+        ffmpeg_core_settings_set_equalizer_channel(settings, channel, gain);
+    }
 }
 
 void CFfmpegCore::SetReverb(int mix, int time) {
@@ -319,6 +328,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_seek = (_ffmpeg_core_seek)::GetProcAddress(m_dll_module, "ffmpeg_core_seek");
     ffmpeg_core_set_volume = (_ffmpeg_core_set_volume)::GetProcAddress(m_dll_module, "ffmpeg_core_set_volume");
     ffmpeg_core_set_speed = (_ffmpeg_core_set_speed)::GetProcAddress(m_dll_module, "ffmpeg_core_set_speed");
+    ffmpeg_core_set_equalizer_channel = (_ffmpeg_core_set_equalizer_channel)::GetProcAddress(m_dll_module, "ffmpeg_core_set_equalizer_channel");
     ffmpeg_core_get_error = (_ffmpeg_core_get_error)::GetProcAddress(m_dll_module, "ffmpeg_core_get_error");
     ffmpeg_core_get_err_msg = (_ffmpeg_core_get_err_msg)::GetProcAddress(m_dll_module, "ffmpeg_core_get_err_msg");
     ffmpeg_core_get_err_msg2 = (_ffmpeg_core_get_err_msg2)::GetProcAddress(m_dll_module, "ffmpeg_core_get_err_msg2");
@@ -344,6 +354,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_settings_set_cache_length = (_ffmpeg_core_settings_set_cache_length)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_cache_length");
     ffmpeg_core_settings_set_max_retry_count = (_ffmpeg_core_settings_set_max_retry_count)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_max_retry_count");
     ffmpeg_core_settings_set_url_retry_interval = (_ffmpeg_core_settings_set_url_retry_interval)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_url_retry_interval");
+    ffmpeg_core_settings_set_equalizer_channel = (_ffmpeg_core_settings_set_equalizer_channel)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_equalizer_channel");
     //≈–∂œ «∑Ò≥…π¶
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
@@ -359,6 +370,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_seek != NULL);
     rtn &= (ffmpeg_core_set_volume != NULL);
     rtn &= (ffmpeg_core_set_speed != NULL);
+    rtn &= (ffmpeg_core_set_equalizer_channel != NULL);
     rtn &= (ffmpeg_core_get_error != NULL);
     rtn &= (ffmpeg_core_get_err_msg != NULL);
     rtn &= (ffmpeg_core_get_err_msg2 != NULL);
@@ -384,6 +396,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_settings_set_cache_length != NULL);
     rtn &= (ffmpeg_core_settings_set_max_retry_count != NULL);
     rtn &= (ffmpeg_core_settings_set_url_retry_interval != NULL);
+    rtn &= (ffmpeg_core_settings_set_equalizer_channel != NULL);
     return rtn;
 }
 
@@ -506,5 +519,32 @@ void CFfmpegCore::SetMaxRetryCount(int max_retry_count) {
 void CFfmpegCore::SetUrlRetryInterval(int url_retry_interval) {
     if (settings) {
         ffmpeg_core_settings_set_url_retry_interval(settings, url_retry_interval);
+    }
+}
+
+int CFfmpegCore::GetEqChannelFreq(int channel) {
+    switch (channel) {
+        case 0:
+            return 80;
+        case 1:
+            return 125;
+        case 2:
+            return 250;
+        case 3:
+            return 500;
+        case 4:
+            return 1000;
+        case 5:
+            return 1500;
+        case 6:
+            return 2000;
+        case 7:
+            return 4000;
+        case 8:
+            return 8000;
+        case 9:
+            return 16000;
+        default:
+            return 0;
     }
 }

@@ -13,6 +13,7 @@
 #include "cda.h"
 #include "fileop.h"
 #include "file.h"
+#include "equalizer_settings.h"
 
 #define CODEPAGE_SIZE 3
 
@@ -77,6 +78,7 @@ void free_music_info_handle(MusicInfoHandle* handle) {
 
 void free_ffmpeg_core_settings(FfmpegCoreSettings* s) {
     if (!s) return;
+    free_equalizer_channels(&s->equalizer_channels);
     free(s);
 }
 
@@ -590,4 +592,16 @@ int ffmpeg_core_settings_set_url_retry_interval(FfmpegCoreSettings* s, int url_r
         return 1;
     }
     return 0;
+}
+
+int ffmpeg_core_settings_set_equalizer_channel(FfmpegCoreSettings* s, int channel, int gain) {
+    if (channel < 0 || channel > 999999 || gain < -900 || gain > 900) return 0;
+    return set_equalizer_channel(&s->equalizer_channels, channel, gain) ? 0 : 1;
+}
+
+int ffmpeg_core_set_equalizer_channel(MusicHandle* handle, int channel, int gain) {
+    if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
+    int r = ffmpeg_core_settings_set_equalizer_channel(handle->s, channel, gain);
+    if (!r) return FFMPEG_CORE_ERR_FAILED_SET_SPEED;
+    return send_reinit_filters(handle);
 }

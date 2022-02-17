@@ -52,6 +52,7 @@ FFMPEG_CORE_API int ffmpeg_core_pause(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_seek(MusicHandle* handle, int64_t time);
 FFMPEG_CORE_API int ffmpeg_core_set_volume(MusicHandle* handle, int volume);
 FFMPEG_CORE_API int ffmpeg_core_set_speed(MusicHandle* handle, float speed);
+FFMPEG_CORE_API int ffmpeg_core_set_equalizer_channel(MusicHandle* handle, int channel, int gain);
 FFMPEG_CORE_API int ffmpeg_core_get_error(MusicHandle* handle);
 /**
  * @brief 返回错误代码对应的错误消息
@@ -133,6 +134,7 @@ FFMPEG_CORE_API int ffmpeg_core_settings_set_speed(FfmpegCoreSettings* s, float 
 FFMPEG_CORE_API int ffmpeg_core_settings_set_cache_length(FfmpegCoreSettings* s, int length);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_max_retry_count(FfmpegCoreSettings* s, int max_retry_count);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_url_retry_interval(FfmpegCoreSettings* s, int url_retry_interval);
+FFMPEG_CORE_API int ffmpeg_core_settings_set_equalizer_channel(FfmpegCoreSettings* s, int channel, int gain);
 #ifdef __cplusplus
 }
 #endif

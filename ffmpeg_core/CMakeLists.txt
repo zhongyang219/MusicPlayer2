@@ -43,6 +43,10 @@ src/cda.h
 src/cda.c
 src/file.h
 src/file.cpp
+src/equalizer_settings.h
+src/equalizer_settings.cpp
+src/equalizer.h
+src/equalizer.c
 )
 
 add_library(ffmpeg_core SHARED "${CORE_FILES}")

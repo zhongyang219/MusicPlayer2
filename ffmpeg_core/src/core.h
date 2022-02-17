@@ -42,6 +42,17 @@ uint32_t range_offset;
 /// duration of the track, total number of frames
 uint32_t duration;
 } CDAData;
+typedef struct EqualizerChannel {
+/// The filter’s central frequency in Hz.
+int channel;
+/// The required gain or attenuation in dB.
+int gain;
+} EqualizerChannel;
+typedef struct EqualizerChannels {
+EqualizerChannel d;
+struct EqualizerChannels* prev;
+struct EqualizerChannels* next;
+} EqualizerChannels;
 typedef struct MusicHandle {
 /// Demux 用
 AVFormatContext* fmt;
@@ -160,6 +171,8 @@ int cache_length;
 int max_retry_count;
 /// 非本地文件重试间隔时间（单位s）
 int url_retry_interval;
+/// 均衡器
+EqualizerChannels* equalizer_channels;
 } FfmpegCoreSettings;
 #if __cplusplus
 }

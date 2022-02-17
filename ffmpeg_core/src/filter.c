@@ -3,6 +3,7 @@
 #include "output.h"
 #include "volume.h"
 #include "speed.h"
+#include "equalizer.h"
 
 int need_filters(FfmpegCoreSettings* s) {
     if (!s) return 0;
@@ -13,6 +14,9 @@ int need_filters(FfmpegCoreSettings* s) {
         return 1;
     }
     if (get_speed(s->speed) != 1000 && avfilter_get_by_name("atempo")) {
+        return 1;
+    }
+    if (s->equalizer_channels && avfilter_get_by_name("equalizer")) {
         return 1;
     }
     return 0;
@@ -39,6 +43,19 @@ int init_filters(MusicHandle* handle) {
                 return re;
             }
             index++;
+        }
+        is_easy_filters = 0;
+    }
+    if (handle->s->equalizer_channels && avfilter_get_by_name("equalizer")) {
+        EqualizerChannels* now = handle->s->equalizer_channels;
+        if ((re = create_equalizer_filter(handle->graph, handle->filter_inp, &handle->filters, now->d.channel, now->d.gain, handle->target_format))) {
+            return re;
+        }
+        while (now->next) {
+            now = now->next;
+            if ((re = create_equalizer_filter(handle->graph, handle->filter_inp, &handle->filters, now->d.channel, now->d.gain, handle->target_format))) {
+                return re;
+            }
         }
         is_easy_filters = 0;
     }
@@ -110,6 +127,19 @@ int reinit_filters(MusicHandle* handle) {
                 goto end;
             }
             index++;
+        }
+        is_easy_filters = 0;
+    }
+    if (handle->s->equalizer_channels && avfilter_get_by_name("equalizer")) {
+        EqualizerChannels* now = handle->s->equalizer_channels;
+        if ((re = create_equalizer_filter(graph, inc, &list, now->d.channel, now->d.gain, handle->target_format))) {
+            goto end;
+        }
+        while (now->next) {
+            now = now->next;
+            if ((re = create_equalizer_filter(graph, inc, &list, now->d.channel, now->d.gain, handle->target_format))) {
+                goto end;
+            }
         }
         is_easy_filters = 0;
     }

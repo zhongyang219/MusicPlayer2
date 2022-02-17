@@ -24,6 +24,7 @@ typedef int(*_ffmpeg_core_pause)(MusicHandle*);
 typedef int(*_ffmpeg_core_seek)(MusicHandle*, int64_t);
 typedef int(*_ffmpeg_core_set_volume)(MusicHandle*, int);
 typedef int(*_ffmpeg_core_set_speed)(MusicHandle*, float);
+typedef int(*_ffmpeg_core_set_equalizer_channel)(MusicHandle*, int, int);
 typedef int(*_ffmpeg_core_get_error)(MusicHandle*);
 typedef wchar_t*(*_ffmpeg_core_get_err_msg)(int);
 typedef const wchar_t*(*_ffmpeg_core_get_err_msg2)(int);
@@ -49,6 +50,7 @@ typedef int(*_ffmpeg_core_settings_set_speed)(FfmpegCoreSettings*, float);
 typedef int(*_ffmpeg_core_settings_set_cache_length)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_max_retry_count)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_url_retry_interval)(FfmpegCoreSettings*, int);
+typedef int(*_ffmpeg_core_settings_set_equalizer_channel)(FfmpegCoreSettings*, int, int);
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
 public:
@@ -120,6 +122,7 @@ private:
     _ffmpeg_core_seek ffmpeg_core_seek = nullptr;
     _ffmpeg_core_set_volume ffmpeg_core_set_volume = nullptr;
     _ffmpeg_core_set_speed ffmpeg_core_set_speed = nullptr;
+    _ffmpeg_core_set_equalizer_channel ffmpeg_core_set_equalizer_channel = nullptr;
     _ffmpeg_core_get_error ffmpeg_core_get_error = nullptr;
     _ffmpeg_core_get_err_msg ffmpeg_core_get_err_msg = nullptr;
     _ffmpeg_core_get_err_msg2 ffmpeg_core_get_err_msg2 = nullptr;
@@ -145,6 +148,8 @@ private:
     _ffmpeg_core_settings_set_cache_length ffmpeg_core_settings_set_cache_length = nullptr;
     _ffmpeg_core_settings_set_max_retry_count ffmpeg_core_settings_set_max_retry_count = nullptr;
     _ffmpeg_core_settings_set_url_retry_interval ffmpeg_core_settings_set_url_retry_interval = nullptr;
+    _ffmpeg_core_settings_set_equalizer_channel ffmpeg_core_settings_set_equalizer_channel = nullptr;
+    int GetEqChannelFreq(int channel);
     MusicHandle* handle;
     FfmpegCoreSettings* settings = nullptr;
     std::wstring recent_file;
