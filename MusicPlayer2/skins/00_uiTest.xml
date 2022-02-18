@@ -72,8 +72,8 @@
 						<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
 						<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
 						<button key="mediaLib" width="24" height="24" margin="2"/>
-						<button key="showPlaylist" width="24" height="24" margin="2"/>
 						<volume show_text="false" adj_btn_on_top="true" width="24" height="24" margin="2"/>
+						<button key="showPlaylist" width="24" height="24" margin="2"/>
 					</horizontalLayout>
 				</verticalLayout>
 			</rectangle>
@@ -100,8 +100,8 @@
 						<button key="playPause" width="36" height="36" bigIcon="true" margin="2"/>
 						<button key="next" width="36" height="36" bigIcon="true" margin="2"/>
 						<button key="mediaLib" width="24" height="24" margin="2"/>
-						<button key="showPlaylist" width="24" height="24" margin="2"/>
 						<volume show_text="false" adj_btn_on_top="true" width="24" height="24" margin="2"/>
+						<button key="showPlaylist" width="24" height="24" margin="2"/>
 					</horizontalLayout>
 				</verticalLayout>
 			</rectangle>
