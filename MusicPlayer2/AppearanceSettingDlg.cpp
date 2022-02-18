@@ -254,7 +254,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_use_out_image_chk.SetCheck(m_data.use_out_image);
 
     m_background_gauss_blur_chk.SetCheck(m_data.background_gauss_blur);
-    m_gauss_blur_radius_sld.SetRange(10, 200);
+    m_gauss_blur_radius_sld.SetRange(10, 300);
     m_gauss_blur_radius_sld.SetPos(m_data.gauss_blur_radius);
     str.Format(_T("%.1f"), static_cast<float>(m_data.gauss_blur_radius) / 10);
     SetDlgItemText(IDC_GAUSS_BLUR_RADIUS_STATIC, str);
