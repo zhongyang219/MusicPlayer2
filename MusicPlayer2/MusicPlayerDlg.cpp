@@ -1805,6 +1805,11 @@ void CMusicPlayerDlg::MoveDesktopLyricWindowPos()
     ::SetWindowPos(m_desktop_lyric.GetSafeHwnd(), nullptr, rcLyric.left, rcLyric.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
+bool CMusicPlayerDlg::IsFloatPlaylistExist()
+{
+    return (m_pFloatPlaylistDlg != nullptr && IsWindow(m_pFloatPlaylistDlg->GetSafeHwnd()));
+}
+
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
     CMainDialogBase::OnInitDialog();
@@ -2079,12 +2084,22 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         }
         SetDrawAreaSize(cx, cy);
 
+        if (nType == SIZE_RESTORED)
+        {
+            if (m_pFloatPlaylistDlg != nullptr && IsWindow(m_pFloatPlaylistDlg->GetSafeHwnd()))
+            {
+                m_pFloatPlaylistDlg->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
+            }
+        }
+
         if (nType != SIZE_MAXIMIZED && !theApp.m_ui_data.full_screen)
         {
             CRect rect;
             GetWindowRect(&rect);
             m_window_width = rect.Width();
             m_window_height = rect.Height();
+
+            MoveFloatPlaylistPos();
         }
 
         //窗口大小变化时更新界面鼠标提示的位置
@@ -3396,6 +3411,11 @@ void CMusicPlayerDlg::OnMiniMode()
     //m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);
     //m_miniModeDlg.SetDisplayFormat(&theApp.m_media_lib_setting_data.display_format);
     ShowWindow(SW_HIDE);
+    if (IsFloatPlaylistExist())
+    {
+        m_pFloatPlaylistDlg->ShowWindow(SW_HIDE);
+    }
+
     if (m_miniModeDlg.DoModal() == IDCANCEL)
     {
         //SendMessage(WM_COMMAND, ID_APP_EXIT);
@@ -3404,6 +3424,11 @@ void CMusicPlayerDlg::OnMiniMode()
     else
     {
         ShowWindow(SW_SHOW);
+        if (IsFloatPlaylistExist())
+        {
+            m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
+        }
+
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
         {
@@ -5977,17 +6002,26 @@ void CMusicPlayerDlg::OnMove(int x, int y)
     CMainDialogBase::OnMove(x, y);
 
     //移动主窗口时同步移动浮动播放列表的位置
+    MoveFloatPlaylistPos();
+}
+
+
+void CMusicPlayerDlg::MoveFloatPlaylistPos()
+{
     CRect rect;
     GetWindowRect(rect);
     m_float_playlist_pos.x = rect.right;
     m_float_playlist_pos.y = rect.top;
     if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
     {
-        if (m_pFloatPlaylistDlg != nullptr && IsWindow(m_pFloatPlaylistDlg->GetSafeHwnd()))
-            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        if (IsFloatPlaylistExist())
+        {
+            CRect float_playlist_rect;
+            m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
+            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
     }
 }
-
 
 afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam)
 {

@@ -238,6 +238,9 @@ protected:
     void GetScreenInfo();
     void MoveDesktopLyricWindowPos();
 
+    bool IsFloatPlaylistExist();
+    void MoveFloatPlaylistPos();
+
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -501,6 +504,7 @@ protected:
 public:
     afx_msg void OnPlaylistOptions();
     afx_msg void OnMove(int x, int y);
+
 protected:
     afx_msg LRESULT OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam);
 };
