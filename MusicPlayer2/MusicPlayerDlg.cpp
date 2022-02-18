@@ -307,6 +307,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
     ON_WM_MOVE()
     ON_MESSAGE(WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged)
+    ON_WM_ACTIVATE()
 END_MESSAGE_MAP()
 
 
@@ -6014,11 +6015,11 @@ void CMusicPlayerDlg::MoveFloatPlaylistPos()
     m_float_playlist_pos.y = rect.top;
     if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
     {
-        if (IsFloatPlaylistExist())
+        if (IsFloatPlaylistExist() && !m_pFloatPlaylistDlg->IsZoomed())
         {
             CRect float_playlist_rect;
             m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
-            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            m_pFloatPlaylistDlg->SetWindowPos(this, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOACTIVATE | SWP_SHOWWINDOW);
         }
     }
 }
@@ -6087,4 +6088,14 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, 
         }
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+{
+    CMainDialogBase::OnActivate(nState, pWndOther, bMinimized);
+
+    // TODO: 在此处添加消息处理程序代码
+    if (IsFloatPlaylistExist())
+        m_pFloatPlaylistDlg->SetWindowPos(this, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE);
 }

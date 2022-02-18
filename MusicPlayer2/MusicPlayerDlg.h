@@ -507,4 +507,6 @@ public:
 
 protected:
     afx_msg LRESULT OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 };
