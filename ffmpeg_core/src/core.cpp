@@ -14,12 +14,20 @@
 #include "fileop.h"
 #include "file.h"
 #include "equalizer_settings.h"
+#include "linked_list.h"
+#include "cstr_util.h"
 
 #define CODEPAGE_SIZE 3
+#define DEVICE_NAME_LIST struct LinkedList<char*>*
 
 #ifndef min
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
+
+template <typename T>
+void tfree(T* data) {
+    free((void*)data);
+}
 
 void free_music_handle(MusicHandle* handle) {
     if (!handle) return;
@@ -82,6 +90,14 @@ void free_ffmpeg_core_settings(FfmpegCoreSettings* s) {
     free(s);
 }
 
+void free_device_name_list(DeviceNameList** list) {
+    if (list) {
+        auto l = (DEVICE_NAME_LIST)(*list);
+        linked_list_clear(l, tfree);
+        *list = (DeviceNameList*)l;
+    }
+}
+
 int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix) {
     return av_log_format_line2(ptr, level, fmt, vl, line, line_size, print_prefix);
 }
@@ -95,14 +111,22 @@ void ffmpeg_core_log_set_flags(int arg) {
 }
 
 int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle) {
-    return ffmpeg_core_open2(url, handle, nullptr);
+    return ffmpeg_core_open3(url, handle, nullptr, nullptr);
 }
 
 int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s) {
+    return ffmpeg_core_open3(url, h, s, nullptr);
+}
+
+int ffmpeg_core_open3(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s, const wchar_t* device) {
     if (!url || !h) return FFMPEG_CORE_ERR_NULLPTR;
     std::string u;
     // 将文件名转为UTF-8，ffmpeg API处理的都是UTF-8文件名
     if (!wchar_util::wstr_to_str(u, url, CP_UTF8)) {
+        return FFMPEG_CORE_ERR_INVAILD_NAME;
+    }
+    std::string d;
+    if (device && !wchar_util::wstr_to_str(d, device, CP_UTF8)) {
         return FFMPEG_CORE_ERR_INVAILD_NAME;
     }
 #if NDEBUG
@@ -165,7 +189,7 @@ int ffmpeg_core_open2(const wchar_t* url, MusicHandle** h, FfmpegCoreSettings* s
     if ((re = open_decoder(handle))) {
         goto end;
     }
-    if ((re = init_output(handle))) {
+    if ((re = init_output(handle, d.empty() ? nullptr : d.c_str()))) {
         goto end;
     }
     if ((re = init_filters(handle))) {
@@ -540,6 +564,8 @@ const wchar_t* ffmpeg_core_get_err_msg2(int err) {
             return L"libcdio not found.";
         case FFMEPG_CORE_ERR_FAILED_PARSE_URL:
             return L"Failed to parse url.";
+        case FFMPEG_CORE_ERR_FAILED_SET_EQUALIZER_CHANNEL:
+            return L"Failed to set equalizer.";
         default:
             return L"Unknown error.";
     }
@@ -602,6 +628,36 @@ int ffmpeg_core_settings_set_equalizer_channel(FfmpegCoreSettings* s, int channe
 int ffmpeg_core_set_equalizer_channel(MusicHandle* handle, int channel, int gain) {
     if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
     int r = ffmpeg_core_settings_set_equalizer_channel(handle->s, channel, gain);
-    if (!r) return FFMPEG_CORE_ERR_FAILED_SET_SPEED;
+    if (!r) return FFMPEG_CORE_ERR_FAILED_SET_EQUALIZER_CHANNEL;
     return send_reinit_filters(handle);
+}
+
+DeviceNameList* ffmpeg_core_get_audio_devices() {
+    DEVICE_NAME_LIST list = nullptr;
+    int r = SDL_InitSubSystem(SDL_INIT_AUDIO);
+    if (r) return nullptr;
+    int count = SDL_GetNumAudioDevices(0);
+    if (count <= 0) {
+        goto end;
+    }
+    for (int i = 0; i < count; i++) {
+        const char* n = SDL_GetAudioDeviceName(i, 0);
+        char* p = nullptr;
+        if (!n) {
+            linked_list_clear(list, tfree);
+            goto end;
+        }
+        if (cstr_util_copy_str(&p, n)) {
+            linked_list_clear(list, tfree);
+            goto end;
+        }
+        if (!linked_list_append(list, &p)) {
+            free(p);
+            linked_list_clear(list, tfree);
+            goto end;
+        }
+    }
+end:
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    return (DeviceNameList*)list;
 }

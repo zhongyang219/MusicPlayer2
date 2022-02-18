@@ -9,14 +9,21 @@
 typedef struct MusicHandle MusicHandle;
 typedef struct MusicInfoHandle MusicInfoHandle;
 typedef struct FfmpegCoreSettings FfmpegCoreSettings;
+typedef struct DeviceNameList {
+    char* device;
+    struct DeviceNameList* prev;
+    struct DeviceNameList* next;
+} DeviceNameList;
 typedef void(*_free_music_handle)(MusicHandle*);
 typedef void(*_free_music_info_handle)(MusicInfoHandle*);
 typedef void(*_free_ffmpeg_core_settings)(FfmpegCoreSettings*);
+typedef void(*_free_device_name_list)(DeviceNameList**);
 typedef int(*_ffmpeg_core_log_format_line)(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
 typedef void(*_ffmpeg_core_log_set_callback)(void(*callback)(void*, int, const char*, va_list));
 typedef void(*_ffmpeg_core_log_set_flags)(int);
 typedef int(*_ffmpeg_core_open)(const wchar_t*, MusicHandle**);
 typedef int(*_ffmpeg_core_open2)(const wchar_t*, MusicHandle**, FfmpegCoreSettings*);
+typedef int(*_ffmpeg_core_open3)(const wchar_t*, MusicHandle**, FfmpegCoreSettings*, const wchar_t*);
 typedef int(*_ffmpeg_core_info_open)(const wchar_t*, MusicInfoHandle**);
 typedef int(*_ffmpeg_core_play)(MusicHandle*);
 typedef int(*_ffmpeg_core_pause)(MusicHandle*);
@@ -50,6 +57,7 @@ typedef int(*_ffmpeg_core_settings_set_cache_length)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_max_retry_count)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_url_retry_interval)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_equalizer_channel)(FfmpegCoreSettings*, int, int);
+typedef DeviceNameList*(*_ffmpeg_core_get_audio_devices)();
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
 public:
@@ -103,6 +111,7 @@ public:
     void SetCacheLength(int cache_length = 15);
     void SetMaxRetryCount(int max_retry_count = 3);
     void SetUrlRetryInterval(int url_retry_interval = 5);
+    std::list<std::wstring> GetAudioDevices();
 private:
     std::wstring GetMetadata(std::string key, MusicInfoHandle* h = nullptr);
     virtual bool GetFunction() override;
@@ -110,11 +119,13 @@ private:
     _free_music_handle free_music_handle = nullptr;
     _free_music_info_handle free_music_info_handle = nullptr;
     _free_ffmpeg_core_settings free_ffmpeg_core_settings = nullptr;
+    _free_device_name_list free_device_name_list = nullptr;
     _ffmpeg_core_log_format_line ffmpeg_core_log_format_line = nullptr;
     _ffmpeg_core_log_set_callback ffmpeg_core_log_set_callback = nullptr;
     _ffmpeg_core_log_set_flags ffmpeg_core_log_set_flags = nullptr;
     _ffmpeg_core_open ffmpeg_core_open = nullptr;
     _ffmpeg_core_open2 ffmpeg_core_open2 = nullptr;
+    _ffmpeg_core_open3 ffmpeg_core_open3 = nullptr;
     _ffmpeg_core_info_open ffmpeg_core_info_open = nullptr;
     _ffmpeg_core_play ffmpeg_core_play = nullptr;
     _ffmpeg_core_pause ffmpeg_core_pause = nullptr;
@@ -148,6 +159,7 @@ private:
     _ffmpeg_core_settings_set_max_retry_count ffmpeg_core_settings_set_max_retry_count = nullptr;
     _ffmpeg_core_settings_set_url_retry_interval ffmpeg_core_settings_set_url_retry_interval = nullptr;
     _ffmpeg_core_settings_set_equalizer_channel ffmpeg_core_settings_set_equalizer_channel = nullptr;
+    _ffmpeg_core_get_audio_devices ffmpeg_core_get_audio_devices = nullptr;
     int GetEqChannelFreq(int channel);
     MusicHandle* handle;
     FfmpegCoreSettings* settings = nullptr;

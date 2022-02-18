@@ -51,6 +51,23 @@ void CFfmpegCore::InitCore() {
         ffmpeg_core_log_set_flags(AV_LOG_SKIP_REPEATED | AV_LOG_PRINT_LEVEL);
         ffmpeg_core_log_set_callback(LogCallback);
         UpdateSettings();
+        auto devices = GetAudioDevices();
+        DeviceInfo d;
+        d.index = -1;
+        d.name = CCommon::LoadText(IDS_SDL_DEFAULT_DEVICE);
+        d.driver = L"";
+        d.flags = 0;
+        theApp.m_output_devices.clear();
+        theApp.m_output_devices.push_back(d);
+        int device_index = 0;
+        for (auto i = devices.begin(); i != devices.end(); i++) {
+            DeviceInfo d;
+            d.index = device_index++;
+            d.name = *i;
+            d.driver = L"";
+            d.flags = 0;
+            theApp.m_output_devices.push_back(d);
+        }
     }
 }
 
@@ -74,7 +91,7 @@ std::wstring CFfmpegCore::GetAudioType() {
 }
 
 int CFfmpegCore::GetChannels() {
-    if (ffmpeg_core_get_channels && handle) {
+    if (IsSucceed() && handle) {
         return ffmpeg_core_get_channels(handle);
     } else return 0;
 }
@@ -90,16 +107,19 @@ std::wstring CFfmpegCore::GetSoundFontName() {
 }
 
 void CFfmpegCore::Open(const wchar_t* file_path) {
+    if (!IsSucceed()) return;
     if (handle) {
         Close();
     }
-    if (ffmpeg_core_open) {
-        if (file_path) recent_file = file_path;
-        if (!settings) settings = ffmpeg_core_init_settings();
-        int re = ffmpeg_core_open2(file_path, &handle, settings);
-        if (re) {
-            err = re;
-        }
+    if (file_path) recent_file = file_path;
+    const wchar_t* device = nullptr;
+    if (theApp.m_play_setting_data.device_selected < theApp.m_output_devices.size() && theApp.m_play_setting_data.device_selected) {
+        device = theApp.m_output_devices[theApp.m_play_setting_data.device_selected].name.c_str();
+    }
+    if (!settings) settings = ffmpeg_core_init_settings();
+    int re = ffmpeg_core_open3(file_path, &handle, settings, device);
+    if (re) {
+        err = re;
     }
 }
 
@@ -319,11 +339,13 @@ bool CFfmpegCore::GetFunction() {
     free_music_handle = (_free_music_handle)::GetProcAddress(m_dll_module, "free_music_handle");
     free_music_info_handle = (_free_music_info_handle)::GetProcAddress(m_dll_module, "free_music_info_handle");
     free_ffmpeg_core_settings = (_free_ffmpeg_core_settings)::GetProcAddress(m_dll_module, "free_ffmpeg_core_settings");
+    free_device_name_list = (_free_device_name_list)::GetProcAddress(m_dll_module, "free_device_name_list");
     ffmpeg_core_log_format_line = (_ffmpeg_core_log_format_line)::GetProcAddress(m_dll_module, "ffmpeg_core_log_format_line");
     ffmpeg_core_log_set_callback = (_ffmpeg_core_log_set_callback)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_callback");
     ffmpeg_core_log_set_flags = (_ffmpeg_core_log_set_flags)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_flags");
     ffmpeg_core_open = (_ffmpeg_core_open)::GetProcAddress(m_dll_module, "ffmpeg_core_open");
     ffmpeg_core_open2 = (_ffmpeg_core_open2)::GetProcAddress(m_dll_module, "ffmpeg_core_open2");
+    ffmpeg_core_open3 = (_ffmpeg_core_open3)::GetProcAddress(m_dll_module, "ffmpeg_core_open3");
     ffmpeg_core_info_open = (_ffmpeg_core_info_open)::GetProcAddress(m_dll_module, "ffmpeg_core_info_open");
     ffmpeg_core_play = (_ffmpeg_core_play)::GetProcAddress(m_dll_module, "ffmpeg_core_play");
     ffmpeg_core_pause = (_ffmpeg_core_pause)::GetProcAddress(m_dll_module, "ffmpeg_core_pause");
@@ -357,7 +379,9 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_settings_set_max_retry_count = (_ffmpeg_core_settings_set_max_retry_count)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_max_retry_count");
     ffmpeg_core_settings_set_url_retry_interval = (_ffmpeg_core_settings_set_url_retry_interval)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_url_retry_interval");
     ffmpeg_core_settings_set_equalizer_channel = (_ffmpeg_core_settings_set_equalizer_channel)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_equalizer_channel");
+    ffmpeg_core_get_audio_devices = (_ffmpeg_core_get_audio_devices)::GetProcAddress(m_dll_module, "ffmpeg_core_get_audio_devices");
     //ÅÐ¶ÏÊÇ·ñ³É¹¦
+    rtn &= (free_device_name_list != NULL);
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
     rtn &= (free_ffmpeg_core_settings != NULL);
@@ -366,6 +390,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_log_set_flags != NULL);
     rtn &= (ffmpeg_core_open != NULL);
     rtn &= (ffmpeg_core_open2 != NULL);
+    rtn &= (ffmpeg_core_open3 != NULL);
     rtn &= (ffmpeg_core_info_open != NULL);
     rtn &= (ffmpeg_core_play != NULL);
     rtn &= (ffmpeg_core_pause != NULL);
@@ -399,6 +424,7 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_settings_set_max_retry_count != NULL);
     rtn &= (ffmpeg_core_settings_set_url_retry_interval != NULL);
     rtn &= (ffmpeg_core_settings_set_equalizer_channel != NULL);
+    rtn &= (ffmpeg_core_get_audio_devices != NULL);
     return rtn;
 }
 
@@ -543,4 +569,19 @@ int CFfmpegCore::GetEqChannelFreq(int channel) {
         default:
             return 0;
     }
+}
+
+std::list<std::wstring> CFfmpegCore::GetAudioDevices() {
+    if (!IsSucceed()) return {};
+    auto d = ffmpeg_core_get_audio_devices();
+    if (!d) return {};
+    std::list<std::wstring> l;
+    l.push_back(CCommon::StrToUnicode(d->device, CodeType::UTF8));
+    auto t = d;
+    while (t->next) {
+        t = t->next;
+        l.push_back(CCommon::StrToUnicode(t->device, CodeType::UTF8));
+    }
+    free_device_name_list(&d);
+    return l;
 }

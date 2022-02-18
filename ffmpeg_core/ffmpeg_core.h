@@ -14,6 +14,11 @@ extern "C" {
 typedef struct MusicHandle MusicHandle;
 typedef struct MusicInfoHandle MusicInfoHandle;
 typedef struct FfmpegCoreSettings FfmpegCoreSettings;
+typedef struct DeviceNameList {
+char* device;
+struct DeviceNameList* prev;
+struct DeviceNameList* next;
+} DeviceNameList;
 // 负数即为来自ffmpeg的错误
 
 #define FFMPEG_CORE_ERR_OK 0
@@ -35,9 +40,11 @@ typedef struct FfmpegCoreSettings FfmpegCoreSettings;
 #define FFMPEG_CORE_ERR_INVALID_CDA_FILE 16
 #define FFMPEG_CORE_ERR_NO_LIBCDIO 17
 #define FFMEPG_CORE_ERR_FAILED_PARSE_URL 18
+#define FFMPEG_CORE_ERR_FAILED_SET_EQUALIZER_CHANNEL 19
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
+FFMPEG_CORE_API void free_device_name_list(DeviceNameList** list);
 /// 即 av_log_format_line2
 FFMPEG_CORE_API int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
 /// 即 av_log_set_callback
@@ -46,6 +53,7 @@ FFMPEG_CORE_API void ffmpeg_core_log_set_callback(void(*callback)(void*, int, co
 FFMPEG_CORE_API void ffmpeg_core_log_set_flags(int arg);
 FFMPEG_CORE_API int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle);
 FFMPEG_CORE_API int ffmpeg_core_open2(const wchar_t* url, MusicHandle** handle, FfmpegCoreSettings* s);
+FFMPEG_CORE_API int ffmpeg_core_open3(const wchar_t* url, MusicHandle** handle, FfmpegCoreSettings* s, const wchar_t* device);
 FFMPEG_CORE_API int ffmpeg_core_info_open(const wchar_t* url, MusicInfoHandle** handle);
 FFMPEG_CORE_API int ffmpeg_core_play(MusicHandle* handle);
 FFMPEG_CORE_API int ffmpeg_core_pause(MusicHandle* handle);
@@ -135,6 +143,7 @@ FFMPEG_CORE_API int ffmpeg_core_settings_set_cache_length(FfmpegCoreSettings* s,
 FFMPEG_CORE_API int ffmpeg_core_settings_set_max_retry_count(FfmpegCoreSettings* s, int max_retry_count);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_url_retry_interval(FfmpegCoreSettings* s, int url_retry_interval);
 FFMPEG_CORE_API int ffmpeg_core_settings_set_equalizer_channel(FfmpegCoreSettings* s, int channel, int gain);
+FFMPEG_CORE_API DeviceNameList* ffmpeg_core_get_audio_devices();
 #ifdef __cplusplus
 }
 #endif

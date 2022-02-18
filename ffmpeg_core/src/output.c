@@ -2,10 +2,12 @@
 
 #include "speed.h"
 
-int init_output(MusicHandle* handle) {
+int init_output(MusicHandle* handle, const char* device) {
     if (!handle) return FFMPEG_CORE_ERR_NULLPTR;
     if (!handle->sdl_initialized) {
-        SDL_InitSubSystem(SDL_INIT_AUDIO);
+        if (SDL_InitSubSystem(SDL_INIT_AUDIO)) {
+            return FFMPEG_CORE_ERR_SDL;
+        }
         handle->sdl_initialized = 1;
     }
     SDL_AudioSpec sdl_spec;
@@ -21,7 +23,7 @@ int init_output(MusicHandle* handle) {
     sdl_spec.callback = SDL_callback;
     sdl_spec.userdata = handle;
     memcpy(&handle->sdl_spec, &sdl_spec, sizeof(SDL_AudioSpec));
-    handle->device_id = SDL_OpenAudioDevice(NULL, 0, &sdl_spec, &handle->sdl_spec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+    handle->device_id = SDL_OpenAudioDevice(device, 0, &sdl_spec, &handle->sdl_spec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
     if (!handle->device_id) {
         av_log(NULL, AV_LOG_FATAL, "Failed to open audio device \"%s\": %s\n", "default", SDL_GetError());
         return FFMPEG_CORE_ERR_SDL;

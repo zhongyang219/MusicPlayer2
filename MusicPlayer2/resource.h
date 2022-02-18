@@ -704,6 +704,7 @@
 #define IDI_ICON23                      552
 #define IDI_ADD                         552
 #define IDS_ITALIC                      552
+#define IDS_SDL_DEFAULT_DEVICE          553
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
