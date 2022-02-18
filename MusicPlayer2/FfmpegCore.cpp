@@ -14,18 +14,21 @@ CFfmpegCore::CFfmpegCore() {
     err = 0;
     Init(L"ffmpeg_core.dll");
     if (!IsSucceed()) {
+        CString strInfo = CCommon::LoadText(IDS_FFMPEG_INIT_FAILED);
+        theApp.WriteLog(wstring(strInfo));
     }
 }
 
 CFfmpegCore::~CFfmpegCore() {
     if (handle || settings) UnInitCore();
+    CDllLib::UnInit();
 }
 
 void CFfmpegCore::InitCore() {
     if (IsSucceed()) {
         CAudioCommon::m_surpported_format.clear();
         SupportedFormat format;
-        format.description = L"FFMPEG";
+        format.description = CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT);
         format.extensions.push_back(L"mp3");
         format.extensions.push_back(L"wma");
         format.extensions.push_back(L"wav");
@@ -68,18 +71,23 @@ void CFfmpegCore::InitCore() {
             d.flags = 0;
             theApp.m_output_devices.push_back(d);
         }
+        std::string ver("ffmpeg core version: ");
+        ver += ffmpeg_core_version_str();
+        ver += "\n";
+        OutputDebugStringA(ver.c_str());
+        ffmpeg_core_dump_library_version(1, AV_LOG_INFO);
+        ffmpeg_core_dump_ffmpeg_configuration(1, AV_LOG_INFO);
     }
 }
 
 void CFfmpegCore::UnInitCore() {
-    if (settings) {
+    if (settings && IsSucceed()) {
         free_ffmpeg_core_settings(settings);
         settings = nullptr;
     }
     if (handle) {
         Close();
     }
-    CDllLib::UnInit();
 }
 
 unsigned int CFfmpegCore::GetHandle() {
@@ -97,7 +105,7 @@ int CFfmpegCore::GetChannels() {
 }
 
 int CFfmpegCore::GetFReq() {
-    if (ffmpeg_core_get_freq && handle) {
+    if (IsSucceed() && handle) {
         return ffmpeg_core_get_freq(handle);
     } else return 0;
 }
@@ -124,7 +132,7 @@ void CFfmpegCore::Open(const wchar_t* file_path) {
 }
 
 void CFfmpegCore::Close() {
-    if (free_music_handle && handle) {
+    if (IsSucceed() && handle) {
         free_music_handle(handle);
         handle = nullptr;
         err = 0;
@@ -132,16 +140,17 @@ void CFfmpegCore::Close() {
 }
 
 void CFfmpegCore::Play() {
+    if (!IsSucceed()) return;
     if (!handle && !recent_file.empty()) {
         Open(recent_file.c_str());
     }
-    if (ffmpeg_core_play && handle) {
+    if (handle) {
         ffmpeg_core_play(handle);
     }
 }
 
 void CFfmpegCore::Pause() {
-    if (ffmpeg_core_pause && handle) {
+    if (IsSucceed() && handle) {
         ffmpeg_core_pause(handle);
     }
 }
@@ -151,6 +160,7 @@ void CFfmpegCore::Stop() {
 }
 
 void CFfmpegCore::SetVolume(int volume) {
+    if (!IsSucceed()) return;
     if (handle) {
         int re = ffmpeg_core_set_volume(handle, volume);
         if (re) {
@@ -162,6 +172,7 @@ void CFfmpegCore::SetVolume(int volume) {
 }
 
 void CFfmpegCore::SetSpeed(float speed) {
+    if (!IsSucceed()) return;
     if (handle) {
         int re = ffmpeg_core_set_speed(handle, speed);
         if (re) {
@@ -173,25 +184,25 @@ void CFfmpegCore::SetSpeed(float speed) {
 }
 
 bool CFfmpegCore::SongIsOver() {
-    if (ffmpeg_core_song_is_over && handle) {
+    if (IsSucceed() && handle) {
         return ffmpeg_core_song_is_over(handle);
     } else return false;
 }
 
 int CFfmpegCore::GetCurPosition() {
-    if (ffmpeg_core_get_cur_position && handle) {
+    if (IsSucceed() && handle) {
         return ffmpeg_core_get_cur_position(handle) / 1000;
     } else return 0;
 }
 
 int CFfmpegCore::GetSongLength() {
-    if (ffmpeg_core_get_song_length && handle) {
+    if (IsSucceed() && handle) {
         return ffmpeg_core_get_song_length(handle) / 1000;
     } else return 0;
 }
 
 void CFfmpegCore::SetCurPosition(int position) {
-    if (ffmpeg_core_seek && handle) {
+    if (IsSucceed() && handle) {
         int re = ffmpeg_core_seek(handle, (int64_t)position * 1000);
         if (re) {
             err = re;
@@ -200,7 +211,7 @@ void CFfmpegCore::SetCurPosition(int position) {
 }
 
 void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
-    if (!handle) return;
+    if (!handle || !IsSucceed()) return;
     if (flag & AF_LENGTH) song_info.lengh = GetSongLength();
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_get_freq(handle);
@@ -222,6 +233,7 @@ void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
 }
 
 void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag) {
+    if (!IsSucceed()) return;
     MusicInfoHandle* h = nullptr;
     int re = ffmpeg_core_info_open(file_path, &h);
     if (re || !h) return;
@@ -267,12 +279,13 @@ bool CFfmpegCore::MidiNoLyric() {
 }
 
 PlayingState CFfmpegCore::GetPlayingState() {
-    if (ffmpeg_core_is_playing && handle) {
+    if (IsSucceed() && handle) {
         return ffmpeg_core_is_playing(handle) ? PlayingState::PS_PLAYING : PlayingState::PS_PAUSED;
     } else return PlayingState::PS_STOPED;
 }
 
 void CFfmpegCore::ApplyEqualizer(int channel, int gain) {
+    if (!IsSucceed()) return;
     channel = GetEqChannelFreq(channel);
     if (handle) {
         int re = ffmpeg_core_set_equalizer_channel(handle, channel, gain);
@@ -291,7 +304,7 @@ void CFfmpegCore::ClearReverb() {
 }
 
 void CFfmpegCore::GetFFTData(float fft_data[FFT_SAMPLE]) {
-    if (handle) {
+    if (handle && IsSucceed()) {
         memset(fft_data, 0, FFT_SAMPLE);
         ffmpeg_core_get_fft_data(handle, fft_data, FFT_SAMPLE);
     } else {
@@ -311,7 +324,7 @@ int CFfmpegCore::GetErrorCode() {
 }
 
 std::wstring CFfmpegCore::GetErrorInfo(int error_code) {
-    if (error_code == 0) return L"";
+    if (error_code == 0 || !IsSucceed()) return L"";
     auto tmp = ffmpeg_core_get_err_msg(error_code);
     if (tmp) {
         std::wstring re(tmp);
@@ -343,6 +356,10 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_log_format_line = (_ffmpeg_core_log_format_line)::GetProcAddress(m_dll_module, "ffmpeg_core_log_format_line");
     ffmpeg_core_log_set_callback = (_ffmpeg_core_log_set_callback)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_callback");
     ffmpeg_core_log_set_flags = (_ffmpeg_core_log_set_flags)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_flags");
+    ffmpeg_core_version_str = (_ffmpeg_core_version_str)::GetProcAddress(m_dll_module, "ffmpeg_core_version_str");
+    ffmpeg_core_version = (_ffmpeg_core_version)::GetProcAddress(m_dll_module, "ffmpeg_core_version");
+    ffmpeg_core_dump_library_version = (_ffmpeg_core_dump_library_version)::GetProcAddress(m_dll_module, "ffmpeg_core_dump_library_version");
+    ffmpeg_core_dump_ffmpeg_configuration = (_ffmpeg_core_dump_ffmpeg_configuration)::GetProcAddress(m_dll_module, "ffmpeg_core_dump_ffmpeg_configuration");
     ffmpeg_core_open = (_ffmpeg_core_open)::GetProcAddress(m_dll_module, "ffmpeg_core_open");
     ffmpeg_core_open2 = (_ffmpeg_core_open2)::GetProcAddress(m_dll_module, "ffmpeg_core_open2");
     ffmpeg_core_open3 = (_ffmpeg_core_open3)::GetProcAddress(m_dll_module, "ffmpeg_core_open3");
@@ -388,6 +405,10 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_log_format_line != NULL);
     rtn &= (ffmpeg_core_log_set_callback != NULL);
     rtn &= (ffmpeg_core_log_set_flags != NULL);
+    rtn &= (ffmpeg_core_version_str != NULL);
+    rtn &= (ffmpeg_core_version != NULL);
+    rtn &= (ffmpeg_core_dump_library_version != NULL);
+    rtn &= (ffmpeg_core_dump_ffmpeg_configuration != NULL);
     rtn &= (ffmpeg_core_open != NULL);
     rtn &= (ffmpeg_core_open2 != NULL);
     rtn &= (ffmpeg_core_open3 != NULL);
@@ -429,6 +450,7 @@ bool CFfmpegCore::GetFunction() {
 }
 
 std::wstring CFfmpegCore::GetMetadata(std::string key, MusicInfoHandle* h) {
+    if (!IsSucceed()) return L"";
     if (h) {
         auto r = ffmpeg_core_info_get_metadata(h, key.c_str());
         if (!r) return L"";
@@ -527,19 +549,19 @@ void CFfmpegCore::UpdateSettings() {
 }
 
 void CFfmpegCore::SetCacheLength(int cache_length) {
-    if (settings) {
+    if (settings && IsSucceed()) {
         ffmpeg_core_settings_set_cache_length(settings, cache_length);
     }
 }
 
 void CFfmpegCore::SetMaxRetryCount(int max_retry_count) {
-    if (settings) {
+    if (settings && IsSucceed()) {
         ffmpeg_core_settings_set_max_retry_count(settings, max_retry_count);
     }
 }
 
 void CFfmpegCore::SetUrlRetryInterval(int url_retry_interval) {
-    if (settings) {
+    if (settings && IsSucceed()) {
         ffmpeg_core_settings_set_url_retry_interval(settings, url_retry_interval);
     }
 }

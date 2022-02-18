@@ -47,9 +47,20 @@ src/equalizer_settings.h
 src/equalizer_settings.cpp
 src/equalizer.h
 src/equalizer.c
+"${CMAKE_CURRENT_BINARY_DIR}/ffmpeg_core.rc"
+"${CMAKE_CURRENT_BINARY_DIR}/ffmpeg_core_version.h"
 )
 
+set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/ffmpeg_core.rc" PROPERTIES GENERATED TRUE)
+set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/ffmpeg_core_version.h" PROPERTIES GENERATED TRUE)
+
+add_custom_target(ffmpeg_core_version
+    ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_SOURCE_DIR}/FFMPEG_CORE_VERSION.cmake"
+)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 add_library(ffmpeg_core SHARED "${CORE_FILES}")
+add_dependencies(ffmpeg_core ffmpeg_core_version)
 set_target_properties(ffmpeg_core PROPERTIES PREFIX "")
 target_compile_definitions(ffmpeg_core PRIVATE BUILD_FFMPEG_CORE)
 target_link_libraries(ffmpeg_core AVFORMAT::AVFORMAT)

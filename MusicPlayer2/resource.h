@@ -705,6 +705,9 @@
 #define IDI_ADD                         552
 #define IDS_ITALIC                      552
 #define IDS_SDL_DEFAULT_DEVICE          553
+#define IDS_FFMPEG_CORE                 554
+#define IDS_FFMPEG_INIT_FAILED          555
+#define IDS_FFMPEG_NO_THIS_FUNCTION     556
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1524,7 +1527,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        552
+#define _APS_NEXT_RESOURCE_VALUE        555
 #define _APS_NEXT_COMMAND_VALUE         33387
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101

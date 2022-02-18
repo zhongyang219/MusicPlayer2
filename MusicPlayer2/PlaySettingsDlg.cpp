@@ -131,6 +131,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_MCI_RADIO), CCommon::LoadText(IDS_MCI_KERNAL_TIP));
+    m_toolTip.AddTool(GetDlgItem(IDC_FFMPEG_RADIO), CCommon::LoadText(IDS_FFMPEG_CORE));
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
 	//初始化各控件的状态
@@ -148,6 +149,18 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 		m_show_taskbar_progress_check.EnableWindow(FALSE);
 		m_show_play_state_icon_chk.EnableWindow(FALSE);
 	}
+
+    bool enable_ffmpeg = false;
+    if (CPlayer::GetInstance().IsFfmpegCore()) {
+        enable_ffmpeg = true;
+    } else {
+        auto h = LoadLibraryW(L"ffmpeg_core.dll");
+        if (h) {
+            enable_ffmpeg = true;
+            FreeLibrary(h);
+        }
+    }
+    m_ffmpeg_radio.EnableWindow(enable_ffmpeg);
 
     if (m_data.use_mci)
         m_mci_radio.SetCheck(TRUE);

@@ -16,6 +16,7 @@
 #include "equalizer_settings.h"
 #include "linked_list.h"
 #include "cstr_util.h"
+#include "ffmpeg_core_version.h"
 
 #define CODEPAGE_SIZE 3
 #define DEVICE_NAME_LIST struct LinkedList<char*>*
@@ -109,6 +110,52 @@ void ffmpeg_core_log_set_callback(void(*callback)(void*, int, const char*, va_li
 void ffmpeg_core_log_set_flags(int arg) {
     av_log_set_flags(arg);
 }
+
+const char* ffmpeg_core_version_str() {
+    return FFMPEG_CORE_VERSION;
+}
+
+int32_t ffmpeg_core_version() {
+    return FFMPEG_CORE_VERSION_INT;
+}
+
+#define PRINTF(f, ...) use_av_log ? av_log(NULL, av_log_level, f, __VA_ARGS__) : printf_s(f, __VA_ARGS__)
+
+void ffmpeg_core_dump_library_version(int use_av_log, int av_log_level) {
+    unsigned int v = avutil_version();
+    PRINTF("FFMPEG libraries: \n");
+    PRINTF("libavutil     %3u.%3u.%3u\n", v >> 16, (v & 0xff00) >> 8, v & 0xff);
+    v = avcodec_version();
+    PRINTF("libavcodec    %3u.%3u.%3u\n", v >> 16, (v & 0xff00) >> 8, v & 0xff);
+    v = avformat_version();
+    PRINTF("libavformat   %3u.%3u.%3u\n", v >> 16, (v & 0xff00) >> 8, v & 0xff);
+    v = avdevice_version();
+    PRINTF("libavdevice   %3u.%3u.%3u\n", v >> 16, (v & 0xff00) >> 8, v & 0xff);
+    v = avfilter_version();
+    PRINTF("libavfilter   %3u.%3u.%3u\n", v >> 16, (v & 0xff00) >> 8, v & 0xff);
+    v = swresample_version();
+    PRINTF("libswresample %3u.%3u.%3u\n", v >> 16, (v & 0xff00) >> 8, v & 0xff);
+    PRINTF("Other thirdparty libraries: \n");
+    SDL_version sv;
+    SDL_GetVersion(&sv);
+    PRINTF("SDL2          %3u.%3u.%3u\n", sv.major, sv.minor, sv.patch);
+}
+
+#define QUICK_PRINT_CONF(f, name) if (basic != f()) { \
+PRINTF(name " have different configuration: %s\n", f()); }
+
+void ffmpeg_core_dump_ffmpeg_configuration(int use_av_log, int av_log_level) {
+    std::string basic = avutil_configuration();
+    PRINTF("configuration: %s\n", basic.c_str());
+    QUICK_PRINT_CONF(avcodec_configuration, "libavcodec")
+    QUICK_PRINT_CONF(avformat_configuration, "libavformat")
+    QUICK_PRINT_CONF(avdevice_configuration, "libavdevice")
+    QUICK_PRINT_CONF(avfilter_configuration, "libavfilter")
+    QUICK_PRINT_CONF(swresample_configuration, "libswresample")
+}
+
+#undef QUICK_PRINT_CONF
+#undef PRINTF
 
 int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle) {
     return ffmpeg_core_open3(url, handle, nullptr, nullptr);
@@ -376,14 +423,14 @@ int ffmpeg_core_info_get_bits(MusicInfoHandle* handle) {
 int64_t ffmpeg_core_get_bitrate(MusicHandle* handle) {
     if (!handle || !handle->decoder) return -1;
     if (handle->decoder->bit_rate) return handle->decoder->bit_rate;
-    if (handle->fmt->bit_rate > 0) return handle->fmt->bit_rate;
+    if (handle->fmt && handle->fmt->bit_rate > 0) return handle->fmt->bit_rate;
     return 0;
 }
 
 int64_t ffmpeg_core_info_get_bitrate(MusicInfoHandle* handle) {
     if (!handle || !handle->is) return -1;
     if (handle->is->codecpar->bit_rate > 0) return handle->is->codecpar->bit_rate;
-    if (handle->fmt->bit_rate > 0) return handle->fmt->bit_rate;
+    if (handle->fmt && handle->fmt->bit_rate > 0) return handle->fmt->bit_rate;
     return 0;
 }
 
@@ -403,7 +450,7 @@ std::wstring get_metadata_str(AVDictionary* dict, const char* key, int flags) {
 
 wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key) {
     if (!handle | !key) return nullptr;
-    if (handle->fmt->metadata) {
+    if (handle->fmt && handle->fmt->metadata) {
         auto re = get_metadata_str(handle->fmt->metadata, key, 0);
         if (!re.empty()) {
             wchar_t* r = nullptr;
@@ -412,7 +459,7 @@ wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key) {
             }
         }
     }
-    if (handle->is->metadata) {
+    if (handle->is && handle->is->metadata) {
         auto re = get_metadata_str(handle->is->metadata, key, 0);
         if (!re.empty()) {
             wchar_t* r = nullptr;
@@ -426,7 +473,7 @@ wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key) {
 
 wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key) {
     if (!handle || !key) return nullptr;
-    if (handle->fmt->metadata) {
+    if (handle->fmt && handle->fmt->metadata) {
         auto re = get_metadata_str(handle->fmt->metadata, key, 0);
         if (!re.empty()) {
             wchar_t* r = nullptr;
@@ -435,7 +482,7 @@ wchar_t* ffmpeg_core_info_get_metadata(MusicInfoHandle* handle, const char* key)
             }
         }
     }
-    if (handle->is->metadata) {
+    if (handle->is && handle->is->metadata) {
         auto re = get_metadata_str(handle->is->metadata, key, 0);
         if (!re.empty()) {
             wchar_t* r = nullptr;

@@ -3,6 +3,7 @@
 #include "DllLib.h"
 
 #define AV_LOG_ERROR 16
+#define AV_LOG_INFO 32
 #define AV_LOG_VERBOSE 40
 #define AV_LOG_SKIP_REPEATED 1
 #define AV_LOG_PRINT_LEVEL 2
@@ -21,6 +22,10 @@ typedef void(*_free_device_name_list)(DeviceNameList**);
 typedef int(*_ffmpeg_core_log_format_line)(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
 typedef void(*_ffmpeg_core_log_set_callback)(void(*callback)(void*, int, const char*, va_list));
 typedef void(*_ffmpeg_core_log_set_flags)(int);
+typedef const char*(*_ffmpeg_core_version_str)();
+typedef int32_t(*_ffmpeg_core_version)();
+typedef void(*_ffmpeg_core_dump_library_version)(int, int);
+typedef void(*_ffmpeg_core_dump_ffmpeg_configuration)(int, int);
 typedef int(*_ffmpeg_core_open)(const wchar_t*, MusicHandle**);
 typedef int(*_ffmpeg_core_open2)(const wchar_t*, MusicHandle**, FfmpegCoreSettings*);
 typedef int(*_ffmpeg_core_open3)(const wchar_t*, MusicHandle**, FfmpegCoreSettings*, const wchar_t*);
@@ -123,6 +128,10 @@ private:
     _ffmpeg_core_log_format_line ffmpeg_core_log_format_line = nullptr;
     _ffmpeg_core_log_set_callback ffmpeg_core_log_set_callback = nullptr;
     _ffmpeg_core_log_set_flags ffmpeg_core_log_set_flags = nullptr;
+    _ffmpeg_core_version_str ffmpeg_core_version_str = nullptr;
+    _ffmpeg_core_version ffmpeg_core_version = nullptr;
+    _ffmpeg_core_dump_library_version ffmpeg_core_dump_library_version = nullptr;
+    _ffmpeg_core_dump_ffmpeg_configuration ffmpeg_core_dump_ffmpeg_configuration = nullptr;
     _ffmpeg_core_open ffmpeg_core_open = nullptr;
     _ffmpeg_core_open2 ffmpeg_core_open2 = nullptr;
     _ffmpeg_core_open3 ffmpeg_core_open3 = nullptr;

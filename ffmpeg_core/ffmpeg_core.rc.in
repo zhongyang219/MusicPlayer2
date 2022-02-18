@@ -1,0 +1,35 @@
+#include <winver.h>
+#ifndef DEBUG
+#define VER_DEBUG 0
+#else
+#define VER_DEBUG VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     @FFMPEG_CORE_VERSION_MAJOR@,@FFMPEG_CORE_VERSION_MINOR@,@FFMPEG_CORE_VERSION_MICRO@,@FFMPEG_CORE_VERSION_REV@
+PRODUCTVERSION  @FFMPEG_CORE_VERSION_MAJOR@,@FFMPEG_CORE_VERSION_MINOR@,@FFMPEG_CORE_VERSION_MICRO@,@FFMPEG_CORE_VERSION_REV@
+FILEFLAGSMASK   VS_FF_DEBUG
+FILEFLAGS       VER_DEBUG
+FILEOS          VOS__WINDOWS32
+FILETYPE        VFT_DLL
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "04090000"
+        BEGIN
+            VALUE "CompanyName",      "lifegpc\0"
+            VALUE "FileDescription",  "A music player core which use FFMPEG and SDL2.\0"
+            VALUE "FileVersion",      "@FFMPEG_CORE_VERSION@\0"
+            VALUE "InternalName",     "ffmpeg_core\0"
+            VALUE "LegalCopyright",   "Copyright (C) 2022  lifegpc\0"
+            VALUE "OriginalFilename", "ffmpeg_core.dll\0"
+            VALUE "ProductName",      "ffmpeg_core\0"
+            VALUE "ProductVersion",   "@FFMPEG_CORE_VERSION@\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 0
+    END
+END

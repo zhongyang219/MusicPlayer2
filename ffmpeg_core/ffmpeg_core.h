@@ -51,6 +51,10 @@ FFMPEG_CORE_API int ffmpeg_core_log_format_line(void* ptr, int level, const char
 FFMPEG_CORE_API void ffmpeg_core_log_set_callback(void(*callback)(void*, int, const char*, va_list));
 /// 即 av_log_set_flags
 FFMPEG_CORE_API void ffmpeg_core_log_set_flags(int arg);
+FFMPEG_CORE_API const char* ffmpeg_core_version_str();
+FFMPEG_CORE_API int32_t ffmpeg_core_version();
+FFMPEG_CORE_API void ffmpeg_core_dump_library_version(int use_av_log, int av_log_level);
+FFMPEG_CORE_API void ffmpeg_core_dump_ffmpeg_configuration(int use_av_log, int av_log_level);
 FFMPEG_CORE_API int ffmpeg_core_open(const wchar_t* url, MusicHandle** handle);
 FFMPEG_CORE_API int ffmpeg_core_open2(const wchar_t* url, MusicHandle** handle, FfmpegCoreSettings* s);
 FFMPEG_CORE_API int ffmpeg_core_open3(const wchar_t* url, MusicHandle** handle, FfmpegCoreSettings* s, const wchar_t* device);
