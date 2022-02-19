@@ -19,5 +19,6 @@ FFMPEG库采用pkg-config来寻找，请确保正确的设置了环境变量`PKG
 * `volume`：用于调节声音大小
 * `atempo`：用于调节速度
 * `equalizer`：用于均衡器
+* `aresample`：用于格式自动转换
 
 其他 `filters` 可以删除以减小体积
