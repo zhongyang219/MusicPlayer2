@@ -2088,7 +2088,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         {
             if (IsFloatPlaylistExist())
             {
-                m_pFloatPlaylistDlg->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
+                m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
             }
         }
 
@@ -2116,7 +2116,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
     if (nType == SIZE_MINIMIZED)
     {
         if (IsFloatPlaylistExist())
-            m_pFloatPlaylistDlg->ShowWindow(SW_MINIMIZE);
+            m_pFloatPlaylistDlg->ShowWindow(SW_HIDE);
 
     }
 
