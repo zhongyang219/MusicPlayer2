@@ -7,6 +7,7 @@ if (MSVC)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(GNUInstallDirs)
 find_package(AVFORMAT 58 REQUIRED)
 find_package(AVCODEC 58 REQUIRED)
 find_package(AVDEVICE 58 REQUIRED)
@@ -59,9 +60,12 @@ add_custom_target(ffmpeg_core_version
 )
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+set(PUBLIC_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg_core.h" "${CMAKE_CURRENT_BINARY_DIR}/ffmpeg_core_version.h")
+
 add_library(ffmpeg_core SHARED "${CORE_FILES}")
 add_dependencies(ffmpeg_core ffmpeg_core_version)
 set_target_properties(ffmpeg_core PROPERTIES PREFIX "")
+set_target_properties(ffmpeg_core PROPERTIES PUBLIC_HEADER "${PUBLIC_HEADERS}")
 target_compile_definitions(ffmpeg_core PRIVATE BUILD_FFMPEG_CORE)
 target_link_libraries(ffmpeg_core AVFORMAT::AVFORMAT)
 target_link_libraries(ffmpeg_core AVCODEC::AVCODEC)
@@ -76,3 +80,6 @@ target_link_libraries(ffmpeg_core utils)
 if (NOT MSVC)
     target_link_libraries(ffmpeg_core m)
 endif()
+
+install(TARGETS ffmpeg_core)
+install(FILES $<TARGET_PDB_FILE:ffmpeg_core> DESTINATION bin OPTIONAL)
