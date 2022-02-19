@@ -82,4 +82,6 @@ if (NOT MSVC)
 endif()
 
 install(TARGETS ffmpeg_core)
-install(FILES $<TARGET_PDB_FILE:ffmpeg_core> DESTINATION bin OPTIONAL)
+if (MSVC)
+    install(FILES $<TARGET_PDB_FILE:ffmpeg_core> DESTINATION bin OPTIONAL)
+endif()

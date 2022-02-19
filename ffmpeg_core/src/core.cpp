@@ -131,7 +131,12 @@ int32_t ffmpeg_core_version() {
     return FFMPEG_CORE_VERSION_INT;
 }
 
+#if _MSC_VER
 #define PRINTF(f, ...) use_av_log ? av_log(NULL, av_log_level, f, __VA_ARGS__) : printf_s(f, __VA_ARGS__)
+#else
+#define PRINTF(f, ...) if (use_av_log) { av_log(NULL, av_log_level, f, ##__VA_ARGS__); } else { printf_s(f, ##__VA_ARGS__); }
+#endif
+
 
 void ffmpeg_core_dump_library_version(int use_av_log, int av_log_level) {
     unsigned int v = avutil_version();
