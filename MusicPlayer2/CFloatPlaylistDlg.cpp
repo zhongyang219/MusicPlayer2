@@ -422,7 +422,7 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
                 return TRUE;
             }
-            if (pMsg->wParam == 'K')
+            if (pMsg->wParam == 'L')
             {
                 OnClose();
                 OnCancel();

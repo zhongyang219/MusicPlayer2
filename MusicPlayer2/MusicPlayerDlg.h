@@ -217,6 +217,9 @@ protected:
     void ShowFloatPlaylist();
     void HideFloatPlaylist();
 
+    void ShowHidePlaylist();
+    void ShowHideFloatPlaylist();
+
     void GetPlaylistItemSelected(int cur_index);
     void GetPlaylistItemSelected();
     void IniPlaylistPopupMenu();        //初始化所有右键菜单中的“添加到播放列表”子菜单
