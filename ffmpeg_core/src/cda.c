@@ -180,18 +180,23 @@ int open_cd_device(MusicHandle* handle, const char* device) {
         return FFMPEG_CORE_ERR_NO_LIBCDIO;
     }
     int re = 0;
-    if ((re = avformat_open_input(&handle->fmt, device, f, NULL)) < 0) {
+    AVDictionary* d = NULL;
+    av_dict_set(&d, "paranoia_mode", "verify", 0);
+    if ((re = avformat_open_input(&handle->fmt, device, f, &d)) < 0) {
         av_log(NULL, AV_LOG_FATAL, "Failed to open \"%s\": %s (%i)\n", device, av_err2str(re), re);
+        av_dict_free(&d);
         return re;
     }
     if ((re = avformat_find_stream_info(handle->fmt, NULL)) < 0) {
         av_log(NULL, AV_LOG_FATAL, "Failed to find streams in \"%s\": %s (%i)\n", device, av_err2str(re), re);
+        av_dict_free(&d);
         return re;
     }
     handle->only_part = 1;
     handle->part_start_pts = av_rescale_q_rnd(handle->cda->range_offset, cda_time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
     handle->part_end_pts = av_rescale_q_rnd((int64_t)handle->cda->duration + handle->cda->range_offset, cda_time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
     // handle->fmt->flags |= AVFMT_FLAG_FAST_SEEK;  // 允许快速定位
+    av_dict_free(&d);
     return FFMPEG_CORE_ERR_OK;
 }
 
