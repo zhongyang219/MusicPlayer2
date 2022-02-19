@@ -18,7 +18,7 @@ public:
     CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent = nullptr);   // 标准构造函数
     virtual ~CFloatPlaylistDlg();
 
-// 对话框数据
+    // 对话框数据
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_MUSICPLAYER2_DIALOG };
 #endif
@@ -58,15 +58,15 @@ protected:
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnSize(UINT nType, int cx, int cy);
-    afx_msg void OnNMRClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
-    afx_msg void OnNMDblclkPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnEnChangeSearchEdit();
     //afx_msg void OnBnClickedClearSearchButton();
     virtual void OnCancel();
     afx_msg void OnClose();
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
-    afx_msg void OnNMClickPlaylistList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
     afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
