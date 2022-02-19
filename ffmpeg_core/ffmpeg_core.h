@@ -4,6 +4,7 @@
 extern "C" {
 #endif
 #include <stdint.h>
+#include <stddef.h>
 #include <wchar.h>
 #include <stdarg.h>
 #if BUILD_FFMPEG_CORE
@@ -45,6 +46,9 @@ FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);
 FFMPEG_CORE_API void free_device_name_list(DeviceNameList** list);
+FFMPEG_CORE_API void ffmpeg_core_free(void* data);
+FFMPEG_CORE_API void* ffmpeg_core_malloc(size_t size);
+FFMPEG_CORE_API void* ffmpeg_core_realloc(void* data, size_t size);
 /// 即 av_log_format_line2
 FFMPEG_CORE_API int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix);
 /// 即 av_log_set_callback

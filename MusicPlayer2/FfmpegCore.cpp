@@ -328,7 +328,7 @@ std::wstring CFfmpegCore::GetErrorInfo(int error_code) {
     auto tmp = ffmpeg_core_get_err_msg(error_code);
     if (tmp) {
         std::wstring re(tmp);
-        free(tmp);
+        ffmpeg_core_free(tmp);
         return re;
     }
     return L"";
@@ -353,6 +353,9 @@ bool CFfmpegCore::GetFunction() {
     free_music_info_handle = (_free_music_info_handle)::GetProcAddress(m_dll_module, "free_music_info_handle");
     free_ffmpeg_core_settings = (_free_ffmpeg_core_settings)::GetProcAddress(m_dll_module, "free_ffmpeg_core_settings");
     free_device_name_list = (_free_device_name_list)::GetProcAddress(m_dll_module, "free_device_name_list");
+    ffmpeg_core_free = (_ffmpeg_core_free)::GetProcAddress(m_dll_module, "ffmpeg_core_free");
+    ffmpeg_core_malloc = (_ffmpeg_core_malloc)::GetProcAddress(m_dll_module, "ffmpeg_core_malloc");
+    ffmpeg_core_realloc = (_ffmpeg_core_realloc)::GetProcAddress(m_dll_module, "ffmpeg_core_realloc");
     ffmpeg_core_log_format_line = (_ffmpeg_core_log_format_line)::GetProcAddress(m_dll_module, "ffmpeg_core_log_format_line");
     ffmpeg_core_log_set_callback = (_ffmpeg_core_log_set_callback)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_callback");
     ffmpeg_core_log_set_flags = (_ffmpeg_core_log_set_flags)::GetProcAddress(m_dll_module, "ffmpeg_core_log_set_flags");
@@ -402,6 +405,9 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
     rtn &= (free_ffmpeg_core_settings != NULL);
+    rtn &= (ffmpeg_core_free != NULL);
+    rtn &= (ffmpeg_core_malloc != NULL);
+    rtn &= (ffmpeg_core_realloc != NULL);
     rtn &= (ffmpeg_core_log_format_line != NULL);
     rtn &= (ffmpeg_core_log_set_callback != NULL);
     rtn &= (ffmpeg_core_log_set_flags != NULL);
@@ -455,14 +461,14 @@ std::wstring CFfmpegCore::GetMetadata(std::string key, MusicInfoHandle* h) {
         auto r = ffmpeg_core_info_get_metadata(h, key.c_str());
         if (!r) return L"";
         std::wstring re(r);
-        free(r);
+        ffmpeg_core_free(r);
         return re;
     }
     if (!handle) return L"";
     auto r = ffmpeg_core_get_metadata(handle, key.c_str());
     if (!r) return L"";
     std::wstring re(r);
-    free(r);
+    ffmpeg_core_free(r);
     return re;
 }
 

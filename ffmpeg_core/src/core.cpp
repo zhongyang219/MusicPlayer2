@@ -99,6 +99,18 @@ void free_device_name_list(DeviceNameList** list) {
     }
 }
 
+void ffmpeg_core_free(void* data) {
+    free(data);
+}
+
+void* ffmpeg_core_malloc(size_t size) {
+    return malloc(size);
+}
+
+void* ffmpeg_core_realloc(void* data, size_t size) {
+    return realloc(data, size);
+}
+
 int ffmpeg_core_log_format_line(void* ptr, int level, const char* fmt, va_list vl, char* line, int line_size, int* print_prefix) {
     return av_log_format_line2(ptr, level, fmt, vl, line, line_size, print_prefix);
 }
