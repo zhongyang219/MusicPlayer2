@@ -430,6 +430,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
     theApp.m_font_set.cortana.GetFont().GetLogFont(&lf);
     CCommon::NormalizeFont(lf);
     CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+    fontDlg.m_cf.Flags |= CF_NOVERTFONTS;   //仅列出水平方向的字体
     if (IDOK == fontDlg.DoModal())     // 显示字体对话框
     {
         //获取字体信息
@@ -491,6 +492,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont2()
     font.GetLogFont(&lf);
     CCommon::NormalizeFont(lf);
     CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+    fontDlg.m_cf.Flags |= CF_NOVERTFONTS;   //仅列出水平方向的字体
     if (IDOK == fontDlg.DoModal())     // 显示字体对话框
     {
         //获取字体信息
@@ -763,6 +765,7 @@ void CLyricSettingsDlg::OnBnClickedSetFontButton()
     theApp.m_font_set.lyric.GetFont().GetLogFont(&lf);
     CCommon::NormalizeFont(lf);
     CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+    fontDlg.m_cf.Flags |= CF_NOVERTFONTS;   //仅列出水平方向的字体
     if (IDOK == fontDlg.DoModal())     // 显示字体对话框
     {
         //获取字体信息

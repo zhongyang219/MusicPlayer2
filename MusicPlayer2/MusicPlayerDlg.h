@@ -217,6 +217,9 @@ protected:
     void ShowFloatPlaylist();
     void HideFloatPlaylist();
 
+    void ShowHidePlaylist();
+    void ShowHideFloatPlaylist();
+
     void GetPlaylistItemSelected(int cur_index);
     void GetPlaylistItemSelected();
     void IniPlaylistPopupMenu();        //初始化所有右键菜单中的“添加到播放列表”子菜单
@@ -237,6 +240,9 @@ protected:
 
     void GetScreenInfo();
     void MoveDesktopLyricWindowPos();
+
+    bool IsFloatPlaylistExist();
+    void MoveFloatPlaylistPos();
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
@@ -501,6 +507,7 @@ protected:
 public:
     afx_msg void OnPlaylistOptions();
     afx_msg void OnMove(int x, int y);
+
 protected:
     afx_msg LRESULT OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam);
 };
