@@ -189,6 +189,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CFloatPlaylistDlg::OnListItemDragged)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFloatPlaylistDlg::OnSearchEditBtnClicked)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CFloatPlaylistDlg::OnLocateToCurrent)
+    ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CFloatPlaylistDlg::OnMainWindowActivated)
 END_MESSAGE_MAP()
 
 
@@ -500,4 +501,18 @@ void CFloatPlaylistDlg::OnLocateToCurrent()
 {
     // TODO: 在此添加命令处理程序代码
     m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+}
+
+
+afx_msg LRESULT CFloatPlaylistDlg::OnMainWindowActivated(WPARAM wParam, LPARAM lParam)
+{
+    /*
+    * WM_MAIN_WINDOW_ACTIVATED消息是当已经有一个MusicPlayer2进程在运行时尝试启动一个新的MusicPlayer2进程时发送
+    * 由于浮动播放列表和主窗口的类名相同（因为主窗口和浮动播放列表使用的是同一对话框资源），因此主窗口可能会不能正常激活，
+    * 在收到此消息时重新激活一次主窗口，并将WM_MAIN_WINDOW_ACTIVATED消息转发给主窗口
+    */
+    theApp.m_pMainWnd->ShowWindow(SW_SHOWNORMAL);		//激活并显示窗口
+    theApp.m_pMainWnd->SetForegroundWindow();		//将窗口设置为焦点
+    theApp.m_pMainWnd->SendMessage(WM_MAIN_WINDOW_ACTIVATED);
+    return 0;
 }
