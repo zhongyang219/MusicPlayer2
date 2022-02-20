@@ -4753,6 +4753,22 @@ void CMusicPlayerDlg::OnFloatPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = !theApp.m_nc_setting_data.playlist_btn_for_float_playlist;
+    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    {
+        //改为浮动播放列表时，如果显示了停靠的播放列表，则显示浮动播放列表，隐藏停靠播放列表
+        if (theApp.m_ui_data.show_playlist)
+        {
+            ShowFloatPlaylist();
+        }
+    }
+    else
+    {
+        //改为停靠的播放列表时，如果显示了浮动的播放列表，则显示停靠的播放列表
+        if (theApp.m_nc_setting_data.float_playlist)
+        {
+            ShowHidePlaylist();
+        }
+    }
 }
 
 

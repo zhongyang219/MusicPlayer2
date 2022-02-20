@@ -431,6 +431,11 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
                 OnCancel();
                 return TRUE;
             }
+            if (pMsg->wParam == 'K')
+            {
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST, 0);
+                return TRUE;
+            }
         }
         if (pMsg->wParam == 'F')        //按F键快速查找
         {
