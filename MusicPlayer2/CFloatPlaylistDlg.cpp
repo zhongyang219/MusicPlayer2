@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CFloatPlaylistDlg.h"
 #include "afxdialogex.h"
+#include "MusicPlayerDlg.h"
 
 
 // CFloatPlaylistDlg 对话框
@@ -188,6 +189,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CFloatPlaylistDlg::OnListItemDragged)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFloatPlaylistDlg::OnSearchEditBtnClicked)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CFloatPlaylistDlg::OnLocateToCurrent)
+    ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CFloatPlaylistDlg::OnMainWindowActivated)
 END_MESSAGE_MAP()
 
 
@@ -199,8 +201,11 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    ModifyStyle(WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0);
-    ModifyStyleEx(WS_EX_APPWINDOW, 0);
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+    {
+        ModifyStyle(WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0);
+        ModifyStyleEx(WS_EX_APPWINDOW, 0);
+    }
     SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 
@@ -412,26 +417,34 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
     // TODO: 在此添加专用代码和/或调用基类
     if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
     {
-        //按下Ctrl键时
-        if (GetKeyState(VK_CONTROL) & 0x80)
+        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
         {
-            if (pMsg->wParam == VK_UP)
-            {
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_UP, 0);
+            //响应Accelerator中设置的快捷键
+            CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+            if (main_wnd != nullptr && main_wnd->m_hAccel && ::TranslateAccelerator(m_hWnd, main_wnd->m_hAccel, pMsg))
                 return TRUE;
-            }
-            if (pMsg->wParam == VK_DOWN)
-            {
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
-                return TRUE;
-            }
-            if (pMsg->wParam == 'L')
-            {
-                OnClose();
-                OnCancel();
-                return TRUE;
-            }
         }
+
+        ////按下Ctrl键时
+        //if (GetKeyState(VK_CONTROL) & 0x80)
+        //{
+        //    if (pMsg->wParam == VK_UP)
+        //    {
+        //        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_UP, 0);
+        //        return TRUE;
+        //    }
+        //    if (pMsg->wParam == VK_DOWN)
+        //    {
+        //        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
+        //        return TRUE;
+        //    }
+        //    if (pMsg->wParam == 'L')
+        //    {
+        //        OnClose();
+        //        OnCancel();
+        //        return TRUE;
+        //    }
+        //}
         if (pMsg->wParam == 'F')        //按F键快速查找
         {
             m_search_edit.SetFocus();
@@ -491,4 +504,18 @@ void CFloatPlaylistDlg::OnLocateToCurrent()
 {
     // TODO: 在此添加命令处理程序代码
     m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+}
+
+
+afx_msg LRESULT CFloatPlaylistDlg::OnMainWindowActivated(WPARAM wParam, LPARAM lParam)
+{
+    /*
+    * WM_MAIN_WINDOW_ACTIVATED消息是当已经有一个MusicPlayer2进程在运行时尝试启动一个新的MusicPlayer2进程时发送
+    * 由于浮动播放列表和主窗口的类名相同（因为主窗口和浮动播放列表使用的是同一对话框资源），因此主窗口可能会不能正常激活，
+    * 在收到此消息时重新激活一次主窗口，并将WM_MAIN_WINDOW_ACTIVATED消息转发给主窗口
+    */
+    theApp.m_pMainWnd->ShowWindow(SW_SHOWNORMAL);		//激活并显示窗口
+    theApp.m_pMainWnd->SetForegroundWindow();		//将窗口设置为焦点
+    theApp.m_pMainWnd->SendMessage(WM_MAIN_WINDOW_ACTIVATED);
+    return 0;
 }

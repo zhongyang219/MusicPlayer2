@@ -468,6 +468,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
     ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
     ini.WriteBool(L"media_lib", L"show_playlist_tooltip", theApp.m_media_lib_setting_data.show_playlist_tooltip);
+    ini.WriteBool(L"media_lib", L"float_playlist_follow_main_wnd", theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd);
     ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
     ini.WriteBool(L"media_lib", L"write_id3_v2_3", theApp.m_media_lib_setting_data.write_id3_v2_3);
@@ -647,6 +648,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
     theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
     theApp.m_media_lib_setting_data.show_playlist_tooltip = ini.GetBool(L"media_lib", L"show_playlist_tooltip", true);
+    theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd = ini.GetBool(L"media_lib", L"float_playlist_follow_main_wnd", true);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
     theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
     theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);
@@ -1384,7 +1386,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     }
 
     //设置“视图”菜单下的复选标记
-    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist || theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_USE_STANDARD_TITLE_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_window_frame ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
@@ -4768,6 +4770,22 @@ void CMusicPlayerDlg::OnFloatPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = !theApp.m_nc_setting_data.playlist_btn_for_float_playlist;
+    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    {
+        //改为浮动播放列表时，如果显示了停靠的播放列表，则显示浮动播放列表，隐藏停靠播放列表
+        if (theApp.m_ui_data.show_playlist)
+        {
+            ShowFloatPlaylist();
+        }
+    }
+    else
+    {
+        //改为停靠的播放列表时，如果显示了浮动的播放列表，则显示停靠的播放列表
+        if (theApp.m_nc_setting_data.float_playlist)
+        {
+            ShowHidePlaylist();
+        }
+    }
 }
 
 
@@ -6056,19 +6074,22 @@ void CMusicPlayerDlg::OnMove(int x, int y)
 
 void CMusicPlayerDlg::MoveFloatPlaylistPos()
 {
-    CRect rect;
-    GetWindowRect(rect);
-    if (rect.IsRectEmpty() || (rect.right < 0 && rect.top < 0))
-        return;
-    m_float_playlist_pos.x = rect.right;
-    m_float_playlist_pos.y = rect.top;
-    if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
     {
-        if (IsFloatPlaylistExist() && !m_pFloatPlaylistDlg->IsZoomed())
+        CRect rect;
+        GetWindowRect(rect);
+        if (rect.IsRectEmpty() || (rect.right < 0 && rect.top < 0))
+            return;
+        m_float_playlist_pos.x = rect.right;
+        m_float_playlist_pos.y = rect.top;
+        if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
         {
-            CRect float_playlist_rect;
-            m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
-            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+            if (IsFloatPlaylistExist() && !m_pFloatPlaylistDlg->IsZoomed())
+            {
+                CRect float_playlist_rect;
+                m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
+                m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+            }
         }
     }
 }

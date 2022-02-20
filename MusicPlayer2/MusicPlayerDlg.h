@@ -50,6 +50,7 @@ public:
     friend class CMusicPlayerCmdHelper;
     friend class CUIWindow;
     friend class CPlayerUIBase;
+    friend class CFloatPlaylistDlg;
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME
