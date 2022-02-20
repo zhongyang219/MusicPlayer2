@@ -201,8 +201,11 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    ModifyStyle(WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0);
-    ModifyStyleEx(WS_EX_APPWINDOW, 0);
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+    {
+        ModifyStyle(WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0);
+        ModifyStyleEx(WS_EX_APPWINDOW, 0);
+    }
     SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 

@@ -61,4 +61,5 @@ public:
     afx_msg void OnBnClickedRefreshMediaLibButton();
     afx_msg void OnBnClickedDisableDeleteFromDiskCheck();
     afx_msg void OnBnClickedShowPlaylistTooltipCheck();
+    afx_msg void OnBnClickedFloatPlaylistFollowMainWndCheck();
 };

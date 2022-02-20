@@ -463,6 +463,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
     ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
     ini.WriteBool(L"media_lib", L"show_playlist_tooltip", theApp.m_media_lib_setting_data.show_playlist_tooltip);
+    ini.WriteBool(L"media_lib", L"float_playlist_follow_main_wnd", theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd);
     ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
     ini.WriteBool(L"media_lib", L"write_id3_v2_3", theApp.m_media_lib_setting_data.write_id3_v2_3);
@@ -638,6 +639,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
     theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
     theApp.m_media_lib_setting_data.show_playlist_tooltip = ini.GetBool(L"media_lib", L"show_playlist_tooltip", true);
+    theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd = ini.GetBool(L"media_lib", L"float_playlist_follow_main_wnd", true);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
     theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
     theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);
@@ -6057,19 +6059,22 @@ void CMusicPlayerDlg::OnMove(int x, int y)
 
 void CMusicPlayerDlg::MoveFloatPlaylistPos()
 {
-    CRect rect;
-    GetWindowRect(rect);
-    if (rect.IsRectEmpty() || (rect.right < 0 && rect.top < 0))
-        return;
-    m_float_playlist_pos.x = rect.right;
-    m_float_playlist_pos.y = rect.top;
-    if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
     {
-        if (IsFloatPlaylistExist() && !m_pFloatPlaylistDlg->IsZoomed())
+        CRect rect;
+        GetWindowRect(rect);
+        if (rect.IsRectEmpty() || (rect.right < 0 && rect.top < 0))
+            return;
+        m_float_playlist_pos.x = rect.right;
+        m_float_playlist_pos.y = rect.top;
+        if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
         {
-            CRect float_playlist_rect;
-            m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
-            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+            if (IsFloatPlaylistExist() && !m_pFloatPlaylistDlg->IsZoomed())
+            {
+                CRect float_playlist_rect;
+                m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
+                m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+            }
         }
     }
 }
