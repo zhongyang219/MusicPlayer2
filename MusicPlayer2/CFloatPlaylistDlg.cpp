@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CFloatPlaylistDlg.h"
 #include "afxdialogex.h"
+#include "MusicPlayerDlg.h"
 
 
 // CFloatPlaylistDlg 对话框
@@ -412,31 +413,34 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
     // TODO: 在此添加专用代码和/或调用基类
     if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
     {
-        //按下Ctrl键时
-        if (GetKeyState(VK_CONTROL) & 0x80)
+        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
         {
-            if (pMsg->wParam == VK_UP)
-            {
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_UP, 0);
+            //响应Accelerator中设置的快捷键
+            CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+            if (main_wnd != nullptr && main_wnd->m_hAccel && ::TranslateAccelerator(m_hWnd, main_wnd->m_hAccel, pMsg))
                 return TRUE;
-            }
-            if (pMsg->wParam == VK_DOWN)
-            {
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
-                return TRUE;
-            }
-            if (pMsg->wParam == 'L')
-            {
-                OnClose();
-                OnCancel();
-                return TRUE;
-            }
-            if (pMsg->wParam == 'K')
-            {
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST, 0);
-                return TRUE;
-            }
         }
+
+        ////按下Ctrl键时
+        //if (GetKeyState(VK_CONTROL) & 0x80)
+        //{
+        //    if (pMsg->wParam == VK_UP)
+        //    {
+        //        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_UP, 0);
+        //        return TRUE;
+        //    }
+        //    if (pMsg->wParam == VK_DOWN)
+        //    {
+        //        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
+        //        return TRUE;
+        //    }
+        //    if (pMsg->wParam == 'L')
+        //    {
+        //        OnClose();
+        //        OnCancel();
+        //        return TRUE;
+        //    }
+        //}
         if (pMsg->wParam == 'F')        //按F键快速查找
         {
             m_search_edit.SetFocus();

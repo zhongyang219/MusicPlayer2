@@ -1371,7 +1371,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     }
 
     //设置“视图”菜单下的复选标记
-    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist || theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_USE_STANDARD_TITLE_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_window_frame ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
