@@ -4798,13 +4798,13 @@ void CMusicPlayerDlg::OnFloatedPlaylist()
 
 LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 {
-    //CRect rect;
-    //if (m_pFloatPlaylistDlg != nullptr)
-    //{
-    //    ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
-    //    if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
-    //        m_float_playlist_pos = rect.TopLeft();
-    //}
+    CRect rect;
+    if (!theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd && IsFloatPlaylistExist())
+    {
+        ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
+        if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
+            m_float_playlist_pos = rect.TopLeft();
+    }
 
     return 0;
 }
