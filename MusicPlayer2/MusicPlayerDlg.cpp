@@ -1192,8 +1192,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     {
         if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
         {
-            if (m_pFloatPlaylistDlg->IsIconic() || m_pFloatPlaylistDlg->IsZoomed())
-                m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
+            m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
             MoveFloatPlaylistPos();
         }
         m_pFloatPlaylistDlg->UpdateStyles();
