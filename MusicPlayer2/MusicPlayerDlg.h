@@ -121,7 +121,7 @@ protected:
     CSoundEffectDlg* m_pSoundEffecDlg;		//音效设定对话框（非模态对话框）
     CFormatConvertDlg* m_pFormatConvertDlg;		//格式转换对话框（非模态对话框）
     CFloatPlaylistDlg* m_pFloatPlaylistDlg;		//浮动播放列表对话框
-    CPoint m_float_playlist_pos;				//浮动播放列表的位置
+    CPoint m_float_playlist_pos{ INT_MAX, INT_MAX };				//浮动播放列表的位置
 
     CWinThread* m_pThread;		//执行在线查看的线程
     static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
@@ -244,6 +244,8 @@ protected:
 
     bool IsFloatPlaylistExist();
     bool MoveFloatPlaylistPos();
+
+    static bool IsPointValid(CPoint);
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();

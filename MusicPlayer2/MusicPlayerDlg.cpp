@@ -1532,8 +1532,10 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
     m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
     if (!MoveFloatPlaylistPos())
     {
-        if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
+        if (IsPointValid(m_float_playlist_pos))
             m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        else
+            m_pFloatPlaylistDlg->CenterWindow();
     }
 
     theApp.m_ui_data.show_playlist = false;
@@ -6100,6 +6102,11 @@ bool CMusicPlayerDlg::MoveFloatPlaylistPos()
         }
     }
     return false;
+}
+
+bool CMusicPlayerDlg::IsPointValid(CPoint point)
+{
+    return (point.x != INT_MAX && point.y != INT_MAX && point.x != INT_MIN && point.y != INT_MAX);
 }
 
 afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam)
