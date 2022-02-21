@@ -421,7 +421,7 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
         {
             //响应Accelerator中设置的快捷键
             CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-            if (main_wnd != nullptr && main_wnd->m_hAccel && ::TranslateAccelerator(m_hWnd, main_wnd->m_hAccel, pMsg))
+            if (main_wnd != nullptr && main_wnd->GetAccel() && ::TranslateAccelerator(m_hWnd, main_wnd->GetAccel(), pMsg))
                 return TRUE;
         }
 

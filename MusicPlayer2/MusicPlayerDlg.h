@@ -50,7 +50,6 @@ public:
     friend class CMusicPlayerCmdHelper;
     friend class CUIWindow;
     friend class CPlayerUIBase;
-    friend class CFloatPlaylistDlg;
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -62,6 +61,7 @@ protected:
 
 public:
     CMenu* m_pCurMenu{};       //当前弹出的菜单
+    HACCEL GetAccel() const { return m_hAccel; }
 
 // 实现
 protected:
@@ -83,7 +83,7 @@ protected:
 #endif
 
     CFindDlg m_findDlg;		//查找对话框
-    HACCEL m_hAccel;
+    HACCEL m_hAccel{};
 
     wstring m_cmdLine;	//命令行参数
 

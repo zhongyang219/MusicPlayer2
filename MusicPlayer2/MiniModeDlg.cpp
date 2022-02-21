@@ -345,14 +345,21 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
             return TRUE;
         }
 
+        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
+        {
+            //响应Accelerator中设置的快捷键
+            CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+            if (main_wnd != nullptr && main_wnd->GetAccel() && ::TranslateAccelerator(m_hWnd, main_wnd->GetAccel(), pMsg))
+                return TRUE;
+        }
     }
 
-    //将此窗口的其他键盘消息转发给主窗口
-    if (pMsg->message == WM_KEYDOWN)
-    {
-        ::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, pMsg->wParam, pMsg->lParam);
-        return TRUE;
-    }
+    ////将此窗口的其他键盘消息转发给主窗口
+    //if (pMsg->message == WM_KEYDOWN)
+    //{
+    //    ::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, pMsg->wParam, pMsg->lParam);
+    //    return TRUE;
+    //}
 
     if (pMsg->message == WM_MOUSEMOVE)
     {
@@ -602,6 +609,7 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         || command == ID_ADD_TO_OTHER_PLAYLIST)
     {
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);
+        return TRUE;
     }
 
     return CDialogEx::OnCommand(wParam, lParam);
