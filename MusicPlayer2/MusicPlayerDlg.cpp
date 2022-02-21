@@ -1373,7 +1373,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     }
 
     //设置“视图”菜单下的复选标记
-    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist || theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_USE_STANDARD_TITLE_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_window_frame ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
@@ -1385,7 +1385,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //迷你模式下禁用全屏模式
     //pMenu->EnableMenuItem(ID_MINI_MODE, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));            //全屏时禁止进入迷你模式
 
-    pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
 
     int ui_selected = GetUiSelected();
     pMenu->CheckMenuRadioItem(ID_SWITCH_UI + 1, ID_SWITCH_UI + m_ui_list.size(), ID_SWITCH_UI + 1 + ui_selected, MF_BYCOMMAND | MF_CHECKED);
@@ -1545,6 +1545,7 @@ void CMusicPlayerDlg::HideFloatPlaylist()
 {
     OnFloatPlaylistClosed(0, 0);
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
+    theApp.m_nc_setting_data.float_playlist = false;
 }
 
 void CMusicPlayerDlg::ShowHidePlaylist()
@@ -4606,10 +4607,11 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 void CMusicPlayerDlg::OnShowPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
-        ShowHideFloatPlaylist();
-    else
-        ShowHidePlaylist();
+    //if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    //    ShowHideFloatPlaylist();
+    //else
+    //    ShowHidePlaylist();
+    ShowHidePlaylist();
 }
 
 
@@ -4754,23 +4756,24 @@ void CMusicPlayerDlg::OnAlwaysOnTop()
 void CMusicPlayerDlg::OnFloatPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = !theApp.m_nc_setting_data.playlist_btn_for_float_playlist;
-    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
-    {
-        //改为浮动播放列表时，如果显示了停靠的播放列表，则显示浮动播放列表，隐藏停靠播放列表
-        if (theApp.m_ui_data.show_playlist)
-        {
-            ShowFloatPlaylist();
-        }
-    }
-    else
-    {
-        //改为停靠的播放列表时，如果显示了浮动的播放列表，则显示停靠的播放列表
-        if (theApp.m_nc_setting_data.float_playlist)
-        {
-            ShowHidePlaylist();
-        }
-    }
+    //theApp.m_nc_setting_data.playlist_btn_for_float_playlist = !theApp.m_nc_setting_data.playlist_btn_for_float_playlist;
+    //if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    //{
+    //    //改为浮动播放列表时，如果显示了停靠的播放列表，则显示浮动播放列表，隐藏停靠播放列表
+    //    if (theApp.m_ui_data.show_playlist)
+    //    {
+    //        ShowFloatPlaylist();
+    //    }
+    //}
+    //else
+    //{
+    //    //改为停靠的播放列表时，如果显示了浮动的播放列表，则显示停靠的播放列表
+    //    if (theApp.m_nc_setting_data.float_playlist)
+    //    {
+    //        ShowHidePlaylist();
+    //    }
+    //}
+    ShowHideFloatPlaylist();
 }
 
 

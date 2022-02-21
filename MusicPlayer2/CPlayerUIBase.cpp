@@ -363,7 +363,10 @@ void CPlayerUIBase::LButtonUp(CPoint point)
 
             case BTN_SHOW_PLAYLIST:
                 m_buttons[BTN_SHOW_PLAYLIST].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
+                if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+                    theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST);
+                else
+                    theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
                 return;
 
             case BTN_SELECT_FOLDER:
