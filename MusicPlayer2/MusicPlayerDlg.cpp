@@ -4781,6 +4781,9 @@ void CMusicPlayerDlg::OnDockedPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = false;
+    auto ui{ GetCurrentUi() };
+    if (ui != nullptr)
+        ui->UpdatePlaylistBtnToolTip();
 }
 
 
@@ -4788,6 +4791,9 @@ void CMusicPlayerDlg::OnFloatedPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = true;
+    auto ui{ GetCurrentUi() };
+    if (ui != nullptr)
+        ui->UpdatePlaylistBtnToolTip();
 }
 
 LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)

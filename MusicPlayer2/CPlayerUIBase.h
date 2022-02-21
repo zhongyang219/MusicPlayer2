@@ -73,6 +73,7 @@ public:
     virtual void UpdateFullScreenTip() override;
     void UpdateTitlebarBtnToolTip();       //更新标题栏上的最大化/还原按钮的鼠标提示
     virtual void UpdateVolumeToolTip();
+    void UpdatePlaylistBtnToolTip();
 
     virtual bool SetCursor() override;
     virtual void MouseLeave() override;

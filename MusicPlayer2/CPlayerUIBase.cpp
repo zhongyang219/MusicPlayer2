@@ -1059,6 +1059,14 @@ void CPlayerUIBase::UpdateVolumeToolTip()
     m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetClassId() * 100);
 }
 
+void CPlayerUIBase::UpdatePlaylistBtnToolTip()
+{
+    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+K)")));
+    else
+        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+L)")));
+}
+
 void CPlayerUIBase::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)
@@ -2142,7 +2150,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
-    AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+L)")));
+    AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? _T(" (Ctrl+K)") : _T(" (Ctrl+L)")));
     AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, _T(" (Ctrl+T)")));
     AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
     AddMouseToolTip(BTN_COVER, m_cover_tip);
