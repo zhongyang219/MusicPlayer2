@@ -1530,8 +1530,15 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
     m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected);
     m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, this);
     m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
-    if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
-        m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+    {
+        MoveFloatPlaylistPos();
+    }
+    else
+    {
+        if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
+            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    }
 
     theApp.m_ui_data.show_playlist = false;
     SetPlaylistVisible();
