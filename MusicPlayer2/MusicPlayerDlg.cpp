@@ -1669,6 +1669,10 @@ void CMusicPlayerDlg::InitUiMenu()
                     str_short_key.Format(_T("\tCtrl+%d"), i + 1);
                     str_name += str_short_key;
                 }
+                else if (i == 9)    //第10个界面分配快捷键C+0
+                {
+                    str_name += _T("\tCtrl+0");
+                }
                 if (!user_ui_separator_added)
                 {
                     CUserUi* user_ui = dynamic_cast<CUserUi*>(m_ui_list[i].get());
@@ -2553,6 +2557,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                         SelectUi(ui_index);
                         return TRUE;
                     }
+                }
+                else if (pMsg->wParam == '0')   //Ctrl+0切换第10个界面
+                {
+                    SelectUi(9);
+                    return TRUE;
                 }
             }
             if (pMsg->wParam == 'M')    //按M键设置循环模式
