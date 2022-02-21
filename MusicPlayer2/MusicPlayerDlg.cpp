@@ -1530,11 +1530,7 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
     m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected);
     m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, this);
     m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
-    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
-    {
-        MoveFloatPlaylistPos();
-    }
-    else
+    if (!MoveFloatPlaylistPos())
     {
         if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
             m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -4806,7 +4802,7 @@ void CMusicPlayerDlg::OnFloatedPlaylist()
 LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 {
     CRect rect;
-    if (!theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd && IsFloatPlaylistExist())
+    if (IsFloatPlaylistExist())
     {
         ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
         if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
@@ -6073,14 +6069,14 @@ void CMusicPlayerDlg::OnMove(int x, int y)
 }
 
 
-void CMusicPlayerDlg::MoveFloatPlaylistPos()
+bool CMusicPlayerDlg::MoveFloatPlaylistPos()
 {
-    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd && !theApp.m_ui_data.full_screen && !IsZoomed() && !IsIconic())
     {
         CRect rect;
         GetWindowRect(rect);
         if (rect.IsRectEmpty() || (rect.right < 0 && rect.top < 0))
-            return;
+            return false;
         m_float_playlist_pos.x = rect.right;
         m_float_playlist_pos.y = rect.top;
         if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
@@ -6090,9 +6086,11 @@ void CMusicPlayerDlg::MoveFloatPlaylistPos()
                 CRect float_playlist_rect;
                 m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
                 m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+                return true;
             }
         }
     }
+    return false;
 }
 
 afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam)

@@ -243,7 +243,7 @@ protected:
     void MoveDesktopLyricWindowPos();
 
     bool IsFloatPlaylistExist();
-    void MoveFloatPlaylistPos();
+    bool MoveFloatPlaylistPos();
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
