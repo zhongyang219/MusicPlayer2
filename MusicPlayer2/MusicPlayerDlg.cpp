@@ -1188,10 +1188,15 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     if (optionDlg.m_tab3_dlg.IsAutoRunModified())
         theApp.SetAutoRun(optionDlg.m_tab3_dlg.m_auto_run);
 
-    if (float_playlist_follow_main_wnd_changed)
+    if (float_playlist_follow_main_wnd_changed && IsFloatPlaylistExist())
     {
         if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+        {
+            if (m_pFloatPlaylistDlg->IsIconic() || m_pFloatPlaylistDlg->IsZoomed())
+                m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
             MoveFloatPlaylistPos();
+        }
+        m_pFloatPlaylistDlg->UpdateStyles();
     }
 
     SaveConfig();       //将设置写入到ini文件
@@ -1535,13 +1540,12 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
 {
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
     m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected);
+    m_pFloatPlaylistDlg->SetInitPoint(m_float_playlist_pos);
     m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, this);
     m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
     if (!MoveFloatPlaylistPos())
     {
-        if (IsPointValid(m_float_playlist_pos))
-            m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-        else
+        if (!IsPointValid(m_float_playlist_pos))
             m_pFloatPlaylistDlg->CenterWindow();
     }
 
@@ -1578,6 +1582,11 @@ void CMusicPlayerDlg::ShowHidePlaylist()
 
 void CMusicPlayerDlg::ShowHideFloatPlaylist()
 {
+    if (IsFloatPlaylistExist() && m_pFloatPlaylistDlg->IsIconic())
+    {
+        m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
+        return;
+    }
     theApp.m_nc_setting_data.float_playlist = !theApp.m_nc_setting_data.float_playlist;
     if (theApp.m_nc_setting_data.float_playlist)
     {

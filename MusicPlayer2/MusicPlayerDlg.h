@@ -195,6 +195,8 @@ public:
     void ShowPlayList(bool highlight_visible = true);
     void SetMenuState(CMenu* pMenu);
 
+    static bool IsPointValid(CPoint);
+
 protected:
     void SetPlayListColor(bool highlight_visible = true);
     void SwitchTrack();		//当切换正在播放的歌曲时的处理
@@ -244,8 +246,6 @@ protected:
 
     bool IsFloatPlaylistExist();
     bool MoveFloatPlaylistPos();
-
-    static bool IsPointValid(CPoint);
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();

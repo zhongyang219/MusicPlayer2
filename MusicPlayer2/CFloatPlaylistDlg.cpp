@@ -157,6 +157,25 @@ void CFloatPlaylistDlg::EnableControl(bool enable)
     m_playlist_toolbar.Invalidate();
 }
 
+void CFloatPlaylistDlg::UpdateStyles()
+{
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+    {
+        ModifyStyle(WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0);
+        ModifyStyleEx(WS_EX_APPWINDOW, 0);
+    }
+    else
+    {
+        ModifyStyle(0, WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+        ModifyStyleEx(0, WS_EX_APPWINDOW);
+    }
+}
+
+void CFloatPlaylistDlg::SetInitPoint(CPoint point)
+{
+    m_init_point = point;
+}
+
 bool CFloatPlaylistDlg::Initilized() const
 {
     return m_playlist_ctrl.GetSafeHwnd() != NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
@@ -201,18 +220,17 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
-    {
-        ModifyStyle(WS_MINIMIZEBOX | WS_MAXIMIZEBOX, 0);
-        ModifyStyleEx(WS_EX_APPWINDOW, 0);
-    }
+    UpdateStyles();
     SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 
     m_set_path_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
 
-    //设置窗口大小
-    SetWindowPos(nullptr, 0, 0, theApp.m_nc_setting_data.playlist_size.cx, theApp.m_nc_setting_data.playlist_size.cy, SWP_NOMOVE | SWP_NOZORDER);
+    //设置窗口大小和位置
+    if (CMusicPlayerDlg::IsPointValid(m_init_point))
+        SetWindowPos(nullptr, m_init_point.x, m_init_point.y, theApp.m_nc_setting_data.playlist_size.cx, theApp.m_nc_setting_data.playlist_size.cy, SWP_NOZORDER);
+    else
+        SetWindowPos(nullptr, 0, 0, theApp.m_nc_setting_data.playlist_size.cx, theApp.m_nc_setting_data.playlist_size.cy, SWP_NOMOVE | SWP_NOZORDER);
 
     CRect rect;
     GetClientRect(rect);

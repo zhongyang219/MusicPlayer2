@@ -32,6 +32,8 @@ public:
     void GetPlaylistItemSelected();
     void SetDragEnable();
     void EnableControl(bool enable);
+    void UpdateStyles();
+    void SetInitPoint(CPoint point);
 
 private:
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
@@ -47,6 +49,8 @@ private:
     bool m_searched{ false };		//播放列表是否处于搜索状态
     int& m_item_selected;		//播放列表中鼠标选中的项目
     vector<int>& m_items_selected;
+
+    CPoint m_init_point{ INT_MAX, INT_MAX };
 
 private:
     bool Initilized() const;
