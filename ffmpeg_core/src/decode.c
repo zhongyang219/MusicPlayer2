@@ -51,8 +51,50 @@ int reopen_decoder(MusicHandle* handle) {
     return FFMPEG_CORE_ERR_OK;
 }
 
+int decode_audio_internal(MusicHandle* handle, char* writed, AVFrame* frame) {
+    if (!handle || !writed || !frame) return FFMPEG_CORE_ERR_NULLPTR;
+    int re = 0;
+    re = avcodec_receive_frame(handle->decoder, frame);
+    if (re >= 0) {
+        if (handle->first_pts == INT64_MIN) {
+            handle->first_pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
+            av_log(NULL, AV_LOG_VERBOSE, "first_pts: %s\n", av_ts2timestr(handle->first_pts, &AV_TIME_BASE_Q));
+            if (handle->only_part) {
+                // 定位到开始位置
+                if (handle->part_start_pts > 0) {
+                    handle->is_seek = 1;
+                    handle->seek_pos = handle->part_start_pts;
+                }
+            }
+        }
+        if (handle->set_new_pts) {
+            av_log(NULL, AV_LOG_VERBOSE, "pts: %s\n", av_ts2timestr(frame->pts, &handle->is->time_base));
+            handle->pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX) - handle->first_pts;
+            handle->end_pts = handle->pts;
+            handle->set_new_pts = 0;
+        }
+        // 整段数据在结束位置之后，跳过
+        if (handle->only_part && (frame->pts - handle->first_pts) >= handle->part_end_pts) {
+            handle->is_eof = 1;
+            goto end;
+        }
+        re = convert_samples_and_add_to_fifo(handle, frame, writed);
+        goto end;
+    } else if (re == AVERROR(EAGAIN)) {
+        // 数据不够，继续读取
+        re = FFMPEG_CORE_ERR_OK;
+        goto end;
+    } else if (re == AVERROR_EOF) {
+        handle->is_eof = 1;
+        re = FFMPEG_CORE_ERR_OK;
+        goto end;
+    }
+end:
+    return re;
+}
+
 int decode_audio(MusicHandle* handle, char* writed) {
-    if (!handle | !writed) return FFMPEG_CORE_ERR_NULLPTR;
+    if (!handle || !writed) return FFMPEG_CORE_ERR_NULLPTR;
     AVPacket pkt;
     AVFrame* frame = av_frame_alloc();
     *writed = 0;
@@ -61,6 +103,12 @@ int decode_audio(MusicHandle* handle, char* writed) {
     }
     int re = FFMPEG_CORE_ERR_OK;
     while (1) {
+        if ((re = decode_audio_internal(handle, writed, frame))) {
+            goto end;
+        }
+        if (*writed) {
+            goto end;
+        }
         if ((re = av_read_frame(handle->fmt, &pkt)) < 0) {
             if (re == AVERROR_EOF) {
                 handle->is_eof = 1;
@@ -76,45 +124,19 @@ int decode_audio(MusicHandle* handle, char* writed) {
         }
         handle->last_pkt_pts = av_rescale_q_rnd(pkt.pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
         if ((re = avcodec_send_packet(handle->decoder, &pkt)) < 0) {
+            if (re == AVERROR(EAGAIN)) {
+                re = 0;
+                av_packet_unref(&pkt);
+                continue;
+            }
             av_packet_unref(&pkt);
             goto end;
         }
         av_packet_unref(&pkt);
-        re = avcodec_receive_frame(handle->decoder, frame);
-        if (re >= 0) {
-            if (handle->first_pts == INT64_MIN) {
-                handle->first_pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
-                av_log(NULL, AV_LOG_VERBOSE, "first_pts: %s\n", av_ts2timestr(handle->first_pts, &AV_TIME_BASE_Q));
-                if (handle->only_part) {
-                    // 定位到开始位置
-                    if (handle->part_start_pts > 0) {
-                        handle->is_seek = 1;
-                        handle->seek_pos = handle->part_start_pts;
-                    }
-                }
-            }
-            if (handle->set_new_pts) {
-                av_log(NULL, AV_LOG_VERBOSE, "pts: %s\n", av_ts2timestr(frame->pts, &handle->is->time_base));
-                handle->pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX) - handle->first_pts;
-                handle->end_pts = handle->pts;
-                handle->set_new_pts = 0;
-            }
-            // 整段数据在结束位置之后，跳过
-            if (handle->only_part && (frame->pts - handle->first_pts) >= handle->part_end_pts) {
-                handle->is_eof = 1;
-                goto end;
-            }
-            re = convert_samples_and_add_to_fifo(handle, frame, writed);
-            goto end;
-        } else if (re == AVERROR(EAGAIN)) {
-            // 数据不够，继续读取
-            re = FFMPEG_CORE_ERR_OK;
-            continue;
-        } else if (re == AVERROR_EOF) {
-            handle->is_eof = 1;
-            re = FFMPEG_CORE_ERR_OK;
+        if ((re = decode_audio_internal(handle, writed, frame))) {
             goto end;
         }
+        if (*writed) break;
     }
 end:
     if (frame) av_frame_free(&frame);

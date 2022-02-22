@@ -198,6 +198,7 @@ DWORD WINAPI event_loop(LPVOID handle) {
             if (av_audio_fifo_size(h->buffer) < buffered_size) {
                 int re = decode_audio(handle, &writed);
                 if (re) {
+                    av_log(NULL, AV_LOG_WARNING, "%s %i: Error when calling decode_audio: %s (%i).\n", __FILE__, __LINE__, av_err2str(re), re);
                     h->have_err = 1;
                     h->err = re;
                     av_log(NULL, AV_LOG_VERBOSE, "Try to reopen file \"%s\".\n", h->url);
