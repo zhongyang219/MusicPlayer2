@@ -1096,6 +1096,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background
                                      || theApp.m_app_setting_data.use_desktop_background != optionDlg.m_tab2_dlg.m_data.use_desktop_background };
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
+    bool float_playlist_follow_main_wnd_changed{theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != optionDlg.m_media_lib_dlg.m_data.float_playlist_follow_main_wnd };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1195,6 +1196,16 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     if (optionDlg.m_tab3_dlg.IsAutoRunModified())
         theApp.SetAutoRun(optionDlg.m_tab3_dlg.m_auto_run);
+
+    if (float_playlist_follow_main_wnd_changed && IsFloatPlaylistExist())
+    {
+        if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+        {
+            m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
+            MoveFloatPlaylistPos();
+        }
+        m_pFloatPlaylistDlg->UpdateStyles();
+    }
 
     SaveConfig();       //将设置写入到ini文件
     theApp.SaveConfig();
@@ -1386,7 +1397,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     }
 
     //设置“视图”菜单下的复选标记
-    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist || theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_USE_STANDARD_TITLE_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_window_frame ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
@@ -1398,7 +1409,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //迷你模式下禁用全屏模式
     //pMenu->EnableMenuItem(ID_MINI_MODE, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));            //全屏时禁止进入迷你模式
 
-    pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_FLOAT_PLAYLIST, MF_BYCOMMAND | (theApp.m_nc_setting_data.float_playlist ? MF_CHECKED : MF_UNCHECKED));
 
     int ui_selected = GetUiSelected();
     pMenu->CheckMenuRadioItem(ID_SWITCH_UI + 1, ID_SWITCH_UI + m_ui_list.size(), ID_SWITCH_UI + 1 + ui_selected, MF_BYCOMMAND | MF_CHECKED);
@@ -1541,10 +1552,14 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
 {
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
     m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected);
+    m_pFloatPlaylistDlg->SetInitPoint(m_float_playlist_pos);
     m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, this);
     m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
-    if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
-        m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    if (!MoveFloatPlaylistPos())
+    {
+        if (!IsPointValid(m_float_playlist_pos))
+            m_pFloatPlaylistDlg->CenterWindow();
+    }
 
     theApp.m_ui_data.show_playlist = false;
     SetPlaylistVisible();
@@ -1558,6 +1573,7 @@ void CMusicPlayerDlg::HideFloatPlaylist()
 {
     OnFloatPlaylistClosed(0, 0);
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
+    theApp.m_nc_setting_data.float_playlist = false;
 }
 
 void CMusicPlayerDlg::ShowHidePlaylist()
@@ -1578,6 +1594,11 @@ void CMusicPlayerDlg::ShowHidePlaylist()
 
 void CMusicPlayerDlg::ShowHideFloatPlaylist()
 {
+    if (IsFloatPlaylistExist() && m_pFloatPlaylistDlg->IsIconic())
+    {
+        m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
+        return;
+    }
     theApp.m_nc_setting_data.float_playlist = !theApp.m_nc_setting_data.float_playlist;
     if (theApp.m_nc_setting_data.float_playlist)
     {
@@ -1677,6 +1698,10 @@ void CMusicPlayerDlg::InitUiMenu()
                     CString str_short_key;
                     str_short_key.Format(_T("\tCtrl+%d"), i + 1);
                     str_name += str_short_key;
+                }
+                else if (i == 9)    //第10个界面分配快捷键C+0
+                {
+                    str_name += _T("\tCtrl+0");
                 }
                 if (!user_ui_separator_added)
                 {
@@ -2562,6 +2587,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                         SelectUi(ui_index);
                         return TRUE;
                     }
+                }
+                else if (pMsg->wParam == '0')   //Ctrl+0切换第10个界面
+                {
+                    SelectUi(9);
+                    return TRUE;
                 }
             }
             if (pMsg->wParam == 'M')    //按M键设置循环模式
@@ -4621,10 +4651,11 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 void CMusicPlayerDlg::OnShowPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
-        ShowHideFloatPlaylist();
-    else
-        ShowHidePlaylist();
+    //if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    //    ShowHideFloatPlaylist();
+    //else
+    //    ShowHidePlaylist();
+    ShowHidePlaylist();
 }
 
 
@@ -4769,23 +4800,24 @@ void CMusicPlayerDlg::OnAlwaysOnTop()
 void CMusicPlayerDlg::OnFloatPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = !theApp.m_nc_setting_data.playlist_btn_for_float_playlist;
-    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
-    {
-        //改为浮动播放列表时，如果显示了停靠的播放列表，则显示浮动播放列表，隐藏停靠播放列表
-        if (theApp.m_ui_data.show_playlist)
-        {
-            ShowFloatPlaylist();
-        }
-    }
-    else
-    {
-        //改为停靠的播放列表时，如果显示了浮动的播放列表，则显示停靠的播放列表
-        if (theApp.m_nc_setting_data.float_playlist)
-        {
-            ShowHidePlaylist();
-        }
-    }
+    //theApp.m_nc_setting_data.playlist_btn_for_float_playlist = !theApp.m_nc_setting_data.playlist_btn_for_float_playlist;
+    //if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    //{
+    //    //改为浮动播放列表时，如果显示了停靠的播放列表，则显示浮动播放列表，隐藏停靠播放列表
+    //    if (theApp.m_ui_data.show_playlist)
+    //    {
+    //        ShowFloatPlaylist();
+    //    }
+    //}
+    //else
+    //{
+    //    //改为停靠的播放列表时，如果显示了浮动的播放列表，则显示停靠的播放列表
+    //    if (theApp.m_nc_setting_data.float_playlist)
+    //    {
+    //        ShowHidePlaylist();
+    //    }
+    //}
+    ShowHideFloatPlaylist();
 }
 
 
@@ -4793,6 +4825,9 @@ void CMusicPlayerDlg::OnDockedPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = false;
+    auto ui{ GetCurrentUi() };
+    if (ui != nullptr)
+        ui->UpdatePlaylistBtnToolTip();
 }
 
 
@@ -4800,17 +4835,20 @@ void CMusicPlayerDlg::OnFloatedPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = true;
+    auto ui{ GetCurrentUi() };
+    if (ui != nullptr)
+        ui->UpdatePlaylistBtnToolTip();
 }
 
 LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
 {
-    //CRect rect;
-    //if (m_pFloatPlaylistDlg != nullptr)
-    //{
-    //    ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
-    //    if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
-    //        m_float_playlist_pos = rect.TopLeft();
-    //}
+    CRect rect;
+    if (IsFloatPlaylistExist())
+    {
+        ::GetWindowRect(m_pFloatPlaylistDlg->GetSafeHwnd(), rect);
+        if (!m_pFloatPlaylistDlg->IsIconic() && !m_pFloatPlaylistDlg->IsZoomed())
+            m_float_playlist_pos = rect.TopLeft();
+    }
 
     return 0;
 }
@@ -6072,14 +6110,14 @@ void CMusicPlayerDlg::OnMove(int x, int y)
 }
 
 
-void CMusicPlayerDlg::MoveFloatPlaylistPos()
+bool CMusicPlayerDlg::MoveFloatPlaylistPos()
 {
-    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd && !theApp.m_ui_data.full_screen && !IsZoomed() && !IsIconic())
     {
         CRect rect;
         GetWindowRect(rect);
         if (rect.IsRectEmpty() || (rect.right < 0 && rect.top < 0))
-            return;
+            return false;
         m_float_playlist_pos.x = rect.right;
         m_float_playlist_pos.y = rect.top;
         if (m_float_playlist_pos.x != 0 && m_float_playlist_pos.y != 0)
@@ -6089,9 +6127,16 @@ void CMusicPlayerDlg::MoveFloatPlaylistPos()
                 CRect float_playlist_rect;
                 m_pFloatPlaylistDlg->GetWindowRect(float_playlist_rect);
                 m_pFloatPlaylistDlg->SetWindowPos(nullptr, m_float_playlist_pos.x, m_float_playlist_pos.y, float_playlist_rect.Width(), rect.Height(), SWP_NOACTIVATE | SWP_NOZORDER);
+                return true;
             }
         }
     }
+    return false;
+}
+
+bool CMusicPlayerDlg::IsPointValid(CPoint point)
+{
+    return (point.x != INT_MAX && point.y != INT_MAX && point.x != INT_MIN && point.y != INT_MAX);
 }
 
 afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam)

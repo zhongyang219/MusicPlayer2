@@ -50,7 +50,6 @@ public:
     friend class CMusicPlayerCmdHelper;
     friend class CUIWindow;
     friend class CPlayerUIBase;
-    friend class CFloatPlaylistDlg;
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -62,6 +61,7 @@ protected:
 
 public:
     CMenu* m_pCurMenu{};       //当前弹出的菜单
+    HACCEL GetAccel() const { return m_hAccel; }
 
 // 实现
 protected:
@@ -83,7 +83,7 @@ protected:
 #endif
 
     CFindDlg m_findDlg;		//查找对话框
-    HACCEL m_hAccel;
+    HACCEL m_hAccel{};
 
     wstring m_cmdLine;	//命令行参数
 
@@ -121,7 +121,7 @@ protected:
     CSoundEffectDlg* m_pSoundEffecDlg;		//音效设定对话框（非模态对话框）
     CFormatConvertDlg* m_pFormatConvertDlg;		//格式转换对话框（非模态对话框）
     CFloatPlaylistDlg* m_pFloatPlaylistDlg;		//浮动播放列表对话框
-    CPoint m_float_playlist_pos;				//浮动播放列表的位置
+    CPoint m_float_playlist_pos{ INT_MAX, INT_MAX };				//浮动播放列表的位置
 
     CWinThread* m_pThread;		//执行在线查看的线程
     static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
@@ -195,6 +195,8 @@ public:
     void ShowPlayList(bool highlight_visible = true);
     void SetMenuState(CMenu* pMenu);
 
+    static bool IsPointValid(CPoint);
+
 protected:
     void SetPlayListColor(bool highlight_visible = true);
     void SwitchTrack();		//当切换正在播放的歌曲时的处理
@@ -243,7 +245,7 @@ protected:
     void MoveDesktopLyricWindowPos();
 
     bool IsFloatPlaylistExist();
-    void MoveFloatPlaylistPos();
+    bool MoveFloatPlaylistPos();
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
