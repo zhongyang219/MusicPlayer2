@@ -67,11 +67,15 @@ int decode_audio_internal(MusicHandle* handle, char* writed, AVFrame* frame) {
                 }
             }
         }
-        if (handle->set_new_pts) {
+        if (handle->set_new_pts && frame->pts != AV_NOPTS_VALUE) {
             av_log(NULL, AV_LOG_VERBOSE, "pts: %s\n", av_ts2timestr(frame->pts, &handle->is->time_base));
             handle->pts = av_rescale_q_rnd(frame->pts, handle->is->time_base, AV_TIME_BASE_Q, AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX) - handle->first_pts;
             handle->end_pts = handle->pts;
             handle->set_new_pts = 0;
+        } else if (handle->set_new_pts) {
+            av_log(NULL, AV_LOG_VERBOSE, "skip NOPTS frame.\n");
+            // 跳过NOPTS的frame
+            goto end;
         }
         // 整段数据在结束位置之后，跳过
         if (handle->only_part && (frame->pts - handle->first_pts) >= handle->part_end_pts) {
