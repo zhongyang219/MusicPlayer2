@@ -106,7 +106,7 @@ int decode_audio(MusicHandle* handle, char* writed) {
         if ((re = decode_audio_internal(handle, writed, frame))) {
             goto end;
         }
-        if (*writed) {
+        if (*writed || handle->is_eof) {
             goto end;
         }
         if ((re = av_read_frame(handle->fmt, &pkt)) < 0) {
@@ -136,7 +136,7 @@ int decode_audio(MusicHandle* handle, char* writed) {
         if ((re = decode_audio_internal(handle, writed, frame))) {
             goto end;
         }
-        if (*writed) break;
+        if (*writed || handle->is_eof) break;
     }
 end:
     if (frame) av_frame_free(&frame);
