@@ -44,10 +44,11 @@ void CFfmpegCore::InitCore() {
         format.extensions.push_back(L"aif");
         format.extensions.push_back(L"aiff");
         format.extensions.push_back(L"cda");
+        format.extensions.push_back(L"cue");
         format.extensions.push_back(L"mp4");
         format.extensions.push_back(L"mkv");
         format.extensions.push_back(L"m2ts");
-        format.extensions_list = L"*.mp3;*.wma;*.wav;*.m4a;*.ogg;*.oga;*.flac;*.ape;*.mp2;*.mp1;*.opus;*.ape;*.cda;*.aif;*.aiff;*.mp4;*.mkv;*.m2ts";
+        format.extensions_list = L"*.mp3;*.wma;*.wav;*.m4a;*.ogg;*.oga;*.flac;*.ape;*.mp2;*.mp1;*.opus;*.ape;*.cda;*.aif;*.aiff;*.cue;*.mp4;*.mkv;*.m2ts";
         CAudioCommon::m_surpported_format.push_back(format);
         CAudioCommon::m_all_surpported_extensions = format.extensions;
         settings = ffmpeg_core_init_settings();
