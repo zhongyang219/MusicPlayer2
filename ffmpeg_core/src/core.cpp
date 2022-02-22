@@ -466,7 +466,7 @@ std::wstring get_metadata_str(AVDictionary* dict, const char* key, int flags) {
 }
 
 wchar_t* ffmpeg_core_get_metadata(MusicHandle* handle, const char* key) {
-    if (!handle | !key) return nullptr;
+    if (!handle || !key) return nullptr;
     if (handle->fmt && handle->fmt->metadata) {
         auto re = get_metadata_str(handle->fmt->metadata, key, 0);
         if (!re.empty()) {
