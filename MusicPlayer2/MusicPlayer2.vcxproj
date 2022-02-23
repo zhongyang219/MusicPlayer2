@@ -245,6 +245,7 @@
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
     <ClInclude Include="EditStringListDlg.h" />
+    <ClInclude Include="FfmpegCore.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LyricRelateDlg.h" />
@@ -397,6 +398,7 @@
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="CueFile.cpp" />
     <ClCompile Include="EditStringListDlg.cpp" />
+    <ClCompile Include="FfmpegCore.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="CPlayerUI3.cpp" />

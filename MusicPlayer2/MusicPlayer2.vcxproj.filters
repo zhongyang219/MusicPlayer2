@@ -363,6 +363,9 @@
     <Filter Include="公共的类\tinyxml2">
       <UniqueIdentifier>{bfba0398-39b7-4eb5-97b5-6b1fa8e31ad7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\PlayerCore\FFMPEG">
+      <UniqueIdentifier>{1374b4aa-def4-4b40-8f36-1caf49de536a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -824,6 +827,9 @@
     <ClInclude Include="TinyXml2Helper.h">
       <Filter>公共的类\tinyxml2</Filter>
     </ClInclude>
+    <ClInclude Include="FfmpegCore.h">
+      <Filter>功能逻辑类\PlayerCore\FFMPEG</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1248,6 +1254,9 @@
     </ClCompile>
     <ClCompile Include="TinyXml2Helper.cpp">
       <Filter>公共的类\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="FfmpegCore.cpp">
+      <Filter>功能逻辑类\PlayerCore\FFMPEG</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

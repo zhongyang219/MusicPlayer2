@@ -75,8 +75,13 @@ BOOL CReverbDlg::OnInitDialog()
 	//初始化混响开关复选框
 	m_enable_reverb_chk.SetCheck(CPlayer::GetInstance().GetReverbEnable());
 
-	//初始化控件的启用状态
-	EnableControls(CPlayer::GetInstance().GetReverbEnable());
+    if (CPlayer::GetInstance().IsFfmpegCore() || CPlayer::GetInstance().IsMciCore()) {
+        EnableControls(false);
+        m_enable_reverb_chk.EnableWindow(FALSE);
+    } else {
+        //初始化控件的启用状态
+        EnableControls(CPlayer::GetInstance().GetReverbEnable());
+    }
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE

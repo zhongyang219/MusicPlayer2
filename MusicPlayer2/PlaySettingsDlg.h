@@ -2,6 +2,7 @@
 #include "ListCtrlEx.h"
 #include "TabDlg.h"
 #include "MyComboBox.h"
+#include "SpinEdit.h"
 
 // CPlaySettingsDlg 对话框
 
@@ -31,6 +32,10 @@ protected:
 	CListCtrlEx m_device_info_list;
     CButton m_bass_radio;
     CButton m_mci_radio;
+    CButton m_ffmpeg_radio;
+    CSpinEdit m_ffmpeg_cache_length;
+    CSpinEdit m_ffmpeg_max_retry_count;
+    CSpinEdit m_ffmpeg_url_retry_interval;
     CToolTipCtrl m_toolTip;
 
 protected:
@@ -41,6 +46,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+    virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedStopWhenError();
 	afx_msg void OnBnClickedShowTaskbarProgress();
@@ -51,5 +57,6 @@ public:
     afx_msg void OnBnClickedContinueWhenSwitchPlaylistCheck();
     afx_msg void OnBnClickedBassRadio();
     afx_msg void OnBnClickedMciRadio();
+    afx_msg void OnBnClickedFfmpegRadio();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

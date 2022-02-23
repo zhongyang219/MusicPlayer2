@@ -34,6 +34,7 @@
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include "UserUi.h"
+#include "FfmpegCore.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -445,6 +446,10 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
+    ini.WriteBool(L"config", L"use_ffmpeg", theApp.m_play_setting_data.use_ffmpeg);
+    ini.WriteInt(L"config", L"ffmpeg_core_cache_length", theApp.m_play_setting_data.ffmpeg_core_cache_length);
+    ini.WriteInt(L"config", L"ffmpeg_core_max_retry_count", theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
+    ini.WriteInt(L"config", L"ffmpeg_core_url_retry_interval", theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
     ini.WriteInt(L"config", L"UI_selected", GetUiSelected());
 
     //保存热键设置
@@ -619,6 +624,10 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_play_setting_data.fade_time = 2000;
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
+    theApp.m_play_setting_data.use_ffmpeg = ini.GetBool(L"config", L"use_ffmpeg", false);
+    theApp.m_play_setting_data.ffmpeg_core_cache_length = ini.GetInt(L"config", L"ffmpeg_core_cache_length", 15);
+    theApp.m_play_setting_data.ffmpeg_core_max_retry_count = ini.GetInt(L"config", L"ffmpeg_core_max_retry_count", 3);
+    theApp.m_play_setting_data.ffmpeg_core_url_retry_interval = ini.GetInt(L"config", L"ffmpeg_core_url_retry_interval", 5);
 
     int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
     SelectUi(ui_selected);
@@ -1075,7 +1084,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                              || theApp.m_app_setting_data.album_cover_as_background != optionDlg.m_tab2_dlg.m_data.album_cover_as_background
                              || theApp.m_app_setting_data.enable_background != optionDlg.m_tab2_dlg.m_data.enable_background };
     bool output_device_changed{ theApp.m_play_setting_data.device_selected != optionDlg.m_tab4_dlg.m_data.device_selected };
-    bool player_core_changed{ theApp.m_play_setting_data.use_mci != optionDlg.m_tab4_dlg.m_data.use_mci };
+    bool player_core_changed{ theApp.m_play_setting_data.use_mci != optionDlg.m_tab4_dlg.m_data.use_mci || theApp.m_play_setting_data.use_ffmpeg != optionDlg.m_tab4_dlg.m_data.use_ffmpeg };
     bool media_lib_setting_changed{ theApp.m_media_lib_setting_data.hide_only_one_classification != optionDlg.m_media_lib_dlg.m_data.hide_only_one_classification
                                     || theApp.m_media_lib_setting_data.media_folders != optionDlg.m_media_lib_dlg.m_data.media_folders
                                     || theApp.m_media_lib_setting_data.recent_played_range != optionDlg.m_media_lib_dlg.m_data.recent_played_range
@@ -1201,6 +1210,10 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     SaveConfig();       //将设置写入到ini文件
     theApp.SaveConfig();
     CPlayer::GetInstance().SaveConfig();
+    if (CPlayer::GetInstance().IsFfmpegCore()) {
+        CFfmpegCore* core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
+        core->UpdateSettings();
+    }
     DrawInfo(true);
 }
 
@@ -3826,6 +3839,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 
     if (CPlayer::GetInstance().IsMciCore())
         title_suffix += _T(" (MCI)");
+    else if (CPlayer::GetInstance().IsFfmpegCore())
+        title_suffix += _T(" (FFMPEG)");
 
 #ifdef _DEBUG
     title_suffix += _T(' ');

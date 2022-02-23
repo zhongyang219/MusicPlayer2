@@ -23,7 +23,8 @@ enum AudioInfoFlag
 enum PlayerCoreType
 {
     PT_BASS,
-    PT_MCI
+    PT_MCI,
+    PT_FFMPEG,
 };
 
 enum PlayingState       //正在播放标志

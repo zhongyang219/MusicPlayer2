@@ -104,6 +104,7 @@ void COptionsDlg::OnOK()
 	m_tab1_dlg.OnOK();
 	m_tab2_dlg.OnOK();
 	m_tab3_dlg.OnOK();
+	m_tab4_dlg.OnOK();
     m_media_lib_dlg.OnOK();
 
 	CBaseDialog::OnOK();

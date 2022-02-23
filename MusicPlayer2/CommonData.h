@@ -299,6 +299,14 @@ struct PlaySettingData
     int fade_time{ 500 };                      //淡入淡出时间（毫秒）
 
     bool use_mci{ false };              //是否使用MCI内核
+    /// 是否使用ffmpeg内核
+    bool use_ffmpeg{ false };
+    /// ffmpeg内核缓存时长（单位：s）
+    int ffmpeg_core_cache_length { 15 };
+    /// ffmpeg内核最大重试次数
+    int ffmpeg_core_max_retry_count { 3 };
+    /// ffmpeg内核非本地文件重试间隔时间（单位s）
+    int ffmpeg_core_url_retry_interval { 5 };
 };
 
 struct GlobalHotKeySettingData

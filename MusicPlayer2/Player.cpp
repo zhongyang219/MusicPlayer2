@@ -5,6 +5,7 @@
 #include "Playlist.h"
 #include "BassCore.h"
 #include "MciCore.h"
+#include "FfmpegCore.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
@@ -32,6 +33,8 @@ void CPlayer::IniPlayerCore()
     {
         if (theApp.m_play_setting_data.use_mci)
             m_pCore = new CMciCore();
+        else if (theApp.m_play_setting_data.use_ffmpeg)
+            m_pCore = new CFfmpegCore();
         else
             m_pCore = new CBassCore();
 
@@ -680,6 +683,12 @@ void CPlayer::CalculateSpectralData()
 
     if (m_pCore->GetHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
     {
+        m_pCore->GetFFTData(m_fft);
+        if (theApp.m_app_setting_data.use_old_style_specturm)
+            CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data);
+        else
+            m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data);
+    } else if (m_pCore->GetCoreType() == PT_FFMPEG) {
         m_pCore->GetFFTData(m_fft);
         if (theApp.m_app_setting_data.use_old_style_specturm)
             CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data);
@@ -2730,7 +2739,11 @@ wstring CPlayer::GetPlaylistPath() const
 
 bool CPlayer::IsMciCore() const
 {
-    return m_pCore->GetCoreType() == PT_MCI;
+    return m_pCore ? m_pCore->GetCoreType() == PT_MCI : false;
+}
+
+bool CPlayer::IsFfmpegCore() const {
+    return m_pCore->GetCoreType() == PT_FFMPEG;
 }
 
 void CPlayer::SetContainSubFolder(bool contain_sub_folder)

@@ -363,6 +363,7 @@ public:
     wstring GetPlaylistPath() const;
     IPlayerCore* GetPlayerCore() { return m_pCore; }
     bool IsMciCore() const;
+    bool IsFfmpegCore() const;
     bool IsFileOpened() const { return m_file_opend; }
     bool IsContainSubFolder() const { return m_contain_sub_folder; }
     void SetContainSubFolder(bool contain_sub_folder);

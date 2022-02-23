@@ -34,6 +34,10 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, m_continue_when_switch_playlist_check);
     DDX_Control(pDX, IDC_BASS_RADIO, m_bass_radio);
     DDX_Control(pDX, IDC_MCI_RADIO, m_mci_radio);
+    DDX_Control(pDX, IDC_FFMPEG_RADIO, m_ffmpeg_radio);
+    DDX_Control(pDX, IDC_FFMPEG_CACHE_LENGTH, m_ffmpeg_cache_length);
+    DDX_Control(pDX, IDC_FFMPEG_MAX_RETRY_COUNT, m_ffmpeg_max_retry_count);
+    DDX_Control(pDX, IDC_FFMPEG_URL_RETRY_INTERVAL, m_ffmpeg_url_retry_interval);
 }
 
 void CPlaySettingsDlg::ShowDeviceInfo()
@@ -91,9 +95,13 @@ void CPlaySettingsDlg::ShowDeviceInfo()
 void CPlaySettingsDlg::EnableControl()
 {
     bool enable = !CPlayer::GetInstance().IsMciCore();
+    bool ffmpeg_enable = CPlayer::GetInstance().IsFfmpegCore();
     m_sound_fade_chk.EnableWindow(enable);
     m_device_info_list.EnableWindow(enable);
     m_output_device_combo.EnableWindow(enable);
+    m_ffmpeg_cache_length.EnableWindow(ffmpeg_enable);
+    m_ffmpeg_max_retry_count.EnableWindow(ffmpeg_enable);
+    m_ffmpeg_url_retry_interval.EnableWindow(ffmpeg_enable);
 }
 
 
@@ -107,6 +115,7 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, &CPlaySettingsDlg::OnBnClickedContinueWhenSwitchPlaylistCheck)
     ON_BN_CLICKED(IDC_BASS_RADIO, &CPlaySettingsDlg::OnBnClickedBassRadio)
     ON_BN_CLICKED(IDC_MCI_RADIO, &CPlaySettingsDlg::OnBnClickedMciRadio)
+    ON_BN_CLICKED(IDC_FFMPEG_RADIO, &CPlaySettingsDlg::OnBnClickedFfmpegRadio)
 END_MESSAGE_MAP()
 
 
@@ -122,6 +131,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_MCI_RADIO), CCommon::LoadText(IDS_MCI_KERNAL_TIP));
+    m_toolTip.AddTool(GetDlgItem(IDC_FFMPEG_RADIO), CCommon::LoadText(IDS_FFMPEG_CORE));
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
 	//初始化各控件的状态
@@ -140,8 +150,22 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 		m_show_play_state_icon_chk.EnableWindow(FALSE);
 	}
 
+    bool enable_ffmpeg = false;
+    if (CPlayer::GetInstance().IsFfmpegCore()) {
+        enable_ffmpeg = true;
+    } else {
+        auto h = LoadLibraryW(L"ffmpeg_core.dll");
+        if (h) {
+            enable_ffmpeg = true;
+            FreeLibrary(h);
+        }
+    }
+    m_ffmpeg_radio.EnableWindow(enable_ffmpeg);
+
     if (m_data.use_mci)
         m_mci_radio.SetCheck(TRUE);
+    else if (m_data.use_ffmpeg)
+        m_ffmpeg_radio.SetCheck(TRUE);
     else
         m_bass_radio.SetCheck(TRUE);
 
@@ -168,8 +192,18 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     EnableControl();
 
+    m_ffmpeg_cache_length.SetRange(1, 60);
+    m_ffmpeg_cache_length.SetValue(theApp.m_play_setting_data.ffmpeg_core_cache_length);
+    m_ffmpeg_max_retry_count.SetRange(-1, SHORT_MAX);
+    m_ffmpeg_max_retry_count.SetValue(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
+    m_ffmpeg_url_retry_interval.SetRange(1, 120);
+    m_ffmpeg_url_retry_interval.SetValue(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
+
     //设置控件不响应鼠标滚轮消息
     m_output_device_combo.SetMouseWheelEnable(false);
+    m_ffmpeg_cache_length.SetMouseWheelEnable(false);
+    m_ffmpeg_max_retry_count.SetMouseWheelEnable(false);
+    m_ffmpeg_url_retry_interval.SetMouseWheelEnable(false);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -230,6 +264,7 @@ void CPlaySettingsDlg::OnBnClickedBassRadio()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.use_mci = false;
+    m_data.use_ffmpeg = false;
 }
 
 
@@ -237,6 +272,13 @@ void CPlaySettingsDlg::OnBnClickedMciRadio()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.use_mci = true;
+    m_data.use_ffmpeg = false;
+}
+
+
+void CPlaySettingsDlg::OnBnClickedFfmpegRadio() {
+    m_data.use_mci = false;
+    m_data.use_ffmpeg = true;
 }
 
 
@@ -247,4 +289,10 @@ BOOL CPlaySettingsDlg::PreTranslateMessage(MSG* pMsg)
         m_toolTip.RelayEvent(pMsg);
 
     return CTabDlg::PreTranslateMessage(pMsg);
+}
+
+void CPlaySettingsDlg::OnOK() {
+    m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
+    m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
+    m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
 }

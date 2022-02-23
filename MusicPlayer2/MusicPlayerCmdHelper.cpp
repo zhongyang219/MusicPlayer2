@@ -59,6 +59,9 @@ void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
     {
         GetOwner()->MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
         return;
+    } else if (CPlayer::GetInstance().IsFfmpegCore()) {
+        GetOwner()->MessageBox(CCommon::LoadText(IDS_FFMPEG_NO_THIS_FUNCTION), NULL, MB_ICONWARNING | MB_OK);
+        return;
     }
 
     pPlayerDlg->m_pFormatConvertDlg = new CFormatConvertDlg(songs, GetOwner());
