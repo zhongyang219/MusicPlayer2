@@ -2590,8 +2590,11 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                 }
                 else if (pMsg->wParam == '0')   //Ctrl+0切换第10个界面
                 {
-                    SelectUi(9);
-                    return TRUE;
+                    if (m_ui_list.size() > 9)
+                    {
+                        SelectUi(9);
+                        return TRUE;
+                    }
                 }
             }
             if (pMsg->wParam == 'M')    //按M键设置循环模式
