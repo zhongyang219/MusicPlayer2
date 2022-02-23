@@ -691,9 +691,9 @@ void CPlayer::CalculateSpectralData()
     } else if (m_pCore->GetCoreType() == PT_FFMPEG) {
         m_pCore->GetFFTData(m_fft);
         if (theApp.m_app_setting_data.use_old_style_specturm)
-            CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data);
+            CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data, 120);
         else
-            m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data);
+            m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data, 120);
     }
     else
     {
@@ -2025,12 +2025,12 @@ void CPlayer::AddListenTime(int sec)
 
 int CPlayer::GetChannels()
 {
-    return m_pCore->GetChannels();
+    return m_pCore == nullptr ? 0 : m_pCore->GetChannels();
 }
 
 int CPlayer::GetFreq()
 {
-    return m_pCore->GetFReq();
+    return m_pCore == nullptr ? 0 : m_pCore->GetFReq();
 }
 
 void CPlayer::ReIniPlayerCore(bool replay)
@@ -2743,7 +2743,7 @@ bool CPlayer::IsMciCore() const
 }
 
 bool CPlayer::IsFfmpegCore() const {
-    return m_pCore->GetCoreType() == PT_FFMPEG;
+    return m_pCore ? m_pCore->GetCoreType() == PT_FFMPEG : false;
 }
 
 void CPlayer::SetContainSubFolder(bool contain_sub_folder)
