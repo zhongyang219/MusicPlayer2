@@ -39,9 +39,8 @@ int seek_to_pos(MusicHandle* handle) {
             ReleaseMutex(handle->mutex);
             goto end;
         }
-        if (handle->seek_pos < handle->end_pts) {
-            flags |= AVSEEK_FLAG_BACKWARD;
-        }
+        // 指的是定位到指定位置之前的关键帧，而不是从后往前定位
+        flags |= AVSEEK_FLAG_BACKWARD;
         if ((re = av_seek_frame(handle->fmt, -1, handle->seek_pos + handle->first_pts, flags)) < 0) {
             av_log(NULL, AV_LOG_FATAL, "Failed to seek frame %" PRIi64 ": %s (%i)\n", handle->seek_pos + handle->first_pts, av_err2str(re), re);
             ReleaseMutex(handle->mutex);
