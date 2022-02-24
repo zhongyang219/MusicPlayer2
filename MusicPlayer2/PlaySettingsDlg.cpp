@@ -96,7 +96,7 @@ void CPlaySettingsDlg::EnableControl()
 {
     bool enable = !CPlayer::GetInstance().IsMciCore();
     bool ffmpeg_enable = CPlayer::GetInstance().IsFfmpegCore();
-    m_sound_fade_chk.EnableWindow(enable);
+    m_sound_fade_chk.EnableWindow(CPlayer::GetInstance().GetPlayerCore()->GetCoreType() == PT_BASS);
     m_device_info_list.EnableWindow(enable);
     m_output_device_combo.EnableWindow(enable);
     m_ffmpeg_cache_length.EnableWindow(ffmpeg_enable);
