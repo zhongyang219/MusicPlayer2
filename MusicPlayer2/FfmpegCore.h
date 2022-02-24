@@ -73,7 +73,6 @@ public:
     ~CFfmpegCore();
     virtual void InitCore() override;
     virtual void UnInitCore() override;
-    virtual unsigned int GetHandle() override;
     virtual std::wstring GetAudioType() override;
     virtual int GetChannels() override;
     virtual int GetFReq() override;

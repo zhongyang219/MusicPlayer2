@@ -397,7 +397,7 @@ void CPlayer::IniLyrics()
     {
         SongInfo song;
         song.file_path = GetCurrentFilePath();
-        CAudioTag audio_tag(song, m_pCore->GetHandle());
+        CAudioTag audio_tag(song, GetBassHandle());
         lyric_str = audio_tag.GetAudioLyric();
         inner_lyrics.LyricsFromRowString(lyric_str);
     }
@@ -460,7 +460,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_is_osu = COSUPlayerHelper::IsOsuFile(GetCurrentFilePath());
         m_pCore->Open(GetCurrentFilePath().c_str());
         GetPlayerCoreError(L"Open");
-        if (m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0)
+        if (m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0)
             m_error_state = ES_FILE_CONNOT_BE_OPEN;
         m_file_opend = true;
         //获取音频类型
@@ -681,7 +681,7 @@ void CPlayer::CalculateSpectralData()
 {
     //memcpy_s(m_last_spectral_data, sizeof(m_last_spectral_data), m_spectral_data, sizeof(m_spectral_data));
 
-    if (m_pCore->GetHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+    if (GetBassHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
     {
         m_pCore->GetFFTData(m_fft);
         if (theApp.m_app_setting_data.use_old_style_specturm)
@@ -1040,7 +1040,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     IniPlayerCore();
     if (m_loading) return;
 
-    if (m_pCore->GetHandle() != 0)
+    if (GetBassHandle() != 0)
         MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
@@ -1097,7 +1097,7 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_ind
     IniPlayerCore();
     if (m_loading) return;
 
-    if (m_pCore->GetHandle() != 0)
+    if (GetBassHandle() != 0)
         MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
@@ -1306,7 +1306,7 @@ bool CPlayer::IsError() const
     if (m_loading)		//如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_file_opend && m_pCore->GetCoreType() == PT_BASS && m_pCore->GetHandle() == 0));
+        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_file_opend && m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0));
 }
 
 std::wstring CPlayer::GetErrorInfo()
@@ -2033,6 +2033,19 @@ int CPlayer::GetFreq()
     return m_pCore == nullptr ? 0 : m_pCore->GetFReq();
 }
 
+unsigned int CPlayer::GetBassHandle() const
+{
+    if (m_pCore != nullptr && m_pCore->GetCoreType() == PT_BASS)
+    {
+        CBassCore* bass_core = dynamic_cast<CBassCore*>(m_pCore);
+        if (bass_core != nullptr)
+        {
+            return bass_core->GetHandle();
+        }
+    }
+    return 0;
+}
+
 void CPlayer::ReIniPlayerCore(bool replay)
 {
     CSingleLock sync(&m_critical, TRUE);
@@ -2559,7 +2572,7 @@ void CPlayer::SearchAlbumCover()
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile() && !always_use_external_album_cover)
     {
         //从文件获取专辑封面
-        CAudioTag audio_tag(GetCurrentSongInfo2(), m_pCore->GetHandle());
+        CAudioTag audio_tag(GetCurrentSongInfo2(), GetBassHandle());
         m_album_cover_path = audio_tag.GetAlbumCover(m_album_cover_type);
         if (!m_album_cover_path.empty())
         {

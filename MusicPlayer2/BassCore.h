@@ -15,7 +15,7 @@ public:
 
     virtual void InitCore() override;
     virtual void UnInitCore() override;
-    virtual unsigned int GetHandle() override;
+    unsigned int GetHandle();
 
     virtual std::wstring GetAudioType() override;
     virtual int GetChannels() override;

@@ -396,7 +396,7 @@ void CBassCore::Pause()
         SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID, theApp.m_play_setting_data.fade_time, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
         {
             KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
-            BASS_ChannelPause(CPlayer::GetInstance().GetPlayerCore()->GetHandle());     //当定时器器触发时，即音量已经渐变到0，执行暂停操作
+            BASS_ChannelPause(CPlayer::GetInstance().GetBassHandle());     //当定时器器触发时，即音量已经渐变到0，执行暂停操作
         });
     }
     else
@@ -416,8 +416,8 @@ void CBassCore::Stop()
         SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID, theApp.m_play_setting_data.fade_time, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
         {
             KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
-            BASS_ChannelStop(CPlayer::GetInstance().GetPlayerCore()->GetHandle());
-            BASS_ChannelSetPosition(CPlayer::GetInstance().GetPlayerCore()->GetHandle(), 0, BASS_POS_BYTE);
+            BASS_ChannelStop(CPlayer::GetInstance().GetBassHandle());
+            BASS_ChannelSetPosition(CPlayer::GetInstance().GetBassHandle(), 0, BASS_POS_BYTE);
         });
     }
     else

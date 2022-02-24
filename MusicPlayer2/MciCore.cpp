@@ -60,11 +60,6 @@ void CMciCore::UnInitCore()
     Close();
 }
 
-unsigned int CMciCore::GetHandle()
-{
-    return 0;
-}
-
 std::wstring CMciCore::GetAudioType()
 {
     return std::wstring();

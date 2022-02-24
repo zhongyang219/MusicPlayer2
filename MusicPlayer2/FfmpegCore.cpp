@@ -91,10 +91,6 @@ void CFfmpegCore::UnInitCore() {
     }
 }
 
-unsigned int CFfmpegCore::GetHandle() {
-    return 0;
-}
-
 std::wstring CFfmpegCore::GetAudioType() {
     return L"";
 }
