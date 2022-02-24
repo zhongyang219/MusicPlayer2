@@ -35,8 +35,27 @@ void CPlayer::IniPlayerCore()
             m_pCore = new CMciCore();
         else if (theApp.m_play_setting_data.use_ffmpeg)
             m_pCore = new CFfmpegCore();
-        else
+
+        //判断MCI或FFMPEG内核是否加载成功
+        CDllLib* dll_lib = dynamic_cast<CDllLib*>(m_pCore);
+        bool is_succeed{ true };
+        if (dll_lib != nullptr)
+        {
+            is_succeed = dll_lib->IsSucceed();
+            if (!is_succeed)
+            {
+                dll_lib->UnInit();
+                delete m_pCore;
+                m_pCore = nullptr;
+            }
+        }
+
+        if (m_pCore == nullptr)
+        {
             m_pCore = new CBassCore();
+            theApp.m_play_setting_data.use_mci = false;
+            theApp.m_play_setting_data.use_ffmpeg = false;
+        }
 
         m_pCore->InitCore();
     }
