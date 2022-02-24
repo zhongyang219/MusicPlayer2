@@ -745,3 +745,20 @@ wstring CAudioCommon::GetFileDlgFilter()
     filter += CCommon::LoadText(IDS_ALL_FILES, _T("|*.*||"));
     return filter;
 }
+
+SupportedFormat CAudioCommon::CreateSupportedFormat(const wchar_t* exts, const wchar_t* description, const wchar_t* file_name /*= L""*/)
+{
+    SupportedFormat format;
+    format.description = description;
+    format.file_name = file_name;
+    CCommon::StringSplit(std::wstring(exts), L' ', format.extensions);
+    for (const auto& ext : format.extensions)
+    {
+        format.extensions_list += L"*.";
+        format.extensions_list += ext;
+        format.extensions_list += L';';
+    }
+    if (!format.extensions.empty())
+        format.extensions_list.pop_back();
+    return format;
+}
