@@ -28,7 +28,7 @@ void CFfmpegCore::InitCore() {
     if (IsSucceed()) {
         CAudioCommon::m_surpported_format.clear();
         CAudioCommon::m_all_surpported_extensions.clear();
-        CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"mp3 wma wav m4a ogg oga flac ape mp2 mp1 opus ape cda aif aiff cue mp4 mkv m2ts", CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT)));
+        CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"mp3 wma wav m4a ogg oga flac ape mp2 mp1 opus ape cda aif aiff cue mp4 mkv mka m2ts", CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT)));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"3gp 3g2 mj2 psp m4b ism ismv isma f4v", L"3gp"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"aa", L"Audible Format 2, 3, and 4"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"aac", L"AAC (Advanced Audio Coding)"));

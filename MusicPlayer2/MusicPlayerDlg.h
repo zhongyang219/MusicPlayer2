@@ -270,7 +270,9 @@ protected:
     afx_msg void OnAppAbout();
     afx_msg void OnFileOpen();
     afx_msg void OnFileOpenFolder();
+public:
     afx_msg void OnDropFiles(HDROP hDropInfo);
+protected:
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnPlayOrder();
     afx_msg void OnPlayShuffle();

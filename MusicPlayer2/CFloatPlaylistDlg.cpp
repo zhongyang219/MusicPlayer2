@@ -209,6 +209,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFloatPlaylistDlg::OnSearchEditBtnClicked)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CFloatPlaylistDlg::OnLocateToCurrent)
     ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CFloatPlaylistDlg::OnMainWindowActivated)
+    ON_WM_DROPFILES()
 END_MESSAGE_MAP()
 
 
@@ -536,4 +537,15 @@ afx_msg LRESULT CFloatPlaylistDlg::OnMainWindowActivated(WPARAM wParam, LPARAM l
     theApp.m_pMainWnd->SetForegroundWindow();		//将窗口设置为焦点
     theApp.m_pMainWnd->SendMessage(WM_MAIN_WINDOW_ACTIVATED);
     return 0;
+}
+
+
+void CFloatPlaylistDlg::OnDropFiles(HDROP hDropInfo)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (main_wnd != nullptr)
+        main_wnd->OnDropFiles(hDropInfo);
+    else
+        CDialog::OnDropFiles(hDropInfo);
 }

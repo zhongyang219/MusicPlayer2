@@ -80,4 +80,6 @@ public:
     afx_msg void OnLocateToCurrent();
 protected:
     afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnDropFiles(HDROP hDropInfo);
 };
