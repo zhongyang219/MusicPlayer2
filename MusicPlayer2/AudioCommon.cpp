@@ -86,7 +86,7 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 
     for (const auto& item : m_surpported_format)
     {
-        if (!item.file_name.empty())
+        if (item.description != CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT).GetString())
         {
             for (const auto& ext : item.extensions)
             {
@@ -98,6 +98,8 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 
     if (extension == L"mp3")
         return L"MPEG Audio Layer 3";
+    else if (extension == L"mp1" || extension == L"mp2")
+        return L"MPEG Audio";
     else if (extension == L"wma")
         return L"Windows Media Audio";
     else if (extension == L"asf")
@@ -106,7 +108,7 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
         return wstring(CCommon::LoadText(_T("WAV "), IDS_AUDIO_FILE));
     else if (extension == L"ogg" || extension == L"oga")
         return wstring(CCommon::LoadText(_T("OGG Vorbis "), IDS_AUDIO_FILE));
-    else if (extension == L"m4a")
+    else if (extension == L"m4a" || extension == L"mp4")
         return wstring(CCommon::LoadText(_T("MPEG-4 "), IDS_AUDIO_FILE));
     else if (extension == L"ape")
         return wstring(L"Monkey's Audio (APE)");
