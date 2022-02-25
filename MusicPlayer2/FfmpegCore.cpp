@@ -49,6 +49,7 @@ void CFfmpegCore::InitCore() {
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"m4a mp4", L"MP4"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"opus", L"Opus"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"pcm", L"PCM"));
+        CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"spx", L"Speex"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"tak", L"TAK (Tom's lossless Audio Kompressor)"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"tta", L"TTA (True Audio)"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"ogg oga", L"Vorbis"));

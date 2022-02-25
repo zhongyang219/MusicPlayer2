@@ -168,15 +168,8 @@ void CFileRelateDlg::OnBnClickedSelectAllCheck()
 
 void CFileRelateDlg::OnBnClickedDefaultButton()
 {
-    // TODO: 在此添加控件通知处理程序代码
-    std::set<wstring> default_selected;
-    for (auto item : CAudioCommon::m_all_surpported_extensions)
-    {
-        if (!item.empty() && item[0] == L'.')
-            item = item.substr(1);
-        if (item != L"mp1" && item != L"mp2" && item != L"mp4")
-            default_selected.insert(item);
-    }
+    //默认选中常见音频格式
+    std::set<wstring> default_selected{ L"aac", L"ac3", L"aif", L"aiff", L"amr", L"ape", L"asf", L"cda", L"cue", L"fla", L"flac", L"m4a", L"mac", L"mp+", L"mp3", L"mpc", L"mpp", L"oga", L"ogg", L"opus", L"spx", L"tta", L"wav", L"wma", L"wv"};
     int list_count{ m_list_ctrl.GetItemCount() };
     for (int i = 0; i < list_count; i++)
     {
@@ -187,5 +180,4 @@ void CFileRelateDlg::OnBnClickedDefaultButton()
         else
             m_list_ctrl.SetCheck(i, FALSE);
     }
-
 }
