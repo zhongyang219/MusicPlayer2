@@ -708,6 +708,9 @@
 #define IDS_FFMPEG_CORE                 554
 #define IDS_FFMPEG_INIT_FAILED          555
 #define IDS_FFMPEG_NO_THIS_FUNCTION     556
+#define IDS_SUPPORTTED_FORMAT_INFO      557
+#define IDS_SUPPORTTED_FORMAT_INFO_MCI  558
+#define IDS_SUPPORTTED_FORMAT_INFO_FFMPEG 559
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

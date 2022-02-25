@@ -49,32 +49,62 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);		// 设置小图标
+    PlayerCoreType core_type{};
+    if (CPlayer::GetInstance().GetPlayerCore() != nullptr)
+        core_type = CPlayer::GetInstance().GetPlayerCore()->GetCoreType();
+    switch (core_type)
+    {
+    case PT_BASS:
+        SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_SUPPORTTED_FORMAT_INFO));
+        break;
+    case PT_MCI:
+        SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_SUPPORTTED_FORMAT_INFO_MCI));
+        break;
+    case PT_FFMPEG:
+        SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_SUPPORTTED_FORMAT_INFO_FFMPEG));
+        break;
+    }
 
 	//初始化列表
 	//m_format_list.SetColor(theApp.m_app_setting_data.theme_color);
 	CRect rect;
 	m_format_list.GetWindowRect(rect);
 	int width0, width1, width2;
-	width0 = theApp.DPI(100);
-	width1 = rect.Width() / 3;
-	width2 = rect.Width() - width1 - width0 - theApp.DPI(20) - 1;
-
     m_format_list.SetExtendedStyle(m_format_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_format_list.InsertColumn(0, CCommon::LoadText(IDS_PLUGIN_FILE_NAME), LVCFMT_LEFT, width0);		//插入第1列
-	m_format_list.InsertColumn(1, CCommon::LoadText(IDS_FORMAT_SUPPORTED), LVCFMT_LEFT, width1);		//插入第2列
-	m_format_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_EXTENSION), LVCFMT_LEFT, width2);		//插入第2列
+    
+    if (core_type == PT_BASS)
+    {
+        width0 = theApp.DPI(100);
+        width1 = rect.Width() / 3;
+        width2 = rect.Width() - width1 - width0 - theApp.DPI(20) - 1;
+
+        m_format_list.InsertColumn(0, CCommon::LoadText(IDS_PLUGIN_FILE_NAME), LVCFMT_LEFT, width0);
+        m_format_list.InsertColumn(1, CCommon::LoadText(IDS_FORMAT_SUPPORTED), LVCFMT_LEFT, width1);
+        m_format_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_EXTENSION), LVCFMT_LEFT, width2);
+    }
+    else
+    {
+        width0 = rect.Width() / 2;
+        width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
+        m_format_list.InsertColumn(0, CCommon::LoadText(IDS_FORMAT_SUPPORTED), LVCFMT_LEFT, width0);
+        m_format_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_EXTENSION), LVCFMT_LEFT, width1);
+    }
 
 	int index = 0;
 	for (const auto support_format : CAudioCommon::m_surpported_format)
 	{
-		if (!support_format.file_name.empty())
+		if (core_type == PT_BASS)
 		{
 			m_format_list.InsertItem(index, support_format.file_name.c_str());
 			m_format_list.SetItemText(index, 1, support_format.description.c_str());
 			m_format_list.SetItemText(index, 2, support_format.extensions_list.c_str());
-
-			index++;
-		}
+        }
+        else
+        {
+            m_format_list.InsertItem(index, support_format.description.c_str());
+            m_format_list.SetItemText(index, 1, support_format.extensions_list.c_str());
+        }
+	    index++;
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
