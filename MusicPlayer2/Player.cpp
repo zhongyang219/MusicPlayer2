@@ -2054,7 +2054,7 @@ int CPlayer::GetFreq()
 
 unsigned int CPlayer::GetBassHandle() const
 {
-    if (m_pCore != nullptr && m_pCore->GetCoreType() == PT_BASS)
+    if (IsBassCore())
     {
         CBassCore* bass_core = dynamic_cast<CBassCore*>(m_pCore);
         if (bass_core != nullptr)
@@ -2772,6 +2772,11 @@ wstring CPlayer::GetPlaylistPath() const
 bool CPlayer::IsMciCore() const
 {
     return m_pCore ? m_pCore->GetCoreType() == PT_MCI : false;
+}
+
+bool CPlayer::IsBassCore() const
+{
+    return m_pCore ? m_pCore->GetCoreType() == PT_BASS : false;
 }
 
 bool CPlayer::IsFfmpegCore() const {
