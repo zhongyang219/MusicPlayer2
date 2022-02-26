@@ -369,6 +369,7 @@ struct NonCategorizedSettingData
     int dark_mode_default_transparency{ 40 };
 
     vector<wstring> default_file_type;
+    vector<wstring> user_defined_type_ffmpeg;   //FFMPEG内核时用户添加的文件格式扩展名
 
     enum eLogType
     {

@@ -92,8 +92,9 @@ struct SupportedFormat		//一种支持的音频文件格式
 {
     wstring file_name;          //插件的文件名
     wstring description;		//文件格式的描述
-    wstring extensions_list;
-    vector<wstring> extensions;		//文件格式的扩展名
+    wstring extensions_list;        //文件扩展名列表（格式形如：*.mp3;*.wav）
+    vector<wstring> extensions;		//文件格式的扩展名（不含圆点）
+    void CreateExtensionsList();    //根据extensions中的内容生成文件扩展名列表，保存到extensions_list中
 };
 
 class CAudioCommon
@@ -159,6 +160,12 @@ public:
     //description：格式的描述
     //file_name: 插件的文件名
     static SupportedFormat CreateSupportedFormat(const wchar_t* exts, const wchar_t* description, const wchar_t* file_name = L"");
+
+    //返回一个SupportedFormat
+    //exts: 格式的扩展名
+    //description：格式的描述
+    //file_name: 插件的文件名
+    static SupportedFormat CreateSupportedFormat(const std::vector<std::wstring>& exts, const wchar_t* description, const wchar_t* file_name = L"");
 
 public:
     static vector<SupportedFormat> m_surpported_format;		//支持的文件格式

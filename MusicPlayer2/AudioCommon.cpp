@@ -6,6 +6,23 @@
 #include "taglib/id3v1genres.h"
 #include "SongInfoHelper.h"
 
+
+void SupportedFormat::CreateExtensionsList()
+{
+    for (const auto& ext : extensions)
+    {
+        extensions_list += L"*.";
+        extensions_list += ext;
+        extensions_list += L';';
+    }
+    if (!extensions.empty())
+        extensions_list.pop_back();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 vector<SupportedFormat> CAudioCommon::m_surpported_format;
 vector<wstring> CAudioCommon::m_all_surpported_extensions;
 
@@ -754,13 +771,17 @@ SupportedFormat CAudioCommon::CreateSupportedFormat(const wchar_t* exts, const w
     format.description = description;
     format.file_name = file_name;
     CCommon::StringSplit(std::wstring(exts), L' ', format.extensions);
-    for (const auto& ext : format.extensions)
-    {
-        format.extensions_list += L"*.";
-        format.extensions_list += ext;
-        format.extensions_list += L';';
-    }
-    if (!format.extensions.empty())
-        format.extensions_list.pop_back();
+    format.CreateExtensionsList();
     return format;
+}
+
+SupportedFormat CAudioCommon::CreateSupportedFormat(const std::vector<std::wstring>& exts, const wchar_t* description, const wchar_t* file_name /*= L""*/)
+{
+    SupportedFormat format;
+    format.description = description;
+    format.file_name = file_name;
+    format.extensions = exts;
+    format.CreateExtensionsList();
+    return format;
+
 }

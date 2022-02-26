@@ -59,8 +59,20 @@ void CFfmpegCore::InitCore() {
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"mov", L"mov"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"avi", L"Audio Video Interleaved"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"cda", L"CD Audio"));
+
+        if (!theApp.m_nc_setting_data.user_defined_type_ffmpeg.empty())
+        {
+            CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(theApp.m_nc_setting_data.user_defined_type_ffmpeg, CCommon::LoadText(IDS_OTHER_FORMATS)));
+        }
+
         for (const auto& item : CAudioCommon::m_surpported_format)
-            CAudioCommon::m_all_surpported_extensions.insert(CAudioCommon::m_all_surpported_extensions.end(), item.extensions.begin(), item.extensions.end());
+        {
+            for (const auto& ext : item.extensions)
+            {
+                if (!ext.empty() && !CCommon::IsItemInVector(CAudioCommon::m_all_surpported_extensions, ext))
+                    CAudioCommon::m_all_surpported_extensions.push_back(ext);
+            }
+        }
 
         settings = ffmpeg_core_init_settings();
         ffmpeg_core_log_set_flags(AV_LOG_SKIP_REPEATED | AV_LOG_PRINT_LEVEL);

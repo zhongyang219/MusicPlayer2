@@ -427,6 +427,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"other", L"debug_log", theApp.m_nc_setting_data.debug_log);
 
     ini.WriteStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type);
+    ini.WriteStringList(L"config", L"user_defined_type_ffmpeg", theApp.m_nc_setting_data.user_defined_type_ffmpeg);
 
     ini.WriteBool(L"general", L"id3v2_first", theApp.m_general_setting_data.id3v2_first);
     ini.WriteBool(L"general", L"auto_download_lyric", theApp.m_general_setting_data.auto_download_lyric);
@@ -595,6 +596,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.debug_log = ini.GetInt(L"other", L"debug_log", NonCategorizedSettingData::LT_ERROR);
 
     ini.GetStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type, vector<wstring>{L"mp3", L"wma", L"wav", L"flac", L"ogg", L"oga", L"m4a", L"mp4", L"cue", L"mp2", L"mp1", L"aif", L"aiff", L"asf"});
+    ini.GetStringList(L"config", L"user_defined_type_ffmpeg", theApp.m_nc_setting_data.user_defined_type_ffmpeg, vector<wstring>{});
 
     theApp.m_general_setting_data.id3v2_first = ini.GetBool(L"general", L"id3v2_first", 1);
     theApp.m_general_setting_data.auto_download_lyric = ini.GetBool(L"general", L"auto_download_lyric", 1);

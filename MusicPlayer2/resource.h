@@ -711,6 +711,7 @@
 #define IDS_SUPPORTTED_FORMAT_INFO      557
 #define IDS_SUPPORTTED_FORMAT_INFO_MCI  558
 #define IDS_SUPPORTTED_FORMAT_INFO_FFMPEG 559
+#define IDS_OTHER_FORMATS               560
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
