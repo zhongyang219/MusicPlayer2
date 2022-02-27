@@ -4547,7 +4547,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
 {
     if (lParam == WM_LBUTTONUP)
     {
-        if (IsFloatPlaylistExist())
+        if (IsFloatPlaylistExist() && m_miniModeDlg.m_hWnd == NULL)
             m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
     }
 
