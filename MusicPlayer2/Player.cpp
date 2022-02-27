@@ -38,11 +38,9 @@ void CPlayer::IniPlayerCore()
 
         //判断MCI或FFMPEG内核是否加载成功
         CDllLib* dll_lib = dynamic_cast<CDllLib*>(m_pCore);
-        bool is_succeed{ true };
         if (dll_lib != nullptr)
         {
-            is_succeed = dll_lib->IsSucceed();
-            if (!is_succeed)
+            if (!dll_lib->IsSucceed())
             {
                 dll_lib->UnInit();
                 delete m_pCore;
