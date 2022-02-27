@@ -63,7 +63,7 @@ public:
     CMenu* m_pCurMenu{};       //当前弹出的菜单
     HACCEL GetAccel() const { return m_hAccel; }
 
-// 实现
+    // 实现
 protected:
     HICON m_hIcon;
     CToolTipCtrl m_Mytip;
@@ -247,6 +247,8 @@ protected:
     bool IsFloatPlaylistExist();
     bool MoveFloatPlaylistPos();
 
+    void Show(bool show);
+
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -311,6 +313,7 @@ public:
     afx_msg void OnDispArtistTitle();
     afx_msg void OnDispTitleArtist();
     afx_msg void OnMiniMode();
+
     afx_msg void OnBnClickedStop();
     afx_msg void OnBnClickedPrevious();
     afx_msg void OnBnClickedPlayPause();

@@ -1098,7 +1098,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background
                                      || theApp.m_app_setting_data.use_desktop_background != optionDlg.m_tab2_dlg.m_data.use_desktop_background };
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
-    bool float_playlist_follow_main_wnd_changed{theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != optionDlg.m_media_lib_dlg.m_data.float_playlist_follow_main_wnd };
+    bool float_playlist_follow_main_wnd_changed{ theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != optionDlg.m_media_lib_dlg.m_data.float_playlist_follow_main_wnd };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -3251,14 +3251,14 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
         }
         else if (GetActiveWindow() == this)           // 如果窗口拥有焦点则隐藏
         {
-            ShowWindow(SW_HIDE);
+            Show(false);
         }
         else                                          // 进行窗口恢复并取得焦点
         {
             if (IsIconic())
                 ShowWindow(SW_RESTORE);
             else
-                ShowWindow(SW_SHOW);
+                Show(true);
             SetForegroundWindow();
         }
     }
@@ -3495,11 +3495,7 @@ void CMusicPlayerDlg::OnMiniMode()
 
     //m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);
     //m_miniModeDlg.SetDisplayFormat(&theApp.m_media_lib_setting_data.display_format);
-    ShowWindow(SW_HIDE);
-    if (IsFloatPlaylistExist())
-    {
-        m_pFloatPlaylistDlg->ShowWindow(SW_HIDE);
-    }
+    Show(false);
 
     if (m_miniModeDlg.DoModal() == IDCANCEL)
     {
@@ -3508,11 +3504,7 @@ void CMusicPlayerDlg::OnMiniMode()
     }
     else
     {
-        ShowWindow(SW_SHOW);
-        if (IsFloatPlaylistExist())
-        {
-            m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
-        }
+        Show(true);
 
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
@@ -3529,6 +3521,16 @@ void CMusicPlayerDlg::OnMiniMode()
     }
 }
 
+
+void CMusicPlayerDlg::Show(bool show)
+{
+    int window_show{ show ? SW_SHOW : SW_HIDE };
+    ShowWindow(window_show);
+    if (IsFloatPlaylistExist())
+    {
+        m_pFloatPlaylistDlg->ShowWindow(window_show);
+    }
+}
 
 void CMusicPlayerDlg::OnBnClickedStop()
 {
@@ -4582,9 +4584,7 @@ void CMusicPlayerDlg::OnCancel()
     // TODO: 在此添加专用代码和/或调用基类
     if (theApp.m_general_setting_data.minimize_to_notify_icon)
     {
-        this->ShowWindow(SW_HIDE);
-        if (IsFloatPlaylistExist())
-            m_pFloatPlaylistDlg->ShowWindow(SW_HIDE);
+        Show(false);
     }
     else
     {
