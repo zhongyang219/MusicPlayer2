@@ -91,4 +91,5 @@ public:
     afx_msg void OnCoverSaveAs();
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnBnClickedShowOutAlbumCoverChk();
+    afx_msg void OnCompressSize();
 };

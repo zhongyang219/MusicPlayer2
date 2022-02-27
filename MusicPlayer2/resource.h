@@ -1527,13 +1527,14 @@
 #define ID_RECENT_FOLDER_PLAYLIST_MENU_END 33384
 #define ID_33385                        33385
 #define ID_HELP_CUSTOM_UI               33386
+#define ID_COMPRESS_SIZE                33387
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        555
-#define _APS_NEXT_COMMAND_VALUE         33387
+#define _APS_NEXT_COMMAND_VALUE         33388
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

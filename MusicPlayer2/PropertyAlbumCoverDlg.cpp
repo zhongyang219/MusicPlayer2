@@ -106,7 +106,7 @@ void CPropertyAlbumCoverDlg::ShowInfo()
     size_t cover_size{};
 
     //载入内嵌专辑封面
-    if(!IsShowOutAlbumCover() && !m_batch_edit)
+    if (!IsShowOutAlbumCover() && !m_batch_edit)
     {
         CAudioTag audio_tag(CurrentSong().file_path);
         wstring cover_img_path = audio_tag.GetAlbumCover(cover_type, PROPERTY_COVER_IMG_FILE_NAME, &cover_size);
@@ -210,7 +210,7 @@ void CPropertyAlbumCoverDlg::ShowInfo()
         m_list_ctrl.SetItemText(RI_COMPRESSED, 0, _T(""));
         for (int i = 0; i < RI_MAX; i++)
         {
-            if (i!=RI_FILE_PATH)
+            if (i != RI_FILE_PATH)
                 m_list_ctrl.SetItemText(i, 1, _T(""));
         }
     }
@@ -327,7 +327,7 @@ void CPropertyAlbumCoverDlg::SetSaveBtnEnable()
         pParent->SendMessage(WM_PROPERTY_DIALOG_MODIFIED, enable);
 }
 
-int CPropertyAlbumCoverDlg::SaveAlbumCover(const wstring & album_cover_path, bool delete_file)
+int CPropertyAlbumCoverDlg::SaveAlbumCover(const wstring& album_cover_path, bool delete_file)
 {
     if (m_batch_edit)
     {
@@ -411,6 +411,7 @@ BEGIN_MESSAGE_MAP(CPropertyAlbumCoverDlg, CTabDlg)
     ON_COMMAND(ID_COVER_SAVE_AS, &CPropertyAlbumCoverDlg::OnCoverSaveAs)
     ON_WM_INITMENU()
     ON_BN_CLICKED(IDC_SHOW_OUT_ALBUM_COVER_CHK, &CPropertyAlbumCoverDlg::OnBnClickedShowOutAlbumCoverChk)
+    ON_COMMAND(ID_COMPRESS_SIZE, &CPropertyAlbumCoverDlg::OnCompressSize)
 END_MESSAGE_MAP()
 
 
@@ -615,7 +616,11 @@ void CPropertyAlbumCoverDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_COVER_BROWSE, MF_BYCOMMAND | (m_write_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_COVER_DELETE, MF_BYCOMMAND | (IsDeleteEnable() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_COVER_SAVE_AS, MF_BYCOMMAND | (HasAlbumCover() ? MF_ENABLED : MF_GRAYED));
-
+    CImage& cover_image{ GetCoverImage() };
+    int cover_size{};
+    if (!cover_image.IsNull())
+        cover_size = max(cover_image.GetWidth(), cover_image.GetHeight());
+    pMenu->EnableMenuItem(ID_COMPRESS_SIZE, MF_BYCOMMAND | (!m_batch_edit && cover_size > theApp.m_nc_setting_data.max_album_cover_size ? MF_ENABLED : MF_GRAYED));
 }
 
 
@@ -624,4 +629,27 @@ void CPropertyAlbumCoverDlg::OnBnClickedShowOutAlbumCoverChk()
     // TODO: 在此添加控件通知处理程序代码
     m_show_out_album_cover = (IsDlgButtonChecked(IDC_SHOW_OUT_ALBUM_COVER_CHK) != 0);
     ShowInfo();
+}
+
+
+void CPropertyAlbumCoverDlg::OnCompressSize()
+{
+    CImage& album_cover{ GetCoverImage() };
+    if (!album_cover.IsNull() && theApp.m_nc_setting_data.max_album_cover_size > 0)
+    {
+        CSize image_size;
+        image_size.cx = album_cover.GetWidth();
+        image_size.cy = album_cover.GetHeight();
+        if (max(image_size.cx, image_size.cy) > theApp.m_nc_setting_data.max_album_cover_size)      //如果专辑封面的尺寸大于设定的最大值，则将其缩小
+        {
+            wstring temp_img_path{ CCommon::GetTemplatePath() + ALBUM_COVER_TEMP_NAME_FOR_PROPERTIES };
+            temp_img_path += L".jpg";
+            //缩小图片大小并保存到临时目录
+            CDrawCommon::ImageResize(album_cover, temp_img_path, theApp.m_nc_setting_data.max_album_cover_size, IT_JPG);
+            m_out_img_path = temp_img_path;
+            m_cover_changed = true;
+            SetSaveBtnEnable();
+        }
+    }
+
 }
