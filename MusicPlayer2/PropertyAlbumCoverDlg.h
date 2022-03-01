@@ -35,7 +35,7 @@ protected:
         RI_HEIGHT,
         RI_BPP,
         RI_SIZE,
-        RI_COMPRESSED,
+        //RI_COMPRESSED,
         RI_MAX
     };
 

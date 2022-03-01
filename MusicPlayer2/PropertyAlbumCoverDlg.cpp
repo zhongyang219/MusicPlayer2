@@ -193,21 +193,21 @@ void CPropertyAlbumCoverDlg::ShowInfo()
             m_list_ctrl.SetItemText(RI_SIZE, 1, CCommon::DataSizeToString(cover_size));
         }
 
-        //已压缩尺寸过大的专辑封面
-        if (!m_cover_changed && !m_batch_edit && IsCurrentSong())
-        {
-            m_list_ctrl.SetItemText(RI_COMPRESSED, 0, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));
-            m_list_ctrl.SetItemText(RI_COMPRESSED, 1, (CPlayer::GetInstance().GetAlbumCoverInfo().size_exceed ? CCommon::LoadText(IDS_YES) : CCommon::LoadText(IDS_NO)));
-        }
-        else
-        {
-            m_list_ctrl.SetItemText(RI_COMPRESSED, 0, _T(""));
-            m_list_ctrl.SetItemText(RI_COMPRESSED, 1, _T(""));
-        }
+    //    //已压缩尺寸过大的专辑封面
+    //    if (!m_cover_changed && !m_batch_edit && IsCurrentSong())
+    //    {
+    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 0, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));
+    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 1, (CPlayer::GetInstance().GetAlbumCoverInfo().size_exceed ? CCommon::LoadText(IDS_YES) : CCommon::LoadText(IDS_NO)));
+    //    }
+    //    else
+    //    {
+    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 0, _T(""));
+    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 1, _T(""));
+    //    }
     }
     else
     {
-        m_list_ctrl.SetItemText(RI_COMPRESSED, 0, _T(""));
+        //m_list_ctrl.SetItemText(RI_COMPRESSED, 0, _T(""));
         for (int i = 0; i < RI_MAX; i++)
         {
             if (i != RI_FILE_PATH)
@@ -444,7 +444,7 @@ BOOL CPropertyAlbumCoverDlg::OnInitDialog()
     m_list_ctrl.InsertItem(RI_HEIGHT, CCommon::LoadText(IDS_HEIGHT));    //高度
     m_list_ctrl.InsertItem(RI_BPP, CCommon::LoadText(IDS_BPP));    //每像素位数
     m_list_ctrl.InsertItem(RI_SIZE, CCommon::LoadText(IDS_FILE_SIZE));    //文件大小
-    m_list_ctrl.InsertItem(RI_COMPRESSED, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));    //已压缩尺寸过大的专辑封面
+    //m_list_ctrl.InsertItem(RI_COMPRESSED, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));    //已压缩尺寸过大的专辑封面
 
     CheckDlgButton(IDC_SHOW_OUT_ALBUM_COVER_CHK, m_show_out_album_cover);
 
