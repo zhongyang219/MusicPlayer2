@@ -38,6 +38,7 @@ void CFloatPlaylistDlg::RefreshData()
     {
         m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, CCommon::LoadText(IDS_FOLDER), CCommon::LoadText(IDS_FOLDER), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
     }
+    m_playlist_ctrl.SetCurSel(-1);
 }
 
 void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
