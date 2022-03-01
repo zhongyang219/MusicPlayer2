@@ -31,11 +31,13 @@ public:
     void AddNewPlaylist(const wstring& path);
     bool DeletePlaylist(const wstring& path);
     void UpdateCurrentPlaylist(int track, int pos, int track_num, int total_time);
+    void UpdatePlaylistInfo(PlaylistInfo playlist_info);
 
     void SavePlaylistData();
     void LoadPlaylistData();
 
     PlaylistInfo FindPlaylistInfo(const wstring& str);
+    PlaylistType GetPlaylistType(const wstring& path);
 
 private:
     CPlaylistMgr();

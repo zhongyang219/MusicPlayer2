@@ -16,7 +16,7 @@
 IMPLEMENT_DYNAMIC(CSelectPlaylistDlg, CMediaLibTabDlg)
 
 CSelectPlaylistDlg::CSelectPlaylistDlg(CWnd* pParent /*=nullptr*/)
-	: CMediaLibTabDlg(IDD_SELECT_PLAYLIST_DIALOG, pParent)
+    : CMediaLibTabDlg(IDD_SELECT_PLAYLIST_DIALOG, pParent)
 {
 
 }
@@ -105,9 +105,9 @@ int CSelectPlaylistDlg::GetPlayingItem()
             auto& recent_playlist{ CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists };
             wstring current_playlist{ CPlayer::GetInstance().GetPlaylistPath() };
             auto iter = std::find_if(recent_playlist.begin(), recent_playlist.end(), [current_playlist](const PlaylistInfo& playlist_info)
-            {
-                return current_playlist == playlist_info.path;
-            });
+                {
+                    return current_playlist == playlist_info.path;
+                });
             playing_item = iter - recent_playlist.begin() + SPEC_PLAYLIST_NUM;
         }
     }
@@ -116,7 +116,7 @@ int CSelectPlaylistDlg::GetPlayingItem()
 
 void CSelectPlaylistDlg::OnTabEntered()
 {
-    if(m_playlist_ctrl.GetCurSel() != -1)
+    if (m_playlist_ctrl.GetCurSel() != -1)
         m_row_selected = m_playlist_ctrl.GetCurSel();
     SetButtonsEnable();
 }
@@ -251,6 +251,8 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CSelectPlaylistDlg::OnNMClickSongList)
     ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CSelectPlaylistDlg::OnNMRClickSongList)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CSelectPlaylistDlg::OnNMDblclkSongList)
+    ON_COMMAND(ID_SAVE_AS_NEW_PLAYLIST, &CSelectPlaylistDlg::OnSaveAsNewPlaylist)
+    ON_COMMAND(ID_PLAYLIST_SAVE_AS, &CSelectPlaylistDlg::OnPlaylistSaveAs)
 END_MESSAGE_MAP()
 
 
@@ -364,7 +366,7 @@ void CSelectPlaylistDlg::ShowPathList()
             index++;
         }
         //最后一行显示临时的播放列表，只有当列表中有歌曲时才显示
-        if(CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.track_num > 0)
+        if (CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist.track_num > 0)
         {
             m_playlist_ctrl.InsertItem(index, std::to_wstring(index + 1).c_str());
             SetListRowData(index, CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist);
@@ -467,19 +469,19 @@ void CSelectPlaylistDlg::SetButtonsEnable()
 
 bool CSelectPlaylistDlg::SelectedCanPlay() const
 {
-    return SelectValid() && 
+    return SelectValid() &&
         (
             !CPlayer::GetInstance().IsPlaylistMode() ||
             GetSelectedPlaylist().path != CPlayer::GetInstance().GetPlaylistPath() ||
             (m_right_selected_item >= 0 && GetSelectedPlaylist().track != m_right_selected_item)
-        );
+            );
 }
 
-void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
+void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    if(!m_searched)
+    if (!m_searched)
     {
         m_row_selected = pNMItemActivate->iItem;
     }
@@ -499,7 +501,7 @@ void CSelectPlaylistDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
 
-    if(SelectedCanPlay())
+    if (SelectedCanPlay())
     {
         int index = -1;
         if (!m_left_selected)
@@ -521,6 +523,12 @@ void CSelectPlaylistDlg::OnOK()
 void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
 {
     // TODO: 在此添加控件通知处理程序代码
+    DoNewPlaylist();
+}
+
+
+wstring CSelectPlaylistDlg::DoNewPlaylist()
+{
     CInputDlg imput_dlg(this);
     imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
@@ -530,26 +538,27 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
         if (playlist_name.IsEmpty())
         {
             MessageBox(CCommon::LoadText(IDS_PLAYLIST_NAME_EMPTY_WARNING), NULL, MB_ICONWARNING | MB_OK);
-            return;
+            return wstring();
         }
         if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
         {
             MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
-            return;
+            return wstring();
         }
         wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
         if (CCommon::FileExist(playlist_path))
         {
             MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_EXIST_WARNING, { playlist_name }), NULL, MB_ICONWARNING | MB_OK);
-            return;
+            return wstring();
         }
 
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
         ShowPathList();
         m_playlist_modified = true;
+        return playlist_path;
     }
+    return wstring();
 }
-
 
 void CSelectPlaylistDlg::OnPlayPlaylist()
 {
@@ -653,7 +662,7 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
 }
 
 
-void CSelectPlaylistDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
+void CSelectPlaylistDlg::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -663,7 +672,7 @@ void CSelectPlaylistDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CSelectPlaylistDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
+void CSelectPlaylistDlg::OnNMRClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -765,7 +774,7 @@ afx_msg LRESULT CSelectPlaylistDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM
 }
 
 
-void CSelectPlaylistDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+void CSelectPlaylistDlg::OnNMClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -774,7 +783,7 @@ void CSelectPlaylistDlg::OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CSelectPlaylistDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
+void CSelectPlaylistDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -796,7 +805,7 @@ void CSelectPlaylistDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CSelectPlaylistDlg::OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult)
+void CSelectPlaylistDlg::OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
@@ -816,4 +825,47 @@ void CSelectPlaylistDlg::OnCancel()
     CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
         ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
+}
+
+
+void CSelectPlaylistDlg::OnSaveAsNewPlaylist()
+{
+    // TODO: 在此添加命令处理程序代码
+    PlaylistInfo playlist_info{ GetSelectedPlaylist() };
+    wstring new_playlist_path = DoNewPlaylist();
+    if (!new_playlist_path.empty())
+    {
+        CopyFile(playlist_info.path.c_str(), new_playlist_path.c_str(), FALSE);
+        PlaylistInfo new_playlist_info = playlist_info;
+        new_playlist_info.path = new_playlist_path;
+        new_playlist_info.last_played_time = 0;
+        CPlaylistMgr::Instance().UpdatePlaylistInfo(new_playlist_info);
+        ShowPathList();
+    }
+}
+
+
+void CSelectPlaylistDlg::OnPlaylistSaveAs()
+{
+    // TODO: 在此添加命令处理程序代码
+    PlaylistInfo playlist_info{ GetSelectedPlaylist() };
+    CFileDialog fileDlg(FALSE, _T("m3u"), CFilePathHelper(playlist_info.path).GetFileNameWithoutExtension().c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_SAVE_PLAYLIST_FILTER), this);
+    if (IDOK == fileDlg.DoModal())
+    {
+        CPlaylistFile playlist;
+        playlist.LoadFromFile(playlist_info.path);
+        //将播放列表保存到文件
+        wstring file_path = fileDlg.GetPathName();
+        wstring file_extension = fileDlg.GetFileExt();
+        file_extension = L'.' + file_extension;
+        CPlaylistFile::Type file_type{};
+        if (file_extension == PLAYLIST_EXTENSION)
+            file_type = CPlaylistFile::PL_PLAYLIST;
+        else if (file_extension == L".m3u")
+            file_type = CPlaylistFile::PL_M3U;
+        else if (file_extension == L".m3u8")
+            file_type = CPlaylistFile::PL_M3U8;
+        playlist.SaveToFile(file_path, file_type);
+    }
+
 }

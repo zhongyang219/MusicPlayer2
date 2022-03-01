@@ -113,6 +113,35 @@ void CPlaylistMgr::UpdateCurrentPlaylist(int track, int pos, int track_num, int 
     }
 }
 
+void CPlaylistMgr::UpdatePlaylistInfo(PlaylistInfo playlist_info)
+{
+    PlaylistType type = GetPlaylistType(playlist_info.path);
+    switch (type)
+    {
+    case PT_DEFAULT:
+        m_default_playlist = playlist_info;
+        break;
+    case PT_FAVOURITE:
+        m_favourite_playlist = playlist_info;
+        break;
+    case PT_TEMP:
+        m_temp_playlist = playlist_info;
+        break;
+    case PT_USER:
+    {
+        auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [&](const PlaylistInfo& info)
+            {
+                return (playlist_info.path == info.path);
+            });
+        if (iter == m_recent_playlists.end())
+            m_recent_playlists.push_back(playlist_info);
+        else
+            *iter = playlist_info;
+    }
+    break;
+    }
+}
+
 void CPlaylistMgr::SavePlaylistData()
 {
     // 打开或者新建文件
@@ -310,4 +339,16 @@ PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str)
         else
             return *iter;
     }
+}
+
+PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path)
+{
+    if (path == m_default_playlist.path)
+        return PT_DEFAULT;
+    else if (path == m_favourite_playlist.path)
+        return PT_FAVOURITE;
+    else if (path == m_temp_playlist.path)
+        return PT_TEMP;
+    else
+        return PT_USER;
 }

@@ -10,15 +10,15 @@
 
 class CSelectPlaylistDlg : public CMediaLibTabDlg
 {
-	DECLARE_DYNAMIC(CSelectPlaylistDlg)
+    DECLARE_DYNAMIC(CSelectPlaylistDlg)
 
 public:
-	CSelectPlaylistDlg(CWnd* pParent = nullptr);   // 标准构造函数
-	virtual ~CSelectPlaylistDlg();
+    CSelectPlaylistDlg(CWnd* pParent = nullptr);   // 标准构造函数
+    virtual ~CSelectPlaylistDlg();
 
-// 对话框数据
+    // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_SELECT_PLAYLIST_DIALOG };
+    enum { IDD = IDD_SELECT_PLAYLIST_DIALOG };
 #endif
 
 
@@ -69,7 +69,7 @@ private:
     vector<SongInfo> m_cur_song_list;   //选中播放列表的数据
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
     int GetPlayingItem();
     virtual void OnTabEntered() override;
@@ -88,7 +88,7 @@ protected:
     virtual void GetSongsSelected(std::vector<SongInfo>& song_list) const override;
     virtual void GetCurrentSongList(std::vector<SongInfo>& song_list) const override;
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 public:
     virtual BOOL OnInitDialog();
@@ -101,16 +101,17 @@ private:
     PlaylistInfo GetSelectedPlaylist() const;
     void SetButtonsEnable();
     bool SelectedCanPlay() const;
+    wstring DoNewPlaylist();        //执行“新建播放列表”操作，返回新播放列表的路径
 
 public:
-    afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
     virtual void OnOK();
     afx_msg void OnBnClickedNewPlaylist();
     afx_msg void OnPlayPlaylist();
     afx_msg void OnRenamePlaylist();
     afx_msg void OnDeletePlaylist();
-    afx_msg void OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult);
-    afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnNMRClickList1(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnNewPlaylist();
     afx_msg void OnEnChangeSearchEdit();
@@ -119,8 +120,10 @@ public:
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 public:
-    afx_msg void OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
-    afx_msg void OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult);
-    afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickSongList(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult);
     virtual void OnCancel();
+    afx_msg void OnSaveAsNewPlaylist();
+    afx_msg void OnPlaylistSaveAs();
 };

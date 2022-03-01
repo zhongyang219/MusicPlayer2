@@ -5502,7 +5502,6 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
         wstring file_path = fileDlg.GetPathName();
         wstring file_extension = fileDlg.GetFileExt();
         file_extension = L'.' + file_extension;
-        auto ofn = fileDlg.m_ofn;
         CPlaylistFile::Type file_type{};
         if (file_extension == PLAYLIST_EXTENSION)
             file_type = CPlaylistFile::PL_PLAYLIST;
