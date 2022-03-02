@@ -616,11 +616,11 @@ void CPropertyAlbumCoverDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_COVER_BROWSE, MF_BYCOMMAND | (m_write_enable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_COVER_DELETE, MF_BYCOMMAND | (IsDeleteEnable() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_COVER_SAVE_AS, MF_BYCOMMAND | (HasAlbumCover() ? MF_ENABLED : MF_GRAYED));
-    CImage& cover_image{ GetCoverImage() };
+    CImage& cover_image{ m_cover_img };
     int cover_size{};
     if (!cover_image.IsNull())
         cover_size = max(cover_image.GetWidth(), cover_image.GetHeight());
-    pMenu->EnableMenuItem(ID_COMPRESS_SIZE, MF_BYCOMMAND | (!m_batch_edit && cover_size > theApp.m_nc_setting_data.max_album_cover_size ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_COMPRESS_SIZE, MF_BYCOMMAND | (!IsShowOutAlbumCover() && !m_batch_edit && cover_size > theApp.m_nc_setting_data.max_album_cover_size ? MF_ENABLED : MF_GRAYED));
 }
 
 

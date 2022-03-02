@@ -698,6 +698,9 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (is_not_default_playlist || is_tmp_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
+    bool select_valid{ (m_row_selected >= 0 && m_row_selected < playlists_size) || is_tmp_playlist };
+    pMenu->EnableMenuItem(ID_SAVE_AS_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 
     bool is_delete_enable{ !m_left_selected && m_right_selected_item >= 0 && m_right_selected_item < static_cast<int>(m_cur_song_list.size())
         && !m_cur_song_list[m_right_selected_item].is_cue && !COSUPlayerHelper::IsOsuFile(m_cur_song_list[m_right_selected_item].file_path) };
