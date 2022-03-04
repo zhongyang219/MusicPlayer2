@@ -1,27 +1,17 @@
 ﻿#pragma once
 #include "ListCtrlEx.h"
-#include "BASSEncodeLibrary.h"
 #include "AudioTag.h"
 #include "MP3EncodeCfgDlg.h"
 #include "OggEncodeCfgDlg.h"
-#include "BASSWmaLibrary.h"
 #include "WmaEncodeCfgDlg.h"
 #include "TagEditDlg.h"
 #include "FolderBrowserDlg.h"
 #include "PlayerProgressBar.h"
-#include "BassMixLibrary.h"
 #include <map>
 #include "BrowseEdit.h"
 #include "MusicPlayer2.h"
 #include "BaseDialog.h"
 
-//格式转换错误代码
-#define CONVERT_ERROR_FILE_CONNOT_OPEN (-1)			//源文件无法读取
-#define CONVERT_ERROR_ENCODE_CHANNEL_FAILED (-2)	//编码通道创建失败
-#define CONVERT_ERROR_ENCODE_PARA_ERROR (-3)		//找不到编码器或编码器参数错误
-#define CONVERT_ERROR_MIDI_NO_SF2 (-4)				//没有MIDI音色库
-#define CONVERT_ERROR_WMA_NO_WMP9_OR_LATER (-5)     //没有安装 Windows Media Player 9 或更高版本。
-#define CONVERT_ERROR_WMA_NO_SUPPORTED_ENCODER (-6) //无法找到可支持请求的采样格式和比特率的编解码器。
 
 //单个文件转换进度的消息
 //wParam: 文件在m_file_list列表中的索引
@@ -39,8 +29,6 @@ class CFormatConvertDlg : public CBaseDialog
 	DECLARE_DYNAMIC(CFormatConvertDlg)
 
 public:
-	enum class EncodeFormat { WAV, MP3, WMA, OGG };
-
 	CFormatConvertDlg(CWnd* pParent = nullptr);   // 标准构造函数
 	CFormatConvertDlg(const vector<SongInfo>& items, CWnd* pParent = nullptr);
 	virtual ~CFormatConvertDlg();
@@ -74,18 +62,13 @@ protected:
     wstring m_out_name;             // 输出文件名格式字符串
 	EncodeFormat m_encode_format{ EncodeFormat::MP3 };
 	CWinThread* m_pThread{};		//格式转换的线程
-	wstring m_encode_dir;
 
 	bool m_encoder_succeed;
 	bool m_thread_runing{};
 
 	MP3EncodePara m_mp3_encode_para;		//MP3编码参数
-	int m_ogg_encode_quality{ 3 };				//OGG编码质量
-	WmaEncodePara m_wma_encode_para;			//wma编码参数
-
-	static CBASSEncodeLibrary m_bass_encode_lib;
-	static CBASSWmaLibrary m_bass_wma_lib;
-    static CBassMixLibrary m_bass_mix_lib;
+    OggEncodePara m_ogg_encode_para;		//OGG编码参数
+	WmaEncodePara m_wma_encode_para;		//wma编码参数
 
 	int m_item_selected;
 
@@ -113,7 +96,6 @@ protected:
 	void ShowFileList();
 	bool InitEncoder();
 	//编码单个文件（在线程函数中调用）
-	//pthis: 当前对话框的指针
 	//file_index: 编码的文件在m_file_list中的索引
 	static bool EncodeSingleFile(CFormatConvertDlg* pthis, int file_index);
 

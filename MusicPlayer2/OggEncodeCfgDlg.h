@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "IPlayerCore.h"
 
 // COggEncodeCfgDlg 对话框
 
@@ -16,7 +16,7 @@ public:
 	enum { IDD = IDD_OGG_ENCODE_CFG_DIALOG };
 #endif
 
-	int m_encode_quality;
+    OggEncodePara m_encode_para;
 
 protected:
 	//控件变量

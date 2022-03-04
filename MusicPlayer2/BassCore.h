@@ -3,6 +3,9 @@
 #include "bass.h"
 #include "BASSMidiLibrary.h"
 #include "Time.h"
+#include "BASSEncodeLibrary.h"
+#include "BASSWmaLibrary.h"
+#include "BassMixLibrary.h"
 
 #define PLAYING_STATE_DEFAULT_VALUE 99
 
@@ -37,6 +40,11 @@ public:
     virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
     virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
 
+    virtual bool EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc) override;
+    virtual bool InitEncoder() override;
+    virtual void UnInitEncoder() override;
+    virtual bool IsFreqConvertAvailable() override;
+
     virtual bool IsMidi() override;
     virtual bool IsMidiConnotPlay() override;
     virtual std::wstring GetMidiInnerLyric() override;
@@ -60,13 +68,14 @@ public:
     virtual std::wstring GetErrorInfo() override;
 
     virtual PlayerCoreType GetCoreType() override { return PT_BASS; }
-    virtual int GetDeviceCount() override;
 
     static int GetBASSCurrentPosition(HSTREAM hStream);
     static Time GetBASSSongLength(HSTREAM hStream);
     static void SetCurrentPosition(HSTREAM hStream, int position);
 
     static void GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO);
+
+    wstring GetEncoderDir() { return m_encode_dir; }
 
 public:
     static CBASSMidiLibrary m_bass_midi_lib;
@@ -104,4 +113,10 @@ private:
 
     static CCriticalSection m_critical;
     PlayingState m_playing_state{};
-};
+
+    static CBASSEncodeLibrary m_bass_encode_lib;
+    static CBASSWmaLibrary m_bass_wma_lib;
+    static CBassMixLibrary m_bass_mix_lib;
+
+    wstring m_encode_dir;
+    };

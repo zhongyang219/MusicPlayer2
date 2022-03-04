@@ -1,12 +1,5 @@
 ﻿#pragma once
-
-
-struct WmaEncodePara	//wma 编码参数
-{
-	bool cbr{ true };			//true: CBR; false: VBR
-	int cbr_bitrate{ 64 };		//CBR比特率，单位kbps
-	int vbr_quality{ 75 };		//VBR质量
-};
+#include "IPlayerCore.h"
 
 // CWmaEncodeCfgDlg 对话框
 

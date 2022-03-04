@@ -104,7 +104,6 @@ public:
     virtual std::wstring GetErrorInfo(int error_code) override;
     virtual std::wstring GetErrorInfo() override;
     virtual PlayerCoreType GetCoreType() override;
-    virtual int GetDeviceCount() override;
     std::wstring GetTitle(MusicInfoHandle* h = nullptr);
     std::wstring GetArtist(MusicInfoHandle* h = nullptr);
     std::wstring GetAlbum(MusicInfoHandle* h = nullptr);
@@ -119,6 +118,12 @@ public:
     void SetMaxRetryCount(int max_retry_count = 3);
     void SetUrlRetryInterval(int url_retry_interval = 5);
     std::list<std::wstring> GetAudioDevices();
+
+    virtual bool EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc) override;
+    virtual bool InitEncoder() override;
+    virtual void UnInitEncoder() override;
+    virtual bool IsFreqConvertAvailable() override;
+
 private:
     std::wstring GetMetadata(std::string key, MusicInfoHandle* h = nullptr);
     virtual bool GetFunction() override;

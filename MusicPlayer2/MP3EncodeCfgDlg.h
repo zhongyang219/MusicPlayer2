@@ -1,17 +1,7 @@
 ﻿#pragma once
-
+#include "IPlayerCore.h"
 
 // CMP3EncodeCfgDlg 对话框
-
-struct MP3EncodePara
-{
-	int encode_type{ 0 };		//0:CBR, 1:ABR, 2:VBR, 3:自定义参数
-	wstring cbr_bitrate{ L"128" };		//CBR比特率
-	wstring abr_bitrate{ L"128" };		//ABR比特率
-	int vbr_quality{ 4 };		//VBR质量（0~9）
-	bool joint_stereo{ true };
-	wstring cmd_para;		//命令行参数
-};
 
 class CMP3EncodeCfgDlg : public CDialog
 {

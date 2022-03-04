@@ -48,14 +48,18 @@ public:
     virtual void ApplyEqualizer(int channel, int gain) override;
     virtual void SetReverb(int mix, int time) override;
     virtual void ClearReverb() override;
-    virtual void GetFFTData(float fft_data[128]) override;
+    virtual void GetFFTData(float fft_data[FFT_SAMPLE]) override;
 
     virtual int GetErrorCode() override;
     virtual std::wstring GetErrorInfo(int error_code) override;
     virtual std::wstring GetErrorInfo() override;
 
     virtual PlayerCoreType GetCoreType() override { return PT_MCI; }
-    virtual int GetDeviceCount() override;
+
+    virtual bool EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc) override;
+    virtual bool InitEncoder() override;
+    virtual void UnInitEncoder() override;
+    virtual bool IsFreqConvertAvailable() override;
 
 private:
     void GetMidiPosition();

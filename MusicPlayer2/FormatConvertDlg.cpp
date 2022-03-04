@@ -13,16 +13,9 @@
 #include "SongDataManager.h"
 #include "PropertyDlgHelper.h"
 
-#define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
-
 #define MAX_ALBUM_COVER_SIZE (128 * 1024)                           //编码器支持的最大专辑封面大小
 #define CONVERT_TEMP_ALBUM_COVER_NAME L"cover_R1hdyFy6CoEK7Gu8"     //临时的专辑封面文件名
 #define COMPRESSED_ALBUM_COVER_PIXEL 512                            //要将专辑封面图片压缩的尺寸
-
-CBASSEncodeLibrary CFormatConvertDlg::m_bass_encode_lib;
-CBASSWmaLibrary CFormatConvertDlg::m_bass_wma_lib;
-CBassMixLibrary CFormatConvertDlg::m_bass_mix_lib;
-
 
 
 static wstring GetCueDisplayFileName(const wstring& title, const wstring& artist)
@@ -81,9 +74,7 @@ CFormatConvertDlg::CFormatConvertDlg(const vector<SongInfo>& items, CWnd* pParen
 
 CFormatConvertDlg::~CFormatConvertDlg()
 {
-    m_bass_encode_lib.UnInit();
-    m_bass_wma_lib.UnInit();
-    m_bass_mix_lib.UnInit();
+    CPlayer::GetInstance().GetPlayerCore()->UnInitEncoder();
 }
 
 CString CFormatConvertDlg::GetDialogName() const
@@ -151,7 +142,7 @@ void CFormatConvertDlg::LoadEncoderConfig()
     m_wma_encode_para.cbr = ini.GetBool(L"wma_encoder", L"cbr", true);
     m_wma_encode_para.cbr_bitrate = ini.GetInt(L"wma_encoder", L"cbr_bitrate", 64);
     m_wma_encode_para.vbr_quality = ini.GetInt(L"wma_encoder", L"vbr_quality", 75);
-    m_ogg_encode_quality = ini.GetInt(L"ogg_encoder", L"quality", 4);
+    m_ogg_encode_para.encode_quality = ini.GetInt(L"ogg_encoder", L"quality", 4);
 }
 
 void CFormatConvertDlg::SaveEncoderConfig() const
@@ -167,7 +158,7 @@ void CFormatConvertDlg::SaveEncoderConfig() const
     ini.WriteBool(L"wma_encoder", L"cbr", m_wma_encode_para.cbr);
     ini.WriteInt(L"wma_encoder", L"cbr_bitrate", m_wma_encode_para.cbr_bitrate);
     ini.WriteInt(L"wma_encoder", L"vbr_quality", m_wma_encode_para.vbr_quality);
-    ini.WriteInt(L"ogg_encoder", L"quality", m_ogg_encode_quality);
+    ini.WriteInt(L"ogg_encoder", L"quality", m_ogg_encode_para.encode_quality);
 
     ini.Save();
 }
@@ -221,7 +212,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
     LoadEncoderConfig();
 
     m_encoder_succeed = InitEncoder();
-    if (!m_bass_mix_lib.IsSucceed())
+    if (!CPlayer::GetInstance().GetPlayerCore()->IsFreqConvertAvailable())
         m_convert_freq = false;
 
     //初始化菜单
@@ -345,28 +336,13 @@ void CFormatConvertDlg::ShowFileList()
 
 bool CFormatConvertDlg::InitEncoder()
 {
-    //初始化bass encode库
-    wstring encode_dll_path;
-    wstring wma_dll_path;
-    wstring plugin_dir;
-    m_encode_dir = theApp.m_local_dir + L"Encoder\\";
-    plugin_dir = theApp.m_local_dir + L"Plugins\\";
-    encode_dll_path = m_encode_dir + L"bassenc.dll";
-    m_bass_encode_lib.Init(encode_dll_path);
-
-    wma_dll_path = plugin_dir + L"basswma.dll";
-    m_bass_wma_lib.Init(wma_dll_path);
-
-    m_bass_mix_lib.Init(m_encode_dir + L"bassmix.dll");
-
-    return m_bass_encode_lib.IsSucceed();
+    return CPlayer::GetInstance().GetPlayerCore()->InitEncoder();
 }
 
 bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_index)
 {
     //设置输出文件路径
     SongInfo& song_info{ pthis->m_file_list[file_index] };
-    const wstring& file_path{ pthis->m_file_list[file_index].file_path };
 
     // 输出文件路径
     wstring out_file_path{ pthis->m_out_dir };
@@ -418,307 +394,69 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         }
     }
 
-    wstring out_file_path_temp = CCommon::GetTemplatePath() + CONVERTING_TEMP_FILE_NAME;     //转换时的临时文件名
-
-    //创建解码通道
-    const int BUFF_SIZE{ 20000 };
-    // char buff[BUFF_SIZE];
-    std::unique_ptr<char[]> buff(new char[BUFF_SIZE]);
-    HSTREAM hStream = BASS_StreamCreateFile(FALSE, file_path.c_str(), 0, 0, BASS_STREAM_DECODE/* | BASS_SAMPLE_FLOAT*/);
-    if (hStream == 0)
+    void* para{};
+    switch (pthis->m_encode_format)
     {
-        ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, CONVERT_ERROR_FILE_CONNOT_OPEN);
-        return false;
-    }
-
-    //获取通道信息
-    BASS_CHANNELINFO channel_info;
-    BASS_ChannelGetInfo(hStream, &channel_info);
-    bool is_midi = (CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype) == AU_MIDI);
-    if (is_midi)
-    {
-        bool sf2_loaded = (CBassCore::m_bass_midi_lib.IsSucceed() && CBassCore::m_sfont.font != 0);
-        if (sf2_loaded)
-        {
-            CBassCore::m_bass_midi_lib.BASS_MIDI_StreamSetFonts(hStream, &CBassCore::m_sfont, 1);
-        }
-        else
-        {
-            BASS_StreamFree(hStream);
-            ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, CONVERT_ERROR_MIDI_NO_SF2);
-            return false;
-        }
-    }
-
-    //转换采样频率
-    int freq = pthis->GetFreq();
-    HSTREAM hStreamOld = 0;
-    if (m_bass_mix_lib.IsSucceed() && pthis->m_convert_freq && freq > 0 && freq != channel_info.freq)
-    {
-        hStreamOld = hStream;
-        hStream = m_bass_mix_lib.BASS_Mixer_StreamCreate(freq, channel_info.chans, BASS_MIXER_END | BASS_STREAM_DECODE);
-        if (hStream != 0)
-        {
-            m_bass_mix_lib.BASS_Mixer_StreamAddChannel(hStream, hStreamOld, 0);
-        }
-        else
-        {
-            hStream = hStreamOld;
-            hStreamOld = 0;
-        }
-    }
-
-    //获取流的长度
-    QWORD length = BASS_ChannelGetLength(hStreamOld != 0 ? hStreamOld : hStream, 0);
-    if (hStreamOld != 0 && channel_info.freq != 0)     //如果开启了转换采样频率
-        length = length * freq / channel_info.freq;
-    if (length == 0) length = 1;	//防止length作为除数时为0
-
-    //如果转换的音频是cue音轨，则先定位到曲目开始处
-    if (song_info.is_cue)
-    {
-        CBassCore::SetCurrentPosition(hStreamOld != 0 ? hStreamOld : hStream, song_info.start_pos.toInt());
-    }
-
-    HENCODE hEncode;
-    if (pthis->m_encode_format != EncodeFormat::WMA)
-    {
-        //设置解码器命令行参数
-        wstring cmdline;
-        switch (pthis->m_encode_format)
-        {
-        case EncodeFormat::MP3:
-        {
-            //设置lame命令行参数
-            cmdline = pthis->m_encode_dir;
-            cmdline += L"lame.exe ";
-            cmdline += pthis->m_mp3_encode_para.cmd_para;
-            CString str;
-            //if (pthis->m_write_tag)
-            //{
-            //	str.Format(_T(" --tt \"%s\" --ta \"%s\" --tl \"%s\" --ty \"%s\" --tc \"%s\" --tn \"%s\" --tg \"%s\""),
-            //		song_info.title.c_str(), song_info.artist.c_str(), song_info.album.c_str(), song_info.get_year().c_str(), song_info.comment.c_str(),
-            //		CAudioCommon::TrackToString(song_info.track).GetString(), song_info.genre.c_str());
-            //	cmdline += str;
-            //}
-            //if(pthis->m_write_tag)
-            //	cmdline += L" --add-id3v2";
-            cmdline += L" - \"";
-            cmdline += out_file_path_temp;
-            cmdline.push_back(L'\"');
-        }
+    case EncodeFormat::MP3:
+        para = &pthis->m_mp3_encode_para;
         break;
-        case EncodeFormat::OGG:
-        {
-            cmdline = pthis->m_encode_dir;
-            CString str;
-            str.Format(_T("oggenc -q %d"), pthis->m_ogg_encode_quality);
-            cmdline += str;
-            if (pthis->m_write_tag)
-            {
-                str.Format(_T(" -t \"%s\" -a \"%s\" -l \"%s\" -N \"%s\""),
-                    song_info.title.c_str(), song_info.artist.c_str(), song_info.album.c_str(), CAudioCommon::TrackToString(song_info.track).GetString());
-                cmdline += str;
-            }
-            cmdline += L" -o \"";
-            cmdline += out_file_path;
-            cmdline += L"\" -";
-        }
+    case EncodeFormat::WMA:
+        para = &pthis->m_wma_encode_para;
         break;
-        default:
-            cmdline = out_file_path;
-        }
-        //开始解码
-        hEncode = m_bass_encode_lib.BASS_Encode_StartW(hStream, cmdline.c_str(), BASS_ENCODE_AUTOFREE | (pthis->m_encode_format == EncodeFormat::WAV ? BASS_ENCODE_PCM : 0), NULL, 0);
-        if (hEncode == 0)
-        {
-            BASS_StreamFree(hStream);
-            if (hStreamOld != 0)
-                BASS_StreamFree(hStreamOld);
-            ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
-            return false;
-        }
-    }
-    else		//输出为WMA时使用专用的编码器
-    {
-        if (!m_bass_wma_lib.IsSucceed())
-        {
-            BASS_StreamFree(hStream);
-            if (hStreamOld != 0)
-                BASS_StreamFree(hStreamOld);
-            return false;
-        }
-        //开始解码
-        int wma_bitrate;
-        if (pthis->m_wma_encode_para.cbr)
-            wma_bitrate = pthis->m_wma_encode_para.cbr_bitrate * 1000;
-        else
-            wma_bitrate = pthis->m_wma_encode_para.vbr_quality;
-        hEncode = m_bass_wma_lib.BASS_WMA_EncodeOpenFileW(hStream, NULL, BASS_WMA_ENCODE_STANDARD | BASS_WMA_ENCODE_SOURCE, wma_bitrate, out_file_path.c_str());
-        int error = BASS_ErrorGetCode();
-        int error_code{ CONVERT_ERROR_ENCODE_CHANNEL_FAILED };
-        //如果出现了错误，则写入错误日志
-        if (error != 0)
-        {
-            CString log_str;
-            log_str = CCommon::LoadTextFormat(IDS_CONVERT_WMA_ERROR, { file_path });
-            switch (error)
-            {
-            case BASS_ERROR_WMA:
-                log_str += CCommon::LoadText(IDS_NO_WMP9_OR_LATER);
-                error_code = CONVERT_ERROR_WMA_NO_WMP9_OR_LATER;
-                break;
-            case BASS_ERROR_NOTAVAIL:
-                log_str += CCommon::LoadText(IDS_NO_SUPPORTED_ENCODER_WARNING);
-                error_code = CONVERT_ERROR_WMA_NO_SUPPORTED_ENCODER;
-                break;
-            default:
-                log_str += CCommon::LoadText(IDS_UNKNOW_ERROR);
-                break;
-            }
-            theApp.WriteLog(wstring(log_str));
-        }
-        if (hEncode == 0)
-        {
-            BASS_StreamFree(hStream);
-            if (hStreamOld != 0)
-                BASS_StreamFree(hStreamOld);
-            ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, error_code);
-            return false;
-        }
-        //写入WMA标签
-        if (pthis->m_write_tag)
-        {
-            m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"Title", song_info.title.c_str());
-            m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"Author", song_info.artist.c_str());
-            m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/AlbumTitle", song_info.album.c_str());
-            m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/Year", song_info.get_year().c_str());
-            m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/TrackNumber", CAudioCommon::TrackToString(song_info.track).GetString());
-            m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"WM/Genre", song_info.genre.c_str());
-            m_bass_wma_lib.BASS_WMA_EncodeSetTagW(hEncode, L"Description", song_info.comment.c_str());
-        }
+    case EncodeFormat::OGG:
+        para = &pthis->m_ogg_encode_para;
+        break;
+    default:
+        break;
+
     }
 
-    while (BASS_ChannelIsActive(hStream) != BASS_ACTIVE_STOPPED)
-    {
-        if (theApp.m_format_convert_dialog_exit)
-        {
-            m_bass_encode_lib.BASS_Encode_Stop(hEncode);
-            BASS_StreamFree(hStream);
-            if (hStreamOld != 0)
-                BASS_StreamFree(hStreamOld);
-            return false;
-        }
-        // BASS_ChannelGetData(hStream, buff, BUFF_SIZE);
-        BASS_ChannelGetData(hStream, buff.get(), BUFF_SIZE);
-        //if (m_bass_encode_lib.BASS_Encode_IsActive(hStream) == 0)
-        //{
-        //	m_bass_encode_lib.BASS_Encode_Stop(hEncode);
-        //	BASS_StreamFree(hStream);
-        //}
+    int freq{};
+    if (CPlayer::GetInstance().GetPlayerCore()->IsFreqConvertAvailable() && pthis->m_convert_freq)
+        freq = pthis->GetFreq();
 
-        //获取转换百分比
-        int percent;
-        static int last_percent{ -1 };
-        if (!song_info.is_cue)
+    static int _file_index{};
+    _file_index = file_index;
+    static CFormatConvertDlg* _pthis{};
+    _pthis = pthis;
+    //执行转换格式
+    CPlayer::GetInstance().GetPlayerCore()->EncodeAudio(song_info, out_file_path, pthis->m_encode_format, para, freq, [](int progress)
         {
-            QWORD position = BASS_ChannelGetPosition(hStream, 0);
-            percent = static_cast<int>(position * 100 / length);
+            ::PostMessage(_pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, _file_index, progress);
+        });
+
+    //转换完成后向目标文件写入标签信息和专辑封面
+    SongInfo song_info_out{ song_info };
+    song_info_out.file_path = out_file_path;
+    //写入标签信息
+    if (pthis->m_write_tag)
+    {
+        CAudioTag audio_tag_out(song_info_out);
+        audio_tag_out.WriteAudioTag();
+    }
+    //写入专辑封面
+    if (pthis->m_write_album_cover)
+    {
+        //获取原始文件的专辑封面
+        SongInfo song_info_tmp;
+        song_info_tmp.file_path = song_info.file_path;
+        CAudioTag audio_tag(song_info_tmp);
+        int cover_type;
+        wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
+        CImage image;
+        image.Load(album_cover_path.c_str());
+        if (image.IsNull())		//如果没有内嵌的专辑封面，则获取外部封面
+        {
+            CMusicPlayerCmdHelper helper;
+            album_cover_path = helper.SearchAlbumCover(song_info);
         }
         else
+            image.Destroy();
+        //将专辑封面写入目标文件
+        if (!album_cover_path.empty())
         {
-            int cue_position = CBassCore::GetBASSCurrentPosition(hStreamOld != 0 ? hStreamOld : hStream) - song_info.start_pos.toInt();
-            int cue_length = song_info.lengh.toInt();
-            percent = static_cast<int>(cue_position * 100 / cue_length);
-            if (percent == 100)
-                break;
-        }
-        if (percent < 0 || percent>100)
-        {
-            ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, CONVERT_ERROR_ENCODE_PARA_ERROR);
-            BASS_StreamFree(hStream);
-            if (hStreamOld != 0)
-                BASS_StreamFree(hStreamOld);
-            return false;
-        }
-        if (last_percent != percent)
-            ::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, percent);
-        last_percent = percent;
-    }
-
-    BASS_StreamFree(hStream);
-    if (hStreamOld != 0)
-        BASS_StreamFree(hStreamOld);
-
-    //转换完成后
-    if (pthis->m_encode_format == EncodeFormat::MP3)
-    {
-        CFilePathHelper out_file_path_helper{ out_file_path };
-        CCommon::MoveAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_temp, out_file_path_helper.GetDir());
-        if (CCommon::FileExist(out_file_path_helper.GetFilePath()))
-            CCommon::DeleteAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_helper.GetFilePath());
-        CCommon::FileRename(out_file_path_helper.GetDir() + CONVERTING_TEMP_FILE_NAME, out_file_path_helper.GetFileName());
-
-        //向mp3文件添加标签信息
-        if (pthis->m_write_tag)
-        {
-            SongInfo song_info_tmp{ song_info };
-            song_info_tmp.file_path = out_file_path;
-            CTagLibHelper::WriteMpegTag(song_info_tmp);
-        }
-
-        //向转换的mp3文件添加专辑封面
-        if (pthis->m_write_album_cover)
-        {
-            SongInfo song_info_tmp;
-            song_info_tmp.file_path = file_path;
-            CAudioTag audio_tag(song_info_tmp);
-            int cover_type;
-            wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
-            CImage image;
-            image.Load(album_cover_path.c_str());
-            if (image.IsNull())		//如果没有内嵌的专辑封面，则获取外部封面
-            {
-                CMusicPlayerCmdHelper helper;
-                album_cover_path = helper.SearchAlbumCover(song_info);
-            }
-            else
-                image.Destroy();
-            if (!album_cover_path.empty())
-            {
-                CTagLibHelper::WriteMp3AlbumCover(out_file_path, album_cover_path);
-            }
-        }
-    }
-
-    else if (pthis->m_encode_format == EncodeFormat::WAV)
-    {
-        SongInfo song_info_tmp{ song_info };
-        song_info_tmp.file_path = out_file_path;
-        if (pthis->m_write_tag)
-        {
-            CTagLibHelper::WriteWavTag(song_info_tmp);
-        }
-        if (pthis->m_write_album_cover)
-        {
-            SongInfo song_info_tmp;
-            song_info_tmp.file_path = file_path;
-            CAudioTag audio_tag(song_info_tmp);
-            int cover_type;
-            wstring album_cover_path = audio_tag.GetAlbumCover(cover_type, ALBUM_COVER_NAME_ENCODE);
-            CImage image;
-            image.Load(album_cover_path.c_str());
-            if (image.IsNull())		//如果没有内嵌的专辑封面，则获取外部封面
-            {
-                CMusicPlayerCmdHelper helper;
-                album_cover_path = helper.SearchAlbumCover(song_info);
-            }
-            else
-                image.Destroy();
-            if (!album_cover_path.empty())
-            {
-                CTagLibHelper::WriteWavAlbumCover(out_file_path, album_cover_path);
-            }
+            CAudioTag audio_tag_out(song_info_out);
+            audio_tag_out.WriteAlbumCover(album_cover_path);
         }
     }
 
@@ -782,8 +520,12 @@ void CFormatConvertDlg::OnBnClickedStartConvertButton()
     SetProgressInfo(0);
     if (!m_encoder_succeed)
     {
+        CBassCore* bass_core = dynamic_cast<CBassCore*>(CPlayer::GetInstance().GetPlayerCore());
         CString info;
-        info = CCommon::LoadTextFormat(IDS_BASS_ENCODER_LOAD_ERROR, { m_encode_dir + L"bassenc.dll" });
+        if (bass_core != nullptr)
+            info = CCommon::LoadTextFormat(IDS_BASS_ENCODER_LOAD_ERROR, { bass_core->GetEncoderDir() + L"bassenc.dll" });
+        else
+            info = CCommon::LoadText(IDS_IDS_ENCODER_INIT_ERROR);
         MessageBox(info, NULL, MB_ICONERROR | MB_OK);
         return;
     }
@@ -986,9 +728,9 @@ void CFormatConvertDlg::OnBnClickedEncoderConfigButton()
     case EncodeFormat::OGG:
     {
         COggEncodeCfgDlg dlg;
-        dlg.m_encode_quality = m_ogg_encode_quality;
+        dlg.m_encode_para = m_ogg_encode_para;
         if (dlg.DoModal() == IDOK)
-            m_ogg_encode_quality = dlg.m_encode_quality;
+            m_ogg_encode_para = dlg.m_encode_para;
     }
     break;
     default:
@@ -1254,10 +996,12 @@ void CFormatConvertDlg::OnBnClickedChangeFreqCheck()
     // TODO: 在此添加控件通知处理程序代码
     CButton* pBtn = (CButton*)GetDlgItem(IDC_CHANGE_FREQ_CHECK);
     m_convert_freq = pBtn->GetCheck() != 0;
-    if (m_convert_freq && !m_bass_mix_lib.IsSucceed())
+    if (m_convert_freq && !CPlayer::GetInstance().GetPlayerCore()->IsFreqConvertAvailable())
     {
         m_convert_freq = false;
-        MessageBox(CCommon::LoadTextFormat(IDS_BASS_MIX_LOAD_ERROR, { m_encode_dir + L"bassmix.dll" }), NULL, MB_ICONWARNING | MB_OK);
+        CBassCore* bass_core = dynamic_cast<CBassCore*>(CPlayer::GetInstance().GetPlayerCore());
+        if (bass_core != nullptr)
+            MessageBox(CCommon::LoadTextFormat(IDS_BASS_MIX_LOAD_ERROR, { bass_core->GetEncoderDir() + L"bassmix.dll" }), NULL, MB_ICONWARNING | MB_OK);
         pBtn->SetCheck(FALSE);
     }
 

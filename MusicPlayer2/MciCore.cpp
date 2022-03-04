@@ -287,7 +287,7 @@ void CMciCore::ClearReverb()
 {
 }
 
-void CMciCore::GetFFTData(float fft_data[128])
+void CMciCore::GetFFTData(float fft_data[FFT_SAMPLE])
 {
     memset(fft_data, 0, sizeof(fft_data));
 }
@@ -311,9 +311,23 @@ std::wstring CMciCore::GetErrorInfo()
     return buff;
 }
 
-int CMciCore::GetDeviceCount()
+bool CMciCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc)
 {
-    return 0;
+    return false;
+}
+
+bool CMciCore::InitEncoder()
+{
+    return false;
+}
+
+void CMciCore::UnInitEncoder()
+{
+}
+
+bool CMciCore::IsFreqConvertAvailable()
+{
+    return false;
 }
 
 void CMciCore::GetMidiPosition()

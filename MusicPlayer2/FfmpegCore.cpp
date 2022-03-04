@@ -362,10 +362,6 @@ PlayerCoreType CFfmpegCore::GetCoreType() {
     return PlayerCoreType::PT_FFMPEG;
 }
 
-int CFfmpegCore::GetDeviceCount() {
-    return 0;
-}
-
 bool CFfmpegCore::GetFunction() {
     bool rtn = true;
     //获取函数入口
@@ -632,4 +628,23 @@ std::list<std::wstring> CFfmpegCore::GetAudioDevices() {
     }
     free_device_name_list(&d);
     return l;
+}
+
+bool CFfmpegCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc)
+{
+    return false;
+}
+
+bool CFfmpegCore::InitEncoder()
+{
+    return false;
+}
+
+void CFfmpegCore::UnInitEncoder()
+{
+}
+
+bool CFfmpegCore::IsFreqConvertAvailable()
+{
+    return false;
 }
