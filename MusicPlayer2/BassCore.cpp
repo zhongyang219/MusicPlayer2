@@ -361,11 +361,14 @@ void CBassCore::Open(const wchar_t * file_path)
 void CBassCore::Close()
 {
     CSingleLock sync(&m_critical, TRUE);
-    if(KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID))
-        BASS_ChannelStop(m_musicStream);
-    RemoveFXHandle();
-    BASS_StreamFree(m_musicStream);
-    m_musicStream = 0;
+    if (m_musicStream != 0)
+    {
+        if (KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID))
+            BASS_ChannelStop(m_musicStream);
+        RemoveFXHandle();
+        BASS_StreamFree(m_musicStream);
+        m_musicStream = 0;
+    }
 }
 
 void CBassCore::Play()
