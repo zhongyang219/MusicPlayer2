@@ -1113,8 +1113,7 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_ind
     IniPlayerCore();
     if (m_loading) return;
 
-    if (GetBassHandle() != 0)
-        MusicControl(Command::CLOSE);
+    MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
         if (!m_playlist_mode || CPlaylistMgr::Instance().m_cur_playlist_type != PT_TEMP)
