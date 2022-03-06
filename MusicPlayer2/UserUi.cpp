@@ -92,6 +92,10 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
         std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
         std::string str_width = CTinyXml2Helper::ElementAttribute(xml_node, "width");
         std::string str_height = CTinyXml2Helper::ElementAttribute(xml_node, "height");
+        std::string str_max_width = CTinyXml2Helper::ElementAttribute(xml_node, "max-width");
+        std::string str_max_height = CTinyXml2Helper::ElementAttribute(xml_node, "max-height");
+        std::string str_min_width = CTinyXml2Helper::ElementAttribute(xml_node, "min-width");
+        std::string str_min_height = CTinyXml2Helper::ElementAttribute(xml_node, "min-height");
         std::string str_margin = CTinyXml2Helper::ElementAttribute(xml_node, "margin");
         std::string str_margin_left = CTinyXml2Helper::ElementAttribute(xml_node, "margin-left");
         std::string str_margin_right = CTinyXml2Helper::ElementAttribute(xml_node, "margin-right");
@@ -105,6 +109,15 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             ui_element->width.FromString(str_width);
         if (!str_height.empty())
             ui_element->height.FromString(str_height);
+        if (!str_max_width.empty())
+            ui_element->max_width.FromString(str_max_width);
+        if (!str_max_height.empty())
+            ui_element->max_height.FromString(str_max_height);
+        if (!str_min_width.empty())
+            ui_element->min_width.FromString(str_min_width);
+        if (!str_min_height.empty())
+            ui_element->min_height.FromString(str_min_height);
+        
         if (!str_margin.empty())
         {
             ui_element->margin_left.FromString(str_margin);

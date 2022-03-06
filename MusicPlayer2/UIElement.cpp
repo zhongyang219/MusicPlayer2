@@ -13,14 +13,21 @@ UiElement::Element::Value::Value(bool _is_vertical)
 void UiElement::Element::Value::FromString(const std::string str)
 {
     size_t index = str.find('%');
+    size_t index_ = str.find('*');
     if (index != std::wstring::npos)   //如果包含百分号
     {
         is_percentage = true;
         value = atoi(str.substr(0, index).c_str());
     }
+    else if (index_ != std::wstring::npos)  // 如果包含星号
+    {
+        is_proportion = true;
+        value = max(atoi(str.substr(0, index_).c_str()), 1);
+    }
     else
     {
         is_percentage = false;
+        is_proportion = false;
         value = atoi(str.c_str());
     }
     valid = true;
@@ -35,7 +42,11 @@ int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) co
         else
             return parent_rect.Width() * value / 100;
     }
-    else    //不是百分比，进行根据当前DPI对数值放大
+    else if (is_proportion)      // 如果是比例则返回原始值
+    {
+        return value;
+    }
+    else                    // 不是百分比或比例，进行根据当前DPI对数值放大
     {
         return ui->DPI(value);
     }
@@ -44,6 +55,11 @@ int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) co
 bool UiElement::Element::Value::IsValid() const
 {
     return valid;
+}
+
+bool UiElement::Element::Value::IsProportion() const
+{
+    return is_proportion;
 }
 
 void UiElement::Element::Draw(CPlayerUIBase* ui)
@@ -146,34 +162,113 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
     //水平布局
     if (type == Horizontal)
     {
-        //计算未指定元素的默认宽度
-        int item_default_size{};        //未指定宽度的元素的默认宽度
-        int total_size{};          //所有已指定元素的宽度，再加上已确定的边距
-        int item_fixed_size_num{};      //有固定宽度的元素的个数
+        vector<int> size_list;          // 已确定子元素尺寸记录(不含边距)，未确定项为INT_MIN
+        int total_size{};               // 所有已指定元素的宽度(非浮动宽度)与已确定的总边距
+        int item_fixed_size_num{};      // 有固定宽度的元素的个数
+
+        // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (child->width.IsValid())
+            if (child->width.IsValid() && !child->width.IsProportion())
             {
-                total_size += child->GetWidth(GetRect(), ui);
+                int width{ child->GetWidth(GetRect(), ui) };
+                if (child->max_width.IsValid())
+                    width = min(child->max_width.GetValue(GetRect(), ui), width);
+                if (child->min_width.IsValid())
+                    width = max(child->min_width.GetValue(GetRect(), ui), width);
+                total_size += width;
+                size_list.push_back(width);
                 item_fixed_size_num++;
             }
-            if (child->margin_left.IsValid())
-                total_size += child->margin_left.GetValue(GetRect(), ui);
-            if (child->margin_right.IsValid())
-                total_size += child->margin_right.GetValue(GetRect(), ui);
+            else
+            {
+                size_list.push_back(INT_MIN); // 这个子元素尺寸未定
+            }
+            if (child->margin_top.IsValid())
+                total_size += child->margin_top.GetValue(GetRect(), ui);
+            if (child->margin_bottom.IsValid())
+                total_size += child->margin_bottom.GetValue(GetRect(), ui);
         }
-        if (childLst.size() - item_fixed_size_num == 0)
-            item_default_size = 0;
-        else
-            item_default_size = (GetRect().Width() - total_size) / (childLst.size() - item_fixed_size_num);
-        if (item_default_size < 0)
-            item_default_size = 0;
-        int left_space{};
-        //如果每个元素都有固定的宽度，则让这些元素在布局中居中
-        if (childLst.size() == item_fixed_size_num)
+
+        int left_space{};                // 全部具有固定尺寸时首子元素与开始边缘的间距
+        bool all_ok{};
+        while (!all_ok)
         {
-            left_space = (GetRect().Width() - total_size) / 2;
+            //如果每个元素都有固定的尺寸，则让这些元素在布局中居中
+            if (childLst.size() == item_fixed_size_num)
+            {
+                left_space = (GetRect().Width() - total_size) / 2;
+                if (left_space < 0)      // 空间不足时优先显示容器前端元素
+                    left_space = 0;
+                all_ok = true;
+            }
+            else
+            {
+                // 此时size_list中为-1的子元素应按比例处理
+                int proportion{};                           // 各未固定子元素比例系数和
+                for (size_t i{}; i < childLst.size(); ++i)  // 计算比例系数和
+                {
+                    if (size_list[i] == INT_MIN)
+                    {
+                        auto& child{ childLst[i] };
+                        if (child->width.IsProportion())
+                            proportion += child->width.GetValue(GetRect(), ui);
+                        else
+                            proportion += 1;
+                    }
+                }
+                // 逐个检查是否符合最值
+                bool ok{};
+                for (size_t i{}; i < childLst.size(); ++i)
+                {
+                    if (size_list[i] == INT_MIN)
+                    {
+                        auto& child{ childLst[i] };
+                        int size{ (GetRect().Width() - total_size) * (child->width.IsProportion() ? child->width.GetValue(GetRect(),ui) : 1) / proportion };
+                        int max_size{ child->max_width.IsValid() ? child->max_width.GetValue(GetRect(), ui) : INT_MAX };
+                        int min_size{ child->min_width.IsValid() ? child->min_width.GetValue(GetRect(), ui) : 0 };
+                        if (size > max_size)                    // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素
+                        {
+                            size_list[i] = max_size;
+                            total_size += max_size;
+                            item_fixed_size_num++;
+                            break;
+                        }
+                        else if (size < min_size)
+                        {
+                            size_list[i] = min_size;
+                            total_size += min_size;
+                            item_fixed_size_num++;
+                            break;
+                        }
+                        else
+                        {
+                            ok = true;
+                        }
+                    }
+                }
+                if (!ok)        // ok为false说明增加了一个固定元素，重新计算比例
+                {
+                    continue;
+                }
+                else            // ok为true说明当前比例可满足最值要求，下面正式进行比例应用
+                {
+                    for (size_t i{}; i < childLst.size(); ++i)
+                    {
+                        if (size_list[i] == INT_MIN)
+                        {
+                            auto& child{ childLst[i] };
+                            int size{ (GetRect().Width() - total_size) * (child->width.IsValid() ? child->width.GetValue(GetRect(), ui) : 1) / proportion };
+                            size_list[i] = max(size, 0);
+                        }
+                    }
+                    left_space = 0;
+                    all_ok = true;
+                }
+            }
         }
+        ASSERT(find(size_list.begin(), size_list.end(), -1) == size_list.end());
+
         //计算每个子元素的矩形区域
         for (size_t i{}; i < childLst.size(); i++)
         {
@@ -197,45 +292,121 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui) + left_space;
             else
                 child_rect.left = childLst[i - 1]->GetRect().right + childLst[i - 1]->margin_right.GetValue(GetRect(), ui) + child->margin_left.GetValue(GetRect(), ui);
-            if (child->width.IsValid())
-                child_rect.right = child_rect.left + child->GetWidth(GetRect(), ui);
-            else
-                child_rect.right = child_rect.left + item_default_size;
+            child_rect.right = child_rect.left + size_list[i];
             child->SetRect(child_rect);
         }
     }
     //垂直布局
     else
     {
-        //计算未指定元素的默认宽度
-        int item_default_size{};        //未指定宽度的元素的默认宽度
-        int total_size{};          //所有已指定元素的宽度，再加上已确定的边距
-        int item_fixed_size_num{};      //有固定宽度的元素的个数
+        vector<int> size_list;          // 已确定子元素尺寸记录(不含边距)，未确定项为INT_MIN
+        int total_size{};               // 所有已指定元素的高度(非浮动高度)与已确定的总边距
+        int item_fixed_size_num{};      // 有固定高度的元素的个数
+
+        // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (child->height.IsValid())
+            if (child->height.IsValid() && !child->height.IsProportion())
             {
-                total_size += child->GetHeight(GetRect(), ui);
+                int height{ child->GetHeight(GetRect(), ui) };
+                if (child->max_height.IsValid())
+                    height = min(child->max_height.GetValue(GetRect(), ui), height);
+                if (child->min_height.IsValid())
+                    height = max(child->min_height.GetValue(GetRect(), ui), height);
+                total_size += height;
+                size_list.push_back(height);
                 item_fixed_size_num++;
+            }
+            else
+            {
+                size_list.push_back(INT_MIN); // 这个子元素尺寸未定
             }
             if (child->margin_top.IsValid())
                 total_size += child->margin_top.GetValue(GetRect(), ui);
             if (child->margin_bottom.IsValid())
                 total_size += child->margin_bottom.GetValue(GetRect(), ui);
         }
-        if (childLst.size() - item_fixed_size_num == 0)
-            item_default_size = 0;
-        else
-            item_default_size = (GetRect().Height() - total_size) / (childLst.size() - item_fixed_size_num);
-        if (item_default_size < 0)
-            item_default_size = 0;
-        int top_space{};
-        //如果每个元素都有固定的宽度，则让这些元素在布局中居中
-        if (childLst.size() == item_fixed_size_num)
+
+        int top_space{};                // 全部具有固定尺寸时首子元素与开始边缘的间距
+        bool all_ok{};
+        while (!all_ok)
         {
-            top_space = (GetRect().Height() - total_size) / 2;
+            //如果每个元素都有固定的尺寸，则让这些元素在布局中居中
+            if (childLst.size() == item_fixed_size_num)
+            {
+                top_space = (GetRect().Height() - total_size) / 2;
+                if (top_space < 0)      // 空间不足时优先显示容器前端元素
+                    top_space = 0;
+                all_ok = true;
+            }
+            else
+            {
+                // 此时size_list中为-1的子元素应按比例处理
+                int proportion{};                           // 各未固定子元素比例系数和
+                for (size_t i{}; i < childLst.size(); ++i)  // 计算比例系数和
+                {
+                    if (size_list[i] == INT_MIN)
+                    {
+                        auto& child{ childLst[i] };
+                        if ( child->height.IsProportion())
+                            proportion += child->height.GetValue(GetRect(), ui);
+                        else
+                            proportion += 1;
+                    }
+                }
+                // 逐个检查是否符合最值
+                bool ok{};
+                for (size_t i{}; i < childLst.size(); ++i)
+                {
+                    if (size_list[i] == INT_MIN)
+                    {
+                        auto& child{ childLst[i] };
+                        int size{ (GetRect().Height() - total_size) * (child->height.IsProportion() ? child->height.GetValue(GetRect(),ui) : 1) / proportion };
+                        int max_size{ child->max_height.IsValid() ? child->max_height.GetValue(GetRect(), ui) : INT_MAX };
+                        int min_size{ child->min_height.IsValid() ? child->min_height.GetValue(GetRect(), ui) : 0 };
+                        if (size > max_size)                    // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素
+                        {
+                            size_list[i] = max_size;
+                            total_size += max_size;
+                            item_fixed_size_num++;
+                            break;
+                        }
+                        else if (size < min_size)
+                        {
+                            size_list[i] = min_size;
+                            total_size += min_size;
+                            item_fixed_size_num++;
+                            break;
+                        }
+                        else
+                        {
+                            ok = true;
+                        }
+                    }
+                }
+                if (!ok)        // ok为false说明增加了一个固定元素，重新计算比例
+                {
+                    continue;
+                }
+                else            // ok为true说明当前比例可满足最值要求，下面正式进行比例应用
+                {
+                    for (size_t i{}; i < childLst.size(); ++i)
+                    {
+                        if (size_list[i] == INT_MIN)
+                        {
+                            auto& child{ childLst[i] };
+                            int size{ (GetRect().Height() - total_size) * (child->height.IsValid() ? child->height.GetValue(GetRect(), ui) : 1) / proportion };
+                            size_list[i] = max(size, 0);
+                        }
+                    }
+                    top_space = 0;
+                    all_ok = true;
+                }
+            }
         }
-        //计算每个子元素的矩形区域
+        ASSERT(find(size_list.begin(), size_list.end(), -1) == size_list.end());
+
+        // 计算每个子元素的矩形区域
         for (size_t i{}; i < childLst.size(); i++)
         {
             auto& child{ childLst[i] };
@@ -258,10 +429,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui) + top_space;
             else
                 child_rect.top = childLst[i - 1]->GetRect().bottom + childLst[i - 1]->margin_bottom.GetValue(GetRect(), ui) + child->margin_top.GetValue(GetRect(), ui);
-            if (child->height.IsValid())
-                child_rect.bottom = child_rect.top + child->GetHeight(GetRect(), ui);
-            else
-                child_rect.bottom = child_rect.top + item_default_size;
+            child_rect.bottom = child_rect.top + size_list[i];
             child->SetRect(child_rect);
         }
     }
@@ -336,8 +504,6 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_STOP;
     else if (key_type == "previous")
         key = CPlayerUIBase::BTN_PREVIOUS;
-    else if (key_type == "next")
-        key = CPlayerUIBase::BTN_NEXT;
     else if (key_type == "next")
         key = CPlayerUIBase::BTN_NEXT;
     else if (key_type == "playPause")

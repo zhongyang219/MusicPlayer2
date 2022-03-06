@@ -12,13 +12,15 @@ namespace UiElement
         {
             Value(bool _is_vertical);
             void FromString(const std::string str);
-            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;   //获取实际显示的数值
-            bool IsValid() const;
+            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;   // 获取实际显示的数值，比例为true时为比例系数
+            bool IsValid() const;           // 返回true说明设置过数值
+            bool IsProportion() const;      // 数值是否为比例，返回true隐含设置过数值
         private:
-            int value{ 0 };                 //如果is_percentate为true，则值为百分比，否则为实际值
-            bool valid{ false };            //如果还没有设置过数值，则为false 
-            bool is_percentage{ false };    //数值是否为百分比
-            bool is_vertical{ false };      //数值是否为垂直方向的
+            int value{ 0 };                 // 如果is_percentate为true，则值为百分比，否则为实际值
+            bool valid{ false };            // 如果还没有设置过数值，则为false
+            bool is_percentage{ false };    // 数值是否为百分比
+            bool is_proportion{ false };    // 数值是否为比例
+            bool is_vertical{ false };      // 数值是否为垂直方向的
         };
         Value margin_left{ false };
         Value margin_right{ false };
@@ -28,6 +30,10 @@ namespace UiElement
         Value y{ true };
         Value width{ false };
         Value height{ true };
+        Value max_width{ false };
+        Value max_height{ true };
+        Value min_width{ false };
+        Value min_height{ true };
 
         Element* pParent{};     //父元素
         std::vector<std::shared_ptr<Element>> childLst; //子元素列表
