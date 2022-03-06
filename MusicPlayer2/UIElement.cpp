@@ -267,7 +267,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 }
             }
         }
-        ASSERT(find(size_list.begin(), size_list.end(), -1) == size_list.end());
+        ASSERT(find(size_list.begin(), size_list.end(), INT_MIN) == size_list.end());
 
         //计算每个子元素的矩形区域
         for (size_t i{}; i < childLst.size(); i++)
@@ -404,7 +404,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 }
             }
         }
-        ASSERT(find(size_list.begin(), size_list.end(), -1) == size_list.end());
+        ASSERT(find(size_list.begin(), size_list.end(), INT_MIN) == size_list.end());
 
         // 计算每个子元素的矩形区域
         for (size_t i{}; i < childLst.size(); i++)
