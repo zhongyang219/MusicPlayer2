@@ -204,7 +204,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             else
             {
-                // 此时size_list中为-1的子元素应按比例处理
+                // 此时size_list中为INT_MIN的子元素应按比例处理
                 int proportion{};                           // 各未固定子元素比例系数和
                 for (size_t i{}; i < childLst.size(); ++i)  // 计算比例系数和
                 {
@@ -218,7 +218,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                     }
                 }
                 // 逐个检查是否符合最值
-                bool ok{};
+                bool ok{ true };
                 for (size_t i{}; i < childLst.size(); ++i)
                 {
                     if (size_list[i] == INT_MIN)
@@ -232,6 +232,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                             size_list[i] = max_size;
                             total_size += max_size;
                             item_fixed_size_num++;
+                            ok = false;
                             break;
                         }
                         else if (size < min_size)
@@ -239,11 +240,8 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                             size_list[i] = min_size;
                             total_size += min_size;
                             item_fixed_size_num++;
+                            ok = false;
                             break;
-                        }
-                        else
-                        {
-                            ok = true;
                         }
                     }
                 }
@@ -341,7 +339,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             else
             {
-                // 此时size_list中为-1的子元素应按比例处理
+                // 此时size_list中为INT_MIN的子元素应按比例处理
                 int proportion{};                           // 各未固定子元素比例系数和
                 for (size_t i{}; i < childLst.size(); ++i)  // 计算比例系数和
                 {
@@ -355,7 +353,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                     }
                 }
                 // 逐个检查是否符合最值
-                bool ok{};
+                bool ok{ true };
                 for (size_t i{}; i < childLst.size(); ++i)
                 {
                     if (size_list[i] == INT_MIN)
@@ -369,6 +367,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                             size_list[i] = max_size;
                             total_size += max_size;
                             item_fixed_size_num++;
+                            ok = false;
                             break;
                         }
                         else if (size < min_size)
@@ -376,11 +375,8 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                             size_list[i] = min_size;
                             total_size += min_size;
                             item_fixed_size_num++;
+                            ok = false;
                             break;
-                        }
-                        else
-                        {
-                            ok = true;
                         }
                     }
                 }
