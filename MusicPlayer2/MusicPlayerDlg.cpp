@@ -1637,10 +1637,7 @@ void CMusicPlayerDlg::GetPlaylistItemSelected(int cur_index)
 
 void CMusicPlayerDlg::GetPlaylistItemSelected()
 {
-    if (IsFloatPlaylistExist())
-        m_pFloatPlaylistDlg->GetPlaylistItemSelected();
-    else
-        GetPlaylistItemSelected(m_playlist_list.GetCurSel());
+    GetPlaylistItemSelected(m_playlist_list.GetCurSel());
 }
 
 void CMusicPlayerDlg::IniPlaylistPopupMenu()
@@ -3172,7 +3169,6 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         }
         else        //否则是添加选中的曲目到播放列表
         {
-            GetPlaylistItemSelected();
             for (auto i : m_items_selected)
             {
                 if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
@@ -3198,7 +3194,6 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     //响应播放列表右键菜单中的分级
     else
     {
-        GetPlaylistItemSelected();
         for (int i : m_items_selected)
         {
             if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())

@@ -124,6 +124,7 @@ void CMiniModeDlg::ShowPlaylist()
 {
     m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format);
     SetPlayListColor();
+    m_playlist_ctrl.SetCurSel(-1);
 }
 
 void CMiniModeDlg::SetPlayListColor()
@@ -344,13 +345,6 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
                 OnShowPlayList();
                 return TRUE;
             }
-
-            //if (pMsg->wParam == 'K')
-            //{
-            //    OnShowPlayList();
-            //    return TRUE;
-            //}
-
         }
 
         if (pMsg->wParam == VK_APPS)		//按菜单键弹出主菜单
