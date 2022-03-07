@@ -324,17 +324,33 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
             return TRUE;
         }
 
-        //按Ctrl+X退出
-        if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'X')
+        if ((GetKeyState(VK_CONTROL) & 0x80))
         {
-            OnCancel();
-            return TRUE;
-        }
-        //按Ctrl+M回到主窗口
-        if ((GetKeyState(VK_CONTROL) & 0x80) && pMsg->wParam == 'M')
-        {
-            OnOK();
-            return TRUE;
+            //按Ctrl+X退出
+            if (pMsg->wParam == 'X')
+            {
+                OnCancel();
+                return TRUE;
+            }
+            //按Ctrl+M回到主窗口
+            if (pMsg->wParam == 'M')
+            {
+                OnOK();
+                return TRUE;
+            }
+
+            if (pMsg->wParam == 'L')
+            {
+                OnShowPlayList();
+                return TRUE;
+            }
+
+            //if (pMsg->wParam == 'K')
+            //{
+            //    OnShowPlayList();
+            //    return TRUE;
+            //}
+
         }
 
         if (pMsg->wParam == VK_APPS)		//按菜单键弹出主菜单

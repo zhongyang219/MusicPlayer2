@@ -1552,6 +1552,12 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
 {
+    if (IsFloatPlaylistExist())
+    {
+        m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
+        return;
+    }
+
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
     m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected);
     m_pFloatPlaylistDlg->SetInitPoint(m_float_playlist_pos);
@@ -3499,7 +3505,11 @@ void CMusicPlayerDlg::OnMiniMode()
 
     //m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);
     //m_miniModeDlg.SetDisplayFormat(&theApp.m_media_lib_setting_data.display_format);
-    Show(false);
+
+    //Show(false);
+    ShowWindow(SW_HIDE);
+    bool float_playlist_exist{ IsFloatPlaylistExist() };
+    HideFloatPlaylist();
 
     if (m_miniModeDlg.DoModal() == IDCANCEL)
     {
@@ -3508,7 +3518,10 @@ void CMusicPlayerDlg::OnMiniMode()
     }
     else
     {
-        Show(true);
+        //Show(true);
+        ShowWindow(SW_SHOW);
+        if (float_playlist_exist)
+            ShowFloatPlaylist();
 
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
