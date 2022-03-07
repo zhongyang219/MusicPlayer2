@@ -163,6 +163,7 @@ public:
     virtual int ExitInstance();
     afx_msg void OnHelpUpdateLog();
     afx_msg void OnHelpCustomUi();
+    afx_msg void OnHelpFaq();
 };
 
 extern CMusicPlayerApp theApp;

@@ -26,6 +26,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerApp, CWinApp)
     ON_COMMAND(ID_HELP, &CMusicPlayerApp::OnHelp)
     ON_COMMAND(ID_HELP_UPDATE_LOG, &CMusicPlayerApp::OnHelpUpdateLog)
     ON_COMMAND(ID_HELP_CUSTOM_UI, &CMusicPlayerApp::OnHelpCustomUi)
+    ON_COMMAND(ID_HELP_FAQ, &CMusicPlayerApp::OnHelpFaq)
 END_MESSAGE_MAP()
 
 
@@ -1169,4 +1170,14 @@ void CMusicPlayerApp::OnHelpUpdateLog()
 void CMusicPlayerApp::OnHelpCustomUi()
 {
     ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E7%95%8C%E9%9D%A2"), NULL, NULL, SW_SHOW);
+}
+
+
+void CMusicPlayerApp::OnHelpFaq()
+{
+    CString language = CCommon::LoadText(IDS_LANGUAGE_CODE);
+    if (language == _T("2"))
+        ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"), NULL, NULL, SW_SHOW);
+    else
+        ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/FAQ"), NULL, NULL, SW_SHOW);
 }

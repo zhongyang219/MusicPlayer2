@@ -1531,13 +1531,14 @@
 #define ID_COMPRESS_SIZE                33387
 #define ID_33388                        33388
 #define ID_PLAYLIST_SAVE_AS             33389
+#define ID_HELP_FAQ                     33390
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        555
-#define _APS_NEXT_COMMAND_VALUE         33390
+#define _APS_NEXT_COMMAND_VALUE         33391
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
