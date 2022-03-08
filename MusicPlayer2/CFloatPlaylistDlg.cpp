@@ -401,9 +401,10 @@ BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         GetPlaylistItemSelected();
         break;
     default:
-        if (wParam == ID_SET_PATH || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), wParam)
-            || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_playlist_toolbar_menu, wParam)
-            || (wParam >= ID_ADD_TO_MY_FAVOURITE && wParam < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE))
+        if (command == ID_SET_PATH || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), command)
+            || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_playlist_toolbar_menu, command)
+            || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_menu, command)
+            || (command >= ID_ADD_TO_MY_FAVOURITE && command < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE))
         {
             theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
             return TRUE;
