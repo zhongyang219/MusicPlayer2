@@ -858,7 +858,7 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
         m_miniModeDlg.ShowPlaylist();
     }
 
-    if (theApp.m_nc_setting_data.float_playlist && IsFloatPlaylistExist())
+    if (IsFloatPlaylistExist())
     {
         m_pFloatPlaylistDlg->RefreshData();
     }
@@ -872,7 +872,7 @@ void CMusicPlayerDlg::SetPlayListColor(bool highlight_visible)
     if (highlight_visible)
         m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 
-    if (theApp.m_nc_setting_data.float_playlist && IsFloatPlaylistExist())
+    if (IsFloatPlaylistExist())
     {
         m_pFloatPlaylistDlg->RefreshState(highlight_visible);
     }
