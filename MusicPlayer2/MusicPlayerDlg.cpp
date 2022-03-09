@@ -1554,6 +1554,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
 {
+    theApp.m_nc_setting_data.float_playlist = true;
     if (IsFloatPlaylistExist())
     {
         m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
