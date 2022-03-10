@@ -11,5 +11,5 @@ public:
 
 private:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;       //绘制信息
-    virtual int GetClassId() override;
+    virtual int GetUiIndex() override;
 };

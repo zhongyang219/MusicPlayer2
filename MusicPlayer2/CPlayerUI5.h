@@ -9,5 +9,5 @@ public:
 
 protected:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
-    virtual int GetClassId() override;
+    virtual int GetUiIndex() override;
 };

@@ -183,7 +183,7 @@ void CPlayerUI3::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 
 }
 
-int CPlayerUI3::GetClassId()
+int CPlayerUI3::GetUiIndex()
 {
     return 3;
 }

@@ -187,7 +187,7 @@ void CPlayerUI4::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
     }
 }
 
-int CPlayerUI4::GetClassId()
+int CPlayerUI4::GetUiIndex()
 {
     return 4;
 }

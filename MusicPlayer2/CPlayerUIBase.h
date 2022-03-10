@@ -213,7 +213,7 @@ protected:
 
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
 
-    virtual int GetClassId() { return 1; }
+    virtual int GetUiIndex() { return 1; }  //UI的序号，用于区分每个界面，不会为0
 
 private:
     void SetRepeatModeToolTipText();
@@ -223,6 +223,8 @@ private:
 
     void DrawStatusBar(CRect rect, bool reset = false);
     void DrawTitleBar(CRect rect);
+
+    int GetToolTipIdOffset();
 
 protected:
     CWnd* m_pMainWnd = nullptr;

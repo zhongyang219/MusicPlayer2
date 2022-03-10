@@ -2,8 +2,8 @@
 #include "UserUi.h"
 #include "TinyXml2Helper.h"
 
-CUserUi::CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path, int id)
-    : CPlayerUIBase(ui_data, pMainWnd), m_xml_path(xml_path), m_id(id)
+CUserUi::CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path, int index)
+    : CPlayerUIBase(ui_data, pMainWnd), m_xml_path(xml_path), m_index(index)
 {
     LoadUi();
 }
@@ -71,9 +71,9 @@ CString CUserUi::GetUIName()
     return m_ui_name.c_str();
 }
 
-int CUserUi::GetClassId()
+int CUserUi::GetUiIndex()
 {
-    return m_id;
+    return m_index;
 }
 
 //从一个xml节点创建UiElement::Element元素及其所有子元素的对象

@@ -323,7 +323,7 @@ void CPlayerUI::MouseMove(CPoint point)
 //  return info_rect;
 //}
 
-int CPlayerUI::GetClassId()
+int CPlayerUI::GetUiIndex()
 {
     return 1;
 }

@@ -151,7 +151,7 @@ void CPlayerUI5::_DrawInfo(CRect draw_rect, bool reset)
 
 }
 
-int CPlayerUI5::GetClassId()
+int CPlayerUI5::GetUiIndex()
 {
     return 5;
 }

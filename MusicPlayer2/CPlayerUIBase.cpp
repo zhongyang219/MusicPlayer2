@@ -121,10 +121,10 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
     else
     {
-        static int last_width{}, last_height{}, last_class_id{};
+        static int last_width{}, last_height{}, last_ui_index{};
         //检测到绘图区域变化或界面进行了切换时
         if (last_width != m_draw_rect.Width() || last_height != m_draw_rect.Height()
-            || (last_class_id != GetClassId() && GetClassId() != 0))
+            || (last_ui_index != GetUiIndex() && GetUiIndex() != 0))
         {
             //更新工具提示的位置
             UpdateToolTipPosition();
@@ -139,7 +139,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
 
             last_width = m_draw_rect.Width();
             last_height = m_draw_rect.Height();
-            last_class_id = GetClassId();
+            last_ui_index = GetUiIndex();
         }
     }
     m_first_draw = false;
@@ -1046,17 +1046,17 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
 
 void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetClassId() * 100);
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetClassId() * 100);
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdateVolumeToolTip()
 {
-    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetClassId() * 100);
+    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdatePlaylistBtnToolTip()
@@ -1071,7 +1071,7 @@ void CPlayerUIBase::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)
     {
-        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetClassId() * 100, btn.second.rect);
+        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetToolTipIdOffset(), btn.second.rect);
     }
 }
 
@@ -1896,6 +1896,11 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     static CDrawCommon::ScrollInfo scroll_info{};
     m_draw.DrawScrollText(rect_temp, theApp.m_window_title.GetString(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info);
     //m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
+}
+
+int CPlayerUIBase::GetToolTipIdOffset()
+{
+    return GetUiIndex() * 100;
 }
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
