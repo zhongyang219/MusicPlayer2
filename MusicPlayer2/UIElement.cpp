@@ -148,31 +148,9 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
             rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent, ui);
 
         if (width.IsValid() && !width.IsProportion())   // 父元素非布局元素时忽略设置为比例的width
-        {
-            if (!x.IsValid())
-            {
-                if(!margin_right.IsValid())     // 右边距未设定或边距均未设定时左对齐应用width
-                    rect.right = rect.left + width.GetValue(rect_parent, ui);
-                else if(!margin_left.IsValid() && margin_right.IsValid()) // 左边距未设定时右对齐应用width
-                    rect.left = rect.right - width.GetValue(rect_parent, ui);
-                // 左右边距均设定时忽略width
-            }
-            else
-                rect.right = rect.left + width.GetValue(rect_parent, ui);   // 设定x时左对齐
-        }
+            rect.right = rect.left + width.GetValue(rect_parent, ui);
         if (height.IsValid() && !height.IsProportion()) // 父元素非布局元素时忽略设置为比例的height
-        {
-            if (!y.IsValid())
-            {
-                if (!margin_bottom.IsValid())   // 下边距未设定或边距均未设定时左对齐应用height
-                    rect.bottom = rect.top + height.GetValue(rect_parent, ui);
-                else if (!margin_top.IsValid() && margin_bottom.IsValid()) // 上边距未设定时右对齐应用height
-                    rect.top = rect.bottom - height.GetValue(rect_parent, ui);
-                // 上下边距均设定时忽略height
-            }
-            else
-                rect.bottom = rect.top + height.GetValue(rect_parent, ui);  // 设定y时上对齐
-        }
+            rect.bottom = rect.top + height.GetValue(rect_parent, ui);
     }
 }
 
