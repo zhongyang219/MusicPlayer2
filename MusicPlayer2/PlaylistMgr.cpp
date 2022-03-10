@@ -51,7 +51,8 @@ void CPlaylistMgr::AddNewPlaylist(const wstring& path)
 {
     PlaylistInfo playlist_info{};
     playlist_info.path = path;
-    m_recent_playlists.push_back(playlist_info);
+    m_recent_playlists.push_front(playlist_info);
+    playlist_info.last_played_time = CCommon::GetCurTimeElapse();
     CPlaylistFile playlist;
     playlist.SaveToFile(path);      //创建空的播放列表文件
 }

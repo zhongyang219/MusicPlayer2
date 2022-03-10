@@ -190,6 +190,12 @@ void CSelectPlaylistDlg::SongListClicked(int index)
     SetButtonsEnable();
 }
 
+void CSelectPlaylistDlg::SetLeftListSelected(int index)
+{
+    m_playlist_ctrl.SetCurSel(index);
+    LeftListClicked(index);
+}
+
 const CListCtrlEx& CSelectPlaylistDlg::GetSongListCtrl() const
 {
     return m_song_list_ctrl;
@@ -554,6 +560,7 @@ wstring CSelectPlaylistDlg::DoNewPlaylist()
 
         CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
         ShowPathList();
+        SetLeftListSelected(SPEC_PLAYLIST_NUM);     //选中新增的播放列表。添加新的播放列表后，新增的播放会排到前面，在特殊的播放列表的后一个位置
         m_playlist_modified = true;
         return playlist_path;
     }
