@@ -658,9 +658,10 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 
     //绘制歌曲序号
     rc_tmp.MoveToX(rc_tmp.right);
-    rc_tmp.right = rc_tmp.left + DPI(30);
     wchar_t buff[128];
     swprintf_s(buff, sizeof(buff) / 2, L"%.3d", CPlayer::GetInstance().GetIndex() + 1);
+    int index_width = m_draw.GetTextExtent(buff).cx;
+    rc_tmp.right = rc_tmp.left + index_width + DPI(4);
     m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
 
     //绘制标识
@@ -700,7 +701,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
     }
 
     //绘制文件名
-    rc_tmp.MoveToX(rc_tmp.right + DPI(4));
+    rc_tmp.MoveToX(rc_tmp.right + (tag_str.empty() ? 0 : DPI(4)));
     rc_tmp.right = rect.right;
     if (rc_tmp.Width() >= DPI(4))
     {
