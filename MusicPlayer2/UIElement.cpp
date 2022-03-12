@@ -73,6 +73,7 @@ void UiElement::Element::Draw(CPlayerUIBase* ui)
 
 int UiElement::Element::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
 {
+    if (!IsEnable()) return 0;
     int w{ width.GetValue(parent_rect, ui) };
     if (max_width.IsValid())
         w = min(max_width.GetValue(GetRect(), ui), w);
@@ -83,6 +84,7 @@ int UiElement::Element::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
 
 int UiElement::Element::GetHeight(CRect parent_rect, CPlayerUIBase* ui) const
 {
+    if (!IsEnable()) return 0;
     int h{ height.GetValue(parent_rect, ui) };
     if (max_height.IsValid())
         h = min(max_height.GetValue(GetRect(), ui), h);
