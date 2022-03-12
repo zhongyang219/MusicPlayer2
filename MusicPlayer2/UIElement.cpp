@@ -73,12 +73,22 @@ void UiElement::Element::Draw(CPlayerUIBase* ui)
 
 int UiElement::Element::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
 {
-    return width.GetValue(parent_rect, ui);
+    int w{ width.GetValue(parent_rect, ui) };
+    if (max_width.IsValid())
+        w = min(max_width.GetValue(GetRect(), ui), w);
+    if (min_width.IsValid())
+        w = max(min_width.GetValue(GetRect(), ui), w);
+    return w;
 }
 
 int UiElement::Element::GetHeight(CRect parent_rect, CPlayerUIBase* ui) const
 {
-    return height.GetValue(parent_rect, ui);
+    int h{ height.GetValue(parent_rect, ui) };
+    if (max_height.IsValid())
+        h = min(max_height.GetValue(GetRect(), ui), h);
+    if (min_height.IsValid())
+        h = max(min_height.GetValue(GetRect(), ui), h);
+    return h;
 }
 
 CRect UiElement::Element::GetRect() const
@@ -148,9 +158,9 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
             rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent, ui);
 
         if (width.IsValid() && !width.IsProportion())   // 父元素非布局元素时忽略设置为比例的width
-            rect.right = rect.left + width.GetValue(rect_parent, ui);
+            rect.right = rect.left + GetWidth(rect_parent, ui);
         if (height.IsValid() && !height.IsProportion()) // 父元素非布局元素时忽略设置为比例的height
-            rect.bottom = rect.top + height.GetValue(rect_parent, ui);
+            rect.bottom = rect.top + GetHeight(rect_parent, ui);
     }
 }
 
@@ -169,13 +179,14 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (child->width.IsValid() && !child->width.IsProportion())
+            if (!IsEnable())            // 设置为不显示时按尺寸为0的固定尺寸元素处理
+            {
+                size_list.push_back(0);
+                item_fixed_size_num++;
+            }
+            else if (child->width.IsValid() && !child->width.IsProportion())
             {
                 int width{ child->GetWidth(GetRect(), ui) };
-                if (child->max_width.IsValid())
-                    width = min(child->max_width.GetValue(GetRect(), ui), width);
-                if (child->min_width.IsValid())
-                    width = max(child->min_width.GetValue(GetRect(), ui), width);
                 total_size += width;
                 size_list.push_back(width);
                 item_fixed_size_num++;
@@ -304,13 +315,14 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (child->height.IsValid() && !child->height.IsProportion())
+            if (!IsEnable())            // 设置为不显示时按尺寸为0的固定尺寸元素处理
+            {
+                size_list.push_back(0);
+                item_fixed_size_num++;
+            }
+            else if (child->height.IsValid() && !child->height.IsProportion())
             {
                 int height{ child->GetHeight(GetRect(), ui) };
-                if (child->max_height.IsValid())
-                    height = min(child->max_height.GetValue(GetRect(), ui), height);
-                if (child->min_height.IsValid())
-                    height = max(child->min_height.GetValue(GetRect(), ui), height);
                 total_size += height;
                 size_list.push_back(height);
                 item_fixed_size_num++;
@@ -626,20 +638,9 @@ void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
     }
 }
 
-int UiElement::Spectrum::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
+bool UiElement::Spectrum::IsEnable() const
 {
-    if (theApp.m_app_setting_data.show_spectrum)
-        return Element::GetWidth(parent_rect, ui);
-    else
-        return 0;
-}
-
-int UiElement::Spectrum::GetHeight(CRect parent_rect, CPlayerUIBase* ui) const
-{
-    if (theApp.m_app_setting_data.show_spectrum)
-        return Element::GetHeight(parent_rect, ui);
-    else
-        return 0;
+    return theApp.m_app_setting_data.show_spectrum;
 }
 
 void UiElement::TrackInfo::Draw(CPlayerUIBase* ui)

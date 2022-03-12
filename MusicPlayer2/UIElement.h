@@ -16,7 +16,7 @@ namespace UiElement
             bool IsValid() const;           // 返回true说明设置过数值
             bool IsProportion() const;      // 数值是否为比例，返回true隐含设置过数值
         private:
-            int value{ 0 };                 // 如果is_percentate为true，则值为百分比，否则为实际值
+            int value{ 0 };                 // 如果is_percentate为true则值为百分比，is_proportion为true则为百分比，否则为实际值
             bool valid{ false };            // 如果还没有设置过数值，则为false
             bool is_percentage{ false };    // 数值是否为百分比
             bool is_proportion{ false };    // 数值是否为比例
@@ -40,8 +40,9 @@ namespace UiElement
         std::string name;
 
         virtual void Draw(CPlayerUIBase* ui);   //绘制此元素
-        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
-        virtual int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
+        virtual bool IsEnable() const { return true; };
+        int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
+        int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         Element* RootElement();       //获取根节点
@@ -133,8 +134,7 @@ namespace UiElement
         bool fixed_width{};     //每个柱形是否使用相同的宽度
         CUIDrawer::SpectrumCol type{ CUIDrawer::SC_64 };     //频谱分析的类型
         virtual void Draw(CPlayerUIBase* ui) override;
-        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
-        virtual int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const override;
+        virtual bool IsEnable() const override;
     };
 
     //曲目信息（包含播放状态、文件名、歌曲标识、速度）
