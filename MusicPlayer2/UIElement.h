@@ -66,6 +66,7 @@ namespace UiElement
     {
     public:
         bool no_corner_radius{};
+        bool theme_color{ true };
         virtual void Draw(CPlayerUIBase* ui) override;
     };
 

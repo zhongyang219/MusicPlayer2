@@ -151,6 +151,9 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             {
                 std::string str_no_corner_radius = CTinyXml2Helper::ElementAttribute(xml_node, "no_corner_radius");
                 rectangle->no_corner_radius = CTinyXml2Helper::StringToBool(str_no_corner_radius.c_str());
+                std::string str_theme_color = CTinyXml2Helper::ElementAttribute(xml_node, "theme_color");
+                if (!str_theme_color.empty())
+                    rectangle->theme_color = CTinyXml2Helper::StringToBool(str_theme_color.c_str());
             }
         }
         //文本

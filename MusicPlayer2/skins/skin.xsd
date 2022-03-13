@@ -171,6 +171,11 @@
                 <xs:documentation>如果为true，则矩形总是为直角；如果为false，则在“选项”——“外观设置”中勾选“使用圆角风格按钮”时，矩形显示为圆角矩形。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="theme_color" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>矩形颜色是否使用主题颜色</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="buttonType">

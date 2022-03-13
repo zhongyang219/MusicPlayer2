@@ -731,7 +731,7 @@ void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
     m_draw.DrawWindowText(rect, str_text, m_colors.color_text, Alignment::CENTER);
 }
 
-void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius)
+void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool theme_color)
 {
     bool draw_background{ IsDrawBackgroundAlpha() };
     //绘制背景
@@ -743,12 +743,25 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius)
     else
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 
+    COLORREF fill_color{};
+    if (theme_color)
+    {
+        fill_color = m_colors.color_control_bar_back;
+    }
+    else
+    {
+        if (theApp.m_app_setting_data.dark_mode)
+            fill_color = CColorConvert::m_gray_color.dark3;
+        else
+            fill_color = CColorConvert::m_gray_color.light4;
+    }
+
     if (!theApp.m_app_setting_data.button_round_corners || no_corner_radius)
-        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+        m_draw.FillAlphaRect(rect, fill_color, alpha);
     else
     {
         m_draw.SetDrawArea(rect);
-        m_draw.DrawRoundRect(rect, m_colors.color_control_bar_back, CalculateRoundRectRadius(rect), alpha);
+        m_draw.DrawRoundRect(rect, fill_color, CalculateRoundRectRadius(rect), alpha);
     }
 }
 

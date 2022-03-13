@@ -48,7 +48,7 @@
         </verticalLayout>
       </horizontalLayout>
       <progressBar show_play_time="false" height="4"/>
-      <rectangle height="80">
+      <rectangle height="80" no_corner_radius="true" theme_color="false">
         <horizontalLayout margin-bottom="8" height="72">
           <horizontalLayout margin-left="8">
             <button key="info" width="28" height="28"/>

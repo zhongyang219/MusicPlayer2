@@ -288,7 +288,7 @@ void UiElement::Layout::Draw(CPlayerUIBase* ui)
 void UiElement::Rectangle::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->DrawRectangle(rect, no_corner_radius);
+    ui->DrawRectangle(rect, no_corner_radius, theme_color);
     ui->ResetDrawArea();
     Element::Draw(ui);
 }
