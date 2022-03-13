@@ -313,3 +313,43 @@ void CUserUi::LoadUi()
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
+
+void CUserUi::UniqueUiIndex(std::vector<std::shared_ptr<CUserUi>>& ui_list)
+{
+    for (auto& ui : ui_list)
+    {
+        if (ui != nullptr)
+        {
+            //遍历UI列表，获取当前UI的序号
+            int ui_index = ui->GetUiIndex();
+            //如果还有其他UI的序号和当前UI相同
+            auto ui_matched_index = FindUiByIndex(ui_list, ui_index, ui);
+            if (ui_matched_index != nullptr)
+            {
+                //将找到的UI的序号设置为最大序号加1
+                ui_matched_index->SetIndex(GetMaxUiIndex(ui_list) + 1);
+            }
+        }
+    }
+}
+
+std::shared_ptr<CUserUi> CUserUi::FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except)
+{
+    for (const auto& ui : ui_list)
+    {
+        if (ui != nullptr && ui != except && ui->GetUiIndex() == ui_index)
+            return ui;
+    }
+    return nullptr;
+}
+
+int CUserUi::GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list)
+{
+    int index_max{};
+    for (const auto& ui : ui_list)
+    {
+        if (ui != nullptr && ui->GetUiIndex() > index_max)
+            index_max = ui->GetUiIndex();
+    }
+    return index_max;
+}

@@ -54,8 +54,8 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     m_ui_list.push_back(std::make_shared<CPlayerUI2>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI3>(theApp.m_ui_data, &m_ui_static_ctrl));
     //加载skins目录下的用户自定义界面
-    std::vector<std::shared_ptr<CUserUi>> user_ui_list_with_index;
-    std::vector<std::shared_ptr<CUserUi>> user_ui_list;
+    std::vector<std::shared_ptr<CUserUi>> user_ui_list_with_index;      //指定了序号的用户自定义界面
+    std::vector<std::shared_ptr<CUserUi>> user_ui_list;                 //未指定序号的用户自定义界面
     std::vector<std::wstring> skin_files;
     CCommon::GetFiles(theApp.m_local_dir + L"skins\\*.xml", skin_files);
     for (const auto& file_name : skin_files)
@@ -67,6 +67,7 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
         else
             user_ui_list.push_back(ui);
     }
+    CUserUi::UniqueUiIndex(user_ui_list_with_index);        //确保序号唯一
     std::sort(user_ui_list_with_index.begin(), user_ui_list_with_index.end(), [](const std::shared_ptr<CUserUi>& ui1, const std::shared_ptr<CUserUi>& ui2)
         {
             return ui1->GetUiIndex() < ui2->GetUiIndex();

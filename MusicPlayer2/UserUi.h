@@ -28,6 +28,13 @@ private:
 public:
     virtual int GetUiIndex() override;
 
+    //确保每个界面的序号唯一
+    static void UniqueUiIndex(std::vector<std::shared_ptr<CUserUi>>& ui_list);
+
+private:
+    static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
+    static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
+
 protected:
     void LoadUi();      //从xml文件载入界面
 };
