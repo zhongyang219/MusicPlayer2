@@ -71,9 +71,18 @@ void UiElement::Element::Draw(CPlayerUIBase* ui)
     }
 }
 
+bool UiElement::Element::IsEnable(CRect parent_rect, CPlayerUIBase* ui) const
+{
+    if (hide_width.IsValid() && hide_width.GetValue(parent_rect, ui) > parent_rect.Width())
+        return false;
+    if (hide_height.IsValid() && hide_height.GetValue(parent_rect, ui) > parent_rect.Height())
+        return false;
+    return true;
+}
+
 int UiElement::Element::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
 {
-    if (!IsEnable()) return 0;
+    if (!IsEnable(parent_rect, ui)) return 0;
     int w{ width.GetValue(parent_rect, ui) };
     if (max_width.IsValid())
         w = min(max_width.GetValue(GetRect(), ui), w);
@@ -84,7 +93,7 @@ int UiElement::Element::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
 
 int UiElement::Element::GetHeight(CRect parent_rect, CPlayerUIBase* ui) const
 {
-    if (!IsEnable()) return 0;
+    if (!IsEnable(parent_rect, ui)) return 0;
     int h{ height.GetValue(parent_rect, ui) };
     if (max_height.IsValid())
         h = min(max_height.GetValue(GetRect(), ui), h);
@@ -191,26 +200,29 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (!IsEnable())            // 设置为不显示时按尺寸为0的固定尺寸元素处理
+            if (!IsEnable(GetRect(), ui))            // 设置为不显示时按尺寸为0的固定尺寸元素处理，并忽略此元素边距
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
             }
-            else if (child->width.IsValid() && !child->width.IsProportion())
-            {
-                int width{ child->GetWidth(GetRect(), ui) };
-                total_size += width;
-                size_list.push_back(width);
-                item_fixed_size_num++;
-            }
             else
             {
-                size_list.push_back(INT_MIN); // 这个子元素尺寸未定
+                if (child->width.IsValid() && !child->width.IsProportion())
+                {
+                    int width{ child->GetWidth(GetRect(), ui) };
+                    total_size += width;
+                    size_list.push_back(width);
+                    item_fixed_size_num++;
+                }
+                else
+                {
+                    size_list.push_back(INT_MIN); // 这个子元素尺寸未定
+                }
+                if (child->margin_top.IsValid())
+                    total_size += child->margin_top.GetValue(GetRect(), ui);
+                if (child->margin_bottom.IsValid())
+                    total_size += child->margin_bottom.GetValue(GetRect(), ui);
             }
-            if (child->margin_top.IsValid())
-                total_size += child->margin_top.GetValue(GetRect(), ui);
-            if (child->margin_bottom.IsValid())
-                total_size += child->margin_bottom.GetValue(GetRect(), ui);
         }
 
         int left_space{};                // 全部具有固定尺寸时首子元素与开始边缘的间距
@@ -291,6 +303,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         ASSERT(find(size_list.begin(), size_list.end(), INT_MIN) == size_list.end());
 
         //计算每个子元素的矩形区域
+        int w{};
         for (size_t i{}; i < childLst.size(); i++)
         {
             auto& child{ childLst[i] };
@@ -309,11 +322,24 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui);
                 child_rect.bottom = GetRect().bottom - child->margin_bottom.GetValue(GetRect(), ui);
             }
-            if (i == 0)
-                child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui) + left_space;
+            if (child->IsEnable(GetRect(), ui))
+            {
+                if (i == 0)
+                    child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui) + left_space;
+                else
+                    child_rect.left = w + child->margin_left.GetValue(GetRect(), ui);
+                child_rect.right = child_rect.left + size_list[i];
+                w = child_rect.right + child->margin_right.GetValue(GetRect(), ui);
+            }
             else
-                child_rect.left = childLst[i - 1]->GetRect().right + childLst[i - 1]->margin_right.GetValue(GetRect(), ui) + child->margin_left.GetValue(GetRect(), ui);
-            child_rect.right = child_rect.left + size_list[i];
+            {
+                if (i == 0)
+                    child_rect.left = GetRect().left + left_space;
+                else
+                    child_rect.left = w;
+                child_rect.right = child_rect.left + size_list[i];
+                w = child_rect.right;
+            }
             child->SetRect(child_rect);
         }
     }
@@ -327,26 +353,29 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (!IsEnable())            // 设置为不显示时按尺寸为0的固定尺寸元素处理
+            if (!IsEnable(GetRect(), ui))            // 设置为不显示时按尺寸为0的固定尺寸元素处理
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
             }
-            else if (child->height.IsValid() && !child->height.IsProportion())
-            {
-                int height{ child->GetHeight(GetRect(), ui) };
-                total_size += height;
-                size_list.push_back(height);
-                item_fixed_size_num++;
-            }
             else
             {
-                size_list.push_back(INT_MIN); // 这个子元素尺寸未定
+                if (child->height.IsValid() && !child->height.IsProportion())
+                {
+                    int height{ child->GetHeight(GetRect(), ui) };
+                    total_size += height;
+                    size_list.push_back(height);
+                    item_fixed_size_num++;
+                }
+                else
+                {
+                    size_list.push_back(INT_MIN); // 这个子元素尺寸未定
+                }
+                if (child->margin_top.IsValid())
+                    total_size += child->margin_top.GetValue(GetRect(), ui);
+                if (child->margin_bottom.IsValid())
+                    total_size += child->margin_bottom.GetValue(GetRect(), ui);
             }
-            if (child->margin_top.IsValid())
-                total_size += child->margin_top.GetValue(GetRect(), ui);
-            if (child->margin_bottom.IsValid())
-                total_size += child->margin_bottom.GetValue(GetRect(), ui);
         }
 
         int top_space{};                // 全部具有固定尺寸时首子元素与开始边缘的间距
@@ -427,6 +456,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         ASSERT(find(size_list.begin(), size_list.end(), INT_MIN) == size_list.end());
 
         // 计算每个子元素的矩形区域
+        int h{};
         for (size_t i{}; i < childLst.size(); i++)
         {
             auto& child{ childLst[i] };
@@ -445,11 +475,24 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui);
                 child_rect.right = GetRect().right - child->margin_right.GetValue(GetRect(), ui);
             }
-            if (i == 0)
-                child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui) + top_space;
+            if (child->IsEnable(GetRect(), ui))
+            {
+                if (i == 0)
+                    child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui) + top_space;
+                else
+                    child_rect.top = h + child->margin_top.GetValue(GetRect(), ui);
+                child_rect.bottom = child_rect.top + size_list[i];
+                h = child_rect.bottom + child->margin_bottom.GetValue(GetRect(), ui);
+            }
             else
-                child_rect.top = childLst[i - 1]->GetRect().bottom + childLst[i - 1]->margin_bottom.GetValue(GetRect(), ui) + child->margin_top.GetValue(GetRect(), ui);
-            child_rect.bottom = child_rect.top + size_list[i];
+            {
+                if (i == 0)
+                    child_rect.top = GetRect().top + top_space;
+                else
+                    child_rect.top = h;
+                child_rect.bottom = child_rect.top + size_list[i];
+                h = child_rect.bottom;
+            }
             child->SetRect(child_rect);
         }
     }
@@ -656,9 +699,11 @@ void UiElement::Spectrum::Draw(CPlayerUIBase* ui)
     }
 }
 
-bool UiElement::Spectrum::IsEnable() const
+bool UiElement::Spectrum::IsEnable(CRect parent_rect, CPlayerUIBase* ui) const
 {
-    return theApp.m_app_setting_data.show_spectrum;
+    if (theApp.m_app_setting_data.show_spectrum)
+        return UiElement::Element::IsEnable(parent_rect, ui);
+    return false;
 }
 
 void UiElement::TrackInfo::Draw(CPlayerUIBase* ui)

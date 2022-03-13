@@ -111,6 +111,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
         std::string str_margin_right = CTinyXml2Helper::ElementAttribute(xml_node, "margin-right");
         std::string str_margin_top = CTinyXml2Helper::ElementAttribute(xml_node, "margin-top");
         std::string str_margin_bottom = CTinyXml2Helper::ElementAttribute(xml_node, "margin-bottom");
+        std::string str_hide_width = CTinyXml2Helper::ElementAttribute(xml_node, "hide-width");
+        std::string str_hide_height = CTinyXml2Helper::ElementAttribute(xml_node, "hide-height");
         if (!str_x.empty())
             ui_element->x.FromString(str_x);
         if (!str_y.empty())
@@ -143,7 +145,12 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             ui_element->margin_top.FromString(str_margin_top);
         if (!str_margin_bottom.empty())
             ui_element->margin_bottom.FromString(str_margin_bottom);
-        
+
+        if (!str_hide_width.empty())
+            ui_element->hide_width.FromString(str_hide_width);
+        if (!str_hide_height.empty())
+            ui_element->hide_height.FromString(str_hide_height);
+
         //根据节点的类型设置元素独有的属性
         //按钮
         if (item_name == "button")

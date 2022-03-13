@@ -34,13 +34,15 @@ namespace UiElement
         Value max_height{ true };
         Value min_width{ false };
         Value min_height{ true };
+        Value hide_width{ false };
+        Value hide_height{ false };
 
         Element* pParent{};     //父元素
         std::vector<std::shared_ptr<Element>> childLst; //子元素列表
         std::string name;
 
         virtual void Draw(CPlayerUIBase* ui);   //绘制此元素
-        virtual bool IsEnable() const { return true; };
+        virtual bool IsEnable(CRect parent_rect, CPlayerUIBase* ui) const;
         int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
         int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
@@ -136,7 +138,7 @@ namespace UiElement
         bool fixed_width{};     //每个柱形是否使用相同的宽度
         CUIDrawer::SpectrumCol type{ CUIDrawer::SC_64 };     //频谱分析的类型
         virtual void Draw(CPlayerUIBase* ui) override;
-        virtual bool IsEnable() const override;
+        virtual bool IsEnable(CRect parent_rect, CPlayerUIBase* ui) const override;
     };
 
     //曲目信息（包含播放状态、文件名、歌曲标识、速度）
