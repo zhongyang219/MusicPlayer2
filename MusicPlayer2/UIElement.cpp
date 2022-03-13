@@ -132,9 +132,19 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
             rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent, ui);
 
         if (width.IsValid())
-            rect.right = rect.left + width.GetValue(rect_parent, ui);
+        {
+            if (!x.IsValid() && !margin_left.IsValid() && margin_right.IsValid())
+                rect.left = rect.right - width.GetValue(rect_parent, ui);
+            else
+                rect.right = rect.left + width.GetValue(rect_parent, ui);
+        }
         if (height.IsValid())
-            rect.bottom = rect.top + height.GetValue(rect_parent, ui);
+        {
+            if (!y.IsValid() && !margin_top.IsValid() && margin_bottom.IsValid())
+                rect.top = rect.bottom - height.GetValue(rect_parent, ui);
+            else
+                rect.bottom = rect.top + height.GetValue(rect_parent, ui);
+        }
     }
 }
 
@@ -378,6 +388,9 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
     case UiElement::Text::Format:
         draw_text = ui->GetDisplayFormatString();
         break;
+    case UiElement::Text::PlayTime:
+        draw_text = CPlayer::GetInstance().GetTimeString();
+        break;
     default:
         break;
     }
@@ -426,7 +439,10 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
 void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->DrawAlbumCover(rect);
+    if (show_info)
+        ui->DrawAlbumCoverWithInfo(rect);
+    else
+        ui->DrawAlbumCover(rect);
     ui->ResetDrawArea();
     Element::Draw(ui);
 }

@@ -779,12 +779,6 @@
     <ClInclude Include="SelectItemDlg.h">
       <Filter>对话框类\SelectItemDlg</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayerUI4.h">
-      <Filter>PlayerUI</Filter>
-    </ClInclude>
-    <ClInclude Include="CPlayerUI5.h">
-      <Filter>PlayerUI</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralDataHelper.h">
       <Filter>功能逻辑类\Player</Filter>
     </ClInclude>
@@ -1206,12 +1200,6 @@
     </ClCompile>
     <ClCompile Include="SelectItemDlg.cpp">
       <Filter>对话框类\SelectItemDlg</Filter>
-    </ClCompile>
-    <ClCompile Include="CPlayerUI4.cpp">
-      <Filter>PlayerUI</Filter>
-    </ClCompile>
-    <ClCompile Include="CPlayerUI5.cpp">
-      <Filter>PlayerUI</Filter>
     </ClCompile>
     <ClCompile Include="SpectralDataHelper.cpp">
       <Filter>功能逻辑类\Player</Filter>

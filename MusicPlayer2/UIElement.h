@@ -100,7 +100,8 @@ namespace UiElement
             Artist,     //歌曲艺术家
             Album,      //歌曲唱片集
             ArtistTitle,    //艺术家 - 标题
-            Format      //歌曲格式
+            Format,     //歌曲格式
+            PlayTime    //播放时间
         };
         Type type;
         int font_size{ 9 };
@@ -115,6 +116,7 @@ namespace UiElement
     {
     public:
         bool square{};
+        bool show_info{};
         virtual void Draw(CPlayerUIBase* ui) override;
         virtual void CalculateRect(CPlayerUIBase* ui) override;
     };

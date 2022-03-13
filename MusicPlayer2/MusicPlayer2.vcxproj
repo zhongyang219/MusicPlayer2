@@ -238,8 +238,6 @@
     <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
     <ClInclude Include="CMMNotificationClient.h" />
-    <ClInclude Include="CPlayerUI4.h" />
-    <ClInclude Include="CPlayerUI5.h" />
     <ClInclude Include="CUIDrawer.h" />
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
@@ -391,8 +389,6 @@
     <ClCompile Include="CListBoxEnhanced.cpp" />
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
     <ClCompile Include="CMMNotificationClient.cpp" />
-    <ClCompile Include="CPlayerUI4.cpp" />
-    <ClCompile Include="CPlayerUI5.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />

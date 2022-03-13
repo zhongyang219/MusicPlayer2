@@ -1934,6 +1934,68 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
     }
 }
 
+void CPlayerUIBase::DrawAlbumCoverWithInfo(CRect rect)
+{
+    const int info_height{ DPI(60) };   //歌曲信息区域的高度
+    if (IsDrawBackgroundAlpha())
+    {
+        DrawAlbumCover(rect);
+    }
+    else        //如果不绘制透明背景，则将专辑封面显示在歌曲信息区域的上方
+    {
+        CRect rect_temp{ rect };
+        rect_temp.bottom -= info_height;
+        DrawAlbumCover(rect_temp);
+    }
+
+    //绘制信息信息
+    CRect rect_info{ rect };
+    rect_info.top = rect_info.bottom - info_height;
+    if (rect_info.top < m_draw_rect.top)
+        rect_info.top = m_draw_rect.top;
+
+    COLORREF text_color;
+    COLORREF back_color;
+    BYTE alpha;
+    //if (theApp.m_app_setting_data.dark_mode)
+    //{
+    //    text_color = theApp.m_app_setting_data.theme_color.dark2;
+    //    back_color = ColorTable::WHITE;
+    //    alpha = 204;
+    //}
+    //else
+    //{
+    text_color = ColorTable::WHITE;
+    back_color = GRAY(64);
+    alpha = 108;
+    //}
+
+    if (IsDrawBackgroundAlpha())
+        m_draw.FillAlphaRect(rect_info, back_color, alpha /** 3 / 4*/);
+    else
+        m_draw.FillRect(rect_info, back_color);
+
+    rect_info.DeflateRect(DPI(24), DPI(8));
+    //绘制艺术家
+    CRect rect_artist{ rect_info };
+    rect_artist.bottom = rect_artist.top + DPI(16);
+    static CDrawCommon::ScrollInfo scroll_info_artist;
+    m_draw.DrawScrollText(rect_artist, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_artist);
+    //绘制歌曲标题
+    CRect rect_title{ rect_info };
+    rect_title.top = rect_artist.bottom;
+    wstring str_title;
+    if (CPlayer::GetInstance().GetCurrentSongInfo().IsTitleEmpty())             //如果标题为空，则显示文件名
+        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetFileName();
+    else
+        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.font12.GetFont(theApp.m_ui_data.full_screen));
+    static CDrawCommon::ScrollInfo scroll_info_title;
+    m_draw.DrawScrollText(rect_title, str_title.c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title);
+    m_draw.SetFont(pOldFont);
+
+}
+
 void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_text)
 {
     m_show_volume_text = show_text;

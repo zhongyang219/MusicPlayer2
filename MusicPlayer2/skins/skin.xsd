@@ -109,6 +109,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="index" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>
+                        界面的序号，至少为4。序号不能与其他界面重复。未定义此属性的界面总是排在后面。
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attributeGroup ref="sharedattr"></xs:attributeGroup><!--引用属性组 sharedattr-->
         </xs:complexType>
     </xs:element>
@@ -383,6 +390,11 @@
                             <xs:documentation>显示歌曲格式</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="play_time">
+                        <xs:annotation>
+                            <xs:documentation>播放时间</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -407,6 +419,11 @@
         <xs:attribute name="square" type="xs:boolean" default="false">
             <xs:annotation>
                 <xs:documentation>如果为true，则总是使用正方形的专辑封面。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="show_info" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>是否在专辑封面上显示歌曲标题和艺术家。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
