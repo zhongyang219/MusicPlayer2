@@ -2,8 +2,8 @@
 #include "UserUi.h"
 #include "TinyXml2Helper.h"
 
-CUserUi::CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path, int id)
-    : CPlayerUIBase(ui_data, pMainWnd), m_xml_path(xml_path), m_id(id)
+CUserUi::CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path)
+    : CPlayerUIBase(ui_data, pMainWnd), m_xml_path(xml_path)
 {
     LoadUi();
 }
@@ -11,6 +11,16 @@ CUserUi::CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path, 
 
 CUserUi::~CUserUi()
 {
+}
+
+void CUserUi::SetIndex(int index)
+{
+    m_index = index;
+}
+
+bool CUserUi::IsIndexValid() const
+{
+    return m_index != INT_MAX;
 }
 
 void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
@@ -71,9 +81,9 @@ CString CUserUi::GetUIName()
     return m_ui_name.c_str();
 }
 
-int CUserUi::GetClassId()
+int CUserUi::GetUiIndex()
 {
-    return m_id;
+    return m_index;
 }
 
 //从一个xml节点创建UiElement::Element元素及其所有子元素的对象
@@ -195,6 +205,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                     text->type = UiElement::Text::ArtistTitle;
                 else if (str_type == "format")
                     text->type = UiElement::Text::Format;
+                else if (str_type == "play_time")
+                    text->type = UiElement::Text::PlayTime;
                 //font_size
                 std::string str_font_size = CTinyXml2Helper::ElementAttribute(xml_node, "font_size");
                 text->font_size = atoi(str_font_size.c_str());
@@ -214,6 +226,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             {
                 std::string str_square = CTinyXml2Helper::ElementAttribute(xml_node, "square");
                 album_cover->square = CTinyXml2Helper::StringToBool(str_square.c_str());
+                std::string str_show_info = CTinyXml2Helper::ElementAttribute(xml_node, "show_info");
+                album_cover->show_info = CTinyXml2Helper::StringToBool(str_show_info.c_str());
             }
         }
         //频谱分析
@@ -289,6 +303,9 @@ void CUserUi::LoadUi()
     CTinyXml2Helper::LoadXmlFile(xml_doc, m_xml_path.c_str());
     tinyxml2::XMLElement* root = xml_doc.RootElement();
     m_ui_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(root, "name"), CodeType::UTF8_NO_BOM);
+    std::string ui_index = CTinyXml2Helper::ElementAttribute(root, "index");
+    if (!ui_index.empty())
+        m_index = atoi(ui_index.c_str());
     CTinyXml2Helper::IterateChildNode(root, [&](tinyxml2::XMLElement* xml_child)
         {
             std::string item_name = CTinyXml2Helper::ElementName(xml_child);

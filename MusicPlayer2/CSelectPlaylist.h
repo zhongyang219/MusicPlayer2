@@ -78,6 +78,8 @@ protected:
     void LeftListClicked(int index);
     void SongListClicked(int index);
 
+    void SetLeftListSelected(int index);
+
     virtual const CListCtrlEx& GetSongListCtrl() const override;
     virtual int GetItemSelected() const override;
     virtual const vector<int>& GetItemsSelected() const override;

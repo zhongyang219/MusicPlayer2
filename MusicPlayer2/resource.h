@@ -713,6 +713,7 @@
 #define IDS_SUPPORTTED_FORMAT_INFO_FFMPEG 559
 #define IDS_OTHER_FORMATS               560
 #define IDS_IDS_ENCODER_INIT_ERROR      561
+#define IDS_SEEK_TO_LINE_TIP            562
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1531,13 +1532,16 @@
 #define ID_COMPRESS_SIZE                33387
 #define ID_33388                        33388
 #define ID_PLAYLIST_SAVE_AS             33389
+#define ID_HELP_FAQ                     33390
+#define ID_33391                        33391
+#define ID_SEEK_TO_CUR_LINE             33392
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        555
-#define _APS_NEXT_COMMAND_VALUE         33390
+#define _APS_NEXT_COMMAND_VALUE         33393
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

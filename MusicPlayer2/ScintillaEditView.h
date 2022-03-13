@@ -44,10 +44,11 @@ public:
 #endif
 #endif
 
-    void SetText(const wstring& text);
-    void GetText(wstring& text);
-    const wchar_t* GetText(int& size);      //获取文本（返回字符串指针，需要自行释放内存）
-    const char* GetTextUtf8(int& size);      //获取UTF8格式文本（返回字符串指针，需要自行释放内存）
+    void SetTextW(const wstring& text);
+    void GetTextW(wstring& text);
+    const wchar_t* GetTextW(int& size);      //获取文本（返回字符串指针，需要自行释放内存）
+    const char* GetText(int& size);      //获取UTF8格式文本（返回字符串指针，需要自行释放内存）
+    std::string GetText(int start, int end);
     void SetFontFace(const wchar_t* font_face);
     void SetFontSize(int font_size);
     void SetTabSize(int tab_size);
@@ -112,7 +113,13 @@ public:
 
     void SetContextMenu(CMenu* pMenu, CWnd* pMenuOwner);
 
+    void GetLinePos(int line, int& start, int& end);        //获取某一行的开始和结束位置
+    void GetCurLinePos(int& start, int& end);               //获取当前行的开始和结束位置
+
     void SetLexerLyric(ColorTable theme_color);       //设置LRC语法解析
+
+    std::string GetCurrentLineText();
+    std::wstring GetCurrentLineTextW();
 
 private:
 

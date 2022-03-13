@@ -29,8 +29,6 @@
 #include "CPlayerUI.h"
 #include "CPlayerUI2.h"
 #include "CPlayerUI3.h"
-#include "CPlayerUI4.h"
-#include "CPlayerUI5.h"
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include "UserUi.h"
@@ -55,16 +53,33 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     m_ui_list.push_back(std::make_shared<CPlayerUI>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI2>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI3>(theApp.m_ui_data, &m_ui_static_ctrl));
-    m_ui_list.push_back(std::make_shared<CPlayerUI4>(theApp.m_ui_data, &m_ui_static_ctrl));
-    m_ui_list.push_back(std::make_shared<CPlayerUI5>(theApp.m_ui_data, &m_ui_static_ctrl));
     //加载skins目录下的用户自定义界面
+    std::vector<std::shared_ptr<CUserUi>> user_ui_list_with_index;
+    std::vector<std::shared_ptr<CUserUi>> user_ui_list;
     std::vector<std::wstring> skin_files;
     CCommon::GetFiles(theApp.m_local_dir + L"skins\\*.xml", skin_files);
-    int index{ static_cast<int>(m_ui_list.size()) + 1 };
     for (const auto& file_name : skin_files)
     {
         std::wstring file_path = theApp.m_local_dir + L"skins\\" + file_name;
-        m_ui_list.push_back(std::make_shared<CUserUi>(theApp.m_ui_data, &m_ui_static_ctrl, file_path, index));
+        auto ui = std::make_shared<CUserUi>(theApp.m_ui_data, &m_ui_static_ctrl, file_path);
+        if (ui->IsIndexValid())
+            user_ui_list_with_index.push_back(ui);
+        else
+            user_ui_list.push_back(ui);
+    }
+    std::sort(user_ui_list_with_index.begin(), user_ui_list_with_index.end(), [](const std::shared_ptr<CUserUi>& ui1, const std::shared_ptr<CUserUi>& ui2)
+        {
+            return ui1->GetUiIndex() < ui2->GetUiIndex();
+        });
+    for (const auto& ui : user_ui_list_with_index)
+        m_ui_list.push_back(ui);
+    int index = m_ui_list.size() + 1;
+    if (!user_ui_list_with_index.empty())
+        index = user_ui_list_with_index.back()->GetUiIndex() + 1;
+    for (const auto& ui : user_ui_list)
+    {
+        m_ui_list.push_back(ui);
+        ui->SetIndex(index);
         index++;
     }
 }
@@ -858,7 +873,7 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
         m_miniModeDlg.ShowPlaylist();
     }
 
-    if (theApp.m_nc_setting_data.float_playlist && IsFloatPlaylistExist())
+    if (IsFloatPlaylistExist())
     {
         m_pFloatPlaylistDlg->RefreshData();
     }
@@ -872,7 +887,7 @@ void CMusicPlayerDlg::SetPlayListColor(bool highlight_visible)
     if (highlight_visible)
         m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 
-    if (theApp.m_nc_setting_data.float_playlist && IsFloatPlaylistExist())
+    if (IsFloatPlaylistExist())
     {
         m_pFloatPlaylistDlg->RefreshState(highlight_visible);
     }
@@ -1201,12 +1216,14 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     if (float_playlist_follow_main_wnd_changed && IsFloatPlaylistExist())
     {
-        if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
-        {
-            m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
-            MoveFloatPlaylistPos();
-        }
-        m_pFloatPlaylistDlg->UpdateStyles();
+        //if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+        //{
+        //    m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
+        //    MoveFloatPlaylistPos();
+        //}
+        //m_pFloatPlaylistDlg->UpdateStyles();
+        HideFloatPlaylist();
+        ShowFloatPlaylist();
     }
 
     SaveConfig();       //将设置写入到ini文件
@@ -1552,10 +1569,17 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
 {
+    theApp.m_nc_setting_data.float_playlist = true;
+    if (IsFloatPlaylistExist())
+    {
+        m_pFloatPlaylistDlg->ShowWindow(SW_RESTORE);
+        return;
+    }
+
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
     m_pFloatPlaylistDlg = new CFloatPlaylistDlg(m_item_selected, m_items_selected);
     m_pFloatPlaylistDlg->SetInitPoint(m_float_playlist_pos);
-    m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, this);
+    m_pFloatPlaylistDlg->Create(IDD_MUSICPLAYER2_DIALOG, theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd ? this : GetDesktopWindow());
     m_pFloatPlaylistDlg->ShowWindow(SW_SHOW);
     if (!MoveFloatPlaylistPos())
     {
@@ -1693,7 +1717,7 @@ void CMusicPlayerDlg::InitUiMenu()
             {
                 CString str_name = m_ui_list[i]->GetUIName();   //获取界面的名称
                 if (str_name.IsEmpty())
-                    str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_UI).GetString(), i + 1); //如果名称为空（没有指定名称），则使用“界面 +数字”的默认名称
+                    str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_UI).GetString(), m_ui_list[i]->GetUiIndex()); //如果名称为空（没有指定名称），则使用“界面 +数字”的默认名称
 
                 if (i + 1 <= 9)     //如果界面的序号在9以内，为其分配Ctrl+数字的快捷键
                 {
@@ -3163,7 +3187,6 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         }
         else        //否则是添加选中的曲目到播放列表
         {
-            GetPlaylistItemSelected();
             for (auto i : m_items_selected)
             {
                 if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
@@ -3495,7 +3518,12 @@ void CMusicPlayerDlg::OnMiniMode()
 
     //m_miniModeDlg.SetDefaultBackGround(&theApp.m_ui_data.default_background);
     //m_miniModeDlg.SetDisplayFormat(&theApp.m_media_lib_setting_data.display_format);
-    Show(false);
+
+    //Show(false);
+    ShowWindow(SW_HIDE);
+    bool float_playlist_exist{ IsFloatPlaylistExist() };
+    if (theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd)
+        HideFloatPlaylist();
 
     if (m_miniModeDlg.DoModal() == IDCANCEL)
     {
@@ -3504,7 +3532,10 @@ void CMusicPlayerDlg::OnMiniMode()
     }
     else
     {
-        Show(true);
+        //Show(true);
+        ShowWindow(SW_SHOW);
+        if (float_playlist_exist)
+            ShowFloatPlaylist();
 
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())

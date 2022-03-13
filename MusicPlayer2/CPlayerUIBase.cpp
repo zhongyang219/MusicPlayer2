@@ -121,10 +121,10 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
     else
     {
-        static int last_width{}, last_height{}, last_class_id{};
+        static int last_width{}, last_height{}, last_ui_index{};
         //检测到绘图区域变化或界面进行了切换时
         if (last_width != m_draw_rect.Width() || last_height != m_draw_rect.Height()
-            || (last_class_id != GetClassId() && GetClassId() != 0))
+            || (last_ui_index != GetUiIndex() && GetUiIndex() != 0))
         {
             //更新工具提示的位置
             UpdateToolTipPosition();
@@ -139,7 +139,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
 
             last_width = m_draw_rect.Width();
             last_height = m_draw_rect.Height();
-            last_class_id = GetClassId();
+            last_ui_index = GetUiIndex();
         }
     }
     m_first_draw = false;
@@ -658,9 +658,10 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 
     //绘制歌曲序号
     rc_tmp.MoveToX(rc_tmp.right);
-    rc_tmp.right = rc_tmp.left + DPI(30);
     wchar_t buff[128];
     swprintf_s(buff, sizeof(buff) / 2, L"%.3d", CPlayer::GetInstance().GetIndex() + 1);
+    int index_width = m_draw.GetTextExtent(buff).cx;
+    rc_tmp.right = rc_tmp.left + index_width + DPI(4);
     m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text_2);
 
     //绘制标识
@@ -700,7 +701,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
     }
 
     //绘制文件名
-    rc_tmp.MoveToX(rc_tmp.right + DPI(4));
+    rc_tmp.MoveToX(rc_tmp.right + (tag_str.empty() ? 0 : DPI(4)));
     rc_tmp.right = rect.right;
     if (rc_tmp.Width() >= DPI(4))
     {
@@ -1046,17 +1047,17 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
 
 void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetClassId() * 100);
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
 {
-    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetClassId() * 100);
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdateVolumeToolTip()
 {
-    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetClassId() * 100);
+    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdatePlaylistBtnToolTip()
@@ -1071,7 +1072,7 @@ void CPlayerUIBase::UpdateToolTipPosition()
 {
     for (const auto& btn : m_buttons)
     {
-        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetClassId() * 100, btn.second.rect);
+        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetToolTipIdOffset(), btn.second.rect);
     }
 }
 
@@ -1898,6 +1899,11 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     //m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
 }
 
+int CPlayerUIBase::GetToolTipIdOffset()
+{
+    return GetUiIndex() * 100;
+}
+
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
 {
     if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
@@ -1926,6 +1932,68 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
             m_draw.DrawIcon(icon, CPoint(x, y), CSize(cover_side, cover_side));
         }
     }
+}
+
+void CPlayerUIBase::DrawAlbumCoverWithInfo(CRect rect)
+{
+    const int info_height{ DPI(60) };   //歌曲信息区域的高度
+    if (IsDrawBackgroundAlpha())
+    {
+        DrawAlbumCover(rect);
+    }
+    else        //如果不绘制透明背景，则将专辑封面显示在歌曲信息区域的上方
+    {
+        CRect rect_temp{ rect };
+        rect_temp.bottom -= info_height;
+        DrawAlbumCover(rect_temp);
+    }
+
+    //绘制信息信息
+    CRect rect_info{ rect };
+    rect_info.top = rect_info.bottom - info_height;
+    if (rect_info.top < m_draw_rect.top)
+        rect_info.top = m_draw_rect.top;
+
+    COLORREF text_color;
+    COLORREF back_color;
+    BYTE alpha;
+    //if (theApp.m_app_setting_data.dark_mode)
+    //{
+    //    text_color = theApp.m_app_setting_data.theme_color.dark2;
+    //    back_color = ColorTable::WHITE;
+    //    alpha = 204;
+    //}
+    //else
+    //{
+    text_color = ColorTable::WHITE;
+    back_color = GRAY(64);
+    alpha = 108;
+    //}
+
+    if (IsDrawBackgroundAlpha())
+        m_draw.FillAlphaRect(rect_info, back_color, alpha /** 3 / 4*/);
+    else
+        m_draw.FillRect(rect_info, back_color);
+
+    rect_info.DeflateRect(DPI(24), DPI(8));
+    //绘制艺术家
+    CRect rect_artist{ rect_info };
+    rect_artist.bottom = rect_artist.top + DPI(16);
+    static CDrawCommon::ScrollInfo scroll_info_artist;
+    m_draw.DrawScrollText(rect_artist, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_artist);
+    //绘制歌曲标题
+    CRect rect_title{ rect_info };
+    rect_title.top = rect_artist.bottom;
+    wstring str_title;
+    if (CPlayer::GetInstance().GetCurrentSongInfo().IsTitleEmpty())             //如果标题为空，则显示文件名
+        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetFileName();
+    else
+        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.font12.GetFont(theApp.m_ui_data.full_screen));
+    static CDrawCommon::ScrollInfo scroll_info_title;
+    m_draw.DrawScrollText(rect_title, str_title.c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title);
+    m_draw.SetFont(pOldFont);
+
 }
 
 void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_text)

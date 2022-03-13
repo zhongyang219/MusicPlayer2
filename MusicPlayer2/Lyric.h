@@ -66,6 +66,15 @@ private:
     static void ParseLyricText(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate);
 
 public:
+    /**
+     * @brief   解析歌词的时间标签
+     * @param[in]   const wstring & lyric_text 一行歌词文本
+     * @param[out]  Time & time 得到的时间标签
+     * @return  bool 是否成功
+     */
+    static bool ParseLyricTimeTag(const wstring& lyric_text, Time& time);
+
+public:
     CLyrics(const wstring& file_name);
     CLyrics() {}
 

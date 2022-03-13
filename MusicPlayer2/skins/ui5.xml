@@ -1,0 +1,53 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
+      index="5">
+  <ui>
+    <verticalLayout margin="4">
+      <lyrics/>
+      <horizontalLayout height="98">
+        <albumCover width="82" margin="8" margin-left="4"/>
+        <verticalLayout>
+          <text type="title" style="scroll" height="32" font_size="12"/>
+          <text type="artist" style="scroll" height="32" font_size="10"/>
+        </verticalLayout>
+      </horizontalLayout>
+      <progressBar show_play_time="true" height="16" margin-left="4" margin-right="4"/>
+      <horizontalLayout margin-bottom="8" margin-left="4" margin-right="4" height="62">
+        <button key="previous" bigIcon="true" width="36" height="36"/>
+        <button key="playPause" bigIcon="true" width="36" height="36"/>
+        <button key="next" bigIcon="true" width="36" height="36"/>
+        <button key="repeatMode" margin="4" width="28" height="28"/>
+        <button key="favorite" margin="4" width="28" height="28"/>
+        <volume show_text="false" margin="4" width="28" height="28"/>
+        <placeHolder/>
+        <button key="mediaLib" margin="4" width="28" height="28"/>
+        <button key="showPlaylist" margin="4" width="28" height="28"/>
+      </horizontalLayout>
+    </verticalLayout>
+    <spectrum draw_reflex="false" width="280" height="32" margin-left="24" margin-bottom="0"/>
+  </ui>
+  <ui type="small">
+    <verticalLayout margin="4">
+      <lyrics/>
+      <horizontalLayout height="94">
+        <albumCover width="78" margin="4"/>
+        <verticalLayout>
+          <text type="title" style="scroll" height="32" font_size="12"/>
+          <text type="artist" style="scroll" height="32" font_size="10"/>
+        </verticalLayout>
+      </horizontalLayout>
+      <progressBar show_play_time="true" height="16" margin-left="4" margin-right="4"/>
+      <horizontalLayout margin-bottom="4" margin-left="4" margin-right="4" height="40">
+        <button key="previous" bigIcon="true" width="36" height="36"/>
+        <button key="playPause" bigIcon="true" width="36" height="36"/>
+        <button key="next" bigIcon="true" width="36" height="36"/>
+        <button key="repeatMode" margin="4" width="28" height="28"/>
+        <button key="favorite" margin="4" width="28" height="28"/>
+        <volume show_text="false" margin="4" width="28" height="28"/>
+        <placeHolder/>
+        <button key="mediaLib" margin="4" width="28" height="28"/>
+        <button key="showPlaylist" margin="4" width="28" height="28"/>
+      </horizontalLayout>
+    </verticalLayout>
+    <spectrum draw_reflex="false" width="280" height="28" margin-left="24" margin-bottom="0"/>
+  </ui>
+</root>

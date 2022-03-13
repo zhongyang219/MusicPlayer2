@@ -166,49 +166,17 @@ void CLyrics::DisposeLyric()
         // if (!lyric.text.empty() && lyric.text.back() <= 32) lyric.text.pop_back();      // 删除歌词末尾的一个控制字符或空格
 
         // 获取时间标签
-        index = -1;
-        while (true)
+        Time t{};
+        if (ParseLyricTimeTag(m_lyrics_str[i], t))
         {
-            index = m_lyrics_str[i].find_first_of(L'[', index + 1);                 // 查找第1个左中括号
-            if (index == string::npos) break;                                       // 没有找到左中括号，退出循环
-            else if (index > static_cast<int>(m_lyrics_str[i].size() - 9)) break;   // 找到了左中括号，但是左中括号在字符串的倒数第9个字符以后，也退出循环
-            else if ((m_lyrics_str[i][index + 1] > L'9' || m_lyrics_str[i][index + 1] < L'0') && m_lyrics_str[i][index + 1] != L'-') continue;     // 找到了左中括号，但是左中括号后面不是数字也不是负号，退出本次循环，继续查找该行中下一个左中括号
+            lyric.time_int = t.toInt();
+            m_lyrics.push_back(lyric);
 
             // 如果已查找到时间标签了，但是还没有找到offset标签，则将m_offset_tag_index设置为第1个时间标签的位置
             if (!m_offset_tag && m_offset_tag_index == -1)
             {
                 m_offset_tag_index = i;
             }
-
-            int index1, index2, index3;                                         // 歌词标签中冒号、圆点和右中括号的位置
-            Time t{};
-            index1 = m_lyrics_str[i].find_first_of(L':', index);                // 查找从左中括号开始第1个冒号的位置
-            index2 = m_lyrics_str[i].find_first_of(L".:", index1 + 1);          // 查找从第1个冒号开始第1个圆点或冒号的位置（秒钟和毫秒数应该用圆点分隔，这里也兼容用冒号分隔的歌词）
-            index3 = m_lyrics_str[i].find(L']', index);                         // 查找右中括号的位置
-            temp = m_lyrics_str[i].substr(index + 1, index1 - index - 1);       // 获取时间标签的分钟数
-            t.min = _wtoi(temp.c_str());
-            temp = m_lyrics_str[i].substr(index1 + 1, index2 - index1 - 1);     // 获取时间标签的秒钟数
-            t.sec = _wtoi(temp.c_str());
-            temp = m_lyrics_str[i].substr(index2 + 1, index3 - index2 - 1);     // 获取时间标签的毫秒数
-            int char_cnt = temp.size();                                         // 毫秒数的位数
-            if (char_cnt > 0 && temp[0] == L'-')                                // 如果毫秒数的前面有负号，则位数减1
-                char_cnt--;
-            switch (char_cnt)
-            {
-            case 0:
-                t.msec = 0;
-            case 1:
-                t.msec = _wtoi(temp.c_str()) * 100;
-                break;
-            case 2:
-                t.msec = _wtoi(temp.c_str()) * 10;
-                break;
-            default:
-                t.msec = _wtoi(temp.c_str()) % 1000;
-                break;
-            }
-            lyric.time_int = t.toInt();
-            m_lyrics.push_back(lyric);
         }
     }
 }
@@ -239,6 +207,48 @@ void CLyrics::ParseLyricText(const wstring& lyric_text_ori, wstring& lyric_text,
         lyric_translate.clear();
     }
 
+}
+
+bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time)
+{
+    int index = -1;
+    bool time_acquired{ false };
+    while (true)
+    {
+        index = lyric_text.find_first_of(L'[', index + 1);                 // 查找第1个左中括号
+        if (index == string::npos) break;                                  // 没有找到左中括号，退出循环
+        else if (index > static_cast<int>(lyric_text.size() - 9)) break;   // 找到了左中括号，但是左中括号在字符串的倒数第9个字符以后，也退出循环
+        else if ((lyric_text[index + 1] > L'9' || lyric_text[index + 1] < L'0') && lyric_text[index + 1] != L'-') continue;     // 找到了左中括号，但是左中括号后面不是数字也不是负号，退出本次循环，继续查找该行中下一个左中括号
+
+        int index1, index2, index3;                                         // 歌词标签中冒号、圆点和右中括号的位置
+        index1 = lyric_text.find_first_of(L':', index);                // 查找从左中括号开始第1个冒号的位置
+        index2 = lyric_text.find_first_of(L".:", index1 + 1);          // 查找从第1个冒号开始第1个圆点或冒号的位置（秒钟和毫秒数应该用圆点分隔，这里也兼容用冒号分隔的歌词）
+        index3 = lyric_text.find(L']', index);                         // 查找右中括号的位置
+        wstring temp = lyric_text.substr(index + 1, index1 - index - 1);       // 获取时间标签的分钟数
+        time.min = _wtoi(temp.c_str());
+        temp = lyric_text.substr(index1 + 1, index2 - index1 - 1);     // 获取时间标签的秒钟数
+        time.sec = _wtoi(temp.c_str());
+        temp = lyric_text.substr(index2 + 1, index3 - index2 - 1);     // 获取时间标签的毫秒数
+        int char_cnt = temp.size();                                         // 毫秒数的位数
+        if (char_cnt > 0 && temp[0] == L'-')                                // 如果毫秒数的前面有负号，则位数减1
+            char_cnt--;
+        switch (char_cnt)
+        {
+        case 0:
+            time.msec = 0;
+        case 1:
+            time.msec = _wtoi(temp.c_str()) * 100;
+            break;
+        case 2:
+            time.msec = _wtoi(temp.c_str()) * 10;
+            break;
+        default:
+            time.msec = _wtoi(temp.c_str()) % 1000;
+            break;
+        }
+        time_acquired = true;
+    }
+    return time_acquired;
 }
 
 bool CLyrics::IsEmpty() const
