@@ -29,11 +29,13 @@
 			</horizontalLayout>
 			<rectangle height="88" no_corner_radius="true">
 				<horizontalLayout>
-					<albumCover width="88"/>
-					<verticalLayout margin="4">
-						<text type="title" style="scroll" height="24" font_size="10"/>
-						<text type="artist" style="scroll" height="24"/>
-					</verticalLayout>
+          <horizontalLayout>
+					  <albumCover width="88"/>
+					  <verticalLayout margin="4">
+						  <text type="title" style="scroll" height="24" font_size="10"/>
+						  <text type="artist" style="scroll" height="24"/>
+					  </verticalLayout>
+          </horizontalLayout>
 					<verticalLayout width="36%">
 						<horizontalLayout height="60">
 							<button key="repeatMode" width="26" height="26" margin="2"/>
@@ -46,7 +48,7 @@
 					</verticalLayout>
 					<horizontalLayout margin-right="4">
 						<placeHolder/>
-						<volume show_text="true" width="56" height="26" margin="2"/>
+						<volume show_text="true" width="64" height="26" margin="2"/>
 						<button key="showPlaylist" width="26" height="26" margin="2"/>
 					</horizontalLayout>
 				</horizontalLayout>

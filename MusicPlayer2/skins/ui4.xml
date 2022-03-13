@@ -48,28 +48,30 @@
         </verticalLayout>
       </horizontalLayout>
       <progressBar show_play_time="false" height="4"/>
-      <horizontalLayout margin-bottom="8" height="72">
-        <horizontalLayout margin-left="8">
-          <button key="info" width="28" height="28"/>
-          <button key="addToPlaylist" width="28" height="28"/>
-          <button key="equalizer" width="28" height="28"/>
-          <placeHolder/>
+      <rectangle height="80">
+        <horizontalLayout margin-bottom="8" height="72">
+          <horizontalLayout margin-left="8">
+            <button key="info" width="28" height="28"/>
+            <button key="addToPlaylist" width="28" height="28"/>
+            <button key="equalizer" width="28" height="28"/>
+            <placeHolder/>
+          </horizontalLayout>
+          <horizontalLayout width="45%">
+            <button key="repeatMode" margin="4" width="28" height="28"/>
+            <button key="previous" bigIcon="true" width="36" height="36"/>
+            <button key="playPause" bigIcon="true" width="36" height="36"/>
+            <button key="next" bigIcon="true" width="36" height="36"/>
+            <button key="favorite" margin="4" width="28" height="28"/>
+          </horizontalLayout>
+          <horizontalLayout margin-right="8">
+            <placeHolder/>
+            <text type="play_time" width="56" height="28" />
+            <volume show_text="false" width="28" height="28"/>
+            <button key="mediaLib" width="28" height="28"/>
+            <button key="showPlaylist" width="28" height="28"/>
+          </horizontalLayout>
         </horizontalLayout>
-        <horizontalLayout width="45%">
-          <button key="repeatMode" margin="4" width="28" height="28"/>
-          <button key="previous" bigIcon="true" width="36" height="36"/>
-          <button key="playPause" bigIcon="true" width="36" height="36"/>
-          <button key="next" bigIcon="true" width="36" height="36"/>
-          <button key="favorite" margin="4" width="28" height="28"/>
-        </horizontalLayout>
-        <horizontalLayout margin-right="8">
-          <placeHolder/>
-          <text type="play_time" width="56" height="28" />
-          <volume show_text="false" width="28" height="28"/>
-          <button key="mediaLib" width="28" height="28"/>
-          <button key="showPlaylist" width="28" height="28"/>
-        </horizontalLayout>
-      </horizontalLayout>
+      </rectangle>
     </verticalLayout>
     <horizontalLayout height="32" margin-bottom="0" >
       <spectrum draw_reflex="false" width="280"/>
