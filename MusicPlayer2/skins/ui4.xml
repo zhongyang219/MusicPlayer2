@@ -56,7 +56,7 @@
             <button key="equalizer" width="28" height="28"/>
             <placeHolder/>
           </horizontalLayout>
-          <horizontalLayout width="45%">
+          <horizontalLayout width="206">
             <button key="repeatMode" margin="4" width="28" height="28"/>
             <button key="previous" bigIcon="true" width="36" height="36"/>
             <button key="playPause" bigIcon="true" width="36" height="36"/>
@@ -65,7 +65,7 @@
           </horizontalLayout>
           <horizontalLayout margin-right="8">
             <placeHolder/>
-            <text type="play_time" width="56" height="28" />
+            <text type="play_time" width="80" alignment="right" margin-right="4" height="28"/>
             <volume show_text="false" width="28" height="28"/>
             <button key="mediaLib" width="28" height="28"/>
             <button key="showPlaylist" width="28" height="28"/>
