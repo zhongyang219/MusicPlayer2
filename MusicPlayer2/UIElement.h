@@ -35,7 +35,7 @@ namespace UiElement
         Value min_width{ false };
         Value min_height{ true };
         Value hide_width{ false };
-        Value hide_height{ false };
+        Value hide_height{ true };
 
         Element* pParent{};     //父元素
         std::vector<std::shared_ptr<Element>> childLst; //子元素列表

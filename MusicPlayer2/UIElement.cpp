@@ -200,7 +200,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (!IsEnable(GetRect(), ui))            // 设置为不显示时按尺寸为0的固定尺寸元素处理，并忽略此元素边距
+            if (!child->IsEnable(GetRect(), ui))            // 设置为不显示时按尺寸为0的固定尺寸元素处理，并忽略此元素边距
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
@@ -218,10 +218,10 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 {
                     size_list.push_back(INT_MIN); // 这个子元素尺寸未定
                 }
-                if (child->margin_top.IsValid())
-                    total_size += child->margin_top.GetValue(GetRect(), ui);
-                if (child->margin_bottom.IsValid())
-                    total_size += child->margin_bottom.GetValue(GetRect(), ui);
+                if (child->margin_left.IsValid())
+                    total_size += child->margin_left.GetValue(GetRect(), ui);
+                if (child->margin_right.IsValid())
+                    total_size += child->margin_right.GetValue(GetRect(), ui);
             }
         }
 
@@ -333,12 +333,8 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             else
             {
-                if (i == 0)
-                    child_rect.left = GetRect().left + left_space;
-                else
-                    child_rect.left = w;
-                child_rect.right = child_rect.left + size_list[i];
-                w = child_rect.right;
+                child_rect.left = w;
+                child_rect.right = w;
             }
             child->SetRect(child_rect);
         }
@@ -353,7 +349,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (!IsEnable(GetRect(), ui))            // 设置为不显示时按尺寸为0的固定尺寸元素处理
+            if (!child->IsEnable(GetRect(), ui))            // 设置为不显示时按尺寸为0的固定尺寸元素处理
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
@@ -486,12 +482,8 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             else
             {
-                if (i == 0)
-                    child_rect.top = GetRect().top + top_space;
-                else
-                    child_rect.top = h;
-                child_rect.bottom = child_rect.top + size_list[i];
-                h = child_rect.bottom;
+                child_rect.top = h;
+                child_rect.bottom = h;
             }
             child->SetRect(child_rect);
         }
