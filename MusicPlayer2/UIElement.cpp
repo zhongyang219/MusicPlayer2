@@ -645,6 +645,50 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
     Element::Draw(ui);
 }
 
+int UiElement::Text::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
+{
+    if (!width_follow_text)
+        return UiElement::Element::GetWidth(parent_rect, ui);
+    else
+    {
+        std::wstring draw_text;
+        switch (type)
+        {
+        case UiElement::Text::UserDefine:
+            draw_text = text;
+            break;
+        case UiElement::Text::Title:
+            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+            break;
+        case UiElement::Text::Artist:
+            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
+            break;
+        case UiElement::Text::Album:
+            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+            break;
+        case UiElement::Text::ArtistTitle:
+            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+            break;
+        case UiElement::Text::Format:
+            draw_text = ui->GetDisplayFormatString();
+            break;
+        case UiElement::Text::PlayTime:
+            draw_text = CPlayer::GetInstance().GetTimeString();
+            break;
+        default:
+            break;
+        }
+        int width_text{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx + ui->DPI(4) };
+        int w{ width.GetValue(parent_rect, ui) };
+        w = min(w, width_text);
+        if (max_width.IsValid())
+            w = min(max_width.GetValue(GetRect(), ui), w);
+        if (min_width.IsValid())
+            w = max(min_width.GetValue(GetRect(), ui), w);
+        return w;
+    }
+}
+
 void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);

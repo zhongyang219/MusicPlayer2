@@ -223,6 +223,12 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                     text->font_size = 8;
                 else if (text->font_size > 12)
                     text->font_size = 12;
+                // max_width_follow_text 优先级低于 max-width
+                std::string str_width_follow_text = CTinyXml2Helper::ElementAttribute(xml_node, "width_follow_text");
+                if (str_width_follow_text == "true")
+                    text->width_follow_text = true;
+                else if (str_width_follow_text == "false")
+                    text->width_follow_text = false;
             }
         }
         //专辑封面

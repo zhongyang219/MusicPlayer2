@@ -43,7 +43,7 @@ namespace UiElement
 
         virtual void Draw(CPlayerUIBase* ui);   //绘制此元素
         virtual bool IsEnable(CRect parent_rect, CPlayerUIBase* ui) const;
-        int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
+        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
         int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
@@ -114,8 +114,10 @@ namespace UiElement
         };
         Type type;
         int font_size{ 9 };
+        bool width_follow_text{};
 
         virtual void Draw(CPlayerUIBase* ui) override;
+        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;
     };
