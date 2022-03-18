@@ -1919,6 +1919,7 @@ int CPlayerUIBase::GetToolTipIdOffset()
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
 {
+    m_draw.SetDrawArea(rect);
     if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
     {
         if (theApp.m_app_setting_data.draw_album_high_quality)
@@ -1945,6 +1946,7 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
             m_draw.DrawIcon(icon, CPoint(x, y), CSize(cover_side, cover_side));
         }
     }
+    ResetDrawArea();
 }
 
 void CPlayerUIBase::DrawAlbumCoverWithInfo(CRect rect)
