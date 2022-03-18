@@ -211,6 +211,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CFloatPlaylistDlg::OnLocateToCurrent)
     ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CFloatPlaylistDlg::OnMainWindowActivated)
     ON_WM_DROPFILES()
+    ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -550,4 +551,20 @@ void CFloatPlaylistDlg::OnDropFiles(HDROP hDropInfo)
         main_wnd->OnDropFiles(hDropInfo);
     else
         CDialog::OnDropFiles(hDropInfo);
+}
+
+
+HBRUSH CFloatPlaylistDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    if (pWnd == this)
+    {
+        static HBRUSH hBackBrush{};
+        if (hBackBrush == NULL)
+            hBackBrush = CreateSolidBrush(CONSTVAL::BACKGROUND_COLOR);
+        return hBackBrush;
+    }
+
+    return hbr;
 }

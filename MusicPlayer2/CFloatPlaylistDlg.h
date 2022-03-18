@@ -82,4 +82,5 @@ protected:
     afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnDropFiles(HDROP hDropInfo);
+    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
