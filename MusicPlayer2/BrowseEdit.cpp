@@ -25,20 +25,40 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
 {
     //使用双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
-
     CDrawCommon drawer;
     drawer.Create(drawDoubleBuffer.GetMemDC(), this);
     CRect rc_draw{ rect };
     rc_draw.MoveToXY(0, 0);
 
-    COLORREF back_color;
+    //使用圆角风格时，先填充背景色，再画按钮
+    if (theApp.m_app_setting_data.button_round_corners)
+    {
+        COLORREF back_color;
+        bool is_read_only = (GetStyle() & ES_READONLY) != 0;
+        if (is_read_only || !IsWindowEnabled())
+            back_color = GetSysColor(COLOR_3DFACE);
+        else
+            back_color = GetSysColor(COLOR_WINDOW);
+        drawer.GetDC()->FillSolidRect(rc_draw, back_color);
+    }
+
+    COLORREF btn_color;
     if (bIsButtonPressed)
-        back_color = m_theme_color.light1_5;
+        btn_color = m_theme_color.light1_5;
     else if (bIsButtonHot)
-        back_color = m_theme_color.light2_5;
+        btn_color = m_theme_color.light2_5;
     else
-        back_color = CColorConvert::m_gray_color.light3;
-    drawer.GetDC()->FillSolidRect(rc_draw, back_color);
+        btn_color = CColorConvert::m_gray_color.light3;
+    if (theApp.m_app_setting_data.button_round_corners)
+    {
+        CRect rc_btn{ rc_draw };
+        rc_btn.DeflateRect(theApp.DPI(1), theApp.DPI(1));
+        drawer.DrawRoundRect(rc_btn, btn_color, theApp.DPI(3));
+    }
+    else
+    {
+        drawer.GetDC()->FillSolidRect(rc_draw, btn_color);
+    }
 
     auto& icon = GetIcon();
     CSize icon_size = icon.GetSize();
