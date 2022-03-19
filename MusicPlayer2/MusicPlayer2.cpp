@@ -668,6 +668,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSubMenu(2)->GetSafeHmenu(), 0, TRUE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_PLAYLIST_ADD_FILE, FALSE, m_icon_set.music);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_PLAYLIST_ADD_FOLDER, FALSE, m_icon_set.select_folder.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_PLAYLIST_ADD_URL, FALSE, m_icon_set.link.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSubMenu(2)->GetSafeHmenu(), 1, TRUE, m_icon_set.close.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_RELOAD_PLAYLIST, FALSE, m_icon_set.loop_playlist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SAVE_AS_NEW_PLAYLIST, FALSE, m_icon_set.save_new);
@@ -769,6 +770,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, m_icon_set.setting.GetIcon(true));
 
     //播放列表菜单
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_FILE_OPEN_FOLDER, FALSE, m_icon_set.select_folder.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_PLAYLIST_ADD_FILE, FALSE, m_icon_set.music);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_PLAYLIST_ADD_FOLDER, FALSE, m_icon_set.select_folder.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu(), ID_PLAYLIST_ADD_URL, FALSE, m_icon_set.link.GetIcon(true));
