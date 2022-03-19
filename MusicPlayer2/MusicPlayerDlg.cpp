@@ -6197,16 +6197,17 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, 
     }
     if (menu_changed)
     {
-        //销毁菜单前先销毁菜单中的位图对象
-        for (int i{}; i < menu_size; i++)
-        {
-            MENUITEMINFO mii{};
-            mii.cbSize = sizeof(MENUITEMINFO);
-            mii.fMask = MIIM_BITMAP;
-            theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuItemInfo(i, &mii, TRUE);
-            if (mii.hbmpItem != nullptr)
-                DeleteObject(mii.hbmpItem);
-        }
+        //CMenuIcon类中缓存了所有菜单的位图对象，因此这里不再需要销毁菜单中的位图对象
+        ////销毁菜单前先销毁菜单中的位图对象
+        //for (int i{}; i < menu_size; i++)
+        //{
+        //    MENUITEMINFO mii{};
+        //    mii.cbSize = sizeof(MENUITEMINFO);
+        //    mii.fMask = MIIM_BITMAP;
+        //    theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuItemInfo(i, &mii, TRUE);
+        //    if (mii.hbmpItem != nullptr)
+        //        DeleteObject(mii.hbmpItem);
+        //}
         theApp.m_menu_set.m_recent_folder_playlist_menu.DestroyMenu();
         theApp.m_menu_set.m_recent_folder_playlist_menu.CreatePopupMenu();
         int item_count{};
