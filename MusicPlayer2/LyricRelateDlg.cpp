@@ -123,6 +123,7 @@ BOOL CLyricRelateDlg::OnInitDialog()
     SetButtonIcon(IDC_LOCAL_SEARCH_BUTTON, theApp.m_icon_set.find_songs.GetIcon(true));
     SetButtonIcon(IDC_BROWSE_BUTTON1, theApp.m_icon_set.folder_explore.GetIcon(true));
     SetButtonIcon(IDC_DELETE_FILE_BUTTON, theApp.m_icon_set.close.GetIcon(true));
+    SetButtonIcon(IDC_DONOT_RELATE_BUTTON, theApp.m_icon_set.unlink.GetIcon(true));
 
     wstring lyric_name;
     if (CPlayer::GetInstance().GetCurrentSongInfo().is_cue || CPlayer::GetInstance().IsOsuFile())
