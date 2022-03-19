@@ -101,7 +101,7 @@ void CSearchEditCtrl::OnChangeLayout()
 
     CRect rc_client;
     GetWindowRect(rc_client);
-    m_nBrowseButtonWidth = std::max({ theApp.DPI(20), rc_client.Height() - theApp.DPI(1), static_cast<int>(m_sizeImage.cx + 8) });
+    m_nBrowseButtonWidth = std::max({ theApp.DPI(20), rc_client.Height() - theApp.DPI(3), static_cast<int>(m_sizeImage.cx + 8) });
 
     SetWindowPos(NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER | SWP_NOMOVE);
 
