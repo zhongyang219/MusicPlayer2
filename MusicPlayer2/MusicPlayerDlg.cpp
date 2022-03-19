@@ -2812,7 +2812,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             if (CPlayer::GetInstance().IsPlaylistMode())
             {
                 if (!CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-                    MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+                    MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             }
             else
             {
@@ -4983,7 +4983,7 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
         if (CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
             CPlayer::GetInstance().SaveCurrentPlaylist();
         else
-            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -5159,7 +5159,7 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         if (CPlayer::GetInstance().AddFiles(file_list, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
             CPlayer::GetInstance().SaveCurrentPlaylist();
         else
-            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 
     }
 }
@@ -5299,7 +5299,7 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         if (CPlayer::GetInstance().AddFiles(vecUrl, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
             CPlayer::GetInstance().SaveCurrentPlaylist();
         else
-            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 
     }
 }

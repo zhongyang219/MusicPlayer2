@@ -107,7 +107,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         playlist.LoadFromFile(playlist_path);
         if (!playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
         {
-            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             return false;
         }
         playlist.SaveToFile(playlist_path);
@@ -140,7 +140,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 if (CCommon::FileExist(playlist_path))
                 {
                     if (!AddToPlaylist(selected_item_path, playlist_path))
-                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 
                 }
             }
@@ -149,13 +149,13 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         {
             std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
             if (!AddToPlaylist(selected_item_path, default_playlist_path))
-                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
             std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
             if (!AddToPlaylist(selected_item_path, favourite_playlist_path))
-                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 
             //添加到“我喜欢”播放列表后，为添加的项目设置favourite标记
             for (const auto& item : selected_item_path)
@@ -187,7 +187,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 if (CCommon::FileExist(playlist_path))
                 {
                     if (!AddToPlaylist(selected_item_path, playlist_path))
-                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONWARNING | MB_OK);
+                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
                 }
                 else
                 {
