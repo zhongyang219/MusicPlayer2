@@ -12,23 +12,6 @@
             </xs:simpleType>
         </xs:union>
     </xs:simpleType>
-    <xs:simpleType name="number+"><!--定义值类型 number+-->
-        <xs:union><!--值必须符合下列类型种的某一种-->
-            <xs:simpleType>
-                <xs:restriction base="xs:int"></xs:restriction>
-            </xs:simpleType>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern value="[0-9]*%"></xs:pattern><!--匹配百分数-->
-                </xs:restriction>
-            </xs:simpleType>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern value="[0-9]*\*"></xs:pattern><!--匹配比例-->
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:union>
-    </xs:simpleType>
     <xs:attributeGroup name="sharedattr"><!--定义属性组 sharedattr-->
         <xs:attribute name="x" type="number_or_percent">
             <xs:annotation>
@@ -44,19 +27,31 @@
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="width" type="number+">
+        <xs:attribute name="width" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
-                    width和height属性用于设置元素的宽度和高度。如果需要为元素设置宽度或高度，请使用此属性。父元素为布局元素时可设置为比例，未设置项默认为"1*"
+                    width属性用于设置元素的宽度。父元素为布局容器时未设定子元素等分空闲空间，指定分配比例请使用proportion属性。
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="height" type="number+">
+        <xs:attribute name="height" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
-                    width和height属性用于设置元素的宽度和高度。如果需要为元素设置宽度或高度，请使用此属性。父元素为布局元素时可设置为比例，未设置项默认为"1*"
+                    height属性用于设置元素的高度。父元素为布局容器时未设定子元素等分空闲空间，指定分配比例请使用proportion属性。
                 </xs:documentation>
             </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="proportion">
+            <xs:annotation>
+                <xs:documentation>
+                    父元素为布局元素时有效，指定与其他非固定尺寸子元素分配空闲空间时的比例，在对应布局容器中优先级高于width或height。
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="1"></xs:minInclusive>
+                </xs:restriction>
+            </xs:simpleType>
         </xs:attribute>
         <xs:attribute name="max-width" type="number_or_percent">
             <xs:annotation>
@@ -458,7 +453,7 @@
         </xs:attribute>
         <xs:attribute name="width_follow_text" type="xs:boolean" default="false">
             <xs:annotation>
-                <xs:documentation>元素宽度是否跟随文字宽度，即当设定宽度大于文字宽度时收缩到文字宽度。优先级低于元素宽度最值设定</xs:documentation>
+                <xs:documentation>元素宽度是否跟随文字宽度，即当设定宽度大于文字宽度时收缩到文字宽度。优先级低于元素宽度最值设定。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>

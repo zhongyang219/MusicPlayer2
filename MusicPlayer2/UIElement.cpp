@@ -13,21 +13,14 @@ UiElement::Element::Value::Value(bool _is_vertical)
 void UiElement::Element::Value::FromString(const std::string str)
 {
     size_t index = str.find('%');
-    size_t index_ = str.find('*');
     if (index != std::wstring::npos)   //如果包含百分号
     {
         is_percentage = true;
         value = atoi(str.substr(0, index).c_str());
     }
-    else if (index_ != std::wstring::npos)  // 如果包含星号
-    {
-        is_proportion = true;
-        value = max(atoi(str.substr(0, index_).c_str()), 1);
-    }
     else
     {
         is_percentage = false;
-        is_proportion = false;
         value = atoi(str.c_str());
     }
     valid = true;
@@ -42,11 +35,7 @@ int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) co
         else
             return parent_rect.Width() * value / 100;
     }
-    else if (is_proportion)      // 如果是比例则返回原始值
-    {
-        return value;
-    }
-    else                    // 不是百分比或比例，进行根据当前DPI对数值放大
+    else                    //不是百分比，进行根据当前DPI对数值放大
     {
         return ui->DPI(value);
     }
@@ -55,11 +44,6 @@ int UiElement::Element::Value::GetValue(CRect parent_rect, CPlayerUIBase* ui) co
 bool UiElement::Element::Value::IsValid() const
 {
     return valid;
-}
-
-bool UiElement::Element::Value::IsProportion() const
-{
-    return is_proportion;
 }
 
 void UiElement::Element::Draw(CPlayerUIBase* ui)
@@ -166,14 +150,14 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
         if (margin_bottom.IsValid())
             rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent, ui);
 
-        if (width.IsValid() && !width.IsProportion())   // 父元素非布局元素时忽略设置为比例的width
+        if (width.IsValid())
         {
             if (!x.IsValid() && !margin_left.IsValid() && margin_right.IsValid())
                 rect.left = rect.right - width.GetValue(rect_parent, ui);
             else
                 rect.right = rect.left + width.GetValue(rect_parent, ui);
         }
-        if (height.IsValid() && !height.IsProportion()) // 父元素非布局元素时忽略设置为比例的height
+        if (height.IsValid())
         {
             if (!y.IsValid() && !margin_top.IsValid() && margin_bottom.IsValid())
                 rect.top = rect.bottom - height.GetValue(rect_parent, ui);
@@ -205,7 +189,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             else
             {
-                if (child->width.IsValid() && !child->width.IsProportion())
+                if (child->width.IsValid() && child->proportion < 1)    // proportion设定时忽略width
                 {
                     int width{ child->GetWidth(GetRect(), ui) };
                     total_size += width;
@@ -242,13 +226,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 for (size_t i{}; i < childLst.size(); ++i)  // 计算比例系数和
                 {
                     if (size_list[i] == INT_MIN)
-                    {
-                        auto& child{ childLst[i] };
-                        if (child->width.IsProportion())
-                            proportion += child->width.GetValue(GetRect(), ui);
-                        else
-                            proportion += 1;
-                    }
+                        proportion += max(childLst[i]->proportion, 1);  // 均未设置时按1处理
                 }
                 // 逐个检查是否符合最值
                 bool ok{ true };
@@ -257,7 +235,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                     if (size_list[i] == INT_MIN)
                     {
                         auto& child{ childLst[i] };
-                        int size{ (GetRect().Width() - total_size) * (child->width.IsProportion() ? child->width.GetValue(GetRect(),ui) : 1) / proportion };
+                        int size{ (GetRect().Width() - total_size) * max(child->proportion, 1) / proportion };
                         int max_size{ child->max_width.IsValid() ? child->max_width.GetValue(GetRect(), ui) : INT_MAX };
                         int min_size{ child->min_width.IsValid() ? child->min_width.GetValue(GetRect(), ui) : 0 };
                         if (size > max_size)                    // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素
@@ -289,7 +267,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                         if (size_list[i] == INT_MIN)
                         {
                             auto& child{ childLst[i] };
-                            int size{ (GetRect().Width() - total_size) * (child->width.IsValid() ? child->width.GetValue(GetRect(), ui) : 1) / proportion };
+                            int size{ (GetRect().Width() - total_size) * max(child->proportion, 1) / proportion };
                             size_list[i] = max(size, 0);
                         }
                     }
@@ -354,7 +332,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             else
             {
-                if (child->height.IsValid() && !child->height.IsProportion())
+                if (child->height.IsValid() && child->proportion < 1)       // proportion设定时忽略height
                 {
                     int height{ child->GetHeight(GetRect(), ui) };
                     total_size += height;
@@ -391,13 +369,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                 for (size_t i{}; i < childLst.size(); ++i)  // 计算比例系数和
                 {
                     if (size_list[i] == INT_MIN)
-                    {
-                        auto& child{ childLst[i] };
-                        if ( child->height.IsProportion())
-                            proportion += child->height.GetValue(GetRect(), ui);
-                        else
-                            proportion += 1;
-                    }
+                        proportion += max(childLst[i]->proportion, 1);  // 均未设置时按1处理
                 }
                 // 逐个检查是否符合最值
                 bool ok{ true };
@@ -406,7 +378,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                     if (size_list[i] == INT_MIN)
                     {
                         auto& child{ childLst[i] };
-                        int size{ (GetRect().Height() - total_size) * (child->height.IsProportion() ? child->height.GetValue(GetRect(),ui) : 1) / proportion };
+                        int size{ (GetRect().Height() - total_size) * max(child->proportion, 1) / proportion };
                         int max_size{ child->max_height.IsValid() ? child->max_height.GetValue(GetRect(), ui) : INT_MAX };
                         int min_size{ child->min_height.IsValid() ? child->min_height.GetValue(GetRect(), ui) : 0 };
                         if (size > max_size)                    // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素
@@ -438,7 +410,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                         if (size_list[i] == INT_MIN)
                         {
                             auto& child{ childLst[i] };
-                            int size{ (GetRect().Height() - total_size) * (child->height.IsValid() ? child->height.GetValue(GetRect(), ui) : 1) / proportion };
+                            int size{ (GetRect().Height() - total_size) * max(child->proportion, 1) / proportion };
                             size_list[i] = max(size, 0);
                         }
                     }

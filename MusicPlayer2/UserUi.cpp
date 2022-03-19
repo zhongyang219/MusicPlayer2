@@ -100,6 +100,7 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
         //设置元素的基类属性
         std::string str_x = CTinyXml2Helper::ElementAttribute(xml_node, "x");
         std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
+        std::string str_proportion = CTinyXml2Helper::ElementAttribute(xml_node, "proportion");
         std::string str_width = CTinyXml2Helper::ElementAttribute(xml_node, "width");
         std::string str_height = CTinyXml2Helper::ElementAttribute(xml_node, "height");
         std::string str_max_width = CTinyXml2Helper::ElementAttribute(xml_node, "max-width");
@@ -117,6 +118,8 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             ui_element->x.FromString(str_x);
         if (!str_y.empty())
             ui_element->y.FromString(str_y);
+        if (!str_proportion.empty())
+            ui_element->proportion = max(atoi(str_proportion.c_str()), 1);
         if (!str_width.empty())
             ui_element->width.FromString(str_width);
         if (!str_height.empty())
