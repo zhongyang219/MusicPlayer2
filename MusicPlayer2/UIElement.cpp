@@ -64,13 +64,19 @@ bool UiElement::Element::IsEnable(CRect parent_rect, CPlayerUIBase* ui) const
     return true;
 }
 
+int UiElement::Element::GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const
+{
+    if (max_width.IsValid())
+        return max_width.GetValue(parent_rect, ui);
+    return INT_MAX;
+}
+
 int UiElement::Element::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
 {
     int w{ width.GetValue(parent_rect, ui) };
-    if (max_width.IsValid())
-        w = min(max_width.GetValue(GetRect(), ui), w);
+    w = min(GetMaxWidth(parent_rect, ui), w);
     if (min_width.IsValid())
-        w = max(min_width.GetValue(GetRect(), ui), w);
+        w = max(min_width.GetValue(parent_rect, ui), w);
     return w;
 }
 
@@ -78,9 +84,9 @@ int UiElement::Element::GetHeight(CRect parent_rect, CPlayerUIBase* ui) const
 {
     int h{ height.GetValue(parent_rect, ui) };
     if (max_height.IsValid())
-        h = min(max_height.GetValue(GetRect(), ui), h);
+        h = min(max_height.GetValue(parent_rect, ui), h);
     if (min_height.IsValid())
-        h = max(min_height.GetValue(GetRect(), ui), h);
+        h = max(min_height.GetValue(parent_rect, ui), h);
     return h;
 }
 
@@ -236,7 +242,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                     {
                         auto& child{ childLst[i] };
                         int size{ (GetRect().Width() - total_size) * max(child->proportion, 1) / proportion };
-                        int max_size{ child->max_width.IsValid() ? child->max_width.GetValue(GetRect(), ui) : INT_MAX };
+                        int max_size{ child->GetMaxWidth(GetRect(), ui) };
                         int min_size{ child->min_width.IsValid() ? child->min_width.GetValue(GetRect(), ui) : 0 };
                         if (size > max_size)                    // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素
                         {
@@ -617,13 +623,13 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
     Element::Draw(ui);
 }
 
-int UiElement::Text::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
+int UiElement::Text::GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const
 {
     if (!width_follow_text)
-        return UiElement::Element::GetWidth(parent_rect, ui);
+        return UiElement::Element::GetMaxWidth(parent_rect, ui);
     else
     {
-        std::wstring draw_text;
+        std::wstring draw_text{};
         switch (type)
         {
         case UiElement::Text::UserDefine:
@@ -651,13 +657,8 @@ int UiElement::Text::GetWidth(CRect parent_rect, CPlayerUIBase* ui) const
             break;
         }
         int width_text{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx + ui->DPI(4) };
-        int w{ width.GetValue(parent_rect, ui) };
-        w = min(w, width_text);
-        if (max_width.IsValid())
-            w = min(max_width.GetValue(GetRect(), ui), w);
-        if (min_width.IsValid())
-            w = max(min_width.GetValue(GetRect(), ui), w);
-        return w;
+        int width_max{ max_width.IsValid() ? max_width.GetValue(parent_rect, ui) : INT_MAX };
+        return min(width_text, width_max);
     }
 }
 
