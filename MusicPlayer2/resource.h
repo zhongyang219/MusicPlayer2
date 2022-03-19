@@ -707,13 +707,22 @@
 #define IDS_SDL_DEFAULT_DEVICE          553
 #define IDS_FFMPEG_CORE                 554
 #define IDS_FFMPEG_INIT_FAILED          555
+#define IDI_SORT                        555
 #define IDS_FFMPEG_NO_THIS_FUNCTION     556
+#define IDI_SORT_D                      556
 #define IDS_SUPPORTTED_FORMAT_INFO      557
+#define IDI_DISPLAY_MODE                557
 #define IDS_SUPPORTTED_FORMAT_INFO_MCI  558
+#define IDI_DISPLAY_MODE_D              558
 #define IDS_SUPPORTTED_FORMAT_INFO_FFMPEG 559
+#define IDI_LINK                        559
 #define IDS_OTHER_FORMATS               560
+#define IDI_LINK_D                      560
 #define IDS_IDS_ENCODER_INIT_ERROR      561
+#define IDI_UNLINK                      561
 #define IDS_SEEK_TO_LINE_TIP            562
+#define IDI_ICON25                      562
+#define IDI_UNLINK_D                    562
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1540,7 +1549,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        555
+#define _APS_NEXT_RESOURCE_VALUE        563
 #define _APS_NEXT_COMMAND_VALUE         33393
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101

@@ -497,6 +497,10 @@ struct IconSet
     IconRes maximize;
     IconRes minimize;
     IconRes restore;
+    IconRes sort;
+    IconRes display_mode;
+    IconRes link;
+    IconRes unlink;
 
     //菜单图标（仅16x16）
     HICON stop_new;

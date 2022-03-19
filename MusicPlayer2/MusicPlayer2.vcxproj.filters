@@ -1676,11 +1676,35 @@
     <Image Include="res\volume3_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\expand.ico">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\add.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\display_mode.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\display_mode_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\expand.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\link.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\link_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\sort.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\sort_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\unlink.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\unlink_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>
