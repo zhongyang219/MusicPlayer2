@@ -4,7 +4,7 @@
 			<horizontalLayout>
 				<verticalLayout width="48" margin-top="4" margin-bottom="4">
 					<button key="menu" width="40" height="40" margin="2"/>
-					<button key="find" width="40" height="40" margin="2"/>
+					<button key="find" width="40" height="40" margin="2" hide-height="211"/>
 					<button key="equalizer" width="40" height="40" margin="2" hide-height="256"/>
 					<button key="info" width="40" height="40" margin="2"/>
 					<button key="mediaLib" width="40" height="40" margin="2"/>
@@ -62,7 +62,7 @@
 			<horizontalLayout>
 				<verticalLayout width="48" margin-top="4" margin-bottom="4">
 					<button key="menu" width="40" height="40" margin="2"/>
-					<button key="find" width="40" height="40" margin="2"/>
+					<button key="find" width="40" height="40" margin="2" hide-height="211"/>
 					<button key="equalizer" width="40" height="40" margin="2" hide-height="256"/>
 					<button key="info" width="40" height="40" margin="2"/>
 					<button key="mediaLib" width="40" height="40" margin="2"/>
