@@ -12,13 +12,13 @@ namespace UiElement
         {
             Value(bool _is_vertical);
             void FromString(const std::string str);
-            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;   //获取实际显示的数值
-            bool IsValid() const;
+            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;   // 获取实际显示的数值
+            bool IsValid() const;           // 返回true说明设置过数值
         private:
-            int value{ 0 };                 //如果is_percentate为true，则值为百分比，否则为实际值
-            bool valid{ false };            //如果还没有设置过数值，则为false 
-            bool is_percentage{ false };    //数值是否为百分比
-            bool is_vertical{ false };      //数值是否为垂直方向的
+            int value{ 0 };                 // 如果is_percentate为true则值为百分比，否则为实际值
+            bool valid{ false };            // 如果还没有设置过数值，则为false
+            bool is_percentage{ false };    // 数值是否为百分比
+            bool is_vertical{ false };      // 数值是否为垂直方向的
         };
         Value margin_left{ false };
         Value margin_right{ false };
@@ -28,14 +28,23 @@ namespace UiElement
         Value y{ true };
         Value width{ false };
         Value height{ true };
+        Value max_width{ false };
+        Value max_height{ true };
+        Value min_width{ false };
+        Value min_height{ true };
+        Value hide_width{ false };
+        Value hide_height{ true };
+        int proportion{ 0 };
 
         Element* pParent{};     //父元素
         std::vector<std::shared_ptr<Element>> childLst; //子元素列表
         std::string name;
 
         virtual void Draw(CPlayerUIBase* ui);   //绘制此元素
-        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
-        virtual int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
+        virtual bool IsEnable(CRect parent_rect, CPlayerUIBase* ui) const;
+        virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const;
+        int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
+        int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         Element* RootElement();       //获取根节点
@@ -106,8 +115,10 @@ namespace UiElement
         };
         Type type;
         int font_size{ 9 };
+        bool width_follow_text{};
 
         virtual void Draw(CPlayerUIBase* ui) override;
+        virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;
     };
@@ -130,8 +141,7 @@ namespace UiElement
         bool fixed_width{};     //每个柱形是否使用相同的宽度
         CUIDrawer::SpectrumCol type{ CUIDrawer::SC_64 };     //频谱分析的类型
         virtual void Draw(CPlayerUIBase* ui) override;
-        virtual int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
-        virtual int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const override;
+        virtual bool IsEnable(CRect parent_rect, CPlayerUIBase* ui) const override;
     };
 
     //曲目信息（包含播放状态、文件名、歌曲标识、速度）

@@ -100,21 +100,39 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
         //设置元素的基类属性
         std::string str_x = CTinyXml2Helper::ElementAttribute(xml_node, "x");
         std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
+        std::string str_proportion = CTinyXml2Helper::ElementAttribute(xml_node, "proportion");
         std::string str_width = CTinyXml2Helper::ElementAttribute(xml_node, "width");
         std::string str_height = CTinyXml2Helper::ElementAttribute(xml_node, "height");
+        std::string str_max_width = CTinyXml2Helper::ElementAttribute(xml_node, "max-width");
+        std::string str_max_height = CTinyXml2Helper::ElementAttribute(xml_node, "max-height");
+        std::string str_min_width = CTinyXml2Helper::ElementAttribute(xml_node, "min-width");
+        std::string str_min_height = CTinyXml2Helper::ElementAttribute(xml_node, "min-height");
         std::string str_margin = CTinyXml2Helper::ElementAttribute(xml_node, "margin");
         std::string str_margin_left = CTinyXml2Helper::ElementAttribute(xml_node, "margin-left");
         std::string str_margin_right = CTinyXml2Helper::ElementAttribute(xml_node, "margin-right");
         std::string str_margin_top = CTinyXml2Helper::ElementAttribute(xml_node, "margin-top");
         std::string str_margin_bottom = CTinyXml2Helper::ElementAttribute(xml_node, "margin-bottom");
+        std::string str_hide_width = CTinyXml2Helper::ElementAttribute(xml_node, "hide-width");
+        std::string str_hide_height = CTinyXml2Helper::ElementAttribute(xml_node, "hide-height");
         if (!str_x.empty())
             ui_element->x.FromString(str_x);
         if (!str_y.empty())
             ui_element->y.FromString(str_y);
+        if (!str_proportion.empty())
+            ui_element->proportion = max(atoi(str_proportion.c_str()), 1);
         if (!str_width.empty())
             ui_element->width.FromString(str_width);
         if (!str_height.empty())
             ui_element->height.FromString(str_height);
+        if (!str_max_width.empty())
+            ui_element->max_width.FromString(str_max_width);
+        if (!str_max_height.empty())
+            ui_element->max_height.FromString(str_max_height);
+        if (!str_min_width.empty())
+            ui_element->min_width.FromString(str_min_width);
+        if (!str_min_height.empty())
+            ui_element->min_height.FromString(str_min_height);
+        
         if (!str_margin.empty())
         {
             ui_element->margin_left.FromString(str_margin);
@@ -130,7 +148,12 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
             ui_element->margin_top.FromString(str_margin_top);
         if (!str_margin_bottom.empty())
             ui_element->margin_bottom.FromString(str_margin_bottom);
-        
+
+        if (!str_hide_width.empty())
+            ui_element->hide_width.FromString(str_hide_width);
+        if (!str_hide_height.empty())
+            ui_element->hide_height.FromString(str_hide_height);
+
         //根据节点的类型设置元素独有的属性
         //按钮
         if (item_name == "button")
@@ -206,6 +229,12 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                     text->font_size = 8;
                 else if (text->font_size > 12)
                     text->font_size = 12;
+                // max_width_follow_text 优先级低于 max-width
+                std::string str_width_follow_text = CTinyXml2Helper::ElementAttribute(xml_node, "width_follow_text");
+                if (str_width_follow_text == "true")
+                    text->width_follow_text = true;
+                else if (str_width_follow_text == "false")
+                    text->width_follow_text = false;
             }
         }
         //专辑封面

@@ -30,15 +30,47 @@
         <xs:attribute name="width" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
-                    width和height属性用于设置元素的宽度和高度。如果需要为元素设置固定的宽度或高度，请使用此属性。如果需要使元素的宽度或高度能够自动适应，则不要使用此属性指定元素的宽度或高度。
+                    width属性用于设置元素的宽度。父元素为布局容器时未设定子元素等分空闲空间，指定分配比例请使用proportion属性。
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="height" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
-                    width和height属性用于设置元素的宽度和高度。如果需要为元素设置固定的宽度或高度，请使用此属性。如果需要使元素的宽度或高度能够自动适应，则不要使用此属性指定元素的宽度或高度。
+                    height属性用于设置元素的高度。父元素为布局容器时未设定子元素等分空闲空间，指定分配比例请使用proportion属性。
                 </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="proportion">
+            <xs:annotation>
+                <xs:documentation>
+                    父元素为布局元素时有效，指定与其他非固定尺寸子元素分配空闲空间时的比例，在对应布局容器中优先级高于width或height。
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="1"></xs:minInclusive>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="max-width" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的最大宽度。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="max-height" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的最大高度。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="min-width" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的最小宽度。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="min-height" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>用于设置元素的最小高度。值可以是固定的数值或百分比。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="margin" type="number_or_percent">
@@ -64,6 +96,16 @@
         <xs:attribute name="margin-bottom" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>用于设置元素的下边距。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="hide-width" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>当父元素宽度小于此值时隐藏。值可以是固定的数值或百分比。</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="hide-height" type="number_or_percent">
+            <xs:annotation>
+                <xs:documentation>当父元素高度小于此值时隐藏。值可以是固定的数值或百分比。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
     </xs:attributeGroup>
@@ -413,6 +455,11 @@
                     <xs:maxInclusive value="12"></xs:maxInclusive>
                 </xs:restriction>
             </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="width_follow_text" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>元素宽度是否跟随文字宽度，即当设定宽度大于文字宽度时收缩到文字宽度。优先级低于元素宽度最值设定。</xs:documentation>
+            </xs:annotation>
         </xs:attribute>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
