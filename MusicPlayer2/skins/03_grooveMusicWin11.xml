@@ -19,7 +19,7 @@
 								<text type="title" style="scroll" height="38" font_size="12"/>
 								<text type="artist" style="scroll" height="24" font_size="10"/>
 								<text type="album" style="scroll" height="24" font_size="10"/>
-								<spectrum draw_reflex="true" fixed_width="true" margin-top="8"/>
+								<spectrum draw_reflex="true" fixed_width="true" margin-top="8" max-height="80"/>
 								<text type="format" style="scroll" height="24"/>
 							</verticalLayout>
 						</horizontalLayout>
@@ -77,7 +77,7 @@
 								<text type="title" style="scroll" height="38" font_size="12"/>
 								<text type="artist" style="scroll" height="24" font_size="10"/>
 								<text type="album" style="scroll" height="24" font_size="10"/>
-								<spectrum draw_reflex="true" fixed_width="true" margin-top="8"/>
+								<spectrum draw_reflex="true" fixed_width="true" margin-top="8" max-height="80"/>
 								<text type="format" style="scroll" height="24"/>
 							</verticalLayout>
 						</horizontalLayout>
