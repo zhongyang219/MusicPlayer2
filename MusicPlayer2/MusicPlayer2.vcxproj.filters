@@ -1706,5 +1706,17 @@
     <Image Include="res\unlink_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\internal_lyric_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\shortcut_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\slow_down_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\speed_up_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

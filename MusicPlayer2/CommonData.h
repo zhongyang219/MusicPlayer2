@@ -527,6 +527,10 @@ struct IconSet
     HICON rename;
     HICON tag;
     HICON star;
+    HICON internal_lyric;
+    HICON speed_up;
+    HICON slow_down;
+    HICON shortcut;
 
     HICON ok;
     IconRes locate;

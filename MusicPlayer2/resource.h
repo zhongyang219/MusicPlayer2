@@ -723,6 +723,11 @@
 #define IDS_SEEK_TO_LINE_TIP            562
 #define IDI_ICON25                      562
 #define IDI_UNLINK_D                    562
+#define IDI_INTERNAL_LYRIC_D            563
+#define IDI_SPEED_UP_D                  564
+#define IDI_SLOW_DOWN_D                 565
+#define IDI_ICON24                      566
+#define IDI_SHORTCUT_D                  566
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1549,7 +1554,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        563
+#define _APS_NEXT_RESOURCE_VALUE        567
 #define _APS_NEXT_COMMAND_VALUE         33393
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
