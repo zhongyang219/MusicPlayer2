@@ -244,7 +244,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                         int size{ (GetRect().Width() - total_size) * max(child->proportion, 1) / proportion };
                         int max_size{ child->GetMaxWidth(GetRect(), ui) };
                         int min_size{ child->min_width.IsValid() ? child->min_width.GetValue(GetRect(), ui) : 0 };
-                        if (size < min_size)    // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素，由于文本收缩的引入最大值可能比预期小故给与最小值更高的优先级
+                        if (size < min_size || max_size < min_size)    // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素，由于文本收缩的引入最大值可能比预期小故给与最小值更高的优先级
                         {
                             size_list[i] = min_size;
                             total_size += min_size;
@@ -387,7 +387,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
                         int size{ (GetRect().Height() - total_size) * max(child->proportion, 1) / proportion };
                         int max_size{ child->max_height.IsValid() ? child->max_height.GetValue(GetRect(), ui) : INT_MAX };
                         int min_size{ child->min_height.IsValid() ? child->min_height.GetValue(GetRect(), ui) : 0 };
-                        if (size < min_size)                // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素
+                        if (size < min_size || max_size < min_size)                // 比例与最值冲突时按最值处理并将此元素标记为固定尺寸元素
                         {
                             size_list[i] = min_size;
                             total_size += min_size;
