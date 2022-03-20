@@ -154,7 +154,7 @@
             <xs:attribute name="index" type="xs:int">
                 <xs:annotation>
                     <xs:documentation>
-                        界面的序号，至少为4。序号不能与其他界面重复。未定义此属性的界面总是排在后面。
+                        界面的序号，至少为3。序号不能与其他界面重复。未定义此属性的界面总是排在后面。
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>

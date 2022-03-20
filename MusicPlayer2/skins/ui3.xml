@@ -1,0 +1,22 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2101/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
+      index="3">
+  <ui>
+    <verticalLayout>
+      <lyrics margin="4" margin-bottom="0"/>
+      <horizontalLayout height="32">
+        <albumCover width="24" height="24" square="true" margin-left="4" margin-right="4"/>
+        <text type="artist_title" style="scroll" width="20%" max-width="200" width_follow_text="true" height="24" font_size="9"/>
+        <button key="repeatMode" width="21" height="21" hide-width="330"/>
+        <button key="settings" width="21" height="21" margin-left="4" hide-width="430"/>
+        <button key="skin" width="21" margin-left="4" height="21"/>
+        <button key="abRepeat" width="21" height="21" margin-left="4" hide-width="384"/>
+        <button key="previous" width="21" margin-left="4" height="21"/>
+        <button key="playPause" width="21" margin-left="4" height="21" />
+        <button key="next" width="21" height="21" margin-left="4"/>
+        <progressBar show_play_time="true" height="24" margin-left="4" margin-right="4"/>
+        <volume show_text="true" width="56" height="24" hide-width="500" adj_btn_on_top="true"/>
+        <button key="showPlaylist" width="21" height="21" margin-left="2" margin-right="6"/>
+      </horizontalLayout>
+    </verticalLayout>
+  </ui>
+</root>

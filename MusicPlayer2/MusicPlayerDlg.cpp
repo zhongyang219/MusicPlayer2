@@ -28,7 +28,6 @@
 #include "PropertyDlgHelper.h"
 #include "CPlayerUI.h"
 #include "CPlayerUI2.h"
-#include "CPlayerUI3.h"
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include "UserUi.h"
@@ -52,7 +51,6 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     //初始化UI
     m_ui_list.push_back(std::make_shared<CPlayerUI>(theApp.m_ui_data, &m_ui_static_ctrl));
     m_ui_list.push_back(std::make_shared<CPlayerUI2>(theApp.m_ui_data, &m_ui_static_ctrl));
-    m_ui_list.push_back(std::make_shared<CPlayerUI3>(theApp.m_ui_data, &m_ui_static_ctrl));
     //加载skins目录下的用户自定义界面
     std::vector<std::shared_ptr<CUserUi>> user_ui_list_with_index;      //指定了序号的用户自定义界面
     std::vector<std::shared_ptr<CUserUi>> user_ui_list;                 //未指定序号的用户自定义界面
