@@ -5,14 +5,14 @@
 				<verticalLayout width="48" margin-top="4" margin-bottom="4">
 					<button key="menu" width="40" height="40" margin="2"/>
 					<button key="find" width="40" height="40" margin="2"/>
-					<button key="equalizer" width="40" height="40" margin="2"/>
+					<button key="equalizer" width="40" height="40" margin="2" hide-height="256"/>
 					<button key="info" width="40" height="40" margin="2"/>
 					<button key="mediaLib" width="40" height="40" margin="2"/>
 					<placeHolder/>
 					<button key="settings" width="40" height="40" margin="2"/>
 				</verticalLayout>
 				<verticalLayout margin-top="8" margin-left="16" margin-right="16">
-					<rectangle no_corner_radius="false">
+					<rectangle no_corner_radius="false" min-height="134">
 						<horizontalLayout>
 							<albumCover square="true" margin="8" width="30%"/>
 							<verticalLayout margin="8">
@@ -63,14 +63,14 @@
 				<verticalLayout width="48" margin-top="4" margin-bottom="4">
 					<button key="menu" width="40" height="40" margin="2"/>
 					<button key="find" width="40" height="40" margin="2"/>
-					<button key="equalizer" width="40" height="40" margin="2"/>
+					<button key="equalizer" width="40" height="40" margin="2" hide-height="256"/>
 					<button key="info" width="40" height="40" margin="2"/>
 					<button key="mediaLib" width="40" height="40" margin="2"/>
 					<placeHolder/>
 					<button key="settings" width="40" height="40" margin="2"/>
 				</verticalLayout>
 				<verticalLayout margin="8">
-					<rectangle no_corner_radius="false">
+					<rectangle no_corner_radius="false" min-height="134">
 						<horizontalLayout>
 							<albumCover square="true" margin="8" width="30%"/>
 							<verticalLayout margin="8">

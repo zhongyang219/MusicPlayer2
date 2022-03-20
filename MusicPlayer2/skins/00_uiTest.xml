@@ -8,7 +8,7 @@
 					<albumCover square="true" margin="20">
 						<verticalLayout>
 							<placeHolder/>
-							<rectangle height="20%" no_corner_radius="true">
+							<rectangle height="20%" min-height="56" no_corner_radius="true">
 								<verticalLayout margin="4">
 									<text type="title" style="scroll" height="24" font_size="10"/>
 									<text type="artist" style="scroll" height="24"/>
@@ -54,7 +54,7 @@
 			<albumCover square="true" margin="20">
 				<verticalLayout>
 					<placeHolder/>
-					<rectangle height="56" no_corner_radius="true">
+					<rectangle height="20%" min-height="56" no_corner_radius="true">
 						<verticalLayout margin="4">
 							<text type="title" style="scroll" height="24" font_size="10"/>
 							<text type="artist" style="scroll" height="24"/>
