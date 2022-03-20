@@ -778,6 +778,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_LYRIC_BATCH_DOWNLOAD, FALSE, m_icon_set.download1);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_SWITCH_UI, FALSE, m_icon_set.skin.GetIcon(true));
     ASSERT(m_menu_set.m_popup_menu.GetSubMenu(0)->GetSubMenu(22) != nullptr);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 22, TRUE, m_icon_set.skin.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_popup_menu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, m_icon_set.setting.GetIcon(true));
 
     //播放列表菜单
