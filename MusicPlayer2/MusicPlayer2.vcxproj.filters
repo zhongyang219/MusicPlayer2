@@ -1712,5 +1712,11 @@
     <Image Include="res\speed_up_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\switch.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\switch_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

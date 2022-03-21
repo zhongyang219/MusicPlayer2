@@ -474,6 +474,42 @@ void UiElement::Layout::Draw(CPlayerUIBase* ui)
     Element::Draw(ui);
 }
 
+
+void UiElement::StackElement::SetCurrentElement(int index)
+{
+    if (index >= 0 && index < static_cast<int>(childLst.size()))
+        cur_index = index;
+    else
+        index = 0;
+}
+
+void UiElement::StackElement::SwitchDisplay()
+{
+    cur_index++;
+    if (cur_index >= static_cast<int>(childLst.size()))
+        cur_index = 0;
+}
+
+void UiElement::StackElement::Draw(CPlayerUIBase* ui)
+{
+    auto cur_element{ CurrentElement() };
+    if (cur_element != nullptr)
+        cur_element->Draw(ui);
+    //只绘制一个子元素
+    //不调用基类的Draw方法。
+}
+
+std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()
+{
+    if (childLst.empty())
+        return nullptr;
+    else if (cur_index >= 0 && cur_index < static_cast<int>(childLst.size()))
+        return childLst[cur_index];
+    else
+        return childLst[0];
+}
+
+
 void UiElement::Rectangle::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
@@ -547,6 +583,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_SHOW_PLAYLIST;
     else if (key_type == "addToPlaylist")
         key = CPlayerUIBase::BTN_ADD_TO_PLAYLIST;
+    else if (key_type == "switchDisplay")
+        key = CPlayerUIBase::BTN_SWITCH_DISPLAY;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
@@ -787,6 +825,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         layout->type = UiElement::Layout::Horizontal;
         element = layout;
     }
+    else if (name == "stackElement")
+        element = new UiElement::StackElement();
     else if (name == "rectangle")
         element = new UiElement::Rectangle();
     else if (name == "button")

@@ -114,6 +114,7 @@
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="verticalLayout" type="verticalLayoutType"></xs:element>
                 <xs:element name="horizontalLayout" type="horizontalLayoutType"></xs:element>
+                <xs:element name="stackElement" type="stackElementType"></xs:element>
                 <xs:element name="rectangle" type="rectangleType"></xs:element>
                 <xs:element name="button" type="buttonType"></xs:element>
                 <xs:element name="text" type="textType"></xs:element>
@@ -202,6 +203,13 @@
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="stackElementType">
+      <xs:annotation>
+        <xs:documentation>堆叠元素，可包含多个子元素，其所有子元素中只显示其中一个。一个界面中只能存在一个stackElement。</xs:documentation>
+      </xs:annotation>
+      <xs:group ref="elements"></xs:group>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="rectangleType">
         <xs:annotation>
@@ -331,6 +339,11 @@
                     <xs:enumeration value="addToPlaylist">
                         <xs:annotation>
                             <xs:documentation>添加到播放列表</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="switchDisplay">
+                        <xs:annotation>
+                            <xs:documentation>切换界面中stackElement元素的显示</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
                 </xs:restriction>

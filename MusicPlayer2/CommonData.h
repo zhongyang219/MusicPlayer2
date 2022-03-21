@@ -501,6 +501,7 @@ struct IconSet
     IconRes display_mode;
     IconRes link;
     IconRes unlink;
+    IconRes switch_display;
 
     //菜单图标（仅16x16）
     HICON stop_new;

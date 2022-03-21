@@ -137,6 +137,7 @@ public:
         BTN_MAXIMIZE,           //最大化按钮
         BTN_APP_CLOSE,          //关闭按钮
         BTN_ADD_TO_PLAYLIST,    //添加到播放列表按钮
+        BTN_SWITCH_DISPLAY,             //切换界面中的staticElement
         BTN_INVALID,            //无效的按钮
     };
 
@@ -213,6 +214,8 @@ protected:
     int CalculateRoundRectRadius(CRect rect);        //计算绘制圆角矩形的半径
 
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
+
+    virtual void SwitchStackElement() {}
 
 public:
     virtual int GetUiIndex() { return 1; }  //UI的序号，用于区分每个界面，不会为0

@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include "UserUi.h"
-#include "TinyXml2Helper.h"
 
 CUserUi::CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path)
     : CPlayerUIBase(ui_data, pMainWnd), m_xml_path(xml_path)
@@ -86,8 +85,7 @@ int CUserUi::GetUiIndex()
     return m_index;
 }
 
-//从一个xml节点创建UiElement::Element元素及其所有子元素的对象
-static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node)
+std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node)
 {
     CElementFactory factory;
     //获取节点名称
@@ -304,6 +302,10 @@ static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::X
                 volume->adj_btn_on_top = CTinyXml2Helper::StringToBool(str_adj_btn_on_top.c_str());
             }
         }
+        else if (item_name == "stackElement")
+        {
+            m_stack_element = ui_element;
+        }
 
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
@@ -341,6 +343,13 @@ void CUserUi::LoadUi()
                     m_root_default = BuildUiElementFromXmlNode(xml_child);
             }
         });
+}
+
+void CUserUi::SwitchStackElement()
+{
+    UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(m_stack_element.get());
+    if (stack_element != nullptr)
+        stack_element->SwitchDisplay();
 }
 
 //////////////////////////////////////////////////////////////////////////////////

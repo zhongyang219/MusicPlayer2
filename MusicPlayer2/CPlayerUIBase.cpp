@@ -445,6 +445,10 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 return;
             }
 
+            case BTN_SWITCH_DISPLAY:
+                SwitchStackElement();
+                return;
+
             default:
                 break;
             }
@@ -585,6 +589,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case BTN_MAXIMIZE: return theApp.m_icon_set.maximize;
     case BTN_APP_CLOSE: return theApp.m_icon_set.close;
     case BTN_ADD_TO_PLAYLIST: return theApp.m_icon_set.add;
+    case BTN_SWITCH_DISPLAY: return theApp.m_icon_set.switch_display;
     default: break;
     }
     return IconRes();
@@ -2248,6 +2253,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_MINIMIZE, CCommon::LoadText(IDS_MINIMIZE));
     AddMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
     AddMouseToolTip(BTN_ADD_TO_PLAYLIST, CCommon::LoadText(IDS_ADD_TO_PLAYLIST));
+    AddMouseToolTip(BTN_SWITCH_DISPLAY, CCommon::LoadText(IDS_SWITCH_DISPLAY));
 
     UpdateRepeatModeToolTip();
 }

@@ -70,6 +70,20 @@ namespace UiElement
         virtual void Draw(CPlayerUIBase* ui) override;
     };
 
+    //包含多个元素的堆叠元素，同时只能显示一个元素
+    class StackElement : public Element
+    {
+    public:
+        void SetCurrentElement(int index);
+        void SwitchDisplay();
+        virtual void Draw(CPlayerUIBase* ui) override;
+
+    protected:
+        std::shared_ptr<Element> CurrentElement();
+
+        int cur_index{};
+    };
+
     //半透明的矩形
     class Rectangle : public Element
     {
