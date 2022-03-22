@@ -309,9 +309,17 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 return true;
 
             case BTN_SKIN:
+            {
                 m_buttons[BTN_SKIN].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+                //theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+                CPoint point1;
+                GetCursorPos(&point1);
+                CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11);
+                ASSERT(pMenu != nullptr);
+                if (pMenu != nullptr)
+                    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
                 return true;
+            }
 
             case BTN_EQ:
                 m_buttons[BTN_EQ].hover = false;
