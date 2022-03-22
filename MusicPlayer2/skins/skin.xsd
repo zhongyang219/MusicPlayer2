@@ -206,9 +206,14 @@
     </xs:complexType>
     <xs:complexType name="stackElementType">
       <xs:annotation>
-        <xs:documentation>堆叠元素，可包含多个子元素，其所有子元素中只显示其中一个。一个界面中只能存在一个stackElement。</xs:documentation>
+        <xs:documentation>堆叠元素，可包含多个子元素，其所有子元素中只显示其中一个。</xs:documentation>
       </xs:annotation>
       <xs:group ref="elements"></xs:group>
+      <xs:attribute name="ckick_to_switch" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>如果为true，则可以通过单击切换显示。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="rectangleType">
@@ -343,7 +348,7 @@
                     </xs:enumeration>
                     <xs:enumeration value="switchDisplay">
                         <xs:annotation>
-                            <xs:documentation>切换界面中stackElement元素的显示</xs:documentation>
+                            <xs:documentation>切换界面中stackElement元素的显示。如果界面中有多个stackElement元素，则点击此按钮会切换第一个stackElement元素的显示。</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
                 </xs:restriction>

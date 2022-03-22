@@ -200,7 +200,7 @@ void CMiniModeUI::RButtonUp(CPoint point)
 {
 }
 
-void CMiniModeUI::LButtonUp(CPoint point)
+bool CMiniModeUI::LButtonUp(CPoint point)
 {
     for (auto& btn : m_buttons)
     {
@@ -254,6 +254,7 @@ void CMiniModeUI::LButtonUp(CPoint point)
 
         }
     }
+    return true;
 }
 
 CRect CMiniModeUI::GetThumbnailClipArea()

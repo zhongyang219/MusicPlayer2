@@ -80,6 +80,23 @@ CString CUserUi::GetUIName()
     return m_ui_name.c_str();
 }
 
+bool CUserUi::LButtonUp(CPoint point)
+{
+    if (!CPlayerUIBase::LButtonUp(point))
+    {
+        for (const auto& element : m_stack_elements)
+        {
+            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
+            if (stack_element != nullptr && stack_element->ckick_to_switch && stack_element->GetRect().PtInRect(point))
+            {
+                stack_element->SwitchDisplay();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 int CUserUi::GetUiIndex()
 {
     return m_index;
@@ -304,7 +321,14 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         }
         else if (item_name == "stackElement")
         {
-            m_stack_element = ui_element;
+            m_stack_elements.push_back(ui_element);
+            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(ui_element.get());
+            if (stack_element != nullptr)
+            {
+                std::string str_click_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "ckick_to_switch");
+                if (!str_click_to_switch.empty())
+                    stack_element->ckick_to_switch = CTinyXml2Helper::StringToBool(str_click_to_switch.c_str());
+            }
         }
 
         //递归调用此函数创建子节点
@@ -320,6 +344,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
 
 void CUserUi::LoadUi()
 {
+    m_stack_elements.clear();
     tinyxml2::XMLDocument xml_doc;
     CTinyXml2Helper::LoadXmlFile(xml_doc, m_xml_path.c_str());
     tinyxml2::XMLElement* root = xml_doc.RootElement();
@@ -348,9 +373,12 @@ void CUserUi::LoadUi()
 void CUserUi::SwitchStackElement()
 {
     m_draw_data.lyric_rect.SetRectEmpty();
-    UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(m_stack_element.get());
-    if (stack_element != nullptr)
-        stack_element->SwitchDisplay();
+    if (!m_stack_elements.empty())
+    {
+        UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(m_stack_elements.front().get());
+        if (stack_element != nullptr)
+            stack_element->SwitchDisplay();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////

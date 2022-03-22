@@ -25,7 +25,7 @@ public:
     virtual void Init(CDC* pDC) override;
 
     virtual void RButtonUp(CPoint point) override;
-    virtual void LButtonUp(CPoint point) override;
+    virtual bool LButtonUp(CPoint point) override;
 
     virtual CRect GetThumbnailClipArea() override;
 

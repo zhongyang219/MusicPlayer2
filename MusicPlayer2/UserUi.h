@@ -16,6 +16,7 @@ public:
     // 通过 CPlayerUIBase 继承
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
     virtual CString GetUIName() override;
+    virtual bool LButtonUp(CPoint point) override;
 
 private:
     int m_index{ INT_MAX };
@@ -25,7 +26,7 @@ private:
     std::shared_ptr<UiElement::Element> m_root_ui_narrow;
     std::shared_ptr<UiElement::Element> m_root_ui_small;
     std::wstring m_ui_name;
-    std::shared_ptr<UiElement::Element> m_stack_element;
+    std::vector<std::shared_ptr<UiElement::Element>> m_stack_elements;
 
 public:
     virtual int GetUiIndex() override;

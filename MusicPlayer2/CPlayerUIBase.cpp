@@ -259,7 +259,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
     _TrackMouseEvent(&tme);
 }
 
-void CPlayerUIBase::LButtonUp(CPoint point)
+bool CPlayerUIBase::LButtonUp(CPoint point)
 {
     if (!m_show_volume_adj)     //如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
         m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
@@ -281,7 +281,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
             {
             case BTN_APP_CLOSE:
                 theApp.m_pMainWnd->SendMessage(WM_CLOSE);
-                return;
+                return true;
 
             case BTN_MAXIMIZE:
                 m_buttons[BTN_MAXIMIZE].hover = false;
@@ -289,77 +289,77 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                     theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
                 else
                     theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
-                return;
+                return true;
 
             case BTN_MINIMIZE:
                 m_buttons[BTN_MINIMIZE].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MINIMIZE);
-                return;
+                return true;
 
             case BTN_REPETEMODE:
                 CPlayer::GetInstance().SetRepeatMode();
                 UpdateRepeatModeToolTip();
-                return;
+                return true;
 
             case BTN_VOLUME:
                 break;
 
             case BTN_TRANSLATE:
                 theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
-                return;
+                return true;
 
             case BTN_SKIN:
                 m_buttons[BTN_SKIN].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
-                return;
+                return true;
 
             case BTN_EQ:
                 m_buttons[BTN_EQ].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
-                return;
+                return true;
 
             case BTN_SETTING:
                 m_buttons[BTN_SETTING].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
-                return;
+                return true;
 
             case BTN_MINI:
                 m_buttons[BTN_MINI].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
-                return;
+                return true;
 
             case BTN_MINI1:
                 m_buttons[BTN_MINI1].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
-                return;
+                return true;
 
             case BTN_INFO:
                 m_buttons[BTN_INFO].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
-                return;
+                return true;
 
             case BTN_LRYIC:
                 theApp.m_lyric_setting_data.show_desktop_lyric = !theApp.m_lyric_setting_data.show_desktop_lyric;
-                return;
+                return true;
 
             case BTN_AB_REPEAT:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_AB_REPEAT);
-                return;
+                return true;
 
             case BTN_STOP:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_STOP);
-                return;
+                return true;
 
             case BTN_PREVIOUS:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PREVIOUS);
-                return;
+                return true;
             case BTN_PLAY_PAUSE:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
-                return;
+                return true;
 
             case BTN_NEXT:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
-                return;
+                return true;
 
             case BTN_SHOW_PLAYLIST:
                 m_buttons[BTN_SHOW_PLAYLIST].hover = false;
@@ -367,23 +367,23 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                     theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST);
                 else
                     theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
-                return;
+                return true;
 
             case BTN_SELECT_FOLDER:
                 m_buttons[BTN_SELECT_FOLDER].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
-                return;
+                return true;
 
             case BTN_FAVOURITE:
                 m_buttons[BTN_FAVOURITE].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
-                return;
+                return true;
 
             case BTN_VOLUME_UP:
                 if (m_show_volume_adj)
                 {
                     CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
-                    return;
+                    return true;
                 }
                 break;
 
@@ -391,7 +391,7 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 if (m_show_volume_adj)
                 {
                     CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
-                    return;
+                    return true;
                 }
                 break;
 
@@ -401,35 +401,35 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 double progress = static_cast<double>(ckick_pos) / m_buttons[BTN_PROGRESS].rect.Width();
                 CPlayer::GetInstance().SeekTo(progress);
             }
-            return;
+            return true;
 
             case BTN_FIND:
                 m_buttons[BTN_FIND].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
-                return;
+                return true;
 
             case BTN_FULL_SCREEN:
                 m_buttons[BTN_FULL_SCREEN].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
-                return;
+                return true;
 
             case BTN_FULL_SCREEN1:
                 m_buttons[BTN_FULL_SCREEN1].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
-                return;
+                return true;
 
             case BTN_MENU:
             {
                 CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
-                return;
+                return true;
             }
 
             case BTN_MENU1:
             {
                 CPoint point(m_buttons[BTN_MENU1].rect.left, m_buttons[BTN_MENU1].rect.bottom);
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
-                return;
+                return true;
             }
 
             case BTN_ADD_TO_PLAYLIST:
@@ -442,19 +442,19 @@ void CPlayerUIBase::LButtonUp(CPoint point)
                 {
                     add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
                 }
-                return;
+                return true;
             }
 
             case BTN_SWITCH_DISPLAY:
                 SwitchStackElement();
-                return;
+                return true;
 
             default:
                 break;
             }
         }
     }
-
+    return false;
 }
 
 CRect CPlayerUIBase::GetThumbnailClipArea()

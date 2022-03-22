@@ -64,7 +64,7 @@ public:
     virtual void LButtonDown(CPoint point) override;
     virtual void RButtonUp(CPoint point) override;
     virtual void MouseMove(CPoint point) override;
-    virtual void LButtonUp(CPoint point) override;
+    virtual bool LButtonUp(CPoint point) override;
 
     virtual CRect GetThumbnailClipArea() override;
     void UpdateRepeatModeToolTip();

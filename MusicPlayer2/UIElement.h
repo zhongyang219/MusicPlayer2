@@ -77,6 +77,7 @@ namespace UiElement
         void SetCurrentElement(int index);
         void SwitchDisplay();
         virtual void Draw(CPlayerUIBase* ui) override;
+        bool ckick_to_switch{};
 
     protected:
         std::shared_ptr<Element> CurrentElement();

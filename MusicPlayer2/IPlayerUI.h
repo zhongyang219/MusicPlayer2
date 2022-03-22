@@ -23,7 +23,7 @@ public:
 	virtual void LButtonDown(CPoint point) = 0;
 	virtual void RButtonUp(CPoint point) = 0;
 	virtual void MouseMove(CPoint point) = 0;
-	virtual void LButtonUp(CPoint point) = 0;
+	virtual bool LButtonUp(CPoint point) = 0;
 
 	virtual CRect GetThumbnailClipArea() = 0;
 
