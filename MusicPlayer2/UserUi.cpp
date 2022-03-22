@@ -347,6 +347,7 @@ void CUserUi::LoadUi()
 
 void CUserUi::SwitchStackElement()
 {
+    m_draw_data.lyric_rect.SetRectEmpty();
     UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(m_stack_element.get());
     if (stack_element != nullptr)
         stack_element->SwitchDisplay();
