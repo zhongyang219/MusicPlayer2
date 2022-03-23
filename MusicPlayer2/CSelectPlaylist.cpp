@@ -259,6 +259,7 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CSelectPlaylistDlg::OnNMDblclkSongList)
     ON_COMMAND(ID_SAVE_AS_NEW_PLAYLIST, &CSelectPlaylistDlg::OnSaveAsNewPlaylist)
     ON_COMMAND(ID_PLAYLIST_SAVE_AS, &CSelectPlaylistDlg::OnPlaylistSaveAs)
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -878,4 +879,14 @@ void CSelectPlaylistDlg::OnPlaylistSaveAs()
         playlist.SaveToFile(file_path, file_type);
     }
 
+}
+
+
+void CSelectPlaylistDlg::OnDestroy()
+{
+    //窗口关闭时，如果播放列表有更改，则通知主窗口更新“添加到播放列表”菜单
+    if (m_playlist_modified)
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
+
+    CMediaLibTabDlg::OnDestroy();
 }

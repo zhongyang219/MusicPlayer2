@@ -128,4 +128,5 @@ public:
     virtual void OnCancel();
     afx_msg void OnSaveAsNewPlaylist();
     afx_msg void OnPlaylistSaveAs();
+    afx_msg void OnDestroy();
 };
