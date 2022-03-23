@@ -352,7 +352,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
     //频谱的实际宽度
     int width_actrual{ col_width * cols + gap_width * (cols - 1) };
     //如果频谱的实际宽度小于矩形的宽度，则让根据alignment的值让频谱居中或右对齐显示
-    if ((width_actrual < rect.Width() && alignment == Alignment::CENTER) || theApp.m_app_setting_data.spectrum_low_freq_in_center)
+    if ((width_actrual < rect.Width() && alignment == Alignment::CENTER) || (width_actrual >= rect.Width() && theApp.m_app_setting_data.spectrum_low_freq_in_center))
         rects[0].MoveToX(rects[0].left + (rect.Width() - width_actrual) / 2);
     else if (width_actrual < rect.Width() && alignment == Alignment::RIGHT)
         rects[0].MoveToX(rects[0].left + (rect.Width() - width_actrual));
