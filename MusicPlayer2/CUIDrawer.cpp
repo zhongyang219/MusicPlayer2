@@ -296,7 +296,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
     SetFont(pOldFont);
 }
 
-void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center, bool fixed_width)
+void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= false*/, bool low_freq_in_center, bool fixed_width, Alignment alignment)
 {
     int cols;		//要显示的频谱柱形的数量
     switch (col)
@@ -336,10 +336,10 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
 
     if (fixed_width)
         SetDrawArea(rect);
-    DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex, low_freq_in_center);
+    DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex, low_freq_in_center, alignment);
 }
 
-void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex /*= false*/, bool low_freq_in_center)
+void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex /*= false*/, bool low_freq_in_center, Alignment alignment)
 {
     CRect rc_spectrum_top = rect;
     if (draw_reflex)     //如果要绘制倒影，则倒影占总高度的1/3
@@ -348,6 +348,15 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
     CRect rects[SPECTRUM_COL];
     rects[0] = rc_spectrum_top;
     rects[0].right = rects[0].left + col_width;
+
+    //频谱的实际宽度
+    int width_actrual{ col_width * cols + gap_width * (cols - 1) };
+    //如果频谱的实际宽度小于矩形的宽度，则让根据alignment的值让频谱居中或右对齐显示
+    if ((width_actrual < rect.Width() && alignment == Alignment::CENTER) || theApp.m_app_setting_data.spectrum_low_freq_in_center)
+        rects[0].MoveToX(rects[0].left + (rect.Width() - width_actrual) / 2);
+    else if (width_actrual < rect.Width() && alignment == Alignment::RIGHT)
+        rects[0].MoveToX(rects[0].left + (rect.Width() - width_actrual));
+
     for (int i{ 1 }; i < cols; i++)
     {
         rects[i] = rects[0];

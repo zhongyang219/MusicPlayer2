@@ -283,6 +283,14 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     spectrum->type = CUIDrawer::SC_16;
                 else if (str_type == "8col")
                     spectrum->type = CUIDrawer::SC_8;
+                //alignment
+                std::string str_alignment = CTinyXml2Helper::ElementAttribute(xml_node, "alignment");
+                if (str_alignment == "left")
+                    spectrum->align = Alignment::LEFT;
+                else if (str_alignment == "right")
+                    spectrum->align = Alignment::RIGHT;
+                else if (str_alignment == "center")
+                    spectrum->align = Alignment::CENTER;
             }
         }
         //工具条

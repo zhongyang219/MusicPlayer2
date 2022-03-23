@@ -15,7 +15,7 @@
       </horizontalLayout>
     </verticalLayout>
     <horizontalLayout height="32" margin-bottom="0" >
-      <spectrum draw_reflex="false" width="280"/>
+      <spectrum draw_reflex="false" width="280" alignment="center"/>
     </horizontalLayout>
   </ui>
   <ui type="small">
@@ -33,7 +33,7 @@
       </horizontalLayout>
     </verticalLayout>
     <horizontalLayout height="28" margin-bottom="0" >
-      <spectrum draw_reflex="false" width="280"/>
+      <spectrum draw_reflex="false" width="280" alignment="center"/>
     </horizontalLayout>
   </ui>
   <ui type="big">
@@ -74,7 +74,7 @@
       </rectangle>
     </verticalLayout>
     <horizontalLayout height="32" margin-bottom="0" >
-      <spectrum draw_reflex="false" width="280"/>
+      <spectrum draw_reflex="false" width="280" alignment="center"/>
     </horizontalLayout>
   </ui>
 </root>

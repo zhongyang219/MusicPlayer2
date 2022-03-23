@@ -526,7 +526,31 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+        <xs:attribute name="alignment" default="left">
+          <xs:annotation>
+            <xs:documentation>对齐方式。</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="left">
+                <xs:annotation>
+                  <xs:documentation>左对齐</xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+              <xs:enumeration value="right">
+                <xs:annotation>
+                  <xs:documentation>右对齐</xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+              <xs:enumeration value="center">
+                <xs:annotation>
+                  <xs:documentation>居中</xs:documentation>
+                </xs:annotation>
+              </xs:enumeration>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="trackInfoType">
         <xs:annotation>
