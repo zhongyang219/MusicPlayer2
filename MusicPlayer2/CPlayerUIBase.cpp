@@ -781,7 +781,11 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool
 void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 {
     DrawRectangle(rect);
+    DrawToolBarWithoutBackground(rect, draw_translate_button);
+}
 
+void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate_button)
+{
     CRect rc_tmp = rect;
 
     //绘制循环模式
@@ -2122,6 +2126,9 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
 
 void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
 {
+    if (rect.Height() < DPI(4))
+        return;
+
     if (margin < 0)
         margin = Margin();
 

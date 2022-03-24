@@ -762,7 +762,7 @@ void UiElement::TrackInfo::Draw(CPlayerUIBase* ui)
 void UiElement::Toolbar::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->DrawToolBar(rect, show_translate_btn);
+    ui->DrawToolBarWithoutBackground(rect, show_translate_btn);
     ui->ResetDrawArea();
     Element::Draw(ui);
 }
