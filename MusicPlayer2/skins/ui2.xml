@@ -41,11 +41,11 @@
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" height="26" font_size="10" />
             <text type="artist" alignment="center" height="20" font_size="9" margin-top="0" />
+            <lyrics height="10%" hide-height="420" margin-top="4"/>
           </verticalLayout>
           <lyrics margin="4"/>
         </stackElement>
         <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="10%" margin-bottom="4" min-height="24" max-height="80"/>
-        <lyrics height="10%" hide-height="420" margin-bottom="4"/>
       </verticalLayout>
       <rectangle height="88">
         <verticalLayout margin="4">
