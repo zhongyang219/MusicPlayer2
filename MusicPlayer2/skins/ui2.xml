@@ -10,7 +10,7 @@
           <albumCover square="true" margin="8"/>
           <text type="title" alignment="center" height="26" font_size="10" />
           <text type="artist" alignment="center" height="20" font_size="9" margin-top="0" />
-          <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="12%" margin-bottom="4" min-height="24" max-height="80"/>
+          <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
         </verticalLayout>
         <lyrics margin="4"/>
       </horizontalLayout>
@@ -22,7 +22,7 @@
         <button key="previous" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
         <button key="playPause" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
         <button key="next" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
-        <progressBar height="16" show_play_time="true" margin-top="4" play_time_both_side="false" />
+        <progressBar height="16" show_play_time="true" margin-left="4" margin-right="4" play_time_both_side="false" />
         <button key="favorite" width="24" height="24" margin-left="2" margin-right="2"/>
         <button key="addToPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
         <button key="mediaLib" width="24" height="24" margin-left="2" margin-right="2"/>
@@ -41,27 +41,25 @@
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" height="26" font_size="10" />
             <text type="artist" alignment="center" height="20" font_size="9" margin-top="0" />
-            <lyrics height="10%" hide-height="420" margin-top="4"/>
+            <lyrics height="10%" hide-height="320" margin-top="4"/>
           </verticalLayout>
           <lyrics margin="4"/>
         </stackElement>
-        <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="10%" margin-bottom="4" min-height="24" max-height="80"/>
+        <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
       </verticalLayout>
-      <rectangle height="88">
-        <verticalLayout margin="4">
-          <toolbar height="24" show_translate_btn="true"/>
-          <progressBar height="16" show_play_time="true" margin-top="4" play_time_both_side="true" />
-          <horizontalLayout height="36">
-            <button key="favorite" width="24" height="24" margin-left="2" margin-right="2"/>
-            <button key="addToPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
-            <button key="previous" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
-            <button key="playPause" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
-            <button key="next" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
-            <button key="mediaLib" width="24" height="24" margin-left="2" margin-right="2"/>
-            <button key="showPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
-          </horizontalLayout>
-        </verticalLayout>
+      <rectangle height="24" margin="4" margin-bottom="0">
+        <toolbar show_translate_btn="true"/>
       </rectangle>
+      <progressBar height="16" show_play_time="true" margin="4" margin-bottom="0" play_time_both_side="true" />
+      <horizontalLayout height="36" margin="4">
+        <button key="favorite" width="24" height="24" margin-left="2" margin-right="2"/>
+        <button key="addToPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
+        <button key="previous" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
+        <button key="playPause" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
+        <button key="next" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
+        <button key="mediaLib" width="24" height="24" margin-left="2" margin-right="2"/>
+        <button key="showPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
+      </horizontalLayout>
     </verticalLayout>
   </ui>
 
@@ -78,21 +76,19 @@
             <text type="artist" alignment="center" height="20" font_size="9" margin-top="0" />
           </verticalLayout>
         </horizontalLayout>
-      <rectangle height="88">
-        <verticalLayout margin="4">
-          <toolbar height="24" show_translate_btn="true"/>
-          <progressBar height="16" show_play_time="true" margin-top="4" play_time_both_side="true" />
-          <horizontalLayout height="36">
-            <button key="favorite" width="24" height="24" margin-left="2" margin-right="2"/>
-            <button key="addToPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
-            <button key="previous" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
-            <button key="playPause" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
-            <button key="next" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
-            <button key="mediaLib" width="24" height="24" margin-left="2" margin-right="2"/>
-            <button key="showPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
-          </horizontalLayout>
-        </verticalLayout>
+      <rectangle height="24" margin="4" margin-bottom="0">
+        <toolbar show_translate_btn="true"/>
       </rectangle>
+      <progressBar height="16" show_play_time="true" margin="4" margin-bottom="0" play_time_both_side="true" />
+      <horizontalLayout height="36" margin="4">
+        <button key="favorite" width="24" height="24" margin-left="2" margin-right="2"/>
+        <button key="addToPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
+        <button key="previous" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
+        <button key="playPause" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
+        <button key="next" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
+        <button key="mediaLib" width="24" height="24" margin-left="2" margin-right="2"/>
+        <button key="showPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
+      </horizontalLayout>
     </verticalLayout>
 
   </ui>

@@ -19,6 +19,7 @@
         <button key="favorite" margin="4" width="28" height="28"/>
         <volume show_text="false" margin="4" width="28" height="28"/>
         <placeHolder/>
+        <button key="skin" margin="4" width="28" height="28" hide-width="340"/>
         <button key="mediaLib" margin="4" width="28" height="28"/>
         <button key="showPlaylist" margin="4" width="28" height="28"/>
       </horizontalLayout>

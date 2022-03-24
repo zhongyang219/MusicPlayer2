@@ -50,6 +50,7 @@
 					<horizontalLayout margin-right="4">
 						<placeHolder/>
 						<volume show_text="true" width="64" height="26" margin="2"/>
+						<button key="skin" width="26" height="26" margin="2"/>
 						<button key="showPlaylist" width="26" height="26" margin="2"/>
 					</horizontalLayout>
 				</horizontalLayout>

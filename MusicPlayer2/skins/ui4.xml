@@ -54,6 +54,7 @@
             <button key="info" width="28" height="28"/>
             <button key="addToPlaylist" width="28" height="28"/>
             <button key="equalizer" width="28" height="28"/>
+            <button key="skin" width="28" height="28"/>
             <placeHolder/>
           </horizontalLayout>
           <horizontalLayout width="206">
