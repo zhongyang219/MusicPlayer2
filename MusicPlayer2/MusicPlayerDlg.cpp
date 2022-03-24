@@ -502,7 +502,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
     theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", true);
     theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", true);
-    theApp.m_ui_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", true);
+    theApp.m_ui_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", false);
     theApp.m_ui_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
@@ -645,7 +645,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.ffmpeg_core_max_retry_count = ini.GetInt(L"config", L"ffmpeg_core_max_retry_count", 3);
     theApp.m_play_setting_data.ffmpeg_core_url_retry_interval = ini.GetInt(L"config", L"ffmpeg_core_url_retry_interval", 5);
 
-    int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
+    int ui_selected = ini.GetInt(L"config", L"UI_selected", 9);
     SelectUi(ui_selected);
 
     //载入热键设置
