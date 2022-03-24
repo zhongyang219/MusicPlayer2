@@ -26,7 +26,7 @@ private:
     std::shared_ptr<UiElement::Element> m_root_ui_narrow;
     std::shared_ptr<UiElement::Element> m_root_ui_small;
     std::wstring m_ui_name;
-    std::vector<std::shared_ptr<UiElement::Element>> m_stack_elements;
+    std::map<CPlayerUIBase::UiSize, std::vector<std::shared_ptr<UiElement::Element>>>  m_stack_elements;
 
 public:
     virtual int GetUiIndex() override;
@@ -38,6 +38,8 @@ private:
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
     std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node);      //从一个xml节点创建UiElement::Element元素及其所有子元素的对象
+
+    std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements();
 
 protected:
     void LoadUi();      //从xml文件载入界面

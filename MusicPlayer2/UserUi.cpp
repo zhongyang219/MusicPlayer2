@@ -84,7 +84,8 @@ bool CUserUi::LButtonUp(CPoint point)
 {
     if (!CPlayerUIBase::LButtonUp(point))
     {
-        for (const auto& element : m_stack_elements)
+        const auto& stack_elements{ GetStackElements() };
+        for (const auto& element : stack_elements)
         {
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
             if (stack_element != nullptr && stack_element->ckick_to_switch && stack_element->GetRect().PtInRect(point))
@@ -329,7 +330,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         }
         else if (item_name == "stackElement")
         {
-            m_stack_elements.push_back(ui_element);
+            GetStackElements().push_back(ui_element);
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(ui_element.get());
             if (stack_element != nullptr)
             {
@@ -348,6 +349,11 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             });
     }
     return ui_element;
+}
+
+std::vector<std::shared_ptr<UiElement::Element>>& CUserUi::GetStackElements()
+{
+    return m_stack_elements[GetUiSize()];
 }
 
 void CUserUi::LoadUi()
@@ -381,9 +387,10 @@ void CUserUi::LoadUi()
 void CUserUi::SwitchStackElement()
 {
     m_draw_data.lyric_rect.SetRectEmpty();
-    if (!m_stack_elements.empty())
+    auto& stack_elements{ GetStackElements() };
+    if (!stack_elements.empty())
     {
-        UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(m_stack_elements.front().get());
+        UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(stack_elements.front().get());
         if (stack_element != nullptr)
             stack_element->SwitchDisplay();
     }
