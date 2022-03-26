@@ -495,8 +495,8 @@ void CMusicPlayerDlg::LoadConfig()
 {
     CIniHelper ini(theApp.m_config_path);
 
-    m_window_width = ini.GetInt(L"config", L"window_width", theApp.DPI(698));
-    m_window_height = ini.GetInt(L"config", L"window_hight", theApp.DPI(565));
+    m_window_width = ini.GetInt(L"config", L"window_width", theApp.DPI(660));
+    m_window_height = ini.GetInt(L"config", L"window_hight", theApp.DPI(482));
     theApp.m_app_setting_data.window_transparency = ini.GetInt(L"config", L"transparency", 100);
     theApp.m_ui_data.narrow_mode = ini.GetBool(L"config", L"narrow_mode", false);
     theApp.m_lyric_setting_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
@@ -506,7 +506,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_ui_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
-    theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(530));
+    theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(482));
     theApp.m_nc_setting_data.playlist_btn_for_float_playlist = ini.GetBool(L"config", L"playlist_btn_for_float_playlist", false);
 
     theApp.m_lyric_setting_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(ini.GetInt(L"config", L"lyric_save_policy", 2));
