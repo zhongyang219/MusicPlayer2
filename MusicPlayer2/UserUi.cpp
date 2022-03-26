@@ -96,6 +96,7 @@ bool CUserUi::LButtonUp(CPoint point)
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
             if (stack_element != nullptr && stack_element->ckick_to_switch && stack_element->GetRect().PtInRect(point))
             {
+                m_draw_data.lyric_rect.SetRectEmpty();
                 stack_element->SwitchDisplay();
                 return true;
             }
