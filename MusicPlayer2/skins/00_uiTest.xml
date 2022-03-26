@@ -53,7 +53,7 @@
   <ui type="narrow">
     <verticalLayout>
       <trackInfo height="24" margin="4"/>
-      <stackElement>
+      <stackElement ckick_to_switch="true">
         <albumCover square="true" margin="20">
           <verticalLayout>
             <placeHolder/>
@@ -84,7 +84,7 @@
         </verticalLayout>
       </rectangle>
     </verticalLayout>
-    <button key="switchDisplay" width="24" height="24" margin-right="8" margin-bottom="106"/>
+    <!--<button key="switchDisplay" width="24" height="24" margin-right="8" margin-bottom="106"/>-->
   </ui>
   <ui type="small">
     <verticalLayout>

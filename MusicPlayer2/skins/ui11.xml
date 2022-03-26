@@ -13,10 +13,21 @@
         </horizontalLayout>
         <progressBar height="40" show_play_time="true" play_time_both_side="true" margin-left="16" margin-right="16"/>
       </verticalLayout>
-      <verticalLayout margin-left="16">
-        <text type="title" font_size="12" height="32"/>
-        <text type="artist" font_size="10" height="32"/>
-        <lyrics margin="8"/>
+      <verticalLayout>
+        <stackElement ckick_to_switch="true" margin-left="32">
+          <verticalLayout>
+            <text type="title" font_size="12" height="32"/>
+            <text type="artist" font_size="10" height="32"/>
+            <lyrics margin="8"/>
+          </verticalLayout>
+          <verticalLayout>
+            <placeHolder/>
+            <text type="title" font_size="12" height="32"/>
+            <text type="artist" font_size="10" height="32"/>
+            <text type="album" font_size="10" height="32"/>
+            <spectrum max-height="80" fixed_width="true" draw_reflex="true" margin-top="24" />
+          </verticalLayout>
+        </stackElement>
         <horizontalLayout height="48">
           <button key="info" width="28" height="28" margin-left="8" margin-right="8"/>
           <button key="favorite" width="28" height="28" margin-left="8" margin-right="8"/>
@@ -46,9 +57,21 @@
   
   <ui type="small">
     <verticalLayout margin="8">
-      <stackElement ckick_to_switch="true">
-        <albumCover square="true" margin="8"/>
-        <lyrics margin="8"/>
+      <stackElement ckick_to_switch="true" margin="8">
+        <horizontalLayout>
+          <albumCover square="true" width="100"/>
+          <verticalLayout margin-left="16">
+            <text type="title" font_size="12" height="32"/>
+            <text type="artist" font_size="10" height="32"/>
+            <text type="album" font_size="10" height="32"/>
+          </verticalLayout>
+        </horizontalLayout>
+        <verticalLayout margin-left="8" margin-right="8">
+          <text type="title" font_size="12" height="24"/>
+          <text type="artist" font_size="10" height="20"/>
+          <spectrum fixed_width="true" draw_reflex="true" margin-top="4" />
+        </verticalLayout>
+        <lyrics/>
       </stackElement>
       <horizontalLayout height="56">
         <button key="repeatMode" width="32" height="32" margin="4"/>
