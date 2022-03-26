@@ -24,7 +24,32 @@ bool CUserUi::IsIndexValid() const
 
 void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
 {
-    std::shared_ptr<UiElement::Element> draw_element{};
+    std::shared_ptr<UiElement::Element> draw_element = GetCurrentUiType();
+    if (draw_element != nullptr)
+    {
+        if (m_ui_data.full_screen)  //全屏模式下，最外侧的边距需要加宽
+        {
+            draw_rect.DeflateRect(EdgeMargin(true), EdgeMargin(false));
+        }
+        draw_element->SetRect(draw_rect);
+        draw_element->Draw(this);
+        //绘制音量调整按钮
+        DrawVolumnAdjBtn();
+    }
+    //绘制右上角图标
+    DrawTopRightIcons(true);
+
+    //全屏模式时在右上角绘制时间
+    if (m_ui_data.full_screen)
+    {
+        DrawCurrentTime();
+    }
+    m_draw_data.thumbnail_rect = draw_rect;
+}
+
+std::shared_ptr<UiElement::Element> CUserUi::GetCurrentUiType()
+{
+    std::shared_ptr<UiElement::Element> draw_element;
     //根据不同的窗口大小选择不同的界面元素的根节点绘图
     auto ui_size = GetUiSize();
     //<ui type="small">
@@ -53,26 +78,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
         else
             draw_element = m_root_default;
     }
-    if (draw_element != nullptr)
-    {
-        if (m_ui_data.full_screen)  //全屏模式下，最外侧的边距需要加宽
-        {
-            draw_rect.DeflateRect(EdgeMargin(true), EdgeMargin(false));
-        }
-        draw_element->SetRect(draw_rect);
-        draw_element->Draw(this);
-        //绘制音量调整按钮
-        DrawVolumnAdjBtn();
-    }
-    //绘制右上角图标
-    DrawTopRightIcons(true);
-
-    //全屏模式时在右上角绘制时间
-    if (m_ui_data.full_screen)
-    {
-        DrawCurrentTime();
-    }
-    m_draw_data.thumbnail_rect = draw_rect;
+    return draw_element;
 }
 
 CString CUserUi::GetUIName()
@@ -109,10 +115,14 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
     //获取节点名称
     std::string item_name = CTinyXml2Helper::ElementName(xml_node);
     //根据节点名称创建ui元素
-    std::shared_ptr<UiElement::Element> ui_element = factory.CreateElement(item_name);
-    if (ui_element != nullptr)
+    std::shared_ptr<UiElement::Element> element = factory.CreateElement(item_name);
+    if (element != nullptr)
     {
-        ui_element->name = item_name;
+        static UiElement::Element* current_build_ui_element{};      //正在创建ui元素
+        if (item_name == "ui")
+            current_build_ui_element = element.get();
+
+        element->name = item_name;
         //设置元素的基类属性
         std::string str_x = CTinyXml2Helper::ElementAttribute(xml_node, "x");
         std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
@@ -131,50 +141,50 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         std::string str_hide_width = CTinyXml2Helper::ElementAttribute(xml_node, "hide-width");
         std::string str_hide_height = CTinyXml2Helper::ElementAttribute(xml_node, "hide-height");
         if (!str_x.empty())
-            ui_element->x.FromString(str_x);
+            element->x.FromString(str_x);
         if (!str_y.empty())
-            ui_element->y.FromString(str_y);
+            element->y.FromString(str_y);
         if (!str_proportion.empty())
-            ui_element->proportion = max(atoi(str_proportion.c_str()), 1);
+            element->proportion = max(atoi(str_proportion.c_str()), 1);
         if (!str_width.empty())
-            ui_element->width.FromString(str_width);
+            element->width.FromString(str_width);
         if (!str_height.empty())
-            ui_element->height.FromString(str_height);
+            element->height.FromString(str_height);
         if (!str_max_width.empty())
-            ui_element->max_width.FromString(str_max_width);
+            element->max_width.FromString(str_max_width);
         if (!str_max_height.empty())
-            ui_element->max_height.FromString(str_max_height);
+            element->max_height.FromString(str_max_height);
         if (!str_min_width.empty())
-            ui_element->min_width.FromString(str_min_width);
+            element->min_width.FromString(str_min_width);
         if (!str_min_height.empty())
-            ui_element->min_height.FromString(str_min_height);
+            element->min_height.FromString(str_min_height);
         
         if (!str_margin.empty())
         {
-            ui_element->margin_left.FromString(str_margin);
-            ui_element->margin_right.FromString(str_margin);
-            ui_element->margin_top.FromString(str_margin);
-            ui_element->margin_bottom.FromString(str_margin);
+            element->margin_left.FromString(str_margin);
+            element->margin_right.FromString(str_margin);
+            element->margin_top.FromString(str_margin);
+            element->margin_bottom.FromString(str_margin);
         }
         if (!str_margin_left.empty())
-            ui_element->margin_left.FromString(str_margin_left);
+            element->margin_left.FromString(str_margin_left);
         if (!str_margin_right.empty())
-            ui_element->margin_right.FromString(str_margin_right);
+            element->margin_right.FromString(str_margin_right);
         if (!str_margin_top.empty())
-            ui_element->margin_top.FromString(str_margin_top);
+            element->margin_top.FromString(str_margin_top);
         if (!str_margin_bottom.empty())
-            ui_element->margin_bottom.FromString(str_margin_bottom);
+            element->margin_bottom.FromString(str_margin_bottom);
 
         if (!str_hide_width.empty())
-            ui_element->hide_width.FromString(str_hide_width);
+            element->hide_width.FromString(str_hide_width);
         if (!str_hide_height.empty())
-            ui_element->hide_height.FromString(str_hide_height);
+            element->hide_height.FromString(str_hide_height);
 
         //根据节点的类型设置元素独有的属性
         //按钮
         if (item_name == "button")
         {
-            UiElement::Button* button = dynamic_cast<UiElement::Button*>(ui_element.get());
+            UiElement::Button* button = dynamic_cast<UiElement::Button*>(element.get());
             if (button != nullptr)
             {
                 std::string str_key = CTinyXml2Helper::ElementAttribute(xml_node, "key");   //按钮的类型
@@ -185,7 +195,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         }
         else if (item_name == "rectangle")
         {
-            UiElement::Rectangle* rectangle = dynamic_cast<UiElement::Rectangle*>(ui_element.get());
+            UiElement::Rectangle* rectangle = dynamic_cast<UiElement::Rectangle*>(element.get());
             if (rectangle != nullptr)
             {
                 std::string str_no_corner_radius = CTinyXml2Helper::ElementAttribute(xml_node, "no_corner_radius");
@@ -198,7 +208,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //文本
         else if (item_name == "text")
         {
-            UiElement::Text* text = dynamic_cast<UiElement::Text*>(ui_element.get());
+            UiElement::Text* text = dynamic_cast<UiElement::Text*>(element.get());
             if (text != nullptr)
             {
                 //text
@@ -256,7 +266,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //专辑封面
         else if (item_name == "albumCover")
         {
-            UiElement::AlbumCover* album_cover = dynamic_cast<UiElement::AlbumCover*>(ui_element.get());
+            UiElement::AlbumCover* album_cover = dynamic_cast<UiElement::AlbumCover*>(element.get());
             if (album_cover != nullptr)
             {
                 std::string str_square = CTinyXml2Helper::ElementAttribute(xml_node, "square");
@@ -268,7 +278,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //频谱分析
         else if (item_name == "spectrum")
         {
-            UiElement::Spectrum* spectrum = dynamic_cast<UiElement::Spectrum*>(ui_element.get());
+            UiElement::Spectrum* spectrum = dynamic_cast<UiElement::Spectrum*>(element.get());
             if (spectrum != nullptr)
             {
                 std::string str_draw_reflex = CTinyXml2Helper::ElementAttribute(xml_node, "draw_reflex");
@@ -297,7 +307,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //工具条
         else if (item_name == "toolbar")
         {
-            UiElement::Toolbar* toolbar = dynamic_cast<UiElement::Toolbar*>(ui_element.get());
+            UiElement::Toolbar* toolbar = dynamic_cast<UiElement::Toolbar*>(element.get());
             if (toolbar != nullptr)
             {
                 std::string str_show_translate_btn = CTinyXml2Helper::ElementAttribute(xml_node, "show_translate_btn");
@@ -307,7 +317,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //进度条
         else if (item_name == "progressBar")
         {
-            UiElement::ProgressBar* progress_bar = dynamic_cast<UiElement::ProgressBar*>(ui_element.get());
+            UiElement::ProgressBar* progress_bar = dynamic_cast<UiElement::ProgressBar*>(element.get());
             if (progress_bar != nullptr)
             {
                 std::string str_show_play_time = CTinyXml2Helper::ElementAttribute(xml_node, "show_play_time");
@@ -319,7 +329,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //音量
         else if (item_name == "volume")
         {
-            UiElement::Volume* volume = dynamic_cast<UiElement::Volume*>(ui_element.get());
+            UiElement::Volume* volume = dynamic_cast<UiElement::Volume*>(element.get());
             if (volume != nullptr)
             {
                 std::string str_show_text = CTinyXml2Helper::ElementAttribute(xml_node, "show_text");
@@ -330,8 +340,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         }
         else if (item_name == "stackElement")
         {
-            GetStackElements().push_back(ui_element);
-            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(ui_element.get());
+            m_stack_elements[current_build_ui_element].push_back(element);
+            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
             if (stack_element != nullptr)
             {
                 std::string str_click_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "ckick_to_switch");
@@ -344,16 +354,16 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
             {
                 std::shared_ptr<UiElement::Element> ui_child = BuildUiElementFromXmlNode(xml_child);
-                ui_child->pParent = ui_element.get();
-                ui_element->childLst.push_back(ui_child);
+                ui_child->pParent = element.get();
+                element->childLst.push_back(ui_child);
             });
     }
-    return ui_element;
+    return element;
 }
 
 std::vector<std::shared_ptr<UiElement::Element>>& CUserUi::GetStackElements()
 {
-    return m_stack_elements[GetUiSize()];
+    return m_stack_elements[GetCurrentUiType().get()];
 }
 
 void CUserUi::LoadUi()
