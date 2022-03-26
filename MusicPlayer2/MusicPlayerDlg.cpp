@@ -5986,6 +5986,8 @@ void CMusicPlayerDlg::OnLocateToCurrent()
 {
     // TODO: 在此添加命令处理程序代码
     m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+    if (IsFloatPlaylistExist())
+        m_pFloatPlaylistDlg->GetListCtrl().EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 }
 
 
