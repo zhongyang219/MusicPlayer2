@@ -29,7 +29,7 @@ UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark, 
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
         colors.color_button_back = theApp.m_app_setting_data.theme_color.dark3;
-        colors.color_stack_indicator = theApp.m_app_setting_data.theme_color.light1;
+        colors.color_stack_indicator = theApp.m_app_setting_data.theme_color.light2;
         if (draw_alpha)
         {
             colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light2;
