@@ -290,3 +290,4 @@ __pycache__/
 *.ini
 *.sf2
 /MusicPlayer2/compile_time.txt
+/MusicPlayer2/skins/test.xml
