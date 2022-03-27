@@ -130,6 +130,9 @@ public:
     void DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha = 255);       //绘制圆角矩形（使用GDI+）
     void DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int radius);       //绘制圆角矩形（使用GDI+）
 
+    void DrawEllipse(CRect rect, COLORREF color, BYTE alpha = 255);     //绘制椭圆（使用GDI+）
+    void DrawEllipse(Gdiplus::Rect rect, Gdiplus::Color color);         //绘制椭圆（使用GDI+）
+
     CSize GetTextExtent(LPCTSTR str);
 
     ////将图片拉伸到指定尺寸(https://blog.csdn.net/sichuanpb/article/details/22986877)

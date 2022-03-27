@@ -497,6 +497,21 @@ void UiElement::StackElement::Draw(CPlayerUIBase* ui)
         cur_element->Draw(ui);
     //只绘制一个子元素
     //不调用基类的Draw方法。
+
+    //绘制指示器
+    if (show_indicator)
+    {
+        //计算指示器的位置
+        int indicator_width = ui->DPI(12) * childLst.size();
+        indicator.rect.top = GetRect().bottom + ui->DPI(2);
+        indicator.rect.bottom = indicator.rect.top + ui->DPI(12);
+        indicator.rect.left = GetRect().left + (GetRect().Width() - indicator_width) / 2;
+        indicator.rect.right = indicator.rect.left + indicator_width;
+        indicator.rect.InflateRect(ui->DPI(2), ui->DPI(2));
+        //绘制指示器
+        ui->DrawStackIndicator(indicator, childLst.size(), cur_index);
+    }
+    ui->ResetDrawArea();
 }
 
 std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()

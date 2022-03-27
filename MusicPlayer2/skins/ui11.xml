@@ -14,17 +14,17 @@
         <progressBar height="40" show_play_time="true" play_time_both_side="true" margin-left="16" margin-right="16"/>
       </verticalLayout>
       <verticalLayout>
-        <stackElement ckick_to_switch="true" margin-left="32">
+        <stackElement ckick_to_switch="true" show_indicator="true" margin-left="32" margin-bottom="16">
           <verticalLayout>
-            <text type="title" font_size="12" height="32"/>
-            <text type="artist" font_size="10" height="32"/>
+            <text type="title" font_size="12" style="scroll" height="32"/>
+            <text type="artist" font_size="10" style="scroll" height="32"/>
             <lyrics margin="8"/>
           </verticalLayout>
           <verticalLayout>
             <placeHolder/>
-            <text type="title" font_size="12" height="32"/>
-            <text type="artist" font_size="10" height="32"/>
-            <text type="album" font_size="10" height="32"/>
+            <text type="title" font_size="12" style="scroll" height="32"/>
+            <text type="artist" font_size="10" style="scroll" height="32"/>
+            <text type="album" font_size="10" style="scroll" height="32"/>
             <spectrum max-height="80" fixed_width="true" draw_reflex="true" margin-top="24" />
           </verticalLayout>
         </stackElement>
@@ -40,7 +40,7 @@
 
   <ui type="narrow">
     <verticalLayout margin="20">
-      <stackElement ckick_to_switch="true">
+      <stackElement ckick_to_switch="true" show_indicator="true" margin-bottom="14">
         <albumCover square="true" margin="24"/>
         <lyrics margin="8"/>
       </stackElement>
@@ -57,18 +57,18 @@
   
   <ui type="small">
     <verticalLayout margin="8">
-      <stackElement ckick_to_switch="true" margin="8">
+      <stackElement ckick_to_switch="true" show_indicator="true" margin="8" margin-bottom="14">
         <horizontalLayout>
           <albumCover square="true" width="100"/>
           <verticalLayout margin-left="16">
-            <text type="title" font_size="12" height="32"/>
-            <text type="artist" font_size="10" height="32"/>
-            <text type="album" font_size="10" height="32"/>
+            <text type="title" font_size="12" style="scroll" height="32"/>
+            <text type="artist" font_size="10" style="scroll" height="32"/>
+            <text type="album" font_size="10" style="scroll" height="32"/>
           </verticalLayout>
         </horizontalLayout>
         <verticalLayout margin-left="8" margin-right="8">
-          <text type="title" font_size="12" height="24"/>
-          <text type="artist" font_size="10" height="20"/>
+          <text type="title" font_size="12" style="scroll" height="24"/>
+          <text type="artist" font_size="10" style="scroll" height="20"/>
           <spectrum fixed_width="true" draw_reflex="true" margin-top="4" />
         </verticalLayout>
         <lyrics/>

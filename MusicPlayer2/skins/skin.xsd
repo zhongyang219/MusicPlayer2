@@ -214,6 +214,11 @@
           <xs:documentation>如果为true，则可以通过单击切换显示。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="show_indicator" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>如果为true，则会在下方显示一个由小圆点组成的切换指示器，点击可以切换显示。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="rectangleType">

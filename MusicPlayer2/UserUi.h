@@ -17,6 +17,8 @@ public:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
     virtual CString GetUIName() override;
     virtual bool LButtonUp(CPoint point) override;
+    virtual void LButtonDown(CPoint point) override;
+    virtual void MouseMove(CPoint point) override;
 
 private:
     int m_index{ INT_MAX };

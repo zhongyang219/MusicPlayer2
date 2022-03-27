@@ -2159,30 +2159,77 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
 
 void CPlayerUIBase::DrawPlaylist(CRect rect)
 {
-    m_draw.SetDrawArea(rect);
-    m_draw_data.playlist_rect = rect;
-    const int item_height = DPI(24);
-    for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
-    {
-        //计算每一行的矩形区域
-        int start_y = -m_playlist_offset + i * item_height;
-        CRect rect_item{ rect };
-        rect_item.top = start_y;
-        rect_item.bottom = rect_item.top + item_height;
+    //m_draw.SetDrawArea(rect);
+    //m_draw_data.playlist_rect = rect;
+    //const int item_height = DPI(24);
+    //for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
+    //{
+    //    //计算每一行的矩形区域
+    //    int start_y = -m_playlist_offset + i * item_height;
+    //    CRect rect_item{ rect };
+    //    rect_item.top = start_y;
+    //    rect_item.bottom = rect_item.top + item_height;
 
-        if (!(rect_item & rect).IsRectEmpty())
+    //    if (!(rect_item & rect).IsRectEmpty())
+    //    {
+    //        if (i % 2 == 0)
+    //        {
+    //            //偶数行绘制一个背景
+    //            DrawRectangle(rect_item & rect);
+    //        }
+    //        //绘制曲目序号
+    //        CRect rect_num{ rect_item };
+    //        rect_num.right = rect_num.left + DPI(40);
+    //        m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text);
+    //        //绘制曲目名称
+    //    }
+    //}
+}
+
+
+void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
+{
+    //绘制背景
+    if (indicator.pressed || indicator.hover)
+    {
+        BYTE alpha;
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+        COLORREF back_color{};
+        if (indicator.pressed)
+            back_color = m_colors.color_button_pressed;
+        else
+            back_color = m_colors.color_button_hover;
+        //if (!theApp.m_app_setting_data.button_round_corners)
+        //    m_draw.FillAlphaRect(indicator.rect, back_color, alpha);
+        //else
+        m_draw.DrawRoundRect(indicator.rect, back_color, indicator.rect.Height() / 2, alpha);
+    }
+
+    //绘制圆
+    int start_x = indicator.rect.left;
+    start_x += (indicator.rect.Width() - num * DPI(12)) / 2;
+    for (int i = 0; i < num; i++)
+    {
+        CRect rect_dot{ indicator.rect };
+        rect_dot.left = start_x + i * DPI(12);
+        rect_dot.right = rect_dot.left + DPI(12);
+        int dot_size{ DPI(5) };
+        rect_dot.left += (rect_dot.Width() - dot_size) / 2;
+        rect_dot.top += (rect_dot.Height() - dot_size) / 2;
+        rect_dot.right = rect_dot.left + dot_size;
+        rect_dot.bottom = rect_dot.top + dot_size;
+        COLORREF dot_color{};
+        BYTE alpha{ 255 };
+        if (i == index)
         {
-            if (i % 2 == 0)
-            {
-                //偶数行绘制一个背景
-                DrawRectangle(rect_item & rect);
-            }
-            //绘制曲目序号
-            CRect rect_num{ rect_item };
-            rect_num.right = rect_num.left + DPI(40);
-            m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text);
-            //绘制曲目名称
+            dot_color = m_colors.color_text;
         }
+        else
+        {
+            dot_color = m_colors.color_stack_indicator;
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+        }
+        m_draw.DrawEllipse(rect_dot, dot_color, alpha);
     }
 }
 

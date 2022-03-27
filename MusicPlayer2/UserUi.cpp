@@ -94,15 +94,47 @@ bool CUserUi::LButtonUp(CPoint point)
         for (const auto& element : stack_elements)
         {
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
-            if (stack_element != nullptr && stack_element->ckick_to_switch && stack_element->GetRect().PtInRect(point))
+            if (stack_element != nullptr)
             {
-                m_draw_data.lyric_rect.SetRectEmpty();
-                stack_element->SwitchDisplay();
-                return true;
+                bool pressed = stack_element->indicator.pressed;
+                stack_element->indicator.pressed = false;
+
+                if ((pressed && stack_element->indicator.rect.PtInRect(point) && stack_element->indicator.enable)
+                    || (stack_element->ckick_to_switch && stack_element->GetRect().PtInRect(point)))
+                {
+                    m_draw_data.lyric_rect.SetRectEmpty();
+                    stack_element->SwitchDisplay();
+                    return true;
+                }
             }
         }
     }
     return false;
+}
+
+void CUserUi::LButtonDown(CPoint point)
+{
+    CPlayerUIBase::LButtonDown(point);
+    auto& stack_elements{ GetStackElements() };
+    for (auto& element : stack_elements)
+    {
+        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
+        if (stack_element != nullptr && stack_element->indicator.enable && stack_element->indicator.rect.PtInRect(point) != FALSE)
+            stack_element->indicator.pressed = true;
+    }
+}
+
+void CUserUi::MouseMove(CPoint point)
+{
+    auto& stack_elements{ GetStackElements() };
+    for (auto& element : stack_elements)
+    {
+        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
+        if (stack_element != nullptr && stack_element->indicator.enable)
+            stack_element->indicator.hover = (stack_element->indicator.rect.PtInRect(point) != FALSE);
+    }
+
+    CPlayerUIBase::MouseMove(point);
 }
 
 int CUserUi::GetUiIndex()
@@ -348,6 +380,9 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_click_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "ckick_to_switch");
                 if (!str_click_to_switch.empty())
                     stack_element->ckick_to_switch = CTinyXml2Helper::StringToBool(str_click_to_switch.c_str());
+                std::string str_show_indicator = CTinyXml2Helper::ElementAttribute(xml_node, "show_indicator");
+                if (!str_show_indicator.empty())
+                    stack_element->show_indicator = CTinyXml2Helper::StringToBool(str_show_indicator.c_str());
             }
         }
 

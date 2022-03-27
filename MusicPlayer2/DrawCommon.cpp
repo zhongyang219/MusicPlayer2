@@ -634,6 +634,21 @@ void CDrawCommon::DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int ra
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
 }
 
+void CDrawCommon::DrawEllipse(CRect rect, COLORREF color, BYTE alpha /*= 255*/)
+{
+    DrawEllipse(CGdiPlusTool::CRectToGdiplusRect(rect), CGdiPlusTool::COLORREFToGdiplusColor(color, alpha));
+}
+
+void CDrawCommon::DrawEllipse(Gdiplus::Rect rect, Gdiplus::Color color)
+{
+    //生成椭圆路径
+    Gdiplus::GraphicsPath ellipse_path;
+    ellipse_path.AddEllipse(rect);
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
+    m_pGraphics->FillPath(&Gdiplus::SolidBrush(color), &ellipse_path);                  //填充路径
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
+}
+
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 {
     if (m_pDC->GetSafeHdc() == NULL)

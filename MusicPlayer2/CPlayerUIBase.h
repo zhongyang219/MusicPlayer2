@@ -20,6 +20,7 @@ namespace UiElement
     class Lyrics;
     class Volume;
     class BeatIndicator;
+    class StackElement;
 }
 
 struct SLayoutData
@@ -55,6 +56,7 @@ public:
     friend class UiElement::Lyrics;
     friend class UiElement::Volume;
     friend class UiElement::BeatIndicator;
+    friend class UiElement::StackElement;
 
 public:
     void Init(CDC* pDC) override;
@@ -177,6 +179,13 @@ protected:
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
     void DrawPlaylist(CRect rect);                  //绘制播放列表
+    /**
+     * @brief   绘制stackElement的指示器
+     * @param   UIButton indicator 指示器信息
+     * @param   int num 指示器中元素的数量
+     * @param   int index 指示器当前索引
+     */
+    void DrawStackIndicator(UIButton indicator, int num, int index);
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
     IconRes* GetVolumeIcon();           //获取当前音量的图标

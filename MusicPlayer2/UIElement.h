@@ -78,6 +78,8 @@ namespace UiElement
         void SwitchDisplay();
         virtual void Draw(CPlayerUIBase* ui) override;
         bool ckick_to_switch{};
+        bool show_indicator{};
+        IPlayerUI::UIButton indicator{};        //指示器
 
     protected:
         std::shared_ptr<Element> CurrentElement();
