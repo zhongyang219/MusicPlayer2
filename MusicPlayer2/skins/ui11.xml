@@ -13,8 +13,8 @@
         </horizontalLayout>
         <progressBar height="40" show_play_time="true" play_time_both_side="true" margin-left="16" margin-right="16"/>
       </verticalLayout>
-      <verticalLayout>
-        <stackElement ckick_to_switch="true" show_indicator="true" margin-left="32" margin-bottom="16">
+      <verticalLayout margin-left="32">
+        <stackElement ckick_to_switch="true" show_indicator="true" margin-bottom="16">
           <verticalLayout>
             <text type="title" font_size="12" style="scroll" height="32"/>
             <text type="artist" font_size="10" style="scroll" height="32"/>
@@ -42,9 +42,17 @@
     <verticalLayout margin="20">
       <stackElement ckick_to_switch="true" show_indicator="true" margin-bottom="14">
         <albumCover square="true" margin="24"/>
+        <verticalLayout>
+          <placeHolder/>
+          <text type="title" font_size="12" style="scroll" height="32"/>
+          <text type="artist" font_size="10" style="scroll" height="32"/>
+          <text type="album" font_size="10" style="scroll" height="32"/>
+          <placeHolder height="24" hide-height="200"/>
+          <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
+        </verticalLayout>
         <lyrics margin="8"/>
       </stackElement>
-      <horizontalLayout height="56">
+      <horizontalLayout height="56" margin-top="8">
         <button key="repeatMode" width="32" height="32" margin="4"/>
         <button key="previous" width="48" height="48" margin="4" bigIcon="true"/>
         <button key="playPause" width="48" height="48" margin="4" bigIcon="true"/>
