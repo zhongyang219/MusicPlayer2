@@ -34,4 +34,5 @@ public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	CButton m_enable_reverb_chk;
 	afx_msg void OnBnClickedEnableReverbCheck();
+    afx_msg void OnDestroy();
 };

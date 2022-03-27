@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CReverbDlg, CDialogEx)
 	ON_WM_HSCROLL()
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_ENABLE_REVERB_CHECK, &CReverbDlg::OnBnClickedEnableReverbCheck)
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -123,4 +124,13 @@ void CReverbDlg::OnBnClickedEnableReverbCheck()
 	bool enable = (m_enable_reverb_chk.GetCheck() != 0);
 	CPlayer::GetInstance().EnableReverb(enable);
 	EnableControls(enable);
+}
+
+
+void CReverbDlg::OnDestroy()
+{
+    CPlayer::GetInstance().SetReverbMix(m_reverb_mix_slider.GetPos());
+    CPlayer::GetInstance().SetReverbTime(m_reverb_time_slider.GetPos());
+
+    CDialogEx::OnDestroy();
 }

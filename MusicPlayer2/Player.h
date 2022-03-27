@@ -193,6 +193,8 @@ public:
 
     int GetReverbMix() const { return m_reverb_mix; }
     int GetReverbTime() const { return m_reverb_time; }
+    void SetReverbMix(int reverb_mix) { m_reverb_mix = reverb_mix; }
+    void SetReverbTime(int reverb_time) { m_reverb_time = reverb_time; }
     void EnableReverb(bool enable);		//混响开关
     bool GetReverbEnable() const { return m_reverb_enable; }
 
