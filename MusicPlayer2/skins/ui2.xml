@@ -36,7 +36,7 @@
       <verticalLayout margin="4" margin-bottom="0">
         <trackInfo height="20"/>
         <text type="format" style="scroll" height="20"/>
-        <stackElement ckick_to_switch="true" show_indicator="true" margin-bottom="12">
+        <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="12">
           <verticalLayout>
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />

@@ -14,7 +14,7 @@
         <progressBar height="40" show_play_time="true" play_time_both_side="true" margin-left="16" margin-right="16"/>
       </verticalLayout>
       <verticalLayout margin-left="32">
-        <stackElement ckick_to_switch="true" show_indicator="true" margin-bottom="16">
+        <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="16">
           <verticalLayout>
             <text type="title" font_size="12" style="scroll" height="32"/>
             <text type="artist" font_size="10" style="scroll" height="32"/>
@@ -40,7 +40,7 @@
 
   <ui type="narrow">
     <verticalLayout margin="20">
-      <stackElement ckick_to_switch="true" show_indicator="true" margin-bottom="14">
+      <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="14">
         <albumCover square="true" margin="24"/>
         <verticalLayout>
           <placeHolder/>
@@ -65,7 +65,7 @@
   
   <ui type="small">
     <verticalLayout margin="8">
-      <stackElement ckick_to_switch="true" show_indicator="true" margin="8" margin-bottom="14">
+      <stackElement ckick_to_switch="false" show_indicator="true" margin="8" margin-bottom="14">
         <horizontalLayout>
           <albumCover square="true" width="100"/>
           <verticalLayout margin-left="16">

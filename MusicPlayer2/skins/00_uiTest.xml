@@ -53,7 +53,7 @@
   <ui type="narrow">
     <verticalLayout>
       <trackInfo height="24" margin="4"/>
-      <stackElement ckick_to_switch="true" show_indicator="true" margin-bottom="14">
+      <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="14">
         <albumCover square="true" margin="20">
           <verticalLayout>
             <placeHolder/>
