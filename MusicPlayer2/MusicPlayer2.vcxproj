@@ -564,12 +564,14 @@
     <Image Include="res\folder_explore_d.ico" />
     <Image Include="res\genre_d.ico" />
     <Image Include="res\heart.ico" />
+    <Image Include="res\help.ico" />
     <Image Include="res\help_d.ico" />
     <Image Include="res\internal_lyric_d.ico" />
     <Image Include="res\link.ico" />
     <Image Include="res\link_d.ico" />
     <Image Include="res\locate.ico" />
     <Image Include="res\lock_d.ico" />
+    <Image Include="res\lyric.ico" />
     <Image Include="res\lyric_d.ico" />
     <Image Include="res\lyric_delay.ico" />
     <Image Include="res\lyric_forward.ico" />
@@ -597,6 +599,7 @@
     <Image Include="res\pause_dark.ico" />
     <Image Include="res\pause_white.ico" />
     <Image Include="res\pin_d.ico" />
+    <Image Include="res\playlist_dock.ico" />
     <Image Include="res\playlist_dock_d.ico" />
     <Image Include="res\playlist_float_d.ico" />
     <Image Include="res\play_dark.ico" />

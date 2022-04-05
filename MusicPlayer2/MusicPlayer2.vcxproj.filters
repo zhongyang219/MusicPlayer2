@@ -1718,5 +1718,14 @@
     <Image Include="res\switch_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\help.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\lyric.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\playlist_dock.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

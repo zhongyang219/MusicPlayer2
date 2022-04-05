@@ -140,6 +140,16 @@ public:
         BTN_APP_CLOSE,          //关闭按钮
         BTN_ADD_TO_PLAYLIST,    //添加到播放列表按钮
         BTN_SWITCH_DISPLAY,     //切换界面中的stackElement
+
+        //菜单栏
+        MENU_FILE,
+        MENU_PLAY_CONTROL,
+        MENU_PLAYLIST,
+        MENU_LYRICS,
+        MENU_VIEW,
+        MENU_TOOLS,
+        MENU_HELP,
+
         BTN_INVALID,            //无效的按钮
     };
 
@@ -186,6 +196,7 @@ protected:
      * @param   int index 指示器当前索引
      */
     void DrawStackIndicator(UIButton indicator, int num, int index);
+    void DrawUiMenuBar(CRect rect);
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
     IconRes* GetVolumeIcon();           //获取当前音量的图标

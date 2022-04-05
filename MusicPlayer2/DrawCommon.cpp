@@ -486,6 +486,22 @@ void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
         ::DrawIconEx(m_pDC->GetSafeHdc(), start_point.x, start_point.y, hIcon, size.cx, size.cy, 0, NULL, DI_NORMAL);
 }
 
+void CDrawCommon::DrawIcon(HICON hIcon, CRect rect)
+{
+    DrawIcon(hIcon, rect.TopLeft(), rect.Size());
+}
+
+void CDrawCommon::DrawIcon(HICON hIcon, CRect rect, int icon_size)
+{
+    CRect rc_icon{ rect };
+    //根据指定的图标大小使图标在矩形中居中
+    rc_icon.left += (rect.Width() - icon_size) / 2;
+    rc_icon.top += (rect.Height() - icon_size) / 2;
+    rc_icon.right = rc_icon.left + icon_size;
+    rc_icon.bottom = rc_icon.top + icon_size;
+    DrawIcon(hIcon, rc_icon);
+}
+
 void CDrawCommon::FillRect(CRect rect, COLORREF color, bool no_clip_area)
 {
     if (m_pDC->GetSafeHdc() == NULL)

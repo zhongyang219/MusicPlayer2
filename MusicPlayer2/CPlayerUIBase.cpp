@@ -100,6 +100,15 @@ void CPlayerUIBase::DrawInfo(bool reset)
             DrawTitleBar(rc_title_bar);
         }
 
+        //绘制菜单栏
+        if (m_ui_data.ShowUiMenuBar())
+        {
+            CRect rc_menu_bar = draw_rect;
+            rc_menu_bar.bottom = rc_menu_bar.top + DPI(24);
+            draw_rect.top = rc_menu_bar.bottom;
+            DrawUiMenuBar(rc_menu_bar);
+        }
+
         //绘制界面中其他信息
         _DrawInfo(draw_rect, reset);
 
@@ -265,6 +274,18 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
         m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
     else        //如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
         m_show_volume_adj = (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point));
+
+    auto showMenu = [](CRect rect, int index)
+    {
+        CPoint point;
+        point.x = rect.left;
+        point.y = rect.bottom;
+        ClientToScreen(AfxGetMainWnd()->GetSafeHwnd(), &point);
+        CMenu* menu = theApp.m_menu_set.m_main_menu.GetSubMenu(index);
+        if (menu != nullptr)
+            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
+
+    };
 
     for (auto& btn : m_buttons)
     {
@@ -457,6 +478,28 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 SwitchStackElement();
                 return true;
 
+                //菜单
+            case MENU_FILE:
+                showMenu(btn.second.rect, 0);
+                return true;
+            case MENU_PLAY_CONTROL:
+                showMenu(btn.second.rect, 1);
+                return true;
+            case MENU_PLAYLIST:
+                showMenu(btn.second.rect, 2);
+                return true;
+            case MENU_LYRICS:
+                showMenu(btn.second.rect, 3);
+                return true;
+            case MENU_VIEW:
+                showMenu(btn.second.rect, 4);
+                return true;
+            case MENU_TOOLS:
+                showMenu(btn.second.rect, 5);
+                return true;
+            case MENU_HELP:
+                showMenu(btn.second.rect, 6);
+                return true;
             default:
                 break;
             }
@@ -469,7 +512,7 @@ CRect CPlayerUIBase::GetThumbnailClipArea()
 {
     //获取菜单栏的高度
     int menu_bar_height = 0;
-    if (m_ui_data.show_menu_bar && m_ui_data.show_window_frame)
+    if (m_ui_data.ShowWindowMenuBar() && m_ui_data.show_window_frame)
     {
         menu_bar_height = CCommon::GetMenuBarHeight(theApp.m_pMainWnd->GetSafeHwnd());
         if (menu_bar_height == 0)
@@ -1918,8 +1961,11 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
     DrawUIButton(rect_temp, m_buttons[BTN_MINI1], theApp.m_icon_set.mini);
     //主菜单图标
-    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
-    DrawUIButton(rect_temp, m_buttons[BTN_MENU], theApp.m_icon_set.menu);
+    if (!m_ui_data.ShowUiMenuBar())
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        DrawUIButton(rect_temp, m_buttons[BTN_MENU], theApp.m_icon_set.menu);
+    }
 
     //绘制标题栏文本
     rect_temp.right = rect_temp.left;
@@ -2231,6 +2277,80 @@ void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
         }
         m_draw.DrawEllipse(rect_dot, dot_color, alpha);
     }
+}
+
+void CPlayerUIBase::DrawUiMenuBar(CRect rect)
+{
+    //m_draw.DrawWindowText(rect, L"menu bar", m_colors.color_text);
+
+    //绘制背景
+    bool draw_background{ IsDrawBackgroundAlpha() };
+    BYTE alpha;
+    if (theApp.m_app_setting_data.dark_mode)
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+    else
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+
+    if (draw_background)
+        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+    else
+        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+
+    CRect rc_item{ rect };
+    rc_item.bottom = rc_item.top + DPI(20);
+    rc_item.left += DPI(4);
+    auto drawMenuItem = [&](BtnKey key, IconRes icon, UINT str_id)
+    {
+        CString text = CCommon::LoadText(str_id);
+        UIButton& btn{ m_buttons[key] };
+        btn.rect = rc_item;
+        btn.rect.right = btn.rect.left + btn.rect.Height() + m_draw.GetTextExtent(text).cx + DPI(6);
+
+        //绘制背景
+        if (btn.pressed || btn.hover)
+        {
+            BYTE alpha;
+            if (draw_background)
+                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+            else
+                alpha = 255;
+            COLORREF back_color{};
+            if (btn.pressed)
+                back_color = m_colors.color_button_pressed;
+            else
+                back_color = m_colors.color_button_hover;
+
+            if (!theApp.m_app_setting_data.button_round_corners)
+                m_draw.FillAlphaRect(btn.rect, back_color, alpha);
+            else
+                m_draw.DrawRoundRect(btn.rect, back_color, CalculateRoundRectRadius(rect), alpha);
+        }
+
+        //绘制图标
+        CRect rc_icon{ rc_item };
+        rc_icon.left += DPI(2);
+        rc_icon.right = rc_icon.left + rc_icon.Height();
+        const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, IsDrawLargeIcon());
+        m_draw.SetDrawArea(rc_icon);
+        m_draw.DrawIcon(hIcon, rc_icon, DPI(16));
+        //绘制文本
+
+        CRect rc_text{ rc_item };
+        rc_text.left = rc_icon.right;
+        rc_text.right = btn.rect.right;
+        m_draw.DrawWindowText(rc_text, text, m_colors.color_text);
+
+        //下一个矩形的位置
+        rc_item.left = rc_text.right + DPI(2);
+    };
+
+    drawMenuItem(MENU_FILE, theApp.m_icon_set.select_folder, IDS_FILE);                 //文件
+    drawMenuItem(MENU_PLAY_CONTROL, theApp.m_icon_set.play_new, IDS_PLAY_CONTROL);      //播放控制
+    drawMenuItem(MENU_PLAYLIST, theApp.m_icon_set.show_playlist, IDS_PLAYLIST);         //播放列表
+    drawMenuItem(MENU_LYRICS, theApp.m_icon_set.lyric, IDS_LYRICS);                     //歌词
+    drawMenuItem(MENU_VIEW, theApp.m_icon_set.playlist_dock, IDS_VIEW);                 //视图
+    drawMenuItem(MENU_TOOLS, theApp.m_icon_set.setting, IDS_TOOLS);                     //工具
+    drawMenuItem(MENU_HELP, theApp.m_icon_set.help, IDS_HELP);                          //帮助
 }
 
 IconRes* CPlayerUIBase::GetRepeatModeIcon()

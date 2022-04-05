@@ -118,6 +118,8 @@ public:
     void DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
 
     void DrawIcon(HICON hIcon, CPoint start_point, CSize size);
+    void DrawIcon(HICON hIcon, CRect rect);
+    void DrawIcon(HICON hIcon, CRect rect, int icon_size);
 
     void FillRect(CRect rect, COLORREF color, bool no_clip_area = false);
     void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = false);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）

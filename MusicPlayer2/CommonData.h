@@ -502,6 +502,9 @@ struct IconSet
     IconRes link;
     IconRes unlink;
     IconRes switch_display;
+    IconRes lyric;
+    IconRes playlist_dock;
+    IconRes help;
 
     //菜单图标（仅16x16）
     HICON stop_new;
@@ -514,17 +517,14 @@ struct IconSet
     HICON convert;
     HICON download;
     HICON download1;
-    HICON help;
     HICON ff_new;
     HICON rew_new;
-    HICON playlist_dock;
     HICON playlist_float;
     HICON statistics;
     HICON pin;
     HICON exit;
     HICON album_cover;
     HICON dark_mode;
-    HICON lyric;
     HICON rename;
     HICON tag;
     HICON star;
@@ -556,6 +556,9 @@ struct UIData
     int draw_area_height;               //绘图区的高度
     CImage default_background;			//默认的背景
     CCriticalSection default_background_sync;
+
+    bool ShowWindowMenuBar() const { return show_menu_bar && show_window_frame && !full_screen; }
+    bool ShowUiMenuBar() const { return show_menu_bar && !show_window_frame && !full_screen; }
 };
 
 

@@ -726,12 +726,21 @@
 #define IDI_INTERNAL_LYRIC_D            563
 #define IDS_SWITCH_DISPLAY              563
 #define IDI_SPEED_UP_D                  564
+#define IDS_FILE                        564
 #define IDI_SLOW_DOWN_D                 565
+#define IDS_PLAY_CONTROL                565
 #define IDI_ICON24                      566
 #define IDI_SHORTCUT_D                  566
+#define IDS_LYRICS                      566
 #define IDI_SWITCH                      567
+#define IDS_VIEW                        567
 #define IDI_ICON26                      568
 #define IDI_SWITCH_D                    568
+#define IDS_TOOLS                       568
+#define IDI_LYRIC                       569
+#define IDI_IDI_PLAYLIST_DOCK           570
+#define IDI_PLAYLIST_DOCK               570
+#define IDI_HELP                        571
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1558,7 +1567,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        569
+#define _APS_NEXT_RESOURCE_VALUE        573
 #define _APS_NEXT_COMMAND_VALUE         33393
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
