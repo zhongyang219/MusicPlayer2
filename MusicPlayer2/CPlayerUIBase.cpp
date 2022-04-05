@@ -2318,6 +2318,10 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
         btn.rect = rc_item;
         btn.rect.right = btn.rect.left + btn.rect.Height() + m_draw.GetTextExtent(text).cx + DPI(6);
 
+        CRect rc_cur_item{ btn.rect };
+        if (btn.pressed && btn.enable)
+            rc_cur_item.OffsetRect(theApp.DPI(1), theApp.DPI(1));
+
         //绘制背景
         if (btn.pressed || btn.hover)
         {
@@ -2333,21 +2337,21 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
                 back_color = m_colors.color_button_hover;
 
             if (!theApp.m_app_setting_data.button_round_corners)
-                m_draw.FillAlphaRect(btn.rect, back_color, alpha);
+                m_draw.FillAlphaRect(rc_cur_item, back_color, alpha);
             else
-                m_draw.DrawRoundRect(btn.rect, back_color, CalculateRoundRectRadius(rect), alpha);
+                m_draw.DrawRoundRect(rc_cur_item, back_color, CalculateRoundRectRadius(rect), alpha);
         }
 
         //绘制图标
-        CRect rc_icon{ rc_item };
+        CRect rc_icon{ rc_cur_item };
         rc_icon.left += DPI(2);
         rc_icon.right = rc_icon.left + rc_icon.Height();
         const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, IsDrawLargeIcon());
         m_draw.SetDrawArea(rc_icon);
         m_draw.DrawIcon(hIcon, rc_icon, DPI(16));
-        //绘制文本
 
-        CRect rc_text{ rc_item };
+        //绘制文本
+        CRect rc_text{ rc_cur_item };
         rc_text.left = rc_icon.right;
         rc_text.right = btn.rect.right;
         m_draw.DrawWindowText(rc_text, text, m_colors.color_text);
