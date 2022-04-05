@@ -104,7 +104,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         if (m_ui_data.ShowUiMenuBar())
         {
             CRect rc_menu_bar = draw_rect;
-            rc_menu_bar.bottom = rc_menu_bar.top + DPI(24);
+            rc_menu_bar.bottom = rc_menu_bar.top + m_layout.menubar_height;
             draw_rect.top = rc_menu_bar.bottom;
             DrawUiMenuBar(rc_menu_bar);
         }
@@ -1308,6 +1308,18 @@ bool CPlayerUIBase::PointInAppIconArea(CPoint point) const
     CRect rect_app_icon{};
     rect_app_icon.right = rect_app_icon.bottom = m_layout.titlabar_height;
     return (rect_app_icon.PtInRect(point) != FALSE);
+}
+
+bool CPlayerUIBase::PointInMenubarArea(CPoint point) const
+{
+    if (!m_ui_data.ShowUiMenuBar())
+        return false;
+
+    CRect rect_menubar = m_draw_rect;
+    rect_menubar.top = m_draw_rect.top + m_layout.titlabar_height;
+    rect_menubar.bottom = rect_menubar.top + m_layout.menubar_height;
+    return (rect_menubar.PtInRect(point) != FALSE);
+
 }
 
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const

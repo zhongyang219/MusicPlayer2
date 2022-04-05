@@ -34,6 +34,7 @@ struct SLayoutData
     const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };   //频谱分析区域的大小
     const int toolbar_height = theApp.DPI(24);                  //播放列表工具栏的高度
     const int titlabar_height = theApp.DPI(28);                 //标题栏的高度
+    const int menubar_height = theApp.DPI(24);                  //菜单栏的高度
 };
 
 class CPlayerUIBase : public IPlayerUI
@@ -90,6 +91,7 @@ public:
     bool PointInControlArea(CPoint point) const;        //判断一个点的位置是否在控件区域
     bool PointInTitlebarArea(CPoint point) const;
     bool PointInAppIconArea(CPoint point) const;
+    bool PointInMenubarArea(CPoint point) const;
 
     //获取界面的名称
     virtual CString GetUIName() { return CString(); }

@@ -69,7 +69,7 @@ void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     auto pUi = pMainWindow->GetCurrentUi();
-    if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point) && !pUi->PointInAppIconArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则拖动窗口
+    if ((pUi->PointInTitlebarArea(point) || pUi->PointInMenubarArea(point)) && !pUi->PointInControlArea(point) && !pUi->PointInAppIconArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则拖动窗口
     {
         if(pMainWindow->IsZoomed())     // 最大化窗口需要先退出最大化再拖动，按下不做反应仅记录，如果鼠标移动再处理
             m_bTitlebarLButtonDown = true, GetCursorPos(&m_ptLButtonDown);
@@ -92,7 +92,7 @@ void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
     {
         pMainWindow->SendMessage(WM_CLOSE);
     }
-    else if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point))
+    else if ((pUi->PointInTitlebarArea(point) || pUi->PointInMenubarArea(point)) && !pUi->PointInControlArea(point))
     {
         if(pMainWindow->IsZoomed())
             pMainWindow->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
@@ -149,7 +149,7 @@ void CUIWindow::OnRButtonUp(UINT nFlags, CPoint point)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     auto pUi = pMainWindow->GetCurrentUi();
-    if (pUi->PointInTitlebarArea(point) && !pUi->PointInControlArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则弹出系统菜单
+    if ((pUi->PointInTitlebarArea(point) || pUi->PointInMenubarArea(point)) && !pUi->PointInControlArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则弹出系统菜单
     {
         CPoint point1;
         GetCursorPos(&point1);
