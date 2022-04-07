@@ -50,7 +50,7 @@ void UiElement::Element::Draw(CPlayerUIBase* ui)
 {
     for (const auto& item : childLst)
     {
-        if (item != nullptr)
+        if (item != nullptr && item->IsEnable(GetRect(), ui))
             item->Draw(ui);
     }
 }
