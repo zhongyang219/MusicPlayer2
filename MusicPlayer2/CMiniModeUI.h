@@ -44,6 +44,7 @@ private:
     virtual bool IsDrawLargeIcon() override { return false; }
     virtual bool IsDrawStatusBar() const override { return false; }
     virtual bool IsDrawTitleBar() const override { return false; }
+    virtual bool IsDrawMenuBar() const override { return false; }
 
 private:
     SMiniModeUIData& m_ui_data;

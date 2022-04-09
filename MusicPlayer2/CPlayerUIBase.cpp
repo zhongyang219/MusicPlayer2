@@ -101,7 +101,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         }
 
         //绘制菜单栏
-        if (m_ui_data.ShowUiMenuBar())
+        if (IsDrawMenuBar())
         {
             CRect rc_menu_bar = draw_rect;
             rc_menu_bar.bottom = rc_menu_bar.top + m_layout.menubar_height;
@@ -1335,6 +1335,11 @@ bool CPlayerUIBase::IsDrawStatusBar() const
 bool CPlayerUIBase::IsDrawTitleBar() const
 {
     return !m_ui_data.show_window_frame && !m_ui_data.full_screen;
+}
+
+bool CPlayerUIBase::IsDrawMenuBar() const
+{
+    return m_ui_data.ShowUiMenuBar();
 }
 
 wstring CPlayerUIBase::GetDisplayFormatString()

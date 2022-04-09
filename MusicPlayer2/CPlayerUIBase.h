@@ -226,6 +226,7 @@ protected:
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
     virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
+    virtual bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
 
     wstring GetDisplayFormatString();       //获取显示格式的字符串
     CString GetVolumeTooltipString();       //获取音量鼠标提示字符串
