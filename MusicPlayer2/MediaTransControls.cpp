@@ -301,21 +301,28 @@ bool MediaTransControls::IsURL(wstring s) {
 }
 
 void MediaTransControls::UpdateDuration(int64_t duration) {
+    HRESULT hr;
     if (timeline) {
-        ASSERT(S_OK == timeline->put_EndTime(ABI::Windows::Foundation::TimeSpan { duration * 10000 }));
-        ASSERT(S_OK == timeline->put_MaxSeekTime(ABI::Windows::Foundation::TimeSpan{ duration * 10000 }));
+        hr = timeline->put_EndTime(ABI::Windows::Foundation::TimeSpan{ duration * 10000 });
+        ASSERT(S_OK == hr);
+        hr = timeline->put_MaxSeekTime(ABI::Windows::Foundation::TimeSpan{ duration * 10000 });
+        ASSERT(S_OK == hr);
     }
     if (controls2) {
-        ASSERT(S_OK == controls2->UpdateTimelineProperties(timeline));
+        hr = controls2->UpdateTimelineProperties(timeline);
+        ASSERT(S_OK == hr);
     }
 }
 
 void MediaTransControls::UpdatePosition(int64_t postion) {
+    HRESULT hr;
     if (timeline) {
-        ASSERT(S_OK == timeline->put_Position(ABI::Windows::Foundation::TimeSpan{ postion * 10000 }));
+        hr = timeline->put_Position(ABI::Windows::Foundation::TimeSpan{ postion * 10000 });
+        ASSERT(S_OK == hr);
     }
     if (controls2) {
-        ASSERT(S_OK == controls2->UpdateTimelineProperties(timeline));
+        hr = controls2->UpdateTimelineProperties(timeline);
+        ASSERT(S_OK == hr);
     }
 }
 
