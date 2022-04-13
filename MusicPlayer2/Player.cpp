@@ -2794,6 +2794,7 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
 
 void CPlayer::UpdateControlsMetadata(SongInfo info)
 {
+    m_controls.UpdateDuration(info.lengh.toInt());
     m_controls.UpdateControlsMetadata(info.IsTitleEmpty() ? info.GetFileName() : info.GetTitle(), info.GetArtist());
 }
 

@@ -6,6 +6,7 @@
 #include "Resource.h"
 #include "shcore.h"
 #include "WinVersionHelper.h"
+#include "player.h"
 
 #pragma comment(lib, "RuntimeObject.lib")
 #pragma comment(lib, "ShCore.lib")
@@ -92,6 +93,28 @@ bool MediaTransControls::Init() {
     ret = controls->put_IsEnabled(true);
     ASSERT(ret == S_OK);
     m_initailzed = true;
+    ret = ActivateInstance(HStringReference(RuntimeClass_Windows_Media_SystemMediaTransportControlsTimelineProperties).Get(), &timeline);
+    if (timeline && ret == S_OK) {
+        timeline->put_StartTime(ABI::Windows::Foundation::TimeSpan { 0 });
+        timeline->put_Position(ABI::Windows::Foundation::TimeSpan{ 0 });
+        timeline->put_MinSeekTime(ABI::Windows::Foundation::TimeSpan{ 0 });
+        timeline->put_EndTime(ABI::Windows::Foundation::TimeSpan{ 0 });
+        timeline->put_MaxSeekTime(ABI::Windows::Foundation::TimeSpan{ 0 });
+    }
+    controls.As(&controls2);
+    if (controls2) {
+        controls2->UpdateTimelineProperties(timeline);
+        auto callbackPlaybackPositionChangeRequested = Callback<ABI::Windows::Foundation::ITypedEventHandler<SystemMediaTransportControls*, PlaybackPositionChangeRequestedEventArgs*>>(
+            [this](ISystemMediaTransportControls*, IPlaybackPositionChangeRequestedEventArgs* pArgs) {
+                HRESULT ret;
+                ABI::Windows::Foundation::TimeSpan time;
+                if ((ret = pArgs->get_RequestedPlaybackPosition(&time)) == S_OK) {
+                    CPlayer::GetInstance().SeekTo((int)(time.Duration / 10000));
+                }
+                return S_OK;
+            });
+        controls2->add_PlaybackPositionChangeRequested(callbackPlaybackPositionChangeRequested.Get(), &m_EventRegistrationToken2);
+    }
     return true;
 }
 
@@ -277,6 +300,25 @@ bool MediaTransControls::IsURL(wstring s) {
     return i != std::wstring::npos && i > 1;
 }
 
+void MediaTransControls::UpdateDuration(int64_t duration) {
+    if (timeline) {
+        ASSERT(S_OK == timeline->put_EndTime(ABI::Windows::Foundation::TimeSpan { duration * 10000 }));
+        ASSERT(S_OK == timeline->put_MaxSeekTime(ABI::Windows::Foundation::TimeSpan{ duration * 10000 }));
+    }
+    if (controls2) {
+        ASSERT(S_OK == controls2->UpdateTimelineProperties(timeline));
+    }
+}
+
+void MediaTransControls::UpdatePosition(int64_t postion) {
+    if (timeline) {
+        ASSERT(S_OK == timeline->put_Position(ABI::Windows::Foundation::TimeSpan{ postion * 10000 }));
+    }
+    if (controls2) {
+        ASSERT(S_OK == controls2->UpdateTimelineProperties(timeline));
+    }
+}
+
 #else
 
 MediaTransControls::MediaTransControls()
@@ -314,5 +356,8 @@ void MediaTransControls::UpdateControlsMetadata(const wstring& title, const wstr
 {
 }
 
+void MediaTransControls::UpdateDuration(int64_t duration) {}
+
+void MediaTransControls::UpdatePosition(int64_t postion) {}
 
 #endif
