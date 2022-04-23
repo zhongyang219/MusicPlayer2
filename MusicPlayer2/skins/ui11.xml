@@ -16,11 +16,11 @@
       <verticalLayout margin-left="32">
         <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="16">
           <verticalLayout>
-            <placeHolder/>
+            <placeHolder proportion="1"/>
             <text type="title" font_size="12" style="scroll" height="32"/>
             <text type="artist" font_size="10" style="scroll" height="32"/>
             <text type="album" font_size="10" style="scroll" height="32"/>
-            <spectrum max-height="80" fixed_width="true" draw_reflex="true" margin-top="24" />
+            <spectrum max-height="80" fixed_width="true" draw_reflex="true" margin-top="24" proportion="4"/>
           </verticalLayout>
           <verticalLayout>
             <text type="title" font_size="12" style="scroll" height="32"/>
@@ -43,7 +43,7 @@
       <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="14">
         <albumCover square="true" margin="24"/>
         <verticalLayout>
-          <placeHolder/>
+          <placeHolder proportion="1"/>
           <horizontalLayout height="96">
             <albumCover square="true" width="96"/>
             <verticalLayout margin-left="16">
@@ -52,8 +52,8 @@
               <text type="album" font_size="10" style="scroll" height="32"/>
             </verticalLayout>
           </horizontalLayout>
-          <placeHolder height="24" hide-height="200"/>
-          <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
+          <placeHolder max-height="24" proportion="2"/>
+          <spectrum max-height="80" fixed_width="true" draw_reflex="true" proportion="10"/>
         </verticalLayout>
         <verticalLayout>
           <horizontalLayout height="64" hide-height="200">
