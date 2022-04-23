@@ -4120,6 +4120,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
             pThis->m_desktop_lyric.ShowLyric();
         }
 
+        CPlayer::GetInstance().m_controls.UpdatePosition(CPlayer::GetInstance().GetCurrentPosition());
         pThis->m_fps_cnt++;
         Sleep(theApp.m_app_setting_data.ui_refresh_interval);
     }
