@@ -44,13 +44,27 @@
         <albumCover square="true" margin="24"/>
         <verticalLayout>
           <placeHolder/>
-          <text type="title" font_size="12" style="scroll" height="32"/>
-          <text type="artist" font_size="10" style="scroll" height="32"/>
-          <text type="album" font_size="10" style="scroll" height="32"/>
+          <horizontalLayout height="96">
+            <albumCover square="true" width="96"/>
+            <verticalLayout margin-left="16">
+              <text type="title" font_size="12" style="scroll" height="32"/>
+              <text type="artist" font_size="10" style="scroll" height="32"/>
+              <text type="album" font_size="10" style="scroll" height="32"/>
+            </verticalLayout>
+          </horizontalLayout>
           <placeHolder height="24" hide-height="200"/>
           <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
         </verticalLayout>
-        <lyrics margin="8"/>
+        <verticalLayout>
+          <horizontalLayout height="64" hide-height="200">
+            <albumCover square="true" width="64"/>
+            <verticalLayout margin-left="16">
+              <text type="title" font_size="12" style="scroll" height="32"/>
+              <text type="artist" font_size="10" style="scroll" height="32"/>
+            </verticalLayout>
+          </horizontalLayout>
+          <lyrics margin="8"/>
+        </verticalLayout>
       </stackElement>
       <horizontalLayout height="56" margin-top="8">
         <button key="repeatMode" width="32" height="32" margin="4"/>

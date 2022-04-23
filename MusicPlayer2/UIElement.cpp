@@ -286,6 +286,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
 
         //计算每个子元素的矩形区域
         int w{};
+        bool first_child{ true };
         for (size_t i{}; i < childLst.size(); i++)
         {
             auto& child{ childLst[i] };
@@ -306,10 +307,15 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             if (child->IsEnable(GetRect(), ui))
             {
-                if (i == 0)
+                if (first_child)
+                {
                     child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect(), ui) + left_space;
+                    first_child = false;
+                }
                 else
+                {
                     child_rect.left = w + child->margin_left.GetValue(GetRect(), ui);
+                }
                 child_rect.right = child_rect.left + size_list[i];
                 w = child_rect.right + child->margin_right.GetValue(GetRect(), ui);
             }
@@ -429,6 +435,7 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
 
         // 计算每个子元素的矩形区域
         int h{};
+        bool first_child{ true };
         for (size_t i{}; i < childLst.size(); i++)
         {
             auto& child{ childLst[i] };
@@ -449,10 +456,15 @@ void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
             }
             if (child->IsEnable(GetRect(), ui))
             {
-                if (i == 0)
+                if (first_child)
+                {
                     child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect(), ui) + top_space;
+                    first_child = false;
+                }
                 else
+                {
                     child_rect.top = h + child->margin_top.GetValue(GetRect(), ui);
+                }
                 child_rect.bottom = child_rect.top + size_list[i];
                 h = child_rect.bottom + child->margin_bottom.GetValue(GetRect(), ui);
             }
