@@ -143,31 +143,25 @@ BOOL CLyricsWindow::RegisterWndClass(LPCTSTR lpszClassName)
 }
 
 
-//更新歌词(进度符号,歌词文本,高亮进度百分比,是否为进度符号高亮)
-void CLyricsWindow::UpdateLyrics(LPCTSTR lpszBeforeLyrics, LPCTSTR lpszLyrics, int nHighlight, bool bBeforeLyrics)
+void CLyricsWindow::SetLyricDoubleLine(bool doubleLine)
 {
-    m_lpszBeforeLyrics = lpszBeforeLyrics;
-    m_bBeforeLyrics = bBeforeLyrics;
-    m_lpszLyrics = lpszLyrics;
-    UpdateLyrics(nHighlight);
+	m_bDoubleLine = doubleLine;
 }
-//更新歌词(歌词文本,高亮进度百分比)
-void CLyricsWindow::UpdateLyrics(LPCTSTR lpszLyrics,int nHighlight)
+
+void CLyricsWindow::SetShowTranslate(bool showTranslate)
 {
-    m_lpszBeforeLyrics.Empty();
-    m_bBeforeLyrics = false;
-    m_lpszLyrics = lpszLyrics;
-    UpdateLyrics(nHighlight);
+	m_bShowTranslate = showTranslate;
 }
-//更新高亮进度(高亮进度百分比)
-void CLyricsWindow::UpdateLyrics(int nHighlight)
+
+void CLyricsWindow::UpdateLyrics(LPCTSTR lpszLyrics, int nHighlight)
 {
-	m_nHighlight=nHighlight;
-	if(m_nHighlight<0)
-		m_nHighlight=0;
-	if(m_nHighlight>1000)
-		m_nHighlight=1000;
-	Draw();
+	m_lpszLyrics = lpszLyrics;
+	m_nHighlight = nHighlight;
+}
+
+void CLyricsWindow::SetNextLyric(LPCTSTR lpszNextLyric)
+{
+	m_strNextLyric = lpszNextLyric;
 }
 
 void CLyricsWindow::UpdateLyricTranslate(LPCTSTR lpszLyricTranslate)
@@ -175,7 +169,16 @@ void CLyricsWindow::UpdateLyricTranslate(LPCTSTR lpszLyricTranslate)
 	m_strTranslate = lpszLyricTranslate;
 }
 
-//重画歌词窗口
+void CLyricsWindow::SetLyricChangeFlag(bool bFlag)
+{
+	m_lyricChangeFlag = bFlag;
+}
+
+const CString& CLyricsWindow::GetLyricStr() const
+{
+	return m_lpszLyrics;
+}
+
 void CLyricsWindow::Draw()
 {
 	//CRect rcWindow;
@@ -207,7 +210,9 @@ void CLyricsWindow::Draw()
 	pGraphics->SetSmoothingMode (Gdiplus::SmoothingModeAntiAlias);
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
 
+	// 计算逐字进度需要使用 Gdiplus::Graphics*，故在此获取将要显示的歌词、翻译、进度
     PreDrawLyric(pGraphics);
+
     bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
     if (m_bDoubleLine && !m_strNextLyric.IsEmpty() && !bDrawTranslate)
         DrawLyricsDoubleLine(pGraphics);
@@ -299,30 +304,13 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 	delete pStringPath; //销毁路径
 }
 
-//绘制歌词
 void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 {
     int lyricHeight = m_nHeight - m_toobar_height;
 	//先取出文字宽度和高度
 	Gdiplus::RectF layoutRect(0,0,0,0);
 	Gdiplus::RectF boundingBox;
-    if (!m_lpszBeforeLyrics.IsEmpty())
-    {
-        pGraphics->MeasureString(m_lpszBeforeLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
-        auto bef_width{ boundingBox.Width };
-        pGraphics->MeasureString(L" ", -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
-        auto sp_width{ boundingBox.Width };
-        m_lpszLyrics = m_lpszBeforeLyrics + L" " + m_lpszLyrics;
-        pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
-        if(m_bBeforeLyrics)
-            m_nHighlight = m_nHighlight * bef_width / boundingBox.Width;
-        else
-            m_nHighlight = ((bef_width + sp_width) * 1000 + m_nHighlight * (boundingBox.Width - bef_width - sp_width)) / boundingBox.Width;
-    }
-	else
-	{
-		pGraphics->MeasureString (m_lpszLyrics, -1, m_pFont,layoutRect, m_pTextFormat,&boundingBox, 0, 0);
-	}
+	pGraphics->MeasureString (m_lpszLyrics, -1, m_pFont,layoutRect, m_pTextFormat,&boundingBox, 0, 0);
     boundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
 	//计算歌词画出的位置
 	Gdiplus::RectF dstRect;		//文字的矩形
@@ -383,23 +371,7 @@ void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
     //先取出文字宽度和高度
     Gdiplus::RectF layoutRect(0, 0, 0, 0);
     Gdiplus::RectF boundingBox;
-    if (!m_lpszBeforeLyrics.IsEmpty())
-    {
-        pGraphics->MeasureString(m_lpszBeforeLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
-        auto bef_width{ boundingBox.Width };
-        pGraphics->MeasureString(L" ", -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
-        auto sp_width{ boundingBox.Width };
-        m_lpszLyrics = m_lpszBeforeLyrics + L" " + m_lpszLyrics;
-        pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
-        if (m_bBeforeLyrics)
-            m_nHighlight = m_nHighlight * bef_width / boundingBox.Width;
-        else
-            m_nHighlight = ((bef_width + sp_width) * 1000 + m_nHighlight * (boundingBox.Width - bef_width - sp_width)) / boundingBox.Width;
-    }
-    else
-    {
-        pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
-    }
+	pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
     boundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
     Gdiplus::RectF nextBoundingBox;
     pGraphics->MeasureString(m_strNextLyric, -1, m_pFont, layoutRect, m_pTextFormat, &nextBoundingBox, 0, 0);
@@ -570,34 +542,9 @@ void CLyricsWindow::SetLyricsFont(const WCHAR * familyName, Gdiplus::REAL emSize
 
 }
 
-void CLyricsWindow::SetLyricDoubleLine(bool doubleLine)
-{
-	m_bDoubleLine = doubleLine;
-}
-
-void CLyricsWindow::SetNextLyric(LPCTSTR lpszNextLyric)
-{
-	m_strNextLyric = lpszNextLyric;
-}
-
-void CLyricsWindow::SetShowTranslate(bool showTranslate)
-{
-    m_bShowTranslate = showTranslate;
-}
-
 void CLyricsWindow::SetAlpha(int alpha)
 {
     m_alpha = alpha;
-}
-
-const CString& CLyricsWindow::GetLyricStr() const
-{
-    return m_lpszLyrics;
-}
-
-void CLyricsWindow::SetLyricChangeFlag(bool bFlag)
-{
-    m_lyricChangeFlag = bFlag;
 }
 
 void CLyricsWindow::SetAlignment(Alignment alignment)

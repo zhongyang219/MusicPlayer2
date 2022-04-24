@@ -52,16 +52,24 @@ public:
 	BOOL Create(LPCTSTR lpszClassName);
 	BOOL Create(LPCTSTR lpszClassName,int nWidth,int nHeight);
 public:
-    //更新歌词(进度符号,歌词文本,高亮进度百分比,是否为进度符号高亮)
-    void UpdateLyrics(LPCTSTR lpszBeforeLyrics, LPCTSTR lpszLyrics, int nHighlight, bool bBeforeLyrics);
-	//更新歌词(歌词文本,高亮进度百分比)
-	void UpdateLyrics(LPCTSTR lpszLyrics,int nHighlight);
-	//更新高亮进度(高亮进度百分比)
-	void UpdateLyrics(int nHighlight);
-	//更新歌词翻译文本
+	//设置是否双行显示
+	void SetLyricDoubleLine(bool doubleLine);
+	// 设置是否显示翻译
+	void SetShowTranslate(bool showTranslate);
+	// 更新当前歌词及高亮进度
+	void UpdateLyrics(LPCTSTR lpszLyrics, int nHighlight);
+	// 更新下一句歌词
+	void SetNextLyric(LPCTSTR lpszNextLyric);
+	// 更新歌词翻译文本
 	void UpdateLyricTranslate(LPCTSTR lpszLyricTranslate);
+	// 设置交换标志
+	void SetLyricChangeFlag(bool bFlag);
+	// 获取当前歌词文本
+	const CString& GetLyricStr() const;
+
 	//重画歌词窗口
 	void Draw();
+
 	//设置歌词颜色
 	void SetLyricsColor(Gdiplus::Color TextColor1);
 	void SetLyricsColor(Gdiplus::Color TextColor1,Gdiplus::Color TextColor2,LyricsGradientMode TextGradientMode);
@@ -76,15 +84,9 @@ public:
 	void SetLyricsShadow(Gdiplus::Color ShadowColor,int nShadowOffset=2);
 	//设置歌词字体
 	void SetLyricsFont(const WCHAR * familyName, Gdiplus::REAL emSize,INT style= Gdiplus::FontStyleRegular, Gdiplus::Unit unit= Gdiplus::UnitPixel);
-	//设置是否双行显示
-	void SetLyricDoubleLine(bool doubleLine);
-	void SetNextLyric(LPCTSTR lpszNextLyric);
-    void SetShowTranslate(bool showTranslate);
+
     //设置不透明度
     void SetAlpha(int alpha);
-    //获取当前歌词文本
-    const CString& GetLyricStr() const;
-    void SetLyricChangeFlag(bool bFlag);
 	//设置对齐方式
 	void SetAlignment(Alignment alignment);
     //设置歌词卡拉OK样式显示
@@ -98,9 +100,11 @@ private:
 	BOOL RegisterWndClass(LPCTSTR lpszClassName);
 
 protected:
+	// 在指定rect实际绘制一行歌词
 	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate = false);
-	//绘制歌词
+	// 绘制单行歌词，含翻译
 	void DrawLyrics(Gdiplus::Graphics* pGraphics);
+	// 绘制能够交换显示的双行歌词
     void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
     //在绘制歌词前绘制的内容
     virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics) { }
@@ -113,10 +117,8 @@ private:
 	HDC m_hCacheDC;//缓存DC
 	int m_nWidth;
 	int m_nHeight;
-    CString m_lpszBeforeLyrics;//进度符号,Unicode格式
 	CString m_lpszLyrics;//Unicode格式的歌词
 	int m_nHighlight;//高亮歌词的百分比 0--1000
-    bool m_bBeforeLyrics;//高亮进度描述歌词前符号
 	Gdiplus::Color m_TextColor1;//普通歌词颜色,ARGB颜色
 	Gdiplus::Color m_TextColor2;//普通歌词颜色,ARGB颜色
 	LyricsGradientMode m_TextGradientMode;//普通歌词渐变模式

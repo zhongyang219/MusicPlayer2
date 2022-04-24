@@ -51,7 +51,10 @@ public:
 	~CDesktopLyric();
 
 	void Create();
+    // 由ui线程调用，刷新一次桌面歌词显示
 	void ShowLyric();
+    // 从播放实例获取歌词信息，由PreDrawLyric调用
+    void UpdateLyric(Gdiplus::Graphics* Graphics);
 	void ClearLyric();
 	void ApplySettings(const DesktopLyricSettingData& data);
 	void SetLyricWindowVisible(bool visible);

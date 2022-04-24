@@ -56,8 +56,8 @@ void CLyrics::apply_offset()
     for (int i{}; i < m_lyrics.size(); ++i)
     {
         // 应用偏移量同时避免出现重叠，重叠的时间标签会被歌词翻译合并误处理
-        last = max(last, m_lyrics[i].time_int + m_offset);
-        m_lyrics[i].time.fromInt(last);
+        last = max(last, m_lyrics[i].time_start_raw + m_offset);
+        m_lyrics[i].time_start = last;
         last += 10;
     }
 }
@@ -169,7 +169,7 @@ void CLyrics::DisposeLyric()
         Time t{};
         if (ParseLyricTimeTag(m_lyrics_str[i], t))
         {
-            lyric.time_int = t.toInt();
+            lyric.time_start_raw = t.toInt();
             m_lyrics.push_back(lyric);
 
             // 如果已查找到时间标签了，但是还没有找到offset标签，则将m_offset_tag_index设置为第1个时间标签的位置
@@ -261,7 +261,7 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, int offset) const
 {
     for (int i{ 0 }; i < static_cast<int>(m_lyrics.size()); i++)
     {
-        if (m_lyrics[i].time > time)        // 如果找到第一个时间标签比要显示的时间大，则该时间标签的前一句歌词即为当前歌词
+        if (m_lyrics[i].time_start > time.toInt())        // 如果找到第一个时间标签比要显示的时间大，则该时间标签的前一句歌词即为当前歌词
         {
             if (i + offset - 1 < -1)
             {
@@ -308,7 +308,7 @@ CLyrics::Lyric CLyrics::GetLyric(int index) const
 }
 
 // 获取进度
-int CLyrics::GetLyricProgress(Time time) const
+int CLyrics::GetLyricProgress(Time time, Gdiplus::Graphics* Graphics) const
 {
     if (m_lyrics.empty())
         return 0;
@@ -318,17 +318,17 @@ int CLyrics::GetLyricProgress(Time time) const
     int progress{};
     for (size_t i{ 0 }; i < m_lyrics.size(); i++)
     {
-        if (m_lyrics[i].time > time)
+        if (m_lyrics[i].time_start > time.toInt())
         {
             if (i == 0)
             {
                 lyric_current_time = time.toInt();
-                lyric_last_time = m_lyrics[i].time.toInt();
+                lyric_last_time = m_lyrics[i].time_start;
             }
             else
             {
-                lyric_last_time = m_lyrics[i].time - m_lyrics[i - 1].time;
-                lyric_current_time = time - m_lyrics[i - 1].time;
+                lyric_last_time = m_lyrics[i].time_start - m_lyrics[i - 1].time_start;
+                lyric_current_time = time - m_lyrics[i - 1].time_start;
             }
             if (lyric_last_time == 0) lyric_last_time = 1;
             progress = lyric_current_time * 1000 / lyric_last_time;
@@ -336,7 +336,41 @@ int CLyrics::GetLyricProgress(Time time) const
         }
     }
     // 如果最后一句歌词之后已经没有时间标签，该句歌词默认显示20秒
-    lyric_current_time = time - m_lyrics[m_lyrics.size() - 1].time;
+    lyric_current_time = time - m_lyrics[m_lyrics.size() - 1].time_start;
+    lyric_last_time = 20000;
+    progress = lyric_current_time * 1000 / lyric_last_time;
+    if (progress > 1000) progress = 1000;
+    return progress;
+}
+int CLyrics::GetLyricProgress(Time time, CUIDrawer* CUIDrawer) const
+{
+    if (m_lyrics.empty())
+        return 0;
+
+    int lyric_last_time{ 1 };           // time时间所在的歌词持续的时间
+    int lyric_current_time{ 0 };        // 当前歌词在time时间时已经持续的时间
+    int progress{};
+    for (size_t i{ 0 }; i < m_lyrics.size(); i++)
+    {
+        if (m_lyrics[i].time_start > time.toInt())
+        {
+            if (i == 0)
+            {
+                lyric_current_time = time.toInt();
+                lyric_last_time = m_lyrics[i].time_start;
+            }
+            else
+            {
+                lyric_last_time = m_lyrics[i].time_start - m_lyrics[i - 1].time_start;
+                lyric_current_time = time - m_lyrics[i - 1].time_start;
+            }
+            if (lyric_last_time == 0) lyric_last_time = 1;
+            progress = lyric_current_time * 1000 / lyric_last_time;
+            return progress;
+        }
+    }
+    // 如果最后一句歌词之后已经没有时间标签，该句歌词默认显示20秒
+    lyric_current_time = time - m_lyrics[m_lyrics.size() - 1].time_start;
     lyric_last_time = 20000;
     progress = lyric_current_time * 1000 / lyric_last_time;
     if (progress > 1000) progress = 1000;
@@ -348,7 +382,7 @@ int CLyrics::GetLyricIndex(Time time) const
 {
     for (int i{ 0 }; i < static_cast<int>(m_lyrics.size()); i++)
     {
-        if (m_lyrics[i].time > time)
+        if (m_lyrics[i].time_start > time.toInt())
             return i - 1;
     }
     return m_lyrics.size() - 1;
@@ -425,21 +459,21 @@ Time CLyrics::GetBlankTimeBeforeLyric(int index) const
 {
     if (index < 1 || index >= static_cast<int>(m_lyrics.size()))
         return Time();
-    Time tmp{ m_lyrics[index].time };
+    Time tmp{ m_lyrics[index].time_start };
     for (int i{ index - 1 }; i >= 0; --i)
     {
         if (m_lyrics[i].text.empty())
-            tmp = m_lyrics[i].time;
+            tmp = m_lyrics[i].time_start;
         else
             break;
     }
-    return m_lyrics[index].time - tmp;
+    return m_lyrics[index].time_start - tmp.toInt();
 }
 
 int CLyrics::GetBlankLyricProgress(int index, Time time) const
 {
     int lyric_blank_time{ GetBlankTimeBeforeLyric(index).toInt() };		                            // time时间所在的歌词持续的时间
-    int lyric_current_time{ time.toInt() - m_lyrics[index].time.toInt() + lyric_blank_time };		// 当前歌词在time时间时已经持续的时间
+    int lyric_current_time{ time.toInt() - m_lyrics[index].time_start + lyric_blank_time };		// 当前歌词在time时间时已经持续的时间
     int progress{};
     if (lyric_blank_time <= 0 || lyric_current_time <= 0) return 0;
     progress = lyric_current_time * 1000 / lyric_blank_time;
@@ -504,7 +538,7 @@ wstring CLyrics::GetLyricsString2() const
     wchar_t time_buff[16];
     for (auto a_lyric : m_lyrics)
     {
-        Time a_time{ a_lyric.time };
+        Time a_time{ a_lyric.time_start };
         if (!a_time.negative) {
             swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
             lyric_string += time_buff;
@@ -571,7 +605,7 @@ void CLyrics::CombineSameTimeLyric()
 {
     for (int i{}; i < static_cast<int>(m_lyrics.size() - 1); i++)
     {
-        if (m_lyrics[i].time_int == m_lyrics[i + 1].time_int)   // 找到相同时间标签的歌词
+        if (m_lyrics[i].time_start_raw == m_lyrics[i + 1].time_start_raw)   // 找到相同时间标签的歌词
         {
             // if (!m_lyrics[i].text.empty() && !m_lyrics[i + 1].text.empty())       // 只有两句相同时间标签的歌词都有文本时，才需要插入一个斜杠
             // {
@@ -588,7 +622,7 @@ void CLyrics::DeleteRedundantLyric()
 {
     for (size_t i{}; i < m_lyrics.size(); i++)
     {
-        if (m_lyrics[i].time > Time{ 100, 0, 0 })                   // 找到一句歌词的时间标签大于100分钟
+        if (m_lyrics[i].time_start > 6000000)                       // 找到一句歌词的时间标签大于100分钟
         {
             m_lyrics.erase(m_lyrics.begin() + i, m_lyrics.end());   // 删除该句歌词及其后面的所有歌词
             break;
@@ -609,7 +643,7 @@ void CLyrics::TimeTagForward()
     // 用后一句歌词的时间标签覆盖前面的
     for (size_t i{}; i < m_lyrics.size() - 1; i++)
     {
-        m_lyrics[i].time = m_lyrics[i + 1].time;
+        m_lyrics[i].time_start = m_lyrics[i + 1].time_start;
     }
 }
 
@@ -618,7 +652,7 @@ void CLyrics::TimeTagDelay()
     // 用前一句歌词的时间标签覆盖后面的
     for (size_t i{ m_lyrics.size() - 1 }; i > 0; i--)
     {
-        m_lyrics[i].time = m_lyrics[i - 1].time;
+        m_lyrics[i].time_start = m_lyrics[i - 1].time_start;
     }
 }
 

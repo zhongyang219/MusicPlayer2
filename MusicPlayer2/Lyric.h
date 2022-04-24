@@ -1,30 +1,25 @@
 ﻿#pragma once
 #include"Common.h"
 #include"Time.h"
+#include "CUIDrawer.h"
 class CLyrics
 {
 public:
     struct Lyric               // 一句歌词的结构体
     {
-        int time_int;          // 歌词载入时的时间标签(初始化时写入之后只读)
-        Time time;             // 歌词时间标签(偏移量已即时应用)
-        wstring text;          // 歌词的文本
-        wstring translate;     // 歌词的翻译
+        int time_start_raw;     // 行开始时间(初始化时写入之后只读)
+        int time_start;         // 行开始时间(偏移量即时应用)
+        int time_span;          // 行持续时间(当与下一行开始时间冲突时修正为下一行开始时间)
+        wstring text;           // 歌词的文本
+        wstring translate;      // 歌词的翻译
+        vector<int> split;      // 逐字歌词对text的分割位置
+        vector<int> char_time;  // 分割后各字持续时间（毫秒）
 
         // 重载小于号运算符，用于对歌词按时间标签排序
         bool operator<(const Lyric& lyric) const
         {
-            return lyric.time_int > time_int;
+            return lyric.time_start_raw > time_start_raw;
         }
-
-        // 根据一个偏移量返回时间
-        // Time GetTime(int offset) const
-        // {
-        //     if (offset == 0)
-        //         return time;
-        //     else
-        //         return time + offset;
-        // }
     };
 
 private:
@@ -89,7 +84,8 @@ public:
     // 根据索引返回一句歌词
     Lyric GetLyric(int index) const;
     // 根据时间返回该时间所对应的歌词的进度（0~1000）（用于使歌词以卡拉OK样式显示）
-    int GetLyricProgress(Time time) const;
+    int GetLyricProgress(Time time, Gdiplus::Graphics* Graphics) const;
+    int GetLyricProgress(Time time, CUIDrawer* CUIDrawer) const;
     // 根据时间返回该时间对应的歌词序号（用于判断歌词是否有变化）
     int GetLyricIndex(Time time) const;
 
