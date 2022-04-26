@@ -390,8 +390,11 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
             {
                 std::shared_ptr<UiElement::Element> ui_child = BuildUiElementFromXmlNode(xml_child);
-                ui_child->pParent = element.get();
-                element->childLst.push_back(ui_child);
+                if (ui_child != nullptr)
+                {
+                    ui_child->pParent = element.get();
+                    element->childLst.push_back(ui_child);
+                }
             });
     }
     return element;
