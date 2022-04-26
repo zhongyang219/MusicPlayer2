@@ -4,7 +4,7 @@ name: CI
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build-x64:
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - name: Check Out
         uses: actions/checkout@v2
@@ -46,7 +46,7 @@ jobs:
           name: MusicPlayer2.x64.other
           path: MusicPlayer2.x64.other.7z
   build-x86:
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - name: Check Out
         uses: actions/checkout@v2
