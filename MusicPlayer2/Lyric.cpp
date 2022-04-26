@@ -303,17 +303,14 @@ int CLyrics::GetLyricIndexIgnoreBlank(int index, bool is_next) const
             }
         }
     }
-    if (is_next)
+    if (is_next && index >= -1)
     {
-        if (++index < static_cast<int>(m_lyrics.size()))
+        for (int i{ index + 1 }; i < static_cast<int>(m_lyrics.size()); ++i)
         {
-            for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
+            if (!m_lyrics[i].text.empty())
             {
-                if (!m_lyrics[i].text.empty())
-                {
-                    index = i;
-                    break;
-                }
+                index = i;
+                break;
             }
         }
     }

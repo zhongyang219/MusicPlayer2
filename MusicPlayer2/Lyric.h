@@ -90,7 +90,7 @@ private:
     // 将当前时间对应的index偏移到非空歌词，is_next为true时执行两次
     int GetLyricIndexIgnoreBlank(int index, bool is_next) const;
     // 获取指定非空歌词之前的空白时长(index无效时返回0)
-    int CLyrics::GetBlankTimeBeforeLyric(int index) const;
+    int GetBlankTimeBeforeLyric(int index) const;
 public:
     // 提供给单双行歌词使用，karaoke为true时返回歌词含进度符号的版本，非原始文本
     // is_next为true时为下一句歌词，否则为当前歌词
