@@ -126,9 +126,10 @@ void CCortanaLyric::DrawInfo()
             }
             else
             {
+                const bool karaoke_mode{ theApp.m_lyric_setting_data.lyric_karaoke_disp && theApp.m_lyric_setting_data.donot_show_blank_lines };
 			    Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-			    int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, &m_draw);
-			    CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0);
+			    int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, karaoke_mode, &m_draw);
+			    CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, karaoke_mode);
                 bool no_lyric{ false };
                 //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
                 no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time_start > 20000) || progress >= 1000;
@@ -201,7 +202,7 @@ void CCortanaLyric::DrawInfo()
             else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//有歌词时显示歌词
             {
                 Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-                str_disp = CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0).text;
+                str_disp = CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, false).text;
                 if (str_disp.empty())
                     str_disp = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
             }

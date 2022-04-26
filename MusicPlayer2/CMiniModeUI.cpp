@@ -173,8 +173,9 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     else
     {
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, 0) };  //获取当歌词
-        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, &m_draw) };     //获取当前歌词进度（范围为0~1000）
+        const bool karaoke_mode{ theApp.m_lyric_setting_data.lyric_karaoke_disp && theApp.m_lyric_setting_data.donot_show_blank_lines };
+        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, karaoke_mode) };  //获取当歌词
+        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, karaoke_mode, &m_draw) };     //获取当前歌词进度（范围为0~1000）
         bool no_lyric{ false };
         //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
         no_lyric = (current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time_start > 20000) || progress >= 1000;

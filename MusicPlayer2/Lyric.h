@@ -7,13 +7,14 @@ class CLyrics
 public:
     struct Lyric               // 一句歌词的结构体
     {
-        int time_start_raw;     // 行开始时间(初始化时写入之后只读)
-        int time_start;         // 行开始时间(偏移量即时应用)
-        int time_span;          // 行持续时间(当与下一行开始时间冲突时修正为下一行开始时间)
+        int time_start_raw{};   // 行开始时间(初始化时写入之后只读)
+        int time_span_raw{};    // 行持续时间(初始化时写入之后只读)
+        int time_start{};       // 行开始时间(偏移量即时应用)
+        int time_span{};        // 行持续时间(偏移量即时应用)
         wstring text;           // 歌词的文本
         wstring translate;      // 歌词的翻译
-        vector<int> split;      // 逐字歌词对text的分割位置
-        vector<int> char_time;  // 分割后各字持续时间（毫秒）
+        // vector<int> split;      // 逐字歌词对text的分割位置
+        // vector<int> word_time;  // 分割后各字持续时间（毫秒），累加若超过time_span时超出部分截断
 
         // 重载小于号运算符，用于对歌词按时间标签排序
         bool operator<(const Lyric& lyric) const
@@ -49,10 +50,11 @@ private:
 
     // 将歌词文件拆分成若干句歌词，并保存在m_lyrics_str中
     void DivideLyrics();
-    // 从int时间应用偏移量到Time时间并规范歌词偏移量避免负值出现
-    void apply_offset();
     // 获得歌词中的时间标签和歌词文本，并将文本从string类型转换成wstring类型，保存在m_lyrics中
     void DisposeLyric();
+
+    // 将歌词中信息全部填入m_lyrics后或偏移量调整后调用，负责修正/填补信息
+    void NormalizeLyric();
 
     // 解析一行歌词文本
     // lyric_text_ori：待解析的歌词文本
@@ -79,25 +81,24 @@ public:
     // 判断是否有歌词
     bool IsEmpty() const;
 
-    // 根据时间返回一句歌词。第2个参数如果是0，则返回当前时间对应的歌词，如果是-1则返回当前时间的前一句歌词，1则返回后一句歌词，以此类推。
-    Lyric GetLyric(Time time, int offset) const;
-    // 根据索引返回一句歌词
-    Lyric GetLyric(int index) const;
-    // 根据时间返回该时间所对应的歌词的进度（0~1000）（用于使歌词以卡拉OK样式显示）
-    int GetLyricProgress(Time time, Gdiplus::Graphics* Graphics) const;
-    int GetLyricProgress(Time time, CUIDrawer* CUIDrawer) const;
-    // 根据时间返回该时间对应的歌词序号（用于判断歌词是否有变化）
+    // 根据时间返回该时间对应的原始歌词序号，多行歌词使用
+    // 返回index直接与下标对应，-1为在第一行歌词之前，超过最后一行歌词后保持为m_lyrics.size() - 1
     int GetLyricIndex(Time time) const;
-
-    // 根据索引与偏移量返回该时间对应的歌词索引
-    int GetLyricIndexIgnoreBlank(int index, int offset) const;
-    // 根据索引返回一句歌词(index为-1时返回标题,其他无效索引返回空歌词)
-    Lyric GetLyricIgnoreBlank(int index) const;
-    // 获取指定歌词之前的空白时长(index无效时返回0)
-    Time CLyrics::GetBlankTimeBeforeLyric(int index) const;
-    // 返回该time所对应的空白进度（0~1000）仅当time位于空行中且之后仍有歌词时可用。
-    // (合并空行，要求index为time之后第一句非空歌词，time位于index之前紧邻的空白中)
-    int GetBlankLyricProgress(int index, Time time) const;
+    // 根据索引返回一句歌词，多行歌词使用
+    Lyric GetLyric(int index) const;
+private:
+    // 将当前时间对应的index偏移到非空歌词，is_next为true时执行两次
+    int GetLyricIndexIgnoreBlank(int index, bool is_next) const;
+    // 获取指定非空歌词之前的空白时长(index无效时返回0)
+    int CLyrics::GetBlankTimeBeforeLyric(int index) const;
+public:
+    // 提供给单双行歌词使用，karaoke为true时返回歌词含进度符号的版本，非原始文本
+    // is_next为true时为下一句歌词，否则为当前歌词
+    Lyric GetLyric(Time time, bool is_next, bool karaoke) const;
+    // 根据时间返回该时间所对应的歌词的进度（0~1000）（用于使歌词以卡拉OK样式显示）
+    // karaoke为true时返回的进度已将进度符号考虑在内，与上方GetLyric配合使用
+    int GetLyricProgress(Time time, bool karaoke, Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormats) const;
+    int GetLyricProgress(Time time, bool karaoke, CUIDrawer* CUIDrawer) const;
 
     // 获得歌词文本的编码类型
     CodeType GetCodeType() const;
@@ -140,6 +141,7 @@ public:
     void TimeTagDelay();
     // 从歌词原文的括号中提取翻译，丢弃原有翻译
     void ExtractTranslationFromBrackets();
+
     // 调整歌词的偏移量
     void AdjustLyric(int offset);
 

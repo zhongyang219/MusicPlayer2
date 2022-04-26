@@ -86,7 +86,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         for (int i{}; i < lyric_count; i++)
         {
             CRect arect{ lyric_area };
-            if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_lyric_setting_data.show_translate)
+            if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i - 1).translate.empty() && theApp.m_lyric_setting_data.show_translate)
                 arect.bottom = arect.top + lyric_height2;
             else
                 arect.bottom = arect.top + lyric_height;
@@ -94,8 +94,8 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         }
         int center_pos = (lyric_area.top + lyric_area.bottom) / 2;		//歌词区域的中心y坐标
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };		//当前播放时间
-        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time) + 1;		//当前歌词的序号（歌词的第一句GetLyricIndex返回的是0，由于显示时第一句歌词要显示标题，所以这里要+1）
-        int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, this);		//当前歌词进度（范围为0~1000）
+        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);		//当前歌词的序号（歌词的第一句GetLyricIndex返回的是0，由于显示时第一句歌词要显示标题，所以这里要+1）
+        int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, false, this);		// 当前歌词进度（范围为0~1000），多行歌词使用的进度不含进度符号
         int y_progress;			//当前歌词在y轴上的进度
         if (!CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index).translate.empty() && theApp.m_lyric_setting_data.show_translate)
             y_progress = progress * lyric_height2 / 1000;
@@ -107,7 +107,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         //再依次减去之前每一句歌词的高度，即得到了第一句歌词的起始位置
         int start_pos;
         start_pos = center_pos - y_progress;
-        for (int i{ lyric_index - 1 }; i >= 0; i--)
+        for (int i{ lyric_index }; i >= -1; i--)
         {
             if (theApp.m_lyric_setting_data.show_translate && !CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty())
                 start_pos -= lyric_height2;
@@ -116,18 +116,18 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         }
 
         //依次绘制每一句歌词
-        for (size_t i{}; i < rects.size(); i++)
+        for (int i{ -1 }; i < static_cast<int>(rects.size()) - 1; i++)
         {
             //计算每一句歌词的位置
-            if (i == 0)
-                rects[i].MoveToY(start_pos);
+            if (i == -1)
+                rects[i + 1].MoveToY(start_pos);
             else
-                rects[i].MoveToY(rects[i - 1].bottom);
+                rects[i + 1].MoveToY(rects[i].bottom);
             //绘制歌词文本
-            if (!(rects[i] & lyric_area).IsRectEmpty())		//只有当一句歌词的矩形区域和歌词区域的矩形有交集时，才绘制歌词
+            if (!(rects[i + 1] & lyric_area).IsRectEmpty())		//只有当一句歌词的矩形区域和歌词区域的矩形有交集时，才绘制歌词
             {
                 //设置歌词文本和翻译文本的矩形区域
-                CRect rect_text{ rects[i] };
+                CRect rect_text{ rects[i + 1] };
                 CRect rect_translate;
                 if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_lyric_setting_data.show_translate)
                 {
@@ -205,12 +205,12 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         SetDrawArea(rect);
         CRect lyric_rect = rect;
 
+        const bool karaoke_mode{ theApp.m_lyric_setting_data.lyric_karaoke_disp && theApp.m_lyric_setting_data.donot_show_blank_lines };
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric current_lyric = now_lyrics.GetLyric(time, 0);
+        CLyrics::Lyric current_lyric = now_lyrics.GetLyric(time, false, karaoke_mode);
         bool is_lyric_empty{ current_lyric.text.empty() };
-        int lyric_index = now_lyrics.GetLyricIndex(time);
-        int progress = now_lyrics.GetLyricProgress(time, this);
+        int progress = now_lyrics.GetLyricProgress(time, karaoke_mode, this);
 
         if (is_lyric_empty)
             current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
@@ -219,13 +219,13 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
             wstring next_lyric_text;
-            next_lyric_text = now_lyrics.GetLyric(time, 1).text;
+            next_lyric_text = now_lyrics.GetLyric(time, true, karaoke_mode).text;
             if (next_lyric_text.empty())
                 next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
             //这里实现文本从非高亮缓慢变化到高亮效果
             int last_time_span = time - current_lyric.time_start;     //当前播放的歌词已持续的时间
             int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
-            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, lyric_index, fade_percent);
+            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, current_lyric.time_start_raw, fade_percent);
         }
         else
         {
@@ -382,16 +382,16 @@ int CUIDrawer::DPI(int pixel)
         return theApp.DPI(pixel);
 }
 
-void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress,int index, int fade_percent)
+void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress,int switch_flag, int fade_percent)
 {
     CFont* pOldFont = SetLyricFont();
     static bool swap;
     static int last_index;
-    if (last_index != index)		//如果歌词索引改变，说明歌词切换到了下一句
+    if (last_index != switch_flag)		//如果数值改变，说明歌词切换到了下一句
     {
         swap = !swap;
     }
-    last_index = index;
+    last_index = switch_flag;
 
     CRect up_rect{ rect }, down_rect{ rect };		//上半部分和下半部分歌词的矩形区域
     up_rect.bottom = up_rect.top + (up_rect.Height() / 2);

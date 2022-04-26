@@ -86,7 +86,7 @@ void CDesktopLyric::ShowLyric()
 
 
 
-void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* Graphics)
+void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat)
 {
     if (CPlayerUIHelper::IsMidiLyric())
     {
@@ -100,29 +100,31 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* Graphics)
     }
     else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())
     {
+        const bool karaoke_mode{ m_lyric_karaoke_disp && theApp.m_lyric_setting_data.donot_show_blank_lines };
+
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric lyric = now_lyrics.GetLyric(time, 0);
+        CLyrics::Lyric lyric = now_lyrics.GetLyric(time, false, karaoke_mode);
         bool is_lyric_empty{ lyric.text.empty() };
-        int progress = now_lyrics.GetLyricProgress(time, Graphics);
+        int progress = now_lyrics.GetLyricProgress(time, karaoke_mode, pGraphics, pFont, pTextFormat);
         if (is_lyric_empty)
             lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
 
         if (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
             CLyrics::Lyric next_lyric;
-            next_lyric = now_lyrics.GetLyric(time, 1);
+            next_lyric = now_lyrics.GetLyric(time, true, karaoke_mode);
             if (next_lyric.text.empty())
                 next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
             SetNextLyric(next_lyric.text.c_str());
         }
 
-        static int last_lyric_index = -1;
-        int lyric_index = now_lyrics.GetLyricIndex(time);
-        if (lyric_index != last_lyric_index)
+        static int last_lyric_time_start = -1;
+        int lyric_time_start = lyric.time_start_raw;    // 防止time_start变动导致交换故使用不变的time_start_raw
+        if (lyric_time_start != last_lyric_time_start)
         {
             SetLyricChangeFlag(true);
-            last_lyric_index = lyric_index;
+            last_lyric_time_start = lyric_time_start;
         }
         else
         {
@@ -146,8 +148,8 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* Graphics)
 
 void CDesktopLyric::ClearLyric()
 {
-    UpdateLyrics(_T(""), 0);
     UpdateLyricTranslate(_T(""));
+    UpdateLyrics(_T(""), 0);
     SetNextLyric(_T(""));
 }
 
@@ -482,10 +484,10 @@ void CDesktopLyric::UpdateToolTipPosition()
 }
 
 
-void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics)
+void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat)
 {
     // 获取歌词信息
-    UpdateLyric(pGraphics);
+    UpdateLyric(pGraphics, pFont, pTextFormat);
 
     //绘制半透明背景
     if (!m_bLocked && !m_lyricBackgroundPenetrate)

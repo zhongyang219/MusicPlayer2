@@ -54,7 +54,7 @@ public:
     // 由ui线程调用，刷新一次桌面歌词显示
 	void ShowLyric();
     // 从播放实例获取歌词信息，由PreDrawLyric调用
-    void UpdateLyric(Gdiplus::Graphics* Graphics);
+    void UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat);
 	void ClearLyric();
 	void ApplySettings(const DesktopLyricSettingData& data);
 	void SetLyricWindowVisible(bool visible);
@@ -84,7 +84,7 @@ protected:
     //绘制工具条上的图标
     void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
 
-    virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics) override;
+    virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat) override;
     virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) override;
 
 private:
