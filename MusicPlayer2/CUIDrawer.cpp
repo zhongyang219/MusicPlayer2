@@ -94,7 +94,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         }
         int center_pos = (lyric_area.top + lyric_area.bottom) / 2;		//歌词区域的中心y坐标
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };		//当前播放时间
-        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);		//当前歌词的序号（歌词的第一句GetLyricIndex返回的是0，由于显示时第一句歌词要显示标题，所以这里要+1）
+        int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);		            // 当前歌词的序号
         int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, false, this);		// 当前歌词进度（范围为0~1000），多行歌词使用的进度不含进度符号
         int y_progress;			//当前歌词在y轴上的进度
         if (!CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index).translate.empty() && theApp.m_lyric_setting_data.show_translate)
@@ -107,7 +107,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         //再依次减去之前每一句歌词的高度，即得到了第一句歌词的起始位置
         int start_pos;
         start_pos = center_pos - y_progress;
-        for (int i{ lyric_index }; i >= -1; i--)
+        for (int i{ lyric_index - 1 }; i >= -1; i--)
         {
             if (theApp.m_lyric_setting_data.show_translate && !CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty())
                 start_pos -= lyric_height2;

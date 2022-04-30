@@ -447,9 +447,9 @@ typedef struct BASS_3DVECTOR {
 	BASS_3DVECTOR() {};
 	BASS_3DVECTOR(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {};
 #endif
-	float x;	// +=right, -=left
-	float y;	// +=up, -=down
-	float z;	// +=front, -=behind
+	float x{};	// +=right, -=left
+	float y{};	// +=up, -=down
+	float z{};	// +=front, -=behind
 } BASS_3DVECTOR;
 
 // 3D channel modes

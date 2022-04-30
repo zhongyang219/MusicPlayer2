@@ -511,7 +511,7 @@ CodeType CLyrics::GetCodeType() const
 wstring CLyrics::GetAllLyricText(bool with_translate) const
 {
     wstring all_lyric{};
-    for (auto a_lyric : m_lyrics)
+    for (auto& a_lyric : m_lyrics)
     {
         all_lyric += a_lyric.text;
         all_lyric += L"\r\n";
@@ -529,7 +529,7 @@ wstring CLyrics::GetLyricsString() const
     wstring lyric_string{};
     if (m_offset == 0)              // 如果时间偏移为0，则返回原始的歌词文本
     {
-        for (auto str : m_lyrics_str)
+        for (auto& str : m_lyrics_str)
         {
             lyric_string += str;
             lyric_string += L"\r\n";
@@ -557,7 +557,7 @@ wstring CLyrics::GetLyricsString2() const
     if (m_by_tag) lyric_string += (L"[by:" + m_by + L"]\r\n");
     if (m_offset_tag) lyric_string += L"[offset:0]\r\n";
     wchar_t time_buff[16];
-    for (auto a_lyric : m_lyrics)
+    for (auto& a_lyric : m_lyrics)
     {
         Time a_time{ a_lyric.time_start };
         if (!a_time.negative) {
