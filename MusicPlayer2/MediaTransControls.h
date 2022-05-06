@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Common.h"
+#include "SongInfo.h"
 
 #ifndef DISABLE_MEDIA_TRANS_CONTROLS
 #include <sdkddkver.h>
@@ -40,7 +41,7 @@ public:
     bool IsActive();
     void ClearAll();
     void UpdateControls(Command cmd);
-    void UpdateControlsMetadata(const wstring& title, const wstring& artist);
+    void UpdateControlsMetadata(const SongInfo song);
     /// Update duration of stream, in milliseconds
     void UpdateDuration(int64_t duration);
     /// Update current time, in milliseconds
@@ -50,10 +51,16 @@ protected:
     Microsoft::WRL::ComPtr<ISystemMediaTransportControls> controls;
     Microsoft::WRL::ComPtr<ISystemMediaTransportControls2> controls2;
     CComPtr<ISystemMediaTransportControlsDisplayUpdater> updater;
-    CComPtr<IMusicDisplayProperties> music;
+    Microsoft::WRL::ComPtr<IMusicDisplayProperties> music;
     EventRegistrationToken m_EventRegistrationToken, m_EventRegistrationToken2;
     void UpdateTitle(wstring title);
     void UpdateArtist(wstring artist);
+    void UpdateAlbumArtist(wstring album_artist);
+    void UpdateAlbumTitle(wstring album_title);
+    void UpdateTrackNumber(UINT track);
+    void UpdateAlbumTrackCount(UINT track_count);
+    void UpdateGenre(wstring genre);
+    void UpdateGenres(std::vector<wstring> genres);
     void OnButtonPressed(SystemMediaTransportControlsButton button);
     bool IsURL(wstring s);
     bool m_initailzed = false;
@@ -72,7 +79,7 @@ public:
     bool IsActive();
     void ClearAll();
     void UpdateControls(Command cmd);
-    void UpdateControlsMetadata(const wstring& title, const wstring& artist);
+    void UpdateControlsMetadata(const SongInfo song);
     void UpdateDuration(int64_t duration);
     void UpdatePosition(int64_t postion);
 };
