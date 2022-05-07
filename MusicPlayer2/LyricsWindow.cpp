@@ -239,16 +239,16 @@ void CLyricsWindow::Draw()
 	::ReleaseDC(m_hWnd,hDC);
 }
 
-void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate)
+void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool is_current, bool is_translate, bool draw_highlight)
 {
-	Gdiplus::REAL fontSize = bDrawTranslate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
+	Gdiplus::REAL fontSize = is_translate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
 	if (fontSize < 1)
 		fontSize = m_FontSize;
 
     Gdiplus::REAL textWidth = rect.Width;
     Gdiplus::REAL highlighWidth = rect.Width * m_nHighlight / 1000;
 
-    if (!bDrawHighlight && !bDrawTranslate)
+    if (!is_current)		// 非当前歌词则左对齐，否则根据进度滚动
     {
         if (rect.X < 0)
             rect.X = 0;
@@ -299,7 +299,7 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, rect);
 	pGraphics->FillPath(pBrush, pStringPath);//填充路径
 	delete pBrush;//销毁画刷
-	if(bDrawHighlight)
+	if(draw_highlight)
 		DrawHighlightLyrics(pGraphics, pStringPath, rect);
 	delete pStringPath; //销毁路径
 }
@@ -357,15 +357,15 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
         }
 	}
 
-	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, m_lyric_karaoke_disp);
+	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮
 	if (bDrawTranslate)
-		DrawLyricText(pGraphics, m_strTranslate, transRect, false, true);
+		DrawLyricText(pGraphics, m_strTranslate, transRect, true, true, false);				// 是当前歌词，是翻译，不绘制高亮
 }
 
 void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
 {
     int lyricHeight = m_nHeight - m_toobar_height;
-    static bool bSwap = false;
+    static bool bSwap = true;
     if (m_lyricChangeFlag)      //如果歌词发生了改变，则交换当前歌词和下一句歌词的位置
         bSwap = !bSwap;
     //先取出文字宽度和高度
@@ -390,8 +390,8 @@ void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
         dstRect.X = m_nWidth - dstRect.Width;
     }
 
-    DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true);
-    DrawLyricText(pGraphics, m_strNextLyric, nextRect, false);
+    DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true, false, true);			// 当前歌词，不是翻译，显示高亮
+    DrawLyricText(pGraphics, m_strNextLyric, nextRect, false, false, false);	// 下一句歌词，不是翻译，不显示高亮
 }
 
 //绘制高亮歌词
@@ -399,7 +399,7 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 {
 	if(m_nHighlight<=0)return;
 	Gdiplus::Region* pRegion=NULL;
-	if(m_nHighlight<1000 && m_lyric_karaoke_disp){
+    if(m_nHighlight<1000 && m_lyric_karaoke_disp){        // 这里的 && m_lyric_karaoke_disp 操作会在关闭卡拉OK模式时将1-999的进度转换到1000
 		Gdiplus::RectF CliptRect(dstRect);
 		CliptRect.Width=CliptRect.Width * m_nHighlight / 1000;
 		pRegion=new Gdiplus::Region(CliptRect);

@@ -258,7 +258,7 @@ void CLyricSettingsDlg::EnableControl()
     m_show_default_album_icon_chk.EnableWindow(enable);
 
     EnableDlgCtrl(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE, enable);
-    EnableDlgCtrl(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.lyric_karaoke_disp);
+    // EnableDlgCtrl(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.lyric_karaoke_disp);
 }
 
 void CLyricSettingsDlg::EnableControlForDesktopLyric()
@@ -335,7 +335,7 @@ void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.lyric_karaoke_disp = (m_karaoke_disp_check.GetCheck() != 0);
-    EnableControl();
+    // EnableControl();
 }
 
 

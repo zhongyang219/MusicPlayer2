@@ -3633,7 +3633,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
     }
     else
     {
-        CLyrics::Lyric lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), false, false) };
+        CLyrics::Lyric lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), false, theApp.m_lyric_setting_data.donot_show_blank_lines, false) };
         lyric_str = lyric.text;
         if (theApp.m_lyric_setting_data.show_translate && !lyric.translate.empty())
         {
@@ -4918,7 +4918,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
     {
         if (index == -2)      //当lParam为-2时，播放默认的播放列表
         {
-            auto default_playlist = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
+            auto& default_playlist = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
             CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
         }
         else

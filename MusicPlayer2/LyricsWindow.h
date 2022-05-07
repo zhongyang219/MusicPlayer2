@@ -100,13 +100,13 @@ private:
 	BOOL RegisterWndClass(LPCTSTR lpszClassName);
 
 protected:
-	// 在指定rect实际绘制一行歌词
-	void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool bDrawHighlight, bool bDrawTranslate = false);
+    // 在指定rect实际绘制一行歌词，is_current决定是否跟随进度滚动，is_translate决定字号大小，draw_highlight决定是否绘制高亮
+    void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool is_current, bool is_translate, bool draw_highlight);
 	// 绘制单行歌词，含翻译
 	void DrawLyrics(Gdiplus::Graphics* pGraphics);
 	// 绘制能够交换显示的双行歌词
     void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
-    //在绘制歌词前绘制/执行的内容
+    // 在绘制歌词前绘制/执行的内容
     virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat) { }
     //在绘制歌词后绘制的内容
     virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) { }

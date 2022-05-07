@@ -100,20 +100,22 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
     }
     else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())
     {
-        const bool karaoke_mode{ m_lyric_karaoke_disp && theApp.m_lyric_setting_data.donot_show_blank_lines };
+        const bool karaoke{ theApp.m_lyric_setting_data.lyric_karaoke_disp };
+        const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines };
 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric lyric = now_lyrics.GetLyric(time, false, karaoke_mode);
+        CLyrics::Lyric lyric = now_lyrics.GetLyric(time, false, ignore_blank, karaoke);
         bool is_lyric_empty{ lyric.text.empty() };
-        int progress = now_lyrics.GetLyricProgress(time, karaoke_mode, pGraphics, pFont, pTextFormat);
+        int progress = now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, pGraphics, pFont, pTextFormat);
+        // TRACE("progress %d\n", progress);
         if (is_lyric_empty)
             lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
 
         if (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
             CLyrics::Lyric next_lyric;
-            next_lyric = now_lyrics.GetLyric(time, true, karaoke_mode);
+            next_lyric = now_lyrics.GetLyric(time, true, ignore_blank, karaoke);
             if (next_lyric.text.empty())
                 next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
             SetNextLyric(next_lyric.text.c_str());

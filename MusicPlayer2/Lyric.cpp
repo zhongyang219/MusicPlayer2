@@ -2,16 +2,27 @@
 #include "Lyric.h"
 
 
-CLyrics::CLyrics(const wstring& file_name) : m_file{ file_name }
+CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file{ file_name }, m_lyric_type{ lyric_type }
 {
-    DivideLyrics();
+    string lyric_str;
+    if (!CCommon::GetFileContent(m_file.c_str(), lyric_str)) return;            // 读取歌词文件内容
+    m_code_type = CCommon::JudgeCodeType(lyric_str, CodeType::ANSI, true);      // 判断编码格式
+    wstring lyric_wcs = CCommon::StrToUnicode(lyric_str, m_code_type, true);    // 转换成Unicode
+    vector<wstring> results;
+    CCommon::StringSplit(lyric_wcs, L'\n', results);                            // 按行拆分
+    for (auto& str : results)
+    {
+        CCommon::StringNormalize(str);
+        m_lyrics_str.push_back(str);
+    }
+
     DisposeLyric();
     std::stable_sort(m_lyrics.begin(), m_lyrics.end());         // 将歌词按时间标签排序（使用stable_sort，确保相同的元素相对位置保持不变，用于处理带翻译的歌词时确保翻译在原文的后面）
     CombineSameTimeLyric();
     NormalizeLyric();
 }
 
-void CLyrics::LyricsFromRowString(const wstring & lyric_str)
+void CLyrics::LyricsFromRowString(const wstring & lyric_str, const LyricType& lyric_type)
 {
     vector<wstring> results;
     CCommon::StringSplit(lyric_str, L'\n', results);
@@ -26,26 +37,6 @@ void CLyrics::LyricsFromRowString(const wstring & lyric_str)
     std::stable_sort(m_lyrics.begin(), m_lyrics.end());
     CombineSameTimeLyric();
     NormalizeLyric();
-}
-
-void CLyrics::DivideLyrics()
-{
-    string lyric_str;
-    // 读取歌词文件内容
-    if (!CCommon::GetFileContent(m_file.c_str(), lyric_str))
-        return;
-    // 判断编码格式
-    m_code_type = CCommon::JudgeCodeType(lyric_str, CodeType::ANSI, true);
-    // 转换成Unicode
-    wstring lyric_wcs = CCommon::StrToUnicode(lyric_str, m_code_type, true);
-    // 按行拆分
-    vector<wstring> results;
-    CCommon::StringSplit(lyric_wcs, L'\n', results);
-    for (auto& str : results)
-    {
-        CCommon::StringNormalize(str);
-        m_lyrics_str.push_back(str);
-    }
 }
 
 void CLyrics::DisposeLyric()
@@ -275,18 +266,13 @@ int CLyrics::GetLyricIndex(Time time) const
 
 CLyrics::Lyric CLyrics::GetLyric(int index) const
 {
-    if (index < -1)
-        return Lyric();
-    else if (index == -1)
-    {
-        Lyric ti{};
-        ti.text = m_ti;
-        return ti;
-    }
-    else if (index < static_cast<int>(m_lyrics.size()))
+    if (index >= 0 && index < static_cast<int>(m_lyrics.size()))
         return m_lyrics[index];
-    else
+    if (index != -1)
         return Lyric();
+    Lyric ti{};
+    ti.text = m_ti;
+    return ti;
 }
 
 int CLyrics::GetLyricIndexIgnoreBlank(int index, bool is_next) const
@@ -302,10 +288,22 @@ int CLyrics::GetLyricIndexIgnoreBlank(int index, bool is_next) const
                 break;
             }
         }
+        if (m_lyrics[index].text.empty())       // 若向后查询失败则向前回溯，解决以多个空行结尾的歌词的显示问题
+        {
+            for (int i{ index }; i >= 0; --i)
+            {
+                if (!m_lyrics[i].text.empty())
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
     }
     if (is_next && index >= -1)
     {
-        for (int i{ index + 1 }; i < static_cast<int>(m_lyrics.size()); ++i)
+        index++;        // 当is_next为true时即使超出m_lyrics下标范围仍要加一
+        for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
         {
             if (!m_lyrics[i].text.empty())
             {
@@ -332,35 +330,22 @@ int CLyrics::GetBlankTimeBeforeLyric(int index) const
     return m_lyrics[index].time_start - tmp;
 }
 
-CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool karaoke) const
+CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, bool blank2mark) const
 {
     int now_index{ GetLyricIndex(time) };
-    if (!karaoke)
-    {
-        // 当前原始歌词
-        if (!is_next)
-            return GetLyric(now_index);
-        // 下一句原始歌词
-        now_index++;
-        if (now_index < m_lyrics.size())
-            return GetLyric(now_index);
-        return Lyric{};
-    }
-    else
-    {
-        // 索引对齐到非空歌词
-        now_index = GetLyricIndexIgnoreBlank(now_index, is_next);
-        // 检查前方空白长度是否足够
-        int blank_time{ GetBlankTimeBeforeLyric(now_index) };
-        // 对足够长的空白添加进度符号
-        CLyrics::Lyric lyric = GetLyric(now_index);
-        if (blank_time > LYRIC_BLANK_IGNORE_TIME)
-            lyric.text = L"♪♪♪ " + lyric.text;
-        return lyric;
-    }
+    if (!ignore_blank)                                          // 不忽略空行，返回原始歌词
+        return GetLyric(now_index + is_next);
+    now_index = GetLyricIndexIgnoreBlank(now_index, is_next);   // 索引对齐到非空歌词
+    int blank_time{ GetBlankTimeBeforeLyric(now_index) };
+    if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不添加进度符号
+        return GetLyric(now_index);
+    CLyrics::Lyric lyric = GetLyric(now_index);
+    if(!lyric.text.empty())                                     // 只对非空歌词添加，应对以多行空行结尾的歌词
+        lyric.text = L"♪♪♪ " + lyric.text;
+    return lyric;
 }
 
-int CLyrics::GetLyricProgress(Time time, bool karaoke, Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat) const
+int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat) const
 {
     if (m_lyrics.empty())
         return 0;
@@ -381,19 +366,16 @@ int CLyrics::GetLyricProgress(Time time, bool karaoke, Gdiplus::Graphics* pGraph
     else
     {
         int blank_time{};
-        if (karaoke)        // 对齐到非空歌词
+        if (ignore_blank)        // 对齐到非空歌词
         {
             now_index = GetLyricIndexIgnoreBlank(now_index, false);
             blank_time = GetBlankTimeBeforeLyric(now_index);
         }
-
         // 先处理不需要size的情况
-        if (blank_time < LYRIC_BLANK_IGNORE_TIME && time < m_lyrics[now_index].time_start)
+        if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
         {
-            return 0;
-        }
-        if (blank_time < LYRIC_BLANK_IGNORE_TIME && time >= m_lyrics[now_index].time_start)    // 不涉及进度符号，正常处理
-        {
+            if (time < m_lyrics[now_index].time_start)
+                return 0;
             lyric_current_time = time - m_lyrics[now_index].time_start;
             lyric_last_time = m_lyrics[now_index].time_span;
             if (lyric_last_time == 0)
@@ -433,7 +415,7 @@ int CLyrics::GetLyricProgress(Time time, bool karaoke, Gdiplus::Graphics* pGraph
         progress = (progress * lyric_word_size / 1000 + lyric_before_size) * 1000 / lyric_line_size;
     return min(progress, 1000);
 }
-int CLyrics::GetLyricProgress(Time time, bool karaoke, CUIDrawer* CUIDrawer) const
+int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, CUIDrawer* CUIDrawer) const
 {
     if (m_lyrics.empty())
         return 0;
@@ -454,19 +436,16 @@ int CLyrics::GetLyricProgress(Time time, bool karaoke, CUIDrawer* CUIDrawer) con
     else
     {
         int blank_time{};
-        if (karaoke)        // 对齐到非空歌词
+        if (ignore_blank)        // 对齐到非空歌词
         {
             now_index = GetLyricIndexIgnoreBlank(now_index, false);
             blank_time = GetBlankTimeBeforeLyric(now_index);
         }
-
         // 先处理不需要size的情况
-        if (blank_time < LYRIC_BLANK_IGNORE_TIME && time < m_lyrics[now_index].time_start)
+        if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
         {
-            return 0;
-        }
-        if (blank_time < LYRIC_BLANK_IGNORE_TIME && time >= m_lyrics[now_index].time_start)    // 不涉及进度符号，正常处理
-        {
+            if (time < m_lyrics[now_index].time_start)
+                return 0;
             lyric_current_time = time - m_lyrics[now_index].time_start;
             lyric_last_time = m_lyrics[now_index].time_span;
             if (lyric_last_time == 0)
@@ -643,7 +622,7 @@ void CLyrics::DeleteRedundantLyric()
 {
     for (size_t i{}; i < m_lyrics.size(); i++)
     {
-        if (m_lyrics[i].time_start > 6000000)                       // 找到一句歌词的时间标签大于100分钟
+        if (m_lyrics[i].time_start >= 6000000)                      // 找到一句歌词的时间标签大于100分钟
         {
             m_lyrics.erase(m_lyrics.begin() + i, m_lyrics.end());   // 删除该句歌词及其后面的所有歌词
             break;
