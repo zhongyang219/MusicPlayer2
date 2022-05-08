@@ -211,11 +211,12 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
         CLyrics::Lyric current_lyric = now_lyrics.GetLyric(time, false, ignore_blank, karaoke);
         int progress = now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, this);
+        static int last_progress{ -1 };
 
         if (current_lyric.text.empty())
             current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
         //双行显示歌词
-        if (double_line && (!CPlayer::GetInstance().m_Lyrics.IsTranslated() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
+        if (double_line && (current_lyric.translate.empty() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
             wstring next_lyric_text;
             next_lyric_text = now_lyrics.GetLyric(time, true, ignore_blank, karaoke).text;
@@ -225,7 +226,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
             int last_time_span = time - current_lyric.time_start;     //当前播放的歌词已持续的时间
             int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
             // 这里的fade_percent当合并空行开启时可能为负，在颜色渐变处规范取值，此处不再处理
-            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, current_lyric.time_start_raw, fade_percent);
+            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, last_progress > progress, fade_percent);
         }
         else
         {
@@ -246,6 +247,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
             else
                 DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
         }
+        last_progress = progress;
     }
 
     SetFont(pOldFont);
@@ -382,16 +384,11 @@ int CUIDrawer::DPI(int pixel)
         return theApp.DPI(pixel);
 }
 
-void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress,int switch_flag, int fade_percent)
+void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, bool switch_flag, int fade_percent)
 {
     CFont* pOldFont = SetLyricFont();
-    static bool swap;
-    static int last_index;
-    if (last_index != switch_flag)		//如果数值改变，说明歌词切换到了下一句
-    {
-        swap = !swap;
-    }
-    last_index = switch_flag;
+    static bool swap{};
+    swap ^= switch_flag;
 
     CRect up_rect{ rect }, down_rect{ rect };		//上半部分和下半部分歌词的矩形区域
     up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
@@ -429,8 +426,6 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
         DrawWindowText(up_rect, next_lyric, m_colors.color_text_2);
         DrawWindowText(down_rect, lyric, color1, color2, progress);
     }
-    // 绘制下一句歌词
-    DrawWindowText(swap ? up_rect : down_rect, next_lyric, m_colors.color_text_2);
     SetFont(pOldFont);
 }
 

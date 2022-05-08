@@ -365,9 +365,8 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
 {
     int lyricHeight = m_nHeight - m_toobar_height;
-    static bool bSwap = true;
-    if (m_lyricChangeFlag)      //如果歌词发生了改变，则交换当前歌词和下一句歌词的位置
-        bSwap = !bSwap;
+	static bool bSwap{};
+    bSwap ^= m_lyricChangeFlag; // 如果歌词发生了改变，则交换当前歌词和下一句歌词的位置
     //先取出文字宽度和高度
     Gdiplus::RectF layoutRect(0, 0, 0, 0);
     Gdiplus::RectF boundingBox;

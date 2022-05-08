@@ -121,17 +121,10 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
             SetNextLyric(next_lyric.text.c_str());
         }
 
-        static int last_lyric_time_start = -1;
-        int lyric_time_start = lyric.time_start_raw;    // 防止time_start变动导致交换故使用不变的time_start_raw
-        if (lyric_time_start != last_lyric_time_start)
-        {
-            SetLyricChangeFlag(true);
-            last_lyric_time_start = lyric_time_start;
-        }
-        else
-        {
-            SetLyricChangeFlag(false);
-        }
+        static int last_progress{ -1 };
+        SetLyricChangeFlag(last_progress > progress);
+        last_progress = progress;
+
         UpdateLyrics(lyric.text.c_str(), progress);
         UpdateLyricTranslate(lyric.translate.c_str());
     }
