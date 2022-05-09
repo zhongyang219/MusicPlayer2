@@ -277,7 +277,9 @@ CLyrics::Lyric CLyrics::GetLyric(int index) const
 
 int CLyrics::GetLyricIndexIgnoreBlank(int index, bool is_next) const
 {
-    // 对齐到非空白歌词，-1为标题不会为空无须处理
+    // 对齐到非空白歌词
+    if (index == -1 && m_ti.empty())
+        index = 0;
     if (index >= 0)
     {
         for (int i{ index }; i < static_cast<int>(m_lyrics.size()); ++i)
@@ -317,17 +319,19 @@ int CLyrics::GetLyricIndexIgnoreBlank(int index, bool is_next) const
 
 int CLyrics::GetBlankTimeBeforeLyric(int index) const
 {
-    if (index < 1 || index >= static_cast<int>(m_lyrics.size()))
+    if (index < 0 || index >= static_cast<int>(m_lyrics.size()))
         return 0;
-    int tmp{ m_lyrics[index].time_start };
+    int index_blank{ index };
     for (int i{ index - 1 }; i >= 0; --i)
     {
         if (m_lyrics[i].text.empty())
-            tmp = m_lyrics[i].time_start;
+            index_blank = i;
         else
             break;
     }
-    return m_lyrics[index].time_start - tmp;
+    if (index_blank == 0 && m_ti.empty())       // index之前的歌词全部为空行或index为第一行歌词并且标题为空时将原本的标题时间计入空行
+        return m_lyrics[index].time_start;
+    return m_lyrics[index].time_start - m_lyrics[index_blank].time_start;
 }
 
 CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, bool blank2mark) const
@@ -347,66 +351,55 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, boo
 
 int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat) const
 {
-    if (m_lyrics.empty())
-        return 0;
-
+    if (m_lyrics.empty()) return 0;
     int lyric_current_time{};       // 当前所处匀速段已进行时间
     int lyric_last_time{};          // 当前所处匀速段总时常
-
     int lyric_before_size{};        // word之前的长度
     int lyric_word_size{};          // 当前所处匀速段长度
     int lyric_line_size{};          // 整行长度
 
     int now_index{ GetLyricIndex(time) };
-    if (now_index == -1)    // 当前正在显示标题
+    int blank_time{};
+    if (ignore_blank)        // 对齐到非空歌词
     {
-        lyric_current_time = time.toInt();
-        lyric_last_time = max(m_lyrics[0].time_start, 1);
+        now_index = GetLyricIndexIgnoreBlank(now_index, false);
+        blank_time = GetBlankTimeBeforeLyric(now_index);
     }
+    // 先处理不需要size的情况
+    if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
+    {
+        if (time < m_lyrics[now_index].time_start)
+            return 0;
+        lyric_current_time = time - m_lyrics[now_index].time_start;
+        lyric_last_time = m_lyrics[now_index].time_span;
+        if (lyric_last_time == 0)
+            lyric_last_time = 20000;
+    }
+    // 处理需要size的情况
     else
     {
-        int blank_time{};
-        if (ignore_blank)        // 对齐到非空歌词
+        const wstring mark{ L"♪♪♪" };
+        const wstring sp{ L" " };
+        Gdiplus::RectF layoutRect(0, 0, 0, 0);
+        Gdiplus::RectF boundingBox_mark;
+        Gdiplus::RectF boundingBox_sp;
+        Gdiplus::RectF boundingBox_lyric;
+        pGraphics->MeasureString(mark.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_mark, 0, 0);
+        pGraphics->MeasureString(sp.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_sp, 0, 0);
+        pGraphics->MeasureString(m_lyrics[now_index].text.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_lyric, 0, 0);
+        lyric_line_size = boundingBox_mark.Width + boundingBox_sp.Width + boundingBox_lyric.Width;
+        if (time < m_lyrics[now_index].time_start)  // 进度处于进度符号
         {
-            now_index = GetLyricIndexIgnoreBlank(now_index, false);
-            blank_time = GetBlankTimeBeforeLyric(now_index);
+            lyric_current_time = time - (m_lyrics[now_index].time_start - blank_time);
+            lyric_last_time = blank_time;
+            lyric_word_size = boundingBox_mark.Width;
         }
-        // 先处理不需要size的情况
-        if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
-        {
-            if (time < m_lyrics[now_index].time_start)
-                return 0;
-            lyric_current_time = time - m_lyrics[now_index].time_start;
-            lyric_last_time = m_lyrics[now_index].time_span;
-            if (lyric_last_time == 0)
-                lyric_last_time = 20000;
-        }
-        // 处理需要size的情况
         else
         {
-            const wstring mark{ L"♪♪♪" };
-            const wstring sp{ L" " };
-            Gdiplus::RectF layoutRect(0, 0, 0, 0);
-            Gdiplus::RectF boundingBox_mark;
-            Gdiplus::RectF boundingBox_sp;
-            Gdiplus::RectF boundingBox_lyric;
-            pGraphics->MeasureString(mark.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_mark, 0, 0);
-            pGraphics->MeasureString(sp.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_sp, 0, 0);
-            pGraphics->MeasureString(m_lyrics[now_index].text.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_lyric, 0, 0);
-            lyric_line_size = boundingBox_mark.Width + boundingBox_sp.Width + boundingBox_lyric.Width;
-            if (time < m_lyrics[now_index].time_start)  // 进度处于进度符号
-            {
-                lyric_current_time = time - (m_lyrics[now_index].time_start - blank_time);
-                lyric_last_time = blank_time;
-                lyric_word_size = boundingBox_mark.Width;
-            }
-            else
-            {
-                lyric_current_time = time - m_lyrics[now_index].time_start;
-                lyric_last_time = lyric_last_time = m_lyrics[now_index].time_span;
-                lyric_before_size = boundingBox_mark.Width + boundingBox_sp.Width;
-                lyric_word_size = boundingBox_lyric.Width;
-            }
+            lyric_current_time = time - m_lyrics[now_index].time_start;
+            lyric_last_time = lyric_last_time = m_lyrics[now_index].time_span;
+            lyric_before_size = boundingBox_mark.Width + boundingBox_sp.Width;
+            lyric_word_size = boundingBox_lyric.Width;
         }
     }
 
@@ -417,62 +410,51 @@ int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, Gdi
 }
 int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, CUIDrawer* CUIDrawer) const
 {
-    if (m_lyrics.empty())
-        return 0;
-
+    if (m_lyrics.empty()) return 0;
     int lyric_current_time{};       // 当前所处匀速段已进行时间
     int lyric_last_time{};          // 当前所处匀速段总时常
-
     int lyric_before_size{};        // word之前的长度
     int lyric_word_size{};          // 当前所处匀速段长度
     int lyric_line_size{};          // 整行长度
 
     int now_index{ GetLyricIndex(time) };
-    if (now_index == -1)    // 当前正在显示标题
+    int blank_time{};
+    if (ignore_blank)        // 对齐到非空歌词
     {
-        lyric_current_time = time.toInt();
-        lyric_last_time = max(m_lyrics[0].time_start, 1);
+        now_index = GetLyricIndexIgnoreBlank(now_index, false);
+        blank_time = GetBlankTimeBeforeLyric(now_index);
     }
+    // 先处理不需要size的情况
+    if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
+    {
+        if (time < m_lyrics[now_index].time_start)
+            return 0;
+        lyric_current_time = time - m_lyrics[now_index].time_start;
+        lyric_last_time = m_lyrics[now_index].time_span;
+        if (lyric_last_time == 0)
+            lyric_last_time = 20000;
+    }
+    // 处理需要size的情况
     else
     {
-        int blank_time{};
-        if (ignore_blank)        // 对齐到非空歌词
+        const wstring mark{ L"♪♪♪" };
+        const wstring sp{ L" " };
+        CSize boundingBox_mark{ CUIDrawer->GetTextExtent(mark.c_str()) };
+        CSize boundingBox_sp{ CUIDrawer->GetTextExtent(sp.c_str()) };
+        CSize boundingBox_lyric{ CUIDrawer->GetTextExtent(m_lyrics[now_index].text.c_str()) };
+        lyric_line_size = boundingBox_mark.cx + boundingBox_sp.cx + boundingBox_lyric.cx;
+        if (time < m_lyrics[now_index].time_start)  // 进度处于进度符号
         {
-            now_index = GetLyricIndexIgnoreBlank(now_index, false);
-            blank_time = GetBlankTimeBeforeLyric(now_index);
+            lyric_current_time = time - (m_lyrics[now_index].time_start - blank_time);
+            lyric_last_time = blank_time;
+            lyric_word_size = boundingBox_mark.cx;
         }
-        // 先处理不需要size的情况
-        if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
-        {
-            if (time < m_lyrics[now_index].time_start)
-                return 0;
-            lyric_current_time = time - m_lyrics[now_index].time_start;
-            lyric_last_time = m_lyrics[now_index].time_span;
-            if (lyric_last_time == 0)
-                lyric_last_time = 20000;
-        }
-        // 处理需要size的情况
         else
         {
-            const wstring mark{ L"♪♪♪" };
-            const wstring sp{ L" " };
-            CSize boundingBox_mark{ CUIDrawer->GetTextExtent(mark.c_str()) };
-            CSize boundingBox_sp{ CUIDrawer->GetTextExtent(sp.c_str()) };
-            CSize boundingBox_lyric{ CUIDrawer->GetTextExtent(m_lyrics[now_index].text.c_str()) };
-            lyric_line_size = boundingBox_mark.cx + boundingBox_sp.cx + boundingBox_lyric.cx;
-            if (time < m_lyrics[now_index].time_start)  // 进度处于进度符号
-            {
-                lyric_current_time = time - (m_lyrics[now_index].time_start - blank_time);
-                lyric_last_time = blank_time;
-                lyric_word_size = boundingBox_mark.cx;
-            }
-            else
-            {
-                lyric_current_time = time - m_lyrics[now_index].time_start;
-                lyric_last_time = lyric_last_time = m_lyrics[now_index].time_span;
-                lyric_before_size = boundingBox_mark.cx + boundingBox_sp.cx;
-                lyric_word_size = boundingBox_lyric.cx;
-            }
+            lyric_current_time = time - m_lyrics[now_index].time_start;
+            lyric_last_time = lyric_last_time = m_lyrics[now_index].time_span;
+            lyric_before_size = boundingBox_mark.cx + boundingBox_sp.cx;
+            lyric_word_size = boundingBox_lyric.cx;
         }
     }
 
