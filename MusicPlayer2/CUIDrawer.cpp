@@ -95,7 +95,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         int center_pos = (lyric_area.top + lyric_area.bottom) / 2;		//歌词区域的中心y坐标
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };		//当前播放时间
         int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);		            // 当前歌词的序号
-        int progress = CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, false, false, this);		// 当前歌词进度（范围为0~1000），多行歌词使用的进度不含进度符号
+        int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, false, false, [this](const wstring& str) { return GetTextExtent(str.c_str()).cx; }) };		// 当前歌词进度（范围为0~1000），多行歌词使用的进度不含进度符号
         int y_progress;			//当前歌词在y轴上的进度
         if (!CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index).translate.empty() && theApp.m_lyric_setting_data.show_translate)
             y_progress = progress * lyric_height2 / 1000;
@@ -210,7 +210,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
         CLyrics::Lyric current_lyric = now_lyrics.GetLyric(time, false, ignore_blank, karaoke);
-        int progress = now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, this);
+        int progress{ now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return GetTextExtent(str.c_str()).cx; }) };
         static int last_progress{ -1 };
 
         if (current_lyric.text.empty())

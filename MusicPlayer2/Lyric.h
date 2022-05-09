@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include"Common.h"
 #include"Time.h"
-#include "CUIDrawer.h"
+
 class CLyrics
 {
 public:
@@ -103,8 +103,7 @@ public:
     Lyric GetLyric(Time time, bool is_next, bool ignore_blank, bool blank2mark) const;
     // 根据时间返回该时间所对应的歌词的进度（0~1000）（用于使歌词以卡拉OK样式显示/长歌词滚动也需要正确的歌词进度）
     // ignore_blank为true时忽略空行，若同时blank2mark为true则将空行替换为进度符号
-    int GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormats) const;
-    int GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, CUIDrawer* CUIDrawer) const;
+    int GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const;
 
     // 获得歌词文本的编码类型
     CodeType GetCodeType() const;

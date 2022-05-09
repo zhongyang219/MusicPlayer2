@@ -107,7 +107,14 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
         CLyrics::Lyric lyric = now_lyrics.GetLyric(time, false, ignore_blank, karaoke);
         bool is_lyric_empty{ lyric.text.empty() };
-        int progress = now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, pGraphics, pFont, pTextFormat);
+        int progress{ now_lyrics.GetLyricProgress(time, ignore_blank, karaoke,
+            [&](const wstring& str)
+            {
+                Gdiplus::RectF boundingBox;
+                pGraphics->MeasureString(str.c_str(), -1, pFont, Gdiplus::RectF{}, pTextFormat, &boundingBox, 0, 0);
+                return static_cast<int>(boundingBox.Width);
+            }
+        ) };
         // TRACE("progress %d\n", progress);
         if (is_lyric_empty)
             lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);

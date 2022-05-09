@@ -349,7 +349,7 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, boo
     return lyric;
 }
 
-int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat) const
+int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const
 {
     if (m_lyrics.empty()) return 0;
     int lyric_current_time{};       // 当前所处匀速段已进行时间
@@ -378,83 +378,22 @@ int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, Gdi
     // 处理需要size的情况
     else
     {
-        const wstring mark{ L"♪♪♪" };
-        const wstring sp{ L" " };
-        Gdiplus::RectF layoutRect(0, 0, 0, 0);
-        Gdiplus::RectF boundingBox_mark;
-        Gdiplus::RectF boundingBox_sp;
-        Gdiplus::RectF boundingBox_lyric;
-        pGraphics->MeasureString(mark.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_mark, 0, 0);
-        pGraphics->MeasureString(sp.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_sp, 0, 0);
-        pGraphics->MeasureString(m_lyrics[now_index].text.c_str(), -1, pFont, layoutRect, pTextFormat, &boundingBox_lyric, 0, 0);
-        lyric_line_size = boundingBox_mark.Width + boundingBox_sp.Width + boundingBox_lyric.Width;
+        int size_mark{ measure(L"♪♪♪") };
+        int size_sp{ measure(L" ") };
+        int size_lyric{ measure(m_lyrics[now_index].text) };
+        lyric_line_size = size_mark + size_sp + size_lyric;
         if (time < m_lyrics[now_index].time_start)  // 进度处于进度符号
         {
             lyric_current_time = time - (m_lyrics[now_index].time_start - blank_time);
             lyric_last_time = blank_time;
-            lyric_word_size = boundingBox_mark.Width;
+            lyric_word_size = size_mark;
         }
         else
         {
             lyric_current_time = time - m_lyrics[now_index].time_start;
             lyric_last_time = lyric_last_time = m_lyrics[now_index].time_span;
-            lyric_before_size = boundingBox_mark.Width + boundingBox_sp.Width;
-            lyric_word_size = boundingBox_lyric.Width;
-        }
-    }
-
-    int progress{ lyric_current_time * 1000 / max(lyric_last_time, 1) };
-    if (lyric_line_size > 0)
-        progress = (progress * lyric_word_size / 1000 + lyric_before_size) * 1000 / lyric_line_size;
-    return min(progress, 1000);
-}
-int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, CUIDrawer* CUIDrawer) const
-{
-    if (m_lyrics.empty()) return 0;
-    int lyric_current_time{};       // 当前所处匀速段已进行时间
-    int lyric_last_time{};          // 当前所处匀速段总时常
-    int lyric_before_size{};        // word之前的长度
-    int lyric_word_size{};          // 当前所处匀速段长度
-    int lyric_line_size{};          // 整行长度
-
-    int now_index{ GetLyricIndex(time) };
-    int blank_time{};
-    if (ignore_blank)        // 对齐到非空歌词
-    {
-        now_index = GetLyricIndexIgnoreBlank(now_index, false);
-        blank_time = GetBlankTimeBeforeLyric(now_index);
-    }
-    // 先处理不需要size的情况
-    if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
-    {
-        if (time < m_lyrics[now_index].time_start)
-            return 0;
-        lyric_current_time = time - m_lyrics[now_index].time_start;
-        lyric_last_time = m_lyrics[now_index].time_span;
-        if (lyric_last_time == 0)
-            lyric_last_time = 20000;
-    }
-    // 处理需要size的情况
-    else
-    {
-        const wstring mark{ L"♪♪♪" };
-        const wstring sp{ L" " };
-        CSize boundingBox_mark{ CUIDrawer->GetTextExtent(mark.c_str()) };
-        CSize boundingBox_sp{ CUIDrawer->GetTextExtent(sp.c_str()) };
-        CSize boundingBox_lyric{ CUIDrawer->GetTextExtent(m_lyrics[now_index].text.c_str()) };
-        lyric_line_size = boundingBox_mark.cx + boundingBox_sp.cx + boundingBox_lyric.cx;
-        if (time < m_lyrics[now_index].time_start)  // 进度处于进度符号
-        {
-            lyric_current_time = time - (m_lyrics[now_index].time_start - blank_time);
-            lyric_last_time = blank_time;
-            lyric_word_size = boundingBox_mark.cx;
-        }
-        else
-        {
-            lyric_current_time = time - m_lyrics[now_index].time_start;
-            lyric_last_time = lyric_last_time = m_lyrics[now_index].time_span;
-            lyric_before_size = boundingBox_mark.cx + boundingBox_sp.cx;
-            lyric_word_size = boundingBox_lyric.cx;
+            lyric_before_size = size_mark + size_sp;
+            lyric_word_size = size_lyric;
         }
     }
 
