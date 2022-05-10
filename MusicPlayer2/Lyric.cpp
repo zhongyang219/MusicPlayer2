@@ -365,8 +365,14 @@ int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std
         now_index = GetLyricIndexIgnoreBlank(now_index, false);
         blank_time = GetBlankTimeBeforeLyric(now_index);
     }
+    // 处于标题
+    if (now_index < 0)
+    {
+        lyric_current_time = time.toInt();
+        lyric_last_time = max(m_lyrics[0].time_start, 1);
+    }
     // 先处理不需要size的情况
-    if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
+    else if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不涉及进度符号，正常处理
     {
         if (time < m_lyrics[now_index].time_start)
             return 0;
@@ -391,7 +397,9 @@ int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std
         else
         {
             lyric_current_time = time - m_lyrics[now_index].time_start;
-            lyric_last_time = lyric_last_time = m_lyrics[now_index].time_span;
+            lyric_last_time = m_lyrics[now_index].time_span;
+            if (lyric_last_time == 0)
+                lyric_last_time = 20000;
             lyric_before_size = size_mark + size_sp;
             lyric_word_size = size_lyric;
         }
