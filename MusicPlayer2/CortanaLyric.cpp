@@ -130,7 +130,7 @@ void CCortanaLyric::DrawInfo()
                 const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines };
 			    Time time{ CPlayer::GetInstance().GetCurrentPosition() };
                 int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return m_draw.GetTextExtent(str.c_str()).cx; }) };
-			    CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, ignore_blank, karaoke);
+                CLyrics::Lyric& lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, ignore_blank, karaoke) };
                 bool no_lyric{ false };
                 //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
                 no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time_start > 20000) || progress >= 1000;

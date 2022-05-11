@@ -277,8 +277,9 @@ CLyrics::Lyric CLyrics::GetLyric(int index) const
 
 int CLyrics::GetLyricIndexIgnoreBlank(int index, bool is_next) const
 {
+    if (m_lyrics.empty()) return 0;
     // 对齐到非空白歌词
-    if (index == -1 && m_ti.empty())
+    if (index < 0 && m_ti.empty())
         index = 0;
     if (index >= 0)
     {
@@ -319,7 +320,7 @@ int CLyrics::GetLyricIndexIgnoreBlank(int index, bool is_next) const
 
 int CLyrics::GetBlankTimeBeforeLyric(int index) const
 {
-    if (index < 0 || index >= static_cast<int>(m_lyrics.size()))
+    if (index < 0 || index >= static_cast<int>(m_lyrics.size()) || m_lyrics[index].text.empty())
         return 0;
     int index_blank{ index };
     for (int i{ index - 1 }; i >= 0; --i)

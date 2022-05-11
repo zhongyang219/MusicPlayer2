@@ -105,7 +105,7 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric lyric = now_lyrics.GetLyric(time, false, ignore_blank, karaoke);
+        CLyrics::Lyric& lyric{ now_lyrics.GetLyric(time, false, ignore_blank, karaoke) };
         bool is_lyric_empty{ lyric.text.empty() };
         int progress{ now_lyrics.GetLyricProgress(time, ignore_blank, karaoke,
             [&](const wstring& str)
@@ -121,8 +121,7 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
 
         if (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
-            CLyrics::Lyric next_lyric;
-            next_lyric = now_lyrics.GetLyric(time, true, ignore_blank, karaoke);
+            CLyrics::Lyric& next_lyric{ now_lyrics.GetLyric(time, true, ignore_blank, karaoke) };
             if (next_lyric.text.empty())
                 next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
             SetNextLyric(next_lyric.text.c_str());
