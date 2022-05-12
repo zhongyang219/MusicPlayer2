@@ -1048,7 +1048,8 @@ void CLyricEditDlg::OnSeekToCurLine()
     // TODO: 在此添加命令处理程序代码
     std::wstring cur_line = m_view->GetCurrentLineTextW();
     Time t;
-    if (m_original_lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file && CLyrics::ParseLyricTimeTag(cur_line, t))
+    int offset{};
+    if (m_original_lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file && CLyrics::ParseLyricTimeTag(cur_line, t, offset))
     {
         CPlayer::GetInstance().SeekTo(t.toInt());
     }

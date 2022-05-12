@@ -372,9 +372,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
         if (pInfo->download_translate)
         {
-            CLyrics lyrics{ lyric_path };		//打开保存过的歌词
-            lyrics.DeleteRedundantLyric();		//删除多余的歌词
-            lyrics.CombineSameTimeLyric();		//将歌词翻译和原始歌词合并成一句
+            CLyrics lyrics{ lyric_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
             lyrics.SaveLyric2();
         }
 

@@ -56,18 +56,6 @@ private:
     bool m_chinese_converted{ false };         // 是否已经执行了中文繁简转换
     bool m_translate{ false };                 // 歌词是否包含翻译
 
-    // 获得歌词中的时间标签和歌词文本，并将文本从string类型转换成wstring类型，保存在m_lyrics中
-    void DisposeLyric();
-
-    // 将歌词中信息全部填入m_lyrics后或偏移量调整后调用，负责修正/填补信息
-    void NormalizeLyric();
-
-    // 解析一行歌词文本
-    // lyric_text_ori：待解析的歌词文本
-    // lyric_text：解析到的歌词原文
-    // lyric_translate：解析到的歌词翻译
-    static void ParseLyricText(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate);
-
 public:
     /**
      * @brief   解析歌词的时间标签
@@ -75,7 +63,16 @@ public:
      * @param[out]  Time & time 得到的时间标签
      * @return  bool 是否成功
      */
-    static bool ParseLyricTimeTag(const wstring& lyric_text, Time& time);
+    static bool ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& offset, wchar_t bracket_left = L'[', wchar_t bracket_right = L']');
+
+private:
+    // 删除歌词中时间标签超过100分钟的歌词（使用时必须确保歌词已经按时间标签排序），对新下载的歌词使用
+    void DeleteRedundantLyric();
+    // 解析m_lyrics_str并将结果保存在m_lyrics中
+    void DisposeLrc();
+    void DisposeLrcNetease();
+    // 将歌词中信息全部填入m_lyrics后或偏移量调整后调用，负责修正/填补信息
+    void NormalizeLyric();
 
 public:
     CLyrics(const wstring& file_name, const LyricType& lyric_type = LyricType::LY_AUTO);
@@ -135,9 +132,6 @@ public:
 
     // 如果歌词中有相同时间标签的歌词，则将其文本合并，保留一个时间标签（用于处理下载到的带翻译的歌词）（使用时必须确保歌词已经按时间标签排序）
     void CombineSameTimeLyric();
-    // 删除歌词中时间标签超过100分钟的歌词（使用时必须确保歌词已经按时间标签排序）
-    void DeleteRedundantLyric();
-
     // 交换歌词文本和翻译
     void SwapTextAndTranslation();
     // 时间标签提前一句

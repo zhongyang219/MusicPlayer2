@@ -536,9 +536,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			return 0;
 		if (m_download_translate)
 		{
-			CLyrics lyrics{ saved_path };		//打开保存过的歌词
-			lyrics.DeleteRedundantLyric();		//删除多余的歌词
-			lyrics.CombineSameTimeLyric();		//将歌词翻译和原始歌词合并成一句
+			CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
 			lyrics.SaveLyric2();
 		}
 
@@ -580,9 +578,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 
 			if (m_download_translate)
 			{
-				CLyrics lyrics{ saved_path };		//打开保存过的歌词
-				lyrics.DeleteRedundantLyric();		//删除多余的歌词
-				lyrics.CombineSameTimeLyric();		//将歌词翻译和原始歌词合并成一句
+				CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
 				lyrics.SaveLyric2();
 			}
 
@@ -753,9 +749,7 @@ void CLyricDownloadDlg::OnLdPreview()
 	CLyricDownloadCommon::AddLyricTag(result, item.id, item.title, item.artist, item.album);
 
 	CLyrics lyrics;
-	lyrics.LyricsFromRowString(result);
-	lyrics.DeleteRedundantLyric();
-	lyrics.CombineSameTimeLyric();
+	lyrics.LyricsFromRowString(result, CLyrics::LyricType::LY_LRC_NETEASE);
 	result = lyrics.GetLyricsString2();
 
 	//显示预览窗口

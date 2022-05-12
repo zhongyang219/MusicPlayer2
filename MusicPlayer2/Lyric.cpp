@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Lyric.h"
-
+#include "FilePathHelper.h"
 
 CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file{ file_name }, m_lyric_type{ lyric_type }
 {
@@ -8,212 +8,47 @@ CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file
     if (!CCommon::GetFileContent(m_file.c_str(), lyric_str)) return;            // 读取歌词文件内容
     m_code_type = CCommon::JudgeCodeType(lyric_str, CodeType::ANSI, true);      // 判断编码格式
     wstring lyric_wcs = CCommon::StrToUnicode(lyric_str, m_code_type, true);    // 转换成Unicode
-    vector<wstring> results;
-    CCommon::StringSplit(lyric_wcs, L'\n', results);                            // 按行拆分
-    for (auto& str : results)
+
+    // 当未指定歌词类型时按扩展名处理
+    if (m_lyric_type == LyricType::LY_AUTO)
     {
-        CCommon::StringNormalize(str);
-        m_lyrics_str.push_back(str);
+        CFilePathHelper path{ m_file };
+        wstring ext{ path.GetFileExtension() };
+        if (ext == L"lrc")
+            m_lyric_type = LyricType::LY_LRC;
+        else
+            m_lyric_type = LyricType::LY_LRC;   // 无匹配时默认为lrc
     }
 
-    DisposeLyric();
-    std::stable_sort(m_lyrics.begin(), m_lyrics.end());         // 将歌词按时间标签排序（使用stable_sort，确保相同的元素相对位置保持不变，用于处理带翻译的歌词时确保翻译在原文的后面）
-    CombineSameTimeLyric();
-    NormalizeLyric();
+    LyricsFromRowString(lyric_wcs, m_lyric_type);
 }
 
-void CLyrics::LyricsFromRowString(const wstring & lyric_str, const LyricType& lyric_type)
+void CLyrics::LyricsFromRowString(const wstring& lyric_str, const LyricType& lyric_type)
 {
     vector<wstring> results;
     CCommon::StringSplit(lyric_str, L'\n', results);
     for (auto& str : results)
     {
-        // string lyric_str = CCommon::UnicodeToStr(str, CodeType::UTF8_NO_BOM);
         CCommon::StringNormalize(str);
         m_lyrics_str.push_back(str);
     }
-    m_code_type = CodeType::UTF8_NO_BOM;
-    DisposeLyric();
-    std::stable_sort(m_lyrics.begin(), m_lyrics.end());
-    CombineSameTimeLyric();
+    ASSERT(lyric_type != LyricType::LY_AUTO);
+    // 按歌词类型调用解析方法
+    if (lyric_type == LyricType::LY_LRC)
+        DisposeLrc();
+    else if (lyric_type == LyricType::LY_LRC_NETEASE)
+        DisposeLrcNetease();
+    // 解析完成后规范歌词
     NormalizeLyric();
 }
 
-void CLyrics::DisposeLyric()
+bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& offset, wchar_t bracket_left, wchar_t bracket_right)
 {
-    int index;
-    wstring temp;
-    Lyric lyric;
-    m_translate = false;
-    for (size_t i{ 0 }; i < m_lyrics_str.size(); i++)
-    {
-        // 查找id标签（由于id标签是我自己加上的，它永远只会出现在第一行）
-        if (i == 0)
-        {
-            index = m_lyrics_str[i].find(L"[id:");
-            if (index != string::npos)
-            {
-                m_id_tag = true;
-                size_t index2 = m_lyrics_str[i].find(L']');
-                temp = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
-                m_id = temp;
-            }
-        }
-
-        // 查找ti标签
-        if (!m_ti_tag)
-        {
-            index = m_lyrics_str[i].find(L"[ti:");
-            if (index != string::npos)
-            {
-                m_ti_tag = true;
-                size_t index2 = m_lyrics_str[i].find(L']');
-                temp = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
-                m_ti = temp;
-            }
-        }
-
-        //查找ar标签
-        if (!m_ar_tag)
-        {
-            index = m_lyrics_str[i].find(L"[ar:");
-            if (index != string::npos)
-            {
-                m_ar_tag = true;
-                size_t index2 = m_lyrics_str[i].find(L']');
-                temp = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
-                m_ar = temp;
-            }
-        }
-
-        // 查找al标签
-        if (!m_al_tag)
-        {
-            index = m_lyrics_str[i].find(L"[al:");
-            if (index != string::npos)
-            {
-                m_al_tag = true;
-                size_t index2 = m_lyrics_str[i].find(L']');
-                temp = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
-                m_al = temp;
-            }
-        }
-
-        // 查找by标签
-        if (!m_by_tag)
-        {
-            index = m_lyrics_str[i].find(L"[by:");
-            if (index != string::npos)
-            {
-                m_by_tag = true;
-                size_t index2 = m_lyrics_str[i].find(L']');
-                temp = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
-                m_by = temp;
-            }
-        }
-
-        // 获取偏移量
-        if (!m_offset_tag)
-        {
-            index = m_lyrics_str[i].find(L"[offset:");      // 查找偏移量标签
-            if (index != string::npos)
-            {
-                m_offset_tag = true;
-                size_t index2 = m_lyrics_str[i].find(L']');
-                temp = m_lyrics_str[i].substr(index + 8, index2 - index - 8);
-                m_offset = _wtoi(temp.c_str());             // 获取偏移量
-                m_offset_tag_index = i;                     // 记录偏移量标签的位置
-            }
-        }
-
-        // 获取歌词文本
-        index = m_lyrics_str[i].find_last_of(L']');         // 查找最后一个']'，后面的字符即为歌词文本
-        if (index == string::npos) continue;
-        temp = m_lyrics_str[i].substr(index + 1, m_lyrics_str[i].size() - index - 1);
-        CCommon::StringNormalize(temp);                     // 删除歌词文本前后的空格或特殊字符
-        // 解析歌词文本
-        ParseLyricText(temp, lyric.text, lyric.translate);
-        // 如果有一句歌词包含翻译，则认为歌词包含翻译
-        if (!lyric.translate.empty())
-            m_translate = true;
-
-
-        // if (lyric.text.empty())         // 如果时间标签后没有文本，显示为“……”
-        //     lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
-        // if (!lyric.text.empty() && lyric.text.back() <= 32) lyric.text.pop_back();      // 删除歌词末尾的一个控制字符或空格
-
-        // 获取时间标签
-        Time t{};
-        if (ParseLyricTimeTag(m_lyrics_str[i], t))
-        {
-            lyric.time_start_raw = t.toInt();
-            m_lyrics.push_back(lyric);
-
-            // 如果已查找到时间标签了，但是还没有找到offset标签，则将m_offset_tag_index设置为第1个时间标签的位置
-            if (!m_offset_tag && m_offset_tag_index == -1)
-            {
-                m_offset_tag_index = i;
-            }
-        }
-    }
-}
-
-void CLyrics::NormalizeLyric()
-{
-    std::stable_sort(m_lyrics.begin(), m_lyrics.end());
-    int last{};
-    for (int i{}; i < m_lyrics.size(); ++i)
-    {
-        // 填充time_start，应用偏移量同时避免出现重叠，重叠的时间标签会被歌词翻译合并误处理
-        last = max(last, m_lyrics[i].time_start_raw + m_offset);
-        m_lyrics[i].time_start = last;
-        last += 10;
-        // 填充time_span
-        if (i > 0)
-        {
-            if (m_lyrics[i - 1].time_span_raw == 0 || m_lyrics[i].time_start - m_lyrics[i - 1].time_start < m_lyrics[i - 1].time_span_raw)
-                m_lyrics[i - 1].time_span = m_lyrics[i].time_start - m_lyrics[i - 1].time_start;
-            else
-                m_lyrics[i - 1].time_span = m_lyrics[i - 1].time_span_raw;
-        }
-    }
-}
-
-// 解析使用括号包含的歌词翻译
-static bool ParseLyricTextWithBracket(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate, wchar_t bracket_left, wchar_t bracket_right)
-{
-    int index1 = lyric_text_ori.rfind(bracket_left);        // 左括号的位置
-    int index2 = lyric_text_ori.rfind(bracket_right);       // 右括号的位置
-    if (index1 == wstring::npos || index2 == wstring::npos || index1 >= lyric_text_ori.size() - 1 || index1 >= index2)      // 确保左括号在右括号的左边
-        return false;
-    lyric_translate = lyric_text_ori.substr(index1 + 1, index2 - index1 - 1);           // 取括号之间的文本作为翻译
-    lyric_text = lyric_text_ori.substr(0, index1) + lyric_text_ori.substr(index2 + 1);  // 其余部分作为歌词原文
-    return true;
-}
-
-void CLyrics::ParseLyricText(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate)
-{
-    size_t index1 = lyric_text_ori.find(L" / ");
-    if (index1 != wstring::npos)        // 如果找到了‘ / ’，说明该句歌词包含翻译
-    {
-        lyric_translate = lyric_text_ori.substr(index1 + 3);
-        lyric_text = lyric_text_ori.substr(0, index1);
-    }
-    else
-    {
-        lyric_text = lyric_text_ori;
-        lyric_translate.clear();
-    }
-
-}
-
-bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time)
-{
-    int index = -1;
+    int index = offset - 1;
     bool time_acquired{ false };
-    while (true)
+    while (!time_acquired)
     {
-        index = lyric_text.find_first_of(L'[', index + 1);                 // 查找第1个左中括号
+        index = lyric_text.find_first_of(bracket_left, index + 1);                 // 查找第1个左中括号
         if (index == string::npos) break;                                  // 没有找到左中括号，退出循环
         else if (index > static_cast<int>(lyric_text.size() - 9)) break;   // 找到了左中括号，但是左中括号在字符串的倒数第9个字符以后，也退出循环
         else if ((lyric_text[index + 1] > L'9' || lyric_text[index + 1] < L'0') && lyric_text[index + 1] != L'-') continue;     // 找到了左中括号，但是左中括号后面不是数字也不是负号，退出本次循环，继续查找该行中下一个左中括号
@@ -221,7 +56,8 @@ bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time)
         int index1, index2, index3;                                         // 歌词标签中冒号、圆点和右中括号的位置
         index1 = lyric_text.find_first_of(L':', index);                // 查找从左中括号开始第1个冒号的位置
         index2 = lyric_text.find_first_of(L".:", index1 + 1);          // 查找从第1个冒号开始第1个圆点或冒号的位置（秒钟和毫秒数应该用圆点分隔，这里也兼容用冒号分隔的歌词）
-        index3 = lyric_text.find(L']', index);                         // 查找右中括号的位置
+        index3 = lyric_text.find_first_of(bracket_right, index2 + 1);                // 查找右中括号的位置
+        if (index1 == string::npos || index2 == string::npos || index3 == string::npos) continue;
         wstring temp = lyric_text.substr(index + 1, index1 - index - 1);       // 获取时间标签的分钟数
         time.min = _wtoi(temp.c_str());
         temp = lyric_text.substr(index1 + 1, index2 - index1 - 1);     // 获取时间标签的秒钟数
@@ -245,8 +81,153 @@ bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time)
             break;
         }
         time_acquired = true;
+        offset = index3;
     }
     return time_acquired;
+}
+
+void CLyrics::DisposeLrc()
+{
+    int index,index2;
+    wstring temp;
+    Lyric lyric;
+    m_translate = false;
+    for (size_t i{ 0 }; i < m_lyrics_str.size(); i++)
+    {
+        // 查找id标签（由于id标签是我自己加上的，它永远只会出现在第一行）
+        if (i == 0)
+        {
+            index = m_lyrics_str[i].find(L"[id:");
+            index2 = m_lyrics_str[i].find(L']', index);
+            if (index != string::npos && index2 != string::npos)
+            {
+                m_id_tag = true;
+                m_id = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+            }
+        }
+        // 查找ti标签
+        if (!m_ti_tag)
+        {
+            index = m_lyrics_str[i].find(L"[ti:");
+            index2 = m_lyrics_str[i].find(L']', index);
+            if (index != string::npos && index2 != string::npos)
+            {
+                m_ti_tag = true;
+                m_ti = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+            }
+        }
+        //查找ar标签
+        if (!m_ar_tag)
+        {
+            index = m_lyrics_str[i].find(L"[ar:");
+            index2 = m_lyrics_str[i].find(L']', index);
+            if (index != string::npos && index2 != string::npos)
+            {
+                m_ar_tag = true;
+                m_ar = m_lyrics_str[i].substr(index + 4, index2 - index - 4);;
+            }
+        }
+        // 查找al标签
+        if (!m_al_tag)
+        {
+            index = m_lyrics_str[i].find(L"[al:");
+            index2 = m_lyrics_str[i].find(L']', index);
+            if (index != string::npos && index2 != string::npos)
+            {
+                m_al_tag = true;
+                m_al = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+            }
+        }
+        // 查找by标签
+        if (!m_by_tag)
+        {
+            index = m_lyrics_str[i].find(L"[by:");
+            index2 = m_lyrics_str[i].find(L']',index);
+            if (index != string::npos && index2 != string::npos)
+            {
+                m_by_tag = true;
+                m_by = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+            }
+        }
+        // 获取偏移量
+        if (!m_offset_tag)
+        {
+            index = m_lyrics_str[i].find(L"[offset:");      // 查找偏移量标签
+            index2 = m_lyrics_str[i].find(L']', index);
+            if (index != string::npos && index2 != string::npos)
+            {
+                m_offset_tag = true;
+                temp = m_lyrics_str[i].substr(index + 8, index2 - index - 8);
+                m_offset = _wtoi(temp.c_str());             // 获取偏移量
+                m_offset_tag_index = i;                     // 记录偏移量标签的位置
+            }
+        }
+
+        // 获取歌词文本
+        index = m_lyrics_str[i].find_last_of(L']');         // 查找最后一个']'，后面的字符即为歌词文本
+        if (index == string::npos) continue;
+        temp = m_lyrics_str[i].substr(index + 1, m_lyrics_str[i].size() - index - 1);
+        CCommon::StringNormalize(temp);                     // 删除歌词文本前后的空格或特殊字符
+        // 解析歌词文本
+        index = temp.find(L" / ");
+        if (index != wstring::npos)        // 如果找到了‘ / ’，说明该句歌词包含翻译
+        {
+            lyric.text = temp.substr(0, index);
+            lyric.translate = temp.substr(index + 3);
+        }
+        else
+        {
+            lyric.text = temp;
+            lyric.translate.clear();
+        }
+        // 如果有一句歌词包含翻译，则认为歌词包含翻译
+        if (!lyric.translate.empty())
+            m_translate = true;
+
+        // 获取时间标签
+        Time t{};
+        int offset{};
+        while (ParseLyricTimeTag(m_lyrics_str[i], t, offset))
+        {
+            lyric.time_start_raw = t.toInt();
+            m_lyrics.push_back(lyric);
+
+            // 如果已查找到时间标签了，但是还没有找到offset标签，则将m_offset_tag_index设置为第1个时间标签的位置
+            if (!m_offset_tag && m_offset_tag_index == -1)
+            {
+                m_offset_tag_index = i;
+            }
+        }
+    }
+}
+
+void CLyrics::DisposeLrcNetease()
+{
+    DisposeLrc();   // 先按lrc解析，再合并歌词与翻译
+    std::stable_sort(m_lyrics.begin(), m_lyrics.end());
+    DeleteRedundantLyric();
+    CombineSameTimeLyric();
+}
+
+void CLyrics::NormalizeLyric()
+{
+    std::stable_sort(m_lyrics.begin(), m_lyrics.end()); // 非必要，但为防止出错还是重新排序
+    int last{};
+    for (int i{}; i < m_lyrics.size(); ++i)
+    {
+        // 填充time_start，应用偏移量同时避免出现重叠，重叠的时间标签会被歌词翻译合并误处理
+        last = max(last, m_lyrics[i].time_start_raw + m_offset);
+        m_lyrics[i].time_start = last;
+        last += 10;
+        // 填充time_span
+        if (i > 0)
+        {
+            if (m_lyrics[i - 1].time_span_raw == 0 || m_lyrics[i].time_start - m_lyrics[i - 1].time_start < m_lyrics[i - 1].time_span_raw)
+                m_lyrics[i - 1].time_span = m_lyrics[i].time_start - m_lyrics[i - 1].time_start;
+            else
+                m_lyrics[i - 1].time_span = m_lyrics[i - 1].time_span_raw;
+        }
+    }
 }
 
 bool CLyrics::IsEmpty() const
@@ -584,6 +565,18 @@ void CLyrics::TimeTagDelay()
     {
         m_lyrics[i].time_start = m_lyrics[i - 1].time_start;
     }
+}
+
+// 解析使用括号包含的歌词翻译
+static bool ParseLyricTextWithBracket(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate, wchar_t bracket_left, wchar_t bracket_right)
+{
+    int index1 = lyric_text_ori.rfind(bracket_left);        // 左括号的位置
+    int index2 = lyric_text_ori.rfind(bracket_right);       // 右括号的位置
+    if (index1 == wstring::npos || index2 == wstring::npos || index1 >= lyric_text_ori.size() - 1 || index1 >= index2)      // 确保左括号在右括号的左边
+        return false;
+    lyric_translate = lyric_text_ori.substr(index1 + 1, index2 - index1 - 1);           // 取括号之间的文本作为翻译
+    lyric_text = lyric_text_ori.substr(0, index1) + lyric_text_ori.substr(index2 + 1);  // 其余部分作为歌词原文
+    return true;
 }
 
 void CLyrics::ExtractTranslationFromBrackets()

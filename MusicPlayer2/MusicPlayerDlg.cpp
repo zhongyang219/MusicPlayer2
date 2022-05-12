@@ -4043,9 +4043,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         out_put << _lyric_str;
         out_put.close();
         //处理歌词翻译
-        CLyrics lyrics{ lyric_path.GetFilePath() };     //打开保存过的歌词
-        lyrics.DeleteRedundantLyric();      //删除多余的歌词
-        lyrics.CombineSameTimeLyric();      //将歌词翻译和原始歌词合并成一句
+        CLyrics lyrics{ lyric_path.GetFilePath(), CLyrics::LyricType::LY_LRC_NETEASE };     //打开保存过的歌词
         lyrics.SaveLyric2();
 
         CPlayer::GetInstance().IniLyrics(lyric_path.GetFilePath());
