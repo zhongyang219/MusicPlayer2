@@ -536,32 +536,28 @@ int CFfmpegCore::GetTrackNum(MusicInfoHandle* h) {
 
 void CFfmpegCore::LogCallback(void* ptr, int level, const char* fmt, va_list vl) {
     if (level > AV_LOG_VERBOSE) return;
-    auto re = LoadLibraryW(L"ffmpeg_core.dll");
-    if (!re) return;
-    auto ffmpeg_core_log_format_line = (_ffmpeg_core_log_format_line)::GetProcAddress(re, "ffmpeg_core_log_format_line");
+    CFfmpegCore* ffmpeg_core = dynamic_cast<CFfmpegCore*>(CPlayer::GetInstance().GetPlayerCore());
+    if (ffmpeg_core == nullptr)
+        return;
     char buf[1024];
-    if (ffmpeg_core_log_format_line) {
-        int print = 1;
-        int r = ffmpeg_core_log_format_line(ptr, level, fmt, vl, buf, sizeof(buf), &print);
-        if (r > 0) {
-            std::wstring s = CCommon::StrToUnicode(std::string(buf, r), CodeType::UTF8);
-            if (s.find(L"Last message repeated") != -1) {
-                FreeLibrary(re);
-                return;
+    int print = 1;
+    int r = ffmpeg_core->ffmpeg_core_log_format_line(ptr, level, fmt, vl, buf, sizeof(buf), &print);
+    if (r > 0) {
+        std::wstring s = CCommon::StrToUnicode(std::string(buf, r), CodeType::UTF8);
+        if (s.find(L"Last message repeated") != -1) {
+            return;
+        }
+        OutputDebugStringW(s.c_str());
+        if (level <= AV_LOG_ERROR) {
+            if (s.back() == '\n') {
+                s.pop_back();
             }
-            OutputDebugStringW(s.c_str());
-            if (level <= AV_LOG_ERROR) {
-                if (s.back() == '\n') {
-                    s.pop_back();
-                }
-                if (last_ffmpeg_core_error_cache.empty() || last_ffmpeg_core_error_cache != s) {
-                    last_ffmpeg_core_error_cache = s;
-                    theApp.WriteLog(s);
-                }
+            if (last_ffmpeg_core_error_cache.empty() || last_ffmpeg_core_error_cache != s) {
+                last_ffmpeg_core_error_cache = s;
+                theApp.WriteLog(s);
             }
         }
     }
-    FreeLibrary(re);
 }
 
 void CFfmpegCore::UpdateSettings() {
