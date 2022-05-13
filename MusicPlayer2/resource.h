@@ -1528,6 +1528,16 @@
 #define ID_EMBED_LYRIC_TO_AUDIO_FILE    33208
 #define ID_DELETE_LYRIC_FROM_AUDIO_FILE 33209
 #define ID_SWITCH_UI                    33210
+#define ID_SWITCH_UI_1                  33211
+#define ID_SWITCH_UI_2                  33212
+#define ID_SWITCH_UI_3                  33213
+#define ID_SWITCH_UI_4                  33214
+#define ID_SWITCH_UI_5                  33215
+#define ID_SWITCH_UI_6                  33216
+#define ID_SWITCH_UI_7                  33217
+#define ID_SWITCH_UI_8                  33218
+#define ID_SWITCH_UI_9                  33219
+#define ID_SWITCH_UI_10                 33220
 #define ID_SHOW_LYRIC_TRANSLATE         33320
 #define ID_COPY_ALL_TEXT                33321
 #define ID_VIEW_ARTIST                  33322
@@ -1562,13 +1572,14 @@
 #define ID_HELP_FAQ                     33390
 #define ID_33391                        33391
 #define ID_SEEK_TO_CUR_LINE             33392
+#define ID_REPEAT_MODE                  33393
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        573
-#define _APS_NEXT_COMMAND_VALUE         33393
+#define _APS_NEXT_COMMAND_VALUE         33394
 #define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

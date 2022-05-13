@@ -137,6 +137,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_FILE_OPEN_FOLDER, &CMusicPlayerDlg::OnFileOpenFolder)
     ON_WM_DROPFILES()
     ON_WM_INITMENU()
+    ON_COMMAND(ID_REPEAT_MODE, &CMusicPlayerDlg::OnRepeatMode)
     ON_COMMAND(ID_PLAY_ORDER, &CMusicPlayerDlg::OnPlayOrder)
     ON_COMMAND(ID_PLAY_SHUFFLE, &CMusicPlayerDlg::OnPlayShuffle)
     ON_COMMAND(ID_LOOP_PLAYLIST, &CMusicPlayerDlg::OnLoopPlaylist)
@@ -2589,53 +2590,28 @@ void CMusicPlayerDlg::OnExplorePath()
 BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (pMsg->hwnd != m_search_edit.GetSafeHwnd())  //如果焦点在搜索框上，则不响应快捷键
+    if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
     {
-        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
-        {
-            //响应Accelerator中设置的快捷键
-            if (m_hAccel && ::TranslateAccelerator(m_hWnd, m_hAccel, pMsg))
-                return TRUE;
-        }
+        //响应Accelerator中设置的快捷键
+        if (m_hAccel && ::TranslateAccelerator(m_hWnd, m_hAccel, pMsg))
+            return TRUE;
+    }
 
-        //响应不在Accelerator中的快捷键
-        if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+    // 响应不在Accelerator中的快捷键
+    if (pMsg->message == WM_KEYDOWN)
+    {
+        // 按键按下，不在搜索框内
+        if (pMsg->hwnd != m_search_edit.GetSafeHwnd())
         {
-            //按下Ctrl键时
-            if (GetKeyState(VK_CONTROL) & 0x80)
-            {
-                if (pMsg->wParam >= '1' && pMsg->wParam <= '9')     //设置按Ctr+数字键切换界面
-                {
-                    int ui_index = pMsg->wParam - '1';
-                    if (ui_index >= 0 && ui_index < static_cast<int>(m_ui_list.size()))
-                    {
-                        SelectUi(ui_index);
-                        return TRUE;
-                    }
-                }
-                else if (pMsg->wParam == '0')   //Ctrl+0切换第10个界面
-                {
-                    if (m_ui_list.size() > 9)
-                    {
-                        SelectUi(9);
-                        return TRUE;
-                    }
-                }
-            }
-            if (pMsg->wParam == 'M')    //按M键设置循环模式
-            {
-                CPlayer::GetInstance().SetRepeatMode();
-                CPlayerUIBase* pUI = GetCurrentUi();
-                if (pUI != nullptr)
-                    pUI->UpdateRepeatModeToolTip();
-                return TRUE;
-            }
             if (pMsg->wParam == 'F')    //按F键快速查找
             {
+                // 若未显示播放列表则先显示（主窗口的快速查找使用停靠播放列表），浮动播放列表的快速查找不存在这个问题
+                if (!theApp.m_ui_data.show_playlist)
+                    OnShowPlaylist();
                 m_search_edit.SetFocus();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_ESCAPE)  //按ESC键退出全屏模式
+            if (pMsg->wParam == VK_ESCAPE)      // 按ESC键退出全屏模式
             {
                 if (theApp.m_ui_data.full_screen)
                 {
@@ -2643,19 +2619,16 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                     return TRUE;
                 }
             }
-
-            if (pMsg->wParam == VK_APPS)        //按菜单键弹出主菜单
+            if (pMsg->wParam == VK_APPS)        // 按菜单键弹出主菜单
             {
                 SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&CPoint(0, 0));
                 return TRUE;
             }
         }
-    }
-
-    //如果焦点在搜索框内，按ESC键将焦点重新设置为主窗口
-    if (pMsg->hwnd == m_search_edit.GetSafeHwnd() && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
-    {
-        SetFocus();
+        else if (pMsg->wParam == VK_ESCAPE) // 按键按下+在搜索框内+按下Esc 设置主窗口焦点
+        {
+            SetFocus();
+        }
     }
 
     if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))        //屏蔽按回车键和ESC键退出
@@ -2663,10 +2636,8 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
         return TRUE;
     }
 
-
     if (pMsg->message == WM_MOUSEMOVE)
         m_Mytip.RelayEvent(pMsg);
-
 
     return CMainDialogBase::PreTranslateMessage(pMsg);
 }
@@ -2839,6 +2810,14 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 
     CMenu* pSysMenu = GetSystemMenu(FALSE);
     SetMenuState(pSysMenu);
+}
+
+void CMusicPlayerDlg::OnRepeatMode()
+{
+    CPlayer::GetInstance().SetRepeatMode();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
