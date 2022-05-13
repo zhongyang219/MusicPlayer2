@@ -50,10 +50,8 @@ private:
 
     int m_offset{};                            // 歌词偏移量
     bool m_offset_tag{ false };                // 歌词是否包含偏移量标签
-    int m_offset_tag_index{ -1 };              // 偏移量标签在第几行（从0开始计）
 
     bool m_modified{ false };                  // 歌词是否已经修改
-    bool m_chinese_converted{ false };         // 是否已经执行了中文繁简转换
     bool m_translate{ false };                 // 歌词是否包含翻译
 
 public:
@@ -108,7 +106,7 @@ public:
     wstring GetPathName() const { return m_file; }
     // 返回所有歌词（仅包含全部歌词文本，不含标识标签和时间标签）。with_translate：是否包含翻译（如果有）
     wstring GetAllLyricText(bool with_translate = false) const;
-    // 返回所有歌词的字符串，原始样式，包含全部标签
+    // 返回所有歌词的字符串，原始样式，包含全部标签（提供给歌词编辑使用）
     wstring GetLyricsString() const;
     // 返回所有歌词的字符串，以保存的样式，包含全部标签（将歌词偏移保存到每个时间标签中）
     wstring GetLyricsString2() const;
@@ -117,16 +115,12 @@ public:
     bool IsModified() const { return m_modified; }
     // 设置歌词更改标志
     void SetModified(bool modified) { m_modified = modified; }
-    // 返回繁简转换标志
-    bool IsChineseConverted() const { return m_chinese_converted; }
     // 返回歌词是否含有翻译
     bool IsTranslated() const { return m_translate; }
 
     // 返回歌词总数
     int GetLyricCount() const{ return static_cast<int>(m_lyrics.size()); }
 
-    // 保存歌词（将歌词偏移保存在offset标签中）
-    void SaveLyric();
     // 保存歌词（将歌词偏移保存到每个时间标签中）
     void SaveLyric2();
 

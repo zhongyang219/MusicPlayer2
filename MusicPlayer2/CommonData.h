@@ -191,7 +191,7 @@ struct LyricSettingData
 {
     bool lyric_karaoke_disp{ true };			//可以是否以卡拉OK样式显示
     bool lyric_fuzzy_match{ true };				//歌词模糊匹配
-    bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
+    // bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
     wstring lyric_path;							//歌词文件夹的路径
     bool use_inner_lyric_first{};				//优先使用内嵌歌词
     bool show_translate{ true };		        //歌词是否显示翻译

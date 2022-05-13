@@ -159,7 +159,6 @@ void CLyrics::DisposeLrc()
                 m_offset_tag = true;
                 temp = m_lyrics_str[i].substr(index + 8, index2 - index - 8);
                 m_offset = _wtoi(temp.c_str());             // 获取偏移量
-                m_offset_tag_index = i;                     // 记录偏移量标签的位置
             }
         }
 
@@ -191,22 +190,16 @@ void CLyrics::DisposeLrc()
         {
             lyric.time_start_raw = t.toInt();
             m_lyrics.push_back(lyric);
-
-            // 如果已查找到时间标签了，但是还没有找到offset标签，则将m_offset_tag_index设置为第1个时间标签的位置
-            if (!m_offset_tag && m_offset_tag_index == -1)
-            {
-                m_offset_tag_index = i;
-            }
         }
     }
+    std::stable_sort(m_lyrics.begin(), m_lyrics.end());
+    CombineSameTimeLyric();
 }
 
 void CLyrics::DisposeLrcNetease()
 {
-    DisposeLrc();   // 先按lrc解析，再合并歌词与翻译
-    std::stable_sort(m_lyrics.begin(), m_lyrics.end());
+    DisposeLrc();
     DeleteRedundantLyric();
-    CombineSameTimeLyric();
 }
 
 void CLyrics::NormalizeLyric()
@@ -445,7 +438,6 @@ wstring CLyrics::GetLyricsString2() const
     if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
     if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
     if (m_by_tag) lyric_string += (L"[by:" + m_by + L"]\r\n");
-    if (m_offset_tag) lyric_string += L"[offset:0]\r\n";
     wchar_t time_buff[16];
     for (auto& a_lyric : m_lyrics)
     {
@@ -468,35 +460,6 @@ wstring CLyrics::GetLyricsString2() const
     return lyric_string;
 }
 
-void CLyrics::SaveLyric()
-{
-    if (m_lyrics.size() == 0) return;   // 没有歌词时直接返回
-
-    // 保存歌词到文件，偏移量保存在offset标签
-    wstring temp{};
-    for (int i{ 0 }; i < static_cast<int>(m_lyrics_str.size()); i++)
-    {
-        if (m_offset_tag_index == i)    // 如果i是偏移标签的位置，则在这时输出偏移标签
-        {
-            temp += L"[offset:" + std::to_wstring(m_offset) + L"]\r\n";
-            if (!m_offset_tag)          // 如果本来没有偏移标签，则这时是插入一行偏移标签，之后还要输出当前歌词
-                temp += m_lyrics_str[i] + L"\r\n";
-        }
-        else
-        {
-            temp += m_lyrics_str[i] + L"\r\n";
-        }
-    }
-    bool char_connot_convert;
-    string lyric_str = CCommon::UnicodeToStr(temp, m_code_type, &char_connot_convert);
-    ASSERT(!char_connot_convert);
-    ofstream out_put{ m_file, std::ios::binary };
-    out_put << lyric_str;
-    out_put.close();
-
-    m_modified = false;
-}
-
 void CLyrics::SaveLyric2()
 {
     if (m_lyrics.size() == 0) return;   // 没有歌词时直接返回
@@ -509,7 +472,6 @@ void CLyrics::SaveLyric2()
     out_put << lyric_str;
     out_put.close();
     m_modified = false;
-    m_chinese_converted = false;
 }
 
 void CLyrics::CombineSameTimeLyric()
@@ -631,8 +593,4 @@ void CLyrics::ChineseConvertion(bool simplified)
         }
     }
     m_modified = true;
-    m_chinese_converted = true;
-    // SaveLyric2();
-    // m_lyrics_str.clear();
-    // DivideLyrics();
 }

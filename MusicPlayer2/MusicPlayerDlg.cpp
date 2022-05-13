@@ -354,7 +354,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_media_lib_setting_data.display_format));
     ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.cortana_info_enable);
     ini.WriteBool(L"config", L"cortana_show_lyric", theApp.m_lyric_setting_data.cortana_show_lyric);
-    ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
+    // ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
     ini.WriteString(L"config", L"font", theApp.m_lyric_setting_data.lyric_font.name);
     ini.WriteInt(L"config", L"font_size", theApp.m_lyric_setting_data.lyric_font.size);
     ini.WriteInt(L"config", L"font_style", theApp.m_lyric_setting_data.lyric_font.style.ToInt());
@@ -521,7 +521,7 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_lyric_setting_data.cortana_info_enable = false;
     else
         theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
-    theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
+    // theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
     theApp.m_lyric_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
     theApp.m_lyric_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
     theApp.m_lyric_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
@@ -3705,10 +3705,7 @@ void CMusicPlayerDlg::OnSaveModifiedLyric()
         }
         else
         {
-            if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())      //如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
-                CPlayer::GetInstance().m_Lyrics.SaveLyric();
-            else
-                CPlayer::GetInstance().m_Lyrics.SaveLyric2();
+            CPlayer::GetInstance().m_Lyrics.SaveLyric2();
         }
     }
 }
