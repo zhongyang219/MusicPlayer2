@@ -1820,7 +1820,7 @@ void CMusicPlayerDlg::DoLyricsAutoSave(bool no_inquiry)
             OnSaveModifiedLyric();
             break;
         case LyricSettingData::LS_INQUIRY:
-            if (no_inquiry || MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION))
+            if (no_inquiry || MessageBoxW(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)    // 仅当MessageBox按下是时保存
             {
                 OnSaveModifiedLyric();
             }
