@@ -59,4 +59,6 @@ public:
     afx_msg void OnBnClickedMciRadio();
     afx_msg void OnBnClickedFfmpegRadio();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
+    afx_msg void OnNMClickFfmpegDownSyslink(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
