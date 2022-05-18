@@ -116,6 +116,8 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_BASS_RADIO, &CPlaySettingsDlg::OnBnClickedBassRadio)
     ON_BN_CLICKED(IDC_MCI_RADIO, &CPlaySettingsDlg::OnBnClickedMciRadio)
     ON_BN_CLICKED(IDC_FFMPEG_RADIO, &CPlaySettingsDlg::OnBnClickedFfmpegRadio)
+    ON_NOTIFY(NM_CLICK, IDC_FFMPEG_DOWN_SYSLINK, &CPlaySettingsDlg::OnNMClickFfmpegDownSyslink)
+    ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -161,6 +163,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
         }
     }
     m_ffmpeg_radio.EnableWindow(enable_ffmpeg);
+    ShowDlgCtrl(IDC_FFMPEG_DOWN_SYSLINK, !enable_ffmpeg);       //未检测到ffmpeg内核时，显示下载链接
 
     if (m_data.use_mci)
         m_mci_radio.SetCheck(TRUE);
@@ -295,4 +298,38 @@ void CPlaySettingsDlg::OnOK() {
     m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
     m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
     m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
+}
+
+
+void CPlaySettingsDlg::OnNMClickFfmpegDownSyslink(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    if (MessageBox(CCommon::LoadText(IDS_DOWNLOAD_FFMPEG_CORE_INFO), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+    {
+        ShellExecute(NULL, _T("open"), _T("https://github.com/lifegpc/ffmpeg_core/releases"), NULL, NULL, SW_SHOW);
+    }
+
+    *pResult = 0;
+}
+
+
+HBRUSH CPlaySettingsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    HBRUSH hbr = CTabDlg::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    // TODO:  在此更改 DC 的任何特性
+    UINT id{};
+    if (pWnd != nullptr)
+        id = pWnd->GetDlgCtrlID();
+    if (id == IDC_FFMPEG_DOWN_SYSLINK)		//设置滑动条控件的背景色为白色
+    {
+        static HBRUSH brush{};
+        if (brush == NULL)
+            brush = CreateSolidBrush(m_background_color);
+        pDC->SetBkColor(m_background_color);
+        return brush;
+    }
+
+    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
+    return hbr;
 }
