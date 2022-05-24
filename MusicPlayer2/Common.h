@@ -304,6 +304,10 @@ public:
     template<class T, class Func>
     static bool IsItemInVector(const vector<T>& items, Func func);
 
+    // 累加vector内元素
+    template<typename T>
+    static T SumVector(vector<T>& vec);
+
     //判断文件名是末尾是否符合“(数字)”的形式
     //file_name: 要判断的文件名，不包含扩展名
     //number: 接收括号中的数字
@@ -553,6 +557,17 @@ inline bool CCommon::IsItemInVector(const vector<T>& items, Func func)
             return true;
     }
     return false;
+}
+
+template<typename T>
+inline T CCommon::SumVector(vector<T>& vec)
+{
+    T sum{};
+    for (size_t i{}; i < vec.size(); ++i)
+    {
+        sum += vec[i];
+    }
+    return sum;
 }
 
 template<class T>

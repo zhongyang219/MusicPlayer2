@@ -129,7 +129,8 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                 //设置歌词文本和翻译文本的矩形区域
                 CRect rect_text{ rects[i + 1] };
                 CRect rect_translate;
-                if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_lyric_setting_data.show_translate)
+                const CLyrics::Lyric& lyric_i = CPlayer::GetInstance().m_Lyrics.GetLyric(i);
+                if (!lyric_i.translate.empty() && theApp.m_lyric_setting_data.show_translate)
                 {
                     rect_text.MoveToY(rect_text.top + line_space);
                     rect_text.bottom = rect_text.top + GetLyricTextHeight();
@@ -137,34 +138,32 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                     rect_translate.MoveToY(rect_text.bottom + line_space);
                 }
 
-                if (i == lyric_index && progress < 1000)		//绘制正在播放的歌词
+                if (i == lyric_index && progress < 1000)		//绘制正在播放的歌词（处于逐渐过度到高亮过程中的歌词）
                 {
-                    CLyrics::Lyric lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(i);
                     //这里实现文本从非高亮缓慢变化到高亮效果
-                    int last_time_span = time - lyric.time_start;     //当前播放的歌词已持续的时间
+                    int last_time_span = time - lyric_i.time_start;     //当前播放的歌词已持续的时间
                     int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
                     COLORREF text_color = CColorConvert::GetGradientColor(m_colors.color_text_2, m_colors.color_text, fade_percent);
                     //绘制歌词文本
                     SetLyricFont();
                     if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-                        DrawWindowText(rect_text, lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
+                        DrawWindowText(rect_text, lyric_i.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
                     else
-                        DrawWindowText(rect_text, lyric.text.c_str(), text_color, text_color, progress, align, true);
+                        DrawWindowText(rect_text, lyric_i.text.c_str(), text_color, text_color, progress, align, true);
                     //绘制翻译文本
-                    if (!lyric.translate.empty() && theApp.m_lyric_setting_data.show_translate)
+                    if (!lyric_i.translate.empty() && theApp.m_lyric_setting_data.show_translate)
                     {
                         SetLyricFontTranslated();
-                        DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, text_color, progress, align, true);
+                        DrawWindowText(rect_translate, lyric_i.translate.c_str(), text_color, text_color, progress, align, true);
                     }
                 }
                 else		//绘制非正在播放的歌词
                 {
                     SetLyricFont();
                     COLORREF text_color;
-                    if (i == lyric_index - 1)      //绘制上一句歌词（这里实现上一句歌词颜色从高亮缓慢变化到非高亮效果）
+                    if (i == lyric_index - 1 || progress == 1000)       // 绘制正在取消高亮的歌词（这里实现一句歌词颜色从高亮缓慢变化到非高亮效果），逐字歌词最后一句在此处取消高亮
                     {
-                        CLyrics::Lyric playing_lyric = CPlayer::GetInstance().m_Lyrics.GetLyric(lyric_index);
-                        int last_time_span = time - playing_lyric.time_start;     //当前播放的歌词已持续的时间
+                        int last_time_span = time - (lyric_i.time_start + lyric_i.time_span);     // 引入逐字歌词后上句歌词结束时长不等于当前播放的歌词已持续的时间，此处应当使用上句歌词结束时间
                         int fade_percent = last_time_span / 20;         //计算颜色高亮变化的百分比，当持续时间为2000毫秒时为100%，即颜色缓慢变化的时间为2秒
                         text_color = CColorConvert::GetGradientColor(m_colors.color_text, m_colors.color_text_2, fade_percent);
                     }
@@ -173,12 +172,12 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                         text_color = m_colors.color_text_2;
                     }
                     //绘制歌词文本
-                    DrawWindowText(rect_text, CPlayer::GetInstance().m_Lyrics.GetLyric(i).text.c_str(), text_color, align, true);
+                    DrawWindowText(rect_text, lyric_i.text.c_str(), text_color, align, true);
                     //绘制翻译文本
-                    if (!CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.empty() && theApp.m_lyric_setting_data.show_translate)
+                    if (!lyric_i.translate.empty() && theApp.m_lyric_setting_data.show_translate)
                     {
                         SetLyricFontTranslated();
-                        DrawWindowText(rect_translate, CPlayer::GetInstance().m_Lyrics.GetLyric(i).translate.c_str(), text_color, align, true);
+                        DrawWindowText(rect_translate, lyric_i.translate.c_str(), text_color, align, true);
                     }
                 }
             }

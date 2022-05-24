@@ -86,7 +86,7 @@ void CDesktopLyric::ShowLyric()
 
 
 
-void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat)
+void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont)
 {
     if (CPlayerUIHelper::IsMidiLyric())
     {
@@ -111,7 +111,7 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
             [&](const wstring& str)
             {
                 Gdiplus::RectF boundingBox;
-                pGraphics->MeasureString(str.c_str(), -1, pFont, Gdiplus::RectF{}, pTextFormat, &boundingBox, 0, 0);
+                pGraphics->MeasureString(str.c_str(), -1, pFont, Gdiplus::RectF{}, Gdiplus::StringFormat::GenericTypographic(), &boundingBox, 0, 0);
                 return static_cast<int>(boundingBox.Width);
             }
         ) };
@@ -485,10 +485,10 @@ void CDesktopLyric::UpdateToolTipPosition()
 }
 
 
-void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat)
+void CDesktopLyric::PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont)
 {
     // 获取歌词信息
-    UpdateLyric(pGraphics, pFont, pTextFormat);
+    UpdateLyric(pGraphics, pFont);
 
     //绘制半透明背景
     if (!m_bLocked && !m_lyricBackgroundPenetrate)

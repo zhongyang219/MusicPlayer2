@@ -107,7 +107,7 @@ protected:
 	// 绘制能够交换显示的双行歌词
     void DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics);
     // 在绘制歌词前绘制/执行的内容
-    virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont, Gdiplus::StringFormat* pTextFormat) { }
+    virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont) { }
     //在绘制歌词后绘制的内容
     virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) { }
 

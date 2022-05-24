@@ -22,8 +22,9 @@ public:
     //从磁盘删除歌曲
     bool DeleteSongsFromDisk(const std::vector<SongInfo>& files);
 
-    //查找匹配的歌词文件
+    //查找可能匹配的所有歌词文件
     void SearchLyricFiles(const wstring& lyric_name, const wstring& cur_dir, std::vector<std::wstring>& result, bool fuzzy_match);
+    //查找最佳匹配的歌词文件并返回路径
     std::wstring SearchLyricFile(const SongInfo& song, bool fuzzy_match);
 
     //查找匹配的外部专辑封面

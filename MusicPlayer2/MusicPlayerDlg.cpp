@@ -3400,18 +3400,24 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
                 file = file_path.ReplaceFileExtension(L"jpg").c_str();
             }
             CCommon::DeleteFiles(m_hWnd, delected_files);
-            for (auto& file : delected_files)
+            for (const wstring& ext : CLyrics::m_surpported_lyric)      // 删除所有后缀的歌词
             {
-                CFilePathHelper file_path(file);
-                file = file_path.ReplaceFileExtension(L"lrc").c_str();
+                for (auto& file : delected_files)
+                {
+                    CFilePathHelper file_path(file);
+                    file = file_path.ReplaceFileExtension(ext.c_str()).c_str();
+                }
+                CCommon::DeleteFiles(m_hWnd, delected_files);
             }
-            CCommon::DeleteFiles(m_hWnd, delected_files);
         }
         else
         {
             CFilePathHelper file_path(delected_file);
             CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
-            CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
+            for (const wstring& ext : CLyrics::m_surpported_lyric)      // 删除所有后缀的歌词
+            {
+                CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(ext.c_str()).c_str());
+            }
         }
     }
     else if (rtn == 1223)   //如果在弹出的对话框中点击“取消”则返回值为1223

@@ -13,8 +13,8 @@ public:
         int time_span{};        // 行持续时间(偏移量即时应用)
         wstring text;           // 歌词的文本
         wstring translate;      // 歌词的翻译
-        // vector<int> split;      // 逐字歌词对text的分割位置
-        // vector<int> word_time;  // 分割后各字持续时间（毫秒），累加若超过time_span时超出部分截断
+        vector<int> split;      // 逐字歌词对text的分割位置
+        vector<int> word_time;  // 分割后各字持续时间（毫秒），未经Normalize仅限GetLyricProgress使用，其他位置不应使用防止出现意料之外的行为
 
         // 重载小于号运算符，用于对歌词按时间标签排序
         bool operator<(const Lyric& lyric) const
@@ -27,8 +27,11 @@ public:
     {
         LY_AUTO,                // 根据扩展名判断
         LY_LRC,
-        LY_LRC_NETEASE
+        LY_LRC_NETEASE,
+        LY_KSC
     };
+
+    const static vector<wstring> m_surpported_lyric;            // 支持的歌词格式的扩展名列表
 
 private:
     wstring m_file;                            // 歌词文件的文件名
@@ -55,6 +58,9 @@ private:
     bool m_translate{ false };                 // 歌词是否包含翻译
 
 public:
+    // 判断文件是否为歌词文件
+    static bool FileIsLyric(const wstring& file_name);
+
     /**
      * @brief   解析歌词的时间标签
      * @param[in]   const wstring & lyric_text 一行歌词文本
@@ -69,6 +75,7 @@ private:
     // 解析m_lyrics_str并将结果保存在m_lyrics中
     void DisposeLrc();
     void DisposeLrcNetease();
+    void DisposeKsc();
     // 将歌词中信息全部填入m_lyrics后或偏移量调整后调用，负责修正/填补信息
     void NormalizeLyric();
 
@@ -124,7 +131,7 @@ public:
     // 保存歌词（将歌词偏移保存到每个时间标签中）
     void SaveLyric2();
 
-    // 如果歌词中有相同时间标签的歌词，则将其文本合并，保留一个时间标签（用于处理下载到的带翻译的歌词）（使用时必须确保歌词已经按时间标签排序）
+    // 如果歌词中有相同时间标签的歌词，则将第二行视作第一行的翻译进行合并（使用时必须确保歌词已经按时间标签排序）
     void CombineSameTimeLyric();
     // 交换歌词文本和翻译
     void SwapTextAndTranslation();

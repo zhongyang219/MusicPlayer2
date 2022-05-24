@@ -211,7 +211,7 @@ void CLyricsWindow::Draw()
 	pGraphics->SetTextRenderingHint (Gdiplus::TextRenderingHintAntiAlias);
 
 	// 计算逐字进度需要使用 Gdiplus::Graphics*，故在此获取将要显示的歌词、翻译、进度
-    PreDrawLyric(pGraphics, m_pFont, m_pTextFormat);
+    PreDrawLyric(pGraphics, m_pFont);
 
     bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
     if (m_bDoubleLine && !m_strNextLyric.IsEmpty() && !bDrawTranslate)
