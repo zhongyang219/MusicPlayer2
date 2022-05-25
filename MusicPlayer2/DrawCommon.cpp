@@ -155,7 +155,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
     //输出文本
     m_pDC->SetTextColor(color2);
     m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);        //绘制背景文字
-    if (color1 != color2)
+    if (color1 != color2 && split != 1000)  // 进度1000表示当前歌词“已完成”不进行高亮
     {
         m_pDC->SetTextColor(color1);
         m_pDC->DrawText(lpszString, text_f_rect, DT_SINGLELINE | DT_NOPREFIX);      //绘制覆盖文字

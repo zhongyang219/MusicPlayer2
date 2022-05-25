@@ -224,6 +224,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
             //这里实现文本从非高亮缓慢变化到高亮效果
             int last_time_span = time - current_lyric.time_start;     //当前播放的歌词已持续的时间
             int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
+            if (progress == 1000) fade_percent = 0;         // 进度为1000时当前歌词“已完成”不再高亮
             // 这里的fade_percent当合并空行开启时可能为负，在颜色渐变处规范取值，此处不再处理
             DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, last_progress > progress, fade_percent);
         }
@@ -243,8 +244,10 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
             SetLyricFont();
             if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
                 DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
-            else
+            else if (0 < progress && progress < 1000)   // 仅高亮“正在进行”的歌词
                 DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
+            else
+                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text_2, m_colors.color_text_2, progress, align, true);
         }
         last_progress = progress;
     }

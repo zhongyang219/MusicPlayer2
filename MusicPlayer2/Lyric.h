@@ -105,6 +105,7 @@ public:
     Lyric GetLyric(Time time, bool is_next, bool ignore_blank, bool blank2mark) const;
     // 根据时间返回该时间所对应的歌词的进度（0~1000）（用于使歌词以卡拉OK样式显示/长歌词滚动也需要正确的歌词进度）
     // ignore_blank为true时忽略空行，若同时blank2mark为true则将空行替换为进度符号
+    // 注意进度为1000时表示当前歌词“已结束”，不要进行高亮并应根据需要进行高亮取消操作，由于逐字歌词引入此状态可能维持一段时间
     int GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const;
 
     // 获得歌词文本的编码类型

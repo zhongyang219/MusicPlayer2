@@ -30,7 +30,7 @@ CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file
 void CLyrics::LyricsFromRowString(const wstring& lyric_str, const LyricType& lyric_type)
 {
     vector<wstring> results;
-    CCommon::StringSplit(lyric_str, L'\n', results);
+    CCommon::StringSplit(lyric_str, L'\n', results, false);
     for (auto& str : results)
     {
         CCommon::StringNormalize(str);
@@ -566,28 +566,68 @@ wstring CLyrics::GetLyricsString() const
 wstring CLyrics::GetLyricsString2() const
 {
     wstring lyric_string{};
-    if (m_id_tag) lyric_string += (L"[id:" + m_id + L"]\r\n");
-    if (m_ti_tag) lyric_string += (L"[ti:" + m_ti + L"]\r\n");
-    if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
-    if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
-    if (m_by_tag) lyric_string += (L"[by:" + m_by + L"]\r\n");
-    wchar_t time_buff[16];
-    for (auto& a_lyric : m_lyrics)
+    if (m_lyric_type == LyricType::LY_LRC || m_lyric_type == LyricType::LY_LRC_NETEASE)
     {
-        Time a_time{ a_lyric.time_start };
-        if (!a_time.negative) {
+        if (m_id_tag) lyric_string += (L"[id:" + m_id + L"]\r\n");
+        if (m_ti_tag) lyric_string += (L"[ti:" + m_ti + L"]\r\n");
+        if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
+        if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
+        if (m_by_tag) lyric_string += (L"[by:" + m_by + L"]\r\n");
+        wchar_t time_buff[16];
+        for (const auto& a_lyric : m_lyrics)
+        {
+            Time a_time{ a_lyric.time_start };
             swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
             lyric_string += time_buff;
-        } else {
-            lyric_string += L"[00:00.00]";
+            lyric_string += a_lyric.text;
+            if (!a_lyric.translate.empty())
+            {
+                lyric_string += L" / ";
+                lyric_string += a_lyric.translate;
+            }
+            lyric_string += L"\r\n";
         }
-        lyric_string += a_lyric.text;
-        if (!a_lyric.translate.empty())
+    }
+    else if (m_lyric_type == LyricType::LY_KSC)
+    {
+        for (const wstring& str : m_lyrics_str) // 不清楚规则故暂不修改非歌词行
         {
-            lyric_string += L" / ";
-            lyric_string += a_lyric.translate;
+            if (str.find(L"karaoke.add") != wstring::npos) break;
+            lyric_string += (str + L"\r\n");
         }
-        lyric_string += L"\r\n";
+        wchar_t time_buff[16];
+        for (const auto& a_lyric : m_lyrics)    // 重新构建歌词行
+        {
+            lyric_string += L"karaoke.add('";
+            Time a_time{ a_lyric.time_start };
+            swprintf_s(time_buff, L"%.2d:%.2d.%.3d", a_time.min, a_time.sec, a_time.msec);
+            lyric_string += time_buff;
+            lyric_string += L"', '";
+            a_time += a_lyric.time_span;
+            swprintf_s(time_buff, L"%.2d:%.2d.%.3d", a_time.min, a_time.sec, a_time.msec);
+            lyric_string += time_buff;
+            lyric_string += L"', '";
+            bool remove_bracket{ true };
+            wstring text{};
+            for (int i{}; i < a_lyric.split.size(); ++i)
+            {
+                if (i == 0)
+                    text += L"[" + a_lyric.text.substr(0, a_lyric.split[i]) + L"]";
+                else
+                    text += L"[" + a_lyric.text.substr(a_lyric.split[i - 1], a_lyric.split[i] - a_lyric.split[i - 1]) + L"]";
+                if (a_lyric.split[i] != i + 1)
+                    remove_bracket = false;
+            }
+            lyric_string += remove_bracket ? a_lyric.text : text;
+            lyric_string += L"', '";
+            for (int i{}; i < a_lyric.word_time.size(); ++i)
+            {
+                lyric_string += std::to_wstring(a_lyric.word_time[i]);
+                if (i != a_lyric.word_time.size() - 1)
+                    lyric_string += L",";
+            }
+            lyric_string += L"');\r\n";
+        }
     }
 
     return lyric_string;
@@ -613,11 +653,6 @@ void CLyrics::CombineSameTimeLyric()
     {
         if (m_lyrics[i].time_start_raw == m_lyrics[i + 1].time_start_raw)   // 找到相同时间标签的歌词
         {
-            // if (!m_lyrics[i].text.empty() && !m_lyrics[i + 1].text.empty())       // 只有两句相同时间标签的歌词都有文本时，才需要插入一个斜杠
-            // {
-            //     m_lyrics[i].text += L" / ";
-            // }
-            // m_lyrics[i].text += m_lyrics[i + 1].text; // 合并两句歌词的文本
             m_lyrics[i].translate = m_lyrics[i + 1].text;
             m_lyrics.erase(m_lyrics.begin() + i + 1);   // 删除后面一句歌词
         }

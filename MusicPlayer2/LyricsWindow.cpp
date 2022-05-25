@@ -396,9 +396,9 @@ void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
 //绘制高亮歌词
 void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::GraphicsPath* pPath, Gdiplus::RectF& dstRect)
 {
-	if(m_nHighlight<=0)return;
+	if (m_nHighlight <= 0 || m_nHighlight >= 1000) return;	// 对于大于等于1000的进度不绘制高亮
 	Gdiplus::Region* pRegion=NULL;
-    if(m_nHighlight<1000 && m_lyric_karaoke_disp){        // 这里的 && m_lyric_karaoke_disp 操作会在关闭卡拉OK模式时将1-999的进度转换到1000
+    if (m_lyric_karaoke_disp){        // 卡拉OK模式下需要根据进度裁剪绘制高亮区域
 		Gdiplus::RectF CliptRect(dstRect);
 		CliptRect.Width=CliptRect.Width * m_nHighlight / 1000;
 		pRegion=new Gdiplus::Region(CliptRect);
