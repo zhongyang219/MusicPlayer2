@@ -43,6 +43,7 @@ protected:
 
 	void ShowDeviceInfo();
     void EnableControl();
+    virtual void GetDataFromUi() override;
 
 	DECLARE_MESSAGE_MAP()
 public:

@@ -238,8 +238,10 @@ void CBrowseEdit::OnBrowse()
             if (dlg.DoModal() == IDOK)
             {
                 strFile = CCommon::StringMerge(items, L',').c_str();
+                SetWindowText(strFile);
+                SetModify(TRUE);
+                OnAfterUpdate();
             }
-            SetWindowText(strFile);
         }
             break;
         default:

@@ -50,6 +50,31 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_ID3V2_TYPE_COMBO, m_id3v2_type_combo);
 }
 
+void CMediaLibSettingDlg::GetDataFromUi()
+{
+    m_data.display_item = 0;
+    if (IsDlgButtonChecked(IDC_ARTIST_CHECK))
+        m_data.display_item |= MLDI_ARTIST;
+    if (IsDlgButtonChecked(IDC_ALBUM_CHECK))
+        m_data.display_item |= MLDI_ALBUM;
+    if (IsDlgButtonChecked(IDC_GENRE_CHECK))
+        m_data.display_item |= MLDI_GENRE;
+    if (IsDlgButtonChecked(IDC_YEAR_CHECK))
+        m_data.display_item |= MLDI_YEAR;
+    if (IsDlgButtonChecked(IDC_FILE_TYPE_CHECK))
+        m_data.display_item |= MLDI_TYPE;
+    if (IsDlgButtonChecked(IDC_BITRATE_CHECK))
+        m_data.display_item |= MLDI_BITRATE;
+    if (IsDlgButtonChecked(IDC_RATING_CHECK))
+        m_data.display_item |= MLDI_RATING;
+    if (IsDlgButtonChecked(IDC_ALL_CHECK))
+        m_data.display_item |= MLDI_ALL;
+    if (IsDlgButtonChecked(IDC_RECENT_CHECK))
+        m_data.display_item |= MLDI_RECENT;
+    if (IsDlgButtonChecked(IDC_FOLDER_EXPLORE_CHECK))
+        m_data.display_item |= MLDI_FOLDER_EXPLORE;
+}
+
 
 BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_CLASSIFY_OTHER_CHECK, &CMediaLibSettingDlg::OnBnClickedClassifyOtherCheck)
@@ -300,27 +325,6 @@ void CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck()
 void CMediaLibSettingDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
-    m_data.display_item = 0;
-    if (IsDlgButtonChecked(IDC_ARTIST_CHECK))
-        m_data.display_item |= MLDI_ARTIST;
-    if (IsDlgButtonChecked(IDC_ALBUM_CHECK))
-        m_data.display_item |= MLDI_ALBUM;
-    if (IsDlgButtonChecked(IDC_GENRE_CHECK))
-        m_data.display_item |= MLDI_GENRE;
-    if (IsDlgButtonChecked(IDC_YEAR_CHECK))
-        m_data.display_item |= MLDI_YEAR;
-    if (IsDlgButtonChecked(IDC_FILE_TYPE_CHECK))
-        m_data.display_item |= MLDI_TYPE;
-    if (IsDlgButtonChecked(IDC_BITRATE_CHECK))
-        m_data.display_item |= MLDI_BITRATE;
-    if (IsDlgButtonChecked(IDC_RATING_CHECK))
-        m_data.display_item |= MLDI_RATING;
-    if (IsDlgButtonChecked(IDC_ALL_CHECK))
-        m_data.display_item |= MLDI_ALL;
-    if (IsDlgButtonChecked(IDC_RECENT_CHECK))
-        m_data.display_item |= MLDI_RECENT;
-    if (IsDlgButtonChecked(IDC_FOLDER_EXPLORE_CHECK))
-        m_data.display_item |= MLDI_FOLDER_EXPLORE;
 
     CTabDlg::OnOK();
 }

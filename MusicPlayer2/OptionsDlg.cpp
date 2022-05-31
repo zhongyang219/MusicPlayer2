@@ -101,11 +101,10 @@ BOOL COptionsDlg::OnInitDialog()
 void COptionsDlg::OnOK()
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	m_tab1_dlg.OnOK();
-	m_tab2_dlg.OnOK();
-	m_tab3_dlg.OnOK();
-	m_tab4_dlg.OnOK();
-    m_media_lib_dlg.OnOK();
+    for (const auto& tab : m_tab_vect)
+    {
+        tab->GetDataFromUi();
+    }
 
 	CBaseDialog::OnOK();
 }
@@ -114,6 +113,11 @@ void COptionsDlg::OnOK()
 void COptionsDlg::OnBnClickedApplyButton()
 {
 	// TODO: 在此添加控件通知处理程序代码
+    for (const auto& tab : m_tab_vect)
+    {
+        tab->GetDataFromUi();
+    }
+
 	::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SETTINGS_APPLIED, (WPARAM)this, 0);
 }
 

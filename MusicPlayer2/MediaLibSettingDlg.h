@@ -40,6 +40,7 @@ protected:
     void ShowDataSizeInfo();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual void GetDataFromUi() override;
 
 	DECLARE_MESSAGE_MAP()
 public:

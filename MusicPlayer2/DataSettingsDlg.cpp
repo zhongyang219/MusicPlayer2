@@ -34,6 +34,26 @@ void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_COMBO1, m_language_combo);
 }
 
+void CDataSettingsDlg::GetDataFromUi()
+{
+    m_data.minimize_to_notify_icon = (((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->GetCheck() != 0);
+    m_data.save_lyric_to_song_folder = (((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->GetCheck() != 0);
+
+    //获取语言的设置
+    m_data.language = static_cast<Language>(m_language_combo.GetCurSel());
+    if (m_data.language != theApp.m_general_setting_data.language)
+    {
+        MessageBox(CCommon::LoadText(IDS_LANGUAGE_CHANGE_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+
+    //获取数据文件保存位置的设置
+    m_data.portable_mode = (IsDlgButtonChecked(IDC_SAVE_TO_PROGRAM_DIR_RADIO) != 0);
+    if (m_data.portable_mode != theApp.m_general_setting_data.portable_mode)
+    {
+        MessageBox(CCommon::LoadText(IDS_CFG_DIR_CHANGED_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+}
+
 
 BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
     //ON_BN_CLICKED(IDC_ID3V2_FIRST_CHECK, &CDataSettingsDlg::OnBnClickedId3v2FirstCheck)
@@ -218,22 +238,6 @@ void CDataSettingsDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
 
-    m_data.minimize_to_notify_icon = (((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->GetCheck() != 0);
-    m_data.save_lyric_to_song_folder = (((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->GetCheck() != 0);
-
-    //获取语言的设置
-    m_data.language = static_cast<Language>(m_language_combo.GetCurSel());
-    if (m_data.language != theApp.m_general_setting_data.language)
-    {
-        MessageBox(CCommon::LoadText(IDS_LANGUAGE_CHANGE_INFO), NULL, MB_ICONINFORMATION | MB_OK);
-    }
-
-    //获取数据文件保存位置的设置
-    m_data.portable_mode = (IsDlgButtonChecked(IDC_SAVE_TO_PROGRAM_DIR_RADIO) != 0);
-    if (m_data.portable_mode != theApp.m_general_setting_data.portable_mode)
-    {
-        MessageBox(CCommon::LoadText(IDS_CFG_DIR_CHANGED_INFO), NULL, MB_ICONINFORMATION | MB_OK);
-    }
 
     CTabDlg::OnOK();
 }
