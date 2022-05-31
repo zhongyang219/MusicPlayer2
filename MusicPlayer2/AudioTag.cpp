@@ -38,37 +38,47 @@ CAudioTag::~CAudioTag()
 {
 }
 
-void CAudioTag::GetAudioTag()
+bool CAudioTag::GetAudioTag()
 {
+    bool suceed{ false };
     m_song_info.tag_type = 0;
     switch (m_type)
     {
     case AU_MP3:
         CTagLibHelper::GetMpegTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_WMA_ASF:
         CTagLibHelper::GetAsfTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_OGG:
         CTagLibHelper::GetOggTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_MP4:
         CTagLibHelper::GetM4aTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_APE:
         CTagLibHelper::GetApeTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_FLAC:
         CTagLibHelper::GetFlacTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_WAV:
         CTagLibHelper::GetWavTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_AIFF:
         CTagLibHelper::GetAiffTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_MPC:
         CTagLibHelper::GetMpcTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_OPUS:
         //CTagLibHelper::GetOpusTagInfo(m_song_info);
@@ -79,12 +89,15 @@ void CAudioTag::GetAudioTag()
     break;
     case AU_WV:
         CTagLibHelper::GetWavPackTagInfo(m_song_info);
+        suceed = true;
         break;
     case AU_TTA:
         CTagLibHelper::GetTtaTagInfo(m_song_info);
+        suceed = true;
         break;
     case AudioType::AU_SPX:
         CTagLibHelper::GetSpxTagInfo(m_song_info);
+        suceed = true;
         break;
     case AudioType::AU_AAC:
         //CTagLibHelper::GetAnyFileTagInfo(m_song_info);
@@ -108,6 +121,7 @@ void CAudioTag::GetAudioTag()
     CCommon::StringNormalize(m_song_info.genre);
     CCommon::StringNormalize(m_song_info.comment);
     m_song_info.info_acquired = true;
+    return suceed;
 }
 
 
