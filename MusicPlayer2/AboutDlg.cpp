@@ -23,6 +23,12 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
     ON_NOTIFY(NM_CLICK, IDC_LICENSE_SYSLINK, &CAboutDlg::OnNMClickLicenseSyslink)
     ON_WM_ERASEBKGND()
     ON_WM_CTLCOLOR()
+    ON_NOTIFY(NM_CLICK, IDC_SYSLINK_BASS, &CAboutDlg::OnNMClickSyslinkBass)
+    ON_NOTIFY(NM_CLICK, IDC_SYSLINK_TAGLIB, &CAboutDlg::OnNMClickSyslinkTaglib)
+    ON_NOTIFY(NM_CLICK, IDC_SYSLINK_TINYXML2, &CAboutDlg::OnNMClickSyslinkTinyxml2)
+    ON_NOTIFY(NM_CLICK, IDC_SYSLINK_SCINTILLA, &CAboutDlg::OnNMClickSyslinkScintilla)
+    ON_NOTIFY(NM_CLICK, IDC_SYSLINK_TRAFFICMONITOR, &CAboutDlg::OnNMClickSyslinkTrafficmonitor)
+    ON_NOTIFY(NM_CLICK, IDC_SYSLINK_SIMPLENOTEPAD, &CAboutDlg::OnNMClickSyslinkSimplenotepad)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -59,6 +65,12 @@ BOOL CAboutDlg::OnInitDialog()
     m_tool_tip.Create(this);
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), CCommon::LoadText(IDS_SEND_EMAIL_TO_ATHOUR, _T("\r\nmailto:zhongyang219@hotmail.com")));
     m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), CCommon::LoadText(IDS_GOTO_GITHUB, _T("\r\nhttps://github.com/zhongyang219/MusicPlayer2")));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_BASS), _T("http://www.un4seen.com/bass.html"));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TAGLIB), _T("http://taglib.org/"));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TINYXML2), _T("https://github.com/leethomason/tinyxml2"));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SCINTILLA), _T("https://www.scintilla.org/index.html"));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TRAFFICMONITOR), CCommon::LoadText(IDS_TRAFFICMONITOR_DESCRIPTION, _T("\r\nhttps://github.com/zhongyang219/TrafficMonitor")));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SIMPLENOTEPAD), CCommon::LoadText(IDS_SIMPLENOTEPAD_DESCRIPTION, _T("\r\nhttps://github.com/zhongyang219/SimpleNotePad")));
     m_tool_tip.SetDelayTime(300);	//设置延迟
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
@@ -171,10 +183,10 @@ BOOL CAboutDlg::OnEraseBkgnd(CDC* pDC)
 
     //绘制白色背景
     int white_height;       //白色区域的高度
-    CRect rc_copyright{};
-    ::GetWindowRect(GetDlgItem(IDC_STATIC_COPYRIGHT)->GetSafeHwnd(), rc_copyright);
-    ScreenToClient(rc_copyright);
-    white_height = rc_copyright.bottom + theApp.DPI(4);
+    CRect rc_ok{};
+    ::GetWindowRect(GetDlgItem(IDOK)->GetSafeHwnd(), rc_ok);
+    ScreenToClient(rc_ok);
+    white_height = rc_ok.top - theApp.DPI(6);
 
     //绘制“确定”按钮上方的分割线
     CRect rc_line{ draw_rect };
@@ -199,7 +211,9 @@ HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     // TODO:  在此更改 DC 的任何特性
     UINT ctrl_id = pWnd->GetDlgCtrlID();
-    if (ctrl_id == IDC_STATIC_VERSION || ctrl_id == IDC_STATIC_COPYRIGHT)
+    if (ctrl_id == IDC_STATIC_VERSION || ctrl_id == IDC_STATIC_COPYRIGHT || ctrl_id == IDC_STATIC
+        || ctrl_id == IDC_SYSLINK_BASS || ctrl_id == IDC_SYSLINK_TAGLIB || ctrl_id == IDC_SYSLINK_TINYXML2 || ctrl_id == IDC_SYSLINK_SCINTILLA
+        || ctrl_id == IDC_SYSLINK_TRAFFICMONITOR || ctrl_id == IDC_SYSLINK_SIMPLENOTEPAD)
     {
         static HBRUSH hBackBrush{};
         if (hBackBrush == NULL)
@@ -211,4 +225,52 @@ HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     // TODO:  如果默认的不是所需画笔，则返回另一个画笔
     return hbr;
+}
+
+
+void CAboutDlg::OnNMClickSyslinkBass(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    ShellExecute(NULL, _T("open"), _T("http://www.un4seen.com/bass.html"), NULL, NULL, SW_SHOW);	//打开超链接
+    *pResult = 0;
+}
+
+
+void CAboutDlg::OnNMClickSyslinkTaglib(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    ShellExecute(NULL, _T("open"), _T("http://taglib.org/"), NULL, NULL, SW_SHOW);	//打开超链接
+    *pResult = 0;
+}
+
+
+void CAboutDlg::OnNMClickSyslinkTinyxml2(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    ShellExecute(NULL, _T("open"), _T("https://github.com/leethomason/tinyxml2"), NULL, NULL, SW_SHOW);	//打开超链接
+    *pResult = 0;
+}
+
+
+void CAboutDlg::OnNMClickSyslinkScintilla(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    ShellExecute(NULL, _T("open"), _T("https://www.scintilla.org/index.html"), NULL, NULL, SW_SHOW);	//打开超链接
+    *pResult = 0;
+}
+
+
+void CAboutDlg::OnNMClickSyslinkTrafficmonitor(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/TrafficMonitor"), NULL, NULL, SW_SHOW);	//打开超链接
+    *pResult = 0;
+}
+
+
+void CAboutDlg::OnNMClickSyslinkSimplenotepad(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/SimpleNotePad"), NULL, NULL, SW_SHOW);	//打开超链接
+    *pResult = 0;
 }
