@@ -741,7 +741,9 @@
 #define IDS_DOWNLOAD_FFMPEG_CORE_INFO   569
 #define IDI_IDI_PLAYLIST_DOCK           570
 #define IDI_PLAYLIST_DOCK               570
+#define IDS_TRAFFICMONITOR_DESCRIPTION  570
 #define IDI_HELP                        571
+#define IDS_SIMPLENOTEPAD_DESCRIPTION   571
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1134,6 +1136,12 @@
 #define IDC_FFMPEG_MAX_RETRY_COUNT      1192
 #define IDC_FFMPEG_URL_RETRY_INTERVAL   1193
 #define IDC_FFMPEG_DOWN_SYSLINK         1194
+#define IDC_SYSLINK_BASS                1195
+#define IDC_SYSLINK_TAGLIB              1196
+#define IDC_SYSLINK_TINYXML2            1197
+#define IDC_SYSLINK_SCINTILLA           1198
+#define IDC_SYSLINK_TRAFFICMONITOR      1199
+#define IDC_SYSLINK_SIMPLENOTEPAD       1200
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1582,7 +1590,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        573
 #define _APS_NEXT_COMMAND_VALUE         33394
-#define _APS_NEXT_CONTROL_VALUE         1195
+#define _APS_NEXT_CONTROL_VALUE         1201
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

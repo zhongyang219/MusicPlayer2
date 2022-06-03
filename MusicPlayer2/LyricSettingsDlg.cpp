@@ -331,6 +331,11 @@ CString CLyricSettingsDlg::GetFontInfoString(const FontInfo& font_info)
     return str;
 }
 
+void CLyricSettingsDlg::GetDataFromUi()
+{
+    m_data.lyric_line_space = m_lyric_line_space_edit.GetValue();
+}
+
 void CLyricSettingsDlg::OnBnClickedKaraokeDisp()
 {
     // TODO: 在此添加控件通知处理程序代码
@@ -354,8 +359,6 @@ void CLyricSettingsDlg::OnOK()
     //m_data.desktop_lyric_data.text_color2 = m_text_color2_static.GetFillColor();
     //m_data.desktop_lyric_data.highlight_color1 = m_highlight_color1_static.GetFillColor();
     //m_data.desktop_lyric_data.highlight_color2 = m_highlight_color2_static.GetFillColor();
-
-    m_data.lyric_line_space = m_lyric_line_space_edit.GetValue();
 
     //CTabDlg::OnOK();
 }

@@ -13,6 +13,7 @@ public:
     void ResetScroll();
     virtual void OnTabEntered() {}      //当标签切换到当前窗口时被调用
     virtual void OnOK();
+    virtual void GetDataFromUi() {}     //需要从界面获取数据时被调用
 	void SetScrollEnable(bool enable) { m_scroll_enable = enable; }
 
 protected:

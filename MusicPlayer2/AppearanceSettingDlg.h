@@ -94,6 +94,8 @@ protected:
     void SetControlEnable();
     void CalculateNotifyIconPreviewRect();
 
+    virtual void GetDataFromUi() override;
+
     DECLARE_MESSAGE_MAP()
 public:
     virtual BOOL OnInitDialog();

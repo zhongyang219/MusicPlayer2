@@ -10,7 +10,7 @@ public:
     ~CAudioTag();
 
     //获取音频文件的标签信息，结果保存在构造函数传递进来的SongInfo结构里，
-    void GetAudioTag();
+    bool GetAudioTag();
 
     void GetAudioTagPropertyMap(std::map<wstring, wstring>& property_map);
 

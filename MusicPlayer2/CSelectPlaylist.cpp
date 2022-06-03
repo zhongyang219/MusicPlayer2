@@ -710,7 +710,7 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_SAVE_AS_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 
-    bool is_delete_enable{ !m_left_selected && m_right_selected_item >= 0 && m_right_selected_item < static_cast<int>(m_cur_song_list.size())
+    bool is_delete_enable{ !m_left_selected && !theApp.m_media_lib_setting_data.disable_delete_from_disk && m_right_selected_item >= 0 && m_right_selected_item < static_cast<int>(m_cur_song_list.size())
         && !m_cur_song_list[m_right_selected_item].is_cue && !COSUPlayerHelper::IsOsuFile(m_cur_song_list[m_right_selected_item].file_path) };
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (is_delete_enable ? MF_ENABLED : MF_GRAYED));
 }

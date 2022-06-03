@@ -104,6 +104,13 @@ void CPlaySettingsDlg::EnableControl()
     m_ffmpeg_url_retry_interval.EnableWindow(ffmpeg_enable);
 }
 
+void CPlaySettingsDlg::GetDataFromUi()
+{
+    m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
+    m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
+    m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
+}
+
 
 BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CTabDlg)
 	ON_BN_CLICKED(IDC_STOP_WHEN_ERROR, &CPlaySettingsDlg::OnBnClickedStopWhenError)
@@ -295,9 +302,6 @@ BOOL CPlaySettingsDlg::PreTranslateMessage(MSG* pMsg)
 }
 
 void CPlaySettingsDlg::OnOK() {
-    m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
-    m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
-    m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
 }
 
 
