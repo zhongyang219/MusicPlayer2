@@ -1714,7 +1714,7 @@ void CPlayerUIBase::DrawProgess(CRect rect)
 
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
 {
-    m_buttons[BTN_TRANSLATE].enable = CPlayer::GetInstance().m_Lyrics.IsTranslated();
+    m_buttons[BTN_TRANSLATE].enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
     DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), theApp.m_lyric_setting_data.show_translate);
 }
 
