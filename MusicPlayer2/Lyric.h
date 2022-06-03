@@ -67,7 +67,7 @@ public:
      * @param[out]  Time & time 得到的时间标签
      * @return  bool 是否成功
      */
-    static bool ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& offset, wchar_t bracket_left = L'[', wchar_t bracket_right = L']');
+    static bool ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& pos_start, int& pos_end, wchar_t bracket_left = L'[', wchar_t bracket_right = L']');
 
 private:
     // 删除歌词中时间标签超过100分钟的歌词（使用时必须确保歌词已经按时间标签排序），对新下载的歌词使用

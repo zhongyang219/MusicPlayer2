@@ -60,9 +60,9 @@ bool CLyrics::FileIsLyric(const wstring& file_name)
     return false;
 }
 
-bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& offset, wchar_t bracket_left, wchar_t bracket_right)
+bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& pos_start, int& pos_end, wchar_t bracket_left, wchar_t bracket_right)
 {
-    int index = offset - 1;
+    int index = pos_end - 1;
     bool time_acquired{ false };
     while (!time_acquired)
     {
@@ -99,7 +99,8 @@ bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& offs
             break;
         }
         time_acquired = true;
-        offset = index3;
+        pos_start = index;
+        pos_end = index3 + 1;
     }
     return time_acquired;
 }
@@ -107,107 +108,123 @@ bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& offs
 void CLyrics::DisposeLrc()
 {
     int index,index2;
-    wstring temp;
-    Lyric lyric;
     m_translate = false;
-    for (size_t i{ 0 }; i < m_lyrics_str.size(); i++)
+    for (const auto& str : m_lyrics_str)
     {
+        Lyric lyric;
+        index = str.find(L"[");
+        index2 = str.find(L']', index);
+        if (index2 == wstring::npos) continue;  // 略过没有右方括号的行
         // 查找id标签（由于id标签是我自己加上的，它永远只会出现在第一行）
-        if (i == 0)
+        if (!m_id_tag)
         {
-            index = m_lyrics_str[i].find(L"[id:");
-            index2 = m_lyrics_str[i].find(L']', index);
-            if (index != string::npos && index2 != string::npos)
+            index = str.find(L"[id:");
+            if (index != string::npos)
             {
                 m_id_tag = true;
-                m_id = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+                m_id = str.substr(index + 4, index2 - index - 4);
             }
         }
         // 查找ti标签
         if (!m_ti_tag)
         {
-            index = m_lyrics_str[i].find(L"[ti:");
-            index2 = m_lyrics_str[i].find(L']', index);
-            if (index != string::npos && index2 != string::npos)
+            index = str.find(L"[ti:");
+            if (index != string::npos)
             {
                 m_ti_tag = true;
-                m_ti = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+                m_ti = str.substr(index + 4, index2 - index - 4);
             }
         }
-        //查找ar标签
+        // 查找ar标签
         if (!m_ar_tag)
         {
-            index = m_lyrics_str[i].find(L"[ar:");
-            index2 = m_lyrics_str[i].find(L']', index);
-            if (index != string::npos && index2 != string::npos)
+            index = str.find(L"[ar:");
+            if (index != string::npos)
             {
                 m_ar_tag = true;
-                m_ar = m_lyrics_str[i].substr(index + 4, index2 - index - 4);;
+                m_ar = str.substr(index + 4, index2 - index - 4);
             }
         }
         // 查找al标签
         if (!m_al_tag)
         {
-            index = m_lyrics_str[i].find(L"[al:");
-            index2 = m_lyrics_str[i].find(L']', index);
-            if (index != string::npos && index2 != string::npos)
+            index = str.find(L"[al:");
+            if (index != string::npos)
             {
                 m_al_tag = true;
-                m_al = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+                m_al = str.substr(index + 4, index2 - index - 4);
             }
         }
         // 查找by标签
         if (!m_by_tag)
         {
-            index = m_lyrics_str[i].find(L"[by:");
-            index2 = m_lyrics_str[i].find(L']',index);
-            if (index != string::npos && index2 != string::npos)
+            index = str.find(L"[by:");
+            if (index != string::npos)
             {
                 m_by_tag = true;
-                m_by = m_lyrics_str[i].substr(index + 4, index2 - index - 4);
+                m_by = str.substr(index + 4, index2 - index - 4);
             }
         }
         // 获取偏移量
         if (!m_offset_tag)
         {
-            index = m_lyrics_str[i].find(L"[offset:");      // 查找偏移量标签
-            index2 = m_lyrics_str[i].find(L']', index);
-            if (index != string::npos && index2 != string::npos)
+            index = str.find(L"[offset:");      // 查找偏移量标签
+            if (index != string::npos)
             {
                 m_offset_tag = true;
-                temp = m_lyrics_str[i].substr(index + 8, index2 - index - 8);
-                m_offset = _wtoi(temp.c_str());             // 获取偏移量
+                m_offset = _wtoi(str.substr(index + 8, index2 - index - 8).c_str());             // 获取偏移量
             }
         }
 
-        // 获取歌词文本
-        index = m_lyrics_str[i].find_last_of(L']');         // 查找最后一个']'，后面的字符即为歌词文本
-        if (index == string::npos) continue;
-        temp = m_lyrics_str[i].substr(index + 1, m_lyrics_str[i].size() - index - 1);
-        CCommon::StringNormalize(temp);                     // 删除歌词文本前后的空格或特殊字符
-        // 解析歌词文本
-        index = temp.find(L" / ");
-        if (index != wstring::npos)        // 如果找到了‘ / ’，说明该句歌词包含翻译
-        {
-            lyric.text = temp.substr(0, index);
-            lyric.translate = temp.substr(index + 3);
-        }
-        else
-        {
-            lyric.text = temp;
-            lyric.translate.clear();
-        }
-        // 如果有一句歌词包含翻译，则认为歌词包含翻译
-        if (!lyric.translate.empty())
-            m_translate = true;
-
-        // 获取时间标签
         Time t{};
-        int offset{};
-        while (ParseLyricTimeTag(m_lyrics_str[i], t, offset))
+        int pos_start{}, pos_end{};
+        if (ParseLyricTimeTag(str, t, pos_start, pos_end))      // 查找首个时间标签，存在时间标签的行才被视为歌词（扩展lrc需要首个时间标签来将字标签转换为word_time）
         {
-            lyric.time_start_raw = t.toInt();
-            m_lyrics.push_back(lyric);
+            // 解析歌词行
+            wstring time_str, text_str;
+            index = str.find_first_not_of(L"[:.]0123456789-", pos_end); // 用来分离行起始时间标签（可能是连续的压缩时间标签）
+            if (index != wstring::npos)
+            {
+                time_str = str.substr(pos_start, index);        // 略去首个时间标签之前的文字
+                text_str = str.substr(index);
+            }
+            else
+                time_str = str.substr(pos_start);               // 略去首个时间标签之前的文字
+            CCommon::StringNormalize(text_str);
+            if (!text_str.empty())                              // 这个if对应的else即空行，无须处理text和translate
+            {
+                index = text_str.find(L" / ");                  // 提取翻译
+                if (index != wstring::npos)                     // 如果找到了‘ / ’，说明该句歌词包含翻译
+                {
+                    lyric.translate = text_str.substr(index + 3);
+                    text_str = text_str.substr(0, index);
+                    m_translate = true; // 由于前面的StringNormalize操作，不可能出现“ / "后面为空的情况，无须重新判断翻译是否为空
+                }
+                index = index2 = 0;
+                Time time_w, time_w_;
+                if (ParseLyricTimeTag(text_str, time_w_, index, index2))    // 歌词文本内含有时间标签说明是扩展lrc
+                {
+                    lyric.text = text_str.substr(0, index);
+                    lyric.split.push_back(lyric.text.size());
+                    lyric.word_time.push_back(time_w_ - t);
+                    int last_pos_end = index2;
+                    while (ParseLyricTimeTag(text_str, time_w, index, index2))
+                    {
+                        lyric.text += text_str.substr(last_pos_end, index - last_pos_end);
+                        lyric.split.push_back(lyric.text.size());
+                        lyric.word_time.push_back(time_w - time_w_);
+                        last_pos_end = index2;
+                        time_w_ = time_w;
+                    }
+                }
+                else
+                    lyric.text = text_str;
+            }
+            do
+            {
+                lyric.time_start_raw = t.toInt();
+                m_lyrics.push_back(lyric);
+            } while (ParseLyricTimeTag(time_str, t, pos_start, pos_end));   // 压缩lrc在此展开
         }
     }
     std::stable_sort(m_lyrics.begin(), m_lyrics.end());
@@ -253,12 +270,12 @@ void CLyrics::DisposeKsc()
         // 解析含有karaoke.add的歌词行
         if (str.find(L"karaoke.add") != wstring::npos)
         {
-            index = 0;
-            if (!ParseLyricTimeTag(str, time, index, L'\'', L'\'')) continue;
+            index = index2 = 0;
+            if (!ParseLyricTimeTag(str, time, index, index2, L'\'', L'\'')) continue;
             lyric.time_start_raw = time.toInt();
-            if (!ParseLyricTimeTag(str, time, index, L'\'', L'\'')) continue;
+            if (!ParseLyricTimeTag(str, time, index, index2, L'\'', L'\'')) continue;
             lyric.time_span_raw = time.toInt() - lyric.time_start_raw;
-            index = str.find(L"\'", index + 1);
+            index = str.find(L"\'", index2);
             index2 = str.find(L"\'", index + 1);
             if (index == wstring::npos || index2 == wstring::npos || index2 - index < 1) continue;
             wstring lyric_raw{ str.substr(index + 1, index2 - index - 1) };
@@ -578,14 +595,31 @@ wstring CLyrics::GetLyricsString2() const
         {
             Time a_time{ a_lyric.time_start };
             swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-            lyric_string += time_buff;
-            lyric_string += a_lyric.text;
+            wstring line_str{ time_buff };
+            size_t split_num{ min(a_lyric.split.size(), a_lyric.word_time.size()) };    // 避免原始歌词不标准可能导致的索引越界
+            if (split_num > 0)  // 以扩展lrc形式存储逐字信息，舍弃行时长time_span
+            {
+                for (size_t i{}; i < split_num; ++i)
+                {
+                    if (i == 0)
+                        line_str += a_lyric.text.substr(0, a_lyric.split[i]);
+                    else
+                        line_str += a_lyric.text.substr(a_lyric.split[i - 1], a_lyric.split[i] - a_lyric.split[i - 1]);
+                    a_time += a_lyric.word_time[i];
+                    swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
+                    line_str += time_buff;
+                }
+            }
+            else
+            {
+                line_str += a_lyric.text;
+            }
             if (!a_lyric.translate.empty())
             {
-                lyric_string += L" / ";
-                lyric_string += a_lyric.translate;
+                line_str += L" / ";
+                line_str += a_lyric.translate;
             }
-            lyric_string += L"\r\n";
+            lyric_string += (line_str + L"\r\n");
         }
     }
     else if (m_lyric_type == LyricType::LY_KSC)
