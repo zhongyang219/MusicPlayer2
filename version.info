@@ -1,15 +1,15 @@
-﻿<version>2.74</version>
+﻿<version>2.75</version>
 <GitHub>
-	<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.74/MusicPlayer2_V2.74_x86.zip</link>
-	<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.74/MusicPlayer2_V2.74_x64.zip</link_x64>
+	<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.75/MusicPlayer2_V2.75_x86.zip</link>
+	<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.75/MusicPlayer2_V2.75_x64.zip</link_x64>
 </GitHub>
 <Gitee>
-	<link>https://gitee.com/zhongyang219/MusicPlayer2/attach_files/964796/download/MusicPlayer2_V2.74_x86.zip</link>
-	<link_x64>https://gitee.com/zhongyang219/MusicPlayer2/attach_files/964797/download/MusicPlayer2_V2.74_x64.zip</link_x64>
+	<link>https://gitee.com/zhongyang219/MusicPlayer2/attach_files/1084341/download/MusicPlayer2_V2.75_x86.zip</link>
+	<link_x64>https://gitee.com/zhongyang219/MusicPlayer2/attach_files/1084343/download/MusicPlayer2_V2.75_x64.zip</link_x64>
 </Gitee>
 <update_contents>
-	<contents_zh_cn>新增通过xml文件自定义界面的功能（请参照主菜单“帮助”——“自定义界面”的说明）。\n新增3个界面布局。\n新增了System Media Transport Controls的支持，将播放控制集成到系统，支持使用多媒体快捷键或蓝牙设备控制音乐的播放。\n新增通过“文件夹/播放列表”文本框下拉菜单快速切换文件夹/播放列表的功能。\n新增配置和数据文件保存位置的设置。\n新增音量图标。\n歌曲属性中增加采样频率、声道数和位深度的显示。\n新增右键菜单中的“删除专辑封面”可以删除内嵌专辑封面。\n修正Windows11下开启“任务栏搜索框显示播放信息”时崩溃的问题。\n部分窗口中的按钮添加了图标。\n浮动的播放列表跟随主窗口移动。\n修正有时在每次启动时都会重新获取歌曲信息的问题。\n“选项”——“歌词设置”中添加“单行和双行显示模式下不显示空白行”的选项。</contents_zh_cn>
-	<contents_en>Added the function of customizing the UI through the xml file (please refer to the main menu "Help" - "Customize UI").\nAdded 3 new UI layout.\nAdded support for System Media Transport Controls, which integrates playback controls into the system and supports the use of multimedia keys or Bluetooth devices to control music playback.\nAdded the function to quickly switch folders/playlists through the drop-down menu of the "Folder/Playlist" text box.\nAdded settings for the save location of configuration and data files.\nAdded the volume icon.\nAdded the display of sampling frequency, number of channels and bit depth in song properties.\nAdded the function to delete the embedded album by "Delete Album Cover" in the context menu.\nFixed a crash when "Allow play information displayed in the taskbar search box" is enabled under Windows 11.\nAddod some icons to some dialogs.\nThe floating playlist moves with the main window.\nFixed an issue where song info would sometimes be refetched on every launch.\nAdded theo ption "Do not display blank lines in single-line and double-line display mode" in "Options" - "Lyric Settings".</contents_en>
+	<contents_zh_cn>新增FFMPEG播放内核（需要单独下载）。\n新增一些新的界面布局。\n界面3、界面4和界面5使用xml重制，优化界面4的效果。\n自定义界面中新增了堆叠组件。\n浮动播放列表的使用逻辑优化。\n修正写入ini时可能出现缓冲区不足的问题。\n在媒体库中新建播放列表时，新的播放列表显示到最前面。\n自绘控件跟随“使用圆角风格”的设置。\n修正“音效设定”中的“混响”无法保存的问题。\n新增自绘菜单栏。\n其他细节方面的改进。</contents_zh_cn>
+	<contents_en>Add the FFMPEG playback core (need to be downloaded separately).\nAdd some new UI layouts.\nThe UI 3, UI 4 and UI 5 are reproduced using xml and optimized the effect of UI 4.\nAdd stacking components to custom UI.\nOptimized the use logic of floating playlist.\nFix the problem that buffer shortage may occur when writing ini.\nWhen creating a new playlist in the media library, the new playlist is brought to the front.\nSelf-drawn controls follow the "Use Rounded Corner Style" setting.\nFixed the problem that "Reverb" in "Sound Settings" could not be saved.\nAdd the self-drawn menu bar.\nImprovements in other details.</contents_en>
 </update_contents>
 <!--以下内容为了兼容旧版本程序的检查更新功能-->
-<contents>新增通过xml文件自定义界面的功能（请参照主菜单“帮助”——“自定义界面”的说明）。\n新增3个界面布局。\n新增了System Media Transport Controls的支持，将播放控制集成到系统，支持使用多媒体快捷键或蓝牙设备控制音乐的播放。\n新增通过“文件夹/播放列表”文本框下拉菜单快速切换文件夹/播放列表的功能。\n新增配置和数据文件保存位置的设置。\n新增音量图标。\n歌曲属性中增加采样频率、声道数和位深度的显示。\n新增右键菜单中的“删除专辑封面”可以删除内嵌专辑封面。\n修正Windows11下开启“任务栏搜索框显示播放信息”时崩溃的问题。\n部分窗口中的按钮添加了图标。\n浮动的播放列表跟随主窗口移动。\n修正有时在每次启动时都会重新获取歌曲信息的问题。\n“选项”——“歌词设置”中添加“单行和双行显示模式下不显示空白行”的选项。</contents>
+<contents>新增FFMPEG播放内核（需要单独下载）。\n新增一些新的界面布局。\n界面3、界面4和界面5使用xml重制，优化界面4的效果。\n自定义界面中新增了堆叠组件。\n浮动播放列表的使用逻辑优化。\n修正写入ini时可能出现缓冲区不足的问题。\n在媒体库中新建播放列表时，新的播放列表显示到最前面。\n自绘控件跟随“使用圆角风格”的设置。\n修正“音效设定”中的“混响”无法保存的问题。\n新增自绘菜单栏。\n其他细节方面的改进。</contents>
