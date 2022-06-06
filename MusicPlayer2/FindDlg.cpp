@@ -67,6 +67,7 @@ void CFindDlg::ShowFindInfo()
         result_mun = m_find_result.size();
     str = CCommon::LoadTextFormat(IDS_FIND_DLG_INFO, { m_key_word, result_mun });
     SetDlgItemText(IDC_FIND_INFO_STATIC, str);
+    ShowDlgCtrl(IDC_FIND_INFO_STATIC, !m_key_word.empty());
 }
 
 bool CFindDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
