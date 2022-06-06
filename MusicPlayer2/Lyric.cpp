@@ -185,11 +185,11 @@ void CLyrics::DisposeLrc()
             index = str.find_first_not_of(L"[:.]0123456789-", pos_end); // 用来分离行起始时间标签（可能是连续的压缩时间标签）
             if (index != wstring::npos)
             {
-                time_str = str.substr(pos_start, index);        // 略去首个时间标签之前的文字
+                time_str = str.substr(0, index);
                 text_str = str.substr(index);
             }
             else
-                time_str = str.substr(pos_start);               // 略去首个时间标签之前的文字
+                time_str = str;
             CCommon::StringNormalize(text_str);
             if (!text_str.empty())                              // 这个if对应的else即空行，无须处理text和translate
             {

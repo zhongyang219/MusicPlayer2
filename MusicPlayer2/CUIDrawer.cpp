@@ -161,9 +161,9 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                 {
                     SetLyricFont();
                     COLORREF text_color;
-                    if (i == lyric_index - 1 || progress == 1000)       // 绘制正在取消高亮的歌词（这里实现一句歌词颜色从高亮缓慢变化到非高亮效果），逐字歌词最后一句在此处取消高亮
+                    if (i == lyric_index - 1 || (i == lyric_index && progress == 1000))         // 绘制正在取消高亮的歌词（这里实现一句歌词颜色从高亮缓慢变化到非高亮效果），逐字歌词最后一句在此处取消高亮
                     {
-                        int last_time_span = time - (lyric_i.time_start + lyric_i.time_span);     // 引入逐字歌词后上句歌词结束时长不等于当前播放的歌词已持续的时间，此处应当使用上句歌词结束时间
+                        int last_time_span = time - (lyric_i.time_start + lyric_i.time_span);   // 引入逐字歌词后上句歌词结束后时长不等于当前播放的歌词已持续的时间，此处应当使用上句歌词结束时间
                         int fade_percent = last_time_span / 20;         //计算颜色高亮变化的百分比，当持续时间为2000毫秒时为100%，即颜色缓慢变化的时间为2秒
                         text_color = CColorConvert::GetGradientColor(m_colors.color_text, m_colors.color_text_2, fade_percent);
                     }
