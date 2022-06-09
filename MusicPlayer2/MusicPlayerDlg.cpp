@@ -500,7 +500,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.window_transparency = ini.GetInt(L"config", L"transparency", 100);
     theApp.m_ui_data.narrow_mode = ini.GetBool(L"config", L"narrow_mode", false);
     theApp.m_lyric_setting_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
-    theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", true);
+    theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", false);
     theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", false);
     theApp.m_ui_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", false);
     theApp.m_ui_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
