@@ -612,6 +612,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_ADD_TO_PLAYLIST;
     else if (key_type == "switchDisplay")
         key = CPlayerUIBase::BTN_SWITCH_DISPLAY;
+    else if (key_type == "darkLightMode")
+        key = CPlayerUIBase::BTN_DARK_LIGHT;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }

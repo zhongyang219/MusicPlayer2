@@ -646,6 +646,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case BTN_APP_CLOSE: return theApp.m_icon_set.close;
     case BTN_ADD_TO_PLAYLIST: return theApp.m_icon_set.add;
     case BTN_SWITCH_DISPLAY: return theApp.m_icon_set.switch_display;
+    case BTN_DARK_LIGHT: return theApp.m_icon_set.dark_mode;
     default: break;
     }
     return IconRes();
