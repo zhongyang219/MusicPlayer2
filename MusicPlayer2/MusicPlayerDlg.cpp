@@ -1225,6 +1225,12 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         ShowFloatPlaylist();
     }
 
+    //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中
+    if (theApp.m_app_setting_data.dark_mode)
+        theApp.m_nc_setting_data.dark_mode_default_transparency = theApp.m_app_setting_data.background_transparency;
+    else
+        theApp.m_nc_setting_data.light_mode_default_transparency = theApp.m_app_setting_data.background_transparency;
+
     SaveConfig();       //将设置写入到ini文件
     theApp.SaveConfig();
     CPlayer::GetInstance().SaveConfig();
