@@ -4820,6 +4820,9 @@ void CMusicPlayerDlg::OnDarkMode()
     else
         theApp.m_app_setting_data.background_transparency = theApp.m_nc_setting_data.light_mode_default_transparency;
     SaveConfig();
+    auto ui{ GetCurrentUi() };
+    if (ui != nullptr)
+        ui->UpdateDarkLightModeBtnToolTip();
 }
 
 

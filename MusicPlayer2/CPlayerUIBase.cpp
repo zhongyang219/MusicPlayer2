@@ -408,6 +408,11 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
                 return true;
 
+            case BTN_DARK_LIGHT:
+                m_buttons[BTN_DARK_LIGHT].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
+                return true;
+
             case BTN_VOLUME_UP:
                 if (m_show_volume_adj)
                 {
@@ -883,8 +888,19 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
         m_buttons[BTN_FIND].rect = CRect();
     }
 
-    //绘制AB重复按钮
+    //绘制深色/浅色按钮
     if (rect.Width() >= DPI(246))
+    {
+        rc_tmp.MoveToX(rc_tmp.right);
+        DrawControlBarBtn(rc_tmp, m_buttons[BTN_DARK_LIGHT], theApp.m_icon_set.dark_mode);
+    }
+    else
+    {
+        m_buttons[BTN_DARK_LIGHT].rect = CRect();
+    }
+
+    //绘制AB重复按钮
+    if (rect.Width() >= DPI(270))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect rc_btn = rc_tmp;
@@ -897,7 +913,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     }
 
     //绘制翻译按钮
-    if (draw_translate_button && rect.Width() >= DPI(270))
+    if (draw_translate_button && rect.Width() >= DPI(294))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;
@@ -910,7 +926,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     }
 
     //绘制桌面歌词按钮
-    if (rect.Width() >= DPI(294))
+    if (rect.Width() >= DPI(318))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;
@@ -925,7 +941,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     rc_tmp.left = rc_tmp.right = rect.right;
 
     //显示<<<<
-    if (rect.Width() >= DPI(344))
+    if (rect.Width() >= DPI(368))
     {
         rc_tmp.right = rc_tmp.left;
         rc_tmp.left = rc_tmp.right - DPI(44);
@@ -1139,6 +1155,11 @@ void CPlayerUIBase::UpdatePlaylistBtnToolTip()
         UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+K)")));
     else
         UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+L)")));
+}
+
+void CPlayerUIBase::UpdateDarkLightModeBtnToolTip()
+{
+    UpdateMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, _T(" (Ctrl+Shift+D)")));
 }
 
 void CPlayerUIBase::UpdateToolTipPosition()
@@ -2457,6 +2478,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
     AddMouseToolTip(BTN_ADD_TO_PLAYLIST, CCommon::LoadText(IDS_ADD_TO_PLAYLIST));
     AddMouseToolTip(BTN_SWITCH_DISPLAY, CCommon::LoadText(IDS_SWITCH_DISPLAY));
+    AddMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, _T(" (Ctrl+Shift+D)")));
 
     UpdateRepeatModeToolTip();
 }

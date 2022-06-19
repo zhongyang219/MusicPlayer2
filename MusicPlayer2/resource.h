@@ -745,6 +745,10 @@
 #define IDI_HELP                        571
 #define IDS_SIMPLENOTEPAD_DESCRIPTION   571
 #define IDS_NO_TRACKS_TIP_INFO          572
+#define IDI_ICON27                      573
+#define IDI_LIGHT_MODE                  573
+#define IDS_SWITHC_TO_DARK_MODE         573
+#define IDS_SWITCH_TO_LIGHT_MODE        574
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
