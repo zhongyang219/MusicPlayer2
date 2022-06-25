@@ -212,6 +212,7 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CFloatPlaylistDlg::OnMainWindowActivated)
     ON_WM_DROPFILES()
     ON_WM_CTLCOLOR()
+    ON_WM_COPYDATA()
 END_MESSAGE_MAP()
 
 
@@ -567,4 +568,16 @@ HBRUSH CFloatPlaylistDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     }
 
     return hbr;
+}
+
+
+BOOL CFloatPlaylistDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    //转发给主窗口
+    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (main_wnd != nullptr)
+        return main_wnd->OnCopyData(pWnd, pCopyDataStruct);
+    else
+        return CDialog::OnCopyData(pWnd, pCopyDataStruct);
 }
