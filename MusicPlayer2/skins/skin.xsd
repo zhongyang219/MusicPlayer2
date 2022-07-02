@@ -356,6 +356,11 @@
                             <xs:documentation>切换界面中stackElement元素的显示。如果界面中有多个stackElement元素，则点击此按钮会切换第一个stackElement元素的显示。</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="darkLightMode">
+                        <xs:annotation>
+                            <xs:documentation>在深色模式和浅色模式之间切换。</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>

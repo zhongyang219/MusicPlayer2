@@ -505,6 +505,7 @@ struct IconSet
     IconRes lyric;
     IconRes playlist_dock;
     IconRes help;
+    IconRes dark_mode;
 
     //菜单图标（仅16x16）
     HICON stop_new;
@@ -524,7 +525,6 @@ struct IconSet
     HICON pin;
     HICON exit;
     HICON album_cover;
-    HICON dark_mode;
     HICON rename;
     HICON tag;
     HICON star;

@@ -567,6 +567,7 @@
     <Image Include="res\help.ico" />
     <Image Include="res\help_d.ico" />
     <Image Include="res\internal_lyric_d.ico" />
+    <Image Include="res\light_mode.ico" />
     <Image Include="res\link.ico" />
     <Image Include="res\link_d.ico" />
     <Image Include="res\locate.ico" />

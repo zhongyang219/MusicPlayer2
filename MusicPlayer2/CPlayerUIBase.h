@@ -77,6 +77,7 @@ public:
     void UpdateTitlebarBtnToolTip();       //更新标题栏上的最大化/还原按钮的鼠标提示
     virtual void UpdateVolumeToolTip();
     void UpdatePlaylistBtnToolTip();
+    void UpdateDarkLightModeBtnToolTip();
 
     virtual bool SetCursor() override;
     virtual void MouseLeave() override;
@@ -142,6 +143,7 @@ public:
         BTN_APP_CLOSE,          //关闭按钮
         BTN_ADD_TO_PLAYLIST,    //添加到播放列表按钮
         BTN_SWITCH_DISPLAY,     //切换界面中的stackElement
+        BTN_DARK_LIGHT,         //切换深色/浅色模式
 
         //菜单栏
         MENU_FILE,

@@ -66,7 +66,14 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     int lyric_height2 = lyric_height * 2 + line_space;		//包含翻译的歌词高度
 
     CFont* pOldFont = SetLyricFont();
-    if (CPlayerUIHelper::IsMidiLyric())
+    if (CPlayer::GetInstance().IsPlaylistEmpty())   //当前播放为空时在歌词区域显示播放提示
+    {
+        CFont* font = SetFont(&theApp.m_font_set.font10.GetFont());
+        CString no_track_tip_str{ CCommon::LoadText(IDS_NO_TRACKS_TIP_INFO) };
+        DrawWindowText(lyric_area, no_track_tip_str, m_colors.color_text_2, Alignment::LEFT, false, true);
+        SetFont(font);
+    }
+    else if (CPlayerUIHelper::IsMidiLyric())
     {
         wstring current_lyric{ CPlayer::GetInstance().GetMidiLyric() };
         DrawWindowText(lyric_area, current_lyric.c_str(), m_colors.color_text, Alignment::CENTER, false, true);
