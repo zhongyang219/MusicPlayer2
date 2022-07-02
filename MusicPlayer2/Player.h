@@ -255,6 +255,7 @@ public:
     void SpeedUp();
     void SlowDown();
     void SetOrignalSpeed();
+    void SetSpeed(float speed);
     float GetSpeed() { return m_speed; }
 
     bool GetPlayerCoreError(const wchar_t* function_name);		//获取BASS音频库的错误

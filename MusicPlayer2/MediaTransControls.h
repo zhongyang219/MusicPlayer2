@@ -28,6 +28,9 @@ public:
         if (controls2 && m_EventRegistrationToken2.value) {
             controls2->remove_PlaybackPositionChangeRequested(m_EventRegistrationToken2);
         }
+        if (controls2 && m_EventRegistrationToken3.value) {
+            controls2->remove_PlaybackRateChangeRequested(m_EventRegistrationToken3);
+        }
     }
     /**
      * @brief Intitialize the interface
@@ -46,13 +49,15 @@ public:
     void UpdateDuration(int64_t duration);
     /// Update current time, in milliseconds
     void UpdatePosition(int64_t postion);
+    /// Update current speed
+    void UpdateSpeed(float speed);
 protected:
     CComPtr<ISystemMediaTransportControlsTimelineProperties> timeline;
     Microsoft::WRL::ComPtr<ISystemMediaTransportControls> controls;
     Microsoft::WRL::ComPtr<ISystemMediaTransportControls2> controls2;
     CComPtr<ISystemMediaTransportControlsDisplayUpdater> updater;
     Microsoft::WRL::ComPtr<IMusicDisplayProperties> music;
-    EventRegistrationToken m_EventRegistrationToken, m_EventRegistrationToken2;
+    EventRegistrationToken m_EventRegistrationToken, m_EventRegistrationToken2, m_EventRegistrationToken3;
     void UpdateTitle(wstring title);
     void UpdateArtist(wstring artist);
     void UpdateAlbumArtist(wstring album_artist);
@@ -82,6 +87,7 @@ public:
     void UpdateControlsMetadata(const SongInfo song);
     void UpdateDuration(int64_t duration);
     void UpdatePosition(int64_t postion);
+    void UpdateSpeed(float speed)
 };
 
 #endif

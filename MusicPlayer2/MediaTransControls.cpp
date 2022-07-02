@@ -115,6 +115,17 @@ bool MediaTransControls::Init() {
                 return S_OK;
             });
         controls2->add_PlaybackPositionChangeRequested(callbackPlaybackPositionChangeRequested.Get(), &m_EventRegistrationToken2);
+        auto callbackPlaybackRateChangeRequested = Callback<ABI::Windows::Foundation::ITypedEventHandler<SystemMediaTransportControls*, PlaybackRateChangeRequestedEventArgs*>>(
+            [this](ISystemMediaTransportControls*, IPlaybackRateChangeRequestedEventArgs* pArgs) {
+                HRESULT ret;
+                double rate = 1.0;
+                ret = pArgs->get_RequestedPlaybackRate(&rate);
+                if (ret == S_OK) {
+                    CPlayer::GetInstance().SetSpeed((float)rate);
+                }
+                return S_OK;
+        });
+        controls2->add_PlaybackRateChangeRequested(callbackPlaybackRateChangeRequested.Get(), &m_EventRegistrationToken3);
     }
     return true;
 }
@@ -414,6 +425,13 @@ void MediaTransControls::UpdateGenres(std::vector<wstring> genres) {
     }
 }
 
+void MediaTransControls::UpdateSpeed(float speed) {
+    if (controls2) {
+        auto ret = controls2->put_PlaybackRate(speed);
+        ASSERT(ret == S_OK);
+    }
+}
+
 #else
 
 MediaTransControls::MediaTransControls()
@@ -455,4 +473,5 @@ void MediaTransControls::UpdateDuration(int64_t duration) {}
 
 void MediaTransControls::UpdatePosition(int64_t postion) {}
 
+void MediaTransControls::UpdateSpeed(float speed) {}
 #endif
