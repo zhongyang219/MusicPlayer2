@@ -111,12 +111,14 @@ void CCueFile::DoAnalysis()
             }
 
             // 查找曲目位置
-            Time time_index00, time_index01;
+            Time time_index00{}, time_index01{};
             size_t index00_pos{}, index01_pos{};
             index00_pos = m_file_content_wcs.find(L"INDEX 00", index_track + 6);
             index01_pos = m_file_content_wcs.find(L"INDEX 01", index_track + 6);
-            time_index00 = PhaseIndex(index00_pos);
-            time_index01 = PhaseIndex(index01_pos);
+            if (index00_pos < next_track_index)
+                time_index00 = PhaseIndex(index00_pos);
+            if (index01_pos < next_track_index)
+                time_index01 = PhaseIndex(index01_pos);
 
             song_info.start_pos = time_index01;
 
