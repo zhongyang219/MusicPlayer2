@@ -75,7 +75,23 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    if (!m_playlist_mode)
+    bool change_to_default_playlist{};
+    for (int i{}; i < m_recent_path.size(); ++i)    // 清除最近播放文件夹列表中的无效项
+    {
+        if (!CAudioCommon::IsPathContainsAudioFile(m_recent_path[i].path, m_recent_path[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(m_recent_path[i].path))
+        {
+            m_recent_path.erase(m_recent_path.begin() + i);
+            change_to_default_playlist = (i == 0);
+            i--;
+        }
+    }
+    if (change_to_default_playlist)
+    {
+        PlaylistInfo playlist_info;
+        playlist_info = CPlaylistMgr::Instance().m_default_playlist;
+        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
+    }
+    else if (!m_playlist_mode)
     {
         IniPlayList();	//初始化播放列表
     }
@@ -208,8 +224,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             continue;
         }
 
-        CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);
-
         //从CSongDataManager获取歌曲信息
         song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
 
@@ -232,6 +246,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             CAudioTag audio_tag(song);
             audio_tag.GetAudioRating();
             CSongDataManager::GetInstance().SaveSongInfo(song);
+            CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);    // 媒体库内存在歌曲信息时此更新修改时间方法可用
             CSongDataManager::GetInstance().SetSongDataModified();
         }
     }

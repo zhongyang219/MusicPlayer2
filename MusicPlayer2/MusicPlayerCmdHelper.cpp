@@ -553,7 +553,7 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
     auto& recent_folders{ CPlayer::GetInstance().GetRecentPath() };
     for (size_t i{}; i < recent_folders.size(); i++)
     {
-        if (!CCommon::FolderExist(recent_folders[i].path))
+        if (!CAudioCommon::IsPathContainsAudioFile(recent_folders[i].path, recent_folders[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(recent_folders[i].path))
         {
             recent_folders.erase(recent_folders.begin() + i);		//删除不存在的路径
             i--;

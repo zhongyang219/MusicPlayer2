@@ -40,6 +40,8 @@ public:
 
     //清理数据，函数对象fun_condition用来判断文件是否要被清理，如果是则返回true
     static int CleanUpSongData(std::function<bool(const SongInfo&)> fun_condition = [&](const SongInfo& song) { return !CCommon::FileExist(song.file_path); });
+
+    // 清除最近播放文件夹中的无效条目
     static int CleanUpRecentFolders();
 
     static bool Rename(SongInfo& song, const wstring& new_name);
