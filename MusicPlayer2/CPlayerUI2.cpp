@@ -192,7 +192,7 @@ void CPlayerUI2::_DrawInfo(CRect draw_rect, bool reset)
         else
         {
             rc_tmp.MoveToX(info_rect.right);
-            rc_tmp.MoveToY(2 * text_height2 + EdgeMargin(false));
+            rc_tmp.MoveToY(start_point.y + EdgeMargin(false));
             rc_tmp.right = draw_rect.right - EdgeMargin(true);
             rc_tmp.bottom = rc_spectrum_area.bottom;
 
