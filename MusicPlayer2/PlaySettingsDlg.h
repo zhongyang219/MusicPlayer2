@@ -44,6 +44,7 @@ protected:
 	void ShowDeviceInfo();
     void EnableControl();
     virtual void GetDataFromUi() override;
+    virtual void ApplyDataToUi() override;
 
 	DECLARE_MESSAGE_MAP()
 public:
