@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CoverDownloadDlg.h"
 #include "afxdialogex.h"
+#include "SongDataManager.h"
 
 
 // CCoverDownloadDlg 对话框
@@ -50,25 +51,20 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
 
     //获取要保存的专辑封面的文件路径
     CFilePathHelper cover_file_path;
-    if (match_item.album == pThis->GetSongInfo().album)		//如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
-    {
-        wstring album_name{ match_item.album };
-        CCommon::FileNameNormalize(album_name);
-        CFilePathHelper url_path(cover_url);
-        cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name + url_path.GetFileExtension(false, true));
-    }
-    else				//否则以歌曲文件名为文件名保存
-    {
-        cover_file_path.SetFilePath(pThis->GetSongInfo().file_path);
-        CFilePathHelper url_path(cover_url);
-        cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
-    }
+    wstring album_name;
+    if (match_item.album == pThis->m_song.album)        // 如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
+        album_name = match_item.album;
+    else                                                // 否则以歌曲文件名为文件名保存
+        album_name = pThis->m_song.GetFileName();
+    CCommon::FileNameNormalize(album_name);
+    CFilePathHelper url_path(cover_url);
+    cover_file_path.SetFilePath(pThis->GetSavedDir() + album_name + url_path.GetFileExtension(false, true));
 
     //下面专辑封面
     if (CCommon::FileExist(cover_file_path.GetFilePath()))
         ::DeleteFile(cover_file_path.GetFilePath().c_str());
-    if (CCommon::FileExist(CPlayer::GetInstance().GetAlbumCoverPath().c_str()))
-        ::DeleteFile(CPlayer::GetInstance().GetAlbumCoverPath().c_str());
+    if (CCommon::FileExist(pThis->m_org_album_cover_path))
+        ::DeleteFile(pThis->m_org_album_cover_path.c_str());
     URLDownloadToFile(0, cover_url.c_str(), cover_file_path.GetFilePath().c_str(), 0, NULL);
 
     //将下载的专辑封面改为隐藏属性
@@ -77,6 +73,37 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
     ::PostMessage(pThis->m_hWnd, WM_DOWNLOAD_COMPLATE, 0, 0);		//下载完成后发送一个搜索完成的消息
 
     return 0;
+}
+
+void CCoverDownloadDlg::SaveConfig() const
+{
+    CIniHelper ini(theApp.m_config_path);
+    ini.WriteBool(L"album_download", L"save_to_song_folder", m_save_to_song_folder);
+    ini.Save();
+}
+
+void CCoverDownloadDlg::LoadConfig()
+{
+    CIniHelper ini(theApp.m_config_path);
+    m_save_to_song_folder = ini.GetBool(L"album_download", L"save_to_song_folder", true);
+}
+
+void CCoverDownloadDlg::SetID(wstring id)
+{
+    if (!m_song.is_cue)
+    {
+        SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song.file_path) };
+        song_info_ori.SetSongId(id);
+        CSongDataManager::GetInstance().SetSongDataModified();
+    }
+}
+
+wstring CCoverDownloadDlg::GetSavedDir()
+{
+    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_app_setting_data.album_path))
+        return CFilePathHelper(m_song.file_path).GetDir();
+    else
+        return theApp.m_app_setting_data.album_path;
 }
 
 SongInfo CCoverDownloadDlg::GetSongInfo() const
@@ -122,6 +149,7 @@ BEGIN_MESSAGE_MAP(CCoverDownloadDlg, CBaseDialog)
     ON_EN_CHANGE(IDC_TITLE_EDIT, &CCoverDownloadDlg::OnEnChangeTitleEdit)
     ON_EN_CHANGE(IDC_ARTIST_EDIT, &CCoverDownloadDlg::OnEnChangeArtistEdit)
     ON_NOTIFY(NM_CLICK, IDC_UNASSOCIATE_LINK, &CCoverDownloadDlg::OnNMClickUnassociateLink)
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -133,30 +161,34 @@ BOOL CCoverDownloadDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+    LoadConfig();
+
     SetIcon(theApp.m_icon_set.album_cover, FALSE);
     SetButtonIcon(IDC_SEARCH_BUTTON, theApp.m_icon_set.find_songs.GetIcon(true));
     SetButtonIcon(IDC_DOWNLOAD_SELECTED, theApp.m_icon_set.download);
 
-    const auto& song_info{ GetSongInfo() };
-    m_title = GetSongInfo().title;
-    m_artist = GetSongInfo().artist;
-    m_album = GetSongInfo().album;
+    m_song = GetSongInfo(); // 初始化复制Songinfo使用，防止随着播放GetSongInfo获取到另一首
+    m_org_album_cover_path = CPlayer::GetInstance().GetAlbumCoverPath();
 
-    if (song_info.IsTitleEmpty())		//如果没有标题信息，就把文件名设为标题
+    m_title = m_song.title;
+    m_artist = m_song.artist;
+    m_album = m_song.album;
+
+    if (m_song.IsTitleEmpty())    // 如果没有标题信息，就把文件名设为标题
     {
-        m_title = GetSongInfo().GetFileName();
+        m_title = m_song.GetFileName();
         size_t index = m_title.rfind(L'.');
         m_title = m_title.substr(0, index);
     }
-    if (song_info.IsArtistEmpty())	//没有艺术家信息，清空艺术家的文本
+    if (m_song.IsArtistEmpty())	//没有艺术家信息，清空艺术家的文本
     {
         m_artist.clear();
     }
-    if (song_info.IsAlbumEmpty())	//没有唱片集信息，清空唱片集的文本
+    if (m_song.IsAlbumEmpty())	//没有唱片集信息，清空唱片集的文本
     {
         m_album.clear();
     }
-    m_file_name = GetSongInfo().GetFileName();
+    m_file_name = m_song.GetFileName();
 
     SetDlgItemText(IDC_TITLE_EDIT, m_title.c_str());
     SetDlgItemText(IDC_ARTIST_EDIT, m_artist.c_str());
@@ -218,11 +250,11 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
     //计算搜索结果中最佳匹配项目
     int best_matched;
     bool id_releated{ false };
-    if (!GetSongInfo().song_id == 0)		//如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+    if (!m_song.song_id == 0)        // 如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
     {
         for (size_t i{}; i < m_down_list.size(); i++)
         {
-            if (GetSongInfo().GetSongId() == m_down_list[i].id)
+            if (m_song.GetSongId() == m_down_list[i].id)
             {
                 id_releated = true;
                 best_matched = i;
@@ -259,8 +291,8 @@ void CCoverDownloadDlg::OnBnClickedDownloadSelected()
 {
     // TODO: 在此添加控件通知处理程序代码
     if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_down_list.size())) return;
-    GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
-    CPlayer::GetInstance().SetRelatedSongID(m_down_list[m_item_selected].id);		//将选中项目的歌曲ID关联到歌曲
+    GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);     // 点击“下载选中项”后禁用该按钮
+    SetID(m_down_list[m_item_selected].id);                     // 将选中项目的歌曲ID关联到歌曲
     m_pDownThread = AfxBeginThread(CoverDownloadThreadFunc, this);
 }
 
@@ -322,11 +354,23 @@ void CCoverDownloadDlg::OnCancel()
 }
 
 
+void CCoverDownloadDlg::OnDestroy()
+{
+    CBaseDialog::OnDestroy();
+
+    // TODO: 在此处添加消息处理程序代码
+    SaveConfig();
+}
+
+
 afx_msg LRESULT CCoverDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lParam)
 {
     //重新从本地获取专辑封面
-    CPlayer::GetInstance().SearchOutAlbumCover();
-    CPlayer::GetInstance().AlbumCoverGaussBlur();
+    if (CPlayer::GetInstance().GetCurrentSongInfo().IsSameSong(m_song))
+    {
+        CPlayer::GetInstance().SearchOutAlbumCover();
+        CPlayer::GetInstance().AlbumCoverGaussBlur();
+    }
     GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(TRUE);		//下载完成后启用该按钮
     MessageBox(CCommon::LoadText(IDS_DOWNLOAD_COMPLETE), NULL, MB_ICONINFORMATION | MB_OK);
     return 0;
@@ -364,8 +408,9 @@ void CCoverDownloadDlg::OnEnChangeArtistEdit()
 void CCoverDownloadDlg::OnNMClickUnassociateLink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    CPlayer::GetInstance().SetRelatedSongID(wstring());
+    SetID(wstring());
     m_unassciate_lnk.ShowWindow(SW_HIDE);
 
     *pResult = 0;
 }
+

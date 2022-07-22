@@ -81,6 +81,7 @@ protected:
 
 	void ShowDownloadList();		//将搜索结果显示出来
 	bool SaveLyric(const wchar_t* path, CodeType code_type);	//保存歌词
+    void SetID(wstring id);         // 保存指定id到媒体库内m_song.file_path对应条目
 
 	void SaveConfig() const;
 	void LoadConfig();

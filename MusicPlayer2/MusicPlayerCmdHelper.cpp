@@ -450,10 +450,17 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
         // 没有找到唱片集为文件名的文件，查找文件名为设置的专辑封面名的文件
         else if (theApp.m_app_setting_data.use_out_image)
         {
+            wstring absolute_dir;
+            // 按照默认封面文件名列表查找歌曲所在目录，如遇到绝对路径则存入absolute_dir
             for (const auto& album_name : theApp.m_app_setting_data.default_album_name)
             {
                 if (!album_name.empty())
                 {
+                    if (absolute_dir.empty() && CCommon::IsWindowsPath(album_name) && CCommon::FileExist(album_name))
+                    {
+                        absolute_dir = album_name;
+                        continue;
+                    }
                     file_name = CCommon::RelativePathToAbsolutePath(album_name + L".*", dir);
                     CCommon::GetImageFiles(file_name, files);
                 }
@@ -466,6 +473,24 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
                     break;
                 }
             }
+            // 按照歌曲名、唱片名查找封面文件夹album_path
+            if (album_cover_path.empty())
+            {
+                CCommon::GetImageFiles(theApp.m_app_setting_data.album_path + c_file_path.GetFileName(), files);
+                if (files.empty() && !song.album.empty())
+                {
+                    // 没有找到和歌曲名一致的图片文件，则查找文件名为“唱片集”的文件
+                    wstring album_name{ song.album };
+                    CCommon::FileNameNormalize(album_name);
+                    file_name = theApp.m_app_setting_data.album_path + album_name + L".*";
+                    CCommon::GetImageFiles(file_name, files);
+                }
+                if (!files.empty())
+                    album_cover_path = theApp.m_app_setting_data.album_path + files[0];
+            }
+            // 使用默认封面文件名列表中的绝对路径
+            if (album_cover_path.empty())
+                album_cover_path = absolute_dir;
         }
     }
     return album_cover_path;
