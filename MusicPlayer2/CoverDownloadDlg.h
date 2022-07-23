@@ -84,4 +84,6 @@ public:
     afx_msg void OnEnChangeTitleEdit();
     afx_msg void OnEnChangeArtistEdit();
     afx_msg void OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnBnClickedSaveToSongFolder2();
+    afx_msg void OnBnClickedSaveToAlbumFolder2();
 };

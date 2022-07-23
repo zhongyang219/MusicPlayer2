@@ -4000,8 +4000,8 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             album_name = cover_file_path.GetFileName();
         }
         // 判断是否保存到封面文件夹
-        if (!theApp.m_general_setting_data.save_album_to_song_folder && CCommon::FolderExist(theApp.m_app_setting_data.album_path))
-            cover_file_path.SetFilePath(theApp.m_app_setting_data.album_path + album_name);
+        if (!theApp.m_general_setting_data.save_album_to_song_folder && CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path))
+            cover_file_path.SetFilePath(theApp.m_app_setting_data.album_cover_path + album_name);
         else
             cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name);
 

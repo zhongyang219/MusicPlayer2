@@ -100,10 +100,10 @@ void CCoverDownloadDlg::SetID(wstring id)
 
 wstring CCoverDownloadDlg::GetSavedDir()
 {
-    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_app_setting_data.album_path))
+    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path))
         return CFilePathHelper(m_song.file_path).GetDir();
     else
-        return theApp.m_app_setting_data.album_path;
+        return theApp.m_app_setting_data.album_cover_path;
 }
 
 SongInfo CCoverDownloadDlg::GetSongInfo() const
@@ -150,6 +150,8 @@ BEGIN_MESSAGE_MAP(CCoverDownloadDlg, CBaseDialog)
     ON_EN_CHANGE(IDC_ARTIST_EDIT, &CCoverDownloadDlg::OnEnChangeArtistEdit)
     ON_NOTIFY(NM_CLICK, IDC_UNASSOCIATE_LINK, &CCoverDownloadDlg::OnNMClickUnassociateLink)
     ON_WM_DESTROY()
+    ON_BN_CLICKED(IDC_SAVE_TO_SONG_FOLDER2, &CCoverDownloadDlg::OnBnClickedSaveToSongFolder2)
+    ON_BN_CLICKED(IDC_SAVE_TO_ALBUM_FOLDER2, &CCoverDownloadDlg::OnBnClickedSaveToAlbumFolder2)
 END_MESSAGE_MAP()
 
 
@@ -212,6 +214,21 @@ BOOL CCoverDownloadDlg::OnInitDialog()
     m_down_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width3);		//插入第3列
 
     m_unassciate_lnk.ShowWindow(SW_HIDE);
+
+    if (m_save_to_song_folder)
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER2))->SetCheck(TRUE);
+    else
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER2))->SetCheck(TRUE);
+
+    //判断封面文件夹是否存在
+    bool lyric_path_exist = CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path);
+    if (!lyric_path_exist)		//如果封面文件夹不存在，则禁用“保存到封面文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
+    {
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER2))->EnableWindow(FALSE);
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER2))->SetCheck(FALSE);
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER2))->SetCheck(TRUE);
+        m_save_to_song_folder = true;
+    }
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -414,3 +431,17 @@ void CCoverDownloadDlg::OnNMClickUnassociateLink(NMHDR* pNMHDR, LRESULT* pResult
     *pResult = 0;
 }
 
+
+
+void CCoverDownloadDlg::OnBnClickedSaveToSongFolder2()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_save_to_song_folder = true;
+}
+
+
+void CCoverDownloadDlg::OnBnClickedSaveToAlbumFolder2()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_save_to_song_folder = false;
+}

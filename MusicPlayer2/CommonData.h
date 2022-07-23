@@ -246,7 +246,7 @@ struct ApperanceSettingData
 
     bool use_out_image{ true };					//使用外部图片作为专辑封面
     bool use_inner_image_first{ true };			//优先使用内嵌专辑封面
-    wstring album_path;                         // 专辑封面存储路径
+    wstring album_cover_path;                         // 专辑封面存储路径
     vector<wstring> default_album_name;			//默认的专辑封面文件名
 
     bool background_gauss_blur{ true };			//背景高斯模糊

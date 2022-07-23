@@ -54,6 +54,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_BTN_ROUND_CORNERS_CHECK, m_btn_round_corners_chk);
     DDX_Control(pDX, IDC_DEFAULT_BACKGROUND_PATH_EDIT, m_default_background_edit);
     DDX_Control(pDX, IDC_DEFAULT_COVER_NAME_EDIT, m_album_cover_name_edit);
+    DDX_Control(pDX, IDC_ALBUM_COVER_PATH_EDIT, m_album_cover_path_edit);
 }
 
 void CAppearanceSettingDlg::SetTransparency()
@@ -93,6 +94,7 @@ void CAppearanceSettingDlg::SetControlEnable()
 {
     m_album_cover_fit_combo.EnableWindow(m_data.show_album_cover);
     m_album_cover_name_edit.EnableWindow(m_data.use_out_image);
+    m_album_cover_path_edit.EnableWindow(m_data.use_out_image);
     m_spectrum_height_slid.EnableWindow(m_data.show_spectrum);
     m_album_cover_as_background_chk.EnableWindow(m_data.enable_background);
     m_back_transparency_slid.EnableWindow(m_data.enable_background);
@@ -120,22 +122,6 @@ void CAppearanceSettingDlg::CalculateNotifyIconPreviewRect()
 
 void CAppearanceSettingDlg::GetDataFromUi()
 {
-    CString temp;
-    GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
-    temp.Replace(L'/', L'\\');
-    CCommon::StringSplit(wstring(temp), L',', m_data.default_album_name);
-    for (auto& album_name : m_data.default_album_name)
-    {
-        // 虽然开头的.\\不是后续识别必须的但是如果发现缺少还是加上
-        // 这是一个非简写的相对路径，绝对路径此处不做处理
-        if (album_name.find(L'\\') != wstring::npos && album_name.front() != L'\\' && !CCommon::IsWindowsPath(album_name))
-        {
-            // 确保相对路径以".\\"开头
-            if (album_name.at(0) == L'.' && album_name.at(1) == L'\\')
-                continue;
-            album_name = L".\\" + album_name;
-        }
-    }
     m_data.ui_refresh_interval = m_ui_refresh_interval_edit.GetValue();
 }
 
@@ -258,10 +244,12 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_toolTip.AddTool(&m_album_cover_fit_combo, CCommon::LoadText(IDS_COVER_FIT_TIP_INFO));
     m_toolTip.AddTool(&m_use_out_image_chk, CCommon::LoadText(IDS_USE_OUT_IMAGE_TIP_INFO));
     m_toolTip.AddTool(&m_album_cover_name_edit, CCommon::LoadText(IDS_DEFAULT_COVER_NAME_TIP_INFO));
+    m_toolTip.AddTool(&m_album_cover_path_edit, CCommon::LoadText(IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO));
 
     SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());
     m_album_cover_name_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::LIST);
     m_album_cover_name_edit.SetPopupDlgTitle(CCommon::LoadText(IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME));
+    SetDlgItemText(IDC_ALBUM_COVER_PATH_EDIT, theApp.m_app_setting_data.album_cover_path.c_str());
 
     m_enable_background_chk.SetCheck(m_data.enable_background);
     m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);
@@ -729,6 +717,32 @@ afx_msg LRESULT CAppearanceSettingDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM
         CString str;
         m_default_background_edit.GetWindowText(str);
         m_data.default_background = str.GetString();
+    }
+    else if (pEdit == &m_album_cover_name_edit)
+    {
+        CString temp;
+        m_album_cover_name_edit.GetWindowTextW(temp);
+        temp.Replace(L'/', L'\\');
+        CCommon::StringSplit(wstring(temp), L',', m_data.default_album_name);
+        for (auto& album_name : m_data.default_album_name)
+        {
+            // 虽然开头的.\\不是后续识别必须的但是如果发现缺少还是加上
+            // 这是一个非简写的相对路径，绝对路径此处不做处理
+            if (album_name.find(L'\\') != wstring::npos && album_name.front() != L'\\' && !CCommon::IsWindowsPath(album_name))
+            {
+                // 确保相对路径以".\\"开头
+                if (album_name.at(0) == L'.' && album_name.at(1) == L'\\')
+                    continue;
+                album_name = L".\\" + album_name;
+            }
+        }
+        m_album_cover_name_edit.SetWindowTextW(CCommon::StringMerge(m_data.default_album_name, L',').c_str());
+    }
+    else if (pEdit == &m_album_cover_path_edit)
+    {
+        CString str;
+        m_album_cover_path_edit.GetWindowText(str);
+        m_data.album_cover_path = str.GetString();
     }
     return 0;
 }

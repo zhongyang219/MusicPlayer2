@@ -1373,7 +1373,7 @@ void CPlayer::SaveConfig() const
     ini.WriteInt(L"config", L"sort_mode", static_cast<int>(m_sort_mode));
     ini.WriteBool(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
     ini.WriteString(L"config", L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
-    ini.WriteString(L"config", L"album_path", theApp.m_app_setting_data.album_path);
+    ini.WriteString(L"config", L"album_cover_path", theApp.m_app_setting_data.album_cover_path);
     ini.WriteBool(L"config", L"playlist_mode", m_playlist_mode);
     ini.WriteDouble(L"config", L"speed", m_speed);
 
@@ -1417,9 +1417,9 @@ void CPlayer::LoadConfig()
     wstring default_album_name = ini.GetString(L"config", L"default_album_file_name", L"cover");
     CCommon::StringSplit(default_album_name, L',', theApp.m_app_setting_data.default_album_name);
 
-    theApp.m_app_setting_data.album_path = ini.GetString(L"config", L"album_path", L".\\cover\\");
-    if (!theApp.m_app_setting_data.album_path.empty() && theApp.m_app_setting_data.album_path.back() != L'/' && theApp.m_app_setting_data.album_path.back() != L'\\')
-        theApp.m_app_setting_data.album_path.append(1, L'\\');
+    theApp.m_app_setting_data.album_cover_path = ini.GetString(L"config", L"album_cover_path", L".\\cover\\");
+    if (!theApp.m_app_setting_data.album_cover_path.empty() && theApp.m_app_setting_data.album_cover_path.back() != L'/' && theApp.m_app_setting_data.album_cover_path.back() != L'\\')
+        theApp.m_app_setting_data.album_cover_path.append(1, L'\\');
 
     bool playlist_mode_default = !CCommon::FileExist(theApp.m_recent_path_dat_path);
     m_playlist_mode = ini.GetBool(L"config", L"playlist_mode", playlist_mode_default);
