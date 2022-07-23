@@ -194,6 +194,7 @@ void CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.auto_download_album_cover = (((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->GetCheck() != 0);
+    EnableControl();
 }
 
 
