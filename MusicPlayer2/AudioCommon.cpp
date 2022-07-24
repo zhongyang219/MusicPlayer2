@@ -454,7 +454,7 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
 {
     for (auto iter = files.begin(); iter != files.end(); ++iter)
     {
-        if (iter->is_cue)        //跳过已解析的cue音轨
+        if (iter->is_cue || iter->file_path.empty())        // 跳过已解析的cue音轨，跳过无效文件
             continue;
         CAudioTag audio_tag(*iter);
         wstring cue_contents = audio_tag.GetAudioCue();

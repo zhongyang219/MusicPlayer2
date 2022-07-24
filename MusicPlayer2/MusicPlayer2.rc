@@ -505,69 +505,72 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,29,125,10
 END
 
-IDD_APPEREANCE_SETTING_DLG DIALOGEX 0, 0, 246, 321
+IDD_APPEREANCE_SETTING_DLG DIALOGEX 0, 0, 246, 372
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x86
 BEGIN
-    GROUPBOX        "主窗口不透明度",IDC_STATIC,149,181,90,28
-    CONTROL         "",IDC_TRANSPARENT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,156,194,60,12
-    LTEXT           "xx%",IDC_TRANSPARENT_STATIC,218,195,19,8
-    GROUPBOX        "视觉效果",IDC_STATIC,7,5,112,119
+    GROUPBOX        "主窗口不透明度",IDC_STATIC,149,230,90,28
+    CONTROL         "",IDC_TRANSPARENT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,156,243,60,12
+    LTEXT           "xx%",IDC_TRANSPARENT_STATIC,218,244,19,8
+    GROUPBOX        "视觉效果",IDC_STATIC,7,5,112,105
     CONTROL         "显示频谱分析",IDC_SHOW_SPECTRUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,53,10
-    CONTROL         "显示专辑封面",IDC_SHOW_ALBUM_COVER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,66,15,52,10
-    LTEXT           "频谱分析高度:",IDC_STATIC,12,27,43,8
-    CONTROL         "",IDC_SPECTRUM_HEIGHT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,57,26,42,12
-    LTEXT           "Static",IDC_SPECTRUM_HEIGHT_STATIC,98,27,18,8
-    LTEXT           "专辑封面契合度:",IDC_STATIC,12,51,57,8
-    COMBOBOX        IDC_ALBUM_FIT_COMBO,68,50,47,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "使用专辑封面作为背景",IDC_ALBUM_COVER_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,129,27,92,10
+    CONTROL         "显示专辑封面",IDC_SHOW_ALBUM_COVER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,52,52,10
+    LTEXT           "频谱分析高度:",IDC_STATIC,12,28,43,8
+    CONTROL         "",IDC_SPECTRUM_HEIGHT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,57,27,42,12
+    LTEXT           "Static",IDC_SPECTRUM_HEIGHT_STATIC,98,28,18,8
+    LTEXT           "专辑封面契合度:",IDC_STATIC,12,65,57,8
+    COMBOBOX        IDC_ALBUM_FIT_COMBO,68,64,47,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "使用专辑封面作为背景",IDC_ALBUM_COVER_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,27,92,10
     LTEXT           "背景不透明度:",IDC_STATIC,130,39,51,8
     CONTROL         "",IDC_BACKGROUND_TRANSPARENCY_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,174,38,43,12
     LTEXT           "Static",IDC_BACKGROUND_TRANSPARENCY_STATIC,220,39,18,8
-    GROUPBOX        "主题颜色",IDC_STATIC,7,130,232,45
-    LTEXT           "",IDC_COLOR_STATIC,20,144,30,13,NOT WS_GROUP,WS_EX_STATICEDGE
-    GROUPBOX        "预置颜色",IDC_STATIC,62,135,111,25
-    LTEXT           "",IDC_COLOR_STATIC2,69,145,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC3,86,145,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC4,103,145,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC5,120,145,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC6,137,145,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC7,154,145,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    PUSHBUTTON      "更多颜色(&C)...",IDC_SET_PROGRESS_COLOR_BUTTON,178,143,50,14
-    CONTROL         "跟随系统主题色",IDC_FOLLOW_SYSTEM_COLOR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,162,173,10
-    CONTROL         "没有专辑封面时使用外部图片",IDC_USE_OUT_IMAGE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,63,104,10
-    LTEXT           "外部图片文件名:",IDC_STATIC,12,76,53,8
-    CONTROL         "背景高斯模糊",IDC_BACKGROUND_GAUSS_BLUR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,129,49,86,10
+    GROUPBOX        "主题颜色",IDC_STATIC,7,179,232,45
+    LTEXT           "",IDC_COLOR_STATIC,20,193,30,13,NOT WS_GROUP,WS_EX_STATICEDGE
+    GROUPBOX        "预置颜色",IDC_STATIC,62,184,111,25
+    LTEXT           "",IDC_COLOR_STATIC2,69,194,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC3,86,194,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC4,103,194,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC5,120,194,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC6,137,194,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC7,154,194,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    PUSHBUTTON      "更多颜色(&C)...",IDC_SET_PROGRESS_COLOR_BUTTON,178,192,50,14
+    CONTROL         "跟随系统主题色",IDC_FOLLOW_SYSTEM_COLOR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,211,173,10
+    CONTROL         "没有专辑封面时使用外部图片",IDC_USE_OUT_IMAGE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,126,104,10
+    LTEXT           "外部图片文件名:",IDC_STATIC,16,140,53,8
+    CONTROL         "背景高斯模糊",IDC_BACKGROUND_GAUSS_BLUR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,49,86,10
     LTEXT           "高斯模糊半径:",IDC_STATIC,130,61,51,8
     CONTROL         "",IDC_GAUSS_BLURE_RADIUS_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,174,60,43,12
     LTEXT           "Static",IDC_GAUSS_BLUR_RADIUS_STATIC,220,61,18,8
-    CONTROL         "歌词界面背景",IDC_LYRIC_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,100,55,10
-    CONTROL         "深色模式",IDC_DARK_MODE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,100,45,10
-    CONTROL         "优先使用内嵌专辑封面",IDC_USE_INNER_IMAGE_FIRST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,88,105,10
-    CONTROL         "启用背景",IDC_ENABLE_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,129,15,60,10
-    CONTROL         "低频部分显示在中间",IDC_LOW_FREQ_IN_CENTER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,38,105,10
-    GROUPBOX        "高级",IDC_STATIC,7,274,232,40
+    CONTROL         "歌词界面背景",IDC_LYRIC_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,77,55,10
+    CONTROL         "深色模式",IDC_DARK_MODE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,77,45,10
+    CONTROL         "优先使用内嵌专辑封面",IDC_USE_INNER_IMAGE_FIRST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,126,79,10
+    CONTROL         "启用背景",IDC_ENABLE_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,15,60,10
+    CONTROL         "低频部分显示在中间",IDC_LOW_FREQ_IN_CENTER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,40,105,10
+    GROUPBOX        "高级",IDC_STATIC,7,323,232,40
     CONTROL         "专辑封面使用GDI+绘图（质量更高但是会占用更多的CPU资源）",IDC_DEFAULT_ALBUM_COVER_HQ,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,285,220,10
-    LTEXT           "界面刷新时间间隔：",IDC_STATIC,16,299,62,8
-    EDITTEXT        IDC_UI_INTERVAL_EDIT,80,297,34,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "毫秒",IDC_STATIC,117,299,22,8
-    PUSHBUTTON      "恢复默认(&D)",IDC_RESTORE_DEFAULT_BUTTON,140,296,50,14
-    GROUPBOX        "通知区图标",IDC_STATIC,7,215,232,54
-    LTEXT           "选择通知区图标：",IDC_STATIC,16,228,59,8
-    COMBOBOX        IDC_COMBO1,16,239,62,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "预览：",IDC_PREVIEW_STATIC,94,222,27,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,334,220,10
+    LTEXT           "界面刷新时间间隔：",IDC_STATIC,16,348,62,8
+    EDITTEXT        IDC_UI_INTERVAL_EDIT,80,346,34,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "毫秒",IDC_STATIC,117,348,22,8
+    PUSHBUTTON      "恢复默认(&D)",IDC_RESTORE_DEFAULT_BUTTON,140,345,50,14
+    GROUPBOX        "通知区图标",IDC_STATIC,7,264,232,54
+    LTEXT           "选择通知区图标：",IDC_STATIC,16,277,59,8
+    COMBOBOX        IDC_COMBO1,16,288,62,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "预览：",IDC_PREVIEW_STATIC,94,271,27,8
     CONTROL         "使用单色图标时根据Windows10深色/浅色模式自动适应",IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,256,209,10
-    CONTROL         "使用圆角风格",IDC_BTN_ROUND_CORNERS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,112,102,10
-    LTEXT           "默认背景图片：",IDC_STATIC,130,74,48,8
-    CONTROL         "",IDC_DEFAULT_BACKGROUND_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x880,130,86,103,12
-    GROUPBOX        "背景设置",IDC_STATIC,125,5,114,119
-    CONTROL         "使用桌面背景",IDC_USE_DESKTOP_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,101,89,10
-    GROUPBOX        "状态栏",IDC_STATIC,7,181,134,28
-    CONTROL         "显示下一曲",IDC_SHOW_NEXT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,193,49,10
-    CONTROL         "显示帧率",IDC_SHOW_FPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,79,193,43,10
-    CONTROL         "",IDC_DEFAULT_COVER_NAME_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,63,74,52,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,305,209,10
+    CONTROL         "使用圆角风格",IDC_BTN_ROUND_CORNERS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,89,55,10
+    LTEXT           "默认背景图片：",IDC_STATIC,130,73,48,8
+    CONTROL         "",IDC_DEFAULT_BACKGROUND_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x880,130,84,103,12
+    GROUPBOX        "背景设置",IDC_STATIC,125,5,114,105
+    CONTROL         "使用桌面背景",IDC_USE_DESKTOP_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,98,89,10
+    GROUPBOX        "状态栏",IDC_STATIC,7,230,134,28
+    CONTROL         "显示下一曲",IDC_SHOW_NEXT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,242,49,10
+    CONTROL         "显示帧率",IDC_SHOW_FPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,79,242,43,10
+    CONTROL         "",IDC_DEFAULT_COVER_NAME_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,67,138,166,12
+    GROUPBOX        "封面选项",IDC_STATIC,7,116,232,57
+    LTEXT           "封面文件夹：",IDC_STATIC,16,155,44,8
+    CONTROL         "",IDC_ALBUM_COVER_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x880,67,154,166,12
 END
 
 IDD_PROPERTY_DIALOG DIALOGEX 0, 0, 304, 143
@@ -648,29 +651,29 @@ BEGIN
     LTEXT           "歌词路径：",IDC_STATIC1,4,18,35,8
 END
 
-IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 246, 225
+IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 246, 234
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x86
 BEGIN
     GROUPBOX        "应用程序设置",IDC_STATIC,7,6,123,66
-    GROUPBOX        "下载设置",IDC_STATIC,7,77,232,47
+    GROUPBOX        "下载设置",IDC_STATIC,7,77,232,61
     CONTROL         "没有专辑封面时自动下载",IDC_COVER_AUTO_DOWNLOAD_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,88,95,10
     CONTROL         "没有歌词时自动下载",IDC_LYRIC_AUTO_DOWNLOAD_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,129,88,95,10
     CONTROL         "启动时检查更新",IDC_CHECK_UPDATE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,18,89,10
-    LTEXT           "MIDI 音色库路径:",IDC_STATIC,13,141,57,8
-    GROUPBOX        "MIDI 设置",IDC_STATIC,7,130,232,39
+    LTEXT           "MIDI 音色库路径:",IDC_STATIC,13,155,57,8
+    GROUPBOX        "MIDI 设置",IDC_STATIC,7,144,232,39
     CONTROL         "优先显示 MIDI 音乐内嵌的歌词",IDC_MIDI_USE_INNER_LYRIC_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,156,122,10
-    CONTROL         "只有歌曲信息完整时才自动下载",IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,111,114,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,170,122,10
+    CONTROL         "只有歌曲信息完整时才自动下载",IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,122,114,10
     LTEXT           "语言：",IDC_STATIC,13,57,23,8
     COMBOBOX        IDC_COMBO1,37,55,65,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "关闭主窗口",IDC_STATIC,7,175,232,34
-    CONTROL         "最小化到通知区",IDC_MINIMIZE_TO_NOTIFY_RADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,13,185,85,10
-    CONTROL         "退出程序",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,13,196,90,10
-    CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,70,140,158,12
-    LTEXT           "歌词保存位置：",IDC_STATIC,13,100,57,8
-    CONTROL         "保存到歌曲所在目录",IDC_SAVE_TO_SONG_FOLDER,"Button",BS_AUTORADIOBUTTON | WS_GROUP,65,99,75,10
-    CONTROL         "保存到歌词文件夹",IDC_SAVE_TO_LYRIC_FOLDER,"Button",BS_AUTORADIOBUTTON,153,99,68,10
+    GROUPBOX        "关闭主窗口",IDC_STATIC,7,189,232,34
+    CONTROL         "最小化到通知区",IDC_MINIMIZE_TO_NOTIFY_RADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,13,199,85,10
+    CONTROL         "退出程序",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,13,210,90,10
+    CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,70,154,158,12
+    LTEXT           "自动下载歌词保存位置：",IDC_STATIC,13,100,74,8
+    CONTROL         "保存到歌曲所在目录",IDC_SAVE_TO_SONG_FOLDER,"Button",BS_AUTORADIOBUTTON | WS_GROUP,88,99,75,10
+    CONTROL         "保存到歌词文件夹",IDC_SAVE_TO_LYRIC_FOLDER,"Button",BS_AUTORADIOBUTTON,165,99,68,10
     CONTROL         "开机自动运行",IDC_AUTO_RUN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,43,73,10
     LTEXT           "更新源：",IDC_STATIC,13,32,32,8
     CONTROL         "GitHub",IDC_GITHUB_RADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,47,31,38,10
@@ -679,6 +682,9 @@ BEGIN
     CONTROL         "保存到 Appdata 目录",IDC_SAVE_TO_APPDATA_RADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,145,18,92,10
     CONTROL         "保存到程序所在目录",IDC_SAVE_TO_PROGRAM_DIR_RADIO,"Button",BS_AUTORADIOBUTTON,145,30,92,10
     PUSHBUTTON      "打开配置文件所在目录(&D)",IDC_OPEN_CONFIG_PATH_BUTTON,144,43,88,14
+    LTEXT           "自动下载封面保存位置：",IDC_STATIC,13,111,77,8
+    CONTROL         "保存到歌曲所在目录",IDC_SAVE_TO_SONG_FOLDER3,"Button",BS_AUTORADIOBUTTON | WS_GROUP,88,110,75,10
+    CONTROL         "保存到封面文件夹",IDC_SAVE_TO_ALBUM_FOLDER3,"Button",BS_AUTORADIOBUTTON,165,110,68,10
 END
 
 IDD_LYRIC_DOWNLOAD_DIALOG DIALOGEX 0, 0, 256, 189
@@ -780,12 +786,12 @@ BEGIN
     LTEXT           "0.00s",IDC_REVERB_TIME_STATIC,146,46,37,8
 END
 
-IDD_COVER_DOWNLOAD_DIALOG DIALOGEX 0, 0, 257, 155
+IDD_COVER_DOWNLOAD_DIALOG DIALOGEX 0, 0, 257, 179
 STYLE DS_SETFONT | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "下载专辑封面（通过网易云音乐的API）"
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
-    PUSHBUTTON      "取消",IDCANCEL,200,134,50,14
+    PUSHBUTTON      "取消",IDCANCEL,200,158,50,14
     PUSHBUTTON      "搜索(&S)",IDC_SEARCH_BUTTON,199,6,50,14
     EDITTEXT        IDC_TITLE_EDIT,29,7,69,12,ES_AUTOHSCROLL
     LTEXT           "标题:",IDC_STATIC,7,7,20,11,SS_CENTERIMAGE
@@ -793,8 +799,12 @@ BEGIN
     LTEXT           "艺术家:",IDC_STATIC,103,7,27,11,SS_CENTERIMAGE
     CONTROL         "",IDC_COVER_DOWN_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,31,242,97
     LTEXT           "搜索结果：",IDC_STATIC_INFO,7,22,95,8
-    DEFPUSHBUTTON   "下载选中项",IDC_DOWNLOAD_SELECTED,144,134,50,14
+    DEFPUSHBUTTON   "下载选中项",IDC_DOWNLOAD_SELECTED,144,158,50,14
     CONTROL         "<a>取消关联</a>",IDC_UNASSOCIATE_LINK,"SysLink",WS_TABSTOP,105,21,38,9
+    GROUPBOX        "下载选项",IDC_STATIC,7,130,243,25
+    LTEXT           "封面保存位置：",IDC_STATIC,12,142,47,8
+    CONTROL         "保存到歌曲所在目录",IDC_SAVE_TO_SONG_FOLDER2,"Button",BS_AUTORADIOBUTTON,66,142,78,10
+    CONTROL         "保存到封面文件夹",IDC_SAVE_TO_ALBUM_FOLDER2,"Button",BS_AUTORADIOBUTTON,156,142,74,10
 END
 
 IDD_FORMAT_CONVERT_DIALOG DIALOGEX 0, 0, 251, 238
@@ -1355,7 +1365,7 @@ BEGIN
         VERTGUIDE, 12
         VERTGUIDE, 16
         TOPMARGIN, 7
-        BOTTOMMARGIN, 318
+        BOTTOMMARGIN, 369
     END
 
     IDD_PROPERTY_DIALOG, DIALOG
@@ -1395,7 +1405,7 @@ BEGIN
         RIGHTMARGIN, 239
         VERTGUIDE, 13
         TOPMARGIN, 6
-        BOTTOMMARGIN, 221
+        BOTTOMMARGIN, 230
     END
 
     IDD_LYRIC_DOWNLOAD_DIALOG, DIALOG
@@ -1444,7 +1454,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 250
         TOPMARGIN, 7
-        BOTTOMMARGIN, 148
+        BOTTOMMARGIN, 172
     END
 
     IDD_FORMAT_CONVERT_DIALOG, DIALOG
@@ -1886,7 +1896,11 @@ BEGIN
     0, 0, 100, 100,
     0, 0, 100, 0,
     100, 100, 0, 0,
-    100, 0, 0, 0
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
 END
 
 IDD_FORMAT_CONVERT_DIALOG AFX_DIALOG_LAYOUT
@@ -3039,6 +3053,10 @@ BEGIN
 0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
 0x3e65, 0x3c33, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
 0x4d5f, 0x646f, 0x3e65, 
+    IDC_ALBUM_COVER_PATH_EDIT, 0x37c, 42, 0
+0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
+0x3e65, 0x3c32, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
+0x4d5f, 0x646f, 0x3e65, 
     0
 END
 
@@ -3374,7 +3392,8 @@ STRINGTABLE
 BEGIN
     IDS_COVER_FIT_TIP_INFO  "拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"
     IDS_USE_OUT_IMAGE_TIP_INFO "如果无法从音频文件获取专辑封面，则尝试在音频文件所在目录下查找下面指定的文件名为专辑封面"
-    IDS_DEFAULT_COVER_NAME_TIP_INFO "在此设置默认的专辑封面文件名，多个文件名之间使用半角逗号隔开"
+    IDS_DEFAULT_COVER_NAME_TIP_INFO 
+                            "在此设置默认的专辑封面文件名，多个文件名之间使用半角逗号隔开，支持通配符与相对路径，设置绝对路径会使封面查找总是成功无法自动下载专辑封面"
     IDS_WHITE_THEME_COLOR_WARNING "警告：将主题颜色设置成白色会使进度条完全看不见！"
     IDS_FOLLOWING_SYSTEM    "跟随系统"
     IDS_CLEAR_DATA_FILE_TIP_INFO 
@@ -3743,6 +3762,7 @@ BEGIN
     IDS_NO_TRACKS_TIP_INFO  "当前没有正在播放的曲目，你可以：\r\n按下Ctrl+L打开播放列表，并向播放列表中添加歌曲；\r\n点击“主菜单”——“文件”——“打开文件”或者快捷键Ctrl+O来打开一个音频文件；\r\n点击“主菜单”——“文件”——“打开文件夹”或者快捷键Ctrl+D打开并播放一个文件夹；\r\n按下Ctrl+T打开媒体库，在媒体库中寻找要播放的歌曲。"
     IDS_SWITHC_TO_DARK_MODE "切换到深色模式"
     IDS_SWITCH_TO_LIGHT_MODE "切换到浅色模式"
+    IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO "如果歌曲所在目录下没有找到专辑封面则会在此文件夹下寻找封面文件。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -3784,77 +3804,80 @@ BEGIN
     CONTROL         "<a>SimpleNotePad</a>",IDC_SYSLINK_SIMPLENOTEPAD,"SysLink",WS_TABSTOP,80,97,59,9
 END
 
-IDD_APPEREANCE_SETTING_DLG DIALOGEX 0, 0, 338, 345
+IDD_APPEREANCE_SETTING_DLG DIALOGEX 0, 0, 338, 384
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    GROUPBOX        "Main Window Opacity",IDC_STATIC,202,202,129,28
-    CONTROL         "",IDC_TRANSPARENT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,212,213,87,12
-    LTEXT           "xx%",IDC_TRANSPARENT_STATIC,300,214,19,8
-    GROUPBOX        "Visual Effects",IDC_STATIC,7,5,173,141
+    GROUPBOX        "Main Window Opacity",IDC_STATIC,202,240,129,28
+    CONTROL         "",IDC_TRANSPARENT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,212,251,87,12
+    LTEXT           "xx%",IDC_TRANSPARENT_STATIC,300,252,19,8
+    GROUPBOX        "Visual Effects",IDC_STATIC,7,5,173,115
     CONTROL         "Show spectrum analysis",IDC_SHOW_SPECTRUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,16,111,10
-    CONTROL         "Show album cover",IDC_SHOW_ALBUM_COVER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,28,92,10
-    LTEXT           "Spectrum height:",IDC_STATIC,12,42,63,8
-    CONTROL         "",IDC_SPECTRUM_HEIGHT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,75,41,61,12
-    LTEXT           "Static",IDC_SPECTRUM_HEIGHT_STATIC,141,42,18,8
+    CONTROL         "Show album cover",IDC_SHOW_ALBUM_COVER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,55,92,10
+    LTEXT           "Spectrum height:",IDC_STATIC,12,30,63,8
+    CONTROL         "",IDC_SPECTRUM_HEIGHT_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,75,29,61,12
+    LTEXT           "Static",IDC_SPECTRUM_HEIGHT_STATIC,141,30,18,8
     LTEXT           "Album cover fit:",IDC_STATIC,12,68,57,8
     COMBOBOX        IDC_ALBUM_FIT_COMBO,73,66,47,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Use album cover as background",IDC_ALBUM_COVER_BACKGROUND_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,31,124,10
-    LTEXT           "Background opacity:",IDC_STATIC,195,44,71,8
-    CONTROL         "",IDC_BACKGROUND_TRANSPARENCY_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,262,43,46,12
-    LTEXT           "Static",IDC_BACKGROUND_TRANSPARENCY_STATIC,309,44,18,8
-    GROUPBOX        "Theme Color",IDC_STATIC,7,151,324,45
-    LTEXT           "",IDC_COLOR_STATIC,20,165,30,13,NOT WS_GROUP,WS_EX_STATICEDGE
-    GROUPBOX        "Preset color",IDC_STATIC,62,156,111,25
-    LTEXT           "",IDC_COLOR_STATIC2,69,166,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC3,86,166,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC4,103,166,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC5,120,166,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC6,137,166,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    LTEXT           "",IDC_COLOR_STATIC7,154,166,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
-    PUSHBUTTON      "More &Color...",IDC_SET_PROGRESS_COLOR_BUTTON,178,164,55,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,28,124,10
+    LTEXT           "Background opacity:",IDC_STATIC,195,41,71,8
+    CONTROL         "",IDC_BACKGROUND_TRANSPARENCY_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,262,40,46,12
+    LTEXT           "Static",IDC_BACKGROUND_TRANSPARENCY_STATIC,309,41,18,8
+    GROUPBOX        "Theme Color",IDC_STATIC,7,189,324,45
+    LTEXT           "",IDC_COLOR_STATIC,20,203,30,13,NOT WS_GROUP,WS_EX_STATICEDGE
+    GROUPBOX        "Preset color",IDC_STATIC,62,194,111,25
+    LTEXT           "",IDC_COLOR_STATIC2,69,204,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC3,86,204,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC4,103,204,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC5,120,204,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC6,137,204,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLOR_STATIC7,154,204,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
+    PUSHBUTTON      "More &Color...",IDC_SET_PROGRESS_COLOR_BUTTON,178,202,55,14
     CONTROL         "Follow the system theme color",IDC_FOLLOW_SYSTEM_COLOR_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,183,173,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,221,173,10
     CONTROL         "Use external picture when album cover not exist",IDC_USE_OUT_IMAGE_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,81,163,10
-    LTEXT           "External picture file name:",IDC_STATIC,12,95,89,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,152,137,174,10
+    LTEXT           "External picture file name:",IDC_STATIC,18,150,89,8
     CONTROL         "Background Gaussian blur",IDC_BACKGROUND_GAUSS_BLUR_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,55,120,10
-    LTEXT           "Gaussian blur radius:",IDC_STATIC,195,68,70,8
-    CONTROL         "",IDC_GAUSS_BLURE_RADIUS_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,261,67,46,12
-    LTEXT           "Static",IDC_GAUSS_BLUR_RADIUS_STATIC,308,68,18,8
-    CONTROL         "Lyric background",IDC_LYRIC_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,120,84,10
-    CONTROL         "Dark mode",IDC_DARK_MODE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,103,120,69,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,52,120,10
+    LTEXT           "Gaussian blur radius:",IDC_STATIC,195,65,70,8
+    CONTROL         "",IDC_GAUSS_BLURE_RADIUS_SLIDER,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,261,64,46,12
+    LTEXT           "Static",IDC_GAUSS_BLUR_RADIUS_STATIC,308,65,18,8
+    CONTROL         "Lyric background",IDC_LYRIC_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,80,84,10
+    CONTROL         "Dark mode",IDC_DARK_MODE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,103,80,69,10
     CONTROL         "Use the Internal album cover first",IDC_USE_INNER_IMAGE_FIRST_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,107,164,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,137,130,10
     CONTROL         "Enable background",IDC_ENABLE_BACKGROUND_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,16,113,10
     CONTROL         "Low-frequency parts appears in the middle",IDC_LOW_FREQ_IN_CENTER_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,54,166,10
-    GROUPBOX        "Advanced",IDC_STATIC,7,296,324,40
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,42,166,10
+    GROUPBOX        "Advanced",IDC_STATIC,7,334,324,40
     CONTROL         "Album covers use GDI+ drawing (higher quality but will take up more CPU resources)",IDC_DEFAULT_ALBUM_COVER_HQ,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,308,312,10
-    LTEXT           "Interface refresh interval:",IDC_STATIC,18,322,92,8
-    EDITTEXT        IDC_UI_INTERVAL_EDIT,108,320,39,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "milliseconds",IDC_STATIC,149,322,45,8
-    PUSHBUTTON      "Restore &Defaults",IDC_RESTORE_DEFAULT_BUTTON,199,319,63,14
-    GROUPBOX        "Notification Area Icon",IDC_STATIC,7,236,324,54
-    LTEXT           "Select notification area icon:",IDC_STATIC,18,249,114,8
-    COMBOBOX        IDC_COMBO1,18,260,100,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Preview:",IDC_PREVIEW_STATIC,148,243,41,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,346,312,10
+    LTEXT           "Interface refresh interval:",IDC_STATIC,18,360,92,8
+    EDITTEXT        IDC_UI_INTERVAL_EDIT,108,358,39,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "milliseconds",IDC_STATIC,149,360,45,8
+    PUSHBUTTON      "Restore &Defaults",IDC_RESTORE_DEFAULT_BUTTON,199,357,63,14
+    GROUPBOX        "Notification Area Icon",IDC_STATIC,7,274,324,54
+    LTEXT           "Select notification area icon:",IDC_STATIC,18,287,114,8
+    COMBOBOX        IDC_COMBO1,18,298,100,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Preview:",IDC_PREVIEW_STATIC,148,281,41,8
     CONTROL         "Automatically adapt to Windows 10 dark/light mode when using the monochrome icons.",IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,276,312,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,314,312,10
     CONTROL         "Use rounded corner style",IDC_BTN_ROUND_CORNERS_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,133,137,10
-    LTEXT           "Default background image:",IDC_STATIC,195,82,102,8
-    CONTROL         "",IDC_DEFAULT_BACKGROUND_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x880,195,95,129,11
-    GROUPBOX        "Background Settings",IDC_STATIC,187,5,144,141
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,93,137,10
+    LTEXT           "Default background image:",IDC_STATIC,195,78,102,8
+    CONTROL         "",IDC_DEFAULT_BACKGROUND_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x880,195,91,129,11
+    GROUPBOX        "Background Settings",IDC_STATIC,187,5,144,115
     CONTROL         "Use desktop background",IDC_USE_DESKTOP_BACKGROUND_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,195,113,108,9
-    GROUPBOX        "Statusbar",IDC_STATIC,7,202,184,28
-    CONTROL         "Show next track",IDC_SHOW_NEXT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,214,88,10
-    CONTROL         "Show fps",IDC_SHOW_FPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,214,55,10
-    CONTROL         "",IDC_DEFAULT_COVER_NAME_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,98,94,76,11
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,195,106,108,9
+    GROUPBOX        "Statusbar",IDC_STATIC,7,240,184,28
+    CONTROL         "Show next track",IDC_SHOW_NEXT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,252,88,10
+    CONTROL         "Show fps",IDC_SHOW_FPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,252,55,10
+    CONTROL         "",IDC_DEFAULT_COVER_NAME_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,108,149,216,11
+    GROUPBOX        "Album Cover Options",IDC_STATIC,7,125,324,58
+    LTEXT           "Album cover folder:",IDC_STATIC,18,165,89,8
+    CONTROL         "",IDC_ALBUM_COVER_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x880,108,164,216,11
 END
 
 IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 361, 247
@@ -3868,12 +3891,12 @@ BEGIN
     PUSHBUTTON      "Apply",IDC_APPLY_BUTTON,306,227,50,14
 END
 
-IDD_COVER_DOWNLOAD_DIALOG DIALOGEX 0, 0, 257, 155
+IDD_COVER_DOWNLOAD_DIALOG DIALOGEX 0, 0, 257, 204
 STYLE DS_SETFONT | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Download album cover (From NetEase cloud music)"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    PUSHBUTTON      "Cancel",IDCANCEL,200,134,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,200,183,50,14
     PUSHBUTTON      "&Search",IDC_SEARCH_BUTTON,199,6,50,14
     EDITTEXT        IDC_TITLE_EDIT,29,7,69,12,ES_AUTOHSCROLL
     LTEXT           "Title:",IDC_STATIC,7,7,20,11,SS_CENTERIMAGE
@@ -3881,50 +3904,61 @@ BEGIN
     LTEXT           "Artist:",IDC_STATIC,103,7,27,11,SS_CENTERIMAGE
     CONTROL         "",IDC_COVER_DOWN_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,31,242,97
     LTEXT           "Search result:",IDC_STATIC_INFO,7,22,110,8
-    DEFPUSHBUTTON   "&Download selected",IDC_DOWNLOAD_SELECTED,113,134,83,14
+    DEFPUSHBUTTON   "&Download selected",IDC_DOWNLOAD_SELECTED,113,183,83,14
     CONTROL         "<a>Cancel Link</a>",IDC_UNASSOCIATE_LINK,"SysLink",WS_TABSTOP,120,21,74,9
+    GROUPBOX        "Download options",IDC_STATIC,7,129,243,49
+    LTEXT           "Album Cover Save Location:",IDC_STATIC,12,140,104,8
+    CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER2,
+                    "Button",BS_AUTORADIOBUTTON,11,152,144,10
+    CONTROL         "Save to album cover directory",IDC_SAVE_TO_ALBUM_FOLDER2,
+                    "Button",BS_AUTORADIOBUTTON,11,163,139,10
 END
 
-IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 337, 231
+IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 337, 267
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
     GROUPBOX        "Application Settings",IDC_STATIC,7,6,166,66
-    GROUPBOX        "Download setting",IDC_STATIC,7,77,323,60
+    GROUPBOX        "Download setting",IDC_STATIC,7,77,324,95
     CONTROL         "Automatically download when album cover is not exist",IDC_COVER_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,90,188,10
     CONTROL         "Automatically download when lyric is not exist",IDC_LYRIC_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,101,200,10
     CONTROL         "Check for update at startup",IDC_CHECK_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,18,109,10
-    LTEXT           "MIDI sound font path:",IDC_STATIC,15,152,83,8
-    GROUPBOX        "MIDI Setting",IDC_STATIC,7,141,323,39
+    LTEXT           "MIDI sound font path:",IDC_STATIC,15,189,83,8
+    GROUPBOX        "MIDI Setting",IDC_STATIC,7,178,324,39
     CONTROL         "Display the inner lyric in MIDI music first",IDC_MIDI_USE_INNER_LYRIC_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,167,216,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,204,216,10
     CONTROL         "Download automatically only when the song information is complete",IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,123,280,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,157,280,10
     LTEXT           "Language:",IDC_STATIC,15,55,40,8
     COMBOBOX        IDC_COMBO1,56,54,75,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Close Main Window",IDC_STATIC,7,185,323,36
+    GROUPBOX        "Close Main Window",IDC_STATIC,7,223,324,36
     CONTROL         "Minimize to notification area",IDC_MINIMIZE_TO_NOTIFY_RADIO,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,196,116,10
-    CONTROL         "Exit the program",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,15,208,102,10
-    CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,99,151,186,12
-    LTEXT           "Lyrics Save Location:",IDC_STATIC,15,113,72,8
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,233,116,10
+    CONTROL         "Exit the program",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,15,245,102,10
+    CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,99,188,186,12
+    LTEXT           "Automatically Download Lyrics Save Location:",IDC_STATIC,15,113,160,8
     CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,90,112,140,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,123,140,10
     CONTROL         "Save to lyrics directory",IDC_SAVE_TO_LYRIC_FOLDER,
-                    "Button",BS_AUTORADIOBUTTON,235,112,94,10
+                    "Button",BS_AUTORADIOBUTTON,163,123,94,10
     CONTROL         "Auto run when Windows starts",IDC_AUTO_RUN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,41,121,10
     LTEXT           "Update source:",IDC_STATIC,15,31,59,8
     CONTROL         "GitHub",IDC_GITHUB_RADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,76,30,41,9
     CONTROL         "Gitee",IDC_GITEE_RADIO,"Button",BS_AUTORADIOBUTTON,125,30,36,9
-    GROUPBOX        "Configuration and data files",IDC_STATIC,182,6,148,66
+    GROUPBOX        "Configuration and data files",IDC_STATIC,183,6,148,66
     CONTROL         "Save to Appdata directory",IDC_SAVE_TO_APPDATA_RADIO,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,191,18,130,10
     CONTROL         "Save to the program directory",IDC_SAVE_TO_PROGRAM_DIR_RADIO,
                     "Button",BS_AUTORADIOBUTTON,191,30,130,10
     PUSHBUTTON      "Open configuration file &directory",IDC_OPEN_CONFIG_PATH_BUTTON,190,43,126,14
+    LTEXT           "Automatically Download Album Cover Save Location:",IDC_STATIC,15,134,180,8
+    CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER3,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,145,140,10
+    CONTROL         "Save to album cover directory",IDC_SAVE_TO_ALBUM_FOLDER3,
+                    "Button",BS_AUTORADIOBUTTON,163,145,113,10
 END
 
 IDD_EQUALIZER_DIALOG DIALOGEX 0, 0, 299, 107
@@ -4667,7 +4701,7 @@ BEGIN
         VERTGUIDE, 12
         VERTGUIDE, 18
         TOPMARGIN, 7
-        BOTTOMMARGIN, 339
+        BOTTOMMARGIN, 378
     END
 
     IDD_OPTIONS_DIALOG, DIALOG
@@ -4683,7 +4717,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 250
         TOPMARGIN, 7
-        BOTTOMMARGIN, 148
+        BOTTOMMARGIN, 197
     END
 
     IDD_DATA_SETTINGS_DIALOG, DIALOG
@@ -4692,7 +4726,8 @@ BEGIN
         RIGHTMARGIN, 330
         VERTGUIDE, 15
         TOPMARGIN, 6
-        BOTTOMMARGIN, 229
+        BOTTOMMARGIN, 259
+        HORZGUIDE, 2
     END
 
     IDD_EQUALIZER_DIALOG, DIALOG
@@ -5043,6 +5078,9 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0
 END
 
@@ -5067,7 +5105,11 @@ BEGIN
     0, 0, 100, 100,
     0, 0, 100, 0,
     100, 100, 0, 0,
-    100, 0, 0, 0
+    100, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
 END
 
 IDD_DATA_SETTINGS_DIALOG AFX_DIALOG_LAYOUT
@@ -6237,6 +6279,10 @@ BEGIN
 0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
 0x3e65, 0x3c33, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
 0x4d5f, 0x646f, 0x3e65, 
+    IDC_ALBUM_COVER_PATH_EDIT, 0x37c, 42, 0
+0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
+0x3e65, 0x3c32, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
+0x4d5f, 0x646f, 0x3e65, 
     0
 END
 
@@ -6505,7 +6551,7 @@ BEGIN
     IDS_USE_OUT_IMAGE_TIP_INFO 
                             "If the album cover can't be get from the audio file, it will try to looking for the specified file name for the album cover in the directory where the audio file located."
     IDS_DEFAULT_COVER_NAME_TIP_INFO 
-                            "Set the default album cover file name here, separated by a comma between multiple file names."
+                            "Set the default album cover file name here, separated by a comma between multiple file names, support wildcards and relative paths, setting absolute paths will make the cover search always successful and not automatically download the album cover."
     IDS_WHITE_THEME_COLOR_WARNING 
                             "Warning: Setting the theme color to white will make the progress bar completely invisible!"
     IDS_FOLLOWING_SYSTEM    "Following system"
@@ -6906,6 +6952,8 @@ BEGIN
     IDS_NO_TRACKS_TIP_INFO  "There are currently no tracks playing, you can:\r\nPress Ctrl+L to open playlist and add songs to the playlist;\r\nClick ""Main Menu"" > ""File"" > ""Open File"" or shortcut Ctrl+O to open an audio file;\r\nClick ""Main Menu"" > ""File"" > ""Open Folder"" or shortcut Ctrl+D to open and play a folder;\r\nPress Ctrl+T to open the media library and find the song you want to play in the media library."
     IDS_SWITHC_TO_DARK_MODE "Switch to dark mode"
     IDS_SWITCH_TO_LIGHT_MODE "Switch to light mode"
+    IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 
+                            "If the album cover is not found in the directory where the song is located then the cover file will be searched for in this folder."
 END
 
 #endif    // 英语(美国) resources

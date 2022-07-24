@@ -749,6 +749,7 @@
 #define IDI_LIGHT_MODE                  573
 #define IDS_SWITHC_TO_DARK_MODE         573
 #define IDS_SWITCH_TO_LIGHT_MODE        574
+#define IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 575
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -964,8 +965,11 @@
 #define IDC_FIND_ALL_PLAYLIST_RADIO     1078
 #define IDC_MCI_RADIO                   1078
 #define IDC_COPY_RADIO                  1078
+#define IDC_SAVE_TO_ALBUM_FOLDER2       1078
 #define IDC_COMBO2                      1079
+#define IDC_SAVE_TO_SONG_FOLDER3        1079
 #define IDC_SAVE_TO_SONG_FOLDER1        1080
+#define IDC_SAVE_TO_ALBUM_FOLDER3       1080
 #define IDC_SAVE_TO_LYRIC_FOLDER1       1081
 #define IDC_BUTTON2                     1082
 #define IDC_SELECTED_SAVE_AS            1082
@@ -1144,7 +1148,9 @@
 #define IDC_SYSLINK_BASS                1195
 #define IDC_SYSLINK_TAGLIB              1196
 #define IDC_SYSLINK_TINYXML2            1197
+#define IDC_SAVE_TO_SONG_FOLDER2        1197
 #define IDC_SYSLINK_SCINTILLA           1198
+#define IDC_ALBUM_COVER_PATH_EDIT       1198
 #define IDC_SYSLINK_TRAFFICMONITOR      1199
 #define IDC_SYSLINK_SIMPLENOTEPAD       1200
 #define ID_32771                        32771

@@ -45,6 +45,15 @@ void CPlaySettingsDlg::ShowDeviceInfo()
     if (theApp.m_output_devices.empty())
         return;
 
+    // 重新设置设备选择下拉框
+    m_output_device_combo.ResetContent();
+    for (const auto& device : theApp.m_output_devices)
+    {
+        m_output_device_combo.AddString(device.name.c_str());
+    }
+    m_output_device_combo.SetCurSel(m_data.device_selected);
+
+    // 更新当前设备信息显示
 	DeviceInfo& device{ theApp.m_output_devices[m_data.device_selected] };
 	m_device_info_list.SetItemText(0, 1, device.name.c_str());
 	m_device_info_list.SetItemText(1, 1, device.driver.c_str());
@@ -109,6 +118,12 @@ void CPlaySettingsDlg::GetDataFromUi()
     m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
     m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
     m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
+}
+
+void CPlaySettingsDlg::ApplyDataToUi()
+{
+    ShowDeviceInfo();
+    EnableControl();
 }
 
 
@@ -178,12 +193,6 @@ BOOL CPlaySettingsDlg::OnInitDialog()
         m_ffmpeg_radio.SetCheck(TRUE);
     else
         m_bass_radio.SetCheck(TRUE);
-
-	for (const auto& device : theApp.m_output_devices)
-	{
-		m_output_device_combo.AddString(device.name.c_str());
-	}
-	m_output_device_combo.SetCurSel(m_data.device_selected);
 
 	//m_device_info_list.SetColor(theApp.m_app_setting_data.theme_color);
 	CRect rect;

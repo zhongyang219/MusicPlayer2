@@ -10,7 +10,7 @@ MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功�
 
 国内备用下载链接：[百度网盘下载](https://pan.baidu.com/s/1i5QNwFF)
 
-MusicPlayer2依赖于Microsoft Visual C++ 运行环境，如果程序启动时提示“找不到MSVC*.dll”，请点击以下链接下载并安装Microsoft Visual C++ 运行环境。
+MusicPlayer2依赖于Microsoft Visual C++ 运行环境，如果程序启动时提示“找不到MSVC\*.dll”，请点击以下链接下载并安装Microsoft Visual C++ 运行环境。
 
 [最新支持的 Visual C++ 可再发行程序包下载 | Microsoft Docs](https://docs.microsoft.com/zh-CN/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 

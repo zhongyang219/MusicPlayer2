@@ -38,6 +38,7 @@ void CDataSettingsDlg::GetDataFromUi()
 {
     m_data.minimize_to_notify_icon = (((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->GetCheck() != 0);
     m_data.save_lyric_to_song_folder = (((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->GetCheck() != 0);
+    m_data.save_album_to_song_folder = (((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER3))->GetCheck() != 0);
 
     //获取语言的设置
     m_data.language = static_cast<Language>(m_language_combo.GetCurSel());
@@ -126,6 +127,22 @@ BOOL CDataSettingsDlg::OnInitDialog()
         ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->SetCheck(TRUE);
         m_data.save_lyric_to_song_folder = true;
     }
+    
+    // 设置封面存储位置选项
+    if (m_data.save_lyric_to_song_folder)
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER3))->SetCheck(TRUE);
+    else
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER3))->SetCheck(TRUE);
+
+    // 判断封面文件夹是否存在
+    bool album_path_exist = CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path);
+    if (!album_path_exist)		// 如果封面文件夹不存在，则禁用“保存到歌词文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
+    {
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER3))->EnableWindow(FALSE);
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER3))->SetCheck(FALSE);
+        ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER3))->SetCheck(TRUE);
+        m_data.save_album_to_song_folder = true;
+    }
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
@@ -161,6 +178,8 @@ void CDataSettingsDlg::EnableControl()
     ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->EnableWindow(m_data.auto_download_lyric);
     ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->EnableWindow(m_data.auto_download_lyric && CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path));
 
+    ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER3))->EnableWindow(m_data.auto_download_album_cover);
+    ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER3))->EnableWindow(m_data.auto_download_album_cover && CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path));
 }
 
 
@@ -175,6 +194,7 @@ void CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.auto_download_album_cover = (((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->GetCheck() != 0);
+    EnableControl();
 }
 
 
