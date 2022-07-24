@@ -7,6 +7,7 @@
 #include "shcore.h"
 #include "WinVersionHelper.h"
 #include "player.h"
+#include "AudioTag.h"
 
 #pragma comment(lib, "RuntimeObject.lib")
 #pragma comment(lib, "ShCore.lib")
@@ -114,6 +115,17 @@ bool MediaTransControls::Init() {
                 return S_OK;
             });
         controls2->add_PlaybackPositionChangeRequested(callbackPlaybackPositionChangeRequested.Get(), &m_EventRegistrationToken2);
+        auto callbackPlaybackRateChangeRequested = Callback<ABI::Windows::Foundation::ITypedEventHandler<SystemMediaTransportControls*, PlaybackRateChangeRequestedEventArgs*>>(
+            [this](ISystemMediaTransportControls*, IPlaybackRateChangeRequestedEventArgs* pArgs) {
+                HRESULT ret;
+                double rate = 1.0;
+                ret = pArgs->get_RequestedPlaybackRate(&rate);
+                if (ret == S_OK) {
+                    CPlayer::GetInstance().SetSpeed((float)rate);
+                }
+                return S_OK;
+        });
+        controls2->add_PlaybackRateChangeRequested(callbackPlaybackRateChangeRequested.Get(), &m_EventRegistrationToken3);
     }
     return true;
 }
@@ -177,7 +189,7 @@ void MediaTransControls::loadThumbnail(const BYTE* content, size_t size) {
     }
     ComPtr<IStream> writer;
     CreateStreamOverRandomAccessStream(s.Get(), IID_PPV_ARGS(writer.GetAddressOf()));
-    writer->Write(content, size, nullptr);
+    writer->Write(content, (ULONG)size, nullptr);
     CComPtr<Streams::IRandomAccessStreamReferenceStatics> rasrs;
     if ((ret = GetActivationFactory(HStringReference(RuntimeClass_Windows_Storage_Streams_RandomAccessStreamReference).Get(), &rasrs)) != S_OK) {
         return;
@@ -265,12 +277,33 @@ void MediaTransControls::UpdateControls(Command cmd)
     }
 }
 
-void MediaTransControls::UpdateControlsMetadata(const wstring& title, const wstring& artist)
+void MediaTransControls::UpdateControlsMetadata(const SongInfo song)
 {
     if (updater && music) {
         updater->put_Type(MediaPlaybackType_Music);
-        UpdateTitle(title);
-        UpdateArtist(artist);
+        UpdateTitle(song.IsTitleEmpty() ? song.GetFileName() : song.GetTitle());
+        UpdateArtist(song.GetArtist());
+        UpdateAlbumTitle(song.GetAlbum());
+        UpdateTrackNumber(song.track);
+        if (!song.IsGenreEmpty()) UpdateGenre(song.GetGenre());
+        SongInfo tmp(song);
+        CAudioTag tag(tmp);
+        std::map<wstring, wstring> property_map;
+        tag.GetAudioTagPropertyMap(property_map);
+        for (const auto& prop : property_map) {
+            if (prop.first == L"TRACKNUMBER") {
+                auto i = prop.second.find('/');
+                if (i != wstring::npos) {
+                    auto d = prop.second.substr(i + 1);
+                    UINT total_track;
+                    if (swscanf_s(d.c_str(), L"%u", &total_track) == 1) {
+                        UpdateAlbumTrackCount(total_track);
+                    }
+                }
+            } else if (prop.first == L"ALBUMARTIST") {
+                UpdateAlbumArtist(prop.second);
+            }
+        }
         updater->Update();
     }
 }
@@ -326,6 +359,79 @@ void MediaTransControls::UpdatePosition(int64_t postion) {
     }
 }
 
+void MediaTransControls::UpdateAlbumArtist(wstring album_artist) {
+    if (music) {
+        auto ret = music->put_AlbumArtist(HStringReference(album_artist.c_str()).Get());
+        ASSERT(ret == S_OK);
+    }
+}
+
+void MediaTransControls::UpdateAlbumTitle(wstring album_title) {
+    if (music) {
+        ComPtr<IMusicDisplayProperties2> p = nullptr;
+        music.As(&p);
+        if (p) {
+            auto ret = p->put_AlbumTitle(HStringReference(album_title.c_str()).Get());
+            ASSERT(ret == S_OK);
+        }
+    }
+}
+
+void MediaTransControls::UpdateTrackNumber(UINT track) {
+    if (music) {
+        ComPtr<IMusicDisplayProperties2> p = nullptr;
+        music.As(&p);
+        if (p) {
+            auto ret = p->put_TrackNumber(track);
+            ASSERT(ret == S_OK);
+        }
+    }
+}
+
+void MediaTransControls::UpdateAlbumTrackCount(UINT track_count) {
+    if (music) {
+        ComPtr<IMusicDisplayProperties3> p = nullptr;
+        music.As(&p);
+        if (p) {
+            auto ret = p->put_AlbumTrackCount(track_count);
+            ASSERT(ret == S_OK);
+        }
+    }
+}
+
+void MediaTransControls::UpdateGenre(wstring genre) {
+    std::vector<wstring> genres(1, genre);
+    UpdateGenres(genres);
+}
+
+void MediaTransControls::UpdateGenres(std::vector<wstring> genres) {
+    if (music) {
+        ComPtr<IMusicDisplayProperties2> p = nullptr;
+        music.As(&p);
+        if (p) {
+            ComPtr<ABI::Windows::Foundation::Collections::IVector<HSTRING>> vect = nullptr;
+            auto ret = p->get_Genres(vect.GetAddressOf());
+            ASSERT(ret == S_OK);
+            if (vect) {
+                ret = vect->Clear();
+                ASSERT(ret == S_OK);
+                for (auto i = genres.begin(); i != genres.end(); i++) {
+                    auto &s = *i;
+                    ret = vect->Append(HStringReference(s.c_str()).Get());
+                    ASSERT(ret == S_OK);
+                }
+            }
+        }
+    }
+}
+
+void MediaTransControls::UpdateSpeed(float speed) {
+    if (controls2) {
+        auto ret = controls2->put_PlaybackRate(speed);
+        ASSERT(ret == S_OK);
+    }
+}
+
 #else
 
 MediaTransControls::MediaTransControls()
@@ -359,7 +465,7 @@ void MediaTransControls::UpdateControls(Command cmd)
 {
 }
 
-void MediaTransControls::UpdateControlsMetadata(const wstring& title, const wstring& artist)
+void MediaTransControls::UpdateControlsMetadata(const SongInfo song)
 {
 }
 
@@ -367,4 +473,5 @@ void MediaTransControls::UpdateDuration(int64_t duration) {}
 
 void MediaTransControls::UpdatePosition(int64_t postion) {}
 
+void MediaTransControls::UpdateSpeed(float speed) {}
 #endif
