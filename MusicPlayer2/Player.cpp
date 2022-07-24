@@ -698,19 +698,17 @@ void CPlayer::CalculateSpectralData()
 {
     //memcpy_s(m_last_spectral_data, sizeof(m_last_spectral_data), m_spectral_data, sizeof(m_spectral_data));
 
-    if (GetBassHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)	//确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+    if ((GetBassHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)     //确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+        || m_pCore->GetCoreType() == PT_FFMPEG)
     {
+        int scale = (m_pCore->GetCoreType() == PT_FFMPEG ? 100 : 60);
         m_pCore->GetFFTData(m_fft);
+        for (int i{}; i < FFT_SAMPLE; i++)
+            m_fft[i] = std::abs(m_fft[i]);
         if (theApp.m_app_setting_data.use_old_style_specturm)
-            CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data);
+            CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data, scale);
         else
-            m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data);
-    } else if (m_pCore->GetCoreType() == PT_FFMPEG) {
-        m_pCore->GetFFTData(m_fft);
-        if (theApp.m_app_setting_data.use_old_style_specturm)
-            CSpectralDataHelper::SpectralDataMapOld(m_fft, m_spectral_data, 120);
-        else
-            m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data, 120);
+            m_spectrum_data_helper.SpectralDataMap(m_fft, m_spectral_data, scale);
     }
     else
     {
