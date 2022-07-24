@@ -247,6 +247,9 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             audio_tag.GetAudioRating();
             CSongDataManager::GetInstance().SaveSongInfo(song);
             CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);    // 媒体库内存在歌曲信息时此更新修改时间方法可用
+            const SongInfo& song_ref{ CSongDataManager::GetInstance().GetSongInfoRef(song.file_path) };
+            if (song_ref.modified_time > song.modified_time)
+                song.modified_time = song_ref.modified_time;
             CSongDataManager::GetInstance().SetSongDataModified();
         }
     }
