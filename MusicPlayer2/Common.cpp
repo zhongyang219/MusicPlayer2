@@ -1337,6 +1337,23 @@ int CCommon::GetMenuItemPosition(CMenu* pMenu, UINT id)
     return pos;
 }
 
+void CCommon::IterateMenuItem(CMenu* pMenu, std::function<void(CMenu*, UINT)> func)
+{
+    if (pMenu != nullptr)
+    {
+        int item_count = pMenu->GetMenuItemCount();
+        for (int i = 0; i < item_count; i++)
+        {
+            CMenu* pSubMenu = pMenu->GetSubMenu(i);
+            if (pSubMenu != nullptr)
+                IterateMenuItem(pSubMenu, func);
+            UINT id = pMenu->GetMenuItemID(i);
+            if (id > 0)
+                func(pMenu, id);
+        }
+    }
+}
+
 CString CCommon::LoadText(UINT id, LPCTSTR back_str)
 {
     CString str;

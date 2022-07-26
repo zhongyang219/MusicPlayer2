@@ -328,6 +328,13 @@ public:
     //获取一个菜单项的序号
     static int GetMenuItemPosition(CMenu* pMenu, UINT id);
 
+    /**
+     * @brief   遍历一个菜单
+     * @param   CMenu * pMenu 遍历的菜单
+     * @param   func 一个函数对象或lambda表达式，第1个参数是被遍历菜单项的菜单对象，第2个参数是被遍历菜单项的id
+     */
+    static void IterateMenuItem(CMenu* pMenu, std::function<void(CMenu*, UINT)> func);
+
     //从资源文件载入字符串。其中，front_str、back_str为载入字符串时需要在前面或后面添加的字符串
     static CString LoadText(UINT id, LPCTSTR back_str = nullptr);
     static CString LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str = nullptr);

@@ -18,6 +18,7 @@
 #include "CHotkeyManager.h"
 #include "CommonData.h"
 #include "MediaLibHelper.h"
+#include "AcceleratorRes.h"
 
 
 // CMusicPlayerApp:
@@ -59,6 +60,7 @@ public:
     GlobalHotKeySettingData m_hot_key_setting_data;	//“全局快捷键”设置
     MediaLibSettingData m_media_lib_setting_data;  	//“媒体库”设置
     CHotkeyManager m_hot_key;
+    CAcceleratorRes m_accelerator_res;
 
     UIData m_ui_data;
     IconSet m_icon_set;			//图标资源
@@ -93,6 +95,7 @@ public:
 
     void LoadIconResource();
     void InitMenuResourse();
+    void AddMenuShortcuts(CMenu* pMenu);    //在菜单项后面添加快捷键
 
     int DPI(int pixel);		//将一个像素值进行DPI变换
     int DPI(double pixel);

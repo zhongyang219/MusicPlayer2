@@ -262,6 +262,7 @@ BOOL CMusicPlayerApp::InitInstance()
     GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
     m_hScintillaModule = LoadLibrary(_T("SciLexer.dll"));
+    m_accelerator_res.Init();
 
     CMusicPlayerDlg dlg(cmd_line);
     //CMusicPlayerDlg dlg(L"\"D:\\音乐\\纯音乐\\班得瑞\\05. Chariots Of Fire 火战车.mp3\"");
@@ -627,11 +628,16 @@ void CMusicPlayerApp::LoadIconResource()
 void CMusicPlayerApp::InitMenuResourse()
 {
     m_menu_set.m_main_menu.LoadMenu(IDR_MENU1);
+    AddMenuShortcuts(&m_menu_set.m_main_menu);
     m_menu_set.m_list_popup_menu.LoadMenu(IDR_POPUP_MENU);		//装载播放列表右键菜单
+    AddMenuShortcuts(&m_menu_set.m_list_popup_menu);
     m_menu_set.m_playlist_toolbar_menu.LoadMenu(IDR_PLAYLIST_TOOLBAR_MENU);
+    AddMenuShortcuts(&m_menu_set.m_playlist_toolbar_menu);
 
     m_menu_set.m_popup_menu.LoadMenu(IDR_LYRIC_POPUP_MENU);	//装载歌词右键菜单
+    AddMenuShortcuts(&m_menu_set.m_popup_menu);
     m_menu_set.m_main_popup_menu.LoadMenu(IDR_MAIN_POPUP_MENU);
+    AddMenuShortcuts(&m_menu_set.m_main_popup_menu);
 
     m_menu_set.m_playlist_btn_menu.LoadMenu(IDR_PLAYLIST_BTN_MENU);
     m_menu_set.m_lyric_default_style.LoadMenu(IDR_LRYIC_DEFAULT_STYLE_MENU);
@@ -644,7 +650,9 @@ void CMusicPlayerApp::InitMenuResourse()
     m_menu_set.m_media_lib_playlist_menu.GetSubMenu(0)->SetDefaultItem(ID_PLAY_PLAYLIST);
 
     m_menu_set.m_notify_menu.LoadMenu(IDR_NOTIFY_MENU);
+    //AddMenuShortcuts(&m_menu_set.m_notify_menu);
     m_menu_set.m_mini_mode_menu.LoadMenu(IDR_MINI_MODE_MENU);
+    AddMenuShortcuts(&m_menu_set.m_mini_mode_menu);
     m_menu_set.m_property_cover_menu.LoadMenu(IDR_PROPERTY_COVER_MENU);
     m_menu_set.m_property_menu.LoadMenu(IDR_PROPERTY_MENU);
 
@@ -941,6 +949,23 @@ void CMusicPlayerApp::InitMenuResourse()
         pSysMenu->AppendMenu(MF_STRING, ID_TEST_DIALOG, _T("Test Dialog"));
 #endif
     }
+}
+
+void CMusicPlayerApp::AddMenuShortcuts(CMenu* pMenu)
+{
+    //遍历所有子菜单项
+    CCommon::IterateMenuItem(pMenu, [&](CMenu* pParentNenu, UINT id)
+        {
+            CString menu_text;
+            pParentNenu->GetMenuString(id, menu_text, MF_BYCOMMAND);
+            std::wstring shortcut = m_accelerator_res.GetShortcutDescriptionById(id);
+            if (!shortcut.empty())
+            {
+                menu_text += _T("\t");
+                menu_text += shortcut.c_str();
+                pParentNenu->ModifyMenu(id, MF_BYCOMMAND, id, menu_text);
+            }
+        });
 }
 
 int CMusicPlayerApp::DPI(int pixel)
