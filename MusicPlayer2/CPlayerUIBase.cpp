@@ -2022,9 +2022,14 @@ int CPlayerUIBase::GetToolTipIdOffset()
 
 CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
 {
-    CString strShortcurKey;
-    strShortcurKey.Format(_T(" (%s)"), theApp.m_accelerator_res.GetShortcutDescriptionById(id).c_str());
-    return strShortcurKey;
+    std::wstring shortcut_key{ theApp.m_accelerator_res.GetShortcutDescriptionById(id) };
+    if (!shortcut_key.empty())
+    {
+        CString shortcut_key_tip;
+        shortcut_key_tip.Format(_T(" (%s)"), shortcut_key.c_str());
+        return shortcut_key_tip;
+    }
+    return CString();
 }
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
@@ -2463,8 +2468,8 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
     AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, GetCmdShortcutKeyForTooltips(ID_EQUALIZER)));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
-    AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_DOEDE)));
-    AddMouseToolTip(BTN_MINI1, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_DOEDE)));
+    AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
+    AddMouseToolTip(BTN_MINI1, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
     AddMouseToolTip(BTN_INFO, m_info_tip);
     AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
     AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
