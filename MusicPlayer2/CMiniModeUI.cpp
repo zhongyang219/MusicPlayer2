@@ -310,6 +310,6 @@ void CMiniModeUI::AddToolTips()
     AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
     AddMouseToolTip(BTN_COVER, _T(""));
     AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
-    AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, _T(" (Ctrl+T)")));
+    AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_SET_PATH)));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
 }

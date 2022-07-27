@@ -558,13 +558,13 @@ void CPlayerUIBase::UpdateFullScreenTip()
 {
     if (m_ui_data.full_screen)
     {
-        UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
-        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, _T(" (F11)")));
+        UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
+        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
     }
     else
     {
-        UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
-        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+        UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
+        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
     }
 }
 
@@ -1153,14 +1153,14 @@ void CPlayerUIBase::UpdateVolumeToolTip()
 void CPlayerUIBase::UpdatePlaylistBtnToolTip()
 {
     if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
-        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+K)")));
+        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST)));
     else
-        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, _T(" (Ctrl+L)")));
+        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST)));
 }
 
 void CPlayerUIBase::UpdateDarkLightModeBtnToolTip()
 {
-    UpdateMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, _T(" (Ctrl+Shift+D)")));
+    UpdateMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, GetCmdShortcutKeyForTooltips(ID_DARK_MODE)));
 }
 
 void CPlayerUIBase::UpdateToolTipPosition()
@@ -1201,7 +1201,8 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 {
     const SongInfo& songInfo = CPlayer::GetInstance().GetCurrentSongInfo();
 
-    m_info_tip = CCommon::LoadText(IDS_SONG_INFO, _T(" (Ctrl+N)\r\n"));
+    m_info_tip = CCommon::LoadText(IDS_SONG_INFO, GetCmdShortcutKeyForTooltips(ID_SONG_INFO));
+    m_info_tip += _T("\r\n");
 
     m_info_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
     m_info_tip += songInfo.GetTitle().c_str();
@@ -2019,6 +2020,13 @@ int CPlayerUIBase::GetToolTipIdOffset()
     return GetUiIndex() * 100;
 }
 
+CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
+{
+    CString strShortcurKey;
+    strShortcurKey.Format(_T(" (%s)"), theApp.m_accelerator_res.GetShortcutDescriptionById(id).c_str());
+    return strShortcurKey;
+}
+
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
 {
     m_draw.SetDrawArea(rect);
@@ -2452,34 +2460,34 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
     AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
     AddMouseToolTip(BTN_VOLUME, GetVolumeTooltipString());
-    AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, _T(" (Ctrl+U)")));
-    AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, _T(" (Ctrl+E)")));
-    AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, _T(" (Ctrl+I)")));
-    AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl+M)")));
-    AddMouseToolTip(BTN_MINI1, CCommon::LoadText(IDS_MINI_MODE, _T(" (Ctrl+M)")));
+    AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
+    AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, GetCmdShortcutKeyForTooltips(ID_EQUALIZER)));
+    AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
+    AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_DOEDE)));
+    AddMouseToolTip(BTN_MINI1, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_DOEDE)));
     AddMouseToolTip(BTN_INFO, m_info_tip);
     AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
     AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
     AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
-    AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? _T(" (Ctrl+K)") : _T(" (Ctrl+L)")));
-    AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, _T(" (Ctrl+T)")));
-    AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, _T(" (Ctrl+F)")));
+    AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST) : GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST)));
+    AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, GetCmdShortcutKeyForTooltips(ID_SET_PATH)));
+    AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, GetCmdShortcutKeyForTooltips(ID_FIND)));
     AddMouseToolTip(BTN_COVER, m_cover_tip);
-    AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
-    AddMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, _T(" (F11)")));
+    AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
+    AddMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_MENU1, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
-    AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, _T(" (Ctrl+R)")));
+    AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, GetCmdShortcutKeyForTooltips(ID_AB_REPEAT)));
     AddMouseToolTip(BTN_APP_CLOSE, CCommon::LoadText(IDS_CLOSE));
     AddMouseToolTip(BTN_MINIMIZE, CCommon::LoadText(IDS_MINIMIZE));
     AddMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
     AddMouseToolTip(BTN_ADD_TO_PLAYLIST, CCommon::LoadText(IDS_ADD_TO_PLAYLIST));
     AddMouseToolTip(BTN_SWITCH_DISPLAY, CCommon::LoadText(IDS_SWITCH_DISPLAY));
-    AddMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, _T(" (Ctrl+Shift+D)")));
+    AddMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, GetCmdShortcutKeyForTooltips(ID_DARK_MODE)));
 
     UpdateRepeatModeToolTip();
 }
