@@ -157,10 +157,6 @@ std::wstring CAcceleratorRes::Key::ToString() const
     {
         str += CCommon::LoadText(IDS_SHOTCUT_DOWN).GetString();
     }
-    else if (key == VK_DELETE)
-    {
-        str += L"Del";
-    }
     else if (key >= VK_F1 && key <= VK_F24)
     {
         str += L'F';

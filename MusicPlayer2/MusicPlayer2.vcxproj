@@ -390,6 +390,7 @@
     <ClCompile Include="CListBoxEnhanced.cpp" />
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
     <ClCompile Include="CMMNotificationClient.cpp" />
+    <ClCompile Include="CommonData.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />

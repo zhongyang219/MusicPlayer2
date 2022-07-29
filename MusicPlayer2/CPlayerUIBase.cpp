@@ -329,9 +329,10 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
                 return true;
 
-            case BTN_SKIN:
+            case BTN_SKIN: case BTN_SKIN_TITLEBAR:
             {
                 m_buttons[BTN_SKIN].hover = false;
+                m_buttons[BTN_SKIN_TITLEBAR].hover = false;
                 //theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
                 CPoint point1;
                 GetCursorPos(&point1);
@@ -347,18 +348,15 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
                 return true;
 
-            case BTN_SETTING:
+            case BTN_SETTING: case BTN_SETTING_TITLEBAR:
                 m_buttons[BTN_SETTING].hover = false;
+                m_buttons[BTN_SETTING_TITLEBAR].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
                 return true;
 
-            case BTN_MINI:
+            case BTN_MINI: case BTN_MINI_TITLEBAR:
                 m_buttons[BTN_MINI].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
-                return true;
-
-            case BTN_MINI1:
-                m_buttons[BTN_MINI1].hover = false;
+                m_buttons[BTN_MINI_TITLEBAR].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
                 return true;
 
@@ -442,26 +440,26 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
                 return true;
 
+            case BTN_FULL_SCREEN_TITLEBAR:
+                m_buttons[BTN_FULL_SCREEN_TITLEBAR].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
+                return true;
+
             case BTN_FULL_SCREEN:
                 m_buttons[BTN_FULL_SCREEN].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
                 return true;
 
-            case BTN_FULL_SCREEN1:
-                m_buttons[BTN_FULL_SCREEN1].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
-                return true;
-
-            case BTN_MENU:
+            case BTN_MENU_TITLEBAR:
             {
-                CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
+                CPoint point(m_buttons[BTN_MENU_TITLEBAR].rect.left, m_buttons[BTN_MENU_TITLEBAR].rect.bottom);
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
                 return true;
             }
 
-            case BTN_MENU1:
+            case BTN_MENU:
             {
-                CPoint point(m_buttons[BTN_MENU1].rect.left, m_buttons[BTN_MENU1].rect.bottom);
+                CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
                 theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
                 return true;
             }
@@ -517,7 +515,7 @@ CRect CPlayerUIBase::GetThumbnailClipArea()
 {
     //获取菜单栏的高度
     int menu_bar_height = 0;
-    if (m_ui_data.ShowWindowMenuBar() && m_ui_data.show_window_frame)
+    if (m_ui_data.ShowWindowMenuBar() && theApp.m_app_setting_data.show_window_frame)
     {
         menu_bar_height = CCommon::GetMenuBarHeight(theApp.m_pMainWnd->GetSafeHwnd());
         if (menu_bar_height == 0)
@@ -558,13 +556,13 @@ void CPlayerUIBase::UpdateFullScreenTip()
 {
     if (m_ui_data.full_screen)
     {
+        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
-        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
     }
     else
     {
+        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
         UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
-        UpdateMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
     }
 }
 
@@ -621,11 +619,11 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     {
     case BTN_REPETEMODE: return *GetRepeatModeIcon();
     case BTN_VOLUME: return *GetVolumeIcon();
-    case BTN_SKIN: return theApp.m_icon_set.skin;
+    case BTN_SKIN: case BTN_SKIN_TITLEBAR: return theApp.m_icon_set.skin;
     case BTN_EQ: return theApp.m_icon_set.eq;
-    case BTN_SETTING: return theApp.m_icon_set.setting;
+    case BTN_SETTING: case BTN_SETTING_TITLEBAR: return theApp.m_icon_set.setting;
     case BTN_MINI: return theApp.m_icon_set.mini;
-    case BTN_MINI1: return theApp.m_icon_set.mini;
+    case BTN_MINI_TITLEBAR: return theApp.m_icon_set.mini;
     case BTN_INFO: return theApp.m_icon_set.info;
     case BTN_FIND: return theApp.m_icon_set.find_songs;
     case BTN_STOP: return (big_icon ? theApp.m_icon_set.stop_l : theApp.m_icon_set.stop);
@@ -638,8 +636,8 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
     case BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
     case BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
-    case BTN_FULL_SCREEN: case BTN_FULL_SCREEN1: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
-    case BTN_MENU: case BTN_MENU1: return theApp.m_icon_set.menu;
+    case BTN_FULL_SCREEN_TITLEBAR: case BTN_FULL_SCREEN: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
+    case BTN_MENU_TITLEBAR: case BTN_MENU: return theApp.m_icon_set.menu;
     case BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
     case BTN_MINIMIZE: return theApp.m_icon_set.minimize;
     case BTN_MAXIMIZE: return theApp.m_icon_set.maximize;
@@ -706,7 +704,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
 {
     //绘制播放状态
     CRect rc_tmp{ rect };
-    if (!theApp.m_ui_data.always_show_statusbar)
+    if (!theApp.m_app_setting_data.always_show_statusbar)
     {
         CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
         //m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
@@ -1296,7 +1294,7 @@ int CPlayerUIBase::DrawAreaHeight() const
     int info_height = m_layout.info_height;
     if (m_ui_data.full_screen)
         info_height = static_cast<int>(info_height * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR) + 2 * EdgeMargin();
-    else if (!m_ui_data.show_window_frame)
+    else if (!theApp.m_app_setting_data.show_window_frame)
         info_height += m_layout.titlabar_height;
 
     return info_height;
@@ -1315,7 +1313,7 @@ bool CPlayerUIBase::PointInControlArea(CPoint point) const
 
 bool CPlayerUIBase::PointInTitlebarArea(CPoint point) const
 {
-    if (m_ui_data.show_window_frame || m_ui_data.full_screen)
+    if (theApp.m_app_setting_data.show_window_frame || m_ui_data.full_screen)
         return false;
 
     CRect rect_titlebar = m_draw_rect;
@@ -1325,7 +1323,7 @@ bool CPlayerUIBase::PointInTitlebarArea(CPoint point) const
 
 bool CPlayerUIBase::PointInAppIconArea(CPoint point) const
 {
-    if (m_ui_data.show_window_frame || m_ui_data.full_screen)
+    if (theApp.m_app_setting_data.show_window_frame || m_ui_data.full_screen)
         return false;
 
     CRect rect_app_icon{};
@@ -1357,7 +1355,7 @@ bool CPlayerUIBase::IsDrawStatusBar() const
 
 bool CPlayerUIBase::IsDrawTitleBar() const
 {
-    return !m_ui_data.show_window_frame && !m_ui_data.full_screen;
+    return !theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen;
 }
 
 bool CPlayerUIBase::IsDrawMenuBar() const
@@ -1743,7 +1741,7 @@ void CPlayerUIBase::DrawTranslateButton(CRect rect)
 
 int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
 {
-    if (!m_ui_data.show_window_frame && !m_ui_data.full_screen)
+    if (!theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen)
         return 0;
 
     int total_width = 0;
@@ -1759,12 +1757,12 @@ int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
         rc_tmp.bottom = rc_tmp.top + icon_size;
         rc_tmp.left = rc_tmp.right - icon_size;
         IconRes& icon{ m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1 };
-        DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN], icon);
+        DrawControlButton(rc_tmp, m_buttons[BTN_FULL_SCREEN_TITLEBAR], icon);
         total_width += Margin();
     }
     else
     {
-        m_buttons[BTN_FULL_SCREEN].rect.SetRectEmpty();
+        m_buttons[BTN_FULL_SCREEN_TITLEBAR].rect.SetRectEmpty();
     }
 
     //绘制“主菜单”图标
@@ -1775,13 +1773,13 @@ int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
         rc_tmp.top = EdgeMargin(false);
         rc_tmp.bottom = rc_tmp.top + icon_size;
         rc_tmp.left = rc_tmp.right - icon_size;
-        DrawControlButton(rc_tmp, m_buttons[BTN_MENU], theApp.m_icon_set.menu);
+        DrawControlButton(rc_tmp, m_buttons[BTN_MENU_TITLEBAR], theApp.m_icon_set.menu);
         total_width += icon_size;
         total_width += Margin();
     }
     else
     {
-        m_buttons[BTN_MENU].rect.SetRectEmpty();
+        m_buttons[BTN_MENU_TITLEBAR].rect.SetRectEmpty();
     }
 
     return total_width;
@@ -1988,23 +1986,47 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     //关闭图标
     DrawUIButton(rect_temp, m_buttons[BTN_APP_CLOSE], theApp.m_icon_set.app_close);
     //最大化/还原图标
-    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
-    auto max_icon = (theApp.m_pMainWnd->IsZoomed() ? theApp.m_icon_set.restore : theApp.m_icon_set.maximize);
-    DrawUIButton(rect_temp, m_buttons[BTN_MAXIMIZE], max_icon);
+    if (theApp.m_app_setting_data.show_maximize_btn_in_titlebar)
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        auto max_icon = (theApp.m_pMainWnd->IsZoomed() ? theApp.m_icon_set.restore : theApp.m_icon_set.maximize);
+        DrawUIButton(rect_temp, m_buttons[BTN_MAXIMIZE], max_icon);
+    }
     //最小化图标
-    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
-    DrawUIButton(rect_temp, m_buttons[BTN_MINIMIZE], theApp.m_icon_set.minimize);
+    if (theApp.m_app_setting_data.show_minimize_btn_in_titlebar)
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        DrawUIButton(rect_temp, m_buttons[BTN_MINIMIZE], theApp.m_icon_set.minimize);
+    }
     //全屏模式图标
-    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
-    DrawUIButton(rect_temp, m_buttons[BTN_FULL_SCREEN], theApp.m_icon_set.full_screen1);
+    if (theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar)
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        DrawUIButton(rect_temp, m_buttons[BTN_FULL_SCREEN_TITLEBAR], theApp.m_icon_set.full_screen1);
+    }
     //迷你模式图标
-    rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
-    DrawUIButton(rect_temp, m_buttons[BTN_MINI1], theApp.m_icon_set.mini);
+    if (theApp.m_app_setting_data.show_minimode_btn_in_titlebar)
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        DrawUIButton(rect_temp, m_buttons[BTN_MINI_TITLEBAR], theApp.m_icon_set.mini);
+    }
+    //切换界面图标
+    if (theApp.m_app_setting_data.show_skin_btn_in_titlebar)
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        DrawUIButton(rect_temp, m_buttons[BTN_SKIN_TITLEBAR], theApp.m_icon_set.skin);
+    }
+    //设置图标
+    if (theApp.m_app_setting_data.show_settings_btn_in_titlebar)
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        DrawUIButton(rect_temp, m_buttons[BTN_SETTING_TITLEBAR], theApp.m_icon_set.setting);
+    }
     //主菜单图标
     if (!m_ui_data.ShowUiMenuBar())
     {
         rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
-        DrawUIButton(rect_temp, m_buttons[BTN_MENU], theApp.m_icon_set.menu);
+        DrawUIButton(rect_temp, m_buttons[BTN_MENU_TITLEBAR], theApp.m_icon_set.menu);
     }
 
     //绘制标题栏文本
@@ -2466,10 +2488,12 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
     AddMouseToolTip(BTN_VOLUME, GetVolumeTooltipString());
     AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
+    AddMouseToolTip(BTN_SKIN_TITLEBAR, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
     AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, GetCmdShortcutKeyForTooltips(ID_EQUALIZER)));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
+    AddMouseToolTip(BTN_SETTING_TITLEBAR, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
     AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
-    AddMouseToolTip(BTN_MINI1, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
+    AddMouseToolTip(BTN_MINI_TITLEBAR, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
     AddMouseToolTip(BTN_INFO, m_info_tip);
     AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
     AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
@@ -2480,10 +2504,10 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, GetCmdShortcutKeyForTooltips(ID_SET_PATH)));
     AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, GetCmdShortcutKeyForTooltips(ID_FIND)));
     AddMouseToolTip(BTN_COVER, m_cover_tip);
+    AddMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
     AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
-    AddMouseToolTip(BTN_FULL_SCREEN1, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
+    AddMouseToolTip(BTN_MENU_TITLEBAR, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
-    AddMouseToolTip(BTN_MENU1, CCommon::LoadText(IDS_MAIN_MENU));
     AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
     AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
     AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, GetCmdShortcutKeyForTooltips(ID_AB_REPEAT)));

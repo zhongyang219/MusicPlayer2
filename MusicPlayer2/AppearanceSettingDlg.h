@@ -139,4 +139,6 @@ public:
     afx_msg void OnBnClickedUseDesktopBackgroundCheck();
     afx_msg void OnBnClickedShowNextCheck();
     afx_msg void OnBnClickedShowFpsCheck();
+    afx_msg void OnBnClickedShowSystemTitlebarCheck();
+    afx_msg void OnBnClickedAlwaysShowStatusbarCheck();
 };

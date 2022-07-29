@@ -502,6 +502,7 @@ public:
     afx_msg void OnViewAlbum();
     afx_msg void OnLocateToCurrent();
     afx_msg void OnUseStandardTitleBar();
+    void ApplyShowStandardTitlebar();
 protected:
     afx_msg LRESULT OnDefaultMultimediaDeviceChanged(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);

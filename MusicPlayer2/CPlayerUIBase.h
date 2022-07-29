@@ -117,10 +117,12 @@ public:
         BTN_VOLUME_DOWN,
         BTN_TRANSLATE,          //歌词翻译按钮
         BTN_SKIN,               //切换界面按钮
+        BTN_SKIN_TITLEBAR,      //标题栏上的切换界面按钮
         BTN_EQ,                 //音效设定按钮
         BTN_SETTING,            //设置按钮
+        BTN_SETTING_TITLEBAR,   //标题栏上的设置按钮
         BTN_MINI,               //迷你模式按钮
-        BTN_MINI1,              //菜单栏上的迷你模式按钮
+        BTN_MINI_TITLEBAR,      //标题栏上的迷你模式按钮
         BTN_INFO,               //曲目信息按钮
         BTN_FIND,               //查找歌曲按钮
         BTN_LRYIC,              //桌面歌词按钮
@@ -133,10 +135,10 @@ public:
         BTN_SELECT_FOLDER,      //媒体库
         BTN_PROGRESS,           //进度条
         BTN_COVER,              //专辑封面
+        BTN_FULL_SCREEN_TITLEBAR, //标题栏上的全屏显示按钮
         BTN_FULL_SCREEN,        //全屏显示按钮
-        BTN_FULL_SCREEN1,       //全屏显示按钮
+        BTN_MENU_TITLEBAR,      //标题栏上的主菜单按钮
         BTN_MENU,               //主菜单按钮
-        BTN_MENU1,              //主菜单按钮
         BTN_FAVOURITE,          //“我喜欢”按钮
         BTN_CLOSE,              //关闭按钮（迷你模式）
         BTN_RETURN,             //返回按钮（迷你模式）
