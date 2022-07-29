@@ -71,6 +71,8 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
 
 #else
+    bool update_tooltip_pos{ false };   //是否需要更新鼠标提示
+
     //双缓冲绘图
     {
         CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
@@ -112,14 +114,23 @@ void CPlayerUIBase::DrawInfo(bool reset)
         //绘制界面中其他信息
         _DrawInfo(draw_rect, reset);
 
+
         //如果切换了显示/隐藏状态栏，则需要更新鼠标提示的位置
         static bool last_draw_status_bar{ false };
         if (draw_status_bar != last_draw_status_bar)
         {
             last_draw_status_bar = draw_status_bar;
-            UpdateToolTipPosition();
+            update_tooltip_pos = true;
         }
 
+        //如果标题栏显示按钮发生了改变，则更新鼠标提示的位置
+        static int last_titlebar_btn{};
+        int titlebar_btn{ theApp.m_app_setting_data.TitleDisplayItem() };
+        if (last_titlebar_btn != titlebar_btn)
+        {
+            last_titlebar_btn = titlebar_btn;
+            update_tooltip_pos = true;
+        }
     }
 
 #endif
@@ -136,7 +147,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
             || (last_ui_index != GetUiIndex() && GetUiIndex() != 0))
         {
             //更新工具提示的位置
-            UpdateToolTipPosition();
+            update_tooltip_pos = true;
 
             //更新任务栏缩略图区域
             CRect thumbnail_rect = GetThumbnailClipArea();
@@ -152,6 +163,9 @@ void CPlayerUIBase::DrawInfo(bool reset)
         }
     }
     m_first_draw = false;
+
+    if (update_tooltip_pos)
+        UpdateToolTipPosition();
 }
 
 void CPlayerUIBase::ClearInfo()
