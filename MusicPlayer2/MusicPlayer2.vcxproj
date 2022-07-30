@@ -213,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="AcceleratorRes.h" />
     <ClInclude Include="AddToPlaylistDlg.h" />
     <ClInclude Include="AlbumCoverInfoDlg.h" />
     <ClInclude Include="AllMediaDlg.h" />
@@ -364,6 +365,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="AcceleratorRes.cpp" />
     <ClCompile Include="AddToPlaylistDlg.cpp" />
     <ClCompile Include="AlbumCoverInfoDlg.cpp" />
     <ClCompile Include="AllMediaDlg.cpp" />

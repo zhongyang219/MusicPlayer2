@@ -106,6 +106,8 @@ public:
 
     UiSize GetUiSize() const;
 
+    static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
+
 public:
     enum BtnKey     //标识按钮的类型
     {

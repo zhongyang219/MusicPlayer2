@@ -2160,8 +2160,8 @@ IDR_MENU1 MENU
 BEGIN
     POPUP "文件(&F)"
     BEGIN
-        MENUITEM "打开文件(&O)...\tCtrl+O",         ID_FILE_OPEN
-        MENUITEM "打开文件夹(&F)...\tCtrl+D",        ID_FILE_OPEN_FOLDER
+        MENUITEM "打开文件(&O)...",                 ID_FILE_OPEN
+        MENUITEM "打开文件夹(&F)...",                ID_FILE_OPEN_FOLDER
         MENUITEM "打开&URL...",                   ID_FILE_OPEN_URL
         MENUITEM "打开播放列表(&P)...",               ID_FILE_OPEN_PLAYLIST
         MENUITEM SEPARATOR
@@ -2169,19 +2169,19 @@ BEGIN
     END
     POPUP "播放控制(&P)"
     BEGIN
-        MENUITEM "播放/暂停(&P)\t空格",               ID_PLAY_PAUSE
-        MENUITEM "停止(&S)\tS",                   ID_STOP
-        MENUITEM "上一曲(&V)\tV",                  ID_PREVIOUS
-        MENUITEM "下一曲(&N)\tN",                  ID_NEXT
+        MENUITEM "播放/暂停(&P)",                   ID_PLAY_PAUSE
+        MENUITEM "停止(&S)",                      ID_STOP
+        MENUITEM "上一曲(&V)",                     ID_PREVIOUS
+        MENUITEM "下一曲(&N)",                     ID_NEXT
         MENUITEM SEPARATOR
-        MENUITEM "快退5秒(&R)\t←",                 ID_REW
-        MENUITEM "快进5秒(&F)\t→",                 ID_FF
+        MENUITEM "快退5秒(&R)",                    ID_REW
+        MENUITEM "快进5秒(&F)",                    ID_FF
         MENUITEM SEPARATOR
-        MENUITEM "加速播放\tCtrl+=",                ID_SPEED_UP
-        MENUITEM "减速播放\tCtrl+-",                ID_SLOW_DOWN
-        MENUITEM "恢复原速\tCtrl+Enter",            ID_ORIGINAL_SPEED
+        MENUITEM "加速播放",                        ID_SPEED_UP
+        MENUITEM "减速播放",                        ID_SLOW_DOWN
+        MENUITEM "恢复原速",                        ID_ORIGINAL_SPEED
         MENUITEM SEPARATOR
-        POPUP "循环模式(&M)\tM"
+        POPUP "循环模式(&M)"
         BEGIN
             MENUITEM "顺序播放",                        ID_PLAY_ORDER
             MENUITEM "无序播放",                        ID_PLAY_SHUFFLE
@@ -2192,12 +2192,12 @@ BEGIN
         END
         POPUP "AB重复(&E)"
         BEGIN
-            MENUITEM "AB重复(&R)\tCtrl+R",            ID_AB_REPEAT
+            MENUITEM "AB重复(&R)",                    ID_AB_REPEAT
             MENUITEM SEPARATOR
-            MENUITEM "设置A点(&A)\tCtrl+Shift+A",      ID_SET_A_POINT
-            MENUITEM "设置B点(&B)\tCtrl+Shift+B",      ID_SET_B_POINT
-            MENUITEM "继续下一句AB重复(&N)\tCtrl+Shift+N", ID_NEXT_AB_REPEAT
-            MENUITEM "取消AB重复(&C)\tCtrl+Shift+C",    ID_RESET_AB_REPEAT
+            MENUITEM "设置A点(&A)",                    ID_SET_A_POINT
+            MENUITEM "设置B点(&B)",                    ID_SET_B_POINT
+            MENUITEM "继续下一句AB重复(&N)",               ID_NEXT_AB_REPEAT
+            MENUITEM "取消AB重复(&C)",                  ID_RESET_AB_REPEAT
         END
     END
     POPUP "播放列表(&L)"
@@ -2245,7 +2245,7 @@ BEGIN
             MENUITEM "标题 - 艺术家",                    ID_DISP_TITLE_ARTIST
         END
         MENUITEM SEPARATOR
-        MENUITEM "定位到正在播放曲目(&L)\tCtrl+G",       ID_LOCATE_TO_CURRENT
+        MENUITEM "定位到正在播放曲目(&L)",               ID_LOCATE_TO_CURRENT
     END
     POPUP "歌词(&C)"
     BEGIN
@@ -2253,7 +2253,7 @@ BEGIN
         MENUITEM "复制当前歌词(&C)",                  ID_COPY_CURRENT_LYRIC
         MENUITEM "复制所有歌词(&A)",                  ID_COPY_ALL_LYRIC
         MENUITEM SEPARATOR
-        MENUITEM "编辑歌词(&E)...\tCtrl+Shift+E",   ID_EDIT_LYRIC
+        MENUITEM "编辑歌词(&E)...",                 ID_EDIT_LYRIC
         POPUP "繁简转换(&V)"
         BEGIN
             MENUITEM "转换为简体中文(&S)",                 ID_TRANSLATE_TO_SIMPLIFIED_CHINESE
@@ -2261,11 +2261,11 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "显示歌词翻译(&N)",                  ID_SHOW_LYRIC_TRANSLATE
-        MENUITEM "显示桌面歌词(&K)\tCtrl+Y",          ID_SHOW_DESKTOP_LYRIC
+        MENUITEM "显示桌面歌词(&K)",                  ID_SHOW_DESKTOP_LYRIC
         MENUITEM SEPARATOR
-        MENUITEM "歌词提前0.5秒\tCtrl+PgUp",         ID_LYRIC_FORWARD
-        MENUITEM "歌词延后0.5秒\tCtrl+PgDn",         ID_LYRIC_DELAY
-        MENUITEM "保存歌词更改(&S)\tCtrl+S",          ID_SAVE_MODIFIED_LYRIC
+        MENUITEM "歌词提前0.5秒",                    ID_LYRIC_FORWARD
+        MENUITEM "歌词延后0.5秒",                    ID_LYRIC_DELAY
+        MENUITEM "保存歌词更改(&S)",                  ID_SAVE_MODIFIED_LYRIC
         MENUITEM SEPARATOR
         MENUITEM "关联本地歌词(&T)...",               ID_RELATE_LOCAL_LYRIC
         MENUITEM "删除歌词(&D)",                    ID_DELETE_LYRIC
@@ -2282,33 +2282,33 @@ BEGIN
     END
     POPUP "视图(&V)"
     BEGIN
-        MENUITEM "显示播放列表(&L)\tCtrl+L",          ID_SHOW_PLAYLIST
-        MENUITEM "浮动播放列表(&P)\tCtrl+K",          ID_FLOAT_PLAYLIST
+        MENUITEM "显示播放列表(&L)",                  ID_SHOW_PLAYLIST
+        MENUITEM "浮动播放列表(&P)",                  ID_FLOAT_PLAYLIST
         MENUITEM "使用系统标准标题栏(&B)",               ID_USE_STANDARD_TITLE_BAR
         MENUITEM "显示菜单栏(&N)",                   ID_SHOW_MENU_BAR
         MENUITEM "总是显示状态栏(&S)",                 ID_ALWAYS_SHOW_STATUS_BAR
-        MENUITEM "总是置顶(&T)\tCtrl+Shift+T",      ID_ALWAYS_ON_TOP
+        MENUITEM "总是置顶(&T)",                    ID_ALWAYS_ON_TOP
         MENUITEM SEPARATOR
-        MENUITEM "迷你模式(&M)\tCtrl+M",            ID_MINI_MODE
-        MENUITEM "全屏显示(&F)\tF11",               ID_FULL_SCREEN
+        MENUITEM "迷你模式(&M)",                    ID_MINI_MODE
+        MENUITEM "全屏显示(&F)",                    ID_FULL_SCREEN
         MENUITEM SEPARATOR
-        MENUITEM "深色模式(&D)\tCtrl+Shift+D",      ID_DARK_MODE
+        MENUITEM "深色模式(&D)",                    ID_DARK_MODE
         POPUP "切换界面"
         BEGIN
-            MENUITEM "切换界面(U)\tCtrl+U",             ID_SWITCH_UI
+            MENUITEM "切换界面(U)",                     ID_SWITCH_UI
         END
     END
     POPUP "工具(&T)"
     BEGIN
-        MENUITEM "媒体库(&M)...\tCtr+T",           ID_SET_PATH
-        MENUITEM "查找歌曲(&F)...\tCtr+F",          ID_FIND
-        MENUITEM "打开文件位置(&B)\tCtrl+B",          ID_EXPLORE_PATH
-        MENUITEM "曲目信息(&I)...\tCtrl+N",         ID_SONG_INFO
-        MENUITEM "音效设定(&E)...\tCtrl+E",         ID_EQUALIZER
+        MENUITEM "媒体库(&M)...",                  ID_SET_PATH
+        MENUITEM "查找歌曲(&F)...",                 ID_FIND
+        MENUITEM "打开文件位置(&B)",                  ID_EXPLORE_PATH
+        MENUITEM "曲目信息(&I)...",                 ID_SONG_INFO
+        MENUITEM "音效设定(&E)...",                 ID_EQUALIZER
         MENUITEM "转换格式(&C)...",                 ID_FORMAT_CONVERT1
         MENUITEM "在线查看(&L)",                    ID_CURRENT_EXPLORE_ONLINE
         MENUITEM SEPARATOR
-        MENUITEM "重新初始化播放器(&N)\tCtrl+Q",        ID_RE_INI_BASS
+        MENUITEM "重新初始化播放器(&N)",                ID_RE_INI_BASS
         POPUP "创建快捷方式"
         BEGIN
             MENUITEM "创建桌面快捷方式(&D)",                ID_CREATE_DESKTOP_SHORTCUT
@@ -2321,17 +2321,17 @@ BEGIN
             MENUITEM "下载专辑封面(&D)...",               ID_DOWNLOAD_ALBUM_COVER
             MENUITEM "专辑封面另存为(&S)...",              ID_ALBUM_COVER_SAVE_AS
             MENUITEM "删除专辑封面(&E)",                  ID_DELETE_ALBUM_COVER
-            MENUITEM "专辑封面详情(&C)...\tCtrl+W",       ID_ALBUM_COVER_INFO
+            MENUITEM "专辑封面详情(&C)...",               ID_ALBUM_COVER_INFO
         END
         POPUP "删除正在播放的曲目"
         BEGIN
-            MENUITEM "从播放列表删除(&P)\tCtrl+Del",       ID_REMOVE_CURRENT_FROM_PLAYLIST
-            MENUITEM "从磁盘删除(&D)\tCtrl+Shift+Del",   ID_DELETE_CURRENT_FROM_DISK
+            MENUITEM "从播放列表删除(&P)",                 ID_REMOVE_CURRENT_FROM_PLAYLIST
+            MENUITEM "从磁盘删除(&D)",                   ID_DELETE_CURRENT_FROM_DISK
         END
         MENUITEM SEPARATOR
         MENUITEM "播放时间统计(&S)...",               ID_LISTEN_STATISTICS
         MENUITEM "文件关联(R)...",                  ID_TOOL_FILE_RELATE
-        MENUITEM "选项(&O)...\tCtrl+I",           ID_OPTION_SETTINGS
+        MENUITEM "选项(&O)...",                   ID_OPTION_SETTINGS
     END
     POPUP "帮助(&H)"
     BEGIN
@@ -2367,8 +2367,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "重新载入播放列表(&R)",                ID_RELOAD_PLAYLIST
         MENUITEM SEPARATOR
-        MENUITEM "从列表中删除(&L)\tDel",             ID_REMOVE_FROM_PLAYLIST
-        MENUITEM "从磁盘删除(&D)\tShift+Del",        ID_DELETE_FROM_DISK
+        MENUITEM "从列表中删除(&L)",                  ID_REMOVE_FROM_PLAYLIST
+        MENUITEM "从磁盘删除(&D)",                   ID_DELETE_FROM_DISK
         MENUITEM SEPARATOR
         POPUP "添加到播放列表(&T)"
         BEGIN
@@ -2380,8 +2380,8 @@ BEGIN
         MENUITEM "复制文件到(&C)...",                ID_COPY_FILE_TO
         MENUITEM "移动文件到(&M)...",                ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
-        MENUITEM "上移(&U)\tCtrl+↑",              ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "下移(&N)\tCtrl+↓",              ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "上移(&U)",                      ID_MOVE_PLAYLIST_ITEM_UP
+        MENUITEM "下移(&N)",                      ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "查看艺术家(&I)...",                ID_PLAYLIST_VIEW_ARTIST
         MENUITEM "查看唱片集(&V)...",                ID_PLAYLIST_VIEW_ALBUM
@@ -2396,7 +2396,7 @@ IDR_MINI_MODE_MENU MENU
 BEGIN
     POPUP "菜单"
     BEGIN
-        MENUITEM "曲目信息(&I)...\tCtrl+N",         ID_SONG_INFO
+        MENUITEM "曲目信息(&I)...",                 ID_SONG_INFO
         POPUP "循环模式(&M)"
         BEGIN
             MENUITEM "顺序播放",                        ID_PLAY_ORDER
@@ -2419,11 +2419,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "添加到我喜欢的音乐(&A)",               ID_ADD_REMOVE_FROM_FAVOURITE
         MENUITEM SEPARATOR
-        MENUITEM "媒体库(&T)...\tCtr+T",           ID_SET_PATH
-        MENUITEM "查找歌曲(&F)...\tCtr+F",          ID_FIND
-        MENUITEM "打开文件位置(&B)\tCtrl+B",          ID_EXPLORE_PATH
-        MENUITEM "音效设定(&E)...\tCtrl+E",         ID_EQUALIZER
-        MENUITEM "选项(&O)...\tCtrl+I",           ID_OPTION_SETTINGS
+        MENUITEM "媒体库(&T)...",                  ID_SET_PATH
+        MENUITEM "查找歌曲(&F)...",                 ID_FIND
+        MENUITEM "打开文件位置(&B)",                  ID_EXPLORE_PATH
+        MENUITEM "音效设定(&E)...",                 ID_EQUALIZER
+        MENUITEM "选项(&O)...",                   ID_OPTION_SETTINGS
         MENUITEM SEPARATOR
         MENUITEM "显示播放列表(&P)\tCtrl+L",          ID_SHOW_PLAY_LIST
         MENUITEM "总是置顶(&Y)",                    ID_MINI_MODE_ALWAYS_ON_TOP
@@ -2441,7 +2441,7 @@ BEGIN
         MENUITEM "重新载入歌词(&R)",                  ID_RELOAD_LYRIC
         MENUITEM "复制当前歌词(&C)",                  ID_COPY_CURRENT_LYRIC
         MENUITEM "复制所有歌词(&A)",                  ID_COPY_ALL_LYRIC
-        MENUITEM "编辑歌词(&E)...\tCtrl+Shift+E",   ID_EDIT_LYRIC
+        MENUITEM "编辑歌词(&E)...",                 ID_EDIT_LYRIC
         POPUP "繁简转换(&V)"
         BEGIN
             MENUITEM "转换为简体中文(&S)",                 ID_TRANSLATE_TO_SIMPLIFIED_CHINESE
@@ -2449,11 +2449,11 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "显示歌词翻译(&N)",                  ID_SHOW_LYRIC_TRANSLATE
-        MENUITEM "显示桌面歌词(&K)\tCtrl+Y",          ID_SHOW_DESKTOP_LYRIC
+        MENUITEM "显示桌面歌词(&K)",                  ID_SHOW_DESKTOP_LYRIC
         MENUITEM SEPARATOR
-        MENUITEM "歌词提前0.5秒\tCtrl+PgUp",         ID_LYRIC_FORWARD
-        MENUITEM "歌词延后0.5秒\tCtrl+PgDn",         ID_LYRIC_DELAY
-        MENUITEM "保存歌词更改(&S)\tCtrl+S",          ID_SAVE_MODIFIED_LYRIC
+        MENUITEM "歌词提前0.5秒",                    ID_LYRIC_FORWARD
+        MENUITEM "歌词延后0.5秒",                    ID_LYRIC_DELAY
+        MENUITEM "保存歌词更改(&S)",                  ID_SAVE_MODIFIED_LYRIC
         MENUITEM SEPARATOR
         MENUITEM "关联本地歌词(&T)...",               ID_RELATE_LOCAL_LYRIC
         MENUITEM "删除歌词(&D)",                    ID_DELETE_LYRIC
@@ -2470,9 +2470,9 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "切换界面"
         BEGIN
-            MENUITEM "切换界面(U)\tCtrl+U",             ID_SWITCH_UI
+            MENUITEM "切换界面(U)",                     ID_SWITCH_UI
         END
-        MENUITEM "选项(&O)...\tCtrl+I",           ID_OPTION_SETTINGS
+        MENUITEM "选项(&O)...",                   ID_OPTION_SETTINGS
     END
 END
 
@@ -2552,7 +2552,7 @@ IDR_MAIN_POPUP_MENU MENU
 BEGIN
     POPUP "菜单"
     BEGIN
-        MENUITEM "曲目信息(&I)...\tCtrl+N",         ID_SONG_INFO
+        MENUITEM "曲目信息(&I)...",                 ID_SONG_INFO
         POPUP "循环模式(&M)"
         BEGIN
             MENUITEM "顺序播放",                        ID_PLAY_ORDER
@@ -2580,26 +2580,26 @@ BEGIN
             MENUITEM "未分级(&U)",                     ID_RATING_NONE
         END
         MENUITEM SEPARATOR
-        MENUITEM "媒体库(&T)...\tCtr+T",           ID_SET_PATH
-        MENUITEM "查找歌曲(&F)...\tCtr+F",          ID_FIND
-        MENUITEM "打开文件位置(&X)\tCtrl+B",          ID_EXPLORE_PATH
-        MENUITEM "音效设定(&E)...\tCtrl+E",         ID_EQUALIZER
+        MENUITEM "媒体库(&T)...",                  ID_SET_PATH
+        MENUITEM "查找歌曲(&F)...",                 ID_FIND
+        MENUITEM "打开文件位置(&X)",                  ID_EXPLORE_PATH
+        MENUITEM "音效设定(&E)...",                 ID_EQUALIZER
         MENUITEM "在线查看(&L)",                    ID_CURRENT_EXPLORE_ONLINE
         MENUITEM SEPARATOR
         MENUITEM "下载专辑封面(&A)...",               ID_DOWNLOAD_ALBUM_COVER
         MENUITEM "专辑封面另存为(&S)...",              ID_ALBUM_COVER_SAVE_AS
         MENUITEM "删除专辑封面(&D)",                  ID_DELETE_ALBUM_COVER
         MENUITEM "总是使用外部专辑封面(&N)",              ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER
-        MENUITEM "专辑封面详情(&C)...\tCtrl+W",       ID_ALBUM_COVER_INFO
+        MENUITEM "专辑封面详情(&C)...",               ID_ALBUM_COVER_INFO
         MENUITEM SEPARATOR
         MENUITEM "查看艺术家(&R)...",                ID_VIEW_ARTIST
         MENUITEM "查看唱片集(&B)...",                ID_VIEW_ALBUM
         MENUITEM SEPARATOR
         POPUP "切换界面"
         BEGIN
-            MENUITEM "切换界面(U)\tCtrl+U",             ID_SWITCH_UI
+            MENUITEM "切换界面(U)",                     ID_SWITCH_UI
         END
-        MENUITEM "选项(&O)...\tCtrl+I",           ID_OPTION_SETTINGS
+        MENUITEM "选项(&O)...",                   ID_OPTION_SETTINGS
     END
 END
 
@@ -2797,8 +2797,8 @@ BEGIN
         MENUITEM "复制文件到(&C)...",                ID_COPY_FILE_TO
         MENUITEM "移动文件到(&M)...",                ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
-        MENUITEM "上移(&U)\tCtrl+↑",              ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "下移(&N)\tCtrl+↓",              ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "上移(&U)",                      ID_MOVE_PLAYLIST_ITEM_UP
+        MENUITEM "下移(&N)",                      ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "全部选择(&A)",                    ID_PLAYLIST_SELECT_ALL
         MENUITEM "全部取消(&L)",                    ID_PLAYLIST_SELECT_NONE
@@ -2806,7 +2806,7 @@ BEGIN
     END
     POPUP "文件夹"
     BEGIN
-        MENUITEM "打开文件夹(&F)...\tCtrl+D",        ID_FILE_OPEN_FOLDER
+        MENUITEM "打开文件夹(&F)...",                ID_FILE_OPEN_FOLDER
         MENUITEM "包含子文件夹(&S)",                  ID_CONTAIN_SUB_FOLDER
     END
 END
@@ -3759,9 +3759,18 @@ BEGIN
                             "FFMPEG内核需要单独下载，下载后请将解压得到的所有dll文件放到程序所在目录下。要下载FFMPEG内核吗？"
     IDS_TRAFFICMONITOR_DESCRIPTION "TrafficMonitor: 功能强大的Windows网速监控软件"
     IDS_SIMPLENOTEPAD_DESCRIPTION "SimpleNotePad: 简洁的 Windows 文本编辑器"
-    IDS_NO_TRACKS_TIP_INFO  "当前没有正在播放的曲目，你可以：\r\n按下Ctrl+L打开播放列表，并向播放列表中添加歌曲；\r\n点击“主菜单”——“文件”——“打开文件”或者快捷键Ctrl+O来打开一个音频文件；\r\n点击“主菜单”——“文件”——“打开文件夹”或者快捷键Ctrl+D打开并播放一个文件夹；\r\n按下Ctrl+T打开媒体库，在媒体库中寻找要播放的歌曲。"
+    IDS_NO_TRACKS_TIP_INFO  "当前没有正在播放的曲目，你可以：\r\n按下<%1%>打开播放列表，并向播放列表中添加歌曲；\r\n点击“主菜单”——“文件”——“打开文件”或者快捷键<%2%>来打开一个音频文件；\r\n点击“主菜单”——“文件”——“打开文件夹”或者快捷键<%3%>打开并播放一个文件夹；\r\n按下<%4%>打开媒体库，在媒体库中寻找要播放的歌曲。"
     IDS_SWITHC_TO_DARK_MODE "切换到深色模式"
     IDS_SWITCH_TO_LIGHT_MODE "切换到浅色模式"
+    IDS_SHORCUT_LEFT        "←"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_SHOTCUT_RIGHT       "→"
+    IDS_SHOTCUT_UP          "↑"
+    IDS_SHOTCUT_DOWN        "↓"
+    IDS_SPACE               "空格"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO "如果歌曲所在目录下没有找到专辑封面则会在此文件夹下寻找封面文件。"
 END
 
@@ -5562,7 +5571,7 @@ BEGIN
         MENUITEM "&Reload Lyrics",              ID_RELOAD_LYRIC
         MENUITEM "&Copy Current Lyric",         ID_COPY_CURRENT_LYRIC
         MENUITEM "Copy &All Lyrics",            ID_COPY_ALL_LYRIC
-        MENUITEM "&Edit Lyrics...\tCtrl+Shift+E", ID_EDIT_LYRIC
+        MENUITEM "&Edit Lyrics...",             ID_EDIT_LYRIC
         POPUP "Chinese Co&nversion"
         BEGIN
             MENUITEM "Convert to &Simplified Chinese", ID_TRANSLATE_TO_SIMPLIFIED_CHINESE
@@ -5570,11 +5579,11 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Show Lyrics &Translation",    ID_SHOW_LYRIC_TRANSLATE
-        MENUITEM "Show Desktop Lyr&ics\tCtrl+Y", ID_SHOW_DESKTOP_LYRIC
+        MENUITEM "Show Desktop Lyr&ics",        ID_SHOW_DESKTOP_LYRIC
         MENUITEM SEPARATOR
-        MENUITEM "Lyrics 0.5 Seconds in Ad&vance\tCtrl+PgUp", ID_LYRIC_FORWARD
-        MENUITEM "Lyrics 0.5 Seconds Dela&yed\tCtrl+PgDn", ID_LYRIC_DELAY
-        MENUITEM "&Save Lyrics Changes\tCtrl+S", ID_SAVE_MODIFIED_LYRIC
+        MENUITEM "Lyrics 0.5 Seconds in Ad&vance", ID_LYRIC_FORWARD
+        MENUITEM "Lyrics 0.5 Seconds Dela&yed", ID_LYRIC_DELAY
+        MENUITEM "&Save Lyrics Changes",        ID_SAVE_MODIFIED_LYRIC
         MENUITEM SEPARATOR
         MENUITEM "Lin&k local lyrics...",       ID_RELATE_LOCAL_LYRIC
         MENUITEM "&Delete Lyrics",              ID_DELETE_LYRIC
@@ -5591,9 +5600,9 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Switch &UI"
         BEGIN
-            MENUITEM "Switch &UI\tCtrl+U",          ID_SWITCH_UI
+            MENUITEM "Switch &UI",                  ID_SWITCH_UI
         END
-        MENUITEM "&Options...\tCtrl+I",         ID_OPTION_SETTINGS
+        MENUITEM "&Options...",                 ID_OPTION_SETTINGS
     END
 END
 
@@ -5601,7 +5610,7 @@ IDR_MAIN_POPUP_MENU MENU
 BEGIN
     POPUP "Menu"
     BEGIN
-        MENUITEM "Song &Info...\tCtrl+N",       ID_SONG_INFO
+        MENUITEM "Song &Info...",               ID_SONG_INFO
         POPUP "Repeat &Mode"
         BEGIN
             MENUITEM "Play in &Oder",               ID_PLAY_ORDER
@@ -5629,26 +5638,26 @@ BEGIN
             MENUITEM "&Unrated",                    ID_RATING_NONE
         END
         MENUITEM SEPARATOR
-        MENUITEM "Media &Library...\tCtr+T",    ID_SET_PATH
-        MENUITEM "&Find Songs...\tCtr+F",       ID_FIND
-        MENUITEM "O&pen File Location\tCtrl+B", ID_EXPLORE_PATH
-        MENUITEM "Sound &Effect Settings...\tCtrl+E", ID_EQUALIZER
+        MENUITEM "Media &Library...",           ID_SET_PATH
+        MENUITEM "&Find Songs...",              ID_FIND
+        MENUITEM "O&pen File Location",         ID_EXPLORE_PATH
+        MENUITEM "Sound &Effect Settings...",   ID_EQUALIZER
         MENUITEM "&View Online",                ID_CURRENT_EXPLORE_ONLINE
         MENUITEM SEPARATOR
         MENUITEM "Download &Album Cover...",    ID_DOWNLOAD_ALBUM_COVER
         MENUITEM "Album Cover &Save As...",     ID_ALBUM_COVER_SAVE_AS
         MENUITEM "&Delete Album Cover",         ID_DELETE_ALBUM_COVER
         MENUITEM "Always Use Exter&nal Album Cover", ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER
-        MENUITEM "Album &Cover Details...\tCtrl+W", ID_ALBUM_COVER_INFO
+        MENUITEM "Album &Cover Details...",     ID_ALBUM_COVER_INFO
         MENUITEM SEPARATOR
         MENUITEM "View A&rtist...",             ID_VIEW_ARTIST
         MENUITEM "View Al&bum...",              ID_VIEW_ALBUM
         MENUITEM SEPARATOR
         POPUP "Switch &UI"
         BEGIN
-            MENUITEM "Switch &UI\tCtrl+U",          ID_SWITCH_UI
+            MENUITEM "Switch &UI",                  ID_SWITCH_UI
         END
-        MENUITEM "&Options...\tCtrl+I",         ID_OPTION_SETTINGS
+        MENUITEM "&Options...",                 ID_OPTION_SETTINGS
     END
 END
 
@@ -5656,8 +5665,8 @@ IDR_MENU1 MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Open File...\tCtrl+O",       ID_FILE_OPEN
-        MENUITEM "Open &Folder...\tCtrl+D",     ID_FILE_OPEN_FOLDER
+        MENUITEM "&Open File...",               ID_FILE_OPEN
+        MENUITEM "Open &Folder...",             ID_FILE_OPEN_FOLDER
         MENUITEM "Open &URL...",                ID_FILE_OPEN_URL
         MENUITEM "Open &Playlist...",           ID_FILE_OPEN_PLAYLIST
         MENUITEM SEPARATOR
@@ -5665,19 +5674,19 @@ BEGIN
     END
     POPUP "&Play Control"
     BEGIN
-        MENUITEM "&Play/Pause\tSpace",          ID_PLAY_PAUSE
-        MENUITEM "&Stop\tS",                    ID_STOP
-        MENUITEM "Pre&vious\tV",                ID_PREVIOUS
-        MENUITEM "&Next\tN",                    ID_NEXT
+        MENUITEM "&Play/Pause",                 ID_PLAY_PAUSE
+        MENUITEM "&Stop",                       ID_STOP
+        MENUITEM "Pre&vious",                   ID_PREVIOUS
+        MENUITEM "&Next",                       ID_NEXT
         MENUITEM SEPARATOR
-        MENUITEM "&Rewind for 5 Seconds\tLeft", ID_REW
-        MENUITEM "Fast forward for 5 Seconds\tRight", ID_FF
+        MENUITEM "&Rewind for 5 Seconds",       ID_REW
+        MENUITEM "Fast forward for 5 Seconds",  ID_FF
         MENUITEM SEPARATOR
-        MENUITEM "Speed Up Playback\tCtrl+=",   ID_SPEED_UP
-        MENUITEM "Slow Down Playback\tCtrl+-",  ID_SLOW_DOWN
-        MENUITEM "Original Speed Playback\tCtrl+Enter", ID_ORIGINAL_SPEED
+        MENUITEM "Speed Up Playback",           ID_SPEED_UP
+        MENUITEM "Slow Down Playback",          ID_SLOW_DOWN
+        MENUITEM "Original Speed Playback",     ID_ORIGINAL_SPEED
         MENUITEM SEPARATOR
-        POPUP "Repeat &Mode\tM"
+        POPUP "Repeat &Mode"
         BEGIN
             MENUITEM "Play in &Oder",               ID_PLAY_ORDER
             MENUITEM "Play &Shuffle",               ID_PLAY_SHUFFLE
@@ -5688,12 +5697,12 @@ BEGIN
         END
         POPUP "AB R&epeat"
         BEGIN
-            MENUITEM "AB &Repeat\tCtrl+R",          ID_AB_REPEAT
+            MENUITEM "AB &Repeat",                  ID_AB_REPEAT
             MENUITEM SEPARATOR
-            MENUITEM "Set &A Point\tCtrl+Shift+A",  ID_SET_A_POINT
-            MENUITEM "Set &B Point\tCtrl+Shift+B",  ID_SET_B_POINT
-            MENUITEM "Continue &Next AB Repeat\tCtrl+Shift+N", ID_NEXT_AB_REPEAT
-            MENUITEM "&Cancel AB Repeat\tCtrl+Shift+C", ID_RESET_AB_REPEAT
+            MENUITEM "Set &A Point",                ID_SET_A_POINT
+            MENUITEM "Set &B Point",                ID_SET_B_POINT
+            MENUITEM "Continue &Next AB Repeat",    ID_NEXT_AB_REPEAT
+            MENUITEM "&Cancel AB Repeat",           ID_RESET_AB_REPEAT
         END
     END
     POPUP "Play&list"
@@ -5741,7 +5750,7 @@ BEGIN
             MENUITEM "Title - Artist",              ID_DISP_TITLE_ARTIST
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Locate the track is playing\tCtrl+G", ID_LOCATE_TO_CURRENT
+        MENUITEM "&Locate the track is playing", ID_LOCATE_TO_CURRENT
     END
     POPUP "Lyri&cs"
     BEGIN
@@ -5749,19 +5758,18 @@ BEGIN
         MENUITEM "&Copy Current Lyric",         ID_COPY_CURRENT_LYRIC
         MENUITEM "Copy &All Lyrics",            ID_COPY_ALL_LYRIC
         MENUITEM SEPARATOR
-        MENUITEM "&Edit Lyrics...\tCtrl+Shift+E", ID_EDIT_LYRIC
+        MENUITEM "&Edit Lyrics...",             ID_EDIT_LYRIC
         POPUP "Chinese Con&version"
         BEGIN
             MENUITEM "Convert to &Simplified Chinese", ID_TRANSLATE_TO_SIMPLIFIED_CHINESE
             MENUITEM "Convert to &Traditional Chinese", ID_TRANSLATE_TO_TRANDITIONAL_CHINESE
         END
         MENUITEM SEPARATOR
-        MENUITEM "Show Lyrics &Translation",    ID_SHOW_LYRIC_TRANSLATE
-        MENUITEM "Show Desktop Lyr&ics\tCtrl+Y", ID_SHOW_DESKTOP_LYRIC
+        MENUITEM "Show Desktop Lyr&ics",        ID_SHOW_DESKTOP_LYRIC
         MENUITEM SEPARATOR
-        MENUITEM "Lyrics 0.5 Seconds in Adva&nce\tCtrl+PgUp", ID_LYRIC_FORWARD
-        MENUITEM "Lyrics 0.5 Seconds Dela&yed\tCtrl+PgDn", ID_LYRIC_DELAY
-        MENUITEM "&Save Lyrics Changes\tCtrl+S", ID_SAVE_MODIFIED_LYRIC
+        MENUITEM "Lyrics 0.5 Seconds in Adva&nce", ID_LYRIC_FORWARD
+        MENUITEM "Lyrics 0.5 Seconds Dela&yed", ID_LYRIC_DELAY
+        MENUITEM "&Save Lyrics Changes",        ID_SAVE_MODIFIED_LYRIC
         MENUITEM SEPARATOR
         MENUITEM "Lin&k local lyrics...",       ID_RELATE_LOCAL_LYRIC
         MENUITEM "&Delete Lyrics",              ID_DELETE_LYRIC
@@ -5778,33 +5786,33 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        MENUITEM "Show &Playlist\tCtrl+L",      ID_SHOW_PLAYLIST
-        MENUITEM "F&loating Playlist\tCtrl+K",  ID_FLOAT_PLAYLIST
+        MENUITEM "Show &Playlist",              ID_SHOW_PLAYLIST
+        MENUITEM "F&loating Playlist",          ID_FLOAT_PLAYLIST
         MENUITEM "Use System Standard Title &Bar", ID_USE_STANDARD_TITLE_BAR
         MENUITEM "Show Me&nu Bar",              ID_SHOW_MENU_BAR
         MENUITEM "Always Show &Status Bar",     ID_ALWAYS_SHOW_STATUS_BAR
-        MENUITEM "Always on &Top\tCtrl+Shift+T", ID_ALWAYS_ON_TOP
+        MENUITEM "Always on &Top",              ID_ALWAYS_ON_TOP
         MENUITEM SEPARATOR
-        MENUITEM "&Mini Mode\tCtrl+M",          ID_MINI_MODE
-        MENUITEM "&Full Screen\tF11",           ID_FULL_SCREEN
+        MENUITEM "&Mini Mode",                  ID_MINI_MODE
+        MENUITEM "&Full Screen",                ID_FULL_SCREEN
         MENUITEM SEPARATOR
-        MENUITEM "&Dark Mode\tCtrl+Shift+D",    ID_DARK_MODE
+        MENUITEM "&Dark Mode",                  ID_DARK_MODE
         POPUP "Switch &UI"
         BEGIN
-            MENUITEM "Switch &UI\tCtrl+U",          ID_SWITCH_UI
+            MENUITEM "Switch &UI",                  ID_SWITCH_UI
         END
     END
     POPUP "&Tool"
     BEGIN
-        MENUITEM "&Media Library...\tCtr+T",    ID_SET_PATH
-        MENUITEM "&Find Songs...\tCtr+F",       ID_FIND
-        MENUITEM "Open File &Location\tCtrl+B", ID_EXPLORE_PATH
-        MENUITEM "Song &Info...\tCtrl+N",       ID_SONG_INFO
-        MENUITEM "Sound &Effect Settings...\tCtrl+E", ID_EQUALIZER
+        MENUITEM "&Media Library...",           ID_SET_PATH
+        MENUITEM "&Find Songs...",              ID_FIND
+        MENUITEM "Open File &Location",         ID_EXPLORE_PATH
+        MENUITEM "Song &Info...",               ID_SONG_INFO
+        MENUITEM "Sound &Effect Settings...",   ID_EQUALIZER
         MENUITEM "Format &Convert...",          ID_FORMAT_CONVERT1
         MENUITEM "&View Online",                ID_CURRENT_EXPLORE_ONLINE
         MENUITEM SEPARATOR
-        MENUITEM "&Reinitialize the Player\tCtrl+Q", ID_RE_INI_BASS
+        MENUITEM "&Reinitialize the Player",    ID_RE_INI_BASS
         POPUP "Create &Shortcut"
         BEGIN
             MENUITEM "Create &Desktop Shortcut",    ID_CREATE_DESKTOP_SHORTCUT
@@ -5817,17 +5825,17 @@ BEGIN
             MENUITEM "Download &Album Cover...",    ID_DOWNLOAD_ALBUM_COVER
             MENUITEM "Album Cover &Save As...",     ID_ALBUM_COVER_SAVE_AS
             MENUITEM "&Delete Album Cover",         ID_DELETE_ALBUM_COVER
-            MENUITEM "Album &Cover Details...\tCtrl+W", ID_ALBUM_COVER_INFO
+            MENUITEM "Album &Cover Details...",     ID_ALBUM_COVER_INFO
         END
         POPUP "Delete Current Playing Track"
         BEGIN
-            MENUITEM "Remove from &Playlist\tCtrl+Del", ID_REMOVE_CURRENT_FROM_PLAYLIST
-            MENUITEM "Delete from &Disk\tCtrl+Shift+Del", ID_DELETE_CURRENT_FROM_DISK
+            MENUITEM "Remove from &Playlist",       ID_REMOVE_CURRENT_FROM_PLAYLIST
+            MENUITEM "Delete from &Disk",           ID_DELETE_CURRENT_FROM_DISK
         END
         MENUITEM SEPARATOR
         MENUITEM "Play Time Statistics...",     ID_LISTEN_STATISTICS
         MENUITEM "File Relate...",              ID_TOOL_FILE_RELATE
-        MENUITEM "&Options...\tCtrl+I",         ID_OPTION_SETTINGS
+        MENUITEM "&Options...",                 ID_OPTION_SETTINGS
     END
     POPUP "&Help"
     BEGIN
@@ -5846,7 +5854,7 @@ IDR_MINI_MODE_MENU MENU
 BEGIN
     POPUP "Menu"
     BEGIN
-        MENUITEM "Song &Info...\tCtrl+N",       ID_SONG_INFO
+        MENUITEM "Song &Info...",               ID_SONG_INFO
         POPUP "Repeat &Mode"
         BEGIN
             MENUITEM "Play in &Oder",               ID_PLAY_ORDER
@@ -5869,11 +5877,11 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Add to My Fa&vourite",        ID_ADD_REMOVE_FROM_FAVOURITE
         MENUITEM SEPARATOR
-        MENUITEM "Media &Library...\tCtr+T",    ID_SET_PATH
-        MENUITEM "&Find Songs...\tCtr+F",       ID_FIND
-        MENUITEM "Open File Lo&cation\tCtrl+B", ID_EXPLORE_PATH
-        MENUITEM "Sound &Effect Settings...\tCtrl+E", ID_EQUALIZER
-        MENUITEM "&Options...\tCtrl+I",         ID_OPTION_SETTINGS
+        MENUITEM "Media &Library...",           ID_SET_PATH
+        MENUITEM "&Find Songs...",              ID_FIND
+        MENUITEM "Open File Lo&cation",         ID_EXPLORE_PATH
+        MENUITEM "Sound &Effect Settings...",   ID_EQUALIZER
+        MENUITEM "&Options...",                 ID_OPTION_SETTINGS
         MENUITEM SEPARATOR
         MENUITEM "Sho&w Playlist\tCtrl+L",      ID_SHOW_PLAY_LIST
         MENUITEM "Always on &Top",              ID_MINI_MODE_ALWAYS_ON_TOP
@@ -5905,8 +5913,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Reload Playlist",            ID_RELOAD_PLAYLIST
         MENUITEM SEPARATOR
-        MENUITEM "Remo&ve from Playlist\tDel",  ID_REMOVE_FROM_PLAYLIST
-        MENUITEM "&Delete from Disk\tShift+Del", ID_DELETE_FROM_DISK
+        MENUITEM "Remo&ve from Playlist",       ID_REMOVE_FROM_PLAYLIST
+        MENUITEM "&Delete from Disk",           ID_DELETE_FROM_DISK
         MENUITEM SEPARATOR
         POPUP "Add to Playlis&t"
         BEGIN
@@ -5918,14 +5926,14 @@ BEGIN
         MENUITEM "&Copy File to...",            ID_COPY_FILE_TO
         MENUITEM "&Move File to...",            ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
-        MENUITEM "Move &Up\tCtrl+Up",           ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "Move Dow&n\tCtrl+Down",       ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "Move &Up",                    ID_MOVE_PLAYLIST_ITEM_UP
+        MENUITEM "Move Dow&n",                  ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "View Art&ist...",             ID_PLAYLIST_VIEW_ARTIST
         MENUITEM "View Al&bum...",              ID_PLAYLIST_VIEW_ALBUM
         MENUITEM SEPARATOR
         MENUITEM "Renam&e...",                  ID_RENAME
-        MENUITEM "Open File &Location\tCtrl+B", ID_EXPLORE_TRACK
+        MENUITEM "Open File &Location",         ID_EXPLORE_TRACK
         MENUITEM "Propert&y...",                ID_ITEM_PROPERTY
     END
 END
@@ -6109,8 +6117,8 @@ BEGIN
         MENUITEM "&Copy File to...",            ID_COPY_FILE_TO
         MENUITEM "&Move File to...",            ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
-        MENUITEM "Move &Up\tCtrl+Up",           ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "Move Dow&n\tCtrl+Down",       ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "Move &Up",                    ID_MOVE_PLAYLIST_ITEM_UP
+        MENUITEM "Move Dow&n",                  ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "Select &All",                 ID_PLAYLIST_SELECT_ALL
         MENUITEM "Select N&one",                ID_PLAYLIST_SELECT_NONE
@@ -6118,7 +6126,7 @@ BEGIN
     END
     POPUP "Folder"
     BEGIN
-        MENUITEM "Open &Folder...\tCtrl+D",     ID_FILE_OPEN_FOLDER
+        MENUITEM "Open &Folder...",             ID_FILE_OPEN_FOLDER
         MENUITEM "Contains &Subfolders",        ID_CONTAIN_SUB_FOLDER
     END
 END
@@ -6949,9 +6957,18 @@ BEGIN
                             "TrafficMonitor: A powerful net speed monitoring software for Windows"
     IDS_SIMPLENOTEPAD_DESCRIPTION 
                             "SimpleNotePad: A simple text editor for Windows"
-    IDS_NO_TRACKS_TIP_INFO  "There are currently no tracks playing, you can:\r\nPress Ctrl+L to open playlist and add songs to the playlist;\r\nClick ""Main Menu"" > ""File"" > ""Open File"" or shortcut Ctrl+O to open an audio file;\r\nClick ""Main Menu"" > ""File"" > ""Open Folder"" or shortcut Ctrl+D to open and play a folder;\r\nPress Ctrl+T to open the media library and find the song you want to play in the media library."
+    IDS_NO_TRACKS_TIP_INFO  "There are currently no tracks playing, you can:\r\nPress <%1%> to open playlist and add songs to the playlist;\r\nClick ""Main Menu"" > ""File"" > ""Open File"" or shortcut <%2%> to open an audio file;\r\nClick ""Main Menu"" > ""File"" > ""Open Folder"" or shortcut <%3%> to open and play a folder;\r\nPress <%4%> to open the media library and find the song you want to play in the media library."
     IDS_SWITHC_TO_DARK_MODE "Switch to dark mode"
     IDS_SWITCH_TO_LIGHT_MODE "Switch to light mode"
+    IDS_SHORCUT_LEFT        "Left"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_SHOTCUT_RIGHT       "Right"
+    IDS_SHOTCUT_UP          "Up"
+    IDS_SHOTCUT_DOWN        "Down"
+    IDS_SPACE               "Space"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 
                             "If the album cover is not found in the directory where the song is located then the cover file will be searched for in this folder."
 END

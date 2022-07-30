@@ -79,7 +79,12 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
     int played_num{};
     for (const auto& item : CSongDataManager::GetInstance().GetSongData())
     {
-        artist_set.emplace(item.second.artist);
+        //处理多个艺术家情况
+        std::vector<std::wstring> artist_list;
+        item.second.GetArtistList(artist_list);
+        for (const auto& artist : artist_list)
+            artist_set.emplace(artist);
+
         album_set.emplace(item.second.album);
         genre_set.emplace(item.second.genre);
         if (item.second.last_played_time > 0)

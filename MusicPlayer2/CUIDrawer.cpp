@@ -69,7 +69,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     if (CPlayer::GetInstance().IsPlaylistEmpty())   //当前播放为空时在歌词区域显示播放提示
     {
         CFont* font = SetFont(&theApp.m_font_set.font10.GetFont());
-        CString no_track_tip_str{ CCommon::LoadText(IDS_NO_TRACKS_TIP_INFO) };
+        CString no_track_tip_str{ CCommon::LoadTextFormat(IDS_NO_TRACKS_TIP_INFO, { theApp.m_accelerator_res.GetShortcutDescriptionById(ID_SHOW_PLAYLIST), theApp.m_accelerator_res.GetShortcutDescriptionById(ID_FILE_OPEN), theApp.m_accelerator_res.GetShortcutDescriptionById(ID_FILE_OPEN_FOLDER), theApp.m_accelerator_res.GetShortcutDescriptionById(ID_SET_PATH)})};
         DrawWindowText(lyric_area, no_track_tip_str, m_colors.color_text_2, Alignment::LEFT, false, true);
         SetFont(font);
     }
