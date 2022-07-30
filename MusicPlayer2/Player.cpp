@@ -518,7 +518,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         }
         SetVolume();
         if (std::fabs(m_speed - 1) > 0.01)
-            m_pCore->SetSpeed(m_speed);
+            SetSpeed(m_speed);
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
         //SetFXHandle();
         if (m_equ_enable)
@@ -1276,6 +1276,7 @@ void CPlayer::SpeedUp()
         if (std::fabs(m_speed - 1) < 0.01)
             m_speed = 1;
         m_pCore->SetSpeed(m_speed);
+        m_controls.UpdateSpeed(m_speed);
     }
 }
 
@@ -1289,6 +1290,15 @@ void CPlayer::SlowDown()
         if (std::fabs(m_speed - 1) < 0.01)
             m_speed = 1;
         m_pCore->SetSpeed(m_speed);
+        m_controls.UpdateSpeed(m_speed);
+    }
+}
+
+void CPlayer::SetSpeed(float speed) {
+    if (speed > MIN_PLAY_SPEED && speed < MAX_PLAY_SPEED) {
+        m_speed = speed;
+        m_pCore->SetSpeed(m_speed);
+        m_controls.UpdateSpeed(m_speed);
     }
 }
 
@@ -1296,6 +1306,7 @@ void CPlayer::SetOrignalSpeed()
 {
     m_speed = 1;
     m_pCore->SetSpeed(m_speed);
+    m_controls.UpdateSpeed(m_speed);
 }
 
 bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
@@ -2793,7 +2804,7 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
 void CPlayer::UpdateControlsMetadata(SongInfo info)
 {
     m_controls.UpdateDuration(info.lengh.toInt());
-    m_controls.UpdateControlsMetadata(info.IsTitleEmpty() ? info.GetFileName() : info.GetTitle(), info.GetArtist());
+    m_controls.UpdateControlsMetadata(info);
 }
 
 void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)
