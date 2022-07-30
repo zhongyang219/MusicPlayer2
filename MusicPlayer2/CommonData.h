@@ -268,8 +268,18 @@ struct ApperanceSettingData
 
     bool use_desktop_background{ false };   //使用桌面壁纸作为背景
 
+    bool always_show_statusbar{ false };    //总是显示状态栏
     bool show_fps{ true };              //是否在状态栏显示帧率
     bool show_next_track{ false };      //是否在状态栏显示下一首播放曲目
+
+    bool show_window_frame{ true };     //显示标准窗口边框
+    bool show_minimize_btn_in_titlebar{ true };     //是否在标题栏显示“最小化”按钮
+    bool show_maximize_btn_in_titlebar{ true };     //是否在标题栏显示“最大化”按钮
+    bool show_minimode_btn_in_titlebar{ true };     //是否在标题栏显示“迷你模式”按钮
+    bool show_fullscreen_btn_in_titlebar{ true };   //是否在标题栏显示“全屏模式”按钮
+    bool show_skin_btn_in_titlebar{ false };        //是否在标题栏显示“切换界面”按钮
+    bool show_settings_btn_in_titlebar{ false };    //是否在标题栏显示“设置”按钮
+    int TitleDisplayItem() const;
 };
 
 struct GeneralSettingData
@@ -552,17 +562,15 @@ struct UIData
     bool narrow_mode;					//窄界面模式
     bool show_playlist{ true };
     bool show_menu_bar{ true };
-    bool show_window_frame{ true };     //显示标准窗口边框
     bool full_screen{ false };
-    bool always_show_statusbar{ false };    //总是显示状态栏
 
     int draw_area_width;                //绘图区的宽度
     int draw_area_height;               //绘图区的高度
     CImage default_background;			//默认的背景
     CCriticalSection default_background_sync;
 
-    bool ShowWindowMenuBar() const { return show_menu_bar && show_window_frame && !full_screen; }
-    bool ShowUiMenuBar() const { return show_menu_bar && !show_window_frame && !full_screen; }
+    bool ShowWindowMenuBar() const ;/* { return show_menu_bar && show_window_frame && !full_screen; }*/
+    bool ShowUiMenuBar() const;/* { return show_menu_bar && !show_window_frame && !full_screen; }*/
 };
 
 
@@ -588,8 +596,8 @@ struct MenuSet
 
 struct ImageSet
 {
-    Gdiplus::Image* default_cover;
-    Gdiplus::Image* default_cover_not_played;
+    Gdiplus::Image* default_cover{};
+    Gdiplus::Image* default_cover_not_played{};
     string default_cover_data;
     string default_cover_not_played_data;
 

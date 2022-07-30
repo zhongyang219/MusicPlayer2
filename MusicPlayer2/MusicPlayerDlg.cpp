@@ -339,8 +339,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_translate", theApp.m_lyric_setting_data.show_translate);
     ini.WriteBool(L"config", L"show_playlist", theApp.m_ui_data.show_playlist);
     ini.WriteBool(L"config", L"show_menu_bar", theApp.m_ui_data.show_menu_bar);
-    ini.WriteBool(L"config", L"show_window_frame", theApp.m_ui_data.show_window_frame);
-    ini.WriteBool(L"config", L"always_show_statusbar", theApp.m_ui_data.always_show_statusbar);
+    ini.WriteBool(L"config", L"show_window_frame", theApp.m_app_setting_data.show_window_frame);
+    ini.WriteBool(L"config", L"always_show_statusbar", theApp.m_app_setting_data.always_show_statusbar);
     ini.WriteBool(L"config", L"float_playlist", theApp.m_nc_setting_data.float_playlist);
     ini.WriteInt(L"config", L"float_playlist_width", theApp.m_nc_setting_data.playlist_size.cx);
     ini.WriteInt(L"config", L"float_playlist_height", theApp.m_nc_setting_data.playlist_size.cy);
@@ -422,6 +422,12 @@ void CMusicPlayerDlg::SaveConfig()
 
     ini.WriteBool(L"config", L"show_fps", theApp.m_app_setting_data.show_fps);
     ini.WriteBool(L"config", L"show_next_track", theApp.m_app_setting_data.show_next_track);
+    ini.WriteBool(L"config", L"show_minimize_btn_in_titlebar", theApp.m_app_setting_data.show_minimize_btn_in_titlebar);
+    ini.WriteBool(L"config", L"show_maximize_btn_in_titlebar", theApp.m_app_setting_data.show_maximize_btn_in_titlebar);
+    ini.WriteBool(L"config", L"show_minimode_btn_in_titlebar", theApp.m_app_setting_data.show_minimode_btn_in_titlebar);
+    ini.WriteBool(L"config", L"show_fullscreen_btn_in_titlebar", theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar);
+    ini.WriteBool(L"config", L"show_skin_btn_in_titlebar", theApp.m_app_setting_data.show_skin_btn_in_titlebar);
+    ini.WriteBool(L"config", L"show_settings_btn_in_titlebar", theApp.m_app_setting_data.show_settings_btn_in_titlebar);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -504,8 +510,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
     theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", false);
     theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", false);
-    theApp.m_ui_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", false);
-    theApp.m_ui_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
+    theApp.m_app_setting_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", false);
+    theApp.m_app_setting_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
     theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(482));
@@ -592,6 +598,12 @@ void CMusicPlayerDlg::LoadConfig()
 
     theApp.m_app_setting_data.show_fps = ini.GetBool(L"config", L"show_fps", true);
     theApp.m_app_setting_data.show_next_track = ini.GetBool(L"config", L"show_next_track", true);
+    theApp.m_app_setting_data.show_minimize_btn_in_titlebar = ini.GetBool(L"config", L"show_minimize_btn_in_titlebar", true);
+    theApp.m_app_setting_data.show_maximize_btn_in_titlebar = ini.GetBool(L"config", L"show_maximize_btn_in_titlebar", true);
+    theApp.m_app_setting_data.show_minimode_btn_in_titlebar = ini.GetBool(L"config", L"show_minimode_btn_in_titlebar", true);
+    theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar = ini.GetBool(L"config", L"show_fullscreen_btn_in_titlebar", true);
+    theApp.m_app_setting_data.show_skin_btn_in_titlebar = ini.GetBool(L"config", L"show_skin_btn_in_titlebar", false);
+    theApp.m_app_setting_data.show_settings_btn_in_titlebar = ini.GetBool(L"config", L"show_settings_btn_in_titlebar", false);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
@@ -940,7 +952,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
 
 void CMusicPlayerDlg::SetMenubarVisible()
 {
-    if (theApp.m_ui_data.ShowWindowMenuBar() && theApp.m_ui_data.show_window_frame && !theApp.m_ui_data.full_screen)
+    if (theApp.m_ui_data.ShowWindowMenuBar() && theApp.m_app_setting_data.show_window_frame && !theApp.m_ui_data.full_screen)
     {
         SetMenu(&theApp.m_menu_set.m_main_menu);
     }
@@ -1116,6 +1128,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                                      || theApp.m_app_setting_data.use_desktop_background != optionDlg.m_tab2_dlg.m_data.use_desktop_background };
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
     bool float_playlist_follow_main_wnd_changed{ theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != optionDlg.m_media_lib_dlg.m_data.float_playlist_follow_main_wnd };
+    bool show_window_frame_changed{ theApp.m_app_setting_data.show_window_frame != optionDlg.m_tab2_dlg.m_data.show_window_frame };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1226,6 +1239,11 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         //m_pFloatPlaylistDlg->UpdateStyles();
         HideFloatPlaylist();
         ShowFloatPlaylist();
+    }
+
+    if (show_window_frame_changed)
+    {
+        ApplyShowStandardTitlebar();
     }
 
     //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中
@@ -1425,14 +1443,14 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 
     //设置“视图”菜单下的复选标记
     pMenu->CheckMenuItem(ID_SHOW_PLAYLIST, MF_BYCOMMAND | (theApp.m_ui_data.show_playlist ? MF_CHECKED : MF_UNCHECKED));
-    pMenu->CheckMenuItem(ID_USE_STANDARD_TITLE_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_window_frame ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_USE_STANDARD_TITLE_BAR, MF_BYCOMMAND | (theApp.m_app_setting_data.show_window_frame ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.show_menu_bar ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_DARK_MODE, MF_BYCOMMAND | (theApp.m_app_setting_data.dark_mode ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_ALWAYS_ON_TOP, MF_BYCOMMAND | (theApp.m_nc_setting_data.always_on_top ? MF_CHECKED : MF_UNCHECKED));
-    pMenu->CheckMenuItem(ID_ALWAYS_SHOW_STATUS_BAR, MF_BYCOMMAND | (theApp.m_ui_data.always_show_statusbar ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_ALWAYS_SHOW_STATUS_BAR, MF_BYCOMMAND | (theApp.m_app_setting_data.always_show_statusbar ? MF_CHECKED : MF_UNCHECKED));
 
-    pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen /*|| !theApp.m_ui_data.show_window_frame*/ ? MF_GRAYED : MF_ENABLED));        //全屏或不使用系统标准标题栏时禁止显示/关闭菜单栏
+    pMenu->EnableMenuItem(ID_SHOW_MENU_BAR, MF_BYCOMMAND | (theApp.m_ui_data.full_screen /*|| !theApp.m_app_setting_data.show_window_frame*/ ? MF_GRAYED : MF_ENABLED));        //全屏或不使用系统标准标题栏时禁止显示/关闭菜单栏
     pMenu->EnableMenuItem(ID_FULL_SCREEN, MF_BYCOMMAND | (m_miniModeDlg.m_hWnd != NULL ? MF_GRAYED : MF_ENABLED));          //迷你模式下禁用全屏模式
     //pMenu->EnableMenuItem(ID_MINI_MODE, MF_BYCOMMAND | (theApp.m_ui_data.full_screen ? MF_GRAYED : MF_ENABLED));            //全屏时禁止进入迷你模式
 
@@ -1976,7 +1994,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
         SetWindowPos(nullptr, 0, 0, m_window_width, m_window_height, SWP_NOZORDER | SWP_NOMOVE);
     }
 
-    ShowTitlebar(theApp.m_ui_data.show_window_frame);
+    ShowTitlebar(theApp.m_app_setting_data.show_window_frame);
 
     //计算“媒体库”按钮的大小
     CDrawCommon draw;
@@ -4711,7 +4729,7 @@ void CMusicPlayerDlg::OnShowMenuBar()
 {
     // TODO: 在此添加命令处理程序代码
     theApp.m_ui_data.show_menu_bar = !theApp.m_ui_data.show_menu_bar;
-    if (theApp.m_ui_data.show_window_frame)
+    if (theApp.m_app_setting_data.show_window_frame)
     {
         SetMenubarVisible();
     }
@@ -4744,7 +4762,7 @@ void CMusicPlayerDlg::OnFullScreen()
     theApp.m_ui_data.full_screen = !theApp.m_ui_data.full_screen;
 
     // 全屏时不显示标题栏、菜单栏与大小边框
-    ShowTitlebar(!theApp.m_ui_data.full_screen && theApp.m_ui_data.show_window_frame);
+    ShowTitlebar(!theApp.m_ui_data.full_screen && theApp.m_app_setting_data.show_window_frame);
     SetMenubarVisible();
     if (!is_zoomed)          // 最大化时进入全屏以及之后的退出全屏不改动大小边框的状态
         ShowSizebox(!theApp.m_ui_data.full_screen);
@@ -5447,7 +5465,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMsgOptionSettings(WPARAM wParam, LPARAM lPara
 void CMusicPlayerDlg::OnAlwaysShowStatusBar()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_ui_data.always_show_statusbar = !theApp.m_ui_data.always_show_statusbar;
+    theApp.m_app_setting_data.always_show_statusbar = !theApp.m_app_setting_data.always_show_statusbar;
     DrawInfo(true);
 }
 
@@ -5998,6 +6016,12 @@ void CMusicPlayerDlg::OnUseStandardTitleBar()
     if (m_miniModeDlg.m_hWnd != NULL)   // 迷你模式下不允许响应
         return;
 
+    theApp.m_app_setting_data.show_window_frame = !theApp.m_app_setting_data.show_window_frame;
+    ApplyShowStandardTitlebar();
+}
+
+void CMusicPlayerDlg::ApplyShowStandardTitlebar()
+{
     // 有可能同时处于最大化与全屏状态，更改标题栏状态前逐个退出
     if (theApp.m_ui_data.full_screen)   // 如果全屏则退出全屏
     {
@@ -6007,8 +6031,7 @@ void CMusicPlayerDlg::OnUseStandardTitleBar()
     {
         SendMessage(WM_SYSCOMMAND, SC_RESTORE);
     }
-    theApp.m_ui_data.show_window_frame = !theApp.m_ui_data.show_window_frame;
-    ShowTitlebar(theApp.m_ui_data.show_window_frame);
+    ShowTitlebar(theApp.m_app_setting_data.show_window_frame);
     SetMenubarVisible();
     auto pCurUi = GetCurrentUi();
     if (pCurUi != nullptr)
@@ -6087,7 +6110,7 @@ void CMusicPlayerDlg::OnWindowPosChanged(WINDOWPOS* lpwndpos)
     // TODO: 在此处添加消息处理程序代码
 
     // 需要去掉大小边框的情况
-    if ((IsZoomed() && !theApp.m_ui_data.show_window_frame) || theApp.m_ui_data.full_screen)
+    if ((IsZoomed() && !theApp.m_app_setting_data.show_window_frame) || theApp.m_ui_data.full_screen)
     {
         ShowSizebox(false);
     }

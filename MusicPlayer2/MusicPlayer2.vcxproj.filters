@@ -1249,6 +1249,7 @@
     <ClCompile Include="AcceleratorRes.cpp">
       <Filter>功能逻辑类\AcceleratorRes</Filter>
     </ClCompile>
+    <ClCompile Include="CommonData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">

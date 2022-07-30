@@ -103,6 +103,13 @@ void CAppearanceSettingDlg::SetControlEnable()
 
     m_default_background_edit.EnableWindow(m_data.enable_background && !m_data.use_desktop_background);
     EnableDlgCtrl(IDC_USE_DESKTOP_BACKGROUND_CHECK, m_data.enable_background);
+
+    EnableDlgCtrl(IDC_SHOW_SETTINGS_BTN_CHECK, !m_data.show_window_frame);
+    EnableDlgCtrl(IDC_SHOW_SKIN_BTN_CHECK, !m_data.show_window_frame);
+    EnableDlgCtrl(IDC_SHOW_MINI_MODE_BTN_CHECK, !m_data.show_window_frame);
+    EnableDlgCtrl(IDC_SHOW_FULLSCREEN_BTN_CHECK, !m_data.show_window_frame);
+    EnableDlgCtrl(IDC_SHOW_MINIMIZE_BTN_CHECK, !m_data.show_window_frame);
+    EnableDlgCtrl(IDC_SHOW_MAXIMIZE_BTN_CHECK, !m_data.show_window_frame);
 }
 
 void CAppearanceSettingDlg::CalculateNotifyIconPreviewRect()
@@ -123,6 +130,16 @@ void CAppearanceSettingDlg::CalculateNotifyIconPreviewRect()
 void CAppearanceSettingDlg::GetDataFromUi()
 {
     m_data.ui_refresh_interval = m_ui_refresh_interval_edit.GetValue();
+
+    m_data.always_show_statusbar = (IsDlgButtonChecked(IDC_ALWAYS_SHOW_STATUSBAR_CHECK) != 0);
+    m_data.show_window_frame = (IsDlgButtonChecked(IDC_SHOW_SYSTEM_TITLEBAR_CHECK) != 0);
+
+    m_data.show_settings_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_SETTINGS_BTN_CHECK) != 0);
+    m_data.show_skin_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_SKIN_BTN_CHECK) != 0);
+    m_data.show_minimode_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MINI_MODE_BTN_CHECK) != 0);
+    m_data.show_fullscreen_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_FULLSCREEN_BTN_CHECK) != 0);
+    m_data.show_minimize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MINIMIZE_BTN_CHECK) != 0);
+    m_data.show_maximize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MAXIMIZE_BTN_CHECK) != 0);
 }
 
 void CAppearanceSettingDlg::DrawColor()
@@ -176,6 +193,8 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_USE_DESKTOP_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedUseDesktopBackgroundCheck)
     ON_BN_CLICKED(IDC_SHOW_NEXT_CHECK, &CAppearanceSettingDlg::OnBnClickedShowNextCheck)
     ON_BN_CLICKED(IDC_SHOW_FPS_CHECK, &CAppearanceSettingDlg::OnBnClickedShowFpsCheck)
+    ON_BN_CLICKED(IDC_SHOW_SYSTEM_TITLEBAR_CHECK, &CAppearanceSettingDlg::OnBnClickedShowSystemTitlebarCheck)
+    ON_BN_CLICKED(IDC_ALWAYS_SHOW_STATUSBAR_CHECK, &CAppearanceSettingDlg::OnBnClickedAlwaysShowStatusbarCheck)
 END_MESSAGE_MAP()
 
 
@@ -290,8 +309,17 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_notify_icon_auto_adapt_chk.SetCheck(m_data.notify_icon_auto_adapt);
     m_btn_round_corners_chk.SetCheck(m_data.button_round_corners);
 
+    CheckDlgButton(IDC_ALWAYS_SHOW_STATUSBAR_CHECK, m_data.always_show_statusbar);
     CheckDlgButton(IDC_SHOW_NEXT_CHECK, m_data.show_next_track);
     CheckDlgButton(IDC_SHOW_FPS_CHECK, m_data.show_fps);
+
+    CheckDlgButton(IDC_SHOW_SYSTEM_TITLEBAR_CHECK, m_data.show_window_frame);
+    CheckDlgButton(IDC_SHOW_SETTINGS_BTN_CHECK, m_data.show_settings_btn_in_titlebar);
+    CheckDlgButton(IDC_SHOW_SKIN_BTN_CHECK, m_data.show_skin_btn_in_titlebar);
+    CheckDlgButton(IDC_SHOW_MINI_MODE_BTN_CHECK, m_data.show_minimode_btn_in_titlebar);
+    CheckDlgButton(IDC_SHOW_FULLSCREEN_BTN_CHECK, m_data.show_fullscreen_btn_in_titlebar);
+    CheckDlgButton(IDC_SHOW_MINIMIZE_BTN_CHECK, m_data.show_minimize_btn_in_titlebar);
+    CheckDlgButton(IDC_SHOW_MAXIMIZE_BTN_CHECK, m_data.show_maximize_btn_in_titlebar);
 
     //设置通知区图标预览区域的位置
     CalculateNotifyIconPreviewRect();
@@ -767,4 +795,18 @@ void CAppearanceSettingDlg::OnBnClickedShowFpsCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.show_fps = (IsDlgButtonChecked(IDC_SHOW_FPS_CHECK) != 0);
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedShowSystemTitlebarCheck()
+{
+    m_data.show_window_frame = (IsDlgButtonChecked(IDC_SHOW_SYSTEM_TITLEBAR_CHECK) != 0);
+    SetControlEnable();
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedAlwaysShowStatusbarCheck()
+{
+    m_data.always_show_statusbar = (IsDlgButtonChecked(IDC_ALWAYS_SHOW_STATUSBAR_CHECK) != 0);
+    SetControlEnable();
 }
