@@ -24,6 +24,8 @@ CLyricEditDlg::~CLyricEditDlg()
 
 void CLyricEditDlg::OpreateTag(TagOpreation operation)
 {
+    if (m_lyric_type == CLyrics::LyricType::LY_KSC)
+        return;
     int start, end;			//光标选中的起始的结束位置
     int tag_index;		//要操作的时间标签的位置
     m_view->GetSel(start, end);
@@ -1054,7 +1056,14 @@ void CLyricEditDlg::OnSeekToCurLine()
     std::wstring cur_line = m_view->GetCurrentLineTextW();
     Time t;
     int pos_start{}, pos_end{};
-    if (m_original_lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file && CLyrics::ParseLyricTimeTag(cur_line, t, pos_start, pos_end))
+    wchar_t bracket_left{ L'[' };
+    wchar_t bracket_right{ L']' };
+    if (m_lyric_type == CLyrics::LyricType::LY_KSC)
+    {
+        bracket_left = L'\'';
+        bracket_right = L'\'';
+    }
+    if (m_original_lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file && CLyrics::ParseLyricTimeTag(cur_line, t, pos_start, pos_end, bracket_left, bracket_right))
     {
         CPlayer::GetInstance().SeekTo(t.toInt());
     }
@@ -1074,7 +1083,6 @@ void CLyricEditDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_FORWARD, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_DELAY, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_SEEK_TO_CUR_LINE, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
 
 }
 
@@ -1090,6 +1098,5 @@ void CLyricEditDlg::SetToolbarCmdEnable()
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, is_lrc);
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_TIME_TAG_FORWARD, is_lrc);
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_TIME_TAG_DELAY, is_lrc);
-        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_SEEK_TO_CUR_LINE, is_lrc);
     }
 }
