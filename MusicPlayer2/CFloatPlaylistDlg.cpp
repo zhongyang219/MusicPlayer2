@@ -438,59 +438,40 @@ void CFloatPlaylistDlg::OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+    if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
     {
-        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
-        {
-            //响应Accelerator中设置的快捷键
-            CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-            if (main_wnd != nullptr && main_wnd->GetAccel() && ::TranslateAccelerator(m_hWnd, main_wnd->GetAccel(), pMsg))
-                return TRUE;
-        }
-
-        ////按下Ctrl键时
-        //if (GetKeyState(VK_CONTROL) & 0x80)
-        //{
-        //    if (pMsg->wParam == VK_UP)
-        //    {
-        //        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_UP, 0);
-        //        return TRUE;
-        //    }
-        //    if (pMsg->wParam == VK_DOWN)
-        //    {
-        //        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MOVE_PLAYLIST_ITEM_DOWN, 0);
-        //        return TRUE;
-        //    }
-        //    if (pMsg->wParam == 'L')
-        //    {
-        //        OnClose();
-        //        OnCancel();
-        //        return TRUE;
-        //    }
-        //}
-        if (pMsg->wParam == 'F')        //按F键快速查找
-        {
-            m_search_edit.SetFocus();
+        //响应Accelerator中设置的快捷键
+        CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+        if (main_wnd != nullptr && main_wnd->GetAccel() && ::TranslateAccelerator(m_hWnd, main_wnd->GetAccel(), pMsg))
             return TRUE;
-        }
-        if (pMsg->wParam == VK_ESCAPE || pMsg->wParam == VK_RETURN)  //按ESC/回车退出
-        {
-            OnClose();
-            OnCancel();
-            return TRUE;
-        }
     }
-
-    //如果焦点在搜索框内，按ESC键将焦点重新设置为主窗口
-    if (pMsg->hwnd == m_search_edit.GetSafeHwnd() && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
+    if (pMsg->message == WM_KEYDOWN)
     {
-        SetFocus();
+        if (pMsg->hwnd != m_search_edit.GetSafeHwnd())
+        {
+            if (pMsg->wParam == 'F')        //按F键快速查找
+            {
+                m_search_edit.SetFocus();
+                return TRUE;
+            }
+            if (pMsg->wParam == VK_ESCAPE || pMsg->wParam == VK_RETURN)  //按ESC/回车退出
+            {
+                OnClose();
+                OnCancel();
+                return TRUE;
+            }
+        }
+        else if (pMsg->wParam == VK_ESCAPE) // 按键按下+在搜索框内+按下Esc 设置浮动播放列表窗口焦点
+        {
+            SetFocus();
+        }
     }
 
     if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))        //屏蔽按回车键和ESC键退出
     {
         return TRUE;
     }
+
     return CDialog::PreTranslateMessage(pMsg);
 }
 

@@ -63,6 +63,16 @@ bool CLyricDownloadDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 	return true;
 }
 
+void CLyricDownloadDlg::SetID(wstring id)
+{
+    if (!m_song.is_cue)
+    {
+        SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song.file_path) };
+        song_info_ori.SetSongId(id);
+        CSongDataManager::GetInstance().SetSongDataModified();
+    }
+}
+
 void CLyricDownloadDlg::SaveConfig() const
 {
 	CIniHelper ini(theApp.m_config_path);
@@ -85,7 +95,7 @@ void CLyricDownloadDlg::LoadConfig()
 wstring CLyricDownloadDlg::GetSavedDir()
 {
     if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
-        return CPlayer::GetInstance().GetCurrentDir();
+        return CFilePathHelper(m_song.file_path).GetDir();
     else
         return theApp.m_lyric_setting_data.lyric_path;
 }
@@ -337,7 +347,7 @@ void CLyricDownloadDlg::OnBnClickedDownloadSelected()
 
 	GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
 	GetDlgItem(IDC_SELECTED_SAVE_AS)->EnableWindow(FALSE);		//点击“下载选中项”后禁用该按钮
-	CPlayer::GetInstance().SetRelatedSongID(m_down_list[m_item_selected].id);		//将选中项目的歌曲ID关联到歌曲
+    SetID(m_down_list[m_item_selected].id);                     // 将选中项目的歌曲ID关联到歌曲
 	m_download_thread_info.hwnd = GetSafeHwnd();
 	m_download_thread_info.download_translate = m_download_translate;
 	m_download_thread_info.save_as = false;
@@ -429,11 +439,11 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	//计算搜索结果中最佳匹配项目
 	int best_matched;
 	bool id_releated{ false };
-	if (!CPlayer::GetInstance().GetCurrentSongInfo().song_id == 0)		//如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+    if (!m_song.song_id == 0)   //如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
 	{
 		for (size_t i{}; i<m_down_list.size(); i++)
 		{
-			if (CPlayer::GetInstance().GetCurrentSongInfo().GetSongId() == m_down_list[i].id)
+            if (m_song.GetSongId() == m_down_list[i].id)
 			{
 				id_releated = true;
 				best_matched = i;
@@ -445,15 +455,17 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, m_lyric_name, true);
 	CString info;
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
-    SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(CPlayer::GetInstance().GetCurrentFilePath()) };
+    SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song.file_path) };
 	if (m_down_list.empty())
     {
         song_info_ori.SetNoOnlineLyric(true);
+        CSongDataManager::GetInstance().SetSongDataModified();
         info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
     }
 	else if (best_matched == -1)
     {
         song_info_ori.SetNoOnlineLyric(true);
+        CSongDataManager::GetInstance().SetSongDataModified();
         info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
     }
 	else if(id_releated)
@@ -536,9 +548,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			return 0;
 		if (m_download_translate)
 		{
-			CLyrics lyrics{ saved_path };		//打开保存过的歌词
-			lyrics.DeleteRedundantLyric();		//删除多余的歌词
-			lyrics.CombineSameTimeLyric();		//将歌词翻译和原始歌词合并成一句
+			CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
 			lyrics.SaveLyric2();
 		}
 
@@ -580,9 +590,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 
 			if (m_download_translate)
 			{
-				CLyrics lyrics{ saved_path };		//打开保存过的歌词
-				lyrics.DeleteRedundantLyric();		//删除多余的歌词
-				lyrics.CombineSameTimeLyric();		//将歌词翻译和原始歌词合并成一句
+				CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
 				lyrics.SaveLyric2();
 			}
 
@@ -717,7 +725,7 @@ BOOL CLyricDownloadDlg::PreTranslateMessage(MSG* pMsg)
 void CLyricDownloadDlg::OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CPlayer::GetInstance().SetRelatedSongID(wstring());
+    SetID(wstring());
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
 
 	*pResult = 0;
@@ -753,9 +761,7 @@ void CLyricDownloadDlg::OnLdPreview()
 	CLyricDownloadCommon::AddLyricTag(result, item.id, item.title, item.artist, item.album);
 
 	CLyrics lyrics;
-	lyrics.LyricsFromRowString(result);
-	lyrics.DeleteRedundantLyric();
-	lyrics.CombineSameTimeLyric();
+	lyrics.LyricsFromRowString(result, CLyrics::LyricType::LY_LRC_NETEASE);
 	result = lyrics.GetLyricsString2();
 
 	//显示预览窗口
@@ -778,6 +784,6 @@ void CLyricDownloadDlg::OnLdRelate()
     // TODO: 在此添加命令处理程序代码
     if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_down_list.size()))
     {
-        CPlayer::GetInstance().SetRelatedSongID(m_down_list[m_item_selected].id);		//将选中项目的歌曲ID关联到歌曲
+        SetID(m_down_list[m_item_selected].id);     // 将选中项目的歌曲ID关联到歌曲
     }
 }

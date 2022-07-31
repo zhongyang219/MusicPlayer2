@@ -75,7 +75,23 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    if (!m_playlist_mode)
+    bool change_to_default_playlist{};
+    for (int i{}; i < m_recent_path.size(); ++i)    // 清除最近播放文件夹列表中的无效项
+    {
+        if (!CAudioCommon::IsPathContainsAudioFile(m_recent_path[i].path, m_recent_path[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(m_recent_path[i].path))
+        {
+            m_recent_path.erase(m_recent_path.begin() + i);
+            change_to_default_playlist = (i == 0);
+            i--;
+        }
+    }
+    if (change_to_default_playlist)
+    {
+        PlaylistInfo playlist_info;
+        playlist_info = CPlaylistMgr::Instance().m_default_playlist;
+        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
+    }
+    else if (!m_playlist_mode)
     {
         IniPlayList();	//初始化播放列表
     }
@@ -208,8 +224,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             continue;
         }
 
-        CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);
-
         //从CSongDataManager获取歌曲信息
         song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
 
@@ -232,6 +246,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             CAudioTag audio_tag(song);
             audio_tag.GetAudioRating();
             CSongDataManager::GetInstance().SaveSongInfo(song);
+            CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);    // 媒体库内存在歌曲信息时此更新修改时间方法可用
+            const SongInfo& song_ref{ CSongDataManager::GetInstance().GetSongInfoRef(song.file_path) };
+            if (song_ref.modified_time > song.modified_time)
+                song.modified_time = song_ref.modified_time;
             CSongDataManager::GetInstance().SetSongDataModified();
         }
     }
@@ -1369,6 +1387,7 @@ void CPlayer::SaveConfig() const
     ini.WriteInt(L"config", L"sort_mode", static_cast<int>(m_sort_mode));
     ini.WriteBool(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
     ini.WriteString(L"config", L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
+    ini.WriteString(L"config", L"album_cover_path", theApp.m_app_setting_data.album_cover_path);
     ini.WriteBool(L"config", L"playlist_mode", m_playlist_mode);
     ini.WriteDouble(L"config", L"speed", m_speed);
 
@@ -1411,6 +1430,10 @@ void CPlayer::LoadConfig()
     theApp.m_lyric_setting_data.lyric_fuzzy_match = ini.GetBool(L"config", L"lyric_fuzzy_match", true);
     wstring default_album_name = ini.GetString(L"config", L"default_album_file_name", L"cover");
     CCommon::StringSplit(default_album_name, L',', theApp.m_app_setting_data.default_album_name);
+
+    theApp.m_app_setting_data.album_cover_path = ini.GetString(L"config", L"album_cover_path", L".\\cover\\");
+    if (!theApp.m_app_setting_data.album_cover_path.empty() && theApp.m_app_setting_data.album_cover_path.back() != L'/' && theApp.m_app_setting_data.album_cover_path.back() != L'\\')
+        theApp.m_app_setting_data.album_cover_path.append(1, L'\\');
 
     bool playlist_mode_default = !CCommon::FileExist(theApp.m_recent_path_dat_path);
     m_playlist_mode = ini.GetBool(L"config", L"playlist_mode", playlist_mode_default);

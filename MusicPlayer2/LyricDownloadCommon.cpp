@@ -74,17 +74,17 @@ void CLyricDownloadCommon::AddLyricTag(wstring& lyric_str, const wstring & song_
 	CString tmp;
 	tmp.Format(_T("[id:%s]\r\n"), song_id.c_str());
 	tag_info += tmp;
-	if (lyric_str.find(L"[ti:") == wstring::npos)
+	if (lyric_str.find(L"[ti:") == wstring::npos || lyric_str.find(L"[ti:]") != wstring::npos)
 	{
 		tmp.Format(_T("[ti:%s]\r\n"), title.c_str());
 		tag_info += tmp;
 	}
-	if (lyric_str.find(L"[ar:") == wstring::npos)
+	if (lyric_str.find(L"[ar:") == wstring::npos || lyric_str.find(L"[ar:]") != wstring::npos)
 	{
 		tmp.Format(_T("[ar:%s]\r\n"), artist.c_str());
 		tag_info += tmp;
 	}
-	if (lyric_str.find(L"[al:") == wstring::npos)
+	if (lyric_str.find(L"[al:") == wstring::npos || lyric_str.find(L"[al:]") != wstring::npos)
 	{
 		tmp.Format(_T("[al:%s]\r\n"), album.c_str());
 		tag_info += tmp;

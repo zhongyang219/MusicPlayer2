@@ -754,6 +754,7 @@
 #define IDS_SHOTCUT_UP                  577
 #define IDS_SHOTCUT_DOWN                578
 #define IDS_SPACE                       579
+#define IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 580
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -969,8 +970,11 @@
 #define IDC_FIND_ALL_PLAYLIST_RADIO     1078
 #define IDC_MCI_RADIO                   1078
 #define IDC_COPY_RADIO                  1078
+#define IDC_SAVE_TO_ALBUM_FOLDER2       1078
 #define IDC_COMBO2                      1079
+#define IDC_SAVE_TO_SONG_FOLDER3        1079
 #define IDC_SAVE_TO_SONG_FOLDER1        1080
+#define IDC_SAVE_TO_ALBUM_FOLDER3       1080
 #define IDC_SAVE_TO_LYRIC_FOLDER1       1081
 #define IDC_BUTTON2                     1082
 #define IDC_SELECTED_SAVE_AS            1082
@@ -1148,18 +1152,20 @@
 #define IDC_FFMPEG_DOWN_SYSLINK         1194
 #define IDC_SYSLINK_BASS                1195
 #define IDC_SYSLINK_TAGLIB              1196
-#define IDC_SHOW_SYSTEM_TITLEBAR_CHECK  1196
 #define IDC_SYSLINK_TINYXML2            1197
-#define IDC_SHOW_SETTINGS_BTN_CHECK     1197
+#define IDC_SAVE_TO_SONG_FOLDER2        1197
 #define IDC_SYSLINK_SCINTILLA           1198
-#define IDC_SHOW_SKIN_BTN_CHECK         1198
+#define IDC_ALBUM_COVER_PATH_EDIT       1198
 #define IDC_SYSLINK_TRAFFICMONITOR      1199
-#define IDC_SHOW_MINI_MODE_BTN_CHECK    1199
 #define IDC_SYSLINK_SIMPLENOTEPAD       1200
-#define IDC_SHOW_FULLSCREEN_BTN_CHECK   1200
-#define IDC_SHOW_MINIMIZE_BTN_CHECK     1201
-#define IDC_SHOW_MAXIMIZE_BTN_CHECK     1202
-#define IDC_ALWAYS_SHOW_STATUSBAR_CHECK 1203
+#define IDC_ALWAYS_SHOW_STATUSBAR_CHECK 1201
+#define IDC_SHOW_SYSTEM_TITLEBAR_CHECK  1203
+#define IDC_SHOW_SETTINGS_BTN_CHECK     1204
+#define IDC_SHOW_SKIN_BTN_CHECK         1205
+#define IDC_SHOW_MINI_MODE_BTN_CHECK    1206
+#define IDC_SHOW_FULLSCREEN_BTN_CHECK   1207
+#define IDC_SHOW_MINIMIZE_BTN_CHECK     1208
+#define IDC_SHOW_MAXIMIZE_BTN_CHECK     1209
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1556,6 +1562,16 @@
 #define ID_EMBED_LYRIC_TO_AUDIO_FILE    33208
 #define ID_DELETE_LYRIC_FROM_AUDIO_FILE 33209
 #define ID_SWITCH_UI                    33210
+#define ID_SWITCH_UI_1                  33211
+#define ID_SWITCH_UI_2                  33212
+#define ID_SWITCH_UI_3                  33213
+#define ID_SWITCH_UI_4                  33214
+#define ID_SWITCH_UI_5                  33215
+#define ID_SWITCH_UI_6                  33216
+#define ID_SWITCH_UI_7                  33217
+#define ID_SWITCH_UI_8                  33218
+#define ID_SWITCH_UI_9                  33219
+#define ID_SWITCH_UI_10                 33220
 #define ID_SHOW_LYRIC_TRANSLATE         33320
 #define ID_COPY_ALL_TEXT                33321
 #define ID_VIEW_ARTIST                  33322
@@ -1590,14 +1606,15 @@
 #define ID_HELP_FAQ                     33390
 #define ID_33391                        33391
 #define ID_SEEK_TO_CUR_LINE             33392
+#define ID_REPEAT_MODE                  33393
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        573
-#define _APS_NEXT_COMMAND_VALUE         33393
-#define _APS_NEXT_CONTROL_VALUE         1204
+#define _APS_NEXT_COMMAND_VALUE         33394
+#define _APS_NEXT_CONTROL_VALUE         1210
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

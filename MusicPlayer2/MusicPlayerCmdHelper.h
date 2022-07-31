@@ -22,8 +22,9 @@ public:
     //从磁盘删除歌曲
     bool DeleteSongsFromDisk(const std::vector<SongInfo>& files);
 
-    //查找匹配的歌词文件
+    //查找可能匹配的所有歌词文件
     void SearchLyricFiles(const wstring& lyric_name, const wstring& cur_dir, std::vector<std::wstring>& result, bool fuzzy_match);
+    //查找最佳匹配的歌词文件并返回路径
     std::wstring SearchLyricFile(const SongInfo& song, bool fuzzy_match);
 
     //查找匹配的外部专辑封面
@@ -40,6 +41,8 @@ public:
 
     //清理数据，函数对象fun_condition用来判断文件是否要被清理，如果是则返回true
     static int CleanUpSongData(std::function<bool(const SongInfo&)> fun_condition = [&](const SongInfo& song) { return !CCommon::FileExist(song.file_path); });
+
+    // 清除最近播放文件夹中的无效条目
     static int CleanUpRecentFolders();
 
     static bool Rename(SongInfo& song, const wstring& new_name);

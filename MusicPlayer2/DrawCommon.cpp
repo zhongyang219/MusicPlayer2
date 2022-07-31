@@ -155,85 +155,10 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
     //输出文本
     m_pDC->SetTextColor(color2);
     m_pDC->DrawText(lpszString, text_rect, DT_SINGLELINE | DT_NOPREFIX);        //绘制背景文字
-    if (color1 != color2)
+    if (color1 != color2 && split != 1000)  // 进度1000表示当前歌词“已完成”不进行高亮
     {
         m_pDC->SetTextColor(color1);
         m_pDC->DrawText(lpszString, text_f_rect, DT_SINGLELINE | DT_NOPREFIX);      //绘制覆盖文字
-    }
-}
-
-void CDrawCommon::DrawWindowTextForLyric(CRect rect, LPCTSTR lpszBeforeString, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, bool isBefore, Alignment align, bool no_clip_area)
-{
-    if (m_pDC->GetSafeHdc() == NULL)
-        return;
-    if (split < 0) split = 0;
-    if (split > 1000) split = 1000;
-    m_pDC->SetBkMode(TRANSPARENT);
-    if (m_pfont != nullptr)
-        m_pDC->SelectObject(m_pfont);
-    // 设置绘图的剪辑区域，防止文字输出超出控件区域
-    if (!no_clip_area)
-    {
-        SetDrawArea(m_pDC, rect);
-    }
-    // 获取文字的宽度和高度
-    CSize before_size{ m_pDC->GetTextExtent(lpszBeforeString) };
-    CSize sp_size{ m_pDC->GetTextExtent(L" ")};
-    CSize string_size{ m_pDC->GetTextExtent(lpszString) };
-
-    // 重新计算含有进度符号的进度
-    if (isBefore)
-        split = split * before_size.cx / (before_size.cx + sp_size.cx + string_size.cx);
-    else
-        split = (split * string_size.cx + (before_size.cx + sp_size.cx) * 1000) / (before_size.cx + sp_size.cx + string_size.cx);
-
-    wstring string;
-    string.append(lpszBeforeString).append(L" ").append(lpszString);
-    CSize text_size{ m_pDC->GetTextExtent(string.c_str()) };    // 文本的大小
-    // 计算文字的起始坐标
-    int text_top, text_left;        // 输出文本的top和left位置
-    text_top = rect.top + (rect.Height() - text_size.cy) / 2;
-    if (align == Alignment::CENTER)
-        text_left = rect.left + (rect.Width() - text_size.cx) / 2;
-    else if (align == Alignment::RIGHT)
-        text_left = rect.left + (rect.Width() - text_size.cx);
-    else
-        text_left = rect.left;
-    // 计算背景文字和覆盖文字的矩形区域
-    CRect text_rect{ CPoint{ text_left, text_top }, text_size };                                                // 背景文字的区域
-    CRect text_f_rect{ CPoint{ text_left, text_top }, CSize{ text_size.cx * split / 1000, text_size.cy } };     // 覆盖文字的区域
-                                                                                                                // 如果文本宽度大于控件宽度，就要根据分割的位置滚动文本
-    if (text_size.cx > rect.Width())
-    {
-        // 如果分割的位置（歌词进度）剩下的宽度已经小于控件宽度的一半，此时使文本右侧和控件右侧对齐
-        if (text_rect.Width() - text_f_rect.Width() < rect.Width() / 2)
-        {
-            text_rect.MoveToX(rect.left - (text_rect.Width() - rect.Width()));
-            text_f_rect.MoveToX(text_rect.left);
-        }
-        // 分割位置剩下的宽度还没有到小于控件宽度的一半，但是分割位置的宽度已经大于控件宽度的一半时，需要移动文本使分割位置正好在控件的中间
-        else if (text_f_rect.Width() > rect.Width() / 2)
-        {
-            text_rect.MoveToX(rect.left - (text_f_rect.Width() - rect.Width() / 2));
-            text_f_rect.MoveToX(text_rect.left);
-        }
-        // 分割位置还不到控件宽度的一半时，使文本左侧和控件左侧对齐
-        else
-        {
-            text_rect.MoveToX(rect.left);
-            text_f_rect.MoveToX(rect.left);
-        }
-    }
-
-    // 用背景色填充矩形区域
-    // m_pDC->FillSolidRect(rect, m_backColor);
-    // 输出文本
-    m_pDC->SetTextColor(color2);
-    m_pDC->DrawText(string.c_str(), text_rect, DT_SINGLELINE | DT_NOPREFIX);            // 绘制背景文字
-    if (color1 != color2)
-    {
-        m_pDC->SetTextColor(color1);
-        m_pDC->DrawText(string.c_str(), text_f_rect, DT_SINGLELINE | DT_NOPREFIX);      // 绘制覆盖文字
     }
 }
 

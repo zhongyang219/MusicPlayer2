@@ -276,6 +276,7 @@ public:
     afx_msg void OnDropFiles(HDROP hDropInfo);
 protected:
     afx_msg void OnInitMenu(CMenu* pMenu);
+    afx_msg void OnRepeatMode();
     afx_msg void OnPlayOrder();
     afx_msg void OnPlayShuffle();
     afx_msg void OnLoopPlaylist();

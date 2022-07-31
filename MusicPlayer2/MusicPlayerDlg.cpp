@@ -137,6 +137,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_FILE_OPEN_FOLDER, &CMusicPlayerDlg::OnFileOpenFolder)
     ON_WM_DROPFILES()
     ON_WM_INITMENU()
+    ON_COMMAND(ID_REPEAT_MODE, &CMusicPlayerDlg::OnRepeatMode)
     ON_COMMAND(ID_PLAY_ORDER, &CMusicPlayerDlg::OnPlayOrder)
     ON_COMMAND(ID_PLAY_SHUFFLE, &CMusicPlayerDlg::OnPlayShuffle)
     ON_COMMAND(ID_LOOP_PLAYLIST, &CMusicPlayerDlg::OnLoopPlaylist)
@@ -354,7 +355,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_media_lib_setting_data.display_format));
     ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.cortana_info_enable);
     ini.WriteBool(L"config", L"cortana_show_lyric", theApp.m_lyric_setting_data.cortana_show_lyric);
-    ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
+    // ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
     ini.WriteString(L"config", L"font", theApp.m_lyric_setting_data.lyric_font.name);
     ini.WriteInt(L"config", L"font_size", theApp.m_lyric_setting_data.lyric_font.size);
     ini.WriteInt(L"config", L"font_style", theApp.m_lyric_setting_data.lyric_font.style.ToInt());
@@ -454,6 +455,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"auto_download_album_cover", theApp.m_general_setting_data.auto_download_album_cover);
     ini.WriteBool(L"general", L"auto_download_only_tag_full", theApp.m_general_setting_data.auto_download_only_tag_full);
     ini.WriteBool(L"general", L"save_lyric_to_song_folder", theApp.m_general_setting_data.save_lyric_to_song_folder);
+    ini.WriteBool(L"general", L"save_album_to_song_folder", theApp.m_general_setting_data.save_album_to_song_folder);
     ini.WriteString(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path);
     ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric);
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
@@ -527,7 +529,7 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_lyric_setting_data.cortana_info_enable = false;
     else
         theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
-    theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
+    // theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
     theApp.m_lyric_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
     theApp.m_lyric_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
     theApp.m_lyric_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
@@ -629,6 +631,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_general_setting_data.auto_download_album_cover = ini.GetBool(L"general", L"auto_download_album_cover", 1);
     theApp.m_general_setting_data.auto_download_only_tag_full = ini.GetBool(L"general", L"auto_download_only_tag_full", 1);
     theApp.m_general_setting_data.save_lyric_to_song_folder = ini.GetBool(L"general", L"save_lyric_to_song_folder", true);
+    theApp.m_general_setting_data.save_album_to_song_folder = ini.GetBool(L"general", L"save_album_to_song_folder", true);
     theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
     theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(L"general", L"midi_use_inner_lyric", 0);
     theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
@@ -1844,7 +1847,7 @@ void CMusicPlayerDlg::DoLyricsAutoSave(bool no_inquiry)
             OnSaveModifiedLyric();
             break;
         case LyricSettingData::LS_INQUIRY:
-            if (no_inquiry || MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION))
+            if (no_inquiry || MessageBoxW(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)    // 仅当MessageBox按下是时保存
             {
                 OnSaveModifiedLyric();
             }
@@ -2613,53 +2616,28 @@ void CMusicPlayerDlg::OnExplorePath()
 BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (pMsg->hwnd != m_search_edit.GetSafeHwnd())  //如果焦点在搜索框上，则不响应快捷键
+    if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
     {
-        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
-        {
-            //响应Accelerator中设置的快捷键
-            if (m_hAccel && ::TranslateAccelerator(m_hWnd, m_hAccel, pMsg))
-                return TRUE;
-        }
+        //响应Accelerator中设置的快捷键
+        if (m_hAccel && ::TranslateAccelerator(m_hWnd, m_hAccel, pMsg))
+            return TRUE;
+    }
 
-        //响应不在Accelerator中的快捷键
-        if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
+    // 响应不在Accelerator中的快捷键
+    if (pMsg->message == WM_KEYDOWN)
+    {
+        // 按键按下，不在搜索框内
+        if (pMsg->hwnd != m_search_edit.GetSafeHwnd())
         {
-            //按下Ctrl键时
-            if (GetKeyState(VK_CONTROL) & 0x80)
-            {
-                if (pMsg->wParam >= '1' && pMsg->wParam <= '9')     //设置按Ctr+数字键切换界面
-                {
-                    int ui_index = pMsg->wParam - '1';
-                    if (ui_index >= 0 && ui_index < static_cast<int>(m_ui_list.size()))
-                    {
-                        SelectUi(ui_index);
-                        return TRUE;
-                    }
-                }
-                else if (pMsg->wParam == '0')   //Ctrl+0切换第10个界面
-                {
-                    if (m_ui_list.size() > 9)
-                    {
-                        SelectUi(9);
-                        return TRUE;
-                    }
-                }
-            }
-            if (pMsg->wParam == 'M')    //按M键设置循环模式
-            {
-                CPlayer::GetInstance().SetRepeatMode();
-                CPlayerUIBase* pUI = GetCurrentUi();
-                if (pUI != nullptr)
-                    pUI->UpdateRepeatModeToolTip();
-                return TRUE;
-            }
             if (pMsg->wParam == 'F')    //按F键快速查找
             {
+                // 若未显示播放列表则先显示（主窗口的快速查找使用停靠播放列表），浮动播放列表的快速查找不存在这个问题
+                if (!theApp.m_ui_data.show_playlist)
+                    OnShowPlaylist();
                 m_search_edit.SetFocus();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_ESCAPE)  //按ESC键退出全屏模式
+            if (pMsg->wParam == VK_ESCAPE)      // 按ESC键退出全屏模式
             {
                 if (theApp.m_ui_data.full_screen)
                 {
@@ -2667,19 +2645,16 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                     return TRUE;
                 }
             }
-
-            if (pMsg->wParam == VK_APPS)        //按菜单键弹出主菜单
+            if (pMsg->wParam == VK_APPS)        // 按菜单键弹出主菜单
             {
                 SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&CPoint(0, 0));
                 return TRUE;
             }
         }
-    }
-
-    //如果焦点在搜索框内，按ESC键将焦点重新设置为主窗口
-    if (pMsg->hwnd == m_search_edit.GetSafeHwnd() && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
-    {
-        SetFocus();
+        else if (pMsg->wParam == VK_ESCAPE) // 按键按下+在搜索框内+按下Esc 设置主窗口焦点
+        {
+            SetFocus();
+        }
     }
 
     if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))        //屏蔽按回车键和ESC键退出
@@ -2687,10 +2662,8 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
         return TRUE;
     }
 
-
     if (pMsg->message == WM_MOUSEMOVE)
         m_Mytip.RelayEvent(pMsg);
-
 
     return CMainDialogBase::PreTranslateMessage(pMsg);
 }
@@ -2863,6 +2836,14 @@ void CMusicPlayerDlg::OnInitMenu(CMenu* pMenu)
 
     CMenu* pSysMenu = GetSystemMenu(FALSE);
     SetMenuState(pSysMenu);
+}
+
+void CMusicPlayerDlg::OnRepeatMode()
+{
+    CPlayer::GetInstance().SetRepeatMode();
+    CPlayerUIBase* pUI = GetCurrentUi();
+    if (pUI != nullptr)
+        pUI->UpdateRepeatModeToolTip();
 }
 
 
@@ -3445,18 +3426,24 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
                 file = file_path.ReplaceFileExtension(L"jpg").c_str();
             }
             CCommon::DeleteFiles(m_hWnd, delected_files);
-            for (auto& file : delected_files)
+            for (const wstring& ext : CLyrics::m_surpported_lyric)      // 删除所有后缀的歌词
             {
-                CFilePathHelper file_path(file);
-                file = file_path.ReplaceFileExtension(L"lrc").c_str();
+                for (auto& file : delected_files)
+                {
+                    CFilePathHelper file_path(file);
+                    file = file_path.ReplaceFileExtension(ext.c_str()).c_str();
+                }
+                CCommon::DeleteFiles(m_hWnd, delected_files);
             }
-            CCommon::DeleteFiles(m_hWnd, delected_files);
         }
         else
         {
             CFilePathHelper file_path(delected_file);
             CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
-            CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
+            for (const wstring& ext : CLyrics::m_surpported_lyric)      // 删除所有后缀的歌词
+            {
+                CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(ext.c_str()).c_str());
+            }
         }
     }
     else if (rtn == 1223)   //如果在弹出的对话框中点击“取消”则返回值为1223
@@ -3657,7 +3644,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
     }
     else
     {
-        CLyrics::Lyric lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), 0) };
+        CLyrics::Lyric& lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), false, theApp.m_lyric_setting_data.donot_show_blank_lines, false) };
         lyric_str = lyric.text;
         if (theApp.m_lyric_setting_data.show_translate && !lyric.translate.empty())
         {
@@ -3729,10 +3716,7 @@ void CMusicPlayerDlg::OnSaveModifiedLyric()
         }
         else
         {
-            if (theApp.m_lyric_setting_data.save_lyric_in_offset && !CPlayer::GetInstance().m_Lyrics.IsChineseConverted())      //如果执行了中文繁简转换，则保存时不管选项设置如何都调用SaveLyric2()
-                CPlayer::GetInstance().m_Lyrics.SaveLyric();
-            else
-                CPlayer::GetInstance().m_Lyrics.SaveLyric2();
+            CPlayer::GetInstance().m_Lyrics.SaveLyric2();
         }
     }
 }
@@ -4003,18 +3987,24 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             return 0;
         }
 
-        //获取要保存的专辑封面的文件路径
-        CFilePathHelper cover_file_path;
+        //获取要保存的专辑封面的文件名
+        wstring album_name;
+        CFilePathHelper cover_file_path{ song.file_path };
         if (match_item.album == song.album && !song.album.empty())      //如果在线搜索结果的唱片集名称和歌曲的相同，则以“唱片集”为文件名保存
         {
-            wstring album_name{ match_item.album };
+            album_name = match_item.album;
             CCommon::FileNameNormalize(album_name);
-            cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name);
         }
         else                //否则以歌曲文件名为文件名保存
         {
-            cover_file_path.SetFilePath(song.file_path);
+            album_name = cover_file_path.GetFileName();
         }
+        // 判断是否保存到封面文件夹
+        if (!theApp.m_general_setting_data.save_album_to_song_folder && CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path))
+            cover_file_path.SetFilePath(theApp.m_app_setting_data.album_cover_path + album_name);
+        else
+            cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name);
+
         CFilePathHelper url_path(cover_url);
         cover_file_path.ReplaceFileExtension(url_path.GetFileExtension().c_str());
 
@@ -4067,9 +4057,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         out_put << _lyric_str;
         out_put.close();
         //处理歌词翻译
-        CLyrics lyrics{ lyric_path.GetFilePath() };     //打开保存过的歌词
-        lyrics.DeleteRedundantLyric();      //删除多余的歌词
-        lyrics.CombineSameTimeLyric();      //将歌词翻译和原始歌词合并成一句
+        CLyrics lyrics{ lyric_path.GetFilePath(), CLyrics::LyricType::LY_LRC_NETEASE };     //打开保存过的歌词
         lyrics.SaveLyric2();
 
         CPlayer::GetInstance().IniLyrics(lyric_path.GetFilePath());
@@ -4945,7 +4933,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
     {
         if (index == -2)      //当lParam为-2时，播放默认的播放列表
         {
-            auto default_playlist = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
+            auto& default_playlist = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist;
             CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
         }
         else

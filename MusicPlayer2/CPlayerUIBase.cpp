@@ -332,8 +332,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 return true;
 
             case BTN_REPETEMODE:
-                CPlayer::GetInstance().SetRepeatMode();
-                UpdateRepeatModeToolTip();
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_REPEAT_MODE);
                 return true;
 
             case BTN_VOLUME:

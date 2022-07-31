@@ -168,7 +168,7 @@ void CLyricRelateDlg::OnBnClickedBrowseButton1()
     // TODO: 在此添加控件通知处理程序代码
     CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
     //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, _T("lrc"), NULL, 0, szFilter, this);
+    CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {

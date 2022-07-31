@@ -191,7 +191,7 @@ struct LyricSettingData
 {
     bool lyric_karaoke_disp{ true };			//可以是否以卡拉OK样式显示
     bool lyric_fuzzy_match{ true };				//歌词模糊匹配
-    bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
+    // bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
     wstring lyric_path;							//歌词文件夹的路径
     bool use_inner_lyric_first{};				//优先使用内嵌歌词
     bool show_translate{ true };		        //歌词是否显示翻译
@@ -243,9 +243,12 @@ struct ApperanceSettingData
     bool spectrum_low_freq_in_center{ false };  //频谱分析低频部分显示在中间
     bool use_old_style_specturm{ false };       //使用旧风格的频谱分析显示
     int background_transparency{ 80 };			//背景的透明度
+
     bool use_out_image{ true };					//使用外部图片作为专辑封面
     bool use_inner_image_first{ true };			//优先使用内嵌专辑封面
+    wstring album_cover_path;                         // 专辑封面存储路径
     vector<wstring> default_album_name;			//默认的专辑封面文件名
+
     bool background_gauss_blur{ true };			//背景高斯模糊
     int gauss_blur_radius{ 60 };				//高斯模糊半径*10
     bool lyric_background{ true };				//歌词界面背景
@@ -285,7 +288,8 @@ struct GeneralSettingData
     bool auto_download_lyric{ false };			//是否自动下载歌词
     bool auto_download_album_cover{ true };		//是否自动下载专辑封面
     bool auto_download_only_tag_full{ true };	//仅在歌曲信息完整时自动下载
-    bool save_lyric_to_song_folder{ true };     //将歌词文件保存在歌曲文件夹
+    bool save_lyric_to_song_folder{ true };     // 将自动下载的歌词文件保存在歌曲文件夹
+    bool save_album_to_song_folder{ true };     // 将自动下载的封面文件保存在歌曲文件夹
     bool check_update_when_start{ true };		//是否在程序启动时检查更新
     int update_source{};                        //更新源。0: GitHub; 1: Gitee
     wstring sf2_path;							//MIDI音色库路径

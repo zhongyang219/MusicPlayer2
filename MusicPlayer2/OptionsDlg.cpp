@@ -119,6 +119,11 @@ void COptionsDlg::OnBnClickedApplyButton()
     }
 
 	::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SETTINGS_APPLIED, (WPARAM)this, 0);
+
+    for (const auto& tab : m_tab_vect)
+    {
+        tab->ApplyDataToUi();
+    }
 }
 
 

@@ -263,11 +263,13 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
     //文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
     _wfinddata_t fileinfo;
     //wstring file_path;
-    if ((hFile = _wfindfirst(path.append(L"\\*.lrc").c_str(), &fileinfo)) != -1)
+    if ((hFile = _wfindfirst((path + L"*").c_str(), &fileinfo)) != -1)
     {
         do
         {
-            files.push_back(fileinfo.name);  //将文件名保存
+            wstring file_name = fileinfo.name;
+            if (CLyrics::FileIsLyric(file_name) && !CCommon::IsFolder(path + file_name))    // 如果找到的文件是歌词文件，则保存到容器中
+                files.push_back(file_name);
         }
         while (_wfindnext(hFile, &fileinfo) == 0);
     }
@@ -452,7 +454,7 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
 {
     for (auto iter = files.begin(); iter != files.end(); ++iter)
     {
-        if (iter->is_cue)        //跳过已解析的cue音轨
+        if (iter->is_cue || iter->file_path.empty())        // 跳过已解析的cue音轨，跳过无效文件
             continue;
         CAudioTag audio_tag(*iter);
         wstring cue_contents = audio_tag.GetAudioCue();
