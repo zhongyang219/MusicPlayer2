@@ -716,8 +716,8 @@ void CPlayer::CalculateSpectralData()
 {
     //memcpy_s(m_last_spectral_data, sizeof(m_last_spectral_data), m_spectral_data, sizeof(m_spectral_data));
 
-    if ((GetBassHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)     //确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
-        || m_pCore->GetCoreType() == PT_FFMPEG)
+    if (m_pCore != nullptr && ((GetBassHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)     //确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+        || m_pCore->GetCoreType() == PT_FFMPEG) && m_pCore->GetPlayingState() != PS_STOPED)
     {
         int scale = (m_pCore->GetCoreType() == PT_FFMPEG ? 100 : 60);
         m_pCore->GetFFTData(m_fft);

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "FfmpegCore.h"
 
 #include "AudioCommon.h"
@@ -243,7 +243,7 @@ void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
     }
     if (flag & AF_TAG_INFO) {
         CAudioTag audio_tag(song_info);
-        if (!audio_tag.GetAudioTag())       //Èç¹ûtaglib»ñÈ¡ĞÅÏ¢Ê§°Ü£¬ÔòÊ¹ÓÃffmpeg»ñÈ¡±êÇ©ĞÅÏ¢
+        if (!audio_tag.GetAudioTag())       //å¦‚æœtaglibè·å–ä¿¡æ¯å¤±è´¥ï¼Œåˆ™ä½¿ç”¨ffmpegè·å–æ ‡ç­¾ä¿¡æ¯
         {
             song_info.title = GetTitle();
             song_info.artist = GetArtist();
@@ -274,7 +274,7 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
         if (song_info.file_path.empty())
             song_info.file_path = file_path;
         CAudioTag audio_tag(song_info);
-        if (!audio_tag.GetAudioTag())       //Èç¹ûtaglib»ñÈ¡ĞÅÏ¢Ê§°Ü£¬ÔòÊ¹ÓÃffmpeg»ñÈ¡±êÇ©ĞÅÏ¢
+        if (!audio_tag.GetAudioTag())       //å¦‚æœtaglibè·å–ä¿¡æ¯å¤±è´¥ï¼Œåˆ™ä½¿ç”¨ffmpegè·å–æ ‡ç­¾ä¿¡æ¯
         {
             song_info.title = GetTitle(h);
             song_info.artist = GetArtist(h);
@@ -335,10 +335,10 @@ void CFfmpegCore::ClearReverb() {
 
 void CFfmpegCore::GetFFTData(float fft_data[FFT_SAMPLE]) {
     if (handle && IsSucceed()) {
-        memset(fft_data, 0, FFT_SAMPLE);
+        memset(fft_data, 0, sizeof(fft_data));
         ffmpeg_core_get_fft_data(handle, fft_data, FFT_SAMPLE);
     } else {
-        memset(fft_data, 0, FFT_SAMPLE);
+        memset(fft_data, 0, sizeof(fft_data));
     }
 }
 
@@ -348,7 +348,7 @@ int CFfmpegCore::GetErrorCode() {
         err = 0;
         return tmp;
     }
-    // ²»·µ»ØÏÂ²ãµÄ´íÎó£¬ÒÔÃâµ±ÏÂ²ãÖØĞÂ´ò¿ªÎÄ¼şÊ±£¬¼´Ê¹ÕâÀï·µ»Ø0£¬ÉÏ²ãÒÀ¾ÉÈÏÎªÓĞ´íÎó
+    // ä¸è¿”å›ä¸‹å±‚çš„é”™è¯¯ï¼Œä»¥å…å½“ä¸‹å±‚é‡æ–°æ‰“å¼€æ–‡ä»¶æ—¶ï¼Œå³ä½¿è¿™é‡Œè¿”å›0ï¼Œä¸Šå±‚ä¾æ—§è®¤ä¸ºæœ‰é”™è¯¯
     // if (handle) return ffmpeg_core_get_error(handle);
     return 0;
 }
@@ -374,7 +374,7 @@ PlayerCoreType CFfmpegCore::GetCoreType() {
 
 bool CFfmpegCore::GetFunction() {
     bool rtn = true;
-    //»ñÈ¡º¯ÊıÈë¿Ú
+    //è·å–å‡½æ•°å…¥å£
     free_music_handle = (_free_music_handle)::GetProcAddress(m_dll_module, "free_music_handle");
     free_music_info_handle = (_free_music_info_handle)::GetProcAddress(m_dll_module, "free_music_info_handle");
     free_ffmpeg_core_settings = (_free_ffmpeg_core_settings)::GetProcAddress(m_dll_module, "free_ffmpeg_core_settings");
@@ -426,7 +426,7 @@ bool CFfmpegCore::GetFunction() {
     ffmpeg_core_settings_set_url_retry_interval = (_ffmpeg_core_settings_set_url_retry_interval)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_url_retry_interval");
     ffmpeg_core_settings_set_equalizer_channel = (_ffmpeg_core_settings_set_equalizer_channel)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_equalizer_channel");
     ffmpeg_core_get_audio_devices = (_ffmpeg_core_get_audio_devices)::GetProcAddress(m_dll_module, "ffmpeg_core_get_audio_devices");
-    //ÅĞ¶ÏÊÇ·ñ³É¹¦
+    //åˆ¤æ–­æ˜¯å¦æˆåŠŸ
     rtn &= (free_device_name_list != NULL);
     rtn &= (free_music_handle != NULL);
     rtn &= (free_music_info_handle != NULL);
