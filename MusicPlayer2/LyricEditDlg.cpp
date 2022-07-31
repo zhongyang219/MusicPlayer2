@@ -192,6 +192,8 @@ void CLyricEditDlg::OpenLyric(const wchar_t* path)
     m_lyric_string = lyrics.GetLyricsString();
     m_code_type = lyrics.GetCodeType();
     m_inner_lyric = false;
+    m_lyric_type = lyrics.GetLyricType();
+    SetToolbarCmdEnable();
 }
 
 bool CLyricEditDlg::SaveInquiry()
@@ -273,6 +275,7 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CBaseDialog)
     ON_COMMAND(ID_LYRIC_TIME_TAG_FORWARD, &CLyricEditDlg::OnLyricTimeTagForward)
     ON_COMMAND(ID_LYRIC_TIME_TAG_DELAY, &CLyricEditDlg::OnLyricTimeTagDelay)
     ON_COMMAND(ID_SEEK_TO_CUR_LINE, &CLyricEditDlg::OnSeekToCurLine)
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -304,6 +307,7 @@ BOOL CLyricEditDlg::OnInitDialog()
         m_lyric_string = lyrics.GetLyricsString();
         m_code_type = lyrics.GetCodeType();
         m_inner_lyric = true;
+        m_lyric_type = lyrics.GetLyricType();
     }
     else
     {
@@ -402,6 +406,7 @@ BOOL CLyricEditDlg::OnInitDialog()
     ImageList.Add(CDrawCommon::LoadIconResource(IDI_REPLACE, icon_size, icon_size));
     m_wndToolBar.GetToolBarCtrl().SetImageList(&ImageList);
     ImageList.Detach();
+    SetToolbarCmdEnable();
 
     //设置工具栏高度
     CRect rect1;
@@ -1052,5 +1057,39 @@ void CLyricEditDlg::OnSeekToCurLine()
     if (m_original_lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file && CLyrics::ParseLyricTimeTag(cur_line, t, pos_start, pos_end))
     {
         CPlayer::GetInstance().SeekTo(t.toInt());
+    }
+}
+
+
+void CLyricEditDlg::OnInitMenu(CMenu* pMenu)
+{
+    CBaseDialog::OnInitMenu(pMenu);
+
+    // TODO: 在此处添加消息处理程序代码
+    bool is_lrc{ m_lyric_type != CLyrics::LyricType::LY_KSC };
+    pMenu->EnableMenuItem(ID_LYRIC_INSERT_TAG, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LYRIC_REPLACE_TAG, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LYRIC_DELETE_TAG, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LRYIC_MERGE_SAME_TIME_TAG, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_FORWARD, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_DELAY, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SEEK_TO_CUR_LINE, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+
+}
+
+void CLyricEditDlg::SetToolbarCmdEnable()
+{
+    if (m_wndToolBar.m_hWnd != NULL)
+    {
+        bool is_lrc{ m_lyric_type != CLyrics::LyricType::LY_KSC };
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_INSERT_TAG, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_REPLACE_TAG, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_DELETE_TAG, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LRYIC_MERGE_SAME_TIME_TAG, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_TIME_TAG_FORWARD, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_TIME_TAG_DELAY, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_SEEK_TO_CUR_LINE, is_lrc);
     }
 }

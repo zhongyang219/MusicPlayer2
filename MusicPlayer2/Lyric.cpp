@@ -353,6 +353,11 @@ bool CLyrics::IsEmpty() const
     return (m_lyrics.size() == 0);
 }
 
+CLyrics::LyricType CLyrics::GetLyricType() const
+{
+    return m_lyric_type;
+}
+
 int CLyrics::GetLyricIndex(Time time) const
 {
     if (m_lyrics.empty() || time.toInt() < m_lyrics[0].time_start)
@@ -716,18 +721,24 @@ void CLyrics::SwapTextAndTranslation()
 void CLyrics::TimeTagForward()
 {
     // 用后一句歌词的时间标签覆盖前面的
-    for (size_t i{}; i < m_lyrics.size() - 1; i++)
+    if (m_lyrics.size() > 1)
     {
-        m_lyrics[i].time_start = m_lyrics[i + 1].time_start;
+        for (size_t i{}; i < m_lyrics.size() - 1; i++)
+        {
+            m_lyrics[i].time_start = m_lyrics[i + 1].time_start;
+        }
     }
 }
 
 void CLyrics::TimeTagDelay()
 {
     // 用前一句歌词的时间标签覆盖后面的
-    for (size_t i{ m_lyrics.size() - 1 }; i > 0; i--)
+    if (m_lyrics.size() > 1)
     {
-        m_lyrics[i].time_start = m_lyrics[i - 1].time_start;
+        for (size_t i{ m_lyrics.size() - 1 }; i > 0; i--)
+        {
+            m_lyrics[i].time_start = m_lyrics[i - 1].time_start;
+        }
     }
 }
 

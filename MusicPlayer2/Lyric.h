@@ -89,6 +89,8 @@ public:
     // 判断是否有歌词
     bool IsEmpty() const;
 
+    LyricType GetLyricType() const;
+
     // 根据时间返回该时间对应的原始歌词序号，多行歌词使用
     // 返回index直接与下标对应，-1为在第一行歌词之前，超过最后一行歌词后保持为m_lyrics.size() - 1
     int GetLyricIndex(Time time) const;

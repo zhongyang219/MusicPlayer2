@@ -38,6 +38,7 @@ protected:
     wstring m_original_lyric_path;	//原来的歌词（当前播放歌曲对应的歌词）的路径
     CodeType m_code_type;		//歌词编码
     wstring m_current_song_name;	//正在播放的歌曲名
+    CLyrics::LyricType m_lyric_type{};
     bool m_modified{ false };	//如果歌词已更改，则为true
     bool m_lyric_saved{ false };	//如果执行过保存操作，则为true
     bool m_inner_lyric{ false };
@@ -67,6 +68,7 @@ protected:
     bool SaveInquiry();
     void SetLyricPathEditText();
     CRect CalculateEditCtrlRect();
+    void SetToolbarCmdEnable();
 
     virtual CString GetDialogName() const override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -107,4 +109,5 @@ public:
     afx_msg void OnLyricTimeTagDelay();
     virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
     afx_msg void OnSeekToCurLine();
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };
