@@ -2005,11 +2005,19 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
         auto max_icon = (theApp.m_pMainWnd->IsZoomed() ? theApp.m_icon_set.restore : theApp.m_icon_set.maximize);
         DrawUIButton(rect_temp, m_buttons[BTN_MAXIMIZE], max_icon);
     }
+    else
+    {
+        m_buttons[BTN_MAXIMIZE].rect = CRect();
+    }
     //最小化图标
     if (theApp.m_app_setting_data.show_minimize_btn_in_titlebar)
     {
         rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
         DrawUIButton(rect_temp, m_buttons[BTN_MINIMIZE], theApp.m_icon_set.minimize);
+    }
+    else
+    {
+        m_buttons[BTN_MINIMIZE].rect = CRect();
     }
     //全屏模式图标
     if (theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar)
@@ -2017,11 +2025,19 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
         rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
         DrawUIButton(rect_temp, m_buttons[BTN_FULL_SCREEN_TITLEBAR], theApp.m_icon_set.full_screen1);
     }
+    else
+    {
+        m_buttons[BTN_FULL_SCREEN_TITLEBAR].rect = CRect();
+    }
     //迷你模式图标
     if (theApp.m_app_setting_data.show_minimode_btn_in_titlebar)
     {
         rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
         DrawUIButton(rect_temp, m_buttons[BTN_MINI_TITLEBAR], theApp.m_icon_set.mini);
+    }
+    else
+    {
+        m_buttons[BTN_MINI_TITLEBAR].rect = CRect();
     }
     //切换界面图标
     if (theApp.m_app_setting_data.show_skin_btn_in_titlebar)
@@ -2029,17 +2045,29 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
         rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
         DrawUIButton(rect_temp, m_buttons[BTN_SKIN_TITLEBAR], theApp.m_icon_set.skin);
     }
+    else
+    {
+        m_buttons[BTN_SKIN_TITLEBAR].rect = CRect();
+    }
     //设置图标
     if (theApp.m_app_setting_data.show_settings_btn_in_titlebar)
     {
         rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
         DrawUIButton(rect_temp, m_buttons[BTN_SETTING_TITLEBAR], theApp.m_icon_set.setting);
     }
+    else
+    {
+        m_buttons[BTN_SETTING_TITLEBAR].rect = CRect();
+    }
     //主菜单图标
     if (!m_ui_data.ShowUiMenuBar())
     {
         rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
         DrawUIButton(rect_temp, m_buttons[BTN_MENU_TITLEBAR], theApp.m_icon_set.menu);
+    }
+    else
+    {
+        m_buttons[BTN_MENU_TITLEBAR].rect = CRect();
     }
 
     //绘制标题栏文本
