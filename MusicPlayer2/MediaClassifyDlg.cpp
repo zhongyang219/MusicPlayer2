@@ -228,7 +228,7 @@ void CMediaClassifyDlg::ShowSongList()
         {
             for (const auto& item : iter->second)
             {
-                const SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.file_path) };
+                const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo(item) };
                 CListCtrlEx::RowData row_data;
                 row_data[COL_TITLE] = song.GetTitle();
                 row_data[COL_ARTIST] = song.GetArtist();

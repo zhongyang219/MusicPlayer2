@@ -90,12 +90,9 @@ void CCoverDownloadDlg::LoadConfig()
 
 void CCoverDownloadDlg::SetID(wstring id)
 {
-    if (!m_song.is_cue)
-    {
-        SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song.file_path) };
-        song_info_ori.SetSongId(id);
-        CSongDataManager::GetInstance().SetSongDataModified();
-    }
+    SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song) };
+    song_info_ori.SetSongId(id);
+    CSongDataManager::GetInstance().SetSongDataModified();
 }
 
 wstring CCoverDownloadDlg::GetSavedDir()

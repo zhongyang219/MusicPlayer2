@@ -29,10 +29,7 @@ void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
         wstring song_id;
         song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
         song.SetSongId(song_id);
-        if (!song.is_cue)
-        {
-            CSongDataManager::GetInstance().SaveSongInfo(song);
-        }
+        CSongDataManager::GetInstance().SaveSongInfo(song);
     }
 
     if (song.song_id == 0)
@@ -495,20 +492,24 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
     return album_cover_path;
 }
 
-bool CMusicPlayerCmdHelper::OnRating(const wstring& file_path, DWORD command)
+bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
 {
     if (command - ID_RATING_1 <= 5)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
     {
         int rating = command - ID_RATING_1 + 1;
-        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file_path);
-        song.rating = static_cast<BYTE>(rating);
-        CAudioTag audio_tag(song);
-        bool succeed{ audio_tag.WriteAudioRating() };
-        if (!CAudioTag::IsFileRatingSupport(CFilePathHelper(file_path).GetFileExtension()))
+        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef2(song);
+        song_info.rating = static_cast<BYTE>(rating);
+        bool succeed{};
+        if (!song_info.is_cue)  // cue文件分级只保存到媒体库，不写入文件
+        {
+            CAudioTag audio_tag(song_info);
+            succeed = audio_tag.WriteAudioRating();
+        }
+        if (song_info.is_cue || !CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()))
             succeed = true;     //如果文件格式不支持写入分级，也返回true
         //if (succeed)
         //{
-        CSongDataManager::GetInstance().AddItem(file_path, song);
+        CSongDataManager::GetInstance().AddItem(song_info);
         CSongDataManager::GetInstance().SetSongDataModified();
         //}
         return succeed;
@@ -532,6 +533,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& file_path : all_media_files)
     {
+        if (CFilePathHelper(file_path).GetFileExtension() == L"cue") continue;  // 缺少cue解析的部分，以下代码实际对cue无效却会将cue文件存入媒体库故暂时跳过
         bool get_song_info{ !CSongDataManager::GetInstance().IsItemExist(file_path) || (refresh && IsSongNewer(file_path)) };
         SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
         if (get_song_info || !song_info.ChannelInfoAcquired())       //如果还没有获取到该歌曲的信息，或者文件的最后修改时间比上次获取到的新，则在这里获取
@@ -545,11 +547,11 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
             {
                 pPlayerCore->GetAudioInfo(file_path.c_str(), song_info, audio_info_flags);
                 song_info.SetChannelInfoAcquired(true);
-                if (!song_info.lengh.isZero() || CFilePathHelper(file_path).GetFileExtension() == L"cue")
+                if (!song_info.lengh.isZero())
                 {
                     CAudioTag audio_tag(song_info);
                     audio_tag.GetAudioRating();
-                    CSongDataManager::GetInstance().AddItem(file_path, song_info);
+                    CSongDataManager::GetInstance().AddItem(song_info);
                     theApp.m_media_num_added++;
                 }
             }

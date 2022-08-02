@@ -110,7 +110,7 @@ void CAllMediaDlg::InitListData()
 
 		//row_data[COL_INDEX] = std::to_wstring(index);
         SongInfo song = item.second;
-        song.file_path = item.first;
+        song.file_path = item.first.path;
         SetRowData(row_data, song);
 		m_list_data.push_back(std::move(row_data));
 	}

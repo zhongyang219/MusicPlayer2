@@ -290,7 +290,7 @@ void CFindDlg::OnBnClickedFindButton()
                 find_flag = false;
                 if (m_find_file && !find_flag)
                 {
-                    wstring file_name = CFilePathHelper(item.first).GetFileName();
+                    wstring file_name = CFilePathHelper(item.first.path).GetFileName();
                     index = CCommon::StringFindNoCase(file_name, m_key_word);
                     if (index != string::npos) find_flag = true;
                 }
@@ -312,7 +312,7 @@ void CFindDlg::OnBnClickedFindButton()
                 if (find_flag)
                 {
                     SongInfo song = item.second;
-                    song.file_path = item.first;
+                    song.file_path = item.first.path;
                     m_find_result.push_back(song);		//如果找到了，就保存结果
                 }
             }

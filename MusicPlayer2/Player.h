@@ -52,9 +52,10 @@ public:
     struct ThreadInfo
     {
         bool refresh_info{};
-        bool sort{};		//指示加载完播放列表后是否要排序
+        bool is_playlist_mode{};		    // 指示是否为播放列表模式，文件夹模式加载完播放列表后需要排序
         bool play{};      //加载完播放列表后是否立即播放
         bool find_current_track{ false };		//加载完成后是否要重新查找当前播放曲目
+        int play_index{};                        // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
     };
     //初始化播放列表的工作线程函数
@@ -85,9 +86,8 @@ private:
     vector<SongInfo> m_playlist;		//播放列表，储存每个音乐文件的各种信息
     wstring m_path;		            //文件夹模式下，当前播放文件的目录
     wstring m_playlist_path;        //当前播放列表文件的路径
-    wstring m_current_file_name_tmp;	//打开单个音频时用于临时储存文件名
-    SongInfo m_current_song_tmp;        // 切换文件夹模式时临时存储歌曲信息以保持播放
-    int m_current_song_position_tmp;    // 切换文件夹模式时临时存储歌曲进度以保持播放
+    SongInfo m_current_song_tmp;        // 临时存储歌曲的信息并在播放列表初始化完成后查找播放
+    int m_current_song_position_tmp;    // 临时存储歌曲的信息并在播放列表初始化完成后查找播放
     wstring m_current_file_type;
     deque<PathInfo> m_recent_path;		//最近打开过的路径
 
@@ -349,7 +349,6 @@ public:
     void SearchAlbumCover();		//获取专辑封面
 private:
     void ConnotPlayWarning() const;		//当无法播放时弹出提示信息
-    wstring GetCurrentFileName() const;
     bool RemoveSongNotPlay(int index);
     void AfterSongsRemoved(bool play);
     void AlbumCoverResize();        //如果专辑封面过大，将其缩小后再加载
@@ -363,6 +362,7 @@ public:
     bool IsPlaylistMode() const { return m_playlist_mode; }
     bool IsPlaylistEmpty() const;
 
+    // 重命名播放列表后使用此方法更新播放实例（不会重新载入播放列表）
     void SetPlaylistPath(const wstring& playlist_path);
     wstring GetPlaylistPath() const;
     IPlayerCore* GetPlayerCore() { return m_pCore; }

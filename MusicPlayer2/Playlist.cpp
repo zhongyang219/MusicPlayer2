@@ -241,17 +241,20 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
 			if (result.size() >= 12)
 				item.comment = result[11];
 		}
+        // cue可以存储到媒体库后播放列表仍然需要存储相关信息，因为媒体库内数据可以被主动清除
+        /*
 		if(CCommon::IsPath(item.file_path))
         {
             if (item.is_cue)
             {
                 //获取位深度、采样频率、声道数
-                SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.file_path) };
+                SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item) };
                 item.bits = song.bits;
                 item.freq = song.freq;
                 item.channels = song.channels;
             }
             m_playlist.push_back(item);
         }
+        */
 	}
 }

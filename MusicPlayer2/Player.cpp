@@ -172,8 +172,9 @@ void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
         m_loading = true;
         //m_thread_info.playlist = &m_playlist;
         m_thread_info.refresh_info = refresh_info;
-        m_thread_info.sort = !playlist_mode;
+        m_thread_info.is_playlist_mode = playlist_mode;
         m_thread_info.play = play;
+        m_thread_info.play_index = m_index_tmp;
         //m_thread_info.path = m_path;
         //创建初始化播放列表的工作线程
         m_pThread = AfxBeginThread(IniPlaylistThreadFunc, &m_thread_info);
@@ -186,6 +187,11 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, 0, 0);
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
     //bool song_data_modified{ false };       //theApp.m_song_data是否有修改
+
+    // 解析原始cue文件，对于m_playlist内已切分的分轨（is_cue == true）GetCueTracks不做任何处理
+    CAudioCommon::GetCueTracks(GetInstance().m_playlist, GetInstance().GetPlayerCore(), pInfo->play_index);
+
+    auto& playlist = GetInstance().m_playlist;
     //获取播放列表中每一首歌曲的信息
     int song_num = GetInstance().m_playlist.size();
     for (int i{}; i < song_num; i++)
@@ -193,65 +199,43 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         SongInfo& song{ GetInstance().m_playlist[i] };
         if (song.file_path.empty())
             continue;
-        wstring file_path{ song.file_path };
-        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo(song.file_path) };
+
         pInfo->process_percent = i * 100 / song_num + 1;
 
-        //获取cue音轨的信息
-        if (song.is_cue)
-        {
-            if (pInfo->refresh_info)
-            {
-                auto& song{ GetInstance().m_playlist[i] };
-                static SongInfo last_song;
-                if (last_song.file_path != song.file_path)
-                {
-                    GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, AF_BITRATE | AF_CHANNEL_INFO);  //获取比特率，如果上次获取到的是同一个文件中的音轨，则不再从文件获取比特率
-                }
-                else
-                {
-                    CSongInfoHelper::SetSongChannelInfo(song, CSongInfoHelper::GetSongChannelInfo(last_song));
-                }
-                last_song = song;
-                if (song.end_pos == 0)   //如果没有获取到cue音轨的结束时间，则将整轨的长度作为结束时间
-                {
-                    GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, AF_BITRATE | AF_LENGTH);
-                    song.end_pos = song.lengh;
-                    song.lengh = song.end_pos - song.start_pos;
-                }
-            }
-            GetInstance().m_playlist[i].info_acquired = true;
-            continue;
-        }
+        // 直接将各种信息更新到CSongDataManager，最后再直接存入m_playlist
+        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef2(song);
 
-        //从CSongDataManager获取歌曲信息
-        song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
+        if (song_info.modified_time == 0 || pInfo->refresh_info)
+            song_info.modified_time = CCommon::GetFileLastModified(song_info.file_path);
 
         //如果要求强制刷新或没有获取过歌曲信息，则在这里获取
-        if (pInfo->refresh_info || !song_info.ChannelInfoAcquired() || !CSongDataManager::GetInstance().IsItemExist(song.file_path))
+        if (!song_info.info_acquired || !song_info.ChannelInfoAcquired() || pInfo->refresh_info)
         {
-            bool is_osu_file{ COSUPlayerHelper::IsOsuFile(file_path) };
-            int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
-            if (!is_osu_file && !CSongDataManager::GetInstance().IsItemExist(song.file_path))
+            //if (!song_info.is_cue)  // cue歌曲能够获取的信息已经在GetCueTracks获取了，这里的代码没有针对cue的特殊处理会破坏信息故跳过
+            bool is_osu_file{ COSUPlayerHelper::IsOsuFile(song_info.file_path) };
+            int flag = AF_BITRATE | AF_CHANNEL_INFO;
+            if (!song_info.is_cue)
+                flag |= AF_LENGTH;
+            if (!is_osu_file && !song_info.is_cue && (!song_info.info_acquired || pInfo->refresh_info))
                 flag |= AF_TAG_INFO;
-            if (pInfo->refresh_info)
-                flag = AF_ALL;
-            GetInstance().GetPlayerCore()->GetAudioInfo(file_path.c_str(), song, flag);
+            GetInstance().GetPlayerCore()->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
             if (is_osu_file)
+                COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
+
+            song_info.info_acquired = true;
+            song_info.SetChannelInfoAcquired(true);
+
+            if (!song_info.is_cue)
             {
-                COSUPlayerHelper::GetOSUAudioTitleArtist(song);
+                // 从文件获取分级信息，仅限支持的文件
+                CAudioTag audio_tag(song_info);
+                audio_tag.GetAudioRating();
             }
-            CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).SetChannelInfoAcquired(true);
-            //获取分级信息
-            CAudioTag audio_tag(song);
-            audio_tag.GetAudioRating();
-            CSongDataManager::GetInstance().SaveSongInfo(song);
-            CSongDataManager::GetInstance().UpdateFileModifiedTime(song.file_path, pInfo->refresh_info);    // 媒体库内存在歌曲信息时此更新修改时间方法可用
-            const SongInfo& song_ref{ CSongDataManager::GetInstance().GetSongInfoRef(song.file_path) };
-            if (song_ref.modified_time > song.modified_time)
-                song.modified_time = song_ref.modified_time;
+
             CSongDataManager::GetInstance().SetSongDataModified();
         }
+        // 将媒体库内信息更新到播放列表
+        song.CopySongInfo(song_info);
     }
     GetInstance().m_loading = false;
     //GetInstance().IniPlaylistComplate();
@@ -264,11 +248,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
-    //m_song_num = m_playlist.size();
-    m_index = m_index_tmp;
-    CAudioCommon::GetCueTracks(m_playlist, m_pCore, m_index_tmp);
-    // 如果是播放列表模式则m_index_tmp可能在cue解析后变化，需重新更新(文件夹模式下m_index_tmp会被处理为错误结果)
+    // 如果是播放列表模式则m_index_tmp可能在cue解析后变化，需重新更新(文件夹模式下m_thread_info.play_index会被处理为错误结果)
     if (m_playlist_mode)
+        m_index = m_thread_info.play_index;
+    else
         m_index = m_index_tmp;
 
     if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
@@ -296,9 +279,9 @@ void CPlayer::IniPlaylistComplate()
     }
 
     //对播放列表排序
-    wstring current_file_name = GetCurrentFileName();		//排序前保存当前歌曲文件名
+    SongInfo current_file = GetCurrentSongInfo();		// 排序前保存当前歌曲
     bool sorted = false;
-    if (m_thread_info.sort && m_playlist.size() > 1)
+    if (m_thread_info.is_playlist_mode && m_playlist.size() > 1)
     {
         SortPlaylist(false);
         sorted = true;
@@ -310,29 +293,7 @@ void CPlayer::IniPlaylistComplate()
     {
         if (m_playing == 0)		//播放列表初始化完成，并排序完成后，如果此时没有在播放，就重新设置播放的文件
         {
-            if (!m_current_file_name_tmp.empty())		//如果执行了ReloadPlaylist，m_current_file_name_tmp不为空，则查找m_current_file_name_tmp保存的曲目并播放
-            {
-                //重新载入播放列表后，查找正在播放项目的序号
-                MusicControl(Command::CLOSE);
-                if (sorted || m_thread_info.find_current_track)
-                {
-                    for (int i{}; i < GetSongNum(); i++)
-                    {
-                        if (m_current_file_name_tmp == m_playlist[i].GetFileName())
-                        {
-                            m_index = i;
-                            //m_current_file_name = m_current_file_name_tmp;
-                            break;
-                        }
-                    }
-                }
-                m_current_file_name_tmp.clear();
-                MusicControl(Command::OPEN);
-                MusicControl(Command::SEEK);
-                if (m_thread_info.play)
-                    MusicControl(Command::PLAY);
-            }
-            else if (!m_current_song_tmp.IsEmpty())     // 切换到文件夹模式时m_current_song_tmp不为空则查找播放此歌曲，同时定位到m_current_song_position_tmp
+            if (!m_current_song_tmp.IsEmpty())     // 切换到文件夹模式时m_current_song_tmp不为空则查找播放此歌曲，同时定位到m_current_song_position_tmp
             {
                 //重新载入播放列表后，查找正在播放项目的序号
                 MusicControl(Command::CLOSE);
@@ -369,7 +330,7 @@ void CPlayer::IniPlaylistComplate()
         {
             for (int i{}; i < GetSongNum(); i++)
             {
-                if (current_file_name == m_playlist[i].GetFileName())
+                if (current_file.IsSameSong(m_playlist[i]))
                 {
                     m_index = i;
                     break;
@@ -397,30 +358,23 @@ void CPlayer::IniPlaylistComplate()
 void CPlayer::SearchLyrics(bool refresh)
 {
     //检索正在播放的音频文件的歌词
-    if (GetCurrentSongInfo().is_cue)
+    const SongInfo& cur_song = GetCurrentSongInfo();
+    SongInfo& cur_song_info{ CSongDataManager::GetInstance().GetSongInfoRef(cur_song) };
+    if (cur_song_info.lyric_file == NO_LYRIC_STR && !refresh)   // 歌曲标记为没有歌词且不要求强制刷新时返回
+        return;
+
+    wstring lyric_path;
+    if (refresh || cur_song_info.lyric_file.empty() || !CCommon::FileExist(cur_song_info.lyric_file))
     {
         CMusicPlayerCmdHelper helper;
-        GetCurrentSongInfo2().lyric_file = helper.SearchLyricFile(GetCurrentSongInfo(), theApp.m_lyric_setting_data.lyric_fuzzy_match);
+        lyric_path = helper.SearchLyricFile(cur_song, theApp.m_lyric_setting_data.lyric_fuzzy_match);
+        cur_song_info.lyric_file = lyric_path;
     }
     else
     {
-        SongInfo& cur_song_info{ CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()) };
-        if (cur_song_info.lyric_file == NO_LYRIC_STR && !refresh)
-            return;
-
-        wstring lyric_path;
-        if (refresh || cur_song_info.lyric_file.empty() || !CCommon::FileExist(cur_song_info.lyric_file))
-        {
-            CMusicPlayerCmdHelper helper;
-            lyric_path = helper.SearchLyricFile(GetCurrentSongInfo(), theApp.m_lyric_setting_data.lyric_fuzzy_match);
-            cur_song_info.lyric_file = lyric_path;
-        }
-        else
-        {
-            lyric_path = cur_song_info.lyric_file;
-        }
-        GetCurrentSongInfo2().lyric_file = lyric_path;
+        lyric_path = cur_song_info.lyric_file;
     }
+    GetCurrentSongInfo2().lyric_file = lyric_path;
 }
 
 void CPlayer::IniLyrics()
@@ -466,7 +420,7 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 {
     m_Lyrics = CLyrics{ lyric_path };
     GetCurrentSongInfo2().lyric_file = lyric_path;
-    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()).lyric_file = lyric_path;
+    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentSongInfo()).lyric_file = lyric_path;
 }
 
 
@@ -502,7 +456,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_current_file_type = m_pCore->GetAudioType();		//根据通道信息获取当前音频文件的类型
         if (m_current_file_type.empty())		//如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
         {
-            CFilePathHelper file_path{ GetCurrentFileName() };
+            CFilePathHelper file_path{ m_playlist[m_index].GetFileName() };
             m_current_file_type = file_path.GetFileExtension(true);
         }
 
@@ -510,7 +464,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
         {
             if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
             {
-                int flag = AF_BITRATE | AF_LENGTH;
+                int flag = AF_BITRATE;
+                if (!m_playlist[m_index].is_cue)
+                    flag |= AF_LENGTH;
                 if (!IsOsuFile())
                     flag |= AF_TAG_INFO;
                 m_pCore->GetAudioInfo(m_playlist[m_index], flag);
@@ -1121,6 +1077,7 @@ void CPlayer::OpenFiles(const vector<wstring>& files, bool play)
     IniPlayList(true, false, play);
 }
 
+// 传入参数 vector<wstring>& 需要改为 vector<SongInfo>&
 void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index, bool play /*= true*/)
 {
     //打开文件时始终添加到默认播放列表中
@@ -1161,11 +1118,16 @@ void CPlayer::OpenFilesInTempPlaylist(const vector<wstring>& files, int play_ind
     {
         m_thread_info.find_current_track = true;
         if (play_index >= 0 && play_index < static_cast<int>(files.size()))
-            m_current_file_name_tmp = CFilePathHelper(files[play_index]).GetFileName();
+        {
+            m_current_song_tmp = SongInfo();
+            m_current_song_tmp.file_path = files[play_index];
+            m_current_song_position_tmp = 0;
+        }
     }
     IniPlayList(true, false, play);
 }
 
+// 传入参数 wstring 需要改为 SongInfo
 void CPlayer::OpenAFile(wstring file, bool play)
 {
     if (file.empty()) return;
@@ -1195,7 +1157,9 @@ void CPlayer::OpenAFile(wstring file, bool play)
     }
 
     //初始化播放列表
-    m_current_file_name_tmp = file_path.GetFileName();
+    m_current_song_tmp = SongInfo();
+    m_current_song_tmp.file_path = file;
+    m_current_song_position_tmp = 0;
     IniPlayList(false, false, play);		//根据新路径重新初始化播放列表
 }
 
@@ -1557,7 +1521,10 @@ wstring CPlayer::GetCurrentFilePath() const
 
 wstring CPlayer::GetFileName() const
 {
-    return (GetCurrentFileName().empty() ? CCommon::LoadText(IDS_FILE_NOT_FOUND).GetString() : GetCurrentFileName());
+    wstring file_name{ GetCurrentSongInfo().GetFileName() };
+    if (file_name.empty())
+        return CCommon::LoadText(IDS_FILE_NOT_FOUND).GetString();
+    return file_name;
 }
 
 wstring CPlayer::GetDisplayName() const
@@ -1616,7 +1583,8 @@ void CPlayer::ReloadPlaylist(bool refresh_info)
 {
     if (m_loading) return;
     MusicControl(Command::CLOSE);
-    m_current_file_name_tmp = GetCurrentFileName();	//保存当前播放的曲目的文件名，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
+    m_current_song_tmp = GetCurrentSongInfo();	// 保存当前播放的曲目，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
+    m_current_song_position_tmp = GetCurrentPosition();
     if (!m_playlist_mode)
     {
         m_playlist.clear();		//清空播放列表
@@ -1825,7 +1793,7 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
         dest_track = m_playlist[dest].track;
     }
 
-    std::wstring current_file_path{ GetCurrentFilePath() };
+    SongInfo current_file{ GetCurrentSongInfo() };
 
     //把要移动的项目取出并删除要移动的项目
     std::vector<SongInfo> moved_items;
@@ -1869,7 +1837,7 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
     //查找正在播放的曲目
     auto iter_play = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& song)
         {
-            return song.file_path == current_file_path;
+            return song.IsSameSong(current_file);
         });
     if (iter_play == m_playlist.end())
         m_index = 0;
@@ -1912,7 +1880,7 @@ void CPlayer::ClearLyric()
 {
     m_Lyrics = CLyrics{};
     GetCurrentSongInfo2().lyric_file.clear();
-    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()).lyric_file.clear();
+    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentSongInfo()).lyric_file.clear();
 }
 
 wstring CPlayer::GetTimeString() const
@@ -2011,11 +1979,7 @@ void CPlayer::SetRelatedSongID(wstring song_id)
     if (m_index >= 0 && m_index < GetSongNum())
     {
         m_playlist[m_index].SetSongId(song_id);
-        if (!m_playlist[m_index].is_cue)
-        {
-            //theApp.m_song_data[m_path + m_playlist[m_index].file_name] = m_playlist[m_index];
-            CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
-        }
+        CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
     }
 }
 
@@ -2024,10 +1988,7 @@ void CPlayer::SetRelatedSongID(int index, wstring song_id)
     if (index >= 0 && index < GetSongNum())
     {
         m_playlist[index].SetSongId(song_id);
-        if (!m_playlist[index].is_cue)
-        {
-            CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
-        }
+        CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
     }
 }
 
@@ -2062,11 +2023,8 @@ void CPlayer::AddListenTime(int sec)
     if (m_index >= 0 && m_index < GetSongNum())
     {
         //m_playlist[m_index].listen_time += sec;
-        if (!m_playlist[m_index].is_cue)
-        {
-            CSongDataManager::GetInstance().GetSongInfoRef(m_playlist[m_index].file_path).listen_time += sec;
-            CSongDataManager::GetInstance().SetSongDataModified();
-        }
+        CSongDataManager::GetInstance().GetSongInfoRef(m_playlist[m_index]).listen_time += sec;
+        CSongDataManager::GetInstance().SetSongDataModified();
     }
 }
 
@@ -2614,7 +2572,7 @@ void CPlayer::SearchAlbumCover()
     //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
-    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentFilePath()) };
+    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentSongInfo()) };
     bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile() && !always_use_external_album_cover)
     {
@@ -2678,14 +2636,6 @@ void CPlayer::AlbumCoverGaussBlur()
         gauss_blur.SetSigma(static_cast<double>(theApp.m_app_setting_data.gauss_blur_radius) / 10);		//设置高斯模糊半径
         gauss_blur.DoGaussBlur(image_tmp, m_album_cover_blur);
     }
-}
-
-wstring CPlayer::GetCurrentFileName() const
-{
-    if (m_index >= 0 && m_index < GetSongNum())
-        return m_playlist[m_index].GetFileName();
-    else
-        return wstring();
 }
 
 bool CPlayer::RemoveSongNotPlay(int index)

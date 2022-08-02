@@ -1326,23 +1326,24 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     int rating{};
     //bool rating_enable = false;     //分级是否可用
     bool single_selected = selete_valid && m_items_selected.size() < 2;     //只选中了一个
-    wstring rating_file_path;
+    SongInfo rating_file_songinfo;
     if (IsMainWindowPopupMenu())
     {
-        rating_file_path = CPlayer::GetInstance().GetCurrentFilePath();
+        rating_file_songinfo = CPlayer::GetInstance().GetCurrentSongInfo();
     }
     else if (selete_valid)
     {
-        rating_file_path = CPlayer::GetInstance().GetPlayList()[m_item_selected].file_path;
+        rating_file_songinfo = CPlayer::GetInstance().GetPlayList()[m_item_selected];
     }
     if (IsMainWindowPopupMenu() || single_selected)
     {
-        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(rating_file_path);
-        if (song_info.rating > 5 && CAudioTag::IsFileRatingSupport(CFilePathHelper(rating_file_path).GetFileExtension()))      //分级大于5，说明没有获取过分级，在这里重新获取
+        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(rating_file_songinfo);
+        // 对非cue且支持读取分级的本地音频获取分级
+        if (!song_info.is_cue && song_info.rating > 5 && CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()))      //分级大于5，说明没有获取过分级，在这里重新获取
         {
             CAudioTag audio_tag(song_info);
             audio_tag.GetAudioRating();
-            CSongDataManager::GetInstance().AddItem(rating_file_path, song_info);
+            CSongDataManager::GetInstance().AddItem(song_info);
             CSongDataManager::GetInstance().SetSongDataModified();
         }
         rating = song_info.rating;
@@ -1588,7 +1589,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_REMOVE_CURRENT_FROM_PLAYLIST, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
 
     //专辑封面
-    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
+    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentSongInfo()) };
     bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
     pMenu->CheckMenuItem(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, (always_use_external_album_cover ? MF_CHECKED : MF_UNCHECKED));
 }
@@ -3210,7 +3211,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     bool rating_failed{ false };
     if (IsMainWindowPopupMenu())
     {
-        if (!cmd_helper.OnRating(CPlayer::GetInstance().GetCurrentFilePath(), command))
+        if (!cmd_helper.OnRating(CPlayer::GetInstance().GetCurrentSongInfo(), command))
             rating_failed = true;
     }
     //响应播放列表右键菜单中的分级
@@ -3220,8 +3221,8 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         {
             if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
             {
-                wstring select_file_path = CPlayer::GetInstance().GetPlayList()[i].file_path;
-                if (!cmd_helper.OnRating(select_file_path, command))
+                SongInfo& select_file = CPlayer::GetInstance().GetPlayList()[i];
+                if (!cmd_helper.OnRating(select_file, command))
                     rating_failed = true;
             }
         }

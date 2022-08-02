@@ -1,12 +1,42 @@
 ﻿#pragma once
 #include "SongInfo.h"
 #include <functional>
+
 class CSongDataManager
 {
 public:
     ~CSongDataManager();
 
-    using SongDataMap = std::unordered_map<wstring, SongInfo>;
+    struct SongDataMapKey
+    {
+        wstring path;
+        int cue_track{};    // 当存储cue时用来保存音轨号，其他情况为0
+
+        SongDataMapKey() {}
+        SongDataMapKey(const wstring& path) :path(path) {}
+        SongDataMapKey(const wstring& path, const int& cue_track) :path(path), cue_track(cue_track) {}
+        SongDataMapKey(const SongInfo& song_info)
+        {
+            path = song_info.file_path;
+            if (song_info.is_cue)
+                cue_track = song_info.track;
+        }
+
+        bool operator==(const SongDataMapKey& b) const
+        {
+            return path == b.path && cue_track == b.cue_track;
+        }
+    };
+
+    struct SongDataMapKey_Hash
+    {
+        size_t operator()(const SongDataMapKey& key) const
+        {
+            return std::hash<wstring>()(key.path) ^ std::hash<int>()(key.cue_track);
+        }
+    };
+
+    using SongDataMap = std::unordered_map<SongDataMapKey, SongInfo, SongDataMapKey_Hash>;
 
     static CSongDataManager& GetInstance();
     void SaveSongData(std::wstring path);		//将所有歌曲信息以序列化的方式保存到文件
@@ -19,20 +49,19 @@ public:
 
     void SaveSongInfo(const SongInfo& song_info);       //将一个歌曲信息保存到m_song_data中
 
-    SongInfo GetSongInfo(const wstring& file_path) const;
-    SongInfo& GetSongInfoRef(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在不会插入新的记录）
-    SongInfo& GetSongInfoRef2(const wstring& file_path);     //获取一个歌曲信息的引用（如果不存在会插入新的记录）
+    SongInfo GetSongInfo(const SongDataMapKey& key) const;
+    SongInfo& GetSongInfoRef(const SongDataMapKey& key);    // 获取一个歌曲信息的引用（如果不存在不会插入新的记录）
+    SongInfo& GetSongInfoRef2(const SongDataMapKey& key);   // 获取一个歌曲信息的引用（如果不存在会插入新的记录）
 
     const SongDataMap& GetSongData();
-    bool IsItemExist(const wstring& file_path) const;
-    void AddItem(const wstring& file_path, SongInfo song);
-    bool RemoveItem(const wstring& file_path);
+    bool IsItemExist(const SongDataMapKey& key) const;
+    void AddItem(const SongInfo& song);
+    bool RemoveItem(const SongDataMapKey& key);
     int RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition);       //删除符合条件的项目，返回已删除个数
 
     void ClearPlayTime();       //清除播放时间统计数据
     void ClearLastPlayedTime();     //清除上次播放时间
 
-    void UpdateFileModifiedTime(const wstring& file_path, bool update = false);      //更新歌曲的最后修改时间，如果update为false，则如果已获取最后时间就不更新，如果update为true，则总是更新
     void ChangeFilePath(const wstring& file_path, const wstring& new_path);
 
 private:

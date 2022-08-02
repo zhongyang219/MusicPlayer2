@@ -127,7 +127,7 @@ BOOL CListenTimeStatisticsDlg::OnInitDialog()
         SongInfo song{ data.second };
         if (song.listen_time >= 20 && song.lengh > 0)
         {
-            song.file_path = data.first;
+            song.file_path = data.first.path;
             m_data_list.push_back(SongInfoToListItem(song));
         }
     }

@@ -137,7 +137,7 @@ void CSelectPlaylistDlg::ShowSongList()
         {
             if (!song.info_acquired)
             {
-                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
+                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song));
             }
             CListCtrlEx::RowData row_data;
             row_data[COL_INDEX] = std::to_wstring(index + 1);

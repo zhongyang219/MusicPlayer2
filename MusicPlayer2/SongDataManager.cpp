@@ -30,12 +30,15 @@ void CSongDataManager::SaveSongData(std::wstring path)
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.730"));			//写入数据版本
+    ar << CString(_T("2.731"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
-        ar << CString(song_data.first.c_str())		//保存映射容器的键，即歌曲的绝对路径
-            << song_data.second.lengh.toInt()
+        if (song_data.second.end_pos == 0)  // SongInfo.length移除前的兼容
+            song_data.second.end_pos = song_data.second.lengh;
+        ar << CString(song_data.first.path.c_str())		//保存映射容器的键，即歌曲的绝对路径
+            << song_data.second.start_pos.toInt()
+            << song_data.second.end_pos.toInt()
             << song_data.second.bitrate
             << CString(song_data.second.title.c_str())
             << CString(song_data.second.artist.c_str())
@@ -49,6 +52,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << CString(song_data.second.GetSongId().c_str())
             << song_data.second.listen_time
             << song_data.second.info_acquired
+            << song_data.second.is_cue
             //<< song_data.second.is_favourite
 
              //<< song_data.second.no_online_album_cover
@@ -82,9 +86,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
     // 读数据
     int size{};
     SongInfo song_info;
-    CString song_path;
     CString temp;
-    int song_length;
     try
     {
         //读取版本
@@ -103,9 +105,16 @@ void CSongDataManager::LoadSongData(std::wstring path)
         }
         for (int i{}; i < size; i++)
         {
-            ar >> song_path;
-            ar >> song_length;
-            song_info.lengh.fromInt(song_length);
+            ar >> temp;
+            song_info.file_path = temp;
+            int song_start_pos{}, song_end_pos{};
+            if (m_data_version >= _T("2.731"))
+            {
+                ar >> song_start_pos;
+            }
+            ar >> song_end_pos;
+            song_info.lengh.fromInt(song_end_pos - song_start_pos); // 计划以后移除length
+            song_info.end_pos.fromInt(song_end_pos);
             if (m_data_version >= _T("2.691"))
             {
                 ar >> song_info.bitrate;
@@ -159,6 +168,11 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.info_acquired;
             }
 
+            if (m_data_version >= _T("2.731"))
+            {
+                ar >> song_info.is_cue;
+            }
+
             if (m_data_version == _T("2.661"))
             {
                 ar >> song_info.is_favourite;
@@ -204,8 +218,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.bits;
                 ar >> song_info.channels;
             }
-
-            m_song_data[wstring{ song_path }] = song_info;		//将读取到的一首歌曲信息添加到映射容器中
+            m_song_data[song_info] = song_info;     // 将读取到的一首歌曲信息添加到映射容器中
         }
     }
     catch (CArchiveException* exception)
@@ -239,11 +252,14 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
 {
     if (song_info.file_path.empty())
         return;
-    SongInfo& song = m_song_data[song_info.file_path];
+    SongInfo& song = m_song_data[song_info];
     song.CopyAudioTag(song_info);
-    song.lengh = song_info.lengh;
+    song.lengh = song_info.lengh;   // 计划移除
+    song.start_pos = song_info.start_pos;
+    song.end_pos = song_info.end_pos;
     song.bitrate = song_info.bitrate;
     song.song_id = song_info.song_id;
+    song.is_cue = song_info.is_cue;
     //song.is_favourite = song_info.is_favourite;
     song.rating = song_info.rating;
     song.freq = song_info.freq;
@@ -253,19 +269,24 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
     SetSongDataModified();
 }
 
-SongInfo CSongDataManager::GetSongInfo(const wstring& file_path) const
+SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key) const
 {
     SongInfo song;
-    auto iter = m_song_data.find(file_path);
+    auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
         song = iter->second;
-    song.file_path = file_path;
+    song.file_path = key.path;
+    if (key.cue_track != 0)
+    {
+        song.track = key.cue_track;
+        song.is_cue = true;
+    }
     return song;
 }
 
-SongInfo& CSongDataManager::GetSongInfoRef(const wstring& file_path)
+SongInfo& CSongDataManager::GetSongInfoRef(const SongDataMapKey& key)
 {
-    auto iter = m_song_data.find(file_path);
+    auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
     {
         return iter->second;
@@ -277,9 +298,9 @@ SongInfo& CSongDataManager::GetSongInfoRef(const wstring& file_path)
     }
 }
 
-SongInfo& CSongDataManager::GetSongInfoRef2(const wstring& file_path)
+SongInfo& CSongDataManager::GetSongInfoRef2(const SongDataMapKey& key)
 {
-    return m_song_data[file_path];
+    return m_song_data[key];
 }
 
 const CSongDataManager::SongDataMap& CSongDataManager::GetSongData()
@@ -287,20 +308,20 @@ const CSongDataManager::SongDataMap& CSongDataManager::GetSongData()
     return m_song_data;
 }
 
-bool CSongDataManager::IsItemExist(const wstring& file_path) const
+bool CSongDataManager::IsItemExist(const SongDataMapKey& key) const
 {
-    auto iter = m_song_data.find(file_path);
+    auto iter = m_song_data.find(key);
     return iter != m_song_data.end();
 }
 
-void CSongDataManager::AddItem(const wstring& file_path, SongInfo song)
+void CSongDataManager::AddItem(const SongInfo& song)
 {
-    m_song_data[file_path] = song;
+    m_song_data[song] = song;
 }
 
-bool CSongDataManager::RemoveItem(const wstring& file_path)
+bool CSongDataManager::RemoveItem(const SongDataMapKey& key)
 {
-    auto iter = m_song_data.find(file_path);
+    auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
     {
         m_song_data.erase(iter);
@@ -315,7 +336,7 @@ int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)> fun_cond
     //遍历映射容器，删除不必要的条目。
     for (auto iter{ m_song_data.begin() }; iter != m_song_data.end();)
     {
-        iter->second.file_path = iter->first;
+        iter->second.file_path = iter->first.path;
         if (fun_condition(iter->second))
         {
             iter = m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目
@@ -345,19 +366,6 @@ void CSongDataManager::ClearLastPlayedTime()
         item.second.last_played_time = 0;
     }
     SetSongDataModified();
-}
-
-void CSongDataManager::UpdateFileModifiedTime(const wstring& file_path, bool update /*= false*/)
-{
-    auto iter = m_song_data.find(file_path);
-    if (iter != m_song_data.end())
-    {
-        if (iter->second.modified_time == 0 || update)
-        {
-            iter->second.modified_time = CCommon::GetFileLastModified(file_path);
-            SetSongDataModified();
-        }
-    }
 }
 
 void CSongDataManager::ChangeFilePath(const wstring& file_path, const wstring& new_path)
