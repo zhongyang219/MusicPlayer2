@@ -3142,24 +3142,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                 {
                     if (item.playlist_info != nullptr)
                     {
-                        int track{ item.playlist_info->track };
-                        int position{ item.playlist_info->position };
-                        bool continue_play{ false };
-                        // 实现切换到播放列表时的同曲目继续播放
-                        if (theApp.m_play_setting_data.continue_when_switch_playlist)
-                        {
-                            SongInfo Last = CPlayer::GetInstance().GetCurrentSongInfo();
-                            CPlaylistFile playlist;
-                            playlist.LoadFromFile(item.playlist_info->path);
-                            int tmp = playlist.GetFileIndexInPlaylist(Last);
-                            if (tmp != -1)
-                            {
-                                track = tmp;
-                                position = CPlayer::GetInstance().GetCurrentPosition();
-                                continue_play = CPlayer::GetInstance().IsPlaying();
-                            }
-                        }
-                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, track, position, false, continue_play);
+                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position, false, false);
                         UpdatePlayPauseButton();
                         DrawInfo(true);
                         CPlayer::GetInstance().SaveRecentPath();
@@ -4946,20 +4929,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
             if (index < 0)          //如果右侧列表没有选中曲目，则播放的曲目为上次播放的曲目
             {
                 track_played = track;
-                // 若当前播放歌曲存在于将要开启的播放列表则放弃上次播放的曲目继续播放当前歌曲
-                if (theApp.m_play_setting_data.continue_when_switch_playlist)
-                {
-                    SongInfo Last = CPlayer::GetInstance().GetCurrentSongInfo();
-                    CPlaylistFile playlist;
-                    playlist.LoadFromFile(pPathDlg->GetSelPlaylistPath());
-                    int tmp = playlist.GetFileIndexInPlaylist(Last);
-                    if (tmp != -1)
-                    {
-                        track_played = tmp;
-                        position = CPlayer::GetInstance().GetCurrentPosition();
-                        continue_play = CPlayer::GetInstance().IsPlaying();
-                    }
-                }
             }
             else        //否则，播放的曲目为右侧列表选中的曲目
             {

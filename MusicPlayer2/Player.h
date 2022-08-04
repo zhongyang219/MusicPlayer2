@@ -54,7 +54,6 @@ public:
         bool refresh_info{};
         bool is_playlist_mode{};                // 指示是否为播放列表模式，文件夹模式加载完播放列表后需要排序
         bool play{};                            // 加载完播放列表后是否立即播放
-        bool find_current_track{ false };       // 加载完成后是否要重新查找当前播放曲目
         int play_index{};                       // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
     };
@@ -84,8 +83,11 @@ private:
     vector<SongInfo> m_playlist;        // 播放列表，储存每个音乐文件的各种信息
     wstring m_path;                     // 文件夹模式下，当前播放文件的目录
     wstring m_playlist_path;            // 当前播放列表文件的路径
+
     SongInfo m_current_song_tmp;        // 临时存储歌曲的信息并在播放列表初始化完成后查找播放
-    int m_current_song_position_tmp;    // 临时存储歌曲的信息并在播放列表初始化完成后查找播放
+    int m_current_song_position_tmp;    // 临时存储歌曲的播放位置（m_current_song_tmp被找到才会应用）
+    bool m_current_song_playing_tmp;    // 临时存储歌曲是否正在播放（m_current_song_tmp被找到才会应用）
+
     wstring m_current_file_type;
     deque<PathInfo> m_recent_path;      //最近打开过的路径
 
@@ -276,7 +278,7 @@ public:
     void OpenFilesInTempPlaylist(const vector<wstring>& files, int play_index = 0, bool play = true);
     //在文件夹模式下打开一个文件
     void OpenAFile(wstring file, bool play = false);
-    //打开一个播放列表文件
+    //打开一个播放列表文件（支持所有支持的播放列表格式，不在默认播放列表目录则以.playlist格式复制到默认播放列表目录）
     void OpenPlaylistFile(const wstring& file_path);
     //向当前播放列表添加文件，如果一个都没有添加，则返回false，否则返回true
     bool AddFiles(const vector<wstring>& files, bool ignore_if_exist = false);
