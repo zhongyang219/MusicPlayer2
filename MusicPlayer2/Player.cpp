@@ -114,7 +114,7 @@ void CPlayer::Create()
     m_controls.Init();
 }
 
-void CPlayer::Create(const vector<wstring>& files)
+void CPlayer::CreateWithFiles(const vector<wstring>& files)
 {
     IniPlayerCore();
     LoadConfig();
@@ -124,7 +124,7 @@ void CPlayer::Create(const vector<wstring>& files)
     m_controls.Init();
 }
 
-void CPlayer::Create(const wstring& path)
+void CPlayer::CreateWithPath(const wstring& path)
 {
     IniPlayerCore();
     LoadConfig();
@@ -640,11 +640,6 @@ bool CPlayer::SongIsOver() const
     }
 }
 
-void CPlayer::GetPlayerCoreSongLength()
-{
-    m_song_length.fromInt(m_pCore->GetSongLength());
-}
-
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
     CSingleLock sync(&m_critical, TRUE);
@@ -714,11 +709,6 @@ void CPlayer::CalculateSpectralDataPeak()
             }
         }
     }
-}
-
-int CPlayer::GetCurrentSecond()
-{
-    return m_current_position.sec;
 }
 
 bool CPlayer::IsPlaying() const
@@ -1454,15 +1444,6 @@ void CPlayer::ExploreLyric() const
         str.Format(_T("/select,\"%s\""), m_Lyrics.GetPathName().c_str());
         ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
     }
-}
-
-
-Time CPlayer::GetAllSongLength(int track) const
-{
-    if (track >= 0 && track < GetSongNum())
-        return m_playlist[track].lengh;
-    else
-        return Time();
 }
 
 int CPlayer::GetSongNum() const

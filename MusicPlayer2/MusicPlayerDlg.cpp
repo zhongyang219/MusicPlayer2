@@ -2292,14 +2292,14 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 wstring path = CCommon::DisposeCmdLineFiles(m_cmdLine, files);
                 if (!path.empty())
                 {
-                    CPlayer::GetInstance().Create(path);
+                    CPlayer::GetInstance().CreateWithPath(path);
                 }
                 else
                 {
                     if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
                         CPlayer::GetInstance().CreateWithPlaylist(files[0]);
                     else
-                        CPlayer::GetInstance().Create(files);
+                        CPlayer::GetInstance().CreateWithFiles(files);
                 }
                 //MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
             }
