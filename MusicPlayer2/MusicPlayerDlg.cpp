@@ -5225,9 +5225,9 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
         if (!CPlayer::GetInstance().IsFavourite())
         {
             //添加到“我喜欢”播放列表
-            if (!playlist.IsFileInPlaylist(current_file))
+            if (!playlist.IsSongInPlaylist(current_file))
             {
-                playlist.AddFiles(std::vector<SongInfo> {current_file});
+                playlist.AddSongs(std::vector<SongInfo> {current_file});
                 playlist.SaveToFile(favourite_playlist_path);
             }
             CPlayer::GetInstance().SetFavourite(true);
@@ -5235,7 +5235,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
         else
         {
             //从“我喜欢”播放列表移除
-            playlist.RemoveFile(current_file);
+            playlist.RemoveSong(current_file);
             playlist.SaveToFile(favourite_playlist_path);
             CPlayer::GetInstance().SetFavourite(false);
         }

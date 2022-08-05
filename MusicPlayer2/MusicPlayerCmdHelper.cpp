@@ -102,7 +102,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
 
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        if (!playlist.AddFiles(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        if (!playlist.AddSongs(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
         {
             pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             return false;
@@ -708,7 +708,7 @@ bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
     {
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        if (playlist.AddFiles(songs, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        if (playlist.AddSongs(songs, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
         {
             playlist.SaveToFile(playlist_path);
             return true;

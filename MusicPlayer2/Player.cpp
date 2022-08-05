@@ -267,7 +267,7 @@ void CPlayer::IniPlaylistComplate()
     favourite_playlist.LoadFromFile(CPlaylistMgr::Instance().m_favourite_playlist.path);
     for (auto& item : m_playlist)
     {
-        item.is_favourite = favourite_playlist.IsFileInPlaylist(item);
+        item.is_favourite = favourite_playlist.IsSongInPlaylist(item);
     }
 
     if (!IsPlaying())
