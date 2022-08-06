@@ -945,6 +945,7 @@
 #define IDC_REPLACE_TAG_BUTTON          1059
 #define IDC_SAVE_LYRIC_BUTTON           1060
 #define IDC_EDIT1                       1061
+#define IDC_PLAYLIST_ITEM_HEIGHT_EDIT   1061
 #define IDC_DELETE_TAG__BUTTON          1062
 #define IDC_SAVE_AS_BUTTON5             1063
 #define IDC_OPEN_LYRIC_BUTTON           1064

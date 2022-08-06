@@ -415,6 +415,15 @@ public:
         return max;
     }
 
+    template<class T>
+    static void SetNumRange(T& num, const T& min_value, const T& max_value)
+    {
+        if (num > max_value)
+            num = max_value;
+        if (num < min_value)
+            num = min_value;
+    }
+
     //以当前语言比较两个字符串
     //返回值：0：相同；-1：小于；1：大于
     static int StringCompareInLocalLanguage(const wstring& str1, const wstring& str2, bool no_case = false);

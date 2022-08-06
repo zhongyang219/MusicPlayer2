@@ -492,6 +492,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
     ini.WriteBool(L"media_lib", L"show_playlist_tooltip", theApp.m_media_lib_setting_data.show_playlist_tooltip);
     ini.WriteBool(L"media_lib", L"float_playlist_follow_main_wnd", theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd);
+    ini.WriteInt(L"media_lib", L"playlist_item_height", theApp.m_media_lib_setting_data.playlist_item_height);
     ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
     ini.WriteBool(L"media_lib", L"write_id3_v2_3", theApp.m_media_lib_setting_data.write_id3_v2_3);
@@ -680,6 +681,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
     theApp.m_media_lib_setting_data.show_playlist_tooltip = ini.GetBool(L"media_lib", L"show_playlist_tooltip", true);
     theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd = ini.GetBool(L"media_lib", L"float_playlist_follow_main_wnd", true);
+    theApp.m_media_lib_setting_data.playlist_item_height = ini.GetInt(L"media_lib", L"playlist_item_height", 24);
+    CCommon::SetNumRange(theApp.m_media_lib_setting_data.playlist_item_height, MIN_PLAYLIST_ITEM_HEIGHT, MAX_PLAYLIST_ITEM_HEIGHT);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
     theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
     theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);
@@ -1129,6 +1132,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != optionDlg.m_tab1_dlg.m_data.cortana_transparent_color };
     bool float_playlist_follow_main_wnd_changed{ theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != optionDlg.m_media_lib_dlg.m_data.float_playlist_follow_main_wnd };
     bool show_window_frame_changed{ theApp.m_app_setting_data.show_window_frame != optionDlg.m_tab2_dlg.m_data.show_window_frame };
+    bool playlist_item_height_changed{ theApp.m_media_lib_setting_data.playlist_item_height != optionDlg.m_media_lib_dlg.m_data.playlist_item_height };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1244,6 +1248,16 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     if (show_window_frame_changed)
     {
         ApplyShowStandardTitlebar();
+    }
+
+    if (playlist_item_height_changed)
+    {
+        int row_height{ theApp.DPI(theApp.m_media_lib_setting_data.playlist_item_height) };
+        m_playlist_list.SetRowHeight(row_height);
+        if (IsFloatPlaylistExist())
+            m_pFloatPlaylistDlg->GetListCtrl().SetRowHeight(row_height);
+        if (m_miniModeDlg.GetSafeHwnd() != NULL)
+            m_miniModeDlg.GetPlaylistCtrl().SetRowHeight(row_height);
     }
 
     //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中
@@ -1933,6 +1947,9 @@ bool CMusicPlayerDlg::IsFloatPlaylistExist()
 
 BOOL CMusicPlayerDlg::OnInitDialog()
 {
+    //载入设置
+    LoadConfig();
+
     CMainDialogBase::OnInitDialog();
 
     // 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
@@ -1965,9 +1982,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     theApp.m_font_set.Init();
 
     theApp.InitMenuResourse();
-
-    //载入设置
-    LoadConfig();
 
     //只有Windows Vista以上的系统才能跟随系统主题色
 #ifdef COMPILE_IN_WIN_XP

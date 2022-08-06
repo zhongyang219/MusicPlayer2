@@ -369,6 +369,9 @@
     <Filter Include="功能逻辑类\AcceleratorRes">
       <UniqueIdentifier>{dd4724e7-e7cb-4d6e-ad64-d537a8d0dab5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\CommonData">
+      <UniqueIdentifier>{4913a86a-5b69-423e-b02f-7cf56b8e4aeb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -577,9 +580,6 @@
     </ClInclude>
     <ClInclude Include="AboutDlg.h">
       <Filter>对话框类\AboutDlg</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonData.h">
-      <Filter>公共的类</Filter>
     </ClInclude>
     <ClInclude Include="StaticEx.h">
       <Filter>派生的控件类\StaticEx</Filter>
@@ -826,6 +826,9 @@
     </ClInclude>
     <ClInclude Include="AcceleratorRes.h">
       <Filter>功能逻辑类\AcceleratorRes</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonData.h">
+      <Filter>公共的类\CommonData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1249,7 +1252,9 @@
     <ClCompile Include="AcceleratorRes.cpp">
       <Filter>功能逻辑类\AcceleratorRes</Filter>
     </ClCompile>
-    <ClCompile Include="CommonData.cpp" />
+    <ClCompile Include="CommonData.cpp">
+      <Filter>公共的类\CommonData</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">

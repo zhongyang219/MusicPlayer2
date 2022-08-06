@@ -48,6 +48,7 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_RECENT_PLAYED_RANGE_OMBO, m_recent_played_range_combo);
     DDX_Control(pDX, IDC_IGNORE_EXIST_CHECK, m_ignore_exist_chk);
     DDX_Control(pDX, IDC_ID3V2_TYPE_COMBO, m_id3v2_type_combo);
+    DDX_Control(pDX, IDC_PLAYLIST_ITEM_HEIGHT_EDIT, m_playlist_item_height_edit);
 }
 
 void CMediaLibSettingDlg::GetDataFromUi()
@@ -73,6 +74,8 @@ void CMediaLibSettingDlg::GetDataFromUi()
         m_data.display_item |= MLDI_RECENT;
     if (IsDlgButtonChecked(IDC_FOLDER_EXPLORE_CHECK))
         m_data.display_item |= MLDI_FOLDER_EXPLORE;
+
+    m_data.playlist_item_height = m_playlist_item_height_edit.GetValue();
 }
 
 
@@ -160,11 +163,14 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     if (setting_btn != nullptr)
         setting_btn->SetIcon(theApp.m_icon_set.loop_playlist.GetIcon(true));
 
+    m_playlist_item_height_edit.SetRange(MIN_PLAYLIST_ITEM_HEIGHT, MAX_PLAYLIST_ITEM_HEIGHT);
+    m_playlist_item_height_edit.SetValue(m_data.playlist_item_height);
 
     //设置控件不响应鼠标滚轮消息
     m_playlist_display_mode_combo.SetMouseWheelEnable(false);
     m_recent_played_range_combo.SetMouseWheelEnable(false);
     m_id3v2_type_combo.SetMouseWheelEnable(false);
+    m_playlist_item_height_edit.SetMouseWheelEnable(false);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

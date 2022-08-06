@@ -3,7 +3,7 @@
 #include "CListBoxEnhanced.h"
 #include "afxwin.h"
 #include "MyComboBox.h"
-
+#include "SpinEdit.h"
 
 // CMediaLibSettingDlg 对话框
 
@@ -32,6 +32,7 @@ private:
 	CMyComboBox m_recent_played_range_combo;
     CButton m_ignore_exist_chk;
     CMyComboBox m_id3v2_type_combo;
+    CSpinEdit m_playlist_item_height_edit;
 
     CToolTipCtrl m_toolTip;
     size_t m_data_size;		//数据文件的大小
