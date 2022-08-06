@@ -239,7 +239,7 @@ bool LastFM::UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track) {
 }
 
 bool LastFM::UpdateNowPlaying() {
-    UpdateNowPlaying(ar.current_track, ar.corrected_current_track);
+    return UpdateNowPlaying(ar.current_track, ar.corrected_current_track);
 }
 
 void LastFM::UpdateCurrentTrack(LastFMTrack track) {
