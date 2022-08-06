@@ -92,7 +92,7 @@ const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
     return m_playlist;
 }
 
-bool CPlaylistFile::AddSongs(const vector<SongInfo>& songs, bool ignore_exist)
+bool CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_exist)
 {
     bool added{ false };
     for (const auto& file : songs)

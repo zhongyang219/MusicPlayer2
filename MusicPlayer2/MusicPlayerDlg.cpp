@@ -2732,7 +2732,7 @@ void CMusicPlayerDlg::OnFileOpen()
     CCommon::DoOpenFileDlg(filter, files, this);
     if (!files.empty())
     {
-        CPlayer::GetInstance().OpenFiles(files);
+        CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files);
         UpdatePlayPauseButton();
         DrawInfo(true);
         // 打开文件时刷新媒体库播放列表标签
@@ -2807,12 +2807,12 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
         {
             if (CPlayer::GetInstance().IsPlaylistMode())
             {
-                if (!CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                if (!CPlayer::GetInstance().AddFilesToPlaylist(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
                     MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             }
             else
             {
-                CPlayer::GetInstance().OpenFiles(files, false);
+                CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files, false);
                 CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
             }
         }
@@ -4967,9 +4967,7 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
     CCommon::DoOpenFileDlg(filter, files, this);
     if (!files.empty())
     {
-        if (CPlayer::GetInstance().AddFiles(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-            CPlayer::GetInstance().SaveCurrentPlaylist();
-        else
+        if (!CPlayer::GetInstance().AddFilesToPlaylist(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
@@ -5143,9 +5141,7 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         {
             CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
         }
-        if (CPlayer::GetInstance().AddFiles(file_list, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-            CPlayer::GetInstance().SaveCurrentPlaylist();
-        else
+        if (!CPlayer::GetInstance().AddFilesToPlaylist(file_list, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 
     }
@@ -5227,7 +5223,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
             //添加到“我喜欢”播放列表
             if (!playlist.IsSongInPlaylist(current_file))
             {
-                playlist.AddSongs(std::vector<SongInfo> {current_file});
+                playlist.AddSongsToPlaylist(std::vector<SongInfo> {current_file});
                 playlist.SaveToFile(favourite_playlist_path);
             }
             CPlayer::GetInstance().SetFavourite(true);
@@ -5259,7 +5255,7 @@ void CMusicPlayerDlg::OnFileOpenUrl()
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
-        CPlayer::GetInstance().OpenFiles(vecUrl);
+        CPlayer::GetInstance().OpenFilesInDefaultPlaylist(vecUrl);
         UpdatePlayPauseButton();
         DrawInfo(true);
         m_play_error_cnt = 0;
@@ -5283,11 +5279,8 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
-        if (CPlayer::GetInstance().AddFiles(vecUrl, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-            CPlayer::GetInstance().SaveCurrentPlaylist();
-        else
+        if (!CPlayer::GetInstance().AddFilesToPlaylist(vecUrl, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
-
     }
 }
 
@@ -5731,11 +5724,12 @@ BOOL CMusicPlayerDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
                 if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
                     CPlayer::GetInstance().OpenPlaylistFile(files[0]);
                 else
-                    CPlayer::GetInstance().OpenFiles(files);
+                    CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files);
             }
             else if (pCopyDataStruct->dwData == COPY_DATA_ADD_FILE)
             {
-                CPlayer::GetInstance().AddFiles(files, true);
+                if (CPlayer::GetInstance().IsPlaylistMode())
+                    CPlayer::GetInstance().AddFilesToPlaylist(files, true);
             }
         }
     }
