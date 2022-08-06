@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ 生成的包含文件。
-// 供 MusicPlayer2.rc 使用
+// Microsoft Visual C++ generated include file.
+// Used by MusicPlayer2.rc
 //
 #define IDM_ABOUTBOX                    0x0010
 #define IDD_ABOUTBOX                    100
@@ -755,6 +755,10 @@
 #define IDS_SHOTCUT_DOWN                578
 #define IDS_SPACE                       579
 #define IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 580
+#define IDS_LOGIN_REQUIRED              581
+#define IDS_LOGGED                      582
+#define IDS_LASTFM_LOGIN                583
+#define IDS_LOGIN_FAILED                584
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1019,6 +1023,7 @@
 #define IDC_BROWSE_BUTTON1              1096
 #define IDC_GET_TAG_FROM_LYRIC_BUTTON   1096
 #define IDC_STATISTICS_INFO_BUTTON      1096
+#define IDC_LASTFM_LOGIN                1096
 #define IDC_ALBUM_FIT_COMBO             1097
 #define IDC_PAUSE_RESUME_BUTTON         1097
 #define IDC_LYRIC_DOUBLE_LINE_CHECK2    1097
@@ -1166,6 +1171,8 @@
 #define IDC_SHOW_FULLSCREEN_BTN_CHECK   1207
 #define IDC_SHOW_MINIMIZE_BTN_CHECK     1208
 #define IDC_SHOW_MAXIMIZE_BTN_CHECK     1209
+#define IDC_ENABLE_LASTFM               1210
+#define IDC_LASTFM_STATUS               1211
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1614,7 +1621,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        573
 #define _APS_NEXT_COMMAND_VALUE         33394
-#define _APS_NEXT_CONTROL_VALUE         1210
+#define _APS_NEXT_CONTROL_VALUE         1212
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

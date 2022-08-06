@@ -68,6 +68,19 @@ public:
         if (!ele) return nullptr;
         return ele->GetText();
     }
+    tinyxml2::XMLElement* session() {
+        return FindElement(doc.RootElement(), "session");
+    }
+    const char* session_key() {
+        auto ele = FindElement(session(), "key");
+        if (!ele) return nullptr;
+        return ele->GetText();
+    }
+    const char* session_name() {
+        auto ele = FindElement(session(), "name");
+        if (!ele) return nullptr;
+        return ele->GetText();
+    }
 };
 
 void LastFM::GenerateApiSig(map<wstring, wstring>& params) {
@@ -83,7 +96,7 @@ void LastFM::GenerateApiSig(map<wstring, wstring>& params) {
     params[L"api_sig"] = CCommon::StrToUnicode(md5.HexDigest());
 }
 
-std::wstring LastFM::GetToken() {
+wstring LastFM::GetToken() {
     map<wstring, wstring> params = { {L"api_key", api_key}, { L"method", L"auth.getToken" } };
     GenerateApiSig(params);
     wstring result;
@@ -99,8 +112,11 @@ std::wstring LastFM::GetToken() {
     return token ? CCommon::StrToUnicode(token, CodeType::UTF8) : L"";
 }
 
-std::wstring LastFM::GetUrl(map<wstring, wstring>& params) {
-    wstring url = L"http://ws.audioscrobbler.com/2.0/?";
+wstring LastFM::GetUrl(map<wstring, wstring>& params, wstring base) {
+    auto url(base);
+    if (url.back() != L'?') {
+        url += L"?";
+    }
     bool first = true;
     for (const auto& param : params) {
         if (!first) {
@@ -110,4 +126,42 @@ std::wstring LastFM::GetUrl(map<wstring, wstring>& params) {
         first = false;
     }
     return url;
+}
+
+wstring LastFM::GetRequestAuthorizationUrl(wstring token) {
+    if (token.empty()) {
+        return L"";
+    }
+    map<wstring, wstring> params = { { L"api_key", api_key }, { L"token", token } };
+    return GetUrl(params, L"https://www.last.fm/api/auth/?");
+}
+
+bool LastFM::HasSessionKey() {
+    return !ar.session_key.empty();
+}
+
+bool LastFM::GetSession(wstring token) {
+    map<wstring, wstring> params = {{L"api_key", api_key}, {L"method", L"auth.getSession"}, {L"token", token}};
+    GenerateApiSig(params);
+    wstring result;
+    if (!CInternetCommon::GetURL(GetUrl(params), result, true, true)) return L"";
+#ifdef _DEBUG
+    OutputDebugStringW(result.c_str());
+#endif
+    XMLHelper helper(result);
+    if (helper.HasError()) {
+        theApp.WriteLog(L"Error in LastFM::GetSession().");
+        helper.PrintError();
+        return false;
+    }
+    auto session_key = helper.session_key();
+    auto session_name = helper.session_name();
+    if (!session_key || !session_name) return false;
+    ar.session_key = CCommon::StrToUnicode(session_key, CodeType::UTF8);
+    ar.user_name = CCommon::StrToUnicode(session_name, CodeType::UTF8);
+    return true;
+}
+
+wstring LastFM::UserName() {
+    return ar.user_name;
 }

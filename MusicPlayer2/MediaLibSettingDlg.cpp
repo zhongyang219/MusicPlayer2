@@ -48,6 +48,9 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_RECENT_PLAYED_RANGE_OMBO, m_recent_played_range_combo);
     DDX_Control(pDX, IDC_IGNORE_EXIST_CHECK, m_ignore_exist_chk);
     DDX_Control(pDX, IDC_ID3V2_TYPE_COMBO, m_id3v2_type_combo);
+    DDX_Control(pDX, IDC_ENABLE_LASTFM, m_enable_lastfm);
+    DDX_Control(pDX, IDC_LASTFM_STATUS, m_lastfm_status);
+    DDX_Control(pDX, IDC_LASTFM_LOGIN, m_lastfm_login);
 }
 
 void CMediaLibSettingDlg::GetDataFromUi()
@@ -93,6 +96,8 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_DISABLE_DELETE_FROM_DISK_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck)
     ON_BN_CLICKED(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, &CMediaLibSettingDlg::OnBnClickedShowPlaylistTooltipCheck)
     ON_BN_CLICKED(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, &CMediaLibSettingDlg::OnBnClickedFloatPlaylistFollowMainWndCheck)
+    ON_BN_CLICKED(IDC_ENABLE_LASTFM, &CMediaLibSettingDlg::OnBnClickedEnableLastfm)
+    ON_BN_CLICKED(IDC_LASTFM_LOGIN, &CMediaLibSettingDlg::OnBnClickedLastfmLogin)
 END_MESSAGE_MAP()
 
 
@@ -165,6 +170,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_playlist_display_mode_combo.SetMouseWheelEnable(false);
     m_recent_played_range_combo.SetMouseWheelEnable(false);
     m_id3v2_type_combo.SetMouseWheelEnable(false);
+    UpdateLastFMStatus();
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -369,4 +375,40 @@ void CMediaLibSettingDlg::OnBnClickedShowPlaylistTooltipCheck()
 void CMediaLibSettingDlg::OnBnClickedFloatPlaylistFollowMainWndCheck()
 {
     m_data.float_playlist_follow_main_wnd = (IsDlgButtonChecked(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK) != 0);
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedEnableLastfm() {
+    m_data.enable_lastfm = (m_enable_lastfm.GetCheck() != 0);
+    UpdateLastFMStatus();
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedLastfmLogin() {
+    auto token = theApp.m_lastfm.GetToken();
+    std::wstring url;
+    int button;
+    if (token.empty()) goto failed;
+    url = theApp.m_lastfm.GetRequestAuthorizationUrl(token);
+    if (url.empty()) goto failed;
+    ShellExecuteW(nullptr, L"open", url.c_str(), nullptr, nullptr, SW_SHOW);
+    button = GetOwner()->MessageBoxW(CCommon::LoadText(IDS_LASTFM_LOGIN), NULL, MB_ICONINFORMATION | MB_OKCANCEL);
+    if (button == IDOK) {
+        if (!theApp.m_lastfm.GetSession(token)) goto failed;
+        UpdateLastFMStatus();
+        theApp.SaveLastFMData();
+    }
+    return;
+failed:
+    GetOwner()->MessageBoxW(CCommon::LoadText(IDS_LOGIN_FAILED), NULL, MB_ICONERROR | MB_OK);
+}
+
+void CMediaLibSettingDlg::UpdateLastFMStatus() {
+    m_enable_lastfm.SetCheck(m_data.enable_lastfm);
+    auto has_key = theApp.m_lastfm.HasSessionKey();
+    auto& basic = has_key ? CCommon::LoadText(IDS_LOGGED) : CCommon::LoadText(IDS_LOGIN_REQUIRED);
+    auto& s = has_key ? std::wstring(basic.GetString()) + L" (" + theApp.m_lastfm.UserName() + L")" : std::wstring(basic.GetString());
+    m_lastfm_status.SetWindowTextW(CString(s.c_str()));
+    bool login_enabled = m_data.enable_lastfm && !has_key;
+    m_lastfm_login.EnableWindow(login_enabled);
 }

@@ -17,7 +17,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 中文(简体，中国) resources
+// Chinese (Simplified, China) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
@@ -1115,7 +1115,7 @@ BEGIN
     LTEXT           "",IDC_PATH_STATIC,115,18,172,8
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 245, 386
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 245, 420
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
@@ -1157,6 +1157,11 @@ BEGIN
     CONTROL         "显示播放列表鼠标提示",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,209,154,10
     CONTROL         "浮动播放列表跟随主窗口",IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,221,159,10
+    GROUPBOX        "Last.fm",IDC_STATIC,6,376,232,40
+    CONTROL         "启用 last.fm 相关功能",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,386,80,10
+    LTEXT           "当前状态：",IDC_STATIC,14,397,34,8
+    LTEXT           "状态",IDC_LASTFM_STATUS,46,397,61,8
+    PUSHBUTTON      "登录",IDC_LASTFM_LOGIN,110,393,50,14,WS_DISABLED
 END
 
 IDD_ADD_TO_PLAYLIST_DIALOG DIALOGEX 0, 0, 186, 152
@@ -1625,7 +1630,7 @@ BEGIN
         RIGHTMARGIN, 238
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 382
+        BOTTOMMARGIN, 416
         HORZGUIDE, 141
         HORZGUIDE, 154
     END
@@ -3782,14 +3787,18 @@ BEGIN
     IDS_SHOTCUT_DOWN        "↓"
     IDS_SPACE               "空格"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO "如果歌曲所在目录下没有找到专辑封面则会在此文件夹下寻找封面文件。"
+    IDS_LOGIN_REQUIRED      "需要登录"
+    IDS_LOGGED              "已登录"
+    IDS_LASTFM_LOGIN        "请您在打开的浏览器窗口内完成登录并在登录成功后单击确定。"
+    IDS_LOGIN_FAILED        "登录失败！"
 END
 
-#endif    // 中文(简体，中国) resources
+#endif    // Chinese (Simplified, China) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 英语(美国) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -4565,7 +4574,7 @@ BEGIN
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,7,7,172,12
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 377
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 425
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
@@ -4611,6 +4620,11 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,41,128,9
     CONTROL         "Show playlist tool tip",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,227,167,9
+    GROUPBOX        "Last.fm",IDC_STATIC,6,373,324,48
+    CONTROL         "Enable last.fm support",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,382,87,10
+    LTEXT           "Current status: ",IDC_STATIC,14,393,49,8
+    LTEXT           "Status",IDC_LASTFM_STATUS,65,393,81,8
+    PUSHBUTTON      "Log in",IDC_LASTFM_LOGIN,151,389,50,14,WS_DISABLED
 END
 
 IDD_LYRIC_RELATE_DIALOG DIALOGEX 0, 0, 329, 178
@@ -4986,7 +5000,7 @@ BEGIN
         RIGHTMARGIN, 330
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 373
+        BOTTOMMARGIN, 421
     END
 
     IDD_LYRIC_RELATE_DIALOG, DIALOG
@@ -7003,9 +7017,13 @@ BEGIN
     IDS_SPACE               "Space"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 
                             "If the album cover is not found in the directory where the song is located then the cover file will be searched for in this folder."
+    IDS_LOGIN_REQUIRED      "Login required"
+    IDS_LOGGED              "Already logged in"
+    IDS_LASTFM_LOGIN        "Please complete the login in the opened browser window and click OK after successful login."
+    IDS_LOGIN_FAILED        "Login failed!"
 END
 
-#endif    // 英语(美国) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

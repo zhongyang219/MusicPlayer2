@@ -47,6 +47,7 @@ void LastFMDataArchive::SaveData(wstring path) {
     /// °æ±¾ºÅ
     ar << (uint16_t)0;
     ar << CString(session_key.c_str());
+    ar << CString(user_name.c_str());
     current_track.SaveDataTo(ar);
     corrected_current_track.SaveDataTo(ar);
     ar << (uint64_t)cached_tracks.size();
@@ -74,6 +75,8 @@ void LastFMDataArchive::LoadData(wstring path) {
         CString temp;
         ar >> temp;
         session_key = temp;
+        ar >> temp;
+        user_name = temp;
         current_track.ReadDataFrom(ar);
         corrected_current_track.ReadDataFrom(ar);
         uint64_t size;

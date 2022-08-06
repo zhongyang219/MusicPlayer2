@@ -32,15 +32,19 @@ private:
 	CMyComboBox m_recent_played_range_combo;
     CButton m_ignore_exist_chk;
     CMyComboBox m_id3v2_type_combo;
+    CButton m_enable_lastfm;
 
     CToolTipCtrl m_toolTip;
     size_t m_data_size;		//数据文件的大小
+    CStatic m_lastfm_status;
+    CButton m_lastfm_login;
 
 protected:
     void ShowDataSizeInfo();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     virtual void GetDataFromUi() override;
+    void UpdateLastFMStatus();
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -63,4 +67,6 @@ public:
     afx_msg void OnBnClickedDisableDeleteFromDiskCheck();
     afx_msg void OnBnClickedShowPlaylistTooltipCheck();
     afx_msg void OnBnClickedFloatPlaylistFollowMainWndCheck();
+    afx_msg void OnBnClickedEnableLastfm();
+    afx_msg void OnBnClickedLastfmLogin();
 };

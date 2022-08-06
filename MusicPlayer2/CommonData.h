@@ -358,6 +358,7 @@ struct MediaLibSettingData
     RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
     int display_item{};                 //媒体库显示的项目
     bool write_id3_v2_3{ false };       //写入的ID3V2版本是否为2.3，否则为2.4
+    bool enable_lastfm { false };       ///是否启用Last.fm相关功能
 };
 
 struct NonCategorizedSettingData

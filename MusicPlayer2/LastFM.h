@@ -18,10 +18,15 @@ public:
     void LoadData(wstring path) {
         return ar.LoadData(path);
     }
-    std::wstring GetToken();
+
+    bool GetSession(wstring token);
+    wstring GetToken();
+    wstring GetRequestAuthorizationUrl(wstring token);
+    bool HasSessionKey();
+    wstring UserName();
 protected:
     void GenerateApiSig(map<wstring, wstring>& params);
-    std::wstring GetUrl(map<wstring, wstring>& params);
+    wstring GetUrl(map<wstring, wstring>& params, wstring base = L"http://ws.audioscrobbler.com/2.0/?");
 private:
     LastFMDataArchive ar;
     wstring api_key;

@@ -13,8 +13,10 @@
 #define B 0xefcdab89
 #define C 0x98badcfe
 #define D 0x10325476
+#define BLOCK_SIZE 64
+#define DIGEST_LENGTH 16
 
-static uint32_t S[] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+static uint32_t s[] = { 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                        5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
                        4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                        6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
@@ -36,36 +38,71 @@ static uint32_t K[] = { 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
                        0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
                        0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391 };
 
-/*
- * Bit-manipulation functions defined by the MD5 algorithm
- */
-#define F(X, Y, Z) ((X & Y) | (~X & Z))
-#define G(X, Y, Z) ((X & Z) | (Y & ~Z))
-#define H(X, Y, Z) (X ^ Y ^ Z)
-#define I(X, Y, Z) (Y ^ (X | ~Z))
+uint32_t readUint32LE(uint8_t* ptr, size_t pos) {
+    return ((int32_t)ptr[pos + 3] << 24) | ((int32_t)ptr[pos + 2] << 16) | ((int32_t)ptr[pos + 1] << 8) | (int32_t)ptr[pos];
+}
 
- /*
-  * Padding used to make the size (in bits) of the input congruent to 448 mod 512
-  */
-static uint8_t PADDING[] = { 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+void writeUint32LE(uint32_t value, uint8_t* out, size_t offset = 0) {
+    out[offset] = value;
+    out[offset + 1] = value >> 8;
+    out[offset + 2] = value >> 16;
+    out[offset + 3] = value >> 24;
+}
+
+size_t md5Hash(MD5Context* ctx, uint8_t* p, size_t pos, size_t len) {
+    uint32_t* w = ctx->temp;
+    uint32_t* v = ctx->state;
+    while (len >= 64) {
+        auto a = v[0];
+        auto b = v[1];
+        auto c = v[2];
+        auto d = v[3];
+        for (auto i = 0; i < 16; i++) {
+            size_t j = pos + (size_t)i * 4;
+            w[i] = readUint32LE(p, j);
+        }
+        for (auto i = 0; i < 64; i++) {
+            uint32_t F = 0, g = 0;
+            if (i >= 0 && i <= 15) {
+                F = d ^ (b & (c ^ d));
+                g = i;
+            } else if (i >= 16 && i <= 31) {
+                F = c ^ (d & (b ^ c));
+                g = (5 * i + 1) % 16;
+            } else if (i >= 32 && i <= 47) {
+                F = b ^ c ^ d;
+                g = (3 * i + 5) % 16;
+            } else {
+                F = c ^ (b | ~d);
+                g = (7 * i) % 16;
+            }
+            F = F + a + K[i] + w[g];
+            a = d;
+            d = c;
+            c = b;
+            b = b + rotateLeft(F, s[i]);
+        }
+        v[0] = v[0] + a;
+        v[1] = v[1] + b;
+        v[2] = v[2] + c;
+        v[3] = v[3] + d;
+        pos += 64;
+        len -= 64;
+    }
+    return pos;
+}
 
 /*
  * Initialize a context
  */
 void md5Init(MD5Context* ctx) {
-    ctx->size = (uint64_t)0;
+    ctx->bytesHashed = 0;
+    ctx->bufferLength = 0;
 
-    ctx->buffer[0] = (uint32_t)A;
-    ctx->buffer[1] = (uint32_t)B;
-    ctx->buffer[2] = (uint32_t)C;
-    ctx->buffer[3] = (uint32_t)D;
+    ctx->state[0] = (uint32_t)A;
+    ctx->state[1] = (uint32_t)B;
+    ctx->state[2] = (uint32_t)C;
+    ctx->state[3] = (uint32_t)D;
 }
 
 /*
@@ -74,32 +111,26 @@ void md5Init(MD5Context* ctx) {
  * If the input fills out a block of 512 bits, apply the algorithm (md5Step)
  * and save the result in the buffer. Also updates the overall size.
  */
-void md5Update(MD5Context* ctx, uint8_t* input_buffer, size_t input_len) {
-    uint32_t input[16];
-    unsigned int offset = ctx->size % 64;
-    ctx->size += (uint64_t)input_len;
-
-    // Copy each byte in input_buffer into the next space in our context input
-    for (unsigned int i = 0; i < input_len; ++i) {
-        ctx->input[offset++] = (uint8_t) * (input_buffer + i);
-
-        // If we've filled our context input, copy it into our local array input
-        // then reset the offset to 0 and fill in a new buffer.
-        // Every time we fill out a chunk, we run it through the algorithm
-        // to enable some back and forth between cpu and i/o
-        if (offset % 64 == 0) {
-            for (unsigned int j = 0; j < 16; ++j) {
-                // Convert to little-endian
-                // The local variable `input` our 512-bit chunk separated into 32-bit words
-                // we can use in calculations
-                input[j] = (uint32_t)(ctx->input[(j * 4) + 3]) << 24 |
-                    (uint32_t)(ctx->input[(j * 4) + 2]) << 16 |
-                    (uint32_t)(ctx->input[(j * 4) + 1]) << 8 |
-                    (uint32_t)(ctx->input[(j * 4)]);
-            }
-            md5Step(ctx->buffer, input);
-            offset = 0;
+void md5Update(MD5Context* ctx, uint8_t* data, size_t dataLength) {
+    size_t dataPos = 0;
+    ctx->bytesHashed += dataLength;
+    if (ctx->bufferLength > 0) {
+        while (ctx->bufferLength < BLOCK_SIZE && dataLength > 0) {
+            ctx->buffer[ctx->bufferLength++] = data[dataPos++];
+            dataLength--;
         }
+        if (ctx->bufferLength == BLOCK_SIZE) {
+            md5Hash(ctx, ctx->buffer, 0, BLOCK_SIZE);
+            ctx->bufferLength = 0;
+        }
+    }
+    if (dataLength >= BLOCK_SIZE) {
+        dataPos = md5Hash(ctx, data, dataPos, dataLength);
+        dataLength %= BLOCK_SIZE;
+    }
+    while (dataLength > 0) {
+        ctx->buffer[ctx->bufferLength++] = data[dataPos++];
+        dataLength--;
     }
 }
 
@@ -108,80 +139,19 @@ void md5Update(MD5Context* ctx, uint8_t* input_buffer, size_t input_len) {
  * and save the result of the final iteration into digest.
  */
 void md5Finalize(MD5Context* ctx) {
-    uint32_t input[16];
-    unsigned int offset = ctx->size % 64;
-    unsigned int padding_length = offset < 56 ? 56 - offset : (56 + 64) - offset;
-
-    // Fill in the padding andndo the changes to size that resulted from the update
-    md5Update(ctx, PADDING, padding_length);
-    ctx->size -= (uint64_t)padding_length;
-
-    // Do a final update (internal to this function)
-    // Last two 32-bit words are the two halves of the size (converted from bytes to bits)
-    for (unsigned int j = 0; j < 14; ++j) {
-        input[j] = (uint32_t)(ctx->input[(j * 4) + 3]) << 24 |
-            (uint32_t)(ctx->input[(j * 4) + 2]) << 16 |
-            (uint32_t)(ctx->input[(j * 4) + 1]) << 8 |
-            (uint32_t)(ctx->input[(j * 4)]);
+    uint32_t bitLenHi = (ctx->bytesHashed / 0x20000000) | 0;
+    uint32_t bitLenLo = ctx->bytesHashed << 3;
+    size_t padLength = ((ctx->bytesHashed) % 64 < 56) ? 64 : 128;
+    ctx->buffer[ctx->bufferLength] = 0x80;
+    for (auto i = ctx->bufferLength + 1; i < padLength - 8; i++) {
+        ctx->buffer[i] = 0;
     }
-    input[14] = (uint32_t)(ctx->size * 8);
-    input[15] = (uint32_t)((ctx->size * 8) >> 32);
-
-    md5Step(ctx->buffer, input);
-
-    // Move the result into digest (convert from little-endian)
-    for (unsigned int i = 0; i < 4; ++i) {
-        ctx->digest[(i * 4) + 0] = (uint8_t)((ctx->buffer[i] & 0x000000FF));
-        ctx->digest[(i * 4) + 1] = (uint8_t)((ctx->buffer[i] & 0x0000FF00) >> 8);
-        ctx->digest[(i * 4) + 2] = (uint8_t)((ctx->buffer[i] & 0x00FF0000) >> 16);
-        ctx->digest[(i * 4) + 3] = (uint8_t)((ctx->buffer[i] & 0xFF000000) >> 24);
+    writeUint32LE(bitLenLo, ctx->buffer, padLength - 8);
+    writeUint32LE(bitLenHi, ctx->buffer, padLength - 4);
+    md5Hash(ctx, ctx->buffer, 0, padLength);
+    for (auto i = 0; i < DIGEST_LENGTH / 4; i++) {
+        writeUint32LE(ctx->state[i], ctx->digest, (size_t)i * 4);
     }
-}
-
-/*
- * Step on 512 bits of input with the main MD5 algorithm.
- */
-void md5Step(uint32_t* buffer, uint32_t* input) {
-    uint32_t AA = buffer[0];
-    uint32_t BB = buffer[1];
-    uint32_t CC = buffer[2];
-    uint32_t DD = buffer[3];
-
-    uint32_t E;
-
-    unsigned int j;
-
-    for (unsigned int i = 0; i < 64; ++i) {
-        switch (i / 16) {
-        case 0:
-            E = F(BB, CC, DD);
-            j = i;
-            break;
-        case 1:
-            E = G(BB, CC, DD);
-            j = ((i * 5) + 1) % 16;
-            break;
-        case 2:
-            E = H(BB, CC, DD);
-            j = ((i * 3) + 5) % 16;
-            break;
-        default:
-            E = I(BB, CC, DD);
-            j = (i * 7) % 16;
-            break;
-        }
-
-        uint32_t temp = DD;
-        DD = CC;
-        CC = BB;
-        BB = BB + rotateLeft(AA + E + K[i] + input[j], S[i]);
-        AA = temp;
-    }
-
-    buffer[0] += AA;
-    buffer[1] += BB;
-    buffer[2] += CC;
-    buffer[3] += DD;
 }
 
 /*
