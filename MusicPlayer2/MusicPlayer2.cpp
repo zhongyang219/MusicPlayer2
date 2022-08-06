@@ -1243,3 +1243,11 @@ void CMusicPlayerApp::LoadLastFMData() {
 void CMusicPlayerApp::SaveLastFMData() {
     m_lastfm.SaveData(m_lastfm_path);
 }
+
+void CMusicPlayerApp::UpdateLastFMNowPlaying() {
+    AfxBeginThread(UpdateLastFMNowPlayingFunProc, (LPVOID)NULL);
+}
+
+UINT CMusicPlayerApp::UpdateLastFMNowPlayingFunProc(LPVOID lpParam) {
+    theApp.m_lastfm.UpdateNowPlaying();
+}

@@ -24,6 +24,9 @@ public:
     wstring GetRequestAuthorizationUrl(wstring token);
     bool HasSessionKey();
     wstring UserName();
+    bool UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track);
+    bool UpdateNowPlaying();
+    void UpdateCurrentTrack(LastFMTrack track);
 protected:
     void GenerateApiSig(map<wstring, wstring>& params);
     wstring GetUrl(map<wstring, wstring>& params, wstring base = L"http://ws.audioscrobbler.com/2.0/?");

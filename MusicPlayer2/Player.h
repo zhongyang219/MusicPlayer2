@@ -376,6 +376,7 @@ public:
 
     MediaTransControls m_controls;
     void UpdateControlsMetadata(SongInfo info);
+    void UpdateLastFMCurrentTrack(SongInfo info);
 
 private:
     void MediaTransControlsLoadThumbnail(std::wstring& file_path);

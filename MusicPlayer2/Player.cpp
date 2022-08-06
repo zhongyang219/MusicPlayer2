@@ -548,6 +548,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
         m_controls.UpdateControls(Command::PLAY);
         UpdateControlsMetadata(GetCurrentSongInfo());
+        if (theApp.m_media_lib_setting_data.enable_lastfm) {
+            UpdateLastFMCurrentTrack(GetCurrentSongInfo());
+        }
         break;
     case Command::PLAY:
         ConnotPlayWarning();
@@ -2863,4 +2866,11 @@ void CPlayer::MediaTransControlsLoadThumbnailDefaultImage()
         else
             m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_not_played_data.data(), theApp.m_image_set.default_cover_not_played_data.size());
     }
+}
+
+void CPlayer::UpdateLastFMCurrentTrack(SongInfo info) {
+    LastFMTrack track;
+    track.ReadDataFrom(info);
+    theApp.m_lastfm.UpdateCurrentTrack(track);
+    theApp.UpdateLastFMNowPlaying();
 }

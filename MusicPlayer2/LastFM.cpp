@@ -4,6 +4,7 @@
 #include "InternetCommon.h"
 #include "tinyxml2/tinyxml2.h"
 #include "MusicPlayer2.h"
+#include <inttypes.h>
 
 using namespace tinyxml2;
 
@@ -27,6 +28,19 @@ public:
             theApp.WriteLog(msg);
             auto emsg = error_msg();
             theApp.WriteLog(emsg ? CCommon::StrToUnicode(emsg, CodeType::UTF8) : L"Failed to get error message.");
+        }
+    }
+    void CorrectData(tinyxml2::XMLElement* parent, const char* tag_name, std::wstring& data) {
+        auto ele = FindElement(parent, tag_name);
+        if (!ele) return;
+        auto attr = ele->FindAttribute("corrected");
+        if (!attr) return;
+        auto corrected = attr->IntValue();
+        if (corrected) {
+            auto text = ele->GetText();
+            if (text) {
+                data = CCommon::StrToUnicode(text, CodeType::UTF8);
+            }
         }
     }
     bool status() {
@@ -80,6 +94,21 @@ public:
         auto ele = FindElement(session(), "name");
         if (!ele) return nullptr;
         return ele->GetText();
+    }
+    tinyxml2::XMLElement* nowplaying() {
+        return FindElement(doc.RootElement(), "nowplaying");
+    }
+    void PrintIgnoredMessage(tinyxml2::XMLElement* parent) {
+        auto ele = FindElement(parent, "ignoredMessage");
+        if (!ele) return;
+        auto attr = ele->FindAttribute("code");
+        if (!attr) return;
+        auto code = attr->IntValue();
+        if (code) {
+            theApp.WriteLog(L"Last fm: Some data was ignored.");
+            auto& msg = ele->GetText() ? CCommon::StrToUnicode(ele->GetText(), CodeType::UTF8) : L"";
+            theApp.WriteLog(msg);
+        }
     }
 };
 
@@ -164,4 +193,56 @@ bool LastFM::GetSession(wstring token) {
 
 wstring LastFM::UserName() {
     return ar.user_name;
+}
+
+bool LastFM::UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track) {
+    if (track.artist.empty() || track.track.empty() || ar.session_key.empty()) return false;
+    map <wstring, wstring> params = {{L"api_key", api_key}, {L"method", L"track.updateNowPlaying"}, {L"sk", ar.session_key}, {L"artist", track.artist}, {L"track", track.track}};
+    if (!track.album.empty()) {
+        params[L"album"] = track.album;
+    }
+    if (!track.trackNumber) {
+        wchar_t tmp[64];
+        wsprintf(tmp, L"%" PRIu16, track.trackNumber);
+        params[L"trackNumber"] = wstring(tmp);
+    }
+    if (!track.mbid.empty()) {
+        params[L"mbid"] = track.mbid;
+    }
+    auto duration = track.duration.toInt() / 1000;
+    if (!duration) {
+        wchar_t tmp[64];
+        wsprintf(tmp, L"%i", duration);
+        params[L"duration"] = wstring(tmp);
+    }
+    if (!track.albumArtist.empty()) {
+        params[L"albumArtist"] = track.albumArtist;
+    }
+    GenerateApiSig(params);
+    wstring result;
+    if (!CInternetCommon::GetURL(GetUrl(params), result, true, true)) return L"";
+    OutputDebugStringW(result.c_str());
+    XMLHelper helper(result);
+    if (helper.HasError()) {
+        theApp.WriteLog(L"Error in LastFM::UpdateNowPlaying().");
+        helper.PrintError();
+        return false;
+    }
+    auto nowplaying = helper.nowplaying();
+    if (!nowplaying) return false;
+    helper.CorrectData(nowplaying, "track", corrected_track.track);
+    helper.CorrectData(nowplaying, "artist", corrected_track.artist);
+    helper.CorrectData(nowplaying, "album", corrected_track.album);
+    helper.CorrectData(nowplaying, "albumArtist", corrected_track.albumArtist);
+    helper.PrintIgnoredMessage(nowplaying);
+    return true;
+}
+
+bool LastFM::UpdateNowPlaying() {
+    UpdateNowPlaying(ar.current_track, ar.corrected_current_track);
+}
+
+void LastFM::UpdateCurrentTrack(LastFMTrack track) {
+    ar.current_track = LastFMTrack(track);
+    ar.corrected_current_track = LastFMTrack(track);
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include <list>
 #include "Time.h"
+#include "SongInfo.h"
 
 using namespace std;
 
@@ -27,8 +28,10 @@ class LastFMTrack {
         wstring albumArtist;
         /// The length of the track in seconds.
         Time duration;
+        void Clear();
         void SaveDataTo(CArchive &archive);
         void ReadDataFrom(CArchive &archive);
+        void ReadDataFrom(SongInfo info);
 };
 
 class LastFMDataArchive {

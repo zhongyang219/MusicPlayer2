@@ -1,6 +1,21 @@
 #include "stdafx.h"
 #include "LastFMDataArchive.h"
 #include "MusicPlayer2.h"
+#include <time.h>
+#include "AudioTag.h"
+
+void LastFMTrack::Clear() {
+    artist = L"";
+    track = L"";
+    timestamp = 0;
+    album = L"";
+    streamId = L"";
+    chosenByUser = true;
+    trackNumber = 0;
+    mbid = L"";
+    albumArtist = L"";
+    duration.fromInt(0);
+}
 
 void LastFMTrack::SaveDataTo(CArchive& ar) {
     ar << CString(artist.c_str());
@@ -35,6 +50,32 @@ void LastFMTrack::ReadDataFrom(CArchive& ar) {
     int32_t d;
     ar >> d;
     duration.fromInt((int)d);
+}
+
+void LastFMTrack::ReadDataFrom(SongInfo info) {
+    Clear();
+    if (!info.artist.empty()) {
+        artist = info.artist;
+    }
+    if (!info.title.empty()) {
+        track = info.title;
+    }
+    __time64_t tm;
+    _time64(&tm);
+    timestamp = tm;
+    if (!info.album.empty()) {
+        album = info.album;
+    }
+    trackNumber = info.track;
+    duration = info.lengh;
+    CAudioTag tag(info);
+    std::map<wstring, wstring> property_map;
+    tag.GetAudioTagPropertyMap(property_map);
+    for (const auto& prop : property_map) {
+        if (prop.first == L"ALBUMARTIST") {
+            albumArtist = prop.second;
+        }
+    }
 }
 
 void LastFMDataArchive::SaveData(wstring path) {
