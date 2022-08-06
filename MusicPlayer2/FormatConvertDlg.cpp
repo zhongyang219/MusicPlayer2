@@ -131,7 +131,7 @@ void CFormatConvertDlg::SaveConfig() const
 
 void CFormatConvertDlg::LoadEncoderConfig()
 {
-    CIniHelper ini(theApp.m_local_dir + L"Encoder\\encoder.ini");
+    CIniHelper ini(theApp.m_config_dir + L"Encoder\\encoder.ini");
 
     m_mp3_encode_para.encode_type = ini.GetInt(L"mp3_encoder", L"encode_type", 0);
     m_mp3_encode_para.cbr_bitrate = ini.GetString(L"mp3_encoder", L"cbr_bitrate", L"128");
@@ -147,7 +147,9 @@ void CFormatConvertDlg::LoadEncoderConfig()
 
 void CFormatConvertDlg::SaveEncoderConfig() const
 {
-    CIniHelper ini(theApp.m_local_dir + L"Encoder\\encoder.ini");
+    std::wstring encoder_dir = theApp.m_config_dir + L"Encoder\\";
+    CCommon::CreateDir(encoder_dir);
+    CIniHelper ini(encoder_dir + L"encoder.ini");
 
     ini.WriteInt(L"mp3_encoder", L"encode_type", m_mp3_encode_para.encode_type);
     ini.WriteString(L"mp3_encoder", L"cbr_bitrate", m_mp3_encode_para.cbr_bitrate);
