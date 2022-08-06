@@ -4568,7 +4568,7 @@ BEGIN
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,7,7,172,12
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 377
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 398
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
@@ -4581,18 +4581,18 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,18,187,10
     CONTROL         "Automatically update media library on startup",IDC_UPDATE_MEDIA_LIB_CHK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,29,185,10
-    LTEXT           "Current data file size:",IDC_SIZE_STATIC,14,305,297,8
-    PUSHBUTTON      "&Clean up...",IDC_CLEAN_DATA_FILE_BUTTON,14,316,59,14
-    GROUPBOX        "Clean up the media library",IDC_STATIC,6,294,324,40
-    PUSHBUTTON      "Clear recently played tracks list...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,14,270,123,14
-    GROUPBOX        "Recently played",IDC_STATIC,6,244,324,45
-    GROUPBOX        "Playlist",IDC_STATIC,6,175,324,65
+    LTEXT           "Current data file size:",IDC_SIZE_STATIC,14,323,297,8
+    PUSHBUTTON      "&Clean up...",IDC_CLEAN_DATA_FILE_BUTTON,14,334,59,14
+    GROUPBOX        "Clean up the media library",IDC_STATIC,6,312,324,40
+    PUSHBUTTON      "Clear recently played tracks list...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,14,288,123,14
+    GROUPBOX        "Recently played",IDC_STATIC,6,262,324,45
+    GROUPBOX        "Playlist",IDC_STATIC,6,175,324,82
     CONTROL         "Disable drag and drop sorting of playlist",IDC_DISABLE_DRAGE_SORT_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,186,149,11
     LTEXT           "Playlist Display Mode:",IDC_STATIC,14,201,80,9
     COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,96,199,133,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Recently played display range:",IDC_STATIC,16,257,113,8
-    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,131,255,125,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Recently played display range:",IDC_STATIC,16,275,113,8
+    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,131,273,125,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Prohibit adding existing tracks to the playlist",IDC_IGNORE_EXIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,214,216,10
     GROUPBOX        "Items displayed in the media library",IDC_STATIC,7,130,323,39
@@ -4606,14 +4606,17 @@ BEGIN
     CONTROL         "Recently played",IDC_RECENT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,169,154,69,10
     CONTROL         "Folder explore",IDC_FOLDER_EXPLORE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,154,73,10
     CONTROL         "Rating",IDC_RATING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,62,154,33,10
-    GROUPBOX        "Music tag reading and writing",IDC_STATIC,7,339,323,30
-    LTEXT           "ID3v2 write type:",IDC_STATIC,15,352,66,9
-    COMBOBOX        IDC_ID3V2_TYPE_COMBO,80,351,52,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Music tag reading and writing",IDC_STATIC,7,357,323,30
+    LTEXT           "ID3v2 write type:",IDC_STATIC,15,370,66,9
+    COMBOBOX        IDC_ID3V2_TYPE_COMBO,80,369,52,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Refresh media library",IDC_REFRESH_MEDIA_LIB_BUTTON,206,20,85,13
     CONTROL         "Disable delete from disk",IDC_DISABLE_DELETE_FROM_DISK_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,41,128,9
     CONTROL         "Show playlist tool tip",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,227,167,9
+    LTEXT           "Playlist item height:",IDC_STATIC,14,242,83,8
+    EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,97,240,39,12,ES_AUTOHSCROLL
+    LTEXT           "pixel",IDC_STATIC,138,242,30,8
 END
 
 IDD_LYRIC_RELATE_DIALOG DIALOGEX 0, 0, 329, 178
@@ -4989,7 +4992,7 @@ BEGIN
         RIGHTMARGIN, 330
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 373
+        BOTTOMMARGIN, 394
     END
 
     IDD_LYRIC_RELATE_DIALOG, DIALOG
