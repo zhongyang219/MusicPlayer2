@@ -1250,4 +1250,5 @@ void CMusicPlayerApp::UpdateLastFMNowPlaying() {
 
 UINT CMusicPlayerApp::UpdateLastFMNowPlayingFunProc(LPVOID lpParam) {
     theApp.m_lastfm.UpdateNowPlaying();
+    return 0;
 }
