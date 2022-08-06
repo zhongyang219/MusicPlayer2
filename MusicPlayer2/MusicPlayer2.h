@@ -19,6 +19,7 @@
 #include "CommonData.h"
 #include "MediaLibHelper.h"
 #include "AcceleratorRes.h"
+#include "LastFM.h"
 
 
 // CMusicPlayerApp:
@@ -42,6 +43,7 @@ public:
     wstring m_desktop_path;		//桌面的路径
     wstring m_module_path_reg;  //程序exe文件的路径
     //wstring m_temp_path;		//临时文件夹的路径
+    wstring m_lastfm_path;      ///存储Last.fm数据的路径
 
     vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
@@ -136,6 +138,10 @@ public:
     HICON GetNotifyIncon(int index);
 
     bool IsScintillaLoaded() const;
+
+    LastFM m_lastfm;
+    void LoadLastFMData();
+    void SaveLastFMData();
 
 private:
     void LoadSongData();

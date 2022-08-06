@@ -247,7 +247,10 @@
     <ClInclude Include="FfmpegCore.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="IPropertyTabDlg.h" />
+    <ClInclude Include="LastFM.h" />
+    <ClInclude Include="LastFMDataArchive.h" />
     <ClInclude Include="LyricRelateDlg.h" />
+    <ClInclude Include="md5.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
     <ClInclude Include="MenuEditCtrl.h" />
@@ -398,7 +401,10 @@
     <ClCompile Include="EditStringListDlg.cpp" />
     <ClCompile Include="FfmpegCore.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
+    <ClCompile Include="LastFM.cpp" />
+    <ClCompile Include="LastFMDataArchive.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
+    <ClCompile Include="md5.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
     <ClCompile Include="MenuEditCtrl.cpp" />

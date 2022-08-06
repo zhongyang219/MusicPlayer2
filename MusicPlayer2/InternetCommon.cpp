@@ -36,7 +36,7 @@ wstring CInternetCommon::URLEncode(const wstring & wstr)
 	return result;
 }
 
-bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
+bool CInternetCommon::GetURL(const wstring & str_url, wstring & result, bool custom_ua, bool allow_other_codes)
 {
     wstring log_info;
     log_info = L"http get: " + str_url;
@@ -44,13 +44,16 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 
 	bool sucessed{ false };
 	CInternetSession session{};
+    if (custom_ua) {
+        session.SetOption(INTERNET_OPTION_USER_AGENT, (LPVOID)L"MuiscPlayer2" APP_VERSION, wcslen(L"MuiscPlayer2" APP_VERSION) * sizeof(wchar_t));
+    }
 	CHttpFile* pfile{};
 	try
 	{
 		pfile = (CHttpFile *)session.OpenURL(str_url.c_str());
 		DWORD dwStatusCode;
 		pfile->QueryInfoStatusCode(dwStatusCode);
-		if (dwStatusCode == HTTP_STATUS_OK)
+		if (allow_other_codes || dwStatusCode == HTTP_STATUS_OK)
 		{
 			CString content;
 			CString data;

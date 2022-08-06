@@ -39,7 +39,7 @@ public:
 	//将一个字符串转换成URL编码（以UTF8编码格式）
 	static wstring URLEncode(const wstring& wstr);
 
-	static bool GetURL(const wstring& str_url, wstring& result);
+	static bool GetURL(const wstring& str_url, wstring& result, bool custom_ua = false, bool allow_other_codes = false);
 
 	//向指定的url发送http post请求，结果保存在result中
 	static int HttpPost(const wstring& str_url, wstring& result);
