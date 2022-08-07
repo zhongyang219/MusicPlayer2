@@ -218,7 +218,7 @@ bool LastFM::UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track) {
     GenerateApiSig(params);
     wstring result;
     wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
-    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType)) return false;
+    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
     OutputDebugStringW(result.c_str());
     XMLHelper helper(result);
     if (helper.HasError()) {

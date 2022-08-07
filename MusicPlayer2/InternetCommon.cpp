@@ -92,12 +92,12 @@ int CInternetCommon::HttpPost(const wstring& str_url, wstring& result) {
     return HttpPost(str_url, result, body, headers);
 }
 
-int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, wstring& body, wstring& headers) {
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, wstring& body, wstring& headers, bool custom_ua) {
     auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
-    return HttpPost(str_url, result, tmp, headers);
+    return HttpPost(str_url, result, tmp, headers, custom_ua);
 }
 
-int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, string& body, wstring& headers)
+int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, string& body, wstring& headers, bool custom_ua)
 {
     wstring log_info;
     log_info = L"http post: " + str_url;
@@ -110,6 +110,10 @@ int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, string&
 	CString strObject;
 	DWORD dwServiceType;
 	INTERNET_PORT nPort;
+
+    if (custom_ua) {
+        session.SetOption(INTERNET_OPTION_USER_AGENT, (LPVOID)L"MuiscPlayer2" APP_VERSION, wcslen(L"MuiscPlayer2" APP_VERSION) * sizeof(wchar_t));
+    }
 
 	AfxParseURL(str_url.c_str(), dwServiceType, strServer, strObject, nPort);
 
