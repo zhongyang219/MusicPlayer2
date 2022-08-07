@@ -6,10 +6,8 @@
 #define LASTFM_SHARED_SECRET L"a6b6804e2bc3a60732ac9c5719c52494"
 class LastFM {
 public:
-    LastFM() {
-        api_key = LASTFM_API_KEY;
-        shared_secret = LASTFM_SHARED_SECRET;
-    }
+    LastFM();
+    ~LastFM();
 
     void SaveData(wstring path) {
         return ar.SaveData(path);
@@ -50,4 +48,6 @@ private:
     LastFMDataArchive ar;
     wstring api_key;
     wstring shared_secret;
+    /// 互斥锁，用于防止同时多次调用Scrobble
+    HANDLE mutex;
 };

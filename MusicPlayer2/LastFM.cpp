@@ -115,6 +115,19 @@ public:
     }
 };
 
+LastFM::LastFM() {
+    api_key = LASTFM_API_KEY;
+    shared_secret = LASTFM_SHARED_SECRET;
+    mutex = CreateMutexA(NULL, FALSE, NULL);
+    if (!mutex) {
+        throw std::runtime_error("Failed to create mutex object.");
+    }
+}
+
+LastFM::~LastFM() {
+    CloseHandle(mutex);
+}
+
 void LastFM::GenerateApiSig(map<wstring, wstring>& params) {
     MD5 md5;
     for (const auto& param : params) {
@@ -346,8 +359,14 @@ bool LastFM::Unlove() {
     return Unlove(ar.corrected_current_track.track, ar.corrected_current_track.artist);
 }
 
+#define RETURN_AND_RELEASE_MUTEX(value) return ReleaseMutex(mutex), value;
+
 bool LastFM::Scrobble(list<LastFMTrack>& tracks) {
-    if (tracks.empty() || ar.session_key.empty()) return false;
+    DWORD dw = WaitForSingleObject(mutex, 1000);
+    if (dw != WAIT_OBJECT_0) {
+        return false;
+    }
+    if (tracks.empty() || ar.session_key.empty()) RETURN_AND_RELEASE_MUTEX(false)
     map <wstring, wstring> params = { {L"api_key", api_key}, {L"method", L"track.scrobble"}, {L"sk", ar.session_key} };
     int i = 0;
     for (auto& track: tracks) {
@@ -397,13 +416,13 @@ bool LastFM::Scrobble(list<LastFMTrack>& tracks) {
     GenerateApiSig(params);
     wstring result;
     wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
-    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
+    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) RETURN_AND_RELEASE_MUTEX(false)
     OutputDebugStringW(result.c_str());
     XMLHelper helper(result);
     if (helper.HasError()) {
         theApp.WriteLog(L"Error in LastFM::Scrobble().");
         helper.PrintError();
-        return false;
+        RETURN_AND_RELEASE_MUTEX(false)
     }
     while (i > 0) {
         if (tracks.empty()) break;
@@ -416,14 +435,14 @@ bool LastFM::Scrobble(list<LastFMTrack>& tracks) {
         i--;
     }
     auto scrobbles = helper.scrobbles();
-    if (!scrobbles) return false;
+    if (!scrobbles) RETURN_AND_RELEASE_MUTEX(false)
     auto scrobble = scrobbles->FirstChildElement();
-    if (!scrobble) return true;
+    if (!scrobble) RETURN_AND_RELEASE_MUTEX(true)
     do {
         helper.PrintIgnoredMessage(scrobble);
         scrobble = scrobble->NextSiblingElement();
     } while (scrobble != nullptr);
-    return true;
+    RETURN_AND_RELEASE_MUTEX(true)
 }
 
 bool LastFM::Scrobble() {
