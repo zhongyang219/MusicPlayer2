@@ -245,6 +245,7 @@
     <ClInclude Include="CueFile.h" />
     <ClInclude Include="EditStringListDlg.h" />
     <ClInclude Include="FfmpegCore.h" />
+    <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LyricRelateDlg.h" />
@@ -397,6 +398,7 @@
     <ClCompile Include="CueFile.cpp" />
     <ClCompile Include="EditStringListDlg.cpp" />
     <ClCompile Include="FfmpegCore.cpp" />
+    <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />

@@ -830,6 +830,9 @@
     <ClInclude Include="CommonData.h">
       <Filter>公共的类\CommonData</Filter>
     </ClInclude>
+    <ClInclude Include="FlacEncodeCfgDlg.h">
+      <Filter>对话框类\格式转换相关对话框\编码选项对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1254,6 +1257,9 @@
     </ClCompile>
     <ClCompile Include="CommonData.cpp">
       <Filter>公共的类\CommonData</Filter>
+    </ClCompile>
+    <ClCompile Include="FlacEncodeCfgDlg.cpp">
+      <Filter>对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
