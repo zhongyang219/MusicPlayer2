@@ -148,7 +148,7 @@ wstring LastFM::GetUrl(map<wstring, wstring>& params, wstring base) {
         if (!first) {
             url += L"&";
         }
-        url += param.first + L"=" + param.second;
+        url += CCommon::EncodeURIComponent(param.first) + L"=" + CCommon::EncodeURIComponent(param.second);
         first = false;
     }
     return url;
