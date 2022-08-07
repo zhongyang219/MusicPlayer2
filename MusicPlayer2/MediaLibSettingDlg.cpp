@@ -51,6 +51,8 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_ENABLE_LASTFM, m_enable_lastfm);
     DDX_Control(pDX, IDC_LASTFM_STATUS, m_lastfm_status);
     DDX_Control(pDX, IDC_LASTFM_LOGIN, m_lastfm_login);
+    DDX_Control(pDX, IDC_LASTFM_LEAST_PERDUR, m_lastfm_least_perdur);
+    DDX_Control(pDX, IDC_LASTFM_LEAST_DUR, m_lastfm_least_dur);
 }
 
 void CMediaLibSettingDlg::GetDataFromUi()
@@ -76,6 +78,8 @@ void CMediaLibSettingDlg::GetDataFromUi()
         m_data.display_item |= MLDI_RECENT;
     if (IsDlgButtonChecked(IDC_FOLDER_EXPLORE_CHECK))
         m_data.display_item |= MLDI_FOLDER_EXPLORE;
+    m_data.lastfm_least_perdur = m_lastfm_least_perdur.GetValue();
+    m_data.lastfm_least_dur = m_lastfm_least_dur.GetValue();
 }
 
 
@@ -164,12 +168,18 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     CButton* setting_btn = (CButton*)(GetDlgItem(IDC_REFRESH_MEDIA_LIB_BUTTON));
     if (setting_btn != nullptr)
         setting_btn->SetIcon(theApp.m_icon_set.loop_playlist.GetIcon(true));
+    m_lastfm_least_perdur.SetRange(10, 90);
+    m_lastfm_least_perdur.SetValue(m_data.lastfm_least_perdur);
+    m_lastfm_least_dur.SetRange(10, 240);
+    m_lastfm_least_dur.SetValue(m_data.lastfm_least_dur);
 
 
     //设置控件不响应鼠标滚轮消息
     m_playlist_display_mode_combo.SetMouseWheelEnable(false);
     m_recent_played_range_combo.SetMouseWheelEnable(false);
     m_id3v2_type_combo.SetMouseWheelEnable(false);
+    m_lastfm_least_perdur.SetMouseWheelEnable(false);
+    m_lastfm_least_dur.SetMouseWheelEnable(false);
     UpdateLastFMStatus();
 
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -411,4 +421,6 @@ void CMediaLibSettingDlg::UpdateLastFMStatus() {
     m_lastfm_status.SetWindowTextW(CString(s.c_str()));
     bool login_enabled = m_data.enable_lastfm && !has_key;
     m_lastfm_login.EnableWindow(login_enabled);
+    m_lastfm_least_perdur.EnableWindow(m_data.enable_lastfm);
+    m_lastfm_least_dur.EnableWindow(m_data.enable_lastfm);
 }

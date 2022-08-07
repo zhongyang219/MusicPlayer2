@@ -496,6 +496,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
     ini.WriteBool(L"media_lib", L"write_id3_v2_3", theApp.m_media_lib_setting_data.write_id3_v2_3);
     ini.WriteBool(L"media_lib", L"enable_lastfm", theApp.m_media_lib_setting_data.enable_lastfm);
+    ini.WriteInt(L"media_lib", L"lastfm_least_perdur", theApp.m_media_lib_setting_data.lastfm_least_perdur);
+    ini.WriteInt(L"media_lib", L"lastfm_least_dur", theApp.m_media_lib_setting_data.lastfm_least_dur);
 
     ini.Save();
 }
@@ -685,6 +687,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
     theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);
     theApp.m_media_lib_setting_data.enable_lastfm = ini.GetBool(L"media_lib", L"enable_lastfm", false);
+    theApp.m_media_lib_setting_data.lastfm_least_perdur = ini.GetInt(L"media_lib", L"lastfm_least_perdur", 50);
+    theApp.m_media_lib_setting_data.lastfm_least_dur = ini.GetInt(L"media_lib", L"lastfm_least_dur", 60);
     CTagLibHelper::SetWriteId3V2_3(theApp.m_media_lib_setting_data.write_id3_v2_3);
 }
 

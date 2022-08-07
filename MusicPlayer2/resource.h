@@ -1023,7 +1023,6 @@
 #define IDC_BROWSE_BUTTON1              1096
 #define IDC_GET_TAG_FROM_LYRIC_BUTTON   1096
 #define IDC_STATISTICS_INFO_BUTTON      1096
-#define IDC_LASTFM_LOGIN                1096
 #define IDC_ALBUM_FIT_COMBO             1097
 #define IDC_PAUSE_RESUME_BUTTON         1097
 #define IDC_LYRIC_DOUBLE_LINE_CHECK2    1097
@@ -1173,6 +1172,9 @@
 #define IDC_SHOW_MAXIMIZE_BTN_CHECK     1209
 #define IDC_ENABLE_LASTFM               1210
 #define IDC_LASTFM_STATUS               1211
+#define IDC_LASTFM_LEAST_DUR            1212
+#define IDC_LASTFM_LEAST_PERDUR         1213
+#define IDC_LASTFM_LOGIN                1214
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773

@@ -3,6 +3,7 @@
 #include "CListBoxEnhanced.h"
 #include "afxwin.h"
 #include "MyComboBox.h"
+#include "SpinEdit.h"
 
 
 // CMediaLibSettingDlg 对话框
@@ -38,6 +39,8 @@ private:
     size_t m_data_size;		//数据文件的大小
     CStatic m_lastfm_status;
     CButton m_lastfm_login;
+    CSpinEdit m_lastfm_least_perdur;
+    CSpinEdit m_lastfm_least_dur;
 
 protected:
     void ShowDataSizeInfo();

@@ -359,6 +359,8 @@ struct MediaLibSettingData
     int display_item{};                 //媒体库显示的项目
     bool write_id3_v2_3{ false };       //写入的ID3V2版本是否为2.3，否则为2.4
     bool enable_lastfm { false };       ///是否启用Last.fm相关功能
+    int lastfm_least_perdur { 50 };     ///将记录写入缓存要求播放的百分比
+    int lastfm_least_dur { 60 };        ///将记录写入缓存要求播放的秒数
 };
 
 struct NonCategorizedSettingData
