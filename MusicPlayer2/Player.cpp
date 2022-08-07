@@ -2076,13 +2076,10 @@ void CPlayer::AddListenTime(int sec)
         }
     }
     if (m_enable_lastfm) {
-        theApp.m_lastfm.AddCurrentPlayedTime(sec);
+        int speed = m_speed * 1000;
+        theApp.m_lastfm.AddCurrentPlayedTime(sec * speed);
         if (!theApp.m_lastfm.IsPushed()) {
-            auto listened = theApp.m_lastfm.CurrentPlayedTime();
-            auto& track = theApp.m_lastfm.CorrectedCurrentTrack();
-            auto track_duration = track.duration.toInt() / 1000;
-            int32_t least_listened = min(max(track_duration / 2, 60), track_duration);
-            if (listened > least_listened) {
+            if (theApp.m_lastfm.CurrentTrackScrobbleable()) {
                 theApp.m_lastfm.PushCurrentTrackToCache();
             }
         }

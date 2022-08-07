@@ -437,8 +437,8 @@ bool LastFM::PushCurrentTrackToCache() {
     return true;
 }
 
-void LastFM::AddCurrentPlayedTime(int sec) {
-    ar.current_played_time += sec;
+void LastFM::AddCurrentPlayedTime(int millisec) {
+    ar.current_played_time += millisec;
 }
 
 int32_t LastFM::CurrentPlayedTime() {
@@ -451,4 +451,10 @@ bool LastFM::IsPushed() {
 
 bool LastFM::IsScrobbeable() {
     return ar.cached_tracks.size() >= 1;
+}
+
+bool LastFM::CurrentTrackScrobbleable() {
+    auto track_duration = ar.corrected_current_track.duration.toInt();
+    int32_t least_listened = min(max(track_duration / 2, 60000), track_duration);
+    return ar.current_played_time > least_listened;
 }
