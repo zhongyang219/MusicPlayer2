@@ -290,3 +290,11 @@ wstring LastFM::GetPostData(map<wstring, wstring>& params) {
     string tmp(printer.CStr(), printer.CStrSize());
     return CCommon::StrToUnicode(tmp, CodeType::UTF8_NO_BOM);
 }
+
+const LastFMTrack& LastFM::CurrentTrack() {
+    return ar.current_track;
+}
+
+const LastFMTrack& LastFM::CorrectedCurrentTrack() {
+    return ar.corrected_current_track;
+}

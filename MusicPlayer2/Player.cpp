@@ -2871,6 +2871,11 @@ void CPlayer::MediaTransControlsLoadThumbnailDefaultImage()
 void CPlayer::UpdateLastFMCurrentTrack(SongInfo info) {
     LastFMTrack track;
     track.ReadDataFrom(info);
+    auto& current = theApp.m_lastfm.CurrentTrack();
+    if (track == current) {
+        int duration = track.duration.toInt() / 1000;
+        if (track.timestamp - current.timestamp < duration) return;
+    }
     theApp.m_lastfm.UpdateCurrentTrack(track);
     theApp.UpdateLastFMNowPlaying();
 }
