@@ -143,9 +143,6 @@ wstring LastFM::GetToken() {
 
 wstring LastFM::GetUrl(map<wstring, wstring>& params, wstring base) {
     auto url(base);
-    if (url.back() != L'?') {
-        url += L"?";
-    }
     bool first = true;
     for (const auto& param : params) {
         if (!first) {
@@ -201,7 +198,7 @@ bool LastFM::UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track) {
     if (!track.album.empty()) {
         params[L"album"] = track.album;
     }
-    if (!track.trackNumber) {
+    if (track.trackNumber) {
         wchar_t tmp[64];
         wsprintf(tmp, L"%" PRIu16, track.trackNumber);
         params[L"trackNumber"] = wstring(tmp);
@@ -210,7 +207,7 @@ bool LastFM::UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track) {
         params[L"mbid"] = track.mbid;
     }
     auto duration = track.duration.toInt() / 1000;
-    if (!duration) {
+    if (duration) {
         wchar_t tmp[64];
         wsprintf(tmp, L"%i", duration);
         params[L"duration"] = wstring(tmp);
@@ -220,7 +217,8 @@ bool LastFM::UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track) {
     }
     GenerateApiSig(params);
     wstring result;
-    if (!CInternetCommon::GetURL(GetUrl(params), result, true, true)) return L"";
+    wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
+    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType)) return false;
     OutputDebugStringW(result.c_str());
     XMLHelper helper(result);
     if (helper.HasError()) {
@@ -245,4 +243,50 @@ bool LastFM::UpdateNowPlaying() {
 void LastFM::UpdateCurrentTrack(LastFMTrack track) {
     ar.current_track = LastFMTrack(track);
     ar.corrected_current_track = LastFMTrack(track);
+}
+
+wstring LastFM::GetPostData(map<wstring, wstring>& params) {
+    tinyxml2::XMLDocument doc;
+    auto root = doc.NewElement("methodCall");
+    if (!root) return L"";
+    doc.InsertFirstChild(root);
+    auto& method = params[L"method"];
+    if (method.empty()) return L"";
+    auto methodName = doc.NewElement("methodName");
+    if (!methodName) return L"";
+    methodName->SetText(CCommon::UnicodeToStr(method, CodeType::UTF8_NO_BOM).c_str());
+    root->InsertEndChild(methodName);
+    auto paramse = doc.NewElement("params");
+    if (!paramse) return L"";
+    root->InsertEndChild(paramse);
+    auto parame = doc.NewElement("param");
+    if (!parame) return L"";
+    paramse->InsertEndChild(parame);
+    auto value = doc.NewElement("value");
+    if (!value) return L"";
+    parame->InsertEndChild(value);
+    auto structe = doc.NewElement("struct");
+    if (!structe) return L"";
+    value->InsertEndChild(structe);
+    for (auto& param : params) {
+        if (param.first == L"method") continue;
+        auto member = doc.NewElement("member");
+        if (!member) return L"";
+        structe->InsertEndChild(member);
+        auto name = doc.NewElement("name");
+        if (!name) return L"";
+        name->SetText(CCommon::UnicodeToStr(param.first, CodeType::UTF8_NO_BOM).c_str());
+        member->InsertEndChild(name);
+        auto value = doc.NewElement("value");
+        if (!value) return L"";
+        member->InsertEndChild(value);
+        auto s = doc.NewElement("string");
+        if (!s) return L"";
+        s->SetText(CCommon::UnicodeToStr(param.second, CodeType::UTF8_NO_BOM).c_str());
+        value->InsertEndChild(s);
+    }
+    tinyxml2::XMLPrinter printer;
+    doc.Print(&printer);
+    string tmp(printer.CStr(), printer.CStrSize());
+    return CCommon::StrToUnicode(tmp, CodeType::UTF8_NO_BOM);
 }

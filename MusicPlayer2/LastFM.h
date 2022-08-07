@@ -30,6 +30,7 @@ public:
 protected:
     void GenerateApiSig(map<wstring, wstring>& params);
     wstring GetUrl(map<wstring, wstring>& params, wstring base = L"http://ws.audioscrobbler.com/2.0/?");
+    wstring GetPostData(map<wstring, wstring>& params);
 private:
     LastFMDataArchive ar;
     wstring api_key;

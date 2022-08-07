@@ -86,8 +86,18 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result, bool cus
 	return sucessed;
 }
 
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result) {
+    string body;
+    wstring headers;
+    return HttpPost(str_url, result, body, headers);
+}
 
-int CInternetCommon::HttpPost(const wstring & str_url, wstring & result)
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, wstring& body, wstring& headers) {
+    auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
+    return HttpPost(str_url, result, tmp, headers);
+}
+
+int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, string& body, wstring& headers)
 {
     wstring log_info;
     log_info = L"http post: " + str_url;
@@ -114,8 +124,8 @@ int CInternetCommon::HttpPost(const wstring & str_url, wstring & result)
 		pFile = pConnection->OpenRequest(_T("POST"), strObject,
 			NULL, 1, NULL, NULL,
 			(dwServiceType == AFX_INET_SERVICE_HTTP ? NORMAL_REQUEST : SECURE_REQUEST));
-
-		pFile->SendRequest(NULL, 0, NULL, 0);
+        
+		pFile->SendRequest(headers.empty() ? NULL : headers.c_str(), headers.size(), body.empty() ? NULL : (LPVOID)body.c_str(), body.size());
 
 		CString content;
 		CString data;
