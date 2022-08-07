@@ -2889,7 +2889,7 @@ void CPlayer::UpdateLastFMCurrentTrack(SongInfo info) {
     track.ReadDataFrom(info);
     auto& current = theApp.m_lastfm.CurrentTrack();
     if (track == current) {
-        int duration = track.duration.toInt() / 1000;
+        int duration = track.duration.toInt() / 1000 * 9 / 10;
         if (track.timestamp - current.timestamp < duration) return;
     }
     theApp.m_lastfm.UpdateCurrentTrack(track);
