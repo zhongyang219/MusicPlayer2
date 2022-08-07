@@ -2046,6 +2046,7 @@ void CPlayer::SetFavourite(bool favourite)
         //    theApp.SaveSongInfo(m_playlist[m_index]);
         //}
     }
+    theApp.UpdateLastFMFavourite(favourite);
 
 }
 

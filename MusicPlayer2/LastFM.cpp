@@ -298,3 +298,45 @@ const LastFMTrack& LastFM::CurrentTrack() {
 const LastFMTrack& LastFM::CorrectedCurrentTrack() {
     return ar.corrected_current_track;
 }
+
+bool LastFM::Love(wstring track, wstring artist) {
+    if (track.empty() || artist.empty() || ar.session_key.empty()) return false;
+    map <wstring, wstring> params = { {L"api_key", api_key}, {L"method", L"track.love"}, {L"sk", ar.session_key}, {L"artist", artist}, {L"track", track} };
+    GenerateApiSig(params);
+    wstring result;
+    wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
+    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
+    OutputDebugStringW(result.c_str());
+    XMLHelper helper(result);
+    if (helper.HasError()) {
+        theApp.WriteLog(L"Error in LastFM::Love().");
+        helper.PrintError();
+        return false;
+    }
+    return true;
+}
+
+bool LastFM::Love() {
+    return Love(ar.corrected_current_track.track, ar.corrected_current_track.artist);
+}
+
+bool LastFM::Unlove(wstring track, wstring artist) {
+    if (track.empty() || artist.empty() || ar.session_key.empty()) return false;
+    map <wstring, wstring> params = { {L"api_key", api_key}, {L"method", L"track.unlove"}, {L"sk", ar.session_key}, {L"artist", artist}, {L"track", track} };
+    GenerateApiSig(params);
+    wstring result;
+    wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
+    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
+    OutputDebugStringW(result.c_str());
+    XMLHelper helper(result);
+    if (helper.HasError()) {
+        theApp.WriteLog(L"Error in LastFM::Unlove().");
+        helper.PrintError();
+        return false;
+    }
+    return true;
+}
+
+bool LastFM::Unlove() {
+    return Unlove(ar.corrected_current_track.track, ar.corrected_current_track.artist);
+}

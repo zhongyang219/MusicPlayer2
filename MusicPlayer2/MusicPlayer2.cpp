@@ -1252,3 +1252,17 @@ UINT CMusicPlayerApp::UpdateLastFMNowPlayingFunProc(LPVOID lpParam) {
     theApp.m_lastfm.UpdateNowPlaying();
     return 0;
 }
+
+void CMusicPlayerApp::UpdateLastFMFavourite(bool favourite) {
+    AfxBeginThread(UpdateLastFMFavouriteFunProc, (LPVOID)favourite);
+}
+
+UINT CMusicPlayerApp::UpdateLastFMFavouriteFunProc(LPVOID lpParam) {
+    auto favourite = (bool)lpParam;
+    if (favourite) {
+        theApp.m_lastfm.Love();
+    } else {
+        theApp.m_lastfm.Unlove();
+    }
+    return 0;
+}

@@ -33,6 +33,7 @@ class LastFMTrack {
         void ReadDataFrom(CArchive &archive);
         void ReadDataFrom(SongInfo info);
         bool operator==(const LastFMTrack& track);
+        bool operator==(const SongInfo& info);
 };
 
 class LastFMDataArchive {

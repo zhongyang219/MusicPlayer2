@@ -29,6 +29,10 @@ public:
     void UpdateCurrentTrack(LastFMTrack track);
     const LastFMTrack& CurrentTrack();
     const LastFMTrack& CorrectedCurrentTrack();
+    bool Love(wstring track, wstring artist);
+    bool Love();
+    bool Unlove(wstring track, wstring artist);
+    bool Unlove();
 protected:
     void GenerateApiSig(map<wstring, wstring>& params);
     wstring GetUrl(map<wstring, wstring>& params, wstring base = L"http://ws.audioscrobbler.com/2.0/?");

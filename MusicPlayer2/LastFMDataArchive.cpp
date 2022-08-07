@@ -87,6 +87,14 @@ bool LastFMTrack::operator==(const LastFMTrack& track) {
         duration == track.duration;
 }
 
+bool LastFMTrack::operator==(const SongInfo& info) {
+    return artist == info.artist &&
+        track == info.title &&
+        album == info.album &&
+        trackNumber == info.track &&
+        duration == info.lengh;
+}
+
 void LastFMDataArchive::SaveData(wstring path) {
     CFile file;
     BOOL bRet = file.Open(path.c_str(), CFile::modeCreate | CFile::modeWrite);
