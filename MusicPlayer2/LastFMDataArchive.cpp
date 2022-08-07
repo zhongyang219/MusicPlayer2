@@ -103,9 +103,11 @@ void LastFMDataArchive::SaveData(wstring path) {
     }
     CArchive ar(&file, CArchive::store);
     /// °æ±¾ºÅ
-    ar << (uint16_t)0;
+    ar << (uint16_t)1;
     ar << CString(session_key.c_str());
     ar << CString(user_name.c_str());
+    ar << current_played_time;
+    ar << is_pushed;
     current_track.SaveDataTo(ar);
     corrected_current_track.SaveDataTo(ar);
     ar << (uint64_t)cached_tracks.size();
@@ -127,7 +129,7 @@ void LastFMDataArchive::LoadData(wstring path) {
     try {
         uint16_t version;
         ar >> version;
-        if (version > 0) {
+        if (version > 1) {
             return;
         }
         CString temp;
@@ -135,6 +137,16 @@ void LastFMDataArchive::LoadData(wstring path) {
         session_key = temp;
         ar >> temp;
         user_name = temp;
+        if (version > 0) {
+            ar >> current_played_time;
+        } else {
+            current_played_time = 0;
+        }
+        if (version > 0) {
+            ar >> is_pushed;
+        } else {
+            is_pushed = false;
+        }
         current_track.ReadDataFrom(ar);
         corrected_current_track.ReadDataFrom(ar);
         uint64_t size;

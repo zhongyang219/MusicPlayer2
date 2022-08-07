@@ -144,6 +144,7 @@ public:
     void SaveLastFMData();
     void UpdateLastFMNowPlaying();
     void UpdateLastFMFavourite(bool favourite);
+    void LastFMScrobble();
 
 private:
     void LoadSongData();
@@ -152,6 +153,7 @@ private:
     static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
     static UINT UpdateLastFMNowPlayingFunProc(LPVOID lpParam);
     static UINT UpdateLastFMFavouriteFunProc(LPVOID lpParam);
+    static UINT LastFMScrobbleFunProc(LPVOID lpParam);
 
 private:
     HHOOK m_multimedia_key_hook = NULL;

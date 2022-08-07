@@ -98,6 +98,9 @@ public:
     tinyxml2::XMLElement* nowplaying() {
         return FindElement(doc.RootElement(), "nowplaying");
     }
+    tinyxml2::XMLElement* scrobbles() {
+        return FindElement(doc.RootElement(), "scrobbles");
+    }
     void PrintIgnoredMessage(tinyxml2::XMLElement* parent) {
         auto ele = FindElement(parent, "ignoredMessage");
         if (!ele) return;
@@ -243,6 +246,8 @@ bool LastFM::UpdateNowPlaying() {
 void LastFM::UpdateCurrentTrack(LastFMTrack track) {
     ar.current_track = LastFMTrack(track);
     ar.corrected_current_track = LastFMTrack(track);
+    ar.current_played_time = 0;
+    ar.is_pushed = false;
 }
 
 wstring LastFM::GetPostData(map<wstring, wstring>& params) {
@@ -339,4 +344,111 @@ bool LastFM::Unlove(wstring track, wstring artist) {
 
 bool LastFM::Unlove() {
     return Unlove(ar.corrected_current_track.track, ar.corrected_current_track.artist);
+}
+
+bool LastFM::Scrobble(list<LastFMTrack>& tracks) {
+    if (tracks.empty() || ar.session_key.empty()) return false;
+    map <wstring, wstring> params = { {L"api_key", api_key}, {L"method", L"track.scrobble"}, {L"sk", ar.session_key} };
+    int i = 0;
+    for (auto& track: tracks) {
+        if (i >= 50) break;
+        wchar_t key[64], tmp[64];
+        if (track.artist.empty() || track.track.empty() || !track.timestamp) continue;
+        wsprintf(key, L"artist[%i]", i);
+        params[key] = track.artist;
+        wsprintf(key, L"track[%i]", i);
+        params[key] = track.track;
+        wsprintf(key, L"timestamp[%i]", i);
+        char tmp2[64];
+        // wsprintf 无法正确识别PRIu64
+        sprintf_s(tmp2, "%" PRIu64, track.timestamp);
+        params[key] = CCommon::StrToUnicode(tmp2);
+        if (!track.album.empty()) {
+            wsprintf(key, L"album[%i]", i);
+            params[key] = track.album;
+        }
+        if (!track.streamId.empty()) {
+            wsprintf(key, L"streamId[%i]", i);
+            params[key] = track.streamId;
+        }
+        wsprintf(key, L"chosenByUser[%i]", i);
+        params[key] = track.chosenByUser ? L"1" : L"0";
+        if (track.trackNumber) {
+            wsprintf(key, L"trackNumber[%i]", i);
+            wsprintf(tmp, L"%" PRIu16, track.trackNumber);
+            params[key] = tmp;
+        }
+        if (!track.mbid.empty()) {
+            wsprintf(key, L"mbid[%i]", i);
+            params[key] = track.mbid;
+        }
+        if (!track.albumArtist.empty()) {
+            wsprintf(key, L"albumArtist[%i]", i);
+            params[key] = track.albumArtist;
+        }
+        auto duration = track.duration.toInt();
+        if (duration) {
+            wsprintf(key, L"duration[%i]", i);
+            wsprintf(tmp, L"%i", duration / 1000);
+            params[key] = tmp;
+        }
+        i++;
+    }
+    GenerateApiSig(params);
+    wstring result;
+    wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
+    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
+    OutputDebugStringW(result.c_str());
+    XMLHelper helper(result);
+    if (helper.HasError()) {
+        theApp.WriteLog(L"Error in LastFM::Scrobble().");
+        helper.PrintError();
+        return false;
+    }
+    while (i > 0) {
+        if (tracks.empty()) break;
+        auto& track = tracks.front();
+        if (track.artist.empty() || track.track.empty() || !track.timestamp) {
+            tracks.pop_front();
+            continue;
+        }
+        tracks.pop_front();
+        i--;
+    }
+    auto scrobbles = helper.scrobbles();
+    if (!scrobbles) return false;
+    auto scrobble = scrobbles->FirstChildElement();
+    if (!scrobble) return true;
+    do {
+        helper.PrintIgnoredMessage(scrobble);
+        scrobble = scrobble->NextSiblingElement();
+    } while (scrobble != nullptr);
+    return true;
+}
+
+bool LastFM::Scrobble() {
+    return Scrobble(ar.cached_tracks);
+}
+
+bool LastFM::PushCurrentTrackToCache() {
+    if (ar.is_pushed) return false;
+    ar.cached_tracks.push_back(LastFMTrack(ar.corrected_current_track));
+    ar.is_pushed = true;
+    return true;
+}
+
+void LastFM::AddCurrentPlayedTime(int sec) {
+    ar.current_played_time += sec;
+}
+
+int32_t LastFM::CurrentPlayedTime() {
+    return ar.current_played_time;
+}
+
+bool LastFM::IsPushed() {
+    return ar.is_pushed;
+}
+
+bool LastFM::IsScrobbeable() {
+    return ar.cached_tracks.size() >= 1;
 }

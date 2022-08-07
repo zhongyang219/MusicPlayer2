@@ -1266,3 +1266,12 @@ UINT CMusicPlayerApp::UpdateLastFMFavouriteFunProc(LPVOID lpParam) {
     }
     return 0;
 }
+
+void CMusicPlayerApp::LastFMScrobble() {
+    AfxBeginThread(LastFMScrobbleFunProc, (LPVOID)NULL);
+}
+
+UINT CMusicPlayerApp::LastFMScrobbleFunProc(LPVOID lpParam) {
+    theApp.m_lastfm.Scrobble();
+    return 0;
+}

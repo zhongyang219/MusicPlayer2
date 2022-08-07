@@ -48,6 +48,10 @@ public:
     wstring session_key;
     /// User name
     wstring user_name;
+    /// The played time for current song.
+    int32_t current_played_time;
+    /// The current song is pushed to cache list or not.
+    bool is_pushed;
     void SaveData(wstring path);
     void LoadData(wstring path);
 };

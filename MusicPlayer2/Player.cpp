@@ -548,7 +548,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
         m_controls.UpdateControls(Command::PLAY);
         UpdateControlsMetadata(GetCurrentSongInfo());
-        if (theApp.m_media_lib_setting_data.enable_lastfm) {
+        m_enable_lastfm = theApp.m_media_lib_setting_data.enable_lastfm;
+        if (m_enable_lastfm) {
             UpdateLastFMCurrentTrack(GetCurrentSongInfo());
         }
         break;
@@ -2046,7 +2047,9 @@ void CPlayer::SetFavourite(bool favourite)
         //    theApp.SaveSongInfo(m_playlist[m_index]);
         //}
     }
-    theApp.UpdateLastFMFavourite(favourite);
+    if (theApp.m_media_lib_setting_data.enable_lastfm) {
+        theApp.UpdateLastFMFavourite(favourite);
+    }
 
 }
 
@@ -2070,6 +2073,21 @@ void CPlayer::AddListenTime(int sec)
         {
             CSongDataManager::GetInstance().GetSongInfoRef(m_playlist[m_index].file_path).listen_time += sec;
             CSongDataManager::GetInstance().SetSongDataModified();
+        }
+    }
+    if (m_enable_lastfm) {
+        theApp.m_lastfm.AddCurrentPlayedTime(sec);
+        if (!theApp.m_lastfm.IsPushed()) {
+            auto listened = theApp.m_lastfm.CurrentPlayedTime();
+            auto& track = theApp.m_lastfm.CorrectedCurrentTrack();
+            auto track_duration = track.duration.toInt() / 1000;
+            int32_t least_listened = min(max(track_duration / 2, 60), track_duration);
+            if (listened > least_listened) {
+                theApp.m_lastfm.PushCurrentTrackToCache();
+            }
+        }
+        if (theApp.m_lastfm.IsScrobbeable()) {
+            theApp.LastFMScrobble();
         }
     }
 }

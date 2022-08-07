@@ -33,6 +33,13 @@ public:
     bool Love();
     bool Unlove(wstring track, wstring artist);
     bool Unlove();
+    bool Scrobble(list<LastFMTrack>& tracks);
+    bool Scrobble();
+    bool PushCurrentTrackToCache();
+    void AddCurrentPlayedTime(int sec);
+    int32_t CurrentPlayedTime();
+    bool IsPushed();
+    bool IsScrobbeable();
 protected:
     void GenerateApiSig(map<wstring, wstring>& params);
     wstring GetUrl(map<wstring, wstring>& params, wstring base = L"http://ws.audioscrobbler.com/2.0/?");
