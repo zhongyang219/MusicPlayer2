@@ -2083,7 +2083,7 @@ void CPlayer::AddListenTime(int sec)
                 theApp.m_lastfm.PushCurrentTrackToCache();
             }
         }
-        if (theApp.m_lastfm.IsScrobbeable()) {
+        if (theApp.m_media_lib_setting_data.lastfm_auto_scrobble && theApp.m_lastfm.IsScrobbeable()) {
             theApp.LastFMScrobble();
         }
     }

@@ -53,6 +53,9 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LASTFM_LOGIN, m_lastfm_login);
     DDX_Control(pDX, IDC_LASTFM_LEAST_PERDUR, m_lastfm_least_perdur);
     DDX_Control(pDX, IDC_LASTFM_LEAST_DUR, m_lastfm_least_dur);
+    DDX_Control(pDX, IDC_LASTFM_AUTO_SCROBBLE, m_lastfm_auto_scrobble);
+    DDX_Control(pDX, IDC_LASTFM_AUTO_SCROBBLE_MIN, m_lastfm_auto_scrobble_min);
+    DDX_Control(pDX, IDC_LASTFM_CACHE_STATUS, m_lastfm_cache_status);
 }
 
 void CMediaLibSettingDlg::GetDataFromUi()
@@ -80,6 +83,7 @@ void CMediaLibSettingDlg::GetDataFromUi()
         m_data.display_item |= MLDI_FOLDER_EXPLORE;
     m_data.lastfm_least_perdur = m_lastfm_least_perdur.GetValue();
     m_data.lastfm_least_dur = m_lastfm_least_dur.GetValue();
+    m_data.lastfm_auto_scrobble_min = m_lastfm_auto_scrobble_min.GetValue();
 }
 
 
@@ -102,6 +106,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, &CMediaLibSettingDlg::OnBnClickedFloatPlaylistFollowMainWndCheck)
     ON_BN_CLICKED(IDC_ENABLE_LASTFM, &CMediaLibSettingDlg::OnBnClickedEnableLastfm)
     ON_BN_CLICKED(IDC_LASTFM_LOGIN, &CMediaLibSettingDlg::OnBnClickedLastfmLogin)
+    ON_BN_CLICKED(IDC_LASTFM_AUTO_SCROBBLE, &CMediaLibSettingDlg::OnBnClickedLastfmAutoScrobble)
 END_MESSAGE_MAP()
 
 
@@ -172,6 +177,8 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_lastfm_least_perdur.SetValue(m_data.lastfm_least_perdur);
     m_lastfm_least_dur.SetRange(10, 240);
     m_lastfm_least_dur.SetValue(m_data.lastfm_least_dur);
+    m_lastfm_auto_scrobble_min.SetRange(1, 50);
+    m_lastfm_auto_scrobble_min.SetValue(m_data.lastfm_auto_scrobble_min);
 
 
     //设置控件不响应鼠标滚轮消息
@@ -423,4 +430,18 @@ void CMediaLibSettingDlg::UpdateLastFMStatus() {
     m_lastfm_login.EnableWindow(login_enabled);
     m_lastfm_least_perdur.EnableWindow(m_data.enable_lastfm);
     m_lastfm_least_dur.EnableWindow(m_data.enable_lastfm);
+    m_lastfm_auto_scrobble.EnableWindow(m_data.enable_lastfm);
+    m_lastfm_auto_scrobble.SetCheck(m_data.lastfm_auto_scrobble);
+    m_lastfm_auto_scrobble_min.EnableWindow(m_data.enable_lastfm && m_data.lastfm_auto_scrobble);
+    CString status = CCommon::LoadText(IDS_LASTFM_CACHE_STATUS);
+    wchar_t tmp[32];
+    wsprintf(tmp, L"%i", (int)theApp.m_lastfm.CachedCount());
+    status.Replace(L"%i", tmp);
+    m_lastfm_cache_status.SetWindowTextW(status);
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedLastfmAutoScrobble() {
+    m_data.lastfm_auto_scrobble = (m_lastfm_auto_scrobble.GetCheck() != 0);
+    UpdateLastFMStatus();
 }

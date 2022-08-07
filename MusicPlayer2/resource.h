@@ -759,6 +759,7 @@
 #define IDS_LOGGED                      582
 #define IDS_LASTFM_LOGIN                583
 #define IDS_LOGIN_FAILED                584
+#define IDS_LASTFM_CACHE_STATUS         585
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1175,6 +1176,9 @@
 #define IDC_LASTFM_LEAST_DUR            1212
 #define IDC_LASTFM_LEAST_PERDUR         1213
 #define IDC_LASTFM_LOGIN                1214
+#define IDC_LASTFM_AUTO_SCROBBLE        1215
+#define IDC_LASTFM_AUTO_SCROBBLE_MIN    1216
+#define IDC_LASTFM_CACHE_STATUS         1217
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1623,7 +1627,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        573
 #define _APS_NEXT_COMMAND_VALUE         33394
-#define _APS_NEXT_CONTROL_VALUE         1212
+#define _APS_NEXT_CONTROL_VALUE         1218
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -469,11 +469,15 @@ bool LastFM::IsPushed() {
 }
 
 bool LastFM::IsScrobbeable() {
-    return ar.cached_tracks.size() >= 1;
+    return ar.cached_tracks.size() >= theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min;
 }
 
 bool LastFM::CurrentTrackScrobbleable() {
     auto track_duration = ar.corrected_current_track.duration.toInt();
     int32_t least_listened = min(max(track_duration * theApp.m_media_lib_setting_data.lastfm_least_perdur / 100, theApp.m_media_lib_setting_data.lastfm_least_dur * 1000), track_duration);
     return ar.current_played_time > least_listened;
+}
+
+size_t LastFM::CachedCount() {
+    return ar.cached_tracks.size();
 }

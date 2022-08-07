@@ -41,6 +41,9 @@ private:
     CButton m_lastfm_login;
     CSpinEdit m_lastfm_least_perdur;
     CSpinEdit m_lastfm_least_dur;
+    CButton m_lastfm_auto_scrobble;
+    CSpinEdit m_lastfm_auto_scrobble_min;
+    CStatic m_lastfm_cache_status;
 
 protected:
     void ShowDataSizeInfo();
@@ -72,4 +75,5 @@ public:
     afx_msg void OnBnClickedFloatPlaylistFollowMainWndCheck();
     afx_msg void OnBnClickedEnableLastfm();
     afx_msg void OnBnClickedLastfmLogin();
+    afx_msg void OnBnClickedLastfmAutoScrobble();
 };

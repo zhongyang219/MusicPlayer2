@@ -361,6 +361,8 @@ struct MediaLibSettingData
     bool enable_lastfm { false };       ///是否启用Last.fm相关功能
     int lastfm_least_perdur { 50 };     ///将记录写入缓存要求播放的百分比
     int lastfm_least_dur { 60 };        ///将记录写入缓存要求播放的秒数
+    bool lastfm_auto_scrobble { true }; ///是否自动上传缓存里的记录
+    int lastfm_auto_scrobble_min { 1 }; ///自动上传缓存里的记录的下限
 };
 
 struct NonCategorizedSettingData

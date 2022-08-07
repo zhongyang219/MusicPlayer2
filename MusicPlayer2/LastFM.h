@@ -40,6 +40,7 @@ public:
     bool IsScrobbeable();
     /// 当前歌曲是否播放到了可以上传的进度
     bool CurrentTrackScrobbleable();
+    size_t CachedCount();
 protected:
     void GenerateApiSig(map<wstring, wstring>& params);
     wstring GetUrl(map<wstring, wstring>& params, wstring base = L"http://ws.audioscrobbler.com/2.0/?");
