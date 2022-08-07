@@ -2065,6 +2065,7 @@ void CPlayer::SortPlaylist(bool change_index)
                 else
                     return file_time_a < file_time_b;
             });
+        break;
     default:
         break;
     }

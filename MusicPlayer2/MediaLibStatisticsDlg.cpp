@@ -13,7 +13,7 @@
 IMPLEMENT_DYNAMIC(CMediaLibStatisticsDlg, CBaseDialog)
 
 CMediaLibStatisticsDlg::CMediaLibStatisticsDlg(CWnd* pParent /*=nullptr*/)
-	: CBaseDialog(IDD_SELECT_ITEM_DIALOG, pParent)
+    : CBaseDialog(IDD_SELECT_ITEM_DIALOG, pParent)
 {
 
 }
@@ -24,7 +24,7 @@ CMediaLibStatisticsDlg::~CMediaLibStatisticsDlg()
 
 void CMediaLibStatisticsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CBaseDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST1, m_list_ctrl);
 }
 
@@ -46,7 +46,7 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    
+
     SetWindowText(CCommon::LoadText(IDS_MEDIALIB_STATISTICS));
     SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
 

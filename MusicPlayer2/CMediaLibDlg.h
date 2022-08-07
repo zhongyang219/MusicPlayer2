@@ -40,7 +40,8 @@ public:
     //tabs: 要显示出来的标签，它不是标签的序号，而是多个bit的组合，用于表示多个标签，每个bit的含义为MediaLibDisplayItem枚举的常量
     void SetTabForceShow(int tabs) { m_tab_show_force = tabs; }
 
-    bool NavigateToItem(const wstring& item);       //跳转到对应项目，例如当前显示的是艺术家标签，则跳转到对应艺术家
+    //跳转到对应项目，例如当前显示的是艺术家标签，则跳转到对应艺术家
+    bool NavigateToItem(const wstring& item);
 
 protected:
     void SaveConfig() const;
