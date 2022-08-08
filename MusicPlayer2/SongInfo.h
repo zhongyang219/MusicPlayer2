@@ -137,6 +137,42 @@ struct SongInfo
     {
         return a.track > b.track;
     }
+    //根据流派的比较函数，用于以流派排序
+    static bool ByGenre(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) < 0;
+    }
+    static bool ByGenreDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) > 0;
+    }
+    //根据比特率的比较函数，用于以比特率排序
+    static bool ByBitrate(const SongInfo& a, const SongInfo& b)
+    {
+        return a.bitrate < b.bitrate;
+    }
+    static bool ByBitrateDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return a.bitrate > b.bitrate;
+    }
+    //根据年份的比较函数，用于以年份排序
+    static bool ByYear(const SongInfo& a, const SongInfo& b)
+    {
+        return a.year < b.year;
+    }
+    static bool ByYearDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return a.year > b.year;
+    }
+    //根据最后播放时间的比较函数，用于以最后播放时间排序
+    static bool ByLastPlay(const SongInfo& a, const SongInfo& b)
+    {
+        return a.last_played_time < b.last_played_time;
+    }
+    static bool ByLastPlayDecending(const SongInfo& a, const SongInfo& b)
+    {
+        return a.last_played_time > b.last_played_time;
+    }
 
     //从另一个SongInfo对象复制标签信息
     void CopyAudioTag(const SongInfo& song_info)

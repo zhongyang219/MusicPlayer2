@@ -226,15 +226,15 @@ void CMediaLibTabDlg::OnItemProperty()
     if (GetItemSelected() < 0)
         return;
     CPropertyDlg* pDlg;
+    std::vector<SongInfo> songs;
     if (GetItemsSelected().size() > 1)        // 选中项多于一个时批量编辑选中项
     {
-        std::vector<SongInfo> songs_selected;
-        GetSongsSelected(songs_selected);
-        pDlg = new CPropertyDlg(songs_selected);
+        GetSongsSelected(songs);
+        pDlg = new CPropertyDlg(songs);
     }
     else                                      // 只有一个选中项时打开选中歌曲属性窗口，songs是用来支持翻页的数据
     {
-        std::vector<SongInfo> songs{ GetSongList() };
+        songs = GetSongList();
         pDlg = new CPropertyDlg(songs, GetItemSelected(), false);
     }
     pDlg->DoModal();

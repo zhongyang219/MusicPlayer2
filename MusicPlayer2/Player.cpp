@@ -204,6 +204,11 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
         // 直接将各种信息更新到CSongDataManager，最后再直接存入m_playlist
         SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef2(song);
+        if (song_info.file_path.empty())    // 说明媒体库内没有记录，需要从song复制信息到空白的song_info
+        {
+            song_info.CopySongInfo(song);
+            song_info.file_path = song.file_path;
+        }
 
         if (song_info.modified_time == 0 || pInfo->refresh_info)
             song_info.modified_time = CCommon::GetFileLastModified(song_info.file_path);
@@ -225,7 +230,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             song_info.info_acquired = true;
             song_info.SetChannelInfoAcquired(true);
 
-            if (!song_info.is_cue)
+            if (!song_info.is_cue && !is_osu_file)
             {
                 // 从文件获取分级信息，仅限支持的文件
                 CAudioTag audio_tag(song_info);
@@ -281,7 +286,7 @@ void CPlayer::IniPlaylistComplate()
     //对播放列表排序
     SongInfo current_file = GetCurrentSongInfo();		// 排序前保存当前歌曲
     bool sorted = false;
-    if (m_thread_info.is_playlist_mode && m_playlist.size() > 1)
+    if (!m_thread_info.is_playlist_mode && m_playlist.size() > 1)
     {
         SortPlaylist(false);
         sorted = true;
@@ -1055,7 +1060,7 @@ void CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_in
     MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
-        if (!CPlaylistMgr::Instance().m_cur_playlist_type == PT_TEMP)
+        if (!(CPlaylistMgr::Instance().m_cur_playlist_type == PT_TEMP))
             SaveCurrentPlaylist();
         EmplaceCurrentPlaylistToRecent();
         EmplaceCurrentPathToRecent();
@@ -1069,6 +1074,7 @@ void CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_in
     if (play_index >= 0 && play_index < static_cast<int>(m_playlist.size()))
     {
         m_current_song_tmp = m_playlist[play_index];
+        m_current_song_playing_tmp = play;
     }
     // 若m_current_song_tmp不存在于初始化后的播放列表则这里设置的0值作为默认值被使用
     m_index = 0;

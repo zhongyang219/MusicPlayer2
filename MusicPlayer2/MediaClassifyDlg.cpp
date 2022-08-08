@@ -323,7 +323,7 @@ bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
 
     auto getSongList = [&](std::vector<SongInfo>& song_list)
     {
-        CMediaLibTabDlg::GetSongsSelected(song_list);
+        GetSongsSelected(song_list);
     };
     CMusicPlayerCmdHelper cmd_helper(this);
     return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);

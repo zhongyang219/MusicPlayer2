@@ -3,6 +3,7 @@
 #include "CVariant.h"
 #include <initializer_list>
 #include <functional>
+#include <numeric>
 #include <gdiplus.h>
 
 enum class Command
@@ -446,6 +447,13 @@ public:
     static CString GetLastCompileTime();
 
     static unsigned __int64 GetCurTimeElapse();
+
+    // https://stackoverflow.com/questions/17074324
+    template <typename T, typename Compare>
+    static std::vector<std::size_t> sort_permutation(const std::vector<T>& vec, Compare& compare);
+
+    template <typename T>
+    static std::vector<T> apply_permutation(const std::vector<T>& vec, const std::vector<std::size_t>& p);
 };
 
 template<class T>
@@ -597,4 +605,23 @@ inline void CCommon::DeleteModelessDialog(T*& dlg)
         delete dlg;
         dlg = nullptr;
     }
+}
+
+template <typename T, typename Compare>
+inline std::vector<std::size_t> CCommon::sort_permutation(const std::vector<T>& vec, Compare& compare)
+{
+    std::vector<std::size_t> p(vec.size());
+    std::iota(p.begin(), p.end(), 0);
+    std::sort(p.begin(), p.end(),
+        [&](std::size_t i, std::size_t j) { return compare(vec[i], vec[j]); });
+    return p;
+}
+
+template <typename T>
+inline std::vector<T> CCommon::apply_permutation(const std::vector<T>& vec, const std::vector<std::size_t>& p)
+{
+    std::vector<T> sorted_vec(vec.size());
+    std::transform(p.begin(), p.end(), sorted_vec.begin(),
+        [&](std::size_t i) { return vec[i]; });
+    return sorted_vec;
 }

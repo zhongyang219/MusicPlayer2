@@ -351,103 +351,69 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 
         //对列表排序
         auto& list_songs{ m_searched ? m_list_songs_searched : m_list_songs };
+        auto& list_data{ m_searched ? m_list_data_searched : m_list_data };
+
         if (phdr->iItem > COL_INDEX && phdr->iItem < COL_MAX)
         {
-            switch (phdr->iItem)
-            {
-            case COL_TITLE:
-                if (ascending)
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByTitle);
-                else
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByTitleDecending);
-                break;
-            case COL_ARTIST:
-                if (ascending)
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByArtist);
-                else
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByArtistDecending);
-                break;
-            case COL_ALBUM:
-                if (ascending)
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByAlbum);
-                else
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByAlbumDecending);
-                break;
-            case COL_TRACK:
-                if (ascending)
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByTrack);
-                else
-                    std::stable_sort(list_songs.begin(), list_songs.end(), SongInfo::ByTrackDecending);
-                break;
-            case COL_GENRE:
-                std::stable_sort(list_songs.begin(), list_songs.end(), [&](const SongInfo& a, const SongInfo& b)
-                    {
-                        if (ascending)
-                            return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) < 0;
-                        else
-                            return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) > 0;
-                    });
-                break;
-            case COL_BITRATE:
-                std::stable_sort(list_songs.begin(), list_songs.end(), [&](const SongInfo& a, const SongInfo& b)
-                    {
-                        if (ascending)
-                            return a.bitrate < b.bitrate;
-                        else
-                            return a.bitrate > b.bitrate;
-                    });
-                break;
-            case COL_YEAR:
-                std::stable_sort(list_songs.begin(), list_songs.end(), [&](const SongInfo& a, const SongInfo& b)
-                    {
-                        if (ascending)
-                            return a.year < b.year;
-                        else
-                            return a.year > b.year;
-                    });
-                break;
-            case COL_PATH:
-                std::stable_sort(list_songs.begin(), list_songs.end(), [&](const SongInfo& a, const SongInfo& b)
-                    {
-                        if (ascending)
-                            return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) < 0;
-                        else
-                            return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) > 0;
-                    });
-                break;
-            case COL_LAST_PLAYED_TIME:
-                std::stable_sort(list_songs.begin(), list_songs.end(), [&](const SongInfo& a, const SongInfo& b)
-                    {
-                        if (ascending)
-                            return a.last_played_time < b.last_played_time;
-                        else
-                            return a.last_played_time > b.last_played_time;
-                    });
-                break;
-            default:
-                break;
-            }
-            if (m_searched)
-            {
-                m_list_data_searched.clear();
-                for (const SongInfo& tmp : m_list_songs_searched)
+            auto so = CCommon::sort_permutation(list_songs, [&](const SongInfo& a, const SongInfo& b)
                 {
-                    CListCtrlEx::RowData row_data;
-                    SetRowData(row_data, tmp);
-                    m_list_data.push_back(std::move(row_data));
-                }
-            }
-            else
-            {
-                m_list_data.clear();
-                for (const SongInfo& tmp : m_list_songs)
-                {
-                    CListCtrlEx::RowData row_data;
-                    SetRowData(row_data, tmp);
-                    m_list_data.push_back(std::move(row_data));
-                }
+                    if (ascending)
+                    {
+                        switch (phdr->iItem)
+                        {
+                        case COL_TITLE:
+                            return SongInfo::ByTitle(a, b); break;
+                        case COL_ARTIST:
+                            return SongInfo::ByArtist(a, b); break;
+                        case COL_ALBUM:
+                            return SongInfo::ByAlbum(a, b); break;
+                        case COL_TRACK:
+                            return SongInfo::ByTrack(a, b); break;
+                        case COL_GENRE:
+                            return SongInfo::ByGenre(a, b); break;
+                        case COL_BITRATE:
+                            return SongInfo::ByBitrate(a, b); break;
+                        case COL_YEAR:
+                            return SongInfo::ByYear(a, b); break;
+                        case COL_PATH:
+                            return SongInfo::ByPath(a, b); break;
+                        case COL_LAST_PLAYED_TIME:
+                            return SongInfo::ByLastPlay(a, b); break;
+                        default: 
+                            return SongInfo::ByTitle(a, b); break;    // 默认按标题排序
+                        }
+                    }
+                    else
+                    {
+                        switch (phdr->iItem)
+                        {
+                        case COL_TITLE:
+                            return SongInfo::ByTitleDecending(a, b); break;
+                        case COL_ARTIST:
+                            return SongInfo::ByArtistDecending(a, b); break;
+                        case COL_ALBUM:
+                            return SongInfo::ByAlbumDecending(a, b); break;
+                        case COL_TRACK:
+                            return SongInfo::ByTrackDecending(a, b); break;
+                        case COL_GENRE:
+                            return SongInfo::ByGenreDecending(a, b); break;
+                        case COL_BITRATE:
+                            return SongInfo::ByBitrateDecending(a, b); break;
+                        case COL_YEAR:
+                            return SongInfo::ByYearDecending(a, b); break;
+                        case COL_PATH:
+                            return SongInfo::ByPathDecending(a, b); break;
+                        case COL_LAST_PLAYED_TIME:
+                            return SongInfo::ByLastPlayDecending(a, b); break;
+                        default:
+                            return SongInfo::ByTitleDecending(a, b); break;   // 默认按标题排序
+                        }
+                    }
+                });
+            list_data = CCommon::apply_permutation(list_data, so);
+            list_songs = CCommon::apply_permutation(list_songs, so);
+            if (!m_searched)
                 UpdateListIndex();
-            }
             ShowSongList();
         }
     }
