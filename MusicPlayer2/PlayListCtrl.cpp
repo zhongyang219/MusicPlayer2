@@ -307,7 +307,7 @@ void CPlayListCtrl::PreSubclassWindow()
 	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width[2]);		//插入第3列
 	SetCtrlAEnable(true);
 
-	SetRowHeight(theApp.DPI(24));
+	SetRowHeight(theApp.DPI(theApp.m_media_lib_setting_data.playlist_item_height));
 
 }
 

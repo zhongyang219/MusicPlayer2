@@ -375,6 +375,9 @@
     <Filter Include="公共的类\MD5">
       <UniqueIdentifier>{061ba298-bcf4-431c-b1fc-d6c692e17753}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\CommonData">
+      <UniqueIdentifier>{4913a86a-5b69-423e-b02f-7cf56b8e4aeb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -583,9 +586,6 @@
     </ClInclude>
     <ClInclude Include="AboutDlg.h">
       <Filter>对话框类\AboutDlg</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonData.h">
-      <Filter>公共的类</Filter>
     </ClInclude>
     <ClInclude Include="StaticEx.h">
       <Filter>派生的控件类\StaticEx</Filter>
@@ -841,6 +841,12 @@
     </ClInclude>
     <ClInclude Include="md5.h">
       <Filter>公共的类\MD5</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonData.h">
+      <Filter>公共的类\CommonData</Filter>
+    </ClInclude>
+    <ClInclude Include="FlacEncodeCfgDlg.h">
+      <Filter>对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1264,7 +1270,6 @@
     <ClCompile Include="AcceleratorRes.cpp">
       <Filter>功能逻辑类\AcceleratorRes</Filter>
     </ClCompile>
-    <ClCompile Include="CommonData.cpp" />
     <ClCompile Include="LastFMDataArchive.cpp">
       <Filter>公共的类\LastFM</Filter>
     </ClCompile>
@@ -1273,6 +1278,12 @@
     </ClCompile>
     <ClCompile Include="LastFM.cpp">
       <Filter>公共的类\LastFM</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonData.cpp">
+      <Filter>公共的类\CommonData</Filter>
+    </ClCompile>
+    <ClCompile Include="FlacEncodeCfgDlg.cpp">
+      <Filter>对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

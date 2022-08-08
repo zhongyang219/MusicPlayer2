@@ -12,6 +12,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
 #include "PropertyDlgHelper.h"
+#include "FlacEncodeCfgDlg.h"
 
 #define MAX_ALBUM_COVER_SIZE (128 * 1024)                           //编码器支持的最大专辑封面大小
 #define CONVERT_TEMP_ALBUM_COVER_NAME L"cover_R1hdyFy6CoEK7Gu8"     //临时的专辑封面文件名
@@ -131,7 +132,7 @@ void CFormatConvertDlg::SaveConfig() const
 
 void CFormatConvertDlg::LoadEncoderConfig()
 {
-    CIniHelper ini(theApp.m_local_dir + L"Encoder\\encoder.ini");
+    CIniHelper ini(theApp.m_config_dir + L"Encoder\\encoder.ini");
 
     m_mp3_encode_para.encode_type = ini.GetInt(L"mp3_encoder", L"encode_type", 0);
     m_mp3_encode_para.cbr_bitrate = ini.GetString(L"mp3_encoder", L"cbr_bitrate", L"128");
@@ -139,15 +140,23 @@ void CFormatConvertDlg::LoadEncoderConfig()
     m_mp3_encode_para.vbr_quality = ini.GetInt(L"mp3_encoder", L"vbr_quality", 4);
     m_mp3_encode_para.cmd_para = ini.GetString(L"mp3_encoder", L"cmd_para", L"");
     m_mp3_encode_para.joint_stereo = ini.GetBool(L"mp3_encoder", L"joint_stereo", true);
+
     m_wma_encode_para.cbr = ini.GetBool(L"wma_encoder", L"cbr", true);
     m_wma_encode_para.cbr_bitrate = ini.GetInt(L"wma_encoder", L"cbr_bitrate", 64);
     m_wma_encode_para.vbr_quality = ini.GetInt(L"wma_encoder", L"vbr_quality", 75);
+
     m_ogg_encode_para.encode_quality = ini.GetInt(L"ogg_encoder", L"quality", 4);
+
+    m_flac_encode_para.compression_level = ini.GetInt(L"flac_encoder", L"compression_level", 8);
+    m_flac_encode_para.user_define_para = ini.GetBool(L"flac_encoder", L"user_define_para", false);
+    m_flac_encode_para.cmd_para = ini.GetString(L"flac_encoder", L"cmd_para", L"");
 }
 
 void CFormatConvertDlg::SaveEncoderConfig() const
 {
-    CIniHelper ini(theApp.m_local_dir + L"Encoder\\encoder.ini");
+    std::wstring encoder_dir = theApp.m_config_dir + L"Encoder\\";
+    CCommon::CreateDir(encoder_dir);
+    CIniHelper ini(encoder_dir + L"encoder.ini");
 
     ini.WriteInt(L"mp3_encoder", L"encode_type", m_mp3_encode_para.encode_type);
     ini.WriteString(L"mp3_encoder", L"cbr_bitrate", m_mp3_encode_para.cbr_bitrate);
@@ -155,10 +164,16 @@ void CFormatConvertDlg::SaveEncoderConfig() const
     ini.WriteInt(L"mp3_encoder", L"vbr_quality", m_mp3_encode_para.vbr_quality);
     ini.WriteString(L"mp3_encoder", L"cmd_para", m_mp3_encode_para.cmd_para);
     ini.WriteBool(L"mp3_encoder", L"joint_stereo", m_mp3_encode_para.joint_stereo);
+
     ini.WriteBool(L"wma_encoder", L"cbr", m_wma_encode_para.cbr);
     ini.WriteInt(L"wma_encoder", L"cbr_bitrate", m_wma_encode_para.cbr_bitrate);
     ini.WriteInt(L"wma_encoder", L"vbr_quality", m_wma_encode_para.vbr_quality);
+
     ini.WriteInt(L"ogg_encoder", L"quality", m_ogg_encode_para.encode_quality);
+
+    ini.WriteInt(L"flac_encoder", L"compression_level", m_flac_encode_para.compression_level);
+    ini.WriteBool(L"flac_encoder", L"user_define_para", m_flac_encode_para.user_define_para);
+    ini.WriteString(L"flac_encoder", L"cmd_para", m_flac_encode_para.cmd_para);
 
     ini.Save();
 }
@@ -242,6 +257,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
     m_encode_format_combo.AddString(CCommon::LoadText(IDS_MP3_LAME_ENCODER));
     m_encode_format_combo.AddString(_T("WMA"));
     m_encode_format_combo.AddString(_T("OGG"));
+    m_encode_format_combo.AddString(_T("FLAC"));
     m_encode_format_combo.SetCurSel(static_cast<int>(m_encode_format));
 
     //初始化选项控件的状态
@@ -378,6 +394,9 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     case EncodeFormat::OGG:
         out_file_path += L".ogg";
         break;
+    case EncodeFormat::FLAC:
+        out_file_path += L".flac";
+        break;
     }
 
     //判断目标文件是否存在
@@ -406,6 +425,8 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     case EncodeFormat::OGG:
         para = &pthis->m_ogg_encode_para;
         break;
+    case EncodeFormat::FLAC:
+        para = &pthis->m_flac_encode_para;
     default:
         break;
 
@@ -731,6 +752,14 @@ void CFormatConvertDlg::OnBnClickedEncoderConfigButton()
         dlg.m_encode_para = m_ogg_encode_para;
         if (dlg.DoModal() == IDOK)
             m_ogg_encode_para = dlg.m_encode_para;
+    }
+    break;
+    case EncodeFormat::FLAC:
+    {
+        CFlacEncodeCfgDlg dlg;
+        dlg.m_encode_para = m_flac_encode_para;
+        if (dlg.DoModal() == IDOK)
+            m_flac_encode_para = dlg.m_encode_para;
     }
     break;
     default:

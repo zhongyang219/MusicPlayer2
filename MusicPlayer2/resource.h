@@ -748,6 +748,7 @@
 #define IDI_ICON27                      573
 #define IDI_LIGHT_MODE                  573
 #define IDS_SWITHC_TO_DARK_MODE         573
+#define IDD_FLAC_ENCODE_CFG_DIALOG      573
 #define IDS_SWITCH_TO_LIGHT_MODE        574
 #define IDS_SHORCUT_LEFT                575
 #define IDS_SHOTCUT_RIGHT               576
@@ -836,6 +837,7 @@
 #define IDC_SELECT_ALL_CHECK            1025
 #define IDC_CLASSIFY_OTHER_CHECK        1025
 #define IDC_FUZZY_MATCH_CHECK           1025
+#define IDC_SPECIFY_PARA_CHECK          1025
 #define IDC_CHECK2                      1026
 #define IDC_KARAOKE_DISP                1026
 #define IDC_FIND_TITLE_CHECK            1026
@@ -950,6 +952,7 @@
 #define IDC_REPLACE_TAG_BUTTON          1059
 #define IDC_SAVE_LYRIC_BUTTON           1060
 #define IDC_EDIT1                       1061
+#define IDC_PLAYLIST_ITEM_HEIGHT_EDIT   1061
 #define IDC_DELETE_TAG__BUTTON          1062
 #define IDC_SAVE_AS_BUTTON5             1063
 #define IDC_OPEN_LYRIC_BUTTON           1064
@@ -1182,6 +1185,7 @@
 #define IDC_LASTFM_UPLOAD_CACHE         1218
 #define IDC_LASTFM_ENABLE_HTTPS         1219
 #define IDC_LASTFM_ENABLE_NOWPLAYING    1220
+#define IDC_COMP_LEVEL_STATIC           1221
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1628,7 +1632,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        573
+#define _APS_NEXT_RESOURCE_VALUE        575
 #define _APS_NEXT_COMMAND_VALUE         33394
 #define _APS_NEXT_CONTROL_VALUE         1221
 #define _APS_NEXT_SYMED_VALUE           101

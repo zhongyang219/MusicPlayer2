@@ -59,6 +59,7 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LASTFM_UPLOAD_CACHE, m_lastfm_upload_cache);
     DDX_Control(pDX, IDC_LASTFM_ENABLE_HTTPS, m_lastfm_enable_https);
     DDX_Control(pDX, IDC_LASTFM_ENABLE_NOWPLAYING, m_lastfm_enable_nowplaying);
+    DDX_Control(pDX, IDC_PLAYLIST_ITEM_HEIGHT_EDIT, m_playlist_item_height_edit);
 }
 
 void CMediaLibSettingDlg::GetDataFromUi()
@@ -87,6 +88,7 @@ void CMediaLibSettingDlg::GetDataFromUi()
     m_data.lastfm_least_perdur = m_lastfm_least_perdur.GetValue();
     m_data.lastfm_least_dur = m_lastfm_least_dur.GetValue();
     m_data.lastfm_auto_scrobble_min = m_lastfm_auto_scrobble_min.GetValue();
+    m_data.playlist_item_height = m_playlist_item_height_edit.GetValue();
 }
 
 
@@ -187,6 +189,8 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_lastfm_auto_scrobble_min.SetRange(1, 50);
     m_lastfm_auto_scrobble_min.SetValue(m_data.lastfm_auto_scrobble_min);
 
+    m_playlist_item_height_edit.SetRange(MIN_PLAYLIST_ITEM_HEIGHT, MAX_PLAYLIST_ITEM_HEIGHT);
+    m_playlist_item_height_edit.SetValue(m_data.playlist_item_height);
 
     //设置控件不响应鼠标滚轮消息
     m_playlist_display_mode_combo.SetMouseWheelEnable(false);
@@ -195,6 +199,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_lastfm_least_perdur.SetMouseWheelEnable(false);
     m_lastfm_least_dur.SetMouseWheelEnable(false);
     m_lastfm_auto_scrobble_min.SetMouseWheelEnable(false);
+    m_playlist_item_height_edit.SetMouseWheelEnable(false);
     UpdateLastFMStatus();
     SetTimer(TIMER_1_SEC, 1000, NULL);
 

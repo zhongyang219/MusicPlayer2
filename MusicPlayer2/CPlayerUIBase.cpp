@@ -671,6 +671,8 @@ void CPlayerUIBase::PreDrawInfo()
     //设置绘制的矩形区域
     SetDrawRect();
 
+    m_draw_data.lyric_rect = CRect();
+
     //检测到界面布局发生了变化时
     static UiSize last_ui_size{};
     if (last_ui_size != GetUiSize())
