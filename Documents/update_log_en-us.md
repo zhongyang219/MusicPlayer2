@@ -1,6 +1,20 @@
 **[简体中文](./update_log.md) | English**<br>
 
 # MusicPlayer2 Update log
+## V2.75 (2022/06/04)
+
+* Add the FFMPEG playback core (need to be downloaded separately).
+* Add some new UI layouts.
+* The UI 3, UI 4 and UI 5 are reproduced using xml and optimized the effect of UI 4.
+* Add stacking components to custom UI.
+* Optimized the use logic of floating playlist.
+* Fix the problem that buffer shortage may occur when writing ini.
+* When creating a new playlist in the media library, the new playlist is brought to the front.
+* Self-drawn controls follow the "Use Rounded Corner Style" setting.
+* Fixed the problem that "Reverb" in "Sound Settings" could not be saved.
+* Add the self-drawn menu bar.
+* Improvements in other details.
+
 ## V2.74 (2022/02/12)
 
 * Added the function of customizing the UI through the xml file (please refer to the main menu "Help" - "Customize UI").
