@@ -36,7 +36,7 @@ wstring CInternetCommon::URLEncode(const wstring & wstr)
 	return result;
 }
 
-bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
+bool CInternetCommon::GetURL(const wstring & str_url, wstring & result, bool custom_ua, bool allow_other_codes)
 {
     wstring log_info;
     log_info = L"http get: " + str_url;
@@ -44,13 +44,16 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 
 	bool sucessed{ false };
 	CInternetSession session{};
+    if (custom_ua) {
+        session.SetOption(INTERNET_OPTION_USER_AGENT, (LPVOID)L"MuiscPlayer2" APP_VERSION, wcslen(L"MuiscPlayer2" APP_VERSION) * sizeof(wchar_t));
+    }
 	CHttpFile* pfile{};
 	try
 	{
 		pfile = (CHttpFile *)session.OpenURL(str_url.c_str());
 		DWORD dwStatusCode;
 		pfile->QueryInfoStatusCode(dwStatusCode);
-		if (dwStatusCode == HTTP_STATUS_OK)
+		if (allow_other_codes || dwStatusCode == HTTP_STATUS_OK)
 		{
 			CString content;
 			CString data;
@@ -83,8 +86,18 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result)
 	return sucessed;
 }
 
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result) {
+    string body;
+    wstring headers;
+    return HttpPost(str_url, result, body, headers);
+}
 
-int CInternetCommon::HttpPost(const wstring & str_url, wstring & result)
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, wstring& body, wstring& headers, bool custom_ua) {
+    auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
+    return HttpPost(str_url, result, tmp, headers, custom_ua);
+}
+
+int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, string& body, wstring& headers, bool custom_ua)
 {
     wstring log_info;
     log_info = L"http post: " + str_url;
@@ -97,6 +110,10 @@ int CInternetCommon::HttpPost(const wstring & str_url, wstring & result)
 	CString strObject;
 	DWORD dwServiceType;
 	INTERNET_PORT nPort;
+
+    if (custom_ua) {
+        session.SetOption(INTERNET_OPTION_USER_AGENT, (LPVOID)L"MuiscPlayer2" APP_VERSION, wcslen(L"MuiscPlayer2" APP_VERSION) * sizeof(wchar_t));
+    }
 
 	AfxParseURL(str_url.c_str(), dwServiceType, strServer, strObject, nPort);
 
@@ -111,8 +128,8 @@ int CInternetCommon::HttpPost(const wstring & str_url, wstring & result)
 		pFile = pConnection->OpenRequest(_T("POST"), strObject,
 			NULL, 1, NULL, NULL,
 			(dwServiceType == AFX_INET_SERVICE_HTTP ? NORMAL_REQUEST : SECURE_REQUEST));
-
-		pFile->SendRequest(NULL, 0, NULL, 0);
+        
+		pFile->SendRequest(headers.empty() ? NULL : headers.c_str(), headers.size(), body.empty() ? NULL : (LPVOID)body.c_str(), body.size());
 
 		CString content;
 		CString data;

@@ -19,6 +19,7 @@
 #include "CommonData.h"
 #include "MediaLibHelper.h"
 #include "AcceleratorRes.h"
+#include "LastFM.h"
 
 
 // CMusicPlayerApp:
@@ -42,6 +43,7 @@ public:
     wstring m_desktop_path;		//桌面的路径
     wstring m_module_path_reg;  //程序exe文件的路径
     //wstring m_temp_path;		//临时文件夹的路径
+    wstring m_lastfm_path;      ///存储Last.fm数据的路径
 
     vector<DeviceInfo> m_output_devices;	//播放设备的信息
 
@@ -137,11 +139,21 @@ public:
 
     bool IsScintillaLoaded() const;
 
+    LastFM m_lastfm;
+    void LoadLastFMData();
+    void SaveLastFMData();
+    void UpdateLastFMNowPlaying();
+    void UpdateLastFMFavourite(bool favourite);
+    void LastFMScrobble();
+
 private:
     void LoadSongData();
 
     static LRESULT CALLBACK MultiMediaKeyHookProc(int nCode, WPARAM wParam, LPARAM lParam);
     static UINT CheckUpdateThreadFunc(LPVOID lpParam);	//启动时检查更新线程函数
+    static UINT UpdateLastFMNowPlayingFunProc(LPVOID lpParam);
+    static UINT UpdateLastFMFavouriteFunProc(LPVOID lpParam);
+    static UINT LastFMScrobbleFunProc(LPVOID lpParam);
 
 private:
     HHOOK m_multimedia_key_hook = NULL;

@@ -17,7 +17,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 中文(简体，中国) resources
+// Chinese (Simplified, China) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
@@ -1115,7 +1115,7 @@ BEGIN
     LTEXT           "",IDC_PATH_STATIC,115,18,172,8
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 245, 403
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 245, 505
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
@@ -1156,10 +1156,30 @@ BEGIN
     CONTROL         "禁用从磁盘删除",IDC_DISABLE_DELETE_FROM_DISK_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,40,118,10
     CONTROL         "显示播放列表鼠标提示",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,209,87,10
     CONTROL         "浮动播放列表跟随主窗口",IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,221,91,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,221,159,10
     LTEXT           "播放列表项目高度：",IDC_STATIC,14,235,66,8
     EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,81,233,34,12,ES_AUTOHSCROLL
     LTEXT           "像素",IDC_STATIC,117,235,26,8
+    GROUPBOX        "Last.fm",IDC_STATIC,6,398,232,103
+    CONTROL         "启用 last.fm 相关功能",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,408,80,10
+    LTEXT           "当前状态：",IDC_STATIC,14,419,34,8
+    LTEXT           "状态",IDC_LASTFM_STATUS,46,419,124,8
+    PUSHBUTTON      "登录",IDC_LASTFM_LOGIN,177,415,50,14,WS_DISABLED
+    LTEXT           "当播放进度满足以下所有条件时将记录计入缓存：",IDC_STATIC,14,431,145,8
+    LTEXT           "至少播放歌曲的",IDC_STATIC,14,441,47,8
+    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,61,440,40,12,ES_AUTOHSCROLL
+    LTEXT           "% 并至少播放",IDC_STATIC,103,441,41,8
+    EDITTEXT        IDC_LASTFM_LEAST_DUR,144,440,40,12,ES_AUTOHSCROLL
+    LTEXT           "秒。",IDC_STATIC,186,442,14,8
+    CONTROL         "当缓存中的记录数超过",IDC_LASTFM_AUTO_SCROBBLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,454,76,10
+    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,92,453,41,12,ES_AUTOHSCROLL
+    LTEXT           "条时，自动上传缓存。",IDC_STATIC,135,455,66,8
+    LTEXT           "缓存状态：",IDC_STATIC,14,467,34,8
+    LTEXT           "X条记录",IDC_LASTFM_CACHE_STATUS,46,467,123,8
+    PUSHBUTTON      "上传缓存",IDC_LASTFM_UPLOAD_CACHE,177,466,50,14,WS_DISABLED
+    CONTROL         "使用 HTTPS 与 last.fm 服务器通信",IDC_LASTFM_ENABLE_HTTPS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,478,116,10
+    CONTROL         "上传当前播放歌曲",IDC_LASTFM_ENABLE_NOWPLAYING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,490,67,10
 END
 
 IDD_ADD_TO_PLAYLIST_DIALOG DIALOGEX 0, 0, 186, 152
@@ -1646,7 +1666,7 @@ BEGIN
         RIGHTMARGIN, 238
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 399
+        BOTTOMMARGIN, 501
         HORZGUIDE, 141
         HORZGUIDE, 154
     END
@@ -3816,14 +3836,19 @@ BEGIN
     IDS_SHOTCUT_DOWN        "↓"
     IDS_SPACE               "空格"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO "如果歌曲所在目录下没有找到专辑封面则会在此文件夹下寻找封面文件。"
+    IDS_LOGIN_REQUIRED      "需要登录"
+    IDS_LOGGED              "已登录"
+    IDS_LASTFM_LOGIN        "请您在打开的浏览器窗口内完成登录并在登录成功后单击确定。"
+    IDS_LOGIN_FAILED        "登录失败！"
+    IDS_LASTFM_CACHE_STATUS "%i条记录"
 END
 
-#endif    // 中文(简体，中国) resources
+#endif    // Chinese (Simplified, China) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 英语(美国) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -4599,7 +4624,7 @@ BEGIN
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,7,7,172,12
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 398
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 499
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
@@ -4645,6 +4670,28 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,41,128,9
     CONTROL         "Show playlist tool tip",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,227,167,9
+    GROUPBOX        "Last.fm",IDC_STATIC,6,394,324,101
+    CONTROL         "Enable last.fm support",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,402,87,10
+    LTEXT           "Current status: ",IDC_STATIC,14,413,49,8
+    LTEXT           "Status",IDC_LASTFM_STATUS,65,413,190,8
+    PUSHBUTTON      "Log in",IDC_LASTFM_LOGIN,264,409,50,14,WS_DISABLED
+    LTEXT           "Cache scrobble when following conditions are meeted:",IDC_STATIC,16,423,181,8
+    LTEXT           "Played",IDC_STATIC,16,434,23,8
+    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,40,433,44,12,ES_AUTOHSCROLL
+    LTEXT           "% of the song and",IDC_STATIC,86,434,64,8
+    EDITTEXT        IDC_LASTFM_LEAST_DUR,148,433,44,12,ES_AUTOHSCROLL
+    LTEXT           "Seconds.",IDC_STATIC,195,434,34,8
+    CONTROL         "Upload scrobbles in cache if the number of cached scrobbles is greater than ",IDC_LASTFM_AUTO_SCROBBLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,447,252,10
+    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,268,446,40,12,ES_AUTOHSCROLL
+    LTEXT           ".",IDC_STATIC,311,428,8,8
+    LTEXT           "Cache status:",IDC_STATIC,14,460,42,8
+    LTEXT           "X scrobbles",IDC_LASTFM_CACHE_STATUS,58,460,196,8
+    PUSHBUTTON      "Upload cache",IDC_LASTFM_UPLOAD_CACHE,264,459,50,14
+    CONTROL         "Use HTTPS when communicating with the last.fm server.",IDC_LASTFM_ENABLE_HTTPS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,472,193,10
+    CONTROL         "Upload now playing track",IDC_LASTFM_ENABLE_NOWPLAYING,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,483,97,10
     LTEXT           "Playlist item height:",IDC_STATIC,14,242,83,8
     EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,97,240,39,12,ES_AUTOHSCROLL
     LTEXT           "pixel",IDC_STATIC,138,242,30,8
@@ -5041,7 +5088,7 @@ BEGIN
         RIGHTMARGIN, 330
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 394
+        BOTTOMMARGIN, 495
     END
 
     IDD_LYRIC_RELATE_DIALOG, DIALOG
@@ -7071,9 +7118,14 @@ BEGIN
     IDS_SPACE               "Space"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 
                             "If the album cover is not found in the directory where the song is located then the cover file will be searched for in this folder."
+    IDS_LOGIN_REQUIRED      "Login required"
+    IDS_LOGGED              "Already logged in"
+    IDS_LASTFM_LOGIN        "Please complete the login in the opened browser window and click OK after successful login."
+    IDS_LOGIN_FAILED        "Login failed!"
+    IDS_LASTFM_CACHE_STATUS "%i scrobbles"
 END
 
-#endif    // 英语(美国) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

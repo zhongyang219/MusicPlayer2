@@ -369,6 +369,12 @@
     <Filter Include="功能逻辑类\AcceleratorRes">
       <UniqueIdentifier>{dd4724e7-e7cb-4d6e-ad64-d537a8d0dab5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\LastFM">
+      <UniqueIdentifier>{accc646e-5e4a-4926-b180-58296096f5c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="公共的类\MD5">
+      <UniqueIdentifier>{061ba298-bcf4-431c-b1fc-d6c692e17753}</UniqueIdentifier>
+    </Filter>
     <Filter Include="公共的类\CommonData">
       <UniqueIdentifier>{4913a86a-5b69-423e-b02f-7cf56b8e4aeb}</UniqueIdentifier>
     </Filter>
@@ -827,6 +833,15 @@
     <ClInclude Include="AcceleratorRes.h">
       <Filter>功能逻辑类\AcceleratorRes</Filter>
     </ClInclude>
+    <ClInclude Include="LastFM.h">
+      <Filter>公共的类\LastFM</Filter>
+    </ClInclude>
+    <ClInclude Include="LastFMDataArchive.h">
+      <Filter>公共的类\LastFM</Filter>
+    </ClInclude>
+    <ClInclude Include="md5.h">
+      <Filter>公共的类\MD5</Filter>
+    </ClInclude>
     <ClInclude Include="CommonData.h">
       <Filter>公共的类\CommonData</Filter>
     </ClInclude>
@@ -1254,6 +1269,15 @@
     </ClCompile>
     <ClCompile Include="AcceleratorRes.cpp">
       <Filter>功能逻辑类\AcceleratorRes</Filter>
+    </ClCompile>
+    <ClCompile Include="LastFMDataArchive.cpp">
+      <Filter>公共的类\LastFM</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.cpp">
+      <Filter>公共的类\MD5</Filter>
+    </ClCompile>
+    <ClCompile Include="LastFM.cpp">
+      <Filter>公共的类\LastFM</Filter>
     </ClCompile>
     <ClCompile Include="CommonData.cpp">
       <Filter>公共的类\CommonData</Filter>

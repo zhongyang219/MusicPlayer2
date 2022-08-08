@@ -99,6 +99,7 @@ BOOL CMusicPlayerApp::InitInstance()
     m_recent_path_dat_path = m_config_dir + L"recent_path.dat";
     m_recent_playlist_data_path = m_config_dir + L"playlist\\recent_playlist.dat";
     m_desktop_path = CCommon::GetDesktopPath();
+    m_lastfm_path = m_config_dir + L"lastfm.dat";
     //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
     m_playlist_dir = m_config_dir + L"playlist\\";
     CCommon::CreateDir(m_playlist_dir);
@@ -197,6 +198,7 @@ BOOL CMusicPlayerApp::InitInstance()
     //CString str = CCommon::LoadTextFormat(IDS_TEST_STR, { 3, L"asdfghhh", 1.2 });
 
     LoadSongData();
+    LoadLastFMData();
     LoadConfig();
 
     //初始化界面语言
@@ -285,6 +287,7 @@ BOOL CMusicPlayerApp::InitInstance()
     }
 
     SaveSongData();
+    SaveLastFMData();
     SaveGlobalConfig();
 
     // 删除上面创建的 shell 管理器。
@@ -1231,4 +1234,44 @@ void CMusicPlayerApp::OnHelpFaq()
         ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"), NULL, NULL, SW_SHOW);
     else
         ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/FAQ"), NULL, NULL, SW_SHOW);
+}
+
+void CMusicPlayerApp::LoadLastFMData() {
+    m_lastfm.LoadData(m_lastfm_path);
+}
+
+void CMusicPlayerApp::SaveLastFMData() {
+    m_lastfm.SaveData(m_lastfm_path);
+}
+
+void CMusicPlayerApp::UpdateLastFMNowPlaying() {
+    AfxBeginThread(UpdateLastFMNowPlayingFunProc, (LPVOID)NULL);
+}
+
+UINT CMusicPlayerApp::UpdateLastFMNowPlayingFunProc(LPVOID lpParam) {
+    theApp.m_lastfm.UpdateNowPlaying();
+    return 0;
+}
+
+void CMusicPlayerApp::UpdateLastFMFavourite(bool favourite) {
+    AfxBeginThread(UpdateLastFMFavouriteFunProc, (LPVOID)favourite);
+}
+
+UINT CMusicPlayerApp::UpdateLastFMFavouriteFunProc(LPVOID lpParam) {
+    auto favourite = (bool)lpParam;
+    if (favourite) {
+        theApp.m_lastfm.Love();
+    } else {
+        theApp.m_lastfm.Unlove();
+    }
+    return 0;
+}
+
+void CMusicPlayerApp::LastFMScrobble() {
+    AfxBeginThread(LastFMScrobbleFunProc, (LPVOID)NULL);
+}
+
+UINT CMusicPlayerApp::LastFMScrobbleFunProc(LPVOID lpParam) {
+    theApp.m_lastfm.Scrobble();
+    return 0;
 }

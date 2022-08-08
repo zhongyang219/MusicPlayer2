@@ -455,6 +455,16 @@ public:
     static CString GetLastCompileTime();
 
     static unsigned __int64 GetCurTimeElapse();
+
+    static wstring EncodeURIComponent(wstring uri);
+    /**
+     * @brief Replace all pattern to new_content
+     * @param input Input string
+     * @param pattern Pattern
+     * @param new_content New content
+     * @return Result string
+    */
+    static std::wstring StrReplace(std::wstring& input, std::wstring pattern, std::wstring new_content);
 };
 
 template<class T>
