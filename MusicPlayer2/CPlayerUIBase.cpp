@@ -71,8 +71,6 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
 
 #else
-    bool update_tooltip_pos{ false };   //是否需要更新鼠标提示
-
     //双缓冲绘图
     {
         CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
@@ -120,7 +118,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         if (draw_status_bar != last_draw_status_bar)
         {
             last_draw_status_bar = draw_status_bar;
-            update_tooltip_pos = true;
+            m_need_update_tooltip_pos = true;
         }
 
         //如果标题栏显示按钮发生了改变，则更新鼠标提示的位置
@@ -129,7 +127,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         if (last_titlebar_btn != titlebar_btn)
         {
             last_titlebar_btn = titlebar_btn;
-            update_tooltip_pos = true;
+            m_need_update_tooltip_pos = true;
         }
     }
 
@@ -147,7 +145,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
             || (last_ui_index != GetUiIndex() && GetUiIndex() != 0))
         {
             //更新工具提示的位置
-            update_tooltip_pos = true;
+            m_need_update_tooltip_pos = true;
 
             //更新任务栏缩略图区域
             CRect thumbnail_rect = GetThumbnailClipArea();
@@ -164,8 +162,11 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
     m_first_draw = false;
 
-    if (update_tooltip_pos)
+    if (m_need_update_tooltip_pos)
+    {
         UpdateToolTipPosition();
+        m_need_update_tooltip_pos = false;
+    }
 }
 
 void CPlayerUIBase::ClearInfo()
@@ -1172,6 +1173,11 @@ void CPlayerUIBase::UpdatePlaylistBtnToolTip()
 void CPlayerUIBase::UpdateDarkLightModeBtnToolTip()
 {
     UpdateMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, GetCmdShortcutKeyForTooltips(ID_DARK_MODE)));
+}
+
+void CPlayerUIBase::UpdateToolTipPositionLater()
+{
+    m_need_update_tooltip_pos = true;
 }
 
 void CPlayerUIBase::UpdateToolTipPosition()

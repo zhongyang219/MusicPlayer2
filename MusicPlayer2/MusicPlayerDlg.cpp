@@ -1290,7 +1290,12 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         CFfmpegCore* core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
         core->UpdateSettings();
     }
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
     DrawInfo(true);
+    if (pCurUi != nullptr)
+        pCurUi->UpdateToolTipPositionLater();
 }
 
 void CMusicPlayerDlg::ApplyThemeColor()
@@ -4764,7 +4769,14 @@ void CMusicPlayerDlg::OnShowMenuBar()
     {
         SetMenubarVisible();
     }
-    DrawInfo();
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
+
+    DrawInfo(true);
+
+    if (pCurUi != nullptr)
+        pCurUi->UpdateToolTipPositionLater();
 
     //隐藏菜单栏后弹出提示，告诉用户如何再次显示菜单栏
     if (!theApp.m_ui_data.show_menu_bar)
