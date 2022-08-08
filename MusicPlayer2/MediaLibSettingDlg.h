@@ -44,6 +44,7 @@ private:
     CButton m_lastfm_auto_scrobble;
     CSpinEdit m_lastfm_auto_scrobble_min;
     CStatic m_lastfm_cache_status;
+    CButton m_lastfm_upload_cache;
 
 protected:
     void ShowDataSizeInfo();
@@ -51,6 +52,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     virtual void GetDataFromUi() override;
     void UpdateLastFMStatus();
+    void UpdateLastFMCacheStatus();
     afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	DECLARE_MESSAGE_MAP()
@@ -77,4 +79,5 @@ public:
     afx_msg void OnBnClickedEnableLastfm();
     afx_msg void OnBnClickedLastfmLogin();
     afx_msg void OnBnClickedLastfmAutoScrobble();
+    afx_msg void OnBnClickedLastfmUploadCache();
 };
