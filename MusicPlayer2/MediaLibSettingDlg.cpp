@@ -88,6 +88,7 @@ void CMediaLibSettingDlg::GetDataFromUi()
 
 
 BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
+    ON_WM_TIMER()
     ON_BN_CLICKED(IDC_CLASSIFY_OTHER_CHECK, &CMediaLibSettingDlg::OnBnClickedClassifyOtherCheck)
     //ON_BN_CLICKED(IDC_SHOW_TREE_TOOL_TIPS_CHECK, &CMediaLibSettingDlg::OnBnClickedShowTreeToolTipsCheck)
     ON_BN_CLICKED(IDC_ADD_BUTTON, &CMediaLibSettingDlg::OnBnClickedAddButton)
@@ -187,7 +188,9 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_id3v2_type_combo.SetMouseWheelEnable(false);
     m_lastfm_least_perdur.SetMouseWheelEnable(false);
     m_lastfm_least_dur.SetMouseWheelEnable(false);
+    m_lastfm_auto_scrobble_min.SetMouseWheelEnable(false);
     UpdateLastFMStatus();
+    SetTimer(TIMER_1_SEC, 1000, NULL);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -444,4 +447,14 @@ void CMediaLibSettingDlg::UpdateLastFMStatus() {
 void CMediaLibSettingDlg::OnBnClickedLastfmAutoScrobble() {
     m_data.lastfm_auto_scrobble = (m_lastfm_auto_scrobble.GetCheck() != 0);
     UpdateLastFMStatus();
+}
+
+void CMediaLibSettingDlg::OnTimer(UINT_PTR nIDEvent) {
+    if (nIDEvent == TIMER_1_SEC) {
+        CString status = CCommon::LoadText(IDS_LASTFM_CACHE_STATUS);
+        wchar_t tmp[32];
+        wsprintf(tmp, L"%i", (int)theApp.m_lastfm.CachedCount());
+        status.Replace(L"%i", tmp);
+        m_lastfm_cache_status.SetWindowTextW(status);
+    }
 }

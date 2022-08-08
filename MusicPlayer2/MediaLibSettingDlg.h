@@ -51,6 +51,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     virtual void GetDataFromUi() override;
     void UpdateLastFMStatus();
+    afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	DECLARE_MESSAGE_MAP()
 public:
