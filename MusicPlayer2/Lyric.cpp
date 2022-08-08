@@ -183,6 +183,7 @@ void CLyrics::DisposeLrc()
             // 解析歌词行
             wstring time_str, text_str;
             index = str.find_first_not_of(L"[:.]0123456789-", pos_end); // 用来分离行起始时间标签（可能是连续的压缩时间标签）
+            index = str.rfind(L"]", index) + 1;                         // 避免截取到歌词开头的数字
             if (index != wstring::npos)
             {
                 time_str = str.substr(0, index);
