@@ -39,10 +39,13 @@ public:
 	//将一个字符串转换成URL编码（以UTF8编码格式）
 	static wstring URLEncode(const wstring& wstr);
 
-	static bool GetURL(const wstring& str_url, wstring& result);
-
+	static bool GetURL(const wstring& str_url, wstring& result, bool custom_ua = false, bool allow_other_codes = false);
+    //向指定的url发送http post请求，结果保存在result中
+    static int HttpPost(const wstring& str_url, wstring& result);
+    //向指定的url发送http post请求，结果保存在result中
+    static int HttpPost(const wstring& str_url, wstring& result, string& body, wstring& headers, bool custom_ua = false);
 	//向指定的url发送http post请求，结果保存在result中
-	static int HttpPost(const wstring& str_url, wstring& result);
+	static int HttpPost(const wstring& str_url, wstring& result, wstring& body, wstring& headers, bool custom_ua = false);
 
 	static void DeleteStrSlash(wstring& str);		//如果字符串中的“\"”，删除字符串中的反斜杠
 	static void DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count = 30);		//从搜索结果search_result中提取出歌曲的信息，并保存在down_list容器里

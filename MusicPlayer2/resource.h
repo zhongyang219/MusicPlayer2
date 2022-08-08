@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ 生成的包含文件。
-// 供 MusicPlayer2.rc 使用
+// Microsoft Visual C++ generated include file.
+// Used by MusicPlayer2.rc
 //
 #define IDM_ABOUTBOX                    0x0010
 #define IDD_ABOUTBOX                    100
@@ -748,6 +748,7 @@
 #define IDI_ICON27                      573
 #define IDI_LIGHT_MODE                  573
 #define IDS_SWITHC_TO_DARK_MODE         573
+#define IDD_FLAC_ENCODE_CFG_DIALOG      573
 #define IDS_SWITCH_TO_LIGHT_MODE        574
 #define IDS_SHORCUT_LEFT                575
 #define IDS_SHOTCUT_RIGHT               576
@@ -755,6 +756,11 @@
 #define IDS_SHOTCUT_DOWN                578
 #define IDS_SPACE                       579
 #define IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 580
+#define IDS_LOGIN_REQUIRED              581
+#define IDS_LOGGED                      582
+#define IDS_LASTFM_LOGIN                583
+#define IDS_LOGIN_FAILED                584
+#define IDS_LASTFM_CACHE_STATUS         585
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -831,6 +837,7 @@
 #define IDC_SELECT_ALL_CHECK            1025
 #define IDC_CLASSIFY_OTHER_CHECK        1025
 #define IDC_FUZZY_MATCH_CHECK           1025
+#define IDC_SPECIFY_PARA_CHECK          1025
 #define IDC_CHECK2                      1026
 #define IDC_KARAOKE_DISP                1026
 #define IDC_FIND_TITLE_CHECK            1026
@@ -945,6 +952,7 @@
 #define IDC_REPLACE_TAG_BUTTON          1059
 #define IDC_SAVE_LYRIC_BUTTON           1060
 #define IDC_EDIT1                       1061
+#define IDC_PLAYLIST_ITEM_HEIGHT_EDIT   1061
 #define IDC_DELETE_TAG__BUTTON          1062
 #define IDC_SAVE_AS_BUTTON5             1063
 #define IDC_OPEN_LYRIC_BUTTON           1064
@@ -1166,6 +1174,18 @@
 #define IDC_SHOW_FULLSCREEN_BTN_CHECK   1207
 #define IDC_SHOW_MINIMIZE_BTN_CHECK     1208
 #define IDC_SHOW_MAXIMIZE_BTN_CHECK     1209
+#define IDC_ENABLE_LASTFM               1210
+#define IDC_LASTFM_STATUS               1211
+#define IDC_LASTFM_LEAST_DUR            1212
+#define IDC_LASTFM_LEAST_PERDUR         1213
+#define IDC_LASTFM_LOGIN                1214
+#define IDC_LASTFM_AUTO_SCROBBLE        1215
+#define IDC_LASTFM_AUTO_SCROBBLE_MIN    1216
+#define IDC_LASTFM_CACHE_STATUS         1217
+#define IDC_LASTFM_UPLOAD_CACHE         1218
+#define IDC_LASTFM_ENABLE_HTTPS         1219
+#define IDC_LASTFM_ENABLE_NOWPLAYING    1220
+#define IDC_COMP_LEVEL_STATIC           1221
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1612,9 +1632,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        573
+#define _APS_NEXT_RESOURCE_VALUE        575
 #define _APS_NEXT_COMMAND_VALUE         33394
-#define _APS_NEXT_CONTROL_VALUE         1210
+#define _APS_NEXT_CONTROL_VALUE         1221
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

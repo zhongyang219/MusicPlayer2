@@ -140,6 +140,8 @@ public:
 
     bool m_loading{ false };        //如果正在载入播放列表，则为true
 
+    bool m_enable_lastfm;           // 当前歌曲是否启用了last.fm支持
+
 private:
 
     vector<int> m_shuffle_list;             //储存乱序播放过的曲目序号
@@ -474,6 +476,7 @@ public:
 
     MediaTransControls m_controls;
     void UpdateControlsMetadata(SongInfo info);
+    void UpdateLastFMCurrentTrack(SongInfo info);
 
 private:
     void MediaTransControlsLoadThumbnail(std::wstring& file_path);

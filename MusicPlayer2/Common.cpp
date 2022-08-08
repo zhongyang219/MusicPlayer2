@@ -1827,3 +1827,33 @@ unsigned __int64 CCommon::GetCurTimeElapse()
     CTime cur_time(sys_time);
     return cur_time.GetTime();
 }
+
+wstring CCommon::EncodeURIComponent(wstring uri) {
+    StrReplace(uri, L"%", L"%25");
+    StrReplace(uri, L":", L"%3A");
+    StrReplace(uri, L"/", L"%2F");
+    StrReplace(uri, L"?", L"%3F");
+    StrReplace(uri, L"#", L"%23");
+    StrReplace(uri, L"[", L"%5B");
+    StrReplace(uri, L"]", L"%5D");
+    StrReplace(uri, L"@", L"%40");
+    StrReplace(uri, L"$", L"%24");
+    StrReplace(uri, L"&", L"%26");
+    StrReplace(uri, L"+", L"%2B");
+    StrReplace(uri, L",", L"%2C");
+    StrReplace(uri, L";", L"%3B");
+    StrReplace(uri, L"=", L"%3D");
+    return uri;
+}
+
+wstring CCommon::StrReplace(wstring& input, wstring pattern, wstring new_content) {
+    auto loc = input.find(pattern, 0);
+    auto len = pattern.length();
+    auto len2 = new_content.length();
+    while (loc != -1) {
+        input.replace(loc, len, new_content);
+        if (loc + len2 < input.length()) loc = input.find(pattern, max(0, loc + len2));
+        else break;
+    }
+    return input;
+}

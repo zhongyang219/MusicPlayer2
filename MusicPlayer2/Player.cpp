@@ -500,6 +500,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
         m_controls.UpdateControls(Command::PLAY);
         UpdateControlsMetadata(GetCurrentSongInfo());
+        m_enable_lastfm = theApp.m_media_lib_setting_data.enable_lastfm;
+        if (m_enable_lastfm) {
+            UpdateLastFMCurrentTrack(GetCurrentSongInfo());
+        }
         break;
     case Command::PLAY:
         ConnotPlayWarning();
@@ -1951,6 +1955,9 @@ void CPlayer::SetFavourite(bool favourite)
         //    theApp.SaveSongInfo(m_playlist[m_index]);
         //}
     }
+    if (theApp.m_media_lib_setting_data.enable_lastfm) {
+        theApp.UpdateLastFMFavourite(favourite);
+    }
 
 }
 
@@ -1972,6 +1979,18 @@ void CPlayer::AddListenTime(int sec)
         //m_playlist[m_index].listen_time += sec;
         CSongDataManager::GetInstance().GetSongInfoRef(m_playlist[m_index]).listen_time += sec;
         CSongDataManager::GetInstance().SetSongDataModified();
+    }
+    if (m_enable_lastfm) {
+        int speed = m_speed * 1000;
+        theApp.m_lastfm.AddCurrentPlayedTime(sec * speed);
+        if (!theApp.m_lastfm.IsPushed()) {
+            if (theApp.m_lastfm.CurrentTrackScrobbleable()) {
+                theApp.m_lastfm.PushCurrentTrackToCache();
+            }
+        }
+        if (theApp.m_media_lib_setting_data.lastfm_auto_scrobble && theApp.m_lastfm.IsScrobbeable()) {
+            theApp.LastFMScrobble();
+        }
     }
 }
 
@@ -2760,5 +2779,19 @@ void CPlayer::MediaTransControlsLoadThumbnailDefaultImage()
             m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_data.data(), theApp.m_image_set.default_cover_data.size());
         else
             m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_not_played_data.data(), theApp.m_image_set.default_cover_not_played_data.size());
+    }
+}
+
+void CPlayer::UpdateLastFMCurrentTrack(SongInfo info) {
+    LastFMTrack track;
+    track.ReadDataFrom(info);
+    auto& current = theApp.m_lastfm.CurrentTrack();
+    if (track == current) {
+        int duration = track.duration.toInt() / 1000 * 9 / 10;
+        if (track.timestamp - current.timestamp < duration) return;
+    }
+    theApp.m_lastfm.UpdateCurrentTrack(track);
+    if (theApp.m_media_lib_setting_data.lastfm_enable_nowplaying) {
+        theApp.UpdateLastFMNowPlaying();
     }
 }

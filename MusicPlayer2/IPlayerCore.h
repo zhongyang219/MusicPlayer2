@@ -62,8 +62,16 @@ struct OggEncodePara
     int encode_quality{ 3 };
 };
 
+//Flac 编码参数
+struct FlacEncodePara
+{
+    int compression_level{ 8 }; //压缩级别，0~8，0：最小压缩，速度最快；8：最大压缩，速度最慢
+    bool user_define_para{ false }; //用户自定义编码参数
+    wstring cmd_para;		//命令行参数
+};
+
 //转换格式时的输出编码格式
-enum class EncodeFormat { WAV, MP3, WMA, OGG };
+enum class EncodeFormat { WAV, MP3, WMA, OGG, FLAC };
 
 //格式转换错误代码
 #define CONVERT_ERROR_FILE_CONNOT_OPEN (-1)			//源文件无法读取

@@ -616,6 +616,19 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
             cmdline += L"\" -";
         }
         break;
+        case EncodeFormat::FLAC:
+        {
+            if (encode_para == nullptr)
+                break;
+            FlacEncodePara* flac_para = (FlacEncodePara*)encode_para;
+            cmdline = m_encode_dir;
+            cmdline += _T("flac.exe ");
+            cmdline += flac_para->cmd_para.c_str();
+            cmdline += L" -o \"";
+            cmdline += dest_file_path;
+            cmdline += L"\" -";
+        }
+        break;
         default:
             cmdline = dest_file_path;
         }

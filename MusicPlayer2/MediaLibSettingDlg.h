@@ -3,7 +3,7 @@
 #include "CListBoxEnhanced.h"
 #include "afxwin.h"
 #include "MyComboBox.h"
-
+#include "SpinEdit.h"
 
 // CMediaLibSettingDlg 对话框
 
@@ -32,15 +32,30 @@ private:
 	CMyComboBox m_recent_played_range_combo;
     CButton m_ignore_exist_chk;
     CMyComboBox m_id3v2_type_combo;
+    CButton m_enable_lastfm;
+    CSpinEdit m_playlist_item_height_edit;
 
     CToolTipCtrl m_toolTip;
     size_t m_data_size;		//数据文件的大小
+    CStatic m_lastfm_status;
+    CButton m_lastfm_login;
+    CSpinEdit m_lastfm_least_perdur;
+    CSpinEdit m_lastfm_least_dur;
+    CButton m_lastfm_auto_scrobble;
+    CSpinEdit m_lastfm_auto_scrobble_min;
+    CStatic m_lastfm_cache_status;
+    CButton m_lastfm_upload_cache;
+    CButton m_lastfm_enable_https;
+    CButton m_lastfm_enable_nowplaying;
 
 protected:
     void ShowDataSizeInfo();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     virtual void GetDataFromUi() override;
+    void UpdateLastFMStatus();
+    void UpdateLastFMCacheStatus();
+    afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -63,4 +78,10 @@ public:
     afx_msg void OnBnClickedDisableDeleteFromDiskCheck();
     afx_msg void OnBnClickedShowPlaylistTooltipCheck();
     afx_msg void OnBnClickedFloatPlaylistFollowMainWndCheck();
+    afx_msg void OnBnClickedEnableLastfm();
+    afx_msg void OnBnClickedLastfmLogin();
+    afx_msg void OnBnClickedLastfmAutoScrobble();
+    afx_msg void OnBnClickedLastfmUploadCache();
+    afx_msg void OnBnClickedLastfmEnableHttps();
+    afx_msg void OnBnClickedLastfmEnableNowplaying();
 };

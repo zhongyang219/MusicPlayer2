@@ -17,7 +17,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 中文(简体，中国) resources
+// Chinese (Simplified, China) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
@@ -1010,7 +1010,7 @@ CLASS "MusicPlayer_l3gwYT"
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
     LTEXT           "当前文件夹:",IDC_PATH_STATIC,188,2,43,12,SS_CENTERIMAGE | WS_TABSTOP
-    CONTROL         "",IDC_PLAYLIST_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,185,39,182,202
+    CONTROL         "",IDC_PLAYLIST_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,185,39,182,202
     PUSHBUTTON      "媒体库(&L)...",ID_SET_PATH,316,0,51,14
     LTEXT           "工具栏",IDC_PLAYLIST_TOOLBAR,185,29,182,8
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,188,15,178,12
@@ -1115,7 +1115,7 @@ BEGIN
     LTEXT           "",IDC_PATH_STATIC,115,18,172,8
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 245, 386
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 245, 505
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
@@ -1126,17 +1126,17 @@ BEGIN
     GROUPBOX        "媒体库选项",IDC_STATIC,6,5,232,49
     CONTROL         "将只有一项的分类归到其他类中",IDC_CLASSIFY_OTHER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,18,133,10
     CONTROL         "启动时自动更新媒体库",IDC_UPDATE_MEDIA_LIB_CHK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,29,132,10
-    LTEXT           "当前数据文件大小：",IDC_SIZE_STATIC,14,303,178,8
-    PUSHBUTTON      "清理(&C)...",IDC_CLEAN_DATA_FILE_BUTTON,14,315,53,14
-    GROUPBOX        "清理媒体库",IDC_STATIC,6,291,232,43
-    PUSHBUTTON      "清空最近播放曲目列表(&R)...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,13,267,95,14
-    GROUPBOX        "最近播放",IDC_STATIC,6,241,232,45
-    GROUPBOX        "播放列表",IDC_STATIC,6,173,232,62
+    LTEXT           "当前数据文件大小：",IDC_SIZE_STATIC,14,321,178,8
+    PUSHBUTTON      "清理(&C)...",IDC_CLEAN_DATA_FILE_BUTTON,14,333,53,14
+    GROUPBOX        "清理媒体库",IDC_STATIC,6,309,232,43
+    PUSHBUTTON      "清空最近播放曲目列表(&R)...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,13,285,95,14
+    GROUPBOX        "最近播放",IDC_STATIC,6,259,232,45
+    GROUPBOX        "播放列表",IDC_STATIC,6,173,232,76
     CONTROL         "禁用播放列表拖放排序",IDC_DISABLE_DRAGE_SORT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,184,89,10
     LTEXT           "播放列表显示方式：",IDC_STATIC,107,185,64,8
     COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,173,183,59,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "最近播放显示范围：",IDC_STATIC,14,253,66,8
-    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,85,251,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "最近播放显示范围：",IDC_STATIC,14,271,66,8
+    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,85,269,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "禁止向播放列表中添加已存在的曲目",IDC_IGNORE_EXIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,197,175,10
     GROUPBOX        "在媒体库中显示的项目",IDC_STATIC,6,129,232,39
     CONTROL         "艺术家",IDC_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,140,36,10
@@ -1149,14 +1149,37 @@ BEGIN
     CONTROL         "最近播放",IDC_RECENT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,143,153,43,10
     CONTROL         "文件夹浏览",IDC_FOLDER_EXPLORE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,187,153,49,10
     CONTROL         "分级",IDC_RATING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,55,153,29,10
-    GROUPBOX        "标签读写",IDC_STATIC,6,340,232,32
-    LTEXT           "ID3v2写入类型：",IDC_STATIC,14,354,61,8
-    COMBOBOX        IDC_ID3V2_TYPE_COMBO,74,353,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "标签读写",IDC_STATIC,6,358,232,32
+    LTEXT           "ID3v2写入类型：",IDC_STATIC,14,372,61,8
+    COMBOBOX        IDC_ID3V2_TYPE_COMBO,74,371,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "刷新媒体库(&R)",IDC_REFRESH_MEDIA_LIB_BUTTON,153,20,59,14
     CONTROL         "禁用从磁盘删除",IDC_DISABLE_DELETE_FROM_DISK_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,40,118,10
-    CONTROL         "显示播放列表鼠标提示",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,209,154,10
+    CONTROL         "显示播放列表鼠标提示",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,209,87,10
     CONTROL         "浮动播放列表跟随主窗口",IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,221,159,10
+    LTEXT           "播放列表项目高度：",IDC_STATIC,14,235,66,8
+    EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,81,233,34,12,ES_AUTOHSCROLL
+    LTEXT           "像素",IDC_STATIC,117,235,26,8
+    GROUPBOX        "Last.fm",IDC_STATIC,6,398,232,103
+    CONTROL         "启用 last.fm 相关功能",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,408,80,10
+    LTEXT           "当前状态：",IDC_STATIC,14,419,34,8
+    LTEXT           "状态",IDC_LASTFM_STATUS,46,419,124,8
+    PUSHBUTTON      "登录",IDC_LASTFM_LOGIN,177,415,50,14,WS_DISABLED
+    LTEXT           "当播放进度满足以下所有条件时将记录计入缓存：",IDC_STATIC,14,431,145,8
+    LTEXT           "至少播放歌曲的",IDC_STATIC,14,441,47,8
+    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,61,440,40,12,ES_AUTOHSCROLL
+    LTEXT           "% 并至少播放",IDC_STATIC,103,441,41,8
+    EDITTEXT        IDC_LASTFM_LEAST_DUR,144,440,40,12,ES_AUTOHSCROLL
+    LTEXT           "秒。",IDC_STATIC,186,442,14,8
+    CONTROL         "当缓存中的记录数超过",IDC_LASTFM_AUTO_SCROBBLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,454,76,10
+    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,92,453,41,12,ES_AUTOHSCROLL
+    LTEXT           "条时，自动上传缓存。",IDC_STATIC,135,455,66,8
+    LTEXT           "缓存状态：",IDC_STATIC,14,467,34,8
+    LTEXT           "X条记录",IDC_LASTFM_CACHE_STATUS,46,467,123,8
+    PUSHBUTTON      "上传缓存",IDC_LASTFM_UPLOAD_CACHE,177,466,50,14,WS_DISABLED
+    CONTROL         "使用 HTTPS 与 last.fm 服务器通信",IDC_LASTFM_ENABLE_HTTPS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,478,116,10
+    CONTROL         "上传当前播放歌曲",IDC_LASTFM_ENABLE_NOWPLAYING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,490,67,10
 END
 
 IDD_ADD_TO_PLAYLIST_DIALOG DIALOGEX 0, 0, 186, 152
@@ -1276,6 +1299,24 @@ BEGIN
     DEFPUSHBUTTON   "确定",IDOK,24,66,50,14
     PUSHBUTTON      "取消",IDCANCEL,78,66,50,14
     CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,121,55
+END
+
+IDD_FLAC_ENCODE_CFG_DIALOG DIALOGEX 0, 0, 176, 96
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Flac 编码选项"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,60,75,50,14
+    PUSHBUTTON      "取消",IDCANCEL,119,75,50,14
+    LTEXT           "压缩级别：",IDC_STATIC,7,8,38,8
+    CONTROL         "",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,60,7,87,10
+    LTEXT           "低",IDC_STATIC,47,8,12,8
+    LTEXT           "高",IDC_STATIC,152,8,12,8
+    LTEXT           "当前选择：",IDC_STATIC,7,20,36,8
+    LTEXT           "Static",IDC_COMP_LEVEL_STATIC,47,20,22,8
+    CONTROL         "自定义 Flac 编码参数",IDC_SPECIFY_PARA_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,34,87,10
+    LTEXT           "编码器参数：",IDC_STATIC,7,48,51,8
+    EDITTEXT        IDC_EDIT1,57,46,99,12,ES_AUTOHSCROLL
 END
 
 
@@ -1625,7 +1666,7 @@ BEGIN
         RIGHTMARGIN, 238
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 382
+        BOTTOMMARGIN, 501
         HORZGUIDE, 141
         HORZGUIDE, 154
     END
@@ -1701,6 +1742,14 @@ BEGIN
         RIGHTMARGIN, 128
         TOPMARGIN, 7
         BOTTOMMARGIN, 80
+    END
+
+    IDD_FLAC_ENCODE_CFG_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 169
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 89
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2158,6 +2207,11 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 100
+END
+
+IDD_FLAC_ENCODE_CFG_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 
@@ -3782,14 +3836,19 @@ BEGIN
     IDS_SHOTCUT_DOWN        "↓"
     IDS_SPACE               "空格"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO "如果歌曲所在目录下没有找到专辑封面则会在此文件夹下寻找封面文件。"
+    IDS_LOGIN_REQUIRED      "需要登录"
+    IDS_LOGGED              "已登录"
+    IDS_LASTFM_LOGIN        "请您在打开的浏览器窗口内完成登录并在登录成功后单击确定。"
+    IDS_LOGIN_FAILED        "登录失败！"
+    IDS_LASTFM_CACHE_STATUS "%i条记录"
 END
 
-#endif    // 中文(简体，中国) resources
+#endif    // Chinese (Simplified, China) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 英语(美国) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -4294,7 +4353,7 @@ CLASS "MusicPlayer_l3gwYT"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
     LTEXT           "Folder:",IDC_PATH_STATIC,186,3,46,12,SS_CENTERIMAGE | WS_TABSTOP
-    CONTROL         "",IDC_PLAYLIST_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,185,42,190,200
+    CONTROL         "",IDC_PLAYLIST_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,185,42,190,200
     PUSHBUTTON      "Media &Library...",ID_SET_PATH,321,1,54,13
     LTEXT           "Toolbar",IDC_PLAYLIST_TOOLBAR,185,32,182,9
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,188,17,178,12
@@ -4565,7 +4624,7 @@ BEGIN
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,7,7,172,12
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 377
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 499
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
@@ -4578,18 +4637,18 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,18,187,10
     CONTROL         "Automatically update media library on startup",IDC_UPDATE_MEDIA_LIB_CHK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,29,185,10
-    LTEXT           "Current data file size:",IDC_SIZE_STATIC,14,305,297,8
-    PUSHBUTTON      "&Clean up...",IDC_CLEAN_DATA_FILE_BUTTON,14,316,59,14
-    GROUPBOX        "Clean up the media library",IDC_STATIC,6,294,324,40
-    PUSHBUTTON      "Clear recently played tracks list...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,14,270,123,14
-    GROUPBOX        "Recently played",IDC_STATIC,6,244,324,45
-    GROUPBOX        "Playlist",IDC_STATIC,6,175,324,65
+    LTEXT           "Current data file size:",IDC_SIZE_STATIC,14,323,297,8
+    PUSHBUTTON      "&Clean up...",IDC_CLEAN_DATA_FILE_BUTTON,14,334,59,14
+    GROUPBOX        "Clean up the media library",IDC_STATIC,6,312,324,40
+    PUSHBUTTON      "Clear recently played tracks list...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,14,288,123,14
+    GROUPBOX        "Recently played",IDC_STATIC,6,262,324,45
+    GROUPBOX        "Playlist",IDC_STATIC,6,175,324,82
     CONTROL         "Disable drag and drop sorting of playlist",IDC_DISABLE_DRAGE_SORT_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,186,149,11
     LTEXT           "Playlist Display Mode:",IDC_STATIC,14,201,80,9
     COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,96,199,133,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Recently played display range:",IDC_STATIC,16,257,113,8
-    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,131,255,125,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Recently played display range:",IDC_STATIC,16,275,113,8
+    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,131,273,125,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Prohibit adding existing tracks to the playlist",IDC_IGNORE_EXIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,214,216,10
     GROUPBOX        "Items displayed in the media library",IDC_STATIC,7,130,323,39
@@ -4603,14 +4662,39 @@ BEGIN
     CONTROL         "Recently played",IDC_RECENT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,169,154,69,10
     CONTROL         "Folder explore",IDC_FOLDER_EXPLORE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,154,73,10
     CONTROL         "Rating",IDC_RATING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,62,154,33,10
-    GROUPBOX        "Music tag reading and writing",IDC_STATIC,7,339,323,30
-    LTEXT           "ID3v2 write type:",IDC_STATIC,15,352,66,9
-    COMBOBOX        IDC_ID3V2_TYPE_COMBO,80,351,52,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Music tag reading and writing",IDC_STATIC,7,357,323,30
+    LTEXT           "ID3v2 write type:",IDC_STATIC,15,370,66,9
+    COMBOBOX        IDC_ID3V2_TYPE_COMBO,80,369,52,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Refresh media library",IDC_REFRESH_MEDIA_LIB_BUTTON,206,20,85,13
     CONTROL         "Disable delete from disk",IDC_DISABLE_DELETE_FROM_DISK_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,41,128,9
     CONTROL         "Show playlist tool tip",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,227,167,9
+    GROUPBOX        "Last.fm",IDC_STATIC,6,394,324,101
+    CONTROL         "Enable last.fm support",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,402,87,10
+    LTEXT           "Current status: ",IDC_STATIC,14,413,49,8
+    LTEXT           "Status",IDC_LASTFM_STATUS,65,413,190,8
+    PUSHBUTTON      "Log in",IDC_LASTFM_LOGIN,264,409,50,14,WS_DISABLED
+    LTEXT           "Cache scrobble when following conditions are meeted:",IDC_STATIC,16,423,181,8
+    LTEXT           "Played",IDC_STATIC,16,434,23,8
+    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,40,433,44,12,ES_AUTOHSCROLL
+    LTEXT           "% of the song and",IDC_STATIC,86,434,64,8
+    EDITTEXT        IDC_LASTFM_LEAST_DUR,148,433,44,12,ES_AUTOHSCROLL
+    LTEXT           "Seconds.",IDC_STATIC,195,434,34,8
+    CONTROL         "Upload scrobbles in cache if the number of cached scrobbles is greater than ",IDC_LASTFM_AUTO_SCROBBLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,447,252,10
+    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,268,446,40,12,ES_AUTOHSCROLL
+    LTEXT           ".",IDC_STATIC,311,428,8,8
+    LTEXT           "Cache status:",IDC_STATIC,14,460,42,8
+    LTEXT           "X scrobbles",IDC_LASTFM_CACHE_STATUS,58,460,196,8
+    PUSHBUTTON      "Upload cache",IDC_LASTFM_UPLOAD_CACHE,264,459,50,14
+    CONTROL         "Use HTTPS when communicating with the last.fm server.",IDC_LASTFM_ENABLE_HTTPS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,472,193,10
+    CONTROL         "Upload now playing track",IDC_LASTFM_ENABLE_NOWPLAYING,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,483,97,10
+    LTEXT           "Playlist item height:",IDC_STATIC,14,242,83,8
+    EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,97,240,39,12,ES_AUTOHSCROLL
+    LTEXT           "pixel",IDC_STATIC,138,242,30,8
 END
 
 IDD_LYRIC_RELATE_DIALOG DIALOGEX 0, 0, 329, 178
@@ -4706,6 +4790,24 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,24,66,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,78,66,50,14
     CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,121,55
+END
+
+IDD_FLAC_ENCODE_CFG_DIALOG DIALOGEX 0, 0, 210, 96
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Flac Encode Options"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,95,75,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,153,75,50,14
+    LTEXT           "Compression level:",IDC_STATIC,7,8,71,8
+    CONTROL         "",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,105,7,76,10
+    LTEXT           "Low",IDC_STATIC,84,8,23,8
+    LTEXT           "High",IDC_STATIC,182,8,21,8
+    LTEXT           "Current selected:",IDC_STATIC,7,20,72,8
+    LTEXT           "Static",IDC_COMP_LEVEL_STATIC,85,20,22,8
+    CONTROL         "Custom flac parameters",IDC_SPECIFY_PARA_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,34,149,10
+    LTEXT           "Encoder parameters:",IDC_STATIC,7,48,76,8
+    EDITTEXT        IDC_EDIT1,86,46,99,12,ES_AUTOHSCROLL
 END
 
 
@@ -4986,7 +5088,7 @@ BEGIN
         RIGHTMARGIN, 330
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 373
+        BOTTOMMARGIN, 495
     END
 
     IDD_LYRIC_RELATE_DIALOG, DIALOG
@@ -5035,6 +5137,14 @@ BEGIN
         RIGHTMARGIN, 128
         TOPMARGIN, 7
         BOTTOMMARGIN, 80
+    END
+
+    IDD_FLAC_ENCODE_CFG_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 203
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 89
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -5501,6 +5611,11 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     0, 0, 100, 100
+END
+
+IDD_FLAC_ENCODE_CFG_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 
@@ -7003,9 +7118,14 @@ BEGIN
     IDS_SPACE               "Space"
     IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 
                             "If the album cover is not found in the directory where the song is located then the cover file will be searched for in this folder."
+    IDS_LOGIN_REQUIRED      "Login required"
+    IDS_LOGGED              "Already logged in"
+    IDS_LASTFM_LOGIN        "Please complete the login in the opened browser window and click OK after successful login."
+    IDS_LOGIN_FAILED        "Login failed!"
+    IDS_LASTFM_CACHE_STATUS "%i scrobbles"
 END
 
-#endif    // 英语(美国) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
