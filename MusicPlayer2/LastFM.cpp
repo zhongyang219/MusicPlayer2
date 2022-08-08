@@ -234,7 +234,7 @@ bool LastFM::UpdateNowPlaying(LastFMTrack track, LastFMTrack& corrected_track) {
     GenerateApiSig(params);
     wstring result;
     wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
-    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
+    if (CInternetCommon::HttpPost(GetDefaultBase(), result, GetUrl(params, L""), ContentType, true)) return false;
     OutputDebugStringW(result.c_str());
     XMLHelper helper(result);
     if (helper.HasError()) {
@@ -323,7 +323,7 @@ bool LastFM::Love(wstring track, wstring artist) {
     GenerateApiSig(params);
     wstring result;
     wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
-    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
+    if (CInternetCommon::HttpPost(GetDefaultBase(), result, GetUrl(params, L""), ContentType, true)) return false;
     OutputDebugStringW(result.c_str());
     XMLHelper helper(result);
     if (helper.HasError()) {
@@ -344,7 +344,7 @@ bool LastFM::Unlove(wstring track, wstring artist) {
     GenerateApiSig(params);
     wstring result;
     wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
-    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) return false;
+    if (CInternetCommon::HttpPost(GetDefaultBase(), result, GetUrl(params, L""), ContentType, true)) return false;
     OutputDebugStringW(result.c_str());
     XMLHelper helper(result);
     if (helper.HasError()) {
@@ -416,7 +416,7 @@ bool LastFM::Scrobble(list<LastFMTrack>& tracks) {
     GenerateApiSig(params);
     wstring result;
     wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");
-    if (CInternetCommon::HttpPost(L"http://ws.audioscrobbler.com/2.0/?", result, GetUrl(params, L""), ContentType, true)) RETURN_AND_RELEASE_MUTEX(false)
+    if (CInternetCommon::HttpPost(GetDefaultBase(), result, GetUrl(params, L""), ContentType, true)) RETURN_AND_RELEASE_MUTEX(false)
     OutputDebugStringW(result.c_str());
     XMLHelper helper(result);
     if (helper.HasError()) {
@@ -480,4 +480,16 @@ bool LastFM::CurrentTrackScrobbleable() {
 
 size_t LastFM::CachedCount() {
     return ar.cached_tracks.size();
+}
+
+wstring LastFM::GetDefaultBase() {
+    if (theApp.m_media_lib_setting_data.lastfm_enable_https) {
+        return L"https://ws.audioscrobbler.com/2.0/?";
+    } else {
+        return L"http://ws.audioscrobbler.com/2.0/?";
+    }
+}
+
+wstring LastFM::GetUrl(map<wstring, wstring>& params) {
+    return GetUrl(params, GetDefaultBase());
 }

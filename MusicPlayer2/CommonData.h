@@ -363,6 +363,8 @@ struct MediaLibSettingData
     int lastfm_least_dur { 60 };        ///将记录写入缓存要求播放的秒数
     bool lastfm_auto_scrobble { true }; ///是否自动上传缓存里的记录
     int lastfm_auto_scrobble_min { 1 }; ///自动上传缓存里的记录的下限
+    bool lastfm_enable_https { false }; ///是否使用HTTPS与last.fm服务器通信
+    bool lastfm_enable_nowplaying{ true }; ///是否上传当前播放歌曲
 };
 
 struct NonCategorizedSettingData

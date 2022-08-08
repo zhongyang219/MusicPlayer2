@@ -43,7 +43,9 @@ public:
     size_t CachedCount();
 protected:
     void GenerateApiSig(map<wstring, wstring>& params);
-    wstring GetUrl(map<wstring, wstring>& params, wstring base = L"http://ws.audioscrobbler.com/2.0/?");
+    wstring GetUrl(map<wstring, wstring>& params, wstring base);
+    wstring GetUrl(map<wstring, wstring>& params);
+    wstring GetDefaultBase();
     wstring GetPostData(map<wstring, wstring>& params);
 private:
     LastFMDataArchive ar;

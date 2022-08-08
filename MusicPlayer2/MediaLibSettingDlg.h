@@ -45,6 +45,8 @@ private:
     CSpinEdit m_lastfm_auto_scrobble_min;
     CStatic m_lastfm_cache_status;
     CButton m_lastfm_upload_cache;
+    CButton m_lastfm_enable_https;
+    CButton m_lastfm_enable_nowplaying;
 
 protected:
     void ShowDataSizeInfo();
@@ -80,4 +82,6 @@ public:
     afx_msg void OnBnClickedLastfmLogin();
     afx_msg void OnBnClickedLastfmAutoScrobble();
     afx_msg void OnBnClickedLastfmUploadCache();
+    afx_msg void OnBnClickedLastfmEnableHttps();
+    afx_msg void OnBnClickedLastfmEnableNowplaying();
 };

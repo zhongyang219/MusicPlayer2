@@ -500,6 +500,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"media_lib", L"lastfm_least_dur", theApp.m_media_lib_setting_data.lastfm_least_dur);
     ini.WriteBool(L"media_lib", L"lastfm_auto_scrobble", theApp.m_media_lib_setting_data.lastfm_auto_scrobble);
     ini.WriteInt(L"media_lib", L"lastfm_auto_scrobble_min", theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min);
+    ini.WriteBool(L"media_lib", L"lastfm_enable_https", theApp.m_media_lib_setting_data.lastfm_enable_https);
+    ini.WriteBool(L"media_lib", L"lastfm_enable_nowplaying", theApp.m_media_lib_setting_data.lastfm_enable_nowplaying);
 
     ini.Save();
 }
@@ -696,6 +698,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.lastfm_auto_scrobble = ini.GetBool(L"media_lib", L"lastfm_auto_scrobble", true);
     theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min = ini.GetInt(L"media_lib", L"lastfm_auto_scrobble_min", 1);
     theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min = min(50, max(1, theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min));
+    theApp.m_media_lib_setting_data.lastfm_enable_https = ini.GetBool(L"media_lib", L"lastfm_enable_https", false);
+    theApp.m_media_lib_setting_data.lastfm_enable_nowplaying = ini.GetBool(L"media_lib", L"lastfm_enable_nowplaying", true);
     CTagLibHelper::SetWriteId3V2_3(theApp.m_media_lib_setting_data.write_id3_v2_3);
 }
 

@@ -2893,5 +2893,7 @@ void CPlayer::UpdateLastFMCurrentTrack(SongInfo info) {
         if (track.timestamp - current.timestamp < duration) return;
     }
     theApp.m_lastfm.UpdateCurrentTrack(track);
-    theApp.UpdateLastFMNowPlaying();
+    if (theApp.m_media_lib_setting_data.lastfm_enable_nowplaying) {
+        theApp.UpdateLastFMNowPlaying();
+    }
 }

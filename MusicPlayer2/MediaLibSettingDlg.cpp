@@ -57,6 +57,8 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LASTFM_AUTO_SCROBBLE_MIN, m_lastfm_auto_scrobble_min);
     DDX_Control(pDX, IDC_LASTFM_CACHE_STATUS, m_lastfm_cache_status);
     DDX_Control(pDX, IDC_LASTFM_UPLOAD_CACHE, m_lastfm_upload_cache);
+    DDX_Control(pDX, IDC_LASTFM_ENABLE_HTTPS, m_lastfm_enable_https);
+    DDX_Control(pDX, IDC_LASTFM_ENABLE_NOWPLAYING, m_lastfm_enable_nowplaying);
 }
 
 void CMediaLibSettingDlg::GetDataFromUi()
@@ -110,6 +112,8 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_LASTFM_LOGIN, &CMediaLibSettingDlg::OnBnClickedLastfmLogin)
     ON_BN_CLICKED(IDC_LASTFM_AUTO_SCROBBLE, &CMediaLibSettingDlg::OnBnClickedLastfmAutoScrobble)
     ON_BN_CLICKED(IDC_LASTFM_UPLOAD_CACHE, &CMediaLibSettingDlg::OnBnClickedLastfmUploadCache)
+    ON_BN_CLICKED(IDC_LASTFM_ENABLE_HTTPS, &CMediaLibSettingDlg::OnBnClickedLastfmEnableHttps)
+    ON_BN_CLICKED(IDC_LASTFM_ENABLE_NOWPLAYING, &CMediaLibSettingDlg::OnBnClickedLastfmEnableNowplaying)
 END_MESSAGE_MAP()
 
 
@@ -438,6 +442,10 @@ void CMediaLibSettingDlg::UpdateLastFMStatus() {
     m_lastfm_auto_scrobble.EnableWindow(m_data.enable_lastfm);
     m_lastfm_auto_scrobble.SetCheck(m_data.lastfm_auto_scrobble);
     m_lastfm_auto_scrobble_min.EnableWindow(m_data.enable_lastfm && m_data.lastfm_auto_scrobble);
+    m_lastfm_enable_https.EnableWindow(m_data.enable_lastfm);
+    m_lastfm_enable_https.SetCheck(m_data.lastfm_enable_https);
+    m_lastfm_enable_nowplaying.EnableWindow(m_data.enable_lastfm);
+    m_lastfm_enable_nowplaying.SetCheck(m_data.lastfm_enable_nowplaying);
     UpdateLastFMCacheStatus();
 }
 
@@ -466,4 +474,14 @@ void CMediaLibSettingDlg::UpdateLastFMCacheStatus() {
 
 void CMediaLibSettingDlg::OnBnClickedLastfmUploadCache() {
     theApp.LastFMScrobble();
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedLastfmEnableHttps() {
+    m_data.lastfm_enable_https = (m_lastfm_enable_https.GetCheck() != 0);
+}
+
+
+void CMediaLibSettingDlg::OnBnClickedLastfmEnableNowplaying() {
+    m_data.lastfm_enable_nowplaying = (m_lastfm_enable_nowplaying.GetCheck() != 0);
 }
