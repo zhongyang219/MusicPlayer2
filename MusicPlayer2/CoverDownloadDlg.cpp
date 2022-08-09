@@ -68,7 +68,8 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
     URLDownloadToFile(0, cover_url.c_str(), cover_file_path.GetFilePath().c_str(), 0, NULL);
 
     //将下载的专辑封面改为隐藏属性
-    SetFileAttributes(cover_file_path.GetFilePath().c_str(), FILE_ATTRIBUTE_HIDDEN);
+    if (pThis->m_save_to_song_folder)
+        SetFileAttributes(cover_file_path.GetFilePath().c_str(), FILE_ATTRIBUTE_HIDDEN);
 
     ::PostMessage(pThis->m_hWnd, WM_DOWNLOAD_COMPLATE, 0, 0);		//下载完成后发送一个搜索完成的消息
 
