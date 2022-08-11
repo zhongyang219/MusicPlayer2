@@ -413,6 +413,10 @@ bool LastFM::Scrobble(list<LastFMTrack>& tracks) {
         }
         i++;
     }
+    if (i == 0) {
+        tracks.clear();
+        RETURN_AND_RELEASE_MUTEX(false)
+    }
     GenerateApiSig(params);
     wstring result;
     wstring ContentType(L"Content-Type: application/x-www-form-urlencoded\r\n");

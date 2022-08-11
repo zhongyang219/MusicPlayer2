@@ -1290,7 +1290,12 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         CFfmpegCore* core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
         core->UpdateSettings();
     }
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
     DrawInfo(true);
+    if (pCurUi != nullptr)
+        pCurUi->UpdateToolTipPositionLater();
 }
 
 void CMusicPlayerDlg::ApplyThemeColor()
@@ -4015,7 +4020,8 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             album_name = cover_file_path.GetFileName();
         }
         // 判断是否保存到封面文件夹
-        if (!theApp.m_general_setting_data.save_album_to_song_folder && CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path))
+        bool saved_to_album_cover_folder{ !theApp.m_general_setting_data.save_album_to_song_folder && CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path) };
+        if (saved_to_album_cover_folder)
             cover_file_path.SetFilePath(theApp.m_app_setting_data.album_cover_path + album_name);
         else
             cover_file_path.SetFilePath(CPlayer::GetInstance().GetCurrentDir() + album_name);
@@ -4027,7 +4033,8 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         URLDownloadToFile(0, cover_url.c_str(), cover_file_path.GetFilePath().c_str(), 0, NULL);
 
         //将下载的专辑封面改为隐藏属性
-        SetFileAttributes(cover_file_path.GetFilePath().c_str(), FILE_ATTRIBUTE_HIDDEN);
+        if (!saved_to_album_cover_folder)
+            SetFileAttributes(cover_file_path.GetFilePath().c_str(), FILE_ATTRIBUTE_HIDDEN);
 
         //重新从本地获取专辑封面
         CPlayer::GetInstance().SearchOutAlbumCover();
@@ -4748,7 +4755,14 @@ void CMusicPlayerDlg::OnShowMenuBar()
     {
         SetMenubarVisible();
     }
-    DrawInfo();
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
+
+    DrawInfo(true);
+
+    if (pCurUi != nullptr)
+        pCurUi->UpdateToolTipPositionLater();
 
     //隐藏菜单栏后弹出提示，告诉用户如何再次显示菜单栏
     if (!theApp.m_ui_data.show_menu_bar)

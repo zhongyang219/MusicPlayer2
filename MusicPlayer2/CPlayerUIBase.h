@@ -78,6 +78,7 @@ public:
     virtual void UpdateVolumeToolTip();
     void UpdatePlaylistBtnToolTip();
     void UpdateDarkLightModeBtnToolTip();
+    void UpdateToolTipPositionLater();
 
     virtual bool SetCursor() override;
     virtual void MouseLeave() override;
@@ -293,4 +294,6 @@ protected:
 
 private:
     CBitmap m_mem_bitmap_static;
+
+    bool m_need_update_tooltip_pos{ false };   //是否需要更新鼠标提示
 };
