@@ -303,6 +303,15 @@ SongInfo& CSongDataManager::GetSongInfoRef2(const SongDataMapKey& key)
     return m_song_data[key];
 }
 
+SongInfo& CSongDataManager::GetSongInfoRef3(const SongInfo& song)
+{
+    ASSERT(!song.file_path.empty());
+    SongInfo& tmp = m_song_data[song];
+    if (tmp.file_path.empty())  // tmp路径为空说明song不存在于m_song_data，复制song内容到tmp
+        tmp = song;
+    return tmp;
+}
+
 const CSongDataManager::SongDataMap& CSongDataManager::GetSongData()
 {
     return m_song_data;

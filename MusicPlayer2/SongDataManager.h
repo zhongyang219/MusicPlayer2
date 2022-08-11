@@ -39,8 +39,8 @@ public:
     using SongDataMap = std::unordered_map<SongDataMapKey, SongInfo, SongDataMapKey_Hash>;
 
     static CSongDataManager& GetInstance();
-    void SaveSongData(std::wstring path);		//将所有歌曲信息以序列化的方式保存到文件
-    void LoadSongData(std::wstring path);			//从文件中以序列化的方式读取所有歌曲信息
+    void SaveSongData(std::wstring path);       //将所有歌曲信息以序列化的方式保存到文件
+    void LoadSongData(std::wstring path);       //从文件中以序列化的方式读取所有歌曲信息
 
     void SetSongDataModified();
     bool IsSongDataModified() const;
@@ -52,6 +52,9 @@ public:
     SongInfo GetSongInfo(const SongDataMapKey& key) const;
     SongInfo& GetSongInfoRef(const SongDataMapKey& key);    // 获取一个歌曲信息的引用（如果不存在不会插入新的记录）
     SongInfo& GetSongInfoRef2(const SongDataMapKey& key);   // 获取一个歌曲信息的引用（如果不存在会插入新的记录）
+    // 获取一个歌曲信息的引用（不存在会插入新的记录并从song复制信息并返回和song一致的引用）
+    // 用于修改只存在于媒体库的歌曲属性，无须保存但要自行SetSongDataModified
+    SongInfo& GetSongInfoRef3(const SongInfo& song);
 
     const SongDataMap& GetSongData();
     bool IsItemExist(const SongDataMapKey& key) const;
@@ -70,7 +73,7 @@ private:
     static CSongDataManager m_instance;
 
 private:
-    SongDataMap m_song_data;		//储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
+    SongDataMap m_song_data;        //储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
     bool m_song_data_modified{};
     CString m_data_version;
 };

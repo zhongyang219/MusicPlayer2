@@ -537,7 +537,7 @@ void CFindDlg::OnFormatConvert()
 void CFindDlg::OnItemProperty()
 {
     // TODO: 在此添加命令处理程序代码
-    if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
+    if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_find_result.size()))
         return;
     CPropertyDlg propertyDlg(m_find_result, m_item_selected, true);
     propertyDlg.DoModal();

@@ -123,8 +123,11 @@ public:
     //查找path目录下的所有歌词文件，并将文件名保存到files容器中
     static void GetLyricFiles(wstring path, vector<wstring>& files);
 
-    //处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，同时维护播放索引位置
-    static void GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index);
+    // 处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，同时维护播放索引位置
+    // 返回files内仅file_path,track是保证正确的，其他项目均不可靠
+    // 获取到的标签、时长信息已写入媒体库，调用后请从媒体库重新读取
+    // refresh_info为true时对媒体库内已存在项目重新获取标签、时长（仅文件夹模式有效）
+    static void GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info);
 
     //获得标准流派信息
     static wstring GetGenre(BYTE genre);
@@ -173,5 +176,5 @@ public:
 
 protected:
     //获取音频文件的内嵌cue文件，并将每段分轨作为一个曲目添加到files容器中
-    static void GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index);
+    static void GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info);
 };

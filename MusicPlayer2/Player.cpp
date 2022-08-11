@@ -186,10 +186,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, 0, 0);
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
-    //bool song_data_modified{ false };       //theApp.m_song_data是否有修改
 
     // 解析原始cue文件，对于m_playlist内已切分的分轨（is_cue == true）GetCueTracks不做任何处理
-    CAudioCommon::GetCueTracks(GetInstance().m_playlist, GetInstance().GetPlayerCore(), pInfo->play_index);
+    // m_playlist内含原始cue文件时（文件夹模式）强制刷新才会生效，执行后仅file_path、track可用
+    CAudioCommon::GetCueTracks(GetInstance().m_playlist, GetInstance().GetPlayerCore(), pInfo->play_index, pInfo->refresh_info);
 
     auto& playlist = GetInstance().m_playlist;
     //获取播放列表中每一首歌曲的信息
@@ -203,12 +203,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         pInfo->process_percent = i * 100 / song_num + 1;
 
         // 直接将各种信息更新到CSongDataManager，最后再直接存入m_playlist
-        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef2(song);
-        if (song_info.file_path.empty())    // 说明媒体库内没有记录，需要从song复制信息到空白的song_info
-        {
-            song_info.CopySongInfo(song);
-            song_info.file_path = song.file_path;
-        }
+        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(song);
 
         if (song_info.modified_time == 0 || pInfo->refresh_info)
             song_info.modified_time = CCommon::GetFileLastModified(song_info.file_path);
@@ -216,7 +211,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         //如果要求强制刷新或没有获取过歌曲信息，则在这里获取
         if (!song_info.info_acquired || !song_info.ChannelInfoAcquired() || pInfo->refresh_info)
         {
-            //if (!song_info.is_cue)  // cue歌曲能够获取的信息已经在GetCueTracks获取了，这里的代码没有针对cue的特殊处理会破坏信息故跳过
             bool is_osu_file{ COSUPlayerHelper::IsOsuFile(song_info.file_path) };
             int flag = AF_BITRATE | AF_CHANNEL_INFO;
             if (!song_info.is_cue)
@@ -243,11 +237,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         song.CopySongInfo(song_info);
     }
     GetInstance().m_loading = false;
-    //GetInstance().IniPlaylistComplate();
-    //GetInstance().IniLyrics();
     PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
-    //if (song_data_modified)
-    //    theApp.StartClassifySongData();
     return 0;
 }
 

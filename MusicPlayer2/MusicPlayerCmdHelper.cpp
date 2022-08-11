@@ -497,21 +497,20 @@ bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
     if (command - ID_RATING_1 <= 5)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
     {
         int rating = command - ID_RATING_1 + 1;
-        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef2(song);
+        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(song);
         song_info.rating = static_cast<BYTE>(rating);
         bool succeed{};
-        if (!song_info.is_cue)  // cue文件分级只保存到媒体库，不写入文件
+        // cue、osu!、不支持写入的文件分级只保存到媒体库
+        if (CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()) && !song_info.is_cue && !COSUPlayerHelper::IsOsuFile(song_info.file_path))
         {
             CAudioTag audio_tag(song_info);
             succeed = audio_tag.WriteAudioRating();
         }
-        if (song_info.is_cue || !CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()))
+        else
+        {
             succeed = true;     //如果文件格式不支持写入分级，也返回true
-        //if (succeed)
-        //{
-        CSongDataManager::GetInstance().AddItem(song_info);
+        }
         CSongDataManager::GetInstance().SetSongDataModified();
-        //}
         return succeed;
     }
     return true;
