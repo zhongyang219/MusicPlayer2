@@ -188,7 +188,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
 
     // 解析原始cue文件，对于m_playlist内已切分的分轨（is_cue == true）GetCueTracks不做任何处理
-    // m_playlist内含原始cue文件时（文件夹模式）强制刷新才会生效，执行后仅file_path、track可用
+    // m_playlist内含原始cue文件时（文件夹模式）强制刷新才会生效，执行后仅file_path、track、is_cue可用
     CAudioCommon::GetCueTracks(GetInstance().m_playlist, GetInstance().GetPlayerCore(), pInfo->play_index, pInfo->refresh_info);
 
     auto& playlist = GetInstance().m_playlist;
@@ -1821,7 +1821,7 @@ void CPlayer::ClearLyric()
 {
     m_Lyrics = CLyrics{};
     GetCurrentSongInfo2().lyric_file.clear();
-    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentSongInfo()).lyric_file.clear();
+    CSongDataManager::GetInstance().GetSongInfoRef3(GetCurrentSongInfo()).lyric_file.clear();
 }
 
 wstring CPlayer::GetTimeString() const

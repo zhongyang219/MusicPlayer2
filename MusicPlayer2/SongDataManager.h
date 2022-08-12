@@ -46,8 +46,10 @@ public:
     bool IsSongDataModified() const;
 
     CString GetDataVersion() const;
-
-    void SaveSongInfo(const SongInfo& song_info);       //将一个歌曲信息保存到m_song_data中
+    // 将一个歌曲信息保存到m_song_data中
+    void SaveSongInfo(const SongInfo& song_info);
+    // 从媒体库加载信息更新到播放列表项目
+    void LoadSongInfo(SongInfo& song_info);
 
     SongInfo GetSongInfo(const SongDataMapKey& key) const;
     SongInfo& GetSongInfoRef(const SongDataMapKey& key);    // 获取一个歌曲信息的引用（如果不存在不会插入新的记录）
