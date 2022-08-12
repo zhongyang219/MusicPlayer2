@@ -811,8 +811,8 @@ BEGIN
     LTEXT           "搜索结果：",IDC_STATIC_INFO,7,22,95,8
     DEFPUSHBUTTON   "下载选中项",IDC_DOWNLOAD_SELECTED,144,158,50,14
     CONTROL         "<a>取消关联</a>",IDC_UNASSOCIATE_LINK,"SysLink",WS_TABSTOP,105,21,38,9
-    GROUPBOX        "下载选项",IDC_STATIC,7,130,243,25
-    LTEXT           "封面保存位置：",IDC_STATIC,12,142,47,8
+    GROUPBOX        "下载选项",IDC_DOWNLOAD_OPTION_GROUPBOX,7,130,243,25
+    LTEXT           "封面保存位置：",IDC_COVER_LOCATION_STATIC,12,142,47,8
     CONTROL         "保存到歌曲所在目录",IDC_SAVE_TO_SONG_FOLDER2,"Button",BS_AUTORADIOBUTTON,66,142,78,10
     CONTROL         "保存到封面文件夹",IDC_SAVE_TO_ALBUM_FOLDER2,"Button",BS_AUTORADIOBUTTON,156,142,74,10
 END
@@ -3994,8 +3994,8 @@ BEGIN
     LTEXT           "Search result:",IDC_STATIC_INFO,7,22,110,8
     DEFPUSHBUTTON   "&Download selected",IDC_DOWNLOAD_SELECTED,113,183,83,14
     CONTROL         "<a>Cancel Link</a>",IDC_UNASSOCIATE_LINK,"SysLink",WS_TABSTOP,120,21,74,9
-    GROUPBOX        "Download options",IDC_STATIC,7,129,243,49
-    LTEXT           "Album Cover Save Location:",IDC_STATIC,12,140,104,8
+    GROUPBOX        "Download options",IDC_DOWNLOAD_OPTION_GROUPBOX,7,129,243,49
+    LTEXT           "Album Cover Save Location:",IDC_COVER_LOCATION_STATIC,12,140,104,8
     CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER2,
                     "Button",BS_AUTORADIOBUTTON,11,152,144,10
     CONTROL         "Save to album cover directory",IDC_SAVE_TO_ALBUM_FOLDER2,

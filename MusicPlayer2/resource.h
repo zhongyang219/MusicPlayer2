@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by MusicPlayer2.rc
+// Microsoft Visual C++ 生成的包含文件。
+// 供 MusicPlayer2.rc 使用
 //
 #define IDM_ABOUTBOX                    0x0010
 #define IDD_ABOUTBOX                    100
@@ -1186,6 +1186,8 @@
 #define IDC_LASTFM_ENABLE_HTTPS         1219
 #define IDC_LASTFM_ENABLE_NOWPLAYING    1220
 #define IDC_COMP_LEVEL_STATIC           1221
+#define IDC_DOWNLOAD_OPTION_GROUPBOX    1221
+#define IDC_COVER_LOCATION_STATIC       1222
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1634,7 +1636,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        575
 #define _APS_NEXT_COMMAND_VALUE         33394
-#define _APS_NEXT_CONTROL_VALUE         1221
+#define _APS_NEXT_CONTROL_VALUE         1223
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
