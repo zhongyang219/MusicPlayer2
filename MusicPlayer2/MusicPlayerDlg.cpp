@@ -2669,7 +2669,7 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
         // 响应不在Accelerator中的快捷键
         if (pMsg->message == WM_KEYDOWN)
         {
-            if (pMsg->wParam == 'F')    //按F键快速查找
+            if (pMsg->wParam == 'F' && (theApp.m_ui_data.show_playlist || IsFloatPlaylistExist()))    //按F键快速查找
             {
                 search_box->SetFocus();
                 return TRUE;
