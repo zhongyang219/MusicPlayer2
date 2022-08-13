@@ -275,6 +275,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     text->type = UiElement::Text::Album;
                 else if (str_type == "artist_title")
                     text->type = UiElement::Text::ArtistTitle;
+                else if (str_type == "artist_album")
+                    text->type = UiElement::Text::ArtistAlbum;
                 else if (str_type == "format")
                     text->type = UiElement::Text::Format;
                 else if (str_type == "play_time")

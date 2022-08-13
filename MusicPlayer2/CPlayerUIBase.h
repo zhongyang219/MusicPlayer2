@@ -235,7 +235,7 @@ protected:
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
     virtual bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
 
-    wstring GetDisplayFormatString();       //获取显示格式的字符串
+    static wstring GetDisplayFormatString();       //获取显示格式的字符串
     CString GetVolumeTooltipString();       //获取音量鼠标提示字符串
 
     int DPI(int pixel) const;

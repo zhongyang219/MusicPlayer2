@@ -127,6 +127,7 @@ namespace UiElement
             Artist,     //歌曲艺术家
             Album,      //歌曲唱片集
             ArtistTitle,    //艺术家 - 标题
+            ArtistAlbum,    //艺术家 - 唱片集
             Format,     //歌曲格式
             PlayTime    //播放时间
         };
@@ -136,6 +137,7 @@ namespace UiElement
 
         virtual void Draw(CPlayerUIBase* ui) override;
         virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
+        std::wstring GetText() const;
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;
     };
