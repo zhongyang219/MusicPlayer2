@@ -522,45 +522,51 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
         return 0;
 
     theApp.m_media_num_added = 0;
-    std::vector<wstring> all_media_files;
+    vector<SongInfo> all_media_songs;
     //获取所有音频文件的路径
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
     {
-        CAudioCommon::GetAudioFiles(item, all_media_files, 50000, true);
+        CAudioCommon::GetAudioFiles(item, all_media_songs, 50000, true);
     }
+    int index = 0;
+    // 解析并移除cue文件及其关联的音频文件，并将分割后的音轨插入
+    // refresh为true时会强制更新cue的时长与标签（直接更新到媒体库）
+    CAudioCommon::GetCueTracks(all_media_songs, CPlayer::GetInstance().GetPlayerCore(), index, refresh);
 
     //std::unordered_map<wstring, SongInfo> new_songs_map;
-    for (const auto& file_path : all_media_files)
+    for (const auto& song : all_media_songs)
     {
-        if (CFilePathHelper(file_path).GetFileExtension() == L"cue") continue;  // 缺少cue解析的部分，以下代码实际对cue无效却会将cue文件存入媒体库故暂时跳过
-        bool get_song_info{ !CSongDataManager::GetInstance().IsItemExist(file_path) || (refresh && IsSongNewer(file_path)) };
-        SongInfo song_info = CSongDataManager::GetInstance().GetSongInfo(file_path);
-        if (get_song_info || !song_info.ChannelInfoAcquired())       //如果还没有获取到该歌曲的信息，或者文件的最后修改时间比上次获取到的新，则在这里获取
+        if (song.file_path.empty()) continue;
+        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(song);
+        // 判断是否重新获取歌曲信息
+        bool get_song_info{ (song_info.modified_time == 0 || refresh) && IsSongNewer(song_info) };  // 未获取过修改时间或要求刷新时通过IsSongNewer确认并更新文件修改时间
+        if (get_song_info || !song_info.info_acquired || !song_info.ChannelInfoAcquired())          // 如果判断需要获取元数据就获取尽量多的项目
         {
-            int audio_info_flags{ AF_ALL };
-            if (!get_song_info)
-                audio_info_flags = AF_CHANNEL_INFO;
-            song_info.file_path = file_path;
+            bool is_osu_file{ COSUPlayerHelper::IsOsuFile(song_info.file_path) };
+            int flag = AF_BITRATE | AF_CHANNEL_INFO;
+            if (!song_info.is_cue)
+                flag |= AF_LENGTH;
+            if (!is_osu_file && !song_info.is_cue)
+                flag |= AF_TAG_INFO;
             IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
             if (pPlayerCore != nullptr)
+                pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
+            if (is_osu_file)
+                COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
+
+            song_info.info_acquired = true;
+            song_info.SetChannelInfoAcquired(true);
+
+            if (!song_info.is_cue && !is_osu_file)
             {
-                pPlayerCore->GetAudioInfo(file_path.c_str(), song_info, audio_info_flags);
-                song_info.SetChannelInfoAcquired(true);
-                if (!song_info.lengh.isZero())
-                {
-                    CAudioTag audio_tag(song_info);
-                    audio_tag.GetAudioRating();
-                    CSongDataManager::GetInstance().AddItem(song_info);
-                    theApp.m_media_num_added++;
-                }
+                // 从文件获取分级信息，仅限支持的文件
+                CAudioTag audio_tag(song_info);
+                audio_tag.GetAudioRating();
             }
+            theApp.m_media_num_added++;
         }
     }
 
-    //for (const auto& item : new_songs_map)
-    //{
-    //    theApp.m_song_data[item.first] = item.second;
-    //}
 
     if (theApp.m_media_num_added > 0)
         CSongDataManager::GetInstance().SetSongDataModified();
@@ -713,13 +719,12 @@ bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
     }
 }
 
-bool CMusicPlayerCmdHelper::IsSongNewer(const std::wstring& file_path)
+bool CMusicPlayerCmdHelper::IsSongNewer(SongInfo& song_info)
 {
-    if (!CCommon::FileExist(file_path))
+    if (!CCommon::FileExist(song_info.file_path))
         return false;
 
-    SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef(file_path);
-    unsigned __int64 last_modified = CCommon::GetFileLastModified(file_path);
+    unsigned __int64 last_modified = CCommon::GetFileLastModified(song_info.file_path);
     bool is_newer = (last_modified > song_info.modified_time);
     song_info.modified_time = last_modified;
     return is_newer;
