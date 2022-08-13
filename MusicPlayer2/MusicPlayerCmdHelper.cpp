@@ -452,7 +452,7 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
             {
                 if (!album_name.empty())
                 {
-                    if (absolute_dir.empty() && CCommon::IsWindowsPath(album_name) && CCommon::FileExist(album_name))
+                    if (absolute_dir.empty() && CCommon::IsPath(album_name) && CCommon::FileExist(album_name))
                     {
                         absolute_dir = album_name;
                         continue;

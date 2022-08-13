@@ -222,16 +222,8 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
             if (result.size() >= 12)
                 item.comment = result[11];
         }
-        if(CCommon::IsPath(item.file_path))
+        if(CCommon::IsPath(item.file_path)) // 绝对路径的语法检查
         {
-            //if (item.is_cue)
-            //{
-            //    //获取位深度、采样频率、声道数
-            //    SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item) };
-            //    item.bits = song.bits;
-            //    item.freq = song.freq;
-            //    item.channels = song.channels;
-            //}
             m_playlist.push_back(item);
         }
     }

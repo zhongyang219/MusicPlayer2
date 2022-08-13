@@ -566,14 +566,13 @@ bool CCommon::IsWindowsPath(const wstring& str)
 
 bool CCommon::IsPath(const wstring& str)
 {
-    if (str.size() < 2)		//只有1个字符不是一个路径
+    if (str.size() < 3)
         return false;
 
     bool is_windows_path{ IsWindowsPath(str) };
+    bool is_UNC_path{ str[0] == L'\\' && str[1] == L'\\' };
 
-    bool is_linux_path{ str[0] == L'/' || str[0] == L'\\' };
-
-    if (!is_windows_path && !is_linux_path)
+    if (!is_windows_path && !is_UNC_path)
         return false;
 
     const wstring invalid_chars{ L":*?\"<>|" };
@@ -834,7 +833,7 @@ _tstring CCommon::RelativePathToAbsolutePath(const _tstring& relative_path, cons
     // 否则将relative_path视为相对路径或斜杠开头的绝对路径并与cur_dir拼接
     _tstring result = relative_path;
     _tstring dir = cur_dir;
-    if (!IsWindowsPath(result) && !dir.empty())
+    if (!IsPath(result) && !dir.empty())
     {
         // https://docs.microsoft.com/en-us/windows/win32/api/shlwapi/
         // PathCombine拼接简化两个合法路径，当result为斜杠开头的绝对路径时将其只与dir的盘符拼接

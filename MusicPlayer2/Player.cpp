@@ -110,7 +110,7 @@ void CPlayer::Create()
             playlist_info = CPlaylistMgr::Instance().m_recent_playlists.front();
         SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
     }
-    SetTitle();		//用当前正在播放的歌曲名作为窗口标题
+    SetTitle();     //用当前正在播放的歌曲名作为窗口标题
     m_controls.Init();
 }
 
@@ -191,7 +191,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     // m_playlist内含原始cue文件时（文件夹模式）强制刷新才会生效，执行后仅file_path、track、is_cue可用
     CAudioCommon::GetCueTracks(GetInstance().m_playlist, GetInstance().GetPlayerCore(), pInfo->play_index, pInfo->refresh_info);
 
-    auto& playlist = GetInstance().m_playlist;
     //获取播放列表中每一首歌曲的信息
     int song_num = GetInstance().m_playlist.size();
     for (int i{}; i < song_num; i++)
@@ -234,7 +233,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             CSongDataManager::GetInstance().SetSongDataModified();
         }
         // 将媒体库内信息更新到播放列表
-        song.CopySongInfo(song_info);
+        CSongDataManager::GetInstance().LoadSongInfo(song);
     }
     GetInstance().m_loading = false;
     PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);

@@ -184,11 +184,11 @@ public:
     static CodeType JudgeCodeType(const string& str, CodeType default_code = CodeType::ANSI, bool auto_utf8 = false);
 
     static bool IsURL(const wstring& str);
-
+private:
     //判断一个字符串是否符合Windows路径的格式
     static bool IsWindowsPath(const wstring& str);
-
-    //判断一个字符串是否符合路径的格式（而不是判断路径是否有效）
+public:
+    //判断一个字符串是否符合绝对路径的格式（而不是判断路径是否有效）
     static bool IsPath(const wstring& str);
 
     //删除一个字符串中指定的字符
