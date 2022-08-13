@@ -2652,25 +2652,26 @@ void CMusicPlayerDlg::OnExplorePath()
 BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
+    CWnd* search_box;
+    if (IsFloatPlaylistExist())
+        search_box = &m_pFloatPlaylistDlg->GetSearchBox();
+    else
+        search_box = &m_search_edit;
+    if (pMsg->hwnd != search_box->GetSafeHwnd())  //如果焦点在搜索框上，则不响应快捷键
     {
-        //响应Accelerator中设置的快捷键
-        if (m_hAccel && ::TranslateAccelerator(m_hWnd, m_hAccel, pMsg))
-            return TRUE;
-    }
+        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
+        {
+            //响应Accelerator中设置的快捷键
+            if (m_hAccel && ::TranslateAccelerator(m_hWnd, m_hAccel, pMsg))
+                return TRUE;
+        }
 
-    // 响应不在Accelerator中的快捷键
-    if (pMsg->message == WM_KEYDOWN)
-    {
-        // 按键按下，不在搜索框内
-        if (pMsg->hwnd != m_search_edit.GetSafeHwnd())
+        // 响应不在Accelerator中的快捷键
+        if (pMsg->message == WM_KEYDOWN)
         {
             if (pMsg->wParam == 'F')    //按F键快速查找
             {
-                // 若未显示播放列表则先显示（主窗口的快速查找使用停靠播放列表），浮动播放列表的快速查找不存在这个问题
-                if (!theApp.m_ui_data.show_playlist)
-                    OnShowPlaylist();
-                m_search_edit.SetFocus();
+                search_box->SetFocus();
                 return TRUE;
             }
             if (pMsg->wParam == VK_ESCAPE)      // 按ESC键退出全屏模式
@@ -2681,16 +2682,19 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                     return TRUE;
                 }
             }
+
             if (pMsg->wParam == VK_APPS)        // 按菜单键弹出主菜单
             {
                 SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&CPoint(0, 0));
                 return TRUE;
             }
         }
-        else if (pMsg->wParam == VK_ESCAPE) // 按键按下+在搜索框内+按下Esc 设置主窗口焦点
-        {
-            SetFocus();
-        }
+    }
+
+    //如果焦点在搜索框内，按ESC键将焦点重新设置为主窗口
+    if (pMsg->hwnd == search_box->GetSafeHwnd() && pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
+    {
+        SetFocus();
     }
 
     if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))        //屏蔽按回车键和ESC键退出
@@ -2698,8 +2702,10 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
         return TRUE;
     }
 
+
     if (pMsg->message == WM_MOUSEMOVE)
         m_Mytip.RelayEvent(pMsg);
+
 
     return CMainDialogBase::PreTranslateMessage(pMsg);
 }

@@ -29,6 +29,7 @@ public:
     CPlayListCtrl& GetListCtrl();
     CStaticEx& GetPathStatic();
     CMenuEditCtrl& GetPathEdit();
+    CSearchEditCtrl& GetSearchBox();
     void GetPlaylistItemSelected();
     void SetDragEnable();
     void EnableControl(bool enable);
