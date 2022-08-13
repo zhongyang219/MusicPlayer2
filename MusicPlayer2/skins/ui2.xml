@@ -44,14 +44,16 @@
             <lyrics height="10%" hide-height="320" margin-top="4"/>
           </verticalLayout>
           <verticalLayout margin="8">
-            <horizontalLayout height="64" hide-height="200">
-            <albumCover square="true" width="64"/>
-            <verticalLayout margin-left="16">
-              <text type="title" font_size="10" style="scroll" height="28"/>
-              <text type="artist_album" font_size="9" style="scroll" height="24"/>
-            </verticalLayout>
+            <rectangle height="80">
+            <horizontalLayout margin="4">
+              <albumCover square="true" width="64" margin-left="4"/>
+              <verticalLayout margin-left="16">
+                <text type="title" font_size="10" style="scroll" height="28"/>
+                <text type="artist_album" font_size="9" style="scroll" height="24"/>
+              </verticalLayout>
             </horizontalLayout>
-            <lyrics margin-top="14"/>
+            </rectangle>
+            <lyrics margin-top="14" hide-height="120"/>
           </verticalLayout>
         </stackElement>
         <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
