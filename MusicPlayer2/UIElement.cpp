@@ -621,33 +621,7 @@ void UiElement::Button::FromString(const std::string& key_type)
 void UiElement::Text::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    std::wstring draw_text;
-    switch (type)
-    {
-    case UiElement::Text::UserDefine:
-        draw_text = text;
-        break;
-    case UiElement::Text::Title:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
-        break;
-    case UiElement::Text::Artist:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
-        break;
-    case UiElement::Text::Album:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
-        break;
-    case UiElement::Text::ArtistTitle:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
-        break;
-    case UiElement::Text::Format:
-        draw_text = ui->GetDisplayFormatString();
-        break;
-    case UiElement::Text::PlayTime:
-        draw_text = CPlayer::GetInstance().GetTimeString();
-        break;
-    default:
-        break;
-    }
+    std::wstring draw_text{ GetText() };
 
     CFont* old_font{};  //原先的字体
     switch (font_size)
@@ -696,37 +670,45 @@ int UiElement::Text::GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const
         return UiElement::Element::GetMaxWidth(parent_rect, ui);
     else
     {
-        std::wstring draw_text{};
-        switch (type)
-        {
-        case UiElement::Text::UserDefine:
-            draw_text = text;
-            break;
-        case UiElement::Text::Title:
-            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
-            break;
-        case UiElement::Text::Artist:
-            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
-            break;
-        case UiElement::Text::Album:
-            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
-            break;
-        case UiElement::Text::ArtistTitle:
-            draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
-            break;
-        case UiElement::Text::Format:
-            draw_text = ui->GetDisplayFormatString();
-            break;
-        case UiElement::Text::PlayTime:
-            draw_text = CPlayer::GetInstance().GetTimeString();
-            break;
-        default:
-            break;
-        }
-        int width_text{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx + ui->DPI(4) };
+        int width_text{ ui->m_draw.GetTextExtent(GetText().c_str()).cx + ui->DPI(4) };
         int width_max{ max_width.IsValid() ? max_width.GetValue(parent_rect, ui) : INT_MAX };
         return min(width_text, width_max);
     }
+}
+
+std::wstring UiElement::Text::GetText() const
+{
+    std::wstring draw_text{};
+    switch (type)
+    {
+    case UiElement::Text::UserDefine:
+        draw_text = text;
+        break;
+    case UiElement::Text::Title:
+        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+        break;
+    case UiElement::Text::Artist:
+        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
+        break;
+    case UiElement::Text::Album:
+        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+        break;
+    case UiElement::Text::ArtistTitle:
+        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+        break;
+    case UiElement::Text::ArtistAlbum:
+        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+        break;
+    case UiElement::Text::Format:
+        draw_text = CPlayerUIBase::GetDisplayFormatString();
+        break;
+    case UiElement::Text::PlayTime:
+        draw_text = CPlayer::GetInstance().GetTimeString();
+        break;
+    default:
+        break;
+    }
+    return draw_text;
 }
 
 void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)

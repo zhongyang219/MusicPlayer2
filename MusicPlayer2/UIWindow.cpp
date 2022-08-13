@@ -44,6 +44,7 @@ void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
 
     CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     auto pUi = pMainWindow->GetCurrentUi();
+    pMainWindow->SetFocus();
 
     //如果点击了应用图标，则弹出系统菜单
     if (pUi->PointInAppIconArea(point))

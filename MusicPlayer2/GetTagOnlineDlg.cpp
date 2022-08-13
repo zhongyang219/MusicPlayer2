@@ -52,6 +52,11 @@ BOOL CGetTagOnlineDlg::OnInitDialog()
     if (pGetInfoBtn != nullptr)
         pGetInfoBtn->SetWindowText(CCommon::LoadText(IDS_GET_THIS));
 
+    ShowDlgCtrl(IDC_DOWNLOAD_OPTION_GROUPBOX, false);
+    ShowDlgCtrl(IDC_COVER_LOCATION_STATIC, false);
+    ShowDlgCtrl(IDC_SAVE_TO_SONG_FOLDER2, false);
+    ShowDlgCtrl(IDC_SAVE_TO_ALBUM_FOLDER2, false);
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }

@@ -460,6 +460,11 @@
                             <xs:documentation>显示为“艺术家 - 标题”</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="artist_album">
+                        <xs:annotation>
+                            <xs:documentation>显示为“艺术家 - 唱片集”</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                     <xs:enumeration value="format">
                         <xs:annotation>
                             <xs:documentation>显示歌曲格式</xs:documentation>

@@ -125,6 +125,11 @@ CMenuEditCtrl& CFloatPlaylistDlg::GetPathEdit()
     return m_path_edit;
 }
 
+CSearchEditCtrl& CFloatPlaylistDlg::GetSearchBox()
+{
+    return m_search_edit;
+}
+
 void CFloatPlaylistDlg::GetPlaylistItemSelected()
 {
     if (!m_searched)
@@ -438,12 +443,15 @@ void CFloatPlaylistDlg::OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
+    if (pMsg->hwnd != m_search_edit.GetSafeHwnd())
     {
-        //响应Accelerator中设置的快捷键
-        CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-        if (main_wnd != nullptr && main_wnd->GetAccel() && ::TranslateAccelerator(m_hWnd, main_wnd->GetAccel(), pMsg))
-            return TRUE;
+        if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
+        {
+            //响应Accelerator中设置的快捷键
+            CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+            if (main_wnd != nullptr && main_wnd->GetAccel() && ::TranslateAccelerator(m_hWnd, main_wnd->GetAccel(), pMsg))
+                return TRUE;
+        }
     }
     if (pMsg->message == WM_KEYDOWN)
     {
