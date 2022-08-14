@@ -129,6 +129,12 @@ void CPlayListCtrl::GetItemSelectedSearched(vector<int>& item_selected)
 	}
 }
 
+void CPlayListCtrl::ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd)
+{
+    m_toolTip.Pop();
+    CListCtrlEx::ShowPopupMenu(pMenu, item_index, pWnd);
+}
+
 void CPlayListCtrl::AdjustColumnWidth()
 {
 	vector<int> width;

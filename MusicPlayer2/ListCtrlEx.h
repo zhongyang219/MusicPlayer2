@@ -25,7 +25,7 @@ public:
 	virtual bool SetRowHeight(int height);		//设置表格行高
 	void SetHightItem(int item) { m_highlight_item = item; }			//设置高亮的项目（播放列表中正在播放的项目）
     void SetDragEnable(bool enable = true) { m_drag_enable = enable; }      //是否允许鼠标拖动
-    void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd);
+    virtual void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd);
     void FillLeftSpaceAfterPaint(bool fill);        //如果为true，则在每行绘制之后填充左侧空白，否则在绘制之前填充（如果表格没有图标或复选框，则应设置为true，否则设置为false）
 
     typedef map<int, wstring> RowData;      //列表数据中每一行的数据，map的key为列序号，value为显示的文本
