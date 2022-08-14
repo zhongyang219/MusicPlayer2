@@ -72,12 +72,14 @@ void CFolderExploreDlg::ShowSongList()
     SetDlgItemText(IDC_PATH_STATIC, m_folder_path_selected.c_str());
 
     //获取歌曲列表
-    std::vector<wstring> files;
+    std::vector<SongInfo> files;
     CAudioCommon::GetAudioFiles(m_folder_path_selected, files, 20000, false);
+    int index{};
+    CAudioCommon::GetCueTracks(files, CPlayer::GetInstance().GetPlayerCore(), index, false);
     m_right_items.clear();
     for (const auto& file : files)
     {
-        SongInfo& song = CSongDataManager::GetInstance().GetSongInfo(file);
+        SongInfo& song = CSongDataManager::GetInstance().GetSongInfo3(file);
         m_right_items.push_back(song);
     }
 
