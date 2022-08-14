@@ -488,6 +488,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"disable_delete_from_disk", theApp.m_media_lib_setting_data.disable_delete_from_disk);
     ini.WriteBool(L"media_lib", L"show_tree_tool_tips", theApp.m_media_lib_setting_data.show_tree_tool_tips);
     ini.WriteBool(L"media_lib", L"update_media_lib_when_start_up", theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
+    ini.WriteBool(L"media_lib", L"remove_file_not_exist_when_update", theApp.m_media_lib_setting_data.remove_file_not_exist_when_update);
     ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
     ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
     ini.WriteBool(L"media_lib", L"show_playlist_tooltip", theApp.m_media_lib_setting_data.show_playlist_tooltip);
@@ -684,6 +685,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.disable_delete_from_disk = ini.GetBool(L"media_lib", L"disable_delete_from_disk", false);
     theApp.m_media_lib_setting_data.show_tree_tool_tips = ini.GetBool(L"media_lib", L"show_tree_tool_tips", true);
     theApp.m_media_lib_setting_data.update_media_lib_when_start_up = ini.GetBool(L"media_lib", L"update_media_lib_when_start_up", true);
+    theApp.m_media_lib_setting_data.remove_file_not_exist_when_update = ini.GetBool(L"media_lib", L"remove_file_not_exist_when_update", true);
     theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
     theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
     theApp.m_media_lib_setting_data.show_playlist_tooltip = ini.GetBool(L"media_lib", L"show_playlist_tooltip", true);

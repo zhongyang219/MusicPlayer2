@@ -1113,8 +1113,11 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool refresh)
         m_media_lib_updating = true;
         AfxBeginThread([](LPVOID lpParam)->UINT
             {
-                CMusicPlayerCmdHelper::CleanUpSongData();
-                CMusicPlayerCmdHelper::CleanUpRecentFolders();
+                if (theApp.m_media_lib_setting_data.remove_file_not_exist_when_update)
+                {
+                    CMusicPlayerCmdHelper::CleanUpSongData();
+                    CMusicPlayerCmdHelper::CleanUpRecentFolders();
+                }
                 CMusicPlayerCmdHelper::UpdateMediaLib(lpParam);
                 theApp.m_media_lib_updating = false;
                 return 0;
