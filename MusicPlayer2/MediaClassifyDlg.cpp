@@ -178,7 +178,7 @@ void CMediaClassifyDlg::ShowSongList()
         {
             for (const auto& item : iter->second)
             {
-                const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo(item) };
+                const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo3(item) };
                 m_right_items.push_back(song);  // 更新显示列表同时存储一份右侧列表SongInfo
                 CListCtrlEx::RowData row_data;
                 row_data[COL_TITLE] = song.GetTitle();

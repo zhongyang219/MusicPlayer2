@@ -497,7 +497,7 @@ bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
     if (command - ID_RATING_1 <= 5)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
     {
         int rating = command - ID_RATING_1 + 1;
-        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(song);
+        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
         song_info.rating = static_cast<BYTE>(rating);
         bool succeed{};
         // cue、osu!、不支持写入的文件分级只保存到媒体库
@@ -510,7 +510,7 @@ bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
         {
             succeed = true;     //如果文件格式不支持写入分级，也返回true
         }
-        CSongDataManager::GetInstance().SetSongDataModified();
+        CSongDataManager::GetInstance().AddItem(song_info);
         return succeed;
     }
     return true;
@@ -537,7 +537,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     for (const auto& song : all_media_songs)
     {
         if (song.file_path.empty()) continue;
-        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(song);
+        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
         // 判断是否重新获取歌曲信息
         bool get_song_info{ (song_info.modified_time == 0 || refresh) && IsSongNewer(song_info) };  // 未获取过修改时间或要求刷新时通过IsSongNewer确认并更新文件修改时间
         if (get_song_info || !song_info.info_acquired || !song_info.ChannelInfoAcquired())          // 如果判断需要获取元数据就获取尽量多的项目
@@ -563,13 +563,11 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
                 CAudioTag audio_tag(song_info);
                 audio_tag.GetAudioRating();
             }
+            CSongDataManager::GetInstance().AddItem(song_info);
             theApp.m_media_num_added++;
         }
     }
 
-
-    if (theApp.m_media_num_added > 0)
-        CSongDataManager::GetInstance().SetSongDataModified();
     return theApp.m_media_num_added;
 }
 

@@ -405,12 +405,12 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         cur.end_pos = cur.start_pos;    // 由于时长本身退出不保存，所以将差值同时清零
                     }
                     // 直接写入媒体库
-                    SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(cur);
+                    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(cur) };
                     song_info.CopyAudioTag(cur);
                     song_info.start_pos = cur.start_pos;
                     song_info.lengh = cur.lengh;
                     song_info.end_pos = cur.end_pos;
-                    CSongDataManager::GetInstance().SetSongDataModified();
+                    CSongDataManager::GetInstance().AddItem(song_info);
                 }
             }
 
@@ -502,12 +502,12 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
                         cur.end_pos = files[i].lengh;
                         cur.lengh = cur.end_pos - cur.start_pos;
                     }
-                    SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(cur);
+                    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(cur) };
                     song_info.CopyAudioTag(cur);
                     song_info.start_pos = cur.start_pos;
                     song_info.lengh = cur.lengh;
                     song_info.end_pos = cur.end_pos;
-                    CSongDataManager::GetInstance().SetSongDataModified();
+                    CSongDataManager::GetInstance().AddItem(song_info);
                 }
             }
 

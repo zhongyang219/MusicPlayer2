@@ -253,6 +253,7 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
     if (song_info.file_path.empty())
         return;
     SongInfo& song = m_song_data[song_info];
+    song.file_path = song_info.file_path;
     song.CopyAudioTag(song_info);
     song.lengh = song_info.lengh;   // 计划移除
     song.start_pos = song_info.start_pos;
@@ -260,7 +261,6 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
     song.bitrate = song_info.bitrate;
     song.song_id = song_info.song_id;
     song.is_cue = song_info.is_cue;
-    //song.is_favourite = song_info.is_favourite;
     song.rating = song_info.rating;
     song.freq = song_info.freq;
     song.channels = song_info.channels;
@@ -295,7 +295,6 @@ SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key) const
     auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
         song = iter->second;
-    song.file_path = key.path;
     if (key.cue_track != 0)
     {
         song.track = key.cue_track;
@@ -304,31 +303,15 @@ SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key) const
     return song;
 }
 
-SongInfo& CSongDataManager::GetSongInfoRef(const SongDataMapKey& key)
-{
-    auto iter = m_song_data.find(key);
-    if (iter != m_song_data.end())
-    {
-        return iter->second;
-    }
-    else
-    {
-        static SongInfo song;
-        return song;
-    }
-}
-
-SongInfo& CSongDataManager::GetSongInfoRef2(const SongDataMapKey& key)
-{
-    return m_song_data[key];
-}
-
-SongInfo& CSongDataManager::GetSongInfoRef3(const SongInfo& song)
+SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song)
 {
     ASSERT(!song.file_path.empty());
-    SongInfo& tmp = m_song_data[song];
-    if (tmp.file_path.empty())  // tmp路径为空说明song不存在于m_song_data，复制song内容到tmp
-        tmp = song;
+    SongInfo tmp;
+    auto iter = m_song_data.find(song);
+    if (iter != m_song_data.end())
+        tmp = iter->second;
+    else
+        tmp =  song;
     return tmp;
 }
 
@@ -345,7 +328,9 @@ bool CSongDataManager::IsItemExist(const SongDataMapKey& key) const
 
 void CSongDataManager::AddItem(const SongInfo& song)
 {
+    ASSERT(!song.file_path.empty());
     m_song_data[song] = song;
+    SetSongDataModified();
 }
 
 bool CSongDataManager::RemoveItem(const SongDataMapKey& key)

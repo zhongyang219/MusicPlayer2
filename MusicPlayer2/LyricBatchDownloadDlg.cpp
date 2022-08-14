@@ -6,6 +6,7 @@
 #include "LyricBatchDownloadDlg.h"
 #include "afxdialogex.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 // CLyricBatchDownloadDlg 对话框
@@ -259,7 +260,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         wstring file_name;
         wstring dir;
         dir = CFilePathHelper(pInfo->playlist->at(i).file_path).GetDir();
-        if (!pInfo->playlist->at(i).is_cue)
+        if (!pInfo->playlist->at(i).is_cue && !COSUPlayerHelper::IsOsuFile(pInfo->playlist->at(i).file_path))
             file_name = pInfo->playlist->at(i).GetFileName();
         else
             file_name = pInfo->playlist->at(i).artist + L" - " + pInfo->playlist->at(i).title + L".lrc";
@@ -267,26 +268,26 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
             lyric_path = dir + file_name;
         else
             lyric_path = theApp.m_lyric_setting_data.lyric_path + file_name;
-        size_t index = lyric_path.rfind(L'.');		//查找文件名最后一个点
-        lyric_path = lyric_path.substr(0, index + 1) + L"lrc";	//将文件名的扩展名改为lrc
+        size_t index = lyric_path.rfind(L'.');                  //查找文件名最后一个点
+        lyric_path = lyric_path.substr(0, index + 1) + L"lrc";  //将文件名的扩展名改为lrc
 
         //判断歌词是否已经存在
         bool lyric_exist = CCommon::FileExist(lyric_path) || (!pInfo->playlist->at(i).lyric_file.empty());
-        if (pInfo->skip_exist && lyric_exist)		//如果设置了跳过已存在歌词的曲目，并且歌词已经存在，则跳过它
+        if (pInfo->skip_exist && lyric_exist)                   //如果设置了跳过已存在歌词的曲目，并且歌词已经存在，则跳过它
         {
             pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_SKIPED));
             continue;
         }
 
         //设置搜索关键字
-        wstring search_result;		//查找歌曲返回的结果
-        wstring lyric_str;			//下载好的歌词
-        wstring keyword;		//查找的关键字
-        if (pInfo->playlist->at(i).IsTitleEmpty())		//如果没有标题信息，就把文件名设为搜索关键字
+        wstring search_result;      //查找歌曲返回的结果
+        wstring lyric_str;          //下载好的歌词
+        wstring keyword;            //查找的关键字
+        if (pInfo->playlist->at(i).IsTitleEmpty())      //如果没有标题信息，就把文件名设为搜索关键字
         {
             keyword = pInfo->playlist->at(i).GetFileName();
-            size_t index = keyword.rfind(L'.');		//查找最后一个点
-            keyword = keyword.substr(0, index);		//去掉扩展名
+            size_t index = keyword.rfind(L'.');         //查找最后一个点
+            keyword = keyword.substr(0, index);         //去掉扩展名
         }
         else if (pInfo->playlist->at(i).IsArtistEmpty())	//如果有标题信息但是没有艺术家信息，就把标题设为搜索关键字
         {
@@ -298,11 +299,11 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         }
 
         //搜索歌曲
-        wstring keyword_url = CInternetCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
+        wstring keyword_url = CInternetCommon::URLEncode(keyword);      //将搜索关键字转换成URL编码
         CString url;
         url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
-        int rtn = CInternetCommon::HttpPost(wstring(url), search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
-        if (theApp.m_batch_download_dialog_exit)		//由于CLyricDownloadCommon::HttpPost函数执行的时间比较长，所有在这里执行判断是否退出线程的处理
+        int rtn = CInternetCommon::HttpPost(wstring(url), search_result);       //向网易云音乐的歌曲搜索API发送http的POST请求
+        if (theApp.m_batch_download_dialog_exit)        //由于CLyricDownloadCommon::HttpPost函数执行的时间比较长，所有在这里执行判断是否退出线程的处理
             return 0;
         if (rtn != 0)
         {
@@ -311,13 +312,14 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         }
 
         //处理返回结果
-        SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(pInfo->playlist->at(i).file_path) };
+        SongInfo song_info_ori{ CSongDataManager::GetInstance().GetSongInfo3(pInfo->playlist->at(i)) };
         vector<CInternetCommon::ItemInfo> down_list;
         CInternetCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
         if (down_list.empty())
         {
             pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_CANNOT_FIND_THIS_SONG));
             song_info_ori.SetNoOnlineLyric(true);
+            CSongDataManager::GetInstance().AddItem(song_info_ori);
             continue;
         }
 
@@ -332,6 +334,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         if (best_matched < 0)
         {
             song_info_ori.SetNoOnlineLyric(true);
+            CSongDataManager::GetInstance().AddItem(song_info_ori);
             pInfo->list_ctrl->SetItemText(i, 4, CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
             continue;
         }
@@ -352,6 +355,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         }
 
         song_info_ori.SetSongId(down_list[best_matched].id);
+        CSongDataManager::GetInstance().AddItem(song_info_ori);
 
         //在歌词前面添加标签
         CLyricDownloadCommon::AddLyricTag(lyric_str, down_list[best_matched].id, down_list[best_matched].title, down_list[best_matched].artist, down_list[best_matched].album);

@@ -91,9 +91,9 @@ void CCoverDownloadDlg::LoadConfig()
 
 void CCoverDownloadDlg::SetID(wstring id)
 {
-    SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song) };
+    SongInfo song_info_ori{ CSongDataManager::GetInstance().GetSongInfo3(m_song) };
     song_info_ori.SetSongId(id);
-    CSongDataManager::GetInstance().SetSongDataModified();
+    CSongDataManager::GetInstance().AddItem(song_info_ori);
 }
 
 wstring CCoverDownloadDlg::GetSavedDir()

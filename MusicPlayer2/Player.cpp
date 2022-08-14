@@ -202,7 +202,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         pInfo->process_percent = i * 100 / song_num + 1;
 
         // 直接将各种信息更新到CSongDataManager，最后再直接存入m_playlist
-        SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfoRef3(song);
+        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
 
         if (song_info.modified_time == 0 || pInfo->refresh_info)
             song_info.modified_time = CCommon::GetFileLastModified(song_info.file_path);
@@ -230,7 +230,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
                 audio_tag.GetAudioRating();
             }
 
-            CSongDataManager::GetInstance().SetSongDataModified();
+            CSongDataManager::GetInstance().AddItem(song_info);
         }
         // 将媒体库内信息更新到播放列表
         CSongDataManager::GetInstance().LoadSongInfo(song);
@@ -344,7 +344,7 @@ void CPlayer::SearchLyrics(bool refresh)
 {
     //检索正在播放的音频文件的歌词
     const SongInfo& cur_song = GetCurrentSongInfo();
-    SongInfo& cur_song_info{ CSongDataManager::GetInstance().GetSongInfoRef(cur_song) };
+    SongInfo cur_song_info{ CSongDataManager::GetInstance().GetSongInfo3(cur_song) };
     if (cur_song_info.lyric_file == NO_LYRIC_STR && !refresh)   // 歌曲标记为没有歌词且不要求强制刷新时返回
         return;
 
@@ -354,6 +354,7 @@ void CPlayer::SearchLyrics(bool refresh)
         CMusicPlayerCmdHelper helper;
         lyric_path = helper.SearchLyricFile(cur_song, theApp.m_lyric_setting_data.lyric_fuzzy_match);
         cur_song_info.lyric_file = lyric_path;
+        CSongDataManager::GetInstance().AddItem(cur_song_info);
     }
     else
     {
@@ -405,7 +406,9 @@ void CPlayer::IniLyrics(const wstring& lyric_path)
 {
     m_Lyrics = CLyrics{ lyric_path };
     GetCurrentSongInfo2().lyric_file = lyric_path;
-    CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentSongInfo()).lyric_file = lyric_path;
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(GetCurrentSongInfo()) };
+    song_info.lyric_file = lyric_path;
+    CSongDataManager::GetInstance().AddItem(song_info);
 }
 
 
@@ -1820,7 +1823,9 @@ void CPlayer::ClearLyric()
 {
     m_Lyrics = CLyrics{};
     GetCurrentSongInfo2().lyric_file.clear();
-    CSongDataManager::GetInstance().GetSongInfoRef3(GetCurrentSongInfo()).lyric_file.clear();
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(GetCurrentSongInfo()) };
+    song_info.lyric_file.clear();
+    CSongDataManager::GetInstance().AddItem(song_info);
 }
 
 wstring CPlayer::GetTimeString() const
@@ -1966,8 +1971,9 @@ void CPlayer::AddListenTime(int sec)
     if (m_index >= 0 && m_index < GetSongNum())
     {
         //m_playlist[m_index].listen_time += sec;
-        CSongDataManager::GetInstance().GetSongInfoRef(m_playlist[m_index]).listen_time += sec;
-        CSongDataManager::GetInstance().SetSongDataModified();
+        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(m_playlist[m_index]) };
+        song_info.listen_time += sec;
+        CSongDataManager::GetInstance().AddItem(song_info);
     }
     if (m_enable_lastfm) {
         int speed = m_speed * 1000;
@@ -2528,8 +2534,9 @@ void CPlayer::SearchAlbumCover()
     //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
-    SongInfo& cur_song{ CSongDataManager::GetInstance().GetSongInfoRef(GetCurrentSongInfo()) };
-    bool always_use_external_album_cover{ cur_song.AlwaysUseExternalAlbumCover() };
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(GetCurrentSongInfo()) };
+    bool always_use_external_album_cover{ song_info.AlwaysUseExternalAlbumCover() };
+    CSongDataManager::GetInstance().AddItem(song_info);
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile() && !always_use_external_album_cover)
     {
         //从文件获取专辑封面

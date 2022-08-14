@@ -52,11 +52,10 @@ public:
     void LoadSongInfo(SongInfo& song_info);
 
     SongInfo GetSongInfo(const SongDataMapKey& key) const;
-    SongInfo& GetSongInfoRef(const SongDataMapKey& key);    // 获取一个歌曲信息的引用（如果不存在不会插入新的记录）
-    SongInfo& GetSongInfoRef2(const SongDataMapKey& key);   // 获取一个歌曲信息的引用（如果不存在会插入新的记录）
-    // 获取一个歌曲信息的引用（不存在会插入新的记录并从song复制信息并返回和song一致的引用）
-    // 用于修改只存在于媒体库的歌曲属性，无须保存但要自行SetSongDataModified
-    SongInfo& GetSongInfoRef3(const SongInfo& song);
+    // 获取一个媒体库歌曲信息（不存在会返回和参数song一致的SongInfo）
+    // 至少要保证用于查询的file_path,is_cue,track是正确的
+    // 用于修改媒体库的歌曲属性，修改后需使用CSongDataManager::AddItem保存
+    SongInfo GetSongInfo3(const SongInfo& song);
 
     const SongDataMap& GetSongData();
     bool IsItemExist(const SongDataMapKey& key) const;
