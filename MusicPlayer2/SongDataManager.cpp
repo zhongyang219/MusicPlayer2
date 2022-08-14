@@ -285,7 +285,7 @@ void CSongDataManager::LoadSongInfo(SongInfo& song_info)
         song_info.modified_time = temp.modified_time;
         song_info.freq = temp.freq;
         song_info.channels = temp.channels;
-        song_info.bitrate = temp.bits;
+        song_info.bits = temp.bits;
     }
 }
 
