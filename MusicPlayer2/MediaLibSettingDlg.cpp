@@ -89,6 +89,7 @@ void CMediaLibSettingDlg::GetDataFromUi()
     m_data.lastfm_least_dur = m_lastfm_least_dur.GetValue();
     m_data.lastfm_auto_scrobble_min = m_lastfm_auto_scrobble_min.GetValue();
     m_data.playlist_item_height = m_playlist_item_height_edit.GetValue();
+    m_data.remove_file_not_exist_when_update = (IsDlgButtonChecked(IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK));
 }
 
 
@@ -135,6 +136,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_update_media_lib_chk.SetCheck(m_data.update_media_lib_when_start_up);
     m_disable_drag_sort_chk.SetCheck(m_data.disable_drag_sort);
     CheckDlgButton(IDC_DISABLE_DELETE_FROM_DISK_CHECK, m_data.disable_delete_from_disk);
+    CheckDlgButton(IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK, m_data.remove_file_not_exist_when_update);
 
     for (const auto& str : m_data.media_folders)
         m_dir_list_ctrl.AddString(str.c_str());

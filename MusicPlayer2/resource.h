@@ -1188,6 +1188,8 @@
 #define IDC_COMP_LEVEL_STATIC           1221
 #define IDC_DOWNLOAD_OPTION_GROUPBOX    1221
 #define IDC_COVER_LOCATION_STATIC       1222
+#define IDC_CHECK9                      1223
+#define IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK 1223
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1636,7 +1638,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        575
 #define _APS_NEXT_COMMAND_VALUE         33394
-#define _APS_NEXT_CONTROL_VALUE         1223
+#define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
