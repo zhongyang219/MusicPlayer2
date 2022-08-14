@@ -193,6 +193,8 @@ namespace UiElement
     {
     public:
         virtual void Draw(CPlayerUIBase* ui) override;
+    protected:
+        bool IsParentRectangle() const;     //判断父元素中是否有矩形元素
     };
 
     //音量
