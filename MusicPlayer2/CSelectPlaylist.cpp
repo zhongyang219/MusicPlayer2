@@ -582,7 +582,7 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
     imput_dlg.SetTitle(CCommon::LoadText(IDS_RENAME_PLAYLIST));
     imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
 
-    CString old_playlist_name = m_playlist_ctrl.GetItemText(m_row_selected, 1);
+    CString old_playlist_name = m_playlist_ctrl.GetItemText(m_playlist_ctrl.GetCurSel(), 1);
     imput_dlg.SetEditText(old_playlist_name);
 
     if (imput_dlg.DoModal() == IDOK)
