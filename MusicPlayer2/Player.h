@@ -155,7 +155,6 @@ private:
     int GetNextShuffled() const;        //返回乱序播放下下一曲的序号
     int GetPrevShuffled() const;        //返回乱序播放下前一曲的序号
     std::list<int> m_random_list;          //随机播放模式下的历史记录，用于回溯之前的记录
-    bool m_play_again{ false };          //再放一遍当前歌曲
     int m_next_song{ -1 };      //下一首播放的歌曲，用于“下一首播放”，-1表示按照原来的方式播放
 
     bool m_playlist_mode{ false };       //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
