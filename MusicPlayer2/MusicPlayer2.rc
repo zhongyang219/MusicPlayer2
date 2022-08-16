@@ -2415,6 +2415,7 @@ BEGIN
     POPUP "菜单"
     BEGIN
         MENUITEM "播放(&P)",                      ID_PLAY_ITEM
+        MENUITEM "下一首播放",                       ID_PLAY_AS_NEXT
         MENUITEM SEPARATOR
         MENUITEM "在线查看(&O)",                    ID_EXPLORE_ONLINE
         MENUITEM "转换格式(&F)...",                 ID_FORMAT_CONVERT
@@ -6046,6 +6047,7 @@ BEGIN
     POPUP "Menu"
     BEGIN
         MENUITEM "&Play",                       ID_PLAY_ITEM
+        MENUITEM "Play After Current Song",     ID_PLAY_AS_NEXT
         MENUITEM SEPARATOR
         MENUITEM "View &Online",                ID_EXPLORE_ONLINE
         MENUITEM "&Format Convert...",          ID_FORMAT_CONVERT

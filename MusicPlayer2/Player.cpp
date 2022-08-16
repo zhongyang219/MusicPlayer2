@@ -403,7 +403,7 @@ void CPlayer::IniPlaylistComplate()
     EmplaceCurrentPlaylistToRecent();
     SetTitle();
     //初始化随机播放序号列表
-    InitShuffleList();
+    InitShuffleList(m_index);
 
     m_random_list.clear();
     if (m_repeat_mode == RM_PLAY_RANDOM)
@@ -797,11 +797,20 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
     switch (m_repeat_mode)
     {
     case RM_PLAY_ORDER:		//顺序播放
-        if (song_track == NEXT)		//播放下一曲
-            song_track = m_index + 1;
-        if (song_track == PREVIOUS)		//播放上一曲
-            song_track = m_index - 1;
+        if (m_next_song > 0)
+        {
+            song_track = m_next_song;
+            m_next_song = -1;
+        }
+        else
+        {
+            if (song_track == NEXT)		//播放下一曲
+                song_track = m_index + 1;
+            if (song_track == PREVIOUS)		//播放上一曲
+                song_track = m_index - 1;
+        }
         break;
+
     case RM_PLAY_SHUFFLE:		//无序播放
         if (m_shuffle_list.size() != m_playlist.size())
             InitShuffleList();
@@ -837,10 +846,12 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
             }
             else if (m_is_shuffle_list_played)
             {
-                InitShuffleList();      //手动指定播放曲目时重新生成无序列表
+                //防止指定播放歌曲时，生成的列表第一个仍是该歌曲导致连续播放两遍
+                InitShuffleList(song_track);      //手动指定播放曲目时重新生成无序列表
             }
         }
         break;
+
     case RM_PLAY_RANDOM:		//随机播放
         if (song_track == NEXT)
         {
@@ -848,6 +859,13 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
             {
                 song_track = m_index;    //不保存曲目
                 m_play_again = false;
+                m_next_song = -1;
+            }
+            else if (m_next_song > 0)
+            {
+                song_track = m_next_song;
+                m_next_song = -1;
+                m_random_list.push_back(song_track);	//保存随机播放过的曲目
             }
             else
             {
@@ -887,17 +905,37 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
             m_random_list.push_back(song_track);	//保存随机播放过的曲目
         }
         break;
+
     case RM_LOOP_TRACK:		//单曲循环
         if (auto_next)
         {
-            if (song_track == NEXT || song_track == PREVIOUS)
-                song_track = m_index;
-            break;
+            if (m_next_song > 0)
+            {
+                song_track = m_next_song;
+                m_next_song = -1;
+            }
+            else
+            {
+                if (song_track == NEXT || song_track == PREVIOUS)
+                    song_track = m_index;
+            }
         }
-        LoopPlaylist(song_track);   //如果不是播放完成后自动下一曲，则执行列表循环中的代码
+        else
+        {
+            LoopPlaylist(song_track);   //如果不是播放完成后自动下一曲，则执行列表循环中的代码
+        }
         break;
+
     case RM_LOOP_PLAYLIST:		//列表循环
-        LoopPlaylist(song_track);
+        if (m_next_song > 0)
+        {
+            song_track = m_next_song;
+            m_next_song = -1;
+        }
+        else
+        {
+            LoopPlaylist(song_track);
+        }
         break;
 
     case RM_PLAY_TRACK:
@@ -909,7 +947,10 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
                 return false;
             }
         }
-        LoopPlaylist(song_track);   //如果不是播放完成后自动下一曲，则执行列表循环中的代码
+        else
+        {
+            LoopPlaylist(song_track);   //如果不是播放完成后自动下一曲，则执行列表循环中的代码
+        }
         break;
     }
 
@@ -942,13 +983,11 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
 }
 
 bool CPlayer::PlayAsNextTrack(int song_track) {
-    //TODO:限制同一播放列表？
     bool valid = (song_track >= 0 && song_track < GetSongNum());
     if (!valid)
         song_track = 0;
+    m_next_song = song_track;
     switch (m_repeat_mode) {
-    default:
-        break;
     case RM_PLAY_SHUFFLE:
         if (m_shuffle_list.size() != m_playlist.size())
             InitShuffleList();
@@ -976,6 +1015,17 @@ bool CPlayer::PlayAsNextTrack(int song_track) {
                 m_play_again = true;      //仅有一首歌
             }
         }
+        break;
+    case RM_PLAY_RANDOM:
+    case RM_LOOP_PLAYLIST:
+    case RM_LOOP_TRACK:
+        if (song_track == m_index)
+        {
+            m_play_again = true;
+        }
+        m_next_song = song_track;
+        break;
+    default:
         break;
     }
     return valid;
@@ -2049,6 +2099,9 @@ SongInfo CPlayer::GetNextTrack() const
     {
     case RM_PLAY_ORDER:
     {
+        if (m_next_song > 0) {
+            return m_playlist[m_next_song];      //用户指定下一首
+        }
         int index = m_index + 1;
         if (index >= GetSongNum() || index < 0)
             return SongInfo();
@@ -2072,10 +2125,16 @@ SongInfo CPlayer::GetNextTrack() const
     }
 
     case RM_PLAY_RANDOM:
+        if (m_next_song > 0) {
+            return m_playlist[m_next_song];      //用户指定下一首
+        }
         return SongInfo();
 
     case RM_LOOP_PLAYLIST:
     {
+        if (m_next_song > 0) {
+            return m_playlist[m_next_song];      //用户指定下一首
+        }
         int index = m_index + 1;
         if (index >= GetSongNum() || index < 0)
             index = 0;
@@ -2083,9 +2142,15 @@ SongInfo CPlayer::GetNextTrack() const
     }
 
     case RM_LOOP_TRACK:
+        if (m_next_song > 0) {
+            return m_playlist[m_next_song];      //用户指定下一首
+        }
         return GetCurrentSongInfo();
 
     case RM_PLAY_TRACK:
+        //if (m_next_song > 0) {
+        //    return m_playlist[m_next_song];      //用户指定下一首
+        //}
         return SongInfo();
 
     default:
@@ -2850,12 +2915,23 @@ void CPlayer::AlbumCoverResize()
     }
 }
 
-void CPlayer::InitShuffleList()
+void CPlayer::InitShuffleList(int first_song)
 {
+    if (first_song < 0 || first_song > m_shuffle_list.size() - 1)
+    {
+        first_song = 0;
+    }
     m_shuffle_list.resize(m_playlist.size());
     //为无序播放列表生成1~n的序号
     for (size_t i{}; i < m_shuffle_list.size(); i++)
         m_shuffle_list[i] = i;
+
+    if (first_song != 0)
+    {
+        //交换
+        m_shuffle_list[first_song] = 0;
+        m_shuffle_list[0] = first_song;
+    }
     //将生成的序号打乱
     if (m_shuffle_list.size() > 1)
     {

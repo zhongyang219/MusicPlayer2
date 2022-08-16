@@ -323,7 +323,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
     ON_WM_MOVE()
     ON_MESSAGE(WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged)
-END_MESSAGE_MAP()
+        ON_COMMAND(ID_PLAY_AS_NEXT, &CMusicPlayerDlg::OnPlayAsNext)
+        END_MESSAGE_MAP()
 
 
 // CMusicPlayerDlg 消息处理程序
@@ -1752,7 +1753,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         }
     };
 
-    initAddToMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(11));
+    initAddToMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(12));
     initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSubMenu(1));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(3));
@@ -6317,4 +6318,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, 
         }
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnPlayAsNext() {
+    CPlayer::GetInstance().PlayAsNextTrack(m_item_selected);
+    DrawInfo(false);
 }
