@@ -350,7 +350,6 @@ int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)> fun_cond
     //遍历映射容器，删除不必要的条目。
     for (auto iter{ m_song_data.begin() }; iter != m_song_data.end();)
     {
-        iter->second.file_path = iter->first.path;
         if (fun_condition(iter->second))
         {
             iter = m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目

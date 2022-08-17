@@ -13,10 +13,17 @@ public:
         int cue_track{};    // 当存储cue时用来保存音轨号，其他情况为0
 
         SongDataMapKey() {}
-        SongDataMapKey(const wstring& path) :path(path) {}
-        SongDataMapKey(const wstring& path, const int& cue_track) :path(path), cue_track(cue_track) {}
+        SongDataMapKey(const wstring& path) :path(path)
+        {
+            ASSERT(!path.empty());
+        }
+        SongDataMapKey(const wstring& path, const int& cue_track) :path(path), cue_track(cue_track)
+        {
+            ASSERT(!path.empty());
+        }
         SongDataMapKey(const SongInfo& song_info)
         {
+            ASSERT(!song_info.file_path.empty());
             path = song_info.file_path;
             if (song_info.is_cue)
                 cue_track = song_info.track;

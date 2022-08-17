@@ -82,7 +82,7 @@ void CMediaLibTabDlg::OnOK()
     GetSongsSelected(songs);
     if (!songs.empty())
     {
-        if (songs.size() > 1)
+        if (songs.size() > 1 || CFilePathHelper(songs[0].file_path).GetFileExtension() == L"cue")   // 为兼容可存在.cue文件的旧媒体库保留
         {
             CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
         }

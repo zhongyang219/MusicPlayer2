@@ -300,6 +300,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             for (int j = 0; j < temp.size(); ++j)
             {
                 CFilePathHelper audio_file_path{ temp[j].file_path };                       // 用于检查与查找音频文件
+                // 检查音轨是否存在于媒体库，音频不存在的话audio_file_name改变后会被重新设置
+                audio_already_songdatamanager = CSongDataManager::GetInstance().IsItemExist(temp[j]);
+
                 // audio_file_path正确时连续同一文件不再二次操作
                 if (audio_file_path.GetFileName() != audio_file_name || audio_file_path.GetFileName().empty())
                 {
