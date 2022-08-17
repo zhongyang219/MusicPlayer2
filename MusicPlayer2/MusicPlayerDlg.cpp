@@ -3994,6 +3994,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             //搜索歌曲并获取最佳匹配的项目
             match_item = CInternetCommon::SearchSongAndGetMatched(song_info_ori.title, song_info_ori.artist, song_info_ori.album, song_info_ori.GetFileName(), false, &result);
             CPlayer::GetInstance().SetRelatedSongID(match_item.id);
+            song_info_ori = CSongDataManager::GetInstance().GetSongInfo3(CPlayer::GetInstance().GetCurrentSongInfo());
         }
         if (song_info_ori.song_id == 0)
         {
