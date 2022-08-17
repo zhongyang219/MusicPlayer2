@@ -796,10 +796,30 @@ void UiElement::ProgressBar::Draw(CPlayerUIBase* ui)
 void UiElement::Lyrics::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->DrawLyrics(rect);
+    if (IsParentRectangle())      //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
+    {
+        if (rect.Height() >= ui->DPI(4))
+            ui->m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
+    }
+    else
+    {
+        ui->DrawLyrics(rect);
+    }
     ui->ResetDrawArea();
     ui->m_draw_data.lyric_rect = rect;
     Element::Draw(ui);
+}
+
+bool UiElement::Lyrics::IsParentRectangle() const
+{
+    const Element* ele{ this };
+    while (ele != nullptr && ele->pParent != nullptr)
+    {
+        if (dynamic_cast<const Rectangle*>(ele) != nullptr)
+            return true;
+        ele = ele->pParent;
+    }
+    return false;
 }
 
 void UiElement::Volume::Draw(CPlayerUIBase* ui)

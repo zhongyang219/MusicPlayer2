@@ -902,7 +902,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     }
 
     //绘制深色/浅色按钮
-    if (rect.Width() >= DPI(246))
+    if (rect.Width() >= DPI(294))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         DrawControlBarBtn(rc_tmp, m_buttons[BTN_DARK_LIGHT], theApp.m_icon_set.dark_mode);
@@ -913,7 +913,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     }
 
     //绘制AB重复按钮
-    if (rect.Width() >= DPI(270))
+    if (rect.Width() >= DPI(318))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect rc_btn = rc_tmp;
@@ -926,7 +926,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     }
 
     //绘制翻译按钮
-    if (draw_translate_button && rect.Width() >= DPI(294))
+    if (draw_translate_button && rect.Width() >= DPI(246))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;
@@ -939,7 +939,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     }
 
     //绘制桌面歌词按钮
-    if (rect.Width() >= DPI(318))
+    if (rect.Width() >= DPI(270))
     {
         rc_tmp.MoveToX(rc_tmp.right);
         CRect translate_rect = rc_tmp;

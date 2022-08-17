@@ -9,7 +9,7 @@
         <verticalLayout>
           <albumCover square="true" margin="8"/>
           <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
-          <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
+          <text type="artist_album" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
           <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
         </verticalLayout>
         <lyrics margin="4"/>
@@ -40,18 +40,18 @@
           <verticalLayout margin-bottom="4">
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
-            <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
+            <text type="artist_album" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
             <lyrics height="10%" hide-height="320" margin-top="4"/>
           </verticalLayout>
           <verticalLayout margin="8">
             <rectangle height="80">
-            <horizontalLayout margin="4">
-              <albumCover square="true" width="64" margin-left="4"/>
-              <verticalLayout margin-left="16">
-                <text type="title" font_size="10" style="scroll" height="28"/>
-                <text type="artist_album" font_size="9" style="scroll" height="24"/>
-              </verticalLayout>
-            </horizontalLayout>
+              <horizontalLayout margin="4">
+                <albumCover square="true" width="64" margin-left="4"/>
+                <verticalLayout margin-left="16">
+                  <text type="title" font_size="10" style="scroll" height="28"/>
+                  <text type="artist_album" font_size="9" style="scroll" height="24"/>
+                </verticalLayout>
+              </horizontalLayout>
             </rectangle>
             <lyrics margin-top="14" hide-height="120"/>
           </verticalLayout>
@@ -75,23 +75,38 @@
   </ui>
 
   <ui type="small">
-      <verticalLayout>
+      <verticalLayout margin="4">
+        <trackInfo height="20" hide-height="180" />
         <horizontalLayout margin="4">
-          <albumCover square="true" margin-right="4" width="120">
+          <rectangle max-height="80">
+            <horizontalLayout margin="6">
+              <albumCover square="true" width="64" margin-left="4">
+                <spectrum draw_reflex="false" fixed_width="true" alignment="center" height="50%" margin-bottom="0"/>
+              </albumCover>
+              <verticalLayout margin-left="16">
+                <text type="title" font_size="10" style="scroll" height="28"/>
+                <text type="artist_album" font_size="9" style="scroll" height="24"/>
+                <text type="format" font_size="8" style="scroll" height="22" hide-height="68"/>
+              </verticalLayout>
+            </horizontalLayout>
+          </rectangle>
+
+          <!--<albumCover square="true" margin-right="4" width="120">
             <spectrum draw_reflex="false" fixed_width="true" alignment="center" height="50%" margin-bottom="0"/>
           </albumCover>
           <verticalLayout>
             <trackInfo height="20"/>
             <text type="format" height="20"/>
             <text type="title" alignment="center" height="26" font_size="10" />
-            <text type="artist" alignment="center" height="20" font_size="9" margin-top="0" />
-          </verticalLayout>
+            <text type="artist_album" alignment="center" height="20" font_size="9" margin-top="0" />
+            <lyrics height="20" />
+          </verticalLayout>-->
         </horizontalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
       </rectangle>
       <progressBar height="16" show_play_time="true" margin="4" margin-bottom="0" play_time_both_side="true" />
-      <horizontalLayout height="36" margin="4">
+      <horizontalLayout height="32" margin-bottom="4">
         <button key="favorite" width="24" height="24" margin-left="2" margin-right="2"/>
         <button key="addToPlaylist" width="24" height="24" margin-left="2" margin-right="2"/>
         <button key="previous" bigIcon="true" width="36" height="36" margin-left="2" margin-right="2"/>
