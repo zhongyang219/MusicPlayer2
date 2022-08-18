@@ -30,28 +30,24 @@ CPlayer::~CPlayer()
 inline int CPlayer::GetNextShuffleIdx() const {
     // 获得下一m_shuffle_index
     int next = m_shuffle_index + 1;
-    //if (m_is_shuffle_list_played)
-    //    next++;
     if (next >= static_cast<int>(m_shuffle_list.size()))
         next = 0;
-    return next;
+    return next < 0 ? 0 : next;
 }
 
 inline int CPlayer::GetPrevShuffleIdx() const {
     // 获得前一m_shuffle_index
     int prev = m_shuffle_index - 1;
-    //if (m_is_shuffle_list_played)
-    //    prev--;
     if (prev < 0)
         prev = static_cast<int>(m_shuffle_list.size()) - 1;
-    return prev;
+    return prev < 0 ? 0 : prev;
 }
 
 inline void CPlayer::OnPlaylistChange() {
     //播放列表有修改时的相关操作，如清空下一首和随机播放记录
     m_random_list.clear();
     m_next_tracks.clear();
-    m_shuffle_list.clear();      //TODO 是否需要重新shuffle
+    m_shuffle_list.clear();
     m_is_shuffle_list_played = false;
 }
 
@@ -844,7 +840,7 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
                 else
                 {
                     m_shuffle_index = GetNextShuffleIdx();
-                    if (m_shuffle_index == 0 && m_is_shuffle_list_played)
+                    if (m_shuffle_index == 0 && m_is_shuffle_list_played || m_shuffle_list.empty())
                     {
                         //如果列表中的曲目已经随机播放完了一遍，则重新生成一个新的顺序
                         InitShuffleList();
@@ -856,7 +852,7 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
             }
             else if (song_track == PREVIOUS)
             {
-                if (m_shuffle_list.empty() && m_playlist.empty())
+                if (m_shuffle_list.empty())
                     break;
                 m_shuffle_index = GetPrevShuffleIdx();
                 song_track = m_shuffle_list[m_shuffle_index];
@@ -2075,7 +2071,7 @@ SongInfo CPlayer::GetNextTrack() const
     case RM_PLAY_SHUFFLE:
     {
         int shuffle_index = GetNextShuffleIdx();
-        if (shuffle_index == 0 && m_is_shuffle_list_played || m_shuffle_index < 0 || m_shuffle_list.empty())
+        if (shuffle_index == 0 && m_is_shuffle_list_played || m_shuffle_list.empty())
         {
             //如果shuffle_index == 0且列表播放过，说明列表中的曲目已经无序播放完一遍，此时无序列表要重新生成，因此下一首曲目是不确定的
             //以及shuffle之前m_shuffle_list为空
