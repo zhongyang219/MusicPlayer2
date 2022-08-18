@@ -848,12 +848,7 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
             {
                 if (GetSongNum() > 1)
                 {
-                    song_track = CCommon::Random(0, GetSongNum() - 1);
-                    if (song_track == m_index)
-                    {
-                        //随机到同一首歌，设为最后一首，保证随机且不会重复
-                        song_track = GetSongNum();
-                    }
+                    song_track = CCommon::Random(0, GetSongNum());
                     m_random_list.push_back(song_track);	//保存随机播放过的曲目
                 }
                 else
