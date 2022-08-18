@@ -6322,6 +6322,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, 
 
 
 void CMusicPlayerDlg::OnPlayAsNext() {
-    CPlayer::GetInstance().PlayAsNextTrack(m_item_selected);
+    //TODO 未选中时的情况？
+    CPlayer::GetInstance().PlayAfterCurrentTrack(m_items_selected);
     DrawInfo(false);
 }
