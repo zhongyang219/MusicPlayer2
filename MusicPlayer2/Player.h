@@ -152,8 +152,8 @@ private:
     vector<int> m_shuffle_list;			//储存乱序播放过的曲目序号
     int m_shuffle_index{};              //乱序播放时当前的索引
     bool m_is_shuffle_list_played{ false };
-    inline int GetNextShuffled() const;        //返回乱序播放下下一曲的序号
-    inline int GetPrevShuffled() const;        //返回乱序播放下前一曲的序号
+    inline int GetNextShuffleIdx() const;        //返回乱序播放下下一曲的序号
+    inline int GetPrevShuffleIdx() const;        //返回乱序播放下前一曲的序号
     std::list<int> m_random_list;          //随机播放模式下的历史记录，用于回溯之前的记录
     deque<int> m_next_tracks{};       //下n首播放的歌曲，用于“下一首播放”
 
@@ -187,6 +187,7 @@ public:
     void SaveRecentPath() const;		//将最近路径列表保存到文件
     void OnExit();		//退出时的处理
     void IniPlaylistComplate();		//播放列表加载完毕时的处理
+    void OnPlaylistChange();      //播放列表有修改时的相关操作
 
     void SetEqualizer(int channel, int gain);		//设置均衡器（channel为通道，取值为0~9，gain为增益，取值为-15~15）
     int GeEqualizer(int channel);		//获取指定均衡器通道的增益
