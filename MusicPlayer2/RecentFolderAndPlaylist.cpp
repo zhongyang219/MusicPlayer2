@@ -37,7 +37,7 @@ void CRecentFolderAndPlaylist::Init()
             return item1.LastPlayedTime() > item2.LastPlayedTime();
         });
     //向主窗口发送通知
-    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED, 0, 0);
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, 0, 0);
 }
 
 const std::vector<CRecentFolderAndPlaylist::Item>& CRecentFolderAndPlaylist::GetItemList() const

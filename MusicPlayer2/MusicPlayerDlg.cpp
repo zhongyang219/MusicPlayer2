@@ -322,7 +322,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_VOLUME_CHANGED, &CMusicPlayerDlg::OnVolumeChanged)
     ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
     ON_WM_MOVE()
-    ON_MESSAGE(WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged)
+    ON_MESSAGE(WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged)
         ON_COMMAND(ID_PLAY_AS_NEXT, &CMusicPlayerDlg::OnPlayAsNext)
         END_MESSAGE_MAP()
 
