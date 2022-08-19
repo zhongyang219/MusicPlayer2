@@ -4288,7 +4288,8 @@ void CMusicPlayerDlg::OnEnChangeSearchEdit()
     m_search_edit.GetWindowText(key_word);
     m_searched = (key_word.GetLength() != 0);
     SetPlaylistDragEnable();
-    m_playlist_list.QuickSearch(wstring(key_word));
+    if (m_searched)
+        m_playlist_list.QuickSearch(wstring(key_word));
     m_playlist_list.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
 }
 
