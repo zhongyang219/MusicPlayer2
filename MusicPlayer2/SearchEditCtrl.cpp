@@ -144,6 +144,7 @@ BEGIN_MESSAGE_MAP(CSearchEditCtrl, CMFCEditBrowseCtrl)
     ON_WM_SIZE()
     ON_CONTROL_REFLECT_EX(EN_CHANGE, &CSearchEditCtrl::OnEnChange)
     ON_WM_NCLBUTTONDOWN()
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CSearchEditCtrl::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -206,4 +207,10 @@ void CSearchEditCtrl::OnNcLButtonDown(UINT nHitTest, CPoint point)
         return;
     }
     CMFCEditBrowseCtrl::OnNcLButtonDown(nHitTest, point);
+}
+
+
+afx_msg LRESULT CSearchEditCtrl::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

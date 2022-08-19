@@ -291,6 +291,7 @@ IconRes& CBrowseEdit::GetIcon()
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)
     ON_WM_DESTROY()
     ON_WM_NCLBUTTONDOWN()
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CBrowseEdit::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -321,4 +322,10 @@ void CBrowseEdit::OnNcLButtonDown(UINT nHitTest, CPoint point)
         return;
     }
     CMFCEditBrowseCtrl::OnNcLButtonDown(nHitTest, point);
+}
+
+
+afx_msg LRESULT CBrowseEdit::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

@@ -40,6 +40,7 @@ void CEditEx::SetColorWhenModified(bool val)
 
 BEGIN_MESSAGE_MAP(CEditEx, CEdit)
     ON_WM_CTLCOLOR_REFLECT()
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CEditEx::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -74,4 +75,10 @@ HBRUSH CEditEx::CtlColor(CDC* pDC, UINT nCtlColor)
     // TODO:  如果不应调用父级的处理程序，则返回非 null 画笔
     static HBRUSH hBackBrush{ CreateSolidBrush(GetSysColor(COLOR_WINDOW)) };
     return (is_read_only ? NULL : hBackBrush);
+}
+
+
+afx_msg LRESULT CEditEx::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

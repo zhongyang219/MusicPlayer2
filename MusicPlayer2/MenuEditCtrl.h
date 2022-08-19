@@ -23,4 +23,6 @@ private:
     ColorTable& m_theme_color;
 public:
     afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };

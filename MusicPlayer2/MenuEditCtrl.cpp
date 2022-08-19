@@ -104,6 +104,7 @@ void CMenuEditCtrl::OnChangeLayout()
 
 BEGIN_MESSAGE_MAP(CMenuEditCtrl, CMFCEditBrowseCtrl)
     ON_WM_NCLBUTTONDOWN()
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CMenuEditCtrl::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -115,4 +116,10 @@ void CMenuEditCtrl::OnNcLButtonDown(UINT nHitTest, CPoint point)
         return;
     }
     CMFCEditBrowseCtrl::OnNcLButtonDown(nHitTest, point);
+}
+
+
+afx_msg LRESULT CMenuEditCtrl::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }
