@@ -266,7 +266,7 @@ void CMusicPlayerCmdHelper::SearchLyricFiles(const wstring& lyric_name, const ws
     result.clear();
 
     // 查找歌词文件名和搜索关键词完全匹配的歌词
-    CFilePathHelper lyric_path{ cur_dir + lyric_name };     // 得到路径+文件名的字符串
+    CFilePathHelper lyric_path{ cur_dir + lyric_name + L".lrc"};     // 得到路径+文件名的字符串，预先加扩展名防止之后ReplaceFileExtension替换误伤
 
     // 按顺序列出所有需要查找的目录
     vector<wstring> path_list{ cur_dir };
@@ -353,7 +353,7 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
     CFilePathHelper lyric_path{ song.file_path };
     if (find_org_name)
     {
-        wstring ar_ti{ song.artist + L" - " + song.title };
+        wstring ar_ti{ song.artist + L" - " + song.title + L".lrc"};    // 预先加扩展名防止之后ReplaceFileExtension替换误伤
         CCommon::FileNameNormalize(ar_ti);
         lyric_path.SetFilePath(lyric_path.GetDir() + ar_ti);
     }

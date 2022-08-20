@@ -4077,7 +4077,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             file_name = song_info_ori.GetFileName();
         else
         {
-            file_name = song_info_ori.artist + L" - " + song_info_ori.title;
+            file_name = song_info_ori.artist + L" - " + song_info_ori.title + L".lrc";
             CCommon::FileNameNormalize(file_name);
         }
         if (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))

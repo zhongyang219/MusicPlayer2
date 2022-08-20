@@ -23,6 +23,7 @@ public:
     // 获取完整路径
     wstring GetFilePath() const { return m_file_path; }
     // 替换文件的扩展名，返回文件完整路径
+    // 注意对不含扩展名的含“.”字符串使用可能会导致误识别
     const wstring& ReplaceFileExtension(const wchar_t* new_extension);
     // 获取文件路径（不含扩展名）
     wstring GetFilePathWithoutExtension() const;
