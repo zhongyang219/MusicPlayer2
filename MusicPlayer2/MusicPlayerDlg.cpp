@@ -4008,7 +4008,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         }
     }
     //自动下载专辑封面
-    if (download_cover && !is_osu)
+    if (download_cover && !is_osu)  // osu文件不进行自动下载专辑封面
     {
         wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song_info_ori.GetSongId());
         if (cover_url.empty())
@@ -4073,7 +4073,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         //保存歌词
         CFilePathHelper lyric_path;
         wstring file_name;
-        if (!song_info_ori.is_cue)
+        if (!song_info_ori.is_cue && !is_osu)   // osu文件使用与cue同样的“艺术家 - 标题”保存自动下载歌词
             file_name = song_info_ori.GetFileName();
         else
         {

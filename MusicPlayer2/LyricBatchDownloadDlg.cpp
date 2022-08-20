@@ -263,7 +263,10 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         if (!pInfo->playlist->at(i).is_cue && !COSUPlayerHelper::IsOsuFile(pInfo->playlist->at(i).file_path))
             file_name = pInfo->playlist->at(i).GetFileName();
         else
+        {
             file_name = pInfo->playlist->at(i).artist + L" - " + pInfo->playlist->at(i).title + L".lrc";
+            CCommon::FileNameNormalize(file_name);
+        }
         if (pInfo->save_to_song_folder)
             lyric_path = dir + file_name;
         else
