@@ -22,6 +22,7 @@ CScintillaEditView::~CScintillaEditView()
 BEGIN_MESSAGE_MAP(CScintillaEditView, CView)
     ON_WM_PAINT()
     ON_WM_RBUTTONUP()
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CScintillaEditView::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -550,4 +551,10 @@ void CScintillaEditView::OnRButtonUp(UINT nFlags, CPoint point)
 
 
     CView::OnRButtonUp(nFlags, point);
+}
+
+
+afx_msg LRESULT CScintillaEditView::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

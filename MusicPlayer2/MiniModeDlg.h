@@ -115,4 +115,6 @@ protected:
     //afx_msg LRESULT OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnExitSizeMove();
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };

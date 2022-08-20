@@ -24,6 +24,8 @@ protected:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 public:
     afx_msg HBRUSH CtlColor(CDC* /*pDC*/, UINT /*nCtlColor*/);
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };
 
 

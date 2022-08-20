@@ -92,4 +92,6 @@ public:
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnBnClickedShowOutAlbumCoverChk();
     afx_msg void OnCompressSize();
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };

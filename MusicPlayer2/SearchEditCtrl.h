@@ -34,6 +34,8 @@ public:
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg BOOL OnEnChange();
     afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };
 
 

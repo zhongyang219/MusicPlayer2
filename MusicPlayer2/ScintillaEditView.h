@@ -140,6 +140,8 @@ public:
     virtual void PreSubclassWindow();
     virtual void OnInitialUpdate();
     afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };
 
 
