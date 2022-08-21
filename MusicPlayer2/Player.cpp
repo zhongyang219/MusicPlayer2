@@ -2864,14 +2864,14 @@ void CPlayer::AlbumCoverResize()
 
 void CPlayer::InitShuffleList(int first_song)
 {
-    if (first_song < 0 && first_song != -1 || first_song > m_shuffle_list.size() - 1)
+    if ((first_song < 0 && first_song != -1) || first_song > static_cast<int>(m_shuffle_list.size()) - 1)
     {
         first_song = 0;
     }
     m_shuffle_list.resize(m_playlist.size());
     //为无序播放列表生成[0, n)的序号
     for (size_t i{}; i < m_shuffle_list.size(); i++)
-        m_shuffle_list[i] = i;
+        m_shuffle_list[i] = int(i);
 
     //将生成的序号打乱
     if (m_shuffle_list.size() > 1)
