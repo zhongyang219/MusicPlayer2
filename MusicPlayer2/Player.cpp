@@ -2864,7 +2864,7 @@ void CPlayer::AlbumCoverResize()
 
 void CPlayer::InitShuffleList(int first_song)
 {
-    if (first_song < 0 && first_song != -1 || first_song > m_shuffle_list.size() - 1)
+    if (first_song < 0 && first_song != -1 || first_song > static_cast<int>(m_shuffle_list.size()) - 1)
     {
         first_song = 0;
     }
