@@ -28,7 +28,7 @@
   </ui>
   <ui type="small">
     <verticalLayout margin="4">
-      <lyrics/>
+      <lyrics hide-height="180"/>
       <horizontalLayout height="94">
         <albumCover width="78" margin="4"/>
         <verticalLayout>

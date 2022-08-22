@@ -70,6 +70,7 @@ void CMyComboBox::SetMouseWheelEnable(bool enable)
 BEGIN_MESSAGE_MAP(CMyComboBox, CComboBox)
     ON_WM_CTLCOLOR()
     ON_CONTROL_REFLECT_EX(CBN_SELCHANGE, &CMyComboBox::OnCbnSelchange)
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CMyComboBox::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -131,4 +132,10 @@ BOOL CMyComboBox::OnCbnSelchange()
     // TODO: 在此添加控件通知处理程序代码
     m_modified = true;
     return FALSE;
+}
+
+
+afx_msg LRESULT CMyComboBox::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

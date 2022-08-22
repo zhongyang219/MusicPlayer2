@@ -109,6 +109,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_COMMAND(ID_MINI_MODE_ALWAYS_ON_TOP, &CMiniModeDlg::OnMiniModeAlwaysOnTop)
     //ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
     ON_WM_EXITSIZEMOVE()
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CMiniModeDlg::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -649,4 +650,10 @@ void CMiniModeDlg::OnExitSizeMove()
     m_playlist_y_offset = 0;
 
     CDialogEx::OnExitSizeMove();
+}
+
+
+afx_msg LRESULT CMiniModeDlg::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

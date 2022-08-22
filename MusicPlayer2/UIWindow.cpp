@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CUIWindow, CStatic)
     ON_WM_PAINT()
     ON_WM_SIZE()
     ON_WM_MOUSELEAVE()
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CUIWindow::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -205,4 +206,10 @@ void CUIWindow::OnMouseLeave()
     m_pUI->MouseLeave();
 
     CStatic::OnMouseLeave();
+}
+
+
+afx_msg LRESULT CUIWindow::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

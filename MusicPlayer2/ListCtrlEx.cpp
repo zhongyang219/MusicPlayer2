@@ -221,6 +221,7 @@ BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
     ON_WM_SETCURSOR()
     ON_WM_ERASEBKGND()
 	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, &CListCtrlEx::OnLvnGetdispinfo)
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CListCtrlEx::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -449,4 +450,10 @@ void CListCtrlEx::OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 	}
 	*pResult = 0;
+}
+
+
+afx_msg LRESULT CListCtrlEx::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }
