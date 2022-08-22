@@ -412,6 +412,7 @@ BEGIN_MESSAGE_MAP(CPropertyAlbumCoverDlg, CTabDlg)
     ON_WM_INITMENU()
     ON_BN_CLICKED(IDC_SHOW_OUT_ALBUM_COVER_CHK, &CPropertyAlbumCoverDlg::OnBnClickedShowOutAlbumCoverChk)
     ON_COMMAND(ID_COMPRESS_SIZE, &CPropertyAlbumCoverDlg::OnCompressSize)
+    ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CPropertyAlbumCoverDlg::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
 
 
@@ -652,4 +653,10 @@ void CPropertyAlbumCoverDlg::OnCompressSize()
         }
     }
 
+}
+
+
+afx_msg LRESULT CPropertyAlbumCoverDlg::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
+{
+    return 0;
 }

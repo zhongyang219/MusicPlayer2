@@ -26,5 +26,7 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg BOOL OnCbnSelchange();
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };
 

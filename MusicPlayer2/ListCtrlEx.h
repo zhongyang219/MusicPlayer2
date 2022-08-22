@@ -68,5 +68,7 @@ public:
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult);
+protected:
+    afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 };
 
