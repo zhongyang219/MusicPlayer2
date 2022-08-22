@@ -3336,6 +3336,9 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
         }
     }
     break;
+    case HK_SHOW_HIDE_DESKTOP_LYRIC:
+        OnShowDesktopLyric();
+        break;
     }
 
     CMainDialogBase::OnHotKey(nHotKeyId, nKey1, nKey2);

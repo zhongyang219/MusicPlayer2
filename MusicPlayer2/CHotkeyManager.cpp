@@ -86,6 +86,9 @@ void CHotkeyManager::LoadFromIni(const CIniHelper & ini)
 
 	hot_key.FromString(ini.GetString(L"hot_key", L"show_hide_player", L""));
 	SetHotKey(HK_SHOW_HIDE_PLAYER, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"show_hide_desktop_lyric", L""));
+	SetHotKey(HK_SHOW_HIDE_DESKTOP_LYRIC, hot_key);
 }
 
 void CHotkeyManager::SaveToTni(CIniHelper & ini)
@@ -120,4 +123,7 @@ void CHotkeyManager::SaveToTni(CIniHelper & ini)
 
     str = GetHotKey(HK_SHOW_HIDE_PLAYER).ToString();
     ini.WriteString(L"hot_key", L"show_hide_player", str);
+
+	str = GetHotKey(HK_SHOW_HIDE_DESKTOP_LYRIC).ToString();
+	ini.WriteString(L"hot_key", L"show_hide_desktop_lyric", str);
 }
