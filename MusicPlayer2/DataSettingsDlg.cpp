@@ -55,6 +55,11 @@ void CDataSettingsDlg::GetDataFromUi()
     }
 }
 
+void CDataSettingsDlg::ApplyDataToUi()
+{
+    EnableControl();
+}
+
 
 BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
     //ON_BN_CLICKED(IDC_ID3V2_FIRST_CHECK, &CDataSettingsDlg::OnBnClickedId3v2FirstCheck)
