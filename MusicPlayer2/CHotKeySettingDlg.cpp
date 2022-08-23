@@ -136,7 +136,7 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
     hot_key.key = key_coke;
 
     hot_key.ctrl = ((modifiers & HOTKEYF_CONTROL) != 0);
-    hot_key.shift = ((modifiers & HOTKEYF_SHIFT) != 0);			//注，在win10下测试通过CHotKeyCtrl::GetHotKey获取的modifiers中，SHIFT的ALT标志被颠倒了
+    hot_key.shift = ((modifiers & HOTKEYF_SHIFT) != 0);
     hot_key.alt = ((modifiers & HOTKEYF_ALT) != 0);
 
     m_hotkey_group[key_id] = hot_key;
