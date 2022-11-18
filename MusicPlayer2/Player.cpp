@@ -894,7 +894,7 @@ void CPlayer::SetPath(const PathInfo& path_info)
 
 }
 
-void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init, bool play)
+void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init, bool play, bool force)
 {
     if (m_loading)
         return;
@@ -902,7 +902,7 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     if (!init)
     {
         // 实现切换到播放列表模式时的同曲目播放保持
-        if (theApp.m_play_setting_data.continue_when_switch_playlist)
+        if (theApp.m_play_setting_data.continue_when_switch_playlist && !force)
         {
             m_current_song_tmp = GetCurrentSongInfo();
             m_current_song_position_tmp = GetCurrentPosition();
