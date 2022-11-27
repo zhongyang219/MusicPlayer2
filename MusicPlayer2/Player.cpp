@@ -392,6 +392,8 @@ void CPlayer::IniPlaylistComplate()
         m_random_list.push_back(m_index);
 
     m_thread_info = ThreadInfo();
+
+    m_controls.UpdateControls(Command::STOP);
 }
 
 void CPlayer::SearchLyrics(bool refresh)

@@ -1208,8 +1208,8 @@
 #define ID_32786                        32786
 #define ID_REW                          32787
 #define ID_FF                           32788
-#define ID_32789                        32789
-#define ID_32790                        32790
+#define ID_PLAY                         32789
+#define ID_PAUSE                        32790
 #define ID_32791                        32791
 #define ID_32792                        32792
 #define ID_SET_PATH                     32793

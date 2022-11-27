@@ -259,6 +259,8 @@ protected:
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnTimer(UINT_PTR nIDEvent);
     afx_msg void OnPlayPause();
+    afx_msg void OnPlay();
+    afx_msg void OnPause();
     afx_msg void OnStop();
     afx_msg void OnPrevious();
     afx_msg void OnNext();

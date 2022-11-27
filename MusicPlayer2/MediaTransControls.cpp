@@ -311,10 +311,10 @@ void MediaTransControls::UpdateControlsMetadata(const SongInfo song)
 void MediaTransControls::OnButtonPressed(SystemMediaTransportControlsButton button) {
     switch (button) {
     case SystemMediaTransportControlsButton_Play:
-        SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_PAUSE, 0);
+        SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY, 0);
         break;
     case SystemMediaTransportControlsButton_Pause:
-        SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_PAUSE, 0);
+        SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PAUSE, 0);
         break;
     case SystemMediaTransportControlsButton_Stop:
         SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_STOP, 0);

@@ -123,6 +123,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_WM_SIZE()
     ON_WM_TIMER()
     ON_COMMAND(ID_PLAY_PAUSE, &CMusicPlayerDlg::OnPlayPause)
+    ON_COMMAND(ID_PLAY, &CMusicPlayerDlg::OnPlay)
+    ON_COMMAND(ID_PAUSE, &CMusicPlayerDlg::OnPause)
     ON_COMMAND(ID_STOP, &CMusicPlayerDlg::OnStop)
     ON_COMMAND(ID_PREVIOUS, &CMusicPlayerDlg::OnPrevious)
     ON_COMMAND(ID_NEXT, &CMusicPlayerDlg::OnNext)
@@ -2537,6 +2539,22 @@ void CMusicPlayerDlg::OnPlayPause()
     CPlayer::GetInstance().MusicControl(Command::PLAY_PAUSE);
     if (!CPlayer::GetInstance().IsPlaying())
         DrawInfo();
+    UpdatePlayPauseButton();
+    m_ui_thread_para.search_box_force_refresh = true;
+    m_ui_thread_para.ui_force_refresh = true;
+}
+
+void CMusicPlayerDlg::OnPlay()
+{
+    CPlayer::GetInstance().MusicControl(Command::PLAY);
+    UpdatePlayPauseButton();
+    m_ui_thread_para.search_box_force_refresh = true;
+    m_ui_thread_para.ui_force_refresh = true;
+}
+
+void CMusicPlayerDlg::OnPause()
+{
+    CPlayer::GetInstance().MusicControl(Command::PAUSE);
     UpdatePlayPauseButton();
     m_ui_thread_para.search_box_force_refresh = true;
     m_ui_thread_para.ui_force_refresh = true;
