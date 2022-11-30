@@ -33,9 +33,6 @@ protected:
         COL_PATH,
     };
 
-
-    void GetSongsSelected(std::vector<SongInfo>& song_list) const override;
-
 protected:
     CSearchEditCtrl m_search_edit;
     CTreeCtrlEx m_folder_explore_tree;
@@ -72,6 +69,7 @@ protected:
     virtual const vector<int>& GetItemsSelected() const override;
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
     virtual wstring GetSelectedString() const override;
+    virtual void GetSongsSelected(std::vector<SongInfo>& song_list) const override;
 
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
