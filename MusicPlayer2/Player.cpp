@@ -257,8 +257,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             CSongDataManager::GetInstance().AddItem(song_info);
         }
         // 将媒体库内信息更新到播放列表
-        if (!song.info_acquired)
-            CSongDataManager::GetInstance().LoadSongInfo(song);
+        CSongDataManager::GetInstance().LoadSongInfo(song);
     }
     GetInstance().m_loading = false;
     PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);

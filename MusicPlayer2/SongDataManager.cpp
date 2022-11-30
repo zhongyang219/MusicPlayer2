@@ -113,6 +113,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_start_pos;
             }
             ar >> song_end_pos;
+            song_info.start_pos.fromInt(song_start_pos);
             song_info.lengh.fromInt(song_end_pos - song_start_pos); // 计划以后移除length
             song_info.end_pos.fromInt(song_end_pos);
             if (m_data_version >= _T("2.691"))
