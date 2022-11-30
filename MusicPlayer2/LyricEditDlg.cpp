@@ -90,8 +90,9 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 
 bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
 {
+    bool is_osu{ CPlayer::GetInstance().IsOsuFile() };
     const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
-    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileExtension());
+    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(song.file_path).GetFileExtension());
     if (m_inner_lyric && lyric_write_support)
     {
         //写入内嵌歌词
@@ -117,8 +118,7 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
         //写入歌词文件
         if (path.empty())		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
         {
-
-            if (!song.is_cue)
+            if (!song.is_cue && !is_osu)
             {
                 m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetFileName();
                 int index = m_lyric_path.rfind(L'.');

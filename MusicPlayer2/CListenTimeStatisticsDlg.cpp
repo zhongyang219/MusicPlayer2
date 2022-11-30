@@ -54,7 +54,8 @@ void CListenTimeStatisticsDlg::ShowData(bool size_changed)
 
 		m_list_ctrl.SetItemText(index, COL_TIMES, str);
 
-		if (CPlayer::GetInstance().GetCurrentFilePath() == data.path)
+        // 处理cue时这里的高亮是有问题的，暂不影响使用以后修
+		if (CPlayer::GetInstance().GetCurrentSongInfo().file_path == data.path)
 			m_list_ctrl.SetHightItem(index);
 
 		index++;
@@ -127,7 +128,7 @@ BOOL CListenTimeStatisticsDlg::OnInitDialog()
         SongInfo song{ data.second };
         if (song.listen_time >= 20 && song.lengh > 0)
         {
-            song.file_path = data.first;
+            song.file_path = data.first.path;
             m_data_list.push_back(SongInfoToListItem(song));
         }
     }

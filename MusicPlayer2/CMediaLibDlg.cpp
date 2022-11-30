@@ -239,8 +239,8 @@ void CMediaLibDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     //限制窗口最小大小
-    lpMMI->ptMinTrackSize.x = m_min_size.cx;		//设置最小宽度
-    lpMMI->ptMinTrackSize.y = m_min_size.cy;		//设置最小高度
+    lpMMI->ptMinTrackSize.x = m_min_size.cx;        //设置最小宽度
+    lpMMI->ptMinTrackSize.y = m_min_size.cy;        //设置最小高度
 
     CDialog::OnGetMinMaxInfo(lpMMI);
 }

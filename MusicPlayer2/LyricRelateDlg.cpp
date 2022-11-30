@@ -197,10 +197,11 @@ void CLyricRelateDlg::OnBnClickedDeleteFileButton()
 void CLyricRelateDlg::OnBnClickedDonotRelateButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CPlayer::GetInstance().ClearLyric();		//清除歌词
-    SongInfo& song_info{ CSongDataManager::GetInstance().GetSongInfoRef(CPlayer::GetInstance().GetCurrentFilePath()) };
-    song_info.lyric_file = NO_LYRIC_STR;       //将该歌曲设置为不关联歌词
+    CPlayer::GetInstance().ClearLyric();        //清除歌词
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(CPlayer::GetInstance().GetCurrentSongInfo()) };
+    song_info.lyric_file = NO_LYRIC_STR;        //将该歌曲设置为不关联歌词
     song_info.SetNoOnlineLyric(true);
+    CSongDataManager::GetInstance().AddItem(song_info);
     //ShowSearchResult();
     OnCancel();
 }

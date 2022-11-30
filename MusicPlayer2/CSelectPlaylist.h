@@ -21,7 +21,7 @@ public:
     enum { IDD = IDD_SELECT_PLAYLIST_DIALOG };
 #endif
 
-
+    // 歌曲属性更新后被调用
     virtual void RefreshSongList() override;
 
 public:
@@ -30,6 +30,8 @@ public:
     int GetPosition() const;
     bool IsPlaylistModified() const;
     void AdjustColumnWidth();       //自动调整列表宽度
+    // 完全重新载入标签页数据
+    void RefreshTabData();
     bool IsLeftSelected() const;
 
 private:
@@ -37,13 +39,13 @@ private:
     //CMenu m_menu;
     bool m_playlist_modified{ false };
     CSearchEditCtrl m_search_edit;
-    vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
-    bool m_searched{ false };				//是否处理搜索状态
-    //CToolTipCtrl m_Mytip;
-    bool m_left_selected{};                   //最后一次选中的是左侧还是右侧
-    int m_right_selected_item{ -1 };
-    std::vector<int> m_right_selected_items;   //右侧列表选中的项目的序号
-    CString m_selected_string;
+    vector<int> m_search_result;                //储存快速搜索结果的歌曲序号
+    bool m_searched{ false };                   //是否处于搜索状态
+
+    bool m_left_selected{};                     //最后一次选中的是左侧还是右侧
+    int m_right_selected_item{ -1 };            //右侧列表选中的项目的序号
+    std::vector<int> m_right_selected_items;    //右侧列表多选选中的项目的序号
+    wstring m_selected_string;
 
     enum
     {
@@ -65,12 +67,12 @@ private:
 
     CListCtrlEx m_playlist_ctrl;
     CListCtrlEx m_song_list_ctrl;
-    CListCtrlEx::ListData m_list_data;	//右侧列表数据
+    CListCtrlEx::ListData m_list_data;  //右侧列表数据
     vector<SongInfo> m_cur_song_list;   //选中播放列表的数据
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-    void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
+    void QuickSearch(const wstring& key_words);         //根据关键字执行快速查找m_search_result中
     int GetPlayingItem();
     virtual void OnTabEntered() override;
     void ShowSongList();
@@ -80,15 +82,11 @@ protected:
 
     void SetLeftListSelected(int index);
 
-    virtual const CListCtrlEx& GetSongListCtrl() const override;
+    virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;
     virtual const vector<int>& GetItemsSelected() const override;
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
-    virtual int GetPathColIndex() const override;
     virtual wstring GetSelectedString() const override;
-
-    virtual void GetSongsSelected(std::vector<SongInfo>& song_list) const override;
-    virtual void GetCurrentSongList(std::vector<SongInfo>& song_list) const override;
 
     DECLARE_MESSAGE_MAP()
 

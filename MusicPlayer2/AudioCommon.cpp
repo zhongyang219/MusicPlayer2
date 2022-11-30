@@ -276,9 +276,8 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
     _findclose(hFile);
 }
 
-void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index)
+void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info)
 {
-    int index_song{ index };                        // 索引位置
     for (size_t i = 0; i < files.size(); i++)
     {
         //依次检查列表中的每首歌曲是否为cue文件
@@ -291,8 +290,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             CCueFile cue_file{ file_path.GetFilePath() };
 
             wstring audio_file_name;                    // 临时存储音频文件名
-            CSongInfoHelper::ChannelInfo channel_info;  //比特率、采样频率、位深度、通道数
             Time audio_file_length{};                   // 音频文件长度
+            bool audio_already_songdatamanager{};       // 发现音轨已存在于媒体库则不进行时长/标签处理除非强制刷新
             bool audio_file_name_change = true;         // 音频文件未匹配，当audio_file_name被错误检查改变，temp[j].file_path不再准确时设为true
             const std::vector<SongInfo>& temp = cue_file.GetAnalysisResult();               // cue文件的文本解析结果
             vector<SongInfo> cue_tracks;                // 储存解析到的cue音轨
@@ -301,6 +300,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             for (int j = 0; j < temp.size(); ++j)
             {
                 CFilePathHelper audio_file_path{ temp[j].file_path };                       // 用于检查与查找音频文件
+                // 检查音轨是否存在于媒体库，音频不存在的话audio_file_name改变后会被重新设置
+                audio_already_songdatamanager = CSongDataManager::GetInstance().IsItemExist(temp[j]);
+
                 // audio_file_path正确时连续同一文件不再二次操作
                 if (audio_file_path.GetFileName() != audio_file_name || audio_file_path.GetFileName().empty())
                 {
@@ -316,7 +318,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                             [](const wstring& file_name)
                             {
                                 CFilePathHelper file_path(file_name);
-                                wstring extension{ file_path.GetFileExtension() };		    // 获取文件扩展名
+                                wstring extension{ file_path.GetFileExtension() };          // 获取文件扩展名
                                 return extension != L"cue" && FileIsAudio(file_name);
                             });
                         // 如果没有找到则尝试与cue同名音频文件
@@ -328,7 +330,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                                 [](const wstring& file_name)
                                 {
                                     CFilePathHelper file_path(file_name);
-                                    wstring extension{ file_path.GetFileExtension() };		// 获取文件扩展名
+                                    wstring extension{ file_path.GetFileExtension() };      // 获取文件扩展名
                                     return extension != L"cue" && FileIsAudio(file_name);
                                 });
                             if (audio_file_path.GetFileExtension() != std::wstring())       // 逐个移除扩展名
@@ -344,16 +346,20 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                     }
                     // 音频不存在处理完成但仍然不能保证成功
 
-                    // 开始取得音频文件信息
+                    // 媒体库不接受没有音频路径的歌曲，跳过temp[j]
+                    if (!CCommon::FileExist(cue_dir + audio_file_name)) continue;
+
+                    // 开始取得音频文件信息(此处仅取得长度)
+                    audio_already_songdatamanager = CSongDataManager::GetInstance().IsItemExist(CSongDataManager::SongDataMapKey{ cue_dir + audio_file_name , temp[j].track });
                     // 如果还未获取对应音频文件的信息，则在这里获取
-                    if (CCommon::FileExist(cue_dir + audio_file_name))
+                    if (!audio_already_songdatamanager || refresh_info)
                     {
-                        SongInfo& audo_file_info = CSongDataManager::GetInstance().GetSongInfoRef2(cue_dir + audio_file_name);
-                        if (pPlayerCore != nullptr && !audo_file_info.info_acquired)
+                        SongInfo audo_file_info;
+                        audo_file_info.file_path = cue_dir + audio_file_name;
+                        if (pPlayerCore != nullptr)
                         {
-                            pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info);
+                            pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info, AF_LENGTH);
                         }
-                        channel_info = CSongInfoHelper::GetSongChannelInfo(audo_file_info);
                         audio_file_length = audo_file_info.lengh;
                     }
 
@@ -368,35 +374,47 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         if (index_find < i)       // 如果删除的文件在当前文件的前面，则循环变量减1
                             i--;
 
-                        //if (files.begin() + index_song < find)              // 移除文件在index_song之前则index_song自减1保持与files的对齐
-                        if (index_song < index_find)
-                            index_song--;
-                        //else if (files.begin() + index_song == find)        // 移除文件就是index_song则让index_song指向此音频所属cue文件
-                        else if (index_song == index_find)
-                            index_song = i;
+                        if (index < index_find)                            // 移除文件在index之前则index自减1保持与files的对齐
+                            index--;
+                        else if (index == index_find)                      // 移除文件就是index则让index指向此音频所属cue文件
+                            index = i;
 
                         files.erase(find);                  // 找到cue对应的音频文件则把它删除
-                   }
+                    }
                 }   // 以上部分仅在新FILE标签或音频文件异常时执行以加快循环检查TRACK的速度
 
                 // 将temp[j]存入cue_tracks并做最后处理
                 cue_tracks.push_back(temp[j]);
-                CSongInfoHelper::SetSongChannelInfo(cue_tracks.back(), channel_info);
-                // 依据end_pos是否为0判断这个轨道是否应当按照音频文件补充结束时间与时长
-                if (cue_tracks.back().end_pos == 0)
-                {
-                    cue_tracks.back().end_pos = audio_file_length;
-                    cue_tracks.back().lengh = Time(audio_file_length - cue_tracks.back().start_pos);
-                }
-                // 若时长获取失败则需要将此FILE所有TRACK标记为无效文件，将时长清零
-                if (audio_file_length.isZero())
-                {
-                    cue_tracks.back().lengh = audio_file_length;
-                    cue_tracks.back().end_pos = cue_tracks.back().start_pos;    // 由于时长本身退出不保存，所以将差值同时清零
-                }
+                SongInfo& cur = cue_tracks.back();
                 // 若cue_tracks.back().file_path中的信息已失效则更新
-                if (audio_file_name_change && !audio_file_name.empty())
-                    cue_tracks.back().file_path = cue_dir + audio_file_name;
+                if (audio_file_name_change)
+                    cur.file_path = cue_dir + audio_file_name;
+
+                ASSERT(CCommon::FileExist(cur.file_path));
+
+                // 媒体库内不存在或强制刷新则重新设置媒体库内项目值
+                if (!audio_already_songdatamanager || refresh_info)
+                {
+                    // 依据end_pos是否为0判断这个轨道是否应当按照音频文件补充结束时间与时长
+                    if (cur.end_pos == 0)
+                    {
+                        cur.end_pos = audio_file_length;
+                        cur.lengh = cur.end_pos - cur.start_pos;
+                    }
+                    // 若时长获取失败则需要将此FILE所有TRACK标记为无效文件，将时长清零
+                    if (audio_file_length.isZero())
+                    {
+                        cur.lengh = 0;
+                        cur.end_pos = cur.start_pos;    // 由于时长本身退出不保存，所以将差值同时清零
+                    }
+                    // 直接写入媒体库
+                    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(cur) };
+                    song_info.CopyAudioTag(cur);
+                    song_info.start_pos = cur.start_pos;
+                    song_info.lengh = cur.lengh;
+                    song_info.end_pos = cur.end_pos;
+                    CSongDataManager::GetInstance().AddItem(song_info);
+                }
             }
 
             /* 此时files[i]为需要移除的cue，解析结果在cue_tracks                 */
@@ -404,14 +422,14 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             /* 可能的情况：cue_tracks全部插入files/部分插入/全部已存在不做更改   */
             /* 不过可以肯定完成后cue_tracks的全部条目files内都会存在             */
 
-            files.erase(files.begin() + i);		        //从列表中删除cue文件
+            files.erase(files.begin() + i);             //从列表中删除cue文件
 
             // 为true表示此次添加不接受重复曲目
             bool ignore{ theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist };
-            // 指示此次需要为index_song同步files[i]位置曲目数量的增减
-            bool before_index{ i < index_song };
-            // 指示此次cue_tracks为索引指定cue，需要index_song跟踪其第一轨位置
-            bool is_index{ i == index_song };
+            // 指示此次需要为index同步files[i]位置曲目数量的增减
+            bool before_index{ i < index };
+            // 指示此次cue_tracks为索引指定cue，需要index跟踪其第一轨位置
+            bool is_index{ i == index };
 
             for (const auto& cue_track : cue_tracks)
             {
@@ -420,75 +438,123 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                     // 查找当前cue_track是否已存在于files
                     auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
                         {
-                            return CCommon::StringCompareNoCase(song.file_path, cue_track.file_path) && song.track == cue_track.track;
+                            return song.IsSameSong(cue_track);
                         });
                     if (find == files.end())
                     {
                         // files中不存在当前曲目，将cue_track插入files
                         files.emplace(files.begin() + i++, cue_track);
                         if (before_index)
-                            index_song++;
+                            index++;
                     }
                     else if (is_index)      // 如果此cue的第一轨已存在于files中则将索引调整到其位置
-                        index_song = find - files.begin();
+                        index = find - files.begin();
                 }
                 else
                 {
-                    // 不检查重复直接添加，此时index_song位置一定正确指向第一轨无需处理
+                    // 不检查重复直接添加，此时index位置一定正确指向第一轨无需处理
                     files.emplace(files.begin() + i++, cue_track);
                     if (before_index)
-                        index_song++;
+                        index++;
                 }
-                is_index = false;           // 仅对cue_tracks[0]修改index_song
+                is_index = false;           // 仅对cue_tracks[0]修改index
             }
-            i--;		                    // 解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
+            i--;                            // 解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
             if (before_index)
-                index_song--;
+                index--;
         }
     }
-    GetInnerCueTracks(files, pPlayerCore, index_song);
-    index = index_song;
+    GetInnerCueTracks(files, pPlayerCore, index, refresh_info);
 }
 
-void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index)
+void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info)
 {
-    for (auto iter = files.begin(); iter != files.end(); ++iter)
+    for (int i{}; i < static_cast<int>(files.size()); ++i)
     {
-        if (iter->is_cue || iter->file_path.empty())        // 跳过已解析的cue音轨，跳过无效文件
+        if (files[i].is_cue || files[i].file_path.empty())        // 跳过已解析的cue音轨，跳过无效文件
             continue;
-        CAudioTag audio_tag(*iter);
+        CAudioTag audio_tag(files[i]);
         wstring cue_contents = audio_tag.GetAudioCue();
 
         //解析cue音轨
         if (!cue_contents.empty())
         {
-            CSongInfoHelper::ChannelInfo channel_info{ CSongInfoHelper::GetSongChannelInfo(*iter) };
-            Time total_length{ iter->lengh };
-
             CCueFile cue_file;
             cue_file.LoadContentsDirect(cue_contents);
-            cue_file.SetTotalLength(total_length);
-            vector<SongInfo> cue_tracks;    //储存解析到的cue音轨
-            for (const auto& track : cue_file.GetAnalysisResult())
+            const vector<SongInfo>& temp = cue_file.GetAnalysisResult();
+            if (temp.empty()) continue;
+            // temp最后一首缺少end_time且媒体库内不存在
+            if (temp.back().end_pos == 0 && (!CSongDataManager::GetInstance().IsItemExist(CSongDataManager::SongDataMapKey{ files[i].file_path, temp.back().track }) || refresh_info))
             {
-                cue_tracks.push_back(track);
-                CSongInfoHelper::SetSongChannelInfo(cue_tracks.back(), channel_info);
-                cue_tracks.back().file_path = iter->file_path;
+                if (pPlayerCore != nullptr)
+                {
+                    pPlayerCore->GetAudioInfo(files[i].file_path.c_str(), files[i], AF_LENGTH);
+                }
+            }
+            
+            vector<SongInfo> cue_tracks;    //储存解析到的cue音轨
+            for (int j{}; j < static_cast<int>(temp.size()); ++j)
+            {
+                cue_tracks.push_back(temp[j]);
+                auto& cur = cue_tracks.back();
+                cur.file_path = files[i].file_path;
+                if (!CSongDataManager::GetInstance().IsItemExist(cur) || refresh_info)
+                {
+                    if (j == temp.size() - 1 && cur.end_pos == 0)   // 最后一首且没有结束时间
+                    {
+                        cur.end_pos = files[i].lengh;
+                        cur.lengh = cur.end_pos - cur.start_pos;
+                    }
+                    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(cur) };
+                    song_info.CopyAudioTag(cur);
+                    song_info.start_pos = cur.start_pos;
+                    song_info.lengh = cur.lengh;
+                    song_info.end_pos = cur.end_pos;
+                    CSongDataManager::GetInstance().AddItem(song_info);
+                }
             }
 
             //从列表中删除原始音频文件
-            iter = files.erase(iter);
+            files.erase(files.begin() + i);
 
-            //将解析到的cue音轨插入到列表
-            iter = files.insert(iter, cue_tracks.begin(), cue_tracks.end());
-            iter += cue_tracks.size();
+            // 为true表示此次添加不接受重复曲目
+            bool ignore{ theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist };
+            // 指示此次需要为index同步files[i]位置曲目数量的增减
+            bool before_index{ i < index };
+            // 指示此次cue_tracks为索引指定cue，需要index跟踪其第一轨位置
+            bool is_index{ i == index };
 
-            // 如果内嵌cue展开发生在index之前则调整index使其指向不变
-            if (iter - files.begin() < index)
-                index += cue_tracks.size() - 1;
-
-            if (iter == files.end())
-                break;
+            for (const auto& cue_track : cue_tracks)
+            {
+                if (ignore)
+                {
+                    // 查找当前cue_track是否已存在于files
+                    auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
+                        {
+                            return song.IsSameSong(cue_track);
+                        });
+                    if (find == files.end())
+                    {
+                        // files中不存在当前曲目，将cue_track插入files
+                        files.emplace(files.begin() + i++, cue_track);
+                        if (before_index)
+                            index++;
+                    }
+                    else if (is_index)      // 如果此cue的第一轨已存在于files中则将索引调整到其位置
+                        index = find - files.begin();
+                }
+                else
+                {
+                    // 不检查重复直接添加，此时index位置一定正确指向第一轨无需处理
+                    files.emplace(files.begin() + i++, cue_track);
+                    if (before_index)
+                        index++;
+                }
+                is_index = false;           // 仅对cue_tracks[0]修改index
+            }
+            i--;                            // 解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
+            if (before_index)
+                index--;
         }
     }
 }

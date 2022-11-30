@@ -27,7 +27,6 @@ CSelectPlaylistDlg::~CSelectPlaylistDlg()
 
 void CSelectPlaylistDlg::RefreshSongList()
 {
-    ShowPathList();     // 对播放列表列表刷新特别处理，刷新左侧列表
     ShowSongList();
 }
 
@@ -57,6 +56,12 @@ void CSelectPlaylistDlg::AdjustColumnWidth()
     CalculateColumeWidth(width);
     for (size_t i{}; i < width.size(); i++)
         m_playlist_ctrl.SetColumnWidth(i, width[i]);
+}
+
+void CSelectPlaylistDlg::RefreshTabData()
+{
+    ShowPathList();
+    ShowSongList();
 }
 
 bool CSelectPlaylistDlg::IsLeftSelected() const
@@ -135,9 +140,9 @@ void CSelectPlaylistDlg::ShowSongList()
         int index{};
         for (SongInfo& song : m_cur_song_list)
         {
-            if (!song.info_acquired)
+            if (!song.info_acquired || !song.ChannelInfoAcquired())
             {
-                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song.file_path));
+                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song));
             }
             CListCtrlEx::RowData row_data;
             row_data[COL_INDEX] = std::to_wstring(index + 1);
@@ -196,9 +201,9 @@ void CSelectPlaylistDlg::SetLeftListSelected(int index)
     LeftListClicked(index);
 }
 
-const CListCtrlEx& CSelectPlaylistDlg::GetSongListCtrl() const
+const vector<SongInfo>& CSelectPlaylistDlg::GetSongList() const
 {
-    return m_song_list_ctrl;
+    return m_cur_song_list;
 }
 
 int CSelectPlaylistDlg::GetItemSelected() const
@@ -216,29 +221,9 @@ void CSelectPlaylistDlg::AfterDeleteFromDisk(const std::vector<SongInfo>& files)
     ShowSongList();
 }
 
-int CSelectPlaylistDlg::GetPathColIndex() const
-{
-    return COL_PATH;
-}
-
 wstring CSelectPlaylistDlg::GetSelectedString() const
 {
-    return wstring(m_selected_string);
-}
-
-void CSelectPlaylistDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
-{
-    for (int index : GetItemsSelected())
-    {
-        if (index < 0 || index >= static_cast<int>(m_cur_song_list.size()))
-            continue;
-        song_list.push_back(m_cur_song_list[index]);
-    }
-}
-
-void CSelectPlaylistDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) const
-{
-    song_list = m_cur_song_list;
+    return m_selected_string;
 }
 
 BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
@@ -311,7 +296,7 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     m_row_selected = GetPlayingItem(); // 初始化时选中正在播放的播放列表
     ShowPathList();
     ShowSongList();
-    m_search_edit.SetFocus();		//初始时将焦点设置到搜索框
+    m_search_edit.SetFocus();       //初始时将焦点设置到搜索框
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
     return FALSE;  // return TRUE unless you set the focus to a control
@@ -352,7 +337,7 @@ void CSelectPlaylistDlg::ShowPathList()
 
     const auto& recent_playlists = CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists;
     m_playlist_ctrl.EnableWindow(TRUE);
-    if (!m_searched)		//显示所有项目
+    if (!m_searched)        //显示所有项目
     {
         m_playlist_ctrl.DeleteAllItems();
         for (int i{}; i < SPEC_PLAYLIST_NUM; i++)
@@ -379,7 +364,7 @@ void CSelectPlaylistDlg::ShowPathList()
             SetListRowData(index, CPlayer::GetInstance().GetRecentPlaylist().m_temp_playlist);
         }
     }
-    else		//只显示搜索结果的曲目
+    else        //只显示搜索结果的曲目
     {
         if (m_search_result.empty())
         {
@@ -402,7 +387,7 @@ void CSelectPlaylistDlg::ShowPathList()
         for (int i{}; i < item_num_after; i++)
         {
             str.Format(_T("%u"), m_search_result[i] + SPEC_PLAYLIST_NUM + 1);
-            if (i >= item_num_before)	//如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
+            if (i >= item_num_before)   //如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
             {
                 m_playlist_ctrl.InsertItem(i, str);
             }
@@ -496,7 +481,7 @@ void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
     {
         CString str;
         str = m_playlist_ctrl.GetItemText(pNMItemActivate->iItem, 0);
-        m_row_selected = _ttoi(str) - 1;
+        m_row_selected = _ttoi(str) - 1;    // 获取序号减一得到
     }
     OnOK();
 
@@ -758,7 +743,7 @@ BOOL CSelectPlaylistDlg::PreTranslateMessage(MSG* pMsg)
     // TODO: 在此添加专用代码和/或调用基类
     if (pMsg->message == WM_KEYDOWN && pMsg->hwnd != m_search_edit.GetSafeHwnd())
     {
-        if (pMsg->wParam == 'F')	//按F键快速查找
+        if (pMsg->wParam == 'F')    //按F键快速查找
         {
             m_search_edit.SetFocus();
             return TRUE;

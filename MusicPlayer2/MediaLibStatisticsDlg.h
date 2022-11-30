@@ -7,15 +7,15 @@
 
 class CMediaLibStatisticsDlg : public CBaseDialog
 {
-	DECLARE_DYNAMIC(CMediaLibStatisticsDlg)
+    DECLARE_DYNAMIC(CMediaLibStatisticsDlg)
 
 public:
-	CMediaLibStatisticsDlg(CWnd* pParent = nullptr);   // 标准构造函数
-	virtual ~CMediaLibStatisticsDlg();
+    CMediaLibStatisticsDlg(CWnd* pParent = nullptr);   // 标准构造函数
+    virtual ~CMediaLibStatisticsDlg();
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_SELECT_ITEM_DIALOG };
+    enum { IDD = IDD_SELECT_ITEM_DIALOG };
 #endif
 
 private:
@@ -32,9 +32,9 @@ protected:
         RI_MAX
     };
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
     virtual CString GetDialogName() const override;
 

@@ -18,7 +18,7 @@
 IMPLEMENT_DYNAMIC(CFolderExploreDlg, CMediaLibTabDlg)
 
 CFolderExploreDlg::CFolderExploreDlg(CWnd* pParent /*=nullptr*/)
-	: CMediaLibTabDlg(IDD_FOLDER_EXPLORE_DIALOG, pParent)
+    : CMediaLibTabDlg(IDD_FOLDER_EXPLORE_DIALOG, pParent)
 {
 
 }
@@ -27,47 +27,9 @@ CFolderExploreDlg::~CFolderExploreDlg()
 {
 }
 
-void CFolderExploreDlg::GetSongsSelected(std::vector<wstring>& song_list) const
-{
-    if (m_left_selected)
-    {
-        CAudioCommon::GetAudioFiles(wstring(m_folder_path_selected), song_list, 20000, true);
-    }
-    else
-    {
-        for (int index : m_right_selected_items)
-        {
-            wstring file_path = m_song_list_ctrl.GetItemText(index, COL_PATH).GetString();
-            song_list.push_back(file_path);
-        }
-    }
-}
-
-void CFolderExploreDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
-{
-    std::vector<wstring> file_list;
-    GetSongsSelected(file_list);
-    for (const auto& file : file_list)
-    {
-        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
-        song_list.push_back(song);
-    }
-}
-
-void CFolderExploreDlg::GetCurrentSongList(std::vector<SongInfo>& song_list) const
-{
-    for (int index = 0; index < m_song_list_ctrl.GetItemCount(); index++)
-    {
-        std::wstring file = m_song_list_ctrl.GetItemText(index, COL_PATH);
-        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
-        song_list.push_back(song);
-
-    }
-}
-
 void CFolderExploreDlg::RefreshData()
 {
-	ShowFolderTree();
+    ShowFolderTree();
 }
 
 void CFolderExploreDlg::RefreshSongList()
@@ -107,21 +69,23 @@ void CFolderExploreDlg::ShowFolderTree()
 void CFolderExploreDlg::ShowSongList()
 {
     CWaitCursor wait_cursor;
-    SetDlgItemText(IDC_PATH_STATIC, m_folder_path_selected);
+    SetDlgItemText(IDC_PATH_STATIC, m_folder_path_selected.c_str());
 
     //获取歌曲列表
-    std::vector<wstring> files;
-    CAudioCommon::GetAudioFiles(wstring(m_folder_path_selected), files, 20000, false);
-    std::vector<SongInfo> song_list;
+    std::vector<SongInfo> files;
+    CAudioCommon::GetAudioFiles(m_folder_path_selected, files, 20000, false);
+    int index{};
+    CAudioCommon::GetCueTracks(files, CPlayer::GetInstance().GetPlayerCore(), index, false);
+    m_right_items.clear();
     for (const auto& file : files)
     {
-        SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file);
-        song_list.push_back(song);
+        SongInfo& song = CSongDataManager::GetInstance().GetSongInfo3(file);
+        m_right_items.push_back(song);
     }
 
     //显示到列表控件中
-	m_list_data.clear();
-    for (const auto& item : song_list)
+    m_list_data.clear();
+    for (const auto& item : m_right_items)
     {
         CListCtrlEx::RowData row_data;
         row_data[COL_FILE_NAME] = item.GetFileName();
@@ -129,7 +93,7 @@ void CFolderExploreDlg::ShowSongList()
         row_data[COL_ARTIST] = item.GetArtist();
         row_data[COL_ALBUM] = item.GetAlbum();
         row_data[COL_PATH] = item.file_path;
-		m_list_data.push_back(std::move(row_data));
+        m_list_data.push_back(std::move(row_data));
     }
     m_song_list_ctrl.SetListData(&m_list_data);
 }
@@ -137,7 +101,7 @@ void CFolderExploreDlg::ShowSongList()
 void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)
 {
     m_left_selected = true;
-    CString folder_path_selected = m_folder_explore_tree.GetItemPath(hItem);
+    wstring folder_path_selected = m_folder_explore_tree.GetItemPath(hItem);
     if (folder_path_selected != m_folder_path_selected)
     {
         m_folder_path_selected = folder_path_selected;
@@ -146,7 +110,7 @@ void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)
     m_right_selected_item = -1;         // 点击左侧列表时清空右侧列表选中项
     m_right_selected_items.clear();
     m_song_list_ctrl.SelectNone();
-    SetButtonsEnable(CCommon::FolderExist(wstring(folder_path_selected)));
+    SetButtonsEnable(CCommon::FolderExist(folder_path_selected));
 }
 
 void CFolderExploreDlg::SongListClicked(int index)
@@ -189,7 +153,7 @@ void CFolderExploreDlg::OnTabEntered()
     }
     bool play_enable;
     if (m_left_selected)
-        play_enable = CCommon::FolderExist(wstring(m_folder_path_selected));
+        play_enable = CCommon::FolderExist(m_folder_path_selected);
     else
         play_enable = (!m_right_selected_items.empty());
     SetButtonsEnable(play_enable);
@@ -202,49 +166,43 @@ UINT CFolderExploreDlg::ViewOnlineThreadFunc(LPVOID lpParam)
         return 0;
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
     //此命令用于跳转到歌曲对应的网易云音乐的在线页面
-    if (pThis->m_right_selected_item >= 0)
+    if (pThis->m_right_selected_item >= 0 && pThis->m_right_selected_item < static_cast<int>(pThis->m_right_items.size()))
     {
-        wstring file_path = pThis->m_song_list_ctrl.GetItemText(pThis->m_right_selected_item, COL_PATH).GetString();
-        if (CCommon::FileExist(file_path))
+        SongInfo sel_song = pThis->m_right_items[pThis->m_right_selected_item];
+        if (CCommon::FileExist(sel_song.file_path))
         {
-            SongInfo song = CSongDataManager::GetInstance().GetSongInfo(file_path);
             CMusicPlayerCmdHelper cmd_helper(pThis);
-            cmd_helper.VeiwOnline(song);
+            cmd_helper.VeiwOnline(sel_song);
         }
     }
     return 0;
 
 }
 
-const CListCtrlEx & CFolderExploreDlg::GetSongListCtrl() const
+const vector<SongInfo>& CFolderExploreDlg::GetSongList() const
 {
-	return m_song_list_ctrl;
+    return m_right_items;
 }
 
 int CFolderExploreDlg::GetItemSelected() const
 {
-	return m_right_selected_item;
+    return m_right_selected_item;
 }
 
 const vector<int>& CFolderExploreDlg::GetItemsSelected() const
 {
-	return m_right_selected_items;
+    return m_right_selected_items;
 }
 
 void CFolderExploreDlg::AfterDeleteFromDisk(const std::vector<SongInfo>& files)
 {
-	//删除成功，则刷新列表
-	ShowSongList();
-}
-
-int CFolderExploreDlg::GetPathColIndex() const
-{
-	return COL_PATH;
+    //删除成功，则刷新列表
+    ShowSongList();
 }
 
 wstring CFolderExploreDlg::GetSelectedString() const
 {
-	return wstring(m_selected_string);
+    return wstring(m_selected_string);
 }
 
 void CFolderExploreDlg::DoDataExchange(CDataExchange* pDX)
@@ -278,7 +236,7 @@ BOOL CFolderExploreDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     CCommon::SetDialogFont(this, theApp.m_pMainWnd->GetFont());     //由于此对话框资源由不同语言共用，所以这里要设置一下字体
-    
+
     //为树控件设置图标
     CImageList image_list;
     image_list.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
@@ -312,7 +270,7 @@ BOOL CFolderExploreDlg::OnInitDialog()
     m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
     m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(100));
     m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
-	m_song_list_ctrl.SetCtrlAEnable(true);
+    m_song_list_ctrl.SetCtrlAEnable(true);
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FORDER), TRUE);
     //SetDlgItemText(IDC_SETTINGS_BUTTON, CCommon::LoadText(IDS_BTN_SETTINGS));
@@ -346,8 +304,8 @@ void CFolderExploreDlg::OnNMRClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pRes
                 CRect item_rect;
                 m_folder_explore_tree.GetItemRect(hItem, item_rect, FALSE);
                 CRect window_rect;
-                m_folder_explore_tree.GetWindowRect(window_rect);		//获取列表控件的矩形区域（以屏幕左上角为原点）
-                point.y = window_rect.top + item_rect.bottom;	//设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
+                m_folder_explore_tree.GetWindowRect(window_rect);       //获取列表控件的矩形区域（以屏幕左上角为原点）
+                point.y = window_rect.top + item_rect.bottom;   //设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
             }
             CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
             pMenu->TrackPopupMenu(TPM_LEFTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
@@ -474,34 +432,20 @@ void CFolderExploreDlg::OnInitMenu(CMenu* pMenu)
 }
 
 
-//void CFolderExploreDlg::OnDeleteFromDisk()
-//{
-//    // TODO: 在此添加命令处理程序代码
-//    vector<SongInfo> songs_selected;
-//    GetSongsSelected(songs_selected);
-//    CMusicPlayerCmdHelper helper;
-//    if (helper.DeleteSongsFromDisk(songs_selected))
-//    {
-//        //删除成功，则刷新列表
-//        ShowSongList();
-//    }
-//}
-
-
 void CFolderExploreDlg::OnOK()
 {
-	// TODO: 在此添加专用代码和/或调用基类
-	if (m_left_selected)        //选中左侧树时，播放选中文件夹
-	{
-		wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
-		CPlayer::GetInstance().OpenFolder(folder_path, true, true);
-		CTabDlg::OnOK();
-		CWnd* pParent = GetParentWindow();
-		if (pParent != nullptr)
-			::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
-	}
-	else
-	{
-		CMediaLibTabDlg::OnOK();
-	}
+    // TODO: 在此添加专用代码和/或调用基类
+    if (m_left_selected)        //选中左侧树时，播放选中文件夹
+    {
+        wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
+        CPlayer::GetInstance().OpenFolder(folder_path, true, true);
+        CTabDlg::OnOK();
+        CWnd* pParent = GetParentWindow();
+        if (pParent != nullptr)
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+    }
+    else
+    {
+        CMediaLibTabDlg::OnOK();
+    }
 }

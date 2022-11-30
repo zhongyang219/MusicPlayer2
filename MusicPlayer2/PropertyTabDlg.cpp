@@ -32,8 +32,9 @@ static void UpdateSongInfo(SongInfo song)
     //CAudioTag audio_tag(song, hStream);
     //audio_tag.GetAudioTag();
     //BASS_StreamFree(hStream);
-    CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).CopyAudioTag(song);
-    CSongDataManager::GetInstance().SetSongDataModified();
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
+    song_info.CopyAudioTag(song);
+    CSongDataManager::GetInstance().AddItem(song_info);
 }
 
 IMPLEMENT_DYNAMIC(CPropertyTabDlg, CTabDlg)
@@ -529,8 +530,9 @@ int CPropertyTabDlg::SaveModified()
             CAudioTag audio_tag(m_all_song_info[m_index], hStream);
             audio_tag.GetAudioTag();
             BASS_StreamFree(hStream);
-            CSongDataManager::GetInstance().GetSongInfoRef2(m_all_song_info[m_index].file_path).CopyAudioTag(m_all_song_info[m_index]);
-            CSongDataManager::GetInstance().SetSongDataModified();
+            SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(m_all_song_info[m_index]) };
+            song_info.CopyAudioTag(m_all_song_info[m_index]);
+            CSongDataManager::GetInstance().AddItem(song_info);
 
             m_modified = false;
             SetSaveBtnEnable();
@@ -768,7 +770,7 @@ void CPropertyTabDlg::ModifyTagInfo(const SongInfo& song)
 bool CPropertyTabDlg::GetTagFromLyrics(SongInfo& song, SongInfo& result)
 {
     //从歌词获取标签信息前，如果还未获取过歌词，从在这里获取一次歌词
-    if (!song.is_cue && song.lyric_file.empty())
+    if (!song.is_cue && song.lyric_file.empty())    // cue不能进行标签编辑
     {
         CMusicPlayerCmdHelper helper;
         wstring lyric_path = helper.SearchLyricFile(song, theApp.m_lyric_setting_data.lyric_fuzzy_match);
@@ -776,7 +778,9 @@ bool CPropertyTabDlg::GetTagFromLyrics(SongInfo& song, SongInfo& result)
         if (!lyric_path.empty())
         {
             //获取到歌词后同时更新song data
-            CSongDataManager::GetInstance().GetSongInfoRef(song.file_path).lyric_file = lyric_path;
+            SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
+            song_info.lyric_file = lyric_path;
+            CSongDataManager::GetInstance().AddItem(song_info);
             m_lyric_file_edit.SetWindowText(lyric_path.c_str());
         }
     }

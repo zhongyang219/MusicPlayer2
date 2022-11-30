@@ -65,12 +65,9 @@ bool CLyricDownloadDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 
 void CLyricDownloadDlg::SetID(wstring id)
 {
-    if (!m_song.is_cue)
-    {
-        SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song.file_path) };
-        song_info_ori.SetSongId(id);
-        CSongDataManager::GetInstance().SetSongDataModified();
-    }
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(m_song) };
+    song_info.SetSongId(id);
+    CSongDataManager::GetInstance().AddItem(song_info);
 }
 
 void CLyricDownloadDlg::SaveConfig() const
@@ -455,17 +452,17 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, m_lyric_name, true);
 	CString info;
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
-    SongInfo& song_info_ori{ CSongDataManager::GetInstance().GetSongInfoRef2(m_song.file_path) };
+    SongInfo song_info_ori{ CSongDataManager::GetInstance().GetSongInfo3(m_song) };
 	if (m_down_list.empty())
     {
         song_info_ori.SetNoOnlineLyric(true);
-        CSongDataManager::GetInstance().SetSongDataModified();
+        CSongDataManager::GetInstance().AddItem(song_info_ori);
         info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
     }
 	else if (best_matched == -1)
     {
         song_info_ori.SetNoOnlineLyric(true);
-        CSongDataManager::GetInstance().SetSongDataModified();
+        CSongDataManager::GetInstance().AddItem(song_info_ori);
         info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
     }
 	else if(id_releated)

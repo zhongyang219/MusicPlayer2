@@ -3,6 +3,7 @@
 #include "CVariant.h"
 #include <initializer_list>
 #include <functional>
+#include <numeric>
 #include <gdiplus.h>
 
 enum class Command
@@ -183,11 +184,11 @@ public:
     static CodeType JudgeCodeType(const string& str, CodeType default_code = CodeType::ANSI, bool auto_utf8 = false);
 
     static bool IsURL(const wstring& str);
-
+private:
     //判断一个字符串是否符合Windows路径的格式
     static bool IsWindowsPath(const wstring& str);
-
-    //判断一个字符串是否符合路径的格式（而不是判断路径是否有效）
+public:
+    //判断一个字符串是否符合绝对路径的格式（而不是判断路径是否有效）
     static bool IsPath(const wstring& str);
 
     //删除一个字符串中指定的字符
@@ -465,6 +466,13 @@ public:
      * @return Result string
     */
     static std::wstring StrReplace(std::wstring& input, std::wstring pattern, std::wstring new_content);
+
+    // https://stackoverflow.com/questions/17074324
+    template <typename T, typename Compare>
+    static std::vector<std::size_t> sort_permutation(const std::vector<T>& vec, Compare& compare);
+
+    template <typename T>
+    static std::vector<T> apply_permutation(const std::vector<T>& vec, const std::vector<std::size_t>& p);
 };
 
 template<class T>
@@ -616,4 +624,23 @@ inline void CCommon::DeleteModelessDialog(T*& dlg)
         delete dlg;
         dlg = nullptr;
     }
+}
+
+template <typename T, typename Compare>
+inline std::vector<std::size_t> CCommon::sort_permutation(const std::vector<T>& vec, Compare& compare)
+{
+    std::vector<std::size_t> p(vec.size());
+    std::iota(p.begin(), p.end(), 0);
+    std::sort(p.begin(), p.end(),
+        [&](std::size_t i, std::size_t j) { return compare(vec[i], vec[j]); });
+    return p;
+}
+
+template <typename T>
+inline std::vector<T> CCommon::apply_permutation(const std::vector<T>& vec, const std::vector<std::size_t>& p)
+{
+    std::vector<T> sorted_vec(vec.size());
+    std::transform(p.begin(), p.end(), sorted_vec.begin(),
+        [&](std::size_t i) { return vec[i]; });
+    return sorted_vec;
 }
