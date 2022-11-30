@@ -4694,6 +4694,7 @@ void CMusicPlayerDlg::OnCancel()
     else
     {
         CMainDialogBase::OnCancel();
+        CBaseDialog::CloseAllWindow();
     }
 }
 
@@ -4709,6 +4710,7 @@ void CMusicPlayerDlg::OnMenuExit()
     {
         ::SendMessage(m_miniModeDlg.m_hWnd, WM_COMMAND, ID_MINI_MODE_EXIT, NULL);
     }
+    CBaseDialog::CloseAllWindow();
 }
 
 
