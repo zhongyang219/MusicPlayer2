@@ -324,7 +324,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_VOLUME_CHANGED, &CMusicPlayerDlg::OnVolumeChanged)
     ON_COMMAND(ID_PLAYLIST_OPTIONS, &CMusicPlayerDlg::OnPlaylistOptions)
     ON_WM_MOVE()
-    ON_MESSAGE(WM_RECENT_FOLSER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged)
+    ON_MESSAGE(WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged)
+    ON_COMMAND(ID_PLAY_AS_NEXT, &CMusicPlayerDlg::OnPlayAsNext)
 END_MESSAGE_MAP()
 
 
@@ -1407,6 +1408,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
             break;
     }
     pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_REMOVE_FROM_PLAYLIST, MF_BYCOMMAND | (selete_valid && playlist_mode ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (selete_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_RENAME, MF_BYCOMMAND | (can_delete ? MF_ENABLED : MF_GRAYED));
@@ -1755,7 +1757,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         }
     };
 
-    initAddToMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(11));
+    initAddToMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(12));
     initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSubMenu(1));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(3));
@@ -3335,6 +3337,9 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
         }
     }
     break;
+    case HK_SHOW_HIDE_DESKTOP_LYRIC:
+        OnShowDesktopLyric();
+        break;
     }
 
     CMainDialogBase::OnHotKey(nHotKeyId, nKey1, nKey2);
@@ -6245,7 +6250,7 @@ bool CMusicPlayerDlg::IsPointValid(CPoint point)
     return (point.x != INT_MAX && point.y != INT_MAX && point.x != INT_MIN && point.y != INT_MAX);
 }
 
-afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam)
+afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, LPARAM lParam)
 {
     //初始化点击文件夹/播放列表右侧按钮弹出的菜单
     //检查菜单项目是否有改变
@@ -6310,4 +6315,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolserOrPlaylistChanged(WPARAM wParam, 
         }
     }
     return 0;
+}
+
+
+void CMusicPlayerDlg::OnPlayAsNext() {
+    CPlayer::GetInstance().PlayAfterCurrentTrack(m_items_selected);
+    DrawInfo(false);
 }

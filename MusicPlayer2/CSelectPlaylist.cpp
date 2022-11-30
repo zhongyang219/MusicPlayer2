@@ -650,8 +650,10 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         ShowPathList();
         m_playlist_modified = true;
     }
-    if (m_playlist_modified)
+    if (m_playlist_modified) {
         CRecentFolderAndPlaylist::Instance().Init();
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
+    }
 }
 
 

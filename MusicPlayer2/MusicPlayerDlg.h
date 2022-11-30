@@ -521,5 +521,7 @@ public:
     afx_msg void OnMove(int x, int y);
 
 protected:
-    afx_msg LRESULT OnRecentFolserOrPlaylistChanged(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnRecentFolderOrPlaylistChanged(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnPlayAsNext();
 };

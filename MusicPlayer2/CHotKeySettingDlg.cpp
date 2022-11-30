@@ -107,6 +107,7 @@ BOOL CHotKeySettingDlg::OnInitDialog()
     m_key_list.InsertItem(7, CCommon::LoadText(IDS_VOLUME_DOWN));
     m_key_list.InsertItem(8, CCommon::LoadText(IDS_EXIT));
     m_key_list.InsertItem(9, CCommon::LoadText(IDS_SHOW_HIDE_PLAYER));
+    m_key_list.InsertItem(10, CCommon::LoadText(IDS_SHOW_HIDE_DESKTOP_LYRIC));
 
     ShowKeyList();
 
@@ -134,9 +135,9 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
     CHotKey hot_key;
     hot_key.key = key_coke;
 
-    hot_key.ctrl = ((modifiers & MOD_CONTROL) != 0);
-    hot_key.shift = ((modifiers & MOD_ALT) != 0);			//注，在win10下测试通过CHotKeyCtrl::GetHotKey获取的modifiers中，SHIFT的ALT标志被颠倒了
-    hot_key.alt = ((modifiers & MOD_SHIFT) != 0);
+    hot_key.ctrl = ((modifiers & HOTKEYF_CONTROL) != 0);
+    hot_key.shift = ((modifiers & HOTKEYF_SHIFT) != 0);
+    hot_key.alt = ((modifiers & HOTKEYF_ALT) != 0);
 
     m_hotkey_group[key_id] = hot_key;
 

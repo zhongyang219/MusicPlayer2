@@ -103,6 +103,8 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 void CPlayListCtrl::QuickSearch(const wstring & key_word)
 {
 	m_search_result.clear();
+	if (key_word.empty())
+		return;
 	for (size_t i{}; i < m_all_song_info.size(); i++)
 	{
 		if (CCommon::StringFindNoCase(m_all_song_info[i].GetFileName(), key_word) != wstring::npos

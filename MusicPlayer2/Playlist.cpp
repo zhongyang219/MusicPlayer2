@@ -80,9 +80,10 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
         for (const auto& item : m_playlist)
         {
             CString buff;
-            buff.Format(_T("#EXTINF:%d,%s - %s"), item.lengh.toInt() / 1000, item.GetArtist().c_str(), item.GetTitle().c_str());
+            SongInfo song = CSongDataManager::GetInstance().GetSongInfo(item.file_path); // m_playlist中只有file_path
+            buff.Format(_T("#EXTINF:%d,%s - %s"), song.lengh.toInt() / 1000, song.GetArtist().c_str(), song.GetTitle().c_str());
             stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << std::endl;
-            stream << CCommon::UnicodeToStr(item.file_path, code_type) << std::endl;
+            stream << CCommon::UnicodeToStr(song.file_path, code_type) << std::endl;
         }
     }
 }

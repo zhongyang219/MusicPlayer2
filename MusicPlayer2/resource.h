@@ -761,6 +761,7 @@
 #define IDS_LASTFM_LOGIN                583
 #define IDS_LOGIN_FAILED                584
 #define IDS_LASTFM_CACHE_STATUS         585
+#define IDS_SHOW_HIDE_DESKTOP_LYRIC     586
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1631,13 +1632,15 @@
 #define ID_33391                        33391
 #define ID_SEEK_TO_CUR_LINE             33392
 #define ID_REPEAT_MODE                  33393
+#define ID_PLAY_AS_NEXT                 33394
+#define ID_Menu33395                    33395
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        575
-#define _APS_NEXT_COMMAND_VALUE         33394
+#define _APS_NEXT_COMMAND_VALUE         33396
 #define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -2415,6 +2415,7 @@ BEGIN
     POPUP "菜单"
     BEGIN
         MENUITEM "播放(&P)",                      ID_PLAY_ITEM
+        MENUITEM "下一首播放",                       ID_PLAY_AS_NEXT
         MENUITEM SEPARATOR
         MENUITEM "在线查看(&O)",                    ID_EXPLORE_ONLINE
         MENUITEM "转换格式(&F)...",                 ID_FORMAT_CONVERT
@@ -3841,6 +3842,7 @@ BEGIN
     IDS_LASTFM_LOGIN        "请您在打开的浏览器窗口内完成登录并在登录成功后单击确定。"
     IDS_LOGIN_FAILED        "登录失败！"
     IDS_LASTFM_CACHE_STATUS "%i条记录"
+    IDS_SHOW_HIDE_DESKTOP_LYRIC "显示/隐藏桌面歌词"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -6046,6 +6048,7 @@ BEGIN
     POPUP "Menu"
     BEGIN
         MENUITEM "&Play",                       ID_PLAY_ITEM
+        MENUITEM "Play After Current Song",     ID_PLAY_AS_NEXT
         MENUITEM SEPARATOR
         MENUITEM "View &Online",                ID_EXPLORE_ONLINE
         MENUITEM "&Format Convert...",          ID_FORMAT_CONVERT
@@ -7125,6 +7128,7 @@ BEGIN
     IDS_LASTFM_LOGIN        "Please complete the login in the opened browser window and click OK after successful login."
     IDS_LOGIN_FAILED        "Login failed!"
     IDS_LASTFM_CACHE_STATUS "%i scrobbles"
+    IDS_SHOW_HIDE_DESKTOP_LYRIC "Show/hide desktop lyric"
 END
 
 #endif    // 英语(美国) resources

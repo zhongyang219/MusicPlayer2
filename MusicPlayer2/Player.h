@@ -147,7 +147,10 @@ private:
     vector<int> m_shuffle_list;             //储存乱序播放过的曲目序号
     int m_shuffle_index{};                  //乱序播放时当前的索引
     bool m_is_shuffle_list_played{ false };
-    std::list<int> m_random_list;           //随机播放模式下的历史记录，用于回溯之前的记录
+    inline int GetNextShuffleIdx() const;        //返回乱序播放下下一曲的序号
+    inline int GetPrevShuffleIdx() const;        //返回乱序播放下前一曲的序号
+    std::list<int> m_random_list;          //随机播放模式下的历史记录，用于回溯之前的记录
+    deque<int> m_next_tracks{};       //下n首播放的歌曲，用于“下一首播放”
 
     bool m_playlist_mode{ false };          //如果播放列表中的曲目来自播放列表文件，而不是从一个路径下搜索到的，则为true
 
@@ -188,6 +191,7 @@ public:
     void OnExit();
     //播放列表加载完毕时的处理
     void IniPlaylistComplate();
+    void OnPlaylistChange();      //播放列表有修改时的相关操作
 
     //设置均衡器（channel为通道，取值为0~9，gain为增益，取值为-15~15）
     void SetEqualizer(int channel, int gain);
@@ -262,6 +266,7 @@ public:
 
     //播放指定序号的歌曲，如果是播放结束自动播放下一曲，则auto_next为true
     bool PlayTrack(int song_track, bool auto_next = false);
+    bool PlayAfterCurrentTrack(std::vector<int> tracks_to_play);		//设置指定序号歌曲为下一首播放的歌曲
 private:
     void LoopPlaylist(int& song_track);
 
@@ -452,7 +457,7 @@ private:
     //如果专辑封面过大，将其缩小后再加载
     void AlbumCoverResize();
     //初始化随机播放列表
-    void InitShuffleList();
+    void InitShuffleList(int first_song = -1);
 
 public:
     //查找匹配的外部专辑封面，并加载专辑封面
