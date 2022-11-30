@@ -33,6 +33,9 @@ protected:
         COL_PATH,
     };
 
+
+    void GetSongsSelected(std::vector<SongInfo>& song_list) const override;
+
 protected:
     CSearchEditCtrl m_search_edit;
     CTreeCtrlEx m_folder_explore_tree;

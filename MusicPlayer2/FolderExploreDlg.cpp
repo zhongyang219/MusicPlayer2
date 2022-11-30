@@ -32,6 +32,18 @@ void CFolderExploreDlg::RefreshData()
     ShowFolderTree();
 }
 
+void CFolderExploreDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
+{
+    if (m_left_selected)
+    {
+        song_list = GetSongList();
+    }
+    else
+    {
+        CMediaLibTabDlg::GetSongsSelected(song_list);
+    }
+}
+
 void CFolderExploreDlg::RefreshSongList()
 {
     ShowSongList();
