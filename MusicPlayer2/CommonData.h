@@ -555,6 +555,8 @@ struct IconSet
     HICON speed_up;
     HICON slow_down;
     HICON shortcut;
+    HICON play_as_next;
+    HICON play_in_playlist;
 
     HICON ok;
     IconRes locate;

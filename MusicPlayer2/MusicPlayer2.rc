@@ -358,6 +358,10 @@ IDI_HELP                ICON                    "res\\help.ico"
 
 IDI_LIGHT_MODE          ICON                    "res\\light_mode.ico"
 
+IDI_PLAY_AS_NEXT        ICON                    "res\\play_as_next.ico"
+
+IDI_PLAY_IN_PLAYLIST    ICON                    "res\\play_in_playlist.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

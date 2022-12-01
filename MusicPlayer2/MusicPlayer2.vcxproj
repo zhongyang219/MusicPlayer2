@@ -622,7 +622,9 @@
     <Image Include="res\playlist_dock.ico" />
     <Image Include="res\playlist_dock_d.ico" />
     <Image Include="res\playlist_float_d.ico" />
+    <Image Include="res\play_as_next.ico" />
     <Image Include="res\play_dark.ico" />
+    <Image Include="res\play_in_playlist.ico" />
     <Image Include="res\play_pause_d.ico" />
     <Image Include="res\play_white.ico" />
     <Image Include="res\previous_dark.ico" />

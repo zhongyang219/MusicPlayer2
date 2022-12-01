@@ -610,6 +610,8 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.speed_up = CDrawCommon::LoadIconResource(IDI_SPEED_UP_D, DPI(16), DPI(16));
     m_icon_set.slow_down = CDrawCommon::LoadIconResource(IDI_SLOW_DOWN_D, DPI(16), DPI(16));
     m_icon_set.shortcut = CDrawCommon::LoadIconResource(IDI_SHORTCUT_D, DPI(16), DPI(16));
+    m_icon_set.play_as_next = CDrawCommon::LoadIconResource(IDI_PLAY_AS_NEXT, DPI(16), DPI(16));
+    m_icon_set.play_in_playlist = CDrawCommon::LoadIconResource(IDI_PLAY_IN_PLAYLIST, DPI(16), DPI(16));
 
     m_icon_set.ok = CDrawCommon::LoadIconResource(IDI_OK_D, DPI(16), DPI(16));
     m_icon_set.locate.Load(IDI_LOCATE_D, NULL, DPI(16));
@@ -810,6 +812,7 @@ void CMusicPlayerApp::InitMenuResourse()
 
     //播放列表右键菜单
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_PLAY_ITEM, FALSE, m_icon_set.play_new.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_PLAY_AS_NEXT, FALSE, m_icon_set.play_as_next);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_EXPLORE_ONLINE, FALSE, m_icon_set.online);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSafeHmenu(), ID_FORMAT_CONVERT, FALSE, m_icon_set.convert);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 5, TRUE, m_icon_set.star);
@@ -843,11 +846,13 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSafeHmenu(), 1, TRUE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSafeHmenu(), ID_ADD_TO_NEW_PALYLIST_AND_PLAY, FALSE, m_icon_set.play_in_playlist);
     //右侧菜单
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_PLAY_ITEM, FALSE, m_icon_set.play_new.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), 3, TRUE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_ADD_TO_NEW_PLAYLIST, FALSE, m_icon_set.add.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_ADD_TO_NEW_PALYLIST_AND_PLAY, FALSE, m_icon_set.play_in_playlist);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_EXPLORE_ONLINE, FALSE, m_icon_set.online);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_FORMAT_CONVERT, FALSE, m_icon_set.convert);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSafeHmenu(), ID_EXPLORE_TRACK, FALSE, m_icon_set.folder_explore.GetIcon(true));

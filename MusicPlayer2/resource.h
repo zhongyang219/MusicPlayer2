@@ -751,7 +751,10 @@
 #define IDD_FLAC_ENCODE_CFG_DIALOG      573
 #define IDS_SWITCH_TO_LIGHT_MODE        574
 #define IDS_SHORCUT_LEFT                575
+#define IDI_PLAY_AS_NEXT                575
 #define IDS_SHOTCUT_RIGHT               576
+#define IDI_ICON29                      576
+#define IDI_PLAY_IN_PLAYLIST            576
 #define IDS_SHOTCUT_UP                  577
 #define IDS_SHOTCUT_DOWN                578
 #define IDS_SPACE                       579
@@ -1639,7 +1642,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        575
+#define _APS_NEXT_RESOURCE_VALUE        577
 #define _APS_NEXT_COMMAND_VALUE         33396
 #define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101

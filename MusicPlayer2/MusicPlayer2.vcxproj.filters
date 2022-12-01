@@ -1773,7 +1773,13 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\light_mode.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_as_next.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_in_playlist.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>
