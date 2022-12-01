@@ -362,6 +362,10 @@ IDI_PLAY_AS_NEXT        ICON                    "res\\play_as_next.ico"
 
 IDI_PLAY_IN_PLAYLIST    ICON                    "res\\play_in_playlist.ico"
 
+IDI_COPY                ICON                    "res\\copy.ico"
+
+IDI_PLAY_IN_FOLDER      ICON                    "res\\play_in_folder.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

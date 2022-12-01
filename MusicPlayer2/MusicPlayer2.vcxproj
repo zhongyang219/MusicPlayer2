@@ -552,6 +552,7 @@
     <Image Include="res\close_d.ico" />
     <Image Include="res\convert.ico" />
     <Image Include="res\convert_d.ico" />
+    <Image Include="res\copy.ico" />
     <Image Include="res\Cortana_black.bmp" />
     <Image Include="res\Cortana_white.bmp" />
     <Image Include="res\dark_mode.ico" />
@@ -624,6 +625,7 @@
     <Image Include="res\playlist_float_d.ico" />
     <Image Include="res\play_as_next.ico" />
     <Image Include="res\play_dark.ico" />
+    <Image Include="res\play_in_folder.ico" />
     <Image Include="res\play_in_playlist.ico" />
     <Image Include="res\play_pause_d.ico" />
     <Image Include="res\play_white.ico" />

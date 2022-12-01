@@ -1781,5 +1781,11 @@
     <Image Include="res\play_in_playlist.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\copy.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_in_folder.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

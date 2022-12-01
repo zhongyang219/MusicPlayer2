@@ -557,6 +557,8 @@ struct IconSet
     HICON shortcut;
     HICON play_as_next;
     HICON play_in_playlist;
+    HICON copy;
+    HICON play_in_folder;
 
     HICON ok;
     IconRes locate;
