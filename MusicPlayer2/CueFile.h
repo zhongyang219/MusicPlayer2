@@ -15,10 +15,20 @@ public:
     const std::vector<SongInfo>& GetAnalysisResult() const;
     // std::wstring GetAudioFileName() const;
 
+    //将所有cue音轨保存到cue文件
+    //如果file_path为空，则保存到m_file_path
+    bool Save(std::wstring file_path = std::wstring());
+
+    //从解析结果中获取一个音轨信息
+    SongInfo& GetTrackInfo(int track);
+
 private:
     void DoAnalysis();
     Time PhaseIndex(size_t pos);
+    std::string TimeToString(const Time& pos);
     wstring GetCommand(const wstring& str, size_t pos = 0);
+    std::map<std::string, std::string> m_cue_property_map;
+    std::map<int, std::map<std::string, std::string>> m_track_property_map;
 
 private:
     std::wstring m_file_path;

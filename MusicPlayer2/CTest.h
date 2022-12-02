@@ -23,5 +23,6 @@ private:
     static void TestTagParse();
     static void TestStringSplit();
     static void TestRating();
+    static void TestCueSave();
 };
 

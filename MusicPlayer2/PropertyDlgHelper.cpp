@@ -155,7 +155,7 @@ bool CPropertyDlgHelper::IsMultiWritable()
 {
     wstring writable_str = GetMultiValue([](const SongInfo& song)
     {
-        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && CAudioTag::IsFileTypeTagWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()))
+        if (song.is_cue || (!COSUPlayerHelper::IsOsuFile(song.file_path) && CAudioTag::IsFileTypeTagWriteSupport(CFilePathHelper(song.file_path).GetFileExtension())))
             return L"true";
         else
             return L"false";

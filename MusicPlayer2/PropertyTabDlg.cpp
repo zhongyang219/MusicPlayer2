@@ -210,7 +210,7 @@ void CPropertyTabDlg::SetWreteEnable()
     else
     {
         CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
-        m_write_enable = (!m_all_song_info[m_index].is_cue && !COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CAudioTag::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/);
+        m_write_enable = (m_all_song_info[m_index].is_cue || (!COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CAudioTag::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/));
     }
     m_write_enable &= !m_read_only;
     SetEditReadOnly(!m_write_enable);
@@ -477,6 +477,7 @@ int CPropertyTabDlg::SaveModified()
         song_info.genre_idx = m_all_song_info[m_index].genre_idx;       //如果流派没有修改，则将原来的流派号写回文件中
     m_comment_edit.GetWindowText(str_temp);
     song_info.comment = str_temp;
+    song_info.is_cue = m_all_song_info[m_index].is_cue;
 
     song_info.Normalize();
 

@@ -10,6 +10,7 @@
 #include "PropertyDlgHelper.h"
 #include "TagLibHelper.h"
 #include "Player.h"
+#include "CueFile.h"
 
 CTest::CTest()
 {
@@ -47,7 +48,9 @@ void CTest::Test()
     //int size = sizeof(SongInfo);
     //MessageBox(theApp.m_pMainWnd->GetSafeHwnd(), std::to_wstring(size).c_str(), NULL, MB_OK);
 
-    TestRating();
+    //TestRating();
+
+    //TestCueSave();
 }
 
 void CTest::TestStringMatch()
@@ -235,4 +238,10 @@ void CTest::TestRating()
     int rate = CTagLibHelper::GetMepgRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path);
     //CTagLibHelper::WriteMpegRating(CPlayer::GetInstance().GetCurrentSongInfo().file_path, 2);
     int a = 0;
+}
+
+void CTest::TestCueSave()
+{
+    CCueFile cue_file(L"C:\\Temp\\cue_test\\1979.cue");
+    cue_file.Save(L"C:\\Temp\\cue_test\\1979_1.cue");
 }

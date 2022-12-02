@@ -52,9 +52,90 @@ const std::vector<SongInfo>& CCueFile::GetAnalysisResult() const
     return m_result;
 }
 
+bool CCueFile::Save(std::wstring file_path)
+{
+    if (file_path.empty())
+        file_path = m_file_path;
+    if (m_result.empty())
+        return false;
+    std::ofstream file_stream(file_path, std::ios::out | std::ios::trunc);
+    if (file_stream.fail())
+        return false;
+
+    const SongInfo& first_track{ m_result.front() };
+    //写入流派
+    if (!first_track.genre.empty())
+        file_stream << "REM GENRE " << CCommon::UnicodeToStr(first_track.genre, CodeType::UTF8_NO_BOM) << "\r\n";
+    //写入年份
+    if (!first_track.IsYearEmpty())
+        file_stream << "REM DATE " << CCommon::UnicodeToStr(first_track.get_year(), CodeType::UTF8_NO_BOM) << "\r\n";
+    //写入注释
+    if (!first_track.comment.empty())
+        file_stream << "REM COMMENT \"" << CCommon::UnicodeToStr(first_track.comment, CodeType::UTF8_NO_BOM) << "\"\r\n";
+    //写入唱片集艺术家
+    file_stream << "PERFORMER \"" << CCommon::UnicodeToStr(first_track.artist, CodeType::UTF8_NO_BOM) << "\"\r\n";
+    //写入唱片集标题
+    file_stream << "TITLE \"" << CCommon::UnicodeToStr(first_track.album, CodeType::UTF8_NO_BOM) << "\"\r\n";
+    //写入文件名
+    std::string file_type;
+    std::wstring file_ext = CFilePathHelper(first_track.file_path).GetFileExtension();
+    if (file_ext == L"mp3")
+        file_type = "MP3";
+    else if (file_ext == L"aif" || file_ext == L"aiff")
+        file_type = "AIFF";
+    else
+        file_type = "WAVE";
+    file_stream << "FILE \"" << CCommon::UnicodeToStr(m_result.front().GetFileName(), CodeType::UTF8_NO_BOM) << "\" " << file_type << "\r\n";
+
+    //写入每个音轨
+    size_t index = 0;
+    for (const auto& song : m_result)
+    {
+        //音轨信息
+        file_stream << "  TRACK ";
+        if (song.track < 10)
+            file_stream << "0";
+        file_stream << song.track << " AUDIO\r\n";
+        //标题
+        file_stream << "    TITLE \"" << CCommon::UnicodeToStr(song.title, CodeType::UTF8_NO_BOM) << "\"\r\n";
+        //艺术家
+        file_stream << "    PERFORMER \"" << CCommon::UnicodeToStr(song.artist, CodeType::UTF8_NO_BOM) << "\"\r\n";
+        //时间
+        if (song.track == 1)
+        {
+            file_stream << "    INDEX 01 00:00:00\r\n";
+        }
+        else
+        {
+            if (index > 0)
+            {
+                Time pre_track_end_pos = m_result[index - 1].end_pos;
+                if (pre_track_end_pos != song.start_pos)
+                    file_stream << "    INDEX 00 " << TimeToString(pre_track_end_pos) << "\r\n";
+                file_stream << "    INDEX 01 " << TimeToString(song.start_pos) << "\r\n";
+            }
+        }
+        index++;
+    }
+
+    file_stream.close();
+    return true;
+}
+
+SongInfo& CCueFile::GetTrackInfo(int track)
+{
+    static SongInfo empty_song_info;
+    for (auto& song : m_result)
+        if (song.track == track)
+            return song;
+    return empty_song_info;
+}
+
 void CCueFile::DoAnalysis()
 {
     CFilePathHelper cue_file_path{ m_file_path };
+
+    //获取cue属性
 
     SongInfo song_info{};
     // 获取一次标签作为默认值，可以取得FILE之前的标签
@@ -167,6 +248,13 @@ Time CCueFile::PhaseIndex(size_t pos)
     time.msec = _wtoi(tmp.c_str()) * 10;
 
     return time;
+}
+
+std::string CCueFile::TimeToString(const Time& pos)
+{
+    char buff[64];
+    sprintf_s(buff, "%.2d:%.2d:%.2d", pos.min, pos.sec, pos.msec / 10);
+    return std::string(buff);
 }
 
 wstring CCueFile::GetCommand(const wstring& str, size_t pos)

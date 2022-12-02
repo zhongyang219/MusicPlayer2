@@ -54,6 +54,17 @@ public:
     //根据一个文件扩展名判断此格式是否支持分级
     static bool IsFileRatingSupport(const wstring& ext);
 
+    //从cue文件中获取一个cue音轨中的信息
+    static bool GetCueTag(SongInfo& song_info);
+
+    //将一个cue音轨的信息写入cue文件
+    static bool WriteCueTag(SongInfo& song_info);
+
+protected:
+    //获取cue文件的路径
+    static std::wstring GetCuePath(const SongInfo& song_info);
+
+
 private:
     SongInfo& m_song_info;
     HSTREAM m_hStream{};

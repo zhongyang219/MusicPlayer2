@@ -2,6 +2,7 @@
 #include "AudioTag.h"
 #include "TagLibHelper.h"
 #include "AudioTagOld.h"
+#include "CueFile.h"
 
 CAudioTag::CAudioTag(SongInfo& song_info, HSTREAM hStream)
     :m_song_info{ song_info }, m_hStream{ hStream }
@@ -42,78 +43,85 @@ bool CAudioTag::GetAudioTag()
 {
     bool suceed{ false };
     m_song_info.tag_type = 0;
-    switch (m_type)
+    if (!m_song_info.is_cue)
     {
-    case AU_MP3:
-        CTagLibHelper::GetMpegTagInfo(m_song_info);
-        suceed = true;
+        switch (m_type)
+        {
+        case AU_MP3:
+            CTagLibHelper::GetMpegTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_WMA_ASF:
+            CTagLibHelper::GetAsfTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_OGG:
+            CTagLibHelper::GetOggTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_MP4:
+            CTagLibHelper::GetM4aTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_APE:
+            CTagLibHelper::GetApeTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_FLAC:
+            CTagLibHelper::GetFlacTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_WAV:
+            CTagLibHelper::GetWavTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_AIFF:
+            CTagLibHelper::GetAiffTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_MPC:
+            CTagLibHelper::GetMpcTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_OPUS:
+            //CTagLibHelper::GetOpusTagInfo(m_song_info);
+        {
+            CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
+            audio_tag_old.GetOggTag();
+        }
         break;
-    case AU_WMA_ASF:
-        CTagLibHelper::GetAsfTagInfo(m_song_info);
-        suceed = true;
+        case AU_WV:
+            CTagLibHelper::GetWavPackTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AU_TTA:
+            CTagLibHelper::GetTtaTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AudioType::AU_SPX:
+            CTagLibHelper::GetSpxTagInfo(m_song_info);
+            suceed = true;
+            break;
+        case AudioType::AU_AAC:
+            //CTagLibHelper::GetAnyFileTagInfo(m_song_info);
+        {
+            CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
+            audio_tag_old.GetTagDefault();
+        }
         break;
-    case AU_OGG:
-        CTagLibHelper::GetOggTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_MP4:
-        CTagLibHelper::GetM4aTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_APE:
-        CTagLibHelper::GetApeTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_FLAC:
-        CTagLibHelper::GetFlacTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_WAV:
-        CTagLibHelper::GetWavTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_AIFF:
-        CTagLibHelper::GetAiffTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_MPC:
-        CTagLibHelper::GetMpcTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_OPUS:
-        //CTagLibHelper::GetOpusTagInfo(m_song_info);
-    {
-        CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
-        audio_tag_old.GetOggTag();
+        case AU_CUE:
+            break;
+        case AU_MIDI:
+            break;
+        case AU_OTHER:
+            break;
+        default:
+            break;
+        }
     }
-    break;
-    case AU_WV:
-        CTagLibHelper::GetWavPackTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AU_TTA:
-        CTagLibHelper::GetTtaTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AudioType::AU_SPX:
-        CTagLibHelper::GetSpxTagInfo(m_song_info);
-        suceed = true;
-        break;
-    case AudioType::AU_AAC:
-        //CTagLibHelper::GetAnyFileTagInfo(m_song_info);
+    else
     {
-        CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
-        audio_tag_old.GetTagDefault();
-    }
-    break;
-    case AU_CUE:
-        break;
-    case AU_MIDI:
-        break;
-    case AU_OTHER:
-        break;
-    default:
-        break;
+        suceed = GetCueTag(m_song_info);
     }
     CCommon::StringNormalize(m_song_info.title);
     CCommon::StringNormalize(m_song_info.artist);
@@ -306,39 +314,46 @@ bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
 bool CAudioTag::WriteAudioTag()
 {
     //AudioType type = CAudioCommon::GetAudioTypeByFileName(m_song_info.file_path);
-    switch (m_type)
+    if (!m_song_info.is_cue)
     {
-    case AU_MP3:
-        return CTagLibHelper::WriteMpegTag(m_song_info);
-    case AU_WMA_ASF:
-        return CTagLibHelper::WriteAsfTag(m_song_info);
-    case AU_OGG:
-        return CTagLibHelper::WriteOggTag(m_song_info);
-    case AU_MP4:
-        return CTagLibHelper::WriteM4aTag(m_song_info);
-    case AU_APE:
-        return CTagLibHelper::WriteApeTag(m_song_info);
-    case AU_AIFF:
-        return CTagLibHelper::WriteAiffTag(m_song_info);
-    case AU_FLAC:
-        return CTagLibHelper::WriteFlacTag(m_song_info);
-    case AU_WAV:
-        return CTagLibHelper::WriteWavTag(m_song_info);
-    case AU_MPC:
-        return CTagLibHelper::WriteMpcTag(m_song_info);
-    case AU_DSD:
-        break;
-    case AU_OPUS:
-        //return CTagLibHelper::WriteOpusTag(m_song_info);
-    case AU_WV:
-        return CTagLibHelper::WriteWavPackTag(m_song_info);
-    case AU_SPX:
-        return CTagLibHelper::WriteSpxTag(m_song_info);
-        break;
-    case AU_TTA:
-        return CTagLibHelper::WriteTtaTag(m_song_info);
-    default:
-        break;
+        switch (m_type)
+        {
+        case AU_MP3:
+            return CTagLibHelper::WriteMpegTag(m_song_info);
+        case AU_WMA_ASF:
+            return CTagLibHelper::WriteAsfTag(m_song_info);
+        case AU_OGG:
+            return CTagLibHelper::WriteOggTag(m_song_info);
+        case AU_MP4:
+            return CTagLibHelper::WriteM4aTag(m_song_info);
+        case AU_APE:
+            return CTagLibHelper::WriteApeTag(m_song_info);
+        case AU_AIFF:
+            return CTagLibHelper::WriteAiffTag(m_song_info);
+        case AU_FLAC:
+            return CTagLibHelper::WriteFlacTag(m_song_info);
+        case AU_WAV:
+            return CTagLibHelper::WriteWavTag(m_song_info);
+        case AU_MPC:
+            return CTagLibHelper::WriteMpcTag(m_song_info);
+        case AU_DSD:
+            break;
+        case AU_OPUS:
+            //return CTagLibHelper::WriteOpusTag(m_song_info);
+        case AU_WV:
+            return CTagLibHelper::WriteWavPackTag(m_song_info);
+        case AU_SPX:
+            return CTagLibHelper::WriteSpxTag(m_song_info);
+            break;
+        case AU_TTA:
+            return CTagLibHelper::WriteTtaTag(m_song_info);
+        default:
+            break;
+        }
+    }
+    else
+    {
+        return WriteCueTag(m_song_info);
     }
     return false;
 }
@@ -461,4 +476,48 @@ bool CAudioTag::IsFileRatingSupport(const wstring& ext)
     CCommon::StringTransform(_ext, false);
     AudioType type = CAudioCommon::GetAudioTypeByFileExtension(_ext);
     return type == AU_MP3 || type == AU_FLAC || type == AU_WMA_ASF;
+}
+
+std::wstring CAudioTag::GetCuePath(const SongInfo& song_info)
+{
+    if (!song_info.is_cue || song_info.file_path.empty())
+        return std::wstring();
+
+    //获取cue文件的路径
+    CFilePathHelper cue_path(song_info.file_path);
+    cue_path.ReplaceFileExtension(L"cue");
+    if (!CCommon::FileExist(cue_path.GetFilePath()))
+    {
+        cue_path.SetFilePath(song_info.file_path + L".cue");
+    }
+    return cue_path.GetFilePath();
+}
+
+bool CAudioTag::GetCueTag(SongInfo& song_info)
+{
+    std::wstring cue_path = GetCuePath(song_info);
+    if (!CCommon::FileExist(cue_path))
+        return false;
+
+    CCueFile cue_file(cue_path);
+    SongInfo cue_track{ cue_file.GetTrackInfo(song_info.track) };
+    if (cue_track.IsEmpty())
+        return false;
+    song_info.CopyAudioTag(cue_track);
+
+    return true;
+}
+
+bool CAudioTag::WriteCueTag(SongInfo& song_info)
+{
+    std::wstring cue_path = GetCuePath(song_info);
+    if (!CCommon::FileExist(cue_path))
+        return false;
+
+    CCueFile cue_file(cue_path);
+    SongInfo& cue_track{ cue_file.GetTrackInfo(song_info.track) };
+    if (cue_track.IsEmpty())
+        return false;
+    cue_track.CopyAudioTag(song_info);
+    return cue_file.Save();
 }

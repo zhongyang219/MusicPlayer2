@@ -241,6 +241,13 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             if (!is_osu_file && !song_info.is_cue && (!song_info.info_acquired || pInfo->refresh_info))
                 flag |= AF_TAG_INFO;
             GetInstance().GetPlayerCore()->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
+            
+            //更新CUE信息
+            if (pInfo->refresh_info && song_info.is_cue)
+            {
+                CAudioTag::GetCueTag(song_info);
+            }
+            
             if (is_osu_file)
                 COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
 
