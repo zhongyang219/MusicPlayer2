@@ -181,7 +181,7 @@ COSUFile::COSUFile(const wchar_t * file_path)
     if (ext != L"osu")
         return;
 
-    CCommon::GetFileContent(file_path, m_data, false);
+    CCommon::GetFileContent(file_path, m_data);
     if (m_data.empty())
         return;
 
