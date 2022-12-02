@@ -245,7 +245,8 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             //更新CUE信息
             if (pInfo->refresh_info && song_info.is_cue)
             {
-                CAudioTag::GetCueTag(song_info);
+                CAudioTag audio_tag(song_info);
+                audio_tag.GetAudioTag();
             }
             
             if (is_osu_file)

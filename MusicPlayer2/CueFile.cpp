@@ -131,11 +131,19 @@ SongInfo& CCueFile::GetTrackInfo(int track)
     return empty_song_info;
 }
 
+const std::map<std::wstring, std::wstring>& CCueFile::GetCuePropertyMap() const
+{
+    return m_cue_property_map;
+}
+
+const std::map<std::wstring, std::wstring>& CCueFile::GetTrackPropertyMap(int track)
+{
+    return m_track_property_maps[track];
+}
+
 void CCueFile::DoAnalysis()
 {
     CFilePathHelper cue_file_path{ m_file_path };
-
-    //获取cue属性
 
     SongInfo song_info{};
     // 获取一次标签作为默认值，可以取得FILE之前的标签
@@ -146,6 +154,34 @@ void CCueFile::DoAnalysis()
     song_info.artist = GetCommand(L"PERFORMER ");
     song_info.is_cue = true;
     song_info.info_acquired = true;
+
+    //获取cue属性
+    m_cue_property_map[L"ALBUM"] = song_info.album;
+    m_cue_property_map[L"ALBUMARTIST"] = song_info.artist;
+    //查找所有REM
+    size_t index_rem{ std::wstring::npos };
+    while (true)
+    {
+        index_rem = m_file_content_wcs.find(L"REM", index_rem + 1);
+        if (index_rem == std::wstring::npos)
+            break;
+        size_t index1{}, index2{};
+        index2 = m_file_content_wcs.find_first_of(L"\r\n", index_rem + 4);
+        index1 = m_file_content_wcs.find(L' ', index_rem + 4);
+        if (index1 != std::wstring::npos && index1 < index2)
+        {
+            std::wstring key = m_file_content_wcs.substr(index_rem + 4, index1 - index_rem - 4);
+            std::wstring value = m_file_content_wcs.substr(index1 + 1, index2 - index1 - 1);
+            if (!key.empty())
+            {
+                if (!value.empty() && value.front() == L'\"')
+                    value = value.substr(1);
+                if (!value.empty() && value.back() == L'\"')
+                    value.pop_back();
+                m_cue_property_map[key] = value;
+            }
+        }
+    }
 
     CCommon::StringNormalize(song_info.album);
     CCommon::StringNormalize(song_info.genre);
@@ -171,6 +207,10 @@ void CCueFile::DoAnalysis()
                 break;
             wstring track_str = m_file_content_wcs.substr(index_track + 6, 3);
             song_info.track = _wtoi(track_str.c_str());
+
+            auto& track_property_map = m_track_property_maps[song_info.track];
+            track_property_map[L"TRACK"] = track_str;
+
             size_t next_track_index = m_file_content_wcs.find(L"TRACK ", index_track + 6);
             // 查找曲目标题
             size_t index2, index3;
@@ -180,6 +220,7 @@ void CCueFile::DoAnalysis()
                 index2 = m_file_content_wcs.find(L'\"', index_title);
                 index3 = m_file_content_wcs.find(L'\"', index2 + 1);
                 song_info.title = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
+                track_property_map[L"TITLE"] = song_info.title;
             }
 
             // 查找曲目艺术家
@@ -189,6 +230,7 @@ void CCueFile::DoAnalysis()
                 index2 = m_file_content_wcs.find(L'\"', index_artist);
                 index3 = m_file_content_wcs.find(L'\"', index2 + 1);
                 song_info.artist = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
+                track_property_map[L"ARTIST"] = song_info.artist;
             }
 
             // 查找曲目位置

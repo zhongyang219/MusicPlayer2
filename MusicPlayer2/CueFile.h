@@ -22,13 +22,16 @@ public:
     //从解析结果中获取一个音轨信息
     SongInfo& GetTrackInfo(int track);
 
+    const std::map<std::wstring, std::wstring>& GetCuePropertyMap() const;
+    const std::map<std::wstring, std::wstring>& GetTrackPropertyMap(int track);
+
 private:
     void DoAnalysis();
     Time PhaseIndex(size_t pos);
     std::string TimeToString(const Time& pos);
     wstring GetCommand(const wstring& str, size_t pos = 0);
-    std::map<std::string, std::string> m_cue_property_map;
-    std::map<int, std::map<std::string, std::string>> m_track_property_map;
+    std::map<std::wstring, std::wstring> m_cue_property_map;
+    std::map<int, std::map<std::wstring, std::wstring>> m_track_property_maps;
 
 private:
     std::wstring m_file_path;

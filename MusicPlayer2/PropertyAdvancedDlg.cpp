@@ -85,19 +85,16 @@ void CPropertyAdvancedDlg::ShowInfo()
     if (!m_batch_edit)      //批量编辑（多选）模式下不支持显示高级标签信息
     {
         SongInfo cur_song = CurrentSong();
-        if (!cur_song.is_cue)
-        {
-            CAudioTag audio_tag(cur_song);
-            std::map<wstring, wstring> property_map;
-            audio_tag.GetAudioTagPropertyMap(property_map);
+        CAudioTag audio_tag(cur_song);
+        std::map<wstring, wstring> property_map;
+        audio_tag.GetAudioTagPropertyMap(property_map);
 
-            int index{};
-            for (const auto& prop : property_map)
-            {
-                m_list_ctrl.InsertItem(index, prop.first.c_str());
-                m_list_ctrl.SetItemText(index, 1, prop.second.c_str());
-                index++;
-            }
+        int index{};
+        for (const auto& prop : property_map)
+        {
+            m_list_ctrl.InsertItem(index, prop.first.c_str());
+            m_list_ctrl.SetItemText(index, 1, prop.second.c_str());
+            index++;
         }
     }
 }
