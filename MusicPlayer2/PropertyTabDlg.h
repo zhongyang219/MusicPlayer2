@@ -62,7 +62,7 @@ protected:
 	CEditEx m_lyric_file_edit;
 
 	void ShowInfo();
-	void SetEditReadOnly(bool read_only);
+	void SetEditReadOnly(bool read_only, bool is_cue);
 	void SetWreteEnable();
     void SetSaveBtnEnable();
     void ResetEditModified();

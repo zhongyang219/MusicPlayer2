@@ -518,6 +518,13 @@ bool CAudioTag::WriteCueTag(SongInfo& song_info)
     if (cue_track.IsEmpty())
         return false;
     cue_track.CopyAudioTag(song_info);
+    //cue中的第一个音轨
+    SongInfo& first_track{ cue_file.GetAnalysisResult().front() };
+    //由于cue文件中，所有音轨共享“唱片集”、“流派”、“年份”、“注释”属性，因此需要将这些属性复制到第一个音轨的信息中，才能将它们写入到cue文件中
+    first_track.album = song_info.album;
+    first_track.genre = song_info.genre;
+    first_track.year = song_info.year;
+    first_track.comment = song_info.comment;
     return cue_file.Save();
 }
 

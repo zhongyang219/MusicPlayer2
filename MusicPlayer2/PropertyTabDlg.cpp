@@ -187,12 +187,12 @@ void CPropertyTabDlg::ShowInfo()
     }
 }
 
-void CPropertyTabDlg::SetEditReadOnly(bool read_only)
+void CPropertyTabDlg::SetEditReadOnly(bool read_only, bool is_cue)
 {
     m_title_edit.SetReadOnly(read_only);
     m_artist_edit.SetReadOnly(read_only);
     m_album_edit.SetReadOnly(read_only);
-    m_track_edit.SetReadOnly(read_only);
+    m_track_edit.SetReadOnly(read_only || is_cue);     //禁止修改cue的音轨号
     m_year_edit.SetReadOnly(read_only);
     //m_genre_edit.SetReadOnly(read_only);
     //((CEdit*)m_genre_combo.GetWindow(GW_CHILD))->SetReadOnly(read_only);      //将combo box设为只读
@@ -213,7 +213,7 @@ void CPropertyTabDlg::SetWreteEnable()
         m_write_enable = (m_all_song_info[m_index].is_cue || (!COSUPlayerHelper::IsOsuFile(file_path.GetFilePath()) && CAudioTag::IsFileTypeTagWriteSupport(file_path.GetFileExtension())/* && m_all_song_info[m_index].tag_type != 2*/));
     }
     m_write_enable &= !m_read_only;
-    SetEditReadOnly(!m_write_enable);
+    SetEditReadOnly(!m_write_enable, m_all_song_info[m_index].is_cue);
     SetSaveBtnEnable();
     if (m_write_enable)
         m_year_edit.SetLimitText(4);

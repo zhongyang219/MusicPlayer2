@@ -40,7 +40,7 @@ void CCueFile::LoadContentsDirect(const std::wstring& cue_contets)
 //     }
 // }
 
-const std::vector<SongInfo>& CCueFile::GetAnalysisResult() const
+std::vector<SongInfo>& CCueFile::GetAnalysisResult()
 {
     return m_result;
 }
