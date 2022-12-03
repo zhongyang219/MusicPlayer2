@@ -170,26 +170,26 @@ void CCueFile::DoAnalysis()
 {
     CFilePathHelper cue_file_path{ m_file_path };
 
-    SongInfo song_info{};
-    // 获取一次标签作为默认值，可以取得FILE之前的标签
-    song_info.album = GetCommand(L"TITLE");
-    song_info.genre = GetCommand(L"REM GENRE");
-    song_info.SetYear(GetCommand(L"REM DATE").c_str());
-    song_info.comment = GetCommand(L"REM COMMENT");
-    song_info.artist = GetCommand(L"PERFORMER ");
-    song_info.is_cue = true;
-    song_info.info_acquired = true;
-
     size_t index_file{};
     index_file = m_file_content_wcs.find(L"FILE ");
+    std::wstring cue_head_contents{ m_file_content_wcs.substr(0, index_file) };     //cue的头部
+
+    SongInfo song_info_common{};
+    // 获取一次标签作为默认值，可以取得FILE之前的标签
+    song_info_common.album = GetCommand(cue_head_contents, L"TITLE");
+    song_info_common.genre = GetCommand(cue_head_contents, L"REM GENRE");
+    song_info_common.SetYear(GetCommand(cue_head_contents, L"REM DATE").c_str());
+    song_info_common.comment = GetCommand(cue_head_contents, L"REM COMMENT");
+    song_info_common.artist = GetCommand(cue_head_contents, L"PERFORMER ");
+    song_info_common.is_cue = true;
+    song_info_common.info_acquired = true;
 
     //查找所有属性
-    std::wstring cue_head_contents{ m_file_content_wcs.substr(0, index_file) };     //cue的头部
     FindAllProperty(cue_head_contents, m_cue_property_map);
 
-    CCommon::StringNormalize(song_info.album);
-    CCommon::StringNormalize(song_info.genre);
-    CCommon::StringNormalize(song_info.comment);
+    CCommon::StringNormalize(song_info_common.album);
+    CCommon::StringNormalize(song_info_common.genre);
+    CCommon::StringNormalize(song_info_common.comment);
 
     size_t index_track{};
     size_t index_title{};
@@ -198,10 +198,11 @@ void CCueFile::DoAnalysis()
     {
         index_track = index_file;   // 恢复内层break时index_track的值，使其正常查找第一个TRACK
         // 获取此FILE标签对应path
-        song_info.file_path = cue_file_path.GetDir() + GetCommand(L"FILE ", index_file);
+        song_info_common.file_path = cue_file_path.GetDir() + GetCommand(m_file_content_wcs, L"FILE ", index_file);
         size_t next_file_index = m_file_content_wcs.find(L"FILE ", index_file + 6);
         while (true)
         {
+            SongInfo song_info{ song_info_common };
             // 查找曲目序号
             index_track = m_file_content_wcs.find(L"TRACK ", index_track + 6);
             // 限制TRACK在此FILE范围
@@ -302,29 +303,29 @@ std::string CCueFile::TimeToString(const Time& pos)
     return std::string(buff);
 }
 
-wstring CCueFile::GetCommand(const wstring& str, size_t pos)
+wstring CCueFile::GetCommand(const wstring& str_contents, const wstring& str, size_t pos)
 {
     if (pos == wstring::npos)
         return wstring();
 
     wstring command;
-    size_t index1 = m_file_content_wcs.find(str, pos);
+    size_t index1 = str_contents.find(str, pos);
     if (index1 == wstring::npos)
         return wstring();
-    size_t index2 = m_file_content_wcs.find(L'\"', index1 + str.size());
-    size_t index3 = m_file_content_wcs.find(L'\"', index2 + 1);
-    size_t index_rtn = m_file_content_wcs.find(L'\n', index1);
+    size_t index2 = str_contents.find(L'\"', index1 + str.size());
+    size_t index3 = str_contents.find(L'\"', index2 + 1);
+    size_t index_rtn = str_contents.find(L'\n', index1);
     if (index2 < index_rtn)     //当前行找到了引号，则获取引号之间的字符串
     {
-        command = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
+        command = str_contents.substr(index2 + 1, index3 - index2 - 1);
     }
     else        //当前行没有找到引号
     {
-        index2 = m_file_content_wcs.find(L' ', index1 + str.size());
+        index2 = str_contents.find(L' ', index1 + str.size());
         index3 = index_rtn;
         size_t count = index3 - index2 - 1;
         if (count > 0)
-            command = m_file_content_wcs.substr(index2 + 1, count);
+            command = str_contents.substr(index2 + 1, count);
     }
 
     return command;
@@ -355,11 +356,4 @@ void CCueFile::FindAllProperty(const wstring& str_contents, std::map<std::wstrin
             property_map[key] = value;
         }
     }
-}
-
-void CCueFile::FindProperty(const wstring& property_name, std::map<std::wstring, std::wstring>& property_map)
-{
-    std::wstring property_value = GetCommand(property_name);
-    if (!property_value.empty())
-        property_map[property_name] = property_value;
 }

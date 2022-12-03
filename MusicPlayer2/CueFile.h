@@ -29,12 +29,10 @@ private:
     void DoAnalysis();
     Time PhaseIndex(size_t pos);
     std::string TimeToString(const Time& pos);
-    wstring GetCommand(const wstring& str, size_t pos = 0);
+    static wstring GetCommand(const wstring& str_contents, const wstring& str, size_t pos = 0);
 
     //查找str_contents中的所有REM字段，并添加到property_map中
     static void FindAllProperty(const wstring& str_contents, std::map<std::wstring, std::wstring>& property_map);
-    
-    void FindProperty(const wstring& property_name, std::map<std::wstring, std::wstring>& property_map);
 
 private:
     std::wstring m_file_path;
