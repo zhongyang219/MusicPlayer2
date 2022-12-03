@@ -347,6 +347,9 @@ public:
     //安全的格式化字符串，将format_str中形如<%序号%>的字符串替换成初始化列表paras中的元素，元素支持int/double/LPCTSTR/CString格式，序号从1开始
     static CString StringFormat(LPCTSTR format_str, const std::initializer_list<CVariant>& paras);
 
+    //判断str的左侧是否匹配matched_str
+    static bool StringLeftMatch(const std::wstring& str, const std::wstring& matched_str);
+
     //从资源文件中载入字符串，并将资源字符串中形如<%序号%>的字符串替换成可变参数列表中的参数
     static CString LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras);
 

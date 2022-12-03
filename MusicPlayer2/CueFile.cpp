@@ -55,7 +55,7 @@ bool CCueFile::Save(std::wstring file_path)
     if (file_stream.fail())
         return false;
 
-    const SongInfo& first_track{ m_result.front() };
+    SongInfo first_track{ m_result.front() };
     //写入流派
     if (!first_track.genre.empty())
         file_stream << "REM GENRE " << CCommon::UnicodeToStr(first_track.genre, CodeType::UTF8_NO_BOM) << "\r\n";
@@ -65,34 +65,46 @@ bool CCueFile::Save(std::wstring file_path)
     //写入注释
     if (!first_track.comment.empty())
         file_stream << "REM COMMENT \"" << CCommon::UnicodeToStr(first_track.comment, CodeType::UTF8_NO_BOM) << "\"\r\n";
-    //写入唱片集艺术家
-    file_stream << "PERFORMER \"" << CCommon::UnicodeToStr(first_track.artist, CodeType::UTF8_NO_BOM) << "\"\r\n";
     //写入唱片集标题
     file_stream << "TITLE \"" << CCommon::UnicodeToStr(first_track.album, CodeType::UTF8_NO_BOM) << "\"\r\n";
+
+    //写入其他属性
+    for (const auto& property_item : m_cue_property_map)
+    {
+        if (property_item.first != L"REM GENRE" && property_item.first != L"REM DATE" && property_item.first != L"REM COMMENT" && property_item.first != L"TITLE")
+            file_stream << CCommon::UnicodeToStr(property_item.first, CodeType::UTF8_NO_BOM) << " " << CCommon::UnicodeToStr(property_item.second, CodeType::UTF8_NO_BOM) << "\r\n";
+    }
     //写入文件名
-    std::string file_type;
-    std::wstring file_ext = CFilePathHelper(first_track.file_path).GetFileExtension();
-    if (file_ext == L"mp3")
-        file_type = "MP3";
-    else if (file_ext == L"aif" || file_ext == L"aiff")
-        file_type = "AIFF";
-    else
-        file_type = "WAVE";
-    file_stream << "FILE \"" << CCommon::UnicodeToStr(m_result.front().GetFileName(), CodeType::UTF8_NO_BOM) << "\" " << file_type << "\r\n";
+    auto getCueAudioFileType = [](const std::wstring& file_path) -> std::string
+    {
+        std::wstring file_ext = CFilePathHelper(file_path).GetFileExtension();
+        if (file_ext == L"mp3")
+            return "MP3";
+        else if (file_ext == L"aif" || file_ext == L"aiff")
+            return "AIFF";
+        else
+            return "WAVE";
+    };
+    std::string file_type = getCueAudioFileType(first_track.file_path);
+    file_stream << "FILE \"" << CCommon::UnicodeToStr(first_track.GetFileName(), CodeType::UTF8_NO_BOM) << "\" " << file_type << "\r\n";
 
     //写入每个音轨
     size_t index = 0;
     for (const auto& song : m_result)
     {
+        //有多个音频文件时写入新的FILE标签
+        if (song.file_path != first_track.file_path)
+        {
+            first_track = song;
+            std::string file_type = getCueAudioFileType(first_track.file_path);
+            file_stream << "FILE \"" << CCommon::UnicodeToStr(first_track.GetFileName(), CodeType::UTF8_NO_BOM) << "\" " << file_type << "\r\n";
+        }
+
         //音轨信息
         file_stream << "  TRACK ";
         if (song.track < 10)
             file_stream << "0";
         file_stream << song.track << " AUDIO\r\n";
-        //标题
-        file_stream << "    TITLE \"" << CCommon::UnicodeToStr(song.title, CodeType::UTF8_NO_BOM) << "\"\r\n";
-        //艺术家
-        file_stream << "    PERFORMER \"" << CCommon::UnicodeToStr(song.artist, CodeType::UTF8_NO_BOM) << "\"\r\n";
         //时间
         if (song.track == 1)
         {
@@ -108,6 +120,14 @@ bool CCueFile::Save(std::wstring file_path)
                 file_stream << "    INDEX 01 " << TimeToString(song.start_pos) << "\r\n";
             }
         }
+        //写入其他属性
+        auto& track_property_map = m_track_property_maps[song.file_path][song.track];
+        for (const auto& property_item : track_property_map)
+        {
+            if (property_item.first != L"TRACK")
+                file_stream << "    " << CCommon::UnicodeToStr(property_item.first, CodeType::UTF8_NO_BOM) << " " << CCommon::UnicodeToStr(property_item.second, CodeType::UTF8_NO_BOM) << "\r\n";
+        }
+
         index++;
     }
 
@@ -115,12 +135,21 @@ bool CCueFile::Save(std::wstring file_path)
     return true;
 }
 
-SongInfo& CCueFile::GetTrackInfo(int track)
+SongInfo& CCueFile::GetTrackInfo(const std::wstring& audio_path, int track)
 {
     static SongInfo empty_song_info;
-    for (auto& song : m_result)
-        if (song.track == track)
-            return song;
+    if (m_track_property_maps.size() == 1)
+    {
+        for (auto& song : m_result)
+            if (song.track == track)
+                return song;
+    }
+    else
+    {
+        for (auto& song : m_result)
+            if (song.track == track && song.file_path == audio_path)
+                return song;
+    }
     return empty_song_info;
 }
 
@@ -129,9 +158,12 @@ const std::map<std::wstring, std::wstring>& CCueFile::GetCuePropertyMap() const
     return m_cue_property_map;
 }
 
-const std::map<std::wstring, std::wstring>& CCueFile::GetTrackPropertyMap(int track)
+const std::map<std::wstring, std::wstring>& CCueFile::GetTrackPropertyMap(const std::wstring& audio_path, int track)
 {
-    return m_track_property_maps[track];
+    if (m_track_property_maps.size() == 1)
+        return m_track_property_maps.begin()->second[track];
+    else
+        return m_track_property_maps[audio_path][track];
 }
 
 void CCueFile::DoAnalysis()
@@ -148,43 +180,20 @@ void CCueFile::DoAnalysis()
     song_info.is_cue = true;
     song_info.info_acquired = true;
 
-    //获取cue属性
-    m_cue_property_map[L"ALBUM"] = song_info.album;
-    m_cue_property_map[L"ALBUMARTIST"] = song_info.artist;
-    //查找所有REM
-    size_t index_rem{ std::wstring::npos };
-    while (true)
-    {
-        index_rem = m_file_content_wcs.find(L"REM", index_rem + 1);
-        if (index_rem == std::wstring::npos)
-            break;
-        size_t index1{}, index2{};
-        index2 = m_file_content_wcs.find_first_of(L"\r\n", index_rem + 4);
-        index1 = m_file_content_wcs.find(L' ', index_rem + 4);
-        if (index1 != std::wstring::npos && index1 < index2)
-        {
-            std::wstring key = m_file_content_wcs.substr(index_rem + 4, index1 - index_rem - 4);
-            std::wstring value = m_file_content_wcs.substr(index1 + 1, index2 - index1 - 1);
-            if (!key.empty())
-            {
-                if (!value.empty() && value.front() == L'\"')
-                    value = value.substr(1);
-                if (!value.empty() && value.back() == L'\"')
-                    value.pop_back();
-                m_cue_property_map[key] = value;
-            }
-        }
-    }
+    size_t index_file{};
+    index_file = m_file_content_wcs.find(L"FILE ");
+
+    //查找所有属性
+    std::wstring cue_head_contents{ m_file_content_wcs.substr(0, index_file) };     //cue的头部
+    FindAllProperty(cue_head_contents, m_cue_property_map);
 
     CCommon::StringNormalize(song_info.album);
     CCommon::StringNormalize(song_info.genre);
     CCommon::StringNormalize(song_info.comment);
 
-    size_t index_file{};
     size_t index_track{};
     size_t index_title{};
     size_t index_artist{};
-    index_file = m_file_content_wcs.find(L"FILE ", index_file);
     while (true)
     {
         index_track = index_file;   // 恢复内层break时index_track的值，使其正常查找第一个TRACK
@@ -201,7 +210,7 @@ void CCueFile::DoAnalysis()
             wstring track_str = m_file_content_wcs.substr(index_track + 6, 3);
             song_info.track = _wtoi(track_str.c_str());
 
-            auto& track_property_map = m_track_property_maps[song_info.track];
+            auto& track_property_map = m_track_property_maps[song_info.file_path][song_info.track];
             track_property_map[L"TRACK"] = track_str;
 
             size_t next_track_index = m_file_content_wcs.find(L"TRACK ", index_track + 6);
@@ -213,7 +222,6 @@ void CCueFile::DoAnalysis()
                 index2 = m_file_content_wcs.find(L'\"', index_title);
                 index3 = m_file_content_wcs.find(L'\"', index2 + 1);
                 song_info.title = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
-                track_property_map[L"TITLE"] = song_info.title;
             }
 
             // 查找曲目艺术家
@@ -223,7 +231,6 @@ void CCueFile::DoAnalysis()
                 index2 = m_file_content_wcs.find(L'\"', index_artist);
                 index3 = m_file_content_wcs.find(L'\"', index2 + 1);
                 song_info.artist = m_file_content_wcs.substr(index2 + 1, index3 - index2 - 1);
-                track_property_map[L"ARTIST"] = song_info.artist;
             }
 
             // 查找曲目位置
@@ -253,6 +260,10 @@ void CCueFile::DoAnalysis()
             CCommon::StringNormalize(song_info.artist);
 
             m_result.push_back(song_info);
+
+            //查找当前音轨的所有标签
+            int index_next_track = m_file_content_wcs.find(L"TRACK ", index_track + 6);
+            FindAllProperty(m_file_content_wcs.substr(index_track, index_next_track - index_track), track_property_map);
         }
         // 如果没有下一个FILE标签则退出
         if (next_file_index == wstring::npos)
@@ -260,7 +271,6 @@ void CCueFile::DoAnalysis()
         else
             index_file = next_file_index;
     }
-
 }
 
 Time CCueFile::PhaseIndex(size_t pos)
@@ -318,4 +328,38 @@ wstring CCueFile::GetCommand(const wstring& str, size_t pos)
     }
 
     return command;
+}
+
+void CCueFile::FindAllProperty(const wstring& str_contents, std::map<std::wstring, std::wstring>& property_map)
+{
+    std::vector<std::wstring> contents_list;
+    CCommon::StringSplitWithMulitChars(str_contents, L"\r\n", contents_list);
+    for (const auto& str : contents_list)
+    {
+        size_t index_quote = str.find(L'\"');           //查找引号
+        size_t index_space1 = str.find(L' ');           //查找第1个空格
+        if (index_space1 == std::wstring::npos || index_space1 > index_quote)   //空格必须在引号前
+            break;
+        size_t index_space2 = str.find(L' ', index_space1 + 1); //查找第2个空格
+        if (index_space2 > index_quote)
+            index_space2 = std::wstring::npos;          //第2个空格在引号后面，则认为无效
+        size_t index{ index_space2 == std::wstring::npos ? index_space1 : index_space2 };
+        std::wstring key = str.substr(0, index);
+        std::wstring value = str.substr(index + 1);
+        CCommon::StringNormalize(key);
+        CCommon::StringNormalize(value);
+        if (CCommon::StringLeftMatch(key, L"FILE") || CCommon::StringLeftMatch(key, L"TRACK") || CCommon::StringLeftMatch(key, L"INDEX"))
+            continue;
+        if (!key.empty())
+        {
+            property_map[key] = value;
+        }
+    }
+}
+
+void CCueFile::FindProperty(const wstring& property_name, std::map<std::wstring, std::wstring>& property_map)
+{
+    std::wstring property_value = GetCommand(property_name);
+    if (!property_value.empty())
+        property_map[property_name] = property_value;
 }

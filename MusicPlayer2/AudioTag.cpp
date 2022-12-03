@@ -496,7 +496,7 @@ bool CAudioTag::GetCueTag(SongInfo& song_info)
         return false;
 
     CCueFile cue_file(cue_path);
-    SongInfo cue_track{ cue_file.GetTrackInfo(song_info.track) };
+    SongInfo cue_track{ cue_file.GetTrackInfo(song_info.file_path, song_info.track) };
     if (cue_track.IsEmpty())
         return false;
     song_info.CopyAudioTag(cue_track);
@@ -514,7 +514,7 @@ bool CAudioTag::WriteCueTag(SongInfo& song_info)
         return false;
 
     CCueFile cue_file(cue_path);
-    SongInfo& cue_track{ cue_file.GetTrackInfo(song_info.track) };
+    SongInfo& cue_track{ cue_file.GetTrackInfo(song_info.file_path, song_info.track) };
     if (cue_track.IsEmpty())
         return false;
     cue_track.CopyAudioTag(song_info);
@@ -536,14 +536,39 @@ bool CAudioTag::GetCuePropertyMap(SongInfo& song_info, std::map<wstring, wstring
 
     CCueFile cue_file(cue_path);
     property_map.clear();
+
+    auto parseCueProperty = [](std::wstring& key, std::wstring& value)
+    {
+        //如果key的前面有“REM”，则将其去掉
+        if (CCommon::StringLeftMatch(key, L"REM "))
+            key = key.substr(4);
+        //去掉value前后的引号
+        if (!value.empty() && value[0] == L'\"')
+            value = value.substr(1);
+        if (!value.empty() && value.back() == L'\"')
+            value.pop_back();
+    };
+
     for (const auto& item : cue_file.GetCuePropertyMap())
     {
-        property_map.insert(item);
+        std::wstring key = item.first;
+        std::wstring value = item.second;
+        parseCueProperty(key, value);
+        if (key == L"TITLE")
+            key = L"ALBUM";
+        if (key == L"PERFORMER")
+            key = L"ALBUMARTIST";
+        property_map[key] = value;
     }
-    const auto& track_property_map = cue_file.GetTrackPropertyMap(song_info.track);
+    const auto& track_property_map = cue_file.GetTrackPropertyMap(song_info.file_path, song_info.track);
     for (const auto& item : track_property_map)
     {
-        property_map.insert(item);
+        std::wstring key = item.first;
+        std::wstring value = item.second;
+        parseCueProperty(key, value);
+        if (key == L"PERFORMER")
+            key = L"ARTIST";
+        property_map[key] = value;
     }
-
+    return true;
 }

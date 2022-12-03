@@ -1389,6 +1389,13 @@ CString CCommon::StringFormat(LPCTSTR format_str, const std::initializer_list<CV
     return str_rtn;
 }
 
+bool CCommon::StringLeftMatch(const std::wstring& str, const std::wstring& matched_str)
+{
+    if (str.size() < matched_str.size())
+        return false;
+    return str.substr(0, matched_str.size()) == matched_str;
+}
+
 CString CCommon::LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras)
 {
     CString str;
