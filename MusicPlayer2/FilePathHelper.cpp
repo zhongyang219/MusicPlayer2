@@ -14,11 +14,12 @@ CFilePathHelper::~CFilePathHelper()
 
 wstring CFilePathHelper::GetFileExtension(bool upper, bool width_dot) const
 {
+    wstring file_name = GetFileName();
 	size_t index;
-	index = m_file_path.rfind('.');
-	if (index == wstring::npos || index == m_file_path.size() - 1)
+	index = file_name.rfind('.');
+	if (index == wstring::npos || index == file_name.size() - 1)
 		return wstring();
-	wstring file_extension{ m_file_path.substr(width_dot ? index : index + 1) };
+	wstring file_extension{ file_name.substr(width_dot ? index : index + 1) };
 	CCommon::StringTransform(file_extension, upper);
 	return file_extension;
 }

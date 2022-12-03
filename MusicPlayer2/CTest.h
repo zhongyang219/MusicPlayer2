@@ -24,5 +24,6 @@ private:
     static void TestStringSplit();
     static void TestRating();
     static void TestCueSave();
+    static void TestFilePathHelper();
 };
 
