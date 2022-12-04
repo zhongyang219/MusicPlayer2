@@ -203,6 +203,7 @@ void CCueFile::DoAnalysis()
         while (true)
         {
             SongInfo song_info{ song_info_common };
+            song_info.cue_file_path = m_file_path;
             // 查找曲目序号
             index_track = m_file_content_wcs.find(L"TRACK ", index_track + 6);
             // 限制TRACK在此FILE范围

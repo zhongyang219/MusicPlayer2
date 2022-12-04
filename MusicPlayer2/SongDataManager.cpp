@@ -30,7 +30,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.731"));			//写入数据版本
+    ar << CString(_T("2.75"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
@@ -65,6 +65,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << song_data.second.freq
             << song_data.second.bits
             << song_data.second.channels
+            << CString(song_data.second.cue_file_path.c_str())
             ;
     }
     // 关闭CArchive对象
@@ -219,6 +220,11 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.bits;
                 ar >> song_info.channels;
             }
+            if (m_data_version >= _T("2.75"))
+            {
+                ar >> temp;
+                song_info.cue_file_path = temp;
+            }
             m_song_data[song_info] = song_info;     // 将读取到的一首歌曲信息添加到映射容器中
         }
     }
@@ -255,6 +261,7 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
         return;
     SongInfo& song = m_song_data[song_info];
     song.file_path = song_info.file_path;
+    song.cue_file_path = song_info.cue_file_path;
     song.CopyAudioTag(song_info);
     song.lengh = song_info.lengh;   // 计划移除
     song.start_pos = song_info.start_pos;
@@ -277,6 +284,7 @@ void CSongDataManager::LoadSongInfo(SongInfo& song_info)
     {
         const SongInfo& temp = iter->second;
         song_info.CopyAudioTag(temp);
+        song_info.cue_file_path = temp.cue_file_path;
         song_info.lengh = temp.lengh;
         song_info.start_pos = temp.start_pos;
         song_info.end_pos = temp.end_pos;

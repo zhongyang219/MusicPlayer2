@@ -474,19 +474,24 @@ bool CAudioTag::IsFileRatingSupport(const wstring& ext)
     return type == AU_MP3 || type == AU_FLAC || type == AU_WMA_ASF;
 }
 
-std::wstring CAudioTag::GetCuePath(const SongInfo& song_info)
+std::wstring CAudioTag::GetCuePath(SongInfo& song_info)
 {
-    if (!song_info.is_cue || song_info.file_path.empty())
-        return std::wstring();
-
-    //获取cue文件的路径
-    CFilePathHelper cue_path(song_info.file_path);
-    cue_path.ReplaceFileExtension(L"cue");
-    if (!CCommon::FileExist(cue_path.GetFilePath()))
+    //为了兼容以前版本的媒体库中保存了没有cue_file_path的SongInfo，或者如果因为某些其他原因，
+    //song_info中的cue_file_path字段为空，则在这里根据音频文件的路径获取cue文件的路径。
+    //正常情况下，这个if里的代码应该不会被执行了。
+    if (song_info.is_cue && song_info.cue_file_path.empty() && !song_info.file_path.empty())
     {
-        cue_path.SetFilePath(song_info.file_path + L".cue");
+        //获取cue文件的路径
+        CFilePathHelper cue_path(song_info.file_path);
+        cue_path.ReplaceFileExtension(L"cue");
+        if (!CCommon::FileExist(cue_path.GetFilePath()))
+        {
+            cue_path.SetFilePath(song_info.file_path + L".cue");
+        }
+        if (CCommon::FileExist(cue_path.GetFilePath()))
+            song_info.cue_file_path = cue_path.GetFilePath();
     }
-    return cue_path.GetFilePath();
+    return song_info.cue_file_path;
 }
 
 bool CAudioTag::GetCueTag(SongInfo& song_info)

@@ -31,7 +31,7 @@ private:
     std::string TimeToString(const Time& pos);
     static wstring GetCommand(const wstring& str_contents, const wstring& str, size_t pos = 0);
 
-    //查找str_contents中的所有REM字段，并添加到property_map中
+    //查找str_contents中的所有属性，并添加到property_map中
     static void FindAllProperty(const wstring& str_contents, std::map<std::wstring, std::wstring>& property_map);
 
 private:

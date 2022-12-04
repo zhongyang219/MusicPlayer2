@@ -56,7 +56,7 @@ public:
 
 protected:
     //获取cue文件的路径
-    static std::wstring GetCuePath(const SongInfo& song_info);
+    static std::wstring GetCuePath(SongInfo& song_info);
 
     //从cue文件中获取一个cue音轨中的信息
     static bool GetCueTag(SongInfo& song_info);
