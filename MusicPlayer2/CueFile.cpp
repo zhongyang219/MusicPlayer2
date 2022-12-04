@@ -120,11 +120,17 @@ bool CCueFile::Save(std::wstring file_path)
                 file_stream << "    INDEX 01 " << TimeToString(song.start_pos) << "\r\n";
             }
         }
+        //写入曲目标题
+        if (!song.title.empty())
+            file_stream << "    TITLE \"" << CCommon::UnicodeToStr(song.title, CodeType::UTF8_NO_BOM) << "\"\r\n";
+        //写入艺术家
+        if (!song.artist.empty())
+            file_stream << "    PERFORMER \"" << CCommon::UnicodeToStr(song.artist, CodeType::UTF8_NO_BOM) << "\"\r\n";
         //写入其他属性
         auto& track_property_map = m_track_property_maps[song.file_path][song.track];
         for (const auto& property_item : track_property_map)
         {
-            if (property_item.first != L"TRACK")
+            if (property_item.first != L"TRACK" && property_item.first != L"PERFORMER" && property_item.first != L"TITLE")
                 file_stream << "    " << CCommon::UnicodeToStr(property_item.first, CodeType::UTF8_NO_BOM) << " " << CCommon::UnicodeToStr(property_item.second, CodeType::UTF8_NO_BOM) << "\r\n";
         }
 

@@ -455,7 +455,7 @@ int CPropertyTabDlg::SaveModified()
 {
     if (!m_write_enable) return false;
     CWaitCursor wait_cursor;
-    SongInfo song_info;
+    SongInfo song_info{ m_all_song_info[m_index] };
     CString str_temp;
     m_title_edit.GetWindowText(str_temp);
     song_info.title = str_temp;
@@ -477,7 +477,6 @@ int CPropertyTabDlg::SaveModified()
         song_info.genre_idx = m_all_song_info[m_index].genre_idx;       //如果流派没有修改，则将原来的流派号写回文件中
     m_comment_edit.GetWindowText(str_temp);
     song_info.comment = str_temp;
-    song_info.is_cue = m_all_song_info[m_index].is_cue;
 
     song_info.Normalize();
 
@@ -518,7 +517,6 @@ int CPropertyTabDlg::SaveModified()
     }
     else
     {
-        song_info.file_path = m_all_song_info[m_index].file_path;
         CPlayer::ReOpen reopen(song_info.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));       //如果保存的是正在播放的曲目，则保存前需要关闭，保存后重新打开
         CAudioTag audio_tag(song_info);
         bool saved = audio_tag.WriteAudioTag();
