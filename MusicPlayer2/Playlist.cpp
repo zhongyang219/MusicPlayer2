@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 #include "SongDataManager.h"
+#include <set>
 
 const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L".m3u8" };
 
@@ -77,13 +78,27 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
             code_type = CodeType::UTF8_NO_BOM;
 
         stream << "#EXTM3U" << std::endl;
+        std::set<std::wstring> saved_cue_path;      //已经保存过的cue文件的路径
         for (const auto& item : m_playlist)
         {
-            CString buff;
-            SongInfo song = CSongDataManager::GetInstance().GetSongInfo(item.file_path); // m_playlist中只有file_path
-            buff.Format(_T("#EXTINF:%d,%s - %s"), song.length().toInt() / 1000, song.GetArtist().c_str(), song.GetTitle().c_str());
-            stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << std::endl;
-            stream << CCommon::UnicodeToStr(song.file_path, code_type) << std::endl;
+            if (item.is_cue)
+            {
+                //如果播放列表中的项目是cue，且该cue文件没有保存过，则将其保存
+                if (!item.cue_file_path.empty() && saved_cue_path.find(item.cue_file_path) == saved_cue_path.end())
+                {
+                    stream << "#" << std::endl;
+                    stream << CCommon::UnicodeToStr(item.cue_file_path, code_type);
+                    saved_cue_path.insert(item.cue_file_path);
+                }
+            }
+            else
+            {
+                CString buff;
+                SongInfo song = CSongDataManager::GetInstance().GetSongInfo(item.file_path); // m_playlist中只有file_path
+                buff.Format(_T("#EXTINF:%d,%s - %s"), song.length().toInt() / 1000, song.GetArtist().c_str(), song.GetTitle().c_str());
+                stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << std::endl;
+                stream << CCommon::UnicodeToStr(song.file_path, code_type) << std::endl;
+            }
         }
     }
 }
