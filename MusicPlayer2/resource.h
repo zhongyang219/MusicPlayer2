@@ -759,7 +759,10 @@
 #define IDS_SHOTCUT_DOWN                578
 #define IDI_PLAY_IN_FOLDER              578
 #define IDS_SPACE                       579
+#define IDI_BITRATE                     579
 #define IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 580
+#define IDI_ICON29                      580
+#define IDI_REVERB                      580
 #define IDS_LOGIN_REQUIRED              581
 #define IDS_LOGGED                      582
 #define IDS_LASTFM_LOGIN                583
@@ -1643,7 +1646,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        579
+#define _APS_NEXT_RESOURCE_VALUE        581
 #define _APS_NEXT_COMMAND_VALUE         33396
 #define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101

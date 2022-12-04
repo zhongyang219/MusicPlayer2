@@ -158,7 +158,7 @@ BOOL CMediaLibDlg::OnInitDialog()
     if (theApp.m_media_lib_setting_data.display_item & MLDI_BITRATE)
     {
         m_bitrate_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
-        ImageList.Add(theApp.m_icon_set.convert);
+        ImageList.Add(theApp.m_icon_set.bitrate);
         m_tab_ctrl.AddWindow(&m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
     }
     //分级

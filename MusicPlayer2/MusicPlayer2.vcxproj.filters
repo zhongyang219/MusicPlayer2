@@ -1787,5 +1787,11 @@
     <Image Include="res\play_in_folder.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\bitrate.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\reverb.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

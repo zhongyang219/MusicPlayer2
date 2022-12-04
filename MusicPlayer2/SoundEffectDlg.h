@@ -2,6 +2,7 @@
 #include "EqualizerDlg.h"
 #include "ReverbDlg.h"
 #include "afxcmn.h"
+#include "CTabCtrlEx.h"
 
 // CSoundEffectDlg 对话框
 
@@ -23,8 +24,7 @@ private:
 	CReverbDlg m_reverb_dlg;		//混响对话框
 
 	int m_tab_selected{};
-	CTabCtrl m_tab;
-
+    CTabCtrlEx m_tab;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -32,6 +32,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	afx_msg void OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void OnCancel();
 };

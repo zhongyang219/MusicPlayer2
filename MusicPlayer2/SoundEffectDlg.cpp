@@ -29,7 +29,6 @@ void CSoundEffectDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CSoundEffectDlg, CDialog)
-	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CSoundEffectDlg::OnTcnSelchangeTab1)
 END_MESSAGE_MAP()
 
 
@@ -42,50 +41,33 @@ BOOL CSoundEffectDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	CenterWindow();
-	//插入标签
-	m_tab.InsertItem(0, CCommon::LoadText(IDS_EQUALIZER));
-	m_tab.InsertItem(1, CCommon::LoadText(IDS_REVERB));
-	//创建子对话框
-	m_equ_dlg.Create(IDD_EQUALIZER_DIALOG, &m_tab);
-	m_reverb_dlg.Create(IDD_REVERB_DIALOG, &m_tab);
-	//调整子对话框的大小和位置
-	CRect rect;
-	m_tab.GetClientRect(rect);
-	CRect rcTabItem;
-	m_tab.GetItemRect(0, rcTabItem);
-	rect.top += rcTabItem.Height() + 4;
-	rect.left += 4;
-	rect.bottom -= 4;
-	rect.right -= 4;
-	m_equ_dlg.MoveWindow(&rect);
-	m_reverb_dlg.MoveWindow(&rect);
-	//默认选中第一个标签
-	m_equ_dlg.ShowWindow(SW_SHOW);
-	m_tab.SetCurFocus(0);
+
+    //创建子对话框
+    m_equ_dlg.Create(IDD_EQUALIZER_DIALOG, &m_tab);
+    m_reverb_dlg.Create(IDD_REVERB_DIALOG, &m_tab);
+
+    //添加对话框
+    m_tab.AddWindow(&m_equ_dlg, CCommon::LoadText(IDS_EQUALIZER));
+    m_tab.AddWindow(&m_reverb_dlg, CCommon::LoadText(IDS_REVERB));
+
+    //为每个标签添加图标
+    CImageList ImageList;
+    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
+    ImageList.Add(theApp.m_icon_set.eq.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.reverb);
+    m_tab.SetImageList(&ImageList);
+    ImageList.Detach();
+
+    m_tab.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
+    m_tab.AdjustTabWindowSize();
+
+    //设置默认选中的标签
+    if (m_tab_selected < 0 || m_tab_selected >= m_tab.GetItemCount())
+        m_tab_selected = 0;
+    m_tab.SetCurTab(m_tab_selected);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
-}
-
-
-void CSoundEffectDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	// TODO: 在此添加控件通知处理程序代码
-	m_tab_selected = m_tab.GetCurSel();
-	switch (m_tab_selected)
-	{
-	case 0:
-		m_equ_dlg.ShowWindow(SW_SHOW);
-		m_reverb_dlg.ShowWindow(SW_HIDE);
-		m_equ_dlg.SetFocus();
-		break;
-	case 1:
-		m_reverb_dlg.ShowWindow(SW_SHOW);
-		m_equ_dlg.ShowWindow(SW_HIDE);
-		m_reverb_dlg.SetFocus();
-		break;
-	}
-	*pResult = 0;
 }
 
 

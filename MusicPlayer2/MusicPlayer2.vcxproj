@@ -548,6 +548,7 @@
     <Image Include="res\album_cover.ico" />
     <Image Include="res\album_d.ico" />
     <Image Include="res\artist_d.ico" />
+    <Image Include="res\bitrate.ico" />
     <Image Include="res\close.ico" />
     <Image Include="res\close_d.ico" />
     <Image Include="res\convert.ico" />
@@ -637,6 +638,7 @@
     <Image Include="res\ReplaceTag.ico" />
     <Image Include="res\restore.ico" />
     <Image Include="res\restore_d.ico" />
+    <Image Include="res\reverb.ico" />
     <Image Include="res\rew_new_d.ico" />
     <Image Include="res\Save.ico" />
     <Image Include="res\save_as_d.ico" />

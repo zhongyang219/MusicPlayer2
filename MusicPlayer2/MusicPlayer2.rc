@@ -366,6 +366,10 @@ IDI_COPY                ICON                    "res\\copy.ico"
 
 IDI_PLAY_IN_FOLDER      ICON                    "res\\play_in_folder.ico"
 
+IDI_BITRATE             ICON                    "res\\bitrate.ico"
+
+IDI_REVERB              ICON                    "res\\reverb.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
