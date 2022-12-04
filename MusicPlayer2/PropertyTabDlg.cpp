@@ -110,10 +110,10 @@ void CPropertyTabDlg::ShowInfo()
 
         //显示文件长度
         wstring song_length;
-        if (m_all_song_info[m_index].lengh.isZero())
+        if (m_all_song_info[m_index].length().isZero())
             song_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);
         else
-            song_length = m_all_song_info[m_index].lengh.toString2();
+            song_length = m_all_song_info[m_index].length().toString2();
         m_song_length_edit.SetWindowText(song_length.c_str());
 
         //显示文件大小

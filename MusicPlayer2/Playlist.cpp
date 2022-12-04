@@ -81,7 +81,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
         {
             CString buff;
             SongInfo song = CSongDataManager::GetInstance().GetSongInfo(item.file_path); // m_playlist中只有file_path
-            buff.Format(_T("#EXTINF:%d,%s - %s"), song.lengh.toInt() / 1000, song.GetArtist().c_str(), song.GetTitle().c_str());
+            buff.Format(_T("#EXTINF:%d,%s - %s"), song.length().toInt() / 1000, song.GetArtist().c_str(), song.GetTitle().c_str());
             stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << std::endl;
             stream << CCommon::UnicodeToStr(song.file_path, code_type) << std::endl;
         }
@@ -202,7 +202,7 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
                 item.start_pos.fromInt(_wtoi(result[2].c_str()));
             if (result.size() >= 4)
                 item.end_pos.fromInt(_wtoi(result[3].c_str()));
-            item.lengh = item.end_pos - item.start_pos;
+            //item.lengh = item.end_pos - item.start_pos;
             if (result.size() >= 5)
             {
                 item.title = result[4];

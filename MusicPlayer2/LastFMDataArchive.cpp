@@ -67,7 +67,7 @@ void LastFMTrack::ReadDataFrom(SongInfo info) {
         album = info.album;
     }
     trackNumber = info.track;
-    duration = info.lengh;
+    duration = info.length();
     CAudioTag tag(info);
     std::map<wstring, wstring> property_map;
     tag.GetAudioTagPropertyMap(property_map);
@@ -92,7 +92,7 @@ bool LastFMTrack::operator==(const SongInfo& info) {
         track == info.title &&
         album == info.album &&
         trackNumber == info.track &&
-        duration == info.lengh;
+        duration == info.length();
 }
 
 void LastFMDataArchive::SaveData(wstring path) {

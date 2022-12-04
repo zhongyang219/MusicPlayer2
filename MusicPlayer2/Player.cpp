@@ -285,7 +285,7 @@ void CPlayer::IniPlaylistComplate()
     m_total_time = 0;
     for (const auto& song : m_playlist)
     {
-        m_total_time += song.lengh.toInt();
+        m_total_time += song.length().toInt();
     }
 
     //检查列表中的曲目是否在“我喜欢”播放列表中
@@ -502,7 +502,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             {
                 m_pCore->GetAudioInfo(m_playlist[m_index], AF_LENGTH);
             }
-            m_song_length = m_playlist[m_index].lengh;
+            m_song_length = m_playlist[m_index].length();
             //打开时获取专辑封面
             SearchAlbumCover();
             //初始化歌词
@@ -512,7 +512,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (m_playlist[m_index].is_cue)
         {
             //SeekTo(0);
-            m_song_length = GetCurrentSongInfo().lengh;
+            m_song_length = GetCurrentSongInfo().length();
         }
         SetVolume();
         if (std::fabs(m_speed - 1) > 0.01)
@@ -1753,7 +1753,7 @@ int CPlayer::RemoveInvalidSongs()
     int removed = 0;
     for (int i = 0; i < GetSongNum(); i++)
     {
-        if (!CCommon::FileExist(m_playlist[i].file_path) || m_playlist[i].lengh.isZero())
+        if (!CCommon::FileExist(m_playlist[i].file_path) || m_playlist[i].length().isZero())
         {
             if (RemoveSong(i))
             {
@@ -2865,7 +2865,7 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
 
 void CPlayer::UpdateControlsMetadata(SongInfo info)
 {
-    m_controls.UpdateDuration(info.lengh.toInt());
+    m_controls.UpdateDuration(info.length().toInt());
     m_controls.UpdateControlsMetadata(info);
 }
 

@@ -44,7 +44,7 @@ wstring CPropertyDlgHelper::GetMultiLength()
 {
     wstring multi_length = GetMultiValue([](const SongInfo& song)
     {
-        return song.lengh.toString2();
+        return song.length().toString2();
     }, m_song_info);
     if (multi_length == L"-:--")
         multi_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);

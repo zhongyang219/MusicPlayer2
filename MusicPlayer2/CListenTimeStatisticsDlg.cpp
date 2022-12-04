@@ -77,8 +77,8 @@ CListenTimeStatisticsDlg::ListItem CListenTimeStatisticsDlg::SongInfoToListItem(
 
     list_item.path = song.file_path;
     list_item.total_time = Time(song.listen_time * 1000);
-    list_item.length = song.lengh;
-    list_item.times = static_cast<double>(song.listen_time) / song.lengh.toInt() * 1000;
+    list_item.length = song.length();
+    list_item.times = static_cast<double>(song.listen_time) / song.length().toInt() * 1000;
     return list_item;
 }
 
@@ -126,7 +126,7 @@ BOOL CListenTimeStatisticsDlg::OnInitDialog()
     for (const auto& data : CSongDataManager::GetInstance().GetSongData())
     {
         SongInfo song{ data.second };
-        if (song.listen_time >= 20 && song.lengh > 0)
+        if (song.listen_time >= 20 && song.length() > 0)
         {
             song.file_path = data.first.path;
             m_data_list.push_back(SongInfoToListItem(song));

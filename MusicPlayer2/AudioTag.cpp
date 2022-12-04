@@ -505,7 +505,7 @@ bool CAudioTag::GetCueTag(SongInfo& song_info)
     if (cue_track.IsEmpty())
         return false;
     song_info.CopyAudioTag(cue_track);
-    song_info.lengh = cue_track.lengh;
+    //song_info.lengh = cue_track.lengh;
     song_info.start_pos = cue_track.start_pos;
     song_info.end_pos = cue_track.end_pos;
 

@@ -254,8 +254,8 @@ void CCueFile::DoAnalysis()
                     m_result.back().end_pos = time_index00;
                 else
                     m_result.back().end_pos = time_index01;
-                if(!m_result.back().end_pos.isZero())
-                    m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
+                //if(!m_result.back().end_pos.isZero())
+                //    m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
             }
 
             CCommon::StringNormalize(song_info.title);

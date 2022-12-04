@@ -232,7 +232,7 @@ void CFfmpegCore::SetCurPosition(int position) {
 
 void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
     if (!handle || !IsSucceed()) return;
-    if (flag & AF_LENGTH) song_info.lengh = GetSongLength();
+    if (flag & AF_LENGTH) song_info.setLength(GetSongLength());
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_get_freq(handle);
         song_info.bits = ffmpeg_core_get_bits(handle);
@@ -261,7 +261,7 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
     MusicInfoHandle* h = nullptr;
     int re = ffmpeg_core_info_open(file_path, &h);
     if (re || !h) return;
-    if (flag & AF_LENGTH) song_info.lengh = ffmpeg_core_info_get_song_length(h) / 1000;
+    if (flag & AF_LENGTH) song_info.setLength(ffmpeg_core_info_get_song_length(h) / 1000);
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_info_get_freq(h);
         song_info.bits = ffmpeg_core_info_get_bits(h);

@@ -70,7 +70,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 			CListCtrlEx::RowData row_data;
 			row_data[0] = std::to_wstring(index + 1);
 			row_data[1] = GetDisplayStr(song, display_format);
-			row_data[2] = song.lengh.toString();
+			row_data[2] = song.length().toString();
 			m_list_data.push_back(std::move(row_data));
 			index++;
 		}
@@ -92,7 +92,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 				CListCtrlEx::RowData row_data;
 				row_data[0] = std::to_wstring(index + 1);
 				row_data[1] = GetDisplayStr(m_all_song_info[index], display_format);
-				row_data[2] = m_all_song_info[index].lengh.toString();
+				row_data[2] = m_all_song_info[index].length().toString();
 				m_list_data.push_back(std::move(row_data));
 			}
 		}

@@ -34,8 +34,6 @@ void CSongDataManager::SaveSongData(std::wstring path)
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
-        if (song_data.second.end_pos == 0)  // SongInfo.length移除前的兼容
-            song_data.second.end_pos = song_data.second.lengh;
         ar << CString(song_data.first.path.c_str())		//保存映射容器的键，即歌曲的绝对路径
             << song_data.second.start_pos.toInt()
             << song_data.second.end_pos.toInt()
@@ -115,7 +113,6 @@ void CSongDataManager::LoadSongData(std::wstring path)
             }
             ar >> song_end_pos;
             song_info.start_pos.fromInt(song_start_pos);
-            song_info.lengh.fromInt(song_end_pos - song_start_pos); // 计划以后移除length
             song_info.end_pos.fromInt(song_end_pos);
             if (m_data_version >= _T("2.691"))
             {
@@ -263,7 +260,6 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
     song.file_path = song_info.file_path;
     song.cue_file_path = song_info.cue_file_path;
     song.CopyAudioTag(song_info);
-    song.lengh = song_info.lengh;   // 计划移除
     song.start_pos = song_info.start_pos;
     song.end_pos = song_info.end_pos;
     song.bitrate = song_info.bitrate;
@@ -285,7 +281,6 @@ void CSongDataManager::LoadSongInfo(SongInfo& song_info)
         const SongInfo& temp = iter->second;
         song_info.CopyAudioTag(temp);
         song_info.cue_file_path = temp.cue_file_path;
-        song_info.lengh = temp.lengh;
         song_info.start_pos = temp.start_pos;
         song_info.end_pos = temp.end_pos;
         song_info.bitrate = temp.bitrate;

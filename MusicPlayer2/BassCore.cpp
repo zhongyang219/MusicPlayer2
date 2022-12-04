@@ -269,7 +269,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
 {
     //获取长度
     if (flag&AF_LENGTH)
-        song_info.lengh = CBassCore::GetBASSSongLength(hStream);
+        song_info.setLength(CBassCore::GetBASSSongLength(hStream));
     //获取比特率
     if(flag&AF_BITRATE)
     {
@@ -724,7 +724,7 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
         else
         {
             int cue_position = CBassCore::GetBASSCurrentPosition(hStreamOld != 0 ? hStreamOld : hStream) - song_info.start_pos.toInt();
-            int cue_length = song_info.lengh.toInt();
+            int cue_length = song_info.length().toInt();
             percent = static_cast<int>(cue_position * 100 / cue_length);
             if (percent == 100)
                 break;

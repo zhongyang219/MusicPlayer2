@@ -360,7 +360,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         {
                             pPlayerCore->GetAudioInfo((cue_dir + audio_file_name).c_str(), audo_file_info, AF_LENGTH);
                         }
-                        audio_file_length = audo_file_info.lengh;
+                        audio_file_length = audo_file_info.length();
                     }
 
                     // 检查files列表中是否包含cue对应的音频文件，移除cue对应原始音频，与处理好的cue条目无关
@@ -399,19 +399,19 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                     if (cur.end_pos == 0)
                     {
                         cur.end_pos = audio_file_length;
-                        cur.lengh = cur.end_pos - cur.start_pos;
+                        //cur.lengh = cur.end_pos - cur.start_pos;
                     }
                     // 若时长获取失败则需要将此FILE所有TRACK标记为无效文件，将时长清零
                     if (audio_file_length.isZero())
                     {
-                        cur.lengh = 0;
+                        //cur.lengh = 0;
                         cur.end_pos = cur.start_pos;    // 由于时长本身退出不保存，所以将差值同时清零
                     }
                     // 直接写入媒体库
                     SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(cur) };
                     song_info.CopyAudioTag(cur);
                     song_info.start_pos = cur.start_pos;
-                    song_info.lengh = cur.lengh;
+                    //song_info.lengh = cur.lengh;
                     song_info.end_pos = cur.end_pos;
                     CSongDataManager::GetInstance().AddItem(song_info);
                 }
@@ -502,13 +502,13 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
                 {
                     if (j == temp.size() - 1 && cur.end_pos == 0)   // 最后一首且没有结束时间
                     {
-                        cur.end_pos = files[i].lengh;
-                        cur.lengh = cur.end_pos - cur.start_pos;
+                        cur.end_pos = files[i].length();
+                        //cur.lengh = cur.end_pos - cur.start_pos;
                     }
                     SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(cur) };
                     song_info.CopyAudioTag(cur);
                     song_info.start_pos = cur.start_pos;
-                    song_info.lengh = cur.lengh;
+                    //song_info.lengh = cur.lengh;
                     song_info.end_pos = cur.end_pos;
                     CSongDataManager::GetInstance().AddItem(song_info);
                 }

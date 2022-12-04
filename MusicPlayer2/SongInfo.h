@@ -31,7 +31,7 @@ struct SongInfo
     int track{};                        // 音轨序号
     int listen_time{};                  // 歌曲累计听的时间（单位为秒）<仅在媒体库内使用>
     int freq{};                         // 采样频率
-    Time lengh{};                       // 歌曲的长度，计划移除
+    //Time lengh{};                       // 歌曲的长度，计划移除
     Time start_pos{};                   // 音频的起始位置
     Time end_pos{};                     // 音频的结束位置
     unsigned short year{};              // 年份
@@ -192,7 +192,7 @@ struct SongInfo
     void CopySongInfo(const SongInfo& song_info)
     {
         CopyAudioTag(song_info);
-        lengh = song_info.lengh;   // 计划移除
+        //lengh = song_info.lengh;   // 计划移除
         start_pos = song_info.start_pos;
         end_pos = song_info.end_pos;
         bitrate = song_info.bitrate;
@@ -204,6 +204,8 @@ struct SongInfo
         freq = song_info.freq;
         channels = song_info.channels;
         bits = song_info.bits;
+        is_cue = song_info.is_cue;
+        cue_file_path = song_info.cue_file_path;
     }
 
     bool IsTitleEmpty() const
@@ -297,6 +299,16 @@ struct SongInfo
             return file_path == song.file_path && track == song.track;
     }
 
+    Time length() const
+    {
+        return Time(end_pos - start_pos);
+    }
+
+    void setLength(Time length)
+    {
+        end_pos = start_pos + length.toInt();
+    }
+
     void Normalize()
     {
         if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
@@ -336,6 +348,6 @@ struct SongInfo
 
     bool IsEmpty() const
     {
-        return file_path.empty() && title.empty() && artist.empty() && album.empty() && comment.empty() && genre.empty() && year == 0 && lengh.isZero();
+        return file_path.empty() && title.empty() && artist.empty() && album.empty() && comment.empty() && genre.empty() && year == 0 && length().isZero();
     }
 };
