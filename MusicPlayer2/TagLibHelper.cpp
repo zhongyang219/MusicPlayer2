@@ -350,6 +350,39 @@ void GetTagPropertyMap(T* tag, std::map<wstring, wstring>& property_map)
     }
 }
 
+static std::wstring GetMapValue(const std::wstring& key, const std::map<std::wstring, std::wstring>& property_map)
+{
+    auto iter = property_map.find(key);
+    if (iter != property_map.end())
+        return iter->second;
+    return std::wstring();
+}
+
+//将标签属性中额外的信息保存到SongInfo中。如果没有获取到任何一个需要的属性，则返回false
+static void OtherPropertyToSongInfo(SongInfo& song_info, const std::map<std::wstring, std::wstring>& property_map)
+{
+    //获取唱片集艺术家
+    song_info.album_artist = GetMapValue(L"ALBUMARTIST", property_map);
+
+    //获取音轨总数
+    std::wstring track_number = GetMapValue(L"TRACKNUMBER", property_map);
+    size_t index = track_number.find(L'/');
+    if (index != wstring::npos)
+    {
+        song_info.total_tracks = static_cast<BYTE>(_wtoi(track_number.substr(index + 1).c_str()));
+    }
+
+    //获取CD序号和CD总数
+    std::wstring disc_number = GetMapValue(L"DISCNUMBER", property_map);
+    index = disc_number.find(L'/');
+    if (index != wstring::npos)
+    {
+        song_info.total_discs = static_cast<BYTE>(_wtoi(disc_number.substr(index + 1).c_str()));
+    }
+    song_info.disc_num = static_cast<BYTE>(_wtoi(disc_number.substr(0, index).c_str()));
+}
+
+
 //解析Windows资源管理器设置的分级信息
 static int ParseAudioRating(int rate_raw)
 {
@@ -441,6 +474,109 @@ static void WriteId3v2Rating(ID3v2::Tag* id3v2, int rate)
         }
     }
 }
+
+static void getFlacPropertyMap(FLAC::File& file, std::map<wstring, wstring>& property_map)
+{
+    if (file.hasXiphComment())
+        GetTagPropertyMap(file.xiphComment(), property_map);
+    if (file.hasID3v2Tag())
+        GetTagPropertyMap(file.ID3v2Tag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+}
+
+static void getM4aPropertyMap(MP4::File& file, std::map<wstring, wstring>& property_map)
+{
+    auto tag = file.tag();
+    GetTagPropertyMap(tag, property_map);
+}
+
+static void getMpegPropertyMap(MPEG::File& file, std::map<wstring, wstring>& property_map)
+{
+    if (file.hasID3v2Tag())
+        GetTagPropertyMap(file.ID3v2Tag(), property_map);
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+}
+
+static void getAsfPropertyMap(ASF::File& file, std::map<wstring, wstring>& property_map)
+{
+    auto tag = file.tag();
+    GetTagPropertyMap(tag, property_map);
+}
+
+static void getApePropertyMap(APE::File& file, std::map<wstring, wstring>& property_map)
+{
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+}
+
+static void getWavPropertyMap(RIFF::WAV::File& file, std::map<wstring, wstring>& property_map)
+{
+    if (file.hasID3v2Tag())
+        GetTagPropertyMap(file.ID3v2Tag(), property_map);
+    if (file.hasInfoTag())
+        GetTagPropertyMap(file.InfoTag(), property_map);
+}
+
+static void getOggPropertyMap(Vorbis::File& file, std::map<wstring, wstring>& property_map)
+{
+    auto tag = file.tag();
+    GetTagPropertyMap(tag, property_map);
+}
+
+static void getMpcPropertyMap(MPC::File& file, std::map<wstring, wstring>& property_map)
+{
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+}
+
+static void getOpusPropertyMap(Ogg::Opus::File& file, std::map<wstring, wstring>& property_map)
+{
+    auto tag = file.tag();
+    GetTagPropertyMap(tag, property_map);
+}
+
+static void getWavPackPropertyMap(WavPack::File& file, std::map<wstring, wstring>& property_map)
+{
+    if (file.hasAPETag())
+        GetTagPropertyMap(file.APETag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+}
+
+static void getTtaPropertyMap(TrueAudio::File& file, std::map<wstring, wstring>& property_map)
+{
+    if (file.hasID3v2Tag())
+        GetTagPropertyMap(file.ID3v2Tag(), property_map);
+    if (file.hasID3v1Tag())
+        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+}
+
+static void getAiffPropertyMap(RIFF::AIFF::File& file, std::map<wstring, wstring>& property_map)
+{
+    auto tag = file.tag();
+    GetTagPropertyMap(tag, property_map);
+}
+
+static void getSpxPropertyMap(Ogg::Speex::File& file, std::map<wstring, wstring>& property_map)
+{
+    auto tag = file.tag();
+    GetTagPropertyMap(tag, property_map);
+}
+
+static void getAnyFilePropertyMap(FileRef& file, std::map<wstring, wstring>& property_map)
+{
+    auto tag = file.tag();
+    GetTagPropertyMap(tag, property_map);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
@@ -653,6 +789,9 @@ void CTagLibHelper::GetFlacTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, true);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getFlacPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetM4aTagInfo(SongInfo& song_info)
@@ -665,6 +804,9 @@ void CTagLibHelper::GetM4aTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getM4aPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetMpegTagInfo(SongInfo& song_info)
@@ -682,6 +824,9 @@ void CTagLibHelper::GetMpegTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, true);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getMpegPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetAsfTagInfo(SongInfo& song_info)
@@ -692,6 +837,9 @@ void CTagLibHelper::GetAsfTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getAsfPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetApeTagInfo(SongInfo& song_info)
@@ -707,6 +855,9 @@ void CTagLibHelper::GetApeTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, true);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getApePropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetWavTagInfo(SongInfo& song_info)
@@ -721,6 +872,9 @@ void CTagLibHelper::GetWavTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getWavPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetOggTagInfo(SongInfo& song_info)
@@ -731,6 +885,9 @@ void CTagLibHelper::GetOggTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getOggPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetMpcTagInfo(SongInfo& song_info)
@@ -745,6 +902,9 @@ void CTagLibHelper::GetMpcTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, true);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getMpcPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetOpusTagInfo(SongInfo& song_info)
@@ -755,6 +915,9 @@ void CTagLibHelper::GetOpusTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getOpusPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetWavPackTagInfo(SongInfo& song_info)
@@ -769,6 +932,9 @@ void CTagLibHelper::GetWavPackTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, true);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getWavPackPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetTtaTagInfo(SongInfo& song_info)
@@ -783,6 +949,9 @@ void CTagLibHelper::GetTtaTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, true);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getTtaPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetAiffTagInfo(SongInfo& song_info)
@@ -795,6 +964,9 @@ void CTagLibHelper::GetAiffTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getAiffPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetSpxTagInfo(SongInfo& song_info)
@@ -805,6 +977,9 @@ void CTagLibHelper::GetSpxTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getSpxPropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetAnyFileTagInfo(SongInfo& song_info)
@@ -815,120 +990,93 @@ void CTagLibHelper::GetAnyFileTagInfo(SongInfo& song_info)
     {
         TagToSongInfo(song_info, tag, false);
     }
+    std::map<std::wstring, std::wstring> property_map;
+    getAnyFilePropertyMap(file, property_map);
+    OtherPropertyToSongInfo(song_info, property_map);
 }
 
 void CTagLibHelper::GetFlacPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     FLAC::File file(file_path.c_str());
-    if (file.hasXiphComment())
-        GetTagPropertyMap(file.xiphComment(), property_map);
-    if (file.hasID3v2Tag())
-        GetTagPropertyMap(file.ID3v2Tag(), property_map);
-    if (file.hasID3v1Tag())
-        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+    getFlacPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetM4aPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     MP4::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getM4aPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetMpegPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     MPEG::File file(file_path.c_str());
-    if (file.hasID3v2Tag())
-        GetTagPropertyMap(file.ID3v2Tag(), property_map);
-    if (file.hasAPETag())
-        GetTagPropertyMap(file.APETag(), property_map);
-    if (file.hasID3v1Tag())
-        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+    getMpegPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetAsfPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     ASF::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getAsfPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetApePropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     APE::File file(file_path.c_str());
-    if (file.hasAPETag())
-        GetTagPropertyMap(file.APETag(), property_map);
-    if (file.hasID3v1Tag())
-        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+    getApePropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetWavPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     RIFF::WAV::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getWavPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetOggPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     Vorbis::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getOggPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetMpcPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     MPC::File file(file_path.c_str());
-    if (file.hasAPETag())
-        GetTagPropertyMap(file.APETag(), property_map);
-    if (file.hasID3v1Tag())
-        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+    getMpcPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetOpusPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     Ogg::Opus::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getOpusPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetWavPackPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     WavPack::File file(file_path.c_str());
-    if (file.hasAPETag())
-        GetTagPropertyMap(file.APETag(), property_map);
-    if (file.hasID3v1Tag())
-        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+    getWavPackPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetTtaPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     TrueAudio::File file(file_path.c_str());
-    if (file.hasID3v2Tag())
-        GetTagPropertyMap(file.ID3v2Tag(), property_map);
-    if (file.hasID3v1Tag())
-        GetTagPropertyMap(file.ID3v1Tag(), property_map);
+    getTtaPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetAiffPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     RIFF::AIFF::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getAiffPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetSpxPropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     Ogg::Speex::File file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getSpxPropertyMap(file, property_map);
 }
 
 void CTagLibHelper::GetAnyFilePropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map)
 {
     FileRef file(file_path.c_str());
-    auto tag = file.tag();
-    GetTagPropertyMap(tag, property_map);
+    getAnyFilePropertyMap(file, property_map);
 }
 
 wstring CTagLibHelper::GetMpegLyric(const wstring& file_path)

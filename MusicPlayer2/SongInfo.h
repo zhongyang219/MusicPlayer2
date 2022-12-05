@@ -25,6 +25,7 @@ struct SongInfo
     wstring comment;                    // 注释
     wstring genre;                      // 流派
     wstring cue_file_path;              // cue文件的路径
+    wstring album_artist;               // 唱片集艺术家
     unsigned __int64 song_id{};         // 歌曲对应的网易云音乐中的歌曲ID
     __int64 last_played_time{};         // 上次播放的时间<仅在媒体库内使用>
     unsigned __int64 modified_time{};   // 修改时间
@@ -45,6 +46,9 @@ struct SongInfo
     BYTE rating{ 255 };                 // 歌曲分级<仅在媒体库内使用>
     BYTE bits{};                        // 位深度
     BYTE channels{};                    // 声道数
+    BYTE total_tracks{};                // 曲目总数
+    BYTE disc_num{};                    // CD序号
+    BYTE total_discs{};                 // CD总数
 
     //定义一组获取和设置一个标志位的方法。
     //func_name：方法的名称（获取标志位的方法名称为func_name，设置标志位的方法名称为Set+func_name）
@@ -114,7 +118,7 @@ struct SongInfo
         if (compare_album != 0)
             return compare_album < 0;
         else if (a.track != b.track)        //唱片集相同的情况下比较音轨号
-            return a.track < b.track;
+            return ByTrack(a, b);
         else                                //音轨号仍然相同，比较艺术家
             return compare_artist < 0;
     }
@@ -125,18 +129,24 @@ struct SongInfo
         if (compare_album != 0)
             return compare_album > 0;
         else if (a.track != b.track)        //唱片集相同的情况下比较音轨号
-            return a.track > b.track;
+            return ByTrackDecending(a, b);
         else                                //音轨号仍然相同，比较艺术家
             return compare_artist > 0;
     }
     //根据音轨序号的比较函数，用于以音轨序号排序
     static bool ByTrack(const SongInfo& a, const SongInfo& b)
     {
-        return a.track < b.track;
+        if (a.disc_num != b.disc_num)
+            return a.disc_num < b.disc_num;
+        else
+            return a.track < b.track;
     }
     static bool ByTrackDecending(const SongInfo& a, const SongInfo& b)
     {
-        return a.track > b.track;
+        if (a.disc_num != b.disc_num)
+            return a.disc_num > b.disc_num;
+        else
+            return a.track > b.track;
     }
     //根据流派的比较函数，用于以流派排序
     static bool ByGenre(const SongInfo& a, const SongInfo& b)
@@ -186,6 +196,10 @@ struct SongInfo
         genre = song_info.genre;
         genre_idx = song_info.genre_idx;
         track = song_info.track;
+        album_artist = song_info.album_artist;
+        total_tracks = song_info.total_tracks;
+        disc_num = song_info.disc_num;
+        total_discs = song_info.total_discs;
         tag_type = song_info.tag_type;
     }
 

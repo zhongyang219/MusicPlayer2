@@ -247,6 +247,15 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             {
                 CAudioTag audio_tag(song_info);
                 audio_tag.GetAudioTag();
+                //更新最后一个音轨的结束位置
+                if (song_info.track == song_info.total_tracks)
+                {
+                    //获取音频文件的长度
+                    SongInfo song_info_temp;
+                    song_info_temp.file_path = song_info.file_path;
+                    GetInstance().GetPlayerCore()->GetAudioInfo(song_info.file_path.c_str(), song_info_temp, AF_LENGTH);
+                    song_info.end_pos = song_info_temp.length();
+                }
             }
             
             if (is_osu_file)

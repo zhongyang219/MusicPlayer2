@@ -186,7 +186,10 @@ void CCueFile::DoAnalysis()
     song_info_common.genre = GetCommand(cue_head_contents, L"REM GENRE");
     song_info_common.SetYear(GetCommand(cue_head_contents, L"REM DATE").c_str());
     song_info_common.comment = GetCommand(cue_head_contents, L"REM COMMENT");
-    song_info_common.artist = GetCommand(cue_head_contents, L"PERFORMER ");
+    song_info_common.album_artist = GetCommand(cue_head_contents, L"PERFORMER ");
+    song_info_common.artist = song_info_common.album_artist;
+    song_info_common.disc_num = static_cast<BYTE>(_wtoi(GetCommand(cue_head_contents, L"REM DISCNUMBER").c_str()));
+    song_info_common.total_discs = static_cast<BYTE>(_wtoi(GetCommand(cue_head_contents, L"REM TOTALDISCS").c_str()));
     song_info_common.is_cue = true;
     song_info_common.info_acquired = true;
 
@@ -278,6 +281,13 @@ void CCueFile::DoAnalysis()
             break;
         else
             index_file = next_file_index;
+    }
+
+    //设置曲目总数
+    int total_tracks = m_result.size();
+    for (auto& song_info : m_result)
+    {
+        song_info.total_tracks = total_tracks;
     }
 }
 
