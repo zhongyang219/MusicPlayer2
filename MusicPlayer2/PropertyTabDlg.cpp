@@ -517,7 +517,8 @@ int CPropertyTabDlg::SaveModified()
     }
     else
     {
-        CPlayer::ReOpen reopen(song_info.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));       //如果保存的是正在播放的曲目，则保存前需要关闭，保存后重新打开
+        //如果保存的是正在播放的曲目，并且不是cue音轨，则保存前需要关闭，保存后重新打开（cue保存时不操作音频文件，因此不需要关闭再打开）
+        CPlayer::ReOpen reopen(!song_info.is_cue && song_info.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
         CAudioTag audio_tag(song_info);
         bool saved = audio_tag.WriteAudioTag();
         if (saved)
