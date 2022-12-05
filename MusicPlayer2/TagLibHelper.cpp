@@ -358,7 +358,7 @@ static std::wstring GetMapValue(const std::wstring& key, const std::map<std::wst
     return std::wstring();
 }
 
-//将标签属性中额外的信息保存到SongInfo中。如果没有获取到任何一个需要的属性，则返回false
+//将标签属性中额外的信息保存到SongInfo中
 static void OtherPropertyToSongInfo(SongInfo& song_info, const std::map<std::wstring, std::wstring>& property_map)
 {
     //获取唱片集艺术家

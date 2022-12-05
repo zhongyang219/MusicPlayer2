@@ -285,25 +285,12 @@ void MediaTransControls::UpdateControlsMetadata(const SongInfo song)
         UpdateArtist(song.GetArtist());
         UpdateAlbumTitle(song.GetAlbum());
         UpdateTrackNumber(song.track);
-        if (!song.IsGenreEmpty()) UpdateGenre(song.GetGenre());
-        SongInfo tmp(song);
-        CAudioTag tag(tmp);
-        std::map<wstring, wstring> property_map;
-        tag.GetAudioTagPropertyMap(property_map);
-        for (const auto& prop : property_map) {
-            if (prop.first == L"TRACKNUMBER") {
-                auto i = prop.second.find('/');
-                if (i != wstring::npos) {
-                    auto d = prop.second.substr(i + 1);
-                    UINT total_track;
-                    if (swscanf_s(d.c_str(), L"%u", &total_track) == 1) {
-                        UpdateAlbumTrackCount(total_track);
-                    }
-                }
-            } else if (prop.first == L"ALBUMARTIST") {
-                UpdateAlbumArtist(prop.second);
-            }
-        }
+        if (!song.IsGenreEmpty())
+            UpdateGenre(song.GetGenre());
+        if (song.total_tracks != 0)
+            UpdateAlbumTrackCount(song.total_tracks);
+        if (!song.album_artist.empty())
+            UpdateAlbumArtist(song.album_artist);
         updater->Update();
     }
 }
