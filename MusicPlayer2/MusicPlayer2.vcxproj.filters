@@ -1793,5 +1793,8 @@
     <Image Include="res\reverb.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\hot_key.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

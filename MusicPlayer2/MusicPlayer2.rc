@@ -370,6 +370,8 @@ IDI_BITRATE             ICON                    "res\\bitrate.ico"
 
 IDI_REVERB              ICON                    "res\\reverb.ico"
 
+IDI_HOT_KEY             ICON                    "res\\hot_key.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

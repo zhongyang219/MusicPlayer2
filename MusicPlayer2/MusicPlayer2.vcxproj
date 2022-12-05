@@ -587,6 +587,7 @@
     <Image Include="res\heart.ico" />
     <Image Include="res\help.ico" />
     <Image Include="res\help_d.ico" />
+    <Image Include="res\hot_key.ico" />
     <Image Include="res\internal_lyric_d.ico" />
     <Image Include="res\light_mode.ico" />
     <Image Include="res\link.ico" />

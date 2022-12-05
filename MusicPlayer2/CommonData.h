@@ -561,6 +561,7 @@ struct IconSet
     HICON play_in_folder;
     HICON bitrate;
     HICON reverb;
+    HICON hot_key;
 
     HICON ok;
     IconRes locate;

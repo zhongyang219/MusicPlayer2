@@ -84,6 +84,21 @@ BOOL COptionsDlg::OnInitDialog()
 	m_tab.AddWindow(&m_media_lib_dlg, CCommon::LoadText(IDS_MEDIA_LIB));
 	m_tab.AddWindow(&m_tab5_dlg, CCommon::LoadText(IDS_GLOBLE_HOTKEY));
 
+    //为每个标签添加图标
+    CImageList ImageList;
+    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
+    ImageList.Add(theApp.m_icon_set.lyric.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.skin.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.setting.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.play_new.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
+    ImageList.Add(theApp.m_icon_set.hot_key);
+    m_tab.SetImageList(&ImageList);
+    ImageList.Detach();
+
+    m_tab.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
+    m_tab.AdjustTabWindowSize();
+
 	//为每个子窗口设置滚动信息
 	for (size_t i = 0; i < m_tab_vect.size(); i++)
 	{
