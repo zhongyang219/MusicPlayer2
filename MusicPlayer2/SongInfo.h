@@ -364,4 +364,9 @@ struct SongInfo
     {
         return file_path.empty() && title.empty() && artist.empty() && album.empty() && comment.empty() && genre.empty() && year == 0 && length().isZero();
     }
+
+    bool IsLastTrack() const
+    {
+        return track == total_tracks;
+    }
 };

@@ -248,7 +248,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
                 CAudioTag audio_tag(song_info);
                 audio_tag.GetAudioTag();
                 //更新最后一个音轨的结束位置
-                if (song_info.track == song_info.total_tracks)
+                if (song_info.IsLastTrack())
                 {
                     //获取音频文件的长度
                     SongInfo song_info_temp;
@@ -643,7 +643,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
 bool CPlayer::SongIsOver() const
 {
-    if (GetCurrentSongInfo().is_cue || IsMciCore())
+    const SongInfo& current_song{ GetCurrentSongInfo() };
+    if ((current_song.is_cue && !current_song.IsLastTrack()) || IsMciCore())
     {
         return (m_playing == PS_PLAYING && m_current_position >= m_song_length && m_current_position.toInt() != 0);
     }
