@@ -654,8 +654,9 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR* pNMHDR, LRESULT* pResult)
         //对右侧列表排序
         if (m_left_selected_items.size() == 1)  //仅当左侧列表选中了一项时处理
         {
-            auto iter = m_classifer.GetMeidaList().find(m_classify_selected);
-            if (iter != m_classifer.GetMeidaList().end())
+            auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
+            auto iter = media_list.find(m_classify_selected);
+            if (iter != media_list.end())
             {
                 switch (phdr->iItem)
                 {
