@@ -372,7 +372,7 @@ IDI_REVERB              ICON                    "res\\reverb.ico"
 
 IDI_HOT_KEY             ICON                    "res\\hot_key.ico"
 
-IDI_MINI_RESTORE        ICON                    "C:\\Projects\\GitHub Porject\\MusicPlayer2\\MusicPlayer2\\res\\mini_restore.ico"
+IDI_MINI_RESTORE        ICON                    "res\\mini_restore.ico"
 
 IDI_IDI_MINI_RESTORE_D  ICON                    "res\\mini_restore_d.ico"
 
