@@ -104,6 +104,9 @@ void CAppearanceSettingDlg::SetControlEnable()
     m_default_background_edit.EnableWindow(m_data.enable_background && !m_data.use_desktop_background);
     EnableDlgCtrl(IDC_USE_DESKTOP_BACKGROUND_CHECK, m_data.enable_background);
 
+    EnableDlgCtrl(IDC_SHOW_NEXT_CHECK, m_data.always_show_statusbar);
+    EnableDlgCtrl(IDC_SHOW_FPS_CHECK, m_data.always_show_statusbar);
+
     EnableDlgCtrl(IDC_SHOW_SETTINGS_BTN_CHECK, !m_data.show_window_frame);
     EnableDlgCtrl(IDC_SHOW_SKIN_BTN_CHECK, !m_data.show_window_frame);
     EnableDlgCtrl(IDC_SHOW_MINI_MODE_BTN_CHECK, !m_data.show_window_frame);
