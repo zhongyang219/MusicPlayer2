@@ -191,9 +191,9 @@ void CMediaClassifier::ClassifyMedia()
         if (item.first != STR_OTHER_CLASSIFY_TYPE)
         {
             if (m_type == CT_ALBUM)    //“唱片集”类别中，默认按音轨序号排序
-                std::sort(item.second.begin(), item.second.end(), [](const SongInfo& a, const SongInfo& b) {return a.track < b.track; });
+                std::sort(item.second.begin(), item.second.end(), SongInfo::ByTrack);
             else    //其他类别默认按文件路径排序
-                std::sort(item.second.begin(), item.second.end(), [](const SongInfo& a, const SongInfo& b) {return a.file_path < b.file_path; });
+                std::sort(item.second.begin(), item.second.end(), SongInfo::ByPath);
         }
     }
 }

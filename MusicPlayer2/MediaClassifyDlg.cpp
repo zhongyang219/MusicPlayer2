@@ -660,31 +660,31 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR* pNMHDR, LRESULT* pResult)
                 switch (phdr->iItem)
                 {
                 case CMediaClassifyDlg::COL_TITLE:
-                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.title, b.title) < 0; else return CCommon::StringCompareInLocalLanguage(a.title, b.title) > 0; });
+                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByTitle : SongInfo::ByTitleDecending));
                     ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_ARTIST:
-                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.artist, b.artist) < 0; else return CCommon::StringCompareInLocalLanguage(a.artist, b.artist) > 0; });
+                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByArtist : SongInfo::ByArtistDecending));
                     ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_ALBUM:
-                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.album, b.album) < 0; else return CCommon::StringCompareInLocalLanguage(a.album, b.album) > 0; });
+                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByAlbum : SongInfo::ByAlbumDecending));
                     ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_TRACK:
-                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.track < b.track; else return a.track > b.track; });
+                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByTrack : SongInfo::ByTrackDecending));
                     ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_GENRE:
-                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) < 0; else return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) > 0; });
+                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByGenre : SongInfo::ByGenreDecending));
                     ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_BITRATE:
-                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return a.bitrate < b.bitrate; else return a.bitrate > b.bitrate; });
+                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByBitrate : SongInfo::ByBitrateDecending));
                     ShowSongList();
                     break;
                 case CMediaClassifyDlg::COL_PATH:
-                    std::sort(iter->second.begin(), iter->second.end(), [](const SongInfo& a, const SongInfo& b) { if (ascending) return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) < 0; else return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) > 0; });
+                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByPath : SongInfo::ByPathDecending));
                     ShowSongList();
                     break;
                 default:
