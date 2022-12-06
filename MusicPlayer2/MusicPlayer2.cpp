@@ -584,6 +584,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.help.Load(IDI_HELP, IDI_HELP_D, DPI(16));
     m_icon_set.lyric.Load(IDI_LYRIC, IDI_LYRIC_D, DPI(16));
     m_icon_set.playlist_dock.Load(IDI_PLAYLIST_DOCK, IDI_PLAYLIST_DOCK_D, DPI(16));
+    m_icon_set.mini_restore.Load(IDI_MINI_RESTORE, IDI_IDI_MINI_RESTORE_D, DPI(16));
 
     //菜单图标
     m_icon_set.stop_new = CDrawCommon::LoadIconResource(IDI_STOP_NEW_D, DPI(16), DPI(16));

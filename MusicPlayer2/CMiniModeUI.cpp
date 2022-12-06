@@ -145,7 +145,7 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"));
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawTextButton(rc_tmp, m_buttons[BTN_RETURN], _T("□"));
+    DrawUIButton(rc_tmp, m_buttons[BTN_RETURN], theApp.m_icon_set.mini_restore);
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
     DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("≡"));

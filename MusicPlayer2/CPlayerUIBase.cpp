@@ -1012,7 +1012,7 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
     m_draw.SetDrawArea(rc_tmp);
 
     //绘制的是否为关闭按钮（关闭按钮需要特别处理）
-    bool is_close_btn = (&btn == &m_buttons[BTN_APP_CLOSE]);
+    bool is_close_btn = (&btn == &m_buttons[BTN_CLOSE] || &btn == &m_buttons[BTN_APP_CLOSE]);
 
     //绘制背景
     if (btn.pressed || btn.hover)
@@ -1107,25 +1107,42 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
         if (btn.pressed)
             rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
 
+        //绘制的是否为关闭按钮（关闭按钮需要特别处理）
+        bool is_close_btn = (&btn == &m_buttons[BTN_CLOSE] || &btn == &m_buttons[BTN_APP_CLOSE]);
+        
         BYTE alpha;
-        if (IsDrawBackgroundAlpha())
+        if (!is_close_btn && IsDrawBackgroundAlpha())
             alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
         else
             alpha = 255;
         if (btn.pressed || btn.hover || back_color)
         {
             COLORREF background_color{};
-            if (btn.pressed)
+            if (is_close_btn)
             {
-                background_color = m_colors.color_button_pressed;
+                if (btn.pressed)
+                {
+                    background_color = RGB(173, 17, 29);
+                }
+                else if (btn.hover)
+                {
+                    background_color = RGB(232, 17, 35);
+                }
             }
-            else if (btn.hover)
+            else
             {
-                background_color = m_colors.color_button_hover;
-            }
-            else if (back_color)
-            {
-                background_color = m_colors.color_button_back;
+                if (btn.pressed)
+                {
+                    background_color = m_colors.color_button_pressed;
+                }
+                else if (btn.hover)
+                {
+                    background_color = m_colors.color_button_hover;
+                }
+                else if (back_color)
+                {
+                    background_color = m_colors.color_button_back;
+                }
             }
 
             if (!theApp.m_app_setting_data.button_round_corners)
@@ -1138,7 +1155,10 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
                 m_draw.DrawRoundRect(rect, background_color, CalculateRoundRectRadius(rect), alpha);
             }
         }
-        m_draw.DrawWindowText(rect, text, m_colors.color_text, Alignment::CENTER);
+        COLORREF front_color{ m_colors.color_text };
+        if (is_close_btn && (btn.hover || btn.pressed))
+            front_color = RGB(255, 255, 255);
+        m_draw.DrawWindowText(rect, text, front_color, Alignment::CENTER);
     }
     else
     {

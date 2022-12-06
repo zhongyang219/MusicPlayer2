@@ -1796,5 +1796,11 @@
     <Image Include="res\hot_key.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\mini_restore.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\mini_restore_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

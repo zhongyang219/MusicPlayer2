@@ -529,6 +529,7 @@ struct IconSet
     IconRes playlist_dock;
     IconRes help;
     IconRes dark_mode;
+    IconRes mini_restore;
 
     //菜单图标（仅16x16）
     HICON stop_new;

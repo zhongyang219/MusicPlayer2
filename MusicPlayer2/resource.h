@@ -767,8 +767,11 @@
 #define IDI_ICON28                      581
 #define IDI_HOT_KEY                     581
 #define IDS_LOGGED                      582
+#define IDI_MINI_RESTORE                582
 #define IDS_LASTFM_LOGIN                583
 #define IDS_LOGIN_FAILED                584
+#define IDI_ICON30                      584
+#define IDI_IDI_MINI_RESTORE_D          584
 #define IDS_LASTFM_CACHE_STATUS         585
 #define IDS_SHOW_HIDE_DESKTOP_LYRIC     586
 #define IDC_STATIC_PATH                 1001
@@ -1648,7 +1651,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        582
+#define _APS_NEXT_RESOURCE_VALUE        585
 #define _APS_NEXT_COMMAND_VALUE         33396
 #define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101
