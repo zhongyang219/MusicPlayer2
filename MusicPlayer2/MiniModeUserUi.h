@@ -14,6 +14,7 @@ private:
 
 private:
     virtual void PreDrawInfo() override;
+    virtual bool LButtonUp(CPoint point) override;
     virtual bool IsDrawLargeIcon() override { return false; }
     virtual bool IsDrawStatusBar() const override { return false; }
     virtual bool IsDrawTitleBar() const override { return false; }

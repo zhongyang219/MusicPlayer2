@@ -218,6 +218,7 @@ void CMiniModeDlg::Init()
         bool user_ui_separator_added{};
         for (size_t i{}; i < user_ui_list.size() && i < MINIMODE_UI_MAX; i++)
         {
+            user_ui_list[i]->SetIndex(i + 1);
             CString str_name = user_ui_list[i]->GetUIName();   //获取界面的名称
             if (str_name.IsEmpty())
                 str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_MINI_MODE).GetString(), i + 1); //如果名称为空（没有指定名称），则使用“迷你模式 +数字”的默认名称
