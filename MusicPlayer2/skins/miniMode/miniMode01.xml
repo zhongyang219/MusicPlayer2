@@ -1,0 +1,11 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../skin.xsd">  
+  <ui width="328" height="56">
+    <horizontalLayout margin="4">
+      <albumCover width="48" margin-right="8"/>
+      <button key="previous" width="36" height="36" bigIcon="true"/>
+      <button key="playPause" width="36" height="36" bigIcon="true"/>
+      <button key="next" width="36" height="36" bigIcon="true"/>
+      <text type="artist_title" style="scroll" margin-left="4"/>
+    </horizontalLayout>
+  </ui>
+</root>

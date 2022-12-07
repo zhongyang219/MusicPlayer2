@@ -2510,6 +2510,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "显示播放列表(&P)\tCtrl+L",          ID_SHOW_PLAY_LIST
         MENUITEM "总是置顶(&Y)",                    ID_MINI_MODE_ALWAYS_ON_TOP
+        POPUP "切换界面"
+        BEGIN
+            MENUITEM "默认界面(&D)",                    ID_MINIMODE_UI_DEFAULT
+        END
         MENUITEM SEPARATOR
         MENUITEM "最小化(&N)",                     ID_MINI_MIDE_MINIMIZE
         MENUITEM "返回正常模式(&R)\tEsc",             IDOK

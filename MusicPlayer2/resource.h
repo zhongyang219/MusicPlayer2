@@ -1646,13 +1646,15 @@
 #define ID_REPEAT_MODE                  33393
 #define ID_PLAY_AS_NEXT                 33394
 #define ID_Menu33395                    33395
+#define ID_MINIMODE_UI_DEFAULT          33396
+#define ID_MINIMODE_UI_MAX              33460
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        585
-#define _APS_NEXT_COMMAND_VALUE         33396
+#define _APS_NEXT_COMMAND_VALUE         33461
 #define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -20,7 +20,7 @@ public:
     virtual void LButtonDown(CPoint point) override;
     virtual void MouseMove(CPoint point) override;
 
-private:
+protected:
     int m_index{ INT_MAX };
     std::wstring m_xml_path;
     std::shared_ptr<UiElement::Element> m_root_default;
@@ -36,7 +36,7 @@ public:
     //确保每个界面的序号唯一
     static void UniqueUiIndex(std::vector<std::shared_ptr<CUserUi>>& ui_list);
 
-private:
+protected:
     std::shared_ptr<UiElement::Element> GetCurrentUiType();
 
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);

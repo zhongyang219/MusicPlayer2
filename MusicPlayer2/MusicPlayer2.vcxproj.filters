@@ -848,6 +848,9 @@
     <ClInclude Include="FlacEncodeCfgDlg.h">
       <Filter>对话框类\格式转换相关对话框\编码选项对话框</Filter>
     </ClInclude>
+    <ClInclude Include="MiniModeUserUi.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1284,6 +1287,9 @@
     </ClCompile>
     <ClCompile Include="FlacEncodeCfgDlg.cpp">
       <Filter>对话框类\格式转换相关对话框\编码选项对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniModeUserUi.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -263,6 +263,7 @@
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
     <ClInclude Include="MenuEditCtrl.h" />
+    <ClInclude Include="MiniModeUserUi.h" />
     <ClInclude Include="PropertyAdvancedDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />
@@ -418,6 +419,7 @@
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
     <ClCompile Include="MenuEditCtrl.cpp" />
+    <ClCompile Include="MiniModeUserUi.cpp" />
     <ClCompile Include="PropertyAdvancedDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />

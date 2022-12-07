@@ -2012,6 +2012,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     theApp.InitMenuResourse();
 
+    m_miniModeDlg.Init();
+
     //只有Windows Vista以上的系统才能跟随系统主题色
 #ifdef COMPILE_IN_WIN_XP
     theApp.m_app_setting_data.theme_color_follow_system = false;
