@@ -50,18 +50,18 @@ bool CMiniModeUserUi::LButtonUp(CPoint point)
 {
     for (auto& btn : m_buttons)
     {
-        btn.second.hover = false;
-        btn.second.pressed = false;
-
         if (btn.second.rect.PtInRect(point))
         {
             switch (btn.first)
             {
             case BTN_RETURN: case BTN_MINI:
-                //m_buttons[BTN_RETURN].hover = false;
+                btn.second.hover = false;
+                btn.second.pressed = false;
                 m_pMainWnd->SendMessage(WM_COMMAND, IDOK);
                 return true;
             case BTN_CLOSE:
+                btn.second.hover = false;
+                btn.second.pressed = false;
                 if (theApp.m_general_setting_data.minimize_to_notify_icon)
                     m_pMainWnd->ShowWindow(HIDE_WINDOW);
                 else
