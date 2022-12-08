@@ -528,10 +528,25 @@ void UiElement::StackElement::Draw(CPlayerUIBase* ui)
 
 std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()
 {
+    if (hover_to_switch && mouse_hover)
+    {
+        int next_index = cur_index + 1;
+        if (next_index < 0 || next_index >= static_cast<int>(childLst.size()))
+            next_index = 0;
+        return GetElement(next_index);
+    }
+    else
+    {
+        return GetElement(cur_index);
+    }
+}
+
+std::shared_ptr<UiElement::Element> UiElement::StackElement::GetElement(int index)
+{
     if (childLst.empty())
         return nullptr;
-    else if (cur_index >= 0 && cur_index < static_cast<int>(childLst.size()))
-        return childLst[cur_index];
+    else if (index >= 0 && index < static_cast<int>(childLst.size()))
+        return childLst[index];
     else
         return childLst[0];
 }
