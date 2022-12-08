@@ -1444,7 +1444,7 @@ CString CPlayerUIBase::GetVolumeTooltipString()
 
 int CPlayerUIBase::DPI(int pixel) const
 {
-    if (m_ui_data.full_screen)
+    if (m_ui_data.full_screen && IsDrawLargeIcon())
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     else
         return theApp.DPI(pixel);
@@ -1452,7 +1452,7 @@ int CPlayerUIBase::DPI(int pixel) const
 
 int CPlayerUIBase::DPI(double pixel) const
 {
-    if (m_ui_data.full_screen)
+    if (m_ui_data.full_screen && IsDrawLargeIcon())
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     else
         return theApp.DPI(pixel);
@@ -1461,7 +1461,7 @@ int CPlayerUIBase::DPI(double pixel) const
 double CPlayerUIBase::DPIDouble(double pixel)
 {
     double rtn_val = static_cast<double>(theApp.GetDPI()) * pixel / 96;
-    if (m_ui_data.full_screen)
+    if (m_ui_data.full_screen && IsDrawLargeIcon())
         rtn_val *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
     return rtn_val;
 }
@@ -1492,7 +1492,7 @@ int CPlayerUIBase::CalculateRoundRectRadius(CRect rect)
     return radius;
 }
 
-bool CPlayerUIBase::IsDrawLargeIcon()
+bool CPlayerUIBase::IsDrawLargeIcon() const
 {
     return theApp.m_ui_data.full_screen;
 }
