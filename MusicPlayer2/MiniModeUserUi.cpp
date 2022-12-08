@@ -74,13 +74,3 @@ bool CMiniModeUserUi::LButtonUp(CPoint point)
 
     return CUserUi::LButtonUp(point);
 }
-
-void CMiniModeUserUi::AddMouseToolTip(BtnKey btn, LPCTSTR str)
-{
-    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + m_index + 2);
-}
-
-void CMiniModeUserUi::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
-{
-    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + m_index + 2);
-}

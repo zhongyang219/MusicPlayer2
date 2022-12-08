@@ -134,7 +134,10 @@ void CUserUi::MouseMove(CPoint point)
         {
             if (stack_element->indicator.enable)
                 stack_element->indicator.hover = (stack_element->indicator.rect.PtInRect(point) != FALSE);
-            stack_element->mouse_hover = (stack_element->GetRect().PtInRect(point) != FALSE);
+            bool hover{ stack_element->GetRect().PtInRect(point) != FALSE };
+            if (!stack_element->mouse_hover && hover)
+                UpdateToolTipPositionLater();
+            stack_element->mouse_hover = hover;
         }
     }
 
