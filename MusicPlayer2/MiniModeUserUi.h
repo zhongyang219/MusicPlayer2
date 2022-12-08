@@ -17,5 +17,7 @@ private:
     virtual bool IsDrawStatusBar() const override { return false; }
     virtual bool IsDrawTitleBar() const override { return false; }
     virtual bool IsDrawMenuBar() const override { return false; }
+    virtual bool PointInControlArea(CPoint point) const override;
+
 };
 

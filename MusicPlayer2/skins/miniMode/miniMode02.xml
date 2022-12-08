@@ -1,0 +1,28 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../skin.xsd">  
+  <ui width="284" height="202">
+    <verticalLayout>
+      <albumCover>
+        <rectangle theme_color="false"/>
+        <stackElement margin-bottom="16" show_indicator="true">
+          <verticalLayout margin="8">
+            <placeHolder/>
+            <text type="artist_album" style="scroll" height="28"/>
+            <text type="title" style="scroll" font_size="10" height="30"/>
+          </verticalLayout>
+          <lyrics margin="8"/>
+        </stackElement>
+      </albumCover>
+      <horizontalLayout height="56">
+        <button key="repeatMode" margin="4" width="28" height="28"/>
+        <button key="favorite" margin="4" width="28" height="28"/>
+        <button key="previous" bigIcon="true" width="36" height="36"/>
+        <button key="playPause" bigIcon="true" width="36" height="36"/>
+        <button key="next" bigIcon="true" width="36" height="36"/>
+        <volume margin="4" width="28" height="28" show_text="false"/>
+        <button key="showPlaylist" margin="4" width="28" height="28"/>
+      </horizontalLayout>
+      <progressBar margin-bottom="0" height="2"/>
+    </verticalLayout>
+    <button key="miniMode" width="28" height="28" margin-top="8" margin-right="8"/>
+  </ui>
+</root>

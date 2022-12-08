@@ -38,13 +38,13 @@ public:
     static void UniqueUiIndex(std::vector<std::shared_ptr<CUserUi>>& ui_list);
 
 protected:
-    std::shared_ptr<UiElement::Element> GetCurrentUiType();
+    std::shared_ptr<UiElement::Element> GetCurrentUiType() const;
 
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
     std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node);      //从一个xml节点创建UiElement::Element元素及其所有子元素的对象
 
-    std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements();
+    const std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements() const;
 
 protected:
     void LoadUi();      //从xml文件载入界面

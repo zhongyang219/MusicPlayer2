@@ -5,7 +5,7 @@
       <stackElement hover_to_switch="true" margin-left="4" margin-right="4">
         <verticalLayout>
           <text type="artist_album" style="scroll"/>
-          <text type="title" style="scroll"/>
+          <text type="title" style="scroll" font_size="10"/>
         </verticalLayout>
         <horizontalLayout>
           <button key="previous" width="36" height="36" bigIcon="true"/>
@@ -17,7 +17,6 @@
         </horizontalLayout>
       </stackElement>
       <button key="miniMode" width="24" height="24"/>
-      <!--<button key=" width="24" height="24"/>-->
     </horizontalLayout>
     <progressBar margin-bottom="0" height="2"/>
   </ui>

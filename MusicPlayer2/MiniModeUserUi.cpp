@@ -89,3 +89,25 @@ bool CMiniModeUserUi::LButtonUp(CPoint point)
 
     return CUserUi::LButtonUp(point);
 }
+
+bool CMiniModeUserUi::PointInControlArea(CPoint point) const
+{
+    if (!__super::PointInControlArea(point))
+    {
+        const auto& stack_elements{ GetStackElements() };
+        for (const auto& element : stack_elements)
+        {
+            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
+            if (stack_element != nullptr)
+            {
+                if (stack_element->indicator.rect.PtInRect(point))
+                    return true;
+            }
+        }
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}

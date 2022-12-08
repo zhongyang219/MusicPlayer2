@@ -47,7 +47,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
     m_draw_data.thumbnail_rect = draw_rect;
 }
 
-std::shared_ptr<UiElement::Element> CUserUi::GetCurrentUiType()
+std::shared_ptr<UiElement::Element> CUserUi::GetCurrentUiType() const
 {
     std::shared_ptr<UiElement::Element> draw_element;
     //根据不同的窗口大小选择不同的界面元素的根节点绘图
@@ -427,9 +427,13 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
     return element;
 }
 
-std::vector<std::shared_ptr<UiElement::Element>>& CUserUi::GetStackElements()
+const std::vector<std::shared_ptr<UiElement::Element>>& CUserUi::GetStackElements() const
 {
-    return m_stack_elements[GetCurrentUiType().get()];
+    auto iter = m_stack_elements.find(GetCurrentUiType().get());
+    if (iter != m_stack_elements.end())
+        return iter->second;
+    static std::vector<std::shared_ptr<UiElement::Element>> vec_empty;
+    return vec_empty;
 }
 
 void CUserUi::LoadUi()

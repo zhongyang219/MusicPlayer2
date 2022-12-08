@@ -90,7 +90,7 @@ public:
     int WidthThreshold() const;
     int DrawAreaHeight() const;     //窄界面模式下显示播放列表时绘图区的高度
 
-    bool PointInControlArea(CPoint point) const;        //判断一个点的位置是否在控件区域
+    virtual bool PointInControlArea(CPoint point) const;        //判断一个点的位置是否在控件区域
     bool PointInTitlebarArea(CPoint point) const;
     bool PointInAppIconArea(CPoint point) const;
     bool PointInMenubarArea(CPoint point) const;
