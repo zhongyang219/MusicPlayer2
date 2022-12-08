@@ -111,15 +111,17 @@ void CMiniModeDlg::SetAlwaysOnTop()
 void CMiniModeDlg::AdjustWindowSize()
 {
     //获取窗口大小
-    int width{}, height{}, height_without_playlist{};
-    CalculateWindowSize(width, height, height_without_playlist);
+    int width{}, height{}, height_with_playlist{};
+    CalculateWindowSize(width, height, height_with_playlist);
     if (width != 0 && height != 0)
     {
-        SetWindowPos(nullptr, 0, 0, width, (m_show_playlist ? height + height_without_playlist : height), SWP_NOMOVE | SWP_NOZORDER);
+        SetWindowPos(nullptr, 0, 0, width, (m_show_playlist ? height_with_playlist : height), SWP_NOMOVE | SWP_NOZORDER);
     }
 
     MoveWindowPos();
     SetAlwaysOnTop();
+
+    Invalidate();
 
     //初始化播放列表控件的位置
     CRect playlist_rect;
@@ -127,7 +129,7 @@ void CMiniModeDlg::AdjustWindowSize()
     playlist_rect.left = margin;
     playlist_rect.right = width - margin;
     playlist_rect.top = height + margin;
-    playlist_rect.bottom = height_without_playlist - margin;
+    playlist_rect.bottom = height_with_playlist - margin;
     m_playlist_ctrl.MoveWindow(playlist_rect);
     m_playlist_ctrl.AdjustColumnWidth();
 
@@ -274,8 +276,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     m_show_playlist = false;
 
     //获取窗口大小
-    int width{}, height{}, height_without_playlist{};
-    CalculateWindowSize(width, height, height_without_playlist);
+    int width{}, height{}, height_with_playlist{};
+    CalculateWindowSize(width, height, height_with_playlist);
 
     //初始化窗口位置
     if (m_position_x != -1 && m_position_y != -1)
@@ -656,8 +658,8 @@ void CMiniModeDlg::OnShowPlayList()
     CRect rect{};
     GetWindowRect(rect);
     //获取窗口大小
-    int width{}, height{}, height_without_playlist{};
-    CalculateWindowSize(width, height, height_without_playlist);
+    int width{}, height{}, height_with_playlist{};
+    CalculateWindowSize(width, height, height_with_playlist);
     if (m_show_playlist)
     {
         SetWindowPos(nullptr, rect.left, rect.top + m_playlist_y_offset, width, height, SWP_NOZORDER);
@@ -666,12 +668,12 @@ void CMiniModeDlg::OnShowPlayList()
     }
     else
     {
-        rect.bottom = rect.top + height_without_playlist;
+        rect.bottom = rect.top + height_with_playlist;
         POINT tmp{ CCommon::CalculateWindowMoveOffset(rect, theApp.m_screen_rects) };    // 向下展开播放列表所需偏移量
         ASSERT(tmp.x == 0); // 此函数不处理横向偏移，需要由OnExitSizeMove及MoveWindowPos保证横向在屏幕内
         // 向下展开播放列表并记录窗口还原偏移量，自行拖动窗口时偏移量会清零
         m_playlist_y_offset = -tmp.y;
-        SetWindowPos(nullptr, rect.left, rect.top + tmp.y, width, height_without_playlist, SWP_NOZORDER);
+        SetWindowPos(nullptr, rect.left, rect.top + tmp.y, width, height_with_playlist, SWP_NOZORDER);
         m_show_playlist = true;
     }
 }
