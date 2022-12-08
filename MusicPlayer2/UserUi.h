@@ -19,6 +19,7 @@ public:
     virtual bool LButtonUp(CPoint point) override;
     virtual void LButtonDown(CPoint point) override;
     virtual void MouseMove(CPoint point) override;
+    virtual void MouseLeave() override;
 
 protected:
     int m_index{ INT_MAX };

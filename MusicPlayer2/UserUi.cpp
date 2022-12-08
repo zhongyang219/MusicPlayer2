@@ -144,6 +144,21 @@ void CUserUi::MouseMove(CPoint point)
     CPlayerUIBase::MouseMove(point);
 }
 
+void CUserUi::MouseLeave()
+{
+    auto& stack_elements{ GetStackElements() };
+    for (auto& element : stack_elements)
+    {
+        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
+        if (stack_element != nullptr)
+        {
+            //清除StackElement中的mouse_hover状态
+            stack_element->mouse_hover = false;
+        }
+    }
+    CPlayerUIBase::MouseLeave();
+}
+
 int CUserUi::GetUiIndex()
 {
     return m_index;
