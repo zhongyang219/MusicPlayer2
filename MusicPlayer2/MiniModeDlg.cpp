@@ -58,7 +58,9 @@ void CMiniModeDlg::LoadConfig()
     m_position_x = ini.GetInt(L"mini_mode", L"position_x", -1);
     m_position_y = ini.GetInt(_T("mini_mode"), _T("position_y"), -1);
     m_always_on_top = ini.GetBool(_T("mini_mode"), _T("always_on_top"), true);
-    m_ui_index = ini.GetInt(L"mini_mode", L"ui_index", 0);
+    m_ui_index = ini.GetInt(L"mini_mode", L"ui_index", 1);
+    if (m_ui_index < 0 || m_ui_index >= static_cast<int>(m_ui_list.size()))
+        m_ui_index = 0;
 }
 
 CPlayerUIBase* CMiniModeDlg::GetCurUi()

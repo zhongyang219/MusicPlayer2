@@ -2,7 +2,7 @@
   <ui width="284" height="202">
     <verticalLayout>
       <albumCover>
-        <rectangle theme_color="false"/>
+        <rectangle theme_color="false" no_corner_radius="true"/>
         <stackElement margin-bottom="16" show_indicator="true">
           <verticalLayout margin="8">
             <placeHolder/>
