@@ -54,19 +54,34 @@ bool CMiniModeUserUi::LButtonUp(CPoint point)
         {
             switch (btn.first)
             {
-            case BTN_RETURN: case BTN_MINI:
+            case BTN_MINI:
                 btn.second.hover = false;
                 btn.second.pressed = false;
                 m_pMainWnd->SendMessage(WM_COMMAND, IDOK);
                 return true;
             case BTN_CLOSE:
-                btn.second.hover = false;
-                btn.second.pressed = false;
                 if (theApp.m_general_setting_data.minimize_to_notify_icon)
                     m_pMainWnd->ShowWindow(HIDE_WINDOW);
                 else
                     m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
                 return true;
+            case BTN_SHOW_PLAYLIST:
+                btn.second.hover = false;
+                btn.second.pressed = false;
+                m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
+                return true;
+            case BTN_SKIN:
+            {
+                btn.second.hover = false;
+                btn.second.pressed = false;
+                CPoint point1;
+                GetCursorPos(&point1);
+                CMenu* pMenu = theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSubMenu(17);
+                ASSERT(pMenu != nullptr);
+                if (pMenu != nullptr)
+                    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
+                return true;
+            }
             }
 
         }

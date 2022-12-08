@@ -145,7 +145,7 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"));
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawUIButton(rc_tmp, m_buttons[BTN_RETURN], theApp.m_icon_set.mini_restore);
+    DrawUIButton(rc_tmp, m_buttons[BTN_MINI], theApp.m_icon_set.mini_restore);
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
     DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("≡"));
@@ -225,7 +225,7 @@ bool CMiniModeUI::LButtonUp(CPoint point)
             case BTN_SHOW_PLAYLIST:
                 m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
                 break;
-            case BTN_RETURN:
+            case BTN_MINI:
                 //m_buttons[BTN_RETURN].hover = false;
                 m_pMainWnd->SendMessage(WM_COMMAND, IDOK);
                 break;
@@ -308,7 +308,7 @@ void CMiniModeUI::AddToolTips()
     AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
-    AddMouseToolTip(BTN_RETURN, CCommon::LoadText(IDS_BACK_TO_NARMAL));
+    AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_BACK_TO_NARMAL));
     AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
     AddMouseToolTip(BTN_COVER, _T(""));
     AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));

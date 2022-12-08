@@ -712,8 +712,13 @@ std::wstring UiElement::Text::GetText() const
         draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
         break;
     case UiElement::Text::ArtistAlbum:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
-        break;
+    {
+        //优先使用唱片集艺术家，如果为空，则使用艺术家
+        std::wstring artist_display{ CPlayer::GetInstance().GetCurrentSongInfo().album_artist };
+        if (artist_display.empty())
+            artist_display = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
+        draw_text = artist_display + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+    }   break;
     case UiElement::Text::Format:
         draw_text = CPlayerUIBase::GetDisplayFormatString();
         break;

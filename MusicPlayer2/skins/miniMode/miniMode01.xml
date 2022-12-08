@@ -1,18 +1,19 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../skin.xsd">  
   <ui width="328" height="56">
     <horizontalLayout margin="4">
-      <albumCover width="48" margin-right="8"/>
-      <stackElement hover_to_switch="true">
+      <albumCover width="48" margin-right="4"/>
+      <stackElement hover_to_switch="true" margin-left="4" margin-right="4">
         <verticalLayout>
-          <text type="artist" style="scroll" margin-left="4"/>
-          <text type="title" style="scroll" margin-left="4"/>
+          <text type="artist_album" style="scroll"/>
+          <text type="title" style="scroll"/>
         </verticalLayout>
         <horizontalLayout>
           <button key="previous" width="36" height="36" bigIcon="true"/>
           <button key="playPause" width="36" height="36" bigIcon="true"/>
           <button key="next" width="36" height="36" bigIcon="true"/>
           <button key="repeatMode" width="32" height="32" bigIcon="true"/>
-          <text type="play_time" style="scroll" margin-left="4"/>
+          <text type="play_time" style="scroll" margin-left="4" margin-right="4"/>
+          <button key="showPlaylist" width="24" height="24"/>
         </horizontalLayout>
       </stackElement>
       <button key="miniMode" width="24" height="24"/>

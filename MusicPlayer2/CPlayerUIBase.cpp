@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "CPlayerUIBase.h"
 #include "MusicPlayerDlg.h"
+#include "MiniModeUserUi.h"
 
 int CPlayerUIBase::m_playlist_offset{};
 
@@ -637,7 +638,11 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case BTN_SKIN: case BTN_SKIN_TITLEBAR: return theApp.m_icon_set.skin;
     case BTN_EQ: return theApp.m_icon_set.eq;
     case BTN_SETTING: case BTN_SETTING_TITLEBAR: return theApp.m_icon_set.setting;
-    case BTN_MINI: return theApp.m_icon_set.mini;
+    case BTN_MINI:
+        if (IsMiniMode())
+            return theApp.m_icon_set.mini_restore;
+        else
+            return theApp.m_icon_set.mini;
     case BTN_MINI_TITLEBAR: return theApp.m_icon_set.mini;
     case BTN_INFO: return theApp.m_icon_set.info;
     case BTN_FIND: return theApp.m_icon_set.find_songs;
@@ -1490,6 +1495,11 @@ int CPlayerUIBase::CalculateRoundRectRadius(CRect rect)
 bool CPlayerUIBase::IsDrawLargeIcon()
 {
     return theApp.m_ui_data.full_screen;
+}
+
+bool CPlayerUIBase::IsMiniMode() const
+{
+    return (dynamic_cast<const CMiniModeUserUi*>(this) != nullptr);
 }
 
 bool CPlayerUIBase::IsDrawNarrowMode() const
@@ -2552,15 +2562,22 @@ IconRes* CPlayerUIBase::GetVolumeIcon()
 
 void CPlayerUIBase::AddToolTips()
 {
+    bool is_mini_mode{ IsMiniMode() };
     AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
     AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
     AddMouseToolTip(BTN_VOLUME, GetVolumeTooltipString());
-    AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
+    if (is_mini_mode)
+        AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI));
+    else
+        AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
     AddMouseToolTip(BTN_SKIN_TITLEBAR, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
     AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, GetCmdShortcutKeyForTooltips(ID_EQUALIZER)));
     AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
     AddMouseToolTip(BTN_SETTING_TITLEBAR, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
-    AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
+    if (is_mini_mode)
+        AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_BACK_TO_NARMAL));
+    else
+        AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
     AddMouseToolTip(BTN_MINI_TITLEBAR, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
     AddMouseToolTip(BTN_INFO, m_info_tip);
     AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
@@ -2568,7 +2585,10 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
     AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
     AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
-    AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST) : GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST)));
+    if (is_mini_mode)
+        AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
+    else
+        AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST) : GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST)));
     AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, GetCmdShortcutKeyForTooltips(ID_SET_PATH)));
     AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, GetCmdShortcutKeyForTooltips(ID_FIND)));
     AddMouseToolTip(BTN_COVER, m_cover_tip);
@@ -2585,6 +2605,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_ADD_TO_PLAYLIST, CCommon::LoadText(IDS_ADD_TO_PLAYLIST));
     AddMouseToolTip(BTN_SWITCH_DISPLAY, CCommon::LoadText(IDS_SWITCH_DISPLAY));
     AddMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, GetCmdShortcutKeyForTooltips(ID_DARK_MODE)));
+    AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
 
     UpdateRepeatModeToolTip();
 }

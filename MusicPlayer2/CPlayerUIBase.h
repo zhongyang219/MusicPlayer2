@@ -142,7 +142,6 @@ public:
         BTN_MENU,               //主菜单按钮
         BTN_FAVOURITE,          //“我喜欢”按钮
         BTN_CLOSE,              //关闭按钮（迷你模式）
-        BTN_RETURN,             //返回按钮（迷你模式）
         BTN_MINIMIZE,           //最小化按钮
         BTN_MAXIMIZE,           //最大化按钮
         BTN_APP_CLOSE,          //关闭按钮
@@ -247,6 +246,8 @@ protected:
     virtual bool IsDrawLargeIcon();        //是否绘制大图标
 
     virtual void SwitchStackElement() {}
+
+    bool IsMiniMode() const;
 
 public:
     virtual int GetUiIndex() { return 1; }  //UI的序号，用于区分每个界面，不会为0
