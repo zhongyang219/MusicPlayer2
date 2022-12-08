@@ -1,8 +1,8 @@
 ﻿#include "stdafx.h"
 #include "UserUi.h"
 
-CUserUi::CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path)
-    : CPlayerUIBase(ui_data, pMainWnd), m_xml_path(xml_path)
+CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
+    : CPlayerUIBase(theApp.m_ui_data, pMainWnd), m_xml_path(xml_path)
 {
     LoadUi();
 }

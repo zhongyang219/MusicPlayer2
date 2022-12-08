@@ -7,7 +7,7 @@ class CUserUi :
     public CPlayerUIBase
 {
 public:
-    CUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path);
+    CUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
     ~CUserUi();
 
     void SetIndex(int index);

@@ -59,7 +59,7 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     for (const auto& file_name : skin_files)
     {
         std::wstring file_path = theApp.m_local_dir + L"skins\\" + file_name;
-        auto ui = std::make_shared<CUserUi>(theApp.m_ui_data, &m_ui_static_ctrl, file_path);
+        auto ui = std::make_shared<CUserUi>(&m_ui_static_ctrl, file_path);
         if (ui->IsIndexValid())
             user_ui_list_with_index.push_back(ui);
         else
@@ -1948,7 +1948,10 @@ int CMusicPlayerDlg::GetUiSelected() const
 
 CPlayerUIBase* CMusicPlayerDlg::GetCurrentUi()
 {
-    return dynamic_cast<CPlayerUIBase*>(m_pUI);
+    if (m_miniModeDlg.m_hWnd != NULL)
+        return m_miniModeDlg.GetCurUi();
+    else
+        return dynamic_cast<CPlayerUIBase*>(m_pUI);
 }
 
 void CMusicPlayerDlg::GetScreenInfo()

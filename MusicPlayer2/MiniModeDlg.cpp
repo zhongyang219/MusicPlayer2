@@ -27,7 +27,7 @@ CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd
     CCommon::GetFiles(theApp.m_local_dir + L"skins\\miniMode\\*.xml", skin_files);
     for (const auto& file_name : skin_files)
     {
-        m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(theApp.m_ui_data, this, theApp.m_local_dir + L"skins\\miniMode\\" + file_name));
+        m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(this, theApp.m_local_dir + L"skins\\miniMode\\" + file_name));
     }
 
 }
@@ -248,17 +248,7 @@ void CMiniModeDlg::SetPlayListColor()
     //m_playlist_ctrl.SetColor(theApp.m_app_setting_data.theme_color);
     m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
 }
-//
-//void CMiniModeDlg::SetDefaultBackGround(CImage * pImage)
-//{
-//	m_ui_data.pDefaultBackground = pImage;
-//}
 
-//void CMiniModeDlg::SetDisplayFormat(DisplayFormat * pDisplayFormat)
-//{
-//	m_ui_data.pDisplayFormat = pDisplayFormat;
-//}
-//
 void CMiniModeDlg::MoveWindowPos()
 {
     CRect rect;
@@ -279,13 +269,6 @@ BOOL CMiniModeDlg::OnInitDialog()
         ui->Init(m_pDC);
     }
 
-    //初始化鼠标提示
-    m_Mytip.Create(this, TTS_ALWAYSTIP);
-    m_Mytip.SetMaxTipWidth(800);
-
-    //m_ui.SetToolTip(&m_Mytip);
-    //UpdateSongTipInfo();
-
     m_show_playlist = false;
 
     //获取窗口大小
@@ -297,9 +280,6 @@ BOOL CMiniModeDlg::OnInitDialog()
         SetWindowPos(nullptr, m_position_x, m_position_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
     AdjustWindowSize();
-
-    ////装载右键菜单
-    //m_menu.LoadMenu(IDR_MINI_MODE_MENU);
 
     //设置定时器
     SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
@@ -381,7 +361,6 @@ void CMiniModeDlg::SetVolume(bool up)
         CPlayer::GetInstance().MusicControl(Command::VOLUME_UP);
     else
         CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN);
-    //ShowVolume(CPlayer::GetInstance().GetVolume());
     KillTimer(11);
     SetTimer(11, 1500, NULL);		//显示音量后设置一个1500毫秒的定时器（音量显示保持1.5秒）
     m_ui_data.m_show_volume = true;
@@ -489,11 +468,6 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 
     if (pMsg->message == WM_MOUSEMOVE)
     {
-        //POINT point = pMsg->pt;
-        //ScreenToClient(&point);
-
-        //if (!m_ui.PointInControlArea(point))
-        m_Mytip.RelayEvent(pMsg);
         CPlayerUIBase* cur_ui{ GetCurUi() };
         if (cur_ui != nullptr)
             cur_ui->GetToolTipCtrl().RelayEvent(pMsg);

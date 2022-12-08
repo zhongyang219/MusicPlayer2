@@ -43,6 +43,8 @@ public:
 
     void DrawInfo();
 
+    CPlayerUIBase* GetCurUi();
+
 protected:
 
     int m_position_x;
@@ -54,11 +56,7 @@ protected:
     int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目
     vector<int>& m_items_selected;
 
-    CToolTipCtrl m_Mytip;
-    //CMenu m_menu;
-
     CMiniModeUI::SMiniModeUIData m_ui_data;     //（仅用于默认的迷你模式界面）
-    //CMiniModeUI m_ui{ m_ui_data, this };
     std::vector<std::shared_ptr<CPlayerUIBase>> m_ui_list;      //保存每个界面类的指针
     int m_ui_index{};
 
@@ -77,8 +75,6 @@ protected:
 
     void SaveConfig() const;
     void LoadConfig();
-
-    CPlayerUIBase* GetCurUi();
 
     void UpdateSongTipInfo();
     void SetTitle();

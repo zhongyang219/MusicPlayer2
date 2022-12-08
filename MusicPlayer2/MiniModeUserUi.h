@@ -4,7 +4,7 @@
 class CMiniModeUserUi : public CUserUi
 {
 public:
-    CMiniModeUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path);
+    CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
     ~CMiniModeUserUi();
 
     bool GetUiSize(int& width, int& height);
@@ -19,6 +19,7 @@ private:
     virtual bool IsDrawStatusBar() const override { return false; }
     virtual bool IsDrawTitleBar() const override { return false; }
     virtual bool IsDrawMenuBar() const override { return false; }
-
+    void AddMouseToolTip(BtnKey btn, LPCTSTR str) override;     //为一个按钮添加鼠标提示
+    void UpdateMouseToolTip(BtnKey btn, LPCTSTR str) override;
 };
 

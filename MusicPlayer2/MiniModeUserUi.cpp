@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "MiniModeUserUi.h"
 
-CMiniModeUserUi::CMiniModeUserUi(UIData& ui_data, CWnd* pMainWnd, const std::wstring& xml_path)
-    : CUserUi(ui_data, pMainWnd, xml_path)
+CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
+    : CUserUi(pMainWnd, xml_path)
 {
 }
 
@@ -73,4 +73,14 @@ bool CMiniModeUserUi::LButtonUp(CPoint point)
     }
 
     return CUserUi::LButtonUp(point);
+}
+
+void CMiniModeUserUi::AddMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + m_index + 2);
+}
+
+void CMiniModeUserUi::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+{
+    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + m_index + 2);
 }

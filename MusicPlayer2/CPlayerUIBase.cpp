@@ -24,6 +24,7 @@ void CPlayerUIBase::Init(CDC* pDC)
 
     m_tool_tip.Create(m_pMainWnd, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
+    m_first_draw = true;
 }
 
 void CPlayerUIBase::DrawInfo(bool reset)

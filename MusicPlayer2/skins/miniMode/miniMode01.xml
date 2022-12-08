@@ -5,6 +5,7 @@
       <button key="previous" width="36" height="36" bigIcon="true"/>
       <button key="playPause" width="36" height="36" bigIcon="true"/>
       <button key="next" width="36" height="36" bigIcon="true"/>
+      <button key="repeatMode" width="32" height="32" bigIcon="true"/>
       <text type="artist_title" style="scroll" margin-left="4"/>
       <button key="miniMode" width="24" height="24"/>
       <!--<button key=" width="24" height="24"/>-->
