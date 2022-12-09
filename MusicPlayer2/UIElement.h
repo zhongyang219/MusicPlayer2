@@ -138,8 +138,6 @@ namespace UiElement
             PlayTimeAndVolume   //显示为播放时间，如果正在调整音量，则显示当前音量，一段时间后恢复
         };
 
-        enum{ SHOW_VOLUME_TIMER_ID = 1635 };
-
         Type type;
         int font_size{ 9 };
         bool width_follow_text{};
@@ -149,7 +147,7 @@ namespace UiElement
         virtual void Draw(CPlayerUIBase* ui) override;
         virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
         std::wstring GetText() const;
-        void VolumeAdjusted(CWnd* pMainWindow);      //在调整音量时需要调用此函数
+
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;
     };

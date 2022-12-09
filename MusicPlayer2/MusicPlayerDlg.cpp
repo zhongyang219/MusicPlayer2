@@ -2537,6 +2537,13 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         m_ignore_color_change = false;
     }
 
+    else if (nIDEvent == CUserUi::SHOW_VOLUME_TIMER_ID)
+    {
+        CUserUi* cur_ui = dynamic_cast<CUserUi*>(GetCurrentUi());
+        if (cur_ui != nullptr)
+            cur_ui->ResetVolumeToPlayTime();
+    }
+
     CMainDialogBase::OnTimer(nIDEvent);
 }
 

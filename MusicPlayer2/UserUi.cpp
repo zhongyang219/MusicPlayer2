@@ -47,7 +47,23 @@ void CUserUi::VolumeAdjusted()
             UiElement::Text* text_element{ dynamic_cast<UiElement::Text*>(element) };
             if (text_element != nullptr)
             {
-                text_element->VolumeAdjusted(this->m_pMainWnd);
+                text_element->show_volume = true;
+            }
+        });
+    KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID);
+    //设置一个音量显示时间的定时器（音量显示保持1.5秒）
+    SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID, 1500, NULL);
+}
+
+void CUserUi::ResetVolumeToPlayTime()
+{
+    KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID);
+    IterateAllElements([this](UiElement::Element* element)
+        {
+            UiElement::Text* text_element{ dynamic_cast<UiElement::Text*>(element) };
+            if (text_element != nullptr)
+            {
+                text_element->show_volume = false;
             }
         });
 }

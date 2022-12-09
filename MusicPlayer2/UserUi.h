@@ -15,6 +15,9 @@ public:
 
     void IterateAllElements(std::function<void(UiElement::Element*)> func);  //遍历所有界面元素
     void VolumeAdjusted();      //当音量调整时需要调用此函数
+    void ResetVolumeToPlayTime();   //定时器SHOW_VOLUME_TIMER_ID响应时需要调用此函数
+
+    enum { SHOW_VOLUME_TIMER_ID = 1635 };
 
     // 通过 CPlayerUIBase 继承
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
