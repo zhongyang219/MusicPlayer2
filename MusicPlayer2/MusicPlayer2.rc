@@ -3865,6 +3865,7 @@ BEGIN
     IDS_LOGIN_FAILED        "登录失败！"
     IDS_LASTFM_CACHE_STATUS "%i条记录"
     IDS_SHOW_HIDE_DESKTOP_LYRIC "显示/隐藏桌面歌词"
+    IDS_APP_RUNING_INFO     "MusicPlayer2 还在进行，请等待进程退出，或者通过任务管理器结束进程。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -7151,6 +7152,7 @@ BEGIN
     IDS_LOGIN_FAILED        "Login failed!"
     IDS_LASTFM_CACHE_STATUS "%i scrobbles"
     IDS_SHOW_HIDE_DESKTOP_LYRIC "Show/hide desktop lyric"
+    IDS_APP_RUNING_INFO     "MusicPlayer2 is still running, please wait for the process to exit, or end the process through the task manager."
 END
 
 #endif    // 英语(美国) resources

@@ -774,6 +774,7 @@
 #define IDI_IDI_MINI_RESTORE_D          584
 #define IDS_LASTFM_CACHE_STATUS         585
 #define IDS_SHOW_HIDE_DESKTOP_LYRIC     586
+#define IDS_APP_RUNING_INFO             587
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

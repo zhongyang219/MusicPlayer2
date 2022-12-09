@@ -120,9 +120,14 @@ BOOL CMusicPlayerApp::InitInstance()
     if (cmd_control)		//如果从命令行参数解析到了命令，则将命令行参数清除
         cmd_line.clear();
 
-    //检查是否已有实例正在运行（Debug时不检查）
-#ifndef _DEBUG
-    HANDLE hMutex = ::CreateMutex(NULL, TRUE, _T("bXS1E7joK0Kh"));		//使用一个随机的字符串创建一个互斥量
+    LPCTSTR str_mutex{};
+#ifdef _DEBUG
+    str_mutex = _T("EY7n2uGon722");
+#else
+    str_mutex = _T("bXS1E7joK0Kh");
+#endif 
+    //检查是否已有实例正在运行
+    HANDLE hMutex = ::CreateMutex(NULL, TRUE, str_mutex);		//使用一个随机的字符串创建一个互斥量
     if (hMutex != NULL)
     {
         if (GetLastError() == ERROR_ALREADY_EXISTS)		//互斥量创建失败，说明已经有一个程序的实例正在运行
@@ -190,10 +195,13 @@ BOOL CMusicPlayerApp::InitInstance()
                     ::SendMessage(handle, WM_COPYDATA, 0, (LPARAM)&copy_data);
                 }
             }
+            else        //仍然找不到窗口句柄，说明程序还没有退出
+            {
+                AfxMessageBox(IDS_APP_RUNING_INFO, MB_ICONINFORMATION | MB_OK);
+            }
             return FALSE;		//退出当前程序
         }
     }
-#endif
 
     //CString str = CCommon::LoadTextFormat(IDS_TEST_STR, { 3, L"asdfghhh", 1.2 });
 
