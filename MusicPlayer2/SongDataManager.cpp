@@ -234,6 +234,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.disc_num;
                 ar >> song_info.total_discs;
             }
+            CSingleLock sync(&m_critical, TRUE);
             m_song_data[song_info] = song_info;     // 将读取到的一首歌曲信息添加到映射容器中
         }
     }
@@ -268,6 +269,7 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
 {
     if (song_info.file_path.empty())
         return;
+    CSingleLock sync(&m_critical, TRUE);
     SongInfo& song = m_song_data[song_info];
     song.file_path = song_info.file_path;
     song.cue_file_path = song_info.cue_file_path;
@@ -344,6 +346,7 @@ bool CSongDataManager::IsItemExist(const SongDataMapKey& key) const
 
 void CSongDataManager::AddItem(const SongInfo& song)
 {
+    CSingleLock sync(&m_critical, TRUE);
     ASSERT(!song.file_path.empty());
     m_song_data[song] = song;
     SetSongDataModified();
@@ -351,6 +354,7 @@ void CSongDataManager::AddItem(const SongInfo& song)
 
 bool CSongDataManager::RemoveItem(const SongDataMapKey& key)
 {
+    CSingleLock sync(&m_critical, TRUE);
     auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
     {
@@ -368,6 +372,7 @@ int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)> fun_cond
     {
         if (fun_condition(iter->second))
         {
+            CSingleLock sync(&m_critical, TRUE);
             iter = m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目
             clear_cnt++;
         }
@@ -402,6 +407,7 @@ void CSongDataManager::ChangeFilePath(const wstring& file_path, const wstring& n
     auto iter = m_song_data.find(file_path);
     if (iter != m_song_data.end())
     {
+        CSingleLock sync(&m_critical, TRUE);
         SongInfo song = iter->second;
         if (!song.file_path.empty())
             song.file_path = new_path;

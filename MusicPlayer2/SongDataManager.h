@@ -84,4 +84,5 @@ private:
     SongDataMap m_song_data;        //储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
     bool m_song_data_modified{};
     CString m_data_version;
+    CCriticalSection m_critical;    //线程同步对象
 };
