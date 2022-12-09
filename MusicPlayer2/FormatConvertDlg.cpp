@@ -441,10 +441,11 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     static CFormatConvertDlg* _pthis{};
     _pthis = pthis;
     //执行转换格式
-    CPlayer::GetInstance().GetPlayerCore()->EncodeAudio(song_info, out_file_path, pthis->m_encode_format, para, freq, [](int progress)
+    if (!CPlayer::GetInstance().GetPlayerCore()->EncodeAudio(song_info, out_file_path, pthis->m_encode_format, para, freq, [](int progress)
         {
             ::PostMessage(_pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, _file_index, progress);
-        });
+        }))
+        return false;
 
     //转换完成后向目标文件写入标签信息和专辑封面
     SongInfo song_info_out{ song_info };
