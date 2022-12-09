@@ -539,6 +539,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     // refresh为true时会强制更新cue的时长与标签（直接更新到媒体库）
     CAudioCommon::GetCueTracks(all_media_songs, CPlayer::GetInstance().GetPlayerCore(), index, refresh);
 
+    theApp.m_media_update_total_num = all_media_songs.size();   //保存音频总数
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& song : all_media_songs)
     {
