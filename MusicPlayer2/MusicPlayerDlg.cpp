@@ -4641,17 +4641,31 @@ void CMusicPlayerDlg::OnSwitchUi()
 void CMusicPlayerDlg::OnVolumeUp()
 {
     if (m_miniModeDlg.m_hWnd == NULL)
+    {
         CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+        if (cur_ui != nullptr)
+            cur_ui->VolumeAdjusted();
+    }
     else
+    {
         m_miniModeDlg.SetVolume(true);
+    }
 }
 
 void CMusicPlayerDlg::OnVolumeDown()
 {
     if (m_miniModeDlg.m_hWnd == NULL)
+    {
         CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+        if (cur_ui != nullptr)
+            cur_ui->VolumeAdjusted();
+    }
     else
+    {
         m_miniModeDlg.SetVolume(false);
+    }
 }
 
 

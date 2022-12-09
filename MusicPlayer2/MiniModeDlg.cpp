@@ -365,6 +365,11 @@ void CMiniModeDlg::SetVolume(bool up)
         CPlayer::GetInstance().MusicControl(Command::VOLUME_UP);
     else
         CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN);
+
+    CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurUi()) };
+    if (cur_ui != nullptr)
+        cur_ui->VolumeAdjusted();
+
     KillTimer(11);
     SetTimer(11, 1500, NULL);		//显示音量后设置一个1500毫秒的定时器（音量显示保持1.5秒）
     m_ui_data.m_show_volume = true;

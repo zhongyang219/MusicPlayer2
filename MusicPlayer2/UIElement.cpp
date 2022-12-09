@@ -734,10 +734,40 @@ std::wstring UiElement::Text::GetText() const
     case UiElement::Text::PlayTime:
         draw_text = CPlayer::GetInstance().GetTimeString();
         break;
+    case UiElement::Text::PlayTimeAndVolume:
+        if (show_volume)
+        {
+            CString str;
+            str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
+            draw_text = str;
+        }
+        else
+        {
+            draw_text = CPlayer::GetInstance().GetTimeString().c_str();
+        }
+        break;
     default:
         break;
     }
     return draw_text;
+}
+
+void UiElement::Text::VolumeAdjusted(CWnd* pMainWindow)
+{
+    if (type == UiElement::Text::PlayTimeAndVolume)
+    {
+        show_volume = true;
+        static UiElement::Text* timer_owner_element = this;
+        static CWnd* timer_owner_window = pMainWindow;
+        KillTimer(pMainWindow->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID);
+        //设置一个音量显示时间的定时器（音量显示保持1.5秒）
+        SetTimer(pMainWindow->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID, 1500, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
+            {
+                KillTimer(timer_owner_window->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID);
+                timer_owner_element->show_volume = false;
+            });
+
+    }
 }
 
 void UiElement::AlbumCover::Draw(CPlayerUIBase* ui)

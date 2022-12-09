@@ -66,7 +66,7 @@
           </horizontalLayout>
           <horizontalLayout margin-right="8">
             <placeHolder/>
-            <text type="play_time" width="80" alignment="right" margin-right="4" height="28"/>
+            <text type="play_time_and_volume" width="80" alignment="right" margin-right="4" height="28"/>
             <volume show_text="false" width="28" height="28"/>
             <button key="mediaLib" width="28" height="28"/>
             <button key="showPlaylist" width="28" height="28"/>

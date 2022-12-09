@@ -13,6 +13,9 @@ public:
     void SetIndex(int index);
     bool IsIndexValid() const;
 
+    void IterateAllElements(std::function<void(UiElement::Element*)> func);  //遍历所有界面元素
+    void VolumeAdjusted();      //当音量调整时需要调用此函数
+
     // 通过 CPlayerUIBase 继承
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
     virtual CString GetUIName() override;
@@ -38,7 +41,7 @@ public:
     static void UniqueUiIndex(std::vector<std::shared_ptr<CUserUi>>& ui_list);
 
 protected:
-    std::shared_ptr<UiElement::Element> GetCurrentUiType() const;
+    std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
 
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);

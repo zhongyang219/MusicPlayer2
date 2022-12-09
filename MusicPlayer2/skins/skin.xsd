@@ -509,6 +509,11 @@
                             <xs:documentation>播放时间</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="play_time_and_volume">
+                        <xs:annotation>
+                            <xs:documentation>显示播放时间，如果正在调整音量，会显示当前音量，一段时间后恢复。</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>

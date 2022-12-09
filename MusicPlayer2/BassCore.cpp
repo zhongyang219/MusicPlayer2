@@ -401,7 +401,7 @@ void CBassCore::Pause()
         BASS_ChannelSlideAttribute(m_musicStream, BASS_ATTRIB_VOL, 0, theApp.m_play_setting_data.fade_time);        //音量渐变到0
         KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
         //设置一个淡出时间的定时器
-        SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID, theApp.m_play_setting_data.fade_time, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
+        SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID, 1500, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4)
         {
             KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), FADE_TIMER_ID);
             BASS_ChannelPause(CPlayer::GetInstance().GetBassHandle());     //当定时器器触发时，即音量已经渐变到0，执行暂停操作

@@ -134,16 +134,22 @@ namespace UiElement
             ArtistTitle,    //艺术家 - 标题
             ArtistAlbum,    //艺术家 - 唱片集
             Format,     //歌曲格式
-            PlayTime    //播放时间
+            PlayTime,   //播放时间
+            PlayTimeAndVolume   //显示为播放时间，如果正在调整音量，则显示当前音量，一段时间后恢复
         };
+
+        enum{ SHOW_VOLUME_TIMER_ID = 1635 };
+
         Type type;
         int font_size{ 9 };
         bool width_follow_text{};
         CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
+        bool show_volume{};     //当type为PlayTimeAndVolume时有效，如果为true，则显示为音量
 
         virtual void Draw(CPlayerUIBase* ui) override;
         virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
         std::wstring GetText() const;
+        void VolumeAdjusted(CWnd* pMainWindow);      //在调整音量时需要调用此函数
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;
     };

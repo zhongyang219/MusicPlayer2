@@ -22,9 +22,39 @@ bool CUserUi::IsIndexValid() const
     return m_index != INT_MAX;
 }
 
+static void IterateElements(UiElement::Element* parent_element, std::function<void(UiElement::Element*)> func)
+{
+    if (parent_element != nullptr)
+    {
+        func(parent_element);
+        for (const auto& ele : parent_element->childLst)
+        {
+            IterateElements(ele.get(), func);
+        }
+    }
+}
+
+void CUserUi::IterateAllElements(std::function<void(UiElement::Element*)> func)
+{
+    std::shared_ptr<UiElement::Element> draw_element = GetCurrentTypeUi();
+    IterateElements(draw_element.get(), func);
+}
+
+void CUserUi::VolumeAdjusted()
+{
+    IterateAllElements([this](UiElement::Element* element)
+        {
+            UiElement::Text* text_element{ dynamic_cast<UiElement::Text*>(element) };
+            if (text_element != nullptr)
+            {
+                text_element->VolumeAdjusted(this->m_pMainWnd);
+            }
+        });
+}
+
 void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
 {
-    std::shared_ptr<UiElement::Element> draw_element = GetCurrentUiType();
+    std::shared_ptr<UiElement::Element> draw_element = GetCurrentTypeUi();
     if (draw_element != nullptr)
     {
         if (m_ui_data.full_screen)  //全屏模式下，最外侧的边距需要加宽
@@ -47,7 +77,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
     m_draw_data.thumbnail_rect = draw_rect;
 }
 
-std::shared_ptr<UiElement::Element> CUserUi::GetCurrentUiType() const
+std::shared_ptr<UiElement::Element> CUserUi::GetCurrentTypeUi() const
 {
     std::shared_ptr<UiElement::Element> draw_element;
     //根据不同的窗口大小选择不同的界面元素的根节点绘图
@@ -310,6 +340,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     text->type = UiElement::Text::Format;
                 else if (str_type == "play_time")
                     text->type = UiElement::Text::PlayTime;
+                else if (str_type == "play_time_and_volume")
+                    text->type = UiElement::Text::PlayTimeAndVolume;
                 //font_size
                 std::string str_font_size = CTinyXml2Helper::ElementAttribute(xml_node, "font_size");
                 text->font_size = atoi(str_font_size.c_str());
@@ -446,7 +478,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
 
 const std::vector<std::shared_ptr<UiElement::Element>>& CUserUi::GetStackElements() const
 {
-    auto iter = m_stack_elements.find(GetCurrentUiType().get());
+    auto iter = m_stack_elements.find(GetCurrentTypeUi().get());
     if (iter != m_stack_elements.end())
         return iter->second;
     static std::vector<std::shared_ptr<UiElement::Element>> vec_empty;
