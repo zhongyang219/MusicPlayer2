@@ -80,6 +80,7 @@ namespace UiElement
         bool ckick_to_switch{};     //鼠标点击时切换
         bool hover_to_switch{};     //鼠标指向时切换
         bool show_indicator{};
+        int indicator_offset{};
         bool mouse_hover{};
         IPlayerUI::UIButton indicator{};        //指示器
 
@@ -96,6 +97,7 @@ namespace UiElement
     public:
         bool no_corner_radius{};
         bool theme_color{ true };
+        CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
         virtual void Draw(CPlayerUIBase* ui) override;
     };
 
@@ -137,6 +139,7 @@ namespace UiElement
         Type type;
         int font_size{ 9 };
         bool width_follow_text{};
+        CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
 
         virtual void Draw(CPlayerUIBase* ui) override;
         virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const override;

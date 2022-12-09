@@ -811,7 +811,7 @@ void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
     m_draw.DrawWindowText(rect, str_text, m_colors.color_text, Alignment::CENTER);
 }
 
-void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool theme_color)
+void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool theme_color, ColorMode color_mode)
 {
     bool draw_background{ IsDrawBackgroundAlpha() };
     //绘制背景
@@ -824,16 +824,32 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 
     COLORREF fill_color{};
-    if (theme_color)
+    if (color_mode == RCM_DARK)
     {
-        fill_color = m_colors.color_control_bar_back;
+        fill_color = CColorConvert::m_gray_color.dark3;
+        if (draw_background)
+            alpha = 108;
+    }
+    else if (color_mode == RCM_LIGHT)
+    {
+        if (theme_color)
+            fill_color = theApp.m_app_setting_data.theme_color.light3;
+        else
+            fill_color = CColorConvert::m_gray_color.light4;
     }
     else
     {
-        if (theApp.m_app_setting_data.dark_mode)
-            fill_color = CColorConvert::m_gray_color.dark3;
+        if (theme_color)
+        {
+            fill_color = m_colors.color_control_bar_back;
+        }
         else
-            fill_color = CColorConvert::m_gray_color.light4;
+        {
+            if (theApp.m_app_setting_data.dark_mode)
+                fill_color = CColorConvert::m_gray_color.dark3;
+            else
+                fill_color = CColorConvert::m_gray_color.light4;
+        }
     }
 
     if (!theApp.m_app_setting_data.button_round_corners || no_corner_radius)

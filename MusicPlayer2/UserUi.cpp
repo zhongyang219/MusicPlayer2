@@ -258,6 +258,13 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_theme_color = CTinyXml2Helper::ElementAttribute(xml_node, "theme_color");
                 if (!str_theme_color.empty())
                     rectangle->theme_color = CTinyXml2Helper::StringToBool(str_theme_color.c_str());
+                std::string str_color_mode = CTinyXml2Helper::ElementAttribute(xml_node, "color_mode");
+                if (str_color_mode == "dark")
+                    rectangle->color_mode = CPlayerUIBase::RCM_DARK;
+                else if (str_color_mode == "light")
+                    rectangle->color_mode = CPlayerUIBase::RCM_LIGHT;
+                else
+                    rectangle->color_mode = CPlayerUIBase::RCM_AUTO;
             }
         }
         //文本
@@ -318,6 +325,13 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     text->width_follow_text = true;
                 else if (str_width_follow_text == "false")
                     text->width_follow_text = false;
+                std::string str_color_mode = CTinyXml2Helper::ElementAttribute(xml_node, "color_mode");
+                if (str_color_mode == "dark")
+                    text->color_mode = CPlayerUIBase::RCM_DARK;
+                else if (str_color_mode == "light")
+                    text->color_mode = CPlayerUIBase::RCM_LIGHT;
+                else
+                    text->color_mode = CPlayerUIBase::RCM_AUTO;
             }
         }
         //专辑封面
@@ -410,6 +424,9 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_show_indicator = CTinyXml2Helper::ElementAttribute(xml_node, "show_indicator");
                 if (!str_show_indicator.empty())
                     stack_element->show_indicator = CTinyXml2Helper::StringToBool(str_show_indicator.c_str());
+                std::string str_indicator_offset = CTinyXml2Helper::ElementAttribute(xml_node, "indicator_offset");
+                if (!str_indicator_offset.empty())
+                    stack_element->indicator_offset = atoi(str_indicator_offset.c_str());
             }
         }
 

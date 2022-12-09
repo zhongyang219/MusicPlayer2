@@ -515,7 +515,7 @@ void UiElement::StackElement::Draw(CPlayerUIBase* ui)
     {
         //计算指示器的位置
         int indicator_width = ui->DPI(12) * childLst.size();
-        indicator.rect.top = GetRect().bottom + ui->DPI(2);
+        indicator.rect.top = GetRect().bottom + ui->DPI(2) + ui->DPI(indicator_offset);
         indicator.rect.bottom = indicator.rect.top + ui->DPI(12);
         indicator.rect.left = GetRect().left + (GetRect().Width() - indicator_width) / 2;
         indicator.rect.right = indicator.rect.left + indicator_width;
@@ -555,7 +555,7 @@ std::shared_ptr<UiElement::Element> UiElement::StackElement::GetElement(int inde
 void UiElement::Rectangle::Draw(CPlayerUIBase* ui)
 {
     CalculateRect(ui);
-    ui->DrawRectangle(rect, no_corner_radius, theme_color);
+    ui->DrawRectangle(rect, no_corner_radius, theme_color, color_mode);
     ui->ResetDrawArea();
     Element::Draw(ui);
 }
@@ -650,23 +650,31 @@ void UiElement::Text::Draw(CPlayerUIBase* ui)
     default: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(big_font)); break;
     }
 
+    COLORREF text_color{};
+    if (color_mode == CPlayerUIBase::RCM_LIGHT)
+        text_color = ColorTable::WHITE;
+    else if (color_mode == CPlayerUIBase::RCM_DARK)
+        text_color = theApp.m_app_setting_data.theme_color.dark2;
+    else
+        text_color = ui->m_colors.color_text;
+
     int text_extent{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx };  //文本的实际宽度
     if (rect.Width() >= text_extent)    //如果绘图区域的宽度大于文本的实际宽度，则文本不需要滚动显示
     {
-        ui->m_draw.DrawWindowText(rect, draw_text.c_str(), ui->m_colors.color_text, align);
+        ui->m_draw.DrawWindowText(rect, draw_text.c_str(), text_color, align);
     }
     else
     {
         switch (style)
         {
         case UiElement::Text::Static:
-            ui->m_draw.DrawWindowText(rect, draw_text.c_str(), ui->m_colors.color_text, align);
+            ui->m_draw.DrawWindowText(rect, draw_text.c_str(), text_color, align);
             break;
         case UiElement::Text::Scroll:
-            ui->m_draw.DrawScrollText(rect, draw_text.c_str(), ui->m_colors.color_text, ui->GetScrollTextPixel(), false, scroll_info, false);
+            ui->m_draw.DrawScrollText(rect, draw_text.c_str(), text_color, ui->GetScrollTextPixel(), false, scroll_info, false);
             break;
         case UiElement::Text::Scroll2:
-            ui->m_draw.DrawScrollText2(rect, draw_text.c_str(), ui->m_colors.color_text, ui->GetScrollTextPixel(), false, scroll_info, false);
+            ui->m_draw.DrawScrollText2(rect, draw_text.c_str(), text_color, ui->GetScrollTextPixel(), false, scroll_info, false);
             break;
         default:
             break;
