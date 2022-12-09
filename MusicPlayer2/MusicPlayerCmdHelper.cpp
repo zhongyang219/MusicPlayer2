@@ -527,7 +527,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     if (CPlayer::GetInstance().IsMciCore())
         return 0;
 
-    theApp.m_media_num_added = 0;
+    theApp.m_media_update_para.num_added = 0;
     vector<SongInfo> all_media_songs;
     //获取所有音频文件的路径
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
@@ -539,10 +539,13 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     // refresh为true时会强制更新cue的时长与标签（直接更新到媒体库）
     CAudioCommon::GetCueTracks(all_media_songs, CPlayer::GetInstance().GetPlayerCore(), index, refresh);
 
-    theApp.m_media_update_total_num = all_media_songs.size();   //保存音频总数
+    theApp.m_media_update_para.total_num = all_media_songs.size();   //保存音频总数
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& song : all_media_songs)
     {
+        if (theApp.m_media_update_para.thread_exit)
+            break;
+
         if (song.file_path.empty()) continue;
         SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
         // 判断是否重新获取歌曲信息
@@ -571,11 +574,11 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
                 audio_tag.GetAudioRating();
             }
             CSongDataManager::GetInstance().AddItem(song_info);
-            theApp.m_media_num_added++;
+            theApp.m_media_update_para.num_added++;
         }
     }
 
-    return theApp.m_media_num_added;
+    return theApp.m_media_update_para.num_added;
 }
 
 int CMusicPlayerCmdHelper::CleanUpSongData(std::function<bool(const SongInfo&)> fun_condition)

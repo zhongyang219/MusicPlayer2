@@ -286,9 +286,15 @@ BOOL CMusicPlayerApp::InitInstance()
         TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
     }
 
-    SaveSongData();
     SaveLastFMData();
     SaveGlobalConfig();
+
+    //如果媒体库正在更新，通知线程退出
+    m_media_update_para.thread_exit = true;
+    if (theApp.m_media_lib_updating)
+        WaitForSingleObject(m_media_lib_update_thread->m_hThread, 1000);	//等待线程退出
+
+    SaveSongData();
 
     // 删除上面创建的 shell 管理器。
     if (pShellManager != NULL)
@@ -1130,7 +1136,7 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool refresh)
     if (!m_media_lib_updating)
     {
         m_media_lib_updating = true;
-        AfxBeginThread([](LPVOID lpParam)->UINT
+        m_media_lib_update_thread = AfxBeginThread([](LPVOID lpParam)->UINT
             {
                 if (theApp.m_media_lib_setting_data.remove_file_not_exist_when_update)
                 {

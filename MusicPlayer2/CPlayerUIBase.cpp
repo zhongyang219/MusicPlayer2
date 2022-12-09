@@ -1961,11 +1961,11 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         m_draw.DrawWindowText(rect, info, m_colors.color_text);
     }
     //显示媒体库更新状态
-    else if (theApp.IsMeidaLibUpdating() && theApp.m_media_num_added > 0)
+    else if (theApp.IsMeidaLibUpdating() && theApp.m_media_update_para.num_added > 0)
     {
-        CString info = CCommon::LoadTextFormat(IDS_UPDATING_MEDIA_LIB_INFO, { theApp.m_media_num_added });
+        CString info = CCommon::LoadTextFormat(IDS_UPDATING_MEDIA_LIB_INFO, { theApp.m_media_update_para.num_added });
         CString str;
-        str.Format(_T(" %d%%"), theApp.m_media_num_added * 100 / theApp.m_media_update_total_num);
+        str.Format(_T(" %d%%"), theApp.m_media_update_para.num_added * 100 / theApp.m_media_update_para.total_num);
         info += str;
         static CDrawCommon::ScrollInfo scroll_info2;
         m_draw.DrawScrollText(rect, info, m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);

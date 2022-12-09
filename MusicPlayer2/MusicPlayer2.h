@@ -80,8 +80,7 @@ public:
     volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
     volatile bool m_cover_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
     volatile bool m_format_convert_dialog_exit{ true };		//用于指示格式对话框已经退出
-    volatile int m_media_num_added{};                       //更新媒体库时新增（包括更新）的音频文件数量
-    int m_media_update_total_num{};
+    MediaUpdateThreadPara m_media_update_para;
 
     bool m_module_dir_writable{ true };         //指示程序所在目录是否可写
 
@@ -167,6 +166,8 @@ private:
     bool m_checking_update{ false };        //是否正在检查更新
 
     HMODULE m_hScintillaModule{};
+
+    CWinThread* m_media_lib_update_thread{};
 
     // 重写
 public:
