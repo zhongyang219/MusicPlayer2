@@ -321,15 +321,17 @@ SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key) const
     return song;
 }
 
-SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song)
+SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song) const
 {
+    if (song.IsEmpty())
+        return song;
     ASSERT(!song.file_path.empty());
     SongInfo tmp;
     auto iter = m_song_data.find(song);
     if (iter != m_song_data.end())
         tmp = iter->second;
     else
-        tmp =  song;
+        tmp = song;
     return tmp;
 }
 

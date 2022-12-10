@@ -62,7 +62,7 @@ public:
     // 获取一个媒体库歌曲信息（不存在会返回和参数song一致的SongInfo）
     // 至少要保证用于查询的file_path,is_cue,track是正确的
     // 用于修改媒体库的歌曲属性，修改后需使用CSongDataManager::AddItem保存
-    SongInfo GetSongInfo3(const SongInfo& song);
+    SongInfo GetSongInfo3(const SongInfo& song) const;
 
     const SongDataMap& GetSongData();
     bool IsItemExist(const SongDataMapKey& key) const;
