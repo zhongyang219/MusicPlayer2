@@ -1,10 +1,10 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../skin.xsd">  
   <ui width="284" height="202">
     <verticalLayout>
-      <stackElement margin-bottom="4" show_indicator="false">
+      <stackElement show_indicator="false">
         <albumCover>
           <rectangle theme_color="false" color_mode="dark" no_corner_radius="true" height="64" margin-bottom="0">
-            <verticalLayout margin-left="8" margin-right="8" margin-bottom="8">
+            <verticalLayout margin-left="8" margin-right="8">
               <text type="artist_album" style="scroll" height="24" color_mode="light"/>
               <text type="title" style="scroll" font_size="10" height="26" color_mode="light"/>
             </verticalLayout>
