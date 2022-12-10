@@ -315,7 +315,7 @@ void CPlaylistMgr::LoadPlaylistData()
     }
 }
 
-PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str)
+PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str) const
 {
     if (m_default_playlist.path.find(str) != wstring::npos)
     {
@@ -342,7 +342,7 @@ PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str)
     }
 }
 
-PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path)
+PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path) const
 {
     if (path == m_default_playlist.path)
         return PT_DEFAULT;

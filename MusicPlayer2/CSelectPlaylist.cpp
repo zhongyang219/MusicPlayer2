@@ -136,8 +136,9 @@ void CSelectPlaylistDlg::ShowSongList()
         wstring playlist_path = GetSelPlaylistPath();
         CPlaylistFile playlist_file;
         playlist_file.LoadFromFile(playlist_path);
-        m_cur_song_list = std::move(playlist_file.GetPlaylist());
+        m_cur_song_list = playlist_file.GetPlaylist();
         int index{};
+        int totla_time{};
         for (SongInfo& song : m_cur_song_list)
         {
             if (!song.info_acquired || !song.ChannelInfoAcquired())
@@ -161,14 +162,18 @@ void CSelectPlaylistDlg::ShowSongList()
             if (CPlayer::GetInstance().IsPlaylistMode() && song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && GetSelectedPlaylist().path == CPlayer::GetInstance().GetPlaylistPath())
                 m_song_list_ctrl.SetHightItem(index);
 
+            totla_time += song.length().toInt();
+
             index++;
         }
+        UpdatePlaylistInfo(playlist_path, static_cast<int>(m_cur_song_list.size()), totla_time);
     }
     m_song_list_ctrl.SetListData(&m_list_data);
 }
 
 void CSelectPlaylistDlg::LeftListClicked(int index)
 {
+    m_left_selected_index = index;
     m_left_selected = true;
     if (!m_searched)
     {
@@ -199,6 +204,19 @@ void CSelectPlaylistDlg::SetLeftListSelected(int index)
 {
     m_playlist_ctrl.SetCurSel(index);
     LeftListClicked(index);
+}
+
+void CSelectPlaylistDlg::UpdatePlaylistInfo(const std::wstring playlist_path, int song_num, int totla_time)
+{
+    //将播放列表的曲目数、总时长更新到CPlaylistMgr中
+    auto& playlist_mgr{ CPlaylistMgr::Instance() };
+    auto playlist_info{ playlist_mgr.FindPlaylistInfo(playlist_path) };
+    playlist_info.track_num = song_num;
+    playlist_info.total_time = totla_time;
+    playlist_mgr.UpdatePlaylistInfo(playlist_info);
+
+    //界面左侧播放列表的显示
+    SetListRowData(m_left_selected_index, playlist_info);
 }
 
 const vector<SongInfo>& CSelectPlaylistDlg::GetSongList() const

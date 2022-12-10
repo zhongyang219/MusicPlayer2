@@ -35,7 +35,8 @@ public:
     bool IsLeftSelected() const;
 
 private:
-    int m_row_selected{ -1 };
+    int m_row_selected{ -1 };       //左侧选中的播放列表的序号（不管是否处于搜索状态都为列表中“序号”一列的值）
+    int m_left_selected_index{ -1 };    //左侧列表选中行在列表中的索引（如果处于搜索状态，为列表选中项实际的索引）
     //CMenu m_menu;
     bool m_playlist_modified{ false };
     CSearchEditCtrl m_search_edit;
@@ -81,6 +82,7 @@ protected:
     void SongListClicked(int index);
 
     void SetLeftListSelected(int index);
+    void UpdatePlaylistInfo(const std::wstring playlist_path, int song_num, int totla_time);
 
     virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;

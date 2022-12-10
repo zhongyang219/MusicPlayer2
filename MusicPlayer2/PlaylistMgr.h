@@ -36,8 +36,8 @@ public:
     void SavePlaylistData();
     void LoadPlaylistData();
 
-    PlaylistInfo FindPlaylistInfo(const wstring& str);
-    PlaylistType GetPlaylistType(const wstring& path);
+    PlaylistInfo FindPlaylistInfo(const wstring& str) const;
+    PlaylistType GetPlaylistType(const wstring& path) const;
 
 private:
     CPlaylistMgr();
