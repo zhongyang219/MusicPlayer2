@@ -144,4 +144,5 @@ public:
     afx_msg void OnCbnSelchangeDesktopLyricAlignmentCombo();
     afx_msg void OnBnClickedShowLyricTranslateCheck();
     afx_msg void OnBnClickedLyricHideBlankLineCheck();
+    afx_msg void OnBnClickedShowSongInfoIfLyricNotExistCheck();
 };

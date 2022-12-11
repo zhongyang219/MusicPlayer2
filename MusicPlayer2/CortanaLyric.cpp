@@ -2,6 +2,7 @@
 #include "CortanaLyric.h"
 #include "PlayListCtrl.h"
 #include "CPlayerUIBase.h"
+#include "CPlayerUIHelper.h"
 
 CCriticalSection CCortanaLyric::m_critical;
 
@@ -154,13 +155,13 @@ void CCortanaLyric::DrawInfo()
                     static CString str_now_playing{ CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) };
                     if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
                     {
-                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, GetScrollTextPixel());
+                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, CPlayerUIHelper::GetScrollTextPixel());
                         index = CPlayer::GetInstance().GetIndex();
                         song_name = CPlayer::GetInstance().GetFileName();
                     }
                     else
                     {
-                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, GetScrollTextPixel());
+                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, CPlayerUIHelper::GetScrollTextPixel());
                     }
                 }
             }
@@ -348,18 +349,6 @@ CRect CCortanaLyric::CoverRect() const
     CRect cover_rect = m_cortana_rect;
     cover_rect.right = cover_rect.left + m_cover_width;
     return cover_rect;
-}
-
-double CCortanaLyric::GetScrollTextPixel() const
-{
-    //界面刷新频率越高，即界面刷新时间间隔越小，则每次滚动的像素值就要越小
-    double pixel = static_cast<double>(theApp.m_app_setting_data.ui_refresh_interval) *0.025 + 0.2;
-    pixel = static_cast<double>(theApp.GetDPI()) * pixel / 96;
-    if (pixel < 0.1)
-        pixel = 0.1;
-    if (pixel > 0.5 && pixel < 1)
-        pixel = 1;
-    return pixel;
 }
 
 void CCortanaLyric::ResetCortanaText()

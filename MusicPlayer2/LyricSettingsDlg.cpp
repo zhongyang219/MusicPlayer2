@@ -110,6 +110,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_CBN_SELCHANGE(IDC_DESKTOP_LYRIC_ALIGNMENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeDesktopLyricAlignmentCombo)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_TRANSLATE_CHECK, &CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck)
     ON_BN_CLICKED(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, &CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck)
+    ON_BN_CLICKED(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK, &CLyricSettingsDlg::OnBnClickedShowSongInfoIfLyricNotExistCheck)
 END_MESSAGE_MAP()
 
 
@@ -132,6 +133,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_save_policy_combo.SetCurSel(static_cast<int>(m_data.lyric_save_policy));
     CheckDlgButton(IDC_SHOW_LYRIC_TRANSLATE_CHECK, m_data.show_translate);
     CheckDlgButton(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.donot_show_blank_lines);
+    CheckDlgButton(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK, m_data.show_song_info_if_lyric_not_exist);
 
     m_lyric_line_space_edit.SetRange(MIM_LINE_SPACE, MAX_LINE_SPACE);
     m_lyric_line_space_edit.SetValue(m_data.lyric_line_space);
@@ -809,4 +811,10 @@ void CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck()
 void CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck()
 {
     m_data.donot_show_blank_lines = (IsDlgButtonChecked(IDC_LYRIC_HIDE_BLANK_LINE_CHECK) != 0);
+}
+
+
+void CLyricSettingsDlg::OnBnClickedShowSongInfoIfLyricNotExistCheck()
+{
+    m_data.show_song_info_if_lyric_not_exist = (IsDlgButtonChecked(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK) != 0);
 }

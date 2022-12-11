@@ -2,7 +2,6 @@
 #include "CUIDrawer.h"
 #include "MusicPlayer2.h"
 
-
 CUIDrawer::CUIDrawer(UIColors& colors)
     : m_colors(colors)
 {
@@ -84,7 +83,22 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     }
     else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())
     {
-        DrawWindowText(lyric_area, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
+        //没有歌词时显示歌曲信息
+        if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist)
+        {
+            CString song_info_str;
+            const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+            std::wstring artist{ cur_song.album_artist };
+            if (artist.empty())
+                artist = cur_song.GetArtist();
+            song_info_str.Format(_T("%s - %s\r\n%s"), artist.c_str(), cur_song.GetAlbum().c_str(), cur_song.GetTitle().c_str());
+            DrawWindowText(lyric_area, song_info_str, m_colors.color_text, theApp.m_lyric_setting_data.lyric_align, false, true);
+        }
+        //显示“当前歌曲没有歌词”
+        else
+        {
+            DrawWindowText(lyric_area, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
+        }
     }
     else
     {
@@ -208,7 +222,20 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
     }
     else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())
     {
-        DrawWindowText(rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
+        //没有歌词时显示歌曲信息
+        if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist)
+        {
+            CString song_info_str;
+            const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+            song_info_str.Format(_T("%s - %s"), cur_song.GetArtist().c_str(), cur_song.GetTitle().c_str());
+            static CDrawCommon::ScrollInfo lyric_scroll_info;
+            DrawScrollText(rect, song_info_str, m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align == Alignment::CENTER, lyric_scroll_info);
+        }
+        //显示“当前歌曲没有歌词”
+        else
+        {
+            DrawWindowText(rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
+        }
     }
     else
     {

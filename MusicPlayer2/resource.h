@@ -1153,6 +1153,7 @@
 #define IDC_CHECK8                      1175
 #define IDC_BTN_ROUND_CORNERS_CHECK     1175
 #define IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK 1175
+#define IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK 1175
 #define IDC_UI_STATIC                   1176
 #define IDC_ALBUM_CHECK                 1177
 #define IDC_GENRE_CHECK                 1178

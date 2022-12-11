@@ -65,8 +65,6 @@ private:
     CRect TextRect() const;
     CRect CoverRect() const;
 
-    double GetScrollTextPixel() const;
-
 private:
     bool m_enable;
 	HWND m_hCortanaBar{};		////Cortana栏的句柄
