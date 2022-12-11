@@ -6063,6 +6063,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Sho&w Playlist\tCtrl+L",      ID_SHOW_PLAY_LIST
         MENUITEM "Always on &Top",              ID_MINI_MODE_ALWAYS_ON_TOP
+        POPUP "Switch UI"
+        BEGIN
+            MENUITEM "&Default UI",                 ID_MINIMODE_UI_DEFAULT
+        END
         MENUITEM SEPARATOR
         MENUITEM "Minimi&ze",                   ID_MINI_MIDE_MINIMIZE
         MENUITEM "Back to &Normal\tEsc",        IDOK
