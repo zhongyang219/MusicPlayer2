@@ -3868,6 +3868,8 @@ BEGIN
     IDS_LASTFM_CACHE_STATUS "%i条记录"
     IDS_SHOW_HIDE_DESKTOP_LYRIC "显示/隐藏桌面歌词"
     IDS_APP_RUNING_INFO     "MusicPlayer2 还在进行，请等待进程退出，或者通过任务管理器结束进程。"
+    IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
+                            "勾选此项后，如果没有歌词，会显示歌曲的艺术家、唱片集和歌曲标题等信息，而不是显示“当前歌曲没有歌词”。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -4344,7 +4346,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,44,113,10
     CONTROL         "Do not display blank lines in single-line and double-line display mode",IDC_LYRIC_HIDE_BLANK_LINE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,32,294,10
-    CONTROL         "Displays song information when lyrics do not exist",IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK,
+    CONTROL         "Display song information when lyrics do not exist",IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,85,240,9
 END
 
@@ -7161,6 +7163,8 @@ BEGIN
     IDS_LASTFM_CACHE_STATUS "%i scrobbles"
     IDS_SHOW_HIDE_DESKTOP_LYRIC "Show/hide desktop lyric"
     IDS_APP_RUNING_INFO     "MusicPlayer2 is still running, please wait for the process to exit, or end the process through the task manager."
+    IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
+                            "When this option is checked, information such as the artist, album and song title of the song will be displayed if there are no lyrics, instead of ""The current song has no lyrics."""
 END
 
 #endif    // 英语(美国) resources

@@ -214,6 +214,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), GetFontInfoString(m_data.lyric_font));
     m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), GetFontInfoString(m_data.desktop_lyric_data.lyric_font));
     m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), GetFontInfoString(m_data.cortana_font));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK), CCommon::LoadText(IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP));
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
