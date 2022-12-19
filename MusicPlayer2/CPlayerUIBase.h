@@ -21,6 +21,7 @@ namespace UiElement
     class Volume;
     class BeatIndicator;
     class StackElement;
+    class Playlist;
 }
 
 struct SLayoutData
@@ -58,6 +59,7 @@ public:
     friend class UiElement::Volume;
     friend class UiElement::BeatIndicator;
     friend class UiElement::StackElement;
+    friend class UiElement::Playlist;
 
 public:
     void Init(CDC* pDC) override;
@@ -68,6 +70,9 @@ public:
     virtual void RButtonUp(CPoint point) override;
     virtual void MouseMove(CPoint point) override;
     virtual bool LButtonUp(CPoint point) override;
+    virtual void RButtonDown(CPoint point) override;
+    virtual bool MouseWheel(int delta, CPoint point) override;
+    virtual bool DoubleClick(CPoint point) override;
 
     virtual CRect GetThumbnailClipArea() override;
     void UpdateRepeatModeToolTip();
@@ -168,6 +173,14 @@ public:
         RCM_LIGHT
     };
 
+    struct UiPlaylistInfo
+    {
+        int playlist_offset{};          //当前播放列表滚动的位移
+        int item_selected{ -1 };        //选中项的序号
+        CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
+        std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域
+    };
+
     //根据按钮的类型获取对应的图标
     //big_icon: 某些按钮提供了不同的尺寸，如果为false，则图标大小为16x16，否则为20x20
     IconRes GetBtnIcon(BtnKey key, bool big_icon = false);
@@ -203,7 +216,7 @@ protected:
     void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
-    void DrawPlaylist(CRect rect);                  //绘制播放列表
+    void DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info);                  //绘制播放列表
     /**
      * @brief   绘制stackElement的指示器
      * @param   UIButton indicator 指示器信息
@@ -298,7 +311,6 @@ protected:
     const int m_progress_on_top_threshold = theApp.DPI(350);        //当控制条的宽度小于此值，将进度条显示在播放控制按钮的上方
 
     bool m_first_draw{ true };
-    static int m_playlist_offset;
 
 private:
     CBitmap m_mem_bitmap_static;

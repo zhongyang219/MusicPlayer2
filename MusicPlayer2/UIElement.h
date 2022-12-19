@@ -222,6 +222,30 @@ namespace UiElement
     public:
         virtual void Draw(CPlayerUIBase* ui) override;
     };
+
+    //播放列表
+    class Playlist : public Element
+    {
+    public:
+        virtual void Draw(CPlayerUIBase* ui) override;
+        void LButtonUp(CPoint point);
+        void LButtonDown(CPoint point);
+        void MouseMove(CPoint point);
+        bool RButtunUp(CPoint point);
+        void RButtonDown(CPoint point);
+        bool MouseWheel(int delta, CPoint point, CPlayerUIBase* ui);
+        bool DoubleClick(CPoint point);
+
+    private:
+        int GetPlaylistIndexByPoint(CPoint point);
+        void Clicked(CPoint point);
+
+    private:
+        CPlayerUIBase::UiPlaylistInfo playlist_info;
+        bool mouse_pressed{ false };        //鼠标左键是否按下
+        CPoint mouse_pressed_pos;           //鼠标按下时的位置
+        int mouse_pressed_offset{};         //鼠标按下时播放列表的位移
+    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

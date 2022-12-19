@@ -127,6 +127,7 @@
                 <xs:element name="volume" type="volumeType"></xs:element>
                 <xs:element name="beatIndicator" type="beatIndicatorType"></xs:element>
                 <xs:element name="placeHolder" type="placeHolderType"></xs:element>
+                <xs:element name="playlist" type="playlistType"></xs:element>
             </xs:choice>
         </xs:sequence>
     </xs:group>
@@ -704,6 +705,12 @@
     <xs:complexType name="placeHolderType">
         <xs:annotation>
             <xs:documentation>placeHolder元素是一个占位符，它不显示任何东西。</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="playlistType">
+        <xs:annotation>
+            <xs:documentation>播放列表。</xs:documentation>
         </xs:annotation>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>

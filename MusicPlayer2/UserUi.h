@@ -13,7 +13,7 @@ public:
     void SetIndex(int index);
     bool IsIndexValid() const;
 
-    void IterateAllElements(std::function<void(UiElement::Element*)> func);  //遍历所有界面元素
+    void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
     void VolumeAdjusted();      //当音量调整时需要调用此函数
     void ResetVolumeToPlayTime();   //定时器SHOW_VOLUME_TIMER_ID响应时需要调用此函数
 
@@ -26,6 +26,10 @@ public:
     virtual void LButtonDown(CPoint point) override;
     virtual void MouseMove(CPoint point) override;
     virtual void MouseLeave() override;
+    virtual void RButtonUp(CPoint point) override;
+    virtual void RButtonDown(CPoint point) override;
+    virtual bool MouseWheel(int delta, CPoint point) override;
+    virtual bool DoubleClick(CPoint point) override;
 
 protected:
     int m_index{ INT_MAX };

@@ -194,6 +194,7 @@ private:
 public:
     void ShowPlayList(bool highlight_visible = true);
     void SetMenuState(CMenu* pMenu);
+    void SetPlaylistSelected(int index);
 
     static bool IsPointValid(CPoint);
 

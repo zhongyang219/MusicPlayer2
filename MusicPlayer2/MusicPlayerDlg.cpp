@@ -1638,6 +1638,14 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->CheckMenuItem(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, (always_use_external_album_cover ? MF_CHECKED : MF_UNCHECKED));
 }
 
+
+void CMusicPlayerDlg::SetPlaylistSelected(int index)
+{
+    m_item_selected = index;
+    m_items_selected.clear();
+    m_items_selected.push_back(index);
+}
+
 void CMusicPlayerDlg::ShowFloatPlaylist()
 {
     theApp.m_nc_setting_data.float_playlist = true;
@@ -2990,7 +2998,11 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     CRect draw_rect{ 0,0,theApp.m_ui_data.draw_area_width, theApp.m_ui_data.draw_area_height };
-    ClientToScreen(draw_rect);
+    ScreenToClient(&pt);
+
+    if (m_pUI->MouseWheel(zDelta, pt))
+        return TRUE;
+
     if (draw_rect.PtInRect(pt))
     {
         if (zDelta > 0)

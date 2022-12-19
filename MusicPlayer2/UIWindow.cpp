@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CUIWindow, CStatic)
     ON_WM_SIZE()
     ON_WM_MOUSELEAVE()
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CUIWindow::OnTabletQuerysystemgesturestatus)
+    ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -100,6 +101,10 @@ void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
             pMainWindow->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
         else
             pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
+    }
+    else
+    {
+        pUi->DoubleClick(point);
     }
 
     //CStatic::OnLButtonDblClk(nFlags, point);
@@ -212,4 +217,13 @@ void CUIWindow::OnMouseLeave()
 afx_msg LRESULT CUIWindow::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+
+
+void CUIWindow::OnRButtonDown(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    m_pUI->RButtonDown(point);
+
+    CStatic::OnRButtonDown(nFlags, point);
 }

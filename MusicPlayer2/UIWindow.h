@@ -33,5 +33,7 @@ public:
     afx_msg void OnMouseLeave();
 protected:
     afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 };
 

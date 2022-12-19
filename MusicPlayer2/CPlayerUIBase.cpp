@@ -2,8 +2,7 @@
 #include "CPlayerUIBase.h"
 #include "MusicPlayerDlg.h"
 #include "MiniModeUserUi.h"
-
-int CPlayerUIBase::m_playlist_offset{};
+#include "PlayListCtrl.h"
 
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
@@ -524,6 +523,21 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             }
         }
     }
+    return false;
+}
+
+
+void CPlayerUIBase::RButtonDown(CPoint point)
+{
+}
+
+bool CPlayerUIBase::MouseWheel(int delta, CPoint point)
+{
+    return false;
+}
+
+bool CPlayerUIBase::DoubleClick(CPoint point)
+{
     return false;
 }
 
@@ -2374,33 +2388,114 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
     m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
 }
 
-void CPlayerUIBase::DrawPlaylist(CRect rect)
+void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info)
 {
-    //m_draw.SetDrawArea(rect);
-    //m_draw_data.playlist_rect = rect;
-    //const int item_height = DPI(24);
-    //for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
-    //{
-    //    //计算每一行的矩形区域
-    //    int start_y = -m_playlist_offset + i * item_height;
-    //    CRect rect_item{ rect };
-    //    rect_item.top = start_y;
-    //    rect_item.bottom = rect_item.top + item_height;
+    m_draw.SetDrawArea(rect);
+    m_draw_data.playlist_rect = rect;
+    int item_height = DPI(theApp.m_media_lib_setting_data.playlist_item_height);
 
-    //    if (!(rect_item & rect).IsRectEmpty())
-    //    {
-    //        if (i % 2 == 0)
-    //        {
-    //            //偶数行绘制一个背景
-    //            DrawRectangle(rect_item & rect);
-    //        }
-    //        //绘制曲目序号
-    //        CRect rect_num{ rect_item };
-    //        rect_num.right = rect_num.left + DPI(40);
-    //        m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text);
-    //        //绘制曲目名称
-    //    }
-    //}
+    int offset{ playlist_info.playlist_offset };
+    if (offset < 0)
+        offset = 0;
+    int offset_max{ item_height * CPlayer::GetInstance().GetSongNum() - rect.Height() };
+    if (offset_max <= 0)
+        offset = 0;
+    else if (offset > offset_max)
+        offset = offset_max;
+    playlist_info.playlist_offset = offset;
+
+    playlist_info.item_rects.clear();
+    playlist_info.item_rects.resize(CPlayer::GetInstance().GetSongNum());
+    for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
+    {
+        //计算每一行的矩形区域
+        int start_y = -offset + rect.top + i * item_height;
+        CRect rect_item{ rect };
+        rect_item.top = start_y;
+        rect_item.bottom = rect_item.top + item_height;
+
+        //如果绘制的行在播放列表区域之个，则不绘制该行
+        if ((rect_item & rect).IsRectEmpty())
+            continue;
+
+        //保存每一行的矩形区域
+        playlist_info.item_rects[i] = rect_item;
+
+        if (!(rect_item & rect).IsRectEmpty())
+        {
+            //rect_item = (rect_item & rect);
+
+            BYTE alpha;
+            if (!IsDrawBackgroundAlpha())
+                alpha = 255;
+            else if (theApp.m_app_setting_data.dark_mode)
+                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+            else
+                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+
+            COLORREF back_color{};
+            //选中项目的背景
+            if (i == playlist_info.item_selected)
+            {
+                back_color = m_colors.color_button_back;
+            }
+            //偶数行的背景
+            else if (i % 2 == 0)
+            {
+                back_color = m_colors.color_control_bar_back;
+            }
+            //绘制背景
+            if (back_color != 0)
+            {
+                m_draw.SetDrawArea(rect);
+                if (theApp.m_app_setting_data.button_round_corners)
+                {
+                    m_draw.DrawRoundRect(rect_item, back_color, DPI(4), alpha);
+                }
+                else
+                    m_draw.FillAlphaRect(rect_item, back_color, alpha, true);
+            }
+
+            //绘制正在播放指示
+            if (i == CPlayer::GetInstance().GetIndex())
+            {
+                m_draw.SetDrawArea(rect);
+                CRect rect_cur_indicator{ rect_item };
+                rect_cur_indicator.right = rect_cur_indicator.left + DPI(4);
+                int indicator_hight = item_height * 6 / 10;
+                rect_cur_indicator.top += (item_height - indicator_hight) / 2;
+                rect_cur_indicator.bottom = rect_cur_indicator.top + indicator_hight;
+                if (theApp.m_app_setting_data.button_round_corners)
+                    m_draw.DrawRoundRect(rect_cur_indicator, m_colors.color_text_heighlight, DPI(2));
+                else
+                    m_draw.FillRect(rect_cur_indicator, m_colors.color_text_heighlight, true);
+            }
+            //绘制曲目序号
+            CRect rect_num{ rect_item };
+            rect_num.left = rect_item.left + DPI(8);
+            rect_num.right = rect_num.left + DPI(40);
+            m_draw.SetDrawArea(rect);
+            m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text, Alignment::LEFT, true);
+            //绘制曲目名称
+            SongInfo song_info{ CPlayer::GetInstance().GetPlayList()[i] };
+            CRect rect_name{ rect_item };
+            rect_name.left = rect_num.right + DPI(4);
+            rect_name.right = rect_item.right - DPI(50);
+            std::wstring display_name{ CPlayListCtrl::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) };
+            m_draw.SetDrawArea(rect & rect_name);
+            if (i == playlist_info.item_selected)
+                m_draw.DrawScrollText(rect_name, display_name.c_str(), m_colors.color_text, GetScrollTextPixel(), false, playlist_info.selected_item_scroll_info, false, true);
+            else
+                m_draw.DrawWindowText(rect_name, display_name.c_str(), m_colors.color_text, Alignment::LEFT, true);
+            //绘制时长
+            CRect rect_time{ rect_item };
+            rect_time.left = rect_name.right + DPI(4);
+            rect_time.right = rect_item.right - DPI(4);
+            m_draw.SetDrawArea(rect);
+            m_draw.DrawWindowText(rect_time, song_info.length().toString().c_str(), m_colors.color_text, Alignment::LEFT, true);
+        }
+    }
+    ResetDrawArea();
 }
 
 

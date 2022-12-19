@@ -22,11 +22,12 @@ bool CUserUi::IsIndexValid() const
     return m_index != INT_MAX;
 }
 
-static void IterateElements(UiElement::Element* parent_element, std::function<void(UiElement::Element*)> func)
+static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func)
 {
     if (parent_element != nullptr)
     {
-        func(parent_element);
+        if (func(parent_element))
+            return;
         for (const auto& ele : parent_element->childLst)
         {
             IterateElements(ele.get(), func);
@@ -34,7 +35,7 @@ static void IterateElements(UiElement::Element* parent_element, std::function<vo
     }
 }
 
-void CUserUi::IterateAllElements(std::function<void(UiElement::Element*)> func)
+void CUserUi::IterateAllElements(std::function<bool(UiElement::Element*)> func)
 {
     std::shared_ptr<UiElement::Element> draw_element = GetCurrentTypeUi();
     IterateElements(draw_element.get(), func);
@@ -42,13 +43,14 @@ void CUserUi::IterateAllElements(std::function<void(UiElement::Element*)> func)
 
 void CUserUi::VolumeAdjusted()
 {
-    IterateAllElements([this](UiElement::Element* element)
+    IterateAllElements([this](UiElement::Element* element) ->bool
         {
             UiElement::Text* text_element{ dynamic_cast<UiElement::Text*>(element) };
             if (text_element != nullptr)
             {
                 text_element->show_volume = true;
             }
+            return false;
         });
     KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID);
     //设置一个音量显示时间的定时器（音量显示保持1.5秒）
@@ -58,13 +60,14 @@ void CUserUi::VolumeAdjusted()
 void CUserUi::ResetVolumeToPlayTime()
 {
     KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), SHOW_VOLUME_TIMER_ID);
-    IterateAllElements([this](UiElement::Element* element)
+    IterateAllElements([this](UiElement::Element* element) ->bool
         {
             UiElement::Text* text_element{ dynamic_cast<UiElement::Text*>(element) };
             if (text_element != nullptr)
             {
                 text_element->show_volume = false;
             }
+            return false;
         });
 }
 
@@ -155,12 +158,26 @@ bool CUserUi::LButtonUp(CPoint point)
             }
         }
     }
+
+    //遍历Playlist元素
+    IterateAllElements([point](UiElement::Element* element) ->bool
+    {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->LButtonUp(point);
+        }
+        return false;
+    });
+
     return false;
 }
 
 void CUserUi::LButtonDown(CPoint point)
 {
     CPlayerUIBase::LButtonDown(point);
+
+    //遍历StackElement
     auto& stack_elements{ GetStackElements() };
     for (auto& element : stack_elements)
     {
@@ -168,6 +185,17 @@ void CUserUi::LButtonDown(CPoint point)
         if (stack_element != nullptr && stack_element->indicator.enable && stack_element->indicator.rect.PtInRect(point) != FALSE)
             stack_element->indicator.pressed = true;
     }
+
+    //遍历Playlist元素
+    IterateAllElements([point](UiElement::Element* element) ->bool
+    {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->LButtonDown(point);
+        }
+        return false;
+    });
 }
 
 void CUserUi::MouseMove(CPoint point)
@@ -187,6 +215,17 @@ void CUserUi::MouseMove(CPoint point)
         }
     }
 
+    //遍历Playlist元素
+    IterateAllElements([point](UiElement::Element* element) ->bool
+    {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->MouseMove(point);
+        }
+        return false;
+    });
+
     CPlayerUIBase::MouseMove(point);
 }
 
@@ -202,7 +241,93 @@ void CUserUi::MouseLeave()
             stack_element->mouse_hover = false;
         }
     }
+    
     CPlayerUIBase::MouseLeave();
+}
+
+
+void CUserUi::RButtonUp(CPoint point)
+{
+    //遍历Playlist元素
+    bool rtn = false;
+    IterateAllElements([&](UiElement::Element* element) ->bool
+    {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            if (playlist_element->RButtunUp(point))
+            {
+                rtn = true;
+                return true;
+            }
+        }
+        return false;
+    });
+
+    if (!rtn)
+        CPlayerUIBase::RButtonUp(point);
+}
+
+
+void CUserUi::RButtonDown(CPoint point)
+{
+    //遍历Playlist元素
+    IterateAllElements([point](UiElement::Element* element) ->bool
+    {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->RButtonDown(point);
+        }
+        return false;
+    });
+    CPlayerUIBase::RButtonDown(point);
+}
+
+bool CUserUi::MouseWheel(int delta, CPoint point)
+{
+    //遍历Playlist元素
+    bool rtn = false;
+    IterateAllElements([&](UiElement::Element* element) ->bool
+    {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            if (playlist_element->MouseWheel(delta, point, this))
+            {
+                rtn = true;
+                return true;
+            }
+        }
+        return false;
+    });
+
+    if (rtn)
+        return true;
+    return CPlayerUIBase::MouseWheel(delta, point);
+}
+
+bool CUserUi::DoubleClick(CPoint point)
+{
+    //遍历Playlist元素
+    bool rtn = false;
+    IterateAllElements([&](UiElement::Element* element) ->bool
+        {
+            UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+            if (playlist_element != nullptr)
+            {
+                if (playlist_element->DoubleClick(point))
+                {
+                    rtn = true;
+                    return true;
+                }
+            }
+            return false;
+        });
+
+    if (rtn)
+        return true;
+    return CPlayerUIBase::DoubleClick(point);
 }
 
 int CUserUi::GetUiIndex()

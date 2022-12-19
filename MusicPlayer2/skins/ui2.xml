@@ -12,7 +12,10 @@
           <text type="artist_album" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
           <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
         </verticalLayout>
-        <lyrics margin="4"/>
+        <stackElement margin="4" margin-bottom="16" show_indicator="true">
+          <lyrics margin-bottom="4"/>
+          <playlist margin-bottom="4"/>
+        </stackElement>
       </horizontalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>

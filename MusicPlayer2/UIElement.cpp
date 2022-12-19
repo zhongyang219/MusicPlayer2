@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "UIElement.h"
 #include "MusicPlayer2.h"
+#include "MusicPlayerDlg.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -510,6 +511,13 @@ void UiElement::StackElement::Draw(CPlayerUIBase* ui)
     //只绘制一个子元素
     //不调用基类的Draw方法。
 
+    //清空不显示的子元素的矩形区域
+    for (size_t i{}; i < childLst.size(); i++)
+    {
+        if (cur_element != childLst[i])
+            childLst[i]->SetRect(CRect());
+    }
+
     //绘制指示器
     if (show_indicator)
     {
@@ -879,6 +887,104 @@ void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui)
     Element::Draw(ui);
 }
 
+void UiElement::Playlist::Draw(CPlayerUIBase * ui)
+{
+    CalculateRect(ui);
+    ui->DrawPlaylist(rect, playlist_info);
+    ui->ResetDrawArea();
+    Element::Draw(ui);
+}
+
+void UiElement::Playlist::LButtonUp(CPoint point)
+{
+    mouse_pressed = false;
+}
+
+void UiElement::Playlist::LButtonDown(CPoint point)
+{
+    Clicked(point);
+    if (rect.PtInRect(point))
+    {
+        mouse_pressed = true;
+        mouse_pressed_pos = point;
+        mouse_pressed_offset = playlist_info.playlist_offset;
+    }
+}
+
+void UiElement::Playlist::MouseMove(CPoint point)
+{
+    if (rect.PtInRect(point))
+    {
+        if (mouse_pressed)
+        {
+            playlist_info.playlist_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
+        }
+    }
+}
+
+bool UiElement::Playlist::RButtunUp(CPoint point)
+{
+    if (rect.PtInRect(point))
+    {
+        mouse_pressed = false;
+        GetCursorPos(&point);
+        CMenu* menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+        if (menu != nullptr)
+            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, theApp.m_pMainWnd); //在指定位置显示弹出菜单
+        return true;
+    }
+    return false;
+}
+
+
+void UiElement::Playlist::RButtonDown(CPoint point)
+{
+    mouse_pressed = false;
+    Clicked(point);
+}
+
+bool UiElement::Playlist::MouseWheel(int delta, CPoint point, CPlayerUIBase* ui)
+{
+    if (rect.PtInRect(point))
+    {
+        int step{};
+        if (delta > 0)
+            step = -1;
+        if (delta < 0)
+            step = 1;
+        playlist_info.playlist_offset += (step * ui->DPI(32));
+        return true;
+    }
+    return false;
+}
+
+bool UiElement::Playlist::DoubleClick(CPoint point)
+{
+    if (rect.PtInRect(point) && playlist_info.item_selected >= 0)
+    {
+        ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_ITEM, 0);
+    }
+    return false;
+}
+
+int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
+{
+    for (size_t i{}; i < playlist_info.item_rects.size(); i++)
+    {
+        if (playlist_info.item_rects[i].PtInRect(point))
+            return static_cast<int>(i);
+    }
+    return -1;
+}
+
+void UiElement::Playlist::Clicked(CPoint point)
+{
+    playlist_info.item_selected = GetPlaylistIndexByPoint(point);
+    CMusicPlayerDlg* pMainWnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pMainWnd != nullptr)
+        pMainWnd->SetPlaylistSelected(playlist_info.item_selected);
+    playlist_info.selected_item_scroll_info.Reset();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -921,6 +1027,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = new UiElement::Volume();
     else if (name == "beatIndicator")
         element = new UiElement::BeatIndicator();
+    else if (name == "playlist")
+        element = new UiElement::Playlist();
     else if (name == "ui" || name == "root" || name == "placeHolder")
         element = new UiElement::Element();
 

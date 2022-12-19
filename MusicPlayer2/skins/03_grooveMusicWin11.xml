@@ -25,7 +25,10 @@
 							</verticalLayout>
 						</horizontalLayout>
 					</rectangle>
-					<lyrics margin="4"/>
+          <stackElement margin="4">
+ 					  <lyrics/>
+            <playlist/>
+         </stackElement>
 				</verticalLayout>
 			</horizontalLayout>
 			<rectangle height="100" no_corner_radius="true">
@@ -50,6 +53,7 @@
 							<placeHolder/>
 							<volume show_text="true" width="64" height="28" margin="2"/>
 							<button key="skin" width="28" height="28" margin="2"/>
+							<button key="switchDisplay" width="28" height="28" margin="2"/>
 							<button key="showPlaylist" width="28" height="28" margin="2"/>
 						</horizontalLayout>
 					</horizontalLayout>
@@ -84,11 +88,15 @@
 							</verticalLayout>
 						</horizontalLayout>
 					</rectangle>
-					<lyrics margin="4"/>
+          <stackElement margin="4">
+ 					  <lyrics/>
+            <playlist/>
+         </stackElement>
 				</verticalLayout>
 			</horizontalLayout>
 			<rectangle height="88" no_corner_radius="true">
-				<verticalLayout margin="4">
+        <button key="switchDisplay" width="28" height="28" margin-right="16" margin-top="-40"/>
+        <verticalLayout margin="4">
 					<progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
 					<horizontalLayout height="60">
 						<button key="repeatMode" width="28" height="28" margin="2"/>

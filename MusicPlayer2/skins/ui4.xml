@@ -40,12 +40,15 @@
     <verticalLayout>
       <horizontalLayout>
         <albumCover square="true" margin="42"/>
-        <verticalLayout margin="8" margin-top="12%">
-          <text type="title" style="scroll" height="36" font_size="12"/>
-          <text type="artist" style="scroll" height="24" font_size="10"/>
-          <text type="album" style="scroll" height="24" font_size="10"/>
-          <lyrics margin-top="20" margin-bottom="20"/>
-        </verticalLayout>
+        <stackElement margin="8" margin-bottom="28" show_indicator="true">
+          <verticalLayout margin-top="12%">
+            <text type="title" style="scroll" height="36" font_size="12"/>
+            <text type="artist" style="scroll" height="24" font_size="10"/>
+            <text type="album" style="scroll" height="24" font_size="10"/>
+            <lyrics margin-top="20" margin-bottom="16"/>
+          </verticalLayout>
+          <playlist margin-top="8" margin-bottom="8"/>
+        </stackElement>
       </horizontalLayout>
       <progressBar show_play_time="false" height="4"/>
       <rectangle height="72" no_corner_radius="true" theme_color="false">
