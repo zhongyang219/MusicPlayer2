@@ -71,6 +71,20 @@ void CUserUi::ResetVolumeToPlayTime()
         });
 }
 
+void CUserUi::PlaylistLocateToCurrent()
+{
+    //遍历Playlist元素
+    IterateAllElements([](UiElement::Element* element) ->bool
+    {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->EnsureItemVisible(CPlayer::GetInstance().GetIndex());
+        }
+        return false;
+    });
+}
+
 void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
 {
     std::shared_ptr<UiElement::Element> draw_element = GetCurrentTypeUi();
@@ -157,45 +171,46 @@ bool CUserUi::LButtonUp(CPoint point)
                 }
             }
         }
-    }
 
-    //遍历Playlist元素
-    IterateAllElements([point](UiElement::Element* element) ->bool
-    {
-        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-        if (playlist_element != nullptr)
+        //遍历Playlist元素
+        IterateAllElements([point](UiElement::Element* element) ->bool
         {
-            playlist_element->LButtonUp(point);
-        }
-        return false;
-    });
-
+            UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+            if (playlist_element != nullptr)
+            {
+                playlist_element->LButtonUp(point);
+            }
+            return false;
+        });
+    }
     return false;
 }
 
-void CUserUi::LButtonDown(CPoint point)
+bool CUserUi::LButtonDown(CPoint point)
 {
-    CPlayerUIBase::LButtonDown(point);
-
-    //遍历StackElement
-    auto& stack_elements{ GetStackElements() };
-    for (auto& element : stack_elements)
+    if (!CPlayerUIBase::LButtonDown(point))
     {
-        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
-        if (stack_element != nullptr && stack_element->indicator.enable && stack_element->indicator.rect.PtInRect(point) != FALSE)
-            stack_element->indicator.pressed = true;
-    }
-
-    //遍历Playlist元素
-    IterateAllElements([point](UiElement::Element* element) ->bool
-    {
-        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-        if (playlist_element != nullptr)
+        //遍历StackElement
+        auto& stack_elements{ GetStackElements() };
+        for (auto& element : stack_elements)
         {
-            playlist_element->LButtonDown(point);
+            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
+            if (stack_element != nullptr && stack_element->indicator.enable && stack_element->indicator.rect.PtInRect(point) != FALSE)
+                stack_element->indicator.pressed = true;
         }
-        return false;
-    });
+
+        //遍历Playlist元素
+        IterateAllElements([point](UiElement::Element* element) ->bool
+        {
+            UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+            if (playlist_element != nullptr)
+            {
+                playlist_element->LButtonDown(point);
+            }
+            return false;
+        });
+    }
+    return false;
 }
 
 void CUserUi::MouseMove(CPoint point)
@@ -601,6 +616,17 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 if (!str_indicator_offset.empty())
                     stack_element->indicator_offset = atoi(str_indicator_offset.c_str());
             }
+        }
+        else if (item_name == "playlist")
+        {
+            UiElement::Playlist* playlist = dynamic_cast<UiElement::Playlist*>(element.get());
+            if (playlist != nullptr)
+            {
+                int item_height = atoi(CTinyXml2Helper::ElementAttribute(xml_node, "item_height"));
+                if (item_height > 0)
+                    playlist->item_height = item_height;
+            }
+
         }
 
         //递归调用此函数创建子节点

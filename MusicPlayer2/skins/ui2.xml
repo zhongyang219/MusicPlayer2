@@ -1,5 +1,5 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2101/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
-      name="界面2（重制版）" index="10">
+      name="默认界面" index="10">
   
   <ui type="big">
     <verticalLayout>
@@ -14,7 +14,7 @@
         </verticalLayout>
         <stackElement margin="4" margin-bottom="16" show_indicator="true">
           <lyrics margin-bottom="4"/>
-          <playlist margin-bottom="4"/>
+          <playlist margin-bottom="4" item_height="32"/>
         </stackElement>
       </horizontalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
@@ -58,6 +58,7 @@
             </rectangle>
             <lyrics margin-top="14" hide-height="120"/>
           </verticalLayout>
+          <playlist margin="8"/>
         </stackElement>
         <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
       </verticalLayout>

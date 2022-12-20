@@ -66,7 +66,7 @@ public:
     virtual void DrawInfo(bool reset = false) override final;
     virtual void ClearInfo() override;
 
-    virtual void LButtonDown(CPoint point) override;
+    virtual bool LButtonDown(CPoint point) override;
     virtual void RButtonUp(CPoint point) override;
     virtual void MouseMove(CPoint point) override;
     virtual bool LButtonUp(CPoint point) override;
@@ -153,6 +153,7 @@ public:
         BTN_ADD_TO_PLAYLIST,    //添加到播放列表按钮
         BTN_SWITCH_DISPLAY,     //切换界面中的stackElement
         BTN_DARK_LIGHT,         //切换深色/浅色模式
+        BTN_LOCATE_TO_CURRENT,  //播放列表定位到当前播放
 
         //菜单栏
         MENU_FILE,
@@ -216,7 +217,7 @@ protected:
     void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
-    void DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info);                  //绘制播放列表
+    void DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int item_height);                  //绘制播放列表
     /**
      * @brief   绘制stackElement的指示器
      * @param   UIButton indicator 指示器信息

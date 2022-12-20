@@ -773,6 +773,8 @@
 #define IDI_ICON30                      584
 #define IDI_IDI_MINI_RESTORE_D          584
 #define IDS_LASTFM_CACHE_STATUS         585
+#define IDI_ICON31                      585
+#define IDI_LOCATE                      585
 #define IDS_SHOW_HIDE_DESKTOP_LYRIC     586
 #define IDS_APP_RUNING_INFO             587
 #define IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 588
@@ -1656,7 +1658,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        585
+#define _APS_NEXT_RESOURCE_VALUE        586
 #define _APS_NEXT_COMMAND_VALUE         33461
 #define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101

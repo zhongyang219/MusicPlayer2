@@ -396,6 +396,11 @@
                             <xs:documentation>在深色模式和浅色模式之间切换。</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="locateTrack">
+                        <xs:annotation>
+                            <xs:documentation>播放列表定位到正在播放的曲目。</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -709,9 +714,15 @@
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="playlistType">
+      <xs:annotation>
+        <xs:documentation>播放列表。</xs:documentation>
+      </xs:annotation>
+      <xs:group ref="elements"></xs:group>
+      <xs:attribute name="item_height" type="xs:int">
         <xs:annotation>
-            <xs:documentation>播放列表。</xs:documentation>
+          <xs:documentation>播放列表项目的高度。</xs:documentation>
         </xs:annotation>
-        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+      </xs:attribute>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
 </xs:schema>

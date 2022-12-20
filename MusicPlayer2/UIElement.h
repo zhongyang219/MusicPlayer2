@@ -236,6 +236,10 @@ namespace UiElement
         bool MouseWheel(int delta, CPoint point, CPlayerUIBase* ui);
         bool DoubleClick(CPoint point);
 
+        void EnsureItemVisible(int index);
+
+        int item_height{ 28 };
+
     private:
         int GetPlaylistIndexByPoint(CPoint point);
         void Clicked(CPoint point);

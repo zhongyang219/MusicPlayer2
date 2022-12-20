@@ -674,7 +674,14 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.ffmpeg_core_max_retry_count = ini.GetInt(L"config", L"ffmpeg_core_max_retry_count", 3);
     theApp.m_play_setting_data.ffmpeg_core_url_retry_interval = ini.GetInt(L"config", L"ffmpeg_core_url_retry_interval", 5);
 
-    int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
+    int ui_selected = ini.GetInt(L"config", L"UI_selected", 9);
+    if (ui_selected < 0 || ui_selected >= static_cast<int>(m_ui_list.size()))
+    {
+        if (m_ui_list.size() >= 2)
+            ui_selected = 1;
+        else
+            ui_selected = 0;
+    }
     SelectUi(ui_selected);
 
     //载入热键设置
@@ -926,7 +933,12 @@ void CMusicPlayerDlg::SetPlayListColor(bool highlight_visible)
     //m_playlist_list.SetColor(theApp.m_app_setting_data.theme_color);
     m_playlist_list.Invalidate(FALSE);
     if (highlight_visible)
+    {
         m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+        CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+        if (user_ui != nullptr)
+            user_ui->PlaylistLocateToCurrent();
+    }
 
     if (IsFloatPlaylistExist())
     {
@@ -6100,6 +6112,9 @@ void CMusicPlayerDlg::OnLocateToCurrent()
     m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
     if (IsFloatPlaylistExist())
         m_pFloatPlaylistDlg->GetListCtrl().EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
+    CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+    if (user_ui != nullptr)
+        user_ui->PlaylistLocateToCurrent();
 }
 
 

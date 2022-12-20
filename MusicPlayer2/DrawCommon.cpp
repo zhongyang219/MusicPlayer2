@@ -104,7 +104,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
         {
             format = (default_right_align ? DT_RIGHT : 0);
         }
-        m_pDC->DrawText(lpszString, rect, format | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+        m_pDC->DrawText(lpszString, rect, format | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX | DT_END_ELLIPSIS);
     }
 }
 

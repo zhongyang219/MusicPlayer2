@@ -176,13 +176,17 @@ void CPlayerUIBase::ClearInfo()
     m_pDC->FillSolidRect(m_draw_rect, CONSTVAL::BACKGROUND_COLOR);
 }
 
-void CPlayerUIBase::LButtonDown(CPoint point)
+bool CPlayerUIBase::LButtonDown(CPoint point)
 {
     for (auto& btn : m_buttons)
     {
         if (btn.second.enable && btn.second.rect.PtInRect(point) != FALSE)
+        {
             btn.second.pressed = true;
+            return true;
+        }
     }
+    return false;
 }
 
 void CPlayerUIBase::RButtonUp(CPoint point)
@@ -424,6 +428,11 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             case BTN_DARK_LIGHT:
                 m_buttons[BTN_DARK_LIGHT].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
+                return true;
+
+            case BTN_LOCATE_TO_CURRENT:
+                m_buttons[BTN_LOCATE_TO_CURRENT].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
                 return true;
 
             case BTN_VOLUME_UP:
@@ -679,6 +688,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case BTN_ADD_TO_PLAYLIST: return theApp.m_icon_set.add;
     case BTN_SWITCH_DISPLAY: return theApp.m_icon_set.switch_display;
     case BTN_DARK_LIGHT: return theApp.m_icon_set.dark_mode;
+    case BTN_LOCATE_TO_CURRENT: return theApp.m_icon_set.locate;
     default: break;
     }
     return IconRes();
@@ -2388,11 +2398,10 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
     m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
 }
 
-void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info)
+void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int item_height)
 {
     m_draw.SetDrawArea(rect);
     m_draw_data.playlist_rect = rect;
-    int item_height = DPI(theApp.m_media_lib_setting_data.playlist_item_height);
 
     int offset{ playlist_info.playlist_offset };
     if (offset < 0)
@@ -2404,7 +2413,6 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info)
         offset = offset_max;
     playlist_info.playlist_offset = offset;
 
-    playlist_info.item_rects.clear();
     playlist_info.item_rects.resize(CPlayer::GetInstance().GetSongNum());
     for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
     {
@@ -2414,13 +2422,10 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info)
         rect_item.top = start_y;
         rect_item.bottom = rect_item.top + item_height;
 
-        //如果绘制的行在播放列表区域之个，则不绘制该行
-        if ((rect_item & rect).IsRectEmpty())
-            continue;
-
         //保存每一行的矩形区域
         playlist_info.item_rects[i] = rect_item;
 
+        //如果绘制的行在播放列表区域之个，则不绘制该行
         if (!(rect_item & rect).IsRectEmpty())
         {
             //rect_item = (rect_item & rect);
@@ -2429,9 +2434,9 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info)
             if (!IsDrawBackgroundAlpha())
                 alpha = 255;
             else if (theApp.m_app_setting_data.dark_mode)
-                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
             else
-                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
             COLORREF back_color{};
             //选中项目的背景
@@ -2449,9 +2454,7 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info)
             {
                 m_draw.SetDrawArea(rect);
                 if (theApp.m_app_setting_data.button_round_corners)
-                {
                     m_draw.DrawRoundRect(rect_item, back_color, DPI(4), alpha);
-                }
                 else
                     m_draw.FillAlphaRect(rect_item, back_color, alpha, true);
             }
@@ -2473,7 +2476,7 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info)
             //绘制曲目序号
             CRect rect_num{ rect_item };
             rect_num.left = rect_item.left + DPI(8);
-            rect_num.right = rect_num.left + DPI(40);
+            rect_num.right = rect_num.left + DPI(32);
             m_draw.SetDrawArea(rect);
             m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text, Alignment::LEFT, true);
             //绘制曲目名称
@@ -2590,6 +2593,7 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
             else
                 back_color = m_colors.color_button_hover;
 
+            m_draw.SetDrawArea(rc_cur_item);
             if (!theApp.m_app_setting_data.button_round_corners)
                 m_draw.FillAlphaRect(rc_cur_item, back_color, alpha);
             else
@@ -2621,6 +2625,7 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
     drawMenuItem(MENU_VIEW, theApp.m_icon_set.playlist_dock, IDS_VIEW);                 //视图
     drawMenuItem(MENU_TOOLS, theApp.m_icon_set.setting, IDS_TOOLS);                     //工具
     drawMenuItem(MENU_HELP, theApp.m_icon_set.help, IDS_HELP);                          //帮助
+    ResetDrawArea();
 }
 
 IconRes* CPlayerUIBase::GetRepeatModeIcon()
@@ -2720,6 +2725,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_SWITCH_DISPLAY, CCommon::LoadText(IDS_SWITCH_DISPLAY));
     AddMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, GetCmdShortcutKeyForTooltips(ID_DARK_MODE)));
     AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
+    AddMouseToolTip(BTN_LOCATE_TO_CURRENT, CCommon::LoadText(IDS_LOCATE_TO_CURRENT, GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT)));
 
     UpdateRepeatModeToolTip();
 }

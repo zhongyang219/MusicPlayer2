@@ -284,7 +284,7 @@ IDI_APP_DEBUG           ICON                    "res\\MusicPlayer2_debug.ico"
 
 IDI_TAG                 ICON                    "res\\tag.ico"
 
-IDI_LOCATE_D            ICON                    "res\\locate.ico"
+IDI_LOCATE_D            ICON                    "res\\locate_d.ico"
 
 IDI_STAR                ICON                    "res\\star.ico"
 
@@ -375,6 +375,8 @@ IDI_HOT_KEY             ICON                    "res\\hot_key.ico"
 IDI_MINI_RESTORE        ICON                    "res\\mini_restore.ico"
 
 IDI_IDI_MINI_RESTORE_D  ICON                    "res\\mini_restore_d.ico"
+
+IDI_LOCATE              ICON                    "res\\locate.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

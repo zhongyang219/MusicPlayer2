@@ -595,6 +595,7 @@
     <Image Include="res\link.ico" />
     <Image Include="res\link_d.ico" />
     <Image Include="res\locate.ico" />
+    <Image Include="res\locate_d.ico" />
     <Image Include="res\lock_d.ico" />
     <Image Include="res\lyric.ico" />
     <Image Include="res\lyric_d.ico" />

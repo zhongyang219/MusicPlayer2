@@ -27,7 +27,7 @@
 					</rectangle>
           <stackElement margin="4">
  					  <lyrics/>
-            <playlist/>
+            <playlist item_height="30"/>
          </stackElement>
 				</verticalLayout>
 			</horizontalLayout>
@@ -90,8 +90,8 @@
 					</rectangle>
           <stackElement margin="4">
  					  <lyrics/>
-            <playlist/>
-         </stackElement>
+            <playlist item_height="30"/>
+          </stackElement>
 				</verticalLayout>
 			</horizontalLayout>
 			<rectangle height="88" no_corner_radius="true">

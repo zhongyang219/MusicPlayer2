@@ -637,6 +637,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_SWITCH_DISPLAY;
     else if (key_type == "darkLightMode")
         key = CPlayerUIBase::BTN_DARK_LIGHT;
+    else if (key_type == "locateTrack")
+        key = CPlayerUIBase::BTN_LOCATE_TO_CURRENT;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
@@ -890,7 +892,7 @@ void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui)
 void UiElement::Playlist::Draw(CPlayerUIBase * ui)
 {
     CalculateRect(ui);
-    ui->DrawPlaylist(rect, playlist_info);
+    ui->DrawPlaylist(rect, playlist_info, ui->DPI(item_height));
     ui->ResetDrawArea();
     Element::Draw(ui);
 }
@@ -902,12 +904,17 @@ void UiElement::Playlist::LButtonUp(CPoint point)
 
 void UiElement::Playlist::LButtonDown(CPoint point)
 {
-    Clicked(point);
     if (rect.PtInRect(point))
     {
+        Clicked(point);
         mouse_pressed = true;
         mouse_pressed_pos = point;
         mouse_pressed_offset = playlist_info.playlist_offset;
+    }
+    else
+    {
+        mouse_pressed = false;
+        playlist_info.item_selected = -1;
     }
 }
 
@@ -940,7 +947,14 @@ bool UiElement::Playlist::RButtunUp(CPoint point)
 void UiElement::Playlist::RButtonDown(CPoint point)
 {
     mouse_pressed = false;
-    Clicked(point);
+    if (rect.PtInRect(point))
+    {
+        Clicked(point);
+    }
+    else
+    {
+        playlist_info.item_selected = -1;
+    }
 }
 
 bool UiElement::Playlist::MouseWheel(int delta, CPoint point, CPlayerUIBase* ui)
@@ -965,6 +979,27 @@ bool UiElement::Playlist::DoubleClick(CPoint point)
         ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_ITEM, 0);
     }
     return false;
+}
+
+void UiElement::Playlist::EnsureItemVisible(int index)
+{
+    if (index < 0 || index >= static_cast<int>(playlist_info.item_rects.size()))
+        return;
+
+    CRect item_rect{ playlist_info.item_rects[index] };
+    //确定当前项目是否处于可见状态
+    if (item_rect.top > rect.top && item_rect.bottom < rect.bottom)
+        return;
+
+    //计算要使指定项可见时的偏移量
+    int delta_offset{};
+    //指定项目在播放列表上方
+    if (item_rect.top < rect.top)
+        delta_offset = rect.top - item_rect.top;
+    //指定项目在播放列表下方
+    else if (item_rect.bottom > rect.bottom)
+        delta_offset = rect.bottom - item_rect.bottom;
+    playlist_info.playlist_offset -= delta_offset;
 }
 
 int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
