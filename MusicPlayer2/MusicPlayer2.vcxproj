@@ -575,6 +575,7 @@
     <Image Include="res\eq_d.ico" />
     <Image Include="res\exit_d.ico" />
     <Image Include="res\expand.ico" />
+    <Image Include="res\expand_d.ico" />
     <Image Include="res\explorer_folder.ico" />
     <Image Include="res\favourite.ico" />
     <Image Include="res\favourite_d.ico" />

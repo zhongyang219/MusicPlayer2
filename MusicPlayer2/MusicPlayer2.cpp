@@ -600,6 +600,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.playlist_dock.Load(IDI_PLAYLIST_DOCK, IDI_PLAYLIST_DOCK_D, DPI(16));
     m_icon_set.mini_restore.Load(IDI_MINI_RESTORE, IDI_IDI_MINI_RESTORE_D, DPI(16));
     m_icon_set.locate.Load(IDI_LOCATE, IDI_LOCATE_D, DPI(16));
+    m_icon_set.expand.Load(IDI_EXPAND, IDI_EXPAND_D, DPI(16));
 
     //菜单图标
     m_icon_set.stop_new = CDrawCommon::LoadIconResource(IDI_STOP_NEW_D, DPI(16), DPI(16));
@@ -635,7 +636,6 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.hot_key = CDrawCommon::LoadIconResource(IDI_HOT_KEY, DPI(16), DPI(16));
 
     m_icon_set.ok = CDrawCommon::LoadIconResource(IDI_OK_D, DPI(16), DPI(16));
-    m_icon_set.expand = CDrawCommon::LoadIconResource(IDI_EXPAND_D, DPI(16), DPI(16));
 
     //加载通知区图标
     m_icon_set.notify_icons[0] = m_icon_set.app.GetIcon();      //应用图标直接使用前面加载过的

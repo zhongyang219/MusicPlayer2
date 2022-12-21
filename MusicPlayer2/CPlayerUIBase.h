@@ -22,6 +22,7 @@ namespace UiElement
     class BeatIndicator;
     class StackElement;
     class Playlist;
+    class PlaylistIndicator;
 }
 
 struct SLayoutData
@@ -60,6 +61,7 @@ public:
     friend class UiElement::BeatIndicator;
     friend class UiElement::StackElement;
     friend class UiElement::Playlist;
+    friend class UiElement::PlaylistIndicator;
 
 public:
     void Init(CDC* pDC) override;
@@ -156,6 +158,7 @@ public:
         BTN_SWITCH_DISPLAY,     //切换界面中的stackElement
         BTN_DARK_LIGHT,         //切换深色/浅色模式
         BTN_LOCATE_TO_CURRENT,  //播放列表定位到当前播放
+        BTN_PLAYLIST_DROP_DOWN, //播放列表下拉按钮
 
         //菜单栏
         MENU_FILE,
@@ -219,6 +222,7 @@ protected:
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
     void DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int item_height);                  //绘制播放列表
+    void DrawCurrentPlaylistIndicator(CRect rect);      //绘制当前播放列表指示
     /**
      * @brief   绘制stackElement的指示器
      * @param   UIButton indicator 指示器信息
@@ -230,6 +234,7 @@ protected:
 
     IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
     IconRes* GetVolumeIcon();           //获取当前音量的图标
+    void DrawUiIcon(CRect rect, const IconRes& icon, bool dark);
     void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);

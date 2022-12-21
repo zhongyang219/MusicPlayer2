@@ -318,7 +318,7 @@ IDI_VOLUME0             ICON                    "res\\volume0.ico"
 
 IDI_VOLUME0_D           ICON                    "res\\volume0_d.ico"
 
-IDI_EXPAND_D            ICON                    "res\\expand.ico"
+IDI_EXPAND_D            ICON                    "res\\expand_d.ico"
 
 IDI_ADD                 ICON                    "res\\add.ico"
 
@@ -377,6 +377,8 @@ IDI_MINI_RESTORE        ICON                    "res\\mini_restore.ico"
 IDI_IDI_MINI_RESTORE_D  ICON                    "res\\mini_restore_d.ico"
 
 IDI_LOCATE              ICON                    "res\\locate.ico"
+
+IDI_EXPAND              ICON                    "res\\expand.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -567,7 +567,7 @@ struct IconSet
 
     HICON ok;
     IconRes locate;
-    HICON expand;
+    IconRes expand;
 
     //通知区图标
     HICON notify_icons[MAX_NOTIFY_ICON];

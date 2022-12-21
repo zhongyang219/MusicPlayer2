@@ -75,7 +75,7 @@ void CMenuEditCtrl::OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPress
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + (rc_draw.Width() - icon_size.cx) / 2;
     icon_top_left.y = rc_draw.top + (rc_draw.Height() - icon_size.cy) / 2;
-    drawer.DrawIcon(theApp.m_icon_set.expand, icon_top_left, icon_size);
+    drawer.DrawIcon(theApp.m_icon_set.expand.GetIcon(true), icon_top_left, icon_size);
 }
 
 

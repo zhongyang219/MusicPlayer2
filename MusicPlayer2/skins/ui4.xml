@@ -47,7 +47,10 @@
             <text type="album" style="scroll" height="24" font_size="10"/>
             <lyrics margin-top="20" margin-bottom="16"/>
           </verticalLayout>
-          <playlist margin-top="8" margin-bottom="8" item_height="32"/>
+          <verticalLayout margin-top="8" margin-bottom="8">
+            <playlistIndicator height="30" margin-bottom="4"/>
+            <playlist item_height="32"/>
+          </verticalLayout>
         </stackElement>
       </horizontalLayout>
       <progressBar show_play_time="false" height="4"/>

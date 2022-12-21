@@ -252,6 +252,13 @@ namespace UiElement
         CPoint mouse_pressed_pos;           //鼠标按下时的位置
         int mouse_pressed_offset{};         //鼠标按下时播放列表的位移
     };
+
+    //当前播放列表指示
+    class PlaylistIndicator : public Element
+    {
+    public:
+        virtual void Draw(CPlayerUIBase* ui) override;
+    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

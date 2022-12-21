@@ -602,6 +602,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 volume->adj_btn_on_top = CTinyXml2Helper::StringToBool(str_adj_btn_on_top.c_str());
             }
         }
+        //堆叠元素
         else if (item_name == "stackElement")
         {
             m_stack_elements[current_build_ui_element].push_back(element);
@@ -622,6 +623,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     stack_element->indicator_offset = atoi(str_indicator_offset.c_str());
             }
         }
+        //播放列表
         else if (item_name == "playlist")
         {
             UiElement::Playlist* playlist = dynamic_cast<UiElement::Playlist*>(element.get());
@@ -631,7 +633,6 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 if (item_height > 0)
                     playlist->item_height = item_height;
             }
-
         }
 
         //递归调用此函数创建子节点

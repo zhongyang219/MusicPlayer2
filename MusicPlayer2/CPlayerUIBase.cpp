@@ -435,6 +435,14 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
                 return true;
 
+            case BTN_PLAYLIST_DROP_DOWN:
+            {
+                m_buttons[BTN_PLAYLIST_DROP_DOWN].hover = false;
+                CRect btn_rect = btn.second.rect;
+                AfxGetMainWnd()->ClientToScreen(&btn_rect);
+                theApp.m_menu_set.m_recent_folder_playlist_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+                return true;
+            }
             case BTN_VOLUME_UP:
                 if (m_show_volume_adj)
                 {
@@ -689,6 +697,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case BTN_SWITCH_DISPLAY: return theApp.m_icon_set.switch_display;
     case BTN_DARK_LIGHT: return theApp.m_icon_set.dark_mode;
     case BTN_LOCATE_TO_CURRENT: return theApp.m_icon_set.locate;
+    case BTN_PLAYLIST_DROP_DOWN: return theApp.m_icon_set.expand;
     default: break;
     }
     return IconRes();
@@ -1090,18 +1099,8 @@ void CPlayerUIBase::DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon)
             m_draw.DrawRoundRect(rc_tmp, back_color, CalculateRoundRectRadius(rect), alpha);
     }
 
-    rc_tmp = rect;
-    //使图标在矩形中居中
-    CSize icon_size = icon.GetSize(IsDrawLargeIcon());
-    rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
-    rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
-    rc_tmp.right = rc_tmp.left + icon_size.cx;
-    rc_tmp.bottom = rc_tmp.top + icon_size.cy;
-
     bool is_light_icon = (theApp.m_app_setting_data.dark_mode || (is_close_btn && (btn.pressed || btn.hover)));
-    const HICON& hIcon = icon.GetIcon(!is_light_icon, IsDrawLargeIcon());
-    m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
-
+    DrawUiIcon(rect, icon, !is_light_icon);
 }
 
 void CPlayerUIBase::DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon)
@@ -1135,16 +1134,7 @@ void CPlayerUIBase::DrawControlButton(CRect rect, UIButton& btn, const IconRes& 
 
     btn.rect = DrawAreaToClient(rc_tmp, m_draw_rect);
 
-    rc_tmp = rect;
-    //使图标在矩形中居中
-    CSize icon_size = icon.GetSize(IsDrawLargeIcon());
-    rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
-    rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
-    rc_tmp.right = rc_tmp.left + icon_size.cx;
-    rc_tmp.bottom = rc_tmp.top + icon_size.cy;
-
-    const HICON& hIcon = icon.GetIcon(!theApp.m_app_setting_data.dark_mode, IsDrawLargeIcon());
-    m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
+    DrawUiIcon(rect, icon, !theApp.m_app_setting_data.dark_mode);
 }
 
 void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color)
@@ -2065,14 +2055,7 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     auto app_icon = theApp.m_icon_set.app;
     CRect rect_temp = rect;
     rect_temp.right = rect_temp.left + m_layout.titlabar_height;
-    //使图标在矩形中居中
-    CSize icon_size = app_icon.GetSize();
-    CRect rc_icon{ rect_temp };
-    rc_icon.left = rect_temp.left + (rect_temp.Width() - icon_size.cx) / 2;
-    rc_icon.top = rect_temp.top + (rect_temp.Height() - icon_size.cy) / 2;
-    rc_icon.right = rc_icon.left + icon_size.cx;
-    rc_icon.bottom = rc_icon.top + icon_size.cy;
-    m_draw.DrawIcon(app_icon.GetIcon(), rc_icon.TopLeft(), icon_size);
+    DrawUiIcon(rect_temp, app_icon, false);
 
     //绘制右侧图标
     rect_temp = rect;
@@ -2303,19 +2286,8 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     //绘制图标
     CRect rect_icon{ rect };
     rect_icon.right = rect_icon.left + rect_icon.Height();
-    //使图标在矩形中居中
-    CRect rc_tmp = rect_icon;
     IconRes* icon{ GetVolumeIcon() };
-    CSize icon_size = icon->GetSize(IsDrawLargeIcon());
-    rc_tmp.left = rect_icon.left + (rect_icon.Width() - icon_size.cx) / 2;
-    rc_tmp.top = rect_icon.top + (rect_icon.Height() - icon_size.cy) / 2;
-    rc_tmp.right = rc_tmp.left + icon_size.cx;
-    rc_tmp.bottom = rc_tmp.top + icon_size.cy;
-
-    bool is_light_icon = (theApp.m_app_setting_data.dark_mode);
-    const HICON& hIcon = icon->GetIcon(!is_light_icon, IsDrawLargeIcon());
-    m_draw.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
-
+    DrawUiIcon(rect_icon, *icon, !theApp.m_app_setting_data.dark_mode);
 
     //绘制文本
     if (show_text && rect_icon.right < rect.right)
@@ -2333,7 +2305,7 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
             m_draw.DrawWindowText(rect_text, str, m_colors.color_text);
     }
     //设置音量调整按钮的位置
-    rc_tmp = rect;
+    CRect rc_tmp = rect;
     rc_tmp.bottom = rc_tmp.top + DPI(24);
     m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
     m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
@@ -2484,6 +2456,45 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int 
     ResetDrawArea();
 }
 
+void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
+{
+    //绘制图标
+    const IconRes& icon{ CPlayer::GetInstance().IsPlaylistMode() ? theApp.m_icon_set.show_playlist : theApp.m_icon_set.select_folder };
+    CRect rect_icon{ rect };
+    rect_icon.right = rect_icon.left + DPI(26);
+    DrawUiIcon(rect_icon, icon, !theApp.m_app_setting_data.dark_mode);
+    //绘制文本
+    CString str{ CCommon::LoadText(CPlayer::GetInstance().IsPlaylistMode() ? IDS_PLAYLIST : IDS_FOLDER, _T(":")) };
+    CRect rect_text{ rect };
+    rect_text.left = rect_icon.right;
+    rect_text.right = rect_text.left + m_draw.GetTextExtent(str).cx;
+    m_draw.DrawWindowText(rect_text, str, m_colors.color_text, Alignment::LEFT, true);
+    //绘制当前播放列表名称
+    CRect rect_name{ rect };
+    rect_name.left = rect_text.right + DPI(8);
+    BYTE alpha{ 255 };
+    if (IsDrawBackgroundAlpha())
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+    if (theApp.m_app_setting_data.button_round_corners)
+        m_draw.DrawRoundRect(rect_name, m_colors.color_control_bar_back, DPI(4), alpha);
+    else
+        m_draw.FillAlphaRect(rect_name, m_colors.color_control_bar_back, alpha);
+
+    rect_name.left += DPI(6);
+    rect_name.right -= DPI(30);
+    static CDrawCommon::ScrollInfo name_scroll_info;
+    m_draw.DrawScrollText(rect_name, CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
+    //绘制下拉按钮
+    CRect rect_drop_down{ rect };
+    rect_drop_down.left = rect_name.right;
+    CRect rect_drop_down_btn{ rect_drop_down };
+    const int icon_size{ (std::min)(DPI(24), rect.Height()) };
+    rect_drop_down_btn.left = rect_drop_down.left + (rect_drop_down.Width() - icon_size) / 2;
+    rect_drop_down_btn.top = rect_drop_down.top + (rect_drop_down.Height() - icon_size) / 2;
+    rect_drop_down_btn.right = rect_drop_down_btn.left + icon_size;
+    rect_drop_down_btn.bottom = rect_drop_down_btn.top + icon_size;
+    DrawUIButton(rect_drop_down_btn, m_buttons[BTN_PLAYLIST_DROP_DOWN], GetBtnIcon(BTN_PLAYLIST_DROP_DOWN, IsDrawLargeIcon()));
+}
 
 void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
 {
@@ -2650,6 +2661,21 @@ IconRes* CPlayerUIBase::GetVolumeIcon()
     else
         icon = &theApp.m_icon_set.volume1;
     return icon;
+}
+
+void CPlayerUIBase::DrawUiIcon(CRect rect, const IconRes & icon, bool dark)
+{
+    //使图标在矩形中居中
+    CRect rc_icon;
+    CSize icon_size = icon.GetSize(IsDrawLargeIcon());
+    rc_icon.left = rect.left + (rect.Width() - icon_size.cx) / 2;
+    rc_icon.top = rect.top + (rect.Height() - icon_size.cy) / 2;
+    rc_icon.right = rc_icon.left + icon_size.cx;
+    rc_icon.bottom = rc_icon.top + icon_size.cy;
+
+    //绘制图标
+    const HICON& hIcon = icon.GetIcon(dark, IsDrawLargeIcon());
+    m_draw.DrawIcon(hIcon, rc_icon.TopLeft(), rc_icon.Size());
 }
 
 //void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)

@@ -985,9 +985,13 @@ bool UiElement::Playlist::DoubleClick(CPoint point)
 
 void UiElement::Playlist::EnsureItemVisible(int index, CPlayerUIBase* ui)
 {
+    if (index <= 0)
+        return;
+
+    CalculateRect(ui);
     CalculateItemRects(ui);
 
-    if (index < 0 || index >= static_cast<int>(playlist_info.item_rects.size()))
+    if (index >= static_cast<int>(playlist_info.item_rects.size()))
         return;
 
     CRect item_rect{ playlist_info.item_rects[index] };
@@ -1053,6 +1057,14 @@ void UiElement::Playlist::Clicked(CPoint point)
     playlist_info.selected_item_scroll_info.Reset();
 }
 
+void UiElement::PlaylistIndicator::Draw(CPlayerUIBase * ui)
+{
+    CalculateRect(ui);
+    ui->DrawCurrentPlaylistIndicator(rect);
+    ui->ResetDrawArea();
+    Element::Draw(ui);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name)
@@ -1096,6 +1108,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = new UiElement::BeatIndicator();
     else if (name == "playlist")
         element = new UiElement::Playlist();
+    else if (name == "playlistIndicator")
+        element = new UiElement::PlaylistIndicator();
     else if (name == "ui" || name == "root" || name == "placeHolder")
         element = new UiElement::Element();
 
