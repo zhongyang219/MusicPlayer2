@@ -707,6 +707,7 @@ void CPlayerUIBase::PreDrawInfo()
     if (last_ui_size != GetUiSize())
     {
         ClearBtnRect();
+        UiSizeChanged();
         last_ui_size = GetUiSize();
     }
 }
@@ -2401,30 +2402,12 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
 void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int item_height)
 {
     m_draw.SetDrawArea(rect);
-    m_draw_data.playlist_rect = rect;
 
-    int offset{ playlist_info.playlist_offset };
-    if (offset < 0)
-        offset = 0;
-    int offset_max{ item_height * CPlayer::GetInstance().GetSongNum() - rect.Height() };
-    if (offset_max <= 0)
-        offset = 0;
-    else if (offset > offset_max)
-        offset = offset_max;
-    playlist_info.playlist_offset = offset;
-
-    playlist_info.item_rects.resize(CPlayer::GetInstance().GetSongNum());
     for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
     {
-        //计算每一行的矩形区域
-        int start_y = -offset + rect.top + i * item_height;
-        CRect rect_item{ rect };
-        rect_item.top = start_y;
-        rect_item.bottom = rect_item.top + item_height;
-
-        //保存每一行的矩形区域
-        playlist_info.item_rects[i] = rect_item;
-
+        if (i < 0 || i > static_cast<int>(playlist_info.item_rects.size()))
+            break;
+        CRect rect_item{ playlist_info.item_rects[i] };
         //如果绘制的行在播放列表区域之个，则不绘制该行
         if (!(rect_item & rect).IsRectEmpty())
         {

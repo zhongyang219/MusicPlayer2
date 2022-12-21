@@ -1956,6 +1956,10 @@ void CMusicPlayerDlg::SelectUi(int ui_selected)
     if (ui_selected < 0 || ui_selected >= static_cast<int>(m_ui_list.size()))
         ui_selected = 0;
     m_pUI = m_ui_list[ui_selected].get();
+
+    CUserUi* user_ui{ dynamic_cast<CUserUi*>(m_pUI) };
+    if (user_ui != nullptr)
+        user_ui->PlaylistLocateToCurrent();
 }
 
 int CMusicPlayerDlg::GetUiSelected() const

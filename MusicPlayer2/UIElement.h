@@ -236,13 +236,15 @@ namespace UiElement
         bool MouseWheel(int delta, CPoint point, CPlayerUIBase* ui);
         bool DoubleClick(CPoint point);
 
-        void EnsureItemVisible(int index);
+        void EnsureItemVisible(int index, CPlayerUIBase* ui);  //确保指定项在播放列表中可见
+        void RestrictOffset(CPlayerUIBase* ui);             //将播放列表偏移量限制在正确的范围
+        void CalculateItemRects(CPlayerUIBase* ui);         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
 
         int item_height{ 28 };
 
     private:
         int GetPlaylistIndexByPoint(CPoint point);
-        void Clicked(CPoint point);
+        void Clicked(CPoint point);     //当播放列表被点击时调用此函数
 
     private:
         CPlayerUIBase::UiPlaylistInfo playlist_info;

@@ -74,12 +74,12 @@ void CUserUi::ResetVolumeToPlayTime()
 void CUserUi::PlaylistLocateToCurrent()
 {
     //遍历Playlist元素
-    IterateAllElements([](UiElement::Element* element) ->bool
+    IterateAllElements([this](UiElement::Element* element) ->bool
     {
         UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
         if (playlist_element != nullptr)
         {
-            playlist_element->EnsureItemVisible(CPlayer::GetInstance().GetIndex());
+            playlist_element->EnsureItemVisible(CPlayer::GetInstance().GetIndex(), this);
         }
         return false;
     });
@@ -343,6 +343,11 @@ bool CUserUi::DoubleClick(CPoint point)
     if (rtn)
         return true;
     return CPlayerUIBase::DoubleClick(point);
+}
+
+void CUserUi::UiSizeChanged()
+{
+    PlaylistLocateToCurrent();
 }
 
 int CUserUi::GetUiIndex()

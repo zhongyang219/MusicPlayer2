@@ -31,6 +31,7 @@ public:
     virtual void RButtonDown(CPoint point) override;
     virtual bool MouseWheel(int delta, CPoint point) override;
     virtual bool DoubleClick(CPoint point) override;
+    virtual void UiSizeChanged() override;
 
 protected:
     int m_index{ INT_MAX };

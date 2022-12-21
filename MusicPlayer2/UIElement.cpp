@@ -892,6 +892,8 @@ void UiElement::BeatIndicator::Draw(CPlayerUIBase* ui)
 void UiElement::Playlist::Draw(CPlayerUIBase * ui)
 {
     CalculateRect(ui);
+    RestrictOffset(ui);
+    CalculateItemRects(ui);
     ui->DrawPlaylist(rect, playlist_info, ui->DPI(item_height));
     ui->ResetDrawArea();
     Element::Draw(ui);
@@ -981,8 +983,10 @@ bool UiElement::Playlist::DoubleClick(CPoint point)
     return false;
 }
 
-void UiElement::Playlist::EnsureItemVisible(int index)
+void UiElement::Playlist::EnsureItemVisible(int index, CPlayerUIBase* ui)
 {
+    CalculateItemRects(ui);
+
     if (index < 0 || index >= static_cast<int>(playlist_info.item_rects.size()))
         return;
 
@@ -1000,6 +1004,34 @@ void UiElement::Playlist::EnsureItemVisible(int index)
     else if (item_rect.bottom > rect.bottom)
         delta_offset = rect.bottom - item_rect.bottom;
     playlist_info.playlist_offset -= delta_offset;
+}
+
+void UiElement::Playlist::RestrictOffset(CPlayerUIBase * ui)
+{
+    int& offset{ playlist_info.playlist_offset };
+    if (offset < 0)
+        offset = 0;
+    int offset_max{ ui->DPI(item_height) * CPlayer::GetInstance().GetSongNum() - rect.Height() };
+    if (offset_max <= 0)
+        offset = 0;
+    else if (offset > offset_max)
+        offset = offset_max;
+}
+
+void UiElement::Playlist::CalculateItemRects(CPlayerUIBase* ui)
+{
+    playlist_info.item_rects.resize(CPlayer::GetInstance().GetSongNum());
+    for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
+    {
+        //计算每一行的矩形区域
+        int start_y = -playlist_info.playlist_offset + rect.top + i * ui->DPI(item_height);
+        CRect rect_item{ rect };
+        rect_item.top = start_y;
+        rect_item.bottom = rect_item.top + ui->DPI(item_height);
+
+        //保存每一行的矩形区域
+        playlist_info.item_rects[i] = rect_item;
+    }
 }
 
 int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)

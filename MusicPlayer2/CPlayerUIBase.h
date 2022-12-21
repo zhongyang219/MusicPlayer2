@@ -112,6 +112,8 @@ public:
 
     UiSize GetUiSize() const;
 
+    virtual void UiSizeChanged() {}
+
     static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
 
 public:
@@ -192,7 +194,6 @@ protected:
         //CRect cover_rect;
         CRect lyric_rect;
         CRect thumbnail_rect;
-        CRect playlist_rect;
     };
 
 protected:
