@@ -986,7 +986,10 @@ bool UiElement::Playlist::DoubleClick(CPoint point)
 void UiElement::Playlist::EnsureItemVisible(int index, CPlayerUIBase* ui)
 {
     if (index <= 0)
+    {
+        playlist_info.playlist_offset = 0;
         return;
+    }
 
     CalculateRect(ui);
     CalculateItemRects(ui);
