@@ -18,7 +18,13 @@
           </albumCover>
           <spectrum height="48" width="280" draw_reflex="true" alignment="center"/>
         </verticalLayout>
-        <lyrics margin="4"/>
+        <stackElement margin-bottom="16" show_indicator="true">
+          <lyrics margin="4"/>
+          <verticalLayout margin="4">
+            <playlistIndicator margin-bottom="6" height="28"/>
+            <playlist/>
+          </verticalLayout>
+        </stackElement>
       </horizontalLayout>
       <rectangle height="74">
         <horizontalLayout margin-left="8" margin-right="8">
