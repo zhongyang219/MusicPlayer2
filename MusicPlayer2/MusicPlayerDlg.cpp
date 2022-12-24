@@ -6356,6 +6356,9 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
             theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_RECENT_FOLDER_PLAYLIST_MENU_START + i, item_name.c_str());
             item_count++;
         }
+        theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_SEPARATOR);
+        theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_SET_PATH, CCommon::LoadText(IDS_MEDIA_LIB, _T("...")));
+
         //设置菜单图标
         for (int i{}; i < item_count; i++)
         {
@@ -6374,6 +6377,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
             }
             CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), i, TRUE, icon);
         }
+        CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, theApp.m_icon_set.media_lib.GetIcon(true));
     }
     return 0;
 }
