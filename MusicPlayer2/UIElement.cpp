@@ -994,7 +994,14 @@ bool UiElement::Playlist::MouseWheel(int delta, CPoint point, CPlayerUIBase* ui)
             step = -1;
         if (delta < 0)
             step = 1;
-        playlist_info.playlist_offset += (step * ui->DPI(32));
+        //一次滚动的行数
+        int lines = rect.Height() / ui->DPI(item_height) / 2;
+        if (lines > 3)
+            lines = 3;
+        if (lines < 1)
+            lines = 1;
+        step *= lines;
+        playlist_info.playlist_offset = (playlist_info.playlist_offset / ui->DPI(item_height) + step) * ui->DPI(item_height);
         return true;
     }
     return false;

@@ -2377,7 +2377,7 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int 
 
     for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
     {
-        if (i < 0 || i > static_cast<int>(playlist_info.item_rects.size()))
+        if (i < 0 || i >= static_cast<int>(playlist_info.item_rects.size()))
             break;
         CRect rect_item{ playlist_info.item_rects[i] };
         //如果绘制的行在播放列表区域之个，则不绘制该行
