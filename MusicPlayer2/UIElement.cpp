@@ -175,6 +175,25 @@ void UiElement::Element::CalculateRect(CPlayerUIBase* ui)
 }
 
 
+void UiElement::Element::IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func)
+{
+    if (parent_element != nullptr)
+    {
+        if (func(parent_element))
+            return;
+        for (const auto& ele : parent_element->childLst)
+        {
+            IterateElements(ele.get(), func);
+        }
+    }
+}
+
+void UiElement::Element::IterateAllElements(std::function<bool(UiElement::Element*)> func)
+{
+    IterateElements(this, func);
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 void UiElement::Layout::CalculateChildrenRect(CPlayerUIBase* ui)
@@ -515,7 +534,14 @@ void UiElement::StackElement::Draw(CPlayerUIBase* ui)
     for (size_t i{}; i < childLst.size(); i++)
     {
         if (cur_element != childLst[i])
-            childLst[i]->SetRect(CRect());
+        {
+            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool
+                {
+                    if (element != nullptr)
+                        element->SetRect(CRect());
+                    return false;
+                });
+        }
     }
 
     //绘制指示器

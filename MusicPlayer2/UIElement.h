@@ -48,10 +48,12 @@ namespace UiElement
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         Element* RootElement();       //获取根节点
+        void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
 
     protected:
         CRect ParentRect(CPlayerUIBase* ui) const;
         virtual void CalculateRect(CPlayerUIBase* ui);           //计算此元素在界面中的矩形区域
+        static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func);
 
         CRect rect;     //用于保存计算得到的元素的矩形区域
     };

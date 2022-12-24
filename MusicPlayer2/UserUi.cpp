@@ -22,23 +22,10 @@ bool CUserUi::IsIndexValid() const
     return m_index != INT_MAX;
 }
 
-static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func)
-{
-    if (parent_element != nullptr)
-    {
-        if (func(parent_element))
-            return;
-        for (const auto& ele : parent_element->childLst)
-        {
-            IterateElements(ele.get(), func);
-        }
-    }
-}
-
 void CUserUi::IterateAllElements(std::function<bool(UiElement::Element*)> func)
 {
     std::shared_ptr<UiElement::Element> draw_element = GetCurrentTypeUi();
-    IterateElements(draw_element.get(), func);
+    draw_element->IterateAllElements(func);
 }
 
 void CUserUi::VolumeAdjusted()
