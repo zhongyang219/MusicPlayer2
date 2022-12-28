@@ -37,6 +37,9 @@ protected:
     CSpinEdit m_ffmpeg_max_retry_count;
     CSpinEdit m_ffmpeg_url_retry_interval;
     CToolTipCtrl m_toolTip;
+    CButton m_ffmpeg_enable_wasapi;
+    CButton m_ffmpeg_enable_wasapi_exclusive;
+    CSpinEdit m_ffmpeg_max_wait_time;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -63,4 +66,6 @@ public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnNMClickFfmpegDownSyslink(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+    afx_msg void OnBnClickedFfmpegEnableWasapi();
+    afx_msg void OnBnClickedFfmpegEnableWasapiExclusive();
 };

@@ -7,6 +7,7 @@
 #define AV_LOG_VERBOSE 40
 #define AV_LOG_SKIP_REPEATED 1
 #define AV_LOG_PRINT_LEVEL 2
+#define FFMPEG_CORE_VERSION(major, minor, micro, rev) (((int32_t)major << 24) | ((int32_t)minor << 16) | ((int32_t)micro << 8) | (int32_t)rev)
 typedef struct MusicHandle MusicHandle;
 typedef struct MusicInfoHandle MusicInfoHandle;
 typedef struct FfmpegCoreSettings FfmpegCoreSettings;
@@ -27,6 +28,7 @@ typedef void(*_ffmpeg_core_log_set_callback)(void(*callback)(void*, int, const c
 typedef void(*_ffmpeg_core_log_set_flags)(int);
 typedef const char*(*_ffmpeg_core_version_str)();
 typedef int32_t(*_ffmpeg_core_version)();
+typedef int(*_ffmpeg_core_is_wasapi_supported)();
 typedef void(*_ffmpeg_core_dump_library_version)(int, int);
 typedef void(*_ffmpeg_core_dump_ffmpeg_configuration)(int, int);
 typedef int(*_ffmpeg_core_open)(const wchar_t*, MusicHandle**);
@@ -65,6 +67,9 @@ typedef int(*_ffmpeg_core_settings_set_cache_length)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_max_retry_count)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_url_retry_interval)(FfmpegCoreSettings*, int);
 typedef int(*_ffmpeg_core_settings_set_equalizer_channel)(FfmpegCoreSettings*, int, int);
+typedef int(*_ffmpeg_core_settings_set_use_WASAPI)(FfmpegCoreSettings*, int);
+typedef int(*_ffmpeg_core_settings_set_enable_exclusive)(FfmpegCoreSettings*, int);
+typedef int(*_ffmpeg_core_settings_set_max_wait_time)(FfmpegCoreSettings*, int);
 typedef DeviceNameList*(*_ffmpeg_core_get_audio_devices)();
 
 class CFfmpegCore : public IPlayerCore, public CDllLib {
@@ -118,6 +123,11 @@ public:
     void SetMaxRetryCount(int max_retry_count = 3);
     void SetUrlRetryInterval(int url_retry_interval = 5);
     std::list<std::wstring> GetAudioDevices();
+    int32_t GetVersion();
+    bool IsWASAPISupported();
+    void EnableWASAPI(bool enable);
+    void EnableExclusiveMode(bool enable);
+    void SetMaxWaitTime(int max_wait_time = 3000);
 
     virtual bool EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc) override;
     virtual bool InitEncoder() override;
@@ -140,6 +150,7 @@ private:
     _ffmpeg_core_log_set_flags ffmpeg_core_log_set_flags = nullptr;
     _ffmpeg_core_version_str ffmpeg_core_version_str = nullptr;
     _ffmpeg_core_version ffmpeg_core_version = nullptr;
+    _ffmpeg_core_is_wasapi_supported ffmpeg_core_is_wasapi_supported = nullptr;
     _ffmpeg_core_dump_library_version ffmpeg_core_dump_library_version = nullptr;
     _ffmpeg_core_dump_ffmpeg_configuration ffmpeg_core_dump_ffmpeg_configuration = nullptr;
     _ffmpeg_core_open ffmpeg_core_open = nullptr;
@@ -178,10 +189,14 @@ private:
     _ffmpeg_core_settings_set_max_retry_count ffmpeg_core_settings_set_max_retry_count = nullptr;
     _ffmpeg_core_settings_set_url_retry_interval ffmpeg_core_settings_set_url_retry_interval = nullptr;
     _ffmpeg_core_settings_set_equalizer_channel ffmpeg_core_settings_set_equalizer_channel = nullptr;
+    _ffmpeg_core_settings_set_use_WASAPI ffmpeg_core_settings_set_use_WASAPI = nullptr;
+    _ffmpeg_core_settings_set_enable_exclusive ffmpeg_core_settings_set_enable_exclusive = nullptr;
+    _ffmpeg_core_settings_set_max_wait_time ffmpeg_core_settings_set_max_wait_time = nullptr;
     _ffmpeg_core_get_audio_devices ffmpeg_core_get_audio_devices = nullptr;
     int GetEqChannelFreq(int channel);
     MusicHandle* handle;
     FfmpegCoreSettings* settings = nullptr;
     std::wstring recent_file;
     int err;
+    int32_t version;
 };
