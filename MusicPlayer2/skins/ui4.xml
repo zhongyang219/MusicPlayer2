@@ -38,21 +38,28 @@
   </ui>
   <ui type="big">
     <verticalLayout>
-      <horizontalLayout>
-        <albumCover square="true" margin="42"/>
-        <stackElement margin="8" margin-bottom="28" show_indicator="true">
-          <verticalLayout margin-top="12%">
+      <stackElement margin-bottom="16" show_indicator="true" indicator_offset="-10">
+        <horizontalLayout>
+          <albumCover square="true" margin="42" margin-bottom="34"/>
+          <verticalLayout margin="8" margin-top="12%">
             <text type="title" style="scroll" height="36" font_size="12"/>
             <text type="artist" style="scroll" height="24" font_size="10"/>
             <text type="album" style="scroll" height="24" font_size="10"/>
             <lyrics margin-top="20" margin-bottom="16"/>
           </verticalLayout>
-          <verticalLayout margin-top="20" margin-bottom="8">
+        </horizontalLayout>
+        <horizontalLayout margin="8">
+          <verticalLayout proportion="7" margin-bottom="8">
+            <albumCover square="true" margin="28" margin-bottom="12"/>
+            <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>
+            <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
+          </verticalLayout>
+          <verticalLayout margin-top="20" margin-bottom="8" margin-left="8" proportion="6">
             <playlistIndicator height="30" margin-bottom="4"/>
             <playlist item_height="32"/>
           </verticalLayout>
-        </stackElement>
-      </horizontalLayout>
+        </horizontalLayout>
+      </stackElement>
       <progressBar show_play_time="false" height="4"/>
       <rectangle height="72" no_corner_radius="true" theme_color="false">
         <horizontalLayout height="72">
