@@ -138,7 +138,7 @@ CString CUserUi::GetUIName()
 
 bool CUserUi::LButtonUp(CPoint point)
 {
-    if (!CPlayerUIBase::LButtonUp(point))
+    if (!CPlayerUIBase::LButtonUp(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         const auto& stack_elements{ GetStackElements() };
         for (const auto& element : stack_elements)
@@ -175,7 +175,7 @@ bool CUserUi::LButtonUp(CPoint point)
 
 bool CUserUi::LButtonDown(CPoint point)
 {
-    if (!CPlayerUIBase::LButtonDown(point))
+    if (!CPlayerUIBase::LButtonDown(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         //遍历StackElement
         auto& stack_elements{ GetStackElements() };
@@ -202,32 +202,34 @@ bool CUserUi::LButtonDown(CPoint point)
 
 void CUserUi::MouseMove(CPoint point)
 {
-    auto& stack_elements{ GetStackElements() };
-    for (auto& element : stack_elements)
+    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
-        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
-        if (stack_element != nullptr)
+        auto& stack_elements{ GetStackElements() };
+        for (auto& element : stack_elements)
         {
-            if (stack_element->indicator.enable)
-                stack_element->indicator.hover = (stack_element->indicator.rect.PtInRect(point) != FALSE);
-            bool hover{ stack_element->GetRect().PtInRect(point) != FALSE };
-            if (!stack_element->mouse_hover && hover)
-                UpdateToolTipPositionLater();
-            stack_element->mouse_hover = hover;
+            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
+            if (stack_element != nullptr)
+            {
+                if (stack_element->indicator.enable)
+                    stack_element->indicator.hover = (stack_element->indicator.rect.PtInRect(point) != FALSE);
+                bool hover{ stack_element->GetRect().PtInRect(point) != FALSE };
+                if (!stack_element->mouse_hover && hover)
+                    UpdateToolTipPositionLater();
+                stack_element->mouse_hover = hover;
+            }
         }
+
+        //遍历Playlist元素
+        IterateAllElements([point](UiElement::Element* element) ->bool
+            {
+                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+                if (playlist_element != nullptr)
+                {
+                    playlist_element->MouseMove(point);
+                }
+                return false;
+            });
     }
-
-    //遍历Playlist元素
-    IterateAllElements([point](UiElement::Element* element) ->bool
-    {
-        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-        if (playlist_element != nullptr)
-        {
-            playlist_element->MouseMove(point);
-        }
-        return false;
-    });
-
     CPlayerUIBase::MouseMove(point);
 }
 
@@ -252,20 +254,22 @@ void CUserUi::RButtonUp(CPoint point)
 {
     //遍历Playlist元素
     bool rtn = false;
-    IterateAllElements([&](UiElement::Element* element) ->bool
+    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
-        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-        if (playlist_element != nullptr)
-        {
-            if (playlist_element->RButtunUp(point))
+        IterateAllElements([&](UiElement::Element* element) ->bool
             {
-                rtn = true;
-                return true;
-            }
-        }
-        return false;
-    });
-
+                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+                if (playlist_element != nullptr)
+                {
+                    if (playlist_element->RButtunUp(point))
+                    {
+                        rtn = true;
+                        return true;
+                    }
+                }
+                return false;
+            });
+    }
     if (!rtn)
         CPlayerUIBase::RButtonUp(point);
 }
@@ -274,15 +278,18 @@ void CUserUi::RButtonUp(CPoint point)
 void CUserUi::RButtonDown(CPoint point)
 {
     //遍历Playlist元素
-    IterateAllElements([point](UiElement::Element* element) ->bool
+    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
-        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-        if (playlist_element != nullptr)
-        {
-            playlist_element->RButtonDown(point);
-        }
-        return false;
-    });
+        IterateAllElements([point](UiElement::Element* element) ->bool
+            {
+                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+                if (playlist_element != nullptr)
+                {
+                    playlist_element->RButtonDown(point);
+                }
+                return false;
+            });
+    }
     CPlayerUIBase::RButtonDown(point);
 }
 
