@@ -970,7 +970,7 @@ BEGIN
     COMBOBOX        IDC_RECORDE_INPUT_COMBO,7,7,54,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_PLAY_SETTING_DIALOG DIALOGEX 0, 0, 246, 248
+IDD_PLAY_SETTING_DIALOG DIALOGEX 0, 0, 246, 264
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x86
 BEGIN
@@ -990,7 +990,7 @@ BEGIN
     CONTROL         "FFMPEG",IDC_FFMPEG_RADIO,"Button",BS_AUTORADIOBUTTON,17,82,46,10
     CONTROL         "切换播放列表时继续播放(&S)",IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | BS_ICON | WS_TABSTOP,124,41,98,10
-    GROUPBOX        "FFMPEG 核心设置",IDC_STATIC,7,185,232,55
+    GROUPBOX        "FFMPEG 核心设置",IDC_STATIC,7,185,232,75
     LTEXT           "缓存时长：",IDC_STATIC,17,196,39,8
     EDITTEXT        IDC_FFMPEG_CACHE_LENGTH,49,195,24,12,ES_AUTOHSCROLL
     LTEXT           "秒",IDC_STATIC,77,196,10,8
@@ -1001,6 +1001,11 @@ BEGIN
     EDITTEXT        IDC_FFMPEG_URL_RETRY_INTERVAL,49,223,24,12,ES_AUTOHSCROLL
     LTEXT           "秒（仅非本地文件）",IDC_STATIC,76,224,70,8
     CONTROL         "<a>点击此处下载</a>",IDC_FFMPEG_DOWN_SYSLINK,"SysLink",WS_TABSTOP,66,82,157,10
+    CONTROL         "启用WASAPI",IDC_FFMPEG_ENABLE_WASAPI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,236,55,10
+    CONTROL         "启用独占模式",IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,120,236,55,10
+    LTEXT           "定位等操作最大等待时间：",IDC_STATIC,17,249,80,8
+    EDITTEXT        IDC_FFMPEG_MAX_WAIT_TIME,93,248,40,12,ES_AUTOHSCROLL
+    LTEXT           "毫秒",IDC_STATIC,136,249,14,8
 END
 
 IDD_SUPPORT_FORMAT_DIALOG DIALOGEX 0, 0, 275, 182
@@ -1588,7 +1593,7 @@ BEGIN
         RIGHTMARGIN, 239
         VERTGUIDE, 17
         TOPMARGIN, 7
-        BOTTOMMARGIN, 244
+        BOTTOMMARGIN, 260
     END
 
     IDD_SUPPORT_FORMAT_DIALOG, DIALOG
@@ -3874,6 +3879,7 @@ BEGIN
     IDS_APP_RUNING_INFO     "MusicPlayer2 还在进行，请等待进程退出，或者通过任务管理器结束进程。"
     IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
                             "勾选此项后，如果没有歌词，会显示歌曲的艺术家、唱片集和歌曲标题等信息，而不是显示“当前歌曲没有歌词”。"
+    IDS_EXCLUSIVE_MODE      "独占模式"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -4410,7 +4416,7 @@ BEGIN
     LTEXT           "High",IDC_STATIC,172,7,20,8
 END
 
-IDD_PLAY_SETTING_DIALOG DIALOGEX 0, 0, 338, 268
+IDD_PLAY_SETTING_DIALOG DIALOGEX 0, 0, 338, 285
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
@@ -4435,7 +4441,7 @@ BEGIN
     CONTROL         "FFMPEG",IDC_FFMPEG_RADIO,"Button",BS_AUTORADIOBUTTON,19,84,54,10
     CONTROL         "Continue playing when &switch playlist",IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,157,42,140,10
-    GROUPBOX        "FFMPEG core settings",IDC_STATIC,7,199,324,59
+    GROUPBOX        "FFMPEG core settings",IDC_STATIC,7,195,324,82
     LTEXT           "Cache length: ",IDC_STATIC,17,211,48,8
     EDITTEXT        IDC_FFMPEG_CACHE_LENGTH,68,210,24,12,ES_AUTOHSCROLL
     LTEXT           "s",IDC_STATIC,97,211,10,8
@@ -4447,6 +4453,12 @@ BEGIN
     LTEXT           "seconds (non-local file only)",IDC_STATIC,96,241,122,8
     CONTROL         "<a>Click here to download</a>",IDC_FFMPEG_DOWN_SYSLINK,
                     "SysLink",WS_TABSTOP,75,84,177,10
+    CONTROL         "Enable WASAPI",IDC_FFMPEG_ENABLE_WASAPI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,253,60,10
+    CONTROL         "Enable exclusive mode",IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,173,253,84,10
+    LTEXT           "Maximum waiting time when performing a seek operation:",IDC_STATIC,19,265,192,8
+    EDITTEXT        IDC_FFMPEG_MAX_WAIT_TIME,206,264,40,12,ES_AUTOHSCROLL
+    LTEXT           "ms",IDC_STATIC,249,265,16,8
 END
 
 IDD_PROPERTY_DIALOG DIALOGEX 0, 0, 323, 142
@@ -5002,7 +5014,7 @@ BEGIN
         RIGHTMARGIN, 331
         VERTGUIDE, 17
         TOPMARGIN, 7
-        BOTTOMMARGIN, 260
+        BOTTOMMARGIN, 277
     END
 
     IDD_PROPERTY_DIALOG, DIALOG
@@ -7169,6 +7181,7 @@ BEGIN
     IDS_APP_RUNING_INFO     "MusicPlayer2 is still running, please wait for the process to exit, or end the process through the task manager."
     IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
                             "When this option is checked, information such as the artist, album and song title of the song will be displayed if there are no lyrics, instead of ""The current song has no lyrics."""
+    IDS_EXCLUSIVE_MODE      "Exclusive mode"
 END
 
 #endif    // 英语(美国) resources

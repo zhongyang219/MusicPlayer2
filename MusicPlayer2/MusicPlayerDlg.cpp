@@ -477,6 +477,9 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"ffmpeg_core_cache_length", theApp.m_play_setting_data.ffmpeg_core_cache_length);
     ini.WriteInt(L"config", L"ffmpeg_core_max_retry_count", theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
     ini.WriteInt(L"config", L"ffmpeg_core_url_retry_interval", theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
+    ini.WriteBool(L"config", L"ffmpeg_core_enable_WASAPI", theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI);
+    ini.WriteBool(L"config", L"ffmpeg_core_enable_WASAPI_exclusive_mode", theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode);
+    ini.WriteInt(L"config", L"ffmpeg_core_max_wait_time", theApp.m_play_setting_data.ffmpeg_core_max_wait_time);
     ini.WriteInt(L"config", L"UI_selected", GetUiSelected());
 
     //保存热键设置
@@ -673,6 +676,9 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.ffmpeg_core_cache_length = ini.GetInt(L"config", L"ffmpeg_core_cache_length", 15);
     theApp.m_play_setting_data.ffmpeg_core_max_retry_count = ini.GetInt(L"config", L"ffmpeg_core_max_retry_count", 3);
     theApp.m_play_setting_data.ffmpeg_core_url_retry_interval = ini.GetInt(L"config", L"ffmpeg_core_url_retry_interval", 5);
+    theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI = ini.GetBool(L"config", L"ffmpeg_core_enable_WASAPI", false);
+    theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode = ini.GetBool(L"config", L"ffmpeg_core_enable_WASAPI_exclusive_mode", false);
+    theApp.m_play_setting_data.ffmpeg_core_max_wait_time = ini.GetInt(L"config", L"ffmpeg_core_max_wait_time", 3000);
 
     int ui_selected = ini.GetInt(L"config", L"UI_selected", 9);
     if (ui_selected < 0 || ui_selected >= static_cast<int>(m_ui_list.size()))
@@ -1169,6 +1175,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool float_playlist_follow_main_wnd_changed{ theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != optionDlg.m_media_lib_dlg.m_data.float_playlist_follow_main_wnd };
     bool show_window_frame_changed{ theApp.m_app_setting_data.show_window_frame != optionDlg.m_tab2_dlg.m_data.show_window_frame };
     bool playlist_item_height_changed{ theApp.m_media_lib_setting_data.playlist_item_height != optionDlg.m_media_lib_dlg.m_data.playlist_item_height };
+    bool need_restart_player { theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI != optionDlg.m_tab4_dlg.m_data.ffmpeg_core_enable_WASAPI
+    || (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI && (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode != optionDlg.m_tab4_dlg.m_data.ffmpeg_core_enable_WASAPI_exclusive_mode))};
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1180,11 +1188,16 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 
     CTagLibHelper::SetWriteId3V2_3(theApp.m_media_lib_setting_data.write_id3_v2_3);
 
-    if (reload_sf2 || output_device_changed || player_core_changed)
+    if (reload_sf2 || output_device_changed || player_core_changed || need_restart_player)
     {
         CPlayer::GetInstance().ReIniPlayerCore(true);
         UpdatePlayPauseButton();
         OnSetTitle(0, 0);
+    } else {
+        if (CPlayer::GetInstance().IsFfmpegCore()) {
+            CFfmpegCore* core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
+            core->UpdateSettings();
+        }
     }
     if (gauss_blur_changed)
         CPlayer::GetInstance().AlbumCoverGaussBlur();
@@ -1305,10 +1318,6 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     SaveConfig();       //将设置写入到ini文件
     theApp.SaveConfig();
     CPlayer::GetInstance().SaveConfig();
-    if (CPlayer::GetInstance().IsFfmpegCore()) {
-        CFfmpegCore* core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
-        core->UpdateSettings();
-    }
     auto pCurUi = GetCurrentUi();
     if (pCurUi != nullptr)
         pCurUi->ClearBtnRect();
@@ -3976,8 +3985,19 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 
     if (CPlayer::GetInstance().IsMciCore())
         title_suffix += _T(" (MCI)");
-    else if (CPlayer::GetInstance().IsFfmpegCore())
-        title_suffix += _T(" (FFMPEG)");
+    else if (CPlayer::GetInstance().IsFfmpegCore()) {
+        title_suffix += _T(" (FFMPEG");
+        auto core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
+        if (core->IsWASAPISupported() && theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI) {
+            title_suffix += _T(", WASAPI");
+            if (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode) {
+                title_suffix += _T("(");
+                title_suffix += CCommon::LoadText(IDS_EXCLUSIVE_MODE);
+                title_suffix += _T(")");
+            }
+        }
+        title_suffix += _T(")");
+    }
 
 #ifdef _DEBUG
     title_suffix += _T(' ');

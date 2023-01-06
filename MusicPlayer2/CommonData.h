@@ -322,6 +322,12 @@ struct PlaySettingData
     int ffmpeg_core_max_retry_count { 3 };
     /// ffmpeg内核非本地文件重试间隔时间（单位s）
     int ffmpeg_core_url_retry_interval { 5 };
+    /// ffmpeg内核是否启用WASAPI
+    int ffmpeg_core_enable_WASAPI { false };
+    /// ffmpeg内核是否启用WASAPI独占模式
+    int ffmpeg_core_enable_WASAPI_exclusive_mode { false };
+    /// ffmpeg内核seek等操作最大等待时间
+    int ffmpeg_core_max_wait_time { 3000 };
 };
 
 struct GlobalHotKeySettingData

@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "PlaySettingsDlg.h"
 #include "afxdialogex.h"
+#include "FfmpegCore.h"
 
 
 // CPlaySettingsDlg 对话框
@@ -38,6 +39,9 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_FFMPEG_CACHE_LENGTH, m_ffmpeg_cache_length);
     DDX_Control(pDX, IDC_FFMPEG_MAX_RETRY_COUNT, m_ffmpeg_max_retry_count);
     DDX_Control(pDX, IDC_FFMPEG_URL_RETRY_INTERVAL, m_ffmpeg_url_retry_interval);
+    DDX_Control(pDX, IDC_FFMPEG_ENABLE_WASAPI, m_ffmpeg_enable_wasapi);
+    DDX_Control(pDX, IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE, m_ffmpeg_enable_wasapi_exclusive);
+    DDX_Control(pDX, IDC_FFMPEG_MAX_WAIT_TIME, m_ffmpeg_max_wait_time);
 }
 
 void CPlaySettingsDlg::ShowDeviceInfo()
@@ -111,6 +115,20 @@ void CPlaySettingsDlg::EnableControl()
     m_ffmpeg_cache_length.EnableWindow(ffmpeg_enable);
     m_ffmpeg_max_retry_count.EnableWindow(ffmpeg_enable);
     m_ffmpeg_url_retry_interval.EnableWindow(ffmpeg_enable);
+    if (ffmpeg_enable) {
+        auto core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
+        m_ffmpeg_enable_wasapi.EnableWindow(core->IsWASAPISupported());
+        auto version = core->GetVersion();
+        m_ffmpeg_max_wait_time.EnableWindow(version > FFMPEG_CORE_VERSION(1, 0, 0, 0));
+    } else {
+        m_ffmpeg_enable_wasapi.EnableWindow(FALSE);
+        m_ffmpeg_max_wait_time.EnableWindow(FALSE);
+    }
+    if (m_ffmpeg_enable_wasapi.IsWindowEnabled() && m_data.ffmpeg_core_enable_WASAPI) {
+        m_ffmpeg_enable_wasapi_exclusive.EnableWindow(TRUE);
+    } else {
+        m_ffmpeg_enable_wasapi_exclusive.EnableWindow(FALSE);
+    }
 }
 
 void CPlaySettingsDlg::GetDataFromUi()
@@ -118,6 +136,7 @@ void CPlaySettingsDlg::GetDataFromUi()
     m_data.ffmpeg_core_cache_length = m_ffmpeg_cache_length.GetValue();
     m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
     m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
+    m_data.ffmpeg_core_max_wait_time = m_ffmpeg_max_wait_time.GetValue();
 }
 
 void CPlaySettingsDlg::ApplyDataToUi()
@@ -140,6 +159,8 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_FFMPEG_RADIO, &CPlaySettingsDlg::OnBnClickedFfmpegRadio)
     ON_NOTIFY(NM_CLICK, IDC_FFMPEG_DOWN_SYSLINK, &CPlaySettingsDlg::OnNMClickFfmpegDownSyslink)
     ON_WM_CTLCOLOR()
+    ON_BN_CLICKED(IDC_FFMPEG_ENABLE_WASAPI, &CPlaySettingsDlg::OnBnClickedFfmpegEnableWasapi)
+    ON_BN_CLICKED(IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE, &CPlaySettingsDlg::OnBnClickedFfmpegEnableWasapiExclusive)
 END_MESSAGE_MAP()
 
 
@@ -217,12 +238,17 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     m_ffmpeg_max_retry_count.SetValue(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
     m_ffmpeg_url_retry_interval.SetRange(1, 120);
     m_ffmpeg_url_retry_interval.SetValue(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
+    m_ffmpeg_enable_wasapi.SetCheck(theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI);
+    m_ffmpeg_enable_wasapi_exclusive.SetCheck(theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode);
+    m_ffmpeg_max_wait_time.SetRange(100, 30000);
+    m_ffmpeg_max_wait_time.SetValue(theApp.m_play_setting_data.ffmpeg_core_max_wait_time);
 
     //设置控件不响应鼠标滚轮消息
     m_output_device_combo.SetMouseWheelEnable(false);
     m_ffmpeg_cache_length.SetMouseWheelEnable(false);
     m_ffmpeg_max_retry_count.SetMouseWheelEnable(false);
     m_ffmpeg_url_retry_interval.SetMouseWheelEnable(false);
+    m_ffmpeg_max_wait_time.SetMouseWheelEnable(false);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -345,4 +371,15 @@ HBRUSH CPlaySettingsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     // TODO:  如果默认的不是所需画笔，则返回另一个画笔
     return hbr;
+}
+
+
+void CPlaySettingsDlg::OnBnClickedFfmpegEnableWasapi() {
+    m_data.ffmpeg_core_enable_WASAPI = (m_ffmpeg_enable_wasapi.GetCheck() != 0);
+    m_ffmpeg_enable_wasapi_exclusive.EnableWindow(m_ffmpeg_enable_wasapi.GetCheck());
+}
+
+
+void CPlaySettingsDlg::OnBnClickedFfmpegEnableWasapiExclusive() {
+    m_data.ffmpeg_core_enable_WASAPI_exclusive_mode = (m_ffmpeg_enable_wasapi_exclusive.GetCheck() != 0);
 }

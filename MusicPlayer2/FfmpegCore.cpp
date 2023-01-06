@@ -478,6 +478,19 @@ bool CFfmpegCore::GetFunction() {
     rtn &= (ffmpeg_core_settings_set_url_retry_interval != NULL);
     rtn &= (ffmpeg_core_settings_set_equalizer_channel != NULL);
     rtn &= (ffmpeg_core_get_audio_devices != NULL);
+    if (ffmpeg_core_version) {
+        version = ffmpeg_core_version();
+        if (version > FFMPEG_CORE_VERSION(1, 0, 0, 0)) {
+            ffmpeg_core_is_wasapi_supported = (_ffmpeg_core_is_wasapi_supported)::GetProcAddress(m_dll_module, "ffmpeg_core_is_wasapi_supported");
+            ffmpeg_core_settings_set_use_WASAPI = (_ffmpeg_core_settings_set_use_WASAPI)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_use_WASAPI");
+            ffmpeg_core_settings_set_enable_exclusive = (_ffmpeg_core_settings_set_enable_exclusive)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_enable_exclusive");
+            ffmpeg_core_settings_set_max_wait_time = (_ffmpeg_core_settings_set_max_wait_time)::GetProcAddress(m_dll_module, "ffmpeg_core_settings_set_max_wait_time");
+            rtn &= (ffmpeg_core_is_wasapi_supported != NULL);
+            rtn &= (ffmpeg_core_settings_set_use_WASAPI != NULL);
+            rtn &= (ffmpeg_core_settings_set_enable_exclusive != NULL);
+            rtn &= (ffmpeg_core_settings_set_max_wait_time != NULL);
+        }
+    }
     return rtn;
 }
 
@@ -574,6 +587,9 @@ void CFfmpegCore::UpdateSettings() {
     SetCacheLength(theApp.m_play_setting_data.ffmpeg_core_cache_length);
     SetMaxRetryCount(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
     SetUrlRetryInterval(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
+    EnableWASAPI(theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI);
+    EnableExclusiveMode(theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode);
+    SetMaxWaitTime(theApp.m_play_setting_data.ffmpeg_core_max_wait_time);
 }
 
 void CFfmpegCore::SetCacheLength(int cache_length) {
@@ -653,4 +669,33 @@ void CFfmpegCore::UnInitEncoder()
 bool CFfmpegCore::IsFreqConvertAvailable()
 {
     return false;
+}
+
+int32_t CFfmpegCore::GetVersion() {
+    return version;
+}
+
+bool CFfmpegCore::IsWASAPISupported() {
+    if (ffmpeg_core_is_wasapi_supported) {
+        return ffmpeg_core_is_wasapi_supported();
+    }
+    return false;
+}
+
+void CFfmpegCore::EnableWASAPI(bool enable) {
+    if (settings && IsSucceed() && ffmpeg_core_settings_set_use_WASAPI) {
+        ffmpeg_core_settings_set_use_WASAPI(settings, enable ? 1 : 0);
+    }
+}
+
+void CFfmpegCore::EnableExclusiveMode(bool enable) {
+    if (settings && IsSucceed() && ffmpeg_core_settings_set_enable_exclusive) {
+        ffmpeg_core_settings_set_enable_exclusive(settings, enable ? 1 : 0);
+    }
+}
+
+void CFfmpegCore::SetMaxWaitTime(int max_wait_time) {
+    if (settings && IsSucceed() && ffmpeg_core_settings_set_max_wait_time) {
+        ffmpeg_core_settings_set_max_wait_time(settings, max_wait_time);
+    }
 }

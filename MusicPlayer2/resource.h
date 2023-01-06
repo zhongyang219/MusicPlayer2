@@ -780,6 +780,7 @@
 #define IDI_EXPAND                      586
 #define IDS_APP_RUNING_INFO             587
 #define IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 588
+#define IDS_EXCLUSIVE_MODE              589
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1093,6 +1094,7 @@
 #define IDC_CLEAN_NOT_EXIST_CHECK       1126
 #define IDC_AUTO_RUN_CHECK              1126
 #define IDC_DISABLE_DELETE_FROM_DISK_CHECK 1126
+#define IDC_FFMPEG_ENABLE_WASAPI        1126
 #define IDC_RECORDE_INPUT_COMBO         1127
 #define IDC_CLEAN_NOT_IN_MEDIA_LIB_DIR_CHECK 1127
 #define IDC_OUTPUT_DEVICE_COMBO         1128
@@ -1155,6 +1157,7 @@
 #define IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK 1174
 #define IDC_SHOW_PLAYLIST_TOOLTIP_CHECK 1174
 #define IDC_LYRIC_HIDE_BLANK_LINE_CHECK 1174
+#define IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE 1174
 #define IDC_CHECK8                      1175
 #define IDC_BTN_ROUND_CORNERS_CHECK     1175
 #define IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK 1175
@@ -1210,6 +1213,7 @@
 #define IDC_COVER_LOCATION_STATIC       1222
 #define IDC_CHECK9                      1223
 #define IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK 1223
+#define IDC_FFMPEG_MAX_WAIT_TIME        1224
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1662,7 +1666,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        587
 #define _APS_NEXT_COMMAND_VALUE         33461
-#define _APS_NEXT_CONTROL_VALUE         1224
+#define _APS_NEXT_CONTROL_VALUE         1225
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
