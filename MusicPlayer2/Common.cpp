@@ -4,6 +4,7 @@
 #include "FilePathHelper.h"
 #include <random>
 #include <functional>
+#include <strsafe.h>
 // #include <pathcch.h>
 
 CCommon::CCommon()
@@ -1850,6 +1851,17 @@ wstring CCommon::EncodeURIComponent(wstring uri) {
     StrReplace(uri, L";", L"%3B");
     StrReplace(uri, L"=", L"%3D");
     return uri;
+}
+
+void CCommon::OutputDebugStringFormat(LPCTSTR str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    TCHAR buf[1024] = { 0 };
+    StringCchVPrintf(buf, 1023, str, args);
+    va_end(args);
+    buf[1023] = L'\0';
+    OutputDebugString(buf);
 }
 
 wstring CCommon::StrReplace(wstring& input, wstring pattern, wstring new_content) {

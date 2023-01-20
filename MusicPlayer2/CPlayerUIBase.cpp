@@ -1389,7 +1389,7 @@ bool CPlayerUIBase::PointInControlArea(CPoint point) const
 
 bool CPlayerUIBase::PointInTitlebarArea(CPoint point) const
 {
-    if (theApp.m_app_setting_data.show_window_frame || m_ui_data.full_screen)
+    if (!IsDrawTitleBar())
         return false;
 
     CRect rect_titlebar = m_draw_rect;
@@ -1399,7 +1399,7 @@ bool CPlayerUIBase::PointInTitlebarArea(CPoint point) const
 
 bool CPlayerUIBase::PointInAppIconArea(CPoint point) const
 {
-    if (theApp.m_app_setting_data.show_window_frame || m_ui_data.full_screen)
+    if (!IsDrawTitleBar())
         return false;
 
     CRect rect_app_icon{};
@@ -1409,7 +1409,7 @@ bool CPlayerUIBase::PointInAppIconArea(CPoint point) const
 
 bool CPlayerUIBase::PointInMenubarArea(CPoint point) const
 {
-    if (!m_ui_data.ShowUiMenuBar())
+    if (!IsDrawMenuBar())
         return false;
 
     CRect rect_menubar = m_draw_rect;

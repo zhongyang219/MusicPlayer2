@@ -461,6 +461,9 @@ public:
     static unsigned __int64 GetCurTimeElapse();
 
     static wstring EncodeURIComponent(wstring uri);
+
+    static void OutputDebugStringFormat(LPCTSTR str, ...);
+
     /**
      * @brief Replace all pattern to new_content
      * @param input Input string
