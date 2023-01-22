@@ -265,6 +265,7 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_COMMAND(ID_PLAYLIST_SAVE_AS, &CSelectPlaylistDlg::OnPlaylistSaveAs)
     ON_WM_DESTROY()
     ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CSelectPlaylistDlg::OnPlaylistFixPathError)
+    ON_COMMAND(ID_PLAYLIST_BROWSE_FILE, &CSelectPlaylistDlg::OnPlaylistBrowseFile)
 END_MESSAGE_MAP()
 
 
@@ -716,6 +717,8 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     bool select_valid{ (m_row_selected >= 0 && m_row_selected < playlists_size) || is_tmp_playlist };
     pMenu->EnableMenuItem(ID_SAVE_AS_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_FIX_PATH_ERROR, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_BROWSE_FILE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 
     bool is_delete_enable{ !m_left_selected && !theApp.m_media_lib_setting_data.disable_delete_from_disk && m_right_selected_item >= 0 && m_right_selected_item < static_cast<int>(m_cur_song_list.size())
         && !m_cur_song_list[m_right_selected_item].is_cue && !COSUPlayerHelper::IsOsuFile(m_cur_song_list[m_right_selected_item].file_path) };
@@ -901,13 +904,27 @@ void CSelectPlaylistDlg::OnDestroy()
 
 void CSelectPlaylistDlg::OnPlaylistFixPathError()
 {
-    if (MessageBox(CCommon::LoadText(IDS_PLAYLIST_FIX_PATH_ERROR_INFO), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    if (SelectValid())
+    {
+        if (MessageBox(CCommon::LoadText(IDS_PLAYLIST_FIX_PATH_ERROR_INFO), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+        {
+            PlaylistInfo playlist_info{ GetSelectedPlaylist() };
+            CMusicPlayerCmdHelper helper;
+            int fixed_count = helper.FixPlaylistPathError(playlist_info.path);
+            ShowSongList();
+            MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE, { fixed_count }), NULL, MB_ICONINFORMATION | MB_OK);
+        }
+    }
+}
+
+
+void CSelectPlaylistDlg::OnPlaylistBrowseFile()
+{
+    if (SelectValid())
     {
         PlaylistInfo playlist_info{ GetSelectedPlaylist() };
-        CMusicPlayerCmdHelper helper;
-        int fixed_count = helper.FixPlaylistPathError(playlist_info.path);
-        ShowSongList();
-        MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE, { fixed_count }), NULL, MB_ICONINFORMATION | MB_OK);
+        CString str;
+        str.Format(_T("/select,\"%s\""), playlist_info.path.c_str());
+        ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
     }
-
 }

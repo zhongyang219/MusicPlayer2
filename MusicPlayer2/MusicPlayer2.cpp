@@ -864,6 +864,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_SAVE_AS_NEW_PLAYLIST, FALSE, m_icon_set.save_new);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_PLAYLIST_SAVE_AS, FALSE, m_icon_set.save_as);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_PLAYLIST_FIX_PATH_ERROR, FALSE, m_icon_set.fix);
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_media_lib_playlist_menu.GetSafeHmenu(), ID_PLAYLIST_BROWSE_FILE, FALSE, m_icon_set.folder_explore.GetIcon(true));
 
     //媒体库右键菜单
     //左侧菜单

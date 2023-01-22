@@ -2774,6 +2774,8 @@ BEGIN
         MENUITEM "删除(&D)",                      ID_DELETE_PLAYLIST
         MENUITEM "保存为新播放列表(&S)...",             ID_SAVE_AS_NEW_PLAYLIST
         MENUITEM "另存为(&A)...",                  ID_PLAYLIST_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "打开播放列表文件位置(&B)",              ID_PLAYLIST_BROWSE_FILE
         MENUITEM "修复错误的文件路径(&F)",               ID_PLAYLIST_FIX_PATH_ERROR
         MENUITEM SEPARATOR
         MENUITEM "新建播放列表(&N)...",               ID_NEW_PLAYLIST
@@ -6202,6 +6204,8 @@ BEGIN
         MENUITEM "&Delete...",                  ID_DELETE_PLAYLIST
         MENUITEM "Save As &New Playlist...",    ID_SAVE_AS_NEW_PLAYLIST
         MENUITEM "Save &As...",                 ID_PLAYLIST_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Open playlist file location", ID_PLAYLIST_BROWSE_FILE
         MENUITEM "&Fix the wrong file path",    ID_PLAYLIST_FIX_PATH_ERROR
         MENUITEM SEPARATOR
         MENUITEM "&New Playlist...",            ID_NEW_PLAYLIST
