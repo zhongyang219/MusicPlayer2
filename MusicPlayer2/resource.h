@@ -779,8 +779,11 @@
 #define IDI_ICON32                      586
 #define IDI_EXPAND                      586
 #define IDS_APP_RUNING_INFO             587
+#define IDI_FIX_D                       587
 #define IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 588
 #define IDS_EXCLUSIVE_MODE              589
+#define IDS_PLAYLIST_FIX_PATH_ERROR_INFO 590
+#define IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE 591
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1659,13 +1662,14 @@
 #define ID_Menu33395                    33395
 #define ID_MINIMODE_UI_DEFAULT          33396
 #define ID_MINIMODE_UI_MAX              33460
+#define ID_PLAYLIST_FIX_PATH_ERROR      33461
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        587
-#define _APS_NEXT_COMMAND_VALUE         33461
+#define _APS_NEXT_RESOURCE_VALUE        588
+#define _APS_NEXT_COMMAND_VALUE         33462
 #define _APS_NEXT_CONTROL_VALUE         1225
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

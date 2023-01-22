@@ -69,6 +69,9 @@ public:
     //查看唱片集
     void OnViewAlbum(const SongInfo& song_info);
 
+    //修正播放列表中的错误的路径
+    int FixPlaylistPathError(const std::wstring& path);
+
 protected:
     bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 

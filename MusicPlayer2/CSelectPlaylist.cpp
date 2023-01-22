@@ -10,6 +10,7 @@
 #include "SongDataManager.h"
 #include "COSUPlayerHelper.h"
 #include "RecentFolderAndPlaylist.h"
+#include "MusicPlayerCmdHelper.h"
 
 // CSelectPlaylist 对话框
 
@@ -263,6 +264,7 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_COMMAND(ID_SAVE_AS_NEW_PLAYLIST, &CSelectPlaylistDlg::OnSaveAsNewPlaylist)
     ON_COMMAND(ID_PLAYLIST_SAVE_AS, &CSelectPlaylistDlg::OnPlaylistSaveAs)
     ON_WM_DESTROY()
+    ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CSelectPlaylistDlg::OnPlaylistFixPathError)
 END_MESSAGE_MAP()
 
 
@@ -894,4 +896,18 @@ void CSelectPlaylistDlg::OnDestroy()
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
 
     CMediaLibTabDlg::OnDestroy();
+}
+
+
+void CSelectPlaylistDlg::OnPlaylistFixPathError()
+{
+    if (MessageBox(CCommon::LoadText(IDS_PLAYLIST_FIX_PATH_ERROR_INFO), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    {
+        PlaylistInfo playlist_info{ GetSelectedPlaylist() };
+        CMusicPlayerCmdHelper helper;
+        int fixed_count = helper.FixPlaylistPathError(playlist_info.path);
+        ShowSongList();
+        MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE, { fixed_count }), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+
 }

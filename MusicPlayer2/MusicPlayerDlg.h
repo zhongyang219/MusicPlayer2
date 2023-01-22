@@ -525,4 +525,5 @@ protected:
     afx_msg LRESULT OnRecentFolderOrPlaylistChanged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnPlayAsNext();
+    afx_msg void OnPlaylistFixPathError();
 };

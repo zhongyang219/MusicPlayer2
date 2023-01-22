@@ -129,4 +129,5 @@ public:
     afx_msg void OnSaveAsNewPlaylist();
     afx_msg void OnPlaylistSaveAs();
     afx_msg void OnDestroy();
+    afx_msg void OnPlaylistFixPathError();
 };

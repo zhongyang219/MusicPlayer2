@@ -570,6 +570,7 @@ struct IconSet
     HICON bitrate;
     HICON reverb;
     HICON hot_key;
+    HICON fix;
 
     HICON ok;
     IconRes locate;

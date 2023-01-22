@@ -1814,5 +1814,8 @@
     <Image Include="res\expand_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\fix_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -708,6 +708,42 @@ void CMusicPlayerCmdHelper::OnViewAlbum(const SongInfo& song_info)
     }
 }
 
+int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
+{
+    CPlaylistFile playlist_file;
+    playlist_file.LoadFromFile(path);
+    vector<SongInfo> song_list{ playlist_file.GetPlaylist() };
+    int fixed_count{};
+    for (auto& song : song_list)
+    {
+        if (!CCommon::FileExist(song.file_path))
+        {
+            //文件不存在，从媒体库中寻找匹配的文件
+            for (const auto& song_info : CSongDataManager::GetInstance().GetSongData())
+            {
+                if (CCommon::FileExist(song_info.second.file_path) && song_info.second.GetFileName() == song.GetFileName())
+                {
+                    song.file_path = song_info.second.file_path;
+                    fixed_count++;
+                }
+            }
+        }
+    }
+    if (fixed_count > 0)
+    {
+        //保存播放列表到文件
+        playlist_file.FromSongList(song_list);
+        playlist_file.SaveToFile(path);
+
+        //如果处理的是正在播放的播放列表
+        if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetPlaylistPath() == path)
+        {
+            CPlayer::GetInstance().ReloadPlaylist(false);
+        }
+    }
+    return fixed_count;
+}
+
 bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
     if (CPlayer::GetInstance().IsPlaylistMode() && playlist_path == CPlayer::GetInstance().GetPlaylistPath())

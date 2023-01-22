@@ -326,6 +326,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_WM_MOVE()
     ON_MESSAGE(WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged)
     ON_COMMAND(ID_PLAY_AS_NEXT, &CMusicPlayerDlg::OnPlayAsNext)
+    ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CMusicPlayerDlg::OnPlaylistFixPathError)
 END_MESSAGE_MAP()
 
 
@@ -6406,4 +6407,15 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
 void CMusicPlayerDlg::OnPlayAsNext() {
     CPlayer::GetInstance().PlayAfterCurrentTrack(m_items_selected);
     DrawInfo(false);
+}
+
+
+void CMusicPlayerDlg::OnPlaylistFixPathError()
+{
+    if (MessageBox(CCommon::LoadText(IDS_PLAYLIST_FIX_PATH_ERROR_INFO), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    {
+        CMusicPlayerCmdHelper helper(this);
+        int fixed_count = helper.FixPlaylistPathError(CPlayer::GetInstance().GetPlaylistPath());
+        MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE, { fixed_count }), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 }

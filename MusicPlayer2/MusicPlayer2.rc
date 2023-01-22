@@ -380,6 +380,8 @@ IDI_LOCATE              ICON                    "res\\locate.ico"
 
 IDI_EXPAND              ICON                    "res\\expand.ico"
 
+IDI_FIX_D               ICON                    "res\\fix_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2772,6 +2774,7 @@ BEGIN
         MENUITEM "删除(&D)",                      ID_DELETE_PLAYLIST
         MENUITEM "保存为新播放列表(&S)...",             ID_SAVE_AS_NEW_PLAYLIST
         MENUITEM "另存为(&A)...",                  ID_PLAYLIST_SAVE_AS
+        MENUITEM "修复错误的文件路径(&F)",               ID_PLAYLIST_FIX_PATH_ERROR
         MENUITEM SEPARATOR
         MENUITEM "新建播放列表(&N)...",               ID_NEW_PLAYLIST
     END
@@ -2873,6 +2876,7 @@ BEGIN
         MENUITEM "保存为新播放列表(&N)...",             ID_SAVE_AS_NEW_PLAYLIST
         MENUITEM "当前播放列表另存为(&S)...",            ID_SAVE_CURRENT_PLAYLIST_AS
         MENUITEM SEPARATOR
+        MENUITEM "修复错误的文件路径(&F)",               ID_PLAYLIST_FIX_PATH_ERROR
         POPUP "播放列表显示方式"
         BEGIN
             MENUITEM "文件名",                         ID_DISP_FILE_NAME
@@ -3880,6 +3884,9 @@ BEGIN
     IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
                             "勾选此项后，如果没有歌词，会显示歌曲的艺术家、唱片集和歌曲标题等信息，而不是显示“当前歌曲没有歌词”。"
     IDS_EXCLUSIVE_MODE      "独占模式"
+    IDS_PLAYLIST_FIX_PATH_ERROR_INFO 
+                            "此功能将会检查播放列表中不存在的曲目，通过在媒体库中寻找匹配的曲目来修复错误的路径。需要修复播放列表中错误的路径吗？"
+    IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE "完成，已修复<%1%>个错误的路径。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -6195,6 +6202,7 @@ BEGIN
         MENUITEM "&Delete...",                  ID_DELETE_PLAYLIST
         MENUITEM "Save As &New Playlist...",    ID_SAVE_AS_NEW_PLAYLIST
         MENUITEM "Save &As...",                 ID_PLAYLIST_SAVE_AS
+        MENUITEM "&Fix the wrong file path",    ID_PLAYLIST_FIX_PATH_ERROR
         MENUITEM SEPARATOR
         MENUITEM "&New Playlist...",            ID_NEW_PLAYLIST
     END
@@ -6296,6 +6304,7 @@ BEGIN
         MENUITEM "Save As &New Playlist...",    ID_SAVE_AS_NEW_PLAYLIST
         MENUITEM "&Save Current Playlist As...", ID_SAVE_CURRENT_PLAYLIST_AS
         MENUITEM SEPARATOR
+        MENUITEM "&Fix the wrong file path",    ID_PLAYLIST_FIX_PATH_ERROR
         POPUP "Playlist Display Mode"
         BEGIN
             MENUITEM "File Name",                   ID_DISP_FILE_NAME
@@ -7182,6 +7191,10 @@ BEGIN
     IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
                             "When this option is checked, information such as the artist, album and song title of the song will be displayed if there are no lyrics, instead of ""The current song has no lyrics."""
     IDS_EXCLUSIVE_MODE      "Exclusive mode"
+    IDS_PLAYLIST_FIX_PATH_ERROR_INFO 
+                            "This feature will check for tracks that do not exist in the playlist and fix the incorrect path by looking for a match item in the media library. Do you want to fix the incorrect path in the playlist?"
+    IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE 
+                            "Finished, <%1%> incorrect path(s) have been fixed."
 END
 
 #endif    // 英语(美国) resources
