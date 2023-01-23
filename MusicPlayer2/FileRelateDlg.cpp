@@ -138,7 +138,7 @@ void CFileRelateDlg::OnOK()
             CString file_ext = m_list_ctrl.GetItemText(i, 0);
             wstring description = CAudioCommon::GetAudioDescriptionByExtension(wstring(file_ext));
 
-            if (CPlaylistFile::IsPlaylistExt(wstring(file_ext)))
+            if (CPlaylistFile::IsPlaylistExt(wstring(file_ext)) || CAudioCommon::GetAudioTypeByFileExtension(wstring(file_ext)) == AU_CUE)
                 reg_file.AddFileTypeRelate(file_ext, 66, false, description.c_str());
             else
                 reg_file.AddFileTypeRelate(file_ext, 46, false, description.c_str());

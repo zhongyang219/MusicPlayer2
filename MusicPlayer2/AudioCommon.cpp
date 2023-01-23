@@ -141,6 +141,8 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
         return wstring(CCommon::LoadText(_T("M3U "), IDS_PLAYLIST));
     else if (extension == L"m3u8")
         return wstring(CCommon::LoadText(_T("M3U8 "), IDS_PLAYLIST));
+    else if (extension == L"cue")
+        return L"CUE Sheets";
     else
         return wstring(extension + CCommon::LoadText(_T(" "), IDS_AUDIO_FILE).GetString());
 }
