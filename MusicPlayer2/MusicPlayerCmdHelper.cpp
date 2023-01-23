@@ -718,10 +718,11 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
     {
         if (!CCommon::FileExist(song.file_path))
         {
+            std::wstring file_name{ song.GetFileName() };
             //文件不存在，从媒体库中寻找匹配的文件
             for (const auto& song_info : CSongDataManager::GetInstance().GetSongData())
             {
-                if (CCommon::FileExist(song_info.second.file_path) && song_info.second.GetFileName() == song.GetFileName())
+                if (CCommon::FileExist(song_info.second.file_path) && song_info.second.GetFileName() == file_name)
                 {
                     song.file_path = song_info.second.file_path;
                     fixed_count++;
