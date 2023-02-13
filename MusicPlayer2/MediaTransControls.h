@@ -87,7 +87,7 @@ public:
     void UpdateControlsMetadata(const SongInfo song);
     void UpdateDuration(int64_t duration);
     void UpdatePosition(int64_t postion);
-    void UpdateSpeed(float speed)
+    void UpdateSpeed(float speed);
 };
 
 #endif
