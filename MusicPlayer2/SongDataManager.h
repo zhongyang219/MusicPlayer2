@@ -75,6 +75,9 @@ public:
 
     void ChangeFilePath(const wstring& file_path, const wstring& new_path);
 
+    //如果file_path不存在，则从媒体库中查找文件名相同的最佳匹配的项目，并将file_path更改为正确的路径
+    bool FixWrongFilePath(wstring& file_path);
+
 private:
     CSongDataManager();
 
@@ -85,4 +88,5 @@ private:
     bool m_song_data_modified{};
     CString m_data_version;
     CCriticalSection m_critical;    //线程同步对象
+    std::unordered_map<std::wstring, std::vector<std::wstring>> m_song_file_name_map; //保存文件名与SongInfo对象的对应关系
 };
