@@ -2793,6 +2793,10 @@ void CMusicPlayerDlg::OnDestroy()
 
     // TODO: 在此处添加消息处理程序代码
 
+    //退出程序时，如果开启了淡入淡出选项，则暂时播放，以实现在退出时音量的淡出效果
+    if (theApp.m_play_setting_data.fade_effect && CPlayer::GetInstance().IsPlaying())
+        CPlayer::GetInstance().GetPlayerCore()->Pause();
+
     //获取桌面歌词窗口的位置
     CRect rect;
     ::GetWindowRect(m_desktop_lyric.GetSafeHwnd(), rect);

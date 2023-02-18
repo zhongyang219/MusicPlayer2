@@ -153,4 +153,6 @@ public:
     virtual std::wstring GetErrorInfo() = 0;  //获取错误信息
 
     virtual PlayerCoreType GetCoreType() = 0;
+
+    virtual bool IsVolumeFadingOut() { return false; }    //是否处于音量淡出状态
 };

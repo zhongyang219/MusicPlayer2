@@ -317,6 +317,12 @@ BOOL CMusicPlayerApp::InitInstance()
     //    m_multimedia_key_hook = NULL;
     //}
 
+    //如果音频音量处于淡出状态，则等待淡出结束再退出程序
+    for (int i{}; i < 100 && CPlayer::GetInstance().GetPlayerCore()->IsVolumeFadingOut(); i++)
+    {
+        Sleep(10);
+    }
+
     // 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
     //  而不是启动应用程序的消息泵。
     return FALSE;

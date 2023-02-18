@@ -69,6 +69,8 @@ public:
 
     virtual PlayerCoreType GetCoreType() override { return PT_BASS; }
 
+    virtual bool IsVolumeFadingOut() override;
+
     static int GetBASSCurrentPosition(HSTREAM hStream);
     static Time GetBASSSongLength(HSTREAM hStream);
     static void SetCurrentPosition(HSTREAM hStream, int position);
@@ -96,9 +98,9 @@ private:
     vector<HPLUGIN> m_plugin_handles;		//插件的句柄
     wstring m_sfont_name;		//MIDI音色库的名称
     static MidiLyricInfo m_midi_lyric;
-    BASS_CHANNELINFO m_channel_info;	//音频通道的信息
-    bool m_is_midi;
-    MidiInfo m_midi_info;
+    BASS_CHANNELINFO m_channel_info{};	//音频通道的信息
+    bool m_is_midi{};
+    MidiInfo m_midi_info{};
     int m_error_code{};
     int m_last_playing_state{ PLAYING_STATE_DEFAULT_VALUE };     //保存上一次的播放状态（BASS_ChannelIsActive的返回值）
 
@@ -119,4 +121,6 @@ private:
     static CBassMixLibrary m_bass_mix_lib;
 
     wstring m_encode_dir;
+
+    static bool m_fading;        //音量是否处于淡入淡出状态
     };
