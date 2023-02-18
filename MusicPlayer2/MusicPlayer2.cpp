@@ -989,6 +989,21 @@ void CMusicPlayerApp::InitMenuResourse()
         pSysMenu->AppendMenu(MF_STRING, ID_TEST_DIALOG, _T("Test Dialog"));
 #endif
     }
+
+    //初始化播放列表工具栏弹出菜单
+    m_menu_set.m_playlist_toolbar_popup_menu.CreatePopupMenu();
+    CCommon::AppendMenuOp(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu());
+    m_menu_set.m_playlist_toolbar_popup_menu.AppendMenu(MF_SEPARATOR);
+    CString temp = CCommon::LoadText(IDS_LOCATE, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT));
+    m_menu_set.m_playlist_toolbar_popup_menu.AppendMenu(MF_STRING, ID_LOCATE_TO_CURRENT, temp);
+    //为播放列表工具栏弹出菜单添加图标
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 0, TRUE, m_icon_set.add.GetIcon(true));               //添加
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 1, TRUE, m_icon_set.close.GetIcon(true));             //删除
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 2, TRUE, m_icon_set.sort.GetIcon(true));              //排序
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 3, TRUE, m_icon_set.show_playlist.GetIcon(true));     //列表
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 4, TRUE, m_icon_set.edit.GetIcon(true));              //编辑
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 5, TRUE, m_icon_set.select_folder.GetIcon(true));     //文件夹
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), ID_LOCATE_TO_CURRENT, FALSE, m_icon_set.locate.GetIcon(true));     //文件夹
 }
 
 void CMusicPlayerApp::AddMenuShortcuts(CMenu* pMenu)

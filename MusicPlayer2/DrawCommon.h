@@ -148,6 +148,9 @@ public:
 
     void ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode, bool no_clip_area);
 
+    //计算一个矩形中正方形图标的矩形区域
+    static CRect CalculateCenterIconRect(CRect rect, int icon_size);
+
 protected:
     CDC* m_pDC{};		//用于绘图的CDC类的指针
     CWnd* m_pMainWnd{};	//绘图窗口的句柄

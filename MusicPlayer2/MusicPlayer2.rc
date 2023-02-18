@@ -3891,6 +3891,11 @@ BEGIN
     IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE "完成，已修复<%1%>个错误的路径。"
 END
 
+STRINGTABLE
+BEGIN
+    IDS_LOCATE              "定位"
+END
+
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -7199,6 +7204,11 @@ BEGIN
                             "This feature will check for tracks that do not exist in the playlist and fix the incorrect path by looking for a match item in the media library. Do you want to fix the incorrect path in the playlist?"
     IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE 
                             "Finished, <%1%> incorrect path(s) have been fixed."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LOCATE              "Locate"
 END
 
 #endif    // 英语(美国) resources

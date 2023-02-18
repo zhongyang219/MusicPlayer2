@@ -443,6 +443,14 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_menu_set.m_recent_folder_playlist_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
                 return true;
             }
+            case BTN_PLAYLIST_MENU:
+            {
+                m_buttons[BTN_PLAYLIST_MENU].hover = false;
+                CRect btn_rect = btn.second.rect;
+                AfxGetMainWnd()->ClientToScreen(&btn_rect);
+                theApp.m_menu_set.m_playlist_toolbar_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+                return true;
+            }
             case BTN_VOLUME_UP:
                 if (m_show_volume_adj)
                 {
@@ -698,6 +706,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
     case BTN_DARK_LIGHT: return theApp.m_icon_set.dark_mode;
     case BTN_LOCATE_TO_CURRENT: return theApp.m_icon_set.locate;
     case BTN_PLAYLIST_DROP_DOWN: return theApp.m_icon_set.expand;
+    case BTN_PLAYLIST_MENU: return theApp.m_icon_set.menu;
     default: break;
     }
     return IconRes();
@@ -2469,17 +2478,25 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
     rect_text.left = rect_icon.right;
     rect_text.right = rect_text.left + m_draw.GetTextExtent(str).cx;
     m_draw.DrawWindowText(rect_text, str, m_colors.color_text, Alignment::LEFT, true);
+    //绘制菜单按钮
+    CRect menu_btn_rect{ rect };
+    menu_btn_rect.left = rect.right - DPI(26);
+    const int icon_size{ (std::min)(DPI(24), rect.Height()) };
+    CRect menu_btn_icon_rect = CDrawCommon::CalculateCenterIconRect(menu_btn_rect, icon_size);
+    DrawUIButton(menu_btn_icon_rect, m_buttons[BTN_PLAYLIST_MENU], GetBtnIcon(BTN_PLAYLIST_MENU, IsDrawLargeIcon()));
     //绘制当前播放列表名称
     CRect rect_name{ rect };
     rect_name.left = rect_text.right + DPI(8);
+    rect_name.right = menu_btn_rect.left - DPI(4);
     BYTE alpha{ 255 };
     if (IsDrawBackgroundAlpha())
         alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+    m_draw.SetDrawArea(rect_name);
     if (theApp.m_app_setting_data.button_round_corners)
         m_draw.DrawRoundRect(rect_name, m_colors.color_control_bar_back, DPI(4), alpha);
     else
         m_draw.FillAlphaRect(rect_name, m_colors.color_control_bar_back, alpha);
-
+    ResetDrawArea();
     rect_name.left += DPI(6);
     rect_name.right -= DPI(30);
     static CDrawCommon::ScrollInfo name_scroll_info;
@@ -2487,12 +2504,8 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
     //绘制下拉按钮
     CRect rect_drop_down{ rect };
     rect_drop_down.left = rect_name.right;
-    CRect rect_drop_down_btn{ rect_drop_down };
-    const int icon_size{ (std::min)(DPI(24), rect.Height()) };
-    rect_drop_down_btn.left = rect_drop_down.left + (rect_drop_down.Width() - icon_size) / 2;
-    rect_drop_down_btn.top = rect_drop_down.top + (rect_drop_down.Height() - icon_size) / 2;
-    rect_drop_down_btn.right = rect_drop_down_btn.left + icon_size;
-    rect_drop_down_btn.bottom = rect_drop_down_btn.top + icon_size;
+    rect_drop_down.right = menu_btn_rect.left - DPI(6);
+    CRect rect_drop_down_btn = CDrawCommon::CalculateCenterIconRect(rect_drop_down, icon_size);
     DrawUIButton(rect_drop_down_btn, m_buttons[BTN_PLAYLIST_DROP_DOWN], GetBtnIcon(BTN_PLAYLIST_DROP_DOWN, IsDrawLargeIcon()));
 }
 

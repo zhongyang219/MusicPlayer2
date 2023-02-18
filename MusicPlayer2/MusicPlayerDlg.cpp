@@ -1658,6 +1658,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     //专辑封面
     bool always_use_external_album_cover{ cur_song_ori.AlwaysUseExternalAlbumCover() };
     pMenu->CheckMenuItem(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, (always_use_external_album_cover ? MF_CHECKED : MF_UNCHECKED));
+
+    pMenu->EnableMenuItem(ID_PLAYLIST_FIX_PATH_ERROR, MF_BYCOMMAND | (CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
 }
 
 
@@ -1791,6 +1793,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
 
     initAddToMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(12));
     initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0));
+    initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_popup_menu.GetSubMenu(4)->GetSubMenu(0));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSubMenu(1));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(3));
     initAddToMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2));

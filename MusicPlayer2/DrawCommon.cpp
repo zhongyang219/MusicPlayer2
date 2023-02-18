@@ -826,3 +826,13 @@ void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CS
         }
     }
 }
+
+CRect CDrawCommon::CalculateCenterIconRect(CRect rect, int icon_size)
+{
+    CRect rc_icon;
+    rc_icon.left = rect.left + (rect.Width() - icon_size) / 2;
+    rc_icon.top = rect.top + (rect.Height() - icon_size) / 2;
+    rc_icon.right = rc_icon.left + icon_size;
+    rc_icon.bottom = rc_icon.top + icon_size;
+    return rc_icon;
+}

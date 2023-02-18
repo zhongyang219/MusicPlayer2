@@ -607,7 +607,8 @@ struct MenuSet
     CMenu m_popup_menu;			    //歌词右键菜单
     CMenu m_main_popup_menu;
     CMenu m_playlist_btn_menu;		//播放列表按钮上的右键菜单
-    CMenu m_playlist_toolbar_menu;
+    CMenu m_playlist_toolbar_menu;      //播放列表工具栏菜单
+    CMenu m_playlist_toolbar_popup_menu;    //播放列表工具栏弹出菜单
     CMenu m_lyric_default_style;     //桌面歌词预设方案菜单
     CMenu m_media_lib_popup_menu;
     CMenu m_media_lib_folder_menu;      //媒体库-文件夹的右键菜单

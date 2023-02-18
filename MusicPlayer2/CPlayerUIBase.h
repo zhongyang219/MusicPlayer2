@@ -159,6 +159,7 @@ public:
         BTN_DARK_LIGHT,         //切换深色/浅色模式
         BTN_LOCATE_TO_CURRENT,  //播放列表定位到当前播放
         BTN_PLAYLIST_DROP_DOWN, //播放列表下拉按钮
+        BTN_PLAYLIST_MENU,      //播放列表菜单按键
 
         //菜单栏
         MENU_FILE,
