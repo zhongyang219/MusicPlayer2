@@ -666,6 +666,9 @@ wstring CCommon::GetAppDataConfigDir()
     CreateDirectory(app_data_path.c_str(), NULL);       //如果Roaming不存在，则创建它
     app_data_path += L'\\';
     app_data_path += APP_NAME;
+#ifdef _DEBUG
+    app_data_path += L" (Debug)";
+#endif
     app_data_path += L'\\';
     CreateDirectory(app_data_path.c_str(), NULL);       //如果C:/User/用户名/AppData/Roaming/MusicPlayer2不存在，则创建它
 
