@@ -19,6 +19,11 @@ CMenuEditCtrl::~CMenuEditCtrl()
 {
 }
 
+void CMenuEditCtrl::SetTooltopText(const CString& tooltip_text)
+{
+    m_tooltip_text = tooltip_text;
+}
+
 void CMenuEditCtrl::OnBrowse()
 {
     PostMessage(WM_KILLFOCUS, 0, 0);
@@ -33,6 +38,11 @@ void CMenuEditCtrl::OnBrowse()
 
 void CMenuEditCtrl::OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot)
 {
+    if (m_btn_rect != rect)
+    {
+        m_btn_rect = rect;
+        UpdateToolTipPosition();
+    }
     //使用双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
     CDrawCommon drawer;
@@ -102,6 +112,12 @@ void CMenuEditCtrl::OnChangeLayout()
 
 }
 
+void CMenuEditCtrl::UpdateToolTipPosition()
+{
+    if (!m_btn_rect.IsRectEmpty())
+        m_tool_tip.SetToolRect(this, 1, m_btn_rect);
+}
+
 BEGIN_MESSAGE_MAP(CMenuEditCtrl, CMFCEditBrowseCtrl)
     ON_WM_NCLBUTTONDOWN()
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CMenuEditCtrl::OnTabletQuerysystemgesturestatus)
@@ -122,4 +138,26 @@ void CMenuEditCtrl::OnNcLButtonDown(UINT nHitTest, CPoint point)
 afx_msg LRESULT CMenuEditCtrl::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+
+
+void CMenuEditCtrl::PreSubclassWindow()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    m_tool_tip.Create(this, TTS_ALWAYSTIP);
+    m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
+    m_tool_tip.AddTool(this, m_tooltip_text, CRect(), 1);
+    UpdateToolTipPosition();
+
+    CMFCEditBrowseCtrl::PreSubclassWindow();
+}
+
+
+BOOL CMenuEditCtrl::PreTranslateMessage(MSG* pMsg)
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    if (pMsg->message == WM_MOUSEMOVE)
+        m_tool_tip.RelayEvent(pMsg);
+
+    return CMFCEditBrowseCtrl::PreTranslateMessage(pMsg);
 }

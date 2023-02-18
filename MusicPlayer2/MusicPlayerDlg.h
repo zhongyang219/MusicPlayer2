@@ -66,7 +66,7 @@ public:
     // 实现
 protected:
     HICON m_hIcon;
-    CToolTipCtrl m_Mytip;
+    CToolTipCtrl m_tool_tip;
     //控件变量
     CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
     //用于支持鼠标指向列表中的项目时显示歌曲信息)
@@ -257,7 +257,7 @@ protected:
     afx_msg HCURSOR OnQueryDragIcon();
     DECLARE_MESSAGE_MAP()
 
-    afx_msg void OnSize(UINT nType, int cx, int cy);
+        afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnTimer(UINT_PTR nIDEvent);
     afx_msg void OnPlayPause();
     afx_msg void OnPlay();

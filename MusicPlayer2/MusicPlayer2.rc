@@ -3894,6 +3894,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_LOCATE              "定位"
+    IDS_PLAYLIST_MENU       "播放列表菜单"
+    IDS_RECENT_FOLDER_OR_PLAYLIST "最近播放的文件夹/播放列表"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -7209,6 +7211,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_LOCATE              "Locate"
+    IDS_PLAYLIST_MENU       "Playlist menu"
+    IDS_RECENT_FOLDER_OR_PLAYLIST "Recently played folder/playlist"
 END
 
 #endif    // 英语(美国) resources

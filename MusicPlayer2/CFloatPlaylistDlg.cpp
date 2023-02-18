@@ -15,7 +15,7 @@ IMPLEMENT_DYNAMIC(CFloatPlaylistDlg, CDialog)
 CFloatPlaylistDlg::CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent /*=nullptr*/)
     : CDialog(IDD_MUSICPLAYER2_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }
 {
-
+    m_path_edit.SetTooltopText(CCommon::LoadText(IDS_RECENT_FOLDER_OR_PLAYLIST));
 }
 
 CFloatPlaylistDlg::~CFloatPlaylistDlg()
