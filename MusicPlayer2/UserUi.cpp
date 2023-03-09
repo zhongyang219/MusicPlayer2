@@ -66,7 +66,7 @@ void CUserUi::PlaylistLocateToCurrent()
         UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
         if (playlist_element != nullptr)
         {
-            playlist_element->EnsureItemVisible(CPlayer::GetInstance().GetIndex(), this);
+            playlist_element->EnsureItemVisible(CPlayer::GetInstance().GetIndex());
         }
         return false;
     });
@@ -82,7 +82,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
             draw_rect.DeflateRect(EdgeMargin(true), EdgeMargin(false));
         }
         draw_element->SetRect(draw_rect);
-        draw_element->Draw(this);
+        draw_element->Draw();
         //绘制音量调整按钮
         DrawVolumnAdjBtn();
     }
@@ -302,7 +302,7 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
         UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
         if (playlist_element != nullptr)
         {
-            if (playlist_element->MouseWheel(delta, point, this))
+            if (playlist_element->MouseWheel(delta, point))
             {
                 rtn = true;
                 return true;
@@ -355,7 +355,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
     //获取节点名称
     std::string item_name = CTinyXml2Helper::ElementName(xml_node);
     //根据节点名称创建ui元素
-    std::shared_ptr<UiElement::Element> element = factory.CreateElement(item_name);
+    std::shared_ptr<UiElement::Element> element = factory.CreateElement(item_name, this);
     if (element != nullptr)
     {
         static UiElement::Element* current_build_ui_element{};      //正在创建ui元素

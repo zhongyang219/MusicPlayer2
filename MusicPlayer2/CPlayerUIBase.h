@@ -186,6 +186,9 @@ public:
         int item_selected{ -1 };        //选中项的序号
         CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
         std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域
+        CRect scrollbar_handle_rect;    //滚动条把手的位置
+        bool scrollbar_bover{};         //鼠标指向滚动条
+        bool scrollbar_handle_pressed{};    //滚动条把手被按下
     };
 
     //根据按钮的类型获取对应的图标

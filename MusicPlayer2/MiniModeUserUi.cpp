@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MiniModeUserUi.h"
 
 CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
@@ -14,9 +14,9 @@ bool CMiniModeUserUi::GetUiSize(int& width, int& height)
 {
     if (m_root_default != nullptr)
     {
-        //ÉèÖÃ»æÍ¼ÇøÓò
-        width = m_root_default->width.GetValue(CRect(), this);
-        height = m_root_default->height.GetValue(CRect(), this);
+        //è®¾ç½®ç»˜å›¾åŒºåŸŸ
+        width = m_root_default->width.GetValue(CRect());
+        height = m_root_default->height.GetValue(CRect());
         return true;
     }
     return false;
@@ -27,19 +27,19 @@ void CMiniModeUserUi::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
     if (m_root_default != nullptr)
     {
         m_root_default->SetRect(draw_rect);
-        m_root_default->Draw(this);
-        //»æÖÆÒôÁ¿µ÷Õû°´Å¥
+        m_root_default->Draw();
+        //ç»˜åˆ¶éŸ³é‡è°ƒæ•´æŒ‰é’®
         DrawVolumnAdjBtn();
     }
 }
 
 void CMiniModeUserUi::PreDrawInfo()
 {
-    //ÉèÖÃÑÕÉ«
+    //è®¾ç½®é¢œè‰²
     m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode);
     if (m_root_default != nullptr)
     {
-        //ÉèÖÃ»æÍ¼ÇøÓò
+        //è®¾ç½®ç»˜å›¾åŒºåŸŸ
         int width{}, height{};
         GetUiSize(width, height);
         m_draw_rect = CRect(CPoint(0, 0), CSize(width, height));

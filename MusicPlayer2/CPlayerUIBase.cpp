@@ -2384,24 +2384,23 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int 
 {
     m_draw.SetDrawArea(rect);
 
+    BYTE alpha;
+    if (!IsDrawBackgroundAlpha())
+        alpha = 255;
+    else if (theApp.m_app_setting_data.dark_mode)
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+    else
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+
     for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
     {
         if (i < 0 || i >= static_cast<int>(playlist_info.item_rects.size()))
             break;
         CRect rect_item{ playlist_info.item_rects[i] };
+        rect_item.right -= DPI(8);      //留出一定距离用于绘制滚动条
         //如果绘制的行在播放列表区域之个，则不绘制该行
         if (!(rect_item & rect).IsRectEmpty())
         {
-            //rect_item = (rect_item & rect);
-
-            BYTE alpha;
-            if (!IsDrawBackgroundAlpha())
-                alpha = 255;
-            else if (theApp.m_app_setting_data.dark_mode)
-                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
-            else
-                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-
             COLORREF back_color{};
             //选中项目的背景
             if (i == playlist_info.item_selected)
@@ -2462,6 +2461,35 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int 
             m_draw.DrawWindowText(rect_time, song_info.length().toString().c_str(), m_colors.color_text, Alignment::LEFT, true);
         }
     }
+
+    //绘制滚动条
+    CRect rect_scrollbar{ rect };
+    rect_scrollbar.left = rect_scrollbar.right - DPI(6);
+    COLORREF scrollbar_handle_color{ playlist_info.scrollbar_handle_pressed ? m_colors.color_button_back : m_colors.color_spectrum_back };
+    auto drawRect = [&](CRect _rect, BYTE _alpha) {
+        if (theApp.m_app_setting_data.button_round_corners)
+            m_draw.DrawRoundRect(_rect, scrollbar_handle_color, DPI(4), _alpha);
+        else
+            m_draw.FillAlphaRect(_rect, scrollbar_handle_color, _alpha, true);
+
+    };
+
+    ////填充背景
+    //drawRect(rect_scrollbar, 40);
+
+    //画滚动条把手
+    if (CPlayer::GetInstance().GetSongNum() > 1 && item_height * CPlayer::GetInstance().GetSongNum() > rect.Height())
+    {
+        int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * CPlayer::GetInstance().GetSongNum()) };
+        if (scroll_handle_length < DPI(8))
+            scroll_handle_length = DPI(8);
+        int scroll_pos{ (rect.Height()) * playlist_info.playlist_offset / (item_height * CPlayer::GetInstance().GetSongNum())};
+        CRect rect_scrollbar_handle{ rect_scrollbar };
+        rect_scrollbar_handle.top = rect_scrollbar.top + scroll_pos;
+        rect_scrollbar_handle.bottom = rect_scrollbar_handle.top + scroll_handle_length;
+        drawRect(rect_scrollbar_handle, alpha);
+    }
+
     ResetDrawArea();
 }
 

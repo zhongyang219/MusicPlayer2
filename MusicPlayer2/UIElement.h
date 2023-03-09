@@ -10,52 +10,55 @@ namespace UiElement
     public:
         struct Value        //一个布局的数值
         {
-            Value(bool _is_vertical);
+            Value(bool _is_vertical, Element* _owner);
             void FromString(const std::string str);
-            int GetValue(CRect parent_rect, CPlayerUIBase* ui) const;   // 获取实际显示的数值
+            int GetValue(CRect parent_rect) const;   // 获取实际显示的数值
             bool IsValid() const;           // 返回true说明设置过数值
         private:
             int value{ 0 };                 // 如果is_percentate为true则值为百分比，否则为实际值
             bool valid{ false };            // 如果还没有设置过数值，则为false
             bool is_percentage{ false };    // 数值是否为百分比
             bool is_vertical{ false };      // 数值是否为垂直方向的
+            Element* owner;
         };
-        Value margin_left{ false };
-        Value margin_right{ false };
-        Value margin_top{ true };
-        Value margin_bottom{ true };
-        Value x{ false };
-        Value y{ true };
-        Value width{ false };
-        Value height{ true };
-        Value max_width{ false };
-        Value max_height{ true };
-        Value min_width{ false };
-        Value min_height{ true };
-        Value hide_width{ false };
-        Value hide_height{ true };
+        Value margin_left{ false, this };
+        Value margin_right{ false, this };
+        Value margin_top{ true, this };
+        Value margin_bottom{ true, this };
+        Value x{ false, this };
+        Value y{ true, this };
+        Value width{ false, this };
+        Value height{ true, this };
+        Value max_width{ false, this };
+        Value max_height{ true, this };
+        Value min_width{ false, this };
+        Value min_height{ true, this };
+        Value hide_width{ false, this };
+        Value hide_height{ true, this };
         int proportion{ 0 };
 
         Element* pParent{};     //父元素
         std::vector<std::shared_ptr<Element>> childLst; //子元素列表
         std::string name;
 
-        virtual void Draw(CPlayerUIBase* ui);   //绘制此元素
-        virtual bool IsEnable(CRect parent_rect, CPlayerUIBase* ui) const;
-        virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const;
-        int GetWidth(CRect parent_rect, CPlayerUIBase* ui) const;
-        int GetHeight(CRect parent_rect, CPlayerUIBase* ui) const;
+        virtual void Draw();   //绘制此元素
+        virtual bool IsEnable(CRect parent_rect) const;
+        virtual int GetMaxWidth(CRect parent_rect) const;
+        int GetWidth(CRect parent_rect) const;
+        int GetHeight(CRect parent_rect) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         Element* RootElement();       //获取根节点
         void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
+        void SetUi(CPlayerUIBase* _ui);
 
     protected:
-        CRect ParentRect(CPlayerUIBase* ui) const;
-        virtual void CalculateRect(CPlayerUIBase* ui);           //计算此元素在界面中的矩形区域
+        CRect ParentRect() const;
+        virtual void CalculateRect();           //计算此元素在界面中的矩形区域
         static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func);
 
         CRect rect;     //用于保存计算得到的元素的矩形区域
+        CPlayerUIBase* ui;
     };
 
     //布局
@@ -68,8 +71,8 @@ namespace UiElement
             Horizontal,
         };
         Type type;
-        void CalculateChildrenRect(CPlayerUIBase* ui);      //计算布局中所有子元素的位置
-        virtual void Draw(CPlayerUIBase* ui) override;
+        void CalculateChildrenRect();      //计算布局中所有子元素的位置
+        virtual void Draw() override;
     };
 
     //包含多个元素的堆叠元素，同时只能显示一个元素
@@ -78,7 +81,7 @@ namespace UiElement
     public:
         void SetCurrentElement(int index);
         void SwitchDisplay();
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
         bool ckick_to_switch{};     //鼠标点击时切换
         bool hover_to_switch{};     //鼠标指向时切换
         bool show_indicator{};
@@ -100,7 +103,7 @@ namespace UiElement
         bool no_corner_radius{};
         bool theme_color{ true };
         CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     };
 
     //按钮
@@ -109,7 +112,7 @@ namespace UiElement
     public:
         CPlayerUIBase::BtnKey key;      //按钮的类型
         bool big_icon;                  //如果为false，则图标尺寸为16x16，否则为20x20
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
         void FromString(const std::string& key_type);
     };
 
@@ -146,8 +149,8 @@ namespace UiElement
         CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
         bool show_volume{};     //当type为PlayTimeAndVolume时有效，如果为true，则显示为音量
 
-        virtual void Draw(CPlayerUIBase* ui) override;
-        virtual int GetMaxWidth(CRect parent_rect, CPlayerUIBase* ui) const override;
+        virtual void Draw() override;
+        virtual int GetMaxWidth(CRect parent_rect) const override;
         std::wstring GetText() const;
 
     private:
@@ -160,8 +163,8 @@ namespace UiElement
     public:
         bool square{};
         bool show_info{};
-        virtual void Draw(CPlayerUIBase* ui) override;
-        virtual void CalculateRect(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
+        virtual void CalculateRect() override;
     };
 
     //频谱分析
@@ -172,15 +175,15 @@ namespace UiElement
         bool fixed_width{};     //每个柱形是否使用相同的宽度
         Alignment align{ Alignment::LEFT };     //对齐方式
         CUIDrawer::SpectrumCol type{ CUIDrawer::SC_64 };     //频谱分析的类型
-        virtual void Draw(CPlayerUIBase* ui) override;
-        virtual bool IsEnable(CRect parent_rect, CPlayerUIBase* ui) const override;
+        virtual void Draw() override;
+        virtual bool IsEnable(CRect parent_rect) const override;
     };
 
     //曲目信息（包含播放状态、文件名、歌曲标识、速度）
     class TrackInfo : public Element
     {
     public:
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     };
 
     //工具栏
@@ -188,7 +191,7 @@ namespace UiElement
     {
     public:
         bool show_translate_btn{};      //是否在工具栏上显示“显示歌词翻译”按钮
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     };
 
     //进度条
@@ -197,14 +200,14 @@ namespace UiElement
     public:
         bool show_play_time{};
         bool play_time_both_side{};
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     };
 
     //歌词
     class Lyrics : public Element
     {
     public:
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     protected:
         bool IsParentRectangle() const;     //判断父元素中是否有矩形元素
     };
@@ -215,32 +218,32 @@ namespace UiElement
     public:
         bool show_text{ true };     //是否在音量图标旁边显示文本
         bool adj_btn_on_top{ false };   //音量调节按钮是否显示在音量图标的上方
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     };
 
     //节拍指示
     class BeatIndicator : public Element
     {
     public:
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     };
 
     //播放列表
     class Playlist : public Element
     {
     public:
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
         void LButtonUp(CPoint point);
         void LButtonDown(CPoint point);
         void MouseMove(CPoint point);
         bool RButtunUp(CPoint point);
         void RButtonDown(CPoint point);
-        bool MouseWheel(int delta, CPoint point, CPlayerUIBase* ui);
+        bool MouseWheel(int delta, CPoint point);
         bool DoubleClick(CPoint point);
 
-        void EnsureItemVisible(int index, CPlayerUIBase* ui);  //确保指定项在播放列表中可见
-        void RestrictOffset(CPlayerUIBase* ui);             //将播放列表偏移量限制在正确的范围
-        void CalculateItemRects(CPlayerUIBase* ui);         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
+        void EnsureItemVisible(int index);  //确保指定项在播放列表中可见
+        void RestrictOffset();             //将播放列表偏移量限制在正确的范围
+        void CalculateItemRects();         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
 
         int item_height{ 28 };
 
@@ -259,7 +262,7 @@ namespace UiElement
     class PlaylistIndicator : public Element
     {
     public:
-        virtual void Draw(CPlayerUIBase* ui) override;
+        virtual void Draw() override;
     };
 }
 
@@ -267,5 +270,5 @@ namespace UiElement
 class CElementFactory
 {
 public:
-    std::shared_ptr<UiElement::Element> CreateElement(const std::string& name);
+    std::shared_ptr<UiElement::Element> CreateElement(const std::string& name, CPlayerUIBase* ui);
 };

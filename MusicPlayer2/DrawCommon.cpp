@@ -576,6 +576,9 @@ void CDrawCommon::DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alp
 
 void CDrawCommon::DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int radius)
 {
+    int max_radius{ (std::min)(rect.Width, rect.Height) / 2 };
+    if (radius > max_radius)
+        radius = max_radius;
     CRect rc{ CGdiPlusTool::GdiplusRectToCRect(rect) };
     rc.right--;
     rc.bottom--;
