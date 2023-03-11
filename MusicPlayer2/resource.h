@@ -787,6 +787,7 @@
 #define IDS_LOCATE                      592
 #define IDS_PLAYLIST_MENU               593
 #define IDS_RECENT_FOLDER_OR_PLAYLIST   594
+#define IDS_PLAYLIST_EMPTY_INFO         595
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
